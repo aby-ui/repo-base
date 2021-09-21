@@ -224,6 +224,7 @@ local function createPromoteArray()
 		local tmpStr = strsplit(" ",VMRT.InviteTool.PromoteNames)
 		while tmpStr do
 			if tmpStr ~= "" and tmpStr ~= " " then
+				tmpStr = tmpStr:lower()
 				module.db.promoteWordsArray[tmpStr] = 1
 			end
 			tmpCount = tmpCount + 1
@@ -456,10 +457,114 @@ function module.options:Load()
 
 	self.dropDownRaidDiffText = ELib:Text(self,L.InviteRaidDiff,11):Size(150,20):Point("TOPLEFT",self.dropDownRaidDiff,-180,0)
 
+
+
+	self.chkEnableMasterLooter = ELib:Check(self,L.InviteMasterlootersEnable,VMRT.InviteTool.LootMethodEnabled):Point("TOPLEFT",self.dropDownRaidDiff,"BOTTOMLEFT",-175,-5):OnClick(function(self) 
+		if self:GetChecked() then
+			VMRT.InviteTool.LootMethodEnabled = true
+		else
+			VMRT.InviteTool.LootMethodEnabled = nil
+		end
+	end)
+
+	local LootMethodDropDown = {
+		{"freeforall",LOOT_FREE_FOR_ALL},
+		{"group",LOOT_GROUP_LOOT},
+		{"master",LOOT_MASTER_LOOTER},
+		{"needbeforegreed",LOOT_NEED_BEFORE_GREED},
+		--{"personalloot",LOOT_PERSONAL_LOOT},
+		{"roundrobin",LOOT_ROUND_ROBIN},
+	}
+	self.dropDownLootMethod = ELib:DropDown(self,235,10):Point("TOPLEFT",self.chkEnableMasterLooter,"BOTTOMLEFT",175,-5):Size(250)
+	function self.dropDownLootMethod:SetValue(newValue)
+		VMRT.InviteTool.LootMethod = LootMethodDropDown[newValue][1]
+		module.options.dropDownLootMethod:SetText( LootMethodDropDown[newValue][2] )
+		ELib:DropDownClose()
+		for i=1,#module.options.dropDownLootMethod.List do
+			module.options.dropDownLootMethod.List[i].checkState = VMRT.InviteTool.LootMethod == LootMethodDropDown[ module.options.dropDownLootMethod.List[i].arg1 ][1]
+		end
+	end
+	for i=1,#LootMethodDropDown do
+		self.dropDownLootMethod.List[i] = {
+			text = LootMethodDropDown[i][2],
+			checkState = VMRT.InviteTool.LootMethod == LootMethodDropDown[i][1],
+			radio = true,
+			arg1 = i,
+			func = self.dropDownLootMethod.SetValue,
+		}
+	end
+	self.dropDownLootMethod.Lines = #self.dropDownLootMethod.List
+	do
+		local methodName = ""
+		for i=1,#LootMethodDropDown do
+			if LootMethodDropDown[i][1] == VMRT.InviteTool.LootMethod then
+				methodName = LootMethodDropDown[i][2]
+				break
+			end
+		end
+		self.dropDownLootMethod:SetText( methodName or "" )
+	end
+	self.dropDownLootMethodText = ELib:Text(self,LOOT_METHOD..":",11):Size(175,20):Point("TOPLEFT",self.dropDownLootMethod,-175,0)
+	
+	
+	self.masterlotersInput = ELib:Edit(self):Size(250,20):Point("TOPLEFT",self.dropDownLootMethod,"BOTTOMLEFT",0,-5):Tooltip(L.InviteMasterlootersTooltip):Text(VMRT.InviteTool.MasterLooters):OnChange(function(self)
+		VMRT.InviteTool.MasterLooters = self:GetText()
+		createMastelootersArray()
+	end) 
+	self.masterlotersInputText = ELib:Text(self,L.InviteMasterlooters,11):Size(175,20):Point("TOPLEFT",self.masterlotersInput,-175,0)
+	
+	
+	local LootThresholdDropDown = {
+		{2,"|c"..select(4,GetItemQualityColor(2))..ITEM_QUALITY2_DESC},
+		{3,"|c"..select(4,GetItemQualityColor(3))..ITEM_QUALITY3_DESC},
+		{4,"|c"..select(4,GetItemQualityColor(4))..ITEM_QUALITY4_DESC},
+	}
+	self.dropDownLootThreshold = ELib:DropDown(self,235,10):Point("TOPLEFT",self.masterlotersInput,"BOTTOMLEFT",0,-5):Size(250)
+	function self.dropDownLootThreshold:SetValue(newValue)
+		VMRT.InviteTool.LootThreshold = LootThresholdDropDown[newValue][1]
+		module.options.dropDownLootThreshold:SetText( LootThresholdDropDown[newValue][2] )
+		ELib:DropDownClose()
+		for i=1,#module.options.dropDownLootThreshold.List do
+			module.options.dropDownLootThreshold.List[i].checkState = VMRT.InviteTool.LootThreshold == LootThresholdDropDown[ module.options.dropDownLootThreshold.List[i].arg1 ][1]
+		end
+
+	end
+	for i=1,#LootThresholdDropDown do
+		self.dropDownLootThreshold.List[i] = {
+			text = LootThresholdDropDown[i][2],
+			checkState = VMRT.InviteTool.LootThreshold == LootThresholdDropDown[i][1],
+			radio = true,
+			arg1 = i,
+			func = self.dropDownLootThreshold.SetValue,
+		}
+	end
+	self.dropDownLootThreshold.Lines = #self.dropDownLootThreshold.List
+	do
+		local diffName = ""
+		for i=1,#LootThresholdDropDown do
+			if LootThresholdDropDown[i][1] == VMRT.InviteTool.LootThreshold then
+				diffName = LootThresholdDropDown[i][2]
+				break
+			end
+		end
+		self.dropDownLootThreshold:SetText( diffName or "" )
+	end
+	self.dropDownLootThresholdText = ELib:Text(self,LOOT_THRESHOLD..":",11):Size(175,20):Point("TOPLEFT",self.dropDownLootThreshold,-175,0)
+
+
+
+
 	if ExRT.isClassic then
 		self.chkRaidDiff:Hide()
 		self.dropDownRaidDiff:Hide()
 		self.dropDownRaidDiffText:Hide()
+	else
+		self.dropDownLootMethod:Hide()
+		self.dropDownLootMethodText:Hide()
+		self.masterlotersInput:Hide()
+		self.masterlotersInputText:Hide()
+		self.dropDownLootThreshold:Hide()
+		self.dropDownLootThresholdText:Hide()
 	end
 
 
@@ -500,6 +605,9 @@ do
 
 	local function GuildReview()
 		guildmembers = {}
+		if (GetNumGuildMembers() or 0) == 0 then
+			C_GuildInfo_GuildRoster()
+		end
 		for j=1,GetNumGuildMembers() do
 			local guild_name,_,rankIndex = GetGuildRosterInfo(j)
 			if guild_name then
@@ -516,7 +624,7 @@ do
 			local name, rank = GetRaidRosterInfo(i)
 			if name and rank == 0 then
 				local sName = ExRT.F.delUnitNameServer(name)
-				if module.db.promoteWordsArray[sName] then
+				if module.db.promoteWordsArray[sName:lower()] then
 					promotes[name] = true
 				elseif IsInGuild() and UnitInGuild(sName) then
 					if not guildmembers then
@@ -531,9 +639,9 @@ do
 		if not scheduledPromotes then
 			scheduledPromotes = ExRT.F.ScheduleTimer(function ()
 				scheduledPromotes = nil
-				for name,v in pairs(promotes) do
+				for name in pairs(promotes) do
 					if not module.db.demotedPlayers[ ExRT.F.delUnitNameServer(name) ] then
-						PromoteToAssistant(name)
+						PromoteToAssistant(name, true)
 					end
 					promotes[name] = nil
 				end
@@ -671,9 +779,11 @@ local function AutoRaidSetup()
 
 				if not ExRT.isClassic then
 					SetRaidDifficultyID(VMRT.InviteTool.RaidDiff)
-					--SetLootMethod(VMRT.InviteTool.LootMethod,UnitName("player"),nil)
+				end
+				if ExRT.isClassic and VMRT.InviteTool.LootMethodEnabled then
+					SetLootMethod(VMRT.InviteTool.LootMethod,UnitName("player"),nil)
 					--SetLootThreshold(VMRT.InviteTool.LootThreshold)	--http://us.battle.net/wow/en/forum/topic/14610481537
-					--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VMRT.InviteTool.LootThreshold)
+					ExRT.F.ScheduleTimer(SetLootThreshold, 2, VMRT.InviteTool.LootThreshold)
 				end
 			end
 		elseif not inRaid and module.db.sessionInRaid then
@@ -682,14 +792,14 @@ local function AutoRaidSetup()
 	else
 		if inRaid and not module.db.sessionInRaidLoot then
 			module.db.sessionInRaidLoot = true
-			if RaidLeader then
-				--SetLootMethod(VMRT.InviteTool.LootMethod,UnitName("player"),nil)
-				--ExRT.F.ScheduleTimer(SetLootThreshold, 2, VMRT.InviteTool.LootThreshold)
+			if RaidLeader and ExRT.isClassic and VMRT.InviteTool.LootMethodEnabled then
+				SetLootMethod(VMRT.InviteTool.LootMethod,UnitName("player"),nil)
+				ExRT.F.ScheduleTimer(SetLootThreshold, 2, VMRT.InviteTool.LootThreshold)
 			end
 		end
 	end
 
-	if inRaid and RaidLeader and VMRT.InviteTool.LootMethod == "master" then
+	if inRaid and RaidLeader and VMRT.InviteTool.LootMethod == "master" and VMRT.InviteTool.LootMethodEnabled and ExRT.isClassic then
 		local lootMethod,_,masterlooterRaidID = GetLootMethod()
 		if lootMethod == "master" then
 			local masterlooterName = UnitName("raid"..masterlooterRaidID)
@@ -698,7 +808,7 @@ local function AutoRaidSetup()
 				local nameNow = UnitName(name)
 				if nameNow then
 					if masterlooterName ~= nameNow then
-						--SetLootMethod("master",name)
+						SetLootMethod("master",name)
 					end
 					break
 				end

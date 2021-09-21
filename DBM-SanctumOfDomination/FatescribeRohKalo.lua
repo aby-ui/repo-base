@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2447, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210903004549")
+mod:SetRevision("20210920013907")
 mod:SetCreatureID(175730)
 mod:SetEncounterID(2431)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -362,7 +362,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if self.Options.NPAuraOnBurdenofDestiny then
 				DBM.Nameplate:Show(true, args.sourceGUID, spellId)
 			end
-		else
+		elseif self:IsHard() then--Normal and LFR just blow it up, it doesn't do any damage
 			specWarnBurdenofDestiny:Show()
 			specWarnBurdenofDestiny:Play("killmob")
 		end

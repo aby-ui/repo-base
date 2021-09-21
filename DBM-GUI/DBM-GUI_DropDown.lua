@@ -165,6 +165,9 @@ function tabFrame1:ShowFontMenu()
 end
 
 function tabFrame1:Refresh()
+	if #self.dropdown.values == 0 then -- Quirky case where there may be no elements in the dropdown???
+		return
+	end
 	self:Show()
 	if self.offset < 0 then
 		self.offset = 0
@@ -223,6 +226,7 @@ function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, he
 		end
 	end
 	local dropdown = CreateFrame("Frame", "DBM_GUI_DropDown" .. self:GetNewID(), parent or self.frame, "UIDropDownMenuTemplate")
+	dropdown.mytype = "dropdown"
 	dropdown.values = values
 	dropdown.callfunc = callfunc
 	local dropdownText = _G[dropdown:GetName() .. "Text"]

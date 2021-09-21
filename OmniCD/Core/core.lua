@@ -195,20 +195,27 @@ E.RegisterEvents = function(f, t)
 end
 
 E.UnregisterEvents = function(f, t)
-	if not t then return end
-	f.eventMap = f.eventMap or {}
+	local map = f.eventMap
+	if not map then return end
 
-	if type(t) == "table" then
-		for i = 1, #t do
-			local event = t[i]
-			if f.eventMap[event] then
-				f:UnregisterEvent(event)
-				f.eventMap[event] = nil
+	if t then
+		if type(t) == "table" then
+			for i = 1, #t do
+				local event = t[i]
+				if map[event] then
+					f:UnregisterEvent(event)
+					map[event] = nil
+				end
 			end
+		elseif map[t] then
+			f:UnregisterEvent(t)
+			map[t] = nil
 		end
-	elseif f.eventMap[t] then
-		f:UnregisterEvent(t)
-		f.eventMap[t] = nil
+	else
+		for event in pairs(map) do
+			f:UnregisterEvent(event)
+			map[event] = nil
+		end
 	end
 end
 

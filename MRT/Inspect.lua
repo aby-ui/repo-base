@@ -987,7 +987,7 @@ function module:PrepCovenantData()
 			local node = soulbindData.tree.nodes[i]
 			if node.state == Enum.SoulbindNodeState.Selected then
 				if node.conduitID ~= 0 then
-					soulbinds = soulbinds .. ":" .. node.conduitID .. "-".. node.conduitRank .. "-"..node.conduitType
+					soulbinds = soulbinds .. ":" .. node.conduitID .. "-".. (node.conduitRank + (node.socketEnhanced and 2 or 0)) .. "-"..node.conduitType
 				else
 					soulbinds = soulbinds .. ":" .. node.spellID
 				end
@@ -1105,7 +1105,7 @@ function module:PrepTalentsClassicData()
 	local class = select(2,UnitClass("player"))
 	local talents
 	for spec=1,3 do
-		for talPos=1,20 do
+		for talPos=1,24 do
 			local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfoClassic(spec, talPos, 1)
 			if name and maxRank > 0 and rank > 0 then
 				talents = (talents and talents..":" or "") .. module.TALENTDATA[class][spec][talPos] .. ":" .. rank .. maxRank

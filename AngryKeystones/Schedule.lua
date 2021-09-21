@@ -8,18 +8,19 @@ local requestPartyKeystones
 -- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
 -- 1溢出 2无常 3火山 4死疽 5繁盛 6暴怒 7激励 8血池 9残暴 10坚韧 11崩裂 12重伤 13易爆 14震荡 16寄生 117 收割 119 迷醉 120 觉醒 121 傲慢 122 鼓舞 123怨毒 124 风雷
 local affixSchedule = {
-    [1] =  {[1]=11, [2]=124,  [3]=10}, --1 Bursting Storming Fortified
-   	[2] =  {[1]=6,  [2]=3,[3]=9}, --2 Raging Volcanic Tyrannical
-   	[3] =  {[1]=122,[2]=12, [3]=10}, --3 Inspiring Grievous Fortified
-   	[4] =  {[1]=123,[2]=4,  [3]=9}, --4 Spiteful Necrotic Tyrannical
-   	[5] =  {[1]=7,  [2]=14, [3]=10}, --5 Bolstering Quaking Fortified
-   	[6] =  {[1]=8,  [2]=124, [3]=9}, --6 Sanguine Storming Tyrannical
-   	[7] =  {[1]=6,[2]=13,  [3]=10}, --7 Raging Explosive Fortified
-   	[8] =  {[1]=11,  [2]=3,  [3]=9}, --8 Bolstering Volcanic Tyrannical
-   	[9] =  {[1]=123,[2]=12,[3]=10}, --9 Spiteful Grievous Fortified
-   	[10] = {[1]=122, [2]=14, [3]=9}, --10 Inspiring Quaking Tyrannical
-   	[11] = {[1]=8,  [2]=4, [3]=10}, --11 Sanguine Necrotic Fortified
-   	[12] = {[1]=7,  [2]=13, [3]=9}, --12 Bolstering Explosive Tyrannical
+	-- Shadowlands Season 2
+	[1] =  {[1]=11, [2]=124,[3]=10}, -- 1 Bursting Storming Fortified
+	[2] =  {[1]=6,  [2]=3,  [3]=9},  -- 2 Raging Volcanic Tyrannical
+	[3] =  {[1]=122,[2]=12, [3]=10}, -- 3 Inspiring Grievous Fortified
+	[4] =  {[1]=123,[2]=4,  [3]=9},  -- 4 Spiteful Necrotic Tyrannical
+	[5] =  {[1]=7,  [2]=14, [3]=10}, -- 5 Bolstering Quaking Fortified
+	[6] =  {[1]=8,  [2]=124,[3]=9},  -- 6 Sanguine Storming Tyrannical
+	[7] =  {[1]=6,  [2]=13, [3]=10}, -- 7 Raging Explosive Fortified
+	[8] =  {[1]=11, [2]=3,  [3]=9},  -- 8 Bursting Volcanic Tyrannical
+	[9] =  {[1]=123,[2]=12, [3]=10}, -- 9 Spiteful Grievous Fortified
+	[10] = {[1]=122,[2]=14, [3]=9},  --10 Inspiring Quaking Tyrannical
+	[11] = {[1]=8,  [2]=4,  [3]=10}, --11 Sanguine Necrotic Fortified
+	[12] = {[1]=7,  [2]=13, [3]=9},  --12 Bolstering Explosive Tyrannical
 }
 
 local affixScheduleUnknown = false
@@ -287,7 +288,7 @@ function Mod:Blizzard_ChallengesUI()
 
 	local keystoneText = ChallengesFrame.WeeklyInfo.Child:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
 	keystoneText:SetPoint("TOP", ChallengesFrame.WeeklyInfo.Child, "TOP", 0, -113)
-	keystoneText:SetWidth(220)
+	keystoneText:SetWidth(320)
 	Mod.KeystoneText = keystoneText
 
 	hooksecurefunc("ChallengesFrame_Update", UpdateFrame)

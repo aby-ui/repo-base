@@ -10,7 +10,7 @@ local Toggle = Addon.Tipped:NewClass('LogToggle', 'CheckButton', ADDON..'MenuChe
 Toggle.Icons = {
 	'Interface/Icons/INV_Crate_03',
 	'Interface/Icons/INV_Misc_Coin_01',
-	'Interface/Icons/INV_Letter_20'
+	'Interface/Icons/Inv_misc_note_02'
 }
 
 Toggle.Titles = {

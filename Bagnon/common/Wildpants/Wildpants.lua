@@ -131,7 +131,7 @@ function Addon:OnEnable()
 		tackleColor = {0.42, 0.59, 1},
 		fridgeColor = {1, .5, .5},
 		gemColor = {1, .65, .98},
-		mineColor = {1, .81, .38},
+		mineColor = {0.65, 0.53, 0.25},
 		herbColor = {.5, 1, .5},
 	})
 

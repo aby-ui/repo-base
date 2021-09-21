@@ -109,10 +109,10 @@ L.NOTESHAREERRORALREADYOPEN		= "不能開啟分享註記連結當註記編輯器
 L.ALLMOD_DEFAULT_LOADED			= "此副本所有的選項設定已套用預設值。"
 L.ALLMOD_STATS_RESETED			= "所有模組狀態已經被重置。"
 L.MOD_DEFAULT_LOADED			= "此戰鬥的預設選項已套用。"
-L.SOUNDKIT_MIGRATION			= "您的一個或多個警告/特別警告音效被重置為預設設置，因為不相容的媒體類型或無效的聲音路徑。DBM現在僅支援播放在您的addons資料夾之內的聲音文件，或者媒體的SoundKit編號。"
 
 L.WORLDBOSS_ENGAGED				= "在你的伺服器上的%s已在百分之%s時開戰(%s發送)。"
 L.WORLDBOSS_DEFEATED			= "在你的伺服器上的%s已被擊敗(%s發送)。"
+L.WORLDBUFF_STARTED			= "在你的伺服器上的%s增益已由%s陣營開始(%s發送)。"
 
 L.TIMER_FORMAT_SECS				= "%.2f秒"
 L.TIMER_FORMAT_MINS				= "%d分鐘"
@@ -191,7 +191,6 @@ L.DBMLDB							= "警告: DBM-LDB已內建在DBM-核心。雖然它不會造成�
 L.DBMLOOTREMINDER					= "警告：已安裝第三方模組 DBM-LootReminder。 此附加插件不再與正式版WOW客戶端相容，並且將導致DBM中斷並且無法發送請求計時器。 建議卸載此插件。"
 L.UPDATE_REQUIRES_RELAUNCH			= "警告: 如果你沒有重啟你的遊戲，這次DBM更新可能無法正確運作。這次更新包含了新的檔案或是.toc檔更新而不能使用ReloadUI載入。如果沒有將遊戲完全重啟可能會導致錯誤或功能不完整。"
 L.OUT_OF_DATE_NAG					= "你的"..L.DEADLY_BOSS_MODS.."版本已經過期，新版本針對特定的首領戰鬥增加新的功能和錯誤的修復。建議您進行更新來改善您的游戲體驗。"
-L.RETAIL_ONLY						= "警告: 此版本的DBM僅適用於最新正式版魔獸世界。反安裝此版本並為經典魔獸世界安裝正確的DBM版本。"
 
 L.MOVABLE_BAR					= "拖動我!"
 
@@ -617,5 +616,13 @@ L.LAG_FOOTER					= "無回應:%s"
 --LDB
 L.LDB_TOOLTIP_HELP1				= "點擊開啟" .. L.DBM
 L.SILENTMODE_IS                 = "無聲模式是 "
-L.LDB_LOAD_MODS					= "載入首領模組"
-L.LDB_ENABLE_BOSS_MOD			= "啟用首領模組"
+
+--Localizers, do not copy entire table, follow same guidelines as other tables, overwrite each entry with L.WORLD_BUFFS.hordeOny = "stuff" for example.
+L.WORLD_BUFFS.hordeOny						= "部落的人民，奧格瑪的城民，來吧，聚集到一起歡慶部落英雄的誕生。"
+L.WORLD_BUFFS.allianceOny					= "暴風城的城民和盟友們，今天，有人創造了歷史。"
+L.WORLD_BUFFS.hordeNef						= "奈法利安被!@#掉了！奧格瑪的人們" -- this is probably not correct (need to get rid of @#)
+L.WORLD_BUFFS.allianceNef					= "聯盟的人民們，黑石領主已經被幹掉了！"
+L.WORLD_BUFFS.zgHeart						= "只差最後一步，我們就可以擺脫靈魂掠奪者的威脅了……"
+L.WORLD_BUFFS.zgHeartBooty					= "靈魂掠奪者血神已經被打敗了！我們不再有危險了！"
+L.WORLD_BUFFS.zgHeartYojamba				= "開始儀式，我的僕從們。我們必須把哈卡完全打回扭曲虛空中！"
+L.WORLD_BUFFS.rendHead						= "那個假的酋長，雷德·黑手，已經倒下了！"

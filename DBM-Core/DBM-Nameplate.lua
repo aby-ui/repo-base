@@ -41,7 +41,7 @@ do
                 return frame.texture_index[texture]
             else
                 -- find unused icon:
-                for _,icon in ipairs(frame.icons) do
+                for _, icon in ipairs(frame.icons) do
                     if not icon:IsShown() then
                         return icon
                     end
@@ -56,7 +56,7 @@ do
         if not frame.icons or #frame.icons == 0 then return end
 
         local prev,total_width,first_icon
-        for _,icon in ipairs(frame.icons) do
+        for _, icon in ipairs(frame.icons) do
             if icon:IsShown() then
                 icon:ClearAllPoints()
 

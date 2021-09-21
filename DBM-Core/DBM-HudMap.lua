@@ -199,7 +199,7 @@ mod.free = function(e, owner, id, noAnimate)
 	end
 end
 
-local function groupIter(state, index)
+local function groupIter(_, index)
 	if index < 0 then
 		return
 	end
@@ -339,7 +339,7 @@ function mod:Disable()
 	end
 end
 
-function mod:ToggleHudar(r, hide)
+function mod:ToggleHudar(hide)
 	if hudarActive or hide then
 		hudarActive = false
 		self:FreeEncounterMarkerByTarget(143430, playerName)
@@ -412,7 +412,7 @@ local animations = {
 	end
 }
 
-local function DrawRouteLineCustom(T, C, sx, sy, ex, ey, w, extend, relPoint)
+local function DrawRouteLineCustom(T, C, sx, sy, ex, ey, w, relPoint)
 	if not relPoint then
 		relPoint = "BOTTOMLEFT"
 	end
@@ -525,8 +525,7 @@ local Object = {
 	Owned = function(self, ownerModule, id)
 		return not self.freed and ownerModule == self.ownerModule and id == self.id
 	end,
-	Show = function(self, noAnimate)
-	end,
+	Show = function() end,
 	Hide = function(self, noAnimate)
 		if noAnimate then
 			self.frame:Hide()
@@ -560,7 +559,7 @@ Edge = setmetatable({
 		end
 		return nil
 	end,
-	New = function(self, r, g, b, a, srcPlayer, dstPlayer, sx, sy, dx, dy, lifetime, texfile, w, extend)
+	New = function(self, r, g, b, a, srcPlayer, dstPlayer, sx, sy, dx, dy, lifetime, texfile, _, extend)
 		local t = tremove(edgeCache)
 		if not t then
 			t = setmetatable({}, edge_mt)
@@ -587,7 +586,7 @@ Edge = setmetatable({
 		t.lifetime = type(lifetime) == "number" and GetTime() + lifetime or nil
 		t:SetColor(r, g, b, a)
 		t.srcPlayer, t.dstPlayer = srcPlayer, dstPlayer
-		t.sx, t.sy, t.dx, t.dy, t.w, t.extend = sx, sy, dx, dy, w, extend
+		t.sx, t.sy, t.dx, t.dy, t.extend = sx, sy, dx, dy, extend
 		activeEdgeList[t] = true
 		activeMarkers = activeMarkers + 1
 		return t
@@ -672,7 +671,6 @@ Edge = setmetatable({
 		elseif self.dx and self.dy then
 			dx, dy = self.dx, self.dy
 		end
-		local w = self.w or 100
 		local visible
 		if sx and sy and dx and dy then
 			local px, py = mod:GetUnitPosition("player")
@@ -692,7 +690,7 @@ Edge = setmetatable({
 			local ay = dy - sy
 			if pow((ax * ax) + (ay * ay), 0.5) > 15 then
 				self.texture:Show()
-				DrawRouteLineCustom(self.texture, mod.canvas, sx, sy, dx, dy, w, self.extend)
+				DrawRouteLineCustom(self.texture, mod.canvas, sx, sy, dx, dy, self.extend)
 			else
 				self.texture:Hide()
 			end
@@ -1231,7 +1229,7 @@ function mod:RegisterPositionMarker(spellid, name, texture, x, y, radius, durati
 	return marker
 end
 
-function mod:RegisterStaticMarkerOnPartyMember(spellid, texture, person, radius, duration, r, g, b, a, blend, canFilterSelf)
+function mod:RegisterStaticMarkerOnPartyMember(spellid, texture, person, radius, duration, r, g, b, a, blend)
 	if not r and person then -- Auto generate class color if colors were left nil
 		local _, cls = UnitClass(person)
 		if cls and RAID_CLASS_COLORS[cls] then
@@ -1251,7 +1249,7 @@ function mod:RegisterStaticMarkerOnPartyMember(spellid, texture, person, radius,
 	return marker
 end
 
-function mod:RegisterRangeMarkerOnPartyMember(spellid, texture, person, radius, duration, r, g, b, a, blend, canFilterSelf)
+function mod:RegisterRangeMarkerOnPartyMember(spellid, texture, person, radius, duration, r, g, b, a, blend)
 	if not r and person then -- Auto generate class color if colors were left nil
 		local _, cls = UnitClass(person)
 		if cls and RAID_CLASS_COLORS[cls] then

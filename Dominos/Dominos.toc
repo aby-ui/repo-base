@@ -3,10 +3,9 @@
 ## Notes: A main actionbar replacement
 ## Notes-zhCN: 一种动作条替换方案
 ## Author: Tuller
-## Version: 9.1.1
+## Version: 9.1.2
 ## SavedVariables: DominosDB
-## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper
-## X-Build: @game-type@
+## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper, LibDualSpec-1.0
 ## X-Build: Retail
 # stuff required for the addon to work
 embeds.xml
@@ -32,8 +31,8 @@ bars\stanceBar.lua
 bars\bagBar.lua
 bars\menuBar.lua
 bars\possessBar.lua
-bars\extraAbilityBar.lua
 bars\vehicleBar.lua
+bars\extraAbilityBar.lua
 # stuff you should be able to comment out and still have Dominos work
 plugins\slashCommands.lua
 plugins\launcher.lua

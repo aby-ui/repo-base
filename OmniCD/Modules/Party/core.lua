@@ -52,7 +52,7 @@ end
 
 function P:ResetModule(isModuleDisabled)
 	if not isModuleDisabled then
-		E.UnregisterEvents(self, self.zoneEvents.all)
+		E.UnregisterEvents(self)
 	end
 	E.Comms:Disable()
 	E.Cooldowns:Disable()

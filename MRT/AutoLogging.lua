@@ -171,9 +171,9 @@ local function GetCurrentMapForLogging()
 			return true
 		elseif VMRT.Logging.enableArena and (zoneType == "arena" or zoneType == "ratedarena") then
 			return true
-		elseif ExRT.isBC and VMRT.Logging.enableclassic5pplHC and (difficulty == 174 or difficulty == 2) then
+		elseif ExRT.isBC and VMRT.Logging.enableclassic5pplHC and (difficulty == 174) then
 			return true
-		elseif ExRT.isBC and VMRT.Logging.enableclassic5pplNormal and (difficulty == 173 or difficulty == 1) then
+		elseif ExRT.isBC and VMRT.Logging.enableclassic5pplNormal and (difficulty == 173) then
 			return true
 		end
 	end

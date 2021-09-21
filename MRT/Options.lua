@@ -737,6 +737,35 @@ end
 OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogo2"):Point("TOPLEFT",15,5):Size(140,140)
 OptionsFrame.title = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("LEFT",OptionsFrame.image,"RIGHT",15,-5):Size(512*0.7,128*0.7)
 
+local askFrame_show
+local pmove_pos = 40
+OptionsFrame.pmove = CreateFrame("Frame",nil,OptionsFrame)
+OptionsFrame.pmove:SetPoint("CENTER",OptionsFrame.image,"CENTER",54*cos(pmove_pos),54*sin(pmove_pos))
+OptionsFrame.pmove:SetSize(15,15)
+local function pmove_OnUpdate(self,elapsed)
+	if not self:IsMouseOver() or not IsMouseButtonDown() then
+		self.isReverse = true
+	end
+	if self.isReverse and self:IsMouseOver() and IsMouseButtonDown() then
+		self.isReverse = false
+	end
+	pmove_pos = pmove_pos + (self.isReverse and -1 or 1) * (100 / GetFramerate() * 0.333)
+	if self.isReverse and pmove_pos < 40 then
+		pmove_pos = 40
+		self:SetScript("OnUpdate",nil)
+	elseif not self.isReverse and pmove_pos >= 400 then
+		pmove_pos = 40
+		self:SetScript("OnUpdate",nil)
+		askFrame_show()
+	end
+	self:SetPoint("CENTER",OptionsFrame.image,"CENTER",54*cos(pmove_pos),54*sin(pmove_pos))
+	OptionsFrame.image:SetRotation((pmove_pos-40)*PI/180)
+end
+OptionsFrame.pmove:SetScript("OnMouseDown",function(self)
+	self.isReverse = false
+	self:SetScript("OnUpdate",pmove_OnUpdate)
+end)
+
 OptionsFrame.animLogo = CreateFrame("Frame",nil,OptionsFrame)
 OptionsFrame.animLogo.g = OptionsFrame.animLogo:CreateAnimationGroup()
 OptionsFrame.animLogo.g:SetLooping("BOUNCE")
@@ -748,6 +777,7 @@ OptionsFrame.animLogo.g.a = OptionsFrame.animLogo.g:CreateAnimation()
 OptionsFrame.animLogo.g.a:SetDuration(.5)
 OptionsFrame.animLogo.g.a:SetScript("OnUpdate",function(self)
 	local p = 0.5-abs(0.5-self:GetProgress())
+	if pmove_pos ~= 40 then return end
 	OptionsFrame.image:SetRotation(p*10*PI/180)
 end)
 OptionsFrame.animLogo.g.a:SetStartDelay(4)
@@ -828,6 +858,204 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 	end
 end)
 
+do
+	local askFrame
+	function askFrame_show()
+		if not askFrame then
+			local M_WIDTH,M_HEIGHT = 1024,650
+
+			askFrame = CreateFrame("Button",nil,UIParent)
+			askFrame:Hide()
+			askFrame:SetSize(M_WIDTH,M_HEIGHT)
+			askFrame:SetPoint("CENTER")
+			askFrame:SetFrameStrata("DIALOG")
+			local mainbg = ELib:Texture(askFrame,[[Interface\AddOns\MRT\media\askjt]]):TexCoord(0,1,0,650/1024):Size(M_WIDTH,M_HEIGHT):Point("TOPLEFT")
+			local hiddenask = ELib:Texture(askFrame,[[Interface\AddOns\MRT\media\askjt]]):TexCoord(0,146/1024,651/1024,874/1024):Size(147,223):Point("CENTER",mainbg,35,-112)
+			hiddenask:SetAlpha(0)
+
+			askFrame:SetMovable(true)
+			askFrame:RegisterForDrag("LeftButton")
+			askFrame:SetScript("OnDragStart", function(self) self:StartMoving() end)
+			askFrame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
+
+			askFrame.Close = ELib:Templates_GUIcons(1)
+			askFrame.Close:SetParent(askFrame)
+			askFrame.Close:SetPoint("TOPRIGHT",-1,0)
+			askFrame.Close:SetSize(18,18)
+			askFrame.Close:SetScript("OnClick",function() askFrame:Hide() end)
+
+			askFrame.border = ELib.CreateShadow(askFrame,20)
+
+			local soundWillPlay, soundHandle, soundTicker
+			askFrame:SetScript("OnShow",function()
+				soundWillPlay, soundHandle = PlaySoundFile("Interface/AddOns/MRT/media/askm.ogg","Master")
+				if soundTicker then
+					soundTicker:Cancel()
+				end
+				soundTicker = C_Timer.NewTicker(40,function()
+					if soundHandle then
+						StopSound(soundHandle)
+					end
+					soundWillPlay, soundHandle = PlaySoundFile("Interface/AddOns/MRT/media/askm.ogg","Master")	
+				end)
+			end)
+			askFrame:SetScript("OnHide",function()
+				if soundTicker then
+					soundTicker:Cancel()
+				end
+				if soundHandle then
+					StopSound(soundHandle)
+				end
+			end)
+			
+			local MIN_X,MAX_X = 354, 672
+			local MIN_Y,MAX_Y = 379, 409
+			
+			local cars = {}
+			for i=1,30 do
+				local posX = MIN_X + (MAX_X - MIN_X) * math.random()
+				local posY = MIN_Y + (MAX_Y - MIN_Y) * math.random()
+				local width = math.random(3,7)
+				local height = math.random(1,2)
+				local car = ELib:Texture(askFrame,0,0,0,.3):Size(width,height):Point("TOPLEFT",mainbg,posX,-posY)
+				cars[i] = car
+				car.x = posX
+				car.y = posY
+				car.w = width
+				car.h = height
+				car.s = math.random(10,100) / 100
+				car:SetAlpha(0)
+			end
+
+			local sf = CreateFrame("ScrollFrame", nil, askFrame)
+			sf:SetPoint("TOPLEFT")
+			sf:SetPoint("BOTTOMRIGHT")
+		
+			sf.C = CreateFrame("Frame", nil, sf) 
+			sf:SetScrollChild(sf.C)
+			sf.C:SetSize(M_WIDTH,M_HEIGHT)
+
+			local function AnimOnUpdate(self)
+				local p = self:GetProgress()
+				self = self.p
+				self:SetPoint("TOPLEFT",self.fx+(self.tx-self.fx)*p,self.fy+(self.ty-self.fy)*p)
+			end
+			local function AnimOnFinished(self)
+				self.p:Update()
+			end
+			local function AnimUpdate(self,isFirstTime)
+				local width = math.random(1,10)
+				self.t:SetSize(width,width)
+				local alpha = math.random(10,40)
+				self.t:Color(1,1,1,alpha/100)
+
+				local maxw,maxh = M_WIDTH,M_HEIGHT
+				local dur = math.random(15,30)
+
+				if isFirstTime then
+					self.fx = math.random(0,maxw)
+					self.fy = -math.random(0,maxh)
+					if self.fx < maxw * 0.5 then
+						dur = dur * 0.5
+					end
+				else
+					self.fx = math.random(maxw*0.25,maxw*1.5)
+					self.fy = -maxh-width
+				end
+				if math.random(1,2) == 1 then
+					self.tx = math.random(-width,self.fx)
+					self.ty = width
+				else
+					self.tx = -width
+					self.ty = math.random(-maxh,width)
+				end
+				self.g.a:SetDuration(dur)
+				self.g:Play()
+			end
+
+			local blink = {}
+			for i=1,100 do
+				local f = CreateFrame("Frame",nil,sf.C)
+				f:SetSize(1,1)
+				blink[i] = f
+				f.t = ELib:Texture(f,[[Interface\AddOns\MRT\media\blip.tga]]):Point("CENTER")
+
+				f.g = f:CreateAnimationGroup()
+				f.g.p = f
+				f.g:SetScript('OnFinished', AnimOnFinished)
+				f.g.a = f.g:CreateAnimation()
+				f.g.a.p = f
+				f.g.a:SetScript("OnUpdate",AnimOnUpdate)
+
+				f.Update = AnimUpdate
+				f:Update(true)
+			end
+			
+			local start = GetTime() + 5
+			local carAlphaStart
+			askFrame:SetScript("OnUpdate",function()
+				local now = GetTime()
+				if now - start <= 30 then
+					hiddenask:SetAlpha(max(0,min((now - start) / 30,1)))
+				elseif not hiddenask.isshown then
+					hiddenask:SetAlpha(1)
+					hiddenask.isshown = true
+					carAlphaStart = now + 5
+				end
+			
+				if carAlphaStart then
+					if now < carAlphaStart then
+						for i=1,#cars do
+							cars[i]:SetAlpha(1-max(0,min((carAlphaStart - now) / 5,1)))
+						end
+					elseif not hiddenask.carsFull then
+						for i=1,#cars do
+							cars[i]:SetAlpha(1)
+						end
+						hiddenask.carsFull = true
+					end
+					for i=1,#cars do
+						local car = cars[i]
+						if i % 2 == 0 then
+							car.x = car.x + car.s
+							local adjX = 0
+							if car.x > MAX_X then
+								car.x = MIN_X - car.w + 1
+								car:SetWidth(min(car.w - (MIN_X - car.x),car.w))
+								adjX = MIN_X - car.x
+							elseif car.x + car.w > MAX_X and car.x < MAX_X then
+								car:SetWidth(max(MAX_X - car.x,1))
+							elseif car.x < MIN_X then
+								car:SetWidth(min(car.w - (MIN_X - car.x),car.w))
+								adjX = MIN_X - car.x
+							else
+								car:SetWidth(car.w)
+							end
+							car:Point("TOPLEFT",mainbg,car.x + adjX,-car.y)
+						else
+							car.x = car.x - car.s
+							local adjX = 0
+							if car.x < MIN_X - car.w then
+								car.x = MAX_X
+								car:SetWidth(1)
+							elseif car.x < MIN_X then
+								car:SetWidth(max(car.w - (MIN_X - car.x),1))
+								adjX = MIN_X - car.x
+							elseif car.x + car.w > MAX_X then
+								car:SetWidth(min(car.w - (car.x + car.w - MAX_X),car.w))
+							else
+								car:SetWidth(car.w)
+							end
+							car:Point("TOPLEFT",mainbg,car.x + adjX,-car.y)
+						end
+					end
+				end
+			end)
+		end
+		askFrame:Show()
+	end
+end
+
 OptionsFrame.chkIconMiniMap = ELib:Check(OptionsFrame,L.setminimap1):Point(25,-155):OnClick(function(self) 
 	if self:GetChecked() then
 		VMRT.Addon.IconMiniMapHide = true
@@ -857,13 +1085,6 @@ OptionsFrame.chkHideOnEsc = ELib:Check(OptionsFrame,L.SetHideOnESC):Point(350,-1
 end)
 OptionsFrame.chkHideOnEsc:SetScript("OnShow", function(self,event) 
 	self:SetChecked(VMRT.Addon.DisableHideESC) 
-end)
-
-OptionsFrame.eggBut = CreateFrame("Button",nil,OptionsFrame)  
-OptionsFrame.eggBut:SetSize(14,14) 
-OptionsFrame.eggBut:SetPoint("CENTER",OptionsFrame.image,0,0)
-OptionsFrame.eggBut:SetScript("OnClick",function(self) 
-
 end)
 
 OptionsFrame.authorLeft = ELib:Text(OptionsFrame,L.setauthor,12):Size(150,25):Point(15,-195):Shadow():Top()

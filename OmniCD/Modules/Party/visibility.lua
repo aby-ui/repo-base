@@ -40,7 +40,6 @@ if E.isPreBCC then
 	P.zoneEvents = {
 		arena = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
 		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
-		all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
 	}
 else
 	P.zoneEvents = {
@@ -49,7 +48,6 @@ else
 		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
 		party = { "CHALLENGE_MODE_START" },
 		raid  = { "ENCOUNTER_END" },
-		all   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET", "PLAYER_FLAGS_CHANGED", "CHALLENGE_MODE_START", "ENCOUNTER_END" },
 	}
 end
 
@@ -290,17 +288,23 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	self:UpdateExPositionValues()
 	self:UpdateRaidPriority()
 
-	E.UnregisterEvents(self, self.zoneEvents.all)
+	E.UnregisterEvents(self)
+	-- Overkill
+	--[[
 	if self.isInDungeon then
-		local _,_, difficultyID = GetInstanceInfo()
-		if difficultyID == 8 then
-			E.RegisterEvents(self, self.zoneEvents[instanceType])
-		end
+		C_Timer.After(1, function()
+			local _,_, difficultyID = GetInstanceInfo() -- returns 0 on entering zone
+			if difficultyID == 23 then
+				E.RegisterEvents(self, self.zoneEvents[instanceType])
+			end
+		 end)
 	else
 		E.RegisterEvents(self, self.zoneEvents[instanceType])
 	end
+	]]
+	E.RegisterEvents(self, self.zoneEvents[instanceType])
 
-	self.isPvP = E.isPreBCC and true or (self.isInPvPInstance or (instanceType == "none" and C_PvP_IsWarModeDesired()))
+	self.isPvP = E.isPreBCC or (self.isInPvPInstance or (instanceType == "none" and C_PvP_IsWarModeDesired()))
 	--//
 
 	if self.isInPvPInstance then
@@ -335,7 +339,7 @@ do
 end
 
 function P:PLAYER_REGEN_DISABLED()
-	E.UnregisterEvents(self, self.zoneEvents.arena)
+	E.UnregisterEvents(self, self.zoneEvents[self.zone])
 end
 
 function P:PLAYER_FLAGS_CHANGED()

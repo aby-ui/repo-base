@@ -178,7 +178,16 @@ function Addon:CreateDatabase()
     self:U1_InitPreset()
     -- XXX 163 end
 
-    local db = LibStub('AceDB-3.0'):New(AddonName .. 'DB', self:GetDatabaseDefaults(), UnitClass('player'))
+    local dbName = AddonName .. 'DB'
+    local dbDefaults = self:GetDatabaseDefaults()
+    local defaultProfileName = UnitClass('player')
+    local db = LibStub('AceDB-3.0'):New(dbName, dbDefaults, defaultProfileName)
+
+    local LibDualSpec = LibStub('LibDualSpec-1.0', true)
+
+    if LibDualSpec then
+        LibDualSpec:EnhanceDatabase(db, dbName)
+    end
 
     db.RegisterCallback(self, 'OnNewProfile')
     db.RegisterCallback(self, 'OnProfileChanged')

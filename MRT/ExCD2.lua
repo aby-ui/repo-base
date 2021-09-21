@@ -11,6 +11,7 @@ local C_PvP_IsWarModeDesired = C_PvP.IsWarModeDesired
 local GetSpellLevelLearned = GetSpellLevelLearned
 if ExRT.isClassic then
 	GetSpellLevelLearned = function () return 1 end
+	IsInJailersTower = function() end
 end
 
 local VMRT = nil
@@ -366,7 +367,9 @@ module.db.spell_autoTalent = {		--Для маркировки базовых з�
 module.db.spell_talentProvideAnotherTalents = {
 	[197492] = {102793},
 	[197488] = {132469},
+	[197632] = {132469},
 	[197491] = {99,22842},
+	[217615] = {99,22842},
 }
 
 module.db.spell_talentsList = {}
@@ -398,6 +401,8 @@ do
 		end
 	end
 end
+
+local SOULBIND_DEF_RANK_NOW = 9
 do
 	local nilData = {}
 	local soulbindData = {}
@@ -412,6 +417,9 @@ do
 			return
 		end
 		soulbindData[player] = soulbindData[player] or {}
+		if rank and type(rank) == 'number' and rank > 15 then	--fix out of range (possible in 9.2?)
+			rank = 15
+		end
 		soulbindData[player][spellID] = rank
 	end
 end
@@ -895,6 +903,8 @@ do
 
 		{307192,213664,216431,216802,216468,338447,301308},	--Healing Potion
 		{338142,338018,338035,326462,326446,326647,326434},
+
+		{115203,243435},	--Fortifying Brew
 	}
 	if ExRT.isBC then
 		sameSpellsData[#sameSpellsData+1] = {2894,2062}
@@ -1343,9 +1353,17 @@ module.db.itemsToSpells = {	-- Тринкеты вида [item ID] = spellID
 	[173087]=331624,
 	[184021]=345319,
 	[184017]=344384,
-	[175921]=345228,
-	[178447]=345231,
-	[181333]=336126,
+	[175921]=345228,[185197]=345228,
+	[178447]=345231,[185282]=345231,
+	[181333]=336126,[185304]=336126,
+
+	[186431]=355327,
+	[186421]=356212,
+	[186428]=355321,
+	[186424]=358712,
+	[186437]=355303,
+	[186432]=355333,
+	[186422]=353692,
 }
 
 for itemID,spellID in pairs(module.db.itemsToSpells) do
@@ -1411,7 +1429,9 @@ module.db.itemsBonusToSpell = {
 
 if ExRT.isClassic then
 	module.db.findspecspells = {}
-	module.db.spell_isTalent = {}
+	module.db.spell_isTalent = {
+		[16190] = true,	
+	}
 	module.db.spell_autoTalent = {}
 	module.db.spell_charge_fix = {}
 	module.db.spell_talentReplaceOther = {}
@@ -1672,6 +1692,7 @@ do
 
 	frame.colFrame = {}
 end
+
 
 local gsub_data = {}
 local gsub_func = function(a)
@@ -2636,6 +2657,13 @@ local function UpdateBarStyle(self)
 	self.textCenter.text = nil
 	self.textIcon.name = nil
 
+	if parent.Masque_Group and self.Masque_Group ~= parent.Masque_Group then
+		parent.Masque_Group:AddButton(self, {Icon = self.iconTexture, Cooldown = self.cooldown}, "MRT_CD_ICON", true)
+		self.Masque_Group = parent.Masque_Group
+	elseif not parent.Masque_Group and self.Masque_Group then
+		self.Masque_Group = nil
+	end
+
 	if module.db.plugin and type(module.db.plugin.UpdateBarStyle)=="function" then
 		module.db.plugin.UpdateBarStyle(self)
 	end
@@ -2805,6 +2833,7 @@ for i=1,module.db.maxColumns do
 		VMRT.ExCD2.colSet[i].posX = self:GetLeft()
 		VMRT.ExCD2.colSet[i].posY = self:GetTop()
 	end)
+	columnFrame.colNum = i
 
 	module:RegisterHideOnPetBattle(columnFrame)
 
@@ -4149,7 +4178,7 @@ do
 				if session_gGUID and (not _db.spell_isPvpTalent[talentSpellID] or module.IsPvpTalentsOn(fullName)) then
 					local timeReduce = durationTable[j+1]
 					if type(timeReduce) == 'table' then
-						local soulbind_rank = _db.soulbind_rank[fullName][talentSpellID] or 5
+						local soulbind_rank = _db.soulbind_rank[fullName][talentSpellID] or SOULBIND_DEF_RANK_NOW
 						timeReduce = timeReduce[soulbind_rank]
 					end
 					local mod = type(session_gGUID) == "table" and session_gGUID[1] or 1
@@ -4191,7 +4220,7 @@ do
 								timeReduce = 0
 							end
 						elseif type(timeReduce) == 'table' then
-							local soulbind_rank = _db.soulbind_rank[fullName][talentSpellID] or 5
+							local soulbind_rank = _db.soulbind_rank[fullName][talentSpellID] or SOULBIND_DEF_RANK_NOW
 							timeReduce = timeReduce[soulbind_rank]
 						end
 					end
@@ -4956,7 +4985,7 @@ do
 		function module.main.COMBAT_LOG_EVENT_UNFILTERED(_,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID,spellName,_,missType,overhealing,_,criticalSwing,_,_,critical)
 			local func = eventsView[event]
 			if func then
-				return func(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellName,critical,missType,overhealing,criticalSwing)
+				return func(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellName,critical,missType,overhealing,criticalSwing,spellID)
 			else
 				return
 			end
@@ -5150,7 +5179,7 @@ do
 			local len = 4 / (1 + (UnitSpellHaste(sourceName) or 0) /100)
 			local changePerTick = 3
 			if session_gGUIDs[sourceName][336992] then
-				local soulbind_rank = _db.soulbind_rank[sourceName][336992] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][336992] or SOULBIND_DEF_RANK_NOW
 				local change = 0.9 + soulbind_rank * 0.1
 
 				changePerTick = changePerTick + change
@@ -5183,7 +5212,7 @@ do
 				hunter_trap_var.steel[sourceName] = true
 			end
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][346747] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][346747] or SOULBIND_DEF_RANK_NOW
 				local timeReduce = 0.9 + 0.1 * soulbind_rank
 
 				line:ReduceCD(timeReduce)
@@ -5394,7 +5423,7 @@ do
 	end
 
 	local isSpellDuplicateDisabled = false
-	function module.main.SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID)
+	function module.main.SPELL_CAST_SUCCESS(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,_,_,spellIDClassic)
 		if not sourceName then
 			return
 		end
@@ -5488,7 +5517,7 @@ do
 
 						local reduceTime = modifData[i+1]
 						if type(reduceTime) == "table" then
-							local soulbind_rank = _db.soulbind_rank[sourceName][ reduceSpellID[2] ] or 5
+							local soulbind_rank = _db.soulbind_rank[sourceName][ reduceSpellID[2] ] or SOULBIND_DEF_RANK_NOW
 							reduceTime = reduceTime[soulbind_rank]
 						end
 
@@ -5517,7 +5546,7 @@ do
 
 						local incTime = modifData[i+1]
 						if type(incTime) == "table" then
-							local soulbind_rank = _db.soulbind_rank[sourceName][ increaseSpellID[2] ] or 5
+							local soulbind_rank = _db.soulbind_rank[sourceName][ increaseSpellID[2] ] or SOULBIND_DEF_RANK_NOW
 							incTime = incTime[soulbind_rank]
 						end
 
@@ -5545,7 +5574,7 @@ do
 		if spellID == 10060 and session_gGUIDs[sourceName][337762] and sourceName ~= destName then	--Power infusion soulbind
 			local line = CDList[sourceName][spellID]
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][337762] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][337762] or SOULBIND_DEF_RANK_NOW
 				local timeReduce = 5.4 + soulbind_rank * 0.6
 
 				line:ChangeCD(-timeReduce,true)
@@ -5601,6 +5630,16 @@ do
 			UpdateAllData()
 		end
 	end
+	if ExRT.isClassic then	--fix for BC Terokkar Tablet of Precision trinket & heroism spell
+		local oldFunc = module.main.SPELL_CAST_SUCCESS
+		module.main.SPELL_CAST_SUCCESS = function(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,_,_,spellIDClassic,...)
+			if spellIDClassic == 25937 then
+				return
+			end
+			return oldFunc(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,_,_,spellIDClassic,...)
+		end
+	end
+
 	function module.main.SPELL_DISPEL(sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,destSpell)
 		if spell_dispellsList[spellID] and sourceName then
 			_db.spell_dispellsFix[ sourceName ] = true
@@ -5673,7 +5712,7 @@ do
 			if maxHP ~= 0 and ((amount / maxHP) > 0.05) then
 				local now = GetTime()
 				if not spell339272_var[destGUID] or (now > spell339272_var[destGUID]) then
-					local soulbind_rank = _db.soulbind_rank[destName][339272] or 5
+					local soulbind_rank = _db.soulbind_rank[destName][339272] or SOULBIND_DEF_RANK_NOW
 					spell339272_var[destGUID] = now + (31 - soulbind_rank)
 					local line = CDList[destName][104773]
 					if line then
@@ -5684,7 +5723,7 @@ do
 		elseif destGUID and isPaladin[destGUID] and destName and session_gGUIDs[destName][338741] then
 			local now = GetTime()
 			if not spell338741_var[destGUID] or (now > spell338741_var[destGUID]) then
-				local soulbind_rank = _db.soulbind_rank[destName][338741] or 5
+				local soulbind_rank = _db.soulbind_rank[destName][338741] or SOULBIND_DEF_RANK_NOW
 				spell338741_var[destGUID] = now + (50 - soulbind_rank * 2)
 				local line = CDList[destName][642]
 				if line then
@@ -5692,12 +5731,14 @@ do
 				end
 			end
 		elseif critical and sourceGUID and isMage[sourceGUID] and sourceName and session_gGUIDs[sourceName][336522] and IsAuraActive(sourceName,12472) then
-			local line = CDList[sourceName][12472]
-			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][336522] or 5
-				local timeReduce = 0.75 + (soulbind_rank - 1) * 0.075
-
-				line:ReduceCD(timeReduce)
+			if spellID ~= 190357 and spellID ~= 327498 and spellID ~= 205021 and spellID ~= 257538 then
+				local line = CDList[sourceName][12472]
+				if line then
+					local soulbind_rank = _db.soulbind_rank[sourceName][336522] or SOULBIND_DEF_RANK_NOW
+					local timeReduce = 0.75 + (soulbind_rank - 1) * 0.075
+	
+					line:ReduceCD(timeReduce)
+				end
 			end
 		end
 		if not spellDamage_trackedSpells[spellID] or not sourceName then
@@ -5763,7 +5804,7 @@ do
 			end
 			local line = CDList[sourceName][12042]
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][336873] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][336873] or SOULBIND_DEF_RANK_NOW
 				local tr = {0.30,0.33,0.36,0.39,0.42,0.45,0.48,0.51,0.54,0.57,0.60,0.63,0.66,0.69,0.72}
 				local timeReduce = tr[soulbind_rank] or 0.42
 
@@ -5774,7 +5815,7 @@ do
 			if petOwner and session_gGUIDs[petOwner][339704] then
 				local line = CDList[petOwner][193530]
 				if line then
-					local soulbind_rank = _db.soulbind_rank[petOwner][339704] or 5
+					local soulbind_rank = _db.soulbind_rank[petOwner][339704] or SOULBIND_DEF_RANK_NOW
 					local timeReduce = 0.8 + soulbind_rank * 0.2
 	
 					line:ReduceCD(timeReduce)
@@ -5787,7 +5828,7 @@ do
 			end
 			hunter_trap_var.expl[sourceName] = true
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][346747] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][346747] or SOULBIND_DEF_RANK_NOW
 				local timeReduce = 0.9 + 0.1 * soulbind_rank
 
 				line:ReduceCD(timeReduce)
@@ -6005,7 +6046,7 @@ do
 		if destGUID and isRogue[destGUID] and destName and session_gGUIDs[destName][341535] and missType == "DODGE" then
 			local line = CDList[destName][5277]
 			if line then
-				local soulbind_rank = _db.soulbind_rank[destName][341535] or 5
+				local soulbind_rank = _db.soulbind_rank[destName][341535] or SOULBIND_DEF_RANK_NOW
 				local timeReduce = 1.8 + soulbind_rank * 0.2
 
 				line:ReduceCD(timeReduce)
@@ -6029,7 +6070,7 @@ do
 		if sourceGUID and isRogue[sourceGUID] and sourceName and session_gGUIDs[sourceName][341535] and spellID == 1766 then
 			local line = CDList[sourceName][31224]
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][341535] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][341535] or SOULBIND_DEF_RANK_NOW
 				local timeReduce = (1.8 + soulbind_rank * 0.2) * 2
 
 				line:ReduceCD(timeReduce)
@@ -6037,7 +6078,7 @@ do
 		elseif sourceName and session_gGUIDs[sourceName][336777] and spellID == 2139 then
 			local line = CDList[sourceName][2139]
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][336777] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][336777] or SOULBIND_DEF_RANK_NOW
 				local tr = {2.5,2.8,3.0,3.3,3.5,3.8,4.0,4.3,4.5,4.8,5.0,5.3,5.5,5.8,6.0}
 				local timeReduce = tr[soulbind_rank] or 3.5
 
@@ -6066,7 +6107,7 @@ do
 		if destGUID and isRogue[destGUID] and destName and session_gGUIDs[sourceName][341559] and spellID == 196911 then
 			local line = CDList[destName][121471]
 			if line then
-				local soulbind_rank = _db.soulbind_rank[sourceName][341559] or 5
+				local soulbind_rank = _db.soulbind_rank[sourceName][341559] or SOULBIND_DEF_RANK_NOW
 				local timeReduce = 0.9 + soulbind_rank * 0.1
 
 				line:ReduceCD(timeReduce)
@@ -7914,6 +7955,7 @@ function module.options:Load()
 		optColSet.chkCooldownShowSwipe:SetChecked(VColOpt.iconCooldownShowSwipe)
 		optColSet.chkShowTitles:SetChecked(VColOpt.iconTitles)
 		optColSet.chkHideBlizzardEdges:SetChecked(VColOpt.iconHideBlizzardEdges)
+		optColSet.chkMasque:SetChecked(VColOpt.iconMasque)
 		optColSet.chkGeneralIcons:SetChecked(VColOpt.iconGeneral)
 		do
 			local defIconPos = VColOpt.iconPosition or defOpt.iconPosition
@@ -8430,6 +8472,15 @@ function module.options:Load()
 		module:ReloadAllSplits()
 	end)
 
+	self.optColSet.chkMasque = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetIconMasque):Point("TOPLEFT",self.optColSet.chkHideBlizzardEdges,0,-25):OnClick(function(self) 
+		if self:GetChecked() then
+			currColOpt.iconMasque = true
+		else
+			currColOpt.iconMasque = nil
+		end
+		module:ReloadAllSplits()
+	end)
+
 	self.optColSet.chkGeneralIcons = ELib:Check(self.optColSet.superTabFrame.tab[2],L.cd2ColSetGeneral):Point("TOPRIGHT",-10,-10):Left():OnClick(function(self) 
 		if self:GetChecked() then
 			currColOpt.iconGeneral = true
@@ -8440,7 +8491,7 @@ function module.options:Load()
 		self:doAlphas()
 	end)
 	function self.optColSet.chkGeneralIcons:doAlphas()
-		ExRT.lib.SetAlphas(VMRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers,module.options.optColSet.textIconPos, module.options.optColSet.textGlowType, module.options.optColSet.dropDownCooldownGlowType,module.options.optColSet.chkCooldownTextDef,module.options.optColSet.chkCooldownExRTNumbers)
+		ExRT.lib.SetAlphas(VMRT.ExCD2.colSet[module.options.optColTabs.selected].iconGeneral and module.options.optColTabs.selected ~= (module.db.maxColumns + 1) and 0.5 or 1,module.options.optColSet.chkGray,module.options.optColSet.sliderHeight,module.options.optColSet.dropDownIconPos,module.options.optColSet.chkCooldown,module.options.optColSet.chkShowTitles,module.options.optColSet.chkHideBlizzardEdges,module.options.optColSet.chkCooldownShowSwipe,module.options.optColSet.chkCooldownHideNumbers,module.options.optColSet.textIconPos, module.options.optColSet.textGlowType, module.options.optColSet.dropDownCooldownGlowType,module.options.optColSet.chkCooldownTextDef,module.options.optColSet.chkCooldownExRTNumbers,module.options.optColSet.chkMasque)
 	end
 
 	--> Texture and colors Options
@@ -9186,7 +9237,7 @@ function module.options:Load()
 		currColOpt.visibilityPartyType = nil
 		module:ReloadAllSplits()
 	end)
-	self.optColSet.chkVisibilityPartyTypeParty = ELib:Radio(self.optColSet.superTabFrame.tab[7],AGGRO_WARNING_IN_PARTY):Point(10,-95):OnClick(function(self) 
+	self.optColSet.chkVisibilityPartyTypeParty = ELib:Radio(self.optColSet.superTabFrame.tab[7],AGGRO_WARNING_IN_PARTY.." / "..SOLO):Point(10,-95):OnClick(function(self) 
 		module.options.optColSet.chkVisibilityPartyTypeAlways:SetChecked(false)
 		module.options.optColSet.chkVisibilityPartyTypeParty:SetChecked(true)
 		module.options.optColSet.chkVisibilityPartyTypeRaid:SetChecked(false)
@@ -11221,6 +11272,16 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 		columnFrame.texture:SetColorTexture(0,0,0,0)
 	end
 
+	local isMasqueEnabled = (not currColOpt.iconGeneral and currColOpt.iconMasque) or (currColOpt.iconGeneral and generalOpt.iconMasque)
+	if isMasqueEnabled and module.db.Masque then
+		if not columnFrame.Masque_Group then
+			columnFrame.Masque_Group = module.db.Masque:Group("MRT", "Raid cooldowns Col "..columnFrame.colNum)
+		end
+	elseif columnFrame.Masque_Group then
+		columnFrame.Masque_Group:Delete()
+		columnFrame.Masque_Group = nil
+	end
+
 	if currColOpt.enabled then
 		for n=1,#columnFrame.lines do
 			local line = columnFrame.lines[n]
@@ -11259,6 +11320,10 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 			end
 			lastLine = line
 		end
+
+		if columnFrame.Masque_Group then
+			columnFrame.Masque_Group:ReSkin(true)
+		end
 	end
 
 	if currColOpt.enabled and VMRT.ExCD2.enabled then
@@ -11285,6 +11350,13 @@ function module:ColApplyStyle(columnFrame,currColOpt,generalOpt,defOpt,mainWidth
 	end
 
 	columnFrame.Gwidth = frameWidth*frameColumns
+end
+
+do	--unsafe check
+	local Masque, MSQ_Version = LibStub("Masque", true)
+	if Masque then
+		module.db.Masque = Masque
+	end
 end
 
 local lastSplitsReload = 0
@@ -12066,6 +12138,13 @@ module.db.AllSpells = {
 	{336126,"ITEMS",	3,	{336126,120,	0},	},	--Sinful Gladiator's Medallion	181333
 	{307192,"ITEMS",	3,	{307192,300,	0},	},	--Spiritual Healing Potion	171267
 	{6262,	"ITEMS",	3,	{6262,	60,	0},	},	--Healthstone		5512
+	{355327,"ITEMS",	3,	{355327,90,	0},	},	--Ebonsoul Vise		186431
+	{356212,"ITEMS",	3,	{356212,600,	0},	},	--Forbidden Necromantic Tome	186421
+	{355321,"ITEMS",	3,	{355321,120,	0},	},	--Shadowed Orb of Torment	186428
+	{358712,"ITEMS",	3,	{358712,90,	0},	},	--Shard of Annhylde's Aegis	186424
+	{355303,"ITEMS",	3,	{355303,60,	0},	},	--Relic of the Frozen Wastes	186437
+	{355333,"ITEMS",	3,	{355333,90,	0},	},	--Salvaged Fusion Amplifier	186432
+	{353692,"ITEMS",	3,	{353692,60,	0},	},	--Tome of Monstrous Constructions	186422
 
 	{295373,"ESSENCES",	3,	{295373,30,	0},	},	--The Crucible of Flame
 	{295186,"ESSENCES",	3,	{295186,60,	0},	},	--Worldvein Resonance
@@ -12167,8 +12246,8 @@ if ExRT.isBC then
 		{31884,	"PALADIN",	1,	{31884,	180,	20}},	--AW
 
 		{16190,	"SHAMAN",	1,	{16190,	300,	12}},	--MTT
-		{32182,	"SHAMAN",	1,	{32182,	600,	40}},	--BL [A]
-		{2825,	"SHAMAN",	1,	{2825,	600,	40}},	--BL [H]
+		{32182,	"SHAMAN",	1,	{32182,	600,	40},	specialCheck=function() if UnitFactionGroup('player')=="Alliance" then return true end end},	--BL [A]
+		{2825,	"SHAMAN",	1,	{2825,	600,	40},	specialCheck=function() if UnitFactionGroup('player')=="Horde" then return true end end},	--BL [H]
 		{20608,	"SHAMAN",	1,	{21169,	3600,	0}},	--Reincarnation
 		{2894, 	"SHAMAN",	1,	{2894,	1200,	120}},	--FET
 		{2062, 	"SHAMAN",	1,	{2062, 	1200,	120}},	--EET

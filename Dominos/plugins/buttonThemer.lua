@@ -60,7 +60,9 @@ local function resizeNormalTexture(button)
 
     -- make the texture slightly transparent now to match its state when moving
     -- empty buttons around
-    -- normalTexture:SetVertexColor(1, 1, 1, 0.5)
+    if button.NormalTexture then
+        button.NormalTexture:SetVertexColor(1, 1, 1, 0.5)
+    end
 end
 
 -- hide the dark background on multi action bar buttons

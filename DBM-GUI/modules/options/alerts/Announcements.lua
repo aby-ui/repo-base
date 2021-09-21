@@ -1,3 +1,5 @@
+local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+
 local L		= DBM_GUI_L
 local CL	= DBM_CORE_L
 
@@ -95,7 +97,7 @@ local Sounds = DBM_GUI:MixinSharedMedia3("sound", {
 	},
 	{
 		text	= "Classic",
-		value	= 11742 -- "Sound\\Doodad\\BellTollNightElf.ogg"
+		value	= isRetail and 11742 or 6674 -- "Sound\\Doodad\\BellTollNightElf.ogg"
 	},
 	{
 		text	= "Ding",

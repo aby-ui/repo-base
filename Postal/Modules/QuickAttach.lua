@@ -6,12 +6,13 @@ Postal_QuickAttach.description = L["Allows you to quickly attach different trade
 -- Classic: Trade Goods(0), Reagent(5, 0)
 -- BCC: Cloth(5), Leather(6), Metal & Stone(7), Meat(8), Herb(9), Enchanting(12), Jewelcrafting(4), Parts(1), Elemental(10), Devices(3), Explosives(2), Materials(13), Other(11)
 -- Shadowlands: Cloth(5), Leather(6), Metal & Stone(7), Cooking(8), Herb(9), Enchanting(12), Inscription(16), Jewelcrafting(4), Parts(1), Elemental(10), Optional Reagents(18), Other(11)
+local QAButtonPos = 0 -- Needed due to lack of static variables in lua
 
 -- Set a button's GameTooltip
-local function SetButtonGameTooltip(button, tip)
+local function SetQAButtonGameTooltip(button, toolTip)
 	button:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-		GameTooltip:SetText(tip,1,1,1,1,true)
+		GameTooltip:SetText(toolTip,1,1,1,1,true)
 		GameTooltip:Show()
 	end)
 	button:SetScript("OnLeave", function()
@@ -19,199 +20,80 @@ local function SetButtonGameTooltip(button, tip)
 	end)
 end
 
+-- Create QuickAttach button
+local function CreateQAButton(name, texturePath, itemTypeclassID, itemTypesubclassID, toolTip)
+	local ofsxBase, ofsyBase, ofsyIndex = 376, 0, -40
+	local buttonWidth, buttonHeight, scale = 36, 36, 0.8
+	local TempButton
+	TempButton = CreateFrame("Button", name, SendMailFrame, "ActionButtonTemplate")
+	TempButton.icon:SetTexture(texturePath) 
+	TempButton:SetSize(math.floor(buttonWidth * scale), math.floor(buttonHeight * scale))
+	TempButton:ClearAllPoints()
+	TempButton:SetPoint("TOPRIGHT", "SendMailFrame", "TOPLEFT", ofsxBase - (buttonWidth - math.floor(buttonWidth * scale)), ofsyBase + math.floor(ofsyIndex * QAButtonPos * scale))
+	TempButton.NormalTexture:SetPoint("TOPLEFT", TempButton ,"TOPLEFT", math.floor(-15 * scale), math.floor(15 * scale))
+	TempButton.NormalTexture:SetPoint("BOTTOMRIGHT", TempButton ,"BOTTOMRIGHT", math.floor(15 * scale), math.floor(-15 * scale))
+	TempButton:SetScript("OnClick", function() Postal_QuickAttachButtonClick(itemTypeclassID, itemTypesubclassID) end)
+	TempButton:SetFrameLevel(TempButton:GetFrameLevel() + 1)
+	SetQAButtonGameTooltip(TempButton, toolTip)
+	QAButtonPos = QAButtonPos + 1
+end
+
+-- Hide QuickAttach Buttons
+local function Postal_QuickAttachHideButtons()
+	local i, name
+	for i = 1, 14 do
+		name = "Postal_QuickAttachButton"..tostring(i)
+		if _G[name] then _G[name]:Hide() end
+	end
+end
+
+-- Show QuickAttach Buttons
+local function Postal_QuickAttachShowButtons()
+	local i, name
+	for i = 1, 14 do
+		name = "Postal_QuickAttachButton"..tostring(i)
+		if _G[name] then _G[name]:Show() end
+	end
+end
+
 -- Create QuickAttach buttons and hook OnClick events
 function Postal_QuickAttach:OnEnable()
-	local Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight = 36, 36
-	local ofsy, ofsyindex = 0, -40
 	if not Postal_QuickAttachButton1 then
 		if Postal.WOWClassic == true then
-			-- Create Trade Goods Button
-			Postal_QuickAttachButton1 = CreateFrame("Button", "Postal_QuickAttachButton1", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton1.icon:SetTexture(GetSpellTexture(2018)) -- Trade Goods
-			Postal_QuickAttachButton1:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton1:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton1:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 0) end)
-			Postal_QuickAttachButton1:SetFrameLevel(Postal_QuickAttachButton1:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton1, L["Trade Goods"])
-			ofsy = ofsy + ofsyindex
-			-- Create Reagent Button
-			Postal_QuickAttachButton2 = CreateFrame("Button", "Postal_QuickAttachButton2", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton2.icon:SetTexture("Interface/Icons/inv_misc_food_02") -- Reagent
-			Postal_QuickAttachButton2:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton2:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton2:SetScript("OnClick", function() Postal_QuickAttachButtonClick(5, 0) end)
-			Postal_QuickAttachButton2:SetFrameLevel(Postal_QuickAttachButton2:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton2, L["Reagent"])
-			ofsy = ofsy + ofsyindex
+			CreateQAButton("Postal_QuickAttachButton1", GetSpellTexture(2018), 7, 0, L["Trade Goods"])
+			CreateQAButton("Postal_QuickAttachButton2", "Interface/Icons/inv_misc_food_02", 5, 0, L["Reagent"])
 		end
 		if (Postal.WOWBCClassic == true) or (Postal.WOWRetail == true) then
-			-- Create Cloth Button
-			Postal_QuickAttachButton1 = CreateFrame("Button", "Postal_QuickAttachButton1", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton1.icon:SetTexture(GetSpellTexture(3908)) -- Cloth
-			Postal_QuickAttachButton1:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton1:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton1:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 5) end)
-			Postal_QuickAttachButton1:SetFrameLevel(Postal_QuickAttachButton1:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton1, L["Cloth"])
-			ofsy = ofsy + ofsyindex
-			-- Create Leather Button
-			Postal_QuickAttachButton2 = CreateFrame("Button", "Postal_QuickAttachButton2", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton2.icon:SetTexture(GetSpellTexture(2108)) -- Leather
-			Postal_QuickAttachButton2:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton2:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton2:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 6) end)
-			Postal_QuickAttachButton2:SetFrameLevel(Postal_QuickAttachButton2:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton2, L["Leather"])
-			ofsy = ofsy + ofsyindex
-			-- Create Metal & Stone Button
-			Postal_QuickAttachButton3 = CreateFrame("Button", "Postal_QuickAttachButton3", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton3.icon:SetTexture(GetSpellTexture(2656)) -- Metal & Stone
-			Postal_QuickAttachButton3:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton3:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton3:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 7) end)
-			Postal_QuickAttachButton3:SetFrameLevel(Postal_QuickAttachButton3:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton3, L["Metal & Stone"])
-			ofsy = ofsy + ofsyindex
-			-- Create Cooking Button
-			Postal_QuickAttachButton4 = CreateFrame("Button", "Postal_QuickAttachButton4", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton4.icon:SetTexture(GetSpellTexture(2550)) -- Cooking
-			Postal_QuickAttachButton4:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton4:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton4:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 8) end)
-			Postal_QuickAttachButton4:SetFrameLevel(Postal_QuickAttachButton4:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton4, L["Cooking"])
-			ofsy = ofsy + ofsyindex
-			-- Create Herb Button
-			Postal_QuickAttachButton5 = CreateFrame("Button", "Postal_QuickAttachButton5", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton5.icon:SetTexture(GetSpellTexture(2383)) -- Herb
-			Postal_QuickAttachButton5:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton5:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton5:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 9) end)
-			Postal_QuickAttachButton5:SetFrameLevel(Postal_QuickAttachButton5:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton5, L["Herb"])
-			ofsy = ofsy + ofsyindex
-			-- Create Enchanting Button
-			Postal_QuickAttachButton6 = CreateFrame("Button", "Postal_QuickAttachButton6", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton6.icon:SetTexture(GetSpellTexture(7411)) -- Enchanting
-			Postal_QuickAttachButton6:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton6:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton6:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 12) end)
-			Postal_QuickAttachButton6:SetFrameLevel(Postal_QuickAttachButton6:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton6, L["Enchanting"])
-			ofsy = ofsy + ofsyindex
+			CreateQAButton("Postal_QuickAttachButton1", GetSpellTexture(3908), 7, 5, L["Cloth"])
+			CreateQAButton("Postal_QuickAttachButton2", GetSpellTexture(2108), 7, 6, L["Leather"])
+			CreateQAButton("Postal_QuickAttachButton3", GetSpellTexture(2656), 7, 7, L["Metal & Stone"])
+			CreateQAButton("Postal_QuickAttachButton4", GetSpellTexture(2550), 7, 8, L["Cooking"])
+			CreateQAButton("Postal_QuickAttachButton5", GetSpellTexture(2383), 7, 9, L["Herb"])
+			CreateQAButton("Postal_QuickAttachButton6", GetSpellTexture(7411), 7, 12, L["Enchanting"])
 			if Postal.WOWRetail == true then
-				-- Create Inscription Button
-				Postal_QuickAttachButton7 = CreateFrame("Button", "Postal_QuickAttachButton7", SendMailFrame, "ActionButtonTemplate")
-				Postal_QuickAttachButton7.icon:SetTexture(GetSpellTexture(45357)) -- Inscription
-				Postal_QuickAttachButton7:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-				Postal_QuickAttachButton7:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-				Postal_QuickAttachButton7:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 16) end)
-				Postal_QuickAttachButton7:SetFrameLevel(Postal_QuickAttachButton7:GetFrameLevel() + 1)
-				SetButtonGameTooltip(Postal_QuickAttachButton7, L["Inscription"])
-				ofsy = ofsy + ofsyindex
+				CreateQAButton("Postal_QuickAttachButton7", GetSpellTexture(45357), 7, 16, L["Inscription"])
 			end
-			-- Create Jewelcrafting Button
-			Postal_QuickAttachButton8 = CreateFrame("Button", "Postal_QuickAttachButton8", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton8.icon:SetTexture(GetSpellTexture(25229)) -- Jewelcrafting
-			Postal_QuickAttachButton8:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton8:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton8:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 4) end)
-			Postal_QuickAttachButton8:SetFrameLevel(Postal_QuickAttachButton8:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton8, L["Jewelcrafting"])
-			ofsy = ofsy + ofsyindex
-			-- Create Parts Button
-			Postal_QuickAttachButton9 = CreateFrame("Button", "Postal_QuickAttachButton9", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton9.icon:SetTexture("Interface/Icons/INV_Gizmo_FelIronCasing") -- Parts
-			Postal_QuickAttachButton9:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton9:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton9:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 1) end)
-			Postal_QuickAttachButton9:SetFrameLevel(Postal_QuickAttachButton9:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton9, L["Parts"])
-			ofsy = ofsy + ofsyindex
-			-- Create Elemental Button
-			Postal_QuickAttachButton10 = CreateFrame("Button", "Postal_QuickAttachButton10", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton10.icon:SetTexture("Interface/Icons/INV_Elemental_Primal_Air") -- Elemental
-			Postal_QuickAttachButton10:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton10:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton10:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 10) end)
-			Postal_QuickAttachButton10:SetFrameLevel(Postal_QuickAttachButton10:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton10, L["Elemental"])
-			ofsy = ofsy + ofsyindex
+			CreateQAButton("Postal_QuickAttachButton8", GetSpellTexture(25229), 7, 4, L["Jewelcrafting"])
+			CreateQAButton("Postal_QuickAttachButton9", "Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, L["Parts"])
+			CreateQAButton("Postal_QuickAttachButton10", "Interface/Icons/INV_Elemental_Primal_Air", 7, 10, L["Elemental"])
 			if Postal.WOWBCClassic == true then
-				-- Create Devices Button
-				Postal_QuickAttachButton11 = CreateFrame("Button", "Postal_QuickAttachButton11", SendMailFrame, "ActionButtonTemplate")
-				Postal_QuickAttachButton11.icon:SetTexture("Interface/Icons/inv_gizmo_goblingtonkcontroller") -- Devices
-				Postal_QuickAttachButton11:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-				Postal_QuickAttachButton11:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-				Postal_QuickAttachButton11:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 3) end)
-				Postal_QuickAttachButton11:SetFrameLevel(Postal_QuickAttachButton11:GetFrameLevel() + 1)
-				SetButtonGameTooltip(Postal_QuickAttachButton11, L["Devices"])
-				ofsy = ofsy + ofsyindex
-				-- Create Explosives Button
-				Postal_QuickAttachButton12 = CreateFrame("Button", "Postal_QuickAttachButton12", SendMailFrame, "ActionButtonTemplate")
-				Postal_QuickAttachButton12.icon:SetTexture("Interface/Icons/INV_Misc_Ammo_Gunpowder_01") -- Explosives
-				Postal_QuickAttachButton12:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-				Postal_QuickAttachButton12:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-				Postal_QuickAttachButton12:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 2) end)
-				Postal_QuickAttachButton12:SetFrameLevel(Postal_QuickAttachButton12:GetFrameLevel() + 1)
-				SetButtonGameTooltip(Postal_QuickAttachButton12, L["Explosives"])
-				ofsy = ofsy + ofsyindex
+				CreateQAButton("Postal_QuickAttachButton11", "Interface/Icons/inv_gizmo_goblingtonkcontroller", 7, 3, L["Devices"])
+				CreateQAButton("Postal_QuickAttachButton12", "Interface/Icons/INV_Misc_Ammo_Gunpowder_01", 7, 2, L["Explosives"])
 			end
 			if Postal.WOWRetail == true then
-				-- Create Optional Reagents Button
-				Postal_QuickAttachButton13 = CreateFrame("Button", "Postal_QuickAttachButton13", SendMailFrame, "ActionButtonTemplate")
-				Postal_QuickAttachButton13.icon:SetTexture("Interface/Icons/INV_Bijou_Green") -- Optional Reagents
-				Postal_QuickAttachButton13:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-				Postal_QuickAttachButton13:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-				Postal_QuickAttachButton13:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 18) end)
-				Postal_QuickAttachButton13:SetFrameLevel(Postal_QuickAttachButton13:GetFrameLevel() + 1)
-				SetButtonGameTooltip(Postal_QuickAttachButton13, L["Optional Reagents"])
-				ofsy = ofsy + ofsyindex
+				CreateQAButton("Postal_QuickAttachButton13", "Interface/Icons/INV_Bijou_Green", 7, 18, L["Optional Reagents"])
 			end
-			-- Create Other Button
-			Postal_QuickAttachButton14 = CreateFrame("Button", "Postal_QuickAttachButton14", SendMailFrame, "ActionButtonTemplate")
-			Postal_QuickAttachButton14.icon:SetTexture("Interface/Icons/INV_Misc_Rune_09") -- Other
-			Postal_QuickAttachButton14:SetSize(Postal_QuickAttachButtonWidth, Postal_QuickAttachButtonHeight)
-			Postal_QuickAttachButton14:SetPoint("TOPRIGHT", "SendMailFrame", "TOPRIGHT", -7, ofsy)
-			Postal_QuickAttachButton14:SetScript("OnClick", function() Postal_QuickAttachButtonClick(7, 11) end)
-			Postal_QuickAttachButton14:SetFrameLevel(Postal_QuickAttachButton14:GetFrameLevel() + 1)
-			SetButtonGameTooltip(Postal_QuickAttachButton14, L["Other"])
-			ofsy = ofsy + ofsyindex
+			CreateQAButton("Postal_QuickAttachButton14", "Interface/Icons/INV_Misc_Rune_09", 7, 11, L["Other"])
+			CreateQAButton("Postal_QuickAttachButton15", "Interface/Icons/Ability_Ensnare", 7, nil, L["Trade Goods"])
 		end
 	end
-	if Postal_QuickAttachButton1 then Postal_QuickAttachButton1:Show() end
-	if Postal_QuickAttachButton2 then Postal_QuickAttachButton2:Show() end
-	if Postal_QuickAttachButton3 then Postal_QuickAttachButton3:Show() end
-	if Postal_QuickAttachButton4 then Postal_QuickAttachButton4:Show() end
-	if Postal_QuickAttachButton5 then Postal_QuickAttachButton5:Show() end
-	if Postal_QuickAttachButton6 then Postal_QuickAttachButton6:Show() end
-	if Postal_QuickAttachButton7 then Postal_QuickAttachButton7:Show() end
-	if Postal_QuickAttachButton8 then Postal_QuickAttachButton8:Show() end
-	if Postal_QuickAttachButton9 then Postal_QuickAttachButton9:Show() end
-	if Postal_QuickAttachButton10 then Postal_QuickAttachButton10:Show() end
-	if Postal_QuickAttachButton11 then Postal_QuickAttachButton11:Show() end
-	if Postal_QuickAttachButton12 then Postal_QuickAttachButton12:Show() end
-	if Postal_QuickAttachButton13 then Postal_QuickAttachButton13:Show() end
-	if Postal_QuickAttachButton14 then Postal_QuickAttachButton14:Show() end
+	Postal_QuickAttachShowButtons()
 end
 
 -- Disabling modules unregisters all events/hook automatically
 function Postal_QuickAttach:OnDisable()
 	Postal_QuickAttach:UnregisterAllEvents()
-	if Postal_QuickAttachButton1 then Postal_QuickAttachButton1:Hide() end
-	if Postal_QuickAttachButton2 then Postal_QuickAttachButton2:Hide() end
-	if Postal_QuickAttachButton3 then Postal_QuickAttachButton3:Hide() end
-	if Postal_QuickAttachButton4 then Postal_QuickAttachButton4:Hide() end
-	if Postal_QuickAttachButton5 then Postal_QuickAttachButton5:Hide() end
-	if Postal_QuickAttachButton6 then Postal_QuickAttachButton6:Hide() end
-	if Postal_QuickAttachButton7 then Postal_QuickAttachButton7:Hide() end
-	if Postal_QuickAttachButton8 then Postal_QuickAttachButton8:Hide() end
-	if Postal_QuickAttachButton9 then Postal_QuickAttachButton9:Hide() end
-	if Postal_QuickAttachButton10 then Postal_QuickAttachButton10:Hide() end
-	if Postal_QuickAttachButton11 then Postal_QuickAttachButton11:Hide() end
-	if Postal_QuickAttachButton12 then Postal_QuickAttachButton12:Hide() end
-	if Postal_QuickAttachButton13 then Postal_QuickAttachButton13:Hide() end
-	if Postal_QuickAttachButton14 then Postal_QuickAttachButton14:Hide() end
+	Postal_QuickAttachHideButtons()
 end
 
 -- Return how many free item slots are in the current send mail
@@ -247,7 +129,7 @@ function Postal_QuickAttachButtonClick(classID, subclassID)
 							itemclassID = select(12, GetItemInfo(itemID))
 							if itemclassID == classID then
 								itemsubclassID = select(13, GetItemInfo(itemID))
-								if itemsubclassID == subclassID then
+								if itemsubclassID == subclassID or subclassID == nil then
 										if SendMailNumberOfFreeSlots() > 0 then
 											PickupContainerItem(bagID, slotIndex)
 											ClickSendMailItemButton()
@@ -262,26 +144,7 @@ function Postal_QuickAttachButtonClick(classID, subclassID)
 	end
 end
 
-function Postal_QuickAttach.SetEnableBag0(dropdownbutton, arg1, arg2, checked)
-	Postal.db.profile.QuickAttach.EnableBag0 = checked
-end
-
-function Postal_QuickAttach.SetEnableBag1(dropdownbutton, arg1, arg2, checked)
-	Postal.db.profile.QuickAttach.EnableBag1 = checked
-end
-
-function Postal_QuickAttach.SetEnableBag2(dropdownbutton, arg1, arg2, checked)
-	Postal.db.profile.QuickAttach.EnableBag2 = checked
-end
-
-function Postal_QuickAttach.SetEnableBag3(dropdownbutton, arg1, arg2, checked)
-	Postal.db.profile.QuickAttach.EnableBag3 = checked
-end
-
-function Postal_QuickAttach.SetEnableBag4(dropdownbutton, arg1, arg2, checked)
-	Postal.db.profile.QuickAttach.EnableBag4 = checked
-end
-
+-- Creat QuickAttach Menu
 function Postal_QuickAttach.ModuleMenu(self, level)
 	if not level then return end
 	local info = self.info
@@ -292,28 +155,38 @@ function Postal_QuickAttach.ModuleMenu(self, level)
 		info.keepShownOnClick = 1
 
 		info.text = L["Enable for backpack"]
-		info.func = Postal_QuickAttach.SetEnableBag0
-		info.checked = db.EnableBag0
+		info.func = Postal.SaveOption
+		info.arg1 = "QuickAttach"
+		info.arg2 = "EnableBag0"
+		info.checked = Postal.db.profile.QuickAttach.EnableBag0
 		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag one"]
-		info.func = Postal_QuickAttach.SetEnableBag1
-		info.checked = db.EnableBag1
+		info.func = Postal.SaveOption
+		info.arg1 = "QuickAttach"
+		info.arg2 = "EnableBag1"
+		info.checked = Postal.db.profile.QuickAttach.EnableBag1
 		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag two"]
-		info.func = Postal_QuickAttach.SetEnableBag2
-		info.checked = db.EnableBag2
+		info.func = Postal.SaveOption
+		info.arg1 = "QuickAttach"
+		info.arg2 = "EnableBag2"
+		info.checked = Postal.db.profile.QuickAttach.EnableBag2
 		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag three"]
-		info.func = Postal_QuickAttach.SetEnableBag3
-		info.checked = db.EnableBag3
+		info.func = Postal.SaveOption
+		info.arg1 = "QuickAttach"
+		info.arg2 = "EnableBag3"
+		info.checked = Postal.db.profile.QuickAttach.EnableBag3
 		UIDropDownMenu_AddButton(info, level)
 
 		info.text = L["Enable for bag four"]
-		info.func = Postal_QuickAttach.SetEnableBag4
-		info.checked = db.EnableBag4
+		info.func = Postal.SaveOption
+		info.arg1 = "QuickAttach"
+		info.arg2 = "EnableBag4"
+		info.checked = Postal.db.profile.QuickAttach.EnableBag4
 		UIDropDownMenu_AddButton(info, level)
 	end
 end

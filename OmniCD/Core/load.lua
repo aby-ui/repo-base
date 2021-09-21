@@ -260,7 +260,7 @@ do
 				local module = E[k]
 				local func = module.Refresh
 				if func then
-					func(module)
+					func(module, true)
 				end
 			end
 

@@ -62,7 +62,7 @@ local function WhoPulledFetch()
 			local _,class = UnitClass(affectedCombatPetOwner or affectedCombat)
 			local color = ExRT.F.classColor(class)
 		
-			print("|cffffff00ExRT|r "..L.WhoPulled..": |c"..color..affectedCombat..(affectedCombatPetOwner and " ["..affectedCombatPetOwner.."]" or ""))
+			print("|cffffff00MRT|r "..L.WhoPulled..": |c"..color..affectedCombat..(affectedCombatPetOwner and " ["..affectedCombatPetOwner.."]" or ""))
 		end
 		return true
 	end

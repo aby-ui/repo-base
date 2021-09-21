@@ -1,6 +1,23 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4580
+* Note: added option "Hide lines with timers but without my name". You can bypass this option with "all" or "glowall" keywords, ex.: {time:1:20,all}
+* Raid Check: added font settings for raid overview window
+* Raid Check: removed food gained by couduit power from raid overview check 
+* Raid Check: consumables on ready check: added enhancement shamans weapon enchants
+* Raid cooldowns: added support for 9.1 trinkets
+* Raid cooldowns: added Masque support
+* Raid Inspect: added SoD achievements
+* Minor fixes
+
+v.4580-BC
+* toc update
+* Invite tools: added options for loot method
+* Raid Check: added font settings for raid overview window
+* Note: added some icons to list for raids from current phase
+* Minor fixes
+
 v.4560
 * Raid cooldowns: Added support for new covenant legendaries
 * Minor fixes

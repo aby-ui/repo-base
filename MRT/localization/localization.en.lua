@@ -115,6 +115,7 @@ L.NoteTimersHidePassed = "Completely hide lines with passed timers"
 L.NoteTimersGlow = "Glowing note with own timer less than 5 seconds (line with timer and my name)"
 L.NoteHelpAdv6 = "Option |cffffff00glowall|r will add glow for the note for all players when the timer is less than 5 seconds. This glow can't be disabled."
 L.NoteHelpAdv7 = "Option |cffffff00glow|r will add glow for the note only for players in line when the timer is less than 5 seconds. This glow can't be disabled."
+L.NoteTimersOnlyMy = "Hide lines with timers but without my name"
 
 L.setminimap1 = "Hide minimap icon"
 L.setauthor = "Author"
@@ -275,6 +276,7 @@ L.RaidCheckOilsEnable = "Enable tracking temporary weapon enchants during ready 
 L.RaidCheckNoKits = "No kits"
 L.RaidCheckNoOils = "No oils"
 L.RaidCheckOnlyCauldron = "Use flask only from cauldron"
+L.RaidCheckDisableForRL = "Disable popup for ready check starter"
 
 L.marksbarstart = "Clear"
 L.marksbardel = "Delete"
@@ -323,6 +325,7 @@ PH.InviteListButton = "Invite by list"
 PH.InviteListTip = "Each name on a new line"
 L.invitewordssay = "Invite by keywords in /say or /yell"
 PH.invitewordstooltipany = "Keyword |cff00ff00ANYKEYWORD|r will allow to invite anyone, regardless of the content of the message"
+L.InviteMasterlootersEnable = "Autochange loot distribution method"
 
 L.cd2fix = "Lock"
 L.cd2alpha = "Alpha"
@@ -579,6 +582,7 @@ L.cd2FramePriorTooltip = "Use this option if your icons appears on the wrong rai
 L.cd2Autoselect = "Autoselect"
 L.cd2ProfileCopySuccess = "Profile copied from %s"
 PH.cd2OtherSetOnlyNotOnCD = "Show only without cd"
+L.cd2ColSetIconMasque = "Enable Masque support"
 
 L.sallspellsEggClear = "Clear"
 L.sallspellsEgg = "Combat log"

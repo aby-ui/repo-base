@@ -1,3 +1,5 @@
+local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+
 local L = DBM_GUI_L
 local generalWarningPanel = DBM_GUI.Cat_Alerts:CreateNewPanel(L.Tab_GeneralMessages, "option")
 
@@ -10,11 +12,17 @@ local generalMessagesArea = generalWarningPanel:CreateArea(L.CombatMessages)
 generalMessagesArea:CreateCheckButton(L.ShowEngageMessage, true, nil, "ShowEngageMessage")
 generalMessagesArea:CreateCheckButton(L.ShowDefeatMessage, true, nil, "ShowDefeatMessage")
 generalMessagesArea:CreateCheckButton(L.ShowGuildMessages, true, nil, "ShowGuildMessages")
-generalMessagesArea:CreateCheckButton(L.ShowGuildMessagesPlus, true, nil, "ShowGuildMessagesPlus")
+if isRetail then
+	generalMessagesArea:CreateCheckButton(L.ShowGuildMessagesPlus, true, nil, "ShowGuildMessagesPlus")
+end
 
 local generalExtraAlerts = generalWarningPanel:CreateArea(L.Area_ChatAlerts)
-generalExtraAlerts:CreateCheckButton(L.RoleSpecAlert, true, nil, "RoleSpecAlert")
-generalExtraAlerts:CreateCheckButton(L.CheckGear, true, nil, "CheckGear")
+if isRetail then
+	generalExtraAlerts:CreateCheckButton(L.RoleSpecAlert, true, nil, "RoleSpecAlert")
+	generalExtraAlerts:CreateCheckButton(L.CheckGear, true, nil, "CheckGear")
+else
+	generalExtraAlerts:CreateCheckButton(L.WorldBuffAlert, true, nil, "WorldBuffAlert")
+end
 generalExtraAlerts:CreateCheckButton(L.WorldBossAlert, true, nil, "WorldBossAlert")
 
 local generalBugsAlerts = generalWarningPanel:CreateArea(L.Area_BugAlerts)

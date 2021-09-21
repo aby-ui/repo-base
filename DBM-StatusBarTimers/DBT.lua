@@ -160,7 +160,7 @@ end
 do
 	local CreateFrame, GetTime, IsShiftKeyDown = CreateFrame, GetTime, IsShiftKeyDown
 
-	local function onUpdate(self, elapsed)
+	local function onUpdate(self)
 		if self.obj then
 			self.obj.curTime = GetTime()
 			self.obj.delta = self.obj.curTime - self.obj.lastUpdate
@@ -1117,8 +1117,7 @@ do
 	end
 
 	function DBT:SetSkin(id)
-		local skin = skins[id]
-		if not skin then
+		if not skins[id] then
 			error("Skin '" .. id .. "' doesn't exist", 2)
 		end
 		local DBM_UsedProfile = DBM_UsedProfile or "Default"
@@ -1135,7 +1134,7 @@ do
 			end
 		end
 		self:ApplyProfile(id, true)
-		for option, value in pairs(skin.Options) do
+		for option, value in pairs(skins[id].Options) do
 			self:SetOption(option, value, true)
 		end
 		self:SetOption("Skin", id) -- Forces an UpdateBars and ApplyStyle

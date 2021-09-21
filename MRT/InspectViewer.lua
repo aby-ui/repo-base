@@ -192,7 +192,10 @@ module.db.topEnchGems = IS_SL and {
 
 
 module.db.achievementsList = {
-	{	--castle Nathria
+	{	--SoD
+		L.S_ZoneT27SoD,
+		15122,15123,15124,15125,15126,15112,15113,15114,15116,15115,15117,15118,15119,15120,15121,15128,15134,15135,
+	},{	--castle Nathria
 		L.S_ZoneT26CastleNathria,
 		14715,14717,14718,14356,14357,14360,14359,14358,14361,14362,14363,14364,14365,14460,14461,
 	},{	--SL 5ppl
@@ -264,7 +267,9 @@ module.db.achievementsList = {
 	},
 }
 module.db.achievementsList_statistic = {
-	{	--CN
+	{	--SoD
+		
+	},{	--CN
 		0,0,0,{14422,14419,14420,14421},{14426,14423,14424,14425},{14438,14435,14436,14437},{14434,14431,14432,14433},{14430,14427,14428,14429},{14442,14439,14440,14441},{14446,14443,14444,14445},{14450,14447,14448,14449},{14454,14451,14452,14453},{14458,14455,14456,14457},
 	},{
 		0,{14387,14388,14389},{14390,14391,14392},{14393,14394,14395},{14396,14397,14398},{14201,14202,14205},{14399,14400,14401},{14402,14403,14404},{14405,14406,14407}
@@ -1783,8 +1788,8 @@ function module.options:Load()
 		end
 		local colorR = color / 1.5
 		for i=1,module.db.perPage do
-			for j=1,16 do
-				local frame = self.lines[i].items[j].border
+			for j,item in pairs(self.lines[i].items) do
+				local frame = item.border
 				if frame:IsVisible() then
 					frame.background:SetColorTexture(1,color,color,.4)
 

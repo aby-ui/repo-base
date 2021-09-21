@@ -1,3 +1,5 @@
+local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
+
 local L = DBM_GUI_L
 
 local specPanel = DBM_GUI.Cat_Alerts:CreateNewPanel(L.Panel_SpecWarnFrame, "option")
@@ -130,25 +132,30 @@ durationSlider:HookScript("OnValueChanged", function(self)
 end)
 durationSlider.myheight = 0
 
-local Sounds = DBM_GUI:MixinSharedMedia3("sound", {
-	{ text = L.NoSound, value = "" },
-	{ text = "Algalon: Beware!", value = 15391 },
-	{ text = "BB Wolf: Run Away", value = 9278 },
-	{ text = "Blizzard Raid Emote", value = 37666 },
-	{ text = "C'Thun: You Will Die!", value = 8585 },
-	{ text = "Headless Horseman: Laugh", value = 11965 },
-	{ text = "Illidan: Not Prepared", value = 12506 },
-	{ text = "Illidan: Not Prepared2", value = 68563 },
-	{ text = "Kaz'rogal: Marked", value = 11052 },
-	{ text = "Kil'Jaeden: Destruction", value = 12506 },
-	{ text = "Loatheb: I see you", value = 128466 },
-	{ text = "Lady Malande: Flee", value = 11482 },
-	{ text = "Milhouse: Light You Up", value = 49764 },
-	{ text = "Night Elf Bell", value = 11742 },
+local sounds = DBM_GUI:MixinSharedMedia3("sound", {
+	{ text = "Algalon: Beware!", value = isRetail and 15391 or "Interface\\AddOns\\DBM-Core\\sounds\\ClassicSupport\\UR_Algalon_BHole01.ogg" },
+	{ text = "BB Wolf: Run Away", value = isRetail and 9278 or "Interface\\AddOns\\DBM-Core\\sounds\\ClassicSupport\\HoodWolfTransformPlayer01.ogg" },
+	{ text = "Illidan: Not Prepared", value = isRetail and 11466 or "Interface\\AddOns\\DBM-Core\\sounds\\ClassicSupport\\BLACK_Illidan_04.ogg" },
+	{ text = "Illidan: Not Prepared2", value = isRetail and 68563 or "Interface\\AddOns\\DBM-Core\\sounds\\ClassicSupport\\VO_703_Illidan_Stormrage_03.ogg" },
+	{ text = "Kil'Jaeden: Destruction", value = isRetail and 12506 or "Interface\\AddOns\\DBM-Core\\sounds\\ClassicSupport\\KILJAEDEN02.ogg" },
+	{ text = "Loatheb: I see you", value = isRetail and 128466 or "Interface\\AddOns\\DBM-Core\\sounds\\ClassicSupport\\LOA_NAXX_AGGRO02.ogg" },
+	{ text = "Night Elf Bell", value = isRetail and 11742 or 6674 },
 	{ text = "PvP Flag", value = 8174 },
-	{ text = "Void Reaver: Marked", value = 11213 },
-	{ text = "Yogg Saron: Laugh", value = 15757 },
 })
+do
+	local tinsert = table.insert
+
+	if isRetail then
+		tinsert(sounds, { text = "Blizzard Raid Emote", value = 37666 })
+		tinsert(sounds, { text = "C'Thun: You Will Die!", value = 8585 })
+		tinsert(sounds, { text = "Headless Horseman: Laugh", value = 11965 })
+		tinsert(sounds, { text = "Kaz'rogal: Marked", value = 11052 })
+		tinsert(sounds, { text = "Lady Malande: Flee", value = 11482 })
+		tinsert(sounds, { text = "Milhouse: Light You Up", value = 49764 })
+		tinsert(sounds, { text = "Void Reaver: Marked", value = 11213 })
+		tinsert(sounds, { text = "Yogg Saron: Laugh", value = 15757 })
+	end
+end
 
 local specWarnOne = specPanel:CreateArea(L.SpecialWarnHeader1)
 
@@ -183,7 +190,7 @@ color1:SetScript("OnColorSelect", function(self)
 end)
 color1.myheight = 104
 
-local SpecialWarnSoundDropDown = specWarnOne:CreateDropdown(L.SpecialWarnSoundOption, Sounds, "DBM", "SpecialWarningSound", function(value)
+local SpecialWarnSoundDropDown = specWarnOne:CreateDropdown(L.SpecialWarnSoundOption, sounds, "DBM", "SpecialWarningSound", function(value)
 	DBM.Options.SpecialWarningSound = value
 end)
 SpecialWarnSoundDropDown:SetPoint("TOPLEFT", specWarnOne.frame, "TOPLEFT", 95, -28)
@@ -251,7 +258,7 @@ color2:SetScript("OnColorSelect", function(self)
 end)
 color2.myheight = 104
 
-local SpecialWarnSoundDropDown2 = specWarnTwo:CreateDropdown(L.SpecialWarnSoundOption, Sounds, "DBM", "SpecialWarningSound2", function(value)
+local SpecialWarnSoundDropDown2 = specWarnTwo:CreateDropdown(L.SpecialWarnSoundOption, sounds, "DBM", "SpecialWarningSound2", function(value)
 	DBM.Options.SpecialWarningSound2 = value
 end)
 SpecialWarnSoundDropDown2:SetPoint("TOPLEFT", specWarnTwo.frame, "TOPLEFT", 95, -28)
@@ -323,7 +330,7 @@ color3:SetScript("OnColorSelect", function(self)
 end)
 color3.myheight = 104
 
-local SpecialWarnSoundDropDown3 = specWarnThree:CreateDropdown(L.SpecialWarnSoundOption, Sounds, "DBM", "SpecialWarningSound3", function(value)
+local SpecialWarnSoundDropDown3 = specWarnThree:CreateDropdown(L.SpecialWarnSoundOption, sounds, "DBM", "SpecialWarningSound3", function(value)
 	DBM.Options.SpecialWarningSound3 = value
 end)
 SpecialWarnSoundDropDown3:SetPoint("TOPLEFT", specWarnThree.frame, "TOPLEFT", 95, -28)
@@ -394,7 +401,7 @@ color4:SetScript("OnColorSelect", function(self)
 end)
 color4.myheight = 104
 
-local SpecialWarnSoundDropDown4 = specWarnFour:CreateDropdown(L.SpecialWarnSoundOption, Sounds, "DBM", "SpecialWarningSound4", function(value)
+local SpecialWarnSoundDropDown4 = specWarnFour:CreateDropdown(L.SpecialWarnSoundOption, sounds, "DBM", "SpecialWarningSound4", function(value)
 	DBM.Options.SpecialWarningSound4 = value
 end)
 SpecialWarnSoundDropDown4:SetPoint("TOPLEFT", specWarnFour.frame, "TOPLEFT", 95, -28)
@@ -463,7 +470,7 @@ color5:SetScript("OnColorSelect", function(self)
 end)
 color5.myheight = 104
 
-local SpecialWarnSoundDropDown5 = specWarnFive:CreateDropdown(L.SpecialWarnSoundOption, Sounds, "DBM", "SpecialWarningSound5", function(value)
+local SpecialWarnSoundDropDown5 = specWarnFive:CreateDropdown(L.SpecialWarnSoundOption, sounds, "DBM", "SpecialWarningSound5", function(value)
 	DBM.Options.SpecialWarningSound5 = value
 end)
 SpecialWarnSoundDropDown5:SetPoint("TOPLEFT", specWarnFive.frame, "TOPLEFT", 95, -28)

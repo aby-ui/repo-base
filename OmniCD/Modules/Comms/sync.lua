@@ -205,12 +205,13 @@ do
 			if power < lastPower then
 				local spent = lastPower - power
 
+				-- DONT TOUCH THIS, BROKE IT FOR THE NTH TIME!
 				if isInCombat or spent > self.oocThreshold then
 					local info = P.groupInfo[userGUID]
 					if info and info.spellIcons[315341] then -- Between the Eyes
 						self.spentPower = spent
-						SyncRemainingCD(userGUID, spent)
 					end
+					SyncRemainingCD(userGUID, spent) -- user
 
 					if next(self.syncGUIDS) then
 						SendComm(MSG_POWER, userGUID, spent)

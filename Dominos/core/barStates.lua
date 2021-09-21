@@ -13,23 +13,23 @@ local function getStateIterator(type, i)
 end
 
 local BarStates = {
-    add = function(self, state, index)
+    add = function(_, state, index)
         if index then
             return table.insert(states, index, state)
         end
         return table.insert(states, state)
     end,
-    getAll = function(self, type)
+    getAll = function(_, type)
         return getStateIterator, type, 0
     end,
-    get = function(self, id)
+    get = function(_, id)
         for _, v in pairs(states) do
             if v.id == id then
                 return v
             end
         end
     end,
-    map = function(self, f)
+    map = function(_, f)
         local results = {}
         for _, v in ipairs(states) do
             if f(v) then
@@ -42,7 +42,7 @@ local BarStates = {
 
 Addon.BarStates = BarStates
 
-local addState = function(stateType, stateId, stateValue, stateText)
+local function addState(stateType, stateId, stateValue, stateText)
     return BarStates:add {
         type = stateType,
         id = stateId,
@@ -63,7 +63,7 @@ addState('modifier', 'shift', '[mod:shift]', SHIFT_KEY)
 addState('modifier', 'meta', '[mod:meta]')
 
 -- paging
-for i = 2, 6 do
+for i = 2, NUM_ACTIONBAR_PAGES do
     addState('page', ('page%d'):format(i), ('[bar:%d]'):format(i), _G['BINDING_NAME_ACTIONPAGE' .. i])
 end
 
@@ -108,7 +108,11 @@ do
             addState('class', 'aquatic', newFormConditionLookup(1066), GetSpellInfo(1066))
 
             if Addon:IsBuild('bcc') then
+                -- flight form
                 addState('class', 'flight', newFormConditionLookup(33943), GetSpellInfo(33943))
+
+                -- swift flight form
+                addState('class', 'flight', newFormConditionLookup(40120), GetSpellInfo(40120))
             end
         else
             addState('class', 'moonkin', '[bonusbar:4]', GetSpellInfo(24858))
@@ -155,7 +159,7 @@ end
 
 -- race
 do
-    local race = select(2, UnitRace('player'))
+    local _, race = UnitRace('player')
     if race == 'NightElf' then
         local name = (GetSpellInfo(58984) or GetSpellInfo(20580))
         addState('class', 'shadowmeld', '[stealth]', name)

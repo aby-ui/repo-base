@@ -166,10 +166,10 @@ E.OpenOptionPanel = function()
 	E.Libs.ACD:SetDefaultSize("OmniCD", 965, 650)
 	E.Libs.ACD:Open("OmniCD")
 
-	for modName in pairs(E.moduleOptions) do -- expand tree
+	for modName in pairs(E.moduleOptions) do
 		E.Libs.ACD:SelectGroup(E.AddOn, modName)
 	end
-	E.Libs.ACD:SelectGroup(E.AddOn, "")
+	E.Libs.ACD:SelectGroup(E.AddOn, "Home")
 end
 
 SLASH_OmniCD1 = "/oc"

@@ -24,6 +24,12 @@ v2.6.30
 Pre v2.6.30 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.6.34
+	Fixed cooldown reduction with synced units.
+
+v2.6.33
+	Fixed cooldowns not resetting at the start of Mythic+.
+
 v2.6.32
 	Battle Res module removed d/t issues. This will no longer be integrated and be available as an external plugin only.
 	Prevent ACCESS_VIOLATION error.

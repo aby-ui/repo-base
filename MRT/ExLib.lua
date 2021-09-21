@@ -695,8 +695,8 @@ do
 	end
 end
 
-function Templates:ExRTButtonTransparentTemplate(parent)
-	local self = CreateFrame("Button",nil,parent)
+function Templates:ExRTButtonTransparentTemplate(parent,isSecure)
+	local self = isSecure and CreateFrame("Button",nil,parent,isSecure) or CreateFrame("Button",nil,parent)
 	self:SetSize(40,18)
 
 	self.HighlightTexture = self:CreateTexture()
@@ -718,8 +718,8 @@ function Templates:ExRTButtonTransparentTemplate(parent)
 	return self
 end
 
-function Templates:ExRTButtonModernTemplate(parent)
-	local self = Templates:ExRTButtonTransparentTemplate(parent)
+function Templates:ExRTButtonModernTemplate(parent,isSecure)
+	local self = Templates:ExRTButtonTransparentTemplate(parent,isSecure)
 
 	Templates:Border(self,0,0,0,1,1)
 
@@ -736,6 +736,10 @@ function Templates:ExRTButtonModernTemplate(parent)
 	self:SetDisabledTexture(self.DisabledTexture)
 
 	return self
+end
+
+Templates["ExRTButtonModernTemplate,SecureHandlerClickTemplate"] = function(self,parent)
+	return Templates:ExRTButtonModernTemplate(parent,"SecureHandlerClickTemplate")
 end
 
 do
@@ -4437,6 +4441,13 @@ function ELib.ScrollDropDown:Reload(level)
 					if data.icon then
 						icon:SetTexture(data.icon)
 						paddingLeft = paddingLeft + 18
+						if data.iconcoord then
+							icon:SetTexCoord(unpack(data.iconcoord))
+							icon.customcoord = true
+						elseif icon.customcoord then
+							icon:SetTexCoord(0,1,0,1)
+							icon.customcoord = false
+						end
 						icon:Show()
 					else
 						icon:Hide()

@@ -232,9 +232,11 @@ end
 
 function Player:UpdateChannelingTicks()
 	local playerClass = select(2, UnitClass("player"))
-	if playerClass == "PRIEST" then
-		-- Castigation talent adds a tick to penance
-		channelingTicks[GetSpellInfo(47540)] = isTalentKnown(19752) and 4 or 3
+	if not WoWBC then
+		if playerClass == "PRIEST" then
+			-- Castigation talent adds a tick to penance
+			channelingTicks[GetSpellInfo(47540)] = isTalentKnown(19752) and 4 or 3
+		end
 	end
 end
 
