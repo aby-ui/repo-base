@@ -1,6 +1,4 @@
 ## Interface: 90100
-## Interface-Classic: 11307
-## Interface-BCC: 20502
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFStatus Bar Timers (REQUIRED)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFTemporizadores de Estado (REQUERIDO)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFTemporizadores de Estado (REQUERIDO)|r
@@ -21,7 +19,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: ce984a9
+## Version: 8ed2049
 ## X-Website: https://deadlybossmods.com
 
 DBT.lua

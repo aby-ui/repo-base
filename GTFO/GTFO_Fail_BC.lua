@@ -174,6 +174,42 @@ GTFO.SpellID["34190"] = {
 	applicationOnly = true;
 };
 
+GTFO.SpellID["37319"] = {
+  --desc = "Wing Buffet (Phoenix-Hawk Hatchling)";
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
+GTFO.SpellID["37317"] = {
+  --desc = "Knockback (Tempest Falconer)";
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
+-- ************************
+-- * Serpentshrine Cavern *
+-- ************************
+
+GTFO.SpellID["37478"] = {
+  --desc = "Geyser (The Lurker Below)";
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
+GTFO.SpellID["37433"] = {
+	--desc = "Spout (The Lurker Below)";
+	sound = 3;
+};
+
+GTFO.SpellID["38260"] = {
+  --desc = "Cleave (Coilfang Elite)";
+  sound = 3;
+  tankSound = 0;
+};
+
 
 -- ******************
 
@@ -243,12 +279,6 @@ GTFO.SpellID["40599"] = {
 
 GTFO.SpellID["40599"] = {
 	--desc = "Saber Lash (Mother Shahraz - Black Temple)";
-	sound = 3;
-	tankSound = 0;
-};
-
-GTFO.SpellID["37433"] = {
-	--desc = "Spout (Lurker - SSC)";
 	sound = 3;
 	tankSound = 0;
 };

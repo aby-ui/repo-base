@@ -313,13 +313,18 @@ GTFO.SpellID["358973"] = {
   --desc = "Wave of Terror (Executioner Varruth)";
   sound = 3;
   applicationOnly = true;
-  test = true;
 };
 
 GTFO.SpellID["353763"] = {
   --desc = "Leeching Cleave (Nal'ragas)";
   sound = 3;
 };
+
+GTFO.SpellID["355737"] = {
+  --desc = "Scorching Blast (Incinerator Arkolath)";
+  sound = 3;
+};
+
 
 --- **********************
 --- * Halls of Atonement *
@@ -619,6 +624,17 @@ GTFO.SpellID["331748"] = {
   sound = 3;
 };
 
+GTFO.SpellID["340304"] = {
+  --desc = "Poisonous Secreations (Mistveil Gorgegullet)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["336759"] = {
+  --desc = "Dodge Ball (Mistcaller)";
+  sound = 3;
+};
+
 GTFO.SpellID["321834"] = {
   --desc = "Dodge Ball (Mistcaller)";
   sound = 3;
@@ -650,6 +666,16 @@ GTFO.SpellID["326263"] = {
 
 GTFO.SpellID["332708"] = {
   --desc = "Ground Smash (Heavin the Breaker)";
+  sound = 3;
+};
+
+GTFO.SpellID["342126"] = {
+  --desc = "Brutal Leap (Dokigg the Brutalizer)";
+  sound = 3;
+};
+
+GTFO.SpellID["334025"] = {
+  --desc = "Bloodthirsty Charge (Harugia the Bloodthirsty)";
   sound = 3;
 };
 
@@ -1020,6 +1046,21 @@ GTFO.SpellID["355224"] = {
   applicationOnly = true;
 };
 
+GTFO.SpellID["352265"] = {
+  --desc = "Ritual of Pain";
+  sound = 3;
+};
+
+GTFO.SpellID["351931"] = {
+  --desc = "Pain Bringer";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["351811"] = {
+  --desc = "Fire and Brimestone (Mawsworn Cremator)";
+  sound = 3;
+};
 
 --- ******************
 --- * Castle Nathria *
@@ -1323,7 +1364,7 @@ GTFO.SpellID["355058"] = {
   applicationOnly = true;
 };
 
-GTFO.SpellID["346469"] = {
+GTFO.SpellID["352381"] = {
   --desc = "Freezing Blast (Kel'Thuzad)";
   sound = 3;
   applicationOnly = true;
@@ -1357,8 +1398,7 @@ GTFO.SpellID["352318"] = {
 GTFO.SpellID["347704"] = {
   --desc = "Veil of Darkness (Sylvanas Windrunner)";
   applicationOnly = true;
-  sound = 3;
-  test = true;
+  sound = 2;
 };
 
 GTFO.SpellID["348145"] = {

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(114350)
 mod:SetEncounterID(1965)
 mod:SetUsedIcons(1, 2)
@@ -113,8 +113,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 228582 and self.vb.imagesActive then--Mana Regen
 		self.vb.imagesActive = false
 		timerSpecialCD:Start()

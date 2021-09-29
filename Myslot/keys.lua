@@ -459,6 +459,7 @@ local MYSLOT_MOD_KEYS = {
     ["SHIFT"] = 1,
     ["CTRL"] = 2,
     ["ALT"] = 3,
+    ["META"] = 4,
     ["NONE"] = 0,
     ["CTRL-ALT"] = 106,
     ["CTRL-SHIFT"] = 107,
@@ -472,6 +473,12 @@ local MYSLOT_MOD_KEYS = {
     ["CTRL-SHIFT-ALT"] = 113,
     ["SHIFT-ALT-CTRL"] = 114,
     ["SHIFT-CTRL-ALT"] = 115,
+    ["ALT-META"] = 116,
+    ["CTRL-META"] = 117,
+    ["SHIFT-META"] = 118,
+    ["ALT-CTRL-META"] = 119,
+    ["ALT-SHIFT-META"] = 120,
+    ["CTRL-SHIFT-META"] = 121,
     ["CUSTOM"] = 255,
 }
 

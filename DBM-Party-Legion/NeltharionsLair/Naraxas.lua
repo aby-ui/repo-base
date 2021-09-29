@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1673, "DBM-Party-Legion", 5, 767)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(91005)
 mod:SetEncounterID(1792)
 
@@ -33,12 +33,6 @@ function mod:OnCombatStart(delay)
 	timerRancidMawCD:Start(7.3-delay)
 	timerToxicRetchCD:Start(12.4-delay)
 	timerSpikedTongueCD:Start(50.5-delay)
-end
-
-function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -75,8 +69,7 @@ end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 --]]
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 199817 then--Call Minions
 		specWarnAdds:Show()
 		specWarnAdds:Play("mobsoon")

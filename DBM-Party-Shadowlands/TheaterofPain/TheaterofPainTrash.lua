@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("TheaterofPainTrash", "DBM-Party-Shadowlands", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201123191107")
+mod:SetRevision("20210921205221")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 341902 341969 330614 342139 333861 330562 333294",
+	"SPELL_CAST_START 341902 341969 330614 342139 333861 330562 333294 331237",
 	"SPELL_CAST_SUCCESS 330810",
 	"SPELL_AURA_APPLIED 341902 333241"
 )
@@ -33,6 +33,8 @@ local specWarnDemoralizingShout				= mod:NewSpecialWarningInterrupt(330562, "Has
 --Notable Kul'tharok Trash
 local specWarnBindSoul						= mod:NewSpecialWarningInterrupt(330810, "HasInterrupt", nil, nil, 1, 2)
 local specWarnDeathWinds					= mod:NewSpecialWarningDodge(333294, nil, nil, nil, 2, 2)--Maybe change to airhorn?
+--Other trash that apparently wasn't notable enough for guide
+local specWarnBoneSpikes					= mod:NewSpecialWarningDodge(331237, nil, nil, nil, 2, 2)
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc
 
@@ -68,6 +70,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 333294 and self:AntiSpam(3, 2) then
 		specWarnDeathWinds:Show()
 		specWarnDeathWinds:Play("watchstep")
+	elseif spellId == 331237 and self:AntiSpam(3, 2) then
+		specWarnBoneSpikes:Show()
+		specWarnBoneSpikes:Play("watchstep")
 	elseif spellId == 333861 then
 		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "RicochetingTarget", 0.1, 4)
 	end

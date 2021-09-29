@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1653, "DBM-Party-Legion", 1, 740)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(98696)
 mod:SetEncounterID(1833)
 mod:SetUsedIcons(3, 2, 1)
@@ -9,10 +9,10 @@ mod:SetUsedIcons(3, 2, 1)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
+	"SPELL_CAST_START 197418 197546 197974 197797",
+	"SPELL_CAST_SUCCESS 197478 197687",
 	"SPELL_AURA_APPLIED 197478",
 	"SPELL_AURA_REMOVED 197478",
-	"SPELL_CAST_START 197418 197546 197974",
-	"SPELL_CAST_SUCCESS 197478 197687",
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
@@ -25,7 +25,6 @@ mod:RegisterEventsInCombat(
 "<213.28 23:53:41> [UNIT_SPELLCAST_SUCCEEDED] Illysanna Ravencrest(??) boss1:Phase 2 Jump::3-3020-1501-31352-197622-0003CA4945:197622",
 --]]
 --TODO, maybe GTFO for standing in fire left by dark rush and eye beams?
---TODO, Interrupt warning for heroic/mythic/challenge mode arcane spell?
 local warnBrutalGlaive				= mod:NewTargetAnnounce(197546, 2)
 local warnDarkRush					= mod:NewTargetAnnounce(197478, 3)
 local warnEyeBeam					= mod:NewTargetAnnounce(197687, 2)
@@ -37,6 +36,7 @@ local specWarnDarkRush				= mod:NewSpecialWarningYou(197478, nil, nil, nil, 1, 2
 local specWarnEyeBeam				= mod:NewSpecialWarningRun(197687, nil, nil, nil, 4, 2)
 local yellEyeBeam					= mod:NewYell(197687)
 local specWarnBonebreakingStrike	= mod:NewSpecialWarningDodge(197974, "Tank", nil, nil, 1, 2)
+local specWarnArcaneBlitz			= mod:NewSpecialWarningInterrupt(197797, "HasInterrupt", nil, nil, 1, 2)
 
 local timerBrutalGlaiveCD			= mod:NewCDTimer(15, 197546, nil, nil, nil, 3)
 local timerVengefulShearCD			= mod:NewCDTimer(11, 197418, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--11-16, delayed by dark rush
@@ -70,6 +70,24 @@ function mod:OnCombatEnd()
 --	if self.Options.RangeFrame then
 --		DBM.RangeCheck:Hide()
 --	end
+end
+
+function mod:SPELL_CAST_START(args)
+	local spellId = args.spellId
+	if spellId == 197418 then
+		specWarnVengefulShear:Show()
+		specWarnVengefulShear:Play("defensive")
+		timerVengefulShearCD:Start()
+	elseif spellId == 197546 then
+		timerBrutalGlaiveCD:Start()
+		self:BossTargetScanner(98696, "BrutalGlaiveTarget", 0.1, 10, true)
+	elseif spellId == 197974 then
+		specWarnBonebreakingStrike:Show()
+		specWarnBonebreakingStrike:Play("shockwave")
+	elseif spellId == 197797 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnArcaneBlitz:Show(args.sourceName)
+		specWarnArcaneBlitz:Play("kickcast")
+	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
@@ -109,21 +127,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:SPELL_CAST_START(args)
-	local spellId = args.spellId
-	if spellId == 197418 then
-		specWarnVengefulShear:Show()
-		specWarnVengefulShear:Play("defensive")
-		timerVengefulShearCD:Start()
-	elseif spellId == 197546 then
-		timerBrutalGlaiveCD:Start()
-		self:BossTargetScanner(98696, "BrutalGlaiveTarget", 0.1, 10, true)
-	elseif spellId == 197974 then
-		specWarnBonebreakingStrike:Show()
-		specWarnBonebreakingStrike:Play("shockwave")
-	end
-end
-
 --[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 153616 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
@@ -132,8 +135,7 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE--]]
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 197622 then--Phase 2 Jump
 		timerBrutalGlaiveCD:Stop()
 		timerVengefulShearCD:Stop()

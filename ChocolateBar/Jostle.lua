@@ -76,9 +76,7 @@ JostleFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 JostleFrame:RegisterEvent("PLAYER_CONTROL_GAINED")
 JostleFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
---ChocolateBar:Debug("ChocolateBar:IsRetail()", ChocolateBar:IsRetail())
 if ChocolateBar:IsRetail() then
-	--ChocolateBar:Debug("ChocolateBar:IsRetail()", ChocolateBar:IsRetail())
 	JostleFrame:RegisterEvent("UNIT_EXITING_VEHICLE")
 	JostleFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
 end

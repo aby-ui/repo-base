@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1654, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200913142322")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(96512)
 mod:SetEncounterID(1836)
 
@@ -32,10 +32,9 @@ function mod:LeapTarget(targetname, uId)
 		warnLeap:Show(DBM_CORE_L.UNKNOWN)
 		return
 	end
+	warnLeap:Show(targetname)
 	if targetname == UnitName("player") then
 		yellLeap:Yell()
-	else
-		warnLeap:Show(targetname)
 	end
 end
 
@@ -74,8 +73,7 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	--"<13.84 02:50:50> [UNIT_SPELLCAST_SUCCEEDED] Arch-Druid Glaidalis(Omegal) [[boss1:Grievous Leap::3-2084-1466-6383-196346-000018A4DA:196346]]", -- [47]
 	if spellId == 196346 then
 		self:BossTargetScanner(96512, "LeapTarget", 0.05, 12, true, nil, nil, nil, true)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1655, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(103344)
 mod:SetEncounterID(1837)
 
@@ -41,12 +41,6 @@ function mod:OnCombatStart(delay)
 	timerRootsCD:Start(12-delay)
 	timerBreathCD:Start(18-delay)
 	timerThrowCD:Start(29-delay)
-end
-
-function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 end
 
 function mod:SPELL_CAST_START(args)

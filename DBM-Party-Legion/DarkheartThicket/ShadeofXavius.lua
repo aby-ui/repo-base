@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1657, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(99192)
 mod:SetEncounterID(1839)
 mod:SetUsedIcons(2, 1)
@@ -98,8 +98,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 204808 then--Because cast is hidden from combat log, and debuff may miss (AMS or the like)
 		timerNightmareCD:Start()
 	elseif spellId == 200050 then--Apocalyptic Nightmare

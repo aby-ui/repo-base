@@ -1,9 +1,9 @@
 ## Interface: 90100
 ## Title: Postal
-## Version: v3.7.4
-## X-Build: 497
-## X-ReleaseDate: 2021-09-17T4:25:35Z
-## X-Revision: 497
+## Version: v3.7.5
+## X-Build: 501
+## X-ReleaseDate: 2021-09-27T18:27:03Z
+## X-Revision: 501
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail

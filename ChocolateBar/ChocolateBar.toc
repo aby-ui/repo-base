@@ -1,13 +1,11 @@
-#@retail@
 ## Interface: 90100
-#@end-retail@
-#@non-retail@
-# ## Interface: 11306
-#@end-non-retail@
+## Interface-Retail: 90100
+## Interface-Classic: @toc-version-classic@
+## Interface-BCC: @toc-version-bcc@
 ## Title: ChocolateBar
 ## Notes: A display for LibDataBroker-1.1
 ## Author: Kiatra - github.com/Kiatra/ChocolateBar/
-## Version: v3.6.15
+## Version: v3.7.5
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibQTip-1.0
 ## X-WoWI-ID: 12326
 ## SavedVariables: ChocolateBarDB, CB_PlayedTime

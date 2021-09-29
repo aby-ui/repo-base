@@ -2419,9 +2419,9 @@ hoverTooltip.ShowTorghastTooltip = function (cell, arg, ...)
   for i, data in ipairs(P.TrackedQuest[index].widgetID) do
     if t.Progress[index]['Available' .. i] then
       local nameInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(data[1])
-      local nameText = strmatch(nameInfo.text, '|n|cffffffff(.+)|r')
+      local nameText = nameInfo and strmatch(nameInfo.text, '|n|cffffffff(.+)|r')
 
-      indicatortip:AddLine(nameText, t.Progress[index]['Level' .. i])
+      indicatortip:AddLine(nameText or '', t.Progress[index]['Level' .. i])
     end
   end
 
@@ -2479,7 +2479,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.1.3-1-geb40329" then
+  if versionString == "9.1.3-3-ga3a1ba2" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -4332,10 +4332,10 @@ function SI:ShowTooltip(anchorframe)
               earned = CurrencyColor(ci.amount,ci.totalMax)..totalmax
             end
             local str
-            if (ci.amount or 0) > 0 or (ci.earnedThisWeek or 0) > 0 then
+            if (ci.amount or 0) > 0 or (ci.earnedThisWeek or 0) > 0 or (ci.totalEarned or 0) > 0 then
               if (ci.weeklyMax or 0) > 0 then
                 str = earned.." ("..CurrencyColor(ci.earnedThisWeek,ci.weeklyMax)..weeklymax..")"
-              elseif (ci.amount or 0) > 0 then
+              elseif (ci.amount or 0) > 0 or (ci.totalEarned or 0) > 0 then
                 str = CurrencyColor(ci.amount,ci.totalMax)..totalmax
               end
               if SI.specialCurrency[idx] and SI.specialCurrency[idx].relatedItem then

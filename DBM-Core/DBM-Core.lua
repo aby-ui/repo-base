@@ -64,18 +64,18 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210921155847"),
+	Revision = parseCurseDate("20210928004514"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.14"
-	DBM.ReleaseRevision = releaseDate(2021, 9, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.1.15"
+	DBM.ReleaseRevision = releaseDate(2021, 9, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.13.79"
-	DBM.ReleaseRevision = releaseDate(2021, 9, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.13.82"
+	DBM.ReleaseRevision = releaseDate(2021, 9, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.13"
-	DBM.ReleaseRevision = releaseDate(2021, 9, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.15"
+	DBM.ReleaseRevision = releaseDate(2021, 9, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -2141,7 +2141,7 @@ do
 		end
 	end
 	local function Break(timer)
-		if IsInGroup() and (DBM:GetRaidRank(playerName) == 0 or (not isRetail or IsPartyLFG())) or IsEncounterInProgress() or select(2, IsInInstance()) == "pvp" then--No break timers if not assistant or if it's dungeon/raid finder/BG
+		if IsInGroup() and (DBM:GetRaidRank(playerName) == 0 or (isRetail and IsPartyLFG())) or IsEncounterInProgress() or select(2, IsInInstance()) == "pvp" then--No break timers if not assistant or if it's dungeon/raid finder/BG
 			DBM:AddMsg(L.ERROR_NO_PERMISSION)
 			return
 		end
@@ -5522,17 +5522,17 @@ do
 			if isRetail then
 				ObjectiveTracker_Expand()
 			else
-				ObjectiveTrackerFrame:Show()
+				QuestWatchFrame:Show()
+				local QuestieLoader = _G["QuestieLoader"]
+				if QuestieLoader then
+					local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
+					if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
+						QuestieTracker:Enable()
+						questieWatchRestore = false
+					end
+				end
 			end
 			watchFrameRestore = false
-		end
-		local QuestieLoader = _G["QuestieLoader"]
-		if QuestieLoader then
-			local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
-			if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
-				QuestieTracker:Enable()
-				questieWatchRestore = false
-			end
 		end
 	end
 
@@ -5993,7 +5993,7 @@ do
 			if self.Options.RecordOnlyBosses then
 				self:StartLogging(0, nil)
 			end
-			if self.Options.HideObjectivesFrame and mod.addon.type ~= "SCENARIO" and GetNumTrackedAchievements() == 0 and difficultyIndex ~= 8 and not InCombatLockdown() then
+			if self.Options.HideObjectivesFrame and mod.addon.type ~= "SCENARIO" and (not isRetail or GetNumTrackedAchievements() == 0) and difficultyIndex ~= 8 and not InCombatLockdown() then
 				if isRetail then
 					if ObjectiveTrackerFrame:IsVisible() then
 						ObjectiveTracker_Collapse()
@@ -6004,15 +6004,15 @@ do
 						QuestWatchFrame:Hide()
 						watchFrameRestore = true
 					end
-				end
-				local QuestieLoader = _G["QuestieLoader"]
-				if QuestieLoader then
-					local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
-					local Questie = _G["Questie"] or QuestieLoader:ImportModule("Questie")
-					if QuestieTracker and Questie and Questie.db.global.trackerEnabled and QuestieTracker.Disable then
-						--Will only hide questie tracker if it's not already hidden.
-						QuestieTracker:Disable()
-						questieWatchRestore = true
+					local QuestieLoader = _G["QuestieLoader"]
+					if QuestieLoader then
+						local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
+						local Questie = _G["Questie"] or QuestieLoader:ImportModule("Questie")
+						if QuestieTracker and Questie and Questie.db.global.trackerEnabled and QuestieTracker.Disable then
+							--Will only hide questie tracker if it's not already hidden.
+							QuestieTracker:Disable()
+							questieWatchRestore = true
+						end
 					end
 				end
 			end
@@ -6431,16 +6431,16 @@ do
 							ObjectiveTracker_Expand()
 						else
 							QuestWatchFrame:Show()
+							local QuestieLoader = _G["QuestieLoader"]
+							if QuestieLoader then
+								local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
+								if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
+									QuestieTracker:Enable()
+									questieWatchRestore = false
+								end
+							end
 						end
 						watchFrameRestore = false
-					end
-					local QuestieLoader = _G["QuestieLoader"]
-					if QuestieLoader then
-						local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
-						if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
-							QuestieTracker:Enable()
-							questieWatchRestore = false
-						end
 					end
 				end
 				if tooltipsHidden then
@@ -7689,7 +7689,7 @@ do
 			elseif type(nameModifier) == "function" then--custom name modify function
 				t = nameModifier(t or name)
 			else--default name modify
-				t = string.split(",", t or name)
+				t = string.split(",", t or obj.localization.general.name or name)
 			end
 			obj.localization.general.name = t or name
 		else
@@ -10313,17 +10313,21 @@ do
 		self:PlaySoundFile(path..number..".ogg")
 	end
 
-	function DBM:CheckVoicePackVersion(value)
-		local activeVP = self.Options.ChosenVoicePack
-		--Check if voice pack out of date
-		if activeVP ~= "None" and activeVP == value then
-			if self.VoiceVersions[value] < 11 then--Version will be bumped when new voice packs released that contain new voices.
-				if self.Options.ShowReminders then
-					self:AddMsg(L.VOICE_PACK_OUTDATED)
+	do
+		local minVoicePackVersion = isRetail and 11 or 10
+
+		function DBM:CheckVoicePackVersion(value)
+			local activeVP = self.Options.ChosenVoicePack
+			--Check if voice pack out of date
+			if activeVP ~= "None" and activeVP == value then
+				if self.VoiceVersions[value] < minVoicePackVersion then--Version will be bumped when new voice packs released that contain new voices.
+					if self.Options.ShowReminders then
+						self:AddMsg(L.VOICE_PACK_OUTDATED)
+					end
+					SWFilterDisabed = self.VoiceVersions[value]--Set disable to version on current voice pack
+				else
+					SWFilterDisabed = minVoicePackVersion
 				end
-				SWFilterDisabed = self.VoiceVersions[value]--Set disable to version on current voice pack
-			else
-				SWFilterDisabed = 11
 			end
 		end
 	end

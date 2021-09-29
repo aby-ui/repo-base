@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20210614230033")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(114790)
 mod:SetEncounterID(2017)
 mod:SetUsedIcons(1, 2, 3)
@@ -170,8 +170,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, bfaSpellId, _, legacySpellId)
-	local spellId = legacySpellId or bfaSpellId
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 229284 then--Bombardment (more reliable than auras, which can be fickle and apply/remove multiple times
 		timerBombardmentCD:Start()
 	end

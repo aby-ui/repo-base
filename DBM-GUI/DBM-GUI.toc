@@ -1,6 +1,4 @@
 ## Interface: 90100
-## Interface-Classic: 11307
-## Interface-BCC: 20502
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFOptions GUI|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFGUI für Einstellungen|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF设置界面|r
@@ -27,7 +25,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: ce984a9
+## Version: 8ed2049
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua

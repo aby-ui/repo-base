@@ -26,7 +26,7 @@ local db --reference to ChocolateBar.db.profile
 -- utility functions
 --------
 local function debug(...)
-	if not ChocolateBar.db or ChocolateBar.db.char.debug then
+	if ChocolateBar.db and ChocolateBar.db.char.debug then
 	 	local s = "ChocolateBar debug:"
 		for i=1,select("#", ...) do
 			local x = select(i, ...)

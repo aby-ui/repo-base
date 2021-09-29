@@ -635,8 +635,7 @@ La["Combine LFR"] = "공찾/탄공 합침"
 La["Combine World Bosses"] = "야외 보스 합침"
 La["Connected Realms"] = "연동 서버"
 La["Covenant"] = "성약의 단"
---[[Translation missing --]]
-La["Covenant Assaults"] = "Covenant Assaults"
+La["Covenant Assaults"] = "성약의 단 습격"
 La["Currency settings"] = "화폐 설정"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1061,8 +1060,7 @@ La["Wrath of the Jailer"] = "Wrath of the Jailer"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Puedes unirse a los iconos y texto en un solo indicador. Seleccione un icono y escribe \"ICON\" en el cuadro de texto para indicar dónde deseas que aparezca el icono."
 
 elseif locale == "ruRU" then
-  --[[Translation missing --]]
-La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r to open weekly rewards"
+  La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Нажать|r открыть еженедельные награды"
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Left-click|r Информация в отдельном окне"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "Средняя кнопка мыши, чтобы показать информацию о рейдах от Blizzard"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Right-click|r Настройки SavedInstances"
@@ -1071,10 +1069,8 @@ La["Abbreviate Mythic keystone dungeon names"] = "Сократить назва�
 La["Account"] = "Аккаунт"
 La["Account Summary"] = "Общая сводка по аккаунту"
 La["Always show"] = "Всегда отображать"
---[[Translation missing --]]
-La["Amathet Reliquary"] = "Amathet Reliquary"
---[[Translation missing --]]
-La["Ambered Coffer"] = "Ambered Coffer"
+La["Amathet Reliquary"] = "Реликварий аматетов"
+La["Ambered Coffer"] = "Покрытый янтарем сундук"
 La["Are you sure you want to remove %s from the SavedInstances character database?"] = "Вы уверены, что хотите удалить %s из базы данных персонажей SavedInstances?"
 La["Are you sure you want to report all your keys to %s?"] = "Вы уверены, что хотите сообщить обо всех своих ключах %s?"
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "Вы уверены, что хотите сбросить базу данных персонажей SavedInstances? Персонажи будут вновь запомнены, как только вы зайдёте ими в игру."
@@ -1100,10 +1096,8 @@ La["Combine emissaries of same expansion"] = "Объединить эмисса�
 La["Combine LFR"] = "Объединять СПР (LFR)"
 La["Combine World Bosses"] = "Объединять мировых босcов"
 La["Connected Realms"] = "Соединенные сервера"
---[[Translation missing --]]
-La["Covenant"] = "Covenant"
---[[Translation missing --]]
-La["Covenant Assaults"] = "Covenant Assaults"
+La["Covenant"] = "Ковенант"
+La["Covenant Assaults"] = "Атаки ковенантов"
 La["Currency settings"] = "Настройки валюты"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1141,14 +1135,10 @@ La["Guild"] = "Гильдия"
 La["HOA"] = "ЧП"
 La["Hold Alt to show all data"] = "Нажмите Alt для просмотра всей информации"
 La["Hover mouse on indicator for details"] = "Наведите мышкой на индикатор для детальной информации"
---[[Translation missing --]]
-La["Hunt: Death Elementals"] = "Hunt: Death Elementals"
---[[Translation missing --]]
-La["Hunt: Shadehounds"] = "Hunt: Shadehounds"
---[[Translation missing --]]
-La["Hunt: Soul Eaters"] = "Hunt: Soul Eaters"
---[[Translation missing --]]
-La["Hunt: Winged Soul Eaters"] = "Hunt: Winged Soul Eaters"
+La["Hunt: Death Elementals"] = "Охота: элементали смерти"
+La["Hunt: Shadehounds"] = "Охота: Темные Гончие"
+La["Hunt: Soul Eaters"] = "Охота: Пожиратели Душ"
+La["Hunt: Winged Soul Eaters"] = "Охота: Крылатые пожиратели душ"
 La["Ignore"] = "Игнорировать"
 La["Indicators"] = "Индикатор"
 --[[Translation missing --]]
@@ -1246,8 +1236,7 @@ La["Time Left"] = "Обновится через"
 La["Tooltip Scale"] = "Масштаб подсказки"
 La["TOP"] = "Театр"
 La["Torghast"] = "Торгаст"
---[[Translation missing --]]
-La["Tormentors of Torghast"] = "Tormentors of Torghast"
+La["Tormentors of Torghast"] = "Мучители из Торгаста"
 La["Track Mythic keystone acquisition"] = "Отслеживать полученные эпохальные ключи"
 La["Track Mythic keystone best run"] = "Отслеживать лучший заход на эпохальный ключ"
 La["Trade Skill Cooldowns"] = "Восстановление способностей профессий."
@@ -1892,15 +1881,12 @@ La["Wrath of the Jailer"] = "典獄長之怒"
 La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "如果想要的話，可以在同個指標上顯示圖示與文字。首先選擇一個圖示，並在文字框中插入「ICON」到想要出現圖示的位置，就會自動替換成你選擇的圖示。"
 
 elseif locale == "ptBR" then
-  --[[Translation missing --]]
-La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r to open weekly rewards"
+  La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r para abrir recompensas semanais"
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Botão Esquerdo | Para destacar as Dicas"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Botão do Meio|r para mostrar informações da Raid dadas pela Blizzard"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Botão Direito|r Para configurar o SavedInstances"
---[[Translation missing --]]
-La["Abbreviate keystones"] = "Abbreviate keystones"
---[[Translation missing --]]
-La["Abbreviate Mythic keystone dungeon names"] = "Abbreviate Mythic keystone dungeon names"
+La["Abbreviate keystones"] = "Abreviar pedras-chave"
+La["Abbreviate Mythic keystone dungeon names"] = "Abreviar nomes de masmorras de pedra-chave Mítica"
 La["Account"] = "Conta"
 La["Account Summary"] = "Sumário da conta"
 La["Always show"] = "Mostrar sempre"
@@ -2035,7 +2021,7 @@ La["Nathanos Blightcaller"] = "Nathanos Blightcaller"
 La["Never show"] = "Nunca mostrar"
 --[[Translation missing --]]
 La["NW"] = "NW"
-La["Opacity of the tooltip row highlighting"] = "Opacidade do destaque da linha de ajuda"
+La["Opacity of the tooltip row highlighting"] = "Opacidade do destaque da linha de ajuda "
 La["Open config"] = "Abrir configuração"
 --[[Translation missing --]]
 La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"

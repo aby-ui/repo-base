@@ -1,7 +1,7 @@
 -- L.Core
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
--- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20210804
+-- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20210924
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -10,6 +10,9 @@ local L = DBM_CORE_L
 
 L.HOW_TO_USE_MOD					= "欢迎使用" .. L.DBM .. "。在聊天框输入 /dbm help 以获取可用命令的帮助。输入 /dbm 可打开设置窗口，并对各个Boss模块进行设置，也可以浏览首领击杀记录。DBM 会自动按你的专精做出相应配置，但是你可以进行微调。"
 L.SILENT_REMINDER					= "提示：" .. L.DBM .. " 正处于静音模式。"
+L.NEWS_UPDATE						= "|h|c11ff1111News|r|h: 此次更新主要在 9.1.9 的版本上去除了导致杀毒软件误报警的情况。详情点击 |Hgarrmission:DBM:news|h|cff3588ff[这里]|r|h"
+
+L.COPY_URL_DIALOG_NEWS				= "阅读最新新闻，请点击下方连接"
 
 L.LOAD_MOD_ERROR				= "读取%s模块时发生错误：%s"
 L.LOAD_MOD_SUCCESS			= "'%s' 模块已加载。在聊天框输入 /dbm 可设置自定义语音或注记等选项。"
@@ -477,7 +480,7 @@ L.AUTO_TIMER_TEXTS.achievement 			= "%s"
 L.AUTO_TIMER_TEXTS.stage					= "下一阶段"
 L.AUTO_TIMER_TEXTS.adds					= "下一波小怪"
 L.AUTO_TIMER_TEXTS.addscustom			= "小怪 (%%s)"
-L.AUTO_TIMER_TEXTS.roleplay				= GUILD_INTEREST_RP
+L.AUTO_TIMER_TEXTS.roleplay				= GUILD_INTEREST_RP or "剧情"
 
 L.AUTO_TIMER_OPTIONS.target				= "计时条：$spell:%s减益效果持续时间"
 L.AUTO_TIMER_OPTIONS.targetcount		= "计时条：$spell:%s减益效果持续时间(带计数)"

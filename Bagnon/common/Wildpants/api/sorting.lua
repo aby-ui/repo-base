@@ -65,12 +65,15 @@ function Sort:Iterate()
     return math.abs(item.space.index - goal.index)
   end
 
-  for _, family in pairs(families) do
+  for _, family in ipairs(families) do
     local order, spaces = self:GetOrder(spaces, family)
     local n = min(#order, #spaces)
 
     for index = 1, n do
-      local item, goal = order[index], spaces[index]
+      local goal = spaces[index]
+      local item = order[index]
+      item.sorted = true
+
       if item.space ~= goal then
         local distance = moveDistance(item, goal)
 
@@ -87,8 +90,6 @@ function Sort:Iterate()
 
         self:Move(item.space, goal)
         self:Delay(0.05, 'Run')
-      else
-        item.placed = true
       end
     end
   end
@@ -124,18 +125,18 @@ function Sort:GetSpaces()
 end
 
 function Sort:GetFamilies(spaces)
-  local families = {}
-  for _, space in pairs(spaces) do
-    families[space.family] = true
+  local set = {}
+  for _, space in ipairs(spaces) do
+    set[space.family] = true
   end
 
-  local sorted = {}
-  for family in pairs(families) do
-    tinsert(sorted, family)
+  local list = {}
+  for family in pairs(set) do
+    tinsert(list, family)
   end
 
-  sort(sorted, function(a, b) return a > b end)
-  return sorted
+  sort(list, function(a, b) return a > b end)
+  return list
 end
 
 function Sort:GetOrder(spaces, family)
@@ -143,7 +144,7 @@ function Sort:GetOrder(spaces, family)
 
   for _, space in ipairs(spaces) do
     local item = space.item
-    if item.id and not item.placed and self:FitsIn(item.id, family) then
+    if item.id and not item.sorted and self:FitsIn(item.id, family) then
       tinsert(order, space.item)
     end
 

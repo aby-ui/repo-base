@@ -15,6 +15,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = true
 L["|cffeda55fControl-Click|r to attach similar items."] = true
 L["|cffeda55fCtrl-Click|r to return it to sender."] = true
 L["|cffeda55fShift-Click|r to take the contents."] = true
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = true
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = true
@@ -60,6 +62,7 @@ L["Contacts"] = true
 L["Cooking"] = true
 L["Copy From"] = true
 L["Copy this mail"] = true
+L["Default recipient:"] = true
 L["Delete"] = true
 L["Devices"] = true
 L["Disable Blizzard's auto-completion popup menu"] = true
@@ -148,6 +151,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Klick|r, um
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fStrg-Klick|r, um ähnliche Gegenstände anzuhängen."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fStrg-Klick|r, um diesen Gegenstand zurückzusenden."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Klick|r, um die Gegenstände zu entnehmen."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFFFCC00*|r Ein Standard-Empfängername kann durch Rechtsklick auf eine Schaltfläche angegeben werden. |cFFFFCC00*|r Welche Taschen von dieser Funktion verwendet werden, können Sie im Hauptmenü einstellen."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r Die Funktion wird nicht für Nachrichten unterstützt, die mit angehängtem Geld oder per Nachnahme gesendet werden.
@@ -208,6 +213,7 @@ L["Contacts"] = "Kontakte"
 L["Cooking"] = "Kochen"
 L["Copy From"] = "Kopieren von"
 L["Copy this mail"] = "Diese Nachricht kopieren"
+L["Default recipient:"] = "Standardempfänger:"
 L["Delete"] = "Löschen"
 L["Devices"] = "Geräte"
 L["Disable Blizzard's auto-completion popup menu"] = "Blizzards Auto-Vervollständigungs-Popup-Menü deaktivieren"
@@ -294,6 +300,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Clic|r para
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clic|r para adjuntar objetos similares."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Clic|r para devolver correo al que te lo envió."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Clic|r para tomar el contenido."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|ffFFCC00 * |r Se puede especificar un nombre de destinatario predeterminado haciendo clic derecho en un botón. |cFFFFCC00 * |r Qué bolsas utiliza esta función se pueden configurar en el menú principal."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r La característica no es compatible con el correo enviado con dinero adjunto o cod enviado.
@@ -354,6 +362,7 @@ L["Contacts"] = "Contactos"
 L["Cooking"] = "Cocción"
 L["Copy From"] = "Copiar de"
 L["Copy this mail"] = "Copiar este correo"
+L["Default recipient:"] = "Destinatario predeterminado:"
 L["Delete"] = "Borrar"
 L["Devices"] = "Dispositivos"
 L["Disable Blizzard's auto-completion popup menu"] = "Desactivar la ventana emergente de autocompletado de Blizzard"
@@ -440,6 +449,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+clic gauche
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl+clic|r pour joindre les objets similaires."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+clic gauche|r pour renvoyer à l'expéditeur."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fMaj+clic gauche|r pour récupérer le contenu."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFFFCC00*|r Un nom de destinataire par défaut peut être spécifié en cliquant avec le bouton droit sur un bouton. |cFFFFCC00*|r Quels sacs sont utilisés par cette fonctionnalité peut être défini dans le menu principal."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r La fonctionnalité n’est pas prise en charge pour le courrier envoyé avec de l’argent attaché ou envoyé COD.
@@ -499,6 +510,7 @@ L["Contacts"] = "Contacts"
 L["Cooking"] = "Cuisine"
 L["Copy From"] = "Copier à partir de"
 L["Copy this mail"] = "Copier ce courrier"
+L["Default recipient:"] = "Destinataire par défaut :"
 L["Delete"] = "Supprimer"
 L["Devices"] = "Dispositifs"
 L["Disable Blizzard's auto-completion popup menu"] = "Désactiver le pop-up de saisie intuitive de Blizzard"
@@ -585,6 +597,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-클릭|r으
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-클릭|r으로 같은 종류의 아이템을 첨부합니다."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-클릭|r으로 반송합니다."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-클릭|r으로 내용물을 수취합니다."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFFFCC00*|R A 기본 받는 사람 이름은 버튼을 마우스 오른쪽 버튼으로 클릭하여 지정할 수 있습니다. |cFFFFCC00*|이 이 기능에서 사용하는 가방은 메인 메뉴에 설정할 수 있습니다."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 첨부된 금전이 있거나 전송된 메일에는 기능이 지원되지 않습니다.
@@ -645,6 +659,7 @@ L["Contacts"] = "연락처"
 L["Cooking"] = "요리"
 L["Copy From"] = "복사해오기"
 L["Copy this mail"] = "이 편지 복사"
+L["Default recipient:"] = "기본 받는 사람:"
 L["Delete"] = "삭제"
 L["Devices"] = "장치"
 L["Disable Blizzard's auto-completion popup menu"] = "블리자드의 자동 완성 팝업 메뉴 비활성화"
@@ -731,6 +746,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+щелчо�
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fControl+щелчок|r чтобы прикрепить аналогичные предметы."
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+щелчок|r чтобы вернуть отправителю."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift+щелчок|r чтобы взять содержимое."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFFFCC00*|r Имя получателя по умолчанию можно указать, щелкнув правой кнопкой мыши по кнопке. |cFFFFCC00*|r Какие сумки используются этой функцией можно установить в главном меню."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r Функция не поддерживается для писем, отправленных с вложенными деньгами или наложенным платежом. 
@@ -791,6 +808,7 @@ L["Contacts"] = "Контакты"
 L["Cooking"] = "Кулинария"
 L["Copy From"] = "Копировать из"
 L["Copy this mail"] = "Скопировать письмо"
+L["Default recipient:"] = "Получатель по умолчанию:"
 L["Delete"] = "Удалить"
 L["Devices"] = "Устройства"
 L["Disable Blizzard's auto-completion popup menu"] = "Выключить всплывающее меню авто-заполнения Blizzard"
@@ -877,9 +895,11 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+点击|r将
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl+点击|r附加类似物品。"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl+点击|r将信退给发件人。"
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift+点击|r获得该邮件的内容副本。"
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFCC00*|r 默认收件人姓名可以通过右键单击按钮来指定。|cFFCC00*|r 此功能使用的包可以设置在主菜单中。"
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
-|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 不支持随附资金或发送 COD 的邮件。
+|cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 不支持发送附带资金的付款取信邮件。
 |cFFFFCC00*|r 不支持附带可堆叠物品的邮件。
 |cFFFFCC00*|r 在这些情况下，转发按钮将被禁用。]=]
 L[ [=[|cFFFFCC00*|r Selected mail will be batch opened or returned to sender by clicking Open or Return.
@@ -936,6 +956,7 @@ L["Contacts"] = "联系人"
 L["Cooking"] = "烹饪"
 L["Copy From"] = "从…复制"
 L["Copy this mail"] = "复制这封信"
+L["Default recipient:"] = "默认收件人："
 L["Delete"] = "删除"
 L["Devices"] = "设备"
 L["Disable Blizzard's auto-completion popup menu"] = "关闭暴雪的自动完成弹出菜单"
@@ -993,7 +1014,7 @@ L["QuickAttach"] = "快速附加"
 L["Rake"] = "收款显示"
 L["Reagent"] = "施法材料"
 L["Recently Mailed"] = "最近邮寄"
-L["Refreshing mailbox..."] = "重新整理收件匣…"
+L["Refreshing mailbox..."] = "重新整理邮箱…"
 L["Remove Contact"] = "删除联系人"
 L["Reset Profile"] = "重置配置文件"
 L["Return"] = "退信"
@@ -1022,6 +1043,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-點擊: |r�
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-點擊|r附加類似物品。"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-點擊: |r返回信件。"
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-點擊: |r收取信件。"
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFCC00*|r 預設收件者姓名可以通過右鍵按鍵按鍵按鍵來指定。|cFFCC00*|r 此功能使用的包可以設置在主功能表中。"
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r 不支援附加金錢或發送 COD 的郵件。
@@ -1082,6 +1105,7 @@ L["Contacts"] = "聯絡人"
 L["Cooking"] = "烹飪"
 L["Copy From"] = "複製自"
 L["Copy this mail"] = "複製這封信"
+L["Default recipient:"] = "預設收件者："
 L["Delete"] = "刪除"
 L["Devices"] = "設備"
 L["Disable Blizzard's auto-completion popup menu"] = "停用內建彈出自動完成的選單"
@@ -1168,6 +1192,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Click|r par
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clique|r para anexar itens semelhantes"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Click|r para retorná-lo ao remetente."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Click|r para pegar o conteúdo."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFCC00*|r Um nome de destinatário padrão pode ser especificado clicando com o botão com o botão. |cFFCC00*|r Quais sacos são usados por esse recurso podem ser definidos no menu principal."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r O recurso não é suportado para e-mails enviados com dinheiro anexado ou enviado COD.
@@ -1228,6 +1254,7 @@ L["Contacts"] = "Contatos"
 L["Cooking"] = "Cozimento"
 L["Copy From"] = "Copiar de"
 L["Copy this mail"] = "Copiar essa carta"
+L["Default recipient:"] = "Destinatário padrão:"
 L["Delete"] = "Excluir"
 L["Devices"] = "Dispositivos"
 L["Disable Blizzard's auto-completion popup menu"] = "Desativar menu popup de auto-completar da Blizzard."
@@ -1314,6 +1341,8 @@ L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Click|r per
 L["|cffeda55fControl-Click|r to attach similar items."] = "Control-Click per allegare oggetti simili"
 L["|cffeda55fCtrl-Click|r to return it to sender."] = "|cffeda55fCtrl-Click|r per rimandarla al mittente."
 L["|cffeda55fShift-Click|r to take the contents."] = "|cffeda55fShift-Click|r per prendere il contenuto."
+L[ [=[|cFFFFCC00*|r A default recipient name can be specified by right clicking on a button.
+|cFFFFCC00*|r Which bags are used by this feature can be set in the main menu.]=] ] = "|cFFFFCC00*|r È possibile specificare un nome destinatario predefinito facendo clic con il pulsante destro del mouse su un pulsante. |cFFFFCC00*|r Quali borse sono utilizzate da questa funzione possono essere impostate nel menu principale."
 L[ [=[|cFFFFCC00*|r Feature is not supported for mail sent with money attached or sent COD.
 |cFFFFCC00*|r Feature is not supported for mail sent with stackable items attached.
 |cFFFFCC00*|r Forward button will be disabled in these cases.]=] ] = [=[|cFFFFCC00*|r La funzionalità non è supportata per la posta inviata con denaro allegato o inviato COD.
@@ -1372,6 +1401,7 @@ L["Contacts"] = "Contatti"
 L["Cooking"] = "Cottura"
 L["Copy From"] = "Copia da"
 L["Copy this mail"] = "Copia questa lettera"
+L["Default recipient:"] = "Destinatario predefinito:"
 L["Delete"] = "Cancella"
 L["Devices"] = "Dispositivi"
 L["Disable Blizzard's auto-completion popup menu"] = "Disabilita il menù popup di auto-completamento della Blizzard"

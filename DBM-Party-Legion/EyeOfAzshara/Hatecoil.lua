@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1490, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20210905144759")
 mod:SetCreatureID(91789)
 mod:SetEncounterID(1811)
 
@@ -12,7 +12,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 193682 193597"
 )
 
---TODO, maybe add a "get back in boss area warning" if you take Crackling THunder damage
+--TODO, maybe add a "get back in boss area warning" if you take Crackling Thunder damage
 --TODO, more curse notes perhaps? Add special warning for player maybe?
 --[[
 1. Healer--193712+18
@@ -22,7 +22,7 @@ mod:RegisterEventsInCombat(
 5. 1 healer, 1 tank, 1 dps--193716+17
 6. Everyone--193717+19
 --]]
-local warnCurseofWitch				= mod:NewTargetAnnounce(193698, 3)
+local warnCurseofWitch				= mod:NewTargetNoFilterAnnounce(193698, 3)
 
 local specWarnStaticNova			= mod:NewSpecialWarning("specWarnStaticNova", nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.dodge:format(193597), nil, 3, 2)
 local specWarnFocusedLightning		= mod:NewSpecialWarning("specWarnFocusedLightning", nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.soon:format(193611), nil, 1)
