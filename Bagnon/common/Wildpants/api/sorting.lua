@@ -165,10 +165,11 @@ function Sort:CanRun()
 end
 
 function Sort:FitsIn(id, family)
-  return
-    family == 0 or
-    (family == 9 and GetItemFamily(id) == 256) or
-    (bit.band(GetItemFamily(id), family) > 0 and select(9, GetItemInfo(id)) ~= 'INVTYPE_BAG')
+  if family == 9 then
+    return GetItemFamily(id) == 256
+  end
+
+  return family == 0 or (bit.band(GetItemFamily(id), family) > 0 and select(9, GetItemInfo(id)) ~= 'INVTYPE_BAG')
 end
 
 function Sort.Rule(a, b)
@@ -185,7 +186,7 @@ function Sort.Rule(a, b)
 end
 
 function Sort:Move(from, to)
-  if from.locked or to.locked then
+  if from.locked or to.locked or (to.item.id and not self:FitsIn(to.item.id, from.family)) then
     return
   end
 

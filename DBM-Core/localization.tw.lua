@@ -112,7 +112,7 @@ L.MOD_DEFAULT_LOADED			= "此戰鬥的預設選項已套用。"
 
 L.WORLDBOSS_ENGAGED				= "在你的伺服器上的%s已在百分之%s時開戰(%s發送)。"
 L.WORLDBOSS_DEFEATED			= "在你的伺服器上的%s已被擊敗(%s發送)。"
-L.WORLDBUFF_STARTED			= "在你的伺服器上的%s增益已由%s陣營開始(%s發送)。"
+L.WORLDBUFF_STARTED				= "在你的伺服器上的%s增益已由%s陣營開始(%s發送)。"
 
 L.TIMER_FORMAT_SECS				= "%.2f秒"
 L.TIMER_FORMAT_MINS				= "%d分鐘"

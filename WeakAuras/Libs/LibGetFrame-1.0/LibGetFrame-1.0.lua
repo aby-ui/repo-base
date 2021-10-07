@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 27
+local MINOR_VERSION = 28
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -29,9 +29,12 @@ local defaultFramePriorities = {
     "^oUF_.-Raid", -- generic oUF
     "^LimeGroup", -- lime
     "^SUFHeaderraid", -- suf
+    "^LUFHeaderraid", -- luf
+    "^AshToAsh", -- AshToAsh
     -- party frames
     "^AleaUI_GroupHeader", -- Alea
     "^SUFHeaderparty", --suf
+    "^LUFHeaderparty", --luf
     "^ElvUF_PartyGroup", -- elv
     "^oUF_.-Party", -- generic oUF
     "^PitBull4_Groups_Party", -- pitbull4
@@ -39,6 +42,7 @@ local defaultFramePriorities = {
     "^CompactParty", -- blizz
     -- player frame
     "^SUFUnitplayer",
+    "^LUFUnitplayer",
     "^PitBull4_Frames_Player",
     "^ElvUF_Player",
     "^oUF_.-Player",
@@ -47,6 +51,7 @@ local defaultFramePriorities = {
 
 local defaultPlayerFrames = {
     "SUFUnitplayer",
+    "LUFUnitplayer",
     "PitBull4_Frames_Player",
     "ElvUF_Player",
     "oUF_.-Player",
@@ -55,6 +60,7 @@ local defaultPlayerFrames = {
 }
 local defaultTargetFrames = {
     "SUFUnittarget",
+    "LUFUnittarget",
     "PitBull4_Frames_Target",
     "ElvUF_Target",
     "oUF_.-Target",
@@ -62,6 +68,7 @@ local defaultTargetFrames = {
 }
 local defaultTargettargetFrames = {
     "SUFUnittargetarget",
+    "LUFUnittargetarget",
     "PitBull4_Frames_Target's target",
     "ElvUF_TargetTarget",
     "oUF_.-TargetTarget",
@@ -71,9 +78,11 @@ local defaultTargettargetFrames = {
 local defaultPartyFrames = {
     "^AleaUI_GroupHeader",
     "^SUFHeaderparty",
+    "^LUFHeaderparty",
     "^ElvUF_PartyGroup",
     "^oUF_.-Party",
     "^PitBull4_Groups_Party",
+    "^AshToAsh",
     "^CompactParty",
 }
 local defaultPartyTargetFrames = {
@@ -81,6 +90,7 @@ local defaultPartyTargetFrames = {
 }
 local defaultFocusFrames = {
     "ElvUF_FocusTarget",
+    "LUFUnitfocus",
     "FocusFrame"
 }
 local defaultRaidFrames = {
@@ -91,8 +101,10 @@ local defaultRaidFrames = {
     "^PlexusLayout",
     "^ElvUF_RaidGroup",
     "^oUF_.-Raid",
+    "^AshToAsh",
     "^LimeGroup",
     "^SUFHeaderraid",
+    "^LUFHeaderraid",
     "^CompactRaid",
 }
 

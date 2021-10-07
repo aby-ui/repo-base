@@ -13,7 +13,7 @@ function OptionsList_OnLoad(self, ...)
 	end
 end
 
-local tabFrame1 = CreateFrame("Frame", "DBM_GUI_DropDown", _G["DBM_GUI_OptionsFrame"], DBM:IsShadowlands() and "BackdropTemplate,OptionsFrameListTemplate" or "OptionsFrameListTemplate")
+local tabFrame1 = CreateFrame("Frame", "DBM_GUI_DropDown", _G["DBM_GUI_OptionsFrame"], "BackdropTemplate,OptionsFrameListTemplate")
 tabFrame1:Hide()
 tabFrame1:SetFrameStrata("TOOLTIP")
 tabFrame1.offset = 0
@@ -25,11 +25,7 @@ tabFrame1.backdropInfo = {
 	edgeSize	= 16,
 	insets		= { left = 3, right = 3, top = 5, bottom = 3 }
 }
-if not DBM:IsShadowlands() then
-	tabFrame1:SetBackdrop(tabFrame1.backdropInfo)
-else
-	tabFrame1:ApplyBackdrop()
-end
+tabFrame1:ApplyBackdrop()
 tabFrame1:SetBackdropColor(0.1, 0.1, 0.1, 0.6)
 tabFrame1:SetBackdropBorderColor(0.4, 0.4, 0.4)
 
@@ -43,9 +39,7 @@ tabFrame1List:SetScript("OnVerticalScroll", function(self, offset)
 	tabFrame1.offset = mfloor(offset)
 	tabFrame1:Refresh()
 end)
-if DBM:IsShadowlands() then
-	Mixin(tabFrame1List, BackdropTemplateMixin)
-end
+Mixin(tabFrame1List, BackdropTemplateMixin)
 tabFrame1List:SetBackdropBorderColor(0.6, 0.6, 0.6, 0.6)
 
 local tabFrame1ScrollBar = _G[tabFrame1List:GetName() .. "ScrollBar"]
@@ -86,7 +80,7 @@ end)
 
 tabFrame1.buttons = {}
 for i = 1, 10 do
-	local button = CreateFrame("Button", tabFrame1:GetName() .. "Button" .. i, tabFrame1, DBM:IsShadowlands() and "BackdropTemplate,UIDropDownMenuButtonTemplate" or "UIDropDownMenuButtonTemplate")
+	local button = CreateFrame("Button", tabFrame1:GetName() .. "Button" .. i, tabFrame1, "BackdropTemplate,UIDropDownMenuButtonTemplate")
 	_G[button:GetName() .. "Check"]:Hide()
 	_G[button:GetName() .. "UnCheck"]:Hide()
 	button:SetFrameLevel(tabFrame1ScrollBar:GetFrameLevel() - 1)
@@ -120,11 +114,7 @@ for i = 1, 10 do
 		_G[self:GetName() .. "NormalText"]:SetFont(defaultFont, defaultFontSize)
 		self:SetHeight(0)
 		self:SetText("")
-		if DBM:IsShadowlands() then
-			self:ClearBackdrop()
-		else
-			self:SetBackdrop(nil)
-		end
+		self:ClearBackdrop()
 	end
 	tabFrame1.buttons[i] = button
 end
@@ -141,11 +131,7 @@ function tabFrame1:ShowMenu()
 				button.backdropInfo = {
 					bgFile	= entry.value
 				}
-				if DBM:IsShadowlands() then
-					button:ApplyBackdrop()
-				else
-					button:SetBackdrop(button.backdropInfo)
-				end
+				button:ApplyBackdrop()
 			end
 		end
 	end

@@ -51,6 +51,7 @@
 			[309328] = "success", -- Living Honey
 			-- Others
 			[5782] = "success", -- Fear (Warlock)
+			[118699] = "success", -- Fear (Warlock) because different spellID for some stupid reason
 			[33786] = "success", -- Cyclone (Druid)
 			--[209753] = "success", -- Cyclone (Druid)
 			[19386] = "success", --Wyvern Sting (Hunter)
@@ -69,6 +70,7 @@
 			[323095] = "UltimateForm", -- Necro
 			[323524] = "UltimateForm", -- Necro
 			[330752] = "AscendantPhial", -- Kyrian Kleia Soulbind debuff immunity for SOME REASON THIS IS A THING
+			[331937] = "euphoria",
 
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)
@@ -421,6 +423,7 @@
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
+			[331937] = "euphoriaDown",
 			--[324867] = "fleshcraftDown", -- Necrolord Signature
 		--TANK TAUNTS
 			--[206891] = "tankTauntsOFF", 			-- Tank Taunts Down
@@ -668,6 +671,14 @@
 			-- Covenant (Cast Success)
 			[324631] = "fleshcraft", -- Necrolord signature
 			[323436] = "phialofserenity", -- Kyrian signature
+			[332423] = "driftglobe", -- Mikanikos Stun
+			[331612] = "driftglobe", -- ^
+			[323916] = "sulfuricEmission", -- Emeni Fear
+			[324263] = "sulfuricEmission", -- ^
+			[347684] = "sulfuricEmission", -- ^
+			[352366] = "nimbleSteps", -- Nadjia Root
+			[354051] = "nimbleSteps", -- ^
+			[354052] = "nimbleSteps", -- ^
 			
 			-- Death Knight (Cast Success)
 			[47528] = "mindFreeze",
@@ -905,6 +916,7 @@
 			[1856] = "vanish",
 			--[76577] = "smokeBomb",
 			[212182] = "smokeBomb",
+			[359053] = "smokeBomb",
 			[79140] = "vendetta",
 			[207777] = "dismantle",
 			[200806] = "exsanguinate",

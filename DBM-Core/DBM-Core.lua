@@ -64,17 +64,17 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20210928004514"),
+	Revision = parseCurseDate("20211003163217"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.15"
+	DBM.DisplayVersion = "9.1.16 alpha"
 	DBM.ReleaseRevision = releaseDate(2021, 9, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.13.82"
+	DBM.DisplayVersion = "1.14.0 alpha"
 	DBM.ReleaseRevision = releaseDate(2021, 9, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.15"
+	DBM.DisplayVersion = "2.5.16 alpha"
 	DBM.ReleaseRevision = releaseDate(2021, 9, 27) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -104,9 +104,10 @@ function DBM:GetTOC()
 end
 
 do
-	local isShadowlandsClient = BackdropTemplateMixin and true or false
-	function DBM:IsShadowlands()
-		return isShadowlandsClient
+	--Not removing yet because you can bet there will be some reason to use a retail vs classic check again for next major version
+	local isLatestCodebase = BackdropTemplateMixin and true or false
+	function DBM:IsLatestCodebase()
+		return isLatestCodebase
 	end
 end
 
@@ -2766,7 +2767,7 @@ do
 	local ignore, cancel
 	local popuplevel = 0
 	local function showPopupConfirmIgnore(ignore, cancel)
-		local popup = CreateFrame("Frame", "DBMHyperLinks", UIParent, DBM:IsShadowlands() and "BackdropTemplate")
+		local popup = CreateFrame("Frame", "DBMHyperLinks", UIParent, "BackdropTemplate")
 		popup.backdropInfo = {
 			bgFile		= "Interface\\DialogFrame\\UI-DialogBox-Background-Dark", -- 312922
 			edgeFile	= "Interface\\DialogFrame\\UI-DialogBox-Border", -- 131072
@@ -2775,11 +2776,7 @@ do
 			edgeSize	= 16,
 			insets		= { left = 1, right = 1, top = 1, bottom = 1 }
 		}
-		if not DBM:IsShadowlands() then
-			popup:SetBackdrop(popup.backdropInfo)
-		else
-			popup:ApplyBackdrop()
-		end
+		popup:ApplyBackdrop()
 		popup:SetSize(500, 80)
 		popup:SetPoint("TOP", UIParent, "TOP", 0, -200)
 		popup:SetFrameStrata("DIALOG")
@@ -5162,7 +5159,7 @@ do
 	local frame, fontstring, fontstringFooter, editBox, urlText
 
 	local function createFrame()
-		frame = CreateFrame("Frame", "DBMUpdateReminder", UIParent, DBM:IsShadowlands() and "BackdropTemplate")
+		frame = CreateFrame("Frame", "DBMUpdateReminder", UIParent, "BackdropTemplate")
 		frame:SetFrameStrata("FULLSCREEN_DIALOG") -- yes, this isn't a fullscreen dialog, but I want it to be in front of other DIALOG frames (like DBM GUI which might open this frame...)
 		frame:SetWidth(430)
 		frame:SetHeight(140)
@@ -5175,11 +5172,7 @@ do
 			edgeSize	= 32,
 			insets		= { left = 11, right = 12, top = 12, bottom = 11 },
 		}
-		if not DBM:IsShadowlands() then
-			frame:SetBackdrop(frame.backdropInfo)
-		else
-			frame:ApplyBackdrop()
-		end
+		frame:ApplyBackdrop()
 		fontstring = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 		fontstring:SetWidth(410)
 		fontstring:SetHeight(0)
@@ -5264,7 +5257,7 @@ do
 	local frame, fontstring, fontstringFooter, editBox, button3
 
 	local function createFrame()
-		frame = CreateFrame("Frame", "DBMNotesEditor", UIParent, DBM:IsShadowlands() and "BackdropTemplate")
+		frame = CreateFrame("Frame", "DBMNotesEditor", UIParent, "BackdropTemplate")
 		frame:SetFrameStrata("FULLSCREEN_DIALOG") -- yes, this isn't a fullscreen dialog, but I want it to be in front of other DIALOG frames (like DBM GUI which might open this frame...)
 		frame:SetWidth(430)
 		frame:SetHeight(140)
@@ -5277,11 +5270,7 @@ do
 			edgeSize	= 32,
 			insets		= { left = 11, right = 12, top = 12, bottom = 11 }
 		}
-		if not DBM:IsShadowlands() then
-			frame:SetBackdrop(frame.backdropInfo)
-		else
-			frame:ApplyBackdrop()
-		end
+		frame:ApplyBackdrop()
 		fontstring = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 		fontstring:SetWidth(410)
 		fontstring:SetHeight(0)
@@ -5523,16 +5512,16 @@ do
 				ObjectiveTracker_Expand()
 			else
 				QuestWatchFrame:Show()
-				local QuestieLoader = _G["QuestieLoader"]
-				if QuestieLoader then
-					local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
-					if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
-						QuestieTracker:Enable()
-						questieWatchRestore = false
-					end
-				end
 			end
 			watchFrameRestore = false
+		end
+		local QuestieLoader = _G["QuestieLoader"]
+		if QuestieLoader then
+			local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
+			if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
+				QuestieTracker:Enable()
+				questieWatchRestore = false
+			end
 		end
 	end
 
@@ -6431,16 +6420,16 @@ do
 							ObjectiveTracker_Expand()
 						else
 							QuestWatchFrame:Show()
-							local QuestieLoader = _G["QuestieLoader"]
-							if QuestieLoader then
-								local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
-								if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
-									QuestieTracker:Enable()
-									questieWatchRestore = false
-								end
-							end
 						end
 						watchFrameRestore = false
+					end
+					local QuestieLoader = _G["QuestieLoader"]
+					if QuestieLoader then
+						local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
+						if QuestieTracker and questieWatchRestore and QuestieTracker.Enable then
+							QuestieTracker:Enable()
+							questieWatchRestore = false
+						end
 					end
 				end
 				if tooltipsHidden then
@@ -12077,7 +12066,7 @@ do
 	"mouseover", "target"}
 	function bossModPrototype:ScanForMobs(creatureID, iconSetMethod, mobIcon, maxIcon, scanInterval, scanningTime, optionName, allowFriendly, secondCreatureID, skipMarked, allAllowed)
 		if not optionName then optionName = self.findFastestComputer[1] end
-		if canSetIcons[optionName] or allAllowed then
+		if canSetIcons[optionName] or (allAllowed and not DBM.Options.DontSetIcons) then
 			--Declare variables.
 			DBM:Debug("canSetIcons or allAllowed true for "..(optionName or "nil"), 2)
 			local timeNow = GetTime()

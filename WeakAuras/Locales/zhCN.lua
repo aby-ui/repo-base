@@ -182,6 +182,8 @@ L["Blizzard Combat Text"] = "暴雪战斗文字"
 L["Block"] = "格挡"
 L["Block (%)"] = "格挡 (%)"
 L["Block against Target (%)"] = "针对目标的格挡 (%)"
+--[[Translation missing --]]
+L["Block Value"] = "Block Value"
 L["Blocked"] = "被格挡"
 L["Bloodlord Mandokir"] = "血领主曼多基尔"
 L["Border"] = "边框"

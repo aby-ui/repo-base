@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_TEXT = "|cff69CCF0GladiatorlosSA2|r (|cffFFF569/gsa|r)"
- local GSA_VERSION = "|cffFF7D0A 3.10.1 |r(|cff9482C99.1 Shadowlands|r)"
+ local GSA_VERSION = "|cffFF7D0A 3.10.2 |r(|cff9482C99.1 Shadowlands|r)"
  local GSA_TEST_BRANCH = ""
  local GSA_AUTHOR = " "
  local gsadb
@@ -123,6 +123,7 @@
 	 --
 	 82691, -- Ring of Frost (Debuff)
 	 5782, -- Fear (Warlock)
+	 118699, -- Fear (Warlock) for whatever reason the debuff ID is different
 	 33786, -- Cyclone (Druid)
 	 --[209753] = "success", -- Cyclone (Druid)
 	 19386, --Wyvern Sting (Hunter)

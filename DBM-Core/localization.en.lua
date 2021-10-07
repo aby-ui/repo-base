@@ -120,6 +120,7 @@ L.MOD_DEFAULT_LOADED				= "Default options for this fight have been loaded."
 
 L.WORLDBOSS_ENGAGED					= "%s was possibly engaged on your realm at %s percent health. (Sent by %s)"
 L.WORLDBOSS_DEFEATED				= "%s was possibly defeated on your realm (Sent by %s)."
+L.WORLDBUFF_STARTED					= "%s buff has started on your realm for %s faction (Sent by %s)."
 
 L.TIMER_FORMAT_SECS					= "%.2f |4second:seconds;"
 L.TIMER_FORMAT_MINS					= "%d |4minute:minutes;"

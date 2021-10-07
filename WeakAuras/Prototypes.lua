@@ -418,6 +418,12 @@ end
 local function get_zoneId_list()
   if WeakAuras.IsClassic() then return "" end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
+  if not currentmap_id then
+    return ("%s\n\n%s"):format(
+      zoneId_list,
+      L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."]
+    )
+  end
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
   local currentmap_zone_name = ""
@@ -7295,10 +7301,6 @@ Private.event_prototypes = {
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
       end
       AddUnitEventForEvents(result, unit, "UNIT_TARGET")
-      if trigger.use_showLatency and unit == "player" then
-        result.events = result.events or {}
-        tinsert(result.events, "CAST_LATENCY_UPDATE")
-      end
       return result
     end,
     internal_events = function(trigger)
@@ -7357,21 +7359,10 @@ Private.event_prototypes = {
           WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, unit)
         end
       ]=];
-
       ret = ret:format(trigger.unit == "group" and "true" or "false",
                         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
                         trigger.use_inverse and "true" or "false");
 
-      if trigger.unit == "player" and trigger.use_showLatency then
-        ret = ret .. [[
-          if event == "CAST_LATENCY_UPDATE" then
-            state.sendTime = GetTime()
-          elseif event == "UNIT_SPELLCAST_START" and tonumber(state.sendTime) then
-            state.latency = GetTime() - state.sendTime
-            state.changed = true
-          end
-        ]]
-      end
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
       return ret
@@ -7691,7 +7682,8 @@ Private.event_prototypes = {
       {
         name = L["Latency"],
         func = function(trigger, state)
-          return 0, type(state.latency) == "number" and state.latency
+          if not state.expirationTime or not state.duration then return 0, 0 end
+          return 0, (state.expirationTime - state.duration) - (Private.LAST_CURRENT_SPELL_CAST_CHANGED or 0)
         end,
         enable = function(trigger)
           return trigger.use_showLatency and trigger.unit == "player"
@@ -8085,6 +8077,14 @@ Private.event_prototypes = {
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
         hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "blockvalue",
+        display = L["Block Value"],
+        type = "number",
+        init = "GetShieldBlock()",
+        store = true,
+        conditionType = "number"
       },
       {
         name = "armorrating",

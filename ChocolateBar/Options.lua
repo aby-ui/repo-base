@@ -571,7 +571,7 @@ local aceoptions = {
 							},
 						},
 					},
-					--[===[@debug@
+					--[==[@debug@
 					debug = {
 						type = 'toggle',
 						--width = "half",
@@ -585,7 +585,7 @@ local aceoptions = {
 								ChocolateBar.db.char.debug = value
 						end,
 					},
-					--@end-debug@]===]
+					--@end-debug@]==]
 				},
 			},
 		bars={

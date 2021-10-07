@@ -118,6 +118,7 @@ L.SOUNDKIT_MIGRATION			= "一个或多个警报的声音因文件丢失而被设
 
 L.WORLDBOSS_ENGAGED			= "世界Boss-%s可能正在作战。当前还有%s的生命值。 (由 %s 的" .. L.DBM .. "发送)"
 L.WORLDBOSS_DEFEATED			= "世界Boss-%s可能战斗结束了。 (由 %s 的" .. L.DBM .. "发送)"
+L.WORLDBUFF_STARTED			    = "世界增益 %s 已开始释放，阵营- %s  (由%s的" .. L.DBM .. "发送)."
 
 L.TIMER_FORMAT_SECS			= "%.2f秒"
 L.TIMER_FORMAT_MINS			= "%d分钟"
