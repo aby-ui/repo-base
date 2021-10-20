@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210826003641")
+mod:SetRevision("20211011144558")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
 mod:DisableIEEUCombatDetection()--kael gets stuck on boss frames well after encounter has ended, therefor must not re-engage boss off this bug
@@ -624,7 +624,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			for i = 1, #birdoTracker do
 				if i == 9 then return end--More birds than we have icons
 				if birdoTracker[i] == args.destGUID then
-					self:ScanForMobs(args.destGUID, 2, i+1, 1, 0.2, 10, "SetIconOnBirdo")
+					self:ScanForMobs(args.destGUID, 2, i+1, 1, nil, 10, "SetIconOnBirdo")
 					break
 				end
 			end

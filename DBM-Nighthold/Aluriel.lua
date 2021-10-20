@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1751, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20211011150938")
 mod:SetCreatureID(104881)
 mod:SetEncounterID(1871)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -205,7 +205,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 213083 then--Frozen Tempest
 		warnFrozenTempest:Show()
 		if self.Options.SetIconOnFrozenTempest then
-			self:ScanForMobs(args.sourceGUID, 2, 8, 1, 0.2, 10, "SetIconOnFrozenTempest")
+			self:ScanForMobs(args.sourceGUID, 2, 8, 1, nil, 10, "SetIconOnFrozenTempest")
 		end
 	elseif spellId == 212492 then--Annihilate
 		local targetName, uId, bossuid = self:GetBossTarget(104881, true)
@@ -249,8 +249,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerArcaneOrbCD:Start()
 		end
 	elseif spellId == 213275 and self.Options.SetIconOnBurstOfFlame then--Detonate: Searing Brand
-		--self:ScanForMobs(107285, 0, 8, 6, 0.1, 20, "SetIconOnBurstOfFlame", false, 107285)--Second CID isn't actually second ID, just more redundancy to try and get god damn thing to work AT ALL
-		self:ScheduleMethod(15, "ScanForMobs", 107285, 0, 8, 8, 0.1, 12, "SetIconOnBurstOfFlame")
+		--self:ScanForMobs(107285, 0, 8, 6, nil, 20, "SetIconOnBurstOfFlame", false)--Second CID isn't actually second ID, just more redundancy to try and get god damn thing to work AT ALL
+		self:ScheduleMethod(15, "ScanForMobs", 107285, 0, 8, 8, nil, 12, "SetIconOnBurstOfFlame")
 	end
 end
 
@@ -467,7 +467,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnArcaneOrb:Show()
 		specWarnArcaneOrb:Play("watchorb")
 	elseif spellId == 213390 then--Detonate: Arcane Orb (still missing from combat log, although this event is 3 seconds slower than scheduling or using yell)
-		self:ScheduleMethod(15, "ScanForMobs", 107287, 0, 8, 8, 0.1, 12, "SetIconOnBurstOfMagic")
+		self:ScheduleMethod(15, "ScanForMobs", 107287, 0, 8, 8, nil, 12, "SetIconOnBurstOfMagic")
 --		specWarnArcaneDetonate:Show()
 --		specWarnArcaneDetonate:Play("watchorb")
 	end

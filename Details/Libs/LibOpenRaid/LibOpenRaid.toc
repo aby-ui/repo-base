@@ -1,5 +1,5 @@
 ## Interface: 90002
-## Title: Library Raid Status
+## Title: Library Open Raid
 ## Notes: This is a library used by addons.
 
 lib.xml

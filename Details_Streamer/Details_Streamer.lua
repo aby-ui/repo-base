@@ -767,6 +767,11 @@ local function CreatePluginFrames()
 	
 		if (StreamOverlay.db.use_square_mode) then
 
+			--hide any line created
+			for i = 1, #StreamOverlay.battle_lines do
+				StreamOverlay.battle_lines[i]:Hide()
+			end
+
 			local amt = StreamOverlay.db.square_amount
 			StreamOverlay.total_lines = amt
 
@@ -794,7 +799,12 @@ local function CreatePluginFrames()
 
 			StreamOverlay:UpdateSquares()
 			StreamOverlay:RefreshInUse()
-		else
+
+		else --showing lines
+			--hide any square created
+			for i = 1, #StreamOverlay.squares do
+				StreamOverlay.squares[i]:Hide()
+			end
 
 			--> how many lines fit in the frame
 			local amt = math.floor (SOF:GetHeight() / StreamOverlay.db.row_spacement)
@@ -1756,6 +1766,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 				get = function() return StreamOverlay.db.use_square_mode end,
 				set = function (self, fixedParam, value) 
 					StreamOverlay.db.use_square_mode = value
+					StreamOverlay:Refresh()
 				end,
 				type = "toggle",
 				name = "Use Square Mode",

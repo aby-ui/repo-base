@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1997, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20211011150938")
 mod:SetCreatureID(122369, 122333, 122367)--Chief Engineer Ishkar, General Erodus, Admiral Svirax
 mod:SetEncounterID(2070)
 mod:SetBossHPInfoToHighest()
@@ -291,7 +291,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		specWarnSummonReinforcements:Play("killmob")
 		timerSummonReinforcementsCD:Start(35)
 		if self.Options.SetIconOnAdds then
-			self:ScanForMobs(122890, 0, self.vb.lastIcon, 1, 0.1, 12, "SetIconOnAdds")
+			self:ScanForMobs(122890, 0, self.vb.lastIcon, 1, nil, 12, "SetIconOnAdds")
 		end
 		if self.vb.lastIcon == 8 then
 			self.vb.lastIcon = 7

@@ -144,30 +144,31 @@
 			--> anywhere from a few hundred thousand damage to over 50 millons
 			--> filtering it the best course of action as nobody should care about this damage
 		}
+
+		--army od the dead cache
+		local dk_pets_cache = {
+			army = {},
+			apoc = {},
+		}
 		
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
-
-	local container_damage_target = _detalhes.container_type.CONTAINER_DAMAGETARGET_CLASS
 	local container_misc = _detalhes.container_type.CONTAINER_MISC_CLASS
-	local duel_candidates = _detalhes.duel_candidates
-	
 	local _token_ids = _detalhes.TokenID
-	
+
 	local OBJECT_TYPE_ENEMY	=	0x00000040
 	local OBJECT_TYPE_PLAYER 	=	0x00000400
 	local OBJECT_TYPE_PETS 	=	0x00003000
 	local AFFILIATION_GROUP 	=	0x00000007
-	local REACTION_FRIENDLY 	=	0x00000010 
-	local REACTION_MINE 		=	0x00000001 
-	
+	local REACTION_FRIENDLY 	=	0x00000010
+
 	local ENVIRONMENTAL_FALLING_NAME	= Loc ["STRING_ENVIRONMENTAL_FALLING"]
 	local ENVIRONMENTAL_DROWNING_NAME	= Loc ["STRING_ENVIRONMENTAL_DROWNING"]
 	local ENVIRONMENTAL_FATIGUE_NAME	= Loc ["STRING_ENVIRONMENTAL_FATIGUE"]
 	local ENVIRONMENTAL_FIRE_NAME		= Loc ["STRING_ENVIRONMENTAL_FIRE"]
 	local ENVIRONMENTAL_LAVA_NAME		= Loc ["STRING_ENVIRONMENTAL_LAVA"]
 	local ENVIRONMENTAL_SLIME_NAME	= Loc ["STRING_ENVIRONMENTAL_SLIME"]
-	
+
 	local RAID_TARGET_FLAGS = {
 		[128] = true, --0x80 skull
 		[64] = true, --0x40 cross
@@ -178,7 +179,7 @@
 		[2] = true, --0x2 circle
 		[1] = true, --0x1 star
 	}
-	
+
 	--> spellIds override
 	local override_spellId
 
@@ -248,12 +249,11 @@
 		end
 	end
 
-	--tbc prayer of mending cache
+	--tbc spell caches
 	local TBC_PrayerOfMendingCache = {}
-	--tbc earth shield cache
 	local TBC_EarthShieldCache = {}
-	--tbc life bloom cache
 	local TBC_LifeBloomLatestHeal
+	local TBC_JudgementOfLightCache  = {}
 
 	--expose the override spells table to external scripts
 	_detalhes.OverridedSpellIds = override_spellId
@@ -629,6 +629,7 @@
 				npcId = _tonumber(_select (6, _strsplit ("-", alvo_serial)) or 0)
 				npcid_cache[alvo_serial] = npcId
 			end
+
 			if (ignored_npcids[npcId]) then
 				return
 			end
@@ -661,7 +662,7 @@
 					damageTable = {total = 0, spells = {}}
 					npcDamage[who_serial] = damageTable
 				end
-				
+
 				damageTable.total = damageTable.total + amount
 				damageTable.spells[spellid] = (damageTable.spells[spellid] or 0) + amount
 
@@ -734,8 +735,19 @@
 				who_name = "Tank Add"
 			end
 
+			if (npcId == 24207) then --army of the dead
+				--check if this is a army or apoc pet
+				if (dk_pets_cache.army[who_serial]) then
+					--who_name = who_name .. " (army)"
+					who_name = who_name .. "|T237511:0|t"
+				else
+					--who_name = who_name .. " (apoc)"
+					who_name = who_name .. "|T1392565:0|t"
+				end
+			end
+
 		--> avoid doing spellID checks on each iteration
-		if (special_damage_spells [spellid]) then
+		--if (special_damage_spells [spellid]) then --remove this IF due to have hit 60 local variables
 			--> stagger
 			if (spellid == SPELLID_MONK_STAGGER) then
 				return parser:MonkStagger_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
@@ -748,7 +760,7 @@
 			elseif (spellid == SPELLID_PALADIN_LIGHTMARTYR) then -- or spellid == 183998 < healing part
 				return parser:LOTM_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
 			end
-		end
+		--end
 
 	------------------------------------------------------------------------------------------------
 	--> check if need start an combat
@@ -887,9 +899,10 @@
 
 		if (_is_in_instance) then
 			if (overkill and overkill > 0) then
+				overkill = overkill + 1
 				--if enabled it'll cut the amount of overkill from the last hit (which killed the actor)
 				--when disabled it'll show the total damage done for the latest hit
-				--amount = amount - overkill
+				amount = amount - overkill
 			end
 		end
 
@@ -1007,6 +1020,8 @@
 				this_event [8] = spelltype or school
 				this_event [9] = false
 				this_event [10] = overkill
+				this_event [11] = critical
+				this_event [12] = crushing
 				
 				i = i + 1
 				
@@ -1082,14 +1097,13 @@
 		
 		if (is_friendly_fire and spellid ~= SPELLID_KYRIAN_DRUID_TANK) then --kyrian spell remove on 10.0
 			if (este_jogador.grupo) then --> se tiver ele n�o adiciona o evento l� em cima
-				local t = last_events_cache [alvo_name]
+				local t = last_events_cache[alvo_name]
 				
 				if (not t) then
-					t = _current_combat:CreateLastEventsTable (alvo_name)
+					t = _current_combat:CreateLastEventsTable(alvo_name)
 				end
 				
 				local i = t.n
-
 				local this_event = t [i]
 				
 				this_event [1] = true --> true if this is a damage || false for healing
@@ -1739,6 +1753,14 @@
 			end
 		--
 
+		--differenciate army and apoc pets for DK
+		if (spellid == 42651) then --army of the dead
+			dk_pets_cache.army[alvo_serial] = who_name
+
+		--elseif (spellid == 42651) then --apoc
+		--	dk_pets_cache.apoc[alvo_serial] = who_name
+		end
+
 		--rename monk's "Storm, Earth, and Fire" adds
 		--desligado pois poderia estar causando problemas
 		if (npcId == 69792) then 
@@ -1961,8 +1983,6 @@
 		if (is_using_spellId_override) then
 			spellid = override_spellId [spellid] or spellid
 		end
-		
-
 
 		--sanguine ichor mythic dungeon affix (heal enemies)
 		if (spellid == SPELLID_SANGUINE_HEAL) then 
@@ -2003,6 +2023,13 @@
 			elseif (spellid == SPELLID_DRUID_LIFEBLOOM_HEAL) then 
 				TBC_LifeBloomLatestHeal = cura_efetiva
 				return
+
+			elseif (spellid == 27163) then  --Judgement of Light (paladin)
+				local sourceData = TBC_JudgementOfLightCache[who_name]
+				if (sourceData) then
+					who_serial, who_name, who_flags = unpack(sourceData)
+					TBC_JudgementOfLightCache[who_name] = nil
+				end
 			end
 		end
 
@@ -2310,6 +2337,9 @@
 
 					elseif (spellid == SPELLID_PRIEST_POM_BUFF) then
 						TBC_PrayerOfMendingCache [alvo_name] = {who_serial, who_name, who_flags}
+
+					elseif (spellid == 27163) then --Judgement Of Light
+						TBC_JudgementOfLightCache[alvo_name] = {who_serial, who_name, who_flags}
 					end
 				end
 
@@ -4883,6 +4913,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (_detalhes.encounter_table)
 		_table_wipe (bargastBuffs) --remove on 10.0
 		_table_wipe (necro_cheat_deaths) --remove on 10.0
+		_table_wipe (dk_pets_cache.army)
+		_table_wipe (dk_pets_cache.apoc)
 
 		--remove on 10.0 spikeball from painsmith
 			spikeball_damage_cache  = {
@@ -5637,6 +5669,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (reflection_events)
 		_table_wipe (reflection_auras)
 		_table_wipe (reflection_dispels)
+
+		_table_wipe (dk_pets_cache.army)
+		_table_wipe (dk_pets_cache.apoc)
 	
 		damage_cache = setmetatable ({}, _detalhes.weaktable)
 		damage_cache_pets = setmetatable ({}, _detalhes.weaktable)

@@ -1510,7 +1510,8 @@ local function GetContainerFilterOptions()
 
 		local searchContainerByZoneID = function(zoneID, containerName)
 			if (zoneID) then
-				for containerID, name in pairs(RSContainerDB.GetAllContainerNames()) do
+				for containerID, info in pairs(RSContainerDB.GetAllInternalContainerInfo()) do
+					local name = RSContainerDB.GetContainerName(containerID) or AL["CONTAINER"]
 					local tempName = name
 					if (not RSContainerDB.IsWorldMap(containerID) and RSContainerDB.IsInternalContainerInMap(containerID, zoneID, true) and ((containerName and RSUtils.Contains(name,containerName)) or not containerName)) then
 						local i = 2

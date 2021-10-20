@@ -23,6 +23,7 @@ end
     ~16 - custom spells
     ~17 - charts data
     ~18 - mythic dungeon
+    ~19 - search results
 --]]
 
 
@@ -657,6 +658,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -1010,6 +1012,7 @@ do
             },
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -1564,6 +1567,7 @@ do
             },
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -1921,6 +1925,7 @@ do
             },
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -2378,6 +2383,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -2675,6 +2681,7 @@ do
             },
             
         }
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -2787,6 +2794,8 @@ do
             },
 
         }
+
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
         do --> micro displays
@@ -3419,6 +3428,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -3657,6 +3667,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -4032,6 +4043,7 @@ do
             
         }
         
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
         refreshToggleAnchor()
     end
@@ -4179,6 +4191,7 @@ do
             },
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -4582,6 +4595,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
         sectionFrame:SetScript("OnShow", function()
@@ -4912,6 +4926,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(autoSwitchFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
 
@@ -5491,6 +5506,7 @@ do --raid tools
             },
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -5729,6 +5745,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX + 350, startY - 20 - 200, heightSize + 300, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -5889,6 +5906,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -6308,6 +6326,7 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -6393,6 +6412,21 @@ do
 
         }
 
+        sectionFrame.sectionOptions = sectionOptions
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+    end
+
+    tinsert(Details.optionsSection, buildSection)
+end
+
+-- ~19 - search results
+do
+    local buildSection = function(sectionFrame)
+
+        local sectionOptions = {
+
+        }
+
         DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
@@ -6414,3 +6448,4 @@ do
     tinsert(Details.optionsSection, buildSection)
 end
 --]]
+

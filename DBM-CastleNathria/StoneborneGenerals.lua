@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210831171020")
+mod:SetRevision("20211011144558")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -486,7 +486,7 @@ function mod:SPELL_SUMMON(args)
 	elseif spellId == 342257 or spellId == 342258 or spellId == 342259 then
 		if self.Options.SetIconOnShadowForces then
 			local icon = spellId == 342257 and (markingSet == "SetOne" and 8 or 6) or spellId == 342258 and 7 or (markingSet == "SetOne" and 6 or 8)
-			self:ScanForMobs(args.destGUID, 2, icon, 1, 0.2, 12, "SetIconOnShadowForces")
+			self:ScanForMobs(args.destGUID, 2, icon, 1, nil, 12, "SetIconOnShadowForces")
 		end
 		timerWickedSlaughterCD:Start(6.1, args.destGUID)
 	end

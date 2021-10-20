@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20211011151021")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
@@ -423,7 +423,7 @@ function mod:SPELL_CAST_START(args)
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
 			if self.Options.SetIconOnAdds then
-				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12)
+				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, nil, 12)
 			end
 			--Increment icon for next cast/seticon
 			self.vb.addIcon = self.vb.addIcon + 1

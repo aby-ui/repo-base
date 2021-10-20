@@ -115,6 +115,8 @@ local function showItemToolTip(cell, args)
 			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NIGHT_FAE"]), 0.6,0.2,0.7)
 		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_VENTHYR, itemID)) then
 			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_VENTHYR"]), 0.7,0,0)
+		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_KYRIAN, itemID)) then
+			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_KYRIAN"]), 0,0.7,1)
 		end
 	end
 	

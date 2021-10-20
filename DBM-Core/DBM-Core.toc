@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 1292fb4
+## Version: 725afac
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibLatency\LibLatency.xml
@@ -31,6 +31,14 @@ localization.en.lua
 localization.cn.lua
 localization.tw.lua
 
+# Pre-core modules
+modules\Modules.lua
+
+modules\DevTools.lua
+modules\Icons.lua
+modules\TargetScanning.lua
+
+# Core
 DBM-Core.lua
 DBM-Arrow.lua
 DBM-Flash.lua

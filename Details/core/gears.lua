@@ -1765,6 +1765,7 @@ function Details.Database.StoreEncounter(combat)
 		local myrole = UnitGroupRolesAssigned ("player")
 		local mybest, onencounter = _detalhes.storage:GetBestFromPlayer (diff, encounter_id, myrole, _detalhes.playername, true) --> get dps or hps
 		local mybest2 = mybest and mybest[1] or 0
+		onencounter = onencounter or 999999
 		local myBestDps = mybest2 / onencounter.elapsed
 
 		if (mybest) then

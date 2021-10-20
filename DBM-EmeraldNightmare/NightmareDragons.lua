@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1704, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20211011150938")
 mod:SetCreatureID(102679)--Ysondre, 102683 (Emeriss), 102682 (Lethon), 102681 (Taerar)
 mod:SetEncounterID(1854)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -275,10 +275,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self.Options.SetIconOnOozes then
 			if self.vb.alternateOozes then
 				--6 and 5 used
-				self:ScanForMobs(103691, 0, 6, 2, 0.1, 10, "SetIconOnOozes")
+				self:ScanForMobs(103691, 0, 6, 2, nil, 10, "SetIconOnOozes")
 			else
 				--8 and 7 used
-				self:ScanForMobs(103691, 0, 8, 2, 0.1, 10, "SetIconOnOozes")
+				self:ScanForMobs(103691, 0, 8, 2, nil, 10, "SetIconOnOozes")
 			end
 		end
 		self.vb.alternateOozes = not self.vb.alternateOozes

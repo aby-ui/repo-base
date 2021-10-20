@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2444, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210831171020")
+mod:SetRevision("20211011144558")
 mod:SetCreatureID(175729)
 mod:SetEncounterID(2432)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -420,7 +420,7 @@ function mod:SPELL_SUMMON(args)
 			updateAllTimers(self, 3.5)
 		end
 		if self.Options.SetIconOnOrbs then
-			self:ScanForMobs(args.destGUID, 2, self.vb.iconCount, 1, 0.2, 12, "SetIconOnOrbs")
+			self:ScanForMobs(args.destGUID, 2, self.vb.iconCount, 1, nil, 12, "SetIconOnOrbs")
 		end
 		self.vb.iconCount = self.vb.iconCount - 1
 	end

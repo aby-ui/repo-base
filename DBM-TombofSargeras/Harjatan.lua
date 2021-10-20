@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1856, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20211011150938")
 mod:SetCreatureID(116407)
 mod:SetEncounterID(2036)
 --mod:SetBossHPInfoToHighest()
@@ -289,7 +289,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 			if cid == 116569 then--Razorjaw Wavemender
 				--timerAqueousBurstCD:Start(1, GUID)
 				if self.Options.SetIconOnWavemender then
-					self:ScanForMobs(GUID, 0, 8, 2, 0.2, 12, "SetIconOnWavemender")
+					self:ScanForMobs(GUID, 0, 8, 2, nil, 12, "SetIconOnWavemender")
 				end
 			end
 		end

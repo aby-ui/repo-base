@@ -44,7 +44,7 @@ local function UpdatePartyKeystones()
 
 	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
 
-	local playerRealm = select(2, UnitFullName("player"))
+	local playerRealm = select(2, UnitFullName("player")) or ""
 
 	local e = 1
 	for i = 1, 4 do

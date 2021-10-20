@@ -1298,6 +1298,10 @@ DF.FoodIDs = {
 	[327707] = 2, --stamina +20
 	[327708] = 2, --intellect +20
 	[327709] = 2, --agility +20
+
+	[327704] = 2, --intellect +18
+	[327701] = 2, --strength +18
+	[327705] = 2, --agility +18
 }
 
 DF.PotionIDs = {

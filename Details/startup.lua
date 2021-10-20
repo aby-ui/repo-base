@@ -247,7 +247,6 @@ function Details:StartMeUp() --I'll never stop!
 
 			self.parser_frame:RegisterEvent ("COMBAT_LOG_EVENT_UNFILTERED")
 
-
 	--update is in group
 	self.details_users = {}
 	self.in_group = IsInGroup() or IsInRaid()
@@ -553,43 +552,45 @@ function Details:StartMeUp() --I'll never stop!
 		warningMessage:SetText ("< right click and choose 'Enter Battle' if 'Enter Battle' button does not work")
 		
 		C_Timer.NewTicker(3, function() -- default = 1
-			if (StaticPopup1:IsShown() or StaticPopup2:IsShown()) then
-				if (StaticPopup1.which == "ADDON_ACTION_FORBIDDEN" or (StaticPopup2 and StaticPopup2:IsShown() and StaticPopup2.which == "ADDON_ACTION_FORBIDDEN")) then
+			if (not Details.DontMoveMinimapIconOnBattlegroundError) then
+				if (StaticPopup1:IsShown() or StaticPopup2:IsShown()) then
+					if (StaticPopup1.which == "ADDON_ACTION_FORBIDDEN" or (StaticPopup2 and StaticPopup2:IsShown() and StaticPopup2.which == "ADDON_ACTION_FORBIDDEN")) then
 
-					if (StaticPopup2:IsShown()) then
-						if (StaticPopup2.which == "ADDON_ACTION_FORBIDDEN") then
-							StaticPopup_Hide("ADDON_ACTION_FORBIDDEN")
-						end
-					end
-	
-					taintWarning:Show()
-					taintWarning:SetPoint ("topleft", StaticPopup1, "bottomleft", 0, -10)
-					if (MiniMapBattlefieldFrame:IsShown() and not Details.DontMoveMinimapIconOnBattlegroundError)then
-
-						if (not originalPosition) then
-							local a = {}
-							for i = 1, MiniMapBattlefieldFrame:GetNumPoints() do
-								a[#a + 1] = {MiniMapBattlefieldFrame:GetPoint(i)}
+						if (StaticPopup2:IsShown()) then
+							if (StaticPopup2.which == "ADDON_ACTION_FORBIDDEN") then
+								StaticPopup_Hide("ADDON_ACTION_FORBIDDEN")
 							end
-							originalPosition = a
 						end
-	
-						MiniMapBattlefieldFrame:ClearAllPoints()
-						MiniMapBattlefieldFrame:SetPoint("left", taintWarning, "left", 10, -2)
-						warningMessage:SetPoint ("left", MiniMapBattlefieldFrame, "right", 9, 0)
-						MiniMapBattlefieldFrame:SetFrameStrata("HIGH")
+		
+						
+						if (MiniMapBattlefieldFrame:IsShown())then
+							taintWarning:Show()
+							taintWarning:SetPoint ("topleft", StaticPopup1, "bottomleft", 0, -10)
+							if (not originalPosition) then
+								local a = {}
+								for i = 1, MiniMapBattlefieldFrame:GetNumPoints() do
+									a[#a + 1] = {MiniMapBattlefieldFrame:GetPoint(i)}
+								end
+								originalPosition = a
+							end
+		
+							MiniMapBattlefieldFrame:ClearAllPoints()
+							MiniMapBattlefieldFrame:SetPoint("left", taintWarning, "left", 10, -2)
+							warningMessage:SetPoint ("left", MiniMapBattlefieldFrame, "right", 9, 0)
+							MiniMapBattlefieldFrame:SetFrameStrata("HIGH")
 
-						isOnOriginalPosition = false
+							isOnOriginalPosition = false
+						end
 					end
-				end
-			else
-				if (originalPosition and not isOnOriginalPosition) then
-					MiniMapBattlefieldFrame:ClearAllPoints()
-					for i = 1, #originalPosition do
-						MiniMapBattlefieldFrame:SetPoint(unpack (originalPosition[i]))
+				else
+					if (originalPosition and not isOnOriginalPosition) then
+						MiniMapBattlefieldFrame:ClearAllPoints()
+						for i = 1, #originalPosition do
+							MiniMapBattlefieldFrame:SetPoint(unpack (originalPosition[i]))
+						end
+						taintWarning:Hide()
+						isOnOriginalPosition = true
 					end
-					taintWarning:Hide()
-					isOnOriginalPosition = true
 				end
 			end
 		end)

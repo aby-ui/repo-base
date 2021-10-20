@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20211011151021")
 mod:SetCreatureID(144755, 144754)--144755 Zaxasj, 144754 Fa'thuul
 mod:SetEncounterID(2269)
 mod:SetBossHPInfoToHighest()
@@ -244,7 +244,7 @@ function mod:SPELL_CAST_START(args)
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
 			if self.Options.SetIconOnAdds then
-				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12)
+				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, nil, 12)
 			end
 			self.vb.addIcon = self.vb.addIcon + 1
 			if self.vb.addIcon == 6 then--3-5 (to match markers bw uses)

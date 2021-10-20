@@ -837,6 +837,14 @@ local default_profile = {
 			},
 		},
 
+		death_log_colors = {
+			damage = "red",
+			heal = "green",
+			friendlyfire = "darkorange",
+			cooldown = "yellow",
+			debuff = "purple",
+		},
+
 	fade_speed = 0.15,
 
 	--> minimap

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1713, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20211011150938")
 mod:SetCreatureID(101002)
 mod:SetEncounterID(1842)
 --mod:SetUsedIcons(8, 7, 6, 3, 2, 1)
@@ -193,7 +193,7 @@ function mod:SPELL_CAST_START(args)
 				DBM.RangeCheck:Show(5)
 			end
 			if self.Options.SetIconOnAdds then
-				self:ScanForMobs(args.sourceGUID, 0, 8, 8, 0.1, 15, "SetIconOnAdds")
+				self:ScanForMobs(args.sourceGUID, 0, 8, 8, nil, 15, "SetIconOnAdds")
 			end
 		end
 		if self:CheckInterruptFilter(args.sourceGUID, false, true) then

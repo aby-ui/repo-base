@@ -1,5 +1,5 @@
 -- OmniBar Locale
--- https://wow.curseforge.com/projects/omnibar/localization
+-- https://www.curseforge.com/wow/addons/omnibar/localization
 
 local L = LibStub("AceLocale-3.0"):NewLocale("OmniBar", "zhTW")
 if not L then return end

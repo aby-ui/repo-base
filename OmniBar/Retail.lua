@@ -616,6 +616,7 @@ addon.Cooldowns = {
     [122783] = { duration = 120, class = "MONK" }, -- Diffuse Magic
     [123986] = { duration = 30, class = "MONK" }, -- Chi Burst
     [310454] = { duration = 120, class = "MONK" }, -- Weapons of Order
+    [325216] = { duration = 60, class = "MONK" }, -- Bonedust Brew
 
         -- Brewmaster
 

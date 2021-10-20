@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Cannon", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200803045206")
+mod:SetRevision("20211011125402")
 
 mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS 102120",
@@ -9,7 +9,7 @@ mod:RegisterEvents(
 )
 mod.noStatistics = true
 
-local timerMagicWings				= mod:NewBuffFadesTimer(8, 102116, nil, nil, nil, 5)
+local timerMagicWings				= mod:NewBuffFadesTimer(8, 102116, nil, false, 2, 5)
 
 local markWings = false
 

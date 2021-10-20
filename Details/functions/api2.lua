@@ -510,9 +510,9 @@ function Details.UnitInfo (unitId, segment)
 
 	local playerInfo = {}
 
-	local raidStatusLib = LibStub:GetLibrary("LibRaidStatus-1.0")
-	if (raidStatusLib) then
-		playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo(unitName)
+	local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
+	if (openRaidLib) then
+		playerInfo = openRaidLib.playerInfoManager.GetPlayerInfo(unitName)
 	end
 
 	unitInfo.class = playerObject.classe or class or "UNKNOW"

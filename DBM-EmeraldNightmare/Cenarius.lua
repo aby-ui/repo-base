@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1750, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20211016204737")
 mod:SetCreatureID(104636)
 mod:SetEncounterID(1877)
 mod:SetUsedIcons(8, 7, 6, 5, 4)
@@ -179,9 +179,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 211471 and self:AntiSpam(5, 1) then
 		timerScornedTouchCD:Start(nil, args.sourceGUID)
 	elseif spellId == 212726 then
-		--Wisps don't fire IEEU so done here inste3ad
+		--Wisps don't fire IEEU so done here instead
 		if self.Options.SetIconOnWisps then
-			self:ScanForMobs(106304, 0, 8, 5, 0.1, 20, "SetIconOnWisps", false, 106659)
+			self:ScanForMobs(106304, 0, 8, 5, {[106304] = true, [106659] = true,}, 20, "SetIconOnWisps", false)--Double ID scan for wisps
 		end
 	end
 end

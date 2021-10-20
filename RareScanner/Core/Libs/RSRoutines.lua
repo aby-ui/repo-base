@@ -34,6 +34,87 @@ local function clone(object)
     return clone(object)
 end
 
+local LoopIndexRoutine = {} do
+	
+	function LoopIndexRoutine:Init(getterItems, chunkSize, processChunk, onfinishCallback, arguments)
+		self.context, self.deadline = {}
+		self.context.currentIndex = 1
+		self.context.getterItems = getterItems
+		self.context.chunkSize = chunkSize
+		self.context.processChunk = processChunk
+		self.context.onfinishCallback = onfinishCallback
+		self.context.arguments = arguments
+	end
+	
+	function LoopIndexRoutine:Run(processChunk, onfinishCallback)
+		if (not self.context) then
+			return true
+		end
+		
+		local callback = processChunk or self.context.processChunk
+		local finishCallback = onfinishCallback or self.context.onfinishCallback
+		
+		self.deadline = debugprofilestop() + getDelay()
+		repeat
+			local chunkIndex = 1
+			local initialIndex = self.context.currentIndex
+			local getter = self.context.arguments and self.context.getterItems(self.context.arguments) or self.context.getterItems()
+			
+			if (tonumber(getter)) then
+				for i = initialIndex, getter do
+					if (chunkIndex == self.context.chunkSize) then
+						return false
+					end
+					
+					callback(self.context, i)
+					self.context.currentIndex = self.context.currentIndex + 1
+					chunkIndex = chunkIndex + 1
+				end
+			else
+				for i = initialIndex, #getter do
+					if (chunkIndex == self.context.chunkSize) then
+						return false
+					end
+					
+					callback(self.context, i)
+					self.context.currentIndex = self.context.currentIndex + 1
+					chunkIndex = chunkIndex + 1
+				end
+			end
+			
+			self.context.finished = true
+			if (finishCallback) then
+				finishCallback(self.context)
+			end
+			
+			return true
+		until debugprofilestop() > self.deadline
+	end
+	
+	function LoopIndexRoutine:Restart(callback)
+		if (callback) then
+			callback(self.context)
+		end
+		return true
+	end
+	
+	function LoopIndexRoutine:IsRunning()
+		if self.context and not self.context.finished then
+			return true
+		else
+			return false
+		end
+	end
+	
+	function LoopIndexRoutine:Reset()
+		self.context.currentIndex = 1
+	end
+	
+	function LoopIndexRoutine:New()
+        return clone(self)
+    end
+end
+
 local LoopRoutine = {} do
 	
 	function LoopRoutine:Init(getterItems, chunkSize, processChunk, onfinishCallback, arguments)
@@ -114,7 +195,7 @@ local ChainLoopRoutine = {} do
 	
 	function ChainLoopRoutine:Run(onfinishCallback)
 		if (not self.context) then
-			return true
+			return
 		end
 		
 		local function RunNext(index)
@@ -124,19 +205,18 @@ local ChainLoopRoutine = {} do
 					local finished = nextLoopRoutine:Run()
 					if (finished) then
 						self:Cancel()
-						return RunNext(nextIndex)
+						RunNext(nextIndex)
 					end
 				end)
+			else
+				self.context.finished = true
+				if (onfinishCallback) then
+					onfinishCallback(self.context)
+				end
 			end
-			
-			self.context.finished = true
-			if (onfinishCallback) then
-				onfinishCallback(self.context)
-			end
-			return true
 		end
 		
-		return RunNext();
+		RunNext();
 	end
 	
 	function ChainLoopRoutine:IsRunning()
@@ -154,6 +234,10 @@ end
 
 function RSRoutines.LoopRoutineNew()
 	return LoopRoutine:New()
+end
+
+function RSRoutines.LoopIndexRoutineNew()
+	return LoopIndexRoutine:New()
 end
 
 function RSRoutines.ChainLoopRoutineNew()

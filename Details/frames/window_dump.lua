@@ -11,6 +11,12 @@ function Details:DumpTable (t)
 	return Details:Dump (t)
 end
 
+function Details:DumpInline(t)
+	for key, value in pairs(t) do
+		print(key, value)
+	end
+end
+
 function Details:Dump (t)
 	if (not DetailsDumpFrame) then
 		DetailsDumpFrame = DetailsFramework:CreateSimplePanel (_G.UIParent)

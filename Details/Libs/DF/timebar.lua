@@ -167,6 +167,11 @@ function TimeBarMetaFunctions:SetTexture(texture)
     self.statusBar.barTexture:SetTexture(texture)
 end
 
+function TimeBarMetaFunctions:SetColor(color, green, blue, alpha)
+    local r, g, b, a = DF:ParseColors(color, green, blue, alpha)
+    self.statusBar.barTexture:SetVertexColor(r, g, b, a)
+end
+
 function TimeBarMetaFunctions:SetLeftText(text)
     self.statusBar.leftText:SetText(text)
 end
@@ -189,6 +194,15 @@ function TimeBarMetaFunctions:SetFont(font, size, color, shadow)
 
     if (shadow) then
         DF:SetFontOutline(self.statusBar.leftText, shadow)
+    end
+end
+
+function TimeBarMetaFunctions:SetThrottle(seconds)
+    if (seconds and seconds > 0) then
+        self.statusBar.isUsingThrottle = true
+        self.statusBar.amountThrottle = seconds
+    else
+        self.statusBar.isUsingThrottle = false
     end
 end
 
@@ -220,12 +234,41 @@ function TimeBarMetaFunctions:StopTimer()
     statusBar.spark:Hide()
 end
 
-local OnUpdateFunc = function(self, deltaTime)
-    self.throttle = self.throttle + deltaTime
-    if (self.throttle < 0.1) then
-        return
+function TimeBarMetaFunctions:ShowSpark(state, alpha, color)
+    if (type(state) == "boolean" and state == false) then
+        self.statusBar.dontShowSpark = true
+    else
+        self.statusBar.dontShowSpark = nil
     end
-    self.throttle = 0
+
+    if (alpha) then
+        self.statusBar.sparkAlpha = alpha
+    else
+        self.statusBar.sparkAlpha = nil
+    end
+
+    if (color) then
+        local r, g, b = DF:ParseColors(color)
+        if (r and g and b) then
+            self.statusBar.sparkColorR = r
+            self.statusBar.sparkColorG = g
+            self.statusBar.sparkColorB = b
+        end
+    else
+        self.statusBar.sparkColorR = nil
+        self.statusBar.sparkColorG = nil
+        self.statusBar.sparkColorB = nil
+    end
+end
+
+local OnUpdateFunc = function(self, deltaTime)
+    if (self.isUsingThrottle) then
+        self.throttle = self.throttle + deltaTime
+        if (self.throttle < self.amountThrottle) then
+            return
+        end
+        self.throttle = 0
+    end
 
     local timeNow = GetTime()
     self:SetValue(timeNow)
@@ -234,17 +277,20 @@ local OnUpdateFunc = function(self, deltaTime)
     local spark = self.spark
     local startTime, endTime = self:GetMinMaxValues()
 
-    if (self.direction == "right") then
-        local pct = abs((timeNow - endTime) / (endTime - startTime))
-        pct = abs(1 - pct)
-        spark:SetPoint("left", self, "left", (self:GetWidth() * pct) - 16, 0)
-        spark:Show()
-    else
-        spark:SetPoint("right", self, "right", self:GetWidth() * (timeNow/self.endTime), 0)
+    if (not self.dontShowSpark) then
+        if (self.direction == "right") then
+            local pct = abs((timeNow - endTime) / (endTime - startTime))
+            pct = abs(1 - pct)
+            spark:SetPoint("left", self, "left", (self:GetWidth() * pct) - 16, 0)
+            spark:Show()
+        else
+            spark:SetPoint("right", self, "right", self:GetWidth() * (timeNow/self.endTime), 0)
+        end
     end
 
     local timeLeft = floor(endTime - timeNow)
-    self.rightText:SetText(timeLeft)
+    local formatedTimeLeft = DF:IntegerToTimer(timeLeft)
+    self.rightText:SetText(formatedTimeLeft)
 
     --check if finished
     if (timeNow >= self.endTime) then
@@ -271,12 +317,12 @@ function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
             --it is the same timer called again
             return
         end
-        self.statusBar.starTime = GetTime()
+        self.statusBar.startTime = GetTime()
         self.statusBar.endTime = GetTime() + currentTime
         self.statusBar.timeLeft2 = currentTime
     end
 
-    self.statusBar:SetMinMaxValues(self.statusBar.starTime, self.statusBar.endTime)
+    self.statusBar:SetMinMaxValues(self.statusBar.startTime, self.statusBar.endTime)
 
     if (self.direction == "right") then
         self.statusBar:SetReverseFill(false)
@@ -284,7 +330,25 @@ function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
         self.statusBar:SetReverseFill(true)
     end
 
-    self.statusBar.spark:Show()
+    if (self.statusBar.dontShowSpark) then
+        self.statusBar.spark:Hide()
+    else
+        self.statusBar.spark:Show()
+        self.statusBar.spark:SetHeight(self.statusBar:GetHeight()+20)
+
+        if (self.statusBar.sparkAlpha) then
+            self.statusBar.spark:SetAlpha(self.statusBar.sparkAlpha)
+        else
+            self.statusBar.spark:SetAlpha(1)
+        end
+
+        if (self.statusBar.sparkColorR) then
+            self.statusBar.spark:SetVertexColor(self.statusBar.sparkColorR, self.statusBar.sparkColorG, self.statusBar.sparkColorB)
+        else
+            self.statusBar.spark:SetVertexColor(1, 1, 1)
+        end
+    end
+
     self.statusBar.hasTimer = true
     self.statusBar.direction = self.direction
     self.statusBar.throttle = 0
@@ -379,6 +443,7 @@ function DF:CreateTimeBar(parent, texture, width, height, value, member, name)
 
         timeBar.statusBar.rightText = timeBar.statusBar:CreateFontString(nil, "overlay", "GameFontNormal", 4)
         timeBar.statusBar.rightText:SetPoint("right", timeBar.statusBar, "right", -2, 0)
+        timeBar.statusBar.rightText:SetJustifyH("left")
         
 	--> hooks
 		timeBar.HookList = {

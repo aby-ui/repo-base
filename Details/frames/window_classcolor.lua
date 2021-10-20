@@ -7,7 +7,7 @@ local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 --> config class colors
 function Details:OpenClassColorsConfig()
     if (not _G.DetailsClassColorManager) then
-        DF:CreateSimplePanel (UIParent, 300, 280, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
+        DF:CreateSimplePanel (UIParent, 300, 425, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
         local panel = _G.DetailsClassColorManager
         
         DF:ApplyStandardBackdrop (panel)
@@ -85,6 +85,102 @@ function Details:OpenClassColorsConfig()
             button:SetClickFunction (reset_color, nil, nil, "RightClick")
             panel.buttons [class_name] = button
         end
+
+        --make color options for death log bars
+        local function hex (num)
+            local hexstr = '0123456789abcdef'
+            local s = ''
+            while num > 0 do
+                local mod = math.fmod(num, 16)
+                s = string.sub(hexstr, mod+1, mod+1) .. s
+                num = math.floor(num / 16)
+            end
+            if s == '' then s = '00' end
+            if (string.len (s) == 1) then
+                s = "0"..s
+            end
+            return s
+        end
+
+        local function sort_color (t1, t2)
+            return t1[1][3] > t2[1][3]
+        end
+
+        local colorSelected = function(self, fixParam, value)
+            local colorName, barType = value:match("^(%w+)@(%w+)")
+            Details.death_log_colors[barType] = colorName
+        end
+
+        local buildColorList = function(barType)
+            --all colors
+            local allColors = {}
+            for colorName, colorTable in pairs(DF:GetDefaultColorList()) do
+                tinsert(allColors, {colorTable, colorName, hex(colorTable[1]*255) .. hex(colorTable[2]*255) .. hex(colorTable[3]*255)})
+            end
+            table.sort(allColors, sort_color)
+            
+            local result = {}
+            for index, colorTable in ipairs(allColors) do
+                local colortable = colorTable[1]
+                local colorname = colorTable[2]
+                local value = colorname .. "@" .. barType
+                tinsert (result, {label = colorname, value = value, color = colortable, onclick = colorSelected})
+            end
+
+            return result
+        end
+
+        local deathLogOptions = {
+            {--damage
+                type = "select",
+                get = function() return Details.death_log_colors.damage end,
+                values = function()
+                    return buildColorList("damage")
+                end,
+                name = "Damage",
+                desc = "Damage",
+            },
+            {--heal
+                type = "select",
+                get = function() return Details.death_log_colors.heal end,
+                values = function()
+                    return buildColorList("heal")
+                end,
+                name = "Heal",
+                desc = "Heal",
+            },
+            {--friendlyfire
+                type = "select",
+                get = function() return Details.death_log_colors.friendlyfire end,
+                values = function()
+                    return buildColorList("friendlyfire")
+                end,
+                name = "Friendly Fire",
+                desc = "Friendly Fire",
+            },
+            {--cooldown
+                type = "select",
+                get = function() return Details.death_log_colors.cooldown end,
+                values = function()
+                    return buildColorList("cooldown")
+                end,
+                name = "Cooldown",
+                desc = "Cooldown",
+            },
+            {--debuff
+                type = "select",
+                get = function() return Details.death_log_colors.debuff end,
+                values = function()
+                    return buildColorList("debuff")
+                end,
+                name = "Debuff",
+                desc = "Debuff",
+            },
+        }
+        DetailsFramework:BuildMenu(panel, deathLogOptions, 5, -285, 700, true)
+
+        local deathLogColorsLabel = DF:CreateLabel(panel, "Colors on Death Log:", 12, "yellow")
+        deathLogColorsLabel:SetPoint("topleft", panel, "topleft", 5, -265)
     end
     
     for class, button in pairs (_G.DetailsClassColorManager.buttons) do

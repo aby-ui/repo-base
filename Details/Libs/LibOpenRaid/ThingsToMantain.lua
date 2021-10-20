@@ -1,22 +1,38 @@
 
 --data which main need maintenance over time
 
-if (not LIB_RAID_STATUS_CAN_LOAD) then
+if (not LIB_OPEN_RAID_CAN_LOAD) then
 	return
 end
 
-LIB_RAID_STATUS_AUGMENTATED_RUNE = 347901
+LIB_OPEN_RAID_AUGMENTATED_RUNE = 347901
 
-LIB_RAID_STATUS_COVENANT_ICONS = {
+LIB_OPEN_RAID_COVENANT_ICONS = {
 	[[Interface\ICONS\UI_Sigil_Kyrian]], --kyrian
 	[[Interface\ICONS\UI_Sigil_Venthyr]], --venthyr
 	[[Interface\ICONS\UI_Sigil_NightFae]], --nightfae
 	[[Interface\ICONS\UI_Sigil_Necrolord]], --necrolords
 }
 
+LIB_OPEN_RAID_MELEE_SPECS = {
+	[251] = "DEATHKNIGHT",
+	[252] = "DEATHKNIGHT",
+	[577] = "DEMONHUNTER",
+	[103] = "DRUID",
+	--[255] = "Survival", --not in the list due to the long interrupt time
+	[269] = "MONK",
+	[70] = "PALADIN",
+	[259] = "ROGUE",
+	[260] = "ROGUE",
+	[261] = "ROGUE",
+	[263] = "SHAMAN",
+	[71] = "WARRIOR",
+	[72] = "WARRIOR",
+}
+
 --which gear slots can be enchanted on the latest retail version of the game
 --when the value is a number, the slot only receives enchants for a specific attribute
-LIB_RAID_STATUS_ENCHANT_SLOTS = {
+LIB_OPEN_RAID_ENCHANT_SLOTS = {
     --[INVSLOT_NECK] = true,
 
     [INVSLOT_BACK] = true, --for all
@@ -34,7 +50,7 @@ LIB_RAID_STATUS_ENCHANT_SLOTS = {
 -- local itemLink = GetInventoryItemLink("player", slotId)
 -- local enchandId = select (3, strsplit(":", itemLink))
 -- print("enchantId:", enchandId)
-LIB_RAID_STATUS_ENCHANT_IDS = {
+LIB_OPEN_RAID_ENCHANT_IDS = {
     --FEET
         --[6207] = INVSLOT_FEET, --[Enchant Boots - Speed of Soul]
         [6211] = INVSLOT_FEET, --[Enchant Boots - Eternal Agility] + 15 agi
@@ -75,13 +91,21 @@ LIB_RAID_STATUS_ENCHANT_IDS = {
         [6227] = INVSLOT_MAINHAND, --[Enchant Weapon - Ascended Vigor] + healing received increased
         [6228] = INVSLOT_MAINHAND, --[Enchant Weapon - Sinful Revelation] + 6% bleed damage
         [6229] = INVSLOT_MAINHAND, --[Enchant Weapon - Celestial Guidance] + 5% agility
+		[6243] = INVSLOT_MAINHAND, --[Runeforging: Rune of Hysteria]
+		[3370] = INVSLOT_MAINHAND, --[Runeforging: Rune of Razorice]
+		[6241] = INVSLOT_MAINHAND, --[Runeforging: Rune of Sanguination]
+		[6242] = INVSLOT_MAINHAND, --[Runeforging: Rune of Spellwarding]
+		[6245] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Apocalypse]
+		[3368] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Fallen Crusader]
+		[3847] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Stoneskin Gargoyle]
+		[6244] = INVSLOT_MAINHAND, --[Runeforging: Rune of Unending Thirst]
 }
 
 -- how to get the gemId:
 -- local itemLink = GetInventoryItemLink("player", slotId)
 -- local gemId = select (4, strsplit(":", itemLink))
 -- print("gemId:", gemId)
-LIB_RAID_STATUS_GEM_IDS = {
+LIB_OPEN_RAID_GEM_IDS = {
     [173126] = true, --Straddling Jewel Doublet (green, +12 speed)
     [173125] = true, --Revitalizing Jewel Doublet (green, +100 health)
     [173130] = true, --Masterful Jewel Cluster (blue, master)
@@ -90,7 +114,8 @@ LIB_RAID_STATUS_GEM_IDS = {
     [173128] = true, --Quick Jewel Cluster (blue, haste)
 }
 
-LIB_RAID_STATUS_WEAPON_ENCHANT_IDS = {
+--/dump GetWeaponEnchantInfo()
+LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {
 	[6188] = true, --shadowcore oil
 	[6190] = true, --embalmer's oil
 	[6201] = true, --weighted
@@ -99,7 +124,7 @@ LIB_RAID_STATUS_WEAPON_ENCHANT_IDS = {
 	[5401] = true, --windfury
 }
 
-LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
+LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 	-- 1 attack cooldown
 	-- 2 personal defensive cooldown
 	-- 3 targetted defensive cooldown
@@ -575,7 +600,7 @@ LIB_RAID_STATUS_COOLDOWNS_BY_SPEC = {
 --if talent is required, use the command:
 --/dump GetTalentInfo (talentTier, talentColumn, 1)
 --example: to get the second talent of the last talent line, use: /dump GetTalentInfo (7, 2, 1)
-LIB_RAID_STATUS_COOLDOWNS_INFO = {
+LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	--> paladin
 	[31884] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "PALADIN", type = 1}, --Avenging Wrath
 	[216331] = {cooldown = 120, duration = 20, talent = 22190, charges = 1, class = "PALADIN", type = 1}, --Avenging Crusader (talent)

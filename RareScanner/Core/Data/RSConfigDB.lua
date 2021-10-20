@@ -19,6 +19,7 @@ local RSEventDB = private.ImportLib("RareScannerEventDB")
 local RSConstants = private.ImportLib("RareScannerConstants")
 local RSLogger = private.ImportLib("RareScannerLogger")
 local RSUtils = private.ImportLib("RareScannerUtils")
+local RSRoutines = private.ImportLib("RareScannerRoutines")
 
 
 ---============================================================================
@@ -456,10 +457,17 @@ function RSConfigDB.SetNpcFiltered(npcID, value)
 	end
 end
 
-function RSConfigDB.FilterAllNPCs()
-	for npcID, _ in pairs (RSNpcDB.GetAllInternalNpcInfo()) do
-		RSConfigDB.SetNpcFiltered(npcID, false)
-	end
+function RSConfigDB.FilterAllNPCs(routines)
+	local filterAllNPCsRoutine = RSRoutines.LoopRoutineNew()
+	filterAllNPCsRoutine:Init(RSNpcDB.GetAllInternalNpcInfo, 500, 
+		function(context, npcID, _)
+			RSConfigDB.SetNpcFiltered(npcID, false)
+		end,
+		function(context)
+			RSLogger:PrintDebugMessage("FilterAllNPCs. Filtrados todos los NPCs")
+		end
+	)
+	table.insert(routines, filterAllNPCsRoutine)
 end
 
 function RSConfigDB.IsNpcFilteredOnlyOnWorldMap()
@@ -573,10 +581,17 @@ function RSConfigDB.SetContainerFiltered(containerID, value)
 	end
 end
 
-function RSConfigDB.FilterAllContainers()
-	for containerID, _ in pairs (RSContainerDB.GetAllInternalContainerInfo()) do
-		RSConfigDB.SetContainerFiltered(containerID, false)
-	end
+function RSConfigDB.FilterAllContainers(routines)
+	local filterAllContainersRoutine = RSRoutines.LoopRoutineNew()
+	filterAllContainersRoutine:Init(RSContainerDB.GetAllInternalContainerInfo, 500, 
+		function(context, containerID, _)
+			RSConfigDB.SetContainerFiltered(containerID, false)
+		end,
+		function(context)
+			RSLogger:PrintDebugMessage("FilterAllContainers. Filtrados todos los contenedores")
+		end
+	)
+	table.insert(routines, filterAllContainersRoutine)
 end
 
 function RSConfigDB.IsContainerFilteredOnlyOnWorldMap()
@@ -618,7 +633,7 @@ function RSConfigDB.EnableMaxSeenContainerTimeFilter()
 		RSConfigDB.SetMaxSeenContainerTimeFilter(private.db.map.maxSeenContainerTimeBak)
 		-- Its possible that they enabled it though the options panel
 	else
-		RSConfigDB.SetMaxSeenContainerTimeFilter(RSConstants.PROFILE_DEFAULTS.profile.map.maxSeenTimeContainer, false)
+		RSConfigDB.SetMaxSeenContainerTimeFilter(5, false)
 	end
 	RSLogger:PrintDebugMessage(string.format("EnableMaxSeenContainerTimeFilter [maxSeenTimeContainer = %s]", RSConfigDB.GetMaxSeenContainerTimeFilter()))
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1984, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210903014754")
+mod:SetRevision("20211011150938")
 mod:SetCreatureID(121975)
 mod:SetEncounterID(2063)
 mod:SetUsedIcons(1, 2, 3, 4, 5)
@@ -527,7 +527,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerFlameRendCD:Stop()
 		timerTempestCD:Stop()
 		if self.Options.SetIconOnAdds then
-			self:ScheduleMethod(2, "ScanForMobs", 122532, 1, 1, 5, 0.1, 12, "SetIconOnAdds", nil, nil, self.Options.skipMarked)
+			self:ScheduleMethod(2, "ScanForMobs", 122532, 1, 1, 5, nil, 12, "SetIconOnAdds", nil, self.Options.skipMarked)
 		end
 		if self.Options.RangeFrame and not self:IsTank() then
 			DBM.RangeCheck:Hide()

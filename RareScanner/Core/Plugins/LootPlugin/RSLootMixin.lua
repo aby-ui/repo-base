@@ -53,6 +53,8 @@ function RSLootMixin:OnEnter()
 				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NIGHT_FAE"]), 0.6,0.2,0.7)
 			elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_VENTHYR, self.itemID)) then
 				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_VENTHYR"]), 0.7,0,0)
+			elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_KYRIAN, self.itemID)) then
+				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_KYRIAN"]), 0,0.7,1)
 			end
 		end
 		

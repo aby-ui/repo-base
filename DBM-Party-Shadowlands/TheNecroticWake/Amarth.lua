@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2391, "DBM-Party-Shadowlands", 1, 1182)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201213235145")
+mod:SetRevision("20211011144558")
 mod:SetCreatureID(163157)--162692?
 mod:SetEncounterID(2388)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -89,7 +89,7 @@ function mod:SPELL_SUMMON(args)
 		local cid = self:GetCIDFromGUID(args.destGUID)
 		if cid == 164414 then--Auto mark mages
 			if self.Options.SetIconOnAdds then--Only use up to 5 icons
-				self:ScanForMobs(args.destGUID, 2, self.vb.iconCount, 1, 0.2, 12, "SetIconOnAdds")
+				self:ScanForMobs(args.destGUID, 2, self.vb.iconCount, 1, nil, 12, "SetIconOnAdds")
 			end
 			self.vb.iconCount = self.vb.iconCount - 1
 			if self.vb.iconCount == 0 then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2372, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20211011151021")
 mod:SetCreatureID(157253, 157254)--Ka'zir and Tek'ris
 mod:SetEncounterID(2333)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)--Refine when max number of mythic Volatile Eruption is known
@@ -283,7 +283,7 @@ function mod:SPELL_CAST_START(args)
 			DBM.Nameplate:Show(true, args.sourceGUID, spellId, nil, 20)
 		end
 		if self.Options.SetIconOnAdds then
-			self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12)
+			self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, nil, 12)
 		end
 		self.vb.addIcon = self.vb.addIcon + 1
 		if self.vb.addIcon == 7 then
@@ -348,7 +348,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--	self.vb.addIcon = 1
 		--end
 		if self.Options.SetIconOnAdds then
-			self:ScanForMobs(args.destGUID, 2, self.vb.addIcon, 1, 0.2, 12)
+			self:ScanForMobs(args.destGUID, 2, self.vb.addIcon, 1, nil, 12)
 		end
 		self.vb.addIcon = self.vb.addIcon + 1
 		if self.vb.addIcon == 7 then

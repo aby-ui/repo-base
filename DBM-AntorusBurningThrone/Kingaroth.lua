@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2004, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20211016204737")
 mod:SetCreatureID(122578)
 mod:SetEncounterID(2088)
 --mod:SetBossHPInfoToHighest()
@@ -155,14 +155,6 @@ do
 		end
 		return lines, sortedLines
 	end
-end
-
---/run DBM:GetModByName("2004"):TestFunction(20)
-function mod:TestFunction(time)
-	timerForgingStrikeCD:AddTime(time, 1)
-	timerDiabolicBombCD:AddTime(time)
-	timerRuinerCD:AddTime(time, 1)
-	timerReverberatingStrikeCD:AddTime(time, 1)
 end
 
 function mod:OnCombatStart(delay)

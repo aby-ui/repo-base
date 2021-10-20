@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2439, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210831171020")
+mod:SetRevision("20211011144558")
 mod:SetCreatureID(175726)--Skyja (TODO, add other 2 and set health to highest?)
 mod:SetEncounterID(2429)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -209,13 +209,13 @@ function mod:SPELL_CAST_START(args)
 		specWarnFormlessMass:Play("killmob")
 		timerFormlessMassCD:Start(nil, self.vb.massCount+1)
 		if self.Options.SetIconOnFormlessMass then--Only use up to 5 icons
-			self:ScanForMobs(177407, 0, 8, 2, 0.2, 12, "SetIconOnFormlessMass")
+			self:ScanForMobs(177407, 0, 8, 2, nil, 12, "SetIconOnFormlessMass")
 		end
 	elseif spellId == 350339 then
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
 --			if self.Options.SetIconOnFormlessMass and self.vb.addIcon > 3 then--Only use up to 5 icons
---				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12, "SetIconOnFormlessMass")
+--				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, nil, 12, "SetIconOnFormlessMass")
 --			end
 --			self.vb.addIcon = self.vb.addIcon - 1
 		end

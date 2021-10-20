@@ -1,19 +1,19 @@
 
-local major = "LibRaidStatus-1.0"
+local major = "LibOpenRaid-1.0"
 local CONST_LIB_VERSION = 20
-LIB_RAID_STATUS_CAN_LOAD = false
+LIB_OPEN_RAID_CAN_LOAD = false
 
 --declae the library within the LibStub
     local libStub = _G.LibStub
-    local raidStatusLib = libStub:NewLibrary(major, CONST_LIB_VERSION)
-    if (not raidStatusLib) then
+    local openRaidLib = libStub:NewLibrary(major, CONST_LIB_VERSION)
+    if (not openRaidLib) then
         return
     end
 
-    LIB_RAID_STATUS_CAN_LOAD = true
+    LIB_OPEN_RAID_CAN_LOAD = true
 
 --default values
-    raidStatusLib.inGroup = false
+    openRaidLib.inGroup = false
 
     --print failures (when the function return an error) results to chat
     local CONST_DIAGNOSTIC_ERRORS = false
@@ -41,13 +41,13 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     local diagnosticError = function(msg, ...)
         if (CONST_DIAGNOSTIC_ERRORS) then
-            print("|cFFFF9922raidStatusLib|r:", msg, ...)
+            print("|cFFFF9922OpenRaidLib|r:", msg, ...)
         end
     end
 
     local diagnosticComm = function(msg, ...)
         if (CONST_DIAGNOSTIC_COMM) then
-            print("|cFFFF9922raidStatusLib|r:", msg, ...)
+            print("|cFFFF9922OpenRaidLib|r:", msg, ...)
         end
     end
 
@@ -59,7 +59,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --return the current specId of the player
-    function raidStatusLib.GetPlayerSpecId()
+    function openRaidLib.GetPlayerSpecId()
         if (isTimewalkWoW()) then
             return 0
         end
@@ -73,30 +73,30 @@ LIB_RAID_STATUS_CAN_LOAD = false
         end
     end
 
-    function raidStatusLib.UpdatePlayerAliveStatus(onLogin)
+    function openRaidLib.UpdatePlayerAliveStatus(onLogin)
         if (UnitIsDeadOrGhost("player")) then
-            if (raidStatusLib.playerAlive) then
-                raidStatusLib.playerAlive = false
+            if (openRaidLib.playerAlive) then
+                openRaidLib.playerAlive = false
 
                 --trigger event if this isn't from login
                 if (not onLogin) then
-                    raidStatusLib.internalCallback.TriggerEvent("onPlayerDeath")
+                    openRaidLib.internalCallback.TriggerEvent("onPlayerDeath")
                 end
             end
         else
-            if (not raidStatusLib.playerAlive) then
-                raidStatusLib.playerAlive = true
+            if (not openRaidLib.playerAlive) then
+                openRaidLib.playerAlive = true
 
                 --trigger event if this isn't from login
                 if (not onLogin) then
-                    raidStatusLib.internalCallback.TriggerEvent("onPlayerRess")
+                    openRaidLib.internalCallback.TriggerEvent("onPlayerRess")
                 end
             end
         end
     end
 
     --creates two tables, one with indexed talents and another with pairs values ([talentId] = true)
-    function raidStatusLib.GetPlayerTalents()
+    function openRaidLib.GetPlayerTalents()
 		local talentsPairs = {}
 		local talentsIndex = {}
 		for i = 1, 7 do
@@ -113,7 +113,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --simple non recursive table copy
-    function raidStatusLib.TCopy(tableToReceive, tableToCopy)
+    function openRaidLib.TCopy(tableToReceive, tableToCopy)
         for key, value in pairs(tableToCopy) do
             tableToReceive[key] = value
         end
@@ -121,7 +121,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     --transform a table index into a string dividing values with a comma
     --@table: an indexed table with unknown size
-    function raidStatusLib.PackTable(table)
+    function openRaidLib.PackTable(table)
         local tableSize = #table
         local newString = "" .. tableSize .. ","
         for i = 1, tableSize do
@@ -133,13 +133,13 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --return is a number is almost equal to another within a tolerance range
-    function raidStatusLib.isNearlyEqual(value1, value2, tolerance)
+    function openRaidLib.isNearlyEqual(value1, value2, tolerance)
         tolerance = tolerance or CONST_FRACTION_OF_A_SECOND
         return abs(value1 - value2) <= tolerance
     end
 
     --return true if the lib is allowed to receive comms from other players
-    function raidStatusLib.IsCommAllowed()
+    function openRaidLib.IsCommAllowed()
         return IsInGroup() or IsInRaid()
     end
 
@@ -158,7 +158,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
     --@isPair: if true treat the table as pairs(), ipairs() otherwise
     --@valueAsTable: return {value1, value2, value3}
     --@amountOfValues: for the parameter above
-    function raidStatusLib.UnpackTable(table, index, isPair, valueIsTable, amountOfValues)
+    function openRaidLib.UnpackTable(table, index, isPair, valueIsTable, amountOfValues)
         local result = {}
         local reservedIndexes = table[index]
         if (not reservedIndexes) then
@@ -191,7 +191,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --returns if the player is in group
-    function raidStatusLib.IsInGroup()
+    function openRaidLib.IsInGroup()
         local inParty = IsInGroup()
         local inRaid = IsInRaid()
         return inParty or inRaid
@@ -200,13 +200,13 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~comms
-    raidStatusLib.commHandler = {}
+    openRaidLib.commHandler = {}
 
-    function raidStatusLib.commHandler.OnReceiveComm(self, event, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
+    function openRaidLib.commHandler.OnReceiveComm(self, event, prefix, text, channel, sender, target, zoneChannelID, localID, name, instanceID)
         --check if the data belong to us
         if (prefix == CONST_COMM_PREFIX) then
             --check if the lib can receive comms
-            if (not raidStatusLib.IsCommAllowed()) then
+            if (not openRaidLib.IsCommAllowed()) then
                 return
             end
 
@@ -226,7 +226,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
             --get the first byte of the data, it indicates what type of data was transmited
             local dataTypePrefix = data:match("^.")
             --get the table with functions regitered for this type of data
-            local callbackTable = raidStatusLib.commHandler.commCallback[dataTypePrefix]
+            local callbackTable = openRaidLib.commHandler.commCallback[dataTypePrefix]
             --convert to table
             local dataAsTable = {strsplit(",", data)}
 
@@ -241,11 +241,11 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     C_ChatInfo.RegisterAddonMessagePrefix(CONST_COMM_PREFIX)
-    raidStatusLib.commHandler.eventFrame = CreateFrame("frame")
-    raidStatusLib.commHandler.eventFrame:RegisterEvent("CHAT_MSG_ADDON")
-    raidStatusLib.commHandler.eventFrame:SetScript("OnEvent", raidStatusLib.commHandler.OnReceiveComm)
+    openRaidLib.commHandler.eventFrame = CreateFrame("frame")
+    openRaidLib.commHandler.eventFrame:RegisterEvent("CHAT_MSG_ADDON")
+    openRaidLib.commHandler.eventFrame:SetScript("OnEvent", openRaidLib.commHandler.OnReceiveComm)
 
-    raidStatusLib.commHandler.commCallback = {
+    openRaidLib.commHandler.commCallback = {
                                             --when transmiting
         [CONST_COMM_FULLINFO_PREFIX] = {}, --update all
         [CONST_COMM_COOLDOWNFULLLIST_PREFIX] = {}, --all cooldowns of a player
@@ -258,12 +258,12 @@ LIB_RAID_STATUS_CAN_LOAD = false
         [CONST_COMM_PLAYERINFO_TALENTS_PREFIX] = {}, --cooldown info
     }
 
-    function raidStatusLib.commHandler.RegisterComm(prefix, func)
-        --the table for the prefix need to be declared at the 'raidStatusLib.commHandler.commCallback' table
-        tinsert(raidStatusLib.commHandler.commCallback[prefix], func)
+    function openRaidLib.commHandler.RegisterComm(prefix, func)
+        --the table for the prefix need to be declared at the 'openRaidLib.commHandler.commCallback' table
+        tinsert(openRaidLib.commHandler.commCallback[prefix], func)
     end
 
-    function raidStatusLib.commHandler.SendCommData(data)
+    function openRaidLib.commHandler.SendCommData(data)
         local LibDeflate = LibStub:GetLibrary("LibDeflate")
         local dataCompressed = LibDeflate:CompressDeflate(data, {level = 9})
         local dataEncoded = LibDeflate:EncodeForWoWAddonChannel(dataCompressed)
@@ -281,7 +281,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~schedule ~timers
 
-    raidStatusLib.Schedules = {
+    openRaidLib.Schedules = {
         registeredUniqueTimers = {}
     }
     
@@ -292,20 +292,20 @@ LIB_RAID_STATUS_CAN_LOAD = false
     
         local result, errortext = pcall(callback, _G.unpack(payload))
         if (not result) then
-            print("raidStatusLib: error on scheduler:", tickerObject.scheduleName, tickerObject.stack, errortext)
+            print("openRaidLib: error on scheduler:", tickerObject.scheduleName, tickerObject.stack, errortext)
         end
 
         if (tickerObject.isUnique) then
             local namespace = tickerObject.namespace
             local scheduleName = tickerObject.scheduleName
-            raidStatusLib.Schedules.CancelUniqueTimer(namespace, scheduleName)
+            openRaidLib.Schedules.CancelUniqueTimer(namespace, scheduleName)
         end
 
         return result
     end
 
     --create a new schedule
-    function raidStatusLib.Schedules.NewTimer(time, callback, ...)
+    function openRaidLib.Schedules.NewTimer(time, callback, ...)
         local payload = {...}
         local newTimer = C_Timer.NewTimer(time, triggerScheduledTick)
         newTimer.payload = payload
@@ -316,23 +316,23 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     --create an unique schedule
     --if a schedule already exists, cancels it and make a new
-    function raidStatusLib.Schedules.NewUniqueTimer(time, callback, namespace, scheduleName, ...)
-        raidStatusLib.Schedules.CancelUniqueTimer(namespace, scheduleName)
+    function openRaidLib.Schedules.NewUniqueTimer(time, callback, namespace, scheduleName, ...)
+        openRaidLib.Schedules.CancelUniqueTimer(namespace, scheduleName)
 
-        local newTimer = raidStatusLib.Schedules.NewTimer(time, callback, ...)
+        local newTimer = openRaidLib.Schedules.NewTimer(time, callback, ...)
         newTimer.namespace = namespace
         newTimer.scheduleName = scheduleName
         newTimer.stack = debugstack()
         newTimer.isUnique = true
 
-        local registeredUniqueTimers = raidStatusLib.Schedules.registeredUniqueTimers
+        local registeredUniqueTimers = openRaidLib.Schedules.registeredUniqueTimers
         registeredUniqueTimers[namespace] = registeredUniqueTimers[namespace] or {}
         registeredUniqueTimers[namespace][scheduleName] = newTimer
     end
 
     --cancel an unique schedule
-    function raidStatusLib.Schedules.CancelUniqueTimer(namespace, scheduleName)
-        local registeredUniqueTimers = raidStatusLib.Schedules.registeredUniqueTimers
+    function openRaidLib.Schedules.CancelUniqueTimer(namespace, scheduleName)
+        local registeredUniqueTimers = openRaidLib.Schedules.registeredUniqueTimers
         local currentSchedule = registeredUniqueTimers[namespace] and registeredUniqueTimers[namespace][scheduleName]
 
         if (currentSchedule) then
@@ -344,8 +344,8 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --cancel all unique timers
-    function raidStatusLib.Schedules.CancelAllUniqueTimers()
-        local registeredUniqueTimers = raidStatusLib.Schedules.registeredUniqueTimers
+    function openRaidLib.Schedules.CancelAllUniqueTimers()
+        local registeredUniqueTimers = openRaidLib.Schedules.registeredUniqueTimers
         for namespace, schedulesTable in pairs(registeredUniqueTimers) do
             for scheduleName, timerObject in pairs (schedulesTable) do
                 if (timerObject and not timerObject._cancelled) then
@@ -374,10 +374,10 @@ LIB_RAID_STATUS_CAN_LOAD = false
     }
 
     --save build the table to avoid lose registered events on older versions
-    raidStatusLib.publicCallback = raidStatusLib.publicCallback or {}
-    raidStatusLib.publicCallback.events = raidStatusLib.publicCallback.events or {}
+    openRaidLib.publicCallback = openRaidLib.publicCallback or {}
+    openRaidLib.publicCallback.events = openRaidLib.publicCallback.events or {}
     for _, callbackName in ipairs(allPublicCallbacks) do
-        raidStatusLib.publicCallback.events[callbackName] = raidStatusLib.publicCallback.events[callbackName] or {}
+        openRaidLib.publicCallback.events[callbackName] = openRaidLib.publicCallback.events[callbackName] or {}
     end
 
     local checkRegisterDataIntegrity = function(addonObject, event, callbackMemberName)
@@ -390,7 +390,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
             return 1
         end
 
-        if (not raidStatusLib.publicCallback.events[event]) then
+        if (not openRaidLib.publicCallback.events[event]) then
             return 2
 
         elseif (not addonObject[callbackMemberName]) then
@@ -402,8 +402,8 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     --call the registered function within the addon namespace
     --payload is sent together within the call
-    function raidStatusLib.publicCallback.TriggerCallback(event, ...)
-        local callbacks = raidStatusLib.publicCallback.events[event]
+    function openRaidLib.publicCallback.TriggerCallback(event, ...)
+        local callbacks = openRaidLib.publicCallback.events[event]
 
         for i = 1, #callbacks do
             local addonObject = callbacks[i][1]
@@ -420,7 +420,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
         end
     end
     
-    function raidStatusLib.RegisterCallback(addonObject, event, callbackMemberName)
+    function openRaidLib.RegisterCallback(addonObject, event, callbackMemberName)
         --check of integrity
         local integrity = checkRegisterDataIntegrity(addonObject, event, callbackMemberName)
         if (integrity and type(integrity) ~= "boolean") then
@@ -428,21 +428,21 @@ LIB_RAID_STATUS_CAN_LOAD = false
         end
 
         --register
-        tinsert(raidStatusLib.publicCallback.events[event], {addonObject, callbackMemberName})
+        tinsert(openRaidLib.publicCallback.events[event], {addonObject, callbackMemberName})
         return true
     end
 
-    function raidStatusLib.UnregisterCallback(addonObject, event, callbackMemberName)
+    function openRaidLib.UnregisterCallback(addonObject, event, callbackMemberName)
         --check of integrity
         local integrity = checkRegisterDataIntegrity(addonObject, event, callbackMemberName)
         if (integrity and type(integrity) ~= "boolean") then
             return integrity
         end
 
-        for i = 1, #raidStatusLib.publicCallback.events[event] do
-            local registeredCallback = raidStatusLib.publicCallback.events[event][i]
+        for i = 1, #openRaidLib.publicCallback.events[event] do
+            local registeredCallback = openRaidLib.publicCallback.events[event][i]
             if (registeredCallback[1] == addonObject and registeredCallback[2] == callbackMemberName) then
-                tremove(raidStatusLib.publicCallback.events[event], i)
+                tremove(openRaidLib.publicCallback.events[event], i)
                 break
             end
         end
@@ -452,8 +452,8 @@ LIB_RAID_STATUS_CAN_LOAD = false
 --> ~internal ~callbacks
 --internally, each module can register events through the internal callback to be notified when something happens in the game
 
-    raidStatusLib.internalCallback = {}
-    raidStatusLib.internalCallback.events = {
+    openRaidLib.internalCallback = {}
+    openRaidLib.internalCallback.events = {
         ["onEnterGroup"] = {},
         ["onLeaveGroup"] = {},
         ["playerCast"] = {},
@@ -463,12 +463,12 @@ LIB_RAID_STATUS_CAN_LOAD = false
         ["onPlayerRess"] = {},
     }
 
-    raidStatusLib.internalCallback.RegisterCallback = function(event, func)
-        tinsert(raidStatusLib.internalCallback.events[event], func)
+    openRaidLib.internalCallback.RegisterCallback = function(event, func)
+        tinsert(openRaidLib.internalCallback.events[event], func)
     end
 
-    raidStatusLib.internalCallback.UnRegisterCallback = function(event, func)
-        local container = raidStatusLib.internalCallback.events[event]
+    openRaidLib.internalCallback.UnRegisterCallback = function(event, func)
+        local container = openRaidLib.internalCallback.events[event]
         for i = 1, #container do
             if (container[i] == func) then
                 tremove(container, i)
@@ -477,70 +477,70 @@ LIB_RAID_STATUS_CAN_LOAD = false
         end
     end
 
-    function raidStatusLib.internalCallback.TriggerEvent(event, ...)
-        local container = raidStatusLib.internalCallback.events[event]
+    function openRaidLib.internalCallback.TriggerEvent(event, ...)
+        local container = openRaidLib.internalCallback.events[event]
         for i = 1, #container do
             container[i](event, ...)
         end
     end
 
     --create the frame for receiving game events
-    local eventFrame = _G.RaidStatusLibFrame
+    local eventFrame = _G.OpenRaidLibFrame
     if (not eventFrame) then
-        eventFrame = CreateFrame("frame", "RaidStatusLibFrame", UIParent)
+        eventFrame = CreateFrame("frame", "OpenRaidLibFrame", UIParent)
     end
 
     local eventFunctions = {
         --check if the player joined a group
         ["GROUP_ROSTER_UPDATE"] = function()
             local eventTriggered = false
-            if (raidStatusLib.IsInGroup()) then
-                if (not raidStatusLib.inGroup) then
-                    raidStatusLib.inGroup = true
-                    raidStatusLib.internalCallback.TriggerEvent("onEnterGroup")
+            if (openRaidLib.IsInGroup()) then
+                if (not openRaidLib.inGroup) then
+                    openRaidLib.inGroup = true
+                    openRaidLib.internalCallback.TriggerEvent("onEnterGroup")
                     eventTriggered = true
                 end
             else
-                if (raidStatusLib.inGroup) then
-                    raidStatusLib.inGroup = false
-                    raidStatusLib.internalCallback.TriggerEvent("onLeaveGroup")
+                if (openRaidLib.inGroup) then
+                    openRaidLib.inGroup = false
+                    openRaidLib.internalCallback.TriggerEvent("onLeaveGroup")
                     eventTriggered = true
                 end
             end
 
-            if (not eventTriggered and raidStatusLib.IsInGroup()) then --the player didn't left or enter a group
+            if (not eventTriggered and openRaidLib.IsInGroup()) then --the player didn't left or enter a group
                 --the group has changed, trigger a long timer to send full data
                 --as the timer is unique, a new change to the group will replace and refresh the time
                 --using random time, players won't trigger all at the same time
                 local randomTime = 1.0 + math.random(1.0, 5.5)
-                raidStatusLib.Schedules.NewUniqueTimer(randomTime, raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
+                openRaidLib.Schedules.NewUniqueTimer(randomTime, openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
             end
         end,
 
         ["UNIT_SPELLCAST_SUCCEEDED"] = function(...)
             local unitId, castGUID, spellId = ...
             C_Timer.After(0.1, function()
-                raidStatusLib.internalCallback.TriggerEvent("playerCast", spellId)
+                openRaidLib.internalCallback.TriggerEvent("playerCast", spellId)
             end)
         end,
 
         ["PLAYER_ENTERING_WORLD"] = function(...)
-            raidStatusLib.internalCallback.TriggerEvent("onEnterWorld")
+            openRaidLib.internalCallback.TriggerEvent("onEnterWorld")
         end,
 
         --["PLAYER_SPECIALIZATION_CHANGED"] = function(...) end, --on changing spec, the talent_update event is also triggered
         ["PLAYER_TALENT_UPDATE"] = function(...)
-            raidStatusLib.internalCallback.TriggerEvent("talentUpdate")
+            openRaidLib.internalCallback.TriggerEvent("talentUpdate")
         end,
 
         ["PLAYER_DEAD"] = function(...)
-            raidStatusLib.UpdatePlayerAliveStatus()
+            openRaidLib.UpdatePlayerAliveStatus()
         end,
         ["PLAYER_ALIVE"] = function(...)
-            raidStatusLib.UpdatePlayerAliveStatus()
+            openRaidLib.UpdatePlayerAliveStatus()
         end,
         ["PLAYER_UNGHOST"] = function(...)
-            raidStatusLib.UpdatePlayerAliveStatus()
+            openRaidLib.UpdatePlayerAliveStatus()
         end,
 
         ["PLAYER_REGEN_DISABLED"] = function(...)
@@ -551,20 +551,20 @@ LIB_RAID_STATUS_CAN_LOAD = false
             --left combat
             --when left encounter, share everything
             --small hack, pretend to have just entered in the group, hence send all data
-            raidStatusLib.internalCallback.TriggerEvent("onEnterGroup")
+            openRaidLib.internalCallback.TriggerEvent("onEnterGroup")
         end,
 
         ["UPDATE_INVENTORY_DURABILITY"] = function(...)
             --an item has changed its durability
             --do not trigger this event  while in combat
             if (not InCombatLockdown()) then
-                raidStatusLib.Schedules.NewUniqueTimer(5 + math.random(0, 4), raidStatusLib.gearManager.SendDurability, "gearManager", "sendDurability_Schedule")
+                openRaidLib.Schedules.NewUniqueTimer(5 + math.random(0, 4), openRaidLib.gearManager.SendDurability, "gearManager", "sendDurability_Schedule")
             end
         end,
 
         ["PLAYER_EQUIPMENT_CHANGED"] = function(...)
             --player changed an equipment
-            raidStatusLib.Schedules.NewUniqueTimer(4 + math.random(0, 5), raidStatusLib.gearManager.SendAllGearInfo, "gearManager", "sendAllGearInfo_Schedule")
+            openRaidLib.Schedules.NewUniqueTimer(4 + math.random(0, 5), openRaidLib.gearManager.SendAllGearInfo, "gearManager", "sendAllGearInfo_Schedule")
         end,
 
         ["ENCOUNTER_END"] = function()
@@ -597,90 +597,90 @@ LIB_RAID_STATUS_CAN_LOAD = false
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~main ~control
 
-    raidStatusLib.mainControl = {
+    openRaidLib.mainControl = {
         playerAliveStatus = {},
     }
 
     --send full data (all data available)
-    function raidStatusLib.mainControl.SendFullData()
+    function openRaidLib.mainControl.SendFullData()
 
         --send cooldown data
-        raidStatusLib.cooldownManager.SendAllCooldowns()
+        openRaidLib.cooldownManager.SendAllCooldowns()
 
         --send gear data
-        raidStatusLib.gearManager.SendAllGearInfo()
+        openRaidLib.gearManager.SendAllGearInfo()
 
         --send player data
-        raidStatusLib.playerInfoManager.SendAllPlayerInfo()
+        openRaidLib.playerInfoManager.SendAllPlayerInfo()
     end
 
-    raidStatusLib.mainControl.onEnterWorld = function()
+    openRaidLib.mainControl.onEnterWorld = function()
         --update the alive status of the player
-        raidStatusLib.UpdatePlayerAliveStatus(true)
+        openRaidLib.UpdatePlayerAliveStatus(true)
 
         --the game client is fully loadded and all information is available
-        if (raidStatusLib.IsInGroup()) then
-            raidStatusLib.Schedules.NewUniqueTimer(1.0, raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
+        if (openRaidLib.IsInGroup()) then
+            openRaidLib.Schedules.NewUniqueTimer(1.0, openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
         end
     end
 
-    raidStatusLib.mainControl.OnEnterGroup = function()
+    openRaidLib.mainControl.OnEnterGroup = function()
         --the player entered in a group
         --schedule to send data
-        raidStatusLib.Schedules.NewUniqueTimer(1.0, raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
+        openRaidLib.Schedules.NewUniqueTimer(1.0, openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
     end
 
-    raidStatusLib.mainControl.OnLeftGroup = function()
+    openRaidLib.mainControl.OnLeftGroup = function()
         --the player left a group
         --wipe group data (each module registers the OnLeftGroup)
 
         --cancel all schedules
-        raidStatusLib.Schedules.CancelAllUniqueTimers()
+        openRaidLib.Schedules.CancelAllUniqueTimers()
 
         --wipe alive status
-        table.wipe(raidStatusLib.mainControl.playerAliveStatus)
+        table.wipe(openRaidLib.mainControl.playerAliveStatus)
 
         --toggle off comms
     end
 
-    raidStatusLib.mainControl.OnPlayerDeath = function()
+    openRaidLib.mainControl.OnPlayerDeath = function()
         local playerName = UnitName("player")
-        raidStatusLib.mainControl.playerAliveStatus[playerName] = false
+        openRaidLib.mainControl.playerAliveStatus[playerName] = false
 
         local dataToSend = CONST_COMM_PLAYER_DEAD_PREFIX
-        raidStatusLib.commHandler.SendCommData(dataToSend)
+        openRaidLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("OnPlayerDeath| " .. dataToSend) --debug
 
-        raidStatusLib.publicCallback.TriggerCallback("OnPlayerDeath", playerName)
+        openRaidLib.publicCallback.TriggerCallback("OnPlayerDeath", playerName)
     end
 
-    raidStatusLib.mainControl.OnPlayerRess = function()
+    openRaidLib.mainControl.OnPlayerRess = function()
         local playerName = UnitName("player")
-        raidStatusLib.mainControl.playerAliveStatus[playerName] = true
+        openRaidLib.mainControl.playerAliveStatus[playerName] = true
 
         local dataToSend = CONST_COMM_PLAYER_ALIVE_PREFIX
-        raidStatusLib.commHandler.SendCommData(dataToSend)
+        openRaidLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("OnPlayerRess| " .. dataToSend) --debug
 
-        raidStatusLib.publicCallback.TriggerCallback("OnPlayerRess", playerName)
+        openRaidLib.publicCallback.TriggerCallback("OnPlayerRess", playerName)
     end
 
-    raidStatusLib.internalCallback.RegisterCallback("onEnterWorld", raidStatusLib.mainControl.onEnterWorld)
-    raidStatusLib.internalCallback.RegisterCallback("onEnterGroup", raidStatusLib.mainControl.OnEnterGroup)
-    raidStatusLib.internalCallback.RegisterCallback("onLeaveGroup", raidStatusLib.mainControl.OnLeftGroup)
-    raidStatusLib.internalCallback.RegisterCallback("onPlayerDeath", raidStatusLib.mainControl.OnPlayerDeath)
-    raidStatusLib.internalCallback.RegisterCallback("onPlayerRess", raidStatusLib.mainControl.OnPlayerRess)
+    openRaidLib.internalCallback.RegisterCallback("onEnterWorld", openRaidLib.mainControl.onEnterWorld)
+    openRaidLib.internalCallback.RegisterCallback("onEnterGroup", openRaidLib.mainControl.OnEnterGroup)
+    openRaidLib.internalCallback.RegisterCallback("onLeaveGroup", openRaidLib.mainControl.OnLeftGroup)
+    openRaidLib.internalCallback.RegisterCallback("onPlayerDeath", openRaidLib.mainControl.OnPlayerDeath)
+    openRaidLib.internalCallback.RegisterCallback("onPlayerRess", openRaidLib.mainControl.OnPlayerRess)
 
     --a player in the group died
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_PLAYER_DEAD_PREFIX, function(data, sourceName)
-        raidStatusLib.mainControl.playerAliveStatus[sourceName] = false
-        raidStatusLib.publicCallback.TriggerCallback("OnPlayerDeath", sourceName)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_PLAYER_DEAD_PREFIX, function(data, sourceName)
+        openRaidLib.mainControl.playerAliveStatus[sourceName] = false
+        openRaidLib.publicCallback.TriggerCallback("OnPlayerDeath", sourceName)
     end)
 
     --a player in the group is now alive
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_PLAYER_ALIVE_PREFIX, function(data, sourceName)
-        raidStatusLib.mainControl.playerAliveStatus[sourceName] = true
-        raidStatusLib.publicCallback.TriggerCallback("OnPlayerRess", sourceName)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_PLAYER_ALIVE_PREFIX, function(data, sourceName)
+        openRaidLib.mainControl.playerAliveStatus[sourceName] = true
+        openRaidLib.publicCallback.TriggerCallback("OnPlayerRess", sourceName)
     end)
 
 
@@ -688,39 +688,39 @@ LIB_RAID_STATUS_CAN_LOAD = false
 --> ~all, request data from all players
 
     --send a request to all player to send their data
-    function raidStatusLib.RequestAllPlayersInfo()
+    function openRaidLib.RequestAllPlayersInfo()
 		if (not IsInGroup()) then
 			return
 		end
 
-        raidStatusLib.requestAllInfoCooldown = raidStatusLib.requestAllInfoCooldown or 0
+        openRaidLib.requestAllInfoCooldown = openRaidLib.requestAllInfoCooldown or 0
 
-        if (raidStatusLib.requestAllInfoCooldown > GetTime()) then
+        if (openRaidLib.requestAllInfoCooldown > GetTime()) then
             return
         end
 
-        raidStatusLib.commHandler.SendCommData(CONST_COMM_FULLINFO_PREFIX)
+        openRaidLib.commHandler.SendCommData(CONST_COMM_FULLINFO_PREFIX)
         diagnosticComm("RequestAllInfo| " .. CONST_COMM_FULLINFO_PREFIX) --debug
 
-        raidStatusLib.requestAllInfoCooldown = GetTime() + 5
+        openRaidLib.requestAllInfoCooldown = GetTime() + 5
         return true
     end
 
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_FULLINFO_PREFIX, function(data, sourceName)
-        raidStatusLib.sendRequestedAllInfoCooldown = raidStatusLib.sendRequestedAllInfoCooldown or 0
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_FULLINFO_PREFIX, function(data, sourceName)
+        openRaidLib.sendRequestedAllInfoCooldown = openRaidLib.sendRequestedAllInfoCooldown or 0
 
         --some player in the group requested  all information from all players
-        if (raidStatusLib.sendRequestedAllInfoCooldown > GetTime()) then
+        if (openRaidLib.sendRequestedAllInfoCooldown > GetTime()) then
             return
         end
 
-        raidStatusLib.Schedules.NewUniqueTimer(random() + math.random(0, 3), raidStatusLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
-        raidStatusLib.sendRequestedAllInfoCooldown = GetTime() + 5
+        openRaidLib.Schedules.NewUniqueTimer(random() + math.random(0, 3), openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
+        openRaidLib.sendRequestedAllInfoCooldown = GetTime() + 5
     end)
 
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~cooldowns
-    raidStatusLib.cooldownManager = {
+    openRaidLib.cooldownManager = {
         playerData = {}, --stores the list of cooldowns each player has sent
         playerCurrentCooldowns = {},
         cooldownTickers = {}, --store C_Timer.NewTicker
@@ -730,19 +730,19 @@ LIB_RAID_STATUS_CAN_LOAD = false
     local cooldownTimeLeftCheck = function(tickerObject)
         local spellId = tickerObject.spellId
         tickerObject.cooldownTimeLeft = tickerObject.cooldownTimeLeft - CONST_COOLDOWN_CHECK_INTERVAL
-        local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
+        local timeLeft, charges, startTime, duration = openRaidLib.cooldownManager.GetCooldownStatus(spellId)
 
         --is the spell ready to use?
         if (timeLeft == 0) then
             --it's ready
-            raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, 0, charges, 0, 0)
-            raidStatusLib.cooldownManager.cooldownTickers[spellId] = nil
+            openRaidLib.cooldownManager.SendCooldownUpdate(spellId, 0, charges, 0, 0)
+            openRaidLib.cooldownManager.cooldownTickers[spellId] = nil
             tickerObject:Cancel()
         else
             --check if the time left has changed
-            if (not raidStatusLib.isNearlyEqual(tickerObject.cooldownTimeLeft, timeLeft, CONST_COOLDOWN_TIMELEFT_HAS_CHANGED)) then
+            if (not openRaidLib.isNearlyEqual(tickerObject.cooldownTimeLeft, timeLeft, CONST_COOLDOWN_TIMELEFT_HAS_CHANGED)) then
                 --there's a deviation, send a comm to communicate the change in the time left
-                raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges, startTime, duration)
+                openRaidLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges, startTime, duration)
                 tickerObject.cooldownTimeLeft = timeLeft
             end
         end
@@ -750,7 +750,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
 
     --after a spell is casted by the player, start a ticker to check its cooldown
     local cooldownStartTicker = function(spellId, cooldownTimeLeft)
-        local existingTicker = raidStatusLib.cooldownManager.cooldownTickers[spellId]
+        local existingTicker = openRaidLib.cooldownManager.cooldownTickers[spellId]
         if (existingTicker) then
             --is a ticker already exists, might be the cooldown of a charge
             --if the ticker isn't about to expire, just keep the timer
@@ -770,7 +770,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
         local newTicker = C_Timer.NewTicker(CONST_COOLDOWN_CHECK_INTERVAL, cooldownTimeLeftCheck, maxTicks)
 
         --store the ticker
-        raidStatusLib.cooldownManager.cooldownTickers[spellId] = newTicker
+        openRaidLib.cooldownManager.cooldownTickers[spellId] = newTicker
         newTicker.spellId = spellId
         newTicker.cooldownTimeLeft = cooldownTimeLeft
         newTicker.startTime = GetTime()
@@ -778,11 +778,11 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     local cooldownGetUnitTable = function(unitName, shouldWipe)
-        local unitCooldownTable = raidStatusLib.cooldownManager.playerData[unitName]
+        local unitCooldownTable = openRaidLib.cooldownManager.playerData[unitName]
         --check if the unit has a cooldownTable
         if (not unitCooldownTable) then
             unitCooldownTable = {}
-            raidStatusLib.cooldownManager.playerData[unitName] = unitCooldownTable
+            openRaidLib.cooldownManager.playerData[unitName] = unitCooldownTable
         else
             --as the unit could have changed a talent or spec, wipe the table before using it
             if (shouldWipe) then
@@ -806,33 +806,33 @@ LIB_RAID_STATUS_CAN_LOAD = false
         unitCooldownTable[spellId] = spellIdTable
     end
 
-    function raidStatusLib.cooldownManager.GetAllPlayersCooldown()
-        return raidStatusLib.cooldownManager.playerData
+    function openRaidLib.cooldownManager.GetAllPlayersCooldown()
+        return openRaidLib.cooldownManager.playerData
     end
 
     --@playerName: name of the player
-    function raidStatusLib.cooldownManager.GetPlayerCooldowns(playerName)
-        return raidStatusLib.cooldownManager.playerData[playerName]
+    function openRaidLib.cooldownManager.GetPlayerCooldowns(playerName)
+        return openRaidLib.cooldownManager.playerData[playerName]
     end
 
-    function raidStatusLib.cooldownManager.OnPlayerCast(event, spellId)
+    function openRaidLib.cooldownManager.OnPlayerCast(event, spellId)
         --player casted a spell, check if the spell is registered as cooldown
-        local playerSpec = raidStatusLib.GetPlayerSpecId()
+        local playerSpec = openRaidLib.GetPlayerSpecId()
         if (playerSpec) then
-            if (LIB_RAID_STATUS_COOLDOWNS_BY_SPEC[playerSpec] and LIB_RAID_STATUS_COOLDOWNS_BY_SPEC[playerSpec][spellId]) then
+            if (LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[playerSpec] and LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[playerSpec][spellId]) then
                 --get the cooldown time for this spell
-                local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
+                local timeLeft, charges, startTime, duration = openRaidLib.cooldownManager.GetCooldownStatus(spellId)
                 local playerName = UnitName("player")
-                local playerCooldownTable = raidStatusLib.cooldownManager.GetPlayerCooldowns(playerName)
+                local playerCooldownTable = openRaidLib.cooldownManager.GetPlayerCooldowns(playerName)
 
                 --update the time left
                 singleCooldownUpdate(playerName, spellId, timeLeft, charges, startTime, duration)
 
                 --trigger a public callback
-                raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", playerName, spellId, timeLeft, charges, startTime, duration, playerCooldownTable, raidStatusLib.cooldownManager.playerData)
+                openRaidLib.publicCallback.TriggerCallback("CooldownUpdate", playerName, spellId, timeLeft, charges, startTime, duration, playerCooldownTable, openRaidLib.cooldownManager.playerData)
 
                 --send to comm
-                raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges, startTime, duration)
+                openRaidLib.cooldownManager.SendCooldownUpdate(spellId, timeLeft, charges, startTime, duration)
 
                 --create a timer to monitor the time of this cooldown
                 --as there's just a few of them to monitor, there's no issue on creating one timer per spell
@@ -840,10 +840,10 @@ LIB_RAID_STATUS_CAN_LOAD = false
             end
         end
     end
-    raidStatusLib.internalCallback.RegisterCallback("playerCast",  raidStatusLib.cooldownManager.OnPlayerCast)
+    openRaidLib.internalCallback.RegisterCallback("playerCast",  openRaidLib.cooldownManager.OnPlayerCast)
 
     --received a cooldown update from another unit (sent by the function above)
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNUPDATE_PREFIX, function(data, sourceName)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNUPDATE_PREFIX, function(data, sourceName)
         --get data
         local dataAsArray = data
         local spellId = tonumber(dataAsArray[1])
@@ -873,47 +873,47 @@ LIB_RAID_STATUS_CAN_LOAD = false
         singleCooldownUpdate(sourceName, spellId, cooldownTimer, charges, startTime, duration)
 
         --trigger a public callback
-        raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", sourceName, spellId, cooldownTimer, charges, startTime, duration, raidStatusLib.cooldownManager.playerData)
+        openRaidLib.publicCallback.TriggerCallback("CooldownUpdate", sourceName, spellId, cooldownTimer, charges, startTime, duration, openRaidLib.cooldownManager.playerData)
     end)
 
     --when the player is ressed while in a group, send the cooldown list
-    function raidStatusLib.cooldownManager.OnPlayerRess()
+    function openRaidLib.cooldownManager.OnPlayerRess()
         --check if is in group
-        if (raidStatusLib.IsInGroup()) then
-            raidStatusLib.Schedules.NewUniqueTimer(1.0 + math.random(0.0, 6.0), raidStatusLib.cooldownManager.SendAllCooldowns, "cooldownManager", "sendAllCooldowns_Schedule")
+        if (openRaidLib.IsInGroup()) then
+            openRaidLib.Schedules.NewUniqueTimer(1.0 + math.random(0.0, 6.0), openRaidLib.cooldownManager.SendAllCooldowns, "cooldownManager", "sendAllCooldowns_Schedule")
         end
     end
-    raidStatusLib.internalCallback.RegisterCallback("onPlayerRess", raidStatusLib.cooldownManager.OnPlayerRess)
+    openRaidLib.internalCallback.RegisterCallback("onPlayerRess", openRaidLib.cooldownManager.OnPlayerRess)
 
     --clear data stored
-    function raidStatusLib.cooldownManager.EraseData()
-        table.wipe(raidStatusLib.cooldownManager.playerData)
+    function openRaidLib.cooldownManager.EraseData()
+        table.wipe(openRaidLib.cooldownManager.playerData)
     end
 
-    function raidStatusLib.cooldownManager.OnLeaveGroup()
+    function openRaidLib.cooldownManager.OnLeaveGroup()
         --clear the data
-        raidStatusLib.cooldownManager.EraseData()
+        openRaidLib.cooldownManager.EraseData()
 
         --trigger a public callback
-        raidStatusLib.publicCallback.TriggerCallback("CooldownListWiped", raidStatusLib.cooldownManager.playerData)
+        openRaidLib.publicCallback.TriggerCallback("CooldownListWiped", openRaidLib.cooldownManager.playerData)
     end
-    raidStatusLib.internalCallback.RegisterCallback("onLeaveGroup", raidStatusLib.cooldownManager.OnLeaveGroup)
+    openRaidLib.internalCallback.RegisterCallback("onLeaveGroup", openRaidLib.cooldownManager.OnLeaveGroup)
 
     --adds a list of cooldowns for another player in the group
     --this is called from the received cooldown list from comm
-    function raidStatusLib.cooldownManager.AddUnitCooldownsList(unitName, cooldownsTable)
+    function openRaidLib.cooldownManager.AddUnitCooldownsList(unitName, cooldownsTable)
         local unitCooldownTable = cooldownGetUnitTable(unitName, true)
-        raidStatusLib.TCopy(unitCooldownTable, cooldownsTable)
+        openRaidLib.TCopy(unitCooldownTable, cooldownsTable)
 
         --trigger a public callback
-        raidStatusLib.publicCallback.TriggerCallback("CooldownListUpdate", unitName, unitCooldownTable, raidStatusLib.cooldownManager.playerData)
+        openRaidLib.publicCallback.TriggerCallback("CooldownListUpdate", unitName, unitCooldownTable, openRaidLib.cooldownManager.playerData)
     end
 
     --check if a player cooldown is ready or if is in cooldown
     --@spellId: the spellId to check for cooldown
-    function raidStatusLib.cooldownManager.GetCooldownStatus(spellId)
+    function openRaidLib.cooldownManager.GetCooldownStatus(spellId)
         --check if is a charge spell
-        local cooldownInfo = LIB_RAID_STATUS_COOLDOWNS_INFO[spellId]
+        local cooldownInfo = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
         if (cooldownInfo) then
             if (cooldownInfo.charges and cooldownInfo.charges > 1) then
                 local chargesAvailable, chargesTotal, start, duration = GetSpellCharges(spellId)
@@ -943,57 +943,57 @@ LIB_RAID_STATUS_CAN_LOAD = false
     end
 
     --send to comm all cooldowns available for the player
-    function raidStatusLib.cooldownManager.SendAllCooldowns()
+    function openRaidLib.cooldownManager.SendAllCooldowns()
         --get the full cooldown list
-        local playerCooldownList = raidStatusLib.cooldownManager.GetPlayerCooldownList()
+        local playerCooldownList = openRaidLib.cooldownManager.GetPlayerCooldownList()
         local dataToSend = CONST_COMM_COOLDOWNFULLLIST_PREFIX .. ","
 
         --pack
-        local playerCooldownString = raidStatusLib.PackTable(playerCooldownList)
+        local playerCooldownString = openRaidLib.PackTable(playerCooldownList)
         dataToSend = dataToSend .. playerCooldownString
 
         --send the data
-        raidStatusLib.commHandler.SendCommData(dataToSend)
+        openRaidLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("SendAllCooldowns| " .. dataToSend) --debug
     end
 
     --send to comm a specific cooldown that was just used, a charge got available or its cooldown is over (ready to use)
-    function raidStatusLib.cooldownManager.SendCooldownUpdate(spellId, cooldownTimeLeft, charges, startTime, duration)
+    function openRaidLib.cooldownManager.SendCooldownUpdate(spellId, cooldownTimeLeft, charges, startTime, duration)
         local dataToSend = CONST_COMM_COOLDOWNUPDATE_PREFIX .. "," .. spellId .. "," .. cooldownTimeLeft .. "," .. charges .. "," .. startTime .. "," .. duration
-        raidStatusLib.commHandler.SendCommData(dataToSend)
+        openRaidLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("SendCooldownUpdate| " .. dataToSend) --debug
     end
 
     --triggered when the lib receives a full list of cooldowns from another player in the raid
     --@data: table received from comm
     --@source: player name
-    function raidStatusLib.cooldownManager.OnReceiveCooldowns(data, source)
+    function openRaidLib.cooldownManager.OnReceiveCooldowns(data, source)
         --unpack the table as a pairs table | the cooldown info uses 5 indexes
-        local unpackedTable = raidStatusLib.UnpackTable(data, 1, true, true, 5)
+        local unpackedTable = openRaidLib.UnpackTable(data, 1, true, true, 5)
         --add the list of cooldowns
-        raidStatusLib.cooldownManager.AddUnitCooldownsList(source, unpackedTable)
+        openRaidLib.cooldownManager.AddUnitCooldownsList(source, unpackedTable)
     end
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNFULLLIST_PREFIX, raidStatusLib.cooldownManager.OnReceiveCooldowns)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNFULLLIST_PREFIX, openRaidLib.cooldownManager.OnReceiveCooldowns)
 
 
     --build a list with the local player cooldowns
-    function raidStatusLib.cooldownManager.GetPlayerCooldownList()
+    function openRaidLib.cooldownManager.GetPlayerCooldownList()
         --get the player specId
-        local specId = raidStatusLib.GetPlayerSpecId()
+        local specId = openRaidLib.GetPlayerSpecId()
         if (specId) then
             --get the cooldowns for the specialization
-            local playerCooldowns = LIB_RAID_STATUS_COOLDOWNS_BY_SPEC[specId]
+            local playerCooldowns = LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specId]
             if (not playerCooldowns) then
                 diagnosticError("cooldownManager|GetPlayerCooldownList|can't find player cooldowns for specId:", specId)
                 return {}
             end
 
             local cooldowns = {}
-            local talentsHash, talentsIndex = raidStatusLib.GetPlayerTalents()
+            local talentsHash, talentsIndex = openRaidLib.GetPlayerTalents()
 
             for cooldownSpellId, cooldownType in pairs(playerCooldowns) do
                 --get all the information about this cooldow
-                local cooldownInfo = LIB_RAID_STATUS_COOLDOWNS_INFO[cooldownSpellId]
+                local cooldownInfo = LIB_OPEN_RAID_COOLDOWNS_INFO[cooldownSpellId]
                 if (cooldownInfo) then
                     --does this cooldown is based on a talent?
                     local talentId = cooldownInfo.talent
@@ -1001,7 +1001,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
                         --check if the player has the talent selected
                         if (talentsHash[talentId]) then
                             cooldowns[#cooldowns+1] = cooldownSpellId
-                            local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
+                            local timeLeft, charges, startTime, duration = openRaidLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
                             cooldowns[#cooldowns+1] = timeLeft
                             cooldowns[#cooldowns+1] = charges
                             cooldowns[#cooldowns+1] = startTime
@@ -1009,7 +1009,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
                         end
                     else
                         cooldowns[#cooldowns+1] = cooldownSpellId
-                        local timeLeft, charges, startTime, duration = raidStatusLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
+                        local timeLeft, charges, startTime, duration = openRaidLib.cooldownManager.GetCooldownStatus(cooldownSpellId)
                         cooldowns[#cooldowns+1] = timeLeft
                         cooldowns[#cooldowns+1] = charges
                         cooldowns[#cooldowns+1] = startTime
@@ -1027,7 +1027,7 @@ LIB_RAID_STATUS_CAN_LOAD = false
 C_Timer.After(0.1, function()
     local vintageCDTrackerFrame = CreateFrame("frame")
     vintageCDTrackerFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    local allCooldownsFromLib = LIB_RAID_STATUS_COOLDOWNS_INFO
+    local allCooldownsFromLib = LIB_OPEN_RAID_COOLDOWNS_INFO
     local recentCastedSpells =  {}
 
     vintageCDTrackerFrame:SetScript("OnEvent", function(self, event, ...)
@@ -1036,7 +1036,7 @@ C_Timer.After(0.1, function()
             if (UnitInParty(unit) or UnitInRaid(unit)) then
                 local unitName = UnitName(unit)
                 local cooldownInfo = allCooldownsFromLib[spellId]
-                if (cooldownInfo and unitName and not raidStatusLib.cooldownManager.GetPlayerCooldowns(unitName)) then
+                if (cooldownInfo and unitName and not openRaidLib.cooldownManager.GetPlayerCooldowns(unitName)) then
                     --check for cast_success spam from channel spells
                     local unitCastCooldown = recentCastedSpells[UnitGUID(unit)]
                     if (not unitCastCooldown) then
@@ -1053,7 +1053,7 @@ C_Timer.After(0.1, function()
                         singleCooldownUpdate(unitName, spellId, duration, 0, 0, duration)
 
                         --trigger a public callback
-                        raidStatusLib.publicCallback.TriggerCallback("CooldownUpdate", unitName, spellId, duration, 0, 0, duration, raidStatusLib.cooldownManager.playerData)
+                        openRaidLib.publicCallback.TriggerCallback("CooldownUpdate", unitName, spellId, duration, 0, 0, duration, openRaidLib.cooldownManager.playerData)
                     end
                 end
             end
@@ -1067,18 +1067,18 @@ end)
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~equipment
 
-    raidStatusLib.gearManager = {
+    openRaidLib.gearManager = {
         --structure:
         --[playerName] = {ilevel = 100, durability = 100, weaponEnchant = 0, noGems = {}, noEnchants = {}}
         playerData = {},
     }
 
-    function raidStatusLib.gearManager.GetAllPlayersGear()
-        return raidStatusLib.gearManager.playerData
+    function openRaidLib.gearManager.GetAllPlayersGear()
+        return openRaidLib.gearManager.playerData
     end
 
-    function raidStatusLib.gearManager.GetPlayerGear(playerName, createNew)
-        local playerGearInfo = raidStatusLib.gearManager.playerData[playerName]
+    function openRaidLib.gearManager.GetPlayerGear(playerName, createNew)
+        local playerGearInfo = openRaidLib.gearManager.playerData[playerName]
         if (not playerGearInfo and createNew) then
             playerGearInfo = {
                 ilevel = 0,
@@ -1087,13 +1087,13 @@ end)
                 noGems = {},
                 noEnchants = {},
             }
-            raidStatusLib.gearManager.playerData[playerName] = playerGearInfo
+            openRaidLib.gearManager.playerData[playerName] = playerGearInfo
         end
         return playerGearInfo
     end
 
     --return an integer between zero and one hundret indicating the player gear durability
-    function raidStatusLib.gearManager.GetGearDurability()
+    function openRaidLib.gearManager.GetGearDurability()
         local durabilityTotalPercent, totalItems = 0, 0
         for i = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
             local durability, maxDurability = GetInventoryItemDurability(i)
@@ -1112,63 +1112,63 @@ end)
     end
 
     --clear data stored
-    function raidStatusLib.gearManager.EraseData()
-        table.wipe(raidStatusLib.gearManager.playerData)
+    function openRaidLib.gearManager.EraseData()
+        table.wipe(openRaidLib.gearManager.playerData)
     end
 
-    function raidStatusLib.gearManager.OnLeaveGroup()
+    function openRaidLib.gearManager.OnLeaveGroup()
         --clear the data
-        raidStatusLib.gearManager.EraseData()
+        openRaidLib.gearManager.EraseData()
 
         --trigger a public callback
-        raidStatusLib.publicCallback.TriggerCallback("GearListWiped", raidStatusLib.gearManager.playerData)
+        openRaidLib.publicCallback.TriggerCallback("GearListWiped", openRaidLib.gearManager.playerData)
     end
-    raidStatusLib.internalCallback.RegisterCallback("onLeaveGroup", raidStatusLib.gearManager.OnLeaveGroup)
+    openRaidLib.internalCallback.RegisterCallback("onLeaveGroup", openRaidLib.gearManager.OnLeaveGroup)
 
     --when the player is ressed while in a group, send the cooldown list
-    function raidStatusLib.gearManager.OnPlayerRess()
+    function openRaidLib.gearManager.OnPlayerRess()
         --check if is in group
-        if (raidStatusLib.IsInGroup()) then
-            raidStatusLib.Schedules.NewUniqueTimer(1.0 + math.random(0.0, 6.0), raidStatusLib.gearManager.SendDurability, "gearManager", "sendDurability_Schedule")
+        if (openRaidLib.IsInGroup()) then
+            openRaidLib.Schedules.NewUniqueTimer(1.0 + math.random(0.0, 6.0), openRaidLib.gearManager.SendDurability, "gearManager", "sendDurability_Schedule")
         end
     end
-    raidStatusLib.internalCallback.RegisterCallback("onPlayerRess", raidStatusLib.gearManager.OnPlayerRess)
+    openRaidLib.internalCallback.RegisterCallback("onPlayerRess", openRaidLib.gearManager.OnPlayerRess)
 
     --send only the gear durability
-    function raidStatusLib.gearManager.SendDurability()
+    function openRaidLib.gearManager.SendDurability()
         local dataToSend = CONST_COMM_GEARINFO_DURABILITY_PREFIX .. ","
-        local playerGearDurability = raidStatusLib.gearManager.GetGearDurability()
+        local playerGearDurability = openRaidLib.gearManager.GetGearDurability()
 
         dataToSend = dataToSend .. playerGearDurability
 
         --send the data
-        raidStatusLib.commHandler.SendCommData(dataToSend)
+        openRaidLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("SendGearDurabilityData| " .. dataToSend) --debug
     end
 
-    function raidStatusLib.gearManager.OnReceiveGearDurability(data, source)
+    function openRaidLib.gearManager.OnReceiveGearDurability(data, source)
         local durability = tonumber(data[1])
-        raidStatusLib.gearManager.UpdateUnitGearDurability(source, durability)
+        openRaidLib.gearManager.UpdateUnitGearDurability(source, durability)
     end
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_GEARINFO_DURABILITY_PREFIX, raidStatusLib.gearManager.OnReceiveGearDurability)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_GEARINFO_DURABILITY_PREFIX, openRaidLib.gearManager.OnReceiveGearDurability)
 
     --on receive the durability (sent when the player get a ress)
-    function raidStatusLib.gearManager.UpdateUnitGearDurability(playerName, durability)
-        local playerGearInfo = raidStatusLib.gearManager.GetPlayerGear(playerName)
+    function openRaidLib.gearManager.UpdateUnitGearDurability(playerName, durability)
+        local playerGearInfo = openRaidLib.gearManager.GetPlayerGear(playerName)
         if (playerGearInfo) then
             playerGearInfo.durability = durability
-            raidStatusLib.publicCallback.TriggerCallback("GearDurabilityUpdate", playerName, durability, playerGearInfo, raidStatusLib.gearManager.GetAllPlayersGear())
+            openRaidLib.publicCallback.TriggerCallback("GearDurabilityUpdate", playerName, durability, playerGearInfo, openRaidLib.gearManager.GetAllPlayersGear())
         end
     end
 
     --get gear information from what the player has equipped at the moment
-    function raidStatusLib.gearManager.GetPlayerGearInfo()
+    function openRaidLib.gearManager.GetPlayerGearInfo()
 
         --get the player class and specId
         local _, playerClass = UnitClass("player")
-        local specId = raidStatusLib.GetPlayerSpecId()
+        local specId = openRaidLib.GetPlayerSpecId()
         --get which attribute the spec uses
-        local specMainAttribute = raidStatusLib.specAttribute[playerClass][specId] --1 int, 2 dex, 3 str
+        local specMainAttribute = openRaidLib.specAttribute[playerClass][specId] --1 int, 2 dex, 3 str
 
         if (not specId or not specMainAttribute) then
             return {0, 0, 0, {}, {}}
@@ -1184,15 +1184,15 @@ end)
             end
 
         --repair status
-            local gearDurability = raidStatusLib.gearManager.GetGearDurability()
+            local gearDurability = openRaidLib.gearManager.GetGearDurability()
 
         --get weapon enchant
             local weaponEnchant = 0
             local _, _, _, mainHandEnchantId, _, _, _, offHandEnchantId = GetWeaponEnchantInfo()
-            if (LIB_RAID_STATUS_WEAPON_ENCHANT_IDS[mainHandEnchantId]) then
+            if (LIB_OPEN_RAID_WEAPON_ENCHANT_IDS[mainHandEnchantId]) then
                 weaponEnchant = 1
 
-            elseif(LIB_RAID_STATUS_WEAPON_ENCHANT_IDS[offHandEnchantId]) then
+            elseif(LIB_OPEN_RAID_WEAPON_ENCHANT_IDS[offHandEnchantId]) then
                 weaponEnchant = 1
             end
 
@@ -1213,7 +1213,7 @@ end)
 
                     --enchant
                         --check if the slot can receive enchat and if the equipment has an enchant
-                        local enchantAttribute = LIB_RAID_STATUS_ENCHANT_SLOTS[equipmentSlotId]
+                        local enchantAttribute = LIB_OPEN_RAID_ENCHANT_SLOTS[equipmentSlotId]
                         if (enchantAttribute) then --this slot can receive an enchat
 
                             --check if this slot is relevant for the class, some slots can have enchants only for Agility which won't matter for Priests as an example
@@ -1235,7 +1235,7 @@ end)
                                     local enchantIdInt = tonumber(enchantId)
                                     if (enchantIdInt) then
                                         --does the enchant is relevent for the character?
-                                        if (not LIB_RAID_STATUS_ENCHANT_IDS[enchantIdInt]) then
+                                        if (not LIB_OPEN_RAID_ENCHANT_IDS[enchantIdInt]) then
                                             slotsWithoutEnchant[#slotsWithoutEnchant+1] = equipmentSlotId
                                         end
 
@@ -1261,7 +1261,7 @@ end)
                                     slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
 
                                 --check if the gem is not a valid gem (deprecated gem)
-                                elseif (not LIB_RAID_STATUS_GEM_IDS[gemId]) then
+                                elseif (not LIB_OPEN_RAID_GEM_IDS[gemId]) then
                                     slotsWithoutGems[#slotsWithoutGems+1] = equipmentSlotId
 
                                 end
@@ -1279,14 +1279,14 @@ end)
         playerGearInfo[#playerGearInfo+1] = slotsWithoutGems    --[5]
 
         --update the player table
-        raidStatusLib.gearManager.AddUnitGearInfoList(UnitName("player"), itemLevel, gearDurability, weaponEnchant, slotsWithoutEnchant, slotsWithoutGems)
+        openRaidLib.gearManager.AddUnitGearInfoList(UnitName("player"), itemLevel, gearDurability, weaponEnchant, slotsWithoutEnchant, slotsWithoutGems)
 
         return playerGearInfo
     end
 
     --when received the gear update from another player, store it and trigger a callback
-    function raidStatusLib.gearManager.AddUnitGearInfoList(playerName, itemLevel, durability, weaponEnchant, noEnchantTable, noGemsTable)
-        local playerGearInfo = raidStatusLib.gearManager.GetPlayerGear(playerName, true)
+    function openRaidLib.gearManager.AddUnitGearInfoList(playerName, itemLevel, durability, weaponEnchant, noEnchantTable, noGemsTable)
+        local playerGearInfo = openRaidLib.gearManager.GetPlayerGear(playerName, true)
 
         playerGearInfo.ilevel = itemLevel
         playerGearInfo.durability = durability
@@ -1294,13 +1294,13 @@ end)
         playerGearInfo.noGems = noGemsTable
         playerGearInfo.noEnchants = noEnchantTable
 
-        raidStatusLib.publicCallback.TriggerCallback("GearUpdate", playerName, playerGearInfo, raidStatusLib.gearManager.GetAllPlayersGear())
+        openRaidLib.publicCallback.TriggerCallback("GearUpdate", playerName, playerGearInfo, openRaidLib.gearManager.GetAllPlayersGear())
     end
 
     --triggered when the lib receives a gear information from another player in the raid
     --@data: table received from comm
     --@source: player name
-    function raidStatusLib.gearManager.OnReceiveGearFullInfo(data, source)
+    function openRaidLib.gearManager.OnReceiveGearFullInfo(data, source)
         local itemLevel = tonumber(data[1])
         local durability = tonumber(data[2])
         local weaponEnchant = tonumber(data[3])
@@ -1309,19 +1309,19 @@ end)
         local noGemsTableIndex = tonumber(noEnchantTableSize + 5)
         local noGemsTableSize = data[noGemsTableIndex]
 
-        --raidStatusLib.UnpackTable(table, index, isPair, valueIsTable, amountOfValues)
+        --openRaidLib.UnpackTable(table, index, isPair, valueIsTable, amountOfValues)
 
         --unpack the enchant data as a ipairs table
-        local noEnchantTableUnpacked = raidStatusLib.UnpackTable(data, 4, false, false, noEnchantTableSize)
+        local noEnchantTableUnpacked = openRaidLib.UnpackTable(data, 4, false, false, noEnchantTableSize)
         --unpack the enchant data as a ipairs table
-        local noGemsTableUnpacked = raidStatusLib.UnpackTable(data, noGemsTableIndex, false, false, noGemsTableSize)
+        local noGemsTableUnpacked = openRaidLib.UnpackTable(data, noGemsTableIndex, false, false, noGemsTableSize)
 
         --add to the list of gear information
-        raidStatusLib.gearManager.AddUnitGearInfoList(source, itemLevel, durability, weaponEnchant, noEnchantTableUnpacked, noGemsTableUnpacked)
+        openRaidLib.gearManager.AddUnitGearInfoList(source, itemLevel, durability, weaponEnchant, noEnchantTableUnpacked, noGemsTableUnpacked)
     end
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_GEARINFO_FULL_PREFIX, raidStatusLib.gearManager.OnReceiveGearFullInfo)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_GEARINFO_FULL_PREFIX, openRaidLib.gearManager.OnReceiveGearFullInfo)
 
-    function raidStatusLib.gearManager.SendAllGearInfo()
+    function openRaidLib.gearManager.SendAllGearInfo()
         --get gear information, gear info has 4 indexes:
         --[1] int item level
         --[2] int durability
@@ -1330,16 +1330,16 @@ end)
         --[4] table with integers of equipSlot which has a gem slot but the slot is empty            
 
         local dataToSend = CONST_COMM_GEARINFO_FULL_PREFIX .. ","
-        local playerGearInfo = raidStatusLib.gearManager.GetPlayerGearInfo()
+        local playerGearInfo = openRaidLib.gearManager.GetPlayerGearInfo()
 
         dataToSend = dataToSend .. playerGearInfo[1] .. "," --item level
         dataToSend = dataToSend .. playerGearInfo[2] .. "," --durability
         dataToSend = dataToSend .. playerGearInfo[3] .. "," --weapon enchant
-        dataToSend = dataToSend .. raidStatusLib.PackTable(playerGearInfo[4]) .. "," --slots without enchant
-        dataToSend = dataToSend .. raidStatusLib.PackTable(playerGearInfo[5]) -- slots with empty gem sockets
+        dataToSend = dataToSend .. openRaidLib.PackTable(playerGearInfo[4]) .. "," --slots without enchant
+        dataToSend = dataToSend .. openRaidLib.PackTable(playerGearInfo[5]) -- slots with empty gem sockets
 
         --send the data
-        raidStatusLib.commHandler.SendCommData(dataToSend)
+        openRaidLib.commHandler.SendCommData(dataToSend)
         diagnosticComm("SendGearFullData| " .. dataToSend) --debug
     end
 
@@ -1347,18 +1347,18 @@ end)
 --------------------------------------------------------------------------------------------------------------------------------
 --> ~player general ~info
 
-    raidStatusLib.playerInfoManager = {
+    openRaidLib.playerInfoManager = {
         --structure:
         --[playerName] = {ilevel = 100, durability = 100, weaponEnchant = 0, noGems = {}, noEnchants = {}}
         playerData = {},
     }
 
-    function raidStatusLib.playerInfoManager.GetAllPlayersInfo()
-        return raidStatusLib.playerInfoManager.playerData
+    function openRaidLib.playerInfoManager.GetAllPlayersInfo()
+        return openRaidLib.playerInfoManager.playerData
     end
 
-    function raidStatusLib.playerInfoManager.GetPlayerInfo(playerName, createNew)
-        local playerInfo = raidStatusLib.playerInfoManager.playerData[playerName]
+    function openRaidLib.playerInfoManager.GetPlayerInfo(playerName, createNew)
+        local playerInfo = openRaidLib.playerInfoManager.playerData[playerName]
         if (not playerInfo and createNew) then
             playerInfo = {
                 specId = 0,
@@ -1367,13 +1367,13 @@ end)
                 talents = {},
                 conduits = {},
             }
-            raidStatusLib.playerInfoManager.playerData[playerName] = playerInfo
+            openRaidLib.playerInfoManager.playerData[playerName] = playerInfo
         end
         return playerInfo
     end
 
-    function raidStatusLib.playerInfoManager.AddPlayerInfo(playerName, specId, renown, covenantId, talentsTableUnpacked, conduitsTableUnpacked)
-        local playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo(playerName, true)
+    function openRaidLib.playerInfoManager.AddPlayerInfo(playerName, specId, renown, covenantId, talentsTableUnpacked, conduitsTableUnpacked)
+        local playerInfo = openRaidLib.playerInfoManager.GetPlayerInfo(playerName, true)
 
         playerInfo.specId = specId
         playerInfo.renown = renown
@@ -1381,13 +1381,13 @@ end)
         playerInfo.talents = talentsTableUnpacked
         playerInfo.conduits = conduitsTableUnpacked
 
-        raidStatusLib.publicCallback.TriggerCallback("PlayerUpdate", playerName, raidStatusLib.playerInfoManager.playerData[playerName], raidStatusLib.playerInfoManager.GetAllPlayersInfo())
+        openRaidLib.publicCallback.TriggerCallback("PlayerUpdate", playerName, openRaidLib.playerInfoManager.playerData[playerName], openRaidLib.playerInfoManager.GetAllPlayersInfo())
     end
 
     --triggered when the lib receives a gear information from another player in the raid
     --@data: table received from comm
     --@source: player name
-    function raidStatusLib.playerInfoManager.OnReceivePlayerFullInfo(data, source)
+    function openRaidLib.playerInfoManager.OnReceivePlayerFullInfo(data, source)
         local specId = tonumber(data[1])
         local renown = tonumber(data[2])
         local covenantId = tonumber(data[3])
@@ -1396,32 +1396,32 @@ end)
         local conduitsSize = data[conduitsTableIndex]
 
         --unpack the talents data as a ipairs table
-        local talentsTableUnpacked = raidStatusLib.UnpackTable(data, 4, false, false, talentsSize)
+        local talentsTableUnpacked = openRaidLib.UnpackTable(data, 4, false, false, talentsSize)
 
         --unpack the conduits data as a ipairs table
-        local conduitsTableUnpacked = raidStatusLib.UnpackTable(data, conduitsTableIndex, false, false, conduitsSize)
+        local conduitsTableUnpacked = openRaidLib.UnpackTable(data, conduitsTableIndex, false, false, conduitsSize)
 
         --add to the list of players information and also trigger a public callback
-        raidStatusLib.playerInfoManager.AddPlayerInfo(source, specId, renown, covenantId, talentsTableUnpacked, conduitsTableUnpacked)
+        openRaidLib.playerInfoManager.AddPlayerInfo(source, specId, renown, covenantId, talentsTableUnpacked, conduitsTableUnpacked)
     end
-    raidStatusLib.commHandler.RegisterComm(CONST_COMM_PLAYERINFO_PREFIX, raidStatusLib.playerInfoManager.OnReceivePlayerFullInfo)
+    openRaidLib.commHandler.RegisterComm(CONST_COMM_PLAYERINFO_PREFIX, openRaidLib.playerInfoManager.OnReceivePlayerFullInfo)
 
-function raidStatusLib.playerInfoManager.SendAllPlayerInfo()
-    local playerInfo = raidStatusLib.playerInfoManager.GetPlayerFullInfo()
+function openRaidLib.playerInfoManager.SendAllPlayerInfo()
+    local playerInfo = openRaidLib.playerInfoManager.GetPlayerFullInfo()
 
     local dataToSend = CONST_COMM_PLAYERINFO_PREFIX .. ","
     dataToSend = dataToSend .. playerInfo[1] .. "," --spec id
     dataToSend = dataToSend .. playerInfo[2] .. "," --renown
     dataToSend = dataToSend .. playerInfo[3] .. "," --covenantId
-    dataToSend = dataToSend .. raidStatusLib.PackTable(playerInfo[4]) .. "," --talents
-    dataToSend = dataToSend .. raidStatusLib.PackTable(playerInfo[5]) .. "," --conduits
+    dataToSend = dataToSend .. openRaidLib.PackTable(playerInfo[4]) .. "," --talents
+    dataToSend = dataToSend .. openRaidLib.PackTable(playerInfo[5]) .. "," --conduits
 
     --send the data
-    raidStatusLib.commHandler.SendCommData(dataToSend)
+    openRaidLib.commHandler.SendCommData(dataToSend)
     diagnosticComm("SendGetPlayerInfoFullData| " .. dataToSend) --debug
 end
 
-function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
+function openRaidLib.playerInfoManager.GetPlayerFullInfo()
     local playerInfo = {}
 
     if (isTimewalkWoW()) then
@@ -1535,13 +1535,13 @@ function raidStatusLib.playerInfoManager.GetPlayerFullInfo()
     --]=]
 end
 
-function raidStatusLib.playerInfoManager.onEnterWorld()
-    raidStatusLib.playerInfoManager.GetPlayerFullInfo()
+function openRaidLib.playerInfoManager.onEnterWorld()
+    openRaidLib.playerInfoManager.GetPlayerFullInfo()
 end
-raidStatusLib.internalCallback.RegisterCallback("onEnterWorld", raidStatusLib.playerInfoManager.onEnterWorld)
+openRaidLib.internalCallback.RegisterCallback("onEnterWorld", openRaidLib.playerInfoManager.onEnterWorld)
 
 --talent update
-function raidStatusLib.playerInfoManager.sendTalentUpdate()
+function openRaidLib.playerInfoManager.sendTalentUpdate()
     --talents
     local talentsToSend = {0, 0, 0, 0, 0, 0, 0}
     for talentTier = 1, 7 do
@@ -1555,31 +1555,31 @@ function raidStatusLib.playerInfoManager.sendTalentUpdate()
     end
 
     local dataToSend = CONST_COMM_PLAYERINFO_TALENTS_PREFIX .. ","
-    local talentsString = raidStatusLib.PackTable(talentsToSend)
+    local talentsString = openRaidLib.PackTable(talentsToSend)
     dataToSend = dataToSend .. talentsString
 
     --send the data
-    raidStatusLib.commHandler.SendCommData(dataToSend)
+    openRaidLib.commHandler.SendCommData(dataToSend)
     diagnosticComm("SendTalentUpdateData| " .. dataToSend) --debug
 end
 
-function raidStatusLib.playerInfoManager.scheduleTalentUpdate()
-    raidStatusLib.Schedules.NewUniqueTimer(1 + math.random(0, 1), raidStatusLib.playerInfoManager.sendTalentUpdate, "playerInfoManager", "sendTalent_Schedule")
+function openRaidLib.playerInfoManager.scheduleTalentUpdate()
+    openRaidLib.Schedules.NewUniqueTimer(1 + math.random(0, 1), openRaidLib.playerInfoManager.sendTalentUpdate, "playerInfoManager", "sendTalent_Schedule")
 end
-raidStatusLib.internalCallback.RegisterCallback("talentUpdate", raidStatusLib.playerInfoManager.scheduleTalentUpdate)
+openRaidLib.internalCallback.RegisterCallback("talentUpdate", openRaidLib.playerInfoManager.scheduleTalentUpdate)
 
-function raidStatusLib.playerInfoManager.OnReceiveTalentsUpdate(data, source)
-    local talentsTableUnpacked = raidStatusLib.UnpackTable(data, 1, false, false, 7)
+function openRaidLib.playerInfoManager.OnReceiveTalentsUpdate(data, source)
+    local talentsTableUnpacked = openRaidLib.UnpackTable(data, 1, false, false, 7)
 
-    local playerInfo = raidStatusLib.playerInfoManager.GetPlayerInfo(source)
+    local playerInfo = openRaidLib.playerInfoManager.GetPlayerInfo(source)
     if (playerInfo) then
         playerInfo.talents = talentsTableUnpacked
 
         --trigger public callback event
-        raidStatusLib.publicCallback.TriggerCallback("TalentUpdate", source, playerInfo, raidStatusLib.playerInfoManager.GetAllPlayersInfo())
+        openRaidLib.publicCallback.TriggerCallback("TalentUpdate", source, playerInfo, openRaidLib.playerInfoManager.GetAllPlayersInfo())
     end
 end
-raidStatusLib.commHandler.RegisterComm(CONST_COMM_PLAYERINFO_TALENTS_PREFIX, raidStatusLib.playerInfoManager.OnReceiveTalentsUpdate)
+openRaidLib.commHandler.RegisterComm(CONST_COMM_PLAYERINFO_TALENTS_PREFIX, openRaidLib.playerInfoManager.OnReceiveTalentsUpdate)
 
 
 
@@ -1590,7 +1590,7 @@ raidStatusLib.commHandler.RegisterComm(CONST_COMM_PLAYERINFO_TALENTS_PREFIX, rai
 --1 Intellect
 --2 Agility
 --3 Strenth
-raidStatusLib.specAttribute = {
+openRaidLib.specAttribute = {
 	["DEMONHUNTER"] = {
 		[577] = 2,
 		[581] = 2,

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1706, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20211011225334")
 mod:SetCreatureID(102263)
 mod:SetEncounterID(1849)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START
@@ -186,7 +186,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.volatileScorpCount = self.vb.volatileScorpCount + 1
 		if self.Options.SetIconOnVolatileScorpion then
 			local icon = 9 - self.vb.volatileScorpCount
-			self:ScanForMobs(args.destGUID, 0, icon, 1, 0.1, 10, "SetIconOnVolatileScorpion")
+			self:ScanForMobs(args.destGUID, 2, icon, 1, nil, 10, "SetIconOnVolatileScorpion")
 		end
 	elseif spellId == 204744 and args:IsPlayer() and self:AntiSpam(2, 3) then
 		specWarnToxicChit:Show()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2445, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210831171020")
+mod:SetRevision("20211011144558")
 mod:SetCreatureID(175727)
 mod:SetEncounterID(2434)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -202,7 +202,7 @@ function mod:SPELL_CAST_START(args)
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
 --			if self.Options.SetIconOnMawsworn and self.vb.addIcon > 3 then--Only use up to 5 icons
---				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, 0.2, 12, "SetIconOnMawsworn")
+--				self:ScanForMobs(args.sourceGUID, 2, self.vb.addIcon, 1, nil, 12, "SetIconOnMawsworn")
 --			end
 --			self.vb.addIcon = self.vb.addIcon - 1
 		end
@@ -242,7 +242,7 @@ function mod:SPELL_CAST_START(args)
 			timerSpawnMawswornCD:Start(timer, self.vb.mawswornSpawn+1)
 		end
 		if self.Options.SetIconOnMawsworn then--This icon method may be faster than GUID matching, but also risks being slower and less consistent if marker has nameplates off
-			self:ScanForMobs(177594, 0, 8, 4, 0.2, 15, "SetIconOnMawsworn")
+			self:ScanForMobs(177594, 0, 8, 4, nil, 15, "SetIconOnMawsworn")
 		end
 	elseif spellId == 350411 then--Hellscream/Shackles
 		timerHellscream:Start(self:IsHeroic() and 35 or self:IsMythic() and 25 or 50)--Heroic and mythic known, other difficulties not yet
