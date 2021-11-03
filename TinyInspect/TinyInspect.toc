@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: TinyInspect
 ## Version: 9.0.2.2
 ## Notes: Show ItemLevel For Inspect & Party & Raid & Mouse & Bag & Bank ...

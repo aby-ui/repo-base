@@ -46,6 +46,7 @@ local tempGroup = {
 };
 OptionsPrivate.tempGroup = tempGroup;
 
+-- Does not duplicate child auras.
 function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
   local base_id = data.id .. " "
   local num = 2
@@ -406,14 +407,6 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
     end
   end,
   OnCancel = function(self)
-    if self.data.parents then
-      for id in pairs(self.data.parents) do
-        local parentRegion = WeakAuras.GetRegion(id)
-        if parentRegion.Resume then
-          parentRegion:Resume()
-        end
-      end
-    end
     self.data = nil
   end,
   showAlert = true,
@@ -643,10 +636,6 @@ local function LayoutDisplayButtons(msg)
   local loadedSorted, unloadedSorted = GetSortedOptionsLists();
 
   frame:SetLoadProgressVisible(true)
-  --frame.buttonsScroll:AddChild(frame.newButton);
-  --if(frame.addonsButton) then
-  --  frame.buttonsScroll:AddChild(frame.addonsButton);
-  --end
   if WeakAurasCompanion then
     frame.buttonsScroll:AddChild(frame.pendingInstallButton);
     frame.buttonsScroll:AddChild(frame.pendingUpdateButton);
@@ -890,7 +879,7 @@ function OptionsPrivate.UpdateButtonsScroll()
 end
 
 local function addChildButtons(button, children, visible)
-  local controlledChildren = children[button:GetTitle()];
+  local controlledChildren = children[button.data.id];
   if(controlledChildren) then
     table.sort(controlledChildren, function(a, b) return displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
     for _, groupchild in ipairs(controlledChildren) do
@@ -1258,7 +1247,11 @@ function OptionsPrivate.PickDisplayMultipleShift(target)
               table.insert(batchSelection, child);
               for i = index + 1, #group.controlledChildren do
                 local current = group.controlledChildren[i];
-                table.insert(batchSelection, current);
+                if (WeakAuras.GetData(current).controlledChildren) then
+                  -- Skip sub groups
+                else
+                  table.insert(batchSelection, current);
+                end
                 -- last button: stop selection
                 if (current == target or current == first) then
                   break;

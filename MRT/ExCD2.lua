@@ -225,6 +225,43 @@ do
 	})
 	module.db.session_gGUIDs_DEBUG = sessionData
 
+	if ExRT.isClassic then
+		module.db.session_gGUIDs = setmetatable({}, {
+			__index = function (t,k) 
+				return sessionData[k] or nilData
+			end,
+			__newindex = function (t,k,v)
+				local e = sessionData[k]
+				if not e then
+					local n = {}
+					e = setmetatable({},{
+						__index = function (t1,k1) 
+							return n[k1] or type(k1) == "number" and k1 > 0 and n[GetSpellInfo(k1) or ""]
+						end,
+						__newindex = function (t1,k1,v1)
+							n[k1] = v1
+						end
+					})
+					sessionData[k] = e
+				end
+				local reason = true
+				if type(v) == 'table' then
+					if v[3] then
+						reason = {v[3],v[2]}
+					else
+						reason = v[2]
+					end
+					v = v[1]
+				end
+				if type(v)=='string' or v > 0 then
+					e[v] = reason
+				else
+					e[-v] = nil
+				end
+			end
+		})
+	end
+
 	function module:ClearSessionDataReason(name,...)
 		local e = sessionData[name]
 		if not e then
@@ -1206,7 +1243,7 @@ module.db.petsAbilities = {	--> PetTypes = HUNTERS[ Tenacity [1], Cunning = [2],
 	[L.creatureNames["Felhunter"]] = 		{0,	{19647,24},	{19505,15},	},
 	[L.creatureNames["Fel Imp"]] = 		{0,	{115276,10},	},
 	[L.creatureNames["Imp"]] = 		{0,	{89808,10},	{119899,30,12},	{89792,20},	},
-	[L.creatureNames["Observer"]] = 		{0,	{115781,24},	{115284,15},	},
+	[L.creatureNames["Observer"]] = 		{0,	{19647,24},	{115284,15},	},
 	[L.creatureNames["Shivarra"]] = 		{0,	{115770,25},	{115268,30},	},
 	[L.creatureNames["Succubus"]] = 		{0,	{6360,25},	{6358,30},	},
 	[L.creatureNames["Voidlord"]] = 		{0,	{115236,10}	},
@@ -1217,7 +1254,14 @@ module.db.petsAbilities = {	--> PetTypes = HUNTERS[ Tenacity [1], Cunning = [2],
 module.db.spell_isPetAbility = {}
 for petName,petData in pairs(module.db.petsAbilities) do
 	for i=2,#petData do
-		module.db.spell_isPetAbility[petData[i][1]] = petName
+		if module.db.spell_isPetAbility[petData[i][1]] then
+			if type(module.db.spell_isPetAbility[petData[i][1]]) ~= "table" then
+				module.db.spell_isPetAbility[petData[i][1]] = {module.db.spell_isPetAbility[petData[i][1]]}
+			end
+			module.db.spell_isPetAbility[petData[i][1]][ #module.db.spell_isPetAbility[petData[i][1]] + 1 ] = petName
+		else
+			module.db.spell_isPetAbility[petData[i][1]] = petName
+		end
 	end
 end
 
@@ -1429,9 +1473,7 @@ module.db.itemsBonusToSpell = {
 
 if ExRT.isClassic then
 	module.db.findspecspells = {}
-	module.db.spell_isTalent = {
-		[16190] = true,	
-	}
+	module.db.spell_isTalent = {}
 	module.db.spell_autoTalent = {}
 	module.db.spell_charge_fix = {}
 	module.db.spell_talentReplaceOther = {}
@@ -3179,7 +3221,7 @@ do
 			(db[unitSpecID] or (not db[unitSpecID] and db[4])) and 
 			(not spell_isTalent[spellID] or session_gGUIDs[name][spellID]) and 
 			(not spell_isPvpTalent[spellID] or (session_gGUIDs[name][spellID] and IsPvpTalentsOn(name))) and 
-			(not spell_isPetAbility[spellID] or session_Pets[name] == spell_isPetAbility[spellID] or (session_Pets[name] and petsAbilities[ session_Pets[name] ] and petsAbilities[ session_Pets[name] ][1] == spell_isPetAbility[spellID])) and
+			(not spell_isPetAbility[spellID] or session_Pets[name] == spell_isPetAbility[spellID] or (session_Pets[name] and petsAbilities[ session_Pets[name] ] and petsAbilities[ session_Pets[name] ][1] == spell_isPetAbility[spellID]) or (type(spell_isPetAbility[spellID]) == "table" and session_Pets[name] and ExRT.F.table_find(spell_isPetAbility[spellID],session_Pets[name]))) and
 			(not spell_talentReplaceOther[spellID] or not TalentReplaceOtherCheck(spellID,name)) and
 			(not data.specialCheck or data.specialCheck(data,currTime))
 			) then 
@@ -6188,7 +6230,10 @@ do
 		local name = UnitCombatlogname(unitID)
 		if _db.spell_ReincarnationFix[name] and not UnitIsDead(unitID) then
 			if not UnitIsGhost(unitID) then
-				module.main.SPELL_CAST_SUCCESS(UnitGUID(unitID),name,0,nil,nil,nil,GetSpellInfo(20608),nil)
+				local hp = UnitHealth(unitID) / max(UnitHealthMax(unitID),1)
+				if hp < 0.45 then
+					module.main.SPELL_CAST_SUCCESS(UnitGUID(unitID),name,0,nil,nil,nil,GetSpellInfo(20608),nil)
+				end
 			end
 			_db.spell_ReincarnationFix[name] = nil
 		end
@@ -12074,7 +12119,7 @@ module.db.AllSpells = {
 	{89808,	"PET,WARLOCK,DISPEL",	5,	{89808,10,0}	},
 	{119899,"PET,WARLOCK",		4,	{119899,30,12}	},
 	{89792,	"PET,WARLOCK",		3,	{89792,20,0}	},
-	{115781,"PET,WARLOCK,KICK",	5,	{115781,24,0}	},
+	--{115781,"PET,WARLOCK,KICK",	5,	{115781,24,0}	},
 	{115831,"PET,WARLOCK",		3,	{115831,45,6}	},
 	{115268,"PET,WARLOCK,CC",	3,	{115268,30,0}	},
 	{6358,	"PET,WARLOCK,CC",	3,	{6358,30,0}	},
@@ -12262,6 +12307,8 @@ if ExRT.isBC then
 		{6346, 	"PRIEST",	1,	{6346,	180,	0}}, 	--Fear Ward
 		{32548, "PRIEST",	1,	{32548,	300,	15},	specialCheck=function(_,_,_,r) if r=="Draenei" then return true end end}, 	--Symbol of Hope
 	}
+	module.db.spell_isTalent[GetSpellInfo(16190) or "spell:16190"] = true
+	module.db.spell_isTalent[16190] = true
 elseif ExRT.isClassic then
 	module.db.AllSpells = {
 		{29166,	"DRUID",	1,	{29166,	360,	20}},	--Озарение

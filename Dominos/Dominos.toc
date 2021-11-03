@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Dominos
 ## Notes: A main actionbar replacement
 ## Notes-zhCN: 一种动作条替换方案

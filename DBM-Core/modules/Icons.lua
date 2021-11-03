@@ -397,7 +397,7 @@ do
 			end
 			--Hopefully we found all units with initial scan and scanExpires has already been emptied in the executeMarking calls
 			--But if not, we Register listeners to watch for the units we seek to appear
-			if not eventsRegistered and scansActive == 1 then
+			if not eventsRegistered and scansActive > 0 then
 				eventsRegistered = true
 				if isRetail then
 					self:RegisterShortTermEvents("UPDATE_MOUSEOVER_UNIT", "UNIT_TARGET_UNFILTERED", "NAME_PLATE_UNIT_ADDED", "FORBIDDEN_NAME_PLATE_UNIT_ADDED", "INSTANCE_ENCOUNTER_ENGAGE_UNIT")

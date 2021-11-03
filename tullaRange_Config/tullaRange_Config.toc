@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: tullaRange Config
 ## Notes: GUI based configuration for tullaRange
 ## Author: Tuller

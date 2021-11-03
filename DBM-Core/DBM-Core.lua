@@ -64,18 +64,18 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20211019032231"),
+	Revision = parseCurseDate("20211102143038"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.19 alpha"
-	DBM.ReleaseRevision = releaseDate(2021, 10, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.1.21 alpha"
+	DBM.ReleaseRevision = releaseDate(2021, 11, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.2 alpha"
-	DBM.ReleaseRevision = releaseDate(2021, 10, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.4 alpha"
+	DBM.ReleaseRevision = releaseDate(2021, 11, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.18 alpha"
-	DBM.ReleaseRevision = releaseDate(2021, 10, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.20 alpha"
+	DBM.ReleaseRevision = releaseDate(2021, 11, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -352,6 +352,12 @@ DBM_DISABLE_ZONE_DETECTION = newproxy(false)
 DBM_OPTION_SPACER = newproxy(false)
 
 --------------
+--  Privates  --
+--------------
+private.modSyncSpam = {}
+private.updateFunctions = {}
+
+--------------
 --  Locals  --
 --------------
 local bossModPrototype = {}
@@ -361,9 +367,7 @@ local lastCombatStarted = GetTime()
 local loadcIds, inCombat, oocBWComms = {}, {}, {}
 local combatInfo = {}
 local bossIds = {}
-local updateFunctions = {}
 local raid = {}
-local modSyncSpam = {}
 local autoRespondSpam = {}
 local chatPrefix = "<Deadly Boss Mods> "
 local chatPrefixShort = "<DBM> "
@@ -372,14 +376,6 @@ local newerVersionPerson = {}
 local combatInitialized = false
 local healthCombatInitialized = false
 local pformat
-local schedulerFrame = CreateFrame("Frame", "DBMScheduler")
-schedulerFrame:Hide()
-local startScheduler
-local schedule
-local unschedule
-local unscheduleAll
-local scheduleCountdown
-local scheduleRepeat
 local loadOptions
 local checkWipe
 local checkBossHealth
@@ -1742,275 +1738,14 @@ end
 --------------------------
 --  OnUpdate/Scheduler  --
 --------------------------
-do
-	-- stack that stores a few tables (up to 8) which will be recycled
-	local popCachedTable, pushCachedTable
-	local numChachedTables = 0
-	do
-		local tableCache
-
-		-- gets a table from the stack, it will then be recycled.
-		function popCachedTable()
-			local t = tableCache
-			if t then
-				tableCache = t.next
-				numChachedTables = numChachedTables - 1
-			end
-			return t
-		end
-
-		-- tries to push a table on the stack
-		-- only tables with <= 4 array entries are accepted as cached tables are only used for tasks with few arguments as we don't want to have big arrays wasting our precious memory space doing nothing...
-		-- also, the maximum number of cached tables is limited to 8 as DBM rarely has more than eight scheduled tasks with less than 4 arguments at the same time
-		-- this is just to re-use all the tables of the small tasks that are scheduled all the time (like the wipe detection)
-		-- note that the cache does not use weak references anywhere for performance reasons, so a cached table will never be deleted by the garbage collector
-		function pushCachedTable(t)
-			if numChachedTables < 8 and #t <= 4 then
-				twipe(t)
-				t.next = tableCache
-				tableCache = t
-				numChachedTables = numChachedTables + 1
-			end
-		end
-	end
-
-	-- priority queue (min-heap) that stores all scheduled tasks.
-	-- insert: O(log n)
-	-- deleteMin: O(log n)
-	-- getMin: O(1)
-	-- removeAllMatching: O(n)
-	local insert, removeAllMatching, getMin, deleteMin
-	do
-		local heap = {}
-		local firstFree = 1
-
-		-- gets the next task
-		function getMin()
-			return heap[1]
-		end
-
-		-- restores the heap invariant by moving an item up
-		local function siftUp(n)
-			local parent = floor(n / 2)
-			while n > 1 and heap[parent].time > heap[n].time do -- move the element up until the heap invariant is restored, meaning the element is at the top or the element's parent is <= the element
-				heap[n], heap[parent] = heap[parent], heap[n] -- swap the element with its parent
-				n = parent
-				parent = floor(n / 2)
-			end
-		end
-
-		-- restores the heap invariant by moving an item down
-		local function siftDown(n)
-			local m -- position of the smaller child
-			while 2 * n < firstFree do -- #children >= 1
-				-- swap the element with its smaller child
-				if 2 * n + 1 == firstFree then -- n does not have a right child --> it only has a left child as #children >= 1
-					m = 2 * n -- left child
-				elseif heap[2 * n].time < heap[2 * n + 1].time then -- #children = 2 and left child < right child
-					m = 2 * n -- left child
-				else -- #children = 2 and right child is smaller than the left one
-					m = 2 * n + 1 -- right
-				end
-				if heap[n].time <= heap[m].time then -- n is <= its smallest child --> heap invariant restored
-					return
-				end
-				heap[n], heap[m] = heap[m], heap[n]
-				n = m
-			end
-		end
-
-		-- inserts a new element into the heap
-		function insert(ele)
-			heap[firstFree] = ele
-			siftUp(firstFree)
-			firstFree = firstFree + 1
-		end
-
-		-- deletes the min element
-		function deleteMin()
-			local min = heap[1]
-			firstFree = firstFree - 1
-			heap[1] = heap[firstFree]
-			heap[firstFree] = nil
-			siftDown(1)
-			return min
-		end
-
-		-- removes multiple scheduled tasks from the heap
-		-- note that this function is comparatively slow by design as it has to check all tasks and allows partial matches
-		function removeAllMatching(f, mod, ...)
-			-- remove all elements that match the signature, this destroyes the heap and leaves a normal array
-			local v, match
-			local foundMatch = false
-			for i = #heap, 1, -1 do -- iterate backwards over the array to allow usage of table.remove
-				v = heap[i]
-				if (not f or v.func == f) and (not mod or v.mod == mod) then
-					match = true
-					for j = 1, select("#", ...) do
-						if select(j, ...) ~= v[j] then
-							match = false
-							break
-						end
-					end
-					if match then
-						tremove(heap, i)
-						firstFree = firstFree - 1
-						foundMatch = true
-					end
-				end
-			end
-			-- rebuild the heap from the array in O(n)
-			if foundMatch then
-				for i = floor((firstFree - 1) / 2), 1, -1 do
-					siftDown(i)
-				end
-			end
-		end
-	end
-
-	local wrappers = {}
-	local function range(max, cur, ...)
-		cur = cur or 1
-		if cur > max then
-			return ...
-		end
-		return cur, range(max, cur + 1, select(2, ...))
-	end
-	local function getWrapper(n)
-		wrappers[n] = wrappers[n] or loadstring(([[
-			return function(func, tbl)
-				return func(]] .. ("tbl[%s], "):rep(n):sub(0, -3) .. [[)
-			end
-		]]):format(range(n)))()
-		return wrappers[n]
-	end
-
-	local nextModSyncSpamUpdate = 0
-	--mainFrame:SetScript("OnUpdate", function(self, elapsed)
-	local function onUpdate(self, elapsed)
-		local time = GetTime()
-
-		-- execute scheduled tasks
-		local nextTask = getMin()
-		while nextTask and nextTask.func and nextTask.time <= time do
-			deleteMin()
-			local n = nextTask.n
-			if n == #nextTask then
-				nextTask.func(unpack(nextTask))
-			else
-				-- too many nil values (or a trailing nil)
-				-- this is bad because unpack will not work properly
-				-- TODO: is there a better solution?
-				getWrapper(n)(nextTask.func, nextTask)
-			end
-			pushCachedTable(nextTask)
-			nextTask = getMin()
-		end
-
-		-- execute OnUpdate handlers of all modules
-		local foundModFunctions = 0
-		for i, v in pairs(updateFunctions) do
-			foundModFunctions = foundModFunctions + 1
-			if i.Options.Enabled and (not i.zones or i.zones[LastInstanceMapID]) then
-				i.elapsed = (i.elapsed or 0) + elapsed
-				if i.elapsed >= (i.updateInterval or 0) then
-					v(i, i.elapsed)
-					i.elapsed = 0
-				end
-			end
-		end
-
-		-- clean up sync spam timers and auto respond spam blockers
-		if time > nextModSyncSpamUpdate then
-			nextModSyncSpamUpdate = time + 20
-			-- TODO: optimize this; using next(t, k) all the time on nearly empty hash tables is not a good idea...doesn't really matter here as modSyncSpam only very rarely contains more than 4 entries...
-			-- we now do this just every 20 seconds since the earlier assumption about modSyncSpam isn't true any longer
-			-- note that not removing entries at all would be just a small memory leak and not a problem (the sync functions themselves check the timestamp)
-			local k, v = next(modSyncSpam, nil)
-			if v and (time - v > 8) then
-				modSyncSpam[k] = nil
-			end
-		end
-		if not nextTask and foundModFunctions == 0 then--Nothing left, stop scheduler
-			schedulerFrame:SetScript("OnUpdate", nil)
-			schedulerFrame:Hide()
-		end
-	end
-
-	function startScheduler()
-		if not schedulerFrame:IsShown() then
-			schedulerFrame:Show()
-			schedulerFrame:SetScript("OnUpdate", onUpdate)
-		end
-	end
-
-	function schedule(t, f, mod, ...)
-		if type(f) ~= "function" then
-			error("usage: schedule(time, func, [mod, args...])", 2)
-		end
-		startScheduler()
-		local v
-		if numChachedTables > 0 and select("#", ...) <= 4 then -- a cached table is available and all arguments fit into an array with four slots
-			v = popCachedTable()
-			v.time = GetTime() + t
-			v.func = f
-			v.mod = mod
-			v.n = select("#", ...)
-			for i = 1, v.n do
-				v[i] = select(i, ...)
-			end
-			-- clear slots if necessary
-			for i = v.n + 1, 4 do
-				v[i] = nil
-			end
-		else -- create a new table
-			v = {time = GetTime() + t, func = f, mod = mod, n = select("#", ...), ...}
-		end
-		insert(v)
-	end
-
-	function scheduleCountdown(time, numAnnounces, func, mod, self, ...)
-		time = time or 5
-		numAnnounces = numAnnounces or 3
-		for i = 1, numAnnounces do
-			--In event time is < numbmer of announces (ie 2 second time, with 3 announces)
-			local validTime = time - i
-			if validTime >= 1 then
-				schedule(validTime, func, mod, self, i, ...)
-			end
-		end
-	end
-
-	function scheduleRepeat(time, spellId, func, mod, self, ...)
-		--Loops until debuff is gone
-		if DBM:UnitAura("player", spellId) then--GetPlayerAuraBySpellID
-			func(...)--Probably not going to work, this is going to need to get a lot more hacky
-			schedule(time or 2, scheduleRepeat, time, spellId, func, mod, self, ...)
-		end
-	end
-
-	function unschedule(f, mod, ...)
-		if not f and not mod then
-			-- you really want to kill the complete scheduler? call unscheduleAll
-			error("cannot unschedule everything, pass a function and/or a mod")
-		end
-		return removeAllMatching(f, mod, ...)
-	end
-
-	function unscheduleAll()
-		return removeAllMatching()
-	end
-end
+local DBMScheduler = private:GetModule("DBMScheduler")
 
 function DBM:Schedule(t, f, ...)
-	if type(f) ~= "function" then
-		error("usage: DBM:Schedule(time, func, [args...])", 2)
-	end
-	return schedule(t, f, nil, ...)
+	return DBMScheduler:Schedule(t, f, nil, ...)
 end
 
 function DBM:Unschedule(f, ...)
-	return unschedule(f, nil, ...)
+	return DBMScheduler:Unschedule(f, nil, ...)
 end
 
 ---------------
@@ -4167,6 +3902,7 @@ do
 			return
 		end--ID hasn't changed, don't waste cpu doing anything else (example situation, porting into garrosh stage 4 is a loading screen)
 		LastInstanceMapID = mapID
+		DBMScheduler:UpdateZone()--Also update zone in scheduler
 		if instanceType == "none" or (C_Garrison and C_Garrison:IsOnGarrisonMap()) then
 			LastInstanceType = "none"
 			if not targetEventsRegistered then
@@ -5885,6 +5621,9 @@ do
 			if isRetail and mod.addon.type == "SCENARIO" and C_Scenario.IsInScenario() then
 				mod.inScenario = true
 			end
+			mod.engagedDiff = savedDifficulty
+			mod.engagedDiffText = difficultyText
+			mod.engagedDiffIndex = difficultyIndex
 			mod.inCombat = true
 			mod.blockSyncs = nil
 			mod.combatInfo.pull = GetTime() - (delay or 0)
@@ -6176,6 +5915,11 @@ do
 			if not savedDifficulty or not difficultyText or not difficultyIndex then--prevent error if savedDifficulty or difficultyText is nil
 				savedDifficulty, difficultyText, difficultyIndex, LastGroupSize, difficultyModifier = DBM:GetCurrentInstanceDifficulty()
 			end
+			--Fix stupid classic behavior where wipes only happen after release which causes all the instance difficulty info to be wrong
+			--This uses stored values from engage first, and only current values as fallback
+			local usedDifficulty = mod.engagedDiff or savedDifficulty
+			local usedDifficultyText = mod.engagedDiffText or difficultyText
+			local usedDifficultyIndex = mod.engagedDiffIndex or difficultyIndex
 			local name = mod.combatInfo.name
 			local modId = mod.id
 			if wipe and mod.stats and not mod.noStatistics then
@@ -6191,30 +5935,30 @@ do
 					local bossesKilled = mod.numBoss - mod.vb.bossLeft
 					wipeHP = wipeHP.." ("..BOSSES_KILLED:format(bossesKilled, mod.numBoss)..")"
 				end
-				local totalPulls = mod.stats[statVarTable[savedDifficulty].."Pulls"]
-				local totalKills = mod.stats[statVarTable[savedDifficulty].."Kills"]
+				local totalPulls = mod.stats[statVarTable[usedDifficulty].."Pulls"]
+				local totalKills = mod.stats[statVarTable[usedDifficulty].."Kills"]
 				if thisTime < 30 then -- Normally, one attempt will last at least 30 sec.
 					totalPulls = totalPulls - 1
-					mod.stats[statVarTable[savedDifficulty].."Pulls"] = totalPulls
+					mod.stats[statVarTable[usedDifficulty].."Pulls"] = totalPulls
 					if self.Options.ShowDefeatMessage then
 						if scenario then
-							self:AddMsg(L.SCENARIO_ENDED_AT:format(difficultyText..name, strFromTime(thisTime)))
+							self:AddMsg(L.SCENARIO_ENDED_AT:format(usedDifficultyText..name, strFromTime(thisTime)))
 						else
-							self:AddMsg(L.COMBAT_ENDED_AT:format(difficultyText..name, wipeHP, strFromTime(thisTime)))
+							self:AddMsg(L.COMBAT_ENDED_AT:format(usedDifficultyText..name, wipeHP, strFromTime(thisTime)))
 							--No reason to GCE it here, so omited on purpose.
 						end
 					end
 				else
 					if self.Options.ShowDefeatMessage then
 						if scenario then
-							self:AddMsg(L.SCENARIO_ENDED_AT_LONG:format(difficultyText..name, strFromTime(thisTime), totalPulls - totalKills))
+							self:AddMsg(L.SCENARIO_ENDED_AT_LONG:format(usedDifficultyText..name, strFromTime(thisTime), totalPulls - totalKills))
 						else
-							self:AddMsg(L.COMBAT_ENDED_AT_LONG:format(difficultyText..name, wipeHP, strFromTime(thisTime), totalPulls - totalKills))
+							self:AddMsg(L.COMBAT_ENDED_AT_LONG:format(usedDifficultyText..name, wipeHP, strFromTime(thisTime), totalPulls - totalKills))
 							local check = isRetail and
-								((difficultyIndex == 8 or difficultyIndex == 14 or difficultyIndex == 15 or difficultyIndex == 16) and InGuildParty()) or
-								difficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10 -- Classic
+								((usedDifficultyIndex == 8 or usedDifficultyIndex == 14 or usedDifficultyIndex == 15 or usedDifficultyIndex == 16) and InGuildParty()) or
+								usedDifficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10 -- Classic
 							if check and not self.Options.DisableGuildStatus then
-								self:Schedule(1.5, delayedGCSync, modId, difficultyIndex, difficultyModifier, name, strFromTime(thisTime), wipeHP)
+								self:Schedule(1.5, delayedGCSync, modId, usedDifficultyIndex, difficultyModifier, name, strFromTime(thisTime), wipeHP)
 							end
 						end
 					end
@@ -6239,15 +5983,15 @@ do
 				for k, _ in pairs(autoRespondSpam) do
 					if self.Options.WhisperStats then
 						if scenario then
-							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_WIPE_STATS:format(playerName, difficultyText..(name or ""), totalPulls - totalKills)
+							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_WIPE_STATS:format(playerName, usedDifficultyText..(name or ""), totalPulls - totalKills)
 						else
-							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_WIPE_STATS_AT:format(playerName, difficultyText..(name or ""), wipeHP, totalPulls - totalKills)
+							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_WIPE_STATS_AT:format(playerName, usedDifficultyText..(name or ""), wipeHP, totalPulls - totalKills)
 						end
 					else
 						if scenario then
-							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_WIPE:format(playerName, difficultyText..(name or ""))
+							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_WIPE:format(playerName, usedDifficultyText..(name or ""))
 						else
-							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_WIPE_AT:format(playerName, difficultyText..(name or ""), wipeHP)
+							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_WIPE_AT:format(playerName, usedDifficultyText..(name or ""), wipeHP)
 						end
 					end
 					sendWhisper(k, msg)
@@ -6256,70 +6000,70 @@ do
 			elseif not wipe and mod.stats and not mod.noStatistics then
 				mod.lastKillTime = GetTime()
 				local thisTime = GetTime() - (mod.combatInfo.pull or 0)
-				local lastTime = mod.stats[statVarTable[savedDifficulty].."LastTime"]
-				local bestTime = mod.stats[statVarTable[savedDifficulty].."BestTime"]
-				if not mod.stats[statVarTable[savedDifficulty].."Kills"] or mod.stats[statVarTable[savedDifficulty].."Kills"] < 0 then mod.stats[statVarTable[savedDifficulty].."Kills"] = 0 end
+				local lastTime = mod.stats[statVarTable[usedDifficulty].."LastTime"]
+				local bestTime = mod.stats[statVarTable[usedDifficulty].."BestTime"]
+				if not mod.stats[statVarTable[usedDifficulty].."Kills"] or mod.stats[statVarTable[usedDifficulty].."Kills"] < 0 then mod.stats[statVarTable[usedDifficulty].."Kills"] = 0 end
 				--Fix logical error i've seen where for some reason we have more kills then pulls for boss as seen by - stats for wipe messages.
-				mod.stats[statVarTable[savedDifficulty].."Kills"] = mod.stats[statVarTable[savedDifficulty].."Kills"] + 1
-				if mod.stats[statVarTable[savedDifficulty].."Kills"] > mod.stats[statVarTable[savedDifficulty].."Pulls"] then mod.stats[statVarTable[savedDifficulty].."Kills"] = mod.stats[statVarTable[savedDifficulty].."Pulls"] end
+				mod.stats[statVarTable[usedDifficulty].."Kills"] = mod.stats[statVarTable[usedDifficulty].."Kills"] + 1
+				if mod.stats[statVarTable[usedDifficulty].."Kills"] > mod.stats[statVarTable[usedDifficulty].."Pulls"] then mod.stats[statVarTable[usedDifficulty].."Kills"] = mod.stats[statVarTable[usedDifficulty].."Pulls"] end
 				if not mod.ignoreBestkill and mod.combatInfo.pull then
-					mod.stats[statVarTable[savedDifficulty].."LastTime"] = thisTime
+					mod.stats[statVarTable[usedDifficulty].."LastTime"] = thisTime
 					--Just to prevent pre mature end combat calls from broken mods from saving bad time stats.
 					if bestTime and bestTime > 0 and bestTime < 1.5 then
-						mod.stats[statVarTable[savedDifficulty].."BestTime"] = thisTime
+						mod.stats[statVarTable[usedDifficulty].."BestTime"] = thisTime
 					else
-						if difficultyIndex == 8 then--Mythic+/Challenge Mode
+						if usedDifficultyIndex == 8 then--Mythic+/Challenge Mode
 							if mod.stats.challengeBestRank > difficultyModifier then--Don't save time stats at all
 								--DO nothing
 							elseif mod.stats.challengeBestRank < difficultyModifier then--Update best time and best rank, even if best time is lower (for a lower rank)
 								mod.stats.challengeBestRank = difficultyModifier--Update best rank
-								mod.stats[statVarTable[savedDifficulty].."BestTime"] = thisTime--Write this time no matter what.
+								mod.stats[statVarTable[usedDifficulty].."BestTime"] = thisTime--Write this time no matter what.
 							else--Best rank must match current rank, so update time normally
-								mod.stats[statVarTable[savedDifficulty].."BestTime"] = mmin(bestTime or mhuge, thisTime)
+								mod.stats[statVarTable[usedDifficulty].."BestTime"] = mmin(bestTime or mhuge, thisTime)
 							end
 						else
-							mod.stats[statVarTable[savedDifficulty].."BestTime"] = mmin(bestTime or mhuge, thisTime)
+							mod.stats[statVarTable[usedDifficulty].."BestTime"] = mmin(bestTime or mhuge, thisTime)
 						end
 					end
 				end
-				local totalKills = mod.stats[statVarTable[savedDifficulty].."Kills"]
+				local totalKills = mod.stats[statVarTable[usedDifficulty].."Kills"]
 				if self.Options.ShowDefeatMessage then
 					local msg
 					local thisTimeString = thisTime and strFromTime(thisTime)
 					if not mod.combatInfo.pull then--was a bad pull so we ignored thisTime, should never happen
 						if scenario then
-							msg = L.SCENARIO_COMPLETE:format(difficultyText..name, L.UNKNOWN)
+							msg = L.SCENARIO_COMPLETE:format(usedDifficultyText..name, L.UNKNOWN)
 						else
-							msg = L.BOSS_DOWN:format(difficultyText..name, L.UNKNOWN)
+							msg = L.BOSS_DOWN:format(usedDifficultyText..name, L.UNKNOWN)
 						end
 					elseif mod.ignoreBestkill then--Should never happen in a scenario so no need for scenario check.
 						if scenario then
-							msg = L.SCENARIO_COMPLETE_I:format(difficultyText..name, totalKills)
+							msg = L.SCENARIO_COMPLETE_I:format(usedDifficultyText..name, totalKills)
 						else
-							msg = L.BOSS_DOWN_I:format(difficultyText..name, totalKills)
+							msg = L.BOSS_DOWN_I:format(usedDifficultyText..name, totalKills)
 						end
 					elseif not lastTime then
 						if scenario then
-							msg = L.SCENARIO_COMPLETE:format(difficultyText..name, thisTimeString)
+							msg = L.SCENARIO_COMPLETE:format(usedDifficultyText..name, thisTimeString)
 						else
-							msg = L.BOSS_DOWN:format(difficultyText..name, thisTimeString)
+							msg = L.BOSS_DOWN:format(usedDifficultyText..name, thisTimeString)
 						end
 					elseif thisTime < (bestTime or mhuge) then
 						if scenario then
-							msg = L.SCENARIO_COMPLETE_NR:format(difficultyText..name, thisTimeString, strFromTime(bestTime), totalKills)
+							msg = L.SCENARIO_COMPLETE_NR:format(usedDifficultyText..name, thisTimeString, strFromTime(bestTime), totalKills)
 						else
-							msg = L.BOSS_DOWN_NR:format(difficultyText..name, thisTimeString, strFromTime(bestTime), totalKills)
+							msg = L.BOSS_DOWN_NR:format(usedDifficultyText..name, thisTimeString, strFromTime(bestTime), totalKills)
 						end
 					else
 						if scenario then
-							msg = L.SCENARIO_COMPLETE_L:format(difficultyText..name, thisTimeString, strFromTime(lastTime), strFromTime(bestTime), totalKills)
+							msg = L.SCENARIO_COMPLETE_L:format(usedDifficultyText..name, thisTimeString, strFromTime(lastTime), strFromTime(bestTime), totalKills)
 						else
-							msg = L.BOSS_DOWN_L:format(difficultyText..name, thisTimeString, strFromTime(lastTime), strFromTime(bestTime), totalKills)
+							msg = L.BOSS_DOWN_L:format(usedDifficultyText..name, thisTimeString, strFromTime(lastTime), strFromTime(bestTime), totalKills)
 						end
 					end
-					local check = not statusGuildDisabled and (isRetail and ((difficultyIndex == 8 or difficultyIndex == 14 or difficultyIndex == 15 or difficultyIndex == 16) and InGuildParty()) or difficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10) -- Classic
+					local check = not statusGuildDisabled and (isRetail and ((usedDifficultyIndex == 8 or usedDifficultyIndex == 14 or usedDifficultyIndex == 15 or usedDifficultyIndex == 16) and InGuildParty()) or usedDifficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10) -- Classic
 					if not scenario and thisTimeString and check and not self.Options.DisableGuildStatus and updateNotificationDisplayed == 0 then
-						SendAddonMessage(DBMPrefix, "GCE\t"..modId.."\t6\t0\t"..thisTimeString.."\t"..difficultyIndex.."\t"..difficultyModifier.."\t"..name, "GUILD")
+						SendAddonMessage(DBMPrefix, "GCE\t"..modId.."\t6\t0\t"..thisTimeString.."\t"..usedDifficultyIndex.."\t"..difficultyModifier.."\t"..name, "GUILD")
 					end
 					self:Schedule(1, self.AddMsg, self, msg)
 				end
@@ -6327,21 +6071,21 @@ do
 				for k, _ in pairs(autoRespondSpam) do
 					if self.Options.WhisperStats then
 						if scenario then
-							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_KILL_STATS:format(playerName, difficultyText..(name or ""), totalKills)
+							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_KILL_STATS:format(playerName, usedDifficultyText..(name or ""), totalKills)
 						else
-							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_KILL_STATS:format(playerName, difficultyText..(name or ""), totalKills)
+							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_KILL_STATS:format(playerName, usedDifficultyText..(name or ""), totalKills)
 						end
 					else
 						if scenario then
-							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_KILL:format(playerName, difficultyText..(name or ""))
+							msg = msg or chatPrefixShort..L.WHISPER_SCENARIO_END_KILL:format(playerName, usedDifficultyText..(name or ""))
 						else
-							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_KILL:format(playerName, difficultyText..(name or ""))
+							msg = msg or chatPrefixShort..L.WHISPER_COMBAT_END_KILL:format(playerName, usedDifficultyText..(name or ""))
 						end
 					end
 					sendWhisper(k, msg)
 				end
 				fireEvent("DBM_Kill", mod)
-				if savedDifficulty == "worldboss" and mod.WBEsync then
+				if usedDifficulty == "worldboss" and mod.WBEsync then
 					if lastBossDefeat[modId..playerRealm] and (GetTime() - lastBossDefeat[modId..playerRealm] < 30) then return end--Someone else synced in last 10 seconds so don't send out another sync to avoid needless sync spam.
 					lastBossDefeat[modId..playerRealm] = GetTime()--Update last defeat time before we send it, so we don't handle our own sync
 					SendWorldSync(self, "WBD", modId.."\t"..playerRealm.."\t8\t"..name)
@@ -6359,6 +6103,9 @@ do
 			end
 			if mod.OnCombatEnd then mod:OnCombatEnd(wipe) end
 			if mod.OnLeavingCombat then delayedFunction = mod.OnLeavingCombat end
+			mod.engagedDiff = nil
+			mod.engagedDiffText = nil
+			mod.engagedDiffIndex = nil
 			if #inCombat == 0 then--prevent error if you pulled multiple boss. (Earth, Wind and Fire)
 				statusWhisperDisabled = false
 				statusGuildDisabled = false
@@ -6411,7 +6158,7 @@ do
 				self:TransitionToDungeonBGM(false, true)
 				self:Schedule(22, self.TransitionToDungeonBGM, self)
 				--module cleanup
-				private:ClearModuleTables()
+				private:ClearModuleTasks()
 			end
 		end
 	end
@@ -7256,7 +7003,8 @@ end
 do
 	local forceDisabled = false
 	function DBM:Disable(forceDisable)
-		unscheduleAll()
+		DBMScheduler:Unschedule()
+
 		dbmIsEnabled = false
 		forceDisabled = forceDisable
 	end
@@ -7657,17 +7405,18 @@ function bossModPrototype:SetUsedIcons(...)
 end
 
 function bossModPrototype:RegisterOnUpdateHandler(func, interval)
-	startScheduler()
 	if type(func) ~= "function" then return end
+	DBM:Debug("Registering RegisterOnUpdateHandler")
+	DBMScheduler:StartScheduler()
 	self.elapsed = 0
 	self.updateInterval = interval or 0
-	updateFunctions[self] = func
+	private.updateFunctions[self] = func
 end
 
 function bossModPrototype:UnregisterOnUpdateHandler()
 	self.elapsed = nil
 	self.updateInterval = nil
-	twipe(updateFunctions)
+	twipe(private.updateFunctions)
 end
 
 function bossModPrototype:SetStage(stage)
@@ -7760,6 +7509,24 @@ function bossModPrototype:IsNormal()
 		return true
 	end
 	return false
+end
+
+do
+	local isSeasonal
+	function bossModPrototype:IsSeasonal()
+		if not isSeasonal then
+			--TODO, use C_Seasons.HasActiveSeason() once it's fixed/working
+			local IsClassicSeason = select(10, UnitAura("player", 1)) == 362859
+			if IsClassicSeason then
+				isSeasonal = true
+				DBM:Debug("Setting Classic seasonal to true")
+			else
+				isSeasonal = false
+				DBM:Debug("Setting Classic seasonal to false")
+			end
+		end
+		return isSeasonal
+	end
 end
 
 --Pretty much ANYTHING that has a heroic mode
@@ -8858,20 +8625,20 @@ do
 				end
 			end
 		end
-		unschedule(self.Show, self.mod, self)
-		schedule(delay or 0.5, self.Show, self.mod, self, ...)
+		DBMScheduler:Unschedule(self.Show, self.mod, self)
+		DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
 	end
 
 	function announcePrototype:Schedule(t, ...)
-		return schedule(t, self.Show, self.mod, self, ...)
+		return DBMScheduler:Schedule(t, self.Show, self.mod, self, ...)
 	end
 
 	function announcePrototype:Countdown(time, numAnnounces, ...)
-		scheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
+		DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
 	end
 
 	function announcePrototype:Cancel(...)
-		return unschedule(self.Show, self.mod, self, ...)
+		return DBMScheduler:Unschedule(self.Show, self.mod, self, ...)
 	end
 
 	function announcePrototype:Play(name, customPath)
@@ -8890,19 +8657,19 @@ do
 
 	function announcePrototype:ScheduleVoice(t, ...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
-		unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
-		return schedule(t, self.Play, self.mod, self, ...)
+		DBMScheduler:Unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
+		return DBMScheduler:Schedule(t, self.Play, self.mod, self, ...)
 	end
 
 	--Object Permits scheduling voice multiple times for same object
 	function announcePrototype:ScheduleVoiceOverLap(t, ...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
-		return schedule(t, self.Play, self.mod, self, ...)
+		return DBMScheduler:Schedule(t, self.Play, self.mod, self, ...)
 	end
 
 	function announcePrototype:CancelVoice(...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
-		return unschedule(self.Play, self.mod, self, ...)
+		return DBMScheduler:Unschedule(self.Play, self.mod, self, ...)
 	end
 
 	-- old constructor (no auto-localize)
@@ -9186,7 +8953,7 @@ do
 	end
 
 	function yellPrototype:Schedule(t, ...)
-		return schedule(t, self.Yell, self.mod, self, ...)
+		return DBMScheduler:Schedule(t, self.Yell, self.mod, self, ...)
 	end
 
 	--Standard schedule object to schedule a say/yell based on what's defined in object
@@ -9195,10 +8962,10 @@ do
 			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", time)
 			if expireTime then
 				local remaining = expireTime-GetTime()
-				scheduleCountdown(remaining, numAnnounces, self.Yell, self.mod, self, ...)
+				DBMScheduler:ScheduleCountdown(remaining, numAnnounces, self.Yell, self.mod, self, ...)
 			end
 		else
-			scheduleCountdown(time, numAnnounces, self.Yell, self.mod, self, ...)
+			DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Yell, self.mod, self, ...)
 		end
 	end
 
@@ -9208,19 +8975,15 @@ do
 			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", time)
 			if expireTime then
 				local remaining = expireTime-GetTime()
-				scheduleCountdown(remaining, numAnnounces, self.Yell, self.mod, self, ...)
+				DBMScheduler:ScheduleCountdown(remaining, numAnnounces, self.Yell, self.mod, self, ...)
 			end
 		else
-			scheduleCountdown(time, numAnnounces, self.Say, self.mod, self, ...)
+			DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Say, self.mod, self, ...)
 		end
 	end
 
-	function yellPrototype:Repeat(...)
-		scheduleRepeat(time, self.Yell, self.spellId, self.mod, self, ...)
-	end
-
 	function yellPrototype:Cancel(...)
-		return unschedule(self.Yell, self.mod, self, ...)
+		return DBMScheduler:Unschedule(self.Yell, self.mod, self, ...)
 	end
 
 	function bossModPrototype:NewYell(...)
@@ -9643,25 +9406,25 @@ do
 				end
 			end
 		end
-		unschedule(self.Show, self.mod, self)
-		schedule(delay or 0.5, self.Show, self.mod, self, ...)
+		DBMScheduler:Unschedule(self.Show, self.mod, self)
+		DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
 	end
 
 	function specialWarningPrototype:DelayedShow(delay, ...)
-		unschedule(self.Show, self.mod, self, ...)
-		schedule(delay or 0.5, self.Show, self.mod, self, ...)
+		DBMScheduler:Unschedule(self.Show, self.mod, self, ...)
+		DBMScheduler:Schedule(delay or 0.5, self.Show, self.mod, self, ...)
 	end
 
 	function specialWarningPrototype:Schedule(t, ...)
-		return schedule(t, self.Show, self.mod, self, ...)
+		return DBMScheduler:Schedule(t, self.Show, self.mod, self, ...)
 	end
 
 	function specialWarningPrototype:Countdown(time, numAnnounces, ...)
-		scheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
+		DBMScheduler:ScheduleCountdown(time, numAnnounces, self.Show, self.mod, self, ...)
 	end
 
 	function specialWarningPrototype:Cancel(_, ...) -- t, ...
-		return unschedule(self.Show, self.mod, self, ...)
+		return DBMScheduler:Unschedule(self.Show, self.mod, self, ...)
 	end
 
 	function specialWarningPrototype:Play(name, customPath)
@@ -9683,19 +9446,19 @@ do
 
 	function specialWarningPrototype:ScheduleVoice(t, ...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
-		unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
-		return schedule(t, self.Play, self.mod, self, ...)
+		DBMScheduler:Unschedule(self.Play, self.mod, self)--Allow ScheduleVoice to be used in same way as CombinedShow
+		return DBMScheduler:Schedule(t, self.Play, self.mod, self, ...)
 	end
 
 	--Object Permits scheduling voice multiple times for same object
 	function specialWarningPrototype:ScheduleVoiceOverLap(t, ...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
-		return schedule(t, self.Play, self.mod, self, ...)
+		return DBMScheduler:Schedule(t, self.Play, self.mod, self, ...)
 	end
 
 	function specialWarningPrototype:CancelVoice(...)
 		if voiceSessionDisabled or DBM.Options.ChosenVoicePack == "None" then return end
-		return unschedule(self.Play, self.mod, self, ...)
+		return DBMScheduler:Unschedule(self.Play, self.mod, self, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarning(text, optionDefault, optionName, optionVersion, runSound, hasVoice, difficulty, texture)
@@ -10409,17 +10172,17 @@ do
 	end
 
 	function timerPrototype:DelayedStart(delay, ...)
-		unschedule(self.Start, self.mod, self, ...)
-		schedule(delay or 0.5, self.Start, self.mod, self, ...)
+		DBMScheduler:Unschedule(self.Start, self.mod, self, ...)
+		DBMScheduler:Schedule(delay or 0.5, self.Start, self.mod, self, ...)
 	end
 	timerPrototype.DelayedShow = timerPrototype.DelayedStart
 
 	function timerPrototype:Schedule(t, ...)
-		return schedule(t, self.Start, self.mod, self, ...)
+		return DBMScheduler:Schedule(t, self.Start, self.mod, self, ...)
 	end
 
 	function timerPrototype:Unschedule(...)
-		return unschedule(self.Start, self.mod, self, ...)
+		return DBMScheduler:Unschedule(self.Start, self.mod, self, ...)
 	end
 
 	--TODO, figure out why this function doesn't properly stop count timers when calling stop without count on count timers
@@ -11493,7 +11256,7 @@ function bossModPrototype:SendSync(event, ...)
 	local time = GetTime()
 	--Mod syncs are more strict and enforce latency threshold always.
 	--Do not put latency check in main sendSync local function (line 313) though as we still want to get version information, etc from these users.
-	if not modSyncSpam[spamId] or (time - modSyncSpam[spamId]) > 8 then
+	if not private.modSyncSpam[spamId] or (time - private.modSyncSpam[spamId]) > 8 then
 		self:ReceiveSync(event, nil, self.revision or 0, tostringall(...))
 		sendSync("M", str)
 	end
@@ -11512,8 +11275,8 @@ end
 function bossModPrototype:ReceiveSync(event, sender, revision, ...)
 	local spamId = self.id .. event .. strjoin("\t", ...)
 	local time = GetTime()
-	if (not modSyncSpam[spamId] or (time - modSyncSpam[spamId]) > self.SyncThreshold) and self.OnSync and (not (self.blockSyncs and sender)) and (not sender or (not self.minSyncRevision or revision >= self.minSyncRevision)) then
-		modSyncSpam[spamId] = time
+	if (not private.modSyncSpam[spamId] or (time - private.modSyncSpam[spamId]) > self.SyncThreshold) and self.OnSync and (not (self.blockSyncs and sender)) and (not sender or (not self.minSyncRevision or revision >= self.minSyncRevision)) then
+		private.modSyncSpam[spamId] = time
 		-- we have to use the sender as last argument for compatibility reasons (stupid old API...)
 		-- avoid table allocations for frequently used number of arguments
 		if select("#", ...) <= 1 then
@@ -11551,11 +11314,11 @@ end
 --  Scheduler  --
 -----------------
 function bossModPrototype:Schedule(t, f, ...)
-	return schedule(t, f, self, ...)
+	return DBMScheduler:Schedule(t, f, self, ...)
 end
 
 function bossModPrototype:Unschedule(f, ...)
-	return unschedule(f, self, ...)
+	return DBMScheduler:Unschedule(f, self, ...)
 end
 
 function bossModPrototype:ScheduleMethod(t, method, ...)

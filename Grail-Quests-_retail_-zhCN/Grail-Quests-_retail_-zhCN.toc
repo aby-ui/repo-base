@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Grail |cff69ccf0Quests |r|cff0000ffRetail|r|cff69ccf0 zhCN|r
 ## Author: Scott M Harrison
 ## Notes: Provides localized zhCN quest names to Grail for Retail

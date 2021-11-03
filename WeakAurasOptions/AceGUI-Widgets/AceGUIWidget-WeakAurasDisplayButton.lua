@@ -531,6 +531,10 @@ local methods = {
           childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
           childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
           childData.parent = data.id;
+          if (data.regionType == "dynamicgroup") then
+            childData.xOffset = 0
+            childData.yOffset = 0
+          end
           WeakAuras.Add(childData);
           WeakAuras.ClearAndUpdateOptions(childData.id)
         end
@@ -540,12 +544,12 @@ local methods = {
         childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
         childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
         self.grouping.parent = data.id;
+        if (data.regionType == "dynamicgroup") then
+          self.grouping.xOffset = 0
+          self.grouping.yOffset = 0
+        end
         WeakAuras.Add(self.grouping);
         WeakAuras.ClearAndUpdateOptions(self.grouping.id);
-      end
-      if (data.regionType == "dynamicgroup") then
-        self.grouping.xOffset = 0;
-        self.grouping.yOffset = 0;
       end
       WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
@@ -650,10 +654,6 @@ local methods = {
       local toDelete = {}
       if(data.controlledChildren) then
         local region = WeakAuras.regions[data.id];
-        if (region.Suspend) then
-          region:Suspend();
-        end
-
         for child in OptionsPrivate.Private.TraverseAllChildren(data) do
           tinsert(toDelete, child);
         end
@@ -808,9 +808,7 @@ local methods = {
 
     function self.callbacks.OnDragStart()
       if WeakAuras.IsImporting() then return end;
-      if #OptionsPrivate.tempGroup.controlledChildren == 0 then
-        WeakAuras.PickDisplay(data.id);
-      end
+      OptionsPrivate.PickDisplayMultiple(data.id)
       OptionsPrivate.StartDrag(data);
     end
 
@@ -871,7 +869,7 @@ local methods = {
     if (not data.controlledChildren) then
       local convertMenu = {};
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
-        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= "timer" and regionType ~= data.regionType) then
+        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= data.regionType) then
           tinsert(convertMenu, {
             text = regionData.displayName,
             notCheckable = true,
@@ -1021,10 +1019,6 @@ local methods = {
     end
     if(OptionsPrivate.Private.CanHaveClones(data)) then
       tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
-    end
-    if(OptionsPrivate.Private.IsDefinedByAddon(data.id)) then
-      tinsert(namestable, " ");
-      tinsert(namestable, {" ", "|cFF00FFFF"..L["Addon"]..": "..OptionsPrivate.Private.IsDefinedByAddon(data.id)});
     end
 
     local hasDescription = data.desc and data.desc ~= "";

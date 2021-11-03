@@ -1,10 +1,10 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Method Raid Tools
 ## Author: ykiigor
 ## Notes: Method Raid Tools
 ## OptionalDeps: ExRT
 ## SavedVariables: VMRT
-## Version: 4580
+## Version: 4600
 core.lua
 Functions.lua
 embeds.xml

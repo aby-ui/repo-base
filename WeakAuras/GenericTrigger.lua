@@ -1674,10 +1674,14 @@ do
         if casting then
           casting = false
         end
-        if isAttacking then
-          swingStart("main")
-          swingTriggerUpdate()
-        end
+        -- check next frame
+        swingTimerFrame:SetScript("OnUpdate", function(self)
+          if isAttacking then
+            swingStart("main")
+            swingTriggerUpdate()
+          end
+          self:SetScript("OnUpdate", nil)
+        end)
       end
       if Private.reset_ranged_swing_spells[spell] then
         if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
@@ -3666,6 +3670,19 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
 
       if (found) then
         ret = ret .. additional;
+      end
+    end
+  else
+    if (trigger.custom_type == "stateupdate") then
+      local variables = events[data.id][triggernum].tsuConditionVariables();
+      if (type(variables) == "table") then
+        for var, varData in pairs(variables) do
+          if (type(varData) == "table") then
+            if varData.display then
+              ret = ret .. "|cFFFF0000%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n"
+            end
+          end
+        end
       end
     end
   end

@@ -372,7 +372,7 @@ local function CreatePluginFrames (data)
 					threat_table [3] = false
 					threat_table [6] = 0
 				end
-				
+
 				--> pet
 				if (UnitExists ("pet")) then
 					local thisplayer_name = GetUnitName ("pet", true) .. " *PET*"
@@ -393,48 +393,48 @@ local function CreatePluginFrames (data)
 					end
 				end
 			end
-			
+
 			--> sort
 			_table_sort (ThreatMeter.player_list_indexes, sort)
 			for index, t in _ipairs (ThreatMeter.player_list_indexes) do
 				ThreatMeter.player_list_hash [t[1]] = index
 			end
-			
+
 			--> no threat on this enemy
 			if (ThreatMeter.player_list_indexes [1] [2] < 1) then
 				ThreatMeter:HideBars()
 				return
 			end
-			
+
 			local lastIndex = 0
 			local shownMe = false
-			
+
 			local firstIndex = 1
-			local pullRow = ThreatMeter.ShownRows [1]
+			local pullRow = ThreatMeter.ShownRows[1]
 			local me = ThreatMeter.player_list_indexes [ ThreatMeter.player_list_hash [player] ]
-			
-			if (me and not ThreatMeter.saveddata.hide_pull_bar) then
+			local hidePullBar = ThreatMeter.saveddata.hide_pull_bar
+
+			--setup the pull aggro bar
+			if (me and not hidePullBar) then
 				firstIndex = 2
 
-				local myThreat = me [6] or 0
-				local myRole = me [4]
-				
-				local topThreat = ThreatMeter.player_list_indexes [1]
-				local aggro = topThreat [6] * (CheckInteractDistance(unitId, 3) and 1.1 or 1.3)
+				local myThreat = me[6] or 0
+
+				--get the player with most aggro
+				local topThreat = ThreatMeter.player_list_indexes[1]
+				local aggro = topThreat[6] * (CheckInteractDistance(unitId, 3) and 1.1 or 1.3)
 				aggro = max(aggro, 0.001)
-				
-				pullRow:SetLeftText ("Pull Aggro At")
-				local realPercent = _math_floor (aggro / max (topThreat [6], 0.01) * 100)
+
+				pullRow:SetLeftText("Pull Aggro At")
+				local realPercent = _math_floor(aggro / max (topThreat [6], 0.01) * 100)
 				pullRow:SetRightText ("+" .. ThreatMeter:ToK2 (aggro - myThreat) .. " (" .. _math_floor (_math_abs ((myThreat / aggro * 100) - realPercent)) .. "%)") --
 				pullRow:SetValue (100)
-				
+
 				local myPercentToAggro = myThreat / aggro * 100
-				
-				local r, g = ThreatMeter:percent_color (myPercentToAggro)
-				--local r, g = myPercentToAggro / 100, (100-myPercentToAggro) / 100
+
+				local r, g = ThreatMeter:percent_color(myPercentToAggro)
 				pullRow:SetColor (r, g, 0)
 				pullRow._icon:SetTexture ([[Interface\PVPFrame\Icon-Combat]])
-				--pullRow._icon:SetVertexColor (r, g, 0)
 				pullRow._icon:SetTexCoord (0, 1, 0, 1)
 				pullRow:Show()
 			else
@@ -442,28 +442,33 @@ local function CreatePluginFrames (data)
 					pullRow:Hide()
 				end
 			end
-			
-			
+
 			for index = firstIndex, #ThreatMeter.ShownRows do
-				local thisRow = ThreatMeter.ShownRows [index]
-				local threat_actor = ThreatMeter.player_list_indexes [index-1]
+				local thisRow = ThreatMeter.ShownRows[index]
+				local threatActor
+
+				if (hidePullBar) then
+					threatActor = ThreatMeter.player_list_indexes[index]
+				else
+					threatActor = ThreatMeter.player_list_indexes[index-1]
+				end
 				
-				if (threat_actor) then
-					local role = threat_actor [4]
+				if (threatActor) then
+					local role = threatActor[4]
 					thisRow._icon:SetTexCoord (_unpack (RoleIconCoord [role]))
 					
-					thisRow:SetLeftText (ThreatMeter:GetOnlyName (threat_actor [1]))
+					thisRow:SetLeftText (ThreatMeter:GetOnlyName (threatActor [1]))
 					
-					local pct = threat_actor [2]
+					local pct = threatActor [2]
 					
-					thisRow:SetRightText (ThreatMeter:ToK2 (threat_actor [6]) .. " (" .. _cstr ("%.1f", pct) .. "%)")
+					thisRow:SetRightText (ThreatMeter:ToK2 (threatActor [6]) .. " (" .. _cstr ("%.1f", pct) .. "%)")
 					thisRow:SetValue (pct)
 					
-					if (options.useplayercolor and threat_actor [1] == player) then
+					if (options.useplayercolor and threatActor [1] == player) then
 						thisRow:SetColor (_unpack (options.playercolor))
 						
 					elseif (options.useclasscolors) then
-						local color = RAID_CLASS_COLORS [threat_actor [5]]
+						local color = RAID_CLASS_COLORS [threatActor [5]]
 						if (color) then
 							thisRow:SetColor (color.r, color.g, color.b)
 						else
@@ -481,7 +486,7 @@ local function CreatePluginFrames (data)
 					if (not thisRow.statusbar:IsShown()) then
 						thisRow:Show()
 					end
-					if (threat_actor [1] == player) then
+					if (threatActor [1] == player) then
 						shownMe = true
 					end
 				else

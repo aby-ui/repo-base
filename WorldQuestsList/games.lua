@@ -1322,3 +1322,66 @@ ToughCrowdHelper:SetScript("OnEvent",function(self,event,arg1,arg2)
 		end
 	end
 end)
+
+
+
+local AspirantTrainingKortia = CreateFrame'Frame'
+AspirantTrainingKortia:RegisterEvent('QUEST_ACCEPTED')
+AspirantTrainingKortia:RegisterEvent('QUEST_REMOVED')
+AspirantTrainingKortia:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+AspirantTrainingKortia:SetScript("OnEvent",function(self,event,arg1,arg2)
+	if event == 'QUEST_ACCEPTED' then
+		if arg1 == 64271 then
+			if VWQL and VWQL.DisableAspirantTraining then
+				return
+			end
+			self:RegisterEvent("CHAT_MSG_MONSTER_SAY")
+			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+		end
+	elseif event == 'QUEST_REMOVED' then
+		if arg1 == 64271 then
+			self:UnregisterEvent("CHAT_MSG_MONSTER_SAY")
+			self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+
+			ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+		end
+	elseif event == 'UNIT_SPELLCAST_SUCCEEDED' then
+		if arg1 == "player" then
+			ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+			ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+		end
+	elseif event == 'CHAT_MSG_MONSTER_SAY' then
+		if not arg1 then
+			return
+		end
+		for i=1,3 do
+			local button = _G["OverrideActionBarButton"..i]
+			local action = button.action
+			local _, spellID = GetActionInfo(action)
+			if spellID then
+				local name = GetSpellInfo(spellID)
+				if name and arg1:lower():find(name:lower()) then
+					ActionButton_HideOverlayGlow(OverrideActionBarButton1)
+					ActionButton_HideOverlayGlow(OverrideActionBarButton2)
+					ActionButton_HideOverlayGlow(OverrideActionBarButton3)
+		
+					ActionButton_ShowOverlayGlow(button)
+					return
+				end
+			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		for i=1,GetNumQuestLogEntries() do
+			local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
+			if questID and questID == 64271 then
+				self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',64271)
+				break
+			end
+		end
+	end
+end)

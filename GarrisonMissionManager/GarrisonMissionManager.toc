@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 
 ## Title: Garrison Mission Manager
 ## Version: v61

@@ -1,4 +1,4 @@
-local VERSION = 101
+local VERSION = 102
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -309,6 +309,8 @@ Minor fixes
 Added warmode bonus for shadowlands quests
 
 Wago update
+
+9.1.5 update
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -2111,6 +2113,8 @@ do
 		[1851] = 2456,
 		[1852] = 2451,
 		[1853] = 2447,
+
+		[1907] = 2470,
 	}
 	local fg_list = {
 		[2164] = "Both",

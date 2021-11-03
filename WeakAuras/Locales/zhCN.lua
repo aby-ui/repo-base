@@ -225,7 +225,22 @@ L["Channel (Spell)"] = "引导法术"
 L["Character Stats"] = "角色属性"
 L["Character Type"] = "角色类型"
 L["Charge gained/lost"] = "获取/失去充能层数"
-L["Charged Combo Point"] = "充能连击点"
+--[[Translation missing --]]
+L["Charged Combo Point (1)"] = "Charged Combo Point (1)"
+--[[Translation missing --]]
+L["Charged Combo Point (2)"] = "Charged Combo Point (2)"
+--[[Translation missing --]]
+L["Charged Combo Point (3)"] = "Charged Combo Point (3)"
+--[[Translation missing --]]
+L["Charged Combo Point (4)"] = "Charged Combo Point (4)"
+--[[Translation missing --]]
+L["Charged Combo Point 1"] = "Charged Combo Point 1"
+--[[Translation missing --]]
+L["Charged Combo Point 2"] = "Charged Combo Point 2"
+--[[Translation missing --]]
+L["Charged Combo Point 3"] = "Charged Combo Point 3"
+--[[Translation missing --]]
+L["Charged Combo Point 4"] = "Charged Combo Point 4"
 L["Charges"] = "充能"
 L["Charges Changed Event"] = "充能变化事件"
 L["Chat Frame"] = "聊天窗口"
@@ -315,7 +330,6 @@ L["Distance"] = "距离"
 L["Dodge"] = "躲闪"
 L["Dodge (%)"] = "闪躲 (%)"
 L["Dodge Rating"] = "闪躲等级"
-L["Done"] = "完成"
 L["Down"] = "下"
 L["Down, then Left"] = "向下，然后向左"
 L["Down, then Right"] = "向下，然后向右"
@@ -671,7 +685,6 @@ L["Nefarian"] = "奈法利安"
 L["Netherspite"] = "虚空幽龙"
 L["Neutral"] = "中立"
 L["Never"] = "从不"
-L["Next"] = "下一个"
 L["Next Combat"] = "下次战斗"
 L["Next Encounter"] = "下次首领战斗"
 L["Nightbane"] = "夜之魇"
@@ -686,6 +699,8 @@ L["Not in Group"] = "不在小队中"
 L["Not on Cooldown"] = "不在冷却中"
 L["Not On Threat Table"] = "不在仇恨列表"
 L["Note, that cross realm transmission is possible if you are on the same group"] = "注意：如果你和其它服务器的玩家在同一个群组内时，跨服务器传输是可行的"
+--[[Translation missing --]]
+L["Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."] = "Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."
 L["Note: 'Hide Alone' is not available in the new aura tracking system. A load option can be used instead."] = "注意：“不在队伍时隐藏”在新光环追踪系统中不可用，使用加载选项来达到相同效果。"
 L["Note: The available text replacements for multi triggers match the normal triggers now."] = "注意：现在普通触发器也可使用多目标触发器可用的文本替换。"
 L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"] = "注意：此类型的触发器只是在预估和单位之间的距离，实际和友方玩家的距离一般要比预估值多 3 码。距离预估的可用数值取决于你的职业、已学技能与目标单位类型，某些距离数值不适用于特定NPC。|n|n|cFFAAFFAA友方单位：|r %s|n|cFFFFAAAA敌方单位：|r %s|n|cFFAAAAFF非特定单位：|r %s"
@@ -833,26 +848,6 @@ L["Requesting display information from %s ..."] = "请求来 %s 的显示信息"
 L["Require Valid Target"] = "需要有效目标"
 L["Resist"] = "抵抗"
 L["Resisted"] = "被抵抗"
-L["Resolve collisions dialog"] = [=[你安装的插件中定义了与|cFF8800FFWeakAuras|r 图示相同名称的变量。
-
-你必须重新命名你的图示。
-
-已解决: |cFFFF0000]=]
-L["Resolve collisions dialog singular"] = [=[你安装的插件中定义了与|cFF8800FFWeakAuras|r 图示相同名称的变量。
-
-你必须重新命名你的图示。
-
-已解决: |cFFFF0000]=]
-L["Resolve collisions dialog startup"] = [=[你安装的插件中定义了与|cFF8800FFWeakAuras|r 图示相同名称的变量。
-
-你必须重新命名你的图示。
-
-已解决: |cFFFF0000]=]
-L["Resolve collisions dialog startup singular"] = [=[你安装的插件中定义了与|cFF8800FFWeakAuras|r 图示相同名称的变量。
-
-你必须重新命名你的图示。
-
-已解决: |cFFFF0000]=]
 L["Rested"] = "休息"
 L["Rested Experience"] = "休息经验值"
 L["Rested Experience (%)"] = "休息经验值百分比"
@@ -968,6 +963,8 @@ L["Spell Usable"] = "法术可用"
 L["Spin"] = "旋转"
 L["Spiral"] = "螺旋"
 L["Spiral In And Out"] = "螺旋进入和退出"
+--[[Translation missing --]]
+L["Spirit"] = "Spirit"
 L["Stack Count"] = "堆叠数"
 L["Stacks"] = "层数"
 L["Stage"] = "阶段"

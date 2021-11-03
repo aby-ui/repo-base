@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactTwins", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404132247")
+mod:SetRevision("20211021181850")
 mod:SetCreatureID(116409, 116410)--Raest Magespear, Karam Magespear
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
@@ -22,8 +22,8 @@ local warnRisingDragon			= mod:NewSpellAnnounce(235426, 3)
 
 --Karam
 local specWarnFixate			= mod:NewSpecialWarningRun(202081, nil, nil, nil, 4, 2)
-local specWarnGrasp				= mod:NewSpecialWarningInterrupt(235578, nil, nil, nil, 1, 2)
 --Raest
+local specWarnGrasp				= mod:NewSpecialWarningInterrupt(235578, nil, nil, nil, 1, 2)
 local specWarnRift				= mod:NewSpecialWarningSwitch(235446, nil, nil, nil, 1, 2)
 local specWarnRune				= mod:NewSpecialWarningMoveTo(236460, nil, nil, nil, 1, 2)
 

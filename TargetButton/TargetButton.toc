@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: TargetButton
 ## Notes: This little improvement adds buttons to the targeting frame when a friendly player is selected. 
 ## X-Repple: 辅助

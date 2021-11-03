@@ -1985,17 +1985,25 @@ local SimplePanel_frame_backdrop_border_color = {0, 0, 0, 1}
 function DF:CreateScaleBar (frame, config)
 	local scaleBar, text = DF:CreateSlider (frame, 120, 14, 0.6, 1.6, 0.1, config.scale, true, "ScaleBar", nil, "Scale:", DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE"), DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
 	scaleBar.thumb:SetWidth(24)
+	scaleBar:SetValueStep(0.1)
+	scaleBar:SetObeyStepOnDrag()
+	scaleBar.mouseDown = false
 
 	text:SetPoint ("topleft", frame, "topleft", 12, -7)
 	scaleBar:SetFrameLevel (DF.FRAMELEVEL_OVERLAY)
 	scaleBar.OnValueChanged = function (_, _, value)
-		config.scale = value
-		if (not scaleBar.IsValueChanging) then
-			frame:SetScale (config.scale)
+		if (scaleBar.mouseDown) then
+			config.scale = value
 		end
 	end
+
+	scaleBar:SetHook ("OnMouseDown", function()
+		scaleBar.mouseDown = true
+	end)
+
 	scaleBar:SetHook ("OnMouseUp", function()
-		frame:SetScale (config.scale)
+		frame:SetScale(config.scale)
+		scaleBar.mouseDown = false
 	end)
 	
 	scaleBar:SetAlpha (0.70)

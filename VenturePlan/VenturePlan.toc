@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Venture Plan
 ## Notes: Interface improvements for Adventures.
 ## Title-zhCN: |c0066ffffVenturePlan9.0随从任务|r

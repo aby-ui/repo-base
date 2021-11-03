@@ -246,18 +246,18 @@ function _detalhes:AbreJanelaInfo (jogador, from_att_change, refresh, ShiftKeyDo
 	Details:UpdateBreakdownPlayerList()
 	
 	--check which tab was selected and reopen that tab
-	if (info.selectedTab == "Summary") then
-		return jogador:MontaInfo()
-	else
-		--open tab
-		for index = 1, #_detalhes.player_details_tabs do
-			local tab = _detalhes.player_details_tabs [index]
-			if (tab:condition (info.jogador, info.atributo, info.sub_atributo)) then
-				if (tab.tabname == info.selectedTab) then
-					--_detalhes.player_details_tabs [index]:Click()
-					--_detalhes.player_details_tabs [index].onclick()
-					_detalhes.player_details_tabs [index]:OnShowFunc()
-				end
+--	if (info.selectedTab == "Summary") then
+--		return jogador:MontaInfo()
+--	else
+
+	--open tab
+	for index = 1, #_detalhes.player_details_tabs do
+		local tab = _detalhes.player_details_tabs [index]
+		if (tab:condition (info.jogador, info.atributo, info.sub_atributo)) then
+			if (tab.tabname == info.selectedTab) then
+				--_detalhes.player_details_tabs [index]:Click()
+				--_detalhes.player_details_tabs [index].onclick()
+				_detalhes.player_details_tabs [index]:OnShowFunc()
 			end
 		end
 	end
@@ -1493,8 +1493,11 @@ local elvui_skin = function()
 	
 	--class icon
 	window.SetClassIcon = function (player, class)
+		if (player.spellicon) then
+			window.classe_icone:SetTexture(player.spellicon)
+			window.classe_icone:SetTexCoord(.1, .9, .1, .9)
 	
-		if (player.spec) then
+		elseif (player.spec) then
 			window.classe_icone:SetTexture ([[Interface\AddOns\Details\images\spec_icons_normal_alpha]])
 			window.classe_icone:SetTexCoord (_unpack (_detalhes.class_specs_coords [player.spec]))
 			--esta_barra.icone_classe:SetVertexColor (1, 1, 1)

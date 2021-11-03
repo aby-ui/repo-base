@@ -5763,13 +5763,9 @@ function _detalhes:SetTooltipMinWidth()
 end
 
 function _detalhes:FormatCooltipBackdrop()
-
 	local CoolTip = GameCooltip
-
 	CoolTip:SetBackdrop (1, menus_backdrop, menus_backdropcolor, menus_bordercolor)
 	CoolTip:SetBackdrop (2, menus_backdrop, menus_backdropcolor_sec, menus_bordercolor)
-	--CoolTip:SetWallpaper (1, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
-
 end
 
 local build_mode_list = function (self, elapsed)
@@ -6794,10 +6790,6 @@ local build_segment_list = function (self, elapsed)
 		CoolTip:SetOption ("HeighMod", 12)
 		
 		_detalhes:SetTooltipMinWidth()
-
-		--CoolTip:SetWallpaper (1, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
-		--CoolTip:SetBackdrop (1, menus_backdrop, nil, menus_bordercolor)
-		--CoolTip:SetBackdrop (2, menus_backdrop, nil, menus_bordercolor)
 		
 		_detalhes:FormatCooltipBackdrop()
 		
@@ -8694,9 +8686,6 @@ end
 		
 		_detalhes:FormatCooltipBackdrop()
 		
-		--GameCooltip:SetWallpaper (1, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
-		--GameCooltip:SetBackdrop (1, menus_backdrop, nil, menus_bordercolor)
-		
 		show_anti_overlap (self.instance, self, "top")
 		
 		_detalhes:SetMenuOwner (self, self.instance)
@@ -8907,9 +8896,6 @@ local report_on_enter = function (self, motion, forced, from_click)
 	
 	_detalhes:FormatCooltipBackdrop()
 	
-	--GameCooltip:SetWallpaper (1, _detalhes.tooltip.menus_bg_texture, _detalhes.tooltip.menus_bg_coords, _detalhes.tooltip.menus_bg_color, true)
-	--GameCooltip:SetBackdrop (1, menus_backdrop, nil, menus_bordercolor)
-	
 	show_anti_overlap (instancia, self, "top")
 	_detalhes:SetMenuOwner (self, instancia)
 	
@@ -8989,8 +8975,6 @@ local atributo_on_enter = function (self, motion, forced, from_click)
 		GameCooltip:SetOption ("YSpacingModSub", -2)
 	end
 	
-	--GameCooltip:SetBackdrop (1, menus_backdrop, nil, menus_bordercolor)
-	--GameCooltip:SetBackdrop (2, menus_backdrop, nil, menus_bordercolor)
 	GameCooltip:SetOption ("TextSize", _detalhes.font_sizes.menus)
 	
 	_detalhes:FormatCooltipBackdrop()

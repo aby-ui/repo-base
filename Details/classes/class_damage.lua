@@ -326,12 +326,18 @@
 				end
 				return table1 [4] < table2 [4]
 			end
-			
+
 --[[exported]]	function Details:GetBarColor (actor)
 				actor = actor or self
 				if (actor.monster) then
 					return _unpack (Details.class_colors.ENEMY)
-					
+
+				elseif (actor.customColor) then
+					return unpack(actor.customColor)
+
+				elseif (actor.spellicon) then
+					return 0.729, 0.917, 1
+
 				elseif (actor.owner) then
 					return _unpack (Details.class_colors [actor.owner.classe or "UNKNOW"])
 
@@ -2879,7 +2885,6 @@ end
 	elseif (self.spellicon) then
 		texture:SetTexture (self.spellicon)
 		texture:SetTexCoord (0.078125, 0.921875, 0.078125, 0.921875)
-		texture:SetVertexColor (1, 1, 1)
 		
 	elseif (classe == "UNKNOW") then
 		texture:SetTexture ([[Interface\AddOns\Details\images\classes_plus]])

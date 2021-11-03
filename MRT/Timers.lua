@@ -225,7 +225,42 @@ function module:slash(arg,msgDeformatted)
 			module.db.lasttimertopull = time_needed + 1
 			module.db.timertopull = time_needed
 			CreateTimers(time_needed,L.timerattack)
-		end	
+		end
+	elseif arg:find("^cleutimer ") then
+		--/rt cleutimer UNIT_DIED 177286 240 sound
+		local u_event,filter,time = msgDeformatted:match("^cleutimer ([^ ]+) (%d+) (%d+)")
+		if time then
+			filter = tonumber(filter)
+			time = tonumber(time)
+			local sound = arg:find("sound") and true or false
+			if u_event == "UNIT_DIED" then
+				function module.main.COMBAT_LOG_EVENT_UNFILTERED(_,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID)
+					if u_event == event and ExRT.F.GUIDtoID(destGUID) == filter then
+						module.frame.total = -time
+						if sound then
+							C_Timer.After(time,function()
+								pcall(PlaySoundFile, [[Interface\AddOns\WeakAuras\Media\Sounds\AirHorn.ogg]], "Master")
+							end)
+						end
+					end
+				end
+			else
+				function module.main.COMBAT_LOG_EVENT_UNFILTERED(_,event,_,sourceGUID,sourceName,sourceFlags,_,destGUID,destName,destFlags,_,spellID)
+					if u_event == event and spellID == filter then
+						module.frame.total = -time
+						if sound then
+							C_Timer.After(time,function()
+								pcall(PlaySoundFile, [[Interface\AddOns\WeakAuras\Media\Sounds\AirHorn.ogg]], "Master")
+							end)
+						end
+					end
+				end
+			end
+			module:RegisterEvents('COMBAT_LOG_EVENT_UNFILTERED')
+			print('added',u_event,filter,time,sound)
+		else
+			print('wrong syntax')
+		end
 	elseif arg == "help" then
 		print("|cff00ff00/rt pull|r - run pull timer with 10 seconds")
 		print("|cff00ff00/rt pull X|r - run pull timer with X seconds")
@@ -506,7 +541,7 @@ function module.main:ADDON_LOADED()
 end
 
 function module.main:PLAYER_REGEN_DISABLED()
-	if not module.frame.encounter then 
+	if not module.frame.encounter and module.frame.total >= 0 then 
 		module.frame.total = 0 
 	end
 	module.frame.inCombat = true

@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Details!: Explosive Orbs (plugin)
 ## Notes: Show how many explosive orbs players target and hit.
 ## RequiredDeps: Details

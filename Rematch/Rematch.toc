@@ -1,8 +1,8 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.11.16
+## Version: 4.11.18
 ## SavedVariables: RematchSaved, RematchSettings
 
 Localization\Rematch zhTW.lua

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactQueen", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404132247")
+mod:SetRevision("20211022011000")
 mod:SetCreatureID(116484, 116499, 116496)--Sigryn, Jarl Velbrand, Runeseer Faljar
 mod:SetEncounterID(2059)
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
@@ -12,6 +12,8 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 238694 237870 237947 237945 237857",
 	"SPELL_CAST_SUCCESS 237849 238432",
+	"SPELL_AURA_APPLIED 237947",
+	"SPELL_AURA_REMOVED 237947",
 	"UNIT_DIED",
 	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3"
 )
@@ -47,6 +49,8 @@ local timerBladeStormCD			= mod:NewCDCountTimer(13.4, 237857, nil, nil, nil, 2)
 local timerRunicDetonationCD	= mod:NewCDCountTimer(13.4, 237914, nil, nil, nil, 5)
 local timerKnowledgeCD			= mod:NewCDCountTimer(13.4, 237952, nil, nil, nil, 3)
 
+mod:AddNamePlateOption("NPAuraOnPresence", 237947)
+
 --This may not be accurate way to do it, it may be some kind of shared CD like HFC council and just be grossly affected by CCs
 --These are ones consistent between 4 pulls (including kill) though
 local bladeStormTimers = {125.0, 105.0, 30.0}
@@ -79,6 +83,15 @@ function mod:OnCombatStart(delay)
 	timerKnowledgeCD:Start(98, 1)
 	timerBladeStormCD:Start(125, 1)
 	timerDarkWingsCD:Start(146)
+	if self.Options.NPAuraOnPresence then
+		DBM:FireEvent("BossMod_EnableHostileNameplates")
+	end
+end
+
+function mod:OnCombatEnd()
+	if self.Options.NPAuraOnPresence  then
+		DBM.Nameplate:Hide(true, nil, nil, nil, true)
+	end
 end
 
 function mod:SPELL_CAST_START(args)
@@ -132,22 +145,23 @@ function mod:SPELL_CAST_SUCCESS(args)
 	end
 end
 
---[[
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 237945 then--Blood of the Father
-		timerThrowSpearCD:Stop()
-		--timerAdvanceCD:Stop()
+	if spellId == 237947 then
+		if self.Options.NPAuraOnPresence then
+			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 20)
+		end
 	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 237945 then--Blood of the Father
-
+	if spellId == 237947 then
+		if self.Options.NPAuraOnPresence then
+			DBM.Nameplate:Show(true, args.destGUID, spellId)
+		end
 	end
 end
---]]
 
 function mod:UNIT_DIED(args)
 	if args.destGUID == UnitGUID("player") then--Solo scenario, a player death is a wipe

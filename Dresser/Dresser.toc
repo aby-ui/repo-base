@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Dresser
 ## Notes: Adds functionality to the dressing room!
 ## Author: Vladinator

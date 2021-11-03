@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: TomTom
 ## Author: Cladhaire, Ludovicus
 ## Version: v3.0.2

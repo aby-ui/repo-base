@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: BattleGroundEnemies
 ## Version: 9.0.5.6
 ## Author: Bullsei

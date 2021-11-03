@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: XLoot Frame
 ## Notes: A customizable, skinnable loot frame.
 ## Version: 9.0-7

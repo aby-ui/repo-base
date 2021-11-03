@@ -25,7 +25,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 44
-RSConstants.CURRENT_LOOT_DB_VERSION = 58
+RSConstants.CURRENT_LOOT_DB_VERSION = 59
 
 ---============================================================================
 -- Special events

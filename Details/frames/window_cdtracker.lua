@@ -42,11 +42,15 @@ function Details.CooldownTracking.EnableTracker()
     Details.ocd_tracker.enabled = true
 
     --register callbacks
-    openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownListUpdate", "CooldownListUpdateFunc")
-    openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownListWipedFunc")
+    --openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownListUpdate", "CooldownListUpdateFunc") --nao tem
+    --openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownListWipedFunc") --nao tem
+
+    --openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownListUpdate", "CooldownUpdateFunc")
+    --openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownListWiped", "CooldownUpdateFunc")
+
     openRaidLib.RegisterCallback(Details.CooldownTracking, "CooldownUpdate", "CooldownUpdateFunc")
 
-    --Details.CooldownTracking.RefreshCooldownFrames()
+    Details.CooldownTracking.RefreshCooldownFrames()
 end
 
 function Details.CooldownTracking.DisableTracker()
@@ -314,45 +318,7 @@ function Details.CooldownTracking.RefreshCooldowns()
         end
     end
 
-    --[=[]]
-
-    local cooldownIndex = 1
-
-    for classId = 1, 12 do --12 classes
-        local t = cooldownsOrganized[classId]
-        for i = 1, #t do
-            local bar = screenPanel.bars[cooldownIndex]
-            cooldownIndex = cooldownIndex + 1
-            bar:Show()
-            local cooldownTable = t[i]
-
-            local classColor = C_ClassColor.GetClassColor(cooldownTable[6])
-            bar:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
-
-            local spellNameDebug, _, spellIcon = GetSpellInfo(cooldownTable[5])
-            bar:SetIcon(spellIcon, .1, .9, .1, .9)
-            bar:SetLeftText(DF:RemoveRealmName(cooldownTable[1]))
-
-            local timeLeft = cooldownTable[2]
-            if (timeLeft > 0) then
-                bar.spellId = cooldownTable[5]
-                bar:SetTimer(timeLeft)
-                --print("timeLeft:", timeLeft, spellNameDebug)
-            else
-                bar:SetMinMaxValues(0, 100)
-                bar:SetTimer(0)
-                --print(spellNameDebug)
-                C_Timer.After(1, function()
-                   -- bar:SetMinMaxValues(0, 100)
-                   -- bar:SetTimer(0)
-                end)
-            end
-        end
-    end
-    --]=]
-
     cooldownIndex = cooldownIndex - 1
-    print("total frames:", cooldownIndex)
 
     local xAnchor = 1
     local defaultY = 0

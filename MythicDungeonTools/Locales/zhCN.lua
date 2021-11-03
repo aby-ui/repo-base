@@ -918,14 +918,10 @@ L["The Warden's Court"] = "守望者庭院"
 L["Theater of Pain"] = "伤逝剧场"
 L["theaterOfPain_miniBossNote"] = "只有一个决斗者能活下来"
 L["TheaterOfPainFloor1"] = "伤逝剧场"
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor2"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor3"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor4"] = ""--]] 
---[[Translation missing --]]
---[[ L["TheaterOfPainFloor5"] = ""--]] 
+L["TheaterOfPainFloor2"] = "征服密室"
+L["TheaterOfPainFloor3"] = "苦痛祭坛"
+L["TheaterOfPainFloor4"] = "屠灭坟冢上层"
+L["TheaterOfPainFloor5"] = "屠灭坟冢下层"
 L["TheNecroticWakeFloor1"] = "通灵战潮"
 L["TheNecroticWakeFloor2"] = "缝合车间"
 L["TheNecroticWakeFloor3"] = "佐尔拉姆斯"

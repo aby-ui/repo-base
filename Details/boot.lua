@@ -6,8 +6,8 @@
 		
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 8889
-		_detalhes.alpha_build_counter = 8889 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 9108
+		_detalhes.alpha_build_counter = 9108 --if this is higher than the regular counter, use it instead
 		_detalhes.bcc_counter = 28
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
@@ -33,6 +33,16 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.1.5.9108.145", "November 02th, 2021"},
+		"Necrotic Wake: weapons damage does not count anymore for the player which uses it.",
+		"Necrotic Wake: a new 'fake player' is shown showing the damage done of all weapons during combat.",
+		"Necrotic Wake: these npcs now does not award damage done to players anymore: Brittlebone Mage, Brittlebone Warrior, Brittlebone Crossbowman",
+		"The Other Side: the npc Volatile Memory does not award anymore damage to players.",
+		"Plaguefall: the npcs Fungret Shroomtender and Plaguebound Fallen does not award anymore damage to players.",
+		"Sanguine Affix: the amount of healing done by sanguine pools now shows on all segments (was shown only in the overall).",
+		"Tiny Threat (plugin): fixed an issue when hidding the pull aggro bar makes the first line be invisible.",
+		"Statistics: fixed several small bugs with guild statistics (/details stats).",
+		"Scale slider (top left slider shown on panels) are now more responsible.",
 
 		{"v9.1.0.8888.145", "October 7th, 2021"},
 		"Search has been added into the options panel",
@@ -219,7 +229,6 @@ do
 			_detalhes.InstancesToStoreData = { --mapId
 				[2296] = true, --castle narnia
 				[2450] = true, --sanctum of domination
-				[2450] = true,
 			}
 
 		--> armazena os escudos - Shields information for absorbs

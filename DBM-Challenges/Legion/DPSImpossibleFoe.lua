@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactImpossibleFoe", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404132247")
+mod:SetRevision("20211021181850")
 mod:SetCreatureID(115638)
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod.soloChallenge = true
@@ -16,9 +16,10 @@ mod:RegisterEventsInCombat(
 )
 --Notes:
 --NEW VOICE: attackshield
-
+--TODO, fix shield absorb, auto calculation doesn't work do to scaling tech. UnitAura detects invalid absorb amount
 local specWarnImpServants		= mod:NewSpecialWarningSwitch(235140, nil, nil, nil, 1, 2)--Agatha's Vengeance spellId used for now
 local specWarnDarkFury			= mod:NewSpecialWarningSwitch(243111, nil, nil, nil, 1, 7)
+local specWarnDarkFuryKick		= mod:NewSpecialWarningInterrupt(243111, nil, nil, nil, 1, 2)
 
 local timerImpServantsCD		= mod:NewCDTimer(45, 235140, nil, nil, nil, 1)
 local timerDarkFuryCD			= mod:NewCDTimer(51.1, 243111, nil, nil, nil, 5, nil, nil, nil, 1, 4)
@@ -59,7 +60,8 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 243113 then
-		specWarnDarkFury:Play("shieldover")
+		specWarnDarkFuryKick:Show(args.sourceName)
+		specWarnDarkFuryKick:Play("kickcast")
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:Hide()
 		end

@@ -230,7 +230,7 @@ function panel:oldUpdateList()
 			button:Show()
 			-- highlight/unhighlight the summoned pet
 			if petID==summonedPetID then
-				button:SetBackdropBorderColor(1,0.82,0)
+				--button:SetBackdropBorderColor(1,0.82,0)
 				panel.Selected:SetParent(button)
 				panel.Selected:SetAllPoints(true)
 				panel.Selected:Show()
@@ -241,7 +241,7 @@ function panel:oldUpdateList()
 					button.Pet.IconBorder:SetBlendMode("ADD")
 				end
 			else
-				button:SetBackdropBorderColor(0.33,0.33,0.33)
+				--button:SetBackdropBorderColor(0.33,0.33,0.33)
 				if not button.slim then
 					button.Pet.IconBorder:SetTexCoord(0.1875,0.796875,0.1875,0.796875)
 					button.Pet.IconBorder:SetBlendMode("BLEND")

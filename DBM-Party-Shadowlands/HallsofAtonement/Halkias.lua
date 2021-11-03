@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2406, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210123235530")
+mod:SetRevision("20211102135304")
 mod:SetCreatureID(165408)
 mod:SetEncounterID(2401)
 
@@ -33,7 +33,7 @@ local specWarnGTFO					= mod:NewSpecialWarningGTFO(323001, nil, nil, nil, 1, 8)
 
 local timerCrumblingSlamCD			= mod:NewCDTimer(12.1, 322936, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)--12.1 except after refracted sinlight
 local timerHeaveDebrisCD			= mod:NewCDTimer(12.1, 322943, nil, nil, nil, 3)--12.1 except after refracted sinlight
-local timerRefractedSinlightD		= mod:NewCDTimer(45, 322711, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)--45--51
+local timerRefractedSinlightCD		= mod:NewCDTimer(47.3, 322711, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)--45--51
 --local timerSinlightVisionsCD		= mod:NewCDTimer(23, 322977, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)--23-27
 
 --"Sinlight Visions-339237-npc:165408 = pull:5.0, 5.0, 20.0, 5.0, 15.0, 20.0
@@ -42,7 +42,7 @@ function mod:OnCombatStart(delay)
 	timerCrumblingSlamCD:Start(4-delay)
 --	timerSinlightVisionsCD:Start(5-delay)--SUCCESS
 	timerHeaveDebrisCD:Start(13.5-delay)--SUCCESS
-	timerRefractedSinlightD:Start(29.6-delay)--Iffy
+	timerRefractedSinlightCD:Start(49.9-delay)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -54,7 +54,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 322711 then
 		specWarnRefractedSinlight:Show()
 		specWarnRefractedSinlight:Play("watchstep")
-		timerRefractedSinlightD:Start()
+		timerRefractedSinlightCD:Start()
 		timerCrumblingSlamCD:Stop()
 		timerHeaveDebrisCD:Stop()
 		timerHeaveDebrisCD:Start(17)

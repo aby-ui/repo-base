@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("ArtifactXylem", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211006163712")
+mod:SetRevision("20211021181850")
 mod:SetCreatureID(115244)
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod.soloChallenge = true
@@ -14,7 +14,7 @@ mod:RegisterEventsInCombat(
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_SUCCESS 232661 231522",
---	"UNIT_DIED",
+	"UNIT_DIED",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 --Notes:

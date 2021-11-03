@@ -719,7 +719,7 @@ function tt:ApplyUnitAppearance(tip,u,first)
 	if (cfg.classColoredBorder) and (u.isPlayer) then
 		if (first) then
 			local color = CLASS_COLORS[u.classID] or CLASS_COLORS["PRIEST"];
-			tip:SetBackdropBorderColor(color.r,color.g,color.b);
+			tip.NineSlice:SetBorderColor(color.r,color.g,color.b);
 		end
 	elseif (cfg.reactColoredBorder) then	-- Az: this will override the classColoredBorder config, perhaps have that option take priority instead?
 		tip:SetBackdropBorderColor(unpack(cfg["colReactBack"..u.reactionIndex]));
@@ -809,7 +809,7 @@ function gttScriptHooks:OnShow()
 	-- Ensures that default anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
 	-- Tooltips from world objects that change cursor seems to also require this. (Tested in 8.0/BfA)
 	if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
-		self:SetBackdropColor(unpack(cfg.tipColor));
+		self.NineSlice:SetCenterColor(unpack(cfg.tipColor)) --abyui915 self:SetBackdropColor(unpack(cfg.tipColor));
 	end
 end
 
@@ -818,8 +818,8 @@ function gttScriptHooks:OnUpdate(elapsed)
 	-- This ensures that mouse anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
 	local gttAnchor = self:GetAnchorType();
 	if (gttAnchor == "ANCHOR_CURSOR") or (gttAnchor == "ANCHOR_CURSOR_RIGHT") then
-		self:SetBackdropColor(unpack(cfg.tipColor));
-		self:SetBackdropBorderColor(unpack(cfg.tipBorderColor));
+		self.NineSlice:SetCenterColor(unpack(cfg.tipColor));
+		self.NineSlice:SetBorderColor(unpack(cfg.tipBorderColor));
 		return;
 	-- Anchor GTT to Mouse
 	elseif (gtt_anchorType == "mouse") and (self.default) then
@@ -828,7 +828,7 @@ function gttScriptHooks:OnUpdate(elapsed)
 
 	-- WoD: This background color reset, from OnShow(), has been copied down here. It seems resetting the color in OnShow() wasn't enough, as the color changes after the tip is being shown
 	if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
-		self:SetBackdropColor(unpack(cfg.tipColor));
+		self.NineSlice:SetCenterColor(unpack(cfg.tipColor));
 	end
 
 	-- Fadeout / Update Tip if Showing a Unit

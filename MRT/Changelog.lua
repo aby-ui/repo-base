@@ -1,6 +1,15 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4600
+* 9.1.5 update
+
+v.4600-BC
+* Minor fixes
+
+v.4600-Classic
+* Minor fixes
+
 v.4580
 * Note: added option "Hide lines with timers but without my name". You can bypass this option with "all" or "glowall" keywords, ex.: {time:1:20,all}
 * Raid Check: added font settings for raid overview window

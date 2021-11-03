@@ -387,7 +387,7 @@ function AcquireTooltip()
 	local tooltip = tremove(tooltipHeap)
 
 	if not tooltip then
-		tooltip = CreateFrame("Frame", nil, UIParent)
+		tooltip = CreateFrame("Frame", nil, UIParent, TooltipBackdropTemplateMixin and "TooltipBackdropTemplate")
 
 		local scrollFrame = CreateFrame("ScrollFrame", nil, tooltip)
 		scrollFrame:SetPoint("TOP", tooltip, "TOP", 0, -TOOLTIP_PADDING)
@@ -540,15 +540,14 @@ function InitializeTooltip(tooltip, key)
 	----------------------------------------------------------------------
 	-- (Re)set frame settings
 	----------------------------------------------------------------------
-	local backdrop = GameTooltip:GetBackdrop()
+	--local backdrop = GameTooltip:GetBackdrop()
 
-	tooltip:SetBackdrop(backdrop)
+	--tooltip:SetBackdrop(backdrop)
 
-	if backdrop then
-		tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
-		tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
-	end
-
+	--if backdrop then
+	--	tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
+	--	tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
+	--end
 	tooltip:SetScale(GameTooltip:GetScale())
 	tooltip:SetAlpha(1)
 	tooltip:SetFrameStrata("TOOLTIP")

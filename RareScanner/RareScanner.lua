@@ -259,6 +259,10 @@ scanner_button.LootBar.itemFramesPool.UpdateCacheItem = function(self, itemID)
 	self.items[itemID].loaded = false
 	
 	local item = Item:CreateFromItemID(itemID)
+	if (not item) then
+		return
+	end
+	
 	item:ContinueOnItemLoad(function()
 		local _, _, _, itemEquipLoc, _, itemClassID, itemSubClassID = GetItemInfoInstant(itemID)
 		if (RSLoot.IsFiltered(itemID, item:GetItemLink(), item:GetItemQuality(), itemEquipLoc, itemClassID, itemSubClassID)) then

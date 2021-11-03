@@ -204,8 +204,8 @@ local function CreateAnchorFrame(anchorkey, parent)
     end
     local frame = CreateFrame("Frame", nil, parent.SubtypeFrame or parent, BackdropTemplateMixin and "ThinBorderTemplate,BackdropTemplate" or "ThinBorderTemplate")
     frame.anchorkey = anchorkey
-    frame:SetBackdrop(GameTooltip:GetBackdrop())
-    frame:SetBackdropColor(GameTooltip:GetBackdropColor())
+    frame:SetBackdrop(TOOLTIP_BACKDROP_STYLE_DEFAULT)
+    frame:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLORtip)
     frame:SetBackdropBorderColor(1, 1, 1, 0)
     frame:SetSize(80, 80)
     frame:SetPoint("TOPRIGHT", 100, -5)

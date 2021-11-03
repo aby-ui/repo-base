@@ -256,7 +256,7 @@ function toolbar:ButtonOnEnter(once)
 			GameTooltip:SetSpellByID(tonumber(spellID))
 		end
 		rematch:SmartAnchor(GameTooltip,self)
-		GameTooltip:SetBackdropBorderColor(0.5,0.5,0.5)
+		--GameTooltip:SetBackdropBorderColor(0.5,0.5,0.5)
 		GameTooltip:Show()
 	end
 

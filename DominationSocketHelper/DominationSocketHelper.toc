@@ -1,7 +1,7 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Domination Socket Helper
 ## Author: Metriss - Stormrage
-## Version: 1.5.3
+## Version: 1.5.4
 ## SavedVariables: DSHDB
 ## Notes: Helps with changing Domination Socket Shards
 

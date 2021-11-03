@@ -13,7 +13,6 @@
 	local _UnitAffectingCombat = UnitAffectingCombat --wow api local
 	local _UnitHealth = UnitHealth --wow api local
 	local _UnitHealthMax = UnitHealthMax --wow api local
-	local _UnitIsFeignDeath = UnitIsFeignDeath --wow api local
 	local _UnitGUID = UnitGUID --wow api local
 	local _IsInRaid = IsInRaid --wow api local
 	local _IsInGroup = IsInGroup --wow api local
@@ -150,7 +149,7 @@
 			army = {},
 			apoc = {},
 		}
-		
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
 	local container_misc = _detalhes.container_type.CONTAINER_MISC_CLASS
@@ -237,11 +236,11 @@
 			[228361] = 228360, --shadow priest void erruption
 		}
 	end
-	
+
 	local bitfield_debuffs_ids = _detalhes.BitfieldSwapDebuffsIDs
 	local bitfield_debuffs = {}
 	for _, spellid in ipairs (bitfield_debuffs_ids) do
-		local spellname = GetSpellInfo (spellid)
+		local spellname = GetSpellInfo(spellid)
 		if (spellname) then
 			bitfield_debuffs [spellname] = true
 		else
@@ -259,7 +258,24 @@
 	_detalhes.OverridedSpellIds = override_spellId
 
 	--> list of ignored npcs by the user
-	local ignored_npcids = {}
+	local ignored_npcids = {
+		--necrotic wake --remove on 10.0
+		[163126] = true, --brittlebone mage
+		[163122] = true, --brittlebone warrior
+		[166079] = true, --brittlebone crossbowman
+
+		--the other side
+		[170147] = true, --volatile memory
+		[170483] = true, --zul'gurub phantoms (they are already immune to damage)
+
+		--plaguefall
+		[168365] = true, --fungret shroomtender
+		[168968] = true, --plaguebound fallen (at the start of the dungeon)
+		[168891] = true, --
+		--[169265] = true, --creepy crawler (summoned by decaying flesh giant)
+		--[168747] = true,  --venomfang (summon)
+		--[168837] = true, --stealthlings (summon)
+	}
 
 	--> ignore soul link (damage from the warlock on his pet - current to demonology only)
 	local SPELLID_WARLOCK_SOULLINK = 108446
@@ -325,8 +341,7 @@
 		ignore_spikeballs = 0,
 	}
 
-	local NPCID_KELTHUZAD_FROSTBOUNDDEVOTED = 176703
-	local NPCID_KELTHUZAD_ADDMIMICPLAYERS = 176605
+		local NPCID_KELTHUZAD_ADDMIMICPLAYERS = 176605
 
 	--> damage spells to ignore
 	local damage_spells_to_ignore = {
@@ -398,6 +413,37 @@
 		}
 		local _auto_regen_thread
 		local AUTO_REGEN_PRECISION = 2
+
+		--kyrian weapons on necrotic wake --remove on 10.0
+		--these detect the kyrial weapon actor by the damage spellId
+		Details.KyrianWeaponSpellIds = {
+			[328128] = true, --Forgotten Forgehammer
+			[328351] = true, --Bloody Javelin
+			[328406] = true, --Discharged Anima
+			[344421] = true, --Anima Exhaust (goliaths)
+		}
+		Details.KyrianWeaponActorName = "Kyrian Weapons"
+		Details.KyrianWeaponActorSpellId = 328351 --for the icon
+		Details.KyrianWeaponColor = {0.729, 0.917, 1} --color
+
+		--sanguine affix for m+
+		Details.SanguineHealActorName = GetSpellInfo(SPELLID_SANGUINE_HEAL)
+
+		--create a table with spell names pointing to spellIds
+		Details.SpecialSpellActorsName = {}
+
+		--add sanguine affix
+		Details.SpecialSpellActorsName[Details.SanguineHealActorName] = SPELLID_SANGUINE_HEAL
+
+		--add kyrian weapons
+		Details.SpecialSpellActorsName[Details.KyrianWeaponActorName] = Details.KyrianWeaponActorSpellId
+		for spellId in pairs(Details.KyrianWeaponSpellIds) do
+			local spellName = GetSpellInfo(spellId)
+			if (spellName) then
+				Details.SpecialSpellActorsName[spellName] = spellId
+			end
+		end
+
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> internal functions
@@ -549,6 +595,13 @@
 		--	return
 		--end
 
+		--kyrian weapons
+		if (Details.KyrianWeaponSpellIds[spellid]) then
+			who_name = Details.KyrianWeaponActorName
+			who_flags = 0x514
+			who_serial = "Creature-0-3134-2289-28065-" .. spellid .. "-000164C698"
+		end
+
 		------------------------------------------------------------------------------------------------
 		--> spell reflection
 		if (who_serial == alvo_serial and not reflection_ignore[spellid]) then --~reflect
@@ -634,7 +687,7 @@
 				return
 			end
 
-			if (npcId == NPCID_KELTHUZAD_FROSTBOUNDDEVOTED) then --remove on 10.0
+			if (npcId == 176703) then --remove on 10.0 --kelthuzad
 				alvo_flags = 0xa48
 			end
 
@@ -728,7 +781,7 @@
 				return
 			end
 
-			if (npcId == NPCID_KELTHUZAD_FROSTBOUNDDEVOTED) then --remove on 10.0
+			if (npcId == 176703) then --remove on 10.0 --kelthuzad
 				who_flags = 0xa48
 			end
 			if (npcId == NPCID_KELTHUZAD_ADDMIMICPLAYERS) then --remove on 10.0
@@ -853,7 +906,11 @@
 		if (not este_jogador) then
 			return
 		end
-		
+
+		if (Details.KyrianWeaponSpellIds[spellid]) then
+			este_jogador.grupo = true
+		end
+
 		--> his target
 		local jogador_alvo, alvo_dono = damage_cache [alvo_serial] or damage_cache_pets [alvo_serial] or damage_cache [alvo_name], damage_cache_petsOwners [alvo_serial]
 		
@@ -1742,7 +1799,7 @@
 		local npcId = _tonumber(_select (6, _strsplit ("-", alvo_serial)) or 0)
 
 		--kel'thuzad encounter --remove on 10.0
-			if (npcId == NPCID_KELTHUZAD_FROSTBOUNDDEVOTED) then 
+			if (npcId == 176703) then --kelthuzad
 				return
 			elseif (spellid == 358108) then --Restore Health
 				return
@@ -1986,7 +2043,7 @@
 
 		--sanguine ichor mythic dungeon affix (heal enemies)
 		if (spellid == SPELLID_SANGUINE_HEAL) then 
-			who_name = GetSpellInfo(SPELLID_SANGUINE_HEAL)
+			who_name = Details.SanguineHealActorName
 			who_flags = 0x518
 			who_serial = "Creature-0-3134-2289-28065-" .. SPELLID_SANGUINE_HEAL .. "-000164C698"
 		end
@@ -4101,7 +4158,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_current_combat.frags_need_refresh = true
 
 		--> player death
-		elseif (not _UnitIsFeignDeath (alvo_name)) then
+		elseif (not UnitIsFeignDeath (alvo_name)) then
 			if (
 				--> player in your group
 				(_bit_band (alvo_flags, AFFILIATION_GROUP) ~= 0 or (damageActor and damageActor.grupo)) and 
@@ -5846,8 +5903,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_recording_ability_with_buffs = _detalhes.RecordPlayerAbilityWithBuffs
 		_in_combat = _detalhes.in_combat
 
-		--> grab the ignored npcid directly from the user profile
-		ignored_npcids = _detalhes.npcid_ignored
+		--> fill the ignored npcid directly from the user profile
+		--ignored_npcids = _detalhes.npcid_ignored
+		for npcId in pairs(_detalhes.npcid_ignored) do
+			ignored_npcids[npcId] = true
+		end
 
 		if (_in_combat) then
 			if (not _auto_regen_thread or _auto_regen_thread._cancelled) then

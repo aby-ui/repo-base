@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2439, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011144558")
+mod:SetRevision("20211030022616")
 mod:SetCreatureID(175726)--Skyja (TODO, add other 2 and set health to highest?)
 mod:SetEncounterID(2429)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -177,7 +177,7 @@ function mod:OnCombatStart(delay)
 		timerFragmentsofDestinyCD:Start(4.5-delay, 1)
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:SetHeader(OVERVIEW)
-			DBM.InfoFrame:Show(5, "function", updateInfoFrame, false, true, true)
+			DBM.InfoFrame:Show(10, "function", updateInfoFrame, false, true, true)
 		end
 	end
 	berserkTimer:Start(300-delay)--Phase 1
@@ -399,7 +399,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			if args:IsPlayer() then
 				specWarnFragmentsofDestiny:Show(self:IconNumToTexture(icon))
 				specWarnFragmentsofDestiny:Play("targetyou")
-				if icon < 9 then
+				if icon > 0 and icon < 9 then
 					yellFragmentsofDestiny:Yell(icon, icon)
 				end
 			end

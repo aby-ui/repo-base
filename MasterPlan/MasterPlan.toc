@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: Master Plan
 ## Notes: Garrison missions UI tweaks.
 ## Author: foxlit

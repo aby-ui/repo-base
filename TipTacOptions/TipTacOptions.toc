@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## Version: 20.10.31
 ## Title: TipTacOptions
 ## Author: Aezay (Earthen Ring EU)

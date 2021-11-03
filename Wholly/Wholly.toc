@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 90105
 ## ClassicInterface: 20501
 ## Title: Wholly
 ## Author: Scott M Harrison

@@ -409,6 +409,7 @@ function MRT.Options:UpdateModulesList()
 end
 
 ----> Options
+local OptionsFrame_title
 
 function OptionsFrame:AddSnowStorm(maxSnowflake)
 	local sf = OptionsFrame.SnowStorm or CreateFrame("ScrollFrame", nil, Options)
@@ -598,7 +599,7 @@ function OptionsFrame:AddDeathStar(maxDeathStars,deathStarType)
 			OptionsFrame:AddDeathStar(self.maxDeathStars,deathStarType)
 		end)
 
-		OptionsFrame.score = ELib:Text(OptionsFrame,"Score: 0",28):Point("RIGHT",OptionsFrame.title,"CENTER",85,-27):Color("FF9117"):Font("Interface\\AddOns\\"..GlobalAddonName.."\\media\\FiraSansMedium.ttf",20)
+		OptionsFrame.score = ELib:Text(OptionsFrame,"Score: 0",28):Point("RIGHT",OptionsFrame_title,"CENTER",85,-27):Color("FF9117"):Font("Interface\\AddOns\\"..GlobalAddonName.."\\media\\FiraSansMedium.ttf",20)
 	end
 
 	sf.snow = sf.snow or {}
@@ -735,7 +736,7 @@ end
 
 
 OptionsFrame.image = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogo2"):Point("TOPLEFT",15,5):Size(140,140)
-OptionsFrame.title = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("LEFT",OptionsFrame.image,"RIGHT",15,-5):Size(512*0.7,128*0.7)
+OptionsFrame_title = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("LEFT",OptionsFrame.image,"RIGHT",15,-5):Size(512*0.7,128*0.7)
 
 local askFrame_show
 local pmove_pos = 40
@@ -828,11 +829,11 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 
 	if false and (today.month == 5 and today.day == 4) then
 		OptionsFrame.image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogom4")
-		OptionsFrame.title:Color("FF9117")
+		OptionsFrame_title:Color("FF9117")
 		if math.random(1,5) == 4 then
-			OptionsFrame.title:Color("ff0000")	--you are sith
+			OptionsFrame_title:Color("ff0000")	--you are sith
 		else	
-			OptionsFrame.title:Color("00ff00")
+			OptionsFrame_title:Color("00ff00")
 		end
 
 		OptionsFrame:AddDeathStar()

@@ -449,9 +449,17 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.FLAG] = { x = 0.5685, y = 0.1911, comment = AL["NOTE_355286_2"] };
 	}; --Memorial Offerings
 	[354275] = {
-		[RSConstants.DOT..1] = { x = 0.535, y = 0.172, comment = AL["NOTE_354275_1"] };
-		[RSConstants.DOT..2] = { x = 0.531, y = 0.19, comment = AL["NOTE_354275_1"] };
-		[RSConstants.DOT..3] = { x = 0.5059, y = 0.1541, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..1] = { x = 0.5283, y = 0.1956, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..2] = { x = 0.5087, y = 0.1471, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..3] = { x = 0.53, y = 0.15, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..4] = { x = 0.535, y = 0.172, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..5] = { x = 0.5355, y = 0.1703, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..6] = { x = 0.531, y = 0.19, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..7] = { x = 0.4981, y = 0.1739, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..8] = { x = 0.5206, y = 0.1999, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..9] = { x = 0.5247, y = 0.1449, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..10] = { x = 0.5147, y = 0.1796, comment = AL["NOTE_354275_1"] };
+		[RSConstants.DOT..11] = { x = 0.5027, y = 0.165, comment = AL["NOTE_354275_1"] };
 	}; --Experimental Construct Part
 	[353871] = {
 		[RSConstants.ENTRANCE] = { x = 0.4773, y = 0.3511 };

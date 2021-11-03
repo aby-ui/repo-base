@@ -58,9 +58,8 @@
 			self.specIcon:SetBlendMode("BLEND")
 			self.roleIcon:SetBlendMode("BLEND")
 		end
-		
-		local updatePlayerLine = function(self, topResult)
 
+		local updatePlayerLine = function(self, topResult)
 			local playerSelected = Details:GetPlayerObjectFromBreakdownWindow()
 			if (playerSelected and playerSelected == self.playerObject) then
 				self:SetBackdropColor(unpack(scrollbox_line_backdrop_color_selected))
@@ -69,22 +68,29 @@
 				self:SetBackdropColor(unpack(scrollbox_line_backdrop_color))
 				self.isSelected = nil
 			end
-			
-			--adjust the player icon
-			local specIcon, L, R, T, B = Details:GetSpecIcon(self.playerObject.spec, false)
-			local specId, specName, specDescription, specIconId, specRole, specClass
-			
-			if (specIcon) then
-				self.specIcon:SetTexture(specIcon)
-				self.specIcon:SetTexCoord(L, R, T, B)
 
-				if (DetailsFramework.IsTimewalkWoW()) then
-					specRole = "NONE"
-				else
-					specId, specName, specDescription, specIconId, specRole, specClass = _G.GetSpecializationInfoByID(self.playerObject.spec)
-				end
+			local specRole
+
+			--adjust the player icon
+			if (self.playerObject.spellicon) then
+				self.specIcon:SetTexture(self.playerObject.spellicon)
+				self.specIcon:SetTexCoord(.1, .9, .1, .9)
 			else
-				self.specIcon:SetTexture(nil)
+				local specIcon, L, R, T, B = Details:GetSpecIcon(self.playerObject.spec, false)
+				local specId, specName, specDescription, specIconId, specClass
+
+				if (specIcon) then
+					self.specIcon:SetTexture(specIcon)
+					self.specIcon:SetTexCoord(L, R, T, B)
+
+					if (DetailsFramework.IsTimewalkWoW()) then
+						specRole = "NONE"
+					else
+						specId, specName, specDescription, specIconId, specRole, specClass = _G.GetSpecializationInfoByID(self.playerObject.spec)
+					end
+				else
+					self.specIcon:SetTexture(nil)
+				end
 			end
 
 			--adjust the role icon

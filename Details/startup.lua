@@ -477,7 +477,7 @@ function Details:StartMeUp() --I'll never stop!
 	--enforce to show 6 abilities on the tooltip
 	--_detalhes.tooltip.tooltip_max_abilities = 6 freeeeeedooommmmm
 
-
+	Details.InstallRaidInfo()
 
 	--Plater integration
 	C_Timer.After(2, function()

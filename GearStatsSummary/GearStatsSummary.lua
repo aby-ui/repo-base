@@ -101,7 +101,6 @@ function GearStatsSummary_OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED");
 	self:RegisterEvent("UNIT_INVENTORY_CHANGED");
     self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-	self:RegisterEvent("ITEM_UPGRADE_MASTER_UPDATE");
 	self:RegisterEvent("REPLACE_ENCHANT");
 
 	InspectLess:RegisterCallback("InspectLess_InspectItemReady", GearStatsSummary_InspectItemReady)
@@ -205,7 +204,7 @@ function GearStatsSummary_OnEvent(self, event, ...)
 		end
 	end
 	
-	if event == "ITEM_UPGRADE_MASTER_UPDATE" or event == "REPLACE_ENCHANT" then
+	if event == "REPLACE_ENCHANT" then
 		if GearStatsSummarySelfFrame:IsVisible() then
 			GearStatsSummary_HideFrame(GearStatsSummarySelfFrame);
 			GearStatsSummary_ShowFrame(GearStatsSummarySelfFrame,PaperDollFrame,UnitName("player"),OFFSET_X,OFFSET_Y);

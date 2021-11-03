@@ -1,8 +1,8 @@
-## Interface: 90100
+## Interface: 90105
 ## Title: SimpleRaidTargetIcons
 ## Author: Driizt
 ## X-Credits: ghostduke, Brodrick (aka Kirov), Qzot
-## Version: 2.1.6
+## Version: 2.1.7
 ## Notes: Displays a widget on modifier + left click or double click on a unit to let a player assign Raid Target Icons.
 ## Notes-zhCN: 在关联键+点击或是双击一个单位的时候显示一个小工具用来让玩家指定团队目标的标记。
 ## Notes-zhTW: 在關聯鍵+左鍵點擊或是左鍵雙點擊一個單位的時候顯示一個小工具用來讓玩家指定團隊目標的標記。
