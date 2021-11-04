@@ -44,3 +44,10 @@ function utils:splitCommand(msg)
     local result = utils:split(msg, ' ')
     return result[1], result[2]
 end
+
+function utils:isValidGUID(guid) 
+    if guid then
+        local unitType = strsplit("-", guid)
+        return unitType == "Player"
+    end    
+end 

@@ -133,4 +133,37 @@ end
 
 --GetQuestLogIndexByID = C_QuestLog.GetLogIndexForQuestID
 
+--[[------------------------------------------------------------
+9.1.5
+---------------------------------------------------------------]]
+if not BACKDROP_TOOLTIP_16_16_5555 then
+    BACKDROP_TOOLTIP_16_16_5555 = {
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileEdge = true,
+        tileSize = 16,
+        edgeSize = 16,
+        insets = { left = 5, right = 5, top = 5, bottom = 5 },
+    };
+
+    BACKDROP_TOOLTIP_8_8_1111 = {
+        bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        tile = true,
+        tileEdge = true,
+        tileSize = 8,
+        edgeSize = 8,
+        insets = { left = 1, right = 1, top = 1, bottom = 1 },
+    };
+
+    BACKDROP_TOOLTIP_0_16_5555 = {
+        edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+        edgeSize = 16,
+        tileEdge = true,
+        insets = { left = 5, right = 5, top = 5, bottom = 5 },
+    };
+end
+
 --DEBUG_MODE = true
+

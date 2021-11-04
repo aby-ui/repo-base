@@ -551,8 +551,6 @@ local function FollowerButton_SetInfo(self, info)
 	s.Portrait:SetTexture(info.portraitIconID)
 	s.Portrait2:SetTexture(info.portraitIconID)
 	s.TextLabel:SetText(onMission and mtl or info.level)
-	s.TextLabel:ClearAllPoints()
-	s.TextLabel:SetPoint("CENTER", 5, -18)
 	s.TextLabel:SetTextColor(mc.r, mc.g, mc.b)
 	s.PortraitR:SetVertexColor(dc, dc, dc)
 	s.PortraitT:SetShown(inTG)
@@ -731,7 +729,7 @@ local function FollowerList_Refresh(self, setXPGain)
 		for i=#fl+1,#wf do
 			wf[i]:Hide()
 		end
-		self:SetHeight(170+72*math.ceil(#fl/4))
+		self:SetHeight(134+66*math.ceil(#fl/4))
 		self.noRefresh = true
 	end
 	FollowerList_SyncToBoard(self)
@@ -1077,8 +1075,8 @@ local function Common_RefreshTooltip(self)
 	end
 end
 local function AwayFollowers_OnEnter(self)
-	GameTooltip:SetOwner(self, self.tooltipAnchor or "ANCHOR_TOP", self.tooltipXO or 0, self.tooltipYO or 0)
-	GameTooltip:SetText(ITEM_QUALITY_COLORS[3].hex .. COVENANT_MISSION_FOLLOWER_CATEGORY)
+    GameTooltip:SetOwner(self, self.tooltipAnchor or "ANCHOR_TOP", self.tooltipXO or 0, self.tooltipYO or 0)
+	GameTooltip:SetText(ITEM_QUALITY_COLORS[3].hex..L"Follwer".."：".."|cffffea00"..#C_Garrison.GetFollowers(123).."|r".."|cffffffff".."/".."|r".."|cffff0000"..L"All".."|r")
 	local ft, ct, nt = {}, C_Garrison.GetFollowers(123), 0
 	for i=1,#ct do
 		local ci = ct[i]
@@ -1094,7 +1092,7 @@ local function AwayFollowers_OnEnter(self)
 	if #ft == 0 and nt == 0 then
 		GameTooltip:AddLine(L'All companions are ready for adventures.', 1,1,1);
 	elseif #ct ~= #ft or nt > 0 then
-		GameTooltip:AddLine((L'%d a total of attendants are available,among:'):format(#ct-#ft), 0.4,0.6,0.93, 1)
+		GameTooltip:AddLine((L'%d a total of attendants are available,among:'):format(#ct-#ft), 0.5, 0.5, 0.5, 1)
 		GameTooltip:AddLine((L'%d |4companion is:companions are; ready for adventures.'):format(#ct-#ft-nt), 0,1,0, 1)
 	end
 	if nt > 0 then
@@ -1320,8 +1318,8 @@ function Factory.CopyBoxUI(parent)
 		f:Hide()
 	end)
 	t, f.CloseButton2 = f:CreateFontString(nil, "OVERLAY", "GameFontBlackSmall"), t
-	t:SetPoint("BOTTOMRIGHT", -16, 14)
-	t:SetText(GetAddOnMetadata(AN, "Title") .. " v" .. GetAddOnMetadata(AN, "Version"))
+	t:SetPoint("BOTTOM", 0, 10)
+	t:SetText(GetAddOnMetadata(AN, "Title") .. " " .. GetAddOnMetadata(AN, "Version"))
 	f.VersionText = t
 
 	f:SetScript("OnHide", function(self)
@@ -1369,9 +1367,11 @@ function Factory.MissionPage(parent)
 						nt = nt + 1
 					end
 					if #ct-#ft-nt ~= 0 then
-		    			ccButton.Icon:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\Ready.blp")
+		    			ccButton.Icon:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\LibParse\\Libs\\tu")
+						ccButton.Icon:SetTexCoord(0.031, 0.141, 0.363, 0.477)
 					else   
-		    			ccButton.Icon:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\Work.blp")
+		    			ccButton.Icon:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\LibParse\\Libs\\tu")
+						ccButton.Icon:SetTexCoord(0.191, 0.297, 0.363, 0.477)
 					end
 				end
 			end
@@ -1542,15 +1542,16 @@ function Factory.MissionButton(parent)
 	t:SetMouseClickEnabled(false)
 	t, s.ExpireTime = cf:CreateTexture(nil, "ARTWORK"), t
 	CreateObject("CountdownText", cf, s.ExpireTime)
-	t:SetPoint("TOPRIGHT", -195, -6)
-	t:SetSize(90, 90)
+	t:SetPoint("TOPRIGHT", -228, -6)
+	t:SetSize(58, 58)
 	t:SetAlpha(0.6)
-	t:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\Marker.blp");
+	t:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\LibParse\\Libs\\tu");
+	t:SetTexCoord(0.305, 0.668, 0, 0.34)
 	s.TentativeMarker = t
 	s.Rewards = CreateObject("RewardBlock", cf, 48, 4)
 	s.Rewards.Container:SetPoint("TOP", 0, -4)
 	t = CreateObject("AchievementRewardIcon", cf)
-	t:SetPoint("RIGHT", cf, "TOPRIGHT", -25, -40)
+	t:SetPoint("RIGHT", cf, "TOPRIGHT", -12, -28)
 	s.AchievementReward = t
 	t = CreateFrame("Frame", nil, cf)
 	t:SetPoint("TOP", s.Name, "BOTTOM", 0, -6)
@@ -1796,15 +1797,37 @@ function Factory.CountdownText(widget, textWidget)
 end
 function Factory.AchievementRewardIcon(parent)
 	local f, t = CreateObject("CommonHoverTooltip", CreateFrame("Button", nil, parent))
-	f:SetSize(30,30)
+	f:SetSize(45,36)
 	f:SetScript("OnHide", HideOwnGameTooltip)
 	f:SetScript("OnClick", CommonLinkable_OnClick)
 	t = f:CreateTexture(nil, "ARTWORK")
-	t:SetTexture("Interface/AchievementFrame/UI-Achievement-Progressive-Shield")
-	t:SetTexCoord(0, 0.75, 0, 0.75)
+    t:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\LibParse\\Libs\\tu")
+	function mAchieve()
+		local Miss = {C_Garrison.GetAvailableMissions(123), C_Garrison.GetInProgressMissions(123)}
+		local Acs = {2250,2251,2252,2253,2254,2255,2256,2258,2259,2260}
+		local Acx = {[2250]=1,[2251]=2,[2252]=3,[2253]=4,[2254]=5,[2255]=6,[2256]=7,[2258]=8,[2259]=9,[2260]=10} 
+		for _, missions in pairs(Miss) do
+		    for i=1, #missions do
+			    for k, id in pairs(Acs) do
+			        if id == missions[i].missionID then
+				        local com = select(3, GetAchievementCriteriaInfo(14844, Acx[id]))
+				            if ( com == false ) then
+		    		            return t:SetTexCoord(0.348, 0.578, 0.348, 0.535)
+				            end
+					    t:SetTexCoord(0.055, 0.289, 0.074, 0.262)
+	        	    end
+	    	    end
+		    end
+	    end
+    end
+	f:RegisterEvent("GARRISON_MISSION_LIST_UPDATE")
+	f:SetScript("OnEvent", function()
+	f:SetScript("OnUpdate", mAchieve)end)
+	mAchieve()
+	t:SetAlpha(1.0)
 	t:SetAllPoints()
 	return f
-end
+ end
 function Factory.ProgressBar(parent)
 	local f, t, r = CreateFrame("Button", nil, parent)
 	f:Disable()
@@ -1974,7 +1997,7 @@ function Factory.FollowerListButton(parent, isTroop)
 	t:SetSize(24, s.HealthBG:GetHeight())
 	t:SetPoint("BOTTOMLEFT", s.HealthBG, "BOTTOMLEFT")
 	t, s.Health = f2:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall"), t
-	t:SetPoint("BOTTOMLEFT", f, "BOTTOM", -6, 11)
+	t:SetPoint("BOTTOMLEFT", f, "BOTTOM", -5, 9)
 	t, s.TextLabel = f2:CreateTexture(nil, "ARTWORK", nil, 4), t
 	t:SetSize(14,16)
 	t:SetAtlas("bags-greenarrow")
@@ -2058,11 +2081,11 @@ function Factory.FollowerList(parent)
 	t:SetTexCoord(0,1,50/311,261/311)
 	t = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 	t:SetText(FOLLOWERLIST_LABEL_TROOPS)
-	t:SetPoint("TOPLEFT", 22, -12)
+	t:SetPoint("TOPLEFT", 22, -17)
 	s.troops = {}
 	for i=1,2 do
 		s.troops[i] = CreateObject("FollowerListButton", f, true)
-		s.troops[i]:SetPoint("TOPLEFT", (i-1)*76+14, -30)
+		s.troops[i]:SetPoint("TOPLEFT", (i-1)*76+14, -35)
 	end
 	t = CreateObject("CommonHoverTooltip", CreateObject("InfoButton", f))
 	t:SetPoint("TOPRIGHT", -12, -12)
@@ -2071,12 +2094,12 @@ function Factory.FollowerList(parent)
 	s.TroopInfo = t
 
 	t = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-	t:SetText(COVENANT_MISSION_FOLLOWER_CATEGORY)
-	t:SetPoint("TOPLEFT", 22, -115)
+	t:SetText(L"Follwer")
+	t:SetPoint("TOPLEFT", 22, -107)
 	s.companions = {}
 	for i=1,24 do
 		t = CreateObject("FollowerListButton", f, false)
-		t:SetPoint("TOPLEFT", ((i-1)%4)*76+14, -math.floor((i-1)/4)*65-132)
+		t:SetPoint("TOPLEFT", ((i-1)%4)*76+14, -math.floor((i-1)/4)*66-126)
 		s.companions[i] = t
 	end
 	f:SetPoint("LEFT", UIParent, "LEFT", 20, 0)

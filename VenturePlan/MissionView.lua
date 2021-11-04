@@ -60,6 +60,9 @@ local function Board_HasCompanion()
 	end
 	return false
 end
+local function Puck_Up(self)
+    self.HealthBar.HealthValue:SetPoint("CENTER", 9, 3)
+end
 local function Puck_OnEnter(self)
 	if not self.name then
 		if GameTooltip:IsOwned(self) then
@@ -709,9 +712,11 @@ local function MissionPage_OnClick(self, button)
 		local g, hc = MissionView_GetGroup()
 		if mid and hc then
 			U.StoreMissionGroup(mid, g, true)
+			PlaySound(165966)
 		end
 	end
 	GarrisonMissionPage_OnClick(self, button)
+	PlaySound(169049)
 end
 local function MissionPageFollower_OnMouseUp(self, frame, button)
 	if button == "RightButton" and not (frame.GetInfo and frame:GetInfo() or frame.info) then
@@ -765,8 +770,8 @@ local function Shuffler_OnEnter(self, source)
 		end
 		sb:Activate(GameTooltip, a1, a2)
 		return
-	elseif (a1 and not a2) or source == "update" then -- finished, no group
-		GameTooltip:AddLine("\124TInterface\\AddOns\\VenturePlan\\Libs\\No.blp:14\124t"..L"Victory could not be guaranteed.", 1,1,1)
+	elseif (a1 and not a2) or source == "update" then -- finished, no group                                                      
+		GameTooltip:AddLine("|TInterface\\AddOns\\VenturePlan\\Libs\\LibParse\\Libs\\tu:::::256:256:178:234:4:60|t "..L"Victory could not be guaranteed.", 1,1,1)
 	else -- not running, not finished
 		GameTooltip:AddLine(ITEM_UNIQUE, 1,1,1, 1)
 		GameTooltip:AddLine(L"Use: Let the book select troops and battle tactics.", 0, 0.8, 1, 1)
@@ -833,6 +838,7 @@ function EV:I_ADVENTURES_UI_LOADED()
 	local MP = CovenantMissionFrame.MissionTab.MissionPage
 	for i=0,12 do
 		local f = MP.Board.framesByBoardIndex[i]
+		f:SetScript("OnUpdate", Puck_Up)
 		f:SetScript("OnEnter", Puck_OnEnter)
 		f:SetScript("OnLeave", Puck_OnLeave)
 		for i=1,2 do
@@ -848,7 +854,7 @@ function EV:I_ADVENTURES_UI_LOADED()
 	end)
 	local cag = T.CreateObject("IconButton", MP.Board, 32, "Interface/Icons/INV_Misc_Book_01")
 	cag:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	cag:SetPoint("BOTTOMLEFT", 20, 15)
+	cag:SetPoint("BOTTOMLEFT", 11, 62)
 	cag:SetScript("OnEnter", Predictor_OnEnter)
 	cag:SetScript("OnLeave", Predictor_OnLeave)
 	cag:SetScript("OnClick", Predictor_OnClick)

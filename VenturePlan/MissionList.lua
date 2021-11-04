@@ -2,29 +2,17 @@
 local EV, L, U, S = T.Evie, T.L, T.Util, T.Shadows
 
 local SetAchievementReward do
-	local aid, missionCreditCriteria = 14844, {}
 	function SetAchievementReward(ar, mid)
-		if not next(missionCreditCriteria) then
-			for i=1,GetAchievementNumCriteria(aid) do
-				local _, ct, com, _, _, _, _, asid, _, cid = GetAchievementCriteriaInfo(aid, i)
-				if ct == 174 and asid then
-					missionCreditCriteria[asid] = cid*2 + (com and 1 or 0)
-				end
-			end
+	    ar.assetID = mid
+		ar.achievementID = 14844
+		local Acs = {[2250] = true,[2251] = true,[2252] = true,[2253] = true,[2254] = true,[2255] = true,[2256] = true,[2258] = true,[2259] = true,[2260] = true}
+		if Acs[mid] then
+			ar:Show()
+		else
+			ar:Hide()
 		end
-		local mc = missionCreditCriteria[mid]
-		if (mc or 1) % 2 == 1 then
-			return ar:Hide()
-		elseif select(3, GetAchievementCriteriaInfoByID(aid, mc/2)) then
-			missionCreditCriteria[mid] = mc + 1
-			return ar:Hide()
-		end
-		ar.assetID = mid
-		ar.achievementID = aid
-		ar:Show()
 	end
 end
-
 local MissionPage, MissionList
 function EV:GARRISON_MISSION_NPC_CLOSED()
 	if MissionList then
@@ -161,7 +149,10 @@ local function cmpMissionInfo(a,b)
 		bc = 0
 	end
 	if ac == bc then
-		return a.durationSeconds < b.durationSeconds
+	    local atime, btime = a.offerEndTime, b.offerEndTime
+		if atime and btime and atime ~= btime then
+			return atime < btime
+		end
 	end
 	return ac < bc
 end

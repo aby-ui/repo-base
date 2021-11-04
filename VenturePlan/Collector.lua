@@ -125,7 +125,7 @@ local function findReportSlot(logs, st, novel)
 			end
 		end
 	end
-	if nc + oc < 10 then
+	if nc + oc < 20 then
 		return #logs+1
 	elseif novel then
 		return oc > 49 and oi or ni
@@ -179,11 +179,11 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 		cr.differentOutcome = not om
 		cr.addonVersion = GetAddOnMetadata("VenturePlan", "Version")
 		local st = serialize(cr)
+		if st == nil then return end;
 		VP_MissionReports = VP_MissionReports or {}
-		if findReportSlot(VP_MissionReports, st, novel) then VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel} end
+		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
 		LR_MissionID, LR_Novelty = mid, nok and (novel and (om and 2 or 3) or 1) or 0
 		EV("I_STORED_LOG_UPDATE")
-		if novel then return end;
 	end
 end
 function EV:I_RESET_STORED_LOGS()

@@ -1204,7 +1204,7 @@ La["Show Holiday"] = "Показывать События"
 La["Show holiday boss rewards"] = "Показывать награду с праздничных боссов"
 La["Show minimap button"] = "Кнопка у миникарты"
 La["Show name for a category when all displayed instances belong only to that category"] = "Показать имя для категории для всех отображаемых подземелий, принадлежащих только этой категории"
-La["Show only current server"] = "Показывать только текущий серврер"
+La["Show only current server"] = "Показывать только текущий сервер"
 La["Show Random"] = "Показывать Случайный Выбор"
 La["Show random dungeon bonus reward"] = "Показывать бонусную награду за случайное подземелье"
 La["Show self always"] = "Показывать себя всегда"
@@ -1466,17 +1466,14 @@ La["Are you sure you want to report all your keys to %s?"] = "¿Estás seguro de
 La["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."] = "¿Seguro que quieres reiniciar la base de datos de personajes de SavedInstances? Los personajes se añadirán de nuevo cuando entres con ellos."
 La["Attempt to recover completed daily quests for this character. Note this may recover some additional, linked daily quests that were not actually completed today."] = "Tratar de recuperar las misiones diarias ya completadas hoy por este personaje. Esto podría recuperar algunas otras misiones relacionadas que no fueron completadas hoy."
 La["Automatically shrink the tooltip to fit on the screen"] = "Encoger automáticamente la descripción para ajustarla a la pantalla"
---[[Translation missing --]]
 La["Azuregos"] = "Azuregos"
 La["Battleground Deserter"] = "Desertor del Campo de Batalla"
 La["Bind a key to toggle the SavedInstances tooltip"] = "Asignar una tecla para mostrar/ocultar la ventana de información de SavedInstances"
 --[[Translation missing --]]
 La["Bonus loot frame"] = "Bonus loot frame"
 La["Bonus rolls"] = "Tiradas extra"
---[[Translation missing --]]
 La[ [=[Boss kill information is missing for this lockout.
-This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
-This is a Blizzard bug affecting certain old raids.]=]
+This is a Blizzard bug affecting certain old raids.]=] ] = "Informacion de jefes muertos faltante para este registro de banda. Esto es una falla que afecta ciertas bandas antigüas."
 --[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorías"
@@ -1484,15 +1481,13 @@ La["Characters"] = "Personajes"
 La["Color currency by cap"] = "---- \"Show currency max\" is \"Mostrar máximos de monedas\""
 --[[Translation missing --]]
 La["Combine Callings"] = "Combine Callings"
---[[Translation missing --]]
-La["Combine Emissaries"] = "Combine Emissaries"
+La["Combine Emissaries"] = "Combinar emisarios"
 La["Combine emissaries of same expansion"] = "Combinar emisarios de la misma expansión"
 La["Combine LFR"] = "Combinar BdG"
 La["Combine World Bosses"] = "Combinar jefes del mundo"
 La["Connected Realms"] = "Reinos conectados"
 La["Covenant"] = "Curia"
---[[Translation missing --]]
-La["Covenant Assaults"] = "Covenant Assaults"
+La["Covenant Assaults"] = "Asaltos de Curias"
 La["Currency settings"] = "Ajustes de moneda"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"
@@ -1522,32 +1517,22 @@ La["Facets of Research"] = "Facetas de investigación"
 La["Fit to screen"] = "Ajustar a pantalla"
 La["Flex"] = "Flexible"
 La["Format large numbers"] = "Dar formato a números grandes"
---[[Translation missing --]]
-La["Full Clear + 1 Mask"] = "Full Clear + 1 Mask"
---[[Translation missing --]]
-La["Full Clear + 2 Masks"] = "Full Clear + 2 Masks"
---[[Translation missing --]]
-La["Full Clear + 3 Masks"] = "Full Clear + 3 Masks"
---[[Translation missing --]]
-La["Full Clear + 4 Masks"] = "Full Clear + 4 Masks"
---[[Translation missing --]]
-La["Full Clear + 5 Masks"] = "Full Clear + 5 Masks"
---[[Translation missing --]]
-La["Full Clear No Masks"] = "Full Clear No Masks"
+La["Full Clear + 1 Mask"] = "Limpieza completa + 1 Máscara"
+La["Full Clear + 2 Masks"] = "Limpieza completa + 2 Máscaras"
+La["Full Clear + 3 Masks"] = "Limpieza completa + 3 Máscaras"
+La["Full Clear + 4 Masks"] = "Limpieza completa + 4 Máscaras"
+La["Full Clear + 5 Masks"] = "Limpieza completa + 5 Máscaras"
+La["Full Clear No Masks"] = "Limpieza completa sin Máscaras"
 La["General settings"] = "Opciones generales"
 La["Group"] = "Grupo"
 La["Guild"] = "Hermandad"
 La["HOA"] = "SdE (HOA)"
 La["Hold Alt to show all data"] = "Pulsa Alt para mostrar toda la información"
 La["Hover mouse on indicator for details"] = "Coloca el cursor sobre el indicador para más detalles"
---[[Translation missing --]]
-La["Hunt: Death Elementals"] = "Hunt: Death Elementals"
---[[Translation missing --]]
-La["Hunt: Shadehounds"] = "Hunt: Shadehounds"
---[[Translation missing --]]
-La["Hunt: Soul Eaters"] = "Hunt: Soul Eaters"
---[[Translation missing --]]
-La["Hunt: Winged Soul Eaters"] = "Hunt: Winged Soul Eaters"
+La["Hunt: Death Elementals"] = "Caza: Elementales de muerte"
+La["Hunt: Shadehounds"] = "Caza: Canes de sombras"
+La["Hunt: Soul Eaters"] = "Caza: Comealmas"
+La["Hunt: Winged Soul Eaters"] = "Caza: Comealmas alados"
 La["Ignore"] = "Ignorar"
 La["Indicators"] = "Indicadores"
 --[[Translation missing --]]
@@ -1560,8 +1545,7 @@ La["Interleave"] = "Entrelazado"
 La["Keystone report target"] = "Keystone report target"
 La["Last updated"] = "Última actualización"
 La["Legion Transmute"] = "Transmutación de Legión"
---[[Translation missing --]]
-La["Lesser Visions of N'Zoth"] = "Lesser Visions of N'Zoth"
+La["Lesser Visions of N'Zoth"] = "Vision de N'zoth menor"
 La["Level %d Characters"] = "Personajes de nivel %d"
 La["LFG cooldown"] = "Tiempo de reutilización del Buscador de Grupo."
 La["LFR"] = "BdB"
@@ -1603,20 +1587,16 @@ La["Roll Bonus"] = "Bonos de tirada"
 La["Row Highlight"] = "Resalta de fila"
 La["SD"] = "CS (SD)"
 La["Set All"] = "Establecer todos"
---[[Translation missing --]]
-La["Show all emissary names"] = "Show all emissary names"
---[[Translation missing --]]
-La["Show both factions' emissay name"] = "Show both factions' emissay name"
+La["Show all emissary names"] = "Mostrar todos los nombres de emisarios"
+La["Show both factions' emissay name"] = "Mostrar ambos nombres de emisario de facciones"
 --[[Translation missing --]]
 La["Show calling line when all quests completed"] = "Show calling line when all quests completed"
 La["Show category names"] = "Mostrar nombres de categorías"
 La["Show category names in the tooltip"] = "Mostrar los nombres de categorías en la descripción"
 La["Show cooldown for characters to use battleground system"] = "Muestra el tiempo de reutilización de personajes para entrar en un campo de batalla."
 La["Show cooldown for characters to use LFG dungeon system"] = "Muestra el tiempo de reutilización de personajes para utilizar el sistema BdG."
---[[Translation missing --]]
-La["Show currency earned"] = "Show currency earned"
---[[Translation missing --]]
-La["Show currency max"] = "Show currency max"
+La["Show currency earned"] = "Mostrar cantidad ganada"
+La["Show currency max"] = "Mostrar cantidad máxima de moneda"
 --[[Translation missing --]]
 La["Show emissary line when all quests completed"] = "Show emissary line when all quests completed"
 La["Show Expired"] = "Mostrar acabados"
@@ -1630,8 +1610,7 @@ La["Show Random"] = "Muestra aleatoria"
 La["Show random dungeon bonus reward"] = "Mostrar recompensa extra de mazmorra aleatoria"
 La["Show self always"] = "Mostrar siempre a si mismo"
 La["Show self first"] = "Mostrarse a uno mismo primero"
---[[Translation missing --]]
-La["Show server name"] = "Show server name"
+La["Show server name"] = "Mostrar nombre del servidor"
 La["Show the SavedInstances minimap button"] = "Mostrar el botón del minimapa de SavedInstances"
 La["Show tooltip hints"] = "Mostrar consejos en descripciones"
 La["Show When"] = "Mostrar cuando"
@@ -1657,24 +1636,18 @@ La["Time Left"] = "Tiempo restante"
 La["Tooltip Scale"] = "Tamaño de la ventana de información"
 La["TOP"] = "TdD (TOP)"
 La["Torghast"] = "Torghast"
---[[Translation missing --]]
-La["Tormentors of Torghast"] = "Tormentors of Torghast"
---[[Translation missing --]]
-La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
---[[Translation missing --]]
-La["Track Mythic keystone best run"] = "Track Mythic keystone best run"
+La["Tormentors of Torghast"] = "Tormentos de Torghast"
+La["Track Mythic keystone acquisition"] = "Rastrear adquisicion de piedra angular mítica"
+La["Track Mythic keystone best run"] = "Rastrear mejor incursión de piedra angular mítica"
 La["Trade Skill Cooldowns"] = "Tiempos de reutilización de Profesiones"
 La["Trade skills"] = "Profesiones"
 La["Transmute"] = "Transmutar"
 La["Type"] = "Tipo"
 La["Use class color"] = "Usar color de clase"
---[[Translation missing --]]
-La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
---[[Translation missing --]]
-La["Vision Boss Only"] = "Vision Boss Only"
+La["Vision Boss + 2 Bonus Objectives"] = "Jefe de Vision + 2 objetivos extras"
+La["Vision Boss Only"] = "Solo jefe de Vision"
 La["Warfronts"] = "Frentes de guerra"
---[[Translation missing --]]
-La["Warn about instance limit"] = "Warn about instance limit"
+La["Warn about instance limit"] = "Advertencia sobre límite de instancias"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Advertencia: Has entrado en %i estancias recientemente, y te estás acercando al límite de %i estancias por hora para tu cuenta. Tendrás más disponibles después de %s."
 La["Weekly Quests"] = "Misiones semanales"
 La["Wild Transmute"] = "Transmutación Salvaje"
@@ -1722,8 +1695,7 @@ La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
 La["Connected Realms"] = "連結伺服器"
 La["Covenant"] = "誓盟"
---[[Translation missing --]]
-La["Covenant Assaults"] = "Covenant Assaults"
+La["Covenant Assaults"] = "誓盟進攻戰"
 La["Currency settings"] = "兌換通貨設定"
 --[[Translation missing --]]
 La["Cursed Coffer"] = "Cursed Coffer"

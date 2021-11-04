@@ -352,7 +352,7 @@ function LinkTypeFuncs:item(link,linkType,id)
 
 	-- Quality Border
 	if (cfg.if_itemQualityBorder) then
-		self:SetBackdropBorderColor(GetItemQualityColor(itemRarity or 0));
+		self.NineSlice:SetBorderColor(GetItemQualityColor(itemRarity or 0));
 	end
 
 	-- level + id -- Only alter the tip if we got either a valid "itemLevel" or "id"

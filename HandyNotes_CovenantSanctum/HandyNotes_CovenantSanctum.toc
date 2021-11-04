@@ -3,12 +3,12 @@
 ## Notes: Shows the NPC and POI locations in your covenant sanctum.
 ## Notes-deDE: Zeigt die Positionen von NPCs und anderer POIs im Paktsanktum an.
 ## Author: |cFFFF8C00Dathwada EU-Eredar|r
-## Version: v9
+## Version: v10
 ## RequiredDeps: HandyNotes
 ## DefaultState: enabled
 ## SavedVariables: HandyNotes_CovenantSanctumDB
 ## X-Embeds: AceTimer-3.0
-## X-Date: 2021-06-30
+## X-Date: 2021-11-03
 ## X-Category: Map
 
 # LOCALIZATION FILES

@@ -7,6 +7,13 @@ GTFO Spell List - Classic
 
 if (GTFO.ClassicMode or GTFO.BurningCrusadeMode) then
 
+GTFO.SpellID["21070"] = {
+  --desc = "Noxious Cloud (Noxious Slime - Maraudon)";
+  applicationOnly = true;
+  sound = 2;
+  trivialLevel = 60;
+};
+
 GTFO.SpellID["17742"] = {
 	--desc = "Cloud of Disease (Scholomance - Old)";
 	sound = 2;

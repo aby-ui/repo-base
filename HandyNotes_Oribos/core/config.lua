@@ -199,7 +199,7 @@ for i, icongroup in ipairs(private.constants.icongroup) do
     }
 end
 
--- set some parameters for scale / aplha config menu points
+-- set some parameters for scale / alpha config menu points
 local sacmp = config.options.args.SCALEALPHA.args
 sacmp.name_auctioneer["hidden"] = function() return not addon:CharacterHasProfession(202) end
 sacmp.icon_scale_auctioneer["hidden"] = function() return not addon:CharacterHasProfession(202) end

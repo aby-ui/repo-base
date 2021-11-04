@@ -5,7 +5,7 @@ T.KnownSpells = {
 	[5]={type="nuke", target="all-enemies", damageATK=10},
 	[6]={type="nuke", target="enemy-back", damageATK=60},
 	[7]={type="nuke", target=0, damageATK=10},
-	[9]={type="heal", target="all-allies", healPercent=5},
+	[9]={type="heal", target="all-allies", healPerc=5},
 	[10]={
 		{type="nuke", target=0, damagePerc=20},
 		{type="aura", target="all-enemies", duration=4, damagePerc=3, noFirstTick=true, dne=true},
@@ -27,7 +27,7 @@ T.KnownSpells = {
 	},
 	[25]={
 		{type="nuke", target="enemy-front", damageATK=50},
-		{type="aura", target=4, modDamageDealt=20, duration=3},
+		{type="aura", target=4, modDamageDealt=20, duration=3}
 	},
 	[26]={
 		{type="heal", target=3, healATK=100},
@@ -41,7 +41,10 @@ T.KnownSpells = {
 		{type="aura", target="friend-back-hard", modDamageTaken=-10, duration=1},
 	},
 	[47]={type="passive", target="all-allies", modDamageTaken=-20},
-	[48]={type="heal", target=4, healATK=20, shroudTurns=1},
+	[48]={
+		{type="heal", target=4, healATK=20},
+		{type="heal", target=4, shroudTurns=1},
+	},
 	[49]={type="aura", target="enemy-back", modDamageTaken=33, duration=4},
 	[50]={type="nuke", target=1, damageATK=120},
 	[51]={type="nuke", target="enemy-front", damageATK=75},
@@ -49,7 +52,7 @@ T.KnownSpells = {
 	[53]={type="aura", target="all-enemies", duration=6, period=2, modDamageDealt=-20, damageATK=10},
 	[54]={
 		{type="nuke", target=0, damageATK=90},
-		{type="nuke", target=1, damageATK=90},
+		{type="nuke", target=1, damageATK=90}
 	},
 	[55]={type="nuke", target="enemy-front", damageATK=150},
 	[56]={type="nuke", target=1, damageATK=125},
@@ -139,7 +142,10 @@ T.KnownSpells = {
 	[122]={type="nop"},
 	[123]={type="heal", target="friend-front-soft", healATK=30},
 	[124]={type="nuke", target="cleave", damageATK=60},
-	[125]={type="nuke", target="random-enemy", damageATK=60},
+	[125]={
+		[1]={type="nuke", target="random-enemy", damageATK=60},
+		[2]={type="nop"},
+	},
 	[126]={type="heal", target="friend-front-soft", healATK=20},
 	[127]={type="nuke", target="enemy-front", damageATK=60},
 	[128]={type="nuke", target="enemy-back", damageATK=75},
@@ -164,7 +170,10 @@ T.KnownSpells = {
 	[149]={type="nuke", target="enemy-front", damageATK=75},
 	[150]={type="nuke", target="cone", damageATK=50},
 	[151]={type="nuke", target=0, damageATK=20},
-	[152]={type="aura", target="all-other-allies", healATK=200, duration=1, firstTurn=5, modDamageDealt=50},
+	[152]={firstTurn=5,
+		{type="heal", target="all-other-allies", healATK=200},
+		{type="aura", target="all-other-allies", duration=1, modDamageDealt=50},
+	},
 	[153]={type="nuke", target="cone", damageATK=75},
 	[154]={type="aura", target=4, duration=3, thornsATK=100},
 	[155]={type="aura", target="all-enemies", duration=1, modDamageDealt=-75},
@@ -353,58 +362,58 @@ T.KnownSpells = {
 
 	--New values for 9.1
 	[305]={type="nuke", target="enemy-back", damageATK=120}, --Roots of Submission
-	[306]={type="aura", target=3, duration=3, modMaxHP=60, plusDamageDealtATK=40}, --Arcane Empowerment (UNVERIFIED)
+	[306]={type="aura", target=3, duration=3, modMaxHPATK=60, plusDamageDealtATK=40}, --Arcane Empowerment (UNVERIFIED)
 	[307]={type="nuke", target="cone", damageATK=160}, --Fist of Nature (UNVERIFIED)
 	[308]={type="nuke", target=1, damageATK=350, firstTurn=3}, --Spore of Doom (UNVERIFIED)
 	[309]={
-        {type="heal", target="all-allies", healATK=200},
-        {type="aura", target="all-allies", duration=1, modDamageDealt=30},
-    }, --Threads of Fate (UNVERIFIED)
+		{type="heal", target="all-allies", healATK=200},
+		{type="aura", target="all-allies", duration=1, modDamageDealt=30},
+	}, --Threads of Fate (UNVERIFIED)
 	[310]={
-        {type="nuke", target=0, damageATK=140},
-        {type="aura", target=4, duration=1, modDamageDealt=20},
-    }, --Axe of Determination (UNVERIFIED)
+		{type="nuke", target=0, damageATK=140},
+		{type="aura", target=4, duration=1, modDamageDealt=20},
+	}, --Axe of Determination (UNVERIFIED)
 	[311]={
-        {type="heal", target=3, healATK=120},
-        {type="aura", target=3, duration=2, modMaxHPATK=40},
-    }, --Wings of Mending (UNVERIFIED)
+		{type="heal", target=3, healATK=120},
+		{type="aura", target=3, duration=2, modMaxHPATK=40},
+	}, --Wings of Mending (UNVERIFIED)
 	[312]={type="nuke", target="cone", damageATK=180}, --Panoptic Beam (UNVERIFIED)
 	[313]={type="heal", target="all-allies", healATK=70}, --Spirit's Guidance (UNVERIFIED)
 	[314]={
-        {type="heal", target=3, healATK=130},
-        {type="aura", target=3, duration=2, plusDamageDealtATK=50},
-    }, --Purifying Light (UNVERIFIED)
+		{type="heal", target=3, healATK=130},
+		{type="aura", target=3, duration=2, plusDamageDealtATK=50},
+	}, --Purifying Light (UNVERIFIED)
 	[315]={type="aura", target=1, damageATK1=150, duration=2, modDamageDealt=-30}, --Resounding Message (UNVERIFIED)
 	[316]={type="nuke", target=0, damageATK=100, selfhealATK=30}, --Self Replication (UNVERIFIED)
-    [317]={type="aura", target="enemy-front", duration=1, damageATK1=150, plusDamageTakenATK=30}, --Shocking Fist (UNVERIFIED)
-    [318]={type="aura", target="all-allies", duration=3, plusDamageDealtATK=50}, --Inspiring Howl (UNVERIFIED)
-    [319]={type="aura", target="enemy-front", duration=3, damageATK1=80, damageATK=50, noFirstTick=true}, --Shattering Blows (UNVERIFIED)
-    [320]={type="nuke", target="enemy-back", damageATK=100}, --Hailstorm (UNVERIFIED)
-    [321]={type="heal", target=3, healATK=200}, --Adjustment (UNVERIFIED)
-    [322]={
+	[317]={type="aura", target="enemy-front", duration=1, damageATK1=150, plusDamageTakenATK=30}, --Shocking Fist (UNVERIFIED)
+	[318]={type="aura", target="all-allies", duration=3, plusDamageDealtATK=50}, --Inspiring Howl (UNVERIFIED)
+	[319]={type="aura", target="enemy-front", duration=4, damageATK1=80, damageATK=50, noFirstTick=true}, --Shattering Blows (UNVERIFIED)
+	[320]={type="nuke", target="enemy-back", damageATK=100}, --Hailstorm (UNVERIFIED)
+	[321]={type="heal", target=3, healATK=200}, --Adjustment (UNVERIFIED)
+	[322]={
 		{type="nuke", target=0, damageATK=80, selfhealATK=80},
 		{type="aura", target=4, duration=1, modMaxHPATK=80},
-    }, --Balance In All Things (UNVERIFIED)
-    [323]={
-        {type="nuke", target="enemy-back", damageATK=40},
-        {type="aura", target="enemy-back", duration=2, modDamageDealt=-10},
-    }, --Anima Shatter (UNVERIFIED)
-    [324]={type="heal", target="friend-surround", healATK=120}, --Protective Parasol (UNVERIFIED)
+	}, --Balance In All Things (UNVERIFIED)
+	[323]={
+		{type="nuke", target="enemy-back", damageATK=40},
+		{type="aura", target="enemy-back", duration=2, modDamageDealt=-10},
+	}, --Anima Shatter (UNVERIFIED)
+	[324]={type="heal", target="friend-surround", healATK=120}, --Protective Parasol (UNVERIFIED)
 	[325]={type="aura", target="friend-surround", duration=2, modDamageDealt=60}, --Vision of Beauty
 	[326]={type="nuke", target="cleave", damageATK=25}, --Shiftless Smash
 	[327]={type="aura", target="all-other-allies", duration=3, plusDamageDealtATK=20}, --Inspirational Teachings
-    [328]={type="nuke", target=0, damageATK=30}, --Applied Lesson
-    [329]={type="aura", target=4, modDamageTaken=-50, duration=3}, --Muscle Up
-    [330]={type="aura", target="all-allies", duration=2, plusDamageDealtATK=20}, --Oversight
+	[328]={type="nuke", target=0, damageATK=30}, --Applied Lesson
+	[329]={type="aura", target=4, modDamageTaken=-50, duration=3}, --Muscle Up
+	[330]={type="aura", target="all-allies", duration=2, plusDamageDealtATK=20}, --Oversight
 	[331]={type="aura", target="all-other-allies", plusDamageDealtATK=20, duration=3}, --Supporting Fire (I'm not sure it's need duration 3)
-    [332]={type="nuke", target=1, damageATK=150}, --Emptied Mug
-    [333]={type="aura", target=4, duration=3, modDamageDealt=40}, --Overload
-    [334]={type="nuke", target=0, damageATK=90}, --Hefty Package
-    [335]={type="nuke", target="enemy-back", damageATK=40}, --Errant Package
-    [336]={type="heal", target=3, healATK=80}, --Evidence of Wrongdoing
-    [337]={type="aura", target=1, duration=4, damageATK1=200, damageATK=40, noFirstTick=true}, --Wavebender's Tide
-    [338]={type="nuke", target=0, damageATK=50}, --Scallywag Slash
-    [339]={type="nuke", target="all-enemies", damageATK=120, firstTurn=3}, --Cannon Barrage
+	[332]={type="nuke", target=1, damageATK=150}, --Emptied Mug
+	[333]={type="aura", target=4, duration=3, plusDamageDealtATK=40}, --Overload
+	[334]={type="nuke", target=0, damageATK=90}, --Hefty Package
+	[335]={type="nuke", target="enemy-back", damageATK=40}, --Errant Package
+	[336]={type="heal", target=3, healATK=80}, --Evidence of Wrongdoing
+	[337]={type="aura", target=1, duration=4, damageATK1=200, damageATK=40, noFirstTick=true}, --Wavebender's Tide
+	[338]={type="nuke", target=0, damageATK=50}, --Scallywag Slash
+	[339]={type="nuke", target="all-enemies", damageATK=120, firstTurn=3}, --Cannon Barrage
 	[340]={type="nuke", target=1, damageATK=60}, --Tainted Bite (UNVERIFIED)
 	[341]={type="aura", target=1, damageATK1=120, duration=3, plusDamageTakenATK=20}, --Tainted Bite
 	[342]={type="aura", target=0, duration=1, damageATK1=100, plusDamageDealtATK=-70}, --Regurgitated Meal
@@ -414,9 +423,9 @@ T.KnownSpells = {
 	}, --Sharptooth Snarl
 	[344]={type="nuke", target="all-enemies", damageATK=30}, --Razorwing Buffet
 	[345]={type="aura", target="all-allies" , duration=3 , plusDamageTakenATK=-30}, --Protective Wings (Bugged in data maybe? Description wording applies modDamageDealt.)
-    [346]={type="aura", target=0, duration=2, damageATK1=30, plusDamageDealtATK=1}, --Heel Bite (BUGGED: Should be modDamageDealt=-1. It isn't.)
-    [347]={type="nuke", target="cone", damageATK=100}, --Darkness from Above
-    [348]={
+	[346]={type="aura", target=0, duration=2, damageATK1=30, plusDamageDealtATK=1}, --Heel Bite (BUGGED: Should be modDamageDealt=-1. It isn't.)
+	[347]={type="nuke", target="cone", damageATK=100}, --Darkness from Above
+	[348]={
 		{type="nuke", target=1, damageATK=120},
 		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
 	}, --Tainted Bite

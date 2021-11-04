@@ -123,6 +123,7 @@ DB.points = {
     [60054330] = { icon="anvil", npc=166160, covenant=Venthyr}, -- Schmiedebedarf
     [60022874] = { icon="mail", label=Mailbox, covenant=Venthyr }, -- Briefkasten
     [54322626] = { icon="renown", npc=175772, covenant=Venthyr}, -- Hüterin des Ruhms
+    [41904841] = { icon="flightmaster", npc=172649, covenant=Venthyr }, -- Oberflächenflieger
 --    [45412852] = { icon="anvil", npc=164738, covenant=Venthyr}, -- Seelenwächter
 },
 

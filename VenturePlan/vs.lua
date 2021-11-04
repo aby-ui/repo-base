@@ -1,6 +1,8 @@
 ﻿local _, T = ...
 local SpellInfo = T.KnownSpells
 
+local isSimLogTurnOn = false
+
 local band, bor, floor = bit.band, bit.bor, math.floor
 local f32_ne, f32_perc, f32_pim, f32_fpim do
 	local frexp, lt = math.frexp, {
@@ -126,7 +128,7 @@ end
 local forkTargets = {["random-enemy"]="all-enemies", ["random-ally"]="all-allies", ["random-all"]="all"}
 local forkTargetBits= {["all-enemies"]=1, ["all-allies"]=2, ["all"]=4}
 do -- targets
-	local overrideAA = {[57]=0, [181]=0, [209]=0, [341]=0, [777]=0, [1213]=0, [1237]=0, [1301]=0, [69424]=0, [69426]=0, [69432]=0, [69434]=0, [69518]=0, [69522]=0, [69524]=0, [69530]=0, [69646]=0, [69648]=0, [69650]=0, [69652]=0, [70286]=0, [70288]=0, [70290]=0, [70292]=0, [70456]=0, [70478]=0, [70550]=0, [70556]=0, [70584]=0, [70586]=0, [70638]=0, [70640]=0, [70642]=0, [70644]=0, [70678]=0, [70682]=0, [70684]=0, [70702]=0, [70704]=0, [70706]=0, [70708]=0, [70714]=0, [70806]=0, [70808]=0, [70812]=0, [70832]=0, [70862]=0, [70868]=0, [70874]=0, [70908]=0, [71194]=0, [71606]=0, [71612]=0, [71640]=0, [71670]=0, [71672]=0, [71674]=0, [71676]=0, [71736]=0, [71800]=0, [71802]=0, [72086]=0, [72088]=0, [72090]=0, [72092]=0, [72310]=0, [72314]=0, [72336]=0, [72338]=0, [72942]=0, [72944]=0, [72946]=0, [72948]=0, [72954]=0, [73210]=0, [73398]=0, [73404]=0, [73558]=0, [73560]=0, [73564]=0}
+	local overrideAA = {[57]=0, [181]=0, [341]=0, [777]=0, [1213]=0, [1225]=0, [1237]=0, [1257]=0, [1301]=0}
 	local targetLists do
 		targetLists = {
 		[0]={
@@ -522,9 +524,8 @@ function mu:damage(sourceIndex, targetIndex, baseDamage, causeTag, causeSID, eDN
 		points, pointsR = 0, points2
 	end
 	if points2 > 0 or (causeTag == "Thorn" and (points ~= 0 or points2 ~= 0)) then
-		local tracer = self.trace
-		if tracer then
-			tracer(self, "HIT", sourceIndex, targetIndex, points, tHP, causeTag, causeSID, pointsR)
+		if self:IsSimLogTurnOn() then
+			self:LogDamage("HIT", sourceIndex, targetIndex, points, tHP, causeTag, causeSID, pointsR)
 		end
 		if points < 0 then
 			local nHP, maxHP, nrHP = tHP-points2, tu.maxHP, rHP + pointsR
@@ -606,9 +607,8 @@ function mu:mend(sourceIndex, targetIndex, halfPoints, causeTag, causeSID)
 			else
 				tu.curHP = nhp
 			end
-			local tracer = self.trace
-			if tracer then
-				tracer(self, "HEAL", sourceIndex, targetIndex, points, cHP, causeTag, causeSID)
+			if self:IsSimLogTurnOn() then
+				self:LogDamage("HEAL", sourceIndex, targetIndex, points, cHP, causeTag, causeSID)
 			end
 		end
 	end
@@ -761,6 +761,11 @@ function mu:aura(sourceIndex, targetIndex, targetSeq, ord, si, sid, eid)
 		tu.curHP, tu.maxHP = tu.curHP+d, tu.maxHP+d
 		enq(self.queue, fadeTurn, {"statDelta", sourceIndex, targetIndex, "maxHP", -d, ord=ordf})
 	end
+	if mdd or mdt or pdd or pdt then
+		if self:IsSimLogTurnOn() then
+			self:LogAura(sourceIndex,targetIndex,mdd,mdt,pdd,pdt)
+		end
+	end
 	if thornsp then
 		tu.thornsDamage = tu.thornsDamage + thornsp
 		tu.thornsSID = tu.thornsSID or sid
@@ -805,7 +810,7 @@ end
 function mu:heal(sourceIndex, targetIndex, _targetSeq, ord, si, sid, _eid)
 	local board = self.board
 	local su, tu = board[sourceIndex], board[targetIndex]
-	local hPerc, hatk = si.healPercent, si.healATK
+	local hPerc, hatk = si.healPerc, si.healATK
 	local points = (hatk and f32_pim(hatk, su.atk) or 0) + (hPerc and floor(hPerc*tu.maxHP/100) or 0)
 	mu.mend(self, sourceIndex, targetIndex, points, "Spell", sid)
 	if si.shroudTurns then
@@ -862,10 +867,7 @@ function mu:CheckCast(sourceIndex,sid)
 		end
 		return false
 	end
-	if spellInfo.healATK == nil then
-		return true
-	end
-	if spellInfo.shroudTurns or spellInfo.modDamageDealt then
+	if spellInfo.healATK == nil and spellInfo.healPerc == nil then
 		return true
 	end
 	local cast = false
@@ -1422,6 +1424,8 @@ function VS:New(team, encounters, envSpell, mid, mscalar, forkLimit)
 		res={min={}, max={}, hadWins=false, hadLosses=false, hadDrops=false, isFinished=false, n=0},
 		pmask=pmask,
 		forkLimit=forkLimit,
+		isSimLogTurnOn = false,
+		simLog = {},
 	}, VSIm)
 	ii.checkpoints[0] = ii:CheckpointBoard()
 	if ii.over then
@@ -1432,5 +1436,57 @@ end
 function VS:SetSpellInfo(t)
 	SpellInfo = t
 end
+
+function VSI:IsSimLogTurnOn()
+	return self.isSimLogTurnOn
+end
+
+function VSI:TurnOnSimLog()
+	self.isSimLogTurnOn = true
+	self.simLog = {}
+end
+
+function VSI:TurnOffSimLog()
+	self.isSimLogTurnOn = false
+end
+
+function VSI:LogDamage(typeStr, sourceIndex, targetIndex, points, tHP, causeTag, causeSID, pointsR)
+	--local s = "[Turn " .. self.turn .. "][" .. typeStr .. "] "
+	--local sourceUnit = self.board[sourceIndex]
+	--local targetUnit = self.board[targetIndex]
+	--s = s .. sourceIndex .. " --> " .. targetIndex .. "(" .. tHP .. ") " .. points .. "\n"
+	local s = string.format("[Turn %d][%s] %d --> %d (%d) %d\n",
+		self.turn,typeStr,
+		sourceIndex,targetIndex,
+		tHP,points)
+	--self.simLogString = self.simLogString .. s
+	table.insert(self.simLog,s)
+end
+
+function VSI:LogAura(sourceIndex, targetIndex, mdd, mdt, pdd, pdt)
+	local s = "[Turn " .. self.turn .. "][aura] "
+	--local sourceUnit = self.board[sourceIndex]
+	--local targetUnit = self.board[targetIndex]
+	if mdd then
+		s = s .. targetIndex .. " modify damage dealt by " .. mdd .. "% from " .. sourceIndex .. " "
+	end
+	if mdt then
+		s = s .. targetIndex .. " modify damage taken by " .. mdt .. "% from " .. sourceIndex .. " "
+	end
+	if pdd then
+		s = s .. targetIndex .. " plus damage dealt by " .. pdd .. " from " .. sourceIndex .. " "
+	end
+	if pdt then
+		s = s .. targetIndex .. " plus damage taken by " .. pdt .. " from " .. sourceIndex .. " "
+	end
+	s = s .. "\n"
+	table.insert(self.simLog,s)
+	--self.simLogString = self.simLogString .. s
+end
+
+function VSI:GetSimLog()
+	return self.isSimLogTurnOn and table.concat(self.simLog) or ""
+end
+
 
 T.VSim, VS.VSI, VS.mu = VS, VSI, mu

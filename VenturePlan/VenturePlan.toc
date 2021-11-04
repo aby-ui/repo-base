@@ -6,7 +6,7 @@
 ## Title-zhTW: |c0066ffffVenturePlan9.0隨從任務|r
 ## Notes-zhTW: |cFF34A2F79.0隨從任務|r
 ## Author: foxlit
-## Version: v5.9.1 修改版 2021.8.18
+## Version: v6.2.4 修改版 2021.10.24
 ## Contributors 注: 9.1新版数据贡献者: LostTemple1990, nyhjw, TekGoNos, Zhavvorsa, PositiveKoodoo, Sehra, Ostjaevel, Ashmelev, Dphennessy, Simca, Legenjerry, Dastey, Zealvurte, Gaboros, Many other who posted logs!
 ## https://nga.178.com/read.php?tid=28076850
 ## https://www.townlong-yak.com/addons/venture-plan
