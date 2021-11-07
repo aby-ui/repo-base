@@ -9,8 +9,8 @@ hook EncounterJournal_LootUpdate
 ---------------------------------------------------------------]]
 EncounterJournal_LootUpdate_ELP = function()
     if db.range == 0 then
-        local items = EncounterJournal.encounter.info.lootScroll.buttons;
-        for _, item in ipairs(items) do if item.instance then item.instance:SetText("") end end
+        local buttons = EncounterJournal.encounter.info.lootScroll.buttons;
+        for _, button in ipairs(buttons) do if button.lootFrame.instance then button.lootFrame.instance:SetText("") end end
         return ELP_RunHooked("EncounterJournal_LootUpdate")
     end
     if ELP_IsRetrieving() then return end
@@ -18,24 +18,28 @@ EncounterJournal_LootUpdate_ELP = function()
     EncounterJournal_UpdateFilterString();
     local scrollFrame = EncounterJournal.encounter.info.lootScroll;
     local offset = HybridScrollFrame_GetOffset(scrollFrame);
-    local items = scrollFrame.buttons;
-    local item, index;
+    local button, index;
 
     local numLoot = #curr_items --EJ_GetNumLoot();
     local buttonSize = INSTANCE_LOOT_BUTTON_HEIGHT;
+    local buttons = scrollFrame.buttons;
 
-    for i = 1, #items do
-        item = items[i];
+    for i = 1, #buttons do
+        button = buttons[i];
         index = offset + i;
+
+        button.dividerFrame:Hide();
+        local currentFrame = button.lootFrame;
+
         if index <= numLoot then
-            item:SetHeight(INSTANCE_LOOT_BUTTON_HEIGHT);
-            item.boss:Show();
-            item.bossTexture:Show();
-            item.bosslessTexture:Hide();
-            item.index = index;
-            EncounterJournal_SetLootButton(item);
+            button:SetHeight(INSTANCE_LOOT_BUTTON_HEIGHT);
+            currentFrame.boss:Show();
+            currentFrame.bossTexture:Show();
+            currentFrame.bosslessTexture:Hide();
+            button.index = index;
+            EncounterJournal_SetLootButton(button);
         else
-            item:Hide();
+            button:Hide();
         end
     end
 
@@ -55,34 +59,42 @@ EncounterJournal_SetLootButton_ELP = function(item)
     local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, icon, vendorPrice = GetItemInfo(itemID)
     link = curr_links[itemID]
     item.link = link;
+
+    if true then --9.1.5
+        item.lootFrame:Show();
+        item.dividerFrame:Hide();
+        item:SetEnabled(true);
+    end
+
+    local currentFrame = item.lootFrame;
     if ( name ) then
-        item.name:SetText(format("|cffb37fff%s|r", name)); --a335ee
-        item.icon:SetTexture(icon);
-        item.slot:SetText(_G[equipSlot] or equipSlot);
-        item.armorType:SetText(subclass~=OTHER_CLASS and subclass or "");
-        if not item.instance then
-            item.instance = item:CreateFontString("$parentInst", "OVERLAY", "GameFontBlack")
-            item.instance:SetJustifyH("RIGHT")
-            item.instance:SetSize(0, 12)
-            item.instance:SetPoint("BOTTOMRIGHT", -6, 6)
-            item.instance:SetTextColor(0.25, 0.1484375, 0.02, 1)
+        currentFrame.name:SetText(format("|cffb37fff%s|r", name)); --a335ee
+        currentFrame.icon:SetTexture(icon);
+        currentFrame.slot:SetText(_G[equipSlot] or equipSlot);
+        currentFrame.armorType:SetText(subclass~=OTHER_CLASS and subclass or "");
+        if not currentFrame.instance then
+            currentFrame.instance = item:CreateFontString("$parentInst", "OVERLAY", "GameFontBlack")
+            currentFrame.instance:SetJustifyH("RIGHT")
+            currentFrame.instance:SetSize(0, 12)
+            currentFrame.instance:SetPoint("BOTTOMRIGHT", -6, 6)
+            currentFrame.instance:SetTextColor(0.25, 0.1484375, 0.02, 1)
         end
         local instance = curr_insts[itemID]
         instance = instance and EJ_GetInstanceInfo(instance)
-        item.instance:SetText(instance or "")
+        currentFrame.instance:SetText(instance or "")
 
-        item.boss:SetFormattedText(BOSS_INFO_STRING, EJ_GetEncounterInfo(encounterID));
+        currentFrame.boss:SetFormattedText(BOSS_INFO_STRING, EJ_GetEncounterInfo(encounterID));
 
-        SetItemButtonQuality(item, 4, itemID);
+        SetItemButtonQuality(currentFrame, 4, itemID);
 
         item.link = link; --"\231\189\145\046\230\152\147" .. select(2, GetItemInfo(format("item:%d::::::::120:70::23:1:%d:3524::", itemID, 1472+((db.forcelevel or 900)-iLevel)))) .. "\230\156\137\46\231\136\177"
     else
-        item.name:SetText(RETRIEVING_ITEM_INFO);
-        item.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-        item.slot:SetText("");
-        item.armorType:SetText("");
-        item.boss:SetText("");
-        if item.instance then item.instance:SetText("") end
+        currentFrame.name:SetText(RETRIEVING_ITEM_INFO);
+        currentFrame.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
+        currentFrame.slot:SetText("");
+        currentFrame.armorType:SetText("");
+        currentFrame.boss:SetText("");
+        if currentFrame.instance then currentFrame.instance:SetText("") end
     end
     item.encounterID = encounterID;
     item.itemID = itemID;

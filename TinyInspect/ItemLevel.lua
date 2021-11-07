@@ -260,7 +260,7 @@ end)
 -- GuildBank
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     if (addonName == "Blizzard_GuildBankUI") then
-        hooksecurefunc("GuildBankFrame_Update", function()
+        hooksecurefunc(GuildBankFrame, "Update", function()
             if (GuildBankFrame.mode == "bank") then
                 local tab = GetCurrentGuildBankTab()
                 local button, index, column
@@ -270,7 +270,7 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                         index = NUM_SLOTS_PER_GUILDBANK_GROUP
                     end
                     column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
-                    button = _G["GuildBankColumn"..column.."Button"..index]
+                    button = GuildBankFrame.Columns[column].Buttons[index] --_G["GuildBankColumn"..column.."Button"..index]
                     SetItemLevel(button, GetGuildBankItemLink(tab, i), "GuildBank")
                 end
             end

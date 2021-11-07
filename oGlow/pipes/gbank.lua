@@ -18,7 +18,7 @@ local update = function(self)
 		local column = math.ceil((i-0.5)/14)
 
 		local slotLink = GetGuildBankItemLink(tab, i)
-		local slotFrame = _G["GuildBankColumn"..column.."Button"..index]
+		local slotFrame = GuildBankFrame.Columns[column].Buttons[index] --_G["GuildBankColumn"..column.."Button"..index]
 
 		self:CallFilters('gbank', slotFrame, _E and slotLink)
 	end

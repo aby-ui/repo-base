@@ -257,7 +257,7 @@ function TradeskillInfo:OnAddonLoaded(_, addon)
 	elseif addon == "Blizzard_TradeSkillUI" or addon == "AdvancedTradeSkillWindow" then
 		self:HookTradeSkillUI()
 	elseif addon == "Blizzard_GuildBankUI" then
-		self:SecureHook("GuildBankFrame_Update")
+		self:SecureHook(GuildBankFrame, "Update", "GuildBankFrame_Update")
 	end
 end
 
@@ -1824,7 +1824,7 @@ function TradeskillInfo:GuildBankFrame_Update()
 		end
 		local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
 
-		local button = _G["GuildBankColumn"..column.."Button"..index];
+		local button = GuildBankFrame.Columns[column].Buttons[index] --_G["GuildBankColumn"..column.."Button"..index];
 		local itemLink = GetGuildBankItemLink(tab, i)
 		local c = self:ItemTextureColor(itemLink)
 		if c then

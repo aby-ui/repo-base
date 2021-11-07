@@ -35,7 +35,7 @@ local function isCategoryValid(categoryId)
 end
 
 local function MakeActivityMenuTable(activityId, baseFilter, customId, menuType)
-    local fullName, _, categoryId, groupId, _, filters = C_LFGList.GetActivityInfo(activityId)
+    local fullName, shortName, categoryId, groupId, _, filters = C_LFGList.GetActivityInfo(activityId)
 
     if customId then
         fullName = ACTIVITY_CUSTOM_NAMES[customId]
@@ -43,7 +43,7 @@ local function MakeActivityMenuTable(activityId, baseFilter, customId, menuType)
 
     local data = {}
 
-    data.text = fullName
+    data.text = shortName
     data.fullName = fullName
     data.categoryId = categoryId
     data.groupId = groupId

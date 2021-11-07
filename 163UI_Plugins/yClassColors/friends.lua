@@ -214,7 +214,7 @@ if FriendsTooltip then
                     local realmName = gameAccountInfo.realmDisplayName or gameAccountInfo.realmID or UNKNOWN;
                     if not gameAccountInfo.isInCurrentRegion then
                         gameAccountInfoString:SetText(BNET_FRIEND_TOOLTIP_ZONE_AND_REALM:format(areaName, realmName));
-                        if gameAccountInfoString:GetBottom() < FriendsTooltip:GetBottom() + 10 then
+                        if FriendsTooltip:GetBottom() and gameAccountInfoString:GetBottom() < FriendsTooltip:GetBottom() + 10 then
                             FriendsTooltip:SetHeight(FriendsTooltip:GetHeight()+15)
                         end
                     end
