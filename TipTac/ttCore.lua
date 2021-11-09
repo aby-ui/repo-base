@@ -712,7 +712,7 @@ function tt:ApplyUnitAppearance(tip,u,first)
 
 	-- Backdrop Color: Reaction
 	if (cfg.reactColoredBackdrop) then
-		tip:SetBackdropColor(unpack(cfg["colReactBack"..u.reactionIndex]));
+        tip.NineSlice:SetCenterColor(unpack(cfg["colReactBack"..u.reactionIndex]));
 	end
 
 	-- Backdrop Border Color: By Class or by Reaction
@@ -722,7 +722,9 @@ function tt:ApplyUnitAppearance(tip,u,first)
 			tip.NineSlice:SetBorderColor(color.r,color.g,color.b);
 		end
 	elseif (cfg.reactColoredBorder) then	-- Az: this will override the classColoredBorder config, perhaps have that option take priority instead?
-		tip:SetBackdropBorderColor(unpack(cfg["colReactBack"..u.reactionIndex]));
+        tip.NineSlice:SetBorderColor(unpack(cfg["colReactBack"..u.reactionIndex]));
+    else
+        tip.NineSlice:SetBorderColor(unpack(cfg.tipBorderColor));
 	end
 
 	-- Remove Unwanted Lines
@@ -829,6 +831,7 @@ function gttScriptHooks:OnUpdate(elapsed)
 	-- WoD: This background color reset, from OnShow(), has been copied down here. It seems resetting the color in OnShow() wasn't enough, as the color changes after the tip is being shown
 	if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
 		self.NineSlice:SetCenterColor(unpack(cfg.tipColor));
+        self.NineSlice:SetBorderColor(unpack(cfg.tipBorderColor));
 	end
 
 	-- Fadeout / Update Tip if Showing a Unit

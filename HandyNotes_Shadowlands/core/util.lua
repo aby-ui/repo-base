@@ -4,25 +4,25 @@ local ADDON_NAME, ns = ...
 ------------------------------ DATAMINE TOOLTIP -------------------------------
 -------------------------------------------------------------------------------
 
-local function CreateDatamineTooltip (name)
-    local f = CreateFrame("GameTooltip", name, UIParent, "GameTooltipTemplate")
-    f:SetOwner(UIParent, "ANCHOR_NONE")
+local function CreateDatamineTooltip(name)
+    local f = CreateFrame('GameTooltip', name, UIParent, 'GameTooltipTemplate')
+    f:SetOwner(UIParent, 'ANCHOR_NONE')
     return f
 end
 
 local NameResolver = {
     cache = {},
     prepared = {},
-    preparer = CreateDatamineTooltip(ADDON_NAME.."_NamePreparer"),
-    resolver = CreateDatamineTooltip(ADDON_NAME.."_NameResolver")
+    preparer = CreateDatamineTooltip(ADDON_NAME .. '_NamePreparer'),
+    resolver = CreateDatamineTooltip(ADDON_NAME .. '_NameResolver')
 }
 
-function NameResolver:IsLink (link)
+function NameResolver:IsLink(link)
     if link == nil then return link end
     return strsub(link, 1, 5) == 'unit:'
 end
 
-function NameResolver:Prepare (link)
+function NameResolver:Prepare(link)
     if self:IsLink(link) and not (self.cache[link] or self.prepared[link]) then
         -- use a separate tooltip to spam load NPC names, doing this with the
         -- main tooltip can sometimes cause it to become unresponsive and never
@@ -32,7 +32,7 @@ function NameResolver:Prepare (link)
     end
 end
 
-function NameResolver:Resolve (link)
+function NameResolver:Resolve(link)
     -- may be passed a raw name or a hyperlink to be resolved
     if not self:IsLink(link) then return link or UNKNOWN end
 
@@ -44,10 +44,10 @@ function NameResolver:Resolve (link)
     local name = self.cache[link]
     if name == nil then
         self.resolver:SetHyperlink(link)
-        name = _G[self.resolver:GetName().."TextLeft1"]:GetText() or UNKNOWN
+        name = _G[self.resolver:GetName() .. 'TextLeft1']:GetText() or UNKNOWN
         if name == UNKNOWN then
             ns.Debug('NameResolver returned UNKNOWN, recreating tooltip ...')
-            self.resolver = CreateDatamineTooltip(ADDON_NAME.."_NameResolver")
+            self.resolver = CreateDatamineTooltip(ADDON_NAME .. '_NameResolver')
         else
             self.cache[link] = name
         end
@@ -64,7 +64,7 @@ local function PrepareLinks(str)
     for type, id in str:gmatch('{(%l+):(%d+)(%l*)}') do
         id = tonumber(id)
         if type == 'npc' then
-            NameResolver:Prepare(("unit:Creature-0-0-0-0-%d"):format(id))
+            NameResolver:Prepare(('unit:Creature-0-0-0-0-%d'):format(id))
         elseif type == 'item' then
             C_Item.RequestLoadItemDataByID(id) -- prime item info
         elseif type == 'daily' or type == 'quest' then
@@ -77,11 +77,12 @@ end
 
 local function RenderLinks(str, nameOnly)
     -- render numberic ids
-    local links, _ = str:gsub('{(%l+):(%d+)(%l*)}', function (type, id, suffix)
+    local links, _ = str:gsub('{(%l+):(%d+)(%l*)}', function(type, id, suffix)
         id = tonumber(id)
         if type == 'npc' then
-            local name = NameResolver:Resolve(("unit:Creature-0-0-0-0-%d"):format(id))
-            name = name..(suffix or '')
+            local name = NameResolver:Resolve(
+                ('unit:Creature-0-0-0-0-%d'):format(id))
+            name = name .. (suffix or '')
             if nameOnly then return name end
             return ns.color.NPC(name)
         elseif type == 'achievement' then
@@ -91,7 +92,7 @@ local function RenderLinks(str, nameOnly)
             else
                 local link = GetAchievementLink(id)
                 if link then
-                    return ns.GetIconLink('achievement', 15)..link
+                    return ns.GetIconLink('achievement', 15) .. link
                 end
             end
         elseif type == 'currency' then
@@ -100,7 +101,7 @@ local function RenderLinks(str, nameOnly)
                 if nameOnly then return info.name end
                 local link = C_CurrencyInfo.GetCurrencyLink(id, 0)
                 if link then
-                    return '|T'..info.iconFileID..':0:0:1:-1|t '..link
+                    return '|T' .. info.iconFileID .. ':0:0:1:-1|t ' .. link
                 end
             end
         elseif type == 'faction' then
@@ -110,33 +111,35 @@ local function RenderLinks(str, nameOnly)
         elseif type == 'item' then
             local name, link, _, _, _, _, _, _, _, icon = GetItemInfo(id)
             if link and icon then
-                if nameOnly then return name..(suffix or '') end
-                return '|T'..icon..':0:0:1:-1|t '..link
+                if nameOnly then return name .. (suffix or '') end
+                return '|T' .. icon .. ':0:0:1:-1|t ' .. link
             end
         elseif type == 'daily' or type == 'quest' then
             local name = C_QuestLog.GetTitleForQuestID(id)
             if name then
                 if nameOnly then return name end
                 local icon = (type == 'daily') and 'quest_ab' or 'quest_ay'
-                return ns.GetIconLink(icon, 12)..ns.color.Yellow('['..name..']')
+                return ns.GetIconLink(icon, 12) ..
+                           ns.color.Yellow('[' .. name .. ']')
             end
         elseif type == 'spell' then
             local name, _, icon = GetSpellInfo(id)
             if name and icon then
                 if nameOnly then return name end
-                local spell = ns.color.Spell('|Hspell:'..id..'|h['..name..']|h')
-                return '|T'..icon..':0:0:1:-1|t '..spell
+                local spell = ns.color.Spell(
+                    '|Hspell:' .. id .. '|h[' .. name .. ']|h')
+                return '|T' .. icon .. ':0:0:1:-1|t ' .. spell
             end
         end
-        return type..'+'..id
+        return type .. '+' .. id
     end)
     -- render non-numeric ids
-    links, _ = links:gsub('{(%l+):([^}]+)}', function (type, id)
+    links, _ = links:gsub('{(%l+):([^}]+)}', function(type, id)
         if type == 'wq' then
             local icon = ns.GetIconLink('world_quest', 16, 0, -1)
-            return icon..ns.color.Yellow('['..id..']')
+            return icon .. ns.color.Yellow('[' .. id .. ']')
         end
-        return type..'+'..id
+        return type .. '+' .. id
     end)
     return links
 end
@@ -147,7 +150,7 @@ end
 
 local function IterateBagSlots()
     local bag, slot, slots = nil, 1, 1
-    return function ()
+    return function()
         if bag == nil or slot == slots then
             repeat
                 bag = (bag or -1) + 1
@@ -167,7 +170,9 @@ local function PlayerHasItem(item, count)
         if GetContainerItemID(bag, slot) == item then
             if count and count > 1 then
                 return select(2, GetContainerItemInfo(bag, slot)) >= count
-            else return true end
+            else
+                return true
+            end
         end
     end
     return false
@@ -178,7 +183,7 @@ end
 -------------------------------------------------------------------------------
 
 local function GetDatabaseTable(...)
-    local db = _G[ADDON_NAME.."DB"]
+    local db = _G[ADDON_NAME .. 'DB']
     for _, key in ipairs({...}) do
         if db[key] == nil then db[key] = {} end
         db = db[key]
@@ -200,17 +205,17 @@ same keys in the exact same order even before actual translations are done.
 
 --]]
 
-local AceLocale = LibStub("AceLocale-3.0")
+local AceLocale = LibStub('AceLocale-3.0')
 local LOCALES = {}
 
-local function NewLocale (locale)
+local function NewLocale(locale)
     if LOCALES[locale] then return LOCALES[locale] end
     local L = AceLocale:NewLocale(ADDON_NAME, locale, (locale == 'enUS'), true)
     if not L then return end
     local wrapper = {}
     setmetatable(wrapper, {
-        __index = function (self, key) return L[key] end,
-        __newindex = function (self, key, value)
+        __index = function(self, key) return L[key] end,
+        __newindex = function(self, key, value)
             if value == nil then return end
             L[key] = value
         end
@@ -222,7 +227,7 @@ end
 ------------------------------ TABLE CONVERTERS -------------------------------
 -------------------------------------------------------------------------------
 
-local function AsTable (value, class)
+local function AsTable(value, class)
     -- normalize to table of scalars
     if type(value) == 'nil' then return end
     if type(value) ~= 'table' then return {value} end
@@ -230,13 +235,13 @@ local function AsTable (value, class)
     return value
 end
 
-local function AsIDTable (value)
+local function AsIDTable(value)
     -- normalize to table of id objects
     if type(value) == 'nil' then return end
-    if type(value) ~= 'table' then return {{id=value}} end
+    if type(value) ~= 'table' then return {{id = value}} end
     if value.id then return {value} end
     for i, v in ipairs(value) do
-        if type(v) == 'number' then value[i] = {id=v} end
+        if type(v) == 'number' then value[i] = {id = v} end
     end
     return value
 end

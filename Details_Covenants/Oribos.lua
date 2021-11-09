@@ -36,7 +36,7 @@ function oribos:fillCovenants()
 end
 
 function oribos:addCovenantForPlayer(covenantID, playerName, playerClass)
-    if covenantID then 
+    if covenantID then
         local playerData = {}
         playerData.covenantID = covenantID
         playerData.class = playerClass
@@ -51,14 +51,14 @@ function oribos:askCovenantInfo(playerName)
 end
 
 function oribos:sendCovenantInfo(playerName)
-    if playerName then 
+    if playerName then
         if playerName == UnitName("player") then
             local message = playerName..":"..C_Covenants.GetActiveCovenantID()..":"..ownClass
             C_ChatInfo.SendAddonMessage(dc.addonPrefix, message, "RAID")
         elseif oribos.covenants[playerName] then
             local message = playerName..":"..oribos.covenants[playerName].covenantID..":"..oribos.covenants[playerName].class
             C_ChatInfo.SendAddonMessage(dc.addonPrefix, message, "RAID")
-        end 
+        end
     end
 end
 
@@ -93,7 +93,7 @@ end
 
 function oribos:logParty()
     local numGroupMembers = GetNumGroupMembers()
-    if numGroupMembers > 0 then 
+    if numGroupMembers > 0 then
         print("|CFFe5a472Details_Covenants|r Party covenants:")
 
         for groupindex = 1, numGroupMembers do
@@ -103,15 +103,15 @@ function oribos:logParty()
             if name and playerData then
                 local _, _, _, classColor = GetClassColor(playerData.class)
                 print(oribos:getCovenantIcon(playerData.covenantID).." |C"..classColor..name.."|r")
-            end  
+            end
         end
-    else 
+    else
         print("|CFFe5a472Details_Covenants|r You are not currently in group.")
-    end 
+    end
 end
 
 
--- Public 
+-- Public
 _G.Oribos = {}
 local publicOribos = _G.Oribos
 
@@ -120,14 +120,14 @@ function publicOribos:getCovenantIconForPlayer(playerName)
 
     if playerName == UnitName("player") then
         covenantID = C_Covenants.GetActiveCovenantID()
-    else 
+    else
         local covenantData = oribos.covenants[playerName]
 
         if covenantData and covenantData.covenantID then
             covenantID = covenantData.covenantID
         else
             return ""
-        end 
+        end
     end
 
     return oribos:getCovenantIcon(covenantID)

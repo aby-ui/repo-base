@@ -1,7 +1,6 @@
 -------------------------------------------------------------------------------
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
-
 local ADDON_NAME, ns = ...
 local Class = ns.Class
 local Group = ns.Group
@@ -23,10 +22,10 @@ ns.expansion = 9
 ------------------------------------ ICONS ------------------------------------
 -------------------------------------------------------------------------------
 
-local ICONS = "Interface\\Addons\\"..ADDON_NAME.."\\artwork\\icons"
-local GLOWS = "Interface\\Addons\\"..ADDON_NAME.."\\artwork\\glows"
-local function Icon(name) return ICONS..'\\'..name..'.blp' end
-local function Glow(name) return GLOWS..'\\'..name..'.blp' end
+local ICONS = 'Interface\\Addons\\' .. ADDON_NAME .. '\\artwork\\icons'
+local GLOWS = 'Interface\\Addons\\' .. ADDON_NAME .. '\\artwork\\glows'
+local function Icon(name) return ICONS .. '\\' .. name .. '.blp' end
+local function Glow(name) return GLOWS .. '\\' .. name .. '.blp' end
 
 ns.icons.cov_sigil_ky = {Icon('covenant_kyrian'), nil}
 ns.icons.cov_sigil_nl = {Icon('covenant_necrolord'), nil}
@@ -38,17 +37,17 @@ ns.icons.tormentor = {Icon('tormentor'), Glow('tormentor')}
 ---------------------------------- CALLBACKS ----------------------------------
 -------------------------------------------------------------------------------
 
-ns.addon:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function ()
+ns.addon:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function()
     -- Listen for aura applied/removed events so we can refresh when the player
     -- enters and exits the rift in Korthia and the Maw
-    local _,e,_,_,_,_,_,_,t,_,_,s  = CombatLogGetCurrentEventInfo()
-    if (e == 'SPELL_AURA_APPLIED' or e == 'SPELL_AURA_REMOVED') and
-        t == UnitName('player') and (s == 352795 or s == 354870) then
+    local _, e, _, _, _, _, _, _, t, _, _, s = CombatLogGetCurrentEventInfo()
+    if (e == 'SPELL_AURA_APPLIED' or e == 'SPELL_AURA_REMOVED') and t ==
+        UnitName('player') and (s == 352795 or s == 354870) then
         C_Timer.After(1, function() ns.addon:Refresh() end)
     end
 end)
 
-ns.addon:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED', function (...)
+ns.addon:RegisterEvent('UNIT_SPELLCAST_SUCCEEDED', function(...)
     -- Watch for a spellcast event that signals the kitten was pet.
     -- https://www.wowhead.com/spell=321337/petting
     -- Watch for a spellcast event for collecting a shard
@@ -65,24 +64,24 @@ end)
 
 -- Add reward information to Blizzard's vignette treasures for callings
 
-local GILDED_WADER = Pet({item=180866, id=2938}) -- Gilded Wader
+local GILDED_WADER = Pet({item = 180866, id = 2938}) -- Gilded Wader
 
-local BLEAKWOOD_CHEST = { Pet({item=180592, id=2901}) } -- Trapped Stonefiend
-local BROKEN_SKYWARD_BELL = { GILDED_WADER, Toy({item=184415}) } -- Soothing Vesper
+local BLEAKWOOD_CHEST = {Pet({item = 180592, id = 2901})} -- Trapped Stonefiend
+local BROKEN_SKYWARD_BELL = {GILDED_WADER, Toy({item = 184415})} -- Soothing Vesper
 local DECAYED_HUSK = {
-    Transmog({item=179593, slot=L["cloth"]}), -- Darkreach Mask
-    Transmog({item=179594, slot=L["leather"]}), -- Witherscorn Guise
+    Transmog({item = 179593, slot = L['cloth']}), -- Darkreach Mask
+    Transmog({item = 179594, slot = L['leather']}) -- Witherscorn Guise
 }
-local GILDED_CHEST = { Toy({item=184418}) } -- Acrobatic Steward
-local HIDDEN_HOARD = { GILDED_WADER }
-local HUNT_SHADEHOUNDS = { Mount({item=184167, id=1304}) } -- Mawsworn Soulhunter
-local SECRET_TREASURE = { Pet({item=180589, id=2894}) } -- Burdened Soul
-local SILVER_STRONGBOX = { GILDED_WADER }
+local GILDED_CHEST = {Toy({item = 184418})} -- Acrobatic Steward
+local HIDDEN_HOARD = {GILDED_WADER}
+local HUNT_SHADEHOUNDS = {Mount({item = 184167, id = 1304})} -- Mawsworn Soulhunter
+local SECRET_TREASURE = {Pet({item = 180589, id = 2894})} -- Burdened Soul
+local SILVER_STRONGBOX = {GILDED_WADER}
 local SLIME_COATED_CRATE = {
-    Pet({item=181262, id=2952}), -- Bubbling Pustule
-    Toy({item=184447}) -- Kevin's Party Supplies
+    Pet({item = 181262, id = 2952}), -- Bubbling Pustule
+    Toy({item = 184447}) -- Kevin's Party Supplies
 }
-local SPOUTING_GROWTH = { Pet({item=181173, id=2949}) } -- Skittering Venomspitter
+local SPOUTING_GROWTH = {Pet({item = 181173, id = 2949})} -- Skittering Venomspitter
 
 local VIGNETTES = {
     [4173] = SECRET_TREASURE,
@@ -143,46 +142,44 @@ hooksecurefunc(GameTooltip, 'Show', function(self)
         if rewards and #rewards > 0 then
             self:AddLine(' ') -- add blank line before rewards
             for i, reward in ipairs(rewards) do
-                if reward:IsEnabled() then
-                    reward:Render(self)
-                end
+                if reward:IsEnabled() then reward:Render(self) end
             end
             vignetteHandled = true
             self:Show()
-       end
+        end
     end
 end)
 
-hooksecurefunc(GameTooltip, 'ClearLines', function(self)
-    vignetteHandled = false
-end)
+hooksecurefunc(GameTooltip, 'ClearLines',
+    function(self) vignetteHandled = false end)
 
 -------------------------------------------------------------------------------
 ---------------------------------- COVENANTS ----------------------------------
 -------------------------------------------------------------------------------
 
 ns.covenants = {
-    KYR = { id = 1, icon = 'cov_sigil_ky', assault=63824 },
-    VEN = { id = 2, icon = 'cov_sigil_vn', assault=63822 },
-    FAE = { id = 3, icon = 'cov_sigil_nf', assault=63823 },
-    NEC = { id = 4, icon = 'cov_sigil_nl', assault=63543 }
+    KYR = {id = 1, icon = 'cov_sigil_ky', assault = 63824},
+    VEN = {id = 2, icon = 'cov_sigil_vn', assault = 63822},
+    FAE = {id = 3, icon = 'cov_sigil_nf', assault = 63823},
+    NEC = {id = 4, icon = 'cov_sigil_nl', assault = 63543}
 }
 
-local function ProcessCovenant (node)
+local function ProcessCovenant(node)
     local covenant = node.covenant or node.assault
     if not covenant then return end
     if node._covenantProcessed then return end
 
     local name = C_Covenants.GetCovenantData(covenant.id).name
-    local str = node.covenant and L["covenant_required"] or L["cov_assault_only"]
+    local str = node.covenant and L['covenant_required'] or
+                    L['cov_assault_only']
     local subl = ns.color.Orange(string.format(str, name))
     local ricon = ns.GetIconLink(covenant.icon, 13)
 
     -- not compatible with rlabel getters
     if not node.getters.rlabel then
-        node.rlabel = node.rlabel and node.rlabel..' '..ricon or ricon
+        node.rlabel = node.rlabel and node.rlabel .. ' ' .. ricon or ricon
     end
-    node.sublabel = node.sublabel and subl..'\n'..node.sublabel or subl
+    node.sublabel = node.sublabel and subl .. '\n' .. node.sublabel or subl
     node._covenantProcessed = true
 end
 
@@ -203,59 +200,83 @@ end
 ----------------------------------- GROUPS ------------------------------------
 -------------------------------------------------------------------------------
 
-ns.groups.ANIMA_SHARD = Group('anima_shard', 'crystal_b', {defaults=ns.GROUP_HIDDEN})
-ns.groups.BLESSINGS = Group('blessings', 1022951, {defaults=ns.GROUP_HIDDEN})
-ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd', {defaults=ns.GROUP_HIDDEN})
-ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g', {defaults=ns.GROUP_HIDDEN})
-ns.groups.DREDBATS = Group('dredbats', 'flight_point_g', {defaults=ns.GROUP_HIDDEN})
-ns.groups.FAERIE_TALES = Group('faerie_tales', 355498, {defaults=ns.GROUP_HIDDEN})
-ns.groups.FUGITIVES = Group('fugitives', 236247, {defaults=ns.GROUP_HIDDEN})
-ns.groups.GRAPPLES = Group('grapples', 'peg_bk', {defaults=ns.GROUP_HIDDEN})
-ns.groups.HELGARDE_CACHE = Group('helgarde_cache', 'chest_gy', {defaults=ns.GROUP_HIDDEN75})
-ns.groups.HYMNS = Group('hymns', 'scroll', {defaults=ns.GROUP_HIDDEN})
-ns.groups.INQUISITORS = Group('inquisitors', 3528307, {defaults=ns.GROUP_HIDDEN})
-ns.groups.INVASIVE_MAWSHROOM = Group('invasive_mawshroom', 134534, {defaults=ns.GROUP_HIDDEN75})
-ns.groups.KORTHIA_SHARED = Group('korthia_dailies', 1506458, {defaults=ns.GROUP_HIDDEN75})
-ns.groups.MAWSWORN_CACHE = Group('mawsworn_cache', 3729814, {defaults=ns.GROUP_HIDDEN75})
-ns.groups.NEST_MATERIALS = Group('nest_materials', 136064, {defaults=ns.GROUP_HIDDEN75})
-ns.groups.NILGANIHMAHT_MOUNT = Group('nilganihmaht', 1391724, {defaults=ns.GROUP_HIDDEN75})
-ns.groups.RIFT_HIDDEN_CACHE = Group('rift_hidden_cache', 'chest_bk', {defaults=ns.GROUP_ALPHA75})
+ns.groups.ANIMA_SHARD = Group('anima_shard', 'crystal_b',
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.BLESSINGS = Group('blessings', 1022951, {defaults = ns.GROUP_HIDDEN})
+ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd',
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.CARRIAGE = Group('carriages', 'horseshoe_g',
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.DREDBATS = Group('dredbats', 'flight_point_g',
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.FAERIE_TALES = Group('faerie_tales', 355498,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.FUGITIVES = Group('fugitives', 236247, {defaults = ns.GROUP_HIDDEN})
+ns.groups.GRAPPLES = Group('grapples', 'peg_bk', {defaults = ns.GROUP_HIDDEN})
+ns.groups.HELGARDE_CACHE = Group('helgarde_cache', 'chest_gy',
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.HYMNS = Group('hymns', 'scroll', {defaults = ns.GROUP_HIDDEN})
+ns.groups.INQUISITORS = Group('inquisitors', 3528307,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.INVASIVE_MAWSHROOM = Group('invasive_mawshroom', 134534,
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.KORTHIA_SHARED = Group('korthia_dailies', 1506458,
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.MAWSWORN_CACHE = Group('mawsworn_cache', 3729814,
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.NEST_MATERIALS = Group('nest_materials', 136064,
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.NILGANIHMAHT_MOUNT = Group('nilganihmaht', 1391724,
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.RIFT_HIDDEN_CACHE = Group('rift_hidden_cache', 'chest_bk',
+    {defaults = ns.GROUP_ALPHA75})
 ns.groups.RIFT_PORTAL = Group('rift_portal', 'portal_gy')
-ns.groups.RIFTBOUND_CACHE = Group('riftbound_cache', 'chest_bk', {defaults=ns.GROUP_ALPHA75})
+ns.groups.RIFTBOUND_CACHE = Group('riftbound_cache', 'chest_bk',
+    {defaults = ns.GROUP_ALPHA75})
 ns.groups.RIFTSTONE = Group('riftstone', 'portal_bl')
-ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o', {defaults=ns.GROUP_HIDDEN})
-ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults=ns.GROUP_HIDDEN})
-ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn', {defaults=ns.GROUP_HIDDEN75})
-ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv', {defaults=ns.GROUP_HIDDEN75})
-ns.groups.VESPERS = Group('vespers', 3536181, {defaults=ns.GROUP_HIDDEN})
-ns.groups.ZOVAAL_VAULT = Group('zovault', 'star_chest_g', {defaults=ns.GROUP_ALPHA75})
+ns.groups.SINRUNNER = Group('sinrunners', 'horseshoe_o',
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.SLIME_CAT = Group('slime_cat', 3732497, {defaults = ns.GROUP_HIDDEN})
+ns.groups.STYGIA_NEXUS = Group('stygia_nexus', 'peg_gn',
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv',
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.VESPERS = Group('vespers', 3536181, {defaults = ns.GROUP_HIDDEN})
+ns.groups.ZOVAAL_VAULT = Group('zovault', 'star_chest_g',
+    {defaults = ns.GROUP_ALPHA75})
 
 ns.groups.ANIMA_VESSEL = Group('anima_vessel', 'chest_tl', {
-    defaults=ns.GROUP_ALPHA75,
-    IsEnabled=function (self)
+    defaults = ns.GROUP_ALPHA75,
+    IsEnabled = function(self)
         -- Anima vessels and caches cannot be seen until the "Vault Anima Tracker"
         -- upgrade is purchased from the Death's Advance quartermaster
-        if not C_QuestLog.IsQuestFlaggedCompleted(64061) then return false end
+        if not C_QuestLog.IsQuestFlaggedCompleted(64061) then
+            return false
+        end
         return Group.IsEnabled(self)
     end
 })
 
 ns.groups.BROKEN_MIRROR = Group('broken_mirror', 3854020, {
-    defaults=ns.GROUP_ALPHA75,
-    IsEnabled=function (self)
+    defaults = ns.GROUP_ALPHA75,
+    IsEnabled = function(self)
         -- Broken mirrors are Venthyr-only (might have completed the quest and then swapped covenants)
         if C_Covenants.GetActiveCovenantID() ~= 2 then return false end
         -- Broken mirrors cannot be accessed until the quest "Repair and Restore" is completed
-        if not C_QuestLog.IsQuestFlaggedCompleted(59740) then return false end
+        if not C_QuestLog.IsQuestFlaggedCompleted(59740) then
+            return false
+        end
         return Group.IsEnabled(self)
     end
 })
 
 ns.groups.RELIC = Group('relic', 'star_chest_b', {
-    defaults=ns.GROUP_ALPHA75,
-    IsEnabled=function (self)
+    defaults = ns.GROUP_ALPHA75,
+    IsEnabled = function(self)
         -- Relics cannot be collected until the quest "What Must Be Found" is completed
-        if not C_QuestLog.IsQuestFlaggedCompleted(64506) then return false end
+        if not C_QuestLog.IsQuestFlaggedCompleted(64506) then
+            return false
+        end
         return Group.IsEnabled(self)
     end
 })
@@ -266,7 +287,7 @@ ns.groups.RELIC = Group('relic', 'star_chest_b', {
 
 local SLMap = Class('ShadowlandsMap', Map)
 
-function SLMap:Prepare ()
+function SLMap:Prepare()
     Map.Prepare(self)
     for coord, node in pairs(self.nodes) do
         -- Update rlabel and sublabel for covenant-restricted nodes
@@ -284,7 +305,7 @@ function RiftMap:Prepare()
     SLMap.Prepare(self)
 
     self.rifted = false
-    for i, spellID in ipairs{352795, 354870} do
+    for i, spellID in ipairs {352795, 354870} do
         if AuraUtil.FindAuraByName(GetSpellInfo(spellID), 'player') then
             self.rifted = true
         end
@@ -307,12 +328,10 @@ ns.RiftMap = RiftMap
 local Venari = Class('Venari', ns.requirement.Requirement)
 
 function Venari:Initialize(quest)
-    self.text = L["venari_upgrade"]
+    self.text = L['venari_upgrade']
     self.quest = quest
 end
 
-function Venari:IsMet()
-    return C_QuestLog.IsQuestFlaggedCompleted(self.quest)
-end
+function Venari:IsMet() return C_QuestLog.IsQuestFlaggedCompleted(self.quest) end
 
 ns.requirement.Venari = Venari

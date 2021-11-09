@@ -160,14 +160,13 @@ EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, toolt
     if areaPoiID == 6640 then
         -- https://www.wowhead.com/guides/torghast-updates-patch-9-1-new-scoring-rewards-torments-shadowlands#farmable-soul-ash
         local levels    = {  "08", "09",   10,    11,    12, }
-        local firstNew  = {    50,   90,  120,   150,   180, }
+        local firstNew  = {   170,  230,  270,   310,   350, }
         local firstOld  = {   860,  915,  960,  1000,  1030, }
-        local repeatOld = {   172,  183,  192,   200,   206, }
         if GameTooltip:IsVisible() then
-            GameTooltip:AddLine("难度   薪尘    灰烬  灰烬(重复打)", 1, 1, 1)
-            local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
+            GameTooltip:AddLine("难度   薪尘    灰烬", 1, 1, 1)
+            local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
             for i, v in ipairs(levels) do
-                GameTooltip:AddLine(format(line, tostring(levels[i]), tostring(firstNew[i]), tostring(firstOld[i]), tostring(repeatOld[i])), 1, 1, 1)
+                GameTooltip:AddLine(format(line, tostring(levels[i]), tostring(firstNew[i]), tostring(firstOld[i])), 1, 1, 1)
             end
 
             GameTooltip:AddLine(" ")

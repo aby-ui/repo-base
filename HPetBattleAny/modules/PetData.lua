@@ -1,6 +1,6 @@
 --[[
 BattlePetBreedID: Pet Data Module
-Last Update: Patch 9.1.0 Live; 2021-09-03T03:47:49Z
+Last Update: Patch 9.1.5 Live; 2021-11-04T19:13:31Z
 
 If you would like a copy of this data in a different format for your own purposes or to be informed of future updates:
 Contact MMOSimca / Simca@Malfurion - either through MMO-Champion, through CurseForge, or in-game
@@ -2524,7 +2524,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BasePetStats[2477] = {8, 8, 8}
     BPBID_Arrays.BasePetStats[2478] = {8.375, 8, 7.625}
     BPBID_Arrays.BasePetStats[2479] = {8.375, 8, 7.625}
-    BPBID_Arrays.BasePetStats[2480] = {10.5, 8, 8}
+    BPBID_Arrays.BasePetStats[2480] = false
     BPBID_Arrays.BasePetStats[2481] = false
     BPBID_Arrays.BasePetStats[2482] = {8, 8, 8}
     BPBID_Arrays.BasePetStats[2483] = {8, 8, 8}
@@ -3203,6 +3203,36 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BasePetStats[3156] = false
     BPBID_Arrays.BasePetStats[3157] = false
     BPBID_Arrays.BasePetStats[3158] = {5.5, 9.5, 11.5}
+    BPBID_Arrays.BasePetStats[3159] = false
+    BPBID_Arrays.BasePetStats[3160] = false
+    BPBID_Arrays.BasePetStats[3161] = false
+    BPBID_Arrays.BasePetStats[3162] = false
+    BPBID_Arrays.BasePetStats[3163] = false
+    BPBID_Arrays.BasePetStats[3164] = false
+    BPBID_Arrays.BasePetStats[3165] = false
+    BPBID_Arrays.BasePetStats[3166] = false
+    BPBID_Arrays.BasePetStats[3167] = false
+    BPBID_Arrays.BasePetStats[3168] = false
+    BPBID_Arrays.BasePetStats[3169] = false
+    BPBID_Arrays.BasePetStats[3170] = false
+    BPBID_Arrays.BasePetStats[3171] = false
+    BPBID_Arrays.BasePetStats[3172] = false
+    BPBID_Arrays.BasePetStats[3173] = false
+    BPBID_Arrays.BasePetStats[3174] = false
+    BPBID_Arrays.BasePetStats[3175] = false
+    BPBID_Arrays.BasePetStats[3176] = false
+    BPBID_Arrays.BasePetStats[3177] = false
+    BPBID_Arrays.BasePetStats[3178] = false
+    BPBID_Arrays.BasePetStats[3179] = false
+    BPBID_Arrays.BasePetStats[3180] = false
+    BPBID_Arrays.BasePetStats[3181] = false
+    BPBID_Arrays.BasePetStats[3182] = false
+    BPBID_Arrays.BasePetStats[3183] = false
+    BPBID_Arrays.BasePetStats[3184] = false
+    BPBID_Arrays.BasePetStats[3185] = false
+    BPBID_Arrays.BasePetStats[3186] = false
+    BPBID_Arrays.BasePetStats[3187] = false
+    BPBID_Arrays.BasePetStats[3188] = {7.825, 8.675, 7.5}
 
 
     -- AVAILABLE BREEDS
@@ -6337,7 +6367,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3129] = {4}
     BPBID_Arrays.BreedsPerSpecies[3130] = {12}
     BPBID_Arrays.BreedsPerSpecies[3131] = {3, 9}
-    BPBID_Arrays.BreedsPerSpecies[3132] = false
+    BPBID_Arrays.BreedsPerSpecies[3132] = {7}
     BPBID_Arrays.BreedsPerSpecies[3133] = {6}
     BPBID_Arrays.BreedsPerSpecies[3134] = {5, 8, 9}
     BPBID_Arrays.BreedsPerSpecies[3135] = {9, 10, 12}
@@ -6364,4 +6394,34 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3156] = false
     BPBID_Arrays.BreedsPerSpecies[3157] = false
     BPBID_Arrays.BreedsPerSpecies[3158] = false
+    BPBID_Arrays.BreedsPerSpecies[3159] = false
+    BPBID_Arrays.BreedsPerSpecies[3160] = false
+    BPBID_Arrays.BreedsPerSpecies[3161] = false
+    BPBID_Arrays.BreedsPerSpecies[3162] = false
+    BPBID_Arrays.BreedsPerSpecies[3163] = false
+    BPBID_Arrays.BreedsPerSpecies[3164] = false
+    BPBID_Arrays.BreedsPerSpecies[3165] = false
+    BPBID_Arrays.BreedsPerSpecies[3166] = false
+    BPBID_Arrays.BreedsPerSpecies[3167] = false
+    BPBID_Arrays.BreedsPerSpecies[3168] = false
+    BPBID_Arrays.BreedsPerSpecies[3169] = false
+    BPBID_Arrays.BreedsPerSpecies[3170] = false
+    BPBID_Arrays.BreedsPerSpecies[3171] = false
+    BPBID_Arrays.BreedsPerSpecies[3172] = false
+    BPBID_Arrays.BreedsPerSpecies[3173] = false
+    BPBID_Arrays.BreedsPerSpecies[3174] = false
+    BPBID_Arrays.BreedsPerSpecies[3175] = false
+    BPBID_Arrays.BreedsPerSpecies[3176] = false
+    BPBID_Arrays.BreedsPerSpecies[3177] = false
+    BPBID_Arrays.BreedsPerSpecies[3178] = false
+    BPBID_Arrays.BreedsPerSpecies[3179] = false
+    BPBID_Arrays.BreedsPerSpecies[3180] = false
+    BPBID_Arrays.BreedsPerSpecies[3181] = false
+    BPBID_Arrays.BreedsPerSpecies[3182] = false
+    BPBID_Arrays.BreedsPerSpecies[3183] = false
+    BPBID_Arrays.BreedsPerSpecies[3184] = false
+    BPBID_Arrays.BreedsPerSpecies[3185] = false
+    BPBID_Arrays.BreedsPerSpecies[3186] = false
+    BPBID_Arrays.BreedsPerSpecies[3187] = false
+    BPBID_Arrays.BreedsPerSpecies[3188] = false
 end

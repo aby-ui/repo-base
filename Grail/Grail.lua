@@ -539,6 +539,12 @@
 --			Changes interface to 90005.
 --			Changes check for renown level to ensure covenant matches as Blizzard renown API ignores covenant.
 --			Starts to add support for Classic Burning Crusade (using interface 20501).
+--		116	Switches to a unified addon for all of Blizzard's releases.
+--			Augments _CovenantRenownMeetsOrExceeds to accept covenant 0 to represent the currrently active covenant, used to indicate that the renown level is at a specific level independent of covenant.
+--			Changes retail interface to 90100.
+--		117 Updates some Quest/NPC information.
+--			Updates some Ve'nari localized reputation levels.
+--			Changes retail interface to 90105, BCC to 20502 and Classic to 11400.
 --
 --	Known Issues
 --
@@ -1066,6 +1072,9 @@ experimental = false,	-- currently this implementation does not reduce memory si
 					self.capabilities.usesFollowers = not self.existsClassic
 					self.capabilities.usesWorldEvents = not self.existsClassic
 					self.capabilities.usesWorldQuests = not self.existsClassic
+					self.capabilities.usesCallingQuests = not self.existsClassic
+					self.capabilities.usesCampaignQuests = not self.existsClassic
+					self.capabilities.usesFlightPoints = not self.existsClassic
 
                     -- These values are no longer used, but kept for posterity.
 					self.existsPandaria = (self.blizzardRelease >= 15640)
@@ -1478,13 +1487,12 @@ experimental = false,	-- currently this implementation does not reduce memory si
 
 					self:_LoadContinentData()
 
-					local environmentToUse = self:_EnvironmentForLoad()
-					self:LoadAddOn("Grail-Quests-" .. environmentToUse)
+					self:LoadAddOn("Grail-Quests")
 					local originalMem = gcinfo()
-					if self:LoadAddOn("Grail-NPCs-" .. environmentToUse) then
+					if self:LoadAddOn("Grail-NPCs") then
 						self:_ProcessNPCs(originalMem)
 					end
-					self:LoadAddOn("Grail-NPCs-" .. environmentToUse .. "-" .. self.playerLocale)
+					self:LoadAddOn("Grail-NPCs-" .. self.playerLocale)
 					self.npc.name[1] = ADVENTURE_JOURNAL
 
 					-- Now we need to update some information based on the server to which we are connected
@@ -2669,7 +2677,7 @@ end,
 			[6] = { 1445, 1515, 1520, 1679, 1681, 1682, 1708, 1710, 1711, 1731, 1732, 1733, 1735, 1736, 1737, 1738, 1739, 1740, 1741, 1847, 1848, 1849, 1850, },
 			[7] = { 1815, 1828, 1833, 1859, 1860, 1862, 1883, 1888, 1894, 1899, 1900, 1919, 1947, 1948, 1975, 1984, 1989, 2018, 2045, 2097, 2098, 2099, 2100, 2101, 2102, 2135, 2165, 2170, },
 			[8] = { 2103, 2111, 2120, 2156, 2157, 2158, 2159, 2160, 2161, 2162, 2163, 2164, 2233, 2264, 2265, 2371, 2372, 2373, 2374, 2375, 2376, 2377, 2378, 2379, 2380, 2381, 2382, 2383, 2384, 2385, 2386, 2387, 2388, 2389, 2390, 2391, 2392, 2395, 2396, 2397, 2398, 2400, 2401, 2415, 2417, 2427, },
-			[9] = { 2407, 2410, 2413, 2432, 2439, 2445, 2446, 2447, 2448, 2449, 2450, 2451, 2452, 2453, 2454, 2455, 2456, 2457, 2458, 2459, 2460, 2461, 2462, 2463, 2464, 2465, },
+			[9] = { 2407, 2410, 2413, 2432, 2439, 2445, 2446, 2447, 2448, 2449, 2450, 2451, 2452, 2453, 2454, 2455, 2456, 2457, 2458, 2459, 2460, 2461, 2462, 2463, 2464, 2465, 2470, 2472, },
 			},
 
 		-- These reputations use the friendship names instead of normal reputation names
@@ -2963,7 +2971,7 @@ end,
 			["96D"] = "Court of Harvesters", -- 2413
 			["96F"] = "Rajani", -- 2415
 			["971"] = "Uldum Accord", -- 2417
---			["976"] = "The Wild Hunt", -- 2422
+			["976"] = "Night Fae", -- 2422
 			["97B"] = "Aqir Hatchling", -- 2427
 			["980"] = "Ve'nari", -- 2432
 			["987"] = "The Avowed", -- 2439
@@ -2988,6 +2996,8 @@ end,
 			["99F"] = "Marasmius", -- 2463
 			["9A0"] = "Court of Night", -- 2464
 			["9A1"] = "The Wild Hunt",	-- 2465
+			["9A6"] = "Death's Advance", -- 2470
+			["9A8"] = "The Archivists' Codex", -- 2472
 			},
 
 		reputationMappingFaction = {
@@ -3249,7 +3259,9 @@ end,
 			["99E"] = "Neutral", -- 2462	-- TODO: Determine faction
 			["99F"] = "Neutral", -- 2463	-- TODO: Determine faction
 			["9A0"] = "Neutral", -- 2464	-- TODO: Determine faction
-			["9A1"] = "Neutral", -- 2422	-- TODO: Determine faction
+			["9A1"] = "Neutral", -- 2465	-- TODO: Determine faction
+			["9A6"] = "Neutral", -- 2470	-- TODO: Determine faction
+			["9A8"] = "Neutral", -- 2472	-- TODO: Determine faction
 			},
 
 		slashCommandOptions = {},
@@ -3510,6 +3522,8 @@ end,
 				zoneName = zoneName .. ' ('..mapId..')'
 			end
 			zoneTable[#zoneTable + 1] = { name = zoneName, mapID = mapId }
+--self.GDE.zoneNames = self.GDE.zoneNames or {}
+--tinsert(self.GDE.zoneNames, { name = zoneName, mapID = mapId, continent = continentMapId })
 			self.zoneNameMapping[zoneName] = mapId
 			self.mapToContinentMapping[mapId] = continentMapId
 		end,
@@ -8226,28 +8240,18 @@ end
 		end,
 
 		---
-		--  Returns the environment string accounting for the special situation for PTR
-		--  by returning the retail string since our files do not differentiate between
-		--  retail and PTR.
-		--  @return The string used for the environment aspect of loading files.
-		--  @requires Grail.environment
-		_EnvironmentForLoad = function(self)
-			return self.environment == "_ptr_" and "_retail_" or self.environment
-		end,
-
-		---
 		--  Attempts to load the quest names for both the environment and the locale.
-		--  @calls Grail:_EnvironmentForLoad(), Grail:LoadAddOn()
+		--  @calls Grail:LoadAddOn()
 		--  @requires Grail.playerLocale
 		LoadLocalizedQuestNames = function(self)
-			self:LoadAddOn("Grail-Quests-" .. self:_EnvironmentForLoad() .. "-" .. self.playerLocale)
+			self:LoadAddOn("Grail-Quests-" .. self.playerLocale)
 		end,
 
 		---
 		--  Attempts to load the reputation information for the environment.
-		--  @calls Grail:_EnvironmentForLoad(), Grail:LoadAddOn()
+		--  @calls Grail:LoadAddOn()
 		LoadReputations = function(self)
-			self:LoadAddOn("Grail-Reputations-" .. self:_EnvironmentForLoad())
+			self:LoadAddOn("Grail-Reputations")
 		end,
 
 		--	Check the internal npc.locations structure for a location close to
@@ -8852,14 +8856,15 @@ end
 --		end,
 		
 		--	Returns a boolean indicating whether the player's renown level with the specified covenant meets or exceeds the desired level.
+		--	1=Bastion, 2=Venthyr, 3=Night Fae, 4=Necrolord
 		_CovenantRenownMeetsOrExceeds = function(self, covenant, desiredLevel)
 			local retval = false
 			covenant = tonumber(covenant)
 			desiredLevel = tonumber(desiredLevel)
 			if nil == covenant or nil == desiredLevel then return false end
 			local activeCovenant = C_Covenants and C_Covenants.GetActiveCovenantID() or nil
-			if covenant ~= activeCovenant then return false end
-			local levels = C_CovenantSanctumUI and C_CovenantSanctumUI.GetRenownLevels(covenant) or nil
+			if 0 ~= covenant and covenant ~= activeCovenant then return false end
+			local levels = C_CovenantSanctumUI and C_CovenantSanctumUI.GetRenownLevels(activeCovenant) or nil
 			if nil ~= levels then
 				for _, levelInfo in pairs(levels) do
 					if desiredLevel == levelInfo.level then
@@ -11932,7 +11937,7 @@ local me = Grail
 if locale == "deDE" then
 	me.bodyGuardLevel = { 'Leibwächter', 'Treuer Leibwächter', 'Persönlicher Flügelmann' }
 	me.friendshipLevel = { 'Fremder', 'Bekannter', 'Kumpel', 'Freund', 'guter Freund', 'bester Freund' }
-	me.friendshipMawLevel = { 'Unsicher', 'Besorgt', 'Unverbindlich', 'Zwiespältig', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { 'Unsicher', 'Besorgt', 'Unverbindlich', 'Zwiespältig', 'Herzlich', 'Appreciative' }
 
 	me.holidayMapping = { ['A'] = 'Liebe liegt in der Luft', ['B'] = 'Braufest', ['C'] = "Kinderwoche", ['D'] = 'Tag der Toten', ['E'] = 'WoW Anniversary', ['F'] = 'Dunkelmond-Jahrmarkt', ['H'] = 'Erntedankfest', ['K'] = "Angelwettstreit der Kalu'ak", ['L'] = 'Mondfest', ['M'] = 'Sonnenwendfest', ['N'] = 'Nobelgarten', ['P'] = "Piratentag", ['U'] = 'Neujahr', ['V'] = 'Winterhauch', ['W'] = "Schlotternächte", ['X'] = 'Anglerwettbewerb im Schlingendorntal', ['Y'] = "Die Pilgerfreuden", ['Z'] = "Weihnachtswoche", ['a'] = 'Bonusereignis: Apexis', ['b'] = 'Bonusereignis: Arenascharmützel', ['c'] = 'Bonusereignis: Schlachtfelder', ['d'] = 'Bonusereignis: Draenordungeons', ['e'] = 'Bonusereignis: Haustierkämpfe', ['f'] = 'Bonusereignis: Zeitwanderungsdungeons', ['Q'] = "AQ", }
 
@@ -12044,7 +12049,7 @@ elseif locale == "esMX" then
 elseif locale == "frFR" then
 	me.bodyGuardLevel = { 'Garde du corps', 'Garde personnel', 'Bras droit' }
 	me.friendshipLevel = { 'Étranger', 'Connaissance', 'Camarade', 'Ami', 'Bon ami', 'Meilleur ami' }
-	me.friendshipMawLevel = { 'Méfiance', 'Crainte', 'Hésitation', 'Incertitude', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { 'Méfiance', 'Crainte', 'Hésitation', 'Incertitude', 'Bienveillance', 'Appreciative' }
 
 	me.holidayMapping = { ['A'] = "De l'amour dans l'air", ['B'] = 'Fête des Brasseurs', ['C'] = "Semaine des enfants", ['D'] = 'Jour des morts', ['E'] = 'WoW Anniversary', ['F'] = 'Foire de Sombrelune', ['H'] = 'Fête des moissons', ['K'] = "Tournoi de pêche kalu'ak", ['L'] = 'Fête lunaire', ['M'] = "Fête du Feu du solstice d'été", ['N'] = 'Le Jardin des nobles', ['P'] = "Jour des pirates", ['U'] = 'Nouvel an', ['V'] = "Voile d'hiver", ['W'] = "Sanssaint", ['X'] = 'Concours de pêche de Strangleronce', ['Y'] = "Bienfaits du pèlerin", ['Z'] = "Vacances de Noël", ['a'] = 'Évènement bonus Apogides', ['b'] ='Évènement bonus Escarmouches en arène', ['c'] = 'Évènement bonus Champs de bataille', ['d'] = 'Évènement Donjon de Draenor', ['e'] = 'Évènement bonus Combats de mascottes', ['f'] = 'Évènement Donjon des Marcheurs du temps', ['Q'] = "AQ", }
 
@@ -12072,7 +12077,7 @@ elseif locale == "frFR" then
 elseif locale == "itIT" then
 	me.bodyGuardLevel = { 'Guardia del Corpo', 'Guardia Fidata', 'Scorta Personale' }
 	me.friendshipLevel = { 'Estraneo', 'Conoscente', 'Compagno', 'Amico', 'Amico Intimo', 'Miglior Amico' }
-	me.friendshipMawLevel = { 'Dubbiosa', 'Ansiosa', 'Incerta', 'Ambivalente', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { 'Dubbiosa', 'Ansiosa', 'Incerta', 'Ambivalente', 'Cordiale', 'Appreciative' }
 
 me.holidayMapping = {
     ['A'] = "Amore nell'Aria",
@@ -12133,7 +12138,7 @@ me.professionMapping = {
 elseif locale == "koKR" then
 	me.bodyGuardLevel = { '경호원', '믿음직스러운 경호원', '개인 호위무사' }
 	me.friendshipLevel = { '이방인', '지인', '동료', '친구', '좋은 친구', '가장 친한 친구' }
-	me.friendshipMawLevel = { '의심', '불안', '불확신', '애증', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { '의심', '불안', '불확신', '애증', '호감', 'Appreciative' }
 
 	me.holidayMapping = { ['A'] = '온누리에 사랑을', ['B'] = '가을 축제', ['C'] = "어린이 주간", ['D'] = '망자의 날', ['E'] = 'WoW Anniversary', ['F'] = '다크문 축제', ['H'] = '추수절', ['K'] = '칼루아크 낚시 대회', ['L'] = '달의 축제', ['M'] = '한여름 불꽃축제', ['N'] = '귀족의 정원', ['P'] = "해적의 날", ['U'] = '새해맞이 전야제', ['V'] = '겨울맞이 축제', ['W'] = "할로윈 축제", ['X'] = '가시덤불 골짜기 낚시왕 선발대회', ['Y'] = "순례자의 감사절", ['Z'] = "한겨울 축제 주간", ['a'] = '에펙시스 보너스 이벤트', ['b'] ='투기장 연습 전투 보너스 이벤트', ['c'] = '전장 보너스 이벤트', ['d'] = '드레노어 던전 이벤트', ['e'] = '애완동물 대전 보너스 이벤트', ['f'] = '시간여행 던전 이벤트', ['Q'] = "AQ", }
 
@@ -12170,7 +12175,7 @@ elseif locale == "koKR" then
 elseif locale == "ptBR" then
 	me.bodyGuardLevel = { 'Guarda-costas', 'Guarda-costas de Confiança', 'Copiloto Pessoal' }
 	me.friendshipLevel = { 'Estranho', 'Conhecido', 'Camarada', 'Amigo', 'Bom Amigo', 'Grande Amigo' }
-	me.friendshipMawLevel = { 'Indecisão', 'Apreensão', 'Hesitação', 'Ambivalência', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { 'Indecisão', 'Apreensão', 'Hesitação', 'Ambivalência', 'Cordialidade', 'Appreciative' }
 
 me.holidayMapping = { ['A'] = "O Amor Está No Ar", ['B'] = 'CervaFest', ['C'] = "Semana das Crianças", ['D'] = 'Dia dos Mortos', ['E'] = 'WoW Anniversary', ['F'] = 'Feira de Negraluna', ['H'] = 'Festival da Colheita', ['K'] = "Campeonato de Pesca dos Kalu'ak", ['L'] = 'Festival da Lua', ['M'] = "Festival do Fogo do Solsticio", ['N'] = 'Jardinova', ['P'] = "Dia dos Piratas", ['U'] = 'New Year', ['V'] = "Festa do Véu de Inverno", ['W'] = "Noturnália", ['X'] = 'Stranglethorn Fishing Extravaganza', ['Y'] = "Festa da Fartura", ['Z'] = "Semana Natalina", ['a'] = 'Evento Bônus de Apexis', ['b'] ='Evento Bônus de Escaramuças da Arena', ['c'] = 'Evento Bônus de Campos de Batalha', ['d'] = 'Evento das Masmorras de Draenor', ['e'] = 'Evento Bônus de Batalha de Mascotes', ['f'] = 'Evento das Masmorras de Caminhada Temporal', ['Q'] = "AQ", }
 
@@ -12216,7 +12221,7 @@ me.professionMapping = {
 elseif locale == "ruRU" then
 	me.bodyGuardLevel = { 'Телохранитель', 'Доверенный боец', 'Боевой товарищ' }
 	me.friendshipLevel = { 'Незнакомец', 'Знакомый', 'Приятель', 'Друг', 'Хороший друг', 'Лучший друг' }
-	me.friendshipMawLevel = { 'Сомнения', 'Опасения', 'Настороженность', 'Безразличие', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { 'Сомнения', 'Опасения', 'Настороженность', 'Безразличие', 'Сердечность', 'Appreciative' }
 
 	me.holidayMapping = { ['A'] = 'Любовная лихорадка', ['B'] = 'Хмельной фестиваль', ['C'] = "Детская неделя", ['D'] = 'День мертвых', ['E'] = 'WoW Anniversary', ['F'] = 'Ярмарка Новолуния', ['H'] = 'Неделя урожая', ['K'] = "Калуакское рыбоборье", ['L'] = 'Лунный фестиваль', ['M'] = 'Огненный солнцеворот', ['N'] = 'Сад чудес', ['P'] = "День пирата", ['U'] = 'Канун Нового Года', ['V'] = 'Зимний Покров', ['W'] = "Тыквовин", ['X'] = 'Рыбная феерия Тернистой долины', ['Y'] = "Пиршество странников", ['Z'] = "Рождественская неделя", ['a'] = 'Событие: бонус к апекситовым кристаллам', ['b'] ='Событие: бонус за стычки на арене', ['c'] = 'Событие: бонус на полях боя', ['d'] = 'Событие: подземелья Дренора', ['e'] = 'Событие: бонус за битвы питомцев', ['f'] = 'Событие: путешествие во времени по подземельям', ['Q'] = "AQ", }
 
@@ -12253,7 +12258,7 @@ elseif locale == "ruRU" then
 elseif locale == "zhCN" then
 	me.bodyGuardLevel = { '保镖', '贴身保镖', '亲密搭档' }
 	me.friendshipLevel = { 'Stranger', 'Acquaintance', 'Buddy', 'Friend', 'Good Friend', '挚友' }
-	me.friendshipMawLevel = { '猜忌', '防备', '犹豫', '纠结', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { '猜忌', '防备', '犹豫', '纠结', '和善', 'Appreciative' }
 	me.holidayMapping = { ['A'] = '情人节', ['B'] = '美酒节', ['C'] = "儿童周", ['D'] = '死人节', ['E'] = 'WoW Anniversary', ['F'] = '暗月马戏团', ['H'] = '收获节', ['K'] = "Tournoi de pêche kalu'ak", ['L'] = '春节', ['M'] = '仲夏火焰节', ['N'] = '复活节', ['P'] = "海盗日", ['U'] = '除夕夜', ['V'] = '冬幕节', ['W'] = "万圣节", ['X'] = '荆棘谷钓鱼大赛', ['Y'] = "感恩节", ['Z'] = "圣诞周", ['a'] = '埃匹希斯假日活动', ['b'] ='竞技场练习赛假日活动', ['c'] = '战场假日活动', ['d'] = '德拉诺地下城活动', ['e'] = '宠物对战假日活动', ['f'] = '时空漫游地下城活动', ['Q'] = "AQ", }
 
 	me.professionMapping = { ['A'] = '炼金术', ['B'] = '锻造', ['C'] = '烹饪', ['E'] = '附魔', ['F'] = '钓鱼', ['H'] = '草药学', ['I'] = '铭文', ['J'] = '珠宝加工', ['L'] = '制皮', ['M'] = '采矿', ['N'] = '工程学', ['R'] = '骑术', ['S'] = '剥皮', ['T'] = '裁缝', ['X'] = '考古学', ['Z'] = '急救', }
@@ -12289,7 +12294,7 @@ elseif locale == "zhCN" then
 elseif locale == "zhTW" then
 	me.bodyGuardLevel = { '保鏢', '信任的保鑣', '個人的搭檔' }
 	me.friendshipLevel = { '陌生人', '熟識', '夥伴', '朋友', '好朋友', '最好的朋友' }
-	me.friendshipMawLevel = { '懷疑', '不安', '猶豫', '籠統', 'Cordial', 'Appreciative' }
+	me.friendshipMawLevel = { '懷疑', '不安', '猶豫', '籠統', '友善', 'Appreciative' }
 
 	me.holidayMapping = { ['A'] = '愛就在身邊', ['B'] = '啤酒節', ['C'] = "兒童週", ['D'] = '亡者節', ['E'] = 'WoW Anniversary', ['F'] = '暗月馬戲團', ['H'] = '收穫節', ['K'] = "卡魯耶克釣魚大賽", ['L'] = '新年慶典', ['M'] = '仲夏火焰節慶', ['N'] = '貴族花園', ['P'] = "海賊日", ['U'] = '除夕夜', ['V'] = '冬幕節', ['W'] = "萬鬼節", ['X'] = '荊棘谷釣魚大賽', ['Y'] = "旅人豐年祭", ['Z'] = "聖誕週", ['a'] = '頂尖獎勵事件', ['b'] ='競技場練習戰獎勵事件', ['c'] = '戰場獎勵事件', ['d'] = '德拉諾地城事件', ['e'] = '寵物對戰獎勵事件', ['f'] = '時光漫遊地城事件', ['Q'] = "AQ", }
 

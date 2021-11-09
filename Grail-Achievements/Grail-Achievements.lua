@@ -155,7 +155,7 @@ Grail.extraAchievements = {
 		[mapArgus] = { 512066, 512073, },
 		[mapZandalar] = { 512771, 512849, 512851, },
 		[mapKulTiras] = { 512510, 512853, 512852, 512995, },
-		[mapShadowlands] = { 514801, 514800, 514799, 514798, 513997, 514234, 514282, },
+		[mapShadowlands] = { 514801, 514800, 514799, 514798, 513997, 514234, 514282, 514961, },
 		},
 	[factionHorde] = {
 		[mapKalimdor] = { 504961, 505859, 505866, },
@@ -169,7 +169,7 @@ Grail.extraAchievements = {
 		[mapArgus] = { 512066, 512073, },
 		[mapZandalar] = { 512555, 512771, 512849, 512851, },
 		[mapKulTiras] = { 512509, 512853, 512852, 512995, },
-		[mapShadowlands] = { 514801, 514800, 514799, 514798, 513997, 514234, 514282, },
+		[mapShadowlands] = { 514801, 514800, 514799, 514798, 513997, 514234, 514282, 514961, },
 		},
 	}
 
@@ -7274,6 +7274,15 @@ G[60906]={514801}	-- The Spear of Kallipe (Sojourner of Bastion) (Bastion) (Shad
 G[61107]={514281}	-- A Land of Strife (The Path to Ascension) (Bastion) (Shadownlands)
 G[62557]={514234}	-- The Bell Tolls (Bastion Campaign) (Bastion) Shadowlands
 G[62921]={513997}	-- Sinfall (Venthyr Campaign) (Revendreth) (Shadowlands)
+G[63593]={514961}	-- A New Path (Chains of Dominion) (Shadowlands 9.1)
+G[63622]={514961}	-- An Army of Bone and Steel (Chains of Dominion) (Shadowlands 9.1)
+G[63639]={514961}	-- Battle of Adenweald (Chains of Dominion) (Shadowlands 9.1)
+G[63656]={514961}	-- The Unseen Guests (Chains of Dominion) (Shadowlands 9.1)
+G[63727]={514961}	-- The Last Sigil (Chains of Dominion) (Shadowlands 9.1)
+G[63902]={514961}	-- Focusing the Eye (Chains of Dominion) (Shadowlands 9.1)
+G[64314]={514961}	-- What Lies Ahead (Chains of Dominion) (Shadowlands 9.1)
+G[64437]={514961}	-- The Power of Night (Chains of Dominion) (Shadowlands 9.1)
+G[64556]={514961}	-- Maw Walkers (Chains of Dominion) (Shadowlands 9.1)
 
 Grail.timings.AchievementsInitialSetup = debugprofilestop() - debugStartTime
 debugStartTime = debugprofilestop()

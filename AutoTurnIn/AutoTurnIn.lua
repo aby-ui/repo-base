@@ -142,7 +142,9 @@ function AutoTurnIn:RegisterGossipEvents()
 	self:RegisterEvent("QUEST_COMPLETE")
 	self:RegisterEvent("QUEST_LOG_UPDATE")
 	self:RegisterEvent("QUEST_ACCEPTED")
-	if AutoTurnInCharacterDB.reviveBattlePet and select(2, UnitClass("player")) == "HUNTER" then self:RegisterEvent("GOSSIP_CONFIRM") end
+	if AutoTurnInCharacterDB.reviveBattlePet --[[ and select(2, UnitClass("player")) == "HUNTER" ]] then 
+		self:RegisterEvent("GOSSIP_CONFIRM") 
+	end
 	
 	local gossipFunc1 = function() AutoTurnIn:Print(L["ivechosen"]); C_GossipInfo.SelectOption(1) end
 	local gossipFunc2 = function() if (C_GossipInfo.GetNumOptions() == 2) then C_GossipInfo.SelectOption(1) end end
@@ -179,7 +181,7 @@ end
 function AutoTurnIn:QUEST_LOG_UPDATE()
 	if ( C_QuestLog.GetNumQuestLogEntries() > 0 ) then
 		for index=1, C_QuestLog.GetNumQuestLogEntries() do
-			local questInfo = C_QuestLog.GetInfo(index)
+			local questInfo = C_QuestLog.GetInfo(index)			
 			if (questInfo and not questInfo.isHeader and self:_isDaily(questInfo.frequency)) then
 				self.questCache[questInfo.title] = true
 			end
@@ -201,6 +203,8 @@ function AutoTurnIn:isAppropriate(questname, byCache)
     else
         daily = (QuestIsDaily() or QuestIsWeekly())
     end
+
+
     return self:_isAppropriate(daily)
 end
 

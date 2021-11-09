@@ -1,7 +1,6 @@
 -------------------------------------------------------------------------------
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
-
 local ADDON_NAME, ns = ...
 local Class = ns.Class
 
@@ -17,9 +16,26 @@ Base class for all node requirements.
 
 --]]
 
-local Requirement = Class('Requirement', nil, { text = UNKNOWN })
+local Requirement = Class('Requirement', nil, {text = UNKNOWN})
 function Requirement:GetText() return self.text end
 function Requirement:IsMet() return false end
+
+-------------------------------------------------------------------------------
+--------------------------------- ACHIEVEMENT ---------------------------------
+-------------------------------------------------------------------------------
+
+local Achievement = Class('Achievement', Requirement)
+
+function Achievement:Initialize(id)
+    self.id = id
+    self.text = string.format('{achievement:%d}', self.id)
+end
+
+function Achievement:IsMet()
+    local _, _, _, completed = GetAchievementInfo(self.id)
+
+    return completed
+end
 
 -------------------------------------------------------------------------------
 ---------------------------------- CURRENCY -----------------------------------
@@ -43,9 +59,7 @@ end
 
 local GarrisonTalent = Class('GarrisonTalent', Requirement)
 
-function GarrisonTalent:Initialize(id, text)
-    self.id, self.text = id, text
-end
+function GarrisonTalent:Initialize(id, text) self.id, self.text = id, text end
 
 function GarrisonTalent:GetText()
     local info = C_Garrison.GetTalentInfo(self.id)
@@ -67,12 +81,43 @@ function Item:Initialize(id, count)
     self.id, self.count = id, count
     self.text = string.format('{item:%d}', self.id)
     if self.count and self.count > 1 then
-        self.text = self.text..' x'..self.count
+        self.text = self.text .. ' x' .. self.count
     end
 end
 
-function Item:IsMet()
-    return ns.PlayerHasItem(self.id, self.count)
+function Item:IsMet() return ns.PlayerHasItem(self.id, self.count) end
+
+-------------------------------------------------------------------------------
+------------------------------------ QUEST ------------------------------------
+-------------------------------------------------------------------------------
+
+local Quest = Class('Quest', Requirement)
+
+function Quest:Initialize(id) self.id = id end
+
+function Quest:GetText() return C_QuestLog.GetTitleForQuestID(self.id) end
+
+function Quest:IsMet() return C_QuestLog.IsQuestFlaggedCompleted(self.id) end
+
+-------------------------------------------------------------------------------
+--------------------------------- REPUTATION ----------------------------------
+-------------------------------------------------------------------------------
+
+local Reputation = Class('Reputation', Requirement)
+
+-- @todo will cause problems when requiring lower / negative reputations. Maybe add comparison as optional parameter with default value '>='.
+function Reputation:Initialize(id, level) self.id, self.level = id, level end
+
+function Reputation:GetText()
+    local name = GetFactionInfoByID(self.id)
+    local level = GetText('FACTION_STANDING_LABEL' .. self.level)
+    return string.format(name .. ' (' .. level .. ')')
+end
+
+function Reputation:IsMet()
+    local _, _, standingID = GetFactionInfoByID(self.id)
+
+    return standingID >= self.level
 end
 
 -------------------------------------------------------------------------------
@@ -101,16 +146,21 @@ end
 
 local WarMode = Class('WarMode', Requirement, {
     text = PVP_LABEL_WAR_MODE,
-    IsMet = function () return C_PvP.IsWarModeActive() or C_PvP.IsWarModeDesired() end
+    IsMet = function()
+        return C_PvP.IsWarModeActive() or C_PvP.IsWarModeDesired()
+    end
 })()
 
 -------------------------------------------------------------------------------
 
 ns.requirement = {
-    Currency=Currency,
-    GarrisonTalent=GarrisonTalent,
-    Item=Item,
-    Requirement=Requirement,
-    Spell=Spell,
-    WarMode=WarMode
+    Achievement = Achievement,
+    Currency = Currency,
+    GarrisonTalent = GarrisonTalent,
+    Item = Item,
+    Quest = Quest,
+    Reputation = Reputation,
+    Requirement = Requirement,
+    Spell = Spell,
+    WarMode = WarMode
 }

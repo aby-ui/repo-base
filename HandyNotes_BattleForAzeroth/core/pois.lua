@@ -1,15 +1,14 @@
 -------------------------------------------------------------------------------
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
-
 local ADDON_NAME, ns = ...
 local Class = ns.Class
 local HBD = LibStub('HereBeDragons-2.0')
 
 local ADDON_NAME2 = "HandyNotes_Shadowlands"
-local ARROW = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\arrow"
-local CIRCLE = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\circle"
-local LINE = "Interface\\AddOns\\"..ADDON_NAME2.."\\core\\artwork\\line"
+local ARROW = 'Interface\\AddOns\\' .. ADDON_NAME2 .. '\\core\\artwork\\arrow'
+local CIRCLE = 'Interface\\AddOns\\' .. ADDON_NAME2 .. '\\core\\artwork\\circle'
+local LINE = 'Interface\\AddOns\\' .. ADDON_NAME2 .. '\\core\\artwork\\line'
 
 -------------------------------------------------------------------------------
 
@@ -34,13 +33,48 @@ local POI = Class('POI')
 
 function POI:Initialize(attrs)
     for k, v in pairs(attrs) do self[k] = v end
+
+    -- normalize table values
+    self.quest = ns.AsTable(self.quest)
+    self.questDeps = ns.AsTable(self.questDeps)
+end
+
+function POI:IsCompleted()
+    if self.quest and self.questAny then
+        -- Completed if *any* attached quest ids are true
+        for i, quest in ipairs(self.quest) do
+            if C_QuestLog.IsQuestFlaggedCompleted(quest) then
+                return true
+            end
+        end
+    elseif self.quest then
+        -- Completed only if *all* attached quest ids are true
+        for i, quest in ipairs(self.quest) do
+            if not C_QuestLog.IsQuestFlaggedCompleted(quest) then
+                return false
+            end
+        end
+        return true
+    end
+    return false
+end
+
+function POI:IsEnabled()
+    -- Not enabled if any dependent quest ids are false
+    if self.questDeps then
+        for i, quest in ipairs(self.questDeps) do
+            if not C_QuestLog.IsQuestFlaggedCompleted(quest) then
+                return false
+            end
+        end
+    end
+
+    return not self:IsCompleted()
 end
 
 function POI:Render(map, template)
     -- draw a circle at every coord
-    for i=1, #self, 1 do
-        map:AcquirePin(template, self, self[i])
-    end
+    for i = 1, #self, 1 do map:AcquirePin(template, self, self[i]) end
 end
 
 function POI:Draw(pin, xy)
@@ -75,9 +109,7 @@ function Glow:Draw(pin, xy)
 
     t:SetTexture(self.icon)
 
-    if self.r then
-        t:SetVertexColor(self.r, self.g, self.b, self.a or 0.5)
-    end
+    if self.r then t:SetVertexColor(self.r, self.g, self.b, self.a or 0.5) end
 
     pin.frameOffset = 1
     if pin.SetScalingLimits then -- World map only!
@@ -96,10 +128,10 @@ local Path = Class('Path', POI)
 
 function Path:Render(map, template)
     -- draw a circle at every coord and a line between them
-    for i=1, #self, 1 do
+    for i = 1, #self, 1 do
         map:AcquirePin(template, self, CIRCLE, self[i])
         if i < #self then
-            map:AcquirePin(template, self, LINE, self[i], self[i+1])
+            map:AcquirePin(template, self, LINE, self[i], self[i + 1])
         end
     end
 end
@@ -129,22 +161,22 @@ function Path:Draw(pin, type, xy1, xy2)
             local mapID = HBD:GetPlayerZone()
             local wx1, wy1 = HBD:GetWorldCoordinatesFromZone(x1, y1, mapID)
             local wx2, wy2 = HBD:GetWorldCoordinatesFromZone(x2, y2, mapID)
-            local wmapDistance = sqrt((wx2-wx1)^2 + (wy2-wy1)^2)
+            local wmapDistance = sqrt((wx2 - wx1) ^ 2 + (wy2 - wy1) ^ 2)
             local mmapDiameter = C_Minimap:GetViewRadius() * 2
             line_length = Minimap:GetWidth() * (wmapDistance / mmapDiameter)
-            pin.rotation = -math.atan2(wy2-wy1, wx2-wx1)
+            pin.rotation = -math.atan2(wy2 - wy1, wx2 - wx1)
         else
             local x1p = x1 * pin.parentWidth
             local x2p = x2 * pin.parentWidth
             local y1p = y1 * pin.parentHeight
             local y2p = y2 * pin.parentHeight
-            line_length = sqrt((x2p-x1p)^2 + (y2p-y1p)^2)
-            pin.rotation = -math.atan2(y2p-y1p, x2p-x1p)
+            line_length = sqrt((x2p - x1p) ^ 2 + (y2p - y1p) ^ 2)
+            pin.rotation = -math.atan2(y2p - y1p, x2p - x1p)
         end
         pin:SetSize(line_length, line_width)
         pin.texture:SetRotation(pin.rotation)
 
-        return (x1+x2)/2, (y1+y2)/2
+        return (x1 + x2) / 2, (y1 + y2) / 2
     end
 end
 
@@ -162,24 +194,24 @@ function Line:Initialize(attrs)
     local x2, y2 = HandyNotes:getXY(self[2])
 
     -- find an appropriate number of segments
-    self.distance = sqrt(((x2-x1) * 1.85)^2 + (y2-y1)^2)
+    self.distance = sqrt(((x2 - x1) * 1.85) ^ 2 + (y2 - y1) ^ 2)
     self.segments = floor(self.distance / 0.015)
 
     self.path = {}
-    for i=0, self.segments, 1 do
-        self.path[#self.path + 1] = HandyNotes:getCoord(
-            x1 + (x2-x1) / self.segments * i,
-            y1 + (y2-y1) / self.segments * i
-        )
+    for i = 0, self.segments, 1 do
+        local segX = x1 + (x2 - x1) / self.segments * i
+        local segY = y1 + (y2 - y1) / self.segments * i
+        self.path[#self.path + 1] = HandyNotes:getCoord(segX, segY)
     end
 end
 
 function Line:Render(map, template)
     if map.minimap then
-        for i=1, #self.path, 1 do
+        for i = 1, #self.path, 1 do
             map:AcquirePin(template, self, CIRCLE, self.path[i])
             if i < #self.path then
-                map:AcquirePin(template, self, LINE, self.path[i], self.path[i+1])
+                map:AcquirePin(template, self, LINE, self.path[i],
+                    self.path[i + 1])
             end
         end
     else
@@ -218,13 +250,13 @@ function Arrow:Draw(pin, type, xy1, xy2)
         local mapID = HBD:GetPlayerZone()
         local wx1, wy1 = HBD:GetWorldCoordinatesFromZone(x1, y1, mapID)
         local wx2, wy2 = HBD:GetWorldCoordinatesFromZone(x2, y2, mapID)
-        pin.rotation = -math.atan2(wy2-wy1, wx2-wx1) + (math.pi / 2)
+        pin.rotation = -math.atan2(wy2 - wy1, wx2 - wx1) + (math.pi / 2)
     else
         local x1p = x1 * pin.parentWidth
         local x2p = x2 * pin.parentWidth
         local y1p = y1 * pin.parentHeight
         local y2p = y2 * pin.parentHeight
-        pin.rotation = -math.atan2(y2p-y1p, x2p-x1p) - (math.pi / 2)
+        pin.rotation = -math.atan2(y2p - y1p, x2p - x1p) - (math.pi / 2)
     end
     pin.texture:SetRotation(pin.rotation)
 
@@ -233,10 +265,4 @@ end
 
 -------------------------------------------------------------------------------
 
-ns.poi = {
-    POI=POI,
-    Glow=Glow,
-    Path=Path,
-    Line=Line,
-    Arrow=Arrow
-}
+ns.poi = {POI = POI, Glow = Glow, Path = Path, Line = Line, Arrow = Arrow}

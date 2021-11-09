@@ -418,6 +418,14 @@
 --			Adds the ability to display custom achivements Grail supports.
 --		083	Adds the ability to display the expansion associated with the quest.
 --			Changes interface to 90005 (and 20501 for Classic Burning Crusade).
+--		084 *** Requires Grail 116 or later ***
+--			Switched to a unified addon for all of Blizzard's releases.
+--			Enables displaying a requirement of a renown level independent of covenant.
+--			Transforms the Wholly map button into one with just "W" and puts it at the top left of the map.
+--			Reintroduces some ability to filter Blizzard map pins in Retail.
+--			Changes retail interface to 90100.
+--		085	Updates _OnUpdate to ensure coordinates are returned before updating locations.
+--			Changes retail interface to 90105, BCC to 20502 and Classic to 11400.
 --
 --	Known Issues
 --
@@ -474,7 +482,7 @@ local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 114
+local requiredGrailVersion = 116
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -491,6 +499,10 @@ BINDING_NAME_WHOLLY_TOGGLESHOWUNOBTAINABLES = "Toggle shows unobtainables"
 BINDING_NAME_WHOLLY_TOGGLESHOWCOMPLETED = "Toggle shows completed"
 BINDING_NAME_WHOLLY_TOGGLESHOWWORLDQUESTS = "Toggle shows World Quests"
 BINDING_NAME_WHOLLY_TOGGLESHOWLOREMASTER = "Toggle shows Loremaster quests"
+BINDING_NAME_WHOLLY_TOGGLESHOWMAPFLIGHTPOINTS = "Toggle shows Blizzard flight points"
+BINDING_NAME_WHOLLY_TOGGLESHOWMAPCALLINGQUESTS = "Toggle shows Blizzard calling quests"
+BINDING_NAME_WHOLLY_TOGGLESHOWMAPCAMPAIGNQUESTS = "Toggle shows Blizzard campaign quests"
+BINDING_NAME_WHOLLY_TOGGLESHOWMAPWORLDQUESTS = "Toggle shows Blizzard world quests"
 
 if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 
@@ -599,20 +611,33 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 		configurationScript16 = function(self)
 --									WorldMapFrame_Update()
 								end,
+		ToggleWorldMapFrameMixin = function(provider, shouldHide)
+			local mixins = Wholly.GetMapProvidersForMixin(WorldMapFrame, provider)
+			if nil ~= mixins then
+				Wholly.mixinsRefreshAllData = Wholly.mixinsRefreshAllData or {} 	-- key is the provider, value is its original implementation of RefreshAllData
+				if nil == Wholly.mixinsRefreshAllData[provider] then
+					Wholly.mixinsRefreshAllData[provider] = provider.RefreshAllData
+				end
+				for _, mixin in pairs(mixins) do
+					if shouldHide then
+						mixin.RefreshAllData = function(fromOnShow) end
+						mixin:RemoveAllData()
+					else
+						mixin.RefreshAllData = Wholly.mixinsRefreshAllData[provider]
+						mixin:RefreshAllData(false)
+					end
+				end
+			end
+		end,
 		configurationScript17 = function(self)
---									WorldMap_UpdateQuestBonusObjectives()
---	The following technique does not seem to work as expected.
-									if WhollyDatabase.hidesBlizzardWorldMapBonusObjectives then
-										Wholly.WorldQuestDataProviderMixin_RefreshAllData = WorldQuestDataProviderMixin.RefreshAllData
-										WorldQuestDataProviderMixin.RefreshAllData = function() end
-										WorldQuestDataProviderMixin:RemoveAllData()
-									else
-										if nil ~= Wholly.WorldQuestDataProviderMixin_RefreshAllData then
-											WorldQuestDataProviderMixin.RefreshAllData = Wholly.WorldQuestDataProviderMixin_RefreshAllData
-											WorldQuestDataProviderMixin:RefreshAllData()
-											Wholly.WorldQuestDataProviderMixin_RefreshAllData = nil
-										end
-									end
+									-- Flight points are handled by FlightPointDataProviderMixin
+									-- Calling quests are handled by BonusObjectiveDataProviderMixin
+									-- Campaign (storyline) quests are handled by StorylineQuestDataProviderMixin
+									-- World quests are handled by WorldQuestDataProviderMixin
+									-- there is Blizzard UI to remove quest objectives, and world quests (albeit by reward)
+									-- DO NOT KNOW the following: InvasionDataProviderMixin
+									-- TODO: See whether there are other items we can remove from the map - dungeon entrances, treasures, teleportation hubs
+									-- DungeonEntranceDataProviderMixin DOES NOT seem to control dungeon entrances
 								end,
 		configurationScript18 = function(self)
 									Wholly:_InitializeLevelOneData()
@@ -622,6 +647,22 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 									Wholly.pinsNeedFiltering = true
 									Wholly:_UpdatePins()
 									Wholly:clearNPCTooltipData()
+								end,
+		configurationScript19 = function(self)
+									Wholly.ToggleWorldMapFrameMixin(FlightPointDataProviderMixin, WhollyDatabase.hidesWorldMapFlightPoints)
+								end,
+		configurationScript20 = function(self)
+									Wholly.ToggleWorldMapFrameMixin(BonusObjectiveDataProviderMixin, WhollyDatabase.hidesBlizzardWorldMapCallingQuests)
+								end,
+		configurationScript21 = function(self)
+									Wholly.ToggleWorldMapFrameMixin(StorylineQuestDataProviderMixin, WhollyDatabase.hidesBlizzardWorldMapCampaignQuests)
+								end,
+		configurationScript22 = function(self)
+									Wholly.ToggleWorldMapFrameMixin(WorldQuestDataProviderMixin, WhollyDatabase.hidesBlizzardWorldMapWorldQuests)
+								end,
+		configurationScript23 = function(self)
+--									Wholly.ToggleWorldMapFrameMixin(DungeonEntranceDataProviderMixin, WhollyDatabase.hidesDungeonEntrances)
+--									Wholly.ToggleWorldMapFrameMixin(VignetteDataProviderMixin, WhollyDatabase.hidesWorldMapTreasures)
 								end,
 		coordinates = nil,
 		currentFrame = nil,
@@ -763,6 +804,21 @@ com_mithrandir_whollyFrameWideSwitchZoneButton:SetText(self.s.MAP)
 
 					-- load all the localized quest names
 					Grail:LoadLocalizedQuestNames()
+
+					-- Add some options based on game capabilities (which basically means version (retail vs classic))
+					local S = Wholly.s
+					if Grail.capabilities.usesFlightPoints then
+						tinsert(Wholly.configuration[S.WORLD_MAP], { S.HIDE_WORLD_MAP_FLIGHT_POINTS, 'hidesWorldMapFlightPoints', 'configurationScript19' })
+					end
+					if Grail.capabilities.usesCallingQuests then
+						tinsert(Wholly.configuration[S.WORLD_MAP], { S.HIDE_BLIZZARD_WORLD_MAP_CALLING_QUESTS, 'hidesBlizzardWorldMapCallingQuests', 'configurationScript20' })
+					end
+					if Grail.capabilities.usesCampaignQuests then
+						tinsert(Wholly.configuration[S.WORLD_MAP], { S.HIDE_BLIZZARD_WORLD_MAP_CAMPAIGN_QUESTS, 'hidesBlizzardWorldMapCampaignQuests', 'configurationScript21' })
+					end
+					if Grail.capabilities.usesWorldQuests then
+						tinsert(Wholly.configuration[S.WORLD_MAP], { S.HIDE_BLIZZARD_WORLD_MAP_WORLD_QUESTS, 'hidesBlizzardWorldMapWorldQuests', 'configurationScript22' })
+					end
 
 					-- Setup the preferences
 --					local com_mithrandir_whollyConfigFrame = CreateFrame("Frame", nil, InterfaceOptionsFramePanelContainer)
@@ -913,6 +969,12 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 --					if WDB.loadRewardData then
 --						self.configurationScript15()
 --					end
+
+					-- Execute the configurationScript appropriate for setting up specific WorldMapFrame settings
+					if Grail.capabilities.usesFlightPoints then self.configurationScript19() end
+					if Grail.capabilities.usesCallingQuests then self.configurationScript20() end
+					if Grail.capabilities.usesCampaignQuests then self.configurationScript21() end
+					if Grail.capabilities.usesWorldQuests then self.configurationScript22() end
 
 					-- We steal the TomTom:RemoveWaypoint() function because we want to override it ourselves
 					if TomTom and TomTom.RemoveWaypoint then
@@ -1155,6 +1217,9 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			['HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES'] = 'Hide Blizzard bonus objectives',
 			['HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS'] = 'Hide Blizzard quest map pins',
 			['HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES'] = 'Hide Blizzard dungeon entrances',
+			['HIDE_BLIZZARD_WORLD_MAP_CALLING_QUESTS'] = 'Hide Blizzard calling quests',
+			['HIDE_BLIZZARD_WORLD_MAP_CAMPAIGN_QUESTS'] = 'Hide Blizzard campaign quests',
+			['HIDE_BLIZZARD_WORLD_MAP_WORLD_QUESTS'] = 'Hide Blizzard world quests',
 			},
 		tooltip = nil,
 		updateDelay = 0.5,
@@ -2577,7 +2642,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			self.lastUpdate = self.lastUpdate + elapsed
 			if self.lastUpdate < self.updateThreshold then return end
 			local x, y = Grail.GetPlayerMapPosition('player')
-			if self.previousX ~= x or self.previousY ~= y then
+			if x and y and (self.previousX ~= x or self.previousY ~= y) then
 				if nil ~= self.coordinates then
 					self.coordinates.text = strformat("%.2f, %.2f", x * 100, y * 100)
 				end
@@ -2746,10 +2811,10 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			elseif questCode == '&' then
 				local message = format(REQUIRES_AZERITE_LEVEL_TOOLTIP, numeric)
 				return format("|c%s%s|r", colorCode, message)
-			elseif questCode == '$' then
-				return format("|c%s%s - %s|r", colorCode, LANDING_PAGE_RENOWN_LABEL, C_Covenants.GetCovenantData(subcode).name or "???", numeric)
-			elseif questCode == '*' then
-				return format("|c%s%s - %s <|r", colorCode, LANDING_PAGE_RENOWN_LABEL, C_Covenants.GetCovenantData(subcode).name or "???", numeric)
+			elseif questCode == '$' or questCode == '*' then
+				local covenantNameToDisplay = (0 == subcode) and "" or C_Covenants.GetCovenantData(subcode).name or "???"
+				local comparisonToDisplay = (questCode == '*') and " <" or ""
+				return format("|c%s%s - %s%s|r", colorCode, LANDING_PAGE_RENOWN_LABEL, covenantNameToDisplay, comparisonToDisplay, numeric)
 			elseif questCode == '%' then
 				return format("|c%s%s|r", colorCode, self:_QuestName(400000 + numeric))
 			else
@@ -4087,12 +4152,46 @@ end
 		_SetupWorldMapWhollyButton = function(self)
 			local parentFrame = Grail.existsClassic and WorldMapFrame or WorldMapFrame.BorderFrame
 			local f = CreateFrame("Button", "WhollyMapButton", parentFrame, "UIPanelButtonTemplate")
-			f:SetSize(100, 25)
+			--f:SetSize(100, 25)
+			f:SetSize(24, 22)
 			f:SetToplevel(true)
-            --f:SetFrameLevel(WorldMapTitleButton:GetFrameLevel()+1)
 			if not Grail.existsClassic then
 				f:SetScale(0.7)
 			end
+--			f:SetText("Wholly")
+			f:SetText("W")
+			if Grail.existsClassic then
+				f:SetFrameLevel(10)
+				f:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame, "TOPLEFT", 5, -37)
+			else
+				f:SetPoint("TOPLEFT", WorldMapFrameHomeButton, "BOTTOMLEFT", -25, 25)
+			end
+--			f:SetScript("OnShow", function(self)
+--				if Gatherer_WorldMapDisplay then
+--					self:SetPoint("TOPLEFT", Gatherer_WorldMapDisplay, "TOPRIGHT", 4, 0)
+--				elseif Questie_Toggle then
+--					self:SetPoint("TOPRIGHT", Questie_Toggle, "TOPLEFT", -8, 2)
+--				elseif TitanMapCursorLocation then
+--					self:SetPoint("TOPLEFT", TitanMapCursorLocation, "TOPRIGHT", 10, 6)
+--				elseif Grail.existsClassic then
+--					self:SetPoint("TOPRIGHT", WorldMapContinentDropDown, "TOPLEFT", 10, 0)
+--				elseif TomTomWorldFrame and TomTomWorldFrame.Player then
+--					self:SetPoint("TOPLEFT", TomTomWorldFrame.Player, "TOPRIGHT", 10, 6)
+--				else
+--					self:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame.Tutorial, "TOPRIGHT", 0, -30)
+--				end
+--			end)
+			f:SetScript("OnEnter", function(self)
+				local t = Wholly.tooltip
+				t:ClearLines()
+				t:SetOwner(self)
+				t:AddLine(Wholly.mapCountLine)
+				t:Show()
+				t:ClearAllPoints()
+				t:SetPoint("TOPLEFT", self, "BOTTOMRIGHT")
+			end)
+			f:SetScript("OnLeave", function(self) Wholly.tooltip:Hide() end)
+			f:SetSize(100, 25)
 			f:SetText("可接任务")
             f:RegisterForClicks("AnyUp");
 			f:SetScript("OnShow", function(self)
@@ -4109,17 +4208,7 @@ end
 				else
 					self:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame.Tutorial, "TOPRIGHT", 0, -30)
 				end
-			end)
-			f:SetScript("OnEnter", function(self)
-				local t = Wholly.tooltip
-				t:ClearLines()
-				t:SetOwner(self)
-				t:AddLine(Wholly.mapCountLine)
-				t:Show()
-				t:ClearAllPoints()
-				t:SetPoint("TOPLEFT", self, "BOTTOMRIGHT")
-			end)
-			f:SetScript("OnLeave", function(self) Wholly.tooltip:Hide() end)
+			end)						
             f:SetScript("OnClick", function(self, button) if button=='RightButton' then SlashCmdList["WHOLLY"]() Wholly:_OpenInterfaceOptions() else Wholly.pairedConfigurationButton:Click() end end)
 			f:Hide()
 			self.mapFrame = f
@@ -5709,11 +5798,10 @@ end
 		{ S.MAP_BUTTON, 'displaysMapFrame', 'configurationScript3' },
 		{ S.MAP_DUNGEONS, 'displaysDungeonQuests', 'configurationScript4' },
 		{ S.MAP_UPDATES, 'updatesWorldMapOnZoneChange', 'configurationScript1' },
---		{ S.HIDE_WORLD_MAP_FLIGHT_POINTS, 'hidesWorldMapFlightPoints', 'configurationScript16' },
 --		{ S.HIDE_BLIZZARD_WORLD_MAP_TREASURES, 'hidesWorldMapTreasures', 'configurationScript16' },
 --		{ S.HIDE_BLIZZARD_WORLD_MAP_BONUS_OBJECTIVES, 'hidesBlizzardWorldMapBonusObjectives', 'configurationScript17' },
 --		{ S.HIDE_BLIZZARD_WORLD_MAP_QUEST_PINS, 'hidesBlizzardWorldMapQuestPins', 'configurationScript16' },
---		{ S.HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES, 'hidesDungeonEntrances', 'configurationScript16' },
+--		{ S.HIDE_BLIZZARD_WORLD_MAP_DUNGEON_ENTRANCES, 'hidesDungeonEntrances', 'configurationScript23' },
 		}
 	Wholly.configuration[S.WIDE_PANEL] = {
 		{ S.WIDE_PANEL },
@@ -5818,5 +5906,16 @@ end
 --	end
 --end)
 --end
+
+Wholly.GetMapProvidersForMixin = function(mapCanvas, mixin)
+	local retval = {}
+    for provider in pairs(mapCanvas.dataProviders) do
+        if provider.RemoveAllData == mixin.RemoveAllData then
+			tinsert(retval, provider)
+        end
+    end
+    return retval
+end
+
 
 end

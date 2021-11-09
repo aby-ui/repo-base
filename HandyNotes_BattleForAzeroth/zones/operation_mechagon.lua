@@ -1,7 +1,6 @@
 -------------------------------------------------------------------------------
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
-
 local _, ns = ...
 local L = ns.locale
 local Class = ns.Class
@@ -15,17 +14,17 @@ ns.groups.MECH_BUFF = Group('mech_buffs')
 
 -------------------------------------------------------------------------------
 
-local map = Map({ id=1490, settings=true })
+local map = Map({id = 1490, settings = true})
 local nodes = map.nodes
 
 -------------------------------------------------------------------------------
 ---------------------------------- BUFF BOTS ----------------------------------
 -------------------------------------------------------------------------------
 
-local Buff = Class('Buff', NPC, {group=ns.groups.MECH_BUFF, scale=0.75})
-local GREASE = Buff({id=155911, icon=252178, note=L["grease_bot_note"]})
-local SHOCK = Buff({id=155909, icon=136099, note=L["shock_bot_note"]})
-local WELDING = Buff({id=155910, icon=134952, note=L["welding_bot_note"]})
+local Buff = Class('Buff', NPC, {group = ns.groups.MECH_BUFF, scale = 0.75})
+local GREASE = Buff({id = 155911, icon = 252178, note = L['grease_bot_note']})
+local SHOCK = Buff({id = 155909, icon = 136099, note = L['shock_bot_note']})
+local WELDING = Buff({id = 155910, icon = 134952, note = L['welding_bot_note']})
 
 nodes[56702140] = GREASE
 nodes[59103300] = GREASE
@@ -77,7 +76,7 @@ nodes[69405270] = WELDING
 nodes[71906280] = WELDING
 nodes[76005440] = WELDING
 
---nodes[67305350] = Clone(GREASE, {note=L["grease_bot_note"]..'\n'..L["cave_spawn"]})
---nodes[66905350] = Clone(SHOCK, {note=L["shock_bot_note"]..'\n'..L["cave_spawn"]})
---nodes[65605560] = Clone(WELDING, {note=L["welding_bot_note"]..'\n'..L["cave_spawn"]})
---nodes[69005310] = Clone(WELDING, {note=L["welding_bot_note"]..'\n'..L["cave_spawn"]})
+-- nodes[67305350] = Clone(GREASE, {note=L["grease_bot_note"]..'\n'..L["cave_spawn"]})
+-- nodes[66905350] = Clone(SHOCK, {note=L["shock_bot_note"]..'\n'..L["cave_spawn"]})
+-- nodes[65605560] = Clone(WELDING, {note=L["welding_bot_note"]..'\n'..L["cave_spawn"]})
+-- nodes[69005310] = Clone(WELDING, {note=L["welding_bot_note"]..'\n'..L["cave_spawn"]})

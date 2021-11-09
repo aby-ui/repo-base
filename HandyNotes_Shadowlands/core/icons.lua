@@ -1,18 +1,17 @@
 -------------------------------------------------------------------------------
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
-
 local ADDON_NAME, ns = ...
 
 -------------------------------------------------------------------------------
 -------------------------------- ICONS & GLOWS --------------------------------
 -------------------------------------------------------------------------------
 
-local ICONS = "Interface\\Addons\\"..ADDON_NAME.."\\core\\artwork\\icons"
-local GLOWS = "Interface\\Addons\\"..ADDON_NAME.."\\core\\artwork\\glows"
+local ICONS = 'Interface\\Addons\\' .. ADDON_NAME .. '\\core\\artwork\\icons'
+local GLOWS = 'Interface\\Addons\\' .. ADDON_NAME .. '\\core\\artwork\\glows'
 
-local function Icon(name) return ICONS..'\\'..name..'.blp' end
-local function Glow(name) return GLOWS..'\\'..name..'.blp' end
+local function Icon(name) return ICONS .. '\\' .. name .. '.blp' end
+local function Glow(name) return GLOWS .. '\\' .. name .. '.blp' end
 
 local DEFAULT_ICON = 454046
 local DEFAULT_GLOW = Glow('square_icon')
@@ -85,7 +84,7 @@ ns.icons = { -- name => path
     envelope = {Icon('envelope'), Glow('envelope')},
     left_mouse = {Icon('left_mouse'), nil},
     scroll = {Icon('scroll'), Glow('scroll')},
-    world_quest = {Icon('world_quest'), Glow('world_quest')},
+    world_quest = {Icon('world_quest'), Glow('world_quest')}
 
 }
 
@@ -100,11 +99,11 @@ local function GetIconPath(name)
 end
 
 local function GetIconLink(name, size, offsetX, offsetY)
-    local link = "|T"..GetIconPath(name)..":"..size..":"..size
+    local link = '|T' .. GetIconPath(name) .. ':' .. size .. ':' .. size
     if offsetX and offsetY then
-        link = link..':'..offsetX..':'..offsetY
+        link = link .. ':' .. offsetX .. ':' .. offsetY
     end
-    return link.."|t"
+    return link .. '|t'
 end
 
 local function GetGlowPath(name)

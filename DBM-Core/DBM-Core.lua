@@ -64,7 +64,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20211102143038"),
+	Revision = parseCurseDate("20211106100824"),
 }
 -- The string that is shown as version
 if isRetail then

@@ -1906,7 +1906,7 @@ function kspam.FilterSortedResult(results)
 	end
 end
 
-hooksecurefunc("LFGListUtil_SortSearchResults", kspam.OnSortResults)
+--hooksecurefunc("LFGListUtil_SortSearchResults", kspam.OnSortResults)
 
 local onClickBanButton = function(banButton)
 	local buttonObject =  banButton.MyObject
@@ -2039,7 +2039,7 @@ function kspam.OnUpdateButtonStatus(button)
 
 end
 
-hooksecurefunc("LFGListSearchEntry_Update", kspam.OnUpdateButtonStatus)
+--hooksecurefunc("LFGListSearchEntry_Update", kspam.OnUpdateButtonStatus)
 
 
 

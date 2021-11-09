@@ -168,5 +168,37 @@ end
 --oGlow TinyInspect TradeskillInfo
 MAX_GUILDBANK_SLOTS_PER_TAB = MAX_GUILDBANK_SLOTS_PER_TAB or 98;
 NUM_SLOTS_PER_GUILDBANK_GROUP = NUM_SLOTS_PER_GUILDBANK_GROUP or 14;
+
+--[[
+tooltip.layoutType = GameTooltip.layoutType
+NineSlicePanelMixin.OnLoad(tooltip.NineSlice)
+if GameTooltip.layoutType then
+    tooltip.NineSlice:SetCenterColor(GameTooltip.NineSlice:GetCenterColor())
+    tooltip.NineSlice:SetBorderColor(GameTooltip.NineSlice:GetBorderColor())
+end
+
+tooltip:SetBackdrop(GameTooltip:GetBackdrop())
+tooltip:SetBackdropColor(GameTooltip:GetBackdropColor())
+tooltip:SetBackdropBorderColor(GameTooltip:GetBackdropBorderColor())
+
+U1DeprecatedTooltipSetBackdropColor = function(tip, ...)
+    if tip.SetBackdropColor then
+        tip:SetBackdropColor(...)
+    elseif tip.NineSlice then
+        tip.NineSlice:SetCenterColor(...)
+    end
+end
+
+U1DeprecatedTooltipSetBackdropBorderColor = function(tip, ...)
+    if tip.SetBackdropBorderColor then
+        tip:SetBackdropBorderColor(...)
+    elseif tip.NineSlice then
+        tip.NineSlice:SetBorderColor(...)
+    end
+end
+--]]
+
+
 --DEBUG_MODE = true
+
 

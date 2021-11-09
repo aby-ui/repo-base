@@ -1,7 +1,6 @@
 -------------------------------------------------------------------------------
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
-
 local _, ns = ...
 
 -------------------------------------------------------------------------------
@@ -26,6 +25,8 @@ ns.color = {}
 ns.status = {}
 
 for name, color in pairs(ns.COLORS) do
-    ns.color[name] = function (t) return string.format('|c%s%s|r', color, t) end
-    ns.status[name] = function (t) return string.format('(|c%s%s|r)', color, t) end
+    ns.color[name] = function(t) return string.format('|c%s%s|r', color, t) end
+    ns.status[name] = function(t)
+        return string.format('(|c%s%s|r)', color, t)
+    end
 end

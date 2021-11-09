@@ -564,5 +564,10 @@ GTFO.SpellID["45402"] = {
   sound = 1;
 };
 
+GTFO.SpellID["45235"] = {
+  --desc = "Blaze (Grand Warlock Alythess)";
+  sound = 1;
+};
+
 
 end

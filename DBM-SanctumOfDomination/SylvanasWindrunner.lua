@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210827033851")
+mod:SetRevision("20211105180310")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3)
@@ -62,7 +62,7 @@ local warnLashingStrike								= mod:NewTargetNoFilterAnnounce(351179, 3)--Mawfo
 local warnCrushingDread								= mod:NewTargetAnnounce(351117, 2)--Mawforged Souljudge
 local warnSummonDecrepitOrbs						= mod:NewCountAnnounce(351353, 2)--Mawforged Summoner
 local warnCurseofLthargy							= mod:NewTargetAnnounce(351451, 2)--Mawforged Summoner
-local warnExpulsion									= mod:NewTargetNoFilterAnnounce(327796, 4)
+local warnExpulsion									= mod:NewTargetNoFilterAnnounce(351562, 4)
 --Stage Three: The Freedom of Choice
 local warnBansheesHeartseeker						= mod:NewCountAnnounce(353969, 2, nil, "Tank")
 local warnBansheesBane								= mod:NewTargetNoFilterAnnounce(353929, 4)

@@ -35,14 +35,14 @@ EO.CustomDisplay = {
     target = false,
     author = "Rhythm",
     desc = L["Show how many explosive orbs players target and hit."],
-    script_version = 10,
+    script_version = 11,
     script = [[
         local Combat, CustomContainer, Instance = ...
         local total, top, amount = 0, 0, 0
 
         if _G.Details_ExplosiveOrbs then
             local CombatNumber = Combat:GetCombatNumber()
-            local Container = Combat:GetContainer(DETAILS_ATTRIBUTE_MISC)
+            local Container = Combat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
             for _, Actor in Container:ListActors() do
                 if Actor:IsGroupPlayer() then
                     -- we only record the players in party
@@ -124,7 +124,7 @@ EO.CustomDisplayOverall = {
     target = false,
     author = "Rhythm",
     desc = L["Show how many explosive orbs players target and hit."],
-    script_version = 10,
+    script_version = 11,
     script = [[
         local Combat, CustomContainer, Instance = ...
         local total, top, amount = 0, 0, 0
@@ -132,7 +132,7 @@ EO.CustomDisplayOverall = {
         if _G.Details_ExplosiveOrbs then
             local OverallCombat = Details:GetCombat(-1)
             local CombatNumber = OverallCombat:GetCombatNumber()
-            local Container = OverallCombat:GetContainer(DETAILS_ATTRIBUTE_MISC)
+            local Container = OverallCombat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
             for _, Actor in Container:ListActors() do
                 if Actor:IsGroupPlayer() then
                     -- we only record the players in party

@@ -27,4 +27,16 @@
 	<Binding name="WHOLLY_TOGGLESHOWLOREMASTER" category="ADDONS">
 		Wholly:ToggleSwitch("showsLoremasterOnly")
 	</Binding>
+	<Binding name="WHOLLY_TOGGLESHOWMAPFLIGHTPOINTS" category="ADDONS">
+		Wholly:ToggleSwitch("hidesWorldMapFlightPoints")
+	</Binding>
+	<Binding name="WHOLLY_TOGGLESHOWMAPCALLINGQUESTS" category="ADDONS">
+		Wholly:ToggleSwitch("hidesBlizzardWorldMapCallingQuests")
+	</Binding>
+	<Binding name="WHOLLY_TOGGLESHOWMAPCAMPAIGNQUESTS" category="ADDONS">
+		Wholly:ToggleSwitch("hidesBlizzardWorldMapCampaignQuests")
+	</Binding>
+	<Binding name="WHOLLY_TOGGLESHOWMAPWORLDQUESTS" category="ADDONS">
+		Wholly:ToggleSwitch("hidesBlizzardWorldMapWorldQuests")
+	</Binding>
 </Bindings>

@@ -1,0 +1,12 @@
+## Interface: 90105
+## Title: Grail |cff69ccf0Quests |r|cff0000ffRetail|r
+## Author: Scott M Harrison
+## Notes: Provides quests to Grail for Retail
+## Version: 37176
+## Dependencies: Grail
+## LoadOnDemand: 1
+
+Grail-Quests-_retail_.lua
+
+## Title: |cff880303[爱不易]|r Grail 任务模块
+## X-Vendor: AbyUI
