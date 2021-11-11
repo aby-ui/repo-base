@@ -112,13 +112,19 @@ function LfgService:LFG_LIST_SEARCH_RESULTS_RECEIVED(event)
 
     local applications = C_LFGList.GetApplications()
 
+    self.activityApps = self.activityApps or {} --abyui 9.1.5 applications also in SearchResults
+    table.wipe(self.activityApps)
+
     for _, id in ipairs(applications) do
+        self.activityApps[id] = true
         self:CacheActivity(id)
     end
 
     local _, resultList = C_LFGList.GetSearchResults()
     for _, id in ipairs(resultList) do
-        self:CacheActivity(id)
+        if not self.activityApps[id] then
+            self:CacheActivity(id)
+        end
     end
 
     self:SendMessage('MEETINGSTONE_ACTIVITIES_COUNT_UPDATED', self:GetActivityCount())

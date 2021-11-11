@@ -449,6 +449,7 @@ GTFO.SpellID["37641"] = {
   --desc = "Whirlwind (Leotheras the Blind)";
   sound = 1;
   tankSound = 0;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["38575"] = {

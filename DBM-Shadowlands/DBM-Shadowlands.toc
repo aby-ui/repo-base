@@ -1,5 +1,5 @@
 ## Interface: 90105
-## Version: 9.1.20-4-g6a22c4f
+## Version: 9.1.20-6-gb95a83a
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Shadowlands)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r

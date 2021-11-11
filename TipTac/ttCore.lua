@@ -596,7 +596,11 @@ end
 
 -- Applies the backdrop, color and border color. The GTT will often reset these internally.
 function tt:ApplyTipBackdrop(tip)
-	SharedTooltip_SetBackdropStyle(tip,tipBackdrop);
+	SharedTooltip_SetBackdropStyle(tip,nil) --tipBackdrop --abyui 9.1.5, but border is not set
+    if tip.NineSlice then
+        local bgR, bgG, bgB = TOOLTIP_DEFAULT_COLOR:GetRGB();
+        tip.NineSlice:SetBorderColor(bgR, bgG, bgB, 1);
+    end
 end
 
 --------------------------------------------------------------------------------------------------------
@@ -723,8 +727,6 @@ function tt:ApplyUnitAppearance(tip,u,first)
 		end
 	elseif (cfg.reactColoredBorder) then	-- Az: this will override the classColoredBorder config, perhaps have that option take priority instead?
         tip.NineSlice:SetBorderColor(unpack(cfg["colReactBack"..u.reactionIndex]));
-    else
-        tip.NineSlice:SetBorderColor(unpack(cfg.tipBorderColor));
 	end
 
 	-- Remove Unwanted Lines
@@ -831,7 +833,6 @@ function gttScriptHooks:OnUpdate(elapsed)
 	-- WoD: This background color reset, from OnShow(), has been copied down here. It seems resetting the color in OnShow() wasn't enough, as the color changes after the tip is being shown
 	if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
 		self.NineSlice:SetCenterColor(unpack(cfg.tipColor));
-        self.NineSlice:SetBorderColor(unpack(cfg.tipBorderColor));
 	end
 
 	-- Fadeout / Update Tip if Showing a Unit

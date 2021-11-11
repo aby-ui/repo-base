@@ -169,6 +169,22 @@ end
 MAX_GUILDBANK_SLOTS_PER_TAB = MAX_GUILDBANK_SLOTS_PER_TAB or 98;
 NUM_SLOTS_PER_GUILDBANK_GROUP = NUM_SLOTS_PER_GUILDBANK_GROUP or 14;
 
+--GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT or TOOLTIP_BACKDROP_STYLE_DEFAULT
+--local layoutName = style and style.layoutType or "TooltipDefaultLayout";
+--local layout = NineSliceUtil.GetLayout(layoutName);
+TOOLTIP_BACKDROP_STYLE_DEFAULT = TOOLTIP_BACKDROP_STYLE_DEFAULT or {
+	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+	tile = true,
+	tileEdge = true,
+	tileSize = 16,
+	edgeSize = 16,
+	insets = { left = 4, right = 4, top = 4, bottom = 4 },
+
+	backdropBorderColor = TOOLTIP_DEFAULT_COLOR,
+	backdropColor = TOOLTIP_DEFAULT_BACKGROUND_COLOR,
+};
+
 --[[
 tooltip.layoutType = GameTooltip.layoutType
 NineSlicePanelMixin.OnLoad(tooltip.NineSlice)
