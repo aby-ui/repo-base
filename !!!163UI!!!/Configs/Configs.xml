@@ -87,7 +87,6 @@
     <Include file="..\..\SwingBar\CfgSwingBar.lua"/>
     <Include file="..\..\TargetButton\CfgTargetButton.lua"/>
     <Include file="..\..\TargetNameplateIndicator\CfgTargetNameplateIndicator.lua"/>
-    <Include file="..\..\TellMeWhen\CfgTellMeWhen.lua"/>
     <Include file="..\..\TheBurningTrade\CfgTheBurningTrade.lua"/>
     <Include file="..\..\TidyPlates\CfgTidyPlates.lua"/>
     <Include file="..\..\TinyInspect\CfgTinyInspect.lua"/>

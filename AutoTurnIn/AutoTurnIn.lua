@@ -182,7 +182,7 @@ function AutoTurnIn:QUEST_LOG_UPDATE()
 	if ( C_QuestLog.GetNumQuestLogEntries() > 0 ) then
 		for index=1, C_QuestLog.GetNumQuestLogEntries() do
 			local questInfo = C_QuestLog.GetInfo(index)			
-			if (questInfo and not questInfo.isHeader and self:_isDaily(questInfo.frequency)) then
+			if (questInfo and not questInfo.isHeader and self:_isDaily(questInfo)) then
 				self.questCache[questInfo.title] = true
 			end
 		end
@@ -190,8 +190,11 @@ function AutoTurnIn:QUEST_LOG_UPDATE()
 	end
 end
 
-function AutoTurnIn:_isDaily(frequency) 
-	return frequency and (frequency == Enum.QuestFrequency.Daily or frequency == Enum.QuestFrequency.Weekly)
+function AutoTurnIn:_isDaily(questInfo) 
+	return questInfo and 
+	(questInfo.frequency == Enum.QuestFrequency.Daily or 
+		questInfo.frequency == Enum.QuestFrequency.Weekly or 
+		questInfo.repeatable)
 end
 
 -- Available check requires cache
@@ -201,7 +204,10 @@ function AutoTurnIn:isAppropriate(questname, byCache)
     if byCache then
         daily = (not not self.questCache[questname])
     else
-        daily = (QuestIsDaily() or QuestIsWeekly())
+    	-- for some reason questInfo in gossip table return data different from one from QuestCache
+    	local questID = GetQuestID()
+    	local qn = questname or (questID and QuestCache:Get(questID).title or "");
+        daily = QuestIsDaily() or QuestIsWeekly() or (not not self.questCache[qn])
     end
 
 
@@ -332,11 +338,17 @@ function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
 end
 
 function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)
-	for index, gossipInfo in ipairs(gossipInfos) do
-		local triviaAndAllowedOrNotTrivial = (not gossipInfo.isTrivial) or AutoTurnInCharacterDB.trivial
-		local quest = L.quests[gossipInfo.title] -- this quest exists in addons quest DB. There are mostly daily quests
-		local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(gossipInfo.title)))
-		local isDaily = self:_isDaily(gossipInfo.frequency)
+	for index, questInfo in ipairs(gossipInfos) do
+		local triviaAndAllowedOrNotTrivial = (not questInfo.isTrivial) or AutoTurnInCharacterDB.trivial
+		local quest = L.quests[questInfo.title] -- this quest exists in addons quest DB. There are mostly daily quests
+		local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(questInfo.title)))
+		local isDaily = self:_isDaily(questInfo)
+		
+		-- for unknown reason the questInfo is different from what is seen in QuestCache:Get(questID);
+		if isDaily then
+			self:CacheAsDaily(questInfo.title)
+		end 
+
 		-- Quest is appropriate if: (it is trivial and trivial are accepted) and (any quest accepted or (it is daily quest that is not in ignore list))
 		if (triviaAndAllowedOrNotTrivial and notBlackListed and self:_isAppropriate(isDaily)) then
 			if quest and quest.amount then
@@ -967,5 +979,25 @@ end)
 hooksecurefunc(QuestFrame, "Show", function() AutoTurnIn:ShowIgnoreButton("quest") end)
 hooksecurefunc(GossipFrame, "Show", function() AutoTurnIn:ShowIgnoreButton("gossip") end)
 
+
+
+-- HELPERS
+function AutoTurnIn:dump(o)
+	DevTools_Dump(o, "value");
+	-- self:Print(self:_dump(o))
+end
+
+function AutoTurnIn:_dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. self:_dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
 -- /run local a=UnitGUID("npc"); for word in a:gmatch("Creature%-%d+%-%d+%-%d+%-%d+%-(%d+)%-") do print(word) end
 -- https://www.townlong-yak.com/
