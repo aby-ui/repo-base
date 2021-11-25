@@ -950,3 +950,26 @@ function rangeCheck:GetDistanceAll(checkrange)
 	end
 	return getDistanceBetweenAll(checkrange)
 end
+
+do
+	local function UpdateRangeFrame(r, reverse)
+		if rangeCheck:IsShown() then
+			rangeCheck:Hide()
+		else
+			if DBM:HasMapRestrictions() then
+				DBM:AddMsg(L.NO_RANGE)
+			end
+			rangeCheck:Show((r and r < 201) and r or 10 , nil, true, nil, reverse)
+		end
+	end
+	SLASH_DBMRANGE1 = "/range"
+	SLASH_DBMRANGE2 = "/distance"
+	SLASH_DBMRRANGE1 = "/rrange"
+	SLASH_DBMRRANGE2 = "/rdistance"
+	SlashCmdList["DBMRANGE"] = function(msg)
+		UpdateRangeFrame(tonumber(msg), false)
+	end
+	SlashCmdList["DBMRRANGE"] = function(msg)
+		UpdateRangeFrame(tonumber(msg), true)
+	end
+end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2415, "DBM-Party-Shadowlands", 8, 1189)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210330155402")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(162103)
 mod:SetEncounterID(2361)
 
@@ -30,7 +30,7 @@ local specWarnSintouchedAnima		= mod:NewSpecialWarningDispel(328494, "RemoveCurs
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
 local timerCastigateCD				= mod:NewNextTimer(20.5, 322554, nil, nil, nil, 3)
-local timerCoalesceManifestationCD	= mod:NewCDTimer(29.5, 322574, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--30 with a standard variationn of 1
+local timerCoalesceManifestationCD	= mod:NewCDTimer(29.5, 322574, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)--30 with a standard variationn of 1
 
 mod:AddRangeFrameOption(8, 322554)
 mod:AddNamePlateOption("NPAuraOnEnergy", 323548)

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.9
+Version 2.4.9.10
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.9";
+local VERSION = "2.4.9.10";
 
 local ADDON_NAME, T = ...;
 
@@ -553,7 +553,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.9,', L["RELEASE_DATE"], '2021-07-04T09:21:57Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.10,', L["RELEASE_DATE"], '2021-11-14T18:34:51Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -571,7 +571,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.9 -- ' .. L["RELEASE_DATE"] .. ' 2021-07-04T09:21:57Z',
+                        name = L["VERSION"] .. ' 2.4.9.10 -- ' .. L["RELEASE_DATE"] .. ' 2021-11-14T18:34:51Z',
                         order = 1,
                     },
                     Pve = {
@@ -1272,6 +1272,7 @@ do
 
     local GetNumBattlefieldScores = _G.GetNumBattlefieldScores
     local GetBattlefieldScore = _G.GetBattlefieldScore
+    local ApiChangedCounter = 0
     local function checkPlayerRealRole(PlayerName, spellName)
         if GetNumBattlefieldScores() == 0 then
             return nil
@@ -1366,8 +1367,12 @@ do
                 return true
             end
         else
+            ApiChangedCounter = ApiChangedCounter + 1
             -- got a few error reports getting here where the classTag was nil on a Paladin... not sure what to do yet, seems rare.
-            HHTD:Debug(ERROR, "(HHTD update required) GetBattlefieldScore() API changed", spec, classTag, GetBattlefieldScore(playerIndex))
+            -- another one where the spec was nil, probably a spurious bug in the API, using a counter to detect real API changes on the 3rd strike.
+            if ApiChangedCounter > 2 then
+                HHTD:Debug(ERROR, "(HHTD update required) GetBattlefieldScore() API changed", spec, classTag, GetBattlefieldScore(playerIndex))
+            end
 
             return nil
         end

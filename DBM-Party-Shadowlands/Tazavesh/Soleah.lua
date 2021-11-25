@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2455, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210627231754")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(180863)
 mod:SetEncounterID(2442)
 
@@ -39,7 +39,7 @@ local specWarnHyperlightNova		= mod:NewSpecialWarningDodge(351646, nil, nil, nil
 --Stage One: Final Preparations
 local timerHyperlightSparkCD		= mod:NewAITimer(11, 350796, nil, nil, nil, 3)
 local timerCollapsingStarCD			= mod:NewAITimer(11, 353635, nil, nil, nil, 5)
-local timerSummonAssassinsCD		= mod:NewAITimer(15.8, 351124, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerSummonAssassinsCD		= mod:NewAITimer(15.8, 351124, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Stage Two: Power Overwhelming
 local timerHyperlightJoltCD			= mod:NewAITimer(11, 350875, nil, nil, nil, 3)
 local timerEnergyFragmentationCD	= mod:NewAITimer(11, 351096, nil, nil, nil, 3)

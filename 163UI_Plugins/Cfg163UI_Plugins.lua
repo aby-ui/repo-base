@@ -61,7 +61,7 @@ U1RegisterAddon("163UI_Plugins", {
                         if sourceGUID == UnitGUID("player") and (subevent=="SPELL_CAST_START" or subevent=="SPELL_CAST_SUCCESS") and lastSpell and (InCombatLockdown() or UnitExists("boss1")) then
                             if lastSpell == spellId then
                                 lastSpell = nil
-                                PlaySoundFile("Interface\\AddOns\\TellMeWhen\\Sounds\\"..self.sound, "MASTER")
+                                PlaySoundFile("Interface\\AddOns\\163UI_Plugins\\sounds\\"..self.sound, "MASTER")
                             end
                         end
                     elseif event == "UNIT_SPELLCAST_SENT" then
@@ -69,7 +69,7 @@ U1RegisterAddon("163UI_Plugins", {
                         if unit == "player" then
                             lastSpell = spell
                             --print(event, unit, spell)
-                            --PlaySoundFile("Interface\\AddOns\\TellMeWhen\\Sounds\\"..self.sound, "MASTER")
+                            --PlaySoundFile("Interface\\AddOns\\163UI_Plugins\\Sounds\\"..self.sound, "MASTER")
                         end
                     end
                 end)
@@ -78,7 +78,7 @@ U1RegisterAddon("163UI_Plugins", {
                 _G.U1CastSoundFrame.sound = v
                 _G.U1CastSoundFrame:RegisterEvent("UNIT_SPELLCAST_SENT")
                 _G.U1CastSoundFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-                if not loading then PlaySoundFile("Interface\\AddOns\\TellMeWhen\\Sounds\\"..v, "MASTER") end
+                if not loading then PlaySoundFile("Interface\\AddOns\\163UI_Plugins\\Sounds\\"..v, "MASTER") end
             else
                 _G.U1CastSoundFrame:UnregisterEvent("UNIT_SPELLCAST_SENT")
                 _G.U1CastSoundFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")

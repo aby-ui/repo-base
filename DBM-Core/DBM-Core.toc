@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 30d44c2
+## Version: aecad97
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibLatency\LibLatency.xml
@@ -30,6 +30,10 @@ Libs\LibSerialize\lib.xml
 localization.en.lua
 localization.cn.lua
 localization.tw.lua
+
+commonlocal.en.lua
+commonlocal.tw.lua
+commonlocal.cn.lua
 
 # Pre-core modules
 modules\Modules.lua
@@ -49,9 +53,13 @@ DBM-HudMap.lua
 DBM-Nameplate.lua
 
 # Modules
+modules\Commands.lua
+modules\Hyperlinks.lua
 modules\MinimapButton.lua
+modules\Notes.lua
 modules\Sounds.lua
 modules\SpecRole.lua
+modules\UpdateReminder.lua
 
 modules\objects\Localization.lua
 

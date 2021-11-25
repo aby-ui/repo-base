@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2443, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211012153829")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(176523)
 mod:SetEncounterID(2430)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
@@ -65,21 +65,21 @@ local yellShadowsteelChainsFades				= mod:NewIconFadesYell(355505, 246367)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
 mod:AddTimerLine(BOSS)
-local timerCruciformAxeCD						= mod:NewCDCountTimer(19.4, 355568, 184055, nil, 2, 5, nil, DBM_CORE_L.TANK_ICON)--"Axe"
+local timerCruciformAxeCD						= mod:NewCDCountTimer(19.4, 355568, 184055, nil, 2, 5, nil, DBM_COMMON_L.TANK_ICON)--"Axe"
 local timerCruciformAxe							= mod:NewTargetTimer(6, 355568, 184055, nil, 2, 5)--"Axe"
-local timerReverberatingHammerCD				= mod:NewCDCountTimer(19.4, 348508, 175798, nil, 2, 5, nil, DBM_CORE_L.TANK_ICON)--"Hammer"
+local timerReverberatingHammerCD				= mod:NewCDCountTimer(19.4, 348508, 175798, nil, 2, 5, nil, DBM_COMMON_L.TANK_ICON)--"Hammer"
 local timerReverberatingHammer					= mod:NewTargetTimer(6, 348508, 175798, nil, 2, 5)--"Hammer"
-local timerDualbladeScytheCD					= mod:NewCDCountTimer(19.4, 355778, 327953, nil, 2, 5, nil, DBM_CORE_L.TANK_ICON)--"Scythe"
+local timerDualbladeScytheCD					= mod:NewCDCountTimer(19.4, 355778, 327953, nil, 2, 5, nil, DBM_COMMON_L.TANK_ICON)--"Scythe"
 local timerDualbladeScythe						= mod:NewTargetTimer(19.4, 355778, 327953, nil, 2, 5)--"Scythe"
-local timerSpikedBallsCD						= mod:NewCDCountTimer(40, 352052, nil, nil, 2, 1, nil, DBM_CORE_L.DAMAGE_ICON)
-local timerFlameclaspTrapCD						= mod:NewCDCountTimer(47.9, 348456, 8312, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)--"Trap"
+local timerSpikedBallsCD						= mod:NewCDCountTimer(40, 352052, nil, nil, 2, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerFlameclaspTrapCD						= mod:NewCDCountTimer(47.9, 348456, 8312, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)--"Trap"
 local timerShadowsteelChainsCD					= mod:NewCDCountTimer(40.1, 355504, 246367, nil, nil, 3)--"Chains"
 --Intermission
-mod:AddTimerLine(DBM_CORE_L.INTERMISSION)
+mod:AddTimerLine(DBM_COMMON_L.INTERMISSION)
 local timerForgeWeapon							= mod:NewCastTimer(48, 355525, nil, nil, nil, 6)
 local timerEmbersCD								= mod:NewNextCountTimer(5, 355534, 264364, nil, nil, 3)--"Embers"
-local timerAddsCD								= mod:NewAddsTimer(120, 357755, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
-local timerFinalScream							= mod:NewCastTimer(15, 357735, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerAddsCD								= mod:NewAddsTimer(120, 357755, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerFinalScream							= mod:NewCastTimer(15, 357735, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 

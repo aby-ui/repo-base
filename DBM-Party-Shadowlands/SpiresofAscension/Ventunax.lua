@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2416, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210123235530")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(162058)
 mod:SetEncounterID(2356)
 
@@ -28,7 +28,7 @@ local specWarnBlindingFlash			= mod:NewSpecialWarningDodge(324205, nil, nil, nil
 local specWarnRecharge				= mod:NewSpecialWarningDodge(334485, nil, nil, nil, 2, 2)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
-local timerDarkStrideCD				= mod:NewCDTimer(17, 324148, nil, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON)
+local timerDarkStrideCD				= mod:NewCDTimer(17, 324148, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON)
 local timerBlindingFlashCD			= mod:NewCDTimer(21.8, 324205, nil, nil, nil, 3)
 local timerRechargeCD				= mod:NewCDTimer(15.8, 334485, nil, nil, nil, 6)
 

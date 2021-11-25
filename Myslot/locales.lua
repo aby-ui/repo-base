@@ -26,6 +26,9 @@ L["Are you SURE to delete '%s'?"] = true
 L["Are you SURE to import ?"] = true
 L["Bad importing text [CRC32]"] = true
 L["Bad importing text [TEXT]"] = true
+L["Clear Action before applying"] = true
+L["Clear Binding before applying"] = true
+L["Clear Macro before applying"] = true
 L["Close"] = true
 L["DANGEROUS"] = true
 L["Export"] = true
@@ -54,7 +57,6 @@ L["Skip CRC32, version and any other validation before importing. May cause unkn
 L["Skip unsupported version"] = true
 L["Time"] = true
 L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"
-L["Too many saved profiles, please use '/myslot trim' to clean up"] = true
 L["Try force importing"] = true
 L["Unsaved"] = true
 L["Use random mount instead of an unattained mount"] = true
@@ -76,6 +78,12 @@ elseif locale == 'deDE' then
 --[[ L["Bad importing text [CRC32]"] = "Bad importing text [CRC32]"--]] 
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
 --[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
@@ -133,8 +141,6 @@ elseif locale == 'deDE' then
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
---[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Unsaved"] = "Unsaved"--]] 
@@ -154,6 +160,12 @@ L["All slots were restored"] = "Se han restaurado todos los huecos"
 L["Are you SURE to import ?"] = "¿Seguro que quieres importarlo?"
 L["Bad importing text [CRC32]"] = "Texto de importación incorrecto [CRC32]"
 L["Bad importing text [TEXT]"] = "Texto de importación incorrecto [TEXT]"
+--[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
 L["Close"] = "Cerrar"
 L["DANGEROUS"] = "PELIGROSO"
 L["Export"] = "Exportar"
@@ -185,8 +197,6 @@ L["Skip CRC32, version and any other validation before importing. May cause unkn
 L["Skip unsupported version"] = "Se salta la validación de versión no soportada"
 L["Time"] = "Hora"
 L["TOC_NOTES"] = "Myslot sirve para transferir opciones entre distintas cuentas. Comentarios a farmer1992@gmail.com"
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 L["Try force importing"] = "Intentar importación forzosa"
 L["Unsaved"] = "No está guardado"
 L["Use random mount instead of an unattained mount"] = "Usa una montura aleatoria en vez de una no disponible"
@@ -208,6 +218,12 @@ elseif locale == 'esMX' then
 --[[ L["Bad importing text [CRC32]"] = "Bad importing text [CRC32]"--]] 
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
 --[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
@@ -264,8 +280,6 @@ elseif locale == 'esMX' then
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
@@ -291,6 +305,12 @@ elseif locale == 'frFR' then
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
 --[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
+--[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
 --[[ L["DANGEROUS"] = "DANGEROUS"--]] 
@@ -346,8 +366,6 @@ elseif locale == 'frFR' then
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
@@ -373,6 +391,12 @@ elseif locale == 'itIT' then
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
 --[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
+--[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
 --[[ L["DANGEROUS"] = "DANGEROUS"--]] 
@@ -428,8 +452,6 @@ elseif locale == 'itIT' then
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
@@ -455,6 +477,12 @@ elseif locale == 'koKR' then
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
 --[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
+--[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
 --[[ L["DANGEROUS"] = "DANGEROUS"--]] 
@@ -510,8 +538,6 @@ elseif locale == 'koKR' then
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
@@ -537,6 +563,12 @@ elseif locale == 'ptBR' then
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
 --[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
+--[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
 --[[ L["DANGEROUS"] = "DANGEROUS"--]] 
@@ -592,8 +624,6 @@ elseif locale == 'ptBR' then
 --[[ L["Time"] = "Time"--]] 
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
@@ -619,6 +649,12 @@ elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
 --[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
+--[[Translation missing --]]
 --[[ L["Close"] = "Close"--]] 
 --[[Translation missing --]]
 --[[ L["DANGEROUS"] = "DANGEROUS"--]] 
@@ -675,8 +711,6 @@ elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
 --[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
---[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
 --[[Translation missing --]]
 --[[ L["Unsaved"] = "Unsaved"--]] 
@@ -692,6 +726,9 @@ L["Are you SURE to delete '%s'?"] = "确定要删除 '%s'"
 L["Are you SURE to import ?"] = "你确定要导入吗?"
 L["Bad importing text [CRC32]"] = "导入文本校验不合法 [CRC32] 通常是没有复制完全"
 L["Bad importing text [TEXT]"] = "导入文本校验不合法 [TEXT]"
+L["Clear Action before applying"] = "导入前清空技能摆放"
+L["Clear Binding before applying"] = "导入前清空快捷键"
+L["Clear Macro before applying"] = "导入前清空宏"
 L["Close"] = "关闭"
 L["DANGEROUS"] = "危险行为"
 L["Export"] = "导出"
@@ -720,7 +757,6 @@ L["Skip CRC32, version and any other validation before importing. May cause unkn
 L["Skip unsupported version"] = "忽略不兼容的版本"
 L["Time"] = "时间"
 L["TOC_NOTES"] = "Myslot可以帮助你在账号之间共享配置。反馈：farmer1992@gmail.com"
-L["Too many saved profiles, please use '/myslot trim' to clean up"] = "保存了过多配置,请使用 /myslot trim 进行清理"
 L["Try force importing"] = "尝试强制导入"
 L["Unsaved"] = "未保存"
 L["Use random mount instead of an unattained mount"] = "使用随机坐骑代替没有获得的坐骑"
@@ -735,6 +771,12 @@ L["All slots were restored"] = "所有按鍵設定都已恢復完畢"
 L["Are you SURE to import ?"] = "你確定要導入麼?"
 L["Bad importing text [CRC32]"] = "錯誤的導入字串[CRC32]"
 L["Bad importing text [TEXT]"] = "錯誤的導入字串[TEXT]"
+--[[Translation missing --]]
+--[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
+--[[Translation missing --]]
+--[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
 L["Close"] = "關閉"
 L["DANGEROUS"] = "危險"
 L["Export"] = "導出"
@@ -764,8 +806,6 @@ L["Skip CRC32, version and any other validation before importing. May cause unkn
 L["Skip unsupported version"] = "忽略不相容的版本"
 L["Time"] = "時間"
 L["TOC_NOTES"] = "Myslot可以跨帳號綁定技能與按鍵設置。反饋通道：farmer1992@gmail.com"
---[[Translation missing --]]
---[[ L["Too many saved profiles, please use '/myslot trim' to clean up"] = "Too many saved profiles, please use '/myslot trim' to clean up"--]] 
 L["Try force importing"] = "嘗試強制導入"
 L["Unsaved"] = "未保存"
 L["Use random mount instead of an unattained mount"] = "使用隨機座騎代替沒有獲得的座騎"

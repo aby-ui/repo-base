@@ -433,7 +433,7 @@ local function updateEnemyPower()
 				end
 			end
 		end
-	else -- Check primary power type and alternate power types together. This should only be used if BOTH power types exist on same boss, else fix your shit MysticalOS
+	else -- Check primary power type and alternate power types together. This should only be used if BOTH power types exist on same boss
 		if specificUnit then
 			if not isRetail then
 				specificUnit = UnitExists(specificUnit) or DBM:GetUnitIdFromGUID(specificUnit)--unitID already passed or GUID we convert into unitID

@@ -96,6 +96,22 @@ else
 	frameRevision:SetText(CL.DEADLY_BOSS_MODS.. " " .. DBM.DisplayVersion.. " (" .. DBM:ShowRealDate(DBM.Revision) .. ")")
 end
 
+do
+	local count = 0
+
+	local frameHeaderButton = CreateFrame("Frame", nil, frame)
+	frameHeaderButton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 18)
+	frameHeaderButton:SetSize(frameRevision:GetSize())
+	frameHeaderButton:EnableMouse(true)
+	frameHeaderButton:SetScript("OnMouseUp", function()
+		count = count + 1
+		if count == 3 then
+			count = 0
+			DBM:PlaySound("1304911", true)
+		end
+	end)
+end
+
 local frameTranslation = frame:CreateFontString("$parentTranslation", "ARTWORK", "GameFontDisableSmall")
 frameTranslation:SetPoint("LEFT", frameRevision, "RIGHT", 20, 0)
 if L.TranslationBy then

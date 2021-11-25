@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank2", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201102223314")
+mod:SetRevision("20211125075428")
 --mod:SetModelID(46712)
 
 mod:RegisterEvents(
@@ -21,7 +21,7 @@ local specWarnPowerShot			= mod:NewSpecialWarningMoveTo(229124, nil, nil, nil, 1
 local specWarnColdCrash			= mod:NewSpecialWarningMoveTo(283199, nil, nil, nil, 3, 2)--Mama Stormstout
 
 local timerPowerShotCD			= mod:NewCDTimer(15.5, 229124, nil, nil, nil, 3)--Johnny Awesome
-local timerColdCrashCD			= mod:NewCDTimer(13.4, 283199, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)----Mama Stormstout
+local timerColdCrashCD			= mod:NewCDTimer(13.4, 283199, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)----Mama Stormstout
 
 mod:AddBoolOption("SetIconOnBlat", true)--Blat
 

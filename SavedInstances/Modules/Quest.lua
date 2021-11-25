@@ -74,6 +74,7 @@ local _specialQuests = {
   [47461] = { daily=true, name=L["Lord Kazzak"] },          -- Lord Kazzak
   [47462] = { daily=true, name=L["Azuregos"] },             -- Azuregos
   [47463] = { daily=true, name=L["Dragon of Nightmare"] },  -- Dragon of Nightmare
+  [60214] = { daily=true, name=L["Doomwalker"] },           -- Doomwalker
 }
 
 function SI:specialQuests()

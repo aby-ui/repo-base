@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2449, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210623015209")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(175546)
 mod:SetEncounterID(2419)
 
@@ -32,7 +32,7 @@ local specWarnInfiniteBreath		= mod:NewSpecialWarningCount(347149, "Tank", nil, 
 --local yellEmbalmingIchor			= mod:NewYell(327664)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(358947, nil, nil, nil, 1, 8)
 
-local timerInfiniteBreathCD			= mod:NewAITimer(15.8, 347149, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+local timerInfiniteBreathCD			= mod:NewAITimer(15.8, 347149, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 local timerDoubleTimeCD				= mod:NewAITimer(11, 350517, nil, nil, nil, 3)
 local timerBruteCD					= mod:NewAITimer(11, "ej23833", nil, nil, nil, 1, 215841)
 --Corsair Cannoneers

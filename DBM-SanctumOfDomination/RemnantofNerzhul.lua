@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2444, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011144558")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(175729)
 mod:SetEncounterID(2432)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -55,8 +55,8 @@ local specWarnGraspofMalice						= mod:NewSpecialWarningDodge(355123, nil, nil, 
 
 --mod:AddTimerLine(BOSS)
 local timerOrbofTormentCD						= mod:NewCDCountTimer(35, 349908, nil, nil, nil, 1, nil, nil, true)
-local timerMalevolenceCD						= mod:NewCDCountTimer(31.3, 350469, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON, true)--Rattlecage of Agony 31.7--49.7
-local timerSufferingCD							= mod:NewCDTimer(24.4, 350894, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON, true, mod:IsTank() and 2, 3)
+local timerMalevolenceCD						= mod:NewCDCountTimer(31.3, 350469, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON, true)--Rattlecage of Agony 31.7--49.7
+local timerSufferingCD							= mod:NewCDTimer(24.4, 350894, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON, true, mod:IsTank() and 2, 3)
 local timerGraspofMaliceCD						= mod:NewCDTimer(20.7, 355123, nil, nil, nil, 3, nil, nil, true)--Malicious Gauntlet (22 possibly the min time now?)
 --local timerBurstofAgonyCD						= mod:NewAITimer(23, 350096, nil, nil, nil, 3)
 
@@ -184,7 +184,7 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 350894 then
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
-			specWarnSufferingTank:Show(DBM_CORE_L.ORB)
+			specWarnSufferingTank:Show(DBM_COMMON_L.ORB)
 			specWarnSufferingTank:Play("targetyou")--or orbrun.ogg?
 			yellSuffering:Yell()
 			yellSufferingFades:Countdown(3)

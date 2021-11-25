@@ -175,11 +175,11 @@ do
 		backdrop:SetPoint("TOPLEFT", 15, -15)
 		backdrop:SetPoint("BOTTOMRIGHT", -40, 40)
 
-		local scrollFrame = CreateFrame("ScrollFrame", "TestScrollFrame", popupFrame, "UIPanelScrollFrameTemplate")
+		local scrollFrame = CreateFrame("ScrollFrame", nil, popupFrame, "UIPanelScrollFrameTemplate")
 		scrollFrame:SetPoint("TOPLEFT", 15, -22)
 		scrollFrame:SetPoint("BOTTOMRIGHT", -40, 45)
 
-		local input = CreateFrame("EditBox", "TestEditBox", scrollFrame)
+		local input = CreateFrame("EditBox", nil, scrollFrame)
 		input:SetTextInsets(7, 7, 3, 3)
 		input:SetFontObject(ChatFontNormal)
 		input:SetMultiLine(true)

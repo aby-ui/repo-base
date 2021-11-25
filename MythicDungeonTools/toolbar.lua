@@ -7,7 +7,6 @@ local toolbarTools = {}
 local drawingActive = false
 local currentTool
 local objectDrawLayer = "OVERLAY"
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local twipe,tinsert,tremove,tgetn,CreateFrame,tonumber,pi,max,min,atan2,abs,pairs,ipairs,GetCursorPosition,GameTooltip = table.wipe,table.insert,table.remove,table.getn,CreateFrame,tonumber,math.pi,math.max,math.min,math.atan2,math.abs,pairs,ipairs,GetCursorPosition,GameTooltip
 
@@ -28,7 +27,7 @@ function MDT:initToolbar(frame)
     frame.toolbar.toggleButton:SetPoint("TOP",frame,"TOP")
     frame.toolbar.toggleButton:SetSize(32,11)
     frame.toolbar.toggleButton:SetNormalTexture("Interface\\AddOns\\MythicDungeonTools\\Textures\\arrows")
-    frame.toolbar.toggleButton:GetNormalTexture():SetTexCoord(0,1,0.65,1)
+    frame.toolbar.toggleButton:GetNormalTexture():SetTexCoord(0,1,0.7,1)
 
     frame.toolbar:Hide()
     frame.toolbar:SetScript("OnHide",function()
@@ -40,13 +39,13 @@ function MDT:initToolbar(frame)
             frame.toolbar:Hide()
             frame.toolbar.toggleButton:ClearAllPoints()
             frame.toolbar.toggleButton:SetPoint("TOP",frame,"TOP")
-            frame.toolbar.toggleButton:GetNormalTexture():SetTexCoord(0,1,0.65,1)
+            frame.toolbar.toggleButton:GetNormalTexture():SetTexCoord(0,1,0.7,1)
             db.toolbarExpanded = false
         else
             frame.toolbar:Show()
             frame.toolbar.toggleButton:ClearAllPoints()
             frame.toolbar.toggleButton:SetPoint("TOP",frame.toolbar,"BOTTOM")
-            frame.toolbar.toggleButton:GetNormalTexture():SetTexCoord(0,1,0,0.35)
+            frame.toolbar.toggleButton:GetNormalTexture():SetTexCoord(0,1,0.05,0.35)
             db.toolbarExpanded = true
         end
     end)
@@ -92,7 +91,7 @@ function MDT:initToolbar(frame)
 
     ---back
     local back = AceGUI:Create("Icon")
-    back:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\icons",0.5,0.75,0.5,0.75)
+    back:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\icons",0.5,0.75,0.55,0.8)
     back:SetCallback("OnClick",function (widget,callbackName)
         self:PresetObjectStepBack()
         if self.liveSessionActive then self:LiveSession_SendCommand("undo") end
@@ -104,7 +103,7 @@ function MDT:initToolbar(frame)
 
     ---forward
     local forward = AceGUI:Create("Icon")
-    forward:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\icons",0.75,1,0.5,0.75)
+    forward:SetImage("Interface\\AddOns\\MythicDungeonTools\\Textures\\icons",0.75,1,0.55,0.8)
     forward:SetCallback("OnClick",function (widget,callbackName)
         self:PresetObjectStepForward()
         if self.liveSessionActive then self:LiveSession_SendCommand("redo") end
@@ -995,7 +994,7 @@ local function makeNoteEditbox()
     if not editbox.frame.SetBackdrop then
         Mixin(editbox.frame, BackdropTemplateMixin)
     end
-    editbox.frame:SetBackdropColor(1,1,1,0)
+    editbox.frame:SetBackdropColor(unpack(MDT.BackdropColor))
     editbox:SetLayout("Flow")
     editbox.multiBox = AceGUI:Create("MultiLineEditBox")
     editbox.multiBox:SetLabel(L["Note Text:"])
@@ -1031,7 +1030,7 @@ local function makeNoteEditbox()
     return editbox
 end
 
-local noteDropDown = LibDD:Create_UIDropDownMenu("noteDropDown", nil)
+local noteDropDown = CreateFrame("frame", "MDTNoteDropDown", nil, "UIDropDownMenuTemplate")
 local currentNote
 local noteMenu = {}
 do
@@ -1116,11 +1115,11 @@ function MDT:DrawNote(x, y, text, objectIndex)
     end
     note:SetScript("OnClick",function(self,button,down)
         if button == "LeftButton" then
-            LibDD:CloseDropDownMenus()
+            CloseDropDownMenus()
             self:OpenEditBox()
         elseif button == "RightButton" then
             currentNote = note
-            LibDD:EasyMenu(noteMenu,noteDropDown, "cursor", 0 , -15, "MENU")
+            EasyMenu(noteMenu,noteDropDown, "cursor", 0 , -15, "MENU")
             if noteEditbox and noteEditbox.frame:IsShown() then
                 noteEditbox.frame:Hide()
             end

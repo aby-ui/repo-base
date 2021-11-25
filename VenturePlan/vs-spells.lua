@@ -143,8 +143,7 @@ T.KnownSpells = {
 	[123]={type="heal", target="friend-front-soft", healATK=30},
 	[124]={type="nuke", target="cleave", damageATK=60},
 	[125]={
-		[1]={type="nuke", target="random-enemy", damageATK=60},
-		[2]={type="nop"},
+		{type="aura", target="random-enemy", damageATK1=60, modDamageDealt=-50, duration=1},
 	},
 	[126]={type="heal", target="friend-front-soft", healATK=20},
 	[127]={type="nuke", target="enemy-front", damageATK=60},
@@ -370,8 +369,7 @@ T.KnownSpells = {
 		{type="aura", target="all-allies", duration=1, modDamageDealt=30},
 	}, --Threads of Fate (UNVERIFIED)
 	[310]={
-		{type="nuke", target=0, damageATK=140},
-		{type="aura", target=4, duration=1, modDamageDealt=20},
+		{type="aura", target=4, duration=2, modDamageDealt=20},
 	}, --Axe of Determination (UNVERIFIED)
 	[311]={
 		{type="heal", target=3, healATK=120},
@@ -430,4 +428,5 @@ T.KnownSpells = {
 		{type="aura", target=1, duration=3, plusDamageTakenATK=20},
 	}, --Tainted Bite
 	[349]={type="nuke", target="all-enemies", damageATK=10}, --Anima Swell
+	[356]={type="nuke", damageATK=100, target=1},
 }

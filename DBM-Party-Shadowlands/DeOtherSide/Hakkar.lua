@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2408, "DBM-Party-Shadowlands", 7, 1188)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210825002052")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(166473)
 mod:SetEncounterID(2395)
 
@@ -44,9 +44,9 @@ local specWarnZealous				= mod:NewSpecialWarningRun(328987, nil, nil, nil, 4, 2)
 
 --Hakkar the Soulflayer
 local timerBloodBarrierCD			= mod:NewCDTimer(29.1, 322773, nil, nil, nil, 6)
---local timerBloodBarrageCD			= mod:NewCDTimer(13, 323064, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+--local timerBloodBarrageCD			= mod:NewCDTimer(13, 323064, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 local timerCorruptedBloodCD			= mod:NewCDTimer(17.1, 322746, nil, nil, nil, 3)--17.1-26 (probably delayed by long blood barriers
-local timerPiercingBarbCD			= mod:NewCDTimer(8.9, 322736, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)--8.9-22.7 (blood barrier delays
+local timerPiercingBarbCD			= mod:NewCDTimer(8.9, 322736, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--8.9-22.7 (blood barrier delays
 --Son of Hakkar:
 --local timerDevotedSacrificeCD		= mod:NewCDTimer(46, 332329, nil, nil, nil, 1)
 

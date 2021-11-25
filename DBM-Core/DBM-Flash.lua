@@ -15,7 +15,7 @@ local frame, duration, elapsed, totalRepeat
 frame = CreateFrame("Frame", "DBMFlash", UIParent, "BackdropTemplate")
 frame:Hide()
 frame.backdropInfo = {
-	bgFile	= "Interface\\Tooltips\\UI-Tooltip-Background" -- 137056
+	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background" -- 137056
 }
 frame:ApplyBackdrop()
 frame:SetAllPoints(UIParent)

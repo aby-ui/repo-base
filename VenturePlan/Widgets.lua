@@ -1802,28 +1802,7 @@ function Factory.AchievementRewardIcon(parent)
 	f:SetScript("OnClick", CommonLinkable_OnClick)
 	t = f:CreateTexture(nil, "ARTWORK")
     t:SetTexture("Interface\\AddOns\\VenturePlan\\Libs\\LibParse\\Libs\\tu")
-	function mAchieve()
-		local Miss = {C_Garrison.GetAvailableMissions(123), C_Garrison.GetInProgressMissions(123)}
-		local Acs = {2250,2251,2252,2253,2254,2255,2256,2258,2259,2260}
-		local Acx = {[2250]=1,[2251]=2,[2252]=3,[2253]=4,[2254]=5,[2255]=6,[2256]=7,[2258]=8,[2259]=9,[2260]=10} 
-		for _, missions in pairs(Miss) do
-		    for i=1, #missions do
-			    for k, id in pairs(Acs) do
-			        if id == missions[i].missionID then
-				        local com = select(3, GetAchievementCriteriaInfo(14844, Acx[id]))
-				            if ( com == false ) then
-		    		            return t:SetTexCoord(0.348, 0.578, 0.348, 0.535)
-				            end
-					    t:SetTexCoord(0.055, 0.289, 0.074, 0.262)
-	        	    end
-	    	    end
-		    end
-	    end
-    end
-	f:RegisterEvent("GARRISON_MISSION_LIST_UPDATE")
-	f:SetScript("OnEvent", function()
-	f:SetScript("OnUpdate", mAchieve)end)
-	mAchieve()
+    f.icon = t
 	t:SetAlpha(1.0)
 	t:SetAllPoints()
 	return f

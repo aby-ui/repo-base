@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2437, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210825002533")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(175616)
 mod:SetEncounterID(2425)
 mod:SetHotfixNoticeRev(20210824000000)--2021, 08, 24
@@ -36,7 +36,7 @@ local specWarnInpoundContraband		= mod:NewSpecialWarningYou(345770, nil, nil, ni
 local timerInterrogationCD			= mod:NewCDTimer(42.5, 353414, nil, nil, nil, 3)--42.5-52
 local timerArmedSecurityCD			= mod:NewCDTimer(37.7, 346204, nil, nil, nil, 6)--37.7--57
 local timerImpoundContrabandCD		= mod:NewCDTimer(31.6, 345770, nil, nil, nil, 3)
---local timerStichNeedleCD			= mod:NewAITimer(15.8, 320200, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)--Basically spammed
+--local timerStichNeedleCD			= mod:NewAITimer(15.8, 320200, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)--Basically spammed
 
 function mod:OnCombatStart(delay)
 	timerArmedSecurityCD:Start(7.2-delay)

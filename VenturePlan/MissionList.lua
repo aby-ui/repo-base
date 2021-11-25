@@ -5,9 +5,15 @@ local SetAchievementReward do
 	function SetAchievementReward(ar, mid)
 	    ar.assetID = mid
 		ar.achievementID = 14844
-		local Acs = {[2250] = true,[2251] = true,[2252] = true,[2253] = true,[2254] = true,[2255] = true,[2256] = true,[2258] = true,[2259] = true,[2260] = true}
+		local Acs = {[2250]=1,[2251]=2,[2252]=3,[2253]=4,[2254]=5,[2255]=6,[2256]=7,[2258]=8,[2259]=9,[2260]=10}
 		if Acs[mid] then
 			ar:Show()
+			local com = select(3, GetAchievementCriteriaInfo(14844, Acs[mid]))
+			if ( com == false ) then
+		    	ar.icon:SetTexCoord(0.348, 0.578, 0.348, 0.535)
+			else
+				ar.icon:SetTexCoord(0.055, 0.289, 0.074, 0.262)
+	       end
 		else
 			ar:Hide()
 		end

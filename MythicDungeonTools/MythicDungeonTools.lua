@@ -17,7 +17,6 @@ MDT.BackdropColor = { 0.058823399245739, 0.058823399245739, 0.058823399245739, 0
 local AceGUI = LibStub("AceGUI-3.0")
 local db
 local icon = LibStub("LibDBIcon-1.0")
-local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("MythicDungeonTools", {
 	type = "data source",
 	text = L["Mythic Dungeon Tools"],
@@ -2302,7 +2301,7 @@ end
 
 ---MouseDownHook
 function MDT:MouseDownHook()
-    return
+
 end
 
 ---Handles mouse-down events on the map scrollframe
@@ -2767,9 +2766,13 @@ function MDT:CreateDungeonSelectDropdown(frame)
 	--Simple Group to hold both dropdowns
 	frame.DungeonSelectionGroup = AceGUI:Create("SimpleGroup")
 	local group = frame.DungeonSelectionGroup
+    if not group.frame.SetBackdrop then
+        Mixin(group.frame, BackdropTemplateMixin)
+    end
+    group.frame:SetBackdropColor(unpack(MDT.BackdropColor))
     group.frame:SetFrameStrata("HIGH")
     group.frame:SetFrameLevel(50)
-	group:SetWidth(200)
+	group:SetWidth(204) --idk ace added weird margin on left
 	group:SetHeight(50)
 	group:SetPoint("TOPLEFT",frame.topPanel,"BOTTOMLEFT",0,2)
     group:SetLayout("List")
@@ -3795,7 +3798,7 @@ function MDT:MakePullSelectionButtons(frame)
 
     frame.newPullButtons = {}
 	--rightclick context menu
-    frame.optionsDropDown = LibDD:Create_UIDropDownMenu("PullButtonsOptionsDropDown", nil)
+    frame.optionsDropDown = CreateFrame("frame", "MDTPullButtonsOptionsDropDown", nil, "UIDropDownMenuTemplate")
 end
 
 
@@ -4592,7 +4595,7 @@ function MDT:HSVtoRGB(H, S, V)
 	H = H % 361
 
 	local function f(n)
-		k = (n + H/60) % 6
+		local k = (n + H/60) % 6
 		return V - V * S * math.max(math.min(k, 4 - k, 1), 0)
 	end
 
@@ -5074,7 +5077,7 @@ function initFrames()
 	-- Set frame position
 	main_frame:ClearAllPoints()
 	main_frame:SetPoint(db.anchorTo, UIParent,db.anchorFrom, db.xoffset, db.yoffset)
-    main_frame.contextDropdown = LibDD:Create_UIDropDownMenu("MDTContextDropDown", nil)
+    main_frame.contextDropdown = CreateFrame("frame", "MDTContextDropDown", nil, "UIDropDownMenuTemplate")
 
     MDT:CheckCurrentZone(true)
     MDT:EnsureDBTables()
@@ -5114,9 +5117,10 @@ function initFrames()
             if not tooltip.SetBackdrop then
                 Mixin(tooltip, BackdropTemplateMixin)
             end
-            tooltip:HookScript("OnShow",function(self)
+            tooltip:HookScript("OnShow",function(self) --ignore updates
                 if self:IsForbidden() then return end
-                self:SetTemplate("Transparent", nil, true) --ignore updates
+                self:ClearBackdrop()
+                self:CreateBackdrop('Transparent')
                 local r, g, b = self:GetBackdropColor()
                 self:SetBackdropColor(r, g, b, ElvUI[1].Tooltip.db.colorAlpha)
             end)

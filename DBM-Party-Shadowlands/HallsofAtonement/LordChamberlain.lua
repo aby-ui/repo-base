@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2413, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201122213043")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(164218)
 mod:SetEncounterID(2381)
 
@@ -31,7 +31,7 @@ local specWarnRitualofWoe			= mod:NewSpecialWarningSoak(323393, nil, nil, nil, 1
 
 local timerTelekineticTossCD		= mod:NewCDTimer(11.5, 323143, nil, nil, nil, 3)--11.5-15.7
 local timerUnleashedSufferingCD		= mod:NewCDTimer(5, 323236, nil, nil, nil, 3)--Unknown actual timer, need longer pull
-local timerStigmaofPrideCD			= mod:NewCDTimer(27.8, 323437, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+local timerStigmaofPrideCD			= mod:NewCDTimer(27.8, 323437, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 --Other phasae
 local timerRitualofWoeCD			= mod:NewNextTimer(8.2, 328791, nil, nil, nil, 2)
 

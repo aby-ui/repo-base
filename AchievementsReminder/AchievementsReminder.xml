@@ -33,11 +33,24 @@
 
 
 <Frame name="icralistach" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
-    <KeyValues>
-        <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
-        <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
-        <KeyValue key="backdropBorderColorAlpha" value="0.25" type="number"/>
-    </KeyValues>
+	<Scripts>
+		<OnLoad>
+					self.background = CreateFrame("Frame", nil, self, "BackdropTemplate")
+					self.background:SetAllPoints()
+					self.background:SetBackdrop(
+						{
+							bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+							edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+							tile = true,
+							tileSize = 16,
+							edgeSize = 8,
+							insets = { left = 3, right = 3, top = 3, bottom = 3, },
+						})
+					self.background:SetBackdropColor(.03, .03, .03, .3)
+					self.background:SetBackdropBorderColor(.4, .4, .4)
+				</OnLoad>
+	</Scripts>
+
 
 <Size x="750" y="500"/>
 	<Anchors>
@@ -46,7 +59,7 @@
 	<Layers>
 	<Layer level="ARTWORK">
 <FontString name="$parent_Text" inherits="GameFontNormal" text="rallmenutxt1">
-	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"/></Anchors>
+	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"><Offset x="0" y="8"/></Anchor></Anchors>
 	</FontString>
 	</Layer>
 	</Layers>
@@ -64,11 +77,24 @@
 	</Frame>
 
 <Frame name="icralistach2" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
-    <KeyValues>
-        <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
-        <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
-        <KeyValue key="backdropBorderColorAlpha" value="0.25" type="number"/>
-    </KeyValues>
+	<Scripts>
+		<OnLoad>
+					self.background = CreateFrame("Frame", nil, self, "BackdropTemplate")
+					self.background:SetAllPoints()
+					self.background:SetBackdrop(
+						{
+							bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+							edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+							tile = true,
+							tileSize = 16,
+							edgeSize = 8,
+							insets = { left = 3, right = 3, top = 3, bottom = 3, },
+						})
+					self.background:SetBackdropColor(.03, .03, .03, .3)
+					self.background:SetBackdropBorderColor(.4, .4, .4)
+				</OnLoad>
+	</Scripts>
+
 
 <Size x="750" y="500"/>
 	<Anchors>
@@ -77,7 +103,7 @@
 	<Layers>
 	<Layer level="ARTWORK">
 <FontString name="$parent_Text" inherits="GameFontNormal" text="rallmenutxt2">
-	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"/></Anchors>
+	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"><Offset x="0" y="8"/></Anchor></Anchors>
 	</FontString>
 	</Layer>
 	</Layers>
@@ -99,11 +125,24 @@
 	</Frame>
 
 <Frame name="icralistach3" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
-    <KeyValues>
-        <KeyValue key="backdropInfo" value="BACKDROP_TOOLTIP_16_16_5555" type="global"/>
-        <KeyValue key="backdropBorderColor" value="TOOLTIP_DEFAULT_COLOR" type="global"/>
-        <KeyValue key="backdropBorderColorAlpha" value="0.25" type="number"/>
-    </KeyValues>
+	<Scripts>
+		<OnLoad>
+					self.background = CreateFrame("Frame", nil, self, "BackdropTemplate")
+					self.background:SetAllPoints()
+					self.background:SetBackdrop(
+						{
+							bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+							edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+							tile = true,
+							tileSize = 16,
+							edgeSize = 8,
+							insets = { left = 3, right = 3, top = 3, bottom = 3, },
+						})
+					self.background:SetBackdropColor(.03, .03, .03, .3)
+					self.background:SetBackdropBorderColor(.4, .4, .4)
+				</OnLoad>
+	</Scripts>
+
 
 <Size x="750" y="500"/>
 	<Anchors>
@@ -112,7 +151,7 @@
 	<Layers>
 	<Layer level="ARTWORK">
 <FontString name="$parent_Text" inherits="GameFontNormal" text="rallmenutxt3">
-	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"/></Anchors>
+	<Anchors><Anchor point="LEFT" relativePoint="TOPLEFT"><Offset x="0" y="8"/></Anchor></Anchors>
 	</FontString>
 	</Layer>
 	</Layers>

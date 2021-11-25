@@ -582,6 +582,13 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandlerWith(nil, "Blizzard_Collections", function()
             --BM_SetMoveHandler(WardrobeFrame)
             --BM_SetMoveHandler(CollectionsJournal)
+            do
+                -- fix a stupid anchor family connection issue blizzard added in 9.1.5
+                local checkbox = _G.WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox;
+                checkbox.Label:ClearAllPoints();
+                checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
+                checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
+            end
             local mover = BM_CreateMover(CollectionsJournal, 26, 30, 30, 0)
             BM_SetMoveHandler(CollectionsJournal, mover)
         end)

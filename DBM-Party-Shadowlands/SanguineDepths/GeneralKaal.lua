@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2407, "DBM-Party-Shadowlands", 8, 1189)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210110025723")
+mod:SetRevision("20211125075428")
 mod:SetCreatureID(162099)
 mod:SetEncounterID(2363)
 
@@ -35,7 +35,7 @@ local specWarnGloomSquall			= mod:NewSpecialWarningMoveTo(322903, nil, nil, nil,
 
 local timerWickedRushCD				= mod:NewCDTimer(15.8, 323845, nil, nil, nil, 3)--5.7, 15.8, 20.7, 15.8
 local timerPiercingBlurCD			= mod:NewCDTimer(9.3, 323810, nil, nil, nil, 3)--9.3 now? (17-25.4 old)
-local timerGloomSquallCD			= mod:NewCDTimer(37.7, 322903, nil, nil, nil, 2, nil, DBM_CORE_L.IMPORTANT_ICON)
+local timerGloomSquallCD			= mod:NewCDTimer(37.7, 322903, nil, nil, nil, 2, nil, DBM_COMMON_L.IMPORTANT_ICON)
 --local timerShiningRadiance			= mod:NewCDTimer(35, 324086, nil, nil, nil, 5)
 
 mod.vb.rushCast = 0
