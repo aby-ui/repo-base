@@ -245,13 +245,16 @@ function _detalhes:ToolTipDead (instancia, morte, esta_barra, keydown)
 					local critOrCrush = critical .. crushing
 
 					if (overkill > 0) then
-						--check the type of overkill that should be shown
-						--if show_totalhitdamage_on_overkill is true it'll show the total damage of the hit
-						--if false it shows the total damage of the hit minus the overkill
-						if (not _detalhes.show_totalhitdamage_on_overkill) then
-							amount = amount - overkill
-						end
-						
+
+						--> deprecated as the parser now removes the overkill damage from total damage
+						--> this should now sum the overkill from [10] with the damage from [3]
+							--check the type of overkill that should be shown
+							--if show_totalhitdamage_on_overkill is true it'll show the total damage of the hit
+							--if false it shows the total damage of the hit minus the overkill
+							--if (not _detalhes.show_totalhitdamage_on_overkill) then
+							--	amount = amount - overkill
+							--end
+
 						overkill = " (" .. _detalhes:ToK (overkill) .. " |cFFFF8800overkill|r)"
 						GameCooltip:AddLine ("" .. _cstr ("%.1f", time - hora_da_morte) .. "s |cFFFFFF00" .. spellname .. "|r (|cFFC6B0D9" .. source .. "|r)", "-" .. _detalhes:ToK (amount) .. critOrCrush .. overkill .. " (" .. hp .. "%)", 1, "white", "white")
 					else

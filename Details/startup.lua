@@ -130,9 +130,20 @@ function Details:StartMeUp() --I'll never stop!
 		end
 
 		function self:RefreshAfterStartup()
-		
+
+			--repair nicknames
+			local currentCombat = Details:GetCurrentCombat()
+			local containerDamage = currentCombat:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+			for _, actorObject in containerDamage:ListActors() do
+				--get the actor nickname
+				local nickname = Details:GetNickname(actorObject:Name(), false, true)
+				if (nickname) then
+					actorObject.displayName = nickname
+				end
+			end
+
 			self:RefreshMainWindow(-1, true)
-			
+
 			local lower_instance = _detalhes:GetLowerInstanceNumber()
 
 			for index = 1, #self.tabela_instancias do

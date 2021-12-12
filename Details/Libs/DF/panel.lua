@@ -7368,15 +7368,16 @@ DF.StatusBarFunctions = {
 		self:RunHooksForWidget ("OnHealthMaxChange", self, self.displayedUnit)
 	end
 
-	healthBarMetaFunctions.UpdateHealth = function (self)
+	healthBarMetaFunctions.UpdateHealth = function(self)
 		-- update max health regardless to avoid weird wrong values on UpdateMaxHealth sometimes
 		-- local maxHealth = UnitHealthMax (self.displayedUnit)
 		-- self:SetMinMaxValues (0, maxHealth)
 		-- self.currentHealthMax = maxHealth
 		
-		local health = UnitHealth (self.displayedUnit)
+		self.oldHealth = self.currentHealth
+		local health = UnitHealth(self.displayedUnit)
 		self.currentHealth = health
-		PixelUtil.SetStatusBarValue (self, health)
+		PixelUtil.SetStatusBarValue(self, health)
 
 		self:RunHooksForWidget ("OnHealthChange", self, self.displayedUnit)
 	end
@@ -8410,7 +8411,7 @@ DF.CastFrameFunctions = {
 			self:SetAlpha (1)
 			self.Icon:SetTexture (texture)
 			self.Icon:Show()
-			self.Text:SetText (text)
+			self.Text:SetText (text or name)
 			
 			if (self.Settings.ShowCastTime and self.Settings.CanLazyTick) then
 				self.percentText:Show()

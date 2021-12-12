@@ -1,5 +1,5 @@
 ## Interface: 90105
-## Version: 9.1.21-27-gbbb900d
+## Version: 9.1.22-20-g4f89bd4
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Shadowlands)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r
@@ -23,7 +23,7 @@
 ## X-DBM-Mod-World-Boss: 1
 ## X-DBM-Mod-Sort: 310
 ## X-DBM-Mod-MapID: 2222
-## X-DBM-Mod-LoadCID: 167524,167525,167527,167526,178958
+## X-DBM-Mod-LoadCID: 167524,167525,167527,167526,178958,182466
 ## X-DBM-Mod-MinCoreRevision: 17286
 ## X-DBM-Mod-MinExpansion: 8
 ## X-Curse-Project-ID: 3358
@@ -36,6 +36,7 @@ Mortanis.lua
 Oranomonos.lua
 Nurgash.lua
 Morgeth.lua
+Antros.lua
 
 
 ## X-Vendor: AbyUI

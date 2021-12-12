@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("d1993", "DBM-Challenges", 2)--1993 Stormwind 1995 Org
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404132247")
+mod:SetRevision("20211208050610")
 
 mod:RegisterCombat("scenario", 2213)--2212, 2213 (org, stormwind)
 
@@ -85,7 +85,7 @@ local timerDarkImaginationCD	= mod:NewCDTimer(60, 315976, nil, nil, nil, 1, 2967
 local timerDarkenedSkyCD		= mod:NewCDTimer(13.3, 308278, nil, nil, nil, 3)
 local timerVoidEruptionCD		= mod:NewCDTimer(27.9, 309819, nil, nil, nil, 2)
 --Extra Abilities (used by Alleria and the area LTs)
---local timerTaintedPolymorphCD	= mod:NewAITimer(21, 309648, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+--local timerTaintedPolymorphCD	= mod:NewAITimer(21, 309648, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
 --local timerExplosiveOrdnanceCD	= mod:NewCDTimer(20.7, 305672, nil, nil, nil, 3)--20-25 (on alleria anyways, forgot to log other guy)
 
 mod:AddInfoFrameOption(307831, true)
@@ -178,7 +178,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnDarkenedSky:Play("watchstep")
 		timerDarkenedSkyCD:Start()
 	elseif spellId == 309819 then
-		specWarnVoidEruption:Show(DBM_CORE_L.BREAK_LOS)
+		specWarnVoidEruption:Show(DBM_COMMON_L.BREAK_LOS)
 		specWarnVoidEruption:Play("findshelter")
 		timerVoidEruptionCD:Start()
 	elseif spellId == 309648 then

@@ -468,6 +468,12 @@ function Config:BuildOptions()
             name = L["Mythic Keystone"],
             desc = L["Track Mythic keystone acquisition"],
           },
+          TimewornMythicKey = {
+            type = "toggle",
+            order = 47.1,
+            name = L["Timeworn Mythic Keystone"],
+            desc = L["Track Timeworn Mythic keystone acquisition"],
+          },
           MythicKeyBest = {
             type = "toggle",
             order = 47.5,

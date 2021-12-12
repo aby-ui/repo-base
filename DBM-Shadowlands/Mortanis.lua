@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2431, "DBM-Shadowlands", nil, 1192)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20211202033102")
 mod:SetCreatureID(167525)
 mod:SetEncounterID(2410)
 mod:SetReCombatTime(20)
@@ -65,7 +65,7 @@ local function checkBuff(self)
 				end
 			end
 		end
-	else--Solo Raid?, maybe in classic TBC or classic WRATH. Future proofing the mod
+	else
 		local guid = UnitGUID("target")
 		if guid then
 			local cid = self:GetCIDFromGUID(guid)

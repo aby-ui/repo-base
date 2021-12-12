@@ -241,7 +241,7 @@ FontSizeSlider:HookScript("OnValueChanged", createDBTOnValueChangedHandler("Font
 
 local DisableBarFade = BarSetup:CreateCheckButton(L.NoBarFade, false, nil, nil, "NoBarFade")
 DisableBarFade:SetPoint("TOPLEFT", FontSizeSlider, "BOTTOMLEFT", 0, -85)
-DisableBarFade.myheight = 75 -- Extra padding because right buttons are offset from sliders
+DisableBarFade.myheight = 50 -- Magical value for offsets
 
 local skins = {}
 for id, skin in pairs(DBT:GetSkins()) do
@@ -303,10 +303,17 @@ BarScaleSlider:SetPoint("TOPLEFT", BarHeightSlider, "BOTTOMLEFT", 0, -10)
 BarScaleSlider:SetValue(DBT.Options.Scale)
 BarScaleSlider:HookScript("OnValueChanged", createDBTOnValueChangedHandler("Scale"))
 
+local saturateSlider = BarSetup:CreateSlider(L.BarSaturation, 0, 1, 0.05, 455)
+saturateSlider:SetPoint("TOPLEFT", BarScaleSlider, "BOTTOMLEFT", 0, -20)
+saturateSlider:SetValue(DBT.Options.DesaturateValue)
+saturateSlider:HookScript("OnValueChanged", createDBTOnValueChangedHandler("DesaturateValue"))
+saturateSlider.myheight = 55
+
 local SortDropDown = BarSetupSmall:CreateDropdown(L.BarSort, Sorts, "DBT", "Sort", function(value)
 	DBT:SetOption("Sort", value)
 end)
-SortDropDown:SetPoint("TOPLEFT", BarScaleSlider, "BOTTOMLEFT", -20, -25)
+SortDropDown:SetPoint("TOPLEFT", saturateSlider, "BOTTOMLEFT", -20, -25)
+SortDropDown.myheight = 70
 
 local BarOffsetXSlider = BarSetupSmall:CreateSlider(L.Slider_BarOffSetX, -50, 50, 1, 120)
 BarOffsetXSlider:SetPoint("TOPLEFT", BarSetupSmall.frame, "TOPLEFT", 350, -90)

@@ -406,6 +406,12 @@ Module.TrackedQuest = {
     quest = 62631,
     relatedQuest = {62631},
   },
+  {
+    name = L["Emissary of War"],
+    weekly = true,
+    quest = 62638,
+    relatedQuest = {62638},
+  }
 }
 
 function Module:OnEnable()

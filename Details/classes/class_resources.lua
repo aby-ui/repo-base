@@ -1344,8 +1344,8 @@ function atributo_energy:MontaTooltipAlvos (esta_barra, index)
 			end
 			
 			local spellname, _, spellicon = _GetSpellInfo (spell [1])
-			GameTooltip:AddDoubleLine (spellname .. ": ", _detalhes:comma_value (spell [2]) .. " (" .. _cstr ("%.1f", (spell [2] / total_regenerado) * 100).."%)", 1, 1, 1, 1, 1, 1)
-			GameTooltip:AddTexture (icone_magia)
+			GameTooltip:AddDoubleLine(spellname .. ": ", _detalhes:comma_value (spell [2]) .. " (" .. _cstr ("%.1f", (spell [2] / total_regenerado) * 100).."%)", 1, 1, 1, 1, 1, 1)
+			GameTooltip:AddTexture(spellicon)
 		end
 	end
 	

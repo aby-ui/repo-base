@@ -5306,6 +5306,8 @@ end
 					shadow.end_time = time()
 				end
 
+			shadow.displayName = actor.displayName or actor.nome
+
 			shadow.boss_fight_component = actor.boss_fight_component or shadow.boss_fight_component
 			shadow.fight_component = actor.fight_component or shadow.fight_component
 			shadow.grupo = actor.grupo or shadow.grupo

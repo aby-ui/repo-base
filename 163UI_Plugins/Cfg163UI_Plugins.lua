@@ -178,6 +178,14 @@ U1RegisterAddon("163UI_Plugins", {
     },
 
     {
+        text = "打开旧版公会界面",
+        tip = "说明`暴雪用社区界面代替了原来的公会界面，但是之前有些功能新的界面无法实现，目前旧公会界面仍然在客户端中，可以临时查看，快捷命令 /oldguild",
+        callback = function(cfg, v, loading)
+            SlashCmdList["OLD_GUILD"]("")
+        end,
+    },
+
+    {
         var = "MerchantFilterButtons", text = "商人面板过滤按钮", default = true, callback = load,
         tip = "说明`在NPC商人购买面板上方，显示'职业、专精、是否装备绑定'等过滤按钮，替代系统的下拉菜单方式。",
     },

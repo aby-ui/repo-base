@@ -6,9 +6,9 @@
 		
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 9108
-		_detalhes.alpha_build_counter = 9108 --if this is higher than the regular counter, use it instead
-		_detalhes.bcc_counter = 28
+		_detalhes.build_counter = 9213
+		_detalhes.alpha_build_counter = 9213 --if this is higher than the regular counter, use it instead
+		_detalhes.bcc_counter = 30
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. _detalhes.build_counter
@@ -33,6 +33,13 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+
+		{"v9.1.5.9213.145", "December 9th, 2021"},
+		"Fixed an issue where after reloading, overall data won't show the players nickname.",
+		"Fixed overkill damage on death log tooltip.",
+		"Fixed the percent bars for the healing done target on the player breakdown window.",
+		"Fixed an issue with resource tooltips.",
+
 		{"v9.1.5.9108.145", "November 02th, 2021"},
 		"Necrotic Wake: weapons damage does not count anymore for the player which uses it.",
 		"Necrotic Wake: a new 'fake player' is shown showing the damage done of all weapons during combat.",

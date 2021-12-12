@@ -18,7 +18,7 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 29)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 30)
 if not Lib then return end
 
 local PLAYER, FACTION, REALM, REALMS
@@ -315,7 +315,7 @@ function Lib:RestoreItemData(item)
 		if complete then
 			if link:find(PET_LINK) then
 				id, level, quality, name, icon = self:RestorePetLinkData(link)
-				class, subclass, query = LE_ITEM_CLASS_BATTLEPET, 0
+				class, subclass, query = Enum.ItemClass.Battlepet, 0
 			elseif link:find(KEYSTONE_LINK) then
 				query = 138019
 			end
@@ -323,7 +323,7 @@ function Lib:RestoreItemData(item)
 			if link:sub(1,9) == 'battlepet' or link:find(PET_STRING) then
 				id, level, quality, name, icon = self:RestorePetLinkData(link)
 				link = PET_LINK_FORMAT:format(select(4, GetItemQualityColor(quality)), link, name)
-				class, subclass, query = LE_ITEM_CLASS_BATTLEPET, 0
+				class, subclass, query = Enum.ItemClass.Battlepet, 0
 			elseif link:sub(1,8) == 'keystone' or link:find(KEYSTONE_STRING) then
 				query = 138019
 			elseif link:sub(1,5) ~= 'item:' then

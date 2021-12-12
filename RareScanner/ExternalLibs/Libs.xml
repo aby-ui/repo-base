@@ -11,7 +11,7 @@
 	<Include file="LibSharedMedia-3.0\lib.xml"/>
 	<Include file="AceGUI-3.0\AceGUI-3.0.xml"/>
 	-->
-	<Include file="AceGUI-3.0-SharedMediaWidgets\AceGUI-3.0-SharedMediaWidgets\MarkersWidget.lua"/>
+	<Include file="AceGUI-3.0-SharedMediaWidgets\MarkersWidget.lua"/>
 	<Include file="AceConfig-3.0\AceConfig-3.0.xml"/>
 	<!--<Include file="AceDB-3.0\AceDB-3.0.xml"/>-->
 	<Include file="LibAboutPanel-2.0\lib.xml"/>

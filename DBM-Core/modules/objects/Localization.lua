@@ -13,6 +13,7 @@ local defaultCatLocalization = {
 		announceother		= L.OPTION_CATEGORY_WARNINGS_OTHER,
 		announcepersonal	= L.OPTION_CATEGORY_WARNINGS_YOU,
 		announcerole		= L.OPTION_CATEGORY_WARNINGS_ROLE,
+		specialannounce		= L.OPTION_CATEGORY_SPECWARNINGS,
 		sound				= L.OPTION_CATEGORY_SOUNDS,
 		yell				= L.OPTION_CATEGORY_YELLS,
 		icon				= L.OPTION_CATEGORY_ICONS,

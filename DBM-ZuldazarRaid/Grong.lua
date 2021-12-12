@@ -10,7 +10,7 @@ end
 local mod	= DBM:NewMod(dungeonID, "DBM-ZuldazarRaid", 1, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20211205163610")
 mod:SetCreatureID(creatureID)
 mod:SetEncounterID(2263, 2284)--2263 Alliance, 2284 Horde
 mod:SetHotfixNoticeRev(18176)
@@ -204,9 +204,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			specWarnThrow:Show(args.destName)
 			specWarnThrow:Play("tauntboss")
 		end
-	elseif spellId == 282083 then--Beastial Smash
-		self.vb.comboCount = self.vb.comboCount + 1
-	elseif spellId == 285875 then--Rending Bite
+	elseif spellId == 282083 or spellId == 285875 then--Beastial Smash/Rending Bite
 		self.vb.comboCount = self.vb.comboCount + 1
 	elseif spellId == 289307 then
 		if args:IsPlayer() then

@@ -81,6 +81,7 @@ end
 
 local function HookOverlayAuctionHouse(event)
     if event ~= "AUCTION_HOUSE_SHOW" then return end
+    if (IsRestrictedAccount() or IsTrialAccount() or IsVeteranTrialAccount()) then return end
 
     -- Add hook for the Auction House frames.
     local buttons = _G["AuctionHouseFrameScrollChild"]:GetParent().buttons

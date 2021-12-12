@@ -264,12 +264,12 @@ scanner_button.LootBar.itemFramesPool.UpdateCacheItem = function(self, itemID)
 	end
 	
 	item:ContinueOnItemLoad(function()
-		local _, _, _, itemEquipLoc, _, itemClassID, itemSubClassID = GetItemInfoInstant(itemID)
+		local _, _, _, itemEquipLoc, _, itemClassID, itemSubClassID = GetItemInfoInstant(item:GetItemID())
 		if (RSLoot.IsFiltered(itemID, item:GetItemLink(), item:GetItemQuality(), itemEquipLoc, itemClassID, itemSubClassID)) then
-			self.items[itemID] = nil
+			self.items[item:GetItemID()] = nil
 			self.totalItems = self.totalItems - 1
-		else
-			self.items[itemID].loaded = true
+		elseif (self.items[item:GetItemID()]) then
+			self.items[item:GetItemID()].loaded = true
 			self.totalLoaded = self.totalLoaded + 1
 		end
 		

@@ -447,7 +447,7 @@ function events:ZONE_CHANGED(...)
     addon:Refresh()
 
     addon:debugmsg("Oribos: refreshed after ZONE_CHANGED")
-    addon:debugmsg("MapID: "..C_Map.GetBestMapForUnit("player"))
+    addon:debugmsg("MapID: "..(C_Map.GetBestMapForUnit("player") or "???"))
 
     if C_Map.GetBestMapForUnit("player") == 1671 then
         RemoveFlightMasterWaypoint()

@@ -88,6 +88,7 @@ DBT.DefaultOptions = {
 	FillUpBars = true,
 	TimerPoint = "TOPRIGHT",
 	Sort = "Sort",
+	DesaturateValue = 1,
 	-- Huge bar
 	EnlargeBarTime = 11,
 	HugeBarXOffset = 0,
@@ -789,6 +790,10 @@ function barPrototype:Update(elapsed)
 				g = barOptions.StartColorG + (barOptions.EndColorG - barOptions.StartColorG) * (1 - timerValue/totaltimeValue)
 				b = barOptions.StartColorB + (barOptions.EndColorB - barOptions.StartColorB) * (1 - timerValue/totaltimeValue)
 			end
+		end
+		if not DBT.Options.HugeBarsEnabled and timerValue > enlargeTime then
+			local x = (barOptions.DesaturateValue * r) + (barOptions.DesaturateValue * g) + (barOptions.DesaturateValue * b)
+			r, g, b = x, x, x
 		end
 		bar:SetStatusBarColor(r, g, b)
 		if sparkEnabled then

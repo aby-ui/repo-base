@@ -114,9 +114,10 @@ local function OnGuildBankOpened(event, ...)
     if event ~= "GUILDBANKFRAME_OPENED" then return end
     if guildBankLoaded == true then return end
     guildBankLoaded = true
-    for column=1,CanIMogIt.NUM_GUILDBANK_COLUMNS do
-        for button=1,CanIMogIt.NUM_SLOTS_PER_GUILDBANK_GROUP do
-            local frame = GuildBankFrame.Columns[column].Buttons[button] --_G["GuildBankColumn"..column.."Button"..button]
+    local guildBankFrame = _G["GuildBankFrame"]
+    for column = 1, #guildBankFrame.Columns do
+        for button = 1, #guildBankFrame.Columns[column].Buttons do
+            local frame = guildBankFrame.Columns[column].Buttons[button]
             if frame then
                 CIMI_AddToFrame(frame, GuildBankFrame_CIMIUpdateIcon)
             end
@@ -171,9 +172,10 @@ local function ContainersOverlayEvents(event, ...)
 
     -- guild bank frames
     if guildBankLoaded then
-        for column=1,CanIMogIt.NUM_GUILDBANK_COLUMNS do
-            for button=1,CanIMogIt.NUM_SLOTS_PER_GUILDBANK_GROUP do
-                local frame = GuildBankFrame.Columns[column].Buttons[button] --_G["GuildBankColumn"..column.."Button"..button]
+        local guildBankFrame = _G["GuildBankFrame"]
+        for column = 1, #guildBankFrame.Columns do
+            for button = 1, #guildBankFrame.Columns[column].Buttons do
+                local frame = guildBankFrame.Columns[column].Buttons[button]
                 if frame then
                     C_Timer.After(.1, function () GuildBankFrame_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
                 end

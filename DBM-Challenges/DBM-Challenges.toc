@@ -18,7 +18,7 @@
 ## X-DBM-StatTypes: normal
 ## X-DBM-Mod-SubCategories: Shadowlands,Battle for Azeroth,Legion,Proving Grounds
 ## X-DBM-Mod-SubCategories-deDE: Shadowlands,BfA Visions,Legion Artefakte,Feuerprobe
-## X-DBM-Mod-SubCategories-koKR: Shadowlands,격아 환영,군단 유물,수련의 장
+## X-DBM-Mod-SubCategories-koKR: 어둠땅,격아 환영,군단 유물,수련의 장
 ## X-DBM-Mod-Name: Challenges
 ## X-DBM-Mod-Name-deDE: Herausforderungen
 ## X-DBM-Mod-Name-esES: Terreno de Pruebas
@@ -28,11 +28,11 @@
 ## X-DBM-Mod-Name-ruRU: Арена испытаний
 ## X-DBM-Mod-Sort: 316
 ## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162, 1911
-## X-DBM-Mod-MinCoreRevision: 20200524142133
+## X-DBM-Mod-MinCoreRevision: 20211207000000
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
 ## X-Wago-ID: Rn6VLLGd
-## Version: r143
+## Version: r144-5-g75276dc
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

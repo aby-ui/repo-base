@@ -194,6 +194,23 @@ U1PLUG["FixBlizGuild"] = function()
 end
 
 --[[------------------------------------------------------------
+旧公会界面
+---------------------------------------------------------------]]
+do
+    SLASH_OLD_GUILD1 = "/oldguild"
+    SlashCmdList["OLD_GUILD"] = function(msg)
+        local n = "Blizzard_GuildUI"
+        if not IsAddOnLoaded(n) and GuildFrame_LoadUI then
+            GuildFrame_LoadUI()
+        end
+
+        if GuildFrame then
+            CoreUIToggleFrame(GuildFrame)
+        end
+    end
+end
+
+--[[------------------------------------------------------------
 点击打开成就面板
 ---------------------------------------------------------------]]
 local newSetItemRef = function(link, text, button, ...)

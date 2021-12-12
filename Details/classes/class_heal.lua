@@ -1940,7 +1940,7 @@ function atributo_heal:MontaInfoHealingDone()
 			barra.on_focus = false
 		end
 
-		self:FocusLock (barra, tabela[1])
+		self:FocusLock(barra, tabela[1])
 		
 		barra.other_actor = tabela [6]
 		
@@ -1967,19 +1967,17 @@ function atributo_heal:MontaInfoHealingDone()
 	end
 	
 	--> TOP CURADOS
-	local meus_inimigos = {}
+	local healedTargets = {}
 	tabela = self.targets
 	for target_name, amount in _pairs (tabela) do
-		_table_insert (meus_inimigos, {target_name, amount, amount / total*100})
+		_table_insert (healedTargets, {target_name, amount, amount / total*100})
 	end
-	_table_sort (meus_inimigos, _detalhes.Sort2)
-	
-	local amt_alvos = #meus_inimigos
-	gump:JI_AtualizaContainerAlvos (amt_alvos)
-	
-	local max_inimigos = meus_inimigos[1] and meus_inimigos[1][2] or 0
-	
-	for index, tabela in _ipairs (meus_inimigos) do
+	_table_sort(healedTargets, _detalhes.Sort2)
+
+	gump:JI_AtualizaContainerAlvos(#healedTargets)
+	local topHealingDone = healedTargets[1] and healedTargets[1][2]
+
+	for index, tabela in _ipairs (healedTargets) do
 	
 		local barra = info.barras2 [index]
 		
@@ -1988,10 +1986,12 @@ function atributo_heal:MontaInfoHealingDone()
 			barra.textura:SetStatusBarColor (1, 1, 1, 1)
 		end
 		
+		local healingDone = tabela[2]
+
 		if (index == 1) then
-			barra.textura:SetValue (100)
+			barra.textura:SetValue(100)
 		else
-			barra.textura:SetValue (tabela[2]/max_*100)
+			barra.textura:SetValue(healingDone / topHealingDone * 100)
 		end
 		
 		local target_actor = instancia.showing (2, tabela[1])
@@ -2004,12 +2004,12 @@ function atributo_heal:MontaInfoHealingDone()
 		end
 		
 		barra.lineText1:SetText (index .. ". " .. _detalhes:GetOnlyName (tabela[1]))
-		barra.textura:SetStatusBarColor (1, 1, 1, 1)
+		barra.textura:SetStatusBarColor(1, 1, 1, 1)
 		
 		if (info.sub_atributo == 2) then
-			barra.lineText4:SetText (_detalhes:comma_value (_math_floor (tabela[2]/meu_tempo)) .." (" .. _cstr ("%.1f", tabela[3]) .. "%)")
+			barra.lineText4:SetText (_detalhes:comma_value (_math_floor (healingDone/meu_tempo)) .." (" .. _cstr ("%.1f", tabela[3]) .. "%)")
 		else
-			barra.lineText4:SetText (SelectedToKFunction (_, tabela[2]) .. " (" .. _cstr ("%.1f", tabela[3]) .. "%)")
+			barra.lineText4:SetText (SelectedToKFunction (_, healingDone) .. " (" .. _cstr ("%.1f", tabela[3]) .. "%)")
 		end
 		
 		barra.minha_tabela = self

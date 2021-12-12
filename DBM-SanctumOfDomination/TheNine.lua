@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2439, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125092153")
+mod:SetRevision("20211212055914")
 mod:SetCreatureID(175726)--Skyja (TODO, add other 2 and set health to highest?)
 mod:SetEncounterID(2429)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -199,7 +199,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 350202 then
-		timerUnendingStrikeCD:Start(self:IsEasy() and 12.1 or 6.9)--TODO, mythic might be faster and LFR even slower
+		timerUnendingStrikeCD:Start(self:IsEasy() and 11.7 or 6.9)--TODO, mythic might be faster and LFR even slower
 	elseif spellId == 350342 then
 --		self.vb.addIcon = 8
 		self.vb.massCount = self.vb.massCount + 1
@@ -290,11 +290,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self:SetStage(2)
 		--self.vb.fragmentCount = 0
 		timerCalloftheValkyrCD:Stop()
-		timerPierceSoulCD:Start(11.7)--11.7-13.3
-		timerResentmentCD:Start(28.7, 1)--28.7-33.6
+		timerPierceSoulCD:Start(9.3)--9.3-13.3
+		timerResentmentCD:Start(27.5, 1)--27.5-33.6
 		timerCalloftheValkyrCD:Start(self:IsEasy() and 30 or 42.6, 1)--42.6-44
 		timerFragmentsofDestinyCD:Stop()
-		timerFragmentsofDestinyCD:Start(15.4, self.vb.fragmentCount+1)--15-17.4. Heroic and normal confirmed, mythic and LFR?
+		timerFragmentsofDestinyCD:Start(14.1, self.vb.fragmentCount+1)--14.1-17.4. Heroic and normal confirmed, mythic and LFR?
 		if self:IsHard() then--Heroic and Mythic
 			timerLinkEssenceCD:Start(24.7, 1)
 			timerWordofRecallCD:Start(72.5, 1)

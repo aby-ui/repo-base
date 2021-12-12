@@ -198,11 +198,6 @@ CanIMogIt.NUM_BLACKMARKET_BUTTONS = 12  -- No Blizzard constant
 CanIMogIt.MAX_CONTAINER_ITEMS = MAX_CONTAINER_ITEMS or 36
 -- Bank = NUM_BANKGENERIC_SLOTS
 CanIMogIt.NUM_VOID_STORAGE_FRAMES = 80 -- Blizzard functions are locals
--- Guild Bank
--- NOTE: For the guild bank, it appears that it gets unset sometimes. We are
--- referencing it here so we don't error when that happens.
-CanIMogIt.NUM_GUILDBANK_COLUMNS = 7 -- Columns
-CanIMogIt.NUM_SLOTS_PER_GUILDBANK_GROUP = 14 -- Buttons
 
 ---- Expansions ----
 CanIMogIt.Expansions = {}

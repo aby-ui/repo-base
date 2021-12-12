@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod("ArtifactFelTotem", "DBM-Challenges", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404132247")
+mod.statTypes = "normal,timewalker"
+
+mod:SetRevision("20211207230342")
 mod:SetCreatureID(117230, 117484)--Tugar, Jormog
 mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
@@ -70,6 +72,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 242733 then--Fel Burst (DPS)
 		felburstCount = felburstCount + 1
 		specWarnFelBurst:Show()
+		specWarnFelBurst:Play("crowdcontrol")--CC based interrupts
 		local timer = felBurstTimers[felburstCount+1]
 		if timer then
 			timerFelBurstCD:Start(timer, felburstCount+1)
@@ -91,7 +94,7 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 238471 then
-		local amount = args.amount or 1
+		local amount = args.amount or 0
 		warnScale:Show(args.destName, amount)
 	end
 end
@@ -120,6 +123,6 @@ end
 function mod:CHAT_MSG_MONSTER_EMOTE(msg)
 	if msg:find("Interface\\Icons\\spell_shaman_earthquake") then
 		specWarnCharge:Show()
-		specWarnCharge:Play("charge")
+		specWarnCharge:Play("chargemove")
 	end
 end

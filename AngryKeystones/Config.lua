@@ -19,14 +19,9 @@ local configDefaults = {
 }
 local callbacks = {}
 
-local My_UIDropDownMenu_SetSelectedValue, My_UIDropDownMenu_GetSelectedValue, My_UIDropDownMenu_CreateInfo, My_UIDropDownMenu_AddButton, My_UIDropDownMenu_Initialize, My_UIDropDownMenuTemplate
+local LibDD
 function Config:InitializeDropdown()
-	My_UIDropDownMenu_SetSelectedValue = Lib_UIDropDownMenu_SetSelectedValue or UIDropDownMenu_SetSelectedValue
-	My_UIDropDownMenu_GetSelectedValue = Lib_UIDropDownMenu_GetSelectedValue or UIDropDownMenu_GetSelectedValue
-	My_UIDropDownMenu_CreateInfo = Lib_UIDropDownMenu_CreateInfo or UIDropDownMenu_CreateInfo
-	My_UIDropDownMenu_AddButton = Lib_UIDropDownMenu_AddButton or UIDropDownMenu_AddButton
-	My_UIDropDownMenu_Initialize = Lib_UIDropDownMenu_Initialize or UIDropDownMenu_Initialize
-	My_UIDropDownMenuTemplate = Lib_UIDropDownMenu_Initialize and "Lib_UIDropDownMenuTemplate" or "UIDropDownMenuTemplate"
+	LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 end
 
 local progressFormatValues = { 1, 2, 3, 4, 5, 6 }
@@ -188,13 +183,13 @@ local function DropDown_OnClick(self, dropdown)
 		panelOriginalConfig[key] = Config[key]
 	end
 	Config:Set(key, self.value)
-	My_UIDropDownMenu_SetSelectedValue( dropdown, self.value )
+	LibDD:UIDropDownMenu_SetSelectedValue( dropdown, self.value )
 end
 
 local function DropDown_Initialize(self)
 	local key = self.configKey
-	local selectedValue = My_UIDropDownMenu_GetSelectedValue(self)
-	local info = My_UIDropDownMenu_CreateInfo()
+	local selectedValue = LibDD:UIDropDownMenu_GetSelectedValue(self)
+	local info = LibDD:UIDropDownMenu_CreateInfo()
 	info.func = DropDown_OnClick
 	info.arg1 = self
 
@@ -207,7 +202,7 @@ local function DropDown_Initialize(self)
 			else
 				info.checked = nil
 			end
-			My_UIDropDownMenu_AddButton(info)
+			LibDD:UIDropDownMenu_AddButton(info)
 		end
 	elseif key == 'splitsFormat' then
 		for i, value in ipairs(splitsFormatValues) do
@@ -218,7 +213,7 @@ local function DropDown_Initialize(self)
 			else
 				info.checked = nil
 			end
-			My_UIDropDownMenu_AddButton(info)
+			LibDD:UIDropDownMenu_AddButton(info)
 		end
 	end
 end
@@ -226,7 +221,7 @@ end
 local DropDown_Index = 0
 local function DropDown_Create(self)
 	DropDown_Index = DropDown_Index + 1
-	local dropdown = CreateFrame("Frame", ADDON.."ConfigDropDown"..DropDown_Index, self, My_UIDropDownMenuTemplate)
+	local dropdown = LibDD:Create_UIDropDownMenu(ADDON.."ConfigDropDown"..DropDown_Index, self)
 	_G[ADDON.."ConfigDropDown"..DropDown_Index.."Middle"]:SetWidth(200)
 	
 	local label = dropdown:CreateFontString(ADDON.."ConfigDropLabel"..DropDown_Index, "BACKGROUND", "GameFontNormal")
@@ -296,8 +291,8 @@ Panel_OnRefresh = function(self)
 	end
 
 	for _, dropdown in ipairs(dropdowns) do
-		My_UIDropDownMenu_Initialize(dropdown, DropDown_Initialize)
-		My_UIDropDownMenu_SetSelectedValue(dropdown, Config:Get(dropdown.configKey))
+		LibDD:UIDropDownMenu_Initialize(dropdown, DropDown_Initialize)
+		LibDD:UIDropDownMenu_SetSelectedValue(dropdown, Config:Get(dropdown.configKey))
 	end
 
 end

@@ -430,7 +430,7 @@ function Item:IsQuestItem()
 			local isQuest, questID, isActive = GetContainerItemQuestInfo(self:GetBag(), self:GetID())
 			return isQuest, (questID and not isActive)
 		else
-			return self.info.class == LE_ITEM_CLASS_QUESTITEM or Search:ForQuest(self.info.link)
+			return self.info.class == Enum.ItemClass.Questitem or Search:ForQuest(self.info.link)
 		end
 	end
 end

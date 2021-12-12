@@ -3,23 +3,11 @@
 		Basic item filters based on item classes
 --]]
 
-
 local ADDON, Addon = ...
-
-local Key = LE_ITEM_CLASS_KEY
-local Quiver = LE_ITEM_CLASS_QUIVER
-local Weapon = LE_ITEM_CLASS_WEAPON
-local Armor = LE_ITEM_CLASS_ARMOR
-local Projectile = LE_ITEM_CLASS_PROJECTILE
-local Container = LE_ITEM_CLASS_CONTAINER
-local Consumable = LE_ITEM_CLASS_CONSUMABLE
-local ItemEnhance = LE_ITEM_CLASS_ITEM_ENHANCEMENT
-local TradeGoods = LE_ITEM_CLASS_TRADEGOODS
-local Recipe = LE_ITEM_CLASS_RECIPE
-local Gem = LE_ITEM_CLASS_GEM
-local Glyph = LE_ITEM_CLASS_GLYPH
-local Quest = LE_ITEM_CLASS_QUESTITEM
-local Misc = LE_ITEM_CLASS_MISCELLANEOUS
+local Key, Quiver, Weapon, Armor, Projectile, Container, Consumable, Enhance, Trade, Recipe, Gem, Glyph, Quest, Misc =
+	Enum.ItemClass.Key, Enum.ItemClass.Quiver, Enum.ItemClass.Weapon, Enum.ItemClass.Armor, Enum.ItemClass.Projectile,
+	Enum.ItemClass.Container, Enum.ItemClass.Consumable, Enum.ItemClass.ItemEnhancement, Enum.ItemClass.Tradegoods,
+	Enum.ItemClass.Recipe, Enum.ItemClass.Gem, Enum.ItemClass.Glyph, Enum.ItemClass.Questitem, Enum.ItemClass.Miscellaneous
 
 local function ClassRule(id, name, icon, classes)
 	local filter = function(_,_,_,_, item)
@@ -63,17 +51,17 @@ ClassRule('contain', GetItemClassInfo(Container), 'Interface/Icons/inv_misc_bag_
 ClassRule('quest', GetItemClassInfo(Quest), 'Interface/QuestFrame/UI-QuestLog-BookIcon', {Quest})
 ClassRule('misc', GetItemClassInfo(Misc), 'Interface/Icons/INV_Misc_Rune_01', {Misc})
 
-ClassRule('use', USABLE_ITEMS, 'Interface/Icons/INV_Potion_93', {Consumable, ItemEnhance})
+ClassRule('use', USABLE_ITEMS, 'Interface/Icons/INV_Potion_93', {Consumable, Enhance})
 ClassSubrule('use/consume', Consumable)
 
-ClassRule('trade', TRADE_SKILLS, 'Interface/Icons/INV_Fabric_Silk_02', {TradeGoods, Recipe, Gem, Glyph})
-ClassSubrule('trade/goods', TradeGoods)
+ClassRule('trade', TRADE_SKILLS, 'Interface/Icons/INV_Fabric_Silk_02', {Trade, Recipe, Gem, Glyph})
+ClassSubrule('trade/goods', Trade)
 ClassSubrule('trade/recipe', Recipe)
 
 if Addon.IsRetail then
 	ClassSubrule('trade/glyph', Glyph)
 	ClassSubrule('trade/gem', Gem)
-	ClassSubrule('use/enhance', ItemEnhance)
+	ClassSubrule('use/enhance', Enhance)
 end
 
 

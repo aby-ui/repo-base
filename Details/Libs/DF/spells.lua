@@ -539,6 +539,7 @@ if (IS_WOW_PROJECT_NOT_MAINLINE) then
 	DF.CooldownsBySpec[65][5588] = 5 --hammer of justice Rank 2
 	DF.CooldownsBySpec[65][5589] = 5 --hammer of justice Rank 3
 	DF.CooldownsBySpec[65][10308] = 5 --hammer of justice Rank 4
+	DF.CooldownsBySpec[65][10326] = 5 --Turn Evil
 	DF.CooldownsBySpec[65][20729] = 3 --blessing of sacrifice Rank 2
 	DF.CooldownsBySpec[65][27147] = 3 --blessing of sacrifice Rank 3
 	DF.CooldownsBySpec[65][27148] = 3 --blessing of sacrifice Rank 4
@@ -557,6 +558,7 @@ if (IS_WOW_PROJECT_NOT_MAINLINE) then
 	DF.CooldownsBySpec[66][5588] = 5 --hammer of justice Rank 2
 	DF.CooldownsBySpec[66][5589] = 5 --hammer of justice Rank 3
 	DF.CooldownsBySpec[66][10308] = 5 --hammer of justice Rank 4
+	DF.CooldownsBySpec[66][10326] = 5 --Turn Evil
 	DF.CooldownsBySpec[66][5599] = 3 --blessing of protection Rank 2
 	DF.CooldownsBySpec[66][10278] = 3 --blessing of protection Rank 3
 
@@ -570,6 +572,7 @@ if (IS_WOW_PROJECT_NOT_MAINLINE) then
 	DF.CooldownsBySpec[70][5588] = 5 --hammer of justice Rank 2
 	DF.CooldownsBySpec[70][5589] = 5 --hammer of justice Rank 3
 	DF.CooldownsBySpec[70][10308] = 5 --hammer of justice Rank 4
+	DF.CooldownsBySpec[70][10326] = 5 --Turn Evil
 	DF.CooldownsBySpec[70][5599] = 3 --blessing of protection Rank 2
 	DF.CooldownsBySpec[70][10278] = 3 --blessing of protection Rank 3
 	DF.CooldownsBySpec[70][20729] = 3 --blessing of sacrifice Rank 2
@@ -1055,6 +1058,7 @@ if (IS_WOW_PROJECT_NOT_MAINLINE) then
 	DF.CrowdControlSpells[5588] = "PALADIN" --hammer of justice Rank 2
 	DF.CrowdControlSpells[5589] = "PALADIN" --hammer of justice Rank 3
 	DF.CrowdControlSpells[10308] = "PALADIN" --hammer of justice Rank 4
+	DF.CrowdControlSpells[10326] = "PALADIN" --Turn Evil
 
 	DF.CrowdControlSpells[8124] = "PRIEST" --psychic scream Rank 2
 	DF.CrowdControlSpells[10888] = "PRIEST" --psychic scream Rank 3

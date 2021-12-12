@@ -244,26 +244,29 @@ local QuestExceptions = {
   [62287] = "Weekly", -- Observing Arenas
   [62288] = "Weekly", -- Observing Teamwork
   [62289] = "Weekly", -- Observing Conflict
-  -- Ve'nari Weekly
-  [60622] = "Weekly", -- Eye of the Scryer
-  [60646] = "Weekly", -- Misery Business
-  [60762] = "Weekly", -- Death Motes
-  [60775] = "Weekly", -- A Suitable Demise
-  [61075] = "Weekly", -- A Spark of Light
-  [61079] = "Weekly", -- The Jailer's Share
-  [61088] = "Weekly", -- Dust to Dust
-  [61103] = "Weekly", -- Disrupting the Cycle
-  [61104] = "Weekly", -- Grathalax, the Extractor
-  [61765] = "Weekly", -- Words of Warding
-  [62214] = "Weekly", -- Forces of Perdition
-  [62234] = "Weekly", -- Power of the Colossus
-  [63206] = "Weekly", -- Soulless Husks
+  -- Ve'nari Weekly (Daily after Patch 9.1)
+  [60622] = "Daily",  -- Eye of the Scryer
+  [60646] = "Daily",  -- Misery Business
+  [60762] = "Daily",  -- Death Motes
+  [60775] = "Daily",  -- A Suitable Demise
+  [61075] = "Daily",  -- A Spark of Light
+  [61079] = "Daily",  -- The Jailer's Share
+  [61088] = "Daily",  -- Dust to Dust
+  [61103] = "Daily",  -- Disrupting the Cycle
+  [61104] = "Daily",  -- Grathalax, the Extractor
+  [61765] = "Daily",  -- Words of Warding
+  [62214] = "Daily",  -- Forces of Perdition
+  [62234] = "Daily",  -- Power of the Colossus
+  [63206] = "Daily",  -- Soulless Husks
+  [64541] = "Weekly", -- The Cost of Death
   -- Queen's Conservatory
   [62441] = "Weekly", -- Fair Exchange for a Soul
   [62445] = "Weekly", -- A Spirit's Pride
   [62449] = "Weekly", -- A Spirit's Duty
   [62450] = "Weekly", -- A Spirit's Heart
   [62452] = "Weekly", -- A Spirit's Might
+  -- Korthia
+  [64522] = "Weekly", -- Stolen Korthian Supplies
 
   -- General
   -- Darkmoon Faire

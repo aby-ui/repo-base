@@ -6,6 +6,7 @@ local _G = _G
 local ipairs, sort, strsplit, tonumber, select, wipe = ipairs, sort, strsplit, tonumber, select, wipe
 
 -- WoW API / Variables
+local C_ChallengeMode_GetKeystoneLevelRarityColor = C_ChallengeMode.GetKeystoneLevelRarityColor
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo
 local C_MythicPlus_GetRunHistory = C_MythicPlus.GetRunHistory
 local C_MythicPlus_RequestMapInfo = C_MythicPlus.RequestMapInfo
@@ -25,6 +26,13 @@ local StaticPopup_Show = StaticPopup_Show
 local Enum_WeeklyRewardChestThresholdType_MythicPlus = Enum.WeeklyRewardChestThresholdType.MythicPlus
 
 local KeystoneAbbrev = {
+  [197] = L["EOA"],   -- Eye of Azshara
+  [198] = L["DHT"],   -- Darkheart Thicket
+  [199] = L["BRH"],   -- Black Rook Hold
+  [206] = L["NL"],    -- Neltharion's Lair
+  [207] = L["VOTW"],  -- Vault of the Wardens
+  [210] = L["COS"],   -- Court of Stars
+
   [375] = L["MISTS"], -- Mists of Tirna Scithe
   [376] = L["NW"],    -- The Necrotic Wake
   [377] = L["DOS"],   -- De Other Side
@@ -52,36 +60,43 @@ function Module:OnEnable()
   self:RefreshMythicWeeklyBestInfo()
 end
 
+do
+  local colorCache = {}
+  local function getLevelColor(level)
+    if colorCache[level] then
+      return colorCache[level]
+    end
+
+    local color = C_ChallengeMode_GetKeystoneLevelRarityColor(level)
+    colorCache[level] = color:GenerateHexColor()
+    return colorCache[level]
+  end
+
+  function Module:ProcessKey(itemLink, targetTable)
+    local _, _, mapID, mapLevel = strsplit(':', itemLink)
+    mapID = tonumber(mapID)
+    mapLevel = tonumber(mapLevel)
+
+    targetTable.link = itemLink
+    targetTable.mapID = mapID
+    targetTable.level = mapLevel
+    targetTable.name = C_ChallengeMode_GetMapUIInfo(mapID)
+    targetTable.color = getLevelColor(mapLevel)
+    targetTable.ResetTime = SI:GetNextWeeklyResetTime()
+  end
+end
+
 function Module:RefreshMythicKeyInfo()
   local t = SI.db.Toons[SI.thisToon]
   t.MythicKey = wipe(t.MythicKey or {})
+  t.TimewornMythicKey = wipe(t.TimewornMythicKey or {})
   for bagID = 0, 4 do
     for invID = 1, GetContainerNumSlots(bagID) do
       local itemID = GetContainerItemID(bagID, invID)
       if itemID and itemID == 180653 then
-        local keyLink = GetContainerItemLink(bagID, invID)
-        local KeyInfo = {strsplit(':', keyLink)}
-        local mapID = tonumber(KeyInfo[3])
-        local mapLevel = tonumber(KeyInfo[4])
-        local color
-        if KeyInfo[4] == "0" then
-          color = select(4, GetItemQualityColor(0))
-        elseif mapLevel >= 10 then
-          color = select(4, GetItemQualityColor(4))
-        elseif mapLevel >= 7 then
-          color = select(4, GetItemQualityColor(3))
-        elseif mapLevel >= 4 then
-          color = select(4, GetItemQualityColor(2))
-        else
-          color = select(4, GetItemQualityColor(1))
-        end
-        -- SI:Debug("Mythic Keystone: %s", gsub(keyLink, "\124", "\124\124"))
-        t.MythicKey.name = C_ChallengeMode_GetMapUIInfo(mapID)
-        t.MythicKey.mapID = mapID
-        t.MythicKey.color = color
-        t.MythicKey.level = mapLevel
-        t.MythicKey.ResetTime = SI:GetNextWeeklyResetTime()
-        t.MythicKey.link = keyLink
+        self:ProcessKey(GetContainerItemLink(bagID, invID), t.MythicKey)
+      elseif itemID and itemID == 187786 then
+        self:ProcessKey(GetContainerItemLink(bagID, invID), t.TimewornMythicKey)
       end
     end
   end
@@ -139,22 +154,25 @@ do
   end
 end
 
-function Module:Keys()
+function Module:Keys(index)
   local target = SI.db.Tooltip.KeystoneReportTarget
   SI:Debug("Key report target: %s", target)
 
   if target == 'EXPORT' then
-    self:ExportKeys()
+    self:ExportKeys(index)
   else
     local dialog = StaticPopup_Show("SAVEDINSTANCES_REPORT_KEYS", target, nil, target)
+    if dialog then
+      dialog.data2 = index
+    end
   end
 end
 
-function Module:KeyData(action)
+function Module:KeyData(index, action)
   local cpairs = SI.cpairs
 
   for toon, t in cpairs(SI.db.Toons, true) do
-    if t.MythicKey and t.MythicKey.link then
+    if t[index] and t[index].link then
       local toonname
       if SI.db.Tooltip.ShowServer then
         toonname = toon
@@ -163,16 +181,16 @@ function Module:KeyData(action)
         toonname = tname
       end
 
-      action(toonname, t.MythicKey.link)
+      action(toonname, t[index].link)
     end
   end
 end
 
-function Module:ReportKeys(target)
-  self:KeyData(function(toon, key) SendChatMessage(toon .. ' - '.. key, target) end)
+function Module:ReportKeys(target, index)
+  self:KeyData(index, function(toon, key) SendChatMessage(toon .. ' - '.. key, target) end)
 end
 
-function Module:ExportKeys()
+function Module:ExportKeys(index)
   if not self.KeyExportWindow then
     local f = CreateFrame("Frame", nil, _G.UIParent, "DialogBoxFrame")
     f:SetSize(700, 450)
@@ -204,7 +222,7 @@ function Module:ExportKeys()
   end
 
   local keys = ""
-  self:KeyData(function(toon, key) keys = keys .. toon .. ' - ' .. key .. '\n' end)
+  self:KeyData(index, function(toon, key) keys = keys .. toon .. ' - ' .. key .. '\n' end)
 
   self.KeyExportText:SetText(keys)
   self.KeyExportText:HighlightText()
@@ -217,7 +235,7 @@ StaticPopupDialogs["SAVEDINSTANCES_REPORT_KEYS"] = {
   text = L["Are you sure you want to report all your keys to %s?"],
   button1 = OKAY,
   button2 = CANCEL,
-  OnAccept = function(self, target) Module:ReportKeys(target) end,
+  OnAccept = function(self, target, index) Module:ReportKeys(target, index) end,
   timeout = 0,
   whileDead = true,
   hideOnEscape = true,

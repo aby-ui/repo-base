@@ -46,7 +46,9 @@ local function CreateOurFrame()
 	decline:SetHighlightTexture(130762, "ADD")--"Interface\\Buttons\\UI-DialogBox-Button-Highlight"
 	decline:SetSize(128, 35)
 	decline:SetPoint("BOTTOM", frame, "BOTTOM", 75, 0)
-	decline:SetScript("OnClick", frame.Hide)
+	decline:SetScript("OnClick", function()
+		frame:Hide()
+	end)
 
 	local dtext = decline:CreateFontString()
 	dtext:SetFontObject(ChatFontNormal)

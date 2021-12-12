@@ -252,7 +252,9 @@
 	local TBC_PrayerOfMendingCache = {}
 	local TBC_EarthShieldCache = {}
 	local TBC_LifeBloomLatestHeal
-	local TBC_JudgementOfLightCache  = {}
+	local TBC_JudgementOfLightCache = {
+		_damageCache = {}
+	}
 
 	--expose the override spells table to external scripts
 	_detalhes.OverridedSpellIds = override_spellId
@@ -288,7 +290,6 @@
 	--> restoration shaman spirit link totem
 	local SPELLID_SHAMAN_SLT = 98021
 	--> holy paladin light of the martyr
-	local SPELLID_PALADIN_LIGHTMARTYR = 196917
 	--> druid kyrian bound spirits
 	local SPELLID_KYRIAN_DRUID = 326434
 	--> druid kyrian bound damage, heal
@@ -326,7 +327,6 @@
 	--> spells with special treatment
 	local special_damage_spells = {
 		[SPELLID_SHAMAN_SLT] = true, --> Spirit Link Toten
-		[SPELLID_PALADIN_LIGHTMARTYR] = true, --> Light of the Martyr
 		[SPELLID_MONK_STAGGER] = true, --> Stagger
 		[315161] = true, --> Eye of Corruption --REMOVE ON 9.0
 		[315197] = true, --> Thing From Beyond --REMOVE ON 9.0
@@ -433,14 +433,18 @@
 		Details.SpecialSpellActorsName = {}
 
 		--add sanguine affix
-		Details.SpecialSpellActorsName[Details.SanguineHealActorName] = SPELLID_SANGUINE_HEAL
+		if (not isTBC) then
+			if (Details.SanguineHealActorName) then
+				Details.SpecialSpellActorsName[Details.SanguineHealActorName] = SPELLID_SANGUINE_HEAL
+			end
 
-		--add kyrian weapons
-		Details.SpecialSpellActorsName[Details.KyrianWeaponActorName] = Details.KyrianWeaponActorSpellId
-		for spellId in pairs(Details.KyrianWeaponSpellIds) do
-			local spellName = GetSpellInfo(spellId)
-			if (spellName) then
-				Details.SpecialSpellActorsName[spellName] = spellId
+			--add kyrian weapons
+			Details.SpecialSpellActorsName[Details.KyrianWeaponActorName] = Details.KyrianWeaponActorSpellId
+			for spellId in pairs(Details.KyrianWeaponSpellIds) do
+				local spellName = GetSpellInfo(spellId)
+				if (spellName) then
+					Details.SpecialSpellActorsName[spellName] = spellId
+				end
 			end
 		end
 
@@ -810,10 +814,18 @@
 				return parser:SLT_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
 			
 			--> Light of the Martyr - paladin spell which causes damage to the caster it self
-			elseif (spellid == SPELLID_PALADIN_LIGHTMARTYR) then -- or spellid == 183998 < healing part
+			elseif (spellid == 196917) then -- or spellid == 183998 < healing part
 				return parser:LOTM_damage (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand)
 			end
 		--end
+
+		if (isTBC) then
+			--is the target an enemy with judgement of light?
+			if (TBC_JudgementOfLightCache[alvo_name]) then
+				--store the player name which just landed a damage
+				TBC_JudgementOfLightCache._damageCache[who_name] = {time, alvo_name}
+			end
+		end
 
 	------------------------------------------------------------------------------------------------
 	--> check if need start an combat
@@ -2081,11 +2093,23 @@
 				TBC_LifeBloomLatestHeal = cura_efetiva
 				return
 
-			elseif (spellid == 27163) then  --Judgement of Light (paladin)
-				local sourceData = TBC_JudgementOfLightCache[who_name]
-				if (sourceData) then
-					who_serial, who_name, who_flags = unpack(sourceData)
-					TBC_JudgementOfLightCache[who_name] = nil
+			elseif (spellid == 27163) then --Judgement of Light (paladin)
+				--check if the hit was landed in the same cleu tick
+
+				local hitCache = TBC_JudgementOfLightCache._damageCache[who_name]
+				if (hitCache) then
+					local timeLanded = hitCache[1]
+					local targetHit = hitCache[2]
+
+					if (timeLanded and timeLanded == time) then
+						local sourceData = TBC_JudgementOfLightCache[targetHit]
+						if (sourceData) then
+							--change the source of the healing
+							who_serial, who_name, who_flags = unpack(sourceData)
+							--erase the hit time information
+							TBC_JudgementOfLightCache._damageCache[who_name] = nil
+						end
+					end
 				end
 			end
 		end
@@ -2439,6 +2463,13 @@
 			elseif (spellid == SPELLID_VENTYR_TAME_GARGOYLE) then --ventyr tame gargoyle on halls of atonement --remove on 10.0
 				_detalhes.tabela_pets:Adicionar(alvo_serial, alvo_name, alvo_flags, who_serial, who_name, 0x00000417)
 			end
+
+			if (isTBC) then --buff applied
+				if (spellid == 27162) then --Judgement Of Light
+					--which player applied the judgement of light on this mob
+					TBC_JudgementOfLightCache[alvo_name] = {who_serial, who_name, who_flags}
+				end
+			end
 			
 		------------------------------------------------------------------------------------------------
 		--> spell reflection
@@ -2707,6 +2738,13 @@
 				bargastBuffs[alvo_serial] = (bargastBuffs[alvo_serial] or 0) + 1
 			end
 
+			if (isTBC) then --buff refresh
+				if (spellid == 27162) then --Judgement Of Light
+					--which player applied the judgement of light on this mob
+					TBC_JudgementOfLightCache[alvo_name] = {who_serial, who_name, who_flags}
+				end
+			end
+
 			if (_in_combat) then
 			------------------------------------------------------------------------------------------------
 			--> buff uptime
@@ -2870,6 +2908,12 @@
 			if (spellid == 315161) then
 				local enemyName = GetSpellInfo(315161)
 				who_serial, who_name, who_flags = "", enemyName, 0xa48
+			end
+
+			if (isTBC) then --buff removed
+				if (spellid == 27162) then --Judgement Of Light
+					TBC_JudgementOfLightCache[alvo_name] = nil
+				end
 			end
 			
 		------------------------------------------------------------------------------------------------
@@ -5064,6 +5108,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes:Msg ("(debug) running scheduled events after combat end.")
 		end
 	
+		TBC_JudgementOfLightCache = {
+			_damageCache = {}
+		}
+
 		--when the user requested data from the storage but is in combat lockdown
 		if (_detalhes.schedule_storage_load) then
 			_detalhes.schedule_storage_load = nil

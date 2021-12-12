@@ -67,7 +67,9 @@ local function CreateOurFrame()
 	button:SetPushedTexture(button:CreateTexture(nil, nil, "UIPanelButtonDownTexture"))
 	button:SetHighlightTexture(button:CreateTexture(nil, nil, "UIPanelButtonHighlightTexture"))
 	button:SetText(OKAY)
-	button:SetScript("OnClick", frame.Hide)
+	button:SetScript("OnClick", function()
+		frame:Hide()
+	end)
 
 end
 

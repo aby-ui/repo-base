@@ -7,7 +7,7 @@ local mod	= DBM:NewMod("d640", "DBM-Challenges", 4, nil, function(t)
 end)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210404132247")
+mod:SetRevision("20211208050610")
 mod.noStatistics = true
 
 --mod:RegisterCombat("scenario", 1148)
@@ -55,7 +55,7 @@ local timerWindBlastCD		= mod:NewNextTimer(21, 144106, nil, nil, nil, 5)
 local timerPowerfulSlamCD	= mod:NewCDTimer(15, 144401, nil, nil, nil, 3)--15-17sec variation. Off by default do to timer spam
 --Damager
 local timerAmberGlobCD		= mod:NewNextTimer(10.5, 142189, nil, nil, nil, 5)--Now off by default do to spam
-local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--Off by default do to timer spam
+local timerHealIllusionCD	= mod:NewNextTimer(20, 142238, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--Off by default do to timer spam
 --Healer
 local timerAquaBombCD		= mod:NewCDTimer(12, 145206, nil, false, nil, 5)--12-22 second variation? off by default do to this
 local timerSonicBlastCD		= mod:NewCDTimer(6, 145200, nil, nil, nil, 2)--8-11sec variation, off by default because maybe spammy?

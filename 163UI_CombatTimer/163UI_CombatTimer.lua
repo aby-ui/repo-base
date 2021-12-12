@@ -97,9 +97,14 @@ U1CT_Enter = function(encounter)
     end
 end
 
+function U1CT_IsSolo()
+    --ENCOUNTER_START 2059, 神后之怒没有END
+    return not IsInGroup() or (GetNumGroupMembers() == 1 and not UnitExists("party1") and not UnitExists("raid1"))
+end
+
 function U1CT_Leave(encounter)
     if not U1CT.start then return end
-    if U1CT.encounter and not encounter then return end
+    if U1CT.encounter and not encounter and not U1CT_IsSolo() then return end
     U1CT.encounter = nil
 
     U1CT_StartTimer(false)

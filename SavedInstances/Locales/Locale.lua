@@ -49,6 +49,7 @@ Ld["Bonus rolls"] = "Bonus rolls"
 Ld[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
+Ld["BRH"] = "BRH"
 Ld["Calling Missing"] = "Calling Missing"
 Ld["Categories"] = "Categories"
 Ld["Characters"] = "Characters"
@@ -59,6 +60,7 @@ Ld["Combine emissaries of same expansion"] = "Combine emissaries of same expansi
 Ld["Combine LFR"] = "Combine LFR"
 Ld["Combine World Bosses"] = "Combine World Bosses"
 Ld["Connected Realms"] = "Connected Realms"
+Ld["COS"] = "COS"
 Ld["Covenant"] = "Covenant"
 Ld["Covenant Assaults"] = "Covenant Assaults"
 Ld["Currency settings"] = "Currency settings"
@@ -66,6 +68,7 @@ Ld["Cursed Coffer"] = "Cursed Coffer"
 Ld["Daily Quests"] = "Daily Quests"
 Ld["Day"] = "Day"
 Ld["Debug Mode"] = "Debug Mode"
+Ld["DHT"] = "DHT"
 Ld["Disable mouseover"] = "Disable mouseover"
 Ld["Disable tooltip display on icon mouseover"] = "Disable tooltip display on icon mouseover"
 Ld["Display instances in order of recommended level from lowest to highest"] = "Display instances in order of recommended level from lowest to highest"
@@ -76,8 +79,10 @@ Ld["Dragon of Nightmare"] = "Dragon of Nightmare"
 Ld["Dump quest debugging information"] = "Dump quest debugging information"
 Ld["Dump time debugging information"] = "Dump time debugging information"
 Ld["Emissary Missing"] = "Emissary Missing"
+Ld["Emissary of War"] = "Emissary of War"
 Ld["Emissary Quests"] = "Emissary Quests"
 Ld["Emissary quests"] = "Emissary quests"
+Ld["EOA"] = "EOA"
 Ld["Expansion"] = "Expansion"
 Ld["Expired Lockout - Can be extended"] = "Expired Lockout - Can be extended"
 Ld["Export"] = "Export"
@@ -129,6 +134,7 @@ Ld["Mythic Key Best"] = "Mythic Key Best"
 Ld["Mythic Keystone"] = "Mythic Keystone"
 Ld["Nathanos Blightcaller"] = "Nathanos Blightcaller"
 Ld["Never show"] = "Never show"
+Ld["NL"] = "NL"
 Ld["NW"] = "NW"
 Ld["Opacity of the tooltip row highlighting"] = "Opacity of the tooltip row highlighting"
 Ld["Open config"] = "Open config"
@@ -192,12 +198,14 @@ Ld["These are the instances that count towards the %i instances per hour account
 Ld["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."
 Ld["Time /played"] = "Time /played"
 Ld["Time Left"] = "Time Left"
+Ld["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 Ld["Tooltip Scale"] = "Tooltip Scale"
 Ld["TOP"] = "TOP"
 Ld["Torghast"] = "Torghast"
 Ld["Tormentors of Torghast"] = "Tormentors of Torghast"
 Ld["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 Ld["Track Mythic keystone best run"] = "Track Mythic keystone best run"
+Ld["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 Ld["Trade Skill Cooldowns"] = "Trade Skill Cooldowns"
 Ld["Trade skills"] = "Trade skills"
 Ld["Transmute"] = "Transmute"
@@ -205,6 +213,7 @@ Ld["Type"] = "Type"
 Ld["Use class color"] = "Use class color"
 Ld["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
 Ld["Vision Boss Only"] = "Vision Boss Only"
+Ld["VOTW"] = "VOTW"
 Ld["Warfronts"] = "Warfronts"
 Ld["Warn about instance limit"] = "Warn about instance limit"
 Ld["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."
@@ -240,6 +249,8 @@ La["Bonus loot frame"] = "Cadre de jet de butin bonus"
 La["Bonus rolls"] = "Jets de dé bonus"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = "Les informations de mort des boss manquent pour ce verrouillage d'instance.\\\\nC'est un bogue de Blizzard qui touche certains vieux raids."
+--[[Translation missing --]]
+La["BRH"] = "BRH"
 La["Calling Missing"] = "Appel manquant"
 La["Categories"] = "Catégories"
 La["Characters"] = "Personnages"
@@ -250,6 +261,8 @@ La["Combine emissaries of same expansion"] = "Combiner les émissaires d'une mê
 La["Combine LFR"] = "Fusionner les RdR"
 La["Combine World Bosses"] = "Fusionner les boss extérieurs"
 La["Connected Realms"] = "Royaumes connectés"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "Congrégation"
 --[[Translation missing --]]
 La["Covenant Assaults"] = "Covenant Assaults"
@@ -258,6 +271,8 @@ La["Cursed Coffer"] = "Relique maudite"
 La["Daily Quests"] = "Quêtes journalières"
 La["Day"] = "Jour"
 La["Debug Mode"] = "Mode débogage"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Désactiver le survol avec la souris"
 La["Disable tooltip display on icon mouseover"] = "Désactive l'affichage de l'infobulle lors du survol de la souris."
 La["Display instances in order of recommended level from lowest to highest"] = "Affiche les instances dans l'ordre du niveau recommandé le plus bas au plus élevé."
@@ -269,8 +284,12 @@ La["Dragon of Nightmare"] = "Les Dragons du Cauchemar"
 La["Dump quest debugging information"] = "lister les informations de débogage des quêtes"
 La["Dump time debugging information"] = "lister les informations de débogage du temps"
 La["Emissary Missing"] = "Émissaire manquant"
+--[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
 La["Emissary Quests"] = "Quêtes d'émissaire"
 La["Emissary quests"] = "Quêtes d'émissaire"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Extension"
 La["Expired Lockout - Can be extended"] = "Verrouillage expiré - Peut être étendu"
 La["Export"] = "Exporter"
@@ -322,6 +341,8 @@ La["Mythic Key Best"] = "Meilleur niveau de clé de donjon mythique"
 La["Mythic Keystone"] = "Clé Mythique"
 La["Nathanos Blightcaller"] = "Nathanos le Flétrisseur"
 La["Never show"] = "Ne jamais afficher"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "NW"
 La["Opacity of the tooltip row highlighting"] = "Opacité de la mise en évidence des rangées de l'infobulle."
 La["Open config"] = "Ouvrir la configuration"
@@ -385,12 +406,16 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Ceci ne devrait être utilisé que pour les personnages qui ont été renommés ou supprimés car les personnages seront de toutes façons ré-affichés lorsque vous vous connecterez avec."
 La["Time /played"] = "Temps /joué"
 La["Time Left"] = "Temps restant "
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Taille de l'infobulle"
 La["TOP"] = "TOP"
 La["Torghast"] = "Tourment"
 La["Tormentors of Torghast"] = "Tourmenteurs de Tourment"
 La["Track Mythic keystone acquisition"] = "Suivre l'acquisition de clé de donjon mythique"
 La["Track Mythic keystone best run"] = "Suivre le meilleur temps pour la clé de donjon mythique"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Échéances des métiers"
 La["Trade skills"] = "Échéances des métiers"
 La["Transmute"] = "Transmutation"
@@ -398,6 +423,8 @@ La["Type"] = "Type"
 La["Use class color"] = "Colorer par classe"
 La["Vision Boss + 2 Bonus Objectives"] = "Boss de la vision + 2 objectifs bonus"
 La["Vision Boss Only"] = "Boss de la vision uniquement"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "Fronts de guerre"
 La["Warn about instance limit"] = "Alerte sur la limite d'instance"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Attention : vous êtes entré dans %i instances récemment et approchez la limite de %i instances par heure pour ce compte. Plus d'instances seront disponibles dans environ %s."
@@ -433,6 +460,8 @@ La["Bonus rolls"] = "Bonuswürfe"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Informationen über getötete Bosse fehlen für diese Instanzsperre.
 Dies ist ein Fehler von Blizzard, der einige ältere Schlachtzüge betrifft.]=]
+--[[Translation missing --]]
+La["BRH"] = "BRH"
 La["Calling Missing"] = "Berufung fehlt"
 La["Categories"] = "Kategorien"
 La["Characters"] = "Charaktere"
@@ -443,6 +472,8 @@ La["Combine emissaries of same expansion"] = "Kombiniert die Abgesandten der sel
 La["Combine LFR"] = "LFR/Flex zusammenfassen"
 La["Combine World Bosses"] = "Weltbosse zusammenfassen"
 La["Connected Realms"] = "Verknüpfte Realms"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "Pakt"
 --[[Translation missing --]]
 La["Covenant Assaults"] = "Covenant Assaults"
@@ -451,6 +482,8 @@ La["Cursed Coffer"] = "Kiste des Schwarzen Imperiums"
 La["Daily Quests"] = "Tägliche Quests"
 La["Day"] = "Tag"
 La["Debug Mode"] = "Debugmodus"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Mouseover deaktivieren"
 La["Disable tooltip display on icon mouseover"] = "Deaktiviert die Anzeige des Tooltips bei Zeigen auf Icons mit der Maus"
 La["Display instances in order of recommended level from lowest to highest"] = "Instanzen nach vorgeschlagenem Level anzeigen, beginnend mit der niedrigsten zur höchsten Instanz"
@@ -462,8 +495,12 @@ La["Dragon of Nightmare"] = "Drache des Albtraums"
 La["Dump quest debugging information"] = "Quest Debugging Information"
 La["Dump time debugging information"] = "Zeit Debugging Informationen"
 La["Emissary Missing"] = "Abgesandte Truhe fehlt"
+--[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
 La["Emissary Quests"] = "Abgesandtenquests"
 La["Emissary quests"] = "Abgesandtenquests"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Erweiterung"
 La["Expired Lockout - Can be extended"] = "Abgelaufene ID – Kann fortgesetzt werden"
 La["Export"] = "exportieren"
@@ -515,6 +552,8 @@ La["Mythic Key Best"] = "Bester mythischer Schlüssel"
 La["Mythic Keystone"] = "Mythischer Schlüsselstein"
 La["Nathanos Blightcaller"] = "Nathanos Pestrufer"
 La["Never show"] = "Nie anzeigen"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "NW"
 La["Opacity of the tooltip row highlighting"] = "Transparenz der Zeilenhervorhebung im Tooltip"
 La["Open config"] = "Konfiguration öffnen"
@@ -578,12 +617,16 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Dies sollte nur für Charaktere, die umbenannt oder gelöscht wurden, verwendet werden, da Charaktere erneut in die Datenbank eingetragen werden, wenn du dich mit ihnen einloggst."
 La["Time /played"] = "Zeit /gespielt"
 La["Time Left"] = "Verbleibende Zeit"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Tooltip-Skalierung"
 La["TOP"] = "TOP"
 La["Torghast"] = "Torghast"
 La["Tormentors of Torghast"] = "Peiniger von Torghast"
 La["Track Mythic keystone acquisition"] = "Verfolge die erhaltenen Schlüsselsteine"
 La["Track Mythic keystone best run"] = "Verfolge den besten mythischen Durchlauf"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Abklingzeiten der Berufsfertigkeiten"
 La["Trade skills"] = "Berufsfertigkeiten"
 La["Transmute"] = "Transmutieren"
@@ -591,6 +634,8 @@ La["Type"] = "Wert"
 La["Use class color"] = "Klassenfarbe verwenden"
 La["Vision Boss + 2 Bonus Objectives"] = "Visions Boss + 2 Bonus Ziele"
 La["Vision Boss Only"] = "nur der Visions Boss"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "Kriegsfronten"
 La["Warn about instance limit"] = "Vor Instanzlimit warnen"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Achtung: Du hast kürzlich %i Instanzen betreten und näherst Dich dem Limit von %i Instanzen pro Stunde für Deinen Account. Weitere Instanzen sollten in %s verfügbar sein."
@@ -629,6 +674,8 @@ La["Bonus rolls"] = "추가 전리품 주사위 추적"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = "보스 처지 정보가 누락되어 잠겨 있습니다.\\n 이것은 특정 낭만 공격대에 영향을 미치는 블리자드 버그입니다."
 --[[Translation missing --]]
+La["BRH"] = "BRH"
+--[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "카테고리"
 La["Characters"] = "캐릭터"
@@ -639,6 +686,8 @@ La["Combine emissaries of same expansion"] = "확팩별 사절퀘 모음"
 La["Combine LFR"] = "공찾/탄공 합침"
 La["Combine World Bosses"] = "야외 보스 합침"
 La["Connected Realms"] = "연동 서버"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "성약의 단"
 La["Covenant Assaults"] = "성약의 단 습격"
 La["Currency settings"] = "화폐 설정"
@@ -647,6 +696,8 @@ La["Cursed Coffer"] = "Cursed Coffer"
 La["Daily Quests"] = "일일 퀘스트"
 La["Day"] = "일"
 La["Debug Mode"] = "디버그 모드"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "마우스오버 사용안함"
 La["Disable tooltip display on icon mouseover"] = "아이콘 마우스 오버시 툴팁 표시 안함"
 La["Display instances in order of recommended level from lowest to highest"] = "권장 레벨이 낮은 것부터 높은 순으로 인던을 표시합니다."
@@ -658,8 +709,12 @@ La["Dragon of Nightmare"] = "악몽의 용"
 La["Dump quest debugging information"] = "퀘스트 디버그 정보 덤프하기"
 La["Dump time debugging information"] = "시간 디버깅 정보 덤프하기"
 La["Emissary Missing"] = "사절 없음"
+--[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
 La["Emissary Quests"] = "사절 퀘스트"
 La["Emissary quests"] = "사절 퀘스트"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "확장"
 La["Expired Lockout - Can be extended"] = "만료된 귀속 - 연장 가능"
 La["Export"] = "내보내기"
@@ -713,6 +768,8 @@ La["Mythic Key Best"] = "주차 단수"
 La["Mythic Keystone"] = "쐐기"
 La["Nathanos Blightcaller"] = "나타노스 브라이트콜러"
 La["Never show"] = "표시하지 않음"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "상흔"
 La["Opacity of the tooltip row highlighting"] = "툴팁 열 강조에 대한 불투명도"
 La["Open config"] = "설정 열기"
@@ -776,12 +833,16 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "이름이 변경되거나 삭제된 캐릭터만 사용해야 하며 재로그인시 캐릭터의 정보가 다시 채워집니다."
 La["Time /played"] = "플레이 시간 표시"
 La["Time Left"] = "남은 시간"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "툴팁 크기"
 La["TOP"] = "투기장"
 La["Torghast"] = "토르가스트"
 La["Tormentors of Torghast"] = "토르가스트의 고문관"
 La["Track Mythic keystone acquisition"] = "쐐기돌 추적"
 La["Track Mythic keystone best run"] = "쐐기 단수 기록"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "전문 기술 재사용 대기시간"
 La["Trade skills"] = "전문 기술"
 La["Transmute"] = "변환"
@@ -789,6 +850,8 @@ La["Type"] = "유형"
 La["Use class color"] = "직업 색상 사용"
 La["Vision Boss + 2 Bonus Objectives"] = "주 목표+추가 목표 2"
 La["Vision Boss Only"] = "주 목표만 달성"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "격전지"
 La["Warn about instance limit"] = "인스턴스 제한 경고"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "경고 : 최근 %i 개의 인스턴스에 입장하였고, 귀하의 계정에 대해 시간 당 제한된 %i 개의 인스턴스에 근접하고 있습니다. 더 많은 인스턴스는 %s 후에 이용가능합니다."
@@ -834,6 +897,8 @@ La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
 --[[Translation missing --]]
+La["BRH"] = "BRH"
+--[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorías"
 La["Characters"] = "Personajes"
@@ -848,6 +913,8 @@ La["Combine LFR"] = "Combinar BDB"
 La["Combine World Bosses"] = "Combinar Jefes del Mundo"
 La["Connected Realms"] = "Reinos Conectados"
 --[[Translation missing --]]
+La["COS"] = "COS"
+--[[Translation missing --]]
 La["Covenant"] = "Covenant"
 --[[Translation missing --]]
 La["Covenant Assaults"] = "Covenant Assaults"
@@ -859,6 +926,8 @@ La["Daily Quests"] = "Misiones diarias"
 La["Day"] = "Day"
 --[[Translation missing --]]
 La["Debug Mode"] = "Debug Mode"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Deshabilitar tooltip"
 La["Disable tooltip display on icon mouseover"] = "Deshabilita el marco al pasar el ratón sobre el ícono"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostrar instancias en orden de nivel recomendado de menor a mayor"
@@ -874,9 +943,13 @@ La["Dump time debugging information"] = "Deshacerse de la información de depura
 --[[Translation missing --]]
 La["Emissary Missing"] = "Emissary Missing"
 --[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
+--[[Translation missing --]]
 La["Emissary Quests"] = "Emissary Quests"
 --[[Translation missing --]]
 La["Emissary quests"] = "Emissary quests"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Expansión"
 La["Expired Lockout - Can be extended"] = "Registro expirado - puede extenderse"
 --[[Translation missing --]]
@@ -953,6 +1026,8 @@ La["Mythic Keystone"] = "Mythic Keystone"
 --[[Translation missing --]]
 La["Nathanos Blightcaller"] = "Nathanos Blightcaller"
 La["Never show"] = "Nunca mostrar"
+--[[Translation missing --]]
+La["NL"] = "NL"
 --[[Translation missing --]]
 La["NW"] = "NW"
 La["Opacity of the tooltip row highlighting"] = "Opacidad de la resalta de filas en la descripción"
@@ -1035,6 +1110,8 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Esto sólo debe ser usado para personajes que han sido renombrados o borrados, ya que los personajes serán cargados de nuevo cuando te conectes con ellos."
 La["Time /played"] = "Tiempo /jugado"
 La["Time Left"] = "Tiempo Restante"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Tamaño de Marco"
 --[[Translation missing --]]
 La["TOP"] = "TOP"
@@ -1046,6 +1123,8 @@ La["Tormentors of Torghast"] = "Tormentors of Torghast"
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]
 La["Track Mythic keystone best run"] = "Track Mythic keystone best run"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Cooldowns de profesiones"
 La["Trade skills"] = "Seguir cooldowns de profesiones"
 La["Transmute"] = "Transmutar"
@@ -1055,6 +1134,8 @@ La["Use class color"] = "Usar color de clase"
 La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
 --[[Translation missing --]]
 La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 --[[Translation missing --]]
 La["Warfronts"] = "Warfronts"
 --[[Translation missing --]]
@@ -1094,6 +1175,8 @@ La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Отсутствует информация об убийстве босса для этого сохранения рейда.
 Это является ошибкой компании Blizzard, затрагивающей некоторые старые рейды.]=]
 --[[Translation missing --]]
+La["BRH"] = "BRH"
+--[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Категории"
 La["Characters"] = "Персонажи"
@@ -1105,6 +1188,8 @@ La["Combine emissaries of same expansion"] = "Объединить эмисса�
 La["Combine LFR"] = "Объединять СПР (LFR)"
 La["Combine World Bosses"] = "Объединять мировых босcов"
 La["Connected Realms"] = "Соединенные сервера"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "Ковенант"
 La["Covenant Assaults"] = "Атаки ковенантов"
 La["Currency settings"] = "Настройки валюты"
@@ -1113,6 +1198,8 @@ La["Cursed Coffer"] = "Cursed Coffer"
 La["Daily Quests"] = "Ежедневные задания"
 La["Day"] = "День"
 La["Debug Mode"] = "Режим отладки"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Откл. отобр. по наведению"
 La["Disable tooltip display on icon mouseover"] = "Отключить отображение подсказки по наведению на иконку"
 La["Display instances in order of recommended level from lowest to highest"] = "Отображать подземелья в порядке рекомендуемого уровня от самого низкого до самого высокого"
@@ -1124,8 +1211,12 @@ La["Dragon of Nightmare"] = "Драконы Кошмара"
 La["Dump quest debugging information"] = "Сохранить отладочную информацию квеста в файле"
 La["Dump time debugging information"] = "Вывести информацию о времени для отладки"
 La["Emissary Missing"] = "Посланники отсутствуют"
+--[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
 La["Emissary Quests"] = "Задания Посланников"
 La["Emissary quests"] = "Задания Посланников"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Сохранение подземелий"
 La["Expired Lockout - Can be extended"] = "Сохранение с истекшим сроком - Можно продлить"
 La["Export"] = "Экспорт"
@@ -1179,6 +1270,8 @@ La["Mythic Key Best"] = "Лучший эпохальный ключ"
 La["Mythic Keystone"] = "Эпохальный ключ"
 La["Nathanos Blightcaller"] = "Натанос Гнилостень"
 La["Never show"] = "Никогда не отображать"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "СТ"
 La["Opacity of the tooltip row highlighting"] = "Прозрачность подсказки подсвеченной строки"
 La["Open config"] = "Открыть настройки"
@@ -1187,9 +1280,9 @@ La["Paragon Chests"] = "Сундуки за Репутацию"
 La["Party"] = "Группа"
 La["PF"] = "ЧК"
 La["Quest progresses"] = "Прогресс квеста"
-La["Raids before dungeons"] = "Рейды перед подземельями "
+La["Raids before dungeons"] = "Рейды перед подземельями"
 La["Recent Bonus Rolls"] = "Недавние бонусные броски"
-La["Recent Instances"] = "Недавние подземелья "
+La["Recent Instances"] = "Недавние подземелья"
 La["Recover Dailies"] = "Восстановление Ежедневных Заданий"
 La["Report instance resets to group"] = "Сообщать группе об обновлении подземелья"
 La["Reset Characters"] = "Сброс Персонажей"
@@ -1244,12 +1337,16 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Используйте только для переименованных или удаленных персонажей, так как данные все равно будут заполнены заново при входе на персонажа."
 La["Time /played"] = "Общее время игры"
 La["Time Left"] = "Обновится через"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Масштаб подсказки"
 La["TOP"] = "Театр"
 La["Torghast"] = "Торгаст"
 La["Tormentors of Torghast"] = "Мучители из Торгаста"
 La["Track Mythic keystone acquisition"] = "Отслеживать полученные эпохальные ключи"
 La["Track Mythic keystone best run"] = "Отслеживать лучший заход на эпохальный ключ"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Восстановление способностей профессий."
 La["Trade skills"] = "Отслеживать восстановление способностей профессий"
 La["Transmute"] = "Трансмутация (алхимия)"
@@ -1257,6 +1354,8 @@ La["Type"] = "Тип"
 La["Use class color"] = "Цвет класса"
 La["Vision Boss + 2 Bonus Objectives"] = "Босс Видения + 2 Бонусных цели"
 La["Vision Boss Only"] = "Только Босс Видения"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "Фронты"
 La["Warn about instance limit"] = "Предупреждать о пределе подземелий"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Внимание! За последнее время вы вошли в %i подземелий и приближаетесь к ограничению в \"%i подземелий в час\" для вашего аккаунта. Новые подземелья будут доступны через %s."
@@ -1292,6 +1391,8 @@ La["Bonus rolls"] = "额外拾取情况"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[首领击杀信息遗失
 这是一个会影响特定旧副本的暴雪BUG]=]
+--[[Translation missing --]]
+La["BRH"] = "BRH"
 La["Calling Missing"] = "使命任务缺失"
 La["Categories"] = "分类"
 La["Characters"] = "角色"
@@ -1302,6 +1403,8 @@ La["Combine emissaries of same expansion"] = "合并同一个资料片的大使�
 La["Combine LFR"] = "合并显示随机团本"
 La["Combine World Bosses"] = "合并世界首领"
 La["Connected Realms"] = "已合并服务器"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "盟约"
 La["Covenant Assaults"] = "盟约突袭"
 La["Currency settings"] = "货币设置"
@@ -1309,19 +1412,23 @@ La["Cursed Coffer"] = "被诅咒的箱子"
 La["Daily Quests"] = "日常任务"
 La["Day"] = "天"
 La["Debug Mode"] = "调试模式"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "禁用鼠标提示"
 La["Disable tooltip display on icon mouseover"] = "禁止当鼠标移动到插件图标上时显示提示信息"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建议的等级从低到高显示副本"
 La["Display instances with space inserted between categories"] = "在分类之间显示间距"
---[[Translation missing --]]
-La["Doomwalker"] = "Doomwalker"
+La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "梦魇之龙"
 La["Dump quest debugging information"] = "打印任务调试信息"
 La["Dump time debugging information"] = "打印时间调试信息"
 La["Emissary Missing"] = "大使任务缺失"
+La["Emissary of War"] = "战争的使者"
 La["Emissary Quests"] = "大使任务"
 La["Emissary quests"] = "大使任务"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "资料片"
 La["Expired Lockout - Can be extended"] = "到期锁定 - 可以延长"
 La["Export"] = "导出"
@@ -1373,6 +1480,8 @@ La["Mythic Key Best"] = "每周最佳纪录"
 La["Mythic Keystone"] = "史诗钥石"
 La["Nathanos Blightcaller"] = "纳萨诺斯·凋零者"
 La["Never show"] = "从不显示"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "通灵"
 La["Opacity of the tooltip row highlighting"] = "高亮提示行的透明度"
 La["Open config"] = "开启设置"
@@ -1436,12 +1545,14 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "此项仅可在人物重命名或者删除后使用，当你重新登入时原人物会被转移到新人物"
 La["Time /played"] = "已游戏时间"
 La["Time Left"] = "剩余时间"
+La["Timeworn Mythic Keystone"] = "时空漫游史诗钥石"
 La["Tooltip Scale"] = "提示框缩放"
 La["TOP"] = "剧场"
 La["Torghast"] = "托加斯特"
 La["Tormentors of Torghast"] = "托加斯特的折磨者"
 La["Track Mythic keystone acquisition"] = "追踪史诗钥石"
 La["Track Mythic keystone best run"] = "追踪史诗钥石每周最佳记录"
+La["Track Timeworn Mythic keystone acquisition"] = "追踪时空漫游史诗钥石"
 La["Trade Skill Cooldowns"] = "商业技能冷却"
 La["Trade skills"] = "商业技能"
 La["Transmute"] = "转化"
@@ -1449,6 +1560,8 @@ La["Type"] = "类型"
 La["Use class color"] = "使用职业颜色"
 La["Vision Boss + 2 Bonus Objectives"] = "三箱"
 La["Vision Boss Only"] = "一箱"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "战争前线"
 La["Warn about instance limit"] = "达到副本进入限制时警告"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已经进入 %i 次副本，并且已经接近账号每小时 %i 次的进入限制，更多的副本可以在 %s 后允许进入。"
@@ -1488,6 +1601,8 @@ La["Bonus rolls"] = "Tiradas extra"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = "Informacion de jefes muertos faltante para este registro de banda. Esto es una falla que afecta ciertas bandas antigüas."
 --[[Translation missing --]]
+La["BRH"] = "BRH"
+--[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorías"
 La["Characters"] = "Personajes"
@@ -1499,6 +1614,8 @@ La["Combine emissaries of same expansion"] = "Combinar emisarios de la misma exp
 La["Combine LFR"] = "Combinar BdG"
 La["Combine World Bosses"] = "Combinar jefes del mundo"
 La["Connected Realms"] = "Reinos conectados"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "Curia"
 La["Covenant Assaults"] = "Asaltos de Curias"
 La["Currency settings"] = "Ajustes de moneda"
@@ -1507,6 +1624,8 @@ La["Cursed Coffer"] = "Cursed Coffer"
 La["Daily Quests"] = "Misiones diarias"
 La["Day"] = "Día"
 La["Debug Mode"] = "Modo de depuración"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Deshabilitar tooltip"
 La["Disable tooltip display on icon mouseover"] = "Deshabilita el tooltip al pasar el ratón por encima del icono"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostrar instancias en orden de nivel recomendado de menor a mayor"
@@ -1521,9 +1640,13 @@ La["Dump time debugging information"] = "Volcar información de depuración de t
 --[[Translation missing --]]
 La["Emissary Missing"] = "Emissary Missing"
 --[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
+--[[Translation missing --]]
 La["Emissary Quests"] = "Emissary Quests"
 --[[Translation missing --]]
 La["Emissary quests"] = "Emissary quests"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Expansión"
 La["Expired Lockout - Can be extended"] = "Registro expirado - puede extenderse"
 La["Export"] = "Exportar"
@@ -1582,6 +1705,8 @@ La["Mythic Keystone"] = "Piedra angular mítica"
 --[[Translation missing --]]
 La["Nathanos Blightcaller"] = "Nathanos Blightcaller"
 La["Never show"] = "No mostrar nunca"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "EN (NW)"
 La["Opacity of the tooltip row highlighting"] = "Opacidad de los resaltados en las filas de la ventana de información"
 La["Open config"] = "Abrir la configuración"
@@ -1648,12 +1773,16 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Esto sólo debe ser usado para personajes que han sido renombrados o borrados, ya que los personajes serán cargados de nuevo cuando te conectes con los mismos."
 La["Time /played"] = "Tiempo jugado (/played)"
 La["Time Left"] = "Tiempo restante"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Tamaño de la ventana de información"
 La["TOP"] = "TdD (TOP)"
 La["Torghast"] = "Torghast"
 La["Tormentors of Torghast"] = "Tormentos de Torghast"
 La["Track Mythic keystone acquisition"] = "Rastrear adquisicion de piedra angular mítica"
 La["Track Mythic keystone best run"] = "Rastrear mejor incursión de piedra angular mítica"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Tiempos de reutilización de Profesiones"
 La["Trade skills"] = "Profesiones"
 La["Transmute"] = "Transmutar"
@@ -1661,6 +1790,8 @@ La["Type"] = "Tipo"
 La["Use class color"] = "Usar color de clase"
 La["Vision Boss + 2 Bonus Objectives"] = "Jefe de Vision + 2 objetivos extras"
 La["Vision Boss Only"] = "Solo jefe de Vision"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "Frentes de guerra"
 La["Warn about instance limit"] = "Advertencia sobre límite de instancias"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "Advertencia: Has entrado en %i estancias recientemente, y te estás acercando al límite de %i estancias por hora para tu cuenta. Tendrás más disponibles después de %s."
@@ -1699,6 +1830,8 @@ La["Bonus rolls"] = "額外骰子"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[缺少這個進度的首領擊殺資訊。
 這是暴雪的 BUG，會影響舊團隊。]=]
+--[[Translation missing --]]
+La["BRH"] = "BRH"
 La["Calling Missing"] = "沒有使命"
 La["Categories"] = "分類"
 La["Characters"] = "角色"
@@ -1709,6 +1842,8 @@ La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
 La["Connected Realms"] = "連結伺服器"
+--[[Translation missing --]]
+La["COS"] = "COS"
 La["Covenant"] = "誓盟"
 La["Covenant Assaults"] = "誓盟進攻戰"
 La["Currency settings"] = "兌換通貨設定"
@@ -1717,6 +1852,8 @@ La["Cursed Coffer"] = "Cursed Coffer"
 La["Daily Quests"] = "每日任務"
 La["Day"] = "日"
 La["Debug Mode"] = "偵錯模式"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "停用滑鼠提示"
 La["Disable tooltip display on icon mouseover"] = "滑鼠指向圖示時不要顯示滑鼠提示"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建議的等級從低到高顯示副本"
@@ -1728,8 +1865,12 @@ La["Dragon of Nightmare"] = "夢魘之龍"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
 La["Emissary Missing"] = "沒有特使"
+--[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
 La["Emissary Quests"] = "特使任務"
 La["Emissary quests"] = "特使任務"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "資料片"
 La["Expired Lockout - Can be extended"] = "進度已過期 - 可以延展"
 La["Export"] = "輸出"
@@ -1783,6 +1924,8 @@ La["Mythic Key Best"] = "最佳傳奇鑰石"
 La["Mythic Keystone"] = "傳奇鑰石"
 La["Nathanos Blightcaller"] = "納撒諾斯·凋零者"
 La["Never show"] = "永不顯示"
+--[[Translation missing --]]
+La["NL"] = "NL"
 La["NW"] = "死靈"
 La["Opacity of the tooltip row highlighting"] = "顯著標示滑鼠提示列的透明度"
 La["Open config"] = "開啟設定選項"
@@ -1846,12 +1989,16 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "這個功能只適用於已經更名或刪除的角色，登入這些角色時會重新擷取資料。"
 La["Time /played"] = "已遊玩時間"
 La["Time Left"] = "剩餘時間"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "滑鼠提示縮放大小"
 La["TOP"] = "劇場"
 La["Torghast"] = "托迦司"
 La["Tormentors of Torghast"] = "托迦司的折磨者"
 La["Track Mythic keystone acquisition"] = "追蹤獲得的傳奇鑰石"
 La["Track Mythic keystone best run"] = "追蹤傳奇鑰石最佳紀錄"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "專業技能冷卻時間"
 La["Trade skills"] = "專業技能"
 La["Transmute"] = "轉化"
@@ -1859,6 +2006,8 @@ La["Type"] = "類型"
 La["Use class color"] = "使用職業顏色"
 La["Vision Boss + 2 Bonus Objectives"] = "幻象首領 + 2個獎勵目標"
 La["Vision Boss Only"] = "只有幻象首領"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "戰爭前線"
 La["Warn about instance limit"] = "警告副本限制"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已經進入副本 %i 次，並且已經接近每小時 %i 次的帳號進入限制。 %s 後允許進入更多副本。"
@@ -1901,6 +2050,8 @@ La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
 --[[Translation missing --]]
+La["BRH"] = "BRH"
+--[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorias"
 La["Characters"] = "Personagens"
@@ -1915,6 +2066,8 @@ La["Combine LFR"] = "Combinar LdR"
 La["Combine World Bosses"] = "Agrupar chefes mundiais"
 La["Connected Realms"] = "Reinos conectados"
 --[[Translation missing --]]
+La["COS"] = "COS"
+--[[Translation missing --]]
 La["Covenant"] = "Covenant"
 --[[Translation missing --]]
 La["Covenant Assaults"] = "Covenant Assaults"
@@ -1924,6 +2077,8 @@ La["Cursed Coffer"] = "Cursed Coffer"
 La["Daily Quests"] = "Missões Diárias"
 La["Day"] = "Dia"
 La["Debug Mode"] = "Mode de Debug"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Desativar mouseover"
 La["Disable tooltip display on icon mouseover"] = "Desabilitar exibição de ajuda ao passar o mouse no ícone"
 La["Display instances in order of recommended level from lowest to highest"] = "Exibir instâncias em ordem de nível recomendado menor para o maior"
@@ -1938,8 +2093,12 @@ La["Dragon of Nightmare"] = "Dragon of Nightmare"
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Gerar informações de tempo de depuração"
 La["Emissary Missing"] = "Emissários Faltando"
+--[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
 La["Emissary Quests"] = "Missões de emissário"
 La["Emissary quests"] = "Missões de emissário"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Expansão"
 La["Expired Lockout - Can be extended"] = "Bloqueio de expirado - Pode ser estendida"
 --[[Translation missing --]]
@@ -2010,6 +2169,8 @@ La["Mythic Keystone"] = "Mythic Keystone"
 --[[Translation missing --]]
 La["Nathanos Blightcaller"] = "Nathanos Blightcaller"
 La["Never show"] = "Nunca mostrar"
+--[[Translation missing --]]
+La["NL"] = "NL"
 --[[Translation missing --]]
 La["NW"] = "NW"
 La["Opacity of the tooltip row highlighting"] = "Opacidade do destaque da linha de ajuda "
@@ -2091,6 +2252,8 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Isto deve ser usado apenas para personagens que foram removidos ou deletados, ou para personagens que serão contabilizados quando você se conectar neles."
 La["Time /played"] = "Tempo /played"
 La["Time Left"] = "Tempo restante"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Escala da janela"
 --[[Translation missing --]]
 La["TOP"] = "TOP"
@@ -2102,6 +2265,8 @@ La["Tormentors of Torghast"] = "Tormentors of Torghast"
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]
 La["Track Mythic keystone best run"] = "Track Mythic keystone best run"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Recarga de Habilidades"
 La["Trade skills"] = "Habilidades de profissão"
 La["Transmute"] = "Transmutação"
@@ -2111,6 +2276,8 @@ La["Use class color"] = "Usar cor das classes"
 La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
 --[[Translation missing --]]
 La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "Fronts de Guerra"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"
@@ -2158,6 +2325,8 @@ La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=]
 --[[Translation missing --]]
+La["BRH"] = "BRH"
+--[[Translation missing --]]
 La["Calling Missing"] = "Calling Missing"
 La["Categories"] = "Categorie"
 La["Characters"] = "Personaggi"
@@ -2172,6 +2341,8 @@ La["Combine LFR"] = "Unisci le riceche spedizioni"
 La["Combine World Bosses"] = "Unisci i boss mondiali"
 La["Connected Realms"] = "Reami connessi"
 --[[Translation missing --]]
+La["COS"] = "COS"
+--[[Translation missing --]]
 La["Covenant"] = "Covenant"
 --[[Translation missing --]]
 La["Covenant Assaults"] = "Covenant Assaults"
@@ -2182,6 +2353,8 @@ La["Daily Quests"] = "Missioni giornaliere"
 La["Day"] = "Giorno"
 --[[Translation missing --]]
 La["Debug Mode"] = "Debug Mode"
+--[[Translation missing --]]
+La["DHT"] = "DHT"
 La["Disable mouseover"] = "Disabilita movimento del mouse"
 La["Disable tooltip display on icon mouseover"] = "Disattiva i tooltip quando vai sull'icona"
 La["Display instances in order of recommended level from lowest to highest"] = "Mostra istanze in ordine del livello raccomandato dal piu' basso al piu' alto"
@@ -2197,9 +2370,13 @@ La["Dump time debugging information"] = "Inserisci l'orario nelle informazioni d
 --[[Translation missing --]]
 La["Emissary Missing"] = "Emissary Missing"
 --[[Translation missing --]]
+La["Emissary of War"] = "Emissary of War"
+--[[Translation missing --]]
 La["Emissary Quests"] = "Emissary Quests"
 --[[Translation missing --]]
 La["Emissary quests"] = "Emissary quests"
+--[[Translation missing --]]
+La["EOA"] = "EOA"
 La["Expansion"] = "Espansione"
 La["Expired Lockout - Can be extended"] = "Salvataggio scaduto - puo' essere esteso"
 --[[Translation missing --]]
@@ -2275,6 +2452,8 @@ La["Mythic Keystone"] = "Mythic Keystone"
 --[[Translation missing --]]
 La["Nathanos Blightcaller"] = "Nathanos Blightcaller"
 La["Never show"] = "Non mostrare mai"
+--[[Translation missing --]]
+La["NL"] = "NL"
 --[[Translation missing --]]
 La["NW"] = "NW"
 La["Opacity of the tooltip row highlighting"] = "Opacita' dell'evidenziazione delle riga"
@@ -2355,6 +2534,8 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Questo dovrebbe essere usato solo per personaggi che sono stati rinominati o cancellati, poiche' i personaggi saranno riesaminati quando ci accedi nuovamente"
 La["Time /played"] = "Tempo /giocato"
 La["Time Left"] = "Tempo rimanente"
+--[[Translation missing --]]
+La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
 La["Tooltip Scale"] = "Zoom del tooltip"
 --[[Translation missing --]]
 La["TOP"] = "TOP"
@@ -2366,6 +2547,8 @@ La["Tormentors of Torghast"] = "Tormentors of Torghast"
 La["Track Mythic keystone acquisition"] = "Track Mythic keystone acquisition"
 --[[Translation missing --]]
 La["Track Mythic keystone best run"] = "Track Mythic keystone best run"
+--[[Translation missing --]]
+La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
 La["Trade Skill Cooldowns"] = "Tempo di scadenza professioni"
 La["Trade skills"] = "Professioni"
 La["Transmute"] = "Trasmutazioni"
@@ -2375,6 +2558,8 @@ La["Use class color"] = "Usa colori delle classi"
 La["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
 --[[Translation missing --]]
 La["Vision Boss Only"] = "Vision Boss Only"
+--[[Translation missing --]]
+La["VOTW"] = "VOTW"
 La["Warfronts"] = "Fronti di Guerra"
 --[[Translation missing --]]
 La["Warn about instance limit"] = "Warn about instance limit"

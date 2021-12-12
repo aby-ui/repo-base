@@ -58,6 +58,13 @@ function DF:GetRangeValue (minValue, maxValue, percent)
 	return Lerp (minValue, maxValue, percent)
 end
 
+function DF:GetColorRangeValue(r1, g1, b1, r2, g2, b2, value)
+	local newR = DF:LerpNorm(r1, r2, value)
+	local newG = DF:LerpNorm(g1, g2, value)
+	local newB = DF:LerpNorm(b1, b2, value)
+	return newR, newG, newB
+end
+
 --dot product of two 2D Vectors
 function DF:GetDotProduct (value1, value2)
 	return (value1.x * value2.x) + (value1.y * value2.y)

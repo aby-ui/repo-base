@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2414, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20211204032249")
 mod:SetCreatureID(162060)
 mod:SetEncounterID(2358)
 
@@ -64,7 +64,7 @@ function mod:OnCombatStart(delay)
 		DBM.RangeCheck:Show(8)
 	end
 	if self.Options.InfoFrame then
-		DBM.InfoFrame:SetHeader(DBM_COMMON_L.INFOFRAME_POWER)
+		DBM.InfoFrame:SetHeader(DBM_CORE_L.INFOFRAME_POWER)
 		DBM.InfoFrame:Show(3, "enemypower", 2)
 	end
 	if self.Options.NPAuraOnAnimaField then

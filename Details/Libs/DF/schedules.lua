@@ -1,12 +1,14 @@
 
+local DF = _G ["DetailsFramework"]
+if (not DF or not DetailsFrameworkCanLoad) then
+	return
+end
 
-
-local DF = DetailsFramework
 local C_Timer = _G.C_Timer
 local unpack = _G.unpack
 
 --make a namespace for schedules
-DF.Schedules = {}
+DF.Schedules = DF.Schedules or {}
 
 --run a scheduled function with its payload
 local triggerScheduledTick = function(tickerObject)
@@ -64,4 +66,8 @@ end
 
 function DF.Schedules.SetName(object, name)
     object.name = name
+end
+
+function DF.Schedules.RunNextTick(callback)
+    return DF.Schedules.After(0, callback)
 end
