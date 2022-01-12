@@ -1,5 +1,7 @@
 local E, L, C = select(2, ...):unpack()
 
+-- On creating new option tables, add them to pre-existing custom spells
+
 local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 local GetSpecializationInfoByID = GetSpecializationInfoByID
@@ -104,7 +106,7 @@ end
 
 local isClassCategory = function(info)
 	local id = GetSpellID(info)
-	return OmniCDDB.cooldowns[id].class ~= "TRINKET" -- pvptrinket itemID are merged for 9.1, prevent editing
+	return OmniCDDB.cooldowns[id].class ~= "TRINKET" -- pvptrinket itemID are merged for 9.1, prevent editing itemID
 end
 
 local getGlobalDurationCharge = function(info)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2439, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211212055914")
+mod:SetRevision("20220104183116")
 mod:SetCreatureID(175726)--Skyja (TODO, add other 2 and set health to highest?)
 mod:SetEncounterID(2429)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -305,8 +305,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		if self:IsMythic() then
 			--TODO, actually see what happens if they aren't dead by the time these timers expire
-			timerWingsofRageCD:Start(56.7)
-			timerReverberatingRefrainCD:Start(95.7)
+			timerWingsofRageCD:Start(56.7, self.vb.wingCount+1)
+			timerReverberatingRefrainCD:Start(95.7, self.vb.refrainCount+1)
 		end
 		berserkTimer:Cancel()--Tecnically not accurate, Phase 1 berserk stops when both valks die. TODO, separate object
 		berserkTimer:Start(602)--Phase 2

@@ -86,7 +86,7 @@ local position = {
 			order = 1,
 			type = "select",
 			values = function() return E.customUF.optionTable end,
-			set = function(info, value) -- TODO: ?
+			set = function(info, value)
 				local key = info[2]
 				if E.db == E.DB.profile.Party[key] then
 					if value == "blizz" and not E.DB.profile.Party[key].position.detached and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then

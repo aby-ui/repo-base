@@ -929,6 +929,7 @@
 			[1776] = "gouge",
 			[13750] = "adrenalineRush",
 			[1784] = "stealth",
+			[115191] = "stealth",
 			[206328] = "Neurotoxin", -- Neurotoxin Honor Talent
 			[328305] = "Sepsis",
 			[185311] = "crimsonVial",
@@ -1013,6 +1014,7 @@
 			[328774] = "amplifyCurse",
 			[353294] = "shadowRift",
 			[353601] = "felObelisk",
+			[89766] = "AxeToss",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",

@@ -26,6 +26,12 @@ local unitFrameData = {
 		[3] = "unit",
 		[4] = 1,
 	},
+	{   [1] = "Grid2-Role", -- 3
+		[2] = "Grid2LayoutHeader1UnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40,
+	},
 	{   [1] = "Aptechka",
 		[2] = "NugRaid%dUnitButton",
 		[3] = "unit",
@@ -228,6 +234,13 @@ local unitFrameData = {
 		[4] = 1,
 		[5] = 40
 	},
+	{
+		[1] = "AshToAsh",
+		[2] = "AshToAshUnit%dUnit",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40
+	}
 }
 
 function E:SetActiveUnitFrameData()

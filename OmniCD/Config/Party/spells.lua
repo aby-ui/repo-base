@@ -88,8 +88,9 @@ local spells = {
 	set = function(info, state) E[info[1]].setSpell(info, state) end,
 	args = {
 		raidDesc = {
-			hidden = isntRaidCDOption,
-			name = L["Assign Raid Cooldowns."],
+--          hidden = isntRaidCDOption,
+--          name = L["Assign Raid Cooldowns."],
+			name = function(info) return isntRaidCDOption(info) and "|cffff2020Ctrl click to edit spell.\n\n" or L["Assign Raid Cooldowns."] end,
 			order = 0,
 			type = "description",
 		},
@@ -155,9 +156,6 @@ local spells = {
 	}
 }
 
-local borderlessCoords = {0.07, 0.93, 0.07, 0.93}
-E.borderlessCoords = borderlessCoords
-
 -- Fix ACCESS_VIOLATION error
 local numOthers = #E.OTHER_SORT_ORDER
 for i = 1, numOthers do
@@ -166,7 +164,7 @@ for i = 1, numOthers do
 	local name = E.L_CATAGORY_OTHER[class]
 	spells.args[class] = {
 		icon = icon,
-		iconCoords = borderlessCoords,
+		iconCoords = E.borderlessCoords,
 		name = name,
 		order = i,
 		type = "group",
@@ -190,7 +188,7 @@ for i = 1, MAX_CLASSES do
 --      icon = E.ICO.CLASS,
 		icon = E.ICO.CLASS .. class,
 --      iconCoords = iconCoords,
-		iconCoords = borderlessCoords,
+		iconCoords = E.borderlessCoords,
 		name = name,
 		type = "group",
 		args = {}
@@ -262,11 +260,12 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					t[sId] = {
 						hidden = isRaidOptDisabledID,
 						image =  icon,
-						imageCoords = borderlessCoords,
+						imageCoords = E.borderlessCoords,
 						name = name,
 						desc = link,
 						order = order,
 						type = "toggle",
+						arg = spellID,
 					}
 				end
 
@@ -318,11 +317,12 @@ function P:AddSpellPickerSpells()
 				t[vtype].args[sId] = {
 					hidden = isRaidOptDisabledID,
 					image = icon,
-					imageCoords = borderlessCoords, -- values doesn't matter, just needs to be added to crop
+					imageCoords = E.borderlessCoords, -- myAce: values doesn't matter, just needs to be added to crop
 					name = name,
 					desc = link,
 					order = order,
 					type = "toggle",
+					arg = spellID, -- myAce: number (ctrl click to edit) or function (dnd - nyi)
 				}
 
 				if class == "TRINKET" and v.item then

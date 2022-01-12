@@ -132,11 +132,17 @@ local function CheckBox_OnMouseDown(frame)
 		end
 
 		mouseOverFrame = GetMouseFocus();
-		--[[
-		if type(self.arg) == "number" then
-			cursorArg = self.arg
+		---[[
+		local arg = self.arg
+		if type(arg) == "number" then
+			--cursorArg = arg
+
+			local isCtrlKey = IsControlKeyDown()
+			if isCtrlKey then
+				OmniCD[1].EditSpell(nil, tostring(arg))
+			end
 		end
-		]]
+		--]]
 	end
 	AceGUI:ClearFocus()
 end
@@ -377,11 +383,11 @@ local methods = {
 	end,
 
 	-- s b (dnd)
-	--[[
+	---[[
 	["SetArg"] = function(self, arg)
 		self.arg = arg
 	end
-	]]
+	--]]
 }
 
 --[[-----------------------------------------------------------------------------

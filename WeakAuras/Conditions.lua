@@ -32,7 +32,7 @@ local function OnDelete(event, uid)
   end
 end
 
-Private:RegisterCallback("Delete", OnDelete)
+Private.callbacks:RegisterCallback("Delete", OnDelete)
 
 local function formatValueForAssignment(vType, value, pathToCustomFunction, pathToFormatters)
   if (value == nil) then
@@ -477,7 +477,7 @@ function Private.LoadConditionPropertyFunctions(data)
               end
               return change.value[fullKey]
             end
-            local formatters = change.value and Private.CreateFormatters(change.value.message, getter)
+            local formatters = change.value and Private.CreateFormatters(change.value.message, getter, true)
             WeakAuras.conditionTextFormatters[id] = WeakAuras.conditionTextFormatters[id] or {}
             WeakAuras.conditionTextFormatters[id][conditionNumber] = WeakAuras.conditionTextFormatters[id][conditionNumber] or {};
             WeakAuras.conditionTextFormatters[id][conditionNumber].changes = WeakAuras.conditionTextFormatters[id][conditionNumber].changes or {};

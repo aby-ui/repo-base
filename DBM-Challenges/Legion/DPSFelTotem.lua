@@ -3,9 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,timewalker"
 
-mod:SetRevision("20211207230342")
+mod:SetRevision("20211226023423")
 mod:SetCreatureID(117230, 117484)--Tugar, Jormog
-mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
 mod.soloChallenge = true
 

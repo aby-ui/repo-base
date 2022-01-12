@@ -1,10 +1,19 @@
 local E, L, C = select(2, ...):unpack()
 
 if E.isClassic then E.changelog = [=[
+v2.6.35
+	CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
+	Warlock Soulstone CD added.
+	Tooltip borders fixed.
+
 v2.6.30
 	Initial release for WoW: Classic Era.
 ]=]
 elseif E.isBCC then E.changelog = [=[
+v2.6.35
+	CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
+	Warlock Soulstone CD added.
+
 v2.6.30
 	Feature Updates
 		All supported UIs can now display individual unit CD bars in a raid.
@@ -24,6 +33,23 @@ v2.6.30
 Pre v2.6.30 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.6.35
+	Feature Updates
+		CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
+	Spells
+		Sinful Brand, Nether Portal, Impending Victory CD updated for 9.1.5
+	CD Modifiers
+		NF Priest, Benevolent Faerie Fermata (Conduit) added.
+		NF Priest, Bwonsamdi's Pact (Runeforge) added.
+	Bug Fixes
+		Kindred Spirits used on group members will correctly start it's CD and apply any existing CDR.
+		Fortifying Brew's CD when affected by both Benevolent Fae and Symbol of Hope will reduce the correct amount.
+		Switching Covenants will correctly remove previous Covenant spells for non-synced units.
+		Offline non-synced members will be re-inspected when they come back online to fix issues when the player has also been disconnected.
+		Fixed stack overflow error which can happen when using Icy Veins with Icy Propulsion and Thermal Void.
+	AshtToAsh UI support.
+	Grid2 by role support.
+
 v2.6.34
 	Fixed cooldown reduction with synced units.
 

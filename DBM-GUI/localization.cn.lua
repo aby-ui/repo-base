@@ -1,7 +1,7 @@
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
 -- sunlcy@NGA
--- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20210202
+-- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20211214
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_GUI_L then DBM_GUI_L = {} end
@@ -18,7 +18,7 @@ L.WebsiteButton				= "网页"
 L.OTabBosses	            = "模块"--Deprecated and will be deleted once tabs no longer use this
 L.OTabRaids		            = "副本 & PVP"--Raids & PVP
 L.OTabDungeons	            = "地下城"--Might still need editing since it doesn't mention scenarios
-L.OTabPlugins	            = "插件"
+L.OTabPlugins	            = "核心插件"
 L.OTabOptions	            = "选项"
 L.OTabAbout		            = "关于"
 
@@ -144,6 +144,9 @@ L.Area_ImportExportProfile	= "导入导出配置"
 L.ImportExportInfo			= "导入会覆盖你当前的配置，请小心使用"
 L.ButtonImportProfile		= "导入配置"
 L.ButtonExportProfile		= "导出配置"
+
+L.ImportErrorOn				= "自定义语音缺失: %s"
+L.ImportVoiceMissing		= "找不要语音包: %s"
 
 -- Tab: Alerts
 L.TabCategory_Alerts	 	= "警报"

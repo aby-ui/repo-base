@@ -63,7 +63,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isOpened = RSContainerDB.IsContainerOpened(containerID)
 	POI.isDiscovered = POI.isOpened or alreadyFoundInfo ~= nil
-	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(containerID, mapID)
+	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLinkByMap(containerID, mapID)
 	if (containerInfo) then
 		POI.worldmap = containerInfo.worldmap
 	end

@@ -54,7 +54,12 @@ local default = {
   fontSize = defaultFontSize,
   mirror = false,
   frameStrata = 1,
-  slantMode = "INSIDE"
+  slantMode = "INSIDE",
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -976,8 +981,6 @@ local function create(parent)
   region.extraTextures = {};
   region.extraSpinners = {};
 
-  region.values = {};
-
   -- Use a dummy object for the SmoothStatusBarMixin, because our SetValue
   -- is used for a different purpose
   region.smoothProgress = {};
@@ -998,8 +1001,6 @@ local function create(parent)
   region.SetOrientation = SetOrientation;
 
   WeakAuras.regionPrototype.create(region);
-
-  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
 
   return region;
 end

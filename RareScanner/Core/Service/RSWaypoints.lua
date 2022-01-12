@@ -9,6 +9,9 @@ local RSWaypoints = private.NewLib("RareScannerWaypoints")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
+-- RareScanner general libraries
+local RSUtils = private.ImportLib("RareScannerUtils")
+
 ---============================================================================
 -- Ingame waypoints
 ---============================================================================
@@ -18,7 +21,7 @@ local function AddWaypoint(entityID)
 
 	local entityInfo = RSGeneralDB.GetAlreadyFoundEntity(entityID)
 	if (entityInfo and entityInfo.coordX and entityInfo.coordY) then
-		local uiMapPoint = UiMapPoint.CreateFromCoordinates(entityInfo.mapID, entityInfo.coordX, entityInfo.coordY);
+		local uiMapPoint = UiMapPoint.CreateFromCoordinates(entityInfo.mapID, tostring(RSUtils.FixCoord(entityInfo.coordX)), tostring(RSUtils.FixCoord(entityInfo.coordY)));
 		C_Map.SetUserWaypoint(uiMapPoint);
 		C_SuperTrack.SetSuperTrackedUserWaypoint(true);
 	end
@@ -27,8 +30,7 @@ end
 function RSWaypoints.AddWorldMapWaypoint(mapID, x, y)
 	if (RSConfigDB.IsAddingWorldMapIngameWaypoints() and mapID and x and y) then
 		C_Map.ClearUserWaypoint();
-		
-		local uiMapPoint = UiMapPoint.CreateFromCoordinates(mapID, x, y);
+		local uiMapPoint = UiMapPoint.CreateFromCoordinates(mapID, tostring(RSUtils.FixCoord(x)), tostring(RSUtils.FixCoord(y)));
 		C_Map.SetUserWaypoint(uiMapPoint);
 		C_SuperTrack.SetSuperTrackedUserWaypoint(true);
 	end

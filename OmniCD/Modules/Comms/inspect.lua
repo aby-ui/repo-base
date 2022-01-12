@@ -15,7 +15,7 @@ local Comms = E["Comms"]
 local P = E["Party"]
 local item_merged = E.item_merged
 local INS_ONUPDATE_INTERVAL = 1
-local INS_DELAY_TIME = 1
+local INS_DELAY_TIME = 2
 local INS_PAUSE_TIME = 2
 local INS_TIME_LIMIT = 180
 local elapsedTime = 0
@@ -47,7 +47,7 @@ local function IsSoulbindRowEnhanced(soulbindID, row, renownLevel)
 	end
 end
 
-local invSlotIDs = { -- runeforgeBaseItems uses this index!
+local invSlotIDs = { -- runeforgeBaseItems uses this index
 	13, -- INVSLOT_TRINKET1
 	14, -- INVSLOT_TRINKET2
 	16, -- INVSLOT_MAINHAND
@@ -129,12 +129,12 @@ function Comms:DisableInspect()
 	self.enabledInspect = false
 end
 
-function Comms:DequeueInspect(guid)
+function Comms:DequeueInspect(guid, addToStale)
 	if queried == guid then
 		queried = nil
 	end
+	staleEntries[guid] = addToStale and queueEntries[guid] or nil
 	queueEntries[guid] = nil
-	staleEntries[guid] = nil
 end
 
 function Comms:EnqueueInspect(force, guid)
@@ -219,7 +219,7 @@ function Comms:RequestInspect()
 			local unit = info.unit
 			local elapsed = now - added
 			if ( not UnitIsConnected(unit) or elapsed > INS_TIME_LIMIT ) then
-				-- Changing online status triggers GRU
+				-- Changing online status triggers GRU -> have to force inspect in GRU since info exists.
 				self:DequeueInspect(guid)
 			elseif ( (E.isPreBCC and not CheckInteractDistance(unit,1)) or not CanInspect(unit) ) then
 				-- CheckInteractDistance: BCC still has 28yd inspection range (zone wide in Legion?)
@@ -329,6 +329,8 @@ if E.isPreBCC then
 					end
 				end
 			end
+
+			InspectTooltip:ClearLines()
 		end
 
 		if info.level == 200 then
@@ -441,6 +443,8 @@ if E.isPreBCC then
 					tmp[c] = itemID
 				end
 			end
+
+			InspectTooltip:ClearLines()
 		end
 
 		local talentInvSlots = table.concat(tmp, ",")
@@ -502,11 +506,11 @@ else
 			end
 		end
 
+		local addToStale
 		local runeforgePower = 0
 		for i = 1, numInvSlotIDs do
 			local slotID = invSlotIDs[i]
-			InspectTooltip:SetInventoryItem(unit, slotID)
-			local _, itemLink = InspectTooltip:GetItem()
+			local itemLink = GetInventoryItemLink(unit, slotID) -- no longer need to scan tooltip in SL
 			if itemLink then
 				local itemID, _,_,_,_,_, itemSubClassID = GetItemInfoInstant(itemLink)
 				if itemID then
@@ -539,6 +543,8 @@ else
 						info.invSlotData[itemID] = true
 					end
 				end
+			elseif not addToStale then -- iss#316 failed or empty slot, ping until time out
+				addToStale = true
 			end
 		end
 		info.shadowlandsData.runeforgeDescID = runeforgePower
@@ -550,7 +556,7 @@ else
 		end
 
 		ClearInspectPlayer()
-		self:DequeueInspect(guid)
+		self:DequeueInspect(guid, addToStale)
 
 		P:UpdateUnitBar(guid)
 	end

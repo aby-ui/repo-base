@@ -35,7 +35,6 @@ local RSRoutines = private.ImportLib("RareScannerRoutines")
 -- RareScanner services
 local RSRespawnTracker = private.ImportLib("RareScannerRespawnTracker")
 local RSMap = private.ImportLib("RareScannerMap")
-local RSWorldMapHooks = private.ImportLib("RareScannerWorldMapHooks")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 local RSLoot = private.ImportLib("RareScannerLoot")
@@ -705,16 +704,24 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 		-- Collection events
 	elseif (event == "NEW_MOUNT_ADDED") then
 		local mountID = ...
-		RSCollectionsDB.RemoveNotCollectedMount(mountID)
+		RSCollectionsDB.RemoveNotCollectedMount(mountID, function()
+			RSExplorerFrame:Refresh()
+		end)
 	elseif (event == "NEW_PET_ADDED") then
 		local petGUID = ...
-		RSCollectionsDB.RemoveNotCollectedPet(petGUID)
+		RSCollectionsDB.RemoveNotCollectedPet(petGUID, function()
+			RSExplorerFrame:Refresh()
+		end)
 	elseif (event == "NEW_TOY_ADDED") then
 		local itemID = ...
-		RSCollectionsDB.RemoveNotCollectedToy(itemID)
+		RSCollectionsDB.RemoveNotCollectedToy(itemID, function()
+			RSExplorerFrame:Refresh()
+		end)
 	elseif (event == "TRANSMOG_COLLECTION_UPDATED") then
 		local latestAppearanceID, _ = C_TransmogCollection.GetLatestAppearance();
-		RSCollectionsDB.RemoveNotCollectedAppearance(latestAppearanceID)
+		RSCollectionsDB.RemoveNotCollectedAppearance(latestAppearanceID, function()
+			RSExplorerFrame:Refresh()
+		end)
 	else
 		return
 	end
@@ -1675,10 +1682,16 @@ function RareScanner:OnInitialize()
 
 	-- Setup our map provider
 	WorldMapFrame:AddDataProvider(CreateFromMixins(RareScannerDataProviderMixin));
-	WorldMapFrame:AddOverlayFrame("WorldMapRSSearchTemplate", "FRAME", "CENTER", WorldMapFrame:GetCanvasContainer(), "TOP", 0, 0);
+	--WorldMapFrame:AddOverlayFrame("WorldMapRSSearchTemplate", "FRAME", "CENTER", WorldMapFrame:GetCanvasContainer(), "TOP", 0, 0);
+	local searchFrame = CreateFrame("FRAME", nil, WorldMapFrame, "WorldMapRSSearchTemplate");
+	searchFrame:SetPoint("CENTER", WorldMapFrame:GetCanvasContainer(), "TOP", 0, 0);
+	searchFrame.relativeFrame = WorldMapFrame:GetCanvasContainer()
 
-	-- Add options to the world map menu
-	RSWorldMapHooks.HookDropDownMenu()
+	-- Add options button to the world map
+	RSMap.LoadWorldMapButton()
+	
+	-- Add minimap icon
+	RSMinimap.LoadMinimapButton()
 
 	-- Load completed quests
 	RSQuestTracker.CacheAllCompletedQuestIDs()
@@ -1905,7 +1918,7 @@ local function RefreshDatabaseData()
 	end)
 	
 	-- Clear previous overlay if active when closed the game
-	RSGeneralDB.RemoveOverlayActive()
+	RSGeneralDB.RemoveAllOverlayActive()
 end
 
 local function UpdateRareNamesDB()
@@ -1943,7 +1956,7 @@ function RareScanner:InitializeDataBase()
 	--============================================
 
 	-- Initialize zone filter list
-	for k, v in pairs(private.CONTINENT_ZONE_IDS) do
+	for k, v in pairs(RSMapDB.GetContinents()) do
 		table.foreach(v.zones, function(index, zoneID)
 			RSConstants.PROFILE_DEFAULTS.profile.general.filteredZones[zoneID] = true
 		end)

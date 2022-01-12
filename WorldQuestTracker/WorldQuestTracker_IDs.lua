@@ -550,6 +550,9 @@ WorldQuestTracker.MapData.AllFactionIds = {
 	[2407] = true, --The Ascended
 	[2465] = true, --The Wild Hunt
 	[2413] = true, --Court of Harvesters
+	[2470] = true, --Death's Advance
+	[2472] = true, --The Archivists' Codex
+	[2432] = true, --Ve'nari
 
 	--BFA Factions
 	[2159] = true, --7th Legion
@@ -585,6 +588,9 @@ WorldQuestTracker.MapData.FactionMapId = {
 	[2407] = 1533, --The Ascended | BASTION
 	[2465] = 1565, --The Wild Hunt | ARDENWEALD
 	[2413] = 1525, --Court of Harvesters | REVENDRETH
+	[2470] = 1961, --Death's Advance
+	[2472] = 1961, --The Archivists' Codex
+	[2432] = 1543, --Ve'nari
 }
 
 WorldQuestTracker.MapData.FactionIcons = {
@@ -593,6 +599,9 @@ WorldQuestTracker.MapData.FactionIcons = {
 	[2407] = 3257748, --The Ascended
 	[2465] = 3575389, --The Wild Hunt
 	[2413] = 3514227, --Court of Harvesters
+	[2470] = [[Interface\ICONS\INV_Tabard_DeathsAdvance_B_01]], --Death's Advance
+	[2472] = [[Interface\ICONS\INV_Inscription_80_Scroll]], --The Archivists' Codex
+	[2432] = [[Interface\AddOns\WorldQuestTracker\media\venari]], --Ve'nari
 
 	--BFA
 	[2159] = "Interface\\ICONS\\inv__faction_alliancewareffort", --7th Legion
@@ -628,6 +637,9 @@ local ShadowlandsFactions = {
 	[2407] = true, --The Ascended
 	[2465] = true, --The Wild Hunt
 	[2413] = true, --Court of Harvesters
+	[2470] = true, --Death's Advance
+	[2472] = true, --The Archivists' Codex
+	[2432] = true, --Ve'nari
 }
 
 local BFAFactions = {
@@ -721,6 +733,11 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[2407] = GetFactionInfoByID(2407), --The Ascended
 		[2465] = GetFactionInfoByID(2465), --The Wild Hunt
 		[2413] = GetFactionInfoByID(2413), --Court of Harvesters
+		[2470] = GetFactionInfoByID(2470), --Death's Advance
+		[2472] = GetFactionInfoByID(2472), --The Archivists' Codex
+		[2432] = GetFactionInfoByID(2432), --Ve'nari
+		--[2462] = Stitchmasters
+		--[2464] = Court of Night
 
 		--BFA
 		[2159] = GetFactionInfoByID (2159), --7th Legion
@@ -766,6 +783,9 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[2407] = GetFactionInfoByID(2407), --The Ascended
 		[2465] = GetFactionInfoByID(2465), --The Wild Hunt
 		[2413] = GetFactionInfoByID(2413), --Court of Harvesters
+		[2470] = GetFactionInfoByID(2470), --Death's Advance
+		[2472] = GetFactionInfoByID(2472), --The Archivists' Codex
+		[2432] = GetFactionInfoByID(2432), --Ve'nari
 		
 		--BFA
 		[2103] = GetFactionInfoByID (2103), --Zandalari Empire

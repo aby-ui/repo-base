@@ -11,7 +11,7 @@ local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local DBM = DBM
 local L = DBM_CORE_L
 local UnitClass, GetTime, GetPartyAssignment, UnitGroupRolesAssigned, GetRaidTargetIndex, UnitExists, UnitGetTotalAbsorbs, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit, UIDropDownMenu_CreateInfo, UIDropDownMenu_AddButton = UnitClass, GetTime, GetPartyAssignment, UnitGroupRolesAssigned, GetRaidTargetIndex, UnitExists, UnitGetTotalAbsorbs, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit, UIDropDownMenu_CreateInfo, UIDropDownMenu_AddButton
-local error, tostring, type, pairs, ipairs, select, tonumber, tsort, twipe, mfloor, mmax, mmin, mrandom, schar, ssplit, CAfter = error, tostring, type, pairs, ipairs, select, tonumber, table.sort, table.wipe, math.floor, math.max, math.min, math.random, string.char, string.split, C_Timer.After
+local error, tostring, type, pairs, ipairs, select, tonumber, tsort, twipe, mfloor, mmax, mmin, mrandom, schar, ssplit = error, tostring, type, pairs, ipairs, select, tonumber, table.sort, table.wipe, math.floor, math.max, math.min, math.random, string.char, string.split
 local NORMAL_FONT_COLOR, SPELL_FAILED_OUT_OF_RANGE = NORMAL_FONT_COLOR, SPELL_FAILED_OUT_OF_RANGE
 local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS-- for Phanx' Class Colors
 
@@ -1177,21 +1177,25 @@ function infoFrame:Update(time)
 	end
 	if frame:IsShown() then
 		if time then
-			CAfter(time, function()
-				onUpdate(frame)
-			end)
+			DBM:Unschedule(onUpdate)
+			DBM:Schedule(time, onUpdate, frame)
 		else
 			onUpdate(frame)
 		end
 	end
 end
 
-function infoFrame:UpdateTable(table)
+function infoFrame:UpdateTable(table, time)
 	if not frame then
 		createFrame()
 	end
 	if frame:IsShown() and table then
-		onUpdate(frame, table)
+		if time then
+			DBM:Unschedule(onUpdate)
+			DBM:Schedule(time, onUpdate, frame, table)
+		else
+			onUpdate(frame, table)
+		end
 	end
 end
 

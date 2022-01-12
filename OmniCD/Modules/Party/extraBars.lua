@@ -617,7 +617,7 @@ function P:UpdateExPosition()
 
 	for key, f in pairs(self.extraBars) do
 		if E.db.extraBars[key].enabled then
-			self:SetExIconLayout(key, true, true, true) -- if isGRU run once after iterating roster
+			self:SetExIconLayout(key, true, true, true) -- if isGRU then run once after iterating roster
 			E.LoadPosition(f)
 			f:Show()
 		else

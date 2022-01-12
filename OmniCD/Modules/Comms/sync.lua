@@ -87,8 +87,8 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- Ace strips realm
 
 	local header, guid, body = strmatch(message, "(.-),(.-),(.+)")
 	local info = P.groupInfo[guid]
-	if not info then -- class nil in updateRoster
-		return -- can't distinguish 'server delay' from 'no longer in group' so return instead of building info
+	if not info then -- class nil in updateRoster (can't distinguish server delay from no longer in group)
+		return
 	end
 
 	local isSyncedUnit = self.syncGUIDS[guid]
@@ -275,3 +275,5 @@ do
 	Comms.SOULBIND_PATH_CHANGED = SendUpdatedSyncData
 	Comms.COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED = SendUpdatedSyncData
 end
+
+Comms.PLAYER_LEAVING_WORLD = Comms.Desync -- Desync on disabling from the AddOns menu

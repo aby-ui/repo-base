@@ -50,8 +50,32 @@ end
 -- Continents database
 ---============================================================================
 
-function RSMapDB.GetContinentMapIDs()
+function RSMapDB.GetContinents()
 	return private.CONTINENT_ZONE_IDS
+end
+
+function RSMapDB.GetContinentInfo(mapID)
+	if (mapID and RSMapDB.GetContinents()[mapID]) then
+		return RSMapDB.GetContinents()[mapID]
+	end
+	
+	return nil
+end
+
+function RSMapDB.GetContinentOfMap(mapID)
+	if (mapID) then
+		for continentID, info in pairs(RSMapDB.GetContinents()) do
+			if (RSUtils.Contains(info, mapID)) then
+				if (info.zonefilter and info.npcfilter) then
+					return continentID
+				else
+					break
+				end
+			end
+		end
+	end
+	
+	return nil
 end
 
 function RSMapDB.IsMapInCurrentExpansion(mapID)
@@ -60,7 +84,7 @@ function RSMapDB.IsMapInCurrentExpansion(mapID)
 	end
 
 	-- check if the map is in the continent
-	for _, continentInfo in pairs (RSMapDB.GetContinentMapIDs()) do
+	for _, continentInfo in pairs (RSMapDB.GetContinents()) do
 		local mapInContinent = RSUtils.Contains(continentInfo.zones, mapID)
 
 		-- check if the mapID is in a subzone into the continent

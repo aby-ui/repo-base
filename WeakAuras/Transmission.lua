@@ -117,7 +117,7 @@ local function stripNonTransmissableFields(datum, fieldMap)
   end
 end
 
-function CompressDisplay(data)
+function CompressDisplay(data, version)
   -- Clean up custom trigger fields that are unused
   -- Those can contain lots of unnecessary data.
   -- Also we warn about any custom code, so removing unnecessary
@@ -139,7 +139,8 @@ function CompressDisplay(data)
   end
 
   local copiedData = CopyTable(data)
-  stripNonTransmissableFields(copiedData, Private.non_transmissable_fields)
+  local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000 or Private.non_transmissable_fields
+  stripNonTransmissableFields(copiedData, non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;
 end
@@ -153,7 +154,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   local remaining = msg;
   local done;
   repeat
-    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- ([^%]]+)%]");
+    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- (.*)%]");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
@@ -229,15 +230,6 @@ showCodeButton:SetPoint("BOTTOMLEFT", 8, 8)
 showCodeButton:SetText(L["Show Code"])
 showCodeButton:SetWidth(90)
 
-local urlEditBox = CreateFrame("EDITBOX", "WeakAurasTooltipUrlEditBox", buttonAnchor)
-urlEditBox:SetWidth(250)
-urlEditBox:SetHeight(34)
-urlEditBox:SetFont(STANDARD_TEXT_FONT, 12)
-urlEditBox:SetPoint("TOPLEFT", 8, -57)
-urlEditBox:SetScript("OnMouseUp", function() urlEditBox:HighlightText() end)
-urlEditBox:SetScript("OnChar", function() urlEditBox:SetText(urlEditBox.text) urlEditBox:HighlightText() end)
-urlEditBox:SetAutoFocus(false)
-
 local checkButtons, radioButtons, keyToButton, pendingData = {}, {}, {}, {}
 
 for _, key in pairs(Private.internal_fields) do
@@ -273,7 +265,6 @@ end
 
 radioButtons = {
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonCopy", buttonAnchor, "UIRadioButtonTemplate"),
-  -- CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonReplace", buttonAnchor, "UIRadioButtonTemplate"),
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonUpdate", buttonAnchor, "UIRadioButtonTemplate"),
 }
 
@@ -295,6 +286,7 @@ for index, button in ipairs(radioButtons) do
   end)
 end
 
+-- Fallback to display category, if keyToButton doesn't contain an entry
 -- Ideally, we would not add an __index method to this
 -- But that would greatly bloat the update_category for display
 -- A better solution would be to refactor the data
@@ -333,7 +325,7 @@ local function install(data, oldData, patch, mode, isParent, originalNames)
   -- munch the provided data and add, update, or delete as appropriate
   -- return the data which the SV knows about afterwards (if there is any)
   local installedUID, imported
-  if mode == 1 then
+  if mode == 1 then -- Copy
     -- always import as a new thing, set preferToUpdate = false
     if data then
       imported = CopyTable(data)
@@ -348,52 +340,55 @@ local function install(data, oldData, patch, mode, isParent, originalNames)
       -- nothing to add
       return
     end
-  elseif not oldData then
-    -- this is a new thing
-    if not checkButtons.newchildren:GetChecked() then
-      -- user has chosen to not add new children, so do nothing
-      return
-    end
-    imported = CopyTable(data)
-    data.id = WeakAuras.FindUnusedId(data.id)
-    data.preferToUpdate = true
-    WeakAuras.Add(data)
-    installedUID = data.uid
-  elseif not data then
-    -- this is an old thing
-    if checkButtons.oldchildren:GetChecked() then
-      WeakAuras.Delete(oldData)
-      return
+  else -- mode == 2 => Update
+    if not oldData then
+      -- this is a new thing
+      if not checkButtons.newchildren:GetChecked() then
+        -- user has chosen to not add new children, so do nothing
+        return
+      end
+      imported = CopyTable(data)
+      data.id = WeakAuras.FindUnusedId(data.id)
+      data.preferToUpdate = true
+      WeakAuras.Add(data)
+      installedUID = data.uid
+    elseif not data then
+      -- this is an old thing
+      if checkButtons.oldchildren:GetChecked() then
+        WeakAuras.Delete(oldData)
+        return
+      else
+        -- user has chosen to not delete obsolete auras, so do nothing
+        return Private.GetDataByUID(oldData.uid)
+      end
     else
-      -- user has chosen to not delete obsolete auras, so do nothing
-      return Private.GetDataByUID(oldData.uid)
-    end
-  else
-    -- something to update
-    if patch then -- if there's no result from Diff, then there's nothing to do
-      for key in pairs(patch) do
-        local checkButton = keyToButton[key]
-        if not isParent and checkButton == checkButtons.anchor then
-          checkButton = checkButtons.arrangement
+      -- something to update
+      if patch then -- if there's no result from Diff, then there's nothing to do
+        for key in pairs(patch) do
+          local checkButton = keyToButton[key]
+          -- For child auras, anchor fields are considered arrangement
+          if not isParent and checkButton == checkButtons.anchor then
+            checkButton = checkButtons.arrangement
+          end
+          if checkButton and not checkButton:GetChecked() then
+            patch[key] = nil
+          end
         end
-        if checkButton and not checkButton:GetChecked() then
-          patch[key] = nil
+        if patch.id then
+          patch.id = WeakAuras.FindUnusedId(patch.id)
         end
       end
-      if patch.id then
-        patch.id = WeakAuras.FindUnusedId(patch.id)
+      WeakAuras.Delete(oldData)
+      if data.uid and data.uid ~= oldData.uid then
+        oldData.uid = data.uid
       end
+      Update(oldData, patch)
+      oldData.preferToUpdate = true
+      installedUID = oldData.uid
+      imported = data
+      originalNames[installedUID] = originalNames[data.uid]
+      originalNames[data.uid] = nil
     end
-    WeakAuras.Delete(oldData)
-    if data.uid and data.uid ~= oldData.uid then
-      oldData.uid = data.uid
-    end
-    Update(oldData, patch)
-    oldData.preferToUpdate = true
-    installedUID = oldData.uid
-    imported = data
-    originalNames[installedUID] = originalNames[data.uid]
-    originalNames[data.uid] = nil
   end
   -- if at this point, then some change has been made in the db. Update History to reflect the change
   Private.SetHistory(installedUID, imported, "import")
@@ -422,7 +417,7 @@ local function importPendingData()
   -- get necessary info
   local imports, old, diffs = pendingData.newData, pendingData.oldData or {}, pendingData.diffs or {}
   local addedChildren, deletedChildren = pendingData.added or 0, pendingData.deleted or 0
-  local mode = pendingData.mode or 1
+  local mode = pendingData.mode or 1 -- mode: 1 == COPY, 2 == UPDATE
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
@@ -442,10 +437,6 @@ local function importPendingData()
   WeakAuras.CloseImportExport()
   WeakAuras.SetImporting(true)
 
-  -- import parent/single aura
-  local data, oldData, patch = imports[0], old[0], diffs[0]
-  data.parent = nil
-
   -- Setup for preserving names.
   -- Importing can rename auras, and due to deletion or cross-renaming, importing also frees names.
   -- So after importing we try to rename again
@@ -455,10 +446,17 @@ local function importPendingData()
       originalNames[imports[i].uid] = imports[i].id
     end
   end
+
+  -- import parent/single aura
+  local data, oldData, patch = imports[0], old[0], diffs[0]
+  data.parent = nil
+
   -- handle sortHybridTable
   local hybridTables
   if (data and data.sortHybridTable) or (mode ~= 1 and oldData and oldData.sortHybridTable) then
     hybridTables = {
+      -- At the end of the function merged contains the correct sortHybridTable
+      -- This only depends on the mode, arrangement checkbox and id renames
       new = data and data.sortHybridTable or {},
       old = mode ~= 1 and oldData and oldData.sortHybridTable or {},
       merged = {},
@@ -485,6 +483,9 @@ local function importPendingData()
     else
       map = preserveOldArrangement and indexMap.oldToNew or indexMap.newToOld
     end
+    -- Depending on mode and/or the state of the arrangement checkbox, either the old
+    -- or new data's arrangement should be preserved.
+    -- This is done by first handling that side, and then later filling in the other side
     for i = 1, preserveOldArrangement and #old or #imports do
       local j = map[i]
       if preserveOldArrangement then
@@ -504,9 +505,11 @@ local function importPendingData()
       end
       local oldID, newID = oldData and oldData.id, data and data.id
       if oldData and mode ~= 1 then
+        -- Update might have changed the parents id!
         oldData.parent = parentData.id
       end
       if data then
+        -- Update might have changed the parents id!
         data.parent = parentData.id
         data.authorMode = nil
       end
@@ -527,11 +530,13 @@ local function importPendingData()
       coroutine.yield()
     end
 
-    -- now, the other side of the data may have some children which need to be handled
+    -- Now, the other side of the data may have some children which need to be handled
+    -- A aura's insert position is determined by the last aura, that matched between old and new
+    -- We fist build up a map of insertPositons -> auras, and then insert them
     if mode ~= 1 then
       if preserveOldArrangement then
         if checkButtons.newchildren:GetChecked() and addedChildren > 0 then
-          -- we have children which need to be added
+          -- We have children which need to be added, adding new into old
           local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
           for newIndex, data in ipairs(imports) do
             local oldIndex = newToOld[newIndex]
@@ -667,7 +672,7 @@ local receivedData;
 hooksecurefunc("SetItemRef", function(link, text)
   buttonAnchor:Hide()
   if(link == "garrmission:weakauras") then
-    local _, _, characterName, displayName = text:find("|Hgarrmission:weakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- ([^%]]+)%]|h");
+    local _, _, characterName, displayName = text:find("|Hgarrmission:weakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- (.*)%]|h");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
@@ -791,11 +796,17 @@ function Private.DisplayToString(id, forChat)
   local data = WeakAuras.GetData(id);
   if(data) then
     data.uid = data.uid or GenerateUniqueID()
-    local transmitData = CompressDisplay(data);
+    -- Check which transmission version we want to use
+    local version = 1421
+    for child in Private.TraverseSubGroups(data) do -- luacheck: ignore
+      version = 2000
+      break;
+    end
+    local transmitData = CompressDisplay(data, version);
     local transmit = {
       m = "d",
       d = transmitData,
-      v = 1421, -- Version of Transmisson, won't change anymore.
+      v = version,
       s = versionString
     };
     local firstTrigger = data.triggers[1].trigger
@@ -819,7 +830,7 @@ function Private.DisplayToString(id, forChat)
         else
           child.uid = GenerateUniqueID()
         end
-        transmit.c[index] = CompressDisplay(child);
+        transmit.c[index] = CompressDisplay(child, version);
         index = index + 1
         if child.controlledChildren then
           transmit.v = 2000
@@ -887,15 +898,7 @@ function Private.RefreshTooltipButtons()
   else
     showCodeButton:Show()
   end
-  urlEditBox:Enable()
-  if pendingData.url then
-    urlEditBox:Show()
-    urlEditBox.text = pendingData.url
-    urlEditBox:SetText(pendingData.url)
-    urlEditBox:HighlightText(0, 0)
-  else
-    urlEditBox:Hide()
-  end
+
   if InCombatLockdown() then
     importButton:SetText(L["In Combat"])
     importButton.tooltipText = L["Importing is disabled while in combat"]
@@ -1200,16 +1203,8 @@ local function findMatch(data, children)
     oldParent = nil
   end
   if not oldParent or not isParentMatch(oldParent, data) then
-    oldParent = nil
     if data.uid then
-      for id, existingData in pairs(WeakAurasSaved.displays) do
-        if isParentMatch(existingData, data) then
-          oldParent = existingData
-          break
-        end
-      end
-    else
-      return nil
+      oldParent = Private.GetDataByUID(data.uid)
     end
   end
   return oldParent
@@ -1259,19 +1254,24 @@ local function MatchInfo(data, children, oldParent)
   end
   local hybridTables
   if oldParent.sortHybridTable or data.sortHybridTable then
+    -- MatchInfo only checks if the sortHybridTables conflict in anyway
+    -- The old and new aura, matched via uid, might have different ids,
+    -- so we can't compare the sortHybridTables directly
+    -- Instead everytime we establish a match between old and new, we check
+    -- if the sortHybridTable of old and new agree
+    -- We remove the matches from hybridTables.old/new, so that any left-over
+    -- at the end indicate a conflict
+    -- Any conflict leads to arrangement category being active
+
     hybridTables = {
       old = {},
       new = {},
     }
     if oldParent.sortHybridTable then
-      for id, isHybrid in pairs(oldParent.sortHybridTable) do
-        hybridTables.old[id] = isHybrid
-      end
+      hybridTables.old = CopyTable(oldParent.sortHybridTable)
     end
     if data.sortHybridTable then
-      for id, isHybrid in pairs(data.sortHybridTable) do
-        hybridTables.new[id] = isHybrid
-      end
+      hybridTables.new = CopyTable(data.sortHybridTable)
     end
   end
 
@@ -1378,6 +1378,7 @@ local function MatchInfo(data, children, oldParent)
       for key in pairs(diff) do
         local button = keyToButton[key]
         if button then
+          -- For child auras, anchor fields are arrangement
           if i > 0 and button == checkButtons.anchor then
             button = checkButtons.arrangement
           end
@@ -1409,7 +1410,6 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
   local highestVersion = data.internalVersion or 1;
   local hasDescription = data.desc and data.desc ~= "";
   local hasUrl = data.url and data.url ~= "";
-  pendingData.url = hasUrl and data.url
   local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
   local tocversion = data.tocversion;
 
@@ -1427,22 +1427,6 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
 
   if hasVersion then
     tinsert(tooltip, {1, L["Version: "] .. (data.semver or data.version), 1, 0.82, 0, 1});
-  end
-
-  -- WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
-  -- the tooltip, it will look to the incoming transmission data for child data. This allows thumbnails of incoming
-  -- groups to be constructed properly.
-  local RegularGetData = WeakAuras.GetData
-  if children then
-    WeakAuras.GetData = function(id)
-      if(children) then
-        for index, childData in pairs(children) do
-          if(childData.id == id) then
-            return childData;
-          end
-        end
-      end
-    end
   end
 
   local linesFromTop
@@ -1615,7 +1599,6 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
       end
     end
   end
-  WeakAuras.GetData = RegularGetData or WeakAuras.GetData
   ShowTooltip(tooltip, linesFromTop, matchInfo and matchInfo.activeCategories)
 end
 
@@ -1690,9 +1673,6 @@ function WeakAuras.Import(inData, target)
   ShowDisplayTooltip(data, children, matchInfo, icon, icons, "unknown")
   return status, msg
 end
-
--- backwards compatibility
-WeakAuras.ImportString = WeakAuras.Import
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"

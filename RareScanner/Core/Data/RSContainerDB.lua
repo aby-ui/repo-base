@@ -112,7 +112,7 @@ function RSContainerDB.GetInternalContainerCoordinates(containerID, mapID)
 	if (containerID and mapID) then
 		local containerInfo = GetInternalContainerInfoByMapID(containerID, mapID)
 		if (containerInfo) then
-			return containerInfo.x, containerInfo.y
+			return RSUtils.Lpad(containerInfo.x, 4, '0'), RSUtils.Lpad(containerInfo.y, 4, '0')
 		end
 	end
 

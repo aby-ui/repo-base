@@ -110,7 +110,7 @@ local importProfile = importExportProfilesArea:CreateButton(L.ButtonImportProfil
 		local activeVP = importTable.DBM.ChosenVoicePack
 		if activeVP ~= "None" then
 			if not DBM.VoiceVersions[activeVP] or (DBM.VoiceVersions[activeVP] and DBM.VoiceVersions[activeVP] == 0) then
-				DBM:AddMsg(L.VOICE_MISSING)
+				DBM:AddMsg(L.ImportVoiceMissing:format(activeVP))
 				tinsert(errors, "ChosenVoicePack")
 			end
 		end

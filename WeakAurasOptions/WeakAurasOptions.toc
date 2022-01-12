@@ -1,7 +1,7 @@
 ## Interface: 90105
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 3.7.3
+## Version: 3.7.5
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -29,11 +29,12 @@ RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
 
 SubRegionOptions\SubRegionCommon.lua
+SubRegionOptions\Background.lua
 SubRegionOptions\SubText.lua
 SubRegionOptions\Border.lua
 SubRegionOptions\Glow.lua
 SubRegionOptions\Tick.lua
-SubRegionOptions\BarModel.lua
+SubRegionOptions\Model.lua
 
 Cache.lua
 

@@ -12,6 +12,9 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 -- RareScanner service libraries
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 
+-- RareScanner general libraries
+local RSUtils = private.ImportLib("RareScannerUtils")
+
 
 RSOverlayMixin = CreateFromMixins(MapCanvasPinMixin);
 
@@ -19,13 +22,14 @@ function RSOverlayMixin:OnLoad()
 	self:SetScalingLimits(1, 1.4, 2.5);
 end
 
-function RSOverlayMixin:OnAcquired(x, y, pin)
+function RSOverlayMixin:OnAcquired(x, y, r, g, b, pin)
 	self:UseFrameLevelType("PIN_FRAME_LEVEL_DIG_SITE", self:GetMap():GetNumActivePinsByTemplate("RSOverlayTemplate"));
 
 	-- Set attributes
 	self.pin = pin
 	self.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
-	self:SetPosition(x, y);
+	self.Texture:SetVertexColor(r, g, b, 0.9)
+	self:SetPosition(RSUtils.FixCoord(x), RSUtils.FixCoord(y));
 end
 
 function RSOverlayMixin:OnMouseEnter()
@@ -53,10 +57,24 @@ end
 
 function RSOverlayMixin:OnMouseDown(button)
 	if (button == "RightButton") then
-		self:GetMap():RemoveAllPinsByTemplate("RSOverlayTemplate");
-		RSGeneralDB.RemoveOverlayActive()
+		for pin in self:GetMap():EnumeratePinsByTemplate("RSOverlayTemplate") do
+			if (pin ~= self and pin:GetEntityID() == self:GetEntityID()) then
+				self:GetMap():RemovePin(pin)
+			end
+		end
+		
+		self:GetMap():RemovePin(self)
+		RSGeneralDB.RemoveOverlayActive(self:GetEntityID())
 
 		-- Refresh minimap
 		RSMinimap.RefreshAllData(true)
+	end
+end
+
+function RSOverlayMixin:GetEntityID()
+	if (self.pin.POI) then
+		return self.pin.POI.entityID
+	else
+		return self.pin.entityID
 	end
 end

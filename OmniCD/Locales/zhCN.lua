@@ -13,26 +13,20 @@ L["|cffff2020Friendly CD module must be enabled for the corresponding instance z
 L["|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."] = "|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."
 L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."] = "|cffff2020重要!|r 只有队友安装技能冷却插件 OmniCD 的队友才能取得誓盟和灵印资料。"
 L["> 1 minute"] = "> 1 分钟"
---[[Translation missing --]]
-L["2nd Row Icons (Double Row Layout)"] = "2nd Row Icons (Double Row Layout)"
+L["2nd Row Icons (Double Row Layout)"] = "两行图标视图"
 L["2px Border"] = "2px边框"
-L["A new update is available. (|cff99cdff%s)"] = "有新版本可以使用。(|cff99cdff%s)"
---[[Translation missing --]]
-L["Active"] = "Active"
+L["A new update is available. |cff99cdff(%s)"] = "有新版本可以使用。|cff99cdff(%s)"
+L["Active"] = "激活"
 L["Active Icon Opacity"] = "冷却中图标的不透明度"
 L["Active Icon Settings"] = "冷卻中图标设定"
---[[Translation missing --]]
-L["Add spell to Spell Alerts"] = "Add spell to Spell Alerts"
---[[Translation missing --]]
-L["Add Spells"] = "Add Spells"
---[[Translation missing --]]
-L["Add to Alerts"] = "Add to Alerts"
+L["Add spell to Spell Alerts"] = "添加法术到法术警告"
+L["Add Spells"] = "添加法术"
+L["Add to Alerts"] = "添加到警报"
 L["Alerts"] = "提示"
 L["All user set values will be lost. Do you want to proceed?"] = "所有用户设定值都将丢失。确定继续吗？"
 L["Always attach to Blizzard frames. By default, bars attach to whichever frame is visible, and if both are visible UF addon take precedence over Blizzard"] = "始终将其附加到暴雪框架上。 默认情况下，图标会附加到可见的框架，如果两个框架都可见，则插件优先于暴雪框架"
 L["Always Bottom"] = "总是在下方"
---[[Translation missing --]]
-L["Always Show Cooldown Numbers"] = "Always Show Cooldown Numbers"
+L["Always Show Cooldown Numbers"] = "总是显示冷却数字"
 L["Always Top"] = "总是在上方"
 L["Anchor"] = "锚点"
 L["Anchor Point"] = "锚点"
@@ -48,19 +42,15 @@ L["Attach to Blizzard Frames"] = "附加到暴雪框架"
 L["Attachment Point"] = "附着点"
 L["Author"] = "作者"
 L["Auto"] = "自动"
---[[Translation missing --]]
-L["Bar"] = "Bar"
---[[Translation missing --]]
-L["Bar width"] = "Bar width"
+L["Bar"] = "条"
+L["Bar width"] = "条宽度"
 --[[Translation missing --]]
 L["Battle Res"] = "Battle Res"
---[[Translation missing --]]
-L["BG"] = "BG"
+L["BG"] = "战场"
 L["Blizzard Raid Frames has been disabled by your AddOn(s). Enable and reload UI?"] = "暴雪团队框架已被你的插件禁用。 启用并重新加载UI？"
 L["Border"] = "边框"
 L["Border Color"] = "边框颜色"
---[[Translation missing --]]
-L["Border Thickness"] = "Border Thickness"
+L["Border Thickness"] = "框体厚度"
 L["Borders retain 1px width regardless of the UI scale"] = "无论用户界面的大小如何，边框都保留1px的宽度"
 L["Borders retain 1px width regardless of the UI scale. Need to reload the UI when the UI or icon scale changes"] = "无论用户界面的大小如何边框都保留1px。 当UI或图标比例更改时需要重新加载UI"
 L["BOTTOM"] = "下"
@@ -77,8 +67,7 @@ L["CD-Group %d"] = "CD-Group %d"
 L["CD-Group Padding"] = "CD-Group Padding"
 L["CENTER"] = "中"
 L["Center Horizontally"] = "水平居中"
---[[Translation missing --]]
-L["Changelog"] = "Changelog"
+L["Changelog"] = "更改日志"
 L["Changing party display options in your UF addon while OmniCD is active will break the anchors. Type (/oc rl) to fix the anchors"] = "当OmniCD处于启用状态，更改你的队伍框架设定可能会打乱OmniCD的锚点设置。请输入 /oc rl 来修正锚点。"
 L["Charge Color"] = "充能颜色"
 L["Charge Size"] = "充能大小"
@@ -87,8 +76,7 @@ L["Check All"] = "选中所有"
 L["Check this option if the spell is a talent ability to ensure proper spell detection"] = "如果是天赋技能，请勾选此项，以确保正确的拼写检查。"
 L["Clean wipe the savedvariable file. |cffff2020Warning|r: This can not be undone!"] = "清空 savedvariable 文件。|cffff2020警告|r: 删除后将无法还原!"
 L["Column"] = "列"
---[[Translation missing --]]
-L["Column Padding"] = "Column Padding"
+L["Column Padding"] = "列间距"
 --[[Translation missing --]]
 L["Commands:"] = "Commands:"
 --[[Translation missing --]]
@@ -116,20 +104,15 @@ L["Crop"] = "Crop"
 --[[Translation missing --]]
 L["Crop Icons 1.5:1."] = "Crop Icons 1.5:1."
 L["Crowd Control"] = "群体控制"
---[[Translation missing --]]
-L["Current Profile"] = "Current Profile"
+L["Current Profile"] = "当前配置"
 L["Current Unit Frame Addon"] = "目前所使用的单位框体插件"
---[[Translation missing --]]
-L["Custom Priority"] = "Custom Priority"
+L["Custom Priority"] = "自定义优先级"
 --[[Translation missing --]]
 L["Custom Spells"] = "Custom Spells"
 L["Custom UI"] = "自定UI"
---[[Translation missing --]]
-L["Decode"] = "Decode"
---[[Translation missing --]]
-L["Decode failed!"] = "Decode failed!"
---[[Translation missing --]]
-L["Decompress failed!"] = "Decompress failed!"
+L["Decode"] = "解码"
+L["Decode failed!"] = "解码失败"
+L["Decompress failed!"] = "解压缩失败！"
 L["Default spells are reverted back to original values and removed from the list only"] = "默认技能将恢复初始值并从列表中删除"
 L["Defensive"] = "防御"
 --[[Translation missing --]]
@@ -139,8 +122,7 @@ L["Desaturate colors on active icons"] = "降低冷却图标上的颜色"
 L["Descending"] = "降序"
 --[[Translation missing --]]
 L["Deserialize failed!"] = "Deserialize failed!"
---[[Translation missing --]]
-L["Destination Profile"] = "Destination Profile"
+L["Destination Profile"] = "目标配置"
 --[[Translation missing --]]
 L["Detach CD-Group"] = "Detach CD-Group"
 L["Detach from raid frames and set position manually"] = "脱离团队框架并手动设置位置"
@@ -174,20 +156,15 @@ L["Enter Spell ID to Add/Edit"] = "Enter Spell ID to Add/Edit"
 L["Enter talent ID if the spell is a talent ability in any of the class specializations. This ensures proper spell detection."] = "Enter talent ID if the spell is a talent ability in any of the class specializations. This ensures proper spell detection."
 --[[Translation missing --]]
 L["Enter value to set a custom spell priority. This value is applied to all zones."] = "Enter value to set a custom spell priority. This value is applied to all zones."
---[[Translation missing --]]
-L["Export"] = "Export"
---[[Translation missing --]]
-L["Export Profile"] = "Export Profile"
---[[Translation missing --]]
-L["Exports your currently active profile."] = "Exports your currently active profile."
+L["Export"] = "导出"
+L["Export Profile"] = "导出配置文件"
+L["Exports your currently active profile."] = "导出你现在激活的配置文件"
 --[[Translation missing --]]
 L["External Defensive"] = "External Defensive"
---[[Translation missing --]]
-L["Extra Bars"] = "Extra Bars"
+L["Extra Bars"] = "额外监视条"
 L["Fade In Time"] = "淡入时间"
 L["Fade Out Time"] = "淡出时间"
---[[Translation missing --]]
-L["Feedback"] = "Feedback"
+L["Feedback"] = "反馈"
 L["Font"] = "字体"
 L["Font Outline"] = "字体轮廓"
 L["Fonts"] = "字体"
@@ -203,16 +180,13 @@ L["Having \"BOTTOM\" in the anchor point, icons grow upward, otherwise downward"
 L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"] = "锚点中选右侧图标向左增长，否则向右增长"
 --[[Translation missing --]]
 L["Help Translate"] = "Help Translate"
---[[Translation missing --]]
-L["Hide Border"] = "Hide Border"
---[[Translation missing --]]
-L["Hide Disabled Spells"] = "Hide Disabled Spells"
+L["Hide Border"] = "隐藏边框"
+L["Hide Disabled Spells"] = "隐藏禁用的法术"
 --[[Translation missing --]]
 L["Hide Spark"] = "Hide Spark"
 --[[Translation missing --]]
 L["Hide spells that are not enabled in the 'Spells' menu."] = "Hide spells that are not enabled in the 'Spells' menu."
---[[Translation missing --]]
-L["Hide status bar border"] = "Hide status bar border"
+L["Hide status bar border"] = "隐藏状态条边框"
 --[[Translation missing --]]
 L["Hide the leading spark texture."] = "Hide the leading spark texture."
 L["Highlight"] = "高亮"
@@ -232,8 +206,7 @@ L["Icon Position"] = "图标位置"
 L["Icon Scale Changed."] = "图标比例已更改"
 L["Icon Size"] = "图标尺寸"
 L["Icon size auto adjusts as a percentage of the anchored frame height"] = "根据对齐的框架高度百分比自动调整图标大小"
---[[Translation missing --]]
-L["Icon Texture"] = "Icon Texture"
+L["Icon Texture"] = "图标材质"
 L["Icons"] = "图标"
 L["Immunity"] = "免疫"
 L["Import"] = "导入"
@@ -241,33 +214,25 @@ L["Import Profile"] = "导入配置文件"
 L["Importing `%s` will create a new profile."] = "导入 '%s' 将会建立新的配置文件。"
 L["Importing `%s` will merge new spells to your list and overwrite same spells."] = "导入 '%s' 会将新的法术合并到列表并覆盖相同的法术。"
 L["Importing Custom Spells will reload UI. Press Cancel to abort."] = "导入自定义法术将会重新载入介面，要放弃请按取消。"
---[[Translation missing --]]
-L["Inactive"] = "Inactive"
+L["Inactive"] = "取消激活"
 L["Inactive Icon Opacity"] = "不在冷却中的图标透明度"
 L["INNER"] = "内部"
---[[Translation missing --]]
-L["Interrupt Bar"] = "Interrupt Bar"
---[[Translation missing --]]
-L["Interrupted Spell Icon"] = "Interrupted Spell Icon"
---[[Translation missing --]]
-L["Interrupted Target Marker"] = "Interrupted Target Marker"
+L["Interrupt Bar"] = "打断技能图标"
+L["Interrupted Spell Icon"] = "被打断的技能图标"
+L["Interrupted Target Marker"] = "被打断的目标标记"
 L["Interrupts"] = "打断"
 L["Invalid ID"] = "无效的ID"
---[[Translation missing --]]
-L["Invalid Profile"] = "Invalid Profile"
+L["Invalid Profile"] = "无效的配置文件"
 L["Item ID (Optional)"] = "物品ID（可选）"
---[[Translation missing --]]
-L["Jump to Extra Bars settings"] = "Jump to Extra Bars settings"
+L["Jump to Extra Bars settings"] = "跳转到额外的条设置"
 L["Layout"] = "设置"
 L["LEFT"] = "向左"
 L["License"] = "许可"
---[[Translation missing --]]
-L["Lock frame position"] = "Lock frame position"
+L["Lock frame position"] = "锁定框体位置"
 L["Login Message"] = "登录信息"
 L["Major update"] = "重大更新"
 L["Manual Mode"] = "手动模式"
---[[Translation missing --]]
-L["Manual Position"] = "Manual Position"
+L["Manual Position"] = "手动设置位置"
 L["Mark Enhanced Spells"] = "标记增强法术"
 L["Mark icons with a red dot to indicate enhanced spells"] = "用红点标记图标以指示增强法术"
 L["Max number of group members"] = "队伍最大成员数量"
@@ -279,25 +244,20 @@ L["MM:SS Color"] = "MM:SS Color"
 --[[Translation missing --]]
 L["MM:SS Threshold"] = "MM:SS Threshold"
 --[[Translation missing --]]
-L["Mouseovering the icon will show the interrupted spell information regardless of \'Show Tooltip\' option."] = "Mouseovering the icon will show the interrupted spell information regardless of \'Show Tooltip\' option."
+L["Mouseovering the icon will show the interrupted spell information regardless of 'Show Tooltip' option."] = "Mouseovering the icon will show the interrupted spell information regardless of 'Show Tooltip' option."
 --[[Translation missing --]]
 L["Move your group's Interrupt spells to the Interrupt Bar."] = "Move your group's Interrupt spells to the Interrupt Bar."
 --[[Translation missing --]]
 L["Move your group's Raid Cooldowns to the Raid Bar."] = "Move your group's Raid Cooldowns to the Raid Bar."
---[[Translation missing --]]
-L["Multiselect"] = "Multiselect"
---[[Translation missing --]]
-L["Name Bar"] = "Name Bar"
---[[Translation missing --]]
-L["Name Offset X"] = "Name Offset X"
---[[Translation missing --]]
-L["Name Offset Y"] = "Name Offset Y"
+L["Multiselect"] = "多选"
+L["Name Bar"] = "姓名条"
+L["Name Offset X"] = "姓名偏移X"
+L["Name Offset Y"] = "姓名偏移Y"
 --[[Translation missing --]]
 L["New Column per Group"] = "New Column per Group"
 --[[Translation missing --]]
 L["None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."] = "None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."
---[[Translation missing --]]
-L["Not an OmniCD profile!"] = "Not an OmniCD profile!"
+L["Not an OmniCD profile!"] = "不是一个OmniCD配置文件"
 L["Notes"] = "说明"
 L["Notify Updates"] = "有新版本时通知我"
 L["Offensive"] = "进攻"

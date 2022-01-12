@@ -61,6 +61,8 @@ function P:ResetModule(isModuleDisabled)
 
 	self.disabled = true
 	self:HideAllBars()
+
+	E.Libs.CBH:Fire("OnShutdown")
 end
 
 function P:Refresh(full)

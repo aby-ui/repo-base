@@ -24,8 +24,15 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 44
-RSConstants.CURRENT_LOOT_DB_VERSION = 59
+RSConstants.CURRENT_DB_VERSION = 46
+RSConstants.CURRENT_LOOT_DB_VERSION = 63
+
+---============================================================================
+-- Current maps (newer)
+---============================================================================
+
+RSConstants.CURRENT_MAP_ID = 1550 --Shadowlands
+RSConstants.CURRENT_SUBMAP_ID = 1961 --Korthia
 
 ---============================================================================
 -- Special events
@@ -43,6 +50,23 @@ RSConstants.FIND_HIDDEN_QUESTS_TIMER = 5 --5 seconds after killing a NPC or open
 RSConstants.CHECK_RESPAWN_BY_QUEST_TIMER = 150 --2.5 minutes
 RSConstants.CHECK_RESPAWNING_BY_LASTSEEN_TIMER = 60 --1 minute
 RSConstants.FIND_BETTER_COORDINATES_WITH_RANGE_TIMER = 1; -- 1 seconds
+
+---============================================================================
+-- Collections enumerators
+---============================================================================
+
+RSConstants.ITEM_SOURCE = {
+	NPC = 1,
+	CONTAINER = 2
+}
+
+RSConstants.ITEM_TYPE = {
+	APPEARANCE = 1,
+	TOY = 2,
+	PET = 3,
+	MOUNT = 4,
+	ANYTHING = 0
+}
 
 ---============================================================================
 -- Addons default settings
@@ -90,7 +114,11 @@ RSConstants.PROFILE_DEFAULTS = {
 			displayChatMessage = true,
 			enableNavigation = true,
 			navigationLockEntity = false,
-			lockPosition = false
+			lockPosition = false,
+			minimapButton = {
+				hide = false
+			},
+			worldmapButton = true
 		},
 		rareFilters = {
 			filtersToggled = true,
@@ -111,7 +139,9 @@ RSConstants.PROFILE_DEFAULTS = {
 			searchingPets = true,
 			searchingMounts = true,
 			searchingToys = true,
-			searchingAppearances = true
+			searchingAppearances = true,
+			showFiltered = true,
+			showDead = true,
 		},
 		map = {
 			displayNpcIcons = false,
@@ -141,7 +171,18 @@ RSConstants.PROFILE_DEFAULTS = {
 			tooltipsNotes = true,
 			tooltipsState = true,
 			tooltipsSeen = true,
-			tooltipsCommands = true
+			tooltipsCommands = true,
+			overlayMaxColours = 10,
+			overlayColour1 = { 1, 0.2, 1 },
+			overlayColour2 = { 0.23, 0.943, 1 },
+			overlayColour3 = { 0.98, 0.99, 0.19 },
+			overlayColour4 = { 0, 0.12, 1 },
+			overlayColour5 = { 0.317, 1, 0.1 },
+			overlayColour6 = { 1, 0.35, 0.11 },
+			overlayColour7 = { 0.08, 0.55, 1 },
+			overlayColour8 = { 0.18, 1, 0.42 },
+			overlayColour9 = { 1, 0.04, 0.4 },
+			overlayColour10 = { 0.4, 0.007, 1 },
 		},
 		loot = {
 			filteredLootCategories = {},
@@ -327,12 +368,6 @@ RSConstants.CONTAINERS_WITH_NPC_VIGNETTE = { 369435 }
 RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
 
 ---============================================================================
--- MountIDs
----============================================================================
-
-RSConstants.MOUNTS_WITHOUT_SOURCE = { 1314, 1411 } 
-
----============================================================================
 -- ItemIDs
 ---============================================================================
 
@@ -510,7 +545,19 @@ RSConstants.STEP7 = "7"
 ---============================================================================
 
 RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS = "RARESCANNER_APPLY_COLLECTIONS_LOOT_FILTERS"
-RSConstants.START_COLLECTIONS_SCAN = "RARESCANNER_START_COLLECTIONS_SCAN"
+RSConstants.EXPLORER_FILTERING_DIALOG = "RARESCANNER_EXPLORER_FILTERING_DIALOG"
+
+---============================================================================
+-- Explorer filters
+---============================================================================
+
+RSConstants.EXPLORER_FILTER_DROP_MOUNTS = 1
+RSConstants.EXPLORER_FILTER_DROP_PETS = 2
+RSConstants.EXPLORER_FILTER_DROP_TOYS = 3
+RSConstants.EXPLORER_FILTER_DROP_APPEARANCES = 4
+RSConstants.EXPLORER_FILTER_PART_ACHIEVEMENT = 5
+RSConstants.EXPLORER_FILTER_DEAD = 6
+RSConstants.EXPLORER_FILTER_FILTERED = 7
 
 ---============================================================================
 -- Others

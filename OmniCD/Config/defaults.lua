@@ -141,7 +141,7 @@ C["Party"] = {
 				["useIconAlpha"] = false,
 				["hideSpark"] = false,
 				["hideBorder"] = false,
-				["showInterruptedSpell"] = false,
+				["showInterruptedSpell"] = true,
 				["showRaidTargetMark"] = false,
 				["statusBarWidth"] = 205,
 				["textOfsX"] = 3,
@@ -224,50 +224,247 @@ C["Party"] = {
 
 if E.isPreBCC then
 	E.spellDefaults = {
-		42292,
-		28730,  26297,  28880,  20594,  20549,  7744,
-		16979,  5211,   22812,  22842,  740,    33831,  17116,
-		1499,   19577,  19503,  19386,  34490,  19263,  23989,  19574,  3045,
-		2139,   45438,  11958,  12042,  11129,  12472,  12043,
-		853,    20066,  642,    1022,   6940,   19752,  20216,  633,    31884,
-		8122,   44041,  15487,  33206,  13908,  2651,   2944,   13896,  724,    14751,  10060,  34433,  6346,
-		1766,   2094,   408,    31224,  5277,   14185,  1856,   13750,  13877,  14177,  14183,
-		8042,   30823,  2825,   16166,  2894,   8177,   16188,
-		19244,  19505,  6789,   5484,   30283,  18288,  1122,
-		6552,   72,     12809,  5246,   676,    12975,  871,    12292,  1719,   20230,  18499,  3411,   23920,
+		42292,  -- PvP Trinket
+		28730,  -- Arcane Torrent
+		26297,  -- Berserking
+		28880,  -- Gift of the Naaru
+		20594,  -- Stoneform
+		20549,  -- War Stomp
+		7744,   -- Will of the Forsaken
+		-- Druid
+		16979,  -- Feral Charge
+		5211,   -- Mighty Bash
+		22812,  -- Barkskin
+		22842,  -- Frenzied Regen
+		740,    -- Tranquility
+		33831,  -- Force of Nature
+		17116,  -- Nature's Swiftness
+		-- Hunter
+		1499,   -- Freezing Trap (Rank 1)
+		19577,  -- Intimidation
+		19503,  -- Scatter Shot
+		19386,  -- Wyvern Sting (Rank 1)
+		34490,  -- Silencing Shot
+		19263,  -- Deterrence
+		23989,  -- Readiness
+		19574,  -- Bestial Wrath
+		3045,   -- Rapid Fire
+		-- Mage
+		2139,   -- Counterspell
+		45438,  -- Ice Block
+		11958,  -- Purifying Brew
+		12042,  -- Arcane Power
+		11129,  -- Combustion
+		12472,  -- Icy Veins
+		12043,  -- Presence of Mind
+		-- Paladin
+		853,    -- Hammer of Justice (Rank 1)
+		20066,  -- Repentance
+		642,    -- Divine Shield
+		1022,   -- Blessing of Protection (Rank 1)
+		6940,   -- Blessing of Sacrifice (Rank 1)
+		19752,  -- Divine Intervention
+		20216,  -- Divine Favor
+		633,    -- Lay on Hands (Rank 1)
+		31884,  -- Avenging Wrath
+		-- Priest
+		8122,   -- Psychic Scream (Rank 1)
+		44041,  -- Chastise (Rank 1)
+		15487,  -- Silence
+		33206,  -- Pain Suppression
+		13908,  -- Desperate Prayer (Rank 1)
+		2651,   -- Elune's Grace
+		2944,   -- Devouring Plague (Rank 1)
+		13896,  -- Feedback (Rank 1)
+		724,    -- Lightwell (Rank 1)
+		14751,  -- Inner Focus
+		10060,  -- Power Infusion
+		34433,  -- Shadowfiend
+		6346,   -- Fear Ward
+		-- Rogue
+		1766,   -- Kick (Rank 1)
+		2094,   -- Blind
+		408,    -- Kidney Shot (Rank 1)
+		31224,  -- Cloak of Shadows
+		5277,   -- Evasion (Rank 1)
+		14185,  -- Preparation
+		1856,   -- Vanish (Rank 1)
+		13750,  -- Adrenaline Rush
+		13877,  -- Blade Flurry
+		14177,  -- Cold Blood
+		14183,  -- Premeditation
+		-- Shaman
+		8042,   -- Earth Shock (Rank 1)
+		30823,  -- Shamanistic Rage
+		2825,   -- Bloodlust
+		16166,  -- Elemental Mastery
+		2894,   -- Fire Elemetal Totem
+		8177,   -- Grounding Totem
+		16188,  -- Nature's Swiftness
+		-- Warlock
+		19244,  -- Spell Lock (Rank 1)
+		19505,  -- Devour Magic (Rank 1)
+		6789,   -- Death Coil (Rank 1)
+		5484,   -- Howl of Terror (Rank 1)
+		30283,  -- Shadowfury (Rank 1)
+		18288,  -- Amplify Curse
+		1122,   -- Inferno
+		-- Warrior
+		6552,   -- Pummel (Rank 1)
+		72,     -- Shield Bash (Rank 1)
+		12809,  -- Concussion Blow
+		5246,   -- Intimidating Shout
+		676,    -- Disarm
+		12975,  -- Last Stand
+		871,    -- Shield Wall
+		12292,  -- Death Wish
+		1719,   -- Recklessness
+		20230,  -- Retaliation
+		18499,  -- Berserker Rage
+		3411,   -- Intervene
+		23920,  -- Spell Reflection
 	}
 
 	E.raidDefaults = {
-		740,
+		740,    -- Tranquility (Rank 1)
 	}
 else
 	E.spellDefaults = {
-		336135, 336126, 196029,
-		59752,
-		323436, 319217,
-		47482,  47528,  48707,  48792,  114556, 51052,
-		183752, 196555, 198589, 209258, 187827, 196718, 200166, 205604,
-		106839, 78675,  22812,  102342, 108238, 61336,  33891,
-		147362, 187707, 187650, 186265, 109304, 53480,
-		2139,   45438,  108978, 342245, 86949,  235219, 198111, 190319,
-		116705, 116849, 122470, 122783, 122278, 115203, 243435, 115310,
-		31935,  96231,  215652, 853,    115750, 642,    228049, 199452, 1022,   216331, 31884,  231895, 210256,
-		15487,  64044,  8122,   213602, 197268, 19236,  47585,  47788,  33206,  20711,  215982, 108968, 62618,  47536, 109964,
-		1766,   2094,   31230,  31224,  5277,   1856,   79140,
-		57994,  108271, 198838, 210918, 30884,  114052, 98008,  204336, 8143,
-		212619, 119898, 6789,   48020,  104773, 212295,
-		6552,   5246,   118038, 184364, 871,    97462,  23920,  236320,
+		336135, -- Sinful Gladiator's Sigil of Adaptation
+		336126, -- Sinful Gladiator's Medallion (item2 = Aspirant)
+		196029, -- Sinful Gladiator's Relentless Brooch
+		59752,  -- Will to Survive
+		-- Covenant
+		323436, -- Purify Soul
+		319217, -- Podtender
+		-- DK
+		47482,  -- Leap & Shambling Rush (91807)
+		47528,  -- Mind Freeze
+		48707,  -- Anti-Magic Shell
+		48792,  -- Icebound Fortitude
+		114556, -- Purgatory (dummy spell)
+		51052,  -- Anti-Magic Zone
+		-- DH
+		183752, -- Disrupt
+		196555, -- Netherwalk
+		198589, -- Blur
+		209258, -- Last Resort (dummy spell)
+		187827, -- Metamorphosis (V)
+		196718, -- Darkness
+		200166, -- Metamorphosis
+		205604, -- Reverse Magic
+		-- Druid
+		106839, -- Skull Bash
+		78675,  -- Solar Beam
+		22812,  -- Barkskin
+		102342, -- Ironbark
+		108238, -- Renewal
+		61336,  -- Survival Instincts
+		33891,  -- Incarnation: Tree of Life
+		-- Hunter
+		147362, -- Countershot
+		187707, -- Muzzle
+		187650, -- Freezing Trap
+		186265, -- Aspect of the Turtle
+		109304, -- Exhilaration
+		53480,  -- Roar of Sacrifice
+		-- Mage
+		2139,   -- Counterspell
+		45438,  -- Ice Block
+		108978, -- Alter Time (FF) (dummy spell)
+		342245, -- Alter Time (A) (dummy spell)
+		86949,  -- Cauterized (dummy spell)
+		235219, -- Cold Snap
+		198111, -- Temporal Shield
+		190319, -- Combustion
+		-- Monk
+		116705, -- Spear Hand strike
+		116849, -- Life Cocoon
+		122470, -- Touch of Karma
+		122783, -- Diffuse Magic
+		122278, -- Dampen Harm
+		115203, -- Fortifying Brew (BM)
+		243435, -- Fortifying Brew (MW, WW)
+		115310, -- Revival
+		-- Paladin
+		31935,  -- Avenger's Shield
+		96231,  -- Rebuke
+		215652, -- Shield of Virtue
+		853,    -- Hammer of Justice
+		115750, -- Blinding Light
+		642,    -- Divine Shield
+		228049, -- Guardian of the Forgotten Queen
+		199452, -- Ultimate Sacrifice
+		1022,   -- Blessing of Protection
+		216331, -- Avenging Crusader
+		31884,  -- Avenging Wrath
+		231895, -- Crusade
+		210256, -- Blessing of Sanctuary
+		-- Priest
+		15487,  -- Silence
+		64044,  -- Psychic Horror
+		8122,   -- Psychic Scream
+		213602, -- Greater Fade
+		197268, -- Ray of Hope
+		19236,  -- Desperate Prayer
+		47585,  -- Dispersion
+		47788,  -- Guardian Spirit
+		33206,  -- Pain Suppression
+		20711,  -- Spirit of the Redemption (passive)
+		215982, -- Spirit of the Redeemer
+		108968, -- Void Shift
+		62618,  -- Power Word: Barrier
+		47536,  -- Rapture
+		109964, -- Spirit Shell
+		-- Rogue
+		1766,   -- Kick
+		2094,   -- Blind
+		31230,  -- Cheat Death (dummy spell)
+		31224,  -- Cloak of Shadows
+		5277,   -- Evasion
+		1856,   -- Vanish
+		79140,  -- Vendetta
+		-- Shaman
+		57994,  -- Wind Shear
+		108271, -- Astral Shift
+		198838, -- Earthen Wall Totem
+		210918, -- Astral Shift
+		30884,  -- Nature's Guardian (dummy spell)
+		114052, -- Ascendance (Res)
+		98008,  -- Spirit Link Totem
+		204336, -- Grounding Totem
+		8143,   -- Tremor Totem
+		-- Warlock
+		212619, -- Call Felhunter
+		119898, -- Command Demon
+		6789,   -- Mortal Coil
+		48020,  -- Demonic Circle: Teleport
+		104773, -- Unending Resolve
+		212295, -- Nether Ward
+		-- Warrior
+		6552,   -- Pummel
+		5246,   -- Intimidating Shout
+		118038, -- Die by the Sword
+		184364, -- Enraged Regeneration
+		871,    -- Shield Wall
+		97462,  -- Rallying Cry
+		23920,  -- Spell Reflection
+		236320, -- War Banner
 	}
 
 	E.raidDefaults = {
-		51052,
-		196718,
-		740,
-		115310,
-		31812,
-		64843,  265202, 62618,  15286,
-		108280, 98008,
-		97462,
+		51052,  -- Anti-Magic Zone
+		196718, -- Cover of Darkness
+		740,    -- Tranquility
+		115310, -- Revival
+		31821,  -- Aura Mastery
+		64843,  -- Divine Hymn
+		265202, -- Holy Word: Salvation
+		62618,  -- Power Word: Barrier
+		15286,  -- Vampiric Embrace
+		108280, -- Healing Tide Totem
+		98008,  -- Spirit Link Totem
+		97462,  -- Rallying Cry
 	}
 end
 
@@ -290,7 +487,4 @@ for k in pairs(E.CFG_ZONE) do
 end
 
 C.Party.party.extraBars.interruptBar.enabled = true
-C.Party.party.extraBars.raidCDBar.enabled = true
-
-C.Party.raid.extraBars.interruptBar.enabled = true
 C.Party.raid.extraBars.raidCDBar.enabled = true

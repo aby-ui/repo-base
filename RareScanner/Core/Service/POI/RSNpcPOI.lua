@@ -68,7 +68,7 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
 	POI.isDiscovered = POI.isDead or alreadyFoundInfo ~= nil
 	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
-	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(npcID, mapID)
+	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLinkByMap(npcID, mapID)
 	if (npcInfo) then
 		POI.worldmap = npcInfo.worldmap
 	end
@@ -216,8 +216,11 @@ function RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, 
 		
 		-- Skip if it doesnt have coordinates. This could happend if it is a custom NPC
 		if (not filtered and (not npcInfo.x or not npcInfo.y)) then
-			RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC N/D [%s]: No disponía de coordenadas.", npcID))
-			filtered = true
+			local x, y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+			if (not x or not y) then
+				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC N/D [%s]: No disponía de coordenadas.", npcID))
+				filtered = true
+			end
 		end
 
 		-- Skip if common filters

@@ -539,7 +539,7 @@ function WeakAuras.ToggleOptions(msg, Private)
   end
   if not OptionsPrivate.Private then
     OptionsPrivate.Private = Private
-    OptionsPrivate.Private:RegisterCallback("AuraWarningsUpdated", function(event, uid)
+    OptionsPrivate.Private.callbacks:RegisterCallback("AuraWarningsUpdated", function(event, uid)
       local id = OptionsPrivate.Private.UIDtoID(uid)
       if displayButtons[id] then
         -- The button does not yet exists if a new aura is created
@@ -547,9 +547,9 @@ function WeakAuras.ToggleOptions(msg, Private)
       end
     end)
 
-    OptionsPrivate.Private:RegisterCallback("ScanForLoads", AfterScanForLoads)
-    OptionsPrivate.Private:RegisterCallback("AboutToDelete", OnAboutToDelete)
-    OptionsPrivate.Private:RegisterCallback("Rename", OnRename)
+    OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
+    OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
+    OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
   end
 
   if(frame and frame:IsVisible()) then
@@ -1330,6 +1330,10 @@ function OptionsPrivate.SetGrouping(data)
 end
 
 function OptionsPrivate.Ungroup(data)
+  if not OptionsPrivate.IsDisplayPicked(data.id) then
+    WeakAuras.PickDisplay(data.id)
+  end
+
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
     for index, childId in ipairs(tempGroup.controlledChildren) do
       local button = WeakAuras.GetDisplayButton(childId);
@@ -1776,7 +1780,7 @@ function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
   end
 end
 
-function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, index, total)
+function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, withoutColor, index, total)
   local headerOption
   if withHeader and (not index or index == 1) then
     headerOption =  {
@@ -1828,7 +1832,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
 
         local selectedFormat = get(symbol .. "_format")
         if (OptionsPrivate.Private.format_types[selectedFormat]) then
-          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
+          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get, withoutColor)
         end
         seenSymbols[symbol] = true
       end

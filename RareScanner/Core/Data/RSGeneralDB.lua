@@ -7,6 +7,7 @@ local RSGeneralDB = private.NewLib("RareScannerGeneralDB")
 
 -- RareScanner database libraries
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
+local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
 -- RareScanner libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -298,19 +299,80 @@ end
 -- Overlay database
 ---============================================================================
 
-function RSGeneralDB.HasOverlayActive(npcID)
-	return private.dbchar.overlayActive and private.dbchar.overlayActive == npcID
+function RSGeneralDB.HasOverlayActive(entityID)
+	if (private.dbchar.overlayActive and entityID and private.dbchar.overlayActive[entityID]) then
+		return true
+	end
+	
+	return false
 end
 
-function RSGeneralDB.SetOverlayActive(npcID)
-	private.dbchar.overlayActive = npcID
+function RSGeneralDB.AddOverlayActive(entityID)
+	if (not private.dbchar.overlayActive) then
+		private.dbchar.overlayActive = {}
+	end
+	
+	-- if its already in the list ignore it
+	if (private.dbchar.overlayActive[entityID]) then
+		return RSConfigDB.GetWorldMapOverlayColour(private.dbchar.overlayActive[entityID].colourID)
+	end
+	
+	-- look for an available colour
+	local assignedColourId = nil;
+	for i = 1,private.db.map.overlayMaxColours,1 do 
+		local colourIdFound = false	
+		for id, info in pairs (private.dbchar.overlayActive) do
+			if (info.colourID == i) then
+				colourIdFound = true
+				break
+			end
+		end
+		
+		if (not colourIdFound) then
+			assignedColourId = i;
+			private.dbchar.overlayActive[entityID] = { colourID = i, timestamp = time() }
+			break
+		end
+	end
+	
+	-- if not added because all colours are used, replace the oldest
+	local replacedEntityID = nil
+	if (not assignedColourId) then
+		local a = {}
+		for _, info in pairs (private.dbchar.overlayActive) do
+			table.insert(a, info.timestamp)
+		end
+		table.sort(a)
+		for currentEntityID, info in pairs (private.dbchar.overlayActive) do
+			if (info.timestamp == a[1]) then
+				replacedEntityID = currentEntityID
+				private.dbchar.overlayActive[currentEntityID] = nil
+				private.dbchar.overlayActive[entityID] = { colourID = info.colourID, timestamp = time() }
+				assignedColourId = info.colourID
+				break
+			end
+		end
+	end
+	
+	local r, g, b = RSConfigDB.GetWorldMapOverlayColour(assignedColourId)
+	return r, g, b, replacedEntityID
 end
 
-function RSGeneralDB.GetOverlayActive()
-	return private.dbchar.overlayActive
+function RSGeneralDB.GetOverlayActive(entityID)
+	if (private.dbchar.overlayActive and entityID and private.dbchar.overlayActive[entityID]) then
+		return private.dbchar.overlayActive[entityID]
+	end
+	
+	return nil
 end
 
-function RSGeneralDB.RemoveOverlayActive()
+function RSGeneralDB.RemoveOverlayActive(entityID)
+	if (private.dbchar.overlayActive and entityID and private.dbchar.overlayActive[entityID]) then
+		private.dbchar.overlayActive[entityID] = nil
+	end
+end
+
+function RSGeneralDB.RemoveAllOverlayActive()
 	private.dbchar.overlayActive = nil
 end
 

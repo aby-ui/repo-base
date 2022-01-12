@@ -14,7 +14,7 @@
 ## SavedVariablesPerCharacter: DBMChallenges_SavedStats
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: SCENARIO
-## X-DBM-Mod-Category: SHADOWLANDS
+## X-DBM-Mod-Category: OTHER
 ## X-DBM-StatTypes: normal
 ## X-DBM-Mod-SubCategories: Shadowlands,Battle for Azeroth,Legion,Proving Grounds
 ## X-DBM-Mod-SubCategories-deDE: Shadowlands,BfA Visions,Legion Artefakte,Feuerprobe
@@ -32,7 +32,7 @@
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
 ## X-Wago-ID: Rn6VLLGd
-## Version: r144-5-g75276dc
+## Version: r146
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

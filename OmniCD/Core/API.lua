@@ -21,8 +21,8 @@ function MyAddon:ADDON_LOADED(arg1)
 		if func then
 			func("MyAddon", "MyPartyUnitFrame", "MyUnitKey")
 			-- Use a hyphen after your addon name to add additional frames
-			func("MyAddon-Raid", "MyRaidUnitFrame", "MyUnitKey", 1, nil, 40)    -- unit 1-40
-			func("MyAddon-Raid-Sorted-by-Groups", "MyRaidGroup%dUnitFrame", "MyUnitKey", 1)     -- group 1-8, unit 1-5
+			func("MyAddon-Raid", "MyRaidUnitFrame", "MyUnitKey", nil, nil, 40)  -- unit 1-40
+			func("MyAddon-Raid-Sorted-by-Groups", "MyRaidGroup%dUnitFrame", "MyUnitKey")    -- group 1-8, unit 1-5
 		end
 	end
 end

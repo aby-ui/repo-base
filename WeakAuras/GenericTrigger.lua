@@ -1601,7 +1601,7 @@ do
         skipNextAttack = ts
         skipNextAttackCount = select(4, ...)
       elseif(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
-        if skipNextAttack == ts and tonumber(skipNextAttackCount) then
+        if tonumber(skipNextAttack) and (ts - skipNextAttack) < 0.04 and tonumber(skipNextAttackCount) then
           if skipNextAttackCount > 0 then
             skipNextAttackCount = skipNextAttackCount - 1
             return
@@ -2600,6 +2600,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange.unitRaidRole = {}
     watchUnitChange.inRaid = IsInRaid()
     watchUnitChange.nameplateFaction = {}
+    watchUnitChange.raidmark = {}
 
     WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -2616,14 +2617,17 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("UNIT_FACTION")
     watchUnitChange:RegisterEvent("PLAYER_ENTERING_WORLD")
     watchUnitChange:RegisterEvent("UNIT_PET")
+    watchUnitChange:RegisterEvent("RAID_TARGET_UPDATE")
 
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       Private.StartProfileSystem("generictrigger unit change");
       if event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
         local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
+        local newMarker = GetRaidTargetIndex(unit) or 0
         if newGuid ~= watchUnitChange.unitChangeGUIDS[unit] then
           WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
           watchUnitChange.unitChangeGUIDS[unit] = newGuid
+          watchUnitChange.raidmark[unit] = newMarker
         end
         if event == "NAME_PLATE_UNIT_ADDED" then
           watchUnitChange.nameplateFaction[unit] = WeakAuras.GetPlayerReaction(unit)
@@ -2641,15 +2645,28 @@ function WeakAuras.WatchUnitChange(unit)
         if pet then
           WeakAuras.ScanEvents("UNIT_CHANGED_" .. pet, pet)
         end
+      elseif event == "RAID_TARGET_UPDATE" then
+        for unit, marker in pairs(watchUnitChange.raidmark) do
+          local newMarker = GetRaidTargetIndex(unit) or 0
+          if marker ~= newMarker then
+            watchUnitChange.raidmark[unit] = newMarker
+            WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
+          end
+        end
       else
         local inRaid = IsInRaid()
         local inRaidChanged = inRaid ~= watchUnitChange.inRaid
 
         for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
           local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
-          if guid ~= newGuid or event == "PLAYER_ENTERING_WORLD" then
+          local newMarker = GetRaidTargetIndex(unit) or 0
+          if guid ~= newGuid
+          or newMarker ~= watchUnitChange.raidmark[unit]
+          or event == "PLAYER_ENTERING_WORLD"
+          then
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             watchUnitChange.unitChangeGUIDS[unit] = newGuid
+            watchUnitChange.raidmark[unit] = newMarker
           elseif Private.multiUnitUnits.group[unit] then
             -- If in raid changed we send a UNIT_CHANGED for the group units
             if inRaidChanged then
@@ -2678,6 +2695,8 @@ function WeakAuras.WatchUnitChange(unit)
   end
   watchUnitChange.unitChangeGUIDS = watchUnitChange.unitChangeGUIDS or {}
   watchUnitChange.unitChangeGUIDS[unit] = UnitGUID(unit) or ""
+  watchUnitChange.raidmark = watchUnitChange.raidmark or {}
+  watchUnitChange.raidmark[unit] = GetRaidTargetIndex(unit) or 0
 end
 
 function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
@@ -2711,8 +2730,8 @@ do
   local bars = {}
   local nextExpire -- time of next expiring timer
   local recheckTimer -- handle of timer
-  local currentStage = 0
-
+  local currentStage = 0 -- can do 1>2>1>2>1>...
+  local currentStageTotal = 0 -- always 1>2>3>4>...
   local function dbmRecheckTimers()
     local now = GetTime()
     nextExpire = nil
@@ -2832,8 +2851,9 @@ do
       end
       WeakAuras.ScanEvents("DBM_TimerUpdate", id)
     elseif event == "DBM_SetStage" then
-      local mod, modId, stage, encounterId = ...
+      local mod, modId, stage, encounterId, stageTotal = ...
       currentStage = stage
+      currentStageTotal = stageTotal
       WeakAuras.ScanEvents("DBM_SetStage", ...)
     else -- DBM_Announce
       WeakAuras.ScanEvents(event, ...)
@@ -2877,7 +2897,7 @@ do
   end
 
   function WeakAuras.GetDBMStage()
-    return currentStage
+    return currentStage, currentStageTotal
   end
 
   function WeakAuras.GetDBMTimerById(id)
@@ -4001,19 +4021,17 @@ do
   end
 end
 
+local findIdInLink = function(id, itemLink)
+  local findID = ":" .. tostring(id:trim())
+  return itemLink:find(findID .. ":", 1, true) or itemLink:find(findID .. "|", 1, true)
+end
+
 WeakAuras.CheckForItemBonusId = function(ids)
   for id in tostring(ids):gmatch('([^,]+)') do
-    id = ":" .. tostring(id:trim())
     for slot in pairs(Private.item_slot_types) do
       local itemLink = GetInventoryItemLink('player', slot)
-      if itemLink then
-        local _, endPos = itemLink:find(id, 1, true)
-        if endPos then
-          endPos = endPos +1
-          if (itemLink:sub(endPos, endPos) == ":" or itemLink:sub(endPos, endPos) == "|") then
-            return true
-          end
-        end
+      if itemLink and findIdInLink(id, itemLink) then
+        return true
       end
     end
   end
@@ -4024,19 +4042,12 @@ end
 WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
   local checkSlots = specificSlot and {[specificSlot] = true} or Private.item_slot_types
   for id in tostring(ids):gmatch('([^,]+)') do
-    local findID = ":" .. tostring(id:trim())
     for slot in pairs(checkSlots) do
       local itemLink = GetInventoryItemLink('player', slot)
-      if itemLink then
-        local _, endPos = itemLink:find(id, 1, true)
-        if endPos then
-          endPos = endPos +1
-          if (itemLink:sub(endPos, endPos) == ":" or itemLink:sub(endPos, endPos) == "|") then
-            local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
-            local itemName = itemLink:match("%[(.*)%]")
-            return id, itemID, itemName, icon, slot, Private.item_slot_types[slot]
-          end
-        end
+      if itemLink and findIdInLink(id, itemLink) then
+        local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
+        local itemName = itemLink:match("%[(.*)%]")
+        return id, itemID, itemName, icon, slot, Private.item_slot_types[slot]
       end
     end
   end

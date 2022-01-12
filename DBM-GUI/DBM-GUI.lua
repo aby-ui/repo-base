@@ -373,31 +373,6 @@ function DBM_GUI:CreateBossModPanel(mod)
 								mod.optionFuncs[v]()
 							end
 						end)
-					elseif mod.buttons and mod.buttons[v] then
-						local but = mod.buttons[v]
-						catbutton = catpanel:CreateButton(v, but.width, but.height, but.onClick, but.fontObject)
-					elseif mod.editboxes and mod.editboxes[v] then
-						local editBox = mod.editboxes[v]
-						catbutton = catpanel:CreateEditBox(mod.localization.options[v], "", editBox.width, editBox.height)
-						catbutton:SetScript("OnShow", function(self)
-							catbutton:SetText(mod.Options[v])
-						end)
-						catbutton:SetScript("OnEnterPressed", function(self)
-							if mod.optionFuncs and mod.optionFuncs[v] then
-								mod.optionFuncs[v]()
-							end
-						end)
-					elseif mod.sliders and mod.sliders[v] then
-						local slider = mod.sliders[v]
-						catbutton = catpanel:CreateSlider(mod.localization.options[v], slider.minValue, slider.maxValue, slider.valueStep)
-						catbutton:SetScript("OnShow", function(self)
-							self:SetValue(mod.Options[v])
-						end)
-						catbutton:HookScript("OnValueChanged", function(self)
-							if mod.optionFuncs and mod.optionFuncs[v] then
-								mod.optionFuncs[v]()
-							end
-						end)
 					elseif mod.dropdowns and mod.dropdowns[v] then
 						local dropdownOptions = {}
 						for _, val in ipairs(mod.dropdowns[v]) do

@@ -32,10 +32,10 @@
 				</Layers>
 				<Scripts>
 					<OnMouseDown>
-						OmniCD_AnchorOnMouseDown(self);
+						OmniCD_AnchorOnMouseDown(self, button);
 					</OnMouseDown>
 					<OnMouseUp>
-						OmniCD_AnchorOnMouseUp(self);
+						OmniCD_AnchorOnMouseUp(self, button);
 					</OnMouseUp>
 				</Scripts>
 			</Frame>

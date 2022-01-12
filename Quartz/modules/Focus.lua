@@ -19,6 +19,9 @@
 local Quartz3 = LibStub("AceAddon-3.0"):GetAddon("Quartz3")
 local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 
+-- Focus is not available on all clients
+if not FocusFrameSpellBar then return end
+
 local MODNAME = "Focus"
 local Focus = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 

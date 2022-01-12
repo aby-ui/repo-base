@@ -23,7 +23,7 @@ local LibWindow = LibStub("LibWindow-1.1")
 local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
 
-local WoWBC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 
 ----------------------------
 -- Upvalues
@@ -222,7 +222,7 @@ function CastBarTemplate:UNIT_SPELLCAST_START(event, unit, guid, spellID)
 	if not startTime or not endTime then return end
 
 	-- this property doesn't exist in BC, and aliases with the spellID
-	if WoWBC then
+	if not WoWRetail then
 		notInterruptible = false
 	end
 
@@ -520,7 +520,7 @@ function CastBarTemplate:RegisterEvents()
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-	if self.unit ~= "player" and not WoWBC then
+	if self.unit ~= "player" and WoWRetail then
 		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
 		self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 	end

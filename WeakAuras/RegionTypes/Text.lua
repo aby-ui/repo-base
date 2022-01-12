@@ -28,6 +28,11 @@ local default = {
   shadowColor = { 0, 0, 0, 1},
   shadowXOffset = 1,
   shadowYOffset = -1,
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 local properties = {
@@ -63,7 +68,6 @@ local function create(parent)
   text:SetWordWrap(true);
   text:SetNonSpaceWrap(true);
 
-  region.values = {};
   region.duration = 0;
   region.expirationTime = math.huge;
 

@@ -119,11 +119,16 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 function Private.GetAnchorsForData(parentData, type)
   local result
   if not parentData.controlledChildren then
-    if not WeakAuras.regionOptions[parentData.regionType] or not WeakAuras.regionOptions[parentData.regionType].getAnchors then
+    if not WeakAuras.regionOptions[parentData.regionType] then
       return
     end
 
-    local anchors = WeakAuras.regionOptions[parentData.regionType].getAnchors(parentData)
+    local anchors
+    if WeakAuras.regionOptions[parentData.regionType].getAnchors then
+      anchors = WeakAuras.regionOptions[parentData.regionType].getAnchors(parentData)
+    else
+      anchors = Private.default_types_for_anchor
+    end
     for anchorId, anchorData in pairs(anchors) do
       if anchorData.type == type then
         result = result or {}
@@ -132,23 +137,6 @@ function Private.GetAnchorsForData(parentData, type)
     end
   end
   return result
-end
-
-function WeakAuras.regionPrototype:AnchorSubRegion(subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
-  subRegion:ClearAllPoints()
-
-  if anchorType == "point" then
-    local xOffset = anchorXOffset or 0
-    local yOffset = anchorYOffset or 0
-    subRegion:SetPoint(Private.point_types[selfPoint] and selfPoint or "CENTER",
-                       self, Private.point_types[anchorPoint] and anchorPoint or "CENTER",
-                       xOffset, yOffset)
-  else
-    anchorXOffset = anchorXOffset or 0
-    anchorYOffset = anchorYOffset or 0
-    subRegion:SetPoint("bottomleft", self, "bottomleft", -anchorXOffset, -anchorYOffset)
-    subRegion:SetPoint("topright", self, "topright", anchorXOffset,  anchorYOffset)
-  end
 end
 
 -- Sound / Chat Message / Custom Code
@@ -461,6 +449,25 @@ local function UpdateTimerTick(self)
   end
 end
 
+local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+  subRegion:ClearAllPoints()
+
+  if anchorType == "point" then
+    local xOffset = anchorXOffset or 0
+    local yOffset = anchorYOffset or 0
+    subRegion:SetPoint(Private.point_types[selfPoint] and selfPoint or "CENTER",
+                       self, Private.point_types[anchorPoint] and anchorPoint or "CENTER",
+                       xOffset, yOffset)
+  else
+    anchorXOffset = anchorXOffset or 0
+    anchorYOffset = anchorYOffset or 0
+    subRegion:SetPoint("bottomleft", self, "bottomleft", -anchorXOffset, -anchorYOffset)
+    subRegion:SetPoint("topright", self, "topright", anchorXOffset,  anchorYOffset)
+  end
+end
+
+WeakAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
+
 function WeakAuras.regionPrototype.create(region)
   local defaultsForRegion = WeakAuras.regionTypes[region.regionType] and WeakAuras.regionTypes[region.regionType].default;
   region.SoundPlay = SoundPlay;
@@ -499,6 +506,8 @@ function WeakAuras.regionPrototype.create(region)
   region.UpdateTimerTick = UpdateTimerTick
 
   region.subRegionEvents = CreateSubRegionEventSystem()
+  region.AnchorSubRegion = AnchorSubRegion
+  region.values = {} -- For SubText
 
   region:SetPoint("CENTER", UIParent, "CENTER")
 end
@@ -577,7 +586,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
       data.actions.start[fullKey] = default
     end
     return data.actions.start[fullKey]
-  end)
+  end, true)
 
   region.finishFormatters = Private.CreateFormatters(data.actions.finish.message, function(key, default)
     local fullKey = "message_format_" .. key
@@ -585,7 +594,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
       data.actions.finish[fullKey] = default
     end
     return data.actions.finish[fullKey]
-  end)
+  end, true)
 
 end
 

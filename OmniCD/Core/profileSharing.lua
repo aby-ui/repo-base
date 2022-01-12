@@ -27,7 +27,6 @@ end
 local function Move_OnMouseDown(self, button)
 	if button == "LeftButton" and not self.isMoving then
 		self:StartMoving()
-		self:SetUserPlaced(false) -- don't save to local layout file
 		self.isMoving = true
 	end
 end
@@ -122,6 +121,7 @@ function PS.ShowProfileDialog(text)
 		Dialog:SetBackdropBorderColor(0.3, 0.3, 0.3)
 		Dialog:SetMovable(true)
 		Dialog:SetClampedToScreen(true)
+--      Dialog:SetUserPlaced(false) -- clamped and nonamed frames aren't saved to local file
 		Dialog:SetResizable(true)
 		Dialog:SetMinResize(180, 100)
 		Dialog:SetScript("OnMouseDown", Move_OnMouseDown)
@@ -176,7 +176,6 @@ function PS.ShowProfileDialog(text)
 		Resizer:SetScript("OnMouseDown", function(_, button)
 			if button == "LeftButton" then
 				Dialog:StartSizing("BOTTOMRIGHT")
-				Dialog:SetUserPlaced(false)
 			end
 		end)
 		Resizer:SetScript("OnMouseUp", function(self, button)

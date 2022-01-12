@@ -141,6 +141,7 @@ L.ButtonImportProfile		= "Import profile"
 L.ButtonExportProfile		= "Export profile"
 
 L.ImportErrorOn				= "Custom sounds missing for setting: %s"
+L.ImportVoiceMissing		= "Missing voice pack: %s"
 
 -- Tab: Alerts
 L.TabCategory_Alerts	 	= "Alerts"

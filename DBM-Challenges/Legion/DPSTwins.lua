@@ -3,9 +3,8 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,timewalker"
 
-mod:SetRevision("20211208050610")
+mod:SetRevision("20211227050352")
 mod:SetCreatureID(116409, 116410)--Raest Magespear, Karam Magespear
-mod:SetZone()--Healer (1710), Tank (1698), DPS (1703-The God-Queen's Fury), DPS (Fel Totem Fall)
 mod:SetBossHPInfoToHighest()
 mod.soloChallenge = true
 
@@ -82,7 +81,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 202081 then--Fixate (Karam Magespear returning in phase 3 and 5)
 		specWarnFixate:Show()
 		specWarnFixate:Play("justrun")
-		specWarnFixate:ScheduleVoice("keepmove")
+		specWarnFixate:ScheduleVoice(1.5, "keepmove")
 		if self.vb.phase >= 2 then--Should filter fixate done on pull
 			self.vb.phase = self.vb.phase + 1
 			timerHandCD:Start(9)

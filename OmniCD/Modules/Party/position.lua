@@ -24,13 +24,12 @@ local function FindAnchorFrame(guid)
 				end
 			end
 		elseif strfind(frameName, "%%d") then
-			for i = MIN, 8 do
+			for i = MIN, 8 do -- IRF3, Lime
 				local name = format(frameName, i)
 				for j = 1, MAX do
 					local f = _G[name .. j]
 					if f and f:IsVisible() then
-						local unit = f[frameUnit]
-						if unit == nil and f.GetAttribute then unit = f:GetAttribute("unit") end --abyui
+						local unit = f[frameUnit] or f.GetAttribute and f:GetAttribute("unit") -- ATA					
 						if unit and UnitGUID(unit) == guid then return f end
 					end
 				end

@@ -75,13 +75,22 @@ function RSGroupPinMixin:ShowOverlay(childPOI)
 	end
 
 	if (overlay) then
+		local r, g, b, replacedEntityID = RSGeneralDB.AddOverlayActive(childPOI.entityID)
+		
+		-- Cleans the replaced overlay
+		if (replacedEntityID) then
+			for pin in self:GetMap():EnumeratePinsByTemplate("RSOverlayTemplate") do
+				if (pin:GetEntityID() == replacedEntityID) then
+					self:GetMap():RemovePin(pin)
+				end
+			end
+		end
+		
+		-- Adds the new one
 		for _, coordinates in ipairs (overlay) do
 			local x, y = strsplit("-", coordinates)
-			self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), childPOI);
+			self:GetMap():AcquirePin("RSOverlayTemplate", tonumber(x), tonumber(y), r, g, b, childPOI);
 		end
-		RSGeneralDB.SetOverlayActive(childPOI.entityID)
-	else
-		RSGeneralDB.RemoveOverlayActive()
 	end
 end
 

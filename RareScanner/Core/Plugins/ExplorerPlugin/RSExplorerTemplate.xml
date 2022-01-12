@@ -1,0 +1,470 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+
+  <Script file="RSExplorerMixin.lua"/>
+ 
+  <Frame name="RSExplorerUITemplate" virtual="true">
+    <Layers>
+      <Layer level="BACKGROUND" textureSubLevel="-1">
+        <Texture parentKey="BackgroundTile" atlas="Adventures-Missions-BG-02" horizTile="true" vertTile="true">
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button parentKey="CloseButton" inherits="UIPanelCloseButton" frameLevel="3020">
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
+            <Offset x="4" y="5"/>
+          </Anchor>
+        </Anchors>
+      </Button>
+    </Frames>
+  </Frame>
+  
+  <Frame name="RSExplorerRareInfoBaseFrameTemplate" virtual="true">
+    <Layers>
+      <Layer level="BORDER">
+        <Texture parentKey="BaseFrameBackground" atlas="Adventures-Missions-BG-01" horizTile="true" vertTile="true">
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="BORDER" textureSubLevel="1">
+        <Texture parentKey="BaseFrameTop" atlas="_Garr_InfoBoxMission-Top" horizTile="true" useAtlasSize="false">
+          <Size y="4"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="1" y="-7"/>
+            <Anchor point="TOPRIGHT" x="-1" y="-7"/>
+          </Anchors>
+          <Color r="1" g="1" b="1" a=".65"/>
+        </Texture>
+        <Texture parentKey="BaseFrameBottom" atlas="_Garr_InfoBoxMission-Top" horizTile="true" useAtlasSize="false">
+          <Size y="4"/>
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" y="7"/>
+            <Anchor point="BOTTOMRIGHT" y="7"/>
+          </Anchors>
+          <Color r="1" g="1" b="1" a=".65"/>
+          <TexCoords left="0.0" right="1.0" top="1.0" bottom="0.0"/>
+        </Texture>
+        <Texture parentKey="BaseFrameLeft" atlas="!Garr_InfoBoxMission-Left" vertTile="true" useAtlasSize="false">
+          <Size x="4"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="7"/>
+            <Anchor point="BOTTOMLEFT" x="7"/>
+          </Anchors>
+          <Color r="1" g="1" b="1" a=".65"/>
+        </Texture>
+        <Texture parentKey="BaseFrameRight" atlas="!Garr_InfoBoxMission-Left" vertTile="true" useAtlasSize="false">
+          <Size x="4"/>
+          <Anchors>
+            <Anchor point="TOPRIGHT" x="-7"/>
+            <Anchor point="BOTTOMRIGHT" x="-7"/>
+          </Anchors>
+          <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
+          <Color r="1" g="1" b="1" a=".55"/>
+        </Texture>
+        <Texture parentKey="BoardDropShadow" atlas="Adventures-Missions-Shadow">
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Frame parentKey="RaisedFrameEdges" setAllPoints="true" frameLevel="50">
+        <Layers>
+          <Layer level="BORDER" textureSubLevel="4">
+            <Texture parentKey="BaseFrameTopEdge" atlas="_AdventuresFrame-Small-Top" horizTile="true" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="TOPLEFT" y="3"/>
+                <Anchor point="TOPRIGHT" y="3"/>
+              </Anchors>
+            </Texture>
+            <Texture parentKey="BaseFrameBottomEdge" atlas="_AdventuresFrame-Small-Top" horizTile="true" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="BOTTOMLEFT" y="-3"/>
+                <Anchor point="BOTTOMRIGHT" y="-3"/>
+              </Anchors>
+              <TexCoords left="0.0" right="1.0" top="1.0" bottom="0.0"/>
+            </Texture>
+            <Texture parentKey="BaseFrameLeftEdge" atlas="!AdventuresFrame-Left" vertTile="true" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="TOPLEFT" x="-3"/>
+                <Anchor point="BOTTOMLEFT" x="-3"/>
+              </Anchors>
+              <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
+            </Texture>
+            <Texture parentKey="BaseFrameRightEdge" atlas="!AdventuresFrame-Right" vertTile="true" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="TOPRIGHT" x="3"/>
+                <Anchor point="BOTTOMRIGHT" x="3"/>
+              </Anchors>
+              <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
+            </Texture>
+          </Layer>
+          <Layer level="BORDER" textureSubLevel="5">
+            <Texture parentKey="BaseFrameTopLeftCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="TOPLEFT"/>
+              </Anchors>
+            </Texture>
+            <Texture parentKey="BaseFrameTopRightCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="TOPRIGHT"/>
+              </Anchors>
+              <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
+            </Texture>
+            <Texture parentKey="BaseFrameBottomLeftCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="BOTTOMLEFT"/>
+              </Anchors>
+              <TexCoords left="0.0" right="1.0" top="1.0" bottom="0.0"/>
+            </Texture>
+            <Texture parentKey="BaseFrameBottomRightCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="BOTTOMRIGHT"/>
+              </Anchors>
+              <TexCoords left="1.0" right="0.0" top="1.0" bottom="0.0"/>
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
+    </Frames>
+  </Frame>
+  
+  <Frame name="RSMapCanvasDetailLayerTemplate" mixin="RSExplorerDetailMap" useParentLevel="true" virtual="true">
+    <Scripts>
+      <OnLoad method="OnLoad" />
+      <OnUpdate method="OnUpdate" />
+    </Scripts>
+  </Frame>
+  
+  <Frame name="RSMapCanvasDetailIconsTemplate" useParentLevel="true" virtual="true">
+	<Size x="18" y="18"/>
+	<Layers>
+	  <Layer level="ARTWORK">
+	    <Texture parentKey="Texture">
+	      <Size x="18" y="18"/>
+		  <Anchors>
+		    <Anchor point="CENTER" x="0" y="0"/>
+		  </Anchors>
+		</Texture>
+	   </Layer>
+	 </Layers>
+  </Frame>
+  
+  <Texture name="RSMapCanvasDetailTileTemplate" virtual="true" />
+  
+  <Button name="RSExplorerRareInfoLootItemTemplate" virtual="true">
+    <Size x="40" y="40"/>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon">
+          <Size x="40" y="40"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture parentKey="IconBorder" atlas="GarrMission_RewardsShadow">
+          <Size x="40" y="40"/>
+          <Anchors>
+            <Anchor point="CENTER" relativeKey="$parent.Icon"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY" textureSubLevel="1">
+        <Texture parentKey="IconOverlay" hidden="true">
+          <Size x="48" y="48"/>
+          <Anchors>
+            <Anchor point="CENTER" relativeKey="$parent.Icon"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnEnter function="RSExplorerRareInfoLootItem_OnEnter"/>
+      <OnLeave function="RSExplorerRareInfoLootItem_OnLeave"/>
+      <OnClick>
+      	RSExplorerRareInfoLootItem_OnClick(self, button);
+      </OnClick>
+    </Scripts>
+  </Button>
+  
+  <Frame name="RSExplorerRareInfoLootTemplate" virtual="true">
+     <Layers>
+       <Layer level="BACKGROUND">
+         <Texture parentKey="Background1" atlas="UI-Frame-Kyrian-CardParchmentWider">
+           <Anchors>
+             <Anchor point="TOPLEFT"/>
+             <Anchor point="BOTTOMRIGHT"/>
+           </Anchors>
+         </Texture>
+       </Layer>
+       <Layer level="BACKGROUND" textureSubLevel="1">
+         <Texture parentKey="Texture" alphaMode="BLEND">
+           <Size x="54" y="52"/>
+           <Anchors>
+             <Anchor point="TOPRIGHT" relativeKey="$parent.Background1" y="-2" x="-5" relativePoint="TOPRIGHT"/>
+           </Anchors>
+           <Color r="1" g="1" b="1" a=".2"/>
+         </Texture>
+       </Layer>
+       <Layer level="ARTWORK">
+         <FontString parentKey="NoItems" inherits="GameFontHighlightLarge" hidden="true" justifyH="LEFT">
+           <Size x="0" y="18"/>
+           <Anchors>
+             <Anchor point="LEFT" relativeKey="$parent.Background1" relativePoint="LEFT" x="15" />
+           </Anchors>
+           <Color r="0" g="0" b="0" a="1"/>
+         </FontString>
+       </Layer>
+     </Layers>
+  </Frame>
+  
+  <Frame name="RSExplorerRareInfoTemplate" inherits="RSExplorerRareInfoBaseFrameTemplate" virtual="true">
+    <Layers>
+      <Layer level="BORDER" textureSubLevel="3">
+        <Texture parentKey="Header">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="0" y="0"/>
+            <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="0" y="-66"/>
+          </Anchors>
+          <Color r="0" g="0" b="0" a=".35"/>
+        </Texture>
+      </Layer>
+      <Layer level="ARTWORK">
+        <FontString parentKey="Name" inherits="QuestFont_Enormous" justifyH="LEFT">
+          <Size x="0" y="18"/>
+          <Color r="1.0" g="1.0" b="1.0"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" x="26" y="5"/>
+            <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT"  y="-83"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button parentKey="AchievementIcon" hidden="true">
+	    <Size x="54" y="54"/>
+	    <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.Header" relativePoint="TOPRIGHT" x="-60" y="-20"/>
+        </Anchors>
+	    <Layers>
+	      <Layer level="ARTWORK">
+	        <Texture file="Interface\AchievementFrame\UI-Achievement-Progressive-Shield">
+	          <Size x="54" y="52"/>
+	        </Texture>
+	        <TexCoords left="0" right="0.75" top="0" bottom="0.75"/>
+	      </Layer>
+	    </Layers>
+	    <Scripts>
+		  <OnEnter function="RSExplorerRareInfoAchievement_OnEnter"/>
+		  <OnLeave function="RSExplorerRareInfoAchievement_OnLeave"/>
+	    </Scripts>
+      </Button>
+      <Frame parentKey="Map">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeKey="$parent.Header" relativePoint="BOTTOMLEFT"/>
+          <Anchor point="TOPRIGHT" x="-5" y="-450"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="Mounts" inherits="RSExplorerRareInfoLootTemplate">
+        <Anchors>
+     	  <Anchor point="TOPLEFT" relativeKey="$parent.Map" relativePoint="BOTTOMLEFT" x="10" y="5" />
+    	  <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Map" relativePoint="BOTTOM" x="0" y="-55"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="Pets" inherits="RSExplorerRareInfoLootTemplate">
+        <Anchors>
+     	  <Anchor point="TOPLEFT" relativeKey="$parent.Mounts" relativePoint="BOTTOMLEFT" />
+    	  <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Mounts" relativePoint="BOTTOMRIGHT" x="0" y="-60"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="Toys" inherits="RSExplorerRareInfoLootTemplate">
+        <Anchors>
+     	  <Anchor point="TOPLEFT" relativeKey="$parent.Pets" relativePoint="BOTTOMLEFT" />
+    	  <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Pets" relativePoint="BOTTOMRIGHT" x="0" y="-60"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="Appearances" inherits="RSExplorerRareInfoLootTemplate">
+        <Anchors>
+     	  <Anchor point="TOPLEFT" relativeKey="$parent.Mounts" relativePoint="TOPRIGHT" x="-5" y="0" />
+    	  <Anchor point="BOTTOMRIGHT" x="-10" y="10" />
+        </Anchors>
+      </Frame>
+    </Frames>
+  </Frame>
+  
+  <Frame name="RSExplorerControlTemplate" virtual="true">
+    <Frames>
+      <CheckButton parentKey="AutoFilterCheckButton" inherits="ChatConfigCheckButtonTemplate">
+      	<Anchors>
+	      <Anchor point="LEFT" x="20" y="5" />
+    	</Anchors>
+        <Scripts>
+		  <OnEnter>
+		  	self:GetParent():ShowTooltip(self)
+		  </OnEnter>
+		  <OnLeave>
+		  	self:GetParent():HideTooltip(self)
+		  </OnLeave>
+        </Scripts>
+      </CheckButton>
+      <CheckButton parentKey="FilterWorldmapCheckButton" inherits="ChatConfigCheckButtonTemplate">
+      	<Anchors>
+	      <Anchor point="LEFT" relativeKey="$parent.AutoFilterCheckButton.Text" relativePoint="RIGHT" x="30" y="-2"/>
+    	</Anchors>
+        <Scripts>
+		  <OnEnter>
+		  	self:GetParent():ShowTooltip(self)
+		  </OnEnter>
+		  <OnLeave>
+		  	self:GetParent():HideTooltip(self)
+		  </OnLeave>
+        </Scripts>
+      </CheckButton>
+      <Button parentKey="ApplyFiltersButton" inherits="SharedButtonSmallTemplate">
+	    <Anchors>
+	      <Anchor point="RIGHT" x="-20" y="5" />
+    	</Anchors>
+	  	<KeyValues>
+			<KeyValue key="atlasName" value="128-RedButton" type="string"/>
+		</KeyValues>
+        <Scripts>
+          <OnClick>
+          	self:GetParent():ApplyFilters(self, button)
+          </OnClick>
+		  <OnEnter>
+		  	self:GetParent():ShowTooltip(self)
+		  </OnEnter>
+		  <OnLeave>
+		  	self:GetParent():HideTooltip(self)
+		  </OnLeave>
+        </Scripts>
+      </Button>
+      <CheckButton parentKey="CreateProfilesBackupCheckButton" inherits="ChatConfigCheckButtonTemplate">
+	    <Anchors>
+	      <Anchor point="RIGHT" relativeKey="$parent.ApplyFiltersButton" relativePoint="LEFT" x="-160"/>
+    	</Anchors>
+        <Scripts>
+		  <OnEnter>
+		  	self:GetParent():ShowTooltip(self)
+		  </OnEnter>
+		  <OnLeave>
+		  	self:GetParent():HideTooltip(self)
+		  </OnLeave>
+        </Scripts>
+      </CheckButton>
+    </Frames>
+  </Frame>
+  
+  <Frame name="RSExplorerFrame" hidden="true" inherits="RSExplorerUITemplate" mixin="RSExplorerMixin" enableMouse="true" movable="true" frameLevel="1" frameStrata="HIGH" parent="UIParent" topLevel="true">
+	<Size x="962" y="762"/>
+    <Anchors>
+      <Anchor point="CENTER"/>
+    </Anchors>
+	<Frames>
+      <Frame parentKey="OverlayElements" frameLevel="2" setAllPoints="true">
+      	<Size x="32" y="32"/>
+        <Anchors>
+          <Anchor point="TOPRIGHT" x="4" y="6"/>
+        </Anchors>
+        <Layers>
+          <Layer level="BORDER">
+            <Texture parentKey="CloseButtonBorder" atlas="UI-Frame-Oribos-ExitButtonBorder" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="CENTER" relativeKey="$parent.CloseButton" x="0" y="0"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
+      <Frame parentKey="RaisedBorder" inherits="NineSlicePanelTemplate" frameLevel="2">
+        <KeyValues>
+          <KeyValue key="layoutType" value="CovenantMissionFrame" type="string"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT"/>
+          <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="Filters" mixin="RSExplorerFilters" name="$parentFilters" frameLevel="4">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="60" y="-25" relativePoint="TOPLEFT"/>
+          <Anchor point="BOTTOMRIGHT" x="-60" y="-65" relativePoint="TOPRIGHT"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="RareNPCList" hidden="true" inherits="RSExplorerRareListTemplate" mixin="RSExplorerRareList" name="$parentRareList">
+        <Size x="305" y="640"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="33" y="-64"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="RareInfo" hidden="true" inherits="RSExplorerRareInfoTemplate" frameLevel="3">
+	    <Size x="574" y="638"/>
+	    <Anchors>
+			<Anchor point="TOPRIGHT" x="-38" y="-61"/>
+		</Anchors>
+	  </Frame>
+      <Frame parentKey="Control" inherits="RSExplorerControlTemplate" mixin="RSExplorerControl" hidden="true" frameLevel="4">
+	    <Size x="574" y="60"/>
+	    <Anchors>
+			<Anchor point="TOPLEFT" relativeKey="$parent.RareNPCList" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+			<Anchor point="BOTTOMRIGHT" x="-38" y="20"/>
+		</Anchors>
+	  </Frame>
+      <Frame parentKey="ScanRequired" mixin="RSExplorerControl" hidden="true" name="$scannerFrame">
+        <Anchors>
+          <Anchor point="TOPLEFT"/>
+          <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+	    <Layers>
+	      <Layer level="OVERLAY">
+	        <FontString parentKey="ScanRequiredText" maxLines="2" wordwrap="true" inherits="GameFontNormalHuge">
+	          <Size x="750" y="40" />
+	          <Anchors>
+	            <Anchor point="CENTER" x="0" y="10"/>
+	          </Anchors>
+	        </FontString>
+	        <FontString parentKey="ScanProcessText" hidden="true" inherits="GameFontNormal">
+	          <Anchors>
+	            <Anchor point="TOP" relativeKey="$parent.ScanRequiredText" relativePoint="BOTTOM" x="0" y="-15"/>
+	          </Anchors>
+	          <Color r="1.0" g="1.0" b="1.0" a="1.0" />
+	        </FontString>
+	      </Layer>
+	    </Layers>
+	    <Frames>
+		  <Button parentKey="StartScanningButton" inherits="SharedButtonLargeTemplate">
+	        <Anchors>
+	          <Anchor point="TOP" relativeKey="$parent.ScanRequiredText" relativePoint="BOTTOM" x="0" y="-15"/>
+	        </Anchors>
+	        <Scripts>
+	          <OnClick>
+	          	self:GetParent():StartScanning(self, button)
+	          </OnClick>
+	        </Scripts>
+	      </Button>
+	    </Frames>
+      </Frame>
+      <GameTooltip parentKey="Tooltip" name="ExplorerTooltip" inherits="GameTooltipTemplate" frameStrata="HIGH" frameLevel="1000" />
+    </Frames>
+    <Scripts>
+      <OnShow method="OnShow"/>
+      <OnLoad method="OnLoad"/>
+      <OnDragStart>self:StartMoving()</OnDragStart>
+  	  <OnDragStop>self:StopMovingOrSizing()</OnDragStop>
+    </Scripts>
+   </Frame>
+  
+</Ui>

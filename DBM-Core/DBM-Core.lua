@@ -66,18 +66,18 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20211212103849"),
+	Revision = parseCurseDate("20220112010540"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.1.23 alpha"
-	DBM.ReleaseRevision = releaseDate(2021, 12, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.1.24 alpha"
+	DBM.ReleaseRevision = releaseDate(2021, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.7 alpha"
-	DBM.ReleaseRevision = releaseDate(2021, 12, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.8 alpha"
+	DBM.ReleaseRevision = releaseDate(2021, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.22 alpha"
-	DBM.ReleaseRevision = releaseDate(2021, 12, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.23 alpha"
+	DBM.ReleaseRevision = releaseDate(2021, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -393,6 +393,7 @@ local bannedMods = { -- a list of "banned" (meaning they are replaced by another
 	"DBM-GarrisonInvasions",--Merged into DBM-Draenor mod
 	"DBM-Azeroth-BfA",--renamed to DBM-BfA
 	"DBM-BattlefieldBarrens",--Apparently people are still running this
+	"DBM-RaidLeadTools", -- Killed plugin
 }
 if isRetail then
 	table.insert(bannedMods, "DBM-ZulAman") -- Part of Cataclysm party mods
@@ -422,7 +423,7 @@ if isRetail then
 		[1205]={40, 3},[1448]={40, 3},[1228]={40, 3},--WoD Raids (yes, only 3 kekw)
 		[1712]={50, 3},[1520]={50, 3},[1530]={50, 3},[1676]={50, 3},[1648]={50, 3},--Legion Raids (Set to 50 because 45 tuning makes them difficult even at 50)
 		[1861]={50, 3},[2070]={50, 3},[2096]={50, 3},[2164]={50, 3},[2217]={50, 3},--BfA Raids
-		[2296]={60, 3},[2450]={60, 3},--Shadowlands Raids
+		[2296]={60, 3},[2450]={60, 3},[2481]={60, 3},--Shadowlands Raids
 		--Dungeons
 		[48]={30, 2},[230]={30, 2},[429]={30, 2},[389]={30, 2},[34]={30, 2},--Classic Dungeons
 		[540]={30, 2},[558]={30, 2},[556]={30, 2},[555]={30, 2},[542]={30, 2},[546]={30, 2},[545]={30, 2},[547]={30, 2},[553]={30, 2},[554]={30, 2},[552]={30, 2},[557]={30, 2},[269]={30, 2},[560]={30, 2},[543]={30, 2},[585]={30, 2},--BC Dungeons
@@ -1348,11 +1349,6 @@ do
 					return
 				end
 			end
-			if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 and not self.Options.DebugMode then
-				self:Disable(true)
-				self:Schedule(15, infniteLoopNotice, self, L.OUTDATEDRLT)
-				return
-			end
 			if GetAddOnEnableState(playerName, "DPMCore") >= 1 then
 				self:Disable(true)
 				self:Schedule(15, infniteLoopNotice, self, L.DPMCORE)
@@ -1939,10 +1935,6 @@ do
 				return
 			end
 		end
-		if GetAddOnEnableState(playerName, "DBM-RaidLeadTools") >= 1 and not self.Options.DebugMode then
-			self:AddMsg(L.OUTDATEDRLT)
-			return
-		end
 		if GetAddOnEnableState(playerName, "DPMCore") >= 1 then
 			self:AddMsg(L.DPMCORE)
 			return
@@ -2247,7 +2239,10 @@ do
 		return (raid[name] and raid[name].subgroup) or 0
 	end
 
-	function DBM:GetRaidRoster()
+	function DBM:GetRaidRoster(name)
+		if name then
+			return raid[name] ~= nil
+		end
 		return raid
 	end
 
@@ -2506,7 +2501,8 @@ function DBM:IsTrivial(customLevel)
 		--First, auto bail and return non trivial if it's an instancce not in table to prevent nil error
 		if not instanceDifficultyBylevel[LastInstanceMapID] then return false end
 		--Content is trivial if player level is 10 higher than content involved
-		if playerLevel >= (instanceDifficultyBylevel[LastInstanceMapID][1]+10) then
+		local levelDiff = isRetail and 10 or 15
+		if playerLevel >= (instanceDifficultyBylevel[LastInstanceMapID][1]+levelDiff) then
 			return true
 		end
 	end
@@ -5189,6 +5185,7 @@ do
 			mod.engagedDiff = nil
 			mod.engagedDiffText = nil
 			mod.engagedDiffIndex = nil
+			mod.vb.stageTotality = nil
 			if #inCombat == 0 then--prevent error if you pulled multiple boss. (Earth, Wind and Fire)
 				statusWhisperDisabled = false
 				statusGuildDisabled = false
@@ -5466,13 +5463,13 @@ function DBM:GetStage(modId)
 	if modId then
 		local mod = self:GetModByName(modId)
 		if mod and mod.inCombat then
-			return mod.vb.phase or 0
+			return mod.vb.phase or 0, mod.vb.stageTotality or 0
 		end
 	else
 		if #inCombat > 0 then--At least one boss is engaged
 			local mod = inCombat[1]--Get first mod in table
 			if mod then
-				return mod.vb.phase or 0
+				return mod.vb.phase or 0, mod.vb.stageTotality or 0
 			end
 		end
 	end
@@ -5505,6 +5502,10 @@ do
 	end
 
 	function DBM:ValidateSound(path, log, ignoreCustom)
+		-- Ignore build in sounds
+		if type(path) == "number" or string.find(path:lower(), "^sound[\\/]+") then
+			return true
+		end
 		-- Validate LibSharedMedia
 		if not LSMMediaCacheBuilt then
 			buildLSMFileCache()
@@ -6481,10 +6482,15 @@ function bossModPrototype:SetStage(stage)
 	else
 		self.vb.phase = stage
 	end
+	--Separate variable to use SetStage totality for very niche weak aura practices
+	if not self.vb.stageTotality then
+		self.vb.stageTotality = 0
+	end
+	self.vb.stageTotality = self.vb.stageTotality + 1
 	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
-		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId)--Mod, modId, Stage, Encounter Id (if available).
+		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, self.vb.stageTotality)--Mod, modId, Stage, Encounter Id (if available), total number of times SetStage has been called since combat start
 		--Note, some encounters have more than one encounter Id, for these encounters, the first ID from mod is always returned regardless of actual engage ID triggered fight
-		DBM:Debug("DBM_SetStage: " .. self.vb.phase)
+		DBM:Debug("DBM_SetStage: " .. self.vb.phase .. "/" .. self.vb.stageTotality)
 	end
 end
 
@@ -9906,7 +9912,7 @@ function bossModPrototype:AddNamePlateOption(name, spellId, default)
 	self.localization.options[name] = L.AUTO_NAMEPLATE_OPTION_TEXT:format(spellId)
 end
 
-function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion)
+function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion, optionalThreshold)
 	local oVersion = ""
 	if optionVersion then
 		oVersion = tostring(optionVersion)
@@ -9918,7 +9924,11 @@ function bossModPrototype:AddInfoFrameOption(spellId, default, optionVersion)
 	self.Options["InfoFrame"..oVersion] = (default == nil) or default
 	self:SetOptionCategory("InfoFrame"..oVersion, "misc")
 	if spellId then
-		self.localization.options["InfoFrame"..oVersion] = L.AUTO_INFO_FRAME_OPTION_TEXT:format(spellId)
+		if optionalThreshold then
+			self.localization.options["InfoFrame"..oVersion] = L.AUTO_INFO_FRAME_OPTION_TEXT3:format(spellId, optionalThreshold)
+		else
+			self.localization.options["InfoFrame"..oVersion] = L.AUTO_INFO_FRAME_OPTION_TEXT:format(spellId)
+		end
 	else
 		self.localization.options["InfoFrame"..oVersion] = L.AUTO_INFO_FRAME_OPTION_TEXT2
 	end
@@ -9944,51 +9954,6 @@ function bossModPrototype:AddSpeedClearOption(name, default)
 	self.Options["SpeedClearTimer"] = (default == nil) or default
 	self:SetOptionCategory("SpeedClearTimer", "timer")
 	self.localization.options["SpeedClearTimer"] = L.AUTO_SPEEDCLEAR_OPTION_TEXT:format(name)
-end
-
-function bossModPrototype:AddSliderOption(name, minValue, maxValue, valueStep, default, cat, func)
-	cat = cat or "misc"
-	self.DefaultOptions[name] = {type = "slider", value = default or 0}
-	self.Options[name] = default or 0
-	self:SetOptionCategory(name, cat)
-	self.sliders = self.sliders or {}
-	self.sliders[name] = {
-		minValue = minValue,
-		maxValue = maxValue,
-		valueStep = valueStep,
-	}
-	if func then
-		self.optionFuncs = self.optionFuncs or {}
-		self.optionFuncs[name] = func
-	end
-end
-
-function bossModPrototype:AddEditboxOption(name, default, cat, width, height, func)
-	cat = cat or "misc"
-	self.DefaultOptions[name] = {type = "editbox", value = default or ""}
-	self.Options[name] = default or ""
-	self:SetOptionCategory(name, cat)
-	self.editboxes = self.editboxes or {}
-	self.editboxes[name] = {
-		width = width,
-		height = height
-	}
-	if func then
-		self.optionFuncs = self.optionFuncs or {}
-		self.optionFuncs[name] = func
-	end
-end
-
-function bossModPrototype:AddButton(name, onClick, cat, width, height, fontObject)
-	cat = cat or "misc"
-	self:SetOptionCategory(name, cat)
-	self.buttons = self.buttons or {}
-	self.buttons[name] = {
-		onClick = onClick,
-		width = width,
-		height = height,
-		fontObject = fontObject
-	}
 end
 
 -- FIXME: this function does not reset any settings to default if you remove an option in a later revision and a user has selected this option in an earlier revision were it still was available

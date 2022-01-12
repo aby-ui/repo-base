@@ -9,6 +9,9 @@ local RSTomtom = private.NewLib("RareScannerTomtom")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 
+-- RareScanner general libraries
+local RSUtils = private.ImportLib("RareScannerUtils")
+
 ---============================================================================
 -- Tomtom integration
 ---============================================================================
@@ -21,7 +24,7 @@ function RSTomtom.AddWorldMapTomtomWaypoint(mapID, x, y, name)
 			TomTom:RemoveWaypoint(tomtom_waypoint)
 		end
 		
-		tomtom_waypoint = TomTom:AddWaypoint(mapID, x, y, {
+		tomtom_waypoint = TomTom:AddWaypoint(mapID, RSUtils.FixCoord(x), RSUtils.FixCoord(y), {
 			title = name,
 			persistent = false,
 			minimap = false,
@@ -38,7 +41,7 @@ function RSTomtom.AddTomtomWaypoint(npcID, name)
 		end
 		local npcInfo = RSGeneralDB.GetAlreadyFoundEntity(npcID)
 		if (npcInfo and npcInfo.coordX and npcInfo.coordY) then
-			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, tonumber(npcInfo.coordX), tonumber(npcInfo.coordY), {
+			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, RSUtils.FixCoord(npcInfo.coordX), RSUtils.FixCoord(npcInfo.coordY), {
 				title = name,
 				persistent = false,
 				minimap = false,

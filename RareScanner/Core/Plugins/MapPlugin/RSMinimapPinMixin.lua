@@ -18,6 +18,9 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 -- RareScanner services
 local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
 
+-- RareScanner general libraries
+local RSUtils = private.ImportLib("RareScannerUtils")
+
 RSMinimapPinMixin = {}
 
 function RSMinimapPinMixin:OnEnter()
@@ -40,7 +43,7 @@ function RSMinimapPinMixin:OnLeave()
 	GameTooltip:Hide()
 end
 
-function RSMinimapPinMixin:ShowOverlay()
+function RSMinimapPinMixin:ShowOverlay(r, g, b)
 	if (not self.overlayFramesPool) then
 		self.overlayFramesPool = CreateFramePool("FRAME", Minimap, "RSMinimapPinTemplate");
 	end
@@ -51,14 +54,24 @@ function RSMinimapPinMixin:ShowOverlay()
 	elseif (self.POI.isContainer) then
 		overlay = RSContainerDB.GetInternalContainerOverlay(self.POI.entityID, self.POI.mapID)
 	end
+	
+	local playerMapPosition = C_Map.GetPlayerMapPosition(self.POI.mapID, "player")
+	local playerCoordX
+	local playerCoodY
+	if (playerMapPosition) then
+		playerCoordX, playerCoodY = playerMapPosition:GetXY()
+	end
 
 	if (overlay) then
 		for _, coordinates in ipairs (overlay) do
 			local x, y = strsplit("-", coordinates)
-			local pin = self.overlayFramesPool:Acquire()
-			pin.POI = self.POI
-			pin.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
-			HBD_Pins:AddMinimapIconMap(self, pin, self.POI.mapID, tonumber(x), tonumber(y), false, false)
+			if (not playerCoordX or not playerCoodY or RSUtils.DistanceBetweenCoords(RSUtils.FixCoord(x), playerCoordX, RSUtils.FixCoord(y), playerCoodY) <= RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE) then
+				local pin = self.overlayFramesPool:Acquire()
+				pin.POI = self.POI
+				pin.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
+				pin.Texture:SetVertexColor(r, g, b, 1)
+				HBD_Pins:AddMinimapIconMap(self, pin, self.POI.mapID, RSUtils.FixCoord(x), RSUtils.FixCoord(y), false, false)
+			end
 		end
 	end
 end

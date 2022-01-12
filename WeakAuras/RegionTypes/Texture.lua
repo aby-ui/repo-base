@@ -23,7 +23,12 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  frameStrata = 1
+  frameStrata = 1,
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -82,9 +87,6 @@ local function create(parent)
   texture:SetAllPoints(region);
 
   WeakAuras.regionPrototype.create(region);
-  region.values = {};
-
-  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
 
   return region;
 end

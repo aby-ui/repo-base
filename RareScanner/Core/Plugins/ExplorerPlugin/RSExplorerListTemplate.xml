@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+  
+  <Frame name="RSExplorerRareListTemplate" virtual="true">
+    <Size x="300" y="575"/>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="background" atlas="adventures-followers-bg">
+          <Anchors>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="BOTTOMRIGHT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <ScrollFrame name="$parentListScrollFrame" parentKey="listScroll" inherits="HybridScrollFrameTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="5" y="-6"/>
+          <Anchor point="BOTTOMRIGHT" x="-3" y="6"/>
+        </Anchors>
+        <Frames>
+          <Slider name="$parentScrollBar" inherits="RSExplorerScrollBarTemplate" parentKey="scrollBar">
+            <Anchors>
+              <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-14" y="-30"/>
+              <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-14" y="30"/>
+            </Anchors>
+            <Scripts>
+              <OnLoad>
+                self.trackBG:Show();
+                self.trackBG:SetVertexColor(0, 0, 0, 0.75);
+                self.doNotHide = true;
+              </OnLoad>
+            </Scripts>
+          </Slider>
+        </Frames>
+      </ScrollFrame>
+      <Frame parentKey="ElevatedFrame" framelevel="50" setAllPoints="true">
+        <Layers>
+          <Layer level="OVERLAY" textureSubLayer="5">
+            <Texture atlas="adventures-followers-frame" useAtlasSize="true">
+              <Anchors>
+                <Anchor point="TOPLEFT"/>
+                <Anchor point="BOTTOMRIGHT"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
+    </Frames>
+  </Frame>
+  
+  <Slider name="RSExplorerScrollBarTemplate" parentKey="scrollBar" virtual="true">
+    <Size x="10" y="0"/>
+    <Layers>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture name="$parentBG" setAllPoints="true" hidden="true" parentKey="trackBG" atlas="Soulbinds_Collection_Scrollbar_Background" useAtlasSize="true"/>
+      </Layer>
+      <Layer level="BACKGROUND">
+        <Texture atlas="Soulbinds_Collection_Scrollbar_Backplate" useAtlasSize="true">
+          <Anchors>
+            <Anchor point="TOPRIGHT" x="7" y="30"/>
+            <Anchor point="BOTTOMRIGHT" x="7" y="-30"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button name="$parentScrollUpButton" parentKey="UpButton" inherits="RSExplorerScrollUpButtonTemplate">
+        <Anchors>
+          <Anchor point="TOP" relativePoint="TOP" x="0" y="15"/>
+        </Anchors>
+        <Scripts>
+          <OnLoad function="HybridScrollFrameScrollUp_OnLoad"/>
+          <OnClick function="HybridScrollFrameScrollButton_OnClick"/>
+        </Scripts>
+      </Button>
+      <Button name="$parentScrollDownButton" parentKey="DownButton" inherits="RSExplorerScrollDownButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="-20"/>
+        </Anchors>
+        <Scripts>
+          <OnLoad function="HybridScrollFrameScrollDown_OnLoad"/>
+          <OnClick function="HybridScrollFrameScrollButton_OnClick"/>
+        </Scripts>
+      </Button>
+    </Frames>
+    <Scripts>
+      <OnValueChanged function="HybridScrollFrame_OnValueChanged"/>
+    </Scripts>
+    <ThumbTexture name="$parentThumbTexture" atlas="Soulbinds_Collection_Scrollbar_Thumb_Wide" parentKey="thumbTexture">
+      <Size x="10" y="24"/>
+    </ThumbTexture>
+  </Slider>
+  
+  <Button name="RSExplorerScrollUpButtonTemplate" virtual="true">
+    <Size x="10" y="10"/>
+    <NormalTexture parentKey="Normal" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Up" useAtlasSize="true"/>
+    <PushedTexture parentKey="Pushed" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Up" useAtlasSize="true"/>
+    <DisabledTexture parentKey="Disabled" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Up" useAtlasSize="true"/>
+    <HighlightTexture parentKey="Highlight" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Up" useAtlasSize="true" alphaMode="ADD"/>
+  </Button>
+  
+  <Button name="RSExplorerScrollDownButtonTemplate" virtual="true">
+    <Size x="10" y="10"/>
+    <NormalTexture parentKey="Normal" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Down" useAtlasSize="true" />
+    <PushedTexture parentKey="Pushed" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Down" useAtlasSize="true"/>
+    <DisabledTexture parentKey="Disabled" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Down" useAtlasSize="true"/>
+    <HighlightTexture parentKey="Highlight" inherits="UIPanelScrollBarButton" atlas="Soulbinds_Collection_Scrollbar_Arrow_Down" useAtlasSize="true" alphaMode="ADD"/>
+  </Button>
+    
+  <Frame name="RSExplorerNpcPortraitTemplate" virtual="true">
+    <Size x="52" y="60"/>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Portrait">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="10" y="-10"/>
+            <Anchor point="BOTTOMRIGHT" x="-3" y="8"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="BORDER">
+        <Texture parentKey="RareOverlay" atlas="Adventure-Mission-Silver-Dragon">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="-3" y="5"/>
+            <Anchor point="BOTTOMRIGHT" x="11" y="-9"/>
+          </Anchors>
+        </Texture>
+        <MaskTexture parentKey="CircleMask" file="Interface\CharacterFrame\TempPortraitAlphaMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeKey="$parent.Icon" x="2" y="-2"/>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon" x="-2" y="2"/>
+          </Anchors>
+          <MaskedTextures>
+            <MaskedTexture childKey="Portrait"/>
+          </MaskedTextures>
+        </MaskTexture>
+      </Layer>
+    </Layers>
+  </Frame>
+  
+  <Button name="RSExplorerListButtonTemplate" virtual="true">
+    <Size x="260" y="56"/>
+    <Anchors>
+      <Anchor point="TOPLEFT" x="0" y="0"/>
+    </Anchors>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="BG" atlas="GarrMission_FollowerListButton" useAtlasSize="true">
+          <Anchors>
+            <Anchor point="TOPRIGHT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture parentKey="Selected" atlas="GarrMission_FollowerListButton-Select" useAtlasSize="true" hidden="true">
+          <Anchors>
+            <Anchor point="TOPRIGHT"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture parentKey="MountTexture" file="Interface\AddOns\RareScanner\Media\Textures\MountTexture" hidden="true">
+          <Size x="54" y="52"/>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture parentKey="PetTexture" file="Interface\AddOns\RareScanner\Media\Textures\PetTexture" hidden="true">
+          <Size x="54" y="52"/>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture parentKey="ToyTexture" file="Interface\AddOns\RareScanner\Media\Textures\ToyTexture" hidden="true">
+         <Size x="54" y="52"/>
+        </Texture>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="1">
+        <Texture parentKey="AppearanceTexture" file="Interface\AddOns\RareScanner\Media\Textures\AppearanceTexture" hidden="true">
+          <Size x="54" y="52"/>
+        </Texture>
+      </Layer>
+      <Layer level="ARTWORK">
+        <FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT">
+          <Size x="180" y="0"/>
+          <Anchors>
+            <Anchor point="LEFT" relativeKey="$parent.PortraitFrame" relativePoint="LEFT" x="70" y="-8"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+      <Layer level="BACKGROUND" textureSubLevel="2">
+        <Texture parentKey="NameBG" atlas="GarrMission_FollowerListButton" alphamode="BLEND">
+          <Size x="180" y="0"/>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeKey="$parent.Name" relativePoint="TOPLEFT" x="-5" y="3"/>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT" x="5" y="-7"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Frame parentKey="PortraitFrame" inherits="RSExplorerNpcPortraitTemplate">
+    	<Size x="52" y="60"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="0" y="2"/>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            self:SetFrameLevel(self:GetParent():GetFrameLevel() + 2);
+          </OnLoad>
+        </Scripts>
+      </Frame>
+    </Frames>
+    <HighlightTexture parentKey="Highlight" atlas="GarrMission_FollowerListButton-Highlight" useAtlasSize="true">
+      <Anchors>
+        <Anchor point="TOPRIGHT"/>
+      </Anchors>
+    </HighlightTexture>
+  </Button>
+  
+  <Frame name="RSExplorerListTemplate" virtual="true">
+    <Size x="260" y="56"/>
+    <Frames>
+      <Button parentKey="RareNPC" inherits="RSExplorerListButtonTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT"/>
+        </Anchors>
+   		<Scripts>
+          <OnLoad>
+            self:RegisterForClicks("LeftButtonUp", "RightButtonDown");
+          </OnLoad>
+      	  <OnClick>
+            RSExplorerRareListButton_OnClick(self, button);
+          </OnClick>
+      	  <OnEnter>
+            RSExplorerRareListButton_OnEnter(self);
+          </OnEnter>
+      	  <OnLeave>
+            RSExplorerRareListButton_OnLeave(self);
+          </OnLeave>
+        </Scripts>
+      </Button>
+    </Frames>
+  </Frame>
+</Ui>

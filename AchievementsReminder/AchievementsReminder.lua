@@ -15,7 +15,7 @@ end
 
 ralldatabase()
 
-  achievementsreminderver=9.150
+  achievementsreminderver=9.151
 
 
 	if ralloptions==nil then ralloptions={1,1,0,0,0,0,1,0,0,0,0,0} end

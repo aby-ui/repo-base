@@ -58,13 +58,13 @@ local function GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 		POI.x = alreadyFoundInfo.coordX
 		POI.y = alreadyFoundInfo.coordY
 	else
-		POI.x = eventInfo.x
-		POI.y = eventInfo.y
+		POI.x = RSUtils.Lpad(eventInfo.x, 4, '0')
+		POI.y = RSUtils.Lpad(eventInfo.y, 4, '0')
 	end
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isCompleted = RSEventDB.IsEventCompleted(eventID)
 	POI.isDiscovered = POI.isCompleted or alreadyFoundInfo ~= nil
-	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLink(eventID, mapID)
+	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLinkByMap(eventID, mapID)
 	if (eventInfo) then
 		POI.worldmap = eventInfo.worldmap
 	end

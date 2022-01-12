@@ -91,7 +91,9 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if WeakAuras.IsRetail() then
+local TBC253 = WeakAuras.IsBCC() and select(4, GetBuildInfo()) >= 20503 -- for 2.5.3 PTR, refactor this after release
+
+if WeakAuras.IsRetail() or TBC253 then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 elseif WeakAuras.IsBCC() then
   WeakAuras.UnitCastingInfo = function(unit)
@@ -101,7 +103,7 @@ elseif WeakAuras.IsBCC() then
 else
   WeakAuras.UnitCastingInfo = function(unit)
     if UnitIsUnit(unit, "player") then
-      return CastingInfo()
+      return UnitCastingInfo("player")
     else
       return LibClassicCasterino:UnitCastingInfo(unit)
     end
@@ -118,7 +120,7 @@ elseif WeakAuras.IsBCC() then
 else
   WeakAuras.UnitChannelInfo = function(unit)
     if UnitIsUnit(unit, "player") then
-      return ChannelInfo()
+      return UnitChannelInfo("player")
     else
       return LibClassicCasterino:UnitChannelInfo(unit)
     end
@@ -1024,6 +1026,8 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0
   elseif (flagToCheck == "InGroup") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) == 0
+  elseif (flagToCheck == "InParty") then
+    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_PARTY) > 0
   elseif (flagToCheck == "NotInGroup") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) > 0
   end
@@ -2000,6 +2004,23 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "raidMarkIndex",
+        display = L["Raid Mark"],
+        type = "select",
+        values = "raid_mark_check_type",
+        store = true,
+        conditionType = "select",
+        init = "GetRaidTargetIndex(unit) or 0"
+      },
+      {
+        name = "raidMark",
+        display = L["Raid Mark Icon"],
+        store = true,
+        hidden = true,
+        test = "true",
+        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -2100,16 +2121,29 @@ Private.event_prototypes = {
     init = function(trigger)
       local ret = [=[
         local factionID = %q
-        local name, description, standingId, bottomValue, topValue, earnedValue, _, _, isHeader, _, _, _, _, factionID = GetFactionInfoByID(factionID)
+        local useWatched = %s
+        local name, description, standingId, bottomValue, topValue, earnedValue, _
+        if useWatched then
+          name, standingId, bottomValue, topValue, earnedValue, factionID = GetWatchedFactionInfo()
+        else
+          name, description, standingId, bottomValue, topValue, earnedValue, _, _, _, _, _, _, _, factionID = GetFactionInfoByID(factionID)
+        end
         local standing
         if tonumber(standingId) then
            standing = getglobal("FACTION_STANDING_LABEL"..standingId)
         end
       ]=]
-      return ret:format(trigger.factionID or 0)
+      return ret:format(trigger.factionID or 0, trigger.use_watched and "true" or "false")
     end,
     statesParameter = "one",
     args = {
+      {
+        name = "watched",
+        display = L["Use Watched Faction"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
+      },
       {
         name = "factionID",
         display = L["Faction"],
@@ -2126,6 +2160,9 @@ Private.event_prototypes = {
           return ret
         end,
         conditionType = "select",
+        enable = function(trigger)
+          return not trigger.use_watched
+        end,
         test = "true"
       },
       {
@@ -2558,6 +2595,23 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "raidMarkIndex",
+        display = L["Raid Mark"],
+        type = "select",
+        values = "raid_mark_check_type",
+        store = true,
+        conditionType = "select",
+        init = "GetRaidTargetIndex(unit) or 0"
+      },
+      {
+        name = "raidMark",
+        display = L["Raid Mark Icon"],
+        store = true,
+        hidden = true,
+        test = "true",
+        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+      },
+      {
         name = "includePets",
         display = WeakAuras.newFeatureString .. L["Include Pets"],
         type = "select",
@@ -2846,12 +2900,10 @@ Private.event_prototypes = {
         end,
         hidden = not WeakAuras.IsRetail()
       },
--- TODO modernize conditions
       {
         name = "chargedComboPoint1",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 1"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -2863,7 +2915,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint2",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 2"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -2875,7 +2926,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint3",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 3"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -2887,7 +2937,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint4",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 4"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -3031,6 +3080,23 @@ Private.event_prototypes = {
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
+      },
+      {
+        name = "raidMarkIndex",
+        display = L["Raid Mark"],
+        type = "select",
+        values = "raid_mark_check_type",
+        store = true,
+        conditionType = "select",
+        init = "GetRaidTargetIndex(unit) or 0"
+      },
+      {
+        name = "raidMark",
+        display = L["Raid Mark Icon"],
+        store = true,
+        hidden = true,
+        test = "true",
+        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         name = "includePets",
@@ -3303,6 +3369,23 @@ Private.event_prototypes = {
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
+      },
+      {
+        name = "raidMarkIndex",
+        display = L["Raid Mark"],
+        type = "select",
+        values = "raid_mark_check_type",
+        store = true,
+        conditionType = "select",
+        init = "GetRaidTargetIndex(unit) or 0"
+      },
+      {
+        name = "raidMark",
+        display = L["Raid Mark Icon"],
+        store = true,
+        hidden = true,
+        test = "true",
+        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         name = "ignoreSelf",
@@ -4890,11 +4973,21 @@ Private.event_prototypes = {
       {
         name = "stage",
         init = "WeakAuras.GetDBMStage()",
-        display = L["Stage"],
+        display = L["Journal Stage"],
+        desc = L["Matches stage number of encounter journal.\nIntermissions are .5\nE.g. 1;2;1;2;2.5;3"],
         type = "number",
         conditionType = "number",
         store = true,
-      }
+      },
+      {
+        name = "stageTotal",
+        init = "select(2, WeakAuras.GetDBMStage())",
+        display = L["Stage Counter"],
+        desc = L["Increases by one per stage or intermission."],
+        type = "number",
+        conditionType = "number",
+        store = true,
+      },
     },
     automaticrequired = true,
     statesParameter = "one",
@@ -6644,6 +6737,47 @@ Private.event_prototypes = {
     },
     timedrequired = true
   },
+  ["Spell Cast Succeeded"] = {
+    type = "event",
+    events = {
+      ["events"] = {"UNIT_SPELLCAST_SUCCEEDED"}
+    },
+    name = L["Spell Cast Succeeded"],
+    statesParameter = "one",
+    args = {
+      {
+        name = "unit",
+        init = "arg",
+        display = L["Caster Unit"],
+        type = "unit",
+        test = "UnitIsUnit(unit or '', %q)",
+        values = "actual_unit_types_with_specific",
+        store = true,
+        conditionType = "select",
+        conditionTest = function(state, needle, op)
+          return state and state.show and (UnitIsUnit(needle, state.unit or '') == (op == "=="))
+        end
+      },
+      {}, -- castGUID
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        type = "string",
+        init = "arg",
+        store = true,
+        conditionType = "number"
+      },
+
+      {
+        name = "icon",
+        hidden = true,
+        init = "select(3, GetSpellInfo(spellId))",
+        store = true,
+        test = "true"
+      },
+    },
+    timedrequired = true
+  },
   ["Ready Check"] = {
     type = "event",
     events = {
@@ -7237,7 +7371,8 @@ Private.event_prototypes = {
     type = "unit",
     events = {
       ["events"] = {
-        "LOSS_OF_CONTROL_UPDATE"
+        "LOSS_OF_CONTROL_UPDATE",
+        "PLAYER_ENTERING_WORLD"
       }
     },
     force_events = "LOSS_OF_CONTROL_UPDATE",
@@ -7626,6 +7761,23 @@ Private.event_prototypes = {
           return not WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                  and not trigger.use_inverse
         end
+      },
+      {
+        name = "raidMarkIndex",
+        display = L["Raid Mark"],
+        type = "select",
+        values = "raid_mark_check_type",
+        store = true,
+        conditionType = "select",
+        init = "GetRaidTargetIndex(unit) or 0"
+      },
+      {
+        name = "raidMark",
+        display = L["Raid Mark Icon"],
+        store = true,
+        hidden = true,
+        test = "true",
+        init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
         name = "includePets",
@@ -8719,6 +8871,7 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.event_prototypes["Crowd Controlled"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
+  Private.event_prototypes["Spell Cast Succeeded"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end

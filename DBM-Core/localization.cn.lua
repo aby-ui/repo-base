@@ -1,7 +1,7 @@
 -- L.Core
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
--- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20210924
+-- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20211214
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -114,7 +114,6 @@ L.NOTESHAREERRORALREADYOPEN	= "为防止未保存的改变，当注记编辑器�
 L.ALLMOD_DEFAULT_LOADED		= "本副本里的所有Boss配置已经被初始化"
 L.ALLMOD_STATS_RESETED		= "所有模组的状态已被重置"
 L.MOD_DEFAULT_LOADED			= "将会使用默认设置来进行本场战斗"
-L.SOUNDKIT_MIGRATION			= "一个或多个警报的声音因文件丢失而被设置成默认。" .. L.DBM .. "只支持放在插件目录下的声音文件，或者是SoundKit ID的重放"
 
 L.WORLDBOSS_ENGAGED			= "世界Boss-%s可能正在作战。当前还有%s的生命值。 (由 %s 的" .. L.DBM .. "发送)"
 L.WORLDBOSS_DEFEATED			= "世界Boss-%s可能战斗结束了。 (由 %s 的" .. L.DBM .. "发送)"
@@ -143,8 +142,8 @@ L.OPTION_CATEGORY_WARNINGS	= "警报"
 L.OPTION_CATEGORY_WARNINGS_YOU	= "个人警报"
 L.OPTION_CATEGORY_WARNINGS_OTHER	= "目标警报"
 L.OPTION_CATEGORY_WARNINGS_ROLE	= "角色警报"
+L.OPTION_CATEGORY_SPECWARNINGS		= "特殊警报"
 
-L.OPTION_CATEGORY_MISC		= "其它"
 L.OPTION_CATEGORY_SOUNDS		= "声音"
 L.OPTION_CATEGORY_DROPDOWNS		= "下拉"
 L.OPTION_CATEGORY_YELLS			= "大喊"
@@ -192,6 +191,7 @@ L.OUTDATEDRLT						= "警告: DBM-RaidLeadTools 干扰到 " .. L.DBM .. "运行.
 L.VICTORYSOUND						= "警告: DBM-VictorySound 与该版本的 " .. L.DBM .. "不兼容，为避免冲突，必须先将其删除。 " .. L.DBM .. " 才可以正常运行。"
 L.DPMCORE						= "警告: DBM-PVP已经已经很久没人维护了,并无法兼容。请移除DBM-PVP避免冲突。"
 L.DBMLDB							= "警告: DBM-LDB 已经集成入" .. L.DBM .. "核心。建议在插件目录删掉'DBM-LDB'。"
+L.DBMLOOTREMINDER					= "警告: 第三方插件DBM-LootReminder已安装。该插件不兼容正式服，并会导致" .. L.DBM .. "挂掉，无法发送开怪提醒。建议移除。"
 L.UPDATE_REQUIRES_RELAUNCH		= "警告: 如果你不完全重启游戏，" .. L.DBM .. "可能会工作不正常。此次更新包含了新的文件，或者toc文件的改变，这是重载界面无法加载的。不重启游戏可能导致作战模块功能错误。"
 L.OUT_OF_DATE_NAG				= "你的" .. L.DBM .. "版本已经过期，新版本针对特定的首领战斗增加新的功能和错误的修复。建议您进行更新来改善您的游戏体验。"
 
@@ -229,8 +229,10 @@ L.RANGERADAR_IN_RANGE_TEXTONE= "%s (%0.1f码)"--One target
 
 L.INFOFRAME_SHOW_SELF		= "总是显示你的能量"		-- Always show your own power value even if you are below the threshold
 L.INFOFRAME_SETLINES			= "设置最大行数"
+L.INFOFRAME_SETCOLS				= "设置最大列数"
 L.INFOFRAME_LINESDEFAULT		= "由模组设置"
 L.INFOFRAME_LINES_TO			= "%d行"
+L.INFOFRAME_COLS_TO				= "%d列"
 L.INFOFRAME_POWER			= "能量"
 L.INFOFRAME_AGGRO			= "仇恨"
 L.INFOFRAME_MAIN				= "主能量:"--Main power
@@ -354,12 +356,12 @@ L.AUTO_ANNOUNCE_OPTIONS.target			= "警报：$spell:%s的目标"
 L.AUTO_ANNOUNCE_OPTIONS.targetNF			= "警报：$spell:%s的目标(忽略全局目标过滤器)"
 L.AUTO_ANNOUNCE_OPTIONS.targetsource		= "警报：$spell:%s的目标(带来源)"
 L.AUTO_ANNOUNCE_OPTIONS.targetcount		= "警报：$spell:%s的目标(带计数)"
-L.AUTO_ANNOUNCE_OPTIONS.spell			= "警报：$spell:%s"
-L.AUTO_ANNOUNCE_OPTIONS.ends				= "警报：$spell:%s束"
-L.AUTO_ANNOUNCE_OPTIONS.endtarget		= "警报：$spell:%s结束"
+L.AUTO_ANNOUNCE_OPTIONS.spell			= "警报：当$spell:%s施法时"
+L.AUTO_ANNOUNCE_OPTIONS.ends				= "警报：$spell:%s结束"
+L.AUTO_ANNOUNCE_OPTIONS.endtarget		= "警报：$spell:%s结束（带目标）"
 L.AUTO_ANNOUNCE_OPTIONS.fades			= "警报：$spell:%s消失"
 L.AUTO_ANNOUNCE_OPTIONS.adds				= "警报：$spell:%s剩余数量"
-L.AUTO_ANNOUNCE_OPTIONS.cast				= "警报：$spell:%s的施放"
+L.AUTO_ANNOUNCE_OPTIONS.cast				= "警报：$spell:%s在施放"
 L.AUTO_ANNOUNCE_OPTIONS.soon				= "预警：$spell:%s"
 L.AUTO_ANNOUNCE_OPTIONS.sooncount		= "预警：$spell:%s(带计数)"
 L.AUTO_ANNOUNCE_OPTIONS.countdown		= "预警：$spell:%s(带计数)"
@@ -532,8 +534,6 @@ L.AUTO_YELL_ANNOUNCE_TEXT.shortposition	= "{rt%%1$d}%s, %%2$d" --Icon, Spellname
 L.AUTO_YELL_ANNOUNCE_TEXT.combo		= "%s, %%s"
 
 --
---L.AUTO_YELL_CUSTOM_POSITION			= "{rt%d}%s{rt%d}"--Doesn't need translating. Has no strings
---L.AUTO_YELL_CUSTOM_POSITION2			= "{rt%d}{rt%d}%s{rt%d}{rt%d}"--Doesn't need translating. Has no strings
 L.AUTO_YELL_CUSTOM_FADE				= "%s 消失"
 L.AUTO_HUD_OPTION_TEXT				= "为$spell:%s显示HudMap(退休了)"
 L.AUTO_HUD_OPTION_TEXT_MULTI			= "为多个机制显示HudMap(退休了)"

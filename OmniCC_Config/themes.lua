@@ -347,6 +347,23 @@ local function addThemeOptions(owner, theme, id)
                                     OmniCC.Cooldown:ForAll('Refresh', true)
                                 end
                             },
+                            maxDuration = {
+                                type = 'range',
+                                name = L.MaxDuration,
+                                desc = L.MaxDurationDesc,
+                                width = 'full',
+                                order = 31,
+                                min = 0,
+                                softMax = 600,
+                                step = 1,
+                                get = function()
+                                    return theme.maxDuration
+                                end,
+                                set = function(_, val)
+                                    theme.maxDuration = val
+                                    OmniCC.Cooldown:ForAll('Refresh', true)
+                                end
+                            },
                             mmssThreshold = {
                                 type = 'range',
                                 name = L.MMSSDuration,

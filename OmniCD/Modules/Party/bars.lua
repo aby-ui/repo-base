@@ -52,9 +52,11 @@ function OmniCD_BarOnHide(self)
 		if f == self then
 			if f.timer_inCombatTicker then
 				f.timer_inCombatTicker:Cancel()
+				f.timer_inCombatTicker = nil
 			end
 			if f.timer_ashenHallowTicker then
 				f.timer_ashenHallowTicker:Cancel()
+				f.timer_ashenHallowTicker = nil
 			end
 			tremove(bars, i)
 			break
@@ -96,6 +98,9 @@ function OmniCD_BarOnHide(self)
 end
 
 function P:SetEnabledColorScheme(info)
+	if not info.isDeadOrOffline then
+		return
+	end
 	info.isDeadOrOffline = nil -- UNIT_HEALTH shouldn't fire for offline players
 
 	for id, icon in pairs(info.spellIcons) do
@@ -135,11 +140,11 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 		end
 
 		if not UnitIsDeadOrGhost(unit) then
+			local currentHealth = UnitHealth(unit)
+			local maxHealth = UnitHealthMax(unit)
 			if E.isPreBCC then
 				local icon = info.spellIcons[20608] -- Reincarnation
 				if icon then
-					local currentHealth = UnitHealth(unit)
-					local maxHealth = UnitHealthMax(unit)
 					-- BCC
 					-- Reincarnation    20/30/40% (Rank 0/1/2)
 					-- Rebirth      400/750/1100/1600/2200/3200 (Rank1-6)
@@ -149,6 +154,11 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 					if currentHealth == math.floor(maxHealth * mult) then
 						P:StartCooldown(icon, icon.duration)
 					end
+				end
+			else
+				local percHealth = currentHealth / maxHealth
+				if (percHealth > 0.5 and percHealth < 0.7) or percHealth > 0.9 then
+					E.Libs.CBH:Fire("OnBattleRezed")
 				end
 			end
 
@@ -376,15 +386,23 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 
 	if not E.Comms.syncGUIDS[guid] and not info.shadowlandsData.covenantID and isInspectedUnit and loginsessionData then
 		for k, v in pairs(loginsessionData) do
-			if v == "C" then
-				info.shadowlandsData.covenantID = E.covenant_abilities[k]
+			if k == "covenantID" then
+				info.shadowlandsData.covenantID = v
+			else
+				info.talentData[k] = v
 			end
-			info.talentData[k] = v
 		end
 	end
 
 	for i = 1, 5 do
-		local spells = i == 1 and spell_db.PVPTRINKET or (i == 2 and spell_db.RACIAL) or (i == 3 and spell_db.TRINKET) or (i == 4 and spell_db.COVENANT) or (i == 5 and spell_db[class])
+---  for i = 1, 6 do
+		local spells = (i == 1 and spell_db.PVPTRINKET) or
+			(i == 2 and spell_db.RACIAL) or
+			(i == 3 and spell_db.TRINKET) or
+			(i == 4 and spell_db.COVENANT) or
+			(i == 5 and spell_db[class])
+---         (i == 5 and spell_db[class]) or
+---         (i == 6 and spell_db.CONSUMABLE)
 		if spells then -- BCC
 			local n = #spells
 			for j = 1, n do
@@ -404,6 +422,12 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 						elseif race == raceID then
 							isValidSpell = true
 						end
+---                 elseif i == 6 then
+---                     if spellID == 6262 then
+---                         isValidSpell = self.isWarlockInGroup and (self.isInDungeon or self.isInArena) -- TODO: did they revert the dungeon restriction?
+---                     else
+---                         isValidSpell = self.isInDungeon
+---                     end
 					elseif isInspectedUnit then
 						if i == 5 then
 							isValidSpell = lvl >= GetSpellLevelLearned(spellID) and (not spec or IsSpellSpecTalent(guid, spec, spellID)) and (not talent or not IsSpellSpecTalent(guid, talent, spellID)) and (not pve or not self.isInPvPInstance)

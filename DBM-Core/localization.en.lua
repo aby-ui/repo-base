@@ -595,6 +595,7 @@ L.AUTO_RRANGE_OPTION_TEXT			= "Show reverse range frame (%s) for $spell:%s"--Rev
 L.AUTO_RRANGE_OPTION_TEXT_SHORT		= "Show reverse range frame (%s)"
 L.AUTO_INFO_FRAME_OPTION_TEXT		= "Show info frame for $spell:%s"
 L.AUTO_INFO_FRAME_OPTION_TEXT2		= "Show info frame for encounter overview"
+L.AUTO_INFO_FRAME_OPTION_TEXT3		= "Show info frame for $spell:%s (when threshold of %%s is met)"
 L.AUTO_READY_CHECK_OPTION_TEXT		= "Play ready check sound when boss is pulled (even if it's not targeted)"
 L.AUTO_SPEEDCLEAR_OPTION_TEXT		= "Show timer for fastest clear of %s"
 

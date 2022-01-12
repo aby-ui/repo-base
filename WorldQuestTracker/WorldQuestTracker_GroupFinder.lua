@@ -1838,7 +1838,9 @@ function kspam.FilterSortedResult(results)
 		--get the result id
 		local resultId = results[i]
 		--get the search result info
+		
 		local searchResultInfo1 = C_LFGList.GetSearchResultInfo(resultId)
+
 		--get the leader name
 		local leaderName = searchResultInfo1.leaderName
 		local leaderLevel = searchResultInfo1.leaderLevel
@@ -1906,7 +1908,7 @@ function kspam.FilterSortedResult(results)
 	end
 end
 
---hooksecurefunc("LFGListUtil_SortSearchResults", kspam.OnSortResults)
+hooksecurefunc("LFGListUtil_SortSearchResults", kspam.OnSortResults)
 
 local onClickBanButton = function(banButton)
 	local buttonObject =  banButton.MyObject

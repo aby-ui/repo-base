@@ -10,7 +10,7 @@ L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquire
 L["> 1 minute"] = "> 1 分鐘"
 L["2nd Row Icons (Double Row Layout)"] = "第二排圖示 (兩排版面配置)"
 L["2px Border"] = "2px 邊框"
-L["A new update is available. (|cff99cdff%s)"] = "有新版本可以使用。(|cff99cdff%s)"
+L["A new update is available. |cff99cdff(%s)"] = "有新版本可以使用。|cff99cdff(%s)"
 L["Active"] = "啟動"
 L["Active Icon Opacity"] = "冷卻中圖示不透明度"
 L["Active Icon Settings"] = "冷卻中圖示設定"

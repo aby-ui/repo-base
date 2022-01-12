@@ -3,6 +3,9 @@
 -----------------------------------------------------------------------
 local ADDON_NAME, private = ...
 
+local LibStub = _G.LibStub
+local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner", false)
+
 local RSMap = private.NewLib("RareScannerMap")
 
 -- RareScanner database libraries
@@ -208,4 +211,45 @@ function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
 	end
 	
 	return nil
+end
+
+---============================================================================
+-- Map names
+---============================================================================
+
+function RSMap.GetMapName(mapID)
+	local mapInfo = C_Map.GetMapInfo(mapID)
+	if (mapInfo) then
+		-- For those zones with the same name, add a comment
+		if (AL["ZONE_"..mapID] ~= "ZONE_"..mapID) then
+			return string.format(AL["ZONE_"..mapID], mapInfo.name)
+		else
+			return mapInfo.name
+		end
+	end
+	
+	return AL["ZONES_CONTINENT_LIST"][mapID]
+end
+
+---============================================================================
+-- Map options button
+---============================================================================
+
+local worldMapButton
+function RSMap.LoadWorldMapButton()
+	local rwm = LibStub('Krowi_WorldMapButtons-1.0')
+	worldMapButton = rwm:Add("RSWorldMapButtonTemplate", 'DROPDOWNTOGGLEBUTTON')
+	if (not RSConfigDB.IsShowingWorldmapButton()) then 
+		worldMapButton:Hide() 
+	end
+end
+
+function RSMap.ToggleWorldmapButton() 
+	if (worldMapButton) then
+		if (RSConfigDB.IsShowingWorldmapButton()) then 
+			worldMapButton:Show() 
+		else 
+			worldMapButton:Hide() 
+		end 
+	end
 end

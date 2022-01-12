@@ -12,6 +12,7 @@ function Comms:Enable()
 
 --  [AC] self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	self:RegisterEvent("PLAYER_LEAVING_WORLD")
 	if E.isPreBCC then
 		self:RegisterEvent("CHARACTER_POINTS_CHANGED")
 	else

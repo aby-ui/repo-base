@@ -136,7 +136,7 @@ local fontInfo = {
 
 local General = {
 	name = title,
-	order = 100,
+	order = 10,
 	type = "group",
 	childGroups = "tab",
 	args = {

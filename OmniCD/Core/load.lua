@@ -184,7 +184,7 @@ do
 			if ver and ver > version then
 				local diff = ver - version
 				local text = diff > 10 and L["Major update"] or (diff > 1 and L["Minor update"]) or L["Hotfix"]
-				text = format("|cfff16436 " .. L["A new update is available. (|cff99cdff%s)"], text)
+				text = format("|cfff16436 " .. L["A new update is available. |cff99cdff(%s)"], text)
 				if E.DB.profile.notifyNew then
 					--E.Write(text)
 				end
@@ -210,11 +210,15 @@ do
 	end
 
 	function E:EnableVersionCheck()
+		local ver = self.DB.global.oodVer
+
 		if today <= (self.DB.global.oodChk or 0) then
+			if ver and ver <= version then
+				self.DB.global.oodMsg = nil
+			end
 			return
 		end
 
-		local ver = self.DB.global.oodVer
 		if ver then
 			if ver > version then
 				if self.DB.profile.notifyNew then
@@ -244,8 +248,9 @@ do
 		if event == "PET_BATTLE_OPENING_START" then
 			for k in pairs(E.moduleOptions) do
 				local module = E[k]
-				if module.test then
-					module:Test()
+				local test = module.Test
+				if test and module.test then
+					test()
 				end
 
 				local func = module.HideAllBars

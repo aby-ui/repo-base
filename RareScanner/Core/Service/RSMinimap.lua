@@ -4,7 +4,14 @@
 local LibStub = _G.LibStub
 local ADDON_NAME, private = ...
 
+-- Locales
+local AL = LibStub("AceLocale-3.0"):GetLocale("RareScanner");
+
+-- Minimap pins
 local HBD_Pins = LibStub("HereBeDragons-Pins-2.0")
+
+-- Minimap icon
+local ldi = LibStub("LibDBIcon-1.0")
 
 local RSMinimap = private.NewLib("RareScannerMinimap")
 
@@ -26,6 +33,39 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 
 local previousMapID
 local pinFramesPool
+local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
+
+function RSMinimap.LoadMinimapButton()
+	local RareScannerMinimapLDB = LibStub("LibDataBroker-1.1"):NewDataObject("RareScannerLDB", {
+		type = "data source",
+		text = "RareScanner",
+		label = "RareScanner",
+		icon = RSConstants.NORMAL_NPC_TEXTURE,
+		OnClick = function(self, button) 
+			if (button == "LeftButton") then
+				RSExplorerFrame:Show()
+			elseif (button == "RightButton") then
+				InterfaceOptionsFrame_OpenToCategory("RareScanner")
+				InterfaceOptionsFrame_OpenToCategory("RareScanner")
+			end
+		end,
+		OnTooltipShow = function(tooltip)
+			tooltip:SetText("RareScanner")
+			tooltip:AddLine(AL["MINIMAP_ICON_TOOLTIP1"], 1, 1, 1)
+			tooltip:AddLine(AL["MINIMAP_ICON_TOOLTIP2"], 1, 1, 1)
+		end
+	})
+	
+	ldi:Register(MINIMAP_BUTTON_NAME, RareScannerMinimapLDB, RSConfigDB.GetMMinimapButtonDB()) 
+end
+
+function RSMinimap.ToggleMinimapButton() 
+	if (RSConfigDB.IsShowingMinimapButton()) then 
+		ldi:Show(MINIMAP_BUTTON_NAME) 
+	else 
+		ldi:Hide(MINIMAP_BUTTON_NAME) 
+	end 
+end
 
 function RSMinimap.RemoveAllData()
 	if (pinFramesPool) then
@@ -98,15 +138,17 @@ function RSMinimap.RefreshAllData(forzed)
 		pin.POI = POI
 			
 		-- Ignore POIs from worldmap
-		if (not POI.worldmap and (not playerCoordX or not playerCoodY or RSUtils.DistanceBetweenCoords(tonumber(POI.x), playerCoordX, tonumber(POI.y), playerCoodY) <= RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE)) then
+		if (not POI.worldmap and (not playerCoordX or not playerCoodY or RSUtils.DistanceBetweenCoords(RSUtils.FixCoord(POI.x), playerCoordX, RSUtils.FixCoord(POI.y), playerCoodY) <= RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE)) then
 			pin.Texture:SetTexture(POI.Texture)
 			pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
-			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, tonumber(POI.x), tonumber(POI.y), false, false)
+			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
 		end
 	
 		-- Adds overlay if active
 		if (RSGeneralDB.HasOverlayActive(POI.entityID)) then
-			pin:ShowOverlay()
+			local overlayInfo = RSGeneralDB.GetOverlayActive(POI.entityID)
+			local r, g, b = RSConfigDB.GetWorldMapOverlayColour(overlayInfo.colourID)
+			pin:ShowOverlay(r, g, b)
 		end
 
 		-- Adds guide if active

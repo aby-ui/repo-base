@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211212055914")
+mod:SetRevision("20211218180514")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3)
@@ -766,7 +766,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local amount = args.amount or 1
 		debuffStacks[args.destName] = amount
 		if self.Options.InfoFrame then
-			DBM.InfoFrame:UpdateTable(debuffStacks)
+			DBM.InfoFrame:UpdateTable(debuffStacks, 0.2)
 		end
 	elseif spellId == 347670 or spellId == 353935 then
 		warnShadowDagger:CombinedShow(0.3, args.destName)
@@ -905,7 +905,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		local amount = args.amount or 1
 		debuffStacks[args.destName] = amount
 		if self.Options.InfoFrame then
-			DBM.InfoFrame:UpdateTable(debuffStacks)
+			DBM.InfoFrame:UpdateTable(debuffStacks, 0.2)
 		end
 		if args:IsPlayer() then
 			specWarnBansheesBane:Cancel()
@@ -1009,7 +1009,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 347807 or spellId == 353929 then
 		debuffStacks[args.destName] = nil
 		if self.Options.InfoFrame then
-			DBM.InfoFrame:UpdateTable(debuffStacks)
+			DBM.InfoFrame:UpdateTable(debuffStacks, 0.2)
 		end
 	elseif spellId == 351109 then
 		if self.Options.NPAuraOnEnflame then
@@ -1186,7 +1186,7 @@ function mod:SPELL_AURA_REMOVED_DOSE(args)
 	if spellId == 347807 or spellId == 353929 then
 		debuffStacks[args.destName] = args.amount or 1
 		if self.Options.InfoFrame then
-			DBM.InfoFrame:UpdateTable(debuffStacks)
+			DBM.InfoFrame:UpdateTable(debuffStacks, 0.2)
 		end
 	end
 end

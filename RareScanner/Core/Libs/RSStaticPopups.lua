@@ -18,23 +18,27 @@ local RSConstants = private.ImportLib("RareScannerConstants")
 local RSLogger = private.ImportLib("RareScannerLogger")
 
 ---============================================================================
--- Start collections scan
+-- Start filtering by collections
 ---============================================================================
 
-LibDialog:Register(RSConstants.START_COLLECTIONS_SCAN, {
-	text = AL["START_COLLECTIONS_SCAN"],
+LibDialog:Register(RSConstants.EXPLORER_FILTERING_DIALOG, {
+	text = string.format(AL["EXPLORER_FILTERING_DIALOG"], AL["EXPLORER_FILTERS"], AL["EXPLORER_FILTER_COLLECTIONS"], AL["EXPLORER_FILTER_MOUNTS"], AL["EXPLORER_FILTER_TOYS"]),
 	no_close_button = true,
     buttons = {
         {
             text = YES,
             on_click = function(self, mouseButton, down)
-                RSCollectionsDB.ApplyCollectionsEntitiesFilters()	
+            	local callback = self.data.callback
+        		RSCollectionsDB.ApplyFilters(self.data.filters, function()
+					callback()
+					RSLogger:PrintMessage(AL["LOG_DONE"])
+				end)
             end,
         },
         {
             text = NO,
             on_click = function(self, mouseButton, down)
-                LibDialog:Dismiss(RSConstants.START_COLLECTIONS_SCAN)
+                LibDialog:Dismiss(RSConstants.EXPLORER_FILTERING_DIALOG)
             end,
         },
     },          

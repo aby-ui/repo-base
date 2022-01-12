@@ -226,24 +226,24 @@ local function GetOptions()
 		for k, v in pairs(E.moduleOptions) do
 			E.options.args[k] = (type(v) == "function") and v() or v
 
-			E.options.args[k].args["title"] = {
+			E.options.args[k].args["title"] = E.options.args[k].args["title"] or {
 				name = "|cffffd200" .. E.options.args[k].name,
 				order = 0,
 				type = "description",
 				fontSize = "large",
 			}
 
-			E.options.args[k].args.hd1 = {
+			E.options.args[k].args.lb0 = {
 				name = "\n",
 				order = 1,
 				type = "description",
 			}
 
-			E.options.args[k].args["enable"] = {
+			E.options.args[k].args["enable"] = E.options.args[k].args["enable"] or {
 				disabled = false,
 				name = ENABLE,
 				desc = L["Toggle module on and off"],
-				descStyle = "inline",
+--              descStyle = "inline",
 				order = 2,
 				type = "toggle",
 				get = function() return E.GetModuleEnabled(k) end,

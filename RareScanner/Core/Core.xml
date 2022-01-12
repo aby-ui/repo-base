@@ -16,8 +16,8 @@
 	<Include file="Data\RSContainerDB.lua"/>
 	<Include file="Data\RSEventDB.lua"/>
 	<Include file="Data\RSNpcDB.lua"/>
-	<Include file="Data\RSGeneralDB.lua"/>
 	<Include file="Data\RSConfigDB.lua"/>
+	<Include file="Data\RSGeneralDB.lua"/>
 	<Include file="Data\RSAchievementDB.lua"/>
 	<Include file="Data\RSLootDB.lua"/>
 	<Include file="Data\RSGuideDB.lua"/>
@@ -38,7 +38,6 @@
 	<Include file="Service\RSQuestTracker.lua"/>
 	<Include file="Service\RSRespawnTracker.lua"/>
 	<Include file="Service\RSMinimap.lua"/>
-	<Include file="Service\RSWorldMapHooks.lua"/>
 	<Include file="Service\RSLoot.lua"/>
 	<Include file="Service\RSWaypoints.lua"/>
 	<Include file="Service\RSCommandLine.lua"/>

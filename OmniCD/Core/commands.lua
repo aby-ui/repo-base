@@ -87,9 +87,9 @@ E.SlashHandler = function(msg)
 				end
 			end
 			E.Write("/oc <zone> <spell type>")
-			E.Write("Pepend 'r' to zone to set Raid CD")
+			E.Write("Prepend 'r' to zone to set Raid CD")
 			E.Write(L["Spell Types"] .. ": ", spelltypeStr)
-			E.Write("Pepend \'-\' to remove spell type, e.g., /oc arena -cc")
+			E.Write("Prepend \'-\' to remove spell type, e.g., /oc arena -cc")
 			E.Write("Select all, Clear all, Reset to default: all, clear, default")
 
 			return
@@ -166,9 +166,8 @@ E.OpenOptionPanel = function()
 	E.Libs.ACD:SetDefaultSize("OmniCD", 965, 650)
 	E.Libs.ACD:Open("OmniCD")
 
-	for modName in pairs(E.moduleOptions) do
-		E.Libs.ACD:SelectGroup(E.AddOn, modName)
-	end
+	-- Expand trees
+	E.Libs.ACD:SelectGroup(E.AddOn, "Party")
 	E.Libs.ACD:SelectGroup(E.AddOn, "Home")
 end
 

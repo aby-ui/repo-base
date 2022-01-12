@@ -330,7 +330,7 @@ local bagUpdateTimerStarted = false
 function Mod:BAG_UPDATE()
 	if not bagUpdateTimerStarted then
 		bagUpdateTimerStarted = true
-		C_Timer.After(1, function()
+		C_Timer.After(2, function()
 			Mod:CheckCurrentKeystone()
 			bagUpdateTimerStarted = false
 		end)

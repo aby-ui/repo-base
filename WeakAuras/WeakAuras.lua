@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 45
+local internalVersion = 48
 
 -- Lua APIs
 local insert = table.insert
@@ -33,7 +33,23 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
-Private.callbacks = LibStub("CallbackHandler-1.0"):New(Private)
+-- The worlds simplest callback system
+-- That supports 1:N, but no deregistration and breaks if registrating in a callback
+Private.callbacks = {}
+Private.callbacks.events = {}
+
+function Private.callbacks:RegisterCallback(event, handler)
+  self.events[event] = self.events[event] or {}
+  tinsert(self.events[event], handler)
+end
+
+function Private.callbacks:Fire(event, ...)
+  if self.events[event] then
+    for index, f in ipairs(self.events[event]) do
+      f(event, ...)
+    end
+  end
+end
 
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < Private.maxTimerDuration) then
@@ -776,9 +792,7 @@ local function CreateTalentCache()
   end
 end
 
-local pvpTalentsInitialized = false;
 local function CreatePvPTalentCache()
-  if (pvpTalentsInitialized) then return end;
   local _, player_class = UnitClass("player")
   local spec = GetSpecialization()
 
@@ -803,8 +817,6 @@ local function CreatePvPTalentCache()
     for i, talentId in ipairs(pvpSpecTalents) do
       Private.pvp_talent_types_specific[player_class][spec][i] = formatTalent(talentId);
     end
-
-    pvpTalentsInitialized = true;
   end
 end
 
@@ -1961,6 +1973,44 @@ function Private.Convert(data, newType)
   regions[id] = nil;
 
   data.regionType = newType;
+
+  -- Clean up sub regions
+  if data.subRegions then
+    for index, subRegionData in ipairs_reverse(data.subRegions) do
+      local subType = subRegionData.type
+      local removeSubRegion = true
+      if subType and Private.subRegionTypes[subType] then
+        if Private.subRegionTypes[subType].supports(data.regionType) then
+          removeSubRegion = false
+        end
+      end
+      if removeSubRegion then
+        tremove(data.subRegions, index)
+        -- Adjust conditions!
+        if data.conditions then
+          for conditionIndex, condition in ipairs(data.conditions) do
+            if type(condition.changes) == "table" then
+              for changeIndex, change in ipairs(condition.changes) do
+                if change.property then
+                  local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
+                  subRegionIndex = tonumber(subRegionIndex)
+                  if subRegionIndex and property then
+                    if subRegionIndex == index then
+                      change.property = nil
+                    elseif subRegionIndex > index then
+                      change.property = "sub." .. subRegionIndex -1 .. "." .. property
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+
   WeakAuras.Add(data);
 
   Private.FakeStatesFor(id, true)
@@ -2229,16 +2279,18 @@ end
 local function validateUserConfig(data, options, config)
   local authorOptionKeys, corruptOptions = {}, {}
   for index, option in ipairs(options) do
-    if not customOptionIsValid(option) then
+    if not customOptionIsValid(option) or authorOptionKeys[option.key] then
       prettyPrint(data.id .. " Custom Option #" .. index .. " in " .. data.id .. " has been detected as corrupt, and has been deleted.")
       corruptOptions[index] = true
     else
       local optionClass = Private.author_option_classes[option.type]
+      if option.key then
+        authorOptionKeys[option.key] = index
+      end
       if optionClass == "simple" then
         if not option.key then
           option.key = WeakAuras.GenerateUniqueID()
         end
-        authorOptionKeys[option.key] = index
         if config[option.key] == nil then
           if type(option.default) ~= "table" then
             config[option.key] = option.default
@@ -2247,7 +2299,6 @@ local function validateUserConfig(data, options, config)
           end
         end
       elseif optionClass == "group" then
-        authorOptionKeys[option.key] = "group"
         local subOptions = option.subOptions
         if type(config[option.key]) ~= "table" then
           config[option.key] = {}
@@ -2288,63 +2339,67 @@ local function validateUserConfig(data, options, config)
       end
     end
   end
-  for i = #options, 1, -1 do
-    if corruptOptions[i] then
-      tremove(options, i)
-    end
-  end
   for key, value in pairs(config) do
     if not authorOptionKeys[key] then
       config[key] = nil
-    elseif authorOptionKeys[key] ~= "group" then
+    else
       local option = options[authorOptionKeys[key]]
-      if type(value) ~= type(option.default) then
-        -- if type mismatch then we know that it can't be right
-        if type(option.default) ~= "table" then
-          config[key] = option.default
-        else
-          config[key] = CopyTable(option.default)
-        end
-      elseif option.type == "input" and option.useLength then
-        config[key] = config[key]:sub(1, option.length)
-      elseif option.type == "number" or option.type == "range" then
-        if (option.max and option.max < value) or (option.min and option.min > value) then
-          config[key] = option.default
-        else
-          if option.type == "number" and option.step then
-            local min = option.min or 0
-            config[key] = option.step * Round((value - min)/option.step) + min
-          end
-        end
-      elseif option.type == "select" then
-        if value < 1 or value > #option.values then
-          config[key] = option.default
-        end
-      elseif option.type == "multiselect" then
-        local multiselect = config[key]
-        for i, v in ipairs(multiselect) do
-          if option.default[i] ~= nil then
-            if type(v) ~= "boolean" then
-              multiselect[i] = option.default[i]
-            end
-          else
-            multiselect[i] = nil
-          end
-        end
-        for i, v in ipairs(option.default) do
-          if type(multiselect[i]) ~= "boolean" then
-            multiselect[i] = v
-          end
-        end
-      elseif option.type == "color" then
-        for i = 1, 4 do
-          local c = config[key][i]
-          if type(c) ~= "number" or c < 0 or c > 1 then
+      local optionClass = Private.author_option_classes[option.type]
+      if optionClass ~= "group" then
+        local option = options[authorOptionKeys[key]]
+        if type(value) ~= type(option.default) then
+          -- if type mismatch then we know that it can't be right
+          if type(option.default) ~= "table" then
             config[key] = option.default
-            break
+          else
+            config[key] = CopyTable(option.default)
+          end
+        elseif option.type == "input" and option.useLength then
+          config[key] = config[key]:sub(1, option.length)
+        elseif option.type == "number" or option.type == "range" then
+          if (option.max and option.max < value) or (option.min and option.min > value) then
+            config[key] = option.default
+          else
+            if option.type == "number" and option.step then
+              local min = option.min or 0
+              config[key] = option.step * Round((value - min)/option.step) + min
+            end
+          end
+        elseif option.type == "select" then
+          if value < 1 or value > #option.values then
+            config[key] = option.default
+          end
+        elseif option.type == "multiselect" then
+          local multiselect = config[key]
+          for i, v in ipairs(multiselect) do
+            if option.default[i] ~= nil then
+              if type(v) ~= "boolean" then
+                multiselect[i] = option.default[i]
+              end
+            else
+              multiselect[i] = nil
+            end
+          end
+          for i, v in ipairs(option.default) do
+            if type(multiselect[i]) ~= "boolean" then
+              multiselect[i] = v
+            end
+          end
+        elseif option.type == "color" then
+          for i = 1, 4 do
+            local c = config[key][i]
+            if type(c) ~= "number" or c < 0 or c > 1 then
+              config[key] = option.default
+              break
+            end
           end
         end
       end
+    end
+  end
+  for i = #options, 1, -1 do
+    if corruptOptions[i] then
+      tremove(options, i)
     end
   end
 end
@@ -2492,11 +2547,9 @@ function WeakAuras.PreAdd(data)
   Private.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
   if data.subRegions then
-    local result = {}
     for index, subRegionData in ipairs(data.subRegions) do
       local subType = subRegionData.type
       if subType and Private.subRegionTypes[subType] then
-        -- If it is not supported, then drop it
         if Private.subRegionTypes[subType].supports(data.regionType) then
           local default = Private.subRegionTypes[subType].default
           if type(default) == "function" then
@@ -2505,16 +2558,11 @@ function WeakAuras.PreAdd(data)
           if default then
             WeakAuras.validate(subRegionData, default)
           end
-
-          tinsert(result, subRegionData)
+        else
+          WeakAuras.prettyPrint(L["ERROR in '%s' unknown or incompatible sub element type '%s'"]:format(data.id, subType))
         end
-      else
-        -- Unknown sub type is because the user didn't restart their client
-        -- so keep it
-        tinsert(result, subRegionData)
       end
     end
-    data.subRegions = result
   end
   validateUserConfig(data, data.authorOptions, data.config)
   removeSpellNames(data)
@@ -2842,8 +2890,8 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
           validVoice and voice or 0,
           message,
           0,
-          TEXTTOSPEECH_CONFIG and TEXTTOSPEECH_CONFIG.speechRate or 0,
-          TEXTTOSPEECH_CONFIG and TEXTTOSPEECH_CONFIG.speechVolume or 100
+          C_TTSSettings and C_TTSSettings.GetSpeechRate() or 0,
+          C_TTSSettings and C_TTSSettings.GetSpeechVolume() or 100
         );
       end)
     end
@@ -3311,6 +3359,14 @@ local function UpdateMouseoverTooltip(region)
 end
 
 function Private.ShowMouseoverTooltip(region, owner)
+  if region:IsAnchoringRestricted() then
+    local data = region.id and WeakAuras.GetData(region.id)
+    if data then
+      Private.AuraWarnings.UpdateWarning(data.uid, "anchoring", "warning", L["This aura tried to show a tooltip on a anchoring restricted region"])
+    end
+    return
+  end
+
   currentTooltipRegion = region;
   currentTooltipOwner = owner;
 
@@ -3484,10 +3540,10 @@ end
 
 function Private.ApplyFrameLevel(region, frameLevel)
   frameLevel = frameLevel or GetFrameLevelFor(region.id)
-  region:SetFrameLevel(frameLevel)
+  local subforegroundIndex = 0
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
-      subRegion:SetFrameLevel(frameLevel + index + 1)
+      subRegion:SetFrameLevel(frameLevel + index)
     end
   end
 end
@@ -4277,7 +4333,7 @@ function Private.ParseTextStr(textStr, symbolCallback)
   end
 end
 
-function Private.CreateFormatters(input, getter)
+function Private.CreateFormatters(input, getter, withoutColor)
   local seenSymbols = {}
   local formatters = {}
   Private.ParseTextStr(input, function(symbol)
@@ -4290,7 +4346,7 @@ function Private.CreateFormatters(input, getter)
         local default = (sym == "p" or sym == "t") and "timed" or "none"
         local selectedFormat = getter(symbol ..  "_format", default)
         if (Private.format_types[selectedFormat]) then
-          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter)
+          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter, withoutColor)
         end
       end
     end

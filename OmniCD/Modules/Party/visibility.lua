@@ -96,6 +96,8 @@ do
 			force = true
 		end
 
+		E.Libs.CBH:Fire("OnStartup")
+
 		for guid, info in pairs(P.groupInfo) do -- info wipes for group members exiting before you from queued-instances (Arena)
 			if not UnitExists(info.name) or (guid == E.userGUID and P.isUserDisabled) then
 				P.groupInfo[guid] = nil
@@ -116,6 +118,7 @@ do
 		end
 
 		local isInRaid = IsInRaid() -- in arena unit ID depends on the frame being used. partframes - Party123, CRF - Raid123
+---     local isWarlockInGroup
 		for i = 1, size do
 			local index = not isInRaid and i == size and 5 or i
 			local unit = isInRaid and E.RAID_UNIT[index] or E.PARTY_UNIT[index]
@@ -127,6 +130,8 @@ do
 			local isUser = guid == E.userGUID
 
 			local pet = (class == "HUNTER" or class == "WARLOCK")and E.unitToPetId[unit]
+---         local isWarlock = class == "WARLOCK"
+---         local pet = (class == "HUNTER" or isWarlock)and E.unitToPetId[unit]
 			if pet then
 				local petGUID = UnitGUID(pet)
 				if petGUID then
@@ -134,6 +139,9 @@ do
 					E.Cooldowns.petGUIDS[petGUID] = guid
 				end
 			end
+---         if not isWarlockInGroup and isWarlock then
+---             isWarlockInGroup = true --> units joined before the warlock is updated on inspect
+---         end
 
 			if info then
 				if info.unit ~= unit then
@@ -158,13 +166,7 @@ do
 					bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit])
 				end
 
-				if isDeadOrOffline then
-					P:SetDisabledColorScheme(info)
-				else
-					P:SetEnabledColorScheme(info)
-				end
-
-				if force then -- LFR can fire GRU(while in a disabled zone) before PEW. -> force UpdateUnitBar on refresh/PEW
+				if force or (not info.isDead and info.isDeadOrOffline and not isDeadOrOffline) then -- LFR can fire GRU(while in a disabled zone) before PEW. -> force UpdateUnitBar on refresh/PEW
 					P.pendingQueue[#P.pendingQueue + 1] = guid
 					P:UpdateUnitBar(guid, true)
 				end
@@ -176,6 +178,7 @@ do
 					P.groupInfo[guid].petGUID = pet
 					P.groupInfo[guid].isDead = isDead
 					P.groupInfo[guid].isDeadOrOffline = isDeadOrOffline
+					info = P.groupInfo[guid]
 
 					P:UpdateUnitBar(guid, true) -- define user info.bar in case inspection fails
 				end
@@ -186,7 +189,7 @@ do
 				if level == 0 then -- TODO: this isn't updated for synced units
 					level = 200
 				end
-				P.groupInfo[guid] = {
+				info = {
 					guid = guid,
 					class = class,
 					raceID = race,
@@ -206,17 +209,28 @@ do
 					isDead = isDead,
 					isDeadOrOffline = isDeadOrOffline,
 				}
+				P.groupInfo[guid] = info
 
 				P.pendingQueue[#P.pendingQueue + 1] = guid
 				P:UpdateUnitBar(guid, true)
 			else
 				E.TimerAfter(UPDATE_ROSTER_DELAY, updateRosterInfo, true)
 			end
+
+			if info then
+				if isDeadOrOffline then
+					P:SetDisabledColorScheme(info)
+				else
+					P:SetEnabledColorScheme(info)
+				end
+			end
 		end
 
 		P:UpdatePosition()
 		P:UpdateExPosition()
 		E.Comms:EnqueueInspect()
+---     E.Comms:EnqueueInspect(P.isWarlockInGroup ~= isWarlockInGroup)
+---     P.isWarlockInGroup = isWarlockInGroup
 
 		if P.groupJoined or force then
 			-- Temp fix for Healbot, VuhDo
@@ -323,7 +337,7 @@ end
 
 do
 	local inspectAll = function()
-		E.Comms.EnqueueInspect(true)
+		E.Comms:EnqueueInspect(true)
 	end
 
 	function P:UPDATE_UI_WIDGET(widgetInfo)

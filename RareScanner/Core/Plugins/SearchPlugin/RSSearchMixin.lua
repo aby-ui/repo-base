@@ -42,10 +42,6 @@ function RSSearchMixin:OnShow()
 		RSGeneralDB.SetWorldMapTextFilter(nil)
 	end
 
-	self:Refresh();
-end
-
-function RSSearchMixin:Refresh()
 	self.EditBox:ClearFocus();
 end
 
