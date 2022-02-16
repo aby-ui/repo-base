@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -83,7 +83,6 @@ local function SetHooks()
 			line.Text:SetFont(KT.font, db.fontSize, db.fontFlag)
 			line.Text:SetShadowColor(0, 0, 0, db.fontShadow)
 			line.Text:SetWordWrap(false)
-			line:SetParent(OTF.BlocksFrame)
 		end
 	end
 
@@ -102,8 +101,8 @@ local function SetHooks_PetTracker_Journal()
 		PetTrackerTrackToggle:Disable()
 		PetTrackerTrackToggle.Text:SetTextColor(0.5, 0.5, 0.5)
 		local infoFrame = CreateFrame("Frame", nil, PetJournal)
+		infoFrame:SetSize(130, 25)
 		infoFrame:SetPoint("TOPLEFT", PetTrackerTrackToggle, 0, 0)
-		infoFrame:SetPoint("BOTTOMRIGHT", PetTrackerTrackToggle, PetTrackerTrackToggle.Text:GetWidth() + 3, 3)
 		infoFrame:SetFrameLevel(PetTrackerTrackToggle:GetFrameLevel() + 1)
 		infoFrame:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
@@ -239,10 +238,10 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.0.8") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.1.2") and db.addonPetTracker)
 
 	if self.isLoaded then
-		KT:Alert_IncompatibleAddon("PetTracker", "9.0.7")
+		KT:Alert_IncompatibleAddon("PetTracker", "9.1.0")
 
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)

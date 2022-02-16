@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220128073746")
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 mod:SetUsedIcons(1, 2, 3, 6, 7, 8)
@@ -54,17 +54,17 @@ local yellRoilingDeceit					= mod:NewCountYell(265360)
 local yellRoilingDeceitFades			= mod:NewFadesYell(265360)
 local specWarnVoidbolt					= mod:NewSpecialWarningInterrupt(267180, "HasInterrupt", nil, nil, 1, 2)
 --Stage Three: Corruption
-local specWarnOrbOfCorruption			= mod:NewSpecialWarningCount(267239, nil, nil, nil, 2, 7)
+local specWarnOrbOfCorruption			= mod:NewSpecialWarningCount(267239, nil, nil, nil, 2, 12)
 local yellCorruptorsPact				= mod:NewFadesYell(265662)
 local specWarnWillofCorruptorSoon		= mod:NewSpecialWarningSoon(265646, nil, nil, nil, 3, 2)
 local specWarnWillofCorruptor			= mod:NewSpecialWarningSwitch(265646, "Dps", nil, 2, 1, 2)
 local specWarnEntropicBlast				= mod:NewSpecialWarningInterrupt(270620, "HasInterrupt", nil, nil, 1, 2)
 
 mod:AddTimerLine(GENERAL)
-local timerSurgingDarknessCD			= mod:NewCDTimer(82.8, 265451, nil, "Melee", nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 3)--60 based on energy math
-local timerMightofVoidCD				= mod:NewCDTimer(37.6, 267312, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)
+local timerSurgingDarknessCD			= mod:NewCDTimer(82.8, 265451, nil, "Melee", nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 3)--60 based on energy math
+local timerMightofVoidCD				= mod:NewCDTimer(37.6, 267312, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
 local timerTitanSparkCD					= mod:NewCDTimer(37.6, 264954, nil, "Healer", nil, 2)
-local timerAddsCD						= mod:NewAddsTimer(120, 31700, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--Generic Timer only used on Mythic
+local timerAddsCD						= mod:NewAddsTimer(120, 31700, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)--Generic Timer only used on Mythic
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerQirajiWarriorCD				= mod:NewCDTimer(60, "ej18071", nil, nil, nil, 1, 31700)--UNKNOWN, TODO
 local timerEyeBeamCD					= mod:NewCDTimer(40, 264382, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 3, 5)
@@ -106,7 +106,7 @@ end
 function mod:RollingTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") and self:AntiSpam(5, 6) then
-		specWarnRoilingDeceit:Show(DBM_CORE_L.ROOM_EDGE)
+		specWarnRoilingDeceit:Show(DBM_COMMON_L.EDGE)
 		specWarnRoilingDeceit:Play("runtoedge")
 		yellRoilingDeceit:Yell(self.vb.roilingCount)
 		yellRoilingDeceitFades:Countdown(12)
@@ -162,7 +162,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 267239 and self:AntiSpam(15, 4) then--Backup, in case emote doesn't fire for more than first one
 		specWarnOrbOfCorruption:Show(1)
-		specWarnOrbOfCorruption:Play("161612")--catch balls
+		specWarnOrbOfCorruption:Play("catchballs")--catch balls
 		timerOrbLands:Start(8, 1)
 	elseif spellId == 270620 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnEntropicBlast:Show(args.sourceName)
@@ -248,7 +248,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 265360 then
 		if args:IsPlayer() and self:AntiSpam(5, 6) then
-			specWarnRoilingDeceit:Show(DBM_CORE_L.ROOM_EDGE)
+			specWarnRoilingDeceit:Show(DBM_COMMON_L.EDGE)
 			specWarnRoilingDeceit:Play("runtoedge")
 			yellRoilingDeceit:Yell(self.vb.roilingCount)
 			yellRoilingDeceitFades:Countdown(spellId)
@@ -257,7 +257,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:AntiSpam(5, 7) then
 			self.vb.corruptorsPactCount = self.vb.corruptorsPactCount + 1
 			specWarnOrbOfCorruption:Show(self.vb.corruptorsPactCount+1)--+1 cause this is pre warning for next orb
-			specWarnOrbOfCorruption:Play("161612")
+			specWarnOrbOfCorruption:Play("catchballs")
 			timerOrbLands:Start(15, self.vb.corruptorsPactCount+1)
 		end
 		warnCorruptorsPact:CombinedShow(0.5, self.vb.corruptorsPactCount, args.destName)--Combined in case more than one soaks same ball (will happen in lfr/normal for sure or farm content for dps increases)
@@ -333,7 +333,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	elseif spellId == 267191 then--Anub'ar Caster Summon Cosmetic Beam
 		if not GetRaidTargetIndex(uId) then--Not already marked
 			if self.Options.SetIconOnAdds then
-				SetRaidTarget(uId, self.vb.addIcon)
+				self:SetIcon(uId, self.vb.addIcon)
 			end
 			self.vb.addIcon = self.vb.addIcon + 1
 			if self.vb.addIcon == 4 then

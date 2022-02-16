@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1749, "DBM-BrokenIsles", 1, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(107023)
 mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -32,7 +32,7 @@ local specWarnStorm					= mod:NewSpecialWarningMove(212884, nil, nil, nil, 1, 2)
 local timerCracklingJoltCD			= mod:NewCDTimer(11, 212841, nil, nil, nil, 3)
 local timerLightningStormCD			= mod:NewCDTimer(30.5, 212867, nil, nil, nil, 3)
 local timerStaticChargeCD			= mod:NewCDTimer(40.2, 212887, nil, "-Tank", nil, 3)
-local timerStormBreathCD			= mod:NewCDTimer(23.1, 212852, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerStormBreathCD			= mod:NewCDTimer(23.1, 212852, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --mod:AddReadyCheckOption(37460, false)
 

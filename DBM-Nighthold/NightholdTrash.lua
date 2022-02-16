@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("NightholdTrash", "DBM-Nighthold")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20220127093507")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -84,7 +84,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnProtectiveShield:Play("runout")
 	elseif spellId == 224246 then
 		specWarnArcWell:Show()
-		specWarnArcWell:Play("killtotem")
+		specWarnArcWell:Play("attacktotem")
 	end
 end
 

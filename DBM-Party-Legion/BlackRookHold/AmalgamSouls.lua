@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1518, "DBM-Party-Legion", 1, 740)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116185401")
 mod:SetCreatureID(98542)
 mod:SetEncounterID(1832)
 
@@ -24,13 +24,13 @@ local specWarnSwirlingScytheNear	= mod:NewSpecialWarningClose(195254, nil, nil, 
 
 local timerSwirlingScytheCD			= mod:NewCDTimer(20.5, 195254, nil, nil, nil, 3)--20-27
 local timerSoulEchoesCD				= mod:NewNextTimer(27.5, 194966, nil, nil, nil, 3)
-local timerReapSoulCD				= mod:NewNextTimer(13, 194956, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.DEADLY_ICON)
+local timerReapSoulCD				= mod:NewNextTimer(13, 194956, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DEADLY_ICON)
 
 --mod:AddRangeFrameOption(5, 194966)
 
 function mod:ScytheTarget(targetname, uId)
 	if not targetname then
-		warnSwirlingScythe:Show(DBM_CORE_L.UNKNOWN)
+		warnSwirlingScythe:Show(DBM_COMMON_L.UNKNOWN)
 		return
 	end
 	if targetname == UnitName("player") then

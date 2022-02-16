@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2334, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011151021")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(144796)
 mod:SetEncounterID(2276)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -73,8 +73,8 @@ local specWarnExplodingSheep			= mod:NewSpecialWarningDodge(287929, nil, nil, ni
 local timerBusterCannonCD				= mod:NewNextCountTimer(25, 282153, 88891, nil, nil, 3)--Shorttext "Cannon"
 local timerBlastOffCD					= mod:NewNextCountTimer(55, 282205, nil, nil, nil, 2)
 local timerCrashDownCD					= mod:NewCastTimer(4.5, 287797, nil, nil, nil, 3)
-local timerGigaVoltChargeCD				= mod:NewNextCountTimer(14.1, 286646, nil, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
-local timerWormholeGeneratorCD			= mod:NewNextCountTimer(55, 287952, 67833, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON, nil, 3, 4)--Shorttext "Wormhole"
+local timerGigaVoltChargeCD				= mod:NewNextCountTimer(14.1, 286646, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)
+local timerWormholeGeneratorCD			= mod:NewNextCountTimer(55, 287952, 67833, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 3, 4)--Shorttext "Wormhole"
 local timerDeploySparkBotCD				= mod:NewNextCountTimer(55, 288410, nil, nil, nil, 1)
 local timerWorldEnlargerCD				= mod:NewNextCountTimer(90, 288049, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 --Intermission: Evasive Maneuvers!
@@ -524,7 +524,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			specWarnGigaVoltCharge:Show(self:IconNumToTexture(icon))
 			specWarnGigaVoltCharge:Play("targetyou")
-			specWarnGigaVoltChargeFading:Schedule(8.5, DBM_CORE_L.BREAK_LOS)
+			specWarnGigaVoltChargeFading:Schedule(8.5, DBM_COMMON_L.BREAK_LOS)
 			specWarnGigaVoltChargeFading:ScheduleVoice(8.5, "mm"..icon)
 			yellGigaVoltCharge:Yell(icon, icon, icon)
 			yellGigaVoltChargeFades:Countdown(spellId, nil, icon)

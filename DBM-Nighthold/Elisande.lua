@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1743, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220127091734")
 mod:SetCreatureID(106643)
 mod:SetEncounterID(1872)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)--During soft enrage will go over 8 debuffs, can't mark beyond that
@@ -62,7 +62,7 @@ local specWarnSingularityGTFO		= mod:NewSpecialWarningMove(209168, "-Tank", nil,
 --Time Layer 2
 local specWarnDelphuricBeam			= mod:NewSpecialWarningYou(214278, nil, nil, nil, 1, 2)
 local yellDelphuricBeam				= mod:NewYell(214278, nil, false)--off by default, because yells last longer than 3-4 seconds so yells from PERVIOUS beam are not yet gone when new beam is cast.
-local specWarnEpochericOrb			= mod:NewSpecialWarningSpell(210022, "-Tank", nil, 2, 1, 2)
+local specWarnEpochericOrb			= mod:NewSpecialWarningSpell(210022, "-Tank", nil, 2, 1, 12)
 local specWarnAblationExplosion		= mod:NewSpecialWarningTaunt(209615, nil, nil, nil, 1, 2)
 local specWarnAblationExplosionOut	= mod:NewSpecialWarningMoveAway(209615, nil, nil, nil, 1, 2)
 local yellAblatingExplosion			= mod:NewFadesYell(209973)
@@ -81,19 +81,19 @@ local timerSlowTimeBubble			= mod:NewTimer(70, "timerSlowTimeBubble", 209165, ni
 --Time Layer 1
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerArcaneticRing			= mod:NewNextCountTimer(6, 208807, nil, nil, nil, 2, nil, nil, nil, 1, 4)
---local timerAblationCD				= mod:NewCDTimer(4.8, 209615, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+--local timerAblationCD				= mod:NewCDTimer(4.8, 209615, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerSpanningSingularityCD	= mod:NewNextCountTimer(16, 209168, nil, nil, nil, 3)
 --Time Layer 2
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerDelphuricBeamCD			= mod:NewNextCountTimer(16, 214278, nil, nil, nil, 3)
-local timerEpochericOrbCD			= mod:NewNextCountTimer(16, 210022, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerEpochericOrbCD			= mod:NewNextCountTimer(16, 210022, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerAblatingExplosion		= mod:NewTargetTimer(6, 209973, nil, "Tank")
-local timerAblatingExplosionCD		= mod:NewCDTimer(20, 209973, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerAblatingExplosionCD		= mod:NewCDTimer(20, 209973, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --Time Layer 3
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerConflexiveBurstCD		= mod:NewNextCountTimer(100, 209597, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
---local timerAblativePulseCD			= mod:NewCDTimer(9.6, 209971, nil, "Tank", nil, 4, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.INTERRUPT_ICON)--12 now?
-local timerPermaliativeTormentCD	= mod:NewNextCountTimer(16, 210387, nil, "Healer", nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
+local timerConflexiveBurstCD		= mod:NewNextCountTimer(100, 209597, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)
+--local timerAblativePulseCD			= mod:NewCDTimer(9.6, 209971, nil, "Tank", nil, 4, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.INTERRUPT_ICON)--12 now?
+local timerPermaliativeTormentCD	= mod:NewNextCountTimer(16, 210387, nil, "Healer", nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(240)
 
@@ -178,7 +178,7 @@ function mod:OnCombatStart(delay)
 	if self:IsMythic() then
 		timerTimeElementalsCD:Start(8-delay, FAST)
 		timerSpanningSingularityCD:Start(53.7-delay, 2)
-		specWarnSpanningSingularityPre:Schedule(48.7, DBM_CORE_L.ROOM_EDGE)
+		specWarnSpanningSingularityPre:Schedule(48.7, DBM_COMMON_L.EDGE)
 		if self.Options.SpecWarn209168moveto then
 			specWarnSpanningSingularityPre:ScheduleVoice(48.7, "runtoedge")
 		end
@@ -233,7 +233,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 210022 and self:AntiSpam(15, 4) then
 		self.vb.orbCastCount = self.vb.orbCastCount + 1
 		specWarnEpochericOrb:Show()
-		specWarnEpochericOrb:Play("161612")
+		specWarnEpochericOrb:Play("catchballs")
 		local nextCount = self.vb.orbCastCount + 1
 		local timer = self:IsMythic() and mythicOrbTimers[nextCount] or self:IsNormal() and normalOrbTimers[nextCount] or self:IsHeroic() and heroicOrbTimers[nextCount] or self:IsLFR() and lfrOrbTimers[nextCount]
 		if timer then
@@ -278,7 +278,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		local timer = self:IsMythic() and mythicOrbTimers[nextCount] or self:IsNormal() and normalOrbTimers[nextCount] or self:IsHeroic() and heroicOrbTimers[nextCount] or self:IsLFR() and lfrOrbTimers[nextCount]
 		if timer then
 			specWarnEpochericOrb:Schedule(timer-10)
-			specWarnEpochericOrb:ScheduleVoice(timer-10, "161612")
+			specWarnEpochericOrb:ScheduleVoice(timer-10, "catchballs")
 			timerEpochericOrbCD:Start(timer-10, nextCount)
 		end
 	end
@@ -458,7 +458,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 				if self.vb.orbCastCount > 0 then
 					timerEpochericOrbCD:Start(24, 1)
 					specWarnEpochericOrb:Schedule(24)--Spawning isn't in combat log in phase 3, only landing, so need to use schedule for warnings
-					specWarnEpochericOrb:ScheduleVoice(24, "161612")
+					specWarnEpochericOrb:ScheduleVoice(24, "catchballs")
 				end
 				if self.vb.ringCastCount > 0 then
 					timerArcaneticRing:Start(42, 1)--Verified Jan 18
@@ -469,7 +469,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 				if self.vb.orbCastCount > 0 then
 					timerEpochericOrbCD:Start(27, 1)
 					specWarnEpochericOrb:Schedule(27)--Spawning isn't in combat log in phase 3, only landing, so need to use schedule for warnings
-					specWarnEpochericOrb:ScheduleVoice(27, "161612")
+					specWarnEpochericOrb:ScheduleVoice(27, "catchballs")
 				end
 				timerPermaliativeTormentCD:Start(33, 1)
 				if self.vb.ringCastCount > 0 then
@@ -540,7 +540,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		if timer then
 			timerSpanningSingularityCD:Start(timer, nextCount)
 			if self:IsMythic() then
-				specWarnSpanningSingularityPre:Schedule(timer-5, DBM_CORE_L.ROOM_EDGE)
+				specWarnSpanningSingularityPre:Schedule(timer-5, DBM_COMMON_L.EDGE)
 				if self.Options.SpecWarn209168moveto then
 					specWarnSpanningSingularityPre:ScheduleVoice(timer-5, "runtoedge")
 				end
@@ -611,7 +611,7 @@ function mod:OnSync(msg, targetname)
 		specWarnEpochericOrb:CancelVoice()
 		self.vb.orbCastCount = self.vb.orbCastCount + 1
 		specWarnEpochericOrb:Show()
-		specWarnEpochericOrb:Play("161612")
+		specWarnEpochericOrb:Play("catchballs")
 		local nextCount = self.vb.orbCastCount + 1
 		local timer = self:IsMythic() and mythicOrbTimers[nextCount] or self:IsNormal() and normalOrbTimers[nextCount] or self:IsHeroic() and heroicOrbTimers[nextCount] or self:IsLFR() and lfrOrbTimers[nextCount]
 		if timer then

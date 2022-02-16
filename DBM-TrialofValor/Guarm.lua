@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1830, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(114323)
 mod:SetEncounterID(1962)
 mod:SetUsedIcons(1, 2, 3)
@@ -46,12 +46,12 @@ local yellShadowyFoam				= mod:NewPosYell(228818, DBM_CORE_L.AUTO_YELL_CUSTOM_PO
 --local timerLickCD					= mod:NewCDCountTimer(45, "ej14463", nil, nil, nil, 3, 228228)
 local timerLeashCD					= mod:NewNextTimer(45, 228201, nil, nil, nil, 6, 129417)
 local timerLeash					= mod:NewBuffActiveTimer(30, 228201, nil, nil, nil, 6)
-local timerFangsCD					= mod:NewCDCountTimer(20.5, 227514, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)--20.5-23
-local timerBreathCD					= mod:NewCDCountTimer(20.5, 228187, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
+local timerFangsCD					= mod:NewCDCountTimer(20.5, 227514, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)--20.5-23
+local timerBreathCD					= mod:NewCDCountTimer(20.5, 228187, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
 local timerLeapCD					= mod:NewCDCountTimer(22, 227883, nil, nil, nil, 3)
-local timerChargeCD					= mod:NewCDTimer(10.9, 227816, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerChargeCD					= mod:NewCDTimer(10.9, 227816, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerVolatileFoamCD			= mod:NewCDCountTimer(15.4, 228824, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerVolatileFoamCD			= mod:NewCDCountTimer(15.4, 228824, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(300)
 

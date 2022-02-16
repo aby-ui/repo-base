@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1663, "DBM-Party-Legion", 8, 727)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(96759)
 mod:SetEncounterID(1824)
 
@@ -29,7 +29,7 @@ local timerPiercingTentacleCD			= mod:NewNextTimer(9, 197596, nil, nil, nil, 3)
 --local timerDestructorTentacleCD		= mod:NewCDTimer(26, "ej12364", nil, nil, nil, 1)--More data
 local timerSubmerged					= mod:NewBuffFadesTimer(15, 196947, nil, nil, nil, 6)
 local timerBreathCD						= mod:NewNextTimer(22, 227233, nil, nil, nil, 3, nil, nil, nil, 1, 4)
-local timerTorrentCD					= mod:NewCDTimer(9.7, 198495, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--often delayed and after breath so often will see 12-14
+local timerTorrentCD					= mod:NewCDTimer(9.7, 198495, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--often delayed and after breath so often will see 12-14
 
 function mod:OnCombatStart(delay)
 	self:SetStage(1)

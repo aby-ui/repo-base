@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116190835")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetUsedIcons(4, 3, 2, 1)
@@ -117,44 +117,44 @@ local specWarnSystemShock				= mod:NewSpecialWarningDefensive(300877, nil, nil, 
 --Stage One: Cursed Lovers (21)
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20250))
 local timerCombatStart					= mod:NewCombatTimer(4)
-local timerPainfulMemoriesCD			= mod:NewNextTimer(60, 297937, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerLongingCD					= mod:NewNextTimer(60, 297934, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerPainfulMemoriesCD			= mod:NewNextTimer(60, 297937, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerLongingCD					= mod:NewNextTimer(60, 297934, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 ----Aethanel
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20261))
 local timerLightningOrbsCD				= mod:NewCDTimer(16.1, 298121, nil, nil, nil, 3)
-local timerColdBlastCD					= mod:NewCDTimer(9.4, 298014, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerColdBlastCD					= mod:NewCDTimer(9.4, 298014, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 ----Cyranus
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20266))
-local timerChargedSpearCD				= mod:NewCDTimer(32.3, 301078, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)--32-40 in stage 1, 12.4-15 stage 3
+local timerChargedSpearCD				= mod:NewCDTimer(32.3, 301078, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--32-40 in stage 1, 12.4-15 stage 3
 ----Overzealous Hulk
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20480))
-local timerHulkSpawnCD					= mod:NewCDCountTimer(30.4, "ej20480", nil, nil, nil, 1, 298531, DBM_CORE_L.DAMAGE_ICON)
+local timerHulkSpawnCD					= mod:NewCDCountTimer(30.4, "ej20480", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
 ----Azshara
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20258))
-local timerArcaneOrbsCD					= mod:NewCDCountTimer(65, 298787, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerArcaneOrbsCD					= mod:NewCDCountTimer(65, 298787, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerBeckonCD						= mod:NewCDCountTimer(30.4, 299094, nil, nil, nil, 3)
-local timerDivideandConquerCD			= mod:NewCDTimer(65, 300478, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON..DBM_CORE_L.DEADLY_ICON)
+local timerDivideandConquerCD			= mod:NewCDTimer(65, 300478, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.DEADLY_ICON)
 --Intermission One: Queen's Decree
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20335))
 local timerNextPhase					= mod:NewPhaseTimer(30.4)
 --Stage Two: Hearts Unleashed
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20323))
-local timerArcaneDetonationCD			= mod:NewCDCountTimer(80, 300519, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)
-local timerReversalofFortuneCD			= mod:NewCDCountTimer(80, 297371, nil, nil, nil, 5, nil, DBM_CORE_L.IMPORTANT_ICON, nil, 2, 5)
-local timerArcaneBurstCD				= mod:NewCDCountTimer(58.2, 303657, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
-local timerAzsharasDevotedCD			= mod:NewCDTimer(95, "ej20353", nil, nil, nil, 1, 298531, DBM_CORE_L.DAMAGE_ICON)
-local timerAzsharasIndomitableCD		= mod:NewCDTimer(100, "ej20410", nil, nil, nil, 1, 298531, DBM_CORE_L.DAMAGE_ICON)
+local timerArcaneDetonationCD			= mod:NewCDCountTimer(80, 300519, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
+local timerReversalofFortuneCD			= mod:NewCDCountTimer(80, 297371, nil, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON, nil, 2, 5)
+local timerArcaneBurstCD				= mod:NewCDCountTimer(58.2, 303657, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
+local timerAzsharasDevotedCD			= mod:NewCDTimer(95, "ej20353", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
+local timerAzsharasIndomitableCD		= mod:NewCDTimer(100, "ej20410", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
 --Stage Three: Song of the Tides
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20340))
-local timerLoyalMyrmidonCD				= mod:NewCDCountTimer(95, "ej20355", nil, nil, nil, 1, 301078, DBM_CORE_L.DAMAGE_ICON)
+local timerLoyalMyrmidonCD				= mod:NewCDCountTimer(95, "ej20355", nil, nil, nil, 1, 301078, DBM_COMMON_L.DAMAGE_ICON)
 local timerStageThreeBerserk			= mod:NewTimer(180, "timerStageThreeBerserk", 28131)
 --Stage Four: My Palace Is a Prison
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20361))
-local timerGreaterReversalCD			= mod:NewCDCountTimer(70, 297372, 297371, nil, nil, 5, nil, DBM_CORE_L.IMPORTANT_ICON..DBM_CORE_L.HEROIC_ICON, nil, 2, 5)
-local timerVoidTouchedCD				= mod:NewCDTimer(6.9, 300743, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerGreaterReversalCD			= mod:NewCDCountTimer(70, 297372, 297371, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON..DBM_COMMON_L.HEROIC_ICON, nil, 2, 5)
+local timerVoidTouchedCD				= mod:NewCDTimer(6.9, 300743, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerNetherPortalCD				= mod:NewCDCountTimer(35, 303980, nil, nil, nil, 3)--35 unless delayed by spell queue
-local timerOverloadCD					= mod:NewCDCountTimer(54.9, 301431, nil, nil, nil, 5, nil, DBM_CORE_L.IMPORTANT_ICON)
-local timerMassiveEnergySpike			= mod:NewCastTimer(42, 301518, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
+local timerOverloadCD					= mod:NewCDCountTimer(54.9, 301431, nil, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON)
+local timerMassiveEnergySpike			= mod:NewCastTimer(42, 301518, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerPiercingGazeCD				= mod:NewCDCountTimer(65, 300768, nil, nil, nil, 3)
 
 local berserkTimer						= mod:NewBerserkTimer(600)
@@ -404,11 +404,11 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 297937 and self:AntiSpam(3, 3) then--Painful Memories
-		specWarnPainfulMemories:Show(DBM_CORE_L.BREAK_LOS)
+		specWarnPainfulMemories:Show(DBM_COMMON_L.BREAK_LOS)
 		specWarnPainfulMemories:Play("moveboss")
 		timerLongingCD:Start(self:IsMythic() and 60 or self:IsHeroic() and 65 or 70)
 	elseif spellId == 297934 and self:AntiSpam(5, 3) then--Longing
-		specWarnLonging:Show(DBM_CORE_L.RESTORE_LOS)
+		specWarnLonging:Show(DBM_COMMON_L.RESTORE_LOS)
 		specWarnLonging:Play("moveboss")
 		timerPainfulMemoriesCD:Start(self:IsHard() and 20 or 24.9)
 	elseif spellId == 298121 then
@@ -455,7 +455,7 @@ function mod:SPELL_CAST_START(args)
 		timerArcaneDetonationCD:Start(self:IsMythic() and 80.1 or 75, 1)--START (same on heroic/normal/lfr but different on mythic)
 	elseif spellId == 300519 then
 		self.vb.arcaneDetonation = self.vb.arcaneDetonation + 1
-		specWarnArcaneDetonation:Show(DBM_CORE_L.BREAK_LOS)
+		specWarnArcaneDetonation:Show(DBM_COMMON_L.BREAK_LOS)
 		specWarnArcaneDetonation:Play("findshelter")
 		timerArcaneDetonationCD:Start(self:IsMythic() and 69.9 or self:IsHeroic() and 75 or 80, self.vb.arcaneDetonation+1)
 	elseif spellId == 301431 then
@@ -649,7 +649,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnChargedSpear:Show(shieldName)
 				specWarnChargedSpear:Play("behindmob")
 			else
-				specWarnChargedSpear:Show(DBM_CORE_L.ROOM_EDGE)
+				specWarnChargedSpear:Show(DBM_COMMON_L.EDGE)
 				specWarnChargedSpear:Play("runtoedge")
 			end
 			yellChargedSpear:Yell()
@@ -827,7 +827,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 304267 and self:AntiSpam(3, 7) then
 		self.vb.painfulMemoriesActive = false
-		warnPainfulMemoriesOver:Show(DBM_CORE_L.RESTORE_LOS)
+		warnPainfulMemoriesOver:Show(DBM_COMMON_L.RESTORE_LOS)
 		warnPainfulMemoriesOver:Play("moveboss")
 	elseif spellId == 299249 or spellId == 299251 or spellId == 299254 or spellId == 299255 or spellId == 299252 or spellId == 299253 then
 		if args:IsPlayer() then

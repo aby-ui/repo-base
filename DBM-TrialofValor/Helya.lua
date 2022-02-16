@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116144653")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -79,12 +79,12 @@ local yellOrbOfCorrosion			= mod:NewPosYell(230267, DBM_CORE_L.AUTO_YELL_CUSTOM_
 
 --Stage One: Low Tide
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerOrbOfCorruptionCD		= mod:NewNextTimer(25, 229119, "OrbsTimerText", nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
-local timerTaintOfSeaCD				= mod:NewCDTimer(14.5, 228088, nil, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)
-local timerBilewaterBreathCD		= mod:NewNextCountTimer(40, 227967, 21131, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)--On for everyone though so others avoid it too
+local timerOrbOfCorruptionCD		= mod:NewNextTimer(25, 229119, "OrbsTimerText", nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)
+local timerTaintOfSeaCD				= mod:NewCDTimer(14.5, 228088, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)
+local timerBilewaterBreathCD		= mod:NewNextCountTimer(40, 227967, 21131, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--On for everyone though so others avoid it too
 local timerTentacleStrikeCD			= mod:NewNextCountTimer(30, 228730, nil, nil, nil, 5)
 local timerTentacleStrike			= mod:NewCastSourceTimer(6, 228730, nil, nil, nil, 5)
-local timerExplodingOozes			= mod:NewCastTimer(20.5, 227992, nil, nil, nil, 2, nil, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerExplodingOozes			= mod:NewCastTimer(20.5, 227992, nil, nil, nil, 2, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
 --Stage Two: From the Mists (65%)
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerFuryofMaw				= mod:NewBuffActiveTimer(32, 228032, nil, nil, nil, 2)
@@ -93,15 +93,15 @@ local timerFuryofMawCD				= mod:NewNextCountTimer(44.5, 228032, nil, nil, nil, 2
 local timerAddsCD					= mod:NewNextTimer(75.5, 167910, nil, nil, nil, 1)
 ----Grimelord
 local timerSludgeNovaCD				= mod:NewCDTimer(24.2, 228390, nil, "Melee", nil, 2)
-local timerAnchorSlamCD				= mod:NewCDTimer(12, 228519, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerAnchorSlamCD				= mod:NewCDTimer(12, 228519, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerFetidRotCD				= mod:NewCDTimer(13, 193367, nil, nil, nil, 3)
 ----Night Watch Mariner
-local timerLanternofDarknessCD		= mod:NewNextTimer(25, 228619, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerLanternofDarknessCD		= mod:NewNextTimer(25, 228619, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerGiveNoQuarterCD			= mod:NewNextTimer(6, 228633, nil, nil, nil, 3)
 --Stage Three: Helheim's Last Stand
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerCorruptedBreathCD		= mod:NewCDCountTimer(40, 228565, 21131, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerOrbOfCorrosionCD			= mod:NewNextTimer(17, 230267, "OrbsTimerText", nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
+local timerCorruptedBreathCD		= mod:NewCDCountTimer(40, 228565, 21131, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerOrbOfCorrosionCD			= mod:NewNextTimer(17, 230267, "OrbsTimerText", nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)
 
 local berserkTimer					= mod:NewBerserkTimer(660)
 
@@ -128,7 +128,7 @@ local seenMobs = {}
 177.493	Striking Tentacle 10 begins casting Tentacle Strike (melee)
 181.444	Striking Tentacle 11 begins casting Tentacle Strike (melee)
 --]]
-local mythicTentacleSpawns = {"2x"..DBM_CORE_L.FRONT, "1x"..DBM_CORE_L.FRONT.."/1x"..DBM_CORE_L.BACK, "2x"..DBM_CORE_L.BACK, "2x"..DBM_CORE_L.BACK.."/1x"..DBM_CORE_L.FRONT, "2x"..DBM_CORE_L.FRONT}
+local mythicTentacleSpawns = {"2x"..DBM_COMMON_L.FRONT, "1x"..DBM_COMMON_L.FRONT.."/1x"..DBM_COMMON_L.BACK, "2x"..DBM_COMMON_L.BACK, "2x"..DBM_COMMON_L.BACK.."/1x"..DBM_COMMON_L.FRONT, "2x"..DBM_COMMON_L.FRONT}
 local phase3MythicOrbs = {6, 13.0, 13.0, 27.1, 10.7, 13.0, 25.0, 13.0, 13.0, 25.0, 13.0, 17.6, 19.5, 13.0, 13.0, 12.0, 12.0, 15, 8.2}--last being 8.2 in one log, but 13 in another. leaving 8.2 for now
 local phase3MythicTaint = {0, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 17, 14, 11, 11}--Assumed that rest are 11 (if you someone survive past berserk)
 
@@ -525,7 +525,7 @@ function mod:RAID_BOSS_EMOTE(msg)
 				if text then
 					specWarnTentacleStrike:Show(text)
 				else
-					specWarnTentacleStrike:Show(DBM_CORE_L.UNKNOWN)
+					specWarnTentacleStrike:Show(DBM_COMMON_L.UNKNOWN)
 				end
 			else
 				timerTentacleStrikeCD:Start(42.5, self.vb.tentacleSetCount+1)
@@ -534,24 +534,24 @@ function mod:RAID_BOSS_EMOTE(msg)
 		if msg:find(L.near) then
 			self.vb.tentacleCount = self.vb.tentacleCount + 1
 			if not self:IsMythic() then
-				specWarnTentacleStrike:Show(DBM_CORE_L.FRONT)
+				specWarnTentacleStrike:Show(DBM_COMMON_L.FRONT)
 			end
-			local subtext = self:IsMythic() and DBM_CORE_L.FRONT.." ("..self.vb.tentacleCount..")" or DBM_CORE_L.FRONT
+			local subtext = self:IsMythic() and DBM_COMMON_L.FRONT.." ("..self.vb.tentacleCount..")" or DBM_COMMON_L.FRONT
 			timerTentacleStrike:Start(subtext)
 		elseif msg:find(L.far) then
 			self.vb.tentacleCount = self.vb.tentacleCount + 1
 			if not self:IsMythic() then
-				specWarnTentacleStrike:Show(DBM_CORE_L.BACK)
+				specWarnTentacleStrike:Show(DBM_COMMON_L.BACK)
 			end
-			local subtext = self:IsMythic() and DBM_CORE_L.BACK.." ("..self.vb.tentacleCount..")" or DBM_CORE_L.BACK
+			local subtext = self:IsMythic() and DBM_COMMON_L.BACK.." ("..self.vb.tentacleCount..")" or DBM_COMMON_L.BACK
 			timerTentacleStrike:Start(subtext)
 		--Backup for the like 8 languages dbm doesn't have translators for
 		else
 			self.vb.tentacleCount = self.vb.tentacleCount + 1
 			if not self:IsMythic() then
-				specWarnTentacleStrike:Show(DBM_CORE_L.UNKNOWN)
+				specWarnTentacleStrike:Show(DBM_COMMON_L.UNKNOWN)
 			end
-			local subtext = self:IsMythic() and DBM_CORE_L.UNKNOWN.." ("..self.vb.tentacleCount..")" or DBM_CORE_L.UNKNOWN
+			local subtext = self:IsMythic() and DBM_COMMON_L.UNKNOWN.." ("..self.vb.tentacleCount..")" or DBM_COMMON_L.UNKNOWN
 			timerTentacleStrike:Start(subtext)
 		end
 	end
@@ -562,21 +562,21 @@ function mod:RAID_BOSS_WHISPER(msg)
 		specWarnOrbOfCorruption:Show()
 		specWarnOrbOfCorruption:Play("orbrun")
 		if self:IsTank() then
-			yellOrbOfCorruption:Yell(2, DBM_CORE_L.ORB, 2)
+			yellOrbOfCorruption:Yell(2, DBM_COMMON_L.ORB, 2)
 		elseif self:IsHealer() then--LFR/Normal doesn't choose a healer, just tank/damage
-			yellOrbOfCorruption:Yell(1, DBM_CORE_L.ORB, 1)
+			yellOrbOfCorruption:Yell(1, DBM_COMMON_L.ORB, 1)
 		else
-			yellOrbOfCorruption:Yell(3, DBM_CORE_L.ORB, 3)
+			yellOrbOfCorruption:Yell(3, DBM_COMMON_L.ORB, 3)
 		end
 	elseif msg:find("spell:228058") then
 		specWarnOrbOfCorrosion:Show()
 		specWarnOrbOfCorrosion:Play("orbrun")
 		if self:IsTank() then
-			yellOrbOfCorrosion:Yell(2, DBM_CORE_L.ORB, 2)
+			yellOrbOfCorrosion:Yell(2, DBM_COMMON_L.ORB, 2)
 		elseif self:IsHealer() then--LFR/Normal doesn't choose a healer, just tank/damage
-			yellOrbOfCorrosion:Yell(1, DBM_CORE_L.ORB, 1)
+			yellOrbOfCorrosion:Yell(1, DBM_COMMON_L.ORB, 1)
 		else
-			yellOrbOfCorrosion:Yell(3, DBM_CORE_L.ORB, 3)
+			yellOrbOfCorrosion:Yell(3, DBM_COMMON_L.ORB, 3)
 		end
 	end
 end

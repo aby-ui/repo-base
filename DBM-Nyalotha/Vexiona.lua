@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(157354)
 mod:SetEncounterID(2336)
 mod:SetHotfixNoticeRev(20200128000000)--2020, 1, 28
@@ -77,19 +77,19 @@ local specWarnVoidBolt						= mod:NewSpecialWarningInterrupt(307177, "HasInterru
 ----Stage 1: Cult of the Void
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20661))
 local timerEncroachingShadowsCD				= mod:NewCDTimer(14.6, 307314, nil, nil, nil, 3)
-local timerTwilightBreathCD					= mod:NewCDTimer(14.8, 307020, 18620, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)--14.8-20.0
-local timerDespairCD						= mod:NewCDTimer(35.2, 307359, nil, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)--35.2-36.4
-local timerShatteredResolve					= mod:NewTargetTimer(6, 307371, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerTwilightBreathCD					= mod:NewCDTimer(14.8, 307020, 18620, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--14.8-20.0
+local timerDespairCD						= mod:NewCDTimer(35.2, 307359, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)--35.2-36.4
+local timerShatteredResolve					= mod:NewTargetTimer(6, 307371, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerDarkGatewayCD					= mod:NewCDCountTimer(33.2, 307057, nil, nil, nil, 1, nil, nil, nil, 1, 4)
 ----Iron-Willed Enforcer
-local timerNoEscapeCD						= mod:NewCDCountTimer(11, 316437, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
+local timerNoEscapeCD						= mod:NewCDCountTimer(11, 316437, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 ----Stage 2: Death From Above
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(20667))
 local timerTwilightDecimatorCD				= mod:NewNextCountTimer(12.2, 307218, 125030, nil, nil, 3)--Deep Breath shorttext
 ----Stage 3: The Void Unleashed
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20669))
-local timerHeartofDarknessCD				= mod:NewCDCountTimer(31.6, 307639, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
-local timerDesolationCD						= mod:NewCDTimer(32.3, 310325, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerHeartofDarknessCD				= mod:NewCDCountTimer(31.6, 307639, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
+local timerDesolationCD						= mod:NewCDTimer(32.3, 310325, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 --Adds
 ----Void Ascendant
 --mod:AddTimerLine(DBM:EJ_GetSectionInfo(20684))

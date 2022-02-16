@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -244,7 +244,7 @@ function KT.GetNumQuests()
     local numEntries = C_QuestLog.GetNumQuestLogEntries()
     for i = 1, numEntries do
         local info = C_QuestLog.GetInfo(i)
-        if not info.isHidden and not info.isHeader then
+        if not info.isHidden and not info.isHeader and not C_QuestLog.IsQuestCalling(info.questID) then
             numQuests = numQuests + 1
         end
     end

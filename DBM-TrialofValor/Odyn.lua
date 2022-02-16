@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1819, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(114263, 114361, 114360)--114263 Odyn, 114361 Hymdall, 114360 Hyrja
 mod:SetEncounterID(1958)
 --mod:SetBossHPInfoToHighest()
@@ -77,20 +77,20 @@ local timerShieldofLightCD			= mod:NewNextCountTimer(32, 228270, nil, nil, nil, 
 --Stage 1: Halls of Valor was merely a set back
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local timerDrawPowerCD				= mod:NewNextTimer(70, 227503, nil, nil, nil, 6, nil, nil, nil, 1, 4)
-local timerDrawPower				= mod:NewCastTimer(33, 227629, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
+local timerDrawPower				= mod:NewCastTimer(33, 227629, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
 --Stage 2: Odyn immitates margok
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerSpearCD					= mod:NewNextTimer(8, 227697, nil, nil, nil, 3)
-local timerHymdallCD				= mod:NewNextTimer(70, "ej14005", nil, nil, nil, 1, 228012, DBM_CORE_L.DAMAGE_ICON)
-local timerHyrjaCD					= mod:NewNextTimer(70, "ej14006", nil, nil, nil, 1, 228270, DBM_CORE_L.DAMAGE_ICON)
+local timerHymdallCD				= mod:NewNextTimer(70, "ej14005", nil, nil, nil, 1, 228012, DBM_COMMON_L.DAMAGE_ICON)
+local timerHyrjaCD					= mod:NewNextTimer(70, "ej14006", nil, nil, nil, 1, 228270, DBM_COMMON_L.DAMAGE_ICON)
 --Stage 3: Odyn immitates lei shen
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerStormOfJusticeCD			= mod:NewNextTimer(10.9, 227807, nil, nil, nil, 3)
-local timerStormforgedSpearCD		= mod:NewNextTimer(10.9, 228918, 71466, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.DEADLY_ICON, nil, 2, 4)
+local timerStormforgedSpearCD		= mod:NewNextTimer(10.9, 228918, 71466, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DEADLY_ICON, nil, 2, 4)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerRunicBrandCD				= mod:NewNextTimer(35, 231297, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON, nil, 1, 4)
-local timerRadiantSmite				= mod:NewCastTimer(7.5, 231350, nil, nil, nil, 2, nil, DBM_CORE_L.HEROIC_ICON)
+local timerRunicBrandCD				= mod:NewNextTimer(35, 231297, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)
+local timerRadiantSmite				= mod:NewCastTimer(7.5, 231350, nil, nil, nil, 2, nil, DBM_COMMON_L.HEROIC_ICON)
 
 --local berserkTimer				= mod:NewBerserkTimer(300)
 

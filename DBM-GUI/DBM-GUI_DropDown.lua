@@ -18,7 +18,7 @@ tabFrame1:Hide()
 tabFrame1:SetFrameStrata("TOOLTIP")
 tabFrame1.offset = 0
 tabFrame1.backdropInfo = {
-	bgFile		= "Interface\\ChatFrame\\ChatFrameBackground", -- 130937
+	--bgFile		= "Interface\\ChatFrame\\ChatFrameBackground", -- 130937
 	edgeFile	= "Interface\\Tooltips\\UI-Tooltip-Border", -- 137057
 	tile		= true,
 	tileSize	= 16,
@@ -213,6 +213,7 @@ function DBM_GUI:CreateDropdown(title, values, vartype, var, callfunc, width, he
 	end
 	local dropdown = CreateFrame("Frame", "DBM_GUI_DropDown" .. self:GetNewID(), parent or self.frame, "UIDropDownMenuTemplate")
 	dropdown.mytype = "dropdown"
+	dropdown.width = width
 	dropdown.values = values
 	dropdown.callfunc = callfunc
 	local dropdownText = _G[dropdown:GetName() .. "Text"]

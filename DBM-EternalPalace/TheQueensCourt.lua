@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2359, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20220128073746")
 mod:SetCreatureID(152852, 152853)--Pashmar 152852, Silivaz 152853
 mod:SetEncounterID(2311)
 mod:SetBossHPInfoToHighest()
@@ -83,7 +83,7 @@ local timerFreneticChargeCD				= mod:NewNextTimer(40, 299914, nil, nil, nil, 3, 
 local timerZealousEruptionCD			= mod:NewNextTimer(104.4, 301807, nil, nil, nil, 2)
 --Pashmar the Fanatical
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20235))
-local timerFerventBoltCD				= mod:NewCDTimer(11.3, 300395, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerFerventBoltCD				= mod:NewCDTimer(11.3, 300395, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerFanaticalVerdictCD			= mod:NewNextTimer(26.7, 296850, nil, nil, nil, 3)
 local timerViolentOutburstCD			= mod:NewNextTimer(104.4, 297325, nil, nil, nil, 2)
 local timerPotentSparkCD				= mod:NewCDTimer(92.2, 301947, nil, nil, nil, 1)
@@ -343,7 +343,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 297851 then--Potent Spark have boss unit Ids and they cast this right after IEEU as well
 		if not GetRaidTargetIndex(uId) then--Not already marked
 			if self.Options.SetIconSparks then
-				SetRaidTarget(uId, self.vb.sparkIcon)
+				self:SetIcon(uId, self.vb.sparkIcon)
 			end
 			self.vb.sparkIcon = self.vb.sparkIcon + 1
 		end

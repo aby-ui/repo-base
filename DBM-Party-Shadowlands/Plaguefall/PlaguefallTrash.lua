@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("PlaguefallTrash", "DBM-Party-Shadowlands", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201217024039")
+mod:SetRevision("20220204091202")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -38,6 +38,8 @@ local specWarnWonderGrow				= mod:NewSpecialWarningInterrupt(328016, "HasInterru
 local specWarnWonderGrowDispel			= mod:NewSpecialWarningDispel(328015, "MagicDispeller", nil, nil, 1, 2)
 
 local timerMetamorphosis				= mod:NewCastTimer(10, 322232, nil, nil, nil, 1)
+
+mod:GroupSpells(328016, 328015)--Group two wonder grows (they use diff spell Ids because they have diff icons, so it's clearer which is interrupt and which is dispel
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc
 

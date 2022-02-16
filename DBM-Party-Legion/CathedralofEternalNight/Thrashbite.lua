@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1906, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(117194)
 mod:SetEncounterID(2057)
 
@@ -23,8 +23,8 @@ local specWarnMindControl			= mod:NewSpecialWarningSwitchCount(238484, nil, DBM_
 local specWarnScornfulGaze			= mod:NewSpecialWarningMoveTo(237726, nil, nil, nil, 3, 2)
 local yellScornfulGaze				= mod:NewYell(237726)
 
-local timerPulvCrudgelCD			= mod:NewCDTimer(34.2, 237276, nil, nil, nil, 2, nil, DBM_CORE_L.TANK_ICON)--Might be shorter if not stunned by gaze/books
-local timerScornfulGazeCD			= mod:NewCDTimer(36.5, 237726, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerPulvCrudgelCD			= mod:NewCDTimer(34.2, 237276, nil, nil, nil, 2, nil, DBM_COMMON_L.TANK_ICON)--Might be shorter if not stunned by gaze/books
+local timerScornfulGazeCD			= mod:NewCDTimer(36.5, 237726, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerHeaveCrudCD				= mod:NewCDTimer(36.5, 243124, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)

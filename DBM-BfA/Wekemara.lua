@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2363, "DBM-BfA", 5, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721041239")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(152671)--155702/spawn-of-wekemara
 mod:SetEncounterID(2318)
 mod:SetReCombatTime(20)
@@ -25,9 +25,9 @@ local specWarnBioelectricBlast		= mod:NewSpecialWarningDodge(303319, nil, nil, n
 local specWarnShockBurst			= mod:NewSpecialWarningMoveAway(303488, nil, nil, nil, 1, 2)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
-local timerBioelectricblastCD		= mod:NewCDTimer(13.9, 303319, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)--13.9 to like 30?
+local timerBioelectricblastCD		= mod:NewCDTimer(13.9, 303319, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--13.9 to like 30?
 local timerShockburstCD				= mod:NewCDTimer(36.6, 303488, nil, nil, nil, 3)
-local timerElectricDischargeCD		= mod:NewCDTimer(25.6, 303451, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
+local timerElectricDischargeCD		= mod:NewCDTimer(25.6, 303451, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 
 --mod:AddReadyCheckOption(37460, false)
 

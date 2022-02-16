@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1861, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116144653")
 mod:SetCreatureID(115767)--116328 Vellius, 115795 Abyss Stalker, 116329/116843 Sarukel
 mod:SetEncounterID(2037)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -62,21 +62,21 @@ local yellDeliciousBufferfish		= mod:NewFadesYell(239375, DBM_CORE_L.AUTO_YELL_C
 --General Stuff
 mod:AddTimerLine(GENERAL)
 local timerHydraShotCD				= mod:NewCDCountTimer(40, 230139, nil, nil, nil, 3, nil, nil, nil, 1, 4)
-local timerBurdenofPainCD			= mod:NewCDCountTimer(27.6, 230201, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)--28-32
+local timerBurdenofPainCD			= mod:NewCDCountTimer(27.6, 230201, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)--28-32
 local timerFromtheAbyssCD			= mod:NewCDTimer(27, 230227, nil, nil, nil, 1)--27-31
 --Stage One: Ten Thousand Fangs
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerSlicingTornadoCD			= mod:NewCDCountTimer(43.2, 232722, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)--43.2-54
+local timerSlicingTornadoCD			= mod:NewCDCountTimer(43.2, 232722, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)--43.2-54
 local timerConsumingHungerCD		= mod:NewCDTimer(31.6, 230920, nil, nil, nil, 1)
-local timerThunderingShockCD		= mod:NewCDTimer(32.2, 230358, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)
+local timerThunderingShockCD		= mod:NewCDTimer(32.2, 230358, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
 --Stage Two: Terrors of the Deep
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerDevouringMawCD			= mod:NewCDCountTimer(40.5, 234621, nil, nil, nil, 3, nil, DBM_CORE_L.IMPORTANT_ICON)
+local timerDevouringMawCD			= mod:NewCDCountTimer(40.5, 234621, nil, nil, nil, 3, nil, DBM_COMMON_L.IMPORTANT_ICON)
 local timerCrashingWaveCD			= mod:NewCDCountTimer(40, 232827, nil, nil, nil, 3)
 local timerInkCD					= mod:NewCDTimer(41, 232913, nil, nil, nil, 3)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerBufferSpawn				= mod:NewNextTimer(20, 239362, nil, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
+local timerBufferSpawn				= mod:NewNextTimer(20, 239362, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
 
 local berserkTimer					= mod:NewBerserkTimer(480)
 
@@ -168,7 +168,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnBurdenofPain:Play("defensive")
 		else
 			if not self.Options.TauntOnPainSuccess then
-				local targetName = UnitName("boss1target") or DBM_CORE_L.UNKNOWN
+				local targetName = UnitName("boss1target") or DBM_COMMON_L.UNKNOWN
 				if self:AntiSpam(5, targetName) and UnitName("player") ~= targetName then
 					specWarnBurdenofPainTaunt:Show(targetName)
 					specWarnBurdenofPainTaunt:Play("tauntboss")

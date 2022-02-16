@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2131, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(131817)
 mod:SetEncounterID(2118)
 
@@ -25,9 +25,9 @@ local specWarnCharge				= mod:NewSpecialWarningDodge(260292, nil, nil, nil, 3, 2
 local specWarnTantrum				= mod:NewSpecialWarningCount(260333, nil, nil, nil, 2, 2)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
-local timerIndigestionCD			= mod:NewCDTimer(70, 260793, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerChargeCD					= mod:NewCDTimer(20.7, 260292, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
-local timerTantrumCD				= mod:NewCDTimer(13, 260333, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
+local timerIndigestionCD			= mod:NewCDTimer(70, 260793, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerChargeCD					= mod:NewCDTimer(20.7, 260292, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerTantrumCD				= mod:NewCDTimer(13, 260333, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 
 mod:AddNamePlateOption("NPAuraMetamorphosis", 260416)
 

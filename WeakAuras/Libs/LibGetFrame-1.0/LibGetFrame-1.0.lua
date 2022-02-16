@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 29
+local MINOR_VERSION = 31
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -24,7 +24,7 @@ local defaultFramePriorities = {
     "^GridLayout", -- grid
     "^Grid2Layout", -- grid2
     "^PlexusLayout", -- plexus
-    "^ElvUF_RaidGroup", -- elv
+    "^ElvUF_Raid%d*Group", -- elv
     "^oUF_bdGrid", -- bdgrid
     "^oUF_.-Raid", -- generic oUF
     "^LimeGroup", -- lime
@@ -98,7 +98,7 @@ local defaultRaidFrames = {
     "^GridLayout",
     "^Grid2Layout",
     "^PlexusLayout",
-    "^ElvUF_RaidGroup",
+    "^ElvUF_Raid%d*Group",
     "^oUF_.-Raid",
     "^AshToAsh",
     "^LimeGroup",
@@ -157,11 +157,11 @@ local function doScanForUnitFrames()
         end
     end
 end
-local function ScanForUnitFrames(noDelay)
-    if noDelay then
-        doScanForUnitFrames()
-    elseif not wait then
+local function ScanForUnitFrames()
+    doScanForUnitFrames()
+    if not wait then
         wait = true
+        -- do another delayed scan due to Plexus and Vuhdo sometime delayed layout
         C_Timer.After(1, function()
             doScanForUnitFrames()
         end)
@@ -244,8 +244,8 @@ local function Init(noDelay)
     GetFramesCacheListener:RegisterEvent("PLAYER_ENTERING_WORLD")
     GetFramesCacheListener:RegisterEvent("GROUP_ROSTER_UPDATE")
     GetFramesCacheListener:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
-    GetFramesCacheListener:SetScript("OnEvent", function() ScanForUnitFrames(false) end)
-    ScanForUnitFrames(noDelay)
+    GetFramesCacheListener:SetScript("OnEvent", function() ScanForUnitFrames() end)
+    ScanForUnitFrames()
 end
 
 function lib.GetUnitFrame(target, opt)

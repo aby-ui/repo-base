@@ -2,7 +2,7 @@
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.11.18
+## Version: 4.11.19
 ## SavedVariables: RematchSaved, RematchSettings
 
 Localization\Rematch zhTW.lua

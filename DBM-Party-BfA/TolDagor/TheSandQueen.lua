@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2097, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(127479)
 mod:SetEncounterID(2101)
 
@@ -22,7 +22,7 @@ local yellUpheavel					= mod:NewYell(257617)
 local specWarnUpheavelNear			= mod:NewSpecialWarningClose(257617, nil, nil, nil, 2, 2)
 local specWarnSandstorm				= mod:NewSpecialWarningSpell(257495, nil, nil, nil, 2, 2)
 
---local timerReapSoulCD				= mod:NewNextTimer(13, 194956, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.DEADLY_ICON)
+--local timerReapSoulCD				= mod:NewNextTimer(13, 194956, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DEADLY_ICON)
 local timerSandTrapCD				= mod:NewCDTimer(14.2, 257092, nil, nil, nil, 3)--14.2-18.6
 local timerUpheavelCD				= mod:NewCDTimer(43.4, 257617, nil, nil, nil, 3)
 local timerSandstormCD				= mod:NewCDTimer(34, 257495, nil, nil, nil, 2)--Health based?

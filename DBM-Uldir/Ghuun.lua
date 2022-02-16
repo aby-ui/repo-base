@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2147, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220201235219")
 mod:SetCreatureID(132998)
 mod:SetEncounterID(2122)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)
@@ -85,14 +85,14 @@ mod:AddTimerLine("Arena Floor")--Dungeon journal later
 local timerExplosiveCorruptionCD		= mod:NewCDCountTimer(13, 272506, nil, nil, nil, 3, nil, nil, nil, 1, 3)
 local timerThousandMawsCD				= mod:NewCDCountTimer(23.9, 267509, nil, nil, nil, 1)--23.9-26.7
 ----Adds
-local timerMassiveSmashCD				= mod:NewCDTimer(9.7, 267412, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerDarkBargainCD				= mod:NewCDTimer(23.1, 267409, nil, nil, nil, 3, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerMassiveSmashCD				= mod:NewCDTimer(9.7, 267412, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerDarkBargainCD				= mod:NewCDTimer(23.1, 267409, nil, nil, nil, 3, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerBurrowCD						= mod:NewCDTimer(30, 267579, nil, nil, nil, 6)
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerWaveofCorruptionCD			= mod:NewCDCountTimer(15, 270373, nil, nil, nil, 3)
 local timerBloodFeastCD					= mod:NewCDCountTimer(15, 263235, nil, nil, nil, 2, nil, nil, nil, 2, 4)
-local timerBurstingBoil					= mod:NewCastCountTimer(8, 277007, nil, nil, 2, 5, nil, DBM_CORE_L.MYTHIC_ICON)
-local timerBurstingBoilCD				= mod:NewCDCountTimer(20.5, 277007, nil, nil, nil, 3, nil, DBM_CORE_L.MYTHIC_ICON)
+local timerBurstingBoil					= mod:NewCastCountTimer(8, 277007, nil, nil, 2, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerBurstingBoilCD				= mod:NewCDCountTimer(20.5, 277007, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 ----Horror
 local timerMindNumbingChatterCD			= mod:NewCDTimer(13.4, 263307, nil, "SpellCaster", nil, 2)
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
@@ -114,7 +114,7 @@ mod:AddSetIconOption("SetIconOnExplosiveCorruption", 272506, false, false, {1, 2
 
 mod.vb.mawCastCount = 0
 mod.vb.matrixCount = 0
-mod.vb.matrixSide = DBM_CORE_L.RIGHT
+mod.vb.matrixSide = DBM_COMMON_L.RIGHT
 mod.vb.explosiveCount = 0
 mod.vb.waveCast = 0
 mod.vb.bloodFeastCount = 0
@@ -182,7 +182,7 @@ do
 				if mod:IsMythic() then
 					addLine(L.NextMatrix, mod.vb.matrixCount+1)
 				else
-					local sideText = (mod.vb.matrixSide == DBM_CORE_L.LEFT) and DBM_CORE_L.RIGHT or DBM_CORE_L.LEFT
+					local sideText = (mod.vb.matrixSide == DBM_COMMON_L.LEFT) and DBM_COMMON_L.RIGHT or DBM_COMMON_L.LEFT
 					addLine(L.NextMatrixLong:format(sideText), mod.vb.matrixCount+1)
 				end
 			end
@@ -260,7 +260,7 @@ function mod:OnCombatStart(delay)
 		timerThousandMawsCD:Start(24.3-delay, 1)
 	end
 	if not self:IsMythic() then
-		self.vb.matrixSide = DBM_CORE_L.RIGHT
+		self.vb.matrixSide = DBM_COMMON_L.RIGHT
 		timerExplosiveCorruptionCD:Start(8-delay, 1)--SUCCESS
 	else
 		timerExplosiveCorruptionCD:Start(10-delay, 1)--SUCCESS
@@ -356,7 +356,7 @@ function mod:SPELL_CAST_START(args)
 		timerBurrowCD:Start(29.5, args.sourceGUID)
 	elseif (spellId == 263482 or spellId == 263503) then
 		self.vb.matrixActive = false
-		self.vb.matrixSide = DBM_CORE_L.RIGHT--Actually left, but this makes it so the way it's coded works
+		self.vb.matrixSide = DBM_COMMON_L.RIGHT--Actually left, but this makes it so the way it's coded works
 		specWarnReorginationBlast:Show()
 		specWarnReorginationBlast:Play("aesoon")--Or phase change
 		timerMatrixCD:Stop()
@@ -572,7 +572,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBloodFeastTarget:Show(self.vb.bloodFeastCount, args.destName)
 			specWarnBloodFeastTarget:Play("bloodfeast")
 			local count = self.vb.bloodFeastCount
-			specWarnBloodFeastTarget:ScheduleVoice(1, nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack.."\\count\\"..count..".ogg")
+			specWarnBloodFeastTarget:ScheduleVoice(1, nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack2.."\\count\\"..count..".ogg")
 		end
 		self.vb.bloodFeastTarget = args.destName
 	elseif spellId == 270443 then--Bite
@@ -703,10 +703,10 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, npc, _, _, target)
 		self.vb.matrixActive = true
 		self.vb.matrixCount = self.vb.matrixCount + 1
 		if not self:IsMythic() then
-			if self.vb.matrixSide == DBM_CORE_L.LEFT then
-				self.vb.matrixSide = DBM_CORE_L.RIGHT
+			if self.vb.matrixSide == DBM_COMMON_L.LEFT then
+				self.vb.matrixSide = DBM_COMMON_L.RIGHT
 			else
-				self.vb.matrixSide = DBM_CORE_L.LEFT
+				self.vb.matrixSide = DBM_COMMON_L.LEFT
 			end
 			warnMatrixSpawn:Show(self.vb.matrixCount.."-"..self.vb.matrixSide)
 		else

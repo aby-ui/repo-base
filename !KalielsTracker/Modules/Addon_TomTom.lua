@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -295,10 +295,10 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v3.0.2") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v3.0.3") and db.addonTomTom)
 
 	if self.isLoaded then
-		KT:Alert_IncompatibleAddon("TomTom", "v90002-1.1.9")
+		KT:Alert_IncompatibleAddon("TomTom", "v3.0.0")
 	end
 
 	local defaults = KT:MergeTables({

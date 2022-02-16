@@ -26,49 +26,66 @@ local CountSoundDropDown3 = spokenGeneralArea:CreateDropdown(L.CountdownVoice3, 
 end, 180)
 CountSoundDropDown3:SetPoint("TOPLEFT", CountSoundDropDown, "TOPLEFT", 0, -45)
 
-local VoiceDropDown = spokenGeneralArea:CreateDropdown(L.VoicePackChoice, DBM.Voices, "DBM", "ChosenVoicePack", function(value)
-	DBM.Options.ChosenVoicePack = value
-	DBM:Debug("DBM.Options.ChosenVoicePack is set to " .. DBM.Options.ChosenVoicePack)
+local voices = DBM.Voices
+if DBM.Options.ChosenVoicePack2 ~= "None" and not DBM.VoiceVersions[DBM.Options.ChosenVoicePack2] then -- Sound pack is missing, add a custom entry of "missing"
+	table.insert(voices, { text = L.MissingVoicePack:format(DBM.Options.ChosenVoicePack2), value = DBM.Options.ChosenVoicePack2 })
+end
+local VoiceDropDown = spokenGeneralArea:CreateDropdown(L.VoicePackChoice, voices, "DBM", "ChosenVoicePack2", function(value)
+	DBM.Options.ChosenVoicePack2 = value
 	DBM:CheckVoicePackVersion(value)
 end, 180)
 VoiceDropDown:SetPoint("TOPLEFT", CountSoundDropDown2, "TOPLEFT", 0, -45)
 VoiceDropDown.myheight = 20 -- TODO: +10 padding per dropdown text
 
-local voiceFilterArea		= spokenAlertsPanel:CreateArea(L.Area_VoicePackOptions)
-local VPF1					= voiceFilterArea:CreateCheckButton(L.SpecWarn_AlwaysVoice, true, nil, "AlwaysPlayVoice")
-local voiceSWOptions = {
-	{
-		text	= L.SWFNever,
-		value	= "None"
-	},
-	{
-		text	= L.SWFDefaultOnly,
-		value	= "DefaultOnly"
-	},
-	{
-		text	= L.SWFAll,
-		value	= "All"
-	},
-}
-local SWFilterDropDown		= voiceFilterArea:CreateDropdown(L.SpecWarn_NoSoundsWVoice, voiceSWOptions, "DBM", "VoiceOverSpecW2", function(value)
-	DBM.Options.VoiceOverSpecW2 = value
-end, 420)
-SWFilterDropDown:SetPoint("TOPLEFT", _G[VPF1:GetName() .. "Text"], "BOTTOMLEFT", -26, -5)
+local voiceReplaceArea		= spokenAlertsPanel:CreateArea(L.Area_VoicePackReplace)
+local VPReplaceAnnounce		= voiceReplaceArea:CreateCheckButton(L.ReplacesAnnounce, true, nil, "VPReplacesAnnounce")
+local VPReplaceSA1			= voiceReplaceArea:CreateCheckButton(L.ReplacesSA1, true, nil, "VPReplacesSA1")
+local VPReplaceSA2			= voiceReplaceArea:CreateCheckButton(L.ReplacesSA2, true, nil, "VPReplacesSA2")
+local VPReplaceSA3			= voiceReplaceArea:CreateCheckButton(L.ReplacesSA3, true, nil, "VPReplacesSA3")
+local VPReplaceSA4			= voiceReplaceArea:CreateCheckButton(L.ReplacesSA4, true, nil, "VPReplacesSA4")
+local VPReplaceCustom		= voiceReplaceArea:CreateCheckButton(L.ReplacesCustom, true, nil, "VPReplacesCustom")
 
-local VPUrlArea1		= spokenAlertsPanel:CreateArea(L.Area_GetVEM)
-VPUrlArea1:CreateText(L.VEMDownload, nil, true, nil, "LEFT")
+local resetbutton = voiceReplaceArea:CreateButton(L.SpecWarn_ResetMe, 120, 16)
+resetbutton:SetPoint("BOTTOMRIGHT", voiceReplaceArea.frame, "BOTTOMRIGHT", -2, 4)
+resetbutton:SetNormalFontObject(GameFontNormalSmall)
+resetbutton:SetHighlightFontObject(GameFontNormalSmall)
+resetbutton:SetScript("OnClick", function()
+	-- Set Options
+	DBM.Options.VPReplacesAnnounce = DBM.DefaultOptions.VPReplacesAnnounce
+	DBM.Options.VPReplacesSA1 = DBM.DefaultOptions.VPReplacesSA1
+	DBM.Options.VPReplacesSA2 = DBM.DefaultOptions.VPReplacesSA2
+	DBM.Options.VPReplacesSA3 = DBM.DefaultOptions.VPReplacesSA3
+	DBM.Options.VPReplacesSA4 = DBM.DefaultOptions.VPReplacesSA4
+	DBM.Options.VPReplacesCustom = DBM.DefaultOptions.VPReplacesCustom
+	-- Set UI visuals
+	VPReplaceAnnounce:SetChecked(DBM.Options.VPReplacesAnnounce)
+	VPReplaceSA1:SetChecked(DBM.Options.VPReplacesSA1)
+	VPReplaceSA2:SetChecked(DBM.Options.VPReplacesSA2)
+	VPReplaceSA3:SetChecked(DBM.Options.VPReplacesSA3)
+	VPReplaceSA4:SetChecked(DBM.Options.VPReplacesSA4)
+	VPReplaceCustom:SetChecked(DBM.Options.VPReplacesCustom)
+end)
+
+--TODO, add note (L.VPReplaceNote) either above or below the replace checkboxes and within voiceReplaceArea
+
+local voiceAdvancedArea		= spokenAlertsPanel:CreateArea(L.Area_VoicePackAdvOptions)
+voiceAdvancedArea:CreateCheckButton(L.SpecWarn_AlwaysVoice, true, nil, "AlwaysPlayVoice")
+voiceAdvancedArea:CreateCheckButton(L.VPDontMuteSounds, true, nil, "VPDontMuteSounds")
+
+local VPUrlArea1		= spokenAlertsPanel:CreateArea(L.Area_VPLearnMore)
+VPUrlArea1:CreateText(L.VPLearnMore, nil, true, nil, "LEFT", 0)
 VPUrlArea1.frame:SetScript("OnMouseUp", function()
-	DBM:ShowUpdateReminder(nil, nil, L.Area_GetVEM, "https://www.curseforge.com/wow/addons/dbm-voicepack-vem")
+	DBM:ShowUpdateReminder(nil, nil, L.Area_VPLearnMore, "https://github.com/DeadlyBossMods/DBM-Retail/wiki/%5BGuide%5D-DBM-&-Voicepacks#2022-update")
 end)
 
 local VPUrlArea2		= spokenAlertsPanel:CreateArea(L.Area_BrowseOtherVP)
-VPUrlArea2:CreateText(L.BrowseOtherVPs, nil, true, nil, "LEFT")
+VPUrlArea2:CreateText(L.BrowseOtherVPs, nil, true, nil, "LEFT", 0)
 VPUrlArea2.frame:SetScript("OnMouseUp", function()
 	DBM:ShowUpdateReminder(nil, nil, L.Area_BrowseOtherVP, "https://www.curseforge.com/wow/addons/search?search=dbm+voice")
 end)
 
 local VPUrlArea3		= spokenAlertsPanel:CreateArea(L.Area_BrowseOtherCT)
-VPUrlArea3:CreateText(L.BrowseOtherCTs, nil, true, nil, "LEFT")
+VPUrlArea3:CreateText(L.BrowseOtherCTs, nil, true, nil, "LEFT", 0)
 VPUrlArea3.frame:SetScript("OnMouseUp", function()
 	DBM:ShowUpdateReminder(nil, nil, L.Area_BrowseOtherCT, "https://www.curseforge.com/wow/addons/search?search=dbm+count+pack")
 end)

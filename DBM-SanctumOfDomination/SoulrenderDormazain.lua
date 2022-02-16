@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2445, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211203195942")
+mod:SetRevision("20220203061508")
 mod:SetCreatureID(175727)
 mod:SetEncounterID(2434)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -56,7 +56,7 @@ local specWarnRuinbladeTaunt				= mod:NewSpecialWarningTaunt(350422, nil, nil, n
 --Mawsworn Agonizer
 local specWarnAgonizingSpike				= mod:NewSpecialWarningInterruptCount(351779, "false", nil, nil, 1, 2)--Opt in
 --Garrosh Hellscream
-local specWarnWarmongerShackles				= mod:NewSpecialWarningSwitch(348985, nil, nil, nil, 1, 2)
+local specWarnWarmongerShackles				= mod:NewSpecialWarningSwitch(350415, nil, nil, nil, 1, 2)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
 --mod:AddTimerLine(BOSS)
@@ -72,11 +72,13 @@ local timerHellscream						= mod:NewCastTimer(35, 350411, nil, nil, nil, 2, nil,
 --local berserkTimer						= mod:NewBerserkTimer(600)
 
 --mod:AddRangeFrameOption("8")
-mod:AddInfoFrameOption(352158, true)
-mod:AddSetIconOption("SetIconOnBrandofTorment", 342077, true, false, {1, 2, 3, 4})
+mod:AddInfoFrameOption(352158, false)
+mod:AddSetIconOption("SetIconOnBrandofTorment", 350647, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconOnMawsworn", 350615, true, true, {5, 6, 7, 8})
 mod:AddNamePlateOption("NPAuraOnDefiance", 350650)
 mod:AddNamePlateOption("NPAuraOnTormented", 350649)
+mod:GroupSpells(350415, 350411)--Shackles and hellscream, same mechanic, hellscream is aoe during shackles
+mod:GroupSpells(350647, 350649)--Brand of torment and tormented debuff from it
 
 local castsPerGUID = {}
 mod.vb.shacklesCount = 0

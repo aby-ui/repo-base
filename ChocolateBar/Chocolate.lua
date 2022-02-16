@@ -335,8 +335,8 @@ local function OnDragStart(frame)
 		for _, child in ipairs(kids) do
 			if not child:IsForbidden() then
 				for i = 1, child:GetNumPoints() do
-					local _,relativeTo,_,_,_ = child:GetPoint(i)
-					if relativeTo == frame then
+					local ok,_,relativeTo,_,_,_ = pcall(function() return child:GetPoint(i) end) --abyui don't understand
+					if ok and relativeTo == frame then
 						child:Hide()
 					end
 				end

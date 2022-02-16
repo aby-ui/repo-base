@@ -144,6 +144,8 @@ E.L_PRIORITY = {
 	["other"] = OTHER,
 }
 
+-- old glow
+--[[
 E.L_GLOW_ATLAS ={
 	["bags-glow-white"] = ICON_TAG_RAID_TARGET_SKULL3,
 	["bags-glow-green"] = ICON_TAG_RAID_TARGET_TRIANGLE3,
@@ -152,6 +154,7 @@ E.L_GLOW_ATLAS ={
 	["bags-glow-orange"] = ICON_TAG_RAID_TARGET_CIRCLE3,
 	["bags-glow-artifact"] = ICON_TAG_RAID_TARGET_STAR3,
 }
+]]
 
 E.L_HIGHLIGHTS = {
 	["racial"] = RACIAL_TRAITS,

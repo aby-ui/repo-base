@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1488, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(95675)
 mod:SetEncounterID(1808)
 
@@ -31,8 +31,8 @@ local specWarnFlames				= mod:NewSpecialWarningMove(193702, nil, nil, nil, 1, 2)
 
 local timerRP						= mod:NewRPTimer(34.4)
 local timerRushCD					= mod:NewCDTimer(11, 193659, nil, nil, nil, 3)--11-13 unless delayed by claim aegis or ragnarok
-local timerSavageBladeCD			= mod:NewCDTimer(19, 193668, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--23 unless delayed by claim aegis or ragnarok
-local timerRagnarokCD				= mod:NewCDTimer(51, 193826, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)--60 now? or maybe health based?
+local timerSavageBladeCD			= mod:NewCDTimer(19, 193668, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--23 unless delayed by claim aegis or ragnarok
+local timerRagnarokCD				= mod:NewCDTimer(51, 193826, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)--60 now? or maybe health based?
 
 function mod:FelblazeRushTarget(targetname, uId)
 	if not targetname then return end

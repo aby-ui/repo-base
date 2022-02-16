@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2012, "DBM-BrokenIsles", 2, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220127091734")
 mod:SetCreatureID(124592)
 --mod:SetEncounterID(1952)--Does not have one
 --mod:SetReCombatTime(20)
@@ -24,12 +24,12 @@ local warnDeathField			= mod:NewSpellAnnounce(247632, 2)
 local specReap					= mod:NewSpecialWarningSpell(247492, "Tank", nil, nil, 1, 2)
 local specWarnSow				= mod:NewSpecialWarningStack(247495, nil, 2, nil, nil, 1, 6)
 local specWarnSowOther			= mod:NewSpecialWarningTaunt(247495, nil, nil, nil, 1, 2)
-local specSeedsofChaos			= mod:NewSpecialWarningSpell(247585, "-Tank", nil, nil, 1, 2)
+local specSeedsofChaos			= mod:NewSpecialWarningSpell(247585, "-Tank", nil, nil, 1, 12)
 --local specWarnDeathField		= mod:NewSpecialWarningDodge(247632, nil, nil, nil, 2, 2)
 
-local timerReapCD				= mod:NewCDTimer(18.7, 247492, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--18-25
-local timerSowCD				= mod:NewCDTimer(13.4, 247495, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--13-19
-local timerSeedsofChaosCD		= mod:NewCDTimer(29.2, 247585, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
+local timerReapCD				= mod:NewCDTimer(18.7, 247492, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--18-25
+local timerSowCD				= mod:NewCDTimer(13.4, 247495, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--13-19
+local timerSeedsofChaosCD		= mod:NewCDTimer(29.2, 247585, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerDeathFieldCD			= mod:NewCDTimer(13.3, 247632, nil, nil, nil, 3)
 
 mod:AddReadyCheckOption(49198, false)
@@ -91,7 +91,7 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 247585 and self:AntiSpam(3, 2) then--Seeds of Chaos
 		specSeedsofChaos:Show()
-		specSeedsofChaos:Play("169613")
+		specSeedsofChaos:Play("runoverflowers")
 		timerSeedsofChaosCD:Start()
 	end
 end

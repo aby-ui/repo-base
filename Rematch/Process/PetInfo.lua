@@ -139,7 +139,8 @@ local apiByStat = {
    petType="Info", creatureID="Info", sourceText="Info", loreText="Info", isWild="Info",
    canBattle="Info", isTradable="Info", isUnique="Info", isObtainable="Info", health="Stats",
    maxHealth="Stats", power="Stats", speed="Stats", rarity="Stats", isDead="Dead", isInjured="Dead",
-   isSummonable="Other", isRevoked="Other", abilityList="Abilities", levelList="Abilities",
+   isSummonable="SummonInfo", summonError="SummonInfo", summonErrorText="SummonInfo", summonShortError="SummonInfo",
+   isRevoked="Other", abilityList="Abilities", levelList="Abilities",
    valid="Valid", count="Count", maxCount="Count", fullLevel="FullLevel", needsFanfare="Fanfare",
    breedID="Breed", breedName="Breed", possibleBreedIDs="PossibleBreeds",
    possibleBreedNames="PossibleBreeds", numPossibleBreeds="PossibleBreeds", hasBreed="Breed",
@@ -198,6 +199,13 @@ local expansionOutliers = {
    [2143] = 7, -- Tottle
    [2157] = 7, -- Dart
    [2798] = 8, -- Plagueborn Slime
+}
+
+-- short reason that the pet can't be summoned
+local summonErrors = {
+   [Enum.PetJournalError.JournalIsLocked] = L["Journal Is Locked"],
+   [Enum.PetJournalError.InvalidFaction] = L["Wrong Faction"],
+   [Enum.PetJournalError.InvalidCovenant] = L["Wrong Covenant"]
 }
 
 -- getIDType takes a petID and returns what type of id it is
@@ -334,8 +342,23 @@ local queryAPIs = {
    Other = function(self)
       if self.idType=="pet" then
          local petID = self.petID
-         self.isSummonable = C_PetJournal.PetIsSummonable(petID)
+         --self.isSummonable = C_PetJournal.PetIsSummonable(petID)
          self.isRevoked = C_PetJournal.PetIsRevoked(petID)
+      end
+   end,
+   -- isSummonable moved to this for new GetPetSummonInfo
+   SummonInfo = function(self)
+      if self.idType=="pet" then
+         local isSummonable, error, errorText = C_PetJournal.GetPetSummonInfo(self.petID)
+         if not isSummonable and error==Enum.PetJournalError.PetIsDead then
+            isSummonable = true -- treating summonable pets that are just dead as summonable
+         end
+         self.isSummonable = isSummonable
+         self.summonError = error
+         self.summonErrorText = errorText -- this text is a bit too long for pet card but usable in tooltips
+         self.summonShortError = error and summonErrors[error] or L["Can't Summon"] -- usable for pet card
+      else
+         self.isSummonable = true
       end
    end,
    -- fills petInfo.abilityList and .levelList

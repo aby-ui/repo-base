@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2036, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614230033")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(122965)
 mod:SetEncounterID(2085)
 
@@ -27,7 +27,7 @@ local specWarnNoxiousStench			= mod:NewSpecialWarningInterrupt(250368, "HasInter
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(250585, nil, nil, nil, 1, 8)
 
 local timerLeapCD					= mod:NewCDTimer(6, 250258, nil, nil, nil, 3)--6 uness delayed by stentch, then 8
-local timerNoxiousStenchCD			= mod:NewCDTimer(18.2, 250368, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON..DBM_CORE_L.DISEASE_ICON)
+local timerNoxiousStenchCD			= mod:NewCDTimer(18.2, 250368, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON..DBM_COMMON_L.DISEASE_ICON)
 
 mod.vb.totemRemaining = 3
 

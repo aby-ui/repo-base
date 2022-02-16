@@ -241,7 +241,6 @@ FontSizeSlider:HookScript("OnValueChanged", createDBTOnValueChangedHandler("Font
 
 local DisableBarFade = BarSetup:CreateCheckButton(L.NoBarFade, false, nil, nil, "NoBarFade")
 DisableBarFade:SetPoint("TOPLEFT", FontSizeSlider, "BOTTOMLEFT", 0, -85)
-DisableBarFade.myheight = 50 -- Magical value for offsets
 
 local skins = {}
 for id, skin in pairs(DBT:GetSkins()) do

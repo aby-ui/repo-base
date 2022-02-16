@@ -1,6 +1,8 @@
+local L = DBM_GUI_L
+
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 
-local select, ipairs, mfloor, mmax = select, pairs, math.floor, math.max
+local select, ipairs, mfloor, mmax, mmin = select, pairs, math.floor, math.max, math.min
 local CreateFrame, GameFontHighlightSmall, GameFontNormalSmall, GameFontNormal = CreateFrame, GameFontHighlightSmall, GameFontNormalSmall, GameFontNormal
 local DBM, DBM_GUI = DBM, DBM_GUI
 
@@ -67,7 +69,7 @@ end
 local function resize(frame, first)
 	local frameHeight = 20
 	for _, child in ipairs({ frame:GetChildren() }) do
-		if child.mytype == "area" then
+		if child.mytype == "area" or child.mytype == "ability" then
 			if first then
 				child:SetPoint("TOPRIGHT", "DBM_GUI_OptionsFramePanelContainerFOVScrollBar", "TOPLEFT", -5, 0)
 			else
@@ -77,12 +79,27 @@ local function resize(frame, first)
 			if not child.isStats then
 				local neededHeight, lastObject = 25, nil
 				for _, child2 in ipairs({ child:GetChildren() }) do
-					if child2.mytype then
-						if child2.mytype == "textblock" then
-							if child2.autowidth then
-								child2:SetWidth(width)
+					if child.mytype == "ability" and child2.mytype then
+						child2:SetShown(not child.hidden)
+						if child2.mytype == "spelldesc" then
+							child2:SetShown(child.hidden)
+							_G[child:GetName() .. "Title"]:Show()
+							_G[child2:GetName() .. "Text"]:SetShown(child.hidden)
+							if child2:IsVisible() then
+								neededHeight = 0
 							end
-							neededHeight = neededHeight + (child2.myheight or child2:GetStringHeight())
+						end
+					end
+					if child2.mytype and child2:IsVisible() then
+						if child2.mytype == "textblock" or child2.mytype == "spelldesc" then
+							local text = _G[child2:GetName() .. "Text"]
+							if child2.autowidth then
+								_G[child2:GetName() .. "Text"]:SetWidth(width - 30)
+								child2:SetSize(width, text:GetStringHeight())
+							end
+							if not child2.myheight then
+								child2.myheight = text:GetStringHeight() + 20 -- + padding
+							end
 						elseif child2.mytype == "checkbutton" then
 							local buttonText = _G[child2:GetName() .. "Text"]
 							buttonText:SetWidth(width - buttonText.widthPad - 57)
@@ -109,12 +126,25 @@ local function resize(frame, first)
 							lastObject = child2
 						elseif child2.mytype == "line" then
 							child2:SetWidth(width - 20)
+							_G[child2:GetName() .. "BG"]:SetWidth(width - _G[child2:GetName() .. "Text"]:GetWidth() - 25)
 							if lastObject and lastObject.myheight then
 								child2:ClearAllPoints()
 								child2:SetPoint("TOPLEFT", lastObject, "TOPLEFT", 0, -lastObject.myheight)
-								_G[child2:GetName() .. "BG"]:SetWidth(width - _G[child2:GetName() .. "Text"]:GetWidth() - 25)
 							end
 							lastObject = child2
+						elseif child2.mytype == "dropdown" then
+							if not child2.width then
+								local ddWidth = 120
+								local dropdownText, titleText = _G[child2:GetName() .. "Text"], _G[child2:GetName() .. "TitleText"]:GetText()
+								if titleText ~= L.FontType and titleText ~= L.FontStyle and titleText ~= L.FontShadow then
+									for _, v in ipairs(child2.values) do
+										dropdownText:SetText(v.text)
+										ddWidth = mmax(ddWidth, dropdownText:GetStringWidth() + 30)
+									end
+								end
+								dropdownText:SetText(child2.text)
+								UIDropDownMenu_SetWidth(child2, mmin(width - 55, ddWidth))
+							end
 						end
 						neededHeight = neededHeight + (child2.myheight or child2:GetHeight())
 					end
@@ -122,6 +152,11 @@ local function resize(frame, first)
 				child:SetHeight(neededHeight)
 			end
 			frameHeight = frameHeight + child:GetHeight() + 20
+		elseif child.mytype == "line" then
+			local width = frame:GetWidth() - 30
+			child:SetWidth(width - 20)
+			_G[child:GetName() .. "BG"]:SetWidth(width - _G[child:GetName() .. "Text"]:GetWidth() - 25)
+			frameHeight = frameHeight + 32
 		elseif child.myheight then
 			frameHeight = frameHeight + child.myheight
 		end

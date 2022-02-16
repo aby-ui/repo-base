@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2129, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(131864)
 mod:SetEncounterID(2117)
 
@@ -22,7 +22,7 @@ local specWarnSummonSlaver			= mod:NewSpecialWarningSwitch(266266, "-Healer", ni
 local specWarnDreadEssence			= mod:NewSpecialWarningSpell(266181, nil, nil, nil, 2, 2)
 local specWarnDarkenedLightning		= mod:NewSpecialWarningInterrupt(266225, "HasInterrupt", nil, nil, 1, 2)
 
-local timerDarkenedLightningCD		= mod:NewCDTimer(15.7, 266225, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--Has interrupt spell icon but it's not actually interruptable
+local timerDarkenedLightningCD		= mod:NewCDTimer(15.7, 266225, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--Has interrupt spell icon but it's not actually interruptable
 local timerSummonSlaverCD			= mod:NewCDTimer(17, 266266, nil, nil, nil, 1)--17-22
 local timerDreadEssenceCD			= mod:NewCDTimer(27.9, 266181, nil, nil, nil, 2)
 

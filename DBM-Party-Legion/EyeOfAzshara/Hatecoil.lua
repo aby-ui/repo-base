@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1490, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(91789)
 mod:SetEncounterID(1811)
 
@@ -30,7 +30,7 @@ local specWarnAdds					= mod:NewSpecialWarningSwitch(193682, "Tank", nil, nil, 1
 local yellCurseofWitch				= mod:NewShortFadesYell(193698)
 
 local timerAddsCD					= mod:NewCDTimer(47, 193682, nil, nil, nil, 1)--47-51
-local timerStaticNovaCD				= mod:NewCDTimer(34, 193597, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
+local timerStaticNovaCD				= mod:NewCDTimer(34, 193597, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
 local timerFocusedLightningCD		= mod:NewNextTimer(15.5, 193611, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)

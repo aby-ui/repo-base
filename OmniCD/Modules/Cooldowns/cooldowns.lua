@@ -43,7 +43,7 @@ local merged_buff_fix = E.merged_buff_fix
 local RemoveHighlight = P.RemoveHighlight
 local userGUID = E.userGUID
 local BOOKTYPE_CATEGORY = E.BOOKTYPE_CATEGORY
---local DEBUFF_HEARTSTOP_AURA = 214975 --> 9.0 Shadowland no longer in CLEU -> Patch 9.1 removed
+
 local FORBEARANCE_DURATION = E.isPreBCC and 60 or 30
 local SOULBIND_PODTENDER = 319217
 
@@ -80,12 +80,12 @@ local function GetHolyWordRT(info, guid, reducedTime)
 		reducedTime = P:IsTalent(reducedTime[1], guid) and reducedTime[2] or reducedTime[3]
 	end
 
-	local rankValue = info.talentData[338345] -- Holy Oration (Conduit)
+	local rankValue = info.talentData[338345]
 	if rankValue then
 		reducedTime = reducedTime * rankValue
 	end
 
-	if info.auras.isApotheosisActive then -- Does not affect X'anshi, Return of Archbishop Benedictus (Runeforge)
+	if info.auras.isApotheosisActive then
 		reducedTime = reducedTime * 4
 	end
 
@@ -102,9 +102,9 @@ local function UpdateCdByReducer(info, guid, t, isHolyPriest)
 	if not target then
 		if isTalent then
 			for id in pairs(info.active) do
-				if id ~= 1856 then -- Vanish
+				if id ~= 1856 then
 					local icon = info.spellIcons[id]
-					if icon and (BOOKTYPE_CATEGORY[icon.category] or icon.category == "COVENANT")then -- incl covenant sig ability
+					if icon and (BOOKTYPE_CATEGORY[icon.category] or icon.category == "COVENANT")then
 						P:UpdateCooldown(icon, duration)
 					end
 				end
@@ -142,7 +142,7 @@ local function UpdateCdBySpender(info, guid, t, isTrueBearing)
 			for i = 1, #target do
 				local k = target[i]
 				local icon = info.spellIcons[k]
-				if icon and icon.active and (k ~= 107574 or not info.talentData[k]) then -- Avatar for Prot
+				if icon and icon.active and (k ~= 107574 or not info.talentData[k]) then
 					P:UpdateCooldown(icon, isTrueBearing and reducedTime * 2 or reducedTime)
 				end
 			end
@@ -169,7 +169,7 @@ local function ProcessSpell(spellID, guid)
 		if covenantID then
 			P.loginsessionData[guid] = P.loginsessionData[guid] or {}
 
-			local currentCovenantID = P.loginsessionData[guid].covenantID -- iss#316 inspect wipes info.shadowlandsData.covenantID
+			local currentCovenantID = P.loginsessionData[guid].covenantID
 			if covenantID ~= currentCovenantID then
 				if currentCovenantID then
 					local currentCovenantSpellID = covenant_IDToSpellID[currentCovenantID]
@@ -182,10 +182,10 @@ local function ProcessSpell(spellID, guid)
 				end
 
 				local covenantSpellID = covenant_IDToSpellID[covenantID]
-				P.loginsessionData[guid][covenantSpellID] = "C" -- uninspected
+				P.loginsessionData[guid][covenantSpellID] = "C"
 				P.loginsessionData[guid].covenantID = covenantID
-				info.talentData[covenantSpellID] = "C"          -- inspected (IsTalent)
-				info.shadowlandsData.covenantID = covenantID    -- internal
+				info.talentData[covenantSpellID] = "C"
+				info.shadowlandsData.covenantID = covenantID
 
 				if spellID == SOULBIND_PODTENDER then
 					P.loginsessionData[guid][spellID] = 0
@@ -210,7 +210,7 @@ local function ProcessSpell(spellID, guid)
 			local k = linked[i]
 			local icon = info.spellIcons[k]
 			if icon then
-				-- Fix mergedID highlighting (mainly for bcc rank spells)
+
 				if E.db.highlight.glowBuffs and mergedID and k == mergedID then
 					icon.buff = merged_buff_fix[spellID] or spellID
 				end
@@ -229,7 +229,7 @@ local function ProcessSpell(spellID, guid)
 	local mergedIcon = mergedID and info.spellIcons[mergedID]
 	local icon = info.spellIcons[spellID] or mergedIcon
 	if icon then
-		-- Fix mergedID highlighting
+
 		if E.db.highlight.glowBuffs and mergedIcon then
 			icon.buff = merged_buff_fix[spellID] or spellID
 		end
@@ -254,11 +254,11 @@ local function ProcessSpell(spellID, guid)
 			info.preActiveIcons[spellID] = icon
 
 			if not P:HighlightIcon(icon) then
-				icon.icon:SetVertexColor(0.4, 0.4, 0.4) -- icon texture color (icon frame alpha reserved for options)
+				icon.icon:SetVertexColor(0.4, 0.4, 0.4)
 			end
 
---          if spellID == 5384 and (E.isBCC or not P.isInArena) then -- Patch 9.1 HSA removed
-			if spellID == 5384 then -- Feign Death
+
+			if spellID == 5384 then
 				info.bar:RegisterUnitEvent("UNIT_AURA", info.unit)
 			end
 
@@ -268,7 +268,7 @@ local function ProcessSpell(spellID, guid)
 		local updateSpell = spell_updateOnCast[spellID]
 		if updateSpell then
 			local cd = updateSpell[1]
-			-- Kindred Beasts Patch 9.1 new - TODO: TEST
+
 			cd = mergedID == 272651 and info.talentData[356962] and cd/2 or cd
 			icon.icon:SetTexture(updateSpell[2])
 			P:StartCooldown(icon, cd)
@@ -299,9 +299,9 @@ local function ProcessSpell(spellID, guid)
 
 				local icon = info.spellIcons[k]
 				if icon and icon.active then
-					if E.isPreBCC and info.active[k].castedLink then -- castedLink is the spellID that started all linked spellID's CD
-						if k == info.active[k].castedLink then -- check if castedLink is Frost Ward (not Fire Ward)
-							for i = 2, #spell_linked[k] do -- reset all linked spellIDs
+					if E.isPreBCC and info.active[k].castedLink then
+						if k == info.active[k].castedLink then
+							for i = 2, #spell_linked[k] do
 								local id = spell_linked[k][i]
 								local icon = info.spellIcons[id]
 								if icon and icon.active then
@@ -385,10 +385,10 @@ local function ProcessSpell(spellID, guid)
 			end
 		end
 
-		-- Self reducing spell cast by user (POWER_ precedes SPELLCAST_ so sync doesn't work on self reducers)
+
 		if isPowerSync and isUser and icon and icon.active then
 			local reducedTime
-			if spellID == 315341 then -- Between the Eyes
+			if spellID == 315341 then
 				reducedTime = E.Comms.spentPower
 			end
 			if reducedTime then
@@ -398,7 +398,7 @@ local function ProcessSpell(spellID, guid)
 	end
 end
 
--- Remove Highlights
+
 local function RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 	if isHighlightEnabled and destGUID == srcGUID then
 		local icon = info.glowIcons[spellID]
@@ -413,18 +413,18 @@ for k in pairs(spell_highlighted) do
 end
 
 function CD:RegisterRemoveHighlightByCLEU(spellID)
-	if not registeredEvents.SPELL_AURA_REMOVED[spellID] then -- prevent overwriting
+	if not registeredEvents.SPELL_AURA_REMOVED[spellID] then
 		registeredEvents.SPELL_AURA_REMOVED[spellID] = RemoveHighlightByCLEU
 	end
 end
 
--- Track spender procs
+
 local removeSpenderProc = function(srcGUID, spellID)
 	local info = groupInfo[srcGUID]
 	if info then
 		local k = info.auras[spellID]
 		if k then
-			local duration = P:GetBuffDuration(info.unit, k) -- NOTE: check all timer buffs that can refresh itself before falling off
+			local duration = P:GetBuffDuration(info.unit, k)
 			if not duration then
 				info.auras[spellID] = nil
 			end
@@ -432,7 +432,7 @@ local removeSpenderProc = function(srcGUID, spellID)
 	end
 end
 
-for k, v in pairs(aura_free_spender) do -- WoG will only consume Shining Force when Divine Purpose is also present
+for k, v in pairs(aura_free_spender) do
 	local spellID = v[1]
 	registeredEvents.SPELL_AURA_REMOVED[k] = function(info, srcGUID, spellID, destGUID)
 		info.auras[spellID] = nil
@@ -440,13 +440,13 @@ for k, v in pairs(aura_free_spender) do -- WoG will only consume Shining Force w
 	end
 	registeredEvents.SPELL_AURA_APPLIED[k] = function(info, srcGUID)
 		info.auras[spellID] = k
-		E.TimerAfter(v[2], removeSpenderProc, srcGUID, spellID) -- NOTE: auras removed on spell cast, we can omit backup timer
+		E.TimerAfter(v[2], removeSpenderProc, srcGUID, spellID)
 	end
 end
 
--- Start CD by aura removed (preactive spells)
+
 local function StartCdOnAuraRemoved(info, srcGUID, spellID, destGUID)
-	if srcGUID == destGUID then -- Misdirection src check to excl pet (pet has buff too)
+	if srcGUID == destGUID then
 		spellID = cd_start_aura_removed[spellID]
 		local icon = info.spellIcons[spellID]
 		if icon then
@@ -468,10 +468,10 @@ for k, v in pairs(cd_start_aura_removed) do
 	registeredEvents.SPELL_AURA_REMOVED[k] = StartCdOnAuraRemoved
 end
 
--- Start CD by aura applied (dummy spells)
+
 local function ProcessSpellOnAuraApplied(info, srcGUID, spellID)
 	spellID = processSpell_aura_applied[spellID]
-	-- skip spellIcons check on ProcessSpell (Adaptation has sharedCD and Podtender is add on cast)
+
 	ProcessSpell(spellID, srcGUID)
 end
 
@@ -479,7 +479,7 @@ for k in pairs(processSpell_aura_applied) do
 	registeredEvents.SPELL_AURA_APPLIED[k] = ProcessSpellOnAuraApplied
 end
 
--- Reduce CD by Damage/Crit
+
 do
 	local function ReduceCdByDamage(info, srcGUID, spellID, destGUID, critical)
 		local t = cd_reduce_damage[spellID]
@@ -498,7 +498,7 @@ do
 			local active = icon and icon.active and info.active[target]
 			if active then
 				if maxLimit then
-					active.numHits = (active.numHits or 0) + 1 -- fix active.numHits nil err (SPELL_HEAL 1st tick on user fires before SPELL_CAST_SUCCESS/UNIT_SPELLCAST_SUCCEEDED)
+					active.numHits = (active.numHits or 0) + 1
 					if active.numHits > maxLimit then
 						return
 					end
@@ -508,7 +508,7 @@ do
 						return
 					end
 				end
-				P:UpdateCooldown(icon, duration == 0 and isTalent or duration) -- 0 duration is Conduit(talent)
+				P:UpdateCooldown(icon, duration == 0 and isTalent or duration)
 			end
 		end
 	end
@@ -516,24 +516,24 @@ do
 	for k in pairs(cd_reduce_damage) do
 		registeredEvents.SPELL_DAMAGE[k] = ReduceCdByDamage
 	end
-	registeredEvents.SPELL_HEAL[320751] = function(info, srcGUID, spellID, destGUID, _,_,_,_,_, criticalHeal) -- Chain Harvest (Covenant)
+	registeredEvents.SPELL_HEAL[320751] = function(info, srcGUID, spellID, destGUID, _,_,_,_,_, criticalHeal)
 		ReduceCdByDamage(info, srcGUID, spellID, nil, criticalHeal)
 	end
 
-	-- Thunderlord (Runeforge) - reset numHits
-	registeredEvents.SPELL_CAST_SUCCESS[6343] = function(info) -- Thunder Clap
+
+	registeredEvents.SPELL_CAST_SUCCESS[6343] = function(info)
 		if info.talentData[335229] then
-			local active = info.active[1160] -- Shield Wall
+			local active = info.active[1160]
 			if active then
 				active.numHits = 0
 			end
 		end
 	end
 
-	-- Walk with the Ox (Conduit) - reset numHits
-	registeredEvents.SPELL_CAST_SUCCESS[322729] = function(info) -- Spinning Crane Kick
+
+	registeredEvents.SPELL_CAST_SUCCESS[322729] = function(info)
 		if info.talentData[337264] then
-			local active = info.active[132578] -- Invoke Niuzao, the Black Ox
+			local active = info.active[132578]
 			if active then
 				active.numHits = 0
 			end
@@ -541,7 +541,7 @@ do
 	end
 end
 
--- Reduce CD by Energize
+
 local function ReduceCdByEnergize(info, srcGUID, spellID)
 	local t = cd_reduce_energize[spellID]
 	local talent, duration, target, mult = t[1], t[2], t[3], t[4]
@@ -558,7 +558,7 @@ for k in pairs(cd_reduce_energize) do
 	registeredEvents.SPELL_ENERGIZE[k] = ReduceCdByEnergize
 end
 
--- Reduce CD by Interrupts
+
 local function ReduceCdByInterrupt(info, srcGUID, spellID)
 	local t = cd_reduce_interrupts[spellID]
 	local talent, duration, target, mult = t[1], t[2], t[3], t[4]
@@ -584,21 +584,21 @@ for k in pairs(cd_reduce_interrupts) do
 	registeredEvents.SPELL_INTERRUPT[k] = ReduceCdByInterrupt
 end
 
-------------------------------------------------------------------------------------
--- DK
 
--- Blood Tap passive / Crimson Rune Weapon (Runeforge)
+
+
+
 do
 	local BLOOD_TAP = 221699
 	local DANCING_RUNE_WEAPON = 49028
 
-	registeredEvents.SPELL_AURA_APPLIED_DOSE[195181] = function(info, _,_,_,_,_,_, amount) -- Marrowrend
-		if amount and (info.spellIcons[BLOOD_TAP] or info.spellIcons[DANCING_RUNE_WEAPON]) then -- returns nil for 1 (1st _DOSE). Event fires 3 times (+3 bone shield stacks)
+	registeredEvents.SPELL_AURA_APPLIED_DOSE[195181] = function(info, _,_,_,_,_,_, amount)
+		if amount and (info.spellIcons[BLOOD_TAP] or info.spellIcons[DANCING_RUNE_WEAPON]) then
 			info.auras.numBoneShields = amount
 		end
 	end
 
-	registeredEvents.SPELL_CAST_SUCCESS[219809] = function(info) -- Tombstone
+	registeredEvents.SPELL_CAST_SUCCESS[219809] = function(info)
 		local numShields = info.auras.numBoneShields
 		if not numShields or numShields == 1 then
 			return
@@ -608,10 +608,10 @@ do
 
 		local icon = info.spellIcons[BLOOD_TAP]
 		if icon and icon.active then
-			P:UpdateCooldown(icon, math.min(5, 2 * consumed)) -- TODO: Bug? 5s hidden limit? (is not 1s/stack)
+			P:UpdateCooldown(icon, math.min(5, 2 * consumed))
 		end
 
-		if info.talentData[334525] then -- Crimson Rune Weapon (Runeforge)
+		if info.talentData[334525] then
 			local icon = info.spellIcons[DANCING_RUNE_WEAPON]
 			if icon and icon.active then
 				P:UpdateCooldown(icon, 3 * consumed)
@@ -619,17 +619,17 @@ do
 		end
 	end
 
-	local function ReduceBloodTapDancingRuneWeaponCD(info, _,_,_,_,_,_, amount) -- overkill = amount in AURA_
+	local function ReduceBloodTapDancingRuneWeaponCD(info, _,_,_,_,_,_, amount)
 		local numShields = info.auras.numBoneShields
 		if not numShields then
 			return
 		end
 
-		amount = amount or 0 -- returns nil for 0 on _REMOVED , ends at 1 for _DOSE
+		amount = amount or 0
 		info.auras.numBoneShields = amount
 
 		local consumed = numShields - amount
-		if consumed > 1 or consumed < 1 then -- natural decay drops all stacks and doesn't reduce cd
+		if consumed > 1 or consumed < 1 then
 			return
 		end
 
@@ -645,14 +645,14 @@ do
 			end
 		end
 	end
-	registeredEvents.SPELL_AURA_REMOVED_DOSE[195181] = ReduceBloodTapDancingRuneWeaponCD -- Bone Shield consumed
+	registeredEvents.SPELL_AURA_REMOVED_DOSE[195181] = ReduceBloodTapDancingRuneWeaponCD
 	registeredEvents.SPELL_AURA_REMOVED[195181] = ReduceBloodTapDancingRuneWeaponCD
 end
 
--- Grip of the Everlasting (Runeforge) -- TODO: Blizzard bug. CD doesn't start sometimes.
+
 do
-	registeredEvents.SPELL_AURA_APPLIED[334722] = function(info) -- Grip of the Everlasting aura
-		local icon = info.spellIcons[49576] -- Death Grip
+	registeredEvents.SPELL_AURA_APPLIED[334722] = function(info)
+		local icon = info.spellIcons[49576]
 		if icon and icon.active then
 			P:ResetCooldown(icon)
 		end
@@ -666,46 +666,46 @@ do
 	end
 end
 
--- Convocatoin of the Dead (Conduit)
-registeredEvents.SPELL_ENERGIZE[195757] = function(info) -- fires for each burst (optional: SPELL_DAMAGE[194311])
+
+registeredEvents.SPELL_ENERGIZE[195757] = function(info)
 	local rankValue = info.talentData[338553]
 	if rankValue then
-		local icon = info.spellIcons[275699] -- Apocalypse
+		local icon = info.spellIcons[275699]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, rankValue)
 		end
 	end
 end
 
-------------------------------------------------------------------------------------
--- DH
 
--- Desperate Instincts
-registeredEvents.SPELL_AURA_APPLIED[212800] = function(info) -- Blur buff
+
+
+
+registeredEvents.SPELL_AURA_APPLIED[212800] = function(info)
 	if info.talentData[205411] then
-		local icon = info.spellIcons[198589] -- Blur
-		if icon and not icon.active then -- if it isn't active then it was auto triggered by Desperate Instincts
-			P:StartCooldown(icon, icon.duration/2) -- Patch 9.1 (+cd reduced by 50% on proc)
+		local icon = info.spellIcons[198589]
+		if icon and not icon.active then
+			P:StartCooldown(icon, icon.duration/2)
 		end
 	end
 end
 
--- Feed the Demon (Talent) / Fiery Soul (Runeforge)
+
 do
-	registeredEvents.SPELL_HEAL[203794] = function(info) -- Soul fragment absorbed
+	registeredEvents.SPELL_HEAL[203794] = function(info)
 		if info.isSoulCleave then
 			info.isSoulCleave = false
 		end
 
 		if info.talentData[218612] then
-			local icon = info.spellIcons[203720] -- Demon Spikes
+			local icon = info.spellIcons[203720]
 			if icon and icon.active then
-				P:UpdateCooldown(icon, 0.5) -- only the cd is affected by haste, not CDR
+				P:UpdateCooldown(icon, 0.5)
 			end
 		end
 	end
 
-	registeredEvents.SPELL_CAST_SUCCESS[228477] = function(info) -- Soul Cleave
+	registeredEvents.SPELL_CAST_SUCCESS[228477] = function(info)
 		if info.talentData[337547] and info.spellIcons[204021] then
 			info.isSoulCleave = true
 		end
@@ -713,20 +713,20 @@ do
 
 	local function ReduceFieryBrandCD(info)
 		if info.isSoulCleave then
-			local icon = info.spellIcons[204021] -- Fiery Brand
+			local icon = info.spellIcons[204021]
 			if icon and icon.active then
 				P:UpdateCooldown(icon, 2)
 			end
 		end
 	end
-	registeredEvents.SPELL_AURA_REMOVED_DOSE[203981] = ReduceFieryBrandCD -- Soul Fragments
+	registeredEvents.SPELL_AURA_REMOVED_DOSE[203981] = ReduceFieryBrandCD
 	registeredEvents.SPELL_AURA_REMOVED[203981] = ReduceFieryBrandCD
 end
 
-------------------------------------------------------------------------------------
--- Druid
 
--- Berserk
+
+
+
 do
 	local FRENZIED_REGEN = 22842
 
@@ -736,7 +736,7 @@ do
 			info.auras.isBerserk = nil
 			local icon = info.spellIcons[FRENZIED_REGEN]
 			if icon and icon.active then
-				P:UpdateCooldown(icon, 0, nil, 4) -- 4 mult
+				P:UpdateCooldown(icon, 0, nil, 4)
 			end
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		end
@@ -753,13 +753,13 @@ do
 			E.TimerAfter(15.1, removeBerserk, nil, srcGUID, spellID, destGUID)
 		end
 	end
-	--> StartCooldown
+
 end
 
-------------------------------------------------------------------------------------
--- Hunter
 
--- Trueshot (TODO: Bugged? Rapid Fire being increased more than intended)
+
+
+
 do
 	local RAPID_FIRE = 257044
 
@@ -785,60 +785,60 @@ do
 			E.TimerAfter(20.1, removeTrueShot, nil, srcGUID, spellID, destGUID)
 		end
 	end
-	--> StartCooldown
+
 end
 
--- Ambuscade (Conduit)
+
 local function ReduceDisengageCD(info, _, spellID)
 	local icon = info.spellIcons[781]
 	if icon and icon.active then
 		local rankValue = info.talentData[346747]
 		if rankValue then
-			info.auras.time_ambuscade = info.auras.time_ambuscade or {} -- for ea trap
+			info.auras.time_ambuscade = info.auras.time_ambuscade or {}
 			local now = GetTime()
-			if now > (info.auras.time_ambuscade[spellID] or 0) then -- only applied once for AOE traps
+			if now > (info.auras.time_ambuscade[spellID] or 0) then
 				P:UpdateCooldown(icon, rankValue)
 				info.auras.time_ambuscade[spellID] = now + 1
 			end
 		end
 	end
 end
-registeredEvents.SPELL_AURA_APPLIED[203337] = ReduceDisengageCD -- Freezing Trap (w/ Diamond Ice)
-registeredEvents.SPELL_AURA_APPLIED[3355] = ReduceDisengageCD   -- Freezing Trap
-registeredEvents.SPELL_AURA_APPLIED[135299] = ReduceDisengageCD -- Tar Trap
-registeredEvents.SPELL_DAMAGE[236777] = ReduceDisengageCD       -- Hi-Explosive Trap
+registeredEvents.SPELL_AURA_APPLIED[203337] = ReduceDisengageCD
+registeredEvents.SPELL_AURA_APPLIED[3355] = ReduceDisengageCD
+registeredEvents.SPELL_AURA_APPLIED[135299] = ReduceDisengageCD
+registeredEvents.SPELL_DAMAGE[236777] = ReduceDisengageCD
 
--- A Murder of Crows
+
 registeredEvents.SPELL_CAST_SUCCESS[131894] = function(info, srcGUID, _, destGUID)
-	if info.spellIcons[131894] then -- isTalent
+	if info.spellIcons[131894] then
 		spellDestGUIDS[destGUID] = spellDestGUIDS[destGUID] or {}
 		spellDestGUIDS[destGUID][srcGUID] = spellDestGUIDS[destGUID][srcGUID] or {}
 		spellDestGUIDS[destGUID][srcGUID][131894] = true
 	end
 
-	C_Timer.After(15, function() -- doesn't fire _AURA events, use duration timer
+	C_Timer.After(15, function()
 		if spellDestGUIDS[destGUID] and spellDestGUIDS[destGUID][srcGUID] then
 			spellDestGUIDS[destGUID][srcGUID][131894] = nil
 		end
 	end)
 end
 
-------------------------------------------------------------------------------------
--- Mage
 
--- Arcane Progidy (Conduit)
+
+
+
 do
 	local ARCANE_PRODIGY = 336873
 	local ARCANE_POWER = 12042
 
-	-- Sequential
-	registeredEvents.SPELL_AURA_APPLIED[263725] = function(info) -- Clear Casting (no backup timer - removed on single cast)
+
+	registeredEvents.SPELL_AURA_APPLIED[263725] = function(info)
 		if info.spellIcons[ARCANE_POWER] and info.talentData[ARCANE_PRODIGY] then
 			info.auras.isClearCasting = true
 		end
 	end
 
-	registeredEvents.SPELL_CAST_SUCCESS[5143] = function(info, srcGUID) -- Arcane Missile
+	registeredEvents.SPELL_CAST_SUCCESS[5143] = function(info, srcGUID)
 		if info.auras.isClearCasting then
 			info.auras.isArcaneProdigy = true
 		elseif info.auras.isArcaneProdigy then
@@ -846,16 +846,16 @@ do
 		end
 	end
 
-	-- Merged to Mirros of Torment
-	--[[
---  registeredEvents.SPELL_AURA_REMOVED[263725] = function(info) -- Clear Casting
---      if info.auras.isClearCasting then
---          info.auras.isClearCasting = nil
---      end
---  end
-	--]]
 
-	registeredEvents.SPELL_DAMAGE[7268] = function(info) -- Arcane Missile (damage)
+
+
+
+
+
+
+
+
+	registeredEvents.SPELL_DAMAGE[7268] = function(info)
 		if info.auras.isArcaneProdigy then
 			local rankValue = info.talentData[ARCANE_PRODIGY]
 			if rankValue then
@@ -868,33 +868,33 @@ do
 	end
 end
 
--- Icy Veins w/ Icy Propulsion (Conduit)
+
 do
 	local ICY_VEINS = 12472
 
 	local removeIcyVeins = function(info, srcGUID, spellID, destGUID)
 		info = info or groupInfo[srcGUID]
-		if info and info.auras.isIcyPropulsion then
+		if info then
 			info.auras.isIcyPropulsion = nil
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		end
 	end
 	registeredEvents.SPELL_AURA_REMOVED[ICY_VEINS] = removeIcyVeins
 	registeredEvents.SPELL_AURA_APPLIED[ICY_VEINS] = function(info, srcGUID, spellID, destGUID)
-		if info.spellIcons[ICY_VEINS] and info.talentData[336522] then -- Icy Propulsion
+		if info.spellIcons[ICY_VEINS] and info.talentData[336522] then
 			info.auras.isIcyPropulsion = true
-			E.TimerAfter(info.talentData[155149] and 23.1 or 33.1, removeIcyVeins, nil, srcGUID, spellID, destGUID) -- Thermal Void
+			E.TimerAfter(info.talentData[155149] and 45 or 23.1, removeIcyVeins, nil, srcGUID, spellID, destGUID)
 		end
 	end
 end
 
--- Shifting Power (Covenant) & Discipline of the Grove (Conduit)
-registeredEvents.SPELL_CAST_SUCCESS[325130] = function(info) -- Shifting Power (Covenant - unique auto-cast ID)
+
+registeredEvents.SPELL_CAST_SUCCESS[325130] = function(info)
 	for id in pairs(info.active) do
 		local icon = info.spellIcons[id]
 		if icon then
-			if BOOKTYPE_CATEGORY[icon.category] and id ~= 314791 and id ~= 342245 then -- Shifting Power, (Alter Time) -- TODO: Bug?
-				local reducedTime = 2.5 -- auto casts x4 times
+			if BOOKTYPE_CATEGORY[icon.category] and id ~= 314791 and id ~= 342245 then
+				local reducedTime = 2.5
 				local rankValue = info.talentData[336992]
 				if rankValue then
 					reducedTime = reducedTime + rankValue
@@ -905,20 +905,20 @@ registeredEvents.SPELL_CAST_SUCCESS[325130] = function(info) -- Shifting Power (
 	end
 end
 
--- Mirrors of Torment (Covenant)
+
 do
 	local MIRRORS_OF_TORMENT = 314793
 
 	local function ReduceFireBlastCD(info)
-		local icon = info.spellIcons[108853] -- Fire Mage unique ID
+		local icon = info.spellIcons[108853]
 		if icon and icon.active then
-			P:UpdateCooldown(icon, 6) -- Patch 9.1 ? 4>6s
+			P:UpdateCooldown(icon, 6)
 		end
 	end
 	registeredEvents.SPELL_AURA_REMOVED_DOSE[MIRRORS_OF_TORMENT] = ReduceFireBlastCD
 	registeredEvents.SPELL_AURA_REMOVED[MIRRORS_OF_TORMENT] = ReduceFireBlastCD
 
-	-- Sinful Delight (Mage-Venthyr-Runeforge) Patch 9.1 new
+
 	local function ProcConsumed(info)
 		if info.talentData[354333] then
 			local icon = info.spellIcons[MIRRORS_OF_TORMENT]
@@ -928,9 +928,9 @@ do
 		end
 	end
 
-	registeredEvents.SPELL_AURA_REMOVED[190446] = ProcConsumed -- Brain Freeze
-	registeredEvents.SPELL_CAST_SUCCESS[108853] = ProcConsumed -- Fire Blast (Fire mage unique id)
-	registeredEvents.SPELL_AURA_REMOVED[263725] = function(info) -- Clearcasting
+	registeredEvents.SPELL_AURA_REMOVED[190446] = ProcConsumed
+	registeredEvents.SPELL_CAST_SUCCESS[108853] = ProcConsumed
+	registeredEvents.SPELL_AURA_REMOVED[263725] = function(info)
 		if info.auras.isClearCasting then
 			info.auras.isClearCasting = nil
 		end
@@ -947,10 +947,10 @@ do
 	end
 end
 
--- Master of Time (Arcane Talent) - CAVEAT: inadvertently resets when purged, stolen, or clicked off
+
 registeredEvents.SPELL_AURA_REMOVED[342246] = function(info, srcGUID, spellID, destGUID)
-	if info.talentData[342249] then -- same tier as Shimmer
-		local icon = info.spellIcons[1953] -- Blink
+	if info.talentData[342249] then
+		local icon = info.spellIcons[1953]
 		if icon and icon.active then
 			P:ResetCooldown(icon)
 		end
@@ -958,15 +958,15 @@ registeredEvents.SPELL_AURA_REMOVED[342246] = function(info, srcGUID, spellID, d
 	RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 end
 
--- Cache Phoenix Flame main target
+
 registeredEvents.SPELL_CAST_SUCCESS[257541] = function(info, _,_, destGUID)
 	info.auras.phoenixFlameTargetGUID = destGUID
 end
 
-------------------------------------------------------------------------------------
--- Monk
 
--- Bone Marrow Hops (Conduit)
+
+
+
 local function ReduceBoneMarrowHopsCD(info)
 	local rankValue = info.talentData[337295]
 	if rankValue then
@@ -980,85 +980,85 @@ local function ReduceBoneMarrowHopsCD(info)
 		end
 	end
 end
-registeredEvents.SPELL_DAMAGE[325217] = ReduceBoneMarrowHopsCD -- Bonedust Brew
+registeredEvents.SPELL_DAMAGE[325217] = ReduceBoneMarrowHopsCD
 registeredEvents.SPELL_HEAL[325218] = ReduceBoneMarrowHopsCD
 
--- Rising Sun Revival (Conduit)
-registeredEvents.SPELL_CAST_SUCCESS[107428] = function(info) -- Rising Sun Kick
+
+registeredEvents.SPELL_CAST_SUCCESS[107428] = function(info)
 	local rankValue = info.talentData[337099]
 	if rankValue then
-		local icon = info.spellIcons[115310] -- Revival
+		local icon = info.spellIcons[115310]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, rankValue)
 		end
 	end
 end
 
--- Blackout Combo (Talent)
--- TODO: aura on every blackout kick. check icon exists? (all brews + BoF)
+
+
 registeredEvents.SPELL_AURA_APPLIED[228563] = function(info) info.auras.isBlackoutCombo = true end
 registeredEvents.SPELL_AURA_REMOVED[228563] = function(info) info.auras.isBlackoutCombo = nil end
 
--- Weapons of Order (Covenant)
-registeredEvents.SPELL_AURA_APPLIED[310454] = function(info) info.auras.isWeaponsOfOrder = true end -- no backup timer - removed on 1 cast
+
+registeredEvents.SPELL_AURA_APPLIED[310454] = function(info) info.auras.isWeaponsOfOrder = true end
 registeredEvents.SPELL_AURA_REMOVED[310454] = function(info, srcGUID, spellID, destGUID)
 	info.auras.isWeaponsOfOrder = nil
 	RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 end
 
--- Eminence (pvp talent) Patch 9.1 new
+
 do
-	-- Stun data from DRList-1.0
-	-- https://www.curseforge.com/wow/addons/drlist-1-0
-	-- https://www.curseforge.com/wow/addons/diminish
+
+
+
 	local stunDebuffs = {
-		[210141]  = true,            -- Zombie Explosion
-		[334693]  = true,            -- Absolute Zero (Breath of Sindragosa)
-		[108194]  = true,            -- Asphyxiate (Unholy)
-		[221562]  = true,            -- Asphyxiate (Blood)
-		[91800]   = true,            -- Gnaw (Ghoul)
-		[91797]   = true,            -- Monstrous Blow (Mutated Ghoul)
-		[287254]  = true,            -- Dead of Winter
-		[179057]  = true,            -- Chaos Nova
---      [213491]  = true,            -- Demonic Trample (Only DRs with itself once)
-		[205630]  = true,            -- Illidan's Grasp (Primary effect)
-		[208618]  = true,            -- Illidan's Grasp (Secondary effect)
-		[211881]  = true,            -- Fel Eruption
-		[200166]  = true,            -- Metamorphosis (PvE stun effect)
-		[203123]  = true,            -- Maim
-		[163505]  = true,            -- Rake (Prowl)
-		[5211]    = true,            -- Mighty Bash
-		[202244]  = true,            -- Overrun
-		[325321]  = true,            -- Wild Hunt's Charge
-		[24394]   = true,            -- Intimidation
-		[119381]  = true,            -- Leg Sweep
-		[202346]  = true,            -- Double Barrel
-		[853]     = true,            -- Hammer of Justice
-		[255941]  = true,            -- Wake of Ashes
-		[64044]   = true,            -- Psychic Horror
-		[200200]  = true,            -- Holy Word: Chastise Censure
-		[1833]    = true,            -- Cheap Shot
-		[408]     = true,            -- Kidney Shot
-		[118905]  = true,            -- Static Charge (Capacitor Totem)
-		[118345]  = true,            -- Pulverize (Primal Earth Elemental)
-		[305485]  = true,            -- Lightning Lasso
-		[89766]   = true,            -- Axe Toss
-		[171017]  = true,            -- Meteor Strike (Infernal)
-		[171018]  = true,            -- Meteor Strike (Abyssal)
---      [22703]   = true,            -- Infernal Awakening (doesn't seem to DR)
-		[30283]   = true,            -- Shadowfury
-		[46968]   = true,            -- Shockwave
-		[132168]  = true,            -- Shockwave (Protection)
-		[145047]  = true,            -- Shockwave (Proving Grounds PvE)
-		[132169]  = true,            -- Storm Bolt
-		[199085]  = true,            -- Warpath
---      [213688]  = true,            -- Fel Cleave (doesn't seem to DR)
-		[20549]   = true,            -- War Stomp (Tauren)
-		[255723]  = true,            -- Bull Rush (Highmountain Tauren)
-		[287712]  = true,            -- Haymaker (Kul Tiran)
-		[280061]  = true,            -- Brainsmasher Brew (Item)
-		[245638]  = true,            -- Thick Shell (Item)
-		[332423]  = true,            -- Sparkling Driftglobe Core
+		[210141]  = true,
+		[334693]  = true,
+		[108194]  = true,
+		[221562]  = true,
+		[91800]   = true,
+		[91797]   = true,
+		[287254]  = true,
+		[179057]  = true,
+
+		[205630]  = true,
+		[208618]  = true,
+		[211881]  = true,
+		[200166]  = true,
+		[203123]  = true,
+		[163505]  = true,
+		[5211]    = true,
+		[202244]  = true,
+		[325321]  = true,
+		[24394]   = true,
+		[119381]  = true,
+		[202346]  = true,
+		[853]     = true,
+		[255941]  = true,
+		[64044]   = true,
+		[200200]  = true,
+		[1833]    = true,
+		[408]     = true,
+		[118905]  = true,
+		[118345]  = true,
+		[305485]  = true,
+		[89766]   = true,
+		[171017]  = true,
+		[171018]  = true,
+
+		[30283]   = true,
+		[46968]   = true,
+		[132168]  = true,
+		[145047]  = true,
+		[132169]  = true,
+		[199085]  = true,
+
+		[20549]   = true,
+		[255723]  = true,
+		[287712]  = true,
+		[280061]  = true,
+		[245638]  = true,
+		[332423]  = true,
 	}
 
 	local TRANSCENDENCE_TRANSFER = 119996
@@ -1089,7 +1089,7 @@ do
 	end
 end
 
--- Sinister Teachings (Monk-Venthyr-Runeforge) Patch 9.1 new - TODO: TEST (internal cd)
+
 do
 	local removeFallenOrder = function(srcGUID, spellID, destGUID)
 		local info = groupInfo[srcGUID]
@@ -1099,7 +1099,7 @@ do
 		end
 	end
 
-	registeredEvents.SPELL_AURA_REMOVED[326860] = function(info, srcGUID, spellID, destGUID) -- Fallen Order (Covenant)
+	registeredEvents.SPELL_AURA_REMOVED[326860] = function(info, srcGUID, spellID, destGUID)
 		if info.auras.isFallenOrder then
 			E.TimerAfter(6, removeFallenOrder, srcGUID, spellID, destGUID)
 		end
@@ -1113,9 +1113,9 @@ do
 	end
 end
 
--- Pressure Points (PvP Talent)
-registeredEvents.SPELL_DAMAGE[322109] = function(info, srcGUID, spellID, destGUID, critical, destFlags, amount, overkill) -- Touch of Death
-	if overkill > -1 and P:IsTalent(345829, srcGUID) and band(destFlags, player) > 0 then -- use 'P:IsTalent' or 'P.isPvP and info.talentData(id)' for pvp status checks on pvp talents
+
+registeredEvents.SPELL_DAMAGE[322109] = function(info, srcGUID, spellID, destGUID, critical, destFlags, amount, overkill)
+	if overkill > -1 and P:IsTalent(345829, srcGUID) and band(destFlags, player) > 0 then
 		local icon = info.spellIcons[122470]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, 60)
@@ -1123,14 +1123,14 @@ registeredEvents.SPELL_DAMAGE[322109] = function(info, srcGUID, spellID, destGUI
 	end
 end
 
-------------------------------------------------------------------------------------
--- Paladin
 
--- Healing Hands
-registeredEvents.SPELL_HEAL[633] = function(info, _,_,_,_,_, amount, overhealing, destName) -- Lay on Hands
-	if info.talentData[326734] then -- Healing Hands
+
+
+
+registeredEvents.SPELL_HEAL[633] = function(info, _,_,_,_,_, amount, overhealing, destName)
+	if info.talentData[326734] then
 		local icon = info.spellIcons[633]
-		if icon then -- skip active check and use timer: _HEAL _AURA fires before _CAST
+		if icon then
 			local maxHP = UnitHealthMax(destName)
 			if maxHP ~= 0 then
 				local reducedMult = math.min((amount - overhealing) / maxHP, 0.6)
@@ -1142,8 +1142,8 @@ registeredEvents.SPELL_HEAL[633] = function(info, _,_,_,_,_, amount, overhealing
 	end
 end
 
--- Resolute Defender (Conduit)
-registeredEvents.SPELL_CAST_SUCCESS[53600] = function(info) -- Shield of the Righteous
+
+registeredEvents.SPELL_CAST_SUCCESS[53600] = function(info)
 	local rankValue = info.talentData[340023]
 	if rankValue then
 		local icon = info.spellIcons[31850]
@@ -1153,7 +1153,7 @@ registeredEvents.SPELL_CAST_SUCCESS[53600] = function(info) -- Shield of the Rig
 	end
 end
 
--- Moment of Glory
+
 do
 	local removeMomentOfGlory = function(srcGUID, spellID, destGUID)
 		local info = groupInfo[srcGUID]
@@ -1174,7 +1174,7 @@ do
 		end
 	end
 
-	registeredEvents.SPELL_CAST_SUCCESS[31935] = function(info) -- Avenger's Shield
+	registeredEvents.SPELL_CAST_SUCCESS[31935] = function(info)
 		local icon = info.spellIcons[31935]
 		if icon and not info.auras.isMomentOfGlory then
 			P:StartCooldown(icon, icon.duration)
@@ -1182,15 +1182,15 @@ do
 	end
 end
 
--- Crusader's Might
-registeredEvents.SPELL_CAST_SUCCESS[35395] = function(info) -- Crusader Strike
-	local icon = info.spellIcons[20473] -- Holy Shock
+
+registeredEvents.SPELL_CAST_SUCCESS[35395] = function(info)
+	local icon = info.spellIcons[20473]
 	if icon and info.talentData[196926] then
-		P:UpdateCooldown(icon, 1.0) -- Patch 9.1 1.5>1s
+		P:UpdateCooldown(icon, 1.0)
 	end
 end
 
--- Radiant Embers (Paladin-Venthyr-Runeforge) Patch 9.1 new - TODO: TEST
+
 do
 	local ASHEN_HALLOW = 316958
 
@@ -1207,8 +1207,8 @@ do
 		if info and info.auras.ashenHollowLT then
 			local now = GetTime()
 			if now - info.auras.ashenHollowLT > 2 then
-				local remainingTime = 47 - now + info.auras.ashenHollowST -- duration increased 50% from Radiant Embers, 2+sec since last tick
-				if remainingTime > 0.25 then -- 0.25 reduce cd by 1s
+				local remainingTime = 47 - now + info.auras.ashenHollowST
+				if remainingTime > 0.25 then
 					local icon = info.spellIcons[ASHEN_HALLOW]
 					if icon and icon.active then
 						P:UpdateCooldown(icon, (remainingTime / 45) * 0.5 * icon.duration)
@@ -1237,10 +1237,10 @@ do
 	end
 end
 
-------------------------------------------------------------------------------------
--- Priest
 
--- Apotheosis
+
+
+
 do
 	local APOTHEOSIS = 200183
 
@@ -1261,7 +1261,7 @@ do
 	end
 end
 
--- Guardian Angel
+
 do
 	local GUARDIAN_SPIRIT = 47788
 
@@ -1282,39 +1282,39 @@ do
 		E.TimerAfter(0.1, onGSRemoval, srcGUID, spellID, destGUID)
 	end
 
-	-- NOTE: check all spells casted to others (fires before/after SPELL_AURA_REMOVED for self/party)
-	registeredEvents.SPELL_HEAL[48153] = function(info) -- Heal when GS procs = prevented death
+
+	registeredEvents.SPELL_HEAL[48153] = function(info)
 		if info.spellIcons[GUARDIAN_SPIRIT] then
 			info.auras.isSavedByGS = true
 		end
 	end
 end
 
--- X'anshi, Return of Archbishop Benedictus (Runeforge)
-registeredEvents.SPELL_AURA_APPLIED[211319] = function(info) -- Archbishop Benedictus' Restitution (don't need talentData check for unique auras)
-	local icon = info.spellIcons[20711] -- Spirit of Redemption
+
+registeredEvents.SPELL_AURA_APPLIED[211319] = function(info)
+	local icon = info.spellIcons[20711]
 	if icon then
 		P:StartCooldown(icon, icon.duration)
 	end
 end
 
--- Power Unto Others (Conduit)
+
 registeredEvents.SPELL_CAST_SUCCESS[10060] = function(info, srcGUID, _, destGUID)
 	local rankValue = info.talentData[337762]
 	if rankValue and srcGUID ~= destGUID then
-		local icon = info.spellIcons[10060] -- Power Infusion
+		local icon = info.spellIcons[10060]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, rankValue)
 		end
 	end
 end
 
--- Thoughtsteal
--- cd resets if you're unable to find a spell to steal ? -> temp fix: 316262 added to dispels to exclude from UNIT_
+
+
 do
 	local THOUGHTSTEAL = 316262
 
-	registeredEvents.SPELL_AURA_APPLIED[322431] = function(info) -- stolen Buff
+	registeredEvents.SPELL_AURA_APPLIED[322431] = function(info)
 		local icon = info.spellIcons[THOUGHTSTEAL]
 		if icon then
 			local statusBar = icon.statusBar
@@ -1334,7 +1334,7 @@ do
 		end
 	end
 
-	registeredEvents.SPELL_AURA_REMOVED[322431] = function(info) -- cd starts when stolen buff is removed from player (323716 stolen debuff on target)
+	registeredEvents.SPELL_AURA_REMOVED[322431] = function(info)
 		local icon = info.spellIcons[THOUGHTSTEAL]
 		if icon then
 			local statusBar = icon.statusBar
@@ -1349,20 +1349,20 @@ do
 	end
 end
 
--- Death and Madness (Talent) -- no exp, honor gain requirement on kills
+
 do
 	local function ResetShadowWordDeath(info)
-		local icon = info.spellIcons[32379] -- Shadow Word: Death
+		local icon = info.spellIcons[32379]
 		if icon and icon.active then
 			P:ResetCooldown(icon)
 		end
 	end
 
-	registeredEvents.SPELL_AURA_APPLIED[321973] = ResetShadowWordDeath -- Death and Madness (unique aura on kill, isTalent)
+	registeredEvents.SPELL_AURA_APPLIED[321973] = ResetShadowWordDeath
 	registeredEvents.SPELL_AURA_REFRESH[321973] = ResetShadowWordDeath
 end
 
--- Spheres' Harmony (Priest-Kyrian-Runeforge) Patch 9.1 new
+
 do
 	local BOON_OFTHE_ASCENDED = 325013
 
@@ -1391,15 +1391,15 @@ do
 	end
 end
 
-------------------------------------------------------------------------------------
--- Rogue
 
--- Silhouette / Intent to Kill
+
+
+
 do
 	local VENDETTA = 79140
 	local SHADOW_STEP = 36554
 
-	local removeVendettaTarget = function(info, srcGUID) -- no buff on src = no highlight
+	local removeVendettaTarget = function(info, srcGUID)
 		info = info or groupInfo[srcGUID]
 		if info and info.auras.vendettaTargetGUID then
 			info.auras.vendettaTargetGUID = nil
@@ -1413,8 +1413,8 @@ do
 		end
 	end
 
-	registeredEvents.SPELL_CAST_SUCCESS[SHADOW_STEP] = function(info, _, spellID, destGUID, _, destFlags) -- Shadowstep
-		if not P.isPvP then -- instead of IsTalent
+	registeredEvents.SPELL_CAST_SUCCESS[SHADOW_STEP] = function(info, _, spellID, destGUID, _, destFlags)
+		if not P.isPvP then
 			return
 		end
 
@@ -1422,13 +1422,13 @@ do
 		if icon and icon.active then
 			local active = info.active[spellID]
 			if active then
-				if info.talentData[197899] then -- Silhouette (Subtlety)
+				if info.talentData[197899] then
 					if band(destFlags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0 then
-						P:UpdateCooldown(icon, active.duration * 0.67 ) -- Patch 9.1 0.5>0.67
+						P:UpdateCooldown(icon, active.duration * 0.67 )
 					end
-				elseif info.talentData[197007] then -- Intent to Kill (Assassination)
+				elseif info.talentData[197007] then
 					if info.auras.vendettaTargetGUID == destGUID then
-						P:UpdateCooldown(icon, active.duration * 0.90 ) -- Patch 9.1 0.66>0.9
+						P:UpdateCooldown(icon, active.duration * 0.90 )
 					end
 				end
 			end
@@ -1436,14 +1436,14 @@ do
 	end
 end
 
--- True Bearing
+
 do
 	local TRUE_BEARING = 193359
 
 	local removeTrueBearing = function(srcGUID)
 		local info = groupInfo[srcGUID]
 		if info and info.auras.isTrueBearing then
-			local duration = P:GetBuffDuration(info.unit, TRUE_BEARING) -- check if buff can re-apply before falling off
+			local duration = P:GetBuffDuration(info.unit, TRUE_BEARING)
 			if not duration then
 				info.auras.isTrueBearing = nil
 			end
@@ -1456,11 +1456,11 @@ do
 	end
 end
 
--- Tricks of the Trade ( -- TODO: check if src == dest check is required.)
+
 do
 	local TRICKS_OT_TRADE = 57934
 
-	registeredEvents.SPELL_AURA_REMOVED[TRICKS_OT_TRADE] = function(info, srcGUID, spellID, destGUID) -- Tricks doesn't go on CD if its not used after pre-activating
+	registeredEvents.SPELL_AURA_REMOVED[TRICKS_OT_TRADE] = function(info, srcGUID, spellID, destGUID)
 		local icon = info.spellIcons[TRICKS_OT_TRADE]
 		if icon then
 			local statusBar = icon.statusBar
@@ -1474,7 +1474,7 @@ do
 	end
 
 	local function StartTricksCD(info, srcGUID, spellID, destGUID)
-		local icon = info.spellIcons[TRICKS_OT_TRADE] -- merged Thick as Thieves
+		local icon = info.spellIcons[TRICKS_OT_TRADE]
 		if icon and srcGUID == destGUID then
 			local statusBar = icon.statusBar
 			if statusBar then
@@ -1491,11 +1491,11 @@ do
 	registeredEvents.SPELL_AURA_APPLIED[221630] = StartTricksCD
 end
 
--- Sepsis
-registeredEvents.SPELL_AURA_APPLIED[347037] = function(info) info.auras.isSepsis = true end -- free stealth proc 5s = target survived full duration
+
+registeredEvents.SPELL_AURA_APPLIED[347037] = function(info) info.auras.isSepsis = true end
 registeredEvents.SPELL_AURA_REMOVED[347037] = function(info) info.auras.isSepsis = nil end
-registeredEvents.SPELL_AURA_REMOVED[328305] = function(info) -- target debuff (if target survived full duration then this fires after(equal GetTime) SPELL_AURA_APPLIED[347037])
-	if not info.auras.isSepsis then -- ended before it's full duration
+registeredEvents.SPELL_AURA_REMOVED[328305] = function(info)
+	if not info.auras.isSepsis then
 		local icon = info.spellIcons[328305]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, 30)
@@ -1503,7 +1503,7 @@ registeredEvents.SPELL_AURA_REMOVED[328305] = function(info) -- target debuff (i
 	end
 end
 
--- Serrated Bone Spikes (Covenant)
+
 do
 	registeredEvents.SPELL_AURA_APPLIED[324073] = function(info, srcGUID, _, destGUID)
 		if info.spellIcons[328547] then
@@ -1515,7 +1515,7 @@ do
 
 	registeredEvents.SPELL_AURA_REMOVED[324073] = function(info, srcGUID, _, destGUID)
 		if info.spellIcons[328547] then
-			C_Timer.After(0.5, function() -- delay to run after UNIT_DIED
+			C_Timer.After(0.5, function()
 				if spellDestGUIDS[destGUID] and spellDestGUIDS[destGUID][srcGUID] then
 					spellDestGUIDS[destGUID][srcGUID][328547] = nil
 				end
@@ -1524,9 +1524,9 @@ do
 	end
 end
 
--- Obedience (Rogue-Venthyr-Runeforge) Patch 9.1 new - TODO: TEST
+
 do
-	registeredEvents.SPELL_AURA_REMOVED[323654] = function(info, srcGUID, spellID, destGUID) -- haste buff 'Flagellation' 345569 is applied on _REMOVED
+	registeredEvents.SPELL_AURA_REMOVED[323654] = function(info, srcGUID, spellID, destGUID)
 		if info.auras.isFlagellation then
 			info.auras.isFlagellation = nil
 		end
@@ -1540,23 +1540,23 @@ do
 	end
 end
 
-------------------------------------------------------------------------------------
--- Shaman
 
--- Reincarnation (no UNIT_)
-registeredEvents.SPELL_CAST_SUCCESS[21169] = function(info) -- AURA_REMOVED 225082 fires on normal res
+
+
+
+registeredEvents.SPELL_CAST_SUCCESS[21169] = function(info)
 	local icon = info.spellIcons[20608]
 	if icon then
 		P:StartCooldown(icon, icon.duration)
 	end
 end
 
--- Static Charge
+
 registeredEvents.SPELL_SUMMON[192058] = function(info, srcGUID, spellID, destGUID)
 	local icon = info.spellIcons[spellID]
 	if icon and info.talentData[265046] then
 		local capGUID = info.auras.capTotemGUID
-		if capGUID then -- remove old. Pet/Guardians are assigned a new GUID on summon
+		if capGUID then
 			totemGUIDS[capGUID] = nil
 		end
 		totemGUIDS[destGUID] = srcGUID
@@ -1564,88 +1564,88 @@ registeredEvents.SPELL_SUMMON[192058] = function(info, srcGUID, spellID, destGUI
 	end
 end
 
--- Nature's Guardian
+
 registeredEvents.SPELL_HEAL[31616] = function(info)
-	local icon = info.spellIcons[30884] -- Nature's Guardian
+	local icon = info.spellIcons[30884]
 	if icon then
 		P:StartCooldown(icon, icon.duration)
 	end
 end
 
--- Surge of Power
+
 registeredEvents.SPELL_AURA_REMOVED[285514] = function(info) info.auras.isSurgeOfPower = nil end
 registeredEvents.SPELL_AURA_APPLIED[285514] = function(info)
 	if info.spellIcons[198067] or info.spellIcons[192249] then
-		info.auras.isSurgeOfPower = true -- removed after 1 lava burst cast
+		info.auras.isSurgeOfPower = true
 	end
 end
 
--- Witch Doctor's Wolf Bones (Runeforge)
+
 local function ReduceFeralSpiritCD(info)
 	if info.talentData[335897] then
-		local icon = info.spellIcons[51533] -- Feral Spirit
+		local icon = info.spellIcons[51533]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, 2)
 		end
 	end
 end
-registeredEvents.SPELL_AURA_APPLIED[344179] = ReduceFeralSpiritCD -- Maelstrom Weapon
+registeredEvents.SPELL_AURA_APPLIED[344179] = ReduceFeralSpiritCD
 registeredEvents.SPELL_AURA_APPLIED_DOSE[344179] = ReduceFeralSpiritCD
 
--- Skybreaker's Fiery Demise (Runeforge)
+
 registeredEvents.SPELL_PERIODIC_DAMAGE[188389] = function(info, srcGUID, spellID, destGUID, critical)
 	if not critical then
 		return
 	end
 
 	if info.talentData[336734] then
-		local icon = info.spellIcons[198067] or info.spellIcons[192249] -- Fire Elemental, Storm Elemental
+		local icon = info.spellIcons[198067] or info.spellIcons[192249]
 		if icon and icon.active then
 			P:UpdateCooldown(icon, 1)
 		end
 	end
 end
 
--- Seeds of Rampant Growth (Shaman-Night Fae-Runeforge) Patch 9.1 new - TODO: TEST
-registeredEvents.SPELL_DAMAGE[328928] = function(info, _,_, destGUID) -- Fae Transfusion damageID
+
+registeredEvents.SPELL_DAMAGE[328928] = function(info, _,_, destGUID)
 	if info.talentData[356218] then
 		local now = GetTime()
 		if now > (info.auras.faeTransfusionLT or 0) then
-			-- compatibility for OCDE
-			local icon = info.spellIcons[198067] or info.spellIcons[192249] -- Fire/Storm Elemental
+
+			local icon = info.spellIcons[198067] or info.spellIcons[192249]
 			if icon then
 				if icon.active then
 					P:UpdateCooldown(icon, 6)
 				end
 				return
 			end
-			icon = info.spellIcons[51533] -- Feral Spirit
+			icon = info.spellIcons[51533]
 			if icon then
 				if icon.active then
 					P:UpdateCooldown(icon, 7)
 				end
 				return
 			end
-			icon = info.spellIcons[108280] -- Healing Tide Totem
+			icon = info.spellIcons[108280]
 			if icon then
 				if icon.active then
 					P:UpdateCooldown(icon, 5)
 				end
 			end
 
-			info.auras.faeTransfusionLT = now + 0.1 -- cdr is per pulse not ea. dmg
+			info.auras.faeTransfusionLT = now + 0.1
 		end
 	end
 end
 
-------------------------------------------------------------------------------------
--- Warlock
 
--- Scouring Tithe (Covenant)
+
+
+
 do
 	local SCOURING_TITHE = 312321
 
-	registeredEvents.SPELL_ENERGIZE[312379] = function(info) -- Scouring Tithe (5 Soul Shard)
+	registeredEvents.SPELL_ENERGIZE[312379] = function(info)
 		info.auras.isScouringTitheKilled = true
 	end
 
@@ -1663,20 +1663,20 @@ do
 		end
 	end
 
-	registeredEvents.SPELL_AURA_REMOVED[SCOURING_TITHE] = function(info, srcGUID) -- doesn't fire sometimes when target dies (no matter)
+	registeredEvents.SPELL_AURA_REMOVED[SCOURING_TITHE] = function(info, srcGUID)
 		local icon = info.spellIcons[SCOURING_TITHE]
 		if icon then
-			E.TimerAfter(0.5, resetScouringTitheCD, srcGUID) -- energize can fire a lot later
+			E.TimerAfter(0.5, resetScouringTitheCD, srcGUID)
 		end
 	end
 end
 
--- Shadowburn
-registeredEvents.SPELL_CAST_SUCCESS[17877] = function(info, srcGUID, _, destGUID) -- PARTY_KILL fires before SPELL_DAMAGE if it's killed instantly on cast
-	if info.spellIcons[17877] then -- isTalent
+
+registeredEvents.SPELL_CAST_SUCCESS[17877] = function(info, srcGUID, _, destGUID)
+	if info.spellIcons[17877] then
 		spellDestGUIDS[destGUID] = spellDestGUIDS[destGUID] or {}
 		spellDestGUIDS[destGUID][srcGUID] = spellDestGUIDS[destGUID][srcGUID] or {}
-		if spellDestGUIDS[destGUID][srcGUID][17877] then -- refresh timer, Shadowburn has 2 charges
+		if spellDestGUIDS[destGUID][srcGUID][17877] then
 			spellDestGUIDS[destGUID][srcGUID][17877]:Cancel()
 		end
 		spellDestGUIDS[destGUID][srcGUID][17877] = C_Timer.NewTicker(5, function()
@@ -1687,19 +1687,20 @@ registeredEvents.SPELL_CAST_SUCCESS[17877] = function(info, srcGUID, _, destGUID
 	end
 end
 
-------------------------------------------------------------------------------------
--- Warrior
 
 
-------------------------------------------------------------------------------------
--- MISC.
 
--- Consumables (CD starts OOC)
+
+
+
+
+
+
 do
-	local consumables = { --> added to cd_start_dispels to bypass UNIT_SPELLCAST_SUCCEEDED
-		323436, -- Purify Soul
-		6262,   -- Healthstone
-		307192, -- Spiritual Healing Potion
+	local consumables = {
+		323436,
+		6262,
+
 	}
 
 	local startCdOutOfCombat = function(guid)
@@ -1755,7 +1756,7 @@ do
 				info.preActiveIcons[spellID] = icon
 				icon.icon:SetVertexColor(0.4, 0.4, 0.4)
 
-				info.bar.timer_inCombatTicker = C_Timer.NewTicker(1, function() startCdOutOfCombat(icon.guid) end, 1000)
+				info.bar.timer_inCombatTicker = C_Timer.NewTicker(5, function() startCdOutOfCombat(icon.guid) end, 200)
 			else
 				info.preActiveIcons[spellID] = nil
 				icon.icon:SetVertexColor(1, 1, 1)
@@ -1767,11 +1768,11 @@ do
 
 	for i = 1, #consumables do
 		local spellID = consumables[i]
-		registeredEvents.SPELL_CAST_SUCCESS[spellID] = StartConsumablesCD -- 331609 Forgelite Filter (Soulbind) makes it auto proc (Conduit make it heal over time, fires SPELL_HEAL multiple times)
+		registeredEvents.SPELL_CAST_SUCCESS[spellID] = StartConsumablesCD
 	end
 
-	-- Purify Soul (Covenant Signature Ability)
-	registeredEvents.SPELL_CAST_SUCCESS[324739] = function(info) -- Summon Steward (Reset stacks)
+
+	registeredEvents.SPELL_CAST_SUCCESS[324739] = function(info)
 		local icon = info.spellIcons[323436]
 		if icon then
 			info.auras.purifySoulStacks = 3
@@ -1780,41 +1781,39 @@ do
 	end
 end
 
--- Effusive Anima Accelerator (Soulbind Ability non-conduit) Patch 9.1 new
+
 do
 	local kyrianAbilityByClass = {
-		WARRIOR = { 307865, 4   },  -- Spear of Bastion
-		PALADIN = { 304971, 4   },  -- Divine Toll
-		HUNTER  = { 308491, 4   },  -- Resonating Arrow
-		ROGUE   = { 323547, 3   },  -- Echoing Reprimand
-		PRIEST  = { 325013, 12  },  -- Boon of the Ascended
-		DEATHKNIGHT = { 312202, 4   },  -- Shackle the Unworthy
-		SHAMAN  = { 324386, 4   },  -- Versper Totem
-		MAGE    = { 307443, 2   },  -- Radiant Spark
-		WARLOCK = { 312321, 3   },  -- Scouring Tithe
-		MONK    = { 310454, 8   },  -- Weapons of Order
-		DRUID   = { 338142, 4   },  -- Lone Empowerment (Bal, Feral) - used inplace of Kindred Spirits
-		DEMONHUNTER = { 306830, 4   },  -- Elysian Decree
+		WARRIOR = { 307865, 4   },
+		PALADIN = { 304971, 4   },
+		HUNTER  = { 308491, 4   },
+		ROGUE   = { 323547, 3   },
+		PRIEST  = { 325013, 12  },
+		DEATHKNIGHT = { 312202, 4   },
+		SHAMAN  = { 324386, 4   },
+		MAGE    = { 307443, 2   },
+		WARLOCK = { 312321, 3   },
+		MONK    = { 310454, 8   },
+		DRUID   = { 338142, 4   },
+		DEMONHUNTER = { 306830, 4   },
 	}
 
 	registeredEvents.SPELL_AURA_APPLIED[353248] = function(info)
-		--if info.talentData[352188] then -- aura isTalent
-			local t = kyrianAbilityByClass[info.class]
-			local target, rt = t[1], t[2]
-			local icon = info.spellIcons[target]
-			local active = icon and icon.active and info.active[target]
-			if active then
-				active.numHits = (active.numHits or 0) + 1 -- numHits reset on StartCooldown
-				if active.numHits > 5 then -- max: rt *5
-					return
-				end
-				P:UpdateCooldown(icon, rt)
+		local t = kyrianAbilityByClass[info.class]
+		local target, rt = t[1], t[2]
+		local icon = info.spellIcons[target]
+		local active = icon and icon.active and info.active[target]
+		if active then
+			active.numHits = (active.numHits or 0) + 1
+			if active.numHits > 5 then
+				return
 			end
-		--end
+			P:UpdateCooldown(icon, rt)
+		end
 	end
 end
 
--- Soul Igniter (SL Trinket)
+
 local startSoulIgniterCD = function(srcGUID, spellID, destGUID)
 	local info = groupInfo[srcGUID]
 	if info then
@@ -1826,10 +1825,10 @@ local startSoulIgniterCD = function(srcGUID, spellID, destGUID)
 	end
 end
 registeredEvents.SPELL_AURA_REMOVED[345211] = function(info, srcGUID, spellID, destGUID)
-	E.TimerAfter(0.05, startSoulIgniterCD, srcGUID, spellID, destGUID) -- CD starts when you cast it a second time, so delay event so UNIT_SPELLCAST_SUCCEEDED doesn't make it preactive again
+	E.TimerAfter(0.05, startSoulIgniterCD, srcGUID, spellID, destGUID)
 end
 
--- Dispels
+
 do
 	local function StartDispelCD(info, _, spellID)
 		local icon = info.spellIcons[spellID]
@@ -1843,7 +1842,7 @@ do
 	end
 end
 
--- Forbearance
+
 do
 	local function RemoveAllForbearance(_,_, spellID, destGUID)
 		if not E.db.icons.showForbearanceCounter then
@@ -1922,20 +1921,20 @@ do
 	end
 end
 
--- CDRR
+
 do
-	local THUNDERCHARGE = 204366 -- Self applying. doesnt matter if UNIT_ fires after SELL_AURA_ since ModRate is applied in StartCooldown()
-	-- Shadowlands...
-	-- Multiplicative
-	-- CDRR + IconRR TESTED, (Feral Charge: Thundercharge + Benevolent)
-	-- IconRR + IconRR TESTED, (Fortifying Brew: Benevolent + Symbol of hope)
+	local THUNDERCHARGE = 204366
+
+
+
+
 	local BLESSING_OF_AUTUMN = 328622
 	local BENEVOLENT_FAERIE = 327710
 	local BENEVOLENT_FAERIE_FERMATA = 345453
 	local HAUNTED_MASK = 356968
-	local SYMBOL_OF_HOPE = 265144 -- unique cdr buffID (not used for highlighting)
+	local SYMBOL_OF_HOPE = 265144
 	local EMERALD_SLUMBER = 329042
-	local INTIMIDATION_TACTICS = 353210 -- Patch 9.1 new
+	local INTIMIDATION_TACTICS = 353210
 
 	local function UpdateCDRR(info, modRate, excludeID)
 		local newRate = (info.modRate or 1) * modRate
@@ -1959,7 +1958,7 @@ do
 						if majorCD and (majorCD == true or majorCD == info.spec) and info.auras.benevolent then
 							totRate = totRate * info.auras.benevolent
 						end
-						if spellID == 300728 and info.auras.intimidation then -- Door of Shadows (Covenant Signature Ability)
+						if spellID == 300728 and info.auras.intimidation then
 							totRate = totRate * info.auras.intimidation
 						end
 
@@ -1979,7 +1978,7 @@ do
 		info.modRate = newRate
 	end
 
---  P.UpdateCDRR = UpdateCDRR -- Patch 9.1 HSA removed
+
 
 	local function UpdateIconRR(info, modType, modRate)
 		local newRate = (info.auras[modType] or 1) * modRate
@@ -1996,7 +1995,7 @@ do
 					local newTime = now - elapsed
 					local cd = (active.duration * modRate)
 
-					if spellID == 115203 then -- Temp Fix: Fortyfying Brew(BM) is modulated by both symbol and benevolent
+					if spellID == 115203 then
 						icon.cooldown:SetCooldown(newTime, cd, (newRate * (info.auras[modType == "symbol" and "benevolent" or "symbol"] or 1)) * (info.modRate or 1))
 					else
 						icon.cooldown:SetCooldown(newTime, cd, newRate * (info.modRate or 1))
@@ -2052,13 +2051,13 @@ do
 			RemoveHighlightByCLEU(destInfo, srcGUID, spellID, destGUID)
 		elseif spellID == EMERALD_SLUMBER then
 			if destInfo.auras[spellID] then
-				UpdateCDRR(destInfo, 5, EMERALD_SLUMBER) -- not self reducing
+				UpdateCDRR(destInfo, 5, EMERALD_SLUMBER)
 				destInfo.auras[spellID] = nil
 			end
 			RemoveHighlightByCLEU(destInfo, srcGUID, spellID, destGUID)
 		else
 			if destInfo.auras[spellID] then
---              UpdateCDRR(info, spellID == DEBUFF_HEARTSTOP_AURA and 0.7 or 1.3)
+
 				UpdateCDRR(destInfo, 1.3)
 				destInfo.auras[spellID] = nil
 			end
@@ -2077,15 +2076,15 @@ do
 			UpdateIconRR(destInfo, "benevolent", 0.5)
 		elseif spellID == BENEVOLENT_FAERIE_FERMATA then
 			UpdateIconRR(destInfo, "benevolent", 1/1.8)
-		-- 1. Requires Benevolent Fae buff to be active when mask is applied
-		-- 2. Fae can be moved to others and mask will continue to apply CDR
+
+
 		elseif spellID == HAUNTED_MASK then
 			if destInfo.auras.benevolent then
 				destInfo.auras.haunted = true
 				UpdateIconRR(destInfo, "benevolent", 1/1.5)
 			end
-		elseif spellID == SYMBOL_OF_HOPE then -- 40yd range, no aura if OOR
-			local _,_,_, startTimeMS, endTimeMS = UnitChannelInfo(info and info.unit or "player") -- iss#275 info is nil for registeredUserEvents
+		elseif spellID == SYMBOL_OF_HOPE then
+			local _,_,_, startTimeMS, endTimeMS = UnitChannelInfo(info and info.unit or "player")
 			if startTimeMS and endTimeMS then
 				local channelTime = (endTimeMS - startTimeMS) / 1000
 				UpdateIconRR(destInfo, "symbol", 1 / ((60 + channelTime) / channelTime))
@@ -2095,15 +2094,15 @@ do
 			UpdateCDRR(destInfo, 0.2, EMERALD_SLUMBER)
 		elseif spellID ~= THUNDERCHARGE or srcGUID ~= destGUID then
 			destInfo.auras[spellID] = true
---          UpdateCDRR(info, spellID == DEBUFF_HEARTSTOP_AURA and 1/0.7 or 1/1.3)
+
 			UpdateCDRR(destInfo, 1/1.3)
 		end
 	end
 
-	-- No backup
+
 	registeredEvents.SPELL_AURA_REMOVED[THUNDERCHARGE] = RemoveModRate
-	registeredEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE] = function(info, srcGUID, spellID, destGUID) -- TODO: Bug?. cast on self 70%, cast on party - self 30%
-		if srcGUID == destGUID then -- never userevent
+	registeredEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE] = function(info, srcGUID, spellID, destGUID)
+		if srcGUID == destGUID then
 			info.auras.isThunderChargeSelfCast = true
 			info.auras[spellID] = true
 			UpdateCDRR(info, 1/1.7)
@@ -2113,7 +2112,7 @@ do
 				destInfo.auras[spellID] = true
 				UpdateCDRR(destInfo, 1/1.3)
 			end
-			if info then -- userevent srcInfo is nil
+			if info then
 				info.auras[spellID] = true
 				UpdateCDRR(info, 1/1.3)
 			end
@@ -2121,9 +2120,9 @@ do
 	end
 	registeredEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate
 	registeredEvents.SPELL_AURA_REMOVED[BLESSING_OF_AUTUMN] = RemoveModRate
-	registeredEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE] = UpdateModRate -- does not fire _REFRESH
+	registeredEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE] = UpdateModRate
 	registeredEvents.SPELL_AURA_REMOVED[BENEVOLENT_FAERIE] = RemoveModRate
-	registeredEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE_FERMATA] = UpdateModRate -- don't need rankValue for this Conduit
+	registeredEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE_FERMATA] = UpdateModRate
 	registeredEvents.SPELL_AURA_REMOVED[BENEVOLENT_FAERIE_FERMATA] = RemoveModRate
 	registeredEvents.SPELL_AURA_APPLIED[HAUNTED_MASK] = UpdateModRate
 	registeredEvents.SPELL_AURA_REMOVED[HAUNTED_MASK] = RemoveModRate
@@ -2136,7 +2135,7 @@ do
 
 	registeredUserEvents.SPELL_AURA_REMOVED[THUNDERCHARGE] = RemoveModRate
 	registeredUserEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE] = registeredEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE]
-	registeredUserEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate -- TODO: 30s duration. cache aura and add backup timer
+	registeredUserEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[BLESSING_OF_AUTUMN] = RemoveModRate
 	registeredUserEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[BENEVOLENT_FAERIE] = RemoveModRate
@@ -2147,25 +2146,25 @@ do
 	registeredUserEvents.SPELL_AURA_APPLIED[SYMBOL_OF_HOPE] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[SYMBOL_OF_HOPE] = RemoveModRate
 
-	-- CDRR
---  registeredHostileEvents.SPELL_AURA_APPLIED[DEBUFF_HEARTSTOP_AURA] = UpdateModRate
---  registeredHostileEvents.SPELL_AURA_REMOVED[DEBUFF_HEARTSTOP_AURA] = RemoveModRate
+
+
+
 end
 
--- Prepared for All (Conduit)
-local function ReduceEvasionCD(destInfo, _,_, missType) -- missType = amount
-	if missType ~= "DODGE" then -- TODO: does spell miss have dodge?
+
+local function ReduceEvasionCD(destInfo, _,_, missType)
+	if missType ~= "DODGE" then
 		return
 	end
 
 	local rankValue = destInfo.talentData[341535]
 	if rankValue then
-		local icon = destInfo.spellIcons[5277] -- Evasion
+		local icon = destInfo.spellIcons[5277]
 		if icon and icon.active then
 			local now = GetTime()
 			if now > (destInfo.auras.time_dodged or 0) then
 				P:UpdateCooldown(icon, rankValue)
-				destInfo.auras.time_dodged = now + 1 -- stealth nerfed
+				destInfo.auras.time_dodged = now + 1
 			end
 		end
 	end
@@ -2174,7 +2173,7 @@ registeredHostileEvents.SWING_MISSED.ROGUE = function(destInfo, _, spellID) Redu
 registeredHostileEvents.RANGE_MISSED.ROGUE = ReduceEvasionCD
 registeredHostileEvents.SPELL_MISSED.ROGUE = ReduceEvasionCD
 
--- Driven to Madness (PvP Talent)
+
 do
 	local removeVoidForm = function(srcGUID, spellID, destGUID)
 		local info = groupInfo[srcGUID]
@@ -2183,12 +2182,12 @@ do
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		end
 	end
-	registeredEvents.SPELL_AURA_REMOVED[194249] = function(info, srcGUID, spellID, destGUID) -- Void Form
+	registeredEvents.SPELL_AURA_REMOVED[194249] = function(info, srcGUID, spellID, destGUID)
 		info.auras.isVoidForm = nil
 		RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 	end
 	registeredEvents.SPELL_AURA_APPLIED[194249] = function(info, srcGUID, spellID, destGUID)
-		if info.spellIcons[228260] then -- Void Eruption (Talent)
+		if info.spellIcons[228260] then
 			info.auras.isVoidForm = true
 			E.TimerAfter(15.1, removeVoidForm, srcGUID, spellID, destGUID)
 		end
@@ -2200,7 +2199,7 @@ do
 		end
 
 		if not destInfo.auras.isVoidForm and P.isPvP and destInfo.talentData[199259] then
-			local icon = destInfo.spellIcons[228260] -- Void Eruption (Talent)
+			local icon = destInfo.spellIcons[228260]
 			if icon and icon.active then
 				local now = GetTime()
 				if now > (destInfo.auras.time_drivenToMadness or 0) then
@@ -2216,11 +2215,11 @@ do
 	registeredHostileEvents.SPELL_ABSORBED.PRIEST = ReduceVoidEruptionCD
 end
 
--- Resolute Barrier (Conduit)
+
 local function ReduceUnendingResolveCD(destInfo, destName, _, amount)
 	local rankValue = destInfo.talentData[339272]
 	if rankValue then
-		local icon = destInfo.spellIcons[104773] -- Unending Resolve
+		local icon = destInfo.spellIcons[104773]
 		if icon and icon.active then
 			local now = GetTime()
 			if now > (destInfo.auras.time_resoluteBarrier or 0) then
@@ -2237,11 +2236,11 @@ registeredHostileEvents.SWING_DAMAGE.WARLOCK = function(destInfo, destName, spel
 registeredHostileEvents.RANGE_DAMAGE.WARLOCK = ReduceUnendingResolveCD
 registeredHostileEvents.SPELL_DAMAGE.WARLOCK = ReduceUnendingResolveCD
 
--- Divine Call (Conduit)
+
 local function ReduceDivineShieldCD(destInfo)
 	local rankValue = destInfo.talentData[338741]
 	if rankValue then
-		local icon = destInfo.spellIcons[642] -- Divine Shield
+		local icon = destInfo.spellIcons[642]
 		if icon and icon.active then
 			local now = GetTime()
 			if now > (destInfo.auras.time_divineCall or 0) then
@@ -2358,7 +2357,7 @@ else
 
 	local function AppendInterruptExtras(info, destRaidFlags, spellID, extraSpellId, extraSpellName)
 		if E.db.extraBars.interruptBar.enabled then
-			local icon = info.spellIcons[spell_merged[spellID] or spellID] -- simple merge
+			local icon = info.spellIcons[spell_merged[spellID] or spellID]
 			local statusBar = icon and icon.type == "interrupt" and icon.statusBar
 			if statusBar then
 				local extraSpellTexture = E.db.extraBars.interruptBar.showInterruptedSpell and GetSpellTexture(extraSpellId)
@@ -2378,20 +2377,20 @@ else
 		end
 	end
 
-	function CD:COMBAT_LOG_EVENT_UNFILTERED() -- Suffix for SWING_(prefix) starts at 10th parameter
+	function CD:COMBAT_LOG_EVENT_UNFILTERED()
 		local _, event, _, srcGUID, srcName, srcFlags, _, destGUID, destName, destFlags, destRaidFlags, spellID, _,_, amount, overkill, _, resisted, _,_, critical = CombatLogGetCurrentEventInfo()
 
-		-- group member are flagged as hostile in duels
-		if band(srcFlags, friendly) == 0 then -- incl NPC
+
+		if band(srcFlags, friendly) == 0 then
 			local destInfo = groupInfo[destGUID]
 			if not destInfo then
-				if event == "UNIT_DIED" then -- spellID = -1, srcGUID = "", srcName = nil
-					if destGUID == userGUID then -- Callback when user dies w/ isUserDisabled
+				if event == "UNIT_DIED" then
+					if destGUID == userGUID then
 						E.Libs.CBH:Fire("OnDisabledUserDied")
 						return
 					end
 
-					local watched = spellDestGUIDS[destGUID] -- A Murder of Crows, Serrated Bone Spike, Shadowburn (Dest specific cdr (spell casted on) - no pet spells)
+					local watched = spellDestGUIDS[destGUID]
 					if watched then
 						for guid, t in pairs(watched) do
 							local info = groupInfo[guid]
@@ -2416,7 +2415,7 @@ else
 				UpdateDeadStatus(destInfo)
 			end
 		elseif band(srcFlags, player) > 0 then
-			if band(srcFlags, mine) > 0 and isUserDisabled then -- apply effects e.a., Forbearance to others when user is disabled
+			if band(srcFlags, mine) > 0 and isUserDisabled then
 				local func = registeredUserEvents[event] and registeredUserEvents[event][spellID]
 				if func and destGUID ~= userGUID then
 					func(nil, srcGUID, spellID, destGUID)
@@ -2439,24 +2438,24 @@ else
 				if info.class == "MAGE" then
 					local specID = info.spec
 					if specID == 63 then
-						if info.talentData[342344] then -- From the Ashes (Talent)
-							local icon = info.spellIcons[257541] -- Pheonix Flames
+						if info.talentData[342344] then
+							local icon = info.spellIcons[257541]
 							if icon and icon.active then
 								P:UpdateCooldown(icon, 1)
 							end
 						end
 					elseif specID == 64 and info.auras.isIcyPropulsion then
-						local rankValue = info.talentData[336522] -- Icy Propulsion (Conduit)
+						local rankValue = info.talentData[336522]
 						if rankValue then
-							local icon = info.spellIcons[12472] -- Icy Veins
-							if icon and icon.active and spellID ~= 190357 then -- Blizzard doesnt count toward CDR. Bug or intended?
+							local icon = info.spellIcons[12472]
+							if icon and icon.active and spellID ~= 190357 then
 								P:UpdateCooldown(icon, rankValue)
 							end
 						end
 					end
 				elseif info.class == "MONK" then
-					if info.auras.isFallenOrder then -- Sinister Teachings (Runeforge) Patch 9.1 new
-						local icon = info.spellIcons[326860]-- Fallen Order (Covenant)
+					if info.auras.isFallenOrder then
+						local icon = info.spellIcons[326860]
 						if icon and icon.active then
 							P:UpdateCooldown(icon, 3)
 						end
@@ -2471,7 +2470,7 @@ else
 						end
 					end
 				end
-			elseif event == "SPELL_INTERRUPT" then -- amount, overkill = extraSpellId, extraSpellName
+			elseif event == "SPELL_INTERRUPT" then
 				AppendInterruptExtras(info, destRaidFlags, spellID, amount, overkill)
 			end
 		elseif band(srcFlags, guardianTotem) > 0 then
@@ -2528,5 +2527,5 @@ end
 
 CD.totemGUIDS = totemGUIDS
 CD.petGUIDS = petGUIDS
-CD.spellDestGUIDS = spellDestGUIDS -- wipe on PEW
+CD.spellDestGUIDS = spellDestGUIDS
 E.ProcessSpell = ProcessSpell

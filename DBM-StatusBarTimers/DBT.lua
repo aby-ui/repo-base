@@ -122,7 +122,6 @@ DBT.DefaultOptions = {
 	ClickThrough = false,
 	KeepBars = true,
 	FadeBars = true,
-	StripCDText = true,
 	Texture = "Interface\\AddOns\\DBM-StatusBarTimers\\textures\\default.blp",
 	Font = "standardFont",
 	FontFlag = "None",
@@ -702,7 +701,7 @@ function barPrototype:SetText(text, inlineIcon)
 		inlineIcon = nil
 	end
 	-- Force change color type 7 to custom inlineIcon
-	_G[self.frame:GetName().."BarName"]:SetText(((self.colorType and self.colorType == 7 and DBT.Options.Bar7CustomInline) and DBM_CORE_L.IMPORTANT_ICON or inlineIcon or "") .. text)
+	_G[self.frame:GetName().."BarName"]:SetText(((self.colorType and self.colorType == 7 and DBT.Options.Bar7CustomInline) and DBM_COMMON_L.IMPORTANT_ICON or inlineIcon or "") .. text)
 end
 
 function barPrototype:SetIcon(icon)
@@ -793,8 +792,7 @@ function barPrototype:Update(elapsed)
 			end
 		end
 		if not enlargeEnabled and timerValue > enlargeTime then
-			local x = (barOptions.DesaturateValue * r) + (barOptions.DesaturateValue * g) + (barOptions.DesaturateValue * b)
-			r, g, b = x, x, x
+			r, g, b = barOptions.DesaturateValue * r, barOptions.DesaturateValue * g, barOptions.DesaturateValue * b
 		end
 		bar:SetStatusBarColor(r, g, b)
 		if sparkEnabled then

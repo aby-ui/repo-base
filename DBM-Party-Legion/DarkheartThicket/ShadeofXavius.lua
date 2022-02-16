@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1657, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(99192)
 mod:SetEncounterID(1839)
 mod:SetUsedIcons(2, 1)
@@ -29,7 +29,7 @@ local yellNightmare					= mod:NewYell(200243)
 local specWarnParanoia				= mod:NewSpecialWarningMoveAway(200289, nil, nil, nil, 1, 2)
 local yellParanoia					= mod:NewYell(200289)
 
-local timerFesteringRipCD			= mod:NewCDTimer(17, 200182, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.MAGIC_ICON)--17-21
+local timerFesteringRipCD			= mod:NewCDTimer(17, 200182, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)--17-21
 local timerNightmareCD				= mod:NewCDTimer(17, 200243, nil, nil, nil, 3)--17-25
 local timerParanoiaCD				= mod:NewCDTimer(18, 200359, nil, nil, nil, 3)--18-28
 --local timerApocNightmareCD			= mod:NewCDTimer(18, 200050, nil, nil, nil, 2)

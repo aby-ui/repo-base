@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1653, "DBM-Party-Legion", 1, 740)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116185401")
 mod:SetCreatureID(98696)
 mod:SetEncounterID(1833)
 mod:SetUsedIcons(3, 2, 1)
@@ -39,7 +39,7 @@ local specWarnBonebreakingStrike	= mod:NewSpecialWarningDodge(197974, "Tank", ni
 local specWarnArcaneBlitz			= mod:NewSpecialWarningInterrupt(197797, "HasInterrupt", nil, nil, 1, 2)
 
 local timerBrutalGlaiveCD			= mod:NewCDTimer(15, 197546, nil, nil, nil, 3)
-local timerVengefulShearCD			= mod:NewCDTimer(11, 197418, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--11-16, delayed by dark rush
+local timerVengefulShearCD			= mod:NewCDTimer(11, 197418, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--11-16, delayed by dark rush
 local timerDarkRushCD				= mod:NewCDTimer(30, 197478, nil, nil, nil, 3)
 local timerEyeBeamCD				= mod:NewNextTimer(15.5, 197687, nil, nil, nil, 3)
 
@@ -48,7 +48,7 @@ mod:AddSetIconOption("SetIconOnDarkRush", 197478, true, false, {1, 2, 3})
 
 function mod:BrutalGlaiveTarget(targetname, uId)
 	if not targetname then
-		warnBrutalGlaive:Show(DBM_CORE_L.UNKNOWN)
+		warnBrutalGlaive:Show(DBM_COMMON_L.UNKNOWN)
 		return
 	end
 	if targetname == UnitName("player") then

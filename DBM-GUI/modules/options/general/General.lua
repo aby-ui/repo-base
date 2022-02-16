@@ -13,19 +13,19 @@ if DBM.Options.EnableModels then
 end
 
 local GeneralArea1		= DBM_GUI.Cat_General:CreateArea(L.Area_BasicSetup)
-GeneralArea1:CreateText("|cFF73C2FBhttps://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BNew-User-Guide%5D-Initial-Setup-Tips|r", nil, true, nil, "LEFT")
+GeneralArea1:CreateText("|cFF73C2FBhttps://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BNew-User-Guide%5D-Initial-Setup-Tips|r", nil, true, nil, "LEFT", 0)
 GeneralArea1.frame:SetScript("OnMouseUp", function()
 	DBM:ShowUpdateReminder(nil, nil, L.Area_BasicSetup, "https://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BNew-User-Guide%5D-Initial-Setup-Tips")
 end)
 
 local GeneralArea2		= DBM_GUI.Cat_General:CreateArea(L.Area_ModulesForYou)
-GeneralArea2:CreateText("|cFF73C2FBhttps://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BNew-User-Guide%5D-What-Modules-are-for-you|r", nil, true, nil, "LEFT")
+GeneralArea2:CreateText("|cFF73C2FBhttps://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BNew-User-Guide%5D-What-Modules-are-for-you|r", nil, true, nil, "LEFT", 0)
 GeneralArea2.frame:SetScript("OnMouseUp", function()
 	DBM:ShowUpdateReminder(nil, nil, L.Area_ModulesForYou, "https://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BNew-User-Guide%5D-What-Modules-are-for-you")
 end)
 
 local GeneralArea3		= DBM_GUI.Cat_General:CreateArea(L.Area_ProfilesSetup)
-GeneralArea3:CreateText("|cFF73C2FBhttps://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BGuide%5D-DBM-Profiles|r", nil, true, nil, "LEFT")
+GeneralArea3:CreateText("|cFF73C2FBhttps://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BGuide%5D-DBM-Profiles|r", nil, true, nil, "LEFT", 0)
 GeneralArea3.frame:SetScript("OnMouseUp", function()
 	DBM:ShowUpdateReminder(nil, nil, L.Area_ProfilesSetup, "https://github.com/DeadlyBossMods/DeadlyBossMods/wiki/%5BGuide%5D-DBM-Profiles")
 end)

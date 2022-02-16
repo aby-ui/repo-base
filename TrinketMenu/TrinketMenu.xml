@@ -1,9 +1,9 @@
 <Ui xmlns = "http://www.blizzard.com/wow/ui/" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation = "http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 	<!-- Backdrop Template -->
-	<Frame name="TrinketMenuBackdropTemplate" mixin="TrinketMenuBackdropTemplateMixin" virtual="true">
+	<Frame name = "TrinketMenuBackdropTemplate" mixin = "TrinketMenuBackdropTemplateMixin" virtual = "true">
 		<Scripts>
-			<OnLoad method="OnBackdropLoaded"/>
-			<OnSizeChanged method="OnBackdropSizeChanged"/>
+			<OnLoad method = "OnBackdropLoaded"/>
+			<OnSizeChanged method = "OnBackdropSizeChanged"/>
 		</Scripts>
 	</Frame>
 	<!-- Worn trinkets template -->
@@ -83,7 +83,7 @@
 			<AbsDimension x = "91" y = "52" />
 		</Size>
 		<KeyValues>
-			<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16_16_4444" type="global"/>
+			<KeyValue key = "backdropInfo" value = "TRINKETMENU_BACKDROP_16_16_4444" type = "global"/>
 		</KeyValues>
 		<Anchors>
 			<Anchor point = "TOPLEFT" relativeTo = "UIParent" relativePoint = "BOTTOMLEFT">
@@ -171,9 +171,6 @@
 			<OnMouseUp>
 				TrinketMenu.MainFrame_OnMouseUp(self)
 			</OnMouseUp>
-			<OnHide>
-				TrinketMenu_MenuFrame:Hide()
-			</OnHide>
 			<OnShow>
 				TrinketMenu.OnShow()
 			</OnShow>
@@ -188,7 +185,7 @@
 			<AbsDimension x = "52" y = "91" />
 		</Size>
 		<KeyValues>
-			<KeyValue key="backdropInfo" value="TRINKETMENU_BACKDROP_16_16_4444" type="global"/>
+			<KeyValue key = "backdropInfo" value = "TRINKETMENU_BACKDROP_16_16_4444" type = "global"/>
 		</KeyValues>
 		<Anchors>
 			<Anchor point = "BOTTOMLEFT" relativeTo = "TrinketMenu_MainFrame" relativePoint = "BOTTOMRIGHT"/>

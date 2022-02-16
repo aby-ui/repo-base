@@ -28,7 +28,7 @@ frame:SetMinResize(800, 400)
 frame:SetMaxResize(UIParent:GetWidth(), UIParent:GetHeight())
 frame:Hide()
 frame.backdropInfo = {
-	bgFile		= "Interface\\DialogFrame\\UI-DialogBox-Background", -- 131071
+	bgFile		= "Interface\\DialogFrame\\UI-DialogBox-Background-Dark", -- 131071
 	edgeFile	= "Interface\\DialogFrame\\UI-DialogBox-Border", -- 131072
 	tile		= true,
 	tileSize	= 32,
@@ -37,6 +37,7 @@ frame.backdropInfo = {
 }
 
 frame:ApplyBackdrop()
+frame:SetBackdropColor(1, 1, 1, .85)
 frame.firstshow = true
 frame:SetScript("OnShow", function(self)
 	if self.firstshow then

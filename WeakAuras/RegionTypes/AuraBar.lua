@@ -35,15 +35,7 @@ local default = {
   icon_side = "RIGHT",
   icon_color = {1.0, 1.0, 1.0, 1.0},
   frameStrata = 1,
-  zoom = 0,
-  subRegions = {
-    [1] = {
-      ["type"] = "subbackground"
-    },
-    [2] = {
-      ["type"] = "subforeground"
-    },
-  }
+  zoom = 0
 };
 
 WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
@@ -1365,5 +1357,18 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
+local function validate(data)
+  -- pre-migration
+  if data.subRegions then
+    for _, subRegionData in ipairs(data.subRegions) do
+      if subRegionData.type == "aurabar_bar" then
+        subRegionData.type = "subforeground"
+      end
+    end
+  end
+  Private.EnforceSubregionExists(data, "subforeground")
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties, validate);

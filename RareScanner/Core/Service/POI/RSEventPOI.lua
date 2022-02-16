@@ -48,7 +48,7 @@ end
 ---- Manage adding Event icons to the world map and minimap
 ---============================================================================
 
-local function GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
+function RSEventPOI.GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 	local POI = {}
 	POI.entityID = eventID
 	POI.isEvent = true
@@ -165,7 +165,7 @@ function RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMa
 
 		-- Skip if common filters
 		if (not filtered and not IsEventPOIFiltered(eventID, mapID, eventInfo.zoneQuestId, vignetteGUIDs, onWorldMap, onMinimap)) then
-			tinsert(POIs, GetEventPOI(eventID, mapID, eventInfo))
+			tinsert(POIs, RSEventPOI.GetEventPOI(eventID, mapID, eventInfo))
 		end
 	end
 
@@ -210,6 +210,6 @@ function RSEventPOI.GetMapAlreadyFoundEventPOI(eventID, alreadyFoundInfo, mapID,
 	end
 
 	if (not IsEventPOIFiltered(eventID, mapID, zoneQuestID, vignetteGUIDs, onWorldMap, onMinimap)) then
-		return GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
+		return RSEventPOI.GetEventPOI(eventID, mapID, eventInfo, alreadyFoundInfo)
 	end
 end

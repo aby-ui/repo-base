@@ -266,7 +266,7 @@ end
 function RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 	if (npcID and mapID) then
 		local npcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
-		if (npcInfo) then
+		if (npcInfo and npcInfo.x and npcInfo.y) then
 			return RSUtils.Lpad(npcInfo.x, 4, '0'), RSUtils.Lpad(npcInfo.y, 4, '0')
 		end
 	end

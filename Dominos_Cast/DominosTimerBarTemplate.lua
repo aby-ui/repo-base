@@ -18,7 +18,7 @@ function TimerBar:OnLoad()
         edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
         tileEdge = true,
         edgeSize = 16,
-        insets = { left = 5, right = 5, top = 5, bottom = 5 },
+        insets = {left = 5, right = 5, top = 5, bottom = 5}
     }
 
     self.Layout = Dominos:Defer(TimerBar.Layout, 0.1, self)
@@ -83,22 +83,22 @@ function TimerBar:SetIcon(icon)
 end
 
 function TimerBar:SetFont(fontID)
-	local newFont = SharedMedia:Fetch(SharedMedia.MediaType.FONT, fontID)
-	local oldFont, fontSize, fontFlags = self.statusBar.label:GetFont()
+    local newFont = SharedMedia:Fetch(SharedMedia.MediaType.FONT, fontID)
+    local oldFont, fontSize, fontFlags = self.statusBar.label:GetFont()
 
-	if newFont and newFont ~= oldFont then
-		self.statusBar.label:SetFont(newFont, fontSize, fontFlags)
-		self.statusBar.text:SetFont(newFont, fontSize, fontFlags)
-	end
+    if newFont and newFont ~= oldFont then
+        self.statusBar.label:SetFont(newFont, fontSize, fontFlags)
+        self.statusBar.text:SetFont(newFont, fontSize, fontFlags)
+    end
 end
 
 function TimerBar:SetTexture(textureID)
-	local texture = SharedMedia:Fetch(SharedMedia.MediaType.STATUSBAR, textureID)
+    local texture = SharedMedia:Fetch(SharedMedia.MediaType.STATUSBAR, textureID)
 
     self.background:SetTexture(texture)
     self.background:SetVertexColor(0, 0, 0, 0.5)
 
-	self.statusBar:SetStatusBarTexture(texture)
+    self.statusBar:SetStatusBarTexture(texture)
 end
 
 TimerBar.showSpark = false
@@ -177,6 +177,14 @@ function TimerBar:SetCountdown(countdown)
     self.countdown = countdown
 end
 
+function TimerBar:SetFadeInDuration(durationSec)
+    self.fadeIn.alpha:SetDuration(durationSec)
+end
+
+function TimerBar:SetFadeOutDuration(durationSec)
+    self.fadeOut.alpha:SetDuration(durationSec)
+end
+
 function TimerBar:Start(value, minValue, maxValue)
     self.tvalue = value
     self.tmin = minValue
@@ -195,9 +203,8 @@ end
 -- safely cast a spell, so we
 function TimerBar:GetLatency()
     local _, _, latencyHome, latencyWorld = GetNetStats()
-    local padding = self.latencyPadding or 0
 
-	return math.max(latencyHome, latencyWorld) / 100
+    return math.max(latencyHome, latencyWorld) / 100
 end
 
 function TimerBar:Pause()
@@ -232,8 +239,14 @@ function TimerBar:FadeIn()
         self.fadeOut:Stop()
     end
 
-    if not self.fadeIn:IsPlaying() and self:GetAlpha() < 1 then
-        self.fadeIn:Play()
+    if self:GetAlpha() < 1 then
+        if self.fadeIn:GetDuration() > 0 then
+            if not self.fadeIn:IsPlaying() then
+                self.fadeIn:Play()
+            end
+        else
+            self:SetAlpha(1)
+        end
     end
 end
 
@@ -242,8 +255,14 @@ function TimerBar:FadeOut()
         self.fadeIn:Stop()
     end
 
-    if not self.fadeOut:IsPlaying() and self:GetAlpha() > 0 then
-        self.fadeOut:Play()
+    if self:GetAlpha() > 0 then
+        if self.fadeOut:GetDuration() > 0 then
+            if not self.fadeOut:IsPlaying() then
+                self.fadeOut:Play()
+            end
+        else
+            self:SetAlpha(0)
+        end
     end
 end
 
@@ -256,7 +275,7 @@ function TimerBar:Layout()
     local margin, iconSize
 
     -- show/hide the border
-	if self.showBorder then
+    if self.showBorder then
         self.border:Show()
         margin = 5
     else

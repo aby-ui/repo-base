@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2146, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(133298)
 mod:SetEncounterID(2128)
 --mod:SetHotfixNoticeRev(16950)
@@ -40,11 +40,11 @@ local yellPutridParoxysm				= mod:NewYell(262314)
 local yellPutridParoxysmFades			= mod:NewFadesYell(262314)
 local specWarnAdds						= mod:NewSpecialWarningAdds(262364, "Dps", nil, nil, 1, 2)
 
-local timerThrashCD						= mod:NewCDTimer(6, 262277, 74979, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--Short Name "Thrash"
+local timerThrashCD						= mod:NewCDTimer(6, 262277, 74979, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Short Name "Thrash"
 local timerRottingRegurgCD				= mod:NewCDTimer(40.1, 262292, 21131, nil, nil, 3, nil, nil, nil, 1, 4)--Short Name "Breath"
 local timerShockwaveStompCD				= mod:NewCDCountTimer(27.5, 262288, 116969, nil, nil, 2)--Short Name "Stomp"
 local timerPreAddsCD					= mod:NewTimer(54.8, "chuteTimer", 262364, false, nil, 5)
-local timerAddsCD						= mod:NewAddsTimer(54.8, 262364, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON, nil, 3, 5)
+local timerAddsCD						= mod:NewAddsTimer(54.8, 262364, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 3, 5)
 
 local berserkTimer						= mod:NewBerserkTimer(330)
 
@@ -121,10 +121,10 @@ function mod:OnCombatStart(delay)
 		timerRottingRegurgCD:Start(31.4-delay)
 	end
 	timerAddsCD:Start(55-delay)--Until Attackable, not the chute visuals
-	timerPreAddsCD:Start(45, DBM_CORE_L.ADDS)
+	timerPreAddsCD:Start(45, DBM_COMMON_L.ADDS)
 	if self:IsMythic() then
 		updateRangeFrame(self)
-		timerPreAddsCD:Start(35, DBM_CORE_L.BIG_ADD)
+		timerPreAddsCD:Start(35, DBM_COMMON_L.BIG_ADD)
 	end
 	berserkTimer:Start()--Until rumor confirmed, use this berserk timer in all modes
 end
@@ -167,9 +167,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnAdds:Play("killmob")
 			local timer = self:IsMythic() and 75 or self:IsEasy() and 60 or 54.8
 			timerAddsCD:Start(timer)
-			timerPreAddsCD:Start(timer-10, DBM_CORE_L.ADDS)
+			timerPreAddsCD:Start(timer-10, DBM_COMMON_L.ADDS)
 			if self:IsMythic() then
-				timerPreAddsCD:Start(timer-20, DBM_CORE_L.BIG_ADD)
+				timerPreAddsCD:Start(timer-20, DBM_COMMON_L.BIG_ADD)
 			end
 		end
 	elseif spellId == 262277 then

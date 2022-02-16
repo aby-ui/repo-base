@@ -12,11 +12,13 @@ end
 
 P.setSpell = function(info, state)
 	local tab = info[3] == "spells" and "spells" or "raidCDS"
+	local sId = info[#info]
 	local db = E.DB.profile.Party[info[2]]
-	db[tab][info[#info]] = state
+	db[tab][sId] = state
 
 	if db == E.db then
 		P:UpdateEnabledSpells()
+---     P:Refresh(sId == "6262")
 		P:Refresh()
 	end
 end

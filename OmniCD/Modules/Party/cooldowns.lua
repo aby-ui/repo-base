@@ -112,6 +112,7 @@ function P:ResetCooldown(icon)
 end
 
 -- TODO: check base CD instead of modified icon.duration
+-- TODO: don't reset if (re)entering a M+ in progress (requires delay timer)
 local minDuration = E.TocVersion > 90100 and 120 or 180
 function P:ResetAllIcons(reason)
 	for _, info in pairs(self.groupInfo) do

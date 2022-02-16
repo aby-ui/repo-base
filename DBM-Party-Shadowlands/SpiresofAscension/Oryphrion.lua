@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2414, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211204032249")
+mod:SetRevision("20220204091202")
 mod:SetCreatureID(162060)
 mod:SetEncounterID(2358)
 
@@ -37,7 +37,7 @@ local specWarnPurifyingBlast		= mod:NewSpecialWarningMoveAway(334053, nil, nil, 
 local yellPurifyingBlast			= mod:NewYell(334053)
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
-local timerEmpyrealOrdnanceCD		= mod:NewCDTimer(26.7, 324427, nil, nil, nil, 3)
+local timerEmpyrealOrdnanceCD		= mod:NewCDTimer(26.7, 321936, nil, nil, nil, 3)
 local timerPurifyingBlastCD			= mod:NewCDTimer(13.4, 334053, nil, nil, nil, 3)--Wild variations do to spell queuing problems
 local timerChargedStompCD			= mod:NewCDTimer(13.4, 324608, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)--Wild variations do to spell queuing problems
 

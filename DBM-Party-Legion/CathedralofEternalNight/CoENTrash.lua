@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CoENTrash", "DBM-Party-Legion", 12)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -30,7 +30,7 @@ local specWarnVenomStorm		= mod:NewSpecialWarningDodge(239266, nil, nil, nil, 1,
 
 function mod:FelStrikeTarget(targetname, uId)
 	if not targetname then
-		warnFelStrike:Show(DBM_CORE_L.UNKNOWN)
+		warnFelStrike:Show(DBM_COMMON_L.UNKNOWN)
 		return
 	end
 	if self:AntiSpam(2, targetname) then--In case two enemies target same target

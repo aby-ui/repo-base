@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1897, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(118289)
 mod:SetEncounterID(2052)
 mod:SetUsedIcons(4, 1)
@@ -53,15 +53,15 @@ local specWarnSpontFrag				= mod:NewSpecialWarningCount(239153, false, nil, nil,
 
 
 --Stage One: Divide and Conquer
-local timerInfusionCD				= mod:NewNextCountTimer(37.9, 235271, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
-local timerLightHammerCD			= mod:NewNextCountTimer(18, 241635, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 1, 4)
-local timerFelHammerCD				= mod:NewNextCountTimer(18, 241636, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
+local timerInfusionCD				= mod:NewNextCountTimer(37.9, 235271, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerLightHammerCD			= mod:NewNextCountTimer(18, 241635, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 1, 4)
+local timerFelHammerCD				= mod:NewNextCountTimer(18, 241636, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)
 local timerMassInstabilityCD		= mod:NewNextCountTimer(31, 235267, nil, nil, nil, 3)
 local timerBlowbackCD				= mod:NewNextTimer(81.1, 237722, nil, nil, nil, 6)--81-82
 local berserkTimer					= mod:NewBerserkTimer(480)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerSpontFragmentationCD		= mod:NewCDTimer(8, 239153, nil, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
+local timerSpontFragmentationCD		= mod:NewCDTimer(8, 239153, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
 
 mod:AddSetIconOption("SetIconOnInfusion", 235271, true)
 mod:AddInfoFrameOption(235117, true)

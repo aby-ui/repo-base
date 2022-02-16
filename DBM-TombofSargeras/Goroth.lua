@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1862, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(115844)
 mod:SetEncounterID(2032)
 --mod:SetUsedIcons(1)
@@ -45,11 +45,11 @@ local timerShatteringStar				= mod:NewBuffFadesTimer(6, 233272, nil, nil, nil, 5
 local timerCrashingComet				= mod:NewBuffFadesTimer(5, 232249, nil, nil, nil, 5, nil, nil, nil, 2, 4)
 local timerCrashingCometCD				= mod:NewCDTimer(18.2, 232249, nil, nil, nil, 3)--18.2-24.7
 local timerInfernalSpikeCD				= mod:NewCDTimer(16, 233055, nil, nil, nil, 3)--16.2-20.7
-local timerBurningArmorCD				= mod:NewCDCountTimer(24.3, 231363, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerBurningArmor					= mod:NewBuffFadesTimer(6, 231363, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON, nil, mod:IsTank() and 2, 4)
+local timerBurningArmorCD				= mod:NewCDCountTimer(24.3, 231363, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerBurningArmor					= mod:NewBuffFadesTimer(6, 231363, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON, nil, mod:IsTank() and 2, 4)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerRainofBrimstoneCD			= mod:NewCDCountTimer(31, 238587, nil, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
-local timerRainofBrimstone				= mod:NewCastTimer(8, 238587, 87701, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
+local timerRainofBrimstoneCD			= mod:NewCDCountTimer(31, 238587, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerRainofBrimstone				= mod:NewCastTimer(8, 238587, 87701, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(300)
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2412, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220131034332")
 mod:SetCreatureID(162061)
 mod:SetEncounterID(2359)
 
@@ -116,9 +116,9 @@ do
 		end
 	end
 
-	function mod:OnSync(msg, targetname)
+	function mod:OnSync(msg, targetname, sender)
 		if not self:IsInCombat() then return end
-		if msg == "Spear" and targetname then
+		if msg == "Spear" and sender then
 			targetname = Ambiguate(targetname, "none")
 			if targetname == playerName then
 				specWarnRunThrough:Show()

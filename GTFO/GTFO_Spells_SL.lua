@@ -188,6 +188,11 @@ GTFO.SpellID["355738"] = {
   sound = 1;
 };
 
+GTFO.SpellID["365909"] = {
+  --desc = "Desecrated Ground (Yggdreth the Despoiler)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -837,5 +842,12 @@ GTFO.SpellID["356163"] = {
   sound = 1;
   tankSound = 0;
 };
+
+--- *******************************
+--- * Sepulcher of the First Ones *
+--- *******************************
+
+-- TODO: Relic Collapse (Artificer Xy'mox) - Mythic only
+
 
 end

@@ -179,6 +179,16 @@ function P:HighlightIcon(icon, isRefresh)
 end
 
 function P:SetGlow(icon)
+	-- old glow
+	-- temp glowType0 in opt
+	--[[
+	local flash = icon.flashAnim
+	local newItemAnim = icon.newitemglowAnim
+	if not flash:IsPlaying() and not newItemAnim:IsPlaying() then
+		flash:Play()
+		newItemAnim:Play()
+	end
+	]]
 	icon.AnimFrame:Show() -- changed drawlayer to overlay to fix Transition being covered
 	icon.AnimFrame.Anim:Play()
 end

@@ -18,6 +18,10 @@ L["EXTRA_SLOT"] = "Set successfully loaded, but you still have an empty dominati
 L["DELETE_SET_CONFIRM"] = "Delete %s?"
 L["NOT_SAVED"] = "Not Saved" --ldb text when your set is not saved
 
+L["REPLACE"] = "Replace %s with %s in:"
+L["REPLACE_TIP"] = "|cFFFC0316Shift|r: Replace All"
+L["NOT_ENOUGH_GEMS"] = "|cFFFC0316Purchase %sx%s to also include:" --example: Missing [item Link]x3
+
 --Below goes on shard buttons.
 --ItemID of base item provided if translation is needed
 L["Bek"] = "Bek" --187057
@@ -29,3 +33,16 @@ L["Zed"] = "Zed" --187079
 L["Cor"] = "Cor" --187063
 L["Kyr"] = "Kyr" --187065
 L["Tel"] = "Tel" --187071
+
+--Options
+L["O_QUICK_SLOT"] = "Quick Slots"
+L["ENABLE"] = "Enable"
+L["ENABLE_DESC"] = "Enable the quick gem slots bar under the character frame."
+L["ALWAYS_EMPTY"] = "Always Show Empty"
+L["ALWAYS_EMPTY_DESC"] = "Always show empty gem slots in the quick slot bar."
+L["STAY_OPEN"] = "Stay Open"
+L["STAY_OPEN_DESC"] = "Keep the quick slot bar expanded after you close the character window."
+
+L["SOCKET_WINDOW"] = "Socket Window"
+L["AUTO_ACCEPT"] = "Auto Accept"
+L["AUTO_ACCEPT_DESC"] = "Auto accept gems without requiring you to click apply."

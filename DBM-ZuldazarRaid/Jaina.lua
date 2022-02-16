@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetUsedIcons(1, 2, 3)
@@ -102,7 +102,7 @@ local specWarnPrismaticImage			= mod:NewSpecialWarningSwitchCount(288747, nil, n
 
 --General
 local timerPhaseTransition				= mod:NewPhaseTimer(55)
-local timerHowlingWindsCD				= mod:NewCDCountTimer(80, 288169, nil, nil, nil, 6, nil, DBM_CORE_L.MYTHIC_ICON)--Mythic
+local timerHowlingWindsCD				= mod:NewCDCountTimer(80, 288169, nil, nil, nil, 6, nil, DBM_COMMON_L.MYTHIC_ICON)--Mythic
 local berserkTimer						= mod:NewBerserkTimer(900)
 local timerIceBlockCD					= mod:NewTargetTimer(20, 287322, nil, nil, nil, 6)
 --Stage One: Burning Seas
@@ -110,27 +110,27 @@ mod:AddTimerLine(DBM:EJ_GetSectionInfo(19557))
 local timerCorsairCD					= mod:NewCDTimer(60.4, "ej19690", nil, nil, nil, 1, "2261243")
 --local timerBombardCD					= mod:NewCDTimer(55, 285828, nil, nil, nil, 3)
 local timerAvalancheCD					= mod:NewCDTimer(60.7, 287565, nil, nil, 2, 5, nil, nil, true)
-local timerGraspofFrostCD				= mod:NewCDTimer(17.3, 287626, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON, true)
+local timerGraspofFrostCD				= mod:NewCDTimer(17.3, 287626, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON, true)
 local timerFreezingBlastCD				= mod:NewCDTimer(14, 285177, nil, "Tank", nil, 3, nil, nil, true)
-local timerRingofIceCD					= mod:NewCDCountTimer(60.7, 285459, nil, nil, nil, 2, nil, DBM_CORE_L.IMPORTANT_ICON, true, 1, 4)
+local timerRingofIceCD					= mod:NewCDCountTimer(60.7, 285459, nil, nil, nil, 2, nil, DBM_COMMON_L.IMPORTANT_ICON, true, 1, 4)
 local timerFrozenSiegeCD				= mod:NewCDCountTimer(31.6, 289488, nil, nil, nil, 3, nil, nil, true)--Mythic
 --Stage Two: Frozen Wrath
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19565))
 local timerBroadsideCD					= mod:NewCDCountTimer(31.3, 288212, nil, nil, nil, 3)
-local timerSiegebreakerCD				= mod:NewCDCountTimer(59.9, 288374, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerSiegebreakerCD				= mod:NewCDCountTimer(59.9, 288374, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 --local timerHandofFrostCD				= mod:NewCDTimer(55, 288412, nil, nil, nil, 3)--Timer is only for first cast of phase, after that, can't tell cast from jump
 local timerGlacialRayCD					= mod:NewCDCountTimer(49.8, 288345, nil, nil, nil, 3, nil, nil, true, 3, 3)--49.8-61.1 (can be delayed significantly by ice block
-local timerIcefallCD					= mod:NewCDCountTimer(42.8, 288475, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerIcefallCD					= mod:NewCDCountTimer(42.8, 288475, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 --local timerIcefall						= mod:NewCastTimer(55, 288475, nil, nil, nil, 3)
 --Intermission 2
-mod:AddTimerLine(DBM_CORE_L.INTERMISSION)
+mod:AddTimerLine(DBM_COMMON_L.INTERMISSION)
 local timerHeartofFrostCD				= mod:NewCDTimer(6, 289220, nil, nil, nil, 3)
-local timerWaterBoltVolleyCD			= mod:NewCDCountTimer(7.2, 290084, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerWaterBoltVolleyCD			= mod:NewCDCountTimer(7.2, 290084, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 --Stage 3
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19624))
-local timerOrbofFrostCD					= mod:NewCDCountTimer(60, 288619, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
-local timerPrismaticImageCD				= mod:NewCDCountTimer(41.3, 288747, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
-local timerCrystallineDustCD			= mod:NewCDCountTimer(14.1, 289940, nil, nil, 2, 5, nil, DBM_CORE_L.TANK_ICON, true)
+local timerOrbofFrostCD					= mod:NewCDCountTimer(60, 288619, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerPrismaticImageCD				= mod:NewCDCountTimer(41.3, 288747, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerCrystallineDustCD			= mod:NewCDCountTimer(14.1, 289940, nil, nil, 2, 5, nil, DBM_COMMON_L.TANK_ICON, true)
 
 mod:AddNamePlateOption("NPAuraOnMarkedTarget2", 288038, false)
 mod:AddNamePlateOption("NPAuraOnTimeWarp", 287925)
@@ -481,7 +481,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 289387 then
 		if args:IsPlayer() then
-			specWarnFreezingBlood:Show(DBM_CORE_L.ALLY)
+			specWarnFreezingBlood:Show(DBM_COMMON_L.ALLY)
 			specWarnFreezingBlood:Play("gathershare")
 			yellFreezingBlood:Countdown(spellId)
 		end

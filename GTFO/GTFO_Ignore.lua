@@ -87,6 +87,6 @@ GTFO.IgnoreScan["356253"] = true; -- Dreadbugs
 GTFO.IgnoreScan["356447"] = true; -- Dreadbugs
 GTFO.IgnoreScan["209858"] = true; -- Necrotic Wound
 GTFO.IgnoreScan["355951"] = true; -- Unworthy
-
+GTFO.IgnoreScan["366943"] = true; -- Radioactive Core
 
 

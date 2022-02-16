@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2011, "DBM-BrokenIsles", 2, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721041434")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(124625)
 mod:SetEncounterID(2083)
 mod:EnableWBEngageSync()--Enable syncing engage in outdoors
@@ -23,9 +23,9 @@ local specWarnBeguilingCharm		= mod:NewSpecialWarningLookAway(247549, nil, nil, 
 local specWarnSadist				= mod:NewSpecialWarningCount(247544, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.stack:format(12, 159515), nil, 1, 2)
 local specWarnSadistOther			= mod:NewSpecialWarningTaunt(247544, nil, nil, nil, 1, 2)
 
-local timerBeguilingCharmCD			= mod:NewCDTimer(34.1, 247549, nil, nil, nil, 2, nil, DBM_CORE_L.IMPORTANT_ICON, nil, 1, 4)
-local timerFelLashCD				= mod:NewCDTimer(31.1, 247604, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
-local timerHeartBreakerCD			= mod:NewCDTimer(21.2, 247517, nil, "Healer", nil, 5, nil, DBM_CORE_L.HEALER_ICON)
+local timerBeguilingCharmCD			= mod:NewCDTimer(34.1, 247549, nil, nil, nil, 2, nil, DBM_COMMON_L.IMPORTANT_ICON, nil, 1, 4)
+local timerFelLashCD				= mod:NewCDTimer(31.1, 247604, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerHeartBreakerCD			= mod:NewCDTimer(21.2, 247517, nil, "Healer", nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 
 mod:AddReadyCheckOption(48620, false)
 

@@ -11,10 +11,10 @@ CL.LEFT								= "Left"
 CL.RIGHT							= "Right"
 CL.BOTH								= "Both"
 CL.BEHIND							= "Behind"
-CL.BACK								= "Back"--BACK
-CL.SIDE								= "Side"
-CL.TOP								= "Top"
-CL.BOTTOM							= "Bottom"
+CL.BACK								= "Back"--Back as in back of the room, not back as in body part
+CL.SIDE								= "Side"--Side as in move to the side
+CL.TOP								= "Top"--Top as in up top, not BDSM
+CL.BOTTOM							= "Bottom"--Bottom as in at the bottom, not BDSM
 CL.MIDDLE							= "Middle"
 CL.FRONT							= "Front"
 CL.EAST								= "East"
@@ -37,7 +37,7 @@ CL.BOSS								= "Boss"
 CL.EDGE								= "Room Edge"
 CL.FAR_AWAY							= "Far Away"
 CL.BREAK_LOS						= "Break LOS"
-CL.RESTORE_LOS						= "Restore/Maintain LOS"
+CL.RESTORE_LOS						= "Maintain LOS"
 CL.SAFE								= "Safe"
 CL.NOTSAFE							= "Not Safe"
 CL.SHIELD							= "Shield"
@@ -46,6 +46,9 @@ CL.SHELTER							= "Shelter"
 CL.INCOMING							= "%s Incoming"
 CL.BOSSTOGETHER						= "Bosses Together"
 CL.BOSSAPART						= "Bosses Apart"
+CL.TANKCOMBO						= "Tank Combo"
+CL.AOEDAMAGE						= "AOE Damage"
+CL.SEASONAL							= "Seasonal"--Used for option headers to label options that apply to seasonal mechanics (Such as season of mastery on classic era)
 
 --Journal Icons should not be copied to non english locals, do not include this section
 local EJIconPath = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) and "EncounterJournal" or "AddOns\\DBM-Core\\textures"

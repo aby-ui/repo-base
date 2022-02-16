@@ -1,10 +1,10 @@
 --- MSA-DropDownMenu-1.0 - DropDown menu for non-Blizzard addons
---- Copyright (c) 2016-2020, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2016-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- https://www.curseforge.com/wow/addons/msa-dropdownmenu-10
 
-local name, version = "MSA-DropDownMenu-1.0", 12
+local name, version = "MSA-DropDownMenu-1.0", 13
 
 local lib, oldVersion = LibStub:NewLibrary(name, version)
 if not lib then return end
@@ -1701,8 +1701,8 @@ local function LoadSkin_Aurora()
     if not IsAddOnLoaded("Aurora") then return end
     local Skin = _G.Aurora.Skin
     for i = 1, MSA_DROPDOWNMENU_MAXLEVELS do
-        Skin.TooltipBackdropTemplate(_G["MSA_DropDownList"..i.."MenuBackdrop"])
-        Skin.TooltipBackdropTemplate(_G["MSA_DropDownList"..i.."Backdrop"])
+        Skin.FrameTypeFrame(_G["MSA_DropDownList"..i.."MenuBackdrop"])
+        Skin.FrameTypeFrame(_G["MSA_DropDownList"..i.."Backdrop"])
     end
 end
 

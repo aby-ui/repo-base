@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 mod:SetHotfixNoticeRev(18336)
@@ -96,16 +96,16 @@ local specWarnFocusedDimise				= mod:NewSpecialWarningInterrupt(286779, nil, nil
 
 --Stage One: Zandalari Honor Guard
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19172))
-local timerScorchingDetonationCD		= mod:NewCDCountTimer(23.1, 284831, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
+local timerScorchingDetonationCD		= mod:NewCDCountTimer(23.1, 284831, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)
 local timerPlagueofToadsCD				= mod:NewCDTimer(21.1, 284933, nil, nil, nil, 1)
 local timerSerpentTotemCD				= mod:NewCDTimer(31.6, 285172, nil, nil, nil, 1)
-mod:AddTimerLine(DBM_CORE_L.ADDS)
+mod:AddTimerLine(DBM_COMMON_L.ADDS)
 ----Prelate Za'lan
 local timerSealofPurificationCD			= mod:NewCDTimer(25.4, 284662, nil, nil, nil, 3)
 ----Siegebreaker Roka
 local timerMeteorLeapCD					= mod:NewCDTimer(33.3, 284686, nil, nil, nil, 3)
 ----Headhunter Gal'wana
-local timerGrievousAxeCD				= mod:NewCDTimer(17.1, 284781, nil, nil, nil, 3, nil, DBM_CORE_L.HEALER_ICON)
+local timerGrievousAxeCD				= mod:NewCDTimer(17.1, 284781, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)
 --Stage Two: Bwonsamdi's Pact
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19242))
 local timerPlagueofFireCD				= mod:NewCDTimer(23, 285347, nil, nil, nil, 3)
@@ -116,10 +116,10 @@ local timerDeathsDoorCD					= mod:NewCDTimer(27.9, 288449, nil, nil, nil, 3)
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19243))
 local timerSpiritVortex					= mod:NewCastTimer(5, 284478, nil, nil, nil, 6)
 local timerDreadReapingCD				= mod:NewCDTimer(14.1, 287116, nil, nil, nil, 3)
-local timerInevitableEndCD				= mod:NewCDCountTimer(62.5, 287333, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)--62-75?
-local timerAddsCD						= mod:NewAddsTimer(120, 284446, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--Single use at start of Stage 3
+local timerInevitableEndCD				= mod:NewCDCountTimer(62.5, 287333, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)--62-75?
+local timerAddsCD						= mod:NewAddsTimer(120, 284446, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)--Single use at start of Stage 3
 ----Spirits
-mod:AddTimerLine(DBM_CORE_L.ADDS)
+mod:AddTimerLine(DBM_COMMON_L.ADDS)
 local timerSealofBwonCD					= mod:NewCDTimer(25.5, 286695, nil, nil, nil, 5)
 local timerNecroticSmashCD				= mod:NewCDTimer(34.6, 286742, nil, nil, nil, 2)
 
@@ -142,7 +142,7 @@ local infoframeTable = {}
 function mod:MeteorLeapTarget(targetname, uId, bossuid, scanningTime)
 	if not targetname then return end
 	if targetname == UnitName("player") then
-		specWarnMeteorLeap:Show(DBM_CORE_L.ALLIES)
+		specWarnMeteorLeap:Show(DBM_COMMON_L.ALLIES)
 		specWarnMeteorLeap:Play("gathershare")
 		yellMeteorLeap:Yell()
 		yellMeteorLeapFades:Countdown(5-scanningTime)

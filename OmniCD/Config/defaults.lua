@@ -55,6 +55,7 @@ C["Party"] = {
 		},
 		highlight = {
 			["glow"] = true,
+			--["glowType0"] = "wardrobe", -- old glow
 			["glowColor"] = "bags-glow-white", -- 2.6.02 removed
 			["glowBuffs"] = true,
 			["glowType"] = "wardrobe",

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2339, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116185401")
 mod:SetCreatureID(144246)
 mod:SetEncounterID(2258)
 
@@ -30,8 +30,8 @@ local specWarnVentingFlames			= mod:NewSpecialWarningMoveTo(291946, nil, nil, ni
 
 local timerAurDropCD				= mod:NewNextTimer(34, 291930, nil, nil, nil, 3)
 local timerExplosiveLeapCD			= mod:NewCDTimer(33.4, 291972, nil, nil, nil, 3)
-local timerVentingFlamesCD			= mod:NewCDTimer(13.4, 291946, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
-local timerBlazingChompCD			= mod:NewCDTimer(15.8, 294929, nil, "Tank|Healer", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerVentingFlamesCD			= mod:NewCDTimer(13.4, 291946, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerBlazingChompCD			= mod:NewCDTimer(15.8, 294929, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 mod:AddRangeFrameOption(10, 291972)
 
@@ -57,7 +57,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 291946 then
-		specWarnVentingFlames:Show(DBM_CORE_L.BREAK_LOS)
+		specWarnVentingFlames:Show(DBM_COMMON_L.BREAK_LOS)
 		specWarnVentingFlames:Play("findshelter")
 		--15.5, 33.9, 34.0, 34.0"
 		timerVentingFlamesCD:Start()

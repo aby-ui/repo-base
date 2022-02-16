@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2095, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210614230033")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(126983)
 mod:SetEncounterID(2096)
 
@@ -28,7 +28,7 @@ local specWarnSwiftwindSaber		= mod:NewSpecialWarningDodge(257278, nil, nil, nil
 local specWarnCannonBarrage			= mod:NewSpecialWarningDodge(257305, nil, nil, nil, 3, 2)
 local yellCannonBarrage				= mod:NewYell(257305)
 
-local timerAvastyeCD				= mod:NewCDTimer(13, 257316, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerAvastyeCD				= mod:NewCDTimer(13, 257316, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerSwiftwindSaberCD			= mod:NewCDTimer(15.8, 257278, nil, nil, nil, 3)
 local timerCannonBarrageCD			= mod:NewCDTimer(17.4, 257305, nil, nil, nil, 3)
 

@@ -1,9 +1,11 @@
 ## Interface: 90105
 ## Title: Domination Socket Helper
 ## Author: Metriss - Stormrage
-## Version: 1.5.4
+## Version: v2.0.9
 ## SavedVariables: DSHDB
-## Notes: Helps with changing Domination Socket Shards
+## Notes: Helps with changing Gems and Domination Socket Shards
+
+## X-Curse-Project-ID: 507074
 
 #@no-lib-strip@
 libs\libs.xml
@@ -16,6 +18,7 @@ locales\zhTW.lua
 
 main.lua
 ldb.lua
+options.lua
 
 ## Title: |cff880303[爱不易]|r Domination 统御碎片助手
 ## X-Vendor: AbyUI

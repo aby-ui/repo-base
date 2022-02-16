@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2099, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(127490)
 mod:SetEncounterID(2103)
 
@@ -21,7 +21,7 @@ local specWarnIgnition				= mod:NewSpecialWarningSpell(256970, nil, nil, nil, 1,
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerCinderflameCD			= mod:NewCDTimer(20.5, 256955, nil, nil, nil, 3)
-local timerFuselighterCD			= mod:NewCDTimer(14.7, 257028, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)--14.7-23, health based?
+local timerFuselighterCD			= mod:NewCDTimer(14.7, 257028, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)--14.7-23, health based?
 local timerIgnitionCD				= mod:NewCDTimer(32.7, 256970, nil, nil, nil, 5)--Health based?
 
 function mod:OnCombatStart(delay)

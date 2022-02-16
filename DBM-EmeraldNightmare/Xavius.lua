@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1726, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220201235234")
 mod:SetCreatureID(103769)
 mod:SetEncounterID(1864)
 mod:SetUsedIcons(6, 2, 1)
@@ -65,19 +65,19 @@ local specWarnInconHorror				= mod:NewSpecialWarningSwitch("ej13162", "-Healer",
 
 --Stage One: The Decent Into Madness
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerDarkeningSoulCD				= mod:NewCDTimer(7, 206651, nil, "Healer|Tank", nil, 5, nil, DBM_CORE_L.MAGIC_ICON..DBM_CORE_L.TANK_ICON)
+local timerDarkeningSoulCD				= mod:NewCDTimer(7, 206651, nil, "Healer|Tank", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON..DBM_COMMON_L.TANK_ICON)
 local timerNightmareBladesCD			= mod:NewNextTimer(15.7, 206656, nil, "-Tank", 2, 3)
 local timerLurkingEruptionCD			= mod:NewCDCountTimer(20.5, 208322, nil, "-Tank", 2, 3)
-local timerCorruptionHorrorCD			= mod:NewNextCountTimer(82.5, 210264, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerCorruptionHorrorCD			= mod:NewNextCountTimer(82.5, 210264, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
 local timerCorruptingNovaCD				= mod:NewNextTimer(20, 207830, nil, nil, nil, 2)
-local timerTormentingSwipeCD			= mod:NewCDTimer(10, 224649, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerTormentingSwipeCD			= mod:NewCDTimer(10, 224649, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --Stage Two: From the Shadows
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerBondsOfTerrorCD				= mod:NewCDTimer(14.1, 209034, nil, "-Tank", 2, 3)
-local timerCorruptionMeteorCD			= mod:NewCDCountTimer(28, 206308, 57467, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, not mod:IsTank() and 3, 4)--Short text "meteor"
-local timerBlackeningSoulCD				= mod:NewCDTimer(7.2, 209158, nil, "Healer|Tank", nil, 5, nil, DBM_CORE_L.MAGIC_ICON..DBM_CORE_L.TANK_ICON)
-local timerNightmareInfusionCD			= mod:NewCDTimer(61.5, 209443, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)--61.5-62.5
-local timerCallOfNightmaresCD			= mod:NewCDTimer(40, 205588, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerCorruptionMeteorCD			= mod:NewCDCountTimer(28, 206308, 57467, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, not mod:IsTank() and 3, 4)--Short text "meteor"
+local timerBlackeningSoulCD				= mod:NewCDTimer(7.2, 209158, nil, "Healer|Tank", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON..DBM_COMMON_L.TANK_ICON)
+local timerNightmareInfusionCD			= mod:NewCDTimer(61.5, 209443, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)--61.5-62.5
+local timerCallOfNightmaresCD			= mod:NewCDTimer(40, 205588, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
 --Stage Three: Darkness and stuff
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerNightmareTentacleCD			= mod:NewCDTimer(20, "ej12977", nil, nil, nil, 1, 93708)--226194 is an icon consideration now
@@ -483,7 +483,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		self.vb.dreamCount = self.vb.dreamCount + 1
 		local count = self.vb.dreamCount
 		specWarnDreaming:Show(count)
-		specWarnDreaming:Play(nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack.."\\count\\"..count..".ogg")
+		specWarnDreaming:Play(nil, "Interface\\AddOns\\DBM-VP"..DBM.Options.ChosenVoicePack2.."\\count\\"..count..".ogg")
 		specWarnDreaming:ScheduleVoice(1, "stepring")
 	end
 end

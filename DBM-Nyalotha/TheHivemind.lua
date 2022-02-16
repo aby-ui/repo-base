@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2372, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011151021")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(157253, 157254)--Ka'zir and Tek'ris
 mod:SetEncounterID(2333)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)--Refine when max number of mythic Volatile Eruption is known
@@ -53,19 +53,19 @@ local specWarnEtropicEhco					= mod:NewSpecialWarningDodge(313692, nil, nil, nil
 --General
 local timerTekrissHiveControlCD				= mod:NewNextTimer(98.7, 307213, nil, nil, nil, 6, nil, nil, nil, 1, 5)
 local timerKazirsHiveControlCD				= mod:NewNextTimer(98.7, 307201, nil, nil, nil, 6, nil, nil, nil, 1, 5)
-local timerDarkReconCast					= mod:NewNextTimer(10, 307569, nil, nil, nil, 5, nil, DBM_CORE_L.DAMAGE_ICON, nil, 3, 4)
+local timerDarkReconCast					= mod:NewNextTimer(10, 307569, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 3, 4)
 --Ka'zir
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20710))
-local timerVolatileEruptionCD				= mod:NewNextCountTimer(84, 307583, 155037, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerVolatileEruptionCD				= mod:NewNextCountTimer(84, 307583, 155037, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerSpawnAcidicAqirCD				= mod:NewNextCountTimer(84, 310340, nil, nil, nil, 3)
-local timerMindNumbingNovaCD				= mod:NewNextCountTimer(7.3, 313652, 242396, "HasInterrupt", nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
-local timerFlyerSwarmCD						= mod:NewNextCountTimer(120, 312710, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerMindNumbingNovaCD				= mod:NewNextCountTimer(7.3, 313652, 242396, "HasInterrupt", nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerFlyerSwarmCD						= mod:NewNextCountTimer(120, 312710, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Tek'ris
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20713))
-local timerAcceleratedEvolutionCD			= mod:NewNextCountTimer(84, 307637, 75610, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON)
-local timerNullificationBlastCD				= mod:NewNextCountTimer(84, 307968, 158259, "Tank", 2, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerAcceleratedEvolutionCD			= mod:NewNextCountTimer(84, 307637, 75610, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON)
+local timerNullificationBlastCD				= mod:NewNextCountTimer(84, 307968, 158259, "Tank", 2, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerEchoingVoidCD					= mod:NewNextCountTimer(84, 307232, nil, nil, nil, 2, nil, nil, nil, 3, 4)
-local timerDronesCD							= mod:NewNextCountTimer(120, 312868, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerDronesCD							= mod:NewNextCountTimer(120, 312868, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 
 --local berserkTimer						= mod:NewBerserkTimer(600)
 
@@ -228,11 +228,11 @@ function mod:SPELL_CAST_START(args)
 		warnDarkRecon:Show()
 		timerDarkReconCast:Start()
 	elseif spellId == 307213 then
-		specWarnTekrissHiveControl:Show(DBM_CORE_L.BOSSTOGETHER)
+		specWarnTekrissHiveControl:Show(DBM_COMMON_L.BOSSTOGETHER)
 		specWarnTekrissHiveControl:Play("phasechange")
 		timerKazirsHiveControlCD:Start(self:IsMythic() and 73.9 or self:IsHeroic() and 92.4 or 98.7)
 	elseif spellId == 307201 then
-		specWarnKazirsHiveControl:Show(DBM_CORE_L.BOSSAPART)
+		specWarnKazirsHiveControl:Show(DBM_COMMON_L.BOSSAPART)
 		specWarnKazirsHiveControl:Play("phasechange")
 		timerTekrissHiveControlCD:Start(self:IsMythic() and 73.9 or self:IsHeroic() and 92.4 or 98.7)
 	elseif spellId == 310340 then

@@ -79,7 +79,33 @@
 					<Color r="0" g="0" b="0"/>
 				</Texture>
 			</Layer>
+			<!-- old glow
+			<Layer level="OVERLAY">
+				<Texture parentKey="flash" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			-->
 		</Layers>
+		<!-- old glow
+		<Animations>
+			<AnimationGroup parentKey="newitemglowAnim" setToFinalAlpha="true" looping="NONE">
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="1" fromAlpha="1" toAlpha="0.2"/>
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="2" fromAlpha="0.2" toAlpha="1"/>
+				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="3" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+			<AnimationGroup parentKey="flashAnim" setToFinalAlpha="true">
+				<Alpha childKey="flash" smoothing="OUT" duration="1" order="1.1" fromAlpha="1" toAlpha="0"/>
+			</AnimationGroup>
+		</Animations>
+		-->
 		<Frames>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawBling="false" drawEdge="false" hidden="true">
 				<SwipeTexture>

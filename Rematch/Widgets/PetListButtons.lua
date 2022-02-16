@@ -498,6 +498,7 @@ function rematch:FillCommonPetListButton(petID)
 		self.Pet:SetVertexColor(1,0,0)
 	elseif not petInfo.isSummonable then
 		self.Pet:SetDesaturated(true)
+		self.Pet:SetVertexColor(1,0,0)
 	else
 		self.Pet:SetVertexColor(1,1,1)
 	end

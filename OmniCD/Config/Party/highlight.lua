@@ -44,10 +44,20 @@ local highlight = {
 					order = 1,
 					type = "toggle",
 				},
+				-- old glow
 				--[[
+				glowType0 = {
+					name = TYPE,
+					order = 2,
+					type = "select",
+					values = {
+						pulse = "White Pulse",
+						wardrobe = "Purple Corner Transition"
+					}
+				},
 				glowColor = {
 					name = COLOR,
-					order = 2,
+					order = 3,
 					type = "select",
 					values = E.L_GLOW_ATLAS,
 				},

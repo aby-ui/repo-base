@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(104218)
 mod:SetEncounterID(1870)
 
@@ -20,7 +20,7 @@ local yellSurge						= mod:NewYell(209602)
 local specWarnSlicingMaelstrom		= mod:NewSpecialWarningSpell(209676, nil, nil, nil, 2, 2)
 local specWarnGale					= mod:NewSpecialWarningDodge(209628, nil, nil, nil, 2, 2)
 
-local timerSurgeCD					= mod:NewCDTimer(17, 209602, nil, nil, nil, 3)
+local timerSurgeCD					= mod:NewCDTimer(12.1, 209602, nil, nil, nil, 3)
 local timerMaelstromCD				= mod:NewCDTimer(17, 209676, nil, nil, nil, 3)
 local timerGaleCD					= mod:NewCDTimer(17, 209628, nil, nil, nil, 2)
 
@@ -28,7 +28,7 @@ local trashmod = DBM:GetModByName("CoSTrash")
 
 function mod:SurgeTarget(targetname, uId)
 	if not targetname then
-		warnSurge:Show(DBM_CORE_L.UNKNOWN)
+		warnSurge:Show(DBM_COMMON_L.UNKNOWN)
 		return
 	end
 	if targetname == UnitName("player") then
@@ -41,9 +41,9 @@ function mod:SurgeTarget(targetname, uId)
 end
 
 function mod:OnCombatStart(delay)
+	timerSurgeCD:Start(5.1-delay)
 	timerGaleCD:Start(5.7-delay)
 	timerMaelstromCD:Start(10.9-delay)
-	timerSurgeCD:Start(17-delay)
 	--Not ideal to do every pull, but cleanest way to ensure it's done
 	if not trashmod then
 		trashmod = DBM:GetModByName("CoSTrash")

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011150938")
+mod:SetRevision("20220116144653")
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
 mod:SetBossHPInfoToHighest()--Because of heal on mythic
@@ -106,31 +106,31 @@ local specWarnReorgModule			= mod:NewSpecialWarningSwitchCount(256389, "RangedDp
 local timerNextPhase				= mod:NewPhaseTimer(74)
 --Stage One: Storm and Sky
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerSweepingScytheCD			= mod:NewCDCountTimer(5.6, 248499, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--5.6-15.7
+local timerSweepingScytheCD			= mod:NewCDCountTimer(5.6, 248499, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--5.6-15.7
 local timerConeofDeathCD			= mod:NewCDCountTimer(19.4, 248165, nil, nil, nil, 3)--19.4-24
 local timerBlightOrbCD				= mod:NewCDCountTimer(22, 248317, nil, nil, nil, 3)--22-32
-local timerTorturedRageCD			= mod:NewCDCountTimer(13, 257296, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)--13-16
+local timerTorturedRageCD			= mod:NewCDCountTimer(13, 257296, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--13-16
 local timerSkyandSeaCD				= mod:NewCDCountTimer(24.9, 255594, nil, nil, nil, 5)--24.9-27.8
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic Stage 1
-local timerSargGazeCD				= mod:NewCDCountTimer(35.2, 258068, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON, nil, 1, 4)
+local timerSargGazeCD				= mod:NewCDCountTimer(35.2, 258068, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)
 --Stage Two: The Protector Redeemed
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerSoulBombCD				= mod:NewNextTimer(42, 251570, nil, nil, nil, 3, nil, DBM_CORE_L.TANK_ICON, nil, 3, 4)
+local timerSoulBombCD				= mod:NewNextTimer(42, 251570, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON, nil, 3, 4)
 local timerSoulBurstCD				= mod:NewNextCountTimer("d42", 250669, nil, nil, nil, 3)
 local timerEdgeofObliterationCD		= mod:NewCDCountTimer(34, 255826, nil, nil, nil, 2)
-local timerAvatarofAggraCD			= mod:NewCDTimer(59.9, 255199, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerAvatarofAggraCD			= mod:NewCDTimer(59.9, 255199, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --Stage Three: The Arcane Masters
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerCosmicRayCD				= mod:NewCDTimer(19.9, 252729, nil, nil, nil, 3)--All adds seem to cast it at same time, so one timer for all
-local timerCosmicBeaconCD			= mod:NewCDTimer(19.9, 252616, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)--All adds seem to cast it at same time, so one timer for all
+local timerCosmicBeaconCD			= mod:NewCDTimer(19.9, 252616, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--All adds seem to cast it at same time, so one timer for all
 local timerDiscsofNorg				= mod:NewCastTimer(12, 252516, nil, nil, nil, 6)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic 3
-local timerSoulrendingScytheCD		= mod:NewCDTimer(8.5, 258838, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)
-local timerSargSentenceCD			= mod:NewTimer(35.2, "timerSargSentenceCD", 257966, nil, nil, 3, DBM_CORE_L.HEROIC_ICON)
-local timerEdgeofAnniCD				= mod:NewCDTimer(5.5, 258834, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerSoulrendingScytheCD		= mod:NewCDTimer(8.5, 258838, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
+local timerSargSentenceCD			= mod:NewTimer(35.2, "timerSargSentenceCD", 257966, nil, nil, 3, DBM_COMMON_L.HEROIC_ICON)
+local timerEdgeofAnniCD				= mod:NewCDTimer(5.5, 258834, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 --Stage Four: The Gift of Life, The Forge of Loss (Non Mythic)
 mod:AddTimerLine(SCENARIO_STAGE:format(4))
-local timerDeadlyScytheCD			= mod:NewCDTimer(5.5, 258039, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerDeadlyScytheCD			= mod:NewCDTimer(5.5, 258039, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerReorgModuleCD			= mod:NewCDCountTimer(48.1, 256389, nil, nil, nil, 1, nil, nil, nil, not mod:IsTank() and 2, 4)
 
 local berserkTimer					= mod:NewBerserkTimer(600)
@@ -236,7 +236,7 @@ end
 --]]
 
 local function delayedBoonCheck(self)
-	specWarnSoulbombMoveTo:Show(DBM_CORE_L.ROOM_EDGE)
+	specWarnSoulbombMoveTo:Show(DBM_COMMON_L.EDGE)
 	specWarnSoulbombMoveTo:Play("bombnow")--Detonate Soon makes more sense than "run to edge" which is still too assumptive
 end
 
@@ -668,7 +668,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 257931 then
 		warnSargFear:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			specWarnSargFear:Show(DBM_CORE_L.ALLY)
+			specWarnSargFear:Show(DBM_COMMON_L.ALLY)
 			specWarnSargFear:Play("gathershare")
 			yellSargFear:Yell()
 			fearCheck(self)

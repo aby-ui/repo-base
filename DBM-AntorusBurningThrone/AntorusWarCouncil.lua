@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1997, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011150938")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(122369, 122333, 122367)--Chief Engineer Ishkar, General Erodus, Admiral Svirax
 mod:SetEncounterID(2070)
 mod:SetBossHPInfoToHighest()
@@ -72,19 +72,19 @@ local yellShockGrenadeFades				= mod:NewShortFadesYell(244737)
 
 --General
 mod:AddTimerLine(GENERAL)
-local timerExploitWeaknessCD			= mod:NewCDTimer(8.5, 244892, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)
-local timerShockGrenadeCD				= mod:NewCDTimer(14.7, 244722, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerExploitWeaknessCD			= mod:NewCDTimer(8.5, 244892, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
+local timerShockGrenadeCD				= mod:NewCDTimer(14.7, 244722, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 local timerAssumeCommandCD				= mod:NewNextTimer(90, 245227, nil, nil, nil, 6, nil, nil, nil, 2, 4)
 --In Pod
 ----Admiral Svirax
 mod:AddTimerLine(Svirax)
-local timerFusilladeCD					= mod:NewNextCountTimer(29.3, 244625, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 4)
+local timerFusilladeCD					= mod:NewNextCountTimer(29.3, 244625, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)
 ----Chief Engineer Ishkar
 mod:AddTimerLine(Ishkar)
 local timerEntropicMineCD				= mod:NewCDTimer(10, 245161, nil, nil, nil, 3)
 ----General Erodus
 mod:AddTimerLine(Erodus)
-local timerSummonReinforcementsCD		= mod:NewNextTimer(8.4, 245546, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerSummonReinforcementsCD		= mod:NewNextTimer(8.4, 245546, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
 

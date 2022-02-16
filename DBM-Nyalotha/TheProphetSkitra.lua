@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2369, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(157620)
 mod:SetEncounterID(2334)
 mod:SetUsedIcons(1, 2, 3)
@@ -44,8 +44,8 @@ local yellShredPsyche						= mod:NewPosYell(307937, DBM_CORE_L.AUTO_YELL_CUSTOM_
 local yellShredPsycheFades					= mod:NewIconFadesYell(307937)
 local specWarnShredPsycheSwitch				= mod:NewSpecialWarningSwitch(307937, "dps", nil, nil, 1, 2)
 
-local timerImagesofAbsolutionCD				= mod:NewCDTimer(84.9, 313239, 127876, nil, nil, 1, nil, DBM_CORE_L.HEROIC_ICON)
-local timerShredPsycheCD					= mod:NewCDTimer(37.7, 307937, nil, nil, nil, 3, nil, DBM_CORE_L.DAMAGE_ICON, nil, 1, 4)
+local timerImagesofAbsolutionCD				= mod:NewCDTimer(84.9, 313239, 127876, nil, nil, 1, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerShredPsycheCD					= mod:NewCDTimer(37.7, 307937, nil, nil, nil, 3, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
 
 local berserkTimer							= mod:NewBerserkTimer(600)--He only gains a 300% damage increase on his berserk, and that's surviable since he doesn't melee and his adds don't gain it
 

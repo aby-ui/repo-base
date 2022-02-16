@@ -6,6 +6,7 @@ local ADDON_NAME, private = ...
 local RSEventDB = private.NewLib("RareScannerEventDB")
 
 -- RareScanner libraries
+local RSLogger = private.ImportLib("RareScannerLogger")
 local RSConstants = private.ImportLib("RareScannerConstants")
 
 ---============================================================================

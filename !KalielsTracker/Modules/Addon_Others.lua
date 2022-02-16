@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -48,12 +48,12 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "12.29", true) then
+    if KT:CheckAddOn("ElvUI", "12.62", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameHeight = function() end    -- preventive
         B.SetObjectiveFrameAutoHide = function() end  -- preventive
-        B.SetupTorghastBuffFrame = function() end     -- preventive
+        B.HandleMawBuffsFrame = function() end        -- preventive
         B.MoveObjectiveFrame = function() end
         if E.private.skins.blizzard.objectiveTracker then
             StaticPopup_Show(addonName.."_ReloadUI", nil, "Activate changes for |cff00ffe3ElvUI|r.")
@@ -63,12 +63,11 @@ local function ElvUI_SetSupport()
         end)
         hooksecurefunc(E, "ToggleOptionsUI", function(self)
             if E.Libs.AceConfigDialog.OpenFrames[self.name] then
-                local options = self.Options.args.general.args.blizzUIImprovements.args.objectiveFrameGroup
-                options.disabled = true
+                local options = self.Options.args.general.args.blizzUIImprovements
                 options.args[addonName.."Warning"] = {
-                    name = KTwarning,
+                    name = "\n"..KTwarning,
                     type = "description",
-                    order = 0.1,
+                    order = 2.99,
                 }
             end
         end)
@@ -77,7 +76,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.22", true) then
+    if KT:CheckAddOn("Tukui", "20.25", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -85,7 +84,7 @@ end
 
 -- RealUI
 local function RealUI_SetSupport()
-    if KT:CheckAddOn("nibRealUI", "2.3.0", true) then
+    if KT:CheckAddOn("nibRealUI", "2.3.1", true) then
         local R = _G.RealUI
         R:SetModuleEnabled("Objectives Adv.", false)
 
@@ -94,14 +93,6 @@ local function RealUI_SetSupport()
         if R:GetModuleEnabled(module) then
             R:SetModuleEnabled(module, false)
             StaticPopup_Show(addonName.."_ReloadUI", nil, "Activate changes for |cff00ffe3RealUI|r.")
-        end
-        local bck_UIFrameFadeIn = UIFrameFadeIn
-        function UIFrameFadeIn(frame, ...)
-            if frame ~= OTF then bck_UIFrameFadeIn(frame, ...) end
-        end
-        local bck_UIFrameFadeOut = UIFrameFadeOut
-        function UIFrameFadeOut(frame, ...)
-            if frame ~= OTF then bck_UIFrameFadeOut(frame, ...) end
         end
         --]]
         if not IsAddOnLoaded("Aurora_Extension") then
@@ -123,7 +114,7 @@ end
 
 -- SpartanUI
 local function SpartanUI_SetSupport()
-    if KT:CheckAddOn("SpartanUI", "6.0.26", true) then
+    if KT:CheckAddOn("SpartanUI", "6.0.27", true) then
         SUI.DB.DisabledComponents.Objectives = true
         local module = SUI:GetModule("Component_Objectives")
         local bck_module_OnEnable = module.OnEnable
@@ -208,7 +199,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoadedMasque = (KT:CheckAddOn("Masque", "9.0.6") and db.addonMasque)
+    self.isLoadedMasque = (KT:CheckAddOn("Masque", "9.1.5") and db.addonMasque)
 
     if self.isLoadedMasque then
         KT:Alert_IncompatibleAddon("Masque", "9.0.4")

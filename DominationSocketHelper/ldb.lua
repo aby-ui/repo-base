@@ -46,20 +46,21 @@ local function onEnter(f)
 	end
 	
 	DSH:UpdateSetContainer()
+
 end
 
-local LDBButton = ldb:NewDataObject("Domination Socket Manager", {type = "data source", text = "Domination Socket Manager", OnClick = onClick, OnEnter = onEnter, icon = "Interface\\Icons\\inv_misc_questionmark"})
+local LDB = ldb:NewDataObject("Domination Socket Manager", {type = "data source", text = "Domination Socket Manager", OnClick = onClick, OnEnter = onEnter, icon = "Interface\\Icons\\inv_misc_questionmark"})
 local setIcons = {1003591, 1392550, 457655}
 
 function DSH:UpdateLDBText(text)
 	if text then
-		LDBButton.icon = setIcons[DSH.db.char.sets[text].icon] or "Interface\\Icons\\inv_misc_gem_variety_02"
+		LDB.icon = setIcons[DSH.db.char.sets[text].icon] or "Interface\\Icons\\inv_misc_gem_variety_02"
 		if #text < 4 then --fix for elvui which wont show short names
 			text = text .. "   "
 		end
-		LDBButton.text = text
+		LDB.text = text
 	else
-		LDBButton.text = L["NOT_SAVED"]
-		LDBButton.icon = "Interface\\Icons\\inv_misc_questionmark"
+		LDB.text = L["NOT_SAVED"]
+		LDB.icon = "Interface\\Icons\\inv_misc_questionmark"
 	end
 end

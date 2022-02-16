@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1987, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20220116144653")
 mod:SetCreatureID(122477, 122135)--122477 F'harg, 122135 Shatug
 mod:SetEncounterID(2074)
 mod:SetBossHPInfoToHighest()
@@ -62,12 +62,12 @@ local yellTouched						= mod:NewPosYell(244054, DBM_CORE_L.AUTO_YELL_CUSTOM_POSI
 --General/Mythic
 local timerFocusingPower				= mod:NewCastTimer(15, 251356, nil, nil, nil, 6)
 mod:AddTimerLine(Fharg)
-local timerBurningMawCD					= mod:NewCDTimer(10.1, 251448, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--usually 11 but some pulls it's 10
+local timerBurningMawCD					= mod:NewCDTimer(10.1, 251448, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--usually 11 but some pulls it's 10
 local timerMoltenTouchCD				= mod:NewCDTimer(95.9, 244072, nil, nil, nil, 3)
 local timerEnflamedCorruptionCD			= mod:NewCDTimer(95.9, 244057, nil, nil, nil, 3)
 local timerDesolateGazeCD				= mod:NewCDTimer(95.9, 244768, nil, nil, nil, 3)
 mod:AddTimerLine(Shatug)
-local timerCorruptingMawCD				= mod:NewCDTimer(10.1, 251447, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--usually 11 but some pulls it's 10
+local timerCorruptingMawCD				= mod:NewCDTimer(10.1, 251447, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--usually 11 but some pulls it's 10
 local timerComsumingSphereCD			= mod:NewCDTimer(77, 244131, nil, nil, nil, 3)--Verify in transcritor
 local timerWeightOfDarknessCD			= mod:NewCDTimer(77, 254429, nil, nil, nil, 3)
 local timerSiphonCorruptionCD			= mod:NewCDTimer(77, 244056, nil, nil, nil, 3)
@@ -243,7 +243,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 248819 then--Siphoned
 		warnSiphoned:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			specWarnSiphoned:Show(DBM_CORE_L.ALLY)
+			specWarnSiphoned:Show(DBM_COMMON_L.ALLY)
 			specWarnSiphoned:Play("gathershare")
 			yellSiphoned:Countdown(4)
 			if self.Options.RangeFrame then
@@ -253,7 +253,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 254429 then
 		warnWeightofDarkness:CombinedShow(0.3, args.destName)
 		if args:IsPlayer() then
-			specWarnWeightOfDarkness:Show(DBM_CORE_L.ALLY)
+			specWarnWeightOfDarkness:Show(DBM_COMMON_L.ALLY)
 			specWarnWeightOfDarkness:Play("gathershare")
 			yellWeightOfDarkness:Yell()
 			yellWeightOfDarknessFades:Countdown(5)

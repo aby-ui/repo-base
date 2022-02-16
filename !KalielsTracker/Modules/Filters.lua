@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -47,6 +47,7 @@ local instanceQuestDifficulty = {
 	[DifficultyUtil.ID.PrimaryRaidMythic] = { Enum.QuestTag.Raid },
 	[DifficultyUtil.ID.PrimaryRaidLFR] = { Enum.QuestTag.Raid },
 }
+local pendingQuestID
 
 local eventFrame
 
@@ -801,11 +802,14 @@ local function SetFrames()
 			elseif event == "QUEST_ACCEPTED" then
 				local questID = arg1
 				if not C_QuestLog.IsQuestTask(questID) and (not C_QuestLog.IsQuestBounty(questID) or C_QuestLog.IsComplete(questID)) and db.filterAuto[1] then
+					pendingQuestID = questID
 					self:RegisterEvent("QUEST_POI_UPDATE")
 				end
 			elseif event == "QUEST_POI_UPDATE" then
 				KT.questStateStopUpdate = true
 				Filter_Quests(_, "zone")
+				QuestSuperTracking_OnQuestTracked(pendingQuestID)
+				pendingQuestID = nil
 				KT.questStateStopUpdate = false
 				self:UnregisterEvent(event)
 			elseif event == "QUEST_COMPLETE" then
@@ -816,19 +820,23 @@ local function SetFrames()
 			elseif event == "ZONE_CHANGED_NEW_AREA" then
 				if not KT.IsInBetween() then
 					C_Timer.After(0, function()
+						KT.autoExpand = false
 						if db.filterAuto[1] == "zone" then
 							Filter_Quests(_, "zone")
 						end
 						if db.filterAuto[2] == "zone" then
 							Filter_Achievements(_, "zone")
 						end
+						KT.autoExpand = true
 					end)
 				end
 			elseif event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" then
 				if not KT.IsInBetween() then
+					KT.autoExpand = false
 					if db.filterAuto[1] == "zone" then
 						Filter_Quests(_, "zone")
 					end
+					KT.autoExpand = true
 				end
 			end
 		end)
@@ -842,13 +850,11 @@ local function SetFrames()
 	eventFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 	-- Filter button
-	local button = CreateFrame("Button", addonName.."FilterButton", KTF)
+	local button = CreateFrame("Button", addonName.."FilterButton", KTF.HeaderButtons)
 	button:SetSize(16, 16)
 	button:SetPoint("TOPRIGHT", KTF.MinimizeButton, "TOPLEFT", -4, 0)
-	button:SetFrameLevel(KTF:GetFrameLevel() + 10)
 	button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
 	button:GetNormalTexture():SetTexCoord(0.5, 1, 0.5, 0.75)
-	
 	button:RegisterForClicks("AnyDown")
 	button:SetScript("OnClick", function(self, btn)
 		DropDown_Toggle()
@@ -870,8 +876,7 @@ local function SetFrames()
 		GameTooltip:Hide()
 	end)
 	KTF.FilterButton = button
-
-	OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() - 20)
+	KT:SetHeaderButtons(1)
 
 	-- Move other buttons
 	if KTF.AchievementsButton and db.hdrOtherButtons then

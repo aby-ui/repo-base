@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2353, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116005403")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(152364)
 mod:SetEncounterID(2305)
 mod:SetUsedIcons(1, 2)
@@ -45,10 +45,10 @@ local specWarnGaleBuffet				= mod:NewSpecialWarningSpell(304098, nil, nil, nil, 
 
 --Rising Fury
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20076))
-local timerTideFistCD					= mod:NewNextCountTimer(58.2, 296546, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, mod:IsTank() and 2, 4)
+local timerTideFistCD					= mod:NewNextCountTimer(58.2, 296546, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, mod:IsTank() and 2, 4)
 local timerArcanadoBurstCD				= mod:NewNextCountTimer(58.2, 296430, nil, nil, nil, 3)
 local timerArcaneBombCD					= mod:NewNextCountTimer(58.2, 296737, nil, "-Tank", nil, 3, nil, nil, nil, 3, 4)
-local timerUnshacklingPowerCD			= mod:NewNextCountTimer(58.2, 296894, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON, nil, 1, 4)
+local timerUnshacklingPowerCD			= mod:NewNextCountTimer(58.2, 296894, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON, nil, 1, 4)
 local timerAncientTempestCD				= mod:NewNextTimer(95.9, 295916, nil, nil, nil, 6)
 --Raging Storm
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20078))

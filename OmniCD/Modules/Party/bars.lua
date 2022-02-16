@@ -128,6 +128,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 		return
 	end
 
+	-- Repeated RegisterUnitEvent calls will remove all units registered in the previous call, so there's no need to unregister first.
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
 		local _,_, spellID = ... -- no unit check required, we're registering unit and pet as a pair
 		if (spell_enabled[spellID] or spell_modifiers[spellID]) and not cd_start_dispels[spellID] then
@@ -297,6 +298,16 @@ function P:RemoveIcon(icon)
 		icon.statusBar = nil
 	end
 
+	-- old glow
+	--[[
+	local flash = icon.flashAnim
+	local newItemAnim = icon.newitemglowAnim
+	if flash:IsPlaying() or newItemAnim:IsPlaying() then
+		flash:Stop()
+		newItemAnim:Stop()
+	end
+	]]
+
 	self:HideOverlayGlow(icon)
 	icon:Hide()
 	tinsert(unusedIcons, icon)
@@ -394,14 +405,12 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 		end
 	end
 
-	for i = 1, 5 do
----  for i = 1, 6 do
+	for i = 1, 6 do
 		local spells = (i == 1 and spell_db.PVPTRINKET) or
 			(i == 2 and spell_db.RACIAL) or
 			(i == 3 and spell_db.TRINKET) or
 			(i == 4 and spell_db.COVENANT) or
-			(i == 5 and spell_db[class])
----         (i == 5 and spell_db[class]) or
+			(i == 5 and spell_db[class]) ---or
 ---         (i == 6 and spell_db.CONSUMABLE)
 		if spells then -- BCC
 			local n = #spells
@@ -424,9 +433,9 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 						end
 ---                 elseif i == 6 then
 ---                     if spellID == 6262 then
----                         isValidSpell = self.isWarlockInGroup and (self.isInDungeon or self.isInArena) -- TODO: did they revert the dungeon restriction?
+---                         isValidSpell = self.isWarlockInGroup and (self.isInDungeon or self.isInArena)
 ---                     else
----                         isValidSpell = self.isInDungeon
+---                         isValidSpell = true
 ---                     end
 					elseif isInspectedUnit then
 						if i == 5 then

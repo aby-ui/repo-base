@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011151021")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
@@ -87,12 +87,12 @@ local specWarnGiftofNzothLunacy			= mod:NewSpecialWarningCount(285685, nil, nil,
 
 --Relics of Power
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19055))
-local timerStormofAnnihilation			= mod:NewTargetTimer(15, 284583, 196871, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)--Short text "Storm"
-local timerUnstableResonanceCD			= mod:NewCDCountTimer(40.8, 293653, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)--40.8-45
-local timerUnstableResonance			= mod:NewBuffFadesTimer(15, 293653, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)--inlineIcon, keep, countdown, countdownMax
+local timerStormofAnnihilation			= mod:NewTargetTimer(15, 284583, 196871, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--Short text "Storm"
+local timerUnstableResonanceCD			= mod:NewCDCountTimer(40.8, 293653, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--40.8-45
+local timerUnstableResonance			= mod:NewBuffFadesTimer(15, 293653, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)--inlineIcon, keep, countdown, countdownMax
 --Stage One: His All-Seeing Eyes
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19104))
-local timerTouchoftheEndCD				= mod:NewCDCountTimer(25, 284851, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--25, but heavily affected by spell queueing or some kind of ability overlap protection
+local timerTouchoftheEndCD				= mod:NewCDCountTimer(25, 284851, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--25, but heavily affected by spell queueing or some kind of ability overlap protection
 local timerOblivionTearCD				= mod:NewCDCountTimer(12.1, 285185, nil, nil, nil, 3)--12.1 but often delayed by other casts
 local timerVoidCrashCD					= mod:NewCDCountTimer(31, 285416, nil, nil, nil, 3)
 --local timerEyesofNzothCD				= mod:NewCDCountTimer(32.7, 285376, nil, nil, nil, 3)--32.7-36.4 (probably spell queuing)
@@ -103,7 +103,7 @@ local timerGiftofNzothObscurityCD		= mod:NewCDCountTimer(42.1, 285453, 285477, n
 --Stage Two: His Dutiful Servants
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19105))
 local timerUnknowableTerrorCD			= mod:NewCDTimer(40.1, 285562, nil, nil, nil, 3)
-local timerMindBenderCD					= mod:NewCDCountTimer(61.1, "ej19118", 284485, nil, nil, 1, 285427, DBM_CORE_L.DAMAGE_ICON)--Shorttext "Mindbender"
+local timerMindBenderCD					= mod:NewCDCountTimer(61.1, "ej19118", 284485, nil, nil, 1, 285427, DBM_COMMON_L.DAMAGE_ICON)--Shorttext "Mindbender"
 local timerGiftofNzothHysteriaCD		= mod:NewCDCountTimer(42.5, 285638, 55975, nil, nil, 2)--Short text "Hysteria"
 --Stage Three: His Unwavering Gaze
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19106))
@@ -836,7 +836,7 @@ do
 		end
 	end
 	function mod:OnSync(msg)
-		if not self:IsMythic() then return end--Just in case some shit lord sends syncs in LFR or something, we don't want to trigger DBMConfigMsg
+		if not self:IsMythic() or not self:IsInCombat() then return end--Just in case some shit lord sends syncs in LFR or something, we don't want to trigger DBMConfigMsg
 		self:Schedule(3, UpdateYellIcons, self, msg)
 	end
 end

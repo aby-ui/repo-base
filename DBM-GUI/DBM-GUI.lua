@@ -298,6 +298,56 @@ function DBM_GUI:ShowHide(forceshow)
 	end
 end
 
+local catbutton, lastButton, addSpacer
+local function addOptions(mod, catpanel, v)
+	if v == DBM_OPTION_SPACER then
+		addSpacer = true
+	else
+		lastButton = catbutton
+		if v.line then
+			catbutton = catpanel:CreateLine(v.text)
+		elseif type(mod.Options[v]) == "boolean" then
+			if mod.Options[v .. "TColor"] then
+				catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true, nil, nil, nil, mod, v, nil, true)
+			elseif mod.Options[v .. "SWSound"] then
+				catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true, nil, nil, nil, mod, v)
+			else
+				catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true)
+			end
+			catbutton:SetScript("OnShow", function(self)
+				self:SetChecked(mod.Options[v])
+			end)
+			catbutton:SetScript("OnClick", function(self)
+				mod.Options[v] = not mod.Options[v]
+				if mod.optionFuncs and mod.optionFuncs[v] then
+					mod.optionFuncs[v]()
+				end
+			end)
+		elseif mod.dropdowns and mod.dropdowns[v] then
+			local dropdownOptions = {}
+			for _, val in ipairs(mod.dropdowns[v]) do
+				tinsert(dropdownOptions, {
+					text	= mod.localization.options[val],
+					value	= val
+				})
+			end
+			catbutton = catpanel:CreateDropdown(mod.localization.options[v], dropdownOptions, mod, v, function(value)
+				mod.Options[v] = value
+				if mod.optionFuncs and mod.optionFuncs[v] then
+					mod.optionFuncs[v]()
+				end
+			end, nil, 32)
+			if not addSpacer then
+				catbutton:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -10)
+			end
+		end
+		if addSpacer then
+			catbutton:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -6)
+			addSpacer = false
+		end
+	end
+end
+
 function DBM_GUI:CreateBossModPanel(mod)
 	if not mod.panel then
 		DBM:AddMsg("Couldn't create boss mod panel for " .. mod.localization.general.name)
@@ -310,11 +360,12 @@ function DBM_GUI:CreateBossModPanel(mod)
 	iconstat:SetPoint("TOP", panel.frame, 0, -10)
 	iconstat:SetFontObject(GameFontNormal)
 	iconstat:SetText(L.IconsInUse)
-	for i = 1, 8 do
+	local totalIcons = DBM.Options.ExtendIcons and 16 or 8
+	for i = 1, totalIcons do
 		local icon = panel.frame:CreateTexture()
 		icon:SetTexture(137009) -- "Interface\\TargetingFrame\\UI-RaidTargetingIcons.blp"
-        icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26)
-        icon:SetSize(16, 16)
+		icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26)
+		icon:SetSize(16, 16)
 		if not mod.usedIcons or not mod.usedIcons[i] then
 			icon:SetAlpha(0.25)
 		end
@@ -326,6 +377,14 @@ function DBM_GUI:CreateBossModPanel(mod)
 		elseif	i == 6 then		icon:SetTexCoord(0.25,	0.5,	0.25,	0.5)
 		elseif	i == 7 then		icon:SetTexCoord(0.5,	0.75,	0.25,	0.5)
 		elseif	i == 8 then		icon:SetTexCoord(0.75,	1,		0.25,	0.5)
+		elseif	i == 9 then		icon:SetTexCoord(0,		0.25,	0.5,	0.75)
+		elseif	i == 10 then	icon:SetTexCoord(0.25,	0.5,	0.5,	0.75)
+		elseif	i == 11 then	icon:SetTexCoord(0.5,	0.75,	0.5,	0.75)
+		elseif	i == 12 then	icon:SetTexCoord(0.75,	1,		0.5,	0.75)
+		elseif	i == 13 then	icon:SetTexCoord(0,		0.25,	0.75,	1)
+		elseif	i == 14 then	icon:SetTexCoord(0.25,	0.5,	0.75,	1)
+		elseif	i == 15 then	icon:SetTexCoord(0.5,	0.75,	0.75,	1)
+		elseif	i == 16 then	icon:SetTexCoord(0.75,	1,		0.75,	1)
 		end
 	end
 
@@ -342,60 +401,45 @@ function DBM_GUI:CreateBossModPanel(mod)
 		mod:Toggle()
 	end)
 
+	if mod.addon and not mod.addon.oldOptions and DBM.Options.GroupOptionsBySpell then
+		for spellID, options in getmetatable(mod.groupOptions).__pairs(mod.groupOptions) do
+			if spellID:find("^line") then
+				panel:CreateLine(options)
+			else
+				local title, desc
+				if tonumber(spellID) then
+					local _title = DBM:GetSpellInfo(spellID)
+					if _title then
+						title, desc = _title, tonumber(spellID)
+					else--Not a valid spellid (Such as a ptr/beta mod loaded on live
+						title, desc = spellID, L.NoDescription
+					end
+				elseif spellID:find("^ej") then
+					title, desc = DBM:EJ_GetSectionInfo(spellID:gsub("ej", ""))
+				else
+					title = spellID
+				end
+				local catpanel = panel:CreateAbility(title)
+				if desc then
+					catpanel:CreateSpellDesc(desc)
+				end
+				catbutton, lastButton, addSpacer = nil, nil, nil
+				for _, v in ipairs(options) do
+					addOptions(mod, catpanel, v)
+				end
+			end
+		end
+	end
+
 	local scannedCategories = {}
 	for _, catident in pairs(mod.categorySort) do
 		category = mod.optionCategories[catident]
 		if not scannedCategories[catident] and category then
 			scannedCategories[catident] = true
 			local catpanel = panel:CreateArea(mod.localization.cats[catident])
-			local catbutton, lastButton, addSpacer
+			catbutton, lastButton, addSpacer = nil, nil, nil
 			for _, v in ipairs(category) do
-				if v == DBM_OPTION_SPACER then
-					addSpacer = true
-				else
-					lastButton = catbutton
-					if v.line then
-						catbutton = catpanel:CreateLine(v.text)
-					elseif type(mod.Options[v]) == "boolean" then
-						if mod.Options[v .. "TColor"] then
-							catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true, nil, nil, nil, mod, v, nil, true)
-						elseif mod.Options[v .. "SWSound"] then
-							catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true, nil, nil, nil, mod, v)
-						else
-							catbutton = catpanel:CreateCheckButton(mod.localization.options[v], true)
-						end
-						catbutton:SetScript("OnShow", function(self)
-							self:SetChecked(mod.Options[v])
-						end)
-						catbutton:SetScript("OnClick", function(self)
-							mod.Options[v] = not mod.Options[v]
-							if mod.optionFuncs and mod.optionFuncs[v] then
-								mod.optionFuncs[v]()
-							end
-						end)
-					elseif mod.dropdowns and mod.dropdowns[v] then
-						local dropdownOptions = {}
-						for _, val in ipairs(mod.dropdowns[v]) do
-							dropdownOptions[#dropdownOptions + 1] = {
-								text	= mod.localization.options[val],
-								value	= val
-							}
-						end
-						catbutton = catpanel:CreateDropdown(mod.localization.options[v], dropdownOptions, mod, v, function(value)
-							mod.Options[v] = value
-							if mod.optionFuncs and mod.optionFuncs[v] then
-								mod.optionFuncs[v]()
-							end
-						end, nil, 32)
-						if not addSpacer then
-							catbutton:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -10)
-						end
-					end
-					if addSpacer then
-						catbutton:SetPoint("TOPLEFT", lastButton, "BOTTOMLEFT", 0, -6)
-						addSpacer = false
-					end
-				end
+				addOptions(mod, catpanel, v)
 			end
 		end
 	end
@@ -511,7 +555,8 @@ do
 			end
 
 			local importExportProfilesArea = panel:CreateArea(L.Area_ImportExportProfile)
-			importExportProfilesArea:CreateText(L.ImportExportInfo, nil, true)
+			local test = importExportProfilesArea:CreateText(L.ImportExportInfo, nil, true)
+			test:SetPoint("TOPLEFT", 15, -10)
 			local exportProfile = importExportProfilesArea:CreateButton(L.ButtonExportProfile, 120, 20, function()
 				local exportProfile = {}
 				local profileID = playerLevel > 9 and DBM_UseDualProfile and (GetSpecialization() or 1) or 0
@@ -520,7 +565,8 @@ do
 				end
 				DBM_GUI:CreateExportProfile(exportProfile)
 			end)
-			exportProfile:SetPoint("TOPLEFT", 12, -20)
+			exportProfile.myheight = 0
+			exportProfile:SetPoint("TOPLEFT", 12, -25)
 			local importProfile = importExportProfilesArea:CreateButton(L.ButtonImportProfile, 120, 20, function()
 				DBM_GUI:CreateImportProfile(function(importTable)
 					local errors = {}
@@ -564,13 +610,13 @@ do
 			return
 		end
 
-		local ptext = panel:CreateText(L.BossModLoaded:format(subtab and addon.subTabs[subtab] or addon.name), nil, nil, GameFontNormal)
-		ptext:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 10, modProfileArea and -235 or -10)
+		local ptext = panel:CreateText(L.BossModLoaded:format(subtab and addon.subTabs[subtab] or addon.name), nil, nil, nil, "CENTER")
+		ptext:SetPoint("TOPLEFT", panel.frame, "TOPLEFT", 10, modProfileArea and -245 or -10)
 
 		local singleLine, doubleLine, noHeaderLine = 0, 0, 0
 		local area = panel:CreateArea()
 		area.frame.isStats = true
-		area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -250 or -25)
+		area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -260 or -25)
 
 		local statOrder = {
 			"lfr", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker"
@@ -720,7 +766,7 @@ do
 				if not IsAddOnLoaded(addon.modId) then
 					local button = addon.panel:CreateButton(L.Button_LoadMod, 200, 30)
 					button.modid = addon
-					button.headline = addon.panel:CreateText(L.BossModLoad_now, 350)
+					button.headline = addon.panel:CreateText(L.BossModLoad_now, 350, nil, nil, "CENTER")
 					button.headline:SetHeight(50)
 					button.headline:SetPoint("CENTER", button, "CENTER", 0, 80)
 

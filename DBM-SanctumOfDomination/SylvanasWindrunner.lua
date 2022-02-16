@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211218180514")
+mod:SetRevision("20220209105329")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3)
@@ -38,74 +38,92 @@ mod:RegisterEventsInCombat(
  or ability.id = 355841  or ability.id = 355826
  or (ability.id = 351075 or ability.id = 351117 or ability.id = 351353 or ability.id = 356023 or ability.id = 351589 or ability.id = 351562) and type = "begincast"
 --]]
+--Shadow dagger timer pruposely uses diff timer from
 local P1Info, P15Info, P2Info, P3Info = DBM:EJ_GetSectionInfo(23057), DBM:EJ_GetSectionInfo(22891), DBM:EJ_GetSectionInfo(23067), DBM:EJ_GetSectionInfo(22890)
 --General
 local warnPhase										= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+
+--local specWarnGTFO								= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
+
+--local berserkTimer								= mod:NewBerserkTimer(600)
+
+--mod:AddRangeFrameOption("8")
+mod:AddInfoFrameOption(nil, true)--Aused for 353929 and 347807
+
 --Stage One: A Cycle of Hatred
-mod:AddOptionLine(P1Info, "announce")
+--mod:AddOptionLine(P1Info, "announce")
+--mod:AddOptionLine(P1Info, "specialannounce")
+--mod:AddOptionLine(P1Info, "yell")
+mod:AddTimerLine(P1Info)
+--mod:AddIconLine(P1Info)
 local warnWindrunnerOver							= mod:NewEndAnnounce(347504, 2)
-local warnShadowDagger								= mod:NewTargetNoFilterAnnounce(347670, 2, nil, "Healer")
-local warnDominationChains							= mod:NewTargetAnnounce(349458, 2, nil, nil, 298213)--Could be spammy, unknown behavior
---local warnVeilofDarkness							= mod:NewTargetNoFilterAnnounce(347704, 2, nil, nil, 209426)
+local warnShadowDagger								= mod:NewTargetNoFilterAnnounce(353935, 2, nil, "Healer")
+local warnDominationChains							= mod:NewTargetAnnounce(349419, 2, nil, nil, 298213)--Could be spammy, unknown behavior
 local warnWailingArrow								= mod:NewTargetCountAnnounce(348064, 4, nil, nil, 208407, nil, nil, nil, true)
 local warnRangersHeartseeker						= mod:NewCountAnnounce(352663, 2, nil, "Tank")
 local warnBansheesMark								= mod:NewStackAnnounce(347607, 2, nil, "Tank|Healer")
 local warnBlackArrow								= mod:NewTargetCountAnnounce(358705, 4, nil, nil, 208407, nil, nil, nil, true)
---Intermission: A Monument to our Suffering
-mod:AddOptionLine(P15Info, "announce")
-local warnRive										= mod:NewCountAnnounce(353418, 4)--May default off by default depending on feedback
---Stage Two: The Banshee Queen
-mod:AddOptionLine(P2Info, "announce")
-local warnIceBridge									= mod:NewCountAnnounce(348148, 2)
-local warnEarthBridge								= mod:NewCountAnnounce(348093, 2)
-local warnWindsofIcecrown							= mod:NewTargetCountAnnounce(356986, 1, nil, nil, nil, nil, nil, nil, true)
-local warnPortal									= mod:NewCastAnnounce(357102, 1)
-----Forces of the Maw
-local warnUnstoppableForce							= mod:NewCountAnnounce(351075, 2)--Mawsworn Vanguard
-local warnLashingStrike								= mod:NewTargetNoFilterAnnounce(351179, 3)--Mawforged Souljudge
-local warnCrushingDread								= mod:NewTargetAnnounce(351117, 2)--Mawforged Souljudge
-local warnSummonDecrepitOrbs						= mod:NewCountAnnounce(351353, 2)--Mawforged Summoner
-local warnCurseofLthargy							= mod:NewTargetAnnounce(351451, 2)--Mawforged Summoner
-local warnExpulsion									= mod:NewTargetNoFilterAnnounce(351562, 4)
---Stage Three: The Freedom of Choice
-mod:AddOptionLine(P3Info, "announce")
-local warnBansheesHeartseeker						= mod:NewCountAnnounce(353969, 2, nil, "Tank")
-local warnBansheesBane								= mod:NewTargetNoFilterAnnounce(353929, 4)
-local warnBansheesScream							= mod:NewTargetNoFilterAnnounce(357720, 3)
-local warnBansheesBlades							= mod:NewCountAnnounce(358181, 4, nil, "Tank")
-local warnDeathKnives								= mod:NewTargetNoFilterAnnounce(358434, 3)
-local warnMerciless									= mod:NewCountAnnounce(358588, 2)
 
---local specWarnGTFO								= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
---Stage One: A Cycle of Hatred
-mod:AddOptionLine(P1Info, "specialannounce")
-mod:AddOptionLine(P1Info, "yell")
 local specWarnWindrunner							= mod:NewSpecialWarningCount(347504, nil, nil, nil, 2, 2)
-local specWarnShadowDagger							= mod:NewSpecialWarningYou(347670, false, nil, nil, 1, 2)
+local specWarnShadowDagger							= mod:NewSpecialWarningYou(353935, false, nil, nil, 1, 2)
 local specWarnDominationChains						= mod:NewSpecialWarningCount(349419, nil, 298213, nil, 2, 2)
 local specWarnVeilofDarkness						= mod:NewSpecialWarningDodgeCount(347704, nil, 209426, nil, 2, 2)
 local specWarnWailingArrow							= mod:NewSpecialWarningRun(348064, nil, 208407, nil, 4, 2)
 local yellWailingArrow								= mod:NewShortPosYell(348064, 208407)
 local yellWailingArrowFades							= mod:NewIconFadesYell(348064, 208407)
 local specWarnWailingArrowTaunt						= mod:NewSpecialWarningTaunt(348064, nil, nil, nil, 1, 2)
---local specWarnBansheesMark						= mod:NewSpecialWarningStack(347607, nil, 3, nil, nil, 1, 2)
---local specWarnBansheesMarkTaunt					= mod:NewSpecialWarningTaunt(347607, nil, nil, nil, 1, 2)
 local specWarnBlackArrow							= mod:NewSpecialWarningYou(358705, nil, 208407, nil, 1, 2, 4)--Is this also on tanks? it doesn't have tank icon
 local yellBlackArrow								= mod:NewShortPosYell(358705, 208407)
 local yellBlackArrowFades							= mod:NewIconFadesYell(358705, 208407)
 local specWarnBlackArrowTaunt						= mod:NewSpecialWarningTaunt(358705, nil, 208407, nil, 1, 2)
 local specWarnRage									= mod:NewSpecialWarningRun(358711, nil, nil, nil, 4, 2)
+
+local timerWindrunnerCD								= mod:NewCDCountTimer(50.3, 347504, nil, nil, nil, 6, nil, nil, nil, 1, 3)
+local timerDominationChainsCD						= mod:NewCDCountTimer(50.7, 349419, 298213, nil, nil, 3)--Shortname Chains
+local timerVeilofDarknessCD							= mod:NewCDCountTimer(48.8, 347704, 209426, nil, nil, 3)--Shortname Darkness
+local timerWailingArrowCD							= mod:NewCDCountTimer(33.9, 347609, 208407, nil, 2, 3)--Shortname Arrow
+local timerWailingArrow								= mod:NewTargetCountTimer(9, 347609, 208407, nil, nil, 5)--6 seconds for pre debuff plus 3 sec cast
+local timerRangersHeartseekerCD						= mod:NewCDCountTimer(33.9, 352663, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerBlackArrowCD								= mod:NewCDCountTimer(33.9, 358705, 208407, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerBlackArrow								= mod:NewTargetCountTimer(9, 358705, 208407, nil, nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
+
+mod:AddSetIconOption("SetIconOnWailingArrow", 348064, true, false, {1, 2, 3})--Applies to both reg and mythic version
+mod:AddNamePlateOption("NPAuraOnRage", 358711)--Dark Sentinel
+
 --Intermission: A Monument to our Suffering
-mod:AddOptionLine(P15Info, "specialannounce")
+--mod:AddOptionLine(P15Info, "announce")
+--mod:AddOptionLine(P15Info, "specialannounce")
+mod:AddTimerLine(P15Info)
+local warnRive										= mod:NewCountAnnounce(353418, 4)--May default off by default depending on feedback
+
 local specWarnBansheeWail							= mod:NewSpecialWarningMoveAwayCount(348094, nil, nil, nil, 2, 2)
+
+local timerRiveCD									= mod:NewCDTimer(48.8, 353418, nil, nil, nil, 3)
+local timerNextPhase								= mod:NewPhaseTimer(16.5, 348094, nil, nil, nil, 6)
+
 --Stage Two: The Banshee Queen
-mod:AddOptionLine(P2Info, "specialannounce")
-mod:AddOptionLine(P2Info, "yell")
+--mod:AddOptionLine(P2Info, "announce")
+--mod:AddOptionLine(P2Info, "specialannounce")
+--mod:AddOptionLine(P2Info, "yell")
+mod:AddTimerLine(P2Info)
+--mod:AddIconLine(P2Info)
+local warnIceBridge									= mod:NewCountAnnounce(348148, 2)
+local warnEarthBridge								= mod:NewCountAnnounce(348093, 2)
+local warnWindsofIcecrown							= mod:NewTargetCountAnnounce(356986, 1, nil, nil, nil, nil, nil, nil, true)
+local warnPortal									= mod:NewCastAnnounce(357102, 1)
+----Forces of the Maw
+local warnUnstoppableForce							= mod:NewCountAnnounce(351075, 2)--Mawsworn Vanguard
+local warnLashingStrike								= mod:NewTargetNoFilterAnnounce(351178, 3)--Mawforged Souljudge
+local warnCrushingDread								= mod:NewTargetAnnounce(351117, 2)--Mawforged Souljudge
+local warnSummonDecrepitOrbs						= mod:NewCountAnnounce(351353, 2)--Mawforged Summoner
+local warnCurseofLthargy							= mod:NewTargetAnnounce(351451, 2)--Mawforged Summoner
+local warnExpulsion									= mod:NewTargetNoFilterAnnounce(351562, 4)
+
 local specWarnHauntingWave							= mod:NewSpecialWarningDodgeCount(352271, nil, nil, nil, 2, 2)
 local specWarnRuin									= mod:NewSpecialWarningInterruptCount(355540, nil, nil, nil, 3, 2)
 ----Forces of the Maw
-local specWarnLashingStrike							= mod:NewSpecialWarningYou(351179, nil, nil, nil, 1, 2)--Mawforged Souljudge
-local yellLashingStrike								= mod:NewYell(351179)--Mawforged Souljudge
+local specWarnLashingStrike							= mod:NewSpecialWarningYou(351178, nil, nil, nil, 1, 2)--Mawforged Souljudge
+local yellLashingStrike								= mod:NewYell(351178)--Mawforged Souljudge
 local specWarnCrushingDread							= mod:NewSpecialWarningMoveAway(351117, nil, nil, nil, 1, 2)--Mawforged Souljudge
 local yellCrushingDread								= mod:NewYell(351117)--Mawforged Souljudge
 local specWarnTerrorOrb								= mod:NewSpecialWarningInterruptCount(356023, nil, nil, nil, 1, 2, 4)--Mawforged Summoner
@@ -119,40 +137,9 @@ local specWarnExpulsion								= mod:NewSpecialWarningYouPos(351562, nil, nil, n
 local yellExpulsion									= mod:NewShortPosYell(351562)
 local yellExpulsionFades							= mod:NewIconFadesYell(351562)
 local specWarnExpulsionTarget						= mod:NewSpecialWarningTarget(351562, false, nil, nil, 1, 2, 4)
---Stage Three: The Freedom of Choice
-mod:AddOptionLine(P3Info, "specialannounce")
-mod:AddOptionLine(P3Info, "yell")
-local specWarnBansheesBane							= mod:NewSpecialWarningStack(353929, nil, 1, nil, nil, 1, 6)
---local specWarnBansheesBaneTaunt						= mod:NewSpecialWarningTaunt(353929, nil, nil, nil, 1, 2)--Let the tank drop bane out by swapping for it
-local specWarnBansheesBaneDispel					= mod:NewSpecialWarningDispel(353929, "RemoveMagic", nil, nil, 3, 2)--Dispel alert during Fury
-local specWarnBansheeScream							= mod:NewSpecialWarningYou(357720, nil, 31295, nil, 1, 2)
-local yellBansheeScream								= mod:NewYell(357720, 31295)
-local specWarnRaze									= mod:NewSpecialWarningRun(354147, nil, nil, nil, 4, 2)
-local specWarnDeathKnives							= mod:NewSpecialWarningMoveAway(358434, nil, nil, nil, 1, 2, 4)--Mythic
-local yellDeathKnives								= mod:NewShortPosYell(358434)
-local yellDeathKnivesFades							= mod:NewIconFadesYell(358434)
-local specWarnMerciless								= mod:NewSpecialWarningSoakCount(358588, false, nil, nil, 2, 2, 4)--Mythic (opt in to upgrade to special waring)
 
---General
---local berserkTimer								= mod:NewBerserkTimer(600)
---Stage One: A Cycle of Hatred
-mod:AddTimerLine(P1Info)
-local timerWindrunnerCD								= mod:NewCDCountTimer(50.3, 347504, nil, nil, nil, 6, nil, nil, nil, 1, 3)
-local timerDominationChainsCD						= mod:NewCDCountTimer(50.7, 349419, 298213, nil, nil, 3)--Shortname Chains
-local timerVeilofDarknessCD							= mod:NewCDCountTimer(48.8, 347726, 209426, nil, nil, 3)--Shortname Darkness
-local timerWailingArrowCD							= mod:NewCDCountTimer(33.9, 347609, 208407, nil, 2, 3)--Shortname Arrow
-local timerWailingArrow								= mod:NewTargetCountTimer(9, 347609, 208407, nil, nil, 5)--6 seconds for pre debuff plus 3 sec cast
-local timerRangersHeartseekerCD						= mod:NewCDCountTimer(33.9, 352663, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerBlackArrowCD								= mod:NewCDCountTimer(33.9, 358704, 208407, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
-local timerBlackArrow								= mod:NewTargetCountTimer(9, 358704, 208407, nil, nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
---Intermission: A Monument to our Suffering
-mod:AddTimerLine(P15Info)
-local timerRiveCD									= mod:NewCDTimer(48.8, 353418, nil, nil, nil, 3)
-local timerNextPhase								= mod:NewPhaseTimer(16.5, 348094, nil, nil, nil, 6)
---Stage Two: The Banshee Queen
-mod:AddTimerLine(P2Info)
-local timerChannelIce								= mod:NewCastTimer(5, 352843, nil, nil, nil, 6)
-local timerCallEarth								= mod:NewCastTimer(5, 352842, nil, nil, nil, 6)
+local timerChannelIce								= mod:NewCastTimer(5, 348148, nil, nil, nil, 6)
+local timerCallEarth								= mod:NewCastTimer(5, 348093, nil, nil, nil, 6)
 --local timerChannelIceCD							= mod:NewCDCountTimer(48.8, 348148, nil, nil, nil, 6)
 local timerCallEarthCD								= mod:NewCDCountTimer(48.8, 348093, nil, nil, nil, 6)
 local timerRuinCD									= mod:NewCDCountTimer(23, 355540, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
@@ -165,34 +152,46 @@ local timerPortal									= mod:NewCastTimer(10, 357102, nil, nil, nil, 6)
 local timerDecrepitOrbsCD							= mod:NewCDTimer(16, 351353, nil, nil, nil, 1)
 local timerFilthCD									= mod:NewCDTimer(13.1, 351589, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.TANK_ICON)
 local timerExpulsionCD								= mod:NewCDTimer(15.8, 351562, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
+
+mod:AddSetIconOption("SetIconOnExpulsion", 351562, true, true, {1, 2, 3})
+mod:AddNamePlateOption("NPAuraOnEnflame", 351109)--Mawsworn Hopebreaker
+
 --Stage Three: The Freedom of Choice
+--mod:AddOptionLine(P3Info, "announce")
+--mod:AddOptionLine(P3Info, "specialannounce")
+--mod:AddOptionLine(P3Info, "yell")
 mod:AddTimerLine(P3Info)
+--mod:AddIconLine(P3Info)
+local warnBansheesHeartseeker						= mod:NewCountAnnounce(353969, 2, nil, "Tank")
+local warnBansheesBane								= mod:NewTargetNoFilterAnnounce(353929, 4)
+local warnBansheesScream							= mod:NewTargetNoFilterAnnounce(357720, 3)
+local warnBansheesBlades							= mod:NewCountAnnounce(358181, 4, nil, "Tank")
+local warnDeathKnives								= mod:NewTargetNoFilterAnnounce(358434, 3)
+local warnMerciless									= mod:NewCountAnnounce(358588, 2)
+
+local specWarnBansheesBane							= mod:NewSpecialWarningStack(353929, nil, 1, nil, nil, 1, 6)
+local specWarnBansheesBaneDispel					= mod:NewSpecialWarningDispel(353929, "RemoveMagic", nil, nil, 3, 2)--Dispel alert during Fury
+local specWarnBansheeScream							= mod:NewSpecialWarningYou(357720, nil, 31295, nil, 1, 2)
+local yellBansheeScream								= mod:NewYell(357720, 31295)
+local specWarnRaze									= mod:NewSpecialWarningRun(354147, nil, nil, nil, 4, 2)
+local specWarnDeathKnives							= mod:NewSpecialWarningMoveAway(358434, nil, nil, nil, 1, 2, 4)--Mythic
+local yellDeathKnives								= mod:NewShortPosYell(358434)
+local yellDeathKnivesFades							= mod:NewIconFadesYell(358434)
+local specWarnMerciless								= mod:NewSpecialWarningSoakCount(358588, false, nil, nil, 2, 2, 4)--Mythic (opt in to upgrade to special waring)
+
 local timerBansheesHeartseekerCD					= mod:NewCDCountTimer(33.9, 353969, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerShadowDaggerCD							= mod:NewCDCountTimer(23, 353935, nil, nil, nil, 3)--Only used in phase 3, in phase 1 it's tied to windrunner
-local timerBaneArrowsCD								= mod:NewCDCountTimer(23, 354011, nil, nil, nil, 3)
+local timerBaneArrowsCD								= mod:NewCDCountTimer(23, 354011, 208407, nil, nil, 3)
 local timerBansheesFuryCD							= mod:NewCDCountTimer(23, 354068, nil, nil, nil, 2)--Short name NOT used since "Fury" also exists on fight
 local timerBansheesScreamCD							= mod:NewCDCountTimer(23, 353952, 31295, nil, nil, 3)
 local timerRazeCD									= mod:NewCDCountTimer(23, 354147, nil, nil, 2, 2, nil, DBM_COMMON_L.DEADLY_ICON)
---local timerBansheesBladesCD							= mod:NewCDCountTimer(33.9, 358181, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.TANK_ICON)
+--local timerBansheesBladesCD						= mod:NewCDCountTimer(33.9, 358181, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.TANK_ICON)
 local timerDeathKnivesCD							= mod:NewCDCountTimer(33.9, 358434, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerDeathKnives								= mod:NewBuffFadesTimer(9, 358434, nil, nil, nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerMercilessCD								= mod:NewCDCountTimer(33.9, 358588, nil, nil, 2, 5, nil, DBM_COMMON_L.MYTHIC_ICON)
 
---mod:AddRangeFrameOption("8")
-mod:AddInfoFrameOption(347807, true)
---Stage 1
-mod:AddIconLine(P1Info)
-mod:AddSetIconOption("SetIconOnWailingArrow", 347609, true, false, {1, 2, 3})--Applies to both reg and mythic version
---Stage 2
-mod:AddIconLine(P2Info)
-mod:AddSetIconOption("SetIconOnExpulsion", 351562, true, true, {1, 2, 3})
---Stage 3
-mod:AddIconLine(P3Info)
 mod:AddSetIconOption("SetIconOnDeathKnives2", 358434, false, false, {1, 2, 3})--Conflicts with arrow, which will be more logical choice. might delete this
---Stage 1
-mod:AddNamePlateOption("NPAuraOnRage", 358711)--Dark Sentinel
---Stage 2
-mod:AddNamePlateOption("NPAuraOnEnflame", 351109)--Mawsworn Hopebreaker
+--mod:GroupSpells(358705, 358711)--Black Arrow and Rage should be bundled?
 
 --P1+ variable
 mod.vb.arrowIcon = 1
@@ -234,13 +233,13 @@ local allTimers = {
 			--Domination Chains
 			[349419] = {29, 63.9, 63.9},
 			--Wailing Arrow
-			[347609] = {41.3, 47.6, 37.3, 39.8},
+			[347609] = {41.3, 46.6, 37.3, 39.8},
 			--Veil of Darkness
 			[347726] = {56.6, 59.3, 59.3},
 		},
 		[3] = {
 			--Bane Arrows
-			[354011] = {36.1, 87.8, 87.9, 89.9, 87.9},
+			[354011] = {36.1, 87.8, 87.9, 88.8, 87.9},
 			--Banshee's Heartseeker
 			[353969] = {38.9, 24.4, 54.5, 3, 13.3, 24.4, 35.1, 11.8, 34.3, 12.5, 36.1, 12.1, 23.3, 45.5, 3},
 			--Shadow Dagger
@@ -442,7 +441,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnDominationChains:Show(self.vb.dominationChainsCount)
 		specWarnDominationChains:Play("watchstep")
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.dominationChainsCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.dominationChainsCount+1]
 			if timer then
 				timerDominationChainsCD:Start(timer, self.vb.dominationChainsCount+1)
 			end
@@ -455,7 +454,7 @@ function mod:SPELL_CAST_START(args)
 --			self.vb.arrowIcon = 1
 			self.vb.wailingArrowCount = self.vb.wailingArrowCount + 1
 			if self.vb.phase == 1 or self.vb.phase == 3 then
-				local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.wailingArrowCount+1]
+				local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.wailingArrowCount+1]
 				if timer then
 					timerWailingArrowCD:Start(timer, self.vb.wailingArrowCount+1)
 				end
@@ -466,7 +465,7 @@ function mod:SPELL_CAST_START(args)
 --			self.vb.arrowIcon = 1
 			self.vb.wailingArrowCount = self.vb.wailingArrowCount + 1--Replaces this arrow in stage 1, so might as well use same variable
 			if self.vb.phase == 1 or self.vb.phase == 3 then
-				local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.wailingArrowCount+1]
+				local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.wailingArrowCount+1]
 				if timer then
 					timerBlackArrowCD:Start(timer, self.vb.wailingArrowCount+1)
 				end
@@ -476,7 +475,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.heartseekerCount = self.vb.heartseekerCount + 1
 		warnRangersHeartseeker:Show(self.vb.heartseekerCount)
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.heartseekerCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.heartseekerCount+1]
 			if timer then
 				timerRangersHeartseekerCD:Start(timer, self.vb.heartseekerCount+1)
 			end
@@ -522,8 +521,6 @@ function mod:SPELL_CAST_START(args)
 		if self:AntiSpam(3, 2) then--If multiple cast it at same time
 			warnUnstoppableForce:Show(castsPerGUID[args.sourceGUID])
 		end
---	elseif spellId == 351179 then
---		timerAbsorbingChargeCD:Start(18.3, args.sourceGUID)
 	elseif spellId == 351353 then
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0
@@ -556,7 +553,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 354011 then
 		self.vb.baneArrowCount = self.vb.baneArrowCount + 1
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.baneArrowCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.baneArrowCount+1]
 			if timer then
 				timerBaneArrowsCD:Start(timer, self.vb.baneArrowCount+1)
 			end
@@ -565,7 +562,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.heartseekerCount = self.vb.heartseekerCount + 1
 		warnBansheesHeartseeker:Show(self.vb.heartseekerCount)
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.heartseekerCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.heartseekerCount+1]
 			if timer then
 				timerBansheesHeartseekerCD:Start(timer, self.vb.heartseekerCount+1)
 			end
@@ -573,7 +570,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 354068 then
 		self.vb.bansheesFuryCount = self.vb.bansheesFuryCount + 1
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.bansheesFuryCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.bansheesFuryCount+1]
 			if timer then
 				timerBansheesFuryCD:Start(timer, self.vb.bansheesFuryCount+1)
 			end
@@ -592,7 +589,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 353952 then
 		self.vb.bansheeScreamCount = self.vb.bansheeScreamCount + 1
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.bansheeScreamCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.bansheeScreamCount+1]
 			if timer then
 				timerBansheesScreamCD:Start(timer, self.vb.bansheeScreamCount+1)
 			end
@@ -601,7 +598,7 @@ function mod:SPELL_CAST_START(args)
 		if self.vb.phase == 3 then
 			self.vb.shadowDaggerCount = self.vb.shadowDaggerCount + 1
 			if self.vb.phase == 1 or self.vb.phase == 3 then
-				local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.shadowDaggerCount+1]
+				local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.shadowDaggerCount+1]
 				if timer then
 					timerShadowDaggerCD:Start(timer, self.vb.shadowDaggerCount+1)
 				end
@@ -618,7 +615,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnRaze:Show(self.vb.razeCount)
 		specWarnRaze:Play("justrun")
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.razeCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.razeCount+1]
 			if timer then
 				timerRazeCD:Start(timer, self.vb.razeCount+1)
 			end
@@ -643,7 +640,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.bladesCount = self.vb.bladesCount + 1
 		warnBansheesBlades:Show(self.vb.bladesCount)
 --		if self.vb.phase == 1 or self.vb.phase == 3 then
---			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.bladesCount+1]
+--			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.bladesCount+1]
 --			if timer then
 --				timerBansheesBladesCD:Start(timer, self.vb.bladesCount+1)
 --			end
@@ -757,7 +754,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnWindrunner:Show(self.vb.windrunnerCount)
 		specWarnWindrunner:Play("specialsoon")
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.windrunnerCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.windrunnerCount+1]
 			if timer then
 				timerWindrunnerCD:Start(timer, self.vb.windrunnerCount+1)
 			end
@@ -825,18 +822,6 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 347607 then
 		local amount = args.amount or 1
 		if amount % 3 == 0 then--3 stacks at a time
---			if args:IsPlayer() then
---				specWarnBansheesMark:Show(amount)
---				specWarnBansheesMark:Play("stackhigh")
---			else
---				if not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) then
---					specWarnBansheesMarkTaunt:Show(args.destName)
---					specWarnBansheesMarkTaunt:Play("tauntboss")
---				else
---					warnBansheesMark:Show(args.destName, amount)
---				end
---			end
---		else
 			warnBansheesMark:Show(args.destName, amount)
 		end
 	elseif spellId == 350857 and self.vb.phase == 1 then
@@ -911,12 +896,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBansheesBane:Cancel()
 			specWarnBansheesBane:Schedule(1.5, amount)--Aggregate grabbing a bunch within 300ms
 			specWarnBansheesBane:ScheduleVoice(1.5, "targetyou")
---		elseif self:AntiSpam(3, args.destName) then
---			local uId = DBM:GetRaidUnitId(args.destName)
---			if self:IsTanking(uId) then
---				specWarnBansheesBaneTaunt:Show(args.destName)
---				specWarnBansheesBaneTaunt:Play("tauntboss")
---			end
 		end
 	elseif spellId == 357720 then
 		warnBansheesScream:CombinedShow(0.3, args.destName)
@@ -975,7 +954,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			self.vb.debuffIcon = 1
 			self.vb.knivesCount = self.vb.knivesCount + 1
 			if self.vb.phase == 1 or self.vb.phase == 3 then
-				local timer = allTimers[difficultyName][self.vb.phase][spellId][self.vb.knivesCount+1]
+				local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][spellId][self.vb.knivesCount+1]
 				if timer then
 					timerDeathKnivesCD:Start(timer, self.vb.knivesCount+1)
 				end
@@ -1199,7 +1178,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 		specWarnVeilofDarkness:Show(self.vb.veilofDarknessCount)
 		specWarnVeilofDarkness:Play("watchstep")
 		if self.vb.phase == 1 or self.vb.phase == 3 then
-			local timer = allTimers[difficultyName][self.vb.phase][347726][self.vb.veilofDarknessCount+1]
+			local timer = allTimers[difficultyName][self.vb.phase] and allTimers[difficultyName][self.vb.phase][347726][self.vb.veilofDarknessCount+1]
 			if timer then--Handles P1 and P3, P2 is scheduled via bridges
 				timerVeilofDarknessCD:Start(timer, self.vb.veilofDarknessCount+1)
 			end

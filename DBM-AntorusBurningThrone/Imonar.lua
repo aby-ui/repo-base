@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2009, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(124158)--or 124158 or 125692
 mod:SetEncounterID(2082)
 --mod:SetBossHPInfoToHighest()
@@ -60,11 +60,11 @@ local yellEmpPulseGrenade				= mod:NewYell(250006)
 --Intermission: On Deadly Ground
 
 --Stage One: Attack Force
-local timerShocklanceCD					= mod:NewCDTimer(4, 247367, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--4-5.1
-local timerSleepCanisterCD				= mod:NewCDTimer(11.3, 247552, nil, nil, nil, 3, nil, DBM_CORE_L.MAGIC_ICON)--11.3-13.4
+local timerShocklanceCD					= mod:NewCDTimer(4, 247367, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--4-5.1
+local timerSleepCanisterCD				= mod:NewCDTimer(11.3, 247552, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)--11.3-13.4
 local timerPulseGrenadeCD				= mod:NewCDTimer(17, 247376, nil, nil, nil, 3, nil, nil, nil, 1, 4)--17?
 --Stage Two: Contract to Kill
-local timerSeverCD						= mod:NewCDTimer(7.2, 247687, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerSeverCD						= mod:NewCDTimer(7.2, 247687, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerChargedBlastsCD				= mod:NewCDTimer(18.2, 247716, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 local timerShrapnalBlastCD				= mod:NewCDCountTimer(13.3, 247923, nil, nil, nil, 3)
 --Stage Three/Five: The Perfect Weapon

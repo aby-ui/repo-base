@@ -5,11 +5,23 @@ local spamPanel = DBM_GUI.Cat_Filters:CreateNewPanel(L.Panel_SpamFilter, "option
 local spamAnnounces = spamPanel:CreateArea(L.Area_SpamFilter_Anounces)
 spamAnnounces:CreateCheckButton(L.SpamBlockNoShowAnnounce, true, nil, "DontShowBossAnnounces")
 spamAnnounces:CreateCheckButton(L.SpamBlockNoShowTgtAnnounce, true, nil, "DontShowTargetAnnouncements")
-spamAnnounces:CreateCheckButton(L.SpamBlockNoSpecWarnText, true, nil, "DontShowSpecialWarningText")
-spamAnnounces:CreateCheckButton(L.SpamBlockNoSpecWarnFlash, true, nil, "DontShowSpecialWarningFlash")
-spamAnnounces:CreateCheckButton(L.SpamBlockNoSpecWarnVibrate, true, nil, "DontDoSpecialWarningVibrate")
-spamAnnounces:CreateCheckButton(L.SpamBlockNoSpecWarnSound, true, nil, "DontPlaySpecialWarningSound")
 spamAnnounces:CreateCheckButton(L.SpamBlockNoTrivialSpecWarnSound, true, nil, "DontPlayTrivialSpecialWarningSound")
+
+local spamSpecAnnouncesFilters = spamPanel:CreateArea(L.Area_SpamFilter_SpecRoleFilters)
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleDispel, true, nil, "SpamSpecRoledispel")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleInterrupt, true, nil, "SpamSpecRoleinterrupt")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleDefensive, true, nil, "SpamSpecRoledefensive")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleTaunt, true, nil, "SpamSpecRoletaunt")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleSoak, true, nil, "SpamSpecRolesoak")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleStack, true, nil, "SpamSpecRolestack")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleSwitch, true, nil, "SpamSpecRoleswitch")
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleGTFO, true, nil, "SpamSpecRolegtfo")
+
+local spamSpecAnnounceFeat = spamPanel:CreateArea(L.Area_SpamFilter_SpecFeatures)
+spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnText, true, nil, "DontShowSpecialWarningText")
+spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnFlash, true, nil, "DontShowSpecialWarningFlash")
+spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnVibrate, true, nil, "DontDoSpecialWarningVibrate")
+spamSpecAnnounceFeat:CreateCheckButton(L.SpamBlockNoSpecWarnSound, true, nil, "DontPlaySpecialWarningSound")
 
 local spamTimers = spamPanel:CreateArea(L.Area_SpamFilter_Timers)
 spamTimers:CreateCheckButton(L.SpamBlockNoShowTimers, true, nil, "DontShowBossTimers")
@@ -45,7 +57,6 @@ local interruptOptions = {
 	{	text	= L.FilterInterrupts,	value	= "onlyTandF"},
 	{	text	= L.FilterInterrupts2,	value	= "TandFandBossCooldown"},
 	{	text	= L.FilterInterrupts3,	value	= "TandFandAllCooldown"},
-	{	text	= L.FilterInterrupts4,	value	= "Always"},
 }
 local interruptDropDown		= spamSpecArea:CreateDropdown(L.FilterInterruptsHeader, interruptOptions, "DBM", "FilterInterrupt2", function(value)
 	DBM.Options.FilterInterrupt2 = value

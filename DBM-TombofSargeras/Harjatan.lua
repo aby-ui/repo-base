@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1856, "DBM-TombofSargeras", nil, 875)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011150938")
+mod:SetRevision("20220116144653")
 mod:SetCreatureID(116407)
 mod:SetEncounterID(2036)
 --mod:SetBossHPInfoToHighest()
@@ -67,12 +67,12 @@ mod:AddTimerLine(BOSS)
 local timerUncheckedRageCD			= mod:NewNextCountTimer(20, 231854, nil, nil, nil, 2, nil, nil, nil, 1, 4)--5 power per second heroic, 20 seconds for 100 energy
 local timerDrawInCD					= mod:NewNextTimer(59, 232061, nil, nil, nil, 6)
 local timerCommandingRoarCD			= mod:NewNextTimer(31.8, 232192, nil, nil, nil, 1)
-mod:AddTimerLine(DBM_CORE_L.ADDS)
+mod:AddTimerLine(DBM_COMMON_L.ADDS)
 --Razorjaw Wavemender
 local timerAqueousBurstCD			= mod:NewCDTimer(6, 231729, nil, false, nil, 3)--6-8
 --Razorjaw Gladiator
 local timerDrivenAssault			= mod:NewTargetTimer(10, 234016, nil, false, nil, 3)--Too many spawn, this would be spammy so off by default
-local timerSplashCleaveCD			= mod:NewCDTimer(12, 234129, nil, false, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerSplashCleaveCD			= mod:NewCDTimer(12, 234129, nil, false, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --Mythic
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerHatchingCD				= mod:NewNextTimer(40.6, 240319, nil, nil, nil, 1)--40.6-42

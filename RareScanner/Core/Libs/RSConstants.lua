@@ -24,7 +24,7 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 46
+RSConstants.CURRENT_DB_VERSION = 47
 RSConstants.CURRENT_LOOT_DB_VERSION = 63
 
 ---============================================================================
@@ -349,6 +349,8 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	[179969] = 179985;
 	[180028] = 180032;
 	[180013] = 180014;
+	-- Bation
+	[176543] = 171008;
 }
 
 -- NPCs that spawn after killing another NPC
@@ -565,7 +567,6 @@ RSConstants.EXPLORER_FILTER_FILTERED = 7
 
 RSConstants.RAID_WARNING_SHOWING_TIME = 3
 RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP = 0.015
-RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE = 0.096
 RSConstants.TOOLTIP_MAX_WIDTH = 250
 
 ---============================================================================

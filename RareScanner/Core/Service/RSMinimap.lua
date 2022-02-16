@@ -18,9 +18,17 @@ local RSMinimap = private.NewLib("RareScannerMinimap")
 -- RareScanner database libraries
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
+local RSNpcDB = private.ImportLib("RareScannerNpcDB")
+local RSContainerDB = private.ImportLib("RareScannerContainerDB")
+local RSEventDB = private.ImportLib("RareScannerEventDB")
+local RSGuideDB = private.ImportLib("RareScannerGuideDB")
 
 -- RareScanner services
 local RSMap = private.ImportLib("RareScannerMap")
+local RSNpcPOI = private.ImportLib("RareScannerNpcPOI")
+local RSContainerPOI = private.ImportLib("RareScannerContainerPOI")
+local RSEventPOI = private.ImportLib("RareScannerEventPOI")
+local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
 
 -- RareScanner general libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -28,11 +36,9 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 local RSUtils = private.ImportLib("RareScannerUtils")
 
 ---============================================================================
--- Update minimap icons
+-- Minimap button
 ---============================================================================
 
-local previousMapID
-local pinFramesPool
 local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
 
 function RSMinimap.LoadMinimapButton()
@@ -67,22 +73,34 @@ function RSMinimap.ToggleMinimapButton()
 	end 
 end
 
+---============================================================================
+-- All layerers
+---============================================================================
+
+local previousMapID
+local pinFramesPool
+local overlayFramesPool
+local guideFramesPool
+
 function RSMinimap.RemoveAllData()
+	HBD_Pins:RemoveAllMinimapIcons(RSMinimap)
+	
 	if (pinFramesPool) then
-		HBD_Pins:RemoveAllMinimapIcons(RSMinimap)
-		for pin in pinFramesPool:EnumerateActive() do
-			if (pin.overlayFramesPool) then
-				HBD_Pins:RemoveAllMinimapIcons(pin)
-				pin.overlayFramesPool:ReleaseAll()
-			end
-			if (pin.guideFramesPool) then
-				HBD_Pins:RemoveAllMinimapIcons(pin)
-				pin.guideFramesPool:ReleaseAll()
-			end
-		end
 		pinFramesPool:ReleaseAll()
 	end
+	
+	if (overlayFramesPool) then
+		overlayFramesPool:ReleaseAll()
+	end
+	
+	if (guideFramesPool) then
+		guideFramesPool:ReleaseAll()
+	end
 end
+
+---============================================================================
+-- Entities layer
+---============================================================================
 
 function RSMinimap.RefreshAllData(forzed)
 	-- Ignore if minimap not available
@@ -101,14 +119,6 @@ function RSMinimap.RefreshAllData(forzed)
 	local mapID = C_Map.GetBestMapForUnit("player")
 	if (not mapID or mapID == 0) then
 		return
-	end
-	
-	-- Gets player coordinates
-	local playerMapPosition = C_Map.GetPlayerMapPosition(mapID, "player")
-	local playerCoordX
-	local playerCoodY
-	if (playerMapPosition) then
-		playerCoordX, playerCoodY = playerMapPosition:GetXY()
 	end
 
 	-- If same zone ignore it
@@ -138,22 +148,217 @@ function RSMinimap.RefreshAllData(forzed)
 		pin.POI = POI
 			
 		-- Ignore POIs from worldmap
-		if (not POI.worldmap and (not playerCoordX or not playerCoodY or RSUtils.DistanceBetweenCoords(RSUtils.FixCoord(POI.x), playerCoordX, RSUtils.FixCoord(POI.y), playerCoodY) <= RSConstants.MAXIMUN_MINIMAP_DISTANCE_RANGE)) then
+		if (not POI.worldmap) then
 			pin.Texture:SetTexture(POI.Texture)
 			pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
 			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
 		end
+	end
 	
-		-- Adds overlay if active
-		if (RSGeneralDB.HasOverlayActive(POI.entityID)) then
-			local overlayInfo = RSGeneralDB.GetOverlayActive(POI.entityID)
-			local r, g, b = RSConfigDB.GetWorldMapOverlayColour(overlayInfo.colourID)
-			pin:ShowOverlay(r, g, b)
-		end
+	-- Adds overlay if active
+	for entityID, _ in pairs (RSGeneralDB.GetAllOverlayActive()) do
+		RSMinimap.AddOverlay(entityID)
+	end
+	
+	-- Adds guide if active
+	if (RSGeneralDB.GetGuideActive()) then
+		RSMinimap.AddGuide(RSGeneralDB.GetGuideActive())
+	end
+end
 
-		-- Adds guide if active
-		if (RSGeneralDB.HasGuideActive(POI.entityID)) then
-			pin:ShowGuide()
+function RSMinimap.RefreshEntityState(entityID)
+	if (pinFramesPool) then
+		for pin in pinFramesPool:EnumerateActive() do
+			local POI = pin.POI
+			if (POI.entityID == entityID) then
+				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+				
+				local isFiltered = false
+				if (POI.isNpc) then
+					POI = RSNpcPOI.GetNpcPOI(entityID, POI.mapID, RSNpcDB.GetInternalNpcInfo(entityID), RSGeneralDB.GetAlreadyFoundEntity(entityID))
+					if (POI.isDead and not RSConfigDB.IsShowingDeadNpcs()) then
+						isFiltered = true
+					end
+				elseif (POI.isContainer) then
+					POI = RSContainerPOI.GetContainerPOI(entityID, POI.mapID, RSContainerDB.GetInternalContainerInfo(entityID), RSGeneralDB.GetAlreadyFoundEntity(entityID))
+					if (POI.isOpened and not RSConfigDB.IsShowingOpenedContainers()) then
+						isFiltered = true
+					end
+				elseif (POI.isEvent) then
+					POI = RSEventPOI.GetEventPOI(entityID, POI.mapID, RSEventDB.GetInternalEventInfo(entityID), RSGeneralDB.GetAlreadyFoundEntity(entityID))
+					if (POI.isCompleted and not RSConfigDB.IsShowingCompletedEvents()) then
+						isFiltered = true
+					end
+				end
+				
+				if (isFiltered) then
+					pinFramesPool:Release(pin)
+				else
+					pin.Texture:SetTexture(POI.Texture)
+					pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+					HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
+				end
+				
+				break
+			end
+		end
+	end
+end
+
+function RSMinimap.HideIcon(entityID)
+	if (pinFramesPool) then
+		for pin in pinFramesPool:EnumerateActive() do
+			local POI = pin.POI
+			if (POI.entityID == entityID) then
+				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+				break
+			end
+		end
+	end
+end
+
+---============================================================================
+-- Overlay layer
+---============================================================================
+
+function RSMinimap.AddOverlay(entityID)
+	-- Gets MAPID from players position
+	local mapID = C_Map.GetBestMapForUnit("player")
+	if (not mapID or mapID == 0) then
+		return
+	end
+	
+	-- Check if the entity is actually active
+	local overlayActive = RSGeneralDB.GetOverlayActive(entityID)
+	if (not overlayActive) then
+		return
+	end
+	
+	-- Gets the information of the entity
+	local isNpc = false
+	local isContainer = false
+	if (RSNpcDB.GetInternalNpcInfo(entityID)) then
+		isNpc = true
+	elseif (RSContainerDB.GetInternalContainerInfo(entityID)) then
+		isContainer = true
+	end
+	
+	-- Check if the entity belongs to that map
+	if ((isNpc and not RSNpcDB.IsInternalNpcInMap(entityID, mapID)) or (isContainer and not RSContainerDB.IsInternalContainerInMap(entityID, mapID))) then
+		return
+	end
+	
+	-- Initializes the pool
+	if (not overlayFramesPool) then
+		overlayFramesPool = CreateFramePool("FRAME", Minimap, "RSMinimapPinTemplate");
+	end
+
+	local overlay = nil
+	if (isNpc) then
+		overlay = RSNpcDB.GetInternalNpcOverlay(entityID, mapID)
+	elseif (isContainer) then
+		overlay = RSContainerDB.GetInternalContainerOverlay(entityID, mapID)
+	end
+
+	if (overlay) then
+		local r, g, b = RSConfigDB.GetWorldMapOverlayColour(overlayActive.colourID)		
+		for _, coordinates in ipairs (overlay) do
+			local x, y = strsplit("-", coordinates)
+			local pin = overlayFramesPool:Acquire()
+			pin.POI = {}
+			pin.POI.entityID = entityID
+			if (isNpc) then
+				pin.POI.name = RSNpcDB.GetNpcName(entityID)
+			elseif (isContainer) then
+				pin.POI.name = RSContainerDB.GetContainerName(entityID)
+			end
+			
+			pin.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
+			pin.Texture:SetVertexColor(r, g, b, 0.7)
+			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, mapID, RSUtils.FixCoord(x), RSUtils.FixCoord(y), false, false)
+		end
+	end
+end
+
+function RSMinimap.RemoveOverlay(entityID)
+	if (overlayFramesPool) then
+		for pin in overlayFramesPool:EnumerateActive() do
+			if (pin.POI.entityID == entityID) then
+				overlayFramesPool:Release(pin)
+				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+			end
+		end
+	end
+end
+
+---============================================================================
+-- Guide layer
+---============================================================================
+
+function RSMinimap.AddGuide(entityID)
+	-- Gets MAPID from players position
+	local mapID = C_Map.GetBestMapForUnit("player")
+	if (not mapID or mapID == 0) then
+		return
+	end
+	
+	-- Check if the entity is actually active
+	if (not RSGeneralDB.GetGuideActive() or RSGeneralDB.GetGuideActive() ~= entityID) then
+		return
+	end
+	
+	-- Gets the information of the entity
+	local isNpc = false
+	local isContainer = false
+	local isEvent = false
+	if (RSNpcDB.GetInternalNpcInfo(entityID)) then
+		isNpc = true
+	elseif (RSContainerDB.GetInternalContainerInfo(entityID)) then
+		isContainer = true
+	elseif (RSEventDB.GetInternalEventInfo(entityID)) then
+		isEvent = true
+	end
+	
+	-- Check if the entity belongs to that map
+	if ((isNpc and not RSNpcDB.IsInternalNpcInMap(entityID, mapID)) or (isContainer and not RSContainerDB.IsInternalContainerInMap(entityID, mapID)) or (isEvent and not RSEventDB.IsInternalEventInMap(entityID, mapID))) then
+		return
+	end
+	
+	-- Initializes the pool
+	if (not guideFramesPool) then
+		guideFramesPool = CreateFramePool("FRAME", Minimap, "RSMinimapPinTemplate");
+	end
+
+	local guide = nil
+	if (isNpc) then
+		guide = RSGuideDB.GetNpcGuide(entityID, mapID)
+	elseif (isContainer) then
+		guide = RSGuideDB.GetContainerGuide(entityID, mapID)
+	else
+		guide = RSGuideDB.GetEventGuide(entityID, mapID)
+	end
+
+	if (guide) then
+		for pinType, info in pairs (guide) do
+			if (not info.questID or not C_QuestLog.IsQuestFlaggedCompleted(info.questID)) then
+				local POI = RSGuidePOI.GetGuidePOI(entityID, pinType, info)
+				local pin = guideFramesPool:Acquire()
+				pin.POI = POI
+				pin.Texture:SetTexture(POI.texture)
+				pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+				HBD_Pins:AddMinimapIconMap(RSMinimap, pin, mapID, POI.x, POI.y, false, false)
+			end
+		end
+	end
+end
+
+function RSMinimap.RemoveGuide(entityID)
+	if (guideFramesPool) then
+		for pin in guideFramesPool:EnumerateActive() do
+			if (pin.POI.entityID == entityID) then
+				guideFramesPool:Release(pin)
+				HBD_Pins:RemoveMinimapIcon(RSMinimap, pin)
+			end
 		end
 	end
 end

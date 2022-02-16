@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1992, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806141949")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(122450)
 mod:SetEncounterID(2076)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
@@ -44,7 +44,7 @@ local yellDecimationFades				= mod:NewShortFadesYell(244410)
 --Annihilator
 local specWarnAnnihilation				= mod:NewSpecialWarningSpell(244761, nil, nil, nil, 1, 2)
 
-local timerFelBombardmentCD				= mod:NewNextTimer(20.7, 246220, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
+local timerFelBombardmentCD				= mod:NewNextTimer(20.7, 246220, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)
 local timerApocDriveCast				= mod:NewCastTimer(30, 244152, nil, nil, nil, 6)
 local timerSpecialCD					= mod:NewNextSpecialTimer(20, nil, nil, nil, nil, 3, nil, nil, nil, 1, 4)--When cannon unknown
 mod:AddTimerLine(Decimator)

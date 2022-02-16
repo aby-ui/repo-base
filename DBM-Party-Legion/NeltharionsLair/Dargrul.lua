@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1687, "DBM-Party-Legion", 5, 767)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(91007)
 mod:SetEncounterID(1793)
 
@@ -22,19 +22,19 @@ local specWarnMagmaSculptor			= mod:NewSpecialWarningSwitch(200637, "Dps", nil, 
 local specWarnMagmaWave				= mod:NewSpecialWarningMoveTo(200404, nil, nil, nil, 2, 2)
 local specWarnBurningHatred			= mod:NewSpecialWarningYou(200154, nil, nil, nil, 1, 2)
 
-local timerMoltenCrashCD			= mod:NewCDTimer(16.5, 200732, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)--16.5-23
-local timerLandSlideCD				= mod:NewCDTimer(16.5, 200700, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--16.5-27
+local timerMoltenCrashCD			= mod:NewCDTimer(16.5, 200732, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16.5-23
+local timerLandSlideCD				= mod:NewCDTimer(16.5, 200700, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--16.5-27
 local timerCrystalSpikesCD			= mod:NewCDTimer(21.4, 200551, nil, nil, nil, 3)
 local timerMagmaSculptorCD			= mod:NewCDTimer(71, 200637, nil, nil, nil, 1)--Everyone?
-local timerMagmaWaveCD				= mod:NewCDTimer(60, 200404, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
+local timerMagmaWaveCD				= mod:NewCDTimer(60, 200404, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
 
 local shelterName = DBM:GetSpellInfo(200551)
 
 function mod:OnCombatStart(delay)
+	timerCrystalSpikesCD:Start(5.8-delay)
 	timerMagmaSculptorCD:Start(7.3-delay)
-	timerLandSlideCD:Start(15.8-delay)
-	timerMoltenCrashCD:Start(19-delay)
-	timerCrystalSpikesCD:Start(21.5-delay)
+	timerLandSlideCD:Start(15.5-delay)
+	timerMoltenCrashCD:Start(18.7-delay)
 	timerMagmaWaveCD:Start(65-delay)
 end
 

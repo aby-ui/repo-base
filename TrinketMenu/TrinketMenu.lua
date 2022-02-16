@@ -1,4 +1,4 @@
---[[ TrinketMenu 9.0.0 ]]--
+--[[ TrinketMenu 9.0.6 ]]--
 
 TrinketMenu = { }
 
@@ -280,6 +280,7 @@ function TrinketMenu.Initialize()
 	TrinketMenuPerOptions.Hidden = TrinketMenuPerOptions.Hidden or { }
 	options.MenuOnRight = options.MenuOnRight or "OFF" -- 3.61
 	if TrinketMenuPerOptions.XPos and TrinketMenuPerOptions.YPos then
+		TrinketMenu_MainFrame:ClearAllPoints()
 		TrinketMenu_MainFrame:SetPoint("TOPLEFT", "UIParent", "BOTTOMLEFT", TrinketMenuPerOptions.XPos, TrinketMenuPerOptions.YPos)
 	end
 	if TrinketMenuPerOptions.MainScale then
@@ -388,8 +389,8 @@ function TrinketMenu.OnLoad(self)
 	self:RegisterEvent("PLAYER_LOGIN")
 end
 
-local shown
 function TrinketMenu.OnEvent(self, event, ...)
+	local wasShown
 	if event == "UNIT_INVENTORY_CHANGED" then
 		local unitID = ...
 		if unitID == "player" then
@@ -401,13 +402,14 @@ function TrinketMenu.OnEvent(self, event, ...)
 		TrinketMenu.UpdateWornCooldowns(1)
 	elseif event == "PET_BATTLE_OPENING_START" then
 		if TrinketMenuOptions.HidePetBattle == "ON" then
-			shown = TrinketMenu_MainFrame:IsShown()
-			if shown then
+			wasShown = TrinketMenu_MainFrame:IsShown()
+			if wasShown then
 				TrinketMenu_MainFrame:Hide()
+				TrinketMenuPerOptions.Visible = "ON"
 			end
 		end
 	elseif event == "PET_BATTLE_CLOSE" then
-		if TrinketMenuOptions.HidePetBattle == "ON" and shown then
+		if TrinketMenuOptions.HidePetBattle == "ON" and wasShown then
 			TrinketMenu_MainFrame:Show()
 		end
 	elseif (event == "PLAYER_REGEN_ENABLED" or event == "PLAYER_UNGHOST" or event == "PLAYER_ALIVE") and not TrinketMenu.IsPlayerReallyDead() then
@@ -425,7 +427,6 @@ function TrinketMenu.OnEvent(self, event, ...)
 		TrinketMenu_OptMenuOnRight:Disable()
 	elseif event == "PLAYER_LOGIN" then
 		TrinketMenu.LoadDefaults()
-		TrinketMenu_MainFrame:ClearAllPoints()
 		TrinketMenu.Initialize()
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -1186,6 +1187,9 @@ function TrinketMenu.OnShow()
 end
 
 function TrinketMenu.OnHide()
+	if not UIParent:IsShown() then
+		return
+	end
 	TrinketMenuPerOptions.Visible = "OFF"
 	TrinketMenu_MenuFrame:Hide()
 end

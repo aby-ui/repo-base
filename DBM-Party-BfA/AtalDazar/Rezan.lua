@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2083, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116185401")
 mod:SetCreatureID(122963)
 mod:SetEncounterID(2086)
 
@@ -22,7 +22,7 @@ local yellPursuit				= mod:NewYell(257407)
 local specWarnPursuit			= mod:NewSpecialWarningRun(257407, nil, nil, nil, 4, 2)
 local specWarnBoneQuake			= mod:NewSpecialWarningSpell(260683, nil, nil, nil, 2, 2)
 
-local timerTeethCD				= mod:NewCDTimer(38, 255434, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--38-43.7?
+local timerTeethCD				= mod:NewCDTimer(38, 255434, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--38-43.7?
 local timerFearCD				= mod:NewCDTimer(40.9, 255371, nil, nil, nil, 2)
 local timerPursuitCD			= mod:NewNextTimer(41.2, 257407, nil, nil, nil, 3)
 
@@ -48,7 +48,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 255371 then
-		specWarnFear:Show(DBM_CORE_L.BREAK_LOS)
+		specWarnFear:Show(DBM_COMMON_L.BREAK_LOS)
 		specWarnFear:Play("findshelter")
 		timerFearCD:Start()
 	elseif spellId == 257407 then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2134, "DBM-Party-BfA", 5, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116185401")
 mod:SetCreatureID(128651)
 mod:SetEncounterID(2099)
 
@@ -16,9 +16,9 @@ local specWarnCrashingTide			= mod:NewSpecialWarningDodge(261563, "Tank", nil, n
 local specWarnBreakWater			= mod:NewSpecialWarningDodge(257882, nil, nil, nil, 2, 2)
 local specWarnTidalSurge			= mod:NewSpecialWarningMoveTo(276068, nil, nil, nil, 3, 2)
 
-local timerCrashingTideCD			= mod:NewCDTimer(15.8, 261563, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerCrashingTideCD			= mod:NewCDTimer(15.8, 261563, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerBreakWaterCD				= mod:NewCDTimer(30, 257882, nil, nil, nil, 3)
-local timerTidalSurgeCD				= mod:NewCDTimer(49.8, 276068, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerTidalSurgeCD				= mod:NewCDTimer(49.8, 276068, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 
 function mod:OnCombatStart(delay)
 	timerBreakWaterCD:Start(7.1-delay)
@@ -33,7 +33,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnBreakWater:Play("watchstep")
 		timerBreakWaterCD:Start()
 	elseif spellId == 276068 then
-		specWarnTidalSurge:Show(DBM_CORE_L.BREAK_LOS)
+		specWarnTidalSurge:Show(DBM_COMMON_L.BREAK_LOS)
 		specWarnTidalSurge:Play("findshelter")
 		timerTidalSurgeCD:Start()--Unknown, pulls to short
 	end

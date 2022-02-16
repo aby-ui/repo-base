@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2139, "DBM-BfA", 2, 1028)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721041239")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(132701)
 --mod:SetEncounterID(1880)
 mod:SetReCombatTime(20)
@@ -27,7 +27,7 @@ local specWarnTerrorWall			= mod:NewSpecialWarningDodge(261552, nil, nil, nil, 3
 
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
-local timerCrushingSlamCD			= mod:NewCDTimer(23.2, 262004, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--24.8-31?
+local timerCrushingSlamCD			= mod:NewCDTimer(23.2, 262004, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--24.8-31?
 local timerCoalescedEssenceCD		= mod:NewCDTimer(23.6, 261600, nil, nil, nil, 3)--25-28?
 local timerConsumingSpiritsCD		= mod:NewCDTimer(21.9, 261605, nil, nil, nil, 3)--21-35?
 local timerTerrorWallCD				= mod:NewCDTimer(23.2, 261552, nil, nil, nil, 3)--24-29?

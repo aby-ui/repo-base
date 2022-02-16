@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20210614230033")
+mod:SetRevision("20220101235930")
 mod:SetCreatureID(104215)
 mod:SetEncounterID(1868)
 
@@ -21,7 +21,7 @@ local specWarnArcaneLockdown		= mod:NewSpecialWarningJump(207278, nil, nil, nil,
 local specWarnBeacon				= mod:NewSpecialWarningSwitch(207806, nil, nil, nil, 1, 2)
 
 local timerResonantSlashCD			= mod:NewCDTimer(12.1, 207261, nil, nil, nil, 3)
-local timerArcaneLockdownCD			= mod:NewCDTimer(30, 207278, nil, nil, nil, 3)
+local timerArcaneLockdownCD			= mod:NewCDTimer(27.9, 207278, nil, nil, nil, 3)
 local timerSignalBeaconCD			= mod:NewCDTimer(20, 207806, nil, nil, nil, 1)
 
 function mod:OnCombatStart(delay)

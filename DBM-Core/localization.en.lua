@@ -273,59 +273,12 @@ L.TIMER_USAGE						= {
 	"-----------------",
 	"/dbm timer <sec> <text>: Starts a <sec> second timer with your <text>.",
 	"/dbm ltimer <sec> <text>: Starts a timer that also automatically loops until canceled.",
-	"('Broadcast' in front of any timer also shares it with raid if leader/promoted)",
+	"('Broadcast' in front of the 'timer' or 'ltimer' also shares it with raid if leader/promoted)",
 	"/dbm timer endloop: Stops any looping ltimer."
 }
 
 L.ERROR_NO_PERMISSION				= "You don't have the required permission to do this."
 L.TIME_TOO_SHORT					= "Pull timer must be longer than 3 seconds."
-
---Common Locals (PURGE AFTER ALL MODS USING COMMON LOCALS UPDATED TO USE DBM_COMMON_L REFERENCE)
-L.NONE								= "None"
-L.RANDOM							= "Random"
-L.NEXT								= "Next %s"
-L.COOLDOWN							= "%s CD"
-L.UNKNOWN							= "Unknown"--UNKNOWN which is "Unknown" (does u vs U matter?)
-L.LEFT								= "Left"
-L.RIGHT								= "Right"
-L.BOTH								= "Both"
-L.BEHIND							= "Behind"
-L.BACK								= "Back"--BACK
-L.SIDE								= "Side"
-L.TOP								= "Top"
-L.BOTTOM							= "Bottom"
-L.MIDDLE							= "Middle"
-L.FRONT								= "Front"
-L.EAST								= "East"
-L.WEST								= "West"
-L.NORTH								= "North"
-L.SOUTH								= "South"
-L.INTERMISSION						= "Intermission"--No blizz global for this, and will probably be used in most end tier fights with intermission phases
-L.ORB								= "Orb"
-L.ORBS								= "Orbs"
-L.RING								= "Ring"
-L.RINGS								= "Rings"
-L.CHEST								= "Chest"--As in Treasure 'Chest'. Not Chest as in body part.
-L.NO_DEBUFF							= "Not %s"--For use in places like info frame where you put "Not Spellname"
-L.ALLY								= "Ally"--Such as "Move to Ally"
-L.ALLIES							= "Allies"--Such as "Move to Allies"
-L.ADD								= "Add"--A fight Add as in "boss spawned extra adds"
-L.ADDS								= "Adds"
-L.BIG_ADD							= "Big Add"
-L.BOSS								= "Boss"
-L.EDGE								= "Room Edge"
-L.FAR_AWAY							= "Far Away"
-L.BREAK_LOS							= "Break LOS"
-L.RESTORE_LOS						= "Restore/Maintain LOS"
-L.SAFE								= "Safe"
-L.NOTSAFE							= "Not Safe"
-L.SHIELD							= "Shield"
-L.PILLAR							= "Pillar"
-L.SHELTER							= "Shelter"
-L.INCOMING							= "%s Incoming"
-L.BOSSTOGETHER						= "Bosses Together"
-L.BOSSAPART							= "Bosses Apart"
---Common Locals end
 
 L.BREAK_USAGE						= "Break timer cannot be longer than 60 minutes. Make sure you're inputting time in minutes and not seconds."
 L.BREAK_START						= "Break starting now -- you have %s! (Sent by %s)"
@@ -436,8 +389,8 @@ L.AUTO_SPEC_WARN_TEXTS = {
 	switch							= "%s - switch targets",
 	switchcount						= "%s - switch targets (%%s)",
 	gtfo							= "%%s damage - move away",
-	adds							= "Incoming Adds - switch targets",
-	addscustom						= "Incoming Adds - %%s",
+	adds							= "Incoming Adds - switch targets",--Basically a generic of switch
+	addscustom						= "Incoming Adds - %%s",--Same as above, but more info, pretty much made for like 3 boss mods, such as akama
 	targetchange					= "Target Change - switch to %%s"
 }
 
@@ -493,37 +446,23 @@ L.AUTO_TIMER_TEXTS = {
 	target							= "%s: %%s",
 	targetcount						= "%s (%%2$s): %%1$s",
 	cast							= "%s",
-	castshort						= "%s ",--if short timers enabled, cast and next are same timer text, this is a conflict. the space resolves it
 	castcount						= "%s (%%s)",
-	castcountshort					= "%s (%%s) ",--Resolve short timer conflict with next timers
 	castsource						= "%s: %%s",
-	castsourceshort					= "%s: %%s ",--Resolve short timer conflict with next timers
 	active							= "%s ends",--Buff/Debuff/event on boss
 	fades							= "%s fades",--Buff/Debuff on players
 	ai								= "%s AI",
-	cd								= "%s CD",
-	cdshort							= "~%s",
-	cdcount							= "%s (%%s) CD",
-	cdcountshort					= "~%s (%%s)",
-	cdsource						= "%s CD: >%%s<",
-	cdsourceshort					= "~%s: >%%s<",
-	cdspecial						= "Special CD",
-	cdspecialshort					= "~Special",
-	next							= "Next %s",
-	nextshort						= "%s",
-	nextcount						= "Next %s (%%s)",
-	nextcountshort					= "%s (%%s)",
-	nextsource						= "Next %s: %%s",
-	nextsourceshort					= "%s: %%s",
-	nextspecial						= "Next Special",
-	nextspecialshort				= "Special",
+	cd								= "~%s",
+	cdcount							= "~%s (%%s)",
+	cdsource						= "~%s: >%%s<",
+	cdspecial						= "~Special",
+	next							= "%s",
+	nextcount						= "%s (%%s)",
+	nextsource						= "%s: %%s",
+	nextspecial						= "Special",
 	achievement						= "%s",
-	stage							= "Next Stage",
-	stageshort						= "Stage",
-	adds							= "Incoming Adds",
-	addsshort						= "Adds",
-	addscustom						= "Incoming Adds (%%s)",
-	addscustomshort					= "Adds (%%s)",
+	stage							= "Stage",
+	adds							= "Adds",
+	addscustom						= "Adds (%%s)",
 	roleplay						= GUILD_INTEREST_RP or "Roleplay"
 }
 
@@ -554,6 +493,7 @@ L.AUTO_TIMER_OPTIONS = {
 
 L.AUTO_ICONS_OPTION_TEXT			= "Set icons on $spell:%s targets"
 L.AUTO_ICONS_OPTION_TEXT2			= "Set icons on $spell:%s"
+L.AUTO_ICONS_OPTION_CONFLICT		= " (May conflict with other options)"
 L.AUTO_ARROW_OPTION_TEXT			= "Show " .. L.DBM .. " Arrow to move toward target affected by $spell:%s"
 L.AUTO_ARROW_OPTION_TEXT2			= "Show " .. L.DBM .. " Arrow to move away from target affected by $spell:%s"
 L.AUTO_ARROW_OPTION_TEXT3			= "Show " .. L.DBM .. " Arrow to move toward specific location for $spell:%s"
@@ -647,34 +587,6 @@ L.DUR_CHECKING						= "Checking raid Durability... "
 L.DUR_HEADER						= L.DEADLY_BOSS_MODS.. " - Durability Results"
 L.DUR_ENTRY							= "%s: Durability [%d percent] / Gear broken [%s]"
 L.LAG_FOOTER						= "No Response: %s"
-
---TODO, PRUNE journal icons from main locals once all 3 game versions get a new release
-local EJIconPath = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) and "EncounterJournal" or "AddOns\\DBM-Core\\textures"
---Role Icons
-L.TANK_ICON							= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:6:21:7:27|t" -- NO TRANSLATE
-L.DAMAGE_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:39:55:7:27|t" -- NO TRANSLATE
-L.HEALER_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:70:86:7:27|t" -- NO TRANSLATE
-
-L.TANK_ICON_SMALL					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:12:12:0:0:255:66:6:21:7:27|t" -- NO TRANSLATE
-L.DAMAGE_ICON_SMALL					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:12:12:0:0:255:66:39:55:7:27|t" -- NO TRANSLATE
-L.HEALER_ICON_SMALL					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:12:12:0:0:255:66:70:86:7:27|t" -- NO TRANSLATE
---Importance Icons
-L.HEROIC_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:22:22:0:0:255:66:102:118:7:27|t" -- NO TRANSLATE
-L.DEADLY_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:22:22:0:0:255:66:133:153:7:27|t" -- NO TRANSLATE
-L.IMPORTANT_ICON					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:168:182:7:27|t" -- NO TRANSLATE
-L.MYTHIC_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:22:22:0:0:255:66:133:153:40:58|t" -- NO TRANSLATE
-
-L.HEROIC_ICON_SMALL					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:14:14:0:0:255:66:102:118:7:27|t" -- NO TRANSLATE
-L.DEADLY_ICON_SMALL					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:14:14:0:0:255:66:133:153:7:27|t" -- NO TRANSLATE
-L.IMPORTANT_ICON_SMALL				= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:12:12:0:0:255:66:168:182:7:27|t" -- NO TRANSLATE
---Type Icons
-L.INTERRUPT_ICON					= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:198:214:7:27|t" -- NO TRANSLATE
-L.MAGIC_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:229:247:7:27|t" -- NO TRANSLATE
-L.CURSE_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:6:21:40:58|t" -- NO TRANSLATE
-L.POISON_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:39:55:40:58|t" -- NO TRANSLATE
-L.DISEASE_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:70:86:40:58|t" -- NO TRANSLATE
-L.ENRAGE_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:102:118:40:58|t" -- NO TRANSLATE
-L.BLEED_ICON						= "|TInterface\\" .. EJIconPath .. "\\UI-EJ-Icons.blp:20:20:0:0:255:66:168:182:40:58|t" -- NO TRANSLATE
 
 --LDB
 L.LDB_TOOLTIP_HELP1					= "Click to open " .. L.DBM

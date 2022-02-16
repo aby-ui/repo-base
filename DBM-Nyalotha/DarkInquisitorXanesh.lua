@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2377, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211011151021")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(156575)
 mod:SetEncounterID(2328)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -42,7 +42,7 @@ local specWarnTorment						= mod:NewSpecialWarningDodgeCount(306208, nil, nil, n
 local specWarnTerrorWave					= mod:NewSpecialWarningInterruptCount(316211, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 
-local timerAbyssalStrikeCD					= mod:NewCDTimer(40, 311551, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)--42.9-47
+local timerAbyssalStrikeCD					= mod:NewCDTimer(40, 311551, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--42.9-47
 local timerVoidRitualCD						= mod:NewNextCountTimer(79.7, 312336, nil, nil, nil, 5, nil, nil, nil, 1, 4)
 local timerSoulFlayCD						= mod:NewCDCountTimer(57, 306319, nil, nil, nil, 3)--57 but will spell queue behind other spells
 local timerTormentCD						= mod:NewNextCountTimer(46.5, 306208, nil, nil, nil, 3, nil, nil, nil, 3, 4)

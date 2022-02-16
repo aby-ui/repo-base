@@ -87,7 +87,7 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- Ace strips realm
 
 	local header, guid, body = strmatch(message, "(.-),(.-),(.+)")
 	local info = P.groupInfo[guid]
-	if not info then -- class nil in updateRoster (can't distinguish server delay from no longer in group)
+	if not info then -- class nil in updateRoster, user zone disabled (msg is never disabled), sender no longer in group (msg latency)
 		return
 	end
 
@@ -188,6 +188,15 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- Ace strips realm
 		end
 	end
 
+	local unit = info.unit
+	if info.level == 200 then
+		local lvl = UnitLevel(unit)
+		info.level = lvl > 0 and lvl or 200
+	end
+	if info.name == "Unknown" then
+		info.name = GetUnitName(unit, true)
+	end
+
 	self.syncGUIDS[guid] = true
 	self:DequeueInspect(guid)
 
@@ -276,4 +285,5 @@ do
 	Comms.COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED = SendUpdatedSyncData
 end
 
-Comms.PLAYER_LEAVING_WORLD = Comms.Desync -- Desync on disabling from the AddOns menu
+-- Desync if user disables module,zone, or addon(/Reload). On zone change where PLW is followed by PEW, CHAT_MSG_ADDON only sends REQ and never DESYNC.
+Comms.PLAYER_LEAVING_WORLD = Comms.Desync

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2171, "DBM-Party-BfA", 3, 1041)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(134993)
 mod:SetEncounterID(2142)
 
@@ -26,7 +26,7 @@ local specWarnEntombOther			= mod:NewSpecialWarningSwitch(267702, nil, nil, nil,
 local specWarnWretchedDischarge		= mod:NewSpecialWarningInterrupt(267763, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(267874, nil, nil, nil, 1, 8)
 
-local timerBurnCorruptionCD			= mod:NewCDTimer(15.5, 267639, nil, "Melee", nil, 2, nil, DBM_CORE_L.TANK_ICON..DBM_CORE_L.DEADLY_ICON)
+local timerBurnCorruptionCD			= mod:NewCDTimer(15.5, 267639, nil, "Melee", nil, 2, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DEADLY_ICON)
 local timerDrainFluidsCD			= mod:NewCDTimer(16.8, 267618, nil, nil, nil, 3)
 local timerEntombCD					= mod:NewCDTimer(60, 267702, nil, nil, nil, 3)
 

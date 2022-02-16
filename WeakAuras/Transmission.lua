@@ -1762,9 +1762,25 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       end
     end
   end
+
+  local linkValidityDuration = 60 * 5
+  local safeSender = safeSenders[sender]
+  local validLink = false
+  if Private.linked then
+    local expiredLinkTime = GetTime() - linkValidityDuration
+    for id, time in pairs(Private.linked) do
+      if time > expiredLinkTime then
+        validLink = true
+      end
+    end
+  end
+  if not safeSender and not validLink then
+    return
+  end
+
   local received = StringToTable(message);
   if(received and type(received) == "table" and received.m) then
-    if(received.m == "d") and safeSenders[sender] then
+    if(received.m == "d") then
       tooltipLoading = nil;
       local data, children, icon, icons = received.d, received.c, received.i, received.a
       WeakAuras.PreAdd(data)
@@ -1776,7 +1792,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       local matchInfo = MatchInfo(data, children)
       ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
-      if(Private.linked and Private.linked[received.d]) then
+      if(Private.linked and Private.linked[received.d] and Private.linked[received.d] > GetTime() - linkValidityDuration) then
         TransmitDisplay(received.d, sender);
       end
     elseif(received.m == "dE") then

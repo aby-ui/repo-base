@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2374, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(158328)
 mod:SetEncounterID(2345)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -57,12 +57,12 @@ local yellAbsorbingCharge					= mod:NewYell(318383)
 
 --mod:AddTimerLine(BOSS)
 --Stage 01: The Corruptor, Reborn
-local timerEyeofNZothCD						= mod:NewCDTimer(17, 309961, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)--16.6-17.4 (0ld), new seems more stable 17
-local timerTouchoftheCorruptorCD			= mod:NewCDCountTimer(64.4, 311401, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON, nil, 1, 4)--64.4-68
+local timerEyeofNZothCD						= mod:NewCDTimer(17, 309961, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16.6-17.4 (0ld), new seems more stable 17
+local timerTouchoftheCorruptorCD			= mod:NewCDCountTimer(64.4, 311401, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)--64.4-68
 local timerCorruptorsGazeCD					= mod:NewCDCountTimer(32.2, 310319, 202046, nil, nil, 3)--32.8-34 Shorttext "Beam"
 --Stage 02: The Organs of Corruption
-local timerCursedBloodCD					= mod:NewNextCountTimer(18, 311159, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
-local timerAbsorbingChargeCD				= mod:NewNextTimer(18.3, 318383, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerCursedBloodCD					= mod:NewNextCountTimer(18, 311159, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerAbsorbingChargeCD				= mod:NewNextTimer(18.3, 318383, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -154,7 +154,7 @@ function mod:OnCombatStart(delay)
 		timerTouchoftheCorruptorCD:Start(47.7-delay, 1)--START
 		if self:IsMythic() then
 			timerCursedBloodCD:Start(20-delay)
-			timerCursedBloodCD:UpdateInline(DBM_CORE_L.MAGIC_ICON)
+			timerCursedBloodCD:UpdateInline(DBM_COMMON_L.MAGIC_ICON)
 		end
 	end
 	if UnitIsGroupLeader("player") and not self:IsLFR() then
@@ -227,7 +227,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerCursedBloodCD:Start(self:IsMythic() and 45 or 18, self.vb.bloodCount+1)
 		if self:IsMythic() then
 			self.vb.bloodIcon = 1
-			timerCursedBloodCD:UpdateInline(DBM_CORE_L.MAGIC_ICON, self.vb.bloodCount+1)
+			timerCursedBloodCD:UpdateInline(DBM_COMMON_L.MAGIC_ICON, self.vb.bloodCount+1)
 		end
 	end
 end

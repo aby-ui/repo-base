@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Greench", "DBM-WorldEvents", 1)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721040757")
+mod:SetRevision("20220208061732")
 mod:SetCreatureID(54499)
 mod:SetModelID(39021)
 mod:SetReCombatTime(10, 5)
@@ -23,7 +23,7 @@ local warnSnowman				= mod:NewSpellAnnounce(101910, 2)
 local warnSnowCrash				= mod:NewCastAnnounce(101907, 3)
 local warnTree					= mod:NewSpellAnnounce(101938, 2)--Needs a custom icon, i'll find one soon.
 
-local specWarnShrinkHeart		= mod:NewSpecialWarningMove(101860, nil, nil, nil, 1, 2)
+local specWarnShrinkHeart		= mod:NewSpecialWarningMove(101873, nil, nil, nil, 1, 2)
 
 local timerShrinkHeartCD		= mod:NewCDTimer(32.5, 101873, nil, nil, nil, 2)
 local timerSnowmanCD			= mod:NewCDTimer(10, 101910, nil, nil, nil, 3)--He alternates these
@@ -69,7 +69,7 @@ end
 
 --Use syncing since these unit events require "target" or "focus" to detect.
 --At least someone in group should be targeting this stuff and sync it to those that aren't (like a healer)
-function mod:OnSync(event, arg)
+function mod:OnSync(event)
 	if event == "SnowMan" then
 		warnSnowman:Show()
 		timerTreeCD:Start()--Not a bug, it's intended to start opposite timer off each trigger.

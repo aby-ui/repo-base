@@ -366,6 +366,14 @@ function RSGeneralDB.GetOverlayActive(entityID)
 	return nil
 end
 
+function RSGeneralDB.GetAllOverlayActive()
+	if (private.dbchar.overlayActive) then
+		return private.dbchar.overlayActive
+	end
+	
+	return {}
+end
+
 function RSGeneralDB.RemoveOverlayActive(entityID)
 	if (private.dbchar.overlayActive and entityID and private.dbchar.overlayActive[entityID]) then
 		private.dbchar.overlayActive[entityID] = nil
@@ -489,6 +497,14 @@ end
 
 function RSGeneralDB.SetLootDbVersion(version)
 	private.dbglobal.lootdbversion = version
+end
+
+function RSGeneralDB.GetLastCleanDb()
+	return private.dbchar.lastClean
+end
+
+function RSGeneralDB.SetLastCleanDb()
+	private.dbchar.lastClean = time()
 end
 
 ---============================================================================

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2330, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(144747, 144767, 144963, 144941)
 mod:SetEncounterID(2268)
 --mod:DisableESCombatDetection()
@@ -94,19 +94,19 @@ local specWarnBwonsamdisWrathDispel		= mod:NewSpecialWarningDispel(284663, "Remo
 --Pa'ku's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19013))
 local timerGiftofWindCD					= mod:NewCDTimer(31.6, 282098, nil, nil, nil, 2)
-local timerPakusWrathCD					= mod:NewCDCountTimer(60, 282107, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)
+local timerPakusWrathCD					= mod:NewCDCountTimer(60, 282107, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
 --Gonk's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19016))
-local timerCrawlingHexCD				= mod:NewCDTimer(25.4, 282135, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON)
-local timerRaptorFormCD					= mod:NewCDTimer(15.8, 285889, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--15.8-17
-local timerGonksWrathCD					= mod:NewCDTimer(60, 282155, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)
+local timerCrawlingHexCD				= mod:NewCDTimer(25.4, 282135, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON)
+local timerRaptorFormCD					= mod:NewCDTimer(15.8, 285889, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--15.8-17
+local timerGonksWrathCD					= mod:NewCDTimer(60, 282155, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Kimbul's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19021))
-local timerLaceratingClawsCD			= mod:NewCDTimer(26.8, 282444, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--26.8-31.6
+local timerLaceratingClawsCD			= mod:NewCDTimer(26.8, 282444, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--26.8-31.6
 local timerKinbulsWrathCD				= mod:NewCDTimer(60, 282834, nil, nil, nil, 3)
 --Akunda's Aspect
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19024))
-local timerThunderingStormCD			= mod:NewCDTimer(19.5, 282411, nil, "Melee", nil, 3, nil, DBM_CORE_L.TANK_ICON)
+local timerThunderingStormCD			= mod:NewCDTimer(19.5, 282411, nil, "Melee", nil, 3, nil, DBM_COMMON_L.TANK_ICON)
 local timerMindWipeCD					= mod:NewCDTimer(33.7, 285878, nil, nil, nil, 3)
 local timerAkundasWrathCD				= mod:NewCDTimer(60, 283685, nil, nil, nil, 3)
 --Krag'wa
@@ -114,7 +114,7 @@ mod:AddTimerLine(DBM:EJ_GetSectionInfo(19193))
 local timerKragwasWrathCD				= mod:NewCDTimer(49.8, 282636, nil, nil, nil, 3, nil, nil, nil, 3, 3)
 --Bwonsamdi
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(19195))
-local timerBwonsamdisWrathCD			= mod:NewCDCountTimer(50, 284666, nil, nil, nil, 3, nil, DBM_CORE_L.CURSE_ICON..DBM_CORE_L.HEALER_ICON)
+local timerBwonsamdisWrathCD			= mod:NewCDCountTimer(50, 284666, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON..DBM_COMMON_L.HEALER_ICON)
 
 --local berserkTimer					= mod:NewBerserkTimer(600)
 

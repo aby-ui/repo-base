@@ -44,7 +44,7 @@ if E.isPreBCC then
 else
 	P.zoneEvents = {
 		none  = { "PLAYER_FLAGS_CHANGED" },
-		arena = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+		arena = { "PLAYER_REGEN_DISABLED", "UPDATE_UI_WIDGET" },
 		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
 		party = { "CHALLENGE_MODE_START" },
 		raid  = { "ENCOUNTER_END" },
@@ -63,7 +63,7 @@ do
 
 	local function SendRequestSync()
 		local success = E.Comms:InspectPlayer() -- GetSpecialization can fail for user joining LFR
-		if success then
+		if success then -- TODO: remove
 			E.Comms:RequestSync()
 			P.groupJoined = false
 			syncTimer = nil
@@ -129,9 +129,9 @@ do
 			local isDeadOrOffline = isDead or not UnitIsConnected(unit)
 			local isUser = guid == E.userGUID
 
-			local pet = (class == "HUNTER" or class == "WARLOCK")and E.unitToPetId[unit]
 ---         local isWarlock = class == "WARLOCK"
 ---         local pet = (class == "HUNTER" or isWarlock)and E.unitToPetId[unit]
+			local pet = (class == "HUNTER" or class == "WARLOCK")and E.unitToPetId[unit]
 			if pet then
 				local petGUID = UnitGUID(pet)
 				if petGUID then
@@ -140,7 +140,7 @@ do
 				end
 			end
 ---         if not isWarlockInGroup and isWarlock then
----             isWarlockInGroup = true --> units joined before the warlock is updated on inspect
+---             isWarlockInGroup = true
 ---         end
 
 			if info then
@@ -184,11 +184,10 @@ do
 				end
 			elseif class then -- nil check
 				local _,_, race = UnitRace(unit)
-				local name = GetUnitName(unit, true)
-				local level = UnitLevel(unit)
-				if level == 0 then -- TODO: this isn't updated for synced units
-					level = 200
-				end
+				-- name lvl can still be nil -> recheck on inspect/sync
+				local name = GetUnitName(unit, true)    -- nil defaults to "Unknown"
+				local level = UnitLevel(unit)           -- nil defaults to 0
+				level = level > 0 and level or 200      -- pass initial spell level check
 				info = {
 					guid = guid,
 					class = class,
@@ -229,8 +228,14 @@ do
 		P:UpdatePosition()
 		P:UpdateExPosition()
 		E.Comms:EnqueueInspect()
----     E.Comms:EnqueueInspect(P.isWarlockInGroup ~= isWarlockInGroup)
----     P.isWarlockInGroup = isWarlockInGroup
+
+		-- CAVEAT: Unknown how blizzard starts the cooldown of consumables after leaving combat. can be 1-10sec.
+---     if P.spell_enabled[6262] and P.isWarlockInGroup ~= isWarlockInGroup then
+---         P.isWarlockInGroup = isWarlockInGroup
+---         for guid in pairs(P.groupInfo) do
+---             P:UpdateUnitBar(guid, true)
+---         end
+---     end
 
 		if P.groupJoined or force then
 			-- Temp fix for Healbot, VuhDo
@@ -265,6 +270,12 @@ function P:GROUP_JOINED(arg)
 	end
 	self.groupJoined = true
 end
+
+local inspectAll = function()
+	E.Comms:EnqueueInspect(true)
+end
+
+local arenaTimer;
 
 function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	local _, instanceType = IsInInstance()
@@ -325,6 +336,17 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		self:ResetAllIcons("joinedPvP")
 	end
 
+	if ( not E.isPreBCC ) then
+		if ( self.isInArena ) then
+			if ( not arenaTimer ) then
+				arenaTimer = C_Timer_NewTicker(5, inspectAll, 11);
+			end
+		elseif ( arenaTimer ) then
+			arenaTimer:Cancel();
+			arenaTimer = nil;
+		end
+	end
+
 	self:GROUP_ROSTER_UPDATE(true, isRefresh) -- Don't ask, just do it!
 end
 
@@ -335,24 +357,22 @@ function P:CHAT_MSG_BG_SYSTEM_NEUTRAL(arg1)
 	end
 end
 
-do
-	local inspectAll = function()
-		E.Comms:EnqueueInspect(true)
-	end
-
-	function P:UPDATE_UI_WIDGET(widgetInfo)
-		if self.disabled then return end
-		if widgetInfo.widgetSetID == 1 and widgetInfo.widgetType == 0 then
-			local info = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widgetInfo.widgetID)
-			if info and info.state == 1 then
-				E.UnregisterEvents(self, "UPDATE_UI_WIDGET")
-				C_Timer.After(1, inspectAll)
-			end
+function P:UPDATE_UI_WIDGET(widgetInfo)
+	if self.disabled then return end
+	if widgetInfo.widgetSetID == 1 and widgetInfo.widgetType == 0 then
+		local info = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widgetInfo.widgetID)
+		if info and info.state == 1 then
+			E.UnregisterEvents(self, "UPDATE_UI_WIDGET")
+			C_Timer.After(1, inspectAll)
 		end
 	end
 end
 
 function P:PLAYER_REGEN_DISABLED()
+	if ( arenaTimer ) then
+		arenaTimer:Cancel();
+		arenaTimer = nil;
+	end
 	E.UnregisterEvents(self, self.zoneEvents[self.zone])
 end
 

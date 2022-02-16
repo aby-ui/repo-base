@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1491, "DBM-Party-Legion", 3, 716)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(91797)
 mod:SetEncounterID(1812)
 
@@ -20,8 +20,8 @@ local specWarnBubbles				= mod:NewSpecialWarningSpell(193018, "-Tank", nil, nil,
 
 local timerQuakeCD					= mod:NewCDTimer(21.8, 193152, nil, nil, nil, 2)--21-25
 local timerCallSeasCD				= mod:NewNextTimer(30, 193051, nil, nil, nil, 2)
-local timerGroundSlamCD				= mod:NewCDTimer(18.2, 193093, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--18.2-30
-local timerBubblesCD				= mod:NewNextTimer(32, 193018, nil, "-Tank", nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerGroundSlamCD				= mod:NewCDTimer(18.2, 193093, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--18.2-30
+local timerBubblesCD				= mod:NewNextTimer(32, 193018, nil, "-Tank", nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 
 mod:AddRangeFrameOption(5, 193152)
 

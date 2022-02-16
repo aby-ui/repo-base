@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetUsedIcons(8)
@@ -45,13 +45,13 @@ local specWarnPearlofThunder		= mod:NewSpecialWarningRun(263365, nil, nil, nil, 
 --Aspix
 ----Lighting
 local timerConductionCD				= mod:NewCDTimer(13, 263371, nil, nil, nil, 3)--NYI
-local timerStaticShockCD			= mod:NewCDTimer(13, 263257, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
+local timerStaticShockCD			= mod:NewCDTimer(13, 263257, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 ----Wind
-local timerGaleForceCD				= mod:NewCDTimer(14.5, 263776, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerGaleForceCD				= mod:NewCDTimer(14.5, 263776, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 --Adderis
 ----Wind
-local timerArcingBladeCD			= mod:NewCDTimer(13.4, 263234, nil, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
-local timerCycloneStrikeCD			= mod:NewCDTimer(14.6, 263573, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerArcingBladeCD			= mod:NewCDTimer(13.4, 263234, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerCycloneStrikeCD			= mod:NewCDTimer(14.6, 263573, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 ----Lighting
 local timerArcDashCD				= mod:NewCDTimer(23, 263424, nil, nil, nil, 3)
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2428, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220203032735")
 mod:SetCreatureID(164261)
 mod:SetEncounterID(2383)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -46,9 +46,7 @@ local specWarnGrowingHunger						= mod:NewSpecialWarningCount(332295, nil, DBM_C
 local specWarnGrowingHungerOther				= mod:NewSpecialWarningTaunt(332295, nil, nil, nil, 1, 2)
 local specWarnOverwhelm							= mod:NewSpecialWarningDefensive(329774, "Tank", nil, nil, 1, 2)
 local specWarnOverwhelmTaunt					= mod:NewSpecialWarningTaunt(329774, nil, nil, nil, 1, 2)
---local specWarnGTFO							= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 
---mod:AddTimerLine(BOSS)
 local timerGluttonousMiasmaCD					= mod:NewCDCountTimer(23.8, 329298, 212238, nil, nil, 3, nil, nil, nil, 1, 3)--Short text, Miasma
 local timerConsumeCD							= mod:NewNextCountTimer(119.8, 334522, nil, nil, nil, 2)
 local timerExpungeCD							= mod:NewNextCountTimer(44.3, 329725, nil, nil, nil, 3)
@@ -61,7 +59,7 @@ local berserkTimer								= mod:NewBerserkTimer(600)
 --mod:AddRangeFrameOption(10, 310277)
 mod:AddSetIconOption("SetIconOnGluttonousMiasma", 329298, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconOnVolatileEjection2", 334266, true, false, {5, 6, 7, 8})
-mod:AddInfoFrameOption(334755, true)
+mod:AddInfoFrameOption(nil, true)
 mod:AddBoolOption("SortDesc", false)
 mod:AddBoolOption("ShowTimeNotStacks", false)
 

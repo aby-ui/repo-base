@@ -114,7 +114,7 @@ ModelSoundDropDown:SetPoint("TOPLEFT", modelarea.frame, "TOPLEFT", 0, -50)
 
 local resizeOptions = coreoptions:CreateArea(L.ResizeOptions)
 
-resizeOptions:CreateText(L.ResizeInfo, nil, true)
+resizeOptions:CreateText(L.ResizeInfo, nil, true, nil, nil, 0)
 
 local optionsFrame = _G["DBM_GUI_OptionsFrame"]
 
@@ -171,3 +171,9 @@ optionsFrame:HookScript("OnSizeChanged", function(self)
 	resizeWidth:SetText(math.floor(self:GetWidth() * 10 ^ 2 + 0.5) / 10 ^ 2)
 	resizeHeight:SetText(math.floor(self:GetHeight() * 10 ^ 2 + 0.5) / 10 ^ 2)
 end)
+
+local UIGroupingOptions = coreoptions:CreateArea(L.UIGroupingOptions)
+UIGroupingOptions:CreateCheckButton(L.GroupOptionsBySpell, true, nil, "GroupOptionsBySpell")
+UIGroupingOptions:CreateCheckButton(L.GroupOptionsExcludeIcon, true, nil, "GroupOptionsExcludeIcon")
+UIGroupingOptions:CreateCheckButton(L.AutoExpandSpellGroups, true, nil, "AutoExpandSpellGroups")
+--UIGroupingOptions:CreateCheckButton(L.ShowSpellDescWhenExpanded, true, nil, "ShowSpellDescWhenExpanded")

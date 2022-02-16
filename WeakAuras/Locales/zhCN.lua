@@ -1085,6 +1085,8 @@ L["Trigger Update"] = "触发器更新"
 L["Trigger:"] = "触发器"
 L["Trivial (Low Level)"] = "低等级（灰色）"
 L["True"] = "真"
+--[[Translation missing --]]
+L["Trying to repair broken conditions in %s likely caused by a WeakAuras bug."] = "Trying to repair broken conditions in %s likely caused by a WeakAuras bug."
 L["Twin Emperors"] = "双子皇帝"
 L["Type"] = "类型"
 L["Unaffected"] = "未受影响"

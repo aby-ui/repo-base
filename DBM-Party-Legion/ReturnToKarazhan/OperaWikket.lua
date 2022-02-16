@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challeng"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(114284, 114251)
 mod:SetEncounterID(1957)--Shared (so not used for encounter START since it'd fire 3 mods)
 mod:DisableESCombatDetection()--However, with ES disabled, EncounterID can be used for BOSS_KILL/ENCOUNTER_END
@@ -27,8 +27,8 @@ local specWarnMagicMagnificent		= mod:NewSpecialWarningMoveTo(227776, nil, nil, 
 local specWarnWondrousRadiance		= mod:NewSpecialWarningMove(227416, nil, nil, nil, 1, 2)
 
 local timerSummonAddsCD				= mod:NewCDTimer(32.7, 227477, nil, nil, nil, 1)
-local timerMagicMagnificentCD		= mod:NewCDTimer(46.1, 198006, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)
-local timerWondrousRadianceCD		= mod:NewCDTimer(8.5, 227410, nil, "Tank", nil, 5, nil, DBM_CORE_L.DEADLY_ICON)
+local timerMagicMagnificentCD		= mod:NewCDTimer(46.1, 198006, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
+local timerWondrousRadianceCD		= mod:NewCDTimer(8.5, 227410, nil, "Tank", nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
 
 local defyGravity = DBM:GetSpellInfo(227405)
 

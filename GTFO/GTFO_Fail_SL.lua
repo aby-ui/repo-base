@@ -325,6 +325,11 @@ GTFO.SpellID["355737"] = {
   sound = 3;
 };
 
+GTFO.SpellID["363530"] = {
+  --desc = "Flattened";
+  applicationOnly = true;
+  sound = 3;
+};
 
 --- **********************
 --- * Halls of Atonement *
@@ -1596,6 +1601,83 @@ GTFO.SpellID["347094"] = {
   --desc = "Titanic Crash (Hylbrande)";
   sound = 3;
 };
+
+--- *******************************
+--- * Sepulcher of the First Ones *
+--- *******************************
+
+-- TODO: Relic Collapse (Artificer Xy'mox) - Mythic only
+-- TODO: Hyperlight Sparknova (Artificer Xy'mox) - More than 1 stack?
+
+
+
+GTFO.SpellID["360999"] = {
+  --desc = "Wave of Disintegration (Vigilant Custodian)";
+  sound = 3;
+};
+
+GTFO.SpellID["365463"] = {
+  --desc = "Wave of Hate (Subjugator Zeltoth)";
+  sound = 3;
+};
+
+GTFO.SpellID["366187"] = {
+  --desc = "Erupting Slash (Hired Muscle)";
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
+GTFO.SpellID["362882"] = {
+  --desc = "Stasis Trap (Artificer Xy'mox)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["364604"] = {
+  --desc = "Genesis Rings (Artificer Xy'mox)";
+  applicationOnly = true;
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["363413"] = {
+  --desc = "Genesis Rings (Artificer Xy'mox)";
+  applicationOnly = true;
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["364373"] = {
+  --desc = "Gunship Barrage (Artificer Xy'mox - Hyperlight Reinforcer)";
+  sound = 3;
+};
+
+GTFO.SpellID["365681"] = {
+  --desc = "Massive Blast (Xy Acolyte)";
+  sound = 3;
+  tankSound = 0;
+  test = true;
+};
+
+GTFO.SpellID["360737"] = {
+  --desc = "Unstable Eruption (Foul Controller)";
+  sound = 3;
+};
+
+GTFO.SpellID["360448"] = {
+  --desc = "Retch (Skolex)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["364522"] = {
+  --desc = "Devouring Blood (Skolex)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+
 
 end
 

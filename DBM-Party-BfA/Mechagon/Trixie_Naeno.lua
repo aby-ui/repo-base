@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2360, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(153755, 150712)
 mod:SetEncounterID(2312)
 mod:SetBossHPInfoToHighest()
@@ -34,10 +34,10 @@ local specWarnPedaltotheMetal		= mod:NewSpecialWarningDodge(298651, nil, nil, ni
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --Trixie "The Tech" Tazer
-local timerMegaTazeCD				= mod:NewCDTimer(40.1, 302682, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON)
+local timerMegaTazeCD				= mod:NewCDTimer(40.1, 302682, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 --Naeno Megacrash
 local timerRoadKillCD				= mod:NewCDTimer(27, 298946, nil, nil, nil, 3)
-local timerBoltBusterCD				= mod:NewCDTimer(18.2, 298940, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerBoltBusterCD				= mod:NewCDTimer(18.2, 298940, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerPedaltotheMetalCD		= mod:NewCDTimer(60, 298651, nil, nil, nil, 3)
 
 mod.vb.MetalCast = 0

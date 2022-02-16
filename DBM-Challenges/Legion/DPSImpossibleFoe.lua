@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,timewalker"
 
-mod:SetRevision("20211226023423")
+mod:SetRevision("20220208061031")
 mod:SetCreatureID(115638)
 mod.soloChallenge = true
 
@@ -25,7 +25,7 @@ local specWarnDarkFuryKick		= mod:NewSpecialWarningInterrupt(243111, nil, nil, n
 local timerImpServantsCD		= mod:NewCDTimer(45, 235140, nil, nil, nil, 1)
 local timerDarkFuryCD			= mod:NewCDTimer(51.1, 243111, nil, nil, nil, 5, nil, nil, nil, 1, 4)
 
-mod:AddInfoFrameOption(243113, true)
+mod:AddInfoFrameOption(243111, true)
 
 mod.vb.phase = 1
 

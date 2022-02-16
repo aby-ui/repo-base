@@ -116,7 +116,7 @@ function rematch:PickRandomPet(petID,notPetID1,notPetID2,notPetID3,evenInTeams)
       for petID in rematch.Roster:AllOwnedPets() do
          if petID~=notPetID1 and petID~=notPetID2 and petID~=notPetID3 then
             local petInfo = rematch.altInfo:Fetch(petID,true)
-            if (petType==0 or petInfo.petType==petType) and petInfo.canBattle and not petInfo.isDead and petInfo.speciesID~=1426 then -- petType==0 is "any type", speciesID 1426 is Elekk Plushie
+            if (petType==0 or petInfo.petType==petType) and petInfo.canBattle and not petInfo.isDead and petInfo.speciesID~=1426 and petInfo.isSummonable then -- petType==0 is "any type", speciesID 1426 is Elekk Plushie
                -- calculating weights from lowest to highest
                -- health is lowest: max health=2, injured=1, dead=0
                local weight = petInfo.health==petInfo.maxHealth and 2 or petInfo.health>0 and 1 or 0

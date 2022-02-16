@@ -551,7 +551,7 @@ local function UpdateNotCollectedAppearanceItemIDs(routines, routineTextOutput)
 					if (not visualsList[j].isCollected) then
 						local sources = C_TransmogCollection.GetAppearanceSources(visualsList[j].visualID)
 						for k = 1, #sources do
-							if (sources[k].sourceType == 4) then --World drop
+							if (sources[k].sourceType == 4 or sources[k].sourceType == 2) then --World drop/quest
 								AddAppearanceItemID(sources[k].visualID, sources[k].itemID)
 						
 								if (not private.dbchar.not_colleted_appearances_item_ids[sources[k].itemID]) then

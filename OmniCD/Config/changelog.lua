@@ -10,6 +10,9 @@ v2.6.30
 	Initial release for WoW: Classic Era.
 ]=]
 elseif E.isBCC then E.changelog = [=[
+v2.6.36
+	nil error fix
+
 v2.6.35
 	CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
 	Warlock Soulstone CD added.
@@ -33,6 +36,12 @@ v2.6.30
 Pre v2.6.30 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.6.36
+	Bug Fixes
+		Icy Veins' highlighting will correctly be removed when the effect ends.
+		Guardian of the Ancient Kings w/ Glyph of the Queen will correctly start it's CD.
+	Non-synced units are now inspected every 5 seconds(was 15s) in arenas until the match begins.
+
 v2.6.35
 	Feature Updates
 		CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.

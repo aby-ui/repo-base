@@ -81,7 +81,7 @@ local function actuallyImport(importTable)
 end
 
 local importExportProfilesArea = profilePanel:CreateArea(L.Area_ImportExportProfile)
-importExportProfilesArea:CreateText(L.ImportExportInfo, nil, true)
+importExportProfilesArea:CreateText(L.ImportExportInfo, nil, true, nil, nil, 0)
 local exportProfile = importExportProfilesArea:CreateButton(L.ButtonExportProfile, 120, 20, function()
 	DBM_GUI:CreateExportProfile({
 		DBM		= DBM.Options,
@@ -107,11 +107,13 @@ local importProfile = importExportProfilesArea:CreateButton(L.ButtonImportProfil
 	DBM_GUI:CreateImportProfile(function(importTable)
 		local errors = {}
 		-- Check if voice pack missing
-		local activeVP = importTable.DBM.ChosenVoicePack
+		local activeVP = importTable.DBM.ChosenVoicePack2
 		if activeVP ~= "None" then
 			if not DBM.VoiceVersions[activeVP] or (DBM.VoiceVersions[activeVP] and DBM.VoiceVersions[activeVP] == 0) then
-				DBM:AddMsg(L.ImportVoiceMissing:format(activeVP))
-				tinsert(errors, "ChosenVoicePack")
+				if activeVP ~= "VEM" then
+					DBM:AddMsg(L.ImportVoiceMissing:format(activeVP))
+					tinsert(errors, "ChosenVoicePack2")
+				end
 			end
 		end
 		-- Check if sound packs are missing

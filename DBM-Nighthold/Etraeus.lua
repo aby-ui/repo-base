@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1732, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144823")
+mod:SetRevision("20220127091734")
 mod:SetCreatureID(103758)
 mod:SetEncounterID(1863)
 --mod:SetUsedIcons(8, 7, 6, 3, 2, 1)
@@ -68,33 +68,33 @@ local specWarnVoidNova				= mod:NewSpecialWarningSpell(207439, nil, nil, nil, 2,
 local specWarnWorldDevouringForce	= mod:NewSpecialWarningDodge(216909, nil, nil, nil, 3, 2)
 --Mythic
 local specWarnConjunction			= mod:NewSpecialWarningMoveAway(205408, nil, nil, nil, 3, 2)
-local specWarnConjunctionSign		= mod:NewSpecialWarningYouPos(205408, nil, nil, nil, 1, 6)
+local specWarnConjunctionSign		= mod:NewSpecialWarningYouPos(205408, nil, nil, nil, 1, 12)
 local yellConjunctionSign			= mod:NewPosYell(205408, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION)
 
 
 --Base abilities
-local timerGravPullCD				= mod:NewCDTimer(28, 205984, nil, nil, nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerGravPullCD				= mod:NewCDTimer(28, 205984, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 --Stage One: The Dome of Observation
 mod:AddTimerLine(SCENARIO_STAGE:format(1))
 --local timerCoronalEjectionCD		= mod:NewCDTimer(16, 206464, nil, nil, nil, 3)--CD is not known, always push phase 2 before this is cast 2nd time
 --Stage Two: Absolute Zero
 mod:AddTimerLine(SCENARIO_STAGE:format(2))
 local timerIcyEjectionCD			= mod:NewCDCountTimer(16, 206936, nil, nil, nil, 3)
-local timerFrigidNovaCD				= mod:NewCDCountTimer(61.5, 206949, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)
+local timerFrigidNovaCD				= mod:NewCDCountTimer(61.5, 206949, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
 --Stage Three: A Shattered World
 mod:AddTimerLine(SCENARIO_STAGE:format(3))
 local timerFelEjectionCD			= mod:NewCDCountTimer(16, 205649, nil, nil, nil, 3)
-local timerFelNovaCD				= mod:NewCDCountTimer(25, 206517, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)
+local timerFelNovaCD				= mod:NewCDCountTimer(25, 206517, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
 --Stage Four: Inevitable Fate
 mod:AddTimerLine(SCENARIO_STAGE:format(4))
 local timerWitnessVoid				= mod:NewCastTimer(4, 207720, nil, nil, nil, 2)
-local timerWitnessVoidCD			= mod:NewCDTimer(13, 207720, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
+local timerWitnessVoidCD			= mod:NewCDTimer(13, 207720, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 --local timerVoidEjectionCD			= mod:NewCDCountTimer(16, 207143, nil, nil, nil, 3)--Where did it go? wasn't on normal test and wasn't on heroic retest
 local timerVoidNovaCD				= mod:NewCDCountTimer(74, 207439, nil, nil, nil, 2)--Only saw a single pull it was cast twice, so CD needs more verification
-local timerWorldDevouringForceCD	= mod:NewCDCountTimer(42, 216909, nil, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON..DBM_CORE_L.HEROIC_ICON, nil, 1, 6)
+local timerWorldDevouringForceCD	= mod:NewCDCountTimer(42, 216909, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON..DBM_COMMON_L.HEROIC_ICON, nil, 1, 6)
 mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
-local timerConjunctionCD			= mod:NewCDCountTimer(16, 205408, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON, nil, 3, 10)
-local timerConjunction				= mod:NewBuffFadesTimer(15, 207720, nil, nil, nil, 5, nil, DBM_CORE_L.DEADLY_ICON, nil, 3, 10)
+local timerConjunctionCD			= mod:NewCDCountTimer(16, 205408, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 3, 10)
+local timerConjunction				= mod:NewBuffFadesTimer(15, 207720, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 10)
 
 local berserkTimer					= mod:NewBerserkTimer(463)
 
@@ -409,7 +409,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(2, "", 2)--Orange Circle
 				self:Schedule(2, updateConjunctionYell, self, 2)
-				specWarnConjunctionSign:Play("205408c")
+				specWarnConjunctionSign:Play("findcrab")
 				timerConjunction:Start()
 				playerAffected = true
 			end
@@ -419,7 +419,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(6, "", 6)--Blue Square
 				self:Schedule(2, updateConjunctionYell, self, 6)
-				specWarnConjunctionSign:Play("205408d")
+				specWarnConjunctionSign:Play("finddragon")
 				timerConjunction:Start()
 				playerAffected = true
 			end
@@ -429,7 +429,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(4, "", 4)--Green Triangle
 				self:Schedule(2, updateConjunctionYell, self, 4)
-				specWarnConjunctionSign:Play("205408h")
+				specWarnConjunctionSign:Play("findhunter")
 				timerConjunction:Start()
 				playerAffected = true
 			end
@@ -439,7 +439,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				specWarnConjunctionSign:Show(args.spellName)
 				yellConjunctionSign:Yell(7, "", 7)--Red Cross
 				self:Schedule(2, updateConjunctionYell, 7)
-				specWarnConjunctionSign:Play("205408w")
+				specWarnConjunctionSign:Play("findwolf")
 				timerConjunction:Start()
 				playerAffected = true
 			end

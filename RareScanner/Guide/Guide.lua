@@ -561,9 +561,13 @@ private.CONTAINER_GUIDE = {
 	[353688] = { [RSConstants.ENTRANCE] = { x = 0.5779, y = 0.4207 } }; --Hidden Hoard
 	[353873] = { [RSConstants.ENTRANCE] = { x = 0.4942, y = 0.5199 } }; --Hidden Hoard
 	[352703] = { 
-		[RSConstants.FLAG..1] = { x = 0.4386, y = 0.4148, itemID = 179823 };
-		[RSConstants.FLAG..2] = { x = 0.3823, y = 0.4376, itemID = 179823 };
-		[RSConstants.FLAG..3] = { x = 0.4356, y = 0.3816, itemID = 179823 };
+		[RSConstants.FLAG..1] = { x = 0.382, y = 0.437, itemID = 179823 };
+		[RSConstants.FLAG..2] = { x = 0.439, y = 0.415, itemID = 179823 };
+		[RSConstants.FLAG..3] = { x = 0.436, y = 0.381, itemID = 179823 };
+		[RSConstants.FLAG..4] = { x = 0.414, y = 0.385, itemID = 179823 };
+		[RSConstants.FLAG..5] = { x = 0.433, y = 0.447, itemID = 179823 };
+		[RSConstants.FLAG..6] = { x = 0.442, y = 0.441, itemID = 179823 };
+		[RSConstants.FLAG..7] = { x = 0.447, y = 0.388, itemID = 179823 };
 	}; --La cosecha
 	[354206] = { [RSConstants.PATH_START] = { x = 0.4102, y = 0.3753 } }; --Greedstone
 	[369148] = { [RSConstants.FLAG..1] = { x = 0.3815, y = 0.4161, comment = AL["NOTE_369148_1"] } }; --Glitering nest material

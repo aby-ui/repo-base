@@ -954,7 +954,7 @@ end
 do
 	local function UpdateRangeFrame(r, reverse)
 		if rangeCheck:IsShown() then
-			rangeCheck:Hide()
+			rangeCheck:Hide(true)
 		else
 			if DBM:HasMapRestrictions() then
 				DBM:AddMsg(L.NO_RANGE)

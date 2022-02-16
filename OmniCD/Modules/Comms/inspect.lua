@@ -15,7 +15,7 @@ local Comms = E["Comms"]
 local P = E["Party"]
 local item_merged = E.item_merged
 local INS_ONUPDATE_INTERVAL = 1
-local INS_DELAY_TIME = 2
+local INS_DELAY_TIME = 2 -- throttle limit
 local INS_PAUSE_TIME = 2
 local INS_TIME_LIMIT = 180
 local elapsedTime = 0
@@ -252,7 +252,7 @@ if E.isPreBCC then
 
 	function Comms:InspectUnit(guid)
 		local info = P.groupInfo[guid]
-		if not info or self.syncGUIDS[guid] then
+		if not info or self.syncGUIDS[guid] then -- [85]
 			ClearInspectPlayer()
 			return
 		end
@@ -472,7 +472,7 @@ else
 
 	function Comms:InspectUnit(guid)
 		local info = P.groupInfo[guid]
-		if not info or self.syncGUIDS[guid] then
+		if not info or self.syncGUIDS[guid] then -- [85]
 			ClearInspectPlayer()
 			return
 		end
@@ -510,7 +510,7 @@ else
 		local runeforgePower = 0
 		for i = 1, numInvSlotIDs do
 			local slotID = invSlotIDs[i]
-			local itemLink = GetInventoryItemLink(unit, slotID) -- no longer need to scan tooltip in SL
+			local itemLink = GetInventoryItemLink(unit, slotID) -- no longer need to scan tooltip in SL -> TODO: revert back for patch 9.2 sets
 			if itemLink then
 				local itemID, _,_,_,_,_, itemSubClassID = GetItemInfoInstant(itemLink)
 				if itemID then
@@ -553,6 +553,9 @@ else
 		if info.level == 200 then
 			local lvl = UnitLevel(unit)
 			info.level = lvl > 0 and lvl or 200
+		end
+		if info.name == "Unknown" then
+			info.name = GetUnitName(unit, true)
 		end
 
 		ClearInspectPlayer()

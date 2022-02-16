@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2419, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220204091202")
 mod:SetCreatureID(164255)
 mod:SetEncounterID(2382)
 
@@ -25,7 +25,7 @@ mod:RegisterEventsInCombat(
 --]]
 local warnPlaguestomp				= mod:NewCastAnnounce(324527, 2)
 local warnSlimeWave					= mod:NewCastAnnounce(324667, 2)
-local warnBeckonSlime				= mod:NewCastAnnounce(324459, 2, 9)
+local warnBeckonSlime				= mod:NewCastAnnounce(327608, 2, 9)
 
 --local specWarnPlaguestomp			= mod:NewSpecialWarningDodge(324527, nil, nil, nil, 2, 2)
 local specWarnDebilitatingPlague	= mod:NewSpecialWarningDispel(324652, "RemoveDisease", nil, nil, 1, 2)

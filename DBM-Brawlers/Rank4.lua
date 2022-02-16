@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank4", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201102223314")
+mod:SetRevision("20220128073654")
 --mod:SetModelID(28115)
 mod:SetUsedIcons(8)
 
@@ -79,7 +79,7 @@ end
 
 function mod:PLAYER_TARGET_CHANGED()
 	if self.Options.SetIconOnDominika and not DBM.Options.DontSetIcons and UnitGUID("target") == DominikaGUID and GetRaidTargetIndex("target") ~= 8 then
-		SetRaidTarget("target", 8)
+		self:SetIcon("target", 8)
 	end
 end
 --]]

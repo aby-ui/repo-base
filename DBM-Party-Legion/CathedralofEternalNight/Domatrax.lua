@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1904, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(119542)--119883 Fel Portal Guardian 118834
 mod:SetEncounterID(2053)
 --mod:SetHotfixNoticeRev(15186)
@@ -24,7 +24,7 @@ local specWarnFelsoulCleave			= mod:NewSpecialWarningDodge(236543, "Tank", nil, 
 local specWarnChaoticEnergy			= mod:NewSpecialWarningMoveTo(234107, nil, nil, nil, 2, 2)
 local specWarnAdds					= mod:NewSpecialWarningAdds(200597, "-Healer", nil, nil, 1, 2)
 
-local timerFelsoulCleaveCD			= mod:NewCDTimer(20, 236543, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerFelsoulCleaveCD			= mod:NewCDTimer(20, 236543, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerChaoticEnergyCD			= mod:NewCDTimer(30, 234107, nil, nil, nil, 2, nil, nil, nil, 1, 4)
 local timerApproachingDoom			= mod:NewCastTimer(20, 241622, nil, nil, nil, 1)
 

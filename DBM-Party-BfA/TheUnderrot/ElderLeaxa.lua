@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2157, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(131318)
 mod:SetEncounterID(2111)
 
@@ -18,10 +18,10 @@ local specWarnSanguineFeast			= mod:NewSpecialWarningDodge(264757, nil, nil, nil
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 --TODO: Use NewNextSourceTimer to split adds from boss
-local timerBloodBoltCD				= mod:NewCDTimer(6.1, 260879, nil, nil, nil, 4, nil, DBM_CORE_L.INTERRUPT_ICON)
+local timerBloodBoltCD				= mod:NewCDTimer(6.1, 260879, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 local timerCreepingRotCD			= mod:NewNextTimer(15.8, 260894, nil, nil, nil, 3)
-local timerSanguineFeastCD			= mod:NewNextTimer(30, 264757, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
-local timerBloodMirrorCD			= mod:NewCDTimer(47.4, 264603, nil, nil, nil, 1, nil, DBM_CORE_L.DAMAGE_ICON)--47.4-49.8
+local timerSanguineFeastCD			= mod:NewNextTimer(30, 264757, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerBloodMirrorCD			= mod:NewCDTimer(47.4, 264603, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)--47.4-49.8
 
 mod:AddInfoFrameOption(260685, "Healer")
 

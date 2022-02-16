@@ -25,7 +25,7 @@ local color1Type1 = BarColors:CreateColorSelect(64)
 local color2Type1 = BarColors:CreateColorSelect(64)
 color1Type1:SetPoint("TOPLEFT", BarColors.frame, "TOPLEFT", 30, -65)
 color2Type1:SetPoint("TOPLEFT", color1Type1, "TOPRIGHT", 20, 0)
-color1Type1.myheight = 84
+color1Type1.myheight = 0
 color2Type1.myheight = 0
 
 local color1Type1reset = BarColors:CreateButton(L.Reset, 64, 10, nil, GameFontNormalSmall)
@@ -39,8 +39,8 @@ color2Type1reset:SetScript("OnClick", function()
 	color2Type1:SetColorRGB(DBT.DefaultOptions.EndColorAR, DBT.DefaultOptions.EndColorAG, DBT.DefaultOptions.EndColorAB)
 end)
 
-local color1Type1text = BarColors:CreateText(L.BarStartColorAdd, 80)
-local color2Type1text = BarColors:CreateText(L.BarEndColorAdd, 80)
+local color1Type1text = BarColors:CreateText(L.BarStartColorAdd, 80, nil, nil, "CENTER")
+local color2Type1text = BarColors:CreateText(L.BarEndColorAdd, 80, nil, nil, "CENTER", 10)
 color1Type1text:SetPoint("BOTTOM", color1Type1, "TOP", 0, 4)
 color2Type1text:SetPoint("BOTTOM", color2Type1, "TOP", 0, 4)
 color1Type1text.myheight = 0
@@ -98,8 +98,8 @@ color2Type2reset:SetScript("OnClick", function()
 	color2Type2:SetColorRGB(DBT.DefaultOptions.EndColorAER, DBT.DefaultOptions.EndColorAEG, DBT.DefaultOptions.EndColorAEB)
 end)
 
-local color1Type2text = BarColors:CreateText(L.BarStartColorAOE, 80)
-local color2Type2text = BarColors:CreateText(L.BarEndColorAOE, 80)
+local color1Type2text = BarColors:CreateText(L.BarStartColorAOE, 80, nil, nil, "CENTER")
+local color2Type2text = BarColors:CreateText(L.BarEndColorAOE, 80, nil, nil, "CENTER", 0)
 color1Type2text:SetPoint("BOTTOM", color1Type2, "TOP", 0, 4)
 color2Type2text:SetPoint("BOTTOM", color2Type2, "TOP", 0, 4)
 color1Type2text.myheight = 0
@@ -157,8 +157,8 @@ color2Type3reset:SetScript("OnClick", function()
 	color2Type3:SetColorRGB(DBT.DefaultOptions.EndColorDR, DBT.DefaultOptions.EndColorDG, DBT.DefaultOptions.EndColorDB)
 end)
 
-local color1Type3text = BarColors:CreateText(L.BarStartColorDebuff, 80)
-local color2Type3text = BarColors:CreateText(L.BarEndColorDebuff, 80)
+local color1Type3text = BarColors:CreateText(L.BarStartColorDebuff, 80, nil, nil, "CENTER")
+local color2Type3text = BarColors:CreateText(L.BarEndColorDebuff, 80, nil, nil, "CENTER", 0)
 color1Type3text:SetPoint("BOTTOM", color1Type3, "TOP", 0, 4)
 color2Type3text:SetPoint("BOTTOM", color2Type3, "TOP", 0, 4)
 color1Type3text.myheight = 0
@@ -216,8 +216,8 @@ color2Type4reset:SetScript("OnClick", function()
 	color2Type4:SetColorRGB(DBT.DefaultOptions.EndColorIR, DBT.DefaultOptions.EndColorIG, DBT.DefaultOptions.EndColorIB)
 end)
 
-local color1Type4text = BarColors:CreateText(L.BarStartColorInterrupt, 80)
-local color2Type4text = BarColors:CreateText(L.BarEndColorInterrupt, 80)
+local color1Type4text = BarColors:CreateText(L.BarStartColorInterrupt, 80, nil, nil, "CENTER")
+local color2Type4text = BarColors:CreateText(L.BarEndColorInterrupt, 80, nil, nil, "CENTER", 0)
 color1Type4text:SetPoint("BOTTOM", color1Type4, "TOP", 0, 4)
 color2Type4text:SetPoint("BOTTOM", color2Type4, "TOP", 0, 4)
 color1Type4text.myheight = 0
@@ -261,7 +261,7 @@ local color1Type5 = BarColors:CreateColorSelect(64)
 local color2Type5 = BarColors:CreateColorSelect(64)
 color1Type5:SetPoint("TOPLEFT", BarColors.frame, "TOPLEFT", 30, -375)
 color2Type5:SetPoint("TOPLEFT", color1Type5, "TOPRIGHT", 20, 0)
-color1Type5.myheight = 74
+color1Type5.myheight = 0
 color2Type5.myheight = 0
 
 local color1Type5reset = BarColors:CreateButton(L.Reset, 64, 10, nil, GameFontNormalSmall)
@@ -275,8 +275,8 @@ color2Type5reset:SetScript("OnClick", function()
 	color2Type5:SetColorRGB(DBT.DefaultOptions.EndColorRR, DBT.DefaultOptions.EndColorRG, DBT.DefaultOptions.EndColorRB)
 end)
 
-local color1Type5text = BarColors:CreateText(L.BarStartColorRole, 80)
-local color2Type5text = BarColors:CreateText(L.BarEndColorRole, 80)
+local color1Type5text = BarColors:CreateText(L.BarStartColorRole, 80, nil, nil, "CENTER")
+local color2Type5text = BarColors:CreateText(L.BarEndColorRole, 80, nil, nil, "CENTER", 0)
 color1Type5text:SetPoint("BOTTOM", color1Type5, "TOP", 0, 4)
 color2Type5text:SetPoint("BOTTOM", color2Type5, "TOP", 0, 4)
 color1Type5text.myheight = 0
@@ -334,8 +334,8 @@ color2Type6reset:SetScript("OnClick", function()
 	color2Type6:SetColorRGB(DBT.DefaultOptions.EndColorPR, DBT.DefaultOptions.EndColorPG, DBT.DefaultOptions.EndColorPB)
 end)
 
-local color1Type6text = BarColors:CreateText(L.BarStartColorPhase, 80)
-local color2Type6text = BarColors:CreateText(L.BarEndColorPhase, 80)
+local color1Type6text = BarColors:CreateText(L.BarStartColorPhase, 80, nil, nil, "CENTER")
+local color2Type6text = BarColors:CreateText(L.BarEndColorPhase, 80, nil, nil, "CENTER", 0)
 color1Type6text:SetPoint("BOTTOM", color1Type6, "TOP", 0, 4)
 color2Type6text:SetPoint("BOTTOM", color2Type6, "TOP", 0, 4)
 color1Type6text.myheight = 0
@@ -379,7 +379,7 @@ local color1Type7 = BarColors:CreateColorSelect(64)
 local color2Type7 = BarColors:CreateColorSelect(64)
 color1Type7:SetPoint("TOPLEFT", BarColors.frame, "TOPLEFT", 30, -530)
 color2Type7:SetPoint("TOPLEFT", color1Type7, "TOPRIGHT", 20, 0)
-color1Type7.myheight = 74
+color1Type7.myheight = 0
 color2Type7.myheight = 0
 
 local color1Type7reset = BarColors:CreateButton(L.Reset, 64, 10, nil, GameFontNormalSmall)
@@ -393,8 +393,8 @@ color2Type7reset:SetScript("OnClick", function()
 	color2Type7:SetColorRGB(DBT.DefaultOptions.EndColorUIR, DBT.DefaultOptions.EndColorUIG, DBT.DefaultOptions.EndColorUIB)
 end)
 
-local color1Type7text = BarColors:CreateText(L.BarStartColorUI, 80)
-local color2Type7text = BarColors:CreateText(L.BarEndColorUI, 80)
+local color1Type7text = BarColors:CreateText(L.BarStartColorUI, 80, nil, nil, "CENTER")
+local color2Type7text = BarColors:CreateText(L.BarEndColorUI, 80, nil, nil, "CENTER", 0)
 color1Type7text:SetPoint("BOTTOM", color1Type7, "TOP", 0, 4)
 color2Type7text:SetPoint("BOTTOM", color2Type7, "TOP", 0, 4)
 color1Type7text.myheight = 0

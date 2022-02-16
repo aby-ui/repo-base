@@ -19,7 +19,7 @@ local icons = {
 	args = {
 		showCounter = {
 			name = COUNTDOWN_FOR_COOLDOWNS_TEXT,
-			desc = L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers at 0 charge"] .. "\n\n\|cffff2020'Show Numbers for Cooldowns\' must be enabled in the Blizzard's Interface/ActionBars option.",
+			desc = L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers at 0 charge"] .. "\n\n\|cffff2020'Show Numbers for Cooldowns\' must be enabled in Blizzard's Interface/ActionBars option.",
 			order = 1,
 			type = "toggle",
 		},

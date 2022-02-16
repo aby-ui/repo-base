@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetUsedIcons(1, 2, 3)--Unknown number of burning targets, guessed for now
@@ -54,11 +54,11 @@ local specWarnGTFO							= mod:NewSpecialWarningGTFO(306824, nil, nil, nil, 1, 8
 local warnSpawnAdds							= mod:NewSpellAnnounce(312389, 2)
 
 --Stage One: The Black Emperor
-local timerSearingBreathCD					= mod:NewCDTimer(8.5, 305978, 18620, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)
+local timerSearingBreathCD					= mod:NewCDTimer(8.5, 305978, 18620, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerIncinerationCD					= mod:NewCDCountTimer(19.4, 306111, nil, nil, nil, 3)--19-24 variation even when not delayed by other casts
 local timerGaleBlastCD						= mod:NewCDCountTimer(90.9, 306289, nil, nil, nil, 2)
-local timerBurningCataclysmCD				= mod:NewCDCountTimer(90.9, 306735, 138565, nil, nil, 3, nil, DBM_CORE_L.DEADLY_ICON, nil, 1, 5)
-local timerBurningCataclysm					= mod:NewCastTimer(8, 306735, 138565, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerBurningCataclysmCD				= mod:NewCDCountTimer(90.9, 306735, 138565, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
+local timerBurningCataclysm					= mod:NewCastTimer(8, 306735, 138565, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 --Stage Two: Smoke and Mirrors
 local timerSmokeandMirrorsCD				= mod:NewNextTimer(155, 306995, nil, nil, nil, 6)
 

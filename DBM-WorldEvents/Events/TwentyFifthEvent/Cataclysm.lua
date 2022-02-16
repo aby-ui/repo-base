@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CataEvent", "DBM-WorldEvents", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220208061732")
 mod:SetCreatureID(52409, 41376, 43324)
 mod:SetEncounterID(2320)
 mod:SetBossHPInfoToHighest()
@@ -64,6 +64,7 @@ local timerLivingMeteorCD		= mod:NewNextTimer(45, 99268, nil, nil, nil, 1, nil, 
 
 mod:AddInfoFrameOption(99849, true)
 mod:AddRangeFrameOption(6, 98495)
+mod:GroupSpells(99268, 99849)--Living Meteor with Fixate
 
 local meteorWarned = false
 local meteorTarget = DBM:GetSpellInfo(99849)

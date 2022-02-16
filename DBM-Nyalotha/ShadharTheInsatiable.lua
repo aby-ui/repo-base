@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2367, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210616003223")
+mod:SetRevision("20220116032237")
 mod:SetCreatureID(157231)
 mod:SetEncounterID(2335)
 mod:SetUsedIcons(4, 3, 2, 1)
@@ -58,14 +58,14 @@ local yellFixate							= mod:NewYell(307260, nil, true, 2)
 local specWarnUmbralEruption				= mod:NewSpecialWarningDodge(308157, false, nil, 2, 2, 2)--Because every 8-10 seconds is excessive, let user opt in for this
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(314736, nil, nil, nil, 1, 8)
 
-local timerCrushCD							= mod:NewCDTimer(25.1, 307471, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 3)
+local timerCrushCD							= mod:NewCDTimer(25.1, 307471, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
 local timerSlurryBreathCD					= mod:NewCDTimer(17, 306736, nil, nil, nil, 3, nil, nil, nil, 1, 3)
-local timerDebilitatingSpitCD				= mod:NewCDTimer(30.1, 306953, 58519, nil, nil, 5, nil, DBM_CORE_L.HEALER_ICON)
-local timerFixateCD							= mod:NewCDCountTimer(30.2, 307260, nil, nil, nil, 3, nil, DBM_CORE_L.DAMAGE_ICON)
-local timerUmbralMantleCD					= mod:NewNextCountTimer(20, 306448, nil, nil, nil, 2, nil, DBM_CORE_L.HEALER_ICON)
-local timerUmbralEruptionCD					= mod:NewNextTimer(10, 308157, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
-local timerBubblingOverflowCD				= mod:NewNextTimer(10, 314736, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
-local timerEntropicBuildupCD				= mod:NewNextCountTimer(10, 308177, nil, nil, nil, 5, nil, DBM_CORE_L.HEROIC_ICON)
+local timerDebilitatingSpitCD				= mod:NewCDTimer(30.1, 306953, 58519, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
+local timerFixateCD							= mod:NewCDCountTimer(30.2, 307260, nil, nil, nil, 3, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerUmbralMantleCD					= mod:NewNextCountTimer(20, 306448, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
+local timerUmbralEruptionCD					= mod:NewNextTimer(10, 308157, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerBubblingOverflowCD				= mod:NewNextTimer(10, 314736, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerEntropicBuildupCD				= mod:NewNextCountTimer(10, 308177, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
 
 local berserkTimer							= mod:NewBerserkTimer(360)
 

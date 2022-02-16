@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1769, "DBM-BrokenIsles", 1, 822)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210721041434")
+mod:SetRevision("20220116041824")
 mod:SetCreatureID(108829)
 mod:SetEncounterID(1953)
 mod:SetReCombatTime(20)
@@ -23,7 +23,7 @@ local specWarnElectrifyDispel	= mod:NewSpecialWarningDispel(217352, "Healer", ni
 
 local timerRendingWhirlCD		= mod:NewCDTimer(48.5, 217235, nil, nil, nil, 2)
 local timerElectrifyCD			= mod:NewCDTimer(33, 217344, nil, nil, nil, 2)
-local timerMassiveSpoutCD		= mod:NewCDTimer(66, 217249, nil, nil, nil, 2, nil, DBM_CORE_L.DEADLY_ICON)
+local timerMassiveSpoutCD		= mod:NewCDTimer(66, 217249, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 
 --mod:AddReadyCheckOption(37460, false)
 

@@ -1,7 +1,7 @@
 ## Interface: 90105
 ## X-Min-Interface: 90105
-## X-Min-Interface-Classic: 11401
-## X-Min-Interface-BCC: 20502
+## X-Min-Interface-Classic: 11402
+## X-Min-Interface-BCC: 20503
 
 ## Title:|cffffd200Deadly Boss Mods|r |cff69ccf0Core|r
 ## Title-zhCN:|cffffd200Deadly Boss Mods|r |cff69ccf0核心|r
@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 2114c57
+## Version: 7858322
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibLatency\LibLatency.xml

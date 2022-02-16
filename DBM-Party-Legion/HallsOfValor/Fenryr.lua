@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1487, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(95674, 99868)
 mod:SetEncounterID(1807)
 mod:DisableEEKillDetection()
@@ -30,7 +30,7 @@ local specWarnFixateOver				= mod:NewSpecialWarningEnd(196838, nil, nil, nil, 1)
 local specWarnWolves					= mod:NewSpecialWarningSwitch("ej12600", "Tank")
 
 local timerLeapCD						= mod:NewCDTimer(31, 197556, nil, nil, nil, 3)--31-36
---local timerClawFrenzyCD					= mod:NewCDTimer(9.7, 196512, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--All over the place
+--local timerClawFrenzyCD					= mod:NewCDTimer(9.7, 196512, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--All over the place
 local timerHowlCD						= mod:NewCDTimer(31.5, 196543, nil, "SpellCaster", nil, 2)--Poor data
 local timerFixateCD						= mod:NewCDTimer(36, 196838, nil, nil, nil, 3)--Poor data
 local timerWolvesCD						= mod:NewCDTimer(35, "ej12600", nil, nil, nil, 1, 199184)

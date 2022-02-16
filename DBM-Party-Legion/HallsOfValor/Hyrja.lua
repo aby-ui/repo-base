@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1486, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(95833)
 mod:SetEncounterID(1806)
 
@@ -29,8 +29,8 @@ local specWarnExpelLight			= mod:NewSpecialWarningMoveAway(192048, nil, nil, nil
 local yellExpelLight				= mod:NewYell(192048)
 local specWarnSearingLight			= mod:NewSpecialWarningInterrupt(192288, "HasInterrupt", nil, nil, 1, 2)
 
-local timerShieldOfLightCD			= mod:NewCDTimer(28, 192018, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, mod:IsTank() and 2, 4)--28-34
-local timerSpecialCD				= mod:NewNextTimer(30, 200736, nil, nil, nil, 2, 200901, DBM_CORE_L.DEADLY_ICON, nil, 1, 4)--Shared timer by eye of storm and Sanctify
+local timerShieldOfLightCD			= mod:NewCDTimer(28, 192018, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, mod:IsTank() and 2, 4)--28-34
+local timerSpecialCD				= mod:NewNextTimer(30, 200736, nil, nil, nil, 2, 200901, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)--Shared timer by eye of storm and Sanctify
 --local timerExpelLightCD			= mod:NewCDTimer(24, 192048, nil, nil, nil, 3)--More review 24-30
 
 mod:AddRangeFrameOption(8, 192048)

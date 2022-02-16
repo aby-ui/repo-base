@@ -209,6 +209,8 @@ scanner_button.LootBar.itemFramesPool = CreateFramePool("FRAME", scanner_button.
 scanner_button.LootBar.itemFramesPool.InitItemList = function(self, atlasName, entityID)
 	self:ReleaseAll()
 	
+	scanner_button:SetScript("OnUpdate", nil)
+	
 	if (not atlasName or not entityID) then
 		return
 	end
@@ -371,9 +373,6 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 			vignetteInfo.id = id
 			self:DetectedNewVignette(self, vignetteInfo)
 		end
-
-		-- Update minimap to hide/show vignettes that are already displayed ingame
-		RSMinimap.RefreshAllData(true)
 		-- Vignette added to world map
 	elseif (event == "VIGNETTES_UPDATED") then
 		if (not RSConfigDB.IsScanningWorldMapVignettes()) then
@@ -395,6 +394,9 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 
 				vignetteInfo.id = vignetteGUID
 				self:DetectedNewVignette(self, vignetteInfo)
+			elseif (vignetteInfo and vignetteInfo.onMinimap and vignetteInfo.objectGUID) then
+				local _, _, _, _, _, vignetteEntityID, _ = strsplit("-", vignetteInfo.objectGUID);
+				RSMinimap.HideIcon(vignetteEntityID)
 			end
 		end
 		-- Nameplates
@@ -450,7 +452,7 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 							local minRange, maxRange = rc:GetRange(nameplateid)
 							if (minRange and minRange < 10) then
 								RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
-								RSMinimap.RefreshAllData(true)
+								RSMinimap.RefreshEntityState(npcID)
 							end
 						end, 15)
 					end
@@ -774,14 +776,15 @@ function RareScanner:ProcessKill(npcID, forzed)
 				RSLogger:PrintDebugMessage(string.format("El NPC [%s] ya dispone de questID [%s]", npcID, unpack(npcInfo.questID)))
 			end
 		end
+		
+		-- Refresh minimap
+		if (not forzed) then
+			RSMinimap.RefreshEntityState(npcID)
+		end
+		
 		-- If we dont have this entity in our database we can ignore it
-	else
+	elseif (RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
 		RSNpcDB.SetNpcKilled(npcID)
-	end
-
-	-- Refresh minimap
-	if (not forzed) then
-		RSMinimap.RefreshAllData(true)
 	end
 end
 
@@ -804,7 +807,7 @@ function RareScanner:ProcessKillByZone(npcID, mapID, forzed)
 		-- If we know for sure it resets with every server restart
 	elseif (npcInfo and npcInfo.weeklyReset) then
 		RSLogger:PrintDebugMessage(string.format("NPC [%s]. Resetea con el reinicio del servidor", npcID))
-		RSNpcDB.SetNpcKilled(npcID, C_DateAndTime.GetSecondsUntilWeeklyReset())
+		RSNpcDB.SetNpcKilled(npcID, time() + C_DateAndTime.GetSecondsUntilWeeklyReset())
 		-- If we know the exact reset timer
 	elseif (npcInfo and npcInfo.resetTimer) then
 		RSLogger:PrintDebugMessage(string.format("NPC [%s]. Resetea pasados [%s]segundos", npcID, npcInfo.resetTimer))
@@ -816,7 +819,7 @@ function RareScanner:ProcessKillByZone(npcID, mapID, forzed)
 		-- If its a warfront reseteable rare
 	elseif (RSMapDB.IsEntityInWarfrontZone(npcID, mapID, alreadyFoundInfo)) then
 		RSLogger:PrintDebugMessage(string.format("NPC [%s]. Resetea cada 2 semanas (Warfront)", npcID))
-		RSNpcDB.SetNpcKilled(npcID, C_DateAndTime.GetSecondsUntilWeeklyReset() + RSTimeUtils.DaysToSeconds(7))
+		RSNpcDB.SetNpcKilled(npcID, time() + C_DateAndTime.GetSecondsUntilWeeklyReset() + RSTimeUtils.DaysToSeconds(7))
 		-- If it wont ever be a rare anymore
 	elseif (RSMapDB.IsEntityInPermanentZone(npcID, mapID, alreadyFoundInfo)) then
 		RSLogger:PrintDebugMessage(string.format("NPC [%s]. Deja de ser un rare NPC", npcID))
@@ -893,14 +896,15 @@ function RareScanner:ProcessOpenContainer(containerID, forzed)
 				RSLogger:PrintDebugMessage(string.format("El Contenedor [%s] ya dispone de questID [%s]", containerID, unpack(RSContainerDB.GetContainerQuestIdFound(containerID))))
 			end
 		end
+		
+		-- Refresh minimap
+		if (not forzed) then
+			RSMinimap.RefreshEntityState(containerID)
+		end
+		
 		-- If we dont have this entity in our database we can ignore it
-	else
+	elseif (RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
 		RSContainerDB.SetContainerOpened(containerID)
-	end
-
-	-- Refresh minimap
-	if (not forzed) then
-		RSMinimap.RefreshAllData(true)
 	end
 end
 
@@ -939,7 +943,7 @@ function RareScanner:ProcessOpenContainerByZone(containerID, mapID, forzed)
 			-- If we know for sure it resets with every server restart
 		elseif (containerInternalInfo and containerInternalInfo.weeklyReset) then
 			RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Resetea con el reinicio del servidor", containerID))
-			RSContainerDB.SetContainerOpened(containerID, C_DateAndTime.GetSecondsUntilWeeklyReset())
+			RSContainerDB.SetContainerOpened(containerID, time() + C_DateAndTime.GetSecondsUntilWeeklyReset())
 			-- If we know for sure it resets every two weeks
 		elseif (containerInternalInfo and containerInternalInfo.covenantAssaultReset) then
 			if (containerInternalInfo.covenantAssaultReset == 0) then
@@ -966,7 +970,7 @@ function RareScanner:ProcessOpenContainerByZone(containerID, mapID, forzed)
 			-- If its a warfront reseteable container
 		elseif (RSMapDB.IsEntityInWarfrontZone(containerID, mapID, containerAlreadyFoundInfo)) then
 			RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Resetea cada 2 semanas (Warfront)", containerID))
-			RSContainerDB.SetContainerOpened(containerID, C_DateAndTime.GetSecondsUntilWeeklyReset() + RSTimeUtils.DaysToSeconds(7))
+			RSContainerDB.SetContainerOpened(containerID, time() + C_DateAndTime.GetSecondsUntilWeeklyReset() + RSTimeUtils.DaysToSeconds(7))
 			-- If it wont ever be open anymore
 		elseif (RSMapDB.IsEntityInPermanentZone(containerID, mapID, containerAlreadyFoundInfo)) then
 			RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. No se puede abrir de nuevo", containerID))
@@ -1032,7 +1036,7 @@ function RareScanner:ProcessCompletedEvent(eventID, forzed)
 		-- If we know for sure it resets with every server restart
 	elseif (eventInternalInfo and eventInternalInfo.weeklyReset) then
 		RSLogger:PrintDebugMessage(string.format("Evento [%s]. Resetea con el reinicio del servidor", eventID))
-		RSEventDB.SetEventCompleted(eventID, C_DateAndTime.GetSecondsUntilWeeklyReset())
+		RSEventDB.SetEventCompleted(eventID, time() + C_DateAndTime.GetSecondsUntilWeeklyReset())
 		-- If we know the exact reset timer
 	elseif (eventInternalInfo and eventInternalInfo.resetTimer) then
 		RSLogger:PrintDebugMessage(string.format("Evento [%s]. Resetea pasados [%s]segundos", eventID))
@@ -1073,7 +1077,7 @@ function RareScanner:ProcessCompletedEvent(eventID, forzed)
 
 	-- Refresh minimap
 	if (not forzed) then
-		RSMinimap.RefreshAllData(true)
+		RSMinimap.RefreshEntityState(eventID)
 	end
 end
 
@@ -1338,7 +1342,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	-- timer to reset already found NPC
 	C_Timer.After(RSConfigDB.GetRescanTimer() * 60, function()
 		RareScanner:RemoveVignetteFound(vignetteInfo.id, entityID)
-		RSMinimap.RefreshAllData(true)
+		RSMinimap.RefreshEntityState(entityID)
 	end)
 
 	-- Refresh minimap
@@ -1908,6 +1912,49 @@ local function RefreshDatabaseData()
 		end
 	)
 	table.insert(routines, setContainersOpenedByQuestIdRoutine)
+	
+	-- Clean already killed/collected/completed entities that arent in the database
+	if (not RSGeneralDB.GetLastCleanDb()) then
+		local cleanKilledNpcs = RSRoutines.LoopRoutineNew()
+		cleanKilledNpcs:Init(RSNpcDB.GetAllNpcsKilledRespawnTimes, 100,
+			function(context, npcID, respawnTimer)
+				if (not RSNpcDB.GetInternalNpcInfo(npcID) and not RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
+					RSNpcDB.DeleteNpcKilled(npcID)
+				end
+			end, 
+			function(context)			
+				RSLogger:PrintDebugMessage("Limpiada la base de datos de NPCs matados")
+			end
+		)
+		table.insert(routines, cleanKilledNpcs)
+		
+		local cleanOpenedContainers = RSRoutines.LoopRoutineNew()
+		cleanOpenedContainers:Init(RSContainerDB.GetAllContainersOpenedRespawnTimes, 100,
+			function(context, containerID, respawnTimer)
+				if (not RSContainerDB.GetInternalContainerInfo(containerID) and not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
+					RSContainerDB.DeleteContainerOpened(containerID)
+				end
+			end, 
+			function(context)			
+				RSLogger:PrintDebugMessage("Limpiada la base de datos de contenedores abiertos")
+			end
+		)
+		table.insert(routines, cleanOpenedContainers)
+		
+		local cleanCompletedEvents = RSRoutines.LoopRoutineNew()
+		cleanCompletedEvents:Init(RSEventDB.GetAllEventsCompletedRespawnTimes, 100,
+			function(context, eventID, respawnTimer)
+				if (not RSEventDB.GetInternalEventInfo(eventID) and not RSGeneralDB.GetAlreadyFoundEntity(eventID)) then
+					RSEventDB.DeleteEventCompleted(eventID)
+				end
+			end, 
+			function(context)			
+				RSLogger:PrintDebugMessage("Limpiada la base de datos de eventos completos")
+			end
+		)
+		table.insert(routines, cleanCompletedEvents)
+		RSGeneralDB.SetLastCleanDb()
+	end
 
 	-- Launch all the routines in order
 	local chainRoutines = RSRoutines.ChainLoopRoutineNew()

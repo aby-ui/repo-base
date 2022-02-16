@@ -1,5 +1,5 @@
 --- Kaliel's Tracker
---- Copyright (c) 2012-2021, Marouan Sabbagh <mar.sabbagh@gmail.com>
+--- Copyright (c) 2012-2022, Marouan Sabbagh <mar.sabbagh@gmail.com>
 --- All Rights Reserved.
 ---
 --- This file is part of addon Kaliel's Tracker.
@@ -132,7 +132,9 @@ local function QuestsCache_Update(isForced)
 						}
 					end
 				end
-				numQuests = numQuests + 1
+				if not C_QuestLog.IsQuestCalling(questInfo.questID) then
+					numQuests = numQuests + 1
+				end
 			end
 		end
 	end
@@ -208,6 +210,7 @@ local function SetHeaders(type)
 				header.Text:SetShadowColor(0, 0, 0, db.fontShadow)
 				header.Text:SetPoint("LEFT", 4, 0.5)
 				header.animateReason = 0
+				header.Button.Icon:SetVertexColor(txtColor.r, txtColor.g, txtColor.b)
 			end
 		end
 	end
@@ -281,6 +284,16 @@ local function RemoveBlockIcon(block)
 	end
 end
 
+local function ModuleMinimize_OnClick(module)
+	ObjectiveTracker_MinimizeModuleButton_OnClick(module.Header.MinimizeButton)
+	local icon = module.Header.Button.Icon
+	if module:IsCollapsed() then
+		icon:SetTexCoord(0, 0.5, 0.75, 1)
+	else
+		icon:SetTexCoord(0.5, 1, 0.75, 1)
+	end
+end
+
 -- Setup ---------------------------------------------------------------------------------------------------------------
 
 local function Init()
@@ -292,7 +305,7 @@ local function Init()
 
 	for i, module in ipairs(db.modulesOrder) do
 		OTF.MODULES_UI_ORDER[i] = _G[module]
-		KT:SaveHeader(OTF.MODULES_UI_ORDER[i])
+		KT:SetModuleHeader(OTF.MODULES_UI_ORDER[i])
 	end
 
 	KT:MoveTracker()
@@ -314,6 +327,10 @@ local function Init()
 		OTF:KTSetPoint("TOPLEFT", 30, -1)
 		OTF:KTSetPoint("BOTTOMRIGHT")
 		ObjectiveTracker_Update()
+
+		-- Fix for interference of some addons with event PLAYER_ENTERING_WORLD (this is not a bug of KT)
+		TopScenarioWidgetContainerBlock.WidgetContainer:ProcessAllWidgets()
+		BottomScenarioWidgetContainerBlock.WidgetContainer:ProcessAllWidgets()
 
 		KT.initialized = true
 		KT.wqInitialized = true
@@ -446,15 +463,22 @@ local function SetFrames()
 	KT.DropDown = MSA_DropDownMenu_Create(addonName.."DropDown", KTF)
 	MSA_DropDownMenu_Initialize(KT.DropDown, nil, "MENU")
 
+	-- Header buttons
+	local headerButtons = CreateFrame("Frame", addonName.."HeaderButtons", KTF)
+	headerButtons:SetSize(0, 25)
+	headerButtons:SetPoint("TOPRIGHT", -4, -4)
+	headerButtons:SetFrameLevel(KTF:GetFrameLevel() + 10)
+	headerButtons:EnableMouse(true)
+	headerButtons.num = 0
+	KTF.HeaderButtons = headerButtons
+
 	-- Minimize button
 	OTFHeader.MinimizeButton:Hide()
-	local button = CreateFrame("Button", addonName.."MinimizeButton", KTF)
+	local button = CreateFrame("Button", addonName.."MinimizeButton", KTF.HeaderButtons)
 	button:SetSize(16, 16)
-	button:SetPoint("TOPRIGHT", -10, -8)
-	button:SetFrameLevel(KTF:GetFrameLevel() + 10)
+	button:SetPoint("TOPRIGHT", -6, -4)
 	button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
 	button:GetNormalTexture():SetTexCoord(0, 0.5, 0.25, 0.5)
-
 	button:RegisterForClicks("AnyDown")
 	button:SetScript("OnClick", function(self, btn)
 		if IsAltKeyDown() then
@@ -476,6 +500,7 @@ local function SetFrames()
 		GameTooltip:Hide()
 	end)
 	KTF.MinimizeButton = button
+	KT:SetHeaderButtons(1)
 
 	-- Scroll frame
 	local Scroll = CreateFrame("ScrollFrame", addonName.."Scroll", KTF)
@@ -544,7 +569,7 @@ local function SetFrames()
 	HelpTip:Hide(MawBuffs, JAILERS_TOWER_BUFFS_TUTORIAL)
 
 	-- Other buttons
-	KT:ToggleOtherButtons()
+	KT:SetOtherButtons()
 
 	-- Buttons frame
 	local Buttons = CreateFrame("Frame", addonName.."Buttons", UIParent, "BackdropTemplate")
@@ -672,15 +697,13 @@ local function SetHooks()
 	local bck_ObjectiveTracker_Update = ObjectiveTracker_Update
 	ObjectiveTracker_Update = function(reason, id, moduleWhoseCollapseChanged)
 		if KT.stopUpdate then return end
-		if reason ~= OBJECTIVE_TRACKER_UPDATE_STATIC then
-			local dbgReason
-			if reason == OBJECTIVE_TRACKER_UPDATE_ALL then
-				dbgReason = "FFFFFFFF"
-			else
-				dbgReason = reason and format("%x", reason) or ""
-			end
-			_DBG("|cffffff00Update ... "..dbgReason, true)
+		local dbgReason
+		if reason == OBJECTIVE_TRACKER_UPDATE_ALL then
+			dbgReason = "FFFFFFFF"
+		else
+			dbgReason = reason and format("%x", reason) or ""
 		end
+		_DBG("|cffffff00Update ... "..dbgReason, true)
 		bck_ObjectiveTracker_Update(reason, id, moduleWhoseCollapseChanged)
 		FixedButtonsReanchor()
 		if dbChar.collapsed then
@@ -692,9 +715,7 @@ local function SetHooks()
 			end
 			OTFHeader.Title:SetText(title)
 		end
-		if reason == OBJECTIVE_TRACKER_UPDATE_STATIC then
-			return
-		elseif KT.IsTableEmpty(KT.activeTasks) then
+		if KT.IsTableEmpty(KT.activeTasks) then
 			KT:ToggleEmptyTracker()
 		end
 		KT:SetSize()
@@ -1540,8 +1561,7 @@ local function SetHooks()
 			if AutoQuestPopupTracker_ShouldDisplayQuest(questID, owningModule) then
 				local questTitle = C_QuestLog.GetTitleForQuestID(questID)
 				if questTitle and questTitle ~= "" then
-					local block = owningModule:GetBlock(questID, "ScrollFrame", "AutoQuestPopUpBlockTemplate")
-					block.height = 68
+					local block = owningModule.usedBlocks["AutoQuestPopUpBlockTemplate"][questID]
 					local blockContents = block.ScrollChild
 					blockContents.QuestName:SetFont(KT.font, 14, "")
 					blockContents.BottomText:SetPoint("BOTTOM", 0, 7)
@@ -2041,13 +2061,6 @@ local function SetHooks()
 		end
 	end)
 
-	local bck_UIWidgetTemplateSpacerMixin_Setup = UIWidgetTemplateSpacerMixin.Setup
-	function UIWidgetTemplateSpacerMixin:Setup(widgetInfo, widgetContainer)
-		if widgetContainer.widgetSetID ~= 252 then
-			bck_UIWidgetTemplateSpacerMixin_Setup(self, widgetInfo, widgetContainer)
-		end
-	end
-
 	MawBuffs.List:SetScript("OnShow", function(self)  -- R
 		self.button:SetPushedAtlas("jailerstower-animapowerbutton-normalpressed", true)
 		self.button:SetHighlightAtlas("jailerstower-animapowerbutton-highlight", true)
@@ -2130,14 +2143,7 @@ function KT:SetSize()
 	else
 		-- width
 		if db.hdrCollapsedTxt == 1 then
-			local width = 35
-			if KTF.FilterButton then
-				width = width + 20
-			end
-			if db.hdrOtherButtons then
-				width = width + (2 * 20)
-			end
-			KTF:SetWidth(width)
+			KTF:SetWidth(KTF.HeaderButtons:GetWidth() + 8)
 		else
 			KTF:SetWidth(trackerWidth)
 		end
@@ -2261,7 +2267,14 @@ function KT:SetText()
 	ScenarioStageBlock.Stage:SetFont(self.font, db.fontSize+5, db.fontFlag)
 end
 
-function KT:SaveHeader(module)
+function KT:SetHeaderButtons(numAddButtons)
+	local buttonSpace = 20
+	KTF.HeaderButtons.num = KTF.HeaderButtons.num + numAddButtons
+	KTF.HeaderButtons:SetWidth((KTF.HeaderButtons.num * buttonSpace) + 7)
+	OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() - (numAddButtons * buttonSpace))
+end
+
+function KT:SetModuleHeader(module)
 	if not module.Header then return end
 	module.Header.Text:SetWidth(165)
 	module.Header.PlayAddAnimation = function() end
@@ -2275,8 +2288,26 @@ function KT:SaveHeader(module)
 	end
 	module.Header.MinimizeButton:SetShown(false)
 	module.Header.MinimizeButton.SetShown = function() end
+	module.Header:SetScript("OnMouseDown", function(self, btn)
+		ModuleMinimize_OnClick(module)
+	end)
 	tinsert(KT.headers, module.Header)
 	module.title = module.Header.Text:GetText()
+
+	-- Module collapse button
+	local button = CreateFrame("Button", nil, module.Header)
+	button:SetSize(16, 25)
+	button:SetPoint("TOPRIGHT", module.Header, "TOPLEFT", 4, 0)
+	button.Icon = button:CreateTexture(nil, "ARTWORK")
+	button.Icon:SetSize(16, 16)
+	button.Icon:SetTexture(mediaPath.."UI-KT-HeaderButtons")
+	button.Icon:SetTexCoord(0.5, 1, 0.75, 1)
+	button.Icon:SetPoint("LEFT", 0, 1.5)
+	button:RegisterForClicks("AnyDown")
+	button:SetScript("OnClick", function(self, btn)
+		ModuleMinimize_OnClick(module)
+	end)
+	module.Header.Button = button
 end
 
 function KT:SetHeaderText(module, append)
@@ -2303,29 +2334,26 @@ function KT:SetAchievsHeaderText(reset)
 	end
 end
 
-function KT:ToggleOtherButtons()
+function KT:SetOtherButtons()
 	if not db.hdrOtherButtons then
 		if KTF.QuestLogButton then
 			KTF.QuestLogButton:Hide()
 			KTF.AchievementsButton:Hide()
-			OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() + 40)
+			self:SetHeaderButtons(-2)
 		end
 		return
 	end
-	OTFHeader.Title:SetWidth(OTFHeader.Title:GetWidth() - 40)
 	if KTF.QuestLogButton then
 		KTF.QuestLogButton:Show()
 		KTF.AchievementsButton:Show()
 	else
 		local button
 		-- Achievements button
-		button = CreateFrame("Button", addonName.."AchievementsButton", KTF)
+		button = CreateFrame("Button", addonName.."AchievementsButton", KTF.HeaderButtons)
 		button:SetSize(16, 16)
-		button:SetPoint("TOPRIGHT", (KTF.FilterButton or KTF.MinimizeButton), "TOPLEFT", -4, 0)
-		button:SetFrameLevel(KTF:GetFrameLevel() + 10)
+		button:SetPoint("TOPRIGHT", KTF.FilterButton or KTF.MinimizeButton, "TOPLEFT", -4, 0)
 		button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
 		button:GetNormalTexture():SetTexCoord(0.5, 1, 0.25, 0.5)
-
 		button:RegisterForClicks("AnyDown")
 		button:SetScript("OnClick", function(self, btn)
 			ToggleAchievementFrame()
@@ -2343,13 +2371,11 @@ function KT:ToggleOtherButtons()
 		KTF.AchievementsButton = button
 
 		-- Quest Log button
-		button = CreateFrame("Button", addonName.."QuestLogButton", KTF)
+		button = CreateFrame("Button", addonName.."QuestLogButton", KTF.HeaderButtons)
 		button:SetSize(16, 16)
 		button:SetPoint("TOPRIGHT", KTF.AchievementsButton, "TOPLEFT", -4, 0)
-		button:SetFrameLevel(KTF:GetFrameLevel() + 10)
 		button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
 		button:GetNormalTexture():SetTexCoord(0.5, 1, 0, 0.25)
-
 		button:RegisterForClicks("AnyDown")
 		button:SetScript("OnClick", function(self, btn)
 			ToggleQuestLog()
@@ -2366,6 +2392,7 @@ function KT:ToggleOtherButtons()
 		end)
 		KTF.QuestLogButton = button
 	end
+	self:SetHeaderButtons(2)
 end
 
 function KT:MoveButtons()
@@ -2523,7 +2550,7 @@ function KT:ToggleEmptyTracker(added)
 		end
 	else
 		if dbChar.collapsed then
-			if added then
+			if added and self.autoExpand then
 				ObjectiveTracker_Toggle()
 			else
 				KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.25)
@@ -2612,6 +2639,7 @@ function KT:OnInitialize()
 	self.stopUpdate = true
 	self.questStateStopUpdate = false
 	self.locked = false
+	self.autoExpand = true
 	self.wqInitialized = false
 	self.initialized = false
 
@@ -2650,6 +2678,7 @@ function KT:OnEnable()
 	SetFrames()
 	SetHooks()
 
+	self.Hacks:Enable()
 	self.QuestLog:Enable()
 	self.Filters:Enable()
 	if self.AddonPetTracker.isLoaded then self.AddonPetTracker:Enable() end

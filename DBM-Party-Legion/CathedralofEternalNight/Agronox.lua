@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1905, "DBM-Party-Legion", 12, 900)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(117193)
 mod:SetEncounterID(2055)
 
@@ -28,7 +28,7 @@ local specWarnSucculentLashers		= mod:NewSpecialWarningSwitch(236639, "-Healer",
 local specWarnFixate				= mod:NewSpecialWarningRun(238674, nil, nil, nil, 4, 2)
 local yellFixate					= mod:NewYell(238674)
 
-local timerTimberSmashCD			= mod:NewCDTimer(21.7, 235751, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON, nil, 2, 4)
+local timerTimberSmashCD			= mod:NewCDTimer(21.7, 235751, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 4)
 local timerChokingVinesCD			= mod:NewCDTimer(30, 238598, nil, nil, nil, 3)
 local timerFulminatingLashersCD		= mod:NewCDTimer(30, 236527, nil, nil, nil, 1)
 local timerSucculentLashersCD		= mod:NewCDTimer(16.5, 236639, nil, nil, nil, 1)

@@ -457,6 +457,11 @@ GTFO.SpellID["38575"] = {
   sound = 1;
 };
 
+GTFO.SpellID["360327"] = {
+  --desc = "Toxic Spores (Lady Vashj)";
+  sound = 1;
+};
+
 GTFO.SpellID["38718"] = {
   --desc = "Toxic Pool (Underbog Colossus)";
   sound = 1;
@@ -553,6 +558,11 @@ GTFO.SpellID["138561"] = {
 
 GTFO.SpellID["40841"] = {
   --desc = "Flame Crash (Black Temple)";
+  sound = 1;
+};
+
+GTFO.SpellID["40948"] = {
+  --desc = "Rain of Chaos (Illidari Fearbringer - Black Temple)";
   sound = 1;
 };
 

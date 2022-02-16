@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20220116042005")
 mod:SetCreatureID(102246)
 mod:SetEncounterID(1852)
 
@@ -27,10 +27,10 @@ local specWarnImpale				= mod:NewSpecialWarningMoveAway(202341, nil, nil, nil, 1
 local yellImpale					= mod:NewYell(202341)
 local specWarnOozeGTFO				= mod:NewSpecialWarningMove(202485, nil, nil, nil, 1, 2)
 
-local timerMandibleStrikeCD			= mod:NewCDTimer(22.8, 202217, nil, "Tank", nil, 5, nil, DBM_CORE_L.TANK_ICON)--22-30
+local timerMandibleStrikeCD			= mod:NewCDTimer(22.8, 202217, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--22-30
 local timerImpaleCD					= mod:NewCDTimer(22.8, 202341, nil, nil, nil, 3)
 local timerSwarmCD					= mod:NewCDTimer(22.8, 201863, nil, nil, nil, 1)
-local timerFixateCD					= mod:NewCDTimer(15.5, 202480, nil, nil, nil, 3, nil, DBM_CORE_L.HEROIC_ICON)
+local timerFixateCD					= mod:NewCDTimer(15.5, 202480, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 
 local bugsSeen = {}
 

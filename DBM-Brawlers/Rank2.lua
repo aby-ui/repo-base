@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BrawlRank2", "DBM-Brawlers")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220129004350")
 --mod:SetModelID(46712)
 
 mod:RegisterEvents(
@@ -78,7 +78,7 @@ end
 --]]
 
 function mod:PLAYER_TARGET_CHANGED()
-	if self.Options.SetIconOnBlat and not DBM.Options.DontSetIcons and UnitGUID("target") == blatGUID and GetRaidTargetIndex("target") ~= 8 then
-		SetRaidTarget("target", 8)
+	if self.Options.SetIconOnBlat and UnitGUID("target") == blatGUID and GetRaidTargetIndex("target") ~= 8 then
+		self:SetIcon("target", 8)
 	end
 end
