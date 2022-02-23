@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2036, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(122965)
 mod:SetEncounterID(2085)
 
@@ -26,7 +26,7 @@ local specWarnLeap					= mod:NewSpecialWarningDodge(250258, nil, nil, nil, 2, 2)
 local specWarnNoxiousStench			= mod:NewSpecialWarningInterrupt(250368, "HasInterrupt", nil, nil, 1, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(250585, nil, nil, nil, 1, 8)
 
-local timerLeapCD					= mod:NewCDTimer(6, 250258, nil, nil, nil, 3)--6 uness delayed by stentch, then 8
+local timerLeapCD					= mod:NewCDTimer(5.7, 250258, nil, nil, nil, 3)--6 uness delayed by stentch, then 8
 local timerNoxiousStenchCD			= mod:NewCDTimer(18.2, 250368, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON..DBM_COMMON_L.DISEASE_ICON)
 
 mod.vb.totemRemaining = 3
@@ -35,7 +35,7 @@ function mod:OnCombatStart(delay)
 	self.vb.totemRemaining = 3
 	self:SetStage(1)
 	timerLeapCD:Start(2-delay)
-	timerNoxiousStenchCD:Start(6-delay)
+	timerNoxiousStenchCD:Start(5.7-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)

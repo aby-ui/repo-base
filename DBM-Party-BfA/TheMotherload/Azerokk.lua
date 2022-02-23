@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2114, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(129227)
 mod:SetEncounterID(2106)
 mod:DisableESCombatDetection()--ES fires for nearby trash even if boss isn't pulled
@@ -72,7 +72,7 @@ function mod:OnCombatStart(delay)
 	self.vb.addCount = 0
 	timerCallEarthragerCD:Start(60-delay, 1)
 	--timerInfusionCD:Start(1-delay)--19.6
-	timerResonantPulseCD:Start(10.6-delay)
+	timerResonantPulseCD:Start(8.6-delay)
 	if not self:IsNormal() then
 		timerTectonicSmashCD:Start(5-delay)
 	end

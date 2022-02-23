@@ -164,11 +164,11 @@ local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, v
 		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
 		if (vignetteInfo and vignetteInfo.objectGUID) then
 			local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
-			if (tonumber(vignetteNPCID) == npcID and onWorldMap and vignetteInfo.onWorldMap) then
+			if (onWorldMap and vignetteInfo.onWorldMap and (tonumber(vignetteNPCID) == npcID or RSConstants.NPCS_WITH_PRE_EVENT[tonumber(vignetteNPCID)] == npcID)) then
 				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", npcID))
 				return true
 			end
-			if (tonumber(vignetteNPCID) == npcID and onMinimap and vignetteInfo.onMinimap) then
+			if (onMinimap and vignetteInfo.onMinimap and (tonumber(vignetteNPCID) == npcID or RSConstants.NPCS_WITH_PRE_EVENT[tonumber(vignetteNPCID)] == npcID)) then
 				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", npcID))
 				return true
 			end

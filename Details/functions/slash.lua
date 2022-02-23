@@ -1319,6 +1319,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		Details:ScrollDamage()
 
 	elseif (msg == "me" or msg == "ME" or msg == "Me" or msg == "mE") then
+	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 		local role = UnitGroupRolesAssigned("player")
 		if (role == "HEALER") then
 			Details:OpenPlayerDetails(2)

@@ -237,7 +237,7 @@ end
 
 local worldMapButton
 function RSMap.LoadWorldMapButton()
-	local rwm = LibStub('Krowi_WorldMapButtons-1.0')
+	local rwm = LibStub('Krowi_WorldMapButtons-1.3')
 	worldMapButton = rwm:Add("RSWorldMapButtonTemplate", 'DROPDOWNTOGGLEBUTTON')
 	if (not RSConfigDB.IsShowingWorldmapButton()) then 
 		worldMapButton:Hide() 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2359, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220128073746")
+mod:SetRevision("20220214214851")
 mod:SetCreatureID(152852, 152853)--Pashmar 152852, Silivaz 152853
 mod:SetEncounterID(2311)
 mod:SetBossHPInfoToHighest()
@@ -31,47 +31,29 @@ mod:RegisterEventsInCombat(
 --]]
 --General
 local warnDesperateMeasures				= mod:NewCastAnnounce(300088, 4)
+
+local timerDesperateMeasures			= mod:NewCastTimer(10, 300088, nil, nil, nil, 5)
+
+--local specWarnGTFO					= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
+
+local berserkTimer						= mod:NewBerserkTimer(600)
+
+mod:AddNamePlateOption("NPAuraOnSoP", 296704)
 --Queen Azshara
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20258))
 local warnRepeatPerformance				= mod:NewTargetNoFilterAnnounce(301244, 3, nil, "Tank|Healer")--Important to tanks healers, if one of targets is tank or healer
 local warnRepeatPerformanceOver			= mod:NewFadesAnnounce(301244, 1)--Personal fades warning
 local warnStandAlone					= mod:NewTargetAnnounce(297656, 2)
 local warnStandAloneOver				= mod:NewFadesAnnounce(297656, 1)--Personal fades warning
 local warnDeferredSentence				= mod:NewSpellAnnounce(297566, 2)
---Silivaz the Zealous
-local warnSilivazTouch					= mod:NewStackAnnounce(244899, 2, nil, "Tank")
-local warnFreneticCharge				= mod:NewTargetNoFilterAnnounce(299914, 4)
---Pashmar the Fanatical
-local warnPashmarsTouch					= mod:NewStackAnnounce(245518, 2, nil, "Tank")
-local warnPotentSpark					= mod:NewSpellAnnounce(301947, 3)
-local warnFanaticalVerdict				= mod:NewTargetAnnounce(296851, 2)
 
---Queen Azshara
 local specWarnFormRanks					= mod:NewSpecialWarningMoveTo(298050, "-Tank", nil, 2, 1, 2)
 local specWarnRepeatPerformance			= mod:NewSpecialWarningYou(301244, nil, nil, nil, 1, 2)
 local specWarnStandAlone				= mod:NewSpecialWarningMoveAway(297656, nil, nil, nil, 1, 2)
 local yellStandAlone					= mod:NewYell(297656)
 local specWarnObeyorSuffer				= mod:NewSpecialWarningDefensive(297585, nil, nil, nil, 1, 2)
 local specWarnObeyorSufferTaunt			= mod:NewSpecialWarningTaunt(297585, false, nil, 2, 1, 2)
---Silivaz the Zealous
-local specWarnSilivazTouch				= mod:NewSpecialWarningStack(301828, nil, 7, nil, nil, 1, 6)
---local specWarnSilivazTouchOther		= mod:NewSpecialWarningTaunt(301828, false, nil, 2, 1, 2)
-local specWarnFreneticCharge			= mod:NewSpecialWarningMoveTo(299914, nil, nil, nil, 1, 2)
-local yellFreneticCharge				= mod:NewYell(299914, nil, nil, nil, "YELL")
-local yellFreneticChargeFades			= mod:NewShortFadesYell(299914, nil, nil, nil, "YELL")
-local specWarnZealousEruption			= mod:NewSpecialWarningMoveTo(301807, nil, nil, nil, 3, 2)
---Pashmar the Fanatical
-local specWarnPashmarsTouch				= mod:NewSpecialWarningStack(301830, nil, 7, nil, nil, 1, 6)
---local specWarnPashmarsTouchOther		= mod:NewSpecialWarningTaunt(301830, false, nil, 2, 1, 2)
-local specWarnFanaticalVerdict			= mod:NewSpecialWarningMoveAway(296851, nil, nil, nil, 1, 2)
-local yellFanaticalVerdict				= mod:NewYell(296851)
-local yellFanaticalVerdictFades			= mod:NewShortFadesYell(296851)
-local specWarnViolentOutburst			= mod:NewSpecialWarningRun(297325, nil, nil, nil, 4, 2)
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 
---General
-local timerDesperateMeasures			= mod:NewCastTimer(10, 300088, nil, nil, nil, 5)
---Queen Azshara
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20258))
 local timerFormRanksCD					= mod:NewNextTimer(40, 298050, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 local timerRepeatPerformanceCD			= mod:NewNextTimer(40, 301244, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 local timerStandAloneCD					= mod:NewNextTimer(40, 297656, nil, nil, nil, 3, nil, nil, nil, 1, 4)
@@ -79,19 +61,38 @@ local timerDeferredSentenceCD			= mod:NewNextTimer(40, 297566, nil, nil, nil, 3,
 local timerObeyorSufferCD				= mod:NewNextTimer(40, 297585, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 --Silivaz the Zealous
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20231))
+local warnSilivazTouch					= mod:NewStackAnnounce(244899, 2, nil, "Tank")
+local warnFreneticCharge				= mod:NewTargetNoFilterAnnounce(299914, 4)
+
+local specWarnSilivazTouch				= mod:NewSpecialWarningStack(301828, nil, 7, nil, nil, 1, 6)
+--local specWarnSilivazTouchOther		= mod:NewSpecialWarningTaunt(301828, false, nil, 2, 1, 2)
+local specWarnFreneticCharge			= mod:NewSpecialWarningMoveTo(299914, nil, nil, nil, 1, 2)
+local yellFreneticCharge				= mod:NewYell(299914, nil, nil, nil, "YELL")
+local yellFreneticChargeFades			= mod:NewShortFadesYell(299914, nil, nil, nil, "YELL")
+local specWarnZealousEruption			= mod:NewSpecialWarningMoveTo(301807, nil, nil, nil, 3, 2)
+
 local timerFreneticChargeCD				= mod:NewNextTimer(40, 299914, nil, nil, nil, 3, nil, nil, nil, not mod:IsTank() and 2, 4)
 local timerZealousEruptionCD			= mod:NewNextTimer(104.4, 301807, nil, nil, nil, 2)
+
+mod:AddSetIconOption("SetIconFreneticCharge", 299914, true, false, {4})
 --Pashmar the Fanatical
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20235))
+local warnPashmarsTouch					= mod:NewStackAnnounce(245518, 2, nil, "Tank")
+local warnPotentSpark					= mod:NewSpellAnnounce(301947, 3)
+local warnFanaticalVerdict				= mod:NewTargetAnnounce(296851, 2)
+
+local specWarnPashmarsTouch				= mod:NewSpecialWarningStack(301830, nil, 7, nil, nil, 1, 6)
+--local specWarnPashmarsTouchOther		= mod:NewSpecialWarningTaunt(301830, false, nil, 2, 1, 2)
+local specWarnFanaticalVerdict			= mod:NewSpecialWarningMoveAway(296851, nil, nil, nil, 1, 2)
+local yellFanaticalVerdict				= mod:NewYell(296851)
+local yellFanaticalVerdictFades			= mod:NewShortFadesYell(296851)
+local specWarnViolentOutburst			= mod:NewSpecialWarningRun(297325, nil, nil, nil, 4, 2)
+
 local timerFerventBoltCD				= mod:NewCDTimer(11.3, 300395, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerFanaticalVerdictCD			= mod:NewNextTimer(26.7, 296850, nil, nil, nil, 3)
 local timerViolentOutburstCD			= mod:NewNextTimer(104.4, 297325, nil, nil, nil, 2)
 local timerPotentSparkCD				= mod:NewCDTimer(92.2, 301947, nil, nil, nil, 1)
 
-local berserkTimer						= mod:NewBerserkTimer(600)
-
-mod:AddNamePlateOption("NPAuraOnSoP", 296704)
-mod:AddSetIconOption("SetIconFreneticCharge", 299914, true, false, {4})
 mod:AddSetIconOption("SetIconSparks", 301947, true, true, {1, 2, 3})
 
 mod.vb.sparkIcon = 1
@@ -120,7 +121,7 @@ function mod:OnCombatStart(delay)
 		timerZealousEruptionCD:Start(60.5-delay)
 		timerFreneticChargeCD:Start(75-delay)
 		--Pashmar
-		timerPotentSparkCD:Start(15.8-delay)
+		timerPotentSparkCD:Start(15.4-delay)
 		if self:IsHeroic() then
 			self.vb.decreeTimer = 40
 		elseif self:IsLFR() then

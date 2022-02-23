@@ -325,14 +325,30 @@ local function ContinentDropDownMenu_Initialize(self)
 end
 
 function RSExplorerFilters:Initialize(mainFrame)
-	self.mainFrame = mainFrame
-	self.FilterDropDown = LibDD:Create_UIDropDownMenu("FilterDropDown", self)
-	self.FilterDropDown:SetPoint("LEFT", 0, 1)
-	self.ContinentDropDown = LibDD:Create_UIDropDownMenu("ContinentDropDown", self)
-	self.ContinentDropDown:SetPoint("LEFT", self.FilterDropDown, "RIGHT", -10, 0)
-	FilterDropDownMenu_Initialize(self)
-	PopulateContinentDropDown(self.mainFrame, self.ContinentDropDown)
-	ContinentDropDownMenu_Initialize(self)
+	if (mainFrame.initialized) then
+		mainFrame:Refresh()
+	else
+		self.mainFrame = mainFrame
+		self.FilterDropDown = LibDD:Create_UIDropDownMenu("FilterDropDown", self)
+		self.FilterDropDown:SetPoint("LEFT", 0, 1)
+		self.ContinentDropDown = LibDD:Create_UIDropDownMenu("ContinentDropDown", self)
+		self.ContinentDropDown:SetPoint("LEFT", self.FilterDropDown, "RIGHT", -10, 0)
+		FilterDropDownMenu_Initialize(self)
+		PopulateContinentDropDown(self.mainFrame, self.ContinentDropDown)
+		ContinentDropDownMenu_Initialize(self)
+		
+		self.RestartScanningButton:SetText(AL["EXPLORER_RESCANN"])
+		self.RestartScanningButton.tooltip = AL["EXPLORER_RESCANN_DESC"]
+	end
+end
+
+function RSExplorerFilters:RestartScanning(self, button)
+	local mainFrame = self:GetParent().mainFrame
+	mainFrame.ScanRequired.ScanRequiredText:SetText(AL["EXPLORER_SCAN_MANUAL"])
+	mainFrame.ScanRequired.StartScanningButton:SetText(AL["EXPLORER_START_SCAN"])
+	mainFrame.ScanRequired.StartScanningButton:Show()
+	mainFrame.ScanRequired:Show()
+	mainFrame:HideContentPanels()
 end
 
 -----------------------------------------------------
@@ -1073,18 +1089,6 @@ function RSExplorerControl:ApplyFilters(self, button)
 	LibDialog:Spawn(RSConstants.EXPLORER_FILTERING_DIALOG, data)
 end
 
-function RSExplorerControl:ShowTooltip(self, message)
-	local tooltip = self:GetParent().mainFrame.Tooltip
-	tooltip:SetOwner(self, "ANCHOR_CURSOR")
-	tooltip:AddLine(self.tooltip, 1, 1, 1, true)
-	tooltip:Show()
-end
-
-function RSExplorerControl:HideTooltip(self)
-	local tooltip = self:GetParent().mainFrame.Tooltip
-	tooltip:Hide()
-end
-
 -----------------------------------------------------
 -- Explorer main frame
 -----------------------------------------------------
@@ -1115,6 +1119,7 @@ function RSExplorerMixin:HideContentPanels()
 	self.RareNPCList.background:Hide()
 	self.RareNPCList.ElevatedFrame:Hide()
 	self.RareNPCList.listScroll:Hide()
+	self.Filters:Hide()
 	self.Control:Hide()
 end
 
@@ -1124,6 +1129,7 @@ function RSExplorerMixin:ShowContentPanels()
 	self.RareNPCList.background:Show()
 	self.RareNPCList.ElevatedFrame:Show()
 	self.RareNPCList.listScroll:Show()
+	self.Filters:Show()
 	self.Control:Show()
 end
 
@@ -1168,4 +1174,16 @@ function RSExplorerMixin:Refresh()
 		PopulateContinentDropDown(self, self.Filters.ContinentDropDown)
 		self.RareNPCList:UpdateRareList()
 	end
+end
+
+function RSExplorerMixin:ShowTooltip(self, message)
+	local tooltip = self:GetParent().mainFrame.Tooltip
+	tooltip:SetOwner(self, "ANCHOR_CURSOR")
+	tooltip:AddLine(self.tooltip, 1, 1, 1, true)
+	tooltip:Show()
+end
+
+function RSExplorerMixin:HideTooltip(self)
+	local tooltip = self:GetParent().mainFrame.Tooltip
+	tooltip:Hide()
 end

@@ -865,7 +865,7 @@
 			}, atributo_custom.mt)
 			
 			new_actor.name_complement = name_complement
-			new_actor.displayName = _detalhes:GetOnlyName (new_actor.nome) .. (name_complement or "")
+			new_actor.displayName = actor.displayName or (_detalhes:GetOnlyName (new_actor.nome) .. (name_complement or ""))
 			new_actor.spec = actor.spec
 			
 			new_actor.enemy = actor.enemy

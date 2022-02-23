@@ -52,12 +52,7 @@ end
 -- Loot tooltip scanner
 ---============================================================================
 
-local lootTooltip = CreateFrame("GAMETOOLTIP", "RSToolTipScan", nil, "GameTooltipTemplate")
-
-function RSTooltipScanners.ScanLoot(itemLink, value)
-	lootTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	lootTooltip:SetHyperlink(itemLink)
-
+function RSTooltipScanners.ScanLoot(lootTooltip, value)
 	local foundText = false
 	for i=1, lootTooltip:NumLines() do
 		local toolTipText = _G["RSToolTipScanTextLeft"..i]:GetText()

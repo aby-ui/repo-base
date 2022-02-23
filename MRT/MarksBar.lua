@@ -543,11 +543,16 @@ local function modifymarkbars()
 			posX = posX + 222 + (showExtraMarks and 224 or 0)
 			totalWidth = totalWidth + 222 + (showExtraMarks and 224 or 0)
 		end
+
+		local worldMarksBool = VMRT.MarksBar.Show[3]
+		if ExRT.isClassic then
+			worldMarksBool = false
+		end
 	
 		mainFrame.edges[3]:SetPoint("TOPLEFT",posX,0)
-		if not VMRT.MarksBar.Show[3] or not VMRT.MarksBar.wmKind then
+		if not worldMarksBool or not VMRT.MarksBar.wmKind then
 			mainFrame.wmarksbuts:Hide()
-		elseif VMRT.MarksBar.Show[3] and VMRT.MarksBar.wmKind then
+		elseif worldMarksBool and VMRT.MarksBar.wmKind then
 			mainFrame.wmarksbuts:Show()
 			
 			posX = posX + 14*ceil(9 / 2)
@@ -556,7 +561,7 @@ local function modifymarkbars()
 	
 		mainFrame.edge:Show()
 		mainFrame:SetBackdropColor(0,0,0,0.8)
-		if not VMRT.MarksBar.wmKind and VMRT.MarksBar.Show[3] then
+		if not VMRT.MarksBar.wmKind and worldMarksBool then
 			mainFrame.wmarksbuts.b:Show()
 			if not (VMRT.MarksBar.Show[1] or VMRT.MarksBar.Show[2] or VMRT.MarksBar.Show[4]) then
 				mainFrame.edge:Hide()
@@ -600,7 +605,7 @@ local function modifymarkbars()
 			mainFrame.raidcheck:Hide()
 		end
 
-		if not (VMRT.MarksBar.Show[1] or VMRT.MarksBar.Show[2] or VMRT.MarksBar.Show[3] or VMRT.MarksBar.Show[4] or VMRT.MarksBar.Show[5]) or not VMRT.MarksBar.enabled then
+		if not (VMRT.MarksBar.Show[1] or VMRT.MarksBar.Show[2] or worldMarksBool or VMRT.MarksBar.Show[4] or VMRT.MarksBar.Show[5]) or not VMRT.MarksBar.enabled then
 			mainFrame:Hide()
 		else
 			mainFrame:Show()
@@ -668,11 +673,16 @@ local function modifymarkbars()
 			posX = posX + 224 + (showExtraMarks and 224 or 0)
 			totalWidth = totalWidth + 224 + (showExtraMarks and 224 or 0)
 		end
+
+		local worldMarksBool = VMRT.MarksBar.Show[3]
+		if ExRT.isClassic then
+			worldMarksBool = false
+		end
 	
 		mainFrame.edges[3]:SetPoint("TOPLEFT",0,-posX)
-		if not VMRT.MarksBar.Show[3] or not VMRT.MarksBar.wmKind then
+		if not worldMarksBool or not VMRT.MarksBar.wmKind then
 			mainFrame.wmarksbuts:Hide()
-		elseif VMRT.MarksBar.Show[3] and VMRT.MarksBar.wmKind then
+		elseif worldMarksBool and VMRT.MarksBar.wmKind then
 			mainFrame.wmarksbuts:Show()
 			
 			posX = posX + 14*ceil(9 / 2)
@@ -681,7 +691,7 @@ local function modifymarkbars()
 	
 		mainFrame.edge:Show()
 		mainFrame:SetBackdropColor(0,0,0,0.8)
-		if not VMRT.MarksBar.wmKind and VMRT.MarksBar.Show[3] then
+		if not VMRT.MarksBar.wmKind and worldMarksBool then
 			mainFrame.wmarksbuts.b:Show()
 			if not (VMRT.MarksBar.Show[1] or VMRT.MarksBar.Show[2] or VMRT.MarksBar.Show[4]) then
 				mainFrame.edge:Hide()
@@ -725,7 +735,7 @@ local function modifymarkbars()
 			mainFrame.raidcheck:Hide()
 		end
 
-		if not (VMRT.MarksBar.Show[1] or VMRT.MarksBar.Show[2] or VMRT.MarksBar.Show[3] or VMRT.MarksBar.Show[4] or VMRT.MarksBar.Show[5]) or not VMRT.MarksBar.enabled then
+		if not (VMRT.MarksBar.Show[1] or VMRT.MarksBar.Show[2] or worldMarksBool or VMRT.MarksBar.Show[4] or VMRT.MarksBar.Show[5]) or not VMRT.MarksBar.enabled then
 			mainFrame:Hide()
 		else
 			mainFrame:Show()
@@ -984,6 +994,14 @@ function module.options:Load()
 	end) 
 	
 	self.shtml1 = ELib:Text(self,L.MarksBarHelp,12):Size(670,200):Point(15,-480):Top()
+
+	if ExRT.isClassic then
+		self.chkEnable3:Hide()
+		self.chkEnable3kindhtml:Hide()
+		self.chkEnable3kind1:Hide()
+		self.chkEnable3kind2:Hide()
+		self.reverseWMMarksOrderChk:Hide()
+	end
 end
 
 function module.main:ADDON_LOADED()

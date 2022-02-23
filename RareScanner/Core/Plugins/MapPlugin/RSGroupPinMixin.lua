@@ -100,29 +100,3 @@ function RSGroupPinMixin:ShowOverlay(childPOI)
 		RSMinimap.AddOverlay(childPOI.entityID)
 	end
 end
-
-function RSGroupPinMixin:ShowGuide(childPOI)
-	-- Guide
-	local guide = nil
-	if (childPOI.isNpc) then
-		guide = RSGuideDB.GetNpcGuide(childPOI.entityID)
-	elseif (childPOI.isContainer) then
-		guide = RSGuideDB.GetContainerGuide(childPOI.entityID)
-	else
-		guide = RSGuideDB.GetEventGuide(childPOI.entityID)
-	end
-
-	if (guide) then
-		for pinType, info in pairs (guide) do
-			if (not info.questID or not C_QuestLog.IsQuestFlaggedCompleted(info.questID)) then
-				local POI = RSGuidePOI.GetGuidePOI(childPOI.entityID, pinType, info)
-				self:GetMap():AcquirePin("RSGuideTemplate", POI, self);
-			end
-		end
-		RSGeneralDB.SetGuideActive(childPOI.entityID)
-		RSMinimap.AddGuide(childPOI.entityID)
-	else
-		RSGeneralDB.RemoveGuideActive()
-		RSMinimap.RemoveGuide(childPOI.entityID)
-	end
-end

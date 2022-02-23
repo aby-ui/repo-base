@@ -2,6 +2,9 @@ local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("ChocolateBar", "enUS", true)
 if not L then return end
 
+L["Disable Tooltip"] = true
+L["Only show tooltip of this plugin when a modifier (shift, alt, ctrl) is held."] = true
+
 L["Label color"] = true
 L["Default label color of a plugin."] = true
 

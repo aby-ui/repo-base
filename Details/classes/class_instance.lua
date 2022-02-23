@@ -360,20 +360,20 @@ end
 	function _detalhes:ShutDownAllInstances()
 		for index, instance in _ipairs (_detalhes.tabela_instancias) do
 			if (instance:IsEnabled() and instance.baseframe and not instance.ignore_mass_showhide) then
-				instance:ShutDown()
+				instance:ShutDown(true)
 			end
 		end
 	end
 
 	--> alias
-	function _detalhes:HideWindow()
-		return self:DesativarInstancia()
+	function _detalhes:HideWindow(all)
+		return self:DesativarInstancia(all)
 	end
-	function _detalhes:ShutDown()
-		return self:DesativarInstancia()
+	function _detalhes:ShutDown(all)
+		return self:DesativarInstancia(all)
 	end
-	function _detalhes:Shutdown()
-		return self:DesativarInstancia()
+	function _detalhes:Shutdown(all)
+		return self:DesativarInstancia(all)
 	end
 	
 	function _detalhes:GetNumWindows()
@@ -381,7 +381,7 @@ end
 	end
 
 --> desativando a inst�ncia ela fica em stand by e apenas hida a janela ~shutdown ~close ~fechar
-	function _detalhes:DesativarInstancia()
+	function _detalhes:DesativarInstancia(all)
 	
 		self.ativa = false
 		_detalhes.opened_windows = _detalhes.opened_windows-1
@@ -413,8 +413,9 @@ end
 		Details.FadeHandler.Fader (self.rowframe, 1)
 		Details.FadeHandler.Fader (self.windowSwitchButton, 1)
 		
-		self:Desagrupar (-1)
-		
+		if (not all) then
+			self:Desagrupar (-1)
+		end
 		if (self.modo == modo_raid) then
 			_detalhes.RaidTables:DisableRaidMode (self)
 			
@@ -534,7 +535,7 @@ end
 		for index = math.min (#_detalhes.tabela_instancias, _detalhes.instances_amount), 1, -1 do 
 			local instancia = _detalhes:GetInstance (index)
 			if (instancia and not instancia.ignore_mass_showhide) then
-				instancia:AtivarInstancia (temp)
+				instancia:AtivarInstancia (temp, true)
 			end
 		end
 	end
@@ -583,14 +584,14 @@ end
 	end
 
 	--> alias
-	function _detalhes:ShowWindow (temp)
-		return self:AtivarInstancia (temp)
+	function _detalhes:ShowWindow (temp, all)
+		return self:AtivarInstancia (temp, all)
 	end
-	function _detalhes:EnableInstance (temp)
-		return self:AtivarInstancia (temp)
+	function _detalhes:EnableInstance (temp, all)
+		return self:AtivarInstancia (temp, all)
 	end
 	
-	function _detalhes:AtivarInstancia (temp)
+	function _detalhes:AtivarInstancia (temp, all)
 		self.ativa = true
 		self.cached_bar_width = self.cached_bar_width or 0
 
@@ -647,6 +648,10 @@ end
 		end
 
 		self:DesaturateMenu()
+		
+	  if (not all) then
+			self:Desagrupar (-1)
+		end
 		
 		self:CheckFor_EnabledTrashSuppression()
 		

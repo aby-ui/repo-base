@@ -5,6 +5,87 @@ if (not LIB_OPEN_RAID_CAN_LOAD) then
 	return
 end
 
+--localization
+local gameLanguage = GetLocale()
+
+local L = { --default localization
+	["STRING_EXPLOSION"] = "explosion",
+	["STRING_MIRROR_IMAGE"] = "Mirror Image",
+	["STRING_CRITICAL_ONLY"]  = "critical",
+	["STRING_BLOOM"] = "Bloom", --lifebloom 'bloom' healing
+	["STRING_GLAIVE"] = "Glaive", --DH glaive toss
+	["STRING_MAINTARGET"] = "Main Target",
+	["STRING_AOE"] = "AoE", --multi targets
+	["STRING_SHADOW"] = "Shadow", --the spell school 'shadow'
+	["STRING_PHYSICAL"] = "Physical", --the spell school 'physical'
+	["STRING_PASSIVE"] = "Passive", --passive spell
+	["STRING_TEMPLAR_VINDCATION"] = "Templar's Vindication", --paladin spell
+	["STRING_PROC"] = "proc", --spell proc
+	["STRING_TRINKET"] = "Trinket", --trinket
+}
+
+if (gameLanguage == "enUS") then
+	--default language
+
+elseif (gameLanguage == "deDE") then
+	L["STRING_EXPLOSION"] = "Explosion"
+	L["STRING_MIRROR_IMAGE"] = "Bilder spiegeln"
+	L["STRING_CRITICAL_ONLY"]  = "kritisch"
+
+elseif (gameLanguage == "esES") then
+	L["STRING_EXPLOSION"] = "explosión"
+	L["STRING_MIRROR_IMAGE"] = "Imagen de espejo"
+	L["STRING_CRITICAL_ONLY"]  = "crítico"
+
+elseif (gameLanguage == "esMX") then
+	L["STRING_EXPLOSION"] = "explosión"
+	L["STRING_MIRROR_IMAGE"] = "Imagen de espejo"
+	L["STRING_CRITICAL_ONLY"]  = "crítico"
+
+elseif (gameLanguage == "frFR") then
+	L["STRING_EXPLOSION"] = "explosion"
+	L["STRING_MIRROR_IMAGE"] = "Effet miroir"
+	L["STRING_CRITICAL_ONLY"]  = "critique"
+
+elseif (gameLanguage == "itIT") then
+	L["STRING_EXPLOSION"] = "esplosione"
+	L["STRING_MIRROR_IMAGE"] = "Immagine Speculare"
+	L["STRING_CRITICAL_ONLY"]  = "critico"
+
+elseif (gameLanguage == "koKR") then
+	L["STRING_EXPLOSION"] = "폭발"
+	L["STRING_MIRROR_IMAGE"] = "미러 이미지"
+	L["STRING_CRITICAL_ONLY"]  = "치명타"
+
+elseif (gameLanguage == "ptBR") then
+	L["STRING_EXPLOSION"] = "explosão"
+	L["STRING_MIRROR_IMAGE"] = "Imagem Espelhada"
+	L["STRING_CRITICAL_ONLY"]  = "critico"
+
+elseif (gameLanguage == "ruRU") then
+	L["STRING_EXPLOSION"] = "взрыв"
+	L["STRING_MIRROR_IMAGE"] = "Зеркальное изображение"
+	L["STRING_CRITICAL_ONLY"]  = "критический"
+
+elseif (gameLanguage == "zhCN") then
+	L["STRING_EXPLOSION"] = "爆炸"
+	L["STRING_MIRROR_IMAGE"] = "镜像"
+	L["STRING_CRITICAL_ONLY"]  = "爆击"
+
+elseif (gameLanguage == "zhTW") then
+	L["STRING_EXPLOSION"] = "爆炸"
+	L["STRING_MIRROR_IMAGE"] = "鏡像"
+	L["STRING_CRITICAL_ONLY"]  = "致命"
+end
+
+LIB_OPEN_RAID_BLOODLUST = {
+	[2825] = true, --bloodlust
+	[32182] = true, --heroism
+	[80353] = true, --timewarp
+	[90355] = true, --ancient hysteria
+	[309658] = true, --current exp drums
+}
+
 LIB_OPEN_RAID_AUGMENTATED_RUNE = 347901
 
 LIB_OPEN_RAID_COVENANT_ICONS = {
@@ -202,6 +283,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[64044] = 5, --Psychic Horror
 			[8122] = 5, --Psychic Scream
 			[205369] = 5, --Mind Bomb
+			[228260] = 1, --Void Erruption
 		},
 	
 	--ROGUE
@@ -808,6 +890,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[15286] = {cooldown = 120, duration = 15, talent = false, charges = 1, class = "PRIEST", type = 4},  --Vampiric Embrace
 	[64044] = {cooldown = 45, duration = 4, talent = 21752, charges = 1, class = "PRIEST", type = 5}, --Psychic Horror
 	[205369] = {cooldown = 30, duration = 6, talent = 23375, charges = 1, class = "PRIEST", type = 5}, --Mind Bomb
+	[228260] = {cooldown = 90, duration = 15, talent = false, charges = 1, class = "PRIEST", type = 1}, --Void Erruption
 
 	--> rogue
 	[79140] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "ROGUE", type = 1},  --Vendetta
@@ -823,3 +906,52 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[343142] = {cooldown = 90, duration = 10, talent = 19250, charges = 1, class = "ROGUE", type = 5},  --Dreadblades
 	[121471]  = {cooldown = 180, duration = 20, talent = false, charges = 1, class = "ROGUE", type = 1},  --Shadow Blades
 }
+
+--[=[
+Spell customizations:
+	Many times there's spells with the same name which does different effects
+	In here you find a list of spells which has its name changed to give more information to the player
+	you may add into the list any other parameter your addon uses declaring for example 'icon = ' or 'texcoord = ' etc.
+
+Implamentation Example:
+	if (LIB_OPEN_RAID_SPELL_CUSTOM_NAMES) then
+		for spellId, customTable in pairs(LIB_OPEN_RAID_SPELL_CUSTOM_NAMES) do
+			local name = customTable.name
+			if (name) then
+				MyCustomSpellTable[spellId] = name
+			end
+		end
+	end
+--]=]
+
+LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {} --default fallback
+
+if (GetBuildInfo():match ("%d") == "1") then
+		LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {}
+
+elseif (GetBuildInfo():match ("%d") == "2") then
+	LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {}
+
+else
+	LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {
+		[44461] = {name = GetSpellInfo(44461) .. " (" .. L["STRING_EXPLOSION"] .. ")"}, --> Living Bomb (explosion)
+		[59638] = {name = GetSpellInfo(59638) .. " (" .. L["STRING_MIRROR_IMAGE"] .. ")"}, --> Mirror Image's Frost Bolt (mage)
+		[88082] = {name = GetSpellInfo(88082) .. " (" .. L["STRING_MIRROR_IMAGE"] .. ")"}, --> Mirror Image's Fireball (mage)
+		[94472] = {name = GetSpellInfo(94472) .. " (" .. L["STRING_CRITICAL_ONLY"] .. ")"}, --> Atonement critical hit (priest)
+		[33778] = {name = GetSpellInfo(33778) .. " (" .. L["STRING_BLOOM"] .. ")"}, --lifebloom (bloom)
+		[121414] = {name = GetSpellInfo(121414) .. " (" .. L["STRING_GLAIVE"] .. " #1)"}, --> glaive toss (hunter)
+		[120761] = {name = GetSpellInfo(120761) .. " (" .. L["STRING_GLAIVE"] .. " #2)"}, --> glaive toss (hunter)
+		[212739] = {name = GetSpellInfo(212739) .. " (" .. L["STRING_MAINTARGET"] .. ")"}, --DK Epidemic
+		[215969] = {name = GetSpellInfo(215969) .. " (" .. L["STRING_AOE"] .. ")"}, --DK Epidemic
+		[70890] = {name = GetSpellInfo(70890) .. " (" .. L["STRING_SHADOW"] .. ")"}, --DK Scourge Strike
+		[55090] = {name = GetSpellInfo(55090) .. " (" .. L["STRING_PHYSICAL"] .. ")"}, --DK Scourge Strike
+		[49184] = {name = GetSpellInfo(49184) .. " (" .. L["STRING_MAINTARGET"] .. ")"}, --DK Howling Blast
+		[237680] = {name = GetSpellInfo(237680) .. " (" .. L["STRING_AOE"] .. ")"}, --DK Howling Blast
+		[228649] = {name = GetSpellInfo(228649) .. " (" .. L["STRING_PASSIVE"] .. ")"}, --Monk Mistweaver Blackout kick - Passive Teachings of the Monastery
+		[339538] = {name = GetSpellInfo(224266) .. " (" .. L["STRING_TEMPLAR_VINDCATION"] .. ")"}, --
+		[343355] = {name = GetSpellInfo(343355)  .. " (" .. L["STRING_PROC"] .. ")"}, --shadow priest's void bold proc
+
+		--> shadowlands trinkets
+		[345020] = {name = GetSpellInfo(345020) .. " ("  .. L["STRING_TRINKET"] .. ")"},
+	}
+end

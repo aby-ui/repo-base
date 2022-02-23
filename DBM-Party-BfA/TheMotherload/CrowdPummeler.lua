@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2109, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(129214)
 mod:SetEncounterID(2105)
 
@@ -32,9 +32,9 @@ local specWarnThrowCoins			= mod:NewSpecialWarningMove(271784, "Tank", nil, nil,
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
 local timerStaticPulseCD			= mod:NewCDTimer(23.1, 262347, nil, nil, nil, 2)
-local timerFootbombLauncherCD		= mod:NewCDTimer(36.5, 269493, nil, nil, nil, 5)
+local timerFootbombLauncherCD		= mod:NewCDTimer(32.8, 269493, nil, nil, nil, 5)
 local timerBlazingAzeriteCD			= mod:NewBuffFadesTimer(15, 256493, nil, nil, nil, 5)
-local timerShockingClawCD			= mod:NewCDTimer(23, 257337, nil, nil, nil, 3)--14.3, 41.3 (not sure if still true, not going to leave it ai though, 23 it is til i see lower)
+local timerShockingClawCD			= mod:NewCDTimer(21.8, 257337, nil, nil, nil, 3)--14.3, 41.3 (not sure if still true, not going to leave it ai though, 23 it is til i see lower)
 local timerThrowCoinsCD				= mod:NewCDTimer(17.4, 271784, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON..DBM_COMMON_L.TANK_ICON)--18.8, 17.4, 25.5, 25.5
 
 

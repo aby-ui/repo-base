@@ -38,70 +38,72 @@ end
 
 function Details:BossModsLink()
     if (_G.DBM) then
-        local dbm_callback_phase = function (event, msg, ...)
+        local DBM = _G.DBM
 
-            --print("D!", event, msg, ...)
-            local mod = Details.encounter_table.DBM_Mod
-            
+        local DBMCallbackPhase = function(event, msg, ...)
+            local encounterTable = Details.encounter_table
+
+            --get the mod from DBM cached within the encounter_table
+            --note: encounter_table is wipped at ENCOUNTER_END
+            --note 2: at the moment, the saved table 'DBM_Mod' isn't in use on Details!, need a cleanup in the future
+            local mod = encounterTable.DBM_Mod
             if (not mod) then
-                local id = Details:GetEncounterIdFromBossIndex (Details.encounter_table.mapid, Details.encounter_table.id)
+                local id = Details:GetEncounterIdFromBossIndex(encounterTable.mapid, encounterTable.id)
                 if (id) then
-                    for index, tmod in ipairs (DBM.Mods) do
-                        if (tmod.id == id) then
-                            Details.encounter_table.DBM_Mod = tmod
-                            mod = tmod
+                    for index, DBMMod in ipairs(DBM.Mods) do
+                        if (DBMMod.id == id) then
+                            encounterTable.DBM_Mod = DBMMod
+                            mod = DBMMod
                         end
                     end
                 end
             end
-            
+
             local newPhase = 1
 
-            --D! DBM_Announce Stage 3 136116 stagechange 0 2429 false
+            event = event:lower()
+            if (event:find("announce")) then
 
-            if (event == "DBM_Announce") then
-                if (msg:find("Stage")) then
+                msg = msg:lower()
+                if (msg:find("stage")) then
+
                     msg = msg:gsub("%a", "")
                     msg = msg:gsub("%s+", "")
                     newPhase = tonumber(msg)
-                    --print("New Phase: ", newPhase)
 
                     local ID, msg2, someId, someNumber, aBool = ...
 
                     if (msg2 == "stagechange") then
-                        --print("D! yeash", msg2)
+                        --print(4,"newPhase: " .. newPhase .. "|", ID, msg2, someId, someNumber, aBool)
                     end
 
                     local phase = newPhase
 
-                    if (phase and Details.encounter_table.phase ~= phase) then
-                        Details:Msg ("Current phase is now:", phase)
-                        
+                    if (phase and encounterTable.phase ~= phase) then
+                        Details:Msg("Current phase is now:", phase)
                         Details:OnCombatPhaseChanged()
-                        
-                        Details.encounter_table.phase = phase
-                        
-                        local cur_combat = Details:GetCurrentCombat()
-                        local time = cur_combat:GetCombatTime()
+                        encounterTable.phase = phase
+                        local currentCombat = Details:GetCurrentCombat()
+                        local time = currentCombat:GetCombatTime()
                         if (time > 5) then
-                            tinsert (cur_combat.PhaseData, {phase, time})
+                            tinsert(currentCombat.PhaseData, {phase, time})
                         end
-                        
-                        Details:SendEvent ("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
+                        Details:SendEvent("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
                     end
                 end
             end
         end
-        
-        local dbm_callback_pull = function (event, mod, delay, synced, startHp)
-            Details.encounter_table.DBM_Mod = mod
-            Details.encounter_table.DBM_ModTime = time()
+
+        local DBMCallbackPull = function(event, mod, delay, synced, startHp)
+            local encounterTable = Details.encounter_table
+            encounterTable.DBM_Mod = mod
+            encounterTable.DBM_ModTime = time()
         end
-        
-        DBM:RegisterCallback ("DBM_Announce", dbm_callback_phase)
-        DBM:RegisterCallback ("pull", dbm_callback_pull)
+
+        DBM:RegisterCallback("DBM_Announce", DBMCallbackPhase)
+        DBM:RegisterCallback("pull", DBMCallbackPull)
     end
-    
+
     if (BigWigsLoader and not _G.DBM) then
 
         --Bigwigs change the phase of an encounter

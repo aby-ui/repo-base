@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2145, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(133392)
 mod:SetEncounterID(2127)
 mod.onlyHighest = true--Instructs DBM health tracking to literally only store highest value seen during fight, even if it drops below that
@@ -76,7 +76,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 269686 then
 		timerPlague:Stop(args.destName)
 	elseif spellId == 274149 then--Life Force Ending
-		timerPulseCD:Start(11)
+		timerPulseCD:Start(9.4)
 	end
 end
 

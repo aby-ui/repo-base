@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Comergy Redux Options
 ## Notes: Options module for Comergy Redux
 ## Version: r32

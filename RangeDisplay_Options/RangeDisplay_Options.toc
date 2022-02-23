@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: RangeDisplay Options
 ## Author: mitch0
 ## Version: v4.9.8

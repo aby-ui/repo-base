@@ -841,7 +841,7 @@ function module.main:GROUP_ROSTER_UPDATE()
 		promoteRosterUpdate()
 	end
 
-	if VMRT.InviteTool.AutoRaidDiff then
+	if VMRT.InviteTool.AutoRaidDiff or ExRT.isClassic then
 		if not scheludedRaidUpdate then
 			scheludedRaidUpdate = ExRT.F.ScheduleTimer(AutoRaidSetup, .5)
 		end

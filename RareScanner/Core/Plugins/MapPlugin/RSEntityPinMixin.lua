@@ -107,13 +107,13 @@ function RSEntityPinMixin:OnMouseDown(button)
 		if (guideEntityID) then
 			self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
 			if (guideEntityID ~= self.POI.entityID) then
-				self:ShowGuide(true)
+				self:ShowGuide(self.POI.mapID)
 			else
 				RSGeneralDB.RemoveGuideActive()
 				RSMinimap.RemoveGuide(self.POI.entityID)
 			end
 		else
-			self:ShowGuide(true)
+			self:ShowGuide(self.POI.mapID)
 		end
 		
 		-- Hide the tooltip
@@ -158,15 +158,15 @@ function RSEntityPinMixin:ShowOverlay()
 	end
 end
 
-function RSEntityPinMixin:ShowGuide(onclick)
+function RSEntityPinMixin:ShowGuide(mapID)
 	-- Guide
 	local guide = nil
 	if (self.POI.isNpc) then
-		guide = RSGuideDB.GetNpcGuide(self.POI.entityID)
+		guide = RSGuideDB.GetNpcGuide(self.POI.entityID, mapID)
 	elseif (self.POI.isContainer) then
-		guide = RSGuideDB.GetContainerGuide(self.POI.entityID)
+		guide = RSGuideDB.GetContainerGuide(self.POI.entityID, mapID)
 	else
-		guide = RSGuideDB.GetEventGuide(self.POI.entityID)
+		guide = RSGuideDB.GetEventGuide(self.POI.entityID, mapID)
 	end
 
 	if (guide) then
@@ -175,17 +175,17 @@ function RSEntityPinMixin:ShowGuide(onclick)
 			if (not info.questID or not C_QuestLog.IsQuestFlaggedCompleted(info.questID)) then
 				local POI = RSGuidePOI.GetGuidePOI(self.POI.entityID, pinType, info)
 				local pin = self:GetMap():AcquirePin("RSGuideTemplate", POI, self);
-
-				if (onclick) then
+				if (POI.loopAnimation) then
+					pin.ShowPingAnim:SetLooping("REPEAT")
+					pin.ShowPingAnim:Play()
+				else
+					pin.ShowPingAnim:SetLooping("NONE")
 					pin.ShowPingAnim:Play()
 				end
 			end
 		end
 		RSGeneralDB.SetGuideActive(self.POI.entityID)
 		RSMinimap.AddGuide(self.POI.entityID)
-	else
-		RSGeneralDB.RemoveGuideActive()
-		RSMinimap.RemoveGuide(self.POI.entityID)
 	end
 end
 

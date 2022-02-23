@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220217003806")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetUsedIcons(1, 2, 3)--Unknown number of burning targets, guessed for now
@@ -33,14 +33,10 @@ mod:RegisterEventsInCombat(
  --]]
 local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 --Stage One: The Black Emperor
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20627))
 local warnSearingArmor						= mod:NewStackAnnounce(306015, 2, nil, "Tank")
 local warnIncineration						= mod:NewTargetAnnounce(306111, 3)
---Stage Two: Smoke and Mirrors
-local warnScales							= mod:NewSpellAnnounce(308682, 2)
-local warnBurningMadness					= mod:NewTargetNoFilterAnnounce(307013, 1)
-local warnSap								= mod:NewTargetNoFilterAnnounce(314347, 3, nil, false)--off by default, assumed it'll be spammy
 
---Stage One: The Black Emperor
 local specWarnSearingArmorStack				= mod:NewSpecialWarningStack(306015, nil, 2, nil, nil, 1, 6)
 local specWarnSearingArmor					= mod:NewSpecialWarningTaunt(306015, nil, nil, nil, 1, 2)
 local specWarnIncineration					= mod:NewSpecialWarningMoveAway(306111, nil, nil, nil, 1, 2)
@@ -50,21 +46,23 @@ local specWarnGaleBlast						= mod:NewSpecialWarningDodgeCount(306289, nil, nil,
 local specWarnBurningCataclysm				= mod:NewSpecialWarningCount(306735, nil, 138565, nil, 2, 2)
 --local specWarnCreepingMadness				= mod:NewSpecialWarningStack(313250, nil, 32, nil, nil, 1, 2, 4)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(306824, nil, nil, nil, 1, 8)
---Stage Two: Smoke and Mirrors
-local warnSpawnAdds							= mod:NewSpellAnnounce(312389, 2)
 
---Stage One: The Black Emperor
 local timerSearingBreathCD					= mod:NewCDTimer(8.5, 305978, 18620, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerIncinerationCD					= mod:NewCDCountTimer(19.4, 306111, nil, nil, nil, 3)--19-24 variation even when not delayed by other casts
 local timerGaleBlastCD						= mod:NewCDCountTimer(90.9, 306289, nil, nil, nil, 2)
 local timerBurningCataclysmCD				= mod:NewCDCountTimer(90.9, 306735, 138565, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
 local timerBurningCataclysm					= mod:NewCastTimer(8, 306735, 138565, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
---Stage Two: Smoke and Mirrors
-local timerSmokeandMirrorsCD				= mod:NewNextTimer(155, 306995, nil, nil, nil, 6)
-
---local berserkTimer						= mod:NewBerserkTimer(600)
 
 mod:AddRangeFrameOption(6, 306289)
+--Stage Two: Smoke and Mirrors
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20635))
+local warnSpawnAdds							= mod:NewSpellAnnounce(312389, 2)
+local warnScales							= mod:NewSpellAnnounce(308682, 2)
+local warnBurningMadness					= mod:NewTargetNoFilterAnnounce(307013, 1)
+local warnSap								= mod:NewTargetNoFilterAnnounce(314347, 3, nil, false)--off by default, assumed it'll be spammy
+
+local timerSmokeandMirrorsCD				= mod:NewNextTimer(155, 306995, nil, nil, nil, 6)
+
 mod:AddInfoFrameOption(307013, true)
 mod:AddSetIconOption("SetIconBurningMadness", 307013, true, false, {1, 2, 3})
 mod:AddNamePlateOption("NPAuraOnHardenedCore", 313175)

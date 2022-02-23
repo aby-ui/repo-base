@@ -54,6 +54,8 @@ local L = WeakAuras.L
 	L["A 48x48 pixels icon"] = "48x48像素图标"
 	L["A 64x64 pixels icon"] = "64x64像素图标"
 	L["A group that dynamically controls the positioning of its children"] = "动态控制子项目位置的群组"
+	L[ [=[A timer will automatically be displayed according to default Interface Settings (overridden by some addons).
+Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=] ] = "冷却文本会根据原生界面设置（可能被某些插件改动）自动显示。当你想隐藏冷却文本时，或者使用WeakAuras文本替代冷却文本时，启用此设置。"
 	L["A Unit ID (e.g., party1)."] = "单位 ID（如 party1）。"
 	L["Actions"] = "动作"
 	L["Add"] = "添加"
@@ -156,6 +158,10 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Browse Wago, the largest collection of auras."] = "浏览Wago，最大的光环集合网站。"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或单位 ID（例如 party1），只有在队伍中的友方玩家名字是有效的。"
 	L["Can be a UID (e.g., party1)."] = "可以是单位 ID（例如：party1）。"
+	--[[Translation missing --]]
+	L["Can set to 0 if Columns * Width equal File Width"] = "Can set to 0 if Columns * Width equal File Width"
+	--[[Translation missing --]]
+	L["Can set to 0 if Rows * Height equal File Height"] = "Can set to 0 if Rows * Height equal File Height"
 	L["Cancel"] = "取消"
 	L["Cast by Player Character"] = "玩家角色施放"
 	L["Cast by Players"] = "玩家施放"
@@ -194,9 +200,6 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "同时控制多个图示的位置和设定"
 	L["Convert to New Aura Trigger"] = "转换为新的光环触发器"
 	L["Convert to..."] = "转换为..."
-	L["Cooldown Edge"] = "冷却边缘"
-	L["Cooldown Settings"] = "冷却设置"
-	L["Cooldown Swipe"] = "冷却旋转动画"
 	L["Copy"] = "拷贝"
 	L["Copy settings..."] = "拷贝设置"
 	L["Copy to all auras"] = "拷贝至所有的光环"
@@ -209,12 +212,10 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Crop Y"] = "裁剪Y"
 	L["Custom"] = "自定义"
 	L["Custom Anchor"] = "自定义锚点"
-	L["Custom Background"] = "自定义背景"
 	L["Custom Check"] = "自定义检查"
 	L["Custom Code"] = "自定义代码"
 	L["Custom Color"] = "自定义颜色"
 	L["Custom Configuration"] = "自定义设置"
-	L["Custom Foreground"] = "自定义前景"
 	L["Custom Frames"] = "自定义框架"
 	L["Custom Function"] = "自定义函数"
 	L["Custom Grow"] = "自定义生长"
@@ -284,6 +285,10 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["eliding"] = "省略"
 	L["Else If"] = "否则如果"
 	L["Else If Trigger %s"] = "否则如果触发器%s"
+	L["Enable \"Edge\" part of the overlay"] = "显示覆盖层的\"边缘\""
+	L["Enable \"swipe\" part of the overlay"] = "启用覆盖层的\"刷\""
+	L["Enable Swipe"] = "启用冷却刷"
+	L["Enable the \"Swipe\" radial overlay"] = "启用冷却刷覆盖层"
 	L["Enabled"] = "启用"
 	L["End Angle"] = "结束角度"
 	L["End of %s"] = "%s 的结尾"
@@ -319,6 +324,10 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "后备图标"
 	L["False"] = "假"
 	L["Fetch Affected/Unaffected Names"] = "获取受影响的/未受影响的名称"
+	--[[Translation missing --]]
+	L["File Height"] = "File Height"
+	--[[Translation missing --]]
+	L["File Width"] = "File Width"
 	L["Filter by Arena Spec"] = "根据竞技场专精过滤"
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
@@ -341,9 +350,13 @@ Supports multiple entries, separated by commas
 	L["Found a Bug?"] = "发现了故障？"
 	L["Frame"] = "框体"
 	L["Frame Count"] = "帧数"
+	--[[Translation missing --]]
+	L["Frame Height"] = "Frame Height"
 	L["Frame Rate"] = "帧率"
 	L["Frame Selector"] = "选择框体"
 	L["Frame Strata"] = "框架层级"
+	--[[Translation missing --]]
+	L["Frame Width"] = "Frame Width"
 	L["Frequency"] = "频率"
 	L["From Template"] = "从模板"
 	L["Full Circle"] = "完整圆形"
@@ -360,6 +373,15 @@ Supports multiple entries, separated by commas
 	L["Grid direction"] = "表格方向"
 	L["Group"] = "组"
 	L["Group (verb)"] = "加入组"
+	L[ [=[Group and anchor each auras by frame.
+
+- Nameplates: attach to nameplates per unit.
+- Unit Frames: attach to unit frame buttons per unit.
+- Custom Frames: choose which frame each region should be anchored to.]=] ] = [=[根据框体分组与锚定每个光环。
+
+- 姓名版：锚定到每个单位的姓名版
+- 单位框架：锚定到每个单位的单位框体
+- 自定义框架：每个光环选择需要锚定到的框体]=]
 	L["Group aura count description"] = [=[所输入的队伍或团队成员的数量必须给定一个或多个光环作为显示触发的条件。
 如果输入的数字是一个整数（如5），受影响的团队成员数量将与输入的数字相同。
 如果输入的数字是一个小数（如0.5），分数（例如1/2），或百分比（例如50%%），那么多比例的队伍或团队成员的必须受到影响。
@@ -385,10 +407,12 @@ Supports multiple entries, separated by commas
 	L["Height"] = "高度"
 	L["Help"] = "帮助"
 	L["Hide"] = "隐藏"
-	L["Hide Cooldown Text"] = "隐藏冷却文本"
+	--[[Translation missing --]]
+	L["Hide Background"] = "Hide Background"
 	L["Hide Glows applied by this aura"] = "隐藏由此光环应用的发光"
 	L["Hide on"] = "隐藏于"
 	L["Hide this group's children"] = "隐藏此组的子项目"
+	L["Hide Timer Text"] = "隐藏冷却文本"
 	L["Hide When Not In Group"] = "不在队伍时隐藏"
 	L["Horizontal Align"] = "水平对齐"
 	L["Horizontal Bar"] = "水平条"
@@ -437,6 +461,7 @@ Supports multiple entries, separated by commas
 	L["Invalid type for property '%s' in '%s'. Expected '%s'"] = "'%2$s'的属性'%1$s'类型非法，需要'%3$s'"
 	L["Inverse"] = "反向"
 	L["Inverse Slant"] = "反向倾斜"
+	L["Invert the direction of progress"] = "颠倒刷旋转方向"
 	L["Is Boss Debuff"] = "首领施放的减益效果"
 	L["Is Stealable"] = "可偷取"
 	L["Justify"] = "对齐"
@@ -490,6 +515,8 @@ Supports multiple entries, separated by commas
 任何相匹配的值的值可以提取]=]
 	L["Multiselect single tooltip"] = [=[|cFFFF0000忽略|r - |cFF777777单个|r - |cFF777777多个|r
 只有一个单一的匹配值可以提取]=]
+	--[[Translation missing --]]
+	L["Must be a power of 2"] = "Must be a power of 2"
 	L["Name Info"] = "名称讯息"
 	L["Name Pattern Match"] = "名称规则匹配"
 	L["Name(s)"] = "名称"
@@ -555,7 +582,6 @@ Supports multiple entries, separated by commas
 	L["Press Ctrl+C to copy"] = "按 Ctrl+C 复制"
 	L["Press Ctrl+C to copy the URL"] = "按 Ctrl+C 复制 URL"
 	L["Prevent Merging"] = "阻止合并"
-	L["Processed %i chars"] = "已处理%i个字符"
 	L["Progress Bar"] = "进度条"
 	L["Progress Bar Settings"] = "进度条设置"
 	L["Progress Texture"] = "进度条材质"
@@ -596,9 +622,13 @@ Supports multiple entries, separated by commas
 	L["Row Width"] = "列宽度"
 	L["Rows"] = "行"
 	L["Same"] = "相同"
+	--[[Translation missing --]]
+	L["Same texture as Foreground"] = "Same texture as Foreground"
 	L["Scale"] = "缩放"
 	L["Search"] = "搜索"
 	L["Select the auras you always want to be listed first"] = "选择优先列出的光环"
+	--[[Translation missing --]]
+	L["Selected Frame"] = "Selected Frame"
 	L["Send To"] = "发送给"
 	L["Separator Text"] = "分隔符文本"
 	L["Separator text"] = "分隔符文本"
@@ -610,9 +640,10 @@ Supports multiple entries, separated by commas
 	L["Shadow X Offset"] = "阴影 X 轴偏移"
 	L["Shadow Y Offset"] = "阴影 Y 轴偏移"
 	L["Shift-click to create chat link"] = "按住 Shift 点击来生成聊天链接"
+	L["Show \"Edge\""] = "显示\"边缘\""
+	L["Show \"Swipe\""] = "显示\"刷\""
 	L["Show all matches (Auto-clone)"] = "列出所有符合的(自动复制)"
 	L["Show Border"] = "显示边框"
-	L["Show Cooldown"] = "显示冷却"
 	L["Show Glow"] = "显示发光效果"
 	L["Show Icon"] = "显示图标"
 	L["Show If Unit Does Not Exist"] = "当单位不存在时显示"
@@ -680,6 +711,7 @@ Supports multiple entries, separated by commas
 	L["Stop Sound"] = "停止播放声音"
 	L["Sub Elements"] = "子元素"
 	L["Sub Option %i"] = "子选项 %i"
+	L["Swipe Overlay Settings"] = "冷却刷覆盖层设置"
 	L["Temporary Group"] = "临时组"
 	L["Text"] = "文字"
 	L["Text %s"] = "文本 %s"

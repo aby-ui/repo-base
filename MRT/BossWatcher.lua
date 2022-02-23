@@ -2778,10 +2778,27 @@ function BWInterfaceFrameLoad()
 					mobSpawnID1 = tonumber(spawnID:sub(1,5), 16) or 0
 					mobSpawnID2 = tonumber(spawnID:sub(6,8), 16) or 0
 					mobSpawnID3 = tonumber(spawnID:sub(9), 16) or 0
+
+					local unitType,_,serverID,instanceID,zoneUID,id,spawnID = strsplit("-", GUID or "")
+					if id and unitType == "Creature" or unitType == "Vehicle" then
+						--local spawnEpoch = GetServerTime() - (GetServerTime() % 2^23)
+						local spawnEpochOffset = bit.band(tonumber(string.sub(spawnID, 5), 16), 0x7fffff)
+						local spawnIndex = bit.rshift(bit.band(tonumber(string.sub(spawnID, 1, 5), 16), 0xffff8), 3)
+						--local spawnTime = spawnEpoch + spawnEpochOffset
+						
+						--if spawnTime > GetServerTime() then
+						--	spawnTime = spawnTime - ((2^23) - 1)
+						--end
+						
+						--mobSpawnID2 = format("%X",spawnEpochOffset)
+						mobSpawnID2 = spawnEpochOffset
+						mobSpawnID3 = spawnIndex
+					end
 				end
 				if mobSpawnID then
 					--return format(patt,tostring(mobSpawnID)..", "..mobSpawnID2.."-"..mobSpawnID1)
-					return format(patt,mobSpawnID2.."-"..mobSpawnID3.."-"..mobSpawnID1)
+					--return format(patt,mobSpawnID2.."-"..mobSpawnID3.."-"..mobSpawnID1)
+					return format(patt,mobSpawnID2..":"..mobSpawnID3)
 				else
 					return format(patt,GUID)
 				end
@@ -6572,8 +6589,27 @@ function BWInterfaceFrameLoad()
 				mobSpawnID4 = tonumber(string.reverse(copyStr), 16) or 0
 			end
 		end
+
+
 		textResult = textResult .. "Mob ID: ".. mobID .. "\n"
-		textResult = textResult .. "Spawn ID: ".. mobSpawnID1 .. "-" .. mobSpawnID2 .." ("..mobSpawnID3..", "..mobSpawnID4..")".. "\n"
+
+		local unitType,_,serverID,instanceID,zoneUID,id,spawnID = strsplit("-", destGUID or "")
+		if id and unitType == "Creature" or unitType == "Vehicle" then
+			local spawnEpoch = GetServerTime() - (GetServerTime() % 2^23)
+			local spawnEpochOffset = bit.band(tonumber(string.sub(spawnID, 5), 16), 0x7fffff)
+			local spawnIndex = bit.rshift(bit.band(tonumber(string.sub(spawnID, 1, 5), 16), 0xffff8), 3)
+			local spawnTime = spawnEpoch + spawnEpochOffset
+			
+			if spawnTime > GetServerTime() then
+				spawnTime = spawnTime - ((2^23) - 1)
+			end
+			
+			textResult = textResult .. "Spawned at: ".. date("%d-%m-%Y %H:%M:%S", spawnTime) .. "\n"
+			textResult = textResult .. "Spawn index: ".. spawnIndex .. "\n"
+		else
+			textResult = textResult .. "Spawn ID: ".. mobSpawnID1 .. "-" .. mobSpawnID2 .." ("..mobSpawnID3..", "..mobSpawnID4..")".. "\n"
+		end
+
 		textResult = textResult .. "GUID: ".. destGUID .. "\n"
 		reportData[4][3][#reportData[4][3]+1] = "Mob ID: ".. mobID
 		reportData[4][3][#reportData[4][3]+1] = "Spawn ID: ".. mobSpawnID1 .. "-" .. mobSpawnID2
@@ -6581,7 +6617,7 @@ function BWInterfaceFrameLoad()
 
 		if CurrentFight.maxHP[destGUID] then
 			textResult = textResult .. "Max Health: ".. CurrentFight.maxHP[destGUID] .. "\n"
-			reportData[4][3][#reportData[4][3]+1] = "Max Health:: ".. CurrentFight.maxHP[destGUID]
+			reportData[4][3][#reportData[4][3]+1] = "Max Health: ".. CurrentFight.maxHP[destGUID]
 		end
 
 		mobsTab.infoBoxText:SetText(textResult)

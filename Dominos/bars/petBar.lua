@@ -34,9 +34,22 @@ function PetBar:GetDisplayName()
     return L.PetBarDisplayName
 end
 
+function PetBar:IsOverrideBar()
+    -- TODO: make overrideBar a property of the bar itself instead of a global
+    -- setting
+    return Addon.db.profile.possessBar == self.id
+end
+
+function PetBar:UpdateOverrideBar()
+    self:UpdateDisplayConditions()
+end
+
 if Addon:IsBuild('bcc', 'classic') then
     function PetBar:GetDisplayConditions()
-        return '[pet]show;hide'
+        if self:IsOverrideBar() then
+            return '[@pet,exists][bonusbar:5]show;hide'
+        end
+        return '[@pet,exists,nobonusbar:5]show;hide'
     end
 else
     function PetBar:GetDisplayConditions()

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "mythic,challenge"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217011830")
 mod:SetCreatureID(114895)
 mod:SetEncounterID(2031)
 mod:SetUsedIcons(1)
@@ -32,7 +32,7 @@ local warnPhase2					= mod:NewPhaseAnnounce(2, 2)
 local warnPhase3					= mod:NewPhaseAnnounce(3, 2)
 
 local specWarnReverbShadows			= mod:NewSpecialWarningInterruptCount(229307, "HasInterrupt", nil, nil, 1, 3)
-local specWarnCharredEarth			= mod:NewSpecialWarningMove(228808, nil, nil, nil, 1, 2)
+local specWarnCharredEarth			= mod:NewSpecialWarningGTFO(228808, nil, nil, nil, 1, 8)
 local specWarnIgniteSoul			= mod:NewSpecialWarningMoveTo(228796, nil, nil, nil, 3, 2)
 local yellIgniteSoul				= mod:NewShortFadesYell(228796)
 local specWarnFear					= mod:NewSpecialWarningSpell(228837, nil, nil, nil, 2, 2)
@@ -145,7 +145,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 228808 and destGUID == UnitGUID("player") and not DBM:UnitDebuff("player", filteredDebuff) and self:AntiSpam(2, 1) then
 		specWarnCharredEarth:Show()
-		specWarnCharredEarth:Play("runaway")
+		specWarnCharredEarth:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

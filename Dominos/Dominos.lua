@@ -202,7 +202,7 @@ end
 function Addon:GetDatabaseDefaults()
     return {
         profile = {
-            possessBar = 1,
+            possessBar = self:IsBuild('retail') and 1 or "pet",
             -- if true, applies a default dominos skin to buttons
             -- when masque is not enabled
             applyButtonTheme = true,
@@ -214,7 +214,7 @@ function Addon:GetDatabaseDefaults()
             showEquippedItemBorders = true,
             showTooltips = true,
             showTooltipsCombat = true,
-            useOverrideUI = not self:IsBuild('classic'),
+            useOverrideUI = self:IsBuild('retail'),
 
             minimap = {minimapPos = 10, hide = false},
 
@@ -606,7 +606,7 @@ function Addon:SetUseOverrideUI(enable)
 end
 
 function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI and not self:IsBuild('classic')
+    return self.db.profile.useOverrideUI and self:IsBuild('retail')
 end
 
 function Addon:UpdateUseOverrideUI()

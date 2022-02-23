@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2349, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220214214851")
 mod:SetCreatureID(150859)
 mod:SetEncounterID(2293)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -32,35 +32,58 @@ mod:RegisterEventsInCombat(
  or (ability.id = 300584 or ability.id = 293509 or ability.id = 296084) and type = "applydebuff"
  or ability.id = 292963 or ability.id = 302503 or ability.id = 296018 or ability.id = 302504
 --]]
+--General
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnDiscipleofNzoth				= mod:NewTargetNoFilterAnnounce(292981, 4)
---Stage One: The Herald
+
+local specWarnHysteria					= mod:NewSpecialWarningStack(292971, nil, 15, nil, nil, 1, 6)
+
+local berserkTimer						= mod:NewBerserkTimer(600)
+
+mod:AddInfoFrameOption(292971, true)
+--Stage One: The Harbinger
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(19983))
 local warnMindTether					= mod:NewTargetSourceAnnounce(295444, 3)
 local warnSnapped						= mod:NewTargetNoFilterAnnounce(300133, 4, nil, "Tank|Healer")
 local warnUnleashedNightmare			= mod:NewSpellAnnounce("ej20289", 3, 300732)
 local warnDread							= mod:NewTargetNoFilterAnnounce(292963, 3, nil, "Healer")
---Stage Two: Grip of Fear
-local warnPunctureDarkness				= mod:NewTargetNoFilterAnnounce(295099, 1)
---Stage Three: Delirium's Descent
-local warnDeliriumsDescent				= mod:NewCountAnnounce(304733, 3)
---Stage Four: All Pathways Open
-local warnDreadScream					= mod:NewTargetNoFilterAnnounce(303543, 3, nil, "Healer")--Mythic
-local warnManicDread					= mod:NewTargetNoFilterAnnounce(296018, 3, nil, "Healer")
 
-local specWarnHysteria					= mod:NewSpecialWarningStack(292971, nil, 15, nil, nil, 1, 6)
---Stage One: The Herald
 local specWarnHorrificSummoner			= mod:NewSpecialWarningSwitch("ej20172", "-Healer", nil, nil, 1, 2)
 local specWarnCrushingGrasp				= mod:NewSpecialWarningDodge(292565, nil, nil, nil, 2, 2)
 local yellDread							= mod:NewPosYell(292963)
 local yellDreadFades					= mod:NewIconFadesYell(292963)
+
+local timerHorrificSummonerCD			= mod:NewCDTimer(80.1, "ej20172", nil, nil, nil, 1, 294515, DBM_COMMON_L.DAMAGE_ICON)
+local timerCrushingGraspCD				= mod:NewCDTimer(31.4, 292565, nil, nil, nil, 3)
+local timerDreadCD						= mod:NewCDTimer(75.4, 292963, nil, "Healer", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)--One dread timer used for all versions (cast by boss)
+local timerMindTetherCD					= mod:NewCDTimer(47.8, 295444, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--52.3
+
+mod:AddSetIconOption("SetIconDread", 292963, true, false, {1, 2, 3, 4})
 --Stage Two: Grip of Fear
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(19979))
+local warnPunctureDarkness				= mod:NewTargetNoFilterAnnounce(295099, 1)
+
 local specWarnManifedNightmares			= mod:NewSpecialWarningYou(293509, nil, nil, nil, 1, 2)
 local yellManifedNightmares				= mod:NewYell(293509)
 local yellManifedNightmaresFades		= mod:NewShortFadesYell(293509)
 local specWarnMaddeningEruption			= mod:NewSpecialWarningMoveTo(292996, "Tank", nil, nil, 1, 2)
+
+local timerManifestNightmaresCD			= mod:NewCDTimer(35, 293509, nil, nil, nil, 3)
+local timerMaddeningEruptionCD			= mod:NewCDTimer(65.1, 292996, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerPuncturedDarkness			= mod:NewNextTimer(25, 295099, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
+local timerPuncturedDarknessActive		= mod:NewBuffActiveTimer(20, 295099, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Stage Three: Delirium's Descent
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(19980))
+local warnDeliriumsDescent				= mod:NewCountAnnounce(304733, 3)
+
 local specWarShatteredPsyche			= mod:NewSpecialWarningDispel(295327, "Healer", nil, 3, 1, 2)
+
+local timerDeliriumsDescentCD			= mod:NewCDTimer(35, 304733, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
 --Stage Four: All Pathways Open
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(19981))
+local warnDreadScream					= mod:NewTargetNoFilterAnnounce(303543, 3, nil, "Healer")--Mythic
+local warnManicDread					= mod:NewTargetNoFilterAnnounce(296018, 3, nil, "Healer")
+
 local specWarnDarkPulse					= mod:NewSpecialWarningSwitch(303978, "-Healer", nil, nil, 1, 2)
 local specWarnPsychoticSplit			= mod:NewSpecialWarningSwitch(301068, "-Healer", nil, nil, 1, 2, 4)--Mythic
 local yellDreadScream					= mod:NewPosYell(303543)
@@ -69,22 +92,6 @@ local specWarnVoidSlam					= mod:NewSpecialWarningDodge(302593, nil, nil, nil, 2
 local yellManicDread					= mod:NewPosYell(296018)
 local yellManicDreadFades				= mod:NewIconFadesYell(296018)
 
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
-
---mod:AddTimerLine(BOSS)
---Stage One: The Herald
-local timerHorrificSummonerCD			= mod:NewCDTimer(80.1, "ej20172", nil, nil, nil, 1, 294515, DBM_COMMON_L.DAMAGE_ICON)
-local timerCrushingGraspCD				= mod:NewCDTimer(31.4, 292565, nil, nil, nil, 3)
-local timerDreadCD						= mod:NewCDTimer(75.4, 292963, nil, "Healer", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)--One dread timer used for all versions (cast by boss)
-local timerMindTetherCD					= mod:NewCDTimer(47.8, 295444, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--52.3
---Stage Two: Grip of Fear
-local timerManifestNightmaresCD			= mod:NewCDTimer(35, 293509, nil, nil, nil, 3)
-local timerMaddeningEruptionCD			= mod:NewCDTimer(66.4, 292996, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerPuncturedDarkness			= mod:NewNextTimer(25, 295099, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerPuncturedDarknessActive		= mod:NewBuffActiveTimer(20, 295099, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
---Stage Three: Delirium's Descent
-local timerDeliriumsDescentCD			= mod:NewCDTimer(35, 304733, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
---Stage Four: All Pathways Open
 local timerDarkPulseCD					= mod:NewCDTimer(93.5, 303978, nil, nil, nil, 6, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerManicDreadCD					= mod:NewCDTimer(75.4, 296018, nil, "Healer", nil, 5, nil, DBM_COMMON_L.MAGIC_ICON)--75-83
 ----Mythic
@@ -93,10 +100,6 @@ local timerPsychoticSplit				= mod:NewCastTimer(25, 301068, nil, nil, nil, 5, ni
 local timerDreadScreamCD				= mod:NewCDTimer(8.5, 303543, nil, "Healer", nil, 5, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.MAGIC_ICON)--Mythic
 local timerVoidSlam						= mod:NewCastTimer(4.1, 302593, nil, nil, nil, 3)--Mythic
 
-local berserkTimer						= mod:NewBerserkTimer(600)
-
-mod:AddInfoFrameOption(292971, true)
-mod:AddSetIconOption("SetIconDread", 292963, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconDreadScream", 303543, true, false, {1, 2, 3, 4})
 mod:AddSetIconOption("SetIconManicDreadScream", 296018, true, false, {1, 2, 3, 4})
 

@@ -99,6 +99,10 @@ function Details:GetPlayerObjectFromBreakdownWindow()
 	return info.jogador
 end
 
+function Details:GetBreakdownWindow()
+	return Details.playerDetailWindow
+end
+
 --english alias
 --window object from Details:GetWindow(n) and playerObject from Details:GetPlayer(playerName, attribute)
 function Details:OpenPlayerBreakdown (windowObject, playerObject)
@@ -338,7 +342,9 @@ function _detalhes:AbreJanelaInfo (jogador, from_att_change, refresh, ShiftKeyDo
 		end
 	end
 
-	shownTab:Click()
+	if (shownTab) then
+		shownTab:Click()
+	end
 end
 
 -- for beta todo: info background need a major rewrite

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2130, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(131383)
 mod:SetEncounterID(2112)
 
@@ -30,7 +30,7 @@ local timerFesteringHarvestCD		= mod:NewCDTimer(51, 259732, nil, nil, nil, 2, ni
 --local timerBoundlessRotCD			= mod:NewCDTimer(13, 259830, nil, nil, nil, 3)
 local timerVolatilePodsCD			= mod:NewCDTimer(27.5, 273271, nil, nil, nil, 3)
 local timerShockwaveCD				= mod:NewCDTimer(14.6, 272457, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerUpheavalCD				= mod:NewCDTimer(20, 259718, nil, nil, nil, 3)
+local timerUpheavalCD				= mod:NewCDTimer(15.8, 259718, nil, nil, nil, 3)--15.8-20
 
 function mod:OnCombatStart(delay)
 	--timerBoundlessRotCD:Start(1-delay)
@@ -90,7 +90,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		--timerBoundlessRotCD:Start()
 	elseif spellId == 259718 and self:AntiSpam(3, 1) then
 		timerUpheavalCD:Start(20.6)
-	elseif spellId == 259732 and DBM.Options.DebugMode then
+	elseif spellId == 259732 then
 		timerUpheavalCD:Start(10.5)
 		if not self:IsNormal() then
 			timerVolatilePodsCD:Start(12)

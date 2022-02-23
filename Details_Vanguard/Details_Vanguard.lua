@@ -979,8 +979,8 @@ local build_options_panel = function()
 			min = 10,
 			max = 50,
 			step = 1,
-			--desc = "Inc Damage Heigth",
-			name = "Incoming Damage Heigth",
+			--desc = "Inc Damage Height",
+			name = "Incoming Damage Height",
 		},
 		{type = "blank"},
 

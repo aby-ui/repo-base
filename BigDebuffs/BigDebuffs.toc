@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: BigDebuffs
 ## Notes: Increases the debuff size of crowd control effects on the Blizzard raid frames
 ## Version: v10.7

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220127091750")
 mod:SetCreatureID(102431)
 mod:SetEncounterID(1855)
 
@@ -23,7 +23,7 @@ local warnMindControlled			= mod:NewTargetAnnounce(202804, 4)
 local warnCallBlood					= mod:NewSpellAnnounce(203381, 2)
 
 local specWarnEssenceoftheBloodQueen= mod:NewSpecialWarningYou(202779)
-local specWarnBloodthirst			= mod:NewSpecialWarningYou(202792, nil, nil, nil, 3)
+local specWarnBloodthirst			= mod:NewSpecialWarningYou(202792, nil, nil, nil, 3, 12)
 local yellBloodThirst				= mod:NewShortFadesYell(202792)
 
 local timerHunger					= mod:NewBuffFadesTimer(20, 202792, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
@@ -54,6 +54,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 202792 then
 		if args:IsPlayer() then
 			specWarnBloodthirst:Show()
+			specWarnBloodthirst:Play("bitenow")
 			timerHunger:Start()
 			yellBloodThirst:Schedule(9, 1)
 			yellBloodThirst:Schedule(8, 2)

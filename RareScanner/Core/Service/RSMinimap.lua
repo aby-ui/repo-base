@@ -307,32 +307,15 @@ function RSMinimap.AddGuide(entityID)
 		return
 	end
 	
-	-- Gets the information of the entity
-	local isNpc = false
-	local isContainer = false
-	local isEvent = false
-	if (RSNpcDB.GetInternalNpcInfo(entityID)) then
-		isNpc = true
-	elseif (RSContainerDB.GetInternalContainerInfo(entityID)) then
-		isContainer = true
-	elseif (RSEventDB.GetInternalEventInfo(entityID)) then
-		isEvent = true
-	end
-	
-	-- Check if the entity belongs to that map
-	if ((isNpc and not RSNpcDB.IsInternalNpcInMap(entityID, mapID)) or (isContainer and not RSContainerDB.IsInternalContainerInMap(entityID, mapID)) or (isEvent and not RSEventDB.IsInternalEventInMap(entityID, mapID))) then
-		return
-	end
-	
 	-- Initializes the pool
 	if (not guideFramesPool) then
 		guideFramesPool = CreateFramePool("FRAME", Minimap, "RSMinimapPinTemplate");
 	end
 
 	local guide = nil
-	if (isNpc) then
+	if (RSNpcDB.GetInternalNpcInfo(entityID)) then
 		guide = RSGuideDB.GetNpcGuide(entityID, mapID)
-	elseif (isContainer) then
+	elseif (RSContainerDB.GetInternalContainerInfo(entityID)) then
 		guide = RSGuideDB.GetContainerGuide(entityID, mapID)
 	else
 		guide = RSGuideDB.GetEventGuide(entityID, mapID)

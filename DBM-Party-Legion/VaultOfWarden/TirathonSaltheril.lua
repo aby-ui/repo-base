@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1467, "DBM-Party-Legion", 10, 707)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217011830")
 mod:SetCreatureID(95885)
 mod:SetEncounterID(1815)
 mod:DisableESCombatDetection()--Remove if blizz fixes trash firing ENCOUNTER_START
@@ -26,7 +26,7 @@ mod:RegisterEventsInCombat(
 local specWarnDarkStrikes			= mod:NewSpecialWarningDefensive(204151, "Tank", nil, nil, 3, 2)
 local specWarnFuriousBlast			= mod:NewSpecialWarningInterrupt(191823, "HasInterrupt", nil, nil, 1, 2)
 local specWarnFelMortar				= mod:NewSpecialWarningDodge(202913, nil, nil, nil, 2, 2)
-local specWarnFelMortarGTFO			= mod:NewSpecialWarningMove(202919, nil, nil, nil, 1, 2)
+local specWarnFelMortarGTFO			= mod:NewSpecialWarningGTFO(202919, nil, nil, nil, 1, 8)
 
 local timerDarkStrikes				= mod:NewBuffActiveTimer(11, 191941, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--tooltip says 15 but every log was 10-11
 
@@ -67,7 +67,7 @@ do
 	function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 		if spellId == 202919 and destGUID == playerGUID and self:AntiSpam(2, 2) then
 			specWarnFelMortarGTFO:Show()
-			specWarnFelMortarGTFO:Play("runaway")
+			specWarnFelMortarGTFO:Play("watchfeet")
 		end
 	end
 	mod.SPELL_MISSED = mod.SPELL_DAMAGE

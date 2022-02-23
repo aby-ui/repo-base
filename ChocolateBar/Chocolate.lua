@@ -37,7 +37,7 @@ local function resizeFrame(self)
 	else
 		width = width + textWidth
 	end
-	
+
 	self:SetWidth(width)
 	if self.bar then self.bar:UpdateCenter() end
 end
@@ -87,7 +87,7 @@ local function LabelUpdater(frame, value)
 	if frame.settings.showLabel then
 		local delimiter = frame.settings.showText and ":" or ""
 		frame.labelText = string.format("|c%s%s%s|r ", tableToHex(db.labelColor), getLabelFromObjOrSettings(frame, value), delimiter)
-	else 
+	else
 		frame.labelText = ""
 	end
 
@@ -96,7 +96,7 @@ end
 
 local function SettingsUpdater(self, value)
 	local settings = self.settings
-	
+
 	if not settings.showText and not settings.showLabel then
 		self.text:Hide()
 	else
@@ -125,7 +125,7 @@ local function SettingsUpdater(self, value)
 	else -- no icon
 		self.text:SetPoint("LEFT", self, 0, 0)
 	end
-	
+
 	LabelUpdater(self, self.obj.label)
 	resizeFrame(self)
 end
@@ -162,6 +162,10 @@ local function CreateIcon(self, icon)
 	self.icon = iconTex
 end
 
+local function tooltipDisabled(obj)
+	return obj.settings.disableTooltip and not IsModifierKeyDown()
+end
+
 -- updaters code taken with permission from fortress
 local updaters = {
 	text = TextUpdater,
@@ -189,10 +193,13 @@ local updaters = {
 	-- tooltiptext is no longer in the data spec, but
 	-- I'll continue to support it, as some plugins seem to use it
 	tooltiptext = function(frame, value, name)
+		ChocolateBar.Debug("tooltiptext", name)
 		local object = frame.obj
-		local tt = object.tooltip or GameTooltip
-		if tt:GetOwner() == frame then
-			tt:SetText(object.tooltiptext)
+		if not tooltipDisabled(object) then
+			local tt = object.tooltip or GameTooltip
+			if tt:GetOwner() == frame then
+				tt:SetText(object.tooltiptext)
+			end
 		end
 	end,
 
@@ -249,6 +256,8 @@ local function OnEnter(self)
 	end
 
 	if db.combathidetip and ChocolateBar.InCombat then return end
+
+	if tooltipDisabled(self) then return end
 
 	if obj.tooltip then
 		PrepareTooltip(obj.tooltip, self)
@@ -426,7 +435,7 @@ function ChocolatePiece:New(name, obj, settings, database)
 	chocolate:SetScript("OnDragStart", OnDragStart)
 	chocolate:SetScript("OnDragStop", OnDragStop)
 	SettingsUpdater(chocolate, settings.showText)
-	LabelUpdater(chocolate, obj.label)	
+	LabelUpdater(chocolate, obj.label)
 	return chocolate
 end
 

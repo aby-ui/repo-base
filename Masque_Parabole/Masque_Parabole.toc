@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Masque_Parabole
 ## Notes: Parabole skin for Masque
 ## Author: Kelly Crabbé AKA MoonWitch

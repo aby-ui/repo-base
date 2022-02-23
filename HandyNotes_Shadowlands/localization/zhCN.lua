@@ -307,14 +307,14 @@ L['mawsworn_cache_note'] = '这3个独立宝箱每个都可以出现在特定位
 L['pile_of_bones'] = '骨堆'
 L['relic_cache'] = '圣物宝箱'
 L['shardhide_stash'] = '碎皮贮藏'
-L['korthia_shared_chest_note'] = '你可以每天收集5个宝箱收集圣物，额外的宝箱可能包含传奇水晶和装备绑定装备代币。'
+L['korthia_shared_chest_note'] = '可以拾取5次获得圣物。进度每30分钟重置，使它们有效地不受限制。'
 L['unusual_nest'] = '异常材料之巢'
 L['unusual_nest_note'] = '全部5个巢每天都可以拾取。'
 
 L['options_icons_invasive_mawshroom_desc'] = '显示入侵的渊菇的位置。'
 L['options_icons_invasive_mawshroom'] = '入侵的渊菇'
-L['options_icons_korthia_dailies_desc'] = '显示未标记日常宝箱的位置。'
-L['options_icons_korthia_dailies'] = '隐藏宝箱'
+L['options_icons_korthia_dailies_desc'] = '显示未标记圣物宝箱的位置。'
+L['options_icons_korthia_dailies'] = '圣物宝箱'
 L['options_icons_mawsworn_cache_desc'] = '显示渊誓之箱的位置。'
 L['options_icons_mawsworn_cache'] = '渊誓之箱'
 L['options_icons_nest_materials_desc'] = '显示异常材料之巢的位置。'
@@ -671,3 +671,140 @@ L['tormentors_note'] = [[
 
 {item:185972} 每周只可以拾取一次，其中包含50个 {currency:1906}。
 ]]
+
+-------------------------------------------------------------------------------
+-------------------------------- ZERETH MORTIS --------------------------------
+-------------------------------------------------------------------------------
+
+L['corrupted_architect_note'] = '攻击 {npc:183958} 和 {npc:183961} 激活稀有。'
+L['dune_dominance_note'] = '{achievement:15392} 成就中全部3个稀有精英在此位置刷新。'
+L['feasting_note'] = '有时会在返回该地点之前巡逻该区域。'
+L['furidian_note'] = '激活区域内三个 |cFFFFFD00Empowered Keys|r，然后解锁 |cFFFFFD00Suspiciously Angry Vault|r。'
+L['garudeon_note'] = '从周围地区收集 {npc:183562} 并使用 {spell:362655} 喂食给 {npc:183554}。三个吃饱后，{npc:180924} 将激活。'
+L['gluttonous_overgrowth_note'] = '摧毁周围全部 {npc:184048} 激活此稀有。'
+L['hirukon_note'] = [[
+引诱 {npc:180978} 到地面，需要制造一个 {item:187923}。
+
+1. 在周围水域钓一些 {item:187662}。
+
+2. 从赞加沼泽的盘牙水库 |cFFFFFD00刺鼻的团豚鱼群|r 内钓一个 {item:187915}。渔点在进入洞穴时的右侧。
+
+3. 纳沙塔尔的凯尔雅之墓飞行点附近的 |cFFFFFD00跳跳鱼群|r {item:187922} 内钓一个。
+
+4. 从烁光海床的纳舒拉平台（34.7, 75.0）二楼的平台拾取一个（非常隐蔽）{item:187916}。
+
+5. Locate {npc:182194} 位于玛卓克萨斯的兵主之座的南边池塘。问她制作完成 {item:187923}。
+
+6. 使用 {item:187923}，可以让你看到 |cFFFFFD00元水母群|r 渔点在 {npc:180978} 附近15分钟。在此钓鱼召唤 {npc:180978} 到平台。
+]] -- Breaking my rule of no coords in the notes for this one
+L['protector_first_ones_note'] = '需要两名玩家。将匹配的符文带到每个控制台（在周围区域找到）来打开屏障。'
+L['the_engulfer_note'] = '保护 {npc:183505} 直到 {npc:183516} 从裂隙中跳出。'
+L['zatojin_note'] = '吸引附近的 {npc:183721} 并让他们获得20层 {spell:362976} 直到你有 {spell:362983}。当你瘫痪时必须站在 {npc:183774} 尸体上，{npc:183764} 会注意你。'
+
+L['architects_reserve_note'] = '完成位于朝圣者的恩典 {npc:180630} 的 {quest:64829} 任务线。之后一天，完成 {npc:181273} 的 {quest:65426} 任务线解锁宝藏。'
+L['bushel_of_produce_note'] = '击杀1个 {npc:182368} 到北边它会被 {spell:360945} 获得自身增益。击杀更多 {npc:182368} （无需增益）直到你获得5层，然后击破门获得宝藏。'
+L['crushed_crate_note'] = '从大球体向北的缩进拾取 {item:189767}。把它交给 {npc:185151} 换取 {item:189768} 可以打破坠落的岩石。'
+L['domination_cache_note'] = '区域内的 {npc:181403} 和 {npc:182426} 有低几率掉落 {item:189704}。'
+L['drowned_broker_supplies_note'] = '和 {npc:181059} 交谈控制附近的 {npc:185282}。'
+L['forgotten_protovault_note'] = '只在 {wq:呱了} 世界任务期间可用。'
+L['grateful_boon_note'] = 'Difficult to reach without flying; use {spell:300728} or {spell:111771} to ascend the mountain. Soothe all 12 creatures in the area and {npc:185293} will spawn the treasure.'
+L['library_vault_note'] = 'Click tablets in the Lexical Grotto until you find the correct {spell:362062} buff to open the vault.'
+L['mistaken_ovoid_note'] = 'Inside Dimensional Falls cavern, behind the balls.'
+L['ripened_protopear_note'] = 'Begin the {quest:64641} quest chain to gain access to the Blooming Foundry. Collect 5 {spell:367180} (green clouds) inside and bring them to the {npc:185416} to pollinate it.'
+L['sphere_treasure_note'] = 'Carefully jump up the spheres until you reach the treasure.'
+L['submerged_chest_note'] = 'Absorb the |cFFFFFD00Dangerous Orb of Power|r to the south, then interact with the |cFFFFFD00Forgotten Pump|r near the treasure.'
+L['symphonic_vault_note'] = 'Examine the {npc:183998} to hear a sequence of four sounds. Each {npc:183950} in the room plays a single sound. Interact with them in the matching order to unlock the treasure.'
+L['template_archive_note'] = 'Push the {npc:183339} in the room into the {npc:183337} blocking the path to the treasure.'
+L['undulating_foliage_note'] = [[
+Press the four {npc:185390s} to activate the teleporter in the center room of the Catalyst Wards.
+
+· Outside behind the |cFFFFFD00Catalyst Wards Lock|r
+· In the south-west room of the wards
+· In the southern room with {npc:181652}
+· In the south-east room of the wards
+]]
+
+L['prying_eye_discovery'] = 'Prying Eye Discovery'
+L['prying_eye_discovery_note'] = 'Easier to reach once flying is unlocked.'
+L['pulp_covered_relic'] = 'Pulp-Covered Relic'
+L['sandworn_chest'] = 'Sandworn Chest'
+L['sandworn_chest_note'] = 'Loot 5x {item:190198} from mobs in the area to construct the {item:190197}.'
+
+L['cache_avian_nest'] = nil
+L['cache_cypher_bound'] = nil
+L['cache_discarded_automa'] = nil
+L['cache_forgotten_vault'] = nil
+L['cache_mawsworn_supply'] = nil
+L['cache_tarachnid_eggs'] = nil
+
+L['cache_cantaric'] = nil
+L['cache_fugueal'] = nil
+L['cache_glissandian'] = nil
+L['cache_mezzonic'] = nil
+L['cache_toccatian'] = nil
+
+L['schematic_treasure_note'] = nil
+L['schematic_treasure_mount_note'] = nil
+L['schematic_treasure_pet_note'] = nil
+L['schematic_bronze_helicid_note'] = nil
+L['schematic_ambystan_darter_note'] = nil
+L['schematic_bronzewing_vespoid_note'] = nil
+L['schematic_buzz_note'] = nil
+L['schematic_darkened_vombata_note'] = nil
+L['schematic_deathrunner_note'] = nil
+L['schematic_desertwing_hunter_note'] = nil
+L['schematic_fierce_scarabid_note'] = nil
+L['schematic_forged_spiteflyer_note'] = nil
+L['schematic_genesis_crawler_note'] = nil
+L['schematic_goldplate_bufonid_note'] = nil
+L['schematic_heartbond_lupine_note'] = nil
+L['schematic_leaping_leporid_note'] = nil
+L['schematic_microlicid_note'] = nil
+L['schematic_pale_regal_cervid_note'] = nil
+L['schematic_prototickles_note'] = nil
+L['schematic_raptora_swooper_note'] = nil
+L['schematic_resonant_echo_note'] = nil
+L['schematic_russet_bufonid_note'] = nil
+L['schematic_scarlet_helicid_note'] = nil
+L['schematic_shelly_note'] = nil
+L['schematic_tarachnid_creeper_note'] = nil
+L['schematic_terror_jelly_note'] = nil
+L['schematic_tunneling_vombata_note'] = nil
+L['schematic_vespoid_flutterer_note'] = nil
+
+L['concordance_excitable'] = nil
+L['concordance_mercurial'] = nil
+L['concordance_tranquil'] = nil
+L['concordance_note'] = nil
+
+L['echoed_jiro_note'] = nil
+
+L['bygone_elemental_note'] = nil
+L['gaiagantic_note'] = nil
+L['misaligned_enforcer_note'] = nil
+L['overcharged_vespoid_note'] = nil
+L['runethief_xylora_note'] = nil
+
+L['patient_bufonid_note'] = nil
+L['patient_bufonid_note_day1'] = nil
+L['patient_bufonid_note_day2'] = nil
+L['patient_bufonid_note_day3'] = nil
+L['patient_bufonid_note_day4'] = nil
+L['patient_bufonid_note_day5'] = nil
+L['patient_bufonid_note_day6'] = nil
+L['patient_bufonid_note_day7'] = nil
+
+L['options_icons_code_creature'] = '{achievement:15211}'
+L['options_icons_code_creature_desc'] = nil
+L['options_icons_concordances'] = nil
+L['options_icons_concordances_desc'] = nil
+L['options_icons_echoed_jiros'] = nil
+L['options_icons_echoed_jiros_desc'] = nil
+L['options_icons_exile_tales'] = '{achievement:15509}'
+L['options_icons_exile_tales_desc'] = nil
+L['options_icons_protoform_schematics'] = nil
+L['options_icons_protoform_schematics_desc'] = nil
+L['options_icons_puzzle_caches'] = nil
+L['options_icons_puzzle_caches_desc'] = nil
+L['options_icons_zereth_caches'] = nil
+L['options_icons_zereth_caches_desc'] = nil

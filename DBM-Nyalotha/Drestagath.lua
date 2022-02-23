@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2373, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220217004111")
 mod:SetCreatureID(157602)
 mod:SetEncounterID(2343)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -35,15 +35,12 @@ mod:RegisterEventsInCombat(
  or ability.id = 310358 and type = "applydebuff"
 --]]
 --Drest'agath
+--mod:AddTimerLine(DBM:EJ_GetSectionInfo(20745))
 local warnVoidGrip							= mod:NewSpellAnnounce(310246, 2, nil, "Tank")--If Tank isn't in range of boss
 local warnVolatileSeed						= mod:NewTargetCountAnnounce(310277, 2, nil, nil, nil, nil, nil, nil, true)
 local warnUnleashedInsanity					= mod:NewTargetAnnounce(310361, 4)--People stunned by muttering of Insanity
 local warnThrowsSoon						= mod:NewSoonAnnounce(308941, 4)
---Tentacle of Drest'agath
-local warnObscuringCloud					= mod:NewSpellAnnounce(310478, 2)
-local warnThroesofDismemberment				= mod:NewTargetNoFilterAnnounce(315712, 4)
 
---Drest'agath
 local specWarnThrowsofAgony					= mod:NewSpecialWarningDodgeCount(308941, nil, nil, nil, 2, 2)--Acts as warning for All abilities triggered at 100 Energy
 local specWarnVolatileSeed					= mod:NewSpecialWarningYouCount(310277, nil, nil, nil, 1, 2)
 local yellolatileSeed						= mod:NewYell(310277)
@@ -52,18 +49,7 @@ local specWarnEntropicCrash					= mod:NewSpecialWarningDodge(310329, nil, nil, n
 local specWarnMutteringsofInsanity			= mod:NewSpecialWarningTarget(310358, nil, nil, nil, 1, 2)
 local yellMutteringsofInsanity				= mod:NewShortFadesYell(310358)
 local specWarnVoidGlare						= mod:NewSpecialWarningDodge(310406, nil, nil, nil, 3, 2)
---Eye of Drest'agath
-local specWarnErrantBlast					= mod:NewSpecialWarningDodge(308953, false, nil, 2, 2, 2, 4)--For mythic
-local specWarnMindFlay						= mod:NewSpecialWarningInterrupt(310552, "HasInterrupt", nil, nil, 1, 2)
---Tentacle of Drest'agath
-local specWarnTentacleSlam					= mod:NewSpecialWarningDodge(308995, false, nil, 2, 2, 2, 4)--For mythic
---Maw of Dresta'gath
-local specWarnSpineEruption					= mod:NewSpecialWarningDodge(310078, false, nil, 2, 2, 2, 4)--For mythic
-local specWarnMutteringsofBetrayal			= mod:NewSpecialWarningStack(310563, nil, 3, nil, nil, 1, 6)
---local specWarnGTFO						= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 
---mod:AddTimerLine(BOSS)
---Drest'agath
 local timerVolatileSeedCD					= mod:NewCDCountTimer(16.6, 310277, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16.6-26.8 (boss has some channeled abilities, spell queuing)
 local timerEntropicCrashCD					= mod:NewCDTimer(44.3, 310329, nil, nil, nil, 2)
 local timerMutteringsofInsanityCD			= mod:NewCDTimer(50.2, 310358, nil, nil, nil, 3)--45-60, it's almost always 50.3+ but have to use the 46
@@ -77,6 +63,21 @@ mod:AddInfoFrameOption(308377, false)
 mod:AddSetIconOption("SetIconOnVolatileSeed", 310277, true, false, {1})
 mod:AddSetIconOption("SetIconOnMuttering", 310358, false, false, {2, 3, 4, 5, 6, 7, 8})--Depends on number of maws up. Shouldn't need to use all 7 but CAN use up to 7
 mod:AddNamePlateOption("NPAuraOnVolatileCorruption", 312595)
+--Eye of Drest'agath
+--mod:AddTimerLine(DBM:EJ_GetSectionInfo(20885))
+local specWarnErrantBlast					= mod:NewSpecialWarningDodge(308953, false, nil, 2, 2, 2, 4)--For mythic
+local specWarnMindFlay						= mod:NewSpecialWarningInterrupt(310552, "HasInterrupt", nil, nil, 1, 2)
+--Maw of Dresta'gath
+ local specWarnSpineEruption					= mod:NewSpecialWarningDodge(310078, false, nil, 2, 2, 2, 4)--For mythic
+ local specWarnMutteringsofBetrayal			= mod:NewSpecialWarningStack(310563, nil, 3, nil, nil, 1, 6)
+--Tentacle of Drest'agath
+--mod:AddTimerLine(DBM:EJ_GetSectionInfo(20886))
+local warnObscuringCloud					= mod:NewSpellAnnounce(310478, 2)
+local warnThroesofDismemberment				= mod:NewTargetNoFilterAnnounce(315712, 4)
+
+local specWarnTentacleSlam					= mod:NewSpecialWarningDodge(308995, false, nil, 2, 2, 2, 4)--For mythic
+
+mod:GroupSpells(310277, 312595)--Volatile Seed grouped with volatile corruption (debuff it applies)
 
 mod.vb.agonyCount = 0
 mod.vb.volatileSeedCount = 0

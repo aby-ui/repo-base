@@ -2,6 +2,8 @@
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
 local ADDON_NAME, ns = ...
+
+local L = ns.locale
 local Class = ns.Class
 
 -------------------------------------------------------------------------------
@@ -63,12 +65,30 @@ function GarrisonTalent:Initialize(id, text) self.id, self.text = id, text end
 
 function GarrisonTalent:GetText()
     local info = C_Garrison.GetTalentInfo(self.id)
-    return self.text:format(info.name)
+    return self.text == UNKNOWN and info.name or self.text:format(info.name)
 end
 
 function GarrisonTalent:IsMet()
     local info = C_Garrison.GetTalentInfo(self.id)
     return info and info.researched
+end
+
+-------------------------------------------------------------------------------
+----------------------------- GARRISON TALENT RANK ----------------------------
+-------------------------------------------------------------------------------
+
+local GarrisonTalentRank = Class('GarrisonTalentRank', Requirement)
+
+function GarrisonTalentRank:Initialize(id, rank) self.id, self.rank = id, rank end
+
+function GarrisonTalentRank:GetText()
+    local info = C_Garrison.GetTalentInfo(self.id)
+    return L['ranked_research']:format(info.name, self.rank, info.talentMaxRank)
+end
+
+function GarrisonTalentRank:IsMet()
+    local info = C_Garrison.GetTalentInfo(self.id)
+    return info and info.talentRank and info.talentRank >= self.rank
 end
 
 -------------------------------------------------------------------------------
@@ -157,6 +177,7 @@ ns.requirement = {
     Achievement = Achievement,
     Currency = Currency,
     GarrisonTalent = GarrisonTalent,
+    GarrisonTalentRank = GarrisonTalentRank,
     Item = Item,
     Quest = Quest,
     Reputation = Reputation,

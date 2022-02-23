@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2361, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116190835")
+mod:SetRevision("20220214214851")
 mod:SetCreatureID(152910)
 mod:SetEncounterID(2299)
 mod:SetUsedIcons(4, 3, 2, 1)
@@ -37,62 +37,86 @@ mod:RegisterEventsInCombat(
  or ability.id = 300551 and type = "applybuff"
  or (ability.id = 303657) and type = "applydebuff"
 --]]
---Ancient Wards (20)
+--General/Ancient Wards (20)
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnPressureSurge					= mod:NewSpellAnnounce(302208, 2)
---Stage One: Cursed Lovers
-local warnPainfulMemoriesOver			= mod:NewMoveToAnnounce(297937, 1, nil, "Tank", 2)
-----Aethanel
-local warnLightningOrbs					= mod:NewSpellAnnounce(298121, 2)
-local warnFrozen						= mod:NewTargetNoFilterAnnounce(298018, 4)
-local warnColdBlast						= mod:NewStackAnnounce(298014, 2, nil, "Tank")
-----Cyranus
-local warnChargedSpear					= mod:NewTargetNoFilterAnnounce(301078, 4)
-----Overzealous Hulk
-local warnGroundPound					= mod:NewCountAnnounce(298531, 2)
-----Azshara
-local warnDrainAncientWard				= mod:NewSpellAnnounce(300334, 2)
-local warnBeckon						= mod:NewTargetNoFilterAnnounce(299094, 3)
-local warnCrushingDepths				= mod:NewTargetNoFilterAnnounce(303825, 4, nil, false, 2)
---Intermission One: Queen's Decree
-local warnQueensDecree					= mod:NewCastAnnounce(299250, 3)
---Stage Two: Hearts Unleashed
-local warnArcaneBurst					= mod:NewTargetNoFilterAnnounce(303657, 3, nil, "Healer", 2)
---Stage Three: Song of the Tides
-local warnStaticShock					= mod:NewTargetAnnounce(300492, 2)
-local warnCrystallineShield				= mod:NewTargetNoFilterAnnounce(300620, 2)
---Stage Four: My Palace Is a Prison
-local warnVoidTouched					= mod:NewStackAnnounce(300743, 2, nil, "Tank")
-local warnNetherPortal					= mod:NewCountAnnounce(303980, 2)
-local warnEssenceofAzeroth				= mod:NewTargetAnnounce(300866, 2)
-local warnOverload						= mod:NewCountAnnounce(301431, 2)
-local warnSystemShock					= mod:NewTargetAnnounce(300877, 3)
 
---Ancient Wards (34)
 local specWarnDrainedSoul				= mod:NewSpecialWarningStack(298569, nil, 5, nil, nil, 1, 6)
+
+local berserkTimer						= mod:NewBerserkTimer(600)
+
+mod:AddInfoFrameOption(298569, true)
+mod:AddBoolOption("SortDesc", false, nil, nil, nil, nil, 298569)
+mod:AddBoolOption("ShowTimeNotStacks", false, nil, nil, nil, nil, 298569)
 --Stage One: Cursed Lovers
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20250))
+local warnPainfulMemoriesOver			= mod:NewMoveToAnnounce(297937, 1, nil, "Tank", 2)
+
 local specWarnPainfulMemories			= mod:NewSpecialWarningMoveTo(297937, "Tank", nil, nil, 3, 2)
 local specWarnLonging					= mod:NewSpecialWarningMoveTo(297934, false, nil, 2, 3, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(297898, nil, nil, nil, 1, 8)
 local specWarnHulk						= mod:NewSpecialWarningSwitchCount("ej20480", "Dps", nil, nil, 1, 2)
+
+local timerCombatStart					= mod:NewCombatTimer(4)
+local timerPainfulMemoriesCD			= mod:NewNextTimer(60, 297937, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerLongingCD					= mod:NewNextTimer(60, 297934, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+
+mod:AddNamePlateOption("NPAuraOnTorment", 297912)
 ----Aethanel
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20261))
+local warnLightningOrbs					= mod:NewSpellAnnounce(298121, 2)
+local warnFrozen						= mod:NewTargetNoFilterAnnounce(298018, 4)
+local warnColdBlast						= mod:NewStackAnnounce(298014, 2, nil, "Tank")
+
 local specWarnChainLightning			= mod:NewSpecialWarningInterrupt(297972, "HasInterrupt", nil, nil, 1, 2)
 local specWarnColdBlast					= mod:NewSpecialWarningStack(298014, nil, 3, nil, nil, 1, 6)
 local specWarnColdBlastTaunt			= mod:NewSpecialWarningTaunt(298014, nil, nil, nil, 1, 2)
+
+local timerLightningOrbsCD				= mod:NewCDTimer(16.1, 298121, nil, nil, nil, 3)
+local timerColdBlastCD					= mod:NewCDTimer(9.4, 298014, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 ----Cyranus
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20266))
+local warnChargedSpear					= mod:NewTargetNoFilterAnnounce(301078, 4)
+
 local specWarnChargedSpear				= mod:NewSpecialWarningMoveTo(301078, nil, nil, nil, 3, 8)
 local yellChargedSpear					= mod:NewYell(301078)
 local yellChargedSpearFades				= mod:NewShortFadesYell(301078)
+
+local timerChargedSpearCD				= mod:NewCDTimer(32.3, 301078, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--32-40 in stage 1, 12.4-15 stage 3
+----Overzealous Hulk
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20480))
+local warnGroundPound					= mod:NewCountAnnounce(298531, 2)
+
+local timerHulkSpawnCD					= mod:NewCDCountTimer(30.4, "ej20480", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
+
+mod:AddNamePlateOption("NPAuraOnInfuriated", 300428)
 ----Azshara
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20258))
+local warnDrainAncientWard				= mod:NewSpellAnnounce(300334, 2)
+local warnBeckon						= mod:NewTargetNoFilterAnnounce(299094, 3)
+local warnCrushingDepths				= mod:NewTargetNoFilterAnnounce(303825, 4, nil, false, 2)
+
 local specWarnArcaneOrbs				= mod:NewSpecialWarningCount(298787, nil, nil, nil, 2, 2)
 local specWarnBeckon					= mod:NewSpecialWarningRun(299094, nil, nil, nil, 4, 8)
 local yellBeckon						= mod:NewYell(299094)--Yell goes off when player loses control of self, not pre warning player gets
 local specWarnBeckonNear				= mod:NewSpecialWarningClose(303799, nil, nil, nil, 1, 8)
 local specWarnDivideandConquer			= mod:NewSpecialWarningDodge(300478, nil, nil, nil, 3, 2, 4)--Mythic
+
+local timerArcaneOrbsCD					= mod:NewCDCountTimer(65, 298787, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerBeckonCD						= mod:NewCDCountTimer(30.4, 299094, nil, nil, nil, 3)
+local timerDivideandConquerCD			= mod:NewCDTimer(65, 300478, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.DEADLY_ICON)
 --Intermission One: Queen's Decree
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20335))
+local warnQueensDecree					= mod:NewCastAnnounce(299250, 3)
+
 local specWarnQueensDecree				= mod:NewSpecialWarningYouCount(299250, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.you:format(299250), nil, 3, 2)
 local yellQueensDecree					= mod:NewYell(299250, "%s", false, nil, "YELL")
+
+local timerNextPhase					= mod:NewPhaseTimer(30.4)
 --Stage Two: Hearts Unleashed
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20323))
+local warnArcaneBurst					= mod:NewTargetNoFilterAnnounce(303657, 3, nil, "Healer", 2)
+
 local specWarnArcaneVuln				= mod:NewSpecialWarningStack(302999, nil, 12, nil, nil, 1, 6)
 local specWarnArcaneDetonation			= mod:NewSpecialWarningMoveTo(300519, nil, nil, nil, 3, 8)
 local specWarnReversalofFortune			= mod:NewSpecialWarningSpell(297371, nil, nil, nil, 2, 5)
@@ -101,11 +125,33 @@ local yellArcaneBurst					= mod:NewPosYell(303657)
 local yellArcaneBurstFades				= mod:NewIconFadesYell(303657)
 local specWarnAzsharasDevoted			= mod:NewSpecialWarningSwitch("ej20353", "Dps", nil, nil, 1, 2)
 local specWarnAzsharasIndomitable		= mod:NewSpecialWarningSwitchCount("ej20410", "Dps", nil, nil, 1, 2)
+
+local timerArcaneDetonationCD			= mod:NewCDCountTimer(80, 300519, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
+local timerReversalofFortuneCD			= mod:NewCDCountTimer(80, 297371, nil, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON, nil, 2, 5)
+local timerArcaneBurstCD				= mod:NewCDCountTimer(58.2, 303657, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
+local timerAzsharasDevotedCD			= mod:NewCDTimer(95, "ej20353", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
+local timerAzsharasIndomitableCD		= mod:NewCDTimer(100, "ej20410", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
+
+mod:AddSetIconOption("SetIconOnArcaneBurst", 303657, true, false, {1, 2, 3, 4})
 --Stage Three: Song of the Tides
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20340))
+local warnStaticShock					= mod:NewTargetAnnounce(300492, 2)
+local warnCrystallineShield				= mod:NewTargetNoFilterAnnounce(300620, 2)
+
 local specWarnLoyalMyrmidon				= mod:NewSpecialWarningSwitchCount("ej20355", "Tank", nil, nil, 1, 2)
 local specWarnStaticShock				= mod:NewSpecialWarningMoveAway(300492, nil, nil, nil, 1, 8)
 local yellStaticShock					= mod:NewYell(300492)
+
+local timerLoyalMyrmidonCD				= mod:NewCDCountTimer(95, "ej20355", nil, nil, nil, 1, 301078, DBM_COMMON_L.DAMAGE_ICON)
+local timerStageThreeBerserk			= mod:NewTimer(180, "timerStageThreeBerserk", 28131)
 --Stage Four: My Palace Is a Prison
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20361))
+local warnVoidTouched					= mod:NewStackAnnounce(300743, 2, nil, "Tank")
+local warnNetherPortal					= mod:NewCountAnnounce(303980, 2)
+local warnEssenceofAzeroth				= mod:NewTargetAnnounce(300866, 2)
+local warnOverload						= mod:NewCountAnnounce(301431, 2)
+local warnSystemShock					= mod:NewTargetAnnounce(300877, 3)
+
 local specWarnGreaterReversal			= mod:NewSpecialWarningSpell(297372, nil, nil, nil, 2, 5)
 local specWarnVoidtouched				= mod:NewSpecialWarningStack(300743, nil, 4, nil, nil, 1, 6)
 local specWarnVoidtouchedTaunt			= mod:NewSpecialWarningTaunt(300743, nil, nil, nil, 1, 2)
@@ -114,57 +160,12 @@ local specWarnOverload					= mod:NewSpecialWarningCount(301431, false, nil, 2, 2
 local specWarnEssenceofAZeroth			= mod:NewSpecialWarningYou(300866, nil, nil, nil, 1, 2)
 local specWarnSystemShock				= mod:NewSpecialWarningDefensive(300877, nil, nil, nil, 1, 2)
 
---Stage One: Cursed Lovers (21)
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20250))
-local timerCombatStart					= mod:NewCombatTimer(4)
-local timerPainfulMemoriesCD			= mod:NewNextTimer(60, 297937, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerLongingCD					= mod:NewNextTimer(60, 297934, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-----Aethanel
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20261))
-local timerLightningOrbsCD				= mod:NewCDTimer(16.1, 298121, nil, nil, nil, 3)
-local timerColdBlastCD					= mod:NewCDTimer(9.4, 298014, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-----Cyranus
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20266))
-local timerChargedSpearCD				= mod:NewCDTimer(32.3, 301078, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--32-40 in stage 1, 12.4-15 stage 3
-----Overzealous Hulk
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20480))
-local timerHulkSpawnCD					= mod:NewCDCountTimer(30.4, "ej20480", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
-----Azshara
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20258))
-local timerArcaneOrbsCD					= mod:NewCDCountTimer(65, 298787, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
-local timerBeckonCD						= mod:NewCDCountTimer(30.4, 299094, nil, nil, nil, 3)
-local timerDivideandConquerCD			= mod:NewCDTimer(65, 300478, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.DEADLY_ICON)
---Intermission One: Queen's Decree
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20335))
-local timerNextPhase					= mod:NewPhaseTimer(30.4)
---Stage Two: Hearts Unleashed
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20323))
-local timerArcaneDetonationCD			= mod:NewCDCountTimer(80, 300519, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 5)
-local timerReversalofFortuneCD			= mod:NewCDCountTimer(80, 297371, nil, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON, nil, 2, 5)
-local timerArcaneBurstCD				= mod:NewCDCountTimer(58.2, 303657, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)
-local timerAzsharasDevotedCD			= mod:NewCDTimer(95, "ej20353", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
-local timerAzsharasIndomitableCD		= mod:NewCDTimer(100, "ej20410", nil, nil, nil, 1, 298531, DBM_COMMON_L.DAMAGE_ICON)
---Stage Three: Song of the Tides
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20340))
-local timerLoyalMyrmidonCD				= mod:NewCDCountTimer(95, "ej20355", nil, nil, nil, 1, 301078, DBM_COMMON_L.DAMAGE_ICON)
-local timerStageThreeBerserk			= mod:NewTimer(180, "timerStageThreeBerserk", 28131)
---Stage Four: My Palace Is a Prison
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20361))
 local timerGreaterReversalCD			= mod:NewCDCountTimer(70, 297372, 297371, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON..DBM_COMMON_L.HEROIC_ICON, nil, 2, 5)
 local timerVoidTouchedCD				= mod:NewCDTimer(6.9, 300743, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerNetherPortalCD				= mod:NewCDCountTimer(35, 303980, nil, nil, nil, 3)--35 unless delayed by spell queue
 local timerOverloadCD					= mod:NewCDCountTimer(54.9, 301431, nil, nil, nil, 5, nil, DBM_COMMON_L.IMPORTANT_ICON)
 local timerMassiveEnergySpike			= mod:NewCastTimer(42, 301518, nil, nil, nil, 5, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerPiercingGazeCD				= mod:NewCDCountTimer(65, 300768, nil, nil, nil, 3)
-
-local berserkTimer						= mod:NewBerserkTimer(600)
-
-mod:AddNamePlateOption("NPAuraOnTorment", 297912)
-mod:AddNamePlateOption("NPAuraOnInfuriated", 300428)
-mod:AddInfoFrameOption(298569, true)
-mod:AddBoolOption("SortDesc", false)
-mod:AddBoolOption("ShowTimeNotStacks", false)
-mod:AddSetIconOption("SetIconOnArcaneBurst", 303657, true, false, {1, 2, 3, 4})
 
 mod.vb.stageOneBossesLeft = 2
 mod.vb.arcaneOrbCount = 0
@@ -359,7 +360,7 @@ function mod:OnCombatStart(delay)
 		--Cyranus
 		timerChargedSpearCD:Start(27.5-delay)--27-29
 		--Azshara
-		timerHulkSpawnCD:Start(41-delay, 1)
+		timerHulkSpawnCD:Start(40.3-delay, 1)
 		timerBeckonCD:Start(54.6-delay, 1)--START
 		timerArcaneOrbsCD:Start(69.8-delay, 1)
 	end
@@ -547,7 +548,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerAzsharasDevotedCD:Start(95)
 		elseif cid == 154565 then--Loyal Myrmidon
 			self.vb.myrmidonCount = self.vb.myrmidonCount + 1
-			specWarnLoyalMyrmidon:Show()
+			specWarnLoyalMyrmidon:Show(self.vb.myrmidonCount)
 			specWarnLoyalMyrmidon:Play("bigmob")
 			if self.vb.myrmidonCount == 1 then
 				timerLoyalMyrmidonCD:Start(self:IsMythic() and 59.9 or self:IsHeroic() and 94.7 or 90, 2)

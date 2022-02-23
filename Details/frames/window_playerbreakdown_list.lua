@@ -123,7 +123,7 @@
 			self.totalStatusBar:SetMinMaxValues(0, topResult)
 			self.totalStatusBar:SetValue(self.playerObject.total)
 		end
-		
+
 		local createPlayerLine = function(self, index)
 			--create a new line
 			local line = _G.CreateFrame("button", "$parentLine" .. index, self, "BackdropTemplate")
@@ -132,20 +132,22 @@
 			line:SetPoint("topleft", self, "topleft", 1, -((index-1) * (player_line_height+1)) - 1)
 			line:SetSize(scrollbox_size[1]-19, player_line_height)
 			line:RegisterForClicks("LeftButtonDown", "RightButtonDown")
-			
+
 			line:SetScript("OnEnter", lineOnEnter)
 			line:SetScript("OnLeave", lineOnLeave)
 			line:SetScript("OnClick", lineOnClick)
-			
+
 			line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 			line:SetBackdropColor(unpack (scrollbox_line_backdrop_color))
 			line:SetBackdropBorderColor(0, 0, 0, 1)
-			
+
 			local specIcon = line:CreateTexture("$parentSpecIcon", "artwork")
-			specIcon:SetSize (player_line_height, player_line_height)
+			specIcon:SetSize(player_line_height, player_line_height)
+			specIcon:SetAlpha(0.71)
 			local roleIcon = line:CreateTexture("$parentRoleIcon", "overlay")
-			roleIcon:SetSize ((player_line_height-2) / 2, (player_line_height-2) / 2)
-			
+			roleIcon:SetSize((player_line_height-2) / 2, (player_line_height-2) / 2)
+			roleIcon:SetAlpha(0.71)
+
 			local playerName = DF:CreateLabel(line, "", "GameFontNormal")
 			playerName.textcolor = {1, 1, 1, .9}
 			playerName.textsize = 11

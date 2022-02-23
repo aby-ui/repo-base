@@ -970,10 +970,24 @@ function module.options:Load()
 		{"Sunwell Plateau 2",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/sw2"}},
 
 		--141-150
+		{L.S_ZoneT28SFO..": "..L.bossName[2512],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo1"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2542],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo2"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2553],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo3"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2540],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo4"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2544],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo5"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2539],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo6"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2529],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo7"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2546],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo8"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2543],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo9"}},
+		{L.S_ZoneT28SFO..": "..L.bossName[2549],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo10"}},
+
+		--151-160
+		{L.S_ZoneT28SFO..": "..L.bossName[2537],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo11"}},
 	}
 	local mapsSorted = {
 		1,
 		{L.NoteColor,10,94,95,96,97,98,99},
+		{L.S_ZoneT28SFO,151,150,149,148,147,146,145,144,143,142,141},
 		{L.S_ZoneT27SoD,114,115,116,124,125,123,122,121,120,119,118,117},
 		{L.S_ZoneT26CastleNathria.." Ingame",100,93,91,92,90,89,88},
 		{L.S_ZoneT26CastleNathria,77,78,79,80,81,82,83,84,85,86,87},

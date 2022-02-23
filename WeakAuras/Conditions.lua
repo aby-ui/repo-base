@@ -698,6 +698,22 @@ local function handleDynamicConditions(self, event)
   Private.StopProfileSystem("dynamic conditions")
 end
 
+local function handleDynamicConditionsPerUnit(self, event, unit)
+  Private.StartProfileSystem("dynamic conditions")
+  if unit then
+    local unitEvent = event..":"..unit
+    if globalDynamicConditionFuncs[unitEvent] then
+      for i, func in ipairs(globalDynamicConditionFuncs[unitEvent]) do
+        func(globalConditionState);
+      end
+    end
+    if (dynamicConditions[unitEvent]) then
+      runDynamicConditionFunctions(dynamicConditions[unitEvent]);
+    end
+  end
+  Private.StopProfileSystem("dynamic conditions")
+end
+
 local lastDynamicConditionsUpdateCheck;
 local function handleDynamicConditionsOnUpdate(self)
   handleDynamicConditions(self, "FRAME_UPDATE");
@@ -721,7 +737,7 @@ local function EvaluateCheckForRegisterForGlobalConditions(uid, check, allCondit
     end
   elseif trigger == -1 and variable == "customcheck" then
     if check.op then
-      for event in string.gmatch(check.op, "[%w_]+") do
+      for event in string.gmatch(check.op, "[%w_:]+") do
         if (not dynamicConditions[event]) then
           register[event] = true;
           dynamicConditions[event] = {};
@@ -771,6 +787,7 @@ function Private.RegisterForGlobalConditions(uid)
   if (next(register) and not dynamicConditionsFrame) then
     dynamicConditionsFrame = CreateFrame("FRAME");
     dynamicConditionsFrame:SetScript("OnEvent", handleDynamicConditions);
+    dynamicConditionsFrame.units = {}
     WeakAuras.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
   end
 
@@ -781,7 +798,17 @@ function Private.RegisterForGlobalConditions(uid)
         dynamicConditionsFrame.onUpdate = true;
       end
     else
-      pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
+      local unitEvent, unit = event:match("([^:]+):([^:]+)")
+      if unitEvent and unit then
+        unit = unit:lower()
+        if not dynamicConditionsFrame.units[unit] then
+          dynamicConditionsFrame.units[unit] = CreateFrame("FRAME");
+          dynamicConditionsFrame.units[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
+        end
+        pcall(dynamicConditionsFrame.units[unit].RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);
+      else
+        pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
+      end
     end
   end
 end
@@ -789,9 +816,24 @@ end
 function Private.UnregisterForGlobalConditions(uid)
   for event, condFuncs in pairs(dynamicConditions) do
     condFuncs[uid] = nil;
+    if next(condFuncs) == nil then
+      local unitEvent, unit = event:match("([^:]+):([^:]+)")
+      if unitEvent and unit then
+        pcall(dynamicConditionsFrame.units[unit].UnregisterEvent, dynamicConditionsFrame.units[unit], unitEvent);
+      elseif (event == "FRAME_UPDATE" or event == "WA_SPELL_RANGECHECK") then
+        if (event == "FRAME_UPDATE" and dynamicConditions["WA_SPELL_RANGECHECK"] == nil)
+        or (event == "WA_SPELL_RANGECHECK" and dynamicConditions["FRAME_UPDATE"] == nil)
+        then
+          dynamicConditionsFrame:SetScript("OnUpdate", nil)
+          dynamicConditionsFrame.onUpdate = false
+        end
+      else
+        pcall(dynamicConditionsFrame.UnregisterEvent, dynamicConditionsFrame, event);
+      end
+      dynamicConditions[event] = nil
+    end
   end
 end
-
 
 function Private.UnloadAllConditions()
   for uid in pairs(conditionChecksTimers.recheckTime) do
@@ -805,6 +847,14 @@ function Private.UnloadAllConditions()
   wipe(conditionChecksTimers.recheckHandle)
 
   dynamicConditions = {}
+  if dynamicConditionsFrame then
+    dynamicConditionsFrame:UnregisterAllEvents()
+    for unit, frame in pairs(dynamicConditionsFrame.units) do
+      frame:UnregisterAllEvents()
+    end
+    dynamicConditionsFrame:SetScript("OnUpdate", nil)
+    dynamicConditionsFrame.onUpdate = false
+  end
 end
 
 function Private.UnloadConditions(uid)

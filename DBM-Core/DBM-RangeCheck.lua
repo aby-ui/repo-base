@@ -26,7 +26,7 @@ local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS -- For 
 local function setCompatibleRestrictedRange(range)
 	if range <= 4 and isRetail then
 		return 4
-	elseif range <= 6 and isRetail then
+	elseif range <= 6 and not isClassic then
 		return 6
 	elseif range <= 8 then
 		return 8
@@ -75,11 +75,11 @@ do
 	}
 	if isRetail then
 		itemRanges[4] = 90175 -- Gin-Ji Knife Set (MoP)
-		itemRanges[6] = 37727 -- Ruby Acorn (WotLK)
 		itemRanges[53] = 116139 -- Haunting Memento (WoD)
 		itemRanges[80] = 35278 -- Reinforced Net (WotLK)
 	end
 	if not isClassic then -- Exists in BCC
+		itemRanges[6] = 16114 -- Foremans Blackjack (TBC)
 		itemRanges[43] = 34471 -- Vial of the Sunwell (UnitInRange api alternate if item checks break)
 		itemRanges[48] = 32698 -- Wrangling Rope
 		itemRanges[60] = 32825 -- Soul Cannon
@@ -106,7 +106,7 @@ do
 			end
 		else -- No range passed, this is being used by a getDistanceBetween function that needs to calculate precise distances of members of raid (well as precise as possible with a crappy api)
 			if isRetail and IsItemInRange(90175, uId) then return 4
-			elseif isRetail and IsItemInRange(37727, uId) then return 6
+			elseif not isClassic and IsItemInRange(16114, uId) then return 6
 			elseif IsItemInRange(8149, uId) then return 8
 			elseif CheckInteractDistance(uId, 3) then return 10
 			elseif CheckInteractDistance(uId, 2) then return 11
@@ -213,19 +213,23 @@ do
 			UIDropDownMenu_AddButton(info, 1)
 		elseif level == 2 then
 			if menu == "range" then
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.RANGECHECK_SETRANGE_TO:format(4)
-				info.func = setRange
-				info.arg1 = 4
-				info.checked = (mainFrame.range == 4)
-				UIDropDownMenu_AddButton(info, 2)
+				if isRetail then
+					info = UIDropDownMenu_CreateInfo()
+					info.text = L.RANGECHECK_SETRANGE_TO:format(4)
+					info.func = setRange
+					info.arg1 = 4
+					info.checked = (mainFrame.range == 4)
+					UIDropDownMenu_AddButton(info, 2)
+				end
 
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.RANGECHECK_SETRANGE_TO:format(6)
-				info.func = setRange
-				info.arg1 = 6
-				info.checked = (mainFrame.range == 6)
-				UIDropDownMenu_AddButton(info, 2)
+				if not isClassic then
+					info = UIDropDownMenu_CreateInfo()
+					info.text = L.RANGECHECK_SETRANGE_TO:format(6)
+					info.func = setRange
+					info.arg1 = 6
+					info.checked = (mainFrame.range == 6)
+					UIDropDownMenu_AddButton(info, 2)
+				end
 
 				info = UIDropDownMenu_CreateInfo()
 				info.text = L.RANGECHECK_SETRANGE_TO:format(8)
@@ -262,12 +266,14 @@ do
 				info.checked = (mainFrame.range == 23)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.RANGECHECK_SETRANGE_TO:format(30)
-				info.func = setRange
-				info.arg1 = 30
-				info.checked = (mainFrame.range == 30)
-				UIDropDownMenu_AddButton(info, 2)
+				if isRetail then
+					info = UIDropDownMenu_CreateInfo()
+					info.text = L.RANGECHECK_SETRANGE_TO:format(30)
+					info.func = setRange
+					info.arg1 = 30
+					info.checked = (mainFrame.range == 30)
+					UIDropDownMenu_AddButton(info, 2)
+				end
 
 				info = UIDropDownMenu_CreateInfo()
 				info.text = L.RANGECHECK_SETRANGE_TO:format(33)
@@ -276,12 +282,14 @@ do
 				info.checked = (mainFrame.range == 33)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
-				info.text = L.RANGECHECK_SETRANGE_TO:format(43)
-				info.func = setRange
-				info.arg1 = 43
-				info.checked = (mainFrame.range == 43)
-				UIDropDownMenu_AddButton(info, 2)
+				if not isClassic then
+					info = UIDropDownMenu_CreateInfo()
+					info.text = L.RANGECHECK_SETRANGE_TO:format(43)
+					info.func = setRange
+					info.arg1 = 43
+					info.checked = (mainFrame.range == 43)
+					UIDropDownMenu_AddButton(info, 2)
+				end
 			elseif menu == "threshold" then
 				info = UIDropDownMenu_CreateInfo()
 				info.text = 1

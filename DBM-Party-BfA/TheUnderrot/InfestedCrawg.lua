@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2131, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(131817)
 mod:SetEncounterID(2118)
 
@@ -93,7 +93,7 @@ function mod:SPELL_CAST_START(args)
 				end
 			end
 		else
-			timerIndigestionCD:Start(45)
+			timerIndigestionCD:Start(43.7)
 			--(will probably never be accurate, since WCL lacks tools to search for normal dungeons)
 		end
 	elseif spellId == 260292 then

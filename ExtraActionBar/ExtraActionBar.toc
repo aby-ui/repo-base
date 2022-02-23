@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Notes: 顯示額外動作條
 ## SavedVariablesPerCharacter: MOGUBar_Info
 Library\MoguLibrary.lua

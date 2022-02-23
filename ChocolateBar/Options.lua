@@ -1158,6 +1158,19 @@ local function SetCustomLabel(info, value)
 	ChocolateBar:AttributeChanged(nil, name, "updateSettings", value)
 end
 
+local function GetDisableTooltip(info, value)
+	local cleanName = info[#info-2]
+	local name = chocolateOptions[cleanName].desc
+	return db.objSettings[name].disableTooltip
+end
+
+local function SetDisableTooltip(info, value)
+	local cleanName = info[#info-2]
+	local name = chocolateOptions[cleanName].desc
+	db.objSettings[name].disableTooltip = value
+	ChocolateBar:AttributeChanged(nil, name, "updateSettings", value)
+end
+
 local function GetLabel(info, value)
 	local cleanName = info[#info-2]
 	local name = chocolateOptions[cleanName].desc
@@ -1669,6 +1682,15 @@ function ChocolateBar:AddObjectOptions(name,obj)
 						width = "full",
 						get = GetCustomLabel,
 						set = SetCustomLabel,
+					},
+					disableTooltip = {
+						type = 'toggle',
+						order = 2,
+						name = L["Disable Tooltip"],
+						desc = L["Only show tooltip of this plugin when a modifier (shift, alt, ctrl) is held."],
+						width = "full",
+						get = GetDisableTooltip,
+						set = SetDisableTooltip,
 					},
 				},
 			},

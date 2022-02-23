@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2360, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217031102")
 mod:SetCreatureID(153755, 150712)
 mod:SetEncounterID(2312)
 mod:SetBossHPInfoToHighest()
@@ -18,24 +18,24 @@ mod:RegisterEventsInCombat(
 --[[
 (ability.id = 298669 or ability.id = 302682 or ability.id = 298897 or ability.id = 298940 or ability.id = 298946 or ability.id = 298651 or ability.id = 299164 or ability.id = 298571 or ability.id = 298898) and type = "begincast"
 --]]
+--Trixie
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20200))
 local warnMegaTaze					= mod:NewTargetNoFilterAnnounce(302682, 3)
 local warnJumpStart					= mod:NewSpellAnnounce(298897, 3)
---Naeno Megacrash
-local warnRoadkill					= mod:NewSpellAnnounce(298946, 3)
-local warnBurnout					= mod:NewSpellAnnounce(298571, 3)
 
---Trixie "The Tech" Tazer
 local specWarnTaze					= mod:NewSpecialWarningInterrupt(298669, false, nil, 2, 1, 2)
 local specWarnMegaTaze				= mod:NewSpecialWarningMoveTo(302682, nil, nil, nil, 3, 2)
 local yellMegaTaze					= mod:NewYell(302682)
---Naeno Megacrash
-local specWarnBoltBuster			= mod:NewSpecialWarningDodge(298940, "Tank", nil, nil, 1, 2)
-local specWarnPedaltotheMetal		= mod:NewSpecialWarningDodge(298651, nil, nil, nil, 2, 2)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
---Trixie "The Tech" Tazer
 local timerMegaTazeCD				= mod:NewCDTimer(40.1, 302682, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 --Naeno Megacrash
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20203))
+local warnRoadkill					= mod:NewSpellAnnounce(298946, 3)
+local warnBurnout					= mod:NewSpellAnnounce(298571, 3)
+
+local specWarnBoltBuster			= mod:NewSpecialWarningDodge(298940, "Tank", nil, nil, 1, 2)
+local specWarnPedaltotheMetal		= mod:NewSpecialWarningDodge(298651, nil, nil, nil, 2, 2)
+
 local timerRoadKillCD				= mod:NewCDTimer(27, 298946, nil, nil, nil, 3)
 local timerBoltBusterCD				= mod:NewCDTimer(18.2, 298940, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerPedaltotheMetalCD		= mod:NewCDTimer(60, 298651, nil, nil, nil, 3)

@@ -193,6 +193,11 @@ GTFO.SpellID["365909"] = {
   sound = 1;
 };
 
+GTFO.SpellID["368715"] = {
+  --desc = "Charged Ground (Genesis Guardian)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

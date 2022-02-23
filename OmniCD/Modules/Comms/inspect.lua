@@ -47,7 +47,7 @@ local function IsSoulbindRowEnhanced(soulbindID, row, renownLevel)
 	end
 end
 
-local invSlotIDs = { -- runeforgeBaseItems uses this index
+local invSlotIDs = {
 	13, -- INVSLOT_TRINKET1
 	14, -- INVSLOT_TRINKET2
 	16, -- INVSLOT_MAINHAND
@@ -67,19 +67,18 @@ local invSlotIDs = { -- runeforgeBaseItems uses this index
 local numInvSlotIDs = #invSlotIDs
 
 local runeforgeBaseItems = {
-	nil, nil, nil,
-	{ 173245, 172317, 172325, 171415 }, -- Miscellaneous[0], Cloth[1], Leather[2], Mail[3], Plate[4]
-	{ 178927, 178927, 178927, 178927 },
-	{ 173247, 172319, 172327, 171417 },
-	{ 173242, 173242, 173242, 173242 },
-	{ 173241, 172314, 172322, 171412 },
-	{ 173249, 172321, 172329, 171419 },
-	{ 173244, 172316, 172324, 171414 },
-	{ 173248, 172320, 172328, 171418 },
-	{ 173246, 172318, 172326, 171416 },
-	{ 173243, 172315, 172323, 171413 },
-	{ 178926, 178926, 178926, 178926 },
-	{ 178926, 178926, 178926, 178926 },
+	[1] = { 173245, 172317, 172325, 171415 }, -- Miscellaneous[0], Cloth[1], Leather[2], Mail[3], Plate[4]
+	[2] = { 178927, 178927, 178927, 178927 },
+	[3] = { 173247, 172319, 172327, 171417 },
+	[15]= { 173242, 173242, 173242, 173242 },
+	[5] = { 173241, 172314, 172322, 171412 },
+	[9] = { 173249, 172321, 172329, 171419 },
+	[10]= { 173244, 172316, 172324, 171414 },
+	[6] = { 173248, 172320, 172328, 171418 },
+	[7] = { 173246, 172318, 172326, 171416 },
+	[8] = { 173243, 172315, 172323, 171413 },
+	[11]= { 178926, 178926, 178926, 178926 },
+	[12]= { 178926, 178926, 178926, 178926 },
 }
 
 local function InspectQueueFrame_OnUpdate(self, elapsed)
@@ -244,11 +243,12 @@ function Comms:INSPECT_READY(guid)
 	end
 end
 
+local item_setBonus = E.item_setBonus
+local S_ITEM_SET_NAME  = "^" .. ITEM_SET_NAME:gsub("([%(%)])", "%%%1"):gsub("%%%d?$?d", "(%%d+)"):gsub("%%%d?$?s", "(.+)") .. "$"
+
 if E.isPreBCC then
 	local item_equipBonus = E.item_equipBonus
-	local item_setBonus = E.item_setBonus
 	local talentNameToRankID = E.talentNameToRankID
-	local S_ITEM_SET_NAME  = "^" .. ITEM_SET_NAME:gsub("([%(%)])", "%%%1"):gsub("%%%d?$?d", "(%%d+)"):gsub("%%%d?$?s", "(.+)") .. "$"
 
 	function Comms:InspectUnit(guid)
 		local info = P.groupInfo[guid]
@@ -298,9 +298,9 @@ if E.isPreBCC then
 				if itemID then
 					if i > 2 then
 
-						local equipID = item_equipBonus[itemID]
-						if equipID then
-							info.talentData[equipID] = true
+						local equipBonusID = item_equipBonus[itemID]
+						if equipBonusID then
+							info.talentData[equipBonusID] = true
 						end
 
 						local setBonus = item_setBonus[itemID]
@@ -402,11 +402,11 @@ if E.isPreBCC then
 				if i > 3 then
 					InspectTooltip:SetInventoryItem("player", slotID)
 
-					local equipID = item_equipBonus[itemID]
-					if equipID then
-						info.talentData[equipID] = true
+					local equipBonusID = item_equipBonus[itemID]
+					if equipBonusID then
+						info.talentData[equipBonusID] = true
 						c = c + 1
-						tmp[c] = equipID
+						tmp[c] = equipBonusID
 					end
 
 					local setBonus = item_setBonus[itemID]
@@ -469,6 +469,8 @@ else
 	local IsRuneforgeLegendary = C_LegendaryCrafting.IsRuneforgeLegendary
 	local soulbind_conduits_rank = E.soulbind_conduits_rank
 	local covenant_IDToSpellID = E.covenant_IDToSpellID
+	-- 9.2
+	local item_unity = E.item_unity
 
 	function Comms:InspectUnit(guid)
 		local info = P.groupInfo[guid]
@@ -507,32 +509,63 @@ else
 		end
 
 		local addToStale
-		local runeforgePower = 0
+		local isRuneforgeFound
+		local isSetBonusFound
 		for i = 1, numInvSlotIDs do
 			local slotID = invSlotIDs[i]
-			local itemLink = GetInventoryItemLink(unit, slotID) -- no longer need to scan tooltip in SL -> TODO: revert back for patch 9.2 sets
+			local itemLink = GetInventoryItemLink(unit, slotID)
 			if itemLink then
 				local itemID, _,_,_,_,_, itemSubClassID = GetItemInfoInstant(itemLink)
 				if itemID then
 					if i > 3 then
-						local baseItem = runeforgeBaseItems[i]
-						itemSubClassID = itemSubClassID == 0 and 1 or itemSubClassID
-						if itemID == baseItem[itemSubClassID] then
-							local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
-							numBonusIDs = tonumber(numBonusIDs)
-							if numBonusIDs and bonusIDs then
-								local t = { strsplit(":", bonusIDs, numBonusIDs + 1) }
-								for j = 1, numBonusIDs do
-									local bonusID = t[j]
-									bonusID = tonumber(bonusID)
-									local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
-									if runeforgeDescID then
-										runeforgePower = runeforgeDescID
-										break
+						local setBonus = item_setBonus[itemID]
+						if setBonus then
+							if not isSetBonusFound then
+								local bonusID, numRequired = setBonus[1], setBonus[2]
+								InspectTooltip:SetInventoryItem(unit, slotID)
+								for j = 10, InspectTooltip:NumLines() do
+									local tooltipLine = _G["OmniCDInspectToolTipTextLeft"..j]
+									local text = tooltipLine:GetText()
+									if text and text ~= "" then
+										local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
+										if name and numEquipped and numFullSet then
+											numEquipped = tonumber(numEquipped)
+											if numEquipped and numEquipped >= numRequired then
+												info.talentData[bonusID] = true
+											end
+											break
+										end
 									end
 								end
+								InspectTooltip:ClearLines()
+								isSetBonusFound = true
 							end
-							break
+						else
+							local unity = item_unity[itemID]
+							if unity then
+								info.talentData[unity] = true
+							elseif not isRuneforgeFound then
+								local baseItem = runeforgeBaseItems[slotID]
+								itemSubClassID = itemSubClassID == 0 and 1 or itemSubClassID
+								if itemID == baseItem[itemSubClassID] then
+									local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
+									numBonusIDs = tonumber(numBonusIDs)
+									if numBonusIDs and bonusIDs then
+										local t = { strsplit(":", bonusIDs, numBonusIDs + 1) }
+										for j = 1, numBonusIDs do
+											local bonusID = t[j]
+											bonusID = tonumber(bonusID)
+											local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
+											if runeforgeDescID then
+												info.shadowlandsData.runeforgeDescID = runeforgeDescID
+												info.talentData[runeforgeDescID] = "R"
+												break
+											end
+										end
+									end
+									isRuneforgeFound = true
+								end
+							end
 						end
 					elseif i == 3 then
 						if itemID == 186414 then
@@ -547,8 +580,6 @@ else
 				addToStale = true
 			end
 		end
-		info.shadowlandsData.runeforgeDescID = runeforgePower
-		info.talentData[runeforgePower] = "R"
 
 		if info.level == 200 then
 			local lvl = UnitLevel(unit)
@@ -657,44 +688,75 @@ else
 		end
 
 		local runeforgePower = 0
-		local specialSnowFlake = 0
+		local isRuneforgeFound
+		local isSetBonusFound
+		local tmpInv = {}
 		for i = 1, numInvSlotIDs do
 			local slotID = invSlotIDs[i]
 			local itemID = GetInventoryItemID("player", slotID)
 			if i > 3 then
 				if itemID then
-					local itemLink = GetInventoryItemLink("player", slotID)
-					local itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID)
-					local isBaseItem = IsValidRuneforgeBaseItem(itemLocation)
-					local isLegendary = IsRuneforgeLegendary(itemLocation)
-					if isBaseItem then
-						break
-					end
-
-					if isLegendary then
-						local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
-						numBonusIDs = tonumber(numBonusIDs)
-						if numBonusIDs and bonusIDs then
-							local t = { strsplit(":", bonusIDs, numBonusIDs + 1) }
-							for j = 1, numBonusIDs do
-								local bonusID = t[j]
-								bonusID = tonumber(bonusID)
-								local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
-								if runeforgeDescID then
-									runeforgePower = runeforgeDescID
-									break
+					local setBonus = item_setBonus[itemID]
+					if setBonus then
+						if not isSetBonusFound then
+							local bonusID, numRequired = setBonus[1], setBonus[2]
+							InspectTooltip:SetInventoryItem("player", slotID)
+							for j = 10, InspectTooltip:NumLines() do
+								local tooltipLine = _G["OmniCDInspectToolTipTextLeft"..j]
+								local text = tooltipLine:GetText()
+								if text and text ~= "" then
+									local name, numEquipped, numFullSet = strmatch(text, S_ITEM_SET_NAME)
+									if name and numEquipped and numFullSet then
+										numEquipped = tonumber(numEquipped)
+										if numEquipped and numEquipped >= numRequired then
+											info.talentData[bonusID] = true
+											tinsert(tmpInv, bonusID)
+										end
+										break
+									end
 								end
 							end
+							InspectTooltip:ClearLines()
+							isSetBonusFound = true
 						end
-						break
+					else
+						local unity = item_unity[itemID]
+						if unity then
+							info.talentData[unity] = true -- not spec bound, treat it as talent
+							tinsert(tmpInv, unity)
+						elseif not isRuneforgeFound then
+							local itemLink = GetInventoryItemLink("player", slotID)
+							local itemLocation = ItemLocation:CreateFromEquipmentSlot(slotID)
+							local isBaseItem = IsValidRuneforgeBaseItem(itemLocation)
+							local isLegendary = IsRuneforgeLegendary(itemLocation)
+							if isBaseItem then
+								isRuneforgeFound = true
+							elseif isLegendary then
+								local _,_,_,_,_,_,_,_,_,_,_,_,_,numBonusIDs,bonusIDs = strsplit(":",itemLink,15)
+								numBonusIDs = tonumber(numBonusIDs)
+								if numBonusIDs and bonusIDs then
+									local t = { strsplit(":", bonusIDs, numBonusIDs + 1) }
+									for j = 1, numBonusIDs do
+										local bonusID = t[j]
+										bonusID = tonumber(bonusID)
+										local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
+										if runeforgeDescID then
+											runeforgePower = runeforgeDescID
+											break
+										end
+									end
+								end
+								isRuneforgeFound = true
+							end
+						end
 					end
 				end
-			elseif i == 3 then
+			elseif i == 3 then -- main hand
 				if itemID == 186414 then
 					info.talentData[itemID] = true
-					specialSnowFlake = itemID
+					tinsert(tmpInv, itemID)
 				end
-			else
+			else -- trinkets
 				if itemID then
 					itemID = item_merged[itemID] or itemID
 					info.invSlotData[itemID] = true
@@ -703,11 +765,12 @@ else
 			end
 		end
 		info.shadowlandsData.runeforgeDescID = runeforgePower
-		info.talentData[runeforgePower] = "R"
+		info.talentData[runeforgePower] = "R" -- runeforge spec check
 
 		local talentInvSlots = table.concat(tmp, ",")
+		local itemInvSlots = table.concat(tmpInv, ",") -- keeping it compatible for now, merge and clean this up on the next major update
 		local covenantSoulbinds = GetCovenantSoulbindData()
-		E.syncData = strjoin(",", guid, specID, talentInvSlots, runeforgePower, covenantSoulbinds, specialSnowFlake)
+		E.syncData = strjoin(",", guid, specID, talentInvSlots, runeforgePower, covenantSoulbinds, itemInvSlots)
 
 		if P.groupInfo[guid] then
 			P:UpdateUnitBar(guid)

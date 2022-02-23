@@ -70,6 +70,7 @@ SI.WorldBosses = {
   [2432] = { quest=61815, expansion=8, level=60 }, -- Oranomonos the Everbranching
   [2433] = { quest=61814, expansion=8, level=60 }, -- Nurgash Muckformed
   [2456] = { quest=64531, expansion=8, level=60 }, -- Mor'geth, Tormentor of the Damned
+  [2468] = { quest=65143, expansion=8, level=60 }, -- Antros
 
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=40 },

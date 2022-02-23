@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## LoadOnDemand: 0
 ## Title: TradeLog
 ## Notes: 交易日志，最近交易情况

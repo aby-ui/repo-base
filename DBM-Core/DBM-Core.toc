@@ -1,5 +1,5 @@
-## Interface: 90105
-## X-Min-Interface: 90105
+## Interface: 90200
+## X-Min-Interface: 90200
 ## X-Min-Interface-Classic: 11402
 ## X-Min-Interface-BCC: 20503
 
@@ -20,7 +20,7 @@
 ## LoadOnDemand: 0
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: 7858322
+## Version: cde50a4
 ## X-Website: https://deadlybossmods.com
 
 Libs\LibLatency\LibLatency.xml

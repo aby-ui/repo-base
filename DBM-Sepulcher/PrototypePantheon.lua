@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2460, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220206083607")
+mod:SetRevision("20220223031308")
 mod:SetCreatureID(181548, 181551, 181546, 181549)
 mod:SetEncounterID(2544)
 mod:SetBossHPInfoToHighest()
@@ -61,7 +61,7 @@ local timerRunecarversDeathtouchCD				= mod:NewCDCountTimer(57.1, 360687, nil, n
 
 mod:AddInfoFrameOption(360687, "Healer")
 mod:AddSetIconOption("SetIconOnDeathtouch", 360687, false, false, {13, 14, 15, 16}, true)--Technically only 2 debuffs go out, but we allow for even a bad group to have two sets of them out. Off by default do to conflict with seeds
-mod:AddSetIconOption("SetIconOnRitualist", 360333, true, true, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})--Conflict arg not passed because by default it won't, user has to introduce conflict via dropdown (and that has a warning)
+mod:AddSetIconOption("SetIconOnRitualist", 360295, true, true, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})--Conflict arg not passed because by default it won't, user has to introduce conflict via dropdown (and that has a warning)
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
 if DBM.Options.ExtendIcons then
 	mod:AddDropdownOption("RitualistIconSetting", {"SetOne", "SetTwo", "SetThree"}, "SetOne", "misc")
@@ -80,7 +80,7 @@ local warnBastionsWard							= mod:NewCastAnnounce(360845, 1)
 local warnPinned								= mod:NewTargetNoFilterAnnounce(362352, 4)
 
 local specWarnHumblingStrikes					= mod:NewSpecialWarningDefensive(365272, nil, nil, nil, 1, 2)
-local specWarnHumblingStrikesTaunt				= mod:NewSpecialWarningTaunt(365269, nil, nil, nil, 1, 2)
+local specWarnHumblingStrikesTaunt				= mod:NewSpecialWarningTaunt(365272, nil, nil, nil, 1, 2)
 local specWarnPinningVolley						= mod:NewSpecialWarningDodgeCount(361278, nil, nil, nil, 2, 2)--Is it dodgeable?
 local yellPinned								= mod:NewShortYell(362352)
 
@@ -88,6 +88,7 @@ local timerHumblingStrikesCD					= mod:NewCDCountTimer(35.7, 365272, nil, "Tank"
 local timerAscensionsCallCD						= mod:NewCDCountTimer(57.1, 365272, nil, nil, nil, 1)
 local timerPinningVolleyCD						= mod:NewCDCountTimer(64.1, 361278, nil, nil, nil, 3)
 
+mod:GroupSpells(361278, 362352)--Pinning Volley and Pinned
 ----Prototype of Renewal
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24135))
 local specWarnAnimabolt							= mod:NewSpecialWarningInterrupt(362383, false, nil, nil, 1, 2)--Kinda spammed, opt in, not opt out
@@ -96,11 +97,9 @@ local specWarnAnimastorm						= mod:NewSpecialWarningMoveTo(362132, nil, nil, ni
 
 local timerWildStampedeCD						= mod:NewCDCountTimer(28.8, 361304, nil, nil, nil, 3)
 local timerWitheringSeedCD						= mod:NewCDCountTimer(96.2, 361568, nil, "Healer", nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
-local timerAnimastormCD							= mod:NewCDCountTimer(28.8, 366234, nil, nil, nil, 2)
+local timerAnimastormCD							= mod:NewCDCountTimer(28.8, 362132, nil, nil, nil, 2)
 
-mod:AddSetIconOption("SetIconOnSeed", 361566, true, true, {1, 2, 3, 4}, nil, true)
-mod:AddNamePlateOption("NPAuraOnWrackingPain", 361689, true)
-
+mod:AddSetIconOption("SetIconOnSeed", 361568, true, true, {1, 2, 3, 4}, nil, true)
 ----Prototype of Absolution
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24139))
 local warnNightHunter							= mod:NewTargetNoFilterAnnounce(361745, 3)
@@ -116,6 +115,7 @@ local timerWrackingPainCD						= mod:NewCDCountTimer(44, 365126, nil, "Tank", ni
 local timerHandofDestructionCD					= mod:NewCDCountTimer(56.2, 361789, nil, nil, nil, 2)--Also timer for sinful projections, the two mechanics are intertwined
 local timerNightHunterCD						= mod:NewAITimer(57.1, 361745, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 
+mod:AddNamePlateOption("NPAuraOnWrackingPain", 365126, true)
 mod:AddSetIconOption("SetIconOnNightHunter", 361745, false, false, {1, 2, 3, 4}, nil, true)
 
 local deathtouchTargets = {}
@@ -189,49 +189,49 @@ local allTimers = {
 	["normal"] = {
 		[1] = {
 			--Necrotic Ritual
-			[360295] = {},
+			[360295] = {11.4, 71.4, 73.3},
 			--Runecarver's Deathtouch
-			[360636] = {},
+			[360636] = {47.1, 57.1, 73.3},
 			--Humbling Strikes
-			[365272] = {},
+			[365272] = {11.4, 35.7, 35.7, 35.6, 35.7},
 			--Ascension's Call
-			[361066] = {},
+			[361066] = {42.8},
 			--Pinning Volley
-			[361278] = {},
+			[361278] = {62.7, 64.4},
 		},
 		[2] = {
 			--Wild Stampede
-			[361304] = {},
+			[361304] = {70.5, 55.2},
 			--Withering Seeds
-			[361568] = {},
+			[361568] = {33},
 			--Animastorm
-			[366234] = {},
+			[366234] = {},--Wasn't cast?
 			--Wracking Pain
-			[365126] = {},
+			[365126] = {41.7, 49.9, 49.9},
 			--Hand of Destruction
-			[361791] = {},
+			[361791] = {104.1},
 		},
 		[3] = {
 			--Necrotic Ritual
-			[360295] = {},
+			[360295] = {},--Wasn't cast?
 			--Runecarver's Deathtouch
-			[360636] = {},
+			[360636] = {},--Wasn't cast?
 			--Humbling Strikes
-			[365272] = {},
+			[365272] = {41.1, 50},
 			--Ascension's Call
-			[361066] = {},
+			[361066] = {},--Not in combat log and no P3 transcriptor
 			--Pinning Volley
-			[361278] = {},
+			[361278] = {56.7},
 			--Wild Stampede
-			[361304] = {},
+			[361304] = {26.5},
 			--Withering Seeds
-			[361568] = {},
+			[361568] = {17.8, 75.8},
 			--Animastorm
-			[366234] = {},
+			[366234] = {},--Wasn't cast?
 			--Wracking Pain
-			[365126] = {},
+			[365126] = {41.2, 50},
 			--Hand of Destruction
-			[361791] = {},
+			[361791] = {105},
 		},
 	},
 	["heroic"] = {
@@ -389,9 +389,9 @@ function mod:OnCombatStart(delay)
 	self.vb.ritualistIconMethod = 1
 	self:SetStage(1)
 	--Necro
-	timerNecroticRitualCD:Start(11.5-delay, 1)
+	timerNecroticRitualCD:Start(11.4-delay, 1)--11.4-14 on various difficulties (may move this)
 	--Kyrian
-	timerHumblingStrikesCD:Start(10-delay, 1)
+	timerHumblingStrikesCD:Start(10-delay, 1)--10-11.4 on various difficulties (may move this)
 	if self:IsMythic() then
 		difficultyName = "mythic"
 		--Necro
@@ -408,13 +408,14 @@ function mod:OnCombatStart(delay)
 		--Kyrian
 		--timerAscensionsCallCD:Start(42.9-delay, 1)--Time til USCS anyways
 		--timerPinningVolleyCD:Start(63-delay, 1)
+		DBM:AddMsg("Timers on this difficulty were signficantly changed AFTER fight was tested and unfortunately it wasn't re-tested, so no timers are available until post launch updates")
 	elseif self:IsNormal() then
 		difficultyName = "normal"
 		--Necro
-		--timerRunecarversDeathtouchCD:Start(50-delay, 1)
+		timerRunecarversDeathtouchCD:Start(47.1-delay, 1)--Sooner than LFR
 		--Kyrian
-		--timerAscensionsCallCD:Start(42.9-delay, 1)--Time til USCS anyways
-		--timerPinningVolleyCD:Start(63-delay, 1)
+		timerAscensionsCallCD:Start(42.8-delay, 1)--Time til USCS anyways/Same as LFR?
+		timerPinningVolleyCD:Start(62.7-delay, 1)--Same as LFR?
 	else
 		difficultyName = "lfr"
 		--Necro
@@ -575,12 +576,12 @@ function mod:SPELL_CAST_START(args)
 				--timerAnimastormCD:Start(52.6, 1)
 			elseif self:IsNormal() then
 				--Prototype of Absolution (Venthyr)
-				--timerWrackingPainCD:Start(36, 1)
-				--timerHandofDestructionCD:Start(107.7, 1)
+				timerWrackingPainCD:Start(41.7, 1)
+				timerHandofDestructionCD:Start(104.1, 1)--May need adjusting by 1 sec to match USCS
 				--prototype-of-renewal (Night Fae)
-				--timerWildStampedeCD:Start(14.6, 1)
-				--timerWitheringSeedCD:Start(26, 1)
+				timerWitheringSeedCD:Start(33, 1)
 				--timerAnimastormCD:Start(52.6, 1)
+				timerWildStampedeCD:Start(70.5, 1)
 			else--LFR
 				--Prototype of Absolution (Venthyr)
 				timerWrackingPainCD:Start(36, 1)
@@ -626,19 +627,19 @@ function mod:SPELL_CAST_START(args)
 				--timerRunecarversDeathtouchCD:Start(106.3, 1)
 			elseif self:IsNormal() then
 				--Prototype of Absolution (Venthyr)
-				--timerWrackingPainCD:Start(33.9, 1)
-				--timerHandofDestructionCD:Start(84.5, 1)
+				timerWrackingPainCD:Start(41.2, 1)
+				timerHandofDestructionCD:Start(105, 1)
 				--prototype-of-duty (Kyrian)
-				--timerHumblingStrikesCD:Start(33.9, 1)
-				--timerPinningVolleyCD:Start(56.7, 1)
-				--timerAscensionsCallCD:Start(97.8, 1)
+				timerHumblingStrikesCD:Start(41.1, 1)
+				timerPinningVolleyCD:Start(56.7, 1)
+				--timerAscensionsCallCD:Start(97.8, 1)--Not in combat log and no P3 transcriptor
 				--prototype-of-renewal (Night Fae)
-				--timerWitheringSeedCD:Start(15.2, 1)
-				--timerAnimastormCD:Start(24.5, 1)
-				--timerWildStampedeCD:Start(35.8, 1)
+				timerWitheringSeedCD:Start(17.8, 1)
+				--timerAnimastormCD:Start(24.5, 1)--Wasn't cast?
+				timerWildStampedeCD:Start(26.5, 1)
 				--prototype-of-war (Necro)
-				--timerNecroticRitualCD:Start(52.6, 1)
-				--timerRunecarversDeathtouchCD:Start(106.3, 1)
+				--timerNecroticRitualCD:Start(52.6, 1)--Wasn't cast?
+				--timerRunecarversDeathtouchCD:Start(106.3, 1)--Wasn't cast?
 			else--LFR
 				--Prototype of Absolution (Venthyr)
 				timerWrackingPainCD:Start(33.9, 1)

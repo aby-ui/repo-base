@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1986, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220127091734")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(122468, 122467, 122469)--122468 Noura, 122467 Asara, 122469 Diima, 125436 Thu'raya (mythic only)
 mod:SetEncounterID(2073)
 mod:SetBossHPInfoToHighest()
@@ -39,63 +39,69 @@ local torment = DBM:EJ_GetSectionInfo(16138)
 --]]
 --All
 local warnActivated						= mod:NewTargetAnnounce(118212, 3, 78740, nil, nil, nil, nil, nil, true)
+
+local specWarnGTFO						= mod:NewSpecialWarningGTFO(245634, nil, nil, nil, 1, 2)
+local specWarnActivated					= mod:NewSpecialWarningSwitchCount(118212, "Tank", nil, 2, 3, 2)
+
+local timerBossIncoming					= mod:NewTimer(61, "timerBossIncoming", nil, nil, nil, 1)
+--local berserkTimer					= mod:NewBerserkTimer(600)
 --Noura, Mother of Flames
+mod:AddTimerLine(Noura)
 local warnFieryStrike					= mod:NewStackAnnounce(244899, 2, nil, "Tank")
 local warnWhirlingSaber					= mod:NewSpellAnnounce(245627, 2)
 local warnFulminatingPulse				= mod:NewTargetAnnounce(253520, 3)
---Asara, Mother of Night
---Diima, Mother of Gloom
-local warnChilledBlood					= mod:NewTargetAnnounce(245586, 2)
-local warnFlashFreeze					= mod:NewStackAnnounce(245518, 2, nil, "Tank")
---Thu'raya, Mother of the Cosmos (Mythic)
-local warnCosmicGlare					= mod:NewTargetAnnounce(250757, 3)
 
---General
-local specWarnGTFO						= mod:NewSpecialWarningGTFO(245634, nil, nil, nil, 1, 2)
-local specWarnActivated					= mod:NewSpecialWarningSwitchCount(118212, "Tank", nil, 2, 3, 2)
---Noura, Mother of Flames
 local specWarnFieryStrike				= mod:NewSpecialWarningStack(244899, nil, 2, nil, nil, 1, 6)
 local specWarnFieryStrikeOther			= mod:NewSpecialWarningTaunt(244899, nil, nil, nil, 1, 2)
 local specWarnFulminatingPulse			= mod:NewSpecialWarningMoveAway(253520, nil, nil, nil, 1, 2)
 local yellFulminatingPulse				= mod:NewFadesYell(253520)
+
+local timerFieryStrikeCD				= mod:NewCDTimer(10.5, 244899, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerWhirlingSaberCD				= mod:NewNextTimer(35.1, 245627, nil, nil, nil, 3)--35-45
+local timerFulminatingPulseCD			= mod:NewNextTimer(40.1, 253520, nil, nil, nil, 3, nil, nil, nil, mod:IsHealer() and 2, 4)
+
+mod:AddSetIconOption("SetIconOnFulminatingPulse2", 253520, false)
 --Asara, Mother of Night
+mod:AddTimerLine(Asara)
 local specWarnShadowBlades				= mod:NewSpecialWarningDodge(246329, nil, nil, nil, 2, 2)
 local specWarnStormofDarkness			= mod:NewSpecialWarningCount(252861, nil, nil, nil, 2, 2)
+
+local timerShadowBladesCD				= mod:NewCDTimer(27.6, 246329, nil, nil, nil, 3)
+local timerStormofDarknessCD			= mod:NewNextCountTimer(56.8, 252861, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON, nil, 3, 4)--57+
 --Diima, Mother of Gloom
+mod:AddTimerLine(Diima)
+local warnChilledBlood					= mod:NewTargetAnnounce(245586, 2)
+local warnFlashFreeze					= mod:NewStackAnnounce(245518, 2, nil, "Tank")
+
 local specWarnFlashfreeze				= mod:NewSpecialWarningStack(245518, nil, 2, nil, nil, 1, 6)
 local specWarnFlashfreezeOther			= mod:NewSpecialWarningTaunt(245518, nil, nil, nil, 1, 2)
 local yellFlashfreeze					= mod:NewYell(245518, nil, false)
 local specWarnChilledBlood				= mod:NewSpecialWarningTarget(245586, "Healer", nil, nil, 1, 2)
 local specWarnOrbofFrost				= mod:NewSpecialWarningDodge(253650, nil, nil, nil, 1, 12)
+
+local timerFlashFreezeCD				= mod:NewCDTimer(10.1, 245518, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerChilledBloodCD				= mod:NewNextTimer(25.4, 245586, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
+local timerOrbofFrostCD					= mod:NewNextTimer(30, 253650, nil, nil, nil, 3)
+
+mod:AddSetIconOption("SetIconOnChilledBlood2", 245586, false)
+mod:AddInfoFrameOption(245586, true)
 --Thu'raya, Mother of the Cosmos (Mythic)
+mod:AddTimerLine(Thuraya)
+local warnCosmicGlare					= mod:NewTargetAnnounce(250757, 3)
+
 local specWarnTouchoftheCosmos			= mod:NewSpecialWarningInterruptCount(250648, "HasInterrupt", nil, nil, 1, 2)
 local specWarnCosmicGlare				= mod:NewSpecialWarningYou(250757, nil, nil, nil, 1, 2)
 local yellCosmicGlare					= mod:NewYell(250757)
 local yellCosmicGlareFades				= mod:NewShortFadesYell(250757)
---Torment of the Titans
-local specWarnTormentofTitans			= mod:NewSpecialWarningSpell("ej16138", nil, nil, nil, 1, 7)
 
---General
-local timerBossIncoming					= mod:NewTimer(61, "timerBossIncoming", nil, nil, nil, 1)
---Noura, Mother of Flames
-mod:AddTimerLine(Noura)
-local timerFieryStrikeCD				= mod:NewCDTimer(10.5, 244899, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerWhirlingSaberCD				= mod:NewNextTimer(35.1, 245627, nil, nil, nil, 3)--35-45
-local timerFulminatingPulseCD			= mod:NewNextTimer(40.1, 253520, nil, nil, nil, 3, nil, nil, nil, mod:IsHealer() and 2, 4)
---Asara, Mother of Night
-mod:AddTimerLine(Asara)
-local timerShadowBladesCD				= mod:NewCDTimer(27.6, 246329, nil, nil, nil, 3)
-local timerStormofDarknessCD			= mod:NewNextCountTimer(56.8, 252861, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON, nil, 3, 4)--57+
---Diima, Mother of Gloom
-mod:AddTimerLine(Diima)
-local timerFlashFreezeCD				= mod:NewCDTimer(10.1, 245518, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerChilledBloodCD				= mod:NewNextTimer(25.4, 245586, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
-local timerOrbofFrostCD					= mod:NewNextTimer(30, 253650, nil, nil, nil, 3)
---Thu'raya, Mother of the Cosmos (Mythic)
-mod:AddTimerLine(Thuraya)
 local timerCosmicGlareCD				= mod:NewCDTimer(15.8, 250757, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
+
+mod:AddSetIconOption("SetIconOnCosmicGlare", 250757, true)
+mod:AddBoolOption("IgnoreFirstKick", false)
 --Torment of the Titans
 mod:AddTimerLine(torment)
+local specWarnTormentofTitans			= mod:NewSpecialWarningSpell("ej16138", nil, nil, nil, 1, 7)
+
 ----Activations timers
 local timerMachinationsofAmanThulCD		= mod:NewCastTimer(85, 250335, nil, nil, nil, 6, nil, nil, nil, 1, 5)
 local timerFlamesofKhazgorothCD			= mod:NewCastTimer(85, 250333, nil, nil, nil, 6, nil, nil, nil, 1, 5)
@@ -104,15 +110,8 @@ local timerFuryofGolgannethCD			= mod:NewCastTimer(85, 249793, nil, nil, nil, 6,
 ----Actual phase stuff
 local timerMachinationsofAman			= mod:NewCastTimer(20, 250095, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
-
-mod:AddSetIconOption("SetIconOnFulminatingPulse2", 253520, false)
-mod:AddSetIconOption("SetIconOnChilledBlood2", 245586, false)
-mod:AddSetIconOption("SetIconOnCosmicGlare", 250757, true)
-mod:AddInfoFrameOption(245586, true)
 mod:AddNamePlateOption("NPAuraOnVisageofTitan", 249863)
---mod:AddBoolOption("SetLighting", true)
-mod:AddBoolOption("IgnoreFirstKick", false)
+--MISC option separated on purpose
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)
 mod:AddDropdownOption("InterruptBehavior", {"Three", "Four", "Five"}, "Three", "misc")
 mod:AddDropdownOption("TauntBehavior", {"TwoMythicThreeNon", "TwoAlways", "ThreeAlways"}, "TwoMythicThreeNon", "misc")
@@ -157,11 +156,6 @@ function mod:OnCombatStart(delay)
 	if self.Options.NPAuraOnVisageofTitan then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
 	end
---	if self.Options.SetLighting then
---		CVAR1, CVAR2 = GetCVar("graphicsLightingQuality") or 3, GetCVar("raidGraphicsLightingQuality") or 2--Non raid cvar is nil if 3 (default) and raid one is nil if 2 (default)
---		SetCVar("graphicsLightingQuality", 1)
---		SetCVar("raidGraphicsLightingQuality", 1)
---	end
 	if UnitIsGroupLeader("player") and not self:IsLFR() then
 		if self.Options.InterruptBehavior == "Three" then
 			self:SendSync("Three", self.Options.IgnoreFirstKick)
@@ -181,22 +175,7 @@ function mod:OnCombatEnd()
 	if self.Options.NPAuraOnVisageofTitan then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end
-	--Attempt restore right away
---	if (CVAR1 or CVAR2) and not InCombatLockdown() then
---		SetCVar("graphicsLightingQuality", CVAR1)
---		SetCVar("raidGraphicsLightingQuality", CVAR2)
---		CVAR1, CVAR2 = nil, nil
---	end
 end
-
---Backup check on leaving combat if OnCombatEnd wasn't successful
---function mod:OnLeavingCombat()
---	if CVAR1 or CVAR2 then
---		SetCVar("graphicsLightingQuality", CVAR1)
---		SetCVar("raidGraphicsLightingQuality", CVAR2)
---		CVAR1, CVAR2 = nil, nil
---	end
---end
 
 function mod:OnTimerRecovery()
 	if self:IsMythic() then

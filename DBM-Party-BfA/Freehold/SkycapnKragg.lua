@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2102, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(126832)
 mod:SetEncounterID(2093)
 
@@ -92,7 +92,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 		warnPhase2:Play("ptwo")
 		timerVilebombardmentCD:Start(6.2)
 		timerPowderShotCD:Start(7.3)--5.4 (old)
-		timerBrewCD:Start(20.6)--15.8 (old)
+--		timerBrewCD:Start(9.7)--5-20. This timer just doesn't appear to be consistent at all, so not worth showing on stage 2 start
 		if not self:IsNormal() then
 			timerDiveBombCD:Start(17.7)
 		end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1470, "DBM-Party-Legion", 10, 707)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217011830")
 mod:SetCreatureID(95888)
 mod:SetEncounterID(1818)
 
@@ -18,14 +18,14 @@ local warnDeepeningShadows			= mod:NewSpellAnnounce(213583, 4)
 local warnVengeance					= mod:NewSpellAnnounce(205004, 4)
 
 local specWarnKick					= mod:NewSpecialWarningSpell(197251, "Tank", nil, nil, 3, 2)
-local specWarnDeepeningShadows		= mod:NewSpecialWarningMoveTo(213583, nil, nil, nil, 3, 6)
+local specWarnDeepeningShadows		= mod:NewSpecialWarningMoveTo(213583, nil, nil, nil, 3, 12)
 local specWarnHiddenStarted			= mod:NewSpecialWarningSpell(192750, nil, nil, nil, 2, 2)
 local specWarnHiddenOver			= mod:NewSpecialWarningEnd(192750, nil, nil, nil, 1, 2)
 local specWarnCreepingDoom			= mod:NewSpecialWarningDodge(197422, nil, nil, nil, 2, 2)
-local specWarnVengeance				= mod:NewSpecialWarningMoveTo(205004, nil, nil, nil, 3, 6)
+local specWarnVengeance				= mod:NewSpecialWarningMoveTo(205004, nil, nil, nil, 3, 12)
 
 local timerKickCD					= mod:NewCDTimer(16, 197251, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--16-42
-local timerDeepeningShadowsCD		= mod:NewCDTimer(30.5, 213576, nil, nil, nil, 3)
+local timerDeepeningShadowsCD		= mod:NewCDTimer(30.5, 213583, nil, nil, nil, 3)
 local timerCreepingDoom				= mod:NewBuffActiveTimer(35, 197422, nil, nil, nil, 6)--35-40
 local timerVengeanceCD				= mod:NewCDTimer(35, 205004, nil, nil, nil, 1)--35-40
 
@@ -39,7 +39,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 213576 or spellId == 213583 then
 		if ExtraActionBarFrame:IsShown() then--Has light
 			specWarnDeepeningShadows:Show(args.spellName)
-			specWarnDeepeningShadows:Play("213576")
+			specWarnDeepeningShadows:Play("bringlighttoshadow")
 		else
 			warnDeepeningShadows:Show()
 		end
@@ -66,7 +66,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 205004 then
 		if ExtraActionBarFrame:IsShown() then--Has light
 			specWarnVengeance:Show(args.spellName)
-			specWarnVengeance:Play(205004)
+			specWarnVengeance:Play("bringlighttomob")
 		else
 			warnVengeance:Show()
 		end

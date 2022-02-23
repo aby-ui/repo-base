@@ -205,24 +205,41 @@ function ExRT.F:LockMove(isLocked,touchTexture,dontTouchMouse)
 	end
 end
 
+local MAX_RAID_GROUP = 5
+if ExRT.isClassic and not ExRT.isBC then
+	MAX_RAID_GROUP = 8
+end
+local DIFF_TO_MAX_GROUP = {
+	[8] = 1,	--party mythic
+	[1] = 1,	--party normal
+	[2] = 1,	--party hc
+	[14] = 6,	--raid normal
+	[15] = 6,	--raid hc
+	[16] = 4,	--raid mythic
+	[3] = 2,	--10ppl
+	[5] = 2,	--10ppl
+	[9] = 8,	--40ppl
+	[186] = 8,	--classic 40ppl
+	[148] = 4,	--classic 20ppl
+	[185] = 4,	--classic 20ppl
+	[175] = 2,	--bc 10ppl
+	[176] = 5,	--bc 25ppl
+	[151] = 6,	--lfr
+	[17] = 6,	--lfr
+	[7] = 5,	--lfr [legacy]
+	[33] = 6,	--timewalk raid
+	[18] = 8,	--event 40ppl
+}
 function ExRT.F.GetRaidDiffMaxGroup()
 	local _,instance_type,difficulty = GetInstanceInfo()
 	if (instance_type == "party" or instance_type == "scenario") and not IsInRaid() then
 		return 1
 	elseif instance_type ~= "raid" then
 		return 8
-	elseif difficulty == 8 or difficulty == 1 or difficulty == 2 then
-		return 1
-	elseif difficulty == 14 or difficulty == 15 then
-		return 6
-	elseif difficulty == 16 then
-		return 4
-	elseif difficulty == 3 or difficulty == 5 then
-		return 2
-	elseif difficulty == 9 then
-		return 8
+	elseif difficulty and DIFF_TO_MAX_GROUP[difficulty] then
+		return DIFF_TO_MAX_GROUP[difficulty]
 	else
-		return 5
+		return MAX_RAID_GROUP
 	end
 end
 
@@ -2048,6 +2065,7 @@ ExRT.GDB.EncountersList = {
 	{1582,2329,2327,2334,2328,2336,2333,2331,2335,2343,2345,2337,2344}, --nyalotha
 	{1735,2398,2418,2402,2383,2405,2406,2412,2399,2417,2407},	--castle Nathria
 	{1998,2423,2433,2429,2432,2434,2430,2436,2431,2422,2435},	--sod
+	{2047,2512,2540,2553,2544,2539,2542,2529,2546,2543,2549,2537},	--sfo
 }
 
 function ExRT.F.GetEncountersList(onlyRaid,onlySL,reverse)

@@ -1,9 +1,9 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: GladiatorlosSA
 ## Notes: PvP Sound Alerter
 ## Author: xGrit
 ## SavedVariables: GladiatorlosSADB
-## Version: 3.12
+## Version: 3.13
 
 #embeds.xml
 Locales\locales.xml

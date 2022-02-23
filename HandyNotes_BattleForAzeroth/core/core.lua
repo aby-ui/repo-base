@@ -118,6 +118,7 @@ function Addon:OnLeave(mapID, coord)
     map:SetFocus(node, false, true)
     ns.MinimapDataProvider:RefreshAllData()
     ns.WorldMapDataProvider:RefreshAllData()
+    node:Unrender(GameTooltip)
     GameTooltip:Hide()
 end
 
@@ -152,7 +153,7 @@ function Addon:OnInitialize()
 
     -- Add quick-toggle menu button to top-right corner of world map
     local template = ADDON_NAME .. 'WorldMapOptionsButtonTemplate'
-    ns.world_map_button = LibStub('Krowi_WorldMapButtons-1.0'):Add(template,
+    ns.world_map_button = LibStub('Krowi_WorldMapButtons-1.3'):Add(template,
         'DROPDOWNTOGGLEBUTTON')
 
     -- Query localized expansion title

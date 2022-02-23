@@ -6,14 +6,14 @@ end
 local Details = _G.Details
 local DF = _G.DetailsFramework
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
-local SharedMedia = _G.LibStub:GetLibrary("LibSharedMedia-3.0")
-local LDB = _G.LibStub ("LibDataBroker-1.1", true)
-local LDBIcon = LDB and _G.LibStub("LibDBIcon-1.0", true)
+--local SharedMedia = _G.LibStub:GetLibrary("LibSharedMedia-3.0")
+--local LDB = _G.LibStub ("LibDataBroker-1.1", true)
+--local LDBIcon = LDB and _G.LibStub("LibDBIcon-1.0", true)
 
 --options panel namespace
 Details.options = {}
 
-local tinsert = _G.tinsert
+--local tinsert = _G.tinsert
 local unpack = _G.unpack
 local CreateFrame = _G.CreateFrame
 local UIParent = _G.UIParent
@@ -48,40 +48,27 @@ function Details.options.InitializeOptionsWindow(instance)
 	f.__name = "Options"
 	f.real_name = "DETAILS_OPTIONS"
 	f.__icon = [[Interface\Scenarios\ScenarioIcon-Interact]]
-    _G.DetailsPluginContainerWindow.EmbedPlugin (f, f, true)
+    _G.DetailsPluginContainerWindow.EmbedPlugin(f, f, true)
     f.sectionFramesContainer = {}
     Details:FormatBackground(f)
 
-    DF:ApplyStandardBackdrop (f)
+    DF:ApplyStandardBackdrop(f)
     local titleBar = DF:CreateTitleBar(f, "Options Panel")
     titleBar.Text:Hide()
 
     local titleText = DF:NewLabel(titleBar, nil, "$parentTitleLabel", "title", "Details! " .. Loc ["STRING_OPTIONS_WINDOW"], "GameFontHighlightLeft", 12, {227/255, 186/255, 4/255})
     titleText:SetPoint("center", titleBar, "center")
-    --titleText:SetPoint("top", f, "top", 0, -8)
 
     f:Hide()
-
-    DF:CreateScaleBar(DetailsOptionsWindow, Details.options_window)
-    DetailsOptionsWindow:SetScale (Details.options_window.scale)
-
-    --[=[]]
-    local closeButton = CreateFrame("button", "DetailsOptionsWindowCloseButton", DetailsOptionsWindow.widget, "UIPanelCloseButton")
-    closeButton:SetWidth(32)
-    closeButton:SetHeight(32)
-    --closeButton:SetPoint("TOPRIGHT", DetailsOptionsWindow.widget, "TOPRIGHT", 0, 0)
-    closeButton:SetText("X")
-    closeButton:SetFrameLevel(closeButton:GetFrameLevel()+2)
---]=]
 
     --select the instance to edit
     local onSelectInstance = function (_, _, instanceId)
         local instance = _detalhes.tabela_instancias[instanceId]
-        
+
         if (not instance:IsEnabled() or not instance:IsStarted()) then
             _detalhes.CriarInstancia (_, _, instance.meu_id)
         end
-        
+
         Details.options.SetCurrentInstance(instance)
         f.updateMicroFrames()
     end
@@ -192,8 +179,6 @@ function Details.options.InitializeOptionsWindow(instance)
 
     --search field
 	local searchBox = DF:CreateTextEntry(f, function()end, 150, 20, _, _, _, options_dropdown_template)
-	searchBox:SetHook ("OnChar", f.OnSearchBoxTextChanged)
-	searchBox:SetHook ("OnTextChanged", f.OnSearchBoxTextChanged)
 	searchBox:SetPoint ("topright", f, "topright", -5, -30)
 
 	local searchLabel = DF:CreateLabel(f, "Search:", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))

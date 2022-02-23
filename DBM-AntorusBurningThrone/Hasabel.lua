@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1985, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(122104)
 mod:SetEncounterID(2064)
 mod:DisableESCombatDetection()--Remove if blizz fixes clicking portals causing this event to fire (even though boss isn't engaged)
@@ -39,22 +39,9 @@ local Nathreza = DBM:EJ_GetSectionInfo(15802)
  or (ability.id = 245050 or ability.id = 244598) and type = "cast"
  --]]
 --Platform: Nexus
+mod:AddTimerLine(Nexus)
 local warnRealityTear					= mod:NewStackAnnounce(244016, 2, nil, "Tank")
---Platform: Xoroth
-local warnXorothPortal					= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 7)
-local warnAegisofFlames					= mod:NewTargetAnnounce(244383, 3, nil, nil, nil, nil, nil, nil, true)
-local warnAegisofFlamesEnded			= mod:NewEndAnnounce(244383, 1)
-local warnEverburningFlames				= mod:NewTargetAnnounce(244613, 2, nil, false)
---Platform: Rancora
-local warnRancoraPortal					= mod:NewSpellAnnounce(246082, 2, nil, nil, nil, nil, nil, 7)
-local warnCausticSlime					= mod:NewTargetAnnounce(244849, 2, nil, false)
---Platform: Nathreza
-local warnNathrezaPortal				= mod:NewSpellAnnounce(246157, 2, nil, nil, nil, nil, nil, 7)
-local warnDelusions						= mod:NewTargetAnnounce(245050, 2, nil, "Healer")
-local warnCloyingShadows				= mod:NewTargetAnnounce(245118, 2, nil, false)
-local warnHungeringGloom				= mod:NewTargetAnnounce(245075, 2, nil, false)
 
---Platform: Nexus
 local specWarnRealityTear				= mod:NewSpecialWarningStack(244016, nil, 2, nil, nil, 1, 6)
 local specWarnRealityTearOther			= mod:NewSpecialWarningTaunt(244016, nil, nil, nil, 1, 2)
 local specWarnTransportPortal			= mod:NewSpecialWarningSwitch(244677, "-Healer", nil, 2, 1, 2)
@@ -62,13 +49,35 @@ local specWarnCollapsingWorld			= mod:NewSpecialWarningCount(243983, nil, nil, n
 local specWarnFelstormBarrage			= mod:NewSpecialWarningDodge(244000, nil, nil, nil, 2, 2)
 local specWarnFieryDetonation			= mod:NewSpecialWarningInterrupt(244709, "HasInterrupt", nil, 2, 1, 2)
 local specWarnHowlingShadows			= mod:NewSpecialWarningInterrupt(245504, "HasInterrupt", nil, nil, 1, 2)
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+
+local timerRealityTearCD				= mod:NewCDTimer(12.1, 244016, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerCollapsingWorldCD			= mod:NewCDTimer(32.9, 243983, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 3)--32.9-41
+local timerFelstormBarrageCD			= mod:NewCDTimer(32.2, 244000, nil, nil, nil, 3, nil, nil, nil, 3, 3)--32.9-41
+local timerTransportPortalCD			= mod:NewCDTimer(41.2, 244677, nil, nil, nil, 1)--41.2-60. most of time 42 on nose.
+
+--local berserkTimer					= mod:NewBerserkTimer(600)
+
+mod:AddRangeFrameOption("8/10")
+mod:AddBoolOption("ShowAllPlatforms", false)
 --Platform: Xoroth
+mod:AddTimerLine(Xoroth)
+local warnXorothPortal					= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 7)
+local warnAegisofFlames					= mod:NewTargetAnnounce(244383, 3, nil, nil, nil, nil, nil, nil, true)
+local warnAegisofFlamesEnded			= mod:NewEndAnnounce(244383, 1)
+local warnEverburningFlames				= mod:NewTargetAnnounce(244613, 2, nil, false)
+
 local specWarnFlamesofXoroth			= mod:NewSpecialWarningInterrupt(244607, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSupernova					= mod:NewSpecialWarningDodge(244598, nil, nil, nil, 2, 2)
 local specWarnEverburningFlames			= mod:NewSpecialWarningMoveTo(244613, nil, nil, nil, 1)--No voice yet
 local yellEverburningFlames				= mod:NewFadesYell(244613)
+
+--local timerSupernovaCD					= mod:NewCDTimer(6.1, 244598, nil, nil, nil, 3)
+local timerFlamesofXorothCD				= mod:NewCDTimer(6.9, 244607, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 --Platform: Rancora
+mod:AddTimerLine(Rancora)
+local warnRancoraPortal					= mod:NewSpellAnnounce(246082, 2, nil, nil, nil, nil, nil, 7)
+local warnCausticSlime					= mod:NewTargetAnnounce(244849, 2, nil, false)
+
 local specWarnFelSilkWrap				= mod:NewSpecialWarningYou(244949, nil, nil, nil, 1, 2)
 local yellFelSilkWrap					= mod:NewYell(244949)
 local specWarnFelSilkWrapOther			= mod:NewSpecialWarningSwitch(244949, "Dps", nil, nil, 1, 2)
@@ -76,36 +85,24 @@ local specWarnLeechEssence				= mod:NewSpecialWarningSpell(244915, nil, nil, nil
 local specWarnCausticSlime				= mod:NewSpecialWarningMoveTo(244849, nil, nil, nil, 1)--No voice yet
 local specWarnCausticSlimeLFR			= mod:NewSpecialWarningMoveAway(244849, nil, nil, nil, 1)--No voice yet
 local yellCausticSlime					= mod:NewFadesYell(244849)
+
+local timerFelSilkWrapCD				= mod:NewCDTimer(16.6, 244949, nil, nil, nil, 3)
+local timerPoisonEssenceCD				= mod:NewCDTimer(9.4, 246316, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
+local timerLeechEssenceCD				= mod:NewCDTimer(9.4, 244915, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 --Platform: Nathreza
+mod:AddTimerLine(Nathreza)
+local warnNathrezaPortal				= mod:NewSpellAnnounce(246157, 2, nil, nil, nil, nil, nil, 7)
+local warnDelusions						= mod:NewTargetAnnounce(245050, 2, nil, "Healer")
+local warnCloyingShadows				= mod:NewTargetAnnounce(245118, 2, nil, false)
+local warnHungeringGloom				= mod:NewTargetAnnounce(245075, 2, nil, false)
+
 local specWarnDelusions					= mod:NewSpecialWarningYou(245050, nil, nil, nil, 1, 2)
 --local specWarnCorrupt					= mod:NewSpecialWarningInterrupt(245040, "HasInterrupt", nil, nil, 1, 2)
 local specWarnCloyingShadows			= mod:NewSpecialWarningYou(245118, nil, nil, nil, 1)--No voice yet (you warning for now, since it's secondary debuff you move to fel miasma)
 local yellCloyingShadows				= mod:NewFadesYell(245118)
 local specWarnHungeringGloom			= mod:NewSpecialWarningMoveTo(245075, nil, nil, nil, 1)--No voice yet
 
---Platform: Nexus
-mod:AddTimerLine(Nexus)
-local timerRealityTearCD				= mod:NewCDTimer(12.1, 244016, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerCollapsingWorldCD			= mod:NewCDTimer(32.9, 243983, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 3)--32.9-41
-local timerFelstormBarrageCD			= mod:NewCDTimer(32.2, 244000, nil, nil, nil, 3, nil, nil, nil, 3, 3)--32.9-41
-local timerTransportPortalCD			= mod:NewCDTimer(41.2, 244677, nil, nil, nil, 1)--41.2-60. most of time 42 on nose.
---Platform: Xoroth
-mod:AddTimerLine(Xoroth)
---local timerSupernovaCD					= mod:NewCDTimer(6.1, 244598, nil, nil, nil, 3)
-local timerFlamesofXorothCD				= mod:NewCDTimer(6.9, 244607, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
---Platform: Rancora
-mod:AddTimerLine(Rancora)
-local timerFelSilkWrapCD				= mod:NewCDTimer(16.6, 244949, nil, nil, nil, 3)
-local timerPoisonEssenceCD				= mod:NewCDTimer(9.4, 246316, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
-local timerLeechEssenceCD				= mod:NewCDTimer(9.4, 244915, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
---Platform: Nathreza
-mod:AddTimerLine(Nathreza)
 local timerDelusionsCD					= mod:NewCDTimer(14.6, 245050, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON..DBM_COMMON_L.MAGIC_ICON)
-
---local berserkTimer					= mod:NewBerserkTimer(600)
-
-mod:AddRangeFrameOption("8/10")
-mod:AddBoolOption("ShowAllPlatforms", false)
 
 mod.vb.shieldsActive = false
 mod.vb.felBarrageCast = 0

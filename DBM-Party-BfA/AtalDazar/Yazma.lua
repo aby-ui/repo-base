@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2030, "DBM-Party-BfA", 1, 968)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(122968)
 mod:SetEncounterID(2087)
 
@@ -34,8 +34,8 @@ local timerEchoesCD					= mod:NewCDTimer(32.8, 250050, nil, nil, nil, 3)
 function mod:OnCombatStart(delay)
 	timerWrackingPainCD:Start(3.5-delay)
 	timerSkewerCD:Start(5-delay)
-	timerSoulrendCD:Start(10-delay)
-	timerEchoesCD:Start(16.9-delay)
+	timerSoulrendCD:Start(9.6-delay)
+	timerEchoesCD:Start(15.6-delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)

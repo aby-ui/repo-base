@@ -194,12 +194,12 @@ function Line:Initialize(attrs)
 
     -- find an appropriate number of segments
     self.distance = sqrt(((x2 - x1) * 1.85) ^ 2 + (y2 - y1) ^ 2)
-    self.segments = floor(self.distance / 0.015)
+    self.segments = max(floor(self.distance / 0.015), 1)
 
     self.path = {}
     for i = 0, self.segments, 1 do
-        local segX = x1 + (x2 - x1) / self.segments * i
-        local segY = y1 + (y2 - y1) / self.segments * i
+        local segX = x1 + ((x2 - x1) / self.segments) * i
+        local segY = y1 + ((y2 - y1) / self.segments) * i
         self.path[#self.path + 1] = HandyNotes:getCoord(segX, segY)
     end
 end

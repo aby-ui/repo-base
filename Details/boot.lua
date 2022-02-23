@@ -1,26 +1,27 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> global name declaration
-		
+
+		_ = nil
 		local _ = nil
 		_detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
-		
+
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 9213
-		_detalhes.alpha_build_counter = 9213 --if this is higher than the regular counter, use it instead
-		_detalhes.bcc_counter = 30
+		_detalhes.build_counter = 9693
+		_detalhes.alpha_build_counter = 9693 --if this is higher than the regular counter, use it instead
+		_detalhes.bcc_counter = 31
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. _detalhes.build_counter
-		_detalhes.realversion = 145 --core version, this is used to check API version for scripts and plugins (see alias below)
+		_detalhes.realversion = 146 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
-		
+
 		_detalhes.BFACORE = 131 --core version on BFA launch
 		_detalhes.SHADOWLANDSCORE = 143 --core version on Shadowlands launch
-		
+
 		Details = _detalhes
-		
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> initialization stuff
 local _
@@ -33,6 +34,50 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+
+		--[=[
+			Added an option to change your own bar color.
+			Added 'Ignore this Npc' into the Npc list under the spell list section.
+			Bookmark window now uses the same scale than the options panel.
+			Class Color window now uses the same scale than the options panel.
+			If not casted on the player itself Power Infusion now shows in the buff list of the target.
+			Allowed nicknames on custom displays (by Flamanis).
+			Aligned Text Columns enabled is now default for new installs.
+			Fodder to the flames DH ability won't count damage done by the player on the add summoned.
+			Spell customization now get date from Lib-OpenRaid.
+			Fixed the load time for the Npc Ids panel on the spell list section.
+			Fixed all issues with the options panel scale.
+			Fixed tooltips overlap when the window is positioned at the top of the screen (fix by Flamanis).
+			Fixed auto hide windows which wasn't saving its group when unhiding (fix by Flamanis).
+			Fixed some XML Headers which was giving errors on loading (fix by github user h0tw1r3).
+			Fixed '/details me' on TBC, which wasn't working correctly (fix by github user Baugstein).
+			Fixed a typo on Vanguard plugin (fix by github user cruzerthebruzer).
+			Fixed font 'NuevaStd' where something the font didn't work at all.
+			Fixed an issue where for some characters the options panel won't open showing an error in the chat instead.
+			New API: combat:GetPlayerDeaths(deadPlayerName).
+			New API: Details:ShowDeathTooltip(combatObject, deathTable) for Cooltip tooltips.
+		]=]
+
+		{"v9.1.5.9213.146", "February 15th, 2022"},
+		"Added an option to change your own bar color.",
+		"Added 'Ignore this Npc' into the Npc list under the spell list section.",
+		"Bookmark window now uses the same scale than the options panel.",
+		"Class Color window now uses the same scale than the options panel.",
+		"If not casted on the player itself Power Infusion now shows in the buff list of the target.",
+		"Allowed nicknames on custom displays (by Flamanis).",
+		"Aligned Text Columns enabled is now default for new installs.",
+		"Fodder to the flames DH ability won't count damage done by the player on the add summoned.",
+		"Fixed the load time for the Npc Ids panel on the spell list section.",
+		"Fixed all issues with the options panel scale.",
+		"Fixed tooltips overlap when the window is positioned at the top of the screen (fix by Flamanis).",
+		"Fixed auto hide windows which wasn't saving its group when unhiding (fix by Flamanis).",
+		"Fixed some XML Headers which was giving errors on loading (fix by github user h0tw1r3).",
+		"Fixed '/details me' on TBC, which wasn't working correctly (fix by github user Baugstein).",
+		"Fixed a typo on Vanguard plugin (fix by github user cruzerthebruzer).",
+		"Fixed font 'NuevaStd' where something the font didn't work at all.",
+		"Fixed an issue where for some characters the options panel won't open showing an error in the chat instead.",
+		"New API: combat:GetPlayerDeaths(deadPlayerName).",
+		"New API: Details:ShowDeathTooltip(combatObject, deathTable) for Cooltip tooltips.",
 
 		{"v9.1.5.9213.145", "December 9th, 2021"},
 		"Fixed an issue where after reloading, overall data won't show the players nickname.",
@@ -231,11 +276,12 @@ do
 			--	/script Details:OpenPlugin ('Advanced Death Logs'); local a = Details_DeathGraphsModeEnduranceButton and Details_DeathGraphsModeEnduranceButton.MyObject:Click()
 				{Name = "Report What is Shown In the Window", Desc = "Report the current data shown in the window, the number 1 is the window number, replace it to report another window.", MacroText = "/script Details:FastReportWindow(1)"},
 			}
-			
+
 		--> current instances of the exp (need to maintain)
 			_detalhes.InstancesToStoreData = { --mapId
 				[2296] = true, --castle narnia
 				[2450] = true, --sanctum of domination
+				[2481] = true, --sepulcher of the first ones
 			}
 
 		--> armazena os escudos - Shields information for absorbs
@@ -384,7 +430,8 @@ do
 		--> player detail skin
 			_detalhes.playerdetailwindow_skins = {}
 
-		_detalhes.BitfieldSwapDebuffsIDs = {265646, 272407, 269691, 273401, 269131, 260900, 260926, 284995, 292826, 311367, 310567, 308996, 307832, 327414, 337253}
+		_detalhes.BitfieldSwapDebuffsIDs = {265646, 272407, 269691, 273401, 269131, 260900, 260926, 284995, 292826, 311367, 310567, 308996, 307832, 327414, 337253,
+											36797, 37122}
 		
 		--> auto run code
 		_detalhes.RunCodeTypes = {
@@ -781,7 +828,7 @@ do
 		SharedMedia:Register ("border", "1 Pixel", [[Interface\Buttons\WHITE8X8]])
 		--misc fonts
 		SharedMedia:Register ("font", "Oswald", [[Interface\Addons\Details\fonts\Oswald-Regular.ttf]])
-		SharedMedia:Register ("font", "Nueva Std Cond", [[Interface\Addons\Details\fonts\NuevaStd-Cond.ttf]])
+		SharedMedia:Register ("font", "Nueva Std Cond", [[Interface\Addons\Details\fonts\Nueva Std Cond.ttf]])
 		SharedMedia:Register ("font", "Accidental Presidency", [[Interface\Addons\Details\fonts\Accidental Presidency.ttf]])
 		SharedMedia:Register ("font", "TrashHand", [[Interface\Addons\Details\fonts\TrashHand.TTF]])
 		SharedMedia:Register ("font", "Harry P", [[Interface\Addons\Details\fonts\HARRYP__.TTF]])

@@ -127,7 +127,7 @@
 			[29166] = "innervate",
 			--[200851] = "rageOfSleeper",
 			--[203727] = "thorns", -- (Resto)
-			[236696] = "thorns", -- (Feral/Balance)
+			--[236696] = "thorns", -- (Feral/Balance)
 			[305497] = "thorns", -- Resto/Feral/Balance 8.2
 			[163505] = "rakeStun",
 			--[323557] = "ravenousFrenzy", -- Venthyr
@@ -922,7 +922,7 @@
 			[207777] = "dismantle",
 			[200806] = "exsanguinate",
 			[408] = "kidney",
-			[199804] = "kidney",
+			--[199804] = "kidney",
 			--[185767] = "cannonballBarrage",
 			[193316] = "diceRoll",
 			--[192759] = "kingsbane",

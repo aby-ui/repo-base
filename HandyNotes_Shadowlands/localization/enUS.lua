@@ -671,3 +671,140 @@ A tormentor event spawns every 2 hours on the hour. The bosses will always spawn
 
 The {item:185972} can be looted once a week and contains 50 {currency:1906}.
 ]]
+
+-------------------------------------------------------------------------------
+-------------------------------- ZERETH MORTIS --------------------------------
+-------------------------------------------------------------------------------
+
+L['corrupted_architect_note'] = 'Engage {npc:183958} and {npc:183961} to activate the rare.'
+L['dune_dominance_note'] = 'All three rare elites for the {achievement:15392} achievement spawn at this location.'
+L['feasting_note'] = 'Will sometimes circle the area before returning to this spot.'
+L['furidian_note'] = 'Activate three |cFFFFFD00Empowered Keys|r in the area, then unlock the |cFFFFFD00Suspiciously Angry Vault|r.'
+L['garudeon_note'] = 'Collect {npc:183562s} from the surrounding area and use {spell:362655} to feed the {npc:183554s}. Once all three are fed, {npc:180924} will activate.'
+L['gluttonous_overgrowth_note'] = 'Break all nearby {npc:184048s} to activate the rare.'
+L['hirukon_note'] = [[
+To entice {npc:180978} to the surface, an {item:187923} must be created.
+
+1. Fish up some {item:187662} from the nearby waters.
+
+2. Fish up a {item:187915} from the |cFFFFFD00Pungent Blobfish Cluster|r inside Coilfang Reservoir in Zangarmarsh. The pool is to the right when you enter the cavern.
+
+3. Fish up a {item:187922} from the |cFFFFFD00Flipper Fish School|r near the Kelya's Grave flight point in Nazjatar.
+
+4. Loot a (very well hidden) {item:187916} from a balcony on the second level of Nar'shola Terrace in the Shimmering Expanse (34.7, 75.0).
+
+5. Locate {npc:182194} at the pond south of the Seat of the Primus in Maldraxxus. Ask her to craft the finished {item:187923}.
+
+6. Use the {item:187923}, allowing you to see the |cFFFFFD00Aurelid Cluster|r fishing pool near {npc:180978} for 15min. Fish in it to summon {npc:180978} to the surface.
+]] -- Breaking my rule of no coords in the notes for this one
+L['protector_first_ones_note'] = 'Requires two people. Bring the matching runes to each console (found in the surrounding area) to open the barrier.'
+L['the_engulfer_note'] = 'Defend {npc:183505} until {npc:183516} jumps out of the rift.'
+L['zatojin_note'] = 'Pull nearby {npc:183721s} and let them apply 20 stacks of {spell:362976} until you are {spell:362983}. You must be standing over the {npc:183774} corpses when you are paralyzed for {npc:183764} to notice you.'
+
+L['architects_reserve_note'] = 'Complete the {quest:64829} questline from {npc:180630} in Pilgrim\'s Grace. The next day, complete {quest:65426} questline from {npc:181273} to unlock the treasure.'
+L['bushel_of_produce_note'] = 'Kill a {npc:182368} to the north while it is buffed with {spell:360945} to gain the buff yourself. Kill more {npc:182368s} (they do not need the buff) until you are at 5 stacks, then break down the door to the treasure.'
+L['crushed_crate_note'] = 'Loot the {item:189767} from the indent in the large orb to the north. Give it to {npc:185151} in exchange for the {item:189768} which can break the fallen rocks.'
+L['domination_cache_note'] = 'The {item:189704} has a low chance to drop from {npc:181403s} and {npc:182426s} in the area.'
+L['drowned_broker_supplies_note'] = 'Tell {npc:181059} to take control of the nearby {npc:185282}.'
+L['forgotten_protovault_note'] = 'Only available during the {wq:Frog\'it} world quest.'
+L['grateful_boon_note'] = 'Difficult to reach without flying; use {spell:300728} or {spell:111771} to ascend the mountain. Soothe all 12 creatures in the area and {npc:185293} will spawn the treasure.'
+L['library_vault_note'] = 'Click tablets in the Lexical Grotto until you find the correct {spell:362062} buff to open the vault.'
+L['mistaken_ovoid_note'] = 'Inside Dimensional Falls cavern, behind the balls.'
+L['ripened_protopear_note'] = 'Begin the {quest:64641} quest chain to gain access to the Blooming Foundry. Collect 5 {spell:367180} (green clouds) inside and bring them to the {npc:185416} to pollinate it.'
+L['sphere_treasure_note'] = 'Carefully jump up the spheres until you reach the treasure.'
+L['submerged_chest_note'] = 'Absorb the |cFFFFFD00Dangerous Orb of Power|r to the south, then interact with the |cFFFFFD00Forgotten Pump|r near the treasure.'
+L['symphonic_vault_note'] = 'Examine the {npc:183998} to hear a sequence of four sounds. Each {npc:183950} in the room plays a single sound. Interact with them in the matching order to unlock the treasure.'
+L['template_archive_note'] = 'Push the {npc:183339} in the room into the {npc:183337} blocking the path to the treasure.'
+L['undulating_foliage_note'] = [[
+Press the four {npc:185390s} to activate the teleporter in the center room of the Catalyst Wards.
+
+• Outside behind the |cFFFFFD00Catalyst Wards Lock|r
+• In the south-west room of the wards
+• In the southern room with {npc:181652}
+• In the south-east room of the wards
+]]
+
+L['prying_eye_discovery'] = 'Prying Eye Discovery'
+L['prying_eye_discovery_note'] = 'Easier to reach once flying is unlocked.'
+L['pulp_covered_relic'] = 'Pulp-Covered Relic'
+L['sandworn_chest'] = 'Sandworn Chest'
+L['sandworn_chest_note'] = 'Loot 5x {item:190198} from mobs in the area to construct the {item:190197}.'
+
+L['cache_avian_nest'] = 'Avian Nest'
+L['cache_cypher_bound'] = 'Cypher Bound Chest'
+L['cache_discarded_automa'] = 'Discarded Automa Scrap'
+L['cache_forgotten_vault'] = 'Forgotten Treasure Vault'
+L['cache_mawsworn_supply'] = 'Mawsworn Supply Chest'
+L['cache_tarachnid_eggs'] = 'Tarachnid Eggs'
+
+L['cache_cantaric'] = 'Cantaric Cache'
+L['cache_fugueal'] = 'Fugueal Cache'
+L['cache_glissandian'] = 'Glissandian Cache'
+L['cache_mezzonic'] = 'Mezzonic Cache'
+L['cache_toccatian'] = 'Toccatian Cache'
+
+L['schematic_treasure_note'] = '|cFFFF8C00This treasure will not contain the protoform schematic if you have not yet unlocked the synthesizer. If you have already looted the treasure, you will find the schematic on the ground nearby.|r'
+L['schematic_treasure_mount_note'] = '|cFFFF8C00This schematic is found in a nearby one-time treasure. If the treasure is opened prior to unlocking the mount synthesizer, the schematic can be found here.|r'
+L['schematic_treasure_pet_note'] = '|cFFFF8C00This schematic is found in a nearby one-time treasure. If the treasure is opened prior to unlocking the pet synthesizer, the schematic can be found here.|r'
+L['schematic_bronze_helicid_note'] = 'Chance to be found in the {item:190610} from the bi-weekly quest {quest:65324}.'
+L['schematic_ambystan_darter_note'] = 'Hidden under the water next to the {npc:185312}.'
+L['schematic_bronzewing_vespoid_note'] = 'Inside the Gravid Repose.'
+L['schematic_buzz_note'] = 'Chance to be found in a {npc:185265}.'
+L['schematic_darkened_vombata_note'] = 'Inside a floating cage.'
+L['schematic_deathrunner_note'] = 'Obtained as part of the {spell:366367} unlock quest chain.'
+L['schematic_desertwing_hunter_note'] = 'Located on top of the pillar.'
+L['schematic_fierce_scarabid_note'] = 'Hidden under the platform the {npc:181870} is standing on.'
+L['schematic_forged_spiteflyer_note'] = 'Sticking out of a vespoid hive cluster.'
+L['schematic_genesis_crawler_note'] = 'Found on top of the entrance to the Genesis Alcove.'
+L['schematic_goldplate_bufonid_note'] = 'Small chance to drop from {npc:178803s}.'
+L['schematic_heartbond_lupine_note'] = 'Small chance to drop from the {npc:179939}.'
+L['schematic_leaping_leporid_note'] = 'Found on top of a floating tree.'
+L['schematic_microlicid_note'] = 'On the lowest branch of the floating tree, underneath some foliage.'
+L['schematic_pale_regal_cervid_note'] = 'Research all cyphers at the {npc:181397} to earn {achievement:15402}.'
+L['schematic_prototickles_note'] = 'Attached to a floating chain inside the vines above the {npc:180978} rare.'
+L['schematic_raptora_swooper_note'] = 'Found inside the Chamber of Shaping.'
+L['schematic_resonant_echo_note'] = 'Chance to be found inside a |cFFFFFD00Crystallized Echo of the First Song|r.'
+L['schematic_russet_bufonid_note'] = 'Chance to be found in the {item:187780} paragon cache.'
+L['schematic_scarlet_helicid_note'] = 'Found on top of the arch structure.'
+L['schematic_shelly_note'] = 'Located on the back side of a shelf in the Lexical Grotto. Requires a teleport ability to climb the shelf.'
+L['schematic_tarachnid_creeper_note'] = 'Inside a small structure in the Endless Sands.'
+L['schematic_terror_jelly_note'] = 'On top of the square pylon next to the ramp.'
+L['schematic_tunneling_vombata_note'] = 'Next to some rubble in a blocked tunnel inside the Locrian Esper complex.'
+L['schematic_vespoid_flutterer_note'] = 'Sticking out of a pile of sand on the Primus Locus tier of the Resonant Peaks.'
+
+L['concordance_excitable'] = 'Excitable Concordance'
+L['concordance_mercurial'] = 'Mercurial Concordance'
+L['concordance_tranquil'] = 'Tranquil Concordance'
+L['concordance_note'] = 'Read each concordance to unlock entries at the |cFFFFFD00Lore Console|r in |cFFFFFD00Exile\'s Hollow|r.'
+
+L['echoed_jiro_note'] = 'Spend {npc:181059} energy to gain temporary buffs. Requires |cFFFFFD00Creatian|r research at the {npc:181397}.'
+
+L['bygone_elemental_note'] = 'A {npc:181221} can spawn in place of any {npc:179007} in the area.'
+L['gaiagantic_note'] = 'Only spawns when {npc:177958} offers the {quest:64785} daily quest.'
+L['misaligned_enforcer_note'] = 'Patrols the area and then despawns at the end of his route.'
+L['overcharged_vespoid_note'] = 'Can spawn as part of any swarm pack in the area.'
+L['runethief_xylora_note'] = 'Spawns stealthed in the Pilgrim\'s Grace area.'
+
+L['patient_bufonid_note'] = 'Progress in the Zereth Mortis story until {npc:180950} offers {quest:65727}. Complete the quests each day to lure the {npc:185798} out of the pond.'
+L['patient_bufonid_note_day1'] = 'Collect 15x {item:190852} from Vespoid in the zone.'
+L['patient_bufonid_note_day2'] = 'Purchase 30x {item:172053} from the Auction House.'
+L['patient_bufonid_note_day3'] = 'Purchase 200x {item:173202} from the Auction House.'
+L['patient_bufonid_note_day4'] = 'Purchase 10x {item:173037} from the Auction House.'
+L['patient_bufonid_note_day5'] = 'Collect 5x {item:187704} from mobs in the zone.'
+L['patient_bufonid_note_day6'] = 'Purchase 5x {item:190880} from {npc:185748} near Pilgrim\'s Grace.'
+L['patient_bufonid_note_day7'] = 'Purchase 1x {item:187171} from the {npc:180114} in the Tazavesh dungeon.'
+
+L['options_icons_code_creature'] = '{achievement:15211}'
+L['options_icons_code_creature_desc'] = 'Display creature locations for the {achievement:15211} achievement.'
+L['options_icons_concordances'] = 'Lore Concordances'
+L['options_icons_concordances_desc'] = 'Display locations of lore concordance consoles.'
+L['options_icons_echoed_jiros'] = 'Echoed Jiro'
+L['options_icons_echoed_jiros_desc'] = 'Display locations of |cFFFFFD00Echoed Jiro|r offering buffs.'
+L['options_icons_exile_tales'] = '{achievement:15509}'
+L['options_icons_exile_tales_desc'] = 'Display tale locations for the {achievement:15509} achievement.'
+L['options_icons_protoform_schematics'] = 'Protoform Schematics'
+L['options_icons_protoform_schematics_desc'] = 'Display locations of mount and pet schematics.'
+L['options_icons_puzzle_caches'] = 'Puzzle Caches'
+L['options_icons_puzzle_caches_desc'] = 'Display possible locations of puzzle caches.'
+L['options_icons_zereth_caches'] = 'Cypher Caches'
+L['options_icons_zereth_caches_desc'] = 'Display possible locations for cypher caches.'

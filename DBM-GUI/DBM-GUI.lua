@@ -406,20 +406,23 @@ function DBM_GUI:CreateBossModPanel(mod)
 			if spellID:find("^line") then
 				panel:CreateLine(options)
 			else
-				local title, desc
+				local title, desc, _, icon
 				if tonumber(spellID) then
 					local _title = DBM:GetSpellInfo(spellID)
 					if _title then
-						title, desc = _title, tonumber(spellID)
+						title, desc, icon = _title, tonumber(spellID), GetSpellTexture(spellID)
 					else--Not a valid spellid (Such as a ptr/beta mod loaded on live
-						title, desc = spellID, L.NoDescription
+						title, desc, icon = spellID, L.NoDescription, 136116
 					end
 				elseif spellID:find("^ej") then
-					title, desc = DBM:EJ_GetSectionInfo(spellID:gsub("ej", ""))
+					title, desc, _, icon = DBM:EJ_GetSectionInfo(spellID:gsub("ej", ""))
+				elseif spellID:find("^at") then
+					spellID = spellID:gsub("at", "")
+					_, title, _, _, _, _, _, desc, _, icon = GetAchievementInfo(spellID)
 				else
 					title = spellID
 				end
-				local catpanel = panel:CreateAbility(title)
+				local catpanel = panel:CreateAbility(title, icon)
 				if desc then
 					catpanel:CreateSpellDesc(desc)
 				end

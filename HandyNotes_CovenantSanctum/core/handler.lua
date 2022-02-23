@@ -278,7 +278,7 @@ local currentMapID = nil
             return false
         end
         if (point.icon == "anvil" and not private.db.show_vendor) then return false end
-        if (point.icon == "flightmaster" and not private.db.show_others) then return false end
+        if (point.icon == "flightMaster" and not private.db.show_others) then return false end
         if (point.icon == "innkeeper" and not private.db.show_innkeeper) then return false end
         if (point.icon == "portal" and (not private.db.show_portal or IsAddOnLoaded("HandyNotes_TravelGuide"))) then return false end
         if (point.icon == "mail" and not private.db.show_mail) then return false end

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220217011830")
 mod:SetCreatureID(98207)
 mod:SetEncounterID(1826)
 mod:SetUsedIcons(2, 1)
@@ -32,8 +32,8 @@ local specWarnBlinkNear			= mod:NewSpecialWarningClose(199811, nil, nil, nil, 1,
 local specWarnVenomGTFO			= mod:NewSpecialWarningMove(200040, nil, nil, nil, 1, 2)
 
 local timerBlinkCD				= mod:NewNextTimer(30, 199811, nil, nil, nil, 3)
-local timerWebCD				= mod:NewCDTimer(21.8, 200227, nil, nil, nil, 3)--21-26
-local timerVenomCD				= mod:NewCDTimer(30, 200024, nil, nil, nil, 3)--30-33
+local timerWebCD				= mod:NewCDTimer(21.8, 200284, nil, nil, nil, 3)--21-26
+local timerVenomCD				= mod:NewCDTimer(30, 200040, nil, nil, nil, 3)--30-33
 
 mod:AddSetIconOption("SetIconOnWeb", 200284, true, false, {1, 2})
 

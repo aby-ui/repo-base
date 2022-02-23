@@ -36,6 +36,26 @@ v2.6.30
 Pre v2.6.30 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.6.38
+	Bug Fixes
+		Fixed an issue that caused Icy Propulsion's cooldown reduction to end prematurely.
+		Casting Condemn will correctly apply Anger Management's CDR for non-synced units.
+	Spells updated for 9.2
+	Removed options from the Interface menu d/t taint. Type /oc to open the option panel.
+
+v2.6.37
+	Bug Fixes
+		Sinful Delight (Runeforge) will correctly reduce Mirrors of Torment by 45seconds when it's dispelled.
+		Tiger Palm will no longer reduce Bonedust Brew's (Covenant) cooldown for MW and WW specs. <iss#332>
+		Walk with the Ox (Conduit) CDR will correctly be limited to once per 100ms (Shuffle).
+		Sinister Teachings (Runeforge) CDR will correctly be limited to once per 750ms.
+		CDR by haste is now applied after additive modifiers.
+	CD Modifiers
+		Shifting Powers CDR now applies to Alter Time for Arcane spec(was Frost & Fire only).
+		Kiss of Death (Runeforge) will reduce SW: Death cooldown by 12 seconds(was 8s).
+		Sinful Delight CDR on consuming Clearcast, Brain Freeze, and a Fireblast charge is now 4s(was 3s).
+		Tiger Palm and Keg Smash reduces Bonedust Brew's cooldown by an additional 1second while it's active for BM spec.
+
 v2.6.36
 	Bug Fixes
 		Icy Veins' highlighting will correctly be removed when the effect ends.

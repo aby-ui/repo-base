@@ -327,40 +327,39 @@
 				return table1 [4] < table2 [4]
 			end
 
---[[exported]]	function Details:GetBarColor (actor)
+--[[exported]]	function Details:GetBarColor(actor)
 				actor = actor or self
+
 				if (actor.monster) then
-					return _unpack (Details.class_colors.ENEMY)
+					return _unpack(Details.class_colors.ENEMY)
 
 				elseif (actor.customColor) then
-					return unpack(actor.customColor)
+					return _unpack(actor.customColor)
 
 				elseif (actor.spellicon) then
 					return 0.729, 0.917, 1
 
 				elseif (actor.owner) then
-					return _unpack (Details.class_colors [actor.owner.classe or "UNKNOW"])
+					return _unpack(Details.class_colors[actor.owner.classe or "UNKNOW"])
 
 				elseif (actor.arena_team and Details.color_by_arena_team) then
 					if (actor.arena_team == 0) then
-						return _unpack (Details.class_colors.ARENA_GREEN)
+						return _unpack(Details.class_colors.ARENA_GREEN)
 					else
-						return _unpack (Details.class_colors.ARENA_YELLOW)
+						return _unpack(Details.class_colors.ARENA_YELLOW)
 					end
-				--elseif (actor.enemy and not actor.arena_enemy) then
-				--	return 0.94117, 0.1, 0.1, 1
+
 				else
 					if (not is_player_class [actor.classe] and actor.flag_original and _bit_band (actor.flag_original, 0x00000020) ~= 0) then --> neutral
-						return _unpack (Details.class_colors.NEUTRAL)
+						return _unpack(Details.class_colors.NEUTRAL)
 					elseif (actor.color) then
 						return _unpack(actor.color)
 					else
-						return _unpack (Details.class_colors [actor.classe or "UNKNOW"])
+						return _unpack(Details.class_colors [actor.classe or "UNKNOW"])
 					end
-					
 				end
 			end
-			
+
 --[[exported]]	function Details:GetSpellLink (spellid)
 				if (_type (spellid) ~= "number") then
 					return spellid
@@ -2842,29 +2841,30 @@ local InBarIconPadding = 6
 	set_text_size (bar, instance)
 end
 
---[[ exported]] function Details:SetBarColors (bar, instance, r, g, b, a)
+--[[ exported]] function Details:SetBarColors(bar, instance, r, g, b, a)
 
 	a = a or 1
 	
 	if (instance.row_info.texture_class_colors) then
 		if (instance.bars_inverted) then
-			bar.right_to_left_texture:SetVertexColor (r, g, b, a)
+			bar.right_to_left_texture:SetVertexColor(r, g, b, a)
 		else
-			bar.textura:SetVertexColor (r, g, b, a)
+			bar.textura:SetVertexColor(r, g, b, a)
 		end
 	end
 	
 	if (instance.row_info.texture_background_class_color) then
-		bar.background:SetVertexColor (r, g, b, a)
+		bar.background:SetVertexColor(r, g, b, a)
 	end
 	
 	if (instance.row_info.textL_class_colors) then
-		bar.lineText1:SetTextColor (r, g, b, a)
+		bar.lineText1:SetTextColor(r, g, b, a)
 	end
+
 	if (instance.row_info.textR_class_colors) then
-		bar.lineText2:SetTextColor (r, g, b, a)
-		bar.lineText3:SetTextColor (r, g, b, a)
-		bar.lineText4:SetTextColor (r, g, b, a)
+		bar.lineText2:SetTextColor(r, g, b, a)
+		bar.lineText3:SetTextColor(r, g, b, a)
+		bar.lineText4:SetTextColor(r, g, b, a)
 	end
 	
 end 
@@ -2954,11 +2954,11 @@ end
 	end
 
 	--> icon
-	self:SetClassIcon (thisLine.icone_classe, instance, class)
+	self:SetClassIcon(thisLine.icone_classe, instance, class)
 	--> texture color
-	self:SetBarColors (thisLine, instance, actor_class_color_r, actor_class_color_g, actor_class_color_b)
+	self:SetBarColors(thisLine, instance, actor_class_color_r, actor_class_color_g, actor_class_color_b)
 	--> left text
-	self:SetBarLeftText (thisLine, instance, enemy, arena_enemy, arena_ally, UsingCustomLeftText)
+	self:SetBarLeftText(thisLine, instance, enemy, arena_enemy, arena_ally, UsingCustomLeftText)
 	
 end
 

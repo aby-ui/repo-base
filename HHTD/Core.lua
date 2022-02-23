@@ -306,7 +306,7 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         [034861] = "PRIEST", -- Circle of Healing
         [064843] = "PRIEST", -- Divine Hymn
         [047788] = "PRIEST", -- Guardian Spirit
-        [032546] = "PRIEST", -- Binding Heal
+        --abyui [032546] = "PRIEST", -- Binding Heal
         [077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
         -- [077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
         [000139] = "PRIEST", -- Renew

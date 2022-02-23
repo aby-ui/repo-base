@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2158, "DBM-Party-BfA", 8, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(133007)
 mod:SetEncounterID(2123)
 
@@ -26,7 +26,7 @@ local specWarnGTFO					= mod:NewSpecialWarningGTFO(269838, nil, nil, nil, 1, 8)
 
 local timerBloodVisageCD			= mod:NewCDTimer(15.7, "ej18312", nil, nil, nil, 1, 269692)
 local timerVileExpulsionCD			= mod:NewNextTimer(15.7, 269843, nil, nil, nil, 3)
-local timerCleansingLightCD			= mod:NewCDTimer(23.7, 269310, nil, nil, nil, 5)--23-37
+local timerCleansingLightCD			= mod:NewCDTimer(21.8, 269310, nil, nil, nil, 5)--21.8-37
 
 mod:AddInfoFrameOption(269301, "Healer")
 

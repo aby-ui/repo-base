@@ -9,9 +9,13 @@ local RSGuideDB = private.NewLib("RareScannerGuideDB")
 -- NPCs guides
 ---============================================================================
 
-function RSGuideDB.GetNpcGuide(npcID)
+function RSGuideDB.GetNpcGuide(npcID, mapID)
 	if (npcID) then
-		return private.NPC_GUIDE[npcID]
+		if (mapID and private.NPC_GUIDE[npcID..mapID]) then
+			return private.NPC_GUIDE[npcID..mapID]
+		else
+			return private.NPC_GUIDE[npcID]
+		end
 	end
 end
 
@@ -19,9 +23,13 @@ end
 -- Container guides
 ---============================================================================
 
-function RSGuideDB.GetContainerGuide(containerID)
+function RSGuideDB.GetContainerGuide(containerID, mapID)
 	if (containerID) then
-		return private.CONTAINER_GUIDE[containerID]
+		if (mapID and private.CONTAINER_GUIDE[containerID..mapID]) then
+			return private.CONTAINER_GUIDE[containerID..mapID]
+		else
+			return private.CONTAINER_GUIDE[containerID]
+		end
 	end
 end
 
@@ -29,8 +37,12 @@ end
 -- Event guides
 ---============================================================================
 
-function RSGuideDB.GetEventGuide(eventID)
+function RSGuideDB.GetEventGuide(eventID, mapID)
 	if (eventID) then
-		return private.EVENT_GUIDE[eventID]
+		if (mapID and private.EVENT_GUIDE[eventID..mapID]) then
+			return private.EVENT_GUIDE[eventID..mapID]
+		else
+			return private.EVENT_GUIDE[eventID]
+		end
 	end
 end

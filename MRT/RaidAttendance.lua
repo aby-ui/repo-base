@@ -13,6 +13,8 @@ module.db.diffNames = {
 	[176] = "25 ppl",
 	[148] = "20 ppl",
 	[9] = "40 ppl",
+	[148] = "20 ppl",
+	[185] = "40 ppl",
 }
 
 local classToLetter = {

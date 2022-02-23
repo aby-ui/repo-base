@@ -175,22 +175,22 @@
 				--> check is didn't changed the spec:
 				if (_detalhes.streamer_config.quick_detection) then
 					--> validate the spec more times if on quick detection
-					_detalhes:ScheduleTimer ("ReGuessSpec", 2, {novo_objeto, self})
-					_detalhes:ScheduleTimer ("ReGuessSpec", 4, {novo_objeto, self})
-					_detalhes:ScheduleTimer ("ReGuessSpec", 6, {novo_objeto, self})
+					_detalhes:ScheduleTimer("ReGuessSpec", 2, {novo_objeto})
+					_detalhes:ScheduleTimer("ReGuessSpec", 4, {novo_objeto})
+					_detalhes:ScheduleTimer("ReGuessSpec", 6, {novo_objeto})
 				end
-				_detalhes:ScheduleTimer ("ReGuessSpec", 15, {novo_objeto, self})
+				_detalhes:ScheduleTimer("ReGuessSpec", 15, {novo_objeto})
 				--print (nome, "spec em cache:", have_cached)
 			else
 				if (_detalhes.streamer_config.quick_detection) then
 					--> shoot detection early if in quick detection
-					_detalhes:ScheduleTimer ("GuessSpec", 1, {novo_objeto, self, 1})
+					_detalhes:ScheduleTimer("GuessSpec", 1, {novo_objeto, nil, 1})
 				else
-					_detalhes:ScheduleTimer ("GuessSpec", 3, {novo_objeto, self, 1})
+					_detalhes:ScheduleTimer("GuessSpec", 3, {novo_objeto, nil, 1})
 				end
 			end
 		end
-	
+
 		local _, engClass = _UnitClass (nome or "")
 
 		if (engClass) then
@@ -207,71 +207,69 @@
 					return
 				end
 			end
-			
+
 			novo_objeto.classe = "UNKNOW"
 			return true
 		end
 	end
 
 	--> read the actor flag
-	local read_actor_flag = function (novo_objeto, dono_do_pet, serial, flag, nome, container_type)
+	local read_actor_flag = function(actorObject, dono_do_pet, serial, flag, nome, container_type)
 
 		if (flag) then
-		
-			--> � um player
+			--> this is player actor
 			if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
-				
 				if (not _detalhes.ignore_nicktag) then
-					novo_objeto.displayName = _detalhes:GetNickname (nome, false, true) --> serial, default, silent
-					if (novo_objeto.displayName and novo_objeto.displayName ~= "") then
+					actorObject.displayName = _detalhes:GetNickname (nome, false, true) --> serial, default, silent
+					if (actorObject.displayName and actorObject.displayName ~= "") then
 						--don't display empty nicknames
-						if (novo_objeto.displayName:find(" ")) then
+						if (actorObject.displayName:find(" ")) then
 							if (_detalhes.remove_realm_from_name) then
-								novo_objeto.displayName = nome:gsub (("%-.*"), "")
+								actorObject.displayName = nome:gsub (("%-.*"), "")
 							else
-								novo_objeto.displayName = nome
+								actorObject.displayName = nome
 							end
 						end
 					end
 				end
 
-				if (not novo_objeto.displayName) then
+				if (not actorObject.displayName) then
 					if (_detalhes.remove_realm_from_name) then
-						novo_objeto.displayName = nome:gsub (("%-.*"), "")
+						actorObject.displayName = nome:gsub(("%-.*"), "")
 					else
-						novo_objeto.displayName = nome
+						actorObject.displayName = nome
 					end
 				end
 
 				if (_detalhes.all_players_are_group or _detalhes.immersion_enabled) then
-					novo_objeto.grupo = true
+					actorObject.grupo = true
 				end
 
 				--special spells to add into the group view
-				local spellId = Details.SpecialSpellActorsName[novo_objeto.nome]
+				local spellId = Details.SpecialSpellActorsName[actorObject.nome]
 				if (spellId) then
-					novo_objeto.grupo = true
+					actorObject.grupo = true
 
 					if (Details.KyrianWeaponSpellIds[spellId]) then
-						novo_objeto.spellicon = GetSpellTexture(Details.KyrianWeaponActorSpellId)
-						novo_objeto.nome = Details.KyrianWeaponActorName
-						novo_objeto.displayName = Details.KyrianWeaponActorName
-						novo_objeto.customColor = Details.KyrianWeaponColor
+						actorObject.spellicon = GetSpellTexture(Details.KyrianWeaponActorSpellId)
+						actorObject.nome = Details.KyrianWeaponActorName
+						actorObject.displayName = Details.KyrianWeaponActorName
+						actorObject.customColor = Details.KyrianWeaponColor
 						nome = Details.KyrianWeaponActorName
 					else
-						novo_objeto.spellicon = GetSpellTexture(spellId)
+						actorObject.spellicon = GetSpellTexture(spellId)
 					end
 				end
 
-				if ((_bit_band (flag, IS_GROUP_OBJECT) ~= 0 and novo_objeto.classe ~= "UNKNOW" and novo_objeto.classe ~= "UNGROUPPLAYER") or _detalhes:IsInCache (serial)) then
-					novo_objeto.grupo = true
+				if ((_bit_band (flag, IS_GROUP_OBJECT) ~= 0 and actorObject.classe ~= "UNKNOW" and actorObject.classe ~= "UNGROUPPLAYER") or _detalhes:IsInCache (serial)) then
+					actorObject.grupo = true
 
 					if (_detalhes:IsATank (serial)) then
-						novo_objeto.isTank = true
+						actorObject.isTank = true
 					end
 				else
 					if (_detalhes.pvp_as_group and (_detalhes.tabela_vigente and _detalhes.tabela_vigente.is_pvp) and _detalhes.is_in_battleground) then
-						novo_objeto.grupo = true
+						actorObject.grupo = true
 					end
 				end
 
@@ -279,32 +277,35 @@
 				if (_detalhes.duel_candidates [serial]) then
 					--> check if is recent
 					if (_detalhes.duel_candidates [serial]+20 > GetTime()) then
-						novo_objeto.grupo = true
-						novo_objeto.enemy = true
+						actorObject.grupo = true
+						actorObject.enemy = true
 					end
 				end
 
 				if (_detalhes.is_in_arena) then
-					local my_team_color = GetBattlefieldArenaFaction and GetBattlefieldArenaFaction() or 0
+					--local my_team_color = GetBattlefieldArenaFaction and GetBattlefieldArenaFaction() or 0
 
-					if (novo_objeto.grupo) then --> is ally
-						novo_objeto.arena_ally = true
-						novo_objeto.arena_team = 0 --my_team_color | forcing the player team to always be the same color
-					else --> is enemy
-						novo_objeto.enemy = true
-						novo_objeto.arena_enemy = true
-						novo_objeto.arena_team = 1 -- - my_team_color
+					--my team
+					if (actorObject.grupo) then
+						actorObject.arena_ally = true
+						actorObject.arena_team = 0 -- former my_team_color | forcing the player team to always be the same color
+
+					--enemy team
+					else
+						actorObject.enemy = true
+						actorObject.arena_enemy = true
+						actorObject.arena_team = 1 -- former my_team_color
 					end
 
 					local arena_props = _detalhes.arena_table [nome]
 
 					if (arena_props) then
-						novo_objeto.role = arena_props.role
+						actorObject.role = arena_props.role
 
 						if (arena_props.role == "NONE") then
 							local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned(nome)
 							if (role and role ~= "NONE") then
-								novo_objeto.role = role
+								actorObject.role = role
 							end
 						end
 					else
@@ -316,10 +317,10 @@
 								local spec = GetArenaOpponentSpec and GetArenaOpponentSpec (i)
 								if (spec) then
 									local id, name, description, icon, role, class = DetailsFramework.GetSpecializationInfoByID (spec) --thanks pas06
-									novo_objeto.role = role
-									novo_objeto.classe = class
-									novo_objeto.enemy = true
-									novo_objeto.arena_enemy = true
+									actorObject.role = role
+									actorObject.classe = class
+									actorObject.enemy = true
+									actorObject.arena_enemy = true
 									found = true
 								end
 							end
@@ -327,47 +328,55 @@
 						
 						local role = UnitGroupRolesAssigned and UnitGroupRolesAssigned (nome)
 						if (role and role ~= "NONE") then
-							novo_objeto.role = role
+							actorObject.role = role
 							found = true
 						end
 						
 						if (not found and nome == _detalhes.playername) then
 							local role = UnitGroupRolesAssigned ("player")
 							if (role and role ~= "NONE") then
-								novo_objeto.role = role
+								actorObject.role = role
 							end
 						end
 						
 					end
 				
-					novo_objeto.grupo = true
+					actorObject.grupo = true
+				end
+
+				--player custom bar color
+				--at this position in the code, the color will replace colors from arena matches
+				if (Details.use_self_color) then
+					if (nome == _detalhes.playername) then
+						actorObject.customColor = Details.class_colors.SELF
+					end
 				end
 			
 			--> � um pet
-			elseif (dono_do_pet) then 
-				novo_objeto.owner = dono_do_pet
-				novo_objeto.ownerName = dono_do_pet.nome
+			elseif (dono_do_pet) then
+				actorObject.owner = dono_do_pet
+				actorObject.ownerName = dono_do_pet.nome
 				
 				if (_IsInInstance() and _detalhes.remove_realm_from_name) then
-					novo_objeto.displayName = nome:gsub (("%-.*"), ">")
+					actorObject.displayName = nome:gsub (("%-.*"), ">")
 				else
-					novo_objeto.displayName = nome
+					actorObject.displayName = nome
 				end
 				
 				--local pet_npc_template = _detalhes:GetNpcIdFromGuid (serial)
 				--if (pet_npc_template == 86933) then --viviane
-				--	novo_objeto.grupo = true
+				--	actorObject.grupo = true
 				--end
 				
 			else
 				--> anything else that isn't a player or a pet
-				novo_objeto.displayName = nome
+				actorObject.displayName = nome
 				
 				--[=[
 				--Chromie - From 'The Deaths of Chromie'
 				if (serial and type (serial) == "string") then
 					if (serial:match ("^Creature%-0%-%d+%-%d+%-%d+%-122663%-%w+$")) then
-						novo_objeto.grupo = true
+						actorObject.grupo = true
 					end
 				end
 				--]=]
@@ -381,7 +390,7 @@
 					
 					if (_bit_band (flag, OBJECT_TYPE_PETGUARDIAN) == 0) then
 						--> isn't a pet or guardian
-						novo_objeto.monster = true
+						actorObject.monster = true
 					end
 					
 					if (serial and type (serial) == "string") then

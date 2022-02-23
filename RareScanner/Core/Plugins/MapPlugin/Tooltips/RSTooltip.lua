@@ -419,11 +419,11 @@ local function AddGuideTooltip(tooltip, pin)
 	-- Guide
 	local guide = false
 	if (pin.POI.isNpc) then
-		guide = RSGuideDB.GetNpcGuide(pin.POI.entityID)
+		guide = RSGuideDB.GetNpcGuide(pin.POI.entityID, pin.POI.mapID)
 	elseif (pin.POI.isContainer) then
-		guide = RSGuideDB.GetContainerGuide(pin.POI.entityID)
+		guide = RSGuideDB.GetContainerGuide(pin.POI.entityID, pin.POI.mapID)
 	else
-		guide = RSGuideDB.GetEventGuide(pin.POI.entityID)
+		guide = RSGuideDB.GetEventGuide(pin.POI.entityID, pin.POI.mapID)
 	end
 
 	if (guide) then

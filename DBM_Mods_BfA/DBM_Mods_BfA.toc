@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## X-Vendor: AbyUI
 ## LoadOnDemand: 1
 

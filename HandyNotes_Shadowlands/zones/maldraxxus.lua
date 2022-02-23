@@ -47,11 +47,11 @@ map.nodes[49012351] = Rare({
     rewards = {
         Achievement({id = 14308, criteria = 48866}),
         Achievement({id = 14833, criteria = 49919, covenant = NECROLORD}), -- Collector Kash's Pack
+        Achievement({id = 14763, criteria = 49930}), -- Jagged Bonesaw
         Transmog({item = 184188, slot = L['1h_axe']}), -- Collector's Corpse Gambrel
         Transmog({item = 184181, slot = L['1h_axe']}), -- Kash's Favored Hook
         Transmog({item = 184189, slot = L['1h_axe']}), -- Stained Fleshgorer
-        Transmog({item = 184182, slot = L['1h_axe']}), -- Strengthened Abomination Hook
-        Item({item = 183692, quest = 62408, covenant = NECROLORD}) -- Jagged Bonesaw
+        Transmog({item = 184182, slot = L['1h_axe']}) -- Strengthened Abomination Hook
     }
 }) -- Collector Kash
 
@@ -126,6 +126,7 @@ map.nodes[38794333] = Rare({
     note = L['schmitd_note'],
     rewards = {
         Achievement({id = 14308, criteria = 48848}),
+        Achievement({id = 14751, criteria = 51474, covenant = NECROLORD}), -- Indomitable Hide
         Transmog({item = 182192, slot = L['plate']}) -- Knee-Obstructing Legguards
     }
 }) -- Indomitable Schmitd
@@ -145,6 +146,7 @@ map.nodes[66023532] = Rare({
     quest = 58851,
     rewards = {
         Achievement({id = 14308, criteria = 49723}),
+        Achievement({id = 14751, criteria = 51473, covenant = NECROLORD}), -- Necromantic Oil
         Transmog({item = 184179, slot = L['2h_sword']}), -- Lichsworn Commander's Boneblade
         Mount({item = 182084, id = 1373}) -- Gorespine
     }
@@ -278,9 +280,9 @@ map.nodes[28965138] = Rare({
     note = L['zargox_the_reborn_note'],
     rewards = {
         Achievement({id = 14308, criteria = 48864}),
+        Achievement({id = 14763, criteria = 49929}), -- Ashen Ink
         Transmog({item = 184285, slot = L['plate']}), -- Boneclutched Shackles
-        Transmog({item = 181804, slot = L['cosmetic'], covenant = NECROLORD}), -- Trophy of the Reborn Bonelord
-        Item({item = 183690, quest = 62404, covenant = NECROLORD}) -- Ashen Ink
+        Transmog({item = 181804, slot = L['cosmetic'], covenant = NECROLORD}) -- Trophy of the Reborn Bonelord
     },
     pois = {POI({26314280})}
 }) -- Zargox the Reborn

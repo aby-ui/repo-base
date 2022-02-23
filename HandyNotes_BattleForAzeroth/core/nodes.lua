@@ -293,7 +293,9 @@ function Node:Render(tooltip, focusable)
     -- additional text for the node to describe how to interact with the
     -- object or summon the rare
     if self.note and ns:GetOpt('show_notes') then
-        if self.requires or self.sublabel then tooltip:AddLine(' ') end
+        if self.requires or self.sublabel then
+            GameTooltip_AddBlankLineToTooltip(tooltip)
+        end
         tooltip:AddLine(ns.RenderLinks(self.note), 1, 1, 1, true)
     end
 
@@ -307,15 +309,33 @@ function Node:Render(tooltip, focusable)
             local isAchieve = IsInstance(reward, ns.reward.Achievement)
             local isSpacer = IsInstance(reward, ns.reward.Spacer)
             if isAchieve and firstAchieve then
-                tooltip:AddLine(' ')
+                GameTooltip_AddBlankLineToTooltip(tooltip)
                 firstAchieve = false
             elseif not (isAchieve or isSpacer) and firstOther then
-                tooltip:AddLine(' ')
+                GameTooltip_AddBlankLineToTooltip(tooltip)
                 firstOther = false
             end
 
             reward:Render(tooltip)
         end
+    end
+
+    if self.spellID then
+        local spell = Spell:CreateFromSpellID(self.spellID)
+        self.cancelSpellDataCallback = spell:ContinueWithCancelOnSpellLoad(
+            function()
+                GameTooltip_AddBlankLineToTooltip(tooltip)
+                EmbeddedItemTooltip_SetSpellWithTextureByID(tooltip.ItemTooltip,
+                    self.spellID, spell:GetSpellTexture())
+                self.cancelSpellDataCallback = nil
+            end);
+    end
+end
+
+function Node:Unrender(tooltip)
+    if self.cancelSpellDataCallback then
+        self.cancelSpellDataCallback()
+        self.cancelSpellDataCallback = nil
     end
 end
 
@@ -366,6 +386,35 @@ function Intro.getters:label()
     end
     return UNKNOWN
 end
+
+-------------------------------------------------------------------------------
+------------------------------------ ITEM -------------------------------------
+-------------------------------------------------------------------------------
+
+local Item = Class('Item', Node, {icon = 454046})
+
+function Item:Initialize(attrs)
+    Node.Initialize(self, attrs)
+    if not self.id then error('id required for Item nodes') end
+
+    local item = _G.Item:CreateFromItemID(self.id)
+    if not item:IsItemEmpty() then
+        item:ContinueOnItemLoad(function() self.icon = item:GetItemIcon() end)
+    end
+end
+
+function Item:IsCompleted()
+    if ns.PlayerHasItem(self.id) then return true end
+    return Node.IsCompleted(self)
+end
+
+function Item:Render(tooltip, focusable)
+    Node.Render(self, tooltip, focusable)
+    GameTooltip_AddBlankLineToTooltip(tooltip)
+    EmbeddedItemTooltip_SetItemByID(tooltip.ItemTooltip, self.id)
+end
+
+function Item.getters:label() return ('{item:%d}'):format(self.id) end
 
 -------------------------------------------------------------------------------
 ------------------------------------- NPC -------------------------------------
@@ -474,6 +523,7 @@ ns.node = {
     Node = Node,
     Collectible = Collectible,
     Intro = Intro,
+    Item = Item,
     NPC = NPC,
     PetBattle = PetBattle,
     Quest = Quest,

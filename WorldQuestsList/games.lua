@@ -1385,3 +1385,55 @@ AspirantTrainingKortia:SetScript("OnEvent",function(self,event,arg1,arg2)
 		end
 	end
 end)
+
+
+---- A Steward for Every Occasion: auto interact
+
+local AStewardforEveryOccasion = CreateFrame'Frame'
+AStewardforEveryOccasion:RegisterEvent('QUEST_ACCEPTED')
+AStewardforEveryOccasion:RegisterEvent('QUEST_REMOVED')
+AStewardforEveryOccasion:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+AStewardforEveryOccasion.QuestMobs = {
+	[169023]=true,
+	[169027]=true,
+	[169026]=true,
+	[169024]=true,
+	[169022]=true,
+	[169026]=true,
+}
+
+AStewardforEveryOccasion:SetScript("OnEvent",function(self,event,arg1,arg2)
+	if event == 'QUEST_ACCEPTED' then
+		if arg1 == 60565 then
+			self:RegisterEvent("GOSSIP_SHOW")
+		end
+	elseif event == 'QUEST_REMOVED' then
+		if arg1 == 60565 then
+			self:UnregisterEvent("GOSSIP_SHOW")
+		end
+	elseif event == 'GOSSIP_SHOW' then
+		local guid = UnitGUID'npc'
+		if guid then
+			local mobtype,_,serverID,instanceID,zoneUID,id,spawnID = strsplit("-", guid)
+			if id and tonumber(id) and self.QuestMobs[tonumber(id)] then
+				local info = C_GossipInfo.GetOptions()
+				if type(info)=="table" and #info > 0 then
+					C_GossipInfo.SelectOption(1)
+				end
+			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		for i=1,GetNumQuestLogEntries() do
+			local title, _, _, _, _, _, _, questID = GetQuestLogTitle(i)
+			if questID and questID == 60565 then
+				self:GetScript("OnEvent")(self,'QUEST_ACCEPTED',60565)
+				break
+			end
+		end
+	end
+end)
+
+
+

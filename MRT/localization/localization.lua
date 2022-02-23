@@ -211,12 +211,25 @@ local zoneEJids = {
 	S_ZoneT25Nyalotha = 1180,
 	S_ZoneT26CastleNathria = 1190,
 	S_ZoneT27SoD = 1193,
+	S_ZoneT28SFO = 1195,
 }
 for prefix,eID in pairs(zoneEJids) do
 	L[prefix] = EJ_GetInstanceInfo(eID)
 end
 
 local encounterIDtoEJidData = {
+	[2512] = 2458,	--Solitary Guardian
+	[2540] = 2459,	--Dausegne, the Fallen Oracle
+	[2553] = 2470,	--Artificer Xy'mox
+	[2544] = 2460,	--Prototype Pantheon
+	[2539] = 2461,	--Lihuvim, Principal Architect
+	[2542] = 2465,	--Skolex, the Insatiable Ravener
+	[2529] = 2463,	--Halondrus the Reclaimer
+	[2546] = 2469,	--Anduin Wrynn
+	[2543] = 2457,	--Lords of Dread
+	[2549] = 2467,	--Rygelon
+	[2537] = 2464,	--The Jailer
+
 	[2423] = 2435,	--The Tarragrue
 	[2433] = 2442,	--The Eye of the Jailer
 	[2429] = 2439,	--The Nine
@@ -424,9 +437,23 @@ end
 local encounterIDtoEJidChache = {
 }
 
+local encounterIDtoNamePredef = {
+	[2512] = "Solitary Guardian",
+	[2540] = "Dausegne, the Fallen Oracle",
+	[2553] = "Artificer Xy'mox",
+	[2544] = "Prototype Pantheon",
+	[2539] = "Lihuvim, Principal Architect",
+	[2542] = "Skolex, the Insatiable Ravener",
+	[2529] = "Halondrus the Reclaimer",
+	[2546] = "Anduin Wrynn",
+	[2543] = "Lords of Dread",
+	[2549] = "Rygelon",
+	[2537] = "The Jailer",
+}
+
 L.bossName = setmetatable({}, {__index=function (t, k)
 	if not encounterIDtoEJidChache[k] then
-		encounterIDtoEJidChache[k] = EJ_GetEncounterInfo(encounterIDtoEJidData[k] or 0) or ""
+		encounterIDtoEJidChache[k] = EJ_GetEncounterInfo(encounterIDtoEJidData[k] or 0) or encounterIDtoNamePredef[k] or ""
 	end
 	return encounterIDtoEJidChache[k]
 end})

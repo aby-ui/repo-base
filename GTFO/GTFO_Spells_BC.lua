@@ -566,6 +566,12 @@ GTFO.SpellID["40948"] = {
   sound = 1;
 };
 
+GTFO.SpellID["41193"] = {
+  --desc = "Cloud of Disease (Mutant War Hound)";
+  sound = 1;
+  trivialLevel = 80;
+};
+
 -- *******************
 -- * Sunwell Plateau *
 -- *******************

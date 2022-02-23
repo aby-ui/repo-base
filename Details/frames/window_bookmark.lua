@@ -6,11 +6,12 @@ local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
 --> config bookmarks
 function Details:OpenBookmarkConfig()
-	
+
     if (not _G.DetailsBookmarkManager) then
         DF:CreateSimplePanel (UIParent, 465, 460, Loc ["STRING_OPTIONS_MANAGE_BOOKMARKS"], "DetailsBookmarkManager")
         local panel = _G.DetailsBookmarkManager
-        DF:ApplyStandardBackdrop (panel)
+        DF:ApplyStandardBackdrop(panel)
+        panel:SetBackdropColor(.1, .1, .1, .9)
         panel.blocks = {}
         
         local clear_func = function (self, button, id)
@@ -139,6 +140,14 @@ function Details:OpenBookmarkConfig()
         end
     end
 
-    _G.DetailsBookmarkManager:Show()
-    _G.DetailsBookmarkManager:Refresh()
+    local bookmarkFrame = _G.DetailsBookmarkManager
+    bookmarkFrame:Show()
+    bookmarkFrame:Refresh()
+
+    local optionsFrame = _G.DetailsOptionsWindow
+    if (optionsFrame) then
+        --parent is the plugin container
+        local currentOptionsScale = optionsFrame:GetParent():GetScale()
+        bookmarkFrame:SetScale(currentOptionsScale)
+    end
 end

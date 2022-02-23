@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: TrinketMenu 9.0.6
 ## Version: 9.0.6
 ## Author: Gello, Resike

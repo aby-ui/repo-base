@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Interface-Mainline: 90105
 ## Interface-BCC: 20502
 ## Title: Details! Damage Meter

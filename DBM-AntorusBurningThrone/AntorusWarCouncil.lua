@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1997, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(122369, 122333, 122367)--Chief Engineer Ishkar, General Erodus, Admiral Svirax
 mod:SetEncounterID(2070)
 mod:SetBossHPInfoToHighest()
@@ -32,64 +32,56 @@ local Erodus = DBM:EJ_GetSectionInfo(16130)
  or ability.id = 253015
 --]]
 --General
+mod:AddTimerLine(GENERAL)
 local warnOutofPod						= mod:NewTargetNoFilterAnnounce("ej16098", 2, 244141)
 local warnExploitWeakness				= mod:NewStackAnnounce(244892, 2, nil, "Tank")
 local warnPsychicAssault				= mod:NewStackAnnounce(244172, 3, nil, "-Tank", 2)
---In Pod
-----Chief Engineer Ishkar
-local warnEntropicMine					= mod:NewSpellAnnounce(245161, 2)
-----General Erodus
---local warnSummonReinforcements			= mod:NewSpellAnnounce(245546, 2, nil, false, 2)
-local warnDemonicCharge					= mod:NewTargetAnnounce(253040, 2, nil, false, 2)
---Out of Pod
-----Admiral Svirax
-local warnShockGrenade					= mod:NewTargetAnnounce(244737, 3, nil, false, 2)
-----Chief Engineer Ishkar
 
---General
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 local specWarnExploitWeakness			= mod:NewSpecialWarningTaunt(244892, nil, nil, nil, 1, 2)
 local specWarnPsychicAssaultStack		= mod:NewSpecialWarningStack(244172, nil, 10, nil, nil, 1, 6)
 local specWarnPsychicAssault			= mod:NewSpecialWarningMove(244172, nil, nil, nil, 3, 2)--Two diff warnings cause we want to upgrade to high priority at 19+ stacks
 local specWarnAssumeCommand				= mod:NewSpecialWarningSwitch(253040, "Tank", nil, nil, 1, 2)
---In Pod
+
+local timerExploitWeaknessCD			= mod:NewCDTimer(8.5, 244892, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
+local timerAssumeCommandCD				= mod:NewNextTimer(90, 245227, nil, nil, nil, 6, nil, nil, nil, 2, 4)
+
+--local berserkTimer					= mod:NewBerserkTimer(600)
 ----Admiral Svirax
+mod:AddTimerLine(Svirax)
+local warnShockGrenade					= mod:NewTargetAnnounce(244737, 3, nil, false, 2)
+
+local specWarnShockGrenade				= mod:NewSpecialWarningMoveAway(244737, nil, nil, nil, 1, 2)
+local yellShockGrenade					= mod:NewShortYell(244737)
+local yellShockGrenadeFades				= mod:NewShortFadesYell(244737)
 local specWarnFusillade					= mod:NewSpecialWarningMoveTo(244625, nil, nil, nil, 1, 5)
+
+local timerShockGrenadeCD				= mod:NewCDTimer(14.7, 244737, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerFusilladeCD					= mod:NewNextCountTimer(29.3, 244625, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)
+
+mod:AddRangeFrameOption(8, 244737)
 ----Chief Engineer Ishkar
+mod:AddTimerLine(Ishkar)
+local warnEntropicMine					= mod:NewSpellAnnounce(245161, 2)
+
 --local specWarnEntropicMine				= mod:NewSpecialWarningDodge(245161, nil, nil, nil, 1, 2)
+
+local timerEntropicMineCD				= mod:NewCDTimer(10, 245161, nil, nil, nil, 3)
 ----General Erodus
+mod:AddTimerLine(Erodus)
+--local warnSummonReinforcements			= mod:NewSpellAnnounce(245546, 2, nil, false, 2)
+local warnDemonicCharge					= mod:NewTargetAnnounce(253040, 2, nil, false, 2)
+
 local specWarnSummonReinforcements		= mod:NewSpecialWarningSwitch(245546, nil, nil, nil, 1, 2)
+
+local timerSummonReinforcementsCD		= mod:NewNextTimer(8.4, 245546, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
+
+mod:AddSetIconOption("SetIconOnAdds", 245546, true, true)
 -------Adds
 local specWarnPyroblast					= mod:NewSpecialWarningInterrupt(246505, "HasInterrupt", nil, nil, 1, 2)
 local specWarnDemonicChargeYou			= mod:NewSpecialWarningYou(253040, nil, nil, nil, 1, 2)
 local specWarnDemonicCharge				= mod:NewSpecialWarningClose(253040, nil, nil, nil, 1, 2)
 local yellDemonicCharge					= mod:NewYell(253040)
---Out of Pod
-----Admiral Svirax
-local specWarnShockGrenade				= mod:NewSpecialWarningMoveAway(244737, nil, nil, nil, 1, 2)
-local yellShockGrenade					= mod:NewShortYell(244737)
-local yellShockGrenadeFades				= mod:NewShortFadesYell(244737)
-
---General
-mod:AddTimerLine(GENERAL)
-local timerExploitWeaknessCD			= mod:NewCDTimer(8.5, 244892, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
-local timerShockGrenadeCD				= mod:NewCDTimer(14.7, 244722, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
-local timerAssumeCommandCD				= mod:NewNextTimer(90, 245227, nil, nil, nil, 6, nil, nil, nil, 2, 4)
---In Pod
-----Admiral Svirax
-mod:AddTimerLine(Svirax)
-local timerFusilladeCD					= mod:NewNextCountTimer(29.3, 244625, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 3, 4)
-----Chief Engineer Ishkar
-mod:AddTimerLine(Ishkar)
-local timerEntropicMineCD				= mod:NewCDTimer(10, 245161, nil, nil, nil, 3)
-----General Erodus
-mod:AddTimerLine(Erodus)
-local timerSummonReinforcementsCD		= mod:NewNextTimer(8.4, 245546, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 4)
-
---local berserkTimer					= mod:NewBerserkTimer(600)
-
-mod:AddSetIconOption("SetIconOnAdds", 245546, true, true)
-mod:AddRangeFrameOption("8")
 
 local felShield = DBM:GetSpellInfo(244910)
 mod.vb.FusilladeCount = 0

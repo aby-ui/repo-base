@@ -146,6 +146,7 @@ map.nodes[32641545] = Rare({
     requires = ns.requirement.GarrisonTalent(1259, L['anima_channeled']),
     note = L['madalav_note'],
     rewards = {
+        Transmog({item = 180489, slot = L['1h_sword']}), -- Forgemaster's Many-Fold Rapier
         Transmog({item = 180939, slot = L['cosmetic'], covenant = VENTHYR}) -- Mantle of the Forgemaster's Dark Blades
     },
     pois = {

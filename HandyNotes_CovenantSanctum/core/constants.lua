@@ -95,7 +95,7 @@ constants.icon = {
     },
 
     anvil           = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\anvil",
-    flightmaster    = "Interface\\MINIMAP\\TRACKING\\FlightMaster",
+    flightMaster    = "Interface\\MINIMAP\\TRACKING\\FlightMaster",
     innkeeper       = "Interface\\MINIMAP\\TRACKING\\Innkeeper",
     mail            = "Interface\\MINIMAP\\TRACKING\\Mailbox",
     reforge         = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\reforge",

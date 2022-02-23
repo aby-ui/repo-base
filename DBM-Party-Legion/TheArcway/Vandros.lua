@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220127091750")
 mod:SetCreatureID(98208)
 mod:SetEncounterID(1829)
 
@@ -24,7 +24,7 @@ local warnTimeLock					= mod:NewTargetAnnounce(203957, 4)
 local warnUnstableMana				= mod:NewTargetAnnounce(203176, 2)
 
 local specWarnTimeSplit				= mod:NewSpecialWarningMove(203833, nil, nil, nil, 1, 2)
-local specWarnForceBomb				= mod:NewSpecialWarningSpell(202974, nil, nil, nil, 2, 2)
+local specWarnForceBomb				= mod:NewSpecialWarningSpell(202974, nil, nil, nil, 2, 12)
 local specWarnBlast					= mod:NewSpecialWarningInterruptCount(203176, "HasInterrupt", nil, 2, 1, 2)
 local specWarnBlastStacks			= mod:NewSpecialWarningDispel(203176, "MagicDispeller")
 local specWarnTimeLock				= mod:NewSpecialWarningInterrupt(203957, "HasInterrupt", nil, 2, 1, 2)
@@ -75,7 +75,7 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 202974 then
 		specWarnForceBomb:Show()
-		specWarnForceBomb:Play("157349")
+		specWarnForceBomb:Play("forcenovacoming")
 		timerForceBombD:Start()
 	elseif spellId == 203882 then
 		timerForceBombD:Cancel()

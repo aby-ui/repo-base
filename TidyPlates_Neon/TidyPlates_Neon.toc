@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Tidy Plates: Neon Theme
 ## Notes: It toasts your Eggo waffles, and butters your bread.
 ## Author: Binny

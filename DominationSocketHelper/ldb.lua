@@ -39,7 +39,7 @@ local function onEnter(f)
 
 	f:SetScript("OnUpdate", onUpdate)
 	
-	DSH.EF:RegisterEvent("CHAT_MSG_LOOT")
+	--DSH.EF:RegisterEvent("CHAT_MSG_LOOT")
 
 	if not DSH.SetC then
 		DSH:CreateSetContainer()

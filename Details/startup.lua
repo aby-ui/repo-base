@@ -439,7 +439,7 @@ function Details:StartMeUp() --I'll never stop!
 	_detalhes:LoadFramesForBroadcastTools()
 	_detalhes:BrokerTick()
 	
-	--boss mobs callbacks (DBM and BigWigs)
+	--register boss mobs callbacks (DBM and BigWigs) -> functions/bossmods.lua
 	Details.Schedules.NewTimer(5, Details.BossModsLink, Details)
 
 	--limit item level life for 24Hs

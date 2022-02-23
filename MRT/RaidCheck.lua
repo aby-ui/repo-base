@@ -297,7 +297,7 @@ module.db.RaidCheckReadyCheckTable = {}
 module.db.RaidCheckReadyPPLNum = 0
 module.db.RaidCheckReadyCheckHideSchedule = nil
 
-module.db.tableRunes = {[224001]=5,[270058]=6,[317065]=6,[347901]=18,}
+module.db.tableRunes = {[224001]=5,[270058]=6,[317065]=6,[347901]=18,[367405]=18,}
 
 module.db.durability = {}
 module.db.oil = {}
@@ -2397,7 +2397,7 @@ function module.frame:UpdateData(onlyLine)
 					elseif module.db.tableRunes[spellId] and line.rune then
 						local val = module.db.tableRunes[spellId]
 
-						line.rune.texture:SetTexture((spellId == 270058 or spellId == 317065) and 840006 or (spellId == 347901 and 134078) or icon)
+						line.rune.texture:SetTexture((spellId == 270058 or spellId == 317065) and 840006 or (spellId == 347901 and 134078) or (spellId == 367405 and 134078) or icon)
 						if val >= 18 then
 							line.rune.text:SetTextColor(0,1,0)
 							line.rune.text:SetText("")

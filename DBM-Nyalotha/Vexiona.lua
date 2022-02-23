@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2370, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220217003806")
 mod:SetCreatureID(157354)
 mod:SetEncounterID(2336)
 mod:SetHotfixNoticeRev(20200128000000)--2020, 1, 28
@@ -35,18 +35,19 @@ mod:RegisterEventsInCombat(
  or (ability.id = 307177 or ability.id = 307729) and type = "begincast"
  or ability.id = 307396 and type = "cast"
 --]]
+--Vexiona
+--General
+local berserkTimer							= mod:NewBerserkTimer(600)
+
+mod:AddInfoFrameOption(307019, true)
 ----Stage 1: Cult of the Void
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20661))
 local warnGiftoftheVoid						= mod:NewTargetNoFilterAnnounce(306981, 1)
 local warnFanaticalAscension				= mod:NewCastAnnounce(307729, 4)
 local warnPoweroftheChosen					= mod:NewTargetNoFilterAnnounce(307075, 3)
 local warnSpitefulAssault					= mod:NewSpellAnnounce(307396, 2)
 local warnBrutalSmash						= mod:NewSpellAnnounce(315932, 4)--Fall back warning that'll only fire if special warning for brutal smash disabled
-----Stage 3: The Void Unleashed
-local warnPhase3							= mod:NewPhaseAnnounce(3, 2)
-local warnDesolation						= mod:NewTargetNoFilterAnnounce(310325, 4)
 
---Vexiona
-----Stage 1: Cult of the Void
 local specWarnEncroachingShadows			= mod:NewSpecialWarningMoveAway(307314, nil, nil, nil, 1, 2)
 local yellEncroachingShadows				= mod:NewYell(307314)
 local yellEncroachingShadowsFades			= mod:NewShortFadesYell(307314)
@@ -56,48 +57,44 @@ local yellDespairFades						= mod:NewFadesYell(307359, nil, false)
 local specWarnDespairOther					= mod:NewSpecialWarningTarget(307359, "Healer", nil, nil, 1, 2)
 local specWarnDarkGateway					= mod:NewSpecialWarningSwitchCount(307057, "-Healer", nil, nil, 1, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(307343, nil, nil, nil, 1, 8)
-----Iron-Willed Enforcer
-local specWarnBrutalSmash					= mod:NewSpecialWarningDodge(315932, false, nil, 2, 2, 2, 4)--May feel spammy if multiple adds are up so elect in instead of out
-----Stage 2: Death From Above
-local specWarnTwilightDecimator				= mod:NewSpecialWarningDodgeCount(307218, nil, 125030, nil, 2, 2)
-----Stage 3: The Void Unleashed
-local specWarnHeartofDarkness				= mod:NewSpecialWarningRun(307639, nil, nil, nil, 4, 2)
-local specWarnDesolation					= mod:NewSpecialWarningYou(310325, nil, nil, nil, 1, 2)
-local yellDesolation						= mod:NewYell(310325, nil, nil, nil, "YELL")
-local yellDesolationFades					= mod:NewShortFadesYell(310325, nil, nil, nil, "YELL")
-local specWarnDesolationShare				= mod:NewSpecialWarningMoveTo(310325, false, nil, 2, 1, 2)
---Adds
-----Void Ascendant
-local specWarnAnnihilation					= mod:NewSpecialWarningDodgeCount(307403, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.dodge:format(307403), nil, 2, 2)
-local specWarnAnnihilationDefensive			= mod:NewSpecialWarningDefensive(307403, nil, nil, nil, 1, 2)
-----Spellbound Ritualist
-local specWarnVoidBolt						= mod:NewSpecialWarningInterrupt(307177, "HasInterrupt", nil, nil, 3, 2)
 
---Vexiona
-----Stage 1: Cult of the Void
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20661))
 local timerEncroachingShadowsCD				= mod:NewCDTimer(14.6, 307314, nil, nil, nil, 3)
 local timerTwilightBreathCD					= mod:NewCDTimer(14.8, 307020, 18620, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--14.8-20.0
 local timerDespairCD						= mod:NewCDTimer(35.2, 307359, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)--35.2-36.4
 local timerShatteredResolve					= mod:NewTargetTimer(6, 307371, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerDarkGatewayCD					= mod:NewCDCountTimer(33.2, 307057, nil, nil, nil, 1, nil, nil, nil, 1, 4)
-----Iron-Willed Enforcer
-local timerNoEscapeCD						= mod:NewCDCountTimer(11, 316437, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 ----Stage 2: Death From Above
---mod:AddTimerLine(DBM:EJ_GetSectionInfo(20667))
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20667))
+local specWarnTwilightDecimator				= mod:NewSpecialWarningDodgeCount(307218, nil, 125030, nil, 2, 2)
+
 local timerTwilightDecimatorCD				= mod:NewNextCountTimer(12.2, 307218, 125030, nil, nil, 3)--Deep Breath shorttext
 ----Stage 3: The Void Unleashed
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20669))
+local warnPhase3							= mod:NewPhaseAnnounce(3, 2)
+local warnDesolation						= mod:NewTargetNoFilterAnnounce(310325, 4)
+
+local specWarnHeartofDarkness				= mod:NewSpecialWarningRun(307639, nil, nil, nil, 4, 2)
+local specWarnDesolation					= mod:NewSpecialWarningYou(310325, nil, nil, nil, 1, 2)
+local yellDesolation						= mod:NewYell(310325, nil, nil, nil, "YELL")
+local yellDesolationFades					= mod:NewShortFadesYell(310325, nil, nil, nil, "YELL")
+local specWarnDesolationShare				= mod:NewSpecialWarningMoveTo(310325, false, nil, 2, 1, 2)
+
 local timerHeartofDarknessCD				= mod:NewCDCountTimer(31.6, 307639, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
 local timerDesolationCD						= mod:NewCDTimer(32.3, 310325, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 --Adds
+mod:AddTimerLine(DBM_COMMON_L.ADDS)
+----Iron-Willed Enforcer
+local specWarnBrutalSmash					= mod:NewSpecialWarningDodge(315932, false, nil, 2, 2, 2, 4)--May feel spammy if multiple adds are up so elect in instead of out
+
+local timerNoEscapeCD						= mod:NewCDCountTimer(11, 316437, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 ----Void Ascendant
---mod:AddTimerLine(DBM:EJ_GetSectionInfo(20684))
+local specWarnAnnihilation					= mod:NewSpecialWarningDodgeCount(307403, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.dodge:format(307403), nil, 2, 2)
+local specWarnAnnihilationDefensive			= mod:NewSpecialWarningDefensive(307403, nil, nil, nil, 1, 2)
+
 local timerAnnihilationCD					= mod:NewCDTimer(14.6, 307403, nil, nil, nil, 3)
+----Spellbound Ritualist
+local specWarnVoidBolt						= mod:NewSpecialWarningInterrupt(307177, "HasInterrupt", nil, nil, 3, 2)
 
-local berserkTimer							= mod:NewBerserkTimer(600)
-
-mod:AddInfoFrameOption(307019, true)
 mod:AddNamePlateOption("NPAuraOnPoweroftheChosen", 307729, false)
 
 local voidCorruptionStacks = {}

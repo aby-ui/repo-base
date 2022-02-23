@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: |cFF74D06CRE|rCrystallize
 ## Notes: Provide Auction House scanner and add item prices to tooltips.
 ## Version: 1.10.3

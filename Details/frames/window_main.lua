@@ -8980,11 +8980,9 @@ local atributo_on_enter = function (self, motion, forced, from_click)
 	_detalhes:FormatCooltipBackdrop()
 	
 	_detalhes:SetMenuOwner (self, instancia)
-	if (instancia.toolbar_side == 2) then --bottom
-		GameCooltip:SetOption ("HeightAnchorMod", 0)
-	end
 	
-	GameCooltip:ShowCooltip (self)
+	
+	GameCooltip:ShowCooltip ()
 end
 
 local atributo_on_leave = function (self, motion, forced, from_click)

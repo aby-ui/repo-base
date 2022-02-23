@@ -150,6 +150,10 @@
 			apoc = {},
 		}
 
+		local buffs_to_other_players = {
+			[10060] = true, --power infusion
+		}
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> constants
 	local container_misc = _detalhes.container_type.CONTAINER_MISC_CLASS
@@ -260,7 +264,7 @@
 	_detalhes.OverridedSpellIds = override_spellId
 
 	--> list of ignored npcs by the user
-	local ignored_npcids = {
+	_detalhes.default_ignored_npcs = {
 		--necrotic wake --remove on 10.0
 		[163126] = true, --brittlebone mage
 		[163122] = true, --brittlebone warrior
@@ -277,7 +281,18 @@
 		--[169265] = true, --creepy crawler (summoned by decaying flesh giant)
 		--[168747] = true,  --venomfang (summon)
 		--[168837] = true, --stealthlings (summon)
+
+		--DH necrolord ability Fodder to the Flame --remove on 10.0
+		[169421] = true,
+		[169425] = true,
+		[168932] = true,
+		[169426] = true,
+		[169429] = true,
+		[169428] = true,
+		[169430] = true,
 	}
+
+	local ignored_npcids = {}
 
 	--> ignore soul link (damage from the warlock on his pet - current to demonology only)
 	local SPELLID_WARLOCK_SOULLINK = 108446
@@ -544,7 +559,9 @@
 				end
 			end
 			
-			_detalhes:Msg ("|cFFFFBB00Your Best Score|r:", _detalhes:ToK2 ((value) / combatTime) .. " [|cFFFFFF00Guild Rank: " .. rank .. "|r]") --> localize-me
+			if (value and combatTime and value > 0 and combatTime > 0) then
+				_detalhes:Msg ("|cFFFFBB00Your Best Score|r:", _detalhes:ToK2 ((value) / combatTime) .. " [|cFFFFFF00Guild Rank: " .. rank .. "|r]") --> localize-me
+			end
 			
 			if ((not combatTime or combatTime == 0) and not _detalhes.SyncWarning) then
 				_detalhes:Msg ("|cFFFF3300you may need sync the rank within the guild, type '|cFFFFFF00/details rank|r'|r") --> localize-me
@@ -2399,6 +2416,13 @@
 			------------------------------------------------------------------------------------------------
 			--> buff uptime
 				
+				if (LIB_OPEN_RAID_BLOODLUST[spellid]) then
+					if (_detalhes.playername == alvo_name) then
+						_current_combat.bloodlust = _current_combat.bloodlust or {}
+						_current_combat.bloodlust[#_current_combat.bloodlust+1] = _current_combat:GetCombatTime()
+					end
+				end
+
 				if (spellid == 27827) then --> spirit of redemption (holy priest)
 					parser:dead ("UNIT_DIED", time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags)
 					ignore_death [who_name] = true
@@ -2432,6 +2456,9 @@
 					elseif (container_pets [who_serial] and container_pets [who_serial][2] == alvo_serial) then
 						--um pet colocando uma aura do dono
 						parser:add_buff_uptime (token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_IN")
+
+					elseif (buffs_to_other_players[spellid]) then
+						parser:add_buff_uptime(token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_IN")
 					end
 				end
 				
@@ -2677,6 +2704,9 @@
 					elseif (container_pets [who_serial] and container_pets [who_serial][2] == alvo_serial) then
 						--um pet colocando uma aura do dono
 						parser:add_buff_uptime (token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_REFRESH")
+
+					elseif (buffs_to_other_players[spellid]) then
+						parser:add_buff_uptime(token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_REFRESH")
 					end
 				end
 
@@ -2826,6 +2856,9 @@
 					elseif (container_pets [who_serial] and container_pets [who_serial][2] == alvo_serial) then
 						--um pet colocando uma aura do dono
 						parser:add_buff_uptime (token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_OUT")
+
+					elseif (buffs_to_other_players[spellid]) then
+						parser:add_buff_uptime(token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_OUT")
 					end
 				end
 				
@@ -4869,7 +4902,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		return _detalhes.parser_functions:ZONE_CHANGED_NEW_AREA()
 	end
 	
+
+
 	-- ~encounter
+	--ENCOUNTER START
 	function _detalhes.parser_functions:ENCOUNTER_START(...)
 		if (_detalhes.debug) then
 			_detalhes:Msg ("(debug) |cFFFFFF00ENCOUNTER_START|r event triggered.")
@@ -4961,6 +4997,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:SendEvent ("COMBAT_ENCOUNTER_START", nil, ...)
 	end
 	
+
+
+	--ENCOUNRTER_END
 	function _detalhes.parser_functions:ENCOUNTER_END (...)
 	
 		if (_detalhes.debug) then
@@ -5022,7 +5061,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				npc_cache = {},
 				ignore_spikeballs = 0,
 			}
-		--
 
 		return true
 	end
@@ -5951,8 +5989,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_recording_ability_with_buffs = _detalhes.RecordPlayerAbilityWithBuffs
 		_in_combat = _detalhes.in_combat
 
-		--> fill the ignored npcid directly from the user profile
-		--ignored_npcids = _detalhes.npcid_ignored
+		_table_wipe(ignored_npcids)
+		--fill it with the default npcs ignored
+		for npcId in pairs(_detalhes.default_ignored_npcs) do
+			ignored_npcids[npcId] = true
+		end
+		--fill it with the npcs the user ignored
 		for npcId in pairs(_detalhes.npcid_ignored) do
 			ignored_npcids[npcId] = true
 		end
@@ -5995,6 +6037,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		is_using_spellId_override = _detalhes.override_spellids
 		
 		return _detalhes:ClearParserCache()
+	end
+
+	function _detalhes.DumpIgnoredNpcs()
+		return ignored_npcids
 	end
 	
 	

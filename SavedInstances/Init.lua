@@ -19,3 +19,4 @@ SI.playerLevel = UnitLevel('player')
 SI.realmName = GetRealmName()
 SI.thisToon = SI.playerName .. ' - ' .. SI.realmName
 SI.maxLevel = GetMaxLevelForPlayerExpansion()
+SI.locale = GetLocale()

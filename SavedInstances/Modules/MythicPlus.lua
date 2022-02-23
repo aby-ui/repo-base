@@ -41,6 +41,8 @@ local KeystoneAbbrev = {
   [380] = L["SD"],    -- Sanguine Depths
   [381] = L["SOA"],   -- Spires of Ascension
   [382] = L["TOP"],   -- Theater of Pain
+  [391] = L["TSW"],   -- Tazavesh: Streets of Wonder
+  [392] = L["TSG"],   -- Tazavesh: So'leah's Gambit
 }
 SI.KeystoneAbbrev = KeystoneAbbrev
 

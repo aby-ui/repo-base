@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220217005916")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetUsedIcons(1, 2, 3)
@@ -36,19 +36,7 @@ mod:RegisterEventsInCombat(
 local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnGiftofNzoth						= mod:NewTargetNoFilterAnnounce(313334, 2)
 local warnWillPower							= mod:NewCountAnnounce(307831, 3)
---Stage 1: Exterior Carapace
-----Fury of N'Zoth
-local warnMadnessBomb						= mod:NewTargetAnnounce(306973, 2)
-local warnAdaptiveMembrane					= mod:NewTargetNoFilterAnnounce(306990, 4)
-local warnBlackScar							= mod:NewStackAnnounce(315954, 2, nil, "Tank")
---Stage 2: Subcutaneous Tunnel
-local warnSynthesRemaining					= mod:NewCountAnnounce(307079, 2)
-local warnSynthesisOver						= mod:NewEndAnnounce(307071, 1)
---Stage 3: Nightmare Chamber
-local warnInsanityBomb						= mod:NewTargetAnnounce(306984, 2)
-local warnCystGenesis						= mod:NewSpellAnnounce(307064, 3)
 
---General
 local specWarnGiftofNzoth					= mod:NewSpecialWarningYou(313334, nil, nil, nil, 1, 2)
 local specWarnServantofNzoth				= mod:NewSpecialWarningTargetChange(307832, false, nil, 2, 1, 2)
 local yellServantofNzoth					= mod:NewYell(307832)
@@ -56,54 +44,63 @@ local specWarnBlackScar						= mod:NewSpecialWarningStack(315954, nil, 2, nil, n
 local specWarnBlackScarTaunt				= mod:NewSpecialWarningTaunt(315954, nil, nil, nil, 1, 2)
 local specwarnWillPower						= mod:NewSpecialWarningCount(307831, nil, nil, nil, 1, 10)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
+
+local timerGiftofNzoth						= mod:NewBuffFadesTimer(20, 313334, nil, nil, nil, 5)
+
+mod:AddRangeFrameOption("10")
+mod:AddInfoFrameOption(307831, true)
 --Stage 1: Exterior Carapace
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20558))
 ----Fury of N'Zoth
+local warnMadnessBomb						= mod:NewTargetAnnounce(306973, 2)
+local warnAdaptiveMembrane					= mod:NewTargetNoFilterAnnounce(306990, 4)
+local warnBlackScar							= mod:NewStackAnnounce(315954, 2, nil, "Tank")
+
 local specWarnMadnessBomb					= mod:NewSpecialWarningMoveAway(306973, nil, nil, nil, 1, 2)
 local yellMadnessBomb						= mod:NewYell(306973)
 local yellMadnessBombFades					= mod:NewShortFadesYell(306973)
 local specWarnGrowthCoveredTentacle			= mod:NewSpecialWarningDodgeCount(307131, nil, nil, nil, 3, 2)
-local specWarnAdaptiveMembrane				= mod:NewSpecialWarningYou(316848, nil, nil, nil, 1, 2, 4)--Mythic
-----Gaze of Madness
-local specWarnGazeOfMadness					= mod:NewSpecialWarningSwitch("ej20565", "Dps", nil, nil, 1, 2)
---Stage 2: Subcutaneous Tunnel
-local specWarnEternalDarkness				= mod:NewSpecialWarningCount(307048, nil, nil, nil, 2, 2)
-local specWarnOccipitalBlast				= mod:NewSpecialWarningDodge(307092, nil, nil, nil, 2, 2)
---Stage 3: Nightmare Chamber
-local specWarnInsanityBomb					= mod:NewSpecialWarningMoveAway(306984, nil, nil, nil, 1, 2)
-local yellInsanityBomb						= mod:NewYell(306984, nil, false, 2)
-local yellInsanityBombFades					= mod:NewShortFadesYell(306984)
-local specWarnInfiniteDarkness				= mod:NewSpecialWarningCount(313040, nil, nil, nil, 2, 2)
-local specWarnThrashingTentacle				= mod:NewSpecialWarningCount(315820, nil, nil, nil, 2, 2)
+local specWarnAdaptiveMembrane				= mod:NewSpecialWarningYou(306990, nil, nil, nil, 1, 2, 4)--Mythic
 
---General
-local timerGiftofNzoth						= mod:NewBuffFadesTimer(20, 313334, nil, nil, nil, 5)
---Stage 1: Exterior Carapace
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20558))
-----Fury of N'Zoth
 local timerMadnessBombCD					= mod:NewCDCountTimer(22.2, 306973, nil, nil, nil, 3)--22-24
 local timerAdaptiveMembraneCD				= mod:NewCDCountTimer(27.7, 306990, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 3, 3)
 local timerAdaptiveMembrane					= mod:NewBuffActiveTimer(12, 306990, nil, false, 2, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerMentalDecayCD					= mod:NewCDTimer(21, 313364, nil, nil, nil, 3)
 local timerGrowthCoveredTentacleCD			= mod:NewNextCountTimer(60, 307131, nil, nil, nil, 1, nil, nil, nil, 1, 3)
 local timerMandibleSlamCD					= mod:NewCDTimer(12.7, 315947, nil, "Tank", 2, 5, nil, DBM_COMMON_L.TANK_ICON)--12.7
-----Adds
+
+mod:AddSetIconOption("SetIconAdaptiveMembrane", 316848, true, false, {1, 2, 3})
+mod:AddNamePlateOption("NPAuraOnMembrane2", 306990, false)
+----Gaze of Madness
+local specWarnGazeOfMadness					= mod:NewSpecialWarningSwitch("ej20565", "Dps", nil, nil, 1, 2)
+
 local timerGazeofMadnessCD					= mod:NewCDCountTimer(58, "ej20565", nil, nil, nil, 1, 307008, DBM_COMMON_L.DAMAGE_ICON)
 --Stage 2: Subcutaneous Tunnel
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20566))
+local warnSynthesRemaining					= mod:NewCountAnnounce(307079, 2)
+local warnSynthesisOver						= mod:NewEndAnnounce(307079, 1)
+
+local specWarnEternalDarkness				= mod:NewSpecialWarningCount(307048, nil, nil, nil, 2, 2)
+local specWarnOccipitalBlast				= mod:NewSpecialWarningDodge(307092, nil, nil, nil, 2, 2)
+
 local timerEternalDarknessCD				= mod:NewCDTimer(22.2, 307048, nil, nil, nil, 2)--Can be delayed if it overlaps with blast, otherwise dead on
 local timerOccipitalBlastCD					= mod:NewCDTimer(33.3, 307092, nil, nil, nil, 3)--Can be delayed if it overlaps with Eternal darkness, otherwise dead on
 --Stage 3: Nightmare Chamber
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20569))
+local warnInsanityBomb						= mod:NewTargetAnnounce(306984, 2)
+local warnCystGenesis						= mod:NewSpellAnnounce(307064, 3)
+
+local specWarnInsanityBomb					= mod:NewSpecialWarningMoveAway(306984, nil, nil, nil, 1, 2)
+local yellInsanityBomb						= mod:NewYell(306984, nil, false, 2)
+local yellInsanityBombFades					= mod:NewShortFadesYell(306984)
+local specWarnInfiniteDarkness				= mod:NewSpecialWarningCount(313040, nil, nil, nil, 2, 2)
+local specWarnThrashingTentacle				= mod:NewSpecialWarningCount(315820, nil, nil, nil, 2, 2)
+
 local timerInsanityBombCD					= mod:NewCDTimer(66.9, 306984, nil, nil, nil, 3)
 local timerInfiniteDarknessCD				= mod:NewCDCountTimer(53.9, 313040, nil, nil, nil, 2)
 local timerThrashingTentacleCD				= mod:NewCDCountTimer(20, 315820, nil, nil, nil, 3)
 
 local berserkTimer							= mod:NewBerserkTimer(720)
-
-mod:AddRangeFrameOption("10")
-mod:AddInfoFrameOption(307831, true)
-mod:AddSetIconOption("SetIconAdaptiveMembrane", 316848, true, false, {1, 2, 3})
-mod:AddNamePlateOption("NPAuraOnMembrane2", 306990, false)
 
 mod.vb.TentacleCount = 0
 mod.vb.gazeCount = 0

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2093, "DBM-Party-BfA", 2, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220220013546")
 mod:SetCreatureID(126845, 126847, 126848)--Captain Jolly, Captain Raoul, Captain Eudora
 mod:SetEncounterID(2094)
 mod:DisableRegenDetection()
@@ -20,41 +20,25 @@ mod:RegisterEventsInCombat(
 
 --TODO: target scan Blackout Barrel?
 --(ability.id = 258338 or ability.id = 256589 or ability.id = 257117) and type = "begincast" or ability.id = 258381 and type = "cast"
-local warnLuckySevens				= mod:NewSpellAnnounce(257117, 1)
-local warnTappedKeg					= mod:NewSpellAnnounce(272884, 1)
-local warnChainShot					= mod:NewSpellAnnounce(272902, 1)
-local warnPowderShot				= mod:NewTargetNoFilterAnnounce(256979, 3)
---Announce Brews
-local warnGoodBrew					= mod:NewAnnounce("warnGoodBrew", 1, 265088)
+--General
+----Announce Brews
+--text, color, icon, optionDefault, optionName, soundOption, spellID
+local warnGoodBrew					= mod:NewAnnounce("warnGoodBrew", 1, 265088, nil, nil, nil, 264605)
 local warnCausticBrew				= mod:NewCastAnnounce(265168, 4)
 
---Genera
 local specWarnBrewOnBoss			= mod:NewSpecialWarning("specWarnBrewOnBoss", "Tank", nil, nil, 1, 2)
---Raoul
-local specWarnBarrelSmash			= mod:NewSpecialWarningRun(256589, "Melee", nil, nil, 4, 2)
-local specWarnBlackoutBarrel		= mod:NewSpecialWarningSwitch(258338, nil, nil, nil, 1, 2)
---Eudora
-local specWarnGrapeShot				= mod:NewSpecialWarningDodge(258381, nil, nil, nil, 3, 2)
-local specWarnPowderShot			= mod:NewSpecialWarningYou(256979, nil, nil, nil, 1, 2)
+
+local timerTendingBarCD				= mod:NewNextTimer(8, 264605, nil, nil, nil, 3)
+
+mod:GroupSpells(264605, 265168)--Group good brew and bad brew with "tending Bar"
 --Jolly
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(17025))
+local warnLuckySevens				= mod:NewSpellAnnounce(257117, 1)
+
 local specWarnCuttingSurge			= mod:NewSpecialWarningDodge(267522, nil, nil, nil, 2, 2)
 local specWarnWhirlpoolofBlades		= mod:NewSpecialWarningDodge(267533, nil, nil, nil, 2, 2)
 local specWarnGTFO					= mod:NewSpecialWarningGTFO(272397, nil, nil, nil, 1, 8)
 
---General
-local timerTendingBarCD				= mod:NewNextTimer(8, 264605, nil, nil, nil, 3)
---Raoul
-----Hostile
-local timerBarrelSmashCD			= mod:NewCDTimer(22.9, 256589, nil, "Melee", nil, 3)--22.9-24.5
-local timerBlackoutBarrelCD			= mod:NewCDTimer(47.3, 258338, nil, nil, nil, 3, nil, DBM_COMMON_L.DAMAGE_ICON)
-----Friendly
-local timerTappedKegCD				= mod:NewNextTimer(22.3, 272884, nil, nil, nil, 5)
---Eudora
-----Hostile
-local timerGrapeShotCD				= mod:NewNextTimer(30.3, 258381, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
-----Friendly
-local timerChainShotCD				= mod:NewNextTimer(15.8, 272902, nil, nil, nil, 5)
---Jolly
 ----Hostile
 local timerCuttingSurgeCD			= mod:NewCDTimer(22.7, 267522, nil, nil, nil, 3)
 local timerWhirlpoolofBladesCD		= mod:NewCDTimer(22.7, 267533, nil, nil, nil, 3)
@@ -62,6 +46,30 @@ local timerWhirlpoolofBladesCD		= mod:NewCDTimer(22.7, 267533, nil, nil, nil, 3)
 local timerLuckySevensCD			= mod:NewNextTimer(29.1, 257117, nil, nil, nil, 5)
 
 mod:AddRangeFrameOption(5, 267522)
+--Raoul
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(17023))
+local warnTappedKeg					= mod:NewSpellAnnounce(272884, 1)
+
+local specWarnBarrelSmash			= mod:NewSpecialWarningRun(256589, "Melee", nil, nil, 4, 2)
+local specWarnBlackoutBarrel		= mod:NewSpecialWarningSwitch(258338, nil, nil, nil, 1, 2)
+
+----Hostile
+local timerBarrelSmashCD			= mod:NewCDTimer(22.9, 256589, nil, "Melee", nil, 3)--22.9-24.5
+local timerBlackoutBarrelCD			= mod:NewCDTimer(47.3, 258338, nil, nil, nil, 3, nil, DBM_COMMON_L.DAMAGE_ICON)
+----Friendly
+local timerTappedKegCD				= mod:NewNextTimer(22.3, 272884, nil, nil, nil, 5)
+--Eudora
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(17024))
+local warnChainShot					= mod:NewSpellAnnounce(272902, 1)
+local warnPowderShot				= mod:NewTargetNoFilterAnnounce(256979, 3)
+
+local specWarnGrapeShot				= mod:NewSpecialWarningDodge(258381, nil, nil, nil, 3, 2)
+local specWarnPowderShot			= mod:NewSpecialWarningYou(256979, nil, nil, nil, 1, 2)
+
+----Hostile
+local timerGrapeShotCD				= mod:NewNextTimer(30.3, 258381, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+----Friendly
+local timerChainShotCD				= mod:NewNextTimer(15.3, 272902, nil, nil, nil, 5)
 
 local function scanCaptains(self, isPull, delay)
 

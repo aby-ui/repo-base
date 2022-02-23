@@ -1,14 +1,14 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: HandyNotes: Oribos
 # ## Notes: Shows the NPC and POI locations in Oribos.
 # ## Notes-deDE: Zeigt die Positionen von NPCs und anderer POIs in Oribos an.
 ## Author: |cFFFF8C00Dathwada EU-Eredar|r
-## Version: v15
+## Version: v16
 ## RequiredDeps: HandyNotes
 ## DefaultState: enabled
 ## SavedVariables: HandyNotes_OribosDB
 ## X-Embeds: AceTimer-3.0
-## X-Date: 2021-11-03
+## X-Date: 2022-02-22
 ## X-Category: Map
 
 # LOCALIZATION FILES

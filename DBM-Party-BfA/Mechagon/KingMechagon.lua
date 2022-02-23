@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2331, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217031102")
 mod:SetCreatureID(150396, 144249, 150397)
 mod:SetEncounterID(2260)
 mod:SetBossHPInfoToHighest()
@@ -30,7 +30,7 @@ local warnRecalibrate				= mod:NewSpellAnnounce(291865, 2, nil, nil, nil, nil, 2
 local warnCuttingBeam				= mod:NewSpellAnnounce(291626, 2)
 --Stage Two: Omega Buster
 local warnPhase2					= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, 2)
-local warnMagnetoArmSoon			= mod:NewSoonAnnounce(283551, 2)
+local warnMagnetoArmSoon			= mod:NewSoonAnnounce(283143, 2)
 
 --Stage One: Aerial Unit R-21/X
 --local specWarnRecalibrate			= mod:NewSpecialWarningDodge(291865, nil, nil, nil, 2, 2)

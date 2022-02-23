@@ -249,6 +249,7 @@ E.CLASSID = { -- not CLASS_SORT_ORDER
 -- 1 for Combo, Chi, etc., 3 for Rage, etc (ignoring 1 Chi spenders used ooc that starts combat)
 E.POWER_TYPE_SPEC_OCC_THRESHOLD = {
 	[250] = 3,  -- DK (Blood)
+	[103] = 1,	-- Druid (Feral)
 	[253] = 3,  -- Hunter(BM)
 	[254] = 3,  -- Hunter (MM)
 	[255] = 3,  -- Hunter (SV)

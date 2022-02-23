@@ -2,7 +2,7 @@ local mod	= DBM:NewMod(2025, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 local DBM_COMMON_L = DBM_COMMON_L
 
-mod:SetRevision("20220116143848")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(124445)
 mod:SetEncounterID(2075)
 --mod:SetBossHPInfoToHighest()
@@ -42,23 +42,38 @@ https://www.warcraftlogs.com/reports/RcjbYJQHWNCt41Fm#fight=24&type=summary&pins
 https://www.warcraftlogs.com/reports/9xkDgRXYLtzb1Bnq#fight=2&type=summary&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20249121%20or%20ability.id%20%3D%20250048)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20246753%20or%20ability.id%20%3D%20254769)%20and%20type%20%3D%20%22cast%22%20%20or%20(ability.id%20%3D%20248332)%20and%20type%20%3D%20%22applydebuff%22%20%20or%20(ability.id%20%3D%20250073)%20and%20type%20%3D%20%22applybuff%22%20%20or%20target.name%20%3D%20%22Volant%20Kerapteron%22
 https://www.warcraftlogs.com/reports/V1dPgAZtFLwq2HDz#fight=8&type=summary&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20249121%20or%20ability.id%20%3D%20250048)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20246753%20or%20ability.id%20%3D%20254769)%20and%20type%20%3D%20%22cast%22%20%20or%20(ability.id%20%3D%20248332)%20and%20type%20%3D%20%22applydebuff%22%20%20or%20(ability.id%20%3D%20250073)%20and%20type%20%3D%20%22applybuff%22%20%20or%20target.name%20%3D%20%22Volant%20Kerapteron%22
 --]]
---The Paraxis
+--General/The Paraxis
+mod:AddTimerLine(GENERAL)
 local warnRainofFel						= mod:NewTargetCountAnnounce(248332, 2)
 local warnWarpIn						= mod:NewTargetAnnounce(246888, 3, nil, nil, nil, nil, nil, 2, true)
 local warnLifeForce						= mod:NewCountAnnounce(250048, 1)
 
---The Paraxis
 local specWarnSpearofDoom				= mod:NewSpecialWarningDodge(248789, nil, nil, nil, 2, 2)
 --local yellSpearofDoom					= mod:NewYell(248789)
 local specWarnRainofFel					= mod:NewSpecialWarningMoveAway(248332, nil, nil, 2, 1, 2)
 local yellRainofFel						= mod:NewYell(248332)
 local yellRainofFelFades				= mod:NewShortFadesYell(248332)
+
+local timerSpearofDoomCD				= mod:NewCDCountTimer(55, 248789, nil, nil, nil, 3)--55-69
+local timerRainofFelCD					= mod:NewCDCountTimer(61, 248332, nil, nil, nil, 3)
+
+mod:AddInfoFrameOption(nil, true)
+mod:AddRangeFrameOption("8/10")
 --Adds
+mod:AddTimerLine(DBM_COMMON_L.ADDS)
 local specWarnSwing						= mod:NewSpecialWarningDodge(250701, "MeleeDps", nil, nil, 1, 2)
 --local yellBurstingDreadflame			= mod:NewPosYell(238430, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION)
 --local specWarnMalignantAnguish		= mod:NewSpecialWarningInterrupt(236597, "HasInterrupt")
 --local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
+
+local timerDestructorCD					= mod:NewTimer(90, "timerDestructor", 254769, nil, nil, 1, DBM_COMMON_L.TANK_ICON)
+local timerObfuscatorCD					= mod:NewTimer(90, "timerObfuscator", 246753, nil, nil, 1, DBM_COMMON_L.DAMAGE_ICON)
+local timerPurifierCD					= mod:NewTimer(90, "timerPurifier", 250074, nil, nil, 1, DBM_COMMON_L.TANK_ICON)
+local timerBatsCD						= mod:NewTimer(90, "timerBats", 242080, nil, nil, 1, DBM_COMMON_L.DAMAGE_ICON)
+
+mod:AddNamePlateOption("NPAuraOnPurification", 250074)
 --Mythic
+mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local specWarnFinalDoom					= mod:NewSpecialWarningCount(249121, "-Tank", nil, nil, 1, 2)
 local specWarnArcaneBuildup				= mod:NewSpecialWarningMoveAway(250693, nil, nil, nil, 1, 2)
 local yellArcaneBuildup					= mod:NewYell(250693)
@@ -68,27 +83,12 @@ local yellBurningEmbers					= mod:NewYell(250691)
 local yellBurningEmbersFades			= mod:NewShortFadesYell(250691)
 local specWarnFoulSteps					= mod:NewSpecialWarningStack(250140, nil, 12, nil, nil, 1, 6)--Fine tune
 
---The Paraxis
-mod:AddTimerLine(GENERAL)
-local timerSpearofDoomCD				= mod:NewCDCountTimer(55, 248789, nil, nil, nil, 3)--55-69
-local timerRainofFelCD					= mod:NewCDCountTimer(61, 248332, nil, nil, nil, 3)
-mod:AddTimerLine(DBM_COMMON_L.ADDS)
-local timerDestructorCD					= mod:NewTimer(90, "timerDestructor", 254769, nil, nil, 1, DBM_COMMON_L.TANK_ICON)
-local timerObfuscatorCD					= mod:NewTimer(90, "timerObfuscator", 246753, nil, nil, 1, DBM_COMMON_L.DAMAGE_ICON)
-local timerPurifierCD					= mod:NewTimer(90, "timerPurifier", 250074, nil, nil, 1, DBM_COMMON_L.TANK_ICON)
-local timerBatsCD						= mod:NewTimer(90, "timerBats", 242080, nil, nil, 1, DBM_COMMON_L.DAMAGE_ICON)
---Mythic
-mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)
 local timerFinalDoom					= mod:NewCastTimer(50, 249121, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 2, 5)
 local timerFinalDoomCD					= mod:NewCDCountTimer(90, 249121, nil, nil, nil, 4, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 5)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
-
 mod:AddSetIconOption("SetIconOnFeedbackTargeted2", 249016, false)
-mod:AddInfoFrameOption(250030, true)
-mod:AddNamePlateOption("NPAuraOnPurification", 250074)
 mod:AddNamePlateOption("NPAuraOnFelShielding", 250555)
-mod:AddRangeFrameOption("8/10")
+
 
 mod.vb.rainOfFelCount = 0
 mod.vb.lifeForceCast = 0

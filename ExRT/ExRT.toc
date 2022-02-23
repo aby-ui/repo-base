@@ -1,8 +1,8 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Method Raid Tools [Storage]
 ## SavedVariables: VExRT
 ## Notes: Required for data migration
-## Version: 4600
+## Version: 4620
 
 # deprecated after addon rebranding
 # used for variables migration

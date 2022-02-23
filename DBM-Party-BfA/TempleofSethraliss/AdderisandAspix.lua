@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2142, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217031102")
 mod:SetCreatureID(133379, 133944)
 mod:SetEncounterID(2124)
 mod:SetUsedIcons(8)
@@ -20,44 +20,43 @@ mod:RegisterEventsInCombat(
 
 --TODO, target scan/warn Gale Force target if possible
 --TODO, get a LONG pull so timer work can be actually figured out. VIDEO too
+--General
 local warnLightningShield			= mod:NewTargetNoFilterAnnounce(263246, 3)
---Aspix
-local warnConduction				= mod:NewTargetAnnounce(263371, 2)
---Adderis
 
+mod:AddRangeFrameOption("8")
+mod:AddInfoFrameOption(263246, true)
+mod:AddSetIconOption("SetIconOnNoLit", 263246, true, true, {8})
 --Aspix
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(18484))
 ----Lighting
+local warnConduction				= mod:NewTargetAnnounce(263371, 2)
+
 local specWarnJolt					= mod:NewSpecialWarningInterrupt(263318, "HasInterrupt", nil, nil, 1, 2)
 local specWarnConduction			= mod:NewSpecialWarningMoveAway(263371, nil, nil, nil, 3, 2)
 local yellConduction				= mod:NewYell(263371)
 local yellConductionFades			= mod:NewShortFadesYell(263371)
 local specWarnStaticShock			= mod:NewSpecialWarningSpell(263257, nil, nil, nil, 2, 2)
-----Wind
-local specWarnGust					= mod:NewSpecialWarningInterrupt(263775, "HasInterrupt", nil, nil, 1, 2)
-local specWarnGaleForce				= mod:NewSpecialWarningSpell(263776, nil, nil, nil, 2, 2)
---Adderis
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
-local specWarnCycloneStrike			= mod:NewSpecialWarningYou(263573, nil, nil, nil, 3, 2)
-local specWarnCycloneStrikeOther	= mod:NewSpecialWarningDodge(263573, nil, nil, nil, 3, 2)
-local yellCycloneStrike				= mod:NewYell(263573)
-local specWarnPearlofThunder		= mod:NewSpecialWarningRun(263365, nil, nil, nil, 4, 2)
 
---Aspix
-----Lighting
 local timerConductionCD				= mod:NewCDTimer(13, 263371, nil, nil, nil, 3)--NYI
 local timerStaticShockCD			= mod:NewCDTimer(13, 263257, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 ----Wind
+local specWarnGust					= mod:NewSpecialWarningInterrupt(263775, "HasInterrupt", nil, nil, 1, 2)
+local specWarnGaleForce				= mod:NewSpecialWarningSpell(263776, nil, nil, nil, 2, 2)
+
 local timerGaleForceCD				= mod:NewCDTimer(14.5, 263776, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)
 --Adderis
-----Wind
-local timerArcingBladeCD			= mod:NewCDTimer(13.4, 263234, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
-local timerCycloneStrikeCD			= mod:NewCDTimer(14.6, 263573, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
-----Lighting
-local timerArcDashCD				= mod:NewCDTimer(23, 263424, nil, nil, nil, 3)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(18485))
+----Lightning
+local specWarnPearlofThunder		= mod:NewSpecialWarningRun(263365, nil, nil, nil, 4, 2)
 
-mod:AddRangeFrameOption("8")
-mod:AddInfoFrameOption(263246, true)
-mod:AddSetIconOption("SetIconOnNoLit", 263246, true, true, {8})
+local timerArcDashCD				= mod:NewCDTimer(23, 263424, nil, nil, nil, 3)
+----Wind
+local specWarnCycloneStrike			= mod:NewSpecialWarningYou(263573, nil, nil, nil, 3, 2)
+local specWarnCycloneStrikeOther	= mod:NewSpecialWarningDodge(263573, nil, nil, nil, 3, 2)
+local yellCycloneStrike				= mod:NewYell(263573)
+
+local timerArcingBladeCD			= mod:NewCDTimer(13.4, 263234, nil, nil, nil, 5, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerCycloneStrikeCD			= mod:NewCDTimer(13.3, 263573, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 
 mod.vb.noLitShield = nil
 
@@ -76,12 +75,12 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.noLitShield = nil
 	--Adderis should be in winds, Aspix timers started by Lightning Shield buff
-	timerCycloneStrikeCD:Start(9-delay)
+	timerCycloneStrikeCD:Start(8.5-delay)
 	if not self:IsNormal() then
 		timerArcingBladeCD:Start(7.3-delay)
 	end
 	--Aspix
-	timerArcDashCD:Start(14-delay)--Seems to be used regardless of shield
+--	timerArcDashCD:Start(14-delay)--Can be used instantly on pull, so no timer
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM_CORE_L.INFOFRAME_POWER)
 		DBM.InfoFrame:Show(3, "enemypower", 10)
@@ -225,7 +224,7 @@ do
 					self.vb.noLitShield = nil
 					local icon = GetRaidTargetIndex(uId)
 					if not icon then
-						SetRaidTarget(uId.."target", 8)
+						self:SetIcon(uId.."target", 8)
 						break
 					end
 				end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2031, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116144653")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(124828)
 mod:SetEncounterID(2092)
 mod:SetBossHPInfoToHighest()--Because of heal on mythic
@@ -31,33 +31,22 @@ mod:RegisterEventsInCombat(
  or (ability.id = 250669 or ability.id = 251570 or ability.id = 255199 or ability.id = 257931 or ability.id = 257869 or ability.id = 257966) and type = "applydebuff" or type = "interrupt" and target.id = 124828
 --]]
 local warnPhase						= mod:NewPhaseChangeAnnounce()
+
+local specWarnGTFO					= mod:NewSpecialWarningGTFO(248167, nil, nil, nil, 1, 2)
+
+local timerNextPhase				= mod:NewPhaseTimer(74)
+
+local berserkTimer					= mod:NewBerserkTimer(600)
+
+mod:AddInfoFrameOption(nil, true)
 --Stage One: Storm and Sky
+mod:AddTimerLine(SCENARIO_STAGE:format(1))
 local warnTorturedRage				= mod:NewCountAnnounce(257296, 2)
 local warnSweepingScythe			= mod:NewStackAnnounce(248499, 2, nil, "Tank")
 local warnBlightOrb					= mod:NewCountAnnounce(248317, 2)
 local warnSoulblight				= mod:NewTargetAnnounce(248396, 2, nil, false, 2)
 local warnSkyandSea					= mod:NewTargetAnnounce(255594, 1)
---Stage one Mythic
-local warnSargRage					= mod:NewTargetAnnounce(257869, 3)
-local warnSargFear					= mod:NewTargetAnnounce(257931, 3)
---Stage Two: The Protector Redeemed
-local warnSoulburst					= mod:NewTargetAnnounce(250669, 2)
-local warnSoulbomb					= mod:NewTargetNoFilterAnnounce(251570, 3)
-local warnAvatarofAggra				= mod:NewTargetNoFilterAnnounce(255199, 1)
---Stage Three: The Arcane Masters
-local warnCosmicRay					= mod:NewTargetAnnounce(252729, 3)
-local warnCosmicBeaconCast			= mod:NewCastAnnounce(252616, 2)
-local warnCosmicBeacon				= mod:NewTargetAnnounce(252616, 2)
-local warnDiscsofNorg				= mod:NewCastAnnounce(252516, 1)
---Stage Three Mythic
-local warnSargSentence				= mod:NewTargetNoFilterAnnounce(257966, 3)
-local warnEdgeofAnni				= mod:NewCountAnnounce(258834, 4)
-local warnSoulRendingScythe			= mod:NewStackAnnounce(258838, 2, nil, "Tank")
---Stage Four: The Gift of Life, The Forge of Loss (Non Mythic)
-local warnGiftOfLifebinder			= mod:NewCastAnnounce(257619, 1)
-local warnDeadlyScythe				= mod:NewStackAnnounce(258039, 2, nil, "Tank")
 
---Stage One: Storm and Sky
 local specWarnSweepingScythe		= mod:NewSpecialWarningStack(248499, nil, 3, nil, nil, 1, 6)
 local specWarnSweepingScytheTaunt	= mod:NewSpecialWarningTaunt(248499, nil, nil, nil, 1, 2)
 local specWarnConeofDeath			= mod:NewSpecialWarningDodge(248165, nil, nil, nil, 1, 2)
@@ -68,15 +57,35 @@ local specWarnGiftofSea				= mod:NewSpecialWarningYou(258647, nil, nil, nil, 1, 
 local yellGiftofSea					= mod:NewPosYell(258647, L.SeaText)
 local specWarnGiftofSky				= mod:NewSpecialWarningYou(258646, nil, nil, nil, 1, 2)
 local yellGiftofSky					= mod:NewPosYell(258646, L.SkyText)
---Mythic P1
-local specWarnSargGaze				= mod:NewSpecialWarningPreWarn(258068, nil, 5, nil, nil, 1, 2)
-local specWarnSargRage				= mod:NewSpecialWarningMoveAway(257869, nil, nil, nil, 3, 2)
+
+local timerSweepingScytheCD			= mod:NewCDCountTimer(5.6, 248499, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--5.6-15.7
+local timerConeofDeathCD			= mod:NewCDCountTimer(19.4, 248165, nil, nil, nil, 3)--19.4-24
+local timerBlightOrbCD				= mod:NewCDCountTimer(22, 248317, nil, nil, nil, 3)--22-32
+local timerTorturedRageCD			= mod:NewCDCountTimer(13, 257296, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--13-16
+local timerSkyandSeaCD				= mod:NewCDCountTimer(24.9, 255594, nil, nil, nil, 5)--24.9-27.8
+
+mod:AddSetIconOption("SetIconGift", 255594, true)--5 and 6
+--Stage one Mythic
+mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic Stage 1
+local warnSargRage					= mod:NewTargetAnnounce(257869, 3)
+local warnSargFear					= mod:NewTargetAnnounce(257931, 3)
+
+local specWarnSargGaze				= mod:NewSpecialWarningPreWarn(258068, nil, 5, nil, nil, 1, 2, 4)
+local specWarnSargRage				= mod:NewSpecialWarningMoveAway(257869, nil, nil, nil, 3, 2, 4)
 local yellSargRage					= mod:NewShortYell(257869, 6612)
-local specWarnSargFear				= mod:NewSpecialWarningMoveTo(257931, nil, nil, nil, 3, 2)
+local specWarnSargFear				= mod:NewSpecialWarningMoveTo(257931, nil, nil, nil, 3, 2, 4)
 local yellSargFear					= mod:NewShortYell(257931, 5782)
 local yellSargFearCombo				= mod:NewComboYell(257931, 5782)
-local specWarnGTFO					= mod:NewSpecialWarningGTFO(248167, nil, nil, nil, 1, 2)
+
+local timerSargGazeCD				= mod:NewCDCountTimer(35.2, 258068, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)
+
+mod:AddRangeFrameOption(5, 257869)
 --Stage Two: The Protector Redeemed
+mod:AddTimerLine(SCENARIO_STAGE:format(2))
+local warnSoulburst					= mod:NewTargetAnnounce(250669, 2)
+local warnSoulbomb					= mod:NewTargetNoFilterAnnounce(251570, 3)
+local warnAvatarofAggra				= mod:NewTargetNoFilterAnnounce(255199, 1)
+
 local specWarnSoulburst				= mod:NewSpecialWarningYou(250669, nil, nil, nil, 1, 2)
 local yellSoulburst					= mod:NewPosYell(250669, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION)
 local yellSoulburstFades			= mod:NewIconFadesYell(250669)
@@ -86,10 +95,40 @@ local yellSoulbomb					= mod:NewPosYell(251570, DBM_CORE_L.AUTO_YELL_CUSTOM_POSI
 local yellSoulbombFades				= mod:NewIconFadesYell(251570, 155188)
 local specWarnEdgeofObliteration	= mod:NewSpecialWarningSpell(255826, nil, nil, nil, 2, 2)
 local specWarnAvatarofAggra			= mod:NewSpecialWarningYou(255199, nil, nil, nil, 1, 2)
+
+local timerSoulBombCD				= mod:NewNextTimer(42, 251570, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON, nil, 3, 4)
+local timerSoulBurstCD				= mod:NewNextCountTimer("d42", 250669, nil, nil, nil, 3)
+local timerEdgeofObliterationCD		= mod:NewCDCountTimer(34, 255826, nil, nil, nil, 2)
+local timerAvatarofAggraCD			= mod:NewCDTimer(59.9, 255199, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+
+mod:AddSetIconOption("SetIconOnAvatar", 255199, true)--4
+mod:AddSetIconOption("SetIconOnSoulBomb", 251570, true)--3 and 7
+mod:AddSetIconOption("SetIconOnSoulBurst", 250669, true)--2
 --Stage Three: The Arcane Masters
+mod:AddTimerLine(SCENARIO_STAGE:format(3))
+local warnCosmicRay					= mod:NewTargetAnnounce(252729, 3)
+local warnCosmicBeaconCast			= mod:NewCastAnnounce(252616, 2)
+local warnCosmicBeacon				= mod:NewTargetAnnounce(252616, 2)
+local warnDiscsofNorg				= mod:NewCastAnnounce(252516, 1)
+
 local specWarnCosmicRay				= mod:NewSpecialWarningYou(252729, nil, nil, nil, 1, 2)
 local yellCosmicRay					= mod:NewYell(252729)
+
+local timerCosmicRayCD				= mod:NewCDTimer(19.9, 252729, nil, nil, nil, 3)--All adds seem to cast it at same time, so one timer for all
+local timerCosmicBeaconCD			= mod:NewCDTimer(19.9, 252616, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--All adds seem to cast it at same time, so one timer for all
+local timerDiscsofNorg				= mod:NewCastTimer(12, 252516, nil, nil, nil, 6)
+
+mod:AddSetIconOption("SetIconOnVulnerability", 255418, true, true)--1-7
+mod:AddNamePlateOption("NPAuraOnInevitability", 253021)
+mod:AddNamePlateOption("NPAuraOnCosmosSword", 255496)
+mod:AddNamePlateOption("NPAuraOnEternalBlades", 255478)
+mod:AddNamePlateOption("NPAuraOnVulnerability", 255418)
 --Stage Three Mythic
+mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic 3
+local warnSargSentence				= mod:NewTargetNoFilterAnnounce(257966, 3)
+local warnEdgeofAnni				= mod:NewCountAnnounce(258834, 4)
+local warnSoulRendingScythe			= mod:NewStackAnnounce(258838, 2, nil, "Tank")
+
 local specWarnSargSentence			= mod:NewSpecialWarningYou(257966, nil, nil, nil, 1, 2)
 local yellSargSentence				= mod:NewShortYell(257966, L.Sentence)
 local yellSargSentenceFades			= mod:NewShortFadesYell(257966)
@@ -97,55 +136,22 @@ local specWarnApocModule			= mod:NewSpecialWarningSwitchCount(258029, "Dps", nil
 local specWarnEdgeofAnni			= mod:NewSpecialWarningDodge(258834, nil, nil, nil, 2, 2)
 local specWarnSoulrendingScythe		= mod:NewSpecialWarningStack(258838, nil, 2, nil, nil, 1, 2)
 local specWarnSoulrendingScytheTaunt= mod:NewSpecialWarningTaunt(258838, nil, nil, nil, 1, 2)
---Stage Four: The Gift of Life, The Forge of Loss (Non Mythic)
-local specWarnEmberofRage			= mod:NewSpecialWarningDodge(257299, nil, nil, nil, 2, 2)
-local specWarnDeadlyScythe			= mod:NewSpecialWarningStack(258039, nil, 2, nil, nil, 1, 2)
-local specWarnDeadlyScytheTaunt		= mod:NewSpecialWarningTaunt(258039, nil, nil, nil, 1, 2)
-local specWarnReorgModule			= mod:NewSpecialWarningSwitchCount(256389, "RangedDps", nil, nil, 1, 2)--Ranged only?
 
-local timerNextPhase				= mod:NewPhaseTimer(74)
---Stage One: Storm and Sky
-mod:AddTimerLine(SCENARIO_STAGE:format(1))
-local timerSweepingScytheCD			= mod:NewCDCountTimer(5.6, 248499, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--5.6-15.7
-local timerConeofDeathCD			= mod:NewCDCountTimer(19.4, 248165, nil, nil, nil, 3)--19.4-24
-local timerBlightOrbCD				= mod:NewCDCountTimer(22, 248317, nil, nil, nil, 3)--22-32
-local timerTorturedRageCD			= mod:NewCDCountTimer(13, 257296, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--13-16
-local timerSkyandSeaCD				= mod:NewCDCountTimer(24.9, 255594, nil, nil, nil, 5)--24.9-27.8
-mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic Stage 1
-local timerSargGazeCD				= mod:NewCDCountTimer(35.2, 258068, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)
---Stage Two: The Protector Redeemed
-mod:AddTimerLine(SCENARIO_STAGE:format(2))
-local timerSoulBombCD				= mod:NewNextTimer(42, 251570, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON, nil, 3, 4)
-local timerSoulBurstCD				= mod:NewNextCountTimer("d42", 250669, nil, nil, nil, 3)
-local timerEdgeofObliterationCD		= mod:NewCDCountTimer(34, 255826, nil, nil, nil, 2)
-local timerAvatarofAggraCD			= mod:NewCDTimer(59.9, 255199, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
---Stage Three: The Arcane Masters
-mod:AddTimerLine(SCENARIO_STAGE:format(3))
-local timerCosmicRayCD				= mod:NewCDTimer(19.9, 252729, nil, nil, nil, 3)--All adds seem to cast it at same time, so one timer for all
-local timerCosmicBeaconCD			= mod:NewCDTimer(19.9, 252616, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)--All adds seem to cast it at same time, so one timer for all
-local timerDiscsofNorg				= mod:NewCastTimer(12, 252516, nil, nil, nil, 6)
-mod:AddTimerLine(ENCOUNTER_JOURNAL_SECTION_FLAG12)--Mythic 3
 local timerSoulrendingScytheCD		= mod:NewCDTimer(8.5, 258838, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
 local timerSargSentenceCD			= mod:NewTimer(35.2, "timerSargSentenceCD", 257966, nil, nil, 3, DBM_COMMON_L.HEROIC_ICON)
 local timerEdgeofAnniCD				= mod:NewCDTimer(5.5, 258834, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 --Stage Four: The Gift of Life, The Forge of Loss (Non Mythic)
 mod:AddTimerLine(SCENARIO_STAGE:format(4))
+local warnGiftOfLifebinder			= mod:NewCastAnnounce(257619, 1)
+local warnDeadlyScythe				= mod:NewStackAnnounce(258039, 2, nil, "Tank")
+
+local specWarnEmberofRage			= mod:NewSpecialWarningDodge(257299, nil, nil, nil, 2, 2)
+local specWarnDeadlyScythe			= mod:NewSpecialWarningStack(258039, nil, 2, nil, nil, 1, 2)
+local specWarnDeadlyScytheTaunt		= mod:NewSpecialWarningTaunt(258039, nil, nil, nil, 1, 2)
+local specWarnReorgModule			= mod:NewSpecialWarningSwitchCount(256389, "RangedDps", nil, nil, 1, 2)--Ranged only?
+
 local timerDeadlyScytheCD			= mod:NewCDTimer(5.5, 258039, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerReorgModuleCD			= mod:NewCDCountTimer(48.1, 256389, nil, nil, nil, 1, nil, nil, nil, not mod:IsTank() and 2, 4)
-
-local berserkTimer					= mod:NewBerserkTimer(600)
-
-mod:AddSetIconOption("SetIconGift", 255594, true)--5 and 6
-mod:AddSetIconOption("SetIconOnAvatar", 255199, true)--4
-mod:AddSetIconOption("SetIconOnSoulBomb", 251570, true)--3 and 7
-mod:AddSetIconOption("SetIconOnSoulBurst", 250669, true)--2
-mod:AddSetIconOption("SetIconOnVulnerability", 255418, true, true)--1-7
-mod:AddInfoFrameOption(nil, true)--Change to EJ entry since spell not localized
-mod:AddRangeFrameOption(5, 257869)
-mod:AddNamePlateOption("NPAuraOnInevitability", 253021)
-mod:AddNamePlateOption("NPAuraOnCosmosSword", 255496)
-mod:AddNamePlateOption("NPAuraOnEternalBlades", 255478)
-mod:AddNamePlateOption("NPAuraOnVulnerability", 255418)
 
 local playerAvatar = false
 mod.vb.phase = 1

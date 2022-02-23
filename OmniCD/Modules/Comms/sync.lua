@@ -158,14 +158,14 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender) -- Ace strips realm
 					info.talentData[spellID] = rankValue
 				elseif conduitID then
 					info.shadowlandsData[conduitID] = 0
-					info.talentData[conduitID] = 0
+					info.talentData[conduitID] = 0 -- incl main hand
 				end
 			elseif v ~= "0" then
 				v = tonumber(v)
 				if i == 16 then
 					if info.shadowlandsData.covenantID then
 						info.shadowlandsData.soulbindID = v
-					else -- backwards compatible. add snowflake if no active soulbind
+					else -- backwards compatible. add main hand if no active soulbind
 						info.talentData[v] = true
 					end
 				elseif i == 15 then

@@ -627,7 +627,6 @@ map.nodes[43484699] = RiftPortal()
 map.nodes[53707200] = RiftPortal()
 map.nodes[56807460] = RiftPortal()
 map.nodes[59405370] = RiftPortal()
-map.nodes[61804460] = RiftPortal()
 
 -------------------------------------------------------------------------------
 ------------------------------ RIFTBOUND CACHES -------------------------------

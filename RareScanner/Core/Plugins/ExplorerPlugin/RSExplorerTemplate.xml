@@ -313,10 +313,10 @@
     	</Anchors>
         <Scripts>
 		  <OnEnter>
-		  	self:GetParent():ShowTooltip(self)
+		  	self:GetParent():GetParent():ShowTooltip(self)
 		  </OnEnter>
 		  <OnLeave>
-		  	self:GetParent():HideTooltip(self)
+		  	self:GetParent():GetParent():HideTooltip(self)
 		  </OnLeave>
         </Scripts>
       </CheckButton>
@@ -326,10 +326,10 @@
     	</Anchors>
         <Scripts>
 		  <OnEnter>
-		  	self:GetParent():ShowTooltip(self)
+		  	self:GetParent():GetParent():ShowTooltip(self)
 		  </OnEnter>
 		  <OnLeave>
-		  	self:GetParent():HideTooltip(self)
+		  	self:GetParent():GetParent():HideTooltip(self)
 		  </OnLeave>
         </Scripts>
       </CheckButton>
@@ -345,10 +345,10 @@
           	self:GetParent():ApplyFilters(self, button)
           </OnClick>
 		  <OnEnter>
-		  	self:GetParent():ShowTooltip(self)
+		  	self:GetParent():GetParent():ShowTooltip(self)
 		  </OnEnter>
 		  <OnLeave>
-		  	self:GetParent():HideTooltip(self)
+		  	self:GetParent():GetParent():HideTooltip(self)
 		  </OnLeave>
         </Scripts>
       </Button>
@@ -358,10 +358,10 @@
     	</Anchors>
         <Scripts>
 		  <OnEnter>
-		  	self:GetParent():ShowTooltip(self)
+		  	self:GetParent():GetParent():ShowTooltip(self)
 		  </OnEnter>
 		  <OnLeave>
-		  	self:GetParent():HideTooltip(self)
+		  	self:GetParent():GetParent():HideTooltip(self)
 		  </OnLeave>
         </Scripts>
       </CheckButton>
@@ -403,6 +403,27 @@
           <Anchor point="TOPLEFT" x="60" y="-25" relativePoint="TOPLEFT"/>
           <Anchor point="BOTTOMRIGHT" x="-60" y="-65" relativePoint="TOPRIGHT"/>
         </Anchors>
+        <Frames>
+	      <Button parentKey="RestartScanningButton" inherits="SharedButtonSmallTemplate">
+		    <Anchors>
+		      <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-5" y="-2" />
+	    	</Anchors>
+		  	<KeyValues>
+				<KeyValue key="atlasName" value="128-RedButton" type="string"/>
+			</KeyValues>
+	        <Scripts>
+	          <OnClick>
+	          	self:GetParent():RestartScanning(self, button)
+	          </OnClick>
+			  <OnEnter>
+			  	self:GetParent():GetParent():ShowTooltip(self)
+			  </OnEnter>
+			  <OnLeave>
+			  	self:GetParent():GetParent():HideTooltip(self)
+			  </OnLeave>
+	        </Scripts>
+	      </Button>
+        </Frames>
       </Frame>
       <Frame parentKey="RareNPCList" hidden="true" inherits="RSExplorerRareListTemplate" mixin="RSExplorerRareList" name="$parentRareList">
         <Size x="305" y="640"/>

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2096, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220217031102")
 mod:SetCreatureID(127503)
 mod:SetEncounterID(2104)
 mod:SetUsedIcons(1)
@@ -32,10 +32,10 @@ local timerARICD					= mod:NewCDTimer(44.8, 256198, nil, nil, nil, 3)
 local timerCrossIgnitionCD			= mod:NewCDTimer(44.8, 256083, nil, nil, nil, 2)
 local timerDeadeyeCD				= mod:NewCDTimer(23, 256038, nil, nil, nil, 3)
 local timerExplosiveBurstCD			= mod:NewCDTimer(44.8, 256105, nil, nil, nil, 3)
-local timerMassiveBlastCD			= mod:NewCDTimer(22, 263345, nil, nil, nil, 3)
+local timerMassiveBlastCD			= mod:NewCDTimer(21.8, 263345, nil, nil, nil, 3)
 
 mod:AddSetIconOption("SetIconOnDeadeye", 256038, true, false, {1})
-mod:AddInfoFrameOption(256044)
+mod:AddInfoFrameOption(256038)
 mod:AddRangeFrameOption(5, 256105)
 
 mod.vb.crossCount = 0
@@ -48,7 +48,7 @@ function mod:OnCombatStart(delay)
 	timerExplosiveBurstCD:Start(11.5-delay)
 	timerCrossIgnitionCD:Start(16-delay)
 	timerMassiveBlastCD:Start(17-delay)
-	timerDeadeyeCD:Start(23.3-delay)
+	timerDeadeyeCD:Start(23.1-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(256044))
 		DBM.InfoFrame:Show(5, "reverseplayerbaddebuffbyspellid", 256044)--Must match spellID to filter other debuffs out
@@ -133,7 +133,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 256101 then
 		self.vb.burstCount = self.vb.burstCount + 1
 		--12.9, 15.8, 7.3, 25.5 /// 12.6, 15.8, 7.3, 15.0, 7.3, 15.8, 7.3
-		if self.vb.crossCount % 2 == 0 then
+		--12.1, 15.8, 7.3, 25.5
+		if self.vb.burstCount % 2 == 0 then
 			timerExplosiveBurstCD:Start(7.3)
 		else
 			timerExplosiveBurstCD:Start(15)

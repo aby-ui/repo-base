@@ -72,7 +72,7 @@ function U1CT_StartTimer(start)
     if start then
         U1CT.start = GetTime()
         U1CT:SetScript("OnUpdate", U1CT.onUpdate)
-        U1CT.text:SetTextColor(1, .2, .2, 1)
+        U1CT.text:SetTextColor(1, 1, .2, 1)
         U1CT.Anim:Play()
     else
         U1CT.start = nil

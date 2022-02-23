@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Author: Jordy141
 ## Notes: Enhances shift-click interface at vendors, making it easier to buy large amounts of items at once.
 ## Title: BuyEmAll

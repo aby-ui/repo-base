@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2351, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220214214851")
 mod:SetCreatureID(152128)
 mod:SetEncounterID(2303)
 mod:SetHotfixNoticeRev(20190716000000)--2019, 7, 16
@@ -31,14 +31,12 @@ mod:RegisterEventsInCombat(
  or (ability.id = 298242 or ability.id = 298103 or ability.id = 298156 or ability.id = 298548 or ability.id = 295779 or ability.id = 305057) and type = "cast"
  or type = "interrupt"
 --]]
+--Boss
+mod:AddTimerLine(BOSS)
 local warnDesensitizingSting				= mod:NewStackAnnounce(298156, 2, nil, "Tank")
 local warnIncubationFluid					= mod:NewTargetNoFilterAnnounce(298306, 2)
 local warnCallofTender						= mod:NewCountAnnounce(305057, 2)
 local warnArcingCurrent						= mod:NewCountAnnounce(295825, 2)
-----Adds
-local warnAquaLance							= mod:NewTargetNoFilterAnnounce(295779, 2)
-local warnShockingLightning					= mod:NewSpellAnnounce(295818, 2, nil, false)
-local warnPowerfulStomp						= mod:NewCountAnnounce(296691, 2)
 
 local specWarnDesensitizingSting			= mod:NewSpecialWarningStack(298156, nil, 9, nil, nil, 1, 6)
 local specWarnDesensitizingStingTaunt		= mod:NewSpecialWarningTaunt(298156, nil, nil, nil, 1, 2)
@@ -48,28 +46,31 @@ local specWarnIncubationFluid				= mod:NewSpecialWarningMoveAway(298306, nil, ni
 local specWarnArcingCurrent					= mod:NewSpecialWarningCount(295825, nil, nil, nil, 2, 2)
 local yellArcingCurrent						= mod:NewYell(295825)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
-----Adds
-local specWarnAquaLance						= mod:NewSpecialWarningMoveAway(295779, nil, nil, nil, 1, 2)
-local yellAquaLance							= mod:NewYell(295779)
-local yellAquaLanceFades					= mod:NewShortFadesYell(295779)
-local specWarnConductivePulse				= mod:NewSpecialWarningInterrupt(295822, "HasInterrupt", nil, nil, 3, 2)
 
-mod:AddTimerLine(BOSS)
 local timerDesensitizingStingCD				= mod:NewCDTimer(5.3, 298156, nil, "Tank", 2, 5, nil, DBM_COMMON_L.TANK_ICON, nil, nil, 3)--If user does enable countdown for this, max count at 3
 local timerDribblingIchorCD					= mod:NewCDCountTimer(84, 298103, nil, nil, nil, 1, nil, nil, nil, 1, 4)--30.4-42
 local timerIncubationFluidCD				= mod:NewCDTimer(31.7, 298242, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 local timerArcingCurrentCD					= mod:NewCDCountTimer(30.1, 295825, nil, nil, nil, 3)
 local timerCalloftheTenderCD				= mod:NewCDCountTimer(35, 305057, nil, nil, nil, 1, nil, DBM_COMMON_L.MYTHIC_ICON, nil, 2, 4)--30.4-42
+local berserkTimer							= mod:NewBerserkTimer(600)
 --Transition
 local timerMassiveIncubator					= mod:NewCastTimer(20, 298548, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON, nil, 1, 4)--was 45, is 20 now
+--Adds
 mod:AddTimerLine(DBM_COMMON_L.ADDS)
+local warnAquaLance							= mod:NewTargetNoFilterAnnounce(295779, 2)
+local warnShockingLightning					= mod:NewSpellAnnounce(295818, 2, nil, false)
+local warnPowerfulStomp						= mod:NewCountAnnounce(296691, 2)
+
+local specWarnAquaLance						= mod:NewSpecialWarningMoveAway(295779, nil, nil, nil, 1, 2)
+local yellAquaLance							= mod:NewYell(295779)
+local yellAquaLanceFades					= mod:NewShortFadesYell(295779)
+local specWarnConductivePulse				= mod:NewSpecialWarningInterrupt(295822, "HasInterrupt", nil, nil, 3, 2)
+
 local timerAmnioticEruption					= mod:NewCastTimer(5, 298465, nil, nil, nil, 2, nil, DBM_COMMON_L.TANK_ICON)
 local timerAquaLanceCD						= mod:NewCDTimer(25.5, 295779, nil, nil, nil, 3)
 local timerShockingLightningCD				= mod:NewCDTimer(4.8, 295818, nil, false, nil, 3)
 local timerConductivePulseCD				= mod:NewCDTimer(18.2, 295822, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 local timerPowerfulStompCD					= mod:NewCDTimer(29.1, 296691, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
-
-local berserkTimer							= mod:NewBerserkTimer(600)
 
 mod:AddNamePlateOption("NPAuraOnAquaLance", 282209)
 mod:AddNamePlateOption("NPAuraOnChaoticGrowth", 296914)
@@ -90,9 +91,9 @@ function mod:OnCombatStart(delay)
 	playerHasIncubation = false
 	table.wipe(castsPerGUID)
 	timerDesensitizingStingCD:Start(3-delay)
-	timerIncubationFluidCD:Start(18.6-delay)
-	timerDribblingIchorCD:Start(28.9-delay, 1)
-	timerArcingCurrentCD:Start(41-delay, 1)
+	timerIncubationFluidCD:Start(17.6-delay)
+	timerDribblingIchorCD:Start(27.5-delay, 1)
+	timerArcingCurrentCD:Start(38.4-delay, 1)
 	if self:IsMythic() then
 		timerCalloftheTenderCD:Start(20.3-delay, 1)
 	end

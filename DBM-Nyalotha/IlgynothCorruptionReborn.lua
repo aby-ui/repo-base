@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2374, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220217005916")
 mod:SetCreatureID(158328)
 mod:SetEncounterID(2345)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -32,14 +32,11 @@ mod:RegisterEventsInCombat(
  or ability.id = 310788
 --]]
 --Stage 01: The Corruptor, Reborn
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20985))
 local warnEyeofNZoth						= mod:NewStackAnnounce(309961, 2, nil, "Tank")
 local warnTouchoftheCorruptor				= mod:NewTargetNoFilterAnnounce(311367, 4)
 local warnFixate							= mod:NewTargetAnnounce(315094, 2)
---Stage 02: The Organs of Corruption
-local warnCursedBlood						= mod:NewTargetAnnounce(311159, 2)
-local warnAbsorbingCharge					= mod:NewTargetNoFilterAnnounce(318383, 3)
 
---Stage 01: The Corruptor, Reborn
 local specWarnEyeofNZoth					= mod:NewSpecialWarningStack(309961, nil, 2, nil, nil, 1, 6)
 local specWarnEyeofNZothTaunt				= mod:NewSpecialWarningTaunt(309961, nil, nil, nil, 1, 2)
 local specWarnTouchoftheCorruptor			= mod:NewSpecialWarningYou(311367, nil, nil, nil, 1, 2)
@@ -47,7 +44,18 @@ local yellTouchoftheCorruptor				= mod:NewYell(311367)
 local specWarnCorruptorsGaze				= mod:NewSpecialWarningSpell(310319, nil, 202046, nil, 2, 2)
 local specWarnGTFO							= mod:NewSpecialWarningGTFO(310322, nil, nil, nil, 1, 8)
 local specWarnFixate						= mod:NewSpecialWarningYou(315094, nil, nil, nil, 1, 2)
+
+local timerEyeofNZothCD						= mod:NewCDTimer(17, 309961, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16.6-17.4 (0ld), new seems more stable 17
+local timerTouchoftheCorruptorCD			= mod:NewCDCountTimer(64.4, 311367, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)--64.4-68
+local timerCorruptorsGazeCD					= mod:NewCDCountTimer(32.2, 310319, 202046, nil, nil, 3)--32.8-34 Shorttext "Beam"
+
+mod:AddInfoFrameOption(315094, true)
+mod:AddSetIconOption("SetIconOnMC", 311367, false, false, {1, 2, 3, 4, 5, 6, 7})
 --Stage 02: The Organs of Corruption
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20993))
+local warnCursedBlood						= mod:NewTargetAnnounce(311159, 2)
+local warnAbsorbingCharge					= mod:NewTargetNoFilterAnnounce(318383, 3)
+
 local specWarnCursedBlood					= mod:NewSpecialWarningMoveAway(311159, nil, nil, nil, 1, 2)
 local yellCursedBlood						= mod:NewShortYell(311159)
 local yellCursedBloodFades					= mod:NewShortFadesYell(311159)
@@ -55,20 +63,12 @@ local specWarnPumpingBlood					= mod:NewSpecialWarningInterruptCount(310788, "Ha
 local specWarnAbsorbingCharge				= mod:NewSpecialWarningYou(318383, nil, nil, nil, 3, 2)
 local yellAbsorbingCharge					= mod:NewYell(318383)
 
---mod:AddTimerLine(BOSS)
---Stage 01: The Corruptor, Reborn
-local timerEyeofNZothCD						= mod:NewCDTimer(17, 309961, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16.6-17.4 (0ld), new seems more stable 17
-local timerTouchoftheCorruptorCD			= mod:NewCDCountTimer(64.4, 311401, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON, nil, 1, 4)--64.4-68
-local timerCorruptorsGazeCD					= mod:NewCDCountTimer(32.2, 310319, 202046, nil, nil, 3)--32.8-34 Shorttext "Beam"
---Stage 02: The Organs of Corruption
 local timerCursedBloodCD					= mod:NewNextCountTimer(18, 311159, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerAbsorbingChargeCD				= mod:NewNextTimer(18.3, 318383, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 local berserkTimer							= mod:NewBerserkTimer(600)
 
 mod:AddRangeFrameOption(11, 311159)
-mod:AddInfoFrameOption(315094, true)
-mod:AddSetIconOption("SetIconOnMC", 311367, false, false, {1, 2, 3, 4, 5, 6, 7})
 mod:AddSetIconOption("SetIconOnCusedBlood", 313759, false, false, {1, 2, 3, 4, 5, 6, 7, 8})
 mod:AddBoolOption("SetIconOnlyOnce", true)--If disabled, as long as living oozes are up, the skull will bounce around to lowest health mob continually, which is likely not desired by most, thus this defaulted on
 mod:AddMiscLine(DBM_CORE_L.OPTION_CATEGORY_DROPDOWNS)

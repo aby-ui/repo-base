@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2364, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220212054028")
+mod:SetRevision("20220217005916")
 mod:SetCreatureID(156866)
 mod:SetEncounterID(2331)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -31,106 +31,110 @@ mod:RegisterEventsInCombat(
  or (ability.id = 313077 or ability.id = 306207 or ability.id = 306273) and type = "applydebuff"
 --]]
 --Stage 1: Gathering Power
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20527))
+local specWarnCallEssence					= mod:NewSpecialWarningSpell(306091, "-Healer")
+local specWarnNullifyingStrike				= mod:NewSpecialWarningStack(306819, nil, 2, nil, nil, 1, 6)
+local specWarnNullifyingStrikeTaunt			= mod:NewSpecialWarningTaunt(306819, nil, nil, nil, 1, 2)
+local specWarnExposure						= mod:NewSpecialWarningYou(306279, nil, nil, nil, 1, 2)
+local specWarnGTFO							= mod:NewSpecialWarningGTFO(315258, nil, nil, nil, 1, 8)
+
+local timerCallEssenceCD					= mod:NewNextCountTimer(55, 306091, DBM_COMMON_L.ORBS, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 5)--44.9-46.3
+local timerNullifyingStrikeCD				= mod:NewCDTimer(15.8, 306819, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16-19
+
+mod:AddInfoFrameOption(nil, true)
+mod:AddNamePlateOption("NPAuraOnDraws", 312750)
 ----Vita
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20528))
 local warnVitaPhase							= mod:NewSpellAnnounce(306732, 2)
 local warnUnstableVita						= mod:NewTargetNoFilterAnnounce(306257, 4)
 local warnCallCracklingStalker				= mod:NewSpellAnnounce("ej20546", 2)
+
+local specWarnUnstableVita					= mod:NewSpecialWarningYou(306257, nil, nil, nil, 3, 2)
+local yellUnstableVita						= mod:NewYell(306257)
+local yellUnstableVitaFades					= mod:NewShortFadesYell(306257)
+local specWarnCallCracklingStalker			= mod:NewSpecialWarningSwitch("ej20546", "-Healer", nil, nil, 1, 2)
+
+local timerCallCracklingStalkerCD			= mod:NewNextTimer(30.1, "ej20546", nil, nil, nil, 1, 306865, DBM_COMMON_L.DAMAGE_ICON)
+local timerUnstableVita						= mod:NewTargetTimer(5, 306257, nil, nil, nil, 5)
+
+mod:AddSetIconOption("SetIconOnUnstableVita", 306257, true, false, {1, 2})
 ------Vita Add
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20546))
 local warnChainLightning					= mod:NewTargetNoFilterAnnounce(306874, 3)
+
+local specWarnChainLightning				= mod:NewSpecialWarningYou(306874, nil, nil, nil, 1, 2)
+local yellChainLightning					= mod:NewYell(306874)
+
+local timerChainLightningCD					= mod:NewCDTimer(4.8, 306874, nil, nil, nil, 3)
+
+mod:AddRangeFrameOption(6, 306874)
 ----Void
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20529))
 local warnVoidPhase							= mod:NewSpellAnnounce(306733, 2)
 local warnUnstableVoid						= mod:NewStackAnnounce(306634, 2)
 local warnNullifyingStrike					= mod:NewStackAnnounce(306819, 2, nil, "Tank")
-local warnVoidCollapse						= mod:NewTargetNoFilterAnnounce(306881, 4)
 local warnCallVoidHunter					= mod:NewSpellAnnounce("ej20549", 2)
+
+local specWarnCallVoidHunter				= mod:NewSpecialWarningSwitch("ej20549", "-Healer", nil, nil, 1, 2)
+
+local timerCallVoidHunterCD					= mod:NewNextTimer(30.1, "ej20549", nil, nil, nil, 1, 306866, DBM_COMMON_L.DAMAGE_ICON)
+local timerUnstableVoidCD					= mod:NewNextCountTimer(5.9, 306634, nil, nil, nil, 5)
+------Void Hunter
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20549))
+local warnVoidCollapse						= mod:NewTargetNoFilterAnnounce(306881, 4)
+
+local specWarnVoidCollapse					= mod:NewSpecialWarningMoveTo(306881, nil, nil, nil, 3, 2)
+local yellVoidCollapse						= mod:NewYell(306881, nil, nil, nil, "YELL")
+local yellVoidCollapseFades					= mod:NewShortFadesYell(306881, nil, nil, nil, "YELL")
+
+local timerVoidCollapseCD					= mod:NewNextTimer(10.8, 306881, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+
+mod:AddSetIconOption("SetIconOnVoidCollapse", 306881, true, false, {3})
 ----Nightmare
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(21083))
 local warnNightmarePhase					= mod:NewSpellAnnounce(312996, 2)
 local warnUnstableNightmare					= mod:NewTargetNoFilterAnnounce(313077, 4)
 local warnCallNightTerror					= mod:NewSpellAnnounce("ej21176", 2)
+
+local specWarnUnstableNightmare				= mod:NewSpecialWarningYou(313077, nil, nil, nil, 3, 2, 4)
+local yellUnstableNightmare					= mod:NewYell(313077)
+local yellUnstableNightmareFades			= mod:NewShortFadesYell(313077)
+local specWarnCallNightTerror				= mod:NewSpecialWarningSwitch("ej21176", false, nil, 2, 1, 2, 4)
+
+local timerCallNightTerrorCD				= mod:NewNextTimer(30.1, "ej21176", nil, nil, nil, 1, 314484, DBM_COMMON_L.DAMAGE_ICON)
+
+mod:AddSetIconOption("SetIconOnUnstableNightmare", 313077, true, false, {4, 5})
 ------Night Terror
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(21176))
 local warnDreadInferno						= mod:NewTargetNoFilterAnnounce(315252, 4)
+
+local specWarnDreadInferno					= mod:NewSpecialWarningYou(315252, nil, nil, nil, 1, 2)
+local yellDreadInferno						= mod:NewYell(315252)
+
+local timerDreadInfernoCD					= mod:NewCDTimer(11.7, 315252, nil, nil, nil, 3)
 --Stage 2: Unleashed Wrath
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20853))
 local warnPhase2							= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
 local warnDecayingWound						= mod:NewTargetNoFilterAnnounce(313227, 4, nil, "Tank|Healer")
 local warnVoidEruption						= mod:NewCountAnnounce(310003, 2)
 local warnChargedBonds						= mod:NewTargetAnnounce(310019, 2)
 local warnCorruptedExistence				= mod:NewTargetNoFilterAnnounce(316065, 4)
 
---Stage 1: Gathering Power
-local specWarnCallEssence					= mod:NewSpecialWarningSpell(306091, "-Healer")
-local specWarnNullifyingStrike				= mod:NewSpecialWarningStack(306819, nil, 2, nil, nil, 1, 6)
-local specWarnNullifyingStrikeTaunt			= mod:NewSpecialWarningTaunt(306819, nil, nil, nil, 1, 2)
-local specWarnExposure						= mod:NewSpecialWarningYou(306279, nil, nil, nil, 1, 2)
-local specWarnGTFO							= mod:NewSpecialWarningGTFO(315258, nil, nil, nil, 1, 8)
-----Vita
-local specWarnUnstableVita					= mod:NewSpecialWarningYou(306257, nil, nil, nil, 3, 2)
-local yellUnstableVita						= mod:NewYell(306257)
-local yellUnstableVitaFades					= mod:NewShortFadesYell(306257)
-local specWarnCallCracklingStalker			= mod:NewSpecialWarningSwitch("ej20546", "-Healer", nil, nil, 1, 2)
-----Vita Add
-local specWarnChainLightning				= mod:NewSpecialWarningYou(306874, nil, nil, nil, 1, 2)
-local yellChainLightning					= mod:NewYell(306874)
-----Void
-local specWarnCallVoidHunter				= mod:NewSpecialWarningSwitch("ej20549", "-Healer", nil, nil, 1, 2)
-------Void Hunter
-local specWarnVoidCollapse					= mod:NewSpecialWarningMoveTo(306881, nil, nil, nil, 3, 2)
-local yellVoidCollapse						= mod:NewYell(306881, nil, nil, nil, "YELL")
-local yellVoidCollapseFades					= mod:NewShortFadesYell(306881, nil, nil, nil, "YELL")
-----Nightmare
-local specWarnUnstableNightmare				= mod:NewSpecialWarningYou(313077, nil, nil, nil, 3, 2, 4)
-local yellUnstableNightmare					= mod:NewYell(313077)
-local yellUnstableNightmareFades			= mod:NewShortFadesYell(313077)
-local specWarnCallNightTerror				= mod:NewSpecialWarningSwitch("ej21176", false, nil, 2, 1, 2, 4)
-------Night Terror
-local specWarnDreadInferno					= mod:NewSpecialWarningYou(315252, nil, nil, nil, 1, 2)
-local yellDreadInferno						= mod:NewYell(315252)
---Stage 2: Unleashed Wrath
 local specWarnDecayingStrike				= mod:NewSpecialWarningDefensive(313213, nil, nil, nil, 1, 2)
 local specWarnChargedBonds					= mod:NewSpecialWarningMoveAwayCount(310019, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.moveaway:format(310019), nil, 3, 2)
 local yellChargedBonds						= mod:NewYell(310019)
 local specWarnDecayingWoundTaunt			= mod:NewSpecialWarningTaunt(313227, nil, nil, nil, 1, 2)
 local specWarnCorruptedExistence			= mod:NewSpecialWarningYou(316065, nil, nil, nil, 3, 2, 4)--Mythic Only
 
---Stage 1: Gathering Power
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20527))
-local timerCallEssenceCD					= mod:NewNextCountTimer(55, 306091, DBM_COMMON_L.ORBS, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON, nil, 1, 5)--44.9-46.3
-local timerNullifyingStrikeCD				= mod:NewCDTimer(15.8, 306819, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)--16-19
-----Vita
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20528))
-local timerCallCracklingStalkerCD			= mod:NewNextTimer(30.1, "ej20546", nil, nil, nil, 1, 306865, DBM_COMMON_L.DAMAGE_ICON)
-local timerUnstableVita						= mod:NewTargetTimer(5, 306257, nil, nil, nil, 5)
-------Vita Add
---mod:AddTimerLine(DBM:EJ_GetSectionInfo(20546))
-local timerChainLightningCD					= mod:NewCDTimer(4.8, 306874, nil, nil, nil, 3)
-----Nightmare
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20529))
-local timerCallVoidHunterCD					= mod:NewNextTimer(30.1, "ej20549", nil, nil, nil, 1, 306866, DBM_COMMON_L.DAMAGE_ICON)
-local timerUnstableVoidCD					= mod:NewNextCountTimer(5.9, 306634, nil, nil, nil, 5)
-------Void Add
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20549))
-local timerVoidCollapseCD					= mod:NewNextTimer(10.8, 306881, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
-----Nightmare
-local timerCallNightTerrorCD				= mod:NewNextTimer(30.1, "ej21176", nil, nil, nil, 1, 314484, DBM_COMMON_L.DAMAGE_ICON)
-------Night Terror
---mod:AddTimerLine(DBM:EJ_GetSectionInfo(20549))
-local timerDreadInfernoCD					= mod:NewCDTimer(11.7, 315252, nil, nil, nil, 3)
---Stage 2: Unleashed Wrath
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20853))
 local timerDecayingStrikeCD					= mod:NewCDTimer(16.9, 313213, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
 local timerVoidEruptionCD					= mod:NewCDCountTimer(19.4, 310003, nil, nil, nil, 2)--20.6-23
 local timerChargedBondsCD					= mod:NewCDCountTimer(10.2, 310019, nil, nil, nil, 3)--10.8-18.2
 local timerGorgeEssenceCD					= mod:NewCDCountTimer(29.1, 309985, nil, nil, nil, 6)
-local timerCorruptedExistenceCD				= mod:NewCDCountTimer(12.2, 317276, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.DEADLY_ICON)
+local timerCorruptedExistenceCD				= mod:NewCDCountTimer(12.2, 316065, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON..DBM_COMMON_L.DEADLY_ICON)
 --local berserkTimer						= mod:NewBerserkTimer(600)
 
-mod:AddRangeFrameOption(6, 306874)
-mod:AddInfoFrameOption(306257, true)
-mod:AddSetIconOption("SetIconOnUnstableVita", 306257, true, false, {1, 2})
 mod:AddSetIconOption("SetIconOnChargedBonds", 310019, true, false, {1})
-mod:AddSetIconOption("SetIconOnVoidCollapse", 306881, true, false, {3})
-mod:AddSetIconOption("SetIconOnUnstableNightmare", 313077, true, false, {4, 5})
 mod:AddSetIconOption("SetIconOnCorruptedExistence", 316065, true, false, {2, 3, 4})
-mod:AddNamePlateOption("NPAuraOnDraws", 312750)
 mod:AddBoolOption("OnlyParentBondMoves", false)
 
 mod.vb.callEssenceCount = 0

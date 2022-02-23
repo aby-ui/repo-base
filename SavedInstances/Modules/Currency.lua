@@ -78,6 +78,9 @@ local currency = {
   1906, -- Soul Cinders
   1931, -- Cataloged Research
   1977, -- Stygian Ember
+  1979, -- Cyphers of the First Ones
+  2009, -- Cosmic Flux
+  2000, -- Motes of Fate
 }
 SI.currency = currency
 for i = #currency, 1 do if C_CurrencyInfo_GetCurrencyInfo(currency[i]) == nil then table.remove(currency, i) end end

@@ -1,5 +1,7 @@
 local _, Engine = ...
 
+-- luacheck: ignore 542
+
 -- Lua functions
 local rawget = rawget
 

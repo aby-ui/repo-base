@@ -468,7 +468,6 @@ function Details:OpenRaidHistoryWindow (_raid, _boss, _difficulty, _role, _guild
             local player2_string = DF:CreateLabel (f, Loc ["STRING_GUILDDAMAGERANK_PLAYERBASE_PLAYER"] .. ":", _, _, "GameFontNormal", "select_player2_label")
             player2_dropdown:SetTemplate (DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 
-
         function f:UpdateDropdowns(DoNotSelectRaid)
 
             local currentGuild = guild_dropdown.value
@@ -985,8 +984,12 @@ function Details:OpenRaidHistoryWindow (_raid, _boss, _difficulty, _role, _guild
         end
     end
 
+    if (not statsWindow.UpdateDropdowns) then
+        Details:Msg("Failled to load statistics, Details! Storage is disabled?")
+        return
+    end
+
     statsWindow:UpdateDropdowns()
-    --statsWindow:UpdateDropdowns()
     statsWindow:Refresh()
     statsWindow:Show()
 

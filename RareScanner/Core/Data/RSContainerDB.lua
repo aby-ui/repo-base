@@ -321,6 +321,9 @@ function RSContainerDB.GetContainerName(containerID)
 		elseif (RSUtils.Contains(RSConstants.STOLEN_ANIMA_VESSEL, containerID) or RSUtils.Contains(RSConstants.STOLEN_ANIMA_VESSEL_RIFT, containerID)) then
 			private.dbglobal.object_names[GetLocale()][containerID] = AL["STOLEN_ANIMA_VESSEL"]
 			return AL["STOLEN_ANIMA_VESSEL"]
+		elseif (RSUtils.Contains(RSConstants.FIRIM_EXILE_OBJECTS, containerID)) then
+			private.dbglobal.object_names[GetLocale()][containerID] = AL["NOTE_FIRIM_EXILE"]
+			return AL["NOTE_FIRIM_EXILE"]
 		elseif (private.dbglobal.object_names[GetLocale()][containerID]) then
 			return private.dbglobal.object_names[GetLocale()][containerID]
 		end

@@ -281,27 +281,29 @@ function DF:NewImage (parent, texture, w, h, layer, coords, member, name)
 	ImageObject.image.MyObject = ImageObject
 
 	if (w) then
-		ImageObject.image:SetWidth (w)
+		ImageObject.image:SetWidth(w)
 	end
 	if (h) then
-		ImageObject.image:SetHeight (h)
+		ImageObject.image:SetHeight(h)
 	end
+
 	if (texture) then
 		if (type (texture) == "table") then
-			local r, g, b = DF:ParseColors (texture)
-			ImageObject.image:SetTexture (r,g,b)
+			local r, g, b = DF:ParseColors(texture)
+			ImageObject.image:SetColorTexture(r,g,b)
+			
 		else
 			if (DF:IsHtmlColor (texture)) then
-				local r, g, b = DF:ParseColors (texture)
-				ImageObject.image:SetTexture (r, g, b)
+				local r, g, b = DF:ParseColors(texture)
+				ImageObject.image:SetColorTexture(r, g, b)
 			else
-				ImageObject.image:SetTexture (texture)
+				ImageObject.image:SetTexture(texture)
 			end
 		end
 	end
 	
 	if (coords and type (coords) == "table" and coords [4]) then
-		ImageObject.image:SetTexCoord (unpack (coords))
+		ImageObject.image:SetTexCoord(unpack (coords))
 	end
 	
 	ImageObject.HookList = {

@@ -835,6 +835,11 @@ local default_profile = {
 				1, -- [2]
 				0, -- [3]
 			},
+			["SELF"] = {
+				0.89019, -- [1]
+				0.32156, -- [2]
+				0.89019, -- [3]
+			},
 		},
 
 		death_log_colors = {
@@ -846,12 +851,13 @@ local default_profile = {
 		},
 
 	fade_speed = 0.15,
+	use_self_color = false,
 
 	--> minimap
 		minimap = {hide = false, radius = 160, minimapPos = 220, onclick_what_todo = 1, text_type = 1, text_format = 3},
 		data_broker_text = "",
 		
-	--> horcorner
+	--> hotcorner
 		hotcorner_topleft = {hide = false},
 		
 	--> PvP

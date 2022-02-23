@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Details!|Skada Covenants
 ## Notes: Show covenant icon
 ## Notes-ruRU: Показывает значок ковенанта в Details! или Skada

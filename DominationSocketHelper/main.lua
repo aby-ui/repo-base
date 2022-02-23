@@ -21,6 +21,9 @@ local GetContainerItemLink = GetContainerItemLink
 local GetItemInfoInstant = GetItemInfoInstant
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 
+local pairs, next, select, type, unpack = pairs, next, select, type, unpack
+local format, tostring, tonumber = string.format, tostring, tonumber
+
 local SLOT_GEM_WRAP = 3
 local BUTTON_SIZE = 35.3
 local BUTTON_PAD = 2
@@ -171,6 +174,8 @@ function DSH:UpdateGemButtons(isDomination, isSlotButton, isRemove)
 	end
 	
 	local buttonCount = 1
+	DSH.GBC.isDomination = isDomination
+	DSH.GBC.isSlotContainer = isSlotButton
 	
 	if isRemove then
 		DSH:UpdateGemButton("remove", nil, 187532, isDomination)
@@ -200,11 +205,6 @@ function DSH:UpdateGemButtons(isDomination, isSlotButton, isRemove)
 		end
 	end
 		
-	-- if not DSH.GBC then return end --no gems found
-
-	DSH.GBC.isDomination = isDomination
-	DSH.GBC.isSlotContainer = isSlotButton
-
 	if isSlotButton then
 		if buttonCount == 1 then
 			DSH.GBC:Hide()
@@ -261,7 +261,6 @@ function EF:MODIFIER_STATE_CHANGED(key, down)
 			
 			for i, slotBtn in pairs(slotMatches) do
 				tipText = tipText .. "\n"..i..": "..slotBtn.itemLink.. " ("..slotLocalizedNames[slotBtn.slot]..")"
-				-- tipText = tipText .. "\n"..slotLocalizedNames[slotBtn.slot]..": "..slotBtn.itemLink
 
 				if i == newGemCount and i ~= #slotMatches then
 					tipText = tipText .. "\n\n"..format(L["NOT_ENOUGH_GEMS"], newItemLink, #slotMatches - newGemCount)
@@ -274,9 +273,7 @@ function EF:MODIFIER_STATE_CHANGED(key, down)
 			DSH:UpdateCurSlotGlow({DSH.SBC.curSlotBtn})
 			DSH:ToggleInfoTooltip(true, format(L["REPLACE_TIP"], DSH.SBC.curSlotBtn.gemLink or ""), DSH.GBC)
 		end
-		
 	end
-
 end
 
 local function replaceAllSlotGemMatches(gemID, isRetry)
@@ -296,24 +293,26 @@ local function replaceAllSlotGemMatches(gemID, isRetry)
 		
 		local oldID = select(1, GetItemInfoInstant(GetExistingSocketLink(1)))
 		dbpr("OLD:", oldID, "REPLACE WITH:", gemID)
+		
 		if oldID ~= gemID then 
 			DSH:UseContainerItemByID(gemID)
 			
 			local newID = GetNewSocketLink(1) and select(1, GetItemInfoInstant(GetNewSocketLink(1))) or nil
-			dbpr("NEW:",newID)
+			dbpr("NEW:", newID)
 
 			if not isRetry and (not newID or (newID and (newID ~= gemID))) then
-				dbpr("ERRPR: NEW GEM NOT IN, RETRYING")
+				dbpr("ERROR: NEW GEM NOT IN, RETRYING")
 				C_Timer.After(0.1, function()
 					CloseSocketInfo()
 					replaceAllSlotGemMatches(gemID, true)
 				end)
 				break
 			end
-			
+
 			AcceptSockets()
 		end
 	end
+	
 	CloseSocketInfo()
 end
 
@@ -386,7 +385,8 @@ local function createGemButton(i)
 		frame:SetScript("OnClick", function() DSH:GemButtonPress(frame) end)
 	end
 	
-	local font = CreateFont("DSHgemButtonFont")
+	--Todo Fix this font stuff, it's wrong
+	local font = CreateFont("DSHGemButtonFont")
 	font:CopyFontObject("GameFontNormal");
 	font:SetFont(GetLocale():sub(1,2)=="zh" and ChatFontNormal:GetFont() or "Fonts\\FRIZQT__.TTF", 13, "OUTLINE")
 	font:SetTextColor(1, 1, 1, 1.0);
@@ -705,7 +705,6 @@ local function itemLoaded(itemsFound, itemLink, s)
 	DSH.totalLoaded = DSH.totalLoaded + 1
 	table.insert(DSH.loadedItems, {itemLink = itemLink, slot = s})
 	
-	-- dbpr(DSH.totalLoaded, itemsFound)
 	--loads all items before continuing.
 	if DSH.totalLoaded ~= itemsFound then return end
 
@@ -1666,17 +1665,14 @@ updateThrottle:SetScript("OnUpdate", function()
 		if CharacterFrame and CharacterFrame:IsVisible() then
 			DSH:UpdateSlotButtons()
 			--brute force updating if the quick slot is still open
-			-- if (DSH.GBC and DSH.GBC.isSlotContainer and DSH.GBC:IsShown()) then
-				-- DSH:InitGemButtons(DSH.GBC.isDomination, DSH.GBC.isSlotContainer)
-			-- end
+
 			if DSH.SBC and DSH.SBC.curSlotBtn and DSH.SBC.curSlotBtn:IsVisible() then
 				DSH:UpdateCurSlotGlow({DSH.SBC.curSlotBtn})
 			else
 				DSH:UpdateCurSlotGlow()--hide slot glow
 			end
 		end
-		-- end)
-		
+
 		if DSH.GBC and DSH.GBC:IsVisible() then
 			DSH:InitGemButtons(DSH.GBC.isDomination, DSH.GBC.isSlotContainer)
 		end

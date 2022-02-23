@@ -34,6 +34,7 @@ local RSRoutines = private.ImportLib("RareScannerRoutines")
 
 -- RareScanner services
 local RSRespawnTracker = private.ImportLib("RareScannerRespawnTracker")
+local RSNotificationTracker = private.ImportLib("RareScannerNotificationTracker")
 local RSMap = private.ImportLib("RareScannerMap")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSWaypoints = private.ImportLib("RareScannerWaypoints")
@@ -209,7 +210,8 @@ scanner_button.LootBar.itemFramesPool = CreateFramePool("FRAME", scanner_button.
 scanner_button.LootBar.itemFramesPool.InitItemList = function(self, atlasName, entityID)
 	self:ReleaseAll()
 	
-	scanner_button:SetScript("OnUpdate", nil)
+	-- Cancels previous requests
+	scanner_button.LootBar:SetScript("OnUpdate", nil)
 	
 	if (not atlasName or not entityID) then
 		return
@@ -222,16 +224,16 @@ scanner_button.LootBar.itemFramesPool.InitItemList = function(self, atlasName, e
 	-- Extract entity loot
 	local updateCacheItemRoutine = RSRoutines.LoopRoutineNew()
 	if (RSConstants.IsNpcAtlas(atlasName) and RSNpcDB.GetNpcLoot(entityID)) then
-		updateCacheItemRoutine:Init(RSNpcDB.GetNpcLoot, 10, nil, nil, entityID)
+		updateCacheItemRoutine:Init(RSNpcDB.GetNpcLoot, 3, nil, nil, entityID)
 		parent.totalItems = RSUtils.GetTableLength(RSNpcDB.GetNpcLoot(entityID))
 	elseif (RSConstants.IsContainerAtlas(atlasName) and RSContainerDB.GetContainerLoot(entityID)) then
-		updateCacheItemRoutine:Init(RSContainerDB.GetContainerLoot, 10, nil, nil, entityID)
+		updateCacheItemRoutine:Init(RSContainerDB.GetContainerLoot, 3, nil, nil, entityID)
 		parent.totalItems = RSUtils.GetTableLength(RSContainerDB.GetContainerLoot(entityID))
 	else
 		return
 	end
 	
-	scanner_button:SetScript("OnUpdate", function()
+	scanner_button.LootBar:SetScript("OnUpdate", function()
 		local finished = updateCacheItemRoutine:Run(function(context, _, itemID)
 			if (C_Item.DoesItemExistByID(itemID)) then
 				parent:UpdateCacheItem(itemID)
@@ -241,7 +243,7 @@ scanner_button.LootBar.itemFramesPool.InitItemList = function(self, atlasName, e
 			end
 		end)
 		if (finished) then
-			scanner_button:SetScript("OnUpdate", nil)
+			scanner_button.LootBar:SetScript("OnUpdate", nil)
 		end
 	end)
 end
@@ -732,7 +734,7 @@ end)
 function scanner_button:SimulateRareFound(npcID, objectGUID, name, x, y, atlasName)
 	local vignetteInfo = {}
 	vignetteInfo.atlasName = atlasName
-	vignetteInfo.id = "NPC"..npcID
+	vignetteInfo.id = npcID
 	vignetteInfo.name = name
 	vignetteInfo.objectGUID = objectGUID or string.format("a-a-a-a-a-%s-a", npcID)
 	vignetteInfo.x = x
@@ -1089,10 +1091,15 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	if (not entityID) then
 		return
 	end
+	
+	--RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s]", vignetteInfo.atlasName))
 		
 	-- Overrides name if Torghast vignette
 	if (vignetteInfo.type and vignetteInfo.type == Enum.VignetteType.Torghast) then
-		vignetteInfo.name = RSNpcDB.GetNpcName(entityID)
+		local npcName = RSNpcDB.GetNpcName(entityID)
+		if (npcName) then
+			vignetteInfo.name = npcName
+		end
 	end
 	
 	-- Check if it is an event to summon another NPC. In that case display NPC information instead
@@ -1100,7 +1107,17 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		local rareNpcID = RSConstants.NPCS_WITH_PRE_EVENT[entityID]
 		RSGeneralDB.RemoveAlreadyFoundEntity(entityID)
 		vignetteInfo.name = RSNpcDB.GetNpcName(rareNpcID)
+		vignetteInfo.atlasName = RSConstants.NPC_VIGNETTE
 		entityID = rareNpcID
+		vignetteInfo.preEvent = true
+	end
+	
+	-- Check if it is an event so summon another CONTAINER. In that case display CONTAINER information instead
+	if (RSConstants.CONTAINERS_WITH_PRE_EVENT[entityID]) then
+		local containerID = RSConstants.CONTAINERS_WITH_PRE_EVENT[entityID]
+		RSGeneralDB.RemoveAlreadyFoundEntity(entityID)
+		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
+		entityID = containerID
 		vignetteInfo.preEvent = true
 	end
 
@@ -1110,13 +1127,34 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	end
 
 	-- Check if we have already found this vignette in a short period of time
-	if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, isNavigating, entityID)) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de %s minutos", entityID, RSConfigDB.GetRescanTimer()))
+	if (RSNotificationTracker.IsAlreadyNotificated(vignetteInfo.id, isNavigating, entityID)) then
+		--RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de %s minutos", entityID, RSConfigDB.GetRescanTimer()))
 		return
 	end
 
 	local mapID = C_Map.GetBestMapForUnit("player")
-
+	
+	-- In Zereth Mortis the containers detected by Pocopoc are tagged as objects
+	if (mapID and mapID == RSConstants.ZERETH_MORTIS_MAPID and vignetteInfo.atlasName == RSConstants.CONTAINER_ZERETH_VIGNETTE) then
+		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
+	end
+		
+	-- In Zereth Mortis Firim scrolls are tagged as objects
+	if (mapID and mapID == RSConstants.ZERETH_MORTIS_MAPID and vignetteInfo.atlasName == RSConstants.CONTAINER_ZERETH_FIRIM_VIGNETTE and RSUtils.Contains(RSConstants.FIRIM_EXILE_OBJECTS, entityID)) then
+		-- Ignore if achievement completed
+		local _, _, _, achievementCompleted, _, _, _, _, _, _ = GetAchievementInfo(RSConstants.TALES_OF_EXILE_ACHIEVEMENT_ID);
+		if (achievementCompleted) then
+			return
+		end
+		
+		-- Ignore if opened (so far is bugged and the vignette is still there)
+		if (RSContainerDB.IsContainerOpened(entityID)) then
+			return
+		end
+		
+		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
+	end
+	
 	-- In Uldum and Valley of eternal Blossoms the icon for elite NPC is used for events
 	if (mapID and vignetteInfo.atlasName == RSConstants.NPC_VIGNETTE_ELITE and (mapID == RSConstants.VALLEY_OF_ETERNAL_BLOSSOMS_MAPID or mapID == RSConstants.ULDUM_MAPID)) then
 		vignetteInfo.atlasName = RSConstants.EVENT_VIGNETTE
@@ -1153,7 +1191,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 			RareScanner:UpdateRareFound(entityID, vignetteInfo)
 		end
 
-		-- If we have it as dead but we got a notification it means that the restart time is wrong (this happends mostly with war fronts)
+		-- If we have it as dead but we got a notification it means that the restart time is wrong (this is normal when playing while a world quest reset)
 		if (RSNpcDB.IsNpcKilled(entityID)) then
 			RSLogger:PrintDebugMessage(string.format("El NPC [%s] estaba marcado como muerto, pero lo acabamos de detectar vivo, resucitado!", entityID))
 			RSNpcDB.DeleteNpcKilled(entityID)
@@ -1243,11 +1281,11 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 				RSWaypoints.AddWaypointFromVignette(vignetteInfo)
 			end
 
-			if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, false, entityID)) then
+			if (RSNotificationTracker.IsAlreadyNotificated(vignetteInfo.id, false, entityID)) then
 				RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", entityID))
 				return
 			else
-				RareScanner:SetVignetteFound(vignetteInfo.id, false, entityID)
+				RSNotificationTracker.AddNotification(vignetteInfo.id, false, entityID)
 				FlashClientIcon()
 				self:PlaySoundAlert(vignetteInfo.atlasName)
 				self:DisplayMessages(vignetteInfo.preEvent and string.format(AL["PRE_EVENT"], vignetteInfo.name) or vignetteInfo.name)
@@ -1262,15 +1300,8 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		end
 	end
 
-	-- Check if we have already found this vignette in a short period of time
-	-- We checked this already at the beggining, but check again just in case two alerts where received at the same time
-	if (RareScanner:IsVignetteAlreadyFound(vignetteInfo.id, isNavigating, entityID)) then
-		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora porque se ha avisado de esta hace menos de 2 minutos", entityID))
-		return
-	end
-
 	-- Sets the current vignette as new found
-	RareScanner:SetVignetteFound(vignetteInfo.id, isNavigating, entityID)
+	RSNotificationTracker.AddNotification(vignetteInfo.id, isNavigating, entityID)
 
 	--------------------------------
 	-- show messages and play alarm
@@ -1339,84 +1370,8 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		RSGeneralDB.SetRecentlySeen(entityID)
 	end
 
-	-- timer to reset already found NPC
-	C_Timer.After(RSConfigDB.GetRescanTimer() * 60, function()
-		RareScanner:RemoveVignetteFound(vignetteInfo.id, entityID)
-		RSMinimap.RefreshEntityState(entityID)
-	end)
-
 	-- Refresh minimap
 	RSMinimap.RefreshAllData(true)
-end
-
-function RareScanner:RemoveVignetteFound(vignetteID, npcID)
-	if (self.already_notified) then
-		RSLogger:PrintDebugMessage(string.format("RemoveVignetteFound[%s]", vignetteID))
-		self.already_notified[vignetteID] = nil
-		self.already_notified["NPC"..npcID] = nil
-	end
-end
-
-function RareScanner:SetVignetteFound(vignetteID, isNavigating, npcID)
-	if (not self.already_notified) then
-		self.already_notified = {}
-	end
-
-	if (not isNavigating) then
-		RSLogger:PrintDebugMessage(string.format("SetVignetteFound[%s]", vignetteID))
-		self.already_notified[vignetteID] = true
-		-- If not spawning in multiple places at the same time
-		if (npcID and not RSUtils.Contains(RSConstants.NPCS_WITH_MULTIPLE_SPAWNS, npcID)) then
-			self.already_notified["NPC"..npcID] = true
-		end
-
-		-- FIX Blubbery Blobule/Unstable Glob (NPCID = 160841/161407) multipoping
-		if (npcID == 160841) then
-			self.already_notified["NPC160841"] = true
-		elseif (npcID == 161407) then
-			self.already_notified["NPC161407"] = true
-		end
-	end
-end
-
-function RareScanner:IsVignetteAlreadyFound(vignetteID, isNavigating, npcID)
-	if (not isNavigating and self.already_notified) then
-		if (self.already_notified[vignetteID] or (npcID and self.already_notified["NPC"..npcID])) then
-			return true
-		end
-
-		-- Avoids showing alert if user is targeting that NPC already
-		-- This will avoid getting constant alerts for the same rare NPC if the user takes a while to start combat
-		-- and the vignettes is removed from the alreadyFound list
-		if (UnitExists("target")) then
-			local targetUid = UnitGUID("target")
-			local _, _, _, _, _, targetNpcID = strsplit("-", targetUid)
-			if (tonumber(targetNpcID) == npcID) then
-				return true
-			end
-		end
-
-		-- Check whether the vignetteID is real or fake
-		local fake = false
-		local vignetteGUID, _, _, _, _, _ = strsplit("-", vignetteID)
-		if (vignetteGUID == "a") then
-			fake = true
-		end
-
-		-- If the vignette is fake it has to check through all the real vignettes to find out if its being found already
-		if (fake and npcID) then
-			for alreadyNotifiedVignetteId, _ in pairs (self.already_notified) do
-				if (RSUtils.Contains(alreadyNotifiedVignetteId, "-")) then
-					local _, _, _, _, _, alreadyNotifiedNpcID, _ = strsplit("-", alreadyNotifiedVignetteId);
-					if (tonumber(alreadyNotifiedNpcID) == npcID) then
-						return true
-					end
-				end
-			end
-		end
-	end
-
-	return false
 end
 
 function RareScanner:UpdateRareFound(entityID, vignetteInfo, coordinates)
@@ -1989,6 +1944,14 @@ local function UpdateRareNamesDB()
 					npcInfo.atlasName =	RSConstants.NPC_VIGNETTE
 					RSLogger:PrintDebugMessage(string.format("NPC [%s]. Estaba marcado como un evento, Corregido!.", npcID))
 				end
+			end
+			
+			-- Remove already found entities that might be a pre event
+			for preEntityID, _ in pairs (RSConstants.NPCS_WITH_PRE_EVENT) do
+				RSGeneralDB.RemoveAlreadyFoundEntity(preEntityID)
+			end
+			for preEntityID, _ in pairs (RSConstants.CONTAINERS_WITH_PRE_EVENT) do
+				RSGeneralDB.RemoveAlreadyFoundEntity(preEntityID)
 			end
 			
 			-- Continue refreshing the rest of the database

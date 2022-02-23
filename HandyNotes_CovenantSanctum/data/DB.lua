@@ -123,7 +123,7 @@ DB.points = {
     [60054330] = { icon="anvil", npc=166160, covenant=Venthyr}, -- Schmiedebedarf
     [60022874] = { icon="mail", label=Mailbox, covenant=Venthyr }, -- Briefkasten
     [54322626] = { icon="renown", npc=175772, covenant=Venthyr}, -- Hüterin des Ruhms
-    [41904841] = { icon="flightmaster", npc=172649, covenant=Venthyr }, -- Oberflächenflieger
+    [41904841] = { icon="flightMaster", npc=172649, covenant=Venthyr }, -- Oberflächenflieger
 --    [45412852] = { icon="anvil", npc=164738, covenant=Venthyr}, -- Seelenwächter
 },
 
@@ -134,7 +134,7 @@ DB.points = {
     [40164648] = { icon="weaponsmith", npc=175369, covenant=Venthyr }, -- Mythic
     [70632748] = { icon="vendor", npc=175406, covenant=Venthyr}, -- Rüstmeister
     [73022671] = { icon="reforge", npc=175408, covenant=Venthyr }, -- Paktrüstungsaufwertungen
-    [67404719] = { icon="flightmaster", npc=172649, covenant=Venthyr }, -- Oberflächenflieger
+    [67404719] = { icon="flightMaster", npc=172649, covenant=Venthyr }, -- Oberflächenflieger
 },
 
 } -- DB ENDE

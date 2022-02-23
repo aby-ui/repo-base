@@ -942,7 +942,7 @@ end
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, links)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --abyui GetAddOnMetadata('Simulationcraft', 'Version')
-  local simcVersionWarning = '# Requires SimulationCraft 910-01 or newer'
+  local simcVersionWarning = '# Requires SimulationCraft 920-01 or newer'
 
   -- Basic player info
   local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --abyui LibRealmInfo:GetRealmInfoByUnit('player')

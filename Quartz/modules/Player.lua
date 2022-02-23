@@ -225,7 +225,7 @@ local channelingTicks = WoWBC and {
 	[GetSpellInfo(117952)] = 4, -- crackling jade lightning
 	[GetSpellInfo(191837)] = 3, -- essence font
 	[GetSpellInfo(115175)] = 8, -- soothing mist
-}
+} or {}
 
 local function getChannelingTicks(spell)
 	if not db.showticks then

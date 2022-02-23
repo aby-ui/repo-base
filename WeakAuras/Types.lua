@@ -885,7 +885,7 @@ do
     [23] = true,
     [33] = true
   }
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
     unplayableRace[9] = true
   end
 
@@ -3229,6 +3229,12 @@ Private.noreset_swing_spells = {
   [35478] = true, -- Drums of Restoration
   [34120] = true, -- Steady Shot (rank 1)
   [19434] = true, -- Aimed Shot (rank 1)
+  [1464] = true, -- Slam (rank 1)
+  [8820] = true, -- Slam (rank 2)
+  [11604] = true, -- Slam (rank 3)
+  [11605] = true, -- Slam (rank 4)
+  [25241] = true, -- Slam (rank 5)
+  [25242] = true, -- Slam (rank 6)
   --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
@@ -3239,7 +3245,7 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   skippedWeaponTypes[9] = true -- Glaives
 else
   skippedWeaponTypes[16] = true -- Thrown
@@ -3418,8 +3424,6 @@ if WeakAuras.IsClassic() then
   for i, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
   end
-
-  Private.glow_types.ACShine = nil
 end
 
 if WeakAuras.IsBCC() then
@@ -3442,6 +3446,10 @@ if WeakAuras.IsBCC() then
     2764, 3018, -- Shoots,
     19434, 20900, 20901, 20902, 20903, 20904, 27065, -- Aimed Shot
     20066, -- Repentance
+    11350, -- Fire Shield (Oil of Immolation)
+    50986, -- Sulfuron Slammer
+    439, 440, 441, 2024, 4042, 17534, 28495, -- Minor/Lesser/Greater/Superior/Major/Super Healing Potion
+    41619, 41620 -- Cenarion Healing Salve/Bottled Nethergon Vapor
   }
   for _, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
@@ -3455,6 +3463,4 @@ if WeakAuras.IsBCC() then
   for _, spellid in ipairs(reset_ranged_swing_spell_list) do
     Private.reset_ranged_swing_spells[spellid] = true
   end
-
-  Private.glow_types.ACShine = nil
 end

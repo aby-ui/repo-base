@@ -1,6 +1,23 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4620
+* 9.2 Update
+
+v.4610
+* Updated Chinese translation (by martinkerth)
+
+v.4610-BC
+* Raid cooldowns: Fixed and added feign death cd
+* Raid cooldowns: added power infusion, ice block, evasion cds
+* Marks Bar: Removed world marks from marks bar [Not available in tbc]
+* Invite Tools: Fixed auto loot method
+
+v.4610-Classic
+* Fixed maximum raid groups for ready checks
+* Removed world marks from marks bar [Not available in classic]
+* Invite Tools: Fixed auto loot method
+
 v.4600
 * 9.1.5 update
 

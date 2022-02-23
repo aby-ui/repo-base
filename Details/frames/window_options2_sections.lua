@@ -561,6 +561,8 @@ do
                 desc = Loc ["STRING_OPTIONS_WC_BOOKMARK_DESC"],
             },
 
+            {type = "blank"},
+
             {--click through
                 type = "toggle",
                 get = function() return currentInstance.clickthrough_window end,
@@ -583,6 +585,32 @@ do
             },
 
             {type = "blank"},
+
+            {type = "label", get = function() return "Immersion" end, text_template = subSectionTitleTextTemplate}, --localize-me
+            {--show pets when solo
+                type = "toggle",
+                get = function() return Details.immersion_pets_on_solo_play end,
+                set = function (self, fixedparam, value)
+                    Details.immersion_pets_on_solo_play = value
+                    afterUpdate()
+                end,
+                name = "Show pets when solo", --localize-me
+                desc = "Show pets when solo",
+            },
+
+            {--always show players even on stardard mode
+                type = "toggle",
+                get = function() return _detalhes.all_players_are_group end,
+                set = function (self, fixedparam, value)
+                    _detalhes.all_players_are_group = value
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_ALWAYSSHOWPLAYERS"],
+                desc = Loc ["STRING_OPTIONS_ALWAYSSHOWPLAYERS_DESC"],
+            },
+
+
+            {type = "breakline"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_SOCIAL"] end, text_template = subSectionTitleTextTemplate},
             {--nickname
                 type = "textentry",
@@ -632,28 +660,33 @@ do
             },
 
             {type = "blank"},
+            {type = "label", get = function() return "Your Self" end, text_template = subSectionTitleTextTemplate},
 
-            {type = "label", get = function() return "Immersion" end, text_template = subSectionTitleTextTemplate}, --localize-me
-            {--show pets when solo
+            {--player bar color toggle
                 type = "toggle",
-                get = function() return Details.immersion_pets_on_solo_play end,
+                get = function() return Details.use_self_color end,
                 set = function (self, fixedparam, value)
-                    Details.immersion_pets_on_solo_play = value
+                    Details.use_self_color = value
                     afterUpdate()
                 end,
-                name = "Show pets when solo", --localize-me
-                desc = "Show pets when solo",
+                name = "Use Different Color for You",
+                desc = "Use a different color on your own bar",
             },
 
-            {--always show players even on stardard mode
-                type = "toggle",
-                get = function() return _detalhes.all_players_are_group end,
-                set = function (self, fixedparam, value)
-                    _detalhes.all_players_are_group = value
+			{--player bar color
+				type = "color",
+                get = function()
+                    local r, g, b = unpack(Details.class_colors.SELF)
+                    return {r, g, b, 1}
+				end,
+				set = function (self, r, g, b, a)
+                    Details.class_colors.SELF[1] = r
+                    Details.class_colors.SELF[2] = g
+                    Details.class_colors.SELF[3] = b
                     afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_ALWAYSSHOWPLAYERS"],
-                desc = Loc ["STRING_OPTIONS_ALWAYSSHOWPLAYERS_DESC"],
+				end,
+				name = "Your Bar Color",
+				desc = "Your Bar Color",
             },
 
         }

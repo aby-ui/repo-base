@@ -192,7 +192,10 @@ module.db.topEnchGems = IS_SL and {
 
 
 module.db.achievementsList = {
-	{	--SoD
+	{	--SotFO
+		L.S_ZoneT28SFO,
+		15493,15492,15416,15418,15478,15479,15480,15481,15482,15483,15484,15485,15486,15487,15488,15489,15470,15471,
+	},{	--SoD
 		L.S_ZoneT27SoD,
 		15122,15123,15124,15125,15126,15112,15113,15114,15116,15115,15117,15118,15119,15120,15121,15128,15134,15135,
 	},{	--castle Nathria
@@ -267,7 +270,9 @@ module.db.achievementsList = {
 	},
 }
 module.db.achievementsList_statistic = {
-	{	--SoD
+	{	--SotFO
+
+	},{	--SoD
 		
 	},{	--CN
 		0,0,0,{14422,14419,14420,14421},{14426,14423,14424,14425},{14438,14435,14436,14437},{14434,14431,14432,14433},{14430,14427,14428,14429},{14442,14439,14440,14441},{14446,14443,14444,14445},{14450,14447,14448,14449},{14454,14451,14452,14453},{14458,14455,14456,14457},
@@ -563,8 +568,8 @@ function module.options:Load()
 	module.db.colorizeLowIlvl685 = VMRT.InspectViewer.ColorizeLowIlvl685
 	module.db.colorizeNoValorUpgrade = VMRT.InspectViewer.ColorizeNoValorUpgrade
 
-	local colorizeLowIlvl630 = 183
-	local colorizeLowIlvl685 = 213
+	local colorizeLowIlvl630 = 233
+	local colorizeLowIlvl685 = 252
 	if IS_LOW then
 		colorizeLowIlvl630 = 50
 		colorizeLowIlvl685 = 80
@@ -661,6 +666,24 @@ function module.options:Load()
 			},
 		},
 	}
+	if not ExRT.isClassic then
+		dropDownTable[4] = {
+			{
+				"_MAGE_DRUID_HUNTER",
+				"_PALADIN_PRIEST_SHAMAN",
+				"_MONK_WARRIOR_ROGUE",
+				"_DEMONHUNTER_DEATHKNIGHT_WARLOCK",
+			},
+		}
+	else
+		dropDownTable[4] = {
+			{
+				"_PALADIN_PRIEST_WARLOCK",
+				"_ROGUE_MAGE_DRUID",
+				"_WARRIOR_HUNTER_SHAMAN",
+			}
+		}
+	end
 
 	self.filterDropDown = ELib:DropDown(self,250,6):Point("TOPRIGHT",-10,-16-1):Size(150):SetText(L.InspectViewerFilter)
 	self.filterDropDown:_Size(140,18)

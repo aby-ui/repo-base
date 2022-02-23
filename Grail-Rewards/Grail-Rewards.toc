@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Grail |r|cff69ccf0Rewards|r
 ## Author: Scott M Harrison
 ## Notes: Provides (non-reputation) reward award information to Grail

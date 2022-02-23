@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2116, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220209045257")
 mod:SetCreatureID(129232)
 mod:SetEncounterID(2108)
 
@@ -64,7 +64,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 260189 then--Configuration: Drill
 		timerGatlingGunCD:Stop()
 		timerHomingMissileCD:Stop()
-		timerDrillSmashCD:Start(22.4)
+		timerDrillSmashCD:Start(17.3)
 	elseif spellId == 260190 then--Configuration: Combat
 		timerDrillSmashCD:Stop()
 		timerHomingMissileCD:Start(7)

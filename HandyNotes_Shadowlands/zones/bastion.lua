@@ -116,7 +116,18 @@ map.nodes[66004367] = Rare({
     note = L['collector_astor_note'],
     rewards = {
         Achievement({id = 14307, criteria = 50610}),
-        Transmog({item = 183608, slot = L['offhand']}) -- Evernote Vesper
+        -- https://www.wowhead.com/npc=171014/collector-astorestes
+        Transmog({item = 183604, slot = L['crossbow']}), -- Piercing Timbre Crossbow
+        Transmog({item = 183605, slot = L['warglaive']}), -- Devourer Wrought Warglaive
+        Transmog({item = 183606, slot = L['shield']}), -- Bulwark of Echoing Courage
+        Transmog({item = 183607, slot = L['polearm']}), -- Uncertain Aspirant's Spear
+        Transmog({item = 183608, slot = L['offhand']}), -- Evernote Vesper
+        Transmog({item = 183609, slot = L['fist']}), -- Re-Powered Golliath Fists
+        Transmog({item = 183610, slot = L['dagger']}), -- Warrior Poet's Poniard
+        Transmog({item = 183611, slot = L['2h_sword']}), -- Humble Ophelia's Greatblade
+        Transmog({item = 183612, slot = L['1h_mace']}), -- Loyal Champion's Hammer
+        Transmog({item = 183613, slot = L['dagger']}), -- Glinting Daybreak Dagger
+        Transmog({item = 183614, slot = L['1h_mace']}) -- Gavel of Harmonious Wisdom
     },
     pois = {
         POI({
@@ -166,12 +177,17 @@ map.nodes[37004180] = Rare({
     rewards = {
         Achievement({id = 14307, criteria = 50611}),
         -- https://www.wowhead.com/object=354649/relic-hoard
+        Transmog({item = 183604, slot = L['crossbow']}), -- Piercing Timbre Crossbow
+        Transmog({item = 183605, slot = L['warglaive']}), -- Devourer Wrought Warglaive
         Transmog({item = 183606, slot = L['shield']}), -- Bulwark of Echoing Courage
+        Transmog({item = 183607, slot = L['polearm']}), -- Uncertain Aspirant's Spear
         Transmog({item = 183608, slot = L['offhand']}), -- Evernote Vesper
-        Transmog({item = 183613, slot = L['dagger']}), -- Glinting Daybreak Dagger
-        Transmog({item = 183611, slot = L['2h_sword']}), -- Humble Ophelia's Greatblade
         Transmog({item = 183609, slot = L['fist']}), -- Re-Powered Golliath Fists
-        Transmog({item = 183607, slot = L['polearm']}) -- Uncertain Aspirant's Spear
+        Transmog({item = 183610, slot = L['dagger']}), -- Warrior Poet's Poniard
+        Transmog({item = 183611, slot = L['2h_sword']}), -- Humble Ophelia's Greatblade
+        Transmog({item = 183612, slot = L['1h_mace']}), -- Loyal Champion's Hammer
+        Transmog({item = 183613, slot = L['dagger']}), -- Glinting Daybreak Dagger
+        Transmog({item = 183614, slot = L['1h_mace']}) -- Gavel of Harmonious Wisdom
     },
     pois = {
         Path({

@@ -24,15 +24,15 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 47
-RSConstants.CURRENT_LOOT_DB_VERSION = 63
+RSConstants.CURRENT_DB_VERSION = 48
+RSConstants.CURRENT_LOOT_DB_VERSION = 65
 
 ---============================================================================
 -- Current maps (newer)
 ---============================================================================
 
 RSConstants.CURRENT_MAP_ID = 1550 --Shadowlands
-RSConstants.CURRENT_SUBMAP_ID = 1961 --Korthia
+RSConstants.CURRENT_SUBMAP_ID = 1970 --Zereth Mortis
 
 ---============================================================================
 -- Special events
@@ -50,6 +50,7 @@ RSConstants.FIND_HIDDEN_QUESTS_TIMER = 5 --5 seconds after killing a NPC or open
 RSConstants.CHECK_RESPAWN_BY_QUEST_TIMER = 150 --2.5 minutes
 RSConstants.CHECK_RESPAWNING_BY_LASTSEEN_TIMER = 60 --1 minute
 RSConstants.FIND_BETTER_COORDINATES_WITH_RANGE_TIMER = 1; -- 1 seconds
+RSConstants.CHECK_RESET_NOTIFICATIONS_TIMER = 10 --10 seconds
 
 ---============================================================================
 -- Collections enumerators
@@ -269,6 +270,8 @@ RSConstants.NPC_TORMENTORS_VIGNETTE = "Tormentors-Boss"
 
 RSConstants.CONTAINER_VIGNETTE = "VignetteLoot"
 RSConstants.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
+RSConstants.CONTAINER_ZERETH_VIGNETTE = "Object"
+RSConstants.CONTAINER_ZERETH_FIRIM_VIGNETTE = "QuestObjective"
 
 RSConstants.EVENT_VIGNETTE = "VignetteEvent"
 RSConstants.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
@@ -285,6 +288,7 @@ RSConstants.MECHAGON_MAPID = 1462
 RSConstants.VALLEY_OF_ETERNAL_BLOSSOMS_MAPID = 1530
 RSConstants.ULDUM_MAPID = 1527
 RSConstants.THE_MAW_MAPID = 1543
+RSConstants.ZERETH_MORTIS_MAPID = 1970
 
 ---============================================================================
 -- NpcIDS
@@ -349,8 +353,29 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	[179969] = 179985;
 	[180028] = 180032;
 	[180013] = 180014;
+	-- Zereth Mortis
+	[183505] = 183516;
+	[183781] = 183764;
+	[182156] = 182155;
+	[185612] = 181249;
+	[182120] = 182114;
+	[182161] = 182158;
+	[182156] = 182155;
 	-- Bation
 	[176543] = 171008;
+}
+
+-- Contains that spawn after completing an event
+RSConstants.CONTAINERS_WITH_PRE_EVENT = {
+-- EVENTID = CONTAINERID
+	-- Ardenweald
+	[171475] = 354662;
+	-- Zereth Mortis
+	[185265] = 375403;
+	[185502] = 375403;
+	[185285] = 375413;
+	[180507] = 369757;
+	[185416] = 375493;
 }
 
 -- NPCs that spawn after killing another NPC
@@ -363,11 +388,13 @@ RSConstants.NPCS_WITH_PRE_NPCS = {
 	
 -- 156480 Next door entity inside Torghast
 -- 155660 Summons from the Depths
-RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373 }
+RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373, 370467, 370466 }
 RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 154330, 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731, 172862, 172577, 158025, 158278, 170303, 179684, 179791, 179805, 177444, 180246, 179108, 179853, 179755, 179768, 179779, 179460, 179851, 179735 }
 RSConstants.NPCS_WITH_CONTAINER_VIGNETTE = { 179883 }
 RSConstants.CONTAINERS_WITH_NPC_VIGNETTE = { 369435 }
 RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
+RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = { 183288 }
+RSConstants.FIRIM_EXILE_OBJECTS = { 375973, 375982, 375983, 375984, 375985, 375986, 375987 }
 
 ---============================================================================
 -- ItemIDs
@@ -377,6 +404,12 @@ RSConstants.ITEMS_REQUIRE_NECROLORD = { 181815, 182080, 186489 }
 RSConstants.ITEMS_REQUIRE_NIGHT_FAE = { 180730, 186492 }
 RSConstants.ITEMS_REQUIRE_VENTHYR = { 180581, 180461, 186479 }
 RSConstants.ITEMS_REQUIRE_KYRIAN = { 186483 }
+
+---============================================================================
+-- Achievements
+---============================================================================
+
+RSConstants.TALES_OF_EXILE_ACHIEVEMENT_ID = 15509;
 
 ---============================================================================
 -- Garrison cache

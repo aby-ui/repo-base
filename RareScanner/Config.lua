@@ -141,8 +141,6 @@ private.CLASS_PROFICIENCIES = {
 	};
 }
 
-private.CLOTH_CHARACTERES = { 4, 8, 9 }
-
 local DEFAULT_MAIN_CATEGORY = 0
 
 local general_options

@@ -1,4 +1,4 @@
-local VERSION = 102
+local VERSION = 104
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -311,6 +311,10 @@ Added warmode bonus for shadowlands quests
 Wago update
 
 9.1.5 update
+
+Bugfixes
+
+9.2 update
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -1658,7 +1662,7 @@ do
 		end
 	end
 	local hookVignetteFunc = function(self,button)
-		if self.vignetteInfo and self.vignetteInfo.atlasName == "VignetteLoot" then
+		if self.vignetteInfo and (self.vignetteInfo.atlasName == "VignetteLoot" or self.vignetteInfo.atlasName == "VignetteLootElite") then
 			local mapID = self:GetMap():GetMapID()
 			local x,y = self:GetPosition()
 			if x and y then
@@ -2115,6 +2119,8 @@ do
 		[1853] = 2447,
 
 		[1907] = 2470,
+
+		[1982] = 2478,
 	}
 	local fg_list = {
 		[2164] = "Both",
@@ -2136,6 +2142,8 @@ do
 		[2410] = "Both",
 		[2413] = "Both",
 		[2407] = "Both",
+
+		[2478] = "Both",
 	}
 	function WorldQuestList:IsFactionCurrency(currencyID)
 		if list[currencyID or 0] then
@@ -3404,6 +3412,8 @@ do
 	list[#list+1] = {text = GetFaction(2413),	func = SetIgnoreFilter,	arg1 = "faction2413IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2413) and SL() end	}
 	list[#list+1] = {text = GetFaction(2407),	func = SetIgnoreFilter,	arg1 = "faction2407IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2407) and SL() end	}
 
+	list[#list+1] = {text = GetFaction(2478),	func = SetIgnoreFilter,	arg1 = "faction2478IgnoreFilter",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2478) and SL() end	}
+
 	list[#list+1] = {text = CLOSE,			func = function() ELib.ScrollDropDown.Close() end,		padding = 16,	}
 
 	function WorldQuestList.filterDropDown.Button:additionalToggle()
@@ -3976,6 +3986,8 @@ do
 		{text = GetFaction(2410),	func = SetHighlighFaction,	arg1 = "faction2410Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2410) and SL() end	},
 		{text = GetFaction(2413),	func = SetHighlighFaction,	arg1 = "faction2413Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2413) and SL() end	},
 		{text = GetFaction(2407),	func = SetHighlighFaction,	arg1 = "faction2407Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2407) and SL() end	},
+
+		{text = GetFaction(2478),	func = SetHighlighFaction,	arg1 = "faction2478Highlight",	checkable = true,	shownFunc = function() return WorldQuestList:IsFactionAvailable(2478) and SL() end	},
 	}
 
 	list[#list+1] = {
@@ -5790,6 +5802,14 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 				info.x,info.y = nil
 			end
 		end
+		if (mapAreaID == 1550) then
+			local oppositeMapQuests = C_TaskQuest.GetQuestsForPlayerByMapID(1970)
+			for _,info in pairs(oppositeMapQuests or WorldQuestList.NULLTable) do
+				taskInfo[#taskInfo+1] = info
+				info.dX,info.dY,info.dMap = info.x,info.y,1355
+				info.x,info.y = 0.86, 0.80
+			end
+		end
 	end
 
 	if mapAreaID == 905 then	--Argus
@@ -6549,6 +6569,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 							money = money * WAR_MODE_BONUS
 							money = money - money % 100
 						end
+						money = money - money % 100 --remove copper
 						RewardListStrings[#RewardListStrings+1] = GetCoinTextureString(money)
 						RewardListSort[#RewardListStrings] = money
 						RewardListType[#RewardListStrings] = (VWQL.SortPrio.gold or defSortPrio.gold)
@@ -6776,7 +6797,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 			for i=1,#result do
 				local info = result[i].info
 				if info and info.questId and info.x and not result[i].showAsRegQuest then
-					if (O.generalMapType == 3 and VWQL.ArgusMap) or (mapAreaID == 619 and info.x == 0.87 and info.y == 0.165) or ((mapAreaID == 875 or mapAreaID == 876) and info.x == 0.87 and info.y == 0.12) then
+					if (O.generalMapType == 3 and VWQL.ArgusMap) or (mapAreaID == 619 and info.x == 0.87 and info.y == 0.165) or ((mapAreaID == 875 or mapAreaID == 876) and info.x == 0.87 and info.y == 0.12) or (mapAreaID == 1550 and info.x == 0.86 and info.y == 0.80) then
 						info = WorldQuestList:GetRadiantWQPosition(info,result)
 					end
 					pinsToRemove[info.questId] = nil
@@ -7904,6 +7925,7 @@ WorldQuestList.TreasureData = WQLdb.TreasureData or {}
 
 --- LFG features
 
+
 local QuestCreationBox = CreateFrame("Button","WQL_QuestCreationBox",UIParent)
 QuestCreationBox:SetSize(350,120)
 QuestCreationBox:SetPoint("CENTER",0,250)
@@ -7982,7 +8004,7 @@ QuestCreationBox.PartyFind:SetPoint("BOTTOM",0,5)
 QuestCreationBox.PartyFind:SetScript("OnClick",function(self,button)
 	QuestCreationBox:Hide()
 	if C_LFGList.CanCreateQuestGroup(self.questID) then
-		LFGListUtil_FindQuestGroup(self.questID)
+		LFGListUtil_FindQuestGroup(self.questID, true)	--taint error
 	elseif button == "RightButton" then
 		WorldQuestList.LFG_StartQuest(self.questID)
 	else
@@ -8035,7 +8057,7 @@ local defPointsSearch
 local minIlvlReq = UnitLevel'player' >= 60 and 120 or 50
 
 function WQL_LFG_StartQuest(questID)
-	if GroupFinderFrame:IsVisible() or C_LFGList.GetActiveEntryInfo() then
+	if GroupFinderFrame:IsShown() or C_LFGList.GetActiveEntryInfo() then
 		return
 	end
 
@@ -8062,7 +8084,7 @@ function WQL_LFG_StartQuest(questID)
 		LFGListFrame_SetActivePanel(LFGListFrame.EntryCreation:GetParent(), LFGListFrame.EntryCreation)
 		autoCreate = true
 	else
-		LFGListEntryCreation_Show(LFGListFrame.EntryCreation, LFGListFrame.baseFilters, 1, 0)
+		--LFGListEntryCreation_Show(LFGListFrame.EntryCreation, LFGListFrame.baseFilters, 1, 0)
 	end
 
 	local activityID, categoryID, filters, questName = LFGListUtil_GetQuestCategoryData(questID)
@@ -8070,7 +8092,7 @@ function WQL_LFG_StartQuest(questID)
 		LFGListEntryCreation_Select(LFGListFrame.EntryCreation, filters, categoryID, nil, activityID)
 	end
 
-	if not defPoints then
+	if not defPoints and false then
 		defPoints = {
 			[edit] = {edit:GetPoint()},
 		}
@@ -8085,7 +8107,8 @@ function WQL_LFG_StartQuest(questID)
 			local autoAccept = true
 			local privateGroup = false
 
-			LFGListEntryCreation_ListGroupInternal(LFGListFrame.EntryCreation, LFGListFrame.EntryCreation.selectedActivity, itemLevel, honorLevel, autoAccept, privateGroup)
+			LFGListEntryCreation_ListGroupInternal(LFGListFrame.EntryCreation, LFGListFrame.EntryCreation.selectedActivity, itemLevel, autoAccept, privateGroup, questID, 0, 0, 0)
+			--C_LFGList.CreateListing(activityID, itemLevel, honorLevel, autoAccept, privateGroup, questID)
 
 			edit:ClearAllPoints()
 			edit:SetPoint(unpack(defPoints[edit]))
@@ -8253,7 +8276,7 @@ function WQL_LFG_Search(questID)
 		LFGListFrame_SetActivePanel(panel:GetParent(), searchPanel)
 		autoSearch = true
 	else
-		LFGListCategorySelection_StartFindGroup(panel)
+		LFGListCategorySelection_StartFindGroup(panel, QuestCreationBox.questID)
 	end
 
 	QuestCreationBox:Show()
@@ -8483,9 +8506,9 @@ QuestCreationBox:RegisterEvent("PARTY_LEADER_CHANGED")
 QuestCreationBox:RegisterEvent("GROUP_ROSTER_UPDATE")
 QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 	if event == "LFG_LIST_SEARCH_RESULTS_RECEIVED" then
-		if LFGListFrameSearchPanelStartGroup:IsShown() then
-			LFGListFrameSearchPanelStartGroup:Hide()
-		end
+		--if LFGListFrameSearchPanelStartGroup:IsShown() then
+		--	LFGListFrameSearchPanelStartGroup:Hide()
+		--end
 		local total,results = C_LFGList.GetSearchResults()
 		if total == 0 and searchQuestID and (VWQL and not VWQL.DisableLFG) then
 			isAfterSearch = true
@@ -8498,8 +8521,8 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 			local searchQ = LFGListFrame.SearchPanel.SearchBox:GetText()
 			searchQ = tonumber(searchQ)
 			if searchQ and searchQ > 10000 and searchQ < 1000000 then
-				LFGListFrameSearchPanelStartGroup.questID = searchQ
-				LFGListFrameSearchPanelStartGroup:Show()
+		--		LFGListFrameSearchPanelStartGroup.questID = searchQ
+		--		LFGListFrameSearchPanelStartGroup:Show()
 			end
 		end
 
@@ -8525,7 +8548,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 					return
 				end
 			end
-			StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
+			--StaticPopup_Hide("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID")
 
 			if not data.autoAccept and
 				(  GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + C_LFGList.GetNumInvitedApplicantMembers() + C_LFGList.GetNumPendingApplicantMembers() <= 5  )
@@ -8580,7 +8603,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if (C_LFGList.GetActiveEntryInfo() or LFGListFrame.SearchPanel.SearchBox:GetText()==tostring(arg1)) and 
 			QuestUtils_IsQuestWorldQuest(arg1) and 
 			CheckQuestPassPopup(arg1) and 
-			(not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1) or (QuestCreationBox.type == 4 and QuestCreationBox.questID == arg1)) and 
+			(not QuestCreationBox:IsShown() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4) or (QuestCreationBox.type == 1 and QuestCreationBox.questID == arg1) or (QuestCreationBox.type == 4 and QuestCreationBox.questID == arg1)) and 
 			(GetNumGroupMembers() or 0) > 1 
 		then
 			local data = C_LFGList.GetActiveEntryInfo()
@@ -8611,8 +8634,11 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if not VWQL or VWQL.DisableLFG or not arg1 or C_LFGList.GetActiveEntryInfo() or VWQL.DisableLFG_Popup or (GetNumGroupMembers() or 0) > 1 then
 			return
 		end
+		--if true then	--disabled at all
+		--	return
+		--end
 		if QuestUtils_IsQuestWorldQuest(arg1) and 					--is WQ
-			(not QuestCreationBox:IsVisible() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4)) and	--popup if not busy
+			(not QuestCreationBox:IsShown() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4)) and	--popup if not busy
 			 CheckQuestPassPopup(arg1) 						--wq pass filters
 		 then
 			QuestCreationBox.Text1:SetText("WQL|n"..(C_TaskQuest.GetQuestInfoByQuestID(arg1) or ""))
@@ -8634,11 +8660,11 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if WorldQuestList.ObjectiveTracker_Update_hook then
 			WorldQuestList.ObjectiveTracker_Update_hook(2)
 		end
-		if QuestCreationBox:IsVisible() and QuestCreationBox.type == 3 and QuestCreationBox.questID == arg1 then
+		if QuestCreationBox:IsShown() and QuestCreationBox.type == 3 and QuestCreationBox.questID == arg1 then
 			QuestCreationBox:Hide()
 		end
 	elseif event == "GROUP_ROSTER_UPDATE" then
-		if GetNumGroupMembers() == 0 and QuestCreationBox:IsVisible() and QuestCreationBox.type == 2 and not C_LFGList.GetActiveEntryInfo() then
+		if GetNumGroupMembers() == 0 and QuestCreationBox:IsShown() and QuestCreationBox.type == 2 and not C_LFGList.GetActiveEntryInfo() then
 			QuestCreationBox:Hide()
 		end
 	end
@@ -8673,6 +8699,7 @@ do
 		end
 	end)
 end
+
 
 local objectiveTrackerButtons = {}
 WorldQuestList.LFG_objectiveTrackerButtons = objectiveTrackerButtons

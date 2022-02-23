@@ -1,6 +1,6 @@
 --[[
 	Krowi's World Map Buttons License
-		Copyright ©2020-2021 The contents of this library, excluding third-party resources, are
+		Copyright ©2020-2022 The contents of this library, excluding third-party resources, are
 		copyrighted to their authors with all rights reserved.
 
 		This library is free to use and the authors hereby grants you the following rights:
@@ -18,7 +18,7 @@
 		the copyright holders.
 ]]
 
-local lib = LibStub:NewLibrary('Krowi_WorldMapButtons-1.0', 1);
+local lib = LibStub:NewLibrary('Krowi_WorldMapButtons-1.3', 1);
 
 if not lib then
 	return;
@@ -38,10 +38,6 @@ end
 
 local hookedDefaultButtons;
 local function HookDefaultButtons()
-	hooksecurefunc(WorldMapFrame, "RefreshOverlayFrames", function()
-		SetPoints();
-	end);
-
 	for _, f in next, WorldMapFrame.overlayFrames do
         if WorldMapTrackingOptionsButtonMixin and f.OnLoad == WorldMapTrackingOptionsButtonMixin.OnLoad then
 			f.KrowiWorldMapButtonsIndex = #buttons;
@@ -87,7 +83,14 @@ function lib:Add(templateName, templateType)
 
 	local xOffset = 4 + #buttons * 32;
 
-	local button = WorldMapFrame:AddOverlayFrame(templateName, templateType, "TOPRIGHT", WorldMapFrame:GetCanvasContainer(), "TOPRIGHT", -xOffset, -2);
+	-- local button = WorldMapFrame:AddOverlayFrame(templateName, templateType, "TOPRIGHT", WorldMapFrame:GetCanvasContainer(), "TOPRIGHT", -xOffset, -2);
+	local button = CreateFrame(templateType, nil, WorldMapFrame, templateName);
+	button:SetPoint("TOPRIGHT", WorldMapFrame:GetCanvasContainer(), "TOPRIGHT", -xOffset, -2);
+	button.relativeFrame = WorldMapFrame:GetCanvasContainer();
+	hooksecurefunc(WorldMapFrame, "RefreshOverlayFrames", function()
+        button:Refresh();
+		SetPoints();
+    end);
 
 	tinsert(buttons, button);
 

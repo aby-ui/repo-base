@@ -209,6 +209,8 @@ Ld["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 Ld["Trade Skill Cooldowns"] = "Trade Skill Cooldowns"
 Ld["Trade skills"] = "Trade skills"
 Ld["Transmute"] = "Transmute"
+Ld["TSG"] = "TSG"
+Ld["TSW"] = "TSW"
 Ld["Type"] = "Type"
 Ld["Use class color"] = "Use class color"
 Ld["Vision Boss + 2 Bonus Objectives"] = "Vision Boss + 2 Bonus Objectives"
@@ -419,6 +421,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Échéances des métiers"
 La["Trade skills"] = "Échéances des métiers"
 La["Transmute"] = "Transmutation"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Type"
 La["Use class color"] = "Colorer par classe"
 La["Vision Boss + 2 Bonus Objectives"] = "Boss de la vision + 2 objectifs bonus"
@@ -630,6 +636,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Abklingzeiten der Berufsfertigkeiten"
 La["Trade skills"] = "Berufsfertigkeiten"
 La["Transmute"] = "Transmutieren"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Wert"
 La["Use class color"] = "Klassenfarbe verwenden"
 La["Vision Boss + 2 Bonus Objectives"] = "Visions Boss + 2 Bonus Ziele"
@@ -846,6 +856,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "전문 기술 재사용 대기시간"
 La["Trade skills"] = "전문 기술"
 La["Transmute"] = "변환"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "유형"
 La["Use class color"] = "직업 색상 사용"
 La["Vision Boss + 2 Bonus Objectives"] = "주 목표+추가 목표 2"
@@ -1128,6 +1142,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Cooldowns de profesiones"
 La["Trade skills"] = "Seguir cooldowns de profesiones"
 La["Transmute"] = "Transmutar"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Tipo"
 La["Use class color"] = "Usar color de clase"
 --[[Translation missing --]]
@@ -1193,8 +1211,7 @@ La["COS"] = "COS"
 La["Covenant"] = "Ковенант"
 La["Covenant Assaults"] = "Атаки ковенантов"
 La["Currency settings"] = "Настройки валюты"
---[[Translation missing --]]
-La["Cursed Coffer"] = "Cursed Coffer"
+La["Cursed Coffer"] = "Проклятый сундук"
 La["Daily Quests"] = "Ежедневные задания"
 La["Day"] = "День"
 La["Debug Mode"] = "Режим отладки"
@@ -1331,8 +1348,7 @@ La["Sorting"] = "Сортировка"
 La["Space between categories"] = "Промежуток между категориями"
 La["Text"] = "Текст"
 La["The Four Celestials"] = "Четыре небожителя"
---[[Translation missing --]]
-La["The World Awaits"] = "The World Awaits"
+La["The World Awaits"] = "Мир ждет"
 La["These are the instances that count towards the %i instances per hour account limit, and the time until they expire."] = "Это те подземелья, на которые существуют ограничения в %i подземелий в час."
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "Используйте только для переименованных или удаленных персонажей, так как данные все равно будут заполнены заново при входе на персонажа."
 La["Time /played"] = "Общее время игры"
@@ -1350,6 +1366,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Восстановление способностей профессий."
 La["Trade skills"] = "Отслеживать восстановление способностей профессий"
 La["Transmute"] = "Трансмутация (алхимия)"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Тип"
 La["Use class color"] = "Цвет класса"
 La["Vision Boss + 2 Bonus Objectives"] = "Босс Видения + 2 Бонусных цели"
@@ -1363,8 +1383,8 @@ La["Weekly Quests"] = "Еженедельные задания"
 La["Wild Transmute"] = "Дикая трансмутация"
 La["World Boss"] = "Мировой босс"
 La["World Bosses"] = "Мировые боcсы"
-La["Wrath of the Jailer"] = "Гнев тюремщика"
-La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Если хотите, то вы можете комбинировать иконки и текст в одном индикаторе. Просто выберите иконку и вставьте слово ICON в текстовое поле. Везде где слово ICON будет найдено, вместо него будет ваш выбранный значок."
+La["Wrath of the Jailer"] = "Гнев Тюремщика"
+La["You can combine icons and text in a single indicator if you wish. Simply choose an icon, and insert the word ICON into the text field. Anywhere the word ICON is found, the icon you chose will be substituted in."] = "Если хотите, то Вы можете комбинировать иконки и текст в одном индикаторе. Просто выберите иконку и вставьте слово ICON в текстовое поле. Везде, где слово ICON будет найдено, вместо него будет Ваш выбранный значок."
 
 elseif locale == "zhCN" then
   La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00点击|r 显示每周奖励"
@@ -1551,6 +1571,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "追踪时空漫游史诗钥�
 La["Trade Skill Cooldowns"] = "商业技能冷却"
 La["Trade skills"] = "商业技能"
 La["Transmute"] = "转化"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "类型"
 La["Use class color"] = "使用职业颜色"
 La["Vision Boss + 2 Bonus Objectives"] = "三箱"
@@ -1780,6 +1804,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Tiempos de reutilización de Profesiones"
 La["Trade skills"] = "Profesiones"
 La["Transmute"] = "Transmutar"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Tipo"
 La["Use class color"] = "Usar color de clase"
 La["Vision Boss + 2 Bonus Objectives"] = "Jefe de Vision + 2 objetivos extras"
@@ -1824,8 +1852,7 @@ La["Bonus rolls"] = "額外骰子"
 La[ [=[Boss kill information is missing for this lockout.
 This is a Blizzard bug affecting certain old raids.]=] ] = [=[缺少這個進度的首領擊殺資訊。
 這是暴雪的 BUG，會影響舊團隊。]=]
---[[Translation missing --]]
-La["BRH"] = "BRH"
+La["BRH"] = "玄鴉"
 La["Calling Missing"] = "沒有使命"
 La["Categories"] = "分類"
 La["Characters"] = "角色"
@@ -1836,8 +1863,7 @@ La["Combine emissaries of same expansion"] = "合併同資料片的特使"
 La["Combine LFR"] = "合併隨機團隊"
 La["Combine World Bosses"] = "合併世界首領"
 La["Connected Realms"] = "連結伺服器"
---[[Translation missing --]]
-La["COS"] = "COS"
+La["COS"] = "眾星"
 La["Covenant"] = "誓盟"
 La["Covenant Assaults"] = "誓盟進攻戰"
 La["Currency settings"] = "兌換通貨設定"
@@ -1846,8 +1872,7 @@ La["Cursed Coffer"] = "Cursed Coffer"
 La["Daily Quests"] = "每日任務"
 La["Day"] = "日"
 La["Debug Mode"] = "偵錯模式"
---[[Translation missing --]]
-La["DHT"] = "DHT"
+La["DHT"] = "暗心"
 La["Disable mouseover"] = "停用滑鼠提示"
 La["Disable tooltip display on icon mouseover"] = "滑鼠指向圖示時不要顯示滑鼠提示"
 La["Display instances in order of recommended level from lowest to highest"] = "依照建議的等級從低到高顯示副本"
@@ -1859,12 +1884,10 @@ La["Dragon of Nightmare"] = "夢魘之龍"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
 La["Emissary Missing"] = "沒有特使"
---[[Translation missing --]]
-La["Emissary of War"] = "Emissary of War"
+La["Emissary of War"] = "戰爭使者"
 La["Emissary Quests"] = "特使任務"
 La["Emissary quests"] = "特使任務"
---[[Translation missing --]]
-La["EOA"] = "EOA"
+La["EOA"] = "艾眼"
 La["Expansion"] = "資料片"
 La["Expired Lockout - Can be extended"] = "進度已過期 - 可以延展"
 La["Export"] = "輸出"
@@ -1918,8 +1941,7 @@ La["Mythic Key Best"] = "最佳傳奇鑰石"
 La["Mythic Keystone"] = "傳奇鑰石"
 La["Nathanos Blightcaller"] = "納撒諾斯·凋零者"
 La["Never show"] = "永不顯示"
---[[Translation missing --]]
-La["NL"] = "NL"
+La["NL"] = "巢穴"
 La["NW"] = "死靈"
 La["Opacity of the tooltip row highlighting"] = "顯著標示滑鼠提示列的透明度"
 La["Open config"] = "開啟設定選項"
@@ -1983,25 +2005,26 @@ La["These are the instances that count towards the %i instances per hour account
 La["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."] = "這個功能只適用於已經更名或刪除的角色，登入這些角色時會重新擷取資料。"
 La["Time /played"] = "已遊玩時間"
 La["Time Left"] = "剩餘時間"
---[[Translation missing --]]
-La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+La["Timeworn Mythic Keystone"] = "時光漫遊傳奇鑰石"
 La["Tooltip Scale"] = "滑鼠提示縮放大小"
 La["TOP"] = "劇場"
 La["Torghast"] = "托迦司"
 La["Tormentors of Torghast"] = "托迦司的折磨者"
 La["Track Mythic keystone acquisition"] = "追蹤獲得的傳奇鑰石"
 La["Track Mythic keystone best run"] = "追蹤傳奇鑰石最佳紀錄"
---[[Translation missing --]]
-La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keystone acquisition"
+La["Track Timeworn Mythic keystone acquisition"] = "追蹤時光漫遊傳奇鑰石獲取"
 La["Trade Skill Cooldowns"] = "專業技能冷卻時間"
 La["Trade skills"] = "專業技能"
 La["Transmute"] = "轉化"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "類型"
 La["Use class color"] = "使用職業顏色"
 La["Vision Boss + 2 Bonus Objectives"] = "幻象首領 + 2個獎勵目標"
 La["Vision Boss Only"] = "只有幻象首領"
---[[Translation missing --]]
-La["VOTW"] = "VOTW"
+La["VOTW"] = "看守"
 La["Warfronts"] = "戰爭前線"
 La["Warn about instance limit"] = "警告副本限制"
 La["Warning: You've entered about %i instances recently and are approaching the %i instance per hour limit for your account. More instances should be available in %s."] = "警告：你最近已經進入副本 %i 次，並且已經接近每小時 %i 次的帳號進入限制。 %s 後允許進入更多副本。"
@@ -2264,6 +2287,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Recarga de Habilidades"
 La["Trade skills"] = "Habilidades de profissão"
 La["Transmute"] = "Transmutação"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Tipo"
 La["Use class color"] = "Usar cor das classes"
 --[[Translation missing --]]
@@ -2546,6 +2573,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Tempo di scadenza professioni"
 La["Trade skills"] = "Professioni"
 La["Transmute"] = "Trasmutazioni"
+--[[Translation missing --]]
+La["TSG"] = "TSG"
+--[[Translation missing --]]
+La["TSW"] = "TSW"
 La["Type"] = "Tipo"
 La["Use class color"] = "Usa colori delle classi"
 --[[Translation missing --]]

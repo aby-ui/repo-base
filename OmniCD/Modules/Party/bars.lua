@@ -405,7 +405,8 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 		end
 	end
 
-	for i = 1, 6 do
+--  for i = 1, 6 do
+	for i = 1, 5 do
 		local spells = (i == 1 and spell_db.PVPTRINKET) or
 			(i == 2 and spell_db.RACIAL) or
 			(i == 3 and spell_db.TRINKET) or
@@ -463,15 +464,6 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 						local ch = self:GetValueByType(spell.charges, guid) or 1
 						if isInspectedUnit then
 							if i == 5 then
-								if spell_cdmod_haste[spellID] then
-									if E.isPreBCC then
-										cd = cd + (info.RAS or 0) -- nil on inspect, requires sync
-									else
-										local haste = UnitSpellHaste(unit) or 0
-										cd = cd * (1 - haste/100)
-									end
-								end
-
 								local cdData = spell_cdmod_talents[spellID]
 								if cdData then
 									if type(cdData[1]) == "table" then
@@ -498,6 +490,15 @@ function P:UpdateUnitBar(guid, isGRU) -- updates glowIcons, preActiveIcons, spel
 										end
 										]]
 										cd = cd - rankValue
+									end
+								end
+
+								if spell_cdmod_haste[spellID] then
+									if E.isPreBCC then
+										cd = cd + (info.RAS or 0) -- nil on inspect, requires sync
+									else
+										local haste = UnitSpellHaste(unit) or 0
+										cd = cd * (1 - haste/100)
 									end
 								end
 

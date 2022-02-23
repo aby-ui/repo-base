@@ -16,7 +16,7 @@ private.CONTINENT_ZONE_IDS = {
 	[876] = { zonefilter = true, npcfilter = true, id = 10, zones = {895,896,942,1161,1462} }; --Kul Tiras
 	[875] = { zonefilter = true, npcfilter = true, id = 11, zones = {862,863,864,1165} }; --Zandalar
 	[1355] = { zonefilter = true, npcfilter = true, id = 12, zones = {1355} }; --Nazjatar
-	[1550] = { zonefilter = true, npcfilter = true, id = 13, zones = {1409,1525,1533,1536,1543,1565,1618,1961}, current = { "all" } }; --Shadowlands
+	[1550] = { zonefilter = true, npcfilter = true, id = 13, zones = {1409,1525,1533,1536,1543,1565,1618,1961,1970,2030}, current = { "all" } }; --Shadowlands
 	[9999] = { zonefilter = true, npcfilter = true, zones = {276,378,628,629,672,734,702,695,747,739} }; --Class Halls
 	[9998] = { zonefilter = true, npcfilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
 	[9997] = { zonefilter = true, npcfilter = true, zones = {11,35,219,229,237,243,251,274,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041,1663,1666,1675,1669,1674,1677,1683,1692} }; --Dungeons or scenarios
@@ -206,6 +206,8 @@ private.RESETABLE_KILLS_ZONE_IDS = {
 	[1525] = { "all" }; --Ravendreth (Shadowlands)
 	[1543] = { "all" }; --The Maw (Shadowlands)
 	[1961] = { "all" }; --Korthia (Shadowlands)
+	[1970] = { "all" }; --Zereth Mortis (Shadowlands)
+	[2030] = { "all" }; --Zereth Mortis (Nexus of Actualization) (Shadowlands)
 }
 
 private.RESETABLE_WARFRONT_KILLS_ZONE_IDS = {

@@ -1,7 +1,7 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: Domination Socket Helper
 ## Author: Metriss - Stormrage
-## Version: v2.0.9
+## Version: v2.0.10
 ## SavedVariables: DSHDB
 ## Notes: Helps with changing Gems and Domination Socket Shards
 

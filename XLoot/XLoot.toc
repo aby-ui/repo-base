@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
 ## Version: 9.0-7

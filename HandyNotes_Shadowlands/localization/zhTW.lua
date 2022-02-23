@@ -307,7 +307,7 @@ L['mawsworn_cache_note'] = '總共有3個淵誓儲物箱會出現在對應的幾
 L['pile_of_bones'] = '白骨堆'
 L['relic_cache'] = '文物箱'
 L['shardhide_stash'] = '晶皮儲藏物'
-L['korthia_shared_chest_note'] = '你一天可以在這些寶藏收集文物5次. 除此之外的箱子可能會含有科西亞水晶和帳號綁定的裝備兌換物'
+L['korthia_shared_chest_note'] = '半小時內可以從這些寶箱收集文物5次. 進度每半小時會重置, 使其有效地成為無限的'
 L['unusual_nest'] = '不尋常材料之巢'
 L['unusual_nest_note'] = '5個位置的巢一天都可被拾取一次'
 
@@ -671,3 +671,126 @@ L['tormentors_note'] = [[
 
 {item:185972} 每個禮拜可以被拾取一次, 內含有50個 {currency:1906}.
 ]]
+
+-------------------------------------------------------------------------------
+-------------------------------- ZERETH MORTIS --------------------------------
+-------------------------------------------------------------------------------
+
+L['corrupted_architect_note'] = '攻擊 {npc:183958} 和 {npc:183961} 來啟動稀有.'
+L['dune_dominance_note'] = nil
+L['feasting_note'] = nil
+L['furidian_note'] = '和 |cFFFFFD00可疑的憤怒儲藏庫|r 互動.'
+L['garudeon_note'] = '從附近的區域收集 {npc:183562} 並且使用 {spell:362655} 來餵食 {npc:183554}. 當三個都被餵食後, {npc:180924} 會啟動.'
+L['gluttonous_overgrowth_note'] = nil
+L['hirukon_note'] = nil
+L['protector_first_ones_note'] = '需要兩人. 攜帶對應的符文 (可以在附近區域找到) 到各個控制台來開啟屏障.'
+L['the_engulfer_note'] = '保護 {npc:183505} 直到 {npc:183516} 從裂隙中跳出.'
+L['zatojin_note'] = '吸引附近的 {npc:183721} 並且讓他們對你堆疊20層的 {spell:362976} 直到你受到 {spell:362983}. 當你麻痺時你必須站在 {npc:183774} 屍體上, 以便讓 {npc:183764} 注意到你.'
+
+L['architects_reserve_note'] = nil
+L['bushel_of_produce_note'] = nil
+L['crushed_crate_note'] = '撿起 {item:189767} from the indent in the large orb to the north. 把它交給 {npc:185151} 來交換 {item:189768} 用來打碎墜落的石頭.'
+L['domination_cache_note'] = nil
+L['drowned_broker_supplies_note'] = nil
+L['forgotten_protovault_note'] = '僅在世界任務 {wq:蛙蛙} 期間內可取得.'
+L['grateful_boon_note'] = nil
+L['library_vault_note'] = '在詞彙石窟點擊石板直到你找到正確的 {spell:362062} 增益來開啟寶庫.'
+L['mistaken_ovoid_note'] = '在次元瀑布洞穴內, 球體的後面.'
+L['ripened_protopear_note'] = nil
+L['sphere_treasure_note'] = '小心的從球體往上跳直到你到達寶藏處.'
+L['submerged_chest_note'] = nil
+L['symphonic_vault_note'] = '檢查 {npc:183998} 後會聽到4種聲音的序列. 房間內每個 {npc:183950} 會撥放一種聲音. 依照對應的順序和它們互動會解鎖寶藏.'
+L['template_archive_note'] = '推動面向擋住路徑的 {npc:183337} 的 {npc:183339} 來取得寶藏.'
+L['undulating_foliage_note'] = [[
+  按下四個 {npc:185390} 來啟動在滋長界地中間房間的傳送器.
+
+  • 在外面的 |cFFFFFD00滋長界地鎖|r 後方
+  • 在滋長界地西南方的房間
+  • 在有 {npc:181652} 的南邊房間
+  • 在滋長界地東南方的房間
+]]
+
+L['prying_eye_discovery'] = nil
+L['prying_eye_discovery_note'] = nil
+L['pulp_covered_relic'] = nil
+L['sandworn_chest'] = nil
+L['sandworn_chest_note'] = nil
+
+L['cache_avian_nest'] = '鳥巢'
+L['cache_cypher_bound'] = '暗語束縛箱子'
+L['cache_discarded_automa'] = '被丟棄的自主機碎塊'
+L['cache_forgotten_vault'] = '被遺忘的藏寶庫'
+L['cache_mawsworn_supply'] = '淵誓補給箱'
+L['cache_tarachnid_eggs'] = '原蛛卵'
+
+L['cache_cantaric'] = '肯塔瑞克原鎖'
+L['cache_fugueal'] = '符古爾原鎖'
+L['cache_glissandian'] = '格里桑迪安原鎖'
+L['cache_mezzonic'] = '梅索尼克原鎖'
+L['cache_toccatian'] = '托卡提安原鎖'
+
+L['schematic_treasure_note'] = nil
+L['schematic_treasure_mount_note'] = nil
+L['schematic_treasure_pet_note'] = nil
+L['schematic_bronze_helicid_note'] = nil
+L['schematic_ambystan_darter_note'] = nil
+L['schematic_bronzewing_vespoid_note'] = nil
+L['schematic_buzz_note'] = nil
+L['schematic_darkened_vombata_note'] = nil
+L['schematic_deathrunner_note'] = nil
+L['schematic_desertwing_hunter_note'] = nil
+L['schematic_fierce_scarabid_note'] = nil
+L['schematic_forged_spiteflyer_note'] = nil
+L['schematic_genesis_crawler_note'] = nil
+L['schematic_goldplate_bufonid_note'] = nil
+L['schematic_heartbond_lupine_note'] = nil
+L['schematic_leaping_leporid_note'] = nil
+L['schematic_microlicid_note'] = nil
+L['schematic_pale_regal_cervid_note'] = nil
+L['schematic_prototickles_note'] = nil
+L['schematic_raptora_swooper_note'] = nil
+L['schematic_resonant_echo_note'] = nil
+L['schematic_russet_bufonid_note'] = nil
+L['schematic_scarlet_helicid_note'] = nil
+L['schematic_shelly_note'] = nil
+L['schematic_tarachnid_creeper_note'] = nil
+L['schematic_terror_jelly_note'] = nil
+L['schematic_tunneling_vombata_note'] = nil
+L['schematic_vespoid_flutterer_note'] = nil
+
+L['concordance_excitable'] = '躁動索引'
+L['concordance_mercurial'] = '易變索引'
+L['concordance_tranquil'] = '平靜索引'
+L['concordance_note'] = '閱讀每一個索引來解鎖在 |cFFFFFD00流亡者洞穴|r 內 |cFFFFFD00知識控制台|r 的項目.'
+
+L['echoed_jiro_note'] = '消耗 {npc:181059} 能量來取得暫時的增益. 需要 {npc:181397} 的 |cFFFFFD00克里希安|r 研究.'
+
+L['bygone_elemental_note'] = nil
+L['gaiagantic_note'] = nil
+L['misaligned_enforcer_note'] = nil
+L['overcharged_vespoid_note'] = nil
+L['runethief_xylora_note'] = nil
+
+L['patient_bufonid_note'] = nil
+L['patient_bufonid_note_day1'] = nil
+L['patient_bufonid_note_day2'] = nil
+L['patient_bufonid_note_day3'] = nil
+L['patient_bufonid_note_day4'] = nil
+L['patient_bufonid_note_day5'] = nil
+L['patient_bufonid_note_day6'] = nil
+L['patient_bufonid_note_day7'] = nil
+
+L['options_icons_code_creature'] = '{achievement:15211}'
+L['options_icons_code_creature_desc'] = nil
+L['options_icons_concordances'] = '知識索引'
+L['options_icons_concordances_desc'] = '顯示知識索引控制台的位置'
+L['options_icons_echoed_jiros'] = '回響的機諾'
+L['options_icons_echoed_jiros_desc'] = '顯示提供增益的 |cFFFFFD00回響機諾|r 位置.'
+L['options_icons_exile_tales'] = '{achievement:15509}'
+L['options_icons_exile_tales_desc'] = nil
+L['options_icons_protoform_schematics'] = nil
+L['options_icons_protoform_schematics_desc'] = nil
+L['options_icons_puzzle_caches'] = '謎題箱'
+L['options_icons_puzzle_caches_desc'] = '顯示謎題箱子的位置'
+L['options_icons_zereth_caches'] = '暗語箱'
+L['options_icons_zereth_caches_desc'] = '顯示暗語箱可能的位置'

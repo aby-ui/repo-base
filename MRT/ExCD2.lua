@@ -563,7 +563,7 @@ module.db.spell_durationByTalent_fix = {	--Изменение длительно
 	[49028] = {233412,"*0.5"},
 	[191427] = {235893,-15},
 	[307865] = {357996,4},
-	[323546] = {354109,5},
+	[323546] = {354109,2.5},
 	[316958] = {355447,"*1.5"},
 }
 
@@ -629,7 +629,7 @@ module.db.spell_cdByTalent_fix = {		--Изменение кд талантом\�
 	[187827] = {296320,"*0.80"},
 	[55233] = {296320,"*0.80"},
 	[47568] = {296320,"*0.80"},
-	[275699] = {288848,-45,296320,"*0.80",338553,{-2,-2.4,-2.4,-2.8,-2.8,-3.2,-3.2,-3.2,-3.6,-3.6,-4,-4.4,-4.4,-4.4,-4.8}},
+	[275699] = {288848,-45,296320,"*0.80",338553,-1},
 	[288613] = {203129,-20,296320,"*0.80",336742,"*0.65"},
 	[193530] = {296320,"*0.80",336742,"*0.65"},
 	[266779] = {296320,"*0.80",336742,"*0.65"},
@@ -937,11 +937,16 @@ do
 		{336471,73325},	--priest: Leap of Faith
 		{108293,108291,319454},	--druid: HotW
 		{119910,19647},	--warlock: pet kick
+		{89766,119914},		--warlock: pet kick [warlock kick]
+		{119909,6358},		--warlock: pet 
+		{119907,17767},		--warlock: pet 
+		{119905,89808},		--warlock: pet 
 
 		{307192,213664,216431,216802,216468,338447,301308},	--Healing Potion
 		{338142,338018,338035,326462,326446,326647,326434},
 
 		{115203,243435},	--Fortifying Brew
+		{218164,115450},	--Detox 
 	}
 	if ExRT.isBC then
 		sameSpellsData[#sameSpellsData+1] = {2894,2062}
@@ -1408,7 +1413,21 @@ module.db.itemsToSpells = {	-- Тринкеты вида [item ID] = spellID
 	[186437]=355303,
 	[186432]=355333,
 	[186422]=353692,
+
+	[188766]=363481,
+	[188524]=363117,
+	[188262]=363557,
+	[188255]=364152,
+	[188272]=367236,
+	[188271]=367241,
+	[188268]=368203,
+	[188266]=367802,
+	[188263]=368894,
+	[188261]=367885,
 }
+
+--/run for _,q in pairs({188255,188272,188271,188268,188266,188263,188261}) do _,e=GetItemSpell(q) JJBox("["..q.."]="..e..",") end
+--/run for _,q in pairs({188255,188272,188271,188268,188266,188263,188261}) do _,e=GetItemSpell(q)t=GetSpellBaseCooldown(e) JJBox("{"..e..',"ITEMS",	3,	{'..e..','..((t or 0)/1000)..',	0},	},') end
 
 for itemID,spellID in pairs(module.db.itemsToSpells) do
 	module.db.spell_isTalent[spellID] = true
@@ -1471,6 +1490,15 @@ module.db.itemsBonusToSpell = {
 	[7708] = 356218,
 }
 
+module.db.spellCDSync = {}
+module.db.spellCDSyncToSpell = {}
+do
+	local c,scd,scsts = select(2,UnitClass'player'),module.db.spellCDSync,module.db.spellCDSyncToSpell
+	if not ExRT.isClassic and c == "SHAMAN" then ExRT.F.table_add(scd,{157153,324386,5394,108280,16191,98008,192058,2484,8143,207399,198838}) end
+end
+
+
+
 if ExRT.isClassic then
 	module.db.findspecspells = {}
 	module.db.spell_isTalent = {}
@@ -1501,6 +1529,7 @@ module.db.vars = {
 		[192249]=true,[193530]=true,[194223]=true,[194249]=true,[198067]=true,[198144]=true,
 		[205180]=true,[216331]=true,[227847]=true,[228260]=true,[231895]=true,[265187]=true,
 		[266779]=true,[275699]=true,[288613]=true,[297850]=true,[333957]=true,[335235]=true,
+		[102558]=true,
 	},
 	isWarlock = {},
 	isRogue = {},
@@ -2996,7 +3025,7 @@ local function AfterCombatResetFunction(isArena)
 				uSpecID = 4
 			end
 
-			if (unitSpellData.cd > 0 and (_db.spell_afterCombatReset[unitSpellData.db[1]] or (unitSpellData.db[uSpecID] and unitSpellData.db[uSpecID][2] >= (isArena and 0 or 180) or unitSpellData.cd >= (isArena and 0 or 180)))) and (not _db.spell_afterCombatNotReset[unitSpellData.db[1]] or isArena) then
+			if (unitSpellData.cd > 0 and (_db.spell_afterCombatReset[unitSpellData.db[1]] or (unitSpellData.db[uSpecID] and unitSpellData.db[uSpecID][2] >= (isArena and 0 or 120) or unitSpellData.cd >= (isArena and 0 or 180)))) and (not _db.spell_afterCombatNotReset[unitSpellData.db[1]] or isArena) then
 				unitSpellData.lastUse = 0 
 				unitSpellData.charge = nil 
 
@@ -3084,6 +3113,7 @@ do
 	local saveDataTimer = 0
 	local lastBattleResChargesStatus = nil
 
+	--[[
 	local function sort_f(a,b)
 		if a.column == b.column then
 			if a.sorting == b.sorting then
@@ -3101,6 +3131,22 @@ do
 			end
 		else
 			return a.column < b.column
+		end
+	end
+	]]
+	local function sort_f(a,b)
+		if a.column ~= b.column then
+			return a.column < b.column
+		elseif a.sorting ~= b.sorting then
+			if a.rsort then
+				return (a.sorting or 0) > (b.sorting or 0)
+			else
+				return (a.sorting or 0) < (b.sorting or 0)
+			end
+		elseif a.rsort then
+			return (a.sort or 0) > (b.sort or 0)
+		else
+			return (a.sort or 0) < (b.sort or 0)
 		end
 	end
 
@@ -3807,6 +3853,21 @@ local lineFuncs = {
 			UpdateAllData()
 		end
 	end,
+	SetCDSynq = function(line,time,delayUpdate)
+		if time == 0 then
+			return line:ResetCD(delayUpdate)
+		end
+		local new = GetTime() - line.cd + time
+		if not line.lastUse or abs(line.lastUse - new) > 1 then
+			line.lastUse = new
+		end
+		if line.bar and line.bar.data == line then
+			line.bar:UpdateStatus()
+		end
+		if not delayUpdate then
+			UpdateAllData()
+		end
+	end,
 	ModCD = function(line,modVal,delayUpdate)
 		if type(modVal) == "number" then
 			line.cd = line.cd + modVal
@@ -4432,6 +4493,8 @@ function module:Enable()
 	UpdateRoster()
 
 	module.main:ZONE_CHANGED_NEW_AREA()
+
+	module:RegisterAddonMessage()
 end
 
 function module:Disable()
@@ -4447,6 +4510,8 @@ function module:Disable()
 
 	module:UnregisterTimer()
 	module:UnregisterEvents('SCENARIO_UPDATE','GROUP_ROSTER_UPDATE','COMBAT_LOG_EVENT_UNFILTERED','UNIT_PET','PLAYER_LOGOUT','CHALLENGE_MODE_RESET','PLAYER_REGEN_DISABLED','PLAYER_REGEN_ENABLED','ENCOUNTER_START','ENCOUNTER_END','ARENA_COOLDOWNS_UPDATE','UNIT_AURA')
+
+	module:UnregisterAddonMessage()
 end
 
 function module:IsEnabled()
@@ -4574,6 +4639,11 @@ function module.main:ADDON_LOADED()
 		module:RegisterEvents('PLAYER_ENTERING_WORLD')
 	end
 
+	for _ in pairs(module.db.spellCDSync) do
+		module:RegisterEvents('SPELL_UPDATE_COOLDOWN')
+		break
+	end
+
 	module:RegisterSlash()
 end
 
@@ -4669,6 +4739,68 @@ do
 	module.main.LOADING_SCREEN_DISABLED = module.main.ZONE_CHANGED_NEW_AREA
 end
 
+do
+	local prevStart,prevDur = {},{}
+	local str
+	function module.main:SPELL_UPDATE_COOLDOWN()
+		for _,spellID in pairs(module.db.spellCDSync) do
+			local start, duration = GetSpellCooldown(spellID)
+			if (start ~= prevStart[spellID] or duration ~= prevDur[spellID]) and (duration == 0 or duration > 2) then
+				prevStart[spellID] = start
+				prevDur[spellID] = duration
+				if duration > 2 then
+					str = (str or "") .. spellID .. ":" .. floor(start + duration - GetTime()) .. ";"
+				elseif duration == 0 then
+					str = (str or "") .. spellID .. ":0;"
+				end
+			end
+		end
+		if str then
+			str = str:sub(1,-2)
+			ExRT.F.SendExMsg("rcd","SQ\t"..str)
+			str = nil
+		end
+	end
+
+	local CDList = _db.cdsNav
+	function module:addonMessage(sender, prefix, subPrefix, ...)
+		if prefix == "rcd" then
+			if subPrefix == "SQ" then
+				--print(sender, prefix, subPrefix, ...)
+				local str = ...
+				local senderFull = sender
+				sender = strsplit("-",sender)
+
+				local updateReq
+
+				while str do
+					local main,next = strsplit(";",str,2)
+					str = next
+
+					if main then
+						local spellID,spellCD = strsplit(":",main)
+						spellID = tonumber(spellID or "")
+						spellCD = tonumber(spellCD or "")
+
+						if spellID and spellCD then
+							local line = CDList[sender][spellID]
+							if line then
+								line:SetCDSynq(spellCD,true)
+								--print('update',sender,spellID,spellCD)
+								updateReq = true
+							end
+						end
+					end
+				end
+
+				if updateReq then
+					UpdateAllData()
+				end
+			end
+		end
+	end
+end
+
 local FD_GUIDs = {}
 local ScheduledUnitAura
 function module.main:UNIT_AURA(unitID)
@@ -4704,6 +4836,9 @@ function module.main:UNIT_AURA(unitID)
 		end
 		if not FD_Found then
 			local line = _db.cdsNav[UnitName(unitID)][5384]
+			if ExRT.isClassic and not line then
+				line = _db.cdsNav[UnitName(unitID)][GetSpellInfo(5384)]
+			end
 			if line then
 				CLEUstartCD(line)
 			end
@@ -5674,8 +5809,12 @@ do
 	end
 	if ExRT.isClassic then	--fix for BC Terokkar Tablet of Precision trinket & heroism spell
 		local oldFunc = module.main.SPELL_CAST_SUCCESS
+		local blacklist = {
+			[25937] = true,
+			[33667] = true,
+		}
 		module.main.SPELL_CAST_SUCCESS = function(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,_,_,spellIDClassic,...)
-			if spellIDClassic == 25937 then
+			if spellIDClassic and blacklist[spellIDClassic] then
 				return
 			end
 			return oldFunc(self,sourceGUID,sourceName,sourceFlags,destGUID,destName,destFlags,spellID,_,_,_,_,spellIDClassic,...)
@@ -6189,9 +6328,16 @@ do
 			local guid = UnitGUID(unitID)
 			local name = UnitName(unitID)
 
-			module.main.SPELL_CAST_SUCCESS(guid,name,0,nil,nil,0,spellID)
+			if not ExRT.isClassic then
+				module.main.SPELL_CAST_SUCCESS(guid,name,0,nil,nil,0,spellID)
+			else
+				module.main.SPELL_CAST_SUCCESS(guid,name,0,nil,nil,0,GetSpellInfo(spellID),nil,nil,nil,nil,spellID)
+			end
 			if spellID == 5384 then
 				local line = CDList[name][5384]
+				if ExRT.isClassic and not line then
+					line = CDList[name][GetSpellInfo(5384)]
+				end
 				if line then
 					line:SetCD(360)
 				end
@@ -6608,7 +6754,7 @@ function module.options:Load()
 			additional[#additional+1] = L.cd2ResurrectTooltip
 		end
 		if module.db.spell_isTalent[ parent.data[1] ] and not parent.isItem and not module.db.spell_covenant[ parent.data[1] ] then
-			additional[#additional+1] = "|cffffffff"..L.cd2AddSpellFrameTalent.."|r"
+			additional[#additional+1] = "|cffffffff"..L.cd2AddSpellFrameTalent.."|r"..(ExRT.isClassic and " |cffff8888(*will be shown only after first usage)|r" or "")
 		end
 		if module.db.spell_dispellsList[ parent.data[1] ] then
 			additional[#additional+1] = "|cffffffaa"..L.cd2AddSpellFrameDispel.."|r"
@@ -11597,7 +11743,7 @@ module.db.AllSpells = {
 	{223306,"PALADIN",		3,	nil,			{223306,12,	5},	nil,			nil,			},	--Bestow Faith
 	{204018,"PALADIN,DEFTAR",	2,	nil,			nil,			{204018,180,	10},	nil,			},	--Blessing of Spellwarding
 	{115750,"PALADIN",		3,	{115750,90,	0},	nil,			nil,			nil,			},	--Blinding Light
-	{231895,"PALADIN,DPS",		3,	nil,			nil,			nil,			{231895,20,	20},	},	--Crusade
+	{231895,"PALADIN,DPS",		3,	nil,			nil,			nil,			{231895,120,	25},	},	--Crusade
 	{343527,"PALADIN",		3,	nil,			nil,			nil,			{343527,60,	0},	},	--Execution Sentence
 	{205191,"PALADIN",		3,	nil,			nil,			nil,			{205191,60,	10},	},	--Eye for an Eye
 	{343721,"PALADIN",		3,	nil,			nil,			nil,			{343721,60,	8},	},	--Final Reckoning
@@ -11726,7 +11872,7 @@ module.db.AllSpells = {
 	{32379,	"PRIEST",		3,	{32379,	20,	0},	nil,			nil,			nil,			},	--Shadow Word: Death
 	{34433,	"PRIEST,DPS,HEAL",	3,	nil,			{34433,	180,	15},	nil,			{34433,	180,	15},	},	--Shadowfiend
 	{15487,	"PRIEST,CC,KICK",	3,	nil,			nil,			nil,			{15487,	45,	4},	},	--Silence
-	{64901,	"PRIEST,HEALUTIL",	1,	nil,			nil,			{64901,	300,	5},	nil,			},	--Symbol of Hope
+	{64901,	"PRIEST,HEALUTIL",	1,	nil,			nil,			{64901,	180,	4},	nil,			},	--Symbol of Hope
 	{15286,	"PRIEST,RAID",		1,	nil,			nil,			nil,			{15286,	120,	15},	},	--Vampiric Embrace
 	{228260,"PRIEST,DPS",		3,	nil,			nil,			nil,			{228260,90,	0},	},	--Void Eruption
 	{200183,"PRIEST,HEAL",		3,	nil,			nil,			{200183,120,	20},	nil,			},	--Apotheosis
@@ -12190,6 +12336,16 @@ module.db.AllSpells = {
 	{355303,"ITEMS",	3,	{355303,60,	0},	},	--Relic of the Frozen Wastes	186437
 	{355333,"ITEMS",	3,	{355333,90,	0},	},	--Salvaged Fusion Amplifier	186432
 	{353692,"ITEMS",	3,	{353692,60,	0},	},	--Tome of Monstrous Constructions	186422
+	{363481,"ITEMS",	3,	{363481,120,	4},	},	--Gladiator's Resonator	188766
+	{363117,"ITEMS",	3,	{363117,180,	15},	},	--Cosmic Gladiator's Fastidious Resolve	188524
+	{363557,"ITEMS",	3,	{363557,600,	0},	},	--The Lion's Roar	188262
+	{364152,"ITEMS",  	3,    	{364152,180,    0},    },
+	{367236,"ITEMS",   	3,   	{367236,90,    0},    },
+	{367241,"ITEMS",    	3,    	{367241,300,    0},    },
+	{368203,"ITEMS",    	3,   	{368203,90,    0},    },
+	{367802,"ITEMS",    	3,    	{367802,60,    0},    },
+	{368894,"ITEMS",    	3,   	{368894,150,    0},    },
+	{367885,"ITEMS",    	3,  	{367885,180,    0},    },
 
 	{295373,"ESSENCES",	3,	{295373,30,	0},	},	--The Crucible of Flame
 	{295186,"ESSENCES",	3,	{295186,60,	0},	},	--Worldvein Resonance
@@ -12282,8 +12438,9 @@ if ExRT.isBC then
 		{12809,	"WARRIOR",	1,	{12809,	45,	5}},	--Concussion Blow
 		{676,	"WARRIOR",	1,	{676,	60,	10}},	--Disarm
 
-		{11958,	"MAGE",		1,	{11958,	480,	40}},	--Cold Snap
+		{11958,	"MAGE",		1,	{11958,	480,	0}},	--Cold Snap
 		{12472,	"MAGE",		1,	{12472,	180,	20}},	--IV
+		{45438,	"MAGE",		1,	{45438,	300,	10}},	--IB
 
 		{1020,	"PALADIN",	1,	{1020,	300,	12}},	--DS
 		{10310,	"PALADIN",	1,	{10310,	3600,	0}},	--LoH
@@ -12302,13 +12459,22 @@ if ExRT.isBC then
 		{19801, "HUNTER",	1,	{19801,	20,	0}},	--Tranq
 		{34477, "HUNTER",	1,	{34477,	120,	30}},	--MD
 		{19577, "HUNTER",	1,	{19577,	60,	3}},	--MD
+		{5384, 	"HUNTER",	1,	{5384,	30,	0}},	--Feign Death
 		
 		{28275, "PRIEST",	1,	{28275,	360,	180}}, 	--Lightwell
 		{6346, 	"PRIEST",	1,	{6346,	180,	0}}, 	--Fear Ward
 		{32548, "PRIEST",	1,	{32548,	300,	15},	specialCheck=function(_,_,_,r) if r=="Draenei" then return true end end}, 	--Symbol of Hope
+		{10060, "PRIEST",	1,	{10060,	180,	15}},	--Power Infusion
+
+		{5277, 	"ROGUE",	1,	{5277,	300,	15}},	--Evasion
 	}
-	module.db.spell_isTalent[GetSpellInfo(16190) or "spell:16190"] = true
-	module.db.spell_isTalent[16190] = true
+	module.db.spell_isTalent[GetSpellInfo(16190) or "spell:16190"] = true	module.db.spell_isTalent[16190] = true
+	module.db.spell_isTalent[GetSpellInfo(10060) or "spell:10060"] = true	module.db.spell_isTalent[10060] = true
+	module.db.spell_isTalent[GetSpellInfo(11958) or "spell:11958"] = true	module.db.spell_isTalent[11958] = true
+
+	module.db.spell_resetOtherSpells[GetSpellInfo(11958) or "spell:11958"] = {GetSpellInfo(45438)}
+	module.db.spell_aura_list[GetSpellInfo(45438) or "spell:45438"] = GetSpellInfo(45438)
+	
 elseif ExRT.isClassic then
 	module.db.AllSpells = {
 		{29166,	"DRUID",	1,	{29166,	360,	20}},	--Озарение

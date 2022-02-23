@@ -295,7 +295,8 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		return
 	end
 
-	wipe(E.Cooldowns.spellDestGUIDS)
+	wipe(E.Cooldowns.diedDestGUIDS)
+	wipe(E.Cooldowns.dispelledDestGUIDS)
 
 	-- TODO: if zone changed or isRefresh or first run
 	local key = self.test and self.testZone or instanceType

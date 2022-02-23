@@ -317,4 +317,4 @@ interfaceOptionPanel:SetScript("OnShow", function(self)
 	self:SetScript("OnShow", nil)
 end)
 
-InterfaceOptions_AddCategory(interfaceOptionPanel)
+--InterfaceOptions_AddCategory(interfaceOptionPanel) -- taint

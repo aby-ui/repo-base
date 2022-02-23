@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2353, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220214214851")
 mod:SetCreatureID(152364)
 mod:SetEncounterID(2305)
 mod:SetUsedIcons(1, 2)
@@ -27,36 +27,33 @@ mod:RegisterEventsInCombat(
  or type = "death" and target.id = 152512
  or type = "interrupt"
 --]]
+--Rising Fury (Boss)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20076))
 local warnArcanadoBurst					= mod:NewSpellAnnounce(296430, 2)
 local warnSquallTrap					= mod:NewSpellAnnounce(296459, 4)
 local warnArcaneBomb					= mod:NewTargetNoFilterAnnounce(296737, 4)
 
---Rising Fury
 local specWarnTideFistCast				= mod:NewSpecialWarningDefensive(296566, nil, nil, nil, 1, 2)
 local specWarnTideFist					= mod:NewSpecialWarningTaunt(296566, nil, nil, nil, 1, 2)
 local specWarnArcaneBomb				= mod:NewSpecialWarningMoveAway(296737, nil, nil, nil, 1, 2)
 local yellArcaneBomb					= mod:NewPosYell(296737)
 local yellArcaneBombFades				= mod:NewIconFadesYell(296737)
 local specWarnUnshackledPower			= mod:NewSpecialWarningCount(296894, nil, nil, nil, 2, 2)
---Raging Storm
-local specWarnAncientTempest			= mod:NewSpecialWarningSpell(295916, nil, nil, nil, 2, 2)
-local specWarnGaleBuffet				= mod:NewSpecialWarningSpell(304098, nil, nil, nil, 2, 2)
---local specWarnGTFO						= mod:NewSpecialWarningGTFO(270290, nil, nil, nil, 1, 8)
 
---Rising Fury
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20076))
 local timerTideFistCD					= mod:NewNextCountTimer(58.2, 296546, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, mod:IsTank() and 2, 4)
 local timerArcanadoBurstCD				= mod:NewNextCountTimer(58.2, 296430, nil, nil, nil, 3)
 local timerArcaneBombCD					= mod:NewNextCountTimer(58.2, 296737, nil, "-Tank", nil, 3, nil, nil, nil, 3, 4)
 local timerUnshacklingPowerCD			= mod:NewNextCountTimer(58.2, 296894, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON, nil, 1, 4)
 local timerAncientTempestCD				= mod:NewNextTimer(95.9, 295916, nil, nil, nil, 6)
---Raging Storm
-mod:AddTimerLine(DBM:EJ_GetSectionInfo(20078))
-local timerGaleBuffetCD					= mod:NewCDTimer(22.6, 304098, nil, nil, nil, 2)
-
 local berserkTimer						= mod:NewBerserkTimer(600)
 
 mod:AddSetIconOption("SetIconOnArcaneBomb", 296737, true, false, {1, 2})
+--Raging Storm (Intermission Add)
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(20078))
+local specWarnAncientTempest			= mod:NewSpecialWarningSpell(295916, nil, nil, nil, 2, 2)
+local specWarnGaleBuffet				= mod:NewSpecialWarningSpell(304098, nil, nil, nil, 2, 2)
+
+local timerGaleBuffetCD					= mod:NewCDTimer(22.6, 304098, nil, nil, nil, 2)
 
 mod.vb.unshackledCount = 0
 mod.vb.arcanadoCount = 0

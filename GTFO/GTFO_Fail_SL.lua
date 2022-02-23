@@ -331,6 +331,17 @@ GTFO.SpellID["363530"] = {
   sound = 3;
 };
 
+GTFO.SpellID["360876"] = {
+  --desc = "Imminent Destruction (Custos)";
+  sound = 3;
+};
+
+GTFO.SpellID["359734"] = {
+  --desc = "Cratering Blast (Custos)";
+  sound = 3;
+};
+
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

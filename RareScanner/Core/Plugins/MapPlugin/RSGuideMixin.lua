@@ -31,6 +31,10 @@ function RSGuideMixin:OnAcquired(POI)
 end
 
 function RSGuideMixin:OnMouseEnter()
+	if (self.ShowPingAnim:IsPlaying()) then
+		self.ShowPingAnim:Stop()
+	end
+	
 	if (self.POI.tooltip) then
 		GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 

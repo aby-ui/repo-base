@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 ## LoadOnDemand: 0
 ## Notes:  增益时间精确到秒，显示施法者等。
 

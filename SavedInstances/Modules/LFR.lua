@@ -115,6 +115,11 @@ local LFRInstances = {
   [2222] = { total=3, base=4,  parent=2228, minLvl=60, remap={ 1, 2, 3 } }, -- Sanctum of Domination: The Dark Bastille
   [2223] = { total=3, base=7,  parent=2228, minLvl=60, remap={ 1, 2, 3 } }, -- Sanctum of Domination: Shackles of Fate
   [2224] = { total=1, base=10, parent=2228, minLvl=60, remap={ 1 } }, -- Sanctum of Domination: The Reckoning
+
+  [2292] = { total=4, base=1,  parent=2290, minLvl=60, remap={ 1, 2, 3, 4 } }, -- Sepulcher of the First Ones: Ephemeral Plains
+  [2291] = { total=3, base=5,  parent=2290, minLvl=60, remap={ 1, 2, 3 } }, -- Sepulcher of the First Ones: Cornerstone of Creation
+  [2293] = { total=3, base=8,  parent=2290, minLvl=60, remap={ 1, 2, 3 } }, -- Sepulcher of the First Ones: Domination's Grasp
+  [2294] = { total=1, base=11, parent=2290, minLvl=60, remap={ 1 } }, -- Sepulcher of the First Ones: The Grand Design
 }
 
 local tbl = {}
@@ -140,6 +145,10 @@ for id, info in pairs(LFRInstances) do
       info.remap = { 3, 5, 7 }
     elseif id == 2092 then -- Castle Nathria: Blood from Stone
       info.remap = { 1, 8, 9 }
+    elseif id == 2292 then -- Sepulcher of the First Ones: Ephemeral Plains
+      info.remap = { 1, 3, 5, 6 }
+    elseif id == 2291 then -- Sepulcher of the First Ones: Cornerstone of Creation
+      info.remap = { 2, 4, 7 }
     end
   end
 

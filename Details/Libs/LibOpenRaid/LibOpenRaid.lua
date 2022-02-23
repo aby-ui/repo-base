@@ -1,6 +1,6 @@
 
 local major = "LibOpenRaid-1.0"
-local CONST_LIB_VERSION = 20
+local CONST_LIB_VERSION = 22
 LIB_OPEN_RAID_CAN_LOAD = false
 
 --declae the library within the LibStub
@@ -1470,7 +1470,7 @@ function openRaidLib.playerInfoManager.GetPlayerFullInfo()
             local nodes = tree.nodes
 
             table.sort(nodes, function(t1, t2) return t1.row < t2.row end)
-
+            local C_Soulbinds_GetConduitCollectionData = C_Soulbinds.GetConduitCollectionData
             for nodeId, nodeInfo in ipairs(nodes) do
                 --check if the node is a conduit placed by the player
                 
@@ -1487,9 +1487,9 @@ function openRaidLib.playerInfoManager.GetPlayerFullInfo()
                         if (spellId == 0) then
                             --is player conduit
                             spellId = C_Soulbinds.GetConduitSpellID(nodeInfo.conduitID, nodeInfo.conduitRank)
-                            local conduitItemLevel = C_Soulbinds.GetConduitItemLevel(conduitId,  conduitRank)
                             conduits[#conduits+1] = spellId
-                            conduits[#conduits+1] = conduitItemLevel
+                            local collectionData = C_Soulbinds_GetConduitCollectionData(conduitId)
+                            conduits[#conduits+1] = collectionData and collectionData.conduitItemLevel or 0         
                         else
                             --is default conduit
                             conduits[#conduits+1] = spellId

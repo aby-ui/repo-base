@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2004, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116144653")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(122578)
 mod:SetEncounterID(2088)
 --mod:SetBossHPInfoToHighest()
@@ -35,24 +35,33 @@ mod:RegisterEventsInCombat(
  or (ability.id = 246516 or ability.id = 246698 or ability.id = 252760) and (type = "removebuff" or type = "removedebuff")
 --]]
 --Stage: Deployment
+mod:AddTimerLine(BOSS)
 local warnShatteringStrike				= mod:NewSpellAnnounce(248375, 2)
 local warnDiabolicBomb					= mod:NewSpellAnnounce(246779, 3, nil, nil, nil, nil, nil, 2)
 local warnReverberatingStrike			= mod:NewTargetAnnounce(254926, 3)
---Reavers (or empowered boss from reaver deaths)
-local warnDecimation					= mod:NewTargetAnnounce(246687, 4)
-local warnDemolish						= mod:NewTargetAnnounce(246692, 4)
 
---Stage: Deployment
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
 local specWarnForgingStrike				= mod:NewSpecialWarningDefensive(244312, nil, nil, nil, 1, 2)
 local specWarnForgingStrikeOther		= mod:NewSpecialWarningTaunt(244312, nil, nil, nil, 1, 2)
 local specWarnReverberatingStrike		= mod:NewSpecialWarningYou(254926, nil, nil, nil, 1, 2)
 local yellReverberatingStrike			= mod:NewYell(254926)
 local specWarnReverberatingStrikeNear	= mod:NewSpecialWarningClose(254926, nil, nil, nil, 1, 2)
 local specWarnRuiner					= mod:NewSpecialWarningDodge(246840, nil, nil, nil, 3, 2)
---Stage: Construction
-local specWarnInitializing				= mod:NewSpecialWarningSwitch(246504, nil, nil, nil, 1, 2)
+
+local timerForgingStrikeCD				= mod:NewCDTimer(14.3, 244312, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
+local timerReverberatingStrikeCD		= mod:NewCDCountTimer(28, 254926, nil, nil, nil, 3)
+local timerDiabolicBombCD				= mod:NewCDTimer(20, 246779, nil, nil, nil, 3)
+local timerRuinerCD						= mod:NewCDCountTimer(28.8, 246840, nil, nil, nil, 3, nil, nil, nil, 3, 4)
+--local timerShatteringStrikeCD			= mod:NewCDTimer(30, 248375, nil, nil, nil, 2)
+local timerApocProtocolCD				= mod:NewCDCountTimer(77, 246516, nil, nil, nil, 6, nil, nil, nil, 1, 4)
+
+mod:AddRangeFrameOption(5, 254926)--?
+mod:AddBoolOption("InfoFrame", true)
+mod:AddBoolOption("UseAddTime", true)
 --Reavers (or empowered boss from reaver deaths)
+mod:AddTimerLine(DBM_COMMON_L.ADDS)
+local warnDecimation					= mod:NewTargetAnnounce(246687, 4)
+local warnDemolish						= mod:NewTargetAnnounce(246692, 4)
+
 local specWarnDecimation				= mod:NewSpecialWarningMoveAway(246687, nil, nil, nil, 1, 2)
 local yellDecimation					= mod:NewShortFadesYell(246687)
 local specWarnAnnihilation				= mod:NewSpecialWarningSpell(245807, nil, nil, nil, 2, 2)
@@ -60,28 +69,14 @@ local specWarnDemolish					= mod:NewSpecialWarningYou(246692, nil, nil, nil, 1, 
 local specWarnDemolishOther				= mod:NewSpecialWarningMoveTo(246692, nil, nil, nil, 1, 2)
 local yellDemolish						= mod:NewPosYell(246692)
 local yellDemolishFades					= mod:NewIconFadesYell(246692)
+local specWarnInitializing				= mod:NewSpecialWarningSwitch(246504, nil, nil, nil, 1, 2)
 
---Stage: Deployment
-mod:AddTimerLine(BOSS)
-local timerForgingStrikeCD				= mod:NewCDTimer(14.3, 244312, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, 2, 3)
-local timerReverberatingStrikeCD		= mod:NewCDCountTimer(28, 254926, nil, nil, nil, 3)
-local timerDiabolicBombCD				= mod:NewCDTimer(20, 246779, nil, nil, nil, 3)
-local timerRuinerCD						= mod:NewCDCountTimer(28.8, 246840, nil, nil, nil, 3, nil, nil, nil, 3, 4)
---local timerShatteringStrikeCD			= mod:NewCDTimer(30, 248375, nil, nil, nil, 2)
-local timerApocProtocolCD				= mod:NewCDCountTimer(77, 246516, nil, nil, nil, 6, nil, nil, nil, 1, 4)
---Stage: Construction
-mod:AddTimerLine(DBM_COMMON_L.ADDS)
 local timerInitializing					= mod:NewCastTimer(30, 246504, nil, nil, nil, 6)
 local timerDecimationCD					= mod:NewCDTimer(10.9, 246687, nil, nil, nil, 3)
 local timerAnnihilationCD				= mod:NewCDTimer(15.4, 245807, nil, nil, nil, 3)
 local timerDemolishCD					= mod:NewCDTimer(15.8, 246692, nil, nil, nil, 3)
 
---local berserkTimer					= mod:NewBerserkTimer(600)
-
 mod:AddSetIconOption("SetIconOnDemolish", 246692, true)
-mod:AddBoolOption("InfoFrame", true)
-mod:AddBoolOption("UseAddTime", true)
-mod:AddRangeFrameOption(5, 254926)--?
 
 mod.vb.ruinerCast = 0
 mod.vb.forgingStrikeCast = 0

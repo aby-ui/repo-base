@@ -108,7 +108,7 @@ local function GetDefaultAuraList()
 		[GetSpellInfo(205630)]    = 8,    -- Illidan's Grasp 1
 		[GetSpellInfo(208618)]    = 8,    -- Illidan's Grasp 2
 		[GetSpellInfo(213491)]    = 8,    -- Demonic Trample knockdown
-		[GetSpellInfo(199804)]    = 8,    -- Between the Eyes
+		--abyui [GetSpellInfo(199804)]    = 8,    -- Between the Eyes
 		[GetSpellInfo(235612)]    = 8,    -- Frost DK stun
 		[GetSpellInfo(287254)]    = 8,    -- Remorseless Winter stun
 		["77505"]                 = 8,    -- Earthquake

@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 90200
 
 ## Title: Masque: Serenity
 ## Notes: Serenity skins for Masque.

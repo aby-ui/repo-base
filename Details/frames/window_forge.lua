@@ -656,15 +656,15 @@ function Details:OpenForge()
                         end
                         events = events:sub (1, #events - 3)
                     end
-                    
-                    local spellName, _, spellIcon = GetSpellInfo (data[1])
-                    
+
+                    local spellName, _, spellIcon = GetSpellInfo(data[1])
+
                     return {
                         index,
-                        spellIcon,
+                        {texture = spellIcon, texcoord = {.1, .9, .1, .9}},
                         {text = spellName or "", id = data[1] or 1},
                         data[1] or "",
-                        Details:GetSpellSchoolFormatedName (Details.spell_school_cache [spellName]) or "",
+                        Details:GetSpellSchoolFormatedName(Details.spell_school_cache [spellName]) or "",
                         data[3] .. "|r",
                         events,
                         data[4],
@@ -674,90 +674,98 @@ function Details:OpenForge()
                 end
             end,
             fill_name = "DetailsForgeEncounterBossSpellsFillPanel",
-        }			
-        
-        
+        }
+
         -----------------------------------------------
-        
-        local npc_ids_module = {
-            name = "Npc IDs",
-            desc = "Show a list of known npc IDs",
+        --Npc Ids
+
+        local ignoreNpcFunc = function(row)
+            local data = all_modules[3].data[row]
+            local npcId = data[1]
+
+            if (not Details.npcid_ignored[npcId]) then
+                Details.npcid_ignored[npcId] = true
+            else
+                Details.npcid_ignored[npcId] = nil
+            end
+
+            Details:UpdateParserGears()
+        end
+
+        local allNpcsModule = {
+            name = "Npc List", --localize-me
+            desc = "Show a list of known npcs", --localize-me
+
             filters_widgets = function()
                 if (not DetailsForgeEncounterNpcIDsFilterPanel) then
-                
-                    local w = CreateFrame ("frame", "DetailsForgeEncounterNpcIDsFilterPanel", f, "BackdropTemplate")
-                    w:SetSize (600, 20)
-                    w:SetPoint ("topleft", f, "topleft", 164, -40)
-                    --npc name filter
-                    local label = w:CreateFontString (nil, "overlay", "GameFontHighlightSmall")
-                    label:SetText ("Npc Name" .. ": ")
-                    label:SetPoint ("left", w, "left", 5, 0)
-                    local entry = fw:CreateTextEntry (w, nil, 120, 20, "entry", "DetailsForgeEncounterNpcIDsFilter")
-                    entry:SetHook ("OnTextChanged", function() f:refresh() end)
-                    entry:SetPoint ("left", label, "right", 2, 0)
-                    entry:SetTemplate (Details.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
-                    --
+                    local npcIdFrame = CreateFrame ("frame", "DetailsForgeEncounterNpcIDsFilterPanel", f, "BackdropTemplate")
+                    npcIdFrame:SetSize (600, 20)
+                    npcIdFrame:SetPoint ("topleft", f, "topleft", 164, -40)
+
+                    local filterSpellNameLabel = npcIdFrame:CreateFontString (nil, "overlay", "GameFontHighlightSmall")
+                    filterSpellNameLabel:SetText (L["STRING_FORGE_FILTER_SPELLNAME"] .. ": ")
+                    filterSpellNameLabel:SetPoint ("left", npcIdFrame, "left", 5, 0)
+
+                    local searchEntry = fw:CreateTextEntry(npcIdFrame, nil, 120, 20, "entry", "DetailsForgeEncounterNpcIDsFilter")
+                    searchEntry:SetHook("OnTextChanged", function() f:refresh() end)
+                    searchEntry:SetPoint("left", filterSpellNameLabel, "right", 2, 0)
+                    searchEntry:SetTemplate(Details.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+
                 end
                 return DetailsForgeEncounterNpcIDsFilterPanel
             end,
+
             search = function()
                 local t = {}
-                
-                local filter_name = DetailsForgeEncounterNpcIDsFilter:GetText()
-                local lower_FilterNpcName = lower (filter_name)
-                
+                local searchText = DetailsForgeEncounterNpcIDsFilter:GetText()
+                searchText = lower(searchText)
+
                 local npcPool = Details.npcid_pool
-                for npcID, npcName in pairs (npcPool) do
-                    local can_add = true
-                    
-                    if (lower_FilterNpcName ~= "") then
-                        if (not lower (npcName):find (lower_FilterNpcName)) then
-                            can_add = false
+                for npcId, npcName in pairs(npcPool) do
+                    local canAdd = true
+                    if (searchText ~= "") then
+                        if (not npcName:lower():find(searchText)) then
+                            canAdd = false
                         end
                     end
-                    
-                    if (can_add) then
-                        tinsert (t, {npcID, npcName})
+                    if (canAdd) then
+                        tinsert(t, {npcId, npcName})
                     end
-                    
-                    table.sort (t, DetailsFramework.SortOrder2R)
                 end
-                
+
+                table.sort(t, DetailsFramework.SortOrder2R)
                 return t
             end,
-            
+
             header = {
                 {name = L["STRING_FORGE_HEADER_INDEX"], width = 40, type = "text", func = no_func},
-                {name = "NpcID", width = 100, type = "entry", func = no_func},
-                {name = "Npc Name", width = 400, type = "entry", func = no_func},
+                {name = L["STRING_FORGE_HEADER_NAME"], width = 200, type = "entry", func = no_func},
+                {name = "NpcId", width = 60, type = "entry", func = no_func},
+                {name = "Ignore", width = 50, type = "checkbox", func = ignoreNpcFunc, icon = [[Interface\Glues\LOGIN\Glues-CheckBox-Check]], notext = true, iconalign = "center"},
             },
-            
+
             fill_panel = false,
             fill_gettotal = function (self) return #self.module.data end,
-            fill_fillrows = function (index, self) 
-                local data = self.module.data [index]
+            fill_fillrows = function (index, self)
+                local data = self.module.data[index]
                 if (data) then
-                    local events = ""
-                    if (EncounterSpellEvents and EncounterSpellEvents [data[1]]) then
-                        for token, _ in pairs (EncounterSpellEvents [data[1]].token) do
-                            token = token:gsub ("SPELL_", "")
-                            events = events .. token .. ",  "
-                        end
-                        events = events:sub (1, #events - 3)
-                    end
+                    local npcId = data[1]
+                    local npcName = data[2]
+                    local isIgnored = Details.npcid_ignored[npcId]
 
                     return {
                         index,
-                        data[1],
-                        data[2]
+                        {text = npcName, id = npcName},
+                        {text = npcId, id = npcId},
+                        isIgnored
                     }
                 else
                     return nothing_to_show
                 end
             end,
             fill_name = "DetailsForgeNpcIDsFillPanel",
-        }	
-        
+        }
+
         -----------------------------------------------
         
         local dbm_open_aura_creator = function (row)
@@ -779,7 +787,7 @@ function Details:OpenForge()
             
             Details:OpenAuraPanel (data[2], spellname, spellicon, data.id, DETAILS_WA_TRIGGER_DBM_TIMER, DETAILS_WA_AURATYPE_TEXT, {dbm_timer_id = data[2], spellid = data[7], text = "Next " .. spellname .. " In", text_size = 72, icon = spellicon})
         end
-        
+
         local dbm_timers_module = {
             name = L["STRING_FORGE_BUTTON_DBMTIMERS"],
             desc = L["STRING_FORGE_BUTTON_DBMTIMERS_DESC"],
@@ -1080,20 +1088,21 @@ function Details:OpenForge()
         f.SelectModule = select_module
         f.AllModules = all_modules
 
-        f:InstallModule (all_spells_module)
-        f:InstallModule (encounter_spells_module)
-        
-        f:InstallModule (npc_ids_module)
-        
-        f:InstallModule (dbm_timers_module)
-        f:InstallModule (bigwigs_timers_module)
-        
-        f:InstallModule (all_players_module)
-        f:InstallModule (all_enemies_module)
-        f:InstallModule (all_pets_module)
+        f:InstallModule(all_spells_module)
+        f:InstallModule(encounter_spells_module)
+
+        f:InstallModule(allNpcsModule)
+
+        f:InstallModule(dbm_timers_module)
+        f:InstallModule(bigwigs_timers_module)
+
+        f:InstallModule(all_players_module)
+        f:InstallModule(all_enemies_module)
+        f:InstallModule(all_pets_module)
 
         local brackets = {
-            [4] = true, 
+            [3] = true,
+            [4] = true,
             [6] = true
         }
         local lastButton
@@ -1108,7 +1117,7 @@ function Details:OpenForge()
             b:SetWidth (140)
             
             if (lastButton) then
-                if (brackets [i]) then
+                if (brackets[i]) then
                     b:SetPoint ("topleft", lastButton, "bottomleft", 0, -23)
                 else
                     b:SetPoint ("topleft", lastButton, "bottomleft", 0, -8)

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2009, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20220216092721")
 mod:SetCreatureID(124158)--or 124158 or 125692
 mod:SetEncounterID(2082)
 --mod:SetBossHPInfoToHighest()
@@ -31,18 +31,15 @@ mod:RegisterEventsInCombat(
  or (ability.id = 248233 or ability.id = 250135) and (type = "applybuff" or type = "removebuff")
 --]]
 local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+
+local berserkTimer						= mod:NewBerserkTimer(420)
+
+mod:AddRangeFrameOption("5/10")
 --Stage One: Attack Force
 local warnShocklance					= mod:NewStackAnnounce(247367, 2, nil, "Tank")
 local warnSleepCanister					= mod:NewTargetAnnounce(247552, 2)
 local warnSlumberGas					= mod:NewTargetAnnounce(247565, 3)
---Stage Two: Contract to Kill
-local warnSever							= mod:NewStackAnnounce(247687, 2, nil, "Tank")
---Stage Three/Five: The Perfect Weapon
-local warnEmpoweredPulseGrenade			= mod:NewTargetAnnounce(250006, 3)
 
---General
---local specWarnGTFO					= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 2)
---Stage One: Attack Force
 local specWarnShocklance				= mod:NewSpecialWarningTaunt(247367, nil, nil, nil, 1, 2)
 local specWarnSleepCanister				= mod:NewSpecialWarningYou(247552, nil, nil, nil, 1, 2)
 local yellSleepCanister					= mod:NewPosYell(247552, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION)
@@ -50,33 +47,31 @@ local yellSleepCanisterStun				= mod:NewYell(255029, L.DispelMe)--Auto yell when
 local specWarnSleepCanisterNear			= mod:NewSpecialWarningClose(247552, nil, nil, nil, 1, 2)
 local specWarnPulseGrenade				= mod:NewSpecialWarningDodge(247376, nil, nil, nil, 1, 2)
 local yellStasisTrap					= mod:NewYell(247641, L.DispelMe)
---Stage Two: Contract to Kill
-local specWarnSever						= mod:NewSpecialWarningTaunt(247687, nil, nil, nil, 1, 2)
-local specWarnChargedBlastsUnknown		= mod:NewSpecialWarningSpell(247716, nil, nil, nil, 2, 2)
-local specWarnShrapnalBlast				= mod:NewSpecialWarningDodge(247923, nil, nil, nil, 1, 2)
---Stage Three/Five: The Perfect Weapon
-local specWarnEmpPulseGrenade			= mod:NewSpecialWarningMoveAway(250006, nil, nil, nil, 1, 2)
-local yellEmpPulseGrenade				= mod:NewYell(250006)
---Intermission: On Deadly Ground
 
---Stage One: Attack Force
 local timerShocklanceCD					= mod:NewCDTimer(4, 247367, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--4-5.1
 local timerSleepCanisterCD				= mod:NewCDTimer(11.3, 247552, nil, nil, nil, 3, nil, DBM_COMMON_L.MAGIC_ICON)--11.3-13.4
 local timerPulseGrenadeCD				= mod:NewCDTimer(17, 247376, nil, nil, nil, 3, nil, nil, nil, 1, 4)--17?
+
+mod:AddSetIconOption("SetIconOnSleepCanister", 247552, true)
 --Stage Two: Contract to Kill
+local warnSever							= mod:NewStackAnnounce(247687, 2, nil, "Tank")
+
+local specWarnSever						= mod:NewSpecialWarningTaunt(247687, nil, nil, nil, 1, 2)
+local specWarnChargedBlastsUnknown		= mod:NewSpecialWarningSpell(247716, nil, nil, nil, 2, 2)
+local specWarnShrapnalBlast				= mod:NewSpecialWarningDodge(247923, nil, nil, nil, 1, 2)
+
 local timerSeverCD						= mod:NewCDTimer(7.2, 247687, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerChargedBlastsCD				= mod:NewCDTimer(18.2, 247716, nil, nil, nil, 3, nil, nil, nil, 3, 4)
 local timerShrapnalBlastCD				= mod:NewCDCountTimer(13.3, 247923, nil, nil, nil, 3)
 --Stage Three/Five: The Perfect Weapon
+local warnEmpoweredPulseGrenade			= mod:NewTargetAnnounce(250006, 3)
 
---Intermission: On Deadly Ground
+local specWarnEmpPulseGrenade			= mod:NewSpecialWarningMoveAway(250006, nil, nil, nil, 1, 2)
+local yellEmpPulseGrenade				= mod:NewYell(250006)
 
-local berserkTimer						= mod:NewBerserkTimer(420)
 
-mod:AddSetIconOption("SetIconOnSleepCanister", 247552, true)
 mod:AddSetIconOption("SetIconOnEmpPulse2", 250006, false)
 mod:AddInfoFrameOption(250006, true)
-mod:AddRangeFrameOption("5/10")
 
 mod.vb.phase = 1
 mod.vb.shrapnalCast = 0

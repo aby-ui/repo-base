@@ -644,6 +644,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		
 		return tonumber (text)
 	end
+	DF.TextToFloor = do_precision
 	
 	function DFSliderMetaFunctions:TypeValue()
 		if (not self.isSwitch) then
@@ -761,14 +762,14 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		if (slider.MyObject.useDecimals) then
 			amt = slider:GetValue()
 		else
-			amt = do_precision (slider:GetValue())
+			amt = do_precision(slider:GetValue())
 		end
-		
+
 		if (slider.MyObject.typing_value and not slider.MyObject.typing_can_change) then
 			slider.MyObject:SetValue (slider.MyObject.typing_value_started)
 			return
 		end
-	
+
 		table_insert (slider.MyObject.previous_value, 1, amt)
 		table_remove (slider.MyObject.previous_value, 4)
 		

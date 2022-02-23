@@ -391,6 +391,20 @@ function MRT.Options:Open(PANEL)
 	end
 end
 
+function MRT.Options:OpenByModuleName(moduleName)
+	for i=1,#Options.Frames do
+		if Options.Frames[i].moduleName == moduleName then
+			Options:Show()
+
+			Options:SetPage(Options.Frames[i])
+
+			Options.modulesList.selected = i
+			Options.modulesList:Update()
+			return Options.Frames[i]
+		end
+	end
+end
+
 MRT.F.menuTable = {
 { text = L.minimapmenu, isTitle = true, notCheckable = true, notClickable = true },
 { text = L.minimapmenuset, func = MRT.Options.Open, notCheckable = true, keepShownOnClick = true, },

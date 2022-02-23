@@ -422,6 +422,7 @@
 			Details.tabela_vigente.IsBeingCreated = nil
 	
 			Details:SendEvent ("COMBAT_PLAYER_ENTER", nil, Details.tabela_vigente, Details.encounter_table and Details.encounter_table.id)
+
 			if (Details.tabela_vigente.is_boss) then
 				--> the encounter was found through encounter_start event
 				Details:SendEvent ("COMBAT_BOSS_FOUND", nil, Details.tabela_vigente.is_boss.index, Details.tabela_vigente.is_boss.name)

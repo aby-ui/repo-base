@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2125, "DBM-Party-BfA", 10, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220217031102")
 mod:SetCreatureID(135358, 135359, 135360, 131823, 131824, 131825)--All versions so we can pull boss
 mod:SetEncounterID(2113)
 mod:DisableESCombatDetection()--ES fires For entryway trash pull sometimes, for some reason.
@@ -23,24 +23,37 @@ mod:RegisterEventsInCombat(
 (ability.id = 260741 or ability.id = 260907 or ability.id = 260703) and (type = "begincast" or type = "cast")
  or ability.id = 260805 and (type = "applybuff" or type = "removebuff")
 --]]
-local warnActiveTriad				= mod:NewTargetNoFilterAnnounce(260805, 2)
+--Sister Briar
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(17738))
+local specWarnJaggedNettles			= mod:NewSpecialWarningTarget(260741, nil, nil, 2, 1, 2)
+
+local timerJaggedNettlesCD			= mod:NewNextTimer(13.3, 260741, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
+--Sister Malady
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(17739))
 local warnUnstableMark				= mod:NewTargetAnnounce(260703, 2)
 local warnAuraofDreadOver			= mod:NewEndAnnounce(268088, 1)
 
-local specWarnRitual				= mod:NewSpecialWarningSpell(260773, nil, nil, nil, 2, 2)
 local specWarnUnstableMark			= mod:NewSpecialWarningMoveAway(260703, nil, nil, nil, 1, 2)
 local yellUnstableMark				= mod:NewYell(260703)
 local specWarnAuraofDread			= mod:NewSpecialWarningKeepMove(268088, nil, nil, nil, 1, 2)
-local specWarnJaggedNettles			= mod:NewSpecialWarningTarget(260741, nil, nil, 2, 1, 2)
-local specWarnSoulManipulation		= mod:NewSpecialWarningSwitch(260907, nil, nil, nil, 1, 2)
 
-local timerJaggedNettlesCD			= mod:NewNextTimer(13.3, 260741, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
-local timerSoulManipulationCD		= mod:NewNextTimer(13.3, 260907, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON)--Always tank? if not, remove tank icon
 local timerUnstableRunicMarkCD		= mod:NewNextTimer(13.3, 260703, nil, nil, nil, 3, nil, DBM_COMMON_L.CURSE_ICON)
 
 mod:AddRangeFrameOption(6, 260703)
-mod:AddInfoFrameOption(260773, true)
+--Sister Solena
+mod:AddTimerLine(DBM:EJ_GetSectionInfo(17740))
+local specWarnSoulManipulation		= mod:NewSpecialWarningSwitch(260907, nil, nil, nil, 1, 2)
+
+local timerSoulManipulationCD		= mod:NewNextTimer(13.3, 260907, nil, nil, nil, 3, nil, DBM_COMMON_L.TANK_ICON)--Always tank? if not, remove tank icon
+--Focusing Iris
+mod:AddTimerLine(DBM:GetSpellInfo(260805))
+local warnActiveTriad				= mod:NewTargetNoFilterAnnounce(260805, 2)
+
+local specWarnRitual				= mod:NewSpecialWarningSpell(260773, nil, nil, nil, 2, 2)
+
 mod:AddSetIconOption("SetIconOnTriad", 260805, true, true, {8})
+mod:AddInfoFrameOption(260773, true)
+
 
 mod.vb.activeTriad = nil
 local IrisBuff = DBM:GetSpellInfo(260805)
@@ -178,7 +191,7 @@ do
 					self.vb.activeTriad = nil
 					local icon = GetRaidTargetIndex(uId)
 					if not icon then
-						SetRaidTarget(uId.."target", 8)
+						self:SetIcon(uId.."target", 8)
 						break
 					end
 				end

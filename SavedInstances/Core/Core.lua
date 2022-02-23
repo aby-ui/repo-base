@@ -143,6 +143,7 @@ SI.defaultDB = {
   -- Artifact: string REMOVED
   -- Cloak: string REMOVED
   -- Covenant: number
+  -- MythicPlusScore: number
   -- Paragon: table
   -- oRace: string
   -- isResting: boolean
@@ -365,7 +366,8 @@ SI.defaultDB = {
     Currency1602 = true, -- Conquest
     Currency1792 = true, -- Honor
     Currency1822 = true, -- Renown
-    Currency1828 = true, -- Soul Ash
+    Currency1979 = true, -- Cyphers of the First Ones
+    Currency2009 = true, -- Cosmic Flux
     CurrencyMax = false,
     CurrencyEarned = true,
     CurrencySortName = false,
@@ -1161,6 +1163,10 @@ function SI:UpdateInstance(id)
     local _
     _, typeID, subtypeID, _, _, recLevel, _, _, expansionLevel, _,
       _,  difficulty, maxPlayers, _, isHoliday, _, _, _, name = GetLFGDungeonInfo(2004)
+  elseif id == 842 then -- Downfall (#308) different name for origin and solo LFG in deDE
+    if SI.locale == 'deDE' then
+      name = "Niedergang"
+    end
   end
   if subtypeID == LFG_SUBTYPEID_SCENARIO and typeID ~= TYPEID_RANDOM_DUNGEON then -- ignore non-random scenarios
     return nil, nil, true
@@ -1485,6 +1491,7 @@ function SI:UpdateToonData()
     end
     t.Warmode = C_PvP.IsWarModeDesired()
     t.Covenant = C_Covenants.GetActiveCovenantID()
+    t.MythicPlusScore = C_ChallengeMode.GetOverallDungeonScore()
   end
 
   t.LastSeen = time()
@@ -1623,6 +1630,9 @@ hoverTooltip.ShowToonTooltip = function (cell, arg, ...)
     if name then
       indicatortip:AddLine(L["Covenant"], name)
     end
+  end
+  if t.MythicPlusScore and t.MythicPlusScore > 0 then
+    indicatortip:AddLine(DUNGEON_SCORE, t.MythicPlusScore)
   end
   if t.Arena2v2rating and t.Arena2v2rating > 0 then
     indicatortip:AddLine(ARENA_2V2 .. ARENA_RATING, t.Arena2v2rating)
@@ -2495,7 +2505,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "78773b1" then
+  if versionString == "9.2.0" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2604,6 +2614,7 @@ function SI:OnEnable()
   self:RegisterEvent("PLAYER_UPDATE_RESTING", "UpdateToonData")
   self:RegisterEvent("PVP_RATED_STATS_UPDATE", "UpdateToonData")
   self:RegisterEvent("COVENANT_CHOSEN", "UpdateToonData")
+  self:RegisterEvent("MYTHIC_PLUS_NEW_WEEKLY_RECORD", "UpdateToonData")
   self:RegisterEvent("ZONE_CHANGED_NEW_AREA", RequestRatedInfo)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function()
     RequestRatedInfo()
