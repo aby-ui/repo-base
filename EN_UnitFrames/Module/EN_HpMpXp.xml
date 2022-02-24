@@ -173,7 +173,7 @@ E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
 		</Frames>
 	</Frame>
 	<!-- TargetFrame -->
-	<Frame name="EUF_TargetFrame" parent="TargetFrame">
+	<Frame name="EUF_TargetFrame" parent="TargetFrameTextureFrame">
 		<Size x="200" y="150"/>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="TOPLEFT"/>
@@ -229,7 +229,7 @@ E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
 		</Scripts>
 	</Frame>
 	<!-- Focus Frame -->
-	<Frame name="EUF_FocusFrame" parent="FocusFrame">
+	<Frame name="EUF_FocusFrame" parent="FocusFrameTextureFrame">
 		<Size x="200" y="150"/>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="TOPLEFT"/>

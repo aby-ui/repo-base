@@ -13,7 +13,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 		</Scripts>
 	</Frame>
 
-	<Frame parent="TargetFrame">
+	<Frame parent="TargetFrameTextureFrame">
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="EUF_TargetInfo" inherits="GameTooltipTextSmall" text="">

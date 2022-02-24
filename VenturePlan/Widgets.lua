@@ -739,7 +739,7 @@ local function FollowerList_OnUpdate(self)
 	local t = GetTime()
 	self.noRefresh = nil
 	if t >= (self.nextUpdate or 0) then
-		self.nextUpdate = t+60
+		self.nextUpdate = t+0.2
 		self:Refresh()
 		local mf = GetMouseFocus()
 		if mf and mf:GetParent() == self and GameTooltip:IsOwned(mf) then

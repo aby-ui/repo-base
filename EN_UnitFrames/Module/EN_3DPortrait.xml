@@ -88,7 +88,7 @@ E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
 		</Frames>
 	</Frame>
 	
-	<Frame name="EUF_3DPortrait_TargetFrame"  frameStrata="BACKGROUND" hidden="true" parent="TargetFrame">
+	<Frame name="EUF_3DPortrait_TargetFrame"  frameStrata="BACKGROUND" hidden="true" parent="TargetFrameTextureFrame">
 		<Size>
 			<AbsDimension x="58" y="58"/>
 		</Size>

@@ -2,7 +2,7 @@
 C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 	<!-- TargetTargetTarget -->
 	<Script file="EN_Focus.lua"/>
-    <Frame name="MGFocusFrameTitle" parent="FocusFrame">
+    <Frame name="MGFocusFrameTitle" parent="FocusFrameTextureFrame">
 				<Size>
 					<AbsDimension x="71" y="16"/>
 				</Size>

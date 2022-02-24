@@ -38,7 +38,7 @@ E:\PROGRA~1\Altova\XMLSpy2006\UI.xsd">
 			</OnLoad>
 		</Scripts>
 	</Frame>
-	<Frame name="EUF_TargetFramePortrait" parent="TargetFrame" hidden="true">
+	<Frame name="EUF_TargetFramePortrait" parent="TargetFrameTextureFrame" hidden="true">
 		<Layers>
 			<Layer level="ARTWORK">
 				<Texture name="$parentIcon">
