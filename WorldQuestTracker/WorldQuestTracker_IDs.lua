@@ -58,6 +58,7 @@ WorldQuestTracker.MapData.ZoneIDs = {
 		THEMAW =		1543,
 		ORIBOS =		1570,
 		THESHADOWLANDS = 1550,
+		ZERETH = 		1970,
 		
 	--Legion
 		ARGUS = 		905, --905
@@ -102,6 +103,7 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 		[zoneQuests.ARDENWEALD] =	true,
 		[zoneQuests.REVENDRETH] =	true,
 		[zoneQuests.THEMAW] =		true,
+		[zoneQuests.ZERETH] = 		true,
 		--[zoneQuests.ORIBOS] =		true,
 		
 	--BFA
@@ -164,6 +166,17 @@ WorldQuestTracker.MapData.QuestHubs = {
 --world map anchors
 WorldQuestTracker.mapTables = {
 	--Shadowlands
+
+		[zoneQuests.ZERETH] = 		{
+			widgets = {},
+			Anchor_X = 0.995,
+			Anchor_Y = 0.68,
+			GrowRight = false,
+			show_on_map = {
+				[zoneQuests.THESHADOWLANDS] = true,
+			},
+		},
+
 		[zoneQuests.MALDRAXXUS] =	{
 			widgets = {},
 			Anchor_X = 0.995,

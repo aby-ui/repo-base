@@ -3,7 +3,7 @@ local Module = SI:NewModule('MythicPlus', 'AceEvent-3.0', 'AceBucket-3.0')
 
 -- Lua functions
 local _G = _G
-local ipairs, sort, strsplit, tonumber, select, wipe = ipairs, sort, strsplit, tonumber, select, wipe
+local ipairs, sort, strsplit, tonumber, wipe = ipairs, sort, strsplit, tonumber, wipe
 
 -- WoW API / Variables
 local C_ChallengeMode_GetKeystoneLevelRarityColor = C_ChallengeMode.GetKeystoneLevelRarityColor
@@ -18,7 +18,6 @@ local CreateFrame = CreateFrame
 local GetContainerItemID = GetContainerItemID
 local GetContainerItemLink = GetContainerItemLink
 local GetContainerNumSlots = GetContainerNumSlots
-local GetItemQualityColor = GetItemQualityColor
 local SendChatMessage = SendChatMessage
 
 local StaticPopup_Show = StaticPopup_Show
@@ -41,8 +40,8 @@ local KeystoneAbbrev = {
   [380] = L["SD"],    -- Sanguine Depths
   [381] = L["SOA"],   -- Spires of Ascension
   [382] = L["TOP"],   -- Theater of Pain
-  [391] = L["TSW"],   -- Tazavesh: Streets of Wonder
-  [392] = L["TSG"],   -- Tazavesh: So'leah's Gambit
+  [391] = L["STRT"],  -- Tazavesh: Streets of Wonder
+  [392] = L["GMBT"],  -- Tazavesh: So'leah's Gambit
 }
 SI.KeystoneAbbrev = KeystoneAbbrev
 

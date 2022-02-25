@@ -134,8 +134,8 @@ end
 ---============================================================================
 
 function RSUtils.DistanceBetweenCoords(x1, x2, y1, y2)
-	local dx = x1 - x2
-	local dy = y1 - y2
+	local dx = RSUtils.FixCoord(x1) - RSUtils.FixCoord(x2)
+	local dy = RSUtils.FixCoord(y1) - RSUtils.FixCoord(y2)
 	return math.sqrt ( (dx * dx) + (dy * dy) )
 end
 

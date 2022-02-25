@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 48
-RSConstants.CURRENT_LOOT_DB_VERSION = 65
+RSConstants.CURRENT_DB_VERSION = 50
+RSConstants.CURRENT_LOOT_DB_VERSION = 66
 
 ---============================================================================
 -- Current maps (newer)
@@ -270,7 +270,6 @@ RSConstants.NPC_TORMENTORS_VIGNETTE = "Tormentors-Boss"
 
 RSConstants.CONTAINER_VIGNETTE = "VignetteLoot"
 RSConstants.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
-RSConstants.CONTAINER_ZERETH_VIGNETTE = "Object"
 RSConstants.CONTAINER_ZERETH_FIRIM_VIGNETTE = "QuestObjective"
 
 RSConstants.EVENT_VIGNETTE = "VignetteEvent"
@@ -361,6 +360,7 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	[182120] = 182114;
 	[182161] = 182158;
 	[182156] = 182155;
+	[185836] = 180924;
 	-- Bation
 	[176543] = 171008;
 }
@@ -393,7 +393,7 @@ RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 154330, 164547, 164477, 160629, 175012,
 RSConstants.NPCS_WITH_CONTAINER_VIGNETTE = { 179883 }
 RSConstants.CONTAINERS_WITH_NPC_VIGNETTE = { 369435 }
 RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
-RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = { 183288 }
+RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = {  }
 RSConstants.FIRIM_EXILE_OBJECTS = { 375973, 375982, 375983, 375984, 375985, 375986, 375987 }
 
 ---============================================================================

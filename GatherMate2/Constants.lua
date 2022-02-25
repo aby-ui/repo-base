@@ -228,6 +228,10 @@ local node_ids = {
 		--[NL["Menacing Sinvyr Deposit"]]			= 286,
 		[NL["Progenium Deposit"]]				= 287,
 		[NL["Rich Progenium Deposit"]]			= 288,
+		[NL["Elusive Progenium Deposit"]]		= 289,
+		[NL["Elusive Rich Progenium Deposit"]]	= 290,
+		[NL["Elusive Elethium Deposit"]]		= 291,
+		[NL["Elusive Rich Elethium Deposit"]]	= 292,
 	},
 	["Extract Gas"] = {
 		[NL["Windy Cloud"]] 					= 301,
@@ -349,6 +353,9 @@ local node_ids = {
 		[NL["Lush Nightshade"]]					= 1401,
 		[NL["Elusive Nightshade"]]				= 1402,
 		[NL["Lush First Flower"]]				= 1403,
+		[NL["Elusive First Flower"]]			= 1404,
+		[NL["Lush Elusive First Flower"]]		= 1405,
+		[NL["Lush Elusive Nightshade"]]			= 1406,
 	},
 	["Treasure"] = {
 		[NL["Giant Clam"]] 						= 501,
@@ -519,7 +526,15 @@ local rare_spawns = {
 	[1401] = {[494]=true,[493]=true,[495]=true,[496]=true,[497]=true,[498]=true}, -- lush nightshade
 	[1402] = {[494]=true,[493]=true,[495]=true,[496]=true,[497]=true,[498]=true}, -- elusive nightshade
 	[1403] = {[499]=true}, -- lush first flower
+	[1404] = {[499]=true}, -- elusive first flower
+	[1405] = {[499]=true, [1404]=true}, -- lush elusive first flower
+	[1406] = {[494]=true,[1402]=true,[493]=true,[495]=true,[496]=true,[497]=true,[498]=true}, -- lush elusive nightshade
 	[493] = {[495]=true,[496]=true,[497]=true,[498]=true}, -- death blossom shares spawn with zone-specific herbs
+	[288] = {[287]=true}, -- rich progenium
+	[289] = {[287]=true}, -- elusive progenium
+	[290] = {[287]=true,[288]=true,[289]=true}, -- elusive rich progenium
+	[291] = {[280]=true}, -- elusive elethium
+	[292] = {[280]=true,[281]=true,[291]=true}, -- elusive rich elethium
 }
 GatherMate.rareNodes = rare_spawns
 Collector.rareNodes = rare_spawns
@@ -751,6 +766,10 @@ local node_textures = {
 		[286] = icon_path.."Mine\\sinvyr.tga",
 		[287] = icon_path.."Mine\\elethium.tga",
 		[288] = icon_path.."Mine\\elethium.tga",
+		[289] = icon_path.."Mine\\elethium.tga",
+		[290] = icon_path.."Mine\\elethium.tga",
+		[291] = icon_path.."Mine\\elethium.tga",
+		[292] = icon_path.."Mine\\elethium.tga",
 	},
 	["Extract Gas"] = {
 		[301] = icon_path.."Gas\\windy_cloud.tga",
@@ -864,6 +883,9 @@ local node_textures = {
 		[1401] = icon_path.."Herb\\nightshade.tga",
 		[1402] = icon_path.."Herb\\nightshade.tga",
 		[1403] = icon_path.."Herb\\nightshade.tga",
+		[1404] = icon_path.."Herb\\nightshade.tga",
+		[1405] = icon_path.."Herb\\nightshade.tga",
+		[1406] = icon_path.."Herb\\nightshade.tga",
 	},
 	["Treasure"] = {
 		[501] = icon_path.."Treasure\\clam.tga",
@@ -1062,6 +1084,10 @@ local node_expansion = {
 		[286] = SL,
 		[287] = SL,
 		[288] = SL,
+		[289] = SL,
+		[290] = SL,
+		[291] = SL,
+		[292] = SL,
 	},
 	["Herb Gathering"] = {
 		[401] = CLASSIC,
@@ -1166,6 +1192,9 @@ local node_expansion = {
 		[1401] = SL,
 		[1402] = SL,
 		[1403] = SL,
+		[1404] = SL,
+		[1405] = SL,
+		[1406] = SL,
 	},
 }
 GatherMate.nodeExpansion = node_expansion

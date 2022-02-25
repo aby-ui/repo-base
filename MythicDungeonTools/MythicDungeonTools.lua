@@ -1045,7 +1045,7 @@ function MDT:MakeSidePanel(frame)
         local sep = ""
         for _,affixID in ipairs(affixes) do
             local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
-            name = name or "Unknown"
+            name = name or L["Unknown"]
             filedataid = filedataid or 134400 --questionmark
             if longText then
                 ret = ret or ""
@@ -2323,7 +2323,7 @@ end
 function MDT:EnsureDBTables()
     --dungeonIdx doesnt exist
     if not MDT.dungeonList[db.currentDungeonIdx] or string.find(MDT.dungeonList[db.currentDungeonIdx],">") then
-        db.currentDungeonIdx = db.currentExpansion == 1 and 1 or db.currentExpansion == 2 and 15
+        db.currentDungeonIdx = db.currentExpansion == 1 and 1 or db.currentExpansion == 2 and 15 or db.currentExpansion == 3 and 29 or 1
     end
     local preset = MDT:GetCurrentPreset()
     preset.week = preset.week or MDT:GetCurrentAffixWeek()

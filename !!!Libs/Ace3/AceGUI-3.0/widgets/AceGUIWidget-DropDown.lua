@@ -1,4 +1,4 @@
---[[ $Id: AceGUIWidget-DropDown.lua 1239 2020-09-20 10:22:02Z nevcairiel $ ]]--
+--[[ $Id: AceGUIWidget-DropDown.lua 1257 2022-01-10 16:25:37Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
@@ -351,7 +351,7 @@ end
 
 do
 	local widgetType = "Dropdown"
-	local widgetVersion = 35
+	local widgetVersion = 36
 
 	--[[ Static data ]]--
 
@@ -376,7 +376,6 @@ do
 
 	local function Dropdown_TogglePullout(this)
 		local self = this.obj
-		PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
 		if self.open then
 			self.open = nil
 			self.pullout:Close()

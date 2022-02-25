@@ -262,8 +262,8 @@ function RSGroupPOI.GetGroupPOI(POIs)
 	groupPOI.isGroup = true
 	groupPOI.POIs = POIs
 	-- Take the coordinates of one of the POIs, it doesnt matter because they are toGether
-	groupPOI.x = POIs[1].x
-	groupPOI.y = POIs[1].y
+	groupPOI.x = RSUtils.FixCoord(POIs[1].x)
+	groupPOI.y = RSUtils.FixCoord(POIs[1].y)
 
 	if (POIs) then
 		-- Usually we will set rare NPCs in the top position, containers in the left and events in the right

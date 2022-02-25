@@ -920,41 +920,41 @@
 		return Details:Reportar (report_table, {_no_current = true, _no_inverse = true, _custom = true})
 	end
 	
-	function atributo_damage:AtualizarBySpell (tabela, whichRowLine, colocacao, instancia)
+	function atributo_damage:AtualizarBySpell (tabela, whichRowLine, colocacao, instance)
 		tabela ["byspell"] = true --> marca que esta tabela � uma tabela de frags, usado no controla na hora de montar o tooltip
-		local thisLine = instancia.barras [whichRowLine] --> pega a refer�ncia da barra na janela
-		
+		local thisLine = instance.barras [whichRowLine] --> pega a refer�ncia da barra na janela
+
 		if (not thisLine) then
-			print ("DEBUG: problema com <instancia.thisLine> "..whichRowLine .. " " .. colocacao)
+			print ("DEBUG: problema com <instance.thisLine> "..whichRowLine .. " " .. colocacao)
 			return
 		end
-		
+
 		thisLine.minha_tabela = tabela
-		
+
 		local spellname, _, spellicon = _GetSpellInfo (tabela [1])
-		
+
 		tabela.nome = spellname --> evita dar erro ao redimencionar a janela
 		tabela.minha_barra = whichRowLine
 		thisLine.colocacao = colocacao
-		
+
 		if (not _getmetatable (tabela)) then 
 			_setmetatable (tabela, {__call = RefreshBarraBySpell}) 
 			tabela._custom = true
 		end
 
-		local total = instancia.showing.totals.by_spell
+		local total = instance.showing.totals.by_spell
 		local porcentagem
-		
-		if (instancia.row_info.percent_type == 1) then
-			porcentagem = _cstr ("%.1f", tabela [2] / total * 100)
-		elseif (instancia.row_info.percent_type == 2) then
-			porcentagem = _cstr ("%.1f", tabela [2] / instancia.top * 100)
-		end
-		
-		thisLine.lineText1:SetText (colocacao .. ". " .. spellname)
 
-		local bars_show_data = instancia.row_info.textR_show_data
-		
+		if (instance.row_info.percent_type == 1) then
+			porcentagem = _cstr ("%.1f", tabela [2] / total * 100)
+		elseif (instance.row_info.percent_type == 2) then
+			porcentagem = _cstr ("%.1f", tabela [2] / instance.top * 100)
+		end
+
+		thisLine.lineText1:SetText(colocacao .. ". " .. spellname)
+
+		local bars_show_data = instance.row_info.textR_show_data
+
 		local spell_damage = tabela [2] -- spell_damage passar por uma ToK function, precisa ser number
 		if (not bars_show_data [1]) then
 			spell_damage = tabela [2] --damage taken by spell n�o tem PS, ent�o � obrigado a passar o dano total
@@ -965,10 +965,10 @@
 			porcentagem = porcentagem .. "%"
 		end
 
-		local bars_brackets = instancia:GetBarBracket()
+		local bars_brackets = instance:GetBarBracket()
 		--
-		if (instancia.use_multi_fontstrings) then
-			Details:SetTextsOnLine(thisLine, "", (spell_damage and SelectedToKFunction (_, spell_damage) or ""), porcentagem)
+		if (instance.use_multi_fontstrings) then
+			instance:SetTextsOnLine(thisLine, "", (spell_damage and SelectedToKFunction (_, spell_damage) or ""), porcentagem)
 		else
 			thisLine.lineText4:SetText ((spell_damage and SelectedToKFunction (_, spell_damage) or "") .. bars_brackets[1] .. porcentagem .. bars_brackets[2])
 		end
@@ -983,14 +983,14 @@
 		if (colocacao == 1) then
 			thisLine:SetValue (100)
 		else
-			thisLine:SetValue (tabela [2] / instancia.top * 100)
+			thisLine:SetValue (tabela [2] / instance.top * 100)
 		end
 		
 		if (thisLine.hidden or thisLine.fading_in or thisLine.faded) then
 			Details.FadeHandler.Fader (thisLine, "out")
 		end
 		
-		if (instancia.row_info.texture_class_colors) then
+		if (instance.row_info.texture_class_colors) then
 			if (tabela [3] > 1) then
 				local r, g, b = Details:GetSpellSchoolColor (tabela [3])
 				thisLine.textura:SetVertexColor (r, g, b)
@@ -1157,7 +1157,7 @@
 		
 		--
 		if (instancia.use_multi_fontstrings) then
-			Details:SetTextsOnLine(thisLine, "", total_frags, porcentagem)
+			instancia:SetTextsOnLine(thisLine, "", total_frags, porcentagem)
 		else
 			thisLine.lineText4:SetText (total_frags .. bars_brackets[1] .. porcentagem .. bars_brackets[2])
 		end
@@ -1576,7 +1576,7 @@
 			thisLine.lineText4:SetText (_string_replace (instancia.row_info.textR_custom_text, formated_damage, formated_dps, porcentagem, self, instancia.showing, instancia, rightText))
 		else
 			if (instancia.use_multi_fontstrings) then
-				Details:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
+				instancia:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
 			else
 				thisLine.lineText4:SetText (rightText)
 			end
@@ -2405,9 +2405,19 @@ local actor_class_color_r, actor_class_color_g, actor_class_color_b
 -- ~texts
 function Details:SetTextsOnLine(thisLine, valueText, perSecondText, percentText)
 	--set defaults
+	local instance = self
 	valueText = valueText or ""
 	perSecondText = perSecondText or ""
 	percentText = percentText or ""
+
+	--check if the instance is showing total, dps and percent
+	local instanceSettings = instance.row_info
+	if (not instanceSettings.textR_show_data[3]) then --percent text disabled on options panel
+		local attributeId = instance:GetDisplay()
+		if (attributeId ~= 5) then --not custom
+			percentText = ""
+		end
+	end
 
 	--parse information
 	if (percentText ~= "") then --has percent text
@@ -2519,7 +2529,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText(_string_replace (instance.row_info.textR_custom_text, formated_damage, formated_dps, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				Details:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
+				instance:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2583,7 +2593,8 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_dps, formated_damage, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				Details:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
+				--instance:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
+				instance:SetTextsOnLine(thisLine, rightText)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2616,7 +2627,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_damage_taken, formated_dtps, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				Details:SetTextsOnLine(thisLine, formated_damage_taken, formated_dtps, porcentagem)
+				instance:SetTextsOnLine(thisLine, formated_damage_taken, formated_dtps, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2642,7 +2653,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_friendly_fire, "", porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				Details:SetTextsOnLine(thisLine, "", formated_friendly_fire, porcentagem)
+				instance:SetTextsOnLine(thisLine, "", formated_friendly_fire, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2674,7 +2685,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_damage_taken, formated_dtps, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				Details:SetTextsOnLine(thisLine, formated_damage_taken, formated_dtps, porcentagem)
+				instance:SetTextsOnLine(thisLine, formated_damage_taken, formated_dtps, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end

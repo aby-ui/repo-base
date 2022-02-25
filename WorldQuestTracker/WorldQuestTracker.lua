@@ -1293,6 +1293,9 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 	--korthia portal location
 	local korthiaPortalX = 0.35661220550537 --0.31601178646088
 	local korthiaPortalY = 0.30656772851944 --0.24368673563004
+	--zereth
+	local zerethPortalX = 0.49530583620071
+	local zerethPortalY = 0.2653232216835
 
 	--upper oribos map id
 	local secondFloormapId = 1671
@@ -1303,7 +1306,7 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 
 	local oribosFlyMasterFrame = CreateFrame("frame", "WorldQuestTrackerOribosFlyMasterFrame", UIParent, "BackdropTemplate")
 	oribosFlyMasterFrame:SetPoint("center", "UIParent", "center", 0, 0)
-	oribosFlyMasterFrame:SetSize(116, 60)
+	oribosFlyMasterFrame:SetSize(136, 60)
 	DetailsFramework:ApplyStandardBackdrop(oribosFlyMasterFrame)
 	oribosFlyMasterFrame:Hide()
 
@@ -1345,6 +1348,13 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 	oribosFlyMasterFrame.KorthiaIcon:SetBlendMode("ADD")
 	oribosFlyMasterFrame.KorthiaIcon:SetTexture([[Interface\AddOns\WorldQuestTracker\media\korthia_portal_icon]])
 
+	oribosFlyMasterFrame.ZerethIcon = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
+	oribosFlyMasterFrame.ZerethIcon:SetPoint("topleft", oribosFlyMasterFrame.KorthiaIcon, "topright", 15, 0)
+	oribosFlyMasterFrame.ZerethIcon:SetSize(16, 16)
+	oribosFlyMasterFrame.ZerethIcon:SetAlpha(0.7)
+	oribosFlyMasterFrame.ZerethIcon:SetBlendMode("ADD")
+	oribosFlyMasterFrame.ZerethIcon:SetTexture([[Interface\AddOns\WorldQuestTracker\media\zereth_portal_icon]])
+
 	oribosFlyMasterFrame.Arrow = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
 	oribosFlyMasterFrame.Arrow:SetPoint("top", oribosFlyMasterFrame.FlightMasterIcon, "bottom", 6, 1)
 	oribosFlyMasterFrame.Arrow:SetSize(32, 32)
@@ -1356,6 +1366,12 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 	oribosFlyMasterFrame.KorthiaArrow:SetSize(32, 32)
 	oribosFlyMasterFrame.KorthiaArrow:SetAlpha(1)
 	oribosFlyMasterFrame.KorthiaArrow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\ArrowGridT]])
+
+	oribosFlyMasterFrame.ZerethArrow = oribosFlyMasterFrame:CreateTexture(nil, "overlay")
+	oribosFlyMasterFrame.ZerethArrow:SetPoint("topleft", oribosFlyMasterFrame.KorthiaArrow, "topright", 0, 0)
+	oribosFlyMasterFrame.ZerethArrow:SetSize(32, 32)
+	oribosFlyMasterFrame.ZerethArrow:SetAlpha(1)
+	oribosFlyMasterFrame.ZerethArrow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\ArrowGridT]])
 
 	local onCloseButton = function()
 		oribosFlyMasterFrame:Hide()
@@ -1381,24 +1397,14 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 		end
 		currentPlayerX, currentPlayerY = mapPosition.x, mapPosition.y
 
-		--update flight master arrow
-			local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, flymasterX, flymasterY) + (math.pi/2)) % (math.pi*2)
+		--> update flight master arrow
+			local questYaw = (DF.FindLookAtRotation(_, currentPlayerX, currentPlayerY, flymasterX, flymasterY) + (math.pi/2)) % (math.pi*2)
 			local playerYaw = GetPlayerFacing() or 0
 			local angle = (((questYaw + playerYaw)%(math.pi*2))+math.pi)%(math.pi*2)
-			local imageIndex = 1+(floor (DF.MapRangeClamped (_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
-			local line = ceil (imageIndex / 12)
+			local imageIndex = 1+(floor(DF.MapRangeClamped(_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
+			local line = ceil(imageIndex / 12)
 			local coord = (imageIndex - ((line-1) * 12)) / 12
-			self.Arrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
-
-			--[=[
-				local distance = CalculateDistance(currentPlayerX, currentPlayerY, flymasterX, flymasterY)
-				if (distance < 0.1) then
-					local alpha = DF:GetRangePercent(0, 0.1, distance)
-					oribosFlyMasterFrame:SetAlpha(alpha)
-				else
-					oribosFlyMasterFrame:SetAlpha(1)
-				end
-			--]=]
+			self.Arrow:SetTexCoord(coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
 
 			if (playerIsMoving) then
 				if (oribosFlyMasterFrame:GetAlpha() < 1) then
@@ -1413,24 +1419,24 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 				end
 			end
 
-		--update korthia arrow
+		--> update korthia arrow
 			local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, korthiaPortalX, korthiaPortalY) + (math.pi/2)) % (math.pi*2)
 			local playerYaw = GetPlayerFacing() or 0
 			local angle = (((questYaw + playerYaw)%(math.pi*2))+math.pi)%(math.pi*2)
-			local imageIndex = 1+(floor (DF.MapRangeClamped (_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
+			local imageIndex = 1+(floor(DF.MapRangeClamped(_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
 			local line = ceil (imageIndex / 12)
 			local coord = (imageIndex - ((line-1) * 12)) / 12
-			self.KorthiaArrow:SetTexCoord (coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
+			self.KorthiaArrow:SetTexCoord(coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
 
-			--[=[
-				local distance = CalculateDistance(currentPlayerX, currentPlayerY, korthiaPortalX, korthiaPortalY)
-				if (distance < 0.1) then
-					local alpha = DF:GetRangePercent(0, 0.1, distance)
-					oribosFlyMasterFrame:SetAlpha(alpha)
-				else
-					oribosFlyMasterFrame:SetAlpha(1)
-				end
-			--]=]
+		--> update zereth arrow
+			local questYaw = (DF.FindLookAtRotation (_, currentPlayerX, currentPlayerY, zerethPortalX, zerethPortalY) + (math.pi/2)) % (math.pi*2)
+			local playerYaw = GetPlayerFacing() or 0
+			local angle = (((questYaw + playerYaw)%(math.pi*2))+math.pi)%(math.pi*2)
+			local imageIndex = 1+(floor(DF.MapRangeClamped(_, 0, (math.pi*2), 1, 144, angle)) + 48)%144 --48� quadro � o que aponta para o norte
+			local line = ceil (imageIndex / 12)
+			local coord = (imageIndex - ((line-1) * 12)) / 12
+			self.ZerethArrow:SetTexCoord(coord-0.0833, coord, 0.0833 * (line-1), 0.0833 * line)
+
 
 		if (UnitOnTaxi("player")) then
 			oribosFlyMasterFrame.disableFlymasterTracker()

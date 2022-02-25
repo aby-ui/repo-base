@@ -16,6 +16,8 @@ U1.ABBR={
     ["tidyplates"] = "tp",
     ["mythicdungeontools"] = "mdt",
     ["mrt"] = "exrt",
+    ["dominationsockethelper"] = "dsh",
+    ["ZerethMortisPuzzleHelper"] = "zmph",
 }
 U1.PINYIN={
 	['DBM:军团5人本']={'dbmjuntuanrenben','dbm:jt5rb'},
@@ -266,4 +268,6 @@ U1.PINYIN={
     ['盟约随从任务']={'mengyuesuicongrenwu','myscrw'},
     ['队友技能监控']={'duiyoujinengjiankong','dyjnjk'},
     ['统御碎片助手']={'tongyusuipianzhushou','tyspzs'},
+    ['源锁解谜助手']={'yuansuojiemizhushou','ysjmzs'},
+
 }

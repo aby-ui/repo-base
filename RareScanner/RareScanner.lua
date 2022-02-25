@@ -1133,11 +1133,6 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	end
 
 	local mapID = C_Map.GetBestMapForUnit("player")
-	
-	-- In Zereth Mortis the containers detected by Pocopoc are tagged as objects
-	if (mapID and mapID == RSConstants.ZERETH_MORTIS_MAPID and vignetteInfo.atlasName == RSConstants.CONTAINER_ZERETH_VIGNETTE) then
-		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
-	end
 		
 	-- In Zereth Mortis Firim scrolls are tagged as objects
 	if (mapID and mapID == RSConstants.ZERETH_MORTIS_MAPID and vignetteInfo.atlasName == RSConstants.CONTAINER_ZERETH_FIRIM_VIGNETTE and RSUtils.Contains(RSConstants.FIRIM_EXILE_OBJECTS, entityID)) then

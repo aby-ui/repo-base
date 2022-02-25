@@ -651,6 +651,13 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.DOT..11] = { x = 0.5520, y = 0.7685, comment = AL["NOTE_375411_1"] };
 		[RSConstants.DOT..12] = { x = 0.6084, y = 0.7592, comment = AL["NOTE_375411_1"] };
 		[RSConstants.DOT..13] = { x = 0.3516, y = 0.4888, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..14] = { x = 0.5070, y = 0.6761, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..15] = { x = 0.4136, y = 0.6938, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..16] = { x = 0.3935, y = 0.5097, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..17] = { x = 0.4460, y = 0.5191, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..18] = { x = 0.5719, y = 0.7778, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..19] = { x = 0.5887, y = 0.6526, comment = AL["NOTE_375411_1"] };
+		[RSConstants.DOT..20] = { x = 0.6088, y = 0.4298, comment = AL["NOTE_375411_1"] };
 	}; --Mistaken Ovoid
 	["3754851970"] = { 
 		[RSConstants.PATH_START] = { x = 0.5580, y = 0.6501 } ;
@@ -673,7 +680,13 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP2] = { x = 0.5318, y = 0.8085, comment = AL["NOTE_375495_3"], questID = 65591 };
 		[RSConstants.STEP3] = { x = 0.5099, y = 0.8199, comment = AL["NOTE_375495_3"], questID = 65589 };
 		[RSConstants.STEP4] = { x = 0.5249, y = 0.8338, comment = AL["NOTE_375495_3"], questID = 65590 };
-		[RSConstants.STEP5] = { x = 0.5125, y = 0.8070, comment = AL["NOTE_375495_4"] };
+		[RSConstants.STEP5] = { x = 0.5125, y = 0.8070, comment = AL["NOTE_375495_4"], questID = 65572 };
+	}; --Undulating Foliage
+	["3754952066"] = { 
+		[RSConstants.STEP2] = { x = 0.6964, y = 0.5275, comment = AL["NOTE_375495_3"], questID = 65591 };
+		[RSConstants.STEP3] = { x = 0.3947, y = 0.6904, comment = AL["NOTE_375495_3"], questID = 65589 };
+		[RSConstants.STEP4] = { x = 0.6011, y = 0.8667, comment = AL["NOTE_375495_3"], questID = 65590 };
+		[RSConstants.STEP5] = { x = 0.4894, y = 0.3430, comment = AL["NOTE_375495_4"], questID = 65572 };
 	}; --Undulating Foliage
 	["3735431970"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.5900, y = 0.8186 }; 

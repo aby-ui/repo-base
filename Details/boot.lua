@@ -7,8 +7,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 9693
-		_detalhes.alpha_build_counter = 9693 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 9696
+		_detalhes.alpha_build_counter = 9696 --if this is higher than the regular counter, use it instead
 		_detalhes.bcc_counter = 31
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
@@ -34,29 +34,12 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.2.0.9696.146", "February 24th, 2022"},
+		"Fixed DPS display when using Aligned Text Columns.",
+		"Fixed percent showing even it's disabled when using Aligned Text Columns.",
 
-		--[=[
-			Added an option to change your own bar color.
-			Added 'Ignore this Npc' into the Npc list under the spell list section.
-			Bookmark window now uses the same scale than the options panel.
-			Class Color window now uses the same scale than the options panel.
-			If not casted on the player itself Power Infusion now shows in the buff list of the target.
-			Allowed nicknames on custom displays (by Flamanis).
-			Aligned Text Columns enabled is now default for new installs.
-			Fodder to the flames DH ability won't count damage done by the player on the add summoned.
-			Spell customization now get date from Lib-OpenRaid.
-			Fixed the load time for the Npc Ids panel on the spell list section.
-			Fixed all issues with the options panel scale.
-			Fixed tooltips overlap when the window is positioned at the top of the screen (fix by Flamanis).
-			Fixed auto hide windows which wasn't saving its group when unhiding (fix by Flamanis).
-			Fixed some XML Headers which was giving errors on loading (fix by github user h0tw1r3).
-			Fixed '/details me' on TBC, which wasn't working correctly (fix by github user Baugstein).
-			Fixed a typo on Vanguard plugin (fix by github user cruzerthebruzer).
-			Fixed font 'NuevaStd' where something the font didn't work at all.
-			Fixed an issue where for some characters the options panel won't open showing an error in the chat instead.
-			New API: combat:GetPlayerDeaths(deadPlayerName).
-			New API: Details:ShowDeathTooltip(combatObject, deathTable) for Cooltip tooltips.
-		]=]
+		{"v9.2.0.9255.146", "February 22th, 2022"},
+		"Added Cosmic Healing Potion to script 'Health Potion & Stone'.",
 
 		{"v9.1.5.9213.146", "February 15th, 2022"},
 		"Added an option to change your own bar color.",
@@ -566,7 +549,7 @@ do
 			--> name to plugin object
 				_detalhes.ToolBar.NameTable = {}
 				_detalhes.ToolBar.Menu = {}
-		
+
 		--> statusbar -------------------------------------------------------------------
 			--> plugins container
 				_detalhes.StatusBar = {}
@@ -578,25 +561,26 @@ do
 				_detalhes.StatusBar.NameTable = {}
 
 	--> constants
-		--[[global]] DETAILS_HEALTH_POTION_ID = 307192
+		--[[global]] DETAILS_HEALTH_POTION_ID = 307192 -- spiritual healing potion
+		--[[global]] DETAILS_HEALTH_POTION2_ID = 359867 --cosmic healing potion
 		--[[global]] DETAILS_REJU_POTION_ID = 307194
 		--[[global]] DETAILS_MANA_POTION_ID = 307193
 		--[[global]] DETAILS_FOCUS_POTION_ID = 307161
 		--[[global]] DETAILS_HEALTHSTONE_ID = 6262
-		
+
 		--[[global]] DETAILS_INT_POTION_ID = 307162
 		--[[global]] DETAILS_AGI_POTION_ID = 307159
 		--[[global]] DETAILS_STR_POTION_ID = 307164
 		--[[global]] DETAILS_STAMINA_POTION_ID = 307163
-
 		--[[global]] DETAILS_HEALTH_POTION_LIST = {
 			[DETAILS_HEALTH_POTION_ID] = true, --Healing Potion
 			[DETAILS_HEALTHSTONE_ID] = true, --Warlock's Healthstone
 			[DETAILS_REJU_POTION_ID] = true, --Rejuvenation Potion
 			[DETAILS_MANA_POTION_ID] = true, --Mana Potion
-			[323436] = true --Phial of Serenity (from Kyrians)
+			[323436] = true, --Phial of Serenity (from Kyrians)
+			[DETAILS_HEALTH_POTION2_ID] = true,
 		}
-	
+
 		--[[global]] DETAILS_MODE_GROUP = 2
 		--[[global]] DETAILS_MODE_ALL = 3
 

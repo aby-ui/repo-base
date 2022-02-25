@@ -2308,6 +2308,19 @@ hoverTooltip.ShowCurrencyTooltip = function (cell, arg, ...)
     end
     indicatortip:AddLine(format(CURRENCY_TOTAL_CAP, "", CurrencyColor(ci.amount or 0, ci.totalMax), SI:formatNumber(ci.totalMax)))
   end
+  if ci.covenant then
+    if not spacer then
+      indicatortip:AddLine(" ")
+      spacer = true
+    end
+    for covenantID = 1, 4 do
+      if ci.covenant[covenantID] then
+        local data = C_Covenants.GetCovenantData(covenantID)
+        local name = data and data.name or UNKNOWN
+        indicatortip:AddLine(name .. ": " .. CurrencyColor(ci.covenant[covenantID] or 0, ci.totalMax))
+      end
+    end
+  end
   if SI.specialCurrency[idx] and SI.specialCurrency[idx].relatedItem then
     if not spacer then
       indicatortip:AddLine(" ")
@@ -2505,7 +2518,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.2.0" then
+  if versionString == "124eb06" then
     versionString = "Dev"
   end
   --@end-debug@]==]

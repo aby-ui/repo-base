@@ -536,9 +536,9 @@
 
 				if (instance.use_multi_fontstrings) then
 					if (type(value) == "string") then
-						Details:SetTextsOnLine(row, "", value, percent) --usando essa linha
+						instance:SetTextsOnLine(row, "", value, percent) --usando essa linha
 					else
-						Details:SetTextsOnLine(row, "", SelectedToKFunction(_, value), percent)
+						instance:SetTextsOnLine(row, "", SelectedToKFunction(_, value), percent)
 					end
 
 				else
@@ -558,7 +558,7 @@
 					row.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
 				else
 					if (instance.use_multi_fontstrings) then
-						Details:SetTextsOnLine(row, "", formated_value, percent)
+						instance:SetTextsOnLine(row, "", formated_value, percent)
 					else
 						row.lineText4:SetText (rightText)
 						row.lineText3:SetText("")
@@ -1312,7 +1312,7 @@
 			PotionUsed.__index = _detalhes.atributo_custom
 			self.custom [#self.custom+1] = PotionUsed
 		end
-		
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --		/run _detalhes:AddDefaultCustomDisplays()
 
@@ -1356,39 +1356,46 @@
 			return total, top, amount
 			]],
 			tooltip = [[
-			--get the parameters passed
-			local actor, combat, instance = ...
-			
-			--get the cooltip object (we dont use the convencional GameTooltip here)
-			local GameCooltip = GameCooltip
-			local R, G, B, A = 0, 0, 0, 0.75
-			
-			local hs = actor:GetSpell (6262)
-			if (hs) then
-				GameCooltip:AddLine (select (1, GetSpellInfo(6262)),  _detalhes:ToK(hs.total))
-				GameCooltip:AddIcon (select (3, GetSpellInfo (6262)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-				GameCooltip:AddStatusBar (100, 1, R, G, B, A)
-			end
-			
-			local pot = actor:GetSpell (DETAILS_HEALTH_POTION_ID)
-			if (pot) then
-				GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_HEALTH_POTION_ID)),  _detalhes:ToK(pot.total))
-				GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_HEALTH_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-				GameCooltip:AddStatusBar (100, 1, R, G, B, A)
-			end
-			
-			local pot = actor:GetSpell (DETAILS_REJU_POTION_ID)
-			if (pot) then
-				GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_REJU_POTION_ID)),  _detalhes:ToK(pot.total))
-				GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_REJU_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
-				GameCooltip:AddStatusBar (100, 1, R, G, B, A)
-			end
-
-			--Cooltip code
+				--get the parameters passed
+				local actor, combat, instance = ...
+				
+				--get the cooltip object (we dont use the convencional GameTooltip here)
+				local GameCooltip = GameCooltip
+				local R, G, B, A = 0, 0, 0, 0.75
+				
+				local hs = actor:GetSpell (6262)
+				if (hs) then
+					GameCooltip:AddLine (select (1, GetSpellInfo(6262)),  _detalhes:ToK(hs.total))
+					GameCooltip:AddIcon (select (3, GetSpellInfo (6262)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
+				end
+				
+				local pot = actor:GetSpell (DETAILS_HEALTH_POTION_ID)
+				if (pot) then
+					GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_HEALTH_POTION_ID)),  _detalhes:ToK(pot.total))
+					GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_HEALTH_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
+				end
+				
+				local pot = actor:GetSpell (DETAILS_HEALTH_POTION2_ID)
+				if (pot) then
+					GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_HEALTH_POTION2_ID)),  _detalhes:ToK(pot.total))
+					GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_HEALTH_POTION2_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
+				end
+				
+				local pot = actor:GetSpell (DETAILS_REJU_POTION_ID)
+				if (pot) then
+					GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_REJU_POTION_ID)),  _detalhes:ToK(pot.total))
+					GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_REJU_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
+				end
+				
+				--Cooltip code
 			]],
 			percent_script = false,
 			total_script = false,
-			script_version = 15,
+			script_version = 16,
 		}
 --	/run _detalhes:AddDefaultCustomDisplays()
 		local have = false

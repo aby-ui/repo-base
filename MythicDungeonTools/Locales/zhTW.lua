@@ -1252,26 +1252,16 @@ L["Tarspitter Lurker"] = "喷油潜伏者"
 L["Tarspitter Slug"] = "喷油蛞蝓"
 L["Taskmaster Askari"] = "监工阿斯加里"
 L["Taunt"] = "嘲諷"
---[[Translation missing --]]
---[[ L["TazaveshFloor1"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor2"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor3"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor4"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor5"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor6"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor7"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshFloor8"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshLower"] = ""--]] 
---[[Translation missing --]]
---[[ L["TazaveshUpper"] = ""--]] 
+L["TazaveshFloor1"] = "帷幕市集"
+L["TazaveshFloor2"] = "大展示廳"
+L["TazaveshFloor3"] = "郵務總局"
+L["TazaveshFloor4"] = "奧彌薩的綠洲"
+L["TazaveshFloor5"] = "斯鐸海姆"
+L["TazaveshFloor6"] = "阿格拉瑪寶庫"
+L["TazaveshFloor7"] = "波拉勒斯港"
+L["TazaveshFloor8"] = "富饒樞核"
+L["TazaveshLower"] = "塔札維許: 奇觀街道"
+L["TazaveshUpper"] = "塔札維許: 索利亞的險招"
 L["tdBuffGateNote"] = "裡面可能有盟友，會依據他們的種族給你增益效果:%s獸人/矮人: 10%% 力量/敏捷%s不死族/人類: 10%% 耐力%s牛頭人/德萊尼: 每 10 秒回復 1%% 血量+法力%s血精靈/地精: 10%% 智力"
 L["tdGraveyardNote1"] = "擊敗沙后後開放"
 L["tdGraveyardNote2"] = "擊敗傑斯·嚎里斯後開放"

@@ -5,6 +5,7 @@ local Module = SI:NewModule('Currency', 'AceEvent-3.0', 'AceTimer-3.0', 'AceBuck
 local ipairs, pairs, wipe = ipairs, pairs, wipe
 
 -- WoW API / Variables
+local C_Covenants_GetActiveCovenantID = C_Covenants.GetActiveCovenantID
 local C_CurrencyInfo_GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
 local GetItemCount = GetItemCount
 local GetMoney = GetMoney
@@ -167,7 +168,7 @@ function Module:UpdateCurrency()
   if SI.logout then return end -- currency is unreliable during logout
   local t = SI.db.Toons[SI.thisToon]
   t.Money = GetMoney()
-  t.currency = wipe(t.currency or {})
+  t.currency = t.currency or {}
   for _,idx in ipairs(currency) do
     local data = C_CurrencyInfo_GetCurrencyInfo(idx)
     if not data.discovered then
@@ -182,6 +183,7 @@ function Module:UpdateCurrency()
         ci.totalEarned = data.totalEarned
       end
       -- handle special currency
+      local covenantID = C_Covenants_GetActiveCovenantID()
       if specialCurrency[idx] then
         local tbl = specialCurrency[idx]
         if tbl.weeklyMax then ci.weeklyMax = tbl.weeklyMax end
@@ -200,6 +202,15 @@ function Module:UpdateCurrency()
         -- plus one to amount and totalMax
         ci.amount = ci.amount + 1
         ci.totalMax = ci.totalMax + 1
+        if covenantID > 0 then
+          ci.covenant = ci.covenant or {}
+          ci.covenant[covenantID] = ci.amount
+        end
+      elseif idx == 1810 or idx == 1813 then -- Redeemed Soul and Reservoir Anima
+        if covenantID > 0 then
+          ci.covenant = ci.covenant or {}
+          ci.covenant[covenantID] = ci.amount
+        end
       end
       -- don't store useless info
       if ci.weeklyMax == 0 then ci.weeklyMax = nil end

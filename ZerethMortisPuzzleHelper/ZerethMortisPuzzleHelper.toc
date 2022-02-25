@@ -1,0 +1,14 @@
+## Interface: 90200
+## Title: Zereth Mortis Puzzle Helper
+## Author: Httpsx
+## Version: 1.4
+## Notes: Helper for Caches of Creations and World Quest puzzles on Zereth Mortis
+## DefaultState: Enabled
+## SavedVariables: ZMPHSaved
+embeds.xml
+core.lua
+
+
+## Title: |cff880303[爱不易]|r ZerethMortisPuzzleHelper 源锁解谜助手
+## Notes: 9.2扎雷殁提斯源锁解谜助手
+## X-Vendor: AbyUI

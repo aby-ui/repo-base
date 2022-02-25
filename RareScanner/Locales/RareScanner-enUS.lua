@@ -630,7 +630,6 @@ if AL then
 	AL["NOTE_181164"] = "There is a [Oonar's Arm] attached to the handle of [Sorrowbane]. In order to get it talk to the innkeeper at The Theater of Pain and make it your new home. Then collect 4x[Edible Redcap]. Your movement will be reduced to 80%, thats why you have to use your hearthstone back to the Inn, mount up and go as fast as you can to the Sword and pick up the arm before the buff goes away."
 	AL["NOTE_181164_1"] = "Slumbar Valorum <Innkeeper>"
 	AL["NOTE_181164_2"] = "Edible Redcap"
-	AL["NOTE_183288"] = "RareScanner will alert you to this container only when [Pocopoc] is looking for treasures and the spell [Perceptive Pocopoc] is active."
 	AL["NOTE_183516"] = "He will appear after defending [The Matriarch]."
 	AL["NOTE_183646"] = "Open the [Suspiciously Angry Vault] to summon [Furidian]. To open it, you have to find 3x[Empowered key]."
 	AL["NOTE_183646_1"] = "Star Empowered Key"

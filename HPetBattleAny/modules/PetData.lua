@@ -1,6 +1,6 @@
 --[[
 BattlePetBreedID: Pet Data Module
-Last Update: Patch 9.2.0 Live; 2022-02-22T18:08:02Z
+Last Update: Patch 9.2.0 Live; 2022-02-24T16:48:09Z
 
 If you would like a copy of this data in a different format for your own purposes or to be informed of future updates:
 Contact MMOSimca / Simca@Malfurion - either through MMO-Champion, through CurseForge, or in-game
@@ -6467,14 +6467,14 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3170] = false
     BPBID_Arrays.BreedsPerSpecies[3171] = false
     BPBID_Arrays.BreedsPerSpecies[3172] = false
-    BPBID_Arrays.BreedsPerSpecies[3173] = false
+    BPBID_Arrays.BreedsPerSpecies[3173] = {3, 6, 7, 12}
     BPBID_Arrays.BreedsPerSpecies[3174] = false
     BPBID_Arrays.BreedsPerSpecies[3175] = false
     BPBID_Arrays.BreedsPerSpecies[3176] = false
     BPBID_Arrays.BreedsPerSpecies[3177] = false
     BPBID_Arrays.BreedsPerSpecies[3178] = false
     BPBID_Arrays.BreedsPerSpecies[3179] = false
-    BPBID_Arrays.BreedsPerSpecies[3180] = false
+    BPBID_Arrays.BreedsPerSpecies[3180] = {4}
     BPBID_Arrays.BreedsPerSpecies[3181] = false
     BPBID_Arrays.BreedsPerSpecies[3182] = false
     BPBID_Arrays.BreedsPerSpecies[3183] = false
@@ -6484,38 +6484,38 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3187] = false
     BPBID_Arrays.BreedsPerSpecies[3188] = false
     BPBID_Arrays.BreedsPerSpecies[3189] = false
-    BPBID_Arrays.BreedsPerSpecies[3190] = {12}
-    BPBID_Arrays.BreedsPerSpecies[3191] = {3, 9, 11}
+    BPBID_Arrays.BreedsPerSpecies[3190] = {3, 5, 7, 9, 11, 12}
+    BPBID_Arrays.BreedsPerSpecies[3191] = {3, 5, 7, 9, 11, 12}
     BPBID_Arrays.BreedsPerSpecies[3192] = false
     BPBID_Arrays.BreedsPerSpecies[3193] = false
     BPBID_Arrays.BreedsPerSpecies[3194] = false
     BPBID_Arrays.BreedsPerSpecies[3195] = false
-    BPBID_Arrays.BreedsPerSpecies[3196] = {3, 4, 5, 8}
+    BPBID_Arrays.BreedsPerSpecies[3196] = {3, 4, 5, 8, 11}
     BPBID_Arrays.BreedsPerSpecies[3197] = false
     BPBID_Arrays.BreedsPerSpecies[3198] = false
     BPBID_Arrays.BreedsPerSpecies[3199] = false
     BPBID_Arrays.BreedsPerSpecies[3200] = {5}
     BPBID_Arrays.BreedsPerSpecies[3201] = false
-    BPBID_Arrays.BreedsPerSpecies[3202] = {3, 11}
-    BPBID_Arrays.BreedsPerSpecies[3203] = {11}
+    BPBID_Arrays.BreedsPerSpecies[3202] = {3, 5, 11}
+    BPBID_Arrays.BreedsPerSpecies[3203] = {3, 5, 11}
     BPBID_Arrays.BreedsPerSpecies[3204] = false
-    BPBID_Arrays.BreedsPerSpecies[3205] = {6, 7, 9}
-    BPBID_Arrays.BreedsPerSpecies[3206] = {4}
+    BPBID_Arrays.BreedsPerSpecies[3205] = {3, 6, 7, 9}
+    BPBID_Arrays.BreedsPerSpecies[3206] = {3, 4, 5, 9}
     BPBID_Arrays.BreedsPerSpecies[3207] = false
     BPBID_Arrays.BreedsPerSpecies[3208] = {3, 5}
     BPBID_Arrays.BreedsPerSpecies[3209] = {5}
     BPBID_Arrays.BreedsPerSpecies[3210] = {4, 5}
     BPBID_Arrays.BreedsPerSpecies[3211] = false
     BPBID_Arrays.BreedsPerSpecies[3212] = {3, 10, 11, 12}
-    BPBID_Arrays.BreedsPerSpecies[3213] = {4, 10, 11}
+    BPBID_Arrays.BreedsPerSpecies[3213] = {4, 5, 8, 10, 11}
     BPBID_Arrays.BreedsPerSpecies[3214] = {5}
     BPBID_Arrays.BreedsPerSpecies[3215] = false
-    BPBID_Arrays.BreedsPerSpecies[3216] = {3, 5}
-    BPBID_Arrays.BreedsPerSpecies[3217] = {5}
-    BPBID_Arrays.BreedsPerSpecies[3218] = false
-    BPBID_Arrays.BreedsPerSpecies[3219] = {3, 12}
+    BPBID_Arrays.BreedsPerSpecies[3216] = {3, 5, 8}
+    BPBID_Arrays.BreedsPerSpecies[3217] = {3, 4, 5}
+    BPBID_Arrays.BreedsPerSpecies[3218] = {3, 5, 11, 12}
+    BPBID_Arrays.BreedsPerSpecies[3219] = {3, 5, 12}
     BPBID_Arrays.BreedsPerSpecies[3220] = false
-    BPBID_Arrays.BreedsPerSpecies[3221] = false
+    BPBID_Arrays.BreedsPerSpecies[3221] = {10}
     BPBID_Arrays.BreedsPerSpecies[3222] = false
     BPBID_Arrays.BreedsPerSpecies[3223] = false
     BPBID_Arrays.BreedsPerSpecies[3224] = false
@@ -6541,5 +6541,5 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3244] = false
     BPBID_Arrays.BreedsPerSpecies[3245] = false
     BPBID_Arrays.BreedsPerSpecies[3246] = false
-    BPBID_Arrays.BreedsPerSpecies[3247] = false
+    BPBID_Arrays.BreedsPerSpecies[3247] = {3}
 end
