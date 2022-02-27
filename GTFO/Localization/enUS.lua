@@ -94,4 +94,11 @@ GTFOLocal =
 	UI_UnmuteDescription2 = "This requires the master volume (and selected channel) sliders to be higher than 0%.",
 	UI_SoundChannel = "Sound Channel",
 	UI_SoundChannelDescription = "This is the volume channel that GTFO alert sounds will attach themselves to.",
+	-- 4.66
+	Vibration_On = "Controller vibration on",
+	Vibration_Off = "Controller vibration off",
+	UI_Vibration = "Vibration",
+	UI_VibrationDescription = "This enables gamepad vibration when sounding alerts.",
+	UI_CustomSounds = "Custom Sounds",
+	UI_CustomSoundsHeader = "Override existing sound alerts"
 }

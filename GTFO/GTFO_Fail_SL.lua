@@ -341,6 +341,55 @@ GTFO.SpellID["359734"] = {
   sound = 3;
 };
 
+GTFO.SpellID["363938"] = {
+  --desc = "Reverberating Detonation (Vitiane)";
+  sound = 3;
+};
+
+GTFO.SpellID["366413"] = {
+  --desc = "Paralytic Spew (Otiosen)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["360875"] = {
+  --desc = "Whirling Smash (Akkaris)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["361453"] = {
+  --desc = "Hardened Sputum (Akkaris)";
+  sound = 3;
+};
+
+GTFO.SpellID["365600"] = {
+  --desc = "Overload (Destabilized Core)";
+  sound = 3;
+};
+
+GTFO.SpellID["368169"] = {
+  --desc = "Charged Barrage (Otaris the Provoked)";
+  sound = 3;
+};
+
+GTFO.SpellID["364187"] = {
+  --desc = "Furious Charge (Chitali the Eldest)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["364187"] = {
+  --desc = "Furious Charge (Chitali the Eldest)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["364889"] = {
+  --desc = "Illusory Assault (Xy'rath the Covetous)";
+  sound = 3;
+};
+
 
 --- **********************
 --- * Halls of Atonement *

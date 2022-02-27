@@ -252,7 +252,7 @@ sliderHeadText:SetText(L"SCALE")
 
 local optionsVersionText =  aura_env.settingsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 optionsVersionText:SetPoint("BOTTOM",  aura_env.settingsFrame, "BOTTOM", 0, 10)
-optionsVersionText:SetText("ZMPH 1.4")
+optionsVersionText:SetText("ZMPH 1.5")
 optionsVersionText:SetFont(fontMain, 12, "OUTLINE")
 
 local groupEnabled = CreateFrame('Frame', nil, aura_env.settingsFrame, 'BackdropTemplate')
@@ -662,7 +662,10 @@ function aura_env.puzzle1()
             frameAddBg(widget,backdrop2, {0,0,0,0.1}, {1,1,1,0.3})
         end
         if hidden then
-            widget:Hide()
+            --widget:Hide()
+            widget:SetBackdrop(nil)
+            widget:SetBackdropColor(nil)
+            widget:SetBackdropBorderColor(nil)
         end
         widget.glow = false;
         widget.draw = false;
@@ -678,8 +681,10 @@ function aura_env.puzzle1()
         texture:Hide()
         if type==2 then 
             texture:SetTexCoord(0.1,0.90,0.1,0.90)
-            texture:SetVertexColor(0.4, 0.4, 0.6, 1.0)
+            -- texture:SetVertexColor(0.4, 0.4, 0.6, 1.0)
             texture:SetSize(28, 28)
+            
+            texture:Show()
         end
         return texture
     end
@@ -764,67 +769,144 @@ function aura_env.puzzle1()
                 end 
             end   
             
-            local function drawLine(node)
-                if node.draw then
-                    node.texture:Hide()
-                    node.draw = false;
-                else
+            local function drawLine(node,act)
+                if act then
                     node.texture:Show()
                     node.draw = true
+                else
+                    node.texture:Hide()
+                    node.draw = false;
                 end
             end
             
-            local function setNode(button, set, dir, i)
+            local function setNode(button, set)
                 button.text:SetText(set)
                 button.text:SetPoint("CENTER")          
                 button.texture:Show();   
                 LibGlow.ButtonGlow_Start(button) 
                 button:Show();
-                if dir == 1 then
-                    if i < 10 then
-                        drawLine(groupButtons.buttonsPuzzle[1][i])
-                        for x=1,9 do drawLine(groupButtons.buttons[i][x]) end
-                    else
-                        for x=1,9 do drawLine(groupButtons.buttonsPuzzle[2][x]) end
+                button.texture:SetVertexColor(0.4, 0.4, 0.6, 1.0)
+            end
+            
+            local function reverseNode(node)
+                if node then return false end
+                if node == false then return true end            
+            end
+            
+            local function checkSolve(board,r1,r2)
+                local simBoard = {}
+                local countTick = 0
+                
+                for y=1,10 do 
+                    simBoard[y] = {}
+                    for x=1,10 do 
+                        simBoard[y][x] = board[y][x]
                     end
                 end
                 
-                if dir == 2 then
-                    
-                    drawLine(groupButtons.buttonsPuzzle[2][i])
-                    if i>1 then
-                        for y=1,9 do 
-                            drawLine(groupButtons.buttons[10-y][i-1])
+                --sim actions
+                for y=1,10 do
+                    if board[y][1] == r1 then 
+                        countTick = countTick + 1
+                        for x=1,10 do 
+                            simBoard[y][x] = reverseNode(simBoard[y][x])
                         end
-                    else
-                        for y=1,9 do 
-                            drawLine(groupButtons.buttonsPuzzle[1][y])
+                    end
+                end
+                
+                for x=1,10 do
+                    if board[10][x] == r2 then 
+                        countTick = countTick + 1
+                        for y=1,10 do 
+                            simBoard[y][x] = reverseNode(simBoard[y][x])
                         end
+                    end
+                end
+                
+                --check solve
+                local solved = countTick <= 7;
+                
+                for y=1,10 do
+                    for x=1,10 do 
+                        if simBoard[y][x] then solved = false;break; end
+                    end
+                end
+                
+                return solved 
+            end
+            
+            local function drawBoard(board)
+                for y=1,9 do 
+                    for x=1,9 do
+                        drawLine(groupButtons.buttons[y][x], board[y][x+1])
+                    end
+                end
+                for x=1,9 do 
+                    drawLine(groupButtons.buttonsPuzzle[1][x], board[x][1])
+                end
+                drawLine(groupButtons.buttonsPuzzle[2][1], board[10][1])
+                for x=2,10 do 
+                    drawLine(groupButtons.buttonsPuzzle[2][x], board[10][x])
+                end
+                
+            end
+            
+            local board = {}
+            for y=1,9 do 
+                board[y] = {}
+                for x=1,10 do
+                    board[y][x] = groupButtons.buttonsPuzzle[1][y].glow
+                end
+            end
+            board[10] = {}
+            for x=1,10 do
+                board[10][x] = groupButtons.buttonsPuzzle[2][1].glow
+            end
+            for x=1,10 do
+                if groupButtons.buttonsPuzzle[2][x].glow ~= board[10][1] then
+                    for y=1,10 do
+                        board[y][x] = reverseNode(board[y][x])
                     end
                 end
             end
             
-            local set = 1;
+            drawBoard(board)
+            
+            for y = 1, 2 do
+                for x = 1, 10 do
+                    groupButtons.buttonsSolve[y][x].texture:Hide()
+                    groupButtons.buttonsSolve[y][x]:Hide(); 
+                end
+            end
+            
+            --v1.5 solution
             local rev1 = line1 <= 5
             local rev2 = true
             
+            if checkSolve(board,true,true) then rev1 = true;rev2 = true; end
+            if checkSolve(board,true,false) then rev1 = true; rev2 = false; end
+            if checkSolve(board,false,true) then rev1 = false; rev2 = true; end
+            if checkSolve(board,false,false) then rev1 = false; rev2 = false; end
+            
+            local set = 1;
+            
             for i=1, 9 do
                 if groupButtons.buttonsPuzzle[1][i].glow == rev1 then 
-                    setNode(groupButtons.buttonsSolve[1][i],set,1,i)    
+                    setNode(groupButtons.buttonsSolve[1][i],set)    
                     set = set + 1
                 end
             end
             if groupButtons.buttonsPuzzle[2][1].glow == rev1 then
-                setNode(groupButtons.buttonsSolve[1][10],set,1,10)    
+                setNode(groupButtons.buttonsSolve[1][10],set)    
                 set = set + 1
-                rev2 = false
-            end
+            end           
             for i=1, 10 do
                 if groupButtons.buttonsPuzzle[2][i].glow == rev2 then 
-                    setNode(groupButtons.buttonsSolve[2][i],set,2,i)  
+                    setNode(groupButtons.buttonsSolve[2][i],set)  
                     set = set + 1
                 end
             end
+            
             for y = 1, 2 do
                 for x = 1, 10 do
                     if ((y == 1 and x < 10) or y == 2) then
@@ -845,10 +927,13 @@ function aura_env.puzzle1()
                         LibGlow.ButtonGlow_Stop(groupButtons.buttonsPuzzle[y][x])                    
                     end
                     
-                    groupButtons.buttonsSolve[y][x].texture:Hide();
+                    groupButtons.buttonsSolve[y][x].texture:Show();
                     groupButtons.buttonsSolve[y][x].glow = false
                     groupButtons.buttonsSolve[y][x].draw = false;
-                    groupButtons.buttonsSolve[y][x]:Hide(); 
+                    groupButtons.buttonsSolve[y][x]:Show(); 
+                    groupButtons.buttonsSolve[y][x].texture:SetVertexColor(1,1,1,1)
+                    groupButtons.buttonsSolve[y][x].text:SetText("")
+                    LibGlow.ButtonGlow_Stop(groupButtons.buttonsSolve[y][x]) 
                 end 
             end       
             for y = 1, 9 do 
@@ -859,7 +944,6 @@ function aura_env.puzzle1()
             end 
     end)
 end
-
 
 function aura_env.puzzle2()
     
@@ -1156,4 +1240,3 @@ SlashCmdList["zmph"] = function(msg)
     end
     
 end
-

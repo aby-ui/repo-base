@@ -360,8 +360,7 @@ function DBM_GUI:CreateBossModPanel(mod)
 	iconstat:SetPoint("TOP", panel.frame, 0, -10)
 	iconstat:SetFontObject(GameFontNormal)
 	iconstat:SetText(L.IconsInUse)
-	local totalIcons = DBM.Options.ExtendIcons and 16 or 8
-	for i = 1, totalIcons do
+	for i = 1, 8 do
 		local icon = panel.frame:CreateTexture()
 		icon:SetTexture(137009) -- "Interface\\TargetingFrame\\UI-RaidTargetingIcons.blp"
 		icon:SetPoint("TOP", panel.frame, 81 - (i * 18), -26)
@@ -377,14 +376,14 @@ function DBM_GUI:CreateBossModPanel(mod)
 		elseif	i == 6 then		icon:SetTexCoord(0.25,	0.5,	0.25,	0.5)
 		elseif	i == 7 then		icon:SetTexCoord(0.5,	0.75,	0.25,	0.5)
 		elseif	i == 8 then		icon:SetTexCoord(0.75,	1,		0.25,	0.5)
-		elseif	i == 9 then		icon:SetTexCoord(0,		0.25,	0.5,	0.75)
-		elseif	i == 10 then	icon:SetTexCoord(0.25,	0.5,	0.5,	0.75)
-		elseif	i == 11 then	icon:SetTexCoord(0.5,	0.75,	0.5,	0.75)
-		elseif	i == 12 then	icon:SetTexCoord(0.75,	1,		0.5,	0.75)
-		elseif	i == 13 then	icon:SetTexCoord(0,		0.25,	0.75,	1)
-		elseif	i == 14 then	icon:SetTexCoord(0.25,	0.5,	0.75,	1)
-		elseif	i == 15 then	icon:SetTexCoord(0.5,	0.75,	0.75,	1)
-		elseif	i == 16 then	icon:SetTexCoord(0.75,	1,		0.75,	1)
+--		elseif	i == 9 then		icon:SetTexCoord(0,		0.25,	0.5,	0.75)
+--		elseif	i == 10 then	icon:SetTexCoord(0.25,	0.5,	0.5,	0.75)
+--		elseif	i == 11 then	icon:SetTexCoord(0.5,	0.75,	0.5,	0.75)
+--		elseif	i == 12 then	icon:SetTexCoord(0.75,	1,		0.5,	0.75)
+--		elseif	i == 13 then	icon:SetTexCoord(0,		0.25,	0.75,	1)
+--		elseif	i == 14 then	icon:SetTexCoord(0.25,	0.5,	0.75,	1)
+--		elseif	i == 15 then	icon:SetTexCoord(0.5,	0.75,	0.75,	1)
+--		elseif	i == 16 then	icon:SetTexCoord(0.75,	1,		0.75,	1)
 		end
 	end
 

@@ -283,15 +283,18 @@ if p1 == "BOTTOMLEFT" and p2 == "TOPLEFT" and rel == ChatFrame1ButtonFrame and r
     QuickJoinToastButton:SetPoint(p1, ChatFrameMenuButton, p2, 0, 0)
 end]]
 
---自动把全角顿号改成/
-hooksecurefunc("ChatEdit_OnTextChanged", function(self, userInput)
-    local text = self:GetText()
-    if (userInput) then
-        if text == "、" then
-            self:SetText("/")
+--自动把全角顿号改成/，但是会导致污染
+if DEBUG_MODE then
+    hooksecurefunc("ChatEdit_OnTextChanged", function(self, userInput)
+        local text = self:GetText()
+        if (userInput) then
+            if text == "、" then
+                self:SetText("/")
+                U1Message("自动将、替换为/，但会导致安全命令失效")
+            end
         end
-    end
-end)
+    end)
+end
 
 --[[------------------------------------------------------------
 设置历史记录行数

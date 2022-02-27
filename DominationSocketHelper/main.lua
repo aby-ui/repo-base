@@ -58,7 +58,7 @@ function EF:ADDON_LOADED(addon)
 		EF:RegisterEvent("PLAYER_REGEN_DISABLED")
 		CharacterFrame:HookScript('OnShow', function() EF:CHARACTER_FRAME_SHOW() end)
 		CharacterFrame:HookScript('OnHide', function() EF:CHARACTER_FRAME_HIDE_GBC() end)
-		CharacterFrame:HookScript('OnEnter', function() EF:CHARACTER_FRAME_HIDE_GBC() end)
+		--CharacterFrame:HookScript('OnEnter', function() EF:CHARACTER_FRAME_HIDE_GBC() end) --abyui don't now what use
 
 		GameTooltip:HookScript("OnTooltipSetItem", function() DSH:ItemToolTip() end);
 		
@@ -204,7 +204,8 @@ function DSH:UpdateGemButtons(isDomination, isSlotButton, isRemove)
 			end
 		end
 	end
-		
+
+    if InCombatLockdown() then return end
 	if isSlotButton then
 		if buttonCount == 1 then
 			DSH.GBC:Hide()
@@ -651,7 +652,7 @@ end
 
 local function updateGemmedSlotButton(i, gemLink, itemLink, gemID)
 	-- dbpr(i)
-	if itemLink == DSH.slotButtons[i].itemLink then --make sure the item is the same
+	if DSH.slotButtons[i] and itemLink == DSH.slotButtons[i].itemLink then --make sure the item is the same
 		DSH.slotButtons[i].gemLink = gemLink
 		DSH.slotButtons[i].gemID = gemID
 		DSH.slotButtons[i].itemLink = DSH.slotButtons[i].isDomination and gemLink or itemLink
@@ -661,6 +662,7 @@ local function updateGemmedSlotButton(i, gemLink, itemLink, gemID)
 end
 
 local function updateEmptySlotButton(s, i, slotType, showLink)
+    if InCombatLockdown() then return end
 	if not DSH.slotButtons[i] then createSlotButton(i) end
 	local isDomination = ((slotType == "domination") and true)
 	DSH.slotButtons[i].slot = s
@@ -738,7 +740,7 @@ local function itemLoaded(itemsFound, itemLink, s)
 
 	hideButtons(DSH.slotButtons, buttonCount)
 	
-	if DSH.SBC then DSH.SBC:Show() end
+	if DSH.SBC and not InCombatLockdown() then DSH.SBC:Show() end
 	
 	DSH:UpdateCurSlotGlow()
 
@@ -795,12 +797,12 @@ function EF:CHARACTER_FRAME_SHOW()
 	-- C_Timer.After(0.1, function() DSH:UpdateSlotButtons() end)
 	DSH:UpdateSlotButtons()
 	
-	slotInfo = ItemLocation:CreateFromEquipmentSlot(1)
+	local slotInfo = ItemLocation:CreateFromEquipmentSlot(1)
 end
 
 --Hides the gem container/set container when you mouseover char if they are anchored there
 function EF:CHARACTER_FRAME_HIDE_GBC()
-	if DSH.GBC and DSH.GBC.isSlotContainer then DSH.GBC:Hide() end
+	if DSH.GBC and DSH.GBC.isSlotContainer and not InCombatLockdown() then DSH.GBC:Hide() end
 	if DSH.SBC then DSH.SBC.curSlotBtn = nil end
 	DSH:UpdateCurSlotGlow()
 	

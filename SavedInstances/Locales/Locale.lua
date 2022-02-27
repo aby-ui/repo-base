@@ -142,6 +142,7 @@ Ld["Open config"] = "Open config"
 Ld["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]"
 Ld["Paragon Chests"] = "Paragon Chests"
 Ld["Party"] = "Party"
+Ld["Patterns Within Patterns"] = "Patterns Within Patterns"
 Ld["PF"] = "PF"
 Ld["Quest progresses"] = "Quest progresses"
 Ld["Raids before dungeons"] = "Raids before dungeons"
@@ -353,6 +354,8 @@ La["Open config"] = "Ouvrir la configuration"
 La["Order must be a number in [0 - 999]"] = "l'ordre doit être un nombre compris entre [0 - 999]"
 La["Paragon Chests"] = "Coffre Parangon"
 La["Party"] = "Groupe"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "PF"
 La["Quest progresses"] = "Progression des quêtes"
 La["Raids before dungeons"] = "Raids avant les donjons"
@@ -568,6 +571,8 @@ La["Open config"] = "Konfiguration öffnen"
 La["Order must be a number in [0 - 999]"] = "Auftrag muss eine Zahl mit [0 - 999] sein"
 La["Paragon Chests"] = "Paragonkiste"
 La["Party"] = "Gruppe"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "PF"
 La["Quest progresses"] = "Questfortschritte"
 La["Raids before dungeons"] = "Schlachtzüge vor Dungeons"
@@ -788,6 +793,8 @@ La["Open config"] = "설정 열기"
 La["Order must be a number in [0 - 999]"] = "순서는 숫자 0에서 999사이의 값을 입력하셔야 합니다."
 La["Paragon Chests"] = "평판 보상"
 La["Party"] = "파티"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "역병"
 La["Quest progresses"] = "퀘스트 진행도"
 La["Raids before dungeons"] = "던전 앞에 공격대"
@@ -1055,6 +1062,8 @@ La["Paragon Chests"] = "Paragon Chests"
 --[[Translation missing --]]
 La["Party"] = "Party"
 --[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
+--[[Translation missing --]]
 La["PF"] = "PF"
 --[[Translation missing --]]
 La["Quest progresses"] = "Quest progresses"
@@ -1297,6 +1306,8 @@ La["Open config"] = "Открыть настройки"
 La["Order must be a number in [0 - 999]"] = "Заказ должен быть числом в диапазоне [0 - 999]"
 La["Paragon Chests"] = "Сундуки за Репутацию"
 La["Party"] = "Группа"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "ЧК"
 La["Quest progresses"] = "Прогресс квеста"
 La["Raids before dungeons"] = "Рейды перед подземельями"
@@ -1460,8 +1471,7 @@ La["Full Clear + 4 Masks"] = "五箱四面具"
 La["Full Clear + 5 Masks"] = "五箱五面具"
 La["Full Clear No Masks"] = "五箱"
 La["General settings"] = "综合"
---[[Translation missing --]]
-La["GMBT"] = "GMBT"
+La["GMBT"] = "宏图"
 La["Group"] = "组合"
 La["Guild"] = "公会"
 La["HOA"] = "赎罪"
@@ -1505,6 +1515,8 @@ La["Open config"] = "开启设置"
 La["Order must be a number in [0 - 999]"] = "序号必须为0到999的数"
 La["Paragon Chests"] = "巅峰声望宝箱"
 La["Party"] = "小队"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "凋魂"
 La["Quest progresses"] = "任务进度"
 La["Raids before dungeons"] = "团队副本于地下城前"
@@ -1555,8 +1567,7 @@ La["Sort categories by"] = "排序分类按"
 La["Sort Order"] = "序号"
 La["Sorting"] = "排序"
 La["Space between categories"] = "显示分类间距"
---[[Translation missing --]]
-La["STRT"] = "STRT"
+La["STRT"] = "天街"
 La["Text"] = "文本"
 La["The Four Celestials"] = "四大天神"
 La["The World Awaits"] = "世界在等待"
@@ -1734,6 +1745,8 @@ La["Order must be a number in [0 - 999]"] = "Orden debe ser un número en [0 - 9
 --[[Translation missing --]]
 La["Paragon Chests"] = "Paragon Chests"
 La["Party"] = "Grupo"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "BP (PF)"
 La["Quest progresses"] = "Progreso de misiones"
 La["Raids before dungeons"] = "Bandas antes que mazmorras"
@@ -1950,6 +1963,8 @@ La["Open config"] = "開啟設定選項"
 La["Order must be a number in [0 - 999]"] = "順序必須是 [0-999] 的數字"
 La["Paragon Chests"] = "巔峰獎勵箱"
 La["Party"] = "隊伍"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 La["PF"] = "瘟疫"
 La["Quest progresses"] = "任務進度"
 La["Raids before dungeons"] = "團隊在地城之前"
@@ -2200,6 +2215,8 @@ La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]
 La["Paragon Chests"] = "Paragon Chests"
 --[[Translation missing --]]
 La["Party"] = "Party"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 --[[Translation missing --]]
 La["PF"] = "PF"
 --[[Translation missing --]]
@@ -2487,6 +2504,8 @@ La["Order must be a number in [0 - 999]"] = "Order must be a number in [0 - 999]
 La["Paragon Chests"] = "Paragon Chests"
 --[[Translation missing --]]
 La["Party"] = "Party"
+--[[Translation missing --]]
+La["Patterns Within Patterns"] = "Patterns Within Patterns"
 --[[Translation missing --]]
 La["PF"] = "PF"
 --[[Translation missing --]]

@@ -143,6 +143,8 @@ local EXPANSION8_CURRENCY_IDS = {
     1904, --塔楼学识
     1906, --灵魂薪尘
     1931, --编集研究
+    1979, --9.2初诞者密文
+    2009, --9.2宇宙助溶剂
 }
 
 local PVP_CURRENCY_IDS = {

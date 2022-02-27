@@ -118,7 +118,6 @@ L.AutoAcceptGuildInvite		= "自動接受來自公會成員的隊伍邀請"
 L.Area_Advanced				= "進階選項"
 L.FakeBW					= "假裝使用BigWigs版本檢查而不是用DBM版本(適合用在工會強制使用BigWigs時)"
 L.AITimer					= "DBM為從未遭遇的戰鬥使用內建的AI計時器來自動生成計時條(在初期Beta或PTR首次遭遇首領時之測試非常有幫助)。注意：這可能不能正確運作在有著相同技能的多重目標上。"
-L.ExtendIcons				= "將團隊標記圖示API擴展到最多16個圖示(而非8個)。重要：對沒有安裝自定義支援16個圖示的'ui-raidtargetingicons.blp'材質檔案的任何人這些圖示都不可見，在啟用或禁用此功能後必須重新載入UI。"
 
 -- Panel: Profiles
 L.Panel_Profile				= "配置檔"

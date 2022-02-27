@@ -531,6 +531,8 @@ WorldQuestTracker.MapData.FactionByMapID = { --not in use
 	[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 		"BFA",
 }
 
+--start of factions
+
 -- texture ID of the reward when the world quest reward is a faction rep token
 WorldQuestTracker.MapData.ReputationIcons = {
 	[2032597] = true, --Talanji's Expedition BFA
@@ -555,6 +557,7 @@ WorldQuestTracker.MapData.ReputationIcons = {
 	[3575389] = true, --Wild Hunt
 	[3492310] = true, --Undying Army
 	[3514227] = true, --Court of Harvesters
+	[4226232] = true, --The Enlightened
 }
 
 WorldQuestTracker.MapData.AllFactionIds = {
@@ -566,6 +569,7 @@ WorldQuestTracker.MapData.AllFactionIds = {
 	[2470] = true, --Death's Advance
 	[2472] = true, --The Archivists' Codex
 	[2432] = true, --Ve'nari
+	[2478] = true, --The Enlightened
 
 	--BFA Factions
 	[2159] = true, --7th Legion
@@ -615,6 +619,7 @@ WorldQuestTracker.MapData.FactionIcons = {
 	[2470] = [[Interface\ICONS\INV_Tabard_DeathsAdvance_B_01]], --Death's Advance
 	[2472] = [[Interface\ICONS\INV_Inscription_80_Scroll]], --The Archivists' Codex
 	[2432] = [[Interface\AddOns\WorldQuestTracker\media\venari]], --Ve'nari
+	[2478] = 4226232, --The Enlightened
 
 	--BFA
 	[2159] = "Interface\\ICONS\\inv__faction_alliancewareffort", --7th Legion
@@ -653,6 +658,7 @@ local ShadowlandsFactions = {
 	[2470] = true, --Death's Advance
 	[2472] = true, --The Archivists' Codex
 	[2432] = true, --Ve'nari
+	[2478] = true, --The Enlightened
 }
 
 local BFAFactions = {
@@ -719,6 +725,7 @@ WorldQuestTracker.MapData.ReputationByMap = {
 	[WorldQuestTracker.MapData.ZoneIDs.MALDRAXXUS] = 	ShadowlandsFactions,
 	[WorldQuestTracker.MapData.ZoneIDs.ARDENWEALD] = 	ShadowlandsFactions,
 	[WorldQuestTracker.MapData.ZoneIDs.REVENDRETH] = 	ShadowlandsFactions,
+	[WorldQuestTracker.MapData.ZoneIDs.ZERETH] = 		ShadowlandsFactions,
 }
 
 function WorldQuestTracker.GetFactionsAllowedOnMap(mapId)
@@ -749,6 +756,7 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[2470] = GetFactionInfoByID(2470), --Death's Advance
 		[2472] = GetFactionInfoByID(2472), --The Archivists' Codex
 		[2432] = GetFactionInfoByID(2432), --Ve'nari
+		[2478] = GetFactionInfoByID(2478), --The Enlightened
 		--[2462] = Stitchmasters
 		--[2464] = Court of Night
 
@@ -799,6 +807,7 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[2470] = GetFactionInfoByID(2470), --Death's Advance
 		[2472] = GetFactionInfoByID(2472), --The Archivists' Codex
 		[2432] = GetFactionInfoByID(2432), --Ve'nari
+		[2478] = GetFactionInfoByID(2478), --The Enlightened
 		
 		--BFA
 		[2103] = GetFactionInfoByID (2103), --Zandalari Empire
@@ -837,6 +846,7 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[GetFactionInfoByID (1948) or "NotFound"] = 1948, --Valarjar
 	},
 }
+--end of factions
 
 WorldQuestTracker.MapData.TradeSkillIcons = {
 	[1064188] = true, --veiled argunite LEGION

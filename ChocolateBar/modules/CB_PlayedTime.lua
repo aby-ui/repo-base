@@ -67,7 +67,7 @@ local function getPlayerIdentifier()
 	if server == "" then
 		server = GetNormalizedRealmName()
 	end
-	return string.format("%s-%s", name, server)
+	return string.format("%s-%s", name or "", server or "")
 end
 
 local function GetMaxLevelForPlayerExpansion()

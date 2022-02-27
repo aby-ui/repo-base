@@ -124,7 +124,6 @@ L.AutoAcceptGuildInvite		= "自动接受同公会成员的组队邀请"
 L.Area_Advanced				= "高级选项"
 L.FakeBW					= "当检查Bigwig时，假装DBM就是Bigwig"
 L.AITimer					= "DBM为没遇见过的战斗使用人工智能自动产生计时器(在初期的Beta或PTR的Boss测试非常有帮助)。此功能不会对多目标技能生效。"
-L.ExtendIcons				= "将团队标记图标API扩展到最多16个图标(而非8个)。重要：对没有安装自定义支持16个图标的'ui-raidtargetingicons.blp'材质文档的任何人这些图标都是不可见，在启用或禁用此功能后必须重载界面。(输入/reload 重载)"
 
 -- Panel: Profiles
 L.Panel_Profile				= "配置文件"

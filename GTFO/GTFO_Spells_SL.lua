@@ -198,6 +198,26 @@ GTFO.SpellID["368715"] = {
   sound = 1;
 };
 
+GTFO.SpellID["363982"] = {
+  --desc = "Tainted Ground (Vitiane)";
+  sound = 1;
+};
+
+GTFO.SpellID["368617"] = {
+  --desc = "Devouring Helix (Akkaris)";
+  sound = 1;
+};
+
+GTFO.SpellID["362506"] = {
+  --desc = "Corruption Beam (Octolus)";
+  sound = 1;
+};
+
+GTFO.SpellID["359932"] = {
+  --desc = "Overwhelming Darkness";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************

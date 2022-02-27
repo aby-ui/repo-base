@@ -49,8 +49,7 @@ function module:SetIcon(mod, target, icon, timer)
 		DBM:Debug("|cffff0000SetIcon is being used impropperly. Check icon/target order|r")
 		return--Fail silently instead of spamming icon lua errors if we screw up
 	end
-	local maxIcon = DBM.Options.ExtendIcons and 16 or 8
-	if not icon or icon > maxIcon or icon < 0 then
+	if not icon or icon > 8 or icon < 0 then
 		DBM:Debug("|cffff0000SetIcon is being used impropperly. Icon value must be between 0 and 8 (16 if extended)|r")
 		return
 	end
@@ -109,8 +108,7 @@ do
 		tsort(iconSortTable[scanId])--Sorted alphabetically
 		for i = 1, #iconSortTable[scanId] do
 			local target = iconSortTable[scanId][i]
-			local maxIcon = DBM.Options.ExtendIcons and 16 or 8
-			if i > maxIcon then
+			if i > 8 then
 				DBM:Debug("|cffff0000Too many players to set icons, reconsider where using icons|r", 2)
 				return
 			end

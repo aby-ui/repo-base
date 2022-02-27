@@ -7,12 +7,14 @@ local ipairs, strmatch, type, tostring, wipe = ipairs, strmatch, type, tostring,
 
 -- WoW API / Variables
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
+local C_TaskQuest_GetQuestTimeLeftSeconds = C_TaskQuest.GetQuestTimeLeftSeconds
 local C_TaskQuest_IsActive = C_TaskQuest.IsActive
 local C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo
 local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
 local C_WeeklyRewards_GetConquestWeeklyProgress = C_WeeklyRewards.GetConquestWeeklyProgress
 local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
+local GetQuestProgressBarPercent = GetQuestProgressBarPercent
 local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 local UnitLevel = UnitLevel
 
@@ -274,6 +276,70 @@ local function CovenantAssaultReset(toon, index)
   t.Progress[index].unlocked = unlocked
 end
 
+-- Patterns Within Patterns (index 10)
+
+local function PatternsUpdate(index)
+  local expiredTime = SI.db.Toons[SI.thisToon].Progress[index] and SI.db.Toons[SI.thisToon].Progress[index].expiredTime
+
+  SI.db.Toons[SI.thisToon].Progress[index] = wipe(SI.db.Toons[SI.thisToon].Progress[index] or {})
+  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(64230) -- Cyphers of the First Ones
+
+  local isComplete = IsQuestFlaggedCompleted(65324)
+  local isOnQuest = C_QuestLog_IsOnQuest(65324)
+  local isFinish = select(3, GetQuestObjectiveInfo(65324, 1, false))
+  local numFulfilled = GetQuestProgressBarPercent(65324)
+  local numRequired = 100
+
+  if isOnQuest then
+    local timeLeft = C_TaskQuest_GetQuestTimeLeftSeconds(65324)
+    if timeLeft and timeLeft > 0 then
+      expiredTime = time() + timeLeft
+    end
+  end
+
+  SI.db.Toons[SI.thisToon].Progress[index].isComplete = isComplete
+  SI.db.Toons[SI.thisToon].Progress[index].isOnQuest = isOnQuest
+  SI.db.Toons[SI.thisToon].Progress[index].isFinish = isFinish
+  SI.db.Toons[SI.thisToon].Progress[index].numFulfilled = numFulfilled
+  SI.db.Toons[SI.thisToon].Progress[index].numRequired = numRequired
+  SI.db.Toons[SI.thisToon].Progress[index].expiredTime = expiredTime
+end
+
+local function PatternsShow(toon, index)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+  if not t.Progress[index].unlocked then return end
+
+  if t.Progress[index].isComplete and not t.Progress[index].expiredTime then
+    -- unknown if is expired
+    return "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t (?)"
+  elseif t.Progress[index].isComplete then
+    return "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
+  elseif not t.Progress[index].isOnQuest then
+    return "\124cFFFFFF00!\124r"
+  elseif t.Progress[index].isFinish then
+    return "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
+  else
+    return floor(t.Progress[index].numFulfilled / t.Progress[index].numRequired * 100) .. "%"
+  end
+end
+
+local function PatternsReset(toon, index)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Progress or not t.Progress[index] then return end
+
+  if t.Progress[index].expiredTime and t.Progress[index].expiredTime < time() then
+    local unlocked = t.Progress[index].unlocked
+    local numRequired = t.Progress[index].numRequired
+    local expiredTime = t.Progress[index].expiredTime + 3 * 24 * 60 * 60
+
+    wipe(t.Progress[index])
+    t.Progress[index].unlocked = unlocked
+    t.Progress[index].numRequired = numRequired
+    t.Progress[index].expiredTime = expiredTime
+  end
+end
+
 Module.TrackedQuest = {
   -- Conquest
   {
@@ -411,7 +477,16 @@ Module.TrackedQuest = {
     weekly = true,
     quest = 62638,
     relatedQuest = {62638},
-  }
+  },
+  -- Patterns Within Patterns
+  {
+    name = L["Patterns Within Patterns"],
+    func = PatternsUpdate,
+    showFunc = PatternsShow,
+    resetFunc = PatternsReset,
+    tooltipKey = 'ShowPatternsTooltip',
+    relatedQuest = {65324},
+  },
 }
 
 function Module:OnEnable()
@@ -435,7 +510,12 @@ function Module:UpdateAll()
       if questID then
         -- no questID on Neutral Pandaren or first login
         local result = {}
-        local _, _, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
+        local _, objectiveType, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
+        if objectiveType == 'progressbar' then
+          numFulfilled = GetQuestProgressBarPercent(questID)
+          numRequired = 100
+        end
+        result.objectiveType = objectiveType
         result.isFinish = finished
         result.numFulfilled = numFulfilled
         result.numRequired = numRequired
@@ -567,9 +647,13 @@ function Module:ShowTooltip(tooltip, columns, showall, preshow)
             elseif value.isFinish then
               text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
             else
-              -- Note: no idea why .numRequired is nil rarely (#325)
-              -- protect this now to stop lua error
-              text = (value.numFulfilled or "?") .. "/" .. (value.numRequired or "?")
+              if value.objectiveType == 'progressbar' then
+                text = floor((value.numFulfilled or 0) / value.numRequired * 100) .. "%"
+              else
+                -- Note: no idea why .numRequired is nil rarely (#325)
+                -- protect this now to stop lua error
+                text = (value.numFulfilled or "?") .. "/" .. (value.numRequired or "?")
+              end
             end
           end
           local col = columns[toon .. 1]
