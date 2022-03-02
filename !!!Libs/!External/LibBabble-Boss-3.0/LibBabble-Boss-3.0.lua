@@ -19,6 +19,19 @@ local GAME_LOCALE = GetLocale()
 --abyuiPW
 local abyuiAppend = {
     --/dumpt EncounterJournal.encounterID
+    -- 9.2
+    ["Vigilant Guardian"] = EJ_GetEncounterInfo(2458),
+    ["Skolex, the Insatiable Ravener"] = EJ_GetEncounterInfo(2465),
+    ["Artificer Xy'mox"] = EJ_GetEncounterInfo(2470),
+    ["Dausegne, the Fallen Oracle"] = EJ_GetEncounterInfo(2459),
+    ["Prototype Pantheon"] = EJ_GetEncounterInfo(2460),
+    ["Lihuvim, Principal Architect"] = EJ_GetEncounterInfo(2461),
+    ["Halondrus the Reclaimer"] = EJ_GetEncounterInfo(2463),
+    ["Anduin Wrynn"] = EJ_GetEncounterInfo(2469),
+    ["Lords of Dread"] = EJ_GetEncounterInfo(2457),
+    ["Rygelon"] = EJ_GetEncounterInfo(2467),
+    ["The Jailer"] = EJ_GetEncounterInfo(2464),
+
     -- 9.1
     ["The Tarragrue"] = EJ_GetEncounterInfo(2435),
     ["The Eye of the Jailer"] = EJ_GetEncounterInfo(2442),

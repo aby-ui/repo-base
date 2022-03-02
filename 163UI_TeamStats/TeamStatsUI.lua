@@ -739,6 +739,7 @@ function TS.SetupColumns(f)
                 if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5,1) else widget:SetTextColor(r,b,g) end
             end
         },
+        --[[
         {
             header = "统御碎片",
             headerSpan = 1,
@@ -757,6 +758,7 @@ function TS.SetupColumns(f)
                 widget:SetText(player.domi_info or "|cff7f7f7f?|r")
             end
         },
+        --]]
         --[[
         {
             header = L["HeaderHealth"],

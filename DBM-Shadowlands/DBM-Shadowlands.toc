@@ -1,5 +1,5 @@
 ## Interface: 90200
-## Version: 9.2.0-6-g37270a8
+## Version: 9.2.1-2-g98db7b4
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Shadowlands)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r
@@ -22,7 +22,7 @@
 ## X-DBM-Mod-Name-ruRU: Мировые боссы (SL)
 ## X-DBM-Mod-World-Boss: 1
 ## X-DBM-Mod-Sort: 310
-## X-DBM-Mod-MapID: 2222
+## X-DBM-Mod-MapID: 2222, 2374
 ## X-DBM-Mod-LoadCID: 167524,167525,167527,167526,178958,182466
 ## X-DBM-Mod-MinCoreRevision: 17286
 ## X-DBM-Mod-MinExpansion: 8

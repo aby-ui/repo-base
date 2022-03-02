@@ -390,6 +390,21 @@ GTFO.SpellID["364889"] = {
   sound = 3;
 };
 
+GTFO.SpellID["360335"] = {
+  --desc = "Cosmic Eruption (Corrupted Architect)";
+  sound = 3;
+};
+
+GTFO.SpellID["361209"] = {
+  --desc = "Furious Slam (Antros)";
+  sound = 3;
+};
+
+GTFO.SpellID["361835"] = {
+  --desc = "Cosmic Expulsion (Antros)";
+  sound = 3;
+};
+
 
 --- **********************
 --- * Halls of Atonement *
@@ -1737,7 +1752,79 @@ GTFO.SpellID["364522"] = {
   applicationOnly = true;
 };
 
+GTFO.SpellID["367554"] = {
+  --desc = "Dark Purge (Bound Realmbreaker)";
+  sound = 3;
+  tankSound = 0;
+};
 
+GTFO.SpellID["365953"] = {
+  --desc = "Collapsing Reality (Bound Realmbreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365948"] = {
+  --desc = "Collapsing Reality (Bound Realmbreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365954"] = {
+  --desc = "Collapsing Reality (Bound Realmbreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365948"] = {
+  --desc = "Collapsing Reality (Bound Realmbreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365952"] = {
+  --desc = "Collapsing Reality (Bound Realmbreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365949"] = {
+  --desc = "Collapsing Reality (Bound Realmbreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365942"] = {
+  --desc = "Collapsing Reality (Colossal Realmcrafter)";
+  sound = 3;
+};
+
+GTFO.SpellID["367314"] = {
+  --desc = "Shimmering Bombardment (Colossal Realmcrafter)";
+  sound = 3;
+};
+
+GTFO.SpellID["365800"] = {
+  --desc = "Annihilate (Mawsworn Annihilator)";
+  sound = 3;
+};
+
+GTFO.SpellID["363399"] = {
+  --desc = "Encroaching Dominion (Domination Core)";
+  sound = 3;
+};
+
+GTFO.SpellID["365866"] = {
+  --desc = "Explosive Armaments (Eternal Assembler)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["362352"] = {
+  --desc = "Pinned (Pinning Weapon)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 end
 

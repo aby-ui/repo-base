@@ -100,5 +100,7 @@ GTFOLocal =
 	UI_Vibration = "Vibration",
 	UI_VibrationDescription = "This enables gamepad vibration when sounding alerts.",
 	UI_CustomSounds = "Custom Sounds",
-	UI_CustomSoundsHeader = "Override existing sound alerts"
+	UI_CustomSoundsHeader = "Override existing sound alerts",
+	UI_Reset = "Reset",
+	UI_ResetCustomSounds = "Reset this sound to use the default sound.",
 }

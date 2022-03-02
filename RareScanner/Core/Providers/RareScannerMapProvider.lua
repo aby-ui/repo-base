@@ -160,6 +160,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 							end
 						-- Otherwise show it
 						else
+							RSGeneralDB.SetGuideActive(POI.entityID)
 							parentFrame:ShowGuideLayer(POI.entityID, self:GetMap():GetMapID())
 						end
 	

@@ -158,10 +158,8 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Browse Wago, the largest collection of auras."] = "浏览Wago，最大的光环集合网站。"
 	L["Can be a Name or a Unit ID (e.g. party1). A name only works on friendly players in your group."] = "可以是名字或单位 ID（例如 party1），只有在队伍中的友方玩家名字是有效的。"
 	L["Can be a UID (e.g., party1)."] = "可以是单位 ID（例如：party1）。"
-	--[[Translation missing --]]
-	L["Can set to 0 if Columns * Width equal File Width"] = "Can set to 0 if Columns * Width equal File Width"
-	--[[Translation missing --]]
-	L["Can set to 0 if Rows * Height equal File Height"] = "Can set to 0 if Rows * Height equal File Height"
+	L["Can set to 0 if Columns * Width equal File Width"] = "如果列x宽度=文件宽度，可以设为0"
+	L["Can set to 0 if Rows * Height equal File Height"] = "如果行x高度=文件高度，可以设为0"
 	L["Cancel"] = "取消"
 	L["Cast by Player Character"] = "玩家角色施放"
 	L["Cast by Players"] = "玩家施放"
@@ -324,10 +322,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Fallback Icon"] = "后备图标"
 	L["False"] = "假"
 	L["Fetch Affected/Unaffected Names"] = "获取受影响的/未受影响的名称"
-	--[[Translation missing --]]
-	L["File Height"] = "File Height"
-	--[[Translation missing --]]
-	L["File Width"] = "File Width"
+	L["File Height"] = "文件高度"
+	L["File Width"] = "文件宽度"
 	L["Filter by Arena Spec"] = "根据竞技场专精过滤"
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
@@ -350,13 +346,11 @@ Supports multiple entries, separated by commas
 	L["Found a Bug?"] = "发现了故障？"
 	L["Frame"] = "框体"
 	L["Frame Count"] = "帧数"
-	--[[Translation missing --]]
-	L["Frame Height"] = "Frame Height"
+	L["Frame Height"] = "帧高度"
 	L["Frame Rate"] = "帧率"
 	L["Frame Selector"] = "选择框体"
 	L["Frame Strata"] = "框架层级"
-	--[[Translation missing --]]
-	L["Frame Width"] = "Frame Width"
+	L["Frame Width"] = "帧宽度"
 	L["Frequency"] = "频率"
 	L["From Template"] = "从模板"
 	L["Full Circle"] = "完整圆形"
@@ -407,8 +401,7 @@ Supports multiple entries, separated by commas
 	L["Height"] = "高度"
 	L["Help"] = "帮助"
 	L["Hide"] = "隐藏"
-	--[[Translation missing --]]
-	L["Hide Background"] = "Hide Background"
+	L["Hide Background"] = "隐藏背景"
 	L["Hide Glows applied by this aura"] = "隐藏由此光环应用的发光"
 	L["Hide on"] = "隐藏于"
 	L["Hide this group's children"] = "隐藏此组的子项目"
@@ -515,8 +508,7 @@ Supports multiple entries, separated by commas
 任何相匹配的值的值可以提取]=]
 	L["Multiselect single tooltip"] = [=[|cFFFF0000忽略|r - |cFF777777单个|r - |cFF777777多个|r
 只有一个单一的匹配值可以提取]=]
-	--[[Translation missing --]]
-	L["Must be a power of 2"] = "Must be a power of 2"
+	L["Must be a power of 2"] = "必须为2的幂"
 	L["Name Info"] = "名称讯息"
 	L["Name Pattern Match"] = "名称规则匹配"
 	L["Name(s)"] = "名称"
@@ -622,13 +614,11 @@ Supports multiple entries, separated by commas
 	L["Row Width"] = "列宽度"
 	L["Rows"] = "行"
 	L["Same"] = "相同"
-	--[[Translation missing --]]
-	L["Same texture as Foreground"] = "Same texture as Foreground"
+	L["Same texture as Foreground"] = "与前景材质相同"
 	L["Scale"] = "缩放"
 	L["Search"] = "搜索"
 	L["Select the auras you always want to be listed first"] = "选择优先列出的光环"
-	--[[Translation missing --]]
-	L["Selected Frame"] = "Selected Frame"
+	L["Selected Frame"] = "已选择帧"
 	L["Send To"] = "发送给"
 	L["Separator Text"] = "分隔符文本"
 	L["Separator text"] = "分隔符文本"

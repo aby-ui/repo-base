@@ -310,7 +310,7 @@ SI.defaultDB = {
     R4Color = { 1, 0, 0 }, -- red
     R4ClassColor = true,
     R5Indicator = "BLANK",
-    R5Text = "KILLED/TOTAL",
+    R5Text = "KILLED/TOTALL",
     R5Color = { 0, 0, 1 }, -- blue
     R5ClassColor = true,
     R6Indicator = "BLANK",
@@ -967,6 +967,8 @@ local function DifficultyString(instance, diff, toon, expired, killoverride, tot
       setting = "R"..(diff-2)
     elseif diff >= 14 and diff <= 16 then -- WoD raids
       setting = "R"..(diff-8)
+    elseif diff == 17 then -- Looking For Raid
+      setting = "R5"
     else -- don't know
       setting = "D1"
     end
@@ -1067,7 +1069,6 @@ function SI:UpdateInstanceData()
   local renames = 0
   local merges = 0
   local conflicts = 0
-  local purges = 0
   for instname, inst in pairs(SI.db.Instances) do
     local truename
     if inst.WorldBoss then
@@ -1110,21 +1111,6 @@ function SI:UpdateInstanceData()
         renames = renames + 1
       end
     end
-
-	-- Eliminate duplicate LFR entries from the database (only affects those that were saved previously), to account for Blizzard's lockout changes in 7.3 (see https://github.com/SavedInstances/SavedInstances/issues/89)
-	for key, info in pairs(inst) do -- Check for potential LFR lockout entries
-
-	if key:find(" - ") then -- is a character key
-			for difficulty, entry in pairs(info) do -- Check difficulty for LFR
-				if difficulty == 7 or difficulty == 17 then -- Difficulties 7 and 17 are for (legacy) LFR modes -> Kill them... with fire!
-					SI:Debug("Purge LFR lockout entry for " .. truename .. ":" .. instname .. ":" .. key)
-					purges = purges + 1
-					SI.db.Instances[instname][key][difficulty] = nil
-				end
-			end
-		  end
-	end
-
   end
   -- SI.lfdid_to_name = lfdid_to_name
   -- SI.wbid_to_name = wbid_to_name
@@ -1132,7 +1118,8 @@ function SI:UpdateInstanceData()
   SI.config:BuildOptions() -- refresh config table
 
   starttime = debugprofilestop()-starttime
-  SI:Debug("UpdateInstanceData(): completed in %.3f ms : %d added, %d renames, %d merges, %d conflicts, %d purges.", starttime, added, renames, merges, conflicts, purges)
+  SI:Debug("UpdateInstanceData(): completed in %.3f ms : %d added, %d renames, %d merges, %d conflicts.",
+    starttime, added, renames, merges, conflicts)
   if SI.RefreshPending then
     SI.RefreshPending = nil
     SI:Refresh()
@@ -2493,36 +2480,6 @@ hoverTooltip.ShowCovenantAssaultTooltip = function (cell, arg, ...)
   finishIndicator()
 end
 
-hoverTooltip.ShowPatternsTooltip = function (cell, arg, ...)
-  -- Should be in Module Progress
-  local toon, index = unpack(arg)
-  local t = SI.db.Toons[toon]
-  if not t or not t.Progress or not t.Progress[index] then return end
-  openIndicator(2, "LEFT", "RIGHT")
-  indicatortip:AddHeader(ClassColorise(t.Class, toon), L["Patterns Within Patterns"])
-
-  local text
-  if t.Progress[index].isComplete then
-    text = "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
-  elseif not t.Progress[index].isOnQuest then
-    text = "\124cFFFFFF00!\124r"
-  elseif t.Progress[index].isFinish then
-    text = "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
-  else
-    text = floor(t.Progress[index].numFulfilled / t.Progress[index].numRequired * 100) .. "%"
-  end
-
-  local timeText = '?'
-  if t.Progress[index].expiredTime then
-    local timeLeft = max(t.Progress[index].expiredTime - time(), 0)
-    timeText = SecondsToTime(timeLeft)
-  end
-
-  indicatortip:AddLine(text, timeText)
-
-  finishIndicator()
-end
-
 hoverTooltip.ShowKeyReportTarget = function (cell, arg, ...)
   openIndicator(2, "LEFT", "RIGHT")
   indicatortip:AddHeader(GOLDFONT..L["Keystone report target"]..FONTEND, SI.db.Tooltip.KeystoneReportTarget)
@@ -2551,7 +2508,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9aa8398" then
+  if versionString == "e47985c" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -3143,24 +3100,22 @@ function SI:Refresh(recoverdaily)
     for i = 1, numsaved do
       local name, id, expires, diff, locked, extended, mostsig, raid, players, diffname = GetSavedInstanceInfo(i)
       local truename, instance = SI:LookupInstance(nil, name, raid)
-      if diff ~= 7 and diff ~= 17 then -- Skip (legacy) LFR entries for this character to prevent writing them to the saved variables (from which they'd be purged after the next reload anyway)
-        if expires and expires > 0 then
-          expires = expires + time()
-        else
-          expires = 0
-        end
-        instance.Raid = instance.Raid or raid
-        instance[SI.thisToon] = instance[SI.thisToon] or temp[truename] or { }
-        local info = instance[SI.thisToon][diff] or {}
-        wipe(info)
-        info.ID = id
-        info.Expires = expires
-        info.Link = GetSavedInstanceChatLink(i)
-        info.Locked = locked
-        info.Extended = extended
-        instance[SI.thisToon][diff] = info
+      if expires and expires > 0 then
+        expires = expires + time()
+      else
+        expires = 0
       end
-	end
+      instance.Raid = instance.Raid or raid
+      instance[SI.thisToon] = instance[SI.thisToon] or temp[truename] or { }
+      local info = instance[SI.thisToon][diff] or {}
+      wipe(info)
+      info.ID = id
+      info.Expires = expires
+      info.Link = GetSavedInstanceChatLink(i)
+      info.Locked = locked
+      info.Extended = extended
+      instance[SI.thisToon][diff] = info
+    end
   end
 
   local weeklyreset = SI:GetNextWeeklyResetTime()

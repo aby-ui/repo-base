@@ -276,70 +276,6 @@ local function CovenantAssaultReset(toon, index)
   t.Progress[index].unlocked = unlocked
 end
 
--- Patterns Within Patterns (index 10)
-
-local function PatternsUpdate(index)
-  local expiredTime = SI.db.Toons[SI.thisToon].Progress[index] and SI.db.Toons[SI.thisToon].Progress[index].expiredTime
-
-  SI.db.Toons[SI.thisToon].Progress[index] = wipe(SI.db.Toons[SI.thisToon].Progress[index] or {})
-  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(64230) -- Cyphers of the First Ones
-
-  local isComplete = IsQuestFlaggedCompleted(65324)
-  local isOnQuest = C_QuestLog_IsOnQuest(65324)
-  local isFinish = select(3, GetQuestObjectiveInfo(65324, 1, false))
-  local numFulfilled = GetQuestProgressBarPercent(65324)
-  local numRequired = 100
-
-  if isOnQuest then
-    local timeLeft = C_TaskQuest_GetQuestTimeLeftSeconds(65324)
-    if timeLeft and timeLeft > 0 then
-      expiredTime = time() + timeLeft
-    end
-  end
-
-  SI.db.Toons[SI.thisToon].Progress[index].isComplete = isComplete
-  SI.db.Toons[SI.thisToon].Progress[index].isOnQuest = isOnQuest
-  SI.db.Toons[SI.thisToon].Progress[index].isFinish = isFinish
-  SI.db.Toons[SI.thisToon].Progress[index].numFulfilled = numFulfilled
-  SI.db.Toons[SI.thisToon].Progress[index].numRequired = numRequired
-  SI.db.Toons[SI.thisToon].Progress[index].expiredTime = expiredTime
-end
-
-local function PatternsShow(toon, index)
-  local t = SI.db.Toons[toon]
-  if not t or not t.Progress or not t.Progress[index] then return end
-  if not t.Progress[index].unlocked then return end
-
-  if t.Progress[index].isComplete and not t.Progress[index].expiredTime then
-    -- unknown if is expired
-    return "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t (?)"
-  elseif t.Progress[index].isComplete then
-    return "\124T" .. READY_CHECK_READY_TEXTURE .. ":0|t"
-  elseif not t.Progress[index].isOnQuest then
-    return "\124cFFFFFF00!\124r"
-  elseif t.Progress[index].isFinish then
-    return "\124T" .. READY_CHECK_WAITING_TEXTURE .. ":0|t"
-  else
-    return floor(t.Progress[index].numFulfilled / t.Progress[index].numRequired * 100) .. "%"
-  end
-end
-
-local function PatternsReset(toon, index)
-  local t = SI.db.Toons[toon]
-  if not t or not t.Progress or not t.Progress[index] then return end
-
-  if t.Progress[index].expiredTime and t.Progress[index].expiredTime < time() then
-    local unlocked = t.Progress[index].unlocked
-    local numRequired = t.Progress[index].numRequired
-    local expiredTime = t.Progress[index].expiredTime + 3 * 24 * 60 * 60
-
-    wipe(t.Progress[index])
-    t.Progress[index].unlocked = unlocked
-    t.Progress[index].numRequired = numRequired
-    t.Progress[index].expiredTime = expiredTime
-  end
-end
-
 Module.TrackedQuest = {
   -- Conquest
   {
@@ -481,10 +417,8 @@ Module.TrackedQuest = {
   -- Patterns Within Patterns
   {
     name = L["Patterns Within Patterns"],
-    func = PatternsUpdate,
-    showFunc = PatternsShow,
-    resetFunc = PatternsReset,
-    tooltipKey = 'ShowPatternsTooltip',
+    weekly = true,
+    quest = 65324,
     relatedQuest = {65324},
   },
 }

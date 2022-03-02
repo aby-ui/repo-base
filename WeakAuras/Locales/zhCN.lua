@@ -426,10 +426,8 @@ L["Frame Selector"] = "选择框体"
 L["Frequency"] = "频率"
 L["Friendly"] = "友善"
 L["Friendly Fire"] = "友方伤害"
---[[Translation missing --]]
-L["Friendship Max Rank"] = "Friendship Max Rank"
---[[Translation missing --]]
-L["Friendship Rank"] = "Friendship Rank"
+L["Friendship Max Rank"] = "最大关系等级"
+L["Friendship Rank"] = "关系等级"
 L["From"] = "从"
 L["Frost Resistance"] = "冰霜抗性"
 L["Full"] = "满"
@@ -994,8 +992,7 @@ L["Summon"] = "召唤"
 L["Supports multiple entries, separated by commas"] = "支持多个条目，由英文逗号分隔"
 L[ [=[Supports multiple entries, separated by commas
 ]=] ] = "支持多个条目，由英文逗号分隔"
---[[Translation missing --]]
-L["Supports multiple entries, separated by commas. Escape ',' with \\"] = "Supports multiple entries, separated by commas. Escape ',' with \\"
+L["Supports multiple entries, separated by commas. Escape ',' with \\"] = "支持多个条目，由英文逗号分隔。使用反斜杠\"\\\"转义\",\"。"
 L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."] = "支持多个条目，由英文逗号分隔。区域组ID必须以g开头，例如 g277。"
 L["Supremus"] = "苏普雷姆斯"
 L["Swing"] = "近战攻击"

@@ -1,5 +1,5 @@
 ## Interface: 90200
-## Version: v1.1.8
+## Version: v1.2.0
 ## Title: PlexusStatusRD(Shadowlands)
 ## Notes: Debuff List for Shadowlands
 ## Author: Doadin
@@ -10,6 +10,7 @@
 
 CastleNathria.lua
 SanctumofDomination.lua
+SepulcheroftheFirstOnes.lua
 
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益9.0

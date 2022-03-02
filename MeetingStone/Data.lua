@@ -288,6 +288,16 @@ CATEGORY = {
             --[270] = true, --暗影国度
             [271] = true,   --统御圣所
             [272] = true,   --塔扎维什
+            [273] = true,
+            [274] = true,
+            [275] = true,
+            [276] = true,
+            [277] = true,
+            [278] = true,
+            [279] = true,
+            [280] = true,
+            [281] = true,
+            [282] = true,
         },
         activities = {
             [723] = true, -- 世界首领

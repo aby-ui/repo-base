@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.10
+Version 2.4.9.11
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.10";
+local VERSION = "2.4.9.11";
 
 local ADDON_NAME, T = ...;
 
@@ -306,7 +306,7 @@ local function REGISTER_HEALERS_ONLY_SPELLS_ONCE ()
         [034861] = "PRIEST", -- Circle of Healing
         [064843] = "PRIEST", -- Divine Hymn
         [047788] = "PRIEST", -- Guardian Spirit
-        --abyui [032546] = "PRIEST", -- Binding Heal
+        [290112] = "PRIEST", -- Binding Heal
         [077485] = "PRIEST", -- Mastery: Echo of Light -- the passibe ability
         -- [077489] = "PRIEST", -- Echo of Light -- the aura applied by the afformentioned
         [000139] = "PRIEST", -- Renew
@@ -553,7 +553,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.10,', L["RELEASE_DATE"], '2021-11-14T18:34:51Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.11,', L["RELEASE_DATE"], '2022-02-27T22:00:19Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -571,7 +571,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.10 -- ' .. L["RELEASE_DATE"] .. ' 2021-11-14T18:34:51Z',
+                        name = L["VERSION"] .. ' 2.4.9.11 -- ' .. L["RELEASE_DATE"] .. ' 2022-02-27T22:00:19Z',
                         order = 1,
                     },
                     Pve = {

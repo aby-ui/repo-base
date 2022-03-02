@@ -1,5 +1,6 @@
 local zoneOrder = { -- /dump WorldMapFrame.mapID
-    [C_Map.GetMapInfo(1998).name] = 10-9.2,         --纳斯利亚堡
+    [C_Map.GetMapInfo(2047).name] = 10-9.3,         --初诞者圣墓
+    [C_Map.GetMapInfo(1998).name] = 10-9.2,         --统御圣所
     [C_Map.GetMapInfo(1735).name] = 10-9.1,         --纳斯利亚堡
     [C_Map.GetMapInfo(1683).name] = 10-9.01,         --9.0小副本
     [C_Map.GetMapInfo(1674).name] = 10-9.02,

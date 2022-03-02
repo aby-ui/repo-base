@@ -45,15 +45,17 @@ end
 
 function QuestServies:QSQ(_, active, questGroupData, progressData)
     self.active = active
-    self.questGroup = QuestGroup:FromProto(questGroupData)
-    if self.questGroup.id ~= QuestType.GoldLeader then
-        if progressData then
-            self:QSP(nil, progressData)
+    self.questGroup = questGroupData and QuestGroup:FromProto(questGroupData)
+    if self.questGroup then
+        if self.questGroup.id ~= QuestType.GoldLeader then
+            if progressData then
+                self:QSP(nil, progressData)
+            else
+                self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
+            end
         else
-            self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
+            self:QueryScore()
         end
-    else
-        self:QueryScore()
     end
     self.fetched = true
     self.quering = nil

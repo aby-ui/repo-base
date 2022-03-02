@@ -218,6 +218,11 @@ GTFO.SpellID["359932"] = {
   sound = 1;
 };
 
+GTFO.SpellID["361335"] = {
+  --desc = "Destruction Zone (Destruction Core)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -874,5 +879,52 @@ GTFO.SpellID["356163"] = {
 
 -- TODO: Relic Collapse (Artificer Xy'mox) - Mythic only
 
+GTFO.SpellID["368582"] = {
+  --desc = "Shocklight Blast";
+  sound = 1;
+};
+
+GTFO.SpellID["365889"] = {
+  --desc = "Maw Expulsion";
+  sound = 1;
+};
+
+GTFO.SpellID["356163"] = {
+  --desc = "Volatile Residue (Skolex)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["361225"] = {
+  --desc = "Encroaching Dominion (Dausegne)";
+  sound = 1;
+};
+
+GTFO.SpellID["361418"] = {
+  --desc = "Obliteration Arc (Dausegne)";
+  sound = 1;
+};
+
+GTFO.SpellID["364125"] = {
+  --desc = "Progenitor Forge";
+  sound = 1;
+};
+
+GTFO.SpellID["360618"] = {
+  --desc = "Necrosis (Ossein Ritual)";
+  sound = 1;
+};
+
+GTFO.SpellID["362798"] = {
+  --desc = "Cosmic Radiation (Rygelon)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["356163"] = {
+  --desc = "Unholy Ground (Zovaal the Jailer)";
+  sound = 1;
+  test = true;
+};
 
 end

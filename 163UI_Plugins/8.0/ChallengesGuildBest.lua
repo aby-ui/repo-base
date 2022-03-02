@@ -74,8 +74,8 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
     --levels          1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
-    local drops  = { nil, 210, 213, 216, 220, 223, 223, 226, 226, 229, 229, 233, 233, 236, 236, 236, 236, 236, 236, 236, 236,  }
-    local levels = { nil, 226, 226, 226, 229, 229, 233, 236, 236, 239, 242, 246, 246, 249, 252, 252, 252, 252, 252, 252, 252,  }
+    local drops  = { nil, 236, 239, 242, 246, 249, 249, 252, 252, 255, 255, 259, 259, 262, 262, 262, 262, 262, 262, 262, 262,  }
+    local levels = { nil, 252, 252, 252, 256, 256, 259, 262, 262, 265, 268, 272, 272, 275, 278, 278, 278, 278, 278, 278, 278,  }
     local function getline(i, curr)
         if not levels[i] then return "" end
         local line = "% 2d层 |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s"
@@ -89,7 +89,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("温馨提示：7月8日第2赛季第1周，大秘掉落最高229。7月15日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
+            GameTooltip:AddLine("温馨提示：3月3日第3赛季第1周，大秘掉落最高255。3月10日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
             GameTooltip:AddLine(" ")
             local header = "层数   掉落  周箱"
             GameTooltip:AddDoubleLine(header, header, 1, 1, 1, 1, 1, 1)
@@ -128,7 +128,7 @@ end)
 --[[------------------------------------------------------------
 PVP每周奖励
 ---------------------------------------------------------------]]
-CoreDependCall("Blizzard_PVPUI", function()
+CoreDependCall("Blizzard_PVPUI_TODO", function()
     local ratings  = { "0000+",    "1400+", "1600+", "1800+", "2100+", }
     local upgrade  = {  220,    226,     233,     240,     246,  }
     local upgradep = {  233,    239,     246,     253,     259,  }
@@ -159,6 +159,7 @@ end)
 EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, tooltipShown, areaPoiID, name)
     if areaPoiID == 6640 then
         -- https://www.wowhead.com/guides/torghast-updates-patch-9-1-new-scoring-rewards-torments-shadowlands#farmable-soul-ash
+        --[[
         local levels    = {  "08", "09",   10,    11,    12, }
         local firstNew  = {   170,  230,  270,   310,   350, }
         local firstOld  = {   860,  915,  960,  1000,  1030, }
@@ -183,6 +184,7 @@ EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, toolt
 
             GameTooltip:Show()
         end
+        ]]
     end
 end, {})
 

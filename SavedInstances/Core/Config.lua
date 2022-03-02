@@ -75,6 +75,8 @@ function SI:idtext(instance,diff,info)
     return SI.diff_strings["R"..(diff-2)]
   elseif diff >= 14 and diff <= 16 then -- WoD raids
     return SI.diff_strings["R"..(diff-8)]
+  elseif diff == 17 then -- Looking For Raid
+    return SI.diff_strings.R5
   else
     return ""
   end

@@ -144,11 +144,11 @@ function Map:IsNodeEnabled(node, coord, minimap)
     -- Check if node's group is disabled
     if not node.group:IsEnabled() then return false end
 
-    -- Check for prerequisites and quest (or custom) completion
-    if not node:IsEnabled() then return false end
+    -- Check if node's group is checked/unchecked
+    if not node.group:GetDisplay(self.id) then return false end
 
-    -- Display the node based off the group display setting
-    return node.group:GetDisplay(self.id)
+    -- Check for prerequisites and quest (or custom) completion
+    return node:IsEnabled()
 end
 
 function Map:Prepare()

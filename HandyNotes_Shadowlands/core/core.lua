@@ -68,7 +68,7 @@ local function InitializeDropdownMenu(level, mapID, coord)
             notCheckable = 1,
             func = function(button)
                 Addon.db.char[mapID .. '_coord_' .. coord] = true
-                Addon:Refresh()
+                Addon:RefreshImmediate()
             end
         }, level)
 
@@ -77,7 +77,7 @@ local function InitializeDropdownMenu(level, mapID, coord)
             notCheckable = 1,
             func = function()
                 wipe(Addon.db.char)
-                Addon:Refresh()
+                Addon:RefreshImmediate()
             end
         }, level)
 
@@ -133,7 +133,7 @@ function Addon:OnClick(button, down, mapID, coord)
     elseif button == 'LeftButton' and down then
         if map:CanFocus(node) then
             map:SetFocus(node, not node._focus)
-            Addon:Refresh()
+            Addon:RefreshImmediate()
         end
     end
 end
@@ -210,24 +210,40 @@ function Addon:RegisterWithHandyNotes()
 
     -- Refresh in any cases where node status may have changed
     self:RegisterBucketEvent({
-        'BAG_UPDATE', 'CRITERIA_EARNED', 'CRITERIA_UPDATE', 'LOOT_CLOSED',
-        'PLAYER_MONEY', 'SHOW_LOOT_TOAST', 'SHOW_LOOT_TOAST_UPGRADE',
-        'QUEST_TURNED_IN', 'ZONE_CHANGED_NEW_AREA'
+        'BAG_UPDATE_DELAYED', -- looted an item
+        'CRITERIA_EARNED', -- new achievement criteria earned
+        'CRITERIA_UPDATE', -- criteria progress
+        'LOOT_CLOSED', -- loot window closed
+        'PLAYER_MONEY', -- player earned gold
+        'PLAYER_REGEN_ENABLED', -- exited combat
+        'QUEST_TURNED_IN', -- complete button pressed or WQ completed
+        'SHOW_LOOT_TOAST_UPGRADE', -- special loot obtained w/ upgrades
+        'SHOW_LOOT_TOAST', -- special loot obtained
+        'ZONE_CHANGED_NEW_AREA' -- player entered new zone
     }, 2, 'Refresh')
 
     -- Also refresh whenever the size of the world map frame changes
-    hooksecurefunc(WorldMapFrame, 'OnFrameSizeChanged',
-        function() self:Refresh() end)
+    hooksecurefunc(WorldMapFrame, 'OnFrameSizeChanged', function(...)
+        if self.world_map_maximized ~= WorldMapFrame:IsMaximized() then
+            self.world_map_maximized = WorldMapFrame:IsMaximized()
+            self:RefreshImmediate()
+        end
+    end)
+    self.world_map_maximized = WorldMapFrame:IsMaximized()
 
     self:Refresh()
 end
 
 function Addon:Refresh()
-    if self._refreshTimer then return end
+    if self._refreshTimer or InCombatLockdown() then return end
     self._refreshTimer = C_Timer.NewTimer(0.1, function()
         self._refreshTimer = nil
-        self:SendMessage('HandyNotes_NotifyUpdate', ADDON_NAME)
-        ns.MinimapDataProvider:RefreshAllData()
-        ns.WorldMapDataProvider:RefreshAllData()
+        self:RefreshImmediate()
     end)
+end
+
+function Addon:RefreshImmediate()
+    self:SendMessage('HandyNotes_NotifyUpdate', ADDON_NAME)
+    ns.MinimapDataProvider:RefreshAllData()
+    ns.WorldMapDataProvider:RefreshAllData()
 end

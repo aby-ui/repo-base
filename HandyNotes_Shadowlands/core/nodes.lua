@@ -397,9 +397,14 @@ function Item:Initialize(attrs)
     Node.Initialize(self, attrs)
     if not self.id then error('id required for Item nodes') end
 
-    local item = _G.Item:CreateFromItemID(self.id)
-    if not item:IsItemEmpty() then
-        item:ContinueOnItemLoad(function() self.icon = item:GetItemIcon() end)
+    if not self.icon then
+        self.icon = 454046 -- temp loading icon
+        local item = _G.Item:CreateFromItemID(self.id)
+        if not item:IsItemEmpty() then
+            item:ContinueOnItemLoad(function()
+                self.icon = item:GetItemIcon()
+            end)
+        end
     end
 end
 
