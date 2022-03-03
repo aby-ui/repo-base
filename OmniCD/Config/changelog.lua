@@ -36,6 +36,10 @@ v2.6.30
 Pre v2.6.30 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.6.40
+	toc update 90200
+	Additional PvP trinkets added
+
 v2.6.38
 	Bug Fixes
 		Fixed an issue that caused Icy Propulsion's cooldown reduction to end prematurely.

@@ -66,12 +66,12 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220302120237"),
+	Revision = parseCurseDate("20220302230004"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.2 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 2) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.3 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 3, 2, 5) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.17 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 2, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
@@ -392,9 +392,9 @@ local SWFilterDisabled = 12
 
 local fakeBWVersion, fakeBWHash
 if isRetail then
-	fakeBWVersion, fakeBWHash = 232, "09476e5"
+	fakeBWVersion, fakeBWHash = 235, "0ee9581"
 else
-	fakeBWVersion, fakeBWHash = 30, "b5d0123"
+	fakeBWVersion, fakeBWHash = 34, "c88d415"
 end
 local bwVersionResponseString = "V^%d^%s"
 

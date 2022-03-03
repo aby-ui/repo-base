@@ -1,18 +1,21 @@
 local mod	= DBM:NewMod(2463, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220302084136")
+mod:SetRevision("20220302225152")
 mod:SetCreatureID(180906)
 mod:SetEncounterID(2529)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20220301000000)
-mod:SetMinSyncRevision(20220301000000)
+mod:SetHotfixNoticeRev(20220302000000)
+mod:SetMinSyncRevision(20220302000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
+mod.disableHealthCombat = true--Boss stays active and even heals up after combat, we don't want these events to trigger new combat
+--mod:DisableIEEUCombatDetection()--Not sure if required yet
+--mod:DisableFriendlyDetection()--Not sure if required yet
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 361676 365283 360977 367079 359236 362056 364979 360115 368957 368529 359235",
+	"SPELL_CAST_START 361676 360977 367079 359236 362056 364979 360115 368957 368529 359235",
 	"SPELL_CAST_SUCCESS 365294",--361602
 	"SPELL_AURA_APPLIED 365297 361309 368671 368969",
 --	"SPELL_AURA_APPLIED_DOSE",
@@ -27,7 +30,7 @@ mod:RegisterEventsInCombat(
 --TODO, infoframe for reclaim absorb shield %?
 --TODO, is Shatter (formerly detonation) still a dps switch warning?
 --[[
-(ability.id = 363340 or ability.id = 363408 or ability.id = 367079 or ability.id = 361676 or ability.id = 365283 or ability.id = 360977 or ability.id = 359236 or ability.id = 364979 or ability.id = 360115 or ability.id = 359235) and type = "begincast"
+(ability.id = 363340 or ability.id = 363408 or ability.id = 367079 or ability.id = 361676 or ability.id = 360977 or ability.id = 359236 or ability.id = 364979 or ability.id = 360115 or ability.id = 359235) and type = "begincast"
  or (ability.id = 365294 or ability.id = 359235 or ability.id = 361602 or ability.id = 359236) and type = "cast"
  or ability.id = 365297 and type = "applydebuff"
  or (ability.id = 364229 or ability.id = 362056) and type = "begincast"
@@ -161,7 +164,7 @@ function mod:SPELL_CAST_START(args)
 			warnSeismicTremors:Show(self.vb.tremorCount)
 		end
 		timerSeismicTremorsCD:Start(nil, self.vb.tremorCount+1)
-	elseif spellId == 361676 or spellId == 365283 then--361676 Confirmed on heroic, 365283 where?
+	elseif spellId == 361676 then
 		self.vb.missilesCount = self.vb.missilesCount + 1
 		specWarnEarthbreakerMissiles:Show(self.vb.missilesCount)
 		specWarnEarthbreakerMissiles:Play("scatter")

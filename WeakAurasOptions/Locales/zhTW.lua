@@ -47,6 +47,15 @@ local L = WeakAuras.L
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"] = "|cFFffcc00文字樣式:|r |cFFFF0000%s|r和陰影|c%s顏色|r，偏移|cFFFF0000%s/%s|r%s%s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"] = "|cFFffcc00文字樣式:|r |cFFFF0000%s|r和陰影|c%s顏色|r，偏移|cFFFF0000%s/%s|r%s%s%s"
 	L["|cFFffcc00Format Options|r"] = "|cFFffcc00格式選項|r"
+	L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
+• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
+|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
+• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.
+• |cffffff00Smart Group|r adjusts to your current group type, matching just the "player" when solo, "party" units (including "player") in a party or "raid" units in a raid.
+• |cffffff00Multi-target|r attempts to use the Combat Log events, rather than unitID, to track affected units.
+|cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
+
+|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=] ] = "|cff00ff00玩家|r，|cff00ff00目標|r，|cff00ff00焦點|r，以及|cff00ff00寵物|r直接對應於那些單獨的單位ID。 •|cff00ff00指定單位|r讓您提供一個特定的有效單位ID來觀看。|cffff0000注意|r：遊戲不會為所有有效的單位ID觸發事件，從而使該觸發器無法跟踪某些事件。•|cffffff00隊伍|r，|cffffff00團隊|r，|cffffff00首領|r，|cffffff00競技場|r，以及|cffffff00名條|r可以匹配多個對應的單位ID。•|cffffff00智能團體|r調整為您當前的隊伍類型，僅匹配單人時的“玩家”、組隊中的“小隊”單位（包括“玩家”）或團隊中的“團隊”單位。• |cffffff00多重目標r嘗試使用戰鬥日誌事件而不是單位ID來追踪受影響的單位。cffff0000注意|r：如果與實際的單位ID沒有直接關係，結果可能會有所不同。 |cffffff00*|r黃色單位設置可以匹配多個單位，並且即使在沒有單位計數或匹配計數設置的情況下找不到受影響的單位時也會預設為活動狀態。"
 	L["1 Match"] = "1 個符合"
 	L["A 20x20 pixels icon"] = "20x20 大小的圖示"
 	L["A 32x32 pixels icon"] = "32x32 大小的圖示"

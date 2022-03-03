@@ -182,7 +182,7 @@ local function ProcessSpell(spellID, guid)
 					P.loginsessionData[guid][currentCovenantSpellID] = nil
 					info.talentData[currentCovenantSpellID] = nil
 					if currentCovenantID == 3 then
-						P.loginsessionData[guid][SOULBIND_PODTENDER] = nil
+
 						info.talentData[SOULBIND_PODTENDER] = nil
 					end
 				end
@@ -194,13 +194,13 @@ local function ProcessSpell(spellID, guid)
 				info.shadowlandsData.covenantID = covenantID
 
 				if spellID == SOULBIND_PODTENDER then
-					P.loginsessionData[guid][spellID] = 0
+
 					info.talentData[spellID] = 0
 				end
 
 				P:UpdateUnitBar(guid)
 			elseif spellID == SOULBIND_PODTENDER and not info.talentData[spellID] then
-				P.loginsessionData[guid][spellID] = 0
+
 				info.talentData[spellID] = 0
 
 				P:UpdateUnitBar(guid)
@@ -1186,7 +1186,8 @@ do
 	registeredEvents.SPELL_AURA_REMOVED[326860] = removeFallenOrder
 	registeredEvents.SPELL_AURA_APPLIED[326860] = function(info, srcGUID, spellID, destGUID)
 		if info.talentData[356818] and info.spellIcons[326860] then
-			info.auras.isFallenOrder = true
+
+			info.auras.isFallenOrder = GetTime() + 21
 			E.TimerAfter(24.1, removeFallenOrder, nil, srcGUID, spellID, destGUID)
 		end
 	end
@@ -1552,6 +1553,7 @@ do
 
 	registeredEvents.SPELL_AURA_REMOVED[TRICKS_OT_TRADE] = function(info, srcGUID, spellID, destGUID)
 		local icon = info.spellIcons[TRICKS_OT_TRADE]
+
 		if icon then
 			local statusBar = icon.statusBar
 			if statusBar then
@@ -1565,6 +1567,7 @@ do
 
 	local function StartTricksCD(info, srcGUID, spellID, destGUID)
 		local icon = info.spellIcons[TRICKS_OT_TRADE]
+
 		if icon and srcGUID == destGUID then
 			local statusBar = icon.statusBar
 			if statusBar then
@@ -2541,6 +2544,7 @@ else
 				return
 			end
 
+
 			local func = registeredEvents[event] and registeredEvents[event][spellID]
 			if func then
 				func(info, srcGUID, spellID, destGUID, critical, destFlags, amount, overkill, destName, resisted)
@@ -2570,7 +2574,7 @@ else
 						end
 					end
 				elseif info.class == "MONK" then
-					if info.auras.isFallenOrder then
+					if spellID ~= 185099 and info.auras.isFallenOrder then
 						local icon = info.spellIcons[326860]
 						if icon and icon.active then
 							local now = GetTime()
@@ -2582,13 +2586,15 @@ else
 						end
 					end
 				end
-			elseif event == "SPELL_HEAL" and resisted then
+			elseif (event == "SPELL_HEAL" or event == "SPELL_PERIODIC_HEAL" ) and resisted then
 				if info.class == "MONK" then
-					if info.auras.isFallenOrder then
+					local fallenOrderET = spellID ~= 191894 and info.auras.isFallenOrder
+					if fallenOrderET then
 						local icon = info.spellIcons[326860]
 						if icon and icon.active then
 							local now = GetTime()
-							if now > (info.auras.time_sinisterTeachings or 0) then
+
+							if now > (info.auras.time_sinisterTeachings or fallenOrderET - 18 ) and now < fallenOrderET then
 
 								P:UpdateCooldown(icon, info.spec == 270 and 2.5 or 5)
 								info.auras.time_sinisterTeachings = now + 0.75

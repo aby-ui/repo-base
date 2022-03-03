@@ -8,6 +8,7 @@ local IconScale = 1.0
 ---------------------------------------------------------
 
 -- InFlight uses FlightMapFrame directly, so it's necessary to change references
+local FlightMapFrame_origin_abyui = FlightMapFrame
 FlightMapFrame = WorldMapFrame
 -- TaxiFrame = WorldMapFrame
 
@@ -155,6 +156,13 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 		-- Therefor we need to prevent the interaction in the first place
 		if InCombatLockdown() then
 			CloseTaxiMap()
+        elseif IsInInstance() then
+            local uiMapSystem = ...;
+            if (uiMapSystem == Enum.UIMapSystem.Taxi) then
+                ShowUIPanel(TaxiFrame);
+            else
+                ShowUIPanel(FlightMapFrame_origin_abyui);
+            end
 		else
 			self:SetTaxiState(true)
 			self.taxiMap = GetMapSize(GetTaxiMapID())

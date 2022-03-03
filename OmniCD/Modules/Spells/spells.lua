@@ -719,6 +719,11 @@ E.spell_db = {
 
 		{ spellID = 345228, duration = 60,  type = "trinket",   item = 175921,  item2 = 175884  },
 		{ spellID = 356567, duration = 180, type = "trinket",   item = 186980,  },
+
+		{ spellID = 363117, duration = 180, type = "pvptrinket",item = 188524   },
+		{ spellID = 363481, duration = 120, type = "trinket",   item = 188766   },
+		{ spellID = 363522, duration = 120, type = "trinket",   item = 188775   },
+		{ spellID = 363532, duration = 180, type = "trinket",   item = 188778,  icon = 3950358  },
 	},
 	["RACIAL"] = {
 		{ spellID = 59752,  duration = 180, type = "racial",    race =  1   },
@@ -752,7 +757,6 @@ E.spell_db = {
 
 
 
-		{ spellID = 329840, duration = 120, type = "trinket",   item = 179331   },
 
 
 
@@ -785,7 +789,8 @@ E.spell_db = {
 
 
 
-		{ spellID = 344907, duration = 480, type = "trinket",   item = 184018   },
+
+
 
 
 

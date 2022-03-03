@@ -335,6 +335,7 @@ else
 		336126, -- Sinful Gladiator's Medallion (item2 = Aspirant)
 		196029, -- Sinful Gladiator's Relentless Brooch
 		59752,  -- Will to Survive
+		363117, -- Cosmic Gladiator's Fastidious Resolve
 		-- Covenant
 		323436, -- Purify Soul
 		319217, -- Podtender

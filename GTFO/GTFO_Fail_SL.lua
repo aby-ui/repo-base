@@ -1685,6 +1685,11 @@ GTFO.SpellID["347094"] = {
 -- TODO: Hyperlight Sparknova (Artificer Xy'mox) - More than 1 stack?
 
 
+GTFO.SpellID["364904"] = {
+  --desc = "Anti-Matter (Vigilant Guardian)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 GTFO.SpellID["360999"] = {
   --desc = "Wave of Disintegration (Vigilant Custodian)";
@@ -1700,7 +1705,6 @@ GTFO.SpellID["366187"] = {
   --desc = "Erupting Slash (Hired Muscle)";
   sound = 3;
   tankSound = 0;
-  test = true;
 };
 
 GTFO.SpellID["362882"] = {
@@ -1713,14 +1717,12 @@ GTFO.SpellID["364604"] = {
   --desc = "Genesis Rings (Artificer Xy'mox)";
   applicationOnly = true;
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["363413"] = {
   --desc = "Genesis Rings (Artificer Xy'mox)";
   applicationOnly = true;
   sound = 3;
-  test = true;
 };
 
 GTFO.SpellID["364373"] = {
@@ -1732,7 +1734,6 @@ GTFO.SpellID["365681"] = {
   --desc = "Massive Blast (Xy Acolyte)";
   sound = 3;
   tankSound = 0;
-  test = true;
 };
 
 GTFO.SpellID["360737"] = {
@@ -1750,6 +1751,11 @@ GTFO.SpellID["364522"] = {
   --desc = "Devouring Blood (Skolex)";
   sound = 3;
   applicationOnly = true;
+};
+
+GTFO.SpellID["359913"] = {
+  --desc = "Wormhole Jaws (Skolex)";
+  sound = 3;
 };
 
 GTFO.SpellID["367554"] = {
@@ -1822,6 +1828,66 @@ GTFO.SpellID["365866"] = {
 
 GTFO.SpellID["362352"] = {
   --desc = "Pinned (Pinning Weapon)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365168"] = {
+  --desc = "Cosmic Slam (Eternal Sentry)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["367428"] = {
+  --desc = "Devour Essence (Gnarled Scavenger)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["366114"] = {
+  --desc = "Restless Earth (Ancient Guardian)";
+  sound = 3;
+};
+
+GTFO.SpellID["369650"] = {
+  --desc = "Aftershock (Halondrus)";
+  sound = 3;
+};
+
+GTFO.SpellID["367082"] = {
+  --desc = "Seismic Tremors (Halondrus)";
+  sound = 3;
+};
+
+GTFO.SpellID["365919"] = {
+  --desc = "Explosive Armaments (Dominated Disrupter)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["364867"] = {
+  --desc = "Sinful Projection (Prototype of Absolution)";
+  sound = 3;
+};
+
+GTFO.SpellID["361305"] = {
+  --desc = "Wild Stampede (Prototype of Renewal)";
+  sound = 3;
+};
+
+GTFO.SpellID["363018"] = {
+  --desc = "Protoform Cascade (Lihuvim)";
+  sound = 3;
+};
+
+GTFO.SpellID["364330"] = {
+  --desc = "Detonation (Acquisitions Automa)";
+  sound = 3;
+  test = true;
+};
+
+GTFO.SpellID["365024"] = {
+  --desc = "Wicked Star (Anduin Wrynn)";
   applicationOnly = true;
   sound = 3;
 };

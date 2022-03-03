@@ -88,5 +88,8 @@ GTFO.IgnoreScan["356447"] = true; -- Dreadbugs
 GTFO.IgnoreScan["209858"] = true; -- Necrotic Wound
 GTFO.IgnoreScan["355951"] = true; -- Unworthy
 GTFO.IgnoreScan["366943"] = true; -- Radioactive Core
+GTFO.IgnoreScan["368146"] = true; -- Eternity Engine
+GTFO.IgnoreScan["362130"] = true; -- Quaking Steps
+GTFO.IgnoreScan["361818"] = true; -- Hopebreaker
 
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220302114658")
+mod:SetRevision("20220302225152")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -47,7 +47,6 @@ mod:RegisterEventsInCombat(
 
 --Stage One: Kingsmourne Hungers
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24462))
---mod:AddIconLine(P1Info)
 --local warnDespair								= mod:NewTargetNoFilterAnnounce(365235, 2)
 local warnBefouledBarrier						= mod:NewSpellAnnounce(365295, 3)
 local warnWickedStar							= mod:NewTargetCountAnnounce(365021, 3, nil, nil, nil, nil, nil, nil, true)
@@ -76,7 +75,7 @@ local timerWickedStar							= mod:NewTargetCountTimer(4, 365021, nil, false, nil
 local timerHopebreakerCD						= mod:NewCDCountTimer(28.8, 361815, nil, nil, nil, 2)
 local timerDominationWordPainCD					= mod:NewCDCountTimer(28.8, 366849, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 
---mod:AddSetIconOption("SetIconOnWickedStar", 365021, false, false, {1, 2, 3, 4, 5, 6})
+mod:AddSetIconOption("SetIconOnAnduinsHope", "ej24468", false, true, {1, 2, 3})--Up to 4 of them, but we hold 4 for grim reflections
 mod:GroupSpells(361989, 361992, 361993)--Group two debuffs with parent spell Blasphemy
 --Intermission: Remnant of a Fallen King
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24494))
@@ -335,6 +334,9 @@ function mod:SPELL_CAST_START(args)
 		if timer then
 			timerKingsmourneHungersCD:Start(timer, self.vb.hungersCount+1)
 		end
+		if self.Options.SetIconOnAnduinsHope then
+			self:ScanForMobs(184493, 1, 1, 3, nil, 12, "SetIconOnAnduinsHope")
+		end
 	elseif spellId == 361989 then
 		self.vb.blastphemyCount = self.vb.blastphemyCount + 1
 		if not playersSouled[playerName] then
@@ -492,11 +494,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		--Determin this debuff and assign icon based on dropdown setting and which debuff it is and construct tables
 		if spellId == 361992 then--Overconfidence
 			overconfidentTargets[#overconfidentTargets + 1] = args.destName
-			icon = (self.vb.PairingBehavior == "Auto") and #overconfidentTargets or 1--Star
 			count = #overconfidentTargets
 		else--Hopelessness
 			hopelessnessTargets[#hopelessnessTargets + 1] = args.destName
-			icon = (self.vb.PairingBehavior == "Auto") and #hopelessnessTargets or 3--Diamond
 			count = #hopelessnessTargets
 		end
 		--Determine if player is in either debuff table by matching current table with other table.
@@ -505,16 +505,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		if hopelessnessTargets[count] and overconfidentTargets[count] == playerName then
 			if self.vb.PairingBehavior == "Auto" then
 				specWarnOverconfidence:Show(hopelessnessTargets[count])--Paired players name
+				icon = count
 			else
 				specWarnOverconfidence:Show(hopelessnessName)--Just the name of debuff they need to pair with
+				icon = 1--Star
 			end
 			specWarnOverconfidence:Play("gather")
 			playerIsInPair = true
 		elseif overconfidentTargets[count] and hopelessnessTargets[count] == playerName then
 			if self.vb.PairingBehavior == "Auto" then
 				specWarnHopelessness:Show(overconfidentTargets[count])--Paired players name
+				icon = count
 			else
 				specWarnHopelessness:Show(overconfidenceName)--Just the name of debuff they need to pair with
+				icon = 3--Diamond
 			end
 			specWarnHopelessness:Play("gather")
 			playerIsInPair = true
@@ -617,7 +621,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnSoulReaperTaunt:Play("tauntboss")
 	elseif spellId == 362862 then
 		warnArmyofDead:Show()
-		timerArmyofDeadCD:Start(37)
+		timerArmyofDeadCD:Start(36.9)
 	elseif spellId == 366849 then
 		warnDominationWordPain:CombinedShow(0.3, args.destName)
 	elseif spellId == 363028 then

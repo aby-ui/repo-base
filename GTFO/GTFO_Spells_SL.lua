@@ -223,6 +223,11 @@ GTFO.SpellID["361335"] = {
   sound = 1;
 };
 
+GTFO.SpellID["368476"] = {
+  --desc = "Charged Ground (Protector of the First Ones)";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -889,7 +894,7 @@ GTFO.SpellID["365889"] = {
   sound = 1;
 };
 
-GTFO.SpellID["356163"] = {
+GTFO.SpellID["366070"] = {
   --desc = "Volatile Residue (Skolex)";
   sound = 1;
   test = true;
@@ -915,13 +920,38 @@ GTFO.SpellID["360618"] = {
   sound = 1;
 };
 
+GTFO.SpellID["365886"] = {
+  --desc = "Photon Expulsion";
+  sound = 1;
+};
+
+GTFO.SpellID["360114"] = {
+  --desc = "Ephemeral Fissure (Halondrus)";
+  sound = 1;
+};
+
+GTFO.SpellID["367838"] = {
+  --desc = "Ephemeral Fissure (Halondrus)";
+  sound = 1;
+};
+
+GTFO.SpellID["366232"] = {
+  --desc = "Animastorm (Prototype of Renewal)";
+  sound = 1;
+};
+
+GTFO.SpellID["360159"] = {
+  --desc = "Unstable Mote (Lihuvim)";
+  sound = 1;
+};
+
 GTFO.SpellID["362798"] = {
   --desc = "Cosmic Radiation (Rygelon)";
   sound = 1;
   test = true;
 };
 
-GTFO.SpellID["356163"] = {
+GTFO.SpellID["360425"] = {
   --desc = "Unholy Ground (Zovaal the Jailer)";
   sound = 1;
   test = true;
