@@ -116,7 +116,7 @@ local function BootstrapDevelopmentEnvironment()
             for i, _ns in ipairs(_G[plugins]) do
                 if not _ns.dev_force then
                     _ns.dev_force = true
-                    _ns.addon:Refresh()
+                    _ns.addon:RefreshImmediate()
                 end
             end
             -- Hide player pins on the map
@@ -129,7 +129,7 @@ local function BootstrapDevelopmentEnvironment()
             for i, _ns in ipairs(_G[plugins]) do
                 if _ns.dev_force then
                     _ns.dev_force = false
-                    _ns.addon:Refresh()
+                    _ns.addon:RefreshImmediate()
                 end
             end
             -- Show player pins on the map

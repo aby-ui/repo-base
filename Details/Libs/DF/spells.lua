@@ -915,12 +915,15 @@ DF.CooldownsInfo = {
 DF.CrowdControlSpells = {
 	[5246] = "WARRIOR", --Intimidating Shout
 	[132168] = "WARRIOR", --Shockwave (debuff spellid)
+	[6552] = "WARRIOR", --Pummel
 	[132169] = "WARRIOR", --Storm Bolt (talent debuff spellid)
-	
+
 	[118699] = "WARLOCK", --Fear (debuff spellid)
 	[6789] = "WARLOCK", --Mortal Coil
+	[19647] = "WARLOCK", --Spelllock
 	[30283] = "WARLOCK", --Shadowfury
 	[710] = "WARLOCK", --Banish
+	[212619] = "WARLOCK", --Call Fellhunt
 	[5484] = "WARLOCK", --Howl of Terror (talent)
 
 	[118] = "MAGE", --Polymorph
@@ -933,6 +936,7 @@ DF.CrowdControlSpells = {
 	[61721] = "MAGE", --Polymorph Rabbit
 	[28272] = "MAGE", --Polymorph Pig
 	[277792] = "MAGE", --Polymorph Bumblebee
+	[2139] = "MAGE", --Counterspell
 	
 	[82691] = "MAGE", --Ring of Frost (debuff spellid)
 	[122] = "MAGE", --Frost Nova
@@ -947,19 +951,26 @@ DF.CrowdControlSpells = {
 	[200200] = "PRIEST", --Holy Word: Chastise (talent debuff spellid)
 	[226943] = "PRIEST", --Mind Bomb (talent)
 	[64044] = "PRIEST", --Psychic Horror (talent)
+	[15487] = "PRIEST", --Silence
 	
 	[2094] = "ROGUE", --Blind
 	[1833] = "ROGUE", --Cheap Shot
 	[408] = "ROGUE", --Kidney Shot
+	[1766] = "ROGUE", --Kick
 	[6770] = "ROGUE", --Sap
 	[1776] = "ROGUE", --Gouge
 	
 	[853] = "PALADIN", --Hammer of Justice
+	[96231] = "PALADIN", --Rebuke (tank)
 	[20066] = "PALADIN", --Repentance (talent)
 	[105421] = "PALADIN", --Blinding Light (talent)
+	[31935] = "PALADIN", --Avengers Shield
+	[217824] = "PALADIN", --Shield of Virtue
 	
 	[221562] = "DEATHKNIGHT", --Asphyxiate
 	[108194] = "DEATHKNIGHT", --Asphyxiate (talent)
+	[47528] = "DEATHKNIGHT", --Mind Frezer
+	[91807] = "DEATHKNIGHT", --Shab Rush
 	[207167] = "DEATHKNIGHT", --Blinding Sleet
 	[334693] = "DEAHTKNIGHT", --Absolute Zero (legendary)
 	
@@ -975,9 +986,12 @@ DF.CrowdControlSpells = {
 	[50259] = "DRUID", --Dazed (from Wild Charge)
 	[209753] = "DRUID", --Cyclone (from pvp talent)
 	[33786] = "DRUID", --Cyclone (from pvp talent - resto druid)
+	[93985] = "DRUID", --Skullbash
 	[163505] = "DRUID", --Rake
 	[127797] = "DRUID", --Ursol's Vortex
 	
+	[147362] = "HUNTER", --Countershot
+	[187707] = "HUNTER", --Muzzle
     [3355] = "HUNTER", --Freezing Trap / Diamond Ice (from pvp talent)
 	[19577] = "HUNTER", --Intimidation
 	[190927] = "HUNTER", --Harpoon
@@ -991,6 +1005,7 @@ DF.CrowdControlSpells = {
 	[198909] = "MONK", --Song of Chi-Ji (talent)
 	[116706] = "MONK", --Disable
 	[107079] = "MONK", --Quaking Palm (racial)
+	[116705] = "MONK", --Spear kick
 	
 	[118905] = "SHAMAN", --Static Charge (Capacitor Totem)
 	[51514] = "SHAMAN", --Hex
@@ -1002,6 +1017,7 @@ DF.CrowdControlSpells = {
 	[277778] = "SHAMAN", --Hex (Zandalari Tendonripper)
 	[277784] = "SHAMAN", --Hex (Wicker Mongrel)
 	[309328] = "SHAMAN", --Hex (Living Honey)
+	[57994] = "SHAMAN",  --Wind Shear
 	[64695] = "SHAMAN", --Earthgrab (talent)
 	[197214] = "SHAMAN", --Sundering (talent)
 	
@@ -1010,6 +1026,7 @@ DF.CrowdControlSpells = {
 	[200166] = "DEMONHUNTER", --Metamorphosis
 	[207685] = "DEMONHUNTER", --Sigil of Misery
 	[211881] = "DEMONHUNTER", -- Fel Eruption
+	[183752] = "DEMONHUNTER", --Disrupt
 	
 	[331866] = "COVENANT|VENTHYR", --Agent of Chaos (Nadia soulbind)
 }
@@ -1337,13 +1354,11 @@ DF.PotionIDs = {
 DF.FeastIDs = {
 	[308462] = true, --Feast of Gluttonous Hedonism
 	[307153] = true, --Eternal Cauldron
-
-
-
 }
 
 DF.RuneIDs = {
 	[347901] = true, --Veiled Augmentation
+	[367405] = true, --Eternal Augmentation
 }
 
 --	/dump UnitAura ("player", 1)

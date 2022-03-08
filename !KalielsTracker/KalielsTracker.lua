@@ -1585,6 +1585,7 @@ local function SetHooks()
 	function ObjectiveTracker_Expand()  -- R
 		_DBG("--------------------------------")
 		_DBG("EXPAND")
+        KT_ForceHideTracker(false)
 		OTF.collapsed = nil
 		dbChar.collapsed = OTF.collapsed
 		OTF.BlocksFrame:Show()
@@ -2550,7 +2551,7 @@ function KT:ToggleEmptyTracker(added)
 		end
 	else
 		if dbChar.collapsed then
-			if added and self.autoExpand then
+			if added and self.autoExpand and not (db.collapseInInstance and IsInInstance()) then --abyui
 				ObjectiveTracker_Toggle()
 			else
 				KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.25)
@@ -2569,6 +2570,30 @@ function KT:ToggleEmptyTracker(added)
 		KTF.AchievementsButton:EnableMouse(mouse)
 	end
 end
+
+--abyui 强制设置成透明，DBM自动隐藏时需要，返回true表示确实有改变
+_G.KT_ForceHideTracker = function(hide)
+    local alpha, mouse = 1, true
+    if hide then
+            alpha = 0
+            mouse = false
+    end
+    if KTF:GetAlpha() == alpha then
+        return false
+    end
+    KTF:SetAlpha(alpha)
+    KTF.MinimizeButton:EnableMouse(mouse)
+    if KT.Filters:IsEnabled() then
+        KTF.FilterButton:EnableMouse(mouse)
+    end
+    if db.hdrOtherButtons then
+        KTF.QuestLogButton:EnableMouse(mouse)
+        KTF.AchievementsButton:EnableMouse(mouse)
+    end
+    return true
+end
+--/run hooksecurefunc("ObjectiveTracker_Expand", pdebug)
+--hooksecurefunc("Scenario_ChallengeMode_ShowBlock", function()    if db.collapseInInstance then end end)
 
 function KT:SetMessage(text, r, g, b, pattern, icon, x, y)
     if not text then return end

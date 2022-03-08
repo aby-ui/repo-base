@@ -686,8 +686,9 @@ function EventAlert_Buffs_Update(...)
 	for i=1,40 do
 		
 		local name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, _, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura("player", i, "HELPFUL")
-		
+
 		if (not spellID) then break end
+        if spellID == 352917 then icon = 132870 end --INV_Enchant_EssenceNetherLarge
 		if isCastByPlayer then unitCaster = "player" end
 
 		if (spellID == 71601) then EA_SPEC_expirationTime1 = expirationTime end;

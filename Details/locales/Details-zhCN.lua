@@ -394,6 +394,16 @@ L["STRING_OPTIONS_3D_UANCHOR"] = "较高3D模型："
 L["STRING_OPTIONS_3D_UENABLED_DESC"] = "启用或禁用计量条后面的3D模型框架"
 L["STRING_OPTIONS_3D_USELECT_DESC"] = "选择哪个模型将被用于在较高的模型栏。"
 L["STRING_OPTIONS_ADVANCED"] = "进阶"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET_DESC"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_WARNING"] = ""--]] 
 L["STRING_OPTIONS_ALPHAMOD_ANCHOR"] = "自动隐藏："
 L["STRING_OPTIONS_ALWAYS_USE"] = "所有角色通用"
 L["STRING_OPTIONS_ALWAYS_USE_DESC"] = "勾选此项时，所有角色都使用此配置。否则将显示一个面板供选择。"
@@ -637,10 +647,14 @@ L["STRING_OPTIONS_ED_DESC"] = [=[|cFFFFFF00手动|r：用户需要手动点击�
 L["STRING_OPTIONS_ED1"] = "手动"
 L["STRING_OPTIONS_ED2"] = "询问"
 L["STRING_OPTIONS_ED3"] = "自动"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_EDIT_CUSTOM_TEXT"] = ""--]] 
 L["STRING_OPTIONS_EDITIMAGE"] = "编辑图片"
 L["STRING_OPTIONS_EDITINSTANCE"] = "编辑窗口："
 L["STRING_OPTIONS_ERASECHARTDATA"] = "删除图表"
 L["STRING_OPTIONS_ERASECHARTDATA_DESC"] = "注销时，所有的战斗收集的数据创建的图表将被删除。"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_EXPORT_PROFILE"] = ""--]] 
 L["STRING_OPTIONS_EXTERNALS_TITLE"] = "外部小工具"
 L["STRING_OPTIONS_EXTERNALS_TITLE2"] = "这些选项控制外部小工具的行为。"
 L["STRING_OPTIONS_GENERAL"] = "一般设置"
@@ -666,6 +680,12 @@ L["STRING_OPTIONS_IGNORENICKNAME_DESC"] = "当启用时，公会成员设置的�
 L["STRING_OPTIONS_ILVL_TRACKER"] = "物品等级跟踪："
 L["STRING_OPTIONS_ILVL_TRACKER_DESC"] = "当启用并在非战斗状态，此插件查询并追踪团队内玩家的物品等级"
 L["STRING_OPTIONS_ILVL_TRACKER_TEXT"] = "启用"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_IMPORT_PROFILE"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_IMPORT_PROFILE_NAME"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_IMPORT_PROFILE_PASTE"] = ""--]] 
 L["STRING_OPTIONS_INSTANCE_ALPHA2"] = "背景颜色"
 L["STRING_OPTIONS_INSTANCE_ALPHA2_DESC"] = "此选项让你改变窗口背景的颜色。"
 L["STRING_OPTIONS_INSTANCE_BACKDROP"] = "背景纹理"
@@ -777,6 +797,8 @@ L["STRING_OPTIONS_NICKNAME_DESC"] = [=[为您设置一个昵称。
 昵称发送给公会成员和 Details!使用它代替你的名字。]=]
 L["STRING_OPTIONS_OPEN_ROWTEXT_EDITOR"] = "行文字编辑器"
 L["STRING_OPTIONS_OPEN_TEXT_EDITOR"] = "打开文本编辑器"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_OPENBROKER"] = ""--]] 
 L["STRING_OPTIONS_OVERALL_ALL"] = "所有片段"
 L["STRING_OPTIONS_OVERALL_ALL_DESC"] = "所有片段会被添加到总体数据。"
 L["STRING_OPTIONS_OVERALL_ANCHOR"] = "总体数据:"

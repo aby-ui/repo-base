@@ -480,15 +480,6 @@
 			Details.leaving_combat = true
 			Details.last_combat_time = _tempo
 			
-			--deprecated (combat are now added immediatelly since there's no script run too long)
-			--if (Details.schedule_remove_overall and not from_encounter_end and not InCombatLockdown()) then
-			--	if (Details.debug) then
-			--		Details:Msg ("(debug) found schedule overall data deletion.")
-			--	end
-			--	Details.schedule_remove_overall = false
-			--	Details.tabela_historico:resetar_overall()
-			--end
-			
 			Details:CatchRaidBuffUptime ("BUFF_UPTIME_OUT")
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_OUT")
 			Details:CloseEnemyDebuffsUptime()
@@ -1848,39 +1839,45 @@
 --> core
 
 	function Details:AutoEraseConfirm()
-	
+
 		local panel = _G.DetailsEraseDataConfirmation
 		if (not panel) then
-			
-			panel = CreateFrame ("frame", "DetailsEraseDataConfirmation", UIParent, "BackdropTemplate")
-			panel:SetSize (400, 85)
-			panel:SetBackdrop ({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16,
+			panel = CreateFrame("frame", "DetailsEraseDataConfirmation", UIParent, "BackdropTemplate")
+			panel:SetSize(400, 85)
+			panel:SetBackdrop({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16,
 			edgeFile = [[Interface\AddOns\Details\images\border_2]], edgeSize = 12})
-			panel:SetPoint ("center", UIParent)
-			panel:SetBackdropColor (0, 0, 0, 0.4)
-			
-			panel:SetScript ("OnMouseDown", function (self, button)
+			panel:SetPoint("center", UIParent)
+			panel:SetBackdropColor(0, 0, 0, 0.4)
+
+			DetailsFramework:ApplyStandardBackdrop(panel)
+
+			panel:SetScript("OnMouseDown", function (self, button)
 				if (button == "RightButton") then
 					panel:Hide()
 				end
 			end)
-			
-			--local icon = Details.gump:CreateImage (panel, [[Interface\AddOns\Details\images\logotipo]], 512*0.4, 256*0.4)
-			--icon:SetPoint ("bottomleft", panel, "topleft", -10, -11)
-			
+
+			--[=[
+				create 3 options
+				- overall data only
+				- current data only
+				- both
+
+			--=]=]
+
 			local text = Details.gump:CreateLabel (panel, Loc ["STRING_OPTIONS_CONFIRM_ERASE"], nil, nil, "GameFontNormal")
 			text:SetPoint ("center", panel, "center")
 			text:SetPoint ("top", panel, "top", 0, -10)
-			
+
 			local no = Details.gump:CreateButton (panel, function() panel:Hide() end, 90, 20, Loc ["STRING_NO"])
 			no:SetPoint ("bottomleft", panel, "bottomleft", 30, 10)
 			no:InstallCustomTexture (nil, nil, nil, nil, true)
-			
+
 			local yes = Details.gump:CreateButton (panel, function() panel:Hide(); Details.tabela_historico:resetar() end, 90, 20, Loc ["STRING_YES"])
 			yes:SetPoint ("bottomright", panel, "bottomright", -30, 10)
 			yes:InstallCustomTexture (nil, nil, nil, nil, true)
 		end
-		
+
 		panel:Show()
 	end
 

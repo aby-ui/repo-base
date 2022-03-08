@@ -253,7 +253,7 @@ L['flayedwing_transporter_note'] = '點選 {npc:178633} 來進入或離開玄秘
 L['fleshwing_note'] = '和 {npc:180079} 對話來開始收集事件.'
 L['forgotten_feather_note'] = '在一個可以從守衛者歇息地跳下去的漂浮小島上.'
 L['konthrogz_note'] = '從一個吞食者傳送門事件中刷新.'
-L['korthia_limited_rare'] = '|cFFFF8C00此稀有在某些日子不會刷新|r'
+L['sl_limited_rare'] = '|cFFFF8C00此稀有在某些日子不會刷新|r'
 L['krelva_note'] = '當血量到80%時會移動到另外一個平台, 然後當血量剩60%會移動到陸地上. |cFFFF8C00你必須在60%後有打到稀有才有計算擊殺!|r'
 L['kroke_note'] = '擊殺區域內的 {npc:179029} 直到他出現. 當 {npc:179029} 不存在時沒有辦法召喚.'
 L['maelie_wanderer'] = '{npc:179912} 會刷新在所標註的位置. 當你點選牠後會對牠使用 {spell:355862} 持續使用六天後，回去找 {npc:179930} 來取得坐騎.'
@@ -685,7 +685,7 @@ L['gluttonous_overgrowth_note'] = '摧毀所有附近的 {npc:184048} 來啟動�
 L['helmix_note'] = [[
 在此區域殺死 {npc:179005} 直到他做出表情並刷新.
 
-|cFFFF8C00大地在震動... 什麼東西潛藏在地表之下!|r
+|cFFFF8C00地面在震動…有東西在地底下鑽洞！|r
 ]]
 L['hirukon_note'] = [[
 要引誘 {npc:180978} 到水面, 需要製造一個 {item:187923}.
@@ -720,7 +720,7 @@ L['ripened_protopear_note'] = '開始 {quest:64641} 任務鏈來獲得進入繁�
 L['sphere_treasure_note'] = '小心的從球體往上跳直到你到達寶藏處.'
 L['submerged_chest_note'] = '吸收南邊的 |cFFFFFD00危險的能量球|r, 然後和寶藏旁邊的 |cFFFFFD00被遺忘的幫浦|r 互動'
 L['symphonic_vault_note'] = '檢查 {npc:183998} 後會聽到4種聲音的序列. 房間內每個 {npc:183950} 會撥放一種聲音. 依照對應的順序和它們互動會解鎖寶藏.'
-L['syntactic_vault_note'] = '要解鎖寶藏, 你必須要在首創者聖塚區域的 |cFFFFFD00Runic Syllables|r 互動取得6層的 {spell:367499}.'
+L['syntactic_vault_note'] = '要解鎖寶藏, 你必須要在首創者聖塚區域的 |cFFFFFD00符文音節|r 互動取得6層的 {spell:367499}.'
 L['template_archive_note'] = '推動面向擋住路徑的 {npc:183337} 的 {npc:183339} 來取得寶藏.'
 L['undulating_foliage_note'] = [[
 按下四個 {npc:185390} 來啟動在滋長界地中間房間的傳送器.
@@ -759,31 +759,34 @@ L['cache_toccatian'] = '托卡提安原鎖'
 L['schematic_treasure_note'] = '|cFFFF8C00在你還沒有解鎖合成器時此寶藏不會含有結構圖. 如果你已經撿過寶藏後才解鎖, 你可以在旁邊的地上找到結構圖.|r'
 L['schematic_treasure_mount_note'] = '|cFFFF8C00此結構圖可以在附近的一次性寶藏找到. 如果你在解鎖坐騎合成器之前開啟了寶藏, 你可以在此找到結構圖.|r'
 L['schematic_treasure_pet_note'] = '|cFFFF8C00此結構圖可以在附近的一次性寶藏找到. 如果你在解鎖寵物合成器之前開啟了寶藏, 你可以在此找到結構圖.|r'
-L['schematic_bronze_helicid_note'] = '有機率從雙周任務 {quest:65324} 的 {item:190610} 內被找到'
+L['schematic_bronze_helicid_note'] = '有機率從每周任務 {quest:65324} 的 {item:190610} 內被找到'
 L['schematic_ambystan_darter_note'] = '藏在水下 {npc:185312} 附近'
 L['schematic_bronzewing_vespoid_note'] = '在育生棲地內'
-L['schematic_buzz_note'] = '在 {npc:185265} 內有機率發現'
+L['schematic_buzz_note'] = '在 {npc:185265} 內有機率找到'
 L['schematic_darkened_vombata_note'] = '在一個漂浮的籠子內'
 L['schematic_deathrunner_note'] = '作為 {spell:366367} 的一部分解鎖任務鏈來取得'
 L['schematic_desertwing_hunter_note'] = '在柱子頂端'
 L['schematic_fierce_scarabid_note'] = '藏在 {npc:181870} 所站的平台底下'
 L['schematic_forged_spiteflyer_note'] = '從原蜂巢群中伸出'
-L['schematic_genesis_crawler_note'] = '在創始密室入口的頂端發現'
+L['schematic_genesis_crawler_note'] = '在創始密室入口的頂端找到'
 L['schematic_goldplate_bufonid_note'] = '{npc:178803} 有低機率掉落'
 L['schematic_heartbond_lupine_note'] = '{npc:179939} 有低機率掉落'
 L['schematic_leaping_leporid_note'] = '在一顆漂浮的樹頂端可以找到'
-L['schematic_microlicid_note'] = '在漂浮樹最低的枝幹上， 在一些葉子之下'
+L['schematic_microlicid_note'] = '在漂浮樹最低的枝幹上， 被蓋在一些葉子下方'
 L['schematic_pale_regal_cervid_note'] = '在 {npc:181397} 處研究所有的暗語來取得 {achievement:15402}.'
-L['schematic_prototickles_note'] = '在稀有 {npc:180978} 之上的藤蔓內連接著的一個漂浮鍊'
-L['schematic_raptora_swooper_note'] = '在轉化廳內發現'
-L['schematic_resonant_echo_note'] = '有機率在 {item:189172} 內發現'
-L['schematic_russet_bufonid_note'] = '有機率在 {item:187780} 巔峰箱內發現'
+L['schematic_prototickles_note'] = '在稀有 {npc:180978} 上方的藤蔓內，和一個漂浮的鍊子相連著'
+L['schematic_raptora_swooper_note'] = '在轉化廳內找到'
+L['schematic_resonant_echo_note'] = '有機率在 {item:189172} 內找到'
+L['schematic_russet_bufonid_note'] = '有機率在 {item:187780} 巔峰箱內找到'
 L['schematic_scarlet_helicid_note'] = '在拱形建築頂端可以被找到'
-L['schematic_shelly_note'] = '在詞彙石窟內書櫃的背面上. 需要傳送技能來爬上書櫃'
+L['schematic_serenade_note'] = nil
+L['schematic_shelly_note'] = '在詞彙石窟裡的書櫃的背面凹洞內. 需要使用傳送技能來到達'
+L['schematic_stabilized_geomental_note'] = nil
 L['schematic_tarachnid_creeper_note'] = '在無盡沙海內的一個小建築內'
-L['schematic_terror_jelly_note'] = '在坡道附近的方形塔架頂端'
-L['schematic_tunneling_vombata_note'] = '在洛克利安魂核內一個被堵塞的隧道的瓦礫旁'
+L['schematic_terror_jelly_note'] = '在坡道旁的方形塔頂端'
+L['schematic_tunneling_vombata_note'] = '在洛克利安魂核內一個被堵塞的隧道裡的瓦礫旁'
 L['schematic_vespoid_flutterer_note'] = '在鳴響山嶽的第一位點的一堆沙中伸出'
+L['schematic_violent_poultrid_note'] = nil
 
 L['concordance_excitable'] = '躁動索引'
 L['concordance_mercurial'] = '易變索引'

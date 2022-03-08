@@ -811,7 +811,7 @@ if AL then
 	AL["NOTE_375382_1"] = "Hiu Fi"
 	AL["NOTE_375404"] = "You need a [Sandworn Chest Key] to open it. The key is built with 5x[Sandworn Chest Key Fragments] dropped by all the mobs around [Arrangement Index]."
 	AL["NOTE_375405"] = "In a nest on top of the tree. You have to climb the orbs to reach there (and have a lot of patience)"
-	AL["NOTE_375408"] = "Research [Sopranian Understanding] at [Cypher Console] to unlock the quest [Finding Tahli] started by [Elder Amir]. Complete the whole series of quests and wait for the next day. Then he will give you the quest [The Lost Component]. After completing these last quests you will be able to go inside the building where the treasure is and interact with it."
+	AL["NOTE_375408"] = "Research [Sopranian Understanding] at [Cypher Console] to unlock the quest [Finding Tahli] started by [Elder Amir]. Complete the whole series of quests and then you will be able to go inside the building where the treasure is and interact with it."
 	AL["NOTE_375408_1"] = "[Elder Amir]"
 	AL["NOTE_375411"] = "Inside a cave. You have to collect 5x[Lost Ovoid]s around the green areas in Zereth Mortis. Then come back and return them to [Frazzledl Poultrid Hen]. It will move aside, letting you get the treasure."
 	AL["NOTE_375411_1"] = "You might find a [Lost Ovoid] here."

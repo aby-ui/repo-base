@@ -696,13 +696,14 @@ function CanIMogIt:CalculateSetsVariantText(setID)
 
     local variantsText = ""
 
+    local k = 1
     for i, variantSet in CanIMogIt.Utils.spairs(variantSets, function(t,a,b) return t[a].uiOrder < t[b].uiOrder end) do
         local variantHave, variantTotal = CanIMogIt:_GetRatio(variantSet.setID)
 
         variantsText = variantsText .. CanIMogIt:_GetRatioTextColor(variantHave, variantTotal)
 
         -- There is intentionally an extra space before the newline, for positioning.
-        variantsText = variantsText .. variantHave .. "/" .. variantTotal .. " \n"
+        variantsText = variantsText .. variantHave .. "/" .. variantTotal .. (k%2==0 and "\n" or " ") k = k + 1
     end
 
     -- uncomment for debug

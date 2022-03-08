@@ -7,8 +7,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 9696
-		_detalhes.alpha_build_counter = 9696 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 9718
+		_detalhes.alpha_build_counter = 9718 --if this is higher than the regular counter, use it instead
 		_detalhes.bcc_counter = 31
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
@@ -34,6 +34,17 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
+		{"v9.2.0.9715.146", "Merch 06th, 2022"},
+		"More Tiny Threat fixes and implementations (by Treeston)",
+		"Fixed Chinese and Taiwan 'Thousand' abbreviation letter (fix by github user Maioro).",
+
+
+		{"v9.2.0.9699.146", "Merch 04th, 2022"},
+		"Align Text Columns now have a warning at the bracket and separators option",
+		"Silence from interrupts shall be counted as a crowd control.",
+		"More phrases in the options panel has been added to translation.",
+		"A revamp has beed started on the erase data prompt.",
+
 		{"v9.2.0.9696.146", "February 24th, 2022"},
 		"Fixed DPS display when using Aligned Text Columns.",
 		"Fixed percent showing even it's disabled when using Aligned Text Columns.",

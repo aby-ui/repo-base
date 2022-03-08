@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 53
-RSConstants.CURRENT_LOOT_DB_VERSION = 67
+RSConstants.CURRENT_DB_VERSION = 54
+RSConstants.CURRENT_LOOT_DB_VERSION = 68
 
 ---============================================================================
 -- Current maps (newer)
@@ -396,7 +396,7 @@ RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 154330, 164547, 164477, 160629, 175012,
 RSConstants.NPCS_WITH_CONTAINER_VIGNETTE = { 179883 }
 RSConstants.CONTAINERS_WITH_NPC_VIGNETTE = { 369435 }
 RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
-RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = {  }
+RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = { 375530, 375362, 375290, 373579, 375373 }
 RSConstants.FIRIM_EXILE_OBJECTS = { 375973, 375982, 375983, 375984, 375985, 375986, 375987 }
 
 ---============================================================================

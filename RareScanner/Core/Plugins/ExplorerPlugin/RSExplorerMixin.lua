@@ -155,6 +155,7 @@ local function PopulateContinentDropDown(mainFrame, continentDropDown)
 		mainFrame.ScanRequired.ScanRequiredText:SetText(AL["EXPLORER_NO_RESULTS"])
 		mainFrame.ScanRequired.StartScanningButton:Hide()
 		mainFrame.ScanRequired:Show()
+		mainFrame.Filters:Show()
    	end
 end
 
@@ -1068,13 +1069,16 @@ function RSExplorerControl:StartScanning(self, button)
 	if (self:IsShown()) then
 		self:Hide()
 		self:GetParent().ScanProcessText:Show()
+		
+		local manualScan = self:GetParent().ScanRequiredText:GetText() == AL["EXPLORER_SCAN_MANUAL"]
+		
 		RSCollectionsDB.ApplyCollectionsEntitiesFilters(function()
 			local mainFrame = self:GetParent():GetParent()
 	    	self:GetParent():Hide()
 			self:GetParent().ScanProcessText:Hide()
     		mainFrame.RareInfo:Show()
 			mainFrame:Initialize()
-	    end, self:GetParent().ScanProcessText)
+	    end, self:GetParent().ScanProcessText, manualScan)
 	end
 end
 

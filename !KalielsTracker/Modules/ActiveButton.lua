@@ -227,12 +227,12 @@ local function SetFrames()
 		button.icon = button:CreateTexture(name.."Icon", "BACKGROUND")
 		button.icon:SetPoint("TOPLEFT", 0, -1)
 		button.icon:SetPoint("BOTTOMRIGHT", 0, -1)
-		
+
 		button.Style = button:CreateTexture(name.."Style", "OVERLAY")
 		button.Style:SetSize(256, 128)
 		button.Style:SetPoint("CENTER", -2, 0)
-		button.Style:SetTexture("Interface\\ExtraButton\\ChampionLight")
-		
+		button.Style:SetTexture("Interface\\ExtraButton\\extrabuttongeneric")
+
 		button.Count = button:CreateFontString(name.."Count", "OVERLAY", "NumberFontNormal")
 		button.Count:SetJustifyH("RIGHT")
 		button.Count:SetPoint("BOTTOMRIGHT", button.icon, -4, 4)

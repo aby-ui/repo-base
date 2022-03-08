@@ -533,19 +533,6 @@ end)
 ---------------------------------------------------------------]]
 
 --[[------------------------------------------------------------
-9.0 噬渊reload显示帮助信息
----------------------------------------------------------------]]
-CoreOnEvent("PLAYER_ENTERING_WORLD", function()
-    for frame in HelpTip.framePool:EnumerateActive() do
-      if frame and frame.info and frame.info.text == EYE_OF_JAILER_TUTORIAL then
-          frame:Close()
-          break
-      end
-    end
-    return true
-end)
-
---[[------------------------------------------------------------
 9.0 拍卖钓鱼价
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_AuctionHouseUI", function()
@@ -566,3 +553,67 @@ CoreDependCall("Blizzard_AuctionHouseUI", function()
         end
     end)
 end)
+
+--[[------------------------------------------------------------
+9.0 噬渊reload显示帮助信息
+CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+    for frame in HelpTip.framePool:EnumerateActive() do
+      if frame and frame.info and frame.info.text == EYE_OF_JAILER_TUTORIAL then
+          frame:Close()
+          break
+      end
+    end
+    return true
+end)
+---------------------------------------------------------------]]
+--[[------------------------------------------------------------
+9.2扎雷殁提斯的按钮reload后会出现帮助
+---------------------------------------------------------------]]
+CoreOnEvent("PLAYER_ENTERING_WORLD", function()
+    --只要拖动过图标，就会设置cvar为true，进门的时候可以生效，但是reload不行
+    if ZoneAbilityFrame:IsVisible() then
+        for spellButton in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
+            local zoneAbilityInfo = spellButton.zoneAbilityInfo;
+            if zoneAbilityInfo and zoneAbilityInfo.zoneAbilityID then
+                if true or GetCVarBitfield("closedExtraAbiltyTutorials", zoneAbilityInfo.zoneAbilityID) then
+                    HelpTip:HideAll(ZoneAbilityFrame);
+                end
+            end
+        end
+    end
+end)
+
+--[[------------------------------------------------------------
+9.15后切换盟约很麻烦，只能用
+/run local G=GetSpellInfo SetMacroSpell(GetRunningMacro(), G"圣洁鸣钟" or G"红烬圣土")
+来修改按钮的显示，但是必须按一次才生效，此部分代码在切换专精和盟约的时候自动运行这种代码
+---------------------------------------------------------------]]
+do
+    local f = CreateFrame("Frame")
+    f:RegisterEvent("COVENANT_CHOSEN")
+    f:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    f:RegisterEvent("SPELLS_CHANGED")
+    local update = function(event)
+        if InCombatLockdown() then return end
+        for i=1,120 do
+            local type, id = GetActionInfo(i)
+            if type == "macro" and id then
+                local _, _, text = GetMacroInfo(id)
+                if text then
+                    local _, _, code = text:find("/run (.-SetMacroSpell%(.-GetRunningMacro%(%).-)\n")
+                    if code then
+                        code = code:gsub("GetRunningMacro%(%)", id)
+                        --print(event, code)
+                        pcall(loadstring(code))
+                    end
+                end
+            end
+        end
+    end
+    f:SetScript("OnEvent", function(self, event)
+        if not InCombatLockdown() then
+            CoreScheduleBucket("ABYUI_UPDATE_MACRO", 0.3, update, event)
+        end
+    end)
+end
+

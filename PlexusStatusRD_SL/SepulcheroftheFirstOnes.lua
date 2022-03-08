@@ -37,7 +37,8 @@ GridStatusRaidDebuff:DebuffId(zoneid, 364030, 306, 5, 5, true) -- Debilitating R
 -- Dausegne, the Fallen Oracle
 GridStatusRaidDebuff:BossNameId(zoneid, 400, "Dausegne, the Fallen Oracle")
 GridStatusRaidDebuff:DebuffId(zoneid, 361966, 401, 5, 5, true, true) -- Infused Strikes
-GridStatusRaidDebuff:DebuffId(zoneid, 361751, 402, 5, 5, true) -- Disintegration Halo
+GridStatusRaidDebuff:DebuffId(zoneid, 361751, 402, 5, 5, true, true) -- Disintegration Halo
+GridStatusRaidDebuff:DebuffId(zoneid, 364289, 402, 4, 4, true, true) -- Disintegration Halo
 
 -- Prototype Pantheon
 GridStatusRaidDebuff:BossNameId(zoneid, 500, "Prototype Pantheon")
@@ -69,17 +70,19 @@ GridStatusRaidDebuff:DebuffId(zoneid, 361597, 703, 5, 5, true, true) -- Ephemera
 GridStatusRaidDebuff:DebuffId(zoneid, 368529, 704, 5, 5) -- Eternity Overdrive
 
 -- Anduin Wrynn
+--zoneid, first, second, icon_priority, color_priority, timer, stackable, color, default_disable, noicon
 GridStatusRaidDebuff:BossNameId(zoneid, 800, "Anduin Wrynn")
-GridStatusRaidDebuff:DebuffId(zoneid, 368913, 801, 4, 4) -- Force of Will
-GridStatusRaidDebuff:DebuffId(zoneid, 362055, 802, 5, 5) -- Lost Soul
-GridStatusRaidDebuff:DebuffId(zoneid, 365445, 803, 5, 5) -- Scarred Soul
+GridStatusRaidDebuff:DebuffId(zoneid, 368913, 801, 4, 4, nil, nil, nil, true) -- Force of Will
+GridStatusRaidDebuff:DebuffId(zoneid, 361817, 801, 4, 4, false, true, nil, true) -- 灭愿者
+GridStatusRaidDebuff:DebuffId(zoneid, 362055, 802, 5, 5, false, true, nil, true) -- Lost Soul
+GridStatusRaidDebuff:DebuffId(zoneid, 365445, 803, 5, 5, false, true, nil, true) -- Scarred Soul 创伤之魂
 GridStatusRaidDebuff:DebuffId(zoneid, 364031, 804, 6, 6) -- Gloom
 GridStatusRaidDebuff:DebuffId(zoneid, 365293, 805, 6, 6) -- Befouled Barrier
 GridStatusRaidDebuff:DebuffId(zoneid, 366849, 806, 5, 5, true) -- Domination Word Pain
 GridStatusRaidDebuff:DebuffId(zoneid, 363024, 807, 6, 6, true) -- Necrotic Detonation
-GridStatusRaidDebuff:DebuffId(zoneid, 363020, 808, 5, 5) -- Necrotic Claws
+GridStatusRaidDebuff:DebuffId(zoneid, 363020, 808, 5, 5) -- Necrotic Claws 通灵之爪
 GridStatusRaidDebuff:DebuffId(zoneid, 364020, 809, 5, 5, true) -- March of the Damned
-GridStatusRaidDebuff:DebuffId(zoneid, 362543, 810, 5, 5, false, true) -- Remorseless Winter
+GridStatusRaidDebuff:DebuffId(zoneid, 362543, 810, 5, 5, false, true, nil, true) -- Remorseless Winter 冷酷严冬
 GridStatusRaidDebuff:DebuffId(zoneid, 363028, 811, 5, 5) -- Unraveling Frenzy
 GridStatusRaidDebuff:DebuffId(zoneid, 368428, 812, 5, 5, true, true) -- Purging Light
 

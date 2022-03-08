@@ -117,12 +117,12 @@ L.RecordOnlyBosses			= "只记录团队BOSS数据 (不记录其他数据，使�
 L.LogOnlyNonTrivial			= "只记录团队Boss，而不记录随机团队/5人本/场景战役"
 --
 L.Area_3rdParty				= "第三方插件选项"
-L.oRA3AnnounceConsumables	= "在战斗开始时通告oRA3消耗品检查"
+L.oRA3AnnounceConsumables	= "在战斗开始时通报oRA3消耗品检查"
 L.Area_Invite				= "组队邀请选项"
 L.AutoAcceptFriendInvite	= "自动接受来自好友列表里的好友的组队邀请"
 L.AutoAcceptGuildInvite		= "自动接受同公会成员的组队邀请"
 L.Area_Advanced				= "高级选项"
-L.FakeBW					= "当检查Bigwig时，假装DBM就是Bigwig"
+L.FakeBW					= "当Bigwig启用检测时，假装DBM就是Bigwig"
 L.AITimer					= "DBM为没遇见过的战斗使用人工智能自动产生计时器(在初期的Beta或PTR的Boss测试非常有帮助)。此功能不会对多目标技能生效。"
 
 -- Panel: Profiles

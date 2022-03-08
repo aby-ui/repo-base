@@ -436,88 +436,93 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 	end
 	
 
-	local f = CreateFrame ("frame", "DetailsFrameworkSliderButtons1", UIParent, "BackdropTemplate")
+	local f = DetailsFrameworkSliderButtons1 or CreateFrame("frame", "DetailsFrameworkSliderButtons1", UIParent, "BackdropTemplate")
 	f:Hide()
-	f:SetHeight (18)
-	
+	f:SetHeight(18)
+
 	local t = 0
-	f.is_going_hide = false
-	local going_hide = function (self, elapsed)
+	f.isGoingToHide = false
+	local goingHide = function(self, elapsed)
 		t = t + elapsed
 		if (t > 0.3) then
 			f:Hide()
 			f:SetScript ("OnUpdate", nil)
-			f.is_going_hide = false
+			f.isGoingToHide = false
 		end
 	end
-	
-	function f:ShowMe (host)
+
+	function f:ShowMe(host)
 		f:SetParent(host)
-		f:SetPoint ("bottomleft", host, "topleft", -3, -5)
-		f:SetPoint ("bottomright", host, "topright", 3, -5)
-		--f:SetFrameStrata (host:GetFrameStrata())
+		f:ClearAllPoints()
+		f:SetPoint ("bottomleft", host, "topleft", -5, -5)
+		f:SetPoint ("bottomright", host, "topright", 5, -5)
+
 		f:SetFrameStrata ("FULLSCREEN")
 		f:SetFrameLevel (host:GetFrameLevel() + 1000)
 		f:Show()
-		if (f.is_going_hide) then
+		if (f.isGoingToHide) then
 			f:SetScript ("OnUpdate", nil)
-			f.is_going_hide = false
+			f.isGoingToHide = false
 		end
-		
+
 		f.host = host.MyObject
 	end
 	
 	function f:PrepareToHide()
-		f.is_going_hide = true
+		f.isGoingToHide = true
 		t = 0
-		f:SetScript ("OnUpdate", going_hide)
+		f:SetScript ("OnUpdate", goingHide)
 	end
 	
-	local button_plus = CreateFrame ("button", "DetailsFrameworkSliderButtonsPlusButton", f, "BackdropTemplate")
-	local button_minor = CreateFrame ("button", "DetailsFrameworkSliderButtonsMinorButton", f, "BackdropTemplate")
-	button_plus:SetFrameStrata (f:GetFrameStrata())
-	button_minor:SetFrameStrata (f:GetFrameStrata())
+	local buttonPlus = CreateFrame ("button", "DetailsFrameworkSliderButtonsPlusButton", f, "BackdropTemplate")
+	local buttonMinor = CreateFrame ("button", "DetailsFrameworkSliderButtonsMinorButton", f, "BackdropTemplate")
+	buttonPlus:SetFrameStrata (f:GetFrameStrata())
+	buttonMinor:SetFrameStrata (f:GetFrameStrata())
 	
-	button_plus:SetScript ("OnEnter", function (self)
-		if (f.is_going_hide) then
+	buttonPlus:SetScript ("OnEnter", function (self)
+		if (f.isGoingToHide) then
 			f:SetScript ("OnUpdate", nil)
-			f.is_going_hide = false
+			f.isGoingToHide = false
 		end
 	end)
-	button_minor:SetScript ("OnEnter", function (self)
-		if (f.is_going_hide) then
+	buttonMinor:SetScript ("OnEnter", function (self)
+		if (f.isGoingToHide) then
 			f:SetScript ("OnUpdate", nil)
-			f.is_going_hide = false
+			f.isGoingToHide = false
 		end
 	end)
 	
-	button_plus:SetScript ("OnLeave", function (self)
+	buttonPlus:SetScript ("OnLeave", function (self)
 		f:PrepareToHide()
 	end)
-	button_minor:SetScript ("OnLeave", function (self)
+	buttonMinor:SetScript ("OnLeave", function (self)
 		f:PrepareToHide()
 	end)
 	
-	button_plus:SetNormalTexture ([[Interface\Buttons\UI-PlusButton-Up]])
-	button_minor:SetNormalTexture ([[Interface\Buttons\UI-MinusButton-Up]])
+	buttonPlus:SetNormalTexture ([[Interface\Buttons\UI-PlusButton-Up]])
+	buttonMinor:SetNormalTexture ([[Interface\Buttons\UI-MinusButton-Up]])
 	
-	button_plus:SetPushedTexture ([[Interface\Buttons\UI-PlusButton-Down]])
-	button_minor:SetPushedTexture ([[Interface\Buttons\UI-MinusButton-Down]])
+	buttonPlus:SetPushedTexture ([[Interface\Buttons\UI-PlusButton-Down]])
+	buttonMinor:SetPushedTexture ([[Interface\Buttons\UI-MinusButton-Down]])
 	
-	button_plus:SetDisabledTexture ([[Interface\Buttons\UI-PlusButton-Disabled]])
-	button_minor:SetDisabledTexture ([[Interface\Buttons\UI-MinusButton-Disabled]])
+	buttonPlus:SetDisabledTexture ([[Interface\Buttons\UI-PlusButton-Disabled]])
+	buttonMinor:SetDisabledTexture ([[Interface\Buttons\UI-MinusButton-Disabled]])
 	
-	button_plus:SetHighlightTexture ([[Interface\Buttons\UI-PlusButton-Hilight]])
-	button_minor:SetHighlightTexture ([[Interface\Buttons\UI-PlusButton-Hilight]])
+	buttonPlus:SetHighlightTexture ([[Interface\Buttons\UI-PlusButton-Hilight]])
+	buttonMinor:SetHighlightTexture ([[Interface\Buttons\UI-PlusButton-Hilight]])
+
+	local plusNormalTexture = buttonPlus:GetNormalTexture()
+	plusNormalTexture:SetDesaturated(true)
+	local minorNormalTexture = buttonMinor:GetNormalTexture()
+	minorNormalTexture:SetDesaturated(true)
+
+	buttonMinor:ClearAllPoints()
+	buttonPlus:ClearAllPoints()
+	buttonMinor:SetPoint ("bottomright", f, "bottomright", 13, -13)
+	buttonPlus:SetPoint ("left", buttonMinor, "right", -2, 0)
 	
-	--button_minor:SetPoint ("bottomleft", f, "bottomleft", -6, -13)
-	--button_plus:SetPoint ("bottomright", f, "bottomright", 6, -13)
-	
-	button_minor:SetPoint ("bottomright", f, "bottomright", 13, -13)
-	button_plus:SetPoint ("left", button_minor, "right", -2, 0)
-	
-	button_plus:SetSize (16, 16)
-	button_minor:SetSize (16, 16)
+	buttonPlus:SetSize (16, 16)
+	buttonMinor:SetSize (16, 16)
 	
 	local timer = 0
 	local change_timer = 0
@@ -550,11 +555,11 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 
 	end
 	
-	button_plus:SetScript ("OnMouseUp", function (self)
-		if (not button_plus.got_click) then
+	buttonPlus:SetScript ("OnMouseUp", function (self)
+		if (not buttonPlus.got_click) then
 			plus_button_script()
 		end
-		button_plus.got_click = false
+		buttonPlus.got_click = false
 		self:SetScript ("OnUpdate", nil)
 	end)
 	
@@ -565,11 +570,11 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 			if (change_timer > 0.1) then
 				change_timer = 0
 				plus_button_script()
-				button_plus.got_click = true
+				buttonPlus.got_click = true
 			end
 		end
 	end
-	button_plus:SetScript ("OnMouseDown", function (self)
+	buttonPlus:SetScript ("OnMouseDown", function (self)
 		timer = 0
 		change_timer = 0
 		self:SetScript ("OnUpdate", on_update)
@@ -601,11 +606,11 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		end
 	end
 	
-	button_minor:SetScript ("OnMouseUp", function (self)
-		if (not button_minor.got_click) then
+	buttonMinor:SetScript ("OnMouseUp", function (self)
+		if (not buttonMinor.got_click) then
 			minor_button_script()
 		end
-		button_minor.got_click = false
+		buttonMinor.got_click = false
 		self:SetScript ("OnUpdate", nil)
 	end)
 	
@@ -616,11 +621,11 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 			if (change_timer > 0.1) then
 				change_timer = 0
 				minor_button_script()
-				button_minor.got_click = true
+				buttonMinor.got_click = true
 			end
 		end
 	end
-	button_minor:SetScript ("OnMouseDown", function (self)
+	buttonMinor:SetScript ("OnMouseDown", function (self)
 		timer = 0
 		change_timer = 0
 		self:SetScript ("OnUpdate", on_update)

@@ -5204,6 +5204,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			end
 		end
 	
+		--[=[ code maintenance: disabled deprecated code Feb 2022
+
 		--deprecated shcedules
 		do
 			if (_detalhes.schedule_add_to_overall and #_detalhes.schedule_add_to_overall > 0) then --deprecated (combat are now added immediatelly since there's no script run too long)
@@ -5262,6 +5264,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_detalhes:CaptureSet (false, "spellcast", false, 10)
 			end
 		end
+
+		--]=]
 
 
 	end

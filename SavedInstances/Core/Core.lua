@@ -2508,7 +2508,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "e47985c" then
+  if versionString == "d17bc95" then
     versionString = "Dev"
   end
   --@end-debug@]==]

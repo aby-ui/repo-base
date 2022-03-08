@@ -338,7 +338,7 @@ do
 
 	--If this continues to throw errors because SetRaidTarget fails even after IEEU has fired for a unit, then this will be scrapped
 	function module:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
-		for i = 1, 5 do
+		for i = 1, 8 do
 			local unitId = "boss"..i
 			if UnitExists(unitId) and UnitIsVisible(unitId) then--Hopefully enough failsafe against icons failing
 				for _, scanId in ipairs(scanExpires) do

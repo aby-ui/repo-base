@@ -205,21 +205,21 @@ GridStatusRaidDebuff.defaultDB = {
     frequency = 0.1,
 
 	["debuff_options"] = {
-        --9.0°ÁÂý
-        [C_Map.GetMapInfo(1683).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
-        [C_Map.GetMapInfo(1674).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
-        [C_Map.GetMapInfo(1669).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
+        --9.0小副本
+        [C_Map.GetMapInfo(1683).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
+        [C_Map.GetMapInfo(1674).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
+        [C_Map.GetMapInfo(1669).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
         [C_Map.GetMapInfo(1679).name] = {
             [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 },
-            [GetSpellInfo(323687)] = { c_prior = 9, i_prior = 9, timer = true }, --ÉÌÈËÉÁµç
-            [GetSpellInfo(323692)] = { c_prior = 8, i_prior = 8, timer = true }, --ÉÌÈË°ÂÊõÒ×ÉË
-            [GetSpellInfo(240559)] = { disabled = true },
+            [GetSpellInfo(323687)] = { c_prior = 9, i_prior = 9, timer = true }, --奥术闪电
+            [GetSpellInfo(323692)] = { c_prior = 8, i_prior = 8, timer = true }, --奥术易伤
+            [GetSpellInfo(240559)] = { disable = true },
         },
-        [C_Map.GetMapInfo(1693).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
-        [C_Map.GetMapInfo(1663).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
-        [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
-        [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disabled = true }, },
-        [C_Map.GetMapInfo(1998).name] = { [GetSpellInfo(352394)] = { disabled = true }, },
+        [C_Map.GetMapInfo(1693).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
+        [C_Map.GetMapInfo(1663).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
+        [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
+        [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
+        [C_Map.GetMapInfo(1998).name] = { [GetSpellInfo(352394)] = { disable = true }, },
     },
     ["detected_debuff"] = {},
 }

@@ -7,8 +7,8 @@ local IconScale = 1.0
 -- End of user settings
 ---------------------------------------------------------
 
+local flightMapFrame = FlightMapFrame
 -- InFlight uses FlightMapFrame directly, so it's necessary to change references
-local FlightMapFrame_origin_abyui = FlightMapFrame
 FlightMapFrame = WorldMapFrame
 -- TaxiFrame = WorldMapFrame
 
@@ -156,14 +156,23 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 		-- Therefor we need to prevent the interaction in the first place
 		if InCombatLockdown() then
 			CloseTaxiMap()
-        elseif IsInInstance() then
-            local uiMapSystem = ...;
-            if (uiMapSystem == Enum.UIMapSystem.Taxi) then
-                ShowUIPanel(TaxiFrame);
-            else
-                ShowUIPanel(FlightMapFrame_origin_abyui);
-            end
 		else
+			if IsInInstance() then
+				local _, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+				if instanceID == 2481 then
+					if not IsAddOnLoaded('Blizzard_FlightMap') then
+						UIParentLoadAddOn('Blizzard_FlightMap')
+						FlightMapFrame:UnregisterAllEvents()
+						flightMapFrame = FlightMapFrame
+					else
+						FlightMapFrame =  flightMapFrame
+					end
+
+					ShowUIPanel(flightMapFrame)
+					return
+				end
+			end
+
 			self:SetTaxiState(true)
 			self.taxiMap = GetMapSize(GetTaxiMapID())
 			
@@ -191,6 +200,12 @@ function WorldFlightMapProvider:OnEvent(event, ...)
 			self:RefreshAllData()
 		end
 	elseif event == 'TAXIMAP_CLOSED' then
+		if FlightMapFrame ~= WorldMapFrame then
+			flightMapFrame:OnEvent(event, ...)
+			FlightMapFrame = WorldMapFrame
+			return
+		end
+
 		self:SetTaxiState(false)
 
 		CloseTaxiMap()
@@ -237,7 +252,7 @@ function WorldFlightMapProvider:AddFlightNode(taxiNodeData)
 				-- taxiNodeData.position.y = mapTaxiY
 				drawPin = true
 			end
-
+			
 			if drawPin then
 				-- Duplicating all of this from frameXML because we need to raise the frame level of the pins
 				local playAnim = taxiNodeData.state ~= Enum.FlightPathState.Unreachable;

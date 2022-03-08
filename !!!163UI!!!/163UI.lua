@@ -836,9 +836,9 @@ function U1OutputAddonState(text, addon, duration, force)
     duration = duration or 0
     if duration > 0 then
         local color = (duration > 250 and "ff0000") or ( duration > 100 and "ff7f00" ) or "7fff7f"
-        dtext = "，用时" .. format("|cff%s%.3f|r", color, duration/1000)
+        dtext = "，用时" .. format("|cff%s%.0f|rms", color, duration)
     end
-    if duration > 100 or force or (DEBUG_MODE or initComplete and not outputOnce[addon]) then
+    if duration > 100 or (DEBUG_MODE and duration > 30) or force or (initComplete and not outputOnce[addon]) then
         if not U1GetAddonInfo(addon).hide and (not U1GetAddonInfo(addon).parent or U1GetAddonInfo(U1GetAddonInfo(addon).parent).dummy) then
             U1Message(format(text .. dtext, format(L["插件-|cffffd100%s|r-"], U1GetAddonTitle(addon))));
         end
@@ -1458,7 +1458,7 @@ function U1:PLAYER_LOGIN()
         loadNormalCfgs(nil, 1, nil);
     end
 
-    if DEBUG_MODE then U1Message(L["玩家登陆中"]) end
+    if DEBUG_MODE then U1Message(L["玩家登陆中"] .. U1.get_timestamp()) end
     --print("PLAYER_LOGIN", db, U1DB, db==U1DB, db==defaultDB) --有时VARIABLES_LOADED会在ENTERING_WORLD之后
 
     --加载load="LOGIN"的插件
@@ -1476,7 +1476,7 @@ function U1:PLAYER_LOGIN()
 
     simEventsAndLoadCfgs(true);
 
-    if DEBUG_MODE then U1Message(L["玩家登陆完毕"]) end
+    if DEBUG_MODE then U1Message(L["玩家登陆完毕"] .. U1.get_timestamp()) end
     CoreFireEvent("LOGIN_ADDONS_LOADED")
 
     f:UnregisterEvent("PLAYER_LOGIN") U1.PLAYER_LOGIN = nil
@@ -1937,7 +1937,7 @@ local function loadAddon()
     else
         -- 全部插件加载完毕了
         if #addonToLoad==0 and not initComplete then
-             U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or ""))
+             U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or "") .. U1.get_timestamp())
             --simEventsAndLoadCfgs(); --因为先加载插件再注册事件的话，可能导致一些插件加载后先响应了其他事件，而DB却未创建
             initComplete = true;
             db.enteredWorld = true; --如果没加载完全部插件, 则下次还原db的设置, 而不是使用Enable/Disable状态
@@ -1963,7 +1963,7 @@ function U1:PLAYER_ENTERING_WORLD(event)
     end
     table.sort(addonToLoad)
 
-    if DEBUG_MODE then U1Message(L["进入世界"]) end
+    if DEBUG_MODE then U1Message(L["进入世界"] .. U1.get_timestamp()) end
 
     loadSpeed = U1DB.loadSpeed2 or U1DB.loadSpeed or 20  --loadSpeed2是/rl2临时设置的慢速加载
     U1DB.loadSpeed2 = nil

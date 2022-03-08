@@ -32,6 +32,9 @@ local gpose = Map({id = 2029}) -- Gravid Repose
 local microd = Map({id = 2030}) -- Nexus of Actualization
 local cata = Map({id = 2066}) -- Catalyst Wards
 
+-- Sepulcher of the First Ones
+local immo = Map({id = 2047}) -- Immortal Hearth
+
 -------------------------------------------------------------------------------
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
@@ -43,6 +46,7 @@ map.nodes[64743369] = Rare({
     id = 179006,
     quest = 65552,
     vignette = 4747,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+15 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52977}), -- Adventurer of Zereth Mortis
@@ -56,6 +60,7 @@ map.nodes[49566751] = Rare({
     id = 183596,
     quest = 65553,
     vignette = 4948,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52978}), -- Adventurer of Zereth Mortis
@@ -82,6 +87,7 @@ map.nodes[47486228] = Rare({
 map.nodes[53634435] = Rare({
     id = 180917,
     quest = 64716,
+    vignette = 4892,
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52974}), -- Adventurer of Zereth Mortis
@@ -97,6 +103,7 @@ map.nodes[47474516] = Rare({
     id = 184409,
     quest = 65555,
     vignette = 4961,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52982}), -- Adventurer of Zereth Mortis
@@ -110,6 +117,7 @@ map.nodes[47474516] = Rare({
 map.nodes[61826060] = Rare({
     id = 178229,
     quest = 65557,
+    vignette = 4740,
     note = L['feasting_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -124,6 +132,7 @@ map.nodes[61826060] = Rare({
 map.nodes[64585865] = Rare({
     id = 183646,
     quest = 65544,
+    vignette = 4949,
     note = L['furidian_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -166,12 +175,12 @@ map.nodes[59862111] = Rare({
     id = 182318,
     quest = 65583,
     vignette = 4909,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+15 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52985}), -- Adventurer of Zereth Mortis
         Transmog({item = 189968, slot = L['leather']}), -- Dreadlord General's Tunic
         Transmog({item = 189948, slot = L['mail']}), -- Strangulating Chainlink Lasso
-        Transmog({item = 190124, slot = L['dagger']}), -- Interrogator's Vicious Dirk
         Transmog({item = 190125, slot = L['dagger']}) -- Kris of Intricate Secrets
     }
 }) -- General Zarathura
@@ -179,6 +188,7 @@ map.nodes[59862111] = Rare({
 map.nodes[53089305] = Rare({
     id = 178778,
     quest = 65579,
+    vignette = 4742,
     note = L['gluttonous_overgrowth_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -195,6 +205,7 @@ map.nodes[80384706] = Rare({
     id = 178963,
     quest = 63988,
     vignette = 4746,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52986}), -- Adventurer of Zereth Mortis
@@ -207,6 +218,8 @@ map.nodes[80384706] = Rare({
 map.nodes[52612503] = Rare({
     id = 178563,
     quest = 65581,
+    vignette = 4738,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52984}), -- Adventurer of Zereth Mortis
@@ -220,6 +233,7 @@ map.nodes[52612503] = Rare({
 map.nodes[58186837] = Rare({
     id = 183748,
     quest = 65551,
+    vignette = 4950,
     note = L['helmix_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -236,6 +250,7 @@ map.nodes[58186837] = Rare({
 map.nodes[52287541] = Rare({
     id = 180978,
     quest = 65548,
+    vignette = 4984,
     note = L['hirukon_note'],
     requires = ns.requirement.Item(187923),
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
@@ -251,6 +266,7 @@ map.nodes[52287541] = Rare({
 map.nodes[58654039] = Rare({
     id = 183814,
     quest = 65257,
+    vignette = 4941,
     note = L['in_small_cave'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -258,12 +274,14 @@ map.nodes[58654039] = Rare({
         Transmog({item = 189909, slot = L['cloth']}), -- Pantaloons of Cold Recesses
         Transmog({item = 189945, slot = L['mail']}), -- Shoulders of the Missing Giant
         Transmog({item = 189957, slot = L['plate']}) -- Colossus' Focusing Headpiece
-    }
+    },
+    pois = {POI({58723789})} -- Cave entrance
 }) -- Otaris the Provoked
 
 map.nodes[54083493] = Rare({
     id = 178508,
     quest = 65547,
+    vignette = 4739,
     rlabel = ns.status.LightBlue('+15 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 53020}), -- Adventurer of Zereth Mortis
@@ -277,6 +295,7 @@ map.nodes[54083493] = Rare({
 map.nodes[55736915] = Rare({
     id = 179043,
     quest = 65582,
+    vignette = 4770,
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     note = L['orixal_note'],
     rewards = {
@@ -296,6 +315,7 @@ map.nodes[55736915] = Rare({
 map.nodes[43308762] = Rare({
     id = 183746,
     quest = 65556,
+    vignette = 4939,
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52972}), -- Adventurer of Zereth Mortis
@@ -309,6 +329,7 @@ map.nodes[43308762] = Rare({
 map.nodes[38872762] = Rare({
     id = 180746,
     quest = 64668,
+    vignette = 4988,
     note = L['protector_first_ones_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -323,6 +344,7 @@ map.nodes[38872762] = Rare({
 map.nodes[53384707] = Rare({
     id = 183927,
     quest = 65574,
+    vignette = 4977,
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52975}), -- Adventurer of Zereth Mortis
@@ -335,6 +357,7 @@ map.nodes[53384707] = Rare({
 map.nodes[42302099] = Rare({
     id = 184413,
     quest = 65549,
+    vignette = 4959,
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52988}), -- Adventurer of Zereth Mortis
@@ -348,6 +371,8 @@ map.nodes[42302099] = Rare({
 map.nodes[35877121] = Rare({
     id = 183722,
     quest = 65240,
+    vignette = 4937,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52980}), -- Adventurer of Zereth Mortis
@@ -361,6 +386,7 @@ map.nodes[35877121] = Rare({
 map.nodes[49783914] = Rare({
     id = 183925,
     quest = 65272,
+    vignette = 4943,
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52979}), -- Adventurer of Zereth Mortis
@@ -375,6 +401,7 @@ map.nodes[54507344] = Rare({
     id = 181249,
     quest = 65550,
     vignette = 4903,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52987}), -- Adventurer of Zereth Mortis
@@ -388,6 +415,7 @@ map.nodes[54507344] = Rare({
 map.nodes[43947530] = Rare({
     id = 183516,
     quest = 65580,
+    vignette = 4933,
     note = L['the_engulfer_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -401,6 +429,8 @@ map.nodes[43947530] = Rare({
 map.nodes[39555737] = Rare({
     id = 181360,
     quest = 65239,
+    vignette = 4936,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 53049}), -- Adventurer of Zereth Mortis
@@ -414,6 +444,8 @@ map.nodes[39555737] = Rare({
 map.nodes[47044698] = Rare({
     id = 183747,
     quest = 65584,
+    vignette = 4967,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52983}), -- Adventurer of Zereth Mortis
@@ -427,6 +459,7 @@ map.nodes[64054975] = Rare({
     id = 183737,
     quest = 65241,
     vignette = 4938,
+    sublabel = L['sl_limited_rare'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52976}), -- Adventurer of Zereth Mortis
@@ -440,6 +473,7 @@ map.nodes[64054975] = Rare({
 map.nodes[43513294] = Rare({
     id = 183764,
     quest = 65251,
+    vignette = 4990,
     note = L['zatojin_note'],
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
@@ -474,17 +508,21 @@ map.nodes[63202603] = Rare({
                 {id = 52994, quest = 65587} -- Reanimatrox Marzan
             }
         }), -- Dune Dominance
+        Transmog({item = 190050, slot = L['fist']}), -- Entropic Broker's Ripper
+        Transmog({item = 190104, slot = L['crossbow']}), -- Deadeye's Spirit Piercer
         Transmog({item = 190107, slot = L['staff']}), -- Staff of Broken Coils
-        Transmog({item = 190458, slot = L['shield'], note = ISKA}), -- Atrophy's Ominous Bulwark
+        Transmog({item = 190124, slot = L['dagger']}), -- Interrogator's Vicious Dirk
+        Transmog({item = 190463, slot = L['warglaive']}), -- Dismal Mystic's Glaive
         Transmog({item = 190102, slot = L['1h_mace'], note = ISKA}), -- Chains of Infectious Serrations
         Transmog({item = 190103, slot = L['2h_mace'], note = ISKA}), -- Pillar of Noxious Dissemination
         Transmog({item = 190126, slot = L['polearm'], note = ISKA}), -- Rotculler's Encroaching Shears
+        Transmog({item = 190458, slot = L['shield'], note = ISKA}), -- Atrophy's Ominous Bulwark
         Transmog({item = 190105, slot = L['1h_mace'], note = DAMARIS}), -- Chilling Domination Mace
+        Transmog({item = 190106, slot = L['2h_mace'], note = DAMARIS}), -- Approaching Terror's Torch
         Transmog({item = 190459, slot = L['shield'], note = DAMARIS}), -- Cold Dispiriting Barricade
-        Transmog({item = 190104, slot = L['crossbow'], note = DAMARIS}), -- Deadeye's Spirit Piercer
-        Transmog({item = 190050, slot = L['fist'], note = DAMARIS}), -- Entropic Broker's Ripper
         Transmog({item = 190460, slot = L['polearm'], note = DAMARIS}), -- High Reaver's Sickle
-        Transmog({item = 190463, slot = L['warglaive'], note = MARZAN}), -- Dismal Mystic's Glaive
+        Transmog({item = 190108, slot = L['shield'], note = MARZAN}), -- Aegis of Laughing Souls
+        Transmog({item = 190109, slot = L['1h_mace'], note = MARZAN}), -- Cudgel of Mortality's Chains
         Transmog({item = 190127, slot = L['polearm'], note = MARZAN}), -- Marzan's Dancing Twin-Scythe
         Transmog({item = 190461, slot = L['2h_mace'], note = MARZAN}), -- Reanimator's Beguiling Baton
         Mount({item = 190765, id = 1584, note = '{npc:182120}'}) -- Iska's Mawrat Leash
@@ -1076,6 +1114,7 @@ map.nodes[53777246] = PetSchematic({
     note = L['in_cave'] .. '\n\n' .. L['schematic_treasure_pet_note']
 }) -- Multichicken
 
+-- Waiting for access to the Rondure Alcove on live, which I could not access on PTR
 -- map.nodes[] = PetSchematic({
 --     id = 189440,
 --     quest = 65348,
@@ -1102,11 +1141,11 @@ map.nodes[57837783] = PetSchematic({
     pois = {POI({59328128})}
 }) -- Shelly
 
--- map.nodes[] = PetSchematic({
---     id = 189437,
---     quest = 65336,
---     note = L['schematic_stabilized_geomental_note']
--- }) -- Stabilized Geomental
+map.nodes[83215337] = PetSchematic({
+    id = 189437,
+    quest = 65336,
+    note = L['schematic_stabilized_geomental_note']
+}) -- Stabilized Geomental
 
 map.nodes[67223261] = PetSchematic({
     id = 189443,
@@ -1121,11 +1160,11 @@ esper.nodes[74745037] = PetSchematic({
     note = L['schematic_tunneling_vombata_note']
 }) -- Tunneling Vombata
 
--- map.nodes[] = PetSchematic({
---     id = 189436,
---     quest = 65334,
---     note = L['schematic_violent_poultrid_note']
--- }) -- Violent Poultrid
+map.nodes[34224865] = PetSchematic({
+    id = 189436,
+    quest = 65334,
+    note = L['schematic_violent_poultrid_note']
+}) -- Violent Poultrid
 
 -- Currently no fallback "Protoform Schematic" object for this one, it will always be
 -- obtained from the Library Vault treasure even if you have not unlocked the pet
@@ -1234,6 +1273,7 @@ map.nodes[53166386] = MountSchematic({
 --     note = L['schematic_ineffable_skitterer_note']
 -- }) -- Ineffable Skitterer
 
+-- Wowhead claims this drops from Dune Dominance, need more confirmation
 -- map.nodes[] = MountSchematic({
 --     id = 189459,
 --     quest = 65382,
@@ -1271,11 +1311,12 @@ map.nodes[47680954] = MountSchematic({
     note = L['schematic_scarlet_helicid_note']
 }) -- Scarlet Helicid
 
--- map.nodes[] = MountSchematic({
---     id = 189461,
---     quest = 65384,
---     note = L['schematic_serenade_note']
--- }) -- Serenade
+immo.nodes[45623070] = MountSchematic({
+    id = 189461,
+    quest = 65384,
+    parent = map.id,
+    note = L['schematic_serenade_note']
+}) -- Serenade
 
 map.nodes[60603052] = MountSchematic({
     id = 189456,
@@ -1289,6 +1330,7 @@ map.nodes[63032149] = MountSchematic({
     note = L['schematic_tarachnid_creeper_note']
 }) -- Tarachnid Creeper
 
+-- Waiting for access to the Camber Alcove room
 -- map.nodes[] = MountSchematic({
 --     id = 189463,
 --     quest = 65386,

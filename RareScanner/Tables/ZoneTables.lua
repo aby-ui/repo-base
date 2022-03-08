@@ -20,7 +20,7 @@ private.CONTINENT_ZONE_IDS = {
 	[9999] = { zonefilter = true, npcfilter = true, zones = {276,378,628,629,672,734,702,695,747,739} }; --Class Halls
 	[9998] = { zonefilter = true, npcfilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
 	[9997] = { zonefilter = true, npcfilter = true, zones = {11,35,219,229,237,243,251,274,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041,1663,1666,1675,1669,1674,1677,1683,1692} }; --Dungeons or scenarios
-	[9996] = { zonefilter = true, npcfilter = true, zones = {366,508,764,850,909} }; --Raids
+	[9996] = { zonefilter = true, npcfilter = true, zones = {366,508,764,850,909,2047} }; --Raids
 	[9995] = { zonefilter = false, npcfilter = true, zones = {0} }; --Unknown
 	[9994] = { zonefilter = true, npcfilter = false, zones = {981,1022,1032,1033,1034,1035,1036,1037,1336,1337,1501,1502} }; --Expedition islands
 }
@@ -74,6 +74,8 @@ private.SUBZONES_IDS = {
 	[1666] = {1667,1668}; --The necrotic wake
 	[1683] = {1684,1685,1686,1687}; --Theater of pain
 	[1674] = {1697}; --Plaguefall
+	[1970] = {2027,2030,2066}; --Zereth Mortis
+	[2047] = {2048,2049,2050,2051,2052,2055,2061}; --Sepulcher of the First Ones
 }
 
 private.ZONES_WITHOUT_VIGNETTE = {

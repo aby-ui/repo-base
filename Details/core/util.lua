@@ -385,16 +385,16 @@
 			if (locale == "kr") then
 				symbol_1K, symbol_10K, symbol_1B = "천", "만", "억"
 			elseif (locale == "cn") then
-				symbol_1K, symbol_10K, symbol_1B = "천", "万", "亿"
+				symbol_1K, symbol_10K, symbol_1B = "千", "万", "亿"
 			elseif (locale == "tw") then
-				symbol_1K, symbol_10K, symbol_1B = "천", "萬", "億"
+				symbol_1K, symbol_10K, symbol_1B = "千", "萬", "億"
 			end
 		end
 		
 		if (not symbol_1K) then
 			--> if a english client is trying to use east asian numeral system and there is no override, let's just use the chinese as default.
 			--> if the user is from kr or tw and want to use english client,  an override must be used.
-			symbol_1K, symbol_10K, symbol_1B = "천", "万", "亿"
+			symbol_1K, symbol_10K, symbol_1B = "千", "万", "亿"
 		end
 	
 		function _detalhes:ToK (numero)

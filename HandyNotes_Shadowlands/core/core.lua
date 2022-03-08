@@ -105,11 +105,18 @@ function Addon:OnEnter(mapID, coord)
         GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
     end
 
-    node:Render(GameTooltip, map:CanFocus(node))
+    -- items do not appear to have their info loaded consistently when the map is
+    -- prepared, so we prepare the node's assets again here before rendering
+    node:Prepare()
     map:SetFocus(node, true, true)
-    ns.MinimapDataProvider:RefreshAllData()
-    ns.WorldMapDataProvider:RefreshAllData()
-    GameTooltip:Show()
+
+    -- Rendering in the next frame appears to help asset name issues
+    C_Timer.After(0, function()
+        node:Render(GameTooltip, map:CanFocus(node))
+        ns.MinimapDataProvider:RefreshAllData()
+        ns.WorldMapDataProvider:RefreshAllData()
+        GameTooltip:Show()
+    end)
 end
 
 function Addon:OnLeave(mapID, coord)

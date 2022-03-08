@@ -73,6 +73,22 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     CoreOnEvent("CHALLENGE_MODE_LEADERS_UPDATE", update)
     -- hooksecurefunc("ChallengesFrame_Update", update)
 
+    local scoreInfo = ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo
+    SetOrHookScript(scoreInfo, "OnEnter", function()
+        if GameTooltip:IsVisible() then
+            local best = C_MythicPlus.GetSeasonBestMythicRatingFromThisExpansion()
+            local curr = C_ChallengeMode.GetOverallDungeonScore()
+            if best > curr then
+                local color = C_ChallengeMode.GetDungeonScoreRarityColor(best);
+                if color then
+                    best = color:WrapTextInColorCode(best)
+                end
+                GameTooltip_AddNormalLine(GameTooltip, "版本最高评分：" .. best);
+                GameTooltip:Show();
+            end
+        end
+    end)
+
     --levels          1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20
     local drops  = { nil, 236, 239, 242, 246, 249, 249, 252, 252, 255, 255, 259, 259, 262, 262, 262, 262, 262, 262, 262, 262,  }
     local levels = { nil, 252, 252, 252, 256, 256, 259, 262, 262, 265, 268, 272, 272, 275, 278, 278, 278, 278, 278, 278, 278,  }
@@ -128,22 +144,22 @@ end)
 --[[------------------------------------------------------------
 PVP每周奖励
 ---------------------------------------------------------------]]
-CoreDependCall("Blizzard_PVPUI_TODO", function()
-    local ratings  = { "0000+",    "1400+", "1600+", "1800+", "2100+", }
-    local upgrade  = {  220,    226,     233,     240,     246,  }
-    local upgradep = {  233,    239,     246,     253,     259,  }
-    local title    = { "休闲者", "争斗者", "挑战者", "竞争者", "决斗者" }
+CoreDependCall("Blizzard_PVPUI", function()
+    local ratings  = { "0000+", "1000+", "1200+", "1400+", "1600+", "1800+", "1950+", "2100+", "2400+"}
+    local upgrade  = {  249,    252,     255,     259,     262,     265,     268,     272,     275, }
+    local upgradep = {  262,    265,     268,     272,     275,     278,     281,     285,     285, }
+    local title    = { "休闲者","争斗者I","争斗者II","挑战者I","挑战者II","竞争者I","竞争者II","决斗者","精锐" }
 
     for _, chest in ipairs({ PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest, PVPQueueFrame.HonorInset.CasualPanel.WeeklyChest}) do
         --chest:HookScript("OnMouseUp", ShowWeeklyRewards)
         chest:HookScript("OnEnter", function(self)
             if GameTooltip:IsVisible() then
                 GameTooltip:AddLine(" ")
-                GameTooltip:AddLine("（以下为第2赛季推测信息, 如有错误以游戏内为准）", nil, nil, nil, true)
-                GameTooltip:AddLine("PVP等级  头衔  可升级到   PVP时装等", 1, 1, 1)
+                GameTooltip:AddLine("（以下为第3赛季信息, 如有错误以游戏内为准）", nil, nil, nil, true)
+                GameTooltip:AddLine("PVP等级  装等  PVP时装等  头衔", 1, 1, 1)
                 for i, v in ipairs(ratings) do
-                    local line = " %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:10:0:0:32:32:10:22:10:22|t %s |T130758:10:30:0:0:32:32:10:22:10:22|t %s"
-                    GameTooltip:AddLine(format(line, ratings[i], title[i], tostring(upgrade[i]), tostring(upgradep[i])), 1, 1, 1)
+                    local line = " %s |T130758:10:15:0:0:32:32:10:22:10:22|t %s |T130758:10:20:0:0:32:32:10:22:10:22|t %s |T130758:10:30:0:0:32:32:10:22:10:22|t %s"
+                    GameTooltip:AddLine(format(line, ratings[i], tostring(upgrade[i]), tostring(upgradep[i]), title[i]), 1, 1, 1)
                 end
                 --GameTooltip:AddLine(" ")
                 --GameTooltip:AddLine("爱不易提示：PVP低保现在和团本、大秘低保一起只能选择一个，点击查看宏伟宝库", 1, 1, 1, true)

@@ -418,8 +418,8 @@ Module.TrackedQuest = {
   {
     name = L["Patterns Within Patterns"],
     weekly = true,
-    quest = 65324,
-    relatedQuest = {65324},
+    quest = 66042,
+    relatedQuest = {66042},
   },
 }
 

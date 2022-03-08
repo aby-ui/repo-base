@@ -1226,7 +1226,7 @@ local default_player_data = {
 		},
 		
 	--> death panel buttons
-		on_death_menu = true,
+		on_death_menu = false,
 }
 
 _detalhes.default_player_data = default_player_data

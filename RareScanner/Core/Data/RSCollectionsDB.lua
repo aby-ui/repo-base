@@ -26,7 +26,7 @@ local RSRoutines = private.ImportLib("RareScannerRoutines")
 -- Manage database
 ---============================================================================
 
-local function ResetEntitiesCollectionsLoot()
+local function ResetEntitiesCollectionsLoot(manualScan)
 	-- If the version didnt change, then there is no need to clear the whole database
 	if (not private.dbglobal.lastCollectionsScanVersion) then
 		private.dbglobal.lastCollectionsScanVersion = {}
@@ -42,6 +42,45 @@ local function ResetEntitiesCollectionsLoot()
 	local _, _, classIndex = UnitClass("player");
 	if (not private.dbglobal.lastCollectionsScanVersion[RSConstants.CURRENT_LOOT_DB_VERSION][classIndex]) then
 		private.dbglobal.lastCollectionsScanVersion[RSConstants.CURRENT_LOOT_DB_VERSION][classIndex] = true
+	end
+	
+	-- Resets common loot and its class missing appearances
+	if (manualScan) then
+		for i, source in pairs (RSConstants.ITEM_SOURCE) do
+			if (private.dbglobal.entity_collections_loot[source]) then
+				for entityID, itemTypes in pairs (private.dbglobal.entity_collections_loot[source]) do
+					for itemType, _ in pairs (private.dbglobal.entity_collections_loot[source][entityID]) do
+						if (itemType ~= RSConstants.ITEM_TYPE.APPEARANCE) then
+							private.dbglobal.entity_collections_loot[source][entityID][itemType] = nil
+						else
+							for classID, _ in pairs (private.dbglobal.entity_collections_loot[source][entityID][itemType]) do
+								if (classID == classIndex) then
+									private.dbglobal.entity_collections_loot[source][entityID][itemType][classIndex] = nil
+								end
+							end
+							
+							if (RSUtils.GetTableLength(private.dbglobal.entity_collections_loot[source][entityID][itemType][classIndex]) == 0) then
+								private.dbglobal.entity_collections_loot[source][entityID][itemType][classIndex] = nil
+							end
+						end
+						
+						if (RSUtils.GetTableLength(private.dbglobal.entity_collections_loot[source][entityID][itemType]) == 0) then
+								private.dbglobal.entity_collections_loot[source][entityID][itemType] = nil
+							end
+					end
+					
+					if (RSUtils.GetTableLength(private.dbglobal.entity_collections_loot[source][entityID]) == 0) then
+						private.dbglobal.entity_collections_loot[source][entityID] = nil
+					end
+				end
+				
+				if (RSUtils.GetTableLength(private.dbglobal.entity_collections_loot[source]) == 0) then
+					private.dbglobal.entity_collections_loot[source] = nil
+				end
+			end
+		end
+		
+	--RSConstants.ITEM_SOURCE.CONTAINER
 	end
 end
 
@@ -471,7 +510,7 @@ function RSCollectionsDB.RemoveNotCollectedMount(mountID, callback) --NEW_MOUNT_
 				local lootList = RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.MOUNT]
 				if (lootList) then
 					for i = #lootList, 1, -1 do
-						if (lootList[i] == GetMountItemID(mountID)) then
+						if (RSUtils.Contains(GetMountItemID(mountID), lootList[i])) then
 							if (table.getn(lootList) == 1) then
 								RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.MOUNT] = nil
 							else
@@ -717,9 +756,9 @@ local function CheckUpdateCollectibles(checkedItems, getter, source, routines, r
 	table.insert(routines, checkUpdateCollectiblesRoutine)
 end
 
-local function UpdateEntitiesCollections(callback, routineTextOutput)
+local function UpdateEntitiesCollections(callback, routineTextOutput, manualScan)
 	-- Reset outdated data
-	ResetEntitiesCollectionsLoot()
+	ResetEntitiesCollectionsLoot(manualScan)
 	
 	local checkedItems = {}
 	checkedItems[RSConstants.ITEM_TYPE.APPEARANCE] = {}
@@ -749,7 +788,7 @@ local function UpdateEntitiesCollections(callback, routineTextOutput)
 end
 
 local loaded = false
-local function LoadNotCollectedItems(callback, routineTextOutput)
+local function LoadNotCollectedItems(callback, routineTextOutput, manualScan)
 	RSLogger:PrintMessage(AL["LOG_FETCHING_COLLECTIONS"])
 	
 	-- Prepare not collected queries routines
@@ -766,7 +805,7 @@ local function LoadNotCollectedItems(callback, routineTextOutput)
 		loaded = true
 		RSLogger:PrintMessage(AL["LOG_DONE"])
 		RSLogger:PrintMessage(AL["LOG_FILTERING_ENTITIES"])
-		UpdateEntitiesCollections(callback, routineTextOutput)
+		UpdateEntitiesCollections(callback, routineTextOutput, manualScan)
 	end)
 end
 
@@ -781,12 +820,12 @@ local function FindProfile(name)
 	return false
 end
 
-function RSCollectionsDB.ApplyCollectionsEntitiesFilters(callback, routineTextOutput)	
+function RSCollectionsDB.ApplyCollectionsEntitiesFilters(callback, routineTextOutput, manualScan)	
 	-- Loads all not collected items if not done in this session --
 	if (not loaded) then
-		LoadNotCollectedItems(callback, routineTextOutput)
+		LoadNotCollectedItems(callback, routineTextOutput, manualScan)
 	else
-		UpdateEntitiesCollections(callback, routineTextOutput)
+		UpdateEntitiesCollections(callback, routineTextOutput, manualScan)
 	end
 end
 

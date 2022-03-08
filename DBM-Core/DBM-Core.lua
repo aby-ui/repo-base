@@ -66,12 +66,12 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220302230004"),
+	Revision = parseCurseDate("20220306050356"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.3 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 2, 5) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.5 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.17 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 2, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
@@ -2307,7 +2307,7 @@ do
 	end
 
 	function DBM:GetRaidUnitId(name)
-		for i = 1, 5 do
+		for i = 1, 8 do
 			local unitId = "boss"..i
 			local bossName = UnitName(unitId)
 			if bossName and bossName == name then
@@ -2318,7 +2318,7 @@ do
 	end
 
 	function DBM:GetEnemyUnitIdByGUID(guid)
-		for i = 1, 5 do
+		for i = 1, 8 do
 			local unitId = "boss"..i
 			local guid2 = UnitGUID(unitId)
 			if guid == guid2 then
@@ -2479,7 +2479,7 @@ end
 
 function DBM:GetBossUnitId(name, bossOnly)--Deprecated, only old mods use this
 	local returnUnitID
-	for i = 1, 5 do
+	for i = 1, 8 do
 		if UnitName("boss" .. i) == name then
 			returnUnitID = "boss"..i
 		end
@@ -2496,7 +2496,7 @@ end
 
 function DBM:GetUnitIdFromGUID(cidOrGuid, bossOnly)
 	local returnUnitID
-	for i = 1, 5 do
+	for i = 1, 8 do
 		local unitId = "boss"..i
 		local bossGUID = UnitGUID(unitId)
 		if type(cidOrGuid) == "number" then--CID passed
@@ -4604,7 +4604,7 @@ function checkWipe(self, confirm)
 		end
 		--hack for no iEEU information is provided.
 		if not bossuIdFound then
-			for i = 1, 5 do
+			for i = 1, 8 do
 				if UnitExists("boss"..i) then
 					bossuIdFound = true
 					break
@@ -4819,14 +4819,25 @@ do
 			self:HideBlizzardEvents(1)
 			if self.Options.RecordOnlyBosses then
 				self:StartLogging(0, nil)
-			end
+            end
+            if self.Options.HideObjectivesFrame and mod.addon.type ~= "SCENARIO" and (not isRetail or GetNumTrackedAchievements() == 0) and difficultyIndex ~= 8 and InCombatLockdown() then
+                --先开怪的人此时已经进战斗
+                if KT_ForceHideTracker and ObjectiveTrackerFrame.collapsed then
+                    KT_ForceHideTracker(true)
+                    KTTrackerRestore = true
+                end
+            end
 			if self.Options.HideObjectivesFrame and mod.addon.type ~= "SCENARIO" and (not isRetail or GetNumTrackedAchievements() == 0) and difficultyIndex ~= 8 and not InCombatLockdown() then
 				if isRetail then
-					if ObjectiveTrackerFrame:IsVisible() then
+					if ObjectiveTrackerFrame:IsVisible() and not ObjectiveTrackerFrame.collapsed then --abyui KT
 						ObjectiveTracker_Collapse()
 						watchFrameRestore = true
 					end
-				else
+                    if KT_ForceHideTracker then
+                        KT_ForceHideTracker(true)
+                        KTTrackerRestore = true
+                    end
+                else
 					if QuestWatchFrame:IsVisible() then
 						QuestWatchFrame:Hide()
 						watchFrameRestore = true
@@ -5269,7 +5280,11 @@ do
 							QuestWatchFrame:Show()
 						end
 						watchFrameRestore = false
-					end
+                    end
+                    if KTTrackerRestore then
+                        KT_ForceHideTracker(false)
+                    end
+
 					local QuestieLoader = _G["QuestieLoader"]
 					if QuestieLoader then
 						local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others
@@ -7167,7 +7182,7 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID,
 			end
 		end
 	else--Check all of them if one isn't defined
-		for i = 1, 5 do
+		for i = 1, 8 do
 			local unitID = "boss"..i
 			local guid = UnitGUID(unitID)
 			--No GUID, any unit having threat returns true, GUID, only specific unit matching guid
@@ -7259,7 +7274,7 @@ function DBM:GetBossHP(cIdOrGUID, onlyHighest)
 	else
 		--Boss UnitIds
 		if isRetail then
-			for i = 1, 5 do
+			for i = 1, 8 do
 				local unitID = "boss"..i
 				local bossguid = UnitGUID(unitID)
 				if (self:GetCIDFromGUID(bossguid) == cIdOrGUID or bossguid == cIdOrGUID) and UnitHealthMax(unitID) ~= 0 then

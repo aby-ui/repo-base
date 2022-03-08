@@ -1,4 +1,6 @@
 local _, U1 = ...
+U1.start_timestamp = debugprofilestop()
+U1.get_timestamp = function() return DEBUG_MODE and format(" (+%.3f)", (debugprofilestop() - U1.start_timestamp)/1000) or "" end
 
 U1PlayerName = UnitName("player")
 U1PlayerClass = select(2, UnitClass("player"))
