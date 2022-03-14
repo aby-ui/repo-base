@@ -104,8 +104,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     --chest:HookScript("OnMouseUp", ShowWeeklyRewards)
     chest:HookScript("OnEnter", function(self)
         if GameTooltip:IsVisible() then
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("温馨提示：3月3日第3赛季第1周，大秘掉落最高255。3月10日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
+            --GameTooltip:AddLine(" ") GameTooltip:AddLine("温馨提示：3月3日第3赛季第1周，大秘掉落最高255。3月10日开的低保，是根据该周打的层数按以下表格计算：", nil, nil, nil, 1)
             GameTooltip:AddLine(" ")
             local header = "层数   掉落  周箱"
             GameTooltip:AddDoubleLine(header, header, 1, 1, 1, 1, 1, 1)
@@ -175,10 +174,9 @@ end)
 EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, tooltipShown, areaPoiID, name)
     if areaPoiID == 6640 then
         -- https://www.wowhead.com/guides/torghast-updates-patch-9-1-new-scoring-rewards-torments-shadowlands#farmable-soul-ash
-        --[[
-        local levels    = {  "08", "09",   10,    11,    12, }
-        local firstNew  = {   170,  230,  270,   310,   350, }
-        local firstOld  = {   860,  915,  960,  1000,  1030, }
+        local levels    = {  "08", "09",   10,    11,    12,     13,     14,     15,     16}
+        local firstNew  = {   170,  230,  270,   310,   350,    380,    410,    440,    470}
+        local firstOld  = {   860,  915,  960,  1000,  1030,   1060,   1090,   1120,   1150}
         if GameTooltip:IsVisible() then
             GameTooltip:AddLine("难度   薪尘    灰烬", 1, 1, 1)
             local line = " %2s |T130758:10:10:0:0:32:32:10:22:10:22|t %5s |T130758:10:10:0:0:32:32:10:22:10:22|t %4s"
@@ -191,16 +189,16 @@ EventRegistry:RegisterCallback("AreaPOIPin.MouseOver", function(self, obj, toolt
             GameTooltip:AddLine("需要灰烬 1250/2000/3200/5150")
             GameTooltip:AddLine("249橙装需要 灰烬5150 薪尘1100")
             GameTooltip:AddLine("262橙装需要 灰烬5150 薪尘1650")
-            GameTooltip:AddLine(" ")
-            GameTooltip:AddLine("统御插槽位置：头、肩、胸")
-            GameTooltip:AddLine("布甲：护腕、腰带")
-            GameTooltip:AddLine("皮甲：手套、鞋子")
-            GameTooltip:AddLine("锁甲：腰带、鞋子")
-            GameTooltip:AddLine("板甲：护腕、手套")
+            GameTooltip:AddLine("291橙装需要 262材料及2000宇宙助溶剂")
+--            GameTooltip:AddLine(" ")
+--            GameTooltip:AddLine("统御插槽位置：头、肩、胸")
+--            GameTooltip:AddLine("布甲：护腕、腰带")
+--            GameTooltip:AddLine("皮甲：手套、鞋子")
+--            GameTooltip:AddLine("锁甲：腰带、鞋子")
+--            GameTooltip:AddLine("板甲：护腕、手套")
 
             GameTooltip:Show()
         end
-        ]]
     end
 end, {})
 
@@ -232,7 +230,7 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
                 local name2 = runInfo2 and C_ChallengeMode.GetMapUIInfo(runInfo2.mapChallengeModeID)
                 local text2, color2 = "", GREEN_FONT_COLOR
                 if runInfo2 then
-                    text2 = name2 .. " - " .. runInfo2.level
+                    text2 = name2:gsub("塔扎维什：", "") .. " - " .. runInfo2.level
                     color2 = runInfo2.completed and GREEN_FONT_COLOR or RED_FONT_COLOR
                 end
                 GameTooltip_AddColoredDoubleLine(GameTooltip, runInfo.level .. " - " .. name, text2, runInfo.completed and GREEN_FONT_COLOR or RED_FONT_COLOR, color2, false)
@@ -241,6 +239,10 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
         end
     end
 
+    SetOrHookScript(WeeklyRewardsFrame, "OnShow", function()
+        if WeeklyRewardsFrame.Overlay then WeeklyRewardsFrame.Overlay:Hide() end
+        if WeeklyRewardsFrame.Blackout then WeeklyRewardsFrame.Blackout:Hide() end
+    end)
     for i=1, 3 do
         local act = WeeklyRewardsFrame:GetActivityFrame(Enum.WeeklyRewardChestThresholdType.MythicPlus, i)
         act.OriginHandlePreviewMythicRewardTooltip = act.HandlePreviewMythicRewardTooltip

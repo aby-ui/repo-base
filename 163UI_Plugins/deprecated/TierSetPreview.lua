@@ -46,20 +46,22 @@ CoreDependCall("Blizzard_EncounterJournal", function()
             end
             for _, itemId in ipairs(itemIDs) do
                 local _, link = GetItemInfo(itemId)
-                GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-                GameTooltip:SetHyperlink(link, 1, specId)
-                GameTooltip:Show()
-                for j = 8, 20 do
-                    local txt = _G["GameTooltipTextLeft" .. j]
-                    if (txt and txt:GetText() or ""):find("%d/%d") then
-                        self.itemLink = link
+                if link then
+                    GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+                    GameTooltip:SetHyperlink(link, 1, specId)
+                    GameTooltip:Show()
+                    for j = 8, 20 do
+                        local txt = _G["GameTooltipTextLeft" .. j]
+                        if (txt and txt:GetText() or ""):find("%d/%d") then
+                            self.itemLink = link
+                            break
+                        end
+                    end
+                    if self.itemLink == nil then
+                        GameTooltip:Hide()
+                    else
                         break
                     end
-                end
-                if self.itemLink == nil then
-                    GameTooltip:Hide()
-                else
-                    break
                 end
             end
         end)

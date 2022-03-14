@@ -10,6 +10,7 @@ local CountSoundDropDown = spokenGeneralArea:CreateDropdown(L.CountdownVoice, DB
 	DBM:BuildVoiceCountdownCache()
 end, 180)
 CountSoundDropDown:SetPoint("TOPLEFT", spokenGeneralArea.frame, "TOPLEFT", 0, -20)
+CountSoundDropDown.myheight = 20
 
 local CountSoundDropDown2 = spokenGeneralArea:CreateDropdown(L.CountdownVoice2, DBM:GetCountSounds(), "DBM", "CountdownVoice2", function(value)
 	DBM.Options.CountdownVoice2 = value
@@ -17,7 +18,6 @@ local CountSoundDropDown2 = spokenGeneralArea:CreateDropdown(L.CountdownVoice2, 
 	DBM:BuildVoiceCountdownCache()
 end, 180)
 CountSoundDropDown2:SetPoint("LEFT", CountSoundDropDown, "RIGHT", 45, 0)
-CountSoundDropDown2.myheight = 0
 
 local CountSoundDropDown3 = spokenGeneralArea:CreateDropdown(L.CountdownVoice3, DBM:GetCountSounds(), "DBM", "CountdownVoice3", function(value)
 	DBM.Options.CountdownVoice3 = value
@@ -25,6 +25,14 @@ local CountSoundDropDown3 = spokenGeneralArea:CreateDropdown(L.CountdownVoice3, 
 	DBM:BuildVoiceCountdownCache()
 end, 180)
 CountSoundDropDown3:SetPoint("TOPLEFT", CountSoundDropDown, "TOPLEFT", 0, -45)
+CountSoundDropDown3.myheight = 20
+
+local CountSoundDropDown4 = spokenGeneralArea:CreateDropdown(L.PullVoice, DBM:GetCountSounds(), "DBM", "PullVoice", function(value)
+	DBM.Options.PullVoice = value
+	DBM:PlayCountSound(1, DBM.Options.PullVoice)
+	DBM:BuildVoiceCountdownCache()
+end, 180)
+CountSoundDropDown4:SetPoint("TOPLEFT", CountSoundDropDown2, "TOPLEFT", 0, -45)
 
 local voices = DBM.Voices
 if DBM.Options.ChosenVoicePack2 ~= "None" and not DBM.VoiceVersions[DBM.Options.ChosenVoicePack2] then -- Sound pack is missing, add a custom entry of "missing"
@@ -34,7 +42,7 @@ local VoiceDropDown = spokenGeneralArea:CreateDropdown(L.VoicePackChoice, voices
 	DBM.Options.ChosenVoicePack2 = value
 	DBM:CheckVoicePackVersion(value)
 end, 180)
-VoiceDropDown:SetPoint("TOPLEFT", CountSoundDropDown2, "TOPLEFT", 0, -45)
+VoiceDropDown:SetPoint("TOPLEFT", CountSoundDropDown3, "TOPLEFT", 0, -45)
 VoiceDropDown.myheight = 20 -- TODO: +10 padding per dropdown text
 
 local voiceReplaceArea		= spokenAlertsPanel:CreateArea(L.Area_VoicePackReplace)

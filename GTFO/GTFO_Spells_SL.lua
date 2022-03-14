@@ -205,6 +205,7 @@ GTFO.SpellID["363982"] = {
 
 GTFO.SpellID["368617"] = {
   --desc = "Devouring Helix (Akkaris)";
+  tankSound = 2;
   sound = 1;
 };
 
@@ -225,6 +226,11 @@ GTFO.SpellID["361335"] = {
 
 GTFO.SpellID["368476"] = {
   --desc = "Charged Ground (Protector of the First Ones)";
+  sound = 1;
+};
+
+GTFO.SpellID["336955"] = {
+  --desc = "Active Volcano";
   sound = 1;
 };
 

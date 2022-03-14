@@ -1514,6 +1514,7 @@ local tentativehandle = nil
 
 function Skada:StartCombat()
 	-- Reset automatic stop on wipe variables
+    if DEBUG_MODE then pdebug() end
 	deathcounter = 0
 	local _, members = self:GetGroupTypeAndCount()
 

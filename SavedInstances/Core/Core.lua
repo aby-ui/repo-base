@@ -61,7 +61,9 @@ local tooltip, indicatortip = nil, nil
 
 function SI:QuestInfo(questid)
   if not questid or questid == 0 then return nil end
+  SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
   SI.ScanTooltip:SetHyperlink("\124cffffff00\124Hquest:"..questid..":90\124h[]\124h\124r")
+  SI.ScanTooltip:Show()
   local l = _G[SI.ScanTooltip:GetName().."TextLeft1"]
   l = l and l:GetText()
   if not l or #l == 0 then return nil end -- cache miss
@@ -814,8 +816,10 @@ function SI:instanceException(LFDID)
     local total = 0
     for idx, id in ipairs(exc) do
       if type(id) == "number" then
+        SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
         SI.ScanTooltip:SetHyperlink(("unit:Creature-0-0-0-0-%d:0000000000"):format(id))
-        local line = SI.ScanTooltip:IsShown() and _G[SI.ScanTooltip:GetName().."TextLeft1"]
+        SI.ScanTooltip:Show()
+        local line = _G[SI.ScanTooltip:GetName().."TextLeft1"]
         line = line and line:GetText()
         if line and #line > 0 then
           exc[idx] = line
@@ -1237,7 +1241,9 @@ function SI:updateSpellTip(spellID)
     end
   end
   if slot then
+    SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
     SI.ScanTooltip:SetUnitDebuff('player', slot)
+    SI.ScanTooltip:Show()
     for i = 1, SI.ScanTooltip:NumLines() - 1 do
       local textLeft = _G[SI.ScanTooltip:GetName() .. 'TextLeft' .. i]
       SI.db.spelltip[spellID][i] = textLeft:GetText()
@@ -2184,7 +2190,9 @@ hoverTooltip.ShowIndicatorTooltip = function (cell, arg, ...)
           .. diff .. ":" .. bits .. "\124h[Battle of Dazar'alor]\124h\124r"
       end
     end
+    SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
     SI.ScanTooltip:SetHyperlink(link)
+    SI.ScanTooltip:Show()
     local name = SI.ScanTooltip:GetName()
     local gotbossinfo
     for i=2,SI.ScanTooltip:NumLines() do
@@ -2508,7 +2516,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "d17bc95" then
+  if versionString == "981fc5e" then
     versionString = "Dev"
   end
   --@end-debug@]==]

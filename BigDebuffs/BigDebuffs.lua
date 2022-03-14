@@ -2112,6 +2112,7 @@ function BigDebuffs:NAME_PLATE_UNIT_ADDED(_, unit)
         if frame:IsForbidden() then return end
 		frame.BigDebuffs:SetScript("OnEnter", function(self)
 			if ( BigDebuffs.db.profile.nameplates.tooltips ) then
+                if self:IsForbidden() then return end
 				NamePlateTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
 				if self.interrupt then
 					NamePlateTooltip:SetSpellByID(self.interrupt)

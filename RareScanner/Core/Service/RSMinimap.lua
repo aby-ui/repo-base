@@ -44,7 +44,7 @@ local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
 function RSMinimap.LoadMinimapButton()
 	local RareScannerMinimapLDB = LibStub("LibDataBroker-1.1"):NewDataObject("RareScannerLDB", {
 		type = "data source",
-		text = "RareScanner",
+		--text = "RareScanner", --abyui
 		label = "RareScanner",
 		icon = RSConstants.NORMAL_NPC_TEXTURE,
 		OnClick = function(self, button) 

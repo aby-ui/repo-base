@@ -279,7 +279,9 @@ function Module:RecordSkill(spellID, expires)
     local slink = GetSpellLink(spellID)
     if slink and #slink > 0 then  -- tt scan for the full name with profession
       link = "\124cffffd000\124Henchant:"..spellID.."\124h[X]\124h\124r"
+      SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
       SI.ScanTooltip:SetHyperlink(link)
+      SI.ScanTooltip:Show()
       local l = _G[SI.ScanTooltip:GetName().."TextLeft1"]
       l = l and l:GetText()
       if l and #l > 0 then

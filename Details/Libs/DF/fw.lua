@@ -1,6 +1,6 @@
 
 
-local dversion = 291
+local dversion = 292
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -340,14 +340,14 @@ function DF.table.reverse (t)
 end
 
 --> copy from table2 to table1 overwriting values
-function DF.table.copy (t1, t2)
-	for key, value in pairs (t2) do 
-		if (key ~= "__index") then
+function DF.table.copy(t1, t2)
+	for key, value in pairs(t2) do
+		if (key ~= "__index" and key ~= "__newindex") then
 			if (type (value) == "table") then
-				t1 [key] = t1 [key] or {}
-				DF.table.copy (t1 [key], t2 [key])
+				t1[key] = t1[key] or {}
+				DF.table.copy(t1[key], t2[key])
 			else
-				t1 [key] = value
+				t1[key] = value
 			end
 		end
 	end
@@ -355,13 +355,13 @@ function DF.table.copy (t1, t2)
 end
 
 --> copy from table2 to table1 overwriting values but do not copy data that cannot be compressed
-function DF.table.copytocompress (t1, t2)
-	for key, value in pairs (t2) do
+function DF.table.copytocompress(t1, t2)
+	for key, value in pairs(t2) do
 		if (key ~= "__index" and type(value) ~= "function") then
 			if (type(value) == "table") then
 				if (not value.GetObjectType) then
-					t1 [key] = t1 [key] or {}
-					DF.table.copytocompress(t1 [key], t2 [key])
+					t1[key] = t1[key] or {}
+					DF.table.copytocompress(t1[key], t2[key])
 				end
 			else
 				t1 [key] = value

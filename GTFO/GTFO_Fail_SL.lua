@@ -405,6 +405,21 @@ GTFO.SpellID["361835"] = {
   sound = 3;
 };
 
+GTFO.SpellID["365201"] = {
+  --desc = "Subterranean Eruptions (Hadeon the Stonebreaker)";
+  sound = 3;
+};
+
+GTFO.SpellID["365882"] = {
+  --desc = "Cosmic Eruption (Dominated Architect)";
+  sound = 3;
+};
+
+GTFO.SpellID["365876"] = {
+  --desc = "Soul Dust (Ilgaz the Plunderer)";
+  applicationOnly = true;
+  sound = 3;
+};
 
 --- **********************
 --- * Halls of Atonement *
@@ -1756,6 +1771,12 @@ GTFO.SpellID["364522"] = {
 GTFO.SpellID["359913"] = {
   --desc = "Wormhole Jaws (Skolex)";
   sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["360411"] = {
+  --desc = "Collapsing Emptiness (Skolex)";
+  sound = 3;
 };
 
 GTFO.SpellID["367554"] = {
@@ -1835,7 +1856,7 @@ GTFO.SpellID["362352"] = {
 GTFO.SpellID["365168"] = {
   --desc = "Cosmic Slam (Eternal Sentry)";
   sound = 3;
-  tankSound = 0;
+  applicationOnly = true;
 };
 
 GTFO.SpellID["367428"] = {
@@ -1856,6 +1877,18 @@ GTFO.SpellID["369650"] = {
 
 GTFO.SpellID["367082"] = {
   --desc = "Seismic Tremors (Halondrus)";
+  sound = 3;
+};
+
+GTFO.SpellID["368820"] = {
+  --desc = "Collapsing Mote (Halondrus)";
+  sound = 3;
+};
+
+GTFO.SpellID["361309"] = {
+  --desc = "Lightshatter Beam (Halondrus)";
+  applicationOnly = true;
+  tankSound = 0;
   sound = 3;
 };
 
@@ -1890,6 +1923,18 @@ GTFO.SpellID["365024"] = {
   --desc = "Wicked Star (Anduin Wrynn)";
   applicationOnly = true;
   sound = 3;
+};
+
+GTFO.SpellID["366189"] = {
+  --desc = "Hyperlight Flash (Thieveing Agent)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["362394"] = {
+  --desc = "Rain of Despair (Anduin's Despair)";
+  sound = 3;
+  applicationOnly = true;
 };
 
 end

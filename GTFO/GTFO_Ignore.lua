@@ -91,5 +91,7 @@ GTFO.IgnoreScan["366943"] = true; -- Radioactive Core
 GTFO.IgnoreScan["368146"] = true; -- Eternity Engine
 GTFO.IgnoreScan["362130"] = true; -- Quaking Steps
 GTFO.IgnoreScan["361818"] = true; -- Hopebreaker
+GTFO.IgnoreScan["364845"] = true; -- Fractured Core
+
 
 

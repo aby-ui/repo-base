@@ -66,12 +66,12 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220306050356"),
+	Revision = parseCurseDate("20220312110800"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.5 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.7 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 3, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.17 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 2, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
@@ -141,6 +141,7 @@ DBM.DefaultOptions = {
 	CountdownVoice = "VP:Yike",
 	CountdownVoice2 = "Meicn",
 	CountdownVoice3 = "Reaper",
+	PullVoice = "VP:Yike",
 	ChosenVoicePack2 = (GetLocale() == "zhCN" or GetLocale() == "zhTW") and "Yike" or (GetLocale() == "enUS" or GetLocale() == "enGB") and "VEM" or "None",
 	VPReplacesAnnounce = true,
 	VPReplacesSA1 = true,
@@ -1314,7 +1315,7 @@ do
 			end
 		end
 		--Check if any of countdown sounds are using missing voice pack
-		local found1, found2, found3 = false, false, false
+		local found1, found2, found3, found4 = false, false, false, false
 		for _, count in pairs(DBM:GetCountSounds()) do
 			local voice = count.value
 			if voice == self.Options.CountdownVoice then
@@ -1325,6 +1326,9 @@ do
 			end
 			if voice == self.Options.CountdownVoice3 then
 				found3 = true
+			end
+			if voice == self.Options.PullVoice then
+				found4 = true
 			end
 		end
 		if not found1 then
@@ -1338,6 +1342,10 @@ do
 		if not found3 then
 			AddMsg(self, L.VOICE_COUNT_MISSING:format(3, self.DefaultOptions.CountdownVoice3))
 			self.Options.CountdownVoice3 = self.DefaultOptions.CountdownVoice3
+		end
+		if not found4 then
+			AddMsg(self, L.VOICE_COUNT_MISSING:format(4, self.DefaultOptions.PullVoice))
+			self.Options.PullVoice = self.DefaultOptions.PullVoice
 		end
 		self:BuildVoiceCountdownCache()
 		--Break timer recovery
@@ -3697,7 +3705,7 @@ do
 			DBM:GetModLocalization("PullTimerCountdownDummy"):SetGeneralLocalization{ name = L.MINIMAP_TOOLTIP_HEADER }
 			dummyMod.text = dummyMod:NewAnnounce("%s", 1, "132349")
 			dummyMod.geartext = dummyMod:NewSpecialWarning("  %s  ", nil, nil, nil, 3)
-			dummyMod.timer = dummyMod:NewTimer(20, "%s", "132349", nil, nil, 0, nil, nil, DBM.Options.DontPlayPTCountdown and 0 or 1, threshold)
+			dummyMod.timer = dummyMod:NewTimer(20, "%s", "132349", nil, nil, 0, nil, nil, DBM.Options.DontPlayPTCountdown and 0 or 4, threshold)
 		end
 		--Cancel any existing pull timers before creating new ones, we don't want double countdowns or mismatching blizz countdown text (cause you can't call another one if one is in progress)
 		if not DBM.Options.DontShowPT2 then--and DBT:GetBar(L.TIMER_PULL)
@@ -4434,10 +4442,10 @@ do
 			local v = inCombat[i]
 			if not v.combatInfo then return end
 			if v.noEEDetection then return end
-			if v.respawnTime and success == 0 and self.Options.ShowRespawn and not self.Options.DontShowBossTimers then--No special hacks needed for bad wrath ENCOUNTER_END. Only mods that define respawnTime have a timer, since variable per boss.
+			if (isRetail or v.respawnTime) and success == 0 and self.Options.ShowRespawn and not self.Options.DontShowBossTimers then--No special hacks needed for bad wrath ENCOUNTER_END. Only mods that define respawnTime have a timer, since variable per boss.
 				name = string.split(",", name)
 				DBT:CreateBar(v.respawnTime, L.TIMER_RESPAWN:format(name), isRetail and 237538 or 136106)--Interface\\Icons\\Spell_Holy_BorrowedTime, Spell_nature_timestop
-				fireEvent("DBM_TimerStart", "DBMRespawnTimer", L.TIMER_RESPAWN:format(name), v.respawnTime, isRetail and "237538" or "136106", "extratimer", nil, 0, v.id)
+				fireEvent("DBM_TimerStart", "DBMRespawnTimer", L.TIMER_RESPAWN:format(name), v.respawnTime or 29, isRetail and "237538" or "136106", "extratimer", nil, 0, v.id)
 			end
 			if v.multiEncounterPullDetection then
 				for _, eId in ipairs(v.multiEncounterPullDetection) do
@@ -9007,15 +9015,16 @@ end
 do
 	local timerPrototype = {}
 	local mt = {__index = timerPrototype}
-	local countvoice1, countvoice2, countvoice3
-	local countvoice1max, countvoice2max, countvoice3max = 5, 5, 5
-	local countpath1, countpath2, countpath3
+	local countvoice1, countvoice2, countvoice3, countvoice4
+	local countvoice1max, countvoice2max, countvoice3max, countvoice4max = 5, 5, 5, 5
+	local countpath1, countpath2, countpath3, countpath4
 
 	--Merged countdown object for timers with build-in countdown
 	function DBM:BuildVoiceCountdownCache()
 		countvoice1 = self.Options.CountdownVoice
 		countvoice2 = self.Options.CountdownVoice2
 		countvoice3 = self.Options.CountdownVoice3
+		countvoice4 = self.Options.PullVoice
 		for _, count in pairs(DBM:GetCountSounds()) do
 			if count.value == countvoice1 then
 				countpath1 = count.path
@@ -9028,6 +9037,10 @@ do
 			if count.value == countvoice3 then
 				countpath3 = count.path
 				countvoice3max = count.max
+			end
+			if count.value == countvoice4 then
+				countpath4 = count.path
+				countvoice4max = count.max
 			end
 		end
 	end
@@ -9056,6 +9069,9 @@ do
 		elseif voice == 3 then
 			maxCount = countvoice3max or 5
 			path = countpath3 or "Interface\\AddOns\\DBM-Core\\Sounds\\Overwatch\\Reaper\\"
+		elseif voice == 4 then
+			maxCount = countvoice4max or 10
+			path = countpath4 or "Interface\\AddOns\\DBM-Core\\Sounds\\Overwatch\\Mei\\cn\\"
 		else
 			maxCount = countvoice1max or 10
 			path = countpath1 or "Interface\\AddOns\\DBM-Core\\Sounds\\Corsica\\"

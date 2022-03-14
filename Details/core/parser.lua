@@ -5658,38 +5658,45 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	saver:RegisterEvent ("PLAYER_LOGOUT")
 	saver:SetScript ("OnEvent", function (...)
 		
+		local currentStep = 0
+
+		--SAVINGDATA = true
+
 		if (not _detalhes.gump) then
 			--> failed to load the framework.
 			return
 		end
+
+		_detalhes_global.exit_log = {}
+		_detalhes_global.exit_errors = _detalhes_global.exit_errors or {}
 		
 		local saver_error = function (errortext)
 			_detalhes_global = _detalhes_global or {}
-			_detalhes_global.exit_errors = _detalhes_global.exit_errors or {}
-			
-			tinsert (_detalhes_global.exit_errors, 1, _detalhes.userversion .. " " .. errortext)
+			tinsert (_detalhes_global.exit_errors, 1, currentStep .. "|" .. date() .. "|" .. _detalhes.userversion .. "|" .. errortext .. "|" .. debugstack())
 			tremove (_detalhes_global.exit_errors, 6)
 		end
-		
-		_detalhes_global.exit_log = {}
-		
+
 		_detalhes.saver_error_func = saver_error
-		
 		_detalhes.logoff_saving_data = true
 	
 		--> close info window
 			if (_detalhes.FechaJanelaInfo) then
 				tinsert (_detalhes_global.exit_log, "1 - Closing Janela Info.")
+				currentStep = "Fecha Janela Info"
 				xpcall (_detalhes.FechaJanelaInfo, saver_error)
 			end
 			
 		--> do not save window pos
 			if (_detalhes.tabela_instancias) then
+				currentStep = "Dealing With Instances"
 				tinsert (_detalhes_global.exit_log, "2 - Clearing user place from instances.")
 				for id, instance in _detalhes:ListInstances() do
-					if (instance.baseframe) then
-						instance.baseframe:SetUserPlaced (false)
-						instance.baseframe:SetDontSavePosition (true)
+					if (id) then
+						tinsert (_detalhes_global.exit_log, "  - " .. id .. " has baseFrame: " .. (instance.baseframe and "yes" or "no") .. ".")
+						if (instance.baseframe) then
+							instance.baseframe:SetUserPlaced (false)
+							instance.baseframe:SetDontSavePosition (true)
+						end
 					end
 				end
 			end
@@ -5697,12 +5704,14 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		--> leave combat start save tables
 			if (_detalhes.in_combat and _detalhes.tabela_vigente) then 
 				tinsert (_detalhes_global.exit_log, "3 - Leaving current combat.")
+				currentStep = "Leaving Current Combat"
 				xpcall (_detalhes.SairDoCombate, saver_error)
 				_detalhes.can_panic_mode = true
 			end
 			
 			if (_detalhes.CheckSwitchOnLogon and _detalhes.tabela_instancias[1] and _detalhes.tabela_instancias and getmetatable (_detalhes.tabela_instancias[1])) then
 				tinsert (_detalhes_global.exit_log, "4 - Reversing switches.")
+				currentStep = "Check Switch on Logon"
 				xpcall (_detalhes.CheckSwitchOnLogon, saver_error)
 			end
 			
@@ -5715,13 +5724,20 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		--> save the config
 			tinsert (_detalhes_global.exit_log, "6 - Saving Config.")
+			currentStep = "Saving Config"
 			xpcall (_detalhes.SaveConfig, saver_error)
+
 			tinsert (_detalhes_global.exit_log, "7 - Saving Profiles.")
+			currentStep = "Saving Profile"
 			xpcall (_detalhes.SaveProfile, saver_error)
 
 		--> save the nicktag cache
 			tinsert (_detalhes_global.exit_log, "8 - Saving nicktag cache.")
-			_detalhes_database.nick_tag_cache = Details.CopyTable (_detalhes_database.nick_tag_cache)
+
+			local saveNicktabCache = function()
+				_detalhes_database.nick_tag_cache = Details.CopyTable(_detalhes_database.nick_tag_cache)
+			end
+			xpcall (saveNicktabCache, saver_error)
 	end)
 	
 	--> end

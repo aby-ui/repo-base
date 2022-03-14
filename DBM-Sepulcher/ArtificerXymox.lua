@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2470, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220307220708")
+mod:SetRevision("20220312015239")
 mod:SetCreatureID(183501)
 mod:SetEncounterID(2553)
 mod:SetUsedIcons(1, 2, 3, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20220303000000)
+mod:SetHotfixNoticeRev(20220308000000)
 mod:SetMinSyncRevision(20220123000000)
 --mod.respawnTime = 29
 
@@ -53,15 +53,15 @@ local yellGlyphofRelocationFades				= mod:NewShortFadesYell(362803)
 local specWarnGlyphofRelocationTaunt			= mod:NewSpecialWarningTaunt(362803, nil, nil, nil, 1, 2)
 local specWarnStasisTrap						= mod:NewSpecialWarningDodge(362882, nil, nil, nil, 2, 2)
 local yellStasisTrap							= mod:NewYell(362882)--Failing to dodge it
-local specWarnHyperlightSpark					= mod:NewSpecialWarningCount(362849, nil, nil, nil, 2, 2)
+local specWarnHyperlightSpark					= mod:NewSpecialWarningCount(362849, nil, 206794, nil, 2, 2)--Short Text "Nova"
 
-local timerDimensionalTearCD					= mod:NewNextTimer(8, 362615, 327770, nil, nil, 3)
+local timerDimensionalTearCD					= mod:NewNextTimer(8, 362615, 67833, nil, nil, 3)
 local timerCartelEliteCD						= mod:NewCDTimer(28.8, 363485, nil, nil, nil, 1, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerGlyphofRelocationCD					= mod:NewCDCountTimer(60, 362801, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerGlyphExplostion						= mod:NewTargetTimer(5, 362803, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 local timerStasisTrapCD							= mod:NewCDTimer(30, 362882, nil, nil, nil, 3)--28-32. it attemts to average 30 but has ~2 in either direction for some reason
-local timerHyperlightSparknovaCD				= mod:NewCDCountTimer(30, 362849, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--28-34
---local berserkTimer							= mod:NewBerserkTimer(600)
+local timerHyperlightSparknovaCD				= mod:NewCDCountTimer(30, 362849, 206794, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--28-34
+local berserkTimer								= mod:NewBerserkTimer(600)
 
 mod:AddSetIconOption("SetIconOnWormhole", 362615, true, false, {1, 2})
 mod:AddSetIconOption("SetIconGlyphofRelocation", 362803, false, false, {3})
@@ -104,7 +104,49 @@ local difficultyName = "None"
 --The reason being they aren't ALWAYS the same, case and point glyph in stage 1, rings in stage 4 heroic
 --Want to be able to update timers faster on fly if fight continues to get hotfixes, this gives most rapidly changable knobs
 local allTimers = {
-	["easy"] = {--Normal, and LFR
+	["lfr"] = {
+		[1] = {--Unchanged
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+		[2] = {--Gets a little slower
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+		[3] = {--Gets even slower
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+		[4] = {
+			--Rings
+			[364465] = 42.8,
+			--Glyph of Relocation
+			[362801] = 42.8,
+			--Stasis Trap
+			[362885] = 42.8,
+			--Hyperlight Sparknova
+			[362849] = 42.8,
+		},
+	},
+	["normal"] = {
 		[1] = {--Unchanged
 			--Rings
 			[364465] = 30,
@@ -193,7 +235,7 @@ local allTimers = {
 			--Rings
 			[364465] = 30,
 			--Glyph of Relocation
-			[362801] = 60,
+			[362801] = 30,
 			--Stasis Trap
 			[362885] = 30,
 			--Hyperlight Sparknova
@@ -239,22 +281,33 @@ function mod:OnCombatStart(delay)
 	self.vb.glyphCount = 0
 	--For the time being, initial pull timers stil same on all difficulties
 	--This will probably be changed soon enough :D
-	timerDimensionalTearCD:Start(7.9-delay)
-	timerHyperlightSparknovaCD:Start(14-delay, 1)
-	timerStasisTrapCD:Start(21-delay)
-	timerForerunnerRingsCD:Start(26-delay, 1)
+	if not self:IsLFR() then
+		--These are same in 3 modes
+		timerDimensionalTearCD:Start(7.9-delay)
+		timerHyperlightSparknovaCD:Start(14-delay, 1)
+		timerStasisTrapCD:Start(21-delay)
+		timerForerunnerRingsCD:Start(26-delay, 1)
+		timerGlyphofRelocationCD:Start(39.9-delay, 1)
+	end
 	if self:IsMythic() then
 		difficultyName = "mythic"
 		timerCartelEliteCD:Start(13.4-delay)
 		timerRiftBlastsCD:Start(13.6-delay)
-		timerGlyphofRelocationCD:Start(44.4-delay, 1)--Only different on pull, it's 40 on phase changes like other modes
+		berserkTimer:Start(600-delay)
 	else
 		if self:IsHeroic() then
 			difficultyName = "heroic"
+		elseif self:IsNormal() then
+			difficultyName = "normal"
 		else
-			difficultyName = "easy"
+			difficultyName = "lfr"
+			timerDimensionalTearCD:Start(11-delay)
+			timerHyperlightSparknovaCD:Start(20-delay, 1)
+			timerStasisTrapCD:Start(30-delay)
+			timerForerunnerRingsCD:Start(37.1-delay, 1)
+			timerGlyphofRelocationCD:Start(57.1-delay, 1)
 		end
-		timerGlyphofRelocationCD:Start(39.9-delay, 1)
+
 	end
 --	if self.Options.InfoFrame then
 --		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(328897))
@@ -280,8 +333,10 @@ function mod:OnTimerRecovery()
 		difficultyName = "mythic"
 	elseif self:IsHeroic() then
 		difficultyName = "heroic"
+	elseif self:IsNormal() then
+		difficultyName = "normal"
 	else
-		difficultyName = "easy"
+		difficultyName = "lfr"
 	end
 end
 
@@ -406,7 +461,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerHyperlightSparknovaCD:Stop()
 		timerStasisTrapCD:Stop()
 		if self:IsMythic() then
-			--Assuming they are still using march 1st version of hotfixes until seeing otherwise
 			timerHyperlightSparknovaCD:Start(15.5, 1)
 			timerDimensionalTearCD:Start(22)
 			timerStasisTrapCD:Start(23)
@@ -422,7 +476,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerDimensionalTearCD:Start(33.3)
 			timerForerunnerRingsCD:Start(36, 1)
 			timerGlyphofRelocationCD:Start(53.3, 1)
-		else--Normal, LFR
+		else--Normal, LFR are same here
 			--Timers on non mythic even more altered on P4 start with march 3rd hotfixes
 			timerHyperlightSparknovaCD:Start(20, 1)
 			timerStasisTrapCD:Start(30)
@@ -529,13 +583,20 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerStasisTrapCD:Start(23.3)
 			timerForerunnerRingsCD:Start(28.8, 1)
 			timerGlyphofRelocationCD:Start(44.4, 1)
-		else--Normal and LFR?
+		elseif self:IsNormal() then
 			--Initial timers are even more slowed as of march 3rd hotfixe
 			timerDimensionalTearCD:Start(10)
 			timerHyperlightSparknovaCD:Start(17.5, 1)
 			timerStasisTrapCD:Start(26.2)
 			timerForerunnerRingsCD:Start(32.5, 1)
 			timerGlyphofRelocationCD:Start(50, 1)
+		else--LFR
+			--Initial timers are even more slowed as of march 3rd hotfixe
+			timerDimensionalTearCD:Start(11.4)
+			timerHyperlightSparknovaCD:Start(20, 1)
+			timerStasisTrapCD:Start(30)
+			timerForerunnerRingsCD:Start(37.1, 1)
+			timerGlyphofRelocationCD:Start(57.1, 1)
 		end
 	elseif spellId == 362615 or spellId == 362614 then
 		if self.Options.SetIconOnWormhole then

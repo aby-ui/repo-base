@@ -32,6 +32,8 @@ local unitKeystones = {}
 local function GetNameForKeystone(keystoneMapID, keystoneLevel)
 	local keystoneMapName = keystoneMapID and C_ChallengeMode.GetMapUIInfo(keystoneMapID)
 	if keystoneMapID and keystoneMapName then
+		keystoneMapName = gsub(keystoneMapName, ".-%-", "") -- Mechagon
+		keystoneMapName = gsub(keystoneMapName, ".-"..HEADER_COLON, "") -- Tazavesh
 		return string.format("%s (%d)", keystoneMapName, keystoneLevel)
 	end
 end
@@ -72,13 +74,7 @@ local function UpdatePartyKeystones()
 					local color = RAID_CLASS_COLORS[class]
 					entry.Text:SetText(name)
 					entry.Text:SetTextColor(color:GetRGBA())
-
-					local _, suffix = strsplit("-", keystoneName)
-					if suffix then
-						keystoneName = suffix
-					end
-					entry.Text2:SetText(keystoneName)
-
+					entry.Text2:SetText(keystoneName:gsub("塔扎维什：", ""))
 					e = e + 1
 				end
 			end
@@ -269,7 +265,9 @@ function Mod:Blizzard_ChallengesUI()
 		entry.Text = text
 
 		local text2 = entry:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-		text2:SetWidth(180)
+        local f1,f2,f3 = text2:GetFont()
+        text2:SetFont(f1, 14, f3)
+		text2:SetWidth(190)
 		text2:SetJustifyH("RIGHT")
 		text2:SetWordWrap(false)
 		text2:SetText()
