@@ -13,6 +13,7 @@ Skada:AddLoadableModule("Enemies", nil, function(Skada, L)
 	local takenplayers = Skada:NewModule(L["Damage taken per player"])
 
 	local function find_player(mob, name)
+        if not name then return {} end
 		local player = mob.players[name]
 		if player then return player end
 		local _, playerClass = UnitClass(name)

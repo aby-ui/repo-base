@@ -108,7 +108,7 @@ end
 function CoreUIShowTooltip(self, anchor, tip)
     if(self.tooltipTitle or self.tooltipText or self.tooltipLines) then
         tip = tip or GameTooltip
-        tip:SetOwner(self, anchor or self.tooltipAnchorPoint);
+        tip:SetOwner(self, (anchor and anchor ~= true) or self.tooltipAnchorPoint);
         tip:ClearLines();
         if(self.tooltipLines)then
             if(type(self.tooltipLines)=="string")then

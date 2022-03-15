@@ -226,11 +226,12 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
             for i = 1, half do
                 local runInfo = runHistory[i];
                 local name = C_ChallengeMode.GetMapUIInfo(runInfo.mapChallengeModeID);
+                name = name:gsub("^.-：", "")
                 local runInfo2 = runHistory[i + half];
                 local name2 = runInfo2 and C_ChallengeMode.GetMapUIInfo(runInfo2.mapChallengeModeID)
                 local text2, color2 = "", GREEN_FONT_COLOR
                 if runInfo2 then
-                    text2 = name2:gsub("塔扎维什：", "") .. " - " .. runInfo2.level
+                    text2 = name2:gsub("^.-：", "") .. " - " .. runInfo2.level
                     color2 = runInfo2.completed and GREEN_FONT_COLOR or RED_FONT_COLOR
                 end
                 GameTooltip_AddColoredDoubleLine(GameTooltip, runInfo.level .. " - " .. name, text2, runInfo.completed and GREEN_FONT_COLOR or RED_FONT_COLOR, color2, false)

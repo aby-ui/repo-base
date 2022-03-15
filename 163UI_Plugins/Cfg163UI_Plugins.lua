@@ -21,6 +21,18 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
+        var = "CovenantHelper", text = U1_NEW_ICON.."盟约选择助手", default = true,
+        callback = function(cfg, v, loading, ...)
+            load(cfg, v, loading, true)
+            if AbySoulbindFrame then
+                AbySoulbindFrame:refresh()
+            end
+        end,
+        tip = "说明`盟约NPC对话时自动选择第一个选项，并且在天赋选择界面右侧显示当前选择的灵魂羁绊。",
+    },
+
+--[[
+    {
         var = "MawThreat", text = "噬渊典狱长之眼详细数值", default = true,
         tip = "说明`在噬渊典狱长之眼框体中显示详细进度值",
         callback = function(cfg, v, loading, ...)
@@ -31,10 +43,7 @@ U1RegisterAddon("163UI_Plugins", {
             end
         end
     },
-
-    {
-        var = "UnlimitedMapPinDistance", text = "导航地图标记无限距离", default = true, callback = load, tip = "说明`9.0新增的游戏内导航，暴雪限制地图标记在1000码-100码之内才显示，可以取消这个限制"
-    },
+]]
 
     {
         var = "CastSound",
@@ -84,6 +93,10 @@ U1RegisterAddon("163UI_Plugins", {
                 _G.U1CastSoundFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
             end
         end
+    },
+
+    {
+        var = "UnlimitedMapPinDistance", text = "导航地图标记无限距离", default = true, callback = load, tip = "说明`9.0新增的游戏内导航，暴雪限制地图标记在1000码-100码之内才显示，可以取消这个限制"
     },
 
     {

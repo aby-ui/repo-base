@@ -617,3 +617,24 @@ do
     end)
 end
 
+--[[------------------------------------------------------------
+9.2bug，没有CLIENT_SCENE_CLOSED
+---------------------------------------------------------------]]
+do
+    local minigameStart
+    CoreOnEvent("CLIENT_SCENE_OPENED", function(event, sceneType)
+        if sceneType == Enum.ClientSceneType.MinigameSceneType then
+            minigameStart = GetTime()
+        end
+    end)
+    hooksecurefunc(PlayerFrame, "SetShown", function(self, shown) if shown then minigameStart = nil end end)
+    CoreOnEvent("UPDATE_OVERRIDE_ACTIONBAR", function()
+        if minigameStart and GetTime() - minigameStart < 60*10 and GetTime() - minigameStart > 2
+                and not InCombatLockdown() and not PlayerFrame:IsVisible() then
+            UpdateUIElementsForClientScene(nil)
+            U1Message("9.2.42698 版本BUG，解谜游戏后无法显示头像，临时处理")
+        end
+    end)
+end
+
+CoreUIRegisterSlash("DEVELOPER_CONSOLE", "/dev", "/develop", function() DeveloperConsole:Toggle() end)

@@ -23,6 +23,7 @@ SlashCommands.lua
 #9.0\MawThreat.lua
 #9.0\DominationShards.lua
 #9.0\TierSetPreview.lua
+9.0\CovenantHelper.lua
 
 yClassColors\core.lua
 yClassColors\battlefield.lua
