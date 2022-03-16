@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2458, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220309115020")
+mod:SetRevision("20220316023906")
 mod:SetCreatureID(180773)
 mod:SetEncounterID(2512)
 --mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -47,14 +47,12 @@ local warnDissonance							= mod:NewStackAnnounce(364447, 2, nil, "Tank|Healer")
 local warnBlast									= mod:NewSpellAnnounce(360176, 3, nil, false)--Spammy
 
 local specWarnPreFabricatedSentry				= mod:NewSpecialWarningSwitch(360658, "Tank", nil, nil, 1, 2)
-local specWarnDissonance						= mod:NewSpecialWarningStack(350202, nil, 3, nil, nil, 1, 6)
-local specWarnDissonanceTaunt					= mod:NewSpecialWarningTaunt(350202, nil, nil, nil, 1, 2)
---local specWarnBlast								= mod:NewSpecialWarningMoveAway(350202, nil, nil, nil, 1, 2)
---local yellBlast									= mod:NewYell(360176)
+local specWarnDissonance						= mod:NewSpecialWarningStack(364447, nil, 3, nil, nil, 1, 6)
+local specWarnDissonanceTaunt					= mod:NewSpecialWarningTaunt(364447, nil, nil, nil, 1, 2)
 
 local timerSentryCD								= mod:NewNextTimer(71.2, 360658, nil, nil, nil, 1, nil, DBM_COMMON_L.TANK_ICON)--Every odd Volatile
 local timerWaveofDisintegrationCD				= mod:NewCDTimer(12.2, 361001, nil, nil, nil, 3)--Time between first and second cast usually 14-15 then 12.2 repeating
-local timerDissonanceCD							= mod:NewCDTimer(12.2, 350202, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Second is 16-18 then rest are 12.2-14
+local timerDissonanceCD							= mod:NewCDTimer(12.2, 364447, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Second is 16-18 then rest are 12.2-14
 --Stage One: Systems Online!
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(23875))
 local warnRefractedBlast						= mod:NewCountAnnounce(366693, 2)
@@ -69,6 +67,7 @@ local timerVolatileMateriumCD					= mod:NewNextTimer(30.6, 365315, nil, nil, nil
 local timerRefractedBlastCD						= mod:NewCDCountTimer(15, 366693, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--15 but can be delayed by shit
 local timerDeresolutionCD						= mod:NewCDTimer(35.3, 359610, nil, nil, nil, 3)
 local timerExposedCore							= mod:NewCastTimer(10, 360412, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerExposedCoreCD						= mod:NewCDTimer(35.3, 360412, nil, nil, nil, 2)
 
 mod:AddInfoFrameOption(360403, true)
 --Stage Two: Roll Out, then Transform
@@ -123,7 +122,7 @@ function mod:OnCombatStart(delay)
 --		timerMatterDisolutionCD:Start()--Not used?
 	else--Heroic, Normal. LFR will probably be different too
 		timerVolatileMateriumCD:Start(5-delay)--5-6
-		timerRefractedBlastCD:Start(15.5-delay, 1)
+		timerRefractedBlastCD:Start(15.3-delay, 1)
 		timerDeresolutionCD:Start(36.9-delay)
 		timerSentryCD:Start(35-delay)
 	end
@@ -155,11 +154,16 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 360412 then
 		warnExposedCore:Show()
 		timerExposedCore:Start()
+--		timerExposedCoreCD:Start(self:IsMythic() and 105 or 109)--Approx, since it is dps based after all
 		self:Schedule(6, delayedCoreCheck)
 		if self.Options.InfoFrame then
 			DBM.InfoFrame:SetHeader(shieldName)
 			DBM.InfoFrame:Show(10, "playerbuff", shieldName)
 		end
+		timerRefractedBlastCD:Stop()
+		timerDeresolutionCD:Stop()
+		timerRefractedBlastCD:Start(self:IsMythic() and 20 or 22.4, self.vb.refractedCount+1)
+		timerDeresolutionCD:Start(self:IsMythic() and 24.7 or 36)
 	elseif spellId == 361001 then
 		if not castsPerGUID[args.sourceGUID] then--Shouldn't happen, but failsafe
 			castsPerGUID[args.sourceGUID] = {}

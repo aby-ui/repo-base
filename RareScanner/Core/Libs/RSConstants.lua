@@ -25,7 +25,7 @@ RSConstants.LOOT_ITEM_ID = nil
 ---============================================================================
 
 RSConstants.CURRENT_DB_VERSION = 54
-RSConstants.CURRENT_LOOT_DB_VERSION = 68
+RSConstants.CURRENT_LOOT_DB_VERSION = 69
 
 ---============================================================================
 -- Current maps (newer)
@@ -44,7 +44,8 @@ RSConstants.SHADOWLANDS_PRE_PATCH_EVENT = true
 -- Timers
 ---============================================================================
 
-RSConstants.RECENTLY_SEEN_ENTITIES_RESET_TIMER = 150 --2.5 minutes
+RSConstants.CHECK_RESET_RECENTLY_SEEN_TMER = 5 --5 seconds
+RSConstants.RECENTLY_SEEN_RESET_TIMER = 120 --2 minutes
 RSConstants.CACHE_ALL_COMPLETED_QUEST_IDS_TIMER = 60 --1 minute
 RSConstants.FIND_HIDDEN_QUESTS_TIMER = 5 --5 seconds after killing a NPC or opening a container
 RSConstants.CHECK_RESPAWN_BY_QUEST_TIMER = 150 --2.5 minutes
@@ -396,7 +397,7 @@ RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 154330, 164547, 164477, 160629, 175012,
 RSConstants.NPCS_WITH_CONTAINER_VIGNETTE = { 179883 }
 RSConstants.CONTAINERS_WITH_NPC_VIGNETTE = { 369435 }
 RSConstants.NPCS_WITH_MULTIPLE_SPAWNS = { 69768, 69769, 69841, 69842, 70323 }
-RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = { 375530, 375362, 375290, 373579, 375373 }
+RSConstants.CONTAINERS_WITH_MULTIPLE_SPAWNS = { 375366, 375530, 375362, 375363, 375373 }
 RSConstants.FIRIM_EXILE_OBJECTS = { 375973, 375982, 375983, 375984, 375985, 375986, 375987 }
 
 ---============================================================================

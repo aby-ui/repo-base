@@ -92,6 +92,10 @@ GTFO.IgnoreScan["368146"] = true; -- Eternity Engine
 GTFO.IgnoreScan["362130"] = true; -- Quaking Steps
 GTFO.IgnoreScan["361818"] = true; -- Hopebreaker
 GTFO.IgnoreScan["364845"] = true; -- Fractured Core
-
+GTFO.IgnoreScan["360287"] = true; -- Anguishing Strike
+GTFO.IgnoreScan["360302"] = true; -- Swarm of Decay
+GTFO.IgnoreScan["360303"] = true; -- Swarm of Darkness
+GTFO.IgnoreScan["361923"] = true; -- Ravenous Hunger
+GTFO.IgnoreScan["359778"] = true; -- Ephemera Dust
 
 

@@ -164,11 +164,13 @@ do -- targets
 	end
 	local adjCleave = {
 		[0x50]=3, [0x51]=4,
-		[0x62]=3, [0x63]=2,
+		[0x62]=3, 
 		[0x70]=1, [0x73]=4, [0x74]=3,
 		[0x82]=0, [0x83]=1,
+		[0x91]=4,
 		[0xa3]=2,
-		[0xb0]=1, [0xb2]=3, --[0xb3]=4, [0xb4]=3,
+		[0xb0]=1, [0xb2]=3,
+		[0xc3]=4, [0xc0]=1,
 	}
 	local adjCleaveN = {
 		[0]={5,6,32,7,9,10,11,32,8,12},
@@ -195,15 +197,256 @@ do -- targets
 		[0x30]=1, [0x31]=1, [0x32]=1, [0x34]=1,
 		[0x41]=1, [0x43]=1,
 	}
+--[[
+	-- eviroment belongs to enemy
+	-- follower : 1 enemy,env : 2
+	local CampFollower = 1
+	local CampEnemy = 2
+	local unitCamp = {
+		[0] = 1,[1] = 1,[2] = 1,[3] = 1,[4] = 1,
+		[-1] = 2,
+		[5] = 2,[6] = 2,[7] = 2,[8] = 2,
+		[9] = 2,[10] = 2,[11] = 2,[12] = 2,
+	}
+	local friendSurroundTable = {
+		[0] = {1,2,3},
+		[1] = {0,3,4},
+		[2] = {0,3},
+		[3] = {0,1,2,4},
+		[4] = {1,3},
+		[5] = {5,6,7,8,9,10,11,12},
+		[6] = {5,6,7,8,9,10,11,12},
+		[7] = {5,6,7,8,9,10,11,12},
+		[8] = {5,6,7,8,9,10,11,12},
+		[9] = {5,6,7,8,9,10,11,12},
+		[10] = {5,6,7,8,9,10,11,12},
+		[11] = {5,6,7,8,9,10,11,12},
+		[12] = {5,6,7,8,9,10,11,12},
+	}
+	local friendSurroundDefaultTable = {
+		[0] = {0},
+		[1] = {1,2},
+		[2] = {1,2,4},
+		[3] = {3},
+		[4] = {0,2,4},
+	}
+	local cleaveTable = {
+		--[0]="56a79b8c", 
+		--[1]="67b8ac59", 
+		--[2]="569a7b8c", 
+		--[3]="675a9b8c", 
+		--[4]="786bac59",
+		--[5]="20314", 
+		--[6]="23014", 
+		--[7]="34201", 
+		--[8]="43120",
+		--[9]="23014", 
+		--[10]="23401", 
+		--[11]="23401", 
+		--[12]="34201"
+	}
+	local function GetCampByUnitIndex(unitIdx)
+		if unitIdx >= 0 and unitIdx < 5 then
+			return CampFollower
+		end
+		return CampEnemy
+	end
+	local function IsInSameCamp(unitIdx0,unitIdx1)
+		return GetCampByUnitIndex(unitIdx0) == GetCampByUnitIndex(unitIdx1)
+	end
+	
+	local availableTargetList = {}
+	local function GetAvailableTargets(sourceIdx,targetType,board)
+		local ret,retIdx = availableTargetList,1
+		local sourceUnit = board[sourceIdx]
+		local checkTargetList = targetLists[targetType] and targetLists[targetType][sourceIdx]
+		local sourceUnitCamp = unitCamp[sourceIdx]
+		local tauntIdx = sourceUnit and sourceUnit.taunt
+		-- target = 0,1,2,3
+		if checkTargetList then
+			-- meele or range,check if there is taunt unit
+			if targetType == 0 or targetType == 1 then
+				local tauntUnit = tauntIdx and board[tauntIdx]
+				if tauntUnit and tauntUnit.curHP > 0 and not tauntUnit.shroud then
+					ret[retIdx], retIdx = tauntIdx, retIdx + 1
+				end
+			end
+			-- no tauntUnit
+			if retIdx == 1 then
+				for i=1,#checkTargetList do
+					local targetIdx = checkTargetList[i]
+					local targetUnit = board[targetIdx]
+					if targetUnit and targetUnit.curHP > 0 then
+						if IsInSameCamp(sourceIdx,targetIdx) then
+							ret[retIdx], retIdx = targetIdx, retIdx + 1
+							break
+						else
+							if not targetUnit.shroud then
+								ret[retIdx], retIdx = tauntUnit or targetIdx, retIdx + 1
+								break
+							end
+						end
+					end
+				end
+			end
+		elseif targetType == "all-enemies" then
+			if sourceUnitCamp == CampFollower then
+				for i=5,12 do
+					local targetUnit = board[i]
+					if targetUnit and targetUnit.curHP > 0 and not targetUnit.shroud then
+						ret[retIdx], retIdx = i, retIdx + 1
+					end
+				end
+			elseif sourceUnitCamp == CampEnemy then
+				for i=0,4 do
+					local targetUnit = board[i]
+					if targetUnit and targetUnit.curHP > 0 and not targetUnit.shroud then
+						ret[retIdx], retIdx = i, retIdx + 1
+					end
+				end
+			end
+		elseif targetType == "all-other-allies" then
+			if sourceUnitCamp == CampFollower then
+				for i=0,4 do
+					local targetUnit = board[i]
+					if i ~= sourceIdx and targetUnit and targetUnit.curHP > 0 then
+						ret[retIdx], retIdx = i, retIdx + 1
+					end
+				end
+			elseif sourceUnitCamp == CampEnemy then
+				for i=5,12 do
+					local targetUnit = board[i]
+					if i ~= sourceIdx and targetUnit and targetUnit.curHP > 0 then
+						ret[retIdx], retIdx = i, retIdx + 1
+					end
+				end
+			end
+		elseif targetType == "all" then
+			for i=0,12 do
+				local targetUnit = board[i]
+				if targetUnit and targetUnit.curHP > 0 and not targetUnit.shroud then
+					ret[retIdx], retIdx = i, retIdx + 1
+				end
+			end
+		elseif targetType == "friend-surround" then
+			local surroundTable = friendSurroundTable[sourceIdx]
+			for i=1,#surroundTable do
+				local targetUnit = board[i]
+				if targetUnit and targetUnit.curHP > 0 then
+					ret[retIdx], retIdx = i, retIdx + 1
+				end
+			end
+			-- no friend surrounded
+			if retIdx == 1 then
+				surroundTable = friendSurroundDefaultTable[sourceIdx]
+				for i=1,#surroundTable do
+					local targetUnit = board[i]
+					if targetUnit and targetUnit.curHP > 0 then
+						ret[retIdx], retIdx = i, retIdx + 1
+					end
+				end
+			end
+		elseif targetType == "cone" then
+			local originalTargetIdx
+			checkTargetList = targetLists[0][source]
+			for i=1,#checkTargetList do
+				local targetIdx = checkTargetList[i]
+				local targetUnit = board[targetIdx]
+				if targetUnit and targetUnit.curHP > 0 and not targetUnit.shroud then
+					ret[retIdx], retIdx = tauntIdx or targetIdx, retIdx + 1
+					originalTargetIdx = targetIdx
+					break
+				end
+			end
+			if originalTargetIdx then
+				local f = ret[1]*16
+				if sourceUnitCamp == CampFollower then
+					for i=5,12 do
+						if coneCleave[f+i] then
+							local targetUnit = board[i]
+							if targetUnit and targetUnit.curHP > 0 and not targetUnit.shroud then
+								ret[retIdx], retIdx = i, retIdx + 1
+							end
+						end
+					end
+				else
+					for i=0,4 do
+						if coneCleave[f+i] then
+							local targetUnit = board[i]
+							if targetUnit and targetUnit.curHP > 0 and not targetUnit.shroud then
+								ret[retIdx], retIdx = i, retIdx + 1
+							end
+						end
+					end
+				end
+			end
+		elseif targetType == "cleave" then
+			local coa, cot = adjCleaveN[source], adjCleaveT[taunt]
+			if cot then
+				for i=1,#cot do
+					i = cot[i]
+					if i <= 12 then
+						local tu = board[i]
+						if tu and tu.curHP > 0 and not tu.shroud then
+							stt[ni], ni = i, ni + 1
+						end
+					elseif i >= 16 then
+						local tu = board[i-16]
+						if tu and tu.curHP > 0 and not tu.shroud then
+							break
+						end
+					end
+				end
+			elseif coa then
+				for i=1,#coa do
+					i = coa[i]
+					if i <= 12 then
+						local tu = board[i]
+						if tu and tu.curHP > 0 and not tu.shroud then
+							stt[ni], ni = i, ni + 1
+						end
+					elseif i == 32 and ni > 1 then
+						break
+					end
+				end
+				if taunt and (ni < 2 or stt[1] ~= taunt) then
+					stt[1], ni = taunt, 2
+				elseif taunt and ni > 3 then
+					ni = 3
+				end
+			elseif taunt then
+				stt[1], ni = taunt, 2
+			else
+				GetTargets(source, 0, board)
+				if #stt > 0 then
+					local s1 = stt[1]
+					local t = adjCleave[source*16+s1]
+					local tu = board[t]
+					local s2 = tu and tu.curHP > 0 and not tu.shroud and t or nil
+					stt[2], ni = s2, s2 and 3 or 2
+					if s2 and s2 < s1 then
+						stt[1], stt[2] = s2, s1
+					end
+				end
+			end
+		end
+		for i=#ret,retIdx,-1 do
+			ret[i] = nil
+		end
+		return ret
+	end
+--]]
 	local stt = {}
 	local function GetTargets(source, tt, board)
 		local ni, su, tl, lo, taunt = 1, board[source], targetLists[tt], source < 5 and source >= 0
 		taunt, tl = su and su.taunt, tl and tl[source]
 		if tl then
+			-- it will not check shroud if target and source belong to a same camp
+			local checkShroud = (tt == 0 or tt == 1) and true or false
 			for i=1,#tl do
 				local t = tl[i]
 				local tu = board[t]
-				if tu and tu.curHP > 0 and not tu.shroud then
+				if tu and tu.curHP > 0 and (not checkShroud or not tu.shroud) then
 					stt[ni], ni = source < 5 and t > 4 and taunt or t, ni + 1
 					break
 				end
@@ -265,6 +508,7 @@ do -- targets
 				end
 			end
 			if taunt == 6 and source == 4 and ot ~= taunt then
+				--print("check targettype cone!!!")
 				local tu = board[0]
 				if tu and tu.curHP > 0 and not tu.shroud then
 					stt[1], ni, ot = 0, 2

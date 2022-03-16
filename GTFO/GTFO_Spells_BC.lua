@@ -572,7 +572,7 @@ GTFO.SpellID["41193"] = {
   trivialLevel = 80;
 };
 
-GTFO.SpellID["40948"] = {
+GTFO.SpellID["40090"] = {
   --desc = "Hurricane (Coilskar Sea-Caller)";
   sound = 1;
 };

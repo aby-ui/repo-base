@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2467, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220309065720")
+mod:SetRevision("20220315121728")
 mod:SetCreatureID(182777)
 mod:SetEncounterID(2549)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -190,7 +190,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 362390 then
 		self.vb.cosmosCount = self.vb.cosmosCount + 1
-		self.vb.coreCount = self.vb.coreCount + self:IsMythic() and 3 or 1
+		self.vb.coreCount = self.vb.coreCount + (self:IsMythic() and 3 or 1)
 		warnManifestCosmos:Show(self.vb.cosmosCount)
 		if self.vb.cosmosCount == 1 then
 			timerManifestCosmosCD:Start(nil, self.vb.cosmosCount+1)--24.2

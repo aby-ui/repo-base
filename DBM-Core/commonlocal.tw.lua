@@ -48,4 +48,6 @@ CL.INCOMING					= "%s 來了"
 CL.BOSSTOGETHER				= "首領靠近"
 CL.BOSSAPART				= "首領分開"
 CL.TANKCOMBO				= "坦克連擊"
+CL.TANKCOMBOC				= "坦克連擊 (%s)"
 CL.AOEDAMAGE				= "AOE傷害"
+CL.SEASONAL					= "季節性"--Used for option headers to label options that apply to seasonal mechanics (Such as season of mastery on classic era)

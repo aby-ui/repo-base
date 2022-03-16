@@ -152,7 +152,7 @@ end
 local function LockMainMenuBar()
 	if not InCombatLockdown() and not UnitInVehicle("Player") then
 		MainMenuBar:SetMovable(true)
-		MainMenuBar:SetUserPlaced(true)
+		--MainMenuBar:SetUserPlaced(false) --abyui 运行次命令会导致切换动画后主动作条无Anchor ACTIONBAR_UPDATE_STATE UPDATE_OVERRIDE_ACTIONBAR
 		ChocolateBar:Debug("LockMainMenuBar")
 		MainMenuBar:SetMovable(false)
 	end
@@ -161,7 +161,7 @@ end
 function Jostle:UNIT_EXITING_VEHICLE()
 	ChocolateBar:Debug("UNIT_EXITING_VEHICLE")
 	MainMenuBar:SetMovable(true)
-	MainMenuBar:SetUserPlaced(false)
+	--MainMenuBar:SetUserPlaced(false)
 	ChocolateBar:Debug("SetUserPlaced(false)")
 	MainMenuBar:SetMovable(false)
 end

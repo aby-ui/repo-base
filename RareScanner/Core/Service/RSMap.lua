@@ -27,6 +27,7 @@ local RSNpcPOI = private.ImportLib("RareScannerNpcPOI")
 local RSContainerPOI = private.ImportLib("RareScannerContainerPOI")
 local RSEventPOI = private.ImportLib("RareScannerEventPOI")
 local RSGroupPOI = private.ImportLib("RareScannerGroupPOI")
+local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
 
 
 ---============================================================================
@@ -171,6 +172,51 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 
 		if (POI) then
 			tinsert(MapPOIs,POI)
+		end
+	end
+	
+	-- extract POIs from recently seen entities (multi spawn)
+	local recentlySeenEntities = RSRecentlySeenTracker.GetAllRecentlySeenSpots()
+	if (RSUtils.GetTableLength(recentlySeenEntities) > 0) then
+		for entityID, entityInfo in pairs (recentlySeenEntities) do
+			if (type(entityInfo) == "table") then
+				for time, info in pairs (entityInfo) do
+					if (info.mapID == mapID) then
+						local entityInfo = {}
+						entityInfo.mapID = mapID
+						entityInfo.coordX = info.x
+						entityInfo.coordY = info.y
+						entityInfo.foundTime = time
+					
+						local POI = nil
+						if (RSConstants.IsNpcAtlas(info.atlasName)) then
+							RSNpcDB.DeleteNpcKilled(entityID)
+							POI = RSNpcPOI.GetMapAlreadyFoundNpcPOI(entityID, entityInfo, mapID, questTitles, vignetteGUIDs, onWorldMap, onMiniMap)
+						elseif (RSConstants.IsContainerAtlas(info.atlasName)) then
+							RSContainerDB.DeleteContainerOpened(entityID)
+							POI = RSContainerPOI.GetMapAlreadyFoundContainerPOI(entityID, entityInfo, mapID, vignetteGUIDs, onWorldMap, onMiniMap)
+						elseif (RSConstants.IsEventAtlas(info.atlasName)) then
+							RSEventDB.DeleteEventCompleted(entityID)
+							POI = RSEventPOI.GetMapAlreadyFoundEventPOI(entityID, entityInfo, mapID, vignetteGUIDs, onWorldMap, onMiniMap)
+						end
+		
+						if (POI) then						
+							-- Ignore if added by already found entitites
+							local alreadyAdded = false
+							for _, MapPOI in ipairs (MapPOIs) do
+								if (POI.entityID == MapPOI.entityID and POI.x == MapPOI.x and POI.y == MapPOI.y) then
+									alreadyAdded = true
+									break
+								end
+							end
+							
+							if (not alreadyAdded) then
+								tinsert(MapPOIs,POI)
+							end
+						end
+					end
+				end
+			end
 		end
 	end
 

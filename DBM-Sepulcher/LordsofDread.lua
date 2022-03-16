@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2457, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220312015239")
+mod:SetRevision("20220316054729")
 mod:SetCreatureID(181398, 181334)--Could be others
 mod:SetEncounterID(2543)
 mod:SetUsedIcons(1, 2, 6, 7, 8)
@@ -81,7 +81,7 @@ local warnFearfulTrepidation					= mod:NewTargetNoFilterAnnounce(360146, 3, nil,
 local warnAuraofShadows							= mod:NewSpellAnnounce(363191, 4)
 local warnAuraofShadowsOver						= mod:NewEndAnnounce(363191, 1)
 local warnSlumberCloud							= mod:NewCountAnnounce(360229, 2)
-local warnAnguishingStrike						= mod:NewStackAnnounce(350202, 2, nil, "Tank|Healer", 31907)--shorttext "Strike"
+local warnAnguishingStrike						= mod:NewStackAnnounce(360284, 2, nil, "Tank|Healer", 31907)--shorttext "Strike"
 
 local specWarnInfiltrationofDread				= mod:NewSpecialWarningCount(360717, nil, nil, nil, 2, 2)
 local specWarnFearfulTrepidation				= mod:NewSpecialWarningYou(360146, nil, 39176, nil, 2, 2)
@@ -90,8 +90,8 @@ local yellFearfulTrepidationFades				= mod:NewIconFadesYell(360146, 39176)
 local specWarnBurstingDread						= mod:NewSpecialWarningDispel(360148, "RemoveMagic", 39176, nil, 1, 2)--shorttext "Fear"
 local specWarnUnsettlingDreams					= mod:NewSpecialWarningDispel(360241, "RemoveMagic", nil, nil, 1, 2)
 local specWarnAnguishingStrike					= mod:NewSpecialWarningDefensive(360284, nil, 31907, nil, 1, 2)
-local specWarnAnguishingStrikeStack				= mod:NewSpecialWarningStack(350202, nil, 3, 31907, nil, 1, 6)
-local specWarnAnguishingStrikeTaunt				= mod:NewSpecialWarningTaunt(350202, nil, 31907, nil, 1, 2)
+local specWarnAnguishingStrikeStack				= mod:NewSpecialWarningStack(360284, nil, 3, 31907, nil, 1, 6)
+local specWarnAnguishingStrikeTaunt				= mod:NewSpecialWarningTaunt(360284, nil, 31907, nil, 1, 2)
 
 local timerInfiltrationofDreadCD				= mod:NewCDCountTimer(123, 360717, nil, nil, nil, 6)--120+3sec cast time
 local timerParanoia								= mod:NewBuffFadesTimer(25, 360418, nil, nil, nil, 5)
@@ -105,6 +105,7 @@ mod:GroupSpells(360717, 360418)--Group paranoia with parent mechanic Infiltratio
 --Mal'Ganis
 mod.vb.darknessCount = 0
 mod.vb.carrionCount = 0
+mod.vb.carrionDebuffs = 0
 mod.vb.shadowsCount = 0
 mod.vb.shadowsIcon = 8
 --Kin'tessa
@@ -115,6 +116,7 @@ mod.vb.slumberCount = 0
 mod.vb.auraofShadowsOn = false
 local castsPerGUID = {}
 local playerDebuffed = false
+local carrionTime = 0
 
 --Things get a bit complicated with debuff priority
 local function updateRangeFrame(self)
@@ -137,6 +139,7 @@ function mod:OnCombatStart(delay)
 	self.vb.shadowsCount = 0
 	self.vb.shadowsIcon = 8
 	self.vb.carrionCount = 0
+	self.vb.carrionDebuffs = 0
 
 	self.vb.trepidationIcon = 1
 	self.vb.infiltrationCount = 0
@@ -187,6 +190,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 360006 then
+		carrionTime = GetTime()
 		self.vb.carrionCount = self.vb.carrionCount + 1
 		specWarnCloudofCarrion:Show()
 		specWarnCloudofCarrion:Play("scatter")
@@ -229,7 +233,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnLeechingClaws:Play("defensive")
 		end
 		timerLeechingClawsCD:Start()
-	elseif spellId == 360717 then
+	elseif spellId == 360717 and self:AntiSpam(3, 1) then
 		self.vb.infiltrationCount = self.vb.infiltrationCount + 1
 		specWarnInfiltrationofDread:Show(self.vb.infiltrationCount)
 		specWarnInfiltrationofDread:Play("specialsoon")
@@ -297,13 +301,16 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 360300 then
 		timerSwarmofDecay:Start()
 	elseif spellId == 360012 then
+		self.vb.carrionDebuffs = self.vb.carrionDebuffs + 1
 		if args:IsPlayer() then
 			specWarnCloudofCarrionDebuff:Show()
 			specWarnCloudofCarrionDebuff:Play("range5")
 			yellCloudofCarrion:Yell()
 			updateRangeFrame(self)
 		else
-			warnCloudofCarrion:CombinedShow(0.3, args.destName)--More than one on mythic
+			if (GetTime() - carrionTime) < 4 then
+				warnCloudofCarrion:CombinedShow(0.5, args.destName)
+			end
 		end
 	elseif spellId == 361934 or spellId == 362020 then
 		if self.Options.NPAuraOnIncompleteForm then
@@ -338,12 +345,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellFearfulTrepidation:Yell(icon, icon)
 			yellFearfulTrepidationFades:Countdown(spellId, nil, icon)
 			updateRangeFrame(self)
+			specWarnCloudofCarrionDebuffMove:Cancel()
+			specWarnCloudofCarrionDebuffMove:CancelVoice()
 		elseif self.Options.SpecWarn360012moveto and DBM:UnitDebuff("player", 360012) then--If have Carrion debuff, spec warn to runt o tepidate debuff to clear it
-			specWarnCloudofCarrionDebuffMove:CombinedShow(0.3, args.destName)
-			specWarnCloudofCarrionDebuffMove:ScheduleVoice(0.3, "gathershare")
-		else
-			warnFearfulTrepidation:Show(icon, args.destName)
+			specWarnCloudofCarrionDebuffMove:CombinedShow(0.5, args.destName)
+			specWarnCloudofCarrionDebuffMove:ScheduleVoice(0.5, "gathershare")
 		end
+		warnFearfulTrepidation:CombinedShow(0.5, args.destName)
 		self.vb.trepidationIcon = self.vb.trepidationIcon + 1
 	elseif spellId == 360148 then
 		if args:IsPlayer() then
@@ -429,6 +437,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 360418 and args:IsPlayer() then
 		timerParanoia:Stop()
 	elseif spellId == 360012 then
+		self.vb.carrionDebuffs = self.vb.carrionDebuffs + 1
 		if args:IsPlayer() then
 			updateRangeFrame(self)
 		end

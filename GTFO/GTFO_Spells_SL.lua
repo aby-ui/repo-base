@@ -234,6 +234,11 @@ GTFO.SpellID["336955"] = {
   sound = 1;
 };
 
+GTFO.SpellID["360677"] = {
+  --desc = "Fleeting Flames";
+  sound = 1;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -890,6 +895,18 @@ GTFO.SpellID["356163"] = {
 
 -- TODO: Relic Collapse (Artificer Xy'mox) - Mythic only
 
+GTFO.SpellID["360412"] = {
+  --desc = "Exposed Core (Vigilant Guardian)";
+  negatingDebuffSpellID = 360403; -- Force Field
+  sound = 1;
+};
+
+GTFO.SpellID["360409"] = {
+  --desc = "Exposed Core (Vigilant Guardian)";
+  negatingDebuffSpellID = 360403; -- Force Field
+  sound = 1;
+};
+
 GTFO.SpellID["368582"] = {
   --desc = "Shocklight Blast";
   sound = 1;
@@ -931,6 +948,11 @@ GTFO.SpellID["365886"] = {
   sound = 1;
 };
 
+GTFO.SpellID["365719"] = {
+  --desc = "Reflective Bulwark (Ancient Sentinel)";
+  sound = 1;
+};
+
 GTFO.SpellID["360114"] = {
   --desc = "Ephemeral Fissure (Halondrus)";
   sound = 1;
@@ -958,9 +980,14 @@ GTFO.SpellID["362798"] = {
 };
 
 GTFO.SpellID["360425"] = {
-  --desc = "Unholy Ground (Zovaal the Jailer)";
+  --desc = "Unholy Ground (The Jailer)";
   sound = 1;
-  test = true;
+  tankSound = 0;
+};
+
+GTFO.SpellID["365174"] = {
+  --desc = "Defile (The Jailer)";
+  sound = 1;
 };
 
 end

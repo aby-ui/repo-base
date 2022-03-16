@@ -900,6 +900,7 @@ local function UButton_OnEnter(self)
 		GameTooltip:AddLine(" ")
 		if m == "start-cost" then
 			GameTooltip:AddLine(L"Insufficient anima", 1, 0.5, 0)
+			print("|cffffff00VenturePlan：|r".."|cffff8000心能不足，无法派遣。|r")
 		end
 		if hadZH then
 			GameTooltip:AddLine(hourglass .. "|cffff8000" .. COVENANT_MISSIONS_COMPANIONS_MISSING_HEALTH, 1, 0.5, 0)

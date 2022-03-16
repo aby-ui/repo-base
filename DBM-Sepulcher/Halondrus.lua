@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2463, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220312232215")
+mod:SetRevision("20220315001341")
 mod:SetCreatureID(180906)
 mod:SetEncounterID(2529)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
-mod:SetHotfixNoticeRev(20220303000000)
-mod:SetMinSyncRevision(20220302000000)
+mod:SetHotfixNoticeRev(20220314000000)
+mod:SetMinSyncRevision(20220314000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -40,7 +40,7 @@ mod:RegisterEventsInCombat(
 --Stage One: The Reclaimer
 local warnReclamationForm						= mod:NewCastAnnounce(359235, 2)
 local warnSeismicTremors						= mod:NewCountAnnounce(367079, 2)
-local warnCrushingPrism							= mod:NewCountAnnounce(365297, 3, nil, "RemoveMagic")
+local warnCrushingPrism							= mod:NewTargetCountAnnounce(365297, 3, nil, "RemoveMagic", nil, nil, nil, nil, true)
 --Stage Two: The Shimmering Cliffs
 local warnRelocationForm						= mod:NewCastAnnounce(359236, 2)
 
@@ -96,12 +96,12 @@ local movementTimers = {
 	--Shatter
 	[364979] = {
 		[2] = {30.1, 22},
-		[4] = {24.1, 24, 18},
+		[4] = {24, 24, 17.9},
 	},
 	--Earthbreaker Missiles
 	[361676] = {
 		[2] = {16.1, 26.1},
-		[4] = {12.1, 18.1, 26.1},
+		[4] = {12, 18, 26},
 	},
 	--Crushing Prism
 	[365297] = {
@@ -111,10 +111,11 @@ local movementTimers = {
 	--Mythic Crushing Prism
 	[3652970] = {
 		[2] = {11.1, 26, 14},
-		[4] = {18.7},--Not known yet
+		[4] = {18.7, 18, 17.9},
 	},
 }
 local p3MissileTimers = {17, 24.5, 37.2, 12.6, 25}
+local p3MissileMythicTimers = {17, 24.5, 37.2}--First 3 same, 4th and 5th not
 
 function mod:OnCombatStart(delay)
 	self:SetStage(1)
@@ -174,9 +175,11 @@ function mod:SPELL_CAST_START(args)
 		self.vb.missilesCount = self.vb.missilesCount + 1
 		specWarnEarthbreakerMissiles:Show(self.vb.missilesCount)
 		specWarnEarthbreakerMissiles:Play("scatter")
-		local timer = self.vb.stageTotality == 5 and p3MissileTimers[self.vb.missilesCount+1] or self.vb.phase == 1 and 26.1 or movementTimers[361676][self.vb.stageTotality][self.vb.missilesCount+1]
-		if timer then
-			timerEarthbreakerMissilesCD:Start(timer, self.vb.missilesCount+1)
+		if self.vb.stageTotality then
+			local timer = self.vb.stageTotality == 5 and (self:IsMythic() and p3MissileMythicTimers[self.vb.missilesCount+1] or p3MissileTimers[self.vb.missilesCount+1]) or self.vb.phase == 1 and 26.1 or movementTimers[361676][self.vb.stageTotality][self.vb.missilesCount+1]
+			if timer then
+				timerEarthbreakerMissilesCD:Start(timer, self.vb.missilesCount+1)
+			end
 		end
 	elseif spellId == 360977 then
 		if self:IsTanking("player", nil, nil, nil, args.sourseGUID) then--Change to boss1 check if boss is always boss1, right now unsure
@@ -249,9 +252,11 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 364979 then--Casts slightly faster than 362056
 		specWarnShatter:Show()
 		specWarnShatter:Play("watchstep")
-		local timer = movementTimers[spellId][self.vb.stageTotality][self.vb.shatterCount+1]
-		if timer then
-			timerShatterCD:Start(timer, self.vb.shatterCount+1)
+		if self.vb.stageTotality then
+			local timer = movementTimers[spellId][self.vb.stageTotality][self.vb.shatterCount+1]
+			if timer then
+				timerShatterCD:Start(timer, self.vb.shatterCount+1)
+			end
 		end
 	elseif spellId == 360115 then
 		self.vb.reclaimCount = self.vb.reclaimCount + 1
@@ -283,12 +288,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:AntiSpam(5, 2) then
 			self.vb.crushIcon = 1
 			self.vb.crushingCast = self.vb.crushingCast + 1
-			warnCrushingPrism:Show(self.vb.crushingCast)
-			--use tabled timers during movements, regular CD during stanary subject to ICD live updates
-			local checkedId = self:IsMythic() and 3652970 or 365297
-			local timer = self.vb.phase == 1 and 26 or movementTimers[checkedId][self.vb.stageTotality][self.vb.crushingCast+1]
-			if timer then
-				timerCrushingPrismCD:Start(timer, self.vb.crushingCast+1)
+			if self.vb.stageTotality then
+				--use tabled timers during movements, regular CD during stanary subject to ICD live updates
+				local checkedId = self:IsMythic() and 3652970 or 365297
+				local timer = self.vb.phase == 1 and 26 or movementTimers[checkedId][self.vb.stageTotality][self.vb.crushingCast+1]
+				if timer then
+					timerCrushingPrismCD:Start(timer, self.vb.crushingCast+1)
+				end
 			end
 		end
 		if args:IsPlayer() then
@@ -298,6 +304,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.SetIconOnCrushing2 and self.vb.crushIcon < 8 then
 			self:SetIcon(args.destName, self.vb.crushIcon)
 		end
+		warnCrushingPrism:CombinedShow(0.5, self.vb.crushingCast, args.destName)
 		self.vb.crushIcon = self.vb.crushIcon + 1
 	elseif spellId == 361309 and not args:IsPlayer() and not DBM:UnitDebuff("player", spellId) then
 		specWarnLightshatterBeamTaunt:Show(args.destName)
@@ -336,7 +343,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerSeismicTremorsCD:Start(4, 1)
 		timerEarthbreakerMissilesCD:Start(11, 1)
 		timerCrushingPrismCD:Start(17, 1)
---		timerReclaimCD:Start(62.8, self.vb.reclaimCount+1)--Guessed based on pattern
+		timerReclaimCD:Start(62, self.vb.reclaimCount+1)--My guess confirmed
 	end
 end
 

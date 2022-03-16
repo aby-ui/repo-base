@@ -66,12 +66,12 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220312110800"),
+	Revision = parseCurseDate("20220315103557"),
 }
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.7 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.8 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 3, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.17 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 2, 22) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
@@ -355,6 +355,7 @@ DBM.DefaultOptions = {
 
 DBM.Mods = {}
 DBM.ModLists = {}
+local checkDuplicateObjects = {}
 
 ------------------------
 -- Global Identifiers --
@@ -2717,6 +2718,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 	if not first and DBM_GUI and DBM_GUI.currentViewing and optionsFrame:IsShown() then
 		optionsFrame:DisplayFrame(DBM_GUI.currentViewing)
 	end
+	table.wipe(checkDuplicateObjects)
 end
 
 function DBM:SpecChanged(force)
@@ -9920,6 +9922,11 @@ end
 --  Options  --
 ---------------
 function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, extraOptionTwo, spellId, optionType)
+	if checkDuplicateObjects[name] and name ~= "timer_berserk" then
+		DBM:Debug("|cffff0000Option already exists for: |r"..name)
+	else
+		checkDuplicateObjects[name] = true
+	end
 	cat = cat or "misc"
 	self.DefaultOptions[name] = (default == nil) or default
 	if cat == "timer" then
@@ -9948,6 +9955,12 @@ function bossModPrototype:AddBoolOption(name, default, cat, func, extraOption, e
 end
 
 function bossModPrototype:AddSpecialWarningOption(name, default, defaultSound, cat, spellId, optionType)
+	if checkDuplicateObjects[name] and name ~= "timer_berserk" then
+		DBM:Debug("|cffff0000Option already exists for: |r"..name)
+		return
+	else
+		checkDuplicateObjects[name] = true
+	end
 	cat = cat or "misc"
 	self.DefaultOptions[name] = (default == nil) or default
 	self.DefaultOptions[name.."SWSound"] = defaultSound or 1

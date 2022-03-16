@@ -272,18 +272,12 @@ end
 function RSGeneralDB.DeleteRecentlySeen(npcID)
 	if (npcID and private.dbglobal.recentlySeen[npcID]) then
 		private.dbglobal.recentlySeen[npcID] = nil
-		RSLogger:PrintDebugMessage(string.format("DeleteRecentlySeen[%s]", npcID))
 	end
 end
 
 function RSGeneralDB.SetRecentlySeen(npcID)
 	if (npcID) then
 		private.dbglobal.recentlySeen[npcID] = true
-		RSLogger:PrintDebugMessage(string.format("SetRecentlySeen[%s]", npcID))
-
-		C_Timer.After(RSConstants.RECENTLY_SEEN_ENTITIES_RESET_TIMER, function()
-			RSGeneralDB.DeleteRecentlySeen(npcID)
-		end)
 	end
 end
 

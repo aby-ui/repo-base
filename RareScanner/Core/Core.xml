@@ -23,6 +23,9 @@
 	<Include file="Data\RSGuideDB.lua"/>
 	<Include file="Data\RSCollectionsDB.lua"/>
 	
+	<!-- Services -->
+	<Include file="Service\RSRecentlySeenTracker.lua"/>
+	
 	<!-- POIs -->
 	<Include file="Service\POI\RSNpcPOI.lua"/>
 	<Include file="Service\POI\RSContainerPOI.lua"/>

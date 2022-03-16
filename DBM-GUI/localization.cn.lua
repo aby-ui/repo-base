@@ -93,7 +93,8 @@ L.UIGroupingOptions			= "界面分组选项 (更改这些需要输入 /reload �
 L.GroupOptionsBySpell		= "按照技能分组 (只支持有效的模块)"
 L.GroupOptionsExcludeIcon	= "按照技能分组排除“设置标记图标”选项 (它们将像以前一样在“图标”类中显示)"
 L.AutoExpandSpellGroups		= "按照技能分组自动扩展选项"
---L.ShowSpellDescWhenExpanded	= "分组扩展时继续显示技能描述"
+--L.ShowSpellDescWhenExpanded	= "分组扩展时显示技能描述"
+L.NoDescription				= "此技能无描述说明"
 
 -- Panel: Extra Features
 L.Panel_ExtraFeatures		= "其他功能"
@@ -238,6 +239,7 @@ L.Area_VoiceSelection		= "语音选择"
 L.CountdownVoice			= "设置第一倒计时语音"
 L.CountdownVoice2			= "设置第二倒计时语音"
 L.CountdownVoice3			= "设置第三倒计时语音"
+L.PullVoice					= "设置开怪倒计时语音"
 L.VoicePackChoice			= "设置语音报警的语音包(快躲开！)"
 L.MissingVoicePack			= "缺少语音包 (%s)"
 L.Area_CountdownOptions		= "倒计时选项"

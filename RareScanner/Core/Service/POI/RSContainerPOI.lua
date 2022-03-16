@@ -21,6 +21,9 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
 local RSUtils = private.ImportLib("RareScannerUtils")
 
+-- RareScanner services
+local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
+
 
 ---============================================================================
 -- Not discovered entities
@@ -71,7 +74,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	-- Textures
 	if (POI.isOpened) then
 		POI.Texture = RSConstants.BLUE_CONTAINER_TEXTURE
-	elseif (RSGeneralDB.IsRecentlySeen(containerID)) then
+	elseif (RSRecentlySeenTracker.IsRecentlySeen(containerID, POI.x, POI.y)) then
 		POI.Texture = RSConstants.PINK_CONTAINER_TEXTURE
 	elseif (not POI.isDiscovered and not POI.achievementLink) then
 		POI.Texture = RSConstants.RED_CONTAINER_TEXTURE

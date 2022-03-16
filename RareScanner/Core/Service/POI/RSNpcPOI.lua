@@ -18,6 +18,8 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
 local RSUtils = private.ImportLib("RareScannerUtils")
 
+-- RareScanner services
+local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
 
 ---============================================================================
 -- Not discovered entities
@@ -78,7 +80,7 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 		POI.Texture = RSConstants.BLUE_NPC_TEXTURE
 	elseif (POI.isFriendly) then
 		POI.Texture = RSConstants.LIGHT_BLUE_NPC_TEXTURE
-	elseif (RSGeneralDB.IsRecentlySeen(npcID)) then
+	elseif (RSRecentlySeenTracker.IsRecentlySeen(npcID, POI.x, POI.y)) then
 		POI.Texture = RSConstants.PINK_NPC_TEXTURE
 	elseif (not POI.isDiscovered and not POI.achievementLink) then
 		POI.Texture = RSConstants.RED_NPC_TEXTURE

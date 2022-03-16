@@ -74,7 +74,7 @@ private.SUBZONES_IDS = {
 	[1666] = {1667,1668}; --The necrotic wake
 	[1683] = {1684,1685,1686,1687}; --Theater of pain
 	[1674] = {1697}; --Plaguefall
-	[1970] = {2027,2030,2066}; --Zereth Mortis
+	[1970] = {2027,2028,2029,2030,2066}; --Zereth Mortis
 	[2047] = {2048,2049,2050,2051,2052,2055,2061}; --Sepulcher of the First Ones
 }
 

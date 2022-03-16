@@ -35,6 +35,7 @@ local RSRoutines = private.ImportLib("RareScannerRoutines")
 -- RareScanner services
 local RSRespawnTracker = private.ImportLib("RareScannerRespawnTracker")
 local RSNotificationTracker = private.ImportLib("RareScannerNotificationTracker")
+local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
 local RSMap = private.ImportLib("RareScannerMap")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSWaypoints = private.ImportLib("RareScannerWaypoints")
@@ -561,22 +562,23 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 
 				-- If the loot comes from a container that we support
 				if (npcType == "GameObject") then
-					RSLogger:PrintDebugMessage(string.format("Abierto [%s].", id or ""))
 					local containerID = id and tonumber(id) or nil
 
 					-- We support all the containers with vignette plus those ones that are part of achievements (without vignette)
 					if (RSGeneralDB.GetAlreadyFoundEntity(containerID) or RSContainerDB.GetInternalContainerInfo(containerID)) then
-						-- Check if we have the Container in our database but the addon didnt detect it
-						-- This will happend in the case where the container doesnt have a vignette
-						if (not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
-							RSGeneralDB.AddAlreadyFoundContainerWithoutVignette(containerID)
-						else
-							RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(containerID)
-						end
-
 						-- Sets the container as opened
 						-- We are looping through all the items looted, we dont want to call this method with every item
 						if (not containerLooted) then
+							RSLogger:PrintDebugMessage(string.format("Abierto [%s].", containerID or ""))
+					
+							-- Check if we have the Container in our database but the addon didnt detect it
+							-- This will happend in the case where the container doesnt have a vignette
+							if (not RSGeneralDB.GetAlreadyFoundEntity(containerID)) then
+								RSGeneralDB.AddAlreadyFoundContainerWithoutVignette(containerID)
+							else
+								RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(containerID)
+							end
+						
 							RareScanner:ProcessOpenContainer(containerID)
 							containerLooted = true
 						end
@@ -594,7 +596,7 @@ scanner_button:SetScript("OnEvent", function(self, event, ...)
 					-- If the loot comes from a creature that we support
 				elseif (npcType == "Creature") then
 					local npcID = id and tonumber(id) or nil
-
+					
 					-- If its a supported NPC
 					if (RSGeneralDB.GetAlreadyFoundEntity(npcID)) then
 						local itemLink = GetLootSlotLink(i)
@@ -849,7 +851,7 @@ function RareScanner:ProcessKillByZone(npcID, mapID, forzed)
 						if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
 							RSNpcDB.SetNpcKilled(internalNpcID, RSNpcDB.GetNpcKilledRespawnTime(npcID))
 							RSLogger:PrintDebugMessage(string.format("NPC [%s]. Deja de ser un rare NPC por compartir mision con otro rare NPC muerto [%s]", internalNpcID, npcID))
-							RSGeneralDB.DeleteRecentlySeen(internalNpcID)
+							RSRecentlySeenTracker.RemoveRecentlySeen(internalNpcID)
 						end
 					end
 				end
@@ -857,7 +859,7 @@ function RareScanner:ProcessKillByZone(npcID, mapID, forzed)
 		end)
 	end
 
-	RSGeneralDB.DeleteRecentlySeen(npcID)
+	RSRecentlySeenTracker.RemoveRecentlySeen(npcID)
 end
 
 function RareScanner:ProcessOpenContainer(containerID, forzed)
@@ -1002,7 +1004,7 @@ function RareScanner:ProcessOpenContainerByZone(containerID, mapID, forzed)
 						if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
 							RSContainerDB.SetContainerOpened(internalContainerID, RSContainerDB.GetContainerOpenedRespawnTime(containerID))
 							RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. El contenedor ahora está cerrado por compartir questID con otro contenedor cerrado [%s]", internalContainerID, containerID))
-							RSGeneralDB.DeleteRecentlySeen(internalContainerID)
+							RSRecentlySeenTracker.RemoveRecentlySeen(internalContainerID)
 						end
 					end
 				end
@@ -1010,7 +1012,7 @@ function RareScanner:ProcessOpenContainerByZone(containerID, mapID, forzed)
 		end)
 	end
 
-	RSGeneralDB.DeleteRecentlySeen(containerID)
+	RSRecentlySeenTracker.RemoveRecentlySeen(containerID)
 end
 
 function RareScanner:ProcessCompletedEvent(eventID, forzed)
@@ -1075,7 +1077,7 @@ function RareScanner:ProcessCompletedEvent(eventID, forzed)
 		end
 	end
 
-	RSGeneralDB.DeleteRecentlySeen(eventID)
+	RSRecentlySeenTracker.RemoveRecentlySeen(eventID)
 
 	-- Refresh minimap
 	if (not forzed) then
@@ -1268,7 +1270,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 
 		-- disable button alert for containers
 		if (not RSConfigDB.IsButtonDisplayingForContainers()) then
-			RSGeneralDB.SetRecentlySeen(entityID)
+			RSRecentlySeenTracker.AddRecentlySeen(entityID, vignetteInfo.atlasName, false)
 
 			-- If navigation disabled, control Tomtom waypoint externally
 			if (not RSConfigDB.IsDisplayingNavigationArrows()) then
@@ -1361,9 +1363,8 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		RSWaypoints.AddWaypointFromVignette(vignetteInfo)
 	end
 
-	if (not isNavigating) then
-		RSGeneralDB.SetRecentlySeen(entityID)
-	end
+	-- Add recently seen
+	RSRecentlySeenTracker.AddRecentlySeen(entityID, vignetteInfo.atlasName, isNavigating)
 
 	-- Refresh minimap
 	RSMinimap.RefreshAllData(true)
