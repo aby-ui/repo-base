@@ -19,7 +19,6 @@ RegisterStateDriver(frame, "visibility", "[group:raid] hide; [group:party] show;
 
 local petParent = CreateFrame("Frame", frame:GetName().."PetFrame", frame, "SecureFrameTemplate")
 
-local i
 for i = 0, 4 do
 	local playerName = (i == 0 and "Player" or "Party"..i)
 	local petName = (i == 0 and "Pet" or "PartyPet"..i)
@@ -49,7 +48,6 @@ function addon:GetPartyFramesMatrix()
 	local count = 0
 	local hasPet
 
-	local i
 	for i = 1, 5 do
 		if playerButtons[i]:IsVisible() then
 			count = i
@@ -70,7 +68,6 @@ end
 
 local function UpdateLayout()
 	local horiz, spacing = addon:GetLayoutData()
-	local i
 	for i = 1, 5 do
 		local playerButton, petButton = playerButtons[i], petButtons[i]
 		if i > 1 then

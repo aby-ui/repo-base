@@ -232,6 +232,8 @@ ns.groups.KORTHIA_SHARED = Group('korthia_dailies', 1506458,
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.MAWSWORN_CACHE = Group('mawsworn_cache', 3729814,
     {defaults = ns.GROUP_HIDDEN75})
+ns.groups.MAWSWORN_SUPPLY_CACHE = Group('mawsworn_supply_cache', 'chest_bk',
+    {defaults = ns.GROUP_HIDDEN75})
 ns.groups.NEST_MATERIALS = Group('nest_materials', 136064,
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.NILGANIHMAHT_MOUNT = Group('nilganihmaht', 1391724,
@@ -257,6 +259,8 @@ ns.groups.STYGIAN_CACHES = Group('stygian_caches', 'chest_nv',
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.VESPERS = Group('vespers', 3536181, {defaults = ns.GROUP_HIDDEN})
 ns.groups.ZERETH_CACHE = Group('zereth_caches', 3950362,
+    {defaults = ns.GROUP_HIDDEN75})
+ns.groups.SHROUDED_CYPHER = Group('shrouded_cyphers', 'chest_pp',
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.ZOVAAL_VAULT = Group('zovault', 'star_chest_g',
     {defaults = ns.GROUP_ALPHA75})

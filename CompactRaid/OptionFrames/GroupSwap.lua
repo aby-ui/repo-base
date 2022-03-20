@@ -93,7 +93,6 @@ end)
 
 local groupPanels = {}
 
-local i
 for i = 1, 8 do
 	local panel = CreateFrame("Button", frame:GetName().."Group"..i, frame)
 	groupPanels[i] = panel
@@ -105,7 +104,7 @@ for i = 1, 8 do
 	panel:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
 	panel:SetPoint("TOPLEFT", addon:GetRaidGroup(i), "TOPLEFT")
 
-	local border = CreateFrameAby("Frame", nil, panel)
+	local border = CreateFrame("Frame", nil, panel, "BackdropTemplate")
 	border:SetAllPoints(panel)
 	border:SetScale(0.5)
 	border:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
@@ -120,7 +119,7 @@ cursor:Hide()
 cursor:SetMovable(true)
 cursor:SetFrameStrata("HIGH")
 
-local border = CreateFrameAby("Frame", nil, cursor)
+local border = CreateFrame("Frame", nil, cursor, "BackdropTemplate")
 border:SetAllPoints(cursor)
 border:SetBackdrop({ bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
 border:SetScale(0.5)
@@ -168,7 +167,6 @@ end
 frame:SetScript("OnShow", function(self)
 	arrowFrame:Hide()
 
-	local i
 	if not InCombatLockdown() then
 		if addon.chardb.showRaidPets then
 			CompactRaidGroupHeaderPet:Hide()
@@ -230,7 +228,6 @@ local function Button_OnDragStart(self)
 	end
 
 	local group = select(3, GetRaidRosterInfo(id))
-	local i
 	for i = 1, 8 do
 		groupPanels[i]:EnableMouse(i ~= group)
 	end
@@ -243,7 +240,6 @@ local function Button_OnDragStop(self)
 	cursor:Hide()
 
 	local targetFrame = GetMouseFocus()
-	local i
 	for i = 1, 8 do
 		groupPanels[i]:EnableMouse(false)
 	end

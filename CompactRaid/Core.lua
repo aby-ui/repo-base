@@ -60,7 +60,6 @@ function addon._EnumFrames(list, object, func, ...)
 	end
 
 	local count = 0
-	local frame
 	for _, frame in pairs(list) do
 		count = count + 1
 		if enumType == 1 then

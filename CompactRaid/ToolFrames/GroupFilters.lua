@@ -60,7 +60,6 @@ local function Button_OnUpdate(self)
 	end
 
 	local count = 0
-	local i
 	for i = 1, #filterGroup do
 		if filterGroup[i]:IsVisible() then
 			count = i
@@ -71,20 +70,19 @@ local function Button_OnUpdate(self)
 	self.count:SetText(count > 0 and count or nil)
 end
 
-local i
 for i = 1, 8 do
-	local button = menu:AddButton(format(GROUP_NUMBER, i), "SecureHandlerClickTemplate")
-	local count = button:CreateFontString(nil, "ARTWORK", "GameFontGreenSmall")
-	button.count = count
+	local subButton = menu:AddButton(format(GROUP_NUMBER, i), "SecureHandlerClickTemplate")
+	local count = subButton:CreateFontString(nil, "ARTWORK", "GameFontGreenSmall")
+	subButton.count = count
 	count:SetPoint("RIGHT", -4, 0)
 
 	local filterGroup = addon:GetRaidGroup(i)
-	button.filterGroup = filterGroup
-	button:SetFrameRef("filtergroup", filterGroup)
+	subButton.filterGroup = filterGroup
+	subButton:SetFrameRef("filtergroup", filterGroup)
 
-	button:SetScript("OnUpdate", Button_OnUpdate)
+	subButton:SetScript("OnUpdate", Button_OnUpdate)
 
-	button:SetAttribute("_onclick", [[
+	subButton:SetAttribute("_onclick", [[
 		local group = self:GetFrameRef("filtergroup")
 		if group:IsShown() then
 			group:Hide()

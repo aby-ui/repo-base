@@ -323,7 +323,6 @@ function profileCombo:OnMenuRequest()
 		return
 	end
 
-	local profile, _
 	for profile, _ in pairs(db) do
 		self:AddLine(profile, profile)
 	end
@@ -517,7 +516,6 @@ function module:OnRestoreDefaults()
 	addon.db.showDispels = 1
 	addon.db.groupSwapNoNotify = nil
 
-	local _, profile
 	for _, profile in pairs(addon.db.profiles) do
 		profile.showPartyPets = 1
 		profile.showRaidPets = nil
@@ -561,7 +559,7 @@ local function UpdateMemoryUsage()
 		color = "ff0000" -- Worst case: all (107) - solo (2), party (10), two raids (40 * 2), friendly NPC (5), raid pet (10)
 	end
 
-	UpdateAddOnMemoryUsage()
+	--UpdateAddOnMemoryUsage()
 	monitorText:SetFormattedText(L["memory monitor info"], color, buttons, color, GetAddOnMemoryUsage(addon.name))
 end
 

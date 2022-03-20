@@ -146,7 +146,6 @@ local function Menu_Finish(self)
 	local COUNT = #self.buttons
 
 	local maxTextLen = self.title:GetWidth()
-	local i
 	for i = 1, COUNT do
 		local b = self.buttons[i]
 		local text = b.text
@@ -175,7 +174,7 @@ local function Menu_OnHide(self)
 end
 
 local function Frame_CreateSecureMenu(self, title, rightIcon)
-	local menu = CreateFrameAby("Button", nil, self, "SecureHandlerShowHideTemplate,SecureHandlerClickTemplate")
+	local menu = CreateFrame("Button", nil, self, "BackdropTemplate,SecureHandlerShowHideTemplate,SecureHandlerClickTemplate")
 	menu:Hide()
 	menu.rightIcon = rightIcon
 	menu.buttons = {}

@@ -79,7 +79,6 @@ local function TabButton_UpdateTextColor(self)
 end
 
 local function TabButton_Select(self)
-	local _, texture
 	for _, texture in ipairs(self.deselectTextures) do
 		texture:Hide()
 	end
@@ -100,7 +99,6 @@ local function TabButton_Select(self)
 end
 
 local function TabButton_Deselect(self, internal)
-	local _, texture
 	for _, texture in ipairs(self.deselectTextures) do
 		texture:Show()
 	end

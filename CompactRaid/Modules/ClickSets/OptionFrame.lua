@@ -40,7 +40,6 @@ tabFrame:AddTab(L["wheel up"])
 tabFrame:AddTab(L["wheel down"])
 
 do
-	local i
 	for i = 1, tabFrame:NumTabs() do
 		page:AddCombatDisableItem(tabFrame:GetTabButton(i))
 	end
@@ -124,14 +123,13 @@ function tabFrame:OnTabSelected(id)
 		return
 	end
 
-	local modifier, combo
 	for modifier, combo in pairs(actionCombos) do
 		combo.id = id
 		combo.text:SetText(BINDING_MODIFIERS_DISPLAY[combo.modIndex]..(id > 5 and L["scroll"] or L["click"]))
 
 		local action, extra = strmatch(module.talentdb[combo.modifier..id] or "", "(.-):(.+)")
 		combo.action, combo.extra = action, extra
-		combo.oldAction, combo.oldExtra = nil
+		combo.oldAction, combo.oldExtra = nil, nil
 
 		local value
 		if action == "action" or action == "buildin" then
@@ -162,7 +160,7 @@ end
 
 local DEF_SPELL_LIST = module.DEFAULT_SPELLS[select(2, UnitClass("player"))]
 
-local i, prev
+local prev
 for i = 1, #module.BINDING_MODIFIERS do
 	local modifier = module.BINDING_MODIFIERS[i]
 	local text = BINDING_MODIFIERS_DISPLAY[i]
@@ -191,14 +189,13 @@ for i = 1, #module.BINDING_MODIFIERS do
 
 	local emergentMacro, emergentIcon = module:GetEmergentMacro()
 	if emergentMacro then
-		local line = combo:AddLine(L["Emergent macro"], "emergent", emergentIcon)
-		line.tooltipTitle = L["Emergent macro"]
-		line.tooltipText = emergentMacro
-		line.tooltipOnButton = 1
+		local emergentline = combo:AddLine(L["Emergent macro"], "emergent", emergentIcon)
+		emergentline.tooltipTitle = L["Emergent macro"]
+		emergentline.tooltipText = emergentMacro
+		emergentline.tooltipOnButton = 1
 	end
 
 	if DEF_SPELL_LIST then
-		local id
 		for _, id in ipairs(DEF_SPELL_LIST) do
 			local spell, _, icon = GetSpellInfo(id)
 			if spell then

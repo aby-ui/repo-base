@@ -54,7 +54,6 @@ end
 function module:OnTick()
 	local hasContents
 	local now = GetTime()
-	local guid, data
 	for guid, data in pairs(overrideDebuffs) do
 		if data.expires < now then
 			overrideDebuffs[guid] = nil

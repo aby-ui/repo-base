@@ -21,11 +21,11 @@ function addon:CliqueRegister(frame)
 	end
 end
 
-function addon:InitializeCliqueRegister(frame) 
+function addon:InitializeCliqueRegister(frame)
 	if not Clique then
 		return
 	end
-	
+
 	if frame then
 		Clique:RegisterFrame(frame)
 	else

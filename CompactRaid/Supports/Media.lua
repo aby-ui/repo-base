@@ -60,7 +60,6 @@ function addon:VerifyMedia(category, media)
 end
 
 do
-	local k, v
 	for k, v in pairs(DEFAULT_MEDIAS) do
 		mediaList[k] = v
 	end

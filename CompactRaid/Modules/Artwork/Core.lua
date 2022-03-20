@@ -30,7 +30,7 @@ function module:OnInitialize()
 			ver = "r"..ver
 		end
 	elseif CWDGMediaPack then
-		name, lib, ver = "CWDGMediaPack", CWDGMediaPack
+		name, lib = "CWDGMediaPack", CWDGMediaPack
 	end
 
 	if lib then

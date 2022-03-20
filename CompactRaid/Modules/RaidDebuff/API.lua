@@ -24,7 +24,6 @@ local format = format
 local strmatch = strmatch
 local tonumber = tonumber
 local GetCurrentMapContinent = Pre80API.GetCurrentMapContinent
-local tinsert = tinsert
 local GetInstanceInfo = GetInstanceInfo
 local GetRealZoneText = GetRealZoneText
 local EJ_SelectInstance = EJ_SelectInstance
@@ -104,7 +103,6 @@ function module:EnumInstances(tierId, instanceType, func, arg1)
 		instanceType = nil
 	end
 
-	local id, data
 	for id, data in pairs(tier.instances) do
 		if not instanceType or instanceType == data.type then
 			if arg1 then
@@ -126,7 +124,6 @@ function module:EnumBosses(tierId, instanceId, func, arg1)
 		return
 	end
 
-	local i
 	for i = 1, #instance.bosses do
 		local data = instance.bosses[i]
 		if arg1 then
@@ -151,7 +148,6 @@ function module:EnumDebuffs(tierId, instanceId, bossId, func, arg1)
 		bossId = 0
 	end
 
-	local name, data
 	for name, data in pairs(instance.debuffs) do
 		if data.bossId == bossId then
 			if arg1 then
@@ -269,7 +265,6 @@ end
 
 function module:ApplyUserLevels()
 	-- Apply user-modified priorities
-	local key, level
 	for key, level in pairs(self.db.userLevels) do
 		local valid = type(key) == "string" and type(level) == "number"
 		if valid then
@@ -284,10 +279,8 @@ function module:ApplyUserLevels()
 end
 
 function module:ClearUserLevels()
-	local _, tier, instance
 	for _, tier in pairs(tierList) do
 		for _, instance in pairs(tier.instances) do
-			local debuff
 			for _, debuff in pairs(instance.debuffs) do
 				debuff.level = debuff.defLevel
 			end
@@ -303,9 +296,7 @@ function module:GetZoneDebuffs()
 
 	local _, continent = GetCurrentMapContinent()
 
-	local _, tier
 	for _, tier in pairs(tierList) do
-		local id, data
 		for id, data in pairs(tier.instances) do
 			if data.name == zone or data.name == continent then
 				--print("zone debuff: ", data.name)
@@ -339,7 +330,6 @@ end
 
 function module:ApplyCustomDebuffs()
 	-- Apply custom debuffs
-	local key, value
 	for key, value in pairs(self.db.customDebuffs) do
 		local valid = type(key) == "string" and type(value) == "string"
 		if valid then
@@ -357,10 +347,8 @@ function module:ApplyCustomDebuffs()
 end
 
 function module:ClearCustomDebuffs()
-	local _, tier, instance
 	for _, tier in pairs(tierList) do
 		for _, instance in pairs(tier.instances) do
-			local name, debuff
 			for name, debuff in pairs(instance.debuffs) do
 				if debuff.custom then
 					instance.debuffs[name] = nil
@@ -376,7 +364,6 @@ end
 
 local function FindBoss(bosses, id)
 	local general
-	local _, data
 	for _, data in ipairs(bosses) do
 		if data.id == id then
 			return data
@@ -428,7 +415,6 @@ end
 local function BuildBossList(instanceId)
 	EJ_SelectInstance(instanceId)
 	local list = {}
-	local i
 	for i = 1, 255 do
 		local name, _, id = EJ_GetEncounterInfoByIndex(i)
 		if not name or not id then
@@ -445,7 +431,6 @@ end
 local function BuildInstanceList(tier, instanceType, list)
 	local arg = instanceType == "raid"
 	EJ_SelectTier(tier)
-	local i
 	for i = 1, 255 do
 		local id, name = EJ_GetInstanceByIndex(i, arg)
 		if not id or not name then
@@ -460,7 +445,6 @@ local function BuildInstanceList(tier, instanceType, list)
 end
 
 function module:InitAPI()
-	local i
 	local numTiers = EJ_GetNumTiers()
 	for i = 1, numTiers do
 		local tier = {}
@@ -473,7 +457,6 @@ function module:InitAPI()
 	end
 
 	initDone = 1
-	local _, data
 	for _, data in pairs(pendingList) do
 		self:RegisterDebuff(data.tierId, data.instanceId, data.bossId, data.spellId, data.level, data.custom)
 	end

@@ -190,7 +190,6 @@ function lib.tcopy(src, dest)
 		dest = {}
 	end
 
-	local k, v
 	for k, v in pairs(src) do
 		if type(v) == "table" then
 			dest[k] = lib.tcopy(v)
@@ -208,7 +207,6 @@ function lib.tfind(t, arg, ...)
 	end
 
 	local funcSearch = type(arg) == "function"
-	local index, data
 	for index, data in ipairs(t) do
 		if funcSearch then
 			if arg(data, ...) then
@@ -239,7 +237,6 @@ end
 local function Addon_GetProfileNameList(self)
 	local list = {}
 	if self.db and type(self.db.profiles) == "table" then
-		local name
 		for name in pairs(self.db.profiles) do
 			tinsert(list, name)
 		end
@@ -287,7 +284,6 @@ end
 local function Addon_RegisterSlashCmd(self, ...)
 	local UPPER_NAME = strupper(self.name)
 
-	local i
 	for i = 1, select("#", ...) do
 		local cmd = select(i, ...)
 		if type(cmd) == "string" then
@@ -486,7 +482,6 @@ local function BCO_BroadcastEvent(self, event, ...)
 		return
 	end
 
-	local i
 	for i = 1, #callbacks do
 		local arg1 = callbacks[i].arg1
 		if arg1 then
@@ -574,7 +569,6 @@ end
 local function Addon_EnumModules(self, func, ...)
 	if type(func) == "function" then
 		local modules = self[PRIVATE].modules
-		local  i
 		for i = 1, #modules do
 			func(modules[i], ...)
 		end
@@ -595,7 +589,6 @@ end
 
 local function Addon_CallAllModules(self, method, ...)
 	local modules = self[PRIVATE].modules
-	local  i
 	for i = 1, #modules do
 		local module = modules[i]
 		local func = module[method]
@@ -607,7 +600,6 @@ end
 
 local function Addon_CallAllEnabledModules(self, method, ...)
 	local modules = self[PRIVATE].modules
-	local  i
 	for i = 1, #modules do
 		local module = modules[i]
 		if module:IsEnabled() then
@@ -625,7 +617,6 @@ local function Addon_GetModule(self, key)
 		return modules[key]
 	end
 
-	local _, module
 	for _, module in ipairs(modules) do
 		if module.key == key then
 			return module
@@ -915,7 +906,6 @@ end
 -------------------------------------------------------
 
 function lib.CopyPlayerInfo(addon)
-	local key, val
 	for key, val in pairs(PLAYER_INFO) do
 		addon[key] = val
 	end
@@ -978,7 +968,6 @@ local function Module_InitializeDB(self, db, chardb)
 end
 
 local function Lib_CallAllAddonsAndEnabledModules(method, ...)
-	local _, addon
 	for _, addon in ipairs(lib._addonList) do
 		local func = addon[method]
 		if type(func) == "function" then
@@ -1014,7 +1003,6 @@ local function Lib_CheckInitDB(addon)
 end
 
 local function Lib_ApplyAllBindings()
-	local name, button
 	for name, button in pairs(lib._bindingList) do
 		ClearOverrideBindings(button)
 		local key1, key2 = GetBindingKey(name)
@@ -1037,7 +1025,6 @@ local function EventFrame_TryUpdateBindings(self)
 end
 
 local function lib_SetAllAddonsKey(key, value)
-	local _, addon
 	for _, addon in ipairs(lib._addonList) do
 		addon[key] = value
 	end
@@ -1102,7 +1089,6 @@ frame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_LOGIN" then
 		Lib_UpdatePlayerInfo()
 
-		local _, addon
 		for _, addon in ipairs(lib._addonList) do
             if not addon:Initialized() then --abyui
 			    lib.CopyPlayerInfo(addon)

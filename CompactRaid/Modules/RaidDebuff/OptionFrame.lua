@@ -189,7 +189,7 @@ function list:OnSelectionChanged(position, data)
 		buttonDelete.position, buttonDelete.data = position, data
 		buttonDelete:Enable()
 	else
-		buttonDelete.position, buttonDelete.data = nil
+		buttonDelete.position, buttonDelete.data = nil, nil
 		buttonDelete:Disable()
 	end
 end
@@ -223,10 +223,9 @@ function tierCombo:OnComboChanged(value)
 	if type(module.db.selInstance) == "number" then
 		instanceCombo:SetSelection(module.db.selInstance)
 	else
-		local i
 		for i = 1, instanceCombo:NumLines() do
-			local value = instanceCombo:GetValueByPosition(i)
-			if value and tonumber(value) then
+			local numberValue = instanceCombo:GetValueByPosition(i)
+			if numberValue and tonumber(numberValue) then
 				instanceCombo:SetSelectionByPosition(i)
 				return
 			end
@@ -259,7 +258,6 @@ end
 
 function page:OnInitShow()
 	tierCombo:ClearLines()
-	local i
 	for i = 1, module:GetNumTiers() do
 		tierCombo:AddLine(module:GetTierName(i), i)
 	end

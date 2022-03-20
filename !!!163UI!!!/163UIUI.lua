@@ -1932,6 +1932,7 @@ function U1_CreateMinimapButton()
                 CloseDropDownMenus(1);
                 UUI.ToggleUI(self, button)
             end
+            LibDBIconTooltip:Hide()
         end,
         OnTooltipShow = function(tip)
             tip:AddLine(L["爱不易插件中心"])

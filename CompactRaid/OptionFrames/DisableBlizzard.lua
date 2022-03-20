@@ -47,7 +47,6 @@ blizzPartyParent:SetScript("OnEvent", function(self)
 end)
 
 addon:RegisterOptionCallback("showParty", function(value)
-	local i
 	for i = 1, 4 do
 		local frame = _G["PartyMemberFrame"..i]
 		if value then

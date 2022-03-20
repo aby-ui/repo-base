@@ -65,7 +65,6 @@ if type(UICreateModularOptionFrame_IsNewerVersion) == "function" and not UICreat
 local function GetBranchHeight(self)
 	local height = BUTTON_HEIGHT
 	if self.expanded then
-		local i
 		for i = 1, #self.nodes do
 			height = height + GetBranchHeight(self.nodes[i])
 		end
@@ -91,7 +90,6 @@ local function CatButton_Expand(self)
 
 	self.expanded = 1
 
-	local _, child
 	for _, child in ipairs(self.nodes) do
 		child:Show()
 	end
@@ -117,7 +115,6 @@ local function CatButton_Collapse(self)
 
 	self.expanded = nil
 
-	local _, child
 	for _, child in ipairs(self.nodes) do
 		child:Hide()
 	end
@@ -312,7 +309,6 @@ local function ScrollFrame_EnsureVisible(self, button)
 	end
 
 	if button:GetTop() > self:GetTop() then
-		local i
 		for i = 1, 100 do
 			if button:GetTop() > self:GetTop() then
 				slider:SetValue(slider:GetValue() - BUTTON_HEIGHT)
@@ -322,7 +318,6 @@ local function ScrollFrame_EnsureVisible(self, button)
 		end
 
 	elseif button:GetBottom() < self:GetBottom() then
-		local i
 		for i = 1, 100 do
 			if button:GetBottom() < self:GetBottom() then
 				slider:SetValue(slider:GetValue() + BUTTON_HEIGHT)
@@ -389,7 +384,7 @@ local function Frame_AddCategory(self, key, title, desc, parent)
 
 	if type(UICreateInterfaceOptionPage) == "function" then
 		page = UICreateInterfaceOptionPage(self:GetName().."_UserPage_"..category.id, title, desc, nil, self.pageContainer)
-		page.SetDialogStyle, page.Open, page.Toggle = nil
+		page.SetDialogStyle, page.Open, page.Toggle = nil, nil, nil
 	else
 		page = CreateFrame("Frame", pageName, self.pageContainer)
 		page.title = page:CreateFontString(pageName.."Title", "ARTWORK", "GameFontNormal")
@@ -469,7 +464,6 @@ local function Frame_GetOperationButton(self, index)
 	end
 
 	if type(index) == "string" then
-		local _, button
 		for _, button in ipairs(self.operationButtons) do
 			if button:GetText() == index then
 				return button
@@ -483,7 +477,7 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 		return
 	end
 
-	local frame = CreateFrameAby("Frame", name, UIParent)
+	local frame = CreateFrame("Frame", name, UIParent, "BackdropTemplate")
 	frame:SetBackdrop({ bgFile = "Interface\\FrameGeneral\\UI-Background-Marble", edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border", edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 } })
 	frame:SetSize(800, 610)
 	frame:SetPoint("CENTER")
@@ -525,7 +519,7 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 	topClose:SetSize(24, 24)
 	topClose:SetPoint("TOPRIGHT", -5, -5)
 
-	local leftPanel = CreateFrameAby("Frame", name.."LeftPanel", frame)
+	local leftPanel = CreateFrame("Frame", name.."LeftPanel", frame, "BackdropTemplate")
 	frame.leftPanel = leftPanel
 	leftPanel:SetBackdrop({ tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }})
 	leftPanel:SetBackdropBorderColor(0.75, 0.75, 0.75)
@@ -550,13 +544,13 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 	texture:SetBlendMode("ADD")
 	texture:SetVertexColor(0.196, 0.388, 0.8, 0.8)
 
-	local texture = catList:CreateTexture(nil, "BORDER")
-	catList.checkedTexture = texture
-	texture:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
-	texture:SetBlendMode("ADD")
-	texture:SetVertexColor(1, 1, 1, 0.8)
+	local checkedTexture = catList:CreateTexture(nil, "BORDER")
+	catList.checkedTexture = checkedTexture
+	checkedTexture:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+	checkedTexture:SetBlendMode("ADD")
+	checkedTexture:SetVertexColor(1, 1, 1, 0.8)
 
-	local rightPanel = CreateFrameAby("Frame", name.."RightPanel", frame)
+	local rightPanel = CreateFrame("Frame", name.."RightPanel", frame, "BackdropTemplate")
 	frame.rightPanel = rightPanel
 	rightPanel:SetBackdrop({ tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }})
 	rightPanel:SetBackdropBorderColor(0.75, 0.75, 0.75)
@@ -574,7 +568,7 @@ function UICreateModularOptionFrame(name, title, version, button1, ...)
 	if button1 then
 		local buttonsTexts = { button1, ... }
 
-		local i, lastButton
+		local lastButton
 		for i = #buttonsTexts, 1, -1 do
 			local button = CreateFrame("Button", name.."OperationButton"..i, frame, "UIPanelButtonTemplate")
 			button:SetSize(96, 24)

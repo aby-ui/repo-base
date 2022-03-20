@@ -96,7 +96,6 @@ local ipairs = ipairs
 local pairs = pairs
 local IsShiftKeyDown = IsShiftKeyDown
 local IsControlKeyDown = IsControlKeyDown
-local strtrim = strtrim
 local tinsert = tinsert
 local tremove = tremove
 local format = format
@@ -132,7 +131,6 @@ end
 
 frame:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_REGEN_ENABLED" then
-		local item
 		for item in pairs(self.items) do
 			if type(item) == "table" and item.__flag_combatDisabled == GUID then
 				item.__flag_combatDisabled = nil
@@ -140,7 +138,6 @@ frame:SetScript("OnEvent", function(self, event)
 			end
 		end
 	elseif event == "PLAYER_REGEN_DISABLED" then
-		local item
 		for item in pairs(self.items) do
 			if type(item) == "table" then
 				local _, enabled = pcall(item.IsEnabled, item)
@@ -233,8 +230,9 @@ local function CreateSubControl(self, frameType, text, template, disableInCombat
 end
 
 local function CreatePanel(self, frame, noBackground, noEdge)
-	if type(frame) ~= "table" or type(frame.SetBackdrop) ~= "function" then
-		frame = CreateSubControl(self, "Frame")
+	if type(frame) ~= "table" then
+		local _
+		frame = CreateSubControl(self, "Frame", _, "BackdropTemplate")
 	end
 
 	local backdrop = {}
@@ -338,12 +336,11 @@ local function CheckGroup_AddButton(self, text, value, disableInCombat, ...)
 	button.value = value
 
 	local pairCount = select("#", ...)
-	local i
 	for i = 1, pairCount, 2 do
 		local key = select(i, ...)
-		local value = select(i + 1, ...)
+		local val = select(i + 1, ...)
 		if type(key) == "string" then
-			button[key] = value
+			button[key] = val
 		end
 	end
 
@@ -364,7 +361,6 @@ end
 
 local function MultiGroup_SetChecked(self, value, checked, noNotify)
 	checked = checked and 1 or nil
-	local _, button
 	for _, button in ipairs(self.buttons) do
 		if button.value == value then
 			if CheckButton_GetChecked(button) ~= checked then
@@ -379,7 +375,6 @@ local function MultiGroup_SetChecked(self, value, checked, noNotify)
 end
 
 local function MultiGroup_GetChecked(self, value)
-	local _, button
 	for _, button in ipairs(self.buttons) do
 		if button.value == value then
 			return CheckButton_GetChecked(button)
@@ -402,7 +397,7 @@ end
 
 local function SingleGroup_OnCheckChanged(self, value, checked, button)
 	if checked then
-		local _, other, changed
+		local changed
 		for _, other in ipairs(self.buttons) do
 			if other ~= button and CheckButton_GetChecked(other) then
 				other:SetChecked(nil)
@@ -420,7 +415,7 @@ local function SingleGroup_OnCheckChanged(self, value, checked, button)
 end
 
 local function SingleGroup_SetSelection(self, value, noNotify)
-	local _, button, found
+	local found
 	for _, button in ipairs(self.buttons) do
 		if button.value == value then
 			found = button
@@ -569,7 +564,7 @@ local function ComboBox_GetSelection(self)
 end
 
 local function ComboBox_SetSelection(self, value, noNotify)
-	local _, line, found
+	local found
 	for _, line in ipairs(self.dropdown.lines) do
 		if line.value == value then
 			found = line
@@ -593,7 +588,6 @@ local function ComboBox_GetLineData(self, position)
 end
 
 local function ComboBox_FindLineData(self, value)
-	local i, line
 	for i, line in ipairs(self.dropdown.lines) do
 		if line.value == value then
 			return i, line
@@ -609,7 +603,6 @@ local function ComboBox_AddLine(self, text, value, icon, flags, r, g, b, positio
 		line = { text = text, value = value, icon = icon }
 		if type(flags) == "string" then
 			local symbols = { strsplit(",", flags) }
-			local _, flag
 			for _, flag in ipairs(symbols) do
 				flag = strtrim(flag)
 				if flag ~= "" then
@@ -686,11 +679,9 @@ local function Dropdown_InitFunc(self)
 		parent:OnMenuRequest()
 	end
 
-	local i
 	for i = 1, #(self.lines) do
 		local line = self.lines[i]
 		local data = {}
-		local k, v
 		for k, v in pairs(line) do
 			data[k] = v
 		end
@@ -939,7 +930,7 @@ hooksecurefunc("ChatEdit_InsertLink", function(link)
 end)
 
 local function CreateEditBox(self, text, horizontal, disableInCombat, textColor)
-	local editbox = CreateSubControl(self, "EditBox", nil, nil, disableInCombat)
+	local editbox = CreateSubControl(self, "EditBox", nil, "BackdropTemplate", disableInCombat)
 	editbox:SetAutoFocus(false)
 	editbox.autoTrim = 1
 	editbox.handleClick = "link"
@@ -1101,7 +1092,6 @@ local DIALOG_STYLES = {
 }
 
 local function IsHideOnEscape(self)
-	local k, v
 	for k, v in ipairs(UISpecialFrames) do
 		if v == self or v == self:GetName() then
 			return k

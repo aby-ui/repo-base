@@ -85,7 +85,6 @@ local function AssignBind(modifier, id, action, extra)
 end
 
 local function ClearAll()
-	local _, modifier, id
 	for _, modifier in ipairs(module.BINDING_MODIFIERS) do
 		for id = 1, 7 do
 			AssignBind(modifier, id)
@@ -95,7 +94,6 @@ end
 
 local function AssignAll()
 	ClearAll()
-	local key, value
 	for key, value in pairs(module.talentdb) do
 		if type(key) == "string" and type(value) == "string" then
 			local modifier, id = strmatch(key, "(.-)(%d+)$")
@@ -131,11 +129,10 @@ end
 
 local function ConvertDB(db)
 	-- Convert data from old version
-	local index, data, converted
+	local converted
 	for index, data in ipairs(db) do
 		if type(data) == "table" then
 			converted = 1
-			local key, value
 			if index > 5 then
 				-- wheels
 				local newValue = ConvertValue(data)
@@ -171,7 +168,6 @@ end
 
 -- Change action "menu" to "togglemenu" for 5.3
 local function Convert_ToggleMenu(db)
-	local key, value
 	for key, value in pairs(db) do
 		if value == "action:menu" then
 			db[key] = "action:togglemenu"
@@ -182,7 +178,6 @@ end
 function module:OnCreateDynamic(frame)
 	CompactRaid:CliqueUnregister(frame)
 
-	local key, value
 	for key, value in pairs(module.talentdb) do
 		if type(key) == "string" and type(value) == "string" then
 			local modifier, id = strmatch(key, "(.-)(%d+)$")

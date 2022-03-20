@@ -29,13 +29,16 @@ module.DEFAULT_SPELLS = {
 
 	DRUID = {
 		774, -- Rejuvenation
+		155777, -- Rejuvenation (Germination)
 		8936, -- Regrowth
 		22812, -- Barkskin
 		33763, -- Lifebloom
 		48438, -- Wild Growth
 		29166, -- Innervate
 		102342, -- Ironbark
-		155777, -- Germination
+		102351, -- Cenarion Ward
+		207385, -- Spring Blossoms
+
 	},
 
 	SHAMAN = {
@@ -172,7 +175,7 @@ function module:EncodeData(db)
 		return
 	end
 
-	local key, def, text
+	local text
 	for key, def in pairs(OPTION_KEYS) do
 		local value = db[key]
 		local isColor = type(value) == "number" and strlen(key) == 2 and strfind(key, "(.+)(%d+)")
@@ -203,7 +206,6 @@ function module:DecodeData(text, db)
 		text = ""
 	end
 
-	local key, def
 	for key, def in pairs(OPTION_KEYS) do
 		local _, _, value = strfind(text, "%["..key.."%]#(.-)#")
 		if value then
@@ -232,7 +234,6 @@ end
 
 local defaultdb = {}
 
-local _, key
 for _, key in ipairs(module.INDICATOR_KEYS) do
 	local data = {}
 	CompactRaid.tcopy(DEFAULTS_INDICATOR, data)

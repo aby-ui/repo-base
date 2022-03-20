@@ -29,7 +29,6 @@ local CLASS_CATEGORIES = {
 }
 
 local function ConvertData(db)
-	local key
 	for _, key in ipairs(module.INDICATOR_KEYS) do
 		if type(db[key]) == "table" then
 			db[key] = module:EncodeData(db[key])
@@ -50,6 +49,7 @@ end
 
 function module:OnUnitChange(frame, displayedUnit, unit, inVehicle, class)
 	local visual = self:GetVisual(frame)
+    if not visual then return end
 	visual.unit = displayedUnit
 	if not displayedUnit then
 		visual:Hide()

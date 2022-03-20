@@ -156,6 +156,8 @@ U1RegisterAddon("163UI_MoreOptions", {
             if not loading then SetCVar(cfg.var:gsub("^cvar_", ""), v) end
         end}),
 
+        { text = "敌方姓名板占位高度", tip = "说明（有Plater插件的时候此设置不执行）`此设置影响敌方姓名板点击可选中的区域，也会影响堆叠分散时姓名板之间的间隔。`系统默认值为45(nameplateOverlapV=1.1)`Plater的设置为28(nameplateOverlapV=1.4)`可供参考", var = "eheight", type = "spin", range = {1, 60, 1}, default = 45, callback = function(cfg, v, loading) if U1IsAddonEnabled("Plater") then return end local w,h = C_NamePlate.GetNamePlateEnemySize() C_NamePlate.SetNamePlateEnemySize(w, v) end, },
+
     },
 
     {
@@ -197,8 +199,9 @@ U1RegisterAddon("163UI_MoreOptions", {
             end
         end,
         { text = "缩放比例", var = "scale", type = "spin", range = {0.4, 2.0, 0.1}, default = 1, callback = function(cfg, v, loading) SetCVar("nameplateGlobalScale", v or 1.0) end, },
-        { text = "自带友方血条宽度", var = "fwidth", type = "spin", range = {24, 200, 1}, default = 60, callback = function(cfg, v, loading) C_NamePlate.SetNamePlateFriendlySize(v, 45) end, },
-        { text = "友方血条不可点击", var = "fthrough", default = false, callback = function(cfg, v, loading) C_NamePlate.SetNamePlateFriendlyClickThrough(not not v) end, },
+        { text = "自带友方姓名板宽度", var = "fwidth", type = "spin", range = {24, 200, 1}, default = 60, callback = function(cfg, v, loading) local w,h = C_NamePlate.GetNamePlateFriendlySize() C_NamePlate.SetNamePlateFriendlySize(v, h) end, },
+        { text = "自带友方姓名板占位高度", tip = "说明`此设置影响友方姓名板点击可选中的区域，也会影响堆叠分散时姓名板之间的间隔，设置成最小1可以实现敌方姓名板堆叠、友方姓名板不堆叠的效果。系统默认值为45，建议想点击时设置成20，不想点击时设置成1", var = "fheight", type = "spin", range = {1, 60, 1}, default = 45, callback = function(cfg, v, loading) local w,h = C_NamePlate.GetNamePlateFriendlySize() C_NamePlate.SetNamePlateFriendlySize(w, v) end, },
+        { text = "友方姓名板不可点击", var = "fthrough", default = false, callback = function(cfg, v, loading) C_NamePlate.SetNamePlateFriendlyClickThrough(not not v) end, },
     },
 
     --[[------------------------------------------------------------

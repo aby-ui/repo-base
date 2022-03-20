@@ -479,6 +479,10 @@ function MainPanel:OpenApplicantTooltip(applicant)
     end
 
 	--abyui
+    if U1AddDonatorTitle then
+        U1AddDonatorTitle(GameTooltip, name)
+    end
+
     local score = applicant:GetDungeonScore() or 0
     if score > 0 then
         local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR

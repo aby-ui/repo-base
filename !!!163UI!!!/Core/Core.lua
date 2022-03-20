@@ -876,7 +876,7 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="�
     ["做家务才能玩-布兰卡德"]="爱不易世界第一猫德信就信不信拉倒",
     ["野牛大改造-冰风岗"]="爱不易凶猛大白熊",
     ["Tioo-冰风岗"]="爱不易董事",
-    ["Roselia-冰风岗"]="爱不易董事",
+    ["Roselia-冰风岗"]="爱不易董事·纸片人老婆的现任·薛定谔的欧皇·咕哒子",
     ["部落炮艇火炮-凤凰之神"]="爱不易大股东",
     ["菜逼分割线-冰风岗"]="爱不易大股东",
     ["明天就减肥-冰风岗"]="爱不易大股东",
@@ -916,24 +916,39 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="�
     ["卡姆九十六-布兰卡德"]="爱不易零零后天才技师",
 }
 
+function U1AddDonatorTitle(self, partOrFullName)
+    if self._ChangingByAbyUI then return end
+    if partOrFullName then
+        if not partOrFullName:find("%-") then
+            partOrFullName = partOrFullName .. "-" .. GetRealmName()
+        end
+        local staff = U1STAFF[partOrFullName]
+        if staff then
+            self:AddLine(staff, 1, 0, 1)
+            if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
+        else
+            local donate = U1Donators and U1Donators.players[partOrFullName]
+            if donate then
+                self:AddLine("爱不易" .. (donate > 0 and "" or "") .. "捐助者", 1, 0, 1)
+                if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
+            end
+        end
+    end
+end
+
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         CoreScheduleTimer(false, 1, function()
             GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                 local _, unit = self:GetUnit();
                 if not unit or not UnitIsPlayer(unit) then return end --or not self:IsVisible()
-                local fullName = U1UnitFullName(unit)
-                if fullName then
-                    local staff = U1STAFF[fullName]
-                    if staff then
-                        self:AddLine(staff, 1, 0, 1)
-                        if not self.fadeOut then self:Show() end
-                    else
-                        local donate = U1Donators and U1Donators.players[fullName]
-                        if donate then
-                            self:AddLine("爱不易" .. (donate > 0 and "" or "") .. "捐助者", 1, 0, 1)
-                            if not self.fadeOut then self:Show() end
-                        end
+                U1AddDonatorTitle(self, U1UnitFullName(unit))
+            end)
+            hooksecurefunc(GameTooltip, "Show", function(self)
+                if CommunitiesFrameScrollChild and self:GetOwner() and self:GetOwner().GetMemberInfo and self:GetOwner():GetParent() == CommunitiesFrameScrollChild then
+                    local memberInfo = self:GetOwner():GetMemberInfo()
+                    if memberInfo then
+                        U1AddDonatorTitle(self, memberInfo.name)
                     end
                 end
             end)

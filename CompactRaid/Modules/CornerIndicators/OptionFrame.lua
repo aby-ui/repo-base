@@ -39,7 +39,6 @@ tabFrame:SetWidth(556)
 tabFrame:SetHeight(420)
 
 do
-	local i
 	for i = 1, #module.INDICATOR_KEYS do
 		local key = module.INDICATOR_KEYS[i]
 		tabFrame:AddTab(L[key], key)
@@ -204,7 +203,7 @@ function page:UpdateSimilarPrompt()
 	if list then
 		activeOptionDB.checkSimilar = 1
 		similarButton.tooltipTitle = aura
-		local similar, text
+		local text
 		local count = 0
 		for similar in pairs(list) do
 			if similar ~= aura then
@@ -221,7 +220,7 @@ function page:UpdateSimilarPrompt()
 		similarButton.icon:SetDesaturated(false)
 		similarButton.count:SetText(count)
 	else
-		activeOptionDB.checkSimilar, similarButton.tooltipTitle, similarButton.tooltipText = nil
+		activeOptionDB.checkSimilar, similarButton.tooltipTitle, similarButton.tooltipText = nil, nil, nil
 		similarButton.icon:SetDesaturated(true)
 		similarButton.count:SetText()
 	end
@@ -243,7 +242,6 @@ spellButton:SetHitRectInsets(0, 0, 22, 0)
 local BUILTIN_SPELLS = module.DEFAULT_SPELLS[select(2, UnitClass("player"))]
 if BUILTIN_SPELLS then
 	local spellList = {}
-	local spellid
 	for _, spellid in ipairs(BUILTIN_SPELLS) do
 		local name, _, icon = GetSpellInfo(spellid)
 		if name then
@@ -268,7 +266,6 @@ if BUILTIN_SPELLS then
 
 	UIDropDownMenu_Initialize(spellMenu, function()
 		local text = strtrim(auraEdit:GetText())
-		local name, icon
 		for name, icon in pairs(spellList) do
 			local sel = name == text
 			UIDropDownMenu_AddButton({ text = name, icon = icon, arg1 = name, func = OnMenuClick, checked = sel })
@@ -284,7 +281,6 @@ else
 end
 
 function page:UpdateOptionStats()
-	local i
 	for i = 1, 3 do
 		local colorSwatch = self.stages[i]
 		if activeOptionDB.style == 0 or activeOptionDB.showlacks then
@@ -395,7 +391,6 @@ function module:InitOptionData()
 		return
 	end
 
-	local key
 	for _, key in ipairs(self.INDICATOR_KEYS) do
 		self.optionData[key] = self:DecodeData(db[key])
 	end
@@ -403,7 +398,6 @@ function module:InitOptionData()
 	tabFrame:DeselectTab()
 	tabFrame:SelectTab(1)
 
-	local indicator
 	for _, indicator in ipairs(self.indicators) do
 		indicator.db = self.optionData[indicator.key]
 	end

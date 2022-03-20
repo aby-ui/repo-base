@@ -42,7 +42,6 @@ local function Button_OnUpdate(self)
 	end
 end
 
-local i
 for i = 1, 8 do
 	local data = UnitPopupButtons["RAID_TARGET_"..i]
 

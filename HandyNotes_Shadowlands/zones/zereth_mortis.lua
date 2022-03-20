@@ -34,13 +34,11 @@ local cata = Map({id = 2066}) -- Catalyst Wards
 
 -- Sepulcher of the First Ones
 local immo = Map({id = 2047}) -- Immortal Hearth
+local ephe = Map({id = 2061}) -- Ephemeral Plains
 
 -------------------------------------------------------------------------------
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
-
--- TODO: Verify - Only one of either Euv'ouk or Vitiane can be up for a given day.
--- TODO: Verify - Helmix is spawned by killing the Annelid Mudborers.
 
 map.nodes[64743369] = Rare({
     id = 179006,
@@ -160,7 +158,8 @@ map.nodes[69073662] = Rare({
     rewards = {
         Achievement({id = 15391, criteria = 53025}), -- Adventurer of Zereth Mortis
         Transmog({item = 189951, slot = L['plate']}), -- Sunbathed Avian Armor
-        Transmog({item = 189937, slot = L['cloak']}) -- Garudeon's Blanket of Feathers
+        Transmog({item = 189937, slot = L['cloak']}), -- Garudeon's Blanket of Feathers
+        Transmog({item = 190057, slot = L['warglaive']}) -- Protective Raptora's Wing-Glaive
         -- Item({item = 187832}) -- Schematic: Pure-Air Sail Extensions (engineering)
     },
     pois = {
@@ -209,6 +208,7 @@ map.nodes[80384706] = Rare({
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52986}), -- Adventurer of Zereth Mortis
+        Transmog({item = 189926, slot = L['leather']}), -- Poison-Licked Spaulders
         Transmog({item = 189960, slot = L['plate']}), -- Crouching Legs of the Bufonid
         Transmog({item = 190001, slot = L['shield']}) -- Gorkek's Glistening Throatguard
     },
@@ -287,6 +287,7 @@ map.nodes[54083493] = Rare({
         Achievement({id = 15391, criteria = 53020}), -- Adventurer of Zereth Mortis
         Transmog({item = 189923, slot = L['leather']}), -- Tarachnid's Terrifying Visage
         Transmog({item = 189950, slot = L['mail']}), -- Constrained Prey's Binds
+        Transmog({item = 189769, slot = L['dagger']}), -- Fang of Phestis
         Transmog({item = 190045, slot = L['staff']}) -- Flowing Sandbender's Staff
     },
     pois = {POI({55963261})} -- Cave entrance
@@ -392,7 +393,8 @@ map.nodes[49783914] = Rare({
         Achievement({id = 15391, criteria = 52979}), -- Adventurer of Zereth Mortis
         Transmog({item = 189915, slot = L['cloth']}), -- Tahkwitz' Cloth Ribbon
         Transmog({item = 189933, slot = L['mail']}), -- Vigilant Raptora's Crest
-        Transmog({item = 189954, slot = L['plate']}) -- Lustrous Sentinel's Sabatons
+        Transmog({item = 189954, slot = L['plate']}), -- Lustrous Sentinel's Sabatons
+        Transmog({item = 190003, slot = L['dagger']}) -- Skyward Savior's Talon
         -- Item({item = 187832}) -- Schematic: Pure-Air Sail Extensions (engineering)
     }
 }) -- Tahkwitz
@@ -405,6 +407,7 @@ map.nodes[54507344] = Rare({
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52987}), -- Adventurer of Zereth Mortis
+        Transmog({item = 189967, slot = L['cloth']}), -- Hood of Star Topology
         Transmog({item = 189928, slot = L['leather']}), -- Centripetal Waistband
         Transmog({item = 189966, slot = L['plate']}), -- Singing Metal Wristbands
         Transmog({item = 190055, slot = L['offhand']}) -- Coalescing Energy Implement
@@ -463,6 +466,8 @@ map.nodes[64054975] = Rare({
     rlabel = ns.status.LightBlue('+10 ' .. L['rep']),
     rewards = {
         Achievement({id = 15391, criteria = 52976}), -- Adventurer of Zereth Mortis
+        Transmog({item = 189918, slot = L['leather']}), -- Fleeting Broker's Strides
+        Transmog({item = 189964, slot = L['plate']}), -- Multi-Faceted Belt
         Transmog({item = 190052, slot = L['dagger']}), -- Xy'rath's Letter Opener
         Transmog({item = 190007, slot = L['1h_sword']}), -- Xy'rath's Signature Saber
         Toy({item = 190238}) -- Xy'rath's Booby-Trapped Cache
@@ -657,7 +662,7 @@ map.nodes[60593053] = Treasure({
     }
 }) -- Mawsworn Cache
 
-map.nodes[53557223] = Treasure({
+map.nodes[53667261] = Treasure({
     quest = 65522,
     note = L['mistaken_ovoid_note'] .. '\n\n' .. L['schematic_treasure_note'],
     rewards = {
@@ -822,6 +827,8 @@ cata.nodes[49243441] = Class('Foliage', Treasure,
 
 -------------------------------------------------------------------------------
 
+-- ephe.nodes[23963780] = Treasure({label = 'High Value Cache'})
+
 map.nodes[42025181] = Treasure({
     quest = 65183,
     requires = ns.requirement.Item(188231),
@@ -850,6 +857,27 @@ map.nodes[53402570] = Treasure({
     pois = {POI({41903400, 50304120, 52804580, 53402570, 64366347})}
 }) -- Pulp-Covered Relic
 
+gpose.nodes[30776440] = Treasure({
+    quest = 65532,
+    label = '{npc:185261}',
+    parent = map.id,
+    note = L['requisites_originator_note'] .. '\n\n' ..
+        ns.color.Orange(L['repertory_alcove_note']),
+    pois = {POI({49613091})} -- Repertory Alcove Arrangement
+}) -- Requisites Originator
+
+map.nodes[42934005] = Treasure({
+    quest = 65567,
+    label = L['rondure_cache'],
+    note = L['rondure_cache_note'] .. '\n\n' ..
+        ns.color.Orange(L['rondure_alcove_note']),
+    rewards = {
+        Achievement({id = 15508, criteria = 53293}), -- Fashion of the First Ones
+        Item({item = 190096, quest = 65534}) -- Pocobold
+    },
+    pois = {POI({50452759})} -- Rondure Alcove Arrangement
+}) -- Rondure Cache
+
 map.nodes[60022583] = Treasure({
     quest = 65611,
     icon = 'chest_yw',
@@ -861,6 +889,41 @@ map.nodes[60022583] = Treasure({
     },
     pois = {POI({60863786, 61401763, 63182603, 65972694})}
 }) -- Sandworn Chest
+
+map.nodes[44393666] = Treasure({
+    quest = {
+        65494, -- Lumpy Sand Pile
+        65495, -- Glinting Sand Pile
+        65496, -- Shifting Sand Pile
+        65497, -- Humming Sand Pile
+        65498, -- Misshapen Sand Pile
+        65499, -- Sparkling Sand Pile
+        65500 -- Ticking Sand Pile
+    },
+    questCount = true,
+    requires = ns.requirement.Item(189863), -- Spatial Opener
+    label = L['sand_piles'],
+    note = L['sand_piles_note'] .. '\n' ..
+        ns.color.Orange(L['dormant_alcove_note']),
+    rewards = {
+        Achievement({
+            id = 15502,
+            criteria = {53258, 53259, 53260, 53261, 53262, 53263, 53265}
+        }) -- Sand, Sand Everywhere!
+    },
+    pois = {POI({51033248})} -- Dormant Alcove Arrangement
+}) -- Sand Piles
+
+map.nodes[46893964] = Treasure({
+    quest = 65643,
+    label = L['torn_ethereal_drape'],
+    note = L['torn_ethereal_drape_note'] .. '\n\n' ..
+        ns.color.Orange(L['fulgore_alcove_note']),
+    rewards = {
+        Transmog({item = 188054, slot = L['cloak']}) -- Antecedent Drape
+    },
+    pois = {POI({47853037})} -- Fulgore Alcove Arrangement
+}) -- Torn Ethereal Drape
 
 -------------------------------------------------------------------------------
 -------------------------------- PUZZLE CACHES --------------------------------
@@ -898,6 +961,7 @@ map.nodes[63103738] = Puzzle({quest = 65093, label = L['cache_fugueal']})
 map.nodes[33785427] = Puzzle({quest = 65321, label = L['cache_glissandian']})
 map.nodes[39937284] = Puzzle({quest = 65321, label = L['cache_glissandian']})
 map.nodes[41843130] = Puzzle({quest = 65092, label = L['cache_glissandian']})
+map.nodes[44093743] = Puzzle({quest = 65092, label = L['cache_glissandian']})
 map.nodes[44635053] = Puzzle({quest = 65321, label = L['cache_glissandian']})
 map.nodes[45069412] = Puzzle({quest = 65316, label = L['cache_glissandian']})
 map.nodes[51282573] = Puzzle({quest = 65412, label = L['cache_glissandian']}) -- 65418
@@ -945,12 +1009,6 @@ local AVIAN_NEST = Cache({label = L['cache_avian_nest']})
 local CYPHER_BOUND = Cache({label = L['cache_cypher_bound']})
 local DISCARDED_AUTOMA = Cache({label = L['cache_discarded_automa']})
 local FORGOTTEN_VAULT = Cache({label = L['cache_forgotten_vault']})
-local MAWSWORN_SUPPLY = Cache({
-    label = L['cache_mawsworn_supply'],
-    rewards = {
-        Mount({item = 190766, id = 1585}) -- Spectral Mawrat's Tail
-    }
-})
 local TARACHNID_EGGS = Cache({label = L['cache_tarachnid_eggs']})
 
 map.nodes[35495205] = AVIAN_NEST
@@ -1054,14 +1112,6 @@ map.nodes[69083683] = FORGOTTEN_VAULT
 map.nodes[75766263] = FORGOTTEN_VAULT
 map.nodes[78215435] = FORGOTTEN_VAULT
 
-map.nodes[45820524] = MAWSWORN_SUPPLY
-map.nodes[47394352] = MAWSWORN_SUPPLY
-map.nodes[57562297] = MAWSWORN_SUPPLY
-map.nodes[58444036] = MAWSWORN_SUPPLY
-map.nodes[59841661] = MAWSWORN_SUPPLY
-map.nodes[60963061] = MAWSWORN_SUPPLY
-map.nodes[62952498] = MAWSWORN_SUPPLY
-
 map.nodes[54253357] = TARACHNID_EGGS
 map.nodes[55263288] = TARACHNID_EGGS
 
@@ -1071,6 +1121,84 @@ microd.nodes[62764399] = Cache({
     label = L['cache_cypher_bound'],
     parent = map.id
 })
+
+-------------------------------------------------------------------------------
+--------------------------- SHROUDED CYPHER CACHES ----------------------------
+-------------------------------------------------------------------------------
+
+-- https://www.wowhead.com/search?q=Shrouded+Cypher+Cache
+
+local Shrouded = Class('ShroudedCypherCache', ns.node.Node, {
+    group = ns.groups.SHROUDED_CYPHER,
+    icon = 'chest_pp',
+    label = L['cache_shrouded_cypher'],
+    note = L['cache_shrouded_cypher_note'],
+    rewards = {
+        Item({item = 189983, quest = 65513, covenant = NIGHTFAE}) -- Gromit Soul
+    }
+})
+
+map.nodes[29404950] = Shrouded()
+map.nodes[34107050] = Shrouded()
+map.nodes[51008300] = Shrouded()
+map.nodes[61006950] = Shrouded()
+map.nodes[36304810] = Shrouded()
+map.nodes[40306270] = Shrouded()
+map.nodes[43908420] = Shrouded()
+map.nodes[54507780] = Shrouded()
+map.nodes[42805280] = Shrouded()
+map.nodes[44507150] = Shrouded()
+map.nodes[53009230] = Shrouded()
+map.nodes[57406500] = Shrouded()
+map.nodes[54204980] = Shrouded()
+map.nodes[56203400] = Shrouded()
+map.nodes[63704120] = Shrouded()
+map.nodes[66502520] = Shrouded()
+map.nodes[41903410] = Shrouded()
+map.nodes[50700460] = Shrouded()
+map.nodes[52706080] = Shrouded()
+map.nodes[59803350] = Shrouded()
+map.nodes[62005730] = Shrouded()
+map.nodes[49003050] = Shrouded()
+map.nodes[61201550] = Shrouded()
+map.nodes[62204630] = Shrouded()
+map.nodes[69503450] = Shrouded()
+
+-------------------------------------------------------------------------------
+--------------------------- MAWSWORN SUPPLY CACHES ----------------------------
+-------------------------------------------------------------------------------
+
+local Mawsworn = Class('MawsornCache', ns.node.Node, {
+    label = L['cache_mawsworn_supply'],
+    group = ns.groups.MAWSWORN_SUPPLY_CACHE,
+    icon = 'chest_bk',
+    rewards = {
+        Mount({item = 190766, id = 1585}) -- Spectral Mawrat's Tail
+    }
+})
+
+map.nodes[45504650] = Mawsworn()
+map.nodes[45820524] = Mawsworn()
+map.nodes[46002430] = Mawsworn()
+map.nodes[46702680] = Mawsworn()
+map.nodes[46801240] = Mawsworn()
+map.nodes[47394352] = Mawsworn()
+map.nodes[47800150] = Mawsworn()
+map.nodes[48104820] = Mawsworn()
+map.nodes[48804250] = Mawsworn()
+map.nodes[50104460] = Mawsworn()
+map.nodes[50801000] = Mawsworn()
+map.nodes[50805050] = Mawsworn()
+map.nodes[51700820] = Mawsworn()
+map.nodes[57562297] = Mawsworn()
+map.nodes[58444036] = Mawsworn()
+map.nodes[59503140] = Mawsworn()
+map.nodes[59841661] = Mawsworn()
+map.nodes[60203240] = Mawsworn()
+map.nodes[60963061] = Mawsworn()
+map.nodes[62952498] = Mawsworn()
+map.nodes[63302100] = Mawsworn()
+map.nodes[67602960] = Mawsworn()
 
 -------------------------------------------------------------------------------
 ----------------------------- PROTOFORM SCHEMATICS ----------------------------
@@ -1114,12 +1242,13 @@ map.nodes[53777246] = PetSchematic({
     note = L['in_cave'] .. '\n\n' .. L['schematic_treasure_pet_note']
 }) -- Multichicken
 
--- Waiting for access to the Rondure Alcove on live, which I could not access on PTR
--- map.nodes[] = PetSchematic({
---     id = 189440,
---     quest = 65348,
---     note = L['schematic_omnipotential_core_note']
--- }) -- Omnipotential Core
+map.nodes[42764060] = PetSchematic({
+    id = 189440,
+    quest = 65348,
+    note = L['schematic_omnipotential_core_note'] .. '\n\n' ..
+        ns.color.Orange(L['rondure_alcove_note']),
+    pois = {POI({50452759})} -- Rondure Alcove Arrangement
+}) -- Omnipotential Core
 
 map.nodes[52237533] = PetSchematic({
     id = 189442,
@@ -1211,11 +1340,14 @@ map.nodes[52804580] = MountSchematic({
     pois = {POI({41903400, 50304120, 52804580, 53402570, 64366347})}
 }) -- Buzz
 
--- map.nodes[] = MountSchematic({
---     id = 189476,
---     quest = 65399,
---     note = L['schematic_curious_crystalsniffer_note']
--- }) -- Curious Crystalsniffer
+local CURIOUS = MountSchematic({
+    id = 189476,
+    quest = 65399,
+    note = L['schematic_curious_crystalsniffer_note']
+}) -- Curious Crystalsniffer
+
+map.nodes[86215337] = CURIOUS
+ephe.nodes[63005200] = CURIOUS
 
 map.nodes[64223562] = MountSchematic({
     id = 189477,
@@ -1267,24 +1399,24 @@ map.nodes[53166386] = MountSchematic({
     note = L['in_cave'] .. ' ' .. L['schematic_heartbond_lupine_note']
 }) -- Heartbond Lupine
 
--- map.nodes[] = MountSchematic({
---     id = 189467,
---     quest = 65390,
---     note = L['schematic_ineffable_skitterer_note']
--- }) -- Ineffable Skitterer
+map.nodes[34974875] = MountSchematic({
+    id = 189467,
+    quest = 65390,
+    note = L['schematic_ineffable_skitterer_note']
+}) -- Ineffable Skitterer
 
 -- Wowhead claims this drops from Dune Dominance, need more confirmation
--- map.nodes[] = MountSchematic({
---     id = 189459,
---     quest = 65382,
---     note = L['schematic_mawdapted_raptora_note']
--- }) -- Mawdapted Raptora
-
-map.nodes[33754950] = MountSchematic({
-    id = 189455,
-    quest = 65375,
-    note = L['schematic_pale_regal_cervid_note']
-}) -- Pale Regal Cervid
+map.nodes[61342626] = MountSchematic({
+    id = 189459,
+    quest = 65382,
+    note = L['schematic_mawdapted_raptora_note'],
+    pois = {
+        POI({64152084}), Path({60812242, 61572342}),
+        Path({61732080, 61461947, 60941839}),
+        Path({64442377, 64882451, 65132565, 65022679, 64812747}),
+        Path({61342626, 61472708, 61902798, 62542853, 63312870, 63852858})
+    }
+}) -- Mawdapted Raptora
 
 map.nodes[66966942] = MountSchematic({
     id = 189469,
@@ -1330,12 +1462,14 @@ map.nodes[63032149] = MountSchematic({
     note = L['schematic_tarachnid_creeper_note']
 }) -- Tarachnid Creeper
 
--- Waiting for access to the Camber Alcove room
--- map.nodes[] = MountSchematic({
---     id = 189463,
---     quest = 65386,
---     note = L['schematic_prototype_fleetpod_note']
--- }) -- Unsuccessful Prototype Fleetpod
+gpose.nodes[49707196] = MountSchematic({
+    id = 189463,
+    quest = 65386,
+    parent = map.id,
+    note = L['schematic_prototype_fleetpod_note'] .. '\n\n' ..
+        ns.color.Orange(L['camber_alcove_note']),
+    pois = {POI({47683448})} -- Camber Alcove Arrangement
+}) -- Unsuccessful Prototype Fleetpod
 
 map.nodes[50312704] = MountSchematic({
     id = 189472,
@@ -1387,13 +1521,13 @@ local Jiro = Class('Jiro', ns.node.NPC, {
 })
 
 local Creatii = Class('Creatii', Jiro,
-    {spellID = 361831, icon = 'peg_gn', fgroup = 'creatii'})
+    {spellID = 361831, icon = 'peg_bl', fgroup = 'creatii'})
 
 local Genesii = Class('Genesii', Jiro,
-    {spellID = 362022, icon = 'peg_bl', fgroup = 'genesii'})
+    {spellID = 362022, icon = 'peg_rd', fgroup = 'genesii'})
 
 local Nascii_ = Class('Nascii', Jiro,
-    {spellID = 362023, icon = 'peg_rd', fgroup = 'nascii'})
+    {spellID = 362023, icon = 'peg_gn', fgroup = 'nascii'})
 
 local CREATIAN_SW = ns.requirement.GarrisonTalentRank(1976, 1)
 local CREATIAN_SE = ns.requirement.GarrisonTalentRank(1976, 2)
@@ -1746,3 +1880,53 @@ function Bufonid.getters:note()
 end
 
 map.nodes[34506548] = Bufonid()
+
+-------------------------------------------------------------------------------
+--------------------------------- SOULSHAPES ----------------------------------
+-------------------------------------------------------------------------------
+
+local Soulshape = Class('Soulshape', Collectible, {
+    IsEnabled = function(self)
+        if C_Covenants.GetActiveCovenantID() ~= NIGHTFAE.id then
+            return false
+        end
+        return Collectible.IsEnabled(self)
+    end
+})
+
+-------------------------------------------------------------------------------
+
+map.nodes[38207180] = Soulshape({
+    id = 185452,
+    icon = 136071,
+    covenant = NIGHTFAE,
+    note = L['multiple_spawns'],
+    rewards = {
+        Item({item = 189988, quest = 65516, covenant = NIGHTFAE}) -- Sheep Soul
+    },
+    pois = {
+        POI({
+            30606720, 37003420, 37607720, 38408060, 43807980, 49808000, 58407500
+        })
+    }
+}) -- Sheep Soul
+
+map.nodes[34407140] = Soulshape({
+    id = 185279,
+    icon = 655866,
+    covenant = NIGHTFAE,
+    note = L['soulshape_penguin_note'],
+    rewards = {
+        Item({item = 189989, quest = 65517, covenant = NIGHTFAE}) -- Penguin Soul
+    }
+}) -- Penguin Soul
+
+map.nodes[63206050] = Soulshape({
+    label = L['lost_comb'],
+    icon = 2027853,
+    covenant = NIGHTFAE,
+    note = L['schematic_desertwing_hunter_note'],
+    rewards = {
+        Item({item = 189990, quest = 65518, covenant = NIGHTFAE}) -- Bee Soul
+    }
+}) -- Bee Soul

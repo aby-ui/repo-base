@@ -112,7 +112,6 @@ module:RegisterDebuff(TIER, INSTANCE, 0, 325725) -- 寰宇操控
 module:RegisterDebuff(TIER, INSTANCE, 0, 328987) -- 狂热
 module:RegisterDebuff(TIER, INSTANCE, 0, 334496) -- 催眠光粉
 module:RegisterDebuff(TIER, INSTANCE, 0, 339978) -- 安抚迷雾
-module:RegisterDebuff(TIER, INSTANCE, 0, 323692) -- 奥术易伤
 module:RegisterDebuff(TIER, INSTANCE, 0, 333250) -- 放血之击
 module:RegisterDebuff(TIER, INSTANCE, 0, 322746) -- 堕落之血
 module:RegisterDebuff(TIER, INSTANCE, 0, 330434) -- 电锯
@@ -121,6 +120,7 @@ module:RegisterDebuff(TIER, INSTANCE, 0, 331847) -- W-00F
 module:RegisterDebuff(TIER, INSTANCE, 0, 327649) -- 粉碎灵魂
 module:RegisterDebuff(TIER, INSTANCE, 0, 331379) -- 润滑剂
 module:RegisterDebuff(TIER, INSTANCE, 0, 332678) -- 龟裂创伤
+module:RegisterDebuff(TIER, INSTANCE, 0, 323692) -- 奥术易伤
 module:RegisterDebuff(TIER, INSTANCE, 0, 323687) -- 奥数闪电
 module:RegisterDebuff(TIER, INSTANCE, 0, 334535) -- 啄裂
 

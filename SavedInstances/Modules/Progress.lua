@@ -419,6 +419,7 @@ Module.TrackedQuest = {
     name = L["Patterns Within Patterns"],
     weekly = true,
     quest = 66042,
+    resetFunc = KeepProgress,
     relatedQuest = {66042},
   },
 }

@@ -5,8 +5,8 @@
 -- 2012/1/14
 ------------------------------------------------------------
 
-local ConvertToParty = ConvertToParty
-local ConvertToRaid = ConvertToRaid
+local ConvertToParty = C_PartyInfo.ConvertToParty
+local ConvertToRaid = C_PartyInfo.ConvertToRaid
 local SetEveryoneIsAssistant = SetEveryoneIsAssistant
 local IsEveryoneAssistant = IsEveryoneAssistant
 local RegisterStateDriver = RegisterStateDriver
@@ -60,7 +60,11 @@ function button:OnClick()
 end
 
 button:SetAttribute("_onstate-groupstate", [[
-	--if newstate == 0 then self:Disable() else self:Enable() end
+	if newstate == 0 then
+		self:Disable()
+	else
+		self:Enable()
+	end
 	self:CallMethod("UpdateGroup", newstate)
 ]])
 
@@ -89,7 +93,11 @@ button:SetScript("OnShow", function(self)
 end)
 
 button:SetAttribute("_onstate-inraid", [[
-	--if newstate == 1 then self:Enable() else self:Disable() end
+	if newstate == 1 then
+		self:Enable()
+	else
+		self:Disable()
+	end
 ]])
 
 RegisterStateDriver(button, "inraid", "[group: raid] 1; 0")
@@ -108,7 +116,11 @@ local function CreateGroupToolButton(text, func)
 	button.OnClick = GroupToolButton_OnClick
 
 	button:SetAttribute("_onstate-ingroup", [[
-		--if newstate == 1 then self:Enable() else self:Disable() end
+		if newstate == 1 then
+			self:Enable()
+		else
+			self:Disable()
+		end
 	]])
 
 	RegisterStateDriver(button, "ingroup", "[group] 1; 0")

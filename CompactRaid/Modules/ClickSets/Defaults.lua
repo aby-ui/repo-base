@@ -83,6 +83,7 @@ module.DEFAULT_SPELLS = {
 		6940, -- Hand of Sacrifice
 		212056, -- Absolution
 		85222, -- Light of Dawn
+		210256, -- Blessing of Sanctuary
 	},
 
 	WARRIOR = {
@@ -246,7 +247,6 @@ end
 local defaultdb = {}
 
 local temp = CLASS_DEFAULTS[CLASS]
-local key, value
 for key, value in pairs(temp) do
 	--if value == "emergent" then
 	--	defaultdb[key] = "buildin:emergent"

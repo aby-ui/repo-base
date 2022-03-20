@@ -21,7 +21,6 @@ local TOMTOM_ARROW_ADDONS = {
 local arrowFilePath
 
 do
-	local name, path
 	for name, path in pairs(TOMTOM_ARROW_ADDONS) do
 		if not arrowFilePath and select(2, GetAddOnInfo(name)) then
 			arrowFilePath = "Interface\\AddOns\\"..name..path
@@ -119,7 +118,7 @@ local function CalcGradientColor(direction)
 
 	local perc = diff / 180
 
-	local r, g = 1, 0
+	local r, g
 	if perc >= 0.5 then
 		r, g = 1, (1.0 - perc) * 2
 	else

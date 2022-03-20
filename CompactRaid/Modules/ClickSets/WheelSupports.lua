@@ -37,7 +37,6 @@ function module:DecodeWheelButton(modifier, id)
 	end
 
 	local index
-	local i, value
 	for i, value in ipairs(module.BINDING_MODIFIERS) do
 		if value == modifier then
 			index = i
@@ -106,7 +105,6 @@ function module:HasWheelBinds()
 		return
 	end
 
-	local modifier
 	for _, modifier in ipairs(self.BINDING_MODIFIERS) do
 		if talentdb[modifier..WHEEL_UP_START] or talentdb[modifier..WHEEL_DOWN_MAP] then
 			return 1

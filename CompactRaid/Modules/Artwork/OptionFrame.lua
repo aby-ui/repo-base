@@ -45,7 +45,7 @@ list:SetPoint("TOPLEFT", 5, -7)
 list:SetPoint("BOTTOMRIGHT", -7, 7)
 
 function list:OnButtonCreated(button)
-	local frame = CreateFrameAby("Frame", nil, button)
+	local frame = CreateFrame("Frame", nil, button)
 	button.frame = frame
 	frame:SetSize(180, 45)
 	frame:SetScale(0.4)
@@ -127,18 +127,16 @@ function tabFrame:OnTabSelected(id, category)
 	list:Clear()
 
 	local lib = module.library
-	local id = AddElement(category, 0, DEFAULT, CompactRaid:GetDefaultMedia(category))
+	id = AddElement(category, 0, DEFAULT, CompactRaid:GetDefaultMedia(category))
 
 	if lib and type(lib.List) == "function" and type(lib.Fetch) == "function" then
 		local mt = lib:List(category)
-		local key, file
 		for _, key in ipairs(mt) do
 			local file = lib:Fetch(category, key)
 			id = AddElement(category, id, key, file)
 		end
 	elseif lib and type(lib.registry) == "table" then
 		local temp = {}
-		local data
 		for _, data in ipairs(lib.registry) do
 			if data[1] == category then
 				local key, file = data[2], data[3]

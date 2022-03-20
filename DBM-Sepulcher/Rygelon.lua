@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2467, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220315121728")
+mod:SetRevision("20220319024345")
 mod:SetCreatureID(182777)
 mod:SetEncounterID(2549)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -126,7 +126,7 @@ function mod:OnCombatStart(delay)
 	timerDarkEclipseCD:Start(6.2, 1)
 	timerCelestialCollapseCD:Start(8.4, 1)
 --	timerCelestialTerminatorCD:Start(1, 1)--not in combat log, do later
-	timerMassiveBangCD:Start(60, 1)
+	timerMassiveBangCD:Start(self:IsMythic() and 65 or 60, 1)
 	if self:IsHard() then
 		timerManifestCosmosCD:Start(15.7, 1)
 		if self:IsMythic() then

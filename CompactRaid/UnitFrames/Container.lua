@@ -53,7 +53,7 @@ container:SetFrameStrata("BACKGROUND")
 
 local backdrop = { bgFile = addon:GetMedia("background"), edgeFile = addon:GetMedia("border"), edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 } }
 
-local containerBorder = CreateFrameAby("Frame", container:GetName().."Border", container)
+local containerBorder = CreateFrame("Frame", container:GetName().."Border", container, "BackdropTemplate")
 containerBorder:SetBackdrop(backdrop)
 containerBorder:SetFrameStrata("BACKGROUND")
 containerBorder:SetPoint("TOPLEFT", -12, 12)

@@ -48,7 +48,6 @@ local function CallOfficalAPI(func, unit, aura, filter)
 		return Call(func, unit, aura, filter, playerOnly)
 	end
 
-	local i
 	for i = 1, 40 do
 		local name, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20 = Call(func, unit, i, filter, playerOnly)
 		if not name then
@@ -93,7 +92,6 @@ end
 local CONTINENT_IDS = { 12, 13, 101, 113, 424, 572, 619, 876 }
 function lib.GetMapContinents()
 	local result = {}
-	local _, id
 	for _, id in ipairs(CONTINENT_IDS) do
 		local info = C_Map.GetMapInfo(id)
 		if info then

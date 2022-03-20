@@ -26,15 +26,15 @@ local auraGroups = _G["LibBuffGroups-1.0"]
 
 local function FindAura(unit, aura, selfcast, lacks, similar)
 	local filter = selfcast and "PLAYER" or ""
-	local name, icon, count, dispelType, duration, expires, caster, harmful
+	local name, icon, count, _, duration, expires, _, harmful
 
 	if similar then
-		name, icon, count, dispelType, duration, expires, caster, harmful = auraGroups:UnitAura(unit, aura)
+		name, icon, count, _, duration, expires, _, harmful = auraGroups:UnitAura(unit, aura)
 	else
-		name, icon, count, dispelType, duration, expires = UnitBuff(unit, aura, filter)
+		name, icon, count, _, duration, expires = UnitBuff(unit, aura, filter)
 		if not name then
 			harmful = 1
-			name, icon, count, dispelType, duration, expires = UnitDebuff(unit, aura, filter)
+			name, icon, count, _, duration, expires = UnitDebuff(unit, aura, filter)
 		end
 	end
 
@@ -220,7 +220,6 @@ local function Indicator_UpdateOffset(self)
 end
 
 local function Frame_UpdateAura(self)
-	local _, indicator
 	for _, indicator in pairs(self.cornerIndicators) do
 		Indicator_UpdateAura(indicator)
 	end
@@ -255,7 +254,6 @@ end
 function module:OnCreateVisual(visual, unitFrame, dynamic)
 	visual:SetAllPoints(unitFrame)
 	visual.cornerIndicators = {}
-	local _, key
 	for _, key in ipairs(module.INDICATOR_KEYS) do
 		local indicator = module:CreateIndicator(visual, key)
 		visual.cornerIndicators[key] = indicator
@@ -344,7 +342,6 @@ function module:UpdateIndicator(indicator, style, aura, scale, offset)
 end
 
 function module:UpdateAllIndicators(key, style, aura, scale, offset)
-	local _, indicator
 	for _, indicator in ipairs(self.indicators) do
 		if not key or indicator.key == key then
 			self:UpdateIndicator(indicator, style, aura, scale, offset)

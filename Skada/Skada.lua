@@ -1514,7 +1514,6 @@ local tentativehandle = nil
 
 function Skada:StartCombat()
 	-- Reset automatic stop on wipe variables
-    if DEBUG_MODE then pdebug() end
 	deathcounter = 0
 	local _, members = self:GetGroupTypeAndCount()
 
@@ -1772,7 +1771,7 @@ local function cleuHandler(timestamp, eventtype, hideCaster, srcGUID, srcName, s
 		if eventtype ~= 'SPELL_PERIODIC_DAMAGE' then
 			dst_is_interesting = band(dstFlags, RAID_FLAGS) ~= 0 or (band(dstFlags, PET_FLAGS) ~= 0 and pets[dstGUID]) or players[dstGUID]
 		end
-		if src_is_interesting or dst_is_interesting then
+		if (src_is_interesting or dst_is_interesting) and IsRaidInCombat() then --abyui add IsRaidInCombat to avoid boss died event.
 			-- Create a current set and set our "tentative" flag to true.
 			Skada.current = createSet(L["Current"])
 
@@ -1868,7 +1867,7 @@ local function cleuHandler(timestamp, eventtype, hideCaster, srcGUID, srcName, s
 				mod.func(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 
 				-- If our "tentative" flag is set and reached the treshold, this means combat really did start.
-				if tentative ~= nil then
+				if tentative ~= nil and tentativehandle ~= nil then --abyui add tentativehandle condition
 					tentative = tentative + 1
 					if tentative == 5 then
 						Skada:CancelTimer(tentativehandle)

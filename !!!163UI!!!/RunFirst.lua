@@ -38,6 +38,7 @@ f01:SetScript("OnEvent", function(self)
     --SetCVar("showQuestTrackingTooltips", 1) --9.0貌似没有这个了
     self:UnregisterAllEvents()
 end)
+SetCVar("predictedHealth", "1") --9.2 影响团队框架更新速度
 
 --- 全关插件然后再单独启用控制台时, 恢复之前的状态, 方便全关测试是否插件问题然后恢复
 local sum = 0 for i = 1, GetNumAddOns() do sum = sum + GetAddOnEnableState(U1PlayerName,i) end

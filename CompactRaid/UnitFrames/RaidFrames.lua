@@ -57,7 +57,6 @@ end
 
 local function Header_GetButtonCount(header)
 	local count = 0
-	local i
 	for i = 1, #header do
 		if header[i]:IsVisible() then
 			count = i
@@ -131,7 +130,6 @@ petGroup:SetAttribute("filterOnPet", 1)
 frame:SetFrameRef("petgroup", petGroup)
 
 -- 8 subgroups
-local i
 for i = 1, 8 do
 	local header = CreateGroupHeader(i, "CompactRaidGroupHeaderSubGroup"..i, 5, "SecureGroupHeaderTemplate", frame)
 	groupHeaders[i] = header
@@ -149,7 +147,6 @@ end
 
 local function GetSubGroupsMatrix()
 	local maxGroup, maxUnits = 0, 0
-	local i
 	for i = 1, 8 do
 		local units = Header_GetButtonCount(groupHeaders[i])
 		if units > 0 then
@@ -203,7 +200,6 @@ addon:RegisterOptionCallback("keepgroupstogether", function(value)
 	if value then
 		raidGroup:Hide()
 		frame:Show()
-		local i
 		for i = 1, 8 do
 			local header = groupHeaders[i]
 			ForceCreateButtons(header, 5)
@@ -261,7 +257,6 @@ addon:RegisterOptionCallback("raidFilter", function(value)
 end)
 
 local function UpdateUnitSize()
-	local header
 	for _, header in pairs(groupHeaders) do
 		ForceUpdateHeader(header)
 	end
@@ -272,7 +267,6 @@ addon:RegisterOptionCallback("height", UpdateUnitSize)
 
 local function UpdateLayout()
 	local horiz, spacing = addon:GetLayoutData()
-	local key, header
 	for key, header in pairs(groupHeaders) do
 		if horiz then
 			header:SetAttribute("columnAnchorPoint", "TOP")
@@ -287,14 +281,12 @@ local function UpdateLayout()
 		end
 
 		-- Fix a stupid bug for Blizzard, they forgot to call "ClearAllPoints" before calling "SetPoint", eh?
-		local i
 		for i = 1, #header do
 			header[i]:ClearAllPoints()
 		end
 		ForceUpdateHeader(header)
 	end
 
-	local i
 	for i = 2, 8 do
 		local header = groupHeaders[i]
 		header:ClearAllPoints()
@@ -324,7 +316,6 @@ addon:RegisterOptionCallback("grouphoriz", UpdateLayout)
 addon:RegisterOptionCallback("spacing", UpdateLayout)
 
 local function SetAllHeadersAttribute(name, value)
-	local _, header
 	for _, header in pairs(groupHeaders) do
 		header:SetAttribute(name, value)
 	end

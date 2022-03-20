@@ -39,7 +39,6 @@ end
 
 local NUM_BUTTONS = 8 + 1
 
-local i
 for i = 1, NUM_BUTTONS do
 	local button = menu:AddButton(i == NUM_BUTTONS and REMOVE_WORLD_MARKERS or _G["WORLD_MARKER"..i], "SecureActionButtonTemplate")
 	button:SetID(i)

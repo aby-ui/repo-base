@@ -189,6 +189,7 @@ function templates:CreateModulePage(module, page)
 
 		local enable = group:AddButton(L["enable module"], "enable", module.secure)
 		page.buttonEnable = enable
+        enable.text:SetWidth(80) enable.text:SetText(enable.text:GetText()) --trigger SetHitRectInsets
 		enable:ClearAllPoints()
 		enable:SetPoint("TOPLEFT", addon.optionFrame.rightPanel, "BOTTOMLEFT", 0, -5)
 		enable.tooltipText = format(L["enable module tooltip"], module.title)
@@ -196,6 +197,9 @@ function templates:CreateModulePage(module, page)
 		if module.spec then
 			local sync = group:AddButton(L["sync dual-talent settings"], "sync", module.secure)
 			page.buttonSync = sync
+            sync:ClearAllPoints()
+            sync:SetPoint("LEFT", enable, "RIGHT", 200, 0)
+            sync.text:SetWidth(120) sync.text:SetText(sync.text:GetText()) --trigger SetHitRectInsets
 			sync.tooltipText = format(L["sync dual-talent tooltip"], module.title)
 		end
 	end
@@ -207,7 +211,7 @@ function templates:CreateScrollFrame(name, parent, scrollRespondingFrame, create
 	frame.scrollBarFrame = _G[name.."ScrollBar"]
 	frame.scrollBarFrame:Hide()
 
-	local scrollBarBk = CreateFrameAby("Frame", nil, frame)
+	local scrollBarBk = CreateFrame("Frame", nil, frame, "BackdropTemplate")
 	scrollBarBk:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }})
 	scrollBarBk:SetBackdropBorderColor(0.75, 0.75, 0.75, 0.75)
 	scrollBarBk:SetPoint("TOPLEFT", _G[name.."ScrollBarScrollUpButton"], "TOPLEFT", -4, 4)
@@ -243,7 +247,7 @@ function templates:CreateScrollFrame(name, parent, scrollRespondingFrame, create
 	return frame, scrollChild
 end
 
-local editToolltip = CreateFrameAby("Button", "CompactRaidOptionPageTooltip", UIParent)
+local editToolltip = CreateFrame("Button", "CompactRaidOptionPageTooltip", UIParent, "BackdropTemplate")
 templates.editToolltip = editToolltip
 
 editToolltip:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 }, })
@@ -389,7 +393,6 @@ function templates:CreateScaleOffsetGroup(parent, disableInCombat, textColor)
 	end
 
 	frame.ClearFocus = function(self)
-		local editbox
 		for _, editbox in pairs(self.editboxes) do
 			editbox:ClearFocus()
 		end
@@ -453,7 +456,7 @@ local function SwatchFunc(restore)
 end
 
 function templates:CreateColorSwatch(name, parent)
-	local colorSwatch = CreateFrameAby("Button", name, parent)
+	local colorSwatch = CreateFrame("Button", name, parent, "BackdropTemplate")
 	colorSwatch[SWATCH_UNIQUE] = 1
 	colorSwatch:SetWidth(16)
 	colorSwatch:SetHeight(16)

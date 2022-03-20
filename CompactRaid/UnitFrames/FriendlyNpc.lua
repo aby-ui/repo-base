@@ -27,15 +27,15 @@ local anchors = {
 	raid = CompactRaidGroupHeaderPet,
 }
 
-local k, v
 for k, v in pairs(anchors) do
 	frame:SetFrameRef("anchor"..k, v)
 end
 
 frame.buttons = {}
 
-local i
-for i = 1, 5 do
+MAX_BOSS = 6
+
+for i = 1, MAX_BOSS do
 	local button = CreateFrame("Button", frame:GetName().."Button"..i, frame, "AbinCompactRaidUnitButtonTemplate")
 	button:Hide(i)
 	button:SetAttribute("unit", "boss"..i)
@@ -83,8 +83,7 @@ local function GetFriendlyNpcFramesMatrix()
 	end
 
 	local count
-	local i
-	for i = 1, 5 do
+	for i = 1, MAX_BOSS do
 		if frame.buttons[i]:IsShown() then
 			count = i
 		end
@@ -170,8 +169,7 @@ local function UpdateLayout()
 	frame:SetAttribute("horiz", horiz)
 	frame:SetAttribute("spacing", spacing)
 
-	local i
-	for i = 2, 5 do
+	for i = 2, MAX_BOSS do
 		local button = frame.buttons[i]
 		button:ClearAllPoints()
 		if horiz then
@@ -186,11 +184,10 @@ addon:RegisterOptionCallback("grouphoriz", UpdateLayout)
 addon:RegisterOptionCallback("spacing", UpdateLayout)
 
 addon:RegisterOptionCallback("showFriendlyNpc", function(value)
-	local i
-	for i = 1, 5 do
+	for i = 1, MAX_BOSS do
 		local button = frame.buttons[i]
 		if value then
-			RegisterStateDriver(button, "visibility", "[@boss"..i..", help] show; hide")
+			RegisterStateDriver(button, "visibility", "[@boss"..i..", exists] show; hide")
 		else
 			UnregisterStateDriver(button, "visibility")
 			button:Hide()
@@ -219,3 +216,10 @@ addon:RegisterOptionCallback("showPartyPets", function(value)
 		UpdateLayout()
 	end
 end)
+
+--abyui calls in LibAddonManager
+local originOnGroupChange = addon.OnGroupChange
+function addon:OnGroupChange(...)
+    if originOnGroupChange then originOnGroupChange(self, ...) end
+    UpdateLayout()
+end

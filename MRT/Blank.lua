@@ -193,4 +193,4 @@ end)
 SlashCmdList["covhelpSlash"] = function (arg)
 	SF_Show()
 end
-SLASH_covhelpSlash1 = "/covenanthelper"
+SLASH_covhelpSlash1 = "/covenanthelpermrt"
