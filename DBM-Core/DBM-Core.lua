@@ -66,7 +66,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220315103557"),
+	Revision = parseCurseDate("20220321092812"),
 }
 -- The string that is shown as version
 if isRetail then
@@ -7168,7 +7168,7 @@ function bossModPrototype:IsHealer(uId)
 	return role == "HEALER"
 end
 
-function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID, includeTarget)
+function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID, includeTarget, onlyS3)
 	if isName then--Passed combat log name, so pull unit ID
 		unit = DBM:GetRaidUnitId(unit)
 	end
@@ -7180,7 +7180,7 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID,
 	if boss then--Only checking one bossID as requested
 		--Check threat first
 		local tanking, status = UnitDetailedThreatSituation(unit, boss)
-		if tanking or (status == 3) then
+		if (not onlyS3 and tanking) or (status == 3) then
 			return true
 		end
 		--Non threat fallback
@@ -7199,7 +7199,7 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID,
 			if not bossGUID or (guid and guid == bossGUID) then
 				--Check threat first
 				local tanking, status = UnitDetailedThreatSituation(unit, unitID)
-				if tanking or (status == 3) then
+				if (not onlyS3 and tanking) or (status == 3) then
 					return true
 				end
 				--Non threat fallback
@@ -7221,7 +7221,7 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID,
 				if guid and guid == bossGUID then
 					--Check threat first
 					local tanking, status = UnitDetailedThreatSituation(unit, unitID)
-					if tanking or (status == 3) then
+					if (not onlyS3 and tanking) or (status == 3) then
 						return true
 					end
 					--Non threat fallback
@@ -8798,6 +8798,10 @@ do
 
 	function bossModPrototype:NewSpecialWarningYouPos(text, optionDefault, ...)
 		return newSpecialWarning(self, "youpos", text, nil, optionDefault, ...)
+	end
+
+	function bossModPrototype:NewSpecialWarningYouPosCount(text, optionDefault, ...)
+		return newSpecialWarning(self, "youposcount", text, nil, optionDefault, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarningSoakPos(text, optionDefault, ...)

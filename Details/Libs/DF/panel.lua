@@ -3972,6 +3972,10 @@ DF.TabContainerFunctions.SelectIndex = function (self, fixedParam, menuIndex)
 		mainFrame.AllButtons[menuIndex].selectedUnderlineGlow:Show()
 	end
 	mainFrame.CurrentIndex = menuIndex
+
+	if (mainFrame.hookList.OnSelectIndex) then
+		DF:QuickDispatch(mainFrame.hookList.OnSelectIndex, mainFrame, mainFrame.AllButtons[menuIndex])
+	end
 end
 
 DF.TabContainerFunctions.SetIndex = function (self, index)
@@ -3983,7 +3987,7 @@ local tab_container_on_show = function (self)
 	self.SelectIndex (self.AllButtons[index], nil, index)
 end
 
-function DF:CreateTabContainer (parent, title, frame_name, frameList, options_table)
+function DF:CreateTabContainer (parent, title, frame_name, frameList, options_table, hookList)
 	
 	local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
 	local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
@@ -4004,6 +4008,7 @@ function DF:CreateTabContainer (parent, title, frame_name, frameList, options_ta
 	local mainFrame = CreateFrame ("frame", frame_name, parent.widget or parent, "BackdropTemplate")
 	mainFrame:SetAllPoints()
 	DF:Mixin (mainFrame, DF.TabContainerFunctions)
+	mainFrame.hookList = hookList
 	
 	local mainTitle = DF:CreateLabel (mainFrame, title, 24, "white")
 	mainTitle:SetPoint ("topleft", mainFrame, "topleft", 10, -30 + y_offset)
@@ -4032,7 +4037,7 @@ function DF:CreateTabContainer (parent, title, frame_name, frameList, options_ta
 		local title = DF:CreateLabel (f, frame.title, 16, "silver")
 		title:SetPoint ("topleft", mainTitle, "bottomleft", 0, 0)
 		
-		local tabButton = DF:CreateButton (mainFrame, DF.TabContainerFunctions.SelectIndex, button_width, button_height, frame.title, i, nil, nil, nil, nil, false, button_tab_template)
+		local tabButton = DF:CreateButton (mainFrame, DF.TabContainerFunctions.SelectIndex, button_width, button_height, frame.title, i, nil, nil, nil, "$parentTabButton" .. frame.name, false, button_tab_template)
 		PixelUtil.SetSize (tabButton, button_width, button_height)
 		tabButton:SetFrameLevel (220)
 		tabButton.textsize = button_text_size

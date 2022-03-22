@@ -1,7 +1,7 @@
 ## Interface: 90200
 ## Title: BigDebuffs
 ## Notes: Increases the debuff size of crowd control effects on the Blizzard raid frames
-## Version: v10.7
+## Version: v10.9
 ## Author: Jordon
 ## DefaultState: Enabled
 ## SavedVariables: BigDebuffsDB

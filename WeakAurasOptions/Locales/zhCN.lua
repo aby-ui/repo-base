@@ -47,7 +47,6 @@ local L = WeakAuras.L
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"] = "|cFFffcc00文字样式：|r|cFFFF0000%s|r，阴影|c%s颜色|r、偏移量|cFFFF0000%s/%s|r%s%s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"] = "|cFFffcc00文字样式：|r|cFFFF0000%s|r，阴影|c%s颜色|r、偏移量|cFFFF0000%s/%s|r%s%s%s"
 	L["|cFFffcc00Format Options|r"] = "|cFFffcc00格式选项|r"
-	--[[Translation missing --]]
 	L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
 • |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
 |cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
@@ -56,15 +55,15 @@ local L = WeakAuras.L
 • |cffffff00Multi-target|r attempts to use the Combat Log events, rather than unitID, to track affected units.
 |cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
 
-|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=] ] = [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
-• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
-|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
-• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.
-• |cffffff00Smart Group|r adjusts to your current group type, matching just the "player" when solo, "party" units (including "player") in a party or "raid" units in a raid.
-• |cffffff00Multi-target|r attempts to use the Combat Log events, rather than unitID, to track affected units.
-|cffff0000Note|r: Without a direct relationship to actual unitIDs, results may vary.
+|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=] ] = [=[• |cff00ff00玩家|r，|cff00ff00目标|r，|cff00ff00焦点目标|r，和|cff00ff00宠物|r直接对应相应的单位ID。
+• |cff00ff00指定单位|r允许你提供一个有效的单位ID来监视。
+|cffff0000注意|r：游戏不会为所有有效的单位ID触发事件，使得其无法被这个触发器跟踪。
+• |cffffff00小队|r，|cffffff00团队|r，|cffffff00首领|r，|cffffff00竞技场|r，和|cffffff00姓名版|r可以匹配多个相应的单位ID。
+• |cffffff00智能队伍|r会根据你目前的组队情况调整，未组队时自动匹配"玩家"，在小队中时匹配"小队"（包括"玩家"），在团队中时匹配"团队"。
+• |cffffff00多目标|r会尝试使用战斗记录事件，而不是单位ID，来跟踪受影响的单位。
+|cffff0000注意|r：没有直接关系到单位ID，结果可能会多种多样。
 
-|cffffff00*|r Yellow Unit settings can match multiple units and will default to being active even while no affected units are found without a Unit Count or Match Count setting.]=]
+|cffffff00*|r黄色的单位设置可以匹配多个单位。在没有单位计数和匹配计数设置的情况下，即使没有受影响的单位，也会默认活跃。]=]
 	L["1 Match"] = "1个符合"
 	L["A 20x20 pixels icon"] = "20x20像素图标"
 	L["A 32x32 pixels icon"] = "32x32像素图标"
@@ -495,7 +494,7 @@ Supports multiple entries, separated by commas
 	L["Low Mana"] = "低法力值"
 	L["Magnetically Align"] = "磁力对齐"
 	L["Main"] = "主要的"
-	L["Match Count"] = "计数匹配"
+	L["Match Count"] = "匹配计数"
 	L["Matches the height setting of a horizontal bar or width for a vertical bar."] = "符合水平进度条的高度设置，或者垂直进度条的宽度设置。"
 	L["Max"] = "最大"
 	L["Max Length"] = "最大长度"

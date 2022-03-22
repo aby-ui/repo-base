@@ -70,7 +70,7 @@ function DF:LoadAllSpells (hashMap, indexTable, allSpellsSameName)
 
 	DF.LoadingAuraAlertFrame:Show()
 	
-	C_Timer.After (0.1, function()
+	C_Timer.After (0, function()
 		if (hashMap and not indexTable) then
 			for i = 1, CONST_MAX_SPELLS do
 				local spellName = GetSpellInfo (i)

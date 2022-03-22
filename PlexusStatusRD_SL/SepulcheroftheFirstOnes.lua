@@ -99,6 +99,8 @@ GridStatusRaidDebuff:DebuffId(zoneid, 360420, 908, 5, 5) -- Shatter Mind
 GridStatusRaidDebuff:DebuffId(zoneid, 362152, 909, 5, 5, false, true) -- Shadow Mastery
 GridStatusRaidDebuff:DebuffId(zoneid, 360148, 910, 5, 5, true) -- Bursting Dread
 GridStatusRaidDebuff:DebuffId(zoneid, 360241, 911, 5, 5, true) -- Unsettling Dreams
+GridStatusRaidDebuff:DebuffId(zoneid, 361502, 912, 9, 9, true) -- Unsettling Dreams
+
 
 -- Rygelon
 GridStatusRaidDebuff:BossNameId(zoneid, 1000, "Rygelon")

@@ -70,7 +70,7 @@ function Details:OpenForge()
             nopluginLabel:SetText (L["STRING_FORGE_ENABLEPLUGINS"])
         end
         
-        if (not Details:GetTutorialCVar ("FORGE_TUTORIAL")) then
+        if (not Details:GetTutorialCVar ("FORGE_TUTORIAL") and false) then
             local tutorialFrame = CreateFrame ("frame", "$parentTutorialFrame", f,"BackdropTemplate")
             tutorialFrame:SetPoint ("center", f, "center")
             tutorialFrame:SetFrameStrata ("DIALOG")

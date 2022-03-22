@@ -7,8 +7,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 9720
-		_detalhes.alpha_build_counter = 9720 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 9722
+		_detalhes.alpha_build_counter = 9722 --if this is higher than the regular counter, use it instead
 		_detalhes.bcc_counter = 31
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
@@ -425,8 +425,8 @@ do
 			_detalhes.playerdetailwindow_skins = {}
 
 		_detalhes.BitfieldSwapDebuffsIDs = {265646, 272407, 269691, 273401, 269131, 260900, 260926, 284995, 292826, 311367, 310567, 308996, 307832, 327414, 337253,
-											36797, 37122}
-		
+											36797, 37122, 362397}
+
 		--> auto run code
 		_detalhes.RunCodeTypes = {
 			{Name = "On Initialization", Desc = "Run code when Details! initialize or when a profile is changed.", Value = 1, ProfileKey = "on_init"},

@@ -246,12 +246,14 @@ function Details.OpenDetailsDeathRecap (segment, RecapID, fromChat)
         return
     end
 
+    --hide blizzard death recap
     DeathRecapFrame.Recap1:Hide()
     DeathRecapFrame.Recap2:Hide()
     DeathRecapFrame.Recap3:Hide()
     DeathRecapFrame.Recap4:Hide()
     DeathRecapFrame.Recap5:Hide()
-    
+
+    --create details death recap if not existant
     if (not Details.DeathRecap) then
         Details.DeathRecap = CreateFrame ("frame", "DetailsDeathRecap", DeathRecapFrame, "BackdropTemplate")
         Details.DeathRecap:SetAllPoints()
@@ -284,14 +286,14 @@ function Details.OpenDetailsDeathRecap (segment, RecapID, fromChat)
             tinsert (Details.DeathRecap.Segments, i, segmentButton)
         end
     end
-    
+
     for i = 1, 10 do
-        Details.DeathRecap.Lines [i]:Hide()
+        Details.DeathRecap.Lines[i]:Hide()
     end
 
     --segment to use
     local death = Details.tabela_vigente.last_events_tables
-    
+
     --see if this segment has a death for the player
     local foundPlayer = false
     for index = #death, 1, -1 do
@@ -313,7 +315,7 @@ function Details.OpenDetailsDeathRecap (segment, RecapID, fromChat)
             end
         end
     end
-    
+
     --segments
     if (Details.death_recap.show_segments) then
         local last_index = 0
@@ -593,7 +595,74 @@ function Details.OpenDetailsDeathRecap (segment, RecapID, fromChat)
 end
 
 hooksecurefunc (_G, "DeathRecap_LoadUI", function()
-	hooksecurefunc (_G, "DeathRecapFrame_OpenRecap", function (RecapID)
-		Details.OpenDetailsDeathRecap (nil, RecapID)
+	hooksecurefunc (_G, "DeathRecapFrame_OpenRecap", function(RecapID)
+        local currentCombat = Details:GetCurrentCombat()
+        --get the player current death and link the death table with the death recapID
+        local playerDeaths = currentCombat:GetPlayerDeaths(UnitName("player"))
+        if (playerDeaths) then
+            local latestDeath = playerDeaths[#playerDeaths]
+            if (latestDeath) then
+                latestDeath.RecapID = RecapID
+
+                --synchronize last events from Details! and Blizzard recap
+                local events = DeathRecap_GetEvents(recapID)
+                --death is event index 1 (the event that killed the player)
+                local evtData = events[1]
+
+                if (evtData) then
+                    --recap by blizzard
+                    local spellName = evtData.spellName
+                    local spellId = evtData.spellId
+                    local event = evtData.event
+                    local environmentalType = evtData.environmentalType
+                    local timeStamp = evtData.timestamp
+                    local amountDamage = evtData.amount
+                    local overkill = evtData.overkill
+                    local absorbed = evtData.absorbed
+                    local resisted = evtData.resisted
+                    local blocked = evtData.blocked
+                    local currentHp = evtData.currentHP
+                    local hideCaster = evtData.hideCaster
+                    local sourceName = evtData.sourceName
+                    local casterPrestige = evtData.casterPrestige
+                    local spellSchool = evtData.school
+
+                    --print("Killed by (Blizzard-Debug): ", spellName, "amount:", amountDamage)
+
+                    --recap by Details!
+                    local deathEventsDetails = latestDeath[1]
+                    for evIndex = #deathEventsDetails, 1, -1 do
+                        local ev = deathEventsDetails[evIndex]
+                        local evType = ev[1]
+                        local spellId = ev[2]
+                        local amount = ev[3]
+                        --is a damage? true boolean
+                        if (type(evType) == "boolean" and evType) then
+                            local spellName, _, spellIcon = Details.GetSpellInfo(spellId)
+                            if (spellName) then
+                                --print("Killed by (Details!-Debug): ", spellName, "amount:", amount)
+                            else
+                                --print("Killed by (Details!-Debug): spell not found")
+                            end
+                            break
+                        end
+                    end
+
+                    --Details:Msg("the message above are debugs of an Alpha version of Details!")
+
+                    local whatKilledThePlayer = 0
+                end
+            end
+        end
+
+		Details.OpenDetailsDeathRecap(nil, RecapID)
 	end)
 end)
+
+--[=[ hooks not loaded at this point
+Details:InstallHook(DETAILS_HOOK_DEATH, function(_, _, _, _, _, _, _, targetName)
+    if (targetName == UnitName("player")) then
+        
+    end
+end)
+--]=]

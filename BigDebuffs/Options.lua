@@ -374,6 +374,8 @@ function BigDebuffs:SetupOptions()
                             ["INNER"] = L["INNER"],
                             ["LEFT"] = L["LEFT"],
                             ["RIGHT"] = L["RIGHT"],
+                            ["TOP"] = L["TOP"],
+                            ["BOTTOM"] = L["BOTTOM"],
                         },
                         order = 11,
                     },

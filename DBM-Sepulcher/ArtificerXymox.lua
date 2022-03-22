@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2470, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220313224350")
+mod:SetRevision("20220320212528")
 mod:SetCreatureID(183501)
 mod:SetEncounterID(2553)
 mod:SetUsedIcons(1, 2, 3, 5, 6, 7, 8)
@@ -345,7 +345,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 363485 then
 		DBM:AddMsg("The Cartel Elite added to combat log, notify DBM authors")
 	elseif spellId == 365682 then
-		if self:IsTanking("player", nil, nil, nil, args.sourseGUID) then
+		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then
 			specWarnMassiveBlast:Show()
 			specWarnMassiveBlast:Play("defensive")
 		end

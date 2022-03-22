@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2467, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220319024345")
+mod:SetRevision("20220322043805")
 mod:SetCreatureID(182777)
 mod:SetEncounterID(2549)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -34,10 +34,11 @@ mod:RegisterEventsInCombat(
 (ability.id = 362806 or ability.id = 362275 or ability.id = 362390 or ability.id = 366379 or ability.id = 363533 or ability.id = 364114 or ability.id = 364386) and type = "begincast"
  or (ability.id = 363108 or ability.id = 363110) and type = "cast"
  or ability.id = 363773
- or ability.id = 362806 and type = "applydebuff"
+ or (ability.id = 361548 or ability.id = 362806) and type = "applydebuff"
  or ability.id = 362184 and type = "begincast"
 --]]
 --General
+local berserkTimer								= mod:NewBerserkTimer(600)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(362798, nil, nil, nil, 1, 8)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
@@ -68,7 +69,7 @@ local specWarnMassiveBangEscape					= mod:NewSpecialWarningMoveTo(363533, nil, n
 local timerDarkEclipseCD						= mod:NewCDCountTimer(11, 361548, nil, nil, nil, 3)
 local timerCelestialCollapseCD					= mod:NewCDCountTimer(20.6, 362275, nil, nil, nil, 5)
 local timerQuasarRadiation						= mod:NewBuffActiveTimer(21, 361548, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
-local timerManifestCosmosCD						= mod:NewCDCountTimer(24.2, 362390, nil, nil, nil, 1, nil, DBM_COMMON_L.HEROIC_ICON)
+local timerManifestCosmosCD						= mod:NewCDCountTimer(23.1, 362390, nil, nil, nil, 1, nil, DBM_COMMON_L.HEROIC_ICON)
 local timerStellarShroudCD						= mod:NewAITimer(28.8, 366379, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON .. DBM_COMMON_L.MYTHIC_ICON)
 local timerCorruptedStrikesCD					= mod:NewCDTimer(6, 362184, nil, "Tank", nil, 5, 2, DBM_COMMON_L.TANK_ICON)
 local timerCelestialTerminatorCD				= mod:NewCDCountTimer(28.8, 363108, nil, nil, nil, 3)
@@ -128,8 +129,9 @@ function mod:OnCombatStart(delay)
 --	timerCelestialTerminatorCD:Start(1, 1)--not in combat log, do later
 	timerMassiveBangCD:Start(self:IsMythic() and 65 or 60, 1)
 	if self:IsHard() then
-		timerManifestCosmosCD:Start(15.7, 1)
+		timerManifestCosmosCD:Start(self:IsMythic() and 20 or 15.7, 1)
 		if self:IsMythic() then
+			berserkTimer:Start(390)
 			timerStellarShroudCD:Start(1)
 			if self.Options.InfoFrame then
 				--On mythic it's slightly more elaborate and involves coordinating a bunch of people around the new mechanic
@@ -193,7 +195,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.coreCount = self.vb.coreCount + (self:IsMythic() and 3 or 1)
 		warnManifestCosmos:Show(self.vb.cosmosCount)
 		if self.vb.cosmosCount == 1 then
-			timerManifestCosmosCD:Start(nil, self.vb.cosmosCount+1)--24.2
+			timerManifestCosmosCD:Start(nil, self.vb.cosmosCount+1)--23.1
 		end
 	elseif spellId == 366379 then
 		self.vb.shroudCount = self.vb.shroudCount + 1
@@ -254,7 +256,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			yellDarkEclipse:Yell(icon, icon)
 			yellDarkEclipseFades:Countdown(spellId, nil, icon)
 		end
-		warnDarkEclipse:CombinedShow(0.5, args.destName)
+		warnDarkEclipse:CombinedShow(0.75, args.destName)
 		self.vb.eclipseIcon = self.vb.eclipseIcon + 1
 	elseif spellId == 362273 and args:IsPlayer() then
 		warnQuasarRadiation:Show(args.destName, args.amount or 1)
@@ -361,9 +363,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerDarkEclipseCD:Start(6, 1)
 		timerCelestialCollapseCD:Start(8.3, 1)
 --		timerCelestialTerminatorCD:Start(3, 1)
-		timerMassiveBangCD:Start(60.6, self.vb.bangCount+1)
+		timerMassiveBangCD:Start(self:IsMythic() and 65 or 60.6, self.vb.bangCount+1)
 		if self:IsHard() then
-			timerManifestCosmosCD:Start(15.6, 1)
+			timerManifestCosmosCD:Start(self:IsMythic() and 20 or 15.6, 1)
 			if self:IsMythic() then
 				timerStellarShroudCD:Start(3)
 			end

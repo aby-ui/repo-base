@@ -190,6 +190,7 @@ addon.Spells = {
     [323546] = { type = BUFF_OFFENSIVE }, -- Ravenous Frenzy (Venthyr Ability)
     [338142] = { type = BUFF_OFFENSIVE }, -- Lone Empowerment (Kyrian Ability)
     [327037] = { type = BUFF_DEFENSIVE }, -- Kindred Protection (Kyrian Ability)
+    [362486] = { type = IMMUNITY }, -- Keeper of the Grove
 
     -- Hunter
 
@@ -219,12 +220,14 @@ addon.Spells = {
     [209997] = { type = BUFF_DEFENSIVE }, -- Play Dead
     [212638] = { type = ROOT }, -- Tracker's Net
     [213691] = { type = CROWD_CONTROL }, -- Scatter Shot
+    [357021] = { type = CROWD_CONTROL }, -- Consecutive Concussion
     [260402] = { type = BUFF_OFFENSIVE }, -- Double Tap
     [266779] = { type = BUFF_OFFENSIVE }, -- Coordinated Assault
     [288613] = { type = BUFF_OFFENSIVE }, -- Trueshot
     [190925] = { type = ROOT }, -- Harpoon
     [202748] = { type = BUFF_DEFENSIVE }, -- Survival Tactics (PvP Talent)
     [248519] = { type = IMMUNITY_SPELL }, -- Interlope (BM PvP Talent)
+    [356727] = { type = CROWD_CONTROL }, -- Spider Venom of Chimaeral Sting (Hunter PvP Talent)
 
     -- Mage
 
@@ -303,6 +306,8 @@ addon.Spells = {
     [202248] = { type = IMMUNITY_SPELL }, -- Guided Meditation (Brew PvP Talent)
     [213664] = { type = BUFF_DEFENSIVE }, -- Nimble Brew (Brew PvP Talent)
     [132578] = { type = BUFF_DEFENSIVE }, -- Invoke Niuzao, the Black Ox
+    [344021] = { type = DEBUFF_OFFENSIVE }, -- Keefer's Skyreach
+    [353319] = { type = IMMUNITY_SPELL }, -- Peaceweaver
 
     -- Paladin
 
@@ -355,7 +360,7 @@ addon.Spells = {
     -- Priest
 
     [337661] = { type = BUFF_DEFENSIVE }, -- Translucent Image (Fade defensive Conduit)
-    [213602] = { type = BUFF_DEFENSIVE }, -- Greater Fade (Holy/Shadow PvP Talent)
+    [213602] = { type = IMMUNITY }, -- Greater Fade (Holy/Shadow PvP Talent)
     [605] = { type = CROWD_CONTROL, priority = true }, -- Mind Control
     [8122] = { type = CROWD_CONTROL }, -- Psychic Scream
     [9484] = { type = CROWD_CONTROL }, -- Shackle Undead
@@ -375,6 +380,7 @@ addon.Spells = {
     [197862] = { type = BUFF_DEFENSIVE }, -- Archangel (Disc PvP Talent)
     [197871] = { type = BUFF_OFFENSIVE }, -- Dark Archangel (Disc PvP Talent) - on the priest
         [197874] = { type = BUFF_OFFENSIVE, parent = 197871 }, -- Dark Archangel (Disc PvP Talent) - on others
+    [199890] = { type = ROOT }, -- Curse of Tongues
     [200183] = { type = BUFF_DEFENSIVE }, -- Apotheosis
     [200196] = { type = CROWD_CONTROL }, -- Holy Word: Chastise
         [200200] = { type = CROWD_CONTROL, parent = 200196 }, -- Holy Word: Chastise (Stun)
@@ -493,6 +499,8 @@ addon.Spells = {
     [192082] = { type = BUFF_SPEED_BOOST }, -- Windrush Totem
     [338036] = { type = BUFF_SPEED_BOOST }, -- Thunderous Paws (Conduit)
     [327164] = { type = BUFF_OFFENSIVE }, -- Primordial Wave (Necrolord Ability)
+    [207495] = { type = BUFF_DEFENSIVE }, -- Ancestral Protection (Totem)
+        [207498] = { type = BUFF_DEFENSIVE, parent = 207495 }, -- Ancestral Protection (Player)
 
     -- Warlock
 
@@ -602,10 +610,12 @@ addon.Spells = {
     [332505] = { type = BUFF_OTHER }, -- Soulsteel Clamps (Kyrian - Mikanikos Trait)
         [332506] = { type = BUFF_OTHER, parent = 332505 }, -- Soulsteel Clamps (Kyrian - Mikanikos Trait) - when moving
     [332423] = { type = CROWD_CONTROL }, -- Sparkling Driftglobe Core (Kyrian - Mikanikos Trait)
+    [354051] = { type = ROOT }, -- Nimble Steps
 
     -- Trinkets
     [356567] = { type = CROWD_CONTROL }, -- Shackles of Malediction
     [358259] = { type = CROWD_CONTROL }, -- Gladiator's Maledict
+    [362699] = { type = IMMUNITY_SPELL }, -- Gladiator's Resolve
 
     -- Legacy (may be deprecated)
 

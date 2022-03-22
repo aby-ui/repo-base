@@ -44,6 +44,7 @@ function Profile:OnInitialize()
                 packedPvp = true,
                 spamLengthEnabled = true,
                 spamLength = 20,
+                showClassLine  = true,
             },
             minimap = {
                 minimapPos = 192.68,
@@ -103,6 +104,7 @@ function Profile:OnEnable()
         'packedPvp',
         'spamLengthEnabled',
         'spamLength',
+        'showClassLine',
     }
 
     for _, key in ipairs(settings) do

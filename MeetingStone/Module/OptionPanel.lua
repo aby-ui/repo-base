@@ -78,6 +78,12 @@ function SettingPanel:OnInitialize()
                 width = 'full',
                 order = order(),
             },
+            showClassLine = {
+                type = 'toggle',
+                name = L['职责列表显示职业颜色条'],
+                width = 'full',
+                order = order(),
+            },
             -- ignore = {
             --     type = 'toggle',
             --     name = L['启用屏蔽列表增强'],

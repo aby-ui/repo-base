@@ -335,13 +335,11 @@ function _detalhes:LoadConfig()
 			if (not _detalhes_database.last_version or _detalhes_database.last_version ~= _detalhes.userversion) then
 				_detalhes.is_version_first_run = true
 			end
-			--_detalhes.is_version_first_run = true
-			--_detalhes_database.last_realversion = 126
 			
 	--> profile
-	
+
 		local unitname = UnitName ("player")
-	
+
 		--> fix for old versions
 		if (type (_detalhes.always_use_profile) == "string") then
 			_detalhes.always_use_profile = false
@@ -352,7 +350,7 @@ function _detalhes:LoadConfig()
 			_detalhes.always_use_profile = false
 			_detalhes.always_use_profile_name = ""
 		end
-		
+
 		--> check for "always use this profile"
 			if (_detalhes.always_use_profile and not _detalhes.always_use_profile_exception [unitname]) then
 				local profile_name = _detalhes.always_use_profile_name
@@ -360,11 +358,6 @@ function _detalhes:LoadConfig()
 					_detalhes_database.active_profile = profile_name
 				end
 			end
-		
-		--> old version
-		--	if (_detalhes.always_use_profile and type (_detalhes.always_use_profile) == "string") then
-		--		_detalhes_database.active_profile = _detalhes.always_use_profile
-		--	end
 
 		--> character first run
 			if (_detalhes_database.active_profile == "") then
@@ -382,60 +375,54 @@ function _detalhes:LoadConfig()
 
 		--> instances
 			_detalhes.tabela_instancias = _detalhes_database.tabela_instancias or {}
-			--so if the instances are loaded, the taint happen
-			--if I break the tabela_instancias the addon won't taint
-			--if true then return end --if I return here, the addon taints
 
 			--> fix for version 1.21.0
 			if (#_detalhes.tabela_instancias > 0) then --> only happens once after the character logon
-				--if (current_profile_name:find (UnitName ("player"))) then
-					for index, saved_skin in ipairs (profile.instances) do
-						local instance = _detalhes.tabela_instancias [index]
-						if (instance) then
-							saved_skin.__was_opened = instance.ativa
-							saved_skin.__pos = Details.CopyTable (instance.posicao)
-							saved_skin.__locked = instance.isLocked
-							saved_skin.__snap = Details.CopyTable (instance.snap)
-							saved_skin.__snapH = instance.horizontalSnap
-							saved_skin.__snapV = instance.verticalSnap
+				for index, saved_skin in ipairs (profile.instances) do
+					local instance = _detalhes.tabela_instancias [index]
+					if (instance) then
+						saved_skin.__was_opened = instance.ativa
+						saved_skin.__pos = Details.CopyTable (instance.posicao)
+						saved_skin.__locked = instance.isLocked
+						saved_skin.__snap = Details.CopyTable (instance.snap)
+						saved_skin.__snapH = instance.horizontalSnap
+						saved_skin.__snapV = instance.verticalSnap
 
-							for key, value in pairs (instance) do
-								if (_detalhes.instance_defaults [key] ~= nil) then
-									if (type (value) == "table") then
-										saved_skin [key] = Details.CopyTable (value)
-									else
-										saved_skin [key] = value
-									end
+						for key, value in pairs (instance) do
+							if (_detalhes.instance_defaults [key] ~= nil) then
+								if (type (value) == "table") then
+									saved_skin [key] = Details.CopyTable (value)
+								else
+									saved_skin [key] = value
 								end
 							end
 						end
 					end
+				end
 
-					for index, instance in _detalhes:ListInstances() do
-						_detalhes.local_instances_config [index] = {
-							pos = Details.CopyTable (instance.posicao),
-							is_open = instance.ativa,
-							attribute = instance.atributo,
-							sub_attribute = instance.sub_atributo,
-							mode = instance.modo or 2,
-							modo = instance.modo or 2,
-							segment = instance.segmento,
-							snap = Details.CopyTable (instance.snap),
-							horizontalSnap = instance.horizontalSnap,
-							verticalSnap = instance.verticalSnap,
-							sub_atributo_last = instance.sub_atributo_last,
-							isLocked = instance.isLocked
-						}
+				for index, instance in _detalhes:ListInstances() do
+					_detalhes.local_instances_config [index] = {
+						pos = Details.CopyTable (instance.posicao),
+						is_open = instance.ativa,
+						attribute = instance.atributo,
+						sub_attribute = instance.sub_atributo,
+						mode = instance.modo or 2,
+						modo = instance.modo or 2,
+						segment = instance.segmento,
+						snap = Details.CopyTable (instance.snap),
+						horizontalSnap = instance.horizontalSnap,
+						verticalSnap = instance.verticalSnap,
+						sub_atributo_last = instance.sub_atributo_last,
+						isLocked = instance.isLocked
+					}
 
-						if (_detalhes.local_instances_config [index].isLocked == nil) then
-							_detalhes.local_instances_config [index].isLocked = false
-						end
+					if (_detalhes.local_instances_config [index].isLocked == nil) then
+						_detalhes.local_instances_config [index].isLocked = false
 					end
-				--end
+				end
 
 				_detalhes.tabela_instancias = {}
 			end
-			--_detalhes:ReativarInstancias()
 
 		--> apply the profile
 			_detalhes:ApplyProfile (current_profile_name, true)

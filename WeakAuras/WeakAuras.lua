@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 50
+local internalVersion = 51
 
 -- Lua APIs
 local insert = table.insert
@@ -985,7 +985,7 @@ end
 
 local function CheckForPreviousEncounter()
   if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-    for i = 1, 5 do
+    for i = 1, 10 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid and db.CurrentEncounter.boss_guids [guid]) then
@@ -1255,7 +1255,7 @@ end
 local function StoreBossGUIDs()
   Private.StartProfileSystem("boss_guids")
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
-    for i = 1, 5 do
+    for i = 1, 10 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid) then
@@ -5021,21 +5021,13 @@ end
 
 local textSymbols = {
   ["{rt1}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
-  ["{rt2}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t",
-  ["{rt3}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t",
-  ["{rt4}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t",
-  ["{rt5}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t",
-  ["{rt6}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t",
-  ["{rt7}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t",
-  ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t",
-  ["{rt9}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:0:16:32:48|t",
-  ["{rt10}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:16:32:32:48|t",
-  ["{rt11}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:32:48:32:48|t",
-  ["{rt12}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:48:64:32:48|t",
-  ["{rt13}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:0:16:48:64|t",
-  ["{rt14}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:16:32:48:64|t",
-  ["{rt15}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:32:48:48:64|t",
-  ["{rt16}"]     = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcons.blp:0:0:0:0:64:64:48:64:48:64|t"
+  ["{rt2}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t ",
+  ["{rt3}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t ",
+  ["{rt4}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t ",
+  ["{rt5}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t ",
+  ["{rt6}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t ",
+  ["{rt7}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t ",
+  ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
 }
 
 function WeakAuras.ReplaceRaidMarkerSymbols(txt)
@@ -5088,6 +5080,13 @@ function Private.ReplaceLocalizedRaidMarkers(txt)
   end
 end
 
+-- WORKAROUND
+-- UnitPlayerControlled doesn't work if the target is "too" far away
+function Private.UnitPlayerControlledFixed(unit)
+  local guid = UnitGUID(unit)
+  return guid and guid:sub(1, 6) == "Player"
+end
+
 do
   local trackableUnits = {}
   trackableUnits["player"] = true
@@ -5106,7 +5105,7 @@ do
     trackableUnits["partypet" .. i] = true
   end
 
-  for i = 1, MAX_BOSS_FRAMES do
+  for i = 1, 10 do
     trackableUnits["boss" .. i] = true
   end
 

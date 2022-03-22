@@ -422,7 +422,7 @@ Private.format_types = {
       local abbreviateFunc
       if color == "class" then
         colorFunc = function(unit, text)
-          if unit and UnitPlayerControlled(unit) then
+          if unit and Private.UnitPlayerControlledFixed(unit) then
             local classFilename = select(2, UnitClass(unit))
             if classFilename then
               return WrapTextInColorCode(text, WA_GetClassColor(classFilename))
@@ -838,9 +838,13 @@ Private.actual_unit_types_cast = {
   member = L["Specific Unit"],
 }
 
+Private.actual_unit_types_cast_tooltip = L["• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.\n• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.\n|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.\n• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.\n• |cffffff00Smart Group|r adjusts to your current group type, matching just the \"player\" when solo, \"party\" units (including \"player\") in a party or \"raid\" units in a raid.\n\n|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura."]
+
 Private.threat_unit_types = {
   target = L["Target"],
   focus = L["Focus"],
+  nameplate = L["Nameplate"],
+  boss = L["Boss"],
   member = L["Specific Unit"],
   none = L["At Least One Enemy"]
 }
@@ -1065,12 +1069,6 @@ Private.include_pets_types = {
   PetsOnly = L["Pets only"]
 }
 
-Private.category_event_prototype = {}
-for name, prototype in pairs(Private.event_prototypes) do
-  Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
-  Private.category_event_prototype[prototype.type][name] = prototype.name
-end
-
 Private.subevent_prefix_types = {
   SWING = L["Swing"],
   RANGE = L["Range"],
@@ -1209,6 +1207,48 @@ Private.combatlog_flags_check_object_type = {
   NPC = L["NPC"],
   Player = L["Player"]
 }
+
+Private.combatlog_spell_school_types = {
+  [1] = STRING_SCHOOL_PHYSICAL,
+  [2] = STRING_SCHOOL_HOLY,
+  [4] = STRING_SCHOOL_FIRE,
+  [8] = STRING_SCHOOL_NATURE,
+  [16] = STRING_SCHOOL_FROST,
+  [32] = STRING_SCHOOL_SHADOW,
+  [64] = STRING_SCHOOL_ARCANE,
+  [3] = STRING_SCHOOL_HOLYSTRIKE,
+  [5] = STRING_SCHOOL_FLAMESTRIKE,
+  [6] = STRING_SCHOOL_HOLYFIRE,
+  [9] = STRING_SCHOOL_STORMSTRIKE,
+  [10] = STRING_SCHOOL_HOLYSTORM,
+  [12] = STRING_SCHOOL_FIRESTORM,
+  [17] = STRING_SCHOOL_FROSTSTRIKE,
+  [18] = STRING_SCHOOL_HOLYFROST,
+  [20] = STRING_SCHOOL_FROSTFIRE,
+  [24] = STRING_SCHOOL_FROSTSTORM,
+  [33] = STRING_SCHOOL_SHADOWSTRIKE,
+  [34] = STRING_SCHOOL_SHADOWLIGHT,
+  [36] = STRING_SCHOOL_SHADOWFLAME,
+  [40] = STRING_SCHOOL_SHADOWSTORM,
+  [48] = STRING_SCHOOL_SHADOWFROST,
+  [65] = STRING_SCHOOL_SPELLSTRIKE,
+  [66] = STRING_SCHOOL_DIVINE,
+  [68] = STRING_SCHOOL_SPELLFIRE,
+  [72] = STRING_SCHOOL_SPELLSTORM,
+  [80] = STRING_SCHOOL_SPELLFROST,
+  [96] = STRING_SCHOOL_SPELLSHADOW,
+  [28] = STRING_SCHOOL_ELEMENTAL,
+  [62] = STRING_SCHOOL_CHROMATIC,
+  [106] = STRING_SCHOOL_COSMIC,
+  [124] = STRING_SCHOOL_CHAOS,
+  [126] = STRING_SCHOOL_MAGIC,
+  [127] = STRING_SCHOOL_CHAOS,
+}
+
+Private.combatlog_spell_school_types_for_ui = {}
+for id, str in pairs(Private.combatlog_spell_school_types) do
+  Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
+end
 
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
@@ -3437,7 +3477,7 @@ if WeakAuras.IsBCC() then
   Private.actual_unit_types_cast.boss = nil
 
   local reset_swing_spell_list = {
-    1464, 8820, 11604, 11605, 25242, -- Slam
+    1464, 8820, 11604, 11605, 25241, 25242, -- Slam
     78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286, 29707, 30324, -- Heroic Strike
     845, 7369, 11608, 11609, 20569, 25231, -- Cleave
     2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, 27014, -- Raptor Strike

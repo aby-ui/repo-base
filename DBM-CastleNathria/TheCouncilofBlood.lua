@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220220020808")
+mod:SetRevision("20220320215817")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -369,91 +369,6 @@ local function phaseChange(self, adjustment)
 			timerWaltzofBloodCD:Start((self:IsMythic() and 26.9 or self:IsLFR() and 35.7 or 30.7)-adjustment)--START
 		end
 	end
-end
-
---/run DBM:GetModByName(2426):TestRestart(60)
-function mod:TestRestart(amount)
-	timerDutifulAttendantCD:Start(amount)
-	timerDualistsRiposteCD:Start(amount)
-	timerDredgerServantsCD:Start(amount)
-	timerCastellansCadreCD:Start(amount)
-	timerDrainEssenceCD:Start(amount)
-	timerSoulSpikesCD:Start(amount)
-	timerDarkRecitalCD:Start(amount)
-	timerEvasiveLungeCD:Start(amount)
-	timerWaltzofBloodCD:Start(amount)
-	timerDancingFoolsCD:Start(amount)
-end
-
---/run DBM:GetModByName(2426):TestAdd(10)
-function mod:TestAdd(amount)
-	timerDutifulAttendantCD:AddTime(amount)
-	timerDualistsRiposteCD:AddTime(amount)
-	timerDredgerServantsCD:AddTime(amount)
-	timerCastellansCadreCD:AddTime(amount)
-	timerDrainEssenceCD:AddTime(amount)
-	timerSoulSpikesCD:AddTime(amount)
-	timerDarkRecitalCD:AddTime(amount)
-	timerEvasiveLungeCD:AddTime(amount)
-	timerWaltzofBloodCD:AddTime(amount)
-	timerDancingFoolsCD:AddTime(amount)
-end
-
---/run DBM:GetModByName(2426):TestRemove(10)
-function mod:TestRemove(amount)
-	timerDutifulAttendantCD:RemoveTime(amount)
-	timerDualistsRiposteCD:RemoveTime(amount)
-	timerDredgerServantsCD:RemoveTime(amount)
-	timerCastellansCadreCD:RemoveTime(amount)
-	timerDrainEssenceCD:RemoveTime(amount)
-	timerSoulSpikesCD:RemoveTime(amount)
-	timerDarkRecitalCD:RemoveTime(amount)
-	timerEvasiveLungeCD:RemoveTime(amount)
-	timerWaltzofBloodCD:RemoveTime(amount)
-	timerDancingFoolsCD:RemoveTime(amount)
-end
-
---/run DBM:GetModByName(2426):SmallTestAdd(10)
-function mod:SmallTestAdd(amount)
-	timerDutifulAttendantCD:AddTime(amount)
-end
-
---/run DBM:GetModByName(2426):SmallTestRemove(10)
-function mod:SmallTestRemove(amount)
-	timerDutifulAttendantCD:RemoveTime(amount)
-end
-
---/run DBM:GetModByName(2426):SmallTestRestart(30)
-function mod:SmallTestRestart(amount)
-	timerDutifulAttendantCD:Start(amount)
-end
-
---/run DBM:GetModByName(2426):TestPause()
-function mod:TestPause()
-	timerDutifulAttendantCD:Pause()
-	timerDualistsRiposteCD:Pause()
-	timerDredgerServantsCD:Pause()
-	timerCastellansCadreCD:Pause()
-	timerDrainEssenceCD:Pause()
-	timerSoulSpikesCD:Pause()
-	timerDarkRecitalCD:Pause()
-	timerEvasiveLungeCD:Pause()
-	timerWaltzofBloodCD:Pause()
-	timerDancingFoolsCD:Pause()
-end
-
---/run DBM:GetModByName(2426):TestResume()
-function mod:TestResume()
-	timerDutifulAttendantCD:Resume()
-	timerDualistsRiposteCD:Resume()
-	timerDredgerServantsCD:Resume()
-	timerCastellansCadreCD:Resume()
-	timerDrainEssenceCD:Resume()
-	timerSoulSpikesCD:Resume()
-	timerDarkRecitalCD:Resume()
-	timerEvasiveLungeCD:Resume()
-	timerWaltzofBloodCD:Resume()
-	timerDancingFoolsCD:Resume()
 end
 
 function mod:OnCombatStart(delay)

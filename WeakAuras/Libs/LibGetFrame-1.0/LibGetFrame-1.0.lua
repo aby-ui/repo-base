@@ -1,5 +1,5 @@
 local MAJOR_VERSION = "LibGetFrame-1.0"
-local MINOR_VERSION = 32
+local MINOR_VERSION = 33
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -31,6 +31,7 @@ local defaultFramePriorities = {
     "^SUFHeaderraid", -- suf
     "^LUFHeaderraid", -- luf
     "^AshToAshUnit%d+Unit%d+", -- AshToAsh
+    "^Cell", -- Cell
     -- party frames
     "^AleaUI_GroupHeader", -- Alea
     "^SUFHeaderparty", --suf
@@ -101,6 +102,7 @@ local defaultRaidFrames = {
     "^ElvUF_Raid%d*Group",
     "^oUF_.-Raid",
     "^AshToAsh",
+    "^Cell",
     "^LimeGroup",
     "^SUFHeaderraid",
     "^LUFHeaderraid",

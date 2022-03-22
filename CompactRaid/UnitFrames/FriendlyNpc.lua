@@ -33,7 +33,7 @@ end
 
 frame.buttons = {}
 
-MAX_BOSS = 6
+MAX_BOSS = 8
 
 for i = 1, MAX_BOSS do
 	local button = CreateFrame("Button", frame:GetName().."Button"..i, frame, "AbinCompactRaidUnitButtonTemplate")
@@ -187,7 +187,7 @@ addon:RegisterOptionCallback("showFriendlyNpc", function(value)
 	for i = 1, MAX_BOSS do
 		local button = frame.buttons[i]
 		if value then
-			RegisterStateDriver(button, "visibility", "[@boss"..i..", exists] show; hide")
+			RegisterStateDriver(button, "visibility", "[@boss"..i..", help] show; hide")
 		else
 			UnregisterStateDriver(button, "visibility")
 			button:Hide()

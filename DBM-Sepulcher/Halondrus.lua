@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2463, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220315001341")
+mod:SetRevision("20220320212453")
 mod:SetCreatureID(180906)
 mod:SetEncounterID(2529)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
@@ -182,7 +182,7 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 	elseif spellId == 360977 then
-		if self:IsTanking("player", nil, nil, nil, args.sourseGUID) then--Change to boss1 check if boss is always boss1, right now unsure
+		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then--Change to boss1 check if boss is always boss1, right now unsure
 			specWarnLightshatterBeam:Show(L.Mote)
 			specWarnLightshatterBeam:Play("defensive")
 		end
@@ -306,9 +306,16 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		warnCrushingPrism:CombinedShow(0.5, self.vb.crushingCast, args.destName)
 		self.vb.crushIcon = self.vb.crushIcon + 1
-	elseif spellId == 361309 and not args:IsPlayer() and not DBM:UnitDebuff("player", spellId) then
-		specWarnLightshatterBeamTaunt:Show(args.destName)
-		specWarnLightshatterBeamTaunt:Play("tauntboss")
+	elseif spellId == 361309 and not args:IsPlayer() then--and not DBM:UnitDebuff("player", spellId)
+		local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", spellId)
+		local remaining
+		if expireTime then
+			remaining = expireTime-GetTime()
+		end
+		if (not remaining or remaining and remaining < 3) and not UnitIsDeadOrGhost("player") then
+			specWarnLightshatterBeamTaunt:Show(args.destName)
+			specWarnLightshatterBeamTaunt:Play("tauntboss")
+		end
 	elseif spellId == 368671 then
 		if self.Options.NPAuraOnFractal then
 			DBM.Nameplate:Show(true, args.destGUID, spellId)

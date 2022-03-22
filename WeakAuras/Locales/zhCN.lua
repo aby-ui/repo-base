@@ -58,6 +58,19 @@ L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000非|r 已装备物品�
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000非|r 玩家名字/服务器"
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00额外选项：|r%s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00额外选项：|r无"
+L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
+• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
+|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
+• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.
+• |cffffff00Smart Group|r adjusts to your current group type, matching just the "player" when solo, "party" units (including "player") in a party or "raid" units in a raid.
+
+|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura.]=] ] = [=[• |cff00ff00玩家|r，|cff00ff00目标|r，|cff00ff00焦点目标|r，和|cff00ff00宠物|r直接对应相应的单位ID。
+• |cff00ff00指定单位|r允许你提供一个有效的单位ID来监视。
+|cffff0000注意|r：游戏不会为所有有效的单位ID触发事件，使得其无法被这个触发器跟踪。
+• |cffffff00小队|r，|cffffff00团队|r，|cffffff00首领|r，|cffffff00竞技场|r，和|cffffff00姓名版|r可以匹配多个相应的单位ID。
+• |cffffff00智能队伍|r会根据你目前的组队情况调整，未组队时自动匹配"玩家"，在小队中时匹配"小队"（包括"玩家"），在团队中时匹配"团队"。
+
+|cffffff00*|r黄色的单位设置会为每个匹配的单位创建克隆，同时为光环提供动态信息。]=]
 L["10 Man Raid"] = "10人团队"
 L["10 Player Raid (Heroic)"] = "10人团队副本（英雄）"
 L["10 Player Raid (Normal)"] = "10人团队副本（普通）"
@@ -625,7 +638,7 @@ L["Marked Last"] = "标记为最后"
 L["Master"] = "主声道"
 L["Mastery (%)"] = "精通 (%)"
 L["Mastery Rating"] = "精通等级"
-L["Match Count"] = "计数匹配"
+L["Match Count"] = "匹配计数"
 L["Match Count per Unit"] = "每个单位的匹配数量"
 L["Matches (Pattern)"] = "匹配（表达式）"
 L[ [=[Matches stage number of encounter journal.
@@ -963,6 +976,7 @@ L["Spell IDs:"] = "法术 ID："
 L["Spell in Range"] = "在法术可用范围内"
 L["Spell Known"] = "学会的法术"
 L["Spell Name"] = "法术名称"
+L["Spell School"] = "法术派系"
 L["Spell Usable"] = "法术可用"
 L["Spin"] = "旋转"
 L["Spiral"] = "螺旋"

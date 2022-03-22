@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2465, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220311004716")
+mod:SetRevision("20220320213855")
 mod:SetCreatureID(181395)
 mod:SetEncounterID(2542)
 --mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -46,7 +46,7 @@ local timerRetchCD								= mod:NewCDCountTimer(32.9, 360448, nil, nil, nil, 3)-
 local timerComboCD								= mod:NewTimer(32.9, "timerComboCD", 359976, nil, nil, 5, DBM_COMMON_L.TANK_ICON)
 local timerBurrowCD								= mod:NewCDCountTimer(75, 359770, nil, nil, nil, 3)--LFR Only
 
-local berserkTimer								= mod:NewBerserkTimer(360)--Final Consumption
+local berserkTimer								= mod:NewBerserkTimer(420)--Final Consumption
 
 --mod:AddRangeFrameOption("8")
 mod:AddInfoFrameOption(359778, true, nil, 5)
@@ -76,7 +76,9 @@ function mod:OnCombatStart(delay)
 			timerBurrowCD:Start(63.9-delay, 1)
 		end
 	end
-	berserkTimer:Start(360-delay)
+	if not self:IsLFR() then -- Cannot verify for LFR, seen 10 minute+ pulls.
+		berserkTimer:Start((self:IsEasy() and 420 or 360)-delay) -- 7 minutes on Normal, 6 minutes on Heroic/Mythic
+	end
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(359778))
 		DBM.InfoFrame:Show(20, "table", EphemeraDustStacks, 5)

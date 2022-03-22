@@ -59,6 +59,13 @@ L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000沒有|r裝備物品額
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000不是|r玩家名字/伺服器"
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00額外選項:|r %s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00額外選項:|r 無"
+L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
+• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
+|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
+• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.
+• |cffffff00Smart Group|r adjusts to your current group type, matching just the "player" when solo, "party" units (including "player") in a party or "raid" units in a raid.
+
+|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura.]=] ] = "• |cff00ff00玩家|r，|cff00ff00目標|r，|cff00ff00焦點|r，以及|cff00ff00寵物|r直接對應於那些單獨的單位編號。• |cff00ff00指定單位|r讓您提供一個特定的有效單位編號來觀看。|cffff0000注意|r：遊戲不會為所有有效的單位編號觸發事件，從而使該觸發器無法跟踪某些事件。• |cffffff00小隊|r，|cffffff00團隊|r，|cffffff00首領|r，|cffffff00競技場|r，以及|cffffff00名條|r可以匹配多個對應的單位編號。 • |cffffff00智能團體|r調整為您當前的隊伍類型，僅匹配單人時的“玩家”、組隊中的“隊伍”單位（包括“玩家”）或團隊中的“團隊”單位。 |cffffff00*|r黃色單位設置將建立複製每個匹配單位，同時此觸發器為光環提供動態訊息。"
 L["10 Man Raid"] = "10 人團隊"
 L["10 Player Raid (Heroic)"] = "10 人團隊 (英雄)"
 L["10 Player Raid (Normal)"] = "10 人團隊 (普通)"
@@ -964,6 +971,8 @@ L["Spell IDs:"] = "法術 ID:"
 L["Spell in Range"] = "在法術範圍內"
 L["Spell Known"] = "已知法術"
 L["Spell Name"] = "法術名稱"
+--[[Translation missing --]]
+L["Spell School"] = "Spell School"
 L["Spell Usable"] = "法術可以使用"
 L["Spin"] = "旋轉"
 L["Spiral"] = "螺旋"

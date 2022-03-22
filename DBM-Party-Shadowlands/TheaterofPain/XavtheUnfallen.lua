@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod(2390, "DBM-Party-Shadowlands", 6, 1187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20211125075428")
+mod:SetRevision("20220321074908")
 mod:SetCreatureID(162329)
 mod:SetEncounterID(2366)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 320644 317231 320729",
+	"SPELL_CAST_START 320644 317231 320729 339415",
 	"SPELL_CAST_SUCCESS 320050 320114 331618",
 	"SPELL_AURA_APPLIED 320102"
 --	"SPELL_PERIODIC_DAMAGE",

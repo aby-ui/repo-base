@@ -57,6 +57,19 @@ L["|cFFFF0000Not|r Item Bonus Id Equipped"] = "|cFFFF0000Not|r Item Bonus Id Equ
 L["|cFFFF0000Not|r Player Name/Realm"] = "|cFFFF0000Not|r Player Name/Realm"
 L["|cFFffcc00Extra Options:|r %s"] = "|cFFffcc00Extra Options:|r %s"
 L["|cFFffcc00Extra Options:|r None"] = "|cFFffcc00Extra Options:|r None"
+L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
+• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
+|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
+• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.
+• |cffffff00Smart Group|r adjusts to your current group type, matching just the "player" when solo, "party" units (including "player") in a party or "raid" units in a raid.
+
+|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura.]=] ] = [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
+• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
+|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
+• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.
+• |cffffff00Smart Group|r adjusts to your current group type, matching just the "player" when solo, "party" units (including "player") in a party or "raid" units in a raid.
+
+|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura.]=]
 L["10 Man Raid"] = "10 Man Raid"
 L["10 Player Raid (Heroic)"] = "10 Player Raid (Heroic)"
 L["10 Player Raid (Normal)"] = "10 Player Raid (Normal)"
@@ -969,6 +982,7 @@ L["Spell IDs:"] = "Spell IDs:"
 L["Spell in Range"] = "Spell in Range"
 L["Spell Known"] = "Spell Known"
 L["Spell Name"] = "Spell Name"
+L["Spell School"] = "Spell School"
 L["Spell Usable"] = "Spell Usable"
 L["Spin"] = "Spin"
 L["Spiral"] = "Spiral"

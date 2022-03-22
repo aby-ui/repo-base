@@ -2423,9 +2423,11 @@
 					end
 				end
 
-				if (spellid == 27827) then --> spirit of redemption (holy priest)
-					parser:dead ("UNIT_DIED", time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags)
-					ignore_death [who_name] = true
+				if (spellid == 27827) then --> spirit of redemption (holy ~priest) ~spirit
+					--C_Timer.After(0.1, function()
+						parser:dead ("UNIT_DIED", time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags)
+						ignore_death [who_name] = true
+					--end)
 					return
 					
 				elseif (spellid == SPELLID_MONK_GUARD) then
@@ -4264,7 +4266,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 						misc_cache [alvo_name] = este_jogador
 					end
 				end
-				
+
 				--> objeto da morte
 				local esta_morte = {}
 				

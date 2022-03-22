@@ -315,3 +315,16 @@ end
         var = "FixMapGlitch", text = U1_NEW_ICON.."临时解决9.1刻希亚地图卡顿", default = true, callback = load, tip = "说明`暴雪9.1客户端问题导致开启世界地图卡顿，已临时通过技术手段改善，但是可能会带来插件被阻止等其他问题，如果不需要此功能请关闭。``详情参见 https://bbs.nga.cn/read.php?tid=27466594``感谢oyg123的研究"
     },
 ---------------------------------------------------------------]]
+
+-- 元尊精粹拾取
+CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
+    if msg and LegendaryItemAlertSystem then
+        local pattern = "^" .. string.format(LOOT_ITEM_SELF, "(.+)") .. "$" --"你获得了物品：%s。"
+        local _, _, link = msg:find(pattern)
+        local itemId = link and select(3, link:find("\124Hitem:(%d+):"))
+        itemId = itemId and tonumber(itemId)
+        if itemId == 187707 then
+            LegendaryItemAlertSystem:AddAlert(link)
+        end
+    end
+end)
