@@ -75,7 +75,7 @@ end
 
 E.LoadPosition = function(f, key)
 	key = key or f.key
-	local db = f.db or E.db -- new namespace or internal
+	local db = f.db or E.db
 	db.manualPos[key] = db.manualPos[key] or {}
 	db = db.manualPos[key]
 	local x = db.x
@@ -111,7 +111,7 @@ function OmniCD_AnchorOnMouseUp(self, button)
 		bar.isMoving = false
 		SavePosition(bar)
 	end
---  E:ACR_NotifyChange() -- udpate X/Y coordinates in option
+
 end
 
 E.SetWidth = function(anchor, padding)
@@ -167,6 +167,30 @@ E.FormatConcat = function(tbl, template, template2)
 		else
 			t[k] = v and template:format(v) or ""
 		end
+	end
+
+	return table.concat(t)
+end
+
+E.MergeConcat = function(...)
+	local t = {}
+	for i = 1, select("#", ...) do
+		local src = select(i, ...)
+		if src then
+			for k, v in ipairs(src) do
+				t[#t+1] = v
+			end
+		end
+	end
+	return table.concat(t, ",")
+end
+
+E.SyncDataConcat = function(tbl, delimiter)
+	local t = delimiter and { delimiter } or {}
+	for i = 1, #tbl do
+		local c = delimiter and i + 1 or i
+		local v = tbl[i]
+		t[c] = v and string.format("%s:", v) or ""
 	end
 
 	return table.concat(t)

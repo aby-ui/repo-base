@@ -1,4 +1,4 @@
-if not(GetLocale() == "zhTW") then
+if GetLocale() ~= "zhTW" then
   return
 end
 
@@ -971,8 +971,7 @@ L["Spell IDs:"] = "法術 ID:"
 L["Spell in Range"] = "在法術範圍內"
 L["Spell Known"] = "已知法術"
 L["Spell Name"] = "法術名稱"
---[[Translation missing --]]
-L["Spell School"] = "Spell School"
+L["Spell School"] = "法術類型"
 L["Spell Usable"] = "法術可以使用"
 L["Spin"] = "旋轉"
 L["Spiral"] = "螺旋"

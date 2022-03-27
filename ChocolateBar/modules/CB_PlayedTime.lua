@@ -29,11 +29,6 @@ dataobj = LibStub("LibDataBroker-1.1"):NewDataObject("CB_PlayedTime", {
 	end
 })
 
-acetimer:ScheduleTimer(function()
-			debug("ScheduleTimer")
-			RequestTimePlayed()
-		end, 60)
-
 local function formatTime(time)
   local days = floor(time/86400)
   local hours = floor(mod(time, 86400)/3600)
@@ -63,11 +58,13 @@ function dataobj:OnTooltipShow()
 end
 
 local function getPlayerIdentifier()
-  local _, engClass, _, _, _, name, server = GetPlayerInfoByGUID(UnitGUID("player"))
+  local _, _, _, _, _, name, server = GetPlayerInfoByGUID(UnitGUID("player"))
 	if not server or server == "" then
 		server = GetNormalizedRealmName() or ""
-	end
-	return string.format("%s-%s", name or "", server or "")
+    end
+    if not name then return "" end
+	--debug("getPlayerIdentifier", server,name)
+	return string.format("%s-%s", name, server)
 end
 
 local function GetMaxLevelForPlayerExpansion()
@@ -79,6 +76,8 @@ local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)
 	local dbChar = db[getPlayerIdentifier()]
 	local days = totalTimeInSeconds / 3600 / 24
 	dbChar.total = totalTimeInSeconds
+	dbChar.timeStamp = GetTime()
+	dbChar.timeAtThisLevel = timeAtThisLevel
 	if UnitLevel("player") == GetMaxLevelForPlayerExpansion() then
 		dataobj.text  =  string.format("%s", formatTime(totalTimeInSeconds))
 		dataobj.label = "Played Time"
@@ -88,17 +87,28 @@ local function playedTimeEvent(self, event, totalTimeInSeconds, timeAtThisLevel)
 	end
 end
 
+local function updateText()
+	local dbChar = db[getPlayerIdentifier()]
+    if not dbChar then return end
+	local diff = GetTime() - dbChar.timeStamp
+	dataobj.text = formatTime(dbChar.timeAtThisLevel + diff)
+end
+
 local frame2 = CreateFrame("Frame")
 
 local function onEnteringWorld()
 	db = CB_PlayedTime and CB_PlayedTime or {}
 	CB_PlayedTime = db
-	RequestTimePlayed()
+	--RequestTimePlayed()
+	acetimer:ScheduleTimer(function()
+				RequestTimePlayed()
+				acetimer:ScheduleRepeatingTimer(function()
+							updateText()
+				end, 3)
+	end, 2)
 	dataobj:RegisterOptions()
 	frame2:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
-
-
 
 function dataobj:Reset()
 	CB_PlayedTime = {}

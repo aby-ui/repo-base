@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220321214419")
+mod:SetRevision("20220325210911")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -332,7 +332,7 @@ function mod:SPELL_CAST_START(args)
 		timerHopebreakerCD:Start(self:IsMythic() and 65.5 or 58.4, self.vb.hopebreakerCount+1)
 	elseif spellId == 362771 then
 		self.vb.befouledCount = self.vb.befouledCount + 1--Reused since befoulment not happening here
-		if self:IsTanking("player", nil, nil, nil, args.sourceGUID, nil, true) then--Change to boss2 if confirmed remnant is always boss2, to save cpu
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Change to boss2 if confirmed remnant is always boss2, to save cpu
 			specWarnSoulReaper:Show()
 			specWarnSoulReaper:Play("defensive")
 		end

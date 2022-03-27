@@ -115,6 +115,12 @@ U1PLUG["CovenantHelper"] = function()
         f:SetShown(true)
         --CoreUIShowOverlayGlow(grp.b1)
         --LibStub("LibCustomGlow-1.0", true).AutoCastGlow_Start(AbySoulbindFrame.soulbinds[1])
+
+        hooksecurefunc("SetUIPanelAttribute", function(frame, prop, value)
+            if frame and frame == PlayerTalentFrame and prop == "width" then
+                frame:SetAttributeNoHandler("UIPanelLayout-"..prop, value + 100);
+            end
+        end)
     end)
 end
 

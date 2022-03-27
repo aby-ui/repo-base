@@ -421,6 +421,23 @@ GTFO.SpellID["365876"] = {
   sound = 3;
 };
 
+GTFO.SpellID["362985"] = {
+  --desc = "Crush of the Infinite (Graktho the Automa-eater)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["363013"] = {
+  --desc = "Infinite Excess (Graktho the Automa-eater)";
+  sound = 3;
+};
+
+GTFO.SpellID["368175"] = {
+  --desc = "Defensive Sweep (Otaris the Provoked)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -1156,6 +1173,19 @@ GTFO.SpellID["351811"] = {
   --desc = "Fire and Brimestone (Mawsworn Cremator)";
   sound = 3;
 };
+
+GTFO.SpellID["350872"] = {
+  --desc = "Spiked Ball";
+  sound = 3;
+};
+
+GTFO.SpellID["352684"] = {
+  --desc = "Dragged (Trap)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+
 
 --- ******************
 --- * Castle Nathria *
@@ -2008,6 +2038,33 @@ GTFO.SpellID["359963"] = {
   tankSound = 0;
 };
 
+GTFO.SpellID["366731"] = {
+  --desc = "Arcing Ejection (Astral Particle)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["363109"] = {
+  --desc = "Celestial Terminator (Rygelon)";
+  sound = 3;
+};
+
+GTFO.SpellID["363533"] = {
+  --desc = "Massive Bang (Rygelon)";
+  sound = 3;
+};
+
+GTFO.SpellID["365686"] = {
+  --desc = "Desecrated Slam (Overthrown Protector)";
+  sound = 3;
+};
+
+GTFO.SpellID["360241"] = {
+  --desc = "Unsettling Dreams (Mal'Ganis)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 GTFO.SpellID["359868"] = {
   --desc = "Shattering Blast (The Jailer)";
   sound = 3;
@@ -2018,6 +2075,7 @@ GTFO.SpellID["365371"] = {
   --desc = "Tormenting Echo (The Jailer)";
   sound = 3;
 };
+
 
 end
 

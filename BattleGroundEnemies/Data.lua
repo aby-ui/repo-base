@@ -1,4 +1,4 @@
-local addonName, Data = ...
+local AddonName, Data = ...
 
 local L = Data.L
 local DRList = LibStub("DRList-1.0")
@@ -9,8 +9,8 @@ local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 local GetSpellInfo = GetSpellInfo
 local GetSpellTexture = GetSpellTexture
 
-local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local isTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local IsTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 
 Data.CyrillicToRomanian = { -- source Wikipedia: https://en.wikipedia.org/wiki/Romanization_of_Russian
 	["А"] = "a",
@@ -82,13 +82,13 @@ Data.CyrillicToRomanian = { -- source Wikipedia: https://en.wikipedia.org/wiki/R
 }
 
 Data.FontOutlines = {
-    [""] = L["None"],
-    ["OUTLINE"] = L["Normal"],
-    ["THICKOUTLINE"] = L["Thick"],
+	[""] = L["None"],
+	["OUTLINE"] = L["Normal"],
+	["THICKOUTLINE"] = L["Thick"],
 }
 
 Data.Buttons = {
-    Target = TARGET,
+	Target = TARGET,
 	Focus = SET_FOCUS,
 	Custom = L.UserDefined
 }
@@ -185,24 +185,24 @@ Data.VerticalDirections = {
 
 
 Data.Interruptdurations = {
-    [6552] = 4,   -- [Warrior] Pummel
-    [96231] = 4,  -- [Paladin] Rebuke
-    [231665] = 3, -- [Paladin] Avengers Shield
-    [147362] = 3, -- [Hunter] Countershot
-    [187707] = 3, -- [Hunter] Muzzle
-    [1766] = 5,   -- [Rogue] Kick
-    [183752] = 3, -- [DH] Consume Magic
-    [47528] = 3,  -- [DK] Mind Freeze
-    [91802] = 2,  -- [DK] Shambling Rush
-    [57994] = 3,  -- [Shaman] Wind Shear
-    [115781] = 6, -- [Warlock] Optical Blast
-    [19647] = 6,  -- [Warlock] Spell Lock
-    [212619] = 6, -- [Warlock] Call Felhunter
-    [132409] = 6, -- [Warlock] Spell Lock
-    [171138] = 6, -- [Warlock] Shadow Lock
-    [2139] = 6,   -- [Mage] Counterspell
-    [116705] = 4, -- [Monk] Spear Hand Strike
-    [106839] = 4, -- [Feral] Skull Bash
+	[6552] = 4,   -- [Warrior] Pummel
+	[96231] = 4,  -- [Paladin] Rebuke
+	[231665] = 3, -- [Paladin] Avengers Shield
+	[147362] = 3, -- [Hunter] Countershot
+	[187707] = 3, -- [Hunter] Muzzle
+	[1766] = 5,   -- [Rogue] Kick
+	[183752] = 3, -- [DH] Consume Magic
+	[47528] = 3,  -- [DK] Mind Freeze
+	[91802] = 2,  -- [DK] Shambling Rush
+	[57994] = 3,  -- [Shaman] Wind Shear
+	[115781] = 6, -- [Warlock] Optical Blast
+	[19647] = 6,  -- [Warlock] Spell Lock
+	[212619] = 6, -- [Warlock] Call Felhunter
+	[132409] = 6, -- [Warlock] Spell Lock
+	[171138] = 6, -- [Warlock] Shadow Lock
+	[2139] = 6,   -- [Mage] Counterspell
+	[116705] = 4, -- [Monk] Spear Hand Strike
+	[106839] = 4, -- [Feral] Skull Bash
 	[93985] = 4,  -- [Feral] Skull Bash
 }
 
@@ -414,6 +414,10 @@ Data.BattlegroundspezificBuffs = { --key = mapID, value = table with key = facti
 	[112] = {						-- Eye of the Storm, used to be mapID 482 before BFA
 		[0] = 34976,  					-- Netherstorm Flag
 		[1] = 34976						-- Netherstorm Flag
+	},
+	[1956] = {						-- Eye of the Storm, TBCC
+		[0] = 34976,  					-- Netherstorm Flag
+		[1] = 34976						-- Netherstorm Flag
 	},	
 	[397] = {						-- Eye of the Storm (mapID RBG only? Not sure why there are two map IDs for Eye of the Storm), used to be mapID 813 before BFA
 		[0] = 34976,  					-- Netherstorm Flag
@@ -436,6 +440,10 @@ Data.BattlegroundspezificDebuffs = { --key = mapID, value = table with key = num
 		46393						-- Brutal Assault							
 	},
 	[397] = {						-- Eye of the Storm (mapID RBG only? Not sure why there are two map IDs for Eye of the Storm), used to be mapID 813 before BFA 
+		46392,						-- Focused Assault
+		46393						-- Brutal Assault							
+	},
+	[1956] = {						-- Eye of the Storm, TBCC
 		46392,						-- Focused Assault
 		46393						-- Brutal Assault							
 	},
@@ -463,7 +471,8 @@ Data.TriggerSpellIDToTrinketnumber = {--key = which first row honor talent, valu
 	[336135] = 3, 	-- 3: Adaptation, 1 min. CD, Shadowlands Update
 	[336139] = 3,   -- 3: Adapted, 1 min. CD, Shadowlands Update
 	[196029] = 4, 	-- 4: Relentless, passive, no CD
-	[336128] = 4 	-- 4: Relentless, passive, no CD, Shadowlands Update
+	[336128] = 4, 	-- 4: Relentless, passive, no CD, Shadowlands Update
+	[363117] = 5    -- 5: Gladiator's Fastidious Resolve, Added in Shadowlands Patch 9.2  
 }
 		
 	
@@ -619,7 +628,9 @@ Data.TrinketTriggerSpellIDtoCooldown = {
 	[208683] = 120,	-- Gladiator's Medallion, 2 min. CD
 	[336126] = 120, -- Gladiator's Medallion, 2 min. CD, Shadowlands Update
 	[195901] = 60, 	-- Adaptation PvP Talent
-	[336135] = 60   -- Adapation, Shadowlands Update
+	[336135] = 60,	-- Adapation, Shadowlands Update
+	[363117] = 180 	-- Gladiator's Fastidious Resolve, Added in Shadowlands Patch 9.2 
+
 }
 
 Data.RacialSpellIDtoCooldownTrigger = {
@@ -758,7 +769,7 @@ do
 		local _, classTag = GetClassInfo(classID)
 		if classTag then
 			Data.Classes[classTag] = {}
-			if isTBCC then 
+			if IsTBCC then 
 				Data.Classes[classTag] = {Ressource = ClassRessources[classTag]}
 				table.insert(Data.ClassList, classTag)
 			else

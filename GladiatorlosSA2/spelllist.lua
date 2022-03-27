@@ -21,6 +21,8 @@
 			[279739] = "drinking",
 			--Was I drunk when I did this??
 			[345231] = "battlemaster",
+			[363121] = "echo",
+			[363117] = "resolve",
 
 			-- Crowd Controls
 			--Polymorph (Mage)
@@ -272,7 +274,7 @@
 			
 			-- Warlock (Aura Applied)
 			[108416] = "darkPact",
-			[104773] = "unendingResolve",
+			[104773] = "unendingResolve2",
 			--[196098] = "darkSoul", -- Soul Harvest (Legion's Version)
 			[113860] = "darkSoul", -- Dark Soul: Misery (Affliction)
 			[113858] = "darkSoul", -- Dark Soul: Instability (Destruction)
@@ -369,7 +371,7 @@
 			[218413] = "voidFormDown",			--Voidform
 			[15286] = "vampiricEmbraceDown",	--Vampiric Embrace
 			--[203727] = "thornsDown",			--Thorns (Resto)
-			[236696] = "thornsDown",			--Thorns (Feral)
+			--[236696] = "thornsDown",			--Thorns (Feral)
 			[305497] = "thornsDown",			--Thorns 8.2
 			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
 			--[216890] = "SpellreflectionDown", 		-- Arms/Fury
@@ -389,7 +391,7 @@
 			[212704] = "BeastWithinDown",	-- The Beast Within; Beastial Wrath Fear/Horror Immunity Honor Talent
 			[1966] = "FeintDown",			-- Feint
 			[210294] = "DivineFavorDown", -- Divine Favor
-			[104773] = "UnendingResolveDown", -- Unending Resolve
+			[104773] = "UnendingResolve2Down", -- Unending Resolve
 			[190319] = "combustionDown", -- Combustion
 			[12042] = "APDown", -- Arcane Power
 			[12472] = "icyVeinsDown", -- Icy Veins
@@ -420,6 +422,8 @@
 			[10060] = "infusionDown", -- Power Infusion
 			[335903] = "doomwindsDown",
 			[199027] = "veilOfMidnightDown",
+			[363121] = "echoDown",
+			[363117] = "resolveDown",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -427,6 +431,7 @@
 			--[324867] = "fleshcraftDown", -- Necrolord Signature
 		--TANK TAUNTS
 			--[206891] = "tankTauntsOFF", 			-- Tank Taunts Down
+	
 			},
 		castStart = {					-- cast start [spellid] = ".ogg file name",
 		
@@ -665,6 +670,7 @@
 			[257040] = "SpatialRift2", -- Spatial Rift Teleport (Spatial Warp) (Void Elf)
 			[255654] = "BullRush", -- Bull Rush (Highmountain Racial)
 			[356567] = "maledict",
+			[363481] = "resonator",
 
 			-- Covenant (Cast Success)
 			[324631] = "fleshcraft", -- Necrolord signature
@@ -978,7 +984,6 @@
 			[6789] = "mortalCoil",
 			[5484] = "terrorHowl",
 			[19647] = "spellLock",
-			[119910] = "spellLock",
 			[171140] = "spellLock",
 			[171138] = "spellLock",
 			[212619] = "spellLock",
@@ -988,7 +993,6 @@
 			[251523] = "spellLock",
 			[251922] = "spellLock",
 			[288047] = "spellLock",
-			[119898] = "spellLock",
 			[119898] = "spellLock",
 			[48018] = "DemonicCircle",
 			[48020] = "demonicCircleTeleport",
@@ -1042,7 +1046,6 @@
 		},
 		friendlyInterrupt = {
 			[19647] = "lockout", -- Spell Locks begin
-			[119910] = "lockout",
 			[171140] = "lockout",
 			[171138] = "lockout",
 			[212619] = "lockout",

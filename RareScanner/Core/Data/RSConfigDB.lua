@@ -972,6 +972,14 @@ function RSConfigDB.IsShowFiltered()
 	return private.db.collections.showFiltered
 end
 
+function RSConfigDB.SetShowWithoutCollectibles(value)
+	private.db.collections.showWithoutCollectibles = value
+end
+
+function RSConfigDB.IsShowWithoutCollectibles()
+	return private.db.collections.showWithoutCollectibles
+end
+
 function RSConfigDB.SetShowDead(value)
 	private.db.collections.showDead = value
 end

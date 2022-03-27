@@ -17,6 +17,9 @@ local function SetItemAngularBorder(self, quality, itemIDOrLink)
         else
             w, h = min(w, ww), min(h, hh)
         end
+        if (w > h * 1.28) then
+            w = h
+        end
         self.angularFrame = CreateFrame("Frame", nil, self)
         self.angularFrame:SetFrameLevel(5)
         self.angularFrame:SetSize(w, h)

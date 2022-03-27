@@ -253,7 +253,7 @@ addon.Spells = {
     [12042] = { type = BUFF_OFFENSIVE }, -- Arcane Power
     [12051] = { type = BUFF_OFFENSIVE }, -- Evocation
     [12472] = { type = BUFF_OFFENSIVE }, -- Icy Veins
-        [198144] = { type = BUFF_OFFENSIVE, parent = 12472 }, -- Ice Form
+        [198144] = { type = BUFF_OFFENSIVE }, -- Ice Form
     [31661] = { type = CROWD_CONTROL }, -- Dragon's Breath
     [45438] = { type = IMMUNITY }, -- Ice Block
     [41425] = { type = BUFF_OTHER }, -- Hypothermia
@@ -616,6 +616,7 @@ addon.Spells = {
     [356567] = { type = CROWD_CONTROL }, -- Shackles of Malediction
     [358259] = { type = CROWD_CONTROL }, -- Gladiator's Maledict
     [362699] = { type = IMMUNITY_SPELL }, -- Gladiator's Resolve
+    [363522] = { type = BUFF_DEFENSIVE }, -- Gladiator's Eternal Aegis
 
     -- Legacy (may be deprecated)
 

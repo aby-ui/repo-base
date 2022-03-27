@@ -23,6 +23,7 @@ function P:Enable()
 
 	self.enabled = true
 
+	self.zone = select(2, IsInInstance())
 	E.Comms:InspectPlayer()
 
 	self:SetHooks()
@@ -70,11 +71,10 @@ function P:Refresh(full)
 		return
 	end
 
-	local instanceType = self.zone or select(2, IsInInstance()) -- nil on init /rl
-	local key = self.test and self.testZone or instanceType
+	local key = self.test and self.testZone or self.zone
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
-	P.profile = E.profile.Party -- TODO: migrate
+	P.profile = E.profile.Party
 	P.db = E.db
 
 	if full then
@@ -113,7 +113,7 @@ function P:UpateTimerFormat()
 end
 
 function P:UpdateEnabledSpells()
-	wipe(self.spell_enabled) -- wipe upvalue
+	wipe(self.spell_enabled)
 
 	for _, v in pairs(E.spell_db) do
 		local n = #v
@@ -214,14 +214,10 @@ function P:IsTalent(talentID, guid)
 		return false
 	end
 
-	-- TODO: move to inspect? (warmode)
 	if talent == "PVP" then
 		return self.isPvP
-	elseif talent == "R" then
-		local spec = runeforge_specID[talentID]
-		return not spec and true or spec == self.groupInfo[guid].spec
 	else
-		return talent -- rankValue for Conduits
+		return talent
 	end
 end
 

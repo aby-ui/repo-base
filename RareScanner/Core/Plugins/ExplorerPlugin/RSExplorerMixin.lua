@@ -111,6 +111,8 @@ local function PopulateContinentDropDown(mainFrame, continentDropDown)
 					AddContinentDropDownValue(npcID, npcInfo, continentDropDownValuesNotSorted)
 				elseif (filters[RSConstants.EXPLORER_FILTER_PART_ACHIEVEMENT] and RSAchievementDB.GetNotCompletedAchievementLink(npcID)) then
 					AddContinentDropDownValue(npcID, npcInfo, continentDropDownValuesNotSorted)
+				elseif (filters[RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES] and (not collectionsLoot or not collectionsLoot[npcID])) then
+					AddContinentDropDownValue(npcID, npcInfo, continentDropDownValuesNotSorted)
 				end
 			end
 		end
@@ -202,6 +204,8 @@ local function FilterDropDownMenu_Initialize(self)
   					RSConfigDB.SetShowDead(filtered)
   				elseif (filterID == RSConstants.EXPLORER_FILTER_FILTERED) then
   					RSConfigDB.SetShowFiltered(filtered)
+  				elseif (filterID == RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES) then
+  					RSConfigDB.SetShowWithoutCollectibles(filtered)
   				end
 	    			
 				-- Refresh
@@ -261,6 +265,14 @@ local function FilterDropDownMenu_Initialize(self)
 	  			info.text = AL["EXPLORER_FILTER_FILTERED"]
 	  			info.arg1 = RSConstants.EXPLORER_FILTER_FILTERED
 	  			info.checked = filters[RSConstants.EXPLORER_FILTER_FILTERED]
+	  			info.func = refreshList
+	  			info.keepShownOnClick = true;
+	  			LibDD:UIDropDownMenu_AddButton(info, level)
+	  			
+	  			info = LibDD:UIDropDownMenu_CreateInfo()
+	  			info.text = AL["EXPLORER_FILTER_WITHOUT_COLLECTIBLES"]
+	  			info.arg1 = RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES
+	  			info.checked = filters[RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES]
 	  			info.func = refreshList
 	  			info.keepShownOnClick = true;
 	  			LibDD:UIDropDownMenu_AddButton(info, level)
@@ -524,6 +536,10 @@ function RSExplorerRareList:UpdateRareList()
 					end
 								
 					if (filters[RSConstants.EXPLORER_FILTER_PART_ACHIEVEMENT] and RSAchievementDB.GetNotCompletedAchievementLink(npcID, self.mapID)) then
+						self:AddFilteredRareToList(npcID, npcInfo, npcName)
+					end
+								
+					if (filters[RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES] and ((not collectionsLoot or not collectionsLoot[npcID]) or (collectionsLoot[npcID][RSConstants.ITEM_TYPE.APPEARANCE] and RSUtils.GetTableLength(collectionsLoot[npcID][RSConstants.ITEM_TYPE.APPEARANCE][self.classIndex]) == 0))) then
 						self:AddFilteredRareToList(npcID, npcInfo, npcName)
 					end
 				end
@@ -1145,6 +1161,7 @@ function RSExplorerMixin:Initialize()
 	filters[RSConstants.EXPLORER_FILTER_DROP_APPEARANCES] = RSConfigDB.IsSearchingAppearances()
 	filters[RSConstants.EXPLORER_FILTER_DEAD] = RSConfigDB.IsShowDead()
 	filters[RSConstants.EXPLORER_FILTER_FILTERED] = RSConfigDB.IsShowFiltered()
+	filters[RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES] = RSConfigDB.IsShowWithoutCollectibles()
 	
 	self.Filters:Initialize(self);
 	self.RareNPCList:Initialize(self);

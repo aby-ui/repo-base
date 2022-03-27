@@ -1,7 +1,7 @@
 ## Interface: 90200
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 3.7.14
+## Version: 3.7.16
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras

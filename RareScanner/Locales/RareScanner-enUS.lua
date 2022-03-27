@@ -176,6 +176,7 @@ if AL then
 	AL["EXPLORER_FILTER_PETS"] = "Drops missing pets"
 	AL["EXPLORER_FILTER_STATE"] = "State"
 	AL["EXPLORER_FILTER_TOYS"] = "Drops missing toys"
+	AL["EXPLORER_FILTER_WITHOUT_COLLECTIBLES"] = "Show NPCs without missing collectibles"
 	AL["EXPLORER_FILTERING"] = "Filter NPCs"
 	AL["EXPLORER_FILTERING_CONTAINERS"] = "Analyzing containers to be filtered..."
 	AL["EXPLORER_FILTERING_DESC"] = "Filter all the NPCs that don't drop any of the collectibles selected under \"%s - %s\" and unfilter the rest."

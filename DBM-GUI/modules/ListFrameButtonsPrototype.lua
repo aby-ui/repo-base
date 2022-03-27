@@ -40,7 +40,7 @@ end
 local ListFrameButtonsPrototype = {}
 
 function ListFrameButtonsPrototype:CreateCategory(frame, parentID)
-	if not type(frame) == "table" then
+	if type(frame) ~= "table" then
 		DBM:AddMsg("Failed to create category - frame is not a table")
 		return false
 	end

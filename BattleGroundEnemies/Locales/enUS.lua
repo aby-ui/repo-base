@@ -1,4 +1,4 @@
-local addonName, Data = ...
+local AddonName, Data = ...
 local defaultLocale = {}
 
 
@@ -14,7 +14,7 @@ Data.L = setmetatable({}, { --key set by all non english clients, Table gets acc
         if defaultLocale[k] then
             if gameLocale ~= "enUS" and not missingReported then
                 C_Timer.After(3, function() 
-                    BattleGroundEnemies:Information("Missing localizations for your ingame language. You can help translating this addon on https://www.curseforge.com/wow/addons/battlegroundenemies/localization")
+                    --BattleGroundEnemies:Information("Missing localizations for your ingame language. You can help translating this addon on https://www.curseforge.com/wow/addons/battlegroundenemies/localization")
                 end)
                 missingReported = true
             end
@@ -22,7 +22,7 @@ Data.L = setmetatable({}, { --key set by all non english clients, Table gets acc
             return defaultLocale[k]
         else
             C_Timer.After(3, function() 
-                BattleGroundEnemies:Information("Missing localization entry for['"..k.."']. Please report this to the addon author.")
+                --BattleGroundEnemies:Information("Missing localization entry for['"..k.."']. Please report this to the addon author.")
             end)
             return k
         end
@@ -77,6 +77,8 @@ L["BGSize_15"] = "1–15 Players"
 L["BGSize_15_Desc"] = "This settings apply for %s in a BG with 1–15 players per side"
 L["BGSize_40"] = "16–40 Players"
 L["BGSize_40_Desc"] = "This settings apply for %s in a BG with 16–40 players per side"
+L["BGSize_5"] = "Arena"
+L["BGSize_5_Desc"] = "This settings apply for %s in arenas"
 L["BlizzlikeAuraFiltering"] = "Use Blizzard's raidframe filter"
 L["BorderThickness"] = "Border size"
 L["BOTTOM"] = "Bottom"
@@ -126,6 +128,7 @@ L["DebuffType_Filtering_Desc"] = "When this option is enabled you will only see 
 L["DisableArenaFrames"] = "Disable Arenaframes"
 L["DisableArenaFrames_Desc"] = "Disables the Arenaframes in a battleground. Also works when sArena is installed"
 L["Disease"] = "Disease"
+L["DispellFilter"] = "Filter by dispellability"
 L["DisplayType"] = "Display type"
 L["Downwards"] = "Downwards"
 L["DR_Disorient"] = "Disorient"
@@ -276,6 +279,10 @@ L["RoleIcon_Enabled_Desc"] = "Enable this option if you want to see a role icon 
 L["RoleIcon_Size_Desc"] = "The size of the role icons (width and height)"
 L["RoleIconSettings"] = "Role icon"
 L["RoleIconSettings_Desc"] = "Settings for the role icon which is shown on the health bar"
+L["ShowDispellable"] = "Show dispellable"
+L["ShowDispellable_Desc"] = [=[Show %s that i can remove by decursing, purging, etc.
+
+]=]
 L["ShowMine"] = "Show mine"
 L["ShowMine_Desc"] = "Show %s that i applied"
 L["ShowNumbers"] = "Show numbers"
@@ -287,6 +294,7 @@ L["ShowTooltips_Desc"] = "Show tooltips when you move the mouse over objects lik
 L["Side"] = "Side"
 L["SideAtObject"] = "Side at object"
 L["Size"] = "Size"
+L["SourceFilter"] = "Filter by Source"
 L["Spec_AuraDisplay_Enabled"] = "Enable Aura display"
 L["Spec_AuraDisplay_Enabled_Desc"] = "When this option is enabled you will see icons for crowd control and interrupts (when active) instead of the spec icon"
 L["Spec_Enabled"] = "Enable specialization"

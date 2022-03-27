@@ -3,7 +3,7 @@
 -- 物品信息庫 Author: M
 ---------------------------------
 
-local MAJOR, MINOR = "LibItemInfo.7000", 4
+local MAJOR, MINOR = "LibItemInfo.7000", 5
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -41,6 +41,7 @@ function lib:GetStatsViaTooltip(tip, stats)
             for statValue, statName in string.gmatch(text, "%+([0-9,]+)([^%+%|]+)") do
                 statName = strtrim(statName)
                 statName = statName:gsub("與$", "") --zhTW
+                statName = statName:gsub("和$", "") --zhTW
                 statName = statName:gsub("，", "")  --zhCN
                 statName = statName:gsub("%s*&$", "") --enUS
                 statValue = statValue:gsub(",","")

@@ -62,21 +62,21 @@ E.PARTY_UNIT = {
 }
 
 E.TANK_SPEC = {
-	[250] = true,   -- Blood DK
-	[581] = true,   -- Vengeance DH
-	[104] = true,   -- Guardian Druid
-	[268] = true,   -- Brewmaster Monk
-	[66] = true,    -- Prot Paladin
-	[73] = true,    -- Prot Warrior
+	[250] = true,
+	[581] = true,
+	[104] = true,
+	[268] = true,
+	[66] = true,
+	[73] = true,
 }
 
 E.HEALER_SPEC = {
-	[105] = true,   -- Restoration Druid
-	[270] = true,   -- Mistweaver
-	[65] = true,    -- Holy Paladin
-	[256] = true,   -- Disipline Priest
-	[257] = true,   -- Holy Priest
-	[264] = true,   -- Restoration Shaman
+	[105] = true,
+	[270] = true,
+	[65] = true,
+	[256] = true,
+	[257] = true,
+	[264] = true,
 }
 
 E.CFG_ZONE = {
@@ -144,17 +144,15 @@ E.L_PRIORITY = {
 	["other"] = OTHER,
 }
 
--- old glow
---[[
-E.L_GLOW_ATLAS ={
-	["bags-glow-white"] = ICON_TAG_RAID_TARGET_SKULL3,
-	["bags-glow-green"] = ICON_TAG_RAID_TARGET_TRIANGLE3,
-	["bags-glow-blue"] = ICON_TAG_RAID_TARGET_SQUARE3,
-	["bags-glow-purple"] = ICON_TAG_RAID_TARGET_DIAMOND3,
-	["bags-glow-orange"] = ICON_TAG_RAID_TARGET_CIRCLE3,
-	["bags-glow-artifact"] = ICON_TAG_RAID_TARGET_STAR3,
-}
-]]
+
+
+
+
+
+
+
+
+
 
 E.L_HIGHLIGHTS = {
 	["racial"] = RACIAL_TRAITS,
@@ -175,31 +173,31 @@ E.OTHER_SORT_ORDER = {
 	"RACIAL",
 	"TRINKET",
 	"COVENANT",
---- "CONSUMABLE",
+
 }
 
 E.L_CATAGORY_OTHER = {
 	["PVPTRINKET"] = L_PVP_TRINKET,
 	["RACIAL"] = RACIAL_TRAITS,
-	["TRINKET"] = INVTYPE_TRINKET,
+	["TRINKET"] = format("%s & %s", INVTYPE_TRINKET, INVTYPE_WEAPONMAINHAND),
 	["COVENANT"] = COVENANT_PREVIEW_RACIAL_ABILITY and format("%s (%s)", COVENANT_PREVIEW_RACIAL_ABILITY, L["Covenant"]) or "Covenant Signature Ability",
---- ["CONSUMABLE"] = BAG_FILTER_CONSUMABLES
+
 }
 
 E.ICO = {
---  ["CLASS"] = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes",
-	["CLASS"] = "Interface\\Icons\\classicon_", -- individual icons if we're cropping tree icons
+
+	["CLASS"] = "Interface\\Icons\\classicon_",
 	["PVPTRINKET"] = "Interface\\Icons\\ability_pvp_gladiatormedallion",
 	["RACIAL"] = "Interface\\Icons\\Achievement_character_human_female",
 	["TRINKET"] = "Interface\\Icons\\inv_60pvp_trinket2d",
 	["COVENANT"] = 3257750,
---- ["CONSUMABLE"] = 3566860,
+
 }
 
 if E.isPreBCC then
 	E.OTHER_SORT_ORDER[4] = nil
---- E.OTHER_SORT_ORDER[5] = nil
-	E.ICO.PVPTRINKET = "Interface\\Icons\\inv_jewelry_trinketpvp_01" -- inv_jewelry_trinketpvp_02 (horde)
+
+	E.ICO.PVPTRINKET = "Interface\\Icons\\inv_jewelry_trinketpvp_01"
 	E.ICO.RACIAL = "Interface\\Icons\\achievement_character_troll_male"
 	E.ICO.TRINKET = "Interface\\Icons\\inv_misc_armorkit_10"
 end
@@ -231,7 +229,7 @@ E.BOOKTYPE_CATEGORY = {
 	["DEMONHUNTER"] = true,
 }
 
-E.CLASSID = { -- not CLASS_SORT_ORDER
+E.CLASSID = {
 	"WARRIOR",
 	"PALADIN",
 	"HUNTER",
@@ -246,76 +244,45 @@ E.CLASSID = { -- not CLASS_SORT_ORDER
 	"DEMONHUNTER"
 }
 
--- 1 for Combo, Chi, etc., 3 for Rage, etc (ignoring 1 Chi spenders used ooc that starts combat)
-E.POWER_TYPE_SPEC_OCC_THRESHOLD = {
-	[250] = 3,  -- DK (Blood)
-	[103] = 1,	-- Druid (Feral)
-	[253] = 3,  -- Hunter(BM)
-	[254] = 3,  -- Hunter (MM)
-	[255] = 3,  -- Hunter (SV)
-	[269] = 1,  -- Monk (WW)
-	[65] = 1,   -- Paladin (Holy)
-	[66] = 1,   -- Paladin (Prot)
-	[70] = 1,   -- Paladin (Ret)
-	[260] = 1,  -- Rogue (Outlaw)
-	[261] = 1,  -- Rogue (Sub)
-	[71] = 3,   -- Warrior (Arms)
-	[72] = 3,   -- Warrior (Fury)
-	[73] = 3,   -- Warrior (Prot)
-	[265] = 1,  -- Warlock (Aff)
-	[266] = 1,  -- Warlock (Demo)
-	[267] = 1,  -- Warlock (Dest)
-}
-
-E.POWER_TYPE_IDS = {
-	["RUNIC_POWER"] = Enum.PowerType.RunicPower,    -- 6
-	["FOCUS"] = Enum.PowerType.Focus,   -- 2
-	["CHI"] = Enum.PowerType.Chi,   -- 12
-	["HOLY_POWER"] = Enum.PowerType.HolyPower,  -- 9
-	["RAGE"] = Enum.PowerType.Rage, -- 1
-	["COMBO_POINTS"] = Enum.PowerType.ComboPoints,  -- 4
-	["SOUL_SHARDS"] = Enum.PowerType.SoulShards,    -- 7
-}
-
 E.COVENANT_HEX_C = {
-	[321076] = "|cff2aa2ff",    -- KYRIAN_BLUE_COLOR
-	[321079] = "|cffe40d0d",    -- VENTHYR_RED_COLOR
-	[321077] = "|cff80b5fd",    -- NIGHT_FAE_BLUE_COLOR
-	[321078] = "|cff17c864",    -- NECROLORD_GREEN_COLOR
+	[321076] = "|cff2aa2ff",
+	[321079] = "|cffe40d0d",
+	[321077] = "|cff80b5fd",
+	[321078] = "|cff17c864",
 }
---> Desc
+
 
 E.HEX_C = {
-	CURSE_ORANGE = "|cfff16436",    -- 0.945, 0.392, 0.212
-	TWITCH_PURPLE = "|cff9146ff",   -- 0.569, 0.275, 1.0
-	PERFORMANCE_BLUE = "|cff99cdff",    -- 0.596, 0.808, 1.0
-	OMNICD_RED = "|cffc10003",      -- 0.757, 0.0, 0.012
-	OMNICD_MAROON = "|cff69000b",   -- 0.412, 0.0, 0.043
-	OVERWOLF_RED = "|cffd34037",    -- 0.827, 0.247, 0.215
+	CURSE_ORANGE = "|cfff16436",
+	TWITCH_PURPLE = "|cff9146ff",
+	PERFORMANCE_BLUE = "|cff99cdff",
+	OMNICD_RED = "|cffc10003",
+	OMNICD_MAROON = "|cff69000b",
+	OVERWOLF_RED = "|cffd34037",
 }
 
 E.PROJECT_HEX_C = {
-	[1] = "|cff99cdff", -- WOW_PROJECT_MAINLINE
-	[2] = "|cff0291b0", -- WOW_PROJECT_CLASSIC
-	[5] = "|cff7bbb4e", -- WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+	[1] = "|cff99cdff",
+	[2] = "|cff0291b0",
+	[5] = "|cff7bbb4e",
 }
 
---  tree/tab maroon  0.412, 0.0, 0.043
---  checkbox maroon  0.536, 0.0, 0.056
---  checkbox red     0.725, 0.008, 0.008
---  checkbox green   0.008, 0.725, 0.008
---  checkbox yellow  0.8, 0.624, 0
---  flash btn green  0, 0.6, 0.4
---  flash btn red    0.725, 0.008, 0.008
---  slider knob yellow   1, 0.824, 0
+
+
+
+
+
+
+
+
 
 E.RAID_TARGET_MARKERS = {
-	[0x00000001] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",   -- Star
-	[0x00000002] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t",   -- Circle
-	[0x00000004] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t",   -- Diamond
-	[0x00000008] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t",   -- Triangle
-	[0x00000010] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t",   -- Moon
-	[0x00000020] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t",   -- Square
-	[0x00000040] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t",   -- Cross
-	[0x00000080] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t",   -- Skull
+	[0x00000001] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t",
+	[0x00000002] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t",
+	[0x00000004] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:0|t",
+	[0x00000008] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:0|t",
+	[0x00000010] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:0|t",
+	[0x00000020] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:0|t",
+	[0x00000040] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t",
+	[0x00000080] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t",
 }

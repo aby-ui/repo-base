@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 54
-RSConstants.CURRENT_LOOT_DB_VERSION = 69
+RSConstants.CURRENT_DB_VERSION = 55
+RSConstants.CURRENT_LOOT_DB_VERSION = 70
 
 ---============================================================================
 -- Current maps (newer)
@@ -144,6 +144,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			searchingAppearances = true,
 			showFiltered = true,
 			showDead = true,
+			showWithoutCollectibles = false
 		},
 		map = {
 			displayNpcIcons = false,
@@ -597,6 +598,7 @@ RSConstants.EXPLORER_FILTER_DROP_APPEARANCES = 4
 RSConstants.EXPLORER_FILTER_PART_ACHIEVEMENT = 5
 RSConstants.EXPLORER_FILTER_DEAD = 6
 RSConstants.EXPLORER_FILTER_FILTERED = 7
+RSConstants.EXPLORER_FILTER_WITHOUT_COLLECTIBLES = 8
 
 ---============================================================================
 -- Others

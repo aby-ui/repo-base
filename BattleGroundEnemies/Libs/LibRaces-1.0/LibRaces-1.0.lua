@@ -2,7 +2,7 @@
 -- @class file
 -- @name LibRaces-1.0
 
-local MAJOR, MINOR = "LibRaces-1.0", 9
+local MAJOR, MINOR = "LibRaces-1.0", tonumber((gsub("r36","r",""))) or 9999;
 local LibRaces = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not LibRaces then return end

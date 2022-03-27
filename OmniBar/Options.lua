@@ -707,18 +707,32 @@ function OmniBar:AddBarToOptions(key, refresh)
 				arg = key,
 				func = "ToggleLock",
 				handler = OmniBar,
+				width = 0.75,
 				order = 1,
+			},
+			test = {
+				type = "execute",
+				name = L["Test"],
+				desc = L["Activate the icons for testing"],
+				order = 2,
+				width = 0.75,
+				func = function(info)
+					local key = info[#info-1]
+					local bar = _G[key]
+					OmniBar_Test(bar)
+				end,
 			},
 			delete = {
 				type = "execute",
 				name = L["Delete"],
+				width = 0.75,
 				desc = L["Delete the bar"],
 				func = function()
 					local popup = StaticPopup_Show("OMNIBAR_DELETE", self.db.profile.bars[key].name)
 					if popup then popup.data = key end
 				end,
 				arg = key,
-				order = 2,
+				order = 3,
 			},
 		},
 	}
@@ -918,12 +932,12 @@ local customSpells = {
 	spellId = {
 		name = L["Spell ID"],
 		type = "input",
-		set = function(info, state)
+		set = function(info, state, data)
 			local spellId = tonumber(state)
 			local name = GetSpellInfo(spellId)
 			if OmniBar.db.global.cooldowns[spellId] then return end
 			if spellId and name then
-				OmniBar.db.global.cooldowns[spellId] = addon.Cooldowns[spellId] or { custom = true, duration = { default = 30 } , class = "GENERAL" }
+				OmniBar.db.global.cooldowns[spellId] = data or addon.Cooldowns[spellId] or { custom = true, duration = { default = 30 } , class = "GENERAL" }
 
 				local duration
 				-- If it's a child convert it
@@ -1096,15 +1110,6 @@ function OmniBar:SetupOptions()
 				name = "|cffffd700 "..L["Author"].."|r Jordon |cffffd700 翻译修改|r NGA-伊甸外\n",
 				cmdHidden = true
 			},
-			test = {
-				type = "execute",
-				name = L["Test"],
-				desc = L["Activate the icons for testing"],
-				order = 3,
-				func = "Test",
-				handler = OmniBar,
-			},
-
 			bars = {
 				name = L["Bars"],
 				type = "group",
@@ -1118,10 +1123,37 @@ function OmniBar:SetupOptions()
 						order = 1,
 						func = "Create",
 						handler = OmniBar,
+						width = 0.7,
+					},
+					test = {
+						type = "execute",
+						name = L["Test All"],
+						desc = L["Activate the icons for testing"],
+						order = 2,
+						func = "Test",
+						handler = OmniBar,
+						width = 0.7,
+					},
+					import = {
+						type = "execute",
+						name = L["Import"],
+						desc = L["Import an OmniBar profile"],
+						order = 3,
+						func = "ShowImport",
+						handler = OmniBar,
+						width = 0.7,
+					},
+					export = {
+						type = "execute",
+						name = L["Export"],
+						desc = L["Export this profile"],
+						order = 4,
+						func = "ShowExport",
+						handler = OmniBar,
+						width = 0.7,
 					},
 				},
 			},
-
 			customSpells = {
 				name = L["Custom Spells"],
 				type = "group",
@@ -1142,7 +1174,6 @@ function OmniBar:SetupOptions()
 					return OmniBar.db.global.cooldowns[spellId][option]
 				end,
 			},
-
 		},
 	}
 
@@ -1155,3 +1186,64 @@ function OmniBar:SetupOptions()
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("OmniBar", self.options)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("OmniBar", "OmniBar")
 end
+
+local AceGUI = LibStub("AceGUI-3.0")
+
+-- Export
+local export = AceGUI:Create("Frame")
+export:SetWidth(550)
+export:EnableResize(false)
+export:SetStatusText("")
+export:SetLayout("Flow")
+export:SetTitle(L["Export"])
+export:SetStatusText(L["Copy this code to share this OmniBar profile."])
+export:Hide()
+local exportEditBox = AceGUI:Create("MultiLineEditBox")
+exportEditBox:SetLabel("")
+exportEditBox:SetNumLines(29)
+exportEditBox:SetText("")
+exportEditBox:SetFullWidth(true)
+exportEditBox:SetWidth(500)
+exportEditBox.button:Hide()
+exportEditBox.frame:SetClipsChildren(true)
+export:AddChild(exportEditBox)
+export.editBox = exportEditBox
+OmniBar.export = export
+
+-- Import
+local import = AceGUI:Create("Frame")
+import:SetWidth(550)
+import:EnableResize(false)
+import:SetStatusText("")
+import:SetLayout("Flow")
+import:SetTitle(L["Import"])
+import:Hide()
+local importEditBox = AceGUI:Create("MultiLineEditBox")
+importEditBox:SetLabel("")
+importEditBox:SetNumLines(25)
+importEditBox:SetText("")
+importEditBox:SetFullWidth(true)
+importEditBox:SetWidth(500)
+importEditBox.button:Hide()
+importEditBox.frame:SetClipsChildren(true)
+import:AddChild(importEditBox)
+import.editBox = importEditBox
+local importButton = AceGUI:Create("Button")
+importButton:SetWidth(100)
+importButton:SetText(L["Import"])
+importButton:SetCallback("OnClick", function()
+    local data = import.data
+    if (not data) then return end
+    if OmniBar:ImportProfile(data) then import:Hide() end
+end)
+import:AddChild(importButton)
+import.button = importButton
+importEditBox:SetCallback("OnTextChanged", function(widget)
+    local data = OmniBar:Decode(widget:GetText())
+    if (not data) then return end
+    import.statustext:SetTextColor(0,1,0)
+    import:SetStatusText(L["Ready to import"])
+    importButton:SetDisabled(false)
+    import.data = data
+end)
+OmniBar.import = import

@@ -36,7 +36,7 @@ E.SlashHandler = function(msg)
 			P:ResetAllIcons()
 			E.Write("Timers reset.")
 		elseif (value == "db" or value == "database") then
---          E.DB:ResetDB("Default")
+
 			OmniCDDB = {}
 			C_UI.Reload()
 		elseif (value == "pf" or value == "profile") then
@@ -52,7 +52,7 @@ E.SlashHandler = function(msg)
 		end
 	elseif (command == "t" or command == "test") then
 		if E.GetModuleEnabled("Party") then
-			local key = not P.test and (P.zone or select(2, IsInInstance()))
+			local key = not P.test and P.zone
 			P:Test(key)
 		else
 			E.Write("Module not enabled!")
@@ -64,14 +64,8 @@ E.SlashHandler = function(msg)
 		E.Write(key, L["Manual Mode"], state)
 		P:Refresh()
 		E:ACR_NotifyChange()
-	elseif (command == "sync") then -- toggles sync for CDR by power spent only
-		E.noPowerSync = not E.noPowerSync
-		local state = E.noPowerSync and VIDEO_OPTIONS_DISABLED or VIDEO_OPTIONS_ENABLED
-		E.Write("Sync power spent: ", state)
-		if E.Comms.enabled then
-			E.Comms:RegisterEventUnitPower()
-		end
-		E:ACR_NotifyChange()
+	elseif (command == "sync") then
+
 	elseif (command == "s" or command == "spell" or E.CFG_ZONE[command]) then
 		local zone = E.CFG_ZONE[command] and command or "arena"
 		value = value and string.lower(value)
@@ -166,7 +160,7 @@ E.OpenOptionPanel = function()
 	E.Libs.ACD:SetDefaultSize("OmniCD", 965, 650)
 	E.Libs.ACD:Open("OmniCD")
 
-	-- Expand trees
+
 	E.Libs.ACD:SelectGroup(E.AddOn, "Party")
 	E.Libs.ACD:SelectGroup(E.AddOn, "Home")
 end

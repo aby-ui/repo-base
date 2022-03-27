@@ -2,11 +2,21 @@ DBM_COMMON_L = {}
 
 local CL = DBM_COMMON_L
 
+--General
 CL.NONE								= "None"
 CL.RANDOM							= "Random"
+CL.UNKNOWN							= "Unknown"--UNKNOWN which is "Unknown" (does u vs U matter?)
 CL.NEXT								= "Next %s"
 CL.COOLDOWN							= "%s CD"
-CL.UNKNOWN							= "Unknown"--UNKNOWN which is "Unknown" (does u vs U matter?)
+CL.INCOMING							= "%s Incoming"
+CL.INTERMISSION						= "Intermission"--No blizz global for this, and will probably be used in most end tier fights with intermission phases
+CL.NO_DEBUFF						= "Not %s"--For use in places like info frame where you put "Not Spellname"
+CL.ALLY								= "Ally"--Such as "Move to Ally"
+CL.ALLIES							= "Allies"--Such as "Move to Allies"
+CL.SAFE								= "Safe"
+CL.NOTSAFE							= "Not Safe"
+CL.SEASONAL							= "Seasonal"--Used for option headers to label options that apply to seasonal mechanics (Such as season of mastery on classic era)
+--Movements/Places
 CL.LEFT								= "Left"
 CL.RIGHT							= "Right"
 CL.BOTH								= "Both"
@@ -21,35 +31,34 @@ CL.EAST								= "East"
 CL.WEST								= "West"
 CL.NORTH							= "North"
 CL.SOUTH							= "South"
-CL.INTERMISSION						= "Intermission"--No blizz global for this, and will probably be used in most end tier fights with intermission phases
+CL.SHIELD							= "Shield"
+CL.PILLAR							= "Pillar"
+CL.SHELTER							= "Shelter"
+CL.EDGE								= "Room Edge"
+CL.FAR_AWAY							= "Far Away"
+CL.PIT								= "Pit"--Pit, as in hole in ground
+--Mechanics
+CL.BOMB								= "Bomb"
+CL.BOMBS							= "Bombs"
 CL.ORB								= "Orb"
 CL.ORBS								= "Orbs"
 CL.RING								= "Ring"
 CL.RINGS							= "Rings"
 CL.CHEST							= "Chest"--As in Treasure 'Chest'. Not Chest as in body part.
-CL.NO_DEBUFF						= "Not %s"--For use in places like info frame where you put "Not Spellname"
-CL.ALLY								= "Ally"--Such as "Move to Ally"
-CL.ALLIES							= "Allies"--Such as "Move to Allies"
 CL.ADD								= "Add"--A fight Add as in "boss spawned extra adds"
 CL.ADDS								= "Adds"
 CL.BIG_ADD							= "Big Add"
 CL.BOSS								= "Boss"
-CL.EDGE								= "Room Edge"
-CL.FAR_AWAY							= "Far Away"
 CL.BREAK_LOS						= "Break LOS"
 CL.RESTORE_LOS						= "Maintain LOS"
-CL.SAFE								= "Safe"
-CL.NOTSAFE							= "Not Safe"
-CL.SHIELD							= "Shield"
-CL.PILLAR							= "Pillar"
-CL.SHELTER							= "Shelter"
-CL.INCOMING							= "%s Incoming"
 CL.BOSSTOGETHER						= "Bosses Together"
 CL.BOSSAPART						= "Bosses Apart"
+CL.MINDCONTROL						= "Mind Control"
 CL.TANKCOMBO						= "Tank Combo"
 CL.TANKCOMBOC						= "Tank Combo (%s)"
 CL.AOEDAMAGE						= "AOE Damage"
-CL.SEASONAL							= "Seasonal"--Used for option headers to label options that apply to seasonal mechanics (Such as season of mastery on classic era)
+CL.GROUPSOAK						= "Group Soak"
+CL.GROUPSOAKS						= "Group Soaks"
 
 --Journal Icons should not be copied to non english locals, do not include this section
 local EJIconPath = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1) and "EncounterJournal" or "AddOns\\DBM-Core\\textures"

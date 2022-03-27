@@ -1010,8 +1010,10 @@ do
         if not plate.isModified then
             plate.isModified = true
             hooksecurefunc(plate.UnitFrame, "Show", function(self)
-                if not UnitIsUnit(self.unit or "", "player") and not UnitNameplateShowsWidgetsOnly(self.unit) then
-                    if not self:IsForbidden() then self:Hide() end --abyui 个人资源有问题
+                if not UnitIsUnit(self.unit, "player") and
+                   not UnitNameplateShowsWidgetsOnly(self.unit) and
+                   not self:IsForbidden() then
+                    self:Hide()
                 end
             end)
         end
@@ -1021,7 +1023,10 @@ do
 		local unitid = ...
         local plate = GetNamePlateForUnit(unitid)
 		-- We're not going to theme the personal unit bar
-		if plate and not UnitIsUnit("player", unitid) and not UnitNameplateShowsWidgetsOnly(unitid) then
+		if plate and
+           not plate:IsForbidden() and
+           not UnitIsUnit("player", unitid) and
+           not UnitNameplateShowsWidgetsOnly(unitid) then
             if plate.UnitFrame then
                 plate.UnitFrame:Hide()
             end

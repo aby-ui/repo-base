@@ -1,6 +1,9 @@
 local E, L, C = select(2, ...):unpack()
 
 if E.isClassic then E.changelog = [=[
+v2.7.00
+	toc update - 11402
+
 v2.6.35
 	CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
 	Warlock Soulstone CD added.
@@ -10,124 +13,101 @@ v2.6.30
 	Initial release for WoW: Classic Era.
 ]=]
 elseif E.isBCC then E.changelog = [=[
+v2.7.00
+
+
 v2.6.36
 	nil error fix
 
-v2.6.35
-	CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
-	Warlock Soulstone CD added.
-
-v2.6.30
-	Feature Updates
-		All supported UIs can now display individual unit CD bars in a raid.
-		CD bars are now grayed out for offline/dead units.
-		Interrupt bar - added option to display interrupted spell icon and target marker. <req#283>
-		Highlighting - all self casted spell types can be highlighted.
-		Compatibility updates for WoW: Classic Era.
-		Compatibility updates for WoW: 9.1.5 PTR.
-	Bug Fixes
-		Reincarnation will correctly go on CD when used. (Temp fix)
-		Stealth, Prowl, Shadowmeld will correctly go on CD when the effect ends instead of on cast.
-		Talent changes will now update for synced units.
-		Fixed Triple row/col layout and recharge color switching on reset. <iss#284>
-		GW2_UI fixed for 5.18.X. <req#286>
-	AltzUI support. <req#291>
-
-Pre v2.6.30 changes can be found in the CHANGELOG file
+Pre v2.6.36 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.7.01
+	Encrypted event fix
+
+v2.7.00
+	TL;DR
+		Spells with cooldown reduction that can't be detected are now directly synced with other users.
+		Fixed an issue where using an ability would incorrectly put the same ability for another unit on cooldown. <iss#322>
+		* AddOn will no longer communicate with earlier versions.
+
+
+	Revised Sync Mode
+		Spells with cooldown reduction that can't be detected are now directly synced with other users.
+		Synced Spell : Prerequisite
+			DK
+				Death Grip: Death's Reach (talent)
+				Death and Decay/Defile/Death Due): Crimson Scourge (passive)
+			DH
+				Eye Beam, Fel Devastation: Darkglare Boon (runeforge)
+				Immolation Aura, Fel Devastation: Rapacious Hunger (set bonus)
+				All Sigils & Elysian Decree: Razelikh's Defilement (runeforge)
+				Felblade: passive
+			Druid
+				Berserk/Incarnation: Heart of the Lion (Feral set bonus)
+			Hunter
+				Rapid Fire: Lethal Shots (talent)
+				Barbed Shot: Wild Call (passive)
+				Wildfire Bomb: Carve passive, Rylakstalker's Confounding Strikes (runeforge), Mad bombardier (set bonus)
+				Harpoon: Terms of Engagement (talent)
+			Monk
+				Invoke Xuen, the White Tiger: Xuen's Bond (conduit)
+				Purifying Brew: Mighty Pour (runeforge)
+				Rising Sun Kick: Teachings of the Monastery (passive)
+				All Brews: Shaohao's Might (runeforge)
+				Roll/Chi Torpedo: Tumbling Technique (conduit)
+			Paladin
+				Avenging Wrath/Avenging Crusader: Dawn Will Come (Holy set bonus)
+				Wake of Ashes: Ashes to Ashes (Ret set bonus)
+				Avenger's Shield: Grand Crusader (passive), Holy Avenger's Engraved Sigil (runeforge)
+			Shaman
+				Primordial Wave: Tumbling Waves (conduit)
+				Fire/Storm Elemental: Fire Heart (Ele set bonus)
+				All Totems: Heal the Soul (Resto set bonus)
+			Warlock
+				Summon Darkglaire: Corrupting Leer (conduit)
+			Warrior
+				Recklessness, Enraged Regeneration: Reckless Defense (runeforge)
+			Covenant Sig
+				Purify Soul: Focusing Mantra (soulbind)
+				Fleshcraft: Resourceful Fleshcrafting (soulbind), passive
+				Soulshape: Stay on the Move (soulbind)
+			Spells affected by power/resource spenders (previous sync mode)
+
+			In raid instances, only the following spells are synced:
+				Fortifying Brew, Avenging Wrath, Ashen Hallow, Spirit Link/Healing Tide/Tremor/Wind Rush Totem.
+		* AddOn will no longer communicate with earlier versions.
+	Main hand on-use abilites can be added as 'Trinket & Main Hand'.
+	Spells
+		Added Cosmic Gladiator's Echoing Resolve. (display only)
+	CD Modifiers
+		Added cooldown rate modulation by Decrypted Urh Cypher (Seasonal affix). - not tested
+		Added cooldown rate modulation by Architect's Ingenuity core (Trinket).
+	Bug Fixes
+		Fixed an issue where using an ability would incorrectly put another unit with the same ability on cooldown. <iss#322>
+		Phial of Serenity will correctly go on cooldown with Forgelite Filter (soulbind ability).
+		Fixed Sinister Teachings' CDR (runeforge) to Fallen Order for Mistweaver Monks.
+		Anger Management will no longer incorrectly be applied under the effect of Deadly Calm.
+		Black Ox Brew will correctly reset Purifying Brew.
+		Keg smash & Tiger palm will correctly reduce Black Ox Brew's CD.
+		Haunted Mask (Bwonsamdi's Pact, runeforge) will correctly affect Benevolent Faerie's initial target only.
+		Emerald Slumber will no longer incorrectly increase it's own cooldown recovery rate.
+		Door of Shadows' cooldown recovery rate will be modulated by Intimidation Tactics only.
+
+	Blizzard Hotfixes
+		MARCH 14, 2022
+			Mage
+				Fire
+					Pyrokinesis (PvP Talent) now causes Fireball to reduce the cooldown of Combustion by 2 seconds (was 3 seconds).
+		MARCH 7, 2022
+			Druid
+				Feral
+					(2) Set Bonus: Berserk’s cooldown is now reduced by 0.7 seconds per combo point spent (was 0.5 seconds).
+
 v2.6.40
 	toc update 90200
 	Additional PvP trinkets added
 
-v2.6.38
-	Bug Fixes
-		Fixed an issue that caused Icy Propulsion's cooldown reduction to end prematurely.
-		Casting Condemn will correctly apply Anger Management's CDR for non-synced units.
-	Spells updated for 9.2
-	Removed options from the Interface menu d/t taint. Type /oc to open the option panel.
-
-v2.6.37
-	Bug Fixes
-		Sinful Delight (Runeforge) will correctly reduce Mirrors of Torment by 45seconds when it's dispelled.
-		Tiger Palm will no longer reduce Bonedust Brew's (Covenant) cooldown for MW and WW specs. <iss#332>
-		Walk with the Ox (Conduit) CDR will correctly be limited to once per 100ms (Shuffle).
-		Sinister Teachings (Runeforge) CDR will correctly be limited to once per 750ms.
-		CDR by haste is now applied after additive modifiers.
-	CD Modifiers
-		Shifting Powers CDR now applies to Alter Time for Arcane spec(was Frost & Fire only).
-		Kiss of Death (Runeforge) will reduce SW: Death cooldown by 12 seconds(was 8s).
-		Sinful Delight CDR on consuming Clearcast, Brain Freeze, and a Fireblast charge is now 4s(was 3s).
-		Tiger Palm and Keg Smash reduces Bonedust Brew's cooldown by an additional 1second while it's active for BM spec.
-
-v2.6.36
-	Bug Fixes
-		Icy Veins' highlighting will correctly be removed when the effect ends.
-		Guardian of the Ancient Kings w/ Glyph of the Queen will correctly start it's CD.
-	Non-synced units are now inspected every 5 seconds(was 15s) in arenas until the match begins.
-
-v2.6.35
-	Feature Updates
-		CTRL-clicking the spell in the 'Spells/RaidCD' tab will add it to the 'Spell Editor'.
-	Spells
-		Sinful Brand, Nether Portal, Impending Victory CD updated for 9.1.5
-	CD Modifiers
-		NF Priest, Benevolent Faerie Fermata (Conduit) added.
-		NF Priest, Bwonsamdi's Pact (Runeforge) added.
-	Bug Fixes
-		Kindred Spirits used on group members will correctly start it's CD and apply any existing CDR.
-		Fortifying Brew's CD when affected by both Benevolent Fae and Symbol of Hope will reduce the correct amount.
-		Switching Covenants will correctly remove previous Covenant spells for non-synced units.
-		Offline non-synced members will be re-inspected when they come back online to fix issues when the player has also been disconnected.
-		Fixed stack overflow error which can happen when using Icy Veins with Icy Propulsion and Thermal Void.
-	AshtToAsh UI support.
-	Grid2 by role support.
-
-v2.6.34
-	Fixed cooldown reduction with synced units.
-
-v2.6.33
-	Fixed cooldowns not resetting at the start of Mythic+.
-
-v2.6.32
-	Battle Res module removed d/t issues. This will no longer be integrated and be available as an external plugin only.
-	Prevent ACCESS_VIOLATION error.
-
-v2.6.31
-	Fixed nil error <iss#294>
-
-v2.6.30
-	Feature Updates
-		Battle Res module.
-		All supported UIs can now display individual unit CD bars in a raid.
-		CD bars are now grayed out for offline/dead units.
-		Interrupt bar - added option to display interrupted spell icon and target marker. <req#283>
-		Highlighting - all spell-types can be highlighted.
-		Compatibility updates for WoW: Classic Era.
-		Compatibility updates for WoW: 9.1.5 PTR.
-	Spells & CD Modifiers
-		Podtender (Night Fae Soulbind) added.
-		Pressure Points (PvP Talent) - Killing a player with Touch of Death reduces the remaining cooldown of Touch of Karma by 60 sec.
-		Death and Madness - If a target dies within 7 sec after being struck by your Shadow Word: Death, the cooldown is reset.
-		A murder of Crows - If the target dies while under attack, A Murder of Crows' cooldown is reset.
-		Shadowburn - Refunds a charge if the target dies within 5 sec.
-		Serrated Bone Spike (Rogue Covenant) - Refunds a charge when target dies.
-	Bug Fixes
-		Intimidation Tactics (Venthyr Soulbind) will correctly increase the CD recovery rate of Door of Shadows by 200% while below 50% health.
-		Seeds of Rampant Growth (Runeforge) will reduce the cooldown of Fae Transfusion on each pulse instead of damage.
-		Obedience will reduce the cooldown of Flagellation while it's active instead of it's haste buff.
-		Sinister Teachings will reduce the cooldown of Fallen Order from critical heals.
-		Fixed Flagellation's CD to 1.5 min.
-		Fixed Adaptation not applying shared CD on racial abilities when Adaptation isn't being tracked.
-		Fire Blast CD for Frost and Arcane Mages are correctly affected by haste.
-		Fixed Runeforge-Legendaries on certain slots.
-		Fixed Condemn (Warrior Covenant) spell ID.
-		Fixed CD recovery rate being lowered when an increased rate wasn't applied in certain situations.
-		Covenant detection will no longer be delayed for units that are still pending inspection.
-		Fixed Triple row/col layout and recharge color switching on reset. <iss#284>
-		GW2_UI fixed for 5.18.X. <req#286>
-	AltzUI support. <req#291>
-
-Pre v2.6.30 changes can be found in the CHANGELOG file
+Pre v2.6.40 changes can be found in the CHANGELOG file
 ]=]
 end

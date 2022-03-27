@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2403, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220204092737")
+mod:SetRevision("20220325103133")
 mod:SetCreatureID(164967)
 mod:SetEncounterID(2384)
 
@@ -35,7 +35,7 @@ local warnCorrosiveGunk				= mod:NewTargetAnnounce(319070, 3)
 local warnWitheringFilth			= mod:NewTargetNoFilterAnnounce(322410, 3, nil, "Healer", 2)--Not special warning, because it's not as urgent to remove as tank debuff (same dispel type)
 
 --General
-local specWarnSlimeLunge			= mod:NewSpecialWarningSpell(321406, nil, nil, nil, 2, 2)
+local specWarnSlimeLunge			= mod:NewSpecialWarningSpell(329217, nil, nil, nil, 2, 2)
 local specWarnSlimeInjection		= mod:NewSpecialWarningDispel(329110, "Healer", nil, 2, 1, 2)
 --local specWarnSlitheringOoze		= mod:NewSpecialWarningMoveTo(334579, nil, nil, nil, 1, 2)
 local specWarnVirulentExplosion		= mod:NewSpecialWarningSpell(321406, nil, nil, nil, 2, 2)--Change to MoveTo warning for Congealed Bile?

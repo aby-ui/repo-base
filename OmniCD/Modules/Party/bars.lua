@@ -92,8 +92,6 @@ function OmniCD_BarOnHide(self)
 
 
 
-
-
 	self:UnregisterAllEvents()
 end
 
@@ -130,7 +128,11 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 
 
 	if event == "UNIT_SPELLCAST_SUCCEEDED" then
-		local _,_, spellID = ...
+		local unit,_, spellID = ...
+		if unit ~= info.unit and unit ~= unitToPetId[info.unit] then
+			return
+		end
+
 		if (spell_enabled[spellID] or spell_modifiers[spellID]) and not cd_start_dispels[spellID] then
 			E.ProcessSpell(spellID, guid)
 		end
@@ -188,16 +190,12 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 
 
 
-
-
 		if info.glowIcons[TOUCH_OF_KARMA] then
 			if not P:GetBuffDuration(unit, TOUCH_OF_KARMA) then
 				local icon = info.glowIcons[TOUCH_OF_KARMA]
 				if icon then
 					P:RemoveHighlight(icon)
 				end
-
-
 
 
 
@@ -213,8 +211,6 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 					icon.icon:SetVertexColor(1, 1, 1)
 					P:StartCooldown(icon, icon.duration)
 				end
-
-
 
 
 
@@ -306,8 +302,6 @@ function P:RemoveIcon(icon)
 
 
 
-
-
 	self:HideOverlayGlow(icon)
 	icon:Hide()
 	tinsert(unusedIcons, icon)
@@ -380,8 +374,7 @@ function P:UpdateUnitBar(guid, isGRU)
 
 
 
-
-
+	f:UnregisterAllEvents()
 	if not E.isPreBCC and isntUser then
 		f:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 	end
@@ -484,8 +477,6 @@ function P:UpdateUnitBar(guid, isGRU)
 								if conduitData then
 									local rankValue = info.talentData[conduitData]
 									if rankValue then
-
-
 
 
 

@@ -13,7 +13,6 @@ local frame, duration, elapsed, totalRepeat
 --  Create Frame  --
 --------------------
 frame = CreateFrame("Frame", "DBMFlash", UIParent, "BackdropTemplate")
-frame:Hide()
 frame.backdropInfo = {
 	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background" -- 137056
 }

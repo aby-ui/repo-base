@@ -52,7 +52,14 @@ scanner_button:SetFrameStrata("MEDIUM")
 scanner_button:SetFrameLevel(200)
 scanner_button:SetSize(200, 50)
 scanner_button:SetScale(0.8)
-scanner_button:SetAttribute("type", "macro")
+scanner_button:RegisterForClicks("RightButtonUp", "LeftButtonUp")
+scanner_button:SetAttribute("*type1", "macro")
+scanner_button:SetAttribute("*type2", "closebutton")
+scanner_button.closebutton = function(self)
+	if (not InCombatLockdown()) then
+		self.CloseButton:Click()
+	end
+end
 scanner_button:SetNormalTexture([[Interface\AchievementFrame\UI-Achievement-Parchment-Horizontal-Desaturated]])
 scanner_button:SetBackdrop({ tile = true, edgeSize = 16, edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]] })
 scanner_button:SetBackdropBorderColor(0, 0, 0)

@@ -963,6 +963,16 @@ GTFO.SpellID["367838"] = {
   sound = 1;
 };
 
+GTFO.SpellID["368363"] = {
+  --desc = "Shattered Prism (Halondrus)";
+  sound = 1;
+};
+
+GTFO.SpellID["369207"] = {
+  --desc = "Planetcracker Beam (Halondrus)";
+  sound = 1;
+};
+
 GTFO.SpellID["366232"] = {
   --desc = "Animastorm (Prototype of Renewal)";
   sound = 1;
@@ -978,6 +988,12 @@ GTFO.SpellID["362798"] = {
   sound = 1;
   test = true;
 };
+
+GTFO.SpellID["365683"] = {
+  --desc = "Desecration (Overthrown Protector)";
+  sound = 1;
+};
+
 
 GTFO.SpellID["360425"] = {
   --desc = "Unholy Ground (The Jailer)";

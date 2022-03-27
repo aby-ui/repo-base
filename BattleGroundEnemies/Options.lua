@@ -1,4 +1,4 @@
-local addonName, Data = ...
+local AddonName, Data = ...
 local GetAddOnMetadata = GetAddOnMetadata
 
 local L = Data.L
@@ -19,7 +19,7 @@ local function copy(obj)
 end
 						
 local function addStaticPopupForPlayerTypeConfigImport(playerType, oppositePlayerType)
-	StaticPopupDialogs["CONFIRM_OVERRITE_"..addonName..playerType] = {
+	StaticPopupDialogs["CONFIRM_OVERRITE_"..AddonName..playerType] = {
 	  text = L.ConfirmProfileOverride:format(L[playerType], L[oppositePlayerType]),
 	  button1 = YES,
 	  button2 = NO,
@@ -41,7 +41,7 @@ addStaticPopupForPlayerTypeConfigImport("Allies", "Enemies")
 
 
 local function addStaticPopupBGTypeConfigImport(playerType, oppositePlayerType, BGSize)
-	StaticPopupDialogs["CONFIRM_OVERRITE_"..addonName..playerType..BGSize] = {
+	StaticPopupDialogs["CONFIRM_OVERRITE_"..AddonName..playerType..BGSize] = {
 	  text = L.ConfirmProfileOverride:format(L[playerType]..": "..L["BGSize_"..BGSize], L[oppositePlayerType]..": "..L["BGSize_"..BGSize]),
 	  button1 = YES,
 	  button2 = NO,
@@ -58,6 +58,8 @@ local function addStaticPopupBGTypeConfigImport(playerType, oppositePlayerType, 
 	  whileDead = 1,
 	}
 end
+addStaticPopupBGTypeConfigImport("Enemies", "Allies", "5")
+addStaticPopupBGTypeConfigImport("Allies", "Enemies", "5")
 addStaticPopupBGTypeConfigImport("Enemies", "Allies", "15")
 addStaticPopupBGTypeConfigImport("Allies", "Enemies", "15")
 addStaticPopupBGTypeConfigImport("Enemies", "Allies", "40")
@@ -76,23 +78,8 @@ local function getOption(location, option)
 	end
 end
 
-local timer = nil
-local function ApplyAllSettings()
-	if timer then timer:Cancel() end -- use a timer to apply changes after 0.2 second, this prevents the UI from getting laggy when the user uses a slider option
-	timer = CTimerNewTicker(0.2, function() 
-		BattleGroundEnemies.Enemies:ApplyAllSettings()
-		BattleGroundEnemies.Allies:ApplyAllSettings()
-		timer = nil
-	end, 1)
-end
-
-
 
 local function setOption(location, option, ...)
-
-
-	
-
 	local value
 	if option.type == "color" then
 		value = {...}   -- local r, g, b, alpha = ...
@@ -101,7 +88,7 @@ local function setOption(location, option, ...)
 	end
 
 	location[option[#option]] = value
-	ApplyAllSettings()
+	BattleGroundEnemies:ApplyAllSettings()
 	
 
 	--BattleGroundEnemies.db.profile[key] = value
@@ -143,7 +130,7 @@ local function addIconPositionSettings(location, optionname)
 			type = "range",
 			name = L.Size,
 			min = 0,
-			max = 40,
+			max = 80,
 			step = 1,
 			order = 1
 		},
@@ -440,7 +427,7 @@ local function addEnemyAndAllySettings(self)
 				desc = L.CopySettings_Desc:format(L[oppositePlayerType])..L.NotAvailableInCombat,
 				disabled = InCombatLockdown,
 				func = function()
-					StaticPopup_Show("CONFIRM_OVERRITE_"..addonName..playerType)
+					StaticPopup_Show("CONFIRM_OVERRITE_"..AddonName..playerType)
 				end,
 				width = "double",
 				order = 5
@@ -498,7 +485,7 @@ local function addEnemyAndAllySettings(self)
 						end,
 						set = function(option, key, state) 
 							location.RangeIndicator_Frames[key] = state
-							ApplyAllSettings()
+							BattleGroundEnemies:ApplyAllSettings()
 						end,
 						width = "double",
 						values = Data.RangeFrames,
@@ -644,14 +631,13 @@ local function addEnemyAndAllySettings(self)
 							}
 						}
 					}
-				
 				}
 			}
 		}
 	}
 	
 
-	for k, BGSize in pairs({"15", "40"}) do
+	for k, BGSize in pairs({"5", "15", "40"}) do
 		local location = BattleGroundEnemies.db.profile[playerType][BGSize]
 		settings[BGSize] = {
 			type = "group", 
@@ -678,7 +664,7 @@ local function addEnemyAndAllySettings(self)
 					name = L.CopySettings:format(L[oppositePlayerType]..": "..L["BGSize_"..BGSize]),
 					desc = L.CopySettings_Desc:format(L[oppositePlayerType]..": "..L["BGSize_"..BGSize]),
 					func = function()
-						StaticPopup_Show("CONFIRM_OVERRITE_"..addonName..playerType..BGSize)
+						StaticPopup_Show("CONFIRM_OVERRITE_"..AddonName..playerType..BGSize)
 					end,
 					width = "double",
 					order = 3
@@ -877,7 +863,7 @@ local function addEnemyAndAllySettings(self)
 											desc = L.RoleIcon_Size_Desc,
 											disabled = function() return not location.RoleIcon_Enabled end,
 											min = 2,
-											max = 40,
+											max = 80,
 											step = 1,
 											width = "normal",
 											order = 2
@@ -913,7 +899,7 @@ local function addEnemyAndAllySettings(self)
 											desc = L.CovenantIcon_Size_Desc,
 											disabled = function() return not location.CovenantIcon_Enabled end,
 											min = 2,
-											max = 40,
+											max = 80,
 											step = 1,
 											width = "normal",
 											order = 2
@@ -1036,7 +1022,7 @@ local function addEnemyAndAllySettings(self)
 									desc = L.Trinket_Width_Desc,
 									disabled = function() return not location.Trinket_Enabled end,
 									min = 1,
-									max = 40,
+									max = 80,
 									step = 1,
 									order = 3
 								},
@@ -1075,7 +1061,7 @@ local function addEnemyAndAllySettings(self)
 									desc = L.Racial_Width_Desc,
 									disabled = function() return not location.Racial_Enabled end,
 									min = 1,
-									max = 40,
+									max = 80,
 									step = 1,
 									order = 3
 								},
@@ -1143,7 +1129,7 @@ local function addEnemyAndAllySettings(self)
 									desc = L.Spec_Width_Desc,
 									disabled = function() return not location.Spec_Enabled end,
 									min = 1,
-									max = 40,
+									max = 80,
 									step = 1,
 									order = 2
 								},
@@ -1355,6 +1341,7 @@ local function addEnemyAndAllySettings(self)
 															},
 															order = 1
 														},
+														Fake1 = addVerticalSpacing(2),
 														Auras_Buffs_CustomFilteringSettings = {
 															type = "group",
 															name = L.AurasCustomConditions,
@@ -1362,7 +1349,7 @@ local function addEnemyAndAllySettings(self)
 																return not (location.Auras_Buffs_Filtering_Mode == "Custom")
 															end,
 															inline = true,
-															order = 2,
+															order = 3,
 															args = {
 																Auras_Buffs_CustomFiltering_ConditionsMode = {
 																	type = "select",
@@ -1377,16 +1364,37 @@ local function addEnemyAndAllySettings(self)
 																},
 
 																Fake = addVerticalSpacing(2),
+																Auras_Buffs_SourceFilter_Enabled = {
+																	type = "toggle",
+																	name = L.SourceFilter,
+																	order = 3,
+																},
 																Auras_Buffs_ShowMine = {
 																	type = "toggle",
 																	name = L.ShowMine,
 																	desc = L.ShowMine_Desc:format(L.Buffs),
+																	hidden = function() return not (location.Auras_Buffs_Filtering_Enabled and location.Auras_Buffs_SourceFilter_Enabled) end,
+																	width = "double",
 																	order = 4,
 																},
+																Fake1 = addVerticalSpacing(5),
+																Auras_Buffs_DispellFilter_Enabled = {
+																	type = "toggle",
+																	name = L.DispellFilter,
+																	order = 6,
+																},
+																Auras_Buffs_ShowDispellable = {
+																	type = "toggle",
+																	name = L.ShowDispellable,
+																	desc = L.ShowDispellable_Desc:format(L.Buffs),
+																	hidden = function() return not (location.Auras_Buffs_Filtering_Enabled and location.Auras_Buffs_DispellFilter_Enabled) end,
+																	order = 7,
+																},
+																Fake2 = addVerticalSpacing(8),
 																Auras_Buffs_SpellIDFiltering_Enabled = {
 																	type = "toggle",
 																	name = L.SpellID_Filtering,
-																	order = 8
+																	order = 9
 																},
 																Auras_Buffs_SpellIDFiltering__AddSpellID = {
 																	type = "input",
@@ -1402,9 +1410,9 @@ local function addEnemyAndAllySettings(self)
 																		end
 																	end,
 																	width = 'double',
-																	order = 9
+																	order = 10
 																},
-																Fake2 = addVerticalSpacing(10),
+																Fake3 = addVerticalSpacing(11),
 																Auras_Buffs_SpellIDFiltering_Filterlist = {
 																	type = "multiselect",
 																	name = L.Filtering_Filterlist,
@@ -1423,7 +1431,7 @@ local function addEnemyAndAllySettings(self)
 																		end
 																		return valueTable
 																	end,
-																	order = 11
+																	order = 12
 																}
 															}
 														}
@@ -1543,19 +1551,38 @@ local function addEnemyAndAllySettings(self)
 																},
 
 																Fake = addVerticalSpacing(2),
+																Auras_Debuffs_SourceFilter_Enabled = {
+																	type = "toggle",
+																	name = L.SourceFilter,
+																	order = 3,
+																},
 																Auras_Debuffs_ShowMine = {
 																	type = "toggle",
 																	name = L.ShowMine,
 																	desc = L.ShowMine_Desc:format(L.Debuffs),
+																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_SourceFilter_Enabled) end,
 																	order = 4,
 																},
 																Fake1 = addVerticalSpacing(5),
+																Auras_Debuffs_DispellFilter_Enabled = {
+																	type = "toggle",
+																	name = L.DispellFilter,
+																	order = 6,
+																},
+																Auras_Debuffs_ShowDispellable = {
+																	type = "toggle",
+																	name = L.ShowDispellable,
+																	desc = L.ShowMine_Desc:format(L.Buffs),
+																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_DispellFilter_Enabled) end,
+																	order = 7,
+																},
+																Fake2 = addVerticalSpacing(8),
 																Auras_Debuffs_DebuffTypeFiltering_Enabled = {
 																	type = "toggle",
 																	name = L.DebuffType_Filtering,
 																	desc = L.DebuffType_Filtering_Desc,
 																	width = 'normal',
-																	order = 6
+																	order = 9
 																},
 																Auras_Debuffs_DebuffTypeFiltering_Filterlist = {
 																	type = "multiselect",
@@ -1570,12 +1597,12 @@ local function addEnemyAndAllySettings(self)
 																	end,
 																	width = 'normal',
 																	values = Data.DebuffTypes,
-																	order = 7
+																	order = 10
 																},
 																Auras_Debuffs_SpellIDFiltering_Enabled = {
 																	type = "toggle",
 																	name = L.SpellID_Filtering,
-																	order = 8
+																	order = 11
 																},
 																Auras_Debuffs_SpellIDFiltering__AddSpellID = {
 																	type = "input",
@@ -1591,9 +1618,9 @@ local function addEnemyAndAllySettings(self)
 																		end
 																	end,
 																	width = 'double',
-																	order = 9
+																	order = 12
 																},
-																Fake2 = addVerticalSpacing(10),
+																Fake3 = addVerticalSpacing(13),
 																Auras_Debuffs_SpellIDFiltering_Filterlist = {
 																	type = "multiselect",
 																	name = L.Filtering_Filterlist,
@@ -1612,7 +1639,7 @@ local function addEnemyAndAllySettings(self)
 																		end
 																		return valueTable
 																	end,
-																	order = 11
+																	order = 14
 																}
 															}
 		
@@ -1688,7 +1715,7 @@ function BattleGroundEnemies:SetupOptions()
 	local location = self.db.profile
 	self.options = {
 		type = "group",
-		name = "BattleGroundEnemies " .. GetAddOnMetadata(addonName, "Version"),
+		name = "BattleGroundEnemies " .. GetAddOnMetadata(AddonName, "Version"),
 		childGroups = "tab",
 		get = function(option)
 			return getOption(location, option)
@@ -1710,13 +1737,14 @@ function BattleGroundEnemies:SetupOptions()
 						order = 1,
 						get = function() return self.BGSize end,
 						set = function(option, value)
-							self:BGSizeCheck(value)
+							self.Allies:UpdatePlayerCount(value)
+							self.Enemies:UpdatePlayerCount(value)
 							
 							if self.TestmodeActive then
 								self:FillData()
 							end
 						end,
-						values = {[15] = L.BGSize_15, [40] = L.BGSize_40}
+						values = {[5] = ARENA, [15] = L.BGSize_15, [40] = L.BGSize_40}
 					},
 					Testmode_Enabled = {
 						type = "execute",

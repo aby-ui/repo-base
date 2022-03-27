@@ -126,6 +126,11 @@ function RSRecentlySeenTracker.RemoveRecentlySeen(entityID)
 		end
 	end
 	
+	-- If for whatever reason it couldnt get the players coordinates it will be empty
+	if (RSUtils.GetTableLength(timeDistances) == 0) then
+		return
+	end
+	
 	-- And removes the closest to the player
 	local distances = {}
 	for time, distance in pairs (timeDistances) do

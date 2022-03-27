@@ -6,6 +6,9 @@
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 local LibItemInfo = LibStub:GetLibrary("LibItemInfo.7000")
 
+--bliz func
+local IsCorruptedItem = IsCorruptedItem or function(link) return false end
+
 --裝備清單
 local slots = {
     { index = 1, name = HEADSLOT, },
@@ -30,7 +33,7 @@ local slots = {
 local function GetInspectItemListFrame(parent)
     if (not parent.inspectFrame) then
         local itemfont = "ChatFontNormal"
-        local frame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+        local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
         local height = parent:GetHeight()
         if (height < 424) then
             height = 424
@@ -69,7 +72,7 @@ local function GetInspectItemListFrame(parent)
             insets   = {left = 1, right = 1, top = 1, bottom = 1}
         }
         for i, v in ipairs(slots) do
-            itemframe = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+            itemframe = CreateFrame("Button", nil, frame, "BackdropTemplate")
             itemframe:SetSize(120, (height-82)/#slots)
             itemframe.index = v.index
             itemframe.backdrop = backdrop
@@ -78,7 +81,7 @@ local function GetInspectItemListFrame(parent)
             else
                 itemframe:SetPoint("TOPLEFT", frame["item"..(i-1)], "BOTTOMLEFT")
             end
-            itemframe.label = CreateFrame("Frame", nil, itemframe, BackdropTemplateMixin and "BackdropTemplate" or nil)
+            itemframe.label = CreateFrame("Frame", nil, itemframe, "BackdropTemplate")
             itemframe.label:SetSize(38, 16)
             itemframe.label:SetPoint("LEFT")
             itemframe.label:SetBackdrop(backdrop)
@@ -248,21 +251,24 @@ end)
 
 --設置邊框
 LibEvent:attachTrigger("INSPECT_FRAME_SHOWN", function(self, frame, parent, ilevel)
+    local backdrop = frame:GetBackdrop()
     if (TinyInspectDB and TinyInspectDB.ShowInspectAngularBorder) then
-        frame.backdrop.edgeSize = 1
-        frame.backdrop.edgeFile = "Interface\\Buttons\\WHITE8X8"
-        frame.backdrop.insets.top = 1
-        frame.backdrop.insets.left = 1
-        frame.backdrop.insets.right = 1
-        frame.backdrop.insets.bottom = 1
+        backdrop.edgeSize = 1
+        backdrop.edgeFile = "Interface\\Buttons\\WHITE8X8"
+        backdrop.insets.top = 1
+        backdrop.insets.left = 1
+        backdrop.insets.right = 1
+        backdrop.insets.bottom = 1
+        frame.backdrop = backdrop
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, 0)
     else
-        frame.backdrop.edgeSize = 16
-        frame.backdrop.edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border"
-        frame.backdrop.insets.top = 4
-        frame.backdrop.insets.left = 4
-        frame.backdrop.insets.right = 4
-        frame.backdrop.insets.bottom = 4
+        backdrop.edgeSize = 16
+        backdrop.edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border"
+        backdrop.insets.top = 4
+        backdrop.insets.left = 4
+        backdrop.insets.right = 4
+        backdrop.insets.bottom = 4
+        frame.backdrop = backdrop
         frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 0, 0)
     end
 end)

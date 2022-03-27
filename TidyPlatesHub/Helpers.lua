@@ -65,6 +65,9 @@ local function ListToTable(...)
 end
 
 local function ConvertStringToTable(source, target)
+    if not source then
+        return
+    end
 	local temp = ListToTable(strsplit("\n", source))
 	target = wipe(target)
 

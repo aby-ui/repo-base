@@ -1,6 +1,6 @@
 local E, L, C = select(2, ...):unpack()
 
--- On creating new option tables, add them to pre-existing custom spells
+
 
 local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
@@ -26,7 +26,8 @@ for i = 1, MAX_CLASSES do
 		specIDs[#specIDs + 1] = id
 	end
 end
-classValues["TRINKET"] = format("|T%s:16|t %s (%s)", E.ICO.TRINKET, INVTYPE_TRINKET, ALL_CLASSES)
+
+classValues["TRINKET"] = format("|T%s:16|t %s & %s", E.ICO.TRINKET, INVTYPE_TRINKET, INVTYPE_WEAPONMAINHAND)
 
 local function GetClassIndexBySpellID(id)
 	for class, v in pairs(spell_db) do
@@ -39,28 +40,28 @@ local function GetClassIndexBySpellID(id)
 	end
 end
 
--- TODO: clean this up
-function E:UpdateSpell(id, isInit, oldClass, oldType) -- leave registered highlights to decay
+
+function E:UpdateSpell(id, isInit, oldClass, oldType)
 	local class, i = GetClassIndexBySpellID(id)
 	local v = OmniCDDB.cooldowns[id]
 	local vclass, vtype, force
 	if v then
 		vclass, vtype = v.class, v.type
-		if class ~= vclass then -- custom spell
-			if class then -- class change custom
+		if class ~= vclass then
+			if class then
 				tremove(spell_db[class], i)
-			else -- add new custom
+			else
 				force = true
 			end
 			spell_db[vclass][#spell_db[vclass] + 1] = v
-		elseif not v.custom and not defaultBackup[id] then -- add new default spell
+		elseif not v.custom and not defaultBackup[id] then
 			defaultBackup[id] = self.DeepCopy(spell_db[class][i])
 			spell_db[class][i] = v
 			if E.L_HIGHLIGHTS[vtype] then
 				self.Cooldowns:RegisterRemoveHighlightByCLEU(v.buff or id)
 			end
 			return
-		else -- type change etc for default/custom
+		else
 			spell_db[class][i] = v
 		end
 
@@ -69,10 +70,10 @@ function E:UpdateSpell(id, isInit, oldClass, oldType) -- leave registered highli
 		end
 	else
 		v = defaultBackup[id]
-		if v then -- delete default
+		if v then
 			vclass, vtype = v.class, v.type
 			spell_db[class][i] = self.DeepCopy(v)
-		else -- delete custom
+		else
 			tremove(spell_db[class], i)
 		end
 	end
@@ -106,7 +107,7 @@ end
 
 local isClassCategory = function(info)
 	local id = GetSpellID(info)
-	return OmniCDDB.cooldowns[id].class ~= "TRINKET" -- pvptrinket itemID are merged for 9.1, prevent editing itemID
+	return OmniCDDB.cooldowns[id].class ~= "TRINKET"
 end
 
 local getGlobalDurationCharge = function(info)
@@ -246,38 +247,36 @@ local customSpellInfo = {
 	lb1 = {
 		name = "\n", order = 7, type = "description",
 	},
-	-- TODO: reminder
-	--[=[
-	customPriority = {
-		name = L["Custom Priority"],
-		desc = L["Enter value to set a custom spell priority. This value is applied to all zones."],
-		order = 8,
-		type = "input",
-		get = function(info)
-			local id = GetSpellID(info)
-			local v = E.DB.profile.Party.customPriority[id]
-			if v then
-				return tostring(v)
-			end
-		end,
-		set = function(info, v)
-			if not string.match(v, "[^%d.]+") then
-				local id = GetSpellID(info)
-				if v == "" then
-					E.DB.profile.Party.customPriority[id] = nil
-				else
-					v = tonumber(v)
-					if v then
-						E.DB.profile.Party.customPriority[id] = v
-					end
-				end
-			end
-		end
-	},
-	lb2 = {
-		name = "", order = 9, type = "description",
-	},
-	]=]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	talentId = {
 		hidden = isOthersCategory,
 		name = L["Talent ID"],
@@ -317,7 +316,7 @@ local customSpellInfo = {
 	},
 	item = {
 		hidden = isClassCategory,
-		name = format("%s: %s", INVTYPE_TRINKET, L["Item ID (Optional)"]),
+		name = format("%s & %s: %s", INVTYPE_TRINKET, INVTYPE_WEAPONMAINHAND, L["Item ID (Optional)"]),
 		desc = L["Enter item ID to enable spell when the item is equipped only"],
 		order = 11,
 		type = "input",
@@ -333,14 +332,12 @@ local customSpellInfo = {
 		get = getItem,
 		set = setItem,
 	},
-	--[[
-	tt = {
-		hidden = isClassCategory,
-		name = "\n" .. L["Toggle \"Show Spell ID in Tooltips\" to retrieve item IDs"],
-		order = 13,
-		type = "description",
-	},
-	]]
+
+
+
+
+
+
 	lb3 = {
 		name = "", order = 14, type = "description",
 	},
@@ -378,19 +375,17 @@ local customSpellInfo = {
 	lb4 = {
 		name = "\n", order = 16, type = "description",
 	},
-	-- TODO: reminder
-	--[[
-	addToAlerts = {
-		disabled = true,
-		name = "+ " .. L["Add to Alerts"],
-		desc = L["Add spell to Spell Alerts"],
-		order = 17,
-		type = "execute",
-		func = function(info)
 
-		end,
-	}
-	]]
+
+
+
+
+
+
+
+
+
+
 }
 
 if not E.isPreBCC then
@@ -455,7 +450,7 @@ if not E.isPreBCC then
 	local customSpellSpecGroup = {
 		hidden = function(info)
 			local specID = GetSpecID(info, 0)
-			if not specID then return end -- inherited call on customSpellSpecInfo can be nil
+			if not specID then return end
 
 			local id = GetSpellID(info)
 			local class = OmniCDDB.cooldowns[id].class
@@ -621,7 +616,7 @@ function E:AddSpellEditor()
 	for id in pairs(OmniCDDB.cooldowns) do
 		if not C_Spell.DoesSpellExist(id) then
 			OmniCDDB.cooldowns[id] = nil
---          E.Write("Removing Invalid ID (User Added): |cffffd200" .. id)
+
 		else
 			id = tostring(id)
 			SpellEditor.args.editor.args[id] = customSpellGroup

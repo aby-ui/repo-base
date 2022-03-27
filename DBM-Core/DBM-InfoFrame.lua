@@ -360,7 +360,7 @@ local function updateIcons()
 			icons[DBM:GetUnitFullName(uId .. "target")] = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(icon2)
 		end
 	end
-	for i = 1, 8 do
+	for i = 1, 10 do
 		local icon = GetRaidTargetIndex("boss" .. i)
 		if icon then
 			icons[UnitName("boss" .. i)] = ("|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t"):format(icon)
@@ -422,7 +422,7 @@ local function updateEnemyPower()
 				end
 			end
 		else
-			for i = 1, 8 do
+			for i = 1, 10 do
 				local uId = "boss" .. i
 				local currentPower, maxPower = UnitPower(uId), UnitPowerMax(uId)
 				if maxPower and maxPower > 0 then
@@ -456,7 +456,7 @@ local function updateEnemyPower()
 				end
 			end
 		else
-			for i = 1, 8 do
+			for i = 1, 10 do
 				local uId = "boss" .. i
 				-- Primary Power
 				local currentPower, maxPower = UnitPower(uId), UnitPowerMax(uId)
@@ -502,7 +502,7 @@ local function updateEnemyAbsorb()
 			end
 		end
 	else--Generic absorbs for bosses. Not to be mistaken for updateMultiEnemyAbsorb, which supports checking multiple units that might or might not be bosses
-		for i = 1, 8 do
+		for i = 1, 10 do
 			local uId = "boss" .. i
 			if UnitExists(uId) then
 				local absorbAmount
@@ -534,7 +534,7 @@ local function updateMultiEnemyAbsorb()
 	local totalAbsorb = value[2]
 	local guidTable = value[3]--Multi target by table
 	local guidTracked = {}
-	for i = 1, 8 do
+	for i = 1, 10 do
 		if #guidTable == #guidTracked then--Stop searching, found everything we're looking for.
 			break
 		end
@@ -590,7 +590,7 @@ local function updateAllAbsorb()
 	twipe(lines)
 	local spellInput = value[1]
 	local totalAbsorb = value[2]
-	for i = 1, 8 do
+	for i = 1, 10 do
 		local uId = "boss" .. i
 		if UnitExists(uId) then
 			local absorbAmount

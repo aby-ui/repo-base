@@ -1,5 +1,5 @@
 local BattleGroundEnemies = BattleGroundEnemies
-local addonName, Data = ...
+local AddonName, Data = ...
 local GetTime = GetTime
 
 BattleGroundEnemies.Objects.ObjectiveAndRespawn = {}
@@ -49,7 +49,7 @@ function BattleGroundEnemies.Objects.ObjectiveAndRespawn.New(playerButton)
 	ObjectiveAndRespawn.Reset = function(self)	
 		self:Hide()
 		self.Icon:SetTexture()
-		self.AuraText:SetText("")
+		if self.AuraText:GetFont() then self.AuraText:SetText("") end
 		self.ActiveRespawnTimer = false
 	end
 	

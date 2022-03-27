@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2463, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220320212453")
+mod:SetRevision("20220325210911")
 mod:SetCreatureID(180906)
 mod:SetEncounterID(2529)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
@@ -182,7 +182,7 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 	elseif spellId == 360977 then
-		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then--Change to boss1 check if boss is always boss1, right now unsure
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Change to boss1 check if boss is always boss1, right now unsure
 			specWarnLightshatterBeam:Show(L.Mote)
 			specWarnLightshatterBeam:Play("defensive")
 		end

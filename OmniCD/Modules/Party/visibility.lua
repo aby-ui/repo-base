@@ -33,7 +33,8 @@ P.userData = {
 	glowIcons = {},
 	talentData = {},
 	invSlotData = {},
-	shadowlandsData = {}
+	shadowlandsData = {},
+	version = E.versionNum,
 }
 
 if E.isPreBCC then
@@ -62,8 +63,8 @@ do
 	end
 
 	local function SendRequestSync()
-		local success = E.Comms:InspectPlayer() -- GetSpecialization can fail for user joining LFR
-		if success then -- TODO: remove
+		local success = E.Comms:InspectPlayer()
+		if success then
 			E.Comms:RequestSync()
 			P.groupJoined = false
 			syncTimer = nil
@@ -79,7 +80,7 @@ do
 
 		local size = P:GetEffectiveNumGroupMembers()
 		local oldDisabled = P.disabled
-		P.disabled = not P.test and (P.disabledzone or size == 0 or -- make absolutely sure this never returns nil
+		P.disabled = not P.test and (P.disabledzone or size == 0 or
 			(size == 1 and P.isUserDisabled) or
 			(GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) == 0 and not E.profile.Party.visibility.finder) or
 			(size > E.profile.Party.visibility.size))
@@ -98,7 +99,7 @@ do
 
 		E.Libs.CBH:Fire("OnStartup")
 
-		for guid, info in pairs(P.groupInfo) do -- info wipes for group members exiting before you from queued-instances (Arena)
+		for guid, info in pairs(P.groupInfo) do
 			if not UnitExists(info.name) or (guid == E.userGUID and P.isUserDisabled) then
 				P.groupInfo[guid] = nil
 				info.bar:Hide()
@@ -117,8 +118,8 @@ do
 			end
 		end
 
-		local isInRaid = IsInRaid() -- in arena unit ID depends on the frame being used. partframes - Party123, CRF - Raid123
----     local isWarlockInGroup
+		local isInRaid = IsInRaid()
+
 		for i = 1, size do
 			local index = not isInRaid and i == size and 5 or i
 			local unit = isInRaid and E.RAID_UNIT[index] or E.PARTY_UNIT[index]
@@ -129,8 +130,8 @@ do
 			local isDeadOrOffline = isDead or not UnitIsConnected(unit)
 			local isUser = guid == E.userGUID
 
----         local isWarlock = class == "WARLOCK"
----         local pet = (class == "HUNTER" or isWarlock)and E.unitToPetId[unit]
+
+
 			local pet = (class == "HUNTER" or class == "WARLOCK")and E.unitToPetId[unit]
 			if pet then
 				local petGUID = UnitGUID(pet)
@@ -139,9 +140,9 @@ do
 					E.Cooldowns.petGUIDS[petGUID] = guid
 				end
 			end
----         if not isWarlockInGroup and isWarlock then
----             isWarlockInGroup = true
----         end
+
+
+
 
 			if info then
 				if info.unit ~= unit then
@@ -153,11 +154,12 @@ do
 					bar.unit = unit
 					bar.anchor.text:SetText(index)
 
-					-- Update event unitIDs
-					if not E.isPreBCC and not isUser then -- user registered in comms to make it work while user is disabled
+
+					bar:UnregisterAllEvents()
+					if not E.isPreBCC and not isUser then
 						bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 					end
-					if info.glowIcons[125174] or info.preActiveIcons[5384] then -- Touch of Karma, Feign Death
+					if info.glowIcons[125174] or info.preActiveIcons[5384] then
 						bar:RegisterUnitEvent("UNIT_AURA", unit)
 					end
 					if isDead then
@@ -166,7 +168,7 @@ do
 					bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit])
 				end
 
-				if force or (not info.isDead and info.isDeadOrOffline and not isDeadOrOffline) then -- LFR can fire GRU(while in a disabled zone) before PEW. -> force UpdateUnitBar on refresh/PEW
+				if force or (not info.isDead and info.isDeadOrOffline and not isDeadOrOffline) then
 					P.pendingQueue[#P.pendingQueue + 1] = guid
 					P:UpdateUnitBar(guid, true)
 				end
@@ -180,14 +182,14 @@ do
 					P.groupInfo[guid].isDeadOrOffline = isDeadOrOffline
 					info = P.groupInfo[guid]
 
-					P:UpdateUnitBar(guid, true) -- define user info.bar in case inspection fails
+					P:UpdateUnitBar(guid, true)
 				end
-			elseif class then -- nil check
+			elseif class then
 				local _,_, race = UnitRace(unit)
-				-- name lvl can still be nil -> recheck on inspect/sync
-				local name = GetUnitName(unit, true)    -- nil defaults to "Unknown"
-				local level = UnitLevel(unit)           -- nil defaults to 0
-				level = level > 0 and level or 200      -- pass initial spell level check
+
+				local name = GetUnitName(unit, true)
+				local level = UnitLevel(unit)
+				level = level > 0 and level or 200
 				info = {
 					guid = guid,
 					class = class,
@@ -229,16 +231,16 @@ do
 		P:UpdateExPosition()
 		E.Comms:EnqueueInspect()
 
-		-- CAVEAT: Unknown how blizzard starts the cooldown of consumables after leaving combat. can be 1-10sec.
----     if P.spell_enabled[6262] and P.isWarlockInGroup ~= isWarlockInGroup then
----         P.isWarlockInGroup = isWarlockInGroup
----         for guid in pairs(P.groupInfo) do
----             P:UpdateUnitBar(guid, true)
----         end
----     end
+
+
+
+
+
+
+
 
 		if P.groupJoined or force then
-			-- Temp fix for Healbot, VuhDo
+
 			if anchorTimer then
 				anchorTimer:Cancel()
 			end
@@ -247,13 +249,15 @@ do
 			if syncTimer then
 				syncTimer:Cancel()
 			end
-			-- solo(test) set delay to 0 so glow, tmarks doesn't reset
-			-- else delay til 2nd pass for class nils
+
+
 			syncTimer = C_Timer_NewTicker(size == 1 and 0 or MSG_INFO_REQUEST_DELAY, SendRequestSync, 1)
 		end
+
+		E.Comms:ToggleLazySync()
 	end
 
-	function P:GROUP_ROSTER_UPDATE(isPEW, isRefresh) -- fires on boss kills in dungeons
+	function P:GROUP_ROSTER_UPDATE(isPEW, isRefresh)
 		if ( isRefresh or GetNumGroupMembers() == 0 ) then
 			updateRosterInfo(true)
 		elseif ( isPEW ) then
@@ -298,7 +302,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	wipe(E.Cooldowns.diedDestGUIDS)
 	wipe(E.Cooldowns.dispelledDestGUIDS)
 
-	-- TODO: if zone changed or isRefresh or first run
+
 	local key = self.test and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
@@ -315,23 +319,21 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	self:UpdateRaidPriority()
 
 	E.UnregisterEvents(self)
-	-- Overkill
-	--[[
-	if self.isInDungeon then
-		C_Timer.After(1, function()
-			local _,_, difficultyID = GetInstanceInfo() -- returns 0 on entering zone
-			if difficultyID == 23 then
-				E.RegisterEvents(self, self.zoneEvents[instanceType])
-			end
-		 end)
-	else
-		E.RegisterEvents(self, self.zoneEvents[instanceType])
-	end
-	]]
+
+
+
+
+
+
+
+
+
+
+
 	E.RegisterEvents(self, self.zoneEvents[instanceType])
 
 	self.isPvP = E.isPreBCC or (self.isInPvPInstance or (instanceType == "none" and C_PvP_IsWarModeDesired()))
-	--//
+
 
 	if self.isInPvPInstance then
 		self:ResetAllIcons("joinedPvP")
@@ -348,7 +350,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		end
 	end
 
-	self:GROUP_ROSTER_UPDATE(true, isRefresh) -- Don't ask, just do it!
+	self:GROUP_ROSTER_UPDATE(true, isRefresh)
 end
 
 function P:CHAT_MSG_BG_SYSTEM_NEUTRAL(arg1)

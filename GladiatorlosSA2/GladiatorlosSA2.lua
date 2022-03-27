@@ -5,9 +5,8 @@
  local L = LibStub("AceLocale-3.0"):GetLocale("GladiatorlosSA")
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
- --local GSA_VERSION = "|cffFF7D0A " .. GetAddOnMetadata("GladiatorlosSA2", "Version") .." |r(|cff9482C99.1 Shadowlands|r)"
  local GSA_VERSION = GetAddOnMetadata("GladiatorlosSA2", "Version")
- local GSA_GAME_VERSION = "9.1.5"
+ local GSA_GAME_VERSION = "9.2"
  local GSA_EXPANSION = ""
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -77,7 +76,7 @@
 
  -- TODO Clean up these arrays
  local TrackedFriendlyDebuffs = {
-	 87204, 		-- Vampiric Touch Horrify
+	 87204, 	-- Vampiric Touch Horrify
 	 196364, 	-- Unstable Affliction Silence
 	 1330, 		-- Garrote Silence
 	 1833, 		-- Cheap Shot
@@ -91,9 +90,9 @@
 	 199086, 	-- Warpath Stun
 	 202335, 	-- Double Barrel Stun
 	 215652, 	-- Shield of Virtue silence (Paladin)
-	 287254,		-- Remorseless Winter (Death Knight)
-	 357021,		-- Consecutive Concussion (Hunter)
-	 356727,		-- Spider Sting (Hunter)
+	 287254,	-- Remorseless Winter (Death Knight)
+	 357021,	-- Consecutive Concussion (Hunter)
+	 356727,	-- Spider Sting (Hunter)
 	 353084, 	-- Ring of Fire (Burning)
 
 	 -- Polymorph
@@ -143,7 +142,7 @@
 	30,		-- Alterac Valley
 	628,	-- Isle of Conquest
 	1280,	-- Southshore vs Tarren Mill
-	1191,	-- Trashcan
+	1191,	-- Ashran
 	2197	-- Korrak's Revenge
  }
 

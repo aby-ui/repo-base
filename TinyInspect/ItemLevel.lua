@@ -197,8 +197,8 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             SetItemLevel(self, link)
         --EncounterJournal
         elseif (self.encounterID and self.link) then
-            link = select(7, GetLootInfoByIndex(self.index))
-            SetItemLevel(self, link or self.link)
+            local itemInfo = GetLootInfoByIndex(self.index)
+            SetItemLevel(self, itemInfo.link or self.link)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())
@@ -258,10 +258,12 @@ hooksecurefunc("LootFrame_UpdateButton", function(index)
 end)
 
 -- GuildBank
+local MAX_GUILDBANK_SLOTS_PER_TAB = 98
+local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     if (addonName == "Blizzard_GuildBankUI") then
-        hooksecurefunc(GuildBankFrame, "Update", function()
-            if (GuildBankFrame.mode == "bank") then
+        hooksecurefunc(GuildBankFrame, "Update", function(self)
+            if (self.mode == "bank") then
                 local tab = GetCurrentGuildBankTab()
                 local button, index, column
                 for i = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
@@ -270,7 +272,7 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
                         index = NUM_SLOTS_PER_GUILDBANK_GROUP
                     end
                     column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
-                    button = GuildBankFrame.Columns[column].Buttons[index] --_G["GuildBankColumn"..column.."Button"..index]
+                    button = self.Columns[column].Buttons[index]
                     SetItemLevel(button, GetGuildBankItemLink(tab, i), "GuildBank")
                 end
             end
@@ -577,8 +579,9 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_BATTLEGROUND", filter)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", filter)
 
 -- 初次拾取钥石的信息 "\124cffa335ee\124Hitem:158923::::::::120:65:4063232:::248:9:9:11:2:::\124h[史诗钥石]\124h\124r",
+--据说首次拾取大秘钥匙是个item:180653:
 function firstLootKeystone(Hyperlink)
-    local map, level = string.match(Hyperlink, "|Hitem:158923::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):")
+    local map, level = string.match(Hyperlink, "|Hitem:180653::::::::%d*:%d*:%d*:%d*:%d*:(%d+):(%d+):")
     if (map and level) then
         local name = C_ChallengeMode.GetMapUIInfo(map)
         if name then
@@ -589,8 +592,8 @@ function firstLootKeystone(Hyperlink)
 end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg, ...)
-    if (string.find(msg, "item:158923:")) then
-        msg = msg:gsub("(|Hitem:158923:.-|h.-|h)", firstLootKeystone)
+    if (string.find(msg, "item:180653:")) then
+        msg = msg:gsub("(|Hitem:180653:.-|h.-|h)", firstLootKeystone)
     end
     return false, msg, ...
 end)

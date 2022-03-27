@@ -1,6 +1,6 @@
 if not LOCALE_zhCN then return end
 
-local addonName, Data = ...
+local AddonName, Data = ...
 local L = Data.L;
 
 L["Allies"] = "友方"
@@ -46,6 +46,8 @@ L["BGSize_15"] = "1-15 名玩家"
 L["BGSize_15_Desc"] = "此设置适用于%s在每方1-15人的战场"
 L["BGSize_40"] = "16-40 名玩家"
 L["BGSize_40_Desc"] = "此设置适用于%s在每方16-40人的战场"
+L["BGSize_5"] = "竞技场"
+L["BGSize_5_Desc"] = "此设置适用于竞技场中的%s"
 L["BlizzlikeAuraFiltering"] = "使用暴雪团队框架过滤器"
 L["BorderThickness"] = "边框大小"
 L["BOTTOM"] = "下"

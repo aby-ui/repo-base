@@ -1,16 +1,15 @@
 --[[
 Name: DRList-1.0
-Description: Diminishing returns database. Fork of DRData-1.0.
-Website: https://www.curseforge.com/wow/addons/drlist-1-0
+Description: Diminishing returns categorization. Fork of outdated DRData-1.0.
+Website: https://github.com/wardz/DRList-1.0/
 Documentation: https://wardz.github.io/DRList-1.0/
-Version: a0bc478
 Dependencies: LibStub
 License: MIT
 ]]
 
 --- DRList-1.0
 -- @module DRList-1.0
-local MAJOR, MINOR = "DRList-1.0", 23
+local MAJOR, MINOR = "DRList-1.0", 29 -- Don't forget to change this in Spells.lua aswell!
 local Lib = assert(LibStub, MAJOR .. " requires LibStub."):NewLibrary(MAJOR, MINOR)
 if not Lib then return end -- already loaded
 
@@ -28,19 +27,20 @@ L["ROOTS"] = "Roots"
 L["SILENCES"] = "Silences"
 L["STUNS"] = "Stuns"
 L["TAUNTS"] = "Taunts"
-
--- Classic & TBC
 L["FEARS"] = "Fears"
 L["RANDOM_ROOTS"] = "Random roots"
 L["RANDOM_STUNS"] = "Random stuns"
+L["SCATTERS"] = "Scatters"
+L["SLEEPS"] = GetSpellInfo(1090) or "Sleep"
 L["MIND_CONTROL"] = GetSpellInfo(605) or "Mind Control"
-L["FROST_SHOCK"] = GetSpellInfo(8056) or GetSpellInfo(196840) or "Frost Shock"
+L["FROST_SHOCK"] = GetSpellInfo(15089) or "Frost Shock"
 L["KIDNEY_SHOT"] = GetSpellInfo(408) or "Kidney Shot"
-L["SLEEPS"] = GetSpellInfo(1090) or "Sleeps"
-L["DEATH_COIL"] = GetSpellInfo(27223) or GetSpellInfo(47541) or "Death Coil"
+L["DEATH_COIL"] = GetSpellInfo(28412) or "Death Coil"
 L["UNSTABLE_AFFLICTION"] = GetSpellInfo(31117) or "Unstable Affliction"
-L["FREEZING_TRAP"] = GetSpellInfo(1499) or GetSpellInfo(187650) or "Freezing Trap"
-L["SCATTER_SHOT"] = GetSpellInfo(19503) or GetSpellInfo(213691) or "Scatter Shot"
+L["CHASTISE"] = GetSpellInfo(44041) or "Chastise"
+L["COUNTERATTACK"] = GetSpellInfo(19306) or "Counterattack"
+L["FREEZING_TRAP"] = GetSpellInfo(27753) or "Freezing Trap" -- DEPRECATED
+L["SCATTER_SHOT"] = GetSpellInfo(23601) or "Scatter Shot" -- DEPRECATED
 
 -- luacheck: push ignore 542
 local locale = GetLocale()
@@ -75,11 +75,13 @@ elseif locale == "ruRU" then
     L["FEARS"] = "Опасения"
     L["INCAPACITATES"] = "Паралич"
     L["KNOCKBACKS"] = "Отбрасывание"
+    L["RANDOM_ROOTS"] = "Случайные корни"
+    L["RANDOM_STUNS"] = "Случайные оглушения"
     L["ROOTS"] = "Сковывание"
     L["SILENCES"] = "Немота"
     L["STUNS"] = "Оглушение"
     L["TAUNTS"] = "Насмешки"
-elseif locale == "esES" then
+elseif locale == "esES" or locale == "esMX" then
     L["DISARMS"] = "Desarmar"
     L["DISORIENTS"] = "Desorientar"
     L["FEARS"] = "Miedos"
@@ -87,13 +89,6 @@ elseif locale == "esES" then
     L["KNOCKBACKS"] = "Derribos"
     L["RANDOM_ROOTS"] = "Raíces aleatorias"
     L["RANDOM_STUNS"] = "Aturdir aleatorio"
-    L["ROOTS"] = "Raíces"
-    L["SILENCES"] = "Silencios"
-    L["STUNS"] = "Aturdimientos"
-    L["TAUNTS"] = "Provocaciones"
-elseif locale == "esMX" then
-    L["FEARS"] = "Miedos"
-    L["KNOCKBACKS"] = "Derribos"
     L["ROOTS"] = "Raíces"
     L["SILENCES"] = "Silencios"
     L["STUNS"] = "Aturdimientos"
@@ -126,38 +121,33 @@ end
 -- luacheck: pop
 -------------------------------------------------------------------------------
 
--- Check which game version we're running
-do
-    local expansions = {
-        [WOW_PROJECT_MAINLINE] = "retail",
-        [WOW_PROJECT_CLASSIC] = "classic",
-        [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "tbc",
-    }
-    Lib.gameExpansion = expansions[WOW_PROJECT_ID] or "unknown"
-end
+-- Check what game version we're running
+Lib.gameExpansion = ({
+    [WOW_PROJECT_MAINLINE] = "retail",
+    [WOW_PROJECT_CLASSIC] = "classic",
+    [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "tbc"
+})[WOW_PROJECT_ID]
 
--- How long it takes for a DR to expire
+-- How long it takes for a DR to expire, in seconds.
 Lib.resetTimes = {
     retail = {
         ["default"] = 18.5,
-        ["npc"] = 23.0, -- Against mobs it seems to last slightly longer, depending on server load
-        ["knockback"] = 10.5, -- Knockbacks are immediately immune and only DRs for 10s
+        ["npc"] = 23, -- Against mobs it seems to last slightly longer, depending on server load
+        ["knockback"] = 10, -- Knockbacks are immediately immune and only DRs for 10s
     },
 
     classic = {
         ["default"] = 19, -- dynamic between 15 and 20s
-        ["npc"] = 23.0,
+        ["npc"] = 23,
     },
 
     tbc = {
         ["default"] = 19, -- dynamic between 15 and 20s
-        ["npc"] = 23.0,
+        ["npc"] = 23,
     },
 }
 
 -- List of all DR categories, english -> localized.
--- Note: unlocalized categories used for the API are always singular,
--- and localized user facing categories are always plural. (Except spell names in classic)
 Lib.categoryNames = {
     retail = {
         ["disorient"] = L.DISORIENTS,
@@ -190,23 +180,24 @@ Lib.categoryNames = {
         ["random_root"] = L.RANDOM_ROOTS,
         ["root"] = L.ROOTS,
         ["disarm"] = L.DISARMS,
-        ["sleep"] = L.SLEEPS,
         ["fear"] = L.FEARS,
+        ["scatter"] = L.SCATTERS,
         ["mind_control"] = L.MIND_CONTROL,
         ["kidney_shot"] = L.KIDNEY_SHOT,
         ["death_coil"] = L.DEATH_COIL,
         ["unstable_affliction"] = L.UNSTABLE_AFFLICTION,
-        ["freezing_trap"] = L.FREEZING_TRAP,
-        ["scatter_shot"] = L.SCATTER_SHOT,
+        ["chastise"] = L.CHASTISE,
+        ["counterattack"] = L.COUNTERATTACK,
+        ["sleep"] = L.SLEEPS, -- DEPRECATED
+        ["freezing_trap"] = L.FREEZING_TRAP, -- DEPRECATED
+        ["scatter_shot"] = L.SCATTER_SHOT, -- DEPRECATED
     },
 }
 
--- Categories that have DR against normal mobs (not player pets).
--- Note that elites and quest bosses have DR on ALL categories.
--- Normal mobs only have a stun and taunt DR.
+-- Categories that have DR against normal mobs.
 Lib.categoriesPvE = {
     retail = {
-        ["taunt"] = L.TAUNTS,
+        ["taunt"] = L.TAUNTS, -- Lib.categoryNames.retail.taunt
         ["stun"] = L.STUNS,
         ["root"] = L.ROOTS,
     },
@@ -250,7 +241,7 @@ Lib.diminishedDurations = {
 --- Get table of all spells that DRs.
 -- Key is the spellID, and value is the unlocalized DR category.
 -- For Classic the key is the localized spell name instead, and value
--- is a table containing both the DR category and spell ID.
+-- is a table containing both the DR category and spell ID. (Classic has no spellID payload in the combat log)
 -- @see IterateSpellsByCategory
 -- @treturn ?table {number=string}|table {string=table}
 function Lib:GetSpells()
@@ -272,7 +263,7 @@ function Lib:GetPvECategories()
     return Lib.categoriesPvE[Lib.gameExpansion]
 end
 
---- Get constant for how long a DR lasts total for a given category.
+--- Get constant for how long a DR lasts for a given category.
 -- @tparam[opt="default"] string category Unlocalized category name, or "npc" for PvE timer.
 -- @treturn number
 function Lib:GetResetTime(category)
@@ -333,9 +324,9 @@ do
     local next = _G.next
 
     local function CategoryIterator(category, index)
-        local newCat
+        local spellList, newCat = Lib.spellList
         repeat
-            index, newCat = next(Lib.spellList, index)
+            index, newCat = next(spellList, index)
             if index then
                 if newCat == category or newCat.category == category then
                     return index, category
@@ -347,7 +338,7 @@ do
     --- Iterate through the spells of a given category.
     -- @tparam string category Unlocalized category name
     -- @usage for spellID in DRList:IterateSpellsByCategory("root") do print(spellID) end
-    -- @warning Slow function, do not use for combat related stuff unless you cache results.
+    -- @warning Slow function, do not use for frequent combat related stuff unless you cache results.
     -- @return Iterator function
     function Lib:IterateSpellsByCategory(category)
         assert(Lib.categoryNames[Lib.gameExpansion][category], "invalid category")

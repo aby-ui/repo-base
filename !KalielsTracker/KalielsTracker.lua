@@ -2572,7 +2572,7 @@ function KT:ToggleEmptyTracker(added)
 end
 
 --abyui 强制设置成透明，DBM自动隐藏时需要，返回true表示确实有改变
-_G.KT_ForceHideTracker = function(hide)
+KT_ForceHideTracker = function(hide)
     local alpha, mouse = 1, true
     if hide then
             alpha = 0
@@ -2592,6 +2592,13 @@ _G.KT_ForceHideTracker = function(hide)
     end
     return true
 end
+
+hooksecurefunc(KTF, "SetAlpha", function(self, alpha)
+    if KTTrackerRestore == true and InCombatLockdown()  and alpha == 1 then
+        KTF:SetAlpha(0)
+    end
+end)
+
 --/run hooksecurefunc("ObjectiveTracker_Expand", pdebug)
 --hooksecurefunc("Scenario_ChallengeMode_ShowBlock", function()    if db.collapseInInstance then end end)
 

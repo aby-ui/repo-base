@@ -122,11 +122,7 @@ E.spell_db = {
 
 
 
-
-
 		{ spellID = 323546, duration = 180, type = "covenant",  spec = 321079   },
-
-
 
 
 
@@ -164,7 +160,6 @@ E.spell_db = {
 		{ spellID = 197721, duration = 90,  type = "offensive", spec = true     },
 		{ spellID = 202770, duration = 60,  type = "offensive", spec = true     },
 		{ spellID = 319454, duration = 300, type = "offensive", spec = true     },
-
 
 
 
@@ -208,8 +203,6 @@ E.spell_db = {
 
 		{ spellID = 212638, duration = 25,  type = "disarm",    spec = true     },
 		{ spellID = 162488, duration = 30,  type = "disarm",    spec = true     },
-
-		{ spellID = 355589, duration = 60,  type = "disarm",    spec = 186414   },
 		{ spellID = 186265, duration = 180, type = "immunity"   },
 		{ spellID = 53480,  duration = 60,  type = "externalDefensive", spec = true },
 		{ spellID = 109304, duration = 120, type = "defensive"  },
@@ -374,7 +367,6 @@ E.spell_db = {
 	["PALADIN"] = {
 		{ spellID = 316958, duration = 240, type = "covenant",  spec = 321079   },
 		{ spellID = 328278, duration = 45,  type = "covenant",  spec = 321077   },
-
 
 
 
@@ -724,6 +716,7 @@ E.spell_db = {
 		{ spellID = 363481, duration = 120, type = "trinket",   item = 188766   },
 		{ spellID = 363522, duration = 120, type = "trinket",   item = 188775   },
 		{ spellID = 363532, duration = 180, type = "trinket",   item = 188778,  icon = 3950358  },
+		{ spellID = 363121, duration = 0,   type = "pvptrinket",item = 188691   },
 	},
 	["RACIAL"] = {
 		{ spellID = 59752,  duration = 180, type = "racial",    race =  1   },
@@ -806,6 +799,7 @@ E.spell_db = {
 
 
 
+		{ spellID = 355589, duration = 60,  type = "trinket",   item = 186414   },
 
 		{ spellID = 367241, duration = 300, type = "trinket",   item = 188271   },
 	},

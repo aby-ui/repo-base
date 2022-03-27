@@ -161,6 +161,7 @@ if AL then
 	AL["EXPEDITION_ISLANDS"] = "海嶼探險"
 	AL["EXPLORER_AUTO_FILTER"] = "自動過濾 NPC"
 	AL["EXPLORER_AUTO_FILTER_DESC"] = "啟動此功能後，只要您從 NPC 收集所有缺失的物品，它就會自動過濾。"
+	AL["EXPLORER_AUTOFILTER"] = "自動過濾 [%s]。不再缺少收藏品。"
 	AL["EXPLORER_BUTTON_TOOLTIP1"] = "左鍵點擊查看詳細"
 	AL["EXPLORER_BUTTON_TOOLTIP2"] = "右鍵點擊停止過濾 NPC"
 	AL["EXPLORER_BUTTON_TOOLTIP3"] = "右鍵點擊過濾此NPC"
