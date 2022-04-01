@@ -248,24 +248,15 @@ local specCache = {} -- key = GUID, value = specName (localized)
 function BattleGroundEnemies.Allies:GroupInSpecT_Update(event, GUID, unitID, info)
 	if not GUID or not info.class then return end
 
-
 	specCache[GUID] = info.spec_name_localized
 
-	if not BattleGroundEnemies.Allies.GUIDToAllyname[GUID] then
-		return C_Timer.After(1, function() BattleGroundEnemies:GROUP_ROSTER_UPDATE() end)
-	end
+	BattleGroundEnemies:GROUP_ROSTER_UPDATE()
 end
 
-if LGIST then -- the libary doesnt work in TBCC, IsTBCC
-	LGIST.RegisterCallback(BattleGroundEnemies.Allies, "GroupInSpecT_Update")
-end
+
 
 
 BattleGroundEnemies:RegisterEvent("PLAYER_LOGIN") --Fired on reload UI and on initial loading screen
-BattleGroundEnemies:RegisterEvent("PLAYER_ENTERING_WORLD") -- fired on reload UI and on every loading screen (for switching zones, intances etc)
-BattleGroundEnemies:RegisterEvent("GROUP_ROSTER_UPDATE")
-BattleGroundEnemies:RegisterEvent("PARTY_LEADER_CHANGED")
-BattleGroundEnemies:RegisterEvent("UI_SCALE_CHANGED")
 
 
 
@@ -1702,7 +1693,7 @@ do
 
 			playerButton.RaidTargetIcon:Hide()
 
-
+			playerButton.unitID = nil
 			playerButton.unit = nil
 
 
@@ -2251,6 +2242,9 @@ do
 					self.resort = true
 				end
 			end
+			if additionalData then
+				Mixin(playerButton, additionalData)
+			end
 			
 			playerButton.Status = 1 --1 means found, already existing
 		else
@@ -2392,7 +2386,7 @@ do
 			PlayerClass = select(2, UnitClass("player")),
 			IsGroupLeader = UnitIsGroupLeader("player"),
 			isGroupAssistant = UnitIsGroupAssistant("player"),
-			unitID = "player",
+			unit = "player",
 			GUID = UnitGUID("player")
 		}
 		
@@ -2412,6 +2406,15 @@ do
 		
 		CreateMainFrame("Allies")
 		CreateMainFrame("Enemies")
+
+		if LGIST then -- the libary doesnt work in TBCC, IsTBCC
+			LGIST.RegisterCallback(BattleGroundEnemies.Allies, "GroupInSpecT_Update")
+		end
+
+		self:RegisterEvent("GROUP_ROSTER_UPDATE")
+		self:RegisterEvent("PLAYER_ENTERING_WORLD") -- fired on reload UI and on every loading screen (for switching zones, intances etc)
+		self:RegisterEvent("PARTY_LEADER_CHANGED")
+		self:RegisterEvent("UI_SCALE_CHANGED")
 		
 		self:SetupOptions()
 
@@ -2775,6 +2778,8 @@ end
 do
 	local oldTarget
 	function BattleGroundEnemies:PLAYER_TARGET_CHANGED()
+		if not PlayerButton then return end
+
 		local playerButton = self:GetPlayerbuttonByUnitID("target")
 		
 		if oldTarget then
@@ -2810,6 +2815,8 @@ end
 do
 	local oldFocus
 	function BattleGroundEnemies:PLAYER_FOCUS_CHANGED()
+		if not PlayerButton then return end
+
 		local playerButton = self:GetPlayerbuttonByUnitID("focus")
 		if oldFocus then
 			if oldFocus.PlayerIsEnemy then
@@ -2968,7 +2975,7 @@ function BattleGroundEnemies:PLAYER_ALIVE()
 end
 
 function BattleGroundEnemies:UNIT_TARGET(unitID)
-	--self:Debug("unitID:", unitID, "unit:", UnitName(unitID), "unittarget:", UnitName(unitID.."target"))
+	--self:Debug("unitID:", unitID, "unitname:", UnitName(unitID), "unittarget:", UnitName(unitID.."target"))
 	
 	local playerButton = self:GetPlayerbuttonByUnitID(unitID)
 	if playerButton and playerButton ~= PlayerButton then
@@ -3066,7 +3073,6 @@ do
 		
 
 		function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
-
 			-- self:Debug(GetCurrentMapAreaID())
 			-- self:Debug("UPDATE_BATTLEFIELD_SCORE")
 			-- self:Debug("GetBattlefieldArenaFaction", GetBattlefieldArenaFaction())
@@ -3216,7 +3222,7 @@ do
 
 	function BattleGroundEnemies.Allies:AddGroupMember(name, isLeader, isAssistant, classTag, unitID)
 		local raceName, raceFile, raceID = UnitRace(unitID)
-		local CreatedOrUpdatedAll = true
+		local stop = false
 
 		local GUID = UnitGUID(unitID)
 		local additionalData = {
@@ -3233,8 +3239,7 @@ do
 			if specName then
 				self:CreateOrUpdatePlayer(name, raceName, classTag, specName, additionalData)
 			else
-				BattleGroundEnemies:Debug(name, "has no specName")
-				CreatedOrUpdatedAll = false
+				stop = true
 			end
 		end
 		
@@ -3247,19 +3252,18 @@ do
 		if isAssistant then
 			table.insert(self.assistants, name)
 		end
-		return CreatedOrUpdatedAll
+		return stop
 	end
 
 	function BattleGroundEnemies.Allies:UpdateAllUnitIDs()
 		for allyName, allyButton in pairs(self.Players) do
 			if allyButton then
 				if allyButton.PlayerName ~= BattleGroundEnemies.PlayerDetails.PlayerName then
-					local unit = allyButton.unitID
-					
+					local unitID = allyButton.unitID
 	
-					if allyButton.unit ~= unit then --it happens that numGroupMembers is higher than the value of the maximal players for that battleground, for example 15 in a 10 man bg, thats why we wipe AllyUnitIDToAllyDetails
+					if allyButton.unit ~= unitID then --it happens that numGroupMembers is higher than the value of the maximal players for that battleground, for example 15 in a 10 man bg, thats why we wipe AllyUnitIDToAllyDetails
 						-- ally has a new unitID now
-						local targetUnitID = unit.."target"
+						local targetUnitID = unitID.."target"
 	
 						--self:Debug("player", groupMember.PlayerName, "has a new unit and targeted something")
 					
@@ -3276,10 +3280,10 @@ do
 						end
 	
 	
-						allyButton:SetLevel(UnitLevel(unit))
+						allyButton:SetLevel(UnitLevel(unitID))
 	
 						allyButton.TargetUnitID = targetUnitID
-						allyButton:NewUnitID(unit)
+						allyButton:NewUnitID(unitID)
 					end
 				else
 					allyButton.TargetUnitID = "target"
@@ -3296,11 +3300,10 @@ do
 		local now = GetTime()
 		if now - lastRun < 2 then 
 			if ticker then ticker:Cancel() end
-			ticker = CTimerNewTicker(3, function() BattleGroundEnemies:GROUP_ROSTER_UPDATE() end, 1)
+			ticker = CTimerNewTicker(2.1, function() BattleGroundEnemies:GROUP_ROSTER_UPDATE() end, 1)
 			return 
 		end
 
-		
 		wipe(self.Allies.NewPlayerDetails)
 		self.Allies.groupLeader = nil
 		self.Allies.assistants = {}  
@@ -3311,7 +3314,7 @@ do
 				
 		-- GetRaidRosterInfo also works when in a party (not raid) but i am not 100% sure how the party unitID maps to the index in GetRaidRosterInfo()
 
-		local CreatedOrUpdatedAll = false
+		local stop = false
 
 		if IsInRaid() then 
 			local numGroupMembers = GetNumGroupMembers()
@@ -3321,7 +3324,7 @@ do
 				local name, rank, subgroup, level, localizedClass, classTag, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
 				
 				if name and rank and classTag then 
-					CreatedOrUpdatedAll = self.Allies:AddGroupMember(name, rank == 2, rank == 1, classTag, unitIDPrefix..i)
+					stop = self.Allies:AddGroupMember(name, rank == 2, rank == 1, classTag, unitIDPrefix..i) or stop
 				end
 			end
 		else
@@ -3338,24 +3341,25 @@ do
 						name = name.."-"..realm
 					end
 		
-					CreatedOrUpdatedAll = self.Allies:AddGroupMember(name, UnitIsGroupLeader(unitID), UnitIsGroupAssistant(unitID), select(2, UnitClass(unitID)), unitID)
+					stop = self.Allies:AddGroupMember(name, UnitIsGroupLeader(unitID), UnitIsGroupAssistant(unitID), select(2, UnitClass(unitID)), unitID) or stop
 				end
 			end
 
 			self.PlayerDetails.isGroupLeader = UnitIsGroupLeader("player")
 			self.PlayerDetails.isGroupAssistant = UnitIsGroupAssistant("player")
-			CreatedOrUpdatedAll = self.Allies:AddGroupMember(self.PlayerDetails.PlayerName, self.PlayerDetails.isGroupLeader, self.PlayerDetails.isGroupAssistant, self.PlayerDetails.PlayerClass, "player")
+			stop = self.Allies:AddGroupMember(self.PlayerDetails.PlayerName, self.PlayerDetails.isGroupLeader, self.PlayerDetails.isGroupAssistant, self.PlayerDetails.PlayerClass, "player") or stop
 		end
 
 		
-		if CreatedOrUpdatedAll then
+		if not stop then
 			if InCombatLockdown() then
-				return C_Timer.After(1, function() BattleGroundEnemies:GROUP_ROSTER_UPDATE() end)
+				C_Timer.After(1, function() BattleGroundEnemies:GROUP_ROSTER_UPDATE() end)
 			else 
 				self.Allies:DeleteAndCreateNewPlayers()
+				self.Allies:UpdateAllUnitIDs()
 			end 		
 		end
-		self.Allies:UpdateAllUnitIDs()
+		
 		lastRun = now
 	end
 
@@ -3371,6 +3375,7 @@ do
 		CurrentMapID = false
 	
 		local _, zone = IsInInstance()
+
 		if zone == "pvp" or zone == "arena" then
 			self:Show()
 			if zone == "arena" then

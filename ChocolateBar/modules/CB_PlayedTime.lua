@@ -1,11 +1,12 @@
--- a LDB object that will show/hide the chocolatebar set in the chocolatebar options
+﻿-- a LDB object that will show/hide the chocolatebar set in the chocolatebar options
 local LibStub = LibStub
 local L = LibStub("AceLocale-3.0"):GetLocale("ChocolateBar")
 local acetimer = LibStub("AceTimer-3.0")
 local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar")
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local ReportPlayedTimeToChat = true
-local dataobj,db
+local dataobj, db
+local name, server
 
 local function RequestTimePlayed()
 	ReportPlayedTimeToChat = false
@@ -58,12 +59,9 @@ function dataobj:OnTooltipShow()
 end
 
 local function getPlayerIdentifier()
-  local _, _, _, _, _, name, server = GetPlayerInfoByGUID(UnitGUID("player"))
-	if not server or server == "" then
-		server = GetNormalizedRealmName() or ""
-    end
-    if not name then return "" end
-	--debug("getPlayerIdentifier", server,name)
+	if not name or not server then
+		name, server = UnitFullName("player")
+	end
 	return string.format("%s-%s", name, server)
 end
 
@@ -89,9 +87,10 @@ end
 
 local function updateText()
 	local dbChar = db[getPlayerIdentifier()]
-    if not dbChar then return end
-	local diff = GetTime() - dbChar.timeStamp
-	dataobj.text = formatTime(dbChar.timeAtThisLevel + diff)
+	if dbChar then
+		local diff = GetTime() - dbChar.timeStamp
+		dataobj.text = formatTime(dbChar.timeAtThisLevel + diff)
+	end
 end
 
 local frame2 = CreateFrame("Frame")
@@ -99,20 +98,26 @@ local frame2 = CreateFrame("Frame")
 local function onEnteringWorld()
 	db = CB_PlayedTime and CB_PlayedTime or {}
 	CB_PlayedTime = db
-	--RequestTimePlayed()
-	acetimer:ScheduleTimer(function()
-				RequestTimePlayed()
-				acetimer:ScheduleRepeatingTimer(function()
+	RequestTimePlayed()
+	acetimer:ScheduleRepeatingTimer(function()
 							updateText()
-				end, 3)
-	end, 2)
-	dataobj:RegisterOptions()
+	end, 5)
+
+	dataobj:RegisterOptions(db)
 	frame2:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function dataobj:Reset()
 	CB_PlayedTime = {}
 	db = CB_PlayedTime
+end
+
+function dataobj:Delete(name)
+	if name and CB_PlayedTime[name] then
+		CB_PlayedTime[name] = nil
+		db = CB_PlayedTime
+		debug("deleted", name)
+	end
 end
 
 local hookedChatFrame_DisplayTimePlayed = ChatFrame_DisplayTimePlayed

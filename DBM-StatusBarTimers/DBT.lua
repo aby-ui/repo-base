@@ -220,7 +220,7 @@ do
 		local spark = bar:CreateTexture("$parentSpark", "OVERLAY")
 		spark:SetPoint("CENTER", bar, "CENTER")
 		spark:SetSize(32, 64)
-		spark:SetTexture("Interface\\AddOns\\DBM-Core\\textures\\Spark.blp")
+		spark:SetTexture("Interface\\AddOns\\DBM-StatusBarTimers\\textures\\Spark.blp")
 		spark:SetBlendMode("ADD")
 		local timer = bar:CreateFontString("$parentTimer", "OVERLAY", "GameFontHighlightSmall")
 		timer:SetPoint("RIGHT", bar, "RIGHT", -1, 0.5)

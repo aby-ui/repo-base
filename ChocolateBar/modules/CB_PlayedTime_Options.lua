@@ -4,6 +4,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("CB_PlayedTime")
 local CB_PlayedTime = LibStub:GetLibrary("LibDataBroker-1.1",true):GetDataObjectByName(addonName)
 local version = GetAddOnMetadata("CB_PlayedTime","X-Curse-Packaged-Version") or ""
 local db
+local tobedeleted
 
 local aceoptions = {
   name = addonName.." "..version,
@@ -11,7 +12,7 @@ local aceoptions = {
 	type='group',
 	desc = addonName,
 	childGroups = "tab",
-    args = {
+  args = {
 		general = {
 			inline = true,
 			name = L["General"],
@@ -27,27 +28,58 @@ local aceoptions = {
 						CB_PlayedTime:Reset()
 					end,
 				},
-			}
-		}
-	}
+			},
+		},
+    delete = {
+      inline = true,
+			name = L["Delete a Character"],
+      type="group",
+			order = 2,
+      args={
+        },
+	   },
+  },
 }
+local deleteOptions = aceoptions.args.delete.args
 
-function CB_PlayedTime:RegisterOptions()
-	local defaults = {
+local function GetName(info)
+  local name = info[#info]
+  return name
+end
+
+local function DeleteName(info)
+  local name = info[#info]
+  CB_PlayedTime:RemoveCharDeleteOption(name)
+  CB_PlayedTime:Delete(name)
+end
+
+function CB_PlayedTime:AddCharDeleteOption(name)
+  deleteOptions[name] = {
+          type = 'execute',
+          order = 0,
+          name = GetName,
+          desc = L["Delete this Character"],
+          func = DeleteName,
+    }
+end
+
+function CB_PlayedTime:RemoveCharDeleteOption(name)
+  deleteOptions[name] = nil
+end
+
+function CB_PlayedTime:RegisterOptions(data)
+  db = data
+  local defaults = {
 		profile = {
-			showWorldLatency = true,
-			showFPS = true,
-			textOutput = "{fps}fps {lw}ms {lh}ms",
-			customTextSetting = false
 		}
 	}
+  for k, v in pairs(db) do
+      self:AddCharDeleteOption(k)
+  end
 
-	--db = LibStub("AceDB-3.0"):New(addonName.."DB", defaults, "Default")
-	--db = db.profile
-	--CB_PlayedTime:SetDB(db)
+
 	LibStub("AceConfig-3.0"):RegisterOptionsTable(addonName, aceoptions)
 	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(addonName, addonName)
-	--aceoptions.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
 end
 
 function CB_PlayedTime:OpenOptions()

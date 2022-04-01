@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2457, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220325210911")
+mod:SetRevision("20220331172209")
 mod:SetCreatureID(181398, 181399)
 mod:SetEncounterID(2543)
 mod:SetUsedIcons(1, 2, 6, 7, 8)
@@ -51,7 +51,7 @@ local specWarnCloudofCarrion					= mod:NewSpecialWarningMoveAway(360012, nil, ni
 local specWarnCloudofCarrionDebuff				= mod:NewSpecialWarningYou(360012, nil, nil, nil, 1, 2)
 local specWarnCloudofCarrionDebuffMove			= mod:NewSpecialWarningMoveTo(360012, false, nil, nil, 1, 2)--Off by default because person has to actually have basic understanding of mechanic first, then agree to this helpful warning to help with it
 local yellCloudofCarrion						= mod:NewYell(360012)
-local yellBitingWounds							= mod:NewIconRepeatYell(364985, DBM_CORE_L.AUTO_YELL_ANNOUNCE_TEXT.shortyell)
+local yellBitingWounds							= mod:NewIconRepeatYell(364985)
 local specWarnLeechingClaws						= mod:NewSpecialWarningDefensive(359960, nil, nil, nil, 1, 2)
 local specWarnOpenedVeins						= mod:NewSpecialWarningTaunt(359963, nil, nil, nil, 1, 2)
 ----Shadow adds
@@ -247,7 +247,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 360229 then
 		self.vb.slumberCount = self.vb.slumberCount + 1--Doesn't reset, used by timers and announce
 		warnSlumberCloud:Show(self.vb.slumberCount)
-		timerSlumberCloudCD:Start(32.8, self.vb.slumberCount+1)
+		timerSlumberCloudCD:Start(self:IsMythic() and 32.8 or 45, self.vb.slumberCount+1)
 	elseif spellId == 360284 then
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Change to boss1/2 if confirmed it's consistent
 			specWarnAnguishingStrike:Show()
@@ -259,7 +259,7 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 360420 then
+	if spellId == 360420 and self:AntiSpam(3, 1) then
 		warnShatterMind:Show()
 	end
 end
@@ -329,7 +329,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		timerFearfulTrepidationCD:Pause(self.vb.fearfulCount+1)
 	elseif spellId == 360418 and args:IsPlayer() then
-		timerParanoia:Start()
+		timerParanoia:Start(self:IsEasy() and 40 or 25)
 	elseif spellId == 360146 then
 		local icon = self.vb.trepidationIcon
 		if self.Options.SetIconOnFearfulTrepidation then

@@ -8,4 +8,7 @@ if L then
 	L["Reset"] = true
 	L["Reset time for all Characters"] = true
 	L["General"] = true
+	L["Delete"] = true
+	L["Delete a Character"] = true
+	L["Delete this Character"] = true
 end
