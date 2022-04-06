@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220325210911")
+mod:SetRevision("20220405224122")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
-mod:SetHotfixNoticeRev(20220320000000)
-mod:SetMinSyncRevision(20220123000000)
+mod:SetHotfixNoticeRev(20220405000000)
+mod:SetMinSyncRevision(20220405000000)
 --mod.respawnTime = 29
 --mod.NoSortAnnounce = true
 
@@ -220,7 +220,7 @@ function mod:OnCombatStart(delay)
 	timerBlasphemyCD:Start(30-delay, 1)
 	timerKingsmourneHungersCD:Start(45-delay, 1)
 	timerWickedStarCD:Start(55-delay, 1)
-	if self:IsMythic() then
+	if self:IsMythic() or self:IsLFR() then
 		timerPhaseCD:Start(164-delay)
 	else
 		timerPhaseCD:Start(155-delay)
@@ -270,11 +270,9 @@ function mod:SPELL_CAST_START(args)
 		self.vb.hungersCount = self.vb.hungersCount + 1
 		specWarnKingsmourneHungers:Show(self.vb.hungersCount)
 		specWarnKingsmourneHungers:Play("shockwave")
-		if self.vb.phase then
-			local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][spellId][self.vb.hungersCount+1]
-			if timer then
-				timerKingsmourneHungersCD:Start(timer, self.vb.hungersCount+1)
-			end
+		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.hungersCount+1)
+		if timer then
+			timerKingsmourneHungersCD:Start(timer, self.vb.hungersCount+1)
 		end
 		if self.Options.SetIconOnAnduinsHope then
 			self:ScanForMobs(184493, 1, 1, 4, nil, 12, "SetIconOnAnduinsHope", true)
@@ -285,12 +283,6 @@ function mod:SPELL_CAST_START(args)
 			specWarnBlasphemy:Show()
 			specWarnBlasphemy:Play("scatter")
 		end
-		if self.vb.phase then
-			local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][spellId][self.vb.blastphemyCount+1]
-			if timer then
-				timerBlasphemyCD:Start(timer, self.vb.blastphemyCount+1)
-			end
-		end
 		table.wipe(overconfidentTargets)
 		table.wipe(hopelessnessTargets)
 		totalDebuffs = 0
@@ -298,6 +290,10 @@ function mod:SPELL_CAST_START(args)
 		--It'll be unscheduled if you get one of them and replaced with a new one
 		if self:IsMythic() and self.vb.PairingBehavior ~= "None" then
 			self:Schedule(3, BlasphemyYellRepeater, self, 0)
+		end
+		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.blastphemyCount+1)
+		if timer then
+			timerBlasphemyCD:Start(timer, self.vb.blastphemyCount+1)
 		end
 	elseif spellId == 365958 then
 		self.vb.blastphemyCount = self.vb.blastphemyCount + 1
@@ -307,11 +303,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 365295 then
 		self.vb.befouledCount = self.vb.befouledCount + 1
 		warnBefouledBarrier:Show(self.vb.befouledCount)
-		if self.vb.phase then
-			local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][spellId][self.vb.befouledCount+1]
-			if timer then
-				timerBefouledBarrierCD:Start(timer, self.vb.befouledCount+1)
-			end
+		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.befouledCount+1)
+		if timer then
+			timerBefouledBarrierCD:Start(timer, self.vb.befouledCount+1)
 		end
 	elseif spellId == 361815 then
 		self.vb.hopebreakerCount = self.vb.hopebreakerCount + 1
@@ -319,11 +313,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnHopebreaker:Show(self.vb.hopebreakerCount)
 			specWarnHopebreaker:Play("aesoon")
 		end
-		if self.vb.phase then
-			local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][spellId][self.vb.hopebreakerCount+1]
-			if timer then
-				timerHopebreakerCD:Start(timer, self.vb.hopebreakerCount+1)
-			end
+		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.hopebreakerCount+1)
+		if timer then
+			timerHopebreakerCD:Start(timer, self.vb.hopebreakerCount+1)
 		end
 	elseif spellId == 365805 then
 		self.vb.hopebreakerCount = self.vb.hopebreakerCount + 1
@@ -345,11 +337,9 @@ function mod:SPELL_CAST_START(args)
 		self.vb.blastphemyCount = self.vb.blastphemyCount + 1--This ability replaces blasphomy in stage 2, so might as well use it's variable
 		specWarnGrimReflections:Show()
 		specWarnGrimReflections:Play("killmob")
-		if self.vb.phase then
-			local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][spellId][self.vb.blastphemyCount+1]
-			if timer then
-				timerGrimReflectionsCD:Start(timer, self.vb.blastphemyCount+1)
-			end
+		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.blastphemyCount+1)
+		if timer then
+			timerGrimReflectionsCD:Start(timer, self.vb.blastphemyCount+1)
 		end
 	elseif spellId == 365008 then
 		if not castsPerGUID[args.sourceGUID] then--This should have been set in summon event
@@ -380,6 +370,23 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif spellId == 365872 then
 		warnBeaconofHope:Show()
+		--Check for skipped intermission, which happens when overgearing
+		if self.vb.phase < 3 then
+			self.vb.blastphemyCount = 0
+			self.vb.hopebreakerCount = 0
+			self.vb.wickedCount = 0
+			self:SetStage(3)
+			timerArmyofDeadCD:Stop()
+			timerSoulReaperCD:Stop()
+			timerMarchofDamnedCD:Stop()
+			timerHopebreakerCD:Start(9.8, 1)
+			timerHopelessnessCD:Start(19.8)
+			timerWickedStarCD:Start(39.8, 1)
+			if self.Options.InfoFrame then
+				DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(365966))
+				DBM.InfoFrame:Show(20, "playerdebuffremaining", 365966)
+			end
+		end
 	end
 end
 
@@ -390,7 +397,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		self.vb.wickedSet = 1
 		if self.vb.phase then
 			if self.vb.phase < 3 then
-				local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][365030][self.vb.wickedCount+1]
+				local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, 365030, self.vb.wickedCount+1)
 				if timer then
 					timerWickedStarCD:Start(timer, self.vb.wickedCount+1)
 				end
@@ -555,7 +562,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				timerMarchofDamnedCD:Start(7.5)--Only mythic has this in first intermission
 				timerPhaseCD:Start(81.9)--Mythic also has 2nd intermission length for first one
 			else
-				timerPhaseCD:Start(156)
+				timerPhaseCD:Start(self:IsLFR() and 73 or 156)
 			end
 			timerArmyofDeadCD:Start(7.5)
 			timerSoulReaperCD:Start(14.5, 1)
@@ -567,7 +574,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			timerArmyofDeadCD:Start(12.7)
 			timerMarchofDamnedCD:Start(12.7)--Only used in second intermission (on non mythic)
 			timerSoulReaperCD:Start(19.7, 1)
-			timerPhaseCD:Start(self:IsMythic() and 86.7 or 80)
+			timerPhaseCD:Start(self:IsMythic() and 86.7 or self:IsLFR() and 56.7 or 80)
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(8)
 			end
@@ -678,11 +685,9 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 366849 then
 		self.vb.domCount = self.vb.domCount + 1
-		if self.vb.phase then
-			local timer = allTimers[self.vb.phase] and allTimers[self.vb.phase][spellId][self.vb.domCount+1]
-			if timer then
-				timerDominationWordPainCD:Start(timer, self.vb.domCount+1)
-			end
+		local timer = self:GetFromTimersTable(allTimers, false, self.vb.phase, spellId, self.vb.domCount+1)
+		if timer then
+			timerDominationWordPainCD:Start(timer, self.vb.domCount+1)
 		end
 	end
 end

@@ -67,23 +67,23 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220330223942"),
+	Revision = parseCurseDate("20220406071248"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.11 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.13 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 4, 5) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 240, "b563b0b"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.18 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.19 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 4, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 36, "cf2511c"
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.32 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 3, 30) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.33 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 4, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 36, "cf2511c"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -6601,6 +6601,7 @@ end
 
 function bossModPrototype:SetStage(stage)
 	if stage == 0 then--Increment request instead of hard value
+		if not self.vb.phase then return end--Person DCed mid fight and somehow managed to perfectly time running SetStage with a value of 0 before getting variable recovery
 		self.vb.phase = self.vb.phase + 1
 	else
 		self.vb.phase = stage
@@ -7386,6 +7387,41 @@ end
 
 bossModPrototype.GetBossHP = DBM.GetBossHP
 
+-------------------------
+--  Timers Table Util  --
+-------------------------
+function bossModPrototype:GetFromTimersTable(table, difficultyName, phase, spellId, count)
+    local prev = table
+
+    if difficultyName ~= false then
+        if not difficultyName or not prev[difficultyName] then
+            DBM:Debug("difficultyName is missing from table")
+            return
+        end
+        prev = prev[difficultyName]
+    end
+
+    if phase ~= false then
+        if not phase or not prev[phase] then
+            DBM:Debug("phase is missing from table")
+            return
+        end
+        prev = prev[phase]
+    end
+
+    if not prev[spellId] then
+        DBM:Debug("spellId is missing from table")
+        return
+    end
+    prev = prev[spellId]
+
+    if count then
+        prev = prev[count]
+    end
+
+    return prev
+end
+
 -----------------------
 --  Announce Object  --
 -----------------------
@@ -7746,12 +7782,6 @@ do
 				end
 				self.mod:AddMsg(text, nil)
 			end
-			if self.sound > 0 then
-				if DBM.Options.ChosenVoicePack2 ~= "None" and DBM.Options.VPReplacesAnnounce and not voiceSessionDisabled and not DBM.Options.VPDontMuteSounds and self.sound <= SWFilterDisabled then return end
-				if not self.option or self.mod.Options[self.option.."SWSound"] ~= "None" then
-					DBM:PlaySoundFile(DBM.Options.RaidWarningSound, nil, true)--Validate true
-				end
-			end
 			--Message: Full message text
 			--Icon: Texture path/id for icon
 			--Type: Announce type
@@ -7764,6 +7794,12 @@ do
 			--Mod ID: Encounter ID as string, or a generic string for mods that don't have encounter ID (such as trash, dummy/test mods)
 			--boolean: Whether or not this warning is a special warning (higher priority).
 			fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
+			if self.sound > 0 then
+				if DBM.Options.ChosenVoicePack2 ~= "None" and DBM.Options.VPReplacesAnnounce and not voiceSessionDisabled and not DBM.Options.VPDontMuteSounds and self.sound <= SWFilterDisabled then return end
+				if not self.option or self.mod.Options[self.option.."SWSound"] ~= "None" then
+					DBM:PlaySoundFile(DBM.Options.RaidWarningSound, nil, true)--Validate true
+				end
+			end
 		else
 			self.combinedcount = 0
 			self.combinedtext = {}

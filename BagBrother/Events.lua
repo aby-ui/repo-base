@@ -24,7 +24,7 @@ local LAST_BANK_SLOT = NUM_BANKBAGSLOTS + NUM_BAG_SLOTS
 
 function BagBrother:BAG_UPDATE(bag)
 	if bag <= NUM_BAG_SLOTS then
-  	self:SaveBag(bag, bag <= BACKPACK_CONTAINER, bag == KEYRING_CONTAINER and HasKey and HasKey())
+  	self:SaveBag(bag, bag <= BACKPACK_CONTAINER, bag == BACKPACK_CONTAINER or bag == KEYRING_CONTAINER and HasKey and HasKey())
 	end
 end
 

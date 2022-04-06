@@ -227,7 +227,8 @@ MDT.mapPOIs[dungeonIndex] = {
             ["g"] = 5;
             ["sublevel"] = 1;
          };
-         [3] = {
+         [3] = {            
+            ["inspiring"] = true;
             ["y"] = -253.24857233171;
             ["x"] = 645.76793200298;
             ["g"] = 5;
@@ -392,6 +393,7 @@ MDT.mapPOIs[dungeonIndex] = {
          [356929] = {};
          [356943] = {};
       };
+      ["stealthDetect"] = true;
       ["characteristics"] = {
          ["Taunt"] = true;
       };
@@ -412,6 +414,11 @@ MDT.mapPOIs[dungeonIndex] = {
          };
       };
       ["id"] = 180495;
+      ["spells"] = {
+         [357512] = {};
+         [344663] = {};
+         [357508] = {};
+      };	  
       ["scale"] = 1;
       ["name"] = "Enraged Direhorn";
       ["displayId"] = 47441;
@@ -917,7 +924,8 @@ MDT.mapPOIs[dungeonIndex] = {
             ["g"] = 15;
             ["sublevel"] = 1;
          };
-         [8] = {
+         [8] = {            
+            ["inspiring"] = true;
             ["y"] = -221.03494931265;
             ["x"] = 464.64980083189;
             ["g"] = 12;
@@ -1205,6 +1213,12 @@ MDT.mapPOIs[dungeonIndex] = {
          };
       };
       ["id"] = 180091;
+      ["spells"] = {
+         [356407] = {};
+         [356408] = {};
+         [356404] = {};
+         [344663] = {};
+      };	  
       ["scale"] = 1;
       ["name"] = "Ancient Core Hound";
       ["displayId"] = 101639;
@@ -1241,6 +1255,10 @@ MDT.mapPOIs[dungeonIndex] = {
          };
       };
       ["id"] = 180567;
+      ["spells"] = {
+         [357827] = {};
+         [344663] = {};
+      };	  
       ["scale"] = 0.8;
       ["name"] = "Frenzied Nightclaw";
       ["displayId"] = 101951;
@@ -1584,7 +1602,8 @@ MDT.mapPOIs[dungeonIndex] = {
    };
    [1] = {
       ["clones"] = {
-         [6] = {
+         [6] = {            
+            ["inspiring"] = true;
             ["y"] = -263.68958529496;
             ["x"] = 607.79378078901;
             ["g"] = 7;
@@ -1823,4 +1842,3 @@ MDT.mapPOIs[dungeonIndex] = {
       ["iconTexture"] = 4335643;
    };
 };
-

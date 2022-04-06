@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2457, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220331172209")
+mod:SetRevision("20220406015212")
 mod:SetCreatureID(181398, 181399)
 mod:SetEncounterID(2543)
 mod:SetUsedIcons(1, 2, 6, 7, 8)
@@ -71,7 +71,7 @@ mod:GroupSpells(360012, 364985)--Group biting wounds with cloud of carrion
 --Kin'tessa
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(23929))
 local warnShatterMind							= mod:NewSpellAnnounce(360420, 4)--Kind of a generic alert to say "this pull is a wash"
-local warnFearfulTrepidation					= mod:NewTargetNoFilterAnnounce(360146, 3, nil, nil, 39176)
+local warnFearfulTrepidation					= mod:NewTargetCountAnnounce(360146, 3, nil, nil, 39176, nil, nil, nil, true)
 local warnAuraofShadows							= mod:NewSpellAnnounce(363191, 4)
 local warnAuraofShadowsOver						= mod:NewEndAnnounce(363191, 1)
 local warnSlumberCloud							= mod:NewCountAnnounce(360229, 2)
@@ -347,7 +347,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnCloudofCarrionDebuffMove:CombinedShow(0.5, args.destName)
 			specWarnCloudofCarrionDebuffMove:ScheduleVoice(0.5, "gathershare")
 		end
-		warnFearfulTrepidation:CombinedShow(0.5, args.destName)
+		warnFearfulTrepidation:CombinedShow(0.5, self.vb.fearfulCount, args.destName)
 		self.vb.trepidationIcon = self.vb.trepidationIcon + 1
 	elseif spellId == 360148 then
 		if args:IsPlayer() then
