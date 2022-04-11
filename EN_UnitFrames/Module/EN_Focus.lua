@@ -30,13 +30,13 @@ function MGFocusFrame_SavePos()
 end
 function MGFocusFrame_OnDragStart(self)
   if (not mg_EUF_Options.lockpos) then
-    self:GetParent():StartMoving();
+    FocusFrame:StartMoving();
     self.isMoving = true;
   end
 end
 
 function MGFocusFrame_OnDragStop(self)
-  self:GetParent():StopMovingOrSizing();
+  FocusFrame:StopMovingOrSizing();
   self.isMoving = false;
   MGFocusFrame_SavePos();
 end

@@ -221,7 +221,7 @@ function P:UpdateCooldown(icon, reducedTime, updateUnitBarCharges, auraMult)
 	local modRate = info.modRate or 1
 	if BOOKTYPE_CATEGORY[icon.category] then
 		if spellID == 329042 then
-			if info.auras[329042] then
+			if info.auras[spellID] then
 				modRate = modRate * 5
 			end
 		else
@@ -280,6 +280,7 @@ function P:UpdateCooldown(icon, reducedTime, updateUnitBarCharges, auraMult)
 	icon.cooldown:SetCooldown(startTime, duration, modRate)
 	active.startTime = startTime
 	active.duration = duration
+	active.totRate = modRate ~= 1 and modRate
 
 	if statusBar then
 		self.OmniCDCastingBarFrame_OnEvent(statusBar.CastingBar, E.db.extraBars[statusBar.key].reverseFill and "UNIT_SPELLCAST_CHANNEL_UPDATE" or "UNIT_SPELLCAST_CAST_UPDATE")
@@ -305,7 +306,7 @@ function P:StartCooldown(icon, cd, recharge, noGlow)
 	if BOOKTYPE_CATEGORY[icon.category] then
 
 		if spellID == 329042 then
-			if info.auras[329042] then
+			if info.auras[spellID] then
 				modRate = modRate * 5
 			end
 		else
@@ -361,6 +362,8 @@ function P:StartCooldown(icon, cd, recharge, noGlow)
 
 	active.startTime = now
 	active.duration = cd
+	active.totRate = modRate ~= 1 and modRate
+
 	if selfLimitedMinMaxReducer[spellID] then
 		active.numHits = 0
 	end

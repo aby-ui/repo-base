@@ -81,7 +81,7 @@ do
 		local size = P:GetEffectiveNumGroupMembers()
 		local oldDisabled = P.disabled
 		P.disabled = not P.test and (P.disabledzone or size == 0 or
-			(size == 1 and P.isUserDisabled) or
+			(size == 1 and P.isUserHidden) or
 			(GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) == 0 and not E.profile.Party.visibility.finder) or
 			(size > E.profile.Party.visibility.size))
 		if P.disabled then
@@ -309,7 +309,8 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	P.profile = E.profile.Party
 	P.db = E.db
 	self.isUserHidden = not self.test and not E.db.general.showPlayer
-	self.isUserDisabled = self.isUserHidden and (not E.db.general.showPlayerEx or (not E.db.extraBars.interruptBar.enabled and not E.db.extraBars.raidCDBar.enabled))
+
+	self.isUserDisabled = self.isUserHidden and (not E.db.extraBars.interruptBar.enabled and not E.db.extraBars.raidCDBar.enabled)
 
 	E.Cooldowns:UpdateCombatLogVar()
 	E:SetActiveUnitFrameData()

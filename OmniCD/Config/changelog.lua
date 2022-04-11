@@ -13,8 +13,8 @@ v2.6.30
 	Initial release for WoW: Classic Era.
 ]=]
 elseif E.isBCC then E.changelog = [=[
-v2.7.00
-
+v2.7.11
+	Bumped toc for 2.5.4
 
 v2.6.36
 	nil error fix
@@ -22,8 +22,28 @@ v2.6.36
 Pre v2.6.36 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.7.11
+	Fixed lua error w/ tullaCC
+	Shadowlands trinkets have been added back in
+
+v2.7.10
+	Feature Updates
+		Removed Bwonsamdi's Pact (Priest, Runeforge). Affected major CDs are now directly synced.
+		Progress bar's animation/counter rate will follow it's CD recovery rate.
+		Show Player in Extra Bars option was removed and is now always enabled.
+	Bug Fixes
+		Emerald Slumber (Guardian Druid, PvP Talent) will no longer incorrectly affect group members.
+		Tricks of the Trade w/ Thick as Thieves (PvP Talent) will correctly go on CD after being activated.
+		Fixed an issue where reducing a CD would fail to update the progress bar counter text.
+		Fixed Shaman legendaries: Witch Doctor's Wolf Bones, Skybreaker's Fiery Demise, Seeds of Rampant Growth.
+	Blizzard Hotfixes
+		APRIL 4, 2022
+			Priest
+				Holy
+					Holy Ward’s (PvP Talent) cooldown increased to 45 seconds (was 30 seconds).
+
 v2.7.01
-	Encrypted event fix
+	Encrypted event fix - Decrypted Urh Cypher CDRR
 
 v2.7.00
 	TL;DR

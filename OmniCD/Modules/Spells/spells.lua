@@ -472,7 +472,7 @@ E.spell_db = {
 		{ spellID = 34433,  duration = 180, type = "offensive", spec = {256,258},   talent = {123040, 200174}   },
 		{ spellID = 123040, duration = 60,  type = "offensive", spec = true,    parent = 34433  },
 		{ spellID = 200174, duration = 60,  type = "offensive", spec = true,    parent = 34433  },
-		{ spellID = 213610, duration = 30,  type = "counterCC", spec = true     },
+		{ spellID = 213610, duration = 45,  type = "counterCC", spec = true     },
 
 
 		{ spellID = 121536, duration = 20,  type = "other",     spec = true,    charges = 3 },
@@ -746,62 +746,73 @@ E.spell_db = {
 	},
 	["TRINKET"] = {
 
+		{ spellID = 313113, duration = 80,  type = "trinket",   item = 173946   },
 
+		{ spellID = 344384, duration = 120, type = "trinket",   item = 184017   },
+		{ spellID = 342423, duration = 300, type = "trinket",   item = 178862   },
+		{ spellID = 329840, duration = 120, type = "trinket",   item = 179331   },
+		{ spellID = 336866, duration = 90,  type = "trinket",   item = 181360,  item2 = 175733  },
+		{ spellID = 311444, duration = 90,  type = "trinket",   item = 173096   },
+		{ spellID = 347047, duration = 90,  type = "trinket",   item = 173069   },
+		{ spellID = 333734, duration = 90,  type = "trinket",   item = 173078   },
+		{ spellID = 331624, duration = 90,  type = "trinket",   item = 173087   },
+		{ spellID = 344732, duration = 90,  type = "trinket",   item = 184030   },
+		{ spellID = 345539, duration = 180, type = "trinket",   item = 180117   },
+		{ spellID = 336841, duration = 90,  type = "trinket",   item = 181501   },
+		{ spellID = 339517, duration = 120, type = "trinket",   item = 182451   },
+		{ spellID = 345319, duration = 90,  type = "trinket",   item = 184021   },
+		{ spellID = 345739, duration = 90,  type = "trinket",   item = 178811   },
 
+		{ spellID = 342432, duration = 120, type = "trinket",   item = 178850   },
+		{ spellID = 345432, duration = 90,  type = "trinket",   item = 184024   },
+		{ spellID = 334885, duration = 120, type = "trinket",   item = 180827   },
+		{ spellID = 344245, duration = 60,  type = "trinket",   item = 184029   },
+		{ spellID = 344662, duration = 120, type = "trinket",   item = 184025   },
+		{ spellID = 330067, duration = 30,  type = "trinket",   item = 178715   },
+		{ spellID = 180116, duration = 90,  type = "trinket",   item = 180116   },
+		{ spellID = 343385, duration = 150, type = "trinket",   item = 178849   },
+		{ spellID = 336465, duration = 150, type = "trinket",   item = 181359,  item2 = 177657  },
+		{ spellID = 329831, duration = 90,  type = "trinket",   item = 179342   },
+		{ spellID = 343399, duration = 75,  type = "trinket",   item = 178825   },
+		{ spellID = 344231, duration = 60,  type = "trinket",   item = 184031   },
 
+		{ spellID = 331523, duration = 120, type = "trinket",   item = 179356   },
+		{ spellID = 345549, duration = 30,  type = "trinket",   item = 178783   },
+		{ spellID = 345019, duration = 90,  type = "trinket",   item = 184016   },
+		{ spellID = 345595, duration = 20,  type = "trinket",   item = 178770   },
+		{ spellID = 345251, duration = 60,  type = "trinket",   item = 184019   },
+		{ spellID = 345801, duration = 120, type = "trinket",   item = 178809   },
+		{ spellID = 345548, duration = 120, type = "trinket",   item = 178751   },
+		{ spellID = 344907, duration = 480, type = "trinket",   item = 184018   },
+		{ spellID = 343393, duration = 90,  type = "trinket",   item = 178826   },
+		{ spellID = 336182, duration = 120, type = "trinket",   item = 181357,  item2 = 175732  },
+		{ spellID = 344916, duration = 120, type = "trinket",   item = 184020   },
+		{ spellID = 336588, duration = 120, type = "trinket",   item = 181457,  item2 = 183850  },
+		{ spellID = 345695, duration = 90,  type = "trinket",   item = 178810   },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		{ spellID = 351867, duration = 150, type = "trinket",   item = 185902   },
+		{ spellID = 353692, duration = 60,  type = "trinket",   item = 186422   },
+		{ spellID = 358712, duration = 90,  type = "trinket",   item = 186424   },
+		{ spellID = 355318, duration = 60,  type = "trinket",   item = 186425   },
+		{ spellID = 355321, duration = 120, type = "trinket",   item = 186428   },
+		{ spellID = 355327, duration = 90,  type = "trinket",   item = 186431   },
+		{ spellID = 355333, duration = 90,  type = "trinket",   item = 186432   },
+		{ spellID = 355303, duration = 60,  type = "trinket",   item = 186437   },
+		{ spellID = 356212, duration = 600, type = "trinket",   item = 186421   },
 		{ spellID = 355589, duration = 60,  type = "trinket",   item = 186414   },
 
 		{ spellID = 367241, duration = 300, type = "trinket",   item = 188271   },
+		{ spellID = 367805, duration = 180, type = "trinket",   item = 188265   },
+		{ spellID = 367802, duration = 60,  type = "trinket",   item = 188266   },
+		{ spellID = 367236, duration = 90,  type = "trinket",   item = 188272   },
+		{ spellID = 368203, duration = 90,  type = "trinket",   item = 188268   },
+		{ spellID = 367808, duration = 180, type = "trinket",   item = 188264   },
+		{ spellID = 368894, duration = 90,  type = "trinket",   item = 188263   },
+		{ spellID = 364152, duration = 180, type = "trinket",   item = 188262   },
+		{ spellID = 367885, duration = 180, type = "trinket",   item = 188261   },
+		{ spellID = 367924, duration = 120, type = "trinket",   item = 188254   },
+		{ spellID = 367931, duration = 180, type = "trinket",   item = 188252   },
+		{ spellID = 367930, duration = 30,  type = "trinket",   item = 188253   },
 	},
 	["COVENANT"] = {
 		{ spellID = 300728, duration = 60,  type = "covenant",  spec = 321079   },

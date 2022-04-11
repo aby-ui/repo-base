@@ -3,13 +3,14 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,timewalker"
 
-mod:SetRevision("20211226024315")
+mod:SetRevision("20220407221113")
 mod:SetCreatureID(115244, 116839)
 mod:SetBossHPInfoToHighest()
 mod.soloChallenge = true
 
 mod:RegisterCombat("combat")
 mod:SetWipeTime(30)--Prevent intermission to stage 2 causing mod to think it wipes since wipe check would detect no combat and no boss1
+mod:SetReCombatTime(20, 5)--Basically killing of recombat restriction. mage tower lets you spam retry, we want the mod to let you
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 234728",

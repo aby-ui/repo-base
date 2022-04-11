@@ -17,7 +17,7 @@ This file is part of BagBrother.
 
 
 function BagBrother:SaveBag(bag, onlyItems, saveSize)
-	local size = ContainerFrame_GetContainerNumSlots(bag)
+	local size = GetContainerNumSlots(bag)
 	if size > 0 then
 		local items = {}
 		for slot = 1, size do

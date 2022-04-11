@@ -18,7 +18,7 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 30)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 32)
 if not Lib then return end
 
 local PLAYER, FACTION, REALM, REALMS

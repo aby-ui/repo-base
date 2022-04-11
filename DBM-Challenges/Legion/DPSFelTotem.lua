@@ -3,12 +3,14 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,timewalker"
 
-mod:SetRevision("20211226023423")
+mod:SetRevision("20220407221113")
 mod:SetCreatureID(117230, 117484)--Tugar, Jormog
 mod:SetBossHPInfoToHighest()
 mod.soloChallenge = true
 
 mod:RegisterCombat("combat")
+mod:SetReCombatTime(20, 5)--Basically killing of recombat restriction. mage tower lets you spam retry, we want the mod to let you
+
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 241687 242496 242733",
 	"SPELL_AURA_REMOVED 238471",

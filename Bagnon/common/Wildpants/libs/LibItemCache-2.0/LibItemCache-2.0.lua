@@ -18,7 +18,7 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 31)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 32)
 if not Lib then return end
 
 local PLAYER, FACTION, REALM, REALMS
@@ -197,7 +197,7 @@ function Lib:GetBagInfo(owner, bag)
 		if bag == KEYRING_CONTAINER then
 			item.family = 9
 		elseif bag <= BACKPACK_CONTAINER then
-			item.count = item.count or item.owned and ContainerFrame_GetContainerNumSlots(bag)
+			item.count = item.count or item.owned and GetContainerNumSlots(bag)
 			item.family = bag ~= REAGENTBANK_CONTAINER and 0 or REAGENTBANK_CONTAINER
 		end
 	end

@@ -67,7 +67,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220406071248"),
+	Revision = parseCurseDate("20220409212344"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -82,8 +82,8 @@ elseif isClassic then
 	DBM.ReleaseRevision = releaseDate(2022, 4, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 36, "cf2511c"
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.33 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 4, 3) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.34 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 4, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 36, "cf2511c"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -1166,6 +1166,7 @@ do
 	end
 
 	function DBM:RegisterShortTermEvents(...)
+		DBM:Debug("RegisterShortTermEvents fired", 2)
 		local _shortTermRegisterEvents = {...}
 		for k, v in pairs(_shortTermRegisterEvents) do
 			if v:sub(0, 5) == "UNIT_" and v:sub(-11) ~= "_UNFILTERED" and not v:find(" ") and v ~= "UNIT_DIED" and v ~= "UNIT_DESTROYED" then
@@ -1173,7 +1174,6 @@ do
 				_shortTermRegisterEvents[k] = v .. " boss1 boss2 boss3 boss4 boss5 target focus"
 			end
 		end
-		self.shortTermEventsRegistered = 1
 		self:RegisterEvents(unpack(_shortTermRegisterEvents))
 		-- Fix so we can register multiple short term events. Use at your own risk, as unsucribing will cause
 		-- all short term events to unregister.
@@ -1187,7 +1187,9 @@ do
 	end
 
 	function DBM:UnregisterShortTermEvents()
+		DBM:Debug("UnregisterShortTermEvents fired", 2)
 		if self.shortTermRegisterEvents then
+			DBM:Debug("UnregisterShortTermEvents found registered shortTermRegisterEvents", 2)
 			for event, mods in pairs(registeredEvents) do
 				if event:sub(0, 6) == "SPELL_" or event:sub(0, 6) == "RANGE_" then
 					local i = 1
@@ -1211,13 +1213,14 @@ do
 					end
 					if #mods == 0 or (match and event:sub(0, 5) == "UNIT_" and event:sub(-11) ~= "_UNFILTERED" and event ~= "UNIT_DIED" and event ~= "UNIT_DESTROYED") then
 						unregisterUEvent(self, event)
+						DBM:Debug("unregisterUEvent for unit event "..event.." unregistered", 3)
 					end
 					if #mods == 0 then
 						registeredEvents[event] = nil
+						DBM:Debug("registeredEvents for event "..event.." nilled", 3)
 					end
 				end
 			end
-			self.shortTermEventsRegistered = nil
 			self.shortTermRegisterEvents = nil
 		end
 	end
@@ -3335,6 +3338,7 @@ do
 		end--ID hasn't changed, don't waste cpu doing anything else (example situation, porting into garrosh stage 4 is a loading screen)
 		LastInstanceMapID = mapID
 		DBMScheduler:UpdateZone()--Also update zone in scheduler
+		fireEvent("DBM_UpdateZone", mapID)
 		if instanceType == "none" or (C_Garrison and C_Garrison:IsOnGarrisonMap()) then
 			LastInstanceType = "none"
 			if not targetEventsRegistered then
@@ -5828,7 +5832,7 @@ do
 		for _, v in ipairs(sortMe) do
 			-- If selectedClient player's realm is not same with your's, timer recovery by selectedClient not works at all.
 			-- SendAddonMessage target channel is "WHISPER" and target player is other realm, no msg sends at all. At same realm, message sending works fine. (Maybe bliz bug or SendAddonMessage function restriction?)
-			if v.name ~= playerName and UnitIsConnected(v.id) and (not UnitIsGhost(v.id)) and UnitRealmRelationship(v.id) ~= 2 and (GetTime() - (clientUsed[v.name] or 0)) > 10 then
+			if v.name ~= playerName and UnitIsConnected(v.id) and UnitIsPlayer(v.id) and (not UnitIsGhost(v.id)) and UnitRealmRelationship(v.id) ~= 2 and (GetTime() - (clientUsed[v.name] or 0)) > 10 then
 				listNum = listNum + 1
 				if listNum == requestNum then
 					selectedClient = v
@@ -7794,8 +7798,8 @@ do
 			--Mod ID: Encounter ID as string, or a generic string for mods that don't have encounter ID (such as trash, dummy/test mods)
 			--boolean: Whether or not this warning is a special warning (higher priority).
 			fireEvent("DBM_Announce", message, self.icon, self.type, self.spellId, self.mod.id, false)
-			if self.sound > 0 then
-				if DBM.Options.ChosenVoicePack2 ~= "None" and DBM.Options.VPReplacesAnnounce and not voiceSessionDisabled and not DBM.Options.VPDontMuteSounds and self.sound <= SWFilterDisabled then return end
+			if self.sound > 0 then--0 means muted, 1 means no voice pack support, 2 means voice pack version/support
+				if self.sound > 1 and DBM.Options.ChosenVoicePack2 ~= "None" and DBM.Options.VPReplacesAnnounce and not voiceSessionDisabled and not DBM.Options.VPDontMuteSounds and self.sound <= SWFilterDisabled then return end
 				if not self.option or self.mod.Options[self.option.."SWSound"] ~= "None" then
 					DBM:PlaySoundFile(DBM.Options.RaidWarningSound, nil, true)--Validate true
 				end

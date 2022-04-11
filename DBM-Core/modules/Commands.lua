@@ -388,7 +388,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		private:GetModule("DevTools"):OnDebugToggle()
 	elseif cmd:sub(1, 8) == "whereiam" or cmd:sub(1, 8) == "whereami" then
 		local x, y, _, map = UnitPosition("player")
-		local mapID = C_Map.GetBestMapForUnit("player")
+		local mapID = C_Map.GetBestMapForUnit("player") or "nil"
 		if DBM:HasMapRestrictions() then
 			DBM:AddMsg(("Location Information\nYou are at zone %u (%s).\nLocal Map ID %u (%s)"):format(map, GetRealZoneText(map), mapID, GetZoneText()))
 		else

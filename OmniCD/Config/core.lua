@@ -122,7 +122,7 @@ local function GetOptions()
 						notice1 = {
 							hidden = E.isPreBCC,
 
-							name = "|cffff2020Coodown reduction by Soulbind Conduits, RNG modifiers (% chance to X) require Sync Mode.",
+							name = "|cffff2020Coodown reduction by Soulbind Conduits, Bwonsamdi's Pact legendary, and RNG modifiers (% chance to X, etc) require Sync Mode.",
 							order = 16,
 							type = "description",
 						},

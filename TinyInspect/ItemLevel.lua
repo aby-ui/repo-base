@@ -280,26 +280,45 @@ LibEvent:attachEvent("ADDON_LOADED", function(self, addonName)
     end
 end)
 
--- ALT
-if (EquipmentFlyout_DisplayButton) then
-    hooksecurefunc("EquipmentFlyout_DisplayButton", function(button, paperDollItemSlot)
-        local location = button.location
-        SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, "")
-        if (not location) then return end
-        local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
-        if (not player and not bank and not bags and not voidStorage) then return end
-        if (voidStorage) then
-            SetItemLevel(button, nil, "AltEquipment")
-        elseif (bags) then
-            local link = GetContainerItemLink(bag, slot)
-            --SetItemLevel(button, link, "AltEquipment", bag, slot)
-            local ilvl, quality = U1GetRealItemLevel(link)
-            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
-        else
-            local link = GetInventoryItemLink("player", slot)
-            --SetItemLevel(button, link, "AltEquipment")
-            local ilvl, quality = U1GetRealItemLevel(link, "player", slot)
-            SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
+-- ALT --modified by abyui
+if EquipmentFlyout_UpdateItems then
+    hooksecurefunc("EquipmentFlyout_UpdateItems", function()
+        local flyout = EquipmentFlyoutFrame;
+        local buttons = flyout.buttons;
+        for i, button in ipairs(buttons) do
+            if button:IsShown() and button.location then
+                if type(button.location) == "table" then
+                    local link = C_Item.GetItemLink(button.location)
+                    local slot = button.location:GetEquipmentSlot()
+                    local ilvl, quality
+                    if slot then
+                        ilvl, quality = U1GetRealItemLevel(link, "player", slot)
+                    else
+                        ilvl, quality = U1GetRealItemLevel(link)
+                    end
+                    SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
+                else
+                    local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = EquipmentManager_UnpackLocation(button.location)
+                    if slot == 255 or voidStorage then
+                        --SetItemLevel(button, nil, "AltEquipment")
+                        SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, "")
+                    elseif bag and slot then
+                        local link = GetContainerItemLink(bag, slot)
+                        --SetItemLevel(button, link, "AltEquipment", bag, slot)
+                        local ilvl, quality = U1GetRealItemLevel(link)
+                        SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
+                    elseif slot then
+                        local link = GetInventoryItemLink("player", slot)
+                        --SetItemLevel(button, link, "AltEquipment")
+                        local ilvl, quality = U1GetRealItemLevel(link, "player", slot)
+                        SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, ilvl, quality, link, ilvl)
+                    else
+                        SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, "")
+                    end
+                end
+            else
+               SetItemLevelString(GetItemLevelFrame(button, "AltEquipment").levelString, "")
+            end
         end
     end)
 end

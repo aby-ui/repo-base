@@ -694,6 +694,7 @@ else
 			end
 		end
 
+		local covenantSoulbinds = GetCovenantSoulbindData()
 		local tmpEquipped = { "|E" }
 		local tmpSync = {}
 		local numRuneforge = 0
@@ -729,7 +730,15 @@ else
 												if ( syncList ) then
 													for i = 1, #syncList do
 														local id = syncList[i];
-														if ( not isRaidZone or E.sync_inRaid[id] ) then
+														if type(id) == "table" then
+															local bid, tid = id[1], id[2]
+															if tid and tid < 0 then
+																id = not info.talentData[-tid] and bid or -tid
+															else
+																id = info.talentData[tid or bid] and bid
+															end
+														end
+														if ( id and (not isRaidZone or E.sync_inRaid[id]) ) then
 															tmpSync[id] = { 0, 0 };
 														end
 													end
@@ -796,7 +805,6 @@ else
 			end
 		end
 
-		local covenantSoulbinds = GetCovenantSoulbindData()
 		E.syncData = E.MergeConcat(tmp, tmpEquipped, covenantSoulbinds)
 
 

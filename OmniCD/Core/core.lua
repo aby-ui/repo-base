@@ -185,17 +185,6 @@ E.MergeConcat = function(...)
 	return table.concat(t, ",")
 end
 
-E.SyncDataConcat = function(tbl, delimiter)
-	local t = delimiter and { delimiter } or {}
-	for i = 1, #tbl do
-		local c = delimiter and i + 1 or i
-		local v = tbl[i]
-		t[c] = v and string.format("%s:", v) or ""
-	end
-
-	return table.concat(t)
-end
-
 E.pairs = function(t, ...)
 	local i, a, k, v = 1, {...}
 	return function()

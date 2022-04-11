@@ -4,6 +4,7 @@ local strjoin = strjoin
 local strsplit = strsplit
 local strfind = string.find
 local strmatch = string.match
+local abs = math.abs
 
 local Comms = E["Comms"]
 local P = E["Party"]
@@ -92,27 +93,44 @@ if ( not E.isPreBCC ) then
 		local now = GetTime();
 		while ( cdstr ) do
 			local spellID, duration, cdLeft, modRate, charges, rest = strsplit(":", cdstr, 6);
-			spellID, charges = tonumber(spellID), tonumber(charges);
 			cdstr = rest;
 			if ( spellID and cdLeft ) then
+				spellID = tonumber(spellID)
 				local icon = info.spellIcons[spellID];
 				if ( icon ) then
 					local active = icon.active and info.active[spellID];
 					if ( active ) then
-						local startTime = now + cdLeft - duration;
+						duration, modRate, charges = tonumber(duration), tonumber(modRate), tonumber(charges);
+
+						local elapsed = duration - cdLeft;
+						if ( modRate == 1 and active.totRate ) then
+							elapsed = elapsed * active.totRate;
+							duration = duration * active.totRate;
+							modRate = active.totRate;
+						elseif ( modRate ~= 1 and not active.totRate ) then
+							elapsed = elapsed / modRate;
+							duration = duration / modRate;
+							modRate = nil;
+						end
+
+						local startTime = now - elapsed;
 						icon.cooldown:SetCooldown(startTime, duration, modRate);
-						active.startTime = now + cdLeft - duration;
+						active.startTime = startTime;
 						active.duration = duration;
+						active.totRate = modRate ~= 1 and modRate;
+
 						local statusBar = icon.statusBar;
 						if ( statusBar ) then
 							P.OmniCDCastingBarFrame_OnEvent(statusBar.CastingBar, E.db.extraBars[statusBar.key].reverseFill and "UNIT_SPELLCAST_CHANNEL_UPDATE" or "UNIT_SPELLCAST_CAST_UPDATE");
 						end
+
 						if ( charges >= 0 and icon.maxcharges and charges ~= active.charges ) then
 							icon.Count:SetText(charges);
 							active.charges = charges;
 							icon.cooldown:SetDrawSwipe(false);
 							icon.cooldown:SetHideCountdownNumbers(true);
 						end
+
 					end
 				end
 			end

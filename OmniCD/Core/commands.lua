@@ -64,8 +64,6 @@ E.SlashHandler = function(msg)
 		E.Write(key, L["Manual Mode"], state)
 		P:Refresh()
 		E:ACR_NotifyChange()
-	elseif (command == "sync") then
-
 	elseif (command == "s" or command == "spell" or E.CFG_ZONE[command]) then
 		local zone = E.CFG_ZONE[command] and command or "arena"
 		value = value and string.lower(value)
