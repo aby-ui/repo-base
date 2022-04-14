@@ -682,11 +682,13 @@ do
 			self.Spec.Icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
 		else
 			local specData = Data.Classes[self.PlayerClass][self.PlayerSpecName]
+            if specData then
 			self.PlayerRoleNumber = specData.roleNumber
 			self.PlayerRoleID = specData.roleID
 			self.Role.Icon:SetTexCoord(GetTexCoordsForRoleSmallCircle(self.PlayerRoleID))
 			self.Spec.Icon:SetTexture(specData.specIcon)
 			self.PlayerSpecID = specData.specID
+            end
 		end
 	end
 

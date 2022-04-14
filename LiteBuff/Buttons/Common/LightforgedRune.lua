@@ -3,23 +3,33 @@
 -- copy from CrystalOfInsanity.lua by 163ui 2017/10
 -- modified for 8.3 by abyui 2020/03
 ------------------------------------------------------------
-if UnitLevel("player") > 59 then return end
+
 
 local _, addon = ...
 local L = addon.L
 
 local AURA_NAME = GetSpellInfo(317065)
-local CONFLICTS = addon:BuildSpellList(nil, 270058) --addon:BuildSpellList(nil, 127230, 105689, 105691, 105693, 105694, 105696, 242551).conflicts
+local CONFLICTS = addon:BuildSpellList(nil, 317065, 270058).conflicts --addon:BuildSpellList(nil, 127230, 105689, 105691, 105693, 105694, 105696, 242551).conflicts
+
+if UnitLevel("player") > 59 then
+    AURA_NAME = GetSpellInfo(367405) --永恒增强
+    CONFLICTS = addon:BuildSpellList(nil, 367405, 347901).conflicts --隐晦强化
+end
 
 local itemName, itemLink
 
 local button = addon:CreateActionButton("LightforgedRune", L["Lightning-Forged Augment Rune"], nil, 3600, "PLAYER_AURA", "ITEM")
-button:SetItem(174906) --160053
-button:RequireItem(174906)
+if UnitLevel("player") > 59 then
+    button:SetItem(190384)
+    button:RequireItem(190384)
+    LibItemQuery:QueryItem(190384, button, 1)
+else
+    button:SetItem(174906) --160053
+    button:RequireItem(174906)
+    LibItemQuery:QueryItem(174906, button, 1)
+end
 button:SetFlyProtect("type", "item")
 button.icon.text:Hide()
-
-LibItemQuery:QueryItem(174906, button, 1)
 
 function button:OnItemInfoReceived(itemId, name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture)
 	self:SetAttribute("item", name)

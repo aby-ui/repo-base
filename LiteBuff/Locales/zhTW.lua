@@ -66,6 +66,6 @@ addon.L = {
 	["shouts"] = "怒吼",
 	["general options"] = "一般選項",
 	["disable buttons"] = "禁用按鈕",
-	["crystal of insanity"] = "精神錯亂水晶",
-    ["Lightning-Forged Augment Rune"] = "雷鑄增強符文"
+	["crystal of insanity"] = "合劑道具",
+    ["Lightning-Forged Augment Rune"] = "符文道具"
 }

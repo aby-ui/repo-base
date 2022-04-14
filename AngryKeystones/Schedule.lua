@@ -234,7 +234,7 @@ function Mod:Blizzard_ChallengesUI()
 
 	local frame2 = CreateFrame("Frame", nil, ChallengesFrame)
 	frame2:SetSize(246, 110)
-	frame2:SetPoint("TOP", frame, "BOTTOM", 0, -10)
+	frame2:SetPoint("TOP", frame, "BOTTOM", 0, -5)
 	Mod.PartyFrame = frame2
 
 	local bg2 = frame2:CreateTexture(nil, "BACKGROUND")

@@ -267,3 +267,113 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
         end)
     end
 end)
+
+--[[------------------------------------------------------------
+大米分数显示
+---------------------------------------------------------------]]
+CoreDependCall("Blizzard_ChallengesUI", function()
+    local SHORT_NAMES = {
+        [375] = "仙林", -- Mists of Tirna Scithe
+        [376] = "通灵", -- The Necrotic Wake
+        [377] = "彼界", -- De Other Side
+        [378] = "赎罪", -- Halls of Atonement
+        [379] = "凋魂", -- Plaguefall
+        [380] = "赤红", -- Sanguine Depths
+        [381] = "高塔", -- Spires of Ascension
+        [382] = "剧场", -- Theater of Pain
+        [391] = "天街", -- Strets of Wonder
+        [392] = "宏图"  -- So'lea's Gambit
+    }
+    local LEVEL_COLORS = { --系统 C_ChallengeMode.GetKeystoneLevelRarityColor 15以上就是橙色了
+        [0] = "ffffff", --白 0-4
+        [1] = "1eff00", --绿 5-9
+        [2] = "0070dd", --蓝 10-14
+        [3] = "a335ee", --紫 15-19
+        [4] = "ff8000", --橙 20-24
+        [5] = "e6cc80", --红 25+
+    }
+    local AFFIX_T = C_ChallengeMode.GetAffixInfo(9) --残暴
+    local AFFIX_F = C_ChallengeMode.GetAffixInfo(10) --强韧
+
+    local function updateIconLevelText(self)
+        local affix, overall = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(self.mapID)
+        if not affix then self._abyAffix:SetText("") return end
+        local left, left_c = "-", "ffffff"
+        local right, right_c = "-", "ffffff"
+        local score
+        for i, v in ipairs(affix) do
+            local color = v.overTime and "7f7f7f" or LEVEL_COLORS[min(floor(v.level/5),5)]
+            if v.name == AFFIX_T then
+                left, left_c = v.level, color
+            elseif v.name == AFFIX_F then
+                right, right_c = v.level, color
+            end
+            if ChallengesFrame._abySort.curr == v.name then
+                score = v.score
+            end
+        end
+        self._abyAffix:SetText(format("|cff%s%s|r|cff7f7f7f / |r|cff%s%s|r", left_c, left, right_c, right))
+
+        if ChallengesFrame._abySort:GetChecked() and score then
+            local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(score * 2)
+            if color then score = color:WrapTextInColorCode(score) end
+        else
+            score = overall
+        end
+        self.HighestLevel:SetText(score)
+    end
+
+    hooksecurefunc("ChallengesFrame_Update", function(self)
+        pcall(function() ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText("") end)
+
+        local curr = C_MythicPlus.GetCurrentAffixes()
+        local currName = curr and curr[1] and curr[1].id and C_ChallengeMode.GetAffixInfo(curr[1].id)
+        if currName then
+            if not ChallengesFrame._abySort then
+                local chk = WW(ChallengesFrame):CheckButton(nil, "UICheckButtonTemplate"):Key("_abySort")
+                :SetPoint("BOTTOMLEFT", ChallengesFrame.DungeonIcons[1], "TOPLEFT", 0, 15)
+                :SetSize(24,24):un()
+                chk:SetScript("OnClick", function(self)
+                    for i, icon in pairs(ChallengesFrame.DungeonIcons) do
+                        updateIconLevelText(icon)
+                    end
+                end)
+                chk.curr = currName
+                chk.text:SetText(currName.."分数")
+                CoreUIEnableTooltip(chk, "显示"..currName.."周分数", "副本分数计算方法为强韧残暴两种词缀下的分数，高的分数乘以3，加上低的分数，然后再除以2。")
+            end
+        end
+
+        for i, icon in pairs(ChallengesFrame.DungeonIcons) do
+            local mapName = C_ChallengeMode.GetMapUIInfo(icon.mapID)
+            mapName = SHORT_NAMES[icon.mapID] or string.sub(mapName, 1, 6)
+            if not icon._abyName then
+                WW(icon):CreateFontString():Key("_abyName")
+                :SetFont(GameFontNormal:GetFont(), 16, "OUTLINE"):TOP(0, 14)
+                :SetText(mapName):up():un()
+
+                WW(icon):CreateFontString():Key("_abyAffix")
+                :SetFont(GameFontNormal:GetFont(), 15, "OUTLINE"):BOTTOM(0, 5)
+                :SetShadowColor(0,0,0):SetShadowOffset(1,-1)
+                :SetText(""):up():un()
+
+                SetOrHookScript(icon, "OnEnter", function(self)
+                    local affix, overall = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(self.mapID)
+                    if not affix then return end
+                    for _, v in ipairs(affix) do
+                        for i = 2, 10 do
+                            local txt = _G["GameTooltipTextLeft"..i]
+                            if (txt and txt:GetText() or ""):find(v.name) then
+                                txt:SetText(txt:GetText() .. "：" .. v.score .. "分")
+                            end
+                        end
+                    end
+                    GameTooltip:Show()
+                end)
+
+                hooksecurefunc(icon, "SetUp", updateIconLevelText)
+            end
+        end
+    end)
+    --ChallengesFrame_Update(ChallengesFrame)
+end)

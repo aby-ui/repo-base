@@ -103,6 +103,9 @@ function templates.CreateIconFrame(parent)
 	frame.cooldown = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
 	frame.cooldown:SetAllPoints(frame.icon)
     frame.cooldown.noCooldownCount = true
+    frame.cooldown:SetAlpha(0.8)
+    frame.cooldown:SetDrawEdge(true)
+    frame.cooldown:SetFrameLevel(frame:GetFrameLevel())
     --frame.cooldown:SetReverse(true)
 --163uiedit
 
