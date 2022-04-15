@@ -1,6 +1,7 @@
 --[[------------------------------------------------------------
 公会大秘排名
 ---------------------------------------------------------------]]
+local addonName = ...
 
 --[[------------- copied from 7.3.0 --------------]]
 ChallengesGuildBestMixin = {};
@@ -296,6 +297,16 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local AFFIX_F = C_ChallengeMode.GetAffixInfo(10) --强韧
 
     local function updateIconLevelText(self)
+        if not U1GetCfgValue(addonName, 'MythicScore') then
+            self._abyName:SetText("")
+            self._abyAffix:SetText("")
+            return
+        end
+
+        local mapName = C_ChallengeMode.GetMapUIInfo(self.mapID)
+        mapName = SHORT_NAMES[self.mapID] or string.sub(mapName, 1, 6)
+        self._abyName:SetText(mapName)
+
         local affix, overall = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(self.mapID)
         if not affix then self._abyAffix:SetText("") return end
         local left, left_c = "-", "ffffff"
@@ -328,29 +339,26 @@ CoreDependCall("Blizzard_ChallengesUI", function()
 
         local curr = C_MythicPlus.GetCurrentAffixes()
         local currName = curr and curr[1] and curr[1].id and C_ChallengeMode.GetAffixInfo(curr[1].id)
-        if currName then
-            if not ChallengesFrame._abySort then
-                local chk = WW(ChallengesFrame):CheckButton(nil, "UICheckButtonTemplate"):Key("_abySort")
-                :SetPoint("BOTTOMLEFT", ChallengesFrame.DungeonIcons[1], "TOPLEFT", 0, 15)
-                :SetSize(24,24):un()
-                chk:SetScript("OnClick", function(self)
-                    for i, icon in pairs(ChallengesFrame.DungeonIcons) do
-                        updateIconLevelText(icon)
-                    end
-                end)
-                chk.curr = currName
-                chk.text:SetText(currName.."分数")
-                CoreUIEnableTooltip(chk, "显示"..currName.."周分数", "副本分数计算方法为强韧残暴两种词缀下的分数，高的分数乘以3，加上低的分数，然后再除以2。")
-            end
+        if not ChallengesFrame._abySort then
+            local chk = WW(ChallengesFrame):CheckButton(nil, "UICheckButtonTemplate"):Key("_abySort")
+            :SetPoint("BOTTOMLEFT", ChallengesFrame.DungeonIcons[1], "TOPLEFT", 0, 15)
+            :SetSize(24,24):un()
+            chk:SetScript("OnClick", function(self)
+                for i, icon in pairs(ChallengesFrame.DungeonIcons) do
+                    updateIconLevelText(icon)
+                end
+            end)
+            chk.curr = currName or "本周"
+            chk.text:SetText(currName.."分数")
+            CoreUIEnableTooltip(chk, "显示"..currName.."周分数", "副本分数计算方法为强韧残暴两种词缀下的分数，高的分数乘以3，加上低的分数，然后再除以2。\n\n选中此项方便查看本周词缀的分数\n\n可以在小功能集合里关闭此功能。")
         end
+        CoreUIShowOrHide(ChallengesFrame._abySort, U1GetCfgValue(addonName, 'MythicScore'))
 
         for i, icon in pairs(ChallengesFrame.DungeonIcons) do
-            local mapName = C_ChallengeMode.GetMapUIInfo(icon.mapID)
-            mapName = SHORT_NAMES[icon.mapID] or string.sub(mapName, 1, 6)
             if not icon._abyName then
                 WW(icon):CreateFontString():Key("_abyName")
                 :SetFont(GameFontNormal:GetFont(), 16, "OUTLINE"):TOP(0, 14)
-                :SetText(mapName):up():un()
+                :SetText(""):up():un()
 
                 WW(icon):CreateFontString():Key("_abyAffix")
                 :SetFont(GameFontNormal:GetFont(), 15, "OUTLINE"):BOTTOM(0, 5)
@@ -372,6 +380,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 end)
 
                 hooksecurefunc(icon, "SetUp", updateIconLevelText)
+                updateIconLevelText(icon)
             end
         end
     end)

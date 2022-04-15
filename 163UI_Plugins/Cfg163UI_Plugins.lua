@@ -21,6 +21,10 @@ U1RegisterAddon("163UI_Plugins", {
     nopic = 1,
 
     {
+        var = "MythicScore", text = U1_NEW_ICON.."史诗钥石界面直接显示分数", default = true,
+    },
+
+    {
         var = "CovenantHelper", text = U1_NEW_ICON.."盟约选择助手", default = true,
         callback = function(cfg, v, loading, ...)
             load(cfg, v, loading, true)
