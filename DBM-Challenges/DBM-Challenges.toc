@@ -6,7 +6,7 @@
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0도전 컨텐츠|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0挑戰|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0白虎试练场|r
-## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Арена испытаний|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Испытания|r
 ## Author: MysticalOS
 ## LoadOnDemand: 1
 ## RequiredDeps: DBM-Core
@@ -19,24 +19,35 @@
 ## X-DBM-Mod-SubCategories: Shadowlands,Battle for Azeroth,Legion,Proving Grounds
 ## X-DBM-Mod-SubCategories-deDE: Shadowlands,BfA Visions,Legion Artefakte,Feuerprobe
 ## X-DBM-Mod-SubCategories-koKR: 어둠땅,격아 환영,군단 유물,수련의 장
+## X-DBM-Mod-SubCategories-ruRU: Тёмные Земли,Битва за Азерот,Легион,Арена испытаний
 ## X-DBM-Mod-Name: Challenges
 ## X-DBM-Mod-Name-deDE: Herausforderungen
 ## X-DBM-Mod-Name-esES: Terreno de Pruebas
 ## X-DBM-Mod-Name-koKR: 도전 컨텐츠
 ## X-DBM-Mod-Name-zhTW: 挑戰
 ## X-DBM-Mod-Name-zhCN: 个人挑战
-## X-DBM-Mod-Name-ruRU: Арена испытаний
+## X-DBM-Mod-Name-ruRU: Испытания
 ## X-DBM-Mod-Sort: 316
-## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162, 1911
+## X-DBM-Mod-MapID: 1148, 1698, 1710, 1703, 1702, 1684, 1673, 1616, 2212, 2213, 2215, 2162, 1911, 2375
 ## X-DBM-Mod-MinCoreRevision: 20211207000000
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
 ## X-Wago-ID: Rn6VLLGd
-## Version: r148
+## Version: r148-14-g1889ab6
 localization.en.lua
 localization.tw.lua
 localization.cn.lua
 Shadowlands\Torghast.lua
+Shadowlands\PoA_Echthra.lua
+Shadowlands\PoA_Nuuminuuru.lua
+Shadowlands\PoA_Splinterbark.lua
+Shadowlands\PoA_CravenCorinth.lua
+Shadowlands\PoA_Kalisthene.lua
+Shadowlands\PoA_AlderynandMynir.lua
+Shadowlands\PoA_MadMortimer.lua
+Shadowlands\PoA_Thrantiok.lua
+Shadowlands\PoA_Athanos.lua
+Shadowlands\PoA_Azaruux.lua
 BfA\NzothVisionStormwind.lua
 BfA\NzothVisionOrgrimmar.lua
 Legion\DPSFelTotem.lua

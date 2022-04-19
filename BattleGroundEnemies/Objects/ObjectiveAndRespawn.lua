@@ -7,7 +7,6 @@ BattleGroundEnemies.Objects.ObjectiveAndRespawn = {}
 
 function BattleGroundEnemies.Objects.ObjectiveAndRespawn.New(playerButton)
 	local ObjectiveAndRespawn = CreateFrame("Frame", nil, playerButton)
-	ObjectiveAndRespawn = CreateFrame("Frame", nil, playerButton)
 	ObjectiveAndRespawn:SetFrameLevel(playerButton:GetFrameLevel()+5)
 	
 	ObjectiveAndRespawn.Icon = ObjectiveAndRespawn:CreateTexture(nil, "BORDER")
@@ -26,7 +25,7 @@ function BattleGroundEnemies.Objects.ObjectiveAndRespawn.New(playerButton)
 	ObjectiveAndRespawn.Cooldown:Hide()
 	
 
-	ObjectiveAndRespawn.Cooldown:SetScript("OnHide", function() 
+	ObjectiveAndRespawn.Cooldown:SetScript("OnCooldownDone", function() 
 		ObjectiveAndRespawn:Reset()
 	end)
 	-- ObjectiveAndRespawn.Cooldown:SetScript("OnCooldownDone", function() 

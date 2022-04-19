@@ -21,17 +21,17 @@ local function AppendID(tooltip, id, strType)
 		local text = frame and frame:GetText()
 
 		if not text then break end
-		if match(text, strType) then -- runs twice on inspection
+		if match(text, strType) then
 			return
 		end
 	end
 
 	tooltip:AddLine("\n" .. strType .. " |cff33ff99" .. id, 1, 1, 1, true)
-	tooltip:Show() -- resize window
+	tooltip:Show()
 end
 
 local function AddAuraID(self, unit, index, auraType)
-	if auraType == "HELPFUL" or auraType == "HARMFUL" then -- TODO: auraType == "MAW"
+	if auraType == "HELPFUL" or auraType == "HARMFUL" then
 		local id = select(10, UnitAura(unit, index, auraType))
 		if id then AppendID(self, id, ID_TYPE[auraType]) end
 	end
@@ -65,8 +65,8 @@ function TooltipID:HookAll()
 		return
 	end
 
-	self:SecureHook(GameTooltip, "SetUnitAura", AddAuraID) -- player
-	self:SecureHook(GameTooltip, "SetUnitBuff", AddBuffID) -- target/focus
+	self:SecureHook(GameTooltip, "SetUnitAura", AddAuraID)
+	self:SecureHook(GameTooltip, "SetUnitBuff", AddBuffID)
 	self:SecureHook(GameTooltip, "SetUnitDebuff", AddDebuffID)
 	self:HookScript(GameTooltip, "OnTooltipSetSpell", AddSpellID)
 	self:HookScript(GameTooltip, "OnTooltipSetItem", AddItemID)

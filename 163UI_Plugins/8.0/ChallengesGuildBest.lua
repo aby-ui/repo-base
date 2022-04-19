@@ -296,6 +296,11 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     local AFFIX_T = C_ChallengeMode.GetAffixInfo(9) --残暴
     local AFFIX_F = C_ChallengeMode.GetAffixInfo(10) --强韧
 
+    local function GetWeekAffixName()
+        local curr = C_MythicPlus.GetCurrentAffixes()
+        return curr and curr[1] and curr[1].id and C_ChallengeMode.GetAffixInfo(curr[1].id) or nil
+    end
+
     local function updateIconLevelText(self)
         if not U1GetCfgValue(addonName, 'MythicScore') then
             self._abyName:SetText("")
@@ -307,29 +312,35 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         mapName = SHORT_NAMES[self.mapID] or string.sub(mapName, 1, 6)
         self._abyName:SetText(mapName)
 
-        local affix, overall = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(self.mapID)
+        local affix, score = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(self.mapID)
         if not affix then self._abyAffix:SetText("") return end
-        local left, left_c = "-", "ffffff"
-        local right, right_c = "-", "ffffff"
-        local score
+        local left, left_c = "0", "ffffff"
+        local right, right_c = "0", "ffffff"
+        local curr = ChallengesFrame._abySort:GetChecked() and GetWeekAffixName()
+        if curr then score = 0 end
         for i, v in ipairs(affix) do
             local color = v.overTime and "7f7f7f" or LEVEL_COLORS[min(floor(v.level/5),5)]
-            if v.name == AFFIX_T then
+            if curr then
+                if GetWeekAffixName() == v.name then
+                    score = v.score
+                    left, left_c = v.level, color
+                end
+            elseif v.name == AFFIX_T then
                 left, left_c = v.level, color
             elseif v.name == AFFIX_F then
                 right, right_c = v.level, color
             end
-            if ChallengesFrame._abySort.curr == v.name then
-                score = v.score
-            end
         end
-        self._abyAffix:SetText(format("|cff%s%s|r|cff7f7f7f / |r|cff%s%s|r", left_c, left, right_c, right))
 
-        if ChallengesFrame._abySort:GetChecked() and score then
+        local fontName, _, fontFlag = self._abyAffix:GetFont()
+        if curr then
             local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(score * 2)
             if color then score = color:WrapTextInColorCode(score) end
+            self._abyAffix:SetFont(fontName, 20, fontFlag)
+            self._abyAffix:SetText(format("|cff%s%s|r", left_c, left))
         else
-            score = overall
+            self._abyAffix:SetFont(fontName, 15, fontFlag)
+            self._abyAffix:SetText(format("|cff%s%s|r|cff7f7f7f / |r|cff%s%s|r", left_c, left, right_c, right))
         end
         self.HighestLevel:SetText(score)
     end
@@ -337,8 +348,6 @@ CoreDependCall("Blizzard_ChallengesUI", function()
     hooksecurefunc("ChallengesFrame_Update", function(self)
         pcall(function() ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText("") end)
 
-        local curr = C_MythicPlus.GetCurrentAffixes()
-        local currName = curr and curr[1] and curr[1].id and C_ChallengeMode.GetAffixInfo(curr[1].id)
         if not ChallengesFrame._abySort then
             local chk = WW(ChallengesFrame):CheckButton(nil, "UICheckButtonTemplate"):Key("_abySort")
             :SetPoint("BOTTOMLEFT", ChallengesFrame.DungeonIcons[1], "TOPLEFT", 0, 15)
@@ -348,10 +357,9 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                     updateIconLevelText(icon)
                 end
             end)
-            chk.curr = currName or "本周"
-            chk.text:SetText(currName.."分数")
-            CoreUIEnableTooltip(chk, "显示"..currName.."周分数", "副本分数计算方法为强韧残暴两种词缀下的分数，高的分数乘以3，加上低的分数，然后再除以2。\n\n选中此项方便查看本周词缀的分数\n\n可以在小功能集合里关闭此功能。")
+            CoreUIEnableTooltip(chk, "显示本周词缀分数", "副本分数计算方法为强韧残暴两种词缀下的分数，高的分数乘以3，加上低的分数，然后再除以2。\n\n选中此项方便查看本周词缀的分数\n\n可以在小功能集合里关闭此功能。")
         end
+        ChallengesFrame._abySort.text:SetText((GetWeekAffixName() or "本周").."分数")
         CoreUIShowOrHide(ChallengesFrame._abySort, U1GetCfgValue(addonName, 'MythicScore'))
 
         for i, icon in pairs(ChallengesFrame.DungeonIcons) do
@@ -361,7 +369,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 :SetText(""):up():un()
 
                 WW(icon):CreateFontString():Key("_abyAffix")
-                :SetFont(GameFontNormal:GetFont(), 15, "OUTLINE"):BOTTOM(0, 5)
+                :SetFont(GameFontNormal:GetFont(), 15, "OUTLINE"):BOTTOM(1, 5)
                 :SetShadowColor(0,0,0):SetShadowOffset(1,-1)
                 :SetText(""):up():un()
 

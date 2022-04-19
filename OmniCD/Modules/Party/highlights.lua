@@ -11,7 +11,7 @@ local function GetOverlayGlow()
 	local overlay = tremove(unusedOverlayGlows)
 	if not overlay then
 		numOverlays = numOverlays + 1
-		overlay = CreateFrame("Frame", "OmniCDOverlayGlow".. numOverlays, UIParent, "OmniCDButtonSpellActivationAlert") -- frame name required for anim
+		overlay = CreateFrame("Frame", "OmniCDOverlayGlow".. numOverlays, UIParent, "OmniCDButtonSpellActivationAlert")
 	end
 
 	return overlay
@@ -37,7 +37,7 @@ local removeHighlightByTimer = function(icon)
 	local guid = icon.guid
 	local info = P.groupInfo[icon.guid]
 	if info and icon.isHighlighted then
-		local duration = P:GetBuffDuration(info.unit, icon.buff) -- TODO: cancel timer
+		local duration = P:GetBuffDuration(info.unit, icon.buff)
 		if not duration then
 			P:RemoveHighlight(icon)
 		end
@@ -132,11 +132,11 @@ function P:RemoveHighlight(icon)
 
 	self:HideOverlayGlow(icon)
 
-	-- End ResetAllIcons
+
 
 	local active = icon.active and info.active[icon.spellID]
 	if active then
-		if info.preActiveIcons[icon.spellID] then -- Forbearance
+		if info.preActiveIcons[icon.spellID] then
 			icon.icon:SetVertexColor(0.4, 0.4, 0.4)
 		end
 
@@ -163,7 +163,7 @@ function P:HighlightIcon(icon, isRefresh)
 	local duration = info and self:GetBuffDuration(unit, buff)
 
 	if duration then
---      if E.buffFixNoCLEU[buff] and (E.isPreBCC or not P.isInArena) then -- Patch 9.1 HSA removed
+
 		if E.buffFixNoCLEU[buff] then
 			info.bar:RegisterUnitEvent("UNIT_AURA", unit)
 		end
@@ -179,16 +179,13 @@ function P:HighlightIcon(icon, isRefresh)
 end
 
 function P:SetGlow(icon)
-	-- old glow
-	-- temp glowType0 in opt
-	--[[
-	local flash = icon.flashAnim
-	local newItemAnim = icon.newitemglowAnim
-	if not flash:IsPlaying() and not newItemAnim:IsPlaying() then
-		flash:Play()
-		newItemAnim:Play()
-	end
-	]]
-	icon.AnimFrame:Show() -- changed drawlayer to overlay to fix Transition being covered
+
+
+
+
+
+
+
+	icon.AnimFrame:Show()
 	icon.AnimFrame.Anim:Play()
 end

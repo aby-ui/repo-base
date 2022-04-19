@@ -144,7 +144,7 @@ local ProfileSharing = {
 					values = ProfileValues,
 					get = function() return selectedProfileDest end,
 					set = function(_, value) selectedProfileDest = value end,
-					disabledItem = function() return selectedProfileSrc end, -- myAce: this must be a function
+					disabledItem = function() return selectedProfileSrc end,
 				},
 				copy = {
 					disabled = function() return not selectedProfileSrc or not selectedProfileZone or not selectedProfileOption or not selectedProfileDest end,
@@ -176,7 +176,7 @@ local ProfileSharing = {
 							end
 						end
 
-						if dest == current then -- bypass same name check in DBObjectLib:SetProfile(name) to update profile. Credit goes to ElvUI.
+						if dest == current then
 							E.DB.keys.profile = current .. "_"
 							E.DB:SetProfile(current)
 						end

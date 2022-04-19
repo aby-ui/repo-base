@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2448, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220405021333")
+mod:SetRevision("20220414001532")
 mod:SetCreatureID(175663)
 mod:SetEncounterID(2426)
 mod:SetUsedIcons(1, 2)
@@ -21,13 +21,19 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, Are swings dogeable by tank?
+--[[
+(ability.id = 347094 or ability.id = 346957 or ability.id = 346766 or ability.id = 358131 or ability.id = 353312) and type = "begincast"
+ or (ability.id = 346116 or ability.id = 181113) and type = "cast"
+ or ability.id = 346766
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 local warnPurgedbyFire				= mod:NewSpellAnnounce(346959, 2)
 local warnKeepersprotection			= mod:NewEndAnnounce(347958, 1)
 local warnLightningNova				= mod:NewTargetNoFilterAnnounce(358131, 3)
 local warnVaultPurifierSoon			= mod:NewSoonAnnounce("ej23004", 2, "136116", false)
 local warnVaultPurifier				= mod:NewSpellAnnounce("ej23004", 2, "136116")
 local warnPurifyingBurst			= mod:NewCountAnnounce(353312, 2)
-local warnTitanicInsight			= mod:NewTargetNoFilterAnnounce(353312, 2)
+local warnTitanicInsight			= mod:NewTargetNoFilterAnnounce(346427, 2)
 
 local specWarnShearingSwings		= mod:NewSpecialWarningDefensive(346116, nil, nil, nil, 1, 2)
 local specWarnTitanicCrash			= mod:NewSpecialWarningDodge(347094, nil, nil, nil, 2, 2)
@@ -41,7 +47,7 @@ local timerPurgedbyFireCD			= mod:NewCDTimer(17, 346959, nil, nil, nil, 3)
 local timerSanitizingCycleCD		= mod:NewCDTimer(11, 346766, nil, nil, nil, 6)
 local timerVaultPurifierCD			= mod:NewCDTimer(29.1, "ej23004", nil, nil, nil, 1, "136116", DBM_COMMON_L.DAMAGE_ICON)
 local timerPurifyingBurstCD			= mod:NewCDTimer(23.1, 353312, nil, nil, nil, 2)
-local timerTitanicInsight			= mod:NewTargetTimer(15, 353312, nil, nil, nil, 5)
+local timerTitanicInsight			= mod:NewTargetTimer(15, 346427, nil, nil, nil, 5)
 
 mod:AddSetIconOption("SetIconOnAdds", "ej23004", true, true, {1, 2})
 

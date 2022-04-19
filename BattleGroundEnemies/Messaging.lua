@@ -6,7 +6,7 @@ local L = Data.L
 local CTimerNewTicker = C_Timer.NewTicker
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 
-local BGE_VERSION = "9.2.0.3"
+local BGE_VERSION = "9.2.0.5"
 local AddonPrefix = "BGE"
 local versionQueryString, versionResponseString = "Q^%s", "V^%s"
 local targetCallVolunteerQueryString = "TVQ^%s" -- wil be send to all the viewers to show if you are volunteering vor target calling
@@ -84,9 +84,10 @@ SlashCmdList.BattleGroundEnemiesVersion = function()
 		end
 	end
 
-	for k,v in pairs(results) do
-		if #v> 0 then
-			BattleGroundEnemies:Information(texts[k]..":", unpack(v))
+	
+	for state, names in pairs(results) do
+		if #names> 0 then
+			BattleGroundEnemies:Information(texts[state]..":", table.concat(names, ", "))
 		end
 	end
 end
@@ -165,7 +166,7 @@ function BattleGroundEnemies:UpdateVersions(sender, prefix, version)
 			if version > BGE_VERSION then
 				if timers.outdatedTimer then timers.outdatedTimer:Cancel() end
 				timers.outdatedTimer = CTimerNewTicker(3, function() 
-					if DEBUG_MODE then BattleGroundEnemies:Information(L.NewVersionAvailable) end
+					if DEBUG_MODE then  BattleGroundEnemies:Information(L.NewVersionAvailable..": ", version) end
 					timers.outdatedTimer = nil
 				end, 1)
 			end

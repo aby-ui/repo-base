@@ -45,6 +45,7 @@ langs.enUS = {
 	newKeystoneAnnounce = "New Keystone: %s",
 	currentKeystoneText = "Current: |cFFFFFFFF%s|r",
 	config_announceKeystones = "Announce newly acquired Mythic Keystones to your party",
+	config_schedule = "Display keystone schedule and party keystones (requires reload UI)",
 }
 langs.enGB = langs.enUS
 

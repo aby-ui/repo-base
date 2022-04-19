@@ -295,6 +295,8 @@
 						actorObject.enemy = true
 						actorObject.arena_enemy = true
 						actorObject.arena_team = 1 -- former my_team_color
+
+						Details:GuessArenaEnemyUnitId(nome)
 					end
 
 					local arena_props = _detalhes.arena_table [nome]

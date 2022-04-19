@@ -5,7 +5,4 @@
 	<Include file="Libs\LibPlayerSpells-1.0\lib.xml"/>
 	<Include file="Libs\LibChangelog\LibChangelog.xml"/>
 	<Script file="Libs\FlyPaper-2.0\LibFlyPaper-2.0.lua"/>
-	<!--@version-retail@--> 
-	<Include file="Libs\LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/>
-	<!--@end-version-retail@-->
 </Ui>

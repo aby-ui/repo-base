@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2459, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220322201100")
+mod:SetRevision("20220414022243")
 mod:SetCreatureID(181224)
 mod:SetEncounterID(2540)
 mod:SetUsedIcons(1, 2, 3)
@@ -195,8 +195,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			yellInfusedStrikes:Cancel()
 			yellInfusedStrikes:Countdown(spellId, 5)
-			if amount % 3 == 0 then
-				if amount >= 9 then
+			if amount % 2 == 0 then
+				if amount >= 4 then
 					specWarnInfusedStrikes:Show(amount)
 					specWarnInfusedStrikes:Play("stackhigh")
 				else
@@ -204,8 +204,8 @@ function mod:SPELL_AURA_APPLIED(args)
 				end
 			end
 		else
-			if amount % 3 == 0 then
-				if (amount >= 9) and not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) then
+			if amount % 2 == 0 then
+				if (amount >= 4) and not UnitIsDeadOrGhost("player") and not DBM:UnitDebuff("player", spellId) then
 					specWarnInfusedStrikesTaunt:Show(args.destName)
 					specWarnInfusedStrikesTaunt:Play("tauntboss")
 				else

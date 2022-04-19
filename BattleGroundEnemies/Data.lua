@@ -11,6 +11,7 @@ local GetSpellTexture = GetSpellTexture
 
 local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local IsTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 Data.CyrillicToRomanian = { -- source Wikipedia: https://en.wikipedia.org/wiki/Romanization_of_Russian
 	["А"] = "a",
@@ -233,10 +234,17 @@ do
 		taunt = 1
 	}
 
-
-	for spellID, categorieName in pairs(DRList.spells) do
-		tinsert(Data.DrCategoryToSpell[categorieName], spellID)
-		Data.SpellPriorities[spellID] = drCategoryToPriority[categorieName]
+	if isClassic then
+		for spellName, spellData in pairs(DRList.spells) do
+			local category = spellData.category
+			tinsert(Data.DrCategoryToSpell[category], spellName)
+			Data.SpellPriorities[spellName] = drCategoryToPriority[category]
+		end
+	else
+		for spellID, categorieName in pairs(DRList.spells) do
+			tinsert(Data.DrCategoryToSpell[categorieName], spellID)
+			Data.SpellPriorities[spellID] = drCategoryToPriority[categorieName]
+		end
 	end
 end
 
@@ -265,7 +273,6 @@ Data.cCduration = {	-- this is basically data from DRList-1 with durations, used
 		[321395] = 8, -- Polymorph (Mawrat)
 		[161355] = 8, -- Polymorph (penguin)
 		[161372] = 8, -- Polymorph (peacock)
-		[126819] = 8, -- Polymorph (Porcupine)
 		[ 82691] = 8, -- Ring of Frost
 		-- Monk
 		[115078] = 4, -- Paralysis
@@ -396,9 +403,7 @@ Data.cCduration = {	-- this is basically data from DRList-1 with durations, used
 
 Data.cCdurationBySpellID = {}
 for category, spellIDs in pairs(Data.cCduration) do
-	for spellID, duration in pairs(spellIDs) do
-		Data.cCdurationBySpellID[spellID] = duration
-	end
+	Mixin(Data.cCdurationBySpellID, spellIDs)
 end	
 		
 
@@ -459,28 +464,35 @@ Data.BattlegroundspezificDebuffs = { --key = mapID, value = table with key = num
 	} 
 }
 		
-		
 
-Data.TriggerSpellIDToTrinketnumber = {--key = which first row honor talent, value = fileID(used for SetTexture())
-	[195710] = 1, 	-- 1: Honorable Medallion, 3. min. CD, detected by Combatlog
-	[42292]  = 2,   -- 2: Medallion of the Alliance, Medallion of the Horde used in Classic, TBC, and probably some other Expansions  2 min. CD, detected by Combatlog
-	[208683] = 2, 	-- 2: Gladiator's Medallion, 2 min. CD, detected by Combatlog
-	[336126] = 2,   -- 2: Gladiator's Medallion, 2 min. CD, Shadowlands Update
-	[195901] = 3, 	-- 3: Adaptation, 1 min. CD, detected by Aura 195901
-	[214027] = 3, 	-- 3: Adaptation, 1 min. CD, detected by Aura 195901, for the Arena_cooldownupdate
-	[336135] = 3, 	-- 3: Adaptation, 1 min. CD, Shadowlands Update
-	[336139] = 3,   -- 3: Adapted, 1 min. CD, Shadowlands Update
-	[196029] = 4, 	-- 4: Relentless, passive, no CD
-	[336128] = 4, 	-- 4: Relentless, passive, no CD, Shadowlands Update
-	[363117] = 5    -- 5: Gladiator's Fastidious Resolve, Added in Shadowlands Patch 9.2  
+Data.TrinketData = {
+	[195710] = {cd = 180											},		-- 1: Honorable Medallion, 3. min. CD, detected by Combatlog
+	[42292]  = {cd = 120, fileID = select(10, GetItemInfo(37865))	},  	-- 2: Medallion of the Alliance, Medallion of the Horde used in Classic, TBC, and probably some other Expansions  2 min. CD, detected by Combatlog, should show as Medaillon; used in TBC etc
+	[208683] = {cd = 120											}, 		-- 2: Gladiator's Medallion, 2 min. CD, detected by Combatlog
+	[336126] = {cd = 120											},		-- 2: Gladiator's Medallion, 2 min. CD, Shadowlands Update
+	[195901] = {cd = 60, fileID = GetSpellTexture(214027)			},		-- 3: Adaptation, 1 min. CD, detected by Aura 195901
+	[214027] = {cd = 60												},		-- 3: Adaptation, 1 min. CD, detected by Aura 195901, for the Arena_cooldownupdate
+	[336135] = {cd = 60												},		-- 3: Adaptation, 1 min. CD, Shadowlands Update
+	[336139] = {cd = 60, fileID = GetSpellTexture(214027)			},		-- 3: Adapted, 1 min. CD, Shadowlands Update
+	[196029] = {cd = false											}, 		-- 4: Relentless, passive, no CD
+	[336128] = {cd = false											}, 		-- 4: Relentless, passive, no CD, Shadowlands Update
+	[363117] = {cd = false											},		-- 5: Gladiator's Fastidious Resolve, Added in Shadowlands Patch 9.2  
 }
-		
-	
-local TrinketTriggerSpellIDtoDisplayfileID = {
-	[42292]  = select(10, GetItemInfo(37865)),   	--PvP Trinket should show as Medaillon; used in TBC etc
-	[195901] = GetSpellTexture(214027),				--Adapted, should display as Adaptation
-	[336139] = GetSpellTexture(214027) 				--Adapted, should display as Adaptation, Shadowlands
-}
+
+
+if isClassic then
+	--Classic: there are no spellIDs in the combat log in classic, only spellnames
+	Mixin(Data.TrinketData, {
+		[GetSpellInfo(5579)]  = {spellID = 5579, cd = 300, fileID = select(10, GetItemInfo(18856))},	-- Immune Root/Snare/Stun 		Warrior, Hunter, Shaman
+		[GetSpellInfo(23273)] = {spellID = 23273, cd = 300, fileID = select(10, GetItemInfo(18856))},	-- Immune Charm/Fear/Polymorph	Rogue, Warlock
+		[GetSpellInfo(23274)] = {spellID = 23274, cd = 300, fileID = select(10, GetItemInfo(18856))}, 	-- Immune Fear/Polymorph/Snare	Mage
+		[GetSpellInfo(23276)] = {spellID = 23276, cd = 300, fileID = select(10, GetItemInfo(18856))},	-- Immune Fear/Polymorph/Stun	Paladin, Priest
+		[GetSpellInfo(23227)] = {spellID = 23227, cd = 300, fileID = select(10, GetItemInfo(18856))}	-- Immune Charm/Fear/Stun		Druid
+	})
+end
+
+
+
 
 
 
@@ -565,53 +577,44 @@ Data.CovenantSpells = {
 }
 
 Data.RacialSpellIDtoCooldown = {
-	 [7744] = 120,	--Will of the Forsaken, Undead Racial, 30 sec cooldown trigger on trinket
-	[20594] = 120,	--Stoneform, Dwarf Racial
-	[58984] = 120,	--Shadowmeld, Night Elf Racial
-	[59752] = 180,  --Every Man for Himself, Human Racial, 90 sec cooldown trigger on trinket
-	[28730] = 90,	--Arcane Torrent, Blood Elf Racial, Mage and Warlock, 
-	[50613] = 90,	--Arcane Torrent, Blood Elf Racial, Death Knight, 
-   [202719] = 90,	--Arcane Torrent, Blood Elf Racial, Demon Hunter, 
-	[80483] = 90,	--Arcane Torrent, Blood Elf Racial, Hunter,
-   [129597] = 90,	--Arcane Torrent, Blood Elf Racial, Monk,
-   [155145] = 90,	--Arcane Torrent, Blood Elf Racial, Paladin,
-   [232633] = 90,	--Arcane Torrent, Blood Elf Racial, Priest,
-	[25046] = 90,	--Arcane Torrent, Blood Elf Racial, Rogue,
-	[69179] = 90,	--Arcane Torrent, Blood Elf Racial, Warrior,
-	[20589] = 90, 	--Escape Artist, Gnome Racial
-	[26297] = 180,	--Berserkering, Troll Racial
-	[33702] = 120,	--Blood Fury, Orc Racial, Mage,  Warlock
-	[20572]	= 120,	--Blood Fury, Orc Racial, Warrior, Hunter, Rogue, Death Knight
-	[33697] = 120,	--Blood Fury, Orc Racial, Shaman, Monk
-	[20577] = 120, 	--Cannibalize, Undead Racial
-	[68992]	= 120,	--Darkflight, Worgen Racial
-	[59545] = 180,	--Gift of the Naaru, Draenei Racial, Death Knight
-	[59543] = 180,	--Gift of the Naaru, Draenei Racial, Hunter
-	[59548] = 180,	--Gift of the Naaru, Draenei Racial, Mage
-   [121093]	= 180,	--Gift of the Naaru, Draenei Racial, Monk
-	[59542] = 180,	--Gift of the Naaru, Draenei Racial, Paladin
-	[59544] = 180,	--Gift of the Naaru, Draenei Racial, Priest
-	[59547] = 180,	--Gift of the Naaru, Draenei Racial, Shaman
-	[28880] = 180,	--Gift of the Naaru, Draenei Racial, Warrior
-   [107079] = 120,	--Quaking Palm, Pandaren Racial
-	[69041] = 90,	--Rocket Barrage, Goblin Racial
-	[69070] = 90,	--Rocket Jump, Goblin Racial
-	[20549] = 90	--War Stomp, Tauren Racial 
-}
+	 [7744] = {cd = 120, trinketCD = 30 },					--Will of the Forsaken, Undead Racial, 30 sec cooldown trigger on trinket
+	[20594] = {cd = 120 				},					--Stoneform, Dwarf Racial
+	[58984] = {cd = 120 				},					--Shadowmeld, Night Elf Racial
+	[59752] = {cd = 180, trinketCD = 90 },  				--Every Man for Himself, Human Racial, 90 sec cooldown trigger on trinket
+	[28730] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Mage and Warlock, 
+	[50613] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Death Knight, 
+   [202719] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Demon Hunter, 
+	[80483] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Hunter,
+   [129597] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Monk,
+   [155145] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Paladin,
+   [232633] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Priest,
+	[25046] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Rogue,
+	[69179] = {cd = 90  				},					--Arcane Torrent, Blood Elf Racial, Warrior,
+	[20589] = {cd = 90  				}, 					--Escape Artist, Gnome Racial
+	[26297] = {cd = 180 				},					--Berserkering, Troll Racial
+	[33702] = {cd = 120 				},					--Blood Fury, Orc Racial, Mage,  Warlock
+	[20572]	= {cd = 120 				},					--Blood Fury, Orc Racial, Warrior, Hunter, Rogue, Death Knight
+	[33697] = {cd = 120 				},					--Blood Fury, Orc Racial, Shaman, Monk
+	[20577] = {cd = 120 				}, 					--Cannibalize, Undead Racial
+	[68992]	= {cd = 120 				},					--Darkflight, Worgen Racial
+	[59545] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Death Knight
+	[59543] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Hunter
+	[59548] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Mage
+   [121093]	= {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Monk
+	[59542] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Paladin
+	[59544] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Priest
+	[59547] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Shaman
+	[28880] = {cd = 180 				},					--Gift of the Naaru, Draenei Racial, Warrior
+   [107079] = {cd = 120 				},					--Quaking Palm, Pandaren Racial
+	[69041] = {cd = 90  				},					--Rocket Barrage, Goblin Racial
+	[69070] = {cd = 90  				},					--Rocket Jump, Goblin Racial
+	[20549] = {cd = 90  				}					--War Stomp, Tauren Racial 
+}				
 
-Data.TriggerSpellIDToDisplayFileId = {}
-for triggerSpellID in pairs(Data.TriggerSpellIDToTrinketnumber) do
-	if TrinketTriggerSpellIDtoDisplayfileID[triggerSpellID] then
-		Data.TriggerSpellIDToDisplayFileId[triggerSpellID] = TrinketTriggerSpellIDtoDisplayfileID[triggerSpellID]
-	else
-		Data.TriggerSpellIDToDisplayFileId[triggerSpellID] = GetSpellTexture(triggerSpellID)
-	end
-end
 
 Data.RacialNameToSpellIDs = {}
 Data.Racialnames = {}
 for spellID in pairs(Data.RacialSpellIDtoCooldown) do
-	Data.TriggerSpellIDToDisplayFileId[spellID] = GetSpellTexture(spellID)
 	local racialName = GetSpellInfo(spellID)
 	if racialName then
 		if not Data.RacialNameToSpellIDs[racialName] then
@@ -623,20 +626,7 @@ for spellID in pairs(Data.RacialSpellIDtoCooldown) do
 	
 end
 
-Data.TrinketTriggerSpellIDtoCooldown = {
-	[195710] = 180,	-- Honorable Medallion, 3 min. CD
-	[208683] = 120,	-- Gladiator's Medallion, 2 min. CD
-	[336126] = 120, -- Gladiator's Medallion, 2 min. CD, Shadowlands Update
-	[195901] = 60, 	-- Adaptation PvP Talent
-	[336135] = 60,	-- Adapation, Shadowlands Update
-	[363117] = 180 	-- Gladiator's Fastidious Resolve, Added in Shadowlands Patch 9.2 
 
-}
-
-Data.RacialSpellIDtoCooldownTrigger = {
-	 [7744] = 30, 	--Will of the Forsaken, Undead Racial, 30 sec cooldown trigger on trinket
-	[59752] = 90  	--Every Man for Himself, Human Racial, 30 sec cooldown trigger on trinket
-}
 
 
 
@@ -769,7 +759,7 @@ do
 		local _, classTag = GetClassInfo(classID)
 		if classTag then
 			Data.Classes[classTag] = {}
-			if IsTBCC then 
+			if IsTBCC or isClassic then 
 				Data.Classes[classTag] = {Ressource = ClassRessources[classTag]}
 				table.insert(Data.ClassList, classTag)
 			else

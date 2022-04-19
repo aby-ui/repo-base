@@ -40,6 +40,7 @@ local RSMap = private.ImportLib("RareScannerMap")
 local RSMinimap = private.ImportLib("RareScannerMinimap")
 local RSWaypoints = private.ImportLib("RareScannerWaypoints")
 local RSLoot = private.ImportLib("RareScannerLoot")
+local RSAudioAlerts = private.ImportLib("RareScannerAudioAlerts")
 
 -- RareScanner other addons integration services
 local RSTomtom = private.ImportLib("RareScannerTomtom")
@@ -1291,7 +1292,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 			else
 				RSNotificationTracker.AddNotification(vignetteInfo.id, false, entityID)
 				FlashClientIcon()
-				self:PlaySoundAlert(vignetteInfo.atlasName)
+				RSAudioAlerts.PlaySoundAlert(vignetteInfo.atlasName)
 				self:DisplayMessages(vignetteInfo.preEvent and string.format(AL["PRE_EVENT"], vignetteInfo.name) or vignetteInfo.name)
 				return
 			end
@@ -1313,7 +1314,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	if (not isNavigating) then
 		FlashClientIcon()
 		self:DisplayMessages(vignetteInfo.preEvent and string.format(AL["PRE_EVENT"], vignetteInfo.name) or vignetteInfo.name)
-		self:PlaySoundAlert(vignetteInfo.atlasName)
+		RSAudioAlerts.PlaySoundAlert(vignetteInfo.atlasName)
 	end
 
 	------------------------
@@ -1451,28 +1452,6 @@ function RareScanner:UpdateRareFound(entityID, vignetteInfo, coordinates)
 	end
 end
 
-function scanner_button:PlaySoundAlert(atlasName)
-	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName))) then
---[[
-		if (RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithObjects())) then
-			PlaySoundFile(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithObjects())), RSConfigDB.GetSoundChannel())
-		else
-			PlaySoundFile(string.gsub(RSConstants.DEFAULT_SOUNDS[RSConfigDB.GetSoundPlayedWithObjects()], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
-		end
---]]
-		PlaySound(RSConstants.DEFAULT_SOUNDS_ABY[RSConfigDB.GetSoundPlayedWithObjects()], RSConfigDB.GetSoundChannel(), false)
-	elseif (not RSConfigDB.IsPlayingSound() and RSConstants.IsNpcAtlas(atlasName)) then
---[[	
-		if (RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithNpcs())) then
-			PlaySoundFile(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(RSConfigDB.GetSoundPlayedWithNpcs())), RSConfigDB.GetSoundChannel())
-		else
-			PlaySoundFile(string.gsub(RSConstants.DEFAULT_SOUNDS[RSConfigDB.GetSoundPlayedWithNpcs()], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
-		end	
---]]		
-		PlaySound(RSConstants.DEFAULT_SOUNDS_ABY[RSConfigDB.GetSoundPlayedWithNpcs()], RSConfigDB.GetSoundChannel(), false)
-	end
-end
-
 function scanner_button:DisplayMessages(name)
 	if (name) then
 		if (RSConfigDB.IsDisplayingRaidWarning()) then
@@ -1607,7 +1586,7 @@ function RareScanner:Test()
 	scanner_button.atlasName = RSConstants.NPC_VIGNETTE
 	scanner_button.Title:SetText(npcTestName)
 	scanner_button:DisplayMessages(npcTestName)
-	scanner_button:PlaySoundAlert(RSConstants.NPC_VIGNETTE)
+	RSAudioAlerts.PlaySoundAlert(RSConstants.NPC_VIGNETTE)
 	scanner_button.Description_text:SetText(AL["CLICK_TARGET"])
 
 	if (not InCombatLockdown()) then

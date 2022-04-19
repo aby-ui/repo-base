@@ -420,16 +420,18 @@
 		print("guid:", guid)
 		--]=]
 
-		_detalhes.cached_talents[guid] = talents
-		if (spec and spec ~= 0)  then
-			_detalhes.cached_specs[guid] = spec
+		if (guid) then
+			_detalhes.cached_talents[guid] = talents
+			if (spec and spec ~= 0)  then
+				_detalhes.cached_specs[guid] = spec
+			end
+			_detalhes.cached_roles[guid] = playerRole
+			_detalhes.item_level_pool[guid] = {
+				name = player,
+				ilvl = itemLevel,
+				time = time()
+			}
 		end
-		_detalhes.cached_roles[guid] = playerRole
-		_detalhes.item_level_pool[guid] = {
-			name = player,
-			ilvl = itemLevel,
-			time = time()
-		}
 	end
 
 	--"CIEA" Coach Is Enabled Ask (client > server)

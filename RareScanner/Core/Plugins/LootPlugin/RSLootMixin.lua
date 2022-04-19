@@ -19,6 +19,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 
 -- RareScanner services
 local RSLoot = private.ImportLib("RareScannerLoot")
+local RSLootTooltip = private.ImportLib("RareScannerLootTooltip")
 
 
 RSLootMixin = { };
@@ -35,32 +36,10 @@ function RSLootMixin:OnEnter()
 		toolTip:SetOwner(self:GetParent():GetParent(), RSConfigDB:GetLootTooltipPosition())
 		toolTip:SetHyperlink(self.itemLink)
 		toolTip:SetParent(self)
-		
-		-- Other addons support
-		if (CanIMogIt and RSConfigDB.IsShowingLootCanimogitTooltip()) then
-			toolTip:AddLine(CanIMogIt:GetTooltipText(itemLink))
-		end
-		
-		if (RSConfigDB.IsShowingLootTooltipsCommands()) then
-			toolTip:AddLine(string.format(AL["LOOT_TOGGLE_FILTER"], GetItemClassInfo(self.itemClassID), GetItemSubClassInfo(self.itemClassID, self.itemSubClassID)), 1,1,0)
-			toolTip:AddLine(AL["LOOT_TOGGLE_INDIVIDUAL_FILTER"], 1,1,0)
-		end
 	
-		if (RSConfigDB.IsShowingCovenantRequirement()) then
-			if (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_NECROLORD, self.itemID)) then
-				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NECROLORDS"]), 0.3,0.7,0.2)
-			elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_NIGHT_FAE, self.itemID)) then
-				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NIGHT_FAE"]), 0.6,0.2,0.7)
-			elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_VENTHYR, self.itemID)) then
-				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_VENTHYR"]), 0.7,0,0)
-			elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_KYRIAN, self.itemID)) then
-				toolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_KYRIAN"]), 0,0.7,1)
-			end
-		end
+		-- Adds extra information
+		RSLootTooltip.AddRareScannerInformation(toolTip, itemLink, self.itemID, itemClassID, itemSubClassID)
 		
-		if (RSConstants.DEBUG_MODE) then
-			toolTip:AddLine(self.itemID, 1,1,0)
-		end
 		toolTip:Show()
 
 		self.Icon.Anim:Play();

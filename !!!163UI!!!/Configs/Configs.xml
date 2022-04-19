@@ -119,7 +119,6 @@
     <Include file="..\..\SwitchSwitch\CfgSwitchSwitch.lua"/>
     <Include file="..\..\VenturePlan\CfgVenturePlan.lua"/>
     <Include file="..\..\OmniCD\CfgOmniCD.lua"/>
-    <Include file="..\..\DominationSocketHelper\CfgDominationSocketHelper.lua"/>
     <Include file="..\..\ZerethMortisPuzzleHelper\CfgZerethMortisPuzzleHelper.lua"/>
 
     <!-- local

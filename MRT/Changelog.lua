@@ -1,6 +1,10 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4630
+* Raid Check: consumables on ready check: added support for Eternal Augment Rune
+* Minor fixes
+
 v.4620
 * 9.2 Update
 

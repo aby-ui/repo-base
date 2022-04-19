@@ -241,9 +241,8 @@
 		}
 	end
 
-	local bitfield_debuffs_ids = _detalhes.BitfieldSwapDebuffsIDs
 	local bitfield_debuffs = {}
-	for _, spellid in ipairs (bitfield_debuffs_ids) do
+	for _, spellid in ipairs (_detalhes.BitfieldSwapDebuffsIDs) do
 		local spellname = GetSpellInfo(spellid)
 		if (spellname) then
 			bitfield_debuffs [spellname] = true
@@ -251,6 +250,12 @@
 			bitfield_debuffs [spellid] = true
 		end
 	end
+
+	for spellId in pairs(_detalhes.BitfieldSwapDebuffsSpellIDs) do
+		bitfield_debuffs [spellId] = true
+	end
+
+	Details.bitfield_debuffs_table = bitfield_debuffs
 
 	--tbc spell caches
 	local TBC_PrayerOfMendingCache = {}
@@ -693,7 +698,11 @@
 					end
 				end
 			end
-		--
+
+			--Jailer
+			if (_current_encounter_id == 2537) then
+				
+			end
 
 		--> npcId check for ignored npcs
 			local npcId = npcid_cache[alvo_serial]
@@ -1000,11 +1009,15 @@
 			end
 		end
 		
-		if (este_jogador.grupo and not este_jogador.arena_enemy and not este_jogador.enemy) then --> source = friendly player and not an enemy player
+		if (este_jogador.grupo and not este_jogador.arena_enemy and not este_jogador.enemy and not jogador_alvo.arena_enemy) then --> source = friendly player and not an enemy player
 			--dano to adversario estava caindo aqui por nao estar checando .enemy
 			_current_gtotal [1] = _current_gtotal [1]+amount
 			
 		elseif (jogador_alvo.grupo) then --> source = arena enemy or friendly player
+
+			if (jogador_alvo.arena_enemy) then
+				_current_gtotal [1] = _current_gtotal [1]+amount
+			end
 
 			--> record avoidance only for tank actors
 			if (tanks_members_cache [alvo_serial]) then
@@ -1094,9 +1107,13 @@
 				this_event [4] = time --> parser time
 
 				--> current unit heal
-				if (arena_enemies[alvo_name]) then
+				if (jogador_alvo.arena_enemy) then
 					--this is an arena enemy, get the heal with the unit Id
-					this_event [5] = _UnitHealth(_detalhes.arena_enemies[alvo_name]) 
+					local unitId = _detalhes.arena_enemies[alvo_name]
+					if (not unitId) then
+						unitId = Details:GuessArenaEnemyUnitId(alvo_name)
+					end
+					this_event [5] = _UnitHealth(unitId)
 				else
 					this_event [5] = _UnitHealth(alvo_name)
 				end
@@ -1170,6 +1187,15 @@
 					if ((jogador_alvo.grupo or alvo_dono and alvo_dono.grupo) and (este_jogador.grupo or meu_dono and meu_dono.grupo)) then
 						is_friendly_fire = true
 					end
+				end
+			end
+
+			if (_current_encounter_id == 2543) then --malganis REMOVE ON 10.0
+				if (bitfield_swap_cache [who_serial] or (meu_dono and bitfield_swap_cache [meu_dono.serial])) then
+					is_friendly_fire = false
+
+				elseif (bitfield_swap_cache [alvo_serial] or (alvo_dono and bitfield_swap_cache [alvo_dono.serial])) then
+					is_friendly_fire = false
 				end
 			end
 		else
@@ -2183,7 +2209,7 @@
 	------------------------------------------------------------------------------------------------
 	--> group checks
 
-		if (este_jogador.grupo) then 
+		if (este_jogador.grupo and not jogador_alvo.arena_enemy) then 
 			--_current_combat.totals_grupo[2] = _current_combat.totals_grupo[2] + cura_efetiva
 			_current_gtotal [2] = _current_gtotal [2] + cura_efetiva
 		end
@@ -2204,7 +2230,19 @@
 				this_event [2] = spellid --> spellid || false if this is a battle ress line
 				this_event [3] = amount --> amount of damage or healing
 				this_event [4] = time --> parser time
-				this_event [5] = _UnitHealth (alvo_name) --> current unit heal
+
+				--current unit heal
+				if (jogador_alvo.arena_enemy) then
+					--this is an arena enemy, get the heal with the unit Id
+					local unitId = _detalhes.arena_enemies[alvo_name]
+					if (not unitId) then
+						unitId = Details:GuessArenaEnemyUnitId(alvo_name)
+					end
+					this_event [5] = _UnitHealth(unitId)
+				else
+					this_event [5] = _UnitHealth(alvo_name)
+				end
+
 				this_event [6] = who_name --> source name
 				this_event [7] = is_shield
 				this_event [8] = absorbed
@@ -2523,8 +2561,8 @@
 						parser:add_cc_done (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname)
 					end
 					
-					if (bitfield_debuffs [spellname] and raid_members_cache [alvo_serial]) then
-						bitfield_swap_cache [alvo_serial] = true
+					if ((bitfield_debuffs[spellname] or bitfield_debuffs[spellid]) and raid_members_cache[alvo_serial]) then
+						bitfield_swap_cache[alvo_serial] = true
 					end
 				
 					if (raid_members_cache [who_serial]) then
@@ -2997,8 +3035,8 @@
 					end
 				end
 				
-				if (bitfield_debuffs [spellname] and alvo_serial) then
-					bitfield_swap_cache [alvo_serial] = nil
+				if ((bitfield_debuffs[spellname] or bitfield_debuffs[spellid]) and alvo_serial) then
+					bitfield_swap_cache[alvo_serial] = nil
 				end
 				
 				if (_recording_ability_with_buffs) then
@@ -4259,11 +4297,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_current_gtotal [4].dead = _current_gtotal [4].dead + 1
 				
 				--> main actor no container de misc que ir� armazenar a morte
-				local este_jogador, meu_dono = misc_cache [alvo_name]
-				if (not este_jogador) then --> pode ser um desconhecido ou um pet
-					este_jogador, meu_dono, who_name = _current_misc_container:PegarCombatente (alvo_serial, alvo_name, alvo_flags, true)
+				local thisPlayer, meu_dono = misc_cache [alvo_name]
+				if (not thisPlayer) then --> pode ser um desconhecido ou um pet
+					thisPlayer, meu_dono, who_name = _current_misc_container:PegarCombatente (alvo_serial, alvo_name, alvo_flags, true)
 					if (not meu_dono) then --> se n�o for um pet, adicionar no cache
-						misc_cache [alvo_name] = este_jogador
+						misc_cache [alvo_name] = thisPlayer
 					end
 				end
 
@@ -4298,12 +4336,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					end
 				end
 				
-				if (este_jogador.last_cooldown) then
+				if (thisPlayer.last_cooldown) then
 					local t = {}
 					t [1] = 3 --> true if this is a damage || false for healing || 1 for cooldown usage || 2 for last cooldown
-					t [2] = este_jogador.last_cooldown[2] --> spellid || false if this is a battle ress line
+					t [2] = thisPlayer.last_cooldown[2] --> spellid || false if this is a battle ress line
 					t [3] = 1 --> amount of damage or healing
-					t [4] = este_jogador.last_cooldown[1] --> parser time
+					t [4] = thisPlayer.last_cooldown[1] --> parser time
 					t [5] = 0 --> current unit heal
 					t [6] = alvo_name --> source name
 					esta_morte [#esta_morte+1] = t
@@ -4321,46 +4359,63 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				local decorrido = _GetTime() - _current_combat:GetStartTime()
 				local minutos, segundos = _math_floor (decorrido/60), _math_floor (decorrido%60)
 				
-				local t = {esta_morte, time, este_jogador.nome, este_jogador.classe, _UnitHealthMax (alvo_name), minutos.."m "..segundos.."s",  ["dead"] = true, ["last_cooldown"] = este_jogador.last_cooldown, ["dead_at"] = decorrido}
+				local maxHealth
+				if (thisPlayer.arena_enemy) then
+					--this is an arena enemy, get the heal with the unit Id
+					local unitId = _detalhes.arena_enemies[thisPlayer.nome]
+					if (not unitId) then
+						unitId = Details:GuessArenaEnemyUnitId(thisPlayer.nome)
+					end
+					if (unitId) then
+						maxHealth = UnitHealthMax(unitId)
+					end
+
+					if (not maxHealth) then
+						maxHealth = 0
+					end
+				else
+					maxHealth = UnitHealthMax(thisPlayer.nome)
+				end
+
+				local t = {esta_morte, time, thisPlayer.nome, thisPlayer.classe, maxHealth, minutos.."m "..segundos.."s",  ["dead"] = true, ["last_cooldown"] = thisPlayer.last_cooldown, ["dead_at"] = decorrido}
 				_table_insert (_current_combat.last_events_tables, #_current_combat.last_events_tables+1, t)
-				
+
 				if (_hook_deaths) then
 					--> send event to registred functions
-					local death_at = _GetTime() - _current_combat:GetStartTime()
-					local max_health = _UnitHealthMax (alvo_name)
+					local deathTime = _GetTime() - _current_combat:GetStartTime()
 
 					for _, func in _ipairs (_hook_deaths_container) do 
 						local copiedDeathTable = Details.CopyTable(t)
-						local successful, errortext = pcall(func, nil, token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, copiedDeathTable, este_jogador.last_cooldown, death_at, max_health)
+						local successful, errortext = pcall(func, nil, token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, copiedDeathTable, thisPlayer.last_cooldown, deathTime, maxHealth)
 						if (not successful) then
 							_detalhes:Msg ("error occurred on a death hook function:", errortext)
 						end
 					end
 				end
 
-				--> check if this is a mythic+ run
+				--check if this is a mythic+ run for overall deaths
 				local mythicLevel = C_ChallengeMode and C_ChallengeMode.GetActiveKeystoneInfo() --classic wow doesn't not have C_ChallengeMode API
 				if (mythicLevel and type (mythicLevel) == "number" and mythicLevel >= 2) then --several checks to be future proof
 					--> more checks for integrity
 					if (_detalhes.tabela_overall and _detalhes.tabela_overall.last_events_tables) then
-						--> this is a mythi dungeon run, add the death to overall data
-						--> need to adjust the time of death, since this will show all deaths in the mythic run
-						--> first copy the table
-						local overallDeathTable = DetailsFramework.table.copy ({}, t)
+						--this is a mythic dungeon run, add the death to overall data
+						--need to adjust the time of death, since this will show all deaths in the mythic run
+						--first copy the table
+						local overallDeathTable = DetailsFramework.table.copy({}, t)
 						
-						--> get the elapsed time
-						local decorrido = _GetTime() - _detalhes.tabela_overall:GetStartTime()
-						local minutos, segundos = _math_floor (decorrido/60), _math_floor (decorrido%60)
+						--get the elapsed time
+						local timeElapsed = _GetTime() - _detalhes.tabela_overall:GetStartTime()
+						local minutos, segundos = _math_floor(timeElapsed/60), _math_floor(timeElapsed%60)
 						
 						overallDeathTable [6] = minutos.."m "..segundos.."s"
-						overallDeathTable.dead_at = decorrido
+						overallDeathTable.dead_at = timeElapsed
 						
-						_table_insert (_detalhes.tabela_overall.last_events_tables, #_detalhes.tabela_overall.last_events_tables + 1, overallDeathTable)
+						_table_insert(_detalhes.tabela_overall.last_events_tables, #_detalhes.tabela_overall.last_events_tables + 1, overallDeathTable)
 					end
 				end
 
-				--> reseta a pool
-				last_events_cache [alvo_name] = nil
+				--remove the player death events from the cache
+				last_events_cache[alvo_name] = nil
 			end
 		end
 	end

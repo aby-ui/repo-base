@@ -82,7 +82,7 @@ function TestMod:Test(key)
 		end
 
 		if active == "blizz" then
-			if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") then -- Grid2
+			if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") then
 				CompactRaidFrameManager:Show()
 				CompactRaidFrameContainer:Show()
 			elseif not E.db.position.detached then
@@ -167,7 +167,7 @@ function TestMod:PLAYER_REGEN_ENABLED()
 	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 end
 
-function TestMod:PLAYER_LEAVING_WORLD() -- revert db on logout w/ test enabled
+function TestMod:PLAYER_LEAVING_WORLD()
 	if P.test then
 		self:Test()
 	end

@@ -263,7 +263,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[10060] = 1, --Power Infusion
 			[200183] = 2, --Apotheosis
 			[47788] = 3, --Guardian Spirit
-			[64844] = 4, --Divine Hymn
+			[64843] = 4, --Divine Hymn
 			[64901] = 4, --Symbol of Hope
 			[265202] = 4, --Holy Word: Salvation (talent)
 			--[88625] = 5, --Holy Word: Chastise
@@ -879,7 +879,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[19236] = {cooldown = 90, duration = 10, talent = false, charges = 1, class = "PRIEST", type = 5},  --Desperate Prayer
 	[200183] = {cooldown = 120, duration = 20, talent = 21644, charges = 1, class = "PRIEST", type = 2},  --Apotheosis (talent)
 	[47788] = {cooldown = 180, duration = 10, talent = false, charges = 1, class = "PRIEST", type = 3},  --Guardian Spirit
-	[64844] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "PRIEST", type = 4},  --Divine Hymn
+	[64843] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "PRIEST", type = 4},  --Divine Hymn
 	[64901] = {cooldown = 300, duration = 6, talent = false, charges = 1, class = "PRIEST", type = 4},  --Symbol of Hope
 	[265202] = {cooldown = 720, duration = false, talent = 23145, charges = 1, class = "PRIEST", type = 4},  --Holy Word: Salvation (talent)
 	[109964]  = {cooldown = 60, duration = 12, talent = 21184, charges = 1, class = "PRIEST", type = 4},  --Spirit Shell (talent)

@@ -22,9 +22,12 @@ v2.6.36
 Pre v2.6.36 changes can be found in the CHANGELOG file
 ]=]
 else E.changelog = [=[
+v2.7.12
+	Fixed Metamorphosis (Havoc) spell ID for sync.
+
 v2.7.11
-	Fixed lua error w/ tullaCC
-	Shadowlands trinkets have been added back in
+	Fixed lua error w/ tullaCC.
+	Shadowlands trinkets have been added back in.
 
 v2.7.10
 	Feature Updates

@@ -127,7 +127,7 @@ function P:SetMarker(icon)
 		local mark = E.spell_marked[spellID] or E.db.highlight.markedSpells[spellID]
 		if mark and (mark == true or self:IsTalent(mark, icon.guid)) then
 			hotkey:SetText(RANGE_INDICATOR)
-			hotkey:SetTextColor(1, 1, 1) -- 2.5.20+
+			hotkey:SetTextColor(1, 1, 1)
 			hotkey:Show()
 		else
 			hotkey:Hide()
@@ -138,14 +138,14 @@ function P:SetMarker(icon)
 end
 
 function P:SetAlpha(icon)
-	-- Alpha
+
 	if icon.statusBar and not E.db.extraBars[icon.statusBar.key].useIconAlpha then
 		icon:SetAlpha(1.0)
 	else
 		icon:SetAlpha(icon.active and E.db.icons.activeAlpha or E.db.icons.inactiveAlpha)
 	end
 
-	-- Color and Saturation
+
 	local info = P.groupInfo[icon.guid]
 	if not info then return end
 	if info.isDeadOrOffline then
@@ -179,7 +179,7 @@ function P:SetCounter(icon)
 	else
 		local charges = icon.maxcharges and tonumber(icon.Count:GetText())
 		local noCount = charges and charges > 0 or (icon.isHighlighted and true) or not E.db.icons.showCounter
-		icon.cooldown:SetHideCountdownNumbers(noCount) -- [11]*
+		icon.cooldown:SetHideCountdownNumbers(noCount)
 		icon.counter:SetScale(E.db.icons.counterScale)
 	end
 end

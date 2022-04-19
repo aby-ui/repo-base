@@ -863,6 +863,14 @@ OptionsFrame.dateChecks:SetScript("OnShow",function(self)
 		return
 	end
 
+	if false and (today.month == 4 and today.day == 28) then
+		local s = 0.39
+		OptionsFrame_title:Size(512*0.7,128*0.7*s):TexCoord(0,1,0,s):Point("LEFT",OptionsFrame.image,"RIGHT",15,-5+128*s*0.4*0.5):Color(0, 87/255, 183/255,1)
+		local OptionsFrame_title2 = ELib:Texture(OptionsFrame,"Interface\\AddOns\\"..GlobalAddonName.."\\media\\logoname2"):Point("TOP",OptionsFrame_title,"BOTTOM"):Size(512*0.7,128*0.7*(1-s)):TexCoord(0,1,s,1):Color(255/255, 221/255, 0,1)
+
+		return
+	end
+
 	if false and type(GetGuildInfo) == 'function' and ((MRT.isClassic and GetGuildInfo("player") == "Гачивайд") or (not MRT.isClassic and today.wday == 4 and GetGuildInfo("player") == "Дивайд")) then
 		OptionsFrame.image:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\OptionLogogv")
 		OptionsFrame.image:SetTexCoord(0,1,0.21875,1-0.21875)

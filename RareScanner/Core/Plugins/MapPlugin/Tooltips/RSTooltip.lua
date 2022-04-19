@@ -27,8 +27,10 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
 
 -- RareScanner service libraries
+local RSLootTooltip = private.ImportLib("RareScannerLootTooltip")
 local RSNotes = private.ImportLib("RareScannerNotes")
 local RSLoot = private.ImportLib("RareScannerLoot")
+local RSLootTooltip = private.ImportLib("RareScannerLootTooltip")
 
 --=====================================================
 -- LibQtip provider for groups
@@ -97,32 +99,10 @@ local function showItemToolTip(cell, args)
 	ItemToolTip:SetScale(0.7 * RSConfigDB.GetWorldMapTooltipsScale())
 	ItemToolTip:SetOwner(cell:GetParent(), "ANCHOR_LEFT", -10)
 	ItemToolTip:SetHyperlink(itemLink)
-		
-	-- Other addons support
-	if (CanIMogIt and RSConfigDB.IsShowingLootCanimogitTooltip()) then
-		ItemToolTip:AddLine(CanIMogIt:GetTooltipText(itemLink))
-	end
-		
-	if (RSConfigDB.IsShowingLootTooltipsCommands()) then
-		ItemToolTip:AddLine(string.format(AL["LOOT_TOGGLE_FILTER"], GetItemClassInfo(itemClassID), GetItemSubClassInfo(itemClassID, itemSubClassID)), 1,1,0)
-		ItemToolTip:AddLine(AL["LOOT_TOGGLE_INDIVIDUAL_FILTER"], 1,1,0)
-	end
 	
-	if (RSConfigDB.IsShowingCovenantRequirement()) then
-		if (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_NECROLORD, itemID)) then
-			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NECROLORDS"]), 0.3,0.7,0.2)
-		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_NIGHT_FAE, itemID)) then
-			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NIGHT_FAE"]), 0.6,0.2,0.7)
-		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_VENTHYR, itemID)) then
-			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_VENTHYR"]), 0.7,0,0)
-		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_KYRIAN, itemID)) then
-			ItemToolTip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_KYRIAN"]), 0,0.7,1)
-		end
-	end
+	-- Adds extra information
+	RSLootTooltip.AddRareScannerInformation(ItemToolTip, itemLink, itemID, itemClassID, itemSubClassID)
 	
-	if (RSConstants.DEBUG_MODE) then
-		ItemToolTip:AddLine(itemID, 1,1,0)
-	end
 	ItemToolTip:Show()
 end
 
@@ -521,7 +501,11 @@ function RSTooltip.ShowSimpleTooltip(pin, parentTooltip)
 
 	-- NPC name
 	local line = tooltip:AddLine()
-	tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.name, "3399FF"), nil, "LEFT", 10)
+	if (pin.POI.name) then
+		tooltip:SetCell(line, 1, RSUtils.TextColor(pin.POI.name, "3399FF"), nil, "LEFT", 10)
+	else
+		tooltip:SetCell(line, 1, RSUtils.TextColor(UKNOWNBEING, "3399FF"), nil, "LEFT", 10)
+	end
 
 	-- Debug
 	if (RSConstants.DEBUG_MODE) then

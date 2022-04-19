@@ -44,7 +44,7 @@ local general = {
 					E.DB.profile.Party[key].general.zoneSelected = src
 				end
 
-				P:Refresh(true) -- don't cross check zone. We just changed it
+				P:Refresh(true)
 			end,
 			confirm = E.ConfirmAction,
 		},

@@ -35,7 +35,7 @@ local visibility = {
 			type = "multiselect",
 			width = "full",
 			values = E.L_ZONE,
---          descStyle = "inline", -- effectively disables mouseover TT w/o desc
+
 			get = function(_, k) return E.DB.profile.Party.visibility[k] end,
 			set = function(_, k, value)
 				E.DB.profile.Party.visibility[k] = value

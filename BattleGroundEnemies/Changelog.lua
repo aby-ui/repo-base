@@ -2,6 +2,31 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "9.2.0.5",
+		Sections = {
+			{
+				Header = "New Features:",
+				Entries = {
+					"Added support for Classic"
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"Added a comma between the name list in the /bgev text",
+					"print the newest available version when out of date",
+					"The addon now uses the same package/zip for Classic, TBC and Retail",
+				}
+			},
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Gladiator's resolve has no Cooldown."
+				}
+			}
+		}
+	},
+	{
 		Version = "9.2.0.4",
 		Sections = {
 			{

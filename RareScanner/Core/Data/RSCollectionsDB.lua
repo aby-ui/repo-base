@@ -616,8 +616,26 @@ local function UpdateNotCollectedAppearanceItemIDs(routines, routineTextOutput)
 	end
 end
 
-local function GetNotCollecteAppearanceItemIDs()
+local function GetNotCollectedAppearanceItemIDs()
 	return private.dbchar.not_colleted_appearances_item_ids
+end
+
+local function DropNotCollectedAppearance(appearanceID)
+	if (private.dbglobal.appearances_item_id and appearanceID and private.dbglobal.appearances_item_id[appearanceID]) then
+		local itemIDs = private.dbglobal.appearances_item_id[appearanceID]
+		for _, itemID in ipairs (itemIDs) do
+			if (GetNotCollectedAppearanceItemIDs()[itemID]) then
+				RSLogger:PrintDebugMessage(string.format("DropNotCollectedAppearance[%s]. Eliminado item [%s].", appearanceID, itemID))
+				GetNotCollectedAppearanceItemIDs()[itemID] = nil
+			end
+		end
+
+		private.dbglobal.appearances_item_id[appearanceID] = nil
+				RSLogger:PrintDebugMessage(string.format("DropNotCollectedAppearance[%s]. Eliminada apariencia.", appearanceID))
+		return true
+	end
+	
+	return false
 end
 
 local function CheckUpdateAppearance(itemID, entityID, source, checkedItems)
@@ -628,7 +646,7 @@ local function CheckUpdateAppearance(itemID, entityID, source, checkedItems)
 		return true
 	-- Otherwise query
 	else				
-		if (GetNotCollecteAppearanceItemIDs()[itemID]) then
+		if (GetNotCollectedAppearanceItemIDs()[itemID]) then
 			UpdateEntityCollection(itemID, entityID, source, RSConstants.ITEM_TYPE.APPEARANCE)
 			
 			if (not checkedItems[RSConstants.ITEM_TYPE.APPEARANCE][itemID]) then
@@ -642,66 +660,88 @@ local function CheckUpdateAppearance(itemID, entityID, source, checkedItems)
 	end
 end
 
+function RSCollectionsDB.IsNotcollectedAppearance(itemID)
+	if (not GetNotCollectedAppearanceItemIDs()) then
+		return nil
+	end
+	
+	if (GetNotCollectedAppearanceItemIDs()[itemID]) then
+		return true
+	end
+	
+	return false
+end
+
 function RSCollectionsDB.RemoveNotCollectedAppearance(appearanceID, callback) --TRANSMOG_COLLECTION_UPDATED
 	if (appearanceID and GetAppearanceItemIDs(appearanceID) and table.getn(GetAppearanceItemIDs(appearanceID)) ~= nil) then	
 		RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]", appearanceID))
-			
+		
+		local routines = {}
+	
 		-- Update filters
 		for source, info in pairs (RSCollectionsDB.GetAllEntitiesCollectionsLoot()) do
-			for entityID, itemTypes in pairs (RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source]) do
-				local classIndexes = RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE]
-				if (classIndexes) then
-					for classIndex, lootList in pairs (classIndexes) do
-						for i = #lootList, 1, -1 do
-							if (RSUtils.Contains(GetAppearanceItemIDs(appearanceID), lootList[i])) then
-								if (table.getn(lootList) == 1) then
-									RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex] = nil
-								else
-									RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]: Eliminado coleccionable de la lista de la entidad [%s].", appearanceID, entityID))
-									table.remove(lootList, i)
-								end
-								
-								-- Check if the entity doesn't have more collections for other classes
-								if (RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE]) == 0) then
-									RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE] = nil
-								end
-								
-								-- Check if the entity doesn't have more collections
-								if (RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID]) == 0) then
-									RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID] = nil
+			local removeNotCollectedAppearanceRoutine = RSRoutines.LoopRoutineNew()
+			removeNotCollectedAppearanceRoutine:Init(function() return RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source] end, 20,
+				function(context, entityID, _)
+					local classIndexes = RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE]
+					if (classIndexes) then
+						for classIndex, lootList in pairs (classIndexes) do
+							for i = #lootList, 1, -1 do
+								if (RSUtils.Contains(GetAppearanceItemIDs(appearanceID), lootList[i])) then
+									if (table.getn(lootList) == 1) then
+										RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex] = nil
+									else
+										RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]: Eliminado coleccionable de la lista de la entidad [%s].", appearanceID, entityID))
+										table.remove(lootList, i)
+									end
 									
-									-- Filter
-									if (RSConfigDB.IsAutoFilteringOnCollect()) then
-										if (source == RSConstants.ITEM_SOURCE.NPC) then
-											RSConfigDB.SetNpcFiltered(entityID, false)
-											RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]: Filtrado NPC [%s] por no disponer de mas coleccionables.", appearanceID, entityID))
-											if (RSNpcDB.GetNpcName(entityID)) then
-												RSLogger:PrintMessage(AL["EXPLORER_AUTOFILTER"], RSNpcDB.GetNpcName(entityID))
-											end
-										elseif (source == RSConstants.ITEM_SOURCE.CONTAINER) then
-											RSConfigDB.SetContainerFiltered(entityID, false)
-											RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]: Filtrado Contenedor [%s] por no disponer de mas coleccionables.", appearanceID, entityID))
-											if (RSContainerDB.GetContainerNamee(entityID)) then
-												RSLogger:PrintMessage(AL["EXPLORER_AUTOFILTER"], RSContainerDB.GetContainerName(entityID))
+									-- Check if the entity doesn't have more collections for other classes
+									if (RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE]) == 0) then
+										RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID][RSConstants.ITEM_TYPE.APPEARANCE] = nil
+									end
+									
+									-- Check if the entity doesn't have more collections
+									if (RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID]) == 0) then
+										RSCollectionsDB.GetAllEntitiesCollectionsLoot()[source][entityID] = nil
+										
+										-- Filter
+										if (RSConfigDB.IsAutoFilteringOnCollect()) then
+											if (source == RSConstants.ITEM_SOURCE.NPC) then
+												RSConfigDB.SetNpcFiltered(entityID, false)
+												RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]: Filtrado NPC [%s] por no disponer de mas coleccionables.", appearanceID, entityID))
+												if (RSNpcDB.GetNpcName(entityID)) then
+													RSLogger:PrintMessage(AL["EXPLORER_AUTOFILTER"], RSNpcDB.GetNpcName(entityID))
+												end
+											elseif (source == RSConstants.ITEM_SOURCE.CONTAINER) then
+												RSConfigDB.SetContainerFiltered(entityID, false)
+												RSLogger:PrintDebugMessage(string.format("RemoveNotCollectedAppearance[%s]: Filtrado Contenedor [%s] por no disponer de mas coleccionables.", appearanceID, entityID))
+												if (RSContainerDB.GetContainerNamee(entityID)) then
+													RSLogger:PrintMessage(AL["EXPLORER_AUTOFILTER"], RSContainerDB.GetContainerName(entityID))
+												end
 											end
 										end
 									end
+									
+									break
 								end
-								
-								if (callback) then
-									callback()
-								end
-								
-								break
 							end
 						end
 					end
-				end
-			end
+				end,
+				function(context) end
+			)
+			tinsert(routines, removeNotCollectedAppearanceRoutine)
 		end
 		
-		-- Drop missing appearance
-		private.dbglobal.appearances_item_id[appearanceID] = nil
+		local chainRoutines = RSRoutines.ChainLoopRoutineNew()
+		chainRoutines:Init(routines)
+		chainRoutines:Run(function(context)
+			-- Drops not collected appearance
+			local dropped = DropNotCollectedAppearance(appearanceID)
+			if (dropped and callback) then
+				callback()
+			end
+		end)
     end
 end
 

@@ -23,6 +23,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 -- RareScanner service libraries
 local RSMap = private.ImportLib("RareScannerMap")
 local RSNpcPOI = private.ImportLib("RareScannerNpcPOI")
+local RSLootTooltip = private.ImportLib("RareScannerLootTooltip")
 
 -- Thirdparty
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
@@ -855,15 +856,10 @@ function RSExplorerRareInfoLootItem_OnEnter(self)
 	item:ContinueOnItemLoad(function()
 		tooltip:SetOwner(itemIcon, "BOTTOM_LEFT")
 		tooltip:SetHyperlink(item:GetItemLink())
-		if (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_NECROLORD, self.itemID)) then
-			tooltip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NECROLORDS"]), 0.3,0.7,0.2)
-		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_NIGHT_FAE, self.itemID)) then
-			tooltip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_NIGHT_FAE"]), 0.6,0.2,0.7)
-		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_VENTHYR, self.itemID)) then
-			tooltip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_VENTHYR"]), 0.7,0,0)
-		elseif (RSUtils.Contains(RSConstants.ITEMS_REQUIRE_KYRIAN, self.itemID)) then
-			tooltip:AddLine(string.format(AL["LOOT_COVENANT_REQUIREMENT"], AL["NOTE_KYRIAN"]), 0,0.7,1)
-		end
+		
+		-- Adds extra information
+		RSLootTooltip.AddRareScannerInformation(tooltip, item:GetItemLink(), self.itemID)
+
 		tooltip:Show()
 	end)
 end

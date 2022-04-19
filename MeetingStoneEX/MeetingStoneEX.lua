@@ -59,6 +59,42 @@ if MEETINGSTONE_UI_DB.IGNORE_TIPS_LOG == nil then
     MEETINGSTONE_UI_DB.IGNORE_TIPS_LOG = true
 end
 
+if MEETINGSTONE_UI_DB.FILTER_MULTY == nil then
+    MEETINGSTONE_UI_DB.FILTER_MULTY = true
+end
+
+--职责过滤
+local function CheckJobsFilter(data,tcount,hcount,dcount)
+
+    if MEETINGSTONE_UI_DB.FILTER_MULTY then
+        local show = false
+        if not MEETINGSTONE_UI_DB.FILTER_TANK and not MEETINGSTONE_UI_DB.FILTER_HEALTH  and not MEETINGSTONE_UI_DB.FILTER_DAMAGE then
+            show = true
+        end
+        if MEETINGSTONE_UI_DB.FILTER_TANK and data.TANK < tcount then
+            show = true
+        end
+        if MEETINGSTONE_UI_DB.FILTER_HEALTH and data.HEALER < hcount then
+            show = true
+        end
+        if MEETINGSTONE_UI_DB.FILTER_DAMAGE and data.DAMAGER < dcount then
+            show = true
+        end
+        return show
+    else
+        if MEETINGSTONE_UI_DB.FILTER_TANK and data.TANK >= tcount then
+            return false
+        end
+        if MEETINGSTONE_UI_DB.FILTER_HEALTH and data.HEALER >= hcount then
+            return false
+        end
+        if MEETINGSTONE_UI_DB.FILTER_DAMAGE and data.DAMAGER >= dcount then
+            return false
+        end
+        return true
+    end
+end
+
 --添加过滤功能
 BrowsePanel.ActivityList:RegisterFilter(function(activity, ...)
             local leader = activity:GetLeader()
@@ -85,14 +121,16 @@ BrowsePanel.ActivityList:RegisterFilter(function(activity, ...)
             end
             local data = C_LFGList.GetSearchResultMemberCounts(activity:GetID())
             if data then
-                if MEETINGSTONE_UI_DB.FILTER_TANK and  data.TANK > 0 then
-                    return false
-                end
-                if MEETINGSTONE_UI_DB.FILTER_HEALTH and data.HEALER > 0 then
-                    return false
-                end
-                if MEETINGSTONE_UI_DB.FILTER_DAMAGE and data.DAMAGER > 2 then
-                    return false
+                local tcount,hcount,dcount = 1,1,3
+                local activitytype = BrowsePanel.ActivityDropdown:GetText()
+                if activitytype == '地下城' then
+                    if not CheckJobsFilter(data,1,1,3) then
+                        return false
+                    end
+                elseif activitytype == '团队副本' then
+                    if not CheckJobsFilter(data,2,6,22) then
+                        return false
+                    end
                 end
             end
             local title = activity:GetSummary()
@@ -120,6 +158,12 @@ BrowsePanel.ActivityList:RegisterFilter(function(activity, ...)
                     end
                 end
                 return false
+            end
+
+            if MEETINGSTONE_UI_DB['SCORE'] then
+                if not activity:GetLeaderScore() or activity:GetLeaderScore() < MEETINGSTONE_UI_DB['SCORE'] then
+                    return false
+                end
             end
 
             if BrowsePanel.ActivityDropdown:GetText() == '地下城' and BrowsePanel.MDSearchs then
@@ -179,9 +223,33 @@ function BrowsePanel:CreateExSearchPanel()
     self.MD = {}
 
     for i,v in ipairs(names) do
+
+        if not self.MDSearchs then
+            self.MDSearchs = {}
+        end
+        
         local Box = Addon:GetClass('CheckBox'):New(ExSearchPanel.Inset)
         Box.Check:SetText(v)
-        -- Box:SetCallback('OnChanged', RefreshExSearch)
+        local text = v
+        Box:SetCallback('OnChanged', function (box)
+            if not self.MDSearchs then
+                self.MDSearchs = {}
+            end
+            self.MDSearchs[text..'（史诗钥石）'] = box.Check:GetChecked()
+            if not box.Check:GetChecked() then
+                local clear = true
+                for k,v2 in pairs(self.MDSearchs) do
+                    if v2 then
+                        clear = false
+                        break
+                    end
+                end
+                if clear then
+                    self.MDSearchs = nil
+                end
+            end
+            self.ActivityList:Refresh()
+        end)
         Box.dungeonName = v
         if i == 1 then
             Box:SetPoint('TOPLEFT', 10, -10)
@@ -196,8 +264,8 @@ function BrowsePanel:CreateExSearchPanel()
 
     self.MDSearchs = nil
     local ResetFilterButton = CreateFrame('Button', nil, ExSearchPanel, 'UIPanelButtonTemplate') do
-        ResetFilterButton:SetSize(80, 22)
-        ResetFilterButton:SetPoint('BOTTOMRIGHT', ExSearchPanel, 'BOTTOM', 0, 3)
+        ResetFilterButton:SetSize(160, 22)
+        ResetFilterButton:SetPoint('BOTTOM', ExSearchPanel, 'BOTTOM', 0, 3)
         ResetFilterButton:SetText('重置')
         ResetFilterButton:SetScript('OnClick', function()
             for i, box in ipairs(self.MD) do
@@ -207,30 +275,31 @@ function BrowsePanel:CreateExSearchPanel()
         end)
     end
 
-    local RefreshFilterButton = CreateFrame('Button', nil, ExSearchPanel, 'UIPanelButtonTemplate') do
-        RefreshFilterButton:SetSize(80, 22)
-        RefreshFilterButton:SetPoint('BOTTOMLEFT', ExSearchPanel, 'BOTTOM', 0, 3)
-        RefreshFilterButton:SetText('确认')
-        RefreshFilterButton:SetScript('OnClick', function()
-            self.MDSearchs = nil
-            for i, box in ipairs(self.MD) do
-                if box.Check:GetChecked() then
-                    if not self.MDSearchs then
-                        self.MDSearchs = {}
-                    end
-                    self.MDSearchs[box.dungeonName..'（史诗钥石）'] = true
-                end
-            end
-            self:DoSearch()
-        end)
-    end
+    -- local RefreshFilterButton = CreateFrame('Button', nil, ExSearchPanel, 'UIPanelButtonTemplate') do
+    --     RefreshFilterButton:SetSize(80, 22)
+    --     RefreshFilterButton:SetPoint('BOTTOMLEFT', ExSearchPanel, 'BOTTOM', 0, 3)
+    --     RefreshFilterButton:SetText('确认')
+    --     RefreshFilterButton:SetScript('OnClick', function()
+    --         self.MDSearchs = nil
+    --         for i, box in ipairs(self.MD) do
+    --             if box.Check:GetChecked() then
+    --                 if not self.MDSearchs then
+    --                     self.MDSearchs = {}
+    --                 end
+    --                 self.MDSearchs[box.dungeonName..'（史诗钥石）'] = true
+    --             end
+    --         end
+    --         self:DoSearch()
+    --     end)
+    -- end
 
 end
 
-function CreateMemberFilter(self,MainPanel,x,text,DB_Name)
+local function CreateMemberFilter(self,MainPanel,x,text,DB_Name)
     if MEETINGSTONE_UI_DB[DB_Name] == nil then
         MEETINGSTONE_UI_DB[DB_Name] = false
     end
+
     local TCount = CreateFrame('CheckButton', nil, self) do
         TCount:SetNormalTexture([[Interface\Buttons\UI-CheckBox-Up]])
         TCount:SetPushedTexture([[Interface\Buttons\UI-CheckBox-Down]])
@@ -250,6 +319,28 @@ function CreateMemberFilter(self,MainPanel,x,text,DB_Name)
         end)
         TCount:SetText(text)
         TCount:SetChecked(MEETINGSTONE_UI_DB[DB_Name])
+    end
+end
+
+local function CreateScoreFilter(self,text,score)
+    local DB_Name = 'SCORE'
+    if MEETINGSTONE_UI_DB[DB_Name] == nil then
+        MEETINGSTONE_UI_DB[DB_Name] = false
+    end
+
+    local filterScoreCheckBox = GUI:GetClass('CheckBox'):New(self) do
+        filterScoreCheckBox:SetSize(24, 24)
+        filterScoreCheckBox:SetPoint('TOPLEFT', self.SearchBox, 'TOPLEFT', 0, 26)
+        filterScoreCheckBox:SetText(text)
+        filterScoreCheckBox:SetChecked(MEETINGSTONE_UI_DB[DB_Name])
+        filterScoreCheckBox:SetScript("OnClick", function()
+            if MEETINGSTONE_UI_DB[DB_Name] then
+                MEETINGSTONE_UI_DB[DB_Name] = nil
+            else
+                MEETINGSTONE_UI_DB[DB_Name] = score
+            end
+            self.ActivityList:Refresh()
+        end)
     end
 end
 
@@ -302,14 +393,11 @@ function BrowsePanel:CreateExSearchButton( )
     CreateMemberFilter(self,MainPanel,70,'坦克','FILTER_TANK')
     CreateMemberFilter(self,MainPanel,130,'治疗','FILTER_HEALTH')
     CreateMemberFilter(self,MainPanel,190,'输出','FILTER_DAMAGE')
-    -- local TCount = Addon:GetClass('CheckBox'):New(self)
-    -- TCount.Check:SetText('T')
-    -- TCount:SetPoint('BOTTOMLEFT',MainPanel,200, 3)
-    -- TCount:SetCallback('OnChanged', function (... )
-    --     print(...)
-    --     MEETINGSTONE_UI_DB.FILTER_TANK = not MEETINGSTONE_UI_DB.FILTER_TANK
-    -- end)
+    CreateMemberFilter(self,MainPanel,250,'多专精("或"条件)','FILTER_MULTY')
 
+    CreateScoreFilter(self,'过滤队长0分队伍',1)
+
+    -- 双击加入功能
     -- self.ActivityList:SetCallback('OnItemDoubleClick',function (_1,_2,activity)
     --     local _, tank, healer, dps = GetLFGRoles();
     --     C_LFGList.ApplyToGroup(activity:GetID(),tank,healer,dps)

@@ -80,7 +80,7 @@ local position = {
 	end,
 	args = {
 		uf = {
---          disabled = function(info) local key = info[2] return E.DB.profile.Party[key].position.detached or not E.customUF.enabled end,
+
 			name = ADDONS,
 			desc = L["Select addon to override auto anchoring"],
 			order = 1,

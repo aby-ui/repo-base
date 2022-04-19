@@ -13,6 +13,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 ---============================================================================
 
 local tooltipNames = {}
+local lootTooltip
 
 local function GetTooltipNameScanner()
 	local now = GetTime()
@@ -52,13 +53,23 @@ end
 -- Loot tooltip scanner
 ---============================================================================
 
-function RSTooltipScanners.ScanLoot(lootTooltip, value)
+function RSTooltipScanners.ScanLoot(itemLink, value)
+	-- Init tooltip
+	if (not lootTooltip) then
+		lootTooltip = CreateFrame("GAMETOOLTIP", "RSToolTipScan", nil, "GameTooltipTemplate")
+		lootTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+	end
+	
+	lootTooltip:SetHyperlink(itemLink)
+	
 	local foundText = false
 	for i=1, lootTooltip:NumLines() do
-		local toolTipText = _G["RSToolTipScanTextLeft"..i]:GetText()
-		if (toolTipText and RSUtils.Contains(toolTipText, value)) then
-			foundText = true
-			break
+		if (_G["RSToolTipScanTextLeft"..i]) then
+			local toolTipText = _G["RSToolTipScanTextLeft"..i]:GetText()
+			if (toolTipText and RSUtils.Contains(toolTipText, value)) then
+				foundText = true
+				break
+			end
 		end
 	end
 

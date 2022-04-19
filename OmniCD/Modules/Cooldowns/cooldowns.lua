@@ -1883,8 +1883,8 @@ do
 		if icon then
 			if spellID == 323436 then
 				local stacks = icon.Count:GetText()
-				stacks = (tonumber(stacks) or 3) - 1
-				stacks = stacks >= 0 and stacks or 0
+				stacks = tonumber(stacks)
+				stacks = (stacks and stacks > 0 and stacks or 3) - 1
 				icon.Count:SetText(stacks)
 				info.auras.purifySoulStacks = stacks
 			end
@@ -2573,7 +2573,7 @@ else
 
 				local mark = E.db.extraBars.interruptBar.showRaidTargetMark and RAID_TARGET_MARKERS[destRaidFlags]
 				if mark then
-					statusBar.CastingBar.Text:SetText(statusBar.name .. mark)
+					statusBar.CastingBar.Text:SetText(format("%s %s", statusBar.name, mark))
 				end
 			end
 		end

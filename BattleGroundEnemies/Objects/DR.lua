@@ -2,6 +2,10 @@ local BattleGroundEnemies = BattleGroundEnemies
 local addonName, Data = ...
 local GetTime = GetTime
 
+local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local IsTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+
 BattleGroundEnemies.Objects.DR = {}
 local DRList = LibStub("DRList-1.0")
 
@@ -42,6 +46,7 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 	DRContainer.Reset = function(self)
 		for drCategory, drFrame in pairs(self.DRFrames) do
 			drFrame.Cooldown:Clear()
+			drFrame:Remove()
 		end	
 	end
 	
@@ -59,7 +64,7 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 	
 
 
-	DRContainer.DisplayDR = function(self, drCat, spellID, additionalDuration)
+	DRContainer.DisplayDR = function(self, drCat, spellID, spellName, additionalDuration)
 		local drFrame = self.DRFrames[drCat]
 		if not drFrame then  --create a new frame for this categorie
 			
@@ -67,6 +72,7 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 
 			drFrame:HookScript("OnEnter", function(self)
 				BattleGroundEnemies:ShowTooltip(self, function() 
+					if isClassic then return end
 					GameTooltip:SetSpellByID(self.SpellID)
 				end)
 			end)
@@ -126,18 +132,17 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 			drFrame.Icon:SetAllPoints()
 			
 			drFrame.Cooldown = BattleGroundEnemies.MyCreateCooldown(drFrame)
-			drFrame.Cooldown:SetScript("OnHide", function()
+		
+			drFrame.Cooldown:SetScript("OnCooldownDone", function()
+				drFrame:Remove()
+			end)
+
+			drFrame.Remove = function()
 				drFrame:Hide()
 				drFrame.SpellID = false
 				drFrame.status = 0
 				self:DrPositioning() --self = DRContainer
-			end)
-			-- drFrame.Cooldown:SetScript("OnCooldownDone", function()
-			-- 	print("OnCooldownDone")
-			-- 	drFrame:Hide()
-			-- 	drFrame.status = 0
-			-- 	self:DrPositioning() --self = DRContainer
-			-- end)
+			end
 			
 			drFrame.status = 0
 			
@@ -154,7 +159,8 @@ function BattleGroundEnemies.Objects.DR.New(playerButton)
 			self:DrPositioning()
 		end
 		drFrame.SpellID = spellID
-		drFrame.Icon:SetTexture(GetSpellTexture(spellID))
+
+		drFrame.Icon:SetTexture(isClassic and GetSpellTexture(DRList.spells[spellName].spellID) or GetSpellTexture(spellID))
 		drFrame.Cooldown:SetCooldown(GetTime(), DRList:GetResetTime(drCat) + additionalDuration)
 	end
 

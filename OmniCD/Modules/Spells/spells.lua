@@ -91,7 +91,7 @@ E.spell_db = {
 		{ spellID = 342817, duration = 20,  type = "offensive", spec = true     },
 		{ spellID = 258920, duration = {[581]=15, default=30},  type = "offensive"  },
 
-		{ spellID = 200166, duration = 240, type = "offensive", spec = {577}    },
+		{ spellID = 191427, duration = 240, type = "offensive", spec = {577}    },
 		{ spellID = 187827, duration = 180, type = "defensive", spec = {581}    },
 		{ spellID = 206491, duration = 120, type = "offensive", spec = true     },
 		{ spellID = 204596, duration = 30,  type = "offensive", spec = {581}    },
@@ -829,7 +829,6 @@ E.spell_db = {
 }
 
 local iconFix = {
-	[200166] = 191427,
 	[193876] = 2825,
 
 }
@@ -840,7 +839,7 @@ local buffFix = {
 	[49028]  = 81256,
 	[198589] = 212800,
 	[196718] = 209426,
-	[200166] = 162264,
+	[191427] = 162264,
 
 	[33891]  = 117679,
 	[116011] = 116014,

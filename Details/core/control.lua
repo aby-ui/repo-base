@@ -941,7 +941,19 @@
 				end
 			end
 		end
-		
+
+		--attempt to get the arena unitId for an actor
+		function Details:GuessArenaEnemyUnitId(unitName)
+			for i = 1, 5 do
+				local unitId = "arena" .. i
+				local enemyName = _G.GetUnitName(unitId, true)
+				if (enemyName == unitName) then
+					_detalhes.arena_enemies[enemyName] = unitId
+					return unitId
+				end
+			end
+		end
+
 		local string_arena_enemyteam_damage = [[
 			local combat = Details:GetCombat ("current")
 			local total = 0

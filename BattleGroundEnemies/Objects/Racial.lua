@@ -1,6 +1,8 @@
 local BattleGroundEnemies = BattleGroundEnemies
-local addonName, Data = ...
+local AddonName, Data = ...
+local GetSpellTexture = GetSpellTexture
 local GetTime = GetTime
+
 
 BattleGroundEnemies.Objects.Racial = {}
 
@@ -57,15 +59,16 @@ function BattleGroundEnemies.Objects.Racial.New(playerButton)
 		if not config.Racial_Enabled then return end
 		local insi = playerButton.Trinket
 		
-		if Data.RacialSpellIDtoCooldownTrigger[spellID] and not insi.HasTrinket == 4 and insi.Cooldown:GetCooldownDuration() < Data.RacialSpellIDtoCooldownTrigger[spellID] * 1000 then
-			insi.Cooldown:SetCooldown(GetTime(), Data.RacialSpellIDtoCooldownTrigger[spellID])
+
+		if Data.RacialSpellIDtoCooldown[spellID].trinketCD and not (insi.SpellID == 336128) and insi.Cooldown:GetCooldownDuration() < Data.RacialSpellIDtoCooldown[spellID].trinketCD * 1000 then
+			insi.Cooldown:SetCooldown(GetTime(), Data.RacialSpellIDtoCooldown[spellID].trinketCD)
 		end
 		
 		if config.RacialFiltering_Enabled and not config.RacialFiltering_Filterlist[spellID] then return end
 		
 		self.SpellID = spellID
-		self.Icon:SetTexture(Data.TriggerSpellIDToDisplayFileId[spellID])
-		self.Cooldown:SetCooldown(GetTime(), Data.RacialSpellIDtoCooldown[spellID])
+		self.Icon:SetTexture(GetSpellTexture(spellID))
+		self.Cooldown:SetCooldown(GetTime(), Data.RacialSpellIDtoCooldown[spellID].cd)
 	end
 	
 	Racial.Reset = function(self)

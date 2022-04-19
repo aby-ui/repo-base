@@ -1340,7 +1340,8 @@ do
 		L_EncName = "^加固（%+[0-9]+ "
 		TimeLeftPatt = "（([^）]-)）$"
 	elseif ExRT.locale ~= "ruRU" and ExRT.locale ~= "enGB" and ExRT.locale ~= "enUS" then
-		L_EncName = "%(%+%d+[^%)]+%) %(%d+"
+		--L_EncName = "%(%+%d+[^%)]+%) %(%d+"
+		L_EncName = "%(%+%d+[^%)]+%) ?%(%d+"
 	end
 
 	function module:KitCheck()
@@ -3152,7 +3153,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	local isElvUIFix
 
 	function module.consumables:Update()
-		if IsAddOnLoaded("ElvUI") and not isElvUIFix then
+		if (IsAddOnLoaded("ElvUI") or IsAddOnLoaded("ShestakUI")) and not isElvUIFix then
 			self:SetParent(ReadyCheckFrame)
 			self:ClearAllPoints()
 			self:SetPoint("BOTTOM",ReadyCheckFrame,"TOP",0,5)
@@ -3453,9 +3454,25 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 
 		local runeCount = GetItemCount(181468,false,true)
-		if runeCount and runeCount > 0 then
+		local runeUnlim = GetItemCount(190384,false,true)
+		if runeUnlim and runeUnlim > 0 then
+			self.buttons.rune.count:SetText("")
+			if not InCombatLockdown() then
+				self.buttons.rune.texture:SetTexture(4224736)
+				local itemName = GetItemInfo(190384)
+				if itemName then
+					self.buttons.rune.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
+					self.buttons.rune.click:Show()
+					self.buttons.rune.click.IsON = true
+				else
+					self.buttons.rune.click:Hide()
+					self.buttons.rune.click.IsON = false
+				end
+			end
+		elseif runeCount and runeCount > 0 then
 			self.buttons.rune.count:SetFormattedText("%d",runeCount)
 			if not InCombatLockdown() then
+				self.buttons.rune.texture:SetTexture(134078)
 				local itemName = GetItemInfo(181468)
 				if itemName then
 					self.buttons.rune.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
@@ -3475,7 +3492,7 @@ if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 		end
 
 		if LCG then
-			if runeCount and runeCount > 0 and not isRune then
+			if ((runeCount and runeCount > 0) or (runeUnlim and runeUnlim > 0)) and not isRune then
 				LCG.PixelGlow_Start(self.buttons.rune)
 			else
 				LCG.PixelGlow_Stop(self.buttons.rune)

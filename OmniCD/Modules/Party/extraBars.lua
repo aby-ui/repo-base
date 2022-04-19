@@ -28,7 +28,7 @@ function P:UpdateRaidPriority(spellType, column)
 		for i = 1, 8 do
 			local group = E.db.extraBars.raidCDBar["group" .. i]
 			for k, v  in pairs(group) do
-				if v then -- we nil this in options but whatever
+				if v then
 					P.raidGroup[k] = i
 					P.raidPriority[k] = 900 - 100 * i + db[k]
 				end
@@ -68,7 +68,7 @@ local function CreateBar(key)
 	f.anchor.text:SetFontObject(E.AnchorFont)
 	local name = key == "interruptBar" and L["Interrupts"] or L["Raid CD"]
 	f.anchor.text:SetText(name)
-	f.anchor.text:SetTextColor(1, 0.824, 0) -- #ffd200
+	f.anchor.text:SetTextColor(1, 0.824, 0)
 	f.anchor.background:SetColorTexture(0, 0, 0, 1)
 	f.anchor.background:SetGradientAlpha("Horizontal", 1, 1, 1, 1, 1, 1, 1, .05)
 	f.anchor:EnableMouse(true)
@@ -111,7 +111,7 @@ function P:UpdateExBar(bar, isGRU)
 					tinsert(f_icons, icon)
 					icon:SetParent(f_container)
 
-					local statusBar = icon.statusBar -- always nil
+					local statusBar = icon.statusBar
 					if f.isProgressBarShown then
 						statusBar = statusBar or self.GetStatusBar(icon, key)
 					elseif statusBar then
@@ -124,7 +124,7 @@ function P:UpdateExBar(bar, isGRU)
 			bar.numIcons = bar.numIcons - n
 			f.numIcons = f.numIcons + n
 
-			if not isGRU then -- prevent updating for every roster on GRU (inspect is still per roster)
+			if not isGRU then
 				self:SetExIconLayout(key, nil, true, true)
 			end
 		end
@@ -163,7 +163,7 @@ function P:UpdateExPositionValues()
 			f.isProgressBarShown = isProgressBarShown
 		end
 
-		if key == "interruptBar" then -- #iss259
+		if key == "interruptBar" then
 			self.rearrangeInterrupts = db.sortBy == 2
 		else
 			for i = 1, 8 do
@@ -237,7 +237,7 @@ do
 				local aclass, bclass = a.class, b.class
 				if aclass == bclass then
 					if a.spellID == b.spellID then
-						return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name -- end with name so it doesn't shuffle around on rl
+						return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name
 					end
 					return a.spellID < b.spellID
 				end
@@ -259,7 +259,7 @@ do
 			end
 			return aclass < bclass
 		end,
-		function(a, b) -- reserved for multicolumn layout
+		function(a, b)
 			local aRprio, bRprio = P.raidPriority[a.type], P.raidPriority[b.type]
 			if aRprio == bRprio then
 				local aprio, bprio = E.db.priority[a.type], E.db.priority[b.type]
@@ -296,7 +296,7 @@ do
 			local icon = icons[i]
 			local info = P.groupInfo[icon.guid]
 			local spellIcon = info and info.spellIcons[icon.spellID]
-			if icon ~= spellIcon then -- for when UpdateUnitBar is called directly. <cf., UpdateBars pre-hide(remove all icons) extraBars>
+			if icon ~= spellIcon then
 				P:RemoveIcon(icon)
 				tremove(icons, i)
 				n = n + 1
@@ -364,7 +364,7 @@ do
 			icon:Show()
 		end
 
-		if not noDelay or updateSettings then -- run on no delay (nil-updateSettings can ignore subsequent true-updateSettings calls being on the same timer)
+		if not noDelay or updateSettings then
 			P:ApplyExSettings(key)
 		end
 
@@ -380,7 +380,7 @@ do
 		if noDelay then
 			updateLayout(key, noDelay, sortOrder, updateSettings)
 		else
-			if not timers[key] then -- nil info err in sort on hideall w/o delay
+			if not timers[key] then
 				timers[key] = E.TimerAfter(0.5, updateLayout, key, noDelay, sortOrder, updateSettings)
 			end
 		end
@@ -500,7 +500,7 @@ function P:SetExBorder(icon, key)
 			statusBar.borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
 			statusBar.borderRight:SetPoint("TOPRIGHT", statusBar.borderTop, "BOTTOMRIGHT")
 			statusBar.borderRight:SetPoint("BOTTOMLEFT", statusBar.borderBottom, "TOPRIGHT", -edgeSize, 0)
-			--> required for castingbar setpoint for hideBorder
+
 
 			if db.hideBorder then
 				statusBar.borderTop:Hide()
@@ -551,9 +551,9 @@ function P:SetExStatusBarColor(icon, key)
 	local c, r, g, b, a = RAID_CLASS_COLORS[icon.class]
 	local statusBar = icon.statusBar
 
-	-- Inactive bg doesn't exist
 
-	-- Inactive text
+
+
 	if not db.hideBar or not icon.active then
 		if info.isDeadOrOffline then
 			r, g, b = 0.3, 0.3, 0.3
@@ -569,13 +569,13 @@ function P:SetExStatusBarColor(icon, key)
 	statusBar.BG:SetShown(not db.hideBar and not icon.active)
 	statusBar.Text:SetShown(db.hideBar or not icon.active)
 
-	-- Inactive bar
+
 	local db_bar = db.barColors.inactiveColor
 	local alpha = db.useIconAlpha and 1 or db_bar.a
 	local spellID = icon.spellID
 	if info.isDeadOrOffline then
 		r, g, b, a = 0.3, 0.3, 0.3, alpha
-	elseif info.preActiveIcons[spellID] and spellID ~= 1022 and spellID ~= 204018 then -- BoP/BoS
+	elseif info.preActiveIcons[spellID] and spellID ~= 1022 and spellID ~= 204018 then
 		r, g, b, a = 0.7, 0.7, 0.7, alpha
 	elseif db.barColors.useClassColor.inactive then
 		r, g, b, a = c.r, c.g, c.b, alpha
@@ -584,7 +584,7 @@ function P:SetExStatusBarColor(icon, key)
 	end
 	statusBar.BG:SetVertexColor(r, g, b, a)
 
-	--> Active & Recharge done in CastingBarFrame_OnLoad
+
 end
 
 function P:ApplyExSettings(key)
@@ -617,7 +617,7 @@ function P:UpdateExPosition()
 
 	for key, f in pairs(self.extraBars) do
 		if E.db.extraBars[key].enabled then
-			self:SetExIconLayout(key, true, true, true) -- if isGRU then run once after iterating roster
+			self:SetExIconLayout(key, true, true, true)
 			E.LoadPosition(f)
 			f:Show()
 		else

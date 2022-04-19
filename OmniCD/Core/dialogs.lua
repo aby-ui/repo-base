@@ -19,7 +19,7 @@ E.StaticPopupDialogs["OMNICD_RELOADUI"] = {
 	text = "%s",
 	button1 = ACCEPT,
 	button2 = CANCEL,
-	OnAccept = function() -- data2 is only passed to OnAccept
+	OnAccept = function()
 		EnableAddOn("Blizzard_CompactRaidFrames")
 		EnableAddOn("Blizzard_CUFProfiles")
 		C_UI.Reload()

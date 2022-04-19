@@ -23,6 +23,7 @@ local affixSchedule = {
 	[12] = {[1]=7,  [2]=13, [3]=9},  --12 Bolstering Explosive Tyrannical
 }
 
+local scheduleEnabled = true
 local affixScheduleUnknown = false
 local currentWeek
 local currentKeystoneMapID
@@ -44,6 +45,7 @@ local function UpdatePartyKeystones()
 		Mod:SendPartyKeystonesRequest()
 	end
 
+	if not scheduleEnabled then return end
 	if not IsAddOnLoaded("Blizzard_ChallengesUI") then return end
 
 	local playerRealm = select(2, UnitFullName("player")) or ""
@@ -96,6 +98,8 @@ local function UpdatePartyKeystones()
 end
 
 local function UpdateFrame()
+	if not scheduleEnabled then return end
+	
 	Mod:CheckAffixes()
 	Mod.AffixFrame:Show()
 	Mod.PartyFrame:Show()
@@ -162,6 +166,8 @@ local function makeAffix(parent)
 end
 
 function Mod:Blizzard_ChallengesUI()
+	if not scheduleEnabled then return end
+	
 	local frame = CreateFrame("Frame", nil, ChallengesFrame)
 	frame:SetSize(246, 92)
 	frame:SetPoint("TOPLEFT", ChallengesFrame.WeeklyInfo.Child.WeeklyChest, "TOPRIGHT", -20, 30)
@@ -436,6 +442,8 @@ function Mod:CHALLENGE_MODE_UPDATED()
 end
 
 function Mod:Startup()
+	scheduleEnabled = Addon.Config.schedule
+	
 	self:RegisterAddOnLoaded("Blizzard_ChallengesUI")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "SetPartyKeystoneRequest")
 	self:RegisterEvent("BAG_UPDATE")

@@ -176,6 +176,7 @@ if AL then
 	AL["EXPLORER_FILTER_PETS"] = "掉落缺失宠物"
 	AL["EXPLORER_FILTER_STATE"] = "状态"
 	AL["EXPLORER_FILTER_TOYS"] = "掉落缺失玩具"
+	AL["EXPLORER_FILTER_WITHOUT_COLLECTIBLES"] = "显示不缺失收藏的 NPC"
 	AL["EXPLORER_FILTERING"] = "过滤 NPC"
 	AL["EXPLORER_FILTERING_CONTAINERS"] = "正在分析要过滤的容器..."
 	AL["EXPLORER_FILTERING_DESC"] = "过滤所有不掉落在“%s - %s”下选择的任何收藏品的 NPC，并取消过滤其余的。"

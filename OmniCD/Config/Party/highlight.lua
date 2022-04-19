@@ -8,7 +8,7 @@ local markEnhancedDesc = {}
 for k, v in pairs(E.spell_marked) do
 	if not C_Spell.DoesSpellExist(k) or (v ~= true and not C_Spell.DoesSpellExist(v)) then
 		E.spell_marked[k] = nil
---      E.Write("Removing Invalid ID (Enhanced): |cffffd200" .. k)
+
 	else
 		local id = v == true and k or v
 		local name, _, icon = GetSpellInfo(id)
@@ -44,24 +44,22 @@ local highlight = {
 					order = 1,
 					type = "toggle",
 				},
-				-- old glow
-				--[[
-				glowType0 = {
-					name = TYPE,
-					order = 2,
-					type = "select",
-					values = {
-						pulse = "White Pulse",
-						wardrobe = "Purple Corner Transition"
-					}
-				},
-				glowColor = {
-					name = COLOR,
-					order = 3,
-					type = "select",
-					values = E.L_GLOW_ATLAS,
-				},
-				]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			}
 		},
 		highlight = {
@@ -111,7 +109,7 @@ local highlight = {
 			type = "group",
 			inline = true,
 			args = {
-				markEnhanced = { -- exists under icons, not highlight
+				markEnhanced = {
 					disabled = false,
 					name = ENABLE,
 					desc = L["Mark icons with a red dot to indicate enhanced spells"] .. "\n\n" .. markEnhancedDesc,
@@ -125,7 +123,7 @@ local highlight = {
 					desc = L["%d: spellID.\n%d-%d: spellID-talentID (Mark spell if talent is selected)."] .. "\n\n" .. L["Use a semi-colon(;) to seperate multiple IDs."],
 					order = 2,
 					type = "input",
---                  multiline = 1, -- myAce: no support for this yet
+
 					width = "full",
 					get = function(info)
 						local t = E.DB.profile.Party[info[2]].highlight.markedSpells.str
@@ -145,7 +143,7 @@ local highlight = {
 							local a, b = strsplit("-", v)
 							if strlen(a) > 1 and strlen(a) < 9 and C_Spell.DoesSpellExist(a) then
 								local a = tonumber(a)
-								if not E.spell_marked[a] then -- overwrite t[a]
+								if not E.spell_marked[a] then
 									t.str = t.str or {}
 									if b then
 										if strlen(b) > 1  and strlen(b) < 9 and C_Spell.DoesSpellExist(b) then

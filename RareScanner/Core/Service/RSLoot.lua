@@ -8,17 +8,17 @@ local RSLoot = private.NewLib("RareScannerLoot")
 -- RareScanner database libraries
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSLootDB = private.ImportLib("RareScannerLootDB")
+local RSCollectionsDB = private.ImportLib("RareScannerCollectionsDB")
 
 -- RareScanner general libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
+local RSConstants = private.ImportLib("RareScannerConstants")
 local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTooltipScanners = private.ImportLib("RareScannerTooltipScanners")
 
 ---============================================================================
 -- Filters to apply to the loot displayed under the main button and the worldmap
 ---============================================================================
-
-local lootTooltip
 
 local conduits = {}
 local function IsConduitAlreadyCollected(itemID)
@@ -62,7 +62,7 @@ end
 local function IsToy(itemLink, itemID)
 	if (RSLootDB.IsToy(itemID)) then
 		return true
-	elseif (RSTooltipScanners.ScanLoot(lootTooltip, TOY)) then
+	elseif (RSTooltipScanners.ScanLoot(itemLink, TOY)) then
 		RSLootDB.SetItemAsToy(itemID)
 		return true
 	end
@@ -83,14 +83,6 @@ local function IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassI
 end
 
 function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)
-	-- Init tooltip
-	if (not lootTooltip) then
-		lootTooltip = CreateFrame("GAMETOOLTIP", "RSToolTipScan", nil, "GameTooltipTemplate")
-		lootTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	end
-	
-	lootTooltip:SetHyperlink(itemLink)
-
 	-- Quality filter
 	if (itemRarity < tonumber(RSConfigDB.GetLootFilterMinQuality())) then
 		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su calidad.", itemID))
@@ -139,9 +131,9 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 	end
 
 	-- Character class filter
-	if (RSConfigDB.IsFilteringLootByNotMatchingClass() and RSTooltipScanners.ScanLoot(lootTooltip, string.gsub(ITEM_CLASSES_ALLOWED, ": %%s", ""))) then
+	if (RSConfigDB.IsFilteringLootByNotMatchingClass() and RSTooltipScanners.ScanLoot(itemLink, string.gsub(ITEM_CLASSES_ALLOWED, ": %%s", ""))) then
 		local localizedClass, _, _ = UnitClass("player")
-		if (not RSTooltipScanners.ScanLoot(lootTooltip, localizedClass)) then
+		if (not RSTooltipScanners.ScanLoot(itemLink, localizedClass)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por clase.", itemID))
 			return true;
 		end
@@ -150,7 +142,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 	-- Character faction filter
 	if (RSConfigDB.IsFilteringLootByNotMatchingFaction()) then
 		local _, localizedFaction = UnitFactionGroup("player")
-		if ((RSTooltipScanners.ScanLoot(lootTooltip, ITEM_REQ_ALLIANCE) and localizedFaction ~= FACTION_ALLIANCE) or (RSTooltipScanners.ScanLoot(lootTooltip, ITEM_REQ_HORDE) and localizedFaction ~= FACTION_HORDE)) then
+		if ((RSTooltipScanners.ScanLoot(itemLink, ITEM_REQ_ALLIANCE) and localizedFaction ~= FACTION_ALLIANCE) or (RSTooltipScanners.ScanLoot(itemLink, ITEM_REQ_HORDE) and localizedFaction ~= FACTION_HORDE)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por facción.", itemID))
 			return true;
 		end
@@ -158,14 +150,20 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 
 	-- Transmog filter
 	if (RSConfigDB.IsFilteringLootByTransmog() and (itemClassID == Enum.ItemClass.Weapon or (itemClassID == Enum.ItemClass.Armor and itemSubClassID ~= Enum.ItemArmorSubclass.Generic))) then --weapons or armor (not rings, necks, etc.)
-		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser equipable (Transmog check).", itemID))
+		-- First check in the internal collections database
+		local isNotcollectedAppearance = RSCollectionsDB.IsNotcollectedAppearance(itemID)
+		if (isNotcollectedAppearance ~= nil and isNotcollectedAppearance == false) then
+			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser transfigurable (Collections check).", itemID))
 			return true
-		elseif (C_TransmogCollection.PlayerHasTransmog(itemID)) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ya tenerlo (Transmog check).", itemID))
-			return true
-		else
-			if (not RSTooltipScanners.ScanLoot(lootTooltip, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN)) then
+		-- Otherwise use other methods
+		elseif (not isNotcollectedAppearance) then
+			if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
+				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser equipable (Transmog check).", itemID))
+				return true
+			elseif (C_TransmogCollection.PlayerHasTransmog(itemID)) then
+				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ya tenerlo (Transmog check).", itemID))
+				return true
+			elseif (not RSTooltipScanners.ScanLoot(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN)) then
 				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser transfigurable (Transmog check).", itemID))
 				return true
 			end
@@ -174,7 +172,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 
 	-- Collection mount filter
 	if (RSConfigDB.IsFilteringByCollected() and itemClassID == Enum.ItemClass.Miscellaneous and itemSubClassID == Enum.ItemMiscellaneousSubclass.Mount) then --mount
-		if (RSTooltipScanners.ScanLoot(lootTooltip, ITEM_SPELL_KNOWN)) then
+		if (RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (montura).", itemID))
 			return true
 		end
@@ -183,7 +181,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 	-- Collection pet filter
 	-- Unique pets
 	if (RSConfigDB.IsFilteringByCollected() and itemClassID == Enum.ItemClass.Miscellaneous and itemSubClassID == Enum.ItemMiscellaneousSubclass.CompanionPet) then --pets
-		if (RSTooltipScanners.ScanLoot(lootTooltip, format(ITEM_PET_KNOWN, "1", "1")) or RSTooltipScanners.ScanLoot(lootTooltip, format(ITEM_PET_KNOWN, "3", "3"))) then
+		if (RSTooltipScanners.ScanLoot(itemLink, format(ITEM_PET_KNOWN, "1", "1")) or RSTooltipScanners.ScanLoot(itemLink, format(ITEM_PET_KNOWN, "3", "3"))) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (mascota).", itemID))
 			return true
 		end
@@ -192,7 +190,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 	-- Collection toy filter
 	-- Toys have different categories under miscelanious
 	if (RSConfigDB.IsFilteringByCollected()) then
-		if (IsToy(itemLink, itemID) and RSTooltipScanners.ScanLoot(lootTooltip, ITEM_SPELL_KNOWN)) then
+		if (IsToy(itemLink, itemID) and RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (juguete).", itemID))
 			return true
 		end
@@ -200,7 +198,7 @@ function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClass
 	
 	-- Anima items filter
 	if (RSConfigDB.IsFilteringAnimaItems()) then
-		if (RSTooltipScanners.ScanLoot(lootTooltip, WORLD_QUEST_REWARD_FILTERS_ANIMA)) then
+		if (RSTooltipScanners.ScanLoot(itemLink, WORLD_QUEST_REWARD_FILTERS_ANIMA)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ser un objeto que da ánima.", itemID))
 			return true
 		end
