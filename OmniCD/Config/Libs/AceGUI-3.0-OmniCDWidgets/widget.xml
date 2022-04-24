@@ -2,5 +2,4 @@
 ..\FrameXML\UI.xsd">
 	<Script file="AceGUIWidget-InlineInfo.lua"/>
 	<Script file="AceGUIWidget-InlineLink.lua"/>
-	<Script file="AceGUIWidget-SearchBox.lua"/>
 </Ui>

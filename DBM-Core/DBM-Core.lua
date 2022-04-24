@@ -67,19 +67,19 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220412172401"),
+	Revision = parseCurseDate("20220423223537"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.14 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 4, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.17 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 4, 23, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 240, "b563b0b"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.20 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 4, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "1.14.21 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 4, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 36, "cf2511c"
 elseif isBCC then
 	DBM.DisplayVersion = "2.5.35 alpha"

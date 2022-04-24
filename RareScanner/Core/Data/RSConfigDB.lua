@@ -118,7 +118,7 @@ function RSConfigDB.GetSoundList()
 	local defaultList = {} 
 	
 	-- Add internal sounds
-	for name, file in pairs (RSConstants.DEFAULT_SOUNDS) do
+	for name, file in pairs (RSConstants.DEFAULT_SOUNDS_ABY) do
 		defaultList[name] = file
 	end
 	

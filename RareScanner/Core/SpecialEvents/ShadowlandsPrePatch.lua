@@ -16,12 +16,10 @@ local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSLogger = private.ImportLib("RareScannerLogger")
 local RSUtils = private.ImportLib("RareScannerUtils")
 local RSTimeUtils = private.ImportLib("RareScannerTimeUtils")
+local RSConstants = private.ImportLib("RareScannerConstants")
 
 -- RareScanner services libraries
 local RSTooltip = private.ImportLib("RareScannerTooltip")
-
--- Shadowlands pre-patch
-local SHADOWLANDS_PRE_PATCH_EVENT = false
 
 -- Next spawn timer
 local NEXT_RESPAWN = 600 --10 minutes
@@ -89,7 +87,7 @@ end
 
 function RareScanner:ShadowlandsPrePatch_Initialize()
 	-- Add hooks wherever we need them
-	if (not SHADOWLANDS_PRE_PATCH_EVENT) then
+	if (not RSConstants.EVENTS[RSConstants.SHADOWLANDS_PRE_PATCH_EVENT]) then
 		return
 	end
 

@@ -90,6 +90,12 @@ local function PopulateContinentDropDown(mainFrame, continentDropDown)
 	if (RSUtils.GetTableLength(filters) > 0) then
 		for npcID, npcInfo in pairs (RSNpcDB.GetAllInternalNpcInfo()) do
 			local filtered = false
+			
+			-- Ignore if part of a disabled event
+			if (RSNpcDB.IsDisabledEvent(npcID)) then
+				filtered = true
+			end
+			
 			-- Ignore if dead
 			if (not filters[RSConstants.EXPLORER_FILTER_DEAD] and RSNpcDB.IsNpcKilled(npcID)) then
 				filtered = true

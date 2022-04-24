@@ -259,15 +259,15 @@ end
 
 local Sorts = {
 	{
-		text	= "None",
+		text	= L.None,
 		value	= "None"
 	},
 	{
-		text	= "Highest at top",
+		text	= L.Highest,
 		value	= "Sort"
 	},
 	{
-		text	= "Lowest at top",
+		text	= L.Lowest,
 		value	= "Invert"
 	}
 }

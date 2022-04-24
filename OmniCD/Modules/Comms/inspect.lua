@@ -571,7 +571,13 @@ else
 											bonusID = tonumber(bonusID)
 											local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
 											if runeforgeDescID then
-												info.talentData[runeforgeDescID] = "R"
+												if type(runeforgeDescID) == "table" then
+													for _, v in pairs(runeforgeDescID) do
+														info.talentData[v] = "R"
+													end
+												else
+													info.talentData[runeforgeDescID] = "R"
+												end
 												break
 											end
 										end
@@ -782,10 +788,17 @@ else
 										bonusID = tonumber(bonusID)
 										local runeforgeDescID = E.runeforge_bonusToDescID[bonusID]
 										if runeforgeDescID then
-											local spec = E.runeforge_specID[runeforgeDescID]
-											if not spec or spec == specID then
-												info.talentData[runeforgeDescID] = "R"
-												tmp[#tmp + 1] = runeforgeDescID
+											if type(runeforgeDescID) == "table" then
+												for _, v in pairs(runeforgeDescID) do
+													info.talentData[v] = "R"
+													tmp[#tmp + 1] = v
+												end
+											else
+												local spec = E.runeforge_specID[runeforgeDescID]
+												if not spec or spec == specID then
+													info.talentData[runeforgeDescID] = "R"
+													tmp[#tmp + 1] = runeforgeDescID
+												end
 											end
 											break
 										end

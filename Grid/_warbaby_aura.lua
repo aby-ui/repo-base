@@ -22,7 +22,8 @@ GridWarbabyMoreAuras = {
     [342938] = { desc="PVP-痛苦无常", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=99,},
     [323687] = { desc="彼界商人闪电", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=99,},
     [323692] = { desc="彼界商人易伤",buff=false, indicator="textstack", statusText="count"   ,color={0,1,0}, priority=90, statusColor="count",countColorLow={ 0, 1, 0},countLow=4,countColorMiddle={1,1,0},countHigh=8,countColorHigh={1,.5,0},},
-    [361817] = { desc="安度因灭愿者", buff=false, indicator="textstack", statusText="count", priority=90, statusColor="count",countColorLow={ 0, 1, 0}, countLow=999,countHigh=999},
-    [362055] = { desc="安度因进场", buff=false, indicator="iconrole", statusText="count", priority=80, },
-    [365445] = { desc="安度因轮换", buff=false, indicator="iconrole", statusText="count", priority=80, },
+    [361817] = { desc="9.2安度因灭愿者", buff=false, indicator="textstack", statusText="count", priority=90, statusColor="count",countColorLow={ 0, 1, 0}, countLow=999,countHigh=999},
+    [362055] = { desc="9.2安度因进场", buff=false, indicator="iconrole", statusText="count", priority=80, },
+    [365445] = { desc="9.2安度因轮换", buff=false, indicator="iconrole", statusText="count", priority=80, },
+    [361067] = { desc="9.2死亡万神殿结界", buff=false, indicator="borderglow", statusText="duration",color={1,0,1},priority=99,},
 }

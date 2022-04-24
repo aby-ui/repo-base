@@ -178,7 +178,7 @@ local function GetOptions()
 									order = 1,
 									type = "input",
 									dialogControl = "Link-OmniCD",
-									get = function(info) return "https://www.curseforge.com/wow/addons/omnicd/issues" end,
+									get = function() return "https://www.curseforge.com/wow/addons/omnicd/issues" end,
 								},
 								translate = {
 									name = L["Help Translate"],
@@ -190,6 +190,37 @@ local function GetOptions()
 								},
 							}
 						},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 					}
 				},
 			},

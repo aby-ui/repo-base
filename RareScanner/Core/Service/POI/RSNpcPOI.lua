@@ -97,6 +97,13 @@ end
 
 local function IsNpcPOIFiltered(npcID, mapID, artID, zoneQuestID, questTitles, vignetteGUIDs, onWorldMap, onMinimap)
 	local name = RSNpcDB.GetNpcName(npcID)
+	
+	-- Skip if part of a disabled event
+	if (RSNpcDB.IsDisabledEvent(npcID)) then
+		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Parte de un evento desactivado.", npcID))
+		return true
+	end
+	
 	-- Skip if filtering by name in the world map search box
 	if (name and RSGeneralDB.GetWorldMapTextFilter() and not RSUtils.Contains(name, RSGeneralDB.GetWorldMapTextFilter())) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado NPC [%s]: Filtrado por nombre [%s][%s].", npcID, name, RSGeneralDB.GetWorldMapTextFilter()))

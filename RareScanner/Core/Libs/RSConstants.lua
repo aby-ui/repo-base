@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 56
-RSConstants.CURRENT_LOOT_DB_VERSION = 71
+RSConstants.CURRENT_DB_VERSION = 57
+RSConstants.CURRENT_LOOT_DB_VERSION = 72
 
 ---============================================================================
 -- Current maps (newer)
@@ -38,7 +38,11 @@ RSConstants.CURRENT_SUBMAP_ID = 1970 --Zereth Mortis
 -- Special events
 ---============================================================================
 
-RSConstants.SHADOWLANDS_PRE_PATCH_EVENT = true
+RSConstants.SHADOWLANDS_PRE_PATCH_EVENT = 1
+
+RSConstants.EVENTS = {
+	[RSConstants.SHADOWLANDS_PRE_PATCH_EVENT] = false
+}
 
 ---============================================================================
 -- Timers
@@ -368,6 +372,10 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	[164102] = 164093;
 	[167874] = 167851;
 	[168053] = 167721;
+	-- Talador
+	[84037] = 88494; 
+	-- Tanaan Jungle
+	[90524] = 90519; 
 }
 
 -- Contains that spawn after completing an event
@@ -393,7 +401,7 @@ RSConstants.NPCS_WITH_PRE_NPCS = {
 	
 -- 156480 Next door entity inside Torghast
 -- 155660 Summons from the Depths
-RSConstants.INGNORED_VIGNETTES = { 156480, 155660, 163373, 370467, 370466 }
+RSConstants.IGNORED_VIGNETTES = { 156480, 155660, 163373, 370467, 370466, 182160, 182668, 182667, 185261 }
 RSConstants.NPCS_WITH_EVENT_VIGNETTE = { 154154, 154330, 164547, 164477, 160629, 175012, 157833, 166398, 164064, 162829, 157964, 162844, 171317, 170774, 162849, 170301, 170302, 170711, 170634, 170731, 172862, 172577, 158025, 158278, 170303, 179684, 179791, 179805, 177444, 180246, 179108, 179853, 179755, 179768, 179779, 179460, 179851, 179735 }
 RSConstants.NPCS_WITH_CONTAINER_VIGNETTE = { 179883 }
 RSConstants.CONTAINERS_WITH_NPC_VIGNETTE = { 369435 }

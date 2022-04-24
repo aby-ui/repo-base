@@ -334,6 +334,17 @@ function RSNpcDB.IsWorldMap(npcID)
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 		return npcInfo and npcInfo.worldmap
 	end
+	
+	return false
+end
+
+function RSNpcDB.IsDisabledEvent(npcID)
+	if (npcID) then
+		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+		return npcInfo and npcInfo.event and not RSConstants.EVENTS[npcInfo.event]
+	end
+	
+	return false
 end
 
 ---============================================================================

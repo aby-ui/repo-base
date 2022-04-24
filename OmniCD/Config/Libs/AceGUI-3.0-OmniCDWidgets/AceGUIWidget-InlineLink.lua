@@ -163,7 +163,7 @@ local function Constructor()
 	editbox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
 
 	editbox:SetScript("OnEditFocusLost", EditBox_OnFocusLost)
-	editbox:SetTextInsets(0, 0, 3, 3)
+	editbox:SetTextInsets(3, 3, 3, 3)
 	editbox:SetMaxLetters(256)
 	editbox:SetPoint("TOPLEFT", label, "TOPRIGHT", 10, 0)
 	editbox:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -10, 0)

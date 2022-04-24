@@ -73,7 +73,7 @@ function Comms:ToggleLazySync()
 	end
 
 	if ( next(E.lazySyncData) and P.disabled == false and (not P.isUserDisabled or next(self.syncGUIDS)) ) then
-		SYNC_ONUPDATE_INTERVAL = P.zone == "raid" and 5 or math.min(self:GetNumSyncMembers() + 1, 5);
+		SYNC_ONUPDATE_INTERVAL = math.min(self:GetNumSyncMembers(), 5);
 		if ( not LazySyncFrame.isShown ) then
 			LazySyncFrame:Show();
 		end
@@ -95,12 +95,12 @@ if ( not E.isPreBCC ) then
 			local spellID, duration, cdLeft, modRate, charges, rest = strsplit(":", cdstr, 6);
 			cdstr = rest;
 			if ( spellID and cdLeft ) then
-				spellID = tonumber(spellID)
+				spellID, duration = tonumber(spellID), tonumber(duration)
 				local icon = info.spellIcons[spellID];
 				if ( icon ) then
 					local active = icon.active and info.active[spellID];
 					if ( active ) then
-						duration, modRate, charges = tonumber(duration), tonumber(modRate), tonumber(charges);
+						modRate, charges = tonumber(modRate), tonumber(charges);
 
 						local elapsed = duration - cdLeft;
 						if ( modRate == 1 and active.totRate ) then
@@ -130,7 +130,9 @@ if ( not E.isPreBCC ) then
 							icon.cooldown:SetDrawSwipe(false);
 							icon.cooldown:SetHideCountdownNumbers(true);
 						end
-
+					elseif ( duration > 0 and sync_periodic[spellID] ) then
+						P:StartCooldown(icon, duration)
+						P:UpdateCooldown(icon, duration - cdLeft)
 					end
 				end
 			end
@@ -181,7 +183,8 @@ if ( not E.isPreBCC ) then
 					if ( duration == 0 ) then
 
 
-						if ( prevStart ~= 0 or isForceUpdate ) then
+
+						if ( isForceUpdate ) then
 							lazySyncData[id][1] = start;
 							lazySyncData[id][2] = charges;
 							cdstr[#cdstr + 1] = id;
@@ -224,6 +227,10 @@ if ( not E.isPreBCC ) then
 
 			elapsedTime = 0;
 		end
+	end
+
+	function Comms:ForceSync()
+		elapsedTime = 100;
 	end
 
 	LazySyncFrame:Hide();

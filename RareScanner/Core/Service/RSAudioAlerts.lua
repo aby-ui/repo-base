@@ -23,20 +23,25 @@ local function PlaySound(soundFile)
 	if (lastPlayedSoundTimer and debugprofilestop() <= (lastPlayedSoundTimer + 900)) then
 		return
 	end
-	
+
+    --[[
 	if (RSConfigDB.GetCustomSound(soundFile)) then
 		PlaySoundFile(string.format(RSConstants.EXTERNAL_SOUND_FOLDER, RSConfigDB.GetCustomSoundsFolder(), RSConfigDB.GetCustomSound(soundFile)), RSConfigDB.GetSoundChannel())
 	else
 		PlaySoundFile(string.gsub(RSConstants.DEFAULT_SOUNDS[soundFile], "-4", "-"..RSConfigDB.GetSoundVolume()), RSConfigDB.GetSoundChannel())
 	end
+	--]]
+    _G.PlaySound(soundFile, RSConfigDB.GetSoundChannel(), false)
 	
 	lastPlayedSoundTimer = debugprofilestop()
 end
 
 function RSAudioAlerts.PlaySoundAlert(atlasName)
 	if (not RSConfigDB.IsPlayingObjectsSound() and (RSConstants.IsContainerAtlas(atlasName) or RSConstants.IsEventAtlas(atlasName))) then
-		PlaySound(RSConfigDB.GetSoundPlayedWithObjects())
+		--PlaySound(RSConfigDB.GetSoundPlayedWithObjects())
+        PlaySound(RSConstants.DEFAULT_SOUNDS_ABY[RSConfigDB.GetSoundPlayedWithObjects()])
 	elseif (not RSConfigDB.IsPlayingSound() and RSConstants.IsNpcAtlas(atlasName)) then
-		PlaySound(RSConfigDB.GetSoundPlayedWithNpcs())
+		--PlaySound(RSConfigDB.GetSoundPlayedWithNpcs())
+        PlaySound(RSConstants.DEFAULT_SOUNDS_ABY[RSConfigDB.GetSoundPlayedWithNpcs()])
 	end
 end

@@ -612,7 +612,7 @@ local function GetSoundOptions()
 						
 						return true
 					end,
-					disabled = function() return RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
+					disabled = function() return true or RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
 				},
 				newCustomSound = {
 					order = 7,
@@ -632,7 +632,7 @@ local function GetSoundOptions()
 						
 						return true
 					end,
-					disabled = function() return RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
+					disabled = function() return true or RSConfigDB.IsPlayingSound() and RSConfigDB.IsPlayingObjectsSound() end,
 				},
 			},
 		}
