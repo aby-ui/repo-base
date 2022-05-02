@@ -67,7 +67,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220423223537"),
+	Revision = parseCurseDate("20220502021745"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -202,7 +202,16 @@ DBM.DefaultOptions = {
 	AutologBosses = false,
 	AdvancedAutologBosses = false,
 	RecordOnlyBosses = false,
-	LogOnlyNonTrivial = true,
+	DoNotLogLFG = true,
+	LogCurrentMythicRaids = true,
+	LogCurrentRaids = true,
+	LogCurrentMPlus = true,
+	LogCurrentMythicZero = false,
+	LogCurrentHeroic = false,
+	LogTrivialRaids = false,
+	LogTWRaids = false,
+	LogTrivialDungeons = false,
+	LogTWDungeons = false,
 	UseSoundChannel = "Master",
 	LFDEnhance = true,
 	WorldBossNearAlert = false,
@@ -488,6 +497,15 @@ end
 --  Libraries  --
 -----------------
 local LibStub = _G["LibStub"]
+local LibSpec = LibStub("LibSpecialization")
+do
+	local function update(specID, _, _, playerName)
+		if raid[playerName] then
+			raid[playerName].specID = specID
+		end
+	end
+	LibSpec:Register(DBM, update)
+end
 
 --------------------------------------------------------
 --  Cache frequently used global variables in locals  --
@@ -2127,6 +2145,7 @@ do
 					raid[name].guid = UnitGUID(id) or ""
 					raid[name].updated = true
 					raidGuids[UnitGUID(id) or ""] = name
+					--RequestSpecialization(nil, name)
 				end
 			end
 			private.enableIcons = false
@@ -4789,8 +4808,13 @@ do
 			savedDifficulty, difficultyText, difficultyIndex, LastGroupSize, difficultyModifier = self:GetCurrentInstanceDifficulty()
 			local name = mod.combatInfo.name
 			local modId = mod.id
-			if isRetail and mod.addon.type == "SCENARIO" and C_Scenario.IsInScenario() and not mod.soloChallenge then
-				mod.inScenario = true
+			if isRetail then
+				--Build current SpecID info on combat start.
+				--Inefficient since very mew mods actually use it, but currently no way to request individual specID info, just everyones all at once
+				LibSpec:RequestSpecialization()
+				if mod.addon.type == "SCENARIO" and C_Scenario.IsInScenario() and not mod.soloChallenge then
+					mod.inScenario = true
+				end
 			end
 			mod.engagedDiff = savedDifficulty
 			mod.engagedDiffText = difficultyText
@@ -5391,13 +5415,56 @@ do
 	local autoLog = false
 	local autoTLog = false
 
-	local function isCurrentContent()
-		return instanceDifficultyBylevel[LastInstanceMapID] and (instanceDifficultyBylevel[LastInstanceMapID][1] >= playerLevel) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 3) or (difficultyIndex or 0) == 8--current player level raid or any M+ dungeon
+	local function isLogableContent(self)
+		--1: Check for any broad global filters like LFG/LFR filter
+		--2: Check for what content specifically selected for logging
+		--3: Boss Only filter is handled somewhere else (where StartLogging is called)
+
+		if self.Options.DoNotLogLFG and isRetail and IsPartyLFG() then
+			return false
+		end
+
+		--First checks are manual index checks versus table because even old content can be scaled up using M+ or TW scaling tech
+		--Current player level Mythic+
+		if self.Options.LogCurrentMPlus and (difficultyIndex or 0) == 8 then
+			return true
+		end
+		--Timewalking or Chromie Time Raid
+		if self.Options.LogTWRaids and (C_PlayerInfo.IsPlayerInChromieTime and C_PlayerInfo.IsPlayerInChromieTime() or difficultyIndex == 24 or difficultyIndex == 33) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 3) then
+			return true
+		end
+		--Timewalking or Chromie Time Dungeon
+		if self.Options.LogTWDungeons and (C_PlayerInfo.IsPlayerInChromieTime and C_PlayerInfo.IsPlayerInChromieTime() or difficultyIndex == 24 or difficultyIndex == 33) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 2) then
+			return true
+		end
+
+		--Now we do checks relying on pre coded trivial check table
+		if self.Options.LogCurrentMythicRaids and instanceDifficultyBylevel[LastInstanceMapID] and (instanceDifficultyBylevel[LastInstanceMapID][1] >= playerLevel) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 3) and difficultyIndex == 16 then
+			return true
+		end
+		--Current player level non mythic raid
+		if self.Options.LogCurrentRaids and instanceDifficultyBylevel[LastInstanceMapID] and (instanceDifficultyBylevel[LastInstanceMapID][1] >= playerLevel) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 3) and difficultyIndex ~= 16 then
+			return true
+		end
+		--Trivial raid (ie one below players level)
+		if self.Options.LogTrivialRaids and (instanceDifficultyBylevel[LastInstanceMapID][1] < playerLevel) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 3) then
+			return true
+		end
+		--Current level mythic dungeon
+		if self.Options.LogCurrentMythicZero and (instanceDifficultyBylevel[LastInstanceMapID][1] >= playerLevel) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 2) and difficultyIndex == 23 then
+			return true
+		end
+		--Current level heroic dungeon
+		if self.Options.LogCurrentHeroic and (instanceDifficultyBylevel[LastInstanceMapID][1] >= playerLevel) and (instanceDifficultyBylevel[LastInstanceMapID][2] == 2) and (difficultyIndex == 2 or difficultyIndex == 174) then
+			return true
+		end
+
+		return false
 	end
 
 	function DBM:StartLogging(timer, checkFunc, force)
 		self:Unschedule(DBM.StopLogging)
-		if not force and self.Options.LogOnlyNonTrivial and ((LastInstanceType ~= "raid" and difficultyIndex ~= 8) or (isRetail and IsPartyLFG()) or not isCurrentContent()) then return end
+		if not force and not isLogableContent(self) then return end
 		if self.Options.AutologBosses then
 			if not LoggingCombat() then
 				autoLog = true
@@ -7034,32 +7101,42 @@ do
 
 	function bossModPrototype:IsMeleeDps(uId)
 		if uId then--This version includes ONLY melee dps
-			local role = UnitGroupRolesAssigned(uId)
-			if isRetail and (role == "HEALER" or role == "TANK") or GetPartyAssignment("MAINTANK", uId, 1) then--Auto filter healer/tank from dps check, can't filter healers in classic
-				return false
-			end
-			local _, class = UnitClass(uId)
-			if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" or class == "DEMONHUNTER" then
-				return true
-			end
-			--Inspect throttle exists, so have to do it this way
-			if class == "DRUID" or class == "SHAMAN" or class == "PALADIN" or class == "MONK" then
-				local unitMaxPower = UnitPowerMax(uId)
-				if not isRetail and unitMaxPower < 7500 then
+			local name = GetUnitName(uId, true)
+			--First we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
+			if isRetail and raid[name].specID then--We know their specId
+				local specID = raid[name].specID
+				return private.specRoleTable[specID]["MeleeDps"]
+			else
+				--Role checks are second best thing
+				local role = UnitGroupRolesAssigned(uId)
+				if isRetail and (role == "HEALER" or role == "TANK") or GetPartyAssignment("MAINTANK", uId, 1) then--Auto filter healer/tank from dps check, can't filter healers in classic
+					return false
+				end
+				--Class checks for things that are a sure thing anywyas
+				local _, class = UnitClass(uId)
+				if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" or class == "DEMONHUNTER" then
 					return true
 				end
-				local powerType = UnitPowerType(uId)
-				local altPowerType = UnitPower(uId, 8)--Additional check for balance druids shapeshifted into bear/cat but may still have > 0 lunar power
-				--Healers all have 50k mana at 60, dps have 10k mana, plus healers still filtered by role check too
-				--Tanks are already filtered out by role check
-				--Maelstrom and Lunar power filtered out because they'd also return less than 11000 power (they'd both be 100)
-				--feral druids, enhance shamans, windwalker monks, ret paladins should all be caught by less than 11000 power checks after filters
-				if powerType ~= 11 and powerType ~= 8 and altPowerType == 0 and unitMaxPower < 11000 then--Maelstrom and Lunar power filters
-					return true
+				--Now we do the ugly checks thanks to Inspect throttle
+				if class == "DRUID" or class == "SHAMAN" or class == "PALADIN" or class == "MONK" then
+					local unitMaxPower = UnitPowerMax(uId)
+					if not isRetail and unitMaxPower < 7500 then
+						return true
+					end
+					local powerType = UnitPowerType(uId)
+					local altPowerType = UnitPower(uId, 8)--Additional check for balance druids shapeshifted into bear/cat but may still have > 0 lunar power
+					--Healers all have 50k mana at 60, dps have 10k mana, plus healers still filtered by role check too
+					--Tanks are already filtered out by role check
+					--Maelstrom and Lunar power filtered out because they'd also return less than 11000 power (they'd both be 100)
+					--feral druids, enhance shamans, windwalker monks, ret paladins should all be caught by less than 11000 power checks after filters
+					if powerType ~= 11 and powerType ~= 8 and altPowerType == 0 and unitMaxPower < 11000 then--Maelstrom and Lunar power filters
+						return true
+					end
 				end
 			end
 			return false
 		end
+		--Personal check Only
 		if not currentSpecID then
 			DBM:SetCurrentSpecInfo()
 		end
@@ -7068,50 +7145,89 @@ do
 
 	function bossModPrototype:IsMelee(uId, mechanical)--mechanical arg means the check is asking if boss mechanics consider them melee (even if they aren't, such as holy paladin/mistweaver monks)
 		if uId then--This version includes monk healers as melee and tanks as melee
+			--Class checks performed first due to mechanical check needing to be broader than a specID check
 			local _, class = UnitClass(uId)
 			--In mechanical check, ALL paladins are melee so don't need anything fancy, as for rest of classes here, same deal
 			if class == "WARRIOR" or class == "ROGUE" or class == "DEATHKNIGHT" or class == "MONK" or class == "DEMONHUNTER" or (mechanical and class == "PALADIN") then
 				return true
 			end
-			--Inspect throttle exists, so have to do it this way
-			if (class == "DRUID" or class == "SHAMAN" or class == "PALADIN") then
-				local unitMaxPower = UnitPowerMax(uId)
-				if not isRetail and unitMaxPower < 7500 then
-					return true
-				end
-				local powerType = UnitPowerType(uId)
-				local altPowerType = UnitPower(uId, 8)--Additional check for balance druids shapeshifted into bear/cat but may still have > 0 lunar power
-				--Hunters are now all flagged ranged because it's no longer possible to tell a survival hunter from marksman. neither will be using a pet and both have 100 focus.
-				--Druids without lunar poewr or 50k mana are either feral or guardian
-				--Shamans without maelstrom and 50k mana can only be enhancement
-				--Paladins without 50k mana can only be prot or ret
-				if powerType ~= 11 and powerType ~= 8 and altPowerType == 0 and unitMaxPower < 11000 then--Maelstrom and Lunar power filters
-					return true
+			--Now we check if we have acccess to specID (ie remote player is using DBM or Bigwigs)
+			local name = GetUnitName(uId, true)
+			if isRetail and raid[name].specID then--We know their specId
+				local specID = raid[name].specID
+				return private.specRoleTable[specID]["Melee"]
+			else
+				--Now we do the ugly checks thanks to Inspect throttle
+				if (class == "DRUID" or class == "SHAMAN" or class == "PALADIN") then
+					local unitMaxPower = UnitPowerMax(uId)
+					if not isRetail and unitMaxPower < 7500 then
+						return true
+					end
+					local powerType = UnitPowerType(uId)
+					local altPowerType = UnitPower(uId, 8)--Additional check for balance druids shapeshifted into bear/cat but may still have > 0 lunar power
+					--Hunters are now all flagged ranged because it's no longer possible to tell a survival hunter from marksman. neither will be using a pet and both have 100 focus.
+					--Druids without lunar poewr or 50k mana are either feral or guardian
+					--Shamans without maelstrom and 50k mana can only be enhancement
+					--Paladins without 50k mana can only be prot or ret
+					if powerType ~= 11 and powerType ~= 8 and altPowerType == 0 and unitMaxPower < 11000 then--Maelstrom and Lunar power filters
+						return true
+					end
 				end
 			end
 			return false
 		end
+		--Personal check Only
 		if not currentSpecID then
 			DBM:SetCurrentSpecInfo()
 		end
 		return private.specRoleTable[currentSpecID]["Melee"]
 	end
 
-	function bossModPrototype:IsRanged()
+	function bossModPrototype:IsRanged(uId)
+		if uId then
+			local name = GetUnitName(uId, true)
+			if isRetail and raid[name].specID then--We know their specId
+				local specID = raid[name].specID
+				return private.specRoleTable[specID]["Ranged"]
+			else
+				print("bossModPrototype:IsRanged should not be called on external units if specID is unavailable, report this message")
+			end
+		end
+		--Personal check Only
 		if not currentSpecID then
 			DBM:SetCurrentSpecInfo()
 		end
 		return private.specRoleTable[currentSpecID]["Ranged"]
 	end
 
-	function bossModPrototype:IsSpellCaster()
+	function bossModPrototype:IsSpellCaster(uId)
+		if uId then
+			local name = GetUnitName(uId, true)
+			if isRetail and raid[name].specID then--We know their specId
+				local specID = raid[name].specID
+				return private.specRoleTable[specID]["SpellCaster"]
+			else
+				print("bossModPrototype:IsSpellCaster should not be called on external units if specID is unavailable, report this message")
+			end
+		end
+		--Personal check Only
 		if not currentSpecID then
 			DBM:SetCurrentSpecInfo()
 		end
 		return private.specRoleTable[currentSpecID]["SpellCaster"]
 	end
 
-	function bossModPrototype:IsMagicDispeller()
+	function bossModPrototype:IsMagicDispeller(uId)
+		if uId then
+			local name = GetUnitName(uId, true)
+			if isRetail and raid[name].specID then--We know their specId
+				local specID = raid[name].specID
+				return private.specRoleTable[specID]["MagicDispeller"]
+			else
+				print("bossModPrototype:IsMagicDispeller should not be called on external units if specID is unavailable, report this message")
+			end
+		end
+		--Personal check Only
 		if not currentSpecID then
 			DBM:SetCurrentSpecInfo()
 		end
@@ -7151,6 +7267,7 @@ end
 
 function bossModPrototype:IsDps(uId)
 	if uId then--External unit call.
+		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
 		return isRetail and UnitGroupRolesAssigned(uId) == "DAMAGER" or not GetPartyAssignment("MAINTANK", uId, 1)
 	end
 	if not currentSpecID then
@@ -7169,6 +7286,7 @@ function bossModPrototype:IsHealer(uId)
 			print("bossModPrototype:IsHealer should not be called in classic, report this message")
 			return false
 		end
+		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
 		return UnitGroupRolesAssigned(uId) == "HEALER"
 	end
 	if not currentSpecID then
@@ -7260,6 +7378,7 @@ function bossModPrototype:IsTanking(unit, boss, isName, onlyRequested, bossGUID,
 		if GetPartyAssignment("MAINTANK", unit, 1) then
 			return true
 		end
+		--no SpecID checks because SpecID is only availalbe with DBM/Bigwigs, but both DBM/Bigwigs auto set DAMAGER/HEALER/TANK roles anyways so it'd be redundant
 		if isRetail and UnitGroupRolesAssigned(unit) == "TANK" then
 			return true
 		end

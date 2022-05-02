@@ -33,7 +33,7 @@
 ## X-DBM-Mod-MinExpansion: 4
 ## X-Curse-Project-ID: 61621
 ## X-Wago-ID: Rn6VLLGd
-## Version: r148-14-g1889ab6
+## Version: r148-16-g8b82d59
 localization.en.lua
 localization.tw.lua
 localization.cn.lua

@@ -386,6 +386,8 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		DBM.Options.DebugMode = not DBM.Options.DebugMode
 		DBM:AddMsg("Debug Message is " .. (DBM.Options.DebugMode and "ON" or "OFF"))
 		private:GetModule("DevTools"):OnDebugToggle()
+	elseif cmd:sub(1, 4) == "test" then
+		DBM:DemoMode()
 	elseif cmd:sub(1, 8) == "whereiam" or cmd:sub(1, 8) == "whereami" then
 		local x, y, _, map = UnitPosition("player")
 		local mapID = C_Map.GetBestMapForUnit("player") or "nil"

@@ -5,6 +5,7 @@ local Colors = {
     DeathKnight = "|cffC41F3B",
     DemonHunter = "|cffA330C9",
     Druid = "|cffFF7D0A",
+    Evoker = "|cff33937F",
     Hunter = "|cffABD473",
     Mage = "|cff69CCF0",
     Monk = "|cFF00FF96",
@@ -119,6 +120,7 @@ L["Hunter"] = Colors.Hunter .. "Hunter" .. "|r"
 L["Monk"] = Colors.Monk .. "Monk" .. "|r"
 L["DemonHunter"] = Colors.DemonHunter .. "Demon Hunter" .. "|r"
 L["Warlock"] = Colors.Warlock .. "Warlock" .. "|r"
+L["Evoker"] = Colors.Evoker .. "Evoker" .. "|r"
 L["Buff Down"] = true
 L["Spell Casting"] = true
 L["BigHeal"] = "Big Heals"
@@ -251,6 +253,7 @@ L["EXPAC_WoD"] = "Warlords of Draenor"
 L["EXPAC_Legion"] = "Legion"
 L["EXPAC_BfA"] = "Battle for Azeroth"
 L["EXPAC_SL"] = "Shadowlands"
+L["EXPAC_DF"] = "Dragonflight"
 
 
 L["GladiatorlosSA2"] = true

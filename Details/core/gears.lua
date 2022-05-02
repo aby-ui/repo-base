@@ -1765,10 +1765,10 @@ function Details.Database.StoreEncounter(combat)
 		local myrole = UnitGroupRolesAssigned ("player")
 		local mybest, onencounter = _detalhes.storage:GetBestFromPlayer (diff, encounter_id, myrole, _detalhes.playername, true) --> get dps or hps
 		local mybest2 = mybest and mybest[1] or 0
-		onencounter = onencounter or 999999
-		local myBestDps = mybest2 / onencounter.elapsed
 
-		if (mybest) then
+		if (mybest and onencounter) then
+			local myBestDps = mybest2 / onencounter.elapsed
+
 			local d_one = 0
 			if (myrole == "DAMAGER" or myrole == "TANK") then
 				d_one = combat (1, _detalhes.playername) and combat (1, _detalhes.playername).total / combat:GetCombatTime()
@@ -1966,6 +1966,7 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 			spec = GetInspectSpecialization (unitid)
 			if (spec and spec ~= 0) then
 				_detalhes.cached_specs [guid] = spec
+				Details:SendEvent("UNIT_SPEC", nil, unitid, spec, guid)
 			end
 		
 --------------------------------------------------------------------------------------------------------
@@ -1983,6 +1984,7 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 		
 			if (talents [1]) then
 				_detalhes.cached_talents [guid] = talents
+				Details:SendEvent("UNIT_TALENTS", nil, unitid, talents, guid)
 				--print (UnitName (unitid), "talents:", unpack (talents))
 			end
 		end

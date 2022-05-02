@@ -91,7 +91,7 @@ local function GetHolyWordRT(info, guid, reducedTime)
 
 
 	if info.auras.isDivineConversation then
-		reducedTime = reducedTime + 15
+		reducedTime = reducedTime + (P.isPvP and 10 or 15)
 	end
 
 	return reducedTime
@@ -591,7 +591,7 @@ do
 		if info.talentData[334525] then
 			local icon = info.spellIcons[DANCING_RUNE_WEAPON]
 			if icon and icon.active then
-				P:UpdateCooldown(icon, 3 * consumed)
+				P:UpdateCooldown(icon, 5 * consumed)
 			end
 		end
 	end
@@ -1334,7 +1334,7 @@ do
 			if info.auras.isSavedByAD then
 				info.auras.isSavedByAD = nil
 			elseif info.talentData[337838] then
-				P:UpdateCooldown(icon, 45)
+				P:UpdateCooldown(icon, 44.8)
 			end
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
 		end
@@ -2505,15 +2505,17 @@ registeredHostileEvents.SPELL_ABSORBED.PALADIN = ReduceDivineShieldCD
 
 
 
-for k in pairs(E.sync_periodic) do
-	if ( registeredEvents.SPELL_CAST_SUCCESS[k] ) then
-		local func = registeredEvents.SPELL_CAST_SUCCESS[k]
-		registeredEvents.SPELL_CAST_SUCCESS[k] = function(info, srcGUID, spellID, destGUID)
-			func(info, srcGUID, spellID, destGUID)
-			E.Comms.ForceSync()
+if ( not E.isPreBCC ) then
+	for k in pairs(E.sync_periodic) do
+		if ( registeredEvents.SPELL_CAST_SUCCESS[k] ) then
+			local func = registeredEvents.SPELL_CAST_SUCCESS[k]
+			registeredEvents.SPELL_CAST_SUCCESS[k] = function(info, srcGUID, spellID, destGUID)
+				func(info, srcGUID, spellID, destGUID)
+				E.Comms.ForceSync()
+			end
+		else
+			registeredEvents.SPELL_CAST_SUCCESS[k] = E.Comms.ForceSync
 		end
-	else
-		registeredEvents.SPELL_CAST_SUCCESS[k] = E.Comms.ForceSync
 	end
 end
 
@@ -2546,6 +2548,9 @@ function P:SetDisabledColorScheme(destInfo)
 end
 
 local function UpdateDeadStatus(destInfo)
+	if ( E.isPreBCC and UnitHealth(destInfo.unit) > 1 ) then
+		return;
+	end
 	P:SetDisabledColorScheme(destInfo)
 	destInfo.isDead = true
 	destInfo.bar:RegisterUnitEvent("UNIT_HEALTH", destInfo.unit)
@@ -2706,6 +2711,10 @@ else
 			if not info then
 				return
 			end
+
+
+
+
 
 			local func = registeredEvents[event] and registeredEvents[event][spellID]
 			if func then

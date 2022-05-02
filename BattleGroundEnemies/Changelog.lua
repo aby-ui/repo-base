@@ -2,6 +2,63 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "9.2.0.9",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed a error message that happened in TBC or Classic. It was probably caused by some data not yet being available. Thanks to Maas1337@Github for reporting."
+				}
+			}
+		}
+	},
+	{
+		Version = "9.2.0.8",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed a error message. Thanks to Soundsstream@curseforge for reporting"
+				}
+			}
+		}
+	},
+	{
+		Version = "9.2.0.7",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed an error that appeared in battlegrounds wich was caused by another addon or probably by disabling the default arena UI addon. Thank to Sharki519@curseforge for reporting."
+				}
+			}
+		}
+	},
+	{
+		Version = "9.2.0.6",
+		Sections = {
+			{
+				Header = "New Features:",
+				Entries = {
+					"Added absorbs to the healthbar, same functionality as the default Blizzard frames. This can be disabled in the healthbar settings."
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"The addon now works in the Comp Stomp brawl. "
+				}
+			},
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed a issue with the Respawn timer icon staying on screen after the player is alive again.",
+					"Fixed a bug where the Spec icon was overlayed by CC icons when you entered a new BG. Thanks for reporting that issue"
+				}
+			}
+		}
+	},
+	{
 		Version = "9.2.0.5",
 		Sections = {
 			{

@@ -122,7 +122,7 @@ local function GetOptions()
 						notice1 = {
 							hidden = E.isPreBCC,
 
-							name = "|cffff2020 Coodown reduction by Soulbind Conduits, Bwonsamdi's Pact legendary, and RNG modifiers (% chance to X, etc) require Sync Mode.",
+							name = "|cffff2020 Coodown reduction by Soulbind Conduits and RNG modifiers (% chance to X, etc) require Sync Mode.",
 							order = 16,
 							type = "description",
 						},
@@ -190,6 +190,19 @@ local function GetOptions()
 								},
 							}
 						},
+						plugins = {
+							name = "Plugins",
+							order = 50,
+							type = "group",
+							args = {
+								battleres = {
+									name = L["Battle Res"],
+									desc = COPY_URL,
+									order = 1,
+									type = "input",
+									dialogControl = "Link-OmniCD",
+									get = function() return "https://www.curseforge.com/wow/addons/omnicd-battleres" end,
+								},
 
 
 
@@ -206,21 +219,8 @@ local function GetOptions()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+							}
+						},
 					}
 				},
 			},

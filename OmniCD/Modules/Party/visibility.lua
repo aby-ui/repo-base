@@ -39,7 +39,7 @@ P.userData = {
 
 if E.isPreBCC then
 	P.zoneEvents = {
-		arena = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
+		arena = { "PLAYER_REGEN_DISABLED", "UPDATE_UI_WIDGET" },
 		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
 	}
 else
@@ -166,6 +166,7 @@ do
 						bar:RegisterUnitEvent("UNIT_HEALTH", unit)
 					end
 					bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit])
+					bar:RegisterUnitEvent("UNIT_CONNECTION", unit)
 				end
 
 				if force or (not info.isDead and info.isDeadOrOffline and not isDeadOrOffline) then
@@ -340,15 +341,17 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		self:ResetAllIcons("joinedPvP")
 	end
 
-	if ( not E.isPreBCC ) then
-		if ( self.isInArena ) then
-			if ( not arenaTimer ) then
-				arenaTimer = C_Timer_NewTicker(5, inspectAll, 11);
+	if ( self.isInArena ) then
+		if ( not arenaTimer ) then
+			if ( E.isPreBCC ) then
+				arenaTimer = C_Timer_NewTicker(10, inspectAll, 7);
+			else
+				arenaTimer = C_Timer_NewTicker(5, inspectAll, 14);
 			end
-		elseif ( arenaTimer ) then
-			arenaTimer:Cancel();
-			arenaTimer = nil;
 		end
+	elseif ( arenaTimer ) then
+		arenaTimer:Cancel();
+		arenaTimer = nil;
 	end
 
 	self:GROUP_ROSTER_UPDATE(true, isRefresh)
@@ -380,8 +383,8 @@ function P:PLAYER_REGEN_DISABLED()
 	E.UnregisterEvents(self, self.zoneEvents[self.zone])
 end
 
-function P:PLAYER_FLAGS_CHANGED()
-	if ( InCombatLockdown() ) then return end
+function P:PLAYER_FLAGS_CHANGED(unitTarget)
+	if ( unitTarget ~= "player" or InCombatLockdown() ) then return end
 
 	local oldpvp = self.isPvP
 	self.isPvP = C_PvP_IsWarModeDesired()

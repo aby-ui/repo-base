@@ -610,7 +610,7 @@ E.spell_db = {
 		{ spellID = 48020,  duration = 30,  type = "defensive"  },
 		{ spellID = 113942, duration = 90,  type = "defensive"  },
 		{ spellID = 104773, duration = 180, type = "defensive"  },
-		{ spellID = 328774, duration = 45,  type = "offensive", spec = true     },
+		{ spellID = 328774, duration = 30,  type = "offensive", spec = true     },
 		{ spellID = 199954, duration = 45,  type = "offensive", spec = true     },
 		{ spellID = 234877, duration = 30,  type = "offensive", spec = true     },
 		{ spellID = 267211, duration = 30,  type = "offensive", spec = true     },

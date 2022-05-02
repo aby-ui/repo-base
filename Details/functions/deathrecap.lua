@@ -627,7 +627,9 @@ hooksecurefunc (_G, "DeathRecap_LoadUI", function()
                     local casterPrestige = evtData.casterPrestige
                     local spellSchool = evtData.school
 
-                    --print("Killed by (Blizzard-Debug): ", spellName, "amount:", amountDamage)
+                    if (Details.death_recap.enabled) then
+                        print("Blizzard DeathRecap: ", spellName, "amount:", amountDamage)
+                    end
 
                     --recap by Details!
                     local deathEventsDetails = latestDeath[1]

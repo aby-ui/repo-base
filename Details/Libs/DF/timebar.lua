@@ -299,6 +299,7 @@ local OnUpdateFunc = function(self, deltaTime)
 end
 
 function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
+    self.statusBar:Show()
 
     if (not currentTime or currentTime == 0) then
         self:StopTimer()
@@ -352,7 +353,6 @@ function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
     self.statusBar.hasTimer = true
     self.statusBar.direction = self.direction
     self.statusBar.throttle = 0
-    self.statusBar:Show()
 
     self.statusBar:SetScript("OnUpdate", OnUpdateFunc)
 

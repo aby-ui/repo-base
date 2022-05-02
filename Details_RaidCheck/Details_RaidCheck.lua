@@ -382,8 +382,8 @@ end
 
 			local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 			--get the information of all players
-			local playersInfoData = openRaidLib.playerInfoManager.GetAllPlayersInfo()
-			local playersGearData = openRaidLib.gearManager.GetAllPlayersGear()
+			local playersInfoData = openRaidLib.GetAllUnitsInfo()
+			local playersGearData = openRaidLib.GetAllUnitsGear()
 		
 			for i = 1, total_lines do
 				local index = i + offset

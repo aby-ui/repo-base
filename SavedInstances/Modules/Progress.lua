@@ -30,7 +30,8 @@ local function KeepProgress(toon, index)
   t.Progress[index] = {
     unlocked = prev.unlocked,
     isComplete = false,
-    isFinish = false,
+    isFinish = prev.isFinish and not prev.isComplete,
+    objectiveType = prev.objectiveType,
     numFulfilled = prev.isComplete and 0 or prev.numFulfilled,
     numRequired = prev.numRequired,
   }

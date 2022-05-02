@@ -92,6 +92,7 @@ function OmniCD_BarOnHide(self)
 
 
 
+
 	self:UnregisterAllEvents()
 end
 
@@ -229,6 +230,15 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 
 		if ( UnitIsConnected(unit) ) then
 			E.Comms:EnqueueInspect(nil, guid)
+		end
+	elseif ( event == "UNIT_CONNECTION" ) then
+		local unit, isConnected = ...;
+		if ( unit == info.unit ) then
+			if ( isConnected ) then
+				P:SetEnabledColorScheme(info)
+			else
+				P:SetDisabledColorScheme(info)
+			end
 		end
 	end
 end
@@ -382,6 +392,7 @@ function P:UpdateUnitBar(guid, isGRU)
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 	end
 	f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, unitToPetId[unit])
+	f:RegisterUnitEvent("UNIT_CONNECTION", unit)
 
 	local isInspectedUnit = info.spec
 	local lvl = info.level

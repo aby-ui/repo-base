@@ -129,7 +129,7 @@ panel.opts = {
 	{ "check", "AutoWinRecordPVPOnly", L["For PVP Battles Only"], L["Automatically track whether the loaded team won or lost only in a PVP battle and never for a PVE battle."], "AutoWinRecord" },
 	{ "check", "AlternateWinRecord", L["Display Total Wins Instead"], L["Instead of displaying the win percentage of a team on the win record button, display the total number of wins.\n\nTeam tabs that are sorted by win record will sort by total wins also."], nil, true },
 	{ "check", "HideWinRecord", L["Hide Win Record Buttons"], L["Hide the win record button displayed to the right of each team.\n\nYou can still manually edit a team's win record from its right-click menu and automatic tracking will continue if enabled."], nil, true },
-	{ "header", L["Leveling Queue Options"]..newIcon, 5 },
+	{ "header", L["Leveling Queue Options"], 5 },
 	{ "check", "QueueSkipDead", L["Prefer Living Pets"], L["When loading pets from the queue, skip dead pets and load living ones first."], nil, true },
 	{ "check", "QueuePreferFullHP", L["And At Full Health"], L["Also prefer uninjured pets when loading pets from the queue."], "QueueSkipDead", true },
 	{ "check", "QueueDoubleClick", L["Double Click To Send To Top"], L["When a pet in the queue panel is double clicked, send it to the top of the queue instead of summoning it."] },
@@ -137,7 +137,7 @@ panel.opts = {
 	{ "check", "QueueAutoLearn", L["Automatically Level New Pets"], L["When you capture or learn a pet, automatically add it to the leveling queue."] },
 	{ "check", "QueueAutoLearnOnly", L["Only Pets Without A 25"], L["Only automatically level pets which don't have a version already at 25 or in the queue."], "QueueAutoLearn" },
 	{ "check", "QueueAutoLearnRare", L["Only Rare Pets"], L["Only automatically level rare quality pets."], "QueueAutoLearn" },
-	{ "check", "QueueRandomWhenEmpty", L["Random Pet When Queue Empty"]..newIcon, L["When the queue is empty, load a random high-level pet in any leveling slots."] },
+	{ "check", "QueueRandomWhenEmpty", L["Random Pet When Queue Empty"], L["When the queue is empty, load a random high-level pet in any leveling slots."] },
 	{ "header", L["Pet Filter Options"], 8 },
 	{ "check", "StrongVsLevel", L["Use Level In Strong Vs Filter"], L["When doing a Strong Vs filter, take the level of the pet into account. If a pet is not high enough level to use a Strong Vs ability, do not list the pet.\n\n\124cffffffffNote:\124r A Strong Vs filter is sometimes useful for identifying pets you want to level or capture. This option will hide those pets while the Strong Vs filter is active."], nil, true },
 	{ "check", "ResetFilters", L["Reset Filters On Login"], L["When logging in, start with all pets listed and no filters active."] },
@@ -171,5 +171,11 @@ panel.opts = {
 	{ "check", "DebugDelayMacsOneFrame", L["Delay Just One Frame"], L["Change the delay from half a second to one frame, or nearly instant."], "DebugDelayMacs" },
 	{ "check", "DebugNoModels", L["Debug: No Models"], L["Prevent the creation or rendering of any models within Rematch. This includes the target panel, loadout slots and pet card.\n\n\124cffff4040This option requires a Reload."], nil, true },
 	{ "text", format(L["Rematch version %s"],GetAddOnMetadata("Rematch","Version")) },
-	{ "text", format(L["The%s icon marks new options."],newIcon) },
 }
+
+-- if newIcon is used on any option, add legend to bottom of options
+for _,info in ipairs(panel.opts) do
+	if info[3] and type(info[3])=="string" and info[3]:match("NewFeatureIcon") then
+		tinsert(panel.opts,{ "text", format(L["The%s icon marks new options."],newIcon) })
+	end
+end

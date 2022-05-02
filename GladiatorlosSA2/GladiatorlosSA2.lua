@@ -569,11 +569,14 @@ function GladiatorlosSA:DUEL_REQUESTED(event, playerName)
 
  function GladiatorlosSA:SetExpansion()
 	 local _,_,_,interfaceNumber = GetBuildInfo()
-	 if (interfaceNumber >= 20000 and interfaceNumber <= 69999) then
+	 if (interfaceNumber >= 20000 and interfaceNumber <= 29999) then
 		 GSA_EXPANSION = L["EXPAC_TBC"]
-		 return GSA_EXPANSION
+	 elseif (interfaceNumber >= 30000 and interfaceNumber <= 39999) then
+		 GSA_EXPANSION = L["EXPAC_WotLK"]
 	 elseif (interfaceNumber >= 90000 and interfaceNumber <= 99999) then
 		 GSA_EXPANSION = L["EXPAC_SL"]
-		 return GSA_EXPANSION
+	--elseif (interfaceNumber >= ? and interfaceNumber <= ?9999) then
+	--	GSA_EXPANSION = L["EXPAC_DF"]
 	 end
+	 	return GSA_EXPANSION
  end

@@ -512,7 +512,7 @@ function Details.UnitInfo (unitId, segment)
 
 	local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 	if (openRaidLib) then
-		playerInfo = openRaidLib.playerInfoManager.GetPlayerInfo(unitName)
+		playerInfo = openRaidLib.GetUnitInfo(unitName)
 	end
 
 	unitInfo.class = playerObject.classe or class or "UNKNOW"

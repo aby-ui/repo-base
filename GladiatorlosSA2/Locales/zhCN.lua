@@ -1,24 +1,24 @@
 ﻿-- Mini Dragon(projecteurs@gmail.com)
--- Last update: Jan 29, 2015
+-- Last update: Jan 25, 2022
 
 local L = LibStub("AceLocale-3.0"):NewLocale("GladiatorlosSA", "zhCN")
 if not L then return end
 
 L["Spell_CastSuccess"] = "施法成功"
 L["Spell_CastStart"] = "施法开始"
-L["Spell_AuraApplied"] = "增益获得"
-L["Spell_AuraRemoved"] = "增益消失"
-L["Spell_Interrupt"] = "法术打断"
-L["Spell_Summon"] = "法术召唤"
+L["Spell_AuraApplied"] = "获得增益/减益"
+L["Spell_AuraRemoved"] = "增益/减益消失"
+L["Spell_Interrupt"] = "打断法术"
+L["Spell_Summon"] = "召唤法术"
 L["Any"] = "任意"
 L["Player"] = "玩家"
 L["Target"] = "目标"
 L["Focus"] = "焦点"
 L["Mouseover"] = "鼠标指向"
-L["Party"] = "小队"
+L["Party"] = "队伍"
 L["Raid"] = "团队"
 L["Arena"] = "竞技场敌方"
-L["Boss"] = "副本Boss"
+L["Boss"] = "副本首领"
 L["Custom"] = "自定义"
 L["Friendly"] = "友好"
 L["Hostile player"] = "敌对玩家"
@@ -28,12 +28,12 @@ L["Myself"] = "玩家自己"
 L["Mine"] = "自己或自己的单位"
 L["My pet"] = "自己的宠物"
 L["Custom Spell"] = "自定义法术"
-L["New Sound Alert"] = "新的声音警报"
+L["New Sound Alert"] = "新的警报声音"
 L["name"] = "名字"
-L["same name already exists"] = "已存在同名警报"
-L["spellid"] = "法术ID"
+L["same name already exists"] = "已存在的同名警报"
+L["spellid"] = "技能ID"
 L["Remove"] = "移除"
-L["Are you sure?"] = "确认移除?"
+L["Are you sure?"] = "确认移除？"
 L["Test"] = "测试"
 L["Use existing sound"] = "使用现存声音"
 L["choose a sound"] = "选择一个声音"
@@ -41,34 +41,31 @@ L["file path"] = "文件路径"
 L["event type"] = "事件类型"
 L["Source unit"] = "来源单位"
 L["Source type"] = "来源类型"
-L["Custom unit name"] = "自定义单位名字"
+L["Custom unit name"] = "自定义单位名称"
 L["Dest unit"] = "目标单位"
 L["Dest type"] = "目标类型"
 
-L["Profiles"] = "配置文件"
-
-L["GladiatorlosSACredits"] = "Customizable PvP Announcer addon for vocalizing many important spells cast by your enemies.|n|n|cffFFF569Created by|r |cff9482C9Abatorlos|r |cffFFF569of Spinebreaker|r|n|cffFFF569Legion/BfA support by|r |cffC79C6EOrunno|r |cffFFF569of Moon Guard (With permission from zuhligan)|r|n|n|cffFFF569Special Thanks|r|n|cffA330C9superk521|r (Past Project Manager)|n|cffA330C9DuskAshes|r (Chinese Support)|n|cffA330C9N30Ex|r (Mists of Pandaria Support)|n|cffA330C9zuhligan|r (Warlords of Draenor & French Support)|n|cffA330C9jungwan2|r (Korean Support)|n|cffA330C9Mini_Dragon|r (Chinese support for WoD & Legion)|n|cffA330C9LordKuper|r (Russian support for Legion)|n|cffA330C9Tzanee - Wyrmrest Accord|r (Placeholder Voice Lines)|n|nAll feedback, questions, suggestions, and bug reports are welcome at the addon's page on Curse!"
+L["GladiatorlosSACredits"] = "可定制的PVP语音预警插件，用于敌人施放的许多重要技能预警.|n|n|cffFFF569Created by|r |cff9482C9Abatorlos|r |cffFFF569of Spinebreaker|r|n|cffFFF569Legion/BfA/Shadowlands support by|r |cFF00FF96Treasuretail|r |cffFFF569of Wyrmrest Accord (With permission from zuhligan)|r|n|n|cffFFF569特别感谢|r|n|cffA330C9superk521|r (Past Project Manager)|n|cffA330C9DuskAshes|r (Chinese Support)|n|cffA330C9N30Ex|r (Mists of Pandaria Support; Shadowlands voice recordings)|n|cffA330C9zuhligan|r (Warlords of Draenor & French Support)|n|cffA330C9jungwan2|r (Korean Support)|n|cffA330C9Mini_Dragon|r (Chinese support for WoD & Legion)|n|cffA330C9LordKuper|r (Russian support for Legion)|n|cffA330C9Tzanee - Wyrmrest Accord|r (Placeholder Voice Lines)|n|cffA330C9Gnulkion - Illidan|r (Alert only from opponent in duels feature)|n|n所有反馈、问题、建议和错误报告欢迎访问 Curse的插件网站:|nhttps://wow.curseforge.com/projects/gladiatorlossa2|n或 GitHub 网站:|nhttps://github.com/Rhykes/GladiatorlosSA2"
 L["PVP Voice Alert"] = "PVP技能语音提示"
-L["Load Configuration"] = "加载配置"
+L["Load Configuration"] = "<-- 加载 GSA2 配置"
 L["Load Configuration Options"] = "加载配置选项"
 L["General"] = "一般"
 L["General options"] = "一般选项"
 L["Enable area"] = "当何时启用"
 L["Anywhere"] = "总是启用"
-L["Alert works anywhere"] = "在任何地方GladiatorlosSA都处于开启状态"
+L["Alert works anywhere"] = "在任何地方都处于启用状态"
 L["Arena"] = "竞技场"
-L["Alert only works in arena"] = "在竞技场中启用GladiatorlosSA"
+L["Alert only works in arena"] = "在竞技场中启用"
 L["Battleground"] = "战场"
-L["Alert only works in BG"] = "在战场中启用GladiatorlosSA"
+L["Alert only works in BG"] = "在战场中启用"
 L["World"] = "野外"
-L["Alert works anywhere else then anena, BG, dungeon instance"] = "除了战场、竞技场和副本的任何地方都启用GladiatorlosSA"
+L["Alert works anywhere else then anena, BG, dungeon instance"] = "除了战场、竞技场和副本的任务地方都启用"
 L["Voice config"] = "声音设置"
 L["Voice language"] = "语言类型"
 L["Select language of the alert"] = "选择通报所用语言"
-L["Chinese(female)"] = "汉语(女声)"
-L["English(female)"] = "英语(女声)"
-L["Volume"] = "声音大小"
-L["adjusting the voice volume(the same as adjusting the system master sound volume)"] = "调节声音大小(等同于调节系统主音量大小)"
+L["Chinese(female)"] = "中文（女）"
+L["English(female)"] = "英语（女）"
+L["adjusting the voice volume(the same as adjusting the system master sound volume)"] = "调节声音大小（等同于调节系统主音量大小）"
 L["Advance options"] = "高级设置"
 L["Smart disable"] = "智能禁用模式"
 L["Disable addon for a moment while too many alerts comes"] = "处于大型战场等警报过于频繁的区域自动禁用"
@@ -76,7 +73,7 @@ L["Throttle"] = "节流阀"
 L["The minimum interval of each alert"] = "控制声音警报的最小间隔"
 L["Abilities"] = "技能"
 L["Abilities options"] = "技能选项"
-L["Disable options"] = "技能模块控制"
+L["Disable options"] = "技能模块"
 L["Disable abilities by type"] = "技能各个模块禁用选项"
 L["Disable Buff Applied"] = "禁用敌方增益技能"
 L["Check this will disable alert for buff applied to hostile targets"] = "勾选此选项以关闭敌方增益技能通报"
@@ -102,30 +99,32 @@ L["Rogue"] = "|cffFFF569潜行者|r"
 L["Warrior"] = "|cffC79C6E战士|r"
 L["Priest"] = "|cffFFFFFF牧师|r"
 L["Shaman"] = "|cff0070DE萨满|r"
-L["ShamanTotems"] = "|cff0070DE萨满(图腾)|r"
+L["ShamanTotems"] = "|cff0070DE萨满图腾|r"
 L["Mage"] = "|cff69CCF0法师|r"
 L["DeathKnight"] = "|cffC41F3B死亡骑士|r"
 L["Hunter"] = "|cffABD473猎人|r"
 L["Monk"] = "|cFF558A84武僧|r"
+L["Evoker"] = true
 L["DemonHunter"] = "|cffA330C9恶魔猎手|r"
+L["Warlock"] = "|cff9482C9术士|r"
+
 L["Buff Down"] = "敌方增益结束"
 L["Spell Casting"] = "敌方读条技能"
 L["BigHeal"] = "大型治疗法术"
 L["BigHeal_Desc"] = "强效治疗术 神圣之光 强效治疗波 治疗之触"
 L["Resurrection"] = "复活技能"
 L["Resurrection_Desc"] = "复活术 救赎 先祖之魂 复活"
-L["Warlock"] = "|cff9482C9术士|r"
 L["Special Abilities"] = "敌方特殊技能"
 L["Friendly Interrupt"] = "友方打断技能"
-L["Spell Lock, Counterspell, Kick, Pummel, Mind Freeze, Skull Bash, Rebuke, Solar Beam, Spear Hand Strike, Wind Shear"] = "法术封锁 法术反制 脚踢 拳击 心智冰封 碎颅猛击 责难 太阳光束"
+L["Profiles"] = "配置文件"
 
-L["PvPWorldQuests"] = true
-L["DisablePvPWorldQuests"] = true
-L["DisablePvPWorldQuestsDesc"] = true
-L["OperationMurlocFreedom"] = true
+--L["PvPWorldQuests"] = "PVP世界任务"
+--L["DisablePvPWorldQuests"] = "禁用PVP世界任务"
+--L["DisablePvPWorldQuestsDesc"] = "禁用PVP世界任务中的所有警报"
+--L["OperationMurlocFreedom"] = true
 
-L["EnemyInterrupts"] = "敌方打断(包括日光术)"
-L["EnemyInterruptsDesc"] = true
+L["EnemyInterrupts"] = "打断技能(还有日光术，因为他能打断和沉默!)"
+L["EnemyInterruptsDesc"] = "启用或禁用所有敌人打断和沉默技能的警报。"
 
 L["Default / Female voice"] = "默认 / 女声"
 L["Select the default voice pack of the alert"] = "选择默认语音包"
@@ -139,94 +138,110 @@ L["Voice menu config"] = "语音菜单选项"
 L["Choose a test voice pack"] = "选择测试语音包"
 L["Select the menu voice pack alert"] = "选择菜单语音包警告"
 
-L["English(male)"] = true
-L["No sound selected for the Custom alert : |cffC41F4B"] = true
-L["Master Volume"] = "主音量" -- changed from L["Volume"] = true
-L["Change Output"] = "改变输出声道"
-L["Unlock the output options"] = "允许修改输出声道选项"
-L["Output"] = "输出声道"
-L["Select the default output"] = "选择默认输出声道"
-L["Master"] = "主声道"
-L["SFX"] = "音效声道"
-L["Ambience"] = "环境音声道"
-L["Music"] = "音乐声道"
-L["Dialog"] = "对话声道"
+L["English(male)"] = "英语（男）"
+L["No sound selected for the Custom alert : |cffC41F4B"] = "没有为自定义警报选择声音 : |cffC41F4B"
+L["Master Volume"] = "主音量" 
+L["Change Output"] = "改变声音输出通道"
+L["Unlock the output options"] = "解锁声音输出选项"
+L["Output"] = "输出"
+L["Select the default output"] = "选择默认输出"
+L["Master"] = "主"
+L["SFX"] = "特效"
+L["Ambience"] = "环境"
+L["Music"] = "音乐"
+L["Dialog"] = "对话"
 
-L["DPSDispel"] = "非魔法驱散"
-L["DPSDispel_Desc"] = "通报混合职业的不会移除魔法效果的驱散.|n|nRemove Corruption (|cffFF7D0ADruid|r)|nRemove Curse (|cff69CCF0Mage|r)|nDetox (|cFF00FF96Monk|r)|nCleanse Toxins (|cffF58CBAPaladin|r)|nCleansing Light |cffF58CBAPaladin|r)|nPurify Disease (Priest)|nCleanse Spirit (|cff0070daShaman|r)"
+L["DPSDispel"] = "非魔法类驱散"
+L["DPSDispel_Desc"] = "不是移除魔法效果的混合职业驱散警报。|n|n清除腐蚀 (|cffFF7D0A德鲁伊|r)|n解除诅咒 (|cff69CCF0法师|r)|n清创生血 (|cFF558A84武僧|r)|n清毒术 (|cffF58CBA圣骑士|r)|n净化疾病 (|cffFFFFFF牧师|r)|n净化灵魂 (|cff0070DE萨满图腾|r)"
 L["HealerDispel"] = "魔法驱散"
-L["HealerDispel_Desc"] = "通报治疗职业(及术士)的会移除魔法效果的驱散.|n|nNature's Cure (|cffFF7D0ADruid|r)|nDetox (|cFF00FF96Monk|r)|nCleanse (|cffF58CBAPaladin|r)|nPurify (Priest)|nPurify Spirit (|cff0070daShaman|r)|nSinge Magic (|cff9482C9Warlock|r)"
+L["HealerDispel_Desc"] = "治疗职业(和|cff9482C9术士|r)的通用驱散技能警报，驱散魔法效果。|n|n自然之愈 (|cffFF7D0A德鲁伊|r)|n还魂术 (|cFF558A84武僧|r)|n清洁术 (|cffF58CBA圣骑士|r)|n纯净术 (|cffFFFFFF牧师|r)|n净化灵魂 (|cff0070DE萨满|r)|n烧灼驱魔 (|cff9482C9术士|r)"
 L["CastingSuccess"] = "控制技能"
-L["CastingSuccess_Desc"] = "通报敌方重要控制技能的成功施放.|n|n注意，这个选项即使目标未受影响（例如控制递减或者免疫）也会通报.|n|n|cffC41F3B注意：如果此选项开启，则下面的所有技能都会通报，哪怕你在职业技能里取消勾选.|r|n|n旋风 (|cffFF7D0A德鲁伊|r)|n休眠 (|cffFF7D0A德鲁伊|r)|n变羊 (|cff69CCF0法师|r)|n冰环 (|cff69CCF0法师|r)|n忏悔 (|cffF58CBA骑士|r)|n心控 (牧师)|n妖术 (|cff0070da萨满|r)|n恐惧 (|cff9482C9术士|r)"
+L["CastingSuccess_Desc"] = "当敌对玩家施放群体控制技能于你或队友/盟友时，启用通用“成功”警报|n|n|cffC41F3B警告: 如果启用，以下所有技能都将警报，即使你有其中一些技能 |r|n|n旋风 (|cffFF7D0A德鲁伊|r)|n纠缠根须 (|cffFF7D0A德鲁伊|r)|n沉眠 (|cffFF7D0A德鲁伊|r)|n恐吓野兽 (|cffABD473猎人|r)|n变形术 (|cff69CCF0法师|r)|n冰霜之环 (|cff69CCF0法师|r)|n忏悔 (|cffF58CBA圣骑士|r)|n精神控制 (|cffFFFFFF牧师|r)|n妖术 (|cff0070DE萨满|r)|n恐惧 (|cff9482C9术士|r)"
 
-L["DispelKickback"] = "驱散惩罚"
+L["DispelKickback"] = "驱散后惩罚"
 
-L["Purge"] = "净化技能"
-L["PurgeDesc"] = "通报移除友方魔法效果的净化技能, 不包括奥术洪流.|n|n吞噬魔法 (|cffA330C9恶魔猎手|r)|n驱散魔法 (牧师)|n净化术 (|cff0070da萨满|r)|n吞噬魔法 (|cff9482C9术士|r)"
+L["Purge"] = "清除技能"
+L["PurgeDesc"] = "清除团队魔法效果的一般警报，不包括奥术洪流|n|n吞噬魔法 (|cffA330C9恶魔猎手|r)|n宁神射击 (|cffABD473猎人|r)|n群体驱散 (|cffFFFFFF牧师|r)|n净化 (|cff0070DE萨满|r)|n吞噬魔法 (|cff9482C9术士|r)"
 
-L["FriendlyInterrupted"] = "禁用友方技能被锁定提示"
-L["FriendlyInterruptedDesc"] = "勾选此选项以关闭友方被敌方打断后技能被锁定的提示.|n|n(播放暴雪的 '任务失败' 音效.)"
+L["FriendlyInterrupted"] = "禁用友方被打断技能"
+L["FriendlyInterruptedDesc"] = "当敌人成功打断你或队友/盟友技能，禁用警报。|n|n(播放暴雪“任务失败”音效)"
 
 L["epicbattleground"] = "史诗战场"
-L["epicbattlegroundDesc"] = "在史诗战场中启用PVP语音提示"
+L["epicbattlegroundDesc"] = "在史诗战场警报。|n|n别客气。"
 
-L["OnlyIfPvPFlagged"] = "Only in PvP"
-L["OnlyIfPvPFlaggedDesc"] = "If enabled, alerts will no longer play unless you are PvP flagged; such as in War Mode or in a PvP instance. Those areas still need to be enabled for GSA to function there, even if this option is enabled.|n|n|cffC41F3BWARNING: This also disables alerts while in a Duel, so remember to toggle it off!|r"
+--L["OnlyIfPvPFlagged"] = "仅在PVP中"
+--L["OnlyIfPvPFlaggedDesc"] = "If enabled, alerts will no longer play unless you are PvP flagged; such as in War Mode or in a PvP instance. Those areas still need to be enabled for GSA to function there, even if this option is enabled.|n|n|cffC41F3BWARNING: This also disables alerts while in a Duel, so remember to toggle it off!|r"
 
-L["TankTauntsOFF"] = "Intimidation"
-L["TankTauntsOFF_Desc"] = "Alerts the fading of Intimidation: a damage amplification effect originating from tank specializations."
-L["TankTauntsON"] = "Intimidation"
-L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage amplifcation effect originating from tank specializations."
+--L["TankTauntsOFF"] = "Intimidation"
+--L["TankTauntsOFF_Desc"] = "Alerts the fading of Intimidation: a damage amplification effect originating from tank specializations."
+--L["TankTauntsON"] = "Intimidation"
+--L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage amplifcation effect originating from tank specializations."
 
-L["Connected"] = "强力伤害"
-L["Connected_Desc"] = "提示'施法成功', 当一些强力读条技能成功施放时.|n|n强效炎爆术 (|cff69CCF0法师|r)|n混乱箭 (|cff9482C9术士|r)"
+L["Connected"] = "标志技能"
+L["Connected_Desc"] = "当某些非常强大的技能成功完成施法时，会发出简单的“已连接”警报。|n|n恶魔追击（恶魔猎手）|n强效炎爆术（法师）|n控心术（牧师）|n混乱之箭（术士） "
 
-L["CovenantAbilities"] = true
+L["CovenantAbilities"] = "盟约技能"
 
-L["FrostDK"] = true
-L["BloodDK"] = true
-L["UnholyDK"] = true
+L["FrostDK"] = "冰霜"
+L["BloodDK"] = "鲜血"
+L["UnholyDK"] = "邪恶"
 
-L["HavocDH"] = true
-L["VengeanceDH"] = true
+L["HavocDH"] = "浩劫"
+L["VengeanceDH"] = "复仇"
 
-L["FeralDR"] = true
-L["BalanceDR"] = true
-L["RestorationDR"] = true
-L["GuardianDR"] = true
+L["FeralDR"] = "野德"
+L["BalanceDR"] = "平衡"
+L["RestorationDR"] = "恢复"
+L["GuardianDR"] = "守护"
 
-L["MarksmanshipHN"] = true
-L["SurvivalHN"] = true
-L["BeastMasteryHN"] = true
+L["MarksmanshipHN"] = "射击"
+L["SurvivalHN"] = "生存"
+L["BeastMasteryHN"] = "兽王"
 
-L["FrostMG"] = true
-L["FireMG"] = true
-L["ArcaneMG"] = true
+L["FrostMG"] = "寒冰"
+L["FireMG"] = "火焰"
+L["ArcaneMG"] = "奥术"
 
-L["MistweaverMN"] = true
-L["WindwalkerMN"] = true
-L["BrewmasterMN"] = true
+L["MistweaverMN"] = "织雾"
+L["WindwalkerMN"] = "踏风"
+L["BrewmasterMN"] = "酒仙"
 
-L["HolyPD"] = true
-L["RetributionPD"] = true
-L["ProtectionPD"] = true
+L["HolyPD"] = "神圣"
+L["RetributionPD"] = "惩戒"
+L["ProtectionPD"] = "防护"
 
-L["HolyPR"] = true
-L["DisciplinePR"] = true
-L["ShadowPR"] = true
+L["HolyPR"] = "神圣"
+L["DisciplinePR"] = "戒律"
+L["ShadowPR"] = "暗影"
 
-L["OutlawRG"] = true
-L["AssassinationRG"] = true
-L["SubtletyRG"] = true
+L["OutlawRG"] = "狂徒"
+L["AssassinationRG"] = "奇袭"
+L["SubtletyRG"] = "敏锐"
 
-L["RestorationSH"] = true
-L["EnhancementSH"] = true
-L["ElementalSH"] = true
+L["RestorationSH"] = "恢复"
+L["EnhancementSH"] = "增强"
+L["ElementalSH"] = "元素"
 
-L["DestructionWL"] = true
-L["DemonologyWL"] = true
-L["AfflictionWL"] = true
+L["DestructionWL"] = "毁灭"
+L["DemonologyWL"] = "恶魔"
+L["AfflictionWL"] = "痛苦"
 
-L["ArmsWR"] = true
-L["FuryWR"] = true
-L["ProtectionWR"] = true
+L["ArmsWR"] = "武器"
+L["FuryWR"] = "狂暴"
+L["ProtectionWR"] = "防御"
+
+L["EXPAC_UnknownExpac"] = "未知/不支持的游戏版本."
+L["EXPAC_Classic"] = "经典"
+L["EXPAC_TBC"] = "燃烧的远征"
+L["EXPAC_WotLK"] = "巫妖王之怒"
+L["EXPAC_Cata"] = "大地的裂变"
+L["EXPAC_MoP"] = "熊猫人之谜"
+L["EXPAC_WoD"] = "德拉诺之王"
+L["EXPAC_Legion"] = "军团再临"
+L["EXPAC_BfA"] = "争霸艾泽拉斯"
+L["EXPAC_SL"] = "暗影国度"
+
+
+L["GladiatorlosSA2"] = true
+
+L["GSA_EXPERIMENTAL_BUILD"] = "这是 GladiatorlosSA2 的测试版本，尚未在 TBC 上进行测试。 尽管我相信一切正常，但如果您遇到问题，请联系我们，并在必要时降级到 GSA2_TBC1.1版本.该消息将不再显示。" 

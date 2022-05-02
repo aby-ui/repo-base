@@ -25,6 +25,8 @@ panel.isScrolling = nil -- true while there are more tabs than can be displayed 
 -- a nil yoffset means to center it to the side of the parent
 local tabNudges = {[11]={-64,1},[12]={-28,1},[13]={nil,0.95},[14]={nil,0.9},[15]={nil,0.85},[16]={nil,0.85}}
 
+local iconSearch = nil -- icon search text, nil or "" for no search
+
 rematch:InitModule(function()
 	rematch.TeamTabs = panel
 	settings = RematchSettings
@@ -217,7 +219,7 @@ function panel:ShowTabEditDialog(index)
 		name = groups[index][1]
 		icon = groups[index][2]
 	end
-	rematch:ShowDialog("TabEdit",390,456,name or L["New Tab"],L["Choose a name and icon"],SAVE,panel.IconPickerSave,CANCEL)
+	rematch:ShowDialog("TabEdit",390,456+20,name or L["New Tab"],L["Choose a name and icon"],SAVE,panel.IconPickerSave,CANCEL)
 	dialog:SetContext("tab",index)
 	dialog:SetContext("name",name)
 	dialog:SetContext("icon",icon)
@@ -239,14 +241,20 @@ function panel:ShowTabEditDialog(index)
 		scrollFrame.ScrollBar.doNotHide = true
 		scrollFrame.stepSize = 270
 		HybridScrollFrame_CreateButtons(scrollFrame,"RematchTeamTabPickerListTemplate")
+		iconPicker.SearchBox.Instructions:SetText(L["Search Icons"])
 	end
 	-- set up icon choices (recreating table each time on purpose; don't want to keep these huge tables)
-	local iconChoices = dialog:SetContext("iconChoices",{})
-	tinsert(iconChoices,"Interface\\Icons\\PetJournalPortrait")
-	panel:AddMoreIcons(iconChoices) -- add icons from bags, inventory, etc
---	GetLooseMacroIcons(iconChoices)
-	GetMacroIcons(iconChoices)
-	GetMacroItemIcons(iconChoices)
+-- 	local iconChoices = dialog:SetContext("iconChoices",{})
+-- 	tinsert(iconChoices,"Interface\\Icons\\PetJournalPortrait")
+-- 	panel:AddMoreIcons(iconChoices) -- add icons from bags, inventory, etc
+-- --	GetLooseMacroIcons(iconChoices)
+-- 	GetMacroIcons(iconChoices)
+-- 	GetMacroItemIcons(iconChoices)
+
+	-- but keeping iconSearchResults
+	iconPicker.SearchBox:SetText("")
+	iconPicker.SearchBox:GetScript("OnEditFocusLost")(iconPicker.SearchBox)
+
 	panel:UpdateTabIconPickerList()
 	iconPicker:Show()
 end
@@ -268,7 +276,7 @@ end
 -- update of icon list in iconpicker
 function panel:UpdateTabIconPickerList()
 	-- data points to searchChoices if a search is used, or iconChoices (all icons) otherwise
-	local data = dialog:GetContext("iconChoices")
+	local data = rematch.teamTabIcons:GetIcons(iconSearch) -- dialog:GetContext("iconChoices")
 	if not data then return end
 	local numData = ceil(#data/10)
 	local scrollFrame = iconPicker.ScrollFrame
@@ -617,5 +625,17 @@ function panel:ScrollToTeamTab(key)
 	key = key or settings.loadedTeam -- if no key given, scroll to loaded team's tab
 	if key and saved[key] then
 		panel:ScrollToTab(saved[key].tab or 1)
+	end
+end
+
+
+function panel:IconPickerSearchBoxOnTextChanged(userInput)
+	local newSearchMask = self:GetText():trim()
+	if newSearchMask=="" then
+		newSearchMask = nil
+	end
+	if iconSearch~=newSearchMask then
+		iconSearch = newSearchMask
+		panel:UpdateTabIconPickerList()	
 	end
 end

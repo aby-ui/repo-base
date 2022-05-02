@@ -21,8 +21,9 @@
 			[279739] = "drinking",
 			--Was I drunk when I did this??
 			[345231] = "battlemaster",
-			[363121] = "echo",
-			[363117] = "resolve",
+			--[363121] = "echo",
+			--[363117] = "resolve",
+			[362699] = "resolve",
 
 			-- Crowd Controls
 			--Polymorph (Mage)
@@ -140,6 +141,9 @@
 			[323546] = "ravenousfrenzy", -- Venthyr
 			[22842] = "FrenziedRegen",
 			[132158] = "naturesSwiftness",
+
+			-- Evoker (Aura Applied)
+			-- placeholder
 
 			-- Hunter (Aura Applied)
 			[19263] = "deterrence",
@@ -308,6 +312,32 @@
 			--[206891] = "tankTauntsON", -- Tank Taunts On
 		},
 		auraRemoved = {					-- aura removed [spellid] = ".ogg file name",
+			-- Death Knight (Aura Removed)
+
+			-- Demon Hunter (Aura Removed)
+
+			-- Druid (Aura Removed)
+
+			-- Evoker (Aura Removed)
+			-- placeholder
+
+			-- Hunter (Aura Removed)
+			
+			-- Mage (Aura Removed)
+
+			-- Monk (Aura Removed)
+
+			-- Paladin (Aura Removed)
+
+			-- Priest (Aura Removed)
+
+			-- Rogue (Aura Removed)
+
+			-- Shaman (Aura Removed)
+
+			-- Warlock (Aura Removed)
+
+			-- Warrior (Aura Removed)
 			[642] = "bubbleDown",				--Divine Shield
 			[47585] = "dispersionDown",			--Dispersion
 			[1022] = "protectionDown",			--Blessing of Protection
@@ -422,8 +452,9 @@
 			[10060] = "infusionDown", -- Power Infusion
 			[335903] = "doomwindsDown",
 			[199027] = "veilOfMidnightDown",
-			[363121] = "echoDown",
-			[363117] = "resolveDown",
+			--[363121] = "echoDown",
+			--[363117] = "resolveDown",
+			[362699] = "resolveDown",
 
 			-- COVENANTS
 			[310143] = "soulshapeDown", -- Nightfae Signature
@@ -486,6 +517,9 @@
 			[274283] = "fullMoon",
 			[2637] = "hibernate", -- Hibernate
 			[329042] = "emeraldSlumber",
+
+			-- Evoker (Spell Casting)
+			-- placeholder
 			
 			-- Hunter (Spell Casting)
 			[982] = "revivePet",
@@ -780,6 +814,9 @@
 			[18562] = "swiftmend",
 			[354654] = "groveProtection",
 			[274837] = "FeralFrenzy",
+
+			-- Evoker (Cast Success)
+			-- placeholder
 			
 			-- Hunter (Cast Success)
 			[147362] = "counterShot",

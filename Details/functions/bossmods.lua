@@ -39,58 +39,19 @@ end
 function Details:BossModsLink()
     if (_G.DBM) then
         local DBM = _G.DBM
-
-        local DBMCallbackPhase = function(event, msg, ...)
+        local DBMCallbackPhase2 = function(event, mod, modId, phase, encounterId, stageTotal)
             local encounterTable = Details.encounter_table
 
-            --get the mod from DBM cached within the encounter_table
-            --note: encounter_table is wipped at ENCOUNTER_END
-            --note 2: at the moment, the saved table 'DBM_Mod' isn't in use on Details!, need a cleanup in the future
-            local mod = encounterTable.DBM_Mod
-            if (not mod) then
-                local id = Details:GetEncounterIdFromBossIndex(encounterTable.mapid, encounterTable.id)
-                if (id) then
-                    for index, DBMMod in ipairs(DBM.Mods) do
-                        if (DBMMod.id == id) then
-                            encounterTable.DBM_Mod = DBMMod
-                            mod = DBMMod
-                        end
-                    end
+            if (phase and encounterTable.phase ~= phase) then
+                --Details:Msg("Current phase is now:", phase)
+                Details:OnCombatPhaseChanged()
+                encounterTable.phase = phase
+                local currentCombat = Details:GetCurrentCombat()
+                local time = currentCombat:GetCombatTime()
+                if (time > 5) then
+                    tinsert(currentCombat.PhaseData, {phase, time})
                 end
-            end
-
-            local newPhase = 1
-
-            event = event:lower()
-            if (event:find("announce")) then
-
-                msg = msg:lower()
-                if (msg:find("stage")) then
-
-                    msg = msg:gsub("%a", "")
-                    msg = msg:gsub("%s+", "")
-                    newPhase = tonumber(msg)
-
-                    local ID, msg2, someId, someNumber, aBool = ...
-
-                    if (msg2 == "stagechange") then
-                        --print(4,"newPhase: " .. newPhase .. "|", ID, msg2, someId, someNumber, aBool)
-                    end
-
-                    local phase = newPhase
-
-                    if (phase and encounterTable.phase ~= phase) then
-                        Details:Msg("Current phase is now:", phase)
-                        Details:OnCombatPhaseChanged()
-                        encounterTable.phase = phase
-                        local currentCombat = Details:GetCurrentCombat()
-                        local time = currentCombat:GetCombatTime()
-                        if (time > 5) then
-                            tinsert(currentCombat.PhaseData, {phase, time})
-                        end
-                        Details:SendEvent("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
-                    end
-                end
+                Details:SendEvent("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
             end
         end
 
@@ -100,8 +61,8 @@ function Details:BossModsLink()
             encounterTable.DBM_ModTime = time()
         end
 
-        DBM:RegisterCallback("DBM_Announce", DBMCallbackPhase)
         DBM:RegisterCallback("pull", DBMCallbackPull)
+        DBM:RegisterCallback("DBM_SetStage", DBMCallbackPhase2)
     end
 
     if (BigWigsLoader and not _G.DBM) then

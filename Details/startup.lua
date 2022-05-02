@@ -37,6 +37,20 @@ function Details:StartMeUp() --I'll never stop!
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> initialize
 
+		C_Timer.After(2, function()
+			--test libOpenRaid deprecated code
+			--[=[
+			local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
+			openRaidLib.playerInfoManager.GetPlayerInfo()
+			openRaidLib.RequestAllPlayersInfo()
+			openRaidLib.playerInfoManager.GetAllPlayersInfo()
+			openRaidLib.gearManager.GetAllPlayersGear()
+			openRaidLib.gearManager.GetPlayerGear()
+			openRaidLib.cooldownManager.GetAllPlayersCooldown()
+			openRaidLib.cooldownManager.GetPlayerCooldowns()
+			--]=]
+		end)
+
 	--build frames
 		--plugin container
 			self:CreatePluginWindowContainer()

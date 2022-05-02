@@ -751,16 +751,19 @@ do
 		SHAMAN = "MANA", 
 		MAGE = "MANA", 
 		WARLOCK = "MANA",
-		DRUID = "MANA"
+		DRUID = "MANA",
+		MONK = "ENERGY",
+		DEATHKNIGHT = "RUNIC_POWER",
+		DEMONHUNTER = "FURY"
 	}
 	
 	
 	for classID = 1, GetNumClasses() do --example classes[EnglishClass][SpecName].
 		local _, classTag = GetClassInfo(classID)
 		if classTag then
-			Data.Classes[classTag] = {}
+			Data.Classes[classTag] = {Ressource = ClassRessources[classTag]}-- for Classic, TBCC and some Brawls
+			
 			if IsTBCC or isClassic then 
-				Data.Classes[classTag] = {Ressource = ClassRessources[classTag]}
 				table.insert(Data.ClassList, classTag)
 			else
 				for i = 1, GetNumSpecializationsForClassID(classID) do

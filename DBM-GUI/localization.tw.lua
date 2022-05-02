@@ -105,11 +105,25 @@ L.SKT_Enabled				= "顯示目前戰鬥的最佳紀錄勝利計時器"
 L.ShowRespawn				= "顯示下一次首領重生計時器"
 L.ShowQueuePop				= "顯示接受彈出佇列的剩餘時間(尋求組隊、戰場..等)"
 --
-L.Area_AutoLogging			= "自動記錄選項"
-L.AutologBosses				= "自動使用暴雪戰鬥日誌記錄地城/團隊戰鬥"
-L.AdvancedAutologBosses		= "自動使用Transcriptor紀錄地城/團隊戰鬥"
-L.RecordOnlyBosses			= "只記錄首領的戰鬥 (排除所有小怪。請於首領開打前使用 /dbm pull 以獲取數據)"
-L.LogOnlyNonTrivial			= "只記錄重要內容 (普通或更難的當前內容團隊副本 & 傳奇+ 地下城)"
+--Auto Logging: Logging toggles/types
+L.Area_AutoLogging			= "自動記錄切換"
+L.AutologBosses				= "自動使用暴雪戰鬥日誌記錄所選內容"
+L.AdvancedAutologBosses		= "自動使用Transcriptor紀錄所選內容"
+--Auto Logging: Global filter Options
+L.Area_AutoLoggingFilters	= "自動記錄過濾"
+L.RecordOnlyBosses			= "不記錄小怪的戰鬥 (只記錄首領。請於首領開打前使用 /dbm pull 以獲取數據)"
+
+L.DoNotLogLFG				= "不記錄地城搜尋器或團隊搜尋器 (佇列的內容)"
+--Auto Logging: Recorded Content types
+L.Area_AutoLoggingContent	= "自動記錄內容"
+L.LogCurrentMythicRaids		= "當前等級傳奇團隊副本"--Retail Only
+L.LogCurrentRaids			= "當前等級團隊"
+L.LogTWRaids				= "時光漫遊 或 克羅米時光團隊副本"--Retail Only
+L.LogTrivialRaids			= "低等團隊副本 (低於角色等級)"
+L.LogCurrentMPlus			= "當前等級傳奇+地下城"--Retail Only
+L.LogCurrentMythicZero		= "當前等級傳奇0層地下城"--Retail Only
+L.LogTWDungeons				= "時光漫遊 或 克羅米時光地下城"--Retail Only
+L.LogCurrentHeroic			= "當前等級英雄地下城 (注意：如果您通過地城搜尋器佇列英雄並想要記錄，請關閉地城搜尋器過濾)"
 --
 L.Area_3rdParty				= "協力插件選項"
 L.oRA3AnnounceConsumables	= "在戰鬥開始時通告oRA3消耗品檢查"

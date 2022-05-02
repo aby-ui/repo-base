@@ -24,7 +24,7 @@ BattleGroundEnemies.Counter = {}
 
 --todo, fix the testmode when the user is in a group
 -- todo, maybe get rid of all the onhide scripts and anchor BGE frame to UIParent
-
+--todo C_PvP.GetScoreInfo() replaces GetBattleFieldScore(), doesnt seem to exist on classic tho...
 
 -- for Clique Support
 ClickCastFrames = ClickCastFrames or {}
@@ -68,6 +68,7 @@ local GetSpecializationInfoByID = GetSpecializationInfoByID
 local GetSpellInfo = GetSpellInfo
 local GetSpellTexture = GetSpellTexture
 local GetTime = GetTime
+local GetUnitName = GetUnitName 
 local InCombatLockdown = InCombatLockdown
 local isInGroup =  IsInGroup
 local IsInInstance = IsInInstance
@@ -96,7 +97,27 @@ local UnitIsGhost = UnitIsGhost
 local UnitLevel = UnitLevel
 local UnitName = UnitName
 local UnitRace = UnitRace
+local UnitRealmRelationship = UnitRealmRelationship
 
+if not GetUnitName then 
+	GetUnitName = function(unit, showServerName)
+		local name, server = UnitName(unit);
+		local relationship = UnitRealmRelationship(unit);
+		if ( server and server ~= "" ) then
+			if ( showServerName ) then
+				return name.."-"..server;
+			else
+				if (relationship == LE_REALM_RELATION_VIRTUAL) then
+					return name;
+				else
+					return name..FOREIGN_SERVER_LABEL;
+				end
+			end
+		else
+			return name;
+		end
+	end
+end
 
 --variables used in multiple functions, if a variable is only used by one function its declared above that function
 --BattleGroundEnemies.BattlegroundBuff --contains the battleground specific enemy buff to watchout for of the current active battlefield
@@ -685,19 +706,24 @@ do
 	end
 	
 	function buttonFunctions:SetSpecAndRole()
-		if IsTBCC or isClassic then
-			self.Spec.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.PlayerClass]))
-			self.Spec.Icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
-		else
+		if self.PlayerSpecName then 
+			
 			local specData = Data.Classes[self.PlayerClass][self.PlayerSpecName]
             if specData then
 			self.PlayerRoleNumber = specData.roleNumber
 			self.PlayerRoleID = specData.roleID
+			self.Role.Icon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
 			self.Role.Icon:SetTexCoord(GetTexCoordsForRoleSmallCircle(self.PlayerRoleID))
 			self.Spec.Icon:SetTexture(specData.specIcon)
 			self.PlayerSpecID = specData.specID
             end
+		else
+			--isTBCC, TBCC
+			self.Spec.Icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+			self.Spec.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[self.PlayerClass]))
 		end
+
+		self.Spec:CropImage(self.Spec:GetWidth(), self.Spec:GetHeight())
 	end
 
 	function buttonFunctions:UpdateRaidTargetIcon()
@@ -897,6 +923,7 @@ do
 			self.ObjectiveAndRespawn:PlayerDied()
 		elseif self.ObjectiveAndRespawn.ActiveRespawnTimer then --player is alive again
 			self.ObjectiveAndRespawn.Cooldown:Clear()
+			self.ObjectiveAndRespawn:Reset()
 		end
 		self.healthBar:SetMinMaxValues(0, UnitHealthMax(unitID))
 		self.healthBar:SetValue(UnitHealth(unitID))
@@ -1140,10 +1167,8 @@ do
 						_name, _, amount, debuffType , duration, expirationTime, unitCaster, canStealOrPurge, _, _spellID, canApplyAura, _, _, _, _, _, _, _ = UnitAura(activeUnitID, i, filter)
 						if isClassic then
 							if spellName == _name and unitCaster then
-								local uName, realm = UnitName(unitCaster)
-								if realm then
-									uName = uName.."-"..realm
-								end
+								local uName = GetUnitName(unitCaster, true)
+							
 								if uName == srcName then -- we found the right aura, because it could be possible that the same spellID is existing but from another source/player
 									spellID = _spellID
 									break
@@ -1151,10 +1176,8 @@ do
 							end
 						else
 							if spellID == _spellID and unitCaster then
-								local uName, realm = UnitName(unitCaster)
-								if realm then
-									uName = uName.."-"..realm
-								end
+								local uName = GetUnitName(unitCaster, true)
+							
 								if uName == srcName then -- we found the right aura, because it could be possible that the same spellID is existing but from another source/player
 									break
 								end
@@ -1348,10 +1371,7 @@ do
 							break
 						end
 						if unitCaster then
-							local srcName, realm = UnitName(unitCaster)
-							if realm then
-								srcName = srcName.."-"..realm
-							end		
+							local srcName = GetUnitName(unitCaster, true)	
 							--BattleGroundEnemies:Debug(operation, spellID)
 							
 							--if srcName == PlayerDetails.PlayerName then BattleGroundEnemies:Debug(aurasEnabled, config.Auras_Enabled, config.AurasFiltering_Enabled, config.AurasFiltering_Filterlist[spellID]) end
@@ -1680,10 +1700,8 @@ do
 	end
 	
 	function MainFrameFunctions:GetPlayerbuttonByUnitID(unitID)
-		local uName, realm = UnitName(unitID)
-		if realm then
-			uName = uName.."-"..realm
-		end
+		local uName = GetUnitName(unitID, true)
+
 		return self.Players[uName]
 	end
 
@@ -1712,6 +1730,9 @@ do
 			playerButton.Covenant:Reset()
 			playerButton.ObjectiveAndRespawn:Reset()
 			playerButton.NumericTargetindicator:SetText(0) --reset testmode
+			playerButton.Spec_AuraDisplay.Cooldown:Clear()
+			playerButton.Spec_AuraDisplay:ActiveAuraRemoved()
+
 
 			if playerButton.UnitIDs then
 				wipe(playerButton.UnitIDs.TargetedByEnemy)  
@@ -1725,6 +1746,7 @@ do
 
 			playerButton.unitID = nil
 			playerButton.unit = nil
+			playerButton.PlayerArenaUnitID = nil
 
 
 		else --no recycleable buttons remaining => create a new one
@@ -1801,15 +1823,19 @@ do
 			playerButton.Spec:SetPoint('BOTTOMLEFT' , playerButton, 'BOTTOMLEFT', 0, 0)
 			
 			playerButton.Spec:SetScript("OnSizeChanged", function(self, width, height)
-				if not (IsTBCC or isClassic) then
+				self:CropImage(width, height)
+			end)
+
+			function playerButton.Spec:CropImage(width, height)
+				if playerButton.PlayerSpecName then
 					BattleGroundEnemies.CropImage(self.Icon, width, height)
 				end
 				BattleGroundEnemies.CropImage(playerButton.Spec_AuraDisplay.Icon, width, height)
-			end)
+			end
 
 			playerButton.Spec:HookScript("OnEnter", function(self)
 				BattleGroundEnemies:ShowTooltip(self, function()
-					if IsTBCC or isClassic then return end 
+					if not playerButton.PlayerSpecName then return end 
 					GameTooltip:SetText(playerButton.PlayerSpecName)
 				end)
 			end)
@@ -1989,7 +2015,7 @@ do
 			playerButton.Role:SetPoint("TOPLEFT")
 			playerButton.Role:SetPoint("BOTTOMLEFT")
 			playerButton.Role.Icon = playerButton.Role:CreateTexture(nil, 'OVERLAY')
-			playerButton.Role.Icon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
+			
 
 			playerButton.Role.ApplySettings = function(self)
 				if not (IsTBCC or isClassic) and playerButton.bgSizeConfig.RoleIcon_Enabled then 
@@ -2154,10 +2180,10 @@ do
 		playerButton.totalAbsorbOverlay:Hide()
 		playerButton.totalAbsorb:Hide()
 		
-		if IsTBCC or isClassic then
-			color = PowerBarColor[Data.Classes[playerButton.PlayerClass].Ressource]
-		else
+		if playerButton.PlayerSpecName then
 			color = PowerBarColor[Data.Classes[playerButton.PlayerClass][playerButton.PlayerSpecName].Ressource]
+		else
+			color = PowerBarColor[Data.Classes[playerButton.PlayerClass].Ressource]
 		end
 		
 		playerButton.Power:SetStatusBarColor(color.r, color.g, color.b)
@@ -2254,10 +2280,9 @@ do
 	end
 
 	function MainFrameFunctions:CreateOrUpdatePlayer(name, race, classTag, specName, additionalData)
-		
 		local playerButton = self.Players[name]
 		if playerButton then	--already existing
-			if not (IsTBCC or isClassic) then 
+			if specName and specName ~= "" then -- isTBCC, TBCC
 				if playerButton.PlayerSpecName ~= specName then--its possible to change specName in battleground
 					playerButton.PlayerSpecName = specName
 					playerButton:SetSpecAndRole()
@@ -2274,7 +2299,7 @@ do
 				PlayerClass = string.upper(classTag), --apparently it can happen that we get a lowercase "druid" from GetBattlefieldScore() in TBCC, IsTBCC
 				PlayerName = name,
 				PlayerRace = race and LibRaces:GetRaceToken(race) or "Unknown", --delivers a locale independent token for relentless check
-				PlayerSpecName = specName,
+				PlayerSpecName = specName ~= "" and specName or false, --set to false since we use Mixin() and Mixin doesnt mixin nil values and therefore we dont overwrite values with nil
 				PlayerClassColor = RAID_CLASS_COLORS[classTag],
 				PlayerLevel = false,
 			}
@@ -2322,11 +2347,17 @@ do
 		end
 
 		local function PlayerSortingByRoleClassName(playerA, playerB)-- a and b are playerButtons
-			if playerA.PlayerRoleNumber == playerB.PlayerRoleNumber then
+			if playerA.PlayerRoleNumber and playerB.PlayerRoleNumber then
+				if playerA.PlayerRoleNumber == playerB.PlayerRoleNumber then
+					if BlizzardsSortOrder[ playerA.PlayerClass ] == BlizzardsSortOrder[ playerB.PlayerClass ] then
+						if playerA.PlayerName < playerB.PlayerName then return true end
+					elseif BlizzardsSortOrder[ playerA.PlayerClass ] < BlizzardsSortOrder[ playerB.PlayerClass ] then return true end
+				elseif playerA.PlayerRoleNumber < playerB.PlayerRoleNumber then return true end
+			else
 				if BlizzardsSortOrder[ playerA.PlayerClass ] == BlizzardsSortOrder[ playerB.PlayerClass ] then
 					if playerA.PlayerName < playerB.PlayerName then return true end
 				elseif BlizzardsSortOrder[ playerA.PlayerClass ] < BlizzardsSortOrder[ playerB.PlayerClass ] then return true end
-			elseif playerA.PlayerRoleNumber < playerB.PlayerRoleNumber then return true end
+			end
 		end
 
 		local function PlayerSortingByArenaUnitID(playerA, playerB)-- a and b are playerButtons
@@ -2507,17 +2538,12 @@ function BattleGroundEnemies.Enemies:CreateArenaEnemies()
 	end
 	self.resort = false
 	wipe(self.NewPlayerDetails)
-	for i = 1, MAX_ARENA_ENEMIES do
+	for i = 1, MAX_ARENA_ENEMIES or 5 do
 		local unitID = "arena"..i
-		local name, realm = UnitName(unitID)
+		local name = GetUnitName(unitID, true)
 
 		local _, classTag, specName
-
-		if realm then 
-			name = name.."-"..realm
-		end			
 				
-
 		local specName, classTag
 		if not (IsTBCC or isClassic) then
 			local specID, gender = GetArenaOpponentSpec(i)
@@ -2545,12 +2571,7 @@ end
 BattleGroundEnemies.Enemies.ARENA_PREP_OPPONENT_SPECIALIZATIONS = BattleGroundEnemies.Enemies.CreateArenaEnemies -- for Prepframe, not available in TBC
 
 function BattleGroundEnemies.Enemies:UNIT_NAME_UPDATE(unitID)
-	local name, realm = UnitName(unitID)
-	if name and name ~= UNKNOWN then
-		if realm then 
-			name = name.."-"..realm
-		end
-	end
+	local name = GetUnitName(unitID, true)
 	self:ChangeName(unitID, name)
 end
 
@@ -2666,10 +2687,7 @@ function BattleGroundEnemies:ARENA_OPPONENT_UPDATE(unitID, unitEvent)
 end
 
 function BattleGroundEnemies:GetPlayerbuttonByUnitID(unitID)
-	local uName, realm = UnitName(unitID)
-	if realm then
-		uName = uName.."-"..realm
-	end
+	local uName = GetUnitName(unitID, true)
 	return self.Enemies.Players[uName] or self.Allies.Players[uName]
 end
 
@@ -3204,7 +3222,7 @@ do
 				--name = name-realm, faction = 0 or 1, race = localized race e.g. "Mensch",classTag = e.g. "PALADIN", spec = localized specname e.g. "holy"
 				--locale dependent are: race, specName
 				
-				if faction and name and classTag and (IsTBCC or isClassic or (specName and specName ~= ""))  then
+				if faction and name and classTag then
 					--if name == PlayerDetails.PlayerName then EnemyFaction = EnemyFaction == 1 and 0 or 1 return end --support for the new brawl because GetBattlefieldArenaFaction() returns wrong data on that BG
 					 if name == self.PlayerDetails.PlayerName and faction == self.EnemyFaction then 
 						self.EnemyFaction = self.AllyFaction
@@ -3254,10 +3272,12 @@ do
 		}
 
 		if IsTBCC or isClassic then
-			self:CreateOrUpdatePlayer(name, raceName, classTag, nil, additionalData)
+			if name and raceName and classTag then
+				self:CreateOrUpdatePlayer(name, raceName, classTag, nil, additionalData)
+			end
 		else
 			local specName = specCache[GUID]
-			if specName then
+			if name and raceName and classTag and specName then
 				self:CreateOrUpdatePlayer(name, raceName, classTag, specName, additionalData)
 			else
 				stop = true
@@ -3357,13 +3377,12 @@ do
 			
 			for i = 1, numGroupMembers do
 				local unitID = unitIDPrefix..i
-				local name, realm = UnitName(unitID)
-				if name then
-					if realm then 
-						name = name.."-"..realm
-					end
-		
-					stop = self.Allies:AddGroupMember(name, UnitIsGroupLeader(unitID), UnitIsGroupAssistant(unitID), (select(2, UnitClass(unitID))), unitID) or stop
+				local name = GetUnitName(unitID, true)
+			
+				local classTag = select(2, UnitClass(unitID))
+
+				if name and classTag then
+					stop = self.Allies:AddGroupMember(name, UnitIsGroupLeader(unitID), UnitIsGroupAssistant(unitID), classTag, unitID) or stop
 				end
 			end
 

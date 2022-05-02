@@ -76,6 +76,8 @@ Data.defaultSettings = {
 				
 				HealthBar_Texture = 'UI-StatusBar',
 				HealthBar_Background = {0, 0, 0, 0.66},
+
+				HealthBar_HealthPrediction_Enabled = true,
 				
 				PowerBar_Enabled = false,
 				PowerBar_Height = 4,
@@ -284,6 +286,8 @@ Data.defaultSettings = {
 				
 				HealthBar_Texture = 'UI-StatusBar',
 				HealthBar_Background = {0, 0, 0, 0.66},
+
+				HealthBar_HealthPrediction_Enabled = true,
 				
 				PowerBar_Enabled = false,
 				PowerBar_Height = 4,
@@ -492,6 +496,8 @@ Data.defaultSettings = {
 				
 				HealthBar_Texture = 'UI-StatusBar',
 				HealthBar_Background = {0, 0, 0, 0.66},
+
+				HealthBar_HealthPrediction_Enabled = true,
 				
 				PowerBar_Enabled = false,
 				PowerBar_Height = 4,
@@ -709,6 +715,8 @@ Data.defaultSettings = {
 				
 				HealthBar_Texture = 'UI-StatusBar',
 				HealthBar_Background = {0, 0, 0, 0.66},
+
+				HealthBar_HealthPrediction_Enabled = true,
 				
 				PowerBar_Enabled = false,
 				PowerBar_Height = 4,
@@ -915,6 +923,8 @@ Data.defaultSettings = {
 				
 				HealthBar_Texture = 'UI-StatusBar',
 				HealthBar_Background = {0, 0, 0, 0.66},
+
+				HealthBar_HealthPrediction_Enabled = true,
 				
 				PowerBar_Enabled = false,
 				PowerBar_Height = 4,
@@ -1121,6 +1131,8 @@ Data.defaultSettings = {
 				
 				HealthBar_Texture = 'UI-StatusBar',
 				HealthBar_Background = {0, 0, 0, 0.66},
+
+				HealthBar_HealthPrediction_Enabled = true,
 				
 				PowerBar_Enabled = false,
 				PowerBar_Height = 4,

@@ -211,10 +211,11 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 	-- 3 targetted defensive cooldown
 	-- 4 raid defensive cooldown
 	-- 5 personal utility cooldown
+	-- 6 interrupt
 
 	--Shadowlands 9.0.2 revision by Juliana Maison
 
-	--MAGE
+	--> MAGE
 		--arcane
 		[62]	= {
 			[12042] = 1, --Arcane Power
@@ -223,6 +224,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[12051] = 5, --Evocation
 			[110960] = 5, --Greater Invisibility
 			[235450] = 5, --Prismatic Barrier
+			[2139] = 6, --Counterspell (interrupt)
 		},
 		--fire
 		[63] = {
@@ -231,6 +233,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[45438] = 2, --Ice Block
 			[66] = 5, --Invisibility
 			[235313] = 5, --Blazing Barrier
+			[2139] = 6, --Counterspell (interrupt)
 		},
 		--frost
 		[64] = {
@@ -242,9 +245,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[235219] = 5, --Cold Snap
 			[11426] = 5, --Ice Barrier
 			[113724] = 5, --Ring of Frost (talent)
+			[2139] = 6, --Counterspell (interrupt)
 		},
 	
-	--PRIEST
+	--> PRIEST
 		--discipline
 		[256] = {
 			[10060] = 1, --Power Infusion
@@ -276,7 +280,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[10060] = 1, --Power Infusion
 			[34433] = 1, --Shadowfiend
 			[200174] = 1, --Mindbender
-			[193223] = 1, --Surrender to Madness
+			[193223] = 1, --Surrender to Madness (talent)
 			[47585] = 2, --Dispersion
 			[15286] = 4, --Vampiric Embrace
 			[19236] = 5, --Desperate Prayer
@@ -284,9 +288,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[8122] = 5, --Psychic Scream
 			[205369] = 5, --Mind Bomb
 			[228260] = 1, --Void Erruption
+			[15487] = 6, --Silence (interrupt)
 		},
 	
-	--ROGUE
+	--> ROGUE
 		--assassination
 		[259] = {
 			[79140] = 1, --Vendetta
@@ -296,6 +301,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[2094] = 5, --Blind
 			[185311] = 5, --Crimson Vial
 			[114018] = 5, --Shroud of Concealment
+			[1766] = 6, --Kick
 		},
 		--outlaw
 		[260] = {
@@ -309,6 +315,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[185311] = 5, --Crimson Vial
 			[114018] = 5, --Shroud of Concealment
 			[343142] = 5, --Dreadblades
+			[1766] = 6, --Kick
 		},
 		--subtlety
 		[261] = {
@@ -319,49 +326,49 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[2094] = 5, --Blind
 			[185311] = 5, --Crimson Vial
 			[114018] = 5, --Shroud of Concealment
+			[1766] = 6, --Kick
 		},
 	
-	--WARLOCK
+	--> WARLOCK
 		--affliction
 		[265] = {
 			[205180] = 1, --Summon Darkglare
-			[342601] = 1, --Ritual of Doom
+			--[342601] = 1, --Ritual of Doom
 			[113860] = 1, --Dark Soul: Misery (talent)
 			[104773] = 2, --Unending Resolve
 			[108416] = 2, --Dark Pact (talent)
 			[30283] = 5, --Shadowfury
-			--[6789] = 5, --Mortal Coil (talent)
 			[333889] = 5, --Fel Domination
+			[19647] = 6, --Spell Lock (pet interrupt)
 		},
 		--demonology
 		[266] = {
 			[265187] = 1, --Summon Demonic Tyrant
-			[342601] = 1, --Ritual of Doom
+			--[342601] = 1, --Ritual of Doom
 			[267171] = 1, --Demonic Strength (talent)
 			[111898] = 1, --Grimoire: Felguard (talent)
 			[267217] = 1, --Nether Portal (talent)
-			
 			[104773] = 2, --Unending Resolve
 			[108416] = 2, --Dark Pact (talent)
-			
 			[30283] = 5, --Shadowfury
-			--[6789] = 5, --Mortal Coil (talent)
 			[5484] = 5, --Howl of Terror (talent)
 			[333889] = 5, --Fel Domination
+			[19647] = 6, --Spell Lock (pet interrupt)
+			[89766] = 6, --Axe Toss (pet interrupt)
 		},
 		--destruction
 		[267] = {
 			[1122] = 1, --Summon Infernal
-			[342601] = 1, --Ritual of Doom
+			--[342601] = 1, --Ritual of Doom
 			[113858] = 1, --Dark Soul: Instability (talent)
 			[104773] = 2, --Unending Resolve
 			[108416] = 2, --Dark Pact (talent)
-			--[6789] = 5, --Mortal Coil (talent)
 			[30283] = 5, --Shadowfury
 			[333889] = 5, --Fel Domination
+			[19647] = 6, --Spell Lock (pet interrupt)
 		},
 	
-	--WARRIOR
+	--> WARRIOR
 		--Arms
 		[71] = {
 			[107574] = 1, --Avatar (talent)
@@ -370,8 +377,8 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[118038] = 2, --Die by the Sword
 			[97462] = 4, --Rallying Cry
 			[64382] = 5, --Shattering Throw
-			--[18499] = 5, --Berserker Rage
 			[5246] = 5, --Intimidating Shout
+			[6552] = 6, --Pummel
 		},
 		--Fury
 		[72] = {
@@ -380,8 +387,8 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[184364] = 2, --Enraged Regeneration
 			[97462] = 4, --Rallying Cry
 			[64382] = 5, --Shattering Throw
-			--[18499] = 5, --Berserker Rage
 			[5246] = 5, --Intimidating Shout
+			[6552] = 6, --Pummel
 		},
 		--Protection
 		[73] = {
@@ -391,11 +398,11 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[871] = 2, --Shield Wall
 			[97462] = 4, --Rallying Cry
 			[64382] = 5, --Shattering Throw
-			--[18499] = 5, --Berserker Rage
 			[5246] = 5, --Intimidating Shout
+			[6552] = 6, --Pummel
 		},
 	
-	--PALADIN
+	--> PALADIN
 		--holy
 		[65] = {
 			[31884] = 1, --Avenging Wrath
@@ -427,6 +434,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[1044] = 5, --Blessing of Freedom
 			[853] = 5, --Hammer of Justice
 			[115750] = 5, --Blinding Light (talent)
+			[96231] = 6, --Rebuke (interrupt)
 		},
 		
 		--retribution
@@ -442,18 +450,20 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[1044] = 5, --Blessing of Freedom
 			[853] = 5, --Hammer of Justice
 			[115750] = 5, --Blinding Light (talent)
+			[96231] = 6, --Rebuke (interrupt)
 		},
 	
-	--DEMON HUNTER
+	--> DEMON HUNTER
 		--havoc
 		[577] = {
-			[200166] = 1, --Metamorphosis
+			[191427] = 1, --Metamorphosis
 			[198589] = 2, --Blur
 			[196555] = 2, --Netherwalk (talent)
 			[196718] = 4, --Darkness
 			[188501] = 5, --Spectral Sight
 			[179057] = 5, --Chaos Nova
 			[211881] = 5, --Fel Eruption (talent)
+			[183752] = 6, --Disrupt (interrupt)
 		},
 		--vengeance
 		[581] = {
@@ -465,9 +475,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[202137] = 5, --Sigil of Silence
 			[202138] = 5, --Sigil of Chains (talent)
 			[188501] = 5, --Spectral Sight
+			[183752] = 6, --Disrupt (interrupt)
 		},
 		
-	--DEATH KNIGHT
+	--> DEATH KNIGHT
 		--unholy
 		[252] = {
 			[275699] = 1, --Apocalypse
@@ -481,7 +492,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[108194] = 5, --Asphyxiate (talent)
 			[287081] = 5, --Lichborne
 			[212552] = 5, --Wraith walk (talent)
-			
+			[47528] = 6, --Mind Freeze (interrupt)
 		},
 		--frost
 		[251] = {
@@ -496,6 +507,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[108194] = 5, --Asphyxiate (talent)
 			[287081] = 5, --Lichborne
 			[212552] = 5, --Wraith walk (talent)
+			[47528] = 6, --Mind Freeze (interrupt)
 		},
 		--blood
 		[250] = {
@@ -509,9 +521,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[108199] = 5, --Gorefiend's Grasp
 			[221562] = 5, --Asphyxiate
 			[212552] = 5, --Wraith walk (talent)
+			[47528] = 6, --Mind Freeze (interrupt)
 		},
 
-	--DRUID
+	--> DRUID
 		--Balance
 		[102] = {
 			[194223] = 1, --Celestial Alignment
@@ -520,10 +533,9 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[108238] = 2, --Renewal (talent)
 			[29166] = 3, --Innervate
 			[77761] = 4, --Stampeding Roar
-			--[99] = 5, --Incapacitating Roar
 			[319454] = 5, --Heart of the Wild (talent)
 			[132469] = 5, --Typhoon
-			[78675] = 5, --Solar Beam
+			[78675] = 6, --Solar Beam (interrupt)
 		},
 		--Feral
 		[103] = {
@@ -532,9 +544,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[22812] = 2, --Barkskin
 			[61336] = 2, --Survival Instincts
 			[108238] = 2, --Renewal (talent)
-			[77764] = 4, --Stampeding Roar
+			[77761] = 4, --Stampeding Roar
 			[132469] = 5, --Typhoon
 			[319454] = 5, --Heart of the Wild (talent)
+			[106839] = 6, --Skull Bash (interrupt)
 		},
 		--Guardian
 		[104] = {
@@ -546,8 +559,8 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[108238] = 2, --Renewal (talent)
 			[77761] = 4, --Stampeding Roar
 			[132469] = 5, --Typhoon
-			--[99] = 5, --Incapacitating Roar
 			[319454] = 5, --Heart of the Wild (talent)
+			[106839] = 6, --Skull Bash (interrupt)
 		},
 		--Restoration
 		[105] = {
@@ -564,8 +577,8 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[319454] = 5, --Heart of the Wild (talent)
 			[102793] = 5, --Ursol's Vortex
 		},
-	
-	--HUNTER
+
+	--> HUNTER
 		--beast mastery
 		[253] = {
 			[193530] = 1, --Aspect of the Wild
@@ -578,16 +591,18 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[19577] = 5, --Intimidation
 			[109248] = 5, --Binding Shot (talent)
 			[187650] = 5, --Freezing Trap
+			[147362] = 6, --Counter Shot (interrupt)
 		},
 		--marksmanship
 		[254] = {
-			[193526] = 1, --Trueshot
+			[288613] = 1, --Trueshot
 			[186265] = 2, --Aspect of the Turtle
 			[199483] = 2, --Camouflage (talent)
 			[109304] = 2, --Exhilaration
 			[281195] = 2, --Survival of the Fittest
 			[186257] = 5, --Aspect of the cheetah
 			[187650] = 5, --Freezing Trap
+			[147362] = 6, --Counter Shot (interrupt)
 		},
 		--survival
 		[255] = {
@@ -598,9 +613,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[186289] = 5, --Aspect of the eagle
 			[19577] = 5, --Intimidation
 			[187650] = 5, --Freezing Trap
+			[187707] = 6, --Muzzle (interrupt)
 		},
 
-	--MONK
+	--> MONK
 		--brewmaster
 		[268] = {
 			[132578] = 1, --Invoke Niuzao, the Black Ox
@@ -611,6 +627,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[122278] = 2, --Dampen Harm (talent)
 			[116844] = 5, --Ring of peace (talent)
 			[119381] = 5, --Leg Sweep
+			[116705] = 6, --Spear Hand Strike (interrupt)
 		},
 		--windwalker
 		[269] = {
@@ -624,6 +641,7 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[122783] = 2, --Diffuse Magic (talent)
 			[116844] = 5, --Ring of peace (talent)
 			[119381] = 5, --Leg Sweep
+			[116705] = 6, --Spear Hand Strike (interrupt)
 		},
 		--mistweaver
 		[270] = {
@@ -633,14 +651,13 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[122783] = 2, --Diffuse Magic (talent)
 			[116849] = 3, --Life Cocoon
 			[322118] = 4, --Invoke Yulon, the Jade serpent
---			[198664] = 4, --Invoke Chi-Ji, the Red Crane (talent)
 			[115310] = 4, --Revival
 			[116844] = 5, --Ring of peace (talent)
 			[197908] = 5, --Mana tea (talent)
 			[119381] = 5, --Leg Sweep
 		},
 	
-	--SHAMAN
+	--> SHAMAN
 		--elemental
 		[262] = {
 			[198067] = 1, --Fire Elemental
@@ -650,9 +667,10 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[108281] = 4, --Ancestral Guidance (talent)
 			[198103] = 2, --Earth Elemental
 			--[79206] = 5, --Spiritwalkers grace
-			[65992] = 5, --Tremor Totem
+			[8143] = 5, --Tremor Totem
 			[192058] = 5, --Capacitor Totem
 			[192077] = 5, --Wind Rush Totem (talent)
+			[57994] = 6, --Wind Shear (interrupt)
 		},
 		--enhancement
 		[263] = {
@@ -660,20 +678,21 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 			[114051] = 1, --Ascendance (talent)
 			[108271] = 2, --Astral Shift
 			[198103] = 2, --Earth Elemental
-			[65992] = 5, --Tremor Totem
+			[8143] = 5, --Tremor Totem
 			[192058] = 5, --Capacitor Totem
-
+			[57994] = 6, --Wind Shear (interrupt)
 		},
 		--restoration
 		[264] = {
 			[108271] = 2, --Astral Shift
-			[114052] = 2, --Ascendance (talent)
+			[114052] = 4, --Ascendance (talent)
 			[98008] = 4, --Spirit Link Totem
 			[108280] = 4, --Healing Tide Totem
 			[16191] = 4, --Mana Tide Totem
 			[207399] = 4, --Ancestral Protection Totem (talent)
 			[198103] = 2, --Earth Elemental
-			[65992] = 5, --Tremor Totem
+			[8143] = 5, --Tremor Totem
+			[57994] = 6, --Wind Shear (interrupt)
 		},
 }
 
@@ -683,7 +702,24 @@ LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {
 --/dump GetTalentInfo (talentTier, talentColumn, 1)
 --example: to get the second talent of the last talent line, use: /dump GetTalentInfo (7, 2, 1)
 LIB_OPEN_RAID_COOLDOWNS_INFO = {
-	--> paladin
+	--interrupts
+	[6552] = {class = "WARRIOR", specs = {71, 72, 73}, cooldown = 15, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Pummel
+	[2139] = {class = "MAGE", specs = {62, 63, 64}, cooldown = 24, silence = 6, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Counterspell
+	[15487] = {class = "PRIEST", specs = {258}, cooldown = 45, silence = 4, talent = false, cooldownWithTalent = 30, cooldownTalentId = 23137, type = 6, charges = 1}, --Silence (shadow) Last Word Talent to reduce cooldown in 15 seconds
+	[1766] = {class = "ROGUE", specs = {259, 260, 261}, cooldown = 15, silence = 5, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Kick
+	[96231] = {class = "PALADIN", specs = {66, 70}, cooldown = 15, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Rebuke (protection and retribution)
+	[116705] = {class = "MONK", specs = {268, 269}, cooldown = 15, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Spear Hand Strike (brewmaster and windwalker)
+	[57994] = {class = "SHAMAN", specs = {262, 263, 264}, cooldown = 12, silence = 3, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Wind Shear
+	[47528] = {class = "DEATHKNIGHT", specs = {250, 251, 252}, cooldown = 15, silence = 3, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Mind Freeze
+	[106839] = {class = "DRUID", specs = {103, 104}, cooldown = 15, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Skull Bash (feral, guardian)
+	[78675] = {class = "DRUID", specs = {102}, cooldown = 60, silence = 8, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Solar Beam (balance)
+	[147362] = {class = "HUNTER", specs = {253, 254}, cooldown = 24, silence = 3, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Counter Shot (beast mastery, marksmanship)
+	[187707] = {class = "HUNTER", specs = {255}, cooldown = 15, silence = 3, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Muzzle (survival)
+	[183752] = {class = "DEMONHUNTER", specs = {577, 581}, cooldown = 15, silence = 3, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Disrupt
+	[19647] = {class = "WARLOCK", specs = {265, 266, 267}, cooldown = 24, silence = 6, talent = false, cooldownWithTalent = false, cooldownTalentId = false, pet = 417, type = 6, charges = 1}, --Spell Lock (pet felhunter ability)
+	[89766] = {class = "WARLOCK", specs = {266}, cooldown = 30, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, pet = 17252, type = 6, charges = 1}, --Axe Toss (pet felguard ability)
+
+	--paladin
 	[31884] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "PALADIN", type = 1}, --Avenging Wrath
 	[216331] = {cooldown = 120, duration = 20, talent = 22190, charges = 1, class = "PALADIN", type = 1}, --Avenging Crusader (talent)
 	[498] = {cooldown = 60, duration = 8, talent = false, charges = 1, class = "PALADIN", type = 2}, --Divine Protection
@@ -705,7 +741,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[205191] = {cooldown = 60, duration = 10, talent = 22183, charges = 1, class = "PALADIN", type = 2}, --Eye for an Eye (talent)
 	[184662] = {cooldown = 120, duration = 15, talent = false, charges = 1, class = "PALADIN", type = 2}, --Shield of Vengeance
 	
-	--> warrior
+	--warrior
 	[107574] = {cooldown = 90, duration = 20, talent = 22397, charges = 1, class = "WARRIOR", type = 1}, --Avatar
 	[227847] = {cooldown = 90, duration = 5, talent = false, charges = 1, class = "WARRIOR", type = 1}, --Bladestorm
 	[152277] = {cooldown = 60, duration = 6, talent = 21667, charges = 1, class = "WARRIOR", type = 1}, --Ravager (talent)
@@ -720,10 +756,9 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[64382]  = {cooldown = 180, duration = false, talent = false, charges = 1, class = "WARRIOR", type = 5}, --Shattering Throw
 	[5246]  = {cooldown = 90, duration = 8, talent = false, charges = 1, class = "WARRIOR", type = 5}, --Intimidating Shout
 
-	
-	--> warlock
+	--warlock
 	[205180] = {cooldown = 180, duration = 20, talent = false, charges = 1, class = "WARLOCK", type = 1}, --Summon Darkglare
-	[342601] = {cooldown = 3600, duration = false, talent = false, charges = 1, class = "WARLOCK", type = 1}, --Ritual of Doom
+	--[342601] = {cooldown = 3600, duration = false, talent = false, charges = 1, class = "WARLOCK", type = 1}, --Ritual of Doom
 	[113860] = {cooldown = 120, duration = 20, talent = 19293, charges = 1, class = "WARLOCK", type = 1}, --Dark Soul: Misery (talent)
 	[104773] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "WARLOCK", type = 2}, --Unending Resolve
 	[108416] = {cooldown = 60, duration = 20, talent = 19286, charges = 1, class = "WARLOCK", type = 2}, --Dark Pact (talent)
@@ -735,10 +770,9 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[113858] = {cooldown = 120, duration = 20, talent = 23092, charges = 1, class = "WARLOCK", type = 1}, --Dark Soul: Instability (talent)
 	[30283] = {cooldown = 60, duration = 3, talent = false, charges = 1, class = "WARLOCK", type = 5}, --Shadowfury
 	[333889] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "WARLOCK", type = 5}, --Fel Domination
-	--[6789] = {cooldown = 45, duration = 3, talent = 19291, charges = 1, class = "WARLOCK", type = 5}, --Mortal Coil (talent)
 	[5484] = {cooldown = 40, duration = 20, talent = 23465, charges = 1, class = "WARLOCK", type = 5}, --Howl of Terror (talent)
 
-	--> shaman
+	--shaman
 	[198067] = {cooldown = 150, duration = 30, talent = false, charges = 1, class = "SHAMAN", type = 1}, --Fire Elemental
 	[192249] = {cooldown = 150, duration = 30, talent = 19272, charges = 1, class = "SHAMAN", type = 1}, --Storm Elemental (talent)
 	[108271] = {cooldown = 90, duration = 8, talent = false, charges = 1, class = "SHAMAN", type = 2}, --Astral Shift
@@ -746,17 +780,17 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[51533] = {cooldown = 120, duration = 15, talent = false, charges = 1, class = "SHAMAN", type = 1}, --Feral Spirit
 	[114050] = {cooldown = 180, duration = 15, talent = 21675, charges = 1, class = "SHAMAN", type = 1}, --Ascendance (talent)
 	[114051] = {cooldown = 180, duration = 15, talent = 21972, charges = 1, class = "SHAMAN", type = 1}, --Ascendance (talent)
-	[114052] = {cooldown = 180, duration = 15, talent = 22359, charges = 1, class = "SHAMAN", type = 2}, --Ascendance (talent)
+	[114052] = {cooldown = 180, duration = 15, talent = 22359, charges = 1, class = "SHAMAN", type = 4}, --Ascendance (talent)
 	[98008] = {cooldown = 180, duration = 6, talent = false, charges = 1, class = "SHAMAN", type = 4}, --Spirit Link Totem
 	[108280] = {cooldown = 180, duration = 10, talent = false, charges = 1, class = "SHAMAN", type = 4}, --Healing Tide Totem
 	[207399] = {cooldown = 240, duration = 30, talent = 22323, charges = 1, class = "SHAMAN", type = 4}, --Ancestral Protection Totem (talent)
 	[16191] = {cooldown = 180, duration = 8, talent = false, charges = 1, class = "SHAMAN", type = 4}, --Mana Tide Totem
 	[198103] = {cooldown = 300, duration = 60, talent = false, charges = 1, class = "SHAMAN", type = 2}, --Earth Elemental
 	[192058] = {cooldown = 60, duration = false, talent = false, charges = 1, class = "SHAMAN", type = 5}, --Capacitor Totem
-	[65992] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "SHAMAN", type = 5}, --Tremor Totem
+	[8143] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "SHAMAN", type = 5}, --Tremor Totem
 	[192077] = {cooldown = 120, duration = 15, talent = 21966, charges = 1, class = "SHAMAN", type = 5}, --Wind Rush Totem (talent)
 	
-	--> monk
+	--monk
 	[132578] = {cooldown = 180, duration = 25, talent = false, charges = 1, class = "MONK", type = 1}, --Invoke Niuzao, the Black Ox
 	[115080] = {cooldown = 180, duration = false, talent = false, charges = 1, class = "MONK", type = 1}, --Touch of Death
 	[115203] = {cooldown = 420, duration = 15, talent = false, charges = 1, class = "MONK", type = 2}, --Fortifying Brew
@@ -768,7 +802,6 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[152173] = {cooldown = 90, duration = 12, talent = 21191, charges = 1, class = "MONK", type = 1}, --Serenity (talent)
 	[122470] = {cooldown = 90, duration = 6, talent = false, charges = 1, class = "MONK", type = 2}, --Touch of Karma
 	[322118] = {cooldown = 180, duration = 25, talent = false, charges = 1, class = "MONK", type = 4}, --Invoke Yulon, the Jade serpent
---	[198664] = {cooldown = 180, duration = 25, talent = 22214, charges = 1, class = "MONK", type = 4}, --Invoke Chi-Ji, the Red Crane (talent)
 	[243435] = {cooldown = 90, duration = 15, talent = false, charges = 1, class = "MONK", type = 2}, --Fortifying Brew
 	[122783] = {cooldown = 90, duration = 6, talent = 20173, charges = 1, class = "MONK", type = 2}, --Diffuse Magic (talent)
 	[116849] = {cooldown = 120, duration = 12, talent = false, charges = 1, class = "MONK", type = 3}, --Life Cocoon
@@ -777,11 +810,11 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[116844] = {cooldown = 45, duration = 5, talent = 19995, charges = 1, class = "MONK", type = 5}, --Ring of peace (talent)
 	[119381] = {cooldown = 50, duration = 3, talent = false, charges = 1, class = "MONK", type = 5}, --Leg Sweep
 	
-	--> hunter
+	--hunter
 	[193530] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "HUNTER", type = 1}, --Aspect of the Wild
 	[19574] = {cooldown = 90, duration = 12, talent = false, charges = 1, class = "HUNTER", type = 1}, --Bestial Wrath
 	[201430] = {cooldown = 180, duration = 12, talent = 23044, charges = 1, class = "HUNTER", type = 1}, --Stampede (talent)
-	[193526] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "HUNTER", type = 1}, --Trueshot
+	[288613] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "HUNTER", type = 1}, --Trueshot
 	[199483] = {cooldown = 60, duration = 60, talent = 23100, charges = 1, class = "HUNTER", type = 2}, --Camouflage (talent)
 	[281195] = {cooldown = 180, duration = 6,  talent = false, charges = 1, class = "HUNTER", type = 2}, --Survival of the Fittest
 	[266779] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "HUNTER", type = 1}, --Coordinated Assault
@@ -793,18 +826,16 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[187650] = {cooldown = 25, duration = 60, talent = false, charges = 1, class = "HUNTER", type = 5}, --Freezing Trap
 	[186289] = {cooldown = 72, duration = 15, talent = false, charges = 1, class = "HUNTER", type = 5}, --Aspect of the eagle
 
-	--> druid
+	--druid
 	[77761] = {cooldown = 120, duration = 8, talent = false, charges = 1, class = "DRUID", type = 4}, --Stampeding Roar
 	[194223] = {cooldown = 180, duration = 20, talent = false, charges = 1, class = "DRUID", type = 1}, --Celestial Alignment
 	[102560] = {cooldown = 180, duration = 30, talent = 21702, charges = 1, class = "DRUID", type = 1}, --Incarnation: Chosen of Elune (talent)
 	[22812] = {cooldown = 60, duration = 12, talent = false, charges = 1, class = "DRUID", type = 2}, --Barkskin
 	[108238] = {cooldown = 90, duration = false, talent = 18570, charges = 1, class = "DRUID", type = 2}, --Renewal (talent)
 	[29166] = {cooldown = 180, duration = 12, talent = false, charges = 1, class = "DRUID", type = 3}, --Innervate
-	[78675] = {cooldown = 60, duration = 8, talent = false, charges = 1, class = "DRUID", type = 5}, --Solar Beam
 	[106951] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "DRUID", type = 1}, --Berserk
 	[102543] = {cooldown = 30, duration = 180, talent = 21704, charges = 1, class = "DRUID", type = 1}, --Incarnation: King of the Jungle (talent)
 	[61336] = {cooldown = 120, duration = 6, talent = false, charges = 2, class = "DRUID", type = 2}, --Survival Instincts (2min feral 4min guardian, same spellid)
-	[77764] = {cooldown = 120, duration = 8, talent = false, charges = 1, class = "DRUID", type = 4}, --Stampeding Roar (utility)
 	[102558] = {cooldown = 180, duration = 30, talent = 22388, charges = 1, class = "DRUID", type = 2}, --Incarnation: Guardian of Ursoc (talent)
 	[33891] = {cooldown = 180, duration = 30, talent = 22421, charges = 1, class = "DRUID", type = 2}, --Incarnation: Tree of Life (talent)
 	[102342] = {cooldown = 60, duration = 12, talent = false, charges = 1, class = "DRUID", type = 3}, --Ironbark
@@ -815,7 +846,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[319454] = {cooldown = 300, duration = 45, talent = 18577, charges = 1, class = "DRUID", type = 5}, --Heart of the Wild (talent)
 	[102793] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "DRUID", type = 5}, --Ursol's Vortex
 
-	--> death knight
+	--death knight
 	[275699] = {cooldown = 90, duration = 15, talent = false, charges = 1, class = "DEATHKNIGHT", type = 1}, --Apocalypse
 	[42650] = {cooldown = 480, duration = 30, talent = false, charges = 1, class = "DEATHKNIGHT", type = 1}, --Army of the Dead
 	[49206] = {cooldown = 180, duration = 30, talent = 22110, charges = 1, class = "DEATHKNIGHT", type = 1}, --Summon Gargoyle (talent)
@@ -836,8 +867,8 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[221562]  = {cooldown = 45, duration = 5, talent = false, charges = 1, class = "DEATHKNIGHT", type = 5}, --Asphyxiate
 	[212552]  = {cooldown = 60, duration = 4, talent = 19228, charges = 1, class = "DEATHKNIGHT", type = 5}, --Wraith walk (talent)
 
-	--> demon hunter
-	[200166] = {cooldown = 240, duration = 30, talent = false, charges = 1, class = "DEMONHUNTER", type = 1}, --Metamorphosis
+	--demon hunter
+	[191427] = {cooldown = 240, duration = 30, talent = false, charges = 1, class = "DEMONHUNTER", type = 1}, --Metamorphosis
 	[198589] = {cooldown = 60, duration = 10, talent = false, charges = 1, class = "DEMONHUNTER", type = 2}, --Blur
 	[196555] = {cooldown = 120, duration = 5, talent = 21865, charges = 1, class = "DEMONHUNTER", type = 2}, --Netherwalk (talent)
 	[187827] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "DEMONHUNTER", type = 2}, --Metamorphosis
@@ -852,7 +883,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[202137] = {cooldown = 60, duration = 8, talent = false, charges = 1, class = "DEMONHUNTER", type = 5}, --Sigil of Silence
 	[202138] = {cooldown = 90, duration = 6, talent = 22511, charges = 1, class = "DEMONHUNTER", type = 5}, --Sigil of Chains (talent)
 	
-	--> mage
+	--mage
 	[12042] = {cooldown = 90, duration = 10, talent = false, charges = 1, class = "MAGE", type = 1},  --Arcane Power
 	[12051] = {cooldown = 90, duration = 6, talent = false, charges = 1, class = "MAGE", type = 1},  --Evocation
 	[110960] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "MAGE", type = 2},  --Greater Invisibility
@@ -868,7 +899,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[235219] = {cooldown = 300, duration = false, talent = false, charges = 1, class = "MAGE", type = 5},  --Cold Snap
 	[113724] = {cooldown = 45, duration = 10, talent = 22471, charges = 1, class = "MAGE", type = 5},  --Ring of Frost (talent)
 
-	--> priest
+	--priest
 	[10060] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "PRIEST", type = 1},  --Power Infusion
 	[34433] = {cooldown = 180, duration = 15, talent = false, charges = 1, class = "PRIEST", type = 1},  --Shadowfiend
 	[123040] = {cooldown = 60, duration = 12, talent = 22094, charges = 1, class = "PRIEST", type = 1},  --Mindbender (talent)
@@ -892,7 +923,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[205369] = {cooldown = 30, duration = 6, talent = 23375, charges = 1, class = "PRIEST", type = 5}, --Mind Bomb
 	[228260] = {cooldown = 90, duration = 15, talent = false, charges = 1, class = "PRIEST", type = 1}, --Void Erruption
 
-	--> rogue
+	--rogue
 	[79140] = {cooldown = 120, duration = 20, talent = false, charges = 1, class = "ROGUE", type = 1},  --Vendetta
 	[1856] = {cooldown = 120, duration = 3, talent = false, charges = 1, class = "ROGUE", type = 2},  --Vanish
 	[5277] = {cooldown = 120, duration = 10, talent = false, charges = 1, class = "ROGUE", type = 2},  --Evasion
@@ -934,13 +965,13 @@ elseif (GetBuildInfo():match ("%d") == "2") then
 
 else
 	LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {
-		[44461] = {name = GetSpellInfo(44461) .. " (" .. L["STRING_EXPLOSION"] .. ")"}, --> Living Bomb (explosion)
-		[59638] = {name = GetSpellInfo(59638) .. " (" .. L["STRING_MIRROR_IMAGE"] .. ")"}, --> Mirror Image's Frost Bolt (mage)
-		[88082] = {name = GetSpellInfo(88082) .. " (" .. L["STRING_MIRROR_IMAGE"] .. ")"}, --> Mirror Image's Fireball (mage)
-		[94472] = {name = GetSpellInfo(94472) .. " (" .. L["STRING_CRITICAL_ONLY"] .. ")"}, --> Atonement critical hit (priest)
+		[44461] = {name = GetSpellInfo(44461) .. " (" .. L["STRING_EXPLOSION"] .. ")"}, --Living Bomb (explosion)
+		[59638] = {name = GetSpellInfo(59638) .. " (" .. L["STRING_MIRROR_IMAGE"] .. ")"}, --Mirror Image's Frost Bolt (mage)
+		[88082] = {name = GetSpellInfo(88082) .. " (" .. L["STRING_MIRROR_IMAGE"] .. ")"}, --Mirror Image's Fireball (mage)
+		[94472] = {name = GetSpellInfo(94472) .. " (" .. L["STRING_CRITICAL_ONLY"] .. ")"}, --Atonement critical hit (priest)
 		[33778] = {name = GetSpellInfo(33778) .. " (" .. L["STRING_BLOOM"] .. ")"}, --lifebloom (bloom)
-		[121414] = {name = GetSpellInfo(121414) .. " (" .. L["STRING_GLAIVE"] .. " #1)"}, --> glaive toss (hunter)
-		[120761] = {name = GetSpellInfo(120761) .. " (" .. L["STRING_GLAIVE"] .. " #2)"}, --> glaive toss (hunter)
+		[121414] = {name = GetSpellInfo(121414) .. " (" .. L["STRING_GLAIVE"] .. " #1)"}, --glaive toss (hunter)
+		[120761] = {name = GetSpellInfo(120761) .. " (" .. L["STRING_GLAIVE"] .. " #2)"}, --glaive toss (hunter)
 		[212739] = {name = GetSpellInfo(212739) .. " (" .. L["STRING_MAINTARGET"] .. ")"}, --DK Epidemic
 		[215969] = {name = GetSpellInfo(215969) .. " (" .. L["STRING_AOE"] .. ")"}, --DK Epidemic
 		[70890] = {name = GetSpellInfo(70890) .. " (" .. L["STRING_SHADOW"] .. ")"}, --DK Scourge Strike
@@ -951,7 +982,70 @@ else
 		[339538] = {name = GetSpellInfo(224266) .. " (" .. L["STRING_TEMPLAR_VINDCATION"] .. ")"}, --
 		[343355] = {name = GetSpellInfo(343355)  .. " (" .. L["STRING_PROC"] .. ")"}, --shadow priest's void bold proc
 
-		--> shadowlands trinkets
+		--shadowlands trinkets
 		[345020] = {name = GetSpellInfo(345020) .. " ("  .. L["STRING_TRINKET"] .. ")"},
 	}
 end
+
+--interrupt list using proxy from cooldown list
+LIB_OPEN_RAID_SPELL_INTERRUPT = {
+	[6552] = LIB_OPEN_RAID_COOLDOWNS_INFO[6552], --Pummel
+
+	[2139] = LIB_OPEN_RAID_COOLDOWNS_INFO[2139], --Counterspell
+
+	[15487] = LIB_OPEN_RAID_COOLDOWNS_INFO[15487], --Silence (shadow) Last Word Talent to reduce cooldown in 15 seconds
+
+	[1766] = LIB_OPEN_RAID_COOLDOWNS_INFO[1766], --Kick
+
+	[96231] = LIB_OPEN_RAID_COOLDOWNS_INFO[96231], --Rebuke (protection and retribution)
+
+	[116705] = LIB_OPEN_RAID_COOLDOWNS_INFO[116705], --Spear Hand Strike (brewmaster and windwalker)
+
+	[57994] = LIB_OPEN_RAID_COOLDOWNS_INFO[57994], --Wind Shear
+
+	[47528] = LIB_OPEN_RAID_COOLDOWNS_INFO[47528], --Mind Freeze
+
+	[106839] = LIB_OPEN_RAID_COOLDOWNS_INFO[106839], --Skull Bash (feral, guardian)
+	[78675] = LIB_OPEN_RAID_COOLDOWNS_INFO[78675], --Solar Beam (balance)
+
+	[147362] = LIB_OPEN_RAID_COOLDOWNS_INFO[147362], --Counter Shot (beast mastery, marksmanship)
+	[187707] = LIB_OPEN_RAID_COOLDOWNS_INFO[187707], --Muzzle (survival)
+
+	[183752] = LIB_OPEN_RAID_COOLDOWNS_INFO[183752], --Disrupt
+
+	[19647] = LIB_OPEN_RAID_COOLDOWNS_INFO[19647], --Spell Lock (pet felhunter ability)
+	[89766] = LIB_OPEN_RAID_COOLDOWNS_INFO[89766], --Axe Toss (pet felguard ability)
+}
+
+LIB_OPEN_RAID_SPELL_DEFAULT_IDS = {
+	--stampeding roar (druid)
+	[106898] = 77761,
+	[77764] = 77761, --"Uncategorized" on wowhead, need to test if still exists
+	--spell lock (warlock pet)
+	[119910] = 19647, --"Uncategorized" on wowhead
+	[132409] = 19647, --"Uncategorized" on wowhead
+	--[115781] = 19647, --optical blast used by old talent observer, still a thing?
+	--[251523] = 19647, --wowhead list this spell as sibling spell
+	--[251922] = 19647, --wowhead list this spell as sibling spell
+	--axe toss (warlock pet)
+	[119914] = 89766, --"Uncategorized" on wowhead
+	[347008] = 89766, --"Uncategorized" on wowhead
+	--hex (shaman)
+	[210873] = 51514, --Compy
+	[211004] = 51514, --Spider
+	[211010] = 51514, --Snake
+	[211015] = 51514, --Cockroach
+	[269352] = 51514, --Skeletal Hatchling
+	[277778] = 51514, --Zandalari Tendonripper
+	[277784] = 51514, --Wicker Mongrel
+	[309328] = 51514, --Living Honey
+	--typhoon
+	--[61391] = 132469,
+	--metamorphosis
+	[191427] = 200166,
+	--187827 vengeance need to test these spellIds
+	--191427 havoc
+
+}
+
+--need to add mass dispell (32375)

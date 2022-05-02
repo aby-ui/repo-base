@@ -253,7 +253,7 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 			},
 		}
 		
-		DF:BuildMenu (f, options, 7, -30, 500, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+		DF:BuildMenu (f, options, 7, -50, 500, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
 		f:SetScript ("OnHide" , function()
 			if (DetailsCurrentDpsMeter) then
@@ -361,12 +361,28 @@ function Details:CreateCurrentDpsFrame(parent, name)
 			f.dpsBarFrame = barFrame
 			barFrame:SetSize(400, 80)
 			barFrame:SetPoint("center", f, "center", 0, 0)
+			barFrame:EnableMouse(false)
 
 			barFrame.splitBar = DF:CreateSplitBar(barFrame, 400, 20)
 			barFrame.splitBar:SetSize(400, 20)
 			barFrame.splitBar:SetPoint("center", barFrame, "center", 0, 0)
 			barFrame.splitBar.fontsize = 10
-			barFrame.splitBar:SetTexture(SharedMedia:Fetch("statusbar", "Splitbar"))
+			barFrame.splitBar:SetTexture(SharedMedia:Fetch("statusbar", "Details Flat"))
+			barFrame.splitBar:SetBackgroundTexture([[Interface/AddOns/Details/images/bar_textures/chess]])
+			barFrame.splitBar:SetBackgroundColor(1, 0, 0, 1)
+			barFrame.splitBar.SparkAlwaysShow = true
+
+			barFrame.borderFrame = CreateFrame("frame", "DetailsArenaDpsBarsBorderFrame", barFrame, "BackdropTemplate")
+			barFrame.borderFrame:SetFrameLevel(barFrame.splitBar:GetFrameLevel()-1)
+			local backgroundText = barFrame.borderFrame:CreateTexture(nil, "background")
+			backgroundText:SetColorTexture(0, 0, 0, 0.5)
+			backgroundText:SetAllPoints()
+
+			barFrame.borderFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+			barFrame.borderFrame:SetBackdropBorderColor(0, 0, 0, 1)
+			barFrame.borderFrame:SetPoint("topleft", barFrame.splitBar.widget, "topleft", -1, 1)
+			barFrame.borderFrame:SetPoint("bottomright", barFrame.splitBar.widget, "bottomright", 1, -1)
+			
 
 	--> title bar
 		local TitleString = f:CreateFontString (nil, "overlay", "GameFontNormal")
@@ -566,7 +582,6 @@ function Details:CreateCurrentDpsFrame(parent, name)
 		_detalhes:UpdateTheRealCurrentDPSFrame()
 		
 		local on_tick = function (self, deltaTime)
-		
 			self.NextUpdate = self.NextUpdate - deltaTime
 			
 			if (self.NextUpdate <= 0) then
@@ -633,7 +648,7 @@ function Details:CreateCurrentDpsFrame(parent, name)
 						f.YellowDamage = max (0, f.YellowDamage)
 					end
 					
-					self.NextScreenUpdate = self.NextScreenUpdate - time_fraction
+					self.NextScreenUpdate = self.NextScreenUpdate - time_fraction --always 0.1
 
 					--> update double bar
 						local teamGreenDps = self.PlayerTeamDamage / self.SampleSize
@@ -642,13 +657,29 @@ function Details:CreateCurrentDpsFrame(parent, name)
 						local dpsBarFrame = DetailsArenaDpsBars.splitBar
 
 						--a percenntagem na barra esta sendo setada corretamente, porem a animação não esta funcrtionando ainda
-						DetailsArenaDpsBars.splitBar:SetValueWithAnimation(teamGreenDps / totalDamage)
+						local percentValue = teamGreenDps / totalDamage
+						DetailsArenaDpsBars.splitBar:SetValueWithAnimation(percentValue)
 						DetailsArenaDpsBars:Show()
 
 						if (f.PlayerTeam == 0) then
-							dpsBarFrame:SetLeftColor(unpack (green_team_color))
-							dpsBarFrame:SetRightColor(unpack (yellow_team_color))
+							local team1Alpha = DF:MapRangeClamped(.5, 1, 1, .7, percentValue)
+							local team2Alpha = DF:MapRangeClamped(0, .5, .7, 1, percentValue)
+
+							do
+								local cR, cG, cB, cA = dpsBarFrame:GetLeftColor()
+								local alphaTeam1Value = DF:LerpLinearColor(deltaTime, 1, cA, 0, 0, team1Alpha, 0, 0)
+								local r, g, b = unpack(green_team_color)
+								dpsBarFrame:SetLeftColor(r, g, b, alphaTeam1Value)
+							end
+
+							do
+								local cR, cG, cB, cA = dpsBarFrame:GetRightColor()
+								local alphaTeam2Value = DF:LerpLinearColor(deltaTime, 1, cA, 0, 0, team2Alpha, 0, 0)
+								local r, g, b = unpack(yellow_team_color)
+								dpsBarFrame:SetRightColor(r, g, b, alphaTeam2Value)
+							end
 						else
+							--not in use, player team is forced to 0
 							dpsBarFrame:SetLeftColor(unpack (yellow_team_color))
 							dpsBarFrame:SetRightColor(unpack (green_team_color))
 						end
@@ -811,7 +842,7 @@ function DetailsTestSplitBar()
 		barFrame.splitBar:SetPoint("center", barFrame, "center", 0, 0)
 		barFrame.splitBar.fontsize = 10
 		local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
-		barFrame.splitBar:SetTexture(SharedMedia:Fetch("statusbar", "Splitbar"))
+		barFrame.splitBar:SetTexture(SharedMedia:Fetch("statusbar", "Details Flat"))
 
 		barFrame.splitBar:SetLeftColor(unpack (green_team_color))
 		barFrame.splitBar:SetRightColor(unpack (yellow_team_color))

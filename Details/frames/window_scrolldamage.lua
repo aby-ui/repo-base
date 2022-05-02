@@ -38,7 +38,7 @@ function Details:ScrollDamage()
 	
 		--header
 		local headerTable = {
-			{text = "Icon", width = 32},
+			{text = "Icon", width = 24},
 			{text = "Spell Name", width = 100},
 			{text = "Amount", width = 60},
 			
@@ -53,11 +53,36 @@ function Details:ScrollDamage()
 		
 		DetailsScrollDamage.Header = DetailsFramework:CreateHeader(DetailsScrollDamage, headerTable, headerOptions)
 		DetailsScrollDamage.Header:SetPoint("topleft", DetailsScrollDamage, "topleft", 5, headerY)
+
+		DetailsScrollDamage.searchText = ""
+		DetailsScrollDamage.searchCache = {}
 		
 		local scroll_refresh = function (self, data, offset, total_lines)
-			
 			local ToK = _detalhes:GetCurrentToKFunction()
-			
+			local dataFiltered = {}
+			DetailsScrollDamage.searchText = DetailsScrollDamage.searchText:lower()
+
+			if (DetailsScrollDamage.searchText ~= "") then
+				local searchInCache = DetailsScrollDamage.searchCache[DetailsScrollDamage.searchText]
+				if (searchInCache) then
+					dataFiltered = searchInCache
+					data = dataFiltered
+				else
+					for index, spellTable in ipairs(data) do
+						local time, token, hidding, sourceSerial, sourceName, sourceFlag, sourceFlag2, targetSerial, targetName, targetFlag, targetFlag2, spellId, spellName, spellType, amount, overKill, school, resisted, blocked, absorbed, isCritical = unpack(spellTable)
+						spellName = spellName:lower()
+						if (spellName:find(DetailsScrollDamage.searchText)) then
+							dataFiltered[#dataFiltered+1] = spellTable
+						end
+					end
+
+					DetailsScrollDamage.searchCache[DetailsScrollDamage.searchText] = dataFiltered
+					data = dataFiltered
+				end
+			else
+				wipe(DetailsScrollDamage.searchCache)
+			end
+
 			for i = 1, total_lines do
 				local index = i + offset
 				local spellTable = data [index]
@@ -206,6 +231,7 @@ function Details:ScrollDamage()
 						DetailsScrollDamage.Data.Started = time()
 					end
 					tinsert (DetailsScrollDamage.Data, 1, {timew, token, hidding, sourceSerial, sourceName, sourceFlag, sourceFlag2, targetSerial, targetName, targetFlag, targetFlag2, spellID, spellName, spellType, amount, overKill or 0, school or 1, resisted or 0, blocked or 0, absorbed or 0, isCritical})
+					wipe(DetailsScrollDamage.searchCache)
 					damageScroll:Refresh()
 					
 				elseif (token == "SWING_DAMAGE") then
@@ -243,6 +269,24 @@ function Details:ScrollDamage()
 
 		local autoOpenText = DetailsFramework:CreateLabel(statusBar, "Auto Open on Training Dummy")
 		autoOpenText:SetPoint("left", autoOpenCheckbox, "right", 2, 0)
+
+		--search bar
+		local searchBox = DF:CreateTextEntry(statusBar, function()end, 150, 20, _, _, _, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+		searchBox:SetPoint("bottomright", statusBar, "bottomright", -2, 0)
+
+		local searchLabel = DF:CreateLabel(searchBox, "search", DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+		searchLabel:SetPoint("left", searchBox, "left", 3, 0)
+
+		searchBox:SetHook("OnTextChanged", function()
+			if (searchBox.text ~= "") then
+				searchLabel:Hide()
+			end
+			DetailsScrollDamage.searchText = searchBox.text
+			damageScroll:Refresh()
+		end)
+
+		--DetailsScrollDamage.searchText
+
 	end
 
 	DetailsScrollDamage:Show()

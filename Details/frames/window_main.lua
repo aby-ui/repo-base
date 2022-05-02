@@ -5218,10 +5218,9 @@ function _detalhes:InstanceColor (red, green, blue, alpha, no_save, change_statu
 
 	local skin = _detalhes.skins [self.skin]
 	if (not skin) then --the skin isn't available any more
-		Details:Msg ("Skin " .. (self.skin or "?") .. " not found, changing to 'Dark Theme'.")
-		Details:Msg ("Recommended to change the skin in the option panel > Skin Selection.")
-		skin = _detalhes.skins ["Minimalistic"]
-		self.skin = "Minimalistic"
+		--put the skin into wait to install
+		local tempSkin = self:WaitForSkin()
+		skin = tempSkin
 	end
 	
 	self.baseframe.cabecalho.ball_r:SetVertexColor (red, green, blue)
@@ -6870,18 +6869,35 @@ function _detalhes:RefreshMicroDisplays()
 	_detalhes.StatusBar:UpdateOptions (self)
 end
 
-function _detalhes:ChangeSkin (skin_name)
+function Details:WaitForSkin()
+	local skinName = self.skin
+	local hasSkinInCache = Details.installed_skins_cache[skinName]
+	if (hasSkinInCache) then
+		Details:InstallSkin(skinName, hasSkinInCache)
+		local skin = Details.skins[skinName]
+		if (skin) then
+			return skin
+		end
+	end
 
+	Details.waitingForSkins = Details.waitingForSkins or {}
+	Details.waitingForSkins[self:GetId()] = skinName
+
+	local defaultSkin = _detalhes.default_skin_to_use
+	local skin = _detalhes.skins[defaultSkin]
+	self.skin = defaultSkin
+	return skin
+end
+
+function Details:ChangeSkin(skin_name)
 	if (not skin_name) then
 		skin_name = self.skin
 	end
 
-	local this_skin = _detalhes.skins [skin_name]
-
+	local this_skin = _detalhes.skins[skin_name]
 	if (not this_skin) then
-		Details:Msg("error 0x4546", skin_name)
-		skin_name = _detalhes.default_skin_to_use
-		this_skin = _detalhes.skins [skin_name]
+		local tempSkin = Details:WaitForSkin()
+		this_skin = tempSkin
 	end
 	
 	local just_updating = false

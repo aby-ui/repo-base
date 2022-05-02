@@ -204,6 +204,22 @@
 					</Slider>
 				</Frames>
 			</ScrollFrame>
+			<EditBox parentKey="SearchBox" inherits="RematchSearchBoxTemplate">
+				<Size x="240" y="24"/>
+				<Anchors>
+					<Anchor point="TOP" relativePoint="BOTTOM" x="0" y="-4"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="TestTexture" hidden="true"/>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnTextChanged>
+						Rematch.TeamTabs.IconPickerSearchBoxOnTextChanged(self,userInput)
+					</OnTextChanged>
+				</Scripts>
+			</EditBox>
 		</Frames>
 	</Frame>
 

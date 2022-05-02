@@ -48,7 +48,7 @@ SI.KeystoneAbbrev = KeystoneAbbrev
 function Module:OnEnable()
   self:RegisterEvent("BAG_UPDATE_DELAYED", "RefreshMythicKeyInfo")
 
-  self:RegisterEvent("CHALLENGE_MODE_COMPLETED", C_MythicPlus_RequestMapInfo)
+  self:RegisterBucketEvent('CHALLENGE_MODE_COMPLETED', 5, C_MythicPlus_RequestMapInfo)
 
   self:RegisterBucketEvent({
     "WEEKLY_REWARDS_UPDATE",

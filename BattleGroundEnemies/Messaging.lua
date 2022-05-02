@@ -6,7 +6,7 @@ local L = Data.L
 local CTimerNewTicker = C_Timer.NewTicker
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 
-local BGE_VERSION = "9.2.0.5"
+local BGE_VERSION = "9.2.0.9"
 local AddonPrefix = "BGE"
 local versionQueryString, versionResponseString = "Q^%s", "V^%s"
 local targetCallVolunteerQueryString = "TVQ^%s" -- wil be send to all the viewers to show if you are volunteering vor target calling

@@ -2135,7 +2135,8 @@ hoverTooltip.ShowIndicatorTooltip = function (cell, arg, ...)
   local thisinstance = SI.db.Instances[instance]
   local worldboss = thisinstance and thisinstance.WorldBoss
   local info = thisinstance[toon][diff]
-  local id = info.ID
+  if not info then return end
+  local id = info.ID or 0
   local nameline = indicatortip:AddHeader()
   indicatortip:SetCell(nameline, 1, DifficultyString(instance, diff, toon), indicatortip:GetHeaderFont(), "LEFT", 1)
   indicatortip:SetCell(nameline, 2, GOLDFONT .. instance .. FONTEND, indicatortip:GetHeaderFont(), "RIGHT", 2)
@@ -2146,20 +2147,20 @@ hoverTooltip.ShowIndicatorTooltip = function (cell, arg, ...)
   local EMPH = " !!! "
   if info.Extended then
     indicatortip:SetCell(indicatortip:AddLine(),1,WHITEFONT .. EMPH .. L["Extended Lockout - Not yet saved"] .. EMPH .. FONTEND,"CENTER",3)
-  elseif info.Locked == false and info.ID > 0 then
+  elseif info.Locked == false and id > 0 then
     indicatortip:SetCell(indicatortip:AddLine(),1,WHITEFONT .. EMPH .. L["Expired Lockout - Can be extended"] .. EMPH .. FONTEND,"CENTER",3)
   end
   if info.Expires > 0 then
     indicatortip:AddLine(YELLOWFONT .. L["Time Left"] .. ":" .. FONTEND, nil, SecondsToTime(thisinstance[toon][diff].Expires - time()))
   end
-  if (info.ID or 0) > 0 and (
+  if id > 0 and (
     (thisinstance.Raid and (diff == 5 or diff == 6 or diff == 16)) -- raid: 10 heroic, 25 heroic or mythic
     or
     (diff == 23) -- mythic 5-man
     ) then
     local n = indicatortip:AddLine()
     indicatortip:SetCell(n, 1, YELLOWFONT .. ID .. ":" .. FONTEND, "LEFT", 1)
-    indicatortip:SetCell(n, 2, info.ID, "RIGHT", 2)
+    indicatortip:SetCell(n, 2, id, "RIGHT", 2)
   end
   if info.Link then
     local link = info.Link
@@ -2227,7 +2228,7 @@ hoverTooltip.ShowIndicatorTooltip = function (cell, arg, ...)
       end
     end
   end
-  if info.ID < 0 then
+  if id < 0 then
     local killed, total, base, remap = SI:instanceBosses(instance,toon,diff)
     for i=base,base+total-1 do
       local bossid = i
@@ -2516,7 +2517,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "3c5312f" then
+  if versionString == "2060033" then
     versionString = "Dev"
   end
   --@end-debug@]==]

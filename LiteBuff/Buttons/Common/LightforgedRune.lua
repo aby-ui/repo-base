@@ -57,14 +57,16 @@ function button:OnUpdateTimer(spell)
 		return 1, expires
 	end
 
-	local other, icon
-	for other, icon in pairs(CONFLICTS) do
-		expires = addon:GetUnitBuffTimer("player", other)
-		if expires then
-			conflict = icon
-			break
-		end
-	end
+    if CONFLICTS then
+        local other, icon
+        for other, icon in pairs(CONFLICTS) do
+            expires = addon:GetUnitBuffTimer("player", other)
+            if expires then
+                conflict = icon
+                break
+            end
+        end
+    end
 
 	self:SetConflictIcon(conflict)
 	return (expires or conflict) and "NONE" or "R", expires

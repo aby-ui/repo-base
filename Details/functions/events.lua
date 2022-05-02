@@ -22,6 +22,8 @@
 		
 		--> misc
 			["DETAILS_OPTIONS_MODIFIED"] = {},
+			["UNIT_SPEC"] = {},
+			["UNIT_TALENTS"] = {},
 		
 		--> data
 			["DETAILS_DATA_RESET"] = {},
@@ -116,6 +118,9 @@ local common_events = {
 	["REALM_CHANNEL_LEAVE"] = true,
 	["COMM_EVENT_RECEIVED"] = true,
 	["COMM_EVENT_SENT"] = true,
+	["UNIT_SPEC"] = true,
+	["UNIT_TALENTS"] = true,
+
 }
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -99,8 +99,10 @@
 		local container_pets = {} --> initialize table (placeholder)
 	--> ignore deaths
 		local ignore_death = {}
-	--> temp ignored 
-		local ignore_actors = {}
+	--> cache
+		local cacheAnything = {
+			arenaHealth = {},
+		}
 	--> druids kyrian bounds
 		local druid_kyrian_bounds = {} --remove on 10.0
 	--> spell containers for special cases
@@ -616,11 +618,6 @@
 			end
 		end
 
-		--check if the target actor isn't in the temp blacklist
-		--if (ignore_actors [alvo_serial]) then
-		--	return
-		--end
-
 		--kyrian weapons
 		if (Details.KyrianWeaponSpellIds[spellid]) then
 			who_name = Details.KyrianWeaponActorName
@@ -1113,7 +1110,13 @@
 					if (not unitId) then
 						unitId = Details:GuessArenaEnemyUnitId(alvo_name)
 					end
-					this_event [5] = _UnitHealth(unitId)
+					if (unitId) then
+						this_event [5] = _UnitHealth(unitId)
+					else
+						this_event [5] = cacheAnything.arenaHealth[alvo_name] or 100000
+					end
+
+					cacheAnything.arenaHealth[alvo_name] = this_event[5]
 				else
 					this_event [5] = _UnitHealth(alvo_name)
 				end
@@ -3713,6 +3716,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		elseif (not alvo_name) then
 			return
 		end
+
+		--development honey pot for interrupt spells
+		if (TrackerCleuDB and TrackerCleuDB.honey_pot) then
+			TrackerCleuDB.honey_pot[spellid] = true
+		end
 		
 		_current_misc_container.need_refresh = true
 
@@ -5251,7 +5259,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		
 		if (not OnRegenEnabled) then
 			_table_wipe (bitfield_swap_cache)
-			_table_wipe (ignore_actors)
 			_detalhes:DispatchAutoRunCode ("on_leavecombat")
 		end
 		
@@ -5655,6 +5662,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		--load auto run code
 		Details:StartAutoRun()
+
+		Details.isLoaded = true
+	end
+
+	function Details.IsLoaded()
+		return Details.isLoaded
 	end
 	
 	function _detalhes.parser_functions:ADDON_LOADED (...)
@@ -5935,7 +5948,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_table_wipe (tanks_members_cache)
 		_table_wipe (auto_regen_cache)
 		_table_wipe (bitfield_swap_cache)
-		_table_wipe (ignore_actors)
 		
 		local roster = _detalhes.tabela_vigente.raid_roster
 		

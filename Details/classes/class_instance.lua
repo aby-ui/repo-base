@@ -2149,6 +2149,7 @@ function _detalhes:TrocaTabela (instancia, segmento, atributo, sub_atributo, ini
 		instancia = self
 	end
 
+	--Details:GetWindow(1):SetDisplay(DETAILS_SEGMENTID_CURRENT, 1, 1, false, DETAILS_MODE_GROUP) InstanceMode is nil on this example
 	if (InstanceMode and InstanceMode ~= instancia:GetMode()) then
 		instancia:AlteraModo (instancia, InstanceMode)
 	end

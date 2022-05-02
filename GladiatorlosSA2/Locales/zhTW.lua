@@ -108,6 +108,7 @@ L["DeathKnight"] = "|cffC41F3B死亡騎士|r"
 L["Hunter"] = "|cffABD473獵人|r"
 L["Monk"] = "|cFF00FF96武僧|r"
 L["DemonHunter"] = "|cffA330C9?|r"
+L["Evoker"] = true
 L["Buff Down"] = "敵方增益結束"
 L["Spell Casting"] = "敵方讀條技能"
 L["BigHeal"] = "大型治療法術"

@@ -2,7 +2,7 @@
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.11.20
+## Version: 4.11.21
 ## SavedVariables: RematchSaved, RematchSettings
 
 Localization\Rematch zhTW.lua
@@ -80,6 +80,7 @@ Widgets\BottomPanel.xml
 Widgets\BottomPanel.lua
 Widgets\TeamTabs.xml
 Widgets\TeamTabs.lua
+Widgets\TeamTabIcons.lua
 Widgets\LoadedTeamPanel.xml
 Widgets\LoadedTeamPanel.lua
 

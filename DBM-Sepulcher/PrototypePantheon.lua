@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2460, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220419182816")
+mod:SetRevision("20220501231317")
 mod:SetCreatureID(181548, 181551, 181546, 181549)
 mod:SetEncounterID(2544)
 mod:SetBossHPInfoToHighest()
@@ -249,9 +249,9 @@ local allTimers = {
 			--Animastorm
 			[366234] = {38.5, 67.5},
 			--Wracking Pain
-			[365126] = {69.7, 45.0},
+			[365126] = {69.7, 45.0, 42.5},
 			--Hand of Destruction
-			[361791] = {79.7},
+			[361791] = {79.7, 56.2},
 		},
 		[3] = {
 			--Necrotic Ritual

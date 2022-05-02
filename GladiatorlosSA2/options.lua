@@ -479,7 +479,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["General Abilities"],
 								order = 30,					      		
-								args = listOption({195901,214027,34709,345231,363121,363117},"auraApplied"),
+								args = listOption({195901,214027,34709,345231,362699},"auraApplied"),
 							},
 							covenants = { -- AuraApplied
 								type = 'group',
@@ -516,6 +516,15 @@ function GSA:OnOptionCreate()
 								order = 70,
 								args = listOption({102560,102543,102558,33891,61336,22812,252216,1850,69369,102342,102351,155835,29166,194223,305497,163505,106951,108291,108292.108293,108294,323546,22842,132158},"auraApplied"),
 							},
+							--[[
+							evoker = { -- AuraApplied
+								type = 'group',
+								inline = true,
+								name = L["Evoker"],
+								order = 75,
+								args = listOption({},"auraApplied"),
+							},
+							--]]
 							hunter = { -- AuraApplied
 								type = 'group',
 								inline = true,
@@ -606,7 +615,7 @@ function GSA:OnOptionCreate()
 								inline = true,
 								name = L["General Abilities"],
 								order = 30,
-								args = listOption({34709,345231},"auraRemoved"),
+								args = listOption({34709,345231,362699},"auraRemoved"),
 							},
 							covenants = { -- AuraRemoved
 								type = 'group',
@@ -636,6 +645,15 @@ function GSA:OnOptionCreate()
 								order = 60,
 								args = listOption({102560,102543,102558,33891,117679,236696,29166,108291,108292.108293,108294,132158},"auraRemoved"),
 							},
+							--[[
+							evoker = { -- AuraRemoved
+								type = 'group',
+								inline = true,
+								name = L["Evoker"],
+								order = 75,
+								args = listOption({},"auraRemoved"),
+							},
+							--]]
 							hunter = { -- AuraRemoved
 								type = 'group',
 								inline = true,
@@ -754,6 +772,15 @@ function GSA:OnOptionCreate()
 								order = 60,
 								args = listOption({274281,274282,274283,2637,33786,339,329042},"castStart"),
 							},
+							--[[
+							evoker = { -- CastStart
+								type = 'group',
+								inline = true,
+								name = L["Evoker"],
+								order = 75,
+								args = listOption({},"castStart"),
+							},
+							--]]
 							hunter = { -- CastStart
 								type = 'group',
 								inline = true,
@@ -906,6 +933,15 @@ function GSA:OnOptionCreate()
 								order = 70,
 								args = listOption({740,108238,99,5211,102359,102417,102383,49376,16979,102416,102401,203651,201664,61391,132469,5215,236026,22570,209749,2908,202246,102793,197721,325727,327071,327022,327037,323764,18562,354654,274837},"castSuccess"),
 							},
+							--[[
+							evoker = { -- CastSuccess
+								type = 'group',
+								inline = true,
+								name = L["Evoker"],
+								order = 75,
+								args = listOption({},"castSuccess"),
+							},
+							--]]
 							hunter = { -- CastSuccess
 								type = 'group',
 								inline = true,

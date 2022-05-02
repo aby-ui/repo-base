@@ -29,7 +29,7 @@ function Details:StopTestBarUpdate()
     Details.test_bar_update = nil
 end
 
-function Details:CreateTestBars (alphabet)
+function Details:CreateTestBars (alphabet, isArena)
     local current_combat = Details:GetCombat ("current")
     local pclass = select (2, UnitClass ("player"))
     
@@ -178,6 +178,18 @@ function Details:CreateTestBars (alphabet)
         robot.grupo = true
         
         robot.classe = who [2]
+        robot.flag_original = "0x514"
+
+        if (isArena) then
+            if (math.random() > 0.5) then
+                robot.arena_ally = true
+                robot.arena_team = 0
+            else
+                robot.arena_enemy = true
+                robot.arena_team = 1
+                robot.enemy = true
+            end
+        end
         
         if (who[3]) then
             robot.spec = who[3]

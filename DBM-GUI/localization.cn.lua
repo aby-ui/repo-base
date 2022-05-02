@@ -1,7 +1,7 @@
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
 -- sunlcy@NGA
--- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20220129
+-- Mini Dragon <流浪者酒馆-Brilla@金色平原> 20220427
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_GUI_L then DBM_GUI_L = {} end
@@ -111,11 +111,22 @@ L.SKT_Enabled				= "总是显示最速胜利计时条(覆盖单独BOSS设置)"
 L.ShowRespawn				= "Boss战斗未完成时显示Boss刷新计时条"
 L.ShowQueuePop				= "显示随机小队/团队查找器确认计时条"
 --
-L.Area_AutoLogging			= "自动战斗日志选项"
+--Auto Logging: Logging toggles/types
+L.Area_AutoLogging			= "自动战斗日志开关"
 L.AutologBosses				= "自动采用官方格式记录日志。"
 L.AdvancedAutologBosses		= "自动采用 Transcriptor 记录日志"
-L.RecordOnlyBosses			= "只记录团队BOSS数据 (不记录其他数据，使用 /dbm pull 可提前记录并使得记录更准确，如提前偷药水或是召唤大军。)"
-L.LogOnlyNonTrivial			= "只记录团队Boss，而不记录随机团队/5人本/场景战役"
+--Auto Logging: Global filter Options
+L.Area_AutoLoggingFilters	= "自动记录选项"
+L.RecordOnlyBosses			= "不记录小怪数据 (只记录团队BOSS数据，使用 /dbm pull 可提前记录并使得记录更准确，如提前偷药水或是召唤大军。)"
+L.DoNotLogLFG				= "不记录随机5人本/团队副本"
+--Auto Logging: Recorded Content types
+L.Area_AutoLoggingContent	= "自动记录内容"
+L.LogCurrentRaids			= "当前等级团队副本"
+L.LogTWRaids				= "时光团队副本或通过克罗米进入的团队副本"--Retail Only
+L.LogTrivialRaids			= "低等级团队"
+L.LogCurrentMPlus			= "当前等级的M+5人本"--Retail Only
+L.LogTWDungeons				= "时光5人本或通过克罗米进入的5人本"--Retail Only
+L.LogCurrentHeroic			= "当前等级的英雄5人本"
 --
 L.Area_3rdParty				= "第三方插件选项"
 L.oRA3AnnounceConsumables	= "在战斗开始时通报oRA3消耗品检查"
@@ -349,6 +360,8 @@ L.BarSpark					= "计时条闪光"
 L.BarFlash					= "快走完时闪动"
 L.BarSort					= "按剩余时间排序"
 L.BarColorByType			= "按类着色"
+L.Highest					= "顶部最高"
+L.Lowest					= "顶部最低"
 L.NoBarFade					= "使用开始/结束颜色作为长/短计时条颜色，而不是颜色渐变"
 L.BarInlineIcons			= "显示条内图标"
 L.ShortTimerText			= "使用更短的计时条文字 (当可行时)"
