@@ -1,5 +1,7 @@
 local E, L, C = select(2, ...):unpack()
 
+
+
 local _G = _G
 local pairs, type = pairs, type
 local abs = math.abs
@@ -618,7 +620,7 @@ do
 		if info.talentData[334525] then
 			local icon = info.spellIcons[DANCING_RUNE_WEAPON]
 			if icon and icon.active then
-				P:UpdateCooldown(icon, 3)
+				P:UpdateCooldown(icon, 5)
 			end
 		end
 	end

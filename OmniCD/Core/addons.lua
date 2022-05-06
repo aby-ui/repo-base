@@ -270,7 +270,7 @@ function E:UnitFrames()
 	for i = 1, #unitFrameData do
 		local unitFrame = unitFrameData[i]
 		local name = unitFrame[1]
-		local addonName = name:gsub("-.+", "")
+		local addonName = name:match("[^%-]+")
 		if _G[addonName] or IsAddOnLoaded(addonName) then
 			self.customUF.enabled = self.customUF.enabled or {}
 			self.customUF.enabled[name] = {

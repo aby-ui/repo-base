@@ -285,6 +285,18 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         [391] = "天街", -- Strets of Wonder
         [392] = "宏图"  -- So'lea's Gambit
     }
+    local PORTAL_SPELLS = {
+        [375] = 354464, --"仙林",
+        [376] = 354462, --"通灵",
+        [377] = 354468, --"彼界",
+        [378] = 354465, --"赎罪",
+        [379] = 354463, --"凋魂",
+        [380] = 354469, --"赤红",
+        [381] = 354466, --"高塔",
+        [382] = 354467, --"剧场",
+        [391] = 367416, --"天街",
+        [392] = 367416, --"宏图",
+    }
     local LEVEL_COLORS = { --系统 C_ChallengeMode.GetKeystoneLevelRarityColor 15以上就是橙色了
         [0] = "ffffff", --白 0-4
         [1] = "1eff00", --绿 5-9
@@ -345,8 +357,64 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         self.HighestLevel:SetText(score)
     end
 
+    local function showPortalSecureButton()
+        if not ChallengesFrame:IsVisible() then return end
+        for i, icon in pairs(ChallengesFrame.DungeonIcons) do
+            local btn = _G["AbyDungeonPortal"..i]
+            if not btn then
+                btn = WW:Button("AbyDungeonPortal"..i, nil, "SecureActionButtonTemplate")
+                :SetAttribute("type", "macro")
+                :SetScript("OnEnter", function(self)
+                    local s = self.hook:GetScript("OnEnter")
+                    if s then
+                        s(icon)
+                        local spell = icon.mapID and PORTAL_SPELLS[icon.mapID]
+                        if spell then
+                            if IsSpellKnown(spell) then
+                                GameTooltip:AddLine(" ")
+                                local start,duration = GetSpellCooldown(spell)
+                                if start and duration and duration > 1.5 then --1.5 is GCD
+                                    GameTooltip:AddLine("传送冷却：" .. MinutesToTime((start+duration-GetTime())/60))
+                                else
+                                    GameTooltip:AddLine("点击施法：" .. (GetSpellInfo(spell) or spell))
+                                end
+                                GameTooltip:Show()
+                            end
+                        end
+                    end
+                end)
+                :SetScript("OnLeave", function(self) local s = self.hook:GetScript("OnLeave") if s then s(icon) end end)
+                :un()
+                btn.hook = icon
+            end
+            WW(btn):SetParent(icon):ClearAllPoints():SetAllPoints(icon):Show()
+            :SetFrameStrata(icon:GetFrameStrata()):AddFrameLevel(1, icon)
+            :un()
+            if icon and icon.mapID then
+                btn:SetAttribute("macrotext", format("/stopcasting\n/cast %s", (GetSpellInfo(PORTAL_SPELLS[icon.mapID]))))
+            else
+                btn:SetAttribute("macrotext", nil)
+            end
+        end
+    end
+
+    CoreOnEvent("PLAYER_REGEN_DISABLED", function()
+        for i=1, 20 do
+            local btn = _G["AbyDungeonPortal"..i]
+            if not btn then break end
+            btn:SetParent(nil)
+            btn:ClearAllPoints()
+            btn:Hide()
+        end
+        C_Timer.After(0.1, function()
+            CoreLeaveCombatCall("ChallengesGuildBest", nil, showPortalSecureButton)
+        end)
+    end)
+
     hooksecurefunc("ChallengesFrame_Update", function(self)
         pcall(function() ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText("") end)
+
+        CoreLeaveCombatCall("ChallengesGuildBest", nil, showPortalSecureButton)
 
         if not ChallengesFrame._abySort then
             local chk = WW(ChallengesFrame):CheckButton(nil, "UICheckButtonTemplate"):Key("_abySort")
@@ -392,5 +460,6 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             end
         end
     end)
+
     --ChallengesFrame_Update(ChallengesFrame)
 end)

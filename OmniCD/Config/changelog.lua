@@ -2,7 +2,7 @@ local E, L, C = select(2, ...):unpack()
 
 if E.isClassic then E.changelog = [=[
 
-Previous changes can be found in the CHANGELOG file
+Previous changes can be found in the CHANGELOG file.
 ]=]
 elseif E.isBCC then E.changelog = [=[
 v2.7.15
@@ -10,9 +10,14 @@ v2.7.15
 	Fixed an issue where logging back in would incorrectly grey-out the icons.
 	Group inspection is now done periodically until the arena match begins.
 
-Previous changes can be found in the CHANGELOG file
+Previous changes can be found in the CHANGELOG file.
 ]=]
 else E.changelog = [=[
+v2.7.16
+	Dancing Rune Weapon CDR fixed.
+	Observer cooldowns will no longer be tracked in the MDI setting.
+	Lib updates.
+
 v2.7.15
 	Blizzard Hotfixes
 		APRIL 26, 2022
@@ -22,17 +27,17 @@ v2.7.15
 
 v2.7.14
 	Updated missing changes from patch 9.0.5 :0
-	Crimson Rune Weapon (DK, Runeforge) cooldown reduction increased to 5 seconds (was 3s)
-	Qa’pla, Eredun War Order (Hunter, Runeforge) now resets the cooldown of Kill Command (was reduces the cooldown by 5 seconds)
+	Crimson Rune Weapon (DK, Runeforge) cooldown reduction increased to 5 seconds (was 3s).
+	Qa’pla, Eredun War Order (Hunter, Runeforge) now resets the cooldown of Kill Command (was reduces the cooldown by 5 seconds).
 	Divine Vision (Paladin, PvP Talent) now reduces the cooldown of Aura Mastery by 1 minute (was grants Shadow Resistance Aura).
-	Duskwalker’s Patch (Rogue, Runeforge) reduces Vendetta’s cooldown for every 30 Energy you expend (was 50 Energy)
-	Amplify Curse (Warlock, PvP Talent) cooldown reduced to 30 seconds (was 45 seconds)
+	Duskwalker’s Patch (Rogue, Runeforge) reduces Vendetta’s cooldown for every 30 Energy you expend (was 50 Energy).
+	Amplify Curse (Warlock, PvP Talent) cooldown reduced to 30 seconds (was 45 seconds).
 
 v2.7.13
 	Fixed an issue where sync could incorrectly reset the CD.
 	Bwonsamdi's Pact has been added back in for non-synced units. (doesn't support multiple buffs per target)
 	Crafted Unity Legendaries added.
 
-Previous changes can be found in the CHANGELOG file
+Previous changes can be found in the CHANGELOG file.
 ]=]
 end

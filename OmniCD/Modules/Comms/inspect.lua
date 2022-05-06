@@ -217,7 +217,7 @@ function Comms:RequestInspect()
 		if info and not isSyncedUnit then
 			local unit = info.unit
 			local elapsed = now - added
-			if ( not UnitIsConnected(unit) or elapsed > INS_TIME_LIMIT ) then
+			if ( not UnitIsConnected(unit) or elapsed > INS_TIME_LIMIT or info.isObserver ) then
 
 				self:DequeueInspect(guid)
 			elseif ( (E.isPreBCC and not CheckInteractDistance(unit,1)) or not CanInspect(unit) ) then

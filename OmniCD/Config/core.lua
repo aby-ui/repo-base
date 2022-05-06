@@ -191,6 +191,7 @@ local function GetOptions()
 							}
 						},
 						plugins = {
+							hidden = function() return E.isPreBCC end,
 							name = "Plugins",
 							order = 50,
 							type = "group",

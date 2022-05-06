@@ -7,13 +7,13 @@
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0
--- @release $Id: AceConfigDialog-3.0.lua 1248 2021-02-05 14:27:49Z funkehdude $
+-- @release $Id: AceConfigDialog-3.0.lua 1255 2021-11-14 09:14:15Z nevcairiel $
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0-OmniCD", 81
+local MAJOR, MINOR = "AceConfigDialog-3.0-OmniCD", 82
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -556,7 +556,6 @@ local function OptionOnMouseOver(widget, event)
 	local appName = user.appName
 	local tooltip = AceConfigDialog.tooltip
 
-	-- s b
 	tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 	local name = GetOptionsMemberValue("name", opt, options, path, appName)
 	local desc = GetOptionsMemberValue("desc", opt, options, path, appName)
@@ -1466,7 +1465,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							elseif width == "half" then
 								check:SetWidth(width_multiplier / 2)
 							elseif (type(width) == "number") then
-								control:SetWidth(width_multiplier * width)
+								check:SetWidth(width_multiplier * width)
 							elseif width == "full" then
 								check.width = "fill"
 							else
@@ -1616,9 +1615,25 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 
 	tooltip:SetText(name, 1, .82, 0, true)
 
-	if type(desc) == "string" then -- s we don't need hyperlink here
+	--[[ s r (Hyperlink support)
+	if type(desc) == "string" then
 		tooltip:AddLine(desc, 1, 1, 1, true)
 	end
+	]]
+	if type(desc) == "string" then
+		local linktype = desc:match(".*|H(%a+):.+|h.+|h.*")
+		if linktype then
+			tooltip:SetHyperlink(desc)
+			--local spellID = strmatch(desc, "spell:(%d+):")
+			local spellID = option.arg -- == GetOptionsMemberValue("arg", option, options, path, appName)
+			if type(spellID) == "number" then
+				tooltip:AddLine("\nID: " .. spellID, 1, 1, 1, true)
+			end
+		else
+			tooltip:AddLine(desc, 1, 1, 1, true)
+		end
+	end
+	-- e
 
 	tooltip:Show()
 end
