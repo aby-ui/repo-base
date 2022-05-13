@@ -131,6 +131,7 @@ function Mod:CHALLENGE_MODE_COMPLETED()
 	local name, _, timeLimit = C_ChallengeMode.GetMapUIInfo(challengeMapID)
 	local _, affixes, wasEnergized = C_ChallengeMode.GetActiveKeystoneInfo()
 	local splits = Mod.splits
+	if not splits then return end
 
 	local missingCount = 0
 	for index,elapsed in pairs(splits) do

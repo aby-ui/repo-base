@@ -5,7 +5,8 @@ local MDT = MDT
 
 MDT.DataCollection = {}
 local DC = MDT.DataCollection
-function DC:Init()
+function DC:Init()    
+    print("MDT: Spell+Characteristics Tracking Init")
     db = MDT:GetDB()
     db.dataCollection = db.dataCollection or {}
     db.dataCollectionCC = db.dataCollectionCC or {}
@@ -18,36 +19,35 @@ function DC:Init()
     f:SetScript("OnEvent", function(self, event, ...)
         return DC[event](self,...)
     end)
-    DC:AddCollectedDataToEnemyTable()
 
 end
 
-function DC:AddCollectedDataToEnemyTable()
-    --add spells/characteristics from db to dungeonEnemies
-    for i=37,38 do --tazavesh dungeons only
-        if db.dataCollection[i] then
-            for id,spells in pairs(db.dataCollection[i]) do
-                local enemies = MDT.dungeonEnemies[i]
-                for enemyIdx,enemy in pairs(enemies) do
-                    if enemy.id == id then
-                        enemy.spells = enemy.spells or {}
-                        for spellId,_ in pairs(spells) do
-                            enemy.spells[spellId] = enemy.spells[spellId] or {}
-                        end
+function DC:AddCollectedDataToEnemyTable(dungeonIndex,ignoreSpells,ignoreCC)
+    if not dungeonIndex then dungeonIndex = db.currentDungeonIdx end
+    --add spells/characteristics from db to dungeonEnemies    
+    local enemies = MDT.dungeonEnemies[dungeonIndex]
+    local collectedData = db.dataCollection[dungeonIndex]
+    if collectedData and not ignoreSpells then
+        for id,spells in pairs(collectedData) do
+            for enemyIdx,enemy in pairs(enemies) do
+                if enemy.id == id then
+                    enemy.spells = enemy.spells or {}
+                    for spellId,_ in pairs(spells) do
+                        enemy.spells[spellId] = enemy.spells[spellId] or {}
                     end
-
                 end
+
             end
         end
-        if db.dataCollectionCC[i] then
-            for id,characteristics in pairs(db.dataCollectionCC[i]) do
-                local enemies = MDT.dungeonEnemies[i]
-                for enemyIdx,enemy in pairs(enemies) do
-                    if enemy.id == id then
-                        enemy.characteristics = enemy.characteristics or {}
-                        for characteristic,_ in pairs(characteristics) do
-                            enemy.characteristics[characteristic] = true
-                        end
+    end
+    local collectedCC = db.dataCollectionCC[dungeonIndex]
+    if collectedCC and not ignoreCC then
+        for id,characteristics in pairs(collectedCC) do
+            for enemyIdx,enemy in pairs(enemies) do
+                if enemy.id == id then
+                    enemy.characteristics = enemy.characteristics or {}
+                    for characteristic,_ in pairs(characteristics) do
+                        enemy.characteristics[characteristic] = true
                     end
                 end
             end
@@ -289,71 +289,64 @@ function DC:MergeReceiveData(package)
     DC:AddCollectedDataToEnemyTable()
 end
 
----HealthTrack
-local enemiesToScale
 function DC:InitHealthTrack()
+    print("MDT: Health Tracking Init")
     db = MDT:GetDB()
-    local enemyCount = 0
-    local totalEnemies = 0
-    local changedEnemies = {}
-    for _,enemy in pairs(MDT.dungeonEnemies[db.currentDungeonIdx]) do
-        totalEnemies = totalEnemies + 1
-    end
-    f = CreateFrame("Frame")
-    f:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
-    f:SetScript("OnEvent", function(self, event, ...)
-        if event == "UPDATE_MOUSEOVER_UNIT" then
-            local unit = "mouseover"
-            local npcId
-            local guid = UnitGUID(unit)
-            if guid then
-                npcId = select(6,strsplit("-", guid))
+    db.healthTracking = db.healthTracking or {}
+    local healthTrackingFrame = CreateFrame("Frame")
+    healthTrackingFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+    healthTrackingFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+    healthTrackingFrame:SetScript("OnEvent", function(_, event, ...)
+        --check difficulty if challenge mode and m+ level
+        local difficultyID = GetDungeonDifficultyID()
+        local isChallenge = difficultyID and C_ChallengeMode.IsChallengeModeActive()
+        local level,activeAffixIDs = C_ChallengeMode.GetActiveKeystoneInfo()
+        local fortified = activeAffixIDs[1] == 10
+        level = isChallenge and level
+        if level then
+            local unit
+            if event == "UPDATE_MOUSEOVER_UNIT" then
+                unit= "mouseover"
+            elseif event == "NAME_PLATE_UNIT_ADDED" then
+                unit = ...
             end
-            if npcId then
-                local npcHealth = UnitHealthMax(unit)
-                for enemyIdx,enemy in pairs(MDT.dungeonEnemies[db.currentDungeonIdx]) do
-                    if enemy.id == tonumber(npcId) then
-                        if enemy.health ~= npcHealth then
-                            print(npcHealth/enemy.health)
-                            enemy.health = npcHealth
-                            enemyCount = enemyCount + 1
-                            changedEnemies[enemyIdx] = true
-                            local enemiesLeft = " "
-                            enemiesToScale = {}
-                            for k,v in pairs(MDT.dungeonEnemies[db.currentDungeonIdx]) do
-                                if not changedEnemies[k] then
-                                    enemiesLeft = enemiesLeft..v.name..", "
-                                    enemiesToScale[k] = true
-                                end
-                            end
-                            print(enemyCount.."/"..totalEnemies..enemiesLeft)
-                        end
-                        break
-                    end
+            if unit then
+                local guid = UnitGUID(unit)
+                local npcId
+                if guid then
+                    npcId = select(6,strsplit("-", guid))
+                end
+                if npcId then
+                    db.healthTracking[tonumber(npcId)] = {
+                        ["health"] = UnitHealthMax(unit),
+                        ["name"] = UnitName(unit),
+                        ["level"] = level,
+                        ["fortified"] = fortified
+                    }
                 end
             end
         end
     end)
-end
 
---season 4
-function MDT:FinishHPTrack()
-    local multiplier = 1.526092251434
-    local constantNpcs = {
-        [155432]=15369884, --enchanted
-        [155433]=999042,
-        [155434]=614795,
-        [161243]=2151786, --sam
-        [161244]=2151786, --blood
-        [161241]=2151786, --spider
-        [161124]=2151786, --tank
-    }
-    for enemyIdx in pairs(enemiesToScale) do
-        local enemy = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]
-        if enemy.health>1 then
-            local newHealth = constantNpcs[enemy.id] or math.floor(enemy.health*multiplier)
-            enemy.health = newHealth
-            print(enemy.name)
+    function MDT:ProcessHealthTrack()
+        local enemies = MDT.dungeonEnemies[db.currentDungeonIdx]
+        if enemies then
+            for enemyIdx,enemy in pairs(enemies) do
+                local tracked = db.healthTracking[enemy.id]
+                if tracked then
+                    local isBoss = enemy.isBoss and true or false
+                    local baseHealth = MDT:ReverseCalcEnemyHealth(tracked.health,tracked.level,isBoss,tracked.fortified)
+                    enemy.health = baseHealth
+                else
+                    print("MDT HPTRACK: Missing: "..enemy.name.." id: "..enemy.id)
+                end
+            end
         end
     end
+
 end
+
+
+
+
+

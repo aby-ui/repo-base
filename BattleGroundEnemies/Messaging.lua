@@ -5,8 +5,9 @@ local L = Data.L
 
 local CTimerNewTicker = C_Timer.NewTicker
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
+local max = math.max
 
-local BGE_VERSION = "9.2.0.9"
+local BGE_VERSION = "9.2.0.11"
 local AddonPrefix = "BGE"
 local versionQueryString, versionResponseString = "Q^%s", "V^%s"
 local targetCallVolunteerQueryString = "TVQ^%s" -- wil be send to all the viewers to show if you are volunteering vor target calling
@@ -127,6 +128,37 @@ end
 --     end
 -- end
 
+--arguments are version tables. example: {"9", "2", ""0", "10"}
+--return true only when the first version is bigger than the second, return false when equal or smaller
+local function FirstGreaterThanSecond(firstVersion, secondVersion, index)
+	for i = index or 1, max(#firstVersion, #secondVersion) do
+		local firstVersionNumber = tonumber(firstVersion[i]) or 0
+		local secondVersionNumber = tonumber(secondVersion[i]) or 0
+
+		if firstVersionNumber > secondVersionNumber then
+			return true
+		elseif firstVersionNumber == secondVersionNumber then
+			--continue to compare the next table element
+			return FirstGreaterThanSecond(firstVersion, secondVersion, i + 1)
+		else
+			return false
+		end
+	end
+	return false --we checked both arrays, both versions are equal
+end
+
+local function IsFirstNewerThanSecond(versionString1, versionString2)
+	--versionString can be "9.2.0.10" for example, another player can have "9.2.0.9"
+	-- we cant make a simple comparison like "9.2.0.10" > "9.2.0.9" because this would result in false
+	
+	
+	local firstVersion = {strsplit(".", versionString1)}
+	local secondVersion = {strsplit(".", versionString2)}
+	return FirstGreaterThanSecond(firstVersion, secondVersion)
+end
+
+
+
 
 
 
@@ -161,12 +193,14 @@ function BattleGroundEnemies:UpdateVersions(sender, prefix, version)
 	if prefix == "V" or prefix == "Q" then -- V = version response, Q = version query
 		if version then
 			versions[sender] = version
-			if version > highestVersion then highestVersion = version end
+			if IsFirstNewerThanSecond(version, highestVersion) then highestVersion = version end
 
-			if version > BGE_VERSION then
+			if IsFirstNewerThanSecond(highestVersion, BGE_VERSION) then
 				if timers.outdatedTimer then timers.outdatedTimer:Cancel() end
-				timers.outdatedTimer = CTimerNewTicker(3, function() 
-					if DEBUG_MODE then  BattleGroundEnemies:Information(L.NewVersionAvailable..": ", version) end
+				timers.outdatedTimer = CTimerNewTicker(3, function()
+					if DEBUG_MODE then
+					BattleGroundEnemies:OnetimeInformation(L.NewVersionAvailable..": ", highestVersion)
+					end
 					timers.outdatedTimer = nil
 				end, 1)
 			end

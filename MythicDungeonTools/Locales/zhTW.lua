@@ -371,6 +371,10 @@ L["Earthrager"] = "地怒者"
 L["Ebonclaw Worg"] = "黑爪座狼"
 L["Echelon"] = "艾谢朗"
 L["Edit"] = "編輯"
+--[[Translation missing --]]
+--[[ L["Efficiency Score"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["EfficiencyScoreTip"] = ""--]] 
 L["Elder Leaxa"] = "长者莉娅克萨"
 L["Elemental"] = "元素"
 L["Elfyra"] = "艾尔菲拉"
@@ -617,8 +621,7 @@ L["Imbued Stormcaller"] = "灌注能量的唤雷者"
 L["Immoliant Fury"] = "不朽之怒"
 L["Import"] = "匯入"
 L["Import a preset from a text string"] = "從文字字串匯入路線"
---[[Translation missing --]]
---[[ L["Import Data"] = ""--]] 
+L["Import Data"] = "匯入資料"
 L["Import Preset"] = "匯入路線"
 L["Imprison"] = "囚禁"
 L["In the bottom right corner"] = "右下角"
@@ -849,12 +852,9 @@ L["Nightborne Reclaimer"] = "夜之子复国者"
 L["Nightborne Spellsword"] = "夜之子魔剑士"
 L["Nightmare Dweller"] = "梦魇住民"
 L["Noble Skirmisher"] = "贵族散兵"
---[[Translation missing --]]
---[[ L["noDungeonData1"] = ""--]] 
---[[Translation missing --]]
---[[ L["noDungeonData2"] = ""--]] 
---[[Translation missing --]]
---[[ L["noDungeonData3"] = ""--]] 
+L["noDungeonData1"] = "尚未有地城資料。"
+L["noDungeonData2"] = "輸入 /mdt devmode 來建立你自己的資料"
+L["noDungeonData3"] = "或是學習如何取得選擇性的地城資料:"
 L["Not specified"] = "未分類"
 L["Note Text:"] = "註記文字:"
 L["Oakheart"] = "橡树之心"
@@ -1373,8 +1373,7 @@ L["Undo"] = "還原"
 L["Undying Servant"] = "亡灵仆从"
 --[[Translation missing --]]
 --[[ L["Undying Stonefiend"] = ""--]] 
---[[Translation missing --]]
---[[ L["Unknown"] = ""--]] 
+L["Unknown"] = "未知"
 L["Unstable Amalgamation"] = "不稳定的融合怪"
 L["Unstable Canister"] = "不稳定的罐子"
 --[[Translation missing --]]

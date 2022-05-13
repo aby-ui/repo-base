@@ -166,8 +166,16 @@ U1RegisterAddon("163UI_MoreOptions", {
         callback = function(cfg, v, loading)
             if not InCombatLockdown() then
                 if v then
-                    SetCVar("NamePlateVerticalScale", 1.0)
-                    SetCVar("NamePlateHorizontalScale", 1.0)
+                    local NamePlateHorizontalScale = 1.0
+                    local NamePlateVerticalScale = 1.0
+                    local NamePlateClassificationScale = 1.0
+                    if InterfaceOptionsNamesPanelUnitNameplatesMakeLarger and tostring(InterfaceOptionsNamesPanelUnitNameplatesMakeLarger:GetValue()) == "1" then
+                        NamePlateHorizontalScale = 1.4
+                        NamePlateVerticalScale = 2.7
+                        NamePlateClassificationScale = 1.25
+                    end
+                    SetCVar("NamePlateHorizontalScale", NamePlateHorizontalScale)
+                    SetCVar("NamePlateVerticalScale", NamePlateVerticalScale)
                     SetCVar("nameplateMinScale", 1.0)
                     SetCVar("nameplateMinAlpha", 0.75)
                     SetCVar("ShowClassColorInFriendlyNameplate", 1)
@@ -176,13 +184,18 @@ U1RegisterAddon("163UI_MoreOptions", {
                     if not loading then
                         U1CfgCallSub(cfg, "scale", true)
                         U1CfgCallSub(cfg, "fwidth", true)
+                        U1CfgCallSub(cfg, "fheight", true)
                         U1CfgCallSub(cfg, "fthrough", true)
                     end
                 elseif not loading then
                     SetCVar("nameplateGlobalScale", GetCVarDefault("nameplateGlobalScale"))
                     SetCVar("nameplateMinScale", GetCVarDefault("nameplateMinScale"))
                     SetCVar("nameplateMinAlpha", GetCVarDefault("nameplateMinAlpha"))
-                    C_NamePlate.SetNamePlateFriendlySize(110, 45)
+                    if InterfaceOptionsNamesPanelUnitNameplatesMakeLarger and tostring(InterfaceOptionsNamesPanelUnitNameplatesMakeLarger:GetValue()) == "1" then
+                        C_NamePlate.SetNamePlateFriendlySize(154, 64.125)
+                    else
+                        C_NamePlate.SetNamePlateFriendlySize(110, 45)
+                    end
                     C_NamePlate.SetNamePlateFriendlyClickThrough(false)
                 end
             end
@@ -191,6 +204,10 @@ U1RegisterAddon("163UI_MoreOptions", {
                     -- call in InterfaceOptionsPanel_Cancel -> InterfaceOptionsLargerNamePlate_OnLoad setFunc
                     if not InCombatLockdown() then
                         U1CfgCallBack(cfg)
+                        U1CfgCallSub(cfg, "scale", true)
+                        U1CfgCallSub(cfg, "fwidth", true)
+                        U1CfgCallSub(cfg, "fheight", true)
+                        U1CfgCallSub(cfg, "fthrough", true)
                     end
                 end)
             end

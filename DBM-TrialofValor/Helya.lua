@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1829, "DBM-TrialofValor", nil, 861)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116144653")
+mod:SetRevision("20220508211213")
 mod:SetCreatureID(114537)
 mod:SetEncounterID(2008)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -582,7 +582,7 @@ function mod:RAID_BOSS_WHISPER(msg)
 end
 
 function mod:UNIT_HEALTH(uId)
-	if not self.vb.phase == 2 then
+	if self.vb.phase ~= 2 then
 		self:UnregisterShortTermEvents()
 		return
 	end

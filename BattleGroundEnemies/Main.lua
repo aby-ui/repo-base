@@ -1796,6 +1796,7 @@ do
 					
 			-- events/scripts
 			playerButton:RegisterForDrag('LeftButton')
+			playerButton:SetClampedToScreen(true)
 
 			playerButton:SetScript('OnDragStart', playerButton.OnDragStart)
 			playerButton:SetScript('OnDragStop', playerButton.OnDragStop)
@@ -2247,7 +2248,18 @@ do
 			
 				
 				local playerButton = players[playerNumber]
-					
+				if not playerButton then
+					-- this really shouldnt be the case but it somehow happened
+					print("PlayerSortingTable")
+					for i = 1, #self.PlayerSortingTable do
+						print(i, self.PlayerSortingTable[i].PlayerName, self.PlayerSortingTable[i])
+					end
+					print("Players")
+					for name, button in pairs(self.Players) do
+						print(name, button)
+					end
+					return
+				end
 				playerButton.Position = playerNumber
 
 				playerButton:ClearAllPoints()
@@ -2647,11 +2659,18 @@ function BattleGroundEnemies:Debug(...)
 	end
 end
 
+local sentMessages = {}
+
+function BattleGroundEnemies:OnetimeInformation(...)
+	local message = table.concat({...}, ", ")
+	if sentMessages[message] then return end
+	print("|cff0099ffBattleGroundEnemies:|r", message) 
+	sentMessages[message] = true
+end
+
 function BattleGroundEnemies:Information(...)
 	print("|cff0099ffBattleGroundEnemies:|r", ...) 
 end
-
-
 
 
 --fires when a arena enemy appears and a frame is ready to be shown
@@ -3357,11 +3376,12 @@ do
 		-- GetRaidRosterInfo also works when in a party (not raid) but i am not 100% sure how the party unitID maps to the index in GetRaidRosterInfo()
 
 		local stop = false
-
+		local numGroupMembers = GetNumGroupMembers()
+		self.Allies:UpdatePlayerCount(numGroupMembers)
+		
 		if IsInRaid() then 
-			local numGroupMembers = GetNumGroupMembers()
-			self.Allies:UpdatePlayerCount(numGroupMembers)
 			local unitIDPrefix = "raid"
+
 			for i = 1, numGroupMembers do -- the player itself only shows up here when he is in a raid		
 				local name, rank, subgroup, level, localizedClass, classTag, zone, online, isDead, role, isML, combatRole = GetRaidRosterInfo(i)
 				
@@ -3372,8 +3392,6 @@ do
 		else
 			-- we are in a party, 5 man group
 			local unitIDPrefix = "party"
-			local numGroupMembers = GetNumGroupMembers()
-			self.Allies:UpdatePlayerCount(numGroupMembers + 1)
 			
 			for i = 1, numGroupMembers do
 				local unitID = unitIDPrefix..i

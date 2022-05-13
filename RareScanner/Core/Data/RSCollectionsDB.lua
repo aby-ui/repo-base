@@ -622,16 +622,19 @@ end
 
 local function DropNotCollectedAppearance(appearanceID)
 	if (private.dbglobal.appearances_item_id and appearanceID and private.dbglobal.appearances_item_id[appearanceID]) then
-		local itemIDs = private.dbglobal.appearances_item_id[appearanceID]
-		for _, itemID in ipairs (itemIDs) do
-			if (GetNotCollectedAppearanceItemIDs()[itemID]) then
-				RSLogger:PrintDebugMessage(string.format("DropNotCollectedAppearance[%s]. Eliminado item [%s].", appearanceID, itemID))
-				GetNotCollectedAppearanceItemIDs()[itemID] = nil
+		if (GetNotCollectedAppearanceItemIDs()) then
+			local itemIDs = private.dbglobal.appearances_item_id[appearanceID]
+			for _, itemID in ipairs (itemIDs) do
+				if (GetNotCollectedAppearanceItemIDs()[itemID]) then
+					RSLogger:PrintDebugMessage(string.format("DropNotCollectedAppearance[%s]. Eliminado item [%s].", appearanceID, itemID))
+					GetNotCollectedAppearanceItemIDs()[itemID] = nil
+				end
 			end
 		end
 
 		private.dbglobal.appearances_item_id[appearanceID] = nil
-				RSLogger:PrintDebugMessage(string.format("DropNotCollectedAppearance[%s]. Eliminada apariencia.", appearanceID))
+		RSLogger:PrintDebugMessage(string.format("DropNotCollectedAppearance[%s]. Eliminada apariencia.", appearanceID))
+		
 		return true
 	end
 	
@@ -646,7 +649,7 @@ local function CheckUpdateAppearance(itemID, entityID, source, checkedItems)
 		return true
 	-- Otherwise query
 	else				
-		if (GetNotCollectedAppearanceItemIDs()[itemID]) then
+		if (GetNotCollectedAppearanceItemIDs() and GetNotCollectedAppearanceItemIDs()[itemID]) then
 			UpdateEntityCollection(itemID, entityID, source, RSConstants.ITEM_TYPE.APPEARANCE)
 			
 			if (not checkedItems[RSConstants.ITEM_TYPE.APPEARANCE][itemID]) then

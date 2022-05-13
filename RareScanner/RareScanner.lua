@@ -1126,6 +1126,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	if (RSConstants.CONTAINERS_WITH_PRE_EVENT[entityID]) then
 		local containerID = RSConstants.CONTAINERS_WITH_PRE_EVENT[entityID]
 		RSGeneralDB.RemoveAlreadyFoundEntity(entityID)
+		vignetteInfo.name = RSContainerDB.GetContainerName(entityID)
 		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
 		entityID = containerID
 		vignetteInfo.preEvent = true

@@ -56,8 +56,6 @@ function SlashCmdList.MYTHICDUNGEONTOOLS(cmd, editbox)
         MDT:ResetMainFramePos()
 	elseif rqst == "dc" then
         MDT:ToggleDataCollection()
-    elseif rqst == "hptrack" then
-        MDT:ToggleHealthTrack()
     else
 		MDT:ShowInterface()
 	end
@@ -109,7 +107,7 @@ local defaultSavedVars = {
         },
 		presets = {},
 		currentPreset = {},
-		dataCollectionActive = false,
+		newDataCollectionActive = false,
 		colorPaletteInfo = {
             autoColoring = true,
             forceColorBlindMode = false,
@@ -149,9 +147,10 @@ do
 			if not db.minimap.hide then
 				icon:Show("MythicDungeonTools")
 			end
-            -- if db.dataCollectionActive then MDT.DataCollection:Init() end
-            -- PTR ONLY
-            --MDT.DataCollection:Init()
+            if db.newDataCollectionActive then 
+                MDT.DataCollection:Init()
+                MDT.DataCollection:InitHealthTrack()
+            end
             --fix db corruption
             do
                 for _,presets in pairs(db.presets) do
@@ -234,8 +233,8 @@ local affixWeeks = {
     [6] =  {7,14,10,130}, -- bolstering quaking fortified encrypted
     [7] =  {8,124,9,130}, -- sanguine storming tyrannical encrypted
     [8] =  {6,13,10,130}, -- raging explosive fortified encrypted
-    [9] =  {0,0,9,130}, -- tyrannical encrypted
-    [10] = {0,0,10,130},  -- fortified encrypted
+    [9] =  {11,3,9,130}, -- bursting volcanic tyrannical encrypted
+    [10] = {123,4,10,130},  -- spiteful necrotic fortified encrypted
     [11] = {0,0,9,130},  -- tyrannical encrypted
     [12] = {0,0,10,130},  -- fortified encrypted
 }
@@ -297,15 +296,9 @@ function MDT:HideInterface()
 end
 
 function MDT:ToggleDataCollection()
-    db.dataCollectionActive = not db.dataCollectionActive
-    print(string.format("%sMDT|r: DataCollection %s. Reload Interface!", mythicColor,db.dataCollectionActive and "|cFF00FF00Enabled|r" or "|cFFFF0000Disabled|r"))
+    db.newDataCollectionActive = not db.newDataCollectionActive
+    print(string.format("%sMDT|r: DataCollection %s. Reload Interface!", mythicColor,db.newDataCollectionActive and "|cFF00FF00Enabled|r" or "|cFFFF0000Disabled|r"))
 end
-
-function MDT:ToggleHealthTrack()
-    MDT.DataCollection:InitHealthTrack()
-    print(string.format("%sMDT|r: HealthTrack %s.", mythicColor,"|cFF00FF00Enabled|r"))
-end
-
 
 function MDT:CreateMenu()
     -- Close button
@@ -542,6 +535,7 @@ local bottomTips = {
     [15] = L["Mouseover a patrolling enemy with a blue border to view the patrol path."],
     [16] = L["Expand the top toolbar to gain access to drawing and note features."],
     [17] = L["ConnectedTip"],
+    [18] = L["EfficiencyScoreTip"]
 }
 
 function MDT:UpdateBottomText()
@@ -1169,6 +1163,8 @@ function MDT:MakeSidePanel(frame)
             MDT:POI_UpdateAll()
             MDT:KillAllAnimatedLines()
             MDT:DrawAllAnimatedLines()
+            MDT:ReloadPullButtons()
+            MDT:DrawAllHulls()
         else
             db.currentDifficulty = difficulty or db.currentDifficulty
         end
@@ -1740,21 +1736,46 @@ local emissaryIds = {[155432]=true,[155433]=true,[155434]=true}
 ---Checks if the specified clone is part of the current map configuration
 function MDT:IsCloneIncluded(enemyIdx, cloneIdx)
     local preset = MDT:GetCurrentPreset()
-    local isCloneBlacktoothEvent = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].blacktoothEvent
-    local cloneFaction = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].faction
+    local enemy = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]
+    local clone = enemy["clones"][cloneIdx]
 
     local week = self:GetEffectivePresetWeek()
 
     if db.currentSeason ~= 3 then
-        if emissaryIds[MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx].id] then return false end
+        if emissaryIds[enemy.id] then return false end
     elseif db.currentSeason ~= 4 then
-        if MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx].corrupted then return false end
+        if enemy.corrupted then return false end
+    end
+
+    --filter enemies out that have filters and conditions are not met
+    local include = clone.include or enemy.include
+    if include then
+        local pass = {}
+        if include.affix then
+            local affixIncluded = false
+            for _, value in pairs(affixWeeks[week]) do
+                if value == include.affix then
+                    affixIncluded = true
+                end
+            end
+            tinsert(pass,affixIncluded)
+        end
+        if include.level then
+            local levelIncluded = db.currentDifficulty >= include.level
+            tinsert(pass,levelIncluded)
+        end
+        --TODO: week
+        local shouldInclude = true
+        for _,v in pairs(pass) do
+           shouldInclude = shouldInclude and v
+        end
+        if not shouldInclude then return false end
     end
 
     --beguiling weekly configuration
-    local weekData = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].week
+    local weekData = clone.week
     if weekData then
-        if weekData[week] and not (cloneFaction and cloneFaction~= preset.faction) and db.currentDifficulty >= 10 then
+        if weekData[week] and not (clone.faction and clone.faction~= preset.faction) and db.currentDifficulty >= 10 then
             return true
         else
             return false
@@ -1765,12 +1786,10 @@ function MDT:IsCloneIncluded(enemyIdx, cloneIdx)
     if week == 0 then week = 3 end
     local isBlacktoothWeek = week == 2
 
-    if not isCloneBlacktoothEvent or isBlacktoothWeek then
-        if not (cloneFaction and cloneFaction~= preset.faction) then
-            local isCloneTeeming = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].teeming
-            local isCloneNegativeTeeming = MDT.dungeonEnemies[db.currentDungeonIdx][enemyIdx]["clones"][cloneIdx].negativeTeeming
-            if MDT:IsCurrentPresetTeeming() or ((isCloneTeeming and isCloneTeeming == false) or (not isCloneTeeming)) then
-                if not(MDT:IsCurrentPresetTeeming() and isCloneNegativeTeeming) then
+    if not clone.blacktoothEvent or isBlacktoothWeek then
+        if not (clone.faction and clone.faction~= preset.faction) then
+            if MDT:IsCurrentPresetTeeming() or ((clone.teeming and clone.teeming == false) or (not clone.teeming)) then
+                if not(MDT:IsCurrentPresetTeeming() and clone.negativeTeeming) then
                     return true
                 end
             end
@@ -2105,15 +2124,13 @@ function MDT:CalculateEnemyHealth(boss, baseHealth, level, ignoreFortified)
 	return round(mult*baseHealth,0)
 end
 
-function MDT:ReverseCalcEnemyHealth(unit, level, boss)
-    local health = UnitHealthMax(unit)
-    local fortified = MDT:IsCurrentPresetFortified()
-    local tyrannical = MDT:IsCurrentPresetTyrannical()
+function MDT:ReverseCalcEnemyHealth(health, level, boss,fortified)
     local mult = 1
+    local tyrannical = not fortified
     if boss == false and fortified == true then mult = 1.2 end
     if boss == true and tyrannical == true then mult = 1.3 end
     mult = round((1.08^math.max(level-2,0))*mult,2)
-    local baseHealth = health/mult
+    local baseHealth = round(health/mult,0)
     return baseHealth
 end
 
@@ -2508,8 +2525,8 @@ function MDT:UpdateToDungeon(dungeonIdx, ignoreUpdateMap, init)
     if dungeonIdx>=15 then db.currentExpansion = 2 end
     if dungeonIdx>=29 then db.currentExpansion = 3 end
     db.currentDungeonIdx = dungeonIdx
-	if not db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentSublevel then 
-        db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentSublevel=1 
+	if not db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentSublevel then
+        db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentSublevel=1
     end
     if init then return end
 	MDT:UpdatePresetDropDown()
@@ -2557,30 +2574,39 @@ MDT.zoneIdToDungeonIdx = {
     [1493] = 26,--upper mecha
     [1494] = 26,--upper mecha
     [1497] = 26,--upper mecha
-    [1663] = 30,
-    [1664] = 30,
-    [1665] = 30,
-    [1666] = 35,
-    [1667] = 35,
-    [1668] = 35,
-    [1669] = 31,
-    [1674] = 32,
-    [1675] = 33,
-    [1676] = 33,
-    [1677] = 29,
-    [1678] = 29,
-    [1679] = 29,
-    [1680] = 29,
-    [1683] = 36,
-    [1684] = 36,
-    [1685] = 36,
-    [1686] = 36,
-    [1687] = 36,
-    [1692] = 34,
-    [1693] = 34,
-    [1694] = 34,
-    [1695] = 34,
-    [1697] = 32,
+    [1663] = 30,--halls of atonement
+    [1664] = 30,--halls of atonement
+    [1665] = 30,--halls of atonement
+    [1666] = 35,--necrotic wake
+    [1667] = 35,--necrotic wake
+    [1668] = 35,--necrotic wake
+    [1669] = 31,--mists of tirna scithe
+    [1674] = 32,--plaguefall
+    [1675] = 33,--sanguine depths
+    [1676] = 33,--sanguine depths
+    [1677] = 29,--de other side
+    [1678] = 29,--de other side
+    [1679] = 29,--de other side
+    [1680] = 29,--de other side
+    [1683] = 36,--theater of pain
+    [1684] = 36,--theater of pain
+    [1685] = 36,--theater of pain
+    [1686] = 36,--theater of pain
+    [1687] = 36,--theater of pain
+    [1692] = 34,--spires of ascension
+    [1693] = 34,--spires of ascension
+    [1694] = 34,--spires of ascension
+    [1695] = 34,--spires of ascension
+    [1697] = 32,--plaguefall
+    [1989] = 37,--tazavesh streets
+    [1990] = 37,--tazavesh streets
+    [1991] = 37,--tazavesh streets
+    [1992] = 37,--tazavesh streets
+    [1993] = 38,--tazavesh gambit
+    [1995] = 38,--tazavesh gambit
+    [1996] = 38,--tazavesh gambit
+    [1997] = 38,--tazavesh gambit
+    --https://wowpedia.fandom.com/wiki/UiMapID
 }
 local lastUpdatedDungeonIdx
 function MDT:CheckCurrentZone(init)
@@ -2769,7 +2795,8 @@ function MDT:MakePresetImportFrame(frame)
 	frame.presetImportBox = AceGUI:Create("EditBox")
 	frame.presetImportBox:SetLabel(L["Import Preset"]..":")
 	frame.presetImportBox:SetWidth(255)
-	frame.presetImportBox:SetCallback("OnEnterPressed", function(widget, event, text) importString = text end)
+	frame.presetImportBox:SetCallback("OnTextChanged", function(widget, event, text) importString = text end)
+	frame.presetImportBox:DisableButton(true)
 	frame.presetImportFrame:AddChild(frame.presetImportBox)
 
 	local importButton = AceGUI:Create("Button")
@@ -3743,9 +3770,8 @@ function MDT:MakeRenameFrame(frame)
 	frame.RenameFrame.Editbox = AceGUI:Create("EditBox")
 	frame.RenameFrame.Editbox:SetLabel(L["Preset Name"]..":")
 	frame.RenameFrame.Editbox:SetWidth(200)
-	frame.RenameFrame.Editbox:SetCallback("OnEnterPressed", function(...)
-        local widget, event, text = ...
-		--check if name is valid, block button if so, unblock if valid
+    frame.RenameFrame.Editbox:SetCallback("OnTextChanged", function(widget, event, text)
+        --check if name is valid, block button if so, unblock if valid
 		if MDT:SanitizePresetName(text) then
 			frame.RenameFrame.PresetRenameLabel:SetText(nil)
 			frame.RenameFrame.RenameButton:SetDisabled(false)
@@ -3757,8 +3783,9 @@ function MDT:MakeRenameFrame(frame)
 			frame.RenameFrame.RenameButton.text:SetTextColor(0.5,0.5,0.5)
 			renameText = nil
 		end
-		frame.presetCreationFrame:DoLayout()
-	end)
+		frame.RenameFrame:DoLayout()
+    end)
+	frame.RenameFrame.Editbox:DisableButton(true)
 
 	frame.RenameFrame:AddChild(frame.RenameFrame.Editbox)
 

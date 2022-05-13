@@ -724,6 +724,9 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP1] = { x = 0.594, y = 0.769, comment = AL["NOTE_369757_1"] };
 		[RSConstants.STEP2] = { x = 0.5848, y = 0.7283, comment = AL["NOTE_369757_2"] };
 	}; --
+	["220986554"] = {
+		[RSConstants.ENTRANCE] = { x = 0.172, y = 0.573 }; 
+	}; --Blackguard's Jetsam
 }
 
 ---============================================================================

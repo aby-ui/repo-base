@@ -67,24 +67,24 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220502021745"),
+	Revision = parseCurseDate("20220511060021"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.17 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 4, 23, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	fakeBWVersion, fakeBWHash = 240, "b563b0b"
+	DBM.DisplayVersion = "9.2.18 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	fakeBWVersion, fakeBWHash = 241, "710129e"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.21 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 4, 19) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	fakeBWVersion, fakeBWHash = 36, "cf2511c"
+	DBM.DisplayVersion = "1.14.22 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	fakeBWVersion, fakeBWHash = 38, "5e831f6"
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.35 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 4, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	fakeBWVersion, fakeBWHash = 36, "cf2511c"
+	DBM.DisplayVersion = "2.5.36 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	fakeBWVersion, fakeBWHash = 38, "5e831f6"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 

@@ -332,6 +332,77 @@ function MDT:CreateDevPanel(frame)
             scaleSlider:SetValue(scale)
             countSlider:SetValue(count)
         end
+
+        local enemyInfoButton = AceGUI:Create("Button")
+        enemyInfoButton:SetText("Open Enemy Info")
+        enemyInfoButton:SetCallback("OnClick",function()
+            local devBlip = MDT:GetCurrentDevmodeBlip()
+            if devBlip then MDT:ShowEnemyInfoFrame(devBlip) else print("MDT DevMode: Please select a blip") end
+        end)
+        container:AddChild(enemyInfoButton)
+
+        local collectedSpellsButton = AceGUI:Create("Button")
+        collectedSpellsButton:SetText("Add collected spells")
+        collectedSpellsButton:SetCallback("OnClick",function()
+            MDT.DataCollection:AddCollectedDataToEnemyTable(db.currentDungeonIdx,false,true)
+        end)
+        container:AddChild(collectedSpellsButton)
+
+        local collectedCharacteristicsButton = AceGUI:Create("Button")
+        collectedCharacteristicsButton:SetText("Add collected characteristics")
+        collectedCharacteristicsButton:SetCallback("OnClick",function()
+            MDT.DataCollection:AddCollectedDataToEnemyTable(db.currentDungeonIdx,true,false)
+        end)
+        container:AddChild(collectedCharacteristicsButton)
+
+        local collectedHealthButton = AceGUI:Create("Button")
+        collectedHealthButton:SetText("Add collected Health Values")
+        collectedHealthButton:SetCallback("OnClick",function()
+            if db.newDataCollectionActive then
+                MDT:ProcessHealthTrack()
+            else
+                print("MDT DevMode: Cant process Health Track, reload to enable Data Collection first!")
+                MDT:ToggleDataCollection()
+            end
+        end)
+        container:AddChild(collectedHealthButton)
+
+        local cleanSpellDataButton = AceGUI:Create("Button")
+        cleanSpellDataButton:SetText("Clean spells")
+        cleanSpellDataButton:SetCallback("OnClick",function()
+            local blacklist = MDT:GetEnemyInfoSpellBlacklist()
+            for i=1,100 do
+                local enemies = MDT.dungeonEnemies[i]
+                if enemies then
+                    for enemyIdx,enemy in pairs(enemies) do
+                        if enemy.spells then
+                            for spellId, spell in pairs(enemy.spells) do
+                            if blacklist[spellId] then
+                                enemy.spells[spellId] = nil
+                            end
+                            end
+                        end
+                    end
+                end
+            end
+            MDT.EnemyInfoFrame:Hide()
+        end)
+        container:AddChild(cleanSpellDataButton)
+
+        local button3 = AceGUI:Create("Button")
+        button3:SetText("Export to LUA")
+        button3:SetCallback("OnClick",function()
+            MDT:CleanEnemyData(db.currentDungeonIdx)
+            local export = tshow(MDT.dungeonEnemies[db.currentDungeonIdx],"MDT.dungeonEnemies[dungeonIndex]")
+            MDT.main_frame.ExportFrame:ClearAllPoints()
+            MDT.main_frame.ExportFrame:Show()
+            MDT.main_frame.ExportFrame:SetPoint("CENTER", MDT.main_frame,"CENTER",0,50)
+            MDT.main_frame.ExportFrameEditbox:SetText(export)
+            MDT.main_frame.ExportFrameEditbox:HighlightText(0, slen(export))
+            MDT.main_frame.ExportFrameEditbox:SetFocus()
+        end)
+        container:AddChild(button3)
+
         local function updateDropdown(npcId,idx)
             if not MDT.dungeonEnemies[db.currentDungeonIdx] then return end
             idx = idx or 1
@@ -652,42 +723,6 @@ function MDT:CreateDevPanel(frame)
         blipsMovableCheckbox:SetValue(db.devModeBlipsMovable)
         blipsScrollableCheckbox:SetValue(db.devModeBlipsScrollable)
 
-        local button3 = AceGUI:Create("Button")
-        button3:SetText("Export to LUA")
-        button3:SetCallback("OnClick",function()
-            MDT:CleanEnemyData(db.currentDungeonIdx)
-            local export = tshow(MDT.dungeonEnemies[db.currentDungeonIdx],"MDT.dungeonEnemies[dungeonIndex]")
-            MDT.main_frame.ExportFrame:ClearAllPoints()
-            MDT.main_frame.ExportFrame:Show()
-            MDT.main_frame.ExportFrame:SetPoint("CENTER", MDT.main_frame,"CENTER",0,50)
-            MDT.main_frame.ExportFrameEditbox:SetText(export)
-            MDT.main_frame.ExportFrameEditbox:HighlightText(0, slen(export))
-            MDT.main_frame.ExportFrameEditbox:SetFocus()
-        end)
-        container:AddChild(button3)
-
-        local button4 = AceGUI:Create("Button")
-        button4:SetText("Export Expansion")
-        button4:SetCallback("OnClick",function()
-            local dungeons = {}
-            for i = 29,36 do
-                MDT:CleanEnemyData(i)
-                dungeons[i] = MDT.dungeonEnemies[i]
-            end
-            local export = MDT:TableToString(dungeons,true,5)
-            MDT.main_frame.ExportFrame:ClearAllPoints()
-            MDT.main_frame.ExportFrame:Show()
-            MDT.main_frame.ExportFrame:SetPoint("CENTER", MDT.main_frame,"CENTER",0,50)
-            MDT.main_frame.ExportFrameEditbox:SetText(export)
-            MDT.main_frame.ExportFrameEditbox:HighlightText(0, slen(export))
-            MDT.main_frame.ExportFrameEditbox:SetFocus()
-        end)
-        container:AddChild(button4)
-
-
-
-
-
         updateDropdown(nil,currentEnemyIdx)
         end
 
@@ -810,6 +845,8 @@ function MDT:CreateDevPanel(frame)
         clearCacheButton:SetText("Clear Cache")
         clearCacheButton:SetCallback("OnClick",function()
             MDT:ResetDataCache()
+            db.dataCollection[db.currentDungeonIdx] = {}
+            db.dataCollectionCC[db.currentDungeonIdx] = {}
         end)
         container:AddChild(clearCacheButton)
 

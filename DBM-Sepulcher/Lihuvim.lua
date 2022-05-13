@@ -1,13 +1,17 @@
 local mod	= DBM:NewMod(2461, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220505185342")
+mod:SetRevision("20220508234625")
 mod:SetCreatureID(182169)
 mod:SetEncounterID(2539)
 mod:SetUsedIcons(1, 2)
-mod:SetHotfixNoticeRev(20220423000000)
-mod:SetMinSyncRevision(20220301000000)
+mod:SetHotfixNoticeRev(20220508000000)
+mod:SetMinSyncRevision(20220508000000)
 --mod.respawnTime = 29
+--Disable all combat types to avoid him engaging during trash RP
+mod:DisableRegenDetection()
+mod:DisableIEEUCombatDetection()
+mod.disableHealthCombat = true
 
 mod:RegisterCombat("combat")
 
