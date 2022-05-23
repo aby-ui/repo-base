@@ -495,8 +495,6 @@ function Details:StartMeUp() --I'll never stop!
 
 	--shutdown pre-pot announcer
 	Details.announce_prepots.enabled = false
-	--disable the min healing to show
-	Details.deathlog_healingdone_min =  1
 	--remove standard skin on 9.0.1
 	_detalhes.standard_skin = false
 	--enforce to show 6 abilities on the tooltip

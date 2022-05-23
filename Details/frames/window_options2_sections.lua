@@ -1152,6 +1152,20 @@ do
         afterUpdate()
     end
 
+    local onSelectBarTextureOverlay =  function(_, instance, textureName)
+        editInstanceSetting(currentInstance, "SetBarOverlaySettings", textureName)
+    end
+
+    local buildTextureOverlayMenu = function()
+        local textures2 = SharedMedia:HashTable("statusbar")
+        local texTable2 = {}
+        for name, texturePath in pairs (textures2) do
+            texTable2[#texTable2+1] = {value = name, label = name, iconsize = texture_icon_size, statusbar = texturePath,  onclick = onSelectBarTextureOverlay, icon = texture_icon, texcoord = texture_texcoord}
+        end
+        table.sort(texTable2, function (t1, t2) return t1.label < t2.label end)
+        return texTable2
+    end
+
     local iconsize = {16, 16}
     local icontexture = [[Interface\WorldStateFrame\ICONS-CLASSES]]
     local iconcoords = {0.25, 0.50, 0, 0.25}
@@ -1283,7 +1297,7 @@ do
                     afterUpdate()
                 end,
                 name = Loc ["STRING_OPTIONS_BARS_CUSTOM_TEXTURE"],
-                desc = Loc ["STRING_OPTIONS_BARS_CUSTOM_TEXTURE_DESC"],
+                desc = Loc ["STRING_CUSTOM_TEXTURE_GUIDE"]
             },
 
             {--remove custom texture
@@ -1314,7 +1328,7 @@ do
 				desc = Loc ["STRING_OPTIONS_BAR_COLOR_DESC"],
             },
 
-            {--use class colors
+            {--color by player class
                 type = "toggle",
                 get = function() return currentInstance.row_info.texture_class_colors end,
                 set = function (self, fixedparam, value)
@@ -1323,6 +1337,32 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS"],
                 desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return "Overlay:" end, text_template = subSectionTitleTextTemplate},
+            {--overlay texture
+                type = "select",
+                get = function() return currentInstance.row_info.overlay_texture end,
+                values = function()
+                    return buildTextureOverlayMenu()
+                end,
+                name = Loc ["STRING_TEXTURE"],
+                desc = "Texture which sits above the bar",
+            },
+
+			{--overlay color
+				type = "color",
+                get = function()
+                    local r, g, b, a = unpack(currentInstance.row_info.overlay_color)
+                    return {r, g, b, a}
+				end,
+				set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "SetBarOverlaySettings", nil, {r, g, b, a})
+                    afterUpdate()
+				end,
+				name = Loc ["STRING_COLOR"],
+				desc = Loc ["STRING_COLOR"],
             },
 
             {type = "blank"},
@@ -1364,7 +1404,7 @@ do
                 desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
             },
 
-            {type = "blank"},
+            {type = "breakline"},
             {type = "label", get = function() return "Arena Team Color" end, text_template = subSectionTitleTextTemplate},
 			{--team 1 color
                 type = "color",
@@ -1397,7 +1437,7 @@ do
                 desc = "Arena team color",
             },
 
-            {type = "breakline"},
+            {type = "blank"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_TEXT_ROWICONS_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
             {--select icon file
@@ -1442,8 +1482,8 @@ do
                     Details.options.SetCurrentInstanceAndRefresh(currentInstance)
                     afterUpdate()
                 end,
-                name = "Enter the path for a custom icon file",
-                desc = "Enter the path for a custom icon file",
+                name = Loc ["STRING_OPTIONS_BARS_CUSTOM_TEXTURE"],
+                desc = Loc ["STRING_CUSTOM_TEXTURE_GUIDE"],
             },
 
             {--bar start at
@@ -1500,6 +1540,17 @@ do
                 desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_SIZE_DESC"],
             },
 
+            {--border uses class colors
+                type = "toggle",
+                get = function() return currentInstance.row_info.backdrop.use_class_colors end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, nil, value)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS"],
+                desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
+            },
+
             {type = "blank"},
             {type = "label", get = function() return Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] end, text_template = subSectionTitleTextTemplate},
 
@@ -1514,6 +1565,36 @@ do
                 end,
                 name = Loc ["STRING_ENABLED"],
                 desc = Loc ["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"],
+            },
+
+            {--inline auto align enabled
+                type = "toggle",
+                get = function() return currentInstance.use_auto_align_multi_fontstrings end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "use_auto_align_multi_fontstrings", value)
+                    editInstanceSetting(currentInstance, "InstanceRefreshRows")
+                    _detalhes:RefreshMainWindow(-1, true)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN"],
+                desc = Loc ["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN_DESC"],
+            },
+
+
+            {--name size offset
+                type = "range",
+                get = function() return tonumber(currentInstance.fontstrings_text_limit_offset) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "fontstrings_text_limit_offset", value)
+                    editInstanceSetting(currentInstance, "InstanceRefreshRows")
+                    Details.options.RefreshInstances(currentInstance)
+                    afterUpdate()
+                end,
+                min = -30,
+                max = 30,
+                step = 1,
+                name = "Unit Name Size Offset",
+                desc = "Unit Name Size Offset",
             },
 
             {--lineText2 (left, usuali is the 'done' amount)
@@ -1561,10 +1642,10 @@ do
                 desc = Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET_DESC"],
             },
 
-            {type = "blank"},
+            {type = "breakline"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_TOTALBAR_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
-            {--enabled
+            {--total bar enabled
                 type = "toggle",
                 get = function() return currentInstance.total_bar.enabled end,
                 set = function (self, fixedparam, value)
@@ -2030,7 +2111,23 @@ do
             editInstanceSetting(currentInstance, "ChangeSkin")
             afterUpdate()
         end
-        
+
+    --> custom title bar texture
+        local onSelectCustomTitleBarTexture =  function(_, instance, textureName)
+            editInstanceSetting(currentInstance, "SetTitleBarSettings", nil, nil, textureName)
+            editInstanceSetting(currentInstance, "RefreshTitleBar")
+        end
+
+        local buildTextureCustomTitleBar = function()
+            local textures = SharedMedia:HashTable("statusbar")
+            local texTable = {}
+            for name, texturePath in pairs (textures) do
+                texTable[#texTable+1] = {value = name, label = name, statusbar = texturePath,  onclick = onSelectCustomTitleBarTexture}
+            end
+            table.sort(texTable, function (t1, t2) return t1.label < t2.label end)
+            return texTable
+        end
+
         local buildIconStyleMenu = function()
             local iconMenu = {
                 {value = "Interface\\AddOns\\Details\\images\\toolbar_icons", label = "Set 1", icon = "Interface\\AddOns\\Details\\images\\toolbar_icons", texcoord = {0, 0.125, 0, 1}, onclick = on_select_icon_set},
@@ -2045,7 +2142,80 @@ do
 
     local buildSection = function(sectionFrame)
         local sectionOptions = {
-            {type = "label", get = function() return Loc ["STRING_OPTIONS_ROW_SETTING_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+            {type = "label", get = function() return "Title Bar" end, text_template = subSectionTitleTextTemplate},
+
+            {--use custom titlebar
+                type = "toggle",
+                get = function() return currentInstance.titlebar_shown end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetTitleBarSettings", value)
+                    editInstanceSetting(currentInstance, "RefreshTitleBar")
+                    afterUpdate()
+                end,
+                name = "Enable Custom Title Bar",
+                desc = "Use an alternative title bar instead of the title bar builtin in the Skin file.\n\n|cFFFFFF00Important|r: To disable the title bar from the Skin file, go to 'Window Body' and make the 'skin color' fully transparent.",
+            },
+
+            {--custom title bar height
+                type = "range",
+                get = function() return currentInstance.titlebar_height end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetTitleBarSettings", nil, value)
+                    editInstanceSetting(currentInstance, "RefreshTitleBar")
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 32,
+                step = 1,
+                name = "Height",
+                desc = "Height",
+            },
+
+            {--custom title bar texture
+                type = "select",
+                get = function() return currentInstance.titlebar_texture end,
+                values = function()
+                    return buildTextureCustomTitleBar()
+                end,
+                name = Loc ["STRING_TEXTURE"],
+                desc = Loc ["STRING_TEXTURE"],
+            },
+
+			{--texture color
+                type = "color",
+                get = function()
+                    local r, g, b, a = unpack(currentInstance.titlebar_texture_color)
+                    return {r, g, b, a}
+                end,
+                set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "SetTitleBarSettings", nil, nil, nil, {r, g, b, a})
+                    editInstanceSetting(currentInstance, "RefreshTitleBar")
+                    afterUpdate()
+                end,
+                name = "Color",
+                desc = "Color",
+            },
+
+
+            --SetTitleBarSettings(shown, height, texture, color)
+
+            {--disable all displays
+                type = "toggle",
+                get = function() return currentInstance.disable_alldisplays_window end,
+                set = function (self, fixedparam, value)
+                    _detalhes.disable_alldisplays_window = value
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_DISABLE_ALLDISPLAYSWINDOW"],
+                desc = Loc ["STRING_OPTIONS_DISABLE_ALLDISPLAYSWINDOW_DESC"],
+            },
+
+
+
+            {type = "blank"},
+
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_TITLEBAR_MENUBUTTONS_HEADER"] end, text_template = subSectionTitleTextTemplate},
 
             {type = "label", get = function() return Loc ["STRING_OPTIONS_MENU_SHOWBUTTONS"] end, text_template = options_text_template},
             {--button orange gear
@@ -2250,33 +2420,6 @@ do
                 desc = Loc ["STRING_OPTIONS_PICONS_DIRECTION_DESC"],
             },
 
-            {type = "blank"},
-            {type = "label", get = function() return Loc ["STRING_OPTIONS_LEFT_MENU_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
-
-            {--menu text size
-                type = "range",
-                get = function() return Details.font_sizes.menus end,
-                set = function (self, fixedparam, value)
-                    Details.font_sizes.menus = value
-                    afterUpdate()
-                end,
-                min = 5,
-                max = 32,
-                step = 1,
-                name = Loc ["STRING_OPTIONS_TEXT_SIZE"],
-                desc = Loc ["STRING_OPTIONS_MENU_FONT_SIZE_DESC"],
-            },
-
-            {--menu text font
-                type = "select",
-                get = function() return Details.font_faces.menus end,
-                values = function()
-                    return buildFontMenu()
-                end,
-                name = Loc ["STRING_OPTIONS_MENU_FONT_FACE"],
-                desc = Loc ["STRING_OPTIONS_MENU_FONT_FACE_DESC"],
-            },
-
             {--disable reset button
                 type = "toggle",
                 get = function() return _detalhes.disable_reset_button end,
@@ -2308,17 +2451,6 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_MENU_AUTOHIDE_LEFT"],
                 desc = Loc ["STRING_OPTIONS_MENU_AUTOHIDE_DESC"],
-            },
-
-            {--disable all displays
-                type = "toggle",
-                get = function() return currentInstance.disable_alldisplays_window end,
-                set = function (self, fixedparam, value)
-                    _detalhes.disable_alldisplays_window = value
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_DISABLE_ALLDISPLAYSWINDOW"],
-                desc = Loc ["STRING_OPTIONS_DISABLE_ALLDISPLAYSWINDOW_DESC"],
             },
 
             {type = "breakline"},
@@ -2434,6 +2566,31 @@ do
                 desc = Loc ["STRING_OPTIONS_MENU_ATTRIBUTE_SIDE_DESC"],
             },
 
+            {type = "blank"},
+            {--menu text font
+                type = "select",
+                get = function() return Details.font_faces.menus end,
+                values = function()
+                    return buildFontMenu()
+                end,
+                name = Loc ["STRING_OPTIONS_MENU_FONT_FACE"],
+                desc = Loc ["STRING_OPTIONS_MENU_FONT_FACE_DESC"],
+            },
+
+            {--menu text size
+                type = "range",
+                get = function() return Details.font_sizes.menus end,
+                set = function (self, fixedparam, value)
+                    Details.font_sizes.menus = value
+                    afterUpdate()
+                end,
+                min = 5,
+                max = 32,
+                step = 1,
+                name = Loc ["STRING_OPTIONS_TEXT_SIZE"],
+                desc = Loc ["STRING_OPTIONS_MENU_FONT_SIZE_DESC"],
+            },
+
         }
 
         sectionFrame.sectionOptions = sectionOptions
@@ -2543,8 +2700,9 @@ do
 
     local buildSection = function(sectionFrame)
         local sectionOptions = {
+            {type = "label", get = function() return Loc["STRING_OPTIONS_GENERAL_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
-			{--window color
+			{--window color (skin color)
                 type = "color",
                 get = function()
                     local r, g, b = unpack (currentInstance.color)
@@ -2555,37 +2713,8 @@ do
                     editInstanceSetting(currentInstance, "InstanceColor", r, g, b, a, nil, true)
                     afterUpdate()
                 end,
-                name = Loc ["STRING_OPTIONS_INSTANCE_COLOR"],
-                desc = Loc ["STRING_OPTIONS_INSTANCE_COLOR_DESC"],
-            },
-
-			{--background color
-                type = "color",
-                get = function()
-                    return {currentInstance.bg_r, currentInstance.bg_g, currentInstance.bg_b, currentInstance.bg_alpha}
-                end,
-                set = function (self, r, g, b, a)
-                    editInstanceSetting(currentInstance, "SetBackgroundColor", r, g, b)
-                    editInstanceSetting(currentInstance, "SetBackgroundAlpha", a)
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_INSTANCE_ALPHA2"],
-                desc = Loc ["STRING_OPTIONS_INSTANCE_ALPHA2_DESC"],
-            },
-
-            {--window scale
-                type = "range",
-                get = function() return tonumber(currentInstance.window_scale) end,
-                set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetWindowScale", value, true)
-                    afterUpdate()
-                end,
-                min = 0.65,
-                max = 1.5,
-                step = 0.02,
-                usedecimals = true,
-                name = Loc ["STRING_OPTIONS_WINDOW_SCALE"],
-                desc = Loc ["STRING_OPTIONS_WINDOW_SCALE_DESC"],
+                name = Loc ["STRING_OPTIONS_WINDOW_SKIN_COLOR"],
+                desc = Loc ["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"],
             },
 
             {--show borders
@@ -2602,6 +2731,35 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_SHOW_SIDEBARS"],
                 desc = Loc ["STRING_OPTIONS_SHOW_SIDEBARS_DESC"],
+            },
+
+			{--background color
+                type = "color",
+                get = function()
+                    return {currentInstance.bg_r, currentInstance.bg_g, currentInstance.bg_b, currentInstance.bg_alpha}
+                end,
+                set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "SetBackgroundColor", r, g, b)
+                    editInstanceSetting(currentInstance, "SetBackgroundAlpha", a)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"],
+                desc = Loc ["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"],
+            },
+
+            {--window scale
+                type = "range",
+                get = function() return tonumber(currentInstance.window_scale) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetWindowScale", value, true)
+                    afterUpdate()
+                end,
+                min = 0.65,
+                max = 1.5,
+                step = 0.02,
+                usedecimals = true,
+                name = Loc ["STRING_OPTIONS_WINDOW_SCALE"],
+                desc = Loc ["STRING_OPTIONS_WINDOW_SCALE_DESC"],
             },
 
             {--ignore on mass hide
@@ -2731,6 +2889,90 @@ do
                 name = Loc ["STRING_OPTIONS_INSTANCE_DELETE"],
                 --icontexture = [[Interface\Buttons\UI-GuildButton-MOTD-Up]],
                 --icontexcoords = {1, 0, 0, 1},
+            },
+
+            {type = "breakline"},
+            {type = "label", get = function() return "Window Area Border" end, text_template = subSectionTitleTextTemplate},
+
+            {--show full border ~border
+                type = "toggle",
+                get = function() return currentInstance.fullborder_shown end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "UpdateFullBorder", value)
+                    afterUpdate()
+                end,
+                name = "Show Border",
+                desc = "Show Border",
+            },
+
+			{--full border color
+                type = "color",
+                get = function()
+                    return {unpack(currentInstance.fullborder_color)}
+                end,
+                set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "UpdateFullBorder", nil, {r, g, b, a})
+                    afterUpdate()
+                end,
+                name = "Border Color",
+                desc = "Border Color",
+            },
+
+            {--border size
+                type = "range",
+                get = function() return tonumber(currentInstance.fullborder_size) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "UpdateFullBorder", nil, nil, value)
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 5,
+                step = 0.5,
+                usedecimals = true,
+                name = "Border Thickness",
+                desc = "Border Thickness",
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return "Row's Area Border" end, text_template = subSectionTitleTextTemplate},
+
+            {--show full border ~border
+                type = "toggle",
+                get = function() return currentInstance.rowareaborder_shown end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "UpdateRowAreaBorder", value)
+                    afterUpdate()
+                end,
+                name = "Show Border",
+                desc = "Show Border",
+            },
+
+			{--full border color
+                type = "color",
+                get = function()
+                    return {unpack(currentInstance.rowareaborder_color)}
+                end,
+                set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "UpdateRowAreaBorder", nil, {r, g, b, a})
+                    afterUpdate()
+                end,
+                name = "Border Color",
+                desc = "Border Color",
+            },
+
+            {--border size
+                type = "range",
+                get = function() return tonumber(currentInstance.rowareaborder_size) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "UpdateRowAreaBorder", nil, nil, value)
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 5,
+                step = 0.5,
+                usedecimals = true,
+                name = "Border Thickness",
+                desc = "Border Thickness",
             },
             
         }
@@ -4457,6 +4699,7 @@ do
 
             local anchorMenu = {
                 {value = "all", label = "Fill", onclick = onSelectAnchor},
+                {value = "titlebar", label = "Full Body", onclick = onSelectAnchor},
                 {value = "center", label = "Center", onclick = onSelectAnchor},
                 {value = "stretchLR", label = "Stretch Left-Right", onclick = onSelectAnchor},
                 {value = "stretchTB", label = "Stretch Top-Bottom", onclick = onSelectAnchor},
@@ -5004,9 +5247,10 @@ do
 			Loc["STRING_OPTIONS_COMBAT_ALPHA_7"],
 			Loc["STRING_OPTIONS_COMBAT_ALPHA_8"],
 			Loc["STRING_OPTIONS_COMBAT_ALPHA_9"],
+			_G.ARENA or "_G.ARENA",
 		}
 
-		local optionsOrder = {3, 4, 5, 6, 7, 8, 1, 2}
+		local optionsOrder = {3, 4, 5, 6, 9, 7, 8, 1, 2}
 
 		local header1Label = _G.DetailsFramework:CreateLabel(sectionFrame, Loc["STRING_CONTEXT"])
 		local header2Label = _G.DetailsFramework:CreateLabel(sectionFrame, Loc["STRING_ENABLED"])
@@ -5044,27 +5288,28 @@ do
 			local line = _G.CreateFrame("frame", nil, sectionFrame,"BackdropTemplate")
 			line:SetSize(300, 22)
 			line:SetPoint("topleft", sectionFrame, "topleft", right_start_at, yyy + ((id) * -23) + 4)
-			_G.DetailsFramework:ApplyStandardBackdrop(line)
+			DetailsFramework:ApplyStandardBackdrop(line)
 
-			local contextLabel = _G.DetailsFramework:CreateLabel(line, typeCombatAlpha[i])
+			local contextLabel = DetailsFramework:CreateLabel(line, typeCombatAlpha[i])
 			contextLabel:SetPoint("left", line, "left", 2, 0)
 
-			local enabledCheckbox = _G.DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
+			local enabledCheckbox = DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
 			enabledCheckbox:SetPoint("left", line, "left", 118, 0)
 			enabledCheckbox:SetAsCheckBox()
 			enabledCheckbox.OnSwitch = onEnableHideContext
 			enabledCheckbox:SetFixedParameter(i)
 
-			local reverseCheckbox = _G.DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
+			local reverseCheckbox = DetailsFramework:NewSwitch(line, nil, nil, nil, 20, 20, nil, nil, false, nil, nil, nil, nil, options_switch_template)
 			reverseCheckbox:SetPoint("left", line, "left", 140, 0)
 			reverseCheckbox:SetAsCheckBox()
 			reverseCheckbox.OnSwitch = onInverseValue
 			reverseCheckbox:SetFixedParameter(i)
 
-			local alphaSlider = _G.DetailsFramework:CreateSlider(line, 138, 20, 0, 100, 1, 100, false, nil, nil, nil, options_slider_template)
+			local alphaSlider = DetailsFramework:CreateSlider(line, 138, 20, 0, 100, 1, 100, false, nil, nil, nil, options_slider_template)
 			alphaSlider:SetPoint("left", line, "left", 162, 0)
 			alphaSlider:SetHook("OnValueChanged", onAlphaChanged)
 			alphaSlider:SetFixedParameter(i)
+            alphaSlider.thumb:SetWidth(32)
 
 			line.contextLabel = contextLabel
 			line.enabledCheckbox = enabledCheckbox

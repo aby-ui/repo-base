@@ -59,7 +59,7 @@ do
 	local syncTimer
 
 	local function AnchorFix()
-		P.UpdatePosition()
+		P:UpdatePosition()
 		anchorTimer = nil
 	end
 
@@ -197,8 +197,9 @@ do
 			elseif class then
 				local _,_, race = UnitRace(unit)
 
-				local name = GetUnitName(unit, true) or "Unknown"
-				local level = UnitLevel(unit) or 200
+				local name = GetUnitName(unit, true)
+				local level = UnitLevel(unit)
+				level = level > 0 and level or 200
 				info = {
 					guid = guid,
 					class = class,
@@ -321,6 +322,8 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 	self.isUserHidden = not self.test and not E.db.general.showPlayer
 
 	self.isUserDisabled = self.isUserHidden and (not E.db.extraBars.interruptBar.enabled and not E.db.extraBars.raidCDBar.enabled)
+
+	self.effectivePixelMult = nil
 
 	E.Cooldowns:UpdateCombatLogVar()
 	E:SetActiveUnitFrameData()

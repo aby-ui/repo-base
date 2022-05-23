@@ -1,5 +1,5 @@
 
-local LS = LibStub:NewLibrary("LibSpecialization", 1)
+local LS = LibStub:NewLibrary("LibSpecialization", 2)
 if not LS then return end -- No upgrade needed
 
 -- Throttle times for separate channels
@@ -131,9 +131,11 @@ local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializ
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local pName = UnitName("player")
 
-C_ChatInfo.RegisterAddonMessagePrefix("LibSpecialization")
+if not C_ChatInfo.RegisterAddonMessagePrefix("LibSpec") then
+	error("LibSpecialization: Failed to register the addon prefix.")
+end
 frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
-	if prefix == "LibSpecialization" and throttleTable[channel] then
+	if prefix == "LibSpec" and throttleTable[channel] then
 		if msg == "R" then
 			local t = GetTime()
 			if t - throttleTable[channel] > 4 then
@@ -144,7 +146,7 @@ frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
 
 					if id then
 						if positionTable[id] then
-							SendAddonMessage("LibSpecialization", format("%d", id), channel)
+							SendAddonMessage("LibSpec", format("%d", id), channel)
 						else
 							error(format("LibSpecialization: Unknown ID %q", id))
 						end
@@ -200,7 +202,7 @@ function LS:RequestSpecialization(channel)
 			local t = GetTime()
 			if t - throttleSendTable[channel] > 4 then
 				throttleSendTable[channel] = t
-				SendAddonMessage("LibSpecialization", "R", channel)
+				SendAddonMessage("LibSpec", "R", channel)
 			end
 		end
 	end

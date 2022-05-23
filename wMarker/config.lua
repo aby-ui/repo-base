@@ -136,7 +136,7 @@ local function backgroundVisibility()
 		wFlares.main:SetBackdropColor(0,0,0,0)
 		wFlares.main:SetBackdropBorderColor(0,0,0,0)
 	elseif (wFlaresDB.bgHide==false) then
-		wFlares.main:SetBackdropColor(0.1,0.1,0.1,1)
+		wFlares.main:SetBackdropColor(0.1,0.1,0.1,0.7)
 		wFlares.main:SetBackdropBorderColor(1,1,1,1)
 	end
 end
@@ -562,7 +562,7 @@ local worldClamp = checkNew(world,L["Clamp to screen"],function() wFlares:clampT
 local worldFlip = checkNew(world,L["Reverse icons"],function() wFlaresDB.flipped = not wFlaresDB.flipped; wFlares:orien() end)
 local worldVert = checkNew(world,L["Display vertically"],function() wFlaresDB.vertical = not wFlaresDB.vertical; wFlares:orien() end)
 local worldParty = checkNew(world,L["Hide when alone"],function() wFlaresDB.partyShow = not wFlaresDB.partyShow; wMarker:visibility() end)
-local worldAssist = checkNew(world,L["Hide without assist (in a raid)"],function() wFlares.assistShow = not wFlaresDB.assistShow; wMarker:visibility() end)
+local worldAssist = checkNew(world,L["Hide without assist (in a raid)"],function() wFlaresDB.assistShow = not wFlaresDB.assistShow; wMarker:visibility() end)
 local worldBG = checkNew(world,L["Hide background"],function() wFlares:bgToggle() end)
 local worldTool = checkNew(world,L["Enable tooltips"],function() wFlaresDB.tooltips = not wFlaresDB.tooltips end)
 
@@ -709,7 +709,7 @@ event:SetScript("OnEvent", function(self,event,addon,...)
 			wFlares:orien()
 			checkUpdate()
 		end
-	elseif (event=="RAID_ROSTER_UPDATE") or (event=="PLAYER_TARGET_CHANGED") or (event=="PARTY_CONVERTED_TO_RAID") then
+	elseif (event=="PARTY_MEMBERS_CHANGED") or (event=="RAID_ROSTER_UPDATE") or (event=="PLAYER_TARGET_CHANGED") or (event=="PARTY_CONVERTED_TO_RAID") then
 		wMarker:visibility()
 	elseif (event=="PLAYER_REGEN_ENABLED") then
 		
@@ -742,8 +742,9 @@ event:SetScript("OnEvent", function(self,event,addon,...)
 		end
 	end
 end)
+--event:RegisterEvent("PARTY_MEMBERS_CHANGED")
 event:RegisterEvent("RAID_ROSTER_UPDATE")
---event:RegisterEvent("PARTY_CONVERTED_TO_RAID") --TODO aby8
+--event:RegisterEvent("PARTY_CONVERTED_TO_RAID")
 event:RegisterEvent("PLAYER_TARGET_CHANGED")
 event:RegisterEvent("PLAYER_REGEN_ENABLED")
 event:RegisterEvent("PLAYER_REGEN_DISABLED")

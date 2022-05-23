@@ -171,6 +171,9 @@ L["STRING_CUSTOM_TARGET_DESC"] = [=[This is the target of the source.
 
 The button in the right shows a list of npcs from raid encounters.]=]
 L["STRING_CUSTOM_TEMPORARILY"] = " (|cFFFFC000temporarily|r)"
+L["STRING_CUSTOM_TEXTURE_GUIDE"] = [=[To load a texture file in the World of Warcraft client you need a file in .TGA format and its width and height must be multiples of 8.
+
+Place the texture inside /WoW Install Folder/retail/Interface/]=]
 L["STRING_DAMAGE"] = "Damage"
 L["STRING_DAMAGE_DPS_IN"] = "DPS received from"
 L["STRING_DAMAGE_FROM"] = "Took damage from"
@@ -408,6 +411,8 @@ L["STRING_OPTIONS_3D_UENABLED_DESC"] = "Enabled or Disable the usage of a 3d mod
 L["STRING_OPTIONS_3D_USELECT_DESC"] = "Choose which model will be used on the upper model bar."
 L["STRING_OPTIONS_ADVANCED"] = "Advanced"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] = "Aligned Text Columns"
+L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN"] = "Auto Alignment"
+L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN_DESC"] = "The alignment is done automatically based on the length of each text"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"] = "Disable brackets and separators and align bars texts in vertical columns"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"] = "Text %d Offset"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET_DESC"] = "Offset from right border"
@@ -503,9 +508,6 @@ Example:
 |cFFFFFF00Escape Sequences|r: use to change color or add textures. Search 'UI escape sequences' for more information.]=]
 L["STRING_OPTIONS_BARS"] = "General Bar Settings"
 L["STRING_OPTIONS_BARS_CUSTOM_TEXTURE"] = "Custom Texture File"
-L["STRING_OPTIONS_BARS_CUSTOM_TEXTURE_DESC"] = [=[
-
-|cFFFFFF00Important|r: the image must be 256x32 pixels.]=]
 L["STRING_OPTIONS_BARS_DESC"] = "These options control the bar appearance."
 L["STRING_OPTIONS_BARSORT"] = "Bar Rank Sort Order"
 L["STRING_OPTIONS_BARSORT_DESC"] = "Sort bars on descending or ascending order."
@@ -737,18 +739,10 @@ L["STRING_OPTIONS_ILVL_TRACKER_TEXT"] = "Enabled"
 L["STRING_OPTIONS_IMPORT_PROFILE"] = "Import Profile"
 L["STRING_OPTIONS_IMPORT_PROFILE_NAME"] = "Insert a Name for the New Profile"
 L["STRING_OPTIONS_IMPORT_PROFILE_PASTE"] = "Details! Import Profile (paste string)"
-L["STRING_OPTIONS_INSTANCE_ALPHA2"] = "Background Color"
-L["STRING_OPTIONS_INSTANCE_ALPHA2_DESC"] = "This option lets you change the color of the window background."
 L["STRING_OPTIONS_INSTANCE_BACKDROP"] = "Background Texture"
 L["STRING_OPTIONS_INSTANCE_BACKDROP_DESC"] = [=[Select the background texture used by this window.
 
 |cFFFFFF00Default|r: Details Background.]=]
-L["STRING_OPTIONS_INSTANCE_COLOR"] = "Window Color"
-L["STRING_OPTIONS_INSTANCE_COLOR_DESC"] = [=[Change the color and alpha of this window.
-
-|cFFFFFF00Important|r: the alpha chosen here is overwritten with |cFFFFFF00Auto Transparency|r values when enabled.
-
-|cFFFFFF00Important|r: selecting the window color overwrites any color customization over the statusbar.]=]
 L["STRING_OPTIONS_INSTANCE_CURRENT"] = "Auto Switch To Current"
 L["STRING_OPTIONS_INSTANCE_CURRENT_DESC"] = "Whenever a combat starts, this window automatically switches to current segment."
 L["STRING_OPTIONS_INSTANCE_DELETE"] = "Delete"
@@ -771,7 +765,6 @@ Using high layer the window might stay in front of the other major panels.
 When changing the layer height you may find some conflicts with other panels overlapping each other.]=]
 L["STRING_OPTIONS_INSTANCES"] = "Windows:"
 L["STRING_OPTIONS_INTERFACEDIT"] = "Interface Edit Mode"
-L["STRING_OPTIONS_LEFT_MENU_ANCHOR"] = "Menu Settings:"
 L["STRING_OPTIONS_LOCKSEGMENTS"] = "Segments Locked"
 L["STRING_OPTIONS_LOCKSEGMENTS_DESC"] = "When enabled, changing the segment makes all other windows also switch to the selected section."
 L["STRING_OPTIONS_MANAGE_BOOKMARKS"] = "Manage Bookmarks"
@@ -992,7 +985,6 @@ L["STRING_OPTIONS_REPORT_SCHEMA1"] = "Total / Per Second / Percent"
 L["STRING_OPTIONS_REPORT_SCHEMA2"] = "Percent / Per Second / Total"
 L["STRING_OPTIONS_REPORT_SCHEMA3"] = "Percent / Total / Per Second"
 L["STRING_OPTIONS_RESET_TO_DEFAULT"] = "Reset to Default"
-L["STRING_OPTIONS_ROW_SETTING_ANCHOR"] = "Layout:"
 L["STRING_OPTIONS_ROWADV_TITLE"] = "Row Advanced Settings"
 L["STRING_OPTIONS_ROWADV_TITLE_DESC"] = "These options allow you modify the rows more deeply."
 L["STRING_OPTIONS_RT_COOLDOWN1"] = "%s used on %s!"
@@ -1089,8 +1081,8 @@ L["STRING_OPTIONS_SEGMENTSSAVE_DESC"] = [=[How many segments you want to save be
 
 High values may increase the time your character takes to logoff.]=]
 L["STRING_OPTIONS_SENDFEEDBACK"] = "Feedback"
-L["STRING_OPTIONS_SHOW_SIDEBARS"] = "Show Borders"
-L["STRING_OPTIONS_SHOW_SIDEBARS_DESC"] = "Show or hide window borders."
+L["STRING_OPTIONS_SHOW_SIDEBARS"] = "Show Skin Border"
+L["STRING_OPTIONS_SHOW_SIDEBARS_DESC"] = "Show the border of the window from the skin file, use the same color as the 'Window Color'."
 L["STRING_OPTIONS_SHOW_STATUSBAR"] = "Show Statusbar"
 L["STRING_OPTIONS_SHOW_STATUSBAR_DESC"] = "Show or hide the bottom statusbar."
 L["STRING_OPTIONS_SHOW_TOTALBAR_COLOR_DESC"] = "Select the color. The transparency value follows the row alpha value."
@@ -1220,6 +1212,7 @@ L["STRING_OPTIONS_TIMEMEASURE"] = "Time Measure"
 L["STRING_OPTIONS_TIMEMEASURE_DESC"] = [=[|cFFFFFF00Activity|r: the timer of each raid member is put on hold if their activity is ceased and back again to count when resumed, common way of measuring DPS and HPS.
 
 |cFFFFFF00Effective|r: used on rankings, this method uses the elapsed combat time to measure the DPS and HPS of all raid members.]=]
+L["STRING_OPTIONS_TITLEBAR_MENUBUTTONS_HEADER"] = "Buttons and Menu Settings"
 L["STRING_OPTIONS_TOOLBAR_SETTINGS"] = "Title Bar Button Settings"
 L["STRING_OPTIONS_TOOLBAR_SETTINGS_DESC"] = "These options change the main menu on the top of the window."
 L["STRING_OPTIONS_TOOLBARSIDE"] = "Title Bar on Top Side"
@@ -1345,12 +1338,20 @@ L["STRING_OPTIONS_WINDOW"] = "Options Panel"
 L["STRING_OPTIONS_WINDOW_ANCHOR_ANCHORS"] = "Anchors:"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE"] = "Ignore Mass Toggle"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE_DESC"] = "When enabled, this window is not affected when hiding, showing, or toggling all windows."
+L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = "\"Row's Area Color\""
+L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = "Set the background color of the area when the rows are shown."
 L["STRING_OPTIONS_WINDOW_SCALE"] = "Scale"
 L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[Adjust the scale of the window.
 
 |cFFFFFF00Tip|r: right click to type the value.
 
 |cFFFFFF00Current|r: %s]=]
+L["STRING_OPTIONS_WINDOW_SKIN_COLOR"] = "Skin Color"
+L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = [=[Modifies the color of the skin applied into this window.
+
+|cFFFFFF00Important|r: the alpha chosen here is overwritten with |cFFFFFF00Auto Transparency|r values when enabled.
+
+|cFFFFFF00Important|r: selecting the skin color overwrites any color customization applied to statusbar.]=]
 L["STRING_OPTIONS_WINDOW_TITLE"] = "General Window Settings"
 L["STRING_OPTIONS_WINDOW_TITLE_DESC"] = "These options control the window appearance of selected window."
 L["STRING_OPTIONS_WINDOWSPEED"] = "Update Interval"

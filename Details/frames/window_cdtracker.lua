@@ -2,7 +2,7 @@
 
 local Details = _G.Details
 local DF = _G.DetailsFramework
-local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
+local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true)
 
 --namespace
 Details.CooldownTracking = {}

@@ -10,7 +10,7 @@ do
 	local _select = select
 	local _unpack = unpack
 
-	local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
+	local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true)
 
 	local unknown_class_coords = {0.75, 1, 0.75, 1}
 
@@ -260,9 +260,11 @@ do
 
 	function Details:GetUnitId(unitName)
 		unitName = unitName or self.nome
-		local unitId = openRaidLib.GetUnitID(unitName)
-		if (unitId) then
-			return unitId
+		if (openRaidLib) then
+			local unitId = openRaidLib.GetUnitID(unitName)
+			if (unitId) then
+				return unitId
+			end
 		end
 
 		if (IsInRaid()) then

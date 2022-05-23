@@ -58,7 +58,7 @@
       bigStep (optional) -> step size of the slider. Defaults to 0.05
       step (optional) -> like bigStep, but applies to number input as well
 ]]
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local WeakAuras = WeakAuras
@@ -1768,7 +1768,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           -- mostly because it would have a very non-intuitive effect
           -- the names and keys would likely not match anymore, and so
           -- the merged display would basically explode into a bunch of separate options
-          childOption.name = childOption.name or ("Option %i"):format(i)
+          childOption.name = childOption.name or (L["Option %i"]):format(i)
           if not childOption.key then
             local newKey = "option" .. i
             local existingKeys = {}

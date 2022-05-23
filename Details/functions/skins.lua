@@ -6,13 +6,17 @@ local _
 	--> install skin function:
 	function _detalhes:InstallSkin (skin_name, skin_table)
 		if (not skin_name) then
-			return false -- skin without a name
-		elseif (_detalhes.skins [skin_name]) then
-			return false -- skin with this name already exists
+			return false
+
+		--already installed?
+		elseif (_detalhes.skins[skin_name]) then
+			if (skin_table.is_cached_skin) then
+				return false
+			end
 		end
-		
+
 		if (not skin_table.file) then
-			return false -- no skin file
+			return false
 		end
 
 		if (not skin_table.no_cache) then
@@ -20,7 +24,8 @@ local _
 			--This way the skin original table is saved within the addon and can work even if the other addon is outdated or disabled
 			if (Details.IsLoaded()) then
 				Details.installed_skins_cache[skin_name] = skin_table
-				print("Skin added to the skin cache", skin_name)
+				skin_table.is_cached_skin = true
+				skin_table.no_cache = true
 			else
 				Details:Msg("cannot install a skin without 'skin.no_cache' before 'Details.IsLoaded()' is true.")
 			end
@@ -33,7 +38,7 @@ local _
 		
 		_detalhes.skins [skin_name] = skin_table
 
-		--checck instances waiting for a skin
+		--check instances waiting for a skin
 		local waitingForSkins = Details.waitingForSkins
 		if (waitingForSkins) then
 			for instanceId, skinName in pairs(waitingForSkins) do
@@ -95,6 +100,7 @@ local _
 		micro_frames = {left = "DETAILS_STATUSBAR_PLUGIN_THREAT"},
 		
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["menu_icons_size"] = 0.85,
 			["color"] = {
 				1, -- [1]
@@ -338,6 +344,7 @@ local _
 		
 		--overwrites
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["menu_icons_size"] = 0.850000023841858,
 			["color"] = {
 				0.0705882352941177, -- [1]
@@ -563,6 +570,7 @@ local _
 		
 		--overwrites
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["color"] = {
 				0.3058, -- [1]
 				0.3058, -- [2]
@@ -785,6 +793,7 @@ local _
 		icon_titletext_position = {1, 2},
 		
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["show_statusbar"] = false,
 			["menu_icons_size"] = 0.80,
 			["color"] = {
@@ -1111,6 +1120,7 @@ local _
 		--[[ when a skin is selected, all customized properties of the window is reseted and then the overwrites are applied]]
 		--[[ for the complete cprop list see the file classe_instancia_include.lua]]
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["hide_in_combat_type"] = 1,
 			["color"] = {
 				0,
@@ -1374,6 +1384,7 @@ local _
 		icon_titletext_position = {2, 5},
 		
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["menu_icons_size"] = 0.899999976158142,
 			["color"] = {
 				1, -- [1]
@@ -1624,6 +1635,7 @@ local _
 		icon_titletext_position = {2, 5},
 		
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["show_statusbar"] = false,
 			["color"] = {1,1,1,1},
 			["menu_anchor"] = {17, 2, ["side"] = 2},
@@ -1811,6 +1823,7 @@ local _
 		icon_titletext_position = {1, 2},
 		
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["hide_in_combat_type"] = 1,
 			["fontstrings_text3_anchor"] = 37,
 			["menu_anchor"] = {
@@ -2281,6 +2294,7 @@ local _
 		
 		--overwrites
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["show_statusbar"] = false,
 			["menu_icons_size"] = 0.850000023841858,
 			["color"] = {
@@ -2540,6 +2554,7 @@ local _
 		
 		--overwrites
 		instance_cprops = {
+			menu_icons_alpha = 0.92,
 			["show_statusbar"] = false,
 			["menu_icons_size"] = 0.850000023841858,
 			["color"] = {

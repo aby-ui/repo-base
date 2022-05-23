@@ -173,7 +173,7 @@ E.spell_db = {
 		{ spellID = 274281, duration = 20,  type = "offensive", spec = true,    charges = 3 },
 		{ spellID = 203651, duration = 60,  type = "offensive", spec = true     },
 
-		{ spellID = 18562,  duration = 15,  type = "offensive", spec = {105}    },
+		{ spellID = 18562,  duration = 15,  type = "offensive", spec = {105,197492} },
 		{ spellID = 5217,   duration = 30,  type = "offensive", spec = {103}    },
 		{ spellID = 202425, duration = 45,  type = "offensive", spec = true     },
 		{ spellID = 77761,  duration = {[104]=60,default=120},  type = "raidMovement"  },

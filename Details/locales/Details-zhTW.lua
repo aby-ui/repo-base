@@ -170,6 +170,7 @@ L["STRING_CUSTOM_TARGET_DESC"] = [=[這是施法者的目標。
 
 右側按鈕會列出團隊首領戰的 NPC。]=]
 L["STRING_CUSTOM_TEMPORARILY"] = " (|cFFFFC000暫時|r)"
+L["STRING_CUSTOM_TEXTURE_GUIDE"] = "要在魔獸世界客戶端載入材質檔案，您需要一個 .TGA格式的檔案，其寬度和高度必須是 8 的倍數。將材質放在 /WoW安裝文件夾/retail/Interface/ 中"
 L["STRING_DAMAGE"] = "傷害"
 L["STRING_DAMAGE_DPS_IN"] = "收到 DPS 來自"
 L["STRING_DAMAGE_FROM"] = "受到傷害來自"
@@ -411,6 +412,8 @@ L["STRING_OPTIONS_3D_UENABLED_DESC"] = "啟用或停用計量條前方的 3D 模
 L["STRING_OPTIONS_3D_USELECT_DESC"] = "選擇前方模型條要使用哪個模型。"
 L["STRING_OPTIONS_ADVANCED"] = "進階"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] = "對齊文字欄位"
+L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN"] = "自動對齊"
+L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN_DESC"] = "對齊是根據每個文字的長度自動完成的"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"] = "停用括號和分隔符號，以垂直的欄位為基準來對齊計量條文字。"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"] = "文字偏移 %d"
 L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET_DESC"] = "從右側邊框算起的偏移距離"
@@ -510,9 +513,6 @@ L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM2_DESC"] = [=[|cFFFFFF00{data1}|r: 傳遞的
 指令必須是英文 Lua 語法，例如寫 {資料1} 插件是看不懂的，必須使用 {data1}。請參考文字列編緝器格式。]=]
 L["STRING_OPTIONS_BARS"] = "計量條一般設定"
 L["STRING_OPTIONS_BARS_CUSTOM_TEXTURE"] = "自訂材質檔案"
-L["STRING_OPTIONS_BARS_CUSTOM_TEXTURE_DESC"] = [=[
-
-|cFFFFFF00重要|r: 圖片必須為 256x32 像素大小。]=]
 L["STRING_OPTIONS_BARS_DESC"] = "這些選項控制計量條的外觀"
 L["STRING_OPTIONS_BARSORT"] = "計量條排名順序"
 L["STRING_OPTIONS_BARSORT_DESC"] = "計量條要遞增或是遞減排序。"
@@ -740,18 +740,10 @@ L["STRING_OPTIONS_ILVL_TRACKER_TEXT"] = "啟用"
 L["STRING_OPTIONS_IMPORT_PROFILE"] = "導入設定檔"
 L["STRING_OPTIONS_IMPORT_PROFILE_NAME"] = "插入新設定檔的名稱"
 L["STRING_OPTIONS_IMPORT_PROFILE_PASTE"] = "Details! 導入設定檔 (貼上字串)"
-L["STRING_OPTIONS_INSTANCE_ALPHA2"] = "背景顏色"
-L["STRING_OPTIONS_INSTANCE_ALPHA2_DESC"] = "此選項讓你更改視窗背景的顏色。"
 L["STRING_OPTIONS_INSTANCE_BACKDROP"] = "背景材質"
 L["STRING_OPTIONS_INSTANCE_BACKDROP_DESC"] = [=[選擇此視窗使用的背景材質。
 
 |cFFFFFF00預設|r: Details Background。]=]
-L["STRING_OPTIONS_INSTANCE_COLOR"] = "視窗顏色"
-L["STRING_OPTIONS_INSTANCE_COLOR_DESC"] = [=[更改此視窗的顏色和透明度。
-
-|cFFFFFF00重要|r: 啟用|cFFFFFF00自動透明度|r時，會取代這裡選擇的透明度。
-
-|cFFFFFF00重要|r: 選擇的視窗顏色會取代狀態列上的所有自訂顏色。]=]
 L["STRING_OPTIONS_INSTANCE_CURRENT"] = "自動切換成目前"
 L["STRING_OPTIONS_INSTANCE_CURRENT_DESC"] = "只要進入戰鬥，視窗就會自動切換到目前戰鬥記錄。"
 L["STRING_OPTIONS_INSTANCE_DELETE"] = "刪除"
@@ -773,7 +765,6 @@ L["STRING_OPTIONS_INSTANCE_STRATA_DESC"] = [=[選擇框架所處的圖層高度�
 更改圖層高度時，可能會看到與其他面板有些衝突、彼此重疊。]=]
 L["STRING_OPTIONS_INSTANCES"] = "視窗:"
 L["STRING_OPTIONS_INTERFACEDIT"] = "介面編輯模式"
-L["STRING_OPTIONS_LEFT_MENU_ANCHOR"] = "選單設定:"
 L["STRING_OPTIONS_LOCKSEGMENTS"] = "同步切換戰鬥記錄"
 L["STRING_OPTIONS_LOCKSEGMENTS_DESC"] = "啟用時，更改戰鬥記錄會讓其他所有視窗也切換到所選的戰鬥記錄。"
 L["STRING_OPTIONS_MANAGE_BOOKMARKS"] = "管理書籤"
@@ -991,7 +982,6 @@ L["STRING_OPTIONS_REPORT_SCHEMA1"] = "總計 / 每秒 / 百分比"
 L["STRING_OPTIONS_REPORT_SCHEMA2"] = "百分比 / 每秒 / 總計"
 L["STRING_OPTIONS_REPORT_SCHEMA3"] = "百分比 / 總計 / 每秒"
 L["STRING_OPTIONS_RESET_TO_DEFAULT"] = "重置為預設值"
-L["STRING_OPTIONS_ROW_SETTING_ANCHOR"] = "版面配置:"
 L["STRING_OPTIONS_ROWADV_TITLE"] = "計量條進階設定"
 L["STRING_OPTIONS_ROWADV_TITLE_DESC"] = "這些選項讓你能夠更進一步的修改計量條。"
 L["STRING_OPTIONS_RT_COOLDOWN1"] = "%s已使用於%s!"
@@ -1211,6 +1201,7 @@ L["STRING_OPTIONS_TIMEMEASURE"] = "時間測量方式"
 L["STRING_OPTIONS_TIMEMEASURE_DESC"] = [=[|cFFFFFF00活躍時間|r: 每一位團隊成員停止活動時，便會暫停各自的計時，並在恢復後再次開始計時。這是用來測量 DPS 和 HPS 最常用的方法。
 
 |cFFFFFF00有效時間|r: 用於排名，此方法會使用整場戰鬥時間來測量所有團隊成員的 DPS 和 HPS。]=]
+L["STRING_OPTIONS_TITLEBAR_MENUBUTTONS_HEADER"] = "按鈕與選單設定"
 L["STRING_OPTIONS_TOOLBAR_SETTINGS"] = "標題列按鈕設定"
 L["STRING_OPTIONS_TOOLBAR_SETTINGS_DESC"] = "這些選項會更改視窗頂端的主要選單。"
 L["STRING_OPTIONS_TOOLBARSIDE"] = "標題列在上方"
@@ -1333,12 +1324,16 @@ L["STRING_OPTIONS_WINDOW"] = "選項面板"
 L["STRING_OPTIONS_WINDOW_ANCHOR_ANCHORS"] = "位置:"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE"] = "忽略大量切換"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE_DESC"] = "啟用時，這個視窗不會受到隱藏、顯示或切換所有視窗動作的影響。"
+L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = "\"行的區域顏色\""
+L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = "設置顯示行時區域背景的顏色。"
 L["STRING_OPTIONS_WINDOW_SCALE"] = "縮放大小"
 L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[調整視窗的縮放大小。
 
 |cFFFFFF00小提示|r: 點一下右鍵來輸入數值。
 
 |cFFFFFF00目前是|r: %s]=]
+L["STRING_OPTIONS_WINDOW_SKIN_COLOR"] = "外觀顏色"
+L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = "修改應用於此視窗的外觀顏色。 |cFFFFFF00重要|r：啟用時，此處選擇的透明度將被 |cFFFFFF00自動透明度|r 值覆蓋。|cFFFFFF00重要|r：選擇外觀顏色會覆蓋應用於狀態欄的任何自定義顏色。"
 L["STRING_OPTIONS_WINDOW_TITLE"] = "視窗一般設定"
 L["STRING_OPTIONS_WINDOW_TITLE_DESC"] = "這些選項控制所選視窗的外觀。"
 L["STRING_OPTIONS_WINDOWSPEED"] = "更新間隔時間"

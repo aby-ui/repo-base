@@ -8,34 +8,74 @@ local setTile = WeakAuras.setTile;
 
 local function setTextureFunc(textureWidget, texturePath, textureName)
   local data = texture_data[texturePath];
+  if not(data) then
+    local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
+    local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
+    local rows, columns, frames = texturePath:lower():match(pattern)
+    if rows then
+      data = {
+        count = tonumber(frames),
+        rows = tonumber(rows),
+        columns = tonumber(columns)
+      }
+    else
+      local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = texturePath:match(pattern2)
+      if rows then
+        rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = tonumber(rows), tonumber(columns), tonumber(frames), tonumber(frameWidth), tonumber(frameHeight), tonumber(fileWidth), tonumber(fileHeight)
+        local frameScaleW = 1
+        local frameScaleH = 1
+        if fileWidth > 0 and frameWidth > 0 then
+          frameScaleW = (frameWidth * columns) / fileWidth
+        end
+        if fileHeight > 0 and frameHeight > 0 then
+          frameScaleH = (frameHeight * rows) / fileHeight
+        end
+        data = {
+          count = frames,
+          rows = rows,
+          columns = columns,
+          frameScaleW = frameScaleW,
+          frameScaleH = frameScaleH
+        }
+      end
+    end
+  end
   textureWidget.frameNr = 0;
   if (data) then
       if (data.rows and data.columns) then
         -- Texture Atlas
         textureWidget:SetTexture(texturePath, textureName);
 
-        setTile(textureWidget, data.count, data.rows, data.columns, 1, 1);
+        setTile(textureWidget, data.count, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
 
-        textureWidget:SetOnUpdate(function()
-          textureWidget.frameNr = textureWidget.frameNr + 1;
-          if (textureWidget.frameNr == data.count) then
-            textureWidget.frameNr = 1;
+        textureWidget:SetOnUpdate(function(self, elapsed)
+          self.elapsed = (self.elapsed or 0) + elapsed
+          if(self.elapsed > 0.1) then
+            self.elapsed = self.elapsed - 0.1;
+            textureWidget.frameNr = textureWidget.frameNr + 1;
+            if (textureWidget.frameNr == data.count) then
+              textureWidget.frameNr = 1;
+            end
+            setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
           end
-          setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns, 1, 1);
-        end);
+        end)
       else
         -- Numbered Textures
         local texture = texturePath .. format("%03d", texture_data[texturePath].count)
         textureWidget:SetTexture(texture, textureName)
         textureWidget:SetTexCoord(0, 1, 0, 1);
 
-        textureWidget:SetOnUpdate(function()
-          textureWidget.frameNr = textureWidget.frameNr + 1;
-          if (textureWidget.frameNr == data.count) then
-            textureWidget.frameNr = 1;
+        textureWidget:SetOnUpdate(function(self, elapsed)
+          self.elapsed = (self.elapsed or 0) + elapsed
+          if(self.elapsed > 0.1) then
+            self.elapsed = self.elapsed - 0.1;
+            textureWidget.frameNr = textureWidget.frameNr + 1;
+            if (textureWidget.frameNr == data.count) then
+              textureWidget.frameNr = 1;
+            end
+            local texture = texturePath .. format("%03d", textureWidget.frameNr)
+            textureWidget:SetTexture(texture, textureName);
           end
-          local texture = texturePath .. format("%03d", textureWidget.frameNr)
-          textureWidget:SetTexture(texture, textureName);
         end);
       end
   else

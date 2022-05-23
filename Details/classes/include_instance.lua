@@ -154,7 +154,7 @@ _detalhes.instance_defaults = {
 		--anchor store the anchor point of main menu
 		menu_anchor = {5, 1, side = 1}, --mode segment attribute report on top position
 		menu_anchor_down = {5, 1}, --mode segment attribute report on bottom position
-		menu_icons_alpha = 0.5,
+		menu_icons_alpha = 1,
 		--blackwhiite icons
 		desaturated_menu = false, --mode segment attribute report
 		--icons on menu
@@ -187,10 +187,27 @@ _detalhes.instance_defaults = {
 
 		--use one fontstring for each value in the lines, e.g. one fontstring to damage done, another fontstring to dps and another to percent amount
 		use_multi_fontstrings = true,
-		fontstrings_width = 35, --not in use
+		use_auto_align_multi_fontstrings = true,
+		fontstrings_text_limit_offset = -10,
 		fontstrings_text4_anchor = 0,
-		fontstrings_text3_anchor = 35,
-		fontstrings_text2_anchor = 70,
+		fontstrings_text3_anchor = 38,
+		fontstrings_text2_anchor = 73,
+
+	--title bar
+		titlebar_shown = false,
+		titlebar_height = 16,
+		titlebar_texture = "Details Serenity",
+		titlebar_texture_color = {.2, .2, .2, 0.8},
+
+	--full border
+		fullborder_shown = false,
+		fullborder_color = {0, 0, 0, 1},
+		fullborder_size = 0.5,
+
+	--row area border
+		rowareaborder_shown = false,
+		rowareaborder_color = {0, 0, 0, 1},
+		rowareaborder_size = 0.5,
 
 	--row info
 		row_info = {
@@ -242,6 +259,9 @@ _detalhes.instance_defaults = {
 			--bar texture name
 				texture_file = [[Interface\AddOns\Details\images\bar4]],
 				texture_custom_file = "Interface\\",
+			--bar overlay texture file
+				overlay_texture = "Details D'ictum",
+				overlay_color = {.7, .7, .7, 0},
 			--bar texture on mouse over
 				texture_highlight = [[Interface\FriendsFrame\UI-FriendsList-Highlight]],
 			--bar background texture
@@ -264,7 +284,12 @@ _detalhes.instance_defaults = {
 			--percent type
 				percent_type = 1,
 			--backdrop
-				backdrop = {enabled = false, size = 12, color = {1, 1, 1, 1}, texture = "Details BarBorder 2"}, --texture is deprecated
+				backdrop = {
+					enabled = false,
+					size = 12,
+					color = {1, 1, 1, 1},
+					use_class_colors = false,
+				},
 			--model
 				models = {
 					upper_enabled = false,

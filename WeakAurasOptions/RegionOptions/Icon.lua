@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local Masque = LibStub("Masque", true)
@@ -229,6 +229,15 @@ local function createOptions(id, data)
       name = L["Hide Timer Text"],
       order = 11.5,
       desc = L["A timer will automatically be displayed according to default Interface Settings (overridden by some addons).\nEnable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer"],
+      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
+      hidden = function() return not data.cooldown end,
+    },
+    useCooldownModRate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Blizzard Cooldown Reduction"],
+      order = 11.6,
+      desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
       disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },

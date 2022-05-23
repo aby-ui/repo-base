@@ -18,6 +18,7 @@ function AddOn:SetPixelMult()
 	local uiUnitFactor = 768 / screenheight
 	local uiScale = UIParent:GetScale()
 	self.PixelMult = uiUnitFactor / uiScale
+	self.uiUnitFactor = uiUnitFactor
 end
 
 NS[1].Libs = {}

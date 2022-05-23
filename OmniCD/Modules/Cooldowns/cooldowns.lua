@@ -1,6 +1,6 @@
+
+
 local E, L, C = select(2, ...):unpack()
-
-
 
 local _G = _G
 local pairs, type = pairs, type
@@ -732,6 +732,7 @@ do
 				P:UpdateCooldown(icon, 0, nil, 0.25)
 			end
 			E.TimerAfter(spellID == 50334 and 15.1 or 30.1, removeBerserk, nil, srcGUID, spellID, destGUID)
+
 		end
 	end
 	registeredEvents.SPELL_AURA_REMOVED[102558] = registeredEvents.SPELL_AURA_REMOVED[50334]
@@ -1904,12 +1905,14 @@ do
 					end
 					icon.cooldown:Clear()
 				end
-				if statusBar then
-					statusBar.BG:SetVertexColor(0.7, 0.7, 0.7)
-				end
-				info.preActiveIcons[spellID] = icon
-				icon.icon:SetVertexColor(0.4, 0.4, 0.4)
 
+				if not info.preActiveIcons[spellID] then
+					if statusBar then
+						statusBar.BG:SetVertexColor(0.7, 0.7, 0.7)
+					end
+					info.preActiveIcons[spellID] = icon
+					icon.icon:SetVertexColor(0.4, 0.4, 0.4)
+				end
 
 					info.bar.timer_inCombatTicker = C_Timer.NewTicker(5, function() startCdOutOfCombat(icon.guid) end, 200)
 
@@ -1925,8 +1928,19 @@ do
 	for i = 1, #consumables do
 		local spellID = consumables[i]
 
-		local event = spellID == 323436 and "SPELL_HEAL" or "SPELL_CAST_SUCCESS"
-		registeredEvents[event][spellID] = StartConsumablesCD
+		if spellID == 323436 then
+			registeredEvents["SPELL_HEAL"][spellID] = function(info, srcGUID, spellID)
+				if not info.auras.igonrePurifySoul then
+					info.auras.igonrePurifySoul = true
+					C_Timer.After(0.1, function() info.auras.igonrePurifySoul = false end)
+					StartConsumablesCD(info, srcGUID, spellID)
+				end
+			end
+			registeredEvents["SPELL_CAST_SUCCESS"][spellID] = registeredEvents["SPELL_HEAL"][spellID]
+
+		else
+			registeredEvents["SPELL_CAST_SUCCESS"][spellID] = StartConsumablesCD
+		end
 	end
 
 
@@ -2084,6 +2098,7 @@ do
 	local THUNDERCHARGE = 204366
 
 	local BLESSING_OF_AUTUMN = 328622
+	local EQUINOX = 355567
 	local BENEVOLENT_FAERIE = 327710
 	local BENEVOLENT_FAERIE_FERMATA = 345453
 	local HAUNTED_MASK = 356968
@@ -2177,7 +2192,7 @@ do
 		info.auras[modType] = abs(1 - newRate) >= 0.05 and newRate
 	end
 
-	local function RemoveModRate(info, srcGUID, spellID, destGUID)
+	local function RemoveModRate(_, srcGUID, spellID, destGUID)
 		local destInfo = groupInfo[destGUID]
 		if not destInfo then
 			return
@@ -2232,11 +2247,23 @@ do
 				UpdateCDRR(destInfo, 1.3)
 				destInfo.auras[spellID] = nil
 			end
+		elseif ( spellID == EQUINOX ) then
+			if ( destInfo.auras[BLESSING_OF_AUTUMN] and destInfo.auras[spellID] ) then
+				UpdateCDRR(destInfo, 1.6/1.3);
+				destInfo.auras[spellID] = nil;
+			end
 		elseif spellID == ARCHITECTS_INGENUITY then
 			if destInfo.auras[spellID] then
 				UpdateCDRR(destInfo, 1.05)
 				destInfo.auras[spellID] = nil
 			end
+		end
+	end
+
+	local function OnTimerEnd(_, srcGUID, spellID, destGUID)
+		local destInfo = groupInfo[destGUID];
+		if ( destInfo and destInfo.auras[spellID] ) then
+			RemoveModRate(nil, srcGUID, spellID, destGUID)
 		end
 	end
 
@@ -2279,9 +2306,17 @@ do
 		elseif spellID == BLESSING_OF_AUTUMN then
 			destInfo.auras[spellID] = true
 			UpdateCDRR(destInfo, 1/1.3)
+			E.TimerAfter(30.5, OnTimerEnd, nil, srcGUID, spellID, destGUID);
+		elseif ( spellID == EQUINOX ) then
+			if ( destInfo.auras[BLESSING_OF_AUTUMN] ) then
+				destInfo.auras[spellID] = true;
+				UpdateCDRR(destInfo, 1.3/1.6);
+				E.TimerAfter(10.5, OnTimerEnd, nil, srcGUID, spellID, destGUID);
+			end
 		elseif spellID == ARCHITECTS_INGENUITY then
 			destInfo.auras[spellID] = true
 			UpdateCDRR(destInfo, 1/1.05)
+			E.TimerAfter(30.5, OnTimerEnd, nil, srcGUID, spellID, destGUID);
 		end
 	end
 
@@ -2292,20 +2327,25 @@ do
 			info.auras.isThunderChargeSelfCast = true
 			info.auras[spellID] = true
 			UpdateCDRR(info, 1/1.7)
+			E.TimerAfter(10.5, OnTimerEnd, nil, srcGUID, spellID, destGUID);
 		else
 			local destInfo = groupInfo[destGUID]
 			if destInfo then
 				destInfo.auras[spellID] = true
 				UpdateCDRR(destInfo, 1/1.3)
+				E.TimerAfter(10.5, OnTimerEnd, nil, srcGUID, spellID, destGUID);
 			end
 			if info then
 				info.auras[spellID] = true
 				UpdateCDRR(info, 1/1.3)
+				E.TimerAfter(10.5, OnTimerEnd, nil, srcGUID, spellID, srcGUID);
 			end
 		end
 	end
 	registeredEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate
 	registeredEvents.SPELL_AURA_REMOVED[BLESSING_OF_AUTUMN] = RemoveModRate
+	registeredEvents.SPELL_AURA_APPLIED[EQUINOX] = UpdateModRate
+	registeredEvents.SPELL_AURA_REMOVED[EQUINOX] = RemoveModRate
 	registeredEvents.SPELL_CAST_SUCCESS[BENEVOLENT_FAERIE] = function(info, srcGUID, spellID, destGUID)
 		local destInfo = groupInfo[destGUID]
 		if destInfo then
@@ -2331,6 +2371,8 @@ do
 	registeredUserEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE] = registeredEvents.SPELL_CAST_SUCCESS[THUNDERCHARGE]
 	registeredUserEvents.SPELL_AURA_APPLIED[BLESSING_OF_AUTUMN] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[BLESSING_OF_AUTUMN] = RemoveModRate
+	registeredUserEvents.SPELL_AURA_APPLIED[EQUINOX] = UpdateModRate
+	registeredUserEvents.SPELL_AURA_REMOVED[EQUINOX] = RemoveModRate
 	registeredUserEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE] = UpdateModRate
 	registeredUserEvents.SPELL_AURA_REMOVED[BENEVOLENT_FAERIE] = RemoveModRate
 	registeredUserEvents.SPELL_AURA_APPLIED[BENEVOLENT_FAERIE_FERMATA] = UpdateModRate
@@ -2341,19 +2383,19 @@ do
 	registeredUserEvents.SPELL_AURA_REMOVED[SYMBOL_OF_HOPE] = RemoveModRate
 
 
-	registeredEvents.SPELL_CAST_SUCCESS[17] = function(_,_,_, destGUID)
+	registeredEvents.SPELL_CAST_SUCCESS[17] = function(_, srcGUID, _, destGUID)
 		local destInfo = groupInfo[destGUID];
 		if ( destInfo ) then
-			if ( destInfo.auras.isHauntedMask and destInfo.auras.isHauntedCDR ) then
+			if ( destInfo.auras.isHauntedMask == srcGUID and destInfo.auras.isHauntedCDR ) then
 				UpdateIconRR(destInfo, "benevolent", 1.5);
 				destInfo.auras.isHauntedCDR = nil;
 			end
 		end
 	end
-	registeredEvents.SPELL_CAST_SUCCESS[186263] = function(_,_,_, destGUID)
+	registeredEvents.SPELL_CAST_SUCCESS[186263] = function(_, srcGUID, _, destGUID)
 		local destInfo = groupInfo[destGUID];
 		if ( destInfo and destInfo.auras.isBenevolent ) then
-			if ( destInfo.auras.isHauntedMask and not destInfo.auras.isHauntedCDR ) then
+			if ( destInfo.auras.isHauntedMask == srcGUID and not destInfo.auras.isHauntedCDR ) then
 				UpdateIconRR(destInfo, "benevolent", 1/1.5);
 				destInfo.auras.isHauntedCDR = true;
 			end
@@ -2366,15 +2408,29 @@ do
 	registeredUserEvents.SPELL_CAST_SUCCESS[2061] = registeredEvents.SPELL_CAST_SUCCESS[186263]
 
 
-	registeredHostileEvents.SPELL_AURA_REMOVED[DECRYPTED_URH_CYPHER] = function(destInfo)
-		if ( destInfo.auras[DECRYPTED_URH_CYPHER] ) then
+	local RemoveUrh = function(destInfo, _,_,_, destGUID)
+		destInfo = destInfo or groupInfo[destGUID];
+		if ( destInfo and destInfo.auras[DECRYPTED_URH_CYPHER] ) then
 			UpdateCDRR(destInfo, 3);
 			destInfo.auras[DECRYPTED_URH_CYPHER] = nil;
 		end
 	end
-	registeredHostileEvents.SPELL_AURA_APPLIED[DECRYPTED_URH_CYPHER] = function(destInfo)
+	local function OnUrhTimerEnd(destGUID)
+		local destInfo = groupInfo[destGUID];
+		if ( destInfo and destInfo.auras[DECRYPTED_URH_CYPHER] ) then
+			local timeLeft = P:GetDebuffDuration(destInfo.unit, DECRYPTED_URH_CYPHER);
+			if ( timeLeft ) then
+				E.TimerAfter(timeLeft + 0.5, RemoveUrh, nil, nil, nil, nil, destGUID);
+			else
+				RemoveUrh(nil, nil, nil, nil, destGUID);
+			end
+		end
+	end
+	registeredHostileEvents.SPELL_AURA_REMOVED[DECRYPTED_URH_CYPHER] = RemoveUrh;
+	registeredHostileEvents.SPELL_AURA_APPLIED[DECRYPTED_URH_CYPHER] = function(destInfo, _,_,_, destGUID)
 		destInfo.auras[DECRYPTED_URH_CYPHER] = true;
 		UpdateCDRR(destInfo, 1/3);
+		E.TimerAfter(10.5, OnUrhTimerEnd, destGUID);
 	end
 end
 
@@ -2695,7 +2751,7 @@ else
 
 			local func = registeredHostileEvents[event] and (registeredHostileEvents[event][spellID] or registeredHostileEvents[event][destInfo.class])
 			if func then
-				func(destInfo, destName, spellID, amount)
+				func(destInfo, destName, spellID, amount, destGUID)
 			elseif event == "UNIT_DIED" then
 				UpdateDeadStatus(destInfo)
 			end

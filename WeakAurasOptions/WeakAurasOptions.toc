@@ -1,7 +1,7 @@
 ## Interface: 90200
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
-## Version: 3.7.16
+## Version: 4.0.0
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras
@@ -64,6 +64,7 @@ OptionsFrames\ImportExport.lua
 OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
+OptionsFrames\Update.lua
 
 # Misc frames
 OptionsFrames\MoverSizer.lua
@@ -90,6 +91,8 @@ AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasInlineGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
+AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r WeakAuras 配置

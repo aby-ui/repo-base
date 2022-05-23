@@ -85,22 +85,17 @@ function P:SetBorder(icon)
 		icon.borderRight:ClearAllPoints()
 		icon.borderLeft:ClearAllPoints()
 
-		local edgeSize = db.borderPixels * E.PixelMult / db.scale
+		local edgeSize = db.borderPixels * ( E.db.general.showRange and not E.db.position.detached and P.effectivePixelMult or E.PixelMult) / db.scale;
 		icon.borderTop:SetPoint("TOPLEFT", icon, "TOPLEFT")
 		icon.borderTop:SetPoint("BOTTOMRIGHT", icon, "TOPRIGHT", 0, -edgeSize)
 		icon.borderBottom:SetPoint("BOTTOMLEFT", icon, "BOTTOMLEFT")
 		icon.borderBottom:SetPoint("TOPRIGHT", icon, "BOTTOMRIGHT", 0, edgeSize)
-		icon.borderLeft:SetPoint("TOPLEFT", icon, "TOPLEFT")
-		icon.borderLeft:SetPoint("BOTTOMRIGHT", icon, "BOTTOMLEFT", edgeSize, 0)
-		icon.borderRight:SetPoint("TOPRIGHT", icon, "TOPRIGHT")
-		icon.borderRight:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", -edgeSize, 0)
+		icon.borderLeft:SetPoint("TOPLEFT", icon, "TOPLEFT", 0, -edgeSize)
+		icon.borderLeft:SetPoint("BOTTOMRIGHT", icon, "BOTTOMLEFT", edgeSize, edgeSize)
+		icon.borderRight:SetPoint("TOPRIGHT", icon, "TOPRIGHT", 0, -edgeSize)
+		icon.borderRight:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", -edgeSize, edgeSize)
 
-		local r, g, b
-		if icon.spellID == 355589 then
-			r, g, b = 1.0, 0.50196, 0.0
-		else
-			r, g, b = db.borderColor.r, db.borderColor.g, db.borderColor.b
-		end
+		local r, g, b = db.borderColor.r, db.borderColor.g, db.borderColor.b
 		icon.borderTop:SetColorTexture(r, g, b)
 		icon.borderBottom:SetColorTexture(r, g, b)
 		icon.borderRight:SetColorTexture(r, g, b)

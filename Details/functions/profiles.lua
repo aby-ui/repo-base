@@ -1277,10 +1277,19 @@ local default_global_data = {
 		current_exp_raid_encounters = {},
 		installed_skins_cache = {},
 
+	--> keystone cache
+		keystone_cache = {},
+
 	--> all switch settings (panel shown when right click the title bar)
 		all_switch_config = {
 			scale = 1,
 			font_size = 10,
+		},
+
+	--> keystone window
+		keystone_frame = {
+			scale = 1,
+			position = {},
 		},
 		
 	--> profile by spec

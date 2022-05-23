@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 -- Lua APIs
@@ -116,7 +116,7 @@ else
 end
 
 local constants = {
-  nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\n"],
+  nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\nCan use \\ to escape -."],
 }
 
 if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
@@ -1283,7 +1283,7 @@ Private.load_prototype = {
       optional = true,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
-      events = {"UNIT_FLAGS"}
+      events = {"PLAYER_FLAGS_CHANGED"}
     },
     {
       name = "never",
@@ -1326,7 +1326,7 @@ Private.load_prototype = {
     },
     {
       name = "ingroup",
-      display = L["In Group"],
+      display = L["Group Type"],
       type = "multiselect",
       width = WeakAuras.normalWidth,
       init = "arg",
@@ -1671,8 +1671,6 @@ Private.load_prototype = {
       init = "arg",
       control = "WeakAurasSortedDropdown",
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
     },
     {
       name = "role",
@@ -1709,7 +1707,7 @@ Private.load_prototype = {
       name = "itemequiped",
       display = L["Item Equipped"],
       type = "item",
-      test = "IsEquippedItem(%s)",
+      test = "IsEquippedItem(GetItemInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
     },
     {
@@ -1911,6 +1909,7 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_FACTION")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
+      AddUnitEventForEvents(result, unit, "PLAYER_FLAGS_CHANGED")
       return result;
     end,
     internal_events = function(trigger)
@@ -1982,6 +1981,7 @@ Private.event_prototypes = {
       {
         name = "namerealm",
         display = L["Unit Name/Realm"],
+        desc = constants.nameRealmFilterDesc,
         type = "string",
         preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
@@ -2134,6 +2134,22 @@ Private.event_prototypes = {
         conditionType = "bool"
       },
       {
+        name = "afk",
+        display = L["Afk"],
+        type = "tristate",
+        init = "UnitIsAFK(unit)",
+        store = true,
+        conditionType = "bool"
+      },
+      {
+        name = "dnd",
+        display = L["Do Not Disturb"],
+        type = "tristate",
+        init = "UnitIsDND(unit)",
+        store = true,
+        conditionType = "bool"
+      },
+      {
         hidden = true,
         test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
@@ -2243,7 +2259,7 @@ Private.event_prototypes = {
         type = "select",
         values = function()
           local ret = {}
-          for i = 0, 8 do
+          for i = 1, 8 do
             ret[i] = GetText("FACTION_STANDING_LABEL"..i, UnitSex("player"))
           end
           return ret
@@ -3753,7 +3769,7 @@ Private.event_prototypes = {
       },
       {
         name = "spellSchool",
-        display = L["Spell School"],
+        display = WeakAuras.newFeatureString .. L["Spell School"],
         type = "select",
         values = "combatlog_spell_school_types_for_ui",
         test = "spellSchool == %d",
@@ -4068,7 +4084,15 @@ Private.event_prototypes = {
   },
   ["Cooldown Progress (Spell)"] = {
     type = "spell",
-    events = {},
+    events = function(trigger)
+      if trigger.use_showlossofcontrol then
+        return {
+          ["events"] = {"LOSS_OF_CONTROL_UPDATE", "LOSS_OF_CONTROL_ADDED"}
+        }
+      else
+        return {}
+      end
+    end,
     internal_events = function(trigger, untrigger)
       local events = {
         "SPELL_COOLDOWN_CHANGED",
@@ -4110,11 +4134,19 @@ Private.event_prototypes = {
         local spellname = %s
         local ignoreRuneCD = %s
         local showgcd = %s;
+        local showlossofcontrol = %s;
         local ignoreSpellKnown = %s;
         local track = %q
-        local startTime, duration, gcdCooldown, readyTime = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
+        local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
         local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
+        if showlossofcontrol and startTime and duration then
+          local locStart, locDuration = GetSpellLossOfControlCooldown(spellname);
+          if locStart and locDuration and (locStart + locDuration) > (startTime + duration) then
+            startTime = locStart
+            duration = locDuration
+          end
+        end
         if (charges == nil) then
           -- Use fake charges for spells that use GetSpellCooldown
           charges = (duration == 0 or gcdCooldown) and 1 or 0;
@@ -4139,6 +4171,7 @@ Private.event_prototypes = {
       ret = ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
+        (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
         (trigger.track or "auto"),
         showOnCheck
@@ -4152,6 +4185,10 @@ Private.event_prototypes = {
           end
           if (state.duration ~= duration) then
             state.duration = duration;
+            state.changed = true;
+          end
+          if (state.modRate ~= modRate) then
+            state.modRate = modRate;
             state.changed = true;
           end
           state.progressType = 'timed';
@@ -4171,6 +4208,7 @@ Private.event_prototypes = {
 
             state.expirationTime = nil;
             state.duration = nil;
+            state.modRate = nil
             state.progressType = 'static';
           elseif (charges > trackedCharge) then
             if (state.expirationTime ~= 0) then
@@ -4181,6 +4219,7 @@ Private.event_prototypes = {
               state.duration = 0;
               state.changed = true;
             end
+            state.modRate = nil;
             state.value = nil;
             state.total = nil;
             state.progressType = 'timed';
@@ -4188,10 +4227,13 @@ Private.event_prototypes = {
             if (state.expirationTime ~= expirationTime) then
               state.expirationTime = expirationTime;
               state.changed = true;
-              state.changed = true;
             end
             if (state.duration ~= duration) then
               state.duration = duration;
+              state.changed = true;
+            end
+            if (state.modRate ~= modRate) then
+              state.modRate = modRate;
               state.changed = true;
             end
             state.value = nil;
@@ -4207,9 +4249,10 @@ Private.event_prototypes = {
           local remaining = 0;
           if (expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
+            local remainingModRate = remaining / modRate;
             local remainingCheck = %s;
-            if(remaining >= remainingCheck and remaining > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            if(remainingModRate >= remainingCheck and remainingModRate > 0) then
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck * modRate);
             end
           end
         ]];
@@ -4220,6 +4263,7 @@ Private.event_prototypes = {
     end,
     statesParameter = "one",
     canHaveDuration = "timed",
+    useModRate = true,
     args = {
       {
       }, -- Ignore first argument (id)
@@ -4244,6 +4288,11 @@ Private.event_prototypes = {
             if trigger.use_showgcd then
               if text ~= "" then text = text .. "; " end
               text = text .. L["Show GCD"]
+            end
+
+            if trigger.use_showlossofcontrol then
+              if text ~= "" then text = text .. "; " end
+              text = text .. L["Show Loss of Control"]
             end
 
             if trigger.use_matchedRune then
@@ -4286,6 +4335,15 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         collapse = "extra Cooldown Progress (Spell)"
+      },
+      {
+        name = "showlossofcontrol",
+        display = WeakAuras.newFeatureString .. L["Show Loss of Control"],
+        type = "toggle",
+        test = "true",
+        collapse = "extra Cooldown Progress (Spell)",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "matchedRune",
@@ -4585,7 +4643,7 @@ Private.event_prototypes = {
         conditionType = "select",
         conditionValues = "charges_change_condition_type";
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckChargesDirection(state.direction, needle)
+          return state and state.show and state.direction and WeakAuras.CheckChargesDirection(state.direction, needle)
         end,
       },
       {
@@ -7050,7 +7108,7 @@ Private.event_prototypes = {
 
       local ret = [[
         local inverse = %s;
-        local equipped = IsEquippedItem(%s);
+        local equipped = IsEquippedItem(GetItemInfo(%s));
       ]];
 
       return ret:format(trigger.use_inverse and "true" or "false", itemName);
@@ -7642,6 +7700,9 @@ Private.event_prototypes = {
         tinsert(result, "UNIT_SPELLCAST_DELAYED")
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
+      if unit == "nameplate" and trigger.use_onUpdateUnitTarget then
+        tinsert(result, "WA_UNIT_TARGET_NAME_PLATE")
+      end
       AddRemainingCastInternalEvents(unit, result)
       local includePets = trigger.use_includePets == true and trigger.includePets or nil
       AddUnitChangeInternalEvents(unit, result, includePets)
@@ -7653,6 +7714,9 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       if trigger.use_showLatency and trigger.unit == "player" then
         WeakAuras.WatchForCastLatency()
+      end
+      if trigger.unit == "nameplate" and trigger.use_onUpdateUnitTarget then
+        WeakAuras.WatchForNameplateTargetChange()
       end
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
@@ -8014,6 +8078,16 @@ Private.event_prototypes = {
           return trigger.unit == "player"
         end,
         reloadOptions = true
+      },
+      {
+        name = "onUpdateUnitTarget",
+        display = WeakAuras.newFeatureString .. L["Advanced Caster's Target Check"],
+        desc = L["Check nameplate's target every 0.2s"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end
       },
       {
         name = "inverse",
@@ -8628,7 +8702,7 @@ Private.event_prototypes = {
       },
       {
         name = "ingroup",
-        display = L["In Group"],
+        display = L["Group Type"],
         type = "multiselect",
         values = "group_types",
         init = "WeakAuras.GroupType()",
@@ -8726,7 +8800,7 @@ Private.event_prototypes = {
       },
       {
         name = "inverse",
-        display = L["Inverse"],
+        display = WeakAuras.newFeatureString .. L["Inverse"],
         type = "toggle",
         test = "true",
       },

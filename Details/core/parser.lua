@@ -38,7 +38,7 @@
 	local escudo = _detalhes.escudos --details local
 	local parser = _detalhes.parser --details local
 	local absorb_spell_list = _detalhes.AbsorbSpells --details local
-	local arena_enemies = _detalhes.arena_enemies --details local
+	--local arena_enemies = _detalhes.arena_enemies --details local (not in use - deprecated)
 
 	local cc_spell_list = DetailsFramework.CrowdControlSpells
 	local container_habilidades = _detalhes.container_habilidades --details local
@@ -2241,7 +2241,11 @@
 					if (not unitId) then
 						unitId = Details:GuessArenaEnemyUnitId(alvo_name)
 					end
-					this_event [5] = _UnitHealth(unitId)
+					if (unitId) then
+						this_event [5] = _UnitHealth(unitId)
+					else
+						this_event [5] = 0
+					end
 				else
 					this_event [5] = _UnitHealth(alvo_name)
 				end
@@ -2457,7 +2461,7 @@
 			------------------------------------------------------------------------------------------------
 			--> buff uptime
 				
-				if (LIB_OPEN_RAID_BLOODLUST[spellid]) then
+				if (LIB_OPEN_RAID_BLOODLUST and LIB_OPEN_RAID_BLOODLUST[spellid]) then
 					if (_detalhes.playername == alvo_name) then
 						_current_combat.bloodlust = _current_combat.bloodlust or {}
 						_current_combat.bloodlust[#_current_combat.bloodlust+1] = _current_combat:GetCombatTime()

@@ -67,23 +67,23 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220511060021"),
+	Revision = parseCurseDate("20220522151812"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.18 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.19 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 5, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 241, "710129e"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.22 alpha"
 	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 38, "5e831f6"
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.36 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.37 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 5, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 38, "5e831f6"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -311,6 +311,7 @@ DBM.DefaultOptions = {
 	DontDoSpecialWarningVibrate = false,
 	DontPlaySpecialWarningSound = false,
 	DontPlayTrivialSpecialWarningSound = true,
+	SpamSpecInformationalOnly = false,
 	SpamSpecRoledispel = false,
 	SpamSpecRoleinterrupt = false,
 	SpamSpecRoledefensive = false,
@@ -2081,6 +2082,7 @@ end
 --  Raid/Party Handling and Unit ID Utilities  --
 -------------------------------------------------
 do
+	local UnitInRaid = UnitInRaid
 	local bwVersionQueryString = "Q^%d^%s"--Only used here
 	local inRaid = false
 
@@ -2414,9 +2416,9 @@ do
 		return raidGuids[guid] and raidGuids[guid]:gsub("%-.*$", "")
 	end
 
-	function DBM:GetGroupId(name)
+	function DBM:GetGroupId(name, higher)
 		local raidMember = raid[name] or raid[GetUnitName(name, true) or ""]
-		return raidMember and raidMember.groupId or 0
+		return raidMember and raidMember.groupId or UnitInRaid(name) or higher and 99 or 0
 	end
 end
 
@@ -7143,7 +7145,7 @@ do
 		return private.specRoleTable[currentSpecID]["MeleeDps"]
 	end
 
-	function bossModPrototype:IsMelee(uId, mechanical)--mechanical arg means the check is asking if boss mechanics consider them melee (even if they aren't, such as holy paladin/mistweaver monks)
+	function DBM:IsMelee(uId, mechanical)--mechanical arg means the check is asking if boss mechanics consider them melee (even if they aren't, such as holy paladin/mistweaver monks)
 		if uId then--This version includes monk healers as melee and tanks as melee
 			--Class checks performed first due to mechanical check needing to be broader than a specID check
 			local _, class = UnitClass(uId)
@@ -7182,6 +7184,7 @@ do
 		end
 		return private.specRoleTable[currentSpecID]["Melee"]
 	end
+	bossModPrototype.IsMelee = DBM.IsMelee
 
 	function bossModPrototype:IsRanged(uId)
 		if uId then
@@ -8533,6 +8536,40 @@ do
 
 	local textureCode = " |T%s:12:12|t "
 
+	local specInstructionalRemapTable = {
+		["dispel"] = "target",
+		["interrupt"] = "spell",
+		["interruptcount"] = "count",
+		["defensive"] = "spell",
+		["taunt"] = "target",
+		["soak"] = "spell",
+		["soakcount"] = "count",
+		["soakpos"] = "spell",
+		["switch"] = "spell",
+		["switchcount"] = "count",
+--		["adds"] = "spell",
+--		["addscustom"] = "spell",
+		["targetchange"] = "target",
+		["gtfo"] = "spell",
+		["bait"] = "soon",
+		["youpos"] = "you",
+		["youposcount"] = "youcount",
+		["move"] = "spell",
+		["keepmove"] = "spell",
+		["stopmove"] = "spell",
+		["dodge"] = "spell",
+		["dodgecount"] = "count",
+		["dodgeloc"] = "spell",
+		["moveaway"] = "spell",
+		["moveawaycount"] = "count",
+		["moveto"] = "spell",
+		["jump"] = "spell",
+		["run"] = "spell",
+		["cast"] = "spell",
+		["lookaway"] = "spell",
+		["reflect"] = "target",
+	}
+
 	local function setText(announceType, spellId, stacks, customName)
 		local text, spellName
 		if customName then
@@ -8551,7 +8588,11 @@ do
 				text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName, L.SEC_FMT:format(tostring(stacks or 5)))
 			end
 		else
-			text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName)
+			if DBM.Options.SpamSpecInformationalOnly and specInstructionalRemapTable[announceType] then
+				text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName)
+			else
+				text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName)
+			end
 		end
 		return text, spellName
 	end
@@ -8573,7 +8614,7 @@ do
 		return isVoicePackUsed
 	end
 
-	local specTypeTable = {
+	local specTypeFilterTable = {
 		["dispel"] = "dispel",
 		["interrupt"] = "interrupt",
 		["interruptcount"] = "interrupt",
@@ -8581,6 +8622,7 @@ do
 		["taunt"] = "taunt",
 		["soak"] = "soak",
 		["soakcount"] = "soak",
+		["soakpos"] = "soak",
 		["stack"] = "stack",
 		["switch"] = "switch",
 		["switchcount"] = "switch",
@@ -8598,8 +8640,8 @@ do
 			--Next, we check if trash mod warning and if so check the filter trash warning filter for trivial difficulties
 			if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
 			--We also check if person has the role filter turned on (typical for highest end raiders who don't want as much handholding from DBM)
-			if specTypeTable[self.announceType] then
-				if DBM.Options["SpamSpecRole"..specTypeTable[self.announceType]] then return end
+			if specTypeFilterTable[self.announceType] then
+				if DBM.Options["SpamSpecRole"..specTypeFilterTable[self.announceType]] then return end
 			end
 			--Lastly, we check if it's a tank warning and filter if not in tank spec. This is done because tank warnings on by default and handled fluidly by spec, not option setting
 			if self.announceType == "taunt" and DBM.Options.FilterTankSpec and not self.mod:IsTank() then return end--Don't tell non tanks to taunt, ever.
@@ -8777,12 +8819,55 @@ do
 		return DBMScheduler:Unschedule(self.Show, self.mod, self, ...)
 	end
 
+	--Several voice lines still need generic alternatives that don't feel "instructional"
+	local specInstructionalRemapVoiceTable = {
+--		["dispel"] = "target",
+--		["interrupt"] = "spell",
+--		["interruptcount"] = "count",
+--		["defensive"] = "spell",
+		["taunt"] = "changemt",--Remaps sound to say a swap is happening, rather than telling you to taunt boss
+--		["soak"] = "spell",
+--		["soakcount"] = "count",
+--		["soakpos"] = "spell",
+--		["switch"] = "spell",
+--		["switchcount"] = "count",
+		["adds"] = "mobsoon",--Remaps sound to say mobs incoming only, not to kill them or cc them or anything else.
+		["addscustom"] = "mobsoon",--Remaps sound to say mobs incoming only, not to kill them or cc them or anything else.
+--		["targetchange"] = "target",
+--		["gtfo"] = "spell",
+--		["bait"] = "soon",
+		["you"] = "targetyou",--Remaps personal alert to just say "target you", without instruction
+		["youpos"] = "targetyou",--Remaps personal alert to just say "target you", without instruction
+		["youposcount"] = "targetyou",--Remaps personal alert to just say "target you", without instruction
+--		["move"] = "spell",
+--		["keepmove"] = "spell",
+--		["stopmove"] = "spell",
+--		["dodge"] = "spell",
+--		["dodgecount"] = "count",
+--		["dodgeloc"] = "spell",
+		["moveaway"] = "targetyou",--Remaps personal alert to just say "target you", without instruction
+		["moveawaycount"] = "targetyou",--Remaps personal alert to just say "target you", without instruction
+--		["moveto"] = "spell",
+--		["jump"] = "spell",
+--		["run"] = "spell",
+--		["cast"] = "spell",
+--		["lookaway"] = "spell",
+--		["reflect"] = "target",
+	}
+
 	function specialWarningPrototype:Play(name, customPath)
 		local always = DBM.Options.AlwaysPlayVoice
 		local voice = DBM.Options.ChosenVoicePack2
 		local soundId = self.option and self.mod.Options[self.option .. "SWSound"] or self.flash
 		if voiceSessionDisabled or voice == "None" or not canVoiceReplace(self, soundId) then return end
 		if self.mod:IsEasyDungeon() and self.mod.isTrashMod and DBM.Options.FilterTrashWarnings2 then return end
+		if specTypeFilterTable[self.announceType] then
+			--Filtered warning, filtered voice
+			if DBM.Options["SpamSpecRole"..specTypeFilterTable[self.announceType]] then return end
+		elseif specInstructionalRemapVoiceTable[self.announceType] then
+			--Instructional disabled, remap to a less instructional voice line
+			name = specInstructionalRemapVoiceTable[self.announceType]
+		end
 		if ((not self.option or self.mod.Options[self.option]) or always) and self.hasVoice <= SWFilterDisabled then
 			--Filter tank specific voice alerts for non tanks if tank filter enabled
 			--But still allow AlwaysPlayVoice to play as well.
@@ -10171,7 +10256,7 @@ end
 --Any time extended icons is used, option must be OFF by default
 --Option must be hidden from GUI if extended icoins not enabled
 --If extended icons are disabled, then on mod load, users option is reset to default (off) to prevent their mod from still executing SetIcon functions (this is because even if it's hidden from GUI, if option was created and enabled, it'd still run)
-function bossModPrototype:AddSetIconOption(name, spellId, default, isHostile, iconsUsed, conflictWarning)
+function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, iconsUsed, conflictWarning)
 	self.DefaultOptions[name] = (default == nil) or default
 	if default and type(default) == "string" then
 		default = self:GetRoleFlagValue(default)
@@ -10181,14 +10266,31 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, isHostile, ic
 		self:GroupSpells(spellId, name)
 	end
 	self:SetOptionCategory(name, "icon")
-	if isHostile then
+	--Legacy bool and nil support
+	if type(iconType) ~= "number" then
+		if iconType then--true
+			iconType = 5
+		else --false/nil
+	        iconType = 0
+		end
+	end
+	if iconType == 1 then
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_MELEE_A:format(spellId)
+	elseif iconType == 2 then
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_MELEE_R:format(spellId)
+	elseif iconType == 3 then
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_RANGED_A:format(spellId)
+	elseif iconType == 4 then
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_RANGED_R:format(spellId)
+	elseif iconType == 5 then
+		--NPC/Mob setting uses icon elect feature and needs to establish latency check table
 		if not self.findFastestComputer then
 			self.findFastestComputer = {}
 		end
 		self.findFastestComputer[#self.findFastestComputer + 1] = name
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TEXT2:format(spellId)
-	else
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TEXT:format(spellId)
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_NPCS:format(spellId)
+	else--Type 0 (Generic for targets)
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS:format(spellId)
 	end
 	--A table defining used icons by number, insert icon textures to end of option
 	if iconsUsed then
@@ -10759,12 +10861,9 @@ do
 		return iconsModule:SetIcon(self, ...)
 	end
 
-	function bossModPrototype:SetIconByAlphaTable(...)
-		return iconsModule:SetIconByAlphaTable(self, ...)
-	end
-
-	function bossModPrototype:SetAlphaIcon(...)
-		return iconsModule:SetAlphaIcon(self, ...)
+	--Backwards compat for old mods using this method, which is now merged into SetSortedIcon
+	function bossModPrototype:SetAlphaIcon(delay, target, maxIcon, returnFunc, scanId, ...)
+		return iconsModule:SetSortedIcon(self, "alpha", delay, target, 1, maxIcon, false, returnFunc, scanId, ...)
 	end
 
 	function bossModPrototype:SetIconBySortedTable(...)

@@ -104,63 +104,71 @@ end
 
 --Special Icon Methods
 do
-	local function SetIconByAlphaTable(mod, returnFunc, scanId)
-		tsort(iconSortTable[scanId])--Sorted alphabetically
-		for i = 1, #iconSortTable[scanId] do
-			local target = iconSortTable[scanId][i]
-			if i > 8 then
-				DBM:Debug("|cffff0000Too many players to set icons, reconsider where using icons|r", 2)
-				return
-			end
-			if not mod.iconRestore[target] then
-				mod.iconRestore[target] = mod:GetIcon(target) or 0
-			end
-			SetRaidTarget(target, i)--Icons match number in table in alpha sort
-			if returnFunc then
-				mod[returnFunc](mod, target, i)--Send icon and target to returnFunc. (Generally used by announce icon targets to raid chat feature)
-			end
-		end
-		mod:Schedule(1.5, clearSortTable, scanId)--Table wipe delay so if icons go out too early do to low fps or bad latency, when they get new target on table, resort and reapplying should auto correct teh icon within .2-.4 seconds at most.
-	end
-
-	function module:SetAlphaIcon(mod, delay, target, maxIcon, returnFunc, scanId)
-		if not target then return end
-		if DBM.Options.DontSetIcons or not private.enableIcons or DBM:GetRaidRank(playerName) == 0 then
-			return
-		end
-		scanId = scanId or 1
-		local uId = DBM:GetRaidUnitId(target)
-		if uId or UnitExists(target) then--target accepts uid, unitname both.
-			uId = uId or target
-			if not iconSortTable[scanId] then iconSortTable[scanId] = {} end
-			if not iconSet[scanId] then iconSet[scanId] = 0 end
-			local foundDuplicate = false
-			for i = #iconSortTable[scanId], 1, -1 do
-				if iconSortTable[scanId][i] == uId then
-					foundDuplicate = true
-					break
-				end
-			end
-			if not foundDuplicate then
-				iconSet[scanId] = iconSet[scanId] + 1
-				tinsert(iconSortTable[scanId], uId)
-			end
-			mod:Unschedule(SetIconByAlphaTable)
-			if maxIcon and iconSet[scanId] == maxIcon then
-				SetIconByAlphaTable(mod, returnFunc, scanId)
-			elseif mod:LatencyCheck() then--lag can fail the icons so we check it before allowing.
-				mod:Schedule(delay or 0.5, SetIconByAlphaTable, mod, returnFunc, scanId)
-			end
-		end
-	end
-end
-
-do
 	local function SortByGroup(v1, v2)
-		return DBM:GetRaidSubgroup(DBM:GetUnitFullName(v1)) < DBM:GetRaidSubgroup(DBM:GetUnitFullName(v2))
+		return DBM:GetGroupId(DBM:GetUnitFullName(v1), true) < DBM:GetGroupId(DBM:GetUnitFullName(v2), true)
 	end
-	local function SetIconBySortedTable(mod, startIcon, reverseIcon, returnFunc, scanId)
-		tsort(iconSortTable[scanId], SortByGroup)
+	local function SortByMeleeAlpha(v1, v2)
+		--if both are melee, the return values are equal and we use alpha sort
+		--if both are ranged, the return values are equal and we use alpha sort
+		if DBM:IsMelee(v1) == DBM:IsMelee(v2) then
+			return DBM:GetUnitFullName(v1) < DBM:GetUnitFullName(v2)
+		--if one is melee and one is ranged, they are not equal so it goes to the below elseifs that prio melee
+		elseif DBM:IsMelee(v1) and not DBM:IsMelee(v2) then
+			return true
+		elseif DBM:IsMelee(v2) and not DBM:IsMelee(v1) then
+			return false
+		end
+	end
+	local function SortByMeleeRoster(v1, v2)
+		--if both are melee, the return values are equal and we use raid roster index sort
+		--if both are ranged, the return values are equal and we use raid roster index sort
+		if DBM:IsMelee(v1) == DBM:IsMelee(v2) then
+			return DBM:GetGroupId(DBM:GetUnitFullName(v1), true) < DBM:GetGroupId(DBM:GetUnitFullName(v2), true)
+		--if one is melee and one is ranged, they are not equal so it goes to the below elseifs that prio melee
+		elseif DBM:IsMelee(v1) and not DBM:IsMelee(v2) then
+			return true
+		elseif DBM:IsMelee(v2) and not DBM:IsMelee(v1) then
+			return false
+		end
+	end
+	local function SortByRangedAlpha(v1, v2)
+		--if both are melee, the return values are equal and we use alpha sort
+		--if both are ranged, the return values are equal and we use alpha sort
+		if DBM:IsRanged(v1) == DBM:IsRanged(v2) then
+			return DBM:GetUnitFullName(v1) < DBM:GetUnitFullName(v2)
+		--if one is melee and one is ranged, they are not equal so it goes to the below elseifs that prio melee
+		elseif DBM:IsRanged(v1) and not DBM:IsRanged(v2) then
+			return true
+		elseif DBM:IsRanged(v2) and not DBM:IsRanged(v1) then
+			return false
+		end
+	end
+	local function SortByRangedRoster(v1, v2)
+		--if both are melee, the return values are equal and we use raid roster index sort
+		--if both are ranged, the return values are equal and we use raid roster index sort
+		if DBM:IsRanged(v1) == DBM:IsRanged(v2) then
+			return DBM:GetGroupId(DBM:GetUnitFullName(v1), true) < DBM:GetGroupId(DBM:GetUnitFullName(v2), true)
+		--if one is melee and one is ranged, they are not equal so it goes to the below elseifs that prio melee
+		elseif DBM:IsRanged(v1) and not DBM:IsRanged(v2) then
+			return true
+		elseif DBM:IsRanged(v2) and not DBM:IsRanged(v1) then
+			return false
+		end
+	end
+	local function SetIconBySortedTable(mod, sortType, startIcon, descendingIcon, returnFunc, scanId)
+		if sortType == "meleealpha" then
+			tsort(iconSortTable[scanId], SortByMeleeAlpha)
+		elseif sortType == "meleeroster" then
+			tsort(iconSortTable[scanId], SortByMeleeRoster)
+		elseif sortType == "rangedalpha" then
+			tsort(iconSortTable[scanId], SortByRangedAlpha)
+		elseif sortType == "rangedroster" then
+			tsort(iconSortTable[scanId], SortByRangedRoster)
+		elseif sortType == "roster" then
+			tsort(iconSortTable[scanId], SortByGroup)
+		else--Just generic "alpha" sort
+			tsort(iconSortTable[scanId])
+		end
 		local icon, CustomIcons
 		if startIcon and type(startIcon) == "table" then--Specific gapped icons
 			CustomIcons = true
@@ -180,20 +188,24 @@ do
 				end
 			else
 				SetRaidTarget(v, icon)--do not use SetIcon function again. It already checked in SetSortedIcon function.
-				if reverseIcon then
+				if descendingIcon then
 					icon = icon - 1
 				else
 					icon = icon + 1
 				end
 				if returnFunc then
-					mod[returnFunc](mod, v, icon)--Send icon and target to returnFunc. (Generally used by announce icon targets to raid chat feature)
+					mod[returnFunc](mod, v, icon)--Send unitId and icon to returnFunc. (Generally used by announce icon targets to raid chat feature)
 				end
 			end
 		end
 		mod:Schedule(1.5, clearSortTable, scanId)--Table wipe delay so if icons go out too early do to low fps or bad latency, when they get new target on table, resort and reapplying should auto correct teh icon within .2-.4 seconds at most.
 	end
 
-	function module:SetSortedIcon(mod, delay, target, startIcon, maxIcon, reverseIcon, returnFunc, scanId)
+	function module:SetSortedIcon(mod, sortType, delay, target, startIcon, maxIcon, descendingIcon, returnFunc, scanId)
+		if type(sortType) ~= "string" then
+			DBM:AddMsg("SetSortedIcon tried to call invalid type, please update your encounter modules for this zone. If error persists, report this issue")
+			return
+		end
 		if not target then return end
 		if DBM.Options.DontSetIcons or not private.enableIcons or DBM:GetRaidRank(playerName) == 0 then
 			return
@@ -218,9 +230,9 @@ do
 			end
 			mod:Unschedule(SetIconBySortedTable)
 			if maxIcon and iconSet[scanId] == maxIcon then
-				SetIconBySortedTable(mod, startIcon, reverseIcon, returnFunc, scanId)
+				SetIconBySortedTable(mod, sortType, startIcon, descendingIcon, returnFunc, scanId)
 			elseif mod:LatencyCheck() then--lag can fail the icons so we check it before allowing.
-				mod:Schedule(delay or 0.5, SetIconBySortedTable, mod, startIcon, reverseIcon, returnFunc, scanId)
+				mod:Schedule(delay or 0.5, SetIconBySortedTable, mod, sortType, startIcon, descendingIcon, returnFunc, scanId)
 			end
 		end
 	end

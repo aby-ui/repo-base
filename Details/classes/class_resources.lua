@@ -248,7 +248,7 @@ function atributo_energy:AtualizarResources (whichRowLine, colocacao, instancia)
 		esta_barra.lineText4:SetText (_string_replace (instancia.row_info.textR_custom_text, formated_resource, formated_rps, porcentagem, self, instancia.showing, instancia, rightText))
 	else
 		if (instancia.use_multi_fontstrings) then
-			instancia:SetTextsOnLine(esta_barra, formated_resource, formated_rps .. " r/s", porcentagem .. "%")
+			instancia:SetInLineTexts(esta_barra, formated_resource, formated_rps .. " r/s", porcentagem .. "%")
 		else
 			esta_barra.lineText4:SetText (rightText)
 		end
@@ -526,7 +526,7 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 			row1.minha_tabela = nil
 			row1.lineText1:SetText (Loc ["STRING_TOTAL"])
 			if (instancia.use_multi_fontstrings) then
-				instancia:SetTextsOnLine(row1, "", _detalhes:ToK2 (total, _detalhes:ToK (total / combat_time)))
+				instancia:SetInLineTexts(row1, "", _detalhes:ToK2 (total, _detalhes:ToK (total / combat_time)))
 			else
 				row1.lineText4:SetText (_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
 			end
@@ -587,7 +587,7 @@ function atributo_energy:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 			row1.lineText1:SetText (Loc ["STRING_TOTAL"])
 			
 			if (instancia.use_multi_fontstrings) then
-				instancia:SetTextsOnLine(row1, "", _detalhes:ToK2 (total), _detalhes:ToK (total / combat_time))
+				instancia:SetInLineTexts(row1, "", _detalhes:ToK2 (total), _detalhes:ToK (total / combat_time))
 			else
 				row1.lineText4:SetText (_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
 			end
@@ -693,7 +693,7 @@ function atributo_energy:RefreshLine (instancia, barras_container, whichRowLine,
 		esta_barra.lineText4:SetText (_string_replace (instancia.row_info.textR_custom_text, formated_energy, "", porcentagem, self, instancia.showing, instancia, rightText))
 	else
 		if (instancia.use_multi_fontstrings) then
-			instancia:SetTextsOnLine(esta_barra, "", formated_energy, porcentagem)
+			instancia:SetInLineTexts(esta_barra, "", formated_energy, porcentagem)
 		else
 			esta_barra.lineText4:SetText (rightText)
 		end

@@ -1,7 +1,7 @@
 -- L.Core
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
--- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20211214
+-- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20220518
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -471,8 +471,14 @@ L.AUTO_TIMER_OPTIONS.adds				= "计时条：下一波小怪"
 L.AUTO_TIMER_OPTIONS.addscustom			= "计时条：下一波小怪"
 L.AUTO_TIMER_OPTIONS.roleplay			= "计时条：剧情"
 
-L.AUTO_ICONS_OPTION_TEXT				= "为$spell:%s的目标添加团队标记"
-L.AUTO_ICONS_OPTION_TEXT2			= "为$spell:%s添加团队标记"
+L.AUTO_ICONS_OPTION_TARGETS				= "为$spell:%s的目标添加团队标记"
+L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "为$spell:%s的目标添加团队标记，以近战和字母顺序优先"
+L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "为$spell:%s的目标添加团队标记，以近战和团队阵容优先"
+L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "为$spell:%s的目标添加团队标记，以远程和字母顺序优先"
+L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "为$spell:%s的目标添加团队标记，以远程和团队阵容优先"
+L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "为$spell:%s的目标添加团队标记，以字母顺序优先"
+L.AUTO_ICONS_OPTION_NPCS			= "为$spell:%s添加团队标记"
+L.AUTO_ICONS_OPTION_CONFLICT 			= " （可能与其他选项冲突）"
 L.AUTO_ARROW_OPTION_TEXT				= "为$spell:%s的目标添加箭头"
 L.AUTO_ARROW_OPTION_TEXT2			= "为$spell:%s的目标添加远离箭头"
 L.AUTO_ARROW_OPTION_TEXT3			= "为$spell:%s的目标添加前往指定位置的箭头"
@@ -562,7 +568,7 @@ L.DUR_FOOTER					= "未反馈此次检测的团员:%s"
 
 --LDB
 L.LDB_TOOLTIP_HELP1	= "左键 打开" .. L.DBM
-L.LDB_TOOLTIP_HELP2	= "右键 启用安静模式"
+L.LDB_TOOLTIP_HELP2	= "Alt+右键 启用安静模式"
 L.SILENTMODE_IS		= "静音模式为："
 
 L.WORLD_BUFFS.hordeOny		 = "部落的人民，奥格瑞玛的居民，来吧，聚集在一起，欢庆部落英雄的诞生"

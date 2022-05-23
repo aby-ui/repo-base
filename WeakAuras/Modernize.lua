@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 local L = WeakAuras.L
 
@@ -1389,6 +1389,41 @@ function Private.Modernize(data)
         triggerData.trigger.threatUnit = nil
         triggerData.trigger.use_threatUnit = nil
       end
+    end
+  end
+
+  if (data.internalVersion < 52) then
+    local function matchTarget(input)
+      return input == "target" or input == "'target'" or input == "\"target\"" or input == "%t" or input == "'%t'" or input == "\"%t\""
+    end
+
+    if data.conditions then
+      for _, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "chat" and change.value then
+            if matchTarget(change.value.message_dest) then
+              change.value.message_dest = "target"
+              change.value.message_dest_isunit = true
+            end
+          end
+        end
+      end
+    end
+
+    if data.actions.start.do_message
+    and data.actions.start.message_type == "WHISPER"
+    and matchTarget(data.actions.start.message_dest)
+    then
+      data.actions.start.message_dest = "target"
+      data.actions.start.message_dest_isunit = true
+    end
+
+    if data.actions.finish.do_message
+    and data.actions.finish.message_type == "WHISPER"
+    and matchTarget(data.actions.finish.message_dest)
+    then
+      data.actions.finish.message_dest = "target"
+      data.actions.finish.message_dest_isunit = true
     end
   end
 

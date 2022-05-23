@@ -7,7 +7,7 @@ local P = E["Party"]
 local isColdStartDC = true
 
 function P:IsCRFActive()
-	return IsInRaid() and not self.isInArena or self.useCRF -- check useCRF in Arena since IsInRaid is always true
+	return IsInRaid() and not self.isInArena or self.useCRF
 end
 
 local function FindAnchorFrame(guid)
@@ -24,7 +24,7 @@ local function FindAnchorFrame(guid)
 				end
 			end
 		elseif strfind(frameName, "%%d") then
-			for i = MIN, 8 do -- IRF3, Lime
+			for i = MIN, 8 do
 				local name = format(frameName, i)
 				for j = 1, MAX do
 					local f = _G[name .. j]
@@ -65,6 +65,7 @@ local function FindAnchorFrame(guid)
 		end
 	end
 end
+P.FindAnchorFrame = FindAnchorFrame
 
 function P:SetAnchorPosition(f)
 	f.anchor:ClearAllPoints()
@@ -73,7 +74,7 @@ end
 
 function P:SetOffset(f)
 	f.container:ClearAllPoints()
---  f.container:SetPoint(self.point, f, self.containerOfsX, self.containerOfsY)
+
 	f.container:SetPoint("TOPLEFT", f, self.containerOfsX, self.containerOfsY)
 end
 
@@ -84,24 +85,28 @@ function P:UpdatePosition()
 
 	if isColdStartDC then
 		isColdStartDC = nil
-		if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") then -- Grid2 !@#$%^&*
-			self:UpdateCRFCVars()
+		if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") then
+			P:UpdateCRFCVars()
 		end
 	end
 
 	P:HideBars()
 
+	local showRange = E.db.general.showRange
+	local effectivePixelMult
 	for guid, info in pairs(P.groupInfo) do
 		local f = info.bar
 		if E.db.position.detached then
+			f:SetParent(UIParent);
 			E.LoadPosition(f)
 			f:Show()
 		else
 			local frame = FindAnchorFrame(guid)
 			if frame then
+				f:SetParent(showRange and frame or UIParent);
                 local _, _, idx = (frame:GetName() or ""):find("PartyMemberFrame([1-4])")
                 local EUF = idx and _G["EUF_PartyFrame"..idx.."HP"]
-                local ox = EUF and EUF:IsVisible() and (self.relativePoint or ""):find("RIGHT") and 70 or idx and 12 or 0
+                local ox = EUF and EUF:IsVisible() and (P.relativePoint or ""):find("RIGHT") and 70 or idx and 12 or 0
 				f:ClearAllPoints()
 				f:SetPoint(P.point, frame, P.relativePoint, ox, 0) --abyui adapt EUF
 				f:Show()
@@ -132,7 +137,7 @@ do
 			self.useCRF = value == "1"
 
 			if P.enabled and not E.db.position.detached and not hookTimer then
-				hookTimer = C_Timer.NewTicker(0.5, onTimerEnd, 1) -- visibility delay
+				hookTimer = C_Timer.NewTicker(0.5, onTimerEnd, 1)
 			end
 		end
 	end
@@ -140,7 +145,7 @@ do
 	local hookFunc = function()
 		if P.enabled and not E.db.position.detached and P:IsCRFActive() then
 			if not hookTimer then
-				hookTimer = C_Timer.NewTicker(0.5, onTimerEnd, 1) -- Blizzard Interface Ht/Wd slider
+				hookTimer = C_Timer.NewTicker(0.5, onTimerEnd, 1)
 			end
 		end
 	end
@@ -150,13 +155,13 @@ do
 			return
 		end
 
-		-- Grid2
+
 		if ( not IsAddOnLoaded("Blizzard_CompactRaidFrames") or not IsAddOnLoaded("Blizzard_CUFProfiles") ) then
 			return
 		end
 
-		self:UpdateCRFCVars() -- return nil on login after d/c, update once on UpdatePosition
---      self.activeRaidProfile = GetActiveRaidProfile()
+		self:UpdateCRFCVars()
+
 
 		hooksecurefunc("CompactRaidFrameManager_SetSetting", function(arg)
 			if arg == "IsShown" then
@@ -166,7 +171,7 @@ do
 					hookFunc()
 				end
 			elseif arg == "KeepGroupsTogether" then
-				P.useKGT = CompactRaidFrameManager_GetSetting("KeepGroupsTogether") -- update useKGT before _ApplyProfile
+				P.useKGT = CompactRaidFrameManager_GetSetting("KeepGroupsTogether")
 			end
 		end)
 

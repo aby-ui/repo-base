@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -522,7 +522,7 @@ local function modifyThumbnail(parent, frame, data)
       icon:SetAllPoints(frame)
       frame.icon = icon
     end
-    local success = frame.icon:SetTexture(path or data.groupIcon) and (path or data.groupIcon)
+    local success = WeakAuras.SetTextureOrAtlas(frame.icon, path or data.groupIcon) and (path or data.groupIcon)
     if success then
       if frame.defaultIcon then
         frame.defaultIcon:Hide()

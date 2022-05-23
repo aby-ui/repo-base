@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras;
@@ -267,7 +267,7 @@ local function SendChat(self, options)
   if (not options or WeakAuras.IsOptionsOpen()) then
     return
   end
-  Private.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_channel, options.r, options.g, options.b, self, options.message_custom, nil, options.message_formaters, options.message_voice);
+  Private.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_dest_isunit, options.message_channel, options.r, options.g, options.b, self, options.message_custom, nil, options.message_formaters, options.message_voice);
 end
 
 local function RunCode(self, func)
@@ -515,6 +515,8 @@ end
 -- SetDurationInfo
 
 function WeakAuras.regionPrototype.modify(parent, region, data)
+  region.state = nil
+  region.states = nil
   region.subRegionEvents:ClearSubscribers()
 
   local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
@@ -771,7 +773,20 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       Private.RunConditions(region, uid, true)
       region.subRegionEvents:Notify("PreHide")
-      region:Hide();
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
+            L["Cannot hide secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Hide()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
+        region:Hide()
+      end
       region.states = nil
       region.state = nil
       if (cloneId) then
@@ -788,7 +803,22 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       Private.RunConditions(region, uid, true)
       region.subRegionEvents:Notify("PreHide")
-      region:Hide();
+
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
+            L["Cannot hide secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Hide()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
+        region:Hide()
+      end
+
       region.states = nil
       region.state = nil
       if (cloneId) then
@@ -829,7 +859,21 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       region.subRegionEvents:Notify("PreShow")
 
       Private.ApplyFrameLevel(region)
-      region:Show();
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
+            L["Cannot show secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Show()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
+        region:Show()
+      end
+
       Private.PerformActions(data, "start", region);
       if not(Private.Animate("display", data.uid, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
@@ -875,16 +919,30 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if (region.toShow) then
         return;
       end
-      region.toShow = true;
+      region.toShow = true
 
       if(region.PreShow) then
         region:PreShow();
       end
 
       region.subRegionEvents:Notify("PreShow")
-
       Private.ApplyFrameLevel(region)
-      region:Show();
+
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
+            L["Cannot show secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Show()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
+        region:Show()
+      end
+
       Private.PerformActions(data, "start", region);
       if not(Private.Animate("display", data.uid, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
@@ -919,7 +977,7 @@ end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
   if type(path) == "string" and GetAtlasInfo(path) then
-    texture:SetAtlas(path);
+    return texture:SetAtlas(path);
   else
     local needToClear = true
     if (texture.wrapModeH and texture.wrapModeH ~= wrapModeH) or (texture.wrapModeV and texture.wrapModeV ~= wrapModeV) then
@@ -930,7 +988,7 @@ function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
     if needToClear then
       texture:SetTexture(nil)
     end
-    texture:SetTexture(path, wrapModeH, wrapModeV);
+    return texture:SetTexture(path, wrapModeH, wrapModeV);
   end
 end
 

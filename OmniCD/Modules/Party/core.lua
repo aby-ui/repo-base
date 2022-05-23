@@ -82,6 +82,7 @@ function P:Refresh(full)
 		self:UpateTimerFormat()
 		self:PLAYER_ENTERING_WORLD(nil, nil, true)
 	else
+
 		E:SetActiveUnitFrameData()
 		self:UpdatePositionValues()
 		self:UpdateExPositionValues()
@@ -135,10 +136,11 @@ function P:UpdatePositionValues()
 
 	local growLeft = string.find(self.point, "RIGHT")
 	local growX = growLeft and -1 or 1
+	local px = (E.db.general.showRange and not E.db.position.detached and P.effectivePixelMult or E.PixelMult)
 
 	self.anchorPoint = growLeft and "BOTTOMLEFT" or "BOTTOMRIGHT"
-	self.containerOfsX = db.offsetX * growX
-	self.containerOfsY = -db.offsetY
+	self.containerOfsX = db.offsetX * growX * px
+	self.containerOfsY = -db.offsetY * px
 	self.columns = db.columns
 	self.multiline = db.layout ~= "vertical" and db.layout ~= "horizontal"
 	self.tripleline = db.layout == "tripleRow" or db.layout == "tripleColumn"
@@ -148,7 +150,7 @@ function P:UpdatePositionValues()
 
 	local growUpward = db.growUpward
 	local growY = growUpward and 1 or -1
-	local px = E.PixelMult / E.db.icons.scale
+	px = px / E.db.icons.scale
 	if db.layout == "vertical" or db.layout == "doubleColumn" or db.layout == "tripleColumn" then
 		self.point2 = growUpward and "BOTTOMRIGHT" or "TOPRIGHT"
 		self.relativePoint2 = growUpward and "TOPRIGHT" or "BOTTOMRIGHT"

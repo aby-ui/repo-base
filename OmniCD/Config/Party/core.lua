@@ -140,6 +140,10 @@ function P:ConfigBars(key, arg)
 		elseif arg == "offsetX" or arg == "offsetY" then
 			self:SetOffset(f)
 		elseif arg == "showAnchor" or arg == "locked" or arg == "detached" then
+			if arg == "detached" then
+				self:SetIconLayout(f)
+				self:ConfigIconSettings(f, "borderPixels")
+			end
 			self:SetAnchor(f)
 		elseif arg == "reset" then
 			E.LoadPosition(f)

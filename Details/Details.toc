@@ -18,6 +18,7 @@ boot.lua
 indent.lua
 core\util.lua
 API.lua
+functions\events.lua
 
 functions\profiles.lua
 functions\hooks.lua
@@ -26,7 +27,6 @@ functions\coach.lua
 functions\skins.lua
 functions\boss.lua
 functions\spells.lua
-functions\events.lua
 functions\classes.lua
 functions\buff.lua
 functions\spellcache.lua

@@ -163,6 +163,8 @@ L["STRING_CUSTOM_TARGET"] = "目标："
 L["STRING_CUSTOM_TARGET_DESC"] = [=[这是来源的目标。
 在右侧的按钮显示团队副本战斗中的NPC名单。]=]
 L["STRING_CUSTOM_TEMPORARILY"] = " (|cFFFFC000临时|r)"
+--[[Translation missing --]]
+--[[ L["STRING_CUSTOM_TEXTURE_GUIDE"] = ""--]] 
 L["STRING_DAMAGE"] = "伤害"
 L["STRING_DAMAGE_DPS_IN"] = "DPS来自"
 L["STRING_DAMAGE_FROM"] = "伤害来自"
@@ -397,6 +399,10 @@ L["STRING_OPTIONS_ADVANCED"] = "进阶"
 --[[Translation missing --]]
 --[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] = ""--]] 
 --[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_AUTOALIGN_DESC"] = ""--]] 
+--[[Translation missing --]]
 --[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_DESC"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS_OFFSET"] = ""--]] 
@@ -484,8 +490,6 @@ L["STRING_OPTIONS_BARRIGHTTEXTCUSTOM2_DESC"] = [=[|cFFFFFF00{data1}|r：被传�
 |cFFFFFF00转义序列|r：用来改变颜色或添加纹理。搜索“UI转义序列”以获取更多信息。]=]
 L["STRING_OPTIONS_BARS"] = "计量条一般设置"
 L["STRING_OPTIONS_BARS_CUSTOM_TEXTURE"] = "自定义材质"
-L["STRING_OPTIONS_BARS_CUSTOM_TEXTURE_DESC"] = [=[
- |cFFFFFF00重要提示|r：图片必须为256x32像素。]=]
 L["STRING_OPTIONS_BARS_DESC"] = "这些选项控制计量条的外观。"
 L["STRING_OPTIONS_BARSORT"] = "排序顺序"
 L["STRING_OPTIONS_BARSORT_DESC"] = "根据升序或降序排序。"
@@ -686,15 +690,9 @@ L["STRING_OPTIONS_ILVL_TRACKER_TEXT"] = "启用"
 --[[ L["STRING_OPTIONS_IMPORT_PROFILE_NAME"] = ""--]] 
 --[[Translation missing --]]
 --[[ L["STRING_OPTIONS_IMPORT_PROFILE_PASTE"] = ""--]] 
-L["STRING_OPTIONS_INSTANCE_ALPHA2"] = "背景颜色"
-L["STRING_OPTIONS_INSTANCE_ALPHA2_DESC"] = "此选项让你改变窗口背景的颜色。"
 L["STRING_OPTIONS_INSTANCE_BACKDROP"] = "背景纹理"
 L["STRING_OPTIONS_INSTANCE_BACKDROP_DESC"] = [=[选择使用此窗口的背景纹理。
 |cFFFFFF00默认|r：Details 背景.]=]
-L["STRING_OPTIONS_INSTANCE_COLOR"] = "窗口颜色"
-L["STRING_OPTIONS_INSTANCE_COLOR_DESC"] = [=[改变这个窗口的颜色和透明度。
-|cFFFFFF00重要|r：启用时，此处选择的Alpha将被|cFFFFFF00自动透明度|r值覆盖
-|cFFFFFF00重要|r：选择窗口颜色覆盖任何颜色定制的状态栏。]=]
 L["STRING_OPTIONS_INSTANCE_CURRENT"] = "自动切换到当前"
 L["STRING_OPTIONS_INSTANCE_CURRENT_DESC"] = "每当战斗开始这个窗口自动切换到当前片段。"
 L["STRING_OPTIONS_INSTANCE_DELETE"] = "删除"
@@ -713,7 +711,6 @@ L["STRING_OPTIONS_INSTANCE_STRATA_DESC"] = [=[选择要放置框架的图层高�
 更改图层高度时，可能会与其他面板发生冲突，彼此重叠]=]
 L["STRING_OPTIONS_INSTANCES"] = "窗口:"
 L["STRING_OPTIONS_INTERFACEDIT"] = "接口编辑模式"
-L["STRING_OPTIONS_LEFT_MENU_ANCHOR"] = "菜单设置:"
 L["STRING_OPTIONS_LOCKSEGMENTS"] = "片段锁定"
 L["STRING_OPTIONS_LOCKSEGMENTS_DESC"] = "当启用时，改变一个片段将使得所有其他窗口也切换到该改变。"
 L["STRING_OPTIONS_MANAGE_BOOKMARKS"] = "管理书签"
@@ -922,7 +919,6 @@ L["STRING_OPTIONS_REPORT_SCHEMA1"] = "总计 / 每秒 / 百分比"
 L["STRING_OPTIONS_REPORT_SCHEMA2"] = "百分比 / 每秒 / 总计"
 L["STRING_OPTIONS_REPORT_SCHEMA3"] = "百分比 / 总计 / 每秒"
 L["STRING_OPTIONS_RESET_TO_DEFAULT"] = "重置成默认"
-L["STRING_OPTIONS_ROW_SETTING_ANCHOR"] = "一般:"
 L["STRING_OPTIONS_ROWADV_TITLE"] = "行高级设置"
 L["STRING_OPTIONS_ROWADV_TITLE_DESC"] = "这些选项让你更深入的修改行。"
 L["STRING_OPTIONS_RT_COOLDOWN1"] = "%s 使用在 %s!"
@@ -1131,6 +1127,8 @@ L["STRING_OPTIONS_TEXTEDITOR_TOK_TOOLTIP"] = [=[添加一个函数来格式化�
 L["STRING_OPTIONS_TIMEMEASURE"] = "时间测量"
 L["STRING_OPTIONS_TIMEMEASURE_DESC"] = [=[|cFFFFFF00活动|r：如果活动停止，每个团队成员的计时器将被暂停，并且当恢复时，每个团队成员的计时器将再次计数，常用的测量方法Dps和Hps
 |cFFFFFF00有效|r：用于排名，此方法使用经过的战斗时间来测量所有团队成员的Dps和Hps]=]
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_TITLEBAR_MENUBUTTONS_HEADER"] = ""--]] 
 L["STRING_OPTIONS_TOOLBAR_SETTINGS"] = "左边的菜单设置"
 L["STRING_OPTIONS_TOOLBAR_SETTINGS_DESC"] = "这些选项更改在窗口顶部的主菜单。"
 L["STRING_OPTIONS_TOOLBARSIDE"] = "工具栏锚点"
@@ -1243,10 +1241,18 @@ L["STRING_OPTIONS_WINDOW"] = "选项面板"
 L["STRING_OPTIONS_WINDOW_ANCHOR_ANCHORS"] = "锚点:"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE"] = "忽略品质切换"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE_DESC"] = "启用后，隐藏，显示或切换所有窗口时，此窗口不受影响"
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = ""--]] 
 L["STRING_OPTIONS_WINDOW_SCALE"] = "尺度"
 L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[调整窗口的比例
 |cFFFFFF00贴士|r：右键单击以键入值
 |cFFFFFF00当前|r：%s]=]
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_WINDOW_SKIN_COLOR"] = ""--]] 
+--[[Translation missing --]]
+--[[ L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = ""--]] 
 L["STRING_OPTIONS_WINDOW_TITLE"] = "窗口设置"
 L["STRING_OPTIONS_WINDOW_TITLE_DESC"] = "这些选项控制选择窗口的窗口外观。"
 L["STRING_OPTIONS_WINDOWSPEED"] = "更新间隔"

@@ -11,6 +11,7 @@ C["Party"] = {
 		["raid"] = false,
 		["scenario"] = false,
 		["none"] = false,
+		["finder"] = false,
 		["size"] = 5,
 	},
 	arena = {
@@ -19,6 +20,7 @@ C["Party"] = {
 			["showPlayer"] = false,
 			["showPlayerEx"] = true,
 			["showTooltip"] = false,
+			["showRange"] = false,
 		},
 		position = {
 			["uf"] = "auto",

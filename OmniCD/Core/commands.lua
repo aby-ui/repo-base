@@ -30,7 +30,7 @@ E.SlashHandler = function(msg)
 		E.Write("reload or rl: " ..  L["Reload addon."])
 		E.Write("reset or rt: " .. L["Reset all cooldown timers."])
 	elseif (command == "rl" or command == "reload") then
-		E:Refresh(true)
+		E:Refresh()
 	elseif (command == "rt" or command == "reset") then
 		if (value == "") then
 			P:ResetAllIcons()

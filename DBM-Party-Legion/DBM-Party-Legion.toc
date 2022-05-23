@@ -3,7 +3,7 @@
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (Legion)|r
 ## Title-deDE:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Gruppe-Legion|r
 ## Title-frFR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Groupe-Legion|r
-## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Групповые подземелья-Legion|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Подземелья (Легион)|r
 ## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0隊伍首領-軍臨天下|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0队伍首领(军团再临)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Mazmorras (Legion)|r
@@ -19,7 +19,7 @@
 ## X-DBM-Mod-SubCategoriesID: 1501, 1466, 1456, 1477, 1458, 1516, 1571, 1492, 1544, 1493, 1651, 1677, 1753
 ## X-DBM-Mod-Name: Dungeons (Legion)
 ## X-DBM-Mod-Name-deDE: Gruppe (Legion)
-## X-DBM-Mod-Name-ruRU: Групповые подземелья (Legion)
+## X-DBM-Mod-Name-ruRU: Подземелья (Легион)
 ## X-DBM-Mod-Name-esES: Mazmorras (Legion)
 ## X-DBM-Mod-Name-esMX: Mazmorras (Legion)
 ## X-DBM-Mod-Name-ptBR: Masmorras (Legion)
@@ -33,7 +33,7 @@
 ## X-DBM-Mod-MinExpansion: 6
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r32
+## Version: r34
 
 localization.en.lua
 localization.cn.lua

@@ -968,7 +968,7 @@
 		local bars_brackets = instance:GetBarBracket()
 		--
 		if (instance.use_multi_fontstrings) then
-			instance:SetTextsOnLine(thisLine, "", (spell_damage and SelectedToKFunction (_, spell_damage) or ""), porcentagem)
+			instance:SetInLineTexts(thisLine, "", (spell_damage and SelectedToKFunction (_, spell_damage) or ""), porcentagem)
 		else
 			thisLine.lineText4:SetText ((spell_damage and SelectedToKFunction (_, spell_damage) or "") .. bars_brackets[1] .. porcentagem .. bars_brackets[2])
 		end
@@ -1157,7 +1157,7 @@
 		
 		--
 		if (instancia.use_multi_fontstrings) then
-			instancia:SetTextsOnLine(thisLine, "", total_frags, porcentagem)
+			instancia:SetInLineTexts(thisLine, "", total_frags, porcentagem)
 		else
 			thisLine.lineText4:SetText (total_frags .. bars_brackets[1] .. porcentagem .. bars_brackets[2])
 		end
@@ -1576,7 +1576,7 @@
 			thisLine.lineText4:SetText (_string_replace (instancia.row_info.textR_custom_text, formated_damage, formated_dps, porcentagem, self, instancia.showing, instancia, rightText))
 		else
 			if (instancia.use_multi_fontstrings) then
-				instancia:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
+				instancia:SetInLineTexts(thisLine, formated_damage, formated_dps, porcentagem)
 			else
 				thisLine.lineText4:SetText (rightText)
 			end
@@ -2397,13 +2397,129 @@ function atributo_damage:RefreshWindow (instancia, tabela_do_combate, forcar, ex
 	
 	Details.LastFullDamageUpdate = Details._tempo
 	
+	instancia:AutoAlignInLineFontStrings()
+
 	return Details:EndRefresh(instancia, total, tabela_do_combate, showing) --> retorna a tabela que precisa ganhar o refresh
 end
+
+--[[exported]] function Details:AutoAlignInLineFontStrings()
+	
+	--if this instance is using in line texts, check the min distance and the length of strings to make them more spread appart
+	if (self.use_multi_fontstrings and self.use_auto_align_multi_fontstrings) then
+		local maxStringLength_StringFour = 0
+		local maxStringLength_StringThree = 0
+		local profileOffsetString3 = self.fontstrings_text3_anchor
+		local profileOffsetString2 = self.fontstrings_text2_anchor
+
+		Details.CacheInLineMaxDistance = Details.CacheInLineMaxDistance or {}
+		Details.CacheInLineMaxDistance[self:GetId()] = Details.CacheInLineMaxDistance[self:GetId()] or {[2] = profileOffsetString2, [3] = profileOffsetString3}
+
+		--space between string4 and string3 (usually dps is 4 and total value is 3)
+		for lineId = 1, self:GetNumLinesShown() do
+			local thisLine = self:GetLine(lineId)
+
+			--check strings 3 and 4
+			if (thisLine.lineText4:GetText() ~= "" and thisLine.lineText3:GetText() ~= "") then
+				--the length of the far right string determines the space between it and the next string in the left
+				local stringLength = thisLine.lineText4:GetStringWidth()
+				maxStringLength_StringFour = stringLength > maxStringLength_StringFour and stringLength or maxStringLength_StringFour
+			end
+			
+			--check strings 2 and 3
+			if (thisLine.lineText2:GetText() ~= "" and thisLine.lineText3:GetText() ~= "") then
+				--the length of the middle string determines the space between it and the next string in the left
+				local stringLength = thisLine.lineText3:GetStringWidth()
+				maxStringLength_StringThree = stringLength > maxStringLength_StringThree and stringLength or maxStringLength_StringThree
+			end
+		end
+
+		--if the length bigger than the min distance? calculate for string4 to string3 distance
+		if ((maxStringLength_StringFour > 0) and (maxStringLength_StringFour + 5 > profileOffsetString3)) then
+			local newOffset = maxStringLength_StringFour + 5
+
+			--check if the current needed min distance is bigger than the distance stored in the cache
+			local currentCacheMaxValue = Details.CacheInLineMaxDistance[self:GetId()][3]
+			if (currentCacheMaxValue < newOffset) then
+				currentCacheMaxValue = newOffset
+				Details.CacheInLineMaxDistance[self:GetId()][3] = currentCacheMaxValue
+			else
+				--if not, use the distance value cached to avoid jittering in the string
+				newOffset = currentCacheMaxValue
+			end
+
+			--update the lines
+			for lineId = 1, self:GetNumLinesShown() do
+				local thisLine = self:GetLine(lineId)
+				thisLine.lineText3:SetPoint("right", thisLine.statusbar, "right", -newOffset, 0)
+			end
+		end
+
+		--check if there's length in the third string, also the third string cannot have a length if the second string is empty
+		if (maxStringLength_StringThree > 0) then
+			local newOffset = maxStringLength_StringThree + maxStringLength_StringFour + 14
+			if (newOffset >= profileOffsetString2) then
+				--check if the current needed min distance is bigger than the distance stored in the cache
+				local currentCacheMaxValue = Details.CacheInLineMaxDistance[self:GetId()][2]
+				if (currentCacheMaxValue < newOffset) then
+					currentCacheMaxValue = newOffset
+					Details.CacheInLineMaxDistance[self:GetId()][2] = currentCacheMaxValue
+				else
+					--if not, use the distance value cached to avoid jittering in the string
+					newOffset = currentCacheMaxValue
+				end
+
+				--update the lines
+				for lineId = 1, self:GetNumLinesShown() do
+					local thisLine = self:GetLine(lineId)
+					thisLine.lineText2:SetPoint("right", thisLine.statusbar, "right", -newOffset, 0)
+				end
+			end
+		end
+
+		--reduce the size of the actor name string based on the total size of all strings in the right side
+		for lineId = 1, self:GetNumLinesShown() do
+			local thisLine = self:GetLine(lineId)
+
+			--check if there's something showing in this line
+			if (thisLine.minha_tabela) then
+				local playerNameFontString = thisLine.lineText1
+				local text2 = thisLine.lineText2
+				local text3 = thisLine.lineText3
+				local text4 = thisLine.lineText4
+
+				local totalWidth = text2:GetStringWidth() + text3:GetStringWidth() + text4:GetStringWidth()
+				totalWidth = totalWidth + 40 - self.fontstrings_text_limit_offset
+
+				DetailsFramework:TruncateTextSafe(playerNameFontString, self.cached_bar_width - totalWidth) --this avoid truncated strings with ...
+
+				--these commented lines are for to create a cache and store the name already truncated there to safe performance
+					--local truncatedName = playerNameFontString:GetText()
+					--local actorObject = thisLine.minha_tabela
+					--actorObject.name_cached = truncatedName
+					--actorObject.name_cached_time = GetTime()
+			end
+		end
+	end
+end
+
+--handle internal details! events
+local eventListener = Details:CreateEventListener()
+eventListener:RegisterEvent("COMBAT_PLAYER_ENTER", function()
+	if (Details.CacheInLineMaxDistance) then
+		wipe(Details.CacheInLineMaxDistance)
+
+		for i = 1, 10 do
+			C_Timer.After(i, function()
+				wipe(Details.CacheInLineMaxDistance)
+			end)
+		end
+	end
+end)
 
 local actor_class_color_r, actor_class_color_g, actor_class_color_b
 
 -- ~texts
-function Details:SetTextsOnLine(thisLine, valueText, perSecondText, percentText)
+--[[exported]] function Details:SetInLineTexts(thisLine, valueText, perSecondText, percentText)
 	--set defaults
 	local instance = self
 	valueText = valueText or ""
@@ -2529,7 +2645,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText(_string_replace (instance.row_info.textR_custom_text, formated_damage, formated_dps, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				instance:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
+				instance:SetInLineTexts(thisLine, formated_damage, formated_dps, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2593,8 +2709,8 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_dps, formated_damage, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				--instance:SetTextsOnLine(thisLine, formated_damage, formated_dps, porcentagem)
-				instance:SetTextsOnLine(thisLine, rightText)
+				--instance:SetInLineTexts(thisLine, formated_damage, formated_dps, porcentagem)
+				instance:SetInLineTexts(thisLine, rightText)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2627,7 +2743,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_damage_taken, formated_dtps, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				instance:SetTextsOnLine(thisLine, formated_damage_taken, formated_dtps, porcentagem)
+				instance:SetInLineTexts(thisLine, formated_damage_taken, formated_dtps, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2653,7 +2769,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_friendly_fire, "", porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				instance:SetTextsOnLine(thisLine, "", formated_friendly_fire, porcentagem)
+				instance:SetInLineTexts(thisLine, "", formated_friendly_fire, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2685,7 +2801,7 @@ function atributo_damage:RefreshLine (instance, lineContainer, whichRowLine, ran
 			thisLine.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_damage_taken, formated_dtps, porcentagem, self, instance.showing, instance, rightText))
 		else
 			if (instance.use_multi_fontstrings) then
-				instance:SetTextsOnLine(thisLine, formated_damage_taken, formated_dtps, porcentagem)
+				instance:SetInLineTexts(thisLine, formated_damage_taken, formated_dtps, porcentagem)
 			else
 				thisLine.lineText4:SetText(rightText)
 			end
@@ -2857,11 +2973,13 @@ end
 	a = a or 1
 	
 	if (instance.row_info.texture_class_colors) then
+		--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 		if (instance.bars_inverted) then
 			bar.right_to_left_texture:SetVertexColor(r, g, b, a)
 		else
 			bar.textura:SetVertexColor(r, g, b, a)
-		end
+		end]]
+		bar.textura:SetVertexColor(r, g, b, a)
 	end
 	
 	if (instance.row_info.texture_background_class_color) then
@@ -2877,7 +2995,12 @@ end
 		bar.lineText3:SetTextColor(r, g, b, a)
 		bar.lineText4:SetTextColor(r, g, b, a)
 	end
-	
+
+	if (instance.row_info.backdrop.use_class_colors) then
+		--get the alpha from the border color
+		local alpha = instance.row_info.backdrop.color[4]
+		bar.lineBorder:SetVertexColor(r, g, b, alpha)
+	end
 end 
 
 --[[ exported]] function Details:SetClassIcon (texture, instance, classe) --self is the actorObject

@@ -536,9 +536,9 @@
 
 				if (instance.use_multi_fontstrings) then
 					if (type(value) == "string") then
-						instance:SetTextsOnLine(row, "", value, percent) --usando essa linha
+						instance:SetInLineTexts(row, "", value, percent) --usando essa linha
 					else
-						instance:SetTextsOnLine(row, "", SelectedToKFunction(_, value), percent)
+						instance:SetInLineTexts(row, "", SelectedToKFunction(_, value), percent)
 					end
 
 				else
@@ -558,7 +558,7 @@
 					row.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
 				else
 					if (instance.use_multi_fontstrings) then
-						instance:SetTextsOnLine(row, "", formated_value, percent)
+						instance:SetInLineTexts(row, "", formated_value, percent)
 					else
 						row.lineText4:SetText (rightText)
 						row.lineText3:SetText("")

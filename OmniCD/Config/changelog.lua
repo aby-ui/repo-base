@@ -13,6 +13,17 @@ v2.7.15
 Previous changes can be found in the CHANGELOG file.
 ]=]
 else E.changelog = [=[
+v2.7.17
+	Added new option 'Show Range'.
+	Added backup timers to remove Decrypted Urh Cypher, etc.
+	Added Seasons of Plenty (Runeforge) CDRR.
+	Added PitBull4 raid support,
+	Fixed an issue where Purify Soul would not activate with certain soulbind abilities.
+	Swiftmend will correctly show with Restoration Affinity.
+	Fixed option panel borders for addons w/ ui scaling.
+	Known Blizzard Bug:
+		Equinox under the effect of Blessing of Autumn incorrectly increases the remaining CD of Guardian Spirit w/ Guardian Angel.
+
 v2.7.16
 	Dancing Rune Weapon CDR fixed.
 	Observer cooldowns will no longer be tracked in the MDI setting.

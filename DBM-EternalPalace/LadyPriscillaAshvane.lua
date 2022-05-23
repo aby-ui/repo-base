@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2354, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220516021348")
 mod:SetCreatureID(152236)
 mod:SetEncounterID(2304)
 mod:SetUsedIcons(1, 2, 3, 4, 6, 7)
@@ -250,7 +250,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 			--star(1) and triangle(4)
 			if self.Options.SetIconOnArcingAzerite then
-				self:SetSortedIcon(1, args.destName, {1, 4}, 2, nil, nil, 1)--TODO, return function announce maybe?
+				self:SetSortedIcon("roster", 1, args.destName, {1, 4}, 2, nil, nil, 1)--TODO, return function announce maybe?
 			end
 		elseif (spellId == 296942 or spellId == 296939) then--Red (orange BW)
 			if args:IsPlayer() then
@@ -266,7 +266,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 			--circle(2) and cross(7)
 			if self.Options.SetIconOnArcingAzerite then
-				self:SetSortedIcon(1, args.destName, {2, 7}, 2, nil, nil, 2)--TODO, return function announce maybe?
+				self:SetSortedIcon("roster", 1, args.destName, {2, 7}, 2, nil, nil, 2)--TODO, return function announce maybe?
 			end
 		elseif (spellId == 296943 or spellId == 296940) then--Blue (Purple BW)
 			if args:IsPlayer() then
@@ -282,7 +282,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 			--diamond(3) and moon(6)
 			if self.Options.SetIconOnArcingAzerite then
-				self:SetSortedIcon(1, args.destName, {3, 6}, 2, nil, nil, 3)--TODO, return function announce maybe?
+				self:SetSortedIcon("roster", 1, args.destName, {3, 6}, 2, nil, nil, 3)--TODO, return function announce maybe?
 			end
 		end
 		if self.Options.InfoFrame then

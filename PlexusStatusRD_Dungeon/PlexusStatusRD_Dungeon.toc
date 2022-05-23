@@ -1,5 +1,5 @@
 ## Interface: 90200
-## Version: v9.2.1
+## Version: v9.2.5
 ## Title: PlexusStatusDungeonDebuff
 ## Notes: Complete Debuff List Up To BfA
 ## Author: Doadin
@@ -13,6 +13,7 @@ ShadowLands/MistsofTirnaScithe.lua
 ShadowLands/Plaguefall.lua
 ShadowLands/SanguineDepths.lua
 ShadowLands/SpiresofAscension.lua
+ShadowLands/Tazavesh.lua
 ShadowLands/TheaterofPain.lua
 ShadowLands/TheNecroticWake.lua
 ShadowLands/TheOtherSide.lua

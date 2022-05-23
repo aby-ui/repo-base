@@ -5289,6 +5289,19 @@ DF.IconRowFunctions = {
 		return iconFrame
 	end,
 	
+	--adds only if not existing already in the cache
+	AddSpecificIcon = function (self, identifierKey, spellId, borderColor, startTime, duration, forceTexture, descText, count, debuffType, caster, canStealOrPurge, spellName, isBuff)
+		if not identifierKey or identifierKey == "" then
+			return
+		end
+		
+		if not self.AuraCache[identifierKey] then
+			local icon = self:SetIcon (spellId, borderColor, startTime, duration, forceTexture, descText, count, debuffType, caster, canStealOrPurge, spellName, isBuff or false)
+			icon.identifierKey = identifierKey
+			self.AuraCache[identifierKey] = true
+		end
+	end,
+	
 	SetIcon = function (self, spellId, borderColor, startTime, duration, forceTexture, descText, count, debuffType, caster, canStealOrPurge, spellName, isBuff)
 	
 		local actualSpellName, _, spellIcon = GetSpellInfo (spellId)
@@ -5321,7 +5334,7 @@ DF.IconRowFunctions = {
 					iconFrame.timeRemaining = startTime + duration - now
 					iconFrame.expirationTime = startTime + duration
 					
-					local formattedTime = (iconFrame.timeRemaining > 0) and iconFrame.parentIconRow.FormatCooldownTime(iconFrame.timeRemaining) or ""
+					local formattedTime = (iconFrame.timeRemaining > 0) and self.options.decimal_timer and iconFrame.parentIconRow.FormatCooldownTimeDecimal(iconFrame.timeRemaining) or iconFrame.parentIconRow.FormatCooldownTime(iconFrame.timeRemaining) or ""
 					iconFrame.CountdownText:SetText (formattedTime)
 					
 					iconFrame.CountdownText:SetPoint (self.options.text_anchor or "center", iconFrame, self.options.text_rel_anchor or "center", self.options.text_x_offset or 0, self.options.text_y_offset or 0)
@@ -5341,6 +5354,7 @@ DF.IconRowFunctions = {
 					iconFrame.CountdownText:Hide()
 				end
 				
+				iconFrame.Cooldown:SetReverse (self.options.cooldown_reverse)
 				iconFrame.Cooldown:SetHideCountdownNumbers (self.options.surpress_blizzard_cd_timer)
 			else
 				iconFrame.timeRemaining = nil
@@ -5391,6 +5405,8 @@ DF.IconRowFunctions = {
 			iconFrame.isBuff = isBuff
 			iconFrame.spellName = spellName
 			
+			iconFrame.identifierKey = nil -- only used for "specific" add/remove
+			
 			--add the spell into the cache
 			self.AuraCache [spellId or -1] = true
 			self.AuraCache [spellName] = true
@@ -5409,7 +5425,11 @@ DF.IconRowFunctions = {
 		if (self.lastUpdateCooldown + 0.05) <= now then
 			self.timeRemaining = self.expirationTime - now
 			if self.timeRemaining > 0 then
-				self.CountdownText:SetText (self.parentIconRow.FormatCooldownTime(self.timeRemaining))
+				if self.parentIconRow.options.decimal_timer then
+					self.CountdownText:SetText (self.parentIconRow.FormatCooldownTimeDecimal(self.timeRemaining))
+				else
+					self.CountdownText:SetText (self.parentIconRow.FormatCooldownTime(self.timeRemaining))
+				end
 			else
 				self.CountdownText:SetText ("")
 			end
@@ -5430,46 +5450,97 @@ DF.IconRowFunctions = {
 		return formattedTime
 	end,
 	
+	FormatCooldownTimeDecimal = function (formattedTime)
+        if formattedTime < 10 then
+            return ("%.1f"):format(formattedTime)
+        elseif formattedTime < 60 then
+            return ("%d"):format(formattedTime)
+        elseif formattedTime < 3600 then
+            return ("%d:%02d"):format(formattedTime/60%60, formattedTime%60)
+        elseif formattedTime < 86400 then
+            return ("%dh %02dm"):format(formattedTime/(3600), formattedTime/60%60)
+        else
+            return ("%dd %02dh"):format(formattedTime/86400, (formattedTime/3600) - (floor(formattedTime/86400) * 24))
+        end
+	end,
+	
+	RemoveSpecificIcon = function (self, identifierKey)
+		if not identifierKey or identifierKey == "" then
+			return
+		end
+	
+		table.wipe (self.AuraCache)
+	
+		local iconPool = self.IconPool
+		local countStillShown = 0
+		for i = 1, self.NextIcon -1 do
+			local iconFrame = iconPool[i]
+			if iconFrame.identifierKey and iconFrame.identifierKey == identifierKey then
+				iconFrame:Hide()
+				iconFrame:ClearAllPoints()
+				iconFrame.identifierKey = nil
+			else
+				self.AuraCache [iconFrame.spellId] = true
+				self.AuraCache [iconFrame.spellName] = true
+				self.AuraCache.canStealOrPurge = self.AuraCache.canStealOrPurge or iconFrame.canStealOrPurge
+				self.AuraCache.hasEnrage = self.AuraCache.hasEnrage or iconFrame.debuffType == "" --yes, enrages are empty-string...
+				countStillShown = countStillShown + 1
+			end
+		end
+		
+		self:AlignAuraIcons()
+		
+	end,
+	
 	ClearIcons = function (self, resetBuffs, resetDebuffs)
 		resetBuffs = resetBuffs ~= false
 		resetDebuffs = resetDebuffs ~= false
 		table.wipe (self.AuraCache)
 		
 		local iconPool = self.IconPool
-		local countStillShown = 0
 		for i = 1, self.NextIcon -1 do
-			if iconPool[i].isBuff == nil then
-				iconPool[i]:Hide()
-				iconPool[i]:ClearAllPoints()
-			elseif resetBuffs and iconPool[i].isBuff then
-				iconPool[i]:Hide()
-				iconPool[i]:ClearAllPoints()
-			elseif resetDebuffs and not iconPool[i].isBuff then
-				iconPool[i]:Hide()
-				iconPool[i]:ClearAllPoints()
+			local iconFrame = iconPool[i]
+			if iconFrame.isBuff == nil then
+				iconFrame:Hide()
+				iconFrame:ClearAllPoints()
+			elseif resetBuffs and iconFrame.isBuff then
+				iconFrame:Hide()
+				iconFrame:ClearAllPoints()
+			elseif resetDebuffs and not iconFrame.isBuff then
+				iconFrame:Hide()
+				iconFrame:ClearAllPoints()
 			else
-				self.AuraCache [iconPool[i].spellId] = true
-				self.AuraCache [iconPool[i].spellName] = true
-				self.AuraCache.canStealOrPurge = self.AuraCache.canStealOrPurge or iconPool[i].canStealOrPurge
-				self.AuraCache.hasEnrage = self.AuraCache.hasEnrage or iconPool[i].debuffType == "" --yes, enrages are empty-string...
-				countStillShown = countStillShown + 1
+				self.AuraCache [iconFrame.spellId] = true
+				self.AuraCache [iconFrame.spellName] = true
+				self.AuraCache.canStealOrPurge = self.AuraCache.canStealOrPurge or iconFrame.canStealOrPurge
+				self.AuraCache.hasEnrage = self.AuraCache.hasEnrage or iconFrame.debuffType == "" --yes, enrages are empty-string...
 			end
 		end
 		
-		if countStillShown == 0 then
-			self.NextIcon = 1
+		self:AlignAuraIcons()
+		
+	end,
+	
+	AlignAuraIcons = function (self)
+		
+		local iconPool = self.IconPool
+		local iconAmount = #iconPool
+		local countStillShown = 0
+		
+		table.sort (iconPool, function(i1, i2) return i1:IsShown() and not i2:IsShown() end)
+		
+		if iconAmount == 0 then
 			self:Hide()
 		else
-			self.NextIcon = countStillShown + 1
-			table.sort (iconPool, function(i1, i2) return i1:IsShown() and not i2:IsShown() end)
-			
 			-- re-anchor not hidden
-			for i = 1, countStillShown do
+			for i = 1, iconAmount do
 				local iconFrame = iconPool[i]
 				local anchor = self.options.anchor
 				local anchorTo = i == 1 and self or self.IconPool [i - 1]
 				local xPadding = i == 1 and self.options.left_padding or self.options.icon_padding or 1
 				local growDirection = self.options.grow_direction
+				
+				countStillShown = countStillShown + (iconFrame:IsShown() and 1 or 0)
 				
 				iconFrame:ClearAllPoints()
 				if (growDirection == 1) then --grow to right
@@ -5489,6 +5560,8 @@ DF.IconRowFunctions = {
 				end
 			end
 		end
+		
+		self.NextIcon = countStillShown + 1
 		
 	end,
 	
@@ -5572,6 +5645,8 @@ local default_icon_row_options = {
 	surpress_blizzard_cd_timer = false,
 	surpress_tulla_omni_cc = false,
 	on_tick_cooldown_update = true,
+	decimal_timer = false,
+	cooldown_reverse = false,
 }
 
 function DF:CreateIconRow (parent, name, options)
@@ -8538,13 +8613,7 @@ DF.CastFrameFunctions = {
 	end,
 	
 	UpdateCastingInfo = function (self, unit)
-		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
-		if not IS_WOW_PROJECT_CLASSIC_TBC then
-			name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
-		else
-			name, text, texture, startTime, endTime, isTradeSkill, castID, spellID = UnitCastingInfo (unit)
-			notInterruptible = false
-		end
+		local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = UnitCastingInfo (unit)
 		
 		--> is valid?
 		if (not self:IsValid (unit, name, isTradeSkill, true)) then

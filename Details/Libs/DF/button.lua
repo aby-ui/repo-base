@@ -1228,21 +1228,20 @@ function DF:NewColorPickButton (parent, name, member, callback, alpha, button_te
 		button:SetBackdrop ({edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]], edgeSize = 6,
 		bgFile = [[Interface\DialogFrame\UI-DialogBox-Background]], insets = {left = 0, right = 0, top = 0, bottom = 0}})
 	end
-	
-	--textura do fundo
-	local background = DF:NewImage (button, nil, color_button_width, color_button_height, nil, nil, nil, "$parentBck")
-	--background:SetTexture ([[Interface\AddOns\Details\images\icons]])
-	background:SetPoint ("topleft", button.widget, "topleft", 1, -2)
-	background:SetPoint ("bottomright", button.widget, "bottomright", -1, 1)
-	background:SetTexCoord (0.337890625, 0.390625, 0.625, 0.658203125)
-	background:SetDrawLayer ("background", 1)
-	
+
+	local background = button:CreateTexture(nil, "background", nil, 2)
+	background:SetPoint("topleft", button.widget, "topleft", 0, 0)
+	background:SetPoint("bottomright", button.widget, "bottomright", 0, 0)
+	background:SetTexture([[Interface\ITEMSOCKETINGFRAME\UI-EMPTYSOCKET]])
+	background:SetTexCoord(3/16, 13/16, 3/16, 13/16)
+	background:SetAlpha(0.3)
+
 	--textura da cor
 	local img = DF:NewImage (button, nil, color_button_width, color_button_height, nil, nil, "color_texture", "$parentTex")
 	img:SetColorTexture (1, 1, 1)
-	img:SetPoint ("topleft", button.widget, "topleft", 1, -2)
-	img:SetPoint ("bottomright", button.widget, "bottomright", -1, 1)
-	img:SetDrawLayer ("background", 2)
+	img:SetPoint ("topleft", button.widget, "topleft", 0, 0)
+	img:SetPoint ("bottomright", button.widget, "bottomright", 0, 0)
+	img:SetDrawLayer ("background", 3)
 	
 	return button
 	

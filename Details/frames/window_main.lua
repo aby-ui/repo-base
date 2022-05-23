@@ -1874,11 +1874,13 @@ local barra_scripts_onenter = function (self)
 	self:SetBackdropColor (0.588, 0.588, 0.588, 0.7)
 
 	if (not _detalhes.instances_disable_bar_highlight) then
+		--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 		if (self._instance.bars_inverted) then
 			self.right_to_left_texture:SetBlendMode ("ADD")
 		else
 			self.textura:SetBlendMode ("ADD")
-		end
+		end]]
+		self.textura:SetBlendMode ("ADD")
 	end
 
 	local lefttext = self.lineText1
@@ -1912,13 +1914,14 @@ local barra_scripts_onleave = function (self)
 	self:SetBackdrop (barra_backdrop_onleave)	
 	self:SetBackdropBorderColor (0, 0, 0, 0)
 	self:SetBackdropColor (0, 0, 0, 0)
-	
+	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 	if (self._instance.bars_inverted) then
 		self.right_to_left_texture:SetBlendMode ("BLEND")
 	else
 		self.textura:SetBlendMode ("BLEND")
-	end
-
+	end]]
+	self.textura:SetBlendMode ("BLEND")
+	
 	self.showing_allspells = false
 	self:SetScript ("OnUpdate", nil)
 	
@@ -2076,6 +2079,7 @@ function _detalhes:HandleTextsOnMouseClick (row, type)
 end
 
 local set_bar_value = function (self, value)
+	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 	if (self._instance.bars_inverted) then
 		self.statusbar:SetValue (0)
 		
@@ -2089,7 +2093,8 @@ local set_bar_value = function (self, value)
 		self.right_to_left_texture:SetTexCoord (coord_inverse, 0, 0, 1)
 	else
 		self.statusbar:SetValue (value)
-	end
+	end]]
+	self.statusbar:SetValue(value)
 	
 	self.statusbar.value = value
 	
@@ -2284,16 +2289,18 @@ local icon_frame_on_enter = function (self)
 				end
 
 			else
-				local dungeonPlayerInfo = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(actorName)
-				if (dungeonPlayerInfo) then
-					local currentScore = dungeonPlayerInfo.currentSeasonScore or 0
-					if (currentScore > 0) then
-						GameCooltip:AddLine("M+ Score:", currentScore, 1, "white")
-						GameCooltip:AddIcon ([[]], 1, 1, 1, 20)
-						_detalhes:AddTooltipBackgroundStatusbar()
-						height = height + 19 --frame height
-					end
-				end				
+				if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and C_PlayerInfo) then --is retail?
+					local dungeonPlayerInfo = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(actorName)
+					if (dungeonPlayerInfo) then
+						local currentScore = dungeonPlayerInfo.currentSeasonScore or 0
+						if (currentScore > 0) then
+							GameCooltip:AddLine("M+ Score:", currentScore, 1, "white")
+							GameCooltip:AddIcon ([[]], 1, 1, 1, 20)
+							_detalhes:AddTooltipBackgroundStatusbar()
+							height = height + 19 --frame height
+						end
+					end		
+				end		
 			end
 
 			--dps
@@ -3469,19 +3476,52 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 
 -- main frames -----------------------------------------------------------------------------------------------------------------------------------------------
 
-	--> create the base frame, everything connect in this frame except the rows.
-	local baseframe = CreateFrame ("scrollframe", "DetailsBaseFrame"..ID, _UIParent,"BackdropTemplate") --
-	baseframe:SetMovable (true)
-	baseframe:SetResizable (true)
-	baseframe:SetUserPlaced (false)
-	baseframe:SetDontSavePosition (true)
-
+	--baseframe is the lowest frame in the window architecture
+	local baseframe = CreateFrame("scrollframe", "DetailsBaseFrame" .. ID, _UIParent, "BackdropTemplate")
+	baseframe:SetMovable(true)
+	baseframe:SetResizable(true)
+	baseframe:SetUserPlaced(false)
+	baseframe:SetDontSavePosition(true)
+	baseframe:SetFrameStrata(baseframe_strata)
+	baseframe:SetFrameLevel(2)
 	baseframe.instance = instancia
-	baseframe:SetFrameStrata (baseframe_strata)
-	baseframe:SetFrameLevel (2)
 
-	--> background holds the wallpaper, alert strings ans textures, have setallpoints on baseframe
-	--> backgrounddisplay is a scrollschild of backgroundframe
+	local baseframeBorder = DetailsFramework:CreateFullBorder(baseframe:GetName() .. "BaseBorder", baseframe)
+	baseframeBorder:SetBorderSizes(1, 1, 1, 1)
+	baseframeBorder:UpdateSizes()
+	baseframeBorder:SetVertexColor(0, 0, 0, 1)
+	baseframe.border = baseframeBorder
+	baseframe.border:Hide()
+
+	local titleBar = CreateFrame("frame", baseframe:GetName() .. "TitleBar", baseframe, "BackdropTemplate")
+	titleBar:SetPoint("bottomleft", baseframe, "topleft", 0, 0)
+	titleBar:SetPoint("bottomright", baseframe, "topright", 0, 0)
+	titleBar:SetHeight(16)
+	titleBar:EnableMouse(false)
+	baseframe.titleBar = titleBar
+
+	titleBar.texture = titleBar:CreateTexture("$parentTexture", "artwork")
+	titleBar.texture:SetAllPoints()
+	titleBar.texture:SetTexture([[Interface\AddOns\Details\images\bar_serenity]])
+	titleBar.texture:SetVertexColor(0, 0, 0, 0)
+
+	--a background frame that anchors in the topleft of the title bar and bottom right of the baseframe
+	--this frame does not attack to statusbar (yet)
+	local fullWindowFrame = CreateFrame("frame", baseframe:GetName() .. "FullWindowFrame", baseframe, "BackdropTemplate")
+	fullWindowFrame:EnableMouse(false)
+	fullWindowFrame:SetPoint("topleft", titleBar, "topleft", 0, 0)
+	fullWindowFrame:SetPoint("bottomright", baseframe, "bottomright", 0, 0)
+	baseframe.fullWindowFrame = fullWindowFrame
+
+	local fullWindowBorder = DetailsFramework:CreateFullBorder(fullWindowFrame:GetName() .. "Border", fullWindowFrame)
+	fullWindowBorder:SetBorderSizes(1, 1, 1, 1)
+	fullWindowBorder:UpdateSizes()
+	fullWindowBorder:SetVertexColor(0, 0, 0, 1)
+	fullWindowFrame.border = fullWindowBorder
+	fullWindowFrame.border:Hide()
+
+	--background holds the wallpaper, alert strings ans textures, have setallpoints on baseframe
+	--backgrounddisplay is a scrollschild of backgroundframe, hence its children won't show outside its canvas
 	local backgroundframe =  CreateFrame ("scrollframe", "Details_WindowFrame"..ID, baseframe) --window frame
 	local backgrounddisplay = CreateFrame ("frame", "Details_GumpFrame"..ID, backgroundframe,"BackdropTemplate") --gump frame
 	backgroundframe:SetFrameLevel (3)
@@ -3676,7 +3716,7 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 			
 
 	--> wallpaper
-		baseframe.wallpaper = backgrounddisplay:CreateTexture (nil, "overlay")
+		baseframe.wallpaper = baseframe:CreateTexture (nil, "overlay")
 		baseframe.wallpaper:Hide()
 	
 	--> alert frame
@@ -4013,7 +4053,7 @@ end
 
 _detalhes.barras_criadas = 0
 
---> search key: ~row ~barra
+--> search key: ~row ~barra  ~newbar ~createbar ~createrow
 function gump:CreateNewLine (instancia, index)
 
 	--> instancia = window object, index = row number
@@ -4021,135 +4061,140 @@ function gump:CreateNewLine (instancia, index)
 	local rowframe = instancia.rowframe
 	
 	--> create the bar with rowframe as parent
-	local new_row = CreateFrame ("button", "DetailsBarra_"..instancia.meu_id.."_"..index, rowframe,"BackdropTemplate")
+	local newLine = CreateFrame ("button", "DetailsBarra_"..instancia.meu_id.."_"..index, rowframe,"BackdropTemplate")
 	
-	new_row.row_id = index
-	new_row.instance_id = instancia.meu_id
-	new_row.animacao_fim = 0
-	new_row.animacao_fim2 = 0
+	newLine.row_id = index
+	newLine.instance_id = instancia.meu_id
+	newLine.animacao_fim = 0
+	newLine.animacao_fim2 = 0
 	
 	--> set point, almost irrelevant here, it recalc this on SetBarGrowDirection()
 	local y = instancia.row_height * (index-1)
 	if (instancia.bars_grow_direction == 1) then
 		y = y*-1
-		new_row:SetPoint ("topleft", baseframe, "topleft", instancia.row_info.space.left, y)
+		newLine:SetPoint ("topleft", baseframe, "topleft", instancia.row_info.space.left, y)
 		
 	elseif (instancia.bars_grow_direction == 2) then
-		new_row:SetPoint ("bottomleft", baseframe, "bottomleft", instancia.row_info.space.left, y + 2)
+		newLine:SetPoint ("bottomleft", baseframe, "bottomleft", instancia.row_info.space.left, y + 2)
 	end
 	
 	--> row height
-	new_row:SetHeight (instancia.row_info.height)
-	new_row:SetWidth (baseframe:GetWidth()+instancia.row_info.space.right)
-	new_row:SetFrameLevel (baseframe:GetFrameLevel() + 4)
-	new_row.last_value = 0
-	new_row.w_mod = 0
-	new_row:EnableMouse (true)
-	new_row:RegisterForClicks ("LeftButtonDown", "RightButtonDown")
+	newLine:SetHeight (instancia.row_info.height)
+	newLine:SetWidth (baseframe:GetWidth()+instancia.row_info.space.right)
+	newLine:SetFrameLevel (baseframe:GetFrameLevel() + 4)
+	newLine.last_value = 0
+	newLine.w_mod = 0
+	newLine:EnableMouse (true)
+	newLine:RegisterForClicks ("LeftButtonDown", "RightButtonDown")
 	
 	--> statusbar
-	new_row.statusbar = CreateFrame ("StatusBar", "DetailsBarra_Statusbar_"..instancia.meu_id.."_"..index, new_row)
-	new_row.statusbar.value = 0
+	newLine.statusbar = CreateFrame ("StatusBar", "DetailsBarra_Statusbar_"..instancia.meu_id.."_"..index, newLine)
+	newLine.statusbar.value = 0
+	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 	--> right to left texture
-	new_row.statusbar.right_to_left_texture = new_row.statusbar:CreateTexture (nil, "overlay")
-	new_row.statusbar.right_to_left_texture:SetPoint ("topright", new_row.statusbar, "topright")
-	new_row.statusbar.right_to_left_texture:SetPoint ("bottomright", new_row.statusbar, "bottomright")
-	new_row.statusbar.right_to_left_texture:SetWidth (0.000000001)
-	new_row.statusbar.right_to_left_texture:Hide()
-	new_row.right_to_left_texture = new_row.statusbar.right_to_left_texture
-	
+	newLine.statusbar.right_to_left_texture = newLine.statusbar:CreateTexture (nil, "overlay")
+	newLine.statusbar.right_to_left_texture:SetPoint ("topright", newLine.statusbar, "topright")
+	newLine.statusbar.right_to_left_texture:SetPoint ("bottomright", newLine.statusbar, "bottomright")
+	newLine.statusbar.right_to_left_texture:SetWidth (0.000000001)
+	newLine.statusbar.right_to_left_texture:Hide()
+	newLine.right_to_left_texture = newLine.statusbar.right_to_left_texture
+	]]
 	--> frame for hold the backdrop border
-	new_row.border = CreateFrame ("Frame", "DetailsBarra_Border_" .. instancia.meu_id .. "_" .. index, new_row.statusbar,"BackdropTemplate")
-	new_row.border:SetFrameLevel (new_row.statusbar:GetFrameLevel()+2)
-	new_row.border:SetAllPoints (new_row)
+	newLine.border = CreateFrame ("Frame", "DetailsBarra_Border_" .. instancia.meu_id .. "_" .. index, newLine.statusbar,"BackdropTemplate")
+	newLine.border:SetFrameLevel (newLine.statusbar:GetFrameLevel()+2)
+	newLine.border:SetAllPoints (newLine)
 	
 	--border
-	local lineBorder
+	newLine.lineBorder = DetailsFramework:CreateFullBorder(newLine:GetName() .. "Border", newLine.border)
+	--[=[
 	if (DetailsFramework.IsTBCWow()) then
-		lineBorder = DetailsFramework:CreateFullBorder(nil, new_row)
-		--lineBorder = CreateFrame("frame", nil, new_row, "DFNamePlateFullBorderTemplate, BackdropTemplate")
+		lineBorder = DetailsFramework:CreateFullBorder(nil, newLine)
+		--lineBorder = CreateFrame("frame", nil, newLine, "DFNamePlateFullBorderTemplate, BackdropTemplate")
 	else
-		lineBorder = CreateFrame("frame", nil, new_row, "NamePlateFullBorderTemplate, BackdropTemplate")
+		lineBorder = CreateFrame("frame", nil, newLine, "NamePlateFullBorderTemplate, BackdropTemplate")
 	end
-	new_row.lineBorder = lineBorder
-
+	newLine.lineBorder = lineBorder
+	--]=]
 	-- search key: ~model
 	
 	--low 3d bar
-	new_row.modelbox_low = CreateFrame ("playermodel", "DetailsBarra_ModelBarLow_" .. instancia.meu_id .. "_" .. index, new_row) --rowframe
-	new_row.modelbox_low:SetFrameLevel (new_row.statusbar:GetFrameLevel()-1)
-	new_row.modelbox_low:SetPoint ("topleft", new_row, "topleft")
-	new_row.modelbox_low:SetPoint ("bottomright", new_row, "bottomright")
+	newLine.modelbox_low = CreateFrame ("playermodel", "DetailsBarra_ModelBarLow_" .. instancia.meu_id .. "_" .. index, newLine) --rowframe
+	newLine.modelbox_low:SetFrameLevel (newLine.statusbar:GetFrameLevel()-1)
+	newLine.modelbox_low:SetPoint ("topleft", newLine, "topleft")
+	newLine.modelbox_low:SetPoint ("bottomright", newLine, "bottomright")
 	--high 3d bar
-	new_row.modelbox_high = CreateFrame ("playermodel", "DetailsBarra_ModelBarHigh_" .. instancia.meu_id .. "_" .. index, new_row) --rowframe
-	new_row.modelbox_high:SetFrameLevel (new_row.statusbar:GetFrameLevel()+1)
-	new_row.modelbox_high:SetPoint ("topleft", new_row, "topleft")
-	new_row.modelbox_high:SetPoint ("bottomright", new_row, "bottomright")
+	newLine.modelbox_high = CreateFrame ("playermodel", "DetailsBarra_ModelBarHigh_" .. instancia.meu_id .. "_" .. index, newLine) --rowframe
+	newLine.modelbox_high:SetFrameLevel (newLine.statusbar:GetFrameLevel()+1)
+	newLine.modelbox_high:SetPoint ("topleft", newLine, "topleft")
+	newLine.modelbox_high:SetPoint ("bottomright", newLine, "bottomright")
 	
 	--> create textures and icons
-	new_row.textura = new_row.statusbar:CreateTexture (nil, "artwork")
-	new_row.textura:SetHorizTile (false)
-	new_row.textura:SetVertTile (false)
+	newLine.textura = newLine.statusbar:CreateTexture (nil, "artwork")
+	newLine.textura:SetHorizTile (false)
+	newLine.textura:SetVertTile (false)
 	
 	--> row background texture
-	new_row.background = new_row:CreateTexture (nil, "background")
-	new_row.background:SetTexture()
-	new_row.background:SetAllPoints (new_row)
+	newLine.background = newLine:CreateTexture (nil, "background")
+	newLine.background:SetTexture()
+	newLine.background:SetAllPoints (newLine)
 
-	new_row.statusbar:SetStatusBarColor (0, 0, 0, 0)
-	new_row.statusbar:SetStatusBarTexture (new_row.textura)
-	new_row.statusbar:SetMinMaxValues (0, 100)
-	new_row.statusbar:SetValue (0)
+	newLine.statusbar:SetStatusBarColor (0, 0, 0, 0)
+	newLine.statusbar:SetStatusBarTexture (newLine.textura)
+	newLine.statusbar:SetMinMaxValues (0, 100)
+	newLine.statusbar:SetValue (0)
+
+	newLine.overlayTexture = newLine.statusbar:CreateTexture (nil, "overlay")
+	newLine.overlayTexture:SetAllPoints()
 
 	--> class icon
-	local icone_classe = new_row.border:CreateTexture (nil, "overlay")
+	local icone_classe = newLine.border:CreateTexture (nil, "overlay")
 	icone_classe:SetHeight (instancia.row_info.height)
 	icone_classe:SetWidth (instancia.row_info.height)
 	icone_classe:SetTexture (instancia.row_info.icon_file)
 	icone_classe:SetTexCoord (.75, 1, .75, 1)
-	new_row.icone_classe = icone_classe
+	newLine.icone_classe = icone_classe
 	
-	local icon_frame = CreateFrame ("frame", "DetailsBarra_IconFrame_" .. instancia.meu_id .. "_" .. index, new_row.statusbar)
+	local icon_frame = CreateFrame ("frame", "DetailsBarra_IconFrame_" .. instancia.meu_id .. "_" .. index, newLine.statusbar)
 	icon_frame:SetPoint ("topleft", icone_classe, "topleft")
 	icon_frame:SetPoint ("bottomright", icone_classe, "bottomright")
-	icon_frame:SetFrameLevel (new_row.statusbar:GetFrameLevel()+1)
+	icon_frame:SetFrameLevel (newLine.statusbar:GetFrameLevel()+1)
 	icon_frame.instance_id = instancia.meu_id
-	icon_frame.row = new_row
-	new_row.icon_frame = icon_frame
+	icon_frame.row = newLine
+	newLine.icon_frame = icon_frame
 	
-	icone_classe:SetPoint ("left", new_row, "left")
-	new_row.statusbar:SetPoint ("topleft", icone_classe, "topright")
-	new_row.statusbar:SetPoint ("bottomright", new_row, "bottomright")
+	icone_classe:SetPoint ("left", newLine, "left")
+	newLine.statusbar:SetPoint ("topleft", icone_classe, "topright")
+	newLine.statusbar:SetPoint ("bottomright", newLine, "bottomright")
 	
 	--> left text 1
-	new_row.lineText1 = new_row.border:CreateFontString (nil, "overlay", "GameFontHighlight")
-	new_row.lineText1:SetPoint ("left", new_row.icone_classe, "right", 3, 0)
-	new_row.lineText1:SetJustifyH ("left")
-	new_row.lineText1:SetNonSpaceWrap (true)
+	newLine.lineText1 = newLine.border:CreateFontString (nil, "overlay", "GameFontHighlight")
+	newLine.lineText1:SetPoint ("left", newLine.icone_classe, "right", 3, 0)
+	newLine.lineText1:SetJustifyH ("left")
+	newLine.lineText1:SetNonSpaceWrap (true)
 
 	--create text columns
 	for i = 2, 4 do
-		new_row ["lineText" .. i] = new_row.border:CreateFontString (nil, "overlay", "GameFontHighlight")
+		newLine ["lineText" .. i] = newLine.border:CreateFontString (nil, "overlay", "GameFontHighlight")
 	end
 
 	--> set the onclick, on enter scripts
-	barra_scripts (new_row, instancia, index)
+	barra_scripts (newLine, instancia, index)
 
 	--> hide
-	Details.FadeHandler.Fader (new_row, 1) 
+	Details.FadeHandler.Fader (newLine, 1) 
 
 	--> adds the window container
-	instancia.barras [index] = new_row
+	instancia.barras [index] = newLine
 	
 	--> set the left text
-	new_row.lineText1:SetText (Loc ["STRING_NEWROW"])
+	newLine.lineText1:SetText (Loc ["STRING_NEWROW"])
 	
 	--> refresh rows
 	instancia:InstanceRefreshRows()
 	
-	_detalhes:SendEvent ("DETAILS_INSTANCE_NEWROW", nil, instancia, new_row)
+	_detalhes:SendEvent ("DETAILS_INSTANCE_NEWROW", nil, instancia, newLine)
 	
-	return new_row
+	return newLine
 end
 
 function _detalhes:SetBarTextSettings (size, font, fixedcolor, leftcolorbyclass, rightcolorbyclass, leftoutline, rightoutline, customrighttextenabled, customrighttext, percentage_type, showposition, customlefttextenabled, customlefttext, smalloutline_left, smalloutlinecolor_left, smalloutline_right, smalloutlinecolor_right, translittext)
@@ -4246,24 +4291,68 @@ function _detalhes:SetBarTextSettings (size, font, fixedcolor, leftcolorbyclass,
 	self:InstanceRefreshRows()
 end
 
-function _detalhes:SetBarBackdropSettings (enabled, size, color) --argumente texture removed on shadowlands beta
-	if (type (enabled) ~= "boolean") then
+function _detalhes:SetBarBackdropSettings (enabled, size, color, use_class_colors)
+	if (type(enabled) ~= "boolean") then
 		enabled = self.row_info.backdrop.enabled
 	end
+
 	if (not size) then
 		size = self.row_info.backdrop.size
 	end
+
 	if (not color) then
 		color = self.row_info.backdrop.color
+	end
+
+	if (type(use_class_colors) ~= "boolean") then
+		use_class_colors = self.row_info.backdrop.use_class_colors
 	end
 	
 	self.row_info.backdrop.enabled = enabled
 	self.row_info.backdrop.size = size
 	self.row_info.backdrop.color = color
+	self.row_info.backdrop.use_class_colors = use_class_colors
 
 	self:InstanceReset()
 	self:InstanceRefreshRows()
 	self:ReajustaGump()
+end
+
+function Details:SetTitleBarSettings(shown, height, texture, color)
+	if (type(shown) ~= "boolean") then
+		shown = self.titlebar_shown
+	end
+
+	if (not height) then
+		height = self.titlebar_height
+	end
+
+	if (not texture) then
+		texture = self.titlebar_texture
+	end
+
+	if (not color) then
+		color = self.titlebar_texture_color
+	end
+
+	self.titlebar_shown = shown
+	self.titlebar_height = height
+	self.titlebar_texture = texture
+	self.titlebar_texture_color = color
+end
+
+function Details:RefreshTitleBar()
+	local shown = self.titlebar_shown
+	local height = self.titlebar_height
+	local texture = self.titlebar_texture
+	local color = self.titlebar_texture_color
+
+	local texturePath = SharedMedia:Fetch("statusbar", texture)
+
+	self.baseframe.titleBar:SetShown(shown)
+	self.baseframe.titleBar:SetHeight(height)
+	self.baseframe.titleBar.texture:SetTexture(texturePath)
+	self.baseframe.titleBar.texture:SetVertexColor(DetailsFramework:ParseColors(color))
 end
 
 function _detalhes:SetBarModel (upper_enabled, upper_model, upper_alpha, lower_enabled, lower_model, lower_alpha)
@@ -4566,6 +4655,14 @@ function _detalhes:FastPSUpdate (enabled)
 end
 
 
+function Details:AdjustInLineTextPadding()
+	for _, row in ipairs(self.barras) do 
+		row.lineText2:SetPoint("right", row.statusbar, "right", -self.fontstrings_text2_anchor, 0)
+		row.lineText3:SetPoint("right", row.statusbar, "right", -self.fontstrings_text3_anchor, 0)
+		row.lineText4:SetPoint("right", row.statusbar, "right", -self.fontstrings_text4_anchor, 0)
+	end
+end
+
 -- search key: ~row ~bar ~updatebar
 function _detalhes:InstanceRefreshRows (instancia)
 	
@@ -4588,9 +4685,9 @@ function _detalhes:InstanceRefreshRows (instancia)
 			self.row_info.texture_background_file = texture_file2
 		
 		if (type (self.row_info.texture_custom) == "string" and self.row_info.texture_custom ~= "") then
-			texture_file = "Interface\\" .. self.row_info.texture_custom
-				--> update texture file
-				self.row_info.texture_custom_file = texture_file
+			texture_file = [[Interface\]] .. self.row_info.texture_custom
+			--update texture file
+			self.row_info.texture_custom_file = texture_file
 		end
 		
 	--> outline values
@@ -4649,6 +4746,9 @@ function _detalhes:InstanceRefreshRows (instancia)
 		
 		local upper_model_alpha = self.row_info.models.upper_alpha
 		local lower_model_alpha = self.row_info.models.lower_alpha
+
+		local overlayTexture = SharedMedia:Fetch("statusbar", self.row_info.overlay_texture)
+		local overlayColor = self.row_info.overlay_color
 	
 --using_upper_3dmodels using_lower_3dmodels	
 	
@@ -4730,9 +4830,9 @@ function _detalhes:InstanceRefreshRows (instancia)
 				row.statusbar:SetPoint ("bottomright", row, "bottomright")
 				row.lineText1:SetPoint ("right", row.statusbar, "right", -2, 0)
 				row.icone_classe:Hide()
-				
+				--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
 				row.right_to_left_texture:SetPoint ("topright", row.statusbar, "topright")
-				row.right_to_left_texture:SetPoint ("bottomright", row.statusbar, "bottomright")
+				row.right_to_left_texture:SetPoint ("bottomright", row.statusbar, "bottomright")]]
 			else
 			
 				row.icone_classe:ClearAllPoints()
@@ -4798,19 +4898,27 @@ function _detalhes:InstanceRefreshRows (instancia)
 		
 		--> texture:
 		row.textura:SetTexture (texture_file)
-		row.right_to_left_texture:SetTexture (texture_file)
+		--Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
+		--row.right_to_left_texture:SetTexture (texture_file)
+		
 		row.background:SetTexture (texture_file2)
+		row.overlayTexture:SetTexture(overlayTexture)
+		row.overlayTexture:SetVertexColor(unpack(overlayColor))
 		
 		if (is_mirror) then
-			row.right_to_left_texture:Show()
+			--Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
+			--row.right_to_left_texture:Show()
+			row.statusbar:SetReverseFill(true)
 			else
-			row.right_to_left_texture:Hide()
+			row.statusbar:SetReverseFill(false)
+			--row.right_to_left_texture:Hide()
 		end
 		
 		--> texture class color: if true color changes on the fly through class refresh
 		if (not texture_class_color) then
 			row.textura:SetVertexColor (texture_r, texture_g, texture_b, alpha)
-			row.right_to_left_texture:SetVertexColor (texture_r, texture_g, texture_b, alpha)
+			--Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
+			--row.right_to_left_texture:SetVertexColor (texture_r, texture_g, texture_b, alpha)
 		else
 			--automatically color the bar by the actor class
 			--forcing alpha 1 instead of use the alpha from the fixed color
@@ -4878,6 +4986,17 @@ function _detalhes:InstanceRefreshRows (instancia)
 	self:UpdateClickThrough()
 	
 
+end
+
+function Details:SetBarOverlaySettings(overlayTexture, overlayColor)
+	overlayTexture = overlayTexture or self.row_info.overlay_texture
+	overlayColor = overlayColor or self.row_info.overlay_color
+	self.row_info.overlay_texture = overlayTexture
+	self.row_info.overlay_color[1] = overlayColor[1]
+	self.row_info.overlay_color[2] = overlayColor[2]
+	self.row_info.overlay_color[3] = overlayColor[3]
+	self.row_info.overlay_color[4] = overlayColor[4]
+	self:InstanceRefreshRows()
 end
 
 -- search key: ~wallpaper
@@ -4950,6 +5069,9 @@ function _detalhes:InstanceWallpaper (texture, anchor, alpha, texcoord, width, h
 	if (anchor == "all") then
 		t:SetPoint ("topleft", self.baseframe, "topleft")
 		t:SetPoint ("bottomright", self.baseframe, "bottomright")
+	elseif (anchor == "titlebar") then
+		t:SetPoint ("topleft", self.baseframe.titleBar, "topleft", 0, 0)
+		t:SetPoint ("bottomright", self.baseframe, "bottomright", 1, -1)
 	elseif (anchor == "center") then
 		t:SetPoint ("center", self.baseframe, "center", 0, 4)
 	elseif (anchor == "stretchLR") then
@@ -5123,6 +5245,7 @@ function _detalhes:SetWindowAlphaForCombat (entering_in_combat, true_hide, alpha
 
 end
 
+--this function is called only from SetAutoHideMenu()
 function _detalhes:InstanceButtonsColors (red, green, blue, alpha, no_save, only_left, only_right)
 	
 	if (not red) then
@@ -5470,21 +5593,19 @@ function _detalhes:SetIconAlpha (alpha, hide, no_animations)
 
 	if (alpha == 1) then
 		alpha = self.menu_icons_alpha
+		if (DetailsFramework:IsNearlyEqual(self.menu_icons_alpha, 0.5)) then --fix for old instances using 0.5 in the 'menu_icons_alpha'
+			self.menu_icons_alpha = Details.skins[self.skin].instance_cprops.menu_icons_alpha or self.menu_icons_alpha
+			alpha = self.menu_icons_alpha
+		end
 	end
 
 	for index, button in _ipairs (SetIconAlphaCacheButtonsTable) do
 		if (self.menu_icons [index]) then
 			if (hide) then
-				--Details.FadeHandler.Fader (button, _unpack (_detalhes.windows_fade_in))	
 				button:Hide()
 			else
 				button:Show()
 				button:SetAlpha(alpha)
-				--if (no_animations) then
-				--	button:SetAlpha (alpha)
-				--else
-				--	Details.FadeHandler.Fader (button, "ALPHAANIM", alpha)
-				--end
 			end
 		end
 	end
@@ -7171,6 +7292,13 @@ function Details:ChangeSkin(skin_name)
 	
 	--> refresh lock buttons
 		self:RefreshLockedState()
+
+	--> update borders
+		self:UpdateFullBorder()
+		self:UpdateRowAreaBorder()
+
+	--> update title bar
+		self:RefreshTitleBar()
 	
 	--> clear any control sscript running in this instance
 	self.bgframe:SetScript ("OnUpdate", nil)
@@ -7476,6 +7604,29 @@ function _detalhes:AdjustAlphaByContext(interacting)
 		end
 	end
 
+	--in arena
+	if (self.hide_on_context[9].enabled) then
+		local contextId = 9
+		local isInInstance = IsInInstance()
+		if (isInInstance and Details.zone_type == "arena") then
+			--player is within a pvp arena
+			if (not self.hide_on_context[contextId].inverse) then
+				self:SetWindowAlphaForCombat(true, true, getAlphaByContext(self, contextId))
+				self:SetWindowAlphaForCombat(true, true, getAlphaByContext(self, contextId))
+			else
+				self:SetWindowAlphaForCombat(false, false, getAlphaByContext(self, contextId)) --> deshida a janela
+			end
+			hasRuleEnabled = true
+		else
+			--player is not inside an arena
+			if (self.hide_on_context[contextId].inverse) then
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, contextId))
+				self:SetWindowAlphaForCombat (true, true, getAlphaByContext(self, contextId))
+				hasRuleEnabled = true
+			end
+		end
+	end
+
 	--in battleground
 	if (self.hide_on_context[7].enabled) then
 		local isInInstance = IsInInstance()
@@ -7596,6 +7747,62 @@ function _detalhes:SetFrameStrata (strata)
 	end
 	
 	self:StretchButtonAlwaysOnTop()
+end
+
+--set and refresh the full border
+function Details:UpdateFullBorder(shown, color, size)
+	if (type(shown) == "boolean") then
+		self.fullborder_shown = shown
+	else
+		shown = self.fullborder_shown
+	end
+
+	if (size) then
+		self.fullborder_size = size
+	else
+		size = self.fullborder_size
+	end
+
+	if (color) then
+		self.fullborder_color = color
+	else
+		color = self.fullborder_color
+	end
+
+	self.baseframe.fullWindowFrame.border:SetShown(shown)
+	if (shown) then
+		self.baseframe.fullWindowFrame.border:SetBorderSizes(size, size, size, size)
+		self.baseframe.fullWindowFrame.border:UpdateSizes()
+		self.baseframe.fullWindowFrame.border:SetVertexColor(DetailsFramework:ParseColors(color))
+	end
+end
+
+--set and refresh the border of the row area
+function Details:UpdateRowAreaBorder(shown, color, size)
+	if (type(shown) == "boolean") then
+		self.rowareaborder_shown = shown
+	else
+		shown = self.rowareaborder_shown
+	end
+
+	if (size) then
+		self.rowareaborder_size = size
+	else
+		size = self.rowareaborder_size
+	end
+
+	if (color) then
+		self.rowareaborder_color = color
+	else
+		color = self.rowareaborder_color
+	end
+
+	self.baseframe.border:SetShown(shown)
+	if (shown) then
+		self.baseframe.border:SetBorderSizes(size, size, size, size)
+		self.baseframe.border:UpdateSizes()
+		self.baseframe.border:SetVertexColor(DetailsFramework:ParseColors(color))
+	end
 end
 
 -- ~attributemenu (text with attribute name)
@@ -7765,7 +7972,8 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 	
 	if (not self.menu_attribute_string) then 
 
-		local label = gump:NewLabel (self.floatingframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
+		--local label = gump:NewLabel (self.floatingframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
+		local label = gump:NewLabel (self.baseframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
 		self.menu_attribute_string = label
 		self.menu_attribute_string.text = _detalhes:GetSubAttributeName (self.atributo, self.sub_atributo)
 		self.menu_attribute_string.owner_instance = self
@@ -7878,16 +8086,12 @@ function _detalhes:SetAutoHideMenu (left, right, interacting)
 		if (self.is_interacting) then
 			if (self.auto_hide_menu.left) then
 				local r, g, b = unpack (self.color_buttons)
-				self:InstanceButtonsColors (r, g, b, 1, true, true) --no save, only left
+				self:InstanceButtonsColors (r, g, b, self.menu_icons_alpha, true, true) --no save, only left
 				
 				if (self.baseframe.cabecalho.PluginIconsSeparator) then
 					self.baseframe.cabecalho.PluginIconsSeparator:Show()
 				end
 			end
---			if (self.auto_hide_menu.right) then
---				local r, g, b = unpack (self.color_buttons)
---				self:InstanceButtonsColors (r, g, b, 1, true, nil, true) --no save, only right
---			end
 		else
 			if (self.auto_hide_menu.left) then
 				local r, g, b = unpack (self.color_buttons)
@@ -7897,10 +8101,6 @@ function _detalhes:SetAutoHideMenu (left, right, interacting)
 					self.baseframe.cabecalho.PluginIconsSeparator:Hide()
 				end
 			end
---			if (self.auto_hide_menu.right) then
---				local r, g, b = unpack (self.color_buttons)
---				self:InstanceButtonsColors (r, g, b, 0, true, nil, true) --no save, only right
---			end
 		end
 		return
 	end
@@ -7919,14 +8119,14 @@ function _detalhes:SetAutoHideMenu (left, right, interacting)
 
 	if (not left) then
 		--auto hide is off
-		self:InstanceButtonsColors (r, g, b, 1, true, true) --no save, only left
+		self:InstanceButtonsColors (r, g, b, self.menu_icons_alpha, true, true) --no save, only left
 		
 		if (self.baseframe.cabecalho.PluginIconsSeparator) then
 			self.baseframe.cabecalho.PluginIconsSeparator:Show()
 		end
 	else
 		if (self.is_interacting) then
-			self:InstanceButtonsColors (r, g, b, 1, true, true) --no save, only left
+			self:InstanceButtonsColors (r, g, b, self.menu_icons_alpha, true, true) --no save, only left
 			
 			if (self.baseframe.cabecalho.PluginIconsSeparator) then
 				self.baseframe.cabecalho.PluginIconsSeparator:Show()
@@ -7940,22 +8140,7 @@ function _detalhes:SetAutoHideMenu (left, right, interacting)
 		end
 	end
 
---[=[	
-	if (not right) then
-		--auto hide is off
-		self:InstanceButtonsColors (r, g, b, 1, true, nil, true) --no save, only right
-	else
-		if (self.is_interacting) then
-			self:InstanceButtonsColors (r, g, b, 1, true, nil, true) --no save, only right
-		else
-			self:InstanceButtonsColors (0, 0, 0, 0, true, nil, true) --no save, only right
-		end
-	end
---]=]
-
 	self:RefreshAttributeTextSize()
-	--auto_hide_menu = {left = false, right = false},
-
 end
 
 -- transparency for toolbar, borders and statusbar

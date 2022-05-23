@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -38,6 +38,18 @@ commonOptionsCache.GetSameAll = function(self, info)
   local base = self:GetData(info)
   if base then
     return base.sameAll
+  end
+end
+
+commonOptionsCache.SetNameAll = function(self, info, value)
+  local base = self:GetOrCreateData(info)
+  base.nameAll = value
+end
+
+commonOptionsCache.GetNameAll = function(self, info)
+  local base = self:GetData(info)
+  if base then
+    return base.nameAll
   end
 end
 
@@ -557,6 +569,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
   end
 
   local function nameAll(info)
+    local cached = commonOptionsCache:GetNameAll(info)
+    if (cached ~= nil) then
+      return cached
+    end
+
     local combinedName;
     local first = true;
     local foundNames = {};
@@ -568,6 +585,8 @@ local function replaceNameDescFuncs(intable, data, subOption)
           name = childOption.name(info);
         else
           name = childOption.name;
+          commonOptionsCache:SetNameAll(info, name)
+          return name
         end
         if (not name) then
         -- Do nothing
@@ -589,7 +608,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
         end
       end
     end
-    return combinedName or "";
+    if combinedName then
+      commonOptionsCache:SetNameAll(info, combinedName)
+    end
+
+    return combinedName or ""
   end
 
   local function descAll(info)
@@ -626,7 +649,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
             if(name == "") then
               return name;
             else
-              return "|cFF4080FF"..(name or "error");
+              return "|cFF4080FF"..(name or "error").."|r";
             end
           end
         end
@@ -664,14 +687,14 @@ local function replaceNameDescFuncs(intable, data, subOption)
                       elseif(tri) then
                         tinsert(values, "|cFFE0E000"..child.id..": |r"..L["Ignored"]);
                       elseif(childOptionTable[i].get(info)) then
-                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFF00FF00"..L["Enabled"]);
+                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFF00FF00"..L["Enabled"].."|r");
                       else
-                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFFFF0000"..L["Disabled"]);
+                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFFFF0000"..L["Disabled"].."|r");
                       end
                     elseif(intable.type == "color") then
                       local r, g, b = childOptionTable[i].get(info);
                       r, g, b = r or 1, g or 1, b or 1;
-                      tinsert(values, ("|cFF%2x%2x%2x%s"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, child.id));
+                      tinsert(values, ("|cFF%2x%2x%2x%s|r"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, child.id));
                     elseif(intable.type == "select") then
                       local selectValues = type(intable.values) == "table" and intable.values or intable.values(info);
                       local key = childOptionTable[i].get(info);
@@ -679,7 +702,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
                       if intable.dialogControl == "LSM30_Font" then
                         tinsert(values, "|cFFE0E000"..child.id..": |r" .. key);
                       else
-                        tinsert(values, "|cFFE0E000"..child.id..": |r"..display);
+                        if type(display) == "string" then
+                          tinsert(values, "|cFFE0E000"..child.id..": |r"..display);
+                        elseif type(display) == "table" then
+                          tinsert(values, "|cFFE0E000"..child.id..": |r"..display[1].."/"..display[2] );
+                        end
                       end
                     elseif(intable.type == "multiselect") then
                       local selectedValues = {};
@@ -975,6 +1002,10 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     end
   end
 
+  local function IsGroupByFrame()
+    return data.regionType == "dynamicgroup" and data.useAnchorPerUnit
+  end
+
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
     __title = L["Position Settings"],
@@ -1053,7 +1084,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       width = WeakAuras.normalWidth,
       name = L["Anchored To"],
       order = 72,
-      hidden = IsParentDynamicGroup,
+      hidden = function()
+        return IsParentDynamicGroup() or IsGroupByFrame()
+      end,
       values = (data.regionType == "group" or data.regionType == "dynamicgroup") and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
@@ -1100,9 +1133,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       order = 75,
       hidden = function()
         if (data.parent) then
-          --if (IsParentDynamicGroup()) then
-          --  return true;
-          --end
+          if IsGroupByFrame() then
+            return false
+          end
           return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
         else
           return data.anchorFrameType == "MOUSE";
@@ -1116,6 +1149,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       name = L["To Group's"],
       order = 76,
       hidden = function()
+        if IsGroupByFrame() then
+          return true
+        end
         if (data.anchorFrameType ~= "SCREEN") then
           return true;
         end
@@ -1420,7 +1456,6 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
       end
       WeakAuras.Add(data);
       WeakAuras.UpdateThumbnail(data);
-      WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
     end,
     control = "WeakAurasSortedDropdown"

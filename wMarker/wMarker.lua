@@ -111,7 +111,7 @@ function wMarker:print(self, msg)
 	DEFAULT_CHAT_FRAME:AddMessage(string.format("%s:%s",wM,msg))
 end
 wMarker.other = {}
-local main = CreateFrameAby("Frame", "wMarkerMain", UIParent)
+local main = CreateFrame("Frame", "wMarkerMain", UIParent, "BackdropTemplate");
 main:SetBackdrop(borderlessBackdrop)
 main:SetBackdropColor(0,0,0,0)
 main:EnableMouse(true)
@@ -121,7 +121,7 @@ main:SetPoint("CENTER", UIParent, "CENTER")
 main:SetClampedToScreen(false)
 wMarker.main = main
 local function createMover(width,height,parent,pt,relPt)
-	local f = CreateFrameAby("Frame",nil,parent.main)
+	local f = CreateFrame("Frame",nil,parent.main, "BackdropTemplate");
 	f:SetBackdrop(defaultBackdrop)
 	f:SetBackdropColor(0.1,0.1,0.1,0.7)
 	f:EnableMouse(true)
@@ -142,11 +142,11 @@ wMarker.other.moverRight = wM_moverRight
 -------------------------------------------------------
 
 -- Main options frame placed here so the icons can reference it via right-click
-wMarker.options = CreateFrame("Frame", "wMarkerOptions", UIParent)
+wMarker.options = CreateFrame("Frame", "wMarkerOptions", UIParent, "BackdropTemplate");
 wMarker.options.name = "wMarker"
 InterfaceOptions_AddCategory(wMarker.options)
 
-wMarker.iconFrame = CreateFrameAby("Frame", "wMarker_iconFrame", wMarker.main)
+wMarker.iconFrame = CreateFrame("Frame", "wMarker_iconFrame", wMarker.main, "BackdropTemplate");
 wMarker.iconFrame:SetBackdrop(defaultBackdrop)
 wMarker.iconFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 wMarker.iconFrame:EnableMouse(true)
@@ -159,7 +159,7 @@ wMarker.icons = {}
 local lastFrame, xOff
 local function iconNew(name, num)
 	if lastFrame then xOff = 0 else xOff = 5 end
-	local f = CreateFrame("Button", string.format("wMarker%sicon",name), wMarker.iconFrame)
+	local f = CreateFrame("Button", string.format("wMarker%sicon",name), wMarker.iconFrame, "BackdropTemplate");
 	table.insert(wMarker.icon, f)
 	f:SetSize(20,20)
 	f:SetPoint("LEFT",lastFrame or wMarker.iconFrame,xOff,0)
@@ -185,7 +185,7 @@ iconNew("Star",1)
 -- wMarker Control Frame
 -------------------------------------------------------
 
-local controlFrame = CreateFrameAby("Frame", "wMarker_controlFrame", wMarker.main)
+local controlFrame = CreateFrame("Frame", "wMarker_controlFrame", wMarker.main, "BackdropTemplate");
 controlFrame:SetBackdrop(defaultBackdrop)
 controlFrame:SetBackdropColor(0.1,0.1,0.1,0.7)
 controlFrame:EnableMouse(true)
@@ -193,7 +193,7 @@ controlFrame:SetMovable(true)
 controlFrame:SetSize(55,35)
 controlFrame:SetPoint("LEFT", wMarker.iconFrame, "RIGHT")
 wMarker.other.controlFrame = controlFrame 
-local clearIcon = CreateFrame("Button", "wMarkerClearIcon", controlFrame)
+local clearIcon = CreateFrame("Button", "wMarkerClearIcon", controlFrame, "BackdropTemplate");
 clearIcon:SetSize(20,20)
 clearIcon:SetPoint("LEFT", controlFrame, "LEFT",10,0)
 clearIcon:SetNormalTexture("interface\\glues\\loadingscreens\\dynamicelements")
@@ -203,7 +203,7 @@ clearIcon:SetScript("OnClick", function(self) SetRaidTarget("target", 0) end)
 clearIcon:SetScript("OnEnter", function(self) if (wMarkerDB.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(L["Clear mark"]); GameTooltip:Show() end end)
 clearIcon:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 wMarker.other.clearIcon = clearIcon
-local readyCheck = CreateFrame("Button", "wMarkerReadyCheck", controlFrame)
+local readyCheck = CreateFrame("Button", "wMarkerReadyCheck", controlFrame, "BackdropTemplate");
 readyCheck:SetSize(20,20)
 readyCheck:SetPoint("LEFT", clearIcon, "RIGHT")
 readyCheck:SetNormalTexture("interface\\raidframe\\readycheck-waiting")
@@ -219,7 +219,7 @@ wMarker.other.readyCheck = readyCheck
 -------------------------------------------------------
 
 wFlares = {}
-wFmain = CreateFrameAby("Frame", "wFlaresMain", UIParent)
+wFmain = CreateFrame("Frame", "wFlaresMain", UIParent, "BackdropTemplate");
 wFmain:SetBackdrop(defaultBackdrop)
 wFmain:SetBackdropColor(0.1,0.1,0.1,0.7)
 wFmain:EnableMouse(true)

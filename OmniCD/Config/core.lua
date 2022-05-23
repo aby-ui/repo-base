@@ -122,15 +122,11 @@ local function GetOptions()
 						notice1 = {
 							hidden = E.isPreBCC,
 
-							name = "|cffff2020 Coodown reduction by Soulbind Conduits and RNG modifiers (% chance to X, etc) require Sync Mode.",
+							name = "|cffff2020* Coodown reduction by Soulbind Conduits and RNG modifiers (% chance to X, etc) require Sync Mode.",
+
 							order = 16,
 							type = "description",
 						},
-
-
-
-
-
 
 
 
@@ -192,7 +188,7 @@ local function GetOptions()
 						},
 						plugins = {
 							hidden = function() return E.isPreBCC end,
-							name = "Plugins",
+							name = L["Plugins"],
 							order = 50,
 							type = "group",
 							args = {

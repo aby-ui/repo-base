@@ -82,10 +82,6 @@ function E:OnInitialize()
 	self.profile = self.DB.profile
 	self.db = self.DB.profile.Party.arena
 
-	E.BackdropTemplate(ACD_Tooltip)
-	ACD_Tooltip:SetBackdropColor(0, 0, 0)
-	ACD_Tooltip:SetBackdropBorderColor(0.3, 0.3, 0.3)
-
 	self:CreateFontObjects()
 	self:UpdateSpellList(true)
 	self:SetupOptions()
@@ -106,6 +102,11 @@ function E:OnEnable()
 	end
 
 	self:LoadAddOns()
+
+	E.BackdropTemplate(ACD_Tooltip)
+	ACD_Tooltip:SetBackdropColor(0, 0, 0)
+	ACD_Tooltip:SetBackdropBorderColor(0.3, 0.3, 0.3)
+
 	self:Refresh()
 
 	if self.DB.profile.loginMsg then

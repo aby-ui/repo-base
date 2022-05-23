@@ -931,7 +931,7 @@ function atributo_misc:RefreshLine (instancia, barras_container, whichRowLine, l
 		esta_barra.lineText4:SetText (_string_replace (instancia.row_info.textR_custom_text, meu_total, "", porcentagem, self, instancia.showing, instancia, rightText))
 	else
 		if (instancia.use_multi_fontstrings) then
-			instancia:SetTextsOnLine(esta_barra, "", meu_total, porcentagem)
+			instancia:SetInLineTexts(esta_barra, "", meu_total, porcentagem)
 		else
 			esta_barra.lineText4:SetText(rightText)
 		end

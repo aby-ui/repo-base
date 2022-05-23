@@ -213,6 +213,27 @@
 		end
 	end
 
+	--check if the nickname fit some minimal rules to be presented to other players
+	local checkValidNickname = function(nickname, playerName)
+		if (nickname and type(nickname) == "string") then
+			if (nickname == "") then
+				return playerName
+
+			elseif (nickname:find(" ")) then
+				return playerName
+
+			--elseif(#nickname > 14) then --cannot check for size as other alphabets uses 2 or 4 bytes to represent letters
+			--	return playerName
+			end
+		else
+			return playerName
+		end
+
+		--remove scapes
+		--nickname = nickname:gsub("|","") --a bug report told about covenant icons plugin being broke, this like is probably the culprit
+		return nickname
+	end
+
 	--> read the actor flag
 	local read_actor_flag = function(actorObject, dono_do_pet, serial, flag, nome, container_type)
 
@@ -220,16 +241,9 @@
 			--> this is player actor
 			if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
 				if (not _detalhes.ignore_nicktag) then
-					actorObject.displayName = _detalhes:GetNickname (nome, false, true) --> serial, default, silent
-					if (actorObject.displayName and actorObject.displayName ~= "") then
-						--don't display empty nicknames
-						if (actorObject.displayName:find(" ")) then
-							if (_detalhes.remove_realm_from_name) then
-								actorObject.displayName = nome:gsub (("%-.*"), "")
-							else
-								actorObject.displayName = nome
-							end
-						end
+					actorObject.displayName = checkValidNickname(Details:GetNickname(nome, false, true), nome) --defaults to player name
+					if (_detalhes.remove_realm_from_name) then
+						actorObject.displayName = actorObject.displayName:gsub(("%-.*"), "")
 					end
 				end
 

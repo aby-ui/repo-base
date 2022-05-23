@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L;
@@ -130,7 +130,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       func = function()
         OptionsPrivate.Private.ConvertBuffTrigger2(trigger);
         WeakAuras.Add(data);
-        WeakAuras.UpdateDisplayButton(data)
+        WeakAuras.UpdateThumbnail(data)
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
     },

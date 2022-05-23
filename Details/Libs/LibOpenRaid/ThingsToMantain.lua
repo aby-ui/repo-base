@@ -78,6 +78,8 @@ elseif (gameLanguage == "zhTW") then
 	L["STRING_CRITICAL_ONLY"]  = "致命"
 end
 
+LIB_OPEN_RAID_MYTHICKEYSTONE_ITEMID = 180653
+
 LIB_OPEN_RAID_BLOODLUST = {
 	[2825] = true, --bloodlust
 	[32182] = true, --heroism

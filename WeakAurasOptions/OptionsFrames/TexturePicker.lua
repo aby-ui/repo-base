@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -135,6 +135,7 @@ local function ConstructTexturePicker(frame)
   dropdown:SetCallback("OnGroupSelected", texturePickerGroupSelected)
 
   function group.UpdateList(self)
+    dropdown.dropdown.pullout:Close()
     wipe(dropdown.list);
     for categoryName, category in pairs(self.textures) do
       local match = false;

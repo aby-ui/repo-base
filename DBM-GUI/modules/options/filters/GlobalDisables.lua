@@ -8,6 +8,7 @@ spamAnnounces:CreateCheckButton(L.SpamBlockNoShowTgtAnnounce, true, nil, "DontSh
 spamAnnounces:CreateCheckButton(L.SpamBlockNoTrivialSpecWarnSound, true, nil, "DontPlayTrivialSpecialWarningSound")
 
 local spamSpecAnnouncesFilters = spamPanel:CreateArea(L.Area_SpamFilter_SpecRoleFilters)
+spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecInformationalOnly, true, nil, "SpamSpecInformationalOnly")
 spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleDispel, true, nil, "SpamSpecRoledispel")
 spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleInterrupt, true, nil, "SpamSpecRoleinterrupt")
 spamSpecAnnouncesFilters:CreateCheckButton(L.SpamSpecRoleDefensive, true, nil, "SpamSpecRoledefensive")

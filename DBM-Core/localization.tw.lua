@@ -468,8 +468,14 @@ L.AUTO_TIMER_OPTIONS.adds					= "計時條：下一次小怪"
 L.AUTO_TIMER_OPTIONS.addscustom				= "計時條：小怪出現"
 L.AUTO_TIMER_OPTIONS.roleplay				= "計時條：劇情持續時間"
 
-L.AUTO_ICONS_OPTION_TEXT					= "為$spell:%s的目標設置標記"
-L.AUTO_ICONS_OPTION_TEXT2					= "為$spell:%s設置標記"
+L.AUTO_ICONS_OPTION_TARGETS					= "為$spell:%s的目標設置標記"
+L.AUTO_ICONS_OPTION_TARGETS_MELEE_A			= "為$spell:%s的目標設置標記，以近戰和字母順序優先"
+L.AUTO_ICONS_OPTION_TARGETS_MELEE_R			= "為$spell:%s的目標設置標記，以近戰和團隊陣容優先"
+L.AUTO_ICONS_OPTION_TARGETS_RANGED_A		= "為$spell:%s的目標設置標記，以遠程和字母順序優先"
+L.AUTO_ICONS_OPTION_TARGETS_RANGED_R		= "為$spell:%s的目標設置標記，以遠程和團隊陣容優先"
+L.AUTO_ICONS_OPTION_TARGETS_ALPHA			= "為$spell:%s的目標設置標記，以字母順序優先"
+L.AUTO_ICONS_OPTION_NPCS					= "為$spell:%s設置標記"
+L.AUTO_ICONS_OPTION_CONFLICT				= " (可能與其他選項衝突)"
 L.AUTO_ARROW_OPTION_TEXT					= "為跑向中了$spell:%s的目標顯示"..L.DBM.."箭頭"
 L.AUTO_ARROW_OPTION_TEXT2					= "為離開中了$spell:%s的目標顯示"..L.DBM.."箭頭"
 L.AUTO_ARROW_OPTION_TEXT3					= "為中了$spell:%s後移動到特定區域顯示"..L.DBM.."箭頭"
@@ -523,6 +529,7 @@ L.HUD_INVALID_ICON			= "不能設定對無團隊標記的目標"
 L.HUD_SUCCESS				= "HUD成功使用你的參數運作。這會在%s後取消，或是使用'/dbm hud hide'指令取消。"
 L.HUD_USAGE	= {
 	"DBM-HudMap 用法:",
+	"-----------------",
 	"/dbm hud <類型> <目標> <持續時間>: 建立一個指向玩家的HUD",
 	"有效類型: arrow, dot, red, blue, green, yellow, icon(需要團隊標記)",
 	"有效目標: target, focus, <玩家名字>",
@@ -535,6 +542,7 @@ L.ARROW_WAY_USAGE				= "/dway <x> <y>: 建立一個箭頭指向一個指定地�
 L.ARROW_WAY_SUCCESS				= "要隱藏箭頭，鍵入 '/dbm arrow hide' 或到達箭頭"
 L.ARROW_ERROR_USAGE	= {
 	"DBM-Arrow 用法:",
+	"-----------------",
 	"/dbm arrow <x> <y>: 建立一個箭頭在特定的位置(使用世界地圖座標)",
 	"/dbm arrow map <x> <y>: 建立一個箭頭在特定的位置 (使用小地圖座標)",
 	"/dbm arrow <玩家>: 建立並箭頭指向你的隊伍或團隊中特定的玩家",
@@ -542,10 +550,10 @@ L.ARROW_ERROR_USAGE	= {
 	"/dbm arrow move: 可移動箭頭"
 }
 
-L.SPEED_KILL_TIMER_TEXT		= "勝利紀錄"
-L.SPEED_CLEAR_TIMER_TEXT	= "最佳紀錄"
-L.COMBAT_RES_TIMER_TEXT		= "下一個戰復充能"
-L.TIMER_RESPAWN				= "%s 重生"
+L.SPEED_KILL_TIMER_TEXT			= "勝利紀錄"
+L.SPEED_CLEAR_TIMER_TEXT		= "最佳紀錄"
+L.COMBAT_RES_TIMER_TEXT			= "下一個戰復充能"
+L.TIMER_RESPAWN					= "%s 重生"
 
 L.LAG_CHECKING					= "檢測團隊成員的網路延遲中..."
 L.LAG_HEADER					= ""..L.DEADLY_BOSS_MODS.." - 網路延遲結果"
@@ -559,6 +567,7 @@ L.LAG_FOOTER					= "無回應:%s"
 
 --LDB
 L.LDB_TOOLTIP_HELP1				= "點擊開啟" .. L.DBM
+L.LDB_TOOLTIP_HELP2				= "Alt+右鍵點擊切換到無聲模式"
 L.SILENTMODE_IS                 = "無聲模式是 "
 
 --Localizers, do not copy entire table, follow same guidelines as other tables, overwrite each entry with L.WORLD_BUFFS.hordeOny = "stuff" for example.

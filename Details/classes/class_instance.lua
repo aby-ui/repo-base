@@ -304,6 +304,16 @@ function _detalhes:GetSkinTexture()
 	return _detalhes.skins [self.skin] and _detalhes.skins [self.skin].file
 end
 
+function Details:GetAllLines()
+	return self.barras
+end
+function Details:GetLine(lineId) --alias of _detalhes:GetRow(index)
+	return self.barras[lineId]
+end
+function Details:GetNumLinesShown() --alis of _detalhes:GetNumRows()
+	return self.rows_fit_in_window
+end
+
 ------------------------------------------------------------------------------------------------------------------------
 
 --> retorna se a inst�ncia esta ou n�o ativa

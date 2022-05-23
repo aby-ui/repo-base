@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220405224122")
+mod:SetRevision("20220517213409")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -530,13 +530,11 @@ function mod:SPELL_AURA_APPLIED(args)
 --				specWarnWickedStarTaunt:Play("tauntboss")
 --			end
 		end
-		warnWickedStar:CombinedShow(0.3, icon, args.destName)
+		warnWickedStar:Show(icon, args.destName)
 		if not playersSouled[playerName] then
 			timerWickedStar:Start(4, args.destName, icon)
 		end
-		if self:AntiSpam(0.3, 7) then
-			self.vb.wickedSet = self.vb.wickedSet + 1
-		end
+		self.vb.wickedSet = self.vb.wickedSet + 1
 	elseif spellId == 364248 then
 		local amount = args.amount or 1
 		if amount >= 12 and self:AntiSpam(4, 2) then

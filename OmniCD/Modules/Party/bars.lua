@@ -614,6 +614,17 @@ function P:UpdateUnitBar(guid, isGRU)
 
 	self:UpdateExBar(f, isGRU)
 
+
+	if ( not P.effectivePixelMult ) then
+		local frame = P.FindAnchorFrame(guid);
+		if ( frame ) then
+			P.effectivePixelMult = E.uiUnitFactor / frame:GetEffectiveScale();
+			if ( E.db.general.showRange and not E.db.position.detached ) then
+				P:UpdatePositionValues();
+			end
+		end
+	end
+
 	if isntUser or not self.isUserHidden then
 		self:ApplySettings(f)
 		self:SetIconLayout(f, true)

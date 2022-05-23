@@ -138,12 +138,13 @@ local unitFrameData = {
 		[2] = "XPerl_Raid_Grp%dUnitButton",
 		[3] = "partyid",
 		[4] = 1,
-		[5] = 40
+		[5] = 40,
 	},
 	{   [1] = "PitBull4", -- no default raid frames
 		[2] = "PitBull4_Groups_PartyUnitButton",
 		[3] = "unit",
 		[4] = 1,
+		[5] = 40,
 	},
 	{   [1] = "NDui",
 		[2] = "oUF_PartyUnitButton",

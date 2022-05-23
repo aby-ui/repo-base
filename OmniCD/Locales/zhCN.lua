@@ -11,7 +11,7 @@ L["|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."] = "|cff9d
 L["|cffff2020Friendly CD module must be enabled for the corresponding instance zone."] = "|cffff2020Friendly CD module must be enabled for the corresponding instance zone."
 --[[Translation missing --]]
 L["|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."] = "|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."
-L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."] = "|cffff2020重要!|r 只有队友安装技能冷却插件 OmniCD 的队友才能取得誓盟和灵印资料。"
+L["|cffff2020Important!|r Covenant and Soulbind Conduit data can only be acquired from group members with OmniCD installed."] = "|cffff2020重要!|r 只有队友安装技能冷却插件 OmniCD 的队友才能取得盟约和导灵器数据。"
 L["> 1 minute"] = "> 1 分钟"
 L["2nd Row Icons (Double Row Layout)"] = "两行图标视图"
 L["2px Border"] = "2px边框"
@@ -22,6 +22,8 @@ L["Active Icon Settings"] = "冷卻中图标设定"
 L["Add spell to Spell Alerts"] = "添加法术到法术警告"
 L["Add Spells"] = "添加法术"
 L["Add to Alerts"] = "添加到警报"
+--[[Translation missing --]]
+L["Addons with raid frame scaling will also cause the icons to scale."] = "Addons with raid frame scaling will also cause the icons to scale."
 L["Alerts"] = "提示"
 L["All user set values will be lost. Do you want to proceed?"] = "所有用户设定值都将丢失。确定继续吗？"
 L["Always attach to Blizzard frames. By default, bars attach to whichever frame is visible, and if both are visible UF addon take precedence over Blizzard"] = "始终将其附加到暴雪框架上。 默认情况下，图标会附加到可见的框架，如果两个框架都可见，则插件优先于暴雪框架"
@@ -95,8 +97,7 @@ L["Copy Zone Segments"] = "复制区域部分内容"
 L["Counter CC"] = "Counter CC"
 L["Counter Color"] = "计数器颜色"
 L["Counter Size"] = "框体尺寸"
---[[Translation missing --]]
-L["Covenant"] = "Covenant"
+L["Covenant"] = "盟约"
 L["Create Bar"] = "创建法术条"
 L["Credits"] = "制作"
 --[[Translation missing --]]
@@ -107,8 +108,7 @@ L["Crowd Control"] = "群体控制"
 L["Current Profile"] = "当前配置"
 L["Current Unit Frame Addon"] = "目前所使用的单位框体插件"
 L["Custom Priority"] = "自定义优先级"
---[[Translation missing --]]
-L["Custom Spells"] = "Custom Spells"
+L["Custom Spells"] = "自定义法术"
 L["Custom UI"] = "自定UI"
 L["Decode"] = "解码"
 L["Decode failed!"] = "解码失败"
@@ -150,8 +150,7 @@ L["Enable to customize the 2nd row icons when using 'Double Row' layout."] = "En
 L["Enable to show cooldown numbers above 0 charges."] = "Enable to show cooldown numbers above 0 charges."
 L["Enter buff ID if it differs from spell ID for Highlights to work"] = "如果buff ID与法术ID不一样，请输入buff ID，这样就能工作"
 L["Enter item ID to enable spell when the item is equipped only"] = "输入物品 ID 来启用法术 (只在已装备该物品时)"
---[[Translation missing --]]
-L["Enter Spell ID to Add/Edit"] = "Enter Spell ID to Add/Edit"
+L["Enter Spell ID to Add/Edit"] = "输入法术 ID 以添加/修改"
 --[[Translation missing --]]
 L["Enter talent ID if the spell is a talent ability in any of the class specializations. This ensures proper spell detection."] = "Enter talent ID if the spell is a talent ability in any of the class specializations. This ensures proper spell detection."
 --[[Translation missing --]]
@@ -163,6 +162,8 @@ L["Exports your currently active profile."] = "导出你现在激活的配置文
 L["External Defensive"] = "External Defensive"
 L["Extra Bars"] = "额外监视条"
 L["Fade In Time"] = "淡入时间"
+--[[Translation missing --]]
+L["Fade out icons when the raid frame fades out for out of range units."] = "Fade out icons when the raid frame fades out for out of range units."
 L["Fade Out Time"] = "淡出时间"
 L["Feedback"] = "反馈"
 L["Font"] = "字体"
@@ -178,8 +179,7 @@ L["Grow Columns Left"] = "Grow Columns Left"
 L["Grow Rows Upward"] = "向上增长"
 L["Having \"BOTTOM\" in the anchor point, icons grow upward, otherwise downward"] = "锚点选底部时图标向上生长，否则向下生长"
 L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"] = "锚点中选右侧图标向左增长，否则向右增长"
---[[Translation missing --]]
-L["Help Translate"] = "Help Translate"
+L["Help Translate"] = "帮助翻译"
 L["Hide Border"] = "隐藏边框"
 L["Hide Disabled Spells"] = "隐藏禁用的法术"
 --[[Translation missing --]]
@@ -258,6 +258,8 @@ L["New Column per Group"] = "New Column per Group"
 --[[Translation missing --]]
 L["None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."] = "None of the CD counter skins support modrate. Timers will fluctuate erratically whenever CD recovery rate is modulated."
 L["Not an OmniCD profile!"] = "不是一个OmniCD配置文件"
+--[[Translation missing --]]
+L["Not Supported:"] = "Not Supported:"
 L["Notes"] = "说明"
 L["Notify Updates"] = "有新版本时通知我"
 L["Offensive"] = "进攻"
@@ -271,6 +273,8 @@ L["Pending user input..."] = "Pending user input..."
 L["Pixel Perfect"] = "完美像素"
 L["Pixel Perfect ON."] = "完美像素开启"
 L["Player Frame in Party"] = "小队中的玩家框体"
+--[[Translation missing --]]
+L["Plugins"] = "Plugins"
 L["Position"] = "位置"
 L["Press Accept to save profile %s. Addon will switch to the imported profile."] = "按下接受来保存设置 %s。插件会自动切换为已导入的设置。"
 L["Press Ctrl+C to copy profile"] = "按 Ctrl+C 复制配置文件"
@@ -293,8 +297,7 @@ L["Profile Type"] = "Profile Type"
 L["Profile Type: %s%s|r"] = "Profile Type: %s%s|r"
 --[[Translation missing --]]
 L["Profile unchanged from default!"] = "Profile unchanged from default!"
---[[Translation missing --]]
-L["PvP Trinket"] = "PvP Trinket"
+L["PvP Trinket"] = "PvP 饰品"
 --[[Translation missing --]]
 L["Quick Select"] = "Quick Select"
 --[[Translation missing --]]
@@ -311,8 +314,7 @@ L["Raid Frames for testing doesn't exist for %s. If it fails to load, configure 
 L["Raid Movement"] = "Raid Movement"
 --[[Translation missing --]]
 L["Recharge"] = "Recharge"
---[[Translation missing --]]
-L["Reload addon."] = "Reload addon."
+L["Reload addon."] = "重载插件。"
 L["Reload UI?"] = "重载UI？"
 --[[Translation missing --]]
 L["Replace default timers with a status bar timer."] = "Replace default timers with a status bar timer."
@@ -389,10 +391,11 @@ L["Show Player in Extra Bars"] = "在额外技能栏中显示自己"
 L["Show player spells in the Extra Bars regardless of 'Show Player' setting."] = "在额外技能列中显示自己的法术，无视 '显示自己' 的设定。"
 L["Show player's spell bar"] = "显示玩家自己的法术监控"
 L["Show pvp trinket only while in Battlegrounds"] = "只在战场中显示pvp饰品"
+--[[Translation missing --]]
+L["Show Range"] = "Show Range"
 L["Show Spell ID in Tooltips"] = "鼠标提示显示法术ID"
 L["Show spell information when you mouseover an icon"] = "鼠标悬停在图标上显示法术提示"
---[[Translation missing --]]
-L["Show the interrupted spell icon."] = "Show the interrupted spell icon."
+L["Show the interrupted spell icon."] = "显示被打断法术的图标。"
 --[[Translation missing --]]
 L["Show the interrupted unit's target marker if it exists."] = "Show the interrupted unit's target marker if it exists."
 L["Show timer on spells while under the effect of Forbearance or Hypothermia. Spells castable to others will darken instead"] = "在自律或体温过低的情况下显示法术计时器。 可施于他人的法术会变暗"

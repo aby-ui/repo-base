@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -33,27 +33,32 @@ local function UpdateWarning(uid, key, severity, message, printOnConsole)
       severity = severity,
       message = message
     }
+    Private.callbacks:Fire("AuraWarningsUpdated", uid)
   else
-    warnings[uid][key] = nil
+    if warnings[uid][key] then
+      warnings[uid][key] = nil
+      Private.callbacks:Fire("AuraWarningsUpdated", uid)
+    end
   end
-
-  Private.callbacks:Fire("AuraWarningsUpdated", uid)
 end
 
 local severityLevel = {
   info = 0,
-  warning = 1,
-  error = 2
+  sound = 1,
+  warning = 2,
+  error = 3
 }
 
 local icons = {
   info = [[Interface/friendsframe/informationicon.blp]],
+  sound = [[chatframe-button-icon-voicechat]],
   warning = [[Interface/buttons/adventureguidemicrobuttonalert.blp]],
   error =  [[Interface/DialogFrame/UI-Dialog-Icon-AlertNew]]
 }
 
 local titles = {
   info = L["Information"],
+  sound = L["Sound"],
   warning = L["Warning"],
   error = L["Error"]
 }
@@ -67,7 +72,11 @@ local function AddMessages(result, messages, icon, mixedSeverity)
       result = result .. "\n\n"
     end
     if mixedSeverity then
-      result = result .. "|T" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
+      if C_Texture.GetAtlasInfo(icon) then
+        result = result .. "|A" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
+      else
+        result = result .. "|T" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
+      end
     end
     result = result .. message
   end
@@ -103,6 +112,7 @@ local function FormatWarnings(uid)
   local result = ""
   result = AddMessages(result, messagePerSeverity["error"], icons["error"], mixedSeverity)
   result = AddMessages(result, messagePerSeverity["warning"], icons["warning"], mixedSeverity)
+  result = AddMessages(result, messagePerSeverity["sound"], icons["sound"], mixedSeverity)
   result = AddMessages(result, messagePerSeverity["info"], icons["info"], mixedSeverity)
   return icons[maxSeverity], titles[maxSeverity], result
 end

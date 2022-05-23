@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220416080509")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 
@@ -31,6 +31,7 @@ local specWarnDisruptingEnergy		= mod:NewSpecialWarningMove(209512, nil, nil, ni
 local specWarnWhirlingBlades		= mod:NewSpecialWarningRun(209378, "Melee", nil, nil, 4, 2)
 
 mod:AddBoolOption("SpyHelper", true)
+mod:AddBoolOption("SendToChat", false)
 
 function mod:SPELL_CAST_START(args)
 	if not self.Options.Enabled then return end
@@ -226,11 +227,13 @@ do
 				local clue = clues[C_GossipInfo.GetText()]
 				if clue and not hints[clue] then
 					C_GossipInfo.CloseGossip()
---					if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
---						SendChatMessage(hintTranslations[clue], "INSTANCE_CHAT")
---					elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
---						SendChatMessage(hintTranslations[clue], "PARTY")
---					end
+					if self.Options.SendToChat then
+						if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+							SendChatMessage(hintTranslations[clue], "INSTANCE_CHAT")
+						elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+							SendChatMessage(hintTranslations[clue], "PARTY")
+						end
+					end
 					hints[clue] = true
 					self:SendSync("CoS", clue)
 					DBM.InfoFrame:Show(5, "function", updateInfoFrame)
