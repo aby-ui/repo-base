@@ -438,6 +438,26 @@ GTFO.SpellID["368175"] = {
   sound = 3;
 };
 
+GTFO.SpellID["315543"] = {
+  --desc = "Bonestorm (Book Tornado)";
+  sound = 3;
+};
+
+GTFO.SpellID["338020"] = {
+  --desc = "Molten Surge (Maw Infernous)";
+  sound = 3;
+};
+
+GTFO.SpellID["337756"] = {
+  --desc = "Fiery Brimstone (Maw Infernous)";
+  sound = 3;
+};
+
+GTFO.SpellID["315220"] = {
+  --desc = "Cursed Mirror!";
+  sound = 3;
+};
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -2062,6 +2082,11 @@ GTFO.SpellID["365686"] = {
 GTFO.SpellID["360241"] = {
   --desc = "Unsettling Dreams (Mal'Ganis)";
   applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["368569"] = {
+  --desc = "Dark Bombardment (Mawsworn Vanguard)";
   sound = 3;
 };
 

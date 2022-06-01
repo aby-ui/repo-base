@@ -1,9 +1,8 @@
 if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L
-local MSQ, MSQ_Version = LibStub("Masque", true);
+local MSQ = LibStub("Masque", true);
 if MSQ then
   MSQ:AddType("WA_Aura", {"Icon", "Cooldown"})
 end
@@ -146,7 +145,7 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
     local anchorRegion = self.icon
     if anchorPoint:sub(1, 6) == "INNER_" then
       if not self.inner then
-        self.inner = CreateFrame("FRAME", nil, self)
+        self.inner = CreateFrame("Frame", nil, self)
         self.inner:SetPoint("CENTER")
         self.UpdateInnerOuterSize()
       end
@@ -154,7 +153,7 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
       anchorPoint = anchorPoint:sub(7)
     elseif anchorPoint:sub(1, 6) == "OUTER_" then
       if not self.outer then
-        self.outer = CreateFrame("FRAME", nil, self)
+        self.outer = CreateFrame("Frame", nil, self)
         self.outer:SetPoint("CENTER")
         self.UpdateInnerOuterSize()
       end
@@ -179,7 +178,7 @@ end
 local function create(parent, data)
   local font = "GameFontHighlight";
 
-  local region = CreateFrame("FRAME", nil, parent);
+  local region = CreateFrame("Frame", nil, parent);
   region.regionType = "icon"
   region:SetMovable(true);
   region:SetResizable(true);
@@ -245,7 +244,7 @@ local function create(parent, data)
   end
   region.frameId = frameId;
 
-  local cooldown = CreateFrame("COOLDOWN", "WeakAurasCooldown"..frameId, region, "CooldownFrameTemplate");
+  local cooldown = CreateFrame("Cooldown", "WeakAurasCooldown"..frameId, region, "CooldownFrameTemplate");
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
   cooldown:SetDrawBling(false)
@@ -359,7 +358,7 @@ local function modify(parent, region, data)
   local tooltipType = Private.CanHaveTooltip(data);
   if(tooltipType and data.useTooltip) then
     if not region.tooltipFrame then
-      region.tooltipFrame = CreateFrame("frame", nil, region);
+      region.tooltipFrame = CreateFrame("Frame", nil, region);
       region.tooltipFrame:SetAllPoints(region);
       region.tooltipFrame:SetScript("OnEnter", function()
         Private.ShowMouseoverTooltip(region, region);

@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque: Caith', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque_Caith.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque_Caith.
 
 	* File...: Locales.lua
 	* Author.: StormFX

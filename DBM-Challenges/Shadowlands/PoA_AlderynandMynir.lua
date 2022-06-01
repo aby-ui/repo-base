@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod("AlderynandMynir", "DBM-Challenges", 1)
 --L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220410233032")
+mod.statTypes = "normal,heroic,mythic,challenge"
+
+mod:SetRevision("20220530062110")
 mod:SetCreatureID(172408, 172409)
 
 mod:RegisterCombat("combat")
@@ -25,7 +27,9 @@ local berserkTimer					= mod:NewBerserkTimer(480)
 function mod:OnCombatStart(delay)
 	timerAnimaDervishCD:Start(5.5-delay)
 	timerAnimaSeedCD:Start(9.9-delay)
-	berserkTimer:Start(100-delay)
+	if self:IsHard() then
+		berserkTimer:Start(100-delay)
+	end
 end
 
 function mod:SPELL_CAST_START(args)

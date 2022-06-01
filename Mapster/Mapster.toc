@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 ## Notes: Simple Map Mod
 ## Notes-zhCN: 简单实用的地图模块
 ## Notes-frFR: Simples modifications de la carte.

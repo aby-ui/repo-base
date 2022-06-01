@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: Grail |cff69ccf0NPCs |r|cff0000ffRetail|r|cff69ccf0 enUS|r
 ## Author: Scott M Harrison
 ## Notes: Provides localized enUS NPCs to Grail for Retail

@@ -239,6 +239,7 @@ GTFO.SpellID["360677"] = {
   sound = 1;
 };
 
+
 --- **********************
 --- * Halls of Atonement *
 --- **********************
@@ -479,6 +480,7 @@ GTFO.SpellID["320366"] = {
 GTFO.SpellID["333485"] = {
   --desc = "Disease Cloud (Rotspew)";
   sound = 1;
+  casterOnly = true;
   test = true;
 };
 
@@ -520,9 +522,14 @@ GTFO.SpellID["332332"] = {
 
 GTFO.SpellID["332672"] = {
   --desc = "Bladestorm (Atal'ai Deathwalker)";
-  sound = 1;
-  tankSound = 0;
-  test = true;
+  soundChallenge = 1;
+  tankSoundChallenge = 2;
+};
+
+GTFO.SpellID["332157"] = {
+  --desc = "Spinning Up (Headless Client)";
+  soundChallenge = 1;
+  tankSoundChallenge = 2;
 };
 
 GTFO.SpellID["323569"] = {

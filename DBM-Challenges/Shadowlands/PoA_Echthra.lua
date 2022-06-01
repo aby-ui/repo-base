@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod("Echthra", "DBM-Challenges", 1)
 --local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220410233032")
+mod.statTypes = "normal,heroic,mythic,challenge"
+
+mod:SetRevision("20220530062110")
 mod:SetCreatureID(172177)
 
 mod:RegisterCombat("combat")
@@ -27,7 +29,9 @@ function mod:OnCombatStart(delay)
 	timerSummonCrawlersCD:Start(5-delay)
 	--timerFoulWasteCD:Start(9.7-delay)
 	timerBefuddlingFumesCD:Start(23.1-delay)
-	berserkTimer:Start(100-delay)
+	if self:IsHard() then
+		berserkTimer:Start(100-delay)
+	end
 end
 
 function mod:SPELL_CAST_START(args)

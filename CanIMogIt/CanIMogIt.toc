@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: Can I Mog It? |TInterface\Addons\CanIMogIt\Icons\KNOWN:0|t
 ## Author: TorelTwiddler, Ami Yuy
 ## Version: 9.1.5v1.32
@@ -18,18 +18,19 @@
 ## SavedVariables: CanIMogItOptions, CanIMogItDatabase
 ## OptionalDeps: AdiBags, ArkInventory, ElvUI, LiteBag, Bagnon, cargBags_Nivaya, Auctionator
 #embeds.xml
-core.lua
-Locale\_locales.xml
-constants.lua
-options.lua
-cache.lua
-requirements.lua
-code.lua
-tooltips.lua
-database.lua
-tooltipScanner.lua
-Overlay\_overlays.xml
-Plugins\_plugins.xml
+
+#core.lua
+#Locale\_locales.xml
+#constants.lua
+#options.lua
+#cache.lua
+#requirements.lua
+#code.lua
+#tooltips.lua
+#database.lua
+#tooltipScanner.lua
+#Overlay\_overlays.xml
+#Plugins\_plugins.xml
 
 
 ## Title: |cff880303[爱不易]|r CanIMogIt 幻化提示

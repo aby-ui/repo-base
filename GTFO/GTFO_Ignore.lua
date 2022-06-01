@@ -97,5 +97,6 @@ GTFO.IgnoreScan["360302"] = true; -- Swarm of Decay
 GTFO.IgnoreScan["360303"] = true; -- Swarm of Darkness
 GTFO.IgnoreScan["361923"] = true; -- Ravenous Hunger
 GTFO.IgnoreScan["359778"] = true; -- Ephemera Dust
+GTFO.IgnoreScan["294720"] = true; -- Bottled Enimga
 
 

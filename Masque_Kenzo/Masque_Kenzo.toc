@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: Masque: |c0099ff00Kenzo|r
 ## Version: 2.0.0
 ## Author: icw82

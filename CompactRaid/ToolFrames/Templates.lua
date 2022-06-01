@@ -9,7 +9,6 @@ local tinsert = tinsert
 local CreateFrame = CreateFrame
 local UnitExists = UnitExists
 local GetRaidTargetIndex = GetRaidTargetIndex
-local UnitPopupButtons = UnitPopupButtons
 local UIErrorsFrame = UIErrorsFrame
 local ERR_ARENA_TEAM_PERMISSIONS = ERR_ARENA_TEAM_PERMISSIONS
 

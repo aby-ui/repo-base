@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod("Nuuminuuru", "DBM-Challenges", 1)
 --L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220410235923")
+mod.statTypes = "normal,heroic,mythic,challenge"
+
+mod:SetRevision("20220530062110")
 mod:SetCreatureID(172410)
 
 mod:RegisterCombat("combat")
@@ -22,7 +24,9 @@ local berserkTimer						= mod:NewBerserkTimer(480)
 function mod:OnCombatStart(delay)
 	timerNewFaerieCD:Start(20.3-delay)
 	timerSymbioticShieldCD:Start(40.9-delay)
-	berserkTimer:Start(100-delay)
+	if self:IsHard() then
+		berserkTimer:Start(100-delay)
+	end
 end
 
 function mod:SPELL_CAST_START(args)

@@ -8,8 +8,6 @@ local pairs = pairs
 local CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
   = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
 
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -21,8 +19,8 @@ local oldFocusName
 function OptionsPrivate.StartFrameChooser(data, path)
   local frame = WeakAuras.OptionsFrame();
   if not(frameChooserFrame) then
-    frameChooserFrame = CreateFrame("frame");
-    frameChooserBox = CreateFrame("frame", nil, frameChooserFrame, BackdropTemplateMixin and "BackdropTemplate");
+    frameChooserFrame = CreateFrame("Frame");
+    frameChooserBox = CreateFrame("Frame", nil, frameChooserFrame, "BackdropTemplate");
     frameChooserBox:SetFrameStrata("TOOLTIP");
     frameChooserBox:SetBackdrop({
       edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",

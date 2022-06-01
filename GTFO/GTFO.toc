@@ -1,8 +1,8 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight/Myzrael
-## Version: 4.66.6
+## Version: 4.67
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 Localization\enUS.lua

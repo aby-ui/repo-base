@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque: Apathy', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque_Apathy.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque_Apathy.
 
 	* File...: Skins.lua
 	* Author.: StormFX

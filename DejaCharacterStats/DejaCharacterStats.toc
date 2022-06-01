@@ -1,5 +1,5 @@
-## Interface: 90200
-## Version: R90200r3
+## Interface: 90205
+## Version: R90205r1
 ## Title: |TInterface\Addons\DejaCharacterStats\DCSArt\DejoLogo:26:26|t|cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.

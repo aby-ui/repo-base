@@ -18,6 +18,11 @@ function P:SetIconLayout(f, sortOrder)
 		sort(icons, sortPriority)
 	end
 
+	local t, c;
+	if ( self.point == "CENTER" ) then
+		t, c = {}, 1;
+	end
+	local db_prio = E.db.priority;
 	local count, rows, numActive, lastActiveIndex = 0, 1, 1
 	for i = 1, f.numIcons do
 		local icon = icons[i]
@@ -27,29 +32,61 @@ function P:SetIconLayout(f, sortOrder)
 			icon:ClearAllPoints()
 			if numActive > 1 then
 				count = count + 1
-				if not self.multiline and count == self.columns or (self.multiline and (rows == 1 and E.db.priority[icon.type] <= self.breakPoint or (self.tripleline and rows == 2 and E.db.priority[icon.type] <= self.breakPoint2))) then
-					if self.tripleline and rows == 1 and E.db.priority[icon.type] <= self.breakPoint2 then
+				if not self.multiline and count == self.columns or (self.multiline and (rows == 1 and db_prio[icon.type] <= self.breakPoint or (self.tripleline and rows == 2 and db_prio[icon.type] <= self.breakPoint2))) then
+					if self.tripleline and rows == 1 and db_prio[icon.type] <= self.breakPoint2 then
 						rows = rows + 1
 					end
 					icon:SetPoint(self.point, f.container, self.ofsX * rows, self.ofsY * rows)
 					count = 0
 					rows = rows + 1
+					if ( t ) then
+						t[#t + 1] = numActive - c;
+						t[#t + 1] = icon;
+						c = numActive;
+					end
 				else
 					icon:SetPoint(self.point2, icons[lastActiveIndex], self.relativePoint2, self.ofsX2, self.ofsY2)
 				end
 			else
-				if self.multiline and E.db.priority[icon.type] <= self.breakPoint then
+				if self.multiline and db_prio[icon.type] <= self.breakPoint then
+					if self.tripleline and rows == 1 and db_prio[icon.type] <= self.breakPoint2 then
+						rows = rows + 1
+					end
 					icon:SetPoint(self.point, f.container, self.ofsX * rows, self.ofsY * rows)
 					rows = rows + 1
 				else
 					icon:SetPoint(self.point, f.container)
 				end
+				if ( t ) then
+					t[#t + 1] = icon;
+				end
 			end
+
 			numActive = numActive + 1
 			lastActiveIndex = i
 
 			icon:Show()
 		end
+	end
+
+	if ( t ) then
+		t[#t + 1] = numActive - c;
+		for i = 1, #t do
+			local j = 2 * i
+			local icon, numIcons = t[j - 1], t[j];
+			if ( icon and numIcons ) then
+				local point, relativeTo, relativePoint, xOfs, yOfs = icon:GetPoint();
+				if ( self.isVertical ) then
+					local growY = E.db.position.growUpward and -1 or 1;
+					yOfs = growY * (E.BASE_ICON_SIZE - self.ofsY2 * growY) * (numIcons - 1) / 2;
+				else
+					xOfs = -(E.BASE_ICON_SIZE + self.ofsX2) * (numIcons - 1) / 2;
+				end
+				icon:ClearAllPoints();
+				icon:SetPoint(point, relativeTo, relativePoint, xOfs, yOfs);
+			end
+		end
+		t = nil;
 	end
 end
 

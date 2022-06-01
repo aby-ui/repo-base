@@ -8,7 +8,6 @@
 local UnitExists = UnitExists
 local GetRaidTargetIndex = GetRaidTargetIndex
 local SetRaidTargetIcon = SetRaidTargetIcon
-local UnitPopupButtons = UnitPopupButtons
 
 local _, addon = ...
 local L = addon.L
@@ -43,22 +42,23 @@ local function Button_OnUpdate(self)
 end
 
 for i = 1, 8 do
-	local data = UnitPopupButtons["RAID_TARGET_"..i]
+	local data = _G["UnitPopupRaidTarget"..i.."ButtonMixin"]
 
-	local button = menu:AddClickButton(data.text)
+	local button = menu:AddClickButton(data:GetText())
 	button:SetID(i)
-	button.text:SetTextColor(data.color.r, data.color.g, data.color.b)
+	button.text:SetTextColor(data:GetColor().r, data:GetColor().g, data:GetColor().b)
 	button.OnClick = Button_OnClick
 	button:SetScript("OnUpdate", Button_OnUpdate)
 
 	local icon = button:CreateTexture(nil, "ARTWORK")
 	icon:SetSize(16, 16)
 	icon:SetPoint("RIGHT", -4, 0)
-	icon:SetTexture(data.icon)
-	icon:SetTexCoord(data.tCoordLeft, data.tCoordRight, data.tCoordTop, data.tCoordBottom)
+	icon:SetTexture(data:GetIcon())
+    local coo = data:GetTextureCoords()
+	icon:SetTexCoord(coo.tCoordLeft, coo.tCoordRight, coo.tCoordTop, coo.tCoordBottom)
 end
 
-local button = menu:AddClickButton(UnitPopupButtons["RAID_TARGET_NONE"].text)
+local button = menu:AddClickButton(UnitPopupRaidTargetNoneButtonMixin:GetText())
 button.OnClick = Button_OnClick
 
 menu:Finish()

@@ -2314,7 +2314,7 @@ function Argus:LoadCheck()
 		isTomTomloaded = true
 	end
 
-	if (IsAddOnLoaded("CanIMogIt")) then 
+	if (IsAddOnLoaded("CanIMogIt") and CanIMogIt) then
 		isCanIMogItloaded = true
 	end
 

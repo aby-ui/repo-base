@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 ## Title: ToyPlus
 ## Version: 1.7.2
 ## Author: distnz

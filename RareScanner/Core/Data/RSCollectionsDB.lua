@@ -23,6 +23,26 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local RSRoutines = private.ImportLib("RareScannerRoutines")
 
 ---============================================================================
+-- Transmog locations (added in 9.2.5)
+---============================================================================
+
+local TRANSMOG_LOCATIONS = {
+	["HEADSLOT"] = { Enum.TransmogCollectionType.Head };
+	["SHOULDERSLOT"] = { Enum.TransmogCollectionType.Shoulder };
+	["BACKSLOT"] = { Enum.TransmogCollectionType.Back };
+	["CHESTSLOT"] = { Enum.TransmogCollectionType.Chest };
+	["SHIRTSLOT"] = { Enum.TransmogCollectionType.Shirt };
+	["TABARDSLOT"] = { Enum.TransmogCollectionType.Tabard };
+	["WRISTSLOT"] = { Enum.TransmogCollectionType.Wrist };
+	["HANDSSLOT"] = { Enum.TransmogCollectionType.Hands };
+	["WAISTSLOT"] = { Enum.TransmogCollectionType.Waist };
+	["LEGSSLOT"] = { Enum.TransmogCollectionType.Legs };
+	["FEETSLOT"] = { Enum.TransmogCollectionType.Feet };
+	["MAINHANDSLOT"] = { Enum.TransmogCollectionType.Wand, Enum.TransmogCollectionType.OneHAxe, Enum.TransmogCollectionType.OneHSword, Enum.TransmogCollectionType.OneHMace, Enum.TransmogCollectionType.Dagger, Enum.TransmogCollectionType.Fist, Enum.TransmogCollectionType.TwoHAxe, Enum.TransmogCollectionType.TwoHSword, Enum.TransmogCollectionType.TwoHMace, Enum.TransmogCollectionType.Staff, Enum.TransmogCollectionType.Polearm, Enum.TransmogCollectionType.Bow, Enum.TransmogCollectionType.Gun, Enum.TransmogCollectionType.Crossbow, Enum.TransmogCollectionType.Warglaives, Enum.TransmogCollectionType.Paired };
+	["SECONDARYHANDSLOT"] = { Enum.TransmogCollectionType.Shield, Enum.TransmogCollectionType.Holdable };
+}
+
+---============================================================================
 -- Manage database
 ---============================================================================
 
@@ -583,35 +603,45 @@ local function UpdateNotCollectedAppearanceItemIDs(routines, routineTextOutput)
 	private.dbchar.not_colleted_appearances_item_ids = {}
 	
 	-- Query	
-	for name, categoryID in pairs (Enum.TransmogCollectionType) do
-		local visualsList = C_TransmogCollection.GetCategoryAppearances(categoryID)
-		if (visualsList) then
-			local notCollectedAppearanceItemIDs = RSRoutines.LoopIndexRoutineNew()
-			notCollectedAppearanceItemIDs:Init(C_TransmogCollection.GetCategoryAppearances, 100, 
-				function(context, j)
-					if (not visualsList[j].isCollected) then
-						local sources = C_TransmogCollection.GetAppearanceSources(visualsList[j].visualID)
-						for k = 1, #sources do
-							if (sources[k].sourceType == 4 or sources[k].sourceType == 2) then --World drop/quest
-								AddAppearanceItemID(sources[k].visualID, sources[k].itemID)
-						
-								if (not private.dbchar.not_colleted_appearances_item_ids[sources[k].itemID]) then
-									private.dbchar.not_colleted_appearances_item_ids[sources[k].itemID] = true
+	for transmogLocationName, transmogCollectionTypes in pairs (TRANSMOG_LOCATIONS) do
+		local transmogLocation = TransmogUtil.GetTransmogLocation(transmogLocationName, Enum.TransmogType.Appearance, Enum.TransmogModification.Main)
+		for _, categoryID in ipairs (transmogCollectionTypes) do
+			local name, _, _, _, _ = C_TransmogCollection.GetCategoryInfo(categoryID) -- Returns name only for the current class proficiencie, so if there is no name, this class cannot transmog it
+			local visualsList = C_TransmogCollection.GetCategoryAppearances(categoryID, transmogLocation)
+			if (name and visualsList) then
+				local notCollectedAppearanceItemIDs = RSRoutines.LoopIndexRoutineNew()
+				notCollectedAppearanceItemIDs:Init(C_TransmogCollection.GetCategoryAppearances, 100, 
+					function(context, j)
+						if (not context.counter) then
+							context.counter = 0
+						end
+						if (not visualsList[j].isCollected) then
+							context.counter = context.counter + 1
+							local sources = C_TransmogCollection.GetAppearanceSources(visualsList[j].visualID, context.arguments[1], context.arguments[2])
+							for k = 1, #sources do
+								if (sources[k].sourceType == 4 or sources[k].sourceType == 2) then --World drop/quest
+									AddAppearanceItemID(sources[k].visualID, sources[k].itemID)
+							
+									if (not private.dbchar.not_colleted_appearances_item_ids[sources[k].itemID]) then
+										private.dbchar.not_colleted_appearances_item_ids[sources[k].itemID] = true
+									end
 								end
 							end
 						end
-					end
-				end,
-				function(context)
-					RSLogger:PrintDebugMessage(string.format("UpdateNotCollectedAppearanceItemIDs. [%s] [%s no conseguidas].", name, RSUtils.GetTableLength(private.dbchar.not_colleted_appearances_item_ids)))
-					
-					if (routineTextOutput) then
-						routineTextOutput:SetText(string.format(AL["EXPLORER_MISSING_APPEARANCES"], RSUtils.GetTableLength(private.dbchar.not_colleted_appearances_item_ids), name))
-					end
-				end,
-				categoryID
-			)
-			table.insert(routines, notCollectedAppearanceItemIDs)
+					end,
+					function(context)
+						local name, _, _, _, _ = C_TransmogCollection.GetCategoryInfo(context.arguments[1])
+						RSLogger:PrintDebugMessage(string.format("UpdateNotCollectedAppearanceItemIDs. [%s] [%s no conseguidas].", name, context.counter or "0"))
+						
+						if (routineTextOutput) then
+							routineTextOutput:SetText(string.format(AL["EXPLORER_MISSING_APPEARANCES"], context.counter or "0", name))
+						end
+					end,
+					categoryID,
+					transmogLocation
+				)
+				table.insert(routines, notCollectedAppearanceItemIDs)
+			end
 		end
 	end
 end

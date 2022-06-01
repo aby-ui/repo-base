@@ -100,15 +100,16 @@ do
             return "no marker"
         end
 
-        local ref = _G.UnitPopupButtons[("RAID_TARGET_%d"):format(rt)]
+        local ref = _G[("UnitPopupRaidTarget%dButtonMixin"):format(rt)]
         local RAID_TARGET_TEXTURE_DIMENSION = _G.RAID_TARGET_TEXTURE_DIMENSION
 
-        return ("|T%s:0:0:0:0:%d:%d:%d:%d:%d:%d|t"):format(ref.icon
+        local coo = ref:GetTextureCoords()
+        return ("|T%s:0:0:0:0:%d:%d:%d:%d:%d:%d|t"):format(ref:GetIcon()
             , RAID_TARGET_TEXTURE_DIMENSION, RAID_TARGET_TEXTURE_DIMENSION
-            , ref.tCoordLeft   * RAID_TARGET_TEXTURE_DIMENSION
-            , ref.tCoordRight  * RAID_TARGET_TEXTURE_DIMENSION
-            , ref.tCoordTop    * RAID_TARGET_TEXTURE_DIMENSION
-            , ref.tCoordBottom * RAID_TARGET_TEXTURE_DIMENSION
+            , coo.tCoordLeft   * RAID_TARGET_TEXTURE_DIMENSION
+            , coo.tCoordRight  * RAID_TARGET_TEXTURE_DIMENSION
+            , coo.tCoordTop    * RAID_TARGET_TEXTURE_DIMENSION
+            , coo.tCoordBottom * RAID_TARGET_TEXTURE_DIMENSION
         )
     end
 

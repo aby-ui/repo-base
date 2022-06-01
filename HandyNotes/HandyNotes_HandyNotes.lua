@@ -33,14 +33,14 @@ local GameTooltip = GameTooltip
 -- An addon can replace this table or add to it directly, but keep in mind
 -- notes are currently stored with the index number of the chosen icon.
 HN.icons = {
-	[1] = UnitPopupButtons.RAID_TARGET_1, -- Star
-	[2] = UnitPopupButtons.RAID_TARGET_2, -- Circle
-	[3] = UnitPopupButtons.RAID_TARGET_3, -- Diamond
-	[4] = UnitPopupButtons.RAID_TARGET_4, -- Triangle
-	[5] = UnitPopupButtons.RAID_TARGET_5, -- Moon
-	[6] = UnitPopupButtons.RAID_TARGET_6, -- Square
-	[7] = UnitPopupButtons.RAID_TARGET_7, -- Cross
-	[8] = UnitPopupButtons.RAID_TARGET_8, -- Skull
+	[1] = {text = RAID_TARGET_1, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0, tCoordRight = 0.25, tCoordTop  = 0, tCoordBottom = 0.25}, -- Star
+	[2] = {text = RAID_TARGET_2, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0.25, tCoordRight = 0.5, tCoordTop  = 0, tCoordBottom = 0.25}, -- Circle
+	[3] = {text = RAID_TARGET_3, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0.5, tCoordRight = 0.75, tCoordTop  = 0, tCoordBottom = 0.25}, -- Diamond
+	[4] = {text = RAID_TARGET_4, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0.75, tCoordRight = 1, tCoordTop  = 0, tCoordBottom = 0.25}, -- Triangle
+	[5] = {text = RAID_TARGET_5, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0, tCoordRight = 0.25, tCoordTop  = 0.25, tCoordBottom = 0.5}, -- Moon
+	[6] = {text = RAID_TARGET_6, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0.25, tCoordRight = 0.5, tCoordTop  = 0.25, tCoordBottom = 0.5}, -- Square
+	[7] = {text = RAID_TARGET_7, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0.5, tCoordRight = 0.75, tCoordTop  = 0.25, tCoordBottom = 0.5}, -- Cross
+	[8] = {text = RAID_TARGET_8, icon = "Interface\\TargetingFrame\\UI-RaidTargetingIcons", tCoordLeft = 0.75, tCoordRight = 1, tCoordTop  = 0.25, tCoordBottom = 0.5}, -- Skull
 	[9] = {text = MINIMAP_TRACKING_AUCTIONEER, icon = "Interface\\Minimap\\Tracking\\Auctioneer"},
 	[10] = {text = MINIMAP_TRACKING_BANKER, icon = "Interface\\Minimap\\Tracking\\Banker"},
 	[11] = {text = MINIMAP_TRACKING_BATTLEMASTER, icon = "Interface\\Minimap\\Tracking\\BattleMaster"},

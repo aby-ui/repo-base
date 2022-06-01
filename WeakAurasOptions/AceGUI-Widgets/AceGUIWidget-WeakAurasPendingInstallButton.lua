@@ -3,7 +3,6 @@ if not WeakAuras.IsCorrectVersion() then
 end
 
 local AddonName, OptionsPrivate = ...
-local L = WeakAuras.L
 
 local pairs, next, type, unpack = pairs, next, type, unpack
 
@@ -160,7 +159,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasPendingInstallButton" .. AceGUI:GetNextWidgetNum(Type)
-  local button = CreateFrame("BUTTON", name, UIParent)
+  local button = CreateFrame("Button", name, UIParent)
   button:SetHeight(32)
   button:SetWidth(1000)
   button.data = {}
@@ -191,7 +190,7 @@ local function Constructor()
 
   button.description = {}
 
-  local update = CreateFrame("BUTTON", nil, button)
+  local update = CreateFrame("Button", nil, button)
   button.update = update
   update.disabled = true
   update.func = function()

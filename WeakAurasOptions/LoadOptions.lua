@@ -16,17 +16,6 @@ local ValidateNumeric = WeakAuras.ValidateNumeric;
 
 local spellCache = WeakAuras.spellCache;
 
-local function union(table1, table2)
-  local meta = {};
-  for i,v in pairs(table1) do
-    meta[i] = v;
-  end
-  for i,v in pairs(table2) do
-    meta[i] = v;
-  end
-  return meta;
-end
-
 local function CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then
@@ -37,7 +26,7 @@ local function CorrectSpellName(input)
       return nil;
     end
   elseif WeakAuras.IsClassic() and input then
-    local name, _, _, _, _, _, spellId = GetSpellInfo(input)
+    local _, _, _, _, _, _, spellId = GetSpellInfo(input)
     if spellId then
       return spellId
     end

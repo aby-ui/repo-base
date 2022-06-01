@@ -45,14 +45,14 @@ end
 
 local LoopIndexRoutine = {} do
 	
-	function LoopIndexRoutine:Init(getterItems, chunkSize, processChunk, onfinishCallback, arguments)
+	function LoopIndexRoutine:Init(getterItems, chunkSize, processChunk, onfinishCallback, ...)
 		self.context, self.deadline = {}
 		self.context.currentIndex = 1
 		self.context.getterItems = getterItems
 		self.context.chunkSize = chunkSize
 		self.context.processChunk = processChunk
 		self.context.onfinishCallback = onfinishCallback
-		self.context.arguments = arguments
+		self.context.arguments = { ... }
 	end
 	
 	function LoopIndexRoutine:Run(processChunk, onfinishCallback)
@@ -67,7 +67,12 @@ local LoopIndexRoutine = {} do
 		repeat
 			local chunkIndex = 1
 			local initialIndex = self.context.currentIndex
-			local getter = self.context.arguments and self.context.getterItems(self.context.arguments) or self.context.getterItems()
+			local getter
+			if (self.context.arguments) then
+				getter = self.context.getterItems(unpack(self.context.arguments))
+			else
+				getter = self.context.getterItems()
+			end
 			
 			if (tonumber(getter)) then
 				for i = initialIndex, getter do
@@ -126,14 +131,14 @@ end
 
 local LoopRoutine = {} do
 	
-	function LoopRoutine:Init(getterItems, chunkSize, processChunk, onfinishCallback, arguments)
+	function LoopRoutine:Init(getterItems, chunkSize, processChunk, onfinishCallback, ...)
 		self.context, self.deadline = {}
 		self.context.currentIndex = 1
 		self.context.getterItems = getterItems
 		self.context.chunkSize = chunkSize
 		self.context.processChunk = processChunk
 		self.context.onfinishCallback = onfinishCallback
-		self.context.arguments = arguments
+		self.context.arguments = { ... }
 	end
 	
 	function LoopRoutine:Run(processChunk, onfinishCallback)
@@ -148,7 +153,14 @@ local LoopRoutine = {} do
 		repeat
 			local totalIndex = 1
 			local chunkIndex = 1
-			for key, value in pairs(self.context.arguments and self.context.getterItems(self.context.arguments) or self.context.getterItems()) do
+			local getter
+			if (self.context.arguments) then
+				getter = self.context.getterItems(unpack(self.context.arguments))
+			else
+				getter = self.context.getterItems()
+			end
+			
+			for key, value in pairs(getter) do
 				if (totalIndex >= self.context.currentIndex) then
 					if (chunkIndex == self.context.chunkSize) then
 						return false

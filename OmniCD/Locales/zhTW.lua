@@ -57,6 +57,8 @@ L["CD-Group %d"] = "冷卻群組 %d"
 L["CD-Group Padding"] = "冷卻群組間距"
 L["CENTER"] = "中"
 L["Center Horizontally"] = "水平置中"
+--[[Translation missing --]]
+L["CENTER will keep the rows centered and grow icons bidirectionally."] = "CENTER will keep the rows centered and grow icons bidirectionally."
 L["Changelog"] = "更新資訊"
 L["Changing party display options in your UF addon while OmniCD is active will break the anchors. Type (/oc rl) to fix the anchors"] = "當 OmniCD 處於啟用狀態時，更改隊伍框架插件的顯示選項會打亂隊友技能監控圖示的對齊位置。請輸入 /oc rl 來修正對齊位置。"
 L["Charge Color"] = "次數顏色"

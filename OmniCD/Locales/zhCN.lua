@@ -69,6 +69,8 @@ L["CD-Group %d"] = "CD-Group %d"
 L["CD-Group Padding"] = "CD-Group Padding"
 L["CENTER"] = "中"
 L["Center Horizontally"] = "水平居中"
+--[[Translation missing --]]
+L["CENTER will keep the rows centered and grow icons bidirectionally."] = "CENTER will keep the rows centered and grow icons bidirectionally."
 L["Changelog"] = "更改日志"
 L["Changing party display options in your UF addon while OmniCD is active will break the anchors. Type (/oc rl) to fix the anchors"] = "当OmniCD处于启用状态，更改你的队伍框架设定可能会打乱OmniCD的锚点设置。请输入 /oc rl 来修正锚点。"
 L["Charge Color"] = "充能颜色"

@@ -50,8 +50,6 @@ local AddonName, OptionsPrivate = ...
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
-local debug = false;
-
 local function addSpace(args, order)
   args["space" .. order] = {
     type = "description",
@@ -59,18 +57,6 @@ local function addSpace(args, order)
     image = function() return "", 0, 0 end,
     order = order,
     width = WeakAuras.normalWidth
-  }
-  order = order + 1;
-  return order;
-end
-
-local function addHalfSpace(args, order)
-  args["space" .. order] = {
-    type = "description",
-    name = "",
-    image = function() return "", 0, 0 end,
-    order = order,
-    width = WeakAuras.halfWidth
   }
   order = order + 1;
   return order;
@@ -92,8 +78,8 @@ end
 local function valueToString(a, propertytype)
   if (propertytype == "color") then
     if (type(a) == "table") then
-      local r, g, b, a = floor((a[1] or 0) * 255), floor((a[2] or 0) * 255), floor((a[3] or 0) * 255), floor((a[4] or 0) * 255)
-      return string.format("|c%02X%02X%02X%02X", a, r, g, b) .. L["color"];
+      local r, g, b, alpha = floor((a[1] or 0) * 255), floor((a[2] or 0) * 255), floor((a[3] or 0) * 255), floor((a[4] or 0) * 255)
+      return string.format("|c%02X%02X%02X%02X", alpha, r, g, b) .. L["color"];
     else
       return "";
     end
@@ -768,7 +754,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     args["condition" .. i .. "value" .. j] = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = blueIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", L["Is Unit"], L["Is Unit"]),
+      name = blueIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", L["Is Unit"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", propertyType),
       order = order,
       get = function()
@@ -785,7 +771,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       type = "select",
       width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType),
+      desc = (descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType, OptionsPrivate.Private.tts_voices) or "") .. "\n" .. L["Available Voices are system specific"],
       values = OptionsPrivate.Private.tts_voices,
       order = order,
       get = function()
@@ -795,7 +781,6 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       hidden = function()
         return not anyMessageType("TTS");
       end,
-      desc = L["Available Voices are system specific"]
     }
     order = order + 1;
 
@@ -810,7 +795,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       desc = descMessage,
       order = order,
       get = message_getter,
-      set = setValueComplex("message", true)
+      set = setValueComplex("message")
     }
     order = order + 1;
 
@@ -854,7 +839,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     if data.controlledChildren then
       local ordered = {}
-      for id, reference in pairs(conditions[i].changes[j].references) do
+      for _, reference in pairs(conditions[i].changes[j].references) do
         tinsert(ordered, reference)
       end
       for index, reference in ipairs(ordered) do
@@ -1872,8 +1857,6 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
       }
       order = order + 1;
 
-      local multipath = {}
-
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "input",
         width = WeakAuras.doubleWidth,
@@ -1894,10 +1877,10 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
                 if (data.controlledChildren) then
                   -- Collect multi paths
                   local multipath = {};
-                  for id, reference in pairs(conditions[i].check.references) do
+                  for id in pairs(conditions[i].check.references) do
                     local conditionIndex = conditions[i].check.references[id].conditionIndex;
                     multipath[id] ={ "conditions", conditionIndex, "check" }
-                    for i, v in ipairs(path) do
+                    for _, v in ipairs(path) do
                       tinsert(multipath[id], "checks")
                       tinsert(multipath[id], v)
                     end
@@ -1906,7 +1889,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
                   OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 else
                   local fullPath = { "conditions", i, "check" }
-                  for i, v in ipairs(path) do
+                  for _, v in ipairs(path) do
                     tinsert(fullPath, "checks")
                     tinsert(fullPath, v)
                   end
@@ -2012,7 +1995,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     order = order,
     disabled = function()
       if (data.controlledChildren) then
-        for id, reference in pairs(conditions[i].check.references) do
+        for _, reference in pairs(conditions[i].check.references) do
           local index = reference.conditionIndex;
           if (index > 1) then
             return false;
@@ -2555,7 +2538,6 @@ local function findMatchingProperty(all, change, id)
   return nil;
 end
 
-local noop = function() end
 local function SubPropertiesForChange(change)
   if change.property == "sound" then
     return { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"}
@@ -2570,7 +2552,7 @@ local function SubPropertiesForChange(change)
       "glow_scale", "glow_border"
     }
   elseif change.property == "chat" then
-    local result = { "message_type", "message_dest", "message_channel", "message_color", "message", "custom" }
+    local result = { "message_type", "message_dest", "message_channel", "message_color", "message", "custom", "message_voice" }
     local input = change.value and change.value.message
     if input then
       local getter = function(key)
@@ -2734,7 +2716,7 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
 end
 
 local fixupConditions = function(conditions)
-  for index, condition in ipairs(conditions) do
+  for _, condition in ipairs(conditions) do
     condition.check = condition.check or {}
     condition.changes = condition.changes or {}
   end

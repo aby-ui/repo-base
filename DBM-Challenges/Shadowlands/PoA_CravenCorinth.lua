@@ -1,7 +1,9 @@
 local mod	= DBM:NewMod("CravenCorinth", "DBM-Challenges", 1)
 --L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220411001638")
+mod.statTypes = "normal,heroic,mythic,challenge"
+
+mod:SetRevision("20220530062110")
 mod:SetCreatureID(172412)
 
 mod:RegisterCombat("combat")
@@ -30,7 +32,9 @@ local fansCount = 0--no need for sycnable variables, it's solo scenario
 function mod:OnCombatStart(delay)
 	timerFansofDesolationCD:Start(11.1-delay)
 	timerConsumeCD:Start(32.9-delay)
-	berserkTimer:Start(80-delay)
+	if self:IsHard() then
+		berserkTimer:Start(80-delay)
+	end
 end
 
 function mod:SPELL_CAST_START(args)

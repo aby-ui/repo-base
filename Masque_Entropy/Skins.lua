@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque: Entropy', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque_Entropy.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque_Entropy.
 
 	* File...: Skins.lua
 	* Author.: StormFX

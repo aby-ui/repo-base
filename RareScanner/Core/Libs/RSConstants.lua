@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 58
-RSConstants.CURRENT_LOOT_DB_VERSION = 74
+RSConstants.CURRENT_DB_VERSION = 59
+RSConstants.CURRENT_LOOT_DB_VERSION = 75
 
 ---============================================================================
 -- Current maps (newer)
@@ -364,6 +364,7 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	[185836] = 180924;
 	-- Bation
 	[176543] = 171008;
+	[171012] = 171040;
 	-- Revendredth
 	[165230] = 165206;
 	[166483] = 166521;

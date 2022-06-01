@@ -99,7 +99,7 @@ local L = WeakAuras.L
 	L["A 64x64 pixels icon"] = "64x64 大小的圖示"
 	L["A group that dynamically controls the positioning of its children"] = "可動態控制子項目位置的群組"
 	L[ [=[A timer will automatically be displayed according to default Interface Settings (overridden by some addons).
-Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=] ] = "計時器將根據預設界面設置自動顯示（被某些插件覆蓋）。如果您希望隱藏此計時器，或使用Wea​​kAuras文字顯示計時器，請啟用此設置"
+Enable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer]=] ] = "計時器將根據預設界面設置自動顯示（被某些插件覆蓋）。如果您希望隱藏此計時器，或使用WeakAuras文字顯示計時器，請啟用此設置"
 	L["A Unit ID (e.g., party1)."] = "單位 ID (例如 party1)。"
 	L["Actions"] = "動作"
 	L["Active Aura Filters and Info"] = "啟用光環過濾以及訊息"

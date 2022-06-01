@@ -64,7 +64,7 @@ function Comms:GetNumSyncMembers()
 	for k in pairs(self.syncGUIDS) do
 		c = c + 1;
 	end
-	return c;
+	return c == 0 and 0.5 or c;
 end
 
 function Comms:ToggleLazySync()

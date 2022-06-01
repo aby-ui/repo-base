@@ -29,7 +29,6 @@ end
 
 local function GetGlobalOptions(data)
 
-  local triggerCount = 0
   local globalTriggerOptions = {
     __title = L["Trigger Combination"],
     __order = 1,
@@ -109,7 +108,7 @@ local function AddOptions(allOptions, data)
       -- Unknown trigger system, empty options
       local options = {};
       OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, index)
-      OptionsPrivate.AddTriggerMetaFunctions(options, data, index, true)
+      OptionsPrivate.AddTriggerMetaFunctions(options, data, index)
       triggerOptions = union(triggerOptions, {
           ["trigger." .. index .. ".unknown"] = options
       })

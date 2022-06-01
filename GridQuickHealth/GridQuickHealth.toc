@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 # Title: GridQuickHealth
 # Notes: 团队框体中的快速治疗功能
 ## Author: yleaf, warbaby

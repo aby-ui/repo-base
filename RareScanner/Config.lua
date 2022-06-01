@@ -1533,24 +1533,14 @@ local function GetContainerFilterOptions()
 		local searchContainerByZoneID = function(zoneID, containerName)
 			if (zoneID) then
 				for containerID, info in pairs(RSContainerDB.GetAllInternalContainerInfo()) do
-					local name = RSContainerDB.GetContainerName(containerID) or AL["CONTAINER"]
-					local tempName = name
+					local name = RSContainerDB.GetContainerName(containerID)
+					if (not name) then
+						name = AL["CONTAINER"]..' ('..containerID..')'
+					elseif (name == AL["CONTAINER"]) then
+						name = AL["CONTAINER"]..' ('..containerID..')'
+					end
 					if (not RSContainerDB.IsWorldMap(containerID) and RSContainerDB.IsInternalContainerInMap(containerID, zoneID, true) and ((containerName and RSUtils.Contains(name,containerName)) or not containerName)) then
-						local i = 2
-						local sameNPC = false
-						while (container_filter_options.args.containerFilters.values[tempName]) do
-							-- If same container skip
-							if (container_filter_options.args.containerFilters.values[tempName] == containerID) then
-								sameNPC = true
-								break;
-							end
-
-							tempName = name..' ('..i..')'
-							i = i+1
-						end
-						if (not sameNPC) then
-							container_filter_options.args.containerFilters.values[tempName] = containerID
-						end
+						container_filter_options.args.containerFilters.values[name] = containerID
 					end
 				end
 			end

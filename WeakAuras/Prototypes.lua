@@ -10,12 +10,11 @@ local ceil, min = ceil, min
 -- WoW APIs
 local GetTalentInfo = GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
-local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
+local UnitClass = UnitClass
 local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
-local UnitDetailedThreatSituation, UnitThreatSituation = UnitDetailedThreatSituation, UnitThreatSituation
-local CastingInfo, ChannelInfo = CastingInfo, ChannelInfo
+local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
 local WeakAuras = WeakAuras
@@ -480,7 +479,7 @@ Private.function_strings = {
   ]]
 };
 
-local hsvFrame = CreateFrame("Colorselect")
+local hsvFrame = CreateFrame("ColorSelect")
 
 -- HSV transition, for a much prettier color transition in many cases
 -- see http://www.wowinterface.com/forums/showthread.php?t=48236
@@ -4249,10 +4248,10 @@ Private.event_prototypes = {
           local remaining = 0;
           if (expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
-            local remainingModRate = remaining / modRate;
+            local remainingModRate = remaining / (modRate or 1);
             local remainingCheck = %s;
             if(remainingModRate >= remainingCheck and remainingModRate > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck * modRate);
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck * (modRate or 1));
             end
           end
         ]];
@@ -9058,7 +9057,6 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.event_prototypes["Crowd Controlled"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
-  Private.event_prototypes["Spell Cast Succeeded"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end

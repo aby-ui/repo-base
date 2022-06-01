@@ -587,7 +587,7 @@ do
 
 		local icon = info.spellIcons[BLOOD_TAP]
 		if icon and icon.active then
-			P:UpdateCooldown(icon, math.min(5, 2 * consumed))
+			P:UpdateCooldown(icon, 2 * consumed)
 		end
 
 		if info.talentData[334525] then
@@ -2428,9 +2428,11 @@ do
 	end
 	registeredHostileEvents.SPELL_AURA_REMOVED[DECRYPTED_URH_CYPHER] = RemoveUrh;
 	registeredHostileEvents.SPELL_AURA_APPLIED[DECRYPTED_URH_CYPHER] = function(destInfo, _,_,_, destGUID)
-		destInfo.auras[DECRYPTED_URH_CYPHER] = true;
-		UpdateCDRR(destInfo, 1/3);
-		E.TimerAfter(10.5, OnUrhTimerEnd, destGUID);
+		if ( not destInfo.auras[DECRYPTED_URH_CYPHER] ) then
+			destInfo.auras[DECRYPTED_URH_CYPHER] = true;
+			UpdateCDRR(destInfo, 1/3);
+			E.TimerAfter(10.5, OnUrhTimerEnd, destGUID);
+		end
 	end
 end
 

@@ -4,21 +4,19 @@ local LSM = LibStub("LibSharedMedia-3.0")
 E.Libs.LSM = LSM
 LSM:Register("statusbar", "OmniCD Flat", "Interface\\Addons\\OmniCD\\Media\\omnicd-texture_flat.blp")
 --LSM:Register("font", "PT Sans Narrow Bold", "Interface\\Addons\\OmniCD\\Media\\Fonts\\PTSansNarrow-Bold.ttf", bit.bor(LSM.LOCALE_BIT_western, LSM.LOCALE_BIT_ruRU))
-LSM_Font = {}
-LSM_Statusbar = {}
+local LSM_Font = {}
+local LSM_Statusbar = {}
 
 local title = GENERAL
 
--- LSM:GetDefault("font") returns name for current locale
---[[
-local defaultFonts = {
-	["기본 글꼴"] = "Fonts\\2002.TTF",
-	["默认"] = "Fonts\\ARKai_T.ttf",
-	["預設"] = "Fonts\\blei00d.TTF",
-	["Friz Quadrata TT"] = "Fonts\\FRIZQT__.TTF",
-	["PT Sans Narrow Bold"] = "Interface\\AddOns\\OmniCD\\Media\\Fonts\\PTSansNarrow-Bold.ttf",
-}
-]]
+
+
+
+
+
+
+
+
 local defaultFonts = {}
 
 if (LOCALE_koKR) then
@@ -110,8 +108,8 @@ local fontInfo = {
 		name = L["Font"],
 		order = 1,
 		type = "select",
---      dialogControl = "LSM30_Font",
---      values = AceGUIWidgetLSMlists.font,
+
+
 		values = LSM_Font,
 	},
 	size = {
@@ -174,7 +172,7 @@ local General = {
 					inline = true,
 					args = fontInfo
 				},
-				-- Until we add panel scaling
+
 				option = {
 					name = OPTIONS,
 					order = 4,
@@ -208,16 +206,16 @@ local General = {
 							name = L["Bar"],
 							order = 1,
 							type = "select",
---                          dialogControl = 'LSM30_Statusbar',
---                          values = AceGUIWidgetLSMlists.statusbar,
+
+
 							values = LSM_Statusbar,
 						},
 						BG = {
 							name = L["BG"],
 							order = 2,
 							type = "select",
---                          dialogControl = 'LSM30_Statusbar',
---                          values = AceGUIWidgetLSMlists.statusbar,
+
+
 							values = LSM_Statusbar,
 						},
 					}
@@ -229,7 +227,7 @@ local General = {
 			order = 30,
 			type = "group",
 			get = function(info) return E.DB.profile.General.cooldownText[info[3]][info[#info]] end,
-			set = function(info, value) E.DB.profile.General.cooldownText[info[3]][info[#info]] = value E:Refresh() end, -- TODO: temp refresh func
+			set = function(info, value) E.DB.profile.General.cooldownText[info[3]][info[#info]] = value E:Refresh() end,
 			args = {
 				statusBar = {
 					name = L["Status Bar"],
@@ -251,7 +249,7 @@ local General = {
 									min = 60, max = 300, step = 5,
 								},
 								mmColor = {
-									disabled = true, -- TODO:
+									disabled = true,
 									name = L["MM:SS Color"],
 									order = 2,
 									type = "color",
@@ -298,13 +296,13 @@ local General = {
 }
 
 function E:AddGeneral()
-	-- Preload fonts to prevent blank text on dropdown items
-	E.dummyFrame.text = E.dummyFrame.text or E.dummyFrame:CreateFontString() -- if we need to hook dynamic updates
+
+	E.dummyFrame.text = E.dummyFrame.text or E.dummyFrame:CreateFontString()
 	for fontName, fontPath in pairs(LSM:HashTable("font")) do
 		E.dummyFrame.text:SetFont(fontPath, 22)
 	end
 
-	-- Convert table to something ACD can use as the values member
+
 	for _, fontName in pairs(LSM:List("font")) do
 		LSM_Font[fontName] = fontName
 	end

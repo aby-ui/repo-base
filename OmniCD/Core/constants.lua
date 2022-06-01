@@ -87,6 +87,7 @@ E.CFG_ZONE = {
 }
 
 E.L_PRESETS = {
+	["CENTER"] = L["CENTER"],
 	["TOPLEFT"] = L["LEFT"],
 	["TOPRIGHT"] = L["RIGHT"],
 	["manual"] = LFG_LIST_MORE or "More...",
@@ -155,6 +156,7 @@ E.L_PRIORITY = {
 
 
 E.L_HIGHLIGHTS = {
+	["pvptrinket"] = L_PVP_TRINKET,
 	["racial"] = RACIAL_TRAITS,
 	["trinket"] = INVTYPE_TRINKET,
 	["covenant"] = L["Covenant"],

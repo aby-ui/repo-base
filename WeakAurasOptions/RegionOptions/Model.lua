@@ -224,7 +224,7 @@ local function createOptions(id, data)
 end
 
 local function createThumbnail()
-  local borderframe = CreateFrame("FRAME", nil, UIParent);
+  local borderframe = CreateFrame("Frame", nil, UIParent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
 
@@ -291,8 +291,8 @@ local function createIcon()
     width = 40
   };
 
-  local thumbnail = createThumbnail(UIParent);
-  modifyThumbnail(UIParent, thumbnail, data, nil, 50);
+  local thumbnail = createThumbnail();
+  modifyThumbnail(UIParent, thumbnail, data);
 
   return thumbnail;
 end

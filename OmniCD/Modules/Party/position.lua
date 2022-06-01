@@ -93,7 +93,6 @@ function P:UpdatePosition()
 	P:HideBars()
 
 	local showRange = E.db.general.showRange
-	local effectivePixelMult
 	for guid, info in pairs(P.groupInfo) do
 		local f = info.bar
 		if E.db.position.detached then
@@ -103,11 +102,16 @@ function P:UpdatePosition()
 		else
 			local frame = FindAnchorFrame(guid)
 			if frame then
-				f:SetParent(showRange and frame or UIParent);
+				if ( showRange ) then
+					f:SetParent(frame);
+					f:SetFrameLevel(10);
+				else
+					f:SetParent(UIParent);
+				end
+				f:ClearAllPoints()
                 local _, _, idx = (frame:GetName() or ""):find("PartyMemberFrame([1-4])")
                 local EUF = idx and _G["EUF_PartyFrame"..idx.."HP"]
                 local ox = EUF and EUF:IsVisible() and (P.relativePoint or ""):find("RIGHT") and 70 or idx and 12 or 0
-				f:ClearAllPoints()
 				f:SetPoint(P.point, frame, P.relativePoint, ox, 0) --abyui adapt EUF
 				f:Show()
 			end

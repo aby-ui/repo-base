@@ -25,9 +25,9 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.66.6"; -- Version number (text format)
+	Version = "4.67"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 46606; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 46700; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 46500; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 46606; -- Numeric version number for checking out-of-date clients (TBC classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
@@ -1915,10 +1915,17 @@ function GTFO_GetAlertID(alert, target)
 		local isHeroic, isChallenge, _, isMythic = select(3, GetDifficultyInfo(select(3, GetInstanceInfo())));
 		if (isChallenge == true) then
 			-- Mythic+/Challenge Mode
-			if (tankAlert and (alert.tankSoundChallenge or alert.tankSoundMythic or alert.tankSoundHeroic)) then
-				alertLevel = alert.tankSoundChallenge or alert.tankSoundMythic or alert.tankSoundHeroic;
-			elseif (alert.soundChallenge or alert.soundMythic or alert.soundHeroic) then
-				alertLevel = alert.soundChallenge or alert.soundMythic or alert.soundHeroic;
+			local useAlert = true;
+			if (alert.soundChallengeMinimumLevel) then
+				local currentKey, _ = C_ChallengeMode.GetActiveKeystoneInfo()
+				useAlert = alert.soundChallengeMinimumLevel >= tonumber(currentKey);
+			end
+			if (useAlert) then
+				if (tankAlert and (alert.tankSoundChallenge or alert.tankSoundMythic or alert.tankSoundHeroic)) then
+					alertLevel = alert.tankSoundChallenge or alert.tankSoundMythic or alert.tankSoundHeroic;
+				elseif (alert.soundChallenge or alert.soundMythic or alert.soundHeroic) then
+					alertLevel = alert.soundChallenge or alert.soundMythic or alert.soundHeroic;
+				end
 			end
 		elseif (isMythic == true) then
 			-- Mythic Mode

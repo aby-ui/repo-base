@@ -23,9 +23,9 @@ local RSTooltipScanners = private.ImportLib("RareScannerTooltipScanners")
 
 function RSLootTooltip.AddRareScannerInformation(tooltip, itemLink, itemID, itemClassID, itemSubClassID)
 	-- Adds transmog unknown appearance message if the game doesnt add it
-	if (not RSTooltipScanners.ScanLoot(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN) and RSCollectionsDB.IsNotcollectedAppearance(itemID)) then
-		GameTooltip_AddColoredLine(tooltip, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN, LIGHTBLUE_FONT_COLOR);
-	end
+	--if (not RSTooltipScanners.ScanLoot(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN) and RSCollectionsDB.IsNotcollectedAppearance(itemID)) then
+	--	GameTooltip_AddColoredLine(tooltip, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN, LIGHTBLUE_FONT_COLOR);
+	--end
 
 	-- Adds commands	
 	if (itemClassID and itemSubClassID and RSConfigDB.IsShowingLootTooltipsCommands()) then

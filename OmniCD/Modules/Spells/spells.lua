@@ -356,7 +356,7 @@ E.spell_db = {
 		{ spellID = 322109, duration = 180, type = "offensive"  },
 		{ spellID = 152175, duration = 24,  type = "offensive", spec = true     },
 		{ spellID = 354540, duration = 90,  type = "counterCC", spec = true     },
-		{ spellID = 209584, duration = 45,  type = "counterCC", spec = true     },
+		{ spellID = 209584, duration = 30,  type = "counterCC", spec = true     },
 		{ spellID = 115008, duration = 20,  type = "other",     spec = true,    charges = 2,    parent = 109132 },
 		{ spellID = 101545, duration = 20,  type = "other",     spec = {269}    },
 		{ spellID = 109132, duration = 20,  type = "other",     charges = 2,    talent = 115008 },
@@ -712,7 +712,7 @@ E.spell_db = {
 		{ spellID = 345228, duration = 60,  type = "trinket",   item = 175921,  item2 = 175884  },
 		{ spellID = 356567, duration = 180, type = "trinket",   item = 186980,  },
 
-		{ spellID = 363117, duration = 180, type = "pvptrinket",item = 188524   },
+		{ spellID = 363117, duration = 180, type = "pvptrinket",item = 188524,  buff = 362699   },
 		{ spellID = 363481, duration = 120, type = "trinket",   item = 188766   },
 		{ spellID = 363522, duration = 120, type = "trinket",   item = 188775   },
 		{ spellID = 363532, duration = 180, type = "trinket",   item = 188778,  icon = 3950358  },

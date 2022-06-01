@@ -7,6 +7,7 @@ local RSNotificationTracker = private.NewLib("RareScannerNotificationTracker")
 
 -- RareScanner database libraries
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
+local RSNpcDB = private.ImportLib("RareScannerNpcDB")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")

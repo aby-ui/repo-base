@@ -1,10 +1,10 @@
 --[[
 
-	This file is part of 'Masque: Cirque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque_Cirque.
+	This file is part of 'Masque: Cirque', an add-on for World of Warcraft. For bug reports,
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque_Cirque.
 
-	* File....: Locales.lua
-	* Authors.: StormFX
+	* File...: Locales.lua
+	* Author.: StormFX
 
 ]]
 
@@ -28,6 +28,7 @@ Core.Locale = setmetatable(L, {
 local Locale = GetLocale()
 
 if Locale == "enGB" or Locale == "enUS" then
+	-- enUS/enGB for Reference
 	--L["A circular skin with an outer ring as an accent."] = "A circular skin with an outer ring as an accent."
 	--L["An alternate version of Cirque without an outer ring."] = "An alternate version of Cirque without an outer ring."
 	return

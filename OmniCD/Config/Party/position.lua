@@ -49,7 +49,7 @@ end
 local setDisabledItem = function(info) return GetDisabledItems(info) end
 
 local position = {
-	name = L["Position"],
+	name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t " .. L["Position"],
 	type = "group",
 	order = 20,
 	get = function(info) return E.DB.profile.Party[info[2]].position[info[#info]] end,
@@ -60,7 +60,10 @@ local position = {
 		E.DB.profile.Party[key].position[option] = value
 
 		if option == "preset" then
-			if value == "TOPLEFT" then
+			if value == "CENTER" then
+				E.DB.profile.Party[key].position.anchor = value
+				E.DB.profile.Party[key].position.attach = value
+			elseif value == "TOPLEFT" then
 				E.DB.profile.Party[key].position.anchor = "TOPRIGHT"
 				E.DB.profile.Party[key].position.attach = value
 			elseif value == "TOPRIGHT" then
@@ -107,8 +110,8 @@ local position = {
 			end,
 		},
 		preset = {
-			name = L["Position"],
-			desc = L["Set the spell bar position"],
+			name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t " .. L["Position"],
+			desc = format("%s\n\n%s", L["Set the spell bar position"], L["CENTER will keep the rows centered and grow icons bidirectionally."]),
 			order = 2,
 			type = "select",
 			values = E.L_PRESETS,
@@ -116,7 +119,7 @@ local position = {
 		anchor = {
 			disabled = isPreset,
 			name = L["Anchor Point"],
-			desc = L["Set the anchor point on the spell bar"] .. "\n\n" .. L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"],
+			desc = format("%s\n\n%s", L["Set the anchor point on the spell bar"], L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"]),
 			order = 3,
 			type = "select",
 			values = E.L_POINTS,
@@ -147,6 +150,7 @@ local position = {
 			name = "\n", order = 7, type = "description",
 		},
 		layout = {
+
 			name = L["Layout"],
 			desc = L["Select the icon layout"],
 			order = 10,
