@@ -192,7 +192,20 @@ function BrowsePanel:OnInitialize()
                     if activity:IsUnusable() then
                         return activity:GetLeaderFullName(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
                     else
-                        return activity:GetLeaderFullName(), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
+                        local prefix = ""
+                        if activity:GetCrossFactionListing() then
+                            local faction
+                            if activity:GetLeaderFactionGroup() == 0 then
+                                faction = "horde"
+                            elseif activity:GetLeaderFactionGroup() == 1 then
+                                faction = "alliance"
+                            end
+                            if faction then
+                                prefix = format("|Tinterface/battlefieldframe/battleground-%s:20:20:0:0|t", faction)
+                                --prefix = format("|Tinterface/icons/pvpcurrency-honor-%s:0:0:0:0|t", faction)
+                            end
+                        end
+                        return prefix .. activity:GetLeaderFullName(), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g,
                                HIGHLIGHT_FONT_COLOR.b
                     end
                 end,

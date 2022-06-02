@@ -341,6 +341,9 @@ local function CreateScoreFilter(self,text,score)
             end
             self.ActivityList:Refresh()
         end)
+        GUI:Embed(filterScoreCheckBox, 'Tooltip')
+        filterScoreCheckBox:SetTooltip("说明", "过滤队长是0分的队伍, 可能有助于减少广告")
+        filterScoreCheckBox:SetTooltipAnchor("TOPLEFT")
     end
 end
 

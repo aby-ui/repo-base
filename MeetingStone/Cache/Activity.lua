@@ -26,6 +26,11 @@ Activity:InitAttr{
     'KilledBossCount',
     'LeaderScore',
     'LeaderScoreInfo',
+    'LeaderPvpRatingInfo',
+    'RequiredDungeonScore',
+    'RequiredPvpRating',
+    'CrossFactionListing',
+    'LeaderFactionGroup',
 }
 
 Activity._Objects = setmetatable({}, {__mode = 'v'})
@@ -64,6 +69,11 @@ function Activity:Update()
     local numMembers = info.numMembers
     local leaderOverallDungeonScore = info.leaderOverallDungeonScore
     local leaderDungeonScoreInfo = info.leaderDungeonScoreInfo
+    local leaderPvpRatingInfo = info.leaderPvpRatingInfo
+    local requiredDungeonScore = info.requiredDungeonScore
+    local requiredPvpRating = info.requiredPvpRating
+    local crossFactionListing = info.crossFactionListing
+    local leaderFactionGroup = info.leaderFactionGroup
 
     if not activityId then
         return false
@@ -102,6 +112,11 @@ function Activity:Update()
     self:SetApplicationExpiration(GetTime() + appDuration)
     self:SetLeaderScore(leaderOverallDungeonScore or 0)
     self:SetLeaderScoreInfo(leaderDungeonScoreInfo)
+    self:SetLeaderPvpRatingInfo(leaderPvpRatingInfo)
+    self:SetRequiredDungeonScore(requiredDungeonScore)
+    self:SetRequiredPvpRating(requiredPvpRating)
+    self:SetCrossFactionListing(crossFactionListing)
+    self:SetLeaderFactionGroup(leaderFactionGroup)
 
     if not self:UpdateCustomData(comment, title) then
         return false

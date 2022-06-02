@@ -23,7 +23,7 @@ end
 
 local function initValidCategorys()
     wipe(validCategorys)
-    for i, baseFilter in ipairs({LE_LFG_LIST_FILTER_PVE, LE_LFG_LIST_FILTER_PVP}) do
+    for i, baseFilter in ipairs({Enum.LFGListFilter.PvE, Enum.LFGListFilter.PvP}) do
         for _, categoryId in ipairs(C_LFGList.GetAvailableCategories(baseFilter)) do
             validCategorys[categoryId] = true
         end
@@ -250,7 +250,7 @@ local function MakeMenuTable(list, baseFilter, menuType)
             local packed = FindPacked(categoryId)
             if packed then
                 tinsert(list, MakePackedCategoryMenuTable(packed, baseFilter, menuType))
-            elseif categoryId ~= 6 or baseFilter ~= LE_LFG_LIST_FILTER_PVE then
+            elseif categoryId ~= 6 or baseFilter ~= Enum.LFGListFilter.PvE then
                 tinsert(list, MakeCategoryMenuTable(categoryId, baseFilter, menuType))
             end
         end
@@ -265,8 +265,8 @@ function GetActivitesMenuTable(menuType)
     initValidCategorys()
 
     local list = {}
-    MakeMenuTable(list, LE_LFG_LIST_FILTER_PVE, menuType)
-    MakeMenuTable(list, LE_LFG_LIST_FILTER_PVP, menuType)
+    MakeMenuTable(list, Enum.LFGListFilter.PvE, menuType)
+    MakeMenuTable(list, Enum.LFGListFilter.PvP, menuType)
 
     if menuType == ACTIVITY_FILTER_BROWSE or menuType == ACTIVITY_FILTER_CREATE then
         tinsert(list, 1, {
@@ -286,14 +286,14 @@ function GetActivitesMenuTable(menuType)
     --             menuTable    = {
     --                 MakeActivityMenuTable(
     --                     ACTIVITY_CUSTOM_IDS[SOLO_HIDDEN_CUSTOM_ID],
-    --                     LE_LFG_LIST_FILTER_PVP,
+    --                     Enum.LFGListFilter.PvP,
     --                     SOLO_HIDDEN_CUSTOM_ID,
     --                     ACTIVITY_CUSTOM_NAMES[SOLO_HIDDEN_CUSTOM_ID],
     --                     L['单刷开团，不会被其他玩家干扰。']
     --                 ),
     --                 MakeActivityMenuTable(
     --                     ACTIVITY_CUSTOM_IDS[SOLO_VISIBLE_CUSTOM_ID],
-    --                     LE_LFG_LIST_FILTER_PVE,
+    --                     Enum.LFGListFilter.PvE,
     --                     SOLO_VISIBLE_CUSTOM_ID,
     --                     ACTIVITY_CUSTOM_NAMES[SOLO_VISIBLE_CUSTOM_ID],
     --                     L['这个活动可以被玩家搜索到。']
@@ -303,7 +303,7 @@ function GetActivitesMenuTable(menuType)
     --     elseif menuType == ACTIVITY_FILTER_BROWSE then
     --         tinsert(list, MakeActivityMenuTable(
     --             ACTIVITY_CUSTOM_IDS[SOLO_VISIBLE_CUSTOM_ID],
-    --             LE_LFG_LIST_FILTER_PVP,
+    --             Enum.LFGListFilter.PvP,
     --             SOLO_VISIBLE_CUSTOM_ID,
     --             ACTIVITY_CUSTOM_NAMES[SOLO_VISIBLE_CUSTOM_ID]
     --         ))
