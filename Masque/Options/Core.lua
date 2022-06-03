@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options/Core.lua
 	* Author.: StormFX
@@ -65,18 +65,19 @@ function Setup.Core(self)
 				order = 0,
 				args = {
 					Head = {
-						type = "description",
-						name = "|cffffcc00Masque - "..L["About"].."|r"..CRLF,
-						fontSize = "medium",
-						hidden = self.GetStandAlone,
+						type = "header",
+						name = MASQUE.." - "..L["About"],
 						order = 0,
+						hidden = self.GetStandAlone,
+						disabled = true,
+						dialogControl = "SFX-Header",
 					},
 					Desc = {
 						type = "description",
 						name = L["This section will allow you to view information about Masque and any skins you have installed."]..CRLF,
-						fontSize = "medium",
-						hidden = function() return not Core.OptionsLoaded end,
 						order = 1,
+						hidden = function() return not Core.OptionsLoaded end,
+						fontSize = "medium",
 					},
 					-- Necessary when manually navigating to the InterfaceOptionsFrame prior to the options being loaded.
 					Load = {
@@ -89,14 +90,12 @@ function Setup.Core(self)
 							Desc = {
 								type = "description",
 								name = L["Masque's options are load on demand. Click the button below to load them."]..CRLF,
-								fontSize = "medium",
 								order = 0,
+								fontSize = "medium",
 							},
 							Button = {
 								type = "execute",
 								name = L["Load Options"],
-								confirm = true,
-								confirmText = L["This action will increase memory usage."].."\n",
 								desc = L["Click to load Masque's options."],
 								func = function()
 									if Setup.LoD then Setup("LoD") end
@@ -107,6 +106,8 @@ function Setup.Core(self)
 									Core.Options.args.Core.args.Load = nil -- GC
 								end,
 								order = 1,
+								confirm = true,
+								confirmText = L["This action will increase memory usage."].."\n",
 							},
 						},
 					},

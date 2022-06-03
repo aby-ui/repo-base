@@ -1207,6 +1207,10 @@ function DF:CreateNewDropdownFrame (parent, name)
 	child:SetPoint ("topleft", scroll, "topleft", 0, 0)
 	child:SetBackdrop (child_backdrop)
 	child:SetBackdropColor (0, 0, 0, 1)
+
+	local t = child:CreateTexture(nil, "background")
+	t:SetAllPoints()
+	t:SetColorTexture(0, 0, 0, 1)
 	
 	DF:ApplyStandardBackdrop (child)
 	

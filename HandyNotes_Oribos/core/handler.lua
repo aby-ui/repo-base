@@ -56,7 +56,7 @@ end
 
 local function HasTwoProfessions()
     local prof1, prof2 = GetProfessions()
-    if prof1 and prof2 then
+    if (prof1 and prof2) then
         return true
     end
     return false
@@ -70,22 +70,22 @@ local fmaster_waypoint = 0
 local function CreateFlightMasterWaypoint()
     local dropdown = private.db.fmaster_waypoint_dropdown
 
-    if dropdown == 1 then
+    if (dropdown == 1) then
         -- create Blizzard waypoint
         C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(1550, 47.02/100, 51.16/100))
         C_SuperTrack.SetSuperTrackedUserWaypoint(true)
         fmaster_waypoint = 1
         addon:debugmsg("Create Blizzard")
-    elseif IsAddOnLoaded("TomTom") and dropdown == 2 then
+    elseif (IsAddOnLoaded("TomTom") and dropdown == 2) then
         -- create TomTom waypoint
         private.uid = TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)})
         fmaster_waypoint = 1
         addon:debugmsg("Create TomTom")
-    elseif dropdown == 3 then
+    elseif (dropdown == 3) then
         -- create both waypoints
         C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(1550, 47.02/100, 51.16/100))
         C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-        if IsAddOnLoaded("TomTom") then
+        if (IsAddOnLoaded("TomTom")) then
             private.uid = TomTom:AddWaypoint(1671, 61.91/100, 68.78/100, {title = GetCreatureNamebyID(162666)})
         end
         fmaster_waypoint = 1
@@ -96,27 +96,59 @@ end
 local function RemoveFlightMasterWaypoint()
     local dropdown = private.db.fmaster_waypoint_dropdown
 
-    if fmaster_waypoint == 1 then
-        if dropdown == 1 then
+    if (fmaster_waypoint == 1) then
+        if (dropdown == 1) then
             -- remove Blizzard waypoint
             C_Map.ClearUserWaypoint()
             fmaster_waypoint = 0
             addon:debugmsg("Remove Blizzard")
-        elseif IsAddOnLoaded("TomTom") and dropdown == 2 then
+        elseif (IsAddOnLoaded("TomTom") and dropdown == 2) then
             -- remove TomTom waypoint
             TomTom:RemoveWaypoint(private.uid)
             fmaster_waypoint = 0
             addon:debugmsg("Remove TomTom")
-        elseif dropdown == 3 then
+        elseif (dropdown == 3) then
             -- remove both waypoints
             C_Map.ClearUserWaypoint()
-            if IsAddOnLoaded("TomTom") then
+            if (IsAddOnLoaded("TomTom")) then
                 TomTom:RemoveWaypoint(private.uid)
             end
             fmaster_waypoint = 0
             addon:debugmsg("Remove Both")
         end
     end
+end
+
+----------------------------------------------------------------------------------------------------
+----------------------------------------------PREPARE-----------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+-- workaround to prepare the multilabels with and without notes
+-- because the game displays the first line in 14px and
+-- the following lines in 13px with a normal for loop.
+local function Prepare(label, note)
+    local t = {}
+    local NOTE
+
+    for i, name in ipairs(label) do
+
+        -- set spell name as label
+        if (type(name) == "number") then
+            name = GetSpellInfo(name)
+        end
+
+        -- add additional notes
+        if (note and note[i]) then
+            NOTE = " ("..note[i]..")"
+        else
+            NOTE = ''
+        end
+
+        -- store everything together
+        t[i] = name..NOTE
+    end
+
+    return table.concat(t, "\n")
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -135,13 +167,13 @@ end
 
 local function GetIconScale(icon, picon)
     -- makes the picon smaller
-    if picon ~= nil and private.db.picons_vendor and icon == "vendor" then return private.db["icon_scale_vendor"] * 0.75 end
-    if picon ~= nil and private.db.picons_trainer and icon == "trainer" then return private.db["icon_scale_trainer"] * 0.75 end
+    if (picon ~= nil and private.db.picons_vendor and icon == "vendor") then return private.db["icon_scale_vendor"] * 0.75 end
+    if (picon ~= nil and private.db.picons_trainer and icon == "trainer") then return private.db["icon_scale_trainer"] * 0.75 end
     -- anvil npcs are vendors
-    if icon == "anvil" then
+    if (icon == "anvil") then
         return private.db["icon_scale_vendor"]
     -- combine the four zone gateway icons
-    elseif icon == "kyrian" or icon == "necrolord" or icon == "nightfae" or icon == "venthyr" then
+    elseif (icon == "kyrian" or icon == "necrolord" or icon == "nightfae" or icon == "venthyr") then
         return  private.db["icon_scale_zonegateway"]
     end
 
@@ -150,10 +182,10 @@ end
 
 local function GetIconAlpha(icon)
     -- anvil npcs are vendors
-    if icon == "anvil" then
+    if (icon == "anvil") then
         return private.db["icon_alpha_vendor"]
     -- combine the four zone gateway icons
-    elseif icon == "kyrian" or icon == "necrolord" or icon == "nightfae" or icon == "venthyr" then
+    elseif (icon == "kyrian" or icon == "necrolord" or icon == "nightfae" or icon == "venthyr") then
         return  private.db["icon_alpha_zonegateway"]
     end
 
@@ -162,8 +194,8 @@ end
 
 local GetPointInfo = function(point)
     local icon
-    if point then
-        local label = GetCreatureNamebyID(point.npc) or point.label or UNKNOWN
+    if (point) then
+        local label = GetCreatureNamebyID(point.npc) or point.label or point.multilabel and Prepare(point.multilabel) or UNKNOWN
         if (point.icon == "portal" and point.quest and not IsQuestCompleted(point.quest)) then
             icon = private.constants.icon["MagePortalHorde"]
         else
@@ -183,24 +215,27 @@ end
 
 local function SetTooltip(tooltip, point)
 
-    if point then
-        if point.npc then
+    if (point) then
+        if (point.npc) then
             local name, sublabel = GetCreatureNamebyID(point.npc)
-            if name then
+            if (name) then
                 tooltip:AddLine(name)
             end
-            if sublabel then
+            if (sublabel) then
                 tooltip:AddLine(sublabel,1,1,1)
             end
         end
-        if point.label then
+        if (point.label) then
             tooltip:AddLine(point.label)
         end
-        if point.note then
-            tooltip:AddLine(point.note)
+        if (point.note) then
+            tooltip:AddLine("("..point.note..")")
+        end
+        if (point.multilabel) then
+            tooltip:AddLine(Prepare(point.multilabel, point.multinote))
         end
         if (point.quest and not IsQuestCompleted(point.quest)) then
-            if C_QuestLog.GetTitleForQuestID(point.quest) ~= nil then
+            if (C_QuestLog.GetTitleForQuestID(point.quest) ~= nil) then
                 tooltip:AddLine(RequiresQuest..": ["..C_QuestLog.GetTitleForQuestID(point.quest).."] (ID: "..point.quest..")",1,0,0)
             else
                 tooltip:AddLine(RetrievingData,1,0,1) -- pink
@@ -236,7 +271,7 @@ function PluginHandler:OnEnter(uMapID, coord)
 end
 
 function PluginHandler:OnLeave(uMapID, coord)
-    if self:GetParent() == WorldMapButton then
+    if (self:GetParent() == WorldMapButton) then
         WorldMapTooltip:Hide()
     else
         GameTooltip:Hide()
@@ -253,7 +288,7 @@ local function closeAllDropdowns()
 end
 
 local function addTomTomWaypoint(button, uMapID, coord)
-    if TomTom then
+    if (IsAddOnLoaded("TomTom")) then
         local x, y = HandyNotes:getXY(coord)
         TomTom:AddWaypoint(uMapID, x, y, {
             title = GetPoinInfoByCoord(uMapID, coord),
@@ -283,7 +318,7 @@ do
 
 --            UIDropDownMenu_AddButton(spacer, level)
 
-            if TomTom and not private.db.easy_waypoint then
+            if (IsAddOnLoaded("TomTom") and not private.db.easy_waypoint) then
                 -- Waypoint menu item
                 info = UIDropDownMenu_CreateInfo()
                 info.text = L["handler_context_menu_add_tomtom"]
@@ -319,20 +354,20 @@ do
     HL_Dropdown.initialize = generateMenu
 
     function PluginHandler:OnClick(button, down, uMapID, coord)
-        if ((down or button ~= "RightButton") and private.db.easy_waypoint and TomTom) then
+        if ((down or button ~= "RightButton") and private.db.easy_waypoint and IsAddOnLoaded("TomTom")) then
             return
         end
-        if ((button == "RightButton" and not down) and (not private.db.easy_waypoint or not TomTom)) then
+        if ((button == "RightButton" and not down) and (not private.db.easy_waypoint or not IsAddOnLoaded("TomTom"))) then
             currentMapID = uMapID
             currentCoord = coord
             ToggleDropDownMenu(1, nil, HL_Dropdown, self, 0, 0)
         end
-        if (IsControlKeyDown() and private.db.easy_waypoint and TomTom) then
+        if (IsControlKeyDown() and private.db.easy_waypoint and IsAddOnLoaded("TomTom")) then
             currentMapID = uMapID
             currentCoord = coord
             ToggleDropDownMenu(1, nil, HL_Dropdown, self, 0, 0)
         else
-        if private.db.easy_waypoint and TomTom then
+        if (private.db.easy_waypoint and IsAddOnLoaded("TomTom")) then
             addTomTomWaypoint(button, uMapID, coord)
         end
         end
@@ -343,10 +378,10 @@ do
 
 local currentMapID = nil
     local function iter(t, prestate)
-        if not t then return nil end
+        if (not t) then return nil end
         local state, value = next(t, prestate)
         while state do
-            if value and private:ShouldShow(state, value, currentMapID) then
+            if (value and private:ShouldShow(state, value, currentMapID)) then
                 local _, icon, iconname, piconname, scale, alpha = GetPointInfo(value)
                     scale = (scale or 1) * GetIconScale(iconname, piconname)
                     alpha = (alpha or 1) * GetIconAlpha(iconname)
@@ -361,7 +396,7 @@ local currentMapID = nil
         return iter, private.DB.points[uMapID], nil
     end
     function private:ShouldShow(coord, point, currentMapID)
-    if not private.db.force_nodes then
+    if (not private.db.force_nodes) then
         if (private.hidden[currentMapID] and private.hidden[currentMapID][coord]) then
             return false
         end
@@ -418,7 +453,7 @@ function addon:OnInitialize()
 
     private.hidden = self.db.char.hidden
 
-    if private.global.dev then
+    if (private.global.dev) then
         private.devmode()
     end
 
@@ -438,7 +473,7 @@ end
 local frame, events = CreateFrame("Frame"), {};
 function events:PLAYER_ENTERING_WORLD(...)
     -- MapID is 1550 when you use the Portal to Korthia
-    if C_Map.GetBestMapForUnit("player") == 1550 then
+    if (C_Map.GetBestMapForUnit("player") == 1550) then
         RemoveFlightMasterWaypoint()
     end
 end
@@ -446,10 +481,16 @@ end
 function events:ZONE_CHANGED(...)
     addon:Refresh()
 
-    addon:debugmsg("Oribos: refreshed after ZONE_CHANGED")
-    addon:debugmsg("MapID: "..(C_Map.GetBestMapForUnit("player") or "???"))
+    if (C_Map.GetBestMapForUnit("player") == nil) then
+        -- occurs during the Shadowlands introduction quest chain in ICC.
+        addon:debugmsg("MapID is nil")
+        return
+    end
 
-    if C_Map.GetBestMapForUnit("player") == 1671 then
+    addon:debugmsg("refreshed after ZONE_CHANGED")
+    addon:debugmsg("MapID: "..C_Map.GetBestMapForUnit("player"))
+
+    if (C_Map.GetBestMapForUnit("player") == 1671) then
         RemoveFlightMasterWaypoint()
     end
 end
@@ -457,12 +498,12 @@ end
 function events:ZONE_CHANGED_INDOORS(...)
     addon:Refresh()
 
-    addon:debugmsg("Oribos: refreshed after ZONE_CHANGED_INDOORS")
+    addon:debugmsg("refreshed after ZONE_CHANGED_INDOORS")
 
     -- Set automatically a waypoint (Blizzard, TomTom or both) to the flightmaster.
-    if private.db.fmaster_waypoint and C_Map.GetBestMapForUnit("player") == 1671 then
+    if (private.db.fmaster_waypoint and C_Map.GetBestMapForUnit("player") == 1671) then
         CreateFlightMasterWaypoint()
-    elseif C_Map.GetBestMapForUnit("player") == 1670 then
+    elseif (C_Map.GetBestMapForUnit("player") == 1670) then
         RemoveFlightMasterWaypoint()
     end
 end
@@ -470,13 +511,13 @@ end
 function events:QUEST_FINISHED(...)
     addon:Refresh()
 
-    addon:debugmsg("Oribos: refreshed after QUEST_FINISHED")
+    addon:debugmsg("refreshed after QUEST_FINISHED")
 end
 
 function events:SKILL_LINES_CHANGED(...)
     addon:Refresh()
 
-    addon:debugmsg("Oribos: refreshed after SKILL_LINES_CHANGED")
+    addon:debugmsg("refreshed after SKILL_LINES_CHANGED")
 end
 
 frame:SetScript("OnEvent", function(self, event, ...)

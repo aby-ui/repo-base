@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Locales\enUS.lua
 	* Author.: StormFX
@@ -33,6 +33,7 @@ Core.Locale = setmetatable(L, {
 -- L["For more information, please visit one of the sites listed below."] = "For more information, please visit one of the sites listed below."
 -- L["Masque is a skinning engine for button-based add-ons."] = "Masque is a skinning engine for button-based add-ons."
 -- L["Select to view."] = "Select to view."
+-- L["Supporters"] = "Supporters"
 -- L["You must have an add-on that supports Masque installed to use it."] = "You must have an add-on that supports Masque installed to use it."
 
 ----------------------------------------
@@ -49,6 +50,7 @@ Core.Locale = setmetatable(L, {
 -- L["Click to load Masque's options."] = "Click to load Masque's options."
 -- L["Load Options"] = "Load Options"
 -- L["Masque's options are load on demand. Click the button below to load them."] = "Masque's options are load on demand. Click the button below to load them."
+-- L["This action will increase memory usage."] = "This action will increase memory usage."
 -- L["This section will allow you to view information about Masque and any skins you have installed."] = "This section will allow you to view information about Masque and any skins you have installed."
 
 ----------------------------------------

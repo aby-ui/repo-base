@@ -1,7 +1,7 @@
 ## Interface: 90205
 ## Title: Can I Mog It? |TInterface\Addons\CanIMogIt\Icons\KNOWN:0|t
 ## Author: TorelTwiddler, Ami Yuy
-## Version: 9.1.5v1.32
+## Version: 9.2.5v1.33
 ## Notes: Adds tooltips to items showing if you have learned a transmog appearance.
 ## Notes-deDE: Fügt Gegenständen Tooltips hinzu, ob eine Transmogrifikationsvorlage bereits bekannt ist.
 ## Notes-esES: Añade a la descripción del objeto si se conoce la apariencia.
@@ -19,18 +19,18 @@
 ## OptionalDeps: AdiBags, ArkInventory, ElvUI, LiteBag, Bagnon, cargBags_Nivaya, Auctionator
 #embeds.xml
 
-#core.lua
-#Locale\_locales.xml
-#constants.lua
-#options.lua
-#cache.lua
-#requirements.lua
-#code.lua
-#tooltips.lua
-#database.lua
-#tooltipScanner.lua
-#Overlay\_overlays.xml
-#Plugins\_plugins.xml
+core.lua
+Locale\_locales.xml
+constants.lua
+options.lua
+cache.lua
+requirements.lua
+code.lua
+tooltips.lua
+database.lua
+tooltipScanner.lua
+Overlay\_overlays.xml
+Plugins\_plugins.xml
 
 
 ## Title: |cff880303[爱不易]|r CanIMogIt 幻化提示

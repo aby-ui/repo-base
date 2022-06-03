@@ -189,6 +189,8 @@ L['cat_figurine_09'] = '在一个水下洞穴。雕像位于天花板的岩石�
 L['cat_figurine_10'] = '在路径下方的一个洞穴里。雕像在三个桶之间。'
 L['figurines_found'] = '已找到水晶猫咪雕像'
 
+L['fabious_desc'] = '使用 {item:122637} 或 {item:122674} 玩具与 {npc:65090} 拍摄“自拍”照片。长时间在随机位置刷新并存在很短的时间。'
+
 L['mardivas_lab'] = '马蒂瓦斯的实验室'
 L['no_reagent'] = '不使用材料'
 L['swater'] = '小水'
@@ -218,6 +220,8 @@ L['options_icons_cats_nazj'] = '{achievement:13836}'
 L['options_icons_cats_nazj_desc'] = '显示 {achievement:13836} 成就水晶猫咪雕像位置。'
 L['options_icons_misc_nazj'] = '杂项'
 L['options_icons_misc_nazj_desc'] = '显示莫洛戈藏身处以及马蒂瓦斯的实验室的位置。'
+L['options_icons_fabious'] = '{npc:65090}'
+L['options_icons_fabious_desc'] = '显示 {item:169201} 坐骑的 {npc:65090} 可能的位置。'
 
 -------------------------------------------------------------------------------
 ------------------------------------ NAZMIR -----------------------------------
@@ -371,7 +375,6 @@ L['dunewalker'] = '点击平台上方的太阳精华释放它。'
 L['friendly_alpaca'] = '每天可以喂食 {npc:162765} 一个 {item:174858}，7天(次)后会获得坐骑。在一个位置只出现10分钟，然后在一个较长的刷新时间后再次出现。'
 L['gaze_of_nzoth'] = '与 {npc:156890} 共享刷新。'
 L['gersahl_note'] = '用于喂食 {npc:162765} 七次后可以获得坐骑。不需要草药学。'
-L['gersahl'] = '基萨尔野菜'
 L['hmiasma'] = '喂食它周围的软泥直到激活。'
 L['kanebti'] = '从 {npc:152427} 身上收集 {item:168160}，与一般的 {npc:151859} 共享刷新。把雕像插入甲虫神龛召唤稀有。'
 L['neferset_rare'] = '这六个稀有在尼斐塞特具有共享三个刷新点。 完成召唤仪式事件后，将随机刷新三个。'

@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Core\Options.lua
 	* Author.: StormFX
@@ -164,17 +164,17 @@ do
 		if Group then
 			local Text = Addon..": "..Group
 			Name = Group
-			Title = "|cffffcc00"..Text.."|r"..CRLF
+			Title = Text
 			Desc = L["This section will allow you to adjust the skin settings of all buttons registered to %s."]
 			Desc = Desc:format(Text)
 		elseif Addon then
 			Name = Addon
-			Title = "|cffffcc00"..Addon.."|r"..CRLF
+			Title = Addon
 			Desc = L["This section will allow you to adjust the skin settings of all buttons registered to %s. This will overwrite any per-group settings."]
 			Desc = Desc:format(Addon)
 		else
 			Name = L["Global"]
-			Title = "|cffffcc00"..L["Global Settings"].."|r"..CRLF
+			Title = L["Global Settings"]
 			Desc = L["This section will allow you to adjust the skin settings of all registered buttons. This will overwrite any per-add-on settings."]
 		end
 
@@ -185,10 +185,11 @@ do
 			order = Order,
 			args = {
 				Head = {
-					type = "description",
+					type = "header",
 					name = Title,
-					fontSize = "medium",
 					order = 0,
+					disabled = true,
+					dialogControl = "SFX-Header",
 				},
 				Desc = {
 					type = "description",
@@ -428,11 +429,12 @@ function Setup.Skins(self)
 		order = 1,
 		args = {
 			Head = {
-				type = "description",
-				name = "|cffffcc00"..MASQUE.." - "..L["Skin Settings"].."|r"..CRLF,
+				type = "header",
+				name = MASQUE.." - "..L["Skin Settings"],
 				order = 0,
-				fontSize = "medium",
 				hidden = self.GetStandAlone,
+				disabled = true,
+				dialogControl = "SFX-Header",
 			},
 			Desc = {
 				type = "description",

@@ -129,7 +129,7 @@ end
     --create the screen panel, goes into the UIParent and show cooldowns
     function Details.CooldownTracking.CreateScreenFrame()
         DetailsOnlineCDTrackerScreenPanel = CreateFrame("frame", "DetailsOnlineCDTrackerScreenPanel", UIParent, "BackdropTemplate")
-        screenPanel = DetailsOnlineCDTrackerScreenPanel
+        local screenPanel = DetailsOnlineCDTrackerScreenPanel
         screenPanel:Hide()
         screenPanel:SetSize(Details.ocd_tracker.width, Details.ocd_tracker.height)
         screenPanel:SetPoint("center", 0, 0)
@@ -184,6 +184,7 @@ end
         if (unitCooldowns) then
             local unitInfo = openRaidLib.GetUnitInfo(unitId)
             if (unitInfo) then
+                local screenPanel = DetailsOnlineCDTrackerScreenPanel
                 for spellId, cooldownInfo in pairs(unitCooldowns) do
                     --get a bar
                     local cooldownFrame = Details.CooldownTracking.GetOrCreateNewCooldownFrame(screenPanel, screenPanel.statusBarFrameIndex)

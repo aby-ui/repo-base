@@ -1107,6 +1107,7 @@ local alpaca = Class('Alpaca', Collectible, {
     id = 162765,
     icon = 2916287,
     quest = 58879,
+    label = '{npc:162765}',
     note = L['friendly_alpaca'],
     pois = {
         POI({
@@ -1120,7 +1121,7 @@ local alpaca = Class('Alpaca', Collectible, {
 
 local gersahl = Class('Gersahl', Collectible, {
     icon = 134190,
-    label = L['gersahl'],
+    label = '{item:174858}',
     note = L['gersahl_note'],
     pois = {
         POI({

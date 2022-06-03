@@ -1,36 +1,36 @@
 --[[
 
 	This file is part of 'AceGUI-3.0: SFX Widgets', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/AceGUI-3.0_SFX-Widgets.
+	documentation and license information, please visit https://github.com/SFX-WoW/AceGUI-3.0_SFX-Widgets.
 
 	* File...: SFX-Info-URL.lua
 	* Author.: StormFX
 
 ]]
 
--- GLOBALS: BackdropTemplateMixin, CreateFrame, GameTooltip, GetLocale, LibStub, UIParent
+-- GLOBALS: GetLocale, LibStub
 
 ----------------------------------------
 -- Locals
 ---
 
-local Type, Version = "SFX-Info-URL", 1
-local AceGUI = LibStub and LibStub("AceGUI-3.0")
+local Type, Version = "SFX-Info-URL", 2
+local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 
 -- Exit if a current or newer version is loaded.
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
-local max = math.max
+local max, pairs = math.max, pairs
 
 ----------------------------------------
 -- WoW API
 ---
 
-local CreateFrame, BackdropTemplateMixin = CreateFrame, BackdropTemplateMixin
+local CreateFrame, UIParent = CreateFrame, UIParent
 
 ----------------------------------------
 -- Locales
@@ -89,121 +89,122 @@ local KEY_EXIT = "|cffffcc00"..L["ESC"].."|r"
 local TXT_COPY = (L["Press %s to copy."]):format(KEY_COPY)
 local TXT_EXIT = (L["Press %s to cancel."]):format(KEY_EXIT)
 
-do
-	----------------------------------------
-	-- EditBox
-	----------------------------------------
+----------------------------------------
+-- Tooltip
+---
 
-	local EditBox
+local Tooltip = CreateFrame("GameTooltip", "SFX-Widgets-Tooltip", UIParent, "GameTooltipTemplate")
 
-	-- EditBox:OnEnter()
-	local function EditBox_OnEnter(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetText(L["Copy"])
-		GameTooltip:AddLine(TXT_COPY, 1, 1, 1)
-		GameTooltip:AddLine(TXT_EXIT, 1, 1, 1)
-		GameTooltip:Show()
+----------------------------------------
+-- EditBox
+---
+
+local EditBox
+
+-- EditBox:OnEnter()
+local function EditBox_OnEnter(self)
+	Tooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+	Tooltip:SetText(L["Copy"])
+	Tooltip:AddLine(TXT_COPY, 1, 1, 1)
+	Tooltip:AddLine(TXT_EXIT, 1, 1, 1)
+	Tooltip:Show()
+end
+
+-- EditBox:OnLeave()
+local function EditBox_OnLeave(self)
+	Tooltip:Hide()
+end
+
+-- EditBox:OnFocusGained()
+local function EditBox_OnFocusGained(self)
+	self:HighlightText()
+	self:SetCursorPosition(0)
+end
+
+-- EditBox:OnFocusLost()
+local function EditBox_OnFocusLost(self)
+	if self.obj then
+		self.obj.Info:Show()
+		self.obj = nil
 	end
 
-	-- EditBox:OnLeave()
-	local function EditBox_OnLeave(self)
-		GameTooltip:Hide()
-	end
+	self:Hide()
+end
 
-	-- EditBox:OnEditFocusGained()
-	local function EditBox_OnFocusGained(self)
-		self:HighlightText()
-		self:SetCursorPosition(0)
-	end
+-- EditBox:OnTextChanged()
+local function EditBox_OnTextChanged(self)
+	local Text = (self:GetParent()).Value or ""
 
-	-- EditBox:OnEditFocusLost()
-	local function EditBox_OnFocusLost(self)
-		if self.obj then
-			self.obj.Info:Show()
-			self.obj = nil
-		end
+	self:SetText(Text)
+	EditBox_OnFocusGained(self)
+end
 
-		self:Hide()
-	end
+----------------------------------------
+-- Button
+---
 
-	-- EditBox:OnTextChanged()
-	local function EditBox_OnTextChanged(self)
-		local Text = (self:GetParent()).Value or ""
+-- Storage
+local Buttons = {}
 
-		self:SetText(Text)
-		EditBox_OnFocusGained(self)
-	end
+-- Button:OnEnter()
+local function Button_OnEnter(self)
+	Tooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+	Tooltip:SetText(L["Select"])
+	Tooltip:AddLine(L["Click to select this text."], 1, 1, 1)
+	Tooltip:Show()
+end
 
-	----------------------------------------
-	-- Button
-	---
+-- Button:OnLeave()
+local function Button_OnLeave(self)
+	Tooltip:Hide()
+end
 
-	-- Button:OnEnter()
-	local function Button_OnEnter(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-		GameTooltip:SetText(L["Select"])
-		GameTooltip:AddLine(L["Click to select this text."], 1, 1, 1)
-		GameTooltip:Show()
-	end
+-- Button:OnClick()
+local function Button_OnClick(self)
+	-- Explicit Call
+	EditBox:ClearFocus()
+	EditBox:SetParent(self)
 
-	-- Button:OnLeave()
-	local function Button_OnLeave(self)
-		GameTooltip:Hide()
-	end
+	local obj = self.obj
+	local Info = obj.Info
+	local Text = self.Value or obj:GetText() or ""
 
-	-- Button:OnClick()
-	local function Button_OnClick(self)
-		-- Explicit Call
-		EditBox:ClearFocus()
-		EditBox:SetParent(self)
+	EditBox:ClearAllPoints()
+	EditBox:SetPoint("TOPLEFT", Info, -2, 2)
+	EditBox:SetPoint("BOTTOMRIGHT", Info, 0, -2)
+	EditBox:SetText(Text)
 
-		local obj = self.obj
-		local Text = self.Value or obj:GetText() or ""
+	local Height = Info:GetStringHeight()
+	local Multi = ((Height > 14) and true) or false
 
-		EditBox:SetText(Text)
+	EditBox:SetMultiLine(Multi)
+	EditBox:Show()
+	EditBox:SetFocus()
+	EditBox.obj = obj
 
-		local Info = obj.Info
+	Info:Hide()
+end
 
-		EditBox:ClearAllPoints()
-		EditBox:SetPoint("TOPLEFT", Info, -2, 2)
-		EditBox:SetPoint("BOTTOMRIGHT", Info, 0, -2)
+----------------------------------------
+-- Widget Methods
+---
 
-		local Height = Info:GetStringHeight()
-		local Multi = ((Height > 14) and true) or false
-
-		EditBox:SetMultiLine(Multi)
-		EditBox:Show()
-		EditBox:SetFocus()
-		EditBox.obj = obj
-
-		Info:Hide()
-	end
-
-	----------------------------------------
-	-- Widget
-	---
-
-	-- Storage
-	local Buttons = {}
+local Methods = {
 
 	-- Widget:OnAcquire()
-	local function Widget_OnAcquire(self)
-		-- Default to disabled.
+	-- Fires when the widget is initialized.
+	OnAcquire = function(self)
+		-- Reset the widget.
 		self:SetDisabled(true)
 		self:SetLabel()
 		self:SetColon()
 		self:SetText()
 		self:SetFullWidth(true)
-	end
-
-	-- Widget:OnRelease()
-	local function Widget_OnRelease(self)
-		self:SetDisabled(true)
-		self.frame:ClearAllPoints()
-	end
+	end,
 
 	-- Widget:SetDisabled()
-	local function Widget_SetDisabled(self, Disabled)
+	-- Toggles the ability to copy the right text.
+	SetDisabled = function(self, Disabled)
 		self.disabled = Disabled
 		local Info = self.Info
 
@@ -214,8 +215,8 @@ do
 
 			if Button then
 				Buttons[#Buttons+1] = Button
-				Button.obj = nil
 				Button.Value = nil
+				Button.obj = nil
 				Button:SetParent(nil)
 				Button:Hide()
 				self.Button = nil
@@ -227,12 +228,8 @@ do
 		else
 			-- Set up the EditBox.
 			if not EditBox then
-				EditBox = CreateFrame("EditBox", "AceGUI-3.0_SFX-InfoRow_EditBox", self.frame, BackdropTemplateMixin and "BackdropTemplate")
+				EditBox = CreateFrame("EditBox", "AceGUI-3.0_SFX-InfoRow_EditBox", self.frame, "BackdropTemplate")
 				EditBox:SetAutoFocus(true)
-				EditBox:SetFontObject("GameFontHighlight")
-				EditBox:SetJustifyH("LEFT")
-				EditBox:SetJustifyV("TOP")
-				EditBox:SetHeight(14)
 				EditBox:SetBackdrop({
 					bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
 					edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
@@ -240,7 +237,12 @@ do
 				})
 				EditBox:SetBackdropColor(0, 0, 0, 0.5)
 				EditBox:SetBackdropBorderColor(1, 1, 1, 0.2)
+				EditBox:SetFontObject("GameFontHighlight")
+				EditBox:SetHeight(14)
+				EditBox:SetJustifyH("LEFT")
+				EditBox:SetJustifyV("TOP")
 				EditBox:SetTextInsets(2, 1, 1, 1)
+
 				EditBox:SetScript("OnEnter", EditBox_OnEnter)
 				EditBox:SetScript("OnLeave", EditBox_OnLeave)
 				EditBox:SetScript("OnTextChanged", EditBox_OnTextChanged)
@@ -248,6 +250,7 @@ do
 				EditBox:SetScript("OnEscapePressed", EditBox.ClearFocus)
 				EditBox:SetScript("OnEditFocusLost", EditBox_OnFocusLost)
 				EditBox:SetScript("OnEditFocusGained", EditBox_OnFocusGained)
+
 				EditBox:Hide()
 			end
 
@@ -277,34 +280,34 @@ do
 			self.Button = Button
 			Info:SetTextColor(0, 0.6, 1)
 		end
-	end
+	end,
 
 	-- Widget:SetLabel()
 	-- Sets the text of the Label field.
-	local function Widget_SetLabel(self, Text)
+	SetLabel = function(self, Text)
 		Text = Text or ""
 		self.Label:SetText(Text)
 
 		if Text == "" then
 			self:SetColon(Text)
 		end
-	end
+	end,
 
-	-- :WidgetSetColon()
+	-- :Widget:SetColon()
 	-- Sets the column separator.
-	local function Widget_SetColon(self, Text)
+	SetColon = function(self, Text)
 		self.Colon:SetText(Text or ":")
-	end
+	end,
 
 	-- Widget:GetText()
 	-- Returns the text of the Info field.
-	local function Widget_GetText(self)
+	GetText = function(self)
 		return self.Info:GetText() or ""
-	end
+	end,
 
 	-- Widget:SetText()
 	-- Sets the text of the Info field.
-	local function Widget_SetText(self, Text)
+	SetText = function(self, Text)
 		Text = Text or ""
 
 		local Info = self.Info
@@ -312,74 +315,60 @@ do
 
 		local Height = max(self.Label:GetStringHeight(), Info:GetStringHeight())
 		self:SetHeight(Height)
+	end,
+
+	-- Unused Methods
+	-- OnRelease = nil,
+	-- OnHeightSet = nil,
+	-- OnWidthSet = nil,
+}
+
+----------------------------------------
+-- Constructor
+---
+
+local function Constructor()
+	-- Container Frame
+	local Frame = CreateFrame("Frame", nil, UIParent)
+
+	-- Label: Left Text
+	local Label = Frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	Label:SetPoint("TOPLEFT", Frame, "TOPLEFT")
+	Label:SetPoint("BOTTOM", Frame, "BOTTOM")
+	Label:SetWidth(75)
+	Label:SetJustifyH("RIGHT")
+	Label:SetJustifyV("TOP")
+
+	-- Colon: Column Separator
+	local Colon = Frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	Colon:SetPoint("TOPLEFT", Label, "TOPRIGHT")
+	Colon:SetPoint("BOTTOM", Frame, "BOTTOM")
+	Colon:SetWidth(8)
+	Colon:SetJustifyH("LEFT")
+	Colon:SetJustifyV("TOP")
+
+	-- Info: Right Text
+	local Info = Frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+	Info:SetPoint("TOPLEFT", Colon, "TOPRIGHT")
+	Info:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMRIGHT")
+	Info:SetJustifyH("LEFT")
+	Info:SetJustifyV("TOP")
+
+	local Widget = {
+		type  = Type,
+		frame = Frame,
+		--num = AceGUI:GetNextWidgetNum(Type),
+
+		Label = Label,
+		Colon = Colon,
+		Info = Info,
+	}
+
+	for method, func in pairs(Methods) do
+		Widget[method] = func
 	end
 
-	-- WidgetWidget:SetWidth()
-	-- * Uses :SetFullWidth(true).
-	local function Widget_SetWidth(self, Width)
-		--self.frame:SetWidth(Width)
-	end
-
-	----------------------------------------
-	-- Constructor
-	---
-
-	local function Constructor()
-		local Widget = {}
-
-		-- Container Frame
-		local Frame = CreateFrame("Frame", nil, UIParent)
-
-		Widget.frame = Frame
-		Frame.obj = Widget
-
-		-- Label: Left Text
-		local Label = Frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-		Label:SetWidth(75)
-		Label:SetPoint("TOPLEFT", Frame, "TOPLEFT")
-		Label:SetPoint("BOTTOM", Frame, "BOTTOM")
-		Label:SetJustifyH("RIGHT")
-		Label:SetJustifyV("TOP")
-
-		Widget.Label = Label
-		Label.obj = Widget
-
-		-- Colon: Column Separator
-		local Colon = Frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-		Colon:SetWidth(8)
-		Colon:SetPoint("TOPLEFT", Label, "TOPRIGHT")
-		Colon:SetPoint("BOTTOM", Frame, "BOTTOM")
-		Colon:SetJustifyH("LEFT")
-		Colon:SetJustifyV("TOP")
-
-		Widget.Colon = Colon
-		Colon.obj = Widget
-
-		-- Info: Right Text
-		local Info = Frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-		Info:SetPoint("TOPLEFT", Colon, "TOPRIGHT")
-		Info:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMRIGHT")
-		Info:SetJustifyH("LEFT")
-		Info:SetJustifyV("TOP")
-
-		Widget.Info = Info
-		Info.obj = Widget
-
-		-- Widget
-		Widget.type  = Type
-		Widget.num   = AceGUI:GetNextWidgetNum(Type)
-
-		Widget.OnAcquire = Widget_OnAcquire
-		Widget.OnRelease = Widget_OnRelease
-		Widget.SetDisabled = Widget_SetDisabled
-
-		Widget.SetColon = Widget_SetColon
-		Widget.SetLabel = Widget_SetLabel
-		Widget.GetText = Widget_GetText
-		Widget.SetText = Widget_SetText
-		Widget.SetWidth = Widget_SetWidth
-
-		return AceGUI:RegisterAsWidget(Widget)
-	end
-	AceGUI:RegisterWidgetType(Type, Constructor, Version)
+	return AceGUI:RegisterAsWidget(Widget)
 end
+
+AceGUI:RegisterWidgetType(Type, Constructor, Version)

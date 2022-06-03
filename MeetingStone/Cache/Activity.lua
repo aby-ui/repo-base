@@ -31,6 +31,9 @@ Activity:InitAttr{
     'RequiredPvpRating',
     'CrossFactionListing',
     'LeaderFactionGroup',
+    'IsMythicPlusActivity',
+    'IsRatedPvpActivity',
+    'RatingToShow',
 }
 
 Activity._Objects = setmetatable({}, {__mode = 'v'})
@@ -82,7 +85,7 @@ function Activity:Update()
         iLvl = 0
     end
 
-    local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType, orderIndex, useHonorLevel, showQuickJoin, isMythicPlusActivity = C_LFGList.GetActivityInfo(activityId)
+    local name, shortName, category, group, iLevel, filters, minLevel, maxMembers, displayType, orderIndex, useHonorLevel, showQuickJoin, isMythicPlusActivity, isRatedPvpActivity, isCurrentRaidActivity, isPvpActivity, isMythicActivity, allowCrossFaction = C_LFGList.GetActivityInfo(activityId)
     local _, appStatus, pendingStatus, appDuration = C_LFGList.GetApplicationInfo(id)
 
     if leader then
@@ -117,6 +120,13 @@ function Activity:Update()
     self:SetRequiredPvpRating(requiredPvpRating)
     self:SetCrossFactionListing(crossFactionListing)
     self:SetLeaderFactionGroup(leaderFactionGroup)
+    self:SetIsMythicPlusActivity(isMythicPlusActivity)
+    self:SetIsRatedPvpActivity(isRatedPvpActivity)
+    if isRatedPvpActivity then
+        self:SetRatingToShow(leaderPvpRatingInfo and leaderPvpRatingInfo.rating or 0)
+    else
+        self:SetRatingToShow(leaderOverallDungeonScore or 0)
+    end
 
     if not self:UpdateCustomData(comment, title) then
         return false

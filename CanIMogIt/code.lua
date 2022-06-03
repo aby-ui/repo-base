@@ -88,6 +88,11 @@ local inventorySlotsMap = {
 }
 
 
+-- This is a one-time call to get a "transmogLocation" object, which we don't actually care about,
+-- but some functions require it now.
+local transmogLocation = TransmogUtil.GetTransmogLocation(inventorySlotsMap[HEAD][1], Enum.TransmogType.Appearance, Enum.TransmogModification.Main)
+
+
 local MISC = 0
 local CLOTH = 1
 local LEATHER = 2
@@ -406,7 +411,7 @@ local function GetAppearancesTable()
     -- more usable.
     if appearancesTableGotten then return end
     for categoryID=1,28 do
-        local categoryAppearances = C_TransmogCollection.GetCategoryAppearances(categoryID)
+        local categoryAppearances = C_TransmogCollection.GetCategoryAppearances(categoryID, transmogLocation)
         for i, categoryAppearance in pairs(categoryAppearances) do
             if categoryAppearance.isCollected then
                 appearanceCount = appearanceCount + 1
@@ -434,7 +439,7 @@ end
 local function AddAppearance(appearanceID)
     -- Adds all of the sources for this appearanceID to the database.
     -- returns early if the buffer is reached.
-    local sources = C_TransmogCollection.GetAppearanceSources(appearanceID)
+    local sources = C_TransmogCollection.GetAppearanceSources(appearanceID, 1, transmogLocation)
     if sources then
         for i, source in pairs(sources) do
             if source.isCollected then
@@ -749,7 +754,7 @@ function CanIMogIt:CalculateSourceLocationText(itemLink)
 
     local appearanceID = CanIMogIt:GetAppearanceID(itemLink)
     if appearanceID == nil then return end
-    local sources = C_TransmogCollection.GetAppearanceSources(appearanceID)
+    local sources = C_TransmogCollection.GetAppearanceSources(appearanceID, 1, transmogLocation)
     if sources then
         local totalSourceTypes = { 0, 0, 0, 0, 0, 0 }
         local knownSourceTypes = { 0, 0, 0, 0, 0, 0 }
@@ -1029,7 +1034,7 @@ function CanIMogIt:GetSourceID(itemLink)
     local itemID, _, _, slotName = GetItemInfoInstant(itemLink)
     local slots = inventorySlotsMap[slotName]
 
-    if slots == nil or slots == false or IsDressableItem(itemLink) == false then return end
+    if slots == nil or slots == false or C_Item.IsDressableItemByID(itemID) == false then return end
 
     local cached_source = CanIMogIt.cache:GetDressUpModelSource(itemLink)
     if cached_source then
@@ -1093,7 +1098,7 @@ function CanIMogIt:_PlayerKnowsTransmog(itemLink, appearanceID)
     -- Internal logic for determining if the item is known or not.
     -- Does not use the CIMI database.
     if itemLink == nil or appearanceID == nil then return end
-    local sources = C_TransmogCollection.GetAppearanceSources(appearanceID)
+    local sources = C_TransmogCollection.GetAppearanceSources(appearanceID, 1, transmogLocation)
     if sources then
         for i, source in pairs(sources) do
             local sourceItemLink = CanIMogIt:GetItemLinkFromSourceID(source.sourceID)

@@ -218,6 +218,35 @@ function CreatePanel:OnInitialize()
         ItemLevel:SetMinMaxValues(0, 2000)
     end
 
+    local MythicPlusRating = GUI:GetClass('NumericBox'):New(VoiceItemLevelWidget) do
+        MythicPlusRating:SetPoint('TOP', ItemLevel, 'BOTTOM', 0, -1)
+        MythicPlusRating:SetSize(108, 23)
+        MythicPlusRating:SetLabel(L['最低评分'])
+        MythicPlusRating:SetValueStep(1)
+        MythicPlusRating:SetMinMaxValues(0, 4000)
+        GUI:Embed(MythicPlusRating, 'Tooltip')
+        MythicPlusRating:SetTooltip(GROUP_FINDER_MYTHIC_RATING_REQ_LABEL)
+    end
+
+    local PVPRating = GUI:GetClass('NumericBox'):New(VoiceItemLevelWidget) do
+        PVPRating:SetPoint('TOP', ItemLevel, 'BOTTOM', 0, -1)
+        PVPRating:SetSize(108, 23)
+        PVPRating:SetLabel(L['最低评分'])
+        PVPRating:SetValueStep(1)
+        PVPRating:SetMinMaxValues(0, 4000)
+        GUI:Embed(PVPRating, 'Tooltip')
+        PVPRating:SetTooltip(GROUP_FINDER_PVP_RATING_REQ_LABEL)
+    end
+    PVPRating:Hide()
+    PVPRating:HookScript("OnTextChanged", function(self)
+        if self.activityId then
+            if not C_LFGList.ValidateRequiredPvpRatingForActivity(self.activityId, tonumber(self:GetText()) or 0) then
+                DEFAULT_CHAT_FRAME:AddMessage("|cffcd1a1c【爱不易】|r- ".."输入的最低评分" .. (tonumber(self:GetText()) or 0) .. "不能超过你自身的评级分数。")
+                self:SetText("")
+            end
+        end
+    end)
+
     local HonorLevel = GUI:GetClass('NumericBox'):New(VoiceItemLevelWidget) do
         HonorLevel:SetPoint('TOP', ItemLevel, 'BOTTOM', 0, -1)
         HonorLevel:SetSize(108, 23)
@@ -225,12 +254,13 @@ function CreatePanel:OnInitialize()
         HonorLevel:SetValueStep(1)
         HonorLevel:SetMinMaxValues(0, 2000)
     end
+    HonorLevel:Hide()
 
     local VoiceBox = LFGListFrame.EntryCreation.VoiceChat.EditBox do
         VoiceItemLevelWidget:SetScript('OnShow', function(VoiceItemLevelWidget)
             VoiceBox:ClearAllPoints()
             VoiceBox:SetParent(VoiceItemLevelWidget)
-            VoiceBox:SetPoint('TOP', HonorLevel, 'BOTTOM', 2, -1)
+            VoiceBox:SetPoint('TOP', MythicPlusRating, 'BOTTOM', 2, -1)
             VoiceBox:SetSize(103, 23)
         end)
         VoiceBox:SetScript('OnTextChanged', nil)
@@ -251,6 +281,27 @@ function CreatePanel:OnInitialize()
         VoiceBox.Instructions.Show = nop
     end
 
+    local CrossFactionGroup = CreateFrame('CheckButton', nil, VoiceItemLevelWidget) do
+        CrossFactionGroup:SetNormalTexture([[Interface\Buttons\UI-CheckBox-Up]])
+        CrossFactionGroup:SetPushedTexture([[Interface\Buttons\UI-CheckBox-Down]])
+        CrossFactionGroup:SetHighlightTexture([[Interface\Buttons\UI-CheckBox-Highlight]])
+        CrossFactionGroup:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-Check]])
+        CrossFactionGroup:SetDisabledCheckedTexture([[Interface\Buttons\UI-CheckBox-Check-Disabled]])
+        CrossFactionGroup:SetSize(22, 22)
+        CrossFactionGroup:SetPoint('TOPLEFT', VoiceBox, 'BOTTOMLEFT', -77, 0)
+        local text = CrossFactionGroup:CreateFontString(nil, 'ARTWORK')
+        text:SetPoint('LEFT', CrossFactionGroup, 'RIGHT', 2, 0)
+        CrossFactionGroup:SetFontString(text)
+        CrossFactionGroup:SetNormalFontObject('GameFontHighlightSmall')
+        CrossFactionGroup:SetHighlightFontObject('GameFontNormalSmall')
+        CrossFactionGroup:SetDisabledFontObject('GameFontDisableSmall')
+
+        local _, localizedFaction = UnitFactionGroup("player");
+        CrossFactionGroup:SetText(LFG_LIST_CROSS_FACTION:format(localizedFaction))
+        GUI:Embed(CrossFactionGroup, 'Tooltip')
+        CrossFactionGroup:SetTooltip(LFG_LIST_CROSS_FACTION_TOOLTIP:format(localizedFaction))
+    end
+
     local PrivateGroup = CreateFrame('CheckButton', nil, VoiceItemLevelWidget) do
         PrivateGroup:SetNormalTexture([[Interface\Buttons\UI-CheckBox-Up]])
         PrivateGroup:SetPushedTexture([[Interface\Buttons\UI-CheckBox-Down]])
@@ -258,14 +309,17 @@ function CreatePanel:OnInitialize()
         PrivateGroup:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-Check]])
         PrivateGroup:SetDisabledCheckedTexture([[Interface\Buttons\UI-CheckBox-Check-Disabled]])
         PrivateGroup:SetSize(22, 22)
-        PrivateGroup:SetPoint('TOPLEFT', VoiceBox, 'BOTTOMLEFT', -83, 0)
+        PrivateGroup:SetPoint('TOPLEFT', CrossFactionGroup, 'TOPLEFT', 120, 0)
         local text = PrivateGroup:CreateFontString(nil, 'ARTWORK')
         text:SetPoint('LEFT', PrivateGroup, 'RIGHT', 2, 0)
         PrivateGroup:SetFontString(text)
         PrivateGroup:SetNormalFontObject('GameFontHighlightSmall')
         PrivateGroup:SetHighlightFontObject('GameFontNormalSmall')
         PrivateGroup:SetDisabledFontObject('GameFontDisableSmall')
-        PrivateGroup:SetText(L['仅战网好友和公会成员可见'])
+        PrivateGroup:SetText(L['个人'])
+
+        GUI:Embed(PrivateGroup, 'Tooltip')
+        PrivateGroup:SetTooltip("私人队伍", LFG_LIST_PRIVATE_TOOLTIP)
     end
 
     --- summary
@@ -387,6 +441,9 @@ function CreatePanel:OnInitialize()
     self.ActivityType = ActivityType
     self.HonorLevel = HonorLevel
     self.PrivateGroup = PrivateGroup
+    self.MythicPlusRating = MythicPlusRating
+    self.PVPRating = PVPRating
+    self.CrossFactionGroup = CrossFactionGroup
 
     self.ViewBoardWidget = ViewBoardWidget
     self.InfoWidget = InfoWidget
@@ -399,6 +456,8 @@ function CreatePanel:OnInitialize()
     self:RegisterInputBox(ItemLevel)
     self:RegisterInputBox(HonorLevel)
     self:RegisterInputBox(VoiceBox)
+    self:RegisterInputBox(MythicPlusRating)
+    self:RegisterInputBox(PVPRating)
 
     self:RegisterEvent('LFG_LIST_ACTIVE_ENTRY_UPDATE')
     self:RegisterEvent('LFG_LIST_AVAILABILITY_UPDATE')
@@ -428,6 +487,21 @@ function CreatePanel:UpdateControlState()
     local enable = activityItem
     local editable = enable and not isSolo
 
+    local activityInfo = activityItem and activityItem.activityId and C_LFGList.GetActivityInfoTable(activityItem.activityId) or {};
+    self.MythicPlusRating:SetShown(not enable or activityInfo.isMythicPlusActivity)
+    if not self.MythicPlusRating:IsShown() then self.MythicPlusRating:SetText("") end
+    self.PVPRating:SetShown(activityInfo.isRatedPvpActivity)
+    if not self.PVPRating:IsShown() then self.PVPRating:SetText("") end
+
+    local categoryInfo = activityItem and activityItem.categoryId and C_LFGList.GetLfgCategoryInfo(activityItem.categoryId) or {};
+    local shouldShowCrossFactionToggle = (categoryInfo.allowCrossFaction);
+    local shouldDisableCrossFactionToggle = (categoryInfo.allowCrossFaction) and not (activityInfo.allowCrossFaction);
+    self.CrossFactionGroup:SetShown(shouldShowCrossFactionToggle)
+    self.CrossFactionGroup:SetEnabled(not shouldDisableCrossFactionToggle);
+    if shouldDisableCrossFactionToggle then
+   	    self.CrossFactionGroup:SetChecked(true);
+    end
+
     self.ActivityType:SetEnabled(isLeader and not isCreated)
 
     self.PrivateGroup:SetEnabled(editable)
@@ -436,6 +510,8 @@ function CreatePanel:UpdateControlState()
     self.TitleBox:SetEnabled(editable)
     self.SummaryBox:SetEnabled(editable)
     self.HonorLevel:SetEnabled(editable and IsUseHonorLevel(activityItem and activityItem.activityId))
+    self.MythicPlusRating:SetEnabled(editable)
+    self.PVPRating:SetEnabled(editable)
 
     self.DisbandButton:SetEnabled(isCreated and isLeader)
     self.CreateButton:SetEnabled(enable and isLeader and self.TitleBox:GetText():trim() ~= '')
@@ -443,6 +519,8 @@ function CreatePanel:UpdateControlState()
     if enable then
         self.ItemLevel:SetMinMaxValues(0, GetPlayerItemLevel())
         self.HonorLevel:SetMinMaxValues(0, UnitHonorLevel('player'))
+        self.MythicPlusRating:SetMinMaxValues(0, C_ChallengeMode.GetOverallDungeonScore() or 0)
+        self.PVPRating.activityId = activityItem and activityItem.activityId --因为没有API知道上限, 所以用 OnTextChanged 超过限制则设置为0
     end
 
     self.CreateButton:SetText(isCreated and L['更新活动'] or L['创建活动'])
@@ -459,6 +537,7 @@ function CreatePanel:InitProfile()
 
     local profile, voice = Profile:GetActivityProfile(activityItem.text)
     local iLvl, summary, minLvl, maxLvl, pvpRating, honorLevel = 0, '', 10, MAX_PLAYER_LEVEL, 0, 0
+    local mythicPlusRating, pvpRating2, crossFactionListing = 0, 0, true
 
     if IsSoloCustomID(customId) then
         iLvl = min(100, GetPlayerItemLevel())
@@ -467,6 +546,9 @@ function CreatePanel:InitProfile()
         iLvl = profile.ItemLevel
         summary = profile.Summary
         honorLevel = profile.HonorLevel or 0
+        mythicPlusRating = profile.RequiredDungeonScore or mythicPlusRating
+        pvpRating2 = profile.RequiredPvpRating or pvpRating2
+        crossFactionListing = profile.CrossFactionListing or crossFactionListing
     else
         local fullName, shortName, categoryID, groupID, iLevel, filters, minLevel, maxPlayers, displayType = C_LFGList.GetActivityInfo(activityId)
         iLvl = min(iLevel, GetPlayerItemLevel())
@@ -476,6 +558,9 @@ function CreatePanel:InitProfile()
 
     self.ItemLevel:SetText(iLvl)
     self.HonorLevel:SetText(honorLevel)
+    self.MythicPlusRating:SetText(mythicPlusRating)
+    self.PVPRating:SetText(pvpRating2)
+    self.CrossFactionGroup:SetChecked(not crossFactionListing)
 end
 
 function CreatePanel:ChooseWidget()
@@ -505,6 +590,10 @@ function CreatePanel:CreateActivity()
 
         HonorLevel = self.HonorLevel:GetNumber(),
         PrivateGroup = self.PrivateGroup:GetChecked(),
+
+        RequiredDungeonScore = self.MythicPlusRating:GetNumber(),
+        RequiredPvpRating = self.PVPRating:GetNumber(),
+        CrossFactionListing = self.CrossFactionGroup:IsShown() and not self.CrossFactionGroup:GetChecked(), --注意是not
     })
     if self:Create(activity, true) then
         self.CreateButton:Disable()
@@ -515,7 +604,6 @@ end
 
 function CreatePanel:Create(activity, isSelf)
     local isCreated = self:IsActivityCreated()
-    --C_LFGList.CreateListing(activityID, itemLevel, honorLevel, autoAccept, privateGroup, questID, mythicPlusRating, pvpRating, selectedPlaystyle, isCrossFaction
     local handler = isCreated and C_LFGList.UpdateListing or C_LFGList.CreateListing
     local autoAccept = C_LFGList:HasActiveEntryInfo() and C_LFGList.GetActiveEntryInfo().autoAccept
 
@@ -543,6 +631,9 @@ function CreatePanel:ClearAllContent()
     self.HonorLevel:SetNumber(0)
     self.ActivityType:SetValue(nil)
     self.PrivateGroup:SetChecked(false)
+    self.MythicPlusRating:SetNumber(0)
+    self.PVPRating:SetNumber(0)
+    self.CrossFactionGroup:SetChecked(false)
 end
 
 function CreatePanel:UpdateActivity()
@@ -559,6 +650,9 @@ function CreatePanel:UpdateActivity()
     self.ItemLevel:SetText(activity:GetItemLevel())
     self.HonorLevel:SetText(activity:GetHonorLevel() or '')
     self.PrivateGroup:SetChecked(activity:GetPrivateGroup())
+    self.MythicPlusRating:SetText(activity:GetRequiredDungeonScore())
+    self.PVPRating:SetText(activity:GetRequiredPvpRating())
+    self.CrossFactionGroup:SetChecked(not activity:GetCrossFactionListing())
 end
 
 function CreatePanel:UpdateActivityView()

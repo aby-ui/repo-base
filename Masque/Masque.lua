@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	docuementation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Masque.lua
 	* Author.: StormFX
@@ -58,6 +58,7 @@ do
 		"StormFX",
 		"|cff999999JJSheets|r",
 	}
+	Core.Discord = "https://discord.gg/DDVqkd6"
 	Core.Websites = {
 		"https://github.com/SFX-WoW/Masque",
 		"https://www.curseforge.com/wow/addons/masque",

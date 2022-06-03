@@ -1290,6 +1290,63 @@ map.nodes[18905030] = FAE_VESSEL2
 map.nodes[22704850] = FAE_VESSEL2
 
 -------------------------------------------------------------------------------
+-------------------------------- WHO SENT YOU ---------------------------------
+-------------------------------------------------------------------------------
+
+local Blackguard = Class('MawswornBlackguard', ns.node.Node, {
+    group = ns.groups.MAWSWORN_BLACKGUARD,
+    icon = 'peg_yw',
+    id = 183173,
+    label = L['mawsworn_blackguard'],
+    scale = 1.5,
+    rewards = {
+        Achievement({
+            id = 14742,
+            criteria = ({id = 1, qty = true, suffix = L['mawsworn_blackguard']})
+        })
+    }
+})
+
+function Blackguard.getters:note()
+    local note = L['mawsworn_blackguard_note'] .. '\n'
+    note = note .. '\n/cleartarget'
+    note = note .. '\n/tar ' .. L['mawsworn_blackguard']
+    note = note .. '\n/cleartarget [dead]'
+    note = note .. '\n/stopmacro [dead][noexists]'
+    note = note .. '\n/script SetRaidTarget("target",8);'
+    return note
+end
+
+local BLACKGUARD = Blackguard()
+
+map.nodes[21803020] = BLACKGUARD
+map.nodes[22202760] = BLACKGUARD
+map.nodes[25002140] = BLACKGUARD
+map.nodes[25202900] = BLACKGUARD
+map.nodes[26802060] = BLACKGUARD
+map.nodes[29804260] = BLACKGUARD
+map.nodes[30203220] = BLACKGUARD
+map.nodes[31203780] = BLACKGUARD
+map.nodes[31402600] = BLACKGUARD
+map.nodes[31802880] = BLACKGUARD
+map.nodes[31803640] = BLACKGUARD
+map.nodes[32003900] = BLACKGUARD
+map.nodes[33203760] = BLACKGUARD
+map.nodes[38002960] = BLACKGUARD
+map.nodes[38803540] = BLACKGUARD
+map.nodes[40003760] = BLACKGUARD
+map.nodes[44086200] = BLACKGUARD
+map.nodes[46205640] = BLACKGUARD
+map.nodes[46405900] = BLACKGUARD
+map.nodes[48606120] = BLACKGUARD
+map.nodes[49206160] = BLACKGUARD
+map.nodes[56005800] = BLACKGUARD
+map.nodes[56606260] = BLACKGUARD
+map.nodes[56805680] = BLACKGUARD
+map.nodes[58605480] = BLACKGUARD
+map.nodes[58606280] = BLACKGUARD
+
+-------------------------------------------------------------------------------
 ------------------------------- ZOVAAL'S VAULT --------------------------------
 -------------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
 --[[
 
-	This file is part of 'Masque', an add-on for World of Warcraft. For license information,
-	please see the included License.txt file or visit https://github.com/StormFX/Masque.
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options\Profiles.lua
 	* Author.: StormFX
@@ -11,8 +11,6 @@
 	TODO: Create a custom profiles panel.
 
 ]]
-
--- GLOBALS: LibStub
 
 local MASQUE, Core = ...
 

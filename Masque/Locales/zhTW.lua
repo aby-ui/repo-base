@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Locales\zhTW.lua
 
@@ -13,6 +13,8 @@
 	or contribute directly on GitHub (https://github.com/SFX-WoW/Masque).
 
 ]]
+
+-- GLOBALS: GetLocale
 
 if GetLocale() ~= "zhTW" then return end
 
@@ -28,6 +30,7 @@ L["API"] = "API"
 L["For more information, please visit one of the sites listed below."] = "更多訊息說明，請拜訪下列其中之一的網站。"
 L["Masque is a skinning engine for button-based add-ons."] = "Masque 是幫插件按鈕更換外觀的引擎。"
 L["Select to view."] = "選擇以查看。"
+-- L["Supporters"] = "Supporters"
 L["You must have an add-on that supports Masque installed to use it."] = "必須安裝支援 Masque 按鈕外觀的插件才能使用。"
 
 ----------------------------------------

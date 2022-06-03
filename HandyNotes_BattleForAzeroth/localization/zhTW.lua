@@ -175,6 +175,8 @@ L['cat_figurine_09'] = '在一個水下洞穴。雕像位於天花板的岩石�
 L['cat_figurine_10'] = '在路徑下方的一個洞穴裡。 雕像在三個桶之間。'
 L['figurines_found'] = nil
 
+L['fabious_desc'] = nil
+
 L['mardivas_lab'] = '瑪爾迪瓦斯實驗室'
 L['no_reagent'] = '不使用水晶'
 L['swater'] = '小深海'
@@ -204,6 +206,8 @@ L['options_icons_cats_nazj'] = '貓咪雕像'
 L['options_icons_cats_nazj_desc'] = '顯示\'喵出喵咪喵像\'成就的水晶貓位置。'
 L['options_icons_misc_nazj'] = '其他'
 L['options_icons_misc_nazj_desc'] = '顯示莫洛哥的洞穴以及瑪爾迪瓦斯的實驗室的位置。'
+L['options_icons_fabious'] = '{npc:65090}'
+L['options_icons_fabious_desc'] = nil
 
 -------------------------------------------------------------------------------
 ------------------------------------ NAZMIR -----------------------------------
@@ -342,7 +346,6 @@ L['dunewalker'] = '在上面的平台上點擊“太陽精華”以釋放他。'
 L['friendly_alpaca'] = '餵七次羊駝吉薩爾草，以作為坐騎收藏。 在一個位置出現10分鐘，然後很久後才重生。'
 L['gaze_of_nzoth'] = '與汙穢觀察者共用出生點。'
 L['gersahl_note'] = '餵給友善的羊駝七次獲得坐騎。 不需要草藥學。'
-L['gersahl'] = '吉薩爾草叢'
 L['hmiasma'] = '餵食它周圍的軟泥，直到它啟動。'
 L['kanebti'] = '從一個珠寶古墓聖甲蟲中收集一個珠寶聖甲蟲小雕像，該雕像與普通的古墓聖甲蟲共用出生點。 將雕像插入聖甲蟲聖壇以召喚稀有怪。'
 L['neferset_rare'] = '這六個稀有怪在奈斐賽特具有相同的三個出生位置。 完成許多“召喚儀式”事件後，將隨機產生三個。'

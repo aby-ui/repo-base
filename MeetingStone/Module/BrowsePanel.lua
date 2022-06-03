@@ -211,20 +211,22 @@ function BrowsePanel:OnInitialize()
                 end,
             },{
                 key = 'LeaderScore',
-                text = L['大秘评分'],
+                text = L['评分'],
                 --style = 'LEFT',
                 width = 90,
                 textHandler = function(activity)
-                    local score = activity:GetLeaderScore()
+                    local score = activity:GetRatingToShow()
                     if not score or score == 0 then
                         return NONE, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
+                    elseif activity:IsRatedPvpActivity() then
+                        return score, 1, 1, 1
                     else
                         local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
                         return score, color.r, color.g, color.b
                     end
                 end,
                 sortHandler = function(activity)
-                    return 1/(activity:GetLeaderScore() + 1)
+                    return 1/(activity:GetRatingToShow() + 1)
                 end,
             }, {
                 key = 'Summary',

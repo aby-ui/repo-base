@@ -408,10 +408,9 @@ function Transmog:IsKnown()
         return true
     end
     if appearanceID then
-        local sources = CTC.GetAppearanceSources(appearanceID)
-        if sources then
-            for i, source in pairs(sources) do
-                if source.isCollected then return true end
+        for i, sourceID in ipairs(CTC.GetAllAppearanceSources(appearanceID)) do
+            if CTC.PlayerHasTransmogItemModifiedAppearance(sourceID) then
+                return true
             end
         end
     end

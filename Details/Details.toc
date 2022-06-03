@@ -1,5 +1,5 @@
 ## Interface: 90205
-## Interface-Mainline: 90200
+## Interface-Mainline: 90205
 ## Interface-BCC: 20502
 ## Title: Details! Damage Meter
 ## Notes: Essential tool to impress that chick in your raid.

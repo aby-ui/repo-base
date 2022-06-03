@@ -81,12 +81,12 @@ Return the glow POI for this node. If the node is hovered or focused, a green
 glow is applyed to help highlight the node.
 --]]
 
-function Node:GetGlow(mapID, minimap)
-    if self.glow and (self._focus or self._hover) then
+function Node:GetGlow(mapID, minimap, focused)
+    if self.glow then
         local _, scale, alpha = self:GetDisplayInfo(mapID, minimap)
         self.glow.alpha = alpha
         self.glow.scale = scale
-        if self._focus then
+        if focused then
             self.glow.r, self.glow.g, self.glow.b = 0, 1, 0
         else
             self.glow.r, self.glow.g, self.glow.b = 1, 1, 0
@@ -476,19 +476,6 @@ function Rare:IsEnabled()
     return NPC.IsEnabled(self)
 end
 
-function Rare:GetGlow(mapID, minimap)
-    local glow = NPC.GetGlow(self, mapID, minimap)
-    if glow then return glow end
-
-    if _G['HandyNotes_ZarPluginsDevelopment'] and not self.quest then
-        local _, scale, alpha = self:GetDisplayInfo(mapID, minimap)
-        self.glow.alpha = alpha
-        self.glow.scale = scale
-        self.glow.r, self.glow.g, self.glow.b = 1, 0, 0
-        return self.glow
-    end
-end
-
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURE -----------------------------------
 -------------------------------------------------------------------------------
@@ -507,19 +494,6 @@ function Treasure.getters:label()
         end
     end
     return UNKNOWN
-end
-
-function Treasure:GetGlow(mapID, minimap)
-    local glow = Node.GetGlow(self, mapID, minimap)
-    if glow then return glow end
-
-    if _G['HandyNotes_ZarPluginsDevelopment'] and not self.quest then
-        local _, scale, alpha = self:GetDisplayInfo(mapID, minimap)
-        self.glow.alpha = alpha
-        self.glow.scale = scale
-        self.glow.r, self.glow.g, self.glow.b = 1, 0, 0
-        return self.glow
-    end
 end
 
 -------------------------------------------------------------------------------

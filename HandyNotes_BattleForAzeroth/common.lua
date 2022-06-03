@@ -27,7 +27,8 @@ ns.groups.BRUTOSAURS =
     Group('brutosaurs', 1881827, {defaults = ns.GROUP_HIDDEN})
 ns.groups.CARVED_IN_STONE = Group('carved_in_stone', 134424,
     {defaults = ns.GROUP_HIDDEN})
-ns.groups.CATS_NAZJ = Group('cats_nazj', 454045)
+ns.groups.CATS_NAZJ = Group('cats_nazj', 454045, {defaults = ns.GROUP_HIDDEN})
+ns.groups.FABIOUS = Group('fabious', 2741477, {defaults = ns.GROUP_HIDDEN})
 ns.groups.COFFERS = Group('coffers', 'star_chest_g')
 ns.groups.DAILY_CHESTS = Group('daily_chests', 'chest_bl',
     {defaults = ns.GROUP_ALPHA75})
@@ -66,7 +67,8 @@ ns.groups.SECRET_SUPPLY = Group('secret_supplies', 'star_chest_b',
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.SHANTY_RAID = Group('shanty_raid', 1500866,
     {defaults = ns.GROUP_HIDDEN})
-ns.groups.SLIMES_NAZJ = Group('slimes_nazj', 132107)
+ns.groups.SLIMES_NAZJ = Group('slimes_nazj', 132107,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.SUPPLY = Group('supplies', 'star_chest_g',
     {defaults = ns.GROUP_HIDDEN75})
 ns.groups.TALES_OF_DE_LOA = Group('tales_of_de_loa', 1875083,

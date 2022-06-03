@@ -192,6 +192,8 @@ L['cat_figurine_09'] = 'In an underwater cave. Figurine is on the rock archway b
 L['cat_figurine_10'] = 'In a cave just below the path. Figurine is between three barrels.'
 L['figurines_found'] = 'Crystalline Figurines Found'
 
+L['fabious_desc'] = 'Take a "selfie" picture with {npc:65090} using either the {item:122637} or {item:122674} toy. Long time spawn in random locations and exist for a short time.'
+
 L['mardivas_lab'] = 'Mardivas\'s Laboratory'
 L['no_reagent'] = 'No reagents'
 L['swater'] = 'Small Water'
@@ -221,6 +223,8 @@ L['options_icons_cats_nazj'] = '{achievement:13836}'
 L['options_icons_cats_nazj_desc'] = 'Display locations of the cat figurines for the {achievement:13836} achievement.'
 L['options_icons_misc_nazj'] = 'Miscellaneous'
 L['options_icons_misc_nazj_desc'] = 'Display the location of {npc:152593}\'s cave and Mardivas\'s Laboratory.'
+L['options_icons_fabious'] = '{npc:65090}'
+L['options_icons_fabious_desc'] = 'Display possible locations of {npc:65090} for the {item:169201} mount.'
 
 -------------------------------------------------------------------------------
 ------------------------------------ NAZMIR -----------------------------------
@@ -374,7 +378,6 @@ L['dunewalker'] = 'Click the Essence of the Sun on the platform above to release
 L['friendly_alpaca'] = 'Feed the alpaca {item:174858} seven times to learn it as a mount. Appears for 10 minutes in one location, then a long respawn.'
 L['gaze_of_nzoth'] = 'Shares a spawn with {npc:156890s}.'
 L['gersahl_note'] = 'Feed to the {npc:162765} seven times for a mount. Does not require Herbalism.'
-L['gersahl'] = 'Gersahl Shrub'
 L['hmiasma'] = 'Feed it the surrounding oozes until it activates.'
 L['kanebti'] = 'Collect a {item:168160} from a {npc:152427}, which shares a spawn with regular {npc:151859s}. Insert the figurine into the Scarab Shrine to summon the rare.'
 L['neferset_rare'] = 'These six rares share the same three spawn locations in Neferset. After a number of Summoning Ritual events have been completed, a random set of three will spawn.'

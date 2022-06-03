@@ -14,6 +14,7 @@ local Treasure = ns.node.Treasure
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
 local Mount = ns.reward.Mount
+local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
 
@@ -833,7 +834,10 @@ map.nodes[42025181] = Treasure({
     quest = 65183,
     requires = ns.requirement.Item(188231),
     label = L['provis_cache'],
-    note = L['provis_cache_note']
+    note = L['provis_cache_note'],
+    rewards = {
+        Item({item = 189710, quest = 65474}) -- Pocopoc's Ruby and Platinum Body
+    }
 }) -- Provis Cache
 
 map.nodes[48016641] = Treasure({
@@ -842,7 +846,8 @@ map.nodes[48016641] = Treasure({
     note = L['multiple_spawns'] .. ' ' .. L['prying_eye_discovery_note'],
     rewards = {
         Achievement({id = 15508, criteria = 53293}), -- Fashion of the First Ones
-        Item({item = 190096, quest = 65534}) -- Pocobold
+        Item({item = 190096, quest = 65534}), -- Pocobold
+        Item({item = 189711, quest = 65476}) -- Pocopoc's Gold and Ruby Components
     },
     pois = {POI({35244371, 34334431, 51767789})}
 }) -- Prying Eye Discovery
@@ -885,7 +890,9 @@ map.nodes[60022583] = Treasure({
     label = L['sandworn_chest'],
     note = L['multiple_spawns'] .. ' ' .. L['sandworn_chest_note'],
     rewards = {
-        Toy({item = 190734}) -- Makaris's Satchel of Mines
+        Toy({item = 190734}), -- Makaris's Satchel of Mines
+        Item({item = 189713, quest = 65473}), -- Pocopoc's Copper and Cobalt Components
+        Item({item = 189714, quest = 65479}) -- Pocopoc's Platinum and Emerald Components
     },
     pois = {POI({60863786, 61401763, 63182603, 65972694})}
 }) -- Sandworn Chest
@@ -918,11 +925,11 @@ map.nodes[46893964] = Treasure({
     quest = 65643,
     label = L['torn_ethereal_drape'],
     note = L['torn_ethereal_drape_note'] .. '\n\n' ..
-        ns.color.Orange(L['fulgore_alcove_note']),
+        ns.color.Orange(L['fulgor_alcove_note']),
     rewards = {
         Transmog({item = 188054, slot = L['cloak']}) -- Antecedent Drape
     },
-    pois = {POI({47853037})} -- Fulgore Alcove Arrangement
+    pois = {POI({47853037})} -- Fulgor Alcove Arrangement
 }) -- Torn Ethereal Drape
 
 -------------------------------------------------------------------------------
@@ -1134,35 +1141,44 @@ local Shrouded = Class('ShroudedCypherCache', ns.node.Node, {
     label = L['cache_shrouded_cypher'],
     note = L['cache_shrouded_cypher_note'],
     rewards = {
-        Item({item = 189983, quest = 65513, covenant = NIGHTFAE}) -- Gromit Soul
+        Item({item = 189983, quest = 65513, covenant = NIGHTFAE}), -- Gromit Soul
+        Item({item = 189707, quest = 65471}), -- Pocopoc's Bronze and Gold Body
+        Item({item = 189708, quest = 65472}), -- Pocopoc's Beryllium and Silver Body
+        Item({item = 189712, quest = 65477}) -- Pocopoc's Silver and Beryllium Components
     }
 })
 
-map.nodes[29404950] = Shrouded()
-map.nodes[34107050] = Shrouded()
-map.nodes[51008300] = Shrouded()
-map.nodes[61006950] = Shrouded()
 map.nodes[36304810] = Shrouded()
 map.nodes[40306270] = Shrouded()
 map.nodes[43908420] = Shrouded()
 map.nodes[54507780] = Shrouded()
+-- Cypher Equipment Level 1/6 object=376041
+map.nodes[29404950] = Shrouded()
+map.nodes[34107050] = Shrouded()
+map.nodes[51008300] = Shrouded()
+map.nodes[60906950] = Shrouded()
+-- Cypher Equipment Level 2/6 object=376046
 map.nodes[42805280] = Shrouded()
 map.nodes[44507150] = Shrouded()
 map.nodes[53009230] = Shrouded()
 map.nodes[57406500] = Shrouded()
-map.nodes[54204980] = Shrouded()
-map.nodes[56203400] = Shrouded()
-map.nodes[63704120] = Shrouded()
-map.nodes[66502520] = Shrouded()
+-- Cypher Equipment Level 3/6 object=376047
 map.nodes[41903410] = Shrouded()
 map.nodes[50700460] = Shrouded()
 map.nodes[52706080] = Shrouded()
 map.nodes[59803350] = Shrouded()
-map.nodes[62005730] = Shrouded()
+map.nodes[62005720] = Shrouded()
+-- Cypher Equipment Level 4/6 object=3760418
+map.nodes[54304970] = Shrouded()
+map.nodes[56203410] = Shrouded()
+map.nodes[63704120] = Shrouded()
+map.nodes[66502520] = Shrouded()
+-- Cypher Equipment Level 5/6 object=376049
 map.nodes[49003050] = Shrouded()
-map.nodes[61201550] = Shrouded()
+map.nodes[61201560] = Shrouded()
 map.nodes[62204630] = Shrouded()
 map.nodes[69503450] = Shrouded()
+-- Cypher Equipment Level 6/6 object=376050
 
 -------------------------------------------------------------------------------
 --------------------------- MAWSWORN SUPPLY CACHES ----------------------------
@@ -1571,6 +1587,81 @@ map.nodes[59713736] = Nascii_({id = 184947, requires = CREATIAN_NE})
 map.nodes[69743354] = Nascii_({id = 184947, requires = CREATIAN_NE})
 
 -------------------------------------------------------------------------------
+----------------------------- APOCOPOCOLYPSE NOW ------------------------------
+-------------------------------------------------------------------------------
+
+local Automa = Class('CorelessAutoma', ns.node.NPC, {
+    group = ns.groups.CORELESS_AUTOMA,
+    requires = ns.requirement.GarrisonTalent(1932), -- Dealic Understanding
+    scale = 1.5,
+    rewards = {
+        Achievement({
+            id = 15542,
+            criteria = ({id = 1, qty = true, suffix = L['coreless_automa']})
+        })
+    }
+})
+
+function Automa.getters:note()
+    local note = L['coreless_automa_note']
+    note = note .. '\n\n{item:190980}'
+    note = note .. '\n{item:190986}'
+    note = note .. '\n{item:190992}'
+    note = note .. '\n{item:190998}'
+    note = note .. '\n\n' .. L['coreless_automa_warning']
+    return note
+end
+
+local CORELESS_VOMBATA_A = Automa({id = 181580, icon = 'peg_bl'})
+local CORELESS_VOMBATA_B = Automa({id = 185662, icon = 'peg_bl'})
+local CORELESS_HELICID = Automa({id = 181558, icon = 'peg_bk'})
+local CORELESS_SCARBID = Automa({id = 181385, icon = 'peg_gn'})
+local CORELESS_TARACHNID = Automa({id = 181556, icon = 'peg_rd'})
+local CORELESS_GEOMENTAL = Automa({id = 181586, icon = 'peg_yw'})
+
+map.nodes[33205620] = CORELESS_VOMBATA_A
+map.nodes[37203760] = CORELESS_VOMBATA_A
+map.nodes[37804720] = CORELESS_VOMBATA_A
+map.nodes[38407080] = CORELESS_VOMBATA_A
+map.nodes[45407580] = CORELESS_VOMBATA_A
+map.nodes[46807860] = CORELESS_VOMBATA_A
+map.nodes[56006660] = CORELESS_VOMBATA_B
+
+map.nodes[32605980] = CORELESS_HELICID
+map.nodes[37207080] = CORELESS_HELICID
+map.nodes[37805500] = CORELESS_HELICID
+map.nodes[42408820] = CORELESS_HELICID
+map.nodes[43806120] = CORELESS_HELICID
+map.nodes[44405640] = CORELESS_HELICID
+map.nodes[50006260] = CORELESS_HELICID
+map.nodes[52607500] = CORELESS_HELICID
+map.nodes[59008420] = CORELESS_HELICID
+map.nodes[63207040] = CORELESS_HELICID
+
+map.nodes[42604360] = CORELESS_SCARBID
+map.nodes[40803160] = CORELESS_SCARBID
+map.nodes[44403680] = CORELESS_SCARBID
+map.nodes[47602420] = CORELESS_SCARBID
+map.nodes[51404920] = CORELESS_SCARBID
+map.nodes[62003200] = CORELESS_SCARBID
+map.nodes[67202500] = CORELESS_SCARBID
+
+map.nodes[41602780] = CORELESS_TARACHNID
+map.nodes[44202460] = CORELESS_TARACHNID
+map.nodes[53602700] = CORELESS_TARACHNID
+map.nodes[57002540] = CORELESS_TARACHNID
+map.nodes[59004900] = CORELESS_TARACHNID
+map.nodes[59405480] = CORELESS_TARACHNID
+map.nodes[62806240] = CORELESS_TARACHNID
+map.nodes[64004380] = CORELESS_TARACHNID
+
+map.nodes[47204600] = CORELESS_GEOMENTAL
+map.nodes[50004160] = CORELESS_GEOMENTAL
+map.nodes[53809040] = CORELESS_GEOMENTAL
+map.nodes[55006040] = CORELESS_GEOMENTAL
+map.nodes[66403800] = CORELESS_GEOMENTAL
+
+-------------------------------------------------------------------------------
 ----------------------------- COMPLETING THE CODE -----------------------------
 -------------------------------------------------------------------------------
 
@@ -1748,6 +1839,8 @@ map.nodes[64833364] = Tale({
     rewards = {Achievement({id = 15509, criteria = 53305})} -- Part 7
 })
 
+-- Firim in Exile, Epilogue (34254871) (65747)
+
 -------------------------------------------------------------------------------
 --------------------------- TRAVERSING THE SPHERES ----------------------------
 -------------------------------------------------------------------------------
@@ -1846,6 +1939,29 @@ map.nodes[32814036] = Proto({
     note = L['wayward_essence_note'],
     rewards = {Achievement({id = 15229, criteria = 53057})}
 }) -- Wayward Essence
+
+-------------------------------------------------------------------------------
+---------------------------------- OLEA MANU ----------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[37164467] = ns.node.NPC({
+    id = 183962,
+    icon = 4254892,
+    requires = {
+        ns.requirement.GarrisonTalent(1902), ns.requirement.Quest(65219)
+    },
+    note = L['olea_manu'],
+    rewards = {
+        Item({item = 187804, note = '25'}), -- Recipe: Empty Kettle of Stone Soup
+        Item({item = 187824, note = '25'}), -- Formula: Magically Regulated Automa Core
+        Item({item = 188793, quest = 65282, note = '150'}), -- Improved Cypher Analysis Tool
+        Item({item = 189986, quest = 65514, covenant = NIGHTFAE, note = '500'}), -- Armadillo Soul
+        Item({item = 189980, quest = 65510, covenant = NIGHTFAE, note = '1000'}), -- Brutosaur Soul
+        Toy({item = 190333, note = '100'}), -- Jiro Circle of Song
+        Pet({item = 191039, id = 3247, note = '500'}), -- Pocopoc Traveler
+        Item({item = 187781, note = '700'}) -- Olea Cache
+    }
+}) -- Olea Manu
 
 -------------------------------------------------------------------------------
 ------------------------------- PATIENT BUFONID -------------------------------

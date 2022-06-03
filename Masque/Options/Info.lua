@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options\Info.lua
 	* Author.: StormFX
@@ -71,10 +71,11 @@ do
 
 	-- Reusable Header
 	local HDR = {
-		type = "description",
-		name = "|cffffcc00"..L["Description"].."|r"..CRLF,
+		type = "header",
+		name = L["Description"],
 		order = 1,
-		fontSize = "medium",
+		disabled = true,
+		dialogControl = "SFX-Header",
 	}
 
 	-- Creates a skin info options group.
@@ -243,10 +244,11 @@ function Setup.Info(self)
 			order = 4,
 			args = {
 				Head = {
-					type = "description",
-					name = "|cffffcc00"..L["Installed Skins"].."|r"..CRLF,
-					fontSize = "medium",
+					type = "header",
+					name = L["Installed Skins"],
 					order = 0,
+					disabled = true,
+					dialogControl = "SFX-Header",
 				},
 				Desc = {
 					type = "description",

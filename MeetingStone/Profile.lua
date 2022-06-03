@@ -137,6 +137,9 @@ function Profile:SaveActivityProfile(activity)
         MaxLevel   = activity:GetMaxLevel(),
         PvPRating  = activity:GetPvPRating(),
         HonorLevel = activity:GetHonorLevel(),
+        RequiredDungeonScore = activity:GetRequiredDungeonScore(),
+        RequiredPvpRating    = activity:GetRequiredPvpRating(),
+        CrossFactionListing  = activity:GetCrossFactionListing(),
     }
 end
 

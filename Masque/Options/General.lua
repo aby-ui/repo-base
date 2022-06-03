@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options\General.lua
 	* Author.: StormFX
@@ -46,17 +46,18 @@ function Setup.General(self)
 		order = 2,
 		args = {
 			Head = {
-				type = "description",
-				name = "|cffffcc00Masque - "..L["General Settings"].."|r"..CRLF,
-				fontSize = "medium",
+				type = "header",
+				name = MASQUE.." - "..L["General Settings"],
 				hidden = self.GetStandAlone,
 				order = 0,
+				disabled = true,
+				dialogControl = "SFX-Header",
 			},
 			Desc = {
 				type = "description",
 				name = L["This section will allow you to adjust Masque's interface and performance settings."]..CRLF,
-				fontSize = "medium",
 				order = 1,
+				fontSize = "medium",
 			},
 			Interface = {
 				type = "group",
@@ -65,16 +66,17 @@ function Setup.General(self)
 				order = 2,
 				args = {
 					Head = {
-						type = "description",
-						name = "|cffffcc00"..L["Interface Settings"].."|r"..CRLF,
-						fontSize = "medium",
+						type = "header",
+						name = L["Interface Settings"],
 						order = 0,
+						disabled = true,
+						dialogControl = "SFX-Header",
 					},
 					Desc = {
 						type = "description",
 						name = L["This section will allow you to adjust settings that affect Masque's interface."]..CRLF,
-						fontSize = "medium",
 						order = 1,
+						fontSize = "medium",
 					},
 					Icon = {
 						type = "toggle",
@@ -89,8 +91,8 @@ function Setup.General(self)
 								Core.LDBI:Show(MASQUE)
 							end
 						end,
-						disabled = function() return not Core.LDBI end,
 						order = 3,
+						disabled = function() return not Core.LDBI end,
 					},
 					Standalone = {
 						type = "toggle",
@@ -109,16 +111,17 @@ function Setup.General(self)
 				order = 3,
 				args = {
 					Head = {
-						type = "description",
-						name = "|cffffcc00"..L["Performance Settings"].."|r"..CRLF,
-						fontSize = "medium",
+						type = "header",
+						name = L["Performance Settings"],
 						order = 1,
+						disabled = true,
+						dialogControl = "SFX-Header",
 					},
 					Desc = {
 						type = "description",
 						name = L["This section will allow you to adjust settings that affect Masque's performance."]..CRLF,
-						fontSize = "medium",
 						order = 2,
+						fontSize = "medium",
 					},
 					SkinInfo = {
 						type = "toggle",
@@ -152,16 +155,17 @@ function Setup.General(self)
 				order = 4,
 				args = {
 					Head = {
-						type = "description",
-						name = "|cffffcc00"..L["Developer Settings"].."|r"..CRLF,
-						fontSize = "medium",
+						type = "header",
+						name = L["Developer Settings"],
 						order = 0,
+						disabled = true,
+						dialogControl = "SFX-Header",
 					},
 					Desc = {
 						type = "description",
 						name = L["This section will allow you to adjust settings that affect working with Masque's API."]..CRLF,
-						fontSize = "medium",
 						order = 1,
+						fontSize = "medium",
 					},
 					Debug = {
 						type = "toggle",
@@ -180,10 +184,10 @@ function Setup.General(self)
 						type = "execute",
 						name = L["Clean Database"],
 						desc = L["Click to purge the settings of all unused add-ons and groups."],
-						confirm = true,
-						confirmText = L["This action cannot be undone. Continue?"],
 						func = Core.CleanDB,
 						order = -1,
+						confirm = true,
+						confirmText = L["This action cannot be undone. Continue?"],
 					},
 				},
 			},

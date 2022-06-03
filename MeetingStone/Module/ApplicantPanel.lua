@@ -60,6 +60,11 @@ local APPLICANT_LIST_HEADER = {
         width = 40 + 56,
         showHandler = function(applicant)
             --abyui
+            local pvpBliz = applicant:GetPVPRatingBlizzard()
+            if pvpBliz and pvpBliz.rating then
+                return pvpBliz.rating, 1, 1, 1
+            end
+
             local score = applicant:GetDungeonScore()
             if score > 0 then
                 if applicant:GetResult() and score > 0 then
@@ -79,6 +84,7 @@ local APPLICANT_LIST_HEADER = {
                 end
                 return
             end
+
             local level = applicant:GetLevel()
             if applicant:GetResult() then
                 local activity = CreatePanel:GetCurrentActivity()
@@ -92,6 +98,10 @@ local APPLICANT_LIST_HEADER = {
             end
         end,
         sortHandler = function(applicant)
+            local pvpBliz = applicant:GetPVPRatingBlizzard()
+            if pvpBliz and pvpBliz.rating then
+                return _PartySortHandler(applicant) or tostring(9999 - pvpBliz.rating)
+            end
             local score = applicant:GetDungeonScore()
             if score > 0 then
                 return _PartySortHandler(applicant) or tostring(9999 - score)
@@ -106,29 +116,13 @@ local APPLICANT_LIST_HEADER = {
         width = 52,
         showHandler = function(applicant)
             if applicant:GetResult() then
-                return applicant:GetItemLevel()
+                return applicant:IsPVP() and applicant:GetPVPItemLevel() or applicant:GetItemLevel()
             else
-                return applicant:GetItemLevel(), GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
+                return applicant:IsPVP() and applicant:GetPVPItemLevel() or applicant:GetItemLevel() , GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b
             end
         end,
         sortHandler = function(applicant)
-            return _PartySortHandler(applicant) or tostring(9999 - applicant:GetItemLevel())
-        end
-    },
-    --[[
-    {
-        key = 'Score',
-        text = L['评分'],
-        width = 52,
-        showHandler = function(applicant)
-
-            local info = applicant:GetBestDungeonScore() or {}
-            local mapScore = info.mapScore or 0
-            local text = format("|cffffffff%d/%d|r", applicant:GetDungeonScore(), mapScore)
-            return text
-        end,
-        sortHandler = function(applicant)
-            return _PartySortHandler(applicant) or tostring(9999 - applicant:GetDungeonScore())
+            return _PartySortHandler(applicant) or tostring(9999 - (applicant:IsPVP() and applicant:GetPVPItemLevel() or applicant:GetItemLevel()))
         end
     },
     --]]
@@ -278,10 +272,12 @@ function ApplicantPanel:UpdateApplicantsList()
     local applicants = C_LFGList.GetApplicants()
 
     if applicants and C_LFGList.HasActiveEntryInfo() then
+        local activityId = C_LFGList.GetActiveEntryInfo().activityID
+        local info = C_LFGList.GetActivityInfoTable(activityId)
         for i, id in ipairs(applicants) do
             local numMembers = C_LFGList.GetApplicantInfo(id).numMembers
             for i = 1, numMembers do
-                tinsert(list, Applicant:New(id, i, C_LFGList.GetActiveEntryInfo().activityID))
+                tinsert(list, Applicant:New(id, i, activityId, info.isPvpActivity))
             end
         end
 

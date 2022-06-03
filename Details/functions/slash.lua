@@ -2237,32 +2237,34 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 							local isInMyParty = UnitInParty(unitName) and (string.byte(unitName, 1) + string.byte(unitName, 2)) or 0
 							local isGuildMember = guildName and guildUsers[unitName] and true
 
-							local keystoneTable = {
-								unitName,
-								keystoneInfo.level,
-								keystoneInfo.mapID,
-								keystoneInfo.challengeMapID,
-								keystoneInfo.classID,
-								keystoneInfo.rating,
-								keystoneInfo.mythicPlusMapID,
-								classIcon,
-								coords[class],
-								mapName, --10
-								isInMyParty,
-								isOnline, --is false when the unit is from the cache
-								isGuildMember, --is a guild member
-								--mapNameChallenge,
-							}
+							if (keystoneInfo.level > 0 or keystoneInfo.rating > 0) then
+								local keystoneTable = {
+									unitName,
+									keystoneInfo.level,
+									keystoneInfo.mapID,
+									keystoneInfo.challengeMapID,
+									keystoneInfo.classID,
+									keystoneInfo.rating,
+									keystoneInfo.mythicPlusMapID,
+									classIcon,
+									coords[class],
+									mapName, --10
+									isInMyParty,
+									isOnline, --is false when the unit is from the cache
+									isGuildMember, --is a guild member
+									--mapNameChallenge,
+								}
 
-							newData[#newData+1] = keystoneTable --this is the table added into the keystone cache
-							unitsAdded[unitName] = true
+								newData[#newData+1] = keystoneTable --this is the table added into the keystone cache
+								unitsAdded[unitName] = true
 
-							--is this unitName listed as a player in the player's guild?
-							if (isGuildMember) then
-								--store the player information into a cache
-								keystoneTable.guild_name = guildName
-								keystoneTable.date = time()
-								Details.keystone_cache[unitName] = keystoneTable
+								--is this unitName listed as a player in the player's guild?
+								if (isGuildMember) then
+									--store the player information into a cache
+									keystoneTable.guild_name = guildName
+									keystoneTable.date = time()
+									Details.keystone_cache[unitName] = keystoneTable
+								end
 							end
 						end
 						
@@ -2270,9 +2272,11 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 						for unitName, keystoneTable in pairs(Details.keystone_cache) do
 							--this unit in the cache isn't shown?
 							if (not unitsAdded[unitName] and keystoneTable.guild_name == guildName and keystoneTable.date > cutoffDate) then
-								keystoneTable[12] = false --isOnline
-								newData[#newData+1] = keystoneTable
-								unitsAdded[unitName] = true
+								if (keystoneTable[2] > 0 or keystoneTable[6] > 0) then
+									keystoneTable[12] = false --isOnline
+									newData[#newData+1] = keystoneTable
+									unitsAdded[unitName] = true
+								end
 							end
 						end
 					end

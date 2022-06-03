@@ -108,7 +108,7 @@ function Addon:OnEnter(mapID, coord)
     -- items do not appear to have their info loaded consistently when the map is
     -- prepared, so we prepare the node's assets again here before rendering
     node:Prepare()
-    map:SetFocus(node, true, true)
+    map:SetFocus(node, coord, true, true)
 
     -- Rendering in the next frame appears to help asset name issues
     C_Timer.After(0, function()
@@ -122,7 +122,7 @@ end
 function Addon:OnLeave(mapID, coord)
     local map = ns.maps[mapID]
     local node = map.nodes[coord]
-    map:SetFocus(node, false, true)
+    map:SetFocus(node, coord, false, true)
     ns.MinimapDataProvider:RefreshAllData()
     ns.WorldMapDataProvider:RefreshAllData()
     node:Unrender(GameTooltip)
@@ -139,7 +139,7 @@ function Addon:OnClick(button, down, mapID, coord)
         ToggleDropDownMenu(1, nil, DropdownMenu, self, 0, 0)
     elseif button == 'LeftButton' and down then
         if map:CanFocus(node) then
-            map:SetFocus(node, not node._focus)
+            map:SetFocus(node, coord, not map:IsFocused(coord))
             Addon:RefreshImmediate()
         end
     end
@@ -191,14 +191,14 @@ function Addon:RegisterWithHandyNotes()
             end
             return nil, nil, nil, nil
         end
-        function Addon:GetNodes2(mapID, _minimap)
+        function Addon:GetNodes2(mapID, isMinimap)
             if ns:GetOpt('show_debug_map') then
                 ns.Debug('Loading nodes for map: ' .. mapID .. ' (minimap=' ..
-                             tostring(_minimap) .. ')')
+                             tostring(isMinimap) .. ')')
             end
 
             map = ns.maps[mapID]
-            minimap = _minimap
+            minimap = isMinimap
             force = ns:GetOpt('force_nodes') or ns.dev_force
 
             if map then

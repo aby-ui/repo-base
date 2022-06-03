@@ -3,7 +3,7 @@
 ## Notes: Show covenant icon
 ## Notes-ruRU: Показывает значок ковенанта в Details! или Skada
 ## Author: Toenak
-## Version: 1.3.3
+## Version: 1.3.4
 ## X-License: MIT
 ## X-Curse-Project-ID: 431558
 ## SavedVariablesPerCharacter: DCovenant, DCovenantLog

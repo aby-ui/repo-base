@@ -672,6 +672,12 @@ A tormentor event spawns every 2 hours on the hour. The bosses will always spawn
 The {item:185972} can be looted once a week and contains 50 {currency:1906}.
 ]]
 
+L['options_icons_mawsworn_blackguard'] = '{achievement:14742}'
+L['options_icons_mawsworn_blackguard_desc'] = 'Mawsworn Blackguard locations for {achievement:14742}'
+
+L['mawsworn_blackguard'] = 'Mawsworn Blackguard'
+L['mawsworn_blackguard_note'] = 'Easily target a stealthed {npc:183173}:'
+
 -------------------------------------------------------------------------------
 -------------------------------- ZERETH MORTIS --------------------------------
 -------------------------------------------------------------------------------
@@ -681,15 +687,16 @@ To access the |cFFFFFD00%s Alcove|r:
 
 1. Complete chapter 6 of the Zereth Mortis campaign.
 2. Find the |cFFFFFD00%s Alcove Arrangement|r %s.
-3. Use the {npc:184329} inside the Gravid Repose to access the Inner Chamber.
-4. Use a different {npc:184485} to access the %s Alcove.
+3. In the |cFFFFFD00Resonant Peaks|r, Kill the mobs who have {spell:362651} or stand in white pool to got 60 {npc:183569}.
+4. Use the {npc:184329} inside the Gravid Repose to access the Inner Chamber. (Requires 30 {npc:183569})
+5. Use {npc:184485} to access the %s Alcove. (Requires 30 {npc:183569})
 ]]
 
-L['camber_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Camber', 'Camber', 'behind the building at the Ultimus Locus', 'Camber')
+L['camber_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Camber', 'Camber', 'behind the building at the |cFFFFFD00Ultimus Locus|r', 'Camber')
 L['dormant_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Dormant', 'Dormant', 'in the |cFFFFFD00Resonant Peaks|r', 'Dormant')
-L['fulgore_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Fulgore', 'Fulgore', 'in the |cFFFFFD00Resonant Peaks|r', 'Fulgore')
-L['rondure_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Rondure', 'Rondure', 'on the Tertius Locus platform', 'Rondure')
-L['repertory_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Repertory', 'Repertory', 'inside the Terrestial Cache cave', 'Repertory')
+L['fulgor_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Fulgor', 'Fulgor', 'in the |cFFFFFD00Resonant Peaks|r', 'Fulgor')
+L['rondure_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Rondure', 'Rondure', 'on the |cFFFFFD00Tertius Locus|r platform', 'Rondure')
+L['repertory_alcove_note'] = string.format(HIDDEN_ALCOVE, 'Repertory', 'Repertory', 'inside the |cFFFFFD00Terrestial Cache|r cave', 'Repertory')
 
 L['corrupted_architect_note'] = 'Engage {npc:183958} and {npc:183961} to activate the rare.'
 L['dune_dominance_note'] = 'All three rare elites for the {achievement:15392} achievement spawn at this location.'
@@ -731,7 +738,7 @@ L['forgotten_protovault_note'] = 'Only available during the {wq:Frog\'it} world 
 L['grateful_boon_note'] = 'Difficult to reach without flying; use {spell:300728} or {spell:111771} to ascend the mountain. Soothe all 12 creatures in the area and {npc:185293} will spawn the treasure.'
 L['library_vault_note'] = 'Click tablets in the Lexical Grotto until you find the correct {spell:362062} buff to open the vault.'
 L['mistaken_ovoid_note'] = 'Inside Dimensional Falls cavern. You must collect 5x {item:190239} and bring them to the {npc:185280}.'
-L['ripened_protopear_note'] = 'Begin the {quest:64641} quest chain to gain access to the Blooming Foundry. Collect 5 {spell:367180} (green clouds) inside and bring them to the {npc:185416} to pollinate it.'
+L['ripened_protopear_note'] = 'Begin the {quest:64641} quest chain to gain access to the Blooming Foundry. Collect 5 {spell:367180} (green clouds) inside and bring them one by one to the {npc:185416} to pollinate it. Once it has grown 5 times, it will fall.'
 L['sphere_treasure_note'] = 'Carefully jump up the spheres until you reach the treasure.'
 L['submerged_chest_note'] = 'Absorb the |cFFFFFD00Dangerous Orb of Power|r to the south, then interact with the |cFFFFFD00Forgotten Pump|r near the treasure.'
 L['symphonic_vault_note'] = 'Examine the {npc:183998} to hear a sequence of four sounds. Each {npc:183950} in the room plays a single sound. Interact with them in the matching order to unlock the treasure.'
@@ -756,17 +763,17 @@ L['prying_eye_discovery'] = 'Prying Eye Discovery'
 L['prying_eye_discovery_note'] = 'Easier to reach once flying is unlocked.'
 L['pulp_covered_relic'] = 'Pulp-Covered Relic'
 L['requisites_originator_note'] = [[
-A machine that will give you different rewards once a day:
+A machine that will give you different rewards once a week:
 
-• |cFFFFFD00Access Auric Reserves|r = Enchanting mats + gold
-• |cFFFFFD00Retrieve Portable Anima Reservoir|r = Anima
-• |cFFFFFD00Generate Encoded Specie|r = Cyphers
-• |cFFFFFD00Restore Genesis Potencies|r = Genesis Motes + {item:189179} (chance)
-• |cFFFFFD00Blend Utility Components|r = Cyphers/Motes/Anima
-• |cFFFFFD00Synthesis Ancillary Combat Implement|r = Cypher Equipment
+• {spell:366667} = Enchanting mats + gold
+• {spell:366668} = Anima
+• {spell:366669} = Cyphers
+• {spell:366670} = Genesis Motes + {item:189179} (chance)
+• {spell:366671} = Cyphers/Motes/Anima
+• {spell:366672} = Cypher Equipment
 ]]
 L['rondure_cache'] = 'Rondure Cache'
-L['rondure_cache_note'] = 'An interactable forge at the top of a jumping puzzle inside the Rondure Alcove.'
+L['rondure_cache_note'] = 'An interactable forge at the top of a jumping puzzle inside the |cFFFFFD00Rondure Alcove|r.'
 L['sandworn_chest'] = 'Sandworn Chest'
 L['sandworn_chest_note'] = 'Loot 5x {item:190198} from mobs in the area to construct the {item:190197}.'
 L['sand_piles'] = 'Sand Piles'
@@ -782,7 +789,7 @@ All sand piles are found in the hidden Dormant Alcove chamber. Each pile require
 • Undulating Foliage
 ]]
 L['torn_ethereal_drape'] = 'Torn Ethereal Drape'
-L['torn_ethereal_drape_note'] = 'Found inside the |cFFFFFD00Fulgore Alcove|r. Activate the |cFFFFFD00Automa Consoles|r, then ride the {npc:183565s} to reach the ceiling.'
+L['torn_ethereal_drape_note'] = 'Found inside the |cFFFFFD00Fulgor Alcove|r. Activate the |cFFFFFD00Automa Consoles|r, then ride the {npc:183565s} to reach the ceiling.'
 
 L['cache_avian_nest'] = 'Avian Nest'
 L['cache_cypher_bound'] = 'Cypher Bound Chest'
@@ -792,7 +799,7 @@ L['cache_mawsworn_supply'] = 'Mawsworn Supply Chest'
 L['cache_tarachnid_eggs'] = 'Tarachnid Eggs'
 L['cache_shrouded_cypher'] = 'Shrouded Cypher Cache'
 L['cache_shrouded_cypher_note'] = [[
-These caches can only be seen while wearing an appropriate Cypher Equipment item:
+These caches can only be seen while having {spell:361917} buff and wearing an appropriate Cypher Equipment item:
 
 |cFF00FF00Enhances Pocopoc's perception, allowing it to discover additional hidden caches.|r
 ]]
@@ -825,7 +832,7 @@ L['schematic_mawdapted_raptora_note'] = 'Small chance to drop from {npc:181412s}
 L['schematic_microlicid_note'] = 'On the lowest branch of the floating tree, underneath some foliage.'
 L['schematic_omnipotential_core_note'] = 'Found in the |cFFFFFD00Rondure Alcove|r. The schematic is hidden behind the upper lip of the archway on the south-west side of the room.'
 L['schematic_prototickles_note'] = 'Attached to a floating chain inside the vines above the {npc:180978} rare.'
-L['schematic_prototype_fleetpod_note'] = 'Found inside the Camber Alcove. Interact with the {npc:184900} to start a minigame. Guide the snail through 5 rings without touching {npc:185455s} to win the schematic.'
+L['schematic_prototype_fleetpod_note'] = 'Found inside the |cFFFFFD00Camber Alcove|r. Interact with the {npc:184900} to start a minigame. Guide the snail through 5 rings without touching {npc:185455s} to win the schematic.'
 L['schematic_raptora_swooper_note'] = 'Found inside the Chamber of Shaping.'
 L['schematic_resonant_echo_note'] = 'Chance to be found inside a |cFFFFFD00Crystallized Echo of the First Song|r.'
 L['schematic_russet_bufonid_note'] = 'Chance to be found in the {item:187780} paragon cache.'
@@ -876,6 +883,12 @@ L['patient_bufonid_note_day7'] = 'Purchase 1x {item:187171} from the {npc:180114
 L['lost_comb'] = 'Lost Comb'
 L['soulshape_penguin_note'] = 'Located on top of the floating forge.'
 
+L['coreless_automa'] = 'wildlife automas'
+L['coreless_automa_note'] = 'Equipping an item with {spell:364480} will grant |cFFFFFD00Pocopoc|r the ability to take over creatures without consuming energy and will make earning this achievement faster.'
+L['coreless_automa_warning'] = '|cFFFF8C00Wait for the automa to actually start following you before telling Pocopoc to leave to avoid causing a bug that requires you to relog.|r'
+
+L['olea_manu'] = 'Sells collectibles and recipes in exchange for {currency:1979}.'
+
 L['options_icons_code_creature'] = '{achievement:15211}'
 L['options_icons_code_creature_desc'] = 'Display creature locations for the {achievement:15211} achievement.'
 L['options_icons_concordances'] = 'Lore Concordances'
@@ -895,4 +908,6 @@ L['options_icons_zereth_caches_desc'] = 'Display possible locations for cypher c
 L['options_icons_shrouded_cyphers'] = 'Shrouded Cypher Caches'
 L['options_icons_shrouded_cyphers_desc'] = 'Display possible locations for hidden cypher caches.'
 L['options_icons_mawsworn_supply_cache'] = 'Mawsworn Supply Caches'
-L['options_icons_mawsworn_supply_cache_desc'] = 'Display possible locations for mawsworn caches.'
+L['options_icons_mawsworn_supply_cache_desc'] = 'Display possible locations for mawsworn supply caches.'
+L['options_icons_coreless_automa'] = '{achievement:15542}'
+L['options_icons_coreless_automa_desc'] = 'Coreless automa locations for the {achievement:15542} achievement.'

@@ -33,6 +33,9 @@ function Map:Initialize(attrs)
     self.fgroups = {}
     self.settings = self.settings or false
 
+    self.focused = {}
+    self.hovered = {}
+
     setmetatable(self.nodes, {
         __newindex = function(nodes, coord, node)
             self:AddNode(coord, node)
@@ -161,16 +164,19 @@ function Map:Prepare()
     end
 end
 
-function Map:SetFocus(node, state, hover)
-    local attr = hover and '_hover' or '_focus'
+function Map:SetFocus(node, coord, state, hover)
+    local attr = hover and 'hovered' or 'focused'
     if node.fgroup then
         for i, coord in ipairs(self.fgroups[node.fgroup]) do
-            self.nodes[coord][attr] = state
+            self[attr][coord] = state
         end
     else
-        node[attr] = state
+        self[attr][coord] = state
     end
 end
+
+function Map:IsFocused(coord) return self.focused[coord] end
+function Map:IsHovered(coord) return self.hovered[coord] end
 
 -------------------------------------------------------------------------------
 ---------------------------- MINIMAP DATA PROVIDER ----------------------------
@@ -228,18 +234,23 @@ function MinimapDataProvider:RefreshAllData()
 
     for coord, node in pairs(map.nodes) do
         if node._prepared and map:IsNodeEnabled(node, coord, true) then
-            -- If this icon has a glow enabled, render it
-            local glow = node:GetGlow(map.id, true)
-            if glow then
-                glow[1] = coord -- update POI coord for this placement
-                glow:Render(self, MinimapPinTemplate)
-            end
+            local focused = map:IsFocused(coord)
+            local hovered = map:IsHovered(coord)
 
-            -- Render any POIs this icon has registered
-            if node.pois and (node._focus or node._hover) then
-                for i, poi in ipairs(node.pois) do
-                    if poi:IsEnabled() then
-                        poi:Render(self, MinimapPinTemplate)
+            if focused or hovered then
+                -- If this icon has a glow enabled, render it
+                local glow = node:GetGlow(map.id, true, focused)
+                if glow then
+                    glow[1] = coord -- update POI coord for this placement
+                    glow:Render(self, MinimapPinTemplate)
+                end
+
+                -- Render any POIs this icon has registered
+                if node.pois then
+                    for i, poi in ipairs(node.pois) do
+                        if poi:IsEnabled() then
+                            poi:Render(self, MinimapPinTemplate)
+                        end
                     end
                 end
             end
@@ -325,19 +336,36 @@ function WorldMapDataProvider:RefreshAllData(fromOnShow)
 
     for coord, node in pairs(map.nodes) do
         if node._prepared and map:IsNodeEnabled(node, coord, false) then
-            -- If this icon has a glow enabled, render it
-            local glow = node:GetGlow(map.id, false)
-            if glow then
-                glow[1] = coord -- update POI coord for this placement
-                glow:Render(self:GetMap(), WorldMapPinTemplate)
-            end
+            local focused = map:IsFocused(coord)
+            local hovered = map:IsHovered(coord)
 
-            -- Render any POIs this icon has registered
-            if node.pois and (node._focus or node._hover) then
-                for i, poi in ipairs(node.pois) do
-                    if poi:IsEnabled() then
-                        poi:Render(self:GetMap(), WorldMapPinTemplate)
+            if focused or hovered then
+                -- If this icon has a glow enabled, render it
+                local glow = node:GetGlow(map.id, false, focused)
+                if glow then
+                    glow[1] = coord -- update POI coord for this placement
+                    glow:Render(self:GetMap(), WorldMapPinTemplate)
+                end
+
+                -- Render any POIs this icon has registered
+                if node.pois then
+                    for i, poi in ipairs(node.pois) do
+                        if poi:IsEnabled() then
+                            poi:Render(self:GetMap(), WorldMapPinTemplate)
+                        end
                     end
+                end
+            elseif _G['HandyNotes_ZarPluginsDevelopment'] and
+                (ns.IsInstance(node, ns.node.Rare) or
+                    ns.IsInstance(node, ns.node.Treasure)) and not node.quest then
+                -- Special red glow for certain common node types missing quest IDs
+                -- This helps highlight things that still need to be looted/killed
+                -- during development of new patches.
+                local glow = node:GetGlow(map.id, false)
+                if glow then
+                    glow[1] = coord -- update POI coord for this placement
+                    glow.r, glow.g, glow.b = 1, 0, 0
+                    glow:Render(self:GetMap(), WorldMapPinTemplate)
                 end
             end
         end

@@ -523,7 +523,7 @@ function CanIMogIt:SlashCommands(input)
         self:Print(CanIMogIt.Utils.tablelength(CanIMogIt.db.global.appearances))
     elseif input == 'PleaseDeleteMyDB' then
         self:DBReset()
-    elseif input == 'dbprint' then
+    elseif input == 'printdb' then
         CanIMogItOptions['databaseDebug'] = not CanIMogItOptions['databaseDebug']
         self:Print("Database prints: " .. tostring(CanIMogItOptions['databaseDebug']))
     elseif input == 'refresh' then

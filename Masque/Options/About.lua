@@ -1,7 +1,7 @@
 --[[
 
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
-	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+	documentation and license information, please visit https://github.com/SFX-WoW/Masque.
 
 	* File...: Options\About.lua
 	* Author.: StormFX
@@ -13,10 +13,10 @@
 local _, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
-local tostring = tostring
+local concat, tostring = table.concat, tostring
 
 ----------------------------------------
 -- Locals
@@ -24,6 +24,20 @@ local tostring = tostring
 
 -- @ Options\Core
 local Setup = Core.Setup
+
+----------------------------------------
+-- Supporters
+---
+
+local COLOR_1 = "|cff0070dd"
+--local COLOR_2 = "|cffa335ee"
+--local COLOR_3 = "|cffff8000"
+
+local Supporters = {
+	-- [1]
+	COLOR_1.."Amenitra|r",
+	COLOR_1.."S9th|r",
+}
 
 ----------------------------------------
 -- Setup
@@ -48,16 +62,17 @@ function Setup.About(self)
 		order = 3,
 		args = {
 			Head = {
-				type = "description",
-				name = "|cffffcc00"..L["About Masque"].."|r"..CRLF,
-				fontSize = "medium",
+				type = "header",
+				name = L["About Masque"],
 				order = 1,
+				disabled = true,
+				dialogControl = "SFX-Header",
 			},
 			Desc = {
 				type = "description",
 				name = Desc,
-				fontSize = "medium",
 				order = 2,
+				fontSize = "medium",
 			},
 			Info = {
 				type = "group",
@@ -125,6 +140,23 @@ function Setup.About(self)
 		Order = Order + 1
 	end
 
+	-- Populate the Discord field.
+	args.Discord = {
+		type = "input",
+		name = "Discord",
+		arg  = self.Discord,
+		order = Order,
+		dialogControl = "SFX-Info-URL",
+	}
+	Order = Order + 1
+
+	args["SPC"..Order] = {
+		type = "description",
+		name = " ",
+		order = Order,
+	}
+	Order = Order + 1
+
 	-- Populate the Website fields.
 	Count = #Websites
 	if Count > 0 then
@@ -145,7 +177,18 @@ function Setup.About(self)
 			name = " ",
 			order = Order,
 		}
+		Order = Order + 1
 	end
+
+	-- Populate the Supporters field.
+	args.Supporters = {
+		type = "input",
+		name = L["Supporters"],
+		arg  = concat(Supporters, ", "),
+		order = Order,
+		disabled = true,
+		dialogControl = "SFX-Info",
+	}
 
 	self.Options.args.Core.args.About = Options
 
