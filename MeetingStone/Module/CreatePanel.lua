@@ -299,7 +299,7 @@ function CreatePanel:OnInitialize()
         local _, localizedFaction = UnitFactionGroup("player");
         CrossFactionGroup:SetText(LFG_LIST_CROSS_FACTION:format(localizedFaction))
         GUI:Embed(CrossFactionGroup, 'Tooltip')
-        CrossFactionGroup:SetTooltip(LFG_LIST_CROSS_FACTION_TOOLTIP:format(localizedFaction))
+        CrossFactionGroup:SetTooltip(LFG_LIST_CROSS_FACTION_TOOLTIP:format(localizedFaction), " ", "爱不易备注：暴雪的系统目前有BUG, 即使选了这个选项, 对面阵营的也能看到并申请。等哪天暴雪修复了，自然就好使了")
     end
 
     local PrivateGroup = CreateFrame('CheckButton', nil, VoiceItemLevelWidget) do
