@@ -67,7 +67,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220531145143"),
+	Revision = parseCurseDate("20220608223844"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -82,8 +82,8 @@ elseif isClassic then
 	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 38, "5e831f6"
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.37 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 5, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "2.5.38 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 6, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 38, "5e831f6"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -3718,7 +3718,7 @@ do
 		if mod and eId and success and (not mod.minSyncRevision or modRevision >= mod.minSyncRevision) and not eeSyncSender[sender] then
 			eeSyncSender[sender] = true
 			eeSyncReceived = eeSyncReceived + 1
-			if eeSyncReceived > 2 then -- need at least 3 person to combat end. (for security)
+			if eeSyncReceived > (isRetail and 2 or 0) then -- need at least 3 person to combat end. (for security) (only 1 on classic because classic breaks too badly otherwise)
 				DBM:EndCombat(mod, success == 0)
 			end
 		end
@@ -4731,7 +4731,11 @@ do
 	local function delayedGCSync(modId, difficultyIndex, difficultyModifier, name, thisTime, wipeHP)
 		if not statusGuildDisabled and updateNotificationDisplayed == 0 then
 			if thisTime then--Wipe event
-				SendAddonMessage(DBMPrefix, "GCE\t"..modId.."\t6\t1\t"..thisTime.."\t"..difficultyIndex.."\t"..difficultyModifier.."\t"..name.."\t"..wipeHP, "GUILD")
+				if wipeHP then
+					SendAddonMessage(DBMPrefix, "GCE\t"..modId.."\t6\t1\t"..thisTime.."\t"..difficultyIndex.."\t"..difficultyModifier.."\t"..name.."\t"..wipeHP, "GUILD")
+				else
+					SendAddonMessage(DBMPrefix, "GCE\t"..modId.."\t6\t0\t"..thisTime.."\t"..difficultyIndex.."\t"..difficultyModifier.."\t"..name, "GUILD")
+				end
 			else
 				SendAddonMessage(DBMPrefix, "GCB\t"..modId.."\t3\t"..difficultyIndex.."\t"..difficultyModifier.."\t"..name, "GUILD")
 			end
@@ -4999,6 +5003,7 @@ do
 							self:AddMsg(L.COMBAT_STARTED:format(difficultyText..name))
 							local check = not statusGuildDisabled and (isRetail and ((difficultyIndex == 8 or difficultyIndex == 14 or difficultyIndex == 15 or difficultyIndex == 16) and InGuildParty()) or difficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10) -- Classic
 							if check and not self.Options.DisableGuildStatus then--Only send relevant content, not guild beating down lich king or LFR.
+								self:Unschedule(delayedGCSync, modId)
 								self:Schedule(1.5, delayedGCSync, modId, difficultyIndex, difficultyModifier, name)
 							end
 						end
@@ -5171,6 +5176,7 @@ do
 								((usedDifficultyIndex == 8 or usedDifficultyIndex == 14 or usedDifficultyIndex == 15 or usedDifficultyIndex == 16) and InGuildParty()) or
 								usedDifficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10 -- Classic
 							if check and not self.Options.DisableGuildStatus then
+								self:Unschedule(delayedGCSync, modId)
 								self:Schedule(1.5, delayedGCSync, modId, usedDifficultyIndex, difficultyModifier, name, strFromTime(thisTime), wipeHP)
 							end
 						end
@@ -5276,7 +5282,8 @@ do
 					end
 					local check = not statusGuildDisabled and (isRetail and ((usedDifficultyIndex == 8 or usedDifficultyIndex == 14 or usedDifficultyIndex == 15 or usedDifficultyIndex == 16) and InGuildParty()) or usedDifficultyIndex ~= 1 and DBM:GetNumGuildPlayersInZone() >= 10) -- Classic
 					if not scenario and thisTimeString and check and not self.Options.DisableGuildStatus and updateNotificationDisplayed == 0 then
-						SendAddonMessage(DBMPrefix, "GCE\t"..modId.."\t6\t0\t"..thisTimeString.."\t"..usedDifficultyIndex.."\t"..difficultyModifier.."\t"..name, "GUILD")
+						self:Unschedule(delayedGCSync, modId)
+						self:Schedule(1.5, delayedGCSync, modId, usedDifficultyIndex, difficultyModifier, name, thisTimeString)
 					end
 					self:Schedule(1, self.AddMsg, self, msg)
 				end
@@ -5564,7 +5571,7 @@ function DBM:GetCurrentInstanceDifficulty()
 	local _, instanceType, difficulty, difficultyName, _, _, _, _, instanceGroupSize = GetInstanceInfo()
 	if difficulty == 0 or difficulty == 172 or (difficulty == 1 and instanceType == "none") or (C_Garrison and C_Garrison:IsOnGarrisonMap()) then--draenor field returns 1, causing world boss mod bug.
 		return "worldboss", RAID_INFO_WORLD_BOSS.." - ", difficulty, instanceGroupSize, 0
-	elseif difficulty == 1 or difficulty == 173 or difficulty == 184 then--5 man Normal Dungeon
+	elseif difficulty == 1 or difficulty == 173 or difficulty == 184 or difficulty == 150 then--5 man Normal Dungeon
 		return "normal5", difficultyName.." - ", difficulty, instanceGroupSize, 0
 	elseif difficulty == 2 or difficulty == 174 then--5 man Heroic Dungeon
 		return "heroic5", difficultyName.." - ", difficulty, instanceGroupSize, 0
@@ -5585,7 +5592,7 @@ function DBM:GetCurrentInstanceDifficulty()
 		return "normal40", difficultyName.." - ",difficulty, instanceGroupSize, 0
 	elseif difficulty == 11 then--Heroic Scenario (mostly Mists of pandaria)
 		return "heroicscenario", difficultyName.." - ",difficulty, instanceGroupSize, 0
-	elseif difficulty == 12 then--Normal Scenario (mostly Mists of pandaria)
+	elseif difficulty == 12 or difficulty == 152 then--Normal Scenario (mostly Mists of pandaria and Visions of Nzoth scenarios)
 		return "normalscenario", difficultyName.." - ",difficulty, instanceGroupSize, 0
 	elseif difficulty == 14 then--Flexible Normal Raid
 		return "normal", difficultyName.." - ", difficulty, instanceGroupSize, 0
@@ -8602,7 +8609,8 @@ do
 			end
 		else
 			if DBM.Options.SpamSpecInformationalOnly and specInstructionalRemapTable[announceType] then
-				text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName)
+				local newType = specInstructionalRemapTable[announceType]
+				text = L.AUTO_SPEC_WARN_TEXTS[newType]:format(spellName)
 			else
 				text = L.AUTO_SPEC_WARN_TEXTS[announceType]:format(spellName)
 			end
@@ -10302,6 +10310,10 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, ico
 		end
 		self.findFastestComputer[#self.findFastestComputer + 1] = name
 		self.localization.options[name] = L.AUTO_ICONS_OPTION_NPCS:format(spellId)
+	elseif iconType == 6 then
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_ALPHA:format(spellId)
+	elseif iconType == 7 then
+		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_ROSTER:format(spellId)
 	else--Type 0 (Generic for targets)
 		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS:format(spellId)
 	end

@@ -368,7 +368,10 @@ function BM_CreateBackground(frame, name, ...)
     if not frame.__blizzMoveHooked then
         frame.originSetPoint = frame.SetPoint
         hooksecurefunc(frame, "SetPoint", function(self, ...)
+            if self._abyuiReAnchoring then return end
+            self._abyuiReAnchoring = 1
             reAnchor(self)
+            self._abyuiReAnchoring = nil
         end)
         frame.__blizzMoveHooked = 1
     end

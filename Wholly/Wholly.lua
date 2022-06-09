@@ -426,6 +426,10 @@
 --			Changes retail interface to 90100.
 --		085	Updates _OnUpdate to ensure coordinates are returned before updating locations.
 --			Changes retail interface to 90105, BCC to 20502 and Classic to 11400.
+--      086 Changes retail interface to 90205, BCC to 20504 and Classic to 11402.
+--			Adds support for quests that only become available after the next daily reset.
+--			Adds an option to hide the quest ID on the Quest Frame.
+--			Adds support for quests that only become available when currency requirements are met.
 --
 --	Known Issues
 --
@@ -663,6 +667,13 @@ if nil == Wholly or Wholly.versionNumber < Wholly_File_Version then
 		configurationScript23 = function(self)
 --									Wholly.ToggleWorldMapFrameMixin(DungeonEntranceDataProviderMixin, WhollyDatabase.hidesDungeonEntrances)
 --									Wholly.ToggleWorldMapFrameMixin(VignetteDataProviderMixin, WhollyDatabase.hidesWorldMapTreasures)
+								end,
+		configurationScript24 = function(self)
+									if WhollyDatabase.hidesIDOnQuestPanel then
+										com_mithrandir_whollyQuestInfoFrame:Hide()
+									else
+										com_mithrandir_whollyQuestInfoFrame:Show()
+									end
 								end,
 		coordinates = nil,
 		currentFrame = nil,
@@ -1220,6 +1231,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			['HIDE_BLIZZARD_WORLD_MAP_CALLING_QUESTS'] = 'Hide Blizzard calling quests',
 			['HIDE_BLIZZARD_WORLD_MAP_CAMPAIGN_QUESTS'] = 'Hide Blizzard campaign quests',
 			['HIDE_BLIZZARD_WORLD_MAP_WORLD_QUESTS'] = 'Hide Blizzard world quests',
+			['HIDE_ID_ON_QUEST_FRAME'] = 'Hide quest ID on Quest Frame',
 			},
 		tooltip = nil,
 		updateDelay = 0.5,
@@ -2804,10 +2816,10 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			elseif questCode == 'a' or questCode == 'b' or questCode == '^' then
 				return format("|c%s"..AVAILABLE_QUEST.."|r", colorCode)
 			elseif questCode == '@' then
-				return format("|c%s%s %s %d|r", colorCode, Grail:NPCName(100000000 + subcode), self.s.LEVEL, numeric)
+				return format("|c%s%s %s %d|r", colorCode, GRAIL:NPCName(100000000 + subcode), self.s.LEVEL, numeric)
 			elseif questCode == '#' then
-				return format(GARRISON_MISSION_TIME, format("|c%s%s|r", colorCode, Grail:MissionName(numeric) or numeric))
---				return format("Mission Needed: |c%s%s|r", colorCode, Grail:MissionName(numeric))	-- GARRISON_MISSION_TIME
+				return format(GARRISON_MISSION_TIME, format("|c%s%s|r", colorCode, GRAIL:MissionName(numeric) or numeric))
+--				return format("Mission Needed: |c%s%s|r", colorCode, GRAIL:MissionName(numeric))	-- GARRISON_MISSION_TIME
 			elseif questCode == '&' then
 				local message = format(REQUIRES_AZERITE_LEVEL_TOOLTIP, numeric)
 				return format("|c%s%s|r", colorCode, message)
@@ -2817,6 +2829,14 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 				return format("|c%s%s - %s%s|r", colorCode, LANDING_PAGE_RENOWN_LABEL, covenantNameToDisplay, comparisonToDisplay, numeric)
 			elseif questCode == '%' then
 				return format("|c%s%s|r", colorCode, self:_QuestName(400000 + numeric))
+			elseif questCode == '(' then
+				local todayResetDate = C_DateAndTime.AdjustTimeByMinutes(C_DateAndTime.GetCurrentCalendarTime(), (C_DateAndTime.GetSecondsUntilDailyReset() - (86400 * 1)) / 60)
+				local presentableDate = strformat("%4d-%02d-%02d %02d:%02d", todayResetDate.year, todayResetDate.monthDay, todayResetDate.day, todayResetDate.hour, todayResetDate.minute)
+				local completedColorCode = GRAIL:IsQuestCompleted(numeric) and WDB.color['C'] or WDB.color['P']
+				return format("|c%s%s |r|c%s< %s|r", completedColorCode, self:_QuestName(numeric), colorCode, presentableDate)
+			elseif questCode == ')' then
+				local currencyName, currentAmount = GRAIL:GetCurrencyInfo(subcode)
+				return format("|c%s%s|r", colorCode, currencyName)
 			else
 				questId = numeric
 				local typeString = ""
@@ -3941,6 +3961,7 @@ end
 				fontString:SetSize(60, 20)
 				fontString:SetPoint("CENTER")	-- needed to add this even though it worked without this in XML
 				fontString:SetText("None")
+				self.configurationScript24()	-- hides the frame based on preferences
 			end
 		end,
 
@@ -5819,6 +5840,7 @@ end
 	Wholly.configuration[S.OTHER_PREFERENCE] = {
 		{ S.OTHER_PREFERENCE },
 		{ S.PANEL_UPDATES, 'updatesPanelWhenZoneChanges', 'configurationScript1' },
+		{ S.HIDE_ID_ON_QUEST_FRAME, 'hidesIDOnQuestPanel', 'configurationScript24' },
 		{ S.SHOW_BREADCRUMB, 'displaysBreadcrumbs', 'configurationScript5' },
 		{ S.SHOW_BREADCRUMB_MESSAGE, 'displaysBreadcrumbMessages', 'configurationScript5' },
 		{ S.SHOW_LOREMASTER, 'showsLoremasterOnly', 'configurationScript4' },

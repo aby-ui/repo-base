@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2440, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220203061508")
+mod:SetRevision("20220607193357")
 mod:SetCreatureID(175559)
 mod:SetEncounterID(2422)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -152,9 +152,6 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:OnCombatEnd()
---	if self.Options.RangeFrame then
---		DBM.RangeCheck:Hide()
---	end
 	if self.Options.NPAuraOnNecroticEmpowerment or self.Options.NPAuraOnFixate then
 		DBM.Nameplate:Hide(true, nil, nil, nil, true, true)
 	end

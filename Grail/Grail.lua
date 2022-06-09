@@ -545,6 +545,11 @@
 --		117 Updates some Quest/NPC information.
 --			Updates some Ve'nari localized reputation levels.
 --			Changes retail interface to 90105, BCC to 20502 and Classic to 11400.
+--      118 Changes retail interface to 90205, BCC to 20504 and Classic to 11402.
+--          Updates some Quest/NPC information.
+--          Adds factions for Zereth Mortis (9.2 release).
+--			Adds support for quests that only become available after the next daily reset.
+--			Adds support for quests that only become available when currency requirements are met.
 --
 --	Known Issues
 --
@@ -1207,6 +1212,7 @@ experimental = false,	-- currently this implementation does not reduce memory si
 							[1632] = true, -- Thorgast 9.0 ?2? Kaltherzinterstitia Ebene 1
 							[1796] = true, -- Thorgast 9.0 ?2? Kaltherzinterstitia Ebene 5
 							[1630] = true, -- Thorgast 9.0 ?2? Kaltherzinterstitia Ebene 6
+							[1970] = true, -- Zereth Mortis
 
 							}
 						self.quest.name = {
@@ -2085,7 +2091,7 @@ end,
 				self:_PostNotification("Accept", theQuestId)
 				-- Check to see whether there are any other quests that are also marked by Blizzard as being completed now.
 				if self.GDE.debug then
-					self:_PostDelayedNotification("QuestAcceptCheck", theQuestId, 1.0)
+					self:_CoalesceDelayedNotification("QuestAcceptCheck", 1.0, theQuestId)
 				end
 
 			end,
@@ -2677,7 +2683,7 @@ end,
 			[6] = { 1445, 1515, 1520, 1679, 1681, 1682, 1708, 1710, 1711, 1731, 1732, 1733, 1735, 1736, 1737, 1738, 1739, 1740, 1741, 1847, 1848, 1849, 1850, },
 			[7] = { 1815, 1828, 1833, 1859, 1860, 1862, 1883, 1888, 1894, 1899, 1900, 1919, 1947, 1948, 1975, 1984, 1989, 2018, 2045, 2097, 2098, 2099, 2100, 2101, 2102, 2135, 2165, 2170, },
 			[8] = { 2103, 2111, 2120, 2156, 2157, 2158, 2159, 2160, 2161, 2162, 2163, 2164, 2233, 2264, 2265, 2371, 2372, 2373, 2374, 2375, 2376, 2377, 2378, 2379, 2380, 2381, 2382, 2383, 2384, 2385, 2386, 2387, 2388, 2389, 2390, 2391, 2392, 2395, 2396, 2397, 2398, 2400, 2401, 2415, 2417, 2427, },
-			[9] = { 2407, 2410, 2413, 2432, 2439, 2445, 2446, 2447, 2448, 2449, 2450, 2451, 2452, 2453, 2454, 2455, 2456, 2457, 2458, 2459, 2460, 2461, 2462, 2463, 2464, 2465, 2470, 2472, },
+			[9] = { 2407, 2410, 2413, 2432, 2439, 2445, 2446, 2447, 2448, 2449, 2450, 2451, 2452, 2453, 2454, 2455, 2456, 2457, 2458, 2459, 2460, 2461, 2462, 2463, 2464, 2465, 2469, 2470, 2472, 2478, },
 			},
 
 		-- These reputations use the friendship names instead of normal reputation names
@@ -2996,8 +3002,10 @@ end,
 			["99F"] = "Marasmius", -- 2463
 			["9A0"] = "Court of Night", -- 2464
 			["9A1"] = "The Wild Hunt",	-- 2465
+            ["9A5"] = "Fractal Lore", -- 2469
 			["9A6"] = "Death's Advance", -- 2470
 			["9A8"] = "The Archivists' Codex", -- 2472
+            ["9AE"] = "The Enlightened", -- 2478
 			},
 
 		reputationMappingFaction = {
@@ -3260,8 +3268,10 @@ end,
 			["99F"] = "Neutral", -- 2463	-- TODO: Determine faction
 			["9A0"] = "Neutral", -- 2464	-- TODO: Determine faction
 			["9A1"] = "Neutral", -- 2465	-- TODO: Determine faction
+            ["9A5"] = "Neutral", -- 2469    -- TODO: Determine faction
 			["9A6"] = "Neutral", -- 2470	-- TODO: Determine faction
 			["9A8"] = "Neutral", -- 2472	-- TODO: Determine faction
+            ["9AE"] = "Neutral", -- 2478    -- TODO: Determine faction
 			},
 
 		slashCommandOptions = {},
@@ -3731,7 +3741,7 @@ end,
 			self.invalidateControl[self.invalidateGroupCurrentWorldQuests] = {}
 --			self.availableWorldQuests = {}
 
-			local mapIdsForWorldQuests = { 14, 62, 625, 627, 630, 634, 641, 646, 650, 680, 790, 830, 882, 885, 862, 863, 864, 895, 896, 942, 1161, 1355, 1462, 1525, 1527, 1530, 1533, 1536, 1543, 1565 }
+			local mapIdsForWorldQuests = { 14, 62, 625, 627, 630, 634, 641, 646, 650, 680, 790, 830, 882, 885, 862, 863, 864, 895, 896, 942, 1161, 1355, 1462, 1525, 1527, 1530, 1533, 1536, 1543, 1565, 1970 }
 
 			for _, mapId in pairs(mapIdsForWorldQuests) do
 				self:_PrepareWorldQuestSelfNPCs(mapId)
@@ -4146,6 +4156,15 @@ end,
 				end
 			end
 			return currencyName, currencyAmount
+		end,
+
+		CurrencyAmountMeetsOrExceeds = function(self, currencyIndex, soughtAmount)
+			local retval = false
+			local _, currentAmount = self:GetCurrencyInfo(currencyIndex)
+			if nil ~= currentAmount and currentAmount >= soughtAmount then
+				retval = true
+			end
+			return retval
 		end,
 
 		ArtifactKnowledgeLevel = function(self)
@@ -4605,6 +4624,10 @@ end,
 					retval = self:_CovenantRenownMeetsOrExceeds(subcode, numeric) and 'P' or 'C'
 				elseif '%' == code then
 					retval = self:_GarrisonTalentResearched(numeric) and 'C' or 'P'
+				elseif '(' == code then
+					retval = self:_QuestTurnedInBeforeTodaysReset(numeric) and 'C' or 'P'
+				elseif ')' == code then
+					retval = self:CurrencyAmountMeetsOrExceeds(subcode, numeric) and 'C' or 'P'
 				elseif 'h' == code then
 					retval = (bitband(questBitMask, self.bitMaskEverCompleted) > 0) and 'P' or 'C'
 				else	-- A, B, C, D, E, H, O, X
@@ -4905,7 +4928,9 @@ end,
 							end
 						elseif 'N' == code then
 							local suggestedVariableLevel = tonumber(strsub(questCode, 2))
-							if suggestedVariableLevel == self:QuestLevelVariableMax(questId) then
+							if suggestedVariableLevel == self:QuestLevel(questId) then
+								shouldAdd = false
+							elseif suggestedVariableLevel == self:QuestLevelVariableMax(questId) then
 								shouldAdd = false
 							else
 								self:_SetQuestVariableLevel(questId, suggestedVariableLevel)
@@ -5669,7 +5694,7 @@ end,
 		--	of that type does not already exist in the system.  Using this allows the code to effectively
 		--	post as many of a type of notification as it wants, but when the delayed notifications are
 		--	processed only one type of notification will be sent to observers.
-		_CoalesceDelayedNotification = function(self, notificationName, delay)
+		_CoalesceDelayedNotification = function(self, notificationName, delay, questId)
 			local needToPost = true
 			if nil ~= self.delayedNotifications then
 				for i = 1, #(self.delayedNotifications) do
@@ -5679,7 +5704,7 @@ end,
 				end
 			end
 			if needToPost then
-				self:_PostDelayedNotification(notificationName, nil, delay)
+				self:_PostDelayedNotification(notificationName, questId, delay)
 			end
 		end,
 
@@ -6240,7 +6265,7 @@ end,
 					numeric = tonumber(strsub(questCode, 2, 5))
 
 				-- Cssssn+ (ssss must be numbers)
-				elseif '=' == code or '<' == code or '>' == code then
+				elseif '=' == code or '<' == code or '>' == code or ')' == code then
 					subcode = tonumber(strsub(questCode, 2, 5))
 					numeric = tonumber(strsub(questCode, 6))
 
@@ -6623,8 +6648,8 @@ end
 			if nil ~= codeString then
 				local questId = p and p.q or nil
 				local dangerous = p and p.d or false
-				local questCompleted, questInLog, questStatus, questEverCompleted, canAcceptQuest, spellPresent, achievementComplete, itemPresent, questEverAbandoned, professionGood, questEverAccepted, hasSkill, spellEverCast, spellEverExperienced, groupDone, groupAccepted, reputationUnder, reputationExceeds, factionMatches, phaseMatches, iLvlMatches, garrisonBuildingMatches, needsMatchBoth, levelMeetsOrExceeds, groupDoneOrComplete, achievementNotComplete, levelLessThan, playerAchievementComplete, playerAchievementNotComplete, garrisonBuildingNPCMatches, classMatches, artifactKnowledgeLevelMatches, worldQuestAvailable, friendshipReputationUnder, friendshipReputationExceeds, artifactLevelMatches, missionMatches, threatQuestAvailable, azeriteLevelMatches, renownExceeds, callingQuestAvailable, garrisonTalentResearched, questTurnedIndBeforeLastWeeklyReset = false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
-				local checkLog, checkEver, checkStatusComplete, shouldCheckTurnin, checkSpell, checkAchievement, checkItem, checkItemLack, checkEverAbandoned, checkNeverAbandoned, checkProfession, checkEverAccepted, checkHasSkill, checkNotCompleted, checkNotSpell, checkEverCastSpell, checkEverExperiencedSpell, checkGroupDone, checkGroupAccepted, checkReputationUnder, checkReputationExceeds, checkSkillLack, checkFaction, checkPhase, checkILvl, checkGarrisonBuilding, checkStatusNotComplete, checkLevelMeetsOrExceeds, checkGroupDoneOrComplete, checkAchievementLack, checkLevelLessThan, checkPlayerAchievement, checkPlayerAchievementLack, checkGarrisonBuildingNPC, checkNotTurnin, checkNotLog, checkClass, checkArtifactKnowledgeLevel, checkWorldQuestAvailable, checkFriendshipReputationExceeds, checkFriendshipReputationUnder, checkArtifactLevel, checkMission, checkNever, checkThreatQuestAvailable, checkAzeriteLevel, checkRenownLevel, checkCallingQuestAvailable, checkGarrisonTalent, checkQuestTurnedInBeforeLastWeeklyReset, checkRenownDoesNotMeetOrExceed, checkNotClass = false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+				local questCompleted, questInLog, questStatus, questEverCompleted, canAcceptQuest, spellPresent, achievementComplete, itemPresent, questEverAbandoned, professionGood, questEverAccepted, hasSkill, spellEverCast, spellEverExperienced, groupDone, groupAccepted, reputationUnder, reputationExceeds, factionMatches, phaseMatches, iLvlMatches, garrisonBuildingMatches, needsMatchBoth, levelMeetsOrExceeds, groupDoneOrComplete, achievementNotComplete, levelLessThan, playerAchievementComplete, playerAchievementNotComplete, garrisonBuildingNPCMatches, classMatches, artifactKnowledgeLevelMatches, worldQuestAvailable, friendshipReputationUnder, friendshipReputationExceeds, artifactLevelMatches, missionMatches, threatQuestAvailable, azeriteLevelMatches, renownExceeds, callingQuestAvailable, garrisonTalentResearched, questTurnedIndBeforeLastWeeklyReset, questTurnedIndBeforeTodaysReset, currencyAmountMatches = false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
+				local checkLog, checkEver, checkStatusComplete, shouldCheckTurnin, checkSpell, checkAchievement, checkItem, checkItemLack, checkEverAbandoned, checkNeverAbandoned, checkProfession, checkEverAccepted, checkHasSkill, checkNotCompleted, checkNotSpell, checkEverCastSpell, checkEverExperiencedSpell, checkGroupDone, checkGroupAccepted, checkReputationUnder, checkReputationExceeds, checkSkillLack, checkFaction, checkPhase, checkILvl, checkGarrisonBuilding, checkStatusNotComplete, checkLevelMeetsOrExceeds, checkGroupDoneOrComplete, checkAchievementLack, checkLevelLessThan, checkPlayerAchievement, checkPlayerAchievementLack, checkGarrisonBuildingNPC, checkNotTurnin, checkNotLog, checkClass, checkArtifactKnowledgeLevel, checkWorldQuestAvailable, checkFriendshipReputationExceeds, checkFriendshipReputationUnder, checkArtifactLevel, checkMission, checkNever, checkThreatQuestAvailable, checkAzeriteLevel, checkRenownLevel, checkCallingQuestAvailable, checkGarrisonTalent, checkQuestTurnedInBeforeLastWeeklyReset, checkRenownDoesNotMeetOrExceed, checkNotClass, checkQuestTurnedInBeforeTodaysReset, checkCurrencyAmount = false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
 				local forcingProfessionOnly, forcingReputationOnly = false, false
 
 				if forceSpecificChecksOnly then
@@ -6717,6 +6742,8 @@ end
 				elseif code == '*' then checkRenownDoesNotMeetOrExceed = true
 				elseif code == '^' then checkCallingQuestAvailable = true
 				elseif code == '%' then checkGarrisonTalent = true
+				elseif code == '(' then checkQuestTurnedInBeforeTodaysReset = true
+				elseif code == ')' then checkCurrencyAmount = true
 				else print("|cffff0000Grail|r _EvaluateCodeAsPrerequisite cannot process code", codeString)
 				end
 
@@ -6826,6 +6853,12 @@ end
 				if checkQuestTurnedInBeforeLastWeeklyReset then
 					questTurnedIndBeforeLastWeeklyReset = Grail:_QuestTurnedInBeforeLastWeeklyReset(value)
 				end
+				if checkQuestTurnedInBeforeTodaysReset then
+					questTurnedIndBeforeTodaysReset = Grail:_QuestTurnedInBeforeTodaysReset(value)
+				end
+				if checkCurrencyAmount then
+					currencyAmountMatches = Grail:CurrencyAmountMeetsOrExceeds(subcode, value)
+				end
 
 				good =
 					(code == ' ') or
@@ -6880,7 +6913,9 @@ end
 					(checkRenownDoesNotMeetOrExceed and not renownExceeds) or
 					(checkCallingQuestAvailable and callingQuestAvailable) or
 					(checkGarrisonTalent and garrisonTalentResearched) or
-					(checkQuestTurnedInBeforeLastWeeklyReset and questTurnedIndBeforeLastWeeklyReset)
+					(checkQuestTurnedInBeforeLastWeeklyReset and questTurnedIndBeforeLastWeeklyReset) or
+					(checkQuestTurnedInBeforeTodaysReset and questTurnedIndBeforeTodaysReset) or
+					(checkCurrencyAmount and currencyAmountMatches)
 				if not good then tinsert(failures, codeString) end
 			end
 
@@ -7445,7 +7480,7 @@ end
 				end
 			end
 -- And back to the original code...
-			if #newlyCompleted > 0 then
+			if #newlyCompleted > 0 or Grail.GDE.debug then
 				local lootingNameToUse = self.lootingName or "NO LOOTING OBJECT"
 				local guidParts = { strsplit('-', self.lootingGUID or "") }
 				if nil ~= guidParts and guidParts[1] == "GameObject" and self.lootingName ~= self.defaultUnfoundLootingName then
@@ -8245,6 +8280,10 @@ end
 		--  @requires Grail.playerLocale
 		LoadLocalizedQuestNames = function(self)
 			self:LoadAddOn("Grail-Quests-" .. self.playerLocale)
+			self.quest.name[62017]=SPELL_FAILED_CUSTOM_ERROR_523	-- Necrolord
+			self.quest.name[62019]=SPELL_FAILED_CUSTOM_ERROR_521	-- Night Fae
+			self.quest.name[62020]=SPELL_FAILED_CUSTOM_ERROR_520	-- Venthyr
+			self.quest.name[62023]=SPELL_FAILED_CUSTOM_ERROR_522	-- Kyrian
 		end,
 
 		---
@@ -8876,7 +8915,7 @@ end
 		end,
 
 		-- The assumption is if someone is not using GrailWhenPlayer then this is the same as IsQuestCompleted
-		_QuestTurnedInBeforeLastWeeklyReset = function(self, questId)
+		_QuestTurnedInBeforeDate = function(self, questId, comparisonDate)
 			questId = tonumber(questId)
 			if nil == questId then return false end
 			local retval = self:IsQuestCompleted(questId)
@@ -8884,9 +8923,6 @@ end
 				if nil ~= GrailWhenPlayer then
 					local when = GrailWhenPlayer.when[questId]
 					if nil ~= when then
---						print("*** Quest:", questId)
-						local lastWeeklyResetDate = C_DateAndTime.AdjustTimeByMinutes(C_DateAndTime.GetCurrentCalendarTime(), (C_DateAndTime.GetSecondsUntilWeeklyReset() - (86400 * 7)) / 60)
---						print("*** Last weekly reset:", lastWeeklyResetDate.year, lastWeeklyResetDate.month, lastWeeklyResetDate.monthDay, lastWeeklyResetDate.hour, lastWeeklyResetDate.minute)
 						-- Start with a date and then replace its values with those from when the quest was completed.
 						-- an example of when is: 2018-12-18 06:34
 						local whenDate = C_DateAndTime.GetCurrentCalendarTime()
@@ -8896,15 +8932,23 @@ end
 						whenDate.monthDay = day
 						whenDate.hour = hour
 						whenDate.minute = minute
---						print("*** When:", when)
---						print("*** As a day:", whenDate.year, whenDate.month, whenDate.monthDay, whenDate.hour, whenDate.minute)
-						-- Compare whenDate with lastWeeklyResetDate
---						print("*** Comparison:", C_DateAndTime.CompareCalendarTime(whenDate, lastWeeklyResetDate))
-						retval = (C_DateAndTime.CompareCalendarTime(whenDate, lastWeeklyResetDate) >= 0)
+						retval = (C_DateAndTime.CompareCalendarTime(whenDate, comparisonDate) >= 0)
 					end
 				end
 			end
 			return retval
+		end,
+
+		-- The assumption is if someone is not using GrailWhenPlayer then this is the same as IsQuestCompleted
+		_QuestTurnedInBeforeLastWeeklyReset = function(self, questId)
+			local lastWeeklyResetDate = C_DateAndTime.AdjustTimeByMinutes(C_DateAndTime.GetCurrentCalendarTime(), (C_DateAndTime.GetSecondsUntilWeeklyReset() - (86400 * 7)) / 60)
+			return self:_QuestTurnedInBeforeDate(questId, lastWeeklyResetDate)
+		end,
+
+		-- The assumption is if someone is not using GrailWhenPlayer then this is the same as IsQuestCompleted
+		_QuestTurnedInBeforeTodaysReset = function(self, questId)
+			local todayResetDate = C_DateAndTime.AdjustTimeByMinutes(C_DateAndTime.GetCurrentCalendarTime(), (C_DateAndTime.GetSecondsUntilDailyReset() - (86400 * 1)) / 60)
+			return self:_QuestTurnedInBeforeDate(questId, todayResetDate)
 		end,
 
 		-- Providing -1 as the talendId prints out all the researched talents instead of doing the normal behavior
@@ -9767,6 +9811,10 @@ print("end:", strgsub(controlTable.something, "|", "*"))
 				self.invalidateControl[self.invalidateGroupCurrentGarrisonTalentQuests] = t
 			elseif 'v' == code then
 				-- TODO: We should take all these quests and put them into a table that is invalidated when the weekly reset happens (even though that is a pain to determine)
+			elseif '(' == code then
+				-- TODO: We should take all these quests and put them into a table that is invalidated when the daily reset happens (even though that is a pain to determine)
+			elseif ')' == code then
+				-- TODO: We should take all these quests and put them into a table that is invalidated when curreny amounts change (not sure we should really care about matching currencies, though it would be better for overall performance I guess)
 			end
 		end,
 

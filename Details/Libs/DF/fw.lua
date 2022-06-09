@@ -1,6 +1,6 @@
 
 
-local dversion = 314
+local dversion = 319
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -71,9 +71,95 @@ function DF.IsTBCWow()
 	return false
 end
 
-function DF.UnitGroupRolesAssigned (unitId)
-	if (UnitGroupRolesAssigned) then
-		return UnitGroupRolesAssigned (unitId)
+local roleBySpecTextureName = {
+	DruidBalance = "DAMAGER",
+	DruidFeralCombat = "DAMAGER",
+	DruidRestoration = "HEALER",
+
+	HunterBeastMastery = "DAMAGER",
+	HunterMarksmanship = "DAMAGER",
+	HunterSurvival = "DAMAGER",
+
+	MageArcane = "DAMAGER",
+	MageFrost = "DAMAGER",
+	MageFire = "DAMAGER",
+
+	PaladinCombat = "DAMAGER",
+	PaladinHoly = "HEALER",
+	PaladinProtection = "TANK",
+
+	PriestHoly = "HEALER",
+	PriestDiscipline = "HEALER",
+	PriestShadow = "DAMAGER",
+
+	RogueAssassination = "DAMAGER",
+	RogueCombat = "DAMAGER",
+	RogueSubtlety = "DAMAGER",
+
+	ShamanElementalCombat = "DAMAGER",
+	ShamanEnhancement = "DAMAGER",
+	ShamanRestoration = "HEALER",
+
+	WarlockCurses = "DAMAGER",
+	WarlockDestruction = "DAMAGER",
+	WarlockSummoning = "DAMAGER",
+
+	WarriorArm = "DAMAGER",
+	WarriorArms = "DAMAGER",
+	WarriorFury = "DAMAGER",
+	WarriorProtection = "TANK",
+}
+
+--classic, tbc and wotlk role guesser based on the weights of each talent tree
+function DF:GetRoleByClassicTalentTree()
+	if (not DF.IsTimewalkWoW()) then
+		return "NONE"
+	end
+
+	--amount of tabs existing
+	local numTabs = GetNumTalentTabs() or 3
+
+	--store the background textures for each tab
+	local pointsPerSpec = {}
+
+	for i = 1, (MAX_TALENT_TABS or 3) do
+		if (i <= numTabs) then
+			--tab information
+			local name, iconTexture, pointsSpent, fileName = GetTalentTabInfo(i)
+			if (name) then
+				tinsert (pointsPerSpec, {name, pointsSpent, fileName})
+			end
+		end
+	end
+
+	local MIN_SPECS = 4
+
+	--put the spec with more talent point to the top
+	table.sort(pointsPerSpec, function (t1, t2) return t1[2] > t2[2] end)
+
+	--get the spec with more points spent
+	local spec = pointsPerSpec[1]
+	if (spec and spec [2] >= MIN_SPECS) then
+		local specName = spec[1]
+		local spentPoints = spec[2]
+		local specTexture = spec[3]
+
+		local role = roleBySpecTextureName[specTexture]
+		return role or "NONE"
+	end
+end
+
+function DF.UnitGroupRolesAssigned(unitId)
+	if (not DF.IsTimewalkWoW()) then --Was function exist check. TBC has function, returns NONE. -Flamanis 5/16/2022
+		local role = UnitGroupRolesAssigned(unitId)
+
+		if (role == "NONE" and UnitIsUnit(unitId, "player")) then
+			local specializationIndex = GetSpecialization() or 0
+			local id, name, description, icon, role, primaryStat = GetSpecializationInfo(specializationIndex)
+			return id and role or "NONE"
+		end
+
+		return role
 	else
 		--attempt to guess the role by the player spec
 		local classLoc, className = UnitClass(unitId)
@@ -92,7 +178,8 @@ function DF.UnitGroupRolesAssigned (unitId)
 			end
 		end
 
-		return "NONE"
+		local role = DF:GetRoleByClassicTalentTree()
+		return role
 	end
 end
 
@@ -1404,7 +1491,7 @@ end
 							parent.widgetids [widget_table.id] = switch
 						end
 						
-						local size = switch.hasLabel:GetStringWidth() + 60 + 4
+						local size = switch.hasLabel:GetStringWidth() + 32
 						if (size > max_x) then
 							max_x = size
 						end
@@ -1460,7 +1547,7 @@ end
 							parent.widgetids [widget_table.id] = slider
 						end
 
-						local size = slider.hasLabel:GetStringWidth() + 140 + 6
+						local size = slider.hasLabel:GetStringWidth() + 146
 						if (size > max_x) then
 							max_x = size
 						end
@@ -1506,7 +1593,7 @@ end
 							parent.widgetids [widget_table.id] = colorpick
 						end
 
-						local size = colorpick.hasLabel:GetStringWidth() + 60 + 4
+						local size = colorpick.hasLabel:GetStringWidth() + 32
 						if (size > max_x) then
 							max_x = size
 						end
@@ -1602,7 +1689,7 @@ end
 							parent.widgetids [widget_table.id] = textentry
 						end
 						
-						local size = textentry.hasLabel:GetStringWidth() + 60 + 4
+						local size = textentry.hasLabel:GetStringWidth() + 64
 						if (size > max_x) then
 							max_x = size
 						end
@@ -1623,8 +1710,7 @@ end
 					
 					if (widget_table.type == "breakline" or cur_y < height) then
 						cur_y = y_offset
-						cur_x = cur_x + max_x + 30
-						line_widgets_created = 0
+						cur_x = cur_x + max_x + 20
 						max_x = 0
 					end
 
@@ -1711,7 +1797,7 @@ end
 						parent.widgetids [widget_table.id] = dropdown
 					end
 					
-					local size = label.widget:GetStringWidth() + 140 + 4
+					local size = label.widget:GetStringWidth() + 144
 					if (size > max_x) then
 						max_x = size
 					end
@@ -1766,7 +1852,7 @@ end
 						parent.widgetids [widget_table.id] = switch
 					end
 					
-					local size = label.widget:GetStringWidth() + 60 + 4
+					local size = label.widget:GetStringWidth() + 32
 					if (size > max_x) then
 						max_x = size
 					end
@@ -1812,7 +1898,7 @@ end
 						parent.widgetids [widget_table.id] = slider
 					end
 
-					local size = label.widget:GetStringWidth() + 140 + 6
+					local size = label.widget:GetStringWidth() + 146
 					if (size > max_x) then
 						max_x = size
 					end
@@ -1857,7 +1943,7 @@ end
 						parent.widgetids [widget_table.id] = colorpick
 					end
 
-					local size = label.widget:GetStringWidth() + 60 + 4
+					local size = label.widget:GetStringWidth() + 32
 					if (size > max_x) then
 						max_x = size
 					end
@@ -1955,7 +2041,7 @@ end
 						parent.widgetids [widget_table.id] = textentry
 					end
 					
-					local size = label.widget:GetStringWidth() + 60 + 4
+					local size = label.widget:GetStringWidth() + 64
 					if (size > max_x) then
 						max_x = size
 					end
@@ -1983,7 +2069,7 @@ end
 
 				if (widget_table.type == "breakline" or cur_y < height) then
 					cur_y = y_offset
-					cur_x = cur_x + max_x + 30
+					cur_x = cur_x + max_x + 20
 					line_widgets_created = 0
 					max_x = 0
 				end

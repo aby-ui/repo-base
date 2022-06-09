@@ -1584,9 +1584,10 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 		DF.IconPickFrame.preview:Hide()
 		
 		--serach
-		DF.IconPickFrame.searchLabel =  DF:NewLabel (DF.IconPickFrame, nil, "$parentSearchBoxLabel", nil, "search:")
+		DF.IconPickFrame.searchLabel =  DF:NewLabel (DF.IconPickFrame, nil, "$parentSearchBoxLabel", nil, "Search:")
 		DF.IconPickFrame.searchLabel:SetPoint ("topleft", DF.IconPickFrame, "topleft", 12, -36)
 		DF.IconPickFrame.searchLabel:SetTemplate (DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+		DF.IconPickFrame.searchLabel.fontsize = 12
 		
 		DF.IconPickFrame.search = DF:NewTextEntry (DF.IconPickFrame, nil, "$parentSearchBox", nil, 140, 20)
 		DF.IconPickFrame.search:SetPoint ("left", DF.IconPickFrame.searchLabel, "right", 2, 0)
@@ -1609,6 +1610,7 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 		--manually enter the icon path
 		DF.IconPickFrame.customIcon = DF:CreateLabel (DF.IconPickFrame, "Icon Path:", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
 		DF.IconPickFrame.customIcon:SetPoint ("bottomleft", DF.IconPickFrame, "bottomleft", 12, 16)
+		DF.IconPickFrame.customIcon.fontsize = 12
 		
 		DF.IconPickFrame.customIconEntry = DF:CreateTextEntry (DF.IconPickFrame, function()end, 200, 20, "CustomIconEntry", _, _, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		DF.IconPickFrame.customIconEntry:SetPoint ("left", DF.IconPickFrame.customIcon, "right", 2, 0)
@@ -1652,11 +1654,13 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 		local MACRO_ICON_FILENAMES = {}
 		local SPELLNAMES_CACHE = {}
 		
+		local texturePathGetter = DF.IconPickFrame:CreateTexture(nil, "overlay")
+
 		DF.IconPickFrame:SetScript ("OnShow", function()
 			
 			MACRO_ICON_FILENAMES [1] = "INV_MISC_QUESTIONMARK"
 			local index = 2
-		
+	
 			for i = 1, GetNumSpellTabs() do
 				local tab, tabTex, offset, numSpells, _ = GetSpellTabInfo (i)
 				offset = offset + 1
@@ -1691,7 +1695,7 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 			GetLooseMacroIcons (MACRO_ICON_FILENAMES)
 			GetMacroIcons (MACRO_ICON_FILENAMES)
 			GetMacroItemIcons (MACRO_ICON_FILENAMES)
-			
+
 			--reset the custom icon text entry
 			DF.IconPickFrame.customIconEntry:SetText ("")
 			--reset the search text entry
@@ -1831,6 +1835,10 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
 			newcheck:SetScript ("OnEnter", onenter)
 			newcheck:SetScript ("OnLeave", onleave)
+		end
+
+		for _, button in ipairs(DF.IconPickFrame.buttons) do
+			button:SetBackdropBorderColor(0, 0, 0, 1)
 		end
 		
 		local scroll = CreateFrame ("ScrollFrame", "DetailsFrameworkIconPickFrameScroll", DF.IconPickFrame, "ListScrollFrameTemplate", "BackdropTemplate")
@@ -4008,7 +4016,7 @@ function DF:CreateTabContainer (parent, title, frame_name, frameList, options_ta
 	local mainFrame = CreateFrame ("frame", frame_name, parent.widget or parent, "BackdropTemplate")
 	mainFrame:SetAllPoints()
 	DF:Mixin (mainFrame, DF.TabContainerFunctions)
-	mainFrame.hookList = hookList
+	mainFrame.hookList = hookList or {}
 	
 	local mainTitle = DF:CreateLabel (mainFrame, title, 24, "white")
 	mainTitle:SetPoint ("topleft", mainFrame, "topleft", 10, -30 + y_offset)

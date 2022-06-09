@@ -467,9 +467,13 @@ local _
 			statusBar:SetPoint ("topleft", menuBackground, "bottomleft", 0, 1)
 			statusBar:SetPoint ("topright", f, "bottomright", 0, 1)
 			statusBar:SetHeight (20)
-			_detalhes.gump:ApplyStandardBackdrop (statusBar)
 			statusBar:SetAlpha (1)
-			_detalhes.gump:BuildStatusbarAuthorInfo (statusBar)
+			DetailsFramework:BuildStatusbarAuthorInfo (statusBar)
+			DetailsFramework:ApplyStandardBackdrop (statusBar)
+			local extraDarkTexture = statusBar:CreateTexture(nil, "background")
+			extraDarkTexture:SetAllPoints()
+			extraDarkTexture:SetColorTexture(.2, .2, .2, .8)
+
 			--
 			local right_click_to_back = _detalhes.gump:CreateLabel (statusBar, "right click to close", 10, "gray")
 			right_click_to_back:SetPoint ("bottomright", statusBar, "bottomright", -1, 5)

@@ -701,13 +701,19 @@ function Simulationcraft:GetItemStrings(debugOutput)
       if ItemLocation then
         itemLoc = ItemLocation:CreateFromEquipmentSlot(slotId)
       end
-      local name, _, _, _, _, _, _, _, _, _, _ = GetItemInfo(itemLink)
+      local name = GetItemInfo(itemLink)
 
       -- get correct level for scaling gear
       local level, _, _ = GetDetailedItemLevelInfo(itemLink)
+
+      local itemComment
+      if name and level then
+        itemComment = name .. ' (' .. level .. ')'
+      end
+
       items[slotNum] = {
         string = GetItemStringFromItemLink(slotNum, itemLink, itemLoc, debugOutput),
-        name = name .. (level and ' (' .. level .. ')' or '')
+        name = itemComment
       }
     end
   end
@@ -1119,7 +1125,9 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
       simulationcraftProfile = simulationcraftProfile .. '### Gear from Bags\n'
       for i=1, #bagItems do
         simulationcraftProfile = simulationcraftProfile .. '#\n'
-        simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].name .. '\n'
+        if bagItems[i].name then
+          simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].name .. '\n'
+        end
         simulationcraftProfile = simulationcraftProfile .. '# ' .. bagItems[i].string .. '\n'
       end
     end

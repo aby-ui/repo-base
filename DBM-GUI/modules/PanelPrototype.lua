@@ -293,15 +293,22 @@ do
 		tinsert(sounds, { text = "Yogg Saron: Laugh", value = 15757 })
 	end
 
+	local function RGBPercToHex(r, g, b)
+		r = r <= 1 and r >= 0 and r or 0
+		g = g <= 1 and g >= 0 and g or 0
+		b = b <= 1 and b >= 0 and b or 0
+		return string.format("%02x%02x%02x", r*255, g*255, b*255)
+	end
+
 	local tcolors = {
-		{ text = L.CBTGeneric, value = 0 },
-		{ text = L.CBTAdd, value = 1 },
-		{ text = L.CBTAOE, value = 2 },
-		{ text = L.CBTTargeted, value = 3 },
-		{ text = L.CBTInterrupt, value = 4 },
-		{ text = L.CBTRole, value = 5 },
-		{ text = L.CBTPhase, value = 6 },
-		{ text = L.CBTImportant, value = 7 }
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorR or 1, DBT.Options.StartColorG or 1, DBT.Options.StartColorB or 1)..L.CBTGeneric.."|r", value = 0 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorAR or 1, DBT.Options.StartColorAG or 1, DBT.Options.StartColorAB or 1)..L.CBTAdd.."|r", value = 1 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorAER or 1, DBT.Options.StartColorAEG or 1, DBT.Options.StartColorAEB or 1)..L.CBTAOE.."|r", value = 2 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorDR or 1, DBT.Options.StartColorDG or 1, DBT.Options.StartColorDB or 1)..L.CBTTargeted.."|r", value = 3 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorIR or 1, DBT.Options.StartColorIG or 1, DBT.Options.StartColorIB or 1)..L.CBTInterrupt.."|r", value = 4 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorRR or 1, DBT.Options.StartColorRG or 1, DBT.Options.StartColorRB or 1)..L.CBTRole.."|r", value = 5 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorPR or 1, DBT.Options.StartColorPG or 1, DBT.Options.StartColorPB or 1)..L.CBTPhase.."|r", value = 6 },
+		{ text = "|cff"..RGBPercToHex(DBT.Options.StartColorUIR or 1, DBT.Options.StartColorUIG or 1, DBT.Options.StartColorUIB or 1)..L.CBTImportant.."|r", value = 7 }
 	}
 	local cvoice = MixinCountTable({
 		{ text = L.None, value = 0 },

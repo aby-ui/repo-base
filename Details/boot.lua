@@ -7,9 +7,9 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 9818
-		_detalhes.alpha_build_counter = 9818 --if this is higher than the regular counter, use it instead
-		_detalhes.bcc_counter = 37
+		_detalhes.build_counter = 9823
+		_detalhes.alpha_build_counter = 9823 --if this is higher than the regular counter, use it instead
+		_detalhes.bcc_counter = 39
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. _detalhes.build_counter
