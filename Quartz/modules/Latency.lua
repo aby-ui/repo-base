@@ -45,10 +45,10 @@ local defaults = {
 		lagtextcolor = {0.7, 0.7, 0.7, 0.8},
 		lagtextalignment = "center", -- L["Left"], L["Right"]
 		lagtextposition = "bottom", --L["Top"], L["Above"], L["Below"]
-		
-		-- With "embed", the lag indicator is placed on the left hand side of the bar instead of right for normal casting 
+
+		-- With "embed", the lag indicator is placed on the left hand side of the bar instead of right for normal casting
 		-- and the castbar time is shifted so that the end of the time accounting for lag lines up with the right hand side of the castbar
-		-- For channeled spells, the lag indicator is shown on the right, and the cast bar is adjusted down from there 
+		-- For channeled spells, the lag indicator is shown on the right, and the cast bar is adjusted down from there
 		-- lagpadding is applied only if lagembed is enabled
 		lagembed = false,
 		lagpadding = 0.0,
@@ -58,7 +58,7 @@ local defaults = {
 function Latency:OnInitialize()
 	self.db = Quartz3.db:RegisterNamespace(MODNAME, defaults)
 	db = self.db.profile
-	
+
 	self:SetEnabledState(Quartz3:GetModuleEnabled(MODNAME))
 	Quartz3:RegisterModuleOptions(MODNAME, getOptions, L["Latency"])
 end
@@ -111,15 +111,15 @@ end
 
 function Latency:UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)
 	self.hooks[object].UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)
-	
+
 	local startTime, endTime = bar.startTime, bar.endTime
 	if not sendTime or not endTime then return end
-	
+
 	timeDiff = GetTime() - sendTime
 	local castlength = endTime - startTime
 	timeDiff = timeDiff > castlength and castlength or timeDiff
 	local perc = timeDiff / castlength
-	
+
 	lagbox:ClearAllPoints()
 	local side
 	if db.lagembed then
@@ -130,7 +130,7 @@ function Latency:UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)
 			side = "RIGHT"
 			lagbox:SetTexCoord(1-perc,1,0,1)
 		end
-		
+
 		startTime = startTime - timeDiff + db.lagpadding
 		bar.startTime = startTime
 		endTime = endTime - timeDiff + db.lagpadding
@@ -148,7 +148,7 @@ function Latency:UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)
 	lagbox:SetPoint(side, Player.Bar.Bar, side)
 	lagbox:SetWidth(Player.Bar.Bar:GetWidth() * perc)
 	lagbox:SetShown(perc > 0)
-	
+
 	if db.lagtext then
 		if alignoutside then
 			lagtext:SetJustifyH(side)
@@ -210,13 +210,13 @@ function Latency:ApplySettings()
 		lagbox:SetTexture(media:Fetch("statusbar", Player.db.profile.texture))
 		lagbox:SetAlpha(db.lagalpha)
 		lagbox:SetVertexColor(unpack(db.lagcolor))
-		
+
 		lagtext:SetFont(media:Fetch("font", db.lagfont), db.lagfontsize)
 		lagtext:SetShadowColor( 0, 0, 0, 1)
 		lagtext:SetShadowOffset( 0.8, -0.8 )
 		lagtext:SetTextColor(unpack(db.lagtextcolor))
 		lagtext:SetNonSpaceWrap(false)
-		
+
 		local lagtextposition = db.lagtextposition
 		local point, relpoint
 		if lagtextposition == "bottom" then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1703, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116041824")
+mod:SetRevision("20220610054336")
 mod:SetCreatureID(102672)
 mod:SetEncounterID(1853)
 mod:SetUsedIcons(4, 3, 2, 1)
@@ -53,7 +53,7 @@ local timerInfestingMindCD			= mod:NewNextTimer(10, 205043, nil, nil, nil, 3, ni
 
 local berserkTimer					= mod:NewBerserkTimer(600)
 
-mod:AddSetIconOption("SetIconOnRot", 203096)--Of course I'll probably be forced to change method when BW does their own thing, for compat.
+mod:AddSetIconOption("SetIconOnRot", 203096, true, 6)--Of course I'll probably be forced to change method when BW does their own thing, for compat.
 mod:AddRangeFrameOption(30, 204463)--Range not actually known, 30 used for now
 mod:AddInfoFrameOption(204506)
 

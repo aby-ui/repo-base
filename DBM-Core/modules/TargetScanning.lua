@@ -189,9 +189,22 @@ end
 do
 	--UNIT_TARGET Target scanning method
 	local eventsRegistered = false
+	--Validate target is in group (I'm not sure why i actually required this since I didn't comment code when I added requirement, so I leave it for now)
+	--If I determine this check isn't needed and it continues to be a problem i'll kill it off.
+	--For now, I'll have check be smart and switch between raid and party and just disable when solo
+	local function validateGroupTarget(unit)
+		if IsInGroup() then
+			if UnitPlayerOrPetInRaid(unit) or UnitPlayerOrPetInParty(unit) then
+				return true
+			end
+		else--Solo
+			return true
+		end
+	end
 	function module:UNIT_TARGET_UNFILTERED(uId)
 		--Active BossUnitTargetScanner
-		if unitMonitor[uId] and UnitExists(uId.."target") and UnitPlayerOrPetInRaid(uId.."target") then
+		DBM:Debug("UNIT_TARGET_UNFILTERED fired for :"..uId, 3)
+		if unitMonitor[uId] and UnitExists(uId.."target") and validateGroupTarget(uId.."target") then
 			DBM:Debug("unitMonitor for this unit exists, target exists in group", 2)
 			local modId, returnFunc = unitMonitor[uId].modid, unitMonitor[uId].returnFunc
 			DBM:Debug("unitMonitor: "..modId..", "..uId..", "..returnFunc, 2)
@@ -223,7 +236,7 @@ do
 			return
 		end
 		--If tank is allowed, return current target when scan ends no matter what.
-		if unitMonitor[uId] and unitMonitor[uId].allowTank and UnitExists(uId.."target") and UnitPlayerOrPetInRaid(uId.."target") then
+		if unitMonitor[uId] and (unitMonitor[uId].allowTank or not IsInGroup()) and validateGroupTarget(uId.."target") then
 			DBM:Debug("unitMonitor unit exists, allowTank target exists", 2)
 			local modId, returnFunc = unitMonitor[uId].modid, unitMonitor[uId].returnFunc
 			DBM:Debug("unitMonitor: "..modId..", "..uId..", "..returnFunc, 2)

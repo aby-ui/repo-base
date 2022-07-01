@@ -2481,7 +2481,8 @@ end
 			local thisLine = self:GetLine(lineId)
 
 			--check if there's something showing in this line
-			if (thisLine.minha_tabela) then
+			--check if the line is shown and if the text exists for sanitization
+			if (thisLine.minha_tabela and thisLine:IsShown() and thisLine.lineText1:GetText()) then
 				local playerNameFontString = thisLine.lineText1
 				local text2 = thisLine.lineText2
 				local text3 = thisLine.lineText3

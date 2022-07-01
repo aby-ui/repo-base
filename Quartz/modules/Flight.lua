@@ -98,11 +98,11 @@ end
 function Flight:TAXIMAP_OPENED()
 	local loaded = LoadAddOn("InFlight")
 	if loaded then
-		function Flight:OnEnable()
+		function Flight.OnEnable(_self)
 			self:SecureHook(InFlight, "StartTimer")
 		end
 
-		function Flight:StartTimer()
+		function Flight.StartTimer(_self)
 			InFlightBar:Hide()
 			local duration = InFlight:GetFlightTime()
 			if duration and duration > 0 then

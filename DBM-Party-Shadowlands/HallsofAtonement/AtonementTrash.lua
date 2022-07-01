@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod("AtonementTrash", "DBM-Party-Shadowlands", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210904043400")
+mod:SetRevision("20220618204835")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 326409 326450 325523 325700 325701 326607 326441",
-	"SPELL_AURA_APPLIED 326450"
+	"SPELL_AURA_APPLIED 326450 326891"
 --	"SPELL_AURA_REMOVED 326409"
 )
 

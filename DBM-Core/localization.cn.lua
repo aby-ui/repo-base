@@ -1,7 +1,7 @@
 -- L.Core
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
--- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20220518
+-- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20220610
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -477,6 +477,7 @@ L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "为$spell:%s的目标添加团队标记�
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "为$spell:%s的目标添加团队标记，以远程和字母顺序优先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_R	= "为$spell:%s的目标添加团队标记，以远程和团队阵容优先"
 L.AUTO_ICONS_OPTION_TARGETS_ALPHA		= "为$spell:%s的目标添加团队标记，以字母顺序优先"
+L.AUTO_ICONS_OPTION_TARGETS_ROSTER 		= "为$spell:%s的目标添加团队标记，以团队阵容优先"
 L.AUTO_ICONS_OPTION_NPCS			= "为$spell:%s添加团队标记"
 L.AUTO_ICONS_OPTION_CONFLICT 			= " （可能与其他选项冲突）"
 L.AUTO_ARROW_OPTION_TEXT				= "为$spell:%s的目标添加箭头"

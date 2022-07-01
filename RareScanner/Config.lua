@@ -1536,8 +1536,8 @@ local function GetContainerFilterOptions()
 					local name = RSContainerDB.GetContainerName(containerID)
 					if (not name) then
 						name = AL["CONTAINER"]..' ('..containerID..')'
-					elseif (name == AL["CONTAINER"]) then
-						name = AL["CONTAINER"]..' ('..containerID..')'
+					else
+						name = name..' ('..containerID..')'
 					end
 					if (not RSContainerDB.IsWorldMap(containerID) and RSContainerDB.IsInternalContainerInMap(containerID, zoneID, true) and ((containerName and RSUtils.Contains(name,containerName)) or not containerName)) then
 						container_filter_options.args.containerFilters.values[name] = containerID

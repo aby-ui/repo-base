@@ -493,6 +493,9 @@ function P:UpdateUnitBar(guid, isGRU)
 
 
 
+										if self.isPvP and conduitData == 336636 then
+											rankValue = rankValue / 2
+										end
 										cd = cd - rankValue
 									end
 								end

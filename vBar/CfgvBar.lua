@@ -69,6 +69,26 @@ U1RegisterAddon("vBar", {
         end
     },
     {
+        text = "按钮透明度",
+        var = "alpha",
+        type = "spin",
+        tip = "说明`按钮透明度,1为不透明。",
+        range = {0.1, 1, 0.1},
+        default = 1,
+        callback = function(cfg, v, loading)
+            if loading then
+                hooksecurefunc("VB_CreateNumpad", function()
+                    if NumpadFrame then NumpadFrame:SetAlpha(v) end
+                end)
+                return
+            end
+            local numpad = VB_GetNumpad()
+            if numpad then
+                numpad:SetAlpha(v)
+            end
+        end
+    },
+    {
         text = "重置所有动作条",
         tip = "说明`会重置动作条的位置及设定，但不清除技能",
         confirm = "确定重置所有动作条?",

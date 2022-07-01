@@ -1,12 +1,16 @@
 local mod	= DBM:NewMod(2451, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220406065258")
+mod:SetRevision("20220616190832")
 mod:SetCreatureID(175806)
 mod:SetEncounterID(2437)
 mod:SetHotfixNoticeRev(20220405000000)
 
 mod:RegisterCombat("combat")
+
+mod:RegisterEvents(
+	"CHAT_MSG_MONSTER_SAY"
+)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 347392 347249 347414 347623 347610 357188 347150",
@@ -30,6 +34,7 @@ local specWarnTripleTechnique		= mod:NewSpecialWarningInterruptCount(347150, "Ha
 
 --Both timers are 15 but boss spell queuing is a nightmare. quickblade delays shurl and shurl delays quickblade and they can come in any order
 --Double and triple technique also delay both even more
+local timerRP						= mod:NewRPTimer(24)
 local timerShurlCD					= mod:NewCDTimer(15, 347481, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerQuickbladeCD				= mod:NewCDTimer(15, 347623, nil, nil, nil, 3)
 
@@ -110,3 +115,15 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 --]]
+
+function mod:CHAT_MSG_MONSTER_SAY(msg, npc, _, _, target)
+	if (msg == L.RPTrigger or msg:find(L.RPTrigger)) and self:LatencyCheck() then
+		self:SendSync("SolamiRP")
+	end
+end
+
+function mod:OnSync(msg, targetname)
+	if msg == "SolamiRP" and self:AntiSpam(10, 1) then
+		timerRP:Start()
+	end
+end

@@ -21,7 +21,7 @@
 ## X-DBM-Mod-MinExpansion: 6
 ## X-Curse-Project-ID: 301324
 ## X-WoWI-ID: 24905
-## Version: r32
+## Version: r32-1-gc810907
 
 localization.en.lua
 localization.cn.lua

@@ -536,7 +536,7 @@ Edge = setmetatable({
 			mod:Disable()
 		end
 	end,
-	New = function(self, r, g, b, a, srcPlayer, dstPlayer, sx, sy, dx, dy, lifetime, texfile, _, extend)
+	New = function(self, r, g, b, a, srcPlayer, dstPlayer, sx, sy, dx, dy, lifetime, texfile, w, extend)
 		local t = tremove(edgeCache)
 		if not t then
 			t = setmetatable({}, edge_mt)
@@ -563,7 +563,7 @@ Edge = setmetatable({
 		t.lifetime = type(lifetime) == "number" and GetTime() + lifetime or nil
 		t:SetColor(r, g, b, a)
 		t.srcPlayer, t.dstPlayer = srcPlayer, dstPlayer
-		t.sx, t.sy, t.dx, t.dy, t.extend = sx, sy, dx, dy, extend
+		t.sx, t.sy, t.dx, t.dy, t.w, t.extend = sx, sy, dx, dy, w, extend
 		activeEdgeList[t] = true
 		activeMarkers = activeMarkers + 1
 		return t
@@ -667,7 +667,7 @@ Edge = setmetatable({
 			local ay = dy - sy
 			if pow((ax * ax) + (ay * ay), 0.5) > 15 then
 				self.texture:Show()
-				DrawRouteLineCustom(self.texture, canvas, sx, sy, dx, dy, self.extend)
+				DrawRouteLineCustom(self.texture, canvas, sx, sy, dx, dy, self.w or 100, self.extend)
 			else
 				self.texture:Hide()
 			end

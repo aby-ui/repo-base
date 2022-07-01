@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1743, "DBM-Nighthold", nil, 786)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220127091734")
+mod:SetRevision("20220610054336")
 mod:SetCreatureID(106643)
 mod:SetEncounterID(1872)
 mod:SetUsedIcons(8, 7, 6, 5, 4, 3, 2, 1)--During soft enrage will go over 8 debuffs, can't mark beyond that
@@ -99,7 +99,7 @@ local berserkTimer					= mod:NewBerserkTimer(240)
 
 mod:AddRangeFrameOption(8, 209973)
 mod:AddInfoFrameOption(209598)
-mod:AddSetIconOption("SetIconOnConflexiveBurst", 209598)
+mod:AddSetIconOption("SetIconOnConflexiveBurst", 209598, true, 6)
 
 --Exists in phases 1-3
 local heroicSlowElementalTimers = {5, 49, 52, 60}--Heroic Jan 18

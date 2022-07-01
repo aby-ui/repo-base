@@ -31,7 +31,7 @@ local unpack = unpack
 
 local f, OnUpdate, db, getOptions, spell, target, modified, r, g, b, castBar
 
-local defaults ={ 
+local defaults ={
 	profile = {
 		rangecolor = {1, 1, 1},
 	}
@@ -62,7 +62,7 @@ end
 function Range:OnInitialize()
 	self.db = Quartz3.db:RegisterNamespace(MODNAME, defaults)
 	db = self.db.profile
-	
+
 	self:SetEnabledState(Quartz3:GetModuleEnabled(MODNAME))
 	Quartz3:RegisterModuleOptions(MODNAME, getOptions, L["Range"])
 

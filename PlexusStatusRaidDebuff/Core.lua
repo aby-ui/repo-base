@@ -220,6 +220,15 @@ GridStatusRaidDebuff.defaultDB = {
         [C_Map.GetMapInfo(1675).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
         [C_Map.GetMapInfo(1666).name] = { [GetSpellInfo(340880)] = { c_prior = 1, i_prior = 1 }, [GetSpellInfo(240559)] = { disable = true }, },
         [C_Map.GetMapInfo(1998).name] = { [GetSpellInfo(352394)] = { disable = true }, },
+        [C_Map.GetMapInfo(2047).name] = {
+            [GetSpellInfo(361608)] = { disable = true }, --罪孽烦扰
+            [GetSpellInfo(361784)] = { disable = true }, --黑夜之触
+            [GetSpellInfo(365293)] = { disable = true }, --亵渎屏障
+            [GetSpellInfo(363020)] = { disable = true }, --通灵之爪
+            [GetSpellInfo(360418)] = { disable = true }, --妄念
+            [GetSpellInfo(368783)] = { disable = true }, --谐波对接
+            [GetSpellInfo(368740)] = { disable = true }, --旋律对接
+        },
     },
     ["detected_debuff"] = {},
 }

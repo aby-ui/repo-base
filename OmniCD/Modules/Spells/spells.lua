@@ -433,7 +433,7 @@ E.spell_db = {
 		{ spellID = 205369, duration = 30,  type = "cc",        spec = true,    parent = 8122   },
 		{ spellID = 204263, duration = 45,  type = "disarm",    spec = true     },
 		{ spellID = 213602, duration = 45,  type = "immunity",  spec = true,    parent = 586    },
-		{ spellID = 197268, duration = 60,  type = "immunity",  spec = true     },
+		{ spellID = 197268, duration = 90,  type = "immunity",  spec = true     },
 		{ spellID = 47788,  duration = 180, type = "externalDefensive", spec = {257}    },
 		{ spellID = 33206,  duration = 180, type = "externalDefensive", spec = {256}    },
 		{ spellID = 19236,  duration = 90,  type = "defensive"  },

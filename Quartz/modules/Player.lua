@@ -44,10 +44,11 @@ local defaults = {
 		noInterruptBorderChange = false,
 		noInterruptColorChange = false,
 		noInterruptShield = false,
+		targetnamestyle = "default"
 	})
 }
 
-do 
+do
 	local function setOpt(info, value)
 		db[info[#info]] = value
 		Player:ApplySettings()
@@ -75,6 +76,14 @@ do
 				name = L["Show Target Name"],
 				desc = L["Display target name of spellcasts after spell name"],
 				disabled = function() return db.hidenametext end,
+				order = 402,
+			}
+			options.args.targetnamestyle = {
+				type = "select",
+				name = L["Target Name Style"],
+				desc = L["How to display target name of spellcasts after spell name"],
+				values = {["default"] = L["Spell -> Target"], ["on"] = L["Spell on Target"]},
+				disabled = function() return not db.targetname or db.hidenametext end,
 				order = 402,
 			}
 			options.args.noInterruptGroup = nil
@@ -113,7 +122,7 @@ end
 
 function Player:ApplySettings()
 	db = self.db.profile
-	
+
 	-- obey the hideblizz setting no matter if disabled or not
 	if db.hideblizz then
 		CastingBarFrame.RegisterEvent = function() end
@@ -134,7 +143,7 @@ function Player:ApplySettings()
 		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 		CastingBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	end
-	
+
 	self.Bar:SetConfig(db)
 	if self:IsEnabled() then
 		self.Bar:ApplySettings()
@@ -199,17 +208,32 @@ end
 
 local channelingTicks = WoWBC and {
 	--- BCC
+	-- druid
+	[GetSpellInfo(740)] = 4, -- tranquility
+	[GetSpellInfo(16914)] = 10, -- hurricane
+	-- hunter
+	[GetSpellInfo(1510)] = 6, -- volley
 	-- mage
-	[GetSpellInfo(5143)] = 5,  -- Arcane Missiles
-	[GetSpellInfo(12051)] = 4, -- Evocation
-	[GetSpellInfo(10)] = 8,    -- Blizzard
+	[GetSpellInfo(10)] = 8, -- blizzard
+	[5143] = 3, -- arcane missiles r1
+	[5144] = 4, -- arcane missiles r2
+	[GetSpellInfo(5145)] = 5, -- arcane missiles
 	-- priest
-	[GetSpellInfo(15407)] = 3, -- Mind Flay
+	[GetSpellInfo(15407)] = 3, -- mind flay
+	[GetSpellInfo(10797)] = 5, -- star shards
+	-- warlock
+	[GetSpellInfo(1949)] = 15, -- hellfire
+	[GetSpellInfo(5740)] = 4, -- rain of fire
+	[GetSpellInfo(5138)] = 5, -- drain mana
+	[GetSpellInfo(689)] = 5, -- drain life
+	[GetSpellInfo(1120)] = 5, -- drain soul
+	[GetSpellInfo(755)] = 10, -- health funnel
 } or WoWRetail and {
 	--- Retail
 	-- warlock
 	[GetSpellInfo(234153)] = 5, -- drain life
 	[GetSpellInfo(198590)] = 5, -- drain soul
+	[GetSpellInfo(217979)] = 5, -- health funnel
 	-- druid
 	[GetSpellInfo(740)] = 4, -- tranquility
 	-- priest
@@ -218,21 +242,23 @@ local channelingTicks = WoWBC and {
 	[GetSpellInfo(47540)] = 3, -- penance
 	[GetSpellInfo(205065)] = 5, -- void torrent
 	[GetSpellInfo(48045)] = 6, -- mind sear
+	[GetSpellInfo(64901)] = 5, -- symbol of hope
 	-- mage
 	[GetSpellInfo(5143)] = 5, -- arcane missiles
 	[GetSpellInfo(205021)] = 5, -- ray of frost
+	[GetSpellInfo(314791)] = 4, -- covenant: shifting power
 	-- monk
 	[GetSpellInfo(117952)] = 4, -- crackling jade lightning
 	[GetSpellInfo(191837)] = 3, -- essence font
 	[GetSpellInfo(115175)] = 8, -- soothing mist
 } or {}
 
-local function getChannelingTicks(spell)
+
+local function getChannelingTicks(spell, spellid)
 	if not db.showticks then
 		return 0
 	end
-	
-	return channelingTicks[spell] or 0
+	return channelingTicks[spellid] or channelingTicks[spell] or 0
 end
 
 local function isTalentKnown(talentID)
@@ -251,10 +277,10 @@ end
 
 function Player:UNIT_SPELLCAST_START(bar, unit)
 	if bar.channeling then
-		local spell = UnitChannelInfo(unit)
+		local spell, _, _, _, _, _, _, spellid = UnitChannelInfo(unit)
 		bar.channelingEnd = bar.endTime
 		bar.channelingDuration = bar.endTime - bar.startTime
-		bar.channelingTicks = getChannelingTicks(spell)
+		bar.channelingTicks = getChannelingTicks(spell, spellid)
 		bar.channelingTickTime = bar.channelingTicks > 0 and (bar.channelingDuration / bar.channelingTicks) or 0
 		bar.ticks = bar.ticks or {}
 		for i = 1, bar.channelingTicks do

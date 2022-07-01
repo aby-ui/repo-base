@@ -32,7 +32,7 @@ local defaults = {
 	profile = Quartz3:Merge(Quartz3.CastBarTemplate.defaults,
 	{
 		hideblizz = true,
-		
+
 		--x =  -- applied automatically in :ApplySettings()
 		y = 300,
 		h = 18,

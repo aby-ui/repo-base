@@ -13,6 +13,9 @@ v2.7.15
 Previous changes can be found in the CHANGELOG file.
 ]=]
 else E.changelog = [=[
+v2.7.19
+	JUNE 28. 2022, Blizzard Class Tuning Update
+
 v2.7.18
 	TOC bump.
 	9.2.5 minor updates.

@@ -29,6 +29,8 @@ local Focus = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 -- Upvalues
 local UnitIsEnemy, UnitIsFriend, UnitIsUnit = UnitIsEnemy, UnitIsFriend, UnitIsUnit
 
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+
 local db, getOptions
 
 local defaults = {
@@ -39,7 +41,7 @@ local defaults = {
 		h = 18,
 		w = 200,
 		texture = "LiteStep",
-		
+
 		showfriendly = true,
 		showhostile = true,
 		showtarget = true,
@@ -91,10 +93,10 @@ end
 function Focus:OnInitialize()
 	self.db = Quartz3.db:RegisterNamespace(MODNAME, defaults)
 	db = self.db.profile
-	
+
 	self:SetEnabledState(Quartz3:GetModuleEnabled(MODNAME))
 	Quartz3:RegisterModuleOptions(MODNAME, getOptions, L["Focus"])
-	
+
 	self.Bar = Quartz3.CastBarTemplate:new(self, "focus", MODNAME, L["Focus"], db)
 end
 
@@ -114,7 +116,7 @@ function Focus:OnDisable()
 end
 
 function Focus:PreShowCondition(bar, unit)
-	if (not db.showfriendly and UnitIsFriend("player", unit)) or 
+	if (not db.showfriendly and UnitIsFriend("player", unit)) or
 	   (not db.showhostile and UnitIsEnemy("player", unit)) or
 	   (not db.showtarget and UnitIsUnit("target", unit)) then
 		return true
@@ -123,7 +125,7 @@ end
 
 function Focus:ApplySettings()
 	db = self.db.profile
-	
+
 	-- obey the hideblizz setting no matter if disabled or not
 	if db.hideblizz then
 		FocusFrameSpellBar.RegisterEvent = function() end
@@ -140,8 +142,10 @@ function Focus:ApplySettings()
 		FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 		FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 		FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-		FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-		FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+		if WoWRetail then
+			FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+			FocusFrameSpellBar:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+		end
 		FocusFrameSpellBar:RegisterEvent("PLAYER_ENTERING_WORLD")
 		FocusFrameSpellBar:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		FocusFrameSpellBar:RegisterEvent("CVAR_UPDATE")

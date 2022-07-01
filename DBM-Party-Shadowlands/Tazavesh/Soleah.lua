@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2455, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220406065258")
+mod:SetRevision("20220614201118")
 mod:SetCreatureID(177269)
 mod:SetEncounterID(2442)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -49,7 +49,7 @@ local warnPhase2					= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
 local warnPowerOverwhelmingEnded	= mod:NewEndAnnounce(351086, 1)
 local warnHyperlightJolt			= mod:NewCountAnnounce(350875, 3)
 
-local specWarnPowerOverwhelming		= mod:NewSpecialWarningCount(351086, nil, nil, nil, 2, 2)
+local specWarnPowerOverwhelming		= mod:NewSpecialWarningSpell(351086, nil, nil, nil, 2, 2)
 local specWarnEnergyFragmentation	= mod:NewSpecialWarningDodge(351096, nil, nil, nil, 2, 2)
 local specWarnHyperlightNova		= mod:NewSpecialWarningDodge(351646, nil, nil, nil, 2, 2)
 
@@ -69,11 +69,19 @@ function mod:OnCombatStart(delay)
 	timerSummonAssassinsCD:Start(6.9-delay)
 	timerHyperlightSparkCD:Start(12.1-delay)
 	timerCollapsingStarCD:Start(20.6-delay)
+	local trashMod = DBM:GetModByName("TazaveshTrash")
+	if trashMod then
+		trashMod.isTrashModBossFightAllowed = true
+	end
 end
 
 function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
+	end
+	local trashMod = DBM:GetModByName("TazaveshTrash")
+	if trashMod then
+		trashMod.isTrashModBossFightAllowed = false
 	end
 end
 
@@ -136,6 +144,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerHyperlightSparkCD:Stop()
 		timerCollapsingStarCD:Stop()
 		timerSummonAssassinsCD:Stop()
+		timerEnergyFragmentationCD:Stop()
+		timerHyperlightNovaCD:Stop()
 
 		timerEnergyFragmentationCD:Start(19.4)
 		timerHyperlightNovaCD:Start(40)

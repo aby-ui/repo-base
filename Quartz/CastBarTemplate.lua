@@ -24,12 +24,25 @@ local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
 
 local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
+
+local LibClassicCasterino = WoWClassic and LibStub("LibClassicCasterino", true)
 
 ----------------------------
 -- Upvalues
 local min, type, format, unpack, setmetatable = math.min, type, string.format, unpack, setmetatable
 local CreateFrame, GetTime, UIParent = CreateFrame, GetTime, UIParent
 local UnitName, UnitCastingInfo, UnitChannelInfo = UnitName, UnitCastingInfo, UnitChannelInfo
+
+if LibClassicCasterino then
+	UnitCastingInfo = function(unit)
+		return LibClassicCasterino:UnitCastingInfo(unit)
+	end
+
+	UnitChannelInfo = function(unit)
+		return LibClassicCasterino:UnitChannelInfo(unit)
+	end
+end
 
 local CastBarTemplate = CreateFrame("Frame")
 local CastBarTemplate_MT = {__index = CastBarTemplate}
@@ -73,7 +86,7 @@ local function OnUpdate(self)
 		elseif self.channeling then
 			remainingTime = endTime - currentTime
 			perc = remainingTime / (endTime - startTime)
-			
+
 			delayFormat, delayFormatTime = "|cffff0000-%.1f|cffffffff %s", "|cffff0000-%.1f|cffffffff %s / %s"
 		end
 
@@ -83,9 +96,9 @@ local function OnUpdate(self)
 
 		if delay and delay ~= 0 then
 			if db.hidecasttime then
-				self.TimeText:SetFormattedText("|cffff0000+%.1f|cffffffff %s", delay, format(TimeFmt(remainingTime)))
+				self.TimeText:SetFormattedText(delayFormat, delay, format(TimeFmt(remainingTime)))
 			else
-				self.TimeText:SetFormattedText("|cffff0000+%.1f|cffffffff %s / %s", delay, format(TimeFmt(remainingTime)), format(TimeFmt(endTime - startTime, true)))
+				self.TimeText:SetFormattedText(delayFormatTime, delay, format(TimeFmt(remainingTime)), format(TimeFmt(endTime - startTime, true)))
 			end
 		else
 			if db.hidecasttime then
@@ -135,7 +148,11 @@ end
 
 function CastBarTemplate:SetNameText(name)
 	if self.config.targetname and self.targetName and self.targetName ~= "" then
-		self.Text:SetFormattedText("%s -> %s", name, self.targetName)
+		if self.config.targetnamestyle == "on" then
+			self.Text:SetFormattedText(L["%s on %s"], name, self.targetName)
+		else
+			self.Text:SetFormattedText("%s -> %s", name, self.targetName)
+		end
 	else
 		self.Text:SetText(name)
 	end
@@ -210,11 +227,11 @@ function CastBarTemplate:UNIT_SPELLCAST_START(event, unit, guid, spellID)
 		self.casting, self.channeling = nil, true
 	end
 
-	local spell, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible
+	local spell, displayName, icon, startTime, endTime, _, notInterruptible
 	if self.casting then
-		spell, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(unit)
+		spell, displayName, icon, startTime, endTime, _, _, notInterruptible = UnitCastingInfo(unit)
 	else -- self.channeling
-		spell, displayName, icon, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(unit)
+		spell, displayName, icon, startTime, endTime, _, notInterruptible = UnitChannelInfo(unit)
 		-- channeling spells sometimes just display "Channeling" - this is not wanted
 		displayName = spell
 	end
@@ -239,7 +256,7 @@ function CastBarTemplate:UNIT_SPELLCAST_START(event, unit, guid, spellID)
 	self:Show()
 	self:SetAlpha(db.alpha)
 
-	self:SetNameText(displayName)
+	self:SetNameText(displayName or spell)
 
 	self.Spark:Show()
 
@@ -321,11 +338,11 @@ function CastBarTemplate:UNIT_SPELLCAST_DELAYED(event, unit)
 		return
 	end
 	local oldStart = self.startTime
-	local spell, displayName, icon, startTime, endTime
+	local _, startTime, endTime
 	if self.casting then
-		spell, displayName, icon, startTime, endTime = UnitCastingInfo(unit)
+		_, _, _, startTime, endTime = UnitCastingInfo(unit)
 	else
-		spell, displayName, icon, startTime, endTime = UnitChannelInfo(unit)
+		_, _, _, startTime, endTime = UnitChannelInfo(unit)
 	end
 
 	if not startTime or not endTime then
@@ -512,17 +529,32 @@ function CastBarTemplate:RegisterEvents()
 	if self.unit == "player" then
 		self:RegisterEvent("UNIT_SPELLCAST_SENT")
 	end
-	self:RegisterEvent("UNIT_SPELLCAST_START")
-	self:RegisterEvent("UNIT_SPELLCAST_STOP")
-	self:RegisterEvent("UNIT_SPELLCAST_FAILED")
-	self:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-	if self.unit ~= "player" and WoWRetail then
-		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-		self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+
+	if LibClassicCasterino then
+		local CastbarEventHandler = function(event, ...)
+			return self[event](self, event, ...)
+		end
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_START", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_STOP", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_FAILED", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_DELAYED", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_INTERRUPTED", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_CHANNEL_START", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_CHANNEL_UPDATE", CastbarEventHandler)
+		LibClassicCasterino.RegisterCallback(self, "UNIT_SPELLCAST_CHANNEL_STOP", CastbarEventHandler)
+	else
+		self:RegisterEvent("UNIT_SPELLCAST_START")
+		self:RegisterEvent("UNIT_SPELLCAST_STOP")
+		self:RegisterEvent("UNIT_SPELLCAST_FAILED")
+		self:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+		self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+		self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+		self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+		if self.unit ~= "player" and WoWRetail then
+			self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+			self:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+		end
 	end
 
 	media.RegisterCallback(self, "LibSharedMedia_SetGlobal", function(mtype, override)
@@ -542,6 +574,9 @@ function CastBarTemplate:UnregisterEvents()
 	self:UnregisterAllEvents()
 	media.UnregisterCallback(self, "LibSharedMedia_SetGlobal")
 	media.UnregisterCallback(self, "LibSharedMedia_Registered")
+	if LibClassicCasterino then
+		LibClassicCasterino.UnregisterAllCallbacks(self)
+	end
 end
 
 do
@@ -618,7 +653,7 @@ do
 		local db = getBar(info).config
 		return not db.noInterruptChangeColor
 	end
-	
+
 	local function icondisabled(info)
 		local db = getBar(info).config
 		return db.hideicon

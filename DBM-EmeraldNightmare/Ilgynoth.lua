@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1738, "DBM-EmeraldNightmare", nil, 768)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220128073818")
+mod:SetRevision("20220610054336")
 mod:SetCreatureID(105393)
 mod:SetEncounterID(1873)
 mod:SetUsedIcons(8, 4, 3, 2, 1)
@@ -78,7 +78,7 @@ local timerDarkReconstitution		= mod:NewCastTimer(50, 210781, nil, nil, nil, 6, 
 local timerFinalTorpor				= mod:NewCastTimer(90, 223121, nil, nil, nil, 6, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerCursedBloodCD			= mod:NewNextTimer(15, 215128, nil, nil, nil, 3)
 
-mod:AddSetIconOption("SetIconOnSpew", 208929, false)
+mod:AddSetIconOption("SetIconOnSpew", 208929, false, 6)
 mod:AddSetIconOption("SetIconOnOoze", "ej13186", false)
 mod:AddBoolOption("SetIconOnlyOnce2", true)
 mod:AddRangeFrameOption(8, 215128)

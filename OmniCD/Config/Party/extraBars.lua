@@ -341,7 +341,7 @@ local extraBarsInfo = {
 		values = function(info) return sortByValues[info[#info-1]] end,
 	},
 	sortDirection = {
-		disabled = isRaidCDBar,
+		disabled = function(info) return not E.DB.profile.Party[info[2]].extraBars[info[4]].enabled or isRaidCDBar(info) end,
 		name = L["Sort Direction"],
 		order = 12,
 		type = "select",

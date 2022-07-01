@@ -11,7 +11,7 @@ C["Party"] = {
 		["raid"] = false,
 		["scenario"] = false,
 		["none"] = false,
-		["finder"] = false,
+		["finder"] = true,
 		["size"] = 5,
 	},
 	arena = {
@@ -62,6 +62,7 @@ C["Party"] = {
 			["glowBuffs"] = true,
 			["glowType"] = "wardrobe",
 			["glowBuffTypes"] = {
+				["pvptrinket"] = false,
 				["racial"] = false,
 				["trinket"] = false,
 				["covenant"] = false,

@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.11
+Version 2.4.9.12
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -100,17 +100,7 @@ do
             return "no marker"
         end
 
-        local ref = _G[("UnitPopupRaidTarget%dButtonMixin"):format(rt)]
-        local RAID_TARGET_TEXTURE_DIMENSION = _G.RAID_TARGET_TEXTURE_DIMENSION
-
-        local coo = ref:GetTextureCoords()
-        return ("|T%s:0:0:0:0:%d:%d:%d:%d:%d:%d|t"):format(ref:GetIcon()
-            , RAID_TARGET_TEXTURE_DIMENSION, RAID_TARGET_TEXTURE_DIMENSION
-            , coo.tCoordLeft   * RAID_TARGET_TEXTURE_DIMENSION
-            , coo.tCoordRight  * RAID_TARGET_TEXTURE_DIMENSION
-            , coo.tCoordTop    * RAID_TARGET_TEXTURE_DIMENSION
-            , coo.tCoordBottom * RAID_TARGET_TEXTURE_DIMENSION
-        )
+        return ("%s0|t"):format(_G.ICON_LIST[rt])
     end
 
     local function getSelectorAssociations()

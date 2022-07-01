@@ -40,9 +40,9 @@ local defaults = {
 		gcdheight = 4,
 		gcdposition = "bottom",
 		gcdgap = -4,
-		
+
 		deplete = false,
-		
+
 		x = 500,
 		y = 300,
 	}
@@ -74,7 +74,7 @@ end
 function GCD:OnInitialize()
 	self.db = Quartz3.db:RegisterNamespace(MODNAME, defaults)
 	db = self.db.profile
-	
+
 	self:SetEnabledState(Quartz3:GetModuleEnabled(MODNAME))
 	Quartz3:RegisterModuleOptions(MODNAME, getOptions, L["GCD"])
 end
@@ -91,7 +91,7 @@ function GCD:OnEnable()
 		gcdbar:SetMovable(true)
 		gcdbar:RegisterForDrag("LeftButton")
 		gcdbar:SetClampedToScreen(true)
-		
+
 		gcdspark = gcdbar:CreateTexture(nil, "DIALOG")
 		gcdbar:Hide()
 	end
@@ -131,7 +131,7 @@ function GCD:ApplySettings()
 		else -- L["Free"]
 			gcdbar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", db.x, db.y)
 		end
-		
+
 		gcdspark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 		gcdspark:SetVertexColor(unpack(db.sparkcolor))
 		gcdspark:SetBlendMode("ADD")
@@ -152,11 +152,11 @@ do
 		db.y = gcdbar:GetBottom()
 		gcdbar:StopMovingOrSizing()
 	end
-	
+
 	local function hiddennofree()
 		return db.gcdposition ~= "free"
 	end
-	
+
 	local function setOpt(info, value)
 		db[info[#info]] = value
 		GCD:ApplySettings()

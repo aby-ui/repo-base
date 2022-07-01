@@ -67,24 +67,24 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220608223844"),
+	Revision = parseCurseDate("20220624161607"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.20 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 5, 31) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	fakeBWVersion, fakeBWHash = 241, "710129e"
+	DBM.DisplayVersion = "9.2.21 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 6, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	fakeBWVersion, fakeBWHash = 243, "d58ab26"
 elseif isClassic then
-	DBM.DisplayVersion = "1.14.22 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 5, 11) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	fakeBWVersion, fakeBWHash = 38, "5e831f6"
+	DBM.DisplayVersion = "1.14.23 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 6, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isBCC then
-	DBM.DisplayVersion = "2.5.38 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 6, 7) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
-	fakeBWVersion, fakeBWHash = 38, "5e831f6"
+	DBM.DisplayVersion = "2.5.39 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 6, 21) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -2363,17 +2363,22 @@ do
 		return raid[name] and raid[name].id
 	end
 
+	local mobUids = {
+		"boss1", "boss2", "boss3", "boss4", "boss5", "boss6", "boss7", "boss8", "boss9", "boss10",
+		"mouseover", "target", "focus", "focustarget", "targettarget", "mouseovertarget",
+		"party1target", "party2target", "party3target", "party4target",
+		"raid1target", "raid2target", "raid3target", "raid4target", "raid5target", "raid6target", "raid7target", "raid8target", "raid9target", "raid10target",
+		"raid11target", "raid12target", "raid13target", "raid14target", "raid15target", "raid16target", "raid17target", "raid18target", "raid19target", "raid20target",
+		"raid21target", "raid22target", "raid23target", "raid24target", "raid25target", "raid26target", "raid27target", "raid28target", "raid29target", "raid30target",
+		"raid31target", "raid32target", "raid33target", "raid34target", "raid35target", "raid36target", "raid37target", "raid38target", "raid39target", "raid40target",
+		"nameplate1", "nameplate2", "nameplate3", "nameplate4", "nameplate5", "nameplate6", "nameplate7", "nameplate8", "nameplate9", "nameplate10",
+		"nameplate11", "nameplate12", "nameplate13", "nameplate14", "nameplate15", "nameplate16", "nameplate17", "nameplate18", "nameplate19", "nameplate20",
+		"nameplate21", "nameplate22", "nameplate23", "nameplate24", "nameplate25", "nameplate26", "nameplate27", "nameplate28", "nameplate29", "nameplate30",
+		"nameplate31", "nameplate32", "nameplate33", "nameplate34", "nameplate35", "nameplate36", "nameplate37", "nameplate38", "nameplate39", "nameplate40"
+	}
+
 	function DBM:GetEnemyUnitIdByGUID(guid)
-		for i = 1, 10 do
-			local unitId = "boss"..i
-			local guid2 = UnitGUID(unitId)
-			if guid == guid2 then
-				return unitId
-			end
-		end
-		local idType = (IsInRaid() and "raid") or "party"
-		for i = 0, GetNumGroupMembers() do
-			local unitId = ((i == 0) and "target") or idType..i.."target"
+		for _, unitId in ipairs(mobUids) do
 			local guid2 = UnitGUID(unitId)
 			if guid == guid2 then
 				return unitId
@@ -6827,11 +6832,9 @@ function bossModPrototype:IsValidWarning(sourceGUID, customunitID, loose)
 	if customunitID then
 		if UnitExists(customunitID) and UnitGUID(customunitID) == sourceGUID and UnitAffectingCombat(customunitID) then return true end
 	else
-		for uId in DBM:GetGroupMembers() do
-			local target = uId.."target"
-			if UnitExists(target) and UnitGUID(target) == sourceGUID and UnitAffectingCombat(target) then return true end
-			local targettwo = uId.."targettarget"
-			if UnitExists(targettwo) and UnitGUID(targettwo) == sourceGUID and UnitAffectingCombat(targettwo) then return true end
+		local unitId = DBM:GetEnemyUnitIdByGUID(sourceGUID)
+		if UnitExists(unitId) and UnitAffectingCombat(unitId) then
+			return true
 		end
 	end
 	return false
@@ -10283,7 +10286,7 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, ico
 		default = self:GetRoleFlagValue(default)
 	end
 	self.Options[name] = (default == nil) or default
-	if not DBM.Options.GroupOptionsExcludeIcon then
+	if spellId and not DBM.Options.GroupOptionsExcludeIcon then
 		self:GroupSpells(spellId, name)
 	end
 	self:SetOptionCategory(name, "icon")
@@ -10296,26 +10299,26 @@ function bossModPrototype:AddSetIconOption(name, spellId, default, iconType, ico
 		end
 	end
 	if iconType == 1 then
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_MELEE_A:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS_MELEE_A:format(spellId) or self.localization.options[name]
 	elseif iconType == 2 then
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_MELEE_R:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS_MELEE_R:format(spellId) or self.localization.options[name]
 	elseif iconType == 3 then
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_RANGED_A:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS_RANGED_A:format(spellId) or self.localization.options[name]
 	elseif iconType == 4 then
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_RANGED_R:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS_RANGED_R:format(spellId) or self.localization.options[name]
 	elseif iconType == 5 then
 		--NPC/Mob setting uses icon elect feature and needs to establish latency check table
 		if not self.findFastestComputer then
 			self.findFastestComputer = {}
 		end
 		self.findFastestComputer[#self.findFastestComputer + 1] = name
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_NPCS:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_NPCS:format(spellId) or self.localization.options[name]
 	elseif iconType == 6 then
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_ALPHA:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS_ALPHA:format(spellId) or self.localization.options[name]
 	elseif iconType == 7 then
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS_ROSTER:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS_ROSTER:format(spellId) or self.localization.options[name]
 	else--Type 0 (Generic for targets)
-		self.localization.options[name] = L.AUTO_ICONS_OPTION_TARGETS:format(spellId)
+		self.localization.options[name] = spellId and L.AUTO_ICONS_OPTION_TARGETS:format(spellId) or self.localization.options[name]
 	end
 	--A table defining used icons by number, insert icon textures to end of option
 	if iconsUsed then

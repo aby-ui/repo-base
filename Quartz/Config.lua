@@ -29,20 +29,20 @@ local pairs, unpack, type = pairs, unpack, type
 local getOpt, setOpt, getColor, setColor
 do
 	function getOpt(info)
-		local key = info[#info] 
+		local key = info[#info]
 		return Quartz3.db.profile[key]
 	end
-	
+
 	function setOpt(info, value)
 		local key = info[#info]
 		Quartz3.db.profile[key] = value
 		Quartz3:ApplySettings()
 	end
-	
+
 	function getColor(info)
 		return unpack(getOpt(info))
 	end
-	
+
 	function setColor(info, r, g, b, a)
 		setOpt(info, {r, g, b, a})
 	end

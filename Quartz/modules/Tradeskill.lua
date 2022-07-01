@@ -43,11 +43,11 @@ local function tradeskillOnUpdate()
 	if casting then
 		local elapsed = duration * completedcasts + currentTime - starttime
 		castBar:SetValue(elapsed)
-		
+
 		local perc = (currentTime - starttime) / duration
 		castBarSpark:ClearAllPoints()
 		castBarSpark:SetPoint("CENTER", castBar, "LEFT", perc * castBar:GetWidth(), 0)
-		
+
 		if Player.db.profile.hidecasttime then
 			castBarTimeText:SetFormattedText(TimeFmt(totaltime - elapsed))
 		else
@@ -65,10 +65,10 @@ local function tradeskillOnUpdate()
 		else
 			local elapsed = duration * completedcasts
 			castBar:SetValue(elapsed)
-			
+
 			castBarSpark:ClearAllPoints()
 			castBarSpark:SetPoint("CENTER", castBar, "LEFT", castBar:GetWidth(), 0)
-			
+
 			if Player.db.profile.hidecasttime then
 				castBarTimeText:SetFormattedText(TimeFmt(totaltime - elapsed))
 			else
@@ -111,15 +111,15 @@ function Tradeskill:UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)
 		castSpellID = spellID
 		bail = nil
 		Player.Bar.endTime = nil
-		
+
 		castBar:SetStatusBarColor(unpack(Quartz3.db.profile.castingcolor))
 		castBar:SetMinMaxValues(0, totaltime)
-		
+
 		castBar:SetValue(0)
 		castBarParent:Show()
 		castBarParent:SetScript("OnUpdate", tradeskillOnUpdate)
 		castBarParent:SetAlpha(Player.db.profile.alpha)
-		
+
 		local numleft = repeattimes - completedcasts
 		if numleft <= 1 then
 			castBarText:SetText(displayName)

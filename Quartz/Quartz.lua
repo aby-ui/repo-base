@@ -156,8 +156,8 @@ function Quartz3:ShowUnlockDialog()
 		f:SetScript('OnHide', function() PlaySound(SOUNDKIT and SOUNDKIT.GS_TITLE_OPTION_EXIT or 'gsTitleOptionExit') end)
 
 		f:RegisterForDrag('LeftButton')
-		f:SetScript('OnDragStart', function(f) f:StartMoving() end)
-		f:SetScript('OnDragStop', function(f) f:StopMovingOrSizing() end)
+		f:SetScript('OnDragStart', function(frame) frame:StartMoving() end)
+		f:SetScript('OnDragStop', function(frame) frame:StopMovingOrSizing() end)
 
 		local header = f:CreateTexture(nil, "ARTWORK")
 		header:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
@@ -178,9 +178,9 @@ function Quartz3:ShowUnlockDialog()
 		desc:SetText(L["Bars unlocked. Move them now and click Lock when you are done."])
 
 		local lockBars = CreateFrame("CheckButton", "Quartz3UnlockDialogLock", f, "OptionsButtonTemplate")
-		getglobal(lockBars:GetName() .. "Text"):SetText(L["Lock"])
+		_G[lockBars:GetName() .. "Text"]:SetText(L["Lock"])
 
-		lockBars:SetScript("OnClick", function(self)
+		lockBars:SetScript("OnClick", function(frame)
 			Quartz3:Lock()
 			LibStub("AceConfigRegistry-3.0"):NotifyChange("Quartz3")
 		end)
