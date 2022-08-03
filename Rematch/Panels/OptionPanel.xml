@@ -309,6 +309,27 @@
 				</Frames>
 			</Frame> <!-- Growth -->
 
+			<Frame parentKey="NotesFont">
+				<Size x="248" y="26"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString parentKey="Label" inherits="GameFontHighlight">
+							<Anchors>
+								<Anchor point="LEFT" x="8" y="0"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame parentKey="DropDown" inherits="RematchComboBoxTemplate,RematchTooltipScripts">
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.Label" relativePoint="RIGHT" x="4" y="0"/>
+							<Anchor point="RIGHT" x="-4" y="0"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
 			<!-- this button is attached to the Custom Scale list button to open a dialog -->
 			<Button parentKey="CustomScaleButton" inherits="RematchStretchButtonTemplate,RematchTooltipScripts">
 				<Size x="64" y="24"/>

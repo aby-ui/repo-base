@@ -17,6 +17,7 @@ L.OTabOptions	= GAMEOPTIONS_MENU
 L.OTabAbout		= "About"
 
 L.TabCategory_OTHER			= "Other Mods"
+L.TabCategory_AFFIXES		= "Affixes"
 
 L.BossModLoaded 			= "%s statistics"
 L.BossModLoad_now 			= [[This boss mod is not loaded.
@@ -426,7 +427,7 @@ L.FilterInterrupts3			= "If caster is not current target/focus (Always) or inter
 L.FilterInterrupts4			= "Always filter interrupt announcements (you don't want to see them period)"
 L.FilterInterruptNoteName	= "Filter announcements for interruptable spells (with count) if announce does not contain your name in the custom note"
 L.FilterDispels				= "Filter announcements for dispelable spells if your dispel is on cooldown"
-L.FilterTrashWarnings		= "Filter all trash mob announcements in normal &amp; heroic dungeons"
+L.FilterTrashWarnings		= "Filter all trash mob announcements in normal, heroic, and trivial (outleveled) dungeons"
 
 L.Area_PullTimer			= "Pull, Break, Combat, & Custom Timer Filter Options"
 L.DontShowPTNoID			= "Block DBM Pull Timers if not sent from same zone as you (will never block BigWigs timers that are sent with no zone ID)"

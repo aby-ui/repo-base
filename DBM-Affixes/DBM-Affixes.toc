@@ -1,0 +1,30 @@
+## Interface: 90207
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeon and Raid Affixes|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0던전과 공격대 어픽스|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Аффиксы подземелий и рейдов|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0地下城以及團隊詞綴|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0副本词缀|r
+## Author: MysticalOS
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMAffixes_AllSavedVars
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: OTHER
+## X-DBM-Mod-Category: SHADOWLANDS
+## X-DBM-Mod-No-Statistics: 1
+## X-DBM-Mod-Name: Affixes
+## X-DBM-Mod-Name-koKR: 어픽스
+## X-DBM-Mod-Name-ruRU: Аффиксы
+## X-DBM-Mod-MapID: 2441, 2097, 1651, 1208, 1195, 2296, 2450, 2481
+## X-DBM-Mod-Sort: 305
+## X-DBM-Mod-MinCoreRevision: 12473
+
+localization.en.lua
+localization.tw.lua
+localization.cn.lua
+
+MPlusAffixes.lua
+FatedAffixes.lua
+
+
+## X-Vendor: AbyUI

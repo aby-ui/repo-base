@@ -112,7 +112,7 @@ local function UpdateCdByReducer(info, guid, t, isHolyPriest)
 				if id ~= 1856 then
 					local icon = info.spellIcons[id]
 					if icon and (BOOKTYPE_CATEGORY[icon.category] or icon.category == "COVENANT")then
-						P:UpdateCooldown(icon, duration)
+						P:UpdateCooldown(icon, P.isPvP and 10 or duration)
 					end
 				end
 			end

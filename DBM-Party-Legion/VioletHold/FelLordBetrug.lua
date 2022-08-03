@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220610054416")
 mod:SetCreatureID(102446)
 mod:SetEncounterID(1856)
 mod:SetUsedIcons(1, 2, 3)--3 icons?
@@ -32,7 +32,7 @@ local timerMightySmashCD		= mod:NewCDTimer(50, 202328, nil, nil, nil, 2)--50-57
 local timerSeedsCD				= mod:NewCDTimer(21.8, 210879, nil, nil, nil, 3, nil, DBM_COMMON_L.HEROIC_ICON)--22-40
 local timerExecute				= mod:NewTargetTimer(20, 205233, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--22-40
 
-mod:AddSetIconOption("SetIconOnSeeds", 210879, true, false, {1, 2, 3})
+mod:AddSetIconOption("SetIconOnSeeds", 210879, true, 6, {1, 2, 3})
 
 function mod:SlashTarget(targetname, uId)
 	if not targetname then return end

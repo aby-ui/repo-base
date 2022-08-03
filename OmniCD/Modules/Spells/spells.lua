@@ -432,7 +432,7 @@ E.spell_db = {
 		{ spellID = 8122,   duration = 60,  type = "cc",        talent = 205369 },
 		{ spellID = 205369, duration = 30,  type = "cc",        spec = true,    parent = 8122   },
 		{ spellID = 204263, duration = 45,  type = "disarm",    spec = true     },
-		{ spellID = 213602, duration = 45,  type = "immunity",  spec = true,    parent = 586    },
+		{ spellID = 213602, duration = 60,  type = "immunity",  spec = true,    parent = 586    },
 		{ spellID = 197268, duration = 90,  type = "immunity",  spec = true     },
 		{ spellID = 47788,  duration = 180, type = "externalDefensive", spec = {257}    },
 		{ spellID = 33206,  duration = 180, type = "externalDefensive", spec = {256}    },
@@ -599,7 +599,7 @@ E.spell_db = {
 		{ spellID = 325640, duration = 60,  type = "covenant",  spec = 321077,  },
 
 		{ spellID = 119898, duration = 24,  type = "interrupt"  },
-		{ spellID = 212619, duration = 24,  type = "interrupt", spec = true     },
+		{ spellID = 212619, duration = 30,  type = "interrupt", spec = true     },
 
 		{ spellID = 111898, duration = 120, type = "cc",        spec = true     },
 		{ spellID = 5484,   duration = 40,  type = "cc",        spec = true     },

@@ -17,7 +17,7 @@ lib.objects = lib.objects or {}
 lib.callbackRegistered = lib.callbackRegistered or nil
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.notCreated = lib.notCreated or {}
-lib.radius = lib.radius or 11
+lib.radius = lib.radius or 5
 local next, Minimap, CreateFrame = next, Minimap, CreateFrame
 lib.tooltip = lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
 local isDraggingButton = false
@@ -219,13 +219,9 @@ local function createButton(name, object, db)
 	button.dataObject = object
 	button.db = db
 	button:SetFrameStrata("MEDIUM")
-	if button.SetFixedFrameStrata then -- Classic support
-		button:SetFixedFrameStrata(true)
-	end
+	button:SetFixedFrameStrata(true)
 	button:SetFrameLevel(8)
-	if button.SetFixedFrameLevel then -- Classic support
-		button:SetFixedFrameLevel(true)
-	end
+	button:SetFixedFrameLevel(true)
 	button:SetSize(31, 31)
 	button:RegisterForClicks("anyUp")
 	button:RegisterForDrag("LeftButton")

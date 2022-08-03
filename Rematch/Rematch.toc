@@ -1,8 +1,8 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.11.24
+## Version: 4.12.0
 ## X-WoWI-ID: 22190
 ## X-Wago-ID: e56nOpK9
 ## X-Curse-Project-ID: 66047

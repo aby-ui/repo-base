@@ -1,18 +1,7 @@
 
-local LS = LibStub:NewLibrary("LibSpecialization", 2)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 3)
 if not LS then return end -- No upgrade needed
 
--- Throttle times for separate channels
-LS.throttleTable = LS.throttleTable or {
-	["RAID"] = 0,
-	["PARTY"] = 0,
-	["INSTANCE_CHAT"] = 0,
-}
-LS.throttleSendTable = LS.throttleSendTable or {
-	["RAID"] = 0,
-	["PARTY"] = 0,
-	["INSTANCE_CHAT"] = 0,
-}
 -- Positions of roles
 LS.positionTable = LS.positionTable or {
 	-- Death Knight
@@ -118,54 +107,107 @@ LS.roleTable = LS.roleTable or {
 LS.callbackMap = LS.callbackMap or {}
 LS.frame = LS.frame or CreateFrame("Frame")
 
-local throttleTable = LS.throttleTable
-local throttleSendTable = LS.throttleSendTable
 local callbackMap = LS.callbackMap
 local positionTable = LS.positionTable
 local roleTable = LS.roleTable
 local frame = LS.frame
 
 local next, type, error, tonumber, format = next, type, error, tonumber, string.format
-local Ambiguate, GetTime, IsInGroup, IsInRaid = Ambiguate, GetTime, IsInGroup, IsInRaid
+local Ambiguate, GetTime, IsInGroup = Ambiguate, GetTime, IsInGroup
 local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
-local SendAddonMessage = C_ChatInfo.SendAddonMessage
+local SendAddonMessage, CTimerAfter = C_ChatInfo.SendAddonMessage, C_Timer.After
 local pName = UnitName("player")
 
 if not C_ChatInfo.RegisterAddonMessagePrefix("LibSpec") then
 	error("LibSpecialization: Failed to register the addon prefix.")
 end
-frame:SetScript("OnEvent", function(_, _, prefix, msg, channel, sender)
-	if prefix == "LibSpec" and throttleTable[channel] then
-		if msg == "R" then
-			local t = GetTime()
-			if t - throttleTable[channel] > 4 then
-				throttleTable[channel] = t
-				local spec = GetSpecialization()
-				if type(spec) == "number" and spec > 0 then
-					local id = GetSpecializationInfo(spec)
 
-					if id then
-						if positionTable[id] then
-							SendAddonMessage("LibSpec", format("%d", id), channel)
-						else
-							error(format("LibSpecialization: Unknown ID %q", id))
+do
+	local approved = {
+		["RAID"] = true,
+		["PARTY"] = true,
+		["INSTANCE_CHAT"] = true,
+	}
+	local talentChangeThrottle, currentSpecId = 0, 0
+	local timerInstance, timerGroup = false, false
+	local function SendToInstance()
+		timerInstance = false
+		if IsInGroup(2) then
+			SendAddonMessage("LibSpec", format("%d", currentSpecId), "INSTANCE_CHAT")
+		end
+	end
+	local function SendToGroup()
+		timerGroup = false
+		if IsInGroup(1) then
+			SendAddonMessage("LibSpec", format("%d", currentSpecId), "RAID") -- RAID auto downgrades to PARTY as needed
+		end
+	end
+	frame:SetScript("OnEvent", function(_, event, prefix, msg, channel, sender)
+		if event == "CHAT_MSG_ADDON" then
+			if prefix == "LibSpec" and approved[channel] then -- Only approved channels
+				if msg == "R" then
+					if channel == "INSTANCE_CHAT" then
+						local specId = LS:MySpecialization()
+						if specId then
+							currentSpecId = specId
+							if not timerInstance then
+								timerInstance = true
+								CTimerAfter(3, SendToInstance)
+							end
+						end
+					else -- RAID/PARTY
+						local specId = LS:MySpecialization()
+						if specId then
+							currentSpecId = specId
+							if not timerGroup then
+								timerGroup = true
+								CTimerAfter(3, SendToGroup)
+							end
+						end
+					end
+					return
+				end
+
+				local specId = tonumber(msg)
+				local role, position = roleTable[specId], positionTable[specId]
+				if role and position then
+					for _,func in next, callbackMap do
+						func(specId, role, position, Ambiguate(sender, "none"), channel)
+					end
+				end
+			end
+		elseif event == "GROUP_FORMED" then -- Join new group
+			LS:RequestSpecialization()
+		elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then -- Talent change fires twice
+			local t = GetTime()
+			if t - talentChangeThrottle > 2 then
+				talentChangeThrottle = t
+				local specId, role, position = LS:MySpecialization()
+				if specId then
+					currentSpecId = specId -- Update this just in case a timer is queued
+					if IsInGroup() then
+						if IsInGroup(2) then -- Instance group
+							SendAddonMessage("LibSpec", format("%d", specId), "INSTANCE_CHAT")
+						end
+						if IsInGroup(1) then -- Normal group
+							SendAddonMessage("LibSpec", format("%d", specId), "RAID")
+						end
+					else
+						for _,func in next, callbackMap do
+							func(specId, role, position, pName, channel) -- This allows us to show our own spec info when not grouped
 						end
 					end
 				end
 			end
-			return
+		elseif event == "PLAYER_LOGIN" then
+			LS:RequestSpecialization()
 		end
-
-		local specId = tonumber(msg)
-		local role, position = roleTable[specId], positionTable[specId]
-		if role and position then
-			for _,func in next, callbackMap do
-				func(specId, role, position, Ambiguate(sender, "none"), channel)
-			end
-		end
-	end
-end)
-frame:RegisterEvent("CHAT_MSG_ADDON")
+	end)
+	frame:RegisterEvent("CHAT_MSG_ADDON")
+	frame:RegisterEvent("GROUP_FORMED")
+	frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+	frame:RegisterEvent("PLAYER_LOGIN")
+end
 
 -- Allow requesting only your specialization
 function LS:MySpecialization()
@@ -184,28 +226,36 @@ function LS:MySpecialization()
 	end
 end
 
--- For automatic group handling, don't pass a channel. The order is INSTANCE_CHAT > RAID > GROUP.
-function LS:RequestSpecialization(channel)
-	if channel and not throttleSendTable[channel] then
-		error("LibSpecialization: Incorrect channel type for :RequestSpecialization.")
-	else
-		if not channel and IsInGroup() then
-			channel = IsInGroup(2) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY"
-		end
-
+do
+	local prev = 0
+	local timer = false
+	function LS:RequestSpecialization()
 		local specId, role, position = LS:MySpecialization()
 		for _,func in next, callbackMap do
-			func(specId, role, position, pName, channel) -- This allows us to show our own spec info when not grouped
+			func(specId, role, position, pName) -- This allows us to show our own spec info when not grouped
 		end
 
-		if channel then
+		if IsInGroup() then
 			local t = GetTime()
-			if t - throttleSendTable[channel] > 4 then
-				throttleSendTable[channel] = t
-				SendAddonMessage("LibSpec", "R", channel)
+			if t-prev > 3 then
+				timer = false
+				prev = t
+				if IsInGroup(2) then
+					SendAddonMessage("LibSpec", "R", "INSTANCE_CHAT")
+				end
+				if IsInGroup(1) then
+					SendAddonMessage("LibSpec", "R", "RAID")
+				end
+			elseif not timer then
+				timer = true
+				CTimerAfter(3.1-(t-prev), LS.RequestSpecialization)
 			end
 		end
 	end
+end
+
+if IsLoggedIn() and not oldminor then -- Player is logged in and library isn't upgrading
+	LS:RequestSpecialization()
 end
 
 function LS:Register(addon, func)
@@ -229,4 +279,3 @@ function LS:Unregister(addon)
 	end
 	callbackMap[addon] = nil
 end
-

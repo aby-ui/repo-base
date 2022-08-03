@@ -101,9 +101,9 @@ local function resize(frame, first)
 								child2.myheight = text:GetStringHeight() + 20 -- + padding
 							end
 						elseif child2.mytype == "checkbutton" then
-							local buttonText = _G[child2:GetName() .. "Text"]
-							buttonText:SetWidth(width - buttonText.widthPad - 57)
-							buttonText:SetText(buttonText.text)
+							local buttonText = child2.textObj
+							buttonText:SetWidth(width - child2.widthPad - 57)
+							buttonText:SetText(child2.text)
 							if not child2.customPoint then
 								local height = buttonText:GetContentHeight()
 								if not isRetail then

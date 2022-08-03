@@ -17,6 +17,7 @@ L.OTabOptions				= "選項"
 L.OTabAbout					= "關於"
 
 L.TabCategory_OTHER			= "其它模組"
+L.TabCategory_AFFIXES		= "詞綴"
 
 L.BossModLoaded				= "%s狀態"
 L.BossModLoad_now 			= [[該模組尚未載入。
@@ -428,7 +429,7 @@ L.FilterInterrupts3			= "如果施法者不是你的目標/專注目標(總是)�
 L.FilterInterrupts4			= "永遠過濾中斷警告 (你不想看到它們的時候)"
 L.FilterInterruptNoteName	= "過濾可中斷技能的警告(與次數)，如果自訂註記警告沒有包含你的名字"
 L.FilterDispels				= "過濾可驅散技能如果你的驅散技正在冷卻中"
-L.FilterTrashWarnings		= "在普通與英雄地城過濾所有的小怪警告"
+L.FilterTrashWarnings		= "過濾所有小怪警告在普通與英雄以及過往版本的地城"
 
 L.Area_PullTimer			= "開怪、休息、戰鬥和自定義計時器過濾器選項"
 L.DontShowPTNoID			= "阻擋與你不同區域ID送出的開怪倒數計時條"

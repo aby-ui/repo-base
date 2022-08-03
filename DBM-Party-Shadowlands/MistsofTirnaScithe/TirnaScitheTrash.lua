@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TirnaScitheTrash", "DBM-Party-Shadowlands", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220616190832")
+mod:SetRevision("20220702183245")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -67,7 +67,7 @@ function mod:VolatileAcid(targetname, uId)
 	if self:AntiSpam(3, targetname) then
 		if targetname == UnitName("player") then
 			specWarnVolatileAcid:Show()
-			specWarnVolatileAcid:Play("runout")
+			specWarnVolatileAcid:Play("range5")
 			yellVolatileAcid:Yell()
 		else
 			warnVolatileAcid:Show(targetname)
@@ -125,7 +125,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 325418 and self:AntiSpam(3, args.destName) then--Backup, in case no one in party was targetting mob casting Volatile Acid (ie target scanning would fail)
 		if args:IsPlayer() then
 			specWarnVolatileAcid:Show()
-			specWarnVolatileAcid:Play("runout")
+			specWarnVolatileAcid:Play("range5")
 			yellVolatileAcid:Yell()
 		else
 			warnVolatileAcid:Show(args.destName)

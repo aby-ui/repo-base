@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Accountant Classic
 ## Notes: 统计个人金钱花费和收入，以表格的形式呈现。
 ## Author: Arith Hsu

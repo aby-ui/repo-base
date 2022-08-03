@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20220217011830")
+mod:SetRevision("20220802030047")
 mod:SetCreatureID(114462)
 mod:SetEncounterID(1964)
 --mod:SetUsedIcons(1)
@@ -30,7 +30,7 @@ local specWarnPowerDischarge		= mod:NewSpecialWarningMove(227465, nil, nil, nil,
 local timerSummonAddCD				= mod:NewNextTimer(9.7, 227267, nil, nil, nil, 1)
 local timerPowerDischargeCD			= mod:NewCDTimer(12.2, 227465, nil, nil, nil, 3)
 local timerEvoCD					= mod:NewNextTimer(70, 227254, nil, nil, nil, 6, nil, nil, nil, 1, 4)
-local timerEvo						= mod:NewBuffActiveTimer(20, 227254, nil, nil, nil, 6, nil, nil, nil, 1, 4)
+local timerEvo						= mod:NewBuffActiveTimer(20, 227254, nil, nil, nil, 6)
 
 --local berserkTimer					= mod:NewBerserkTimer(300)
 

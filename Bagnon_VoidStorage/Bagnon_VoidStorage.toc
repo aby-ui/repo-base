@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Bagnon Void Storage
 ## Author: Jaliborc (João Cardoso)
 ## Notes: Single window display for your void storage

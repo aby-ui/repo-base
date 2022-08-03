@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Can I Mog It? |TInterface\Addons\CanIMogIt\Icons\KNOWN:0|t
 ## Author: TorelTwiddler, Ami Yuy
 ## Version: 9.2.5v1.33

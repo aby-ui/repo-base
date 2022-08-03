@@ -1,6 +1,6 @@
 ## Author: Torhal
 ## DefaultState: enabled
-## Interface: 90205
+## Interface: 90207
 ## LoadManagers: AddonLoader
 ## OptionalDeps: Ace3, LibDataBroker-1.1, LibQTip-1.0, TipTac
 ## SavedVariables: Broker_CurrencyDB

@@ -2,15 +2,6 @@ if GetLocale() ~= "zhTW" then return end
 local L
 
 -----------------------
--- <<<Global (M+ Affixes) >>> --
------------------------
-L = DBM:GetModLocalization("MPlusAffixes")
-
-L:SetGeneralLocalization({
-	name =	"M+ 詞綴"
-})
-
------------------------
 -- <<<The Necrotic Wake (1182J/2286M) >>> --
 -----------------------
 -----------------------

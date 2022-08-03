@@ -65,7 +65,6 @@ REMATCH_SLIDER_BACKDROP_STYLE = {
 	tileSize = 8,
 	edgeSize = 8,
 	insets = { left = 3, right = 3, top = 6, bottom = 6 },
-
 }
 
 -- the following hint tables describe whether an attack is strong/weak vs a pet type
@@ -195,6 +194,7 @@ function rematch:Start()
 	rematch:RegisterEvent("PLAYER_REGEN_DISABLED")
 	rematch:RegisterEvent("PLAYER_REGEN_ENABLED")
 	rematch:RegisterEvent("PET_BATTLE_OPENING_START")
+	rematch:RegisterEvent("PET_BATTLE_PET_CHANGED")
 	rematch:RegisterEvent("PET_BATTLE_CLOSE")
 	rematch:RegisterEvent("PET_BATTLE_QUEUE_STATUS")
 	rematch:RegisterEvent("PLAYER_LOGOUT")
@@ -492,6 +492,14 @@ function rematch:PET_BATTLE_OPENING_START()
 		end
 	end
 	rematch.playerForfeit = nil -- start watching for player forfeiting the match
+	rematch.Battle:ShowNoteButtons()
+end
+
+-- when opening done, show note buttons if any
+function rematch:PET_BATTLE_PET_CHANGED()
+	if not settings.HideNoteButtons then
+		rematch.Battle:ShowNoteButtons()
+	end
 end
 
 function rematch:PET_BATTLE_QUEUE_STATUS()

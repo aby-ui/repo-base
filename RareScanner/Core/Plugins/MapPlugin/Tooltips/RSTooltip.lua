@@ -96,20 +96,33 @@ ItemToolTip.shoppingTooltips = { ItemToolTipComp1, ItemToolTipComp2 }
 
 local function showItemToolTip(cell, args)
 	local itemID, itemLink, itemClassID, itemSubClassID = unpack(args)
-	ItemToolTip:SetScale(0.7 * RSConfigDB.GetWorldMapTooltipsScale())
-	ItemToolTip:SetOwner(cell:GetParent(), "ANCHOR_LEFT", -10)
+	ItemToolTip:SetScale(RSConfigDB.GetWorldMapLootAchievTooltipsScale())
+	if (RSConfigDB.GetWorldMapLootAchievTooltipPosition() == "ANCHOR_LEFT") then
+		ItemToolTip:SetOwner(cell:GetParent():GetParent():GetParent(), "ANCHOR_BOTTOMLEFT", 0, cell:GetParent():GetParent():GetParent():GetHeight())	
+	elseif (RSConfigDB.GetWorldMapLootAchievTooltipPosition() == "ANCHOR_RIGHT") then
+		ItemToolTip:SetOwner(cell:GetParent():GetParent():GetParent(), "ANCHOR_BOTTOMRIGHT", 0, cell:GetParent():GetParent():GetParent():GetHeight())	
+	elseif (RSConfigDB.GetWorldMapLootAchievTooltipPosition() == "ANCHOR_TOPLEFT") then
+		ItemToolTip:SetOwner(cell:GetParent():GetParent():GetParent(), "ANCHOR_LEFT")	
+	elseif (RSConfigDB.GetWorldMapLootAchievTooltipPosition() == "ANCHOR_TOPRIGHT") then
+		ItemToolTip:SetOwner(cell:GetParent():GetParent():GetParent(), "ANCHOR_RIGHT")	
+	else
+		ItemToolTip:SetOwner(cell:GetParent():GetParent():GetParent(), RSConfigDB.GetWorldMapLootAchievTooltipPosition())	
+	end
+
 	ItemToolTip:SetHyperlink(itemLink)
+	ItemToolTip:SetFrameLevel(cell:GetParent():GetParent():GetParent():GetFrameLevel() + 100)
 	
 	-- Adds extra information
 	RSLootTooltip.AddRareScannerInformation(ItemToolTip, itemLink, itemID, itemClassID, itemSubClassID)
-	
 	ItemToolTip:Show()
 end
 
 local function showItemComparationTooltip(cell)
 	if (IsShiftKeyDown() and ItemToolTip:IsShown()) then
-		ItemToolTipComp1:SetScale(0.7 * RSConfigDB.GetWorldMapTooltipsScale())
-		ItemToolTipComp2:SetScale(0.7 * RSConfigDB.GetWorldMapTooltipsScale())
+		ItemToolTipComp1:SetScale(RSConfigDB.GetWorldMapLootAchievTooltipsScale())
+		ItemToolTipComp2:SetScale(RSConfigDB.GetWorldMapLootAchievTooltipsScale())
+		ItemToolTipComp1:SetFrameLevel(2100)
+		ItemToolTipComp2:SetFrameLevel(2100)
 		GameTooltip_OnTooltipSetShoppingItem(ItemToolTip)
 		GameTooltip_ShowCompareItem(ItemToolTip)
 		cell:SetPropagateKeyboardInput(false)

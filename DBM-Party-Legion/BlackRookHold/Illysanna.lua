@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1653, "DBM-Party-Legion", 1, 740)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116185401")
+mod:SetRevision("20220610054416")
 mod:SetCreatureID(98696)
 mod:SetEncounterID(1833)
 mod:SetUsedIcons(3, 2, 1)
@@ -43,7 +43,7 @@ local timerVengefulShearCD			= mod:NewCDTimer(11, 197418, nil, "Tank", nil, 5, n
 local timerDarkRushCD				= mod:NewCDTimer(30, 197478, nil, nil, nil, 3)
 local timerEyeBeamCD				= mod:NewNextTimer(15.5, 197687, nil, nil, nil, 3)
 
-mod:AddSetIconOption("SetIconOnDarkRush", 197478, true, false, {1, 2, 3})
+mod:AddSetIconOption("SetIconOnDarkRush", 197478, true, 6, {1, 2, 3})
 --mod:AddRangeFrameOption(5, 197546)--Range not given for Brutal Glaive
 
 function mod:BrutalGlaiveTarget(targetname, uId)

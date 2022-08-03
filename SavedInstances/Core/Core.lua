@@ -2026,7 +2026,7 @@ hoverTooltip.ShowAccountSummary = function (cell, arg, ...)
   for _,ri in pairs(r) do table.insert(rmoney,ri) end
   table.sort(rmoney,function(a,b) return a.money > b.money end)
   for _,ri in ipairs(rmoney) do
-    if ri.money > 10000*10000 and ri.cnt > 1 then -- show multi-toon servers with over 10k wealth
+    if ri.money > 10000*10000 then -- show servers with over 10k wealth
       indicatortip:AddLine(ri.realm.." "..MONEY,SI:formatNumber(ri.money,true))
     end
   end
@@ -2517,7 +2517,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.2.2" then
+  if versionString == "9.2.3" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2872,7 +2872,7 @@ function SI:histZoneKey()
   if insttype == nil or insttype == "none" or insttype == "arena" or insttype == "pvp" then -- pvp doesnt count
     return nil
   end
-  if (IsInLFGDungeon() or IsInScenarioGroup()) and diff ~= 19 then -- LFG instances don't count, but Holiday Event counts
+  if (IsInLFGDungeon() or IsInScenarioGroup()) and diff ~= 19 and diff ~= 17 then -- LFG instances don't count, but Holiday Events and LFR both count
     return nil
   end
   if C_Garrison.IsOnGarrisonMap() then -- Garrisons don't count

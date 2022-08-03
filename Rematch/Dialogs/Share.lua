@@ -150,7 +150,8 @@ end
 --[[ Import Dialog ]]
 
 function rematch:ShowImportDialog()
-	local dialog = rematch:ShowDialog("ImportDialog",340,306,L["Import Team"],nil,SAVE,share.AcceptImport,CANCEL,share.ImportDialogOnHide,L["Load"],share.ImportLoadTeamOnly)
+	local breedPadding = rematch:GetBreedSource() and 30 or 0	
+	local dialog = rematch:ShowDialog("ImportDialog",340,306+breedPadding,L["Import Team"],nil,SAVE,share.AcceptImport,CANCEL,share.ImportDialogOnHide,L["Load"],share.ImportLoadTeamOnly)
 	share:SetPoint("TOP",0,-36)
 	share:Show()
 	share.TopText:SetText(L["Press Ctrl+V to paste a team from the clipboard."])
@@ -163,9 +164,25 @@ function rematch:ShowImportDialog()
 
 	dialog.TabPicker:SetPoint("TOP",dialog.MultiLine,"BOTTOM",0,-12)
 	dialog.TabPicker:Show()
+
+	if breedPadding > 0 then
+		dialog.CheckButton:SetPoint("TOPLEFT",dialog.TabPicker,"BOTTOMLEFT",-2,-2)
+		dialog.CheckButton.text:SetText(L["Prioritize Breed On Import"])
+		dialog.CheckButton:Show()
+		dialog.CheckButton:SetChecked(settings.PrioritizeBreedOnImport)
+		dialog.CheckButton:SetScript("OnClick",function(self)
+			settings.PrioritizeBreedOnImport = self:GetChecked()
+			share.ImportEditBoxOnTextChanged(dialog.MultiLine.EditBox)
+			if rematch.OptionPanel:IsVisible() then
+				rematch.OptionPanel:Update()
+			end
+		end)
+		dialog.CheckButton.tooltipTitle = L["Prioritize Breed On Import"]
+		dialog.CheckButton.tooltipBody = L["When importing or receiving teams, fill the team with the best matched breed as the first priority instead of the highest level."]
+	end
+
 	dialog.Accept:Disable()
 	dialog.Other:Disable()
-
 	dialog.Other:SetScript("OnEnter",share.ShowImportLoadTooltip)
 	dialog.Other:SetScript("OnLeave",rematch.HideTooltip)
 end
@@ -203,6 +220,7 @@ end
 function share:ImportEditBoxOnTextChanged()
 	local text = (self:GetText() or ""):trim()
 	local numTeams,numConflicts = rematch:TestTextForStringTeams(text)
+	local breedPadding = rematch:GetBreedSource() and 30 or 0	
 
 	local dialog = rematch.Dialog
 	dialog.Accept:SetEnabled(numTeams and numTeams>0)
@@ -214,45 +232,45 @@ function share:ImportEditBoxOnTextChanged()
 		dialog.Team:Hide()
 		dialog.Text:Hide()
 		dialog.ConflictRadios:Hide()
-		dialog:SetHeight(306)
+		dialog:SetHeight(306+breedPadding)
 	elseif not numTeams or numTeams==0 then -- no discernable teams in editbox, show warning only
 		dialog.Warning.Text:SetText(L["This is not a recognizable team."])
-		dialog.Warning:SetPoint("TOP",dialog.TabPicker,"BOTTOM",0,-4)
+		dialog.Warning:SetPoint("TOP",dialog.TabPicker,"BOTTOM",0,-4-breedPadding)
 		dialog.Warning:Show()
 		dialog.Team:Hide()
 		dialog.Text:Hide()
 		dialog.ConflictRadios:Hide()
-		dialog:SetHeight(338)
+		dialog:SetHeight(338+breedPadding)
 	elseif numTeams==1 then -- one team is found, show the team
 		dialog.Warning:Hide()
-		dialog.Team:SetPoint("TOP",dialog.TabPicker,"BOTTOM",0,-28)
+		dialog.Team:SetPoint("TOP",dialog.TabPicker,"BOTTOM",0,-28-breedPadding)
 		local team,key = rematch:GetSideline()
 		dialog:FillTeam(dialog.Team,team)
 		dialog.Team:Show()
-		dialog:ShowText(rematch:GetSidelineTitle(true),280,20,"TOP",dialog.TabPicker,"BOTTOM",0,-4)
+		dialog:ShowText(rematch:GetSidelineTitle(true),280,20,"TOP",dialog.TabPicker,"BOTTOM",0,-4-breedPadding)
 		dialog.Text:SetJustifyH("CENTER")
 		if not RematchSaved[key] then
-			dialog:SetHeight(410)
+			dialog:SetHeight(410+breedPadding)
 			dialog.ConflictRadios:Hide()
 		else
 			dialog.ConflictRadios:SetPoint("TOP",dialog.Team,"BOTTOM",0,-8)
 			dialog.ConflictRadios:Show()
 			share:UpdateConflictRadios(format(L["An existing team already has this %s."],type(key)=="number" and L["target"] or L["name"]),L["Create a new copy"],L["Overwrite existing team"])
-			dialog:SetHeight(480)
+			dialog:SetHeight(480+breedPadding)
 		end
 	else -- this is a multi-team import
 		dialog.Warning:Hide()
 		dialog.Team:Hide()
-		dialog:ShowText(format(L["%s%d\124r teams are in this import."],rematch.hexWhite,numTeams),280,20,"TOP",dialog.TabPicker,"BOTTOM",0,-8)
+		dialog:ShowText(format(L["%s%d\124r teams are in this import."],rematch.hexWhite,numTeams),280,20,"TOP",dialog.TabPicker,"BOTTOM",0,-8-breedPadding)
 		dialog.Text:SetJustifyH("CENTER")
 		if not numConflicts or numConflicts==0 then
 			dialog.ConflictRadios:Hide()
-			dialog:SetHeight(334)
+			dialog:SetHeight(334+breedPadding)
 		else
 			dialog.ConflictRadios:SetPoint("TOP",dialog.Text,"BOTTOM",0,-4)
 			dialog.ConflictRadios:Show()
 			share:UpdateConflictRadios(format(L["%s%d\124r have a name or target already used."],rematch.hexRed,numConflicts),L["Create new copies"],L["Overwrite existing teams"])
-			dialog:SetHeight(402)
+			dialog:SetHeight(402+breedPadding)
 		end
 	end
 end

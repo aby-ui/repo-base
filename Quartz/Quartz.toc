@@ -1,5 +1,5 @@
 ## Title: Quartz
-## Interface: 90205
+## Interface: 90207
 ## Notes: Modular casting bar.
 ## Author: Nevcairiel, Nymbia
 ## Version: 3.6.11

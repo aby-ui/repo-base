@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Author: Warbaby @ 爱不易 github.com/aby-ui
 ## Title: FriendsMenuXP
 ## Notes: Greatly extends the player drop down menu without secure taint.

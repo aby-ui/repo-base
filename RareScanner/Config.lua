@@ -49,10 +49,14 @@ private.MARKERS = {
 
 private.TOOLTIP_POSITIONS = {
 	["ANCHOR_LEFT"] = AL["TOOLTIP_LEFT"],
+	["ANCHOR_TOPLEFT"] = AL["TOOLTIP_TOPLEFT"],
+	["ANCHOR_BOTTOMLEFT"] = AL["TOOLTIP_BOTTOMLEFT"],
 	["ANCHOR_RIGHT"] = AL["TOOLTIP_RIGHT"],
+	["ANCHOR_TOPRIGHT"] = AL["TOOLTIP_TOPRIGHT"],
+	["ANCHOR_BOTTOMRIGHT"] = AL["TOOLTIP_BOTTOMRIGHT"],
 	["ANCHOR_CURSOR"] = AL["TOOLTIP_CURSOR"],
-	["ANCHOR_TOPLEFT"] = AL["TOOLTIP_TOP"],
-	["ANCHOR_BOTTOMLEFT"] = AL["TOOLTIP_BOTTOM"],
+	["ANCHOR_TOP"] = AL["TOOLTIP_TOP"],
+	["ANCHOR_BOTTOM"] = AL["TOOLTIP_BOTTOM"],
 }
 
 private.ITEM_QUALITY = {
@@ -2747,6 +2751,37 @@ local function GetMapOptions()
 								RSConfigDB.SetShowingTooltipsCommands(value)
 							end,
 							width = "full",
+						},
+						separatorLootAchievements = {
+							order = 9,
+							type = "header",
+							name = AL["MAP_TOOLTIPS_LOOT_ACHIEVEMENT"],
+						},
+						lootAchievementsScale = {
+							order = 10,
+							type = "range",
+							name = AL["MAP_TOOLTIPS_LOOT_ACHIEVEMENT_SCALE"],
+							desc = AL["MAP_TOOLTIPS_LOOT_ACHIEVEMENT_SCALE_DESC"],
+							min	= 0.1,
+							max	= 1.5,
+							step = 0.05,
+							get = function() return RSConfigDB.GetWorldMapLootAchievTooltipsScale() end,
+							set = function(_, value)
+								RSConfigDB.SetWorldMapLootAchievTooltipsScale(value)
+							end,
+							width = "full"
+						},
+						lootAchievementsPosition = {
+							order = 11,
+							type = "select",
+							name = AL["MAP_TOOLTIPS_LOOT_ACHIEVEMENT_POSITION"],
+							desc = AL["MAP_TOOLTIPS_LOOT_ACHIEVEMENT_POSITION_DESC"],
+							values = private.TOOLTIP_POSITIONS,
+							get = function() return RSConfigDB.GetWorldMapLootAchievTooltipPosition() end,
+							set = function(_, value)
+								RSConfigDB.SetWorldMapLootAchievTooltipPosition(value)
+							end,
+							width = "double"
 						},
 					},
 				},

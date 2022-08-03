@@ -4,6 +4,8 @@ local pairs, next, type, ipairs, setmetatable, mfloor, mmax = pairs, next, type,
 local CreateFrame, GameFontNormalSmall = CreateFrame, GameFontNormalSmall
 local DBM = DBM
 
+local isDragonflight = DBM:GetTOC() >= 100000
+
 local defaultFont, defaultFontSize = GameFontHighlightSmall:GetFont()
 
 local hack = OptionsList_OnLoad
@@ -13,7 +15,13 @@ function OptionsList_OnLoad(self, ...)
 	end
 end
 
-local tabFrame1 = CreateFrame("Frame", "DBM_GUI_DropDown", _G["DBM_GUI_OptionsFrame"], "BackdropTemplate,OptionsFrameListTemplate")
+local tabFrame1
+if isDragonflight then
+	tabFrame1 = CreateFrame("ScrollFrame", "DBM_GUI_DropDown", _G["DBM_GUI_OptionsFrame"], "BackdropTemplate,UIPanelScrollFrameTemplate")
+else
+	-- Temporary hack, till I get both versions running smoothly on the new system
+	tabFrame1 = CreateFrame("Frame", "DBM_GUI_DropDown", _G["DBM_GUI_OptionsFrame"], "BackdropTemplate,OptionsFrameListTemplate")
+end
 tabFrame1:Hide()
 tabFrame1:SetFrameStrata("TOOLTIP")
 tabFrame1.offset = 0
@@ -29,7 +37,8 @@ tabFrame1:ApplyBackdrop()
 tabFrame1:SetBackdropColor(0.1, 0.1, 0.1, 0.6)
 tabFrame1:SetBackdropBorderColor(0.4, 0.4, 0.4)
 
-local tabFrame1List = _G[tabFrame1:GetName() .. "List"]
+-- Temporary hack, till I get both versions running smoothly on the new system
+local tabFrame1List = isDragonflight and tabFrame1 or _G[tabFrame1:GetName() .. "List"]
 tabFrame1List:SetScript("OnVerticalScroll", function(self, offset)
 	local scrollbar = _G[self:GetName() .. "ScrollBar"]
 	local _, max = scrollbar:GetMinMaxValues()

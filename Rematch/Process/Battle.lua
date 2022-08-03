@@ -16,12 +16,35 @@ local unitFrames = {
 	["Enemy3"] = {"TOPRIGHT","TOPLEFT"}
 }
 
+-- anchor for notes button (with anchor point="CENTER", parent is frame.Icon) on each unit frame
+local noteAnchors = {
+	["ActiveAlly"] = {"TOPRIGHT",-2,-4},
+	["ActiveEnemy"] = {"TOPLEFT",2,-4},
+	["Ally2"] = {"TOPRIGHT",-2,-8},
+	["Ally3"] = {"TOPRIGHT",-2,-8},
+	["Enemy2"] = {"TOPLEFT",2,-8},
+	["Enemy3"] = {"TOPLEFT",2,-8}
+}
+
+local noteButtons = {}
+
 rematch:InitModule(function()
 	settings = RematchSettings
 	if IsAddOnLoaded("Blizzard_PetBattleUI") then
 		battle:Blizzard_PetBattleUI()
 	end
 end)
+
+-- shows/hides the notes buttons on pets in battle ui with notes
+function battle:ShowNoteButtons()
+	if C_PetBattles.IsInBattle() then
+		for key in pairs(noteAnchors) do
+			local frame = PetBattleFrame[key]
+			local speciesID = C_PetBattles.GetPetSpeciesID(frame.petOwner,frame.petIndex)
+			noteButtons[key]:SetShown(speciesID and rematch.petInfo:Fetch(speciesID).notes and not settings.HideNoteButtons)
+		end
+	end
+end
 
 -- called in ADDON_LOADED of Blizzard_PetBattleUI (or during startup if already loaded)
 function battle:Blizzard_PetBattleUI()
@@ -35,6 +58,12 @@ function battle:Blizzard_PetBattleUI()
 		frame:HookScript("OnEnter",battle.UnitOnEnter)
 		frame:HookScript("OnLeave",battle.UnitOnLeave)
 		frame:HookScript("OnClick",battle.UnitOnClick)
+		local noteButton = CreateFrame("Button",nil,frame,"RematchNotesButtonTemplate")
+		noteButtons[key] = noteButton
+		if noteAnchors[key] then
+			noteButton:SetPoint("CENTER",frame.Icon,unpack(noteAnchors[key]))
+		end
+		noteButton:Show()
 	end
 
 end
@@ -45,6 +74,15 @@ function battle.PetBattleUnitFrameDropDownInit(self)
 	info.text = L["Show Pet Card"]
 	info.notCheckable = 1
 	info.func = function() battle:ShowBattlePetCard(self.petOwner,self.petIndex,true) end
+	UIDropDownMenu_AddButton(info);
+	local info = UIDropDownMenu_CreateInfo()
+	info.text = L["Set Notes"]
+	info.notCheckable = 1
+	info.func = function()
+		rematch.Notes.locked = true
+		rematch:ShowNotes("pet",C_PetBattles.GetPetSpeciesID(self.petOwner,self.petIndex),true)
+		rematch.Notes.Content.ScrollFrame.EditBox:SetFocus(true)
+	 end
 	UIDropDownMenu_AddButton(info);
 end
 

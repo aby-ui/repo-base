@@ -172,7 +172,11 @@ end
 function notes:OnEnter()
 	local key = self:GetParent().key
 	local petID = self:GetParent().petID
-	if key then
+	local petOwner = self:GetParent().petOwner
+	local petIndex = self:GetParent().petIndex
+	if petOwner and petIndex then -- this is a notes button on battle UI
+		rematch:ShowNotes("pet",C_PetBattles.GetPetSpeciesID(petOwner,petIndex))
+	elseif key then
 		rematch:ShowNotes("team",key)
 	else
 		rematch:ShowNotes("pet",petID)
@@ -190,7 +194,10 @@ end
 function notes:OnClick()
 	local parent = self:GetParent()
 	local subject,subjectType
-	if parent.key then
+	if parent.petOwner and parent.petIndex then -- this is a battle ui note button
+		subject = C_PetBattles.GetPetSpeciesID(parent.petOwner,parent.petIndex)
+		subjectType = "pet"
+	elseif parent.key then
 		subject = parent.key
 		subjectType = "team"
 	elseif parent.petID then
@@ -263,6 +270,7 @@ function notes:OnFocusLostDelayed()
 	end
 	if update then
 		rematch:UpdateUI()
+		rematch.Battle:ShowNoteButtons()
 	end
 end
 
@@ -299,6 +307,7 @@ function notes:AcceptDelete()
 		settings.PetNotes[subject] = nil
 	end
 	rematch:UpdateUI()
+	rematch.Battle:ShowNoteButtons()
 end
 
 function notes:UpdateControlButtons()

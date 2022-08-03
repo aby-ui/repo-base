@@ -26,6 +26,18 @@ rematch:InitModule(function()
 		panel.Growth.Corners[i].Arrow:SetTexCoord(info[4],info[5],info[6],info[7],info[8],info[9],info[10],info[11])
 	end
 	panel.Growth.Label:SetText(L["Anchor"])
+
+	panel.NotesFont.Label:SetText(L["Notes Font Size \124TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:12:12\124t"])
+	rematch:RegisterMenu("NotesFontMenu",{
+		{ text=L["Small"], font="GameFontHighlightSmall", highlight=panel.NotesFont.DropDown.IsHighlighted, func=panel.NotesFont.DropDown.SetSize },
+		{ text=L["Normal"], font="GameFontHighlight", highlight=panel.NotesFont.DropDown.IsHighlighted, func=panel.NotesFont.DropDown.SetSize },
+		{ text=L["Large"], font="GameFontHighlightLarge", highlight=panel.NotesFont.DropDown.IsHighlighted, func=panel.NotesFont.DropDown.SetSize },
+	})
+	panel.NotesFont.DropDown.tooltipTitle=L["Notes Font Size"]
+	panel.NotesFont.DropDown.tooltipBody=L["This determines the size of text within pet and team notes."]
+
+	panel:UpdateNotesFont()
+
 	settings.ExpandedOptHeaders = settings.ExpandedOptHeaders or {}
 	if not settings.RememberExpandedLists then
 		wipe(settings.ExpandedOptHeaders)
@@ -71,6 +83,15 @@ rematch:InitModule(function()
 		end
 	end
 
+	-- remove Prioritize Breed On Import if no breed addon enabled
+	if not rematch:GetBreedSource() then
+		for i=#panel.opts,1,-1 do
+			if panel.opts[i][2]=="PrioritizeBreedOnImport" then
+				tremove(panel.opts,i)
+			end
+		end
+	end
+
 	panel:PopulateList()
 
 	-- setup list scrollframe
@@ -82,6 +103,7 @@ rematch:InitModule(function()
 	scrollFrame.preUpdateFunc = function() -- hide all widgets at start of an update
 		panel.Growth:Hide()
 		panel.CustomScaleButton:Hide()
+		panel.NotesFont:Hide()
 	end
 	scrollFrame.postUpdateFunc = rematch.UpdateTextureHighlight
 end)
@@ -502,6 +524,10 @@ end
 
 panel.funcs.HideMenuHelp = rematch.UpdateUI
 
+panel.funcs.HideNoteButtons = function()
+	rematch.Battle:ShowNoteButtons()
+end
+
 -- collapses or expands an option header
 function panel:HeaderOnClick()
 	local headerIndex = self.headerIndex
@@ -647,4 +673,33 @@ function panel:CollapseAllButtonOnKeyDown(key)
 		end
 	end
     self:SetPropagateKeyboardInput(true)
+end
+
+function panel:UpdateNotesFont()
+	local font = "Normal"
+	if settings.NotesFont=="GameFontHighlightSmall" then
+		font = "Small"
+	elseif settings.NotesFont=="GameFontHighlightLarge" then
+		font = "Large"
+	else
+		settings.NotesFont = "GameFontHighlight"
+		font = "Normal"
+	end
+	self.NotesFont.DropDown.Text:SetText(font)
+	rematch.Notes.Content.ScrollFrame.EditBox:SetFontObject(settings.NotesFont)
+end
+
+function panel.NotesFont.DropDown:OnClick()
+	rematch:ToggleMenu("NotesFontMenu","TOPRIGHT",self,"BOTTOMRIGHT",0,2)
+end
+
+-- menu function to set the notes font to the menu's font value
+function panel.NotesFont.DropDown:SetSize()
+	settings.NotesFont = self.font
+	panel:UpdateNotesFont()
+end
+
+-- menu function to highlight current notes font
+function panel.NotesFont.DropDown:IsHighlighted()
+	return self.font==settings.NotesFont
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2464, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220607214758")
+mod:SetRevision("20220702055823")
 mod:SetCreatureID(180990)
 mod:SetEncounterID(2537)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -500,11 +500,7 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(364942, 360562, 364488) then--All deciminator casts with a cast time
 		self.vb.decimatorCount = self.vb.decimatorCount + 1--This event may be before CLEU event so just make sure count updated before target scan
 		specWarnDecimator:Show(self.vb.decimatorCount)
-		if self:IsHard() then
-			specWarnDecimator:Play("carefly")
-		else
-			specWarnDecimator:Play("specialsoon")
-		end
+		specWarnDecimator:Play("specialsoon")
 		local timer = self:GetFromTimersTable(allTimers, difficultyName, self.vb.phase, 360562, self.vb.decimatorCount+1)
 		if timer then
 			timerDecimatorCD:Start(timer, self.vb.decimatorCount+1)

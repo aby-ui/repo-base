@@ -25,12 +25,35 @@ local StaticPopup_Show = StaticPopup_Show
 local Enum_WeeklyRewardChestThresholdType_MythicPlus = Enum.WeeklyRewardChestThresholdType.MythicPlus
 
 local KeystoneAbbrev = {
+  [166] = L["GD"],    -- Grimrail Depot
+  [169] = L["ID"],    -- Iron Docks
+
   [197] = L["EOA"],   -- Eye of Azshara
   [198] = L["DHT"],   -- Darkheart Thicket
   [199] = L["BRH"],   -- Black Rook Hold
+  [200] = L["HOV"],   -- Halls of Valor
   [206] = L["NL"],    -- Neltharion's Lair
   [207] = L["VOTW"],  -- Vault of the Wardens
+  [208] = L["MOS"],   -- Maw of Souls
+  [209] = L["ARC"],   -- The Arcway
   [210] = L["COS"],   -- Court of Stars
+  [227] = L["LOWR"],  -- Return to Karazhan: Lower
+  [233] = L["COEN"],  -- Cathedral of Eternal Night
+  [234] = L["UPPR"],  -- Return to Karazhan: Upper
+  [239] = L["SEAT"],  -- Seat of the Triumvirate
+
+  [244] = L["AD"],    -- Atal'Dazar
+  [245] = L["FH"],    -- Freehold
+  [246] = L["TD"],    -- Tol Dagor
+  [247] = L["ML"],    -- The MOTHERLODE!!
+  [248] = L["WM"],    -- Waycrest Manor
+  [249] = L["KR"],    -- Kings' Rest
+  [250] = L["TOS"],   -- Temple of Sethraliss
+  [251] = L["UNDR"],  -- The Underrot
+  [252] = L["SOTS"],  -- Shrine of the Storm
+  [353] = L["SIEGE"], -- Siege of Boralus
+  [369] = L["YARD"],  -- Operation: Mechagon - Junkyard
+  [370] = L["WORK"],  -- Operation: Mechagon - Workshop
 
   [375] = L["MISTS"], -- Mists of Tirna Scithe
   [376] = L["NW"],    -- The Necrotic Wake

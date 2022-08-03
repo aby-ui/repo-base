@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20220610054416")
 mod:SetCreatureID(114350)
 mod:SetEncounterID(1965)
 mod:SetUsedIcons(1, 2)
@@ -35,7 +35,7 @@ local specWarnGuardiansImage		= mod:NewSpecialWarningSwitch(228334, nil, nil, ni
 
 local timerSpecialCD				= mod:NewCDSpecialTimer(30, 228582, nil, nil, nil, nil, nil, nil, nil, 1, 4)
 
-mod:AddSetIconOption("SetIconOnWreath", 228261, true, false, {1, 2})
+mod:AddSetIconOption("SetIconOnWreath", 228261, true, 6, {1, 2})
 --mod:AddInfoFrameOption(198108, false)
 
 mod.vb.playersFrozen = 0

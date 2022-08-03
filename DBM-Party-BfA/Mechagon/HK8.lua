@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2355, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217031102")
+mod:SetRevision("20220613012903")
 mod:SetCreatureID(150190)
 mod:SetEncounterID(2291)
 
@@ -64,15 +64,15 @@ local function checkHardMode(self)
 			local cid = self:GetUnitCreatureId(unitID)
 			if cid == 150295 then--MK1
 				found = true
-				timerFulminatingZapCD:Start(8.4)--SUCCESS--Assumed
-				timerWreckCD:Start(15.7)--Assumed
-				timerReinforcementRelayCD:Start(19.8)--Assumed
+				timerFulminatingZapCD:Start(7.4)--SUCCESS--Assumed
+				timerWreckCD:Start(14.7)--Assumed
+				timerReinforcementRelayCD:Start(18.8)--Assumed
 			elseif cid == 155760 then--MK2 (hard mode)
 				found = true
 				self.vb.hard = true
-				timerFulminatingBurstCD:Start(8.4)--SUCCESS--VERIFIED
-				timerWreckCD:Start(15.7)--VERIFIED
-				timerReinforcementRelayCD:Start(19.8)--VERIFIED
+				timerFulminatingBurstCD:Start(7.4)--SUCCESS--VERIFIED
+				timerWreckCD:Start(14.7)--VERIFIED
+				timerReinforcementRelayCD:Start(18.8)--VERIFIED
 			end
 		end
 	end
@@ -83,7 +83,7 @@ end
 
 function mod:OnCombatStart(delay)
 	self.vb.hard = false
-	self:Schedule(1-delay, checkHardMode, self)
+	self:Schedule(2-delay, checkHardMode, self)
 	table.wipe(unitTracked)
 	if self.Options.NPAuraOnWalkieShockie then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")

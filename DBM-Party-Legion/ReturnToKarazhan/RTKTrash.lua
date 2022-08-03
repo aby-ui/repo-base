@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("RTKTrash", "DBM-Party-Legion", 11)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20200806142123")
+mod:SetRevision("20220802030047")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -38,6 +38,8 @@ local specWarnFlashlight			= mod:NewSpecialWarningLookAway(227966, nil, nil, nil
 
 local timerAchieve					= mod:NewBuffActiveTimer(480, 229074)
 
+--Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc, 7 gtfo
+
 function mod:SPELL_CAST_START(args)
 	if not self.Options.Enabled then return end
 	local spellId = args.spellId
@@ -59,7 +61,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 229714 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnConsumeMagic:Show(args.destName)
 		specWarnConsumeMagic:Play("kickcast")
-	elseif spellId == 227925 and self:AntiSpam(3, 1) then
+	elseif spellId == 227925 and self:AntiSpam(3, 6) then
 		specWarnFinalCurtain:Show()
 		specWarnFinalCurtain:Play("runout")
 	elseif spellId == 227966 and self:AntiSpam(3, 2) then
@@ -90,7 +92,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 229716 then
 		specWarnCurseofDoom:Show(args.destName)
 		specWarnCurseofDoom:Play("dispelnow")
-	elseif spellId == 229074 and self:AntiSpam(3, 3) then
+	elseif spellId == 229074 and self:AntiSpam(3, 8) then
 		local uId = DBM:GetRaidUnitId(args.destName)
 		local _, _, _, _, _, expires = DBM:UnitBuff(uId, args.spellName)
 		if expires then

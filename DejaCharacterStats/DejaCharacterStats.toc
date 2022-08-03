@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Version: R90205r1
 ## Title: |TInterface\Addons\DejaCharacterStats\DCSArt\DejoLogo:26:26|t|cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul

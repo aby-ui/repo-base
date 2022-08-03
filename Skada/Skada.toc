@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Skada
 ## Notes: Modular damage meter.
 ## Notes-deDE: Ein Damage-Meter.

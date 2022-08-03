@@ -1,8 +1,9 @@
-local mod	= DBM:NewMod("MPlusAffixes", "DBM-Party-Shadowlands", 10)
+local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220614214033")
+mod:SetRevision("20220802030106")
 --mod:SetModelID(47785)
+mod:SetZone(2441, 2097, 1651, 1208, 1195)--All of the S4 SL M+ Dungeons
 
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true
