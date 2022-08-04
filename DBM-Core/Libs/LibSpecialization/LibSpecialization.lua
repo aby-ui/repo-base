@@ -1,5 +1,5 @@
 
-local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 3)
+local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 4)
 if not LS then return end -- No upgrade needed
 
 -- Positions of roles
@@ -112,8 +112,23 @@ local positionTable = LS.positionTable
 local roleTable = LS.roleTable
 local frame = LS.frame
 
+local starterSpecs = {
+	[1444] = true, -- Shaman
+	[1446] = true, -- Warrior
+	[1447] = true, -- Druid
+	[1448] = true, -- Hunter
+	[1449] = true, -- Mage
+	[1450] = true, -- Monk
+	[1451] = true, -- Paladin
+	[1452] = true, -- Priest
+	[1453] = true, -- Rogue
+	[1454] = true, -- Warlock
+	[1455] = true, -- Death Knight
+	[1456] = true, -- Demon Hunter
+}
+
 local next, type, error, tonumber, format = next, type, error, tonumber, string.format
-local Ambiguate, GetTime, IsInGroup = Ambiguate, GetTime, IsInGroup
+local Ambiguate, geterrorhandler, GetTime, IsInGroup = Ambiguate, geterrorhandler, GetTime, IsInGroup
 local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
 local SendAddonMessage, CTimerAfter = C_ChatInfo.SendAddonMessage, C_Timer.After
 local pName = UnitName("player")
@@ -219,8 +234,8 @@ function LS:MySpecialization()
 			local position = positionTable[specId]
 			if position then
 				return specId, role, position
-			else
-				error(format("LibSpecialization: Unknown specId %q", specId))
+			elseif not starterSpecs[specId] then
+				geterrorhandler()(format("LibSpecialization: Unknown specId %q", specId))
 			end
 		end
 	end
@@ -231,8 +246,10 @@ do
 	local timer = false
 	function LS:RequestSpecialization()
 		local specId, role, position = LS:MySpecialization()
-		for _,func in next, callbackMap do
-			func(specId, role, position, pName) -- This allows us to show our own spec info when not grouped
+		if specId then
+			for _,func in next, callbackMap do
+				func(specId, role, position, pName) -- This allows us to show our own spec info when not grouped
+			end
 		end
 
 		if IsInGroup() then

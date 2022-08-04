@@ -499,8 +499,7 @@ L["Graveyard"] = "墓地"
 L["Grease Bot"] = "滑油机器人"
 L["Grievous"] = "重伤"
 L["Grimhorn the Enslaver"] = "奴役者格里霍恩"
---[[Translation missing --]]
---[[ L["GrimrailDepot"] = ""--]] 
+L["GrimrailDepot"] = "恐轨车站"
 L["Grip"] = "死亡之握"
 L["Gripping Terror"] = "攫握恐魔"
 L["Gritslime Snail"] = "砂泥蜗牛"
@@ -599,8 +598,7 @@ L["Inspiring"] = "鼓舞"
 L["Interment Construct"] = "葬礼构造体"
 L["Interrogation Specialist"] = "审讯专员"
 L["Invalid import string"] = "导入字符串无效"
---[[Translation missing --]]
---[[ L["IronDocks"] = ""--]] 
+L["IronDocks"] = "钢铁码头"
 L["Ironhull Apprentice"] = "铁舟学徒"
 L["Irontide Bonesaw"] = "铁潮锯骨者"
 L["Irontide Buccaneer"] = "铁潮冒险家"
@@ -785,8 +783,7 @@ L["Nal'asha"] = "纳尔莎"
 L["Nalthor the Rimebinder"] = "缚霜者纳尔佐"
 L["Nal'tira"] = "纳尔提拉"
 L["Nar'zudah"] = "纳祖达"
---[[Translation missing --]]
---[[ L["Nathrezim Infiltrator"] = ""--]] 
+L["Nathrezim Infiltrator"] = "纳斯雷兹姆潜入者"
 L["Necrotic"] = "死疽"
 L["Necrotic Spiderling"] = "死疽小蜘蛛"
 L["Nefarious Darkspeaker"] = "卑劣的暗语者"
@@ -894,8 +891,7 @@ L["Quaking"] = "震荡"
 L["Queen Patlaa"] = "帕特拉女王"
 L["Queen Wasi"] = "沃希女王"
 L["Raal the Gluttonous"] = "贪食的拉尔"
---[[Translation missing --]]
---[[ L["Rafters"] = ""--]] 
+L["Rafters"] = "栈桥"
 L["Raging"] = "暴怒"
 L["Raging Bloodhorn"] = "狂怒的血角"
 L["Rainbow"] = "彩虹"
@@ -910,8 +906,7 @@ L["Reanimated Mage"] = "复生的法师"
 L["Reanimated Warrior"] = "复生的战士"
 L["Reanimation Totem"] = "复生图腾"
 L["Reaping"] = "收割"
---[[Translation missing --]]
---[[ L["Rear Train Cars"] = ""--]] 
+L["Rear Train Cars"] = "后车厢"
 L["receiveErrorUpdate"] = "MDT无法正确接收路线, 请确认传送者%s已安装最新版本MDT!"
 L["Receiving: ..."] = "正在接收: ..."
 L["Red, Green and Blue"] = "红绿蓝"
@@ -1065,8 +1060,7 @@ L["Shrine of the Storm Sublevel"] = "风暴神殿"
 L["Shrine Templar"] = "神殿骑士"
 L["shrineGraveyardNote1"] = "击败斯托颂勋爵后解锁"
 L["Shroud Hound"] = "迷雾猎犬"
---[[Translation missing --]]
---[[ L["Shrouded"] = ""--]] 
+L["Shrouded"] = "伪装"
 L["Shrouded Fang"] = "隐秘之牙"
 L["Shuffling Corpse"] = "蹒跚的死尸"
 L["Siege of Boralus"] = "围攻伯拉勒斯"
@@ -1278,8 +1272,7 @@ L["Toxic Lurker"] = "剧毒潜伏者"
 L["Toxic Monstrosity"] = "剧毒畸体"
 L["Toxic Saurid"] = "剧毒细颚龙"
 L["Tracker Zo'korss"] = "追踪者佐·刻斯"
---[[Translation missing --]]
---[[ L["Train Depot"] = ""--]] 
+L["Train Depot"] = "地铁站"
 L["Tred'ova"] = "特雷德奥瓦"
 L["Trixie Tazer"] = "崔克茜·击电"
 L["Trothak"] = "托萨克"
@@ -1414,8 +1407,7 @@ L["Zolramus Necromancer"] = "佐尔拉姆斯通灵师"
 L["Zolramus Siphoner"] = "佐尔拉姆斯虹吸者 "
 L["Zolramus Sorcerer"] = "佐尔拉姆斯巫师"
 L["Zo'phex"] = "佐·菲克斯"
---[[Translation missing --]]
---[[ L["Zul'gamux"] = ""--]] 
+L["Zul'gamux"] = "祖尔加玛斯"
 L["Zul'Gurub"] = "祖尔格拉布"
 L["Zuraal the Ascended"] = "晋升者祖拉尔"
 

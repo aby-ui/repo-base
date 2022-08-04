@@ -33,7 +33,7 @@
 ## X-DBM-Mod-MinExpansion: 6
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r36
+## Version: r37
 
 localization.en.lua
 localization.cn.lua
@@ -116,7 +116,6 @@ SeatofTriumvirate\Saprish.lua
 SeatofTriumvirate\ViceroyNezhar.lua
 SeatofTriumvirate\Lura.lua
 SeatofTriumvirate\SoTTrash.lua
-
 
 
 ## X-Vendor: AbyUI

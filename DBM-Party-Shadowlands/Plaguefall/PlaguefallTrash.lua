@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("PlaguefallTrash", "DBM-Party-Shadowlands", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220614201118")
+mod:SetRevision("20220803233609")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true

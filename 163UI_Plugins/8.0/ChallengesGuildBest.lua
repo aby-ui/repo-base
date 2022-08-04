@@ -146,8 +146,8 @@ PVP每周奖励
 ---------------------------------------------------------------]]
 CoreDependCall("Blizzard_PVPUI", function()
     local ratings  = { "0000+", "1000+", "1200+", "1400+", "1600+", "1800+", "1950+", "2100+", "2400+"}
-    local upgrade  = {  249,    252,     255,     259,     262,     265,     268,     272,     275, }
-    local upgradep = {  262,    265,     268,     272,     275,     278,     281,     285,     285, }
+    local upgrade  = {  275,    278,     281,     285,     288,     291,     294,     298,     301, }
+    local upgradep = {  288,    291,     294,     298,     301,     304,     307,     311,     311, }
     local title    = { "休闲者","争斗者I","争斗者II","挑战者I","挑战者II","竞争者I","竞争者II","决斗者","精锐" }
 
     for _, chest in ipairs({ PVPQueueFrame.HonorInset.RatedPanel.WeeklyChest, PVPQueueFrame.HonorInset.CasualPanel.WeeklyChest}) do
@@ -283,7 +283,14 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         [381] = "高塔", -- Spires of Ascension
         [382] = "剧场", -- Theater of Pain
         [391] = "天街", -- Strets of Wonder
-        [392] = "宏图"  -- So'lea's Gambit
+        [392] = "宏图",  -- So'lea's Gambit
+
+        [370] = "车间",
+        [369] = "垃圾场",
+        [169] = "码头",
+        [227] = "卡下",
+        [234] = "卡上",
+        [166] = "恐轨",
     }
     local PORTAL_SPELLS = {
         [375] = 354464, --"仙林",
@@ -390,7 +397,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             WW(btn):SetParent(icon):ClearAllPoints():SetAllPoints(icon):Show()
             :SetFrameStrata(icon:GetFrameStrata()):AddFrameLevel(1, icon)
             :un()
-            if icon and icon.mapID then
+            if icon and icon.mapID and GetSpellInfo(PORTAL_SPELLS[icon.mapID]) then
                 btn:SetAttribute("macrotext", format("/stopcasting\n/cast %s", (GetSpellInfo(PORTAL_SPELLS[icon.mapID]))))
             else
                 btn:SetAttribute("macrotext", nil)
