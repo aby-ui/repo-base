@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Version: 1.0
 ## Title: GridBorderStyle
 ## Notes: Add Border Style to Grid Frames

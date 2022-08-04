@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: Kaliel's Tracker
 ## Notes: Improved Blizzard Objective Tracker
 ## Version: 4.4.0

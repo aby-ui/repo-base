@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Notes: 显示副本boss的简易攻略。
 ## SavedVariables: AbyBossGuideDB
 

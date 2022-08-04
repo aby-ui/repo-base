@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: World Quest Tracker
 ## Notes: An addon by Terciob. Make more easy to see world quests.
 ## SavedVariables: WQTrackerDB

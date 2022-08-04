@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: HandyNotes: Battle for Azeroth
 ## Version: 10
 ## Notes: Battle for Azeroth Notes

@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: Quest Announce
 ## Version: 9.0.1.1
 ## Author: Michael Irving (original), Sommy aka Gyffes(Gilneas) (WoW 2.4), Kotenuki aka Cinnabuns(Doomhammer) (WoW 4.0+)

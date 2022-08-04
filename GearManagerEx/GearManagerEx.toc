@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: GearManagerEx
 ## Version: 3.01
 ## Author: Abin

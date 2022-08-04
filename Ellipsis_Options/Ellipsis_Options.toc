@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: Ellipsis Options (|cff67b1e9K|cff4779ceith|cff67b1e9M|cff4779ceod|r)
 ## Notes: Options for Ellipsis. Must be enabled to alter settings.
 ## Author: Kith

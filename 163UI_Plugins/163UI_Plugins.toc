@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: |cff880303[爱不易]|r AbyUI 小功能集合
 ## SavedVariables: SimulationcraftAbyUIDB
 ## X-Vendor: AbyUI

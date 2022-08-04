@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 90205
 ## Title: World Quests List
 ## Author: ykiigor
 ## Version: 104
