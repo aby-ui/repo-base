@@ -96,6 +96,12 @@ U1RegisterAddon("DBM-CastleNathria", { title = "纳斯利亚堡模块", });
 U1RegisterAddon("DBM-SanctumOfDomination", { title = "统御圣所模块", });
 U1RegisterAddon("DBM-Sepulcher", { title = "初诞者圣墓模块", });
 U1RegisterAddon("DBM-Affixes", { title = "副本词缀模块", });
+U1RegisterAddon("DBM-Party-Classic", { title = "经典旧世5人副本", });
+U1RegisterAddon("DBM-Party-BC", { title = "燃烧远征5人副本", });
+U1RegisterAddon("DBM-Party-WotLK", { title = "巫妖王之怒5人副本", });
+U1RegisterAddon("DBM-Party-Cataclysm", { title = "大地的裂变5人副本", });
+U1RegisterAddon("DBM-Party-MoP", { title = "熊猫人之谜5人副本", });
+U1RegisterAddon("DBM-Party-WoD", { title = "德拉诺之王5人副本", });
 
 --第三方开发的
 U1RegisterAddon("DBM-SpellTimers", { title = "冷却监控", load = "NORMAL", defaultEnable = 0 });
