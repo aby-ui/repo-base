@@ -595,6 +595,11 @@ GTFO.SpellID["352676"] = {
   sound = 1;
 };
 
+GTFO.SpellID["368015"] = {
+  --desc = "Bloated Rot Pool";
+  sound = 1;
+};
+
 --- ******************
 --- * Castle Nathria *
 --- ******************
@@ -1000,7 +1005,6 @@ GTFO.SpellID["365683"] = {
   --desc = "Desecration (Overthrown Protector)";
   sound = 1;
 };
-
 
 GTFO.SpellID["360425"] = {
   --desc = "Unholy Ground (The Jailer)";

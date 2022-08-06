@@ -1673,6 +1673,11 @@ GTFO.SpellID["228519"] = {
 -- TODO: Flame Wreath (Shade of Medivh) -- (If you cause it)
 -- TODO: Shadow Phlegm (Viz'aduum the Watcher) -- Avoidable?
 
+GTFO.SpellID["227568"] = {
+  --desc = "Burning Leg Sweep (Toe Knee)";
+  sound = 3;
+};
+
 GTFO.SpellID["227416"] = {
   --desc = "Wondrous Radiance (Galindre)";
   sound = 3;
@@ -1778,6 +1783,27 @@ GTFO.SpellID["229161"] = {
 GTFO.SpellID["229151"] = {
   --desc = "Disintegrate (Viz'aduum the Watcher)";
   sound = 3;
+};
+
+GTFO.SpellID["227434"] = {
+  --desc = "Bubble Blast (Shoreline Tidespeaker)";
+  sound = 3;
+};
+
+GTFO.SpellID["227799"] = {
+  --desc = "Wash Away (Mrrgria)";
+  sound = 3;
+};
+
+GTFO.SpellID["227780"] = {
+  --desc = "Thunder Ritual (Mrrgria)";
+	soundFunction = function() -- Warn only if you get hit more than once
+		if (GTFO_FindEvent("ThunderRitual")) then
+			return 3;
+		end
+		GTFO_AddEvent("ThunderRitual", 2);
+		return 0;
+	end
 };
 
 -- **************************

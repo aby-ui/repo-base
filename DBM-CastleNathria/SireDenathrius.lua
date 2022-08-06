@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2424, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803205142")
+mod:SetRevision("20220806032935")
 mod:SetCreatureID(167406)
 mod:SetEncounterID(2407)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -165,7 +165,7 @@ local allTimers = {
 		},
 		[3] = {--Totally different from heroic
 			--Hand of Destruction P3
-			[333932] = {72.6, 76.4, 94.7},
+			[333932] = {72.6, 76.4, 92.5},
 			--Fatal Finesse P3
 			[332794] = {17.4, 24, 24.9, 29, 22, 34, 22, 26, 32},
 			--Adds P2 (There are none in phase 3 but sometimes message can trigger after p2 trigger, this stops nil error)
@@ -354,6 +354,9 @@ function mod:SPELL_CAST_START(args)
 		timerCommandRavageCD:Start(self:IsEasy() and 59.5 or 57.3, self.vb.RavageCount+1)
 	elseif spellId == 328117 then--March of the Penitent (first intermission)
 		self:SetStage(1.5)
+		if self:IsFated() then
+			self:AffixEvent(0)--Stop Affix Bars
+		end
 		specWarnMarchofthePenitent:Show()
 		timerCleansingPainCD:Stop()
 		timerBloodPriceCD:Stop()
@@ -378,6 +381,9 @@ function mod:SPELL_CAST_START(args)
 		local timer = self:GetFromTimersTable(allTimers, difficultyName, self.vb.phase, spellId, self.vb.HandCount+1) or 41.2--Or part may not be accurate
 		if timer then
 			timerHandofDestructionCD:Start(timer, self.vb.HandCount+1)
+		end
+		if self:IsFated() then
+			self:AffixEvent(2, nil, 5)--Delay any affix until Hand has finished casting.
 		end
 	elseif spellId == 344776 then
 		if not castsPerGUID[args.sourceGUID] then
@@ -435,6 +441,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerCommandMassacreCD:Start(self:IsMythic() and 41.4 or 47.4, self.vb.MassacreCount+1)--Mythic 41-45
 	elseif spellId == 326005 then--Indignation
 		self:SetStage(3)
+		if self:IsFated() then
+			self:AffixEvent(2)--Restart Affix Bars
+		end
 		P3Transition = true
 		self.vb.priceCount = 0
 		self.vb.painCount = 0--reused for shattering pain
@@ -693,6 +702,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 328117 and self:IsInCombat() then--March of the Penitent
 		self:SetStage(2)
+		if self:IsFated() then
+			self:AffixEvent(1)--Start Affix Bars
+		end
 		self.vb.painCount = 0
 		self.vb.DebuffCount = 0
 		warnPhase:Show(DBM_CORE_L.AUTO_ANNOUNCE_TEXTS.stage:format(2))
@@ -788,6 +800,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 			local timer = self:GetFromTimersTable(allTimers, difficultyName, self.vb.phase, 333932, self.vb.HandCount+1)
 			if timer then
 				timerHandofDestructionCD:Start(timer, self.vb.HandCount+1)
+			end
+			if self:IsFated() then
+				self:AffixEvent(2, nil, 5)--Delay any affix until Hand has finished casting.
 			end
 		end
 		specWarnHandofDestruction:Show()

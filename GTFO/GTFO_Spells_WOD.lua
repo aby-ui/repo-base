@@ -22,6 +22,10 @@ GTFO.SpellID["164177"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["165677"] = {
+  --desc = "Void Slice (Taskmaster Gurran)";
+  sound = 1;
+};
 
 GTFO.SpellID["166031"] = {
 	--desc = "Crush (Ogron Warcrusher)";

@@ -69,7 +69,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220804075942"),
+	Revision = parseCurseDate("20220806023721"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -3269,28 +3269,20 @@ do
 			if not self:IsTrivial() then
 				if instanceDifficultyBylevel[LastInstanceMapID] and instanceDifficultyBylevel[LastInstanceMapID][2] == 2 and not GetAddOnInfo("DBM-Party-BC") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Dungeon mods"))
-					modAdvertisementShown = true
 				elseif (classicZones[LastInstanceMapID] or bcZones[LastInstanceMapID]) and not GetAddOnInfo("DBM-BlackTemple") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM BC/Vanilla mods"))
-					modAdvertisementShown = true
 				elseif wrathZones[LastInstanceMapID] and not GetAddOnInfo("DBM-Ulduar") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Wrath of the Lich King mods"))
-					modAdvertisementShown = true
 				elseif cataZones[LastInstanceMapID] and not GetAddOnInfo("DBM-Firelands") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Cataclysm mods"))
-					modAdvertisementShown = true
 				elseif mopZones[LastInstanceMapID] and not GetAddOnInfo("DBM-SiegeOfOrgrimmarV2") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Mists of Pandaria mods"))
-					modAdvertisementShown = true
 				elseif wodZones[LastInstanceMapID] and not GetAddOnInfo("DBM-HellfireCitadel") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Warlords of Draenor mods"))
-					modAdvertisementShown = true
 				elseif legionZones[LastInstanceMapID] and not GetAddOnInfo("DBM-AntorusBurningThrone") then--Technically 45 level with quish, but because of tuning you need need mods even at 50
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Legion mods"))
-					modAdvertisementShown = true
 				elseif bfaZones[LastInstanceMapID] and not GetAddOnInfo("DBM-Nyalotha") then--Technically 50, but tuning and huge loss of player power, zones are even HARDER at 60
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Battle for Azeroth mods"))
-					modAdvertisementShown = true
 				end
 			elseif challengeScenarios[LastInstanceMapID] and not GetAddOnInfo("DBM-Challenges") then--No trivial check on challenge scenarios
 				AddMsg(self, L.MOD_AVAILABLE:format("DBM-Challenges"))
@@ -4384,7 +4376,7 @@ do
 		if not combatInitialized then return end
 		if dbmIsEnabled and combatInfo[LastInstanceMapID] then
 			for _, v in ipairs(combatInfo[LastInstanceMapID]) do
-				if v.type:find("combat") and not v.noRegenDetection then
+				if v.type:find("combat") and not v.noRegenDetection and not (#inCombat > 0 and v.noMultiBoss) then
 					if v.multiMobPullDetection then
 						for _, mob in ipairs(v.multiMobPullDetection) do
 							if checkForPull(mob, v) then
@@ -6731,6 +6723,12 @@ function bossModPrototype:SetStage(stage)
 		fireEvent("DBM_SetStage", self, self.id, self.vb.phase, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, self.vb.stageTotality)--Mod, modId, Stage, Encounter Id (if available), total number of times SetStage has been called since combat start
 		--Note, some encounters have more than one encounter Id, for these encounters, the first ID from mod is always returned regardless of actual engage ID triggered fight
 		DBM:Debug("DBM_SetStage: " .. self.vb.phase .. "/" .. self.vb.stageTotality)
+	end
+end
+
+function bossModPrototype:AffixEvent(eventType, customStage, timeAdjust, spellDebit)
+	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
+		fireEvent("DBM_AffixEvent", self, self.id, eventType, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, customStage or self.vb.phase or 1, timeAdjust, spellDebit)--Mod, modId, type (0 end, 1, begin, 2, timerExtend), Encounter Id (if available), stage, amount of time to extend to, spellDebit, whether to subtrack the previous extend arg from next timer
 	end
 end
 
@@ -10665,6 +10663,9 @@ function bossModPrototype:RegisterCombat(cType, ...)
 	if self.noRegenDetection then
 		info.noRegenDetection = self.noRegenDetection
 	end
+	if self.noMultiBoss then
+		info.noMultiBoss = self.noMultiBoss
+	end
 	if self.WBEsync then
 		info.WBEsync = self.WBEsync
 	end
@@ -10790,6 +10791,13 @@ function bossModPrototype:DisableRegenDetection()
 	self.noRegenDetection = true
 	if self.combatInfo then
 		self.combatInfo.noRegenDetection = true
+	end
+end
+
+function bossModPrototype:DisableMultiBossPulls()
+	self.noMultiBoss = true
+	if self.combatInfo then
+		self.combatInfo.noMultiBoss = true
 	end
 end
 

@@ -1387,10 +1387,14 @@ GTFO.SpellID["230197"] = {
 --- * Return to Karazhan *
 --- **********************
 
--- TODO: Flame Gale (Toe Knee)
 -- TODO: Flashing Forks (Coggleston)
 -- TODO: Iron Whirlwind (Baron Rafe Dreuger) -- tank avoidable?
 
+GTFO.SpellID["227480"] = {
+  --desc = "Flame Gale (Toe Knee)";
+  applicationOnly = true;
+  sound = 1;
+};
 
 GTFO.SpellID["228200"] = {
   --desc = "Burning Blaze (Luminore)";

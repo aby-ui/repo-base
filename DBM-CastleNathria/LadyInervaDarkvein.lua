@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2420, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220202090223")
+mod:SetRevision("20220806032935")
 mod:SetCreatureID(165521)
 mod:SetEncounterID(2406)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -208,7 +208,7 @@ function mod:OnCombatStart(delay)
 --		timerFocusAnimaCD:Start(3.5-delay)--3.5-18?
 		timerExposedDesiresCD:Start(12.1-delay)
 		timerSinsandSufferingCD:Start(29.1-delay, 1)
-		timerBottledAnimaCD:Start(19.4-delay)
+		timerBottledAnimaCD:Start(19-delay)
 		timerConcentratedAnimaCD:Start(54.7-delay, 1)--Not cast on normal until near end of fight?
 	end
 --	berserkTimer:Start(-delay)--Confirmed normal and heroic
@@ -231,7 +231,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.addIcon = 8
 		self.vb.ConcentratedCount = self.vb.ConcentratedCount + 1
 		--1 Expose Desires (tank), 2 Bottled Anima (bouncing bottles), 3 Sins and Suffering (links), 4 Concentrate Anima (adds)
-		timerConcentratedAnimaCD:Start(self.vb.containerActive == 4 and 40 or 60.7, self.vb.ConcentratedCount+1)
+		timerConcentratedAnimaCD:Start(self.vb.containerActive == 4 and 40 or 60, self.vb.ConcentratedCount+1)
 	elseif spellId == 342280 or spellId == 342281 or spellId == 342282 then--Rank 1, Rank 2, Rank 3
 		if self.Options.SpecWarn325769moveto then
 			specWarnBottledAnima:Show()

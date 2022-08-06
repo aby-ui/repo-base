@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2418, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220202090223")
+mod:SetRevision("20220806032935")
 mod:SetCreatureID(166644)
 mod:SetEncounterID(2405)
 mod:SetUsedIcons(1, 2)
@@ -240,8 +240,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 			--If hyper is in progress, boss actually finishes it and the phase change CD isn't triggered
 			if not self.vb.hyperInProgress then
 				timerHyperlightSparkCD:Start(5.5)--5.5-6
-			else--When this happens, it doesn't get recast for a full minute
-				timerHyperlightSparkCD:Start(60)
+			else--When this happens, it doesn't get recast for a full minute (Old)
+				timerHyperlightSparkCD:Start(25)--New, it's no longer a minute?
 			end
 			timerDimensionalTearCD:Start(14)
 			timerRiftBlastCD:Start(20)

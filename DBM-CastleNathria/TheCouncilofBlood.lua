@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2426, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220320215817")
+mod:SetRevision("20220805031343")
 mod:SetCreatureID(166971, 166969, 166970)--Castellan Niklaus, Baroness Frieda, Lord Stavros
 mod:SetEncounterID(2412)
 mod:SetBossHPInfoToHighest()
@@ -597,6 +597,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		--Over adds time to all timers just to keep them from expiring
 		--This is then corrected later after knowing exact time of dance
 		timerDancingFeverCD:Stop()
+		if self:IsFated() then
+			self:AffixEvent(0)--Stop Affix Bars
+		end
 		if not self.vb.nikDead then
 			timerDutifulAttendantCD:Pause()--Alive and dead ability
 			timerDualistsRiposteCD:Pause()
@@ -762,6 +765,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 330959 and self:AntiSpam(10, 2) then
 		warnDanceOver:Show()
+		if self:IsFated() then
+			self:AffixEvent(1, 2)--Restart Affix Bars
+		end
 		--Hack to remove the over timing of dance phases
 --		local danceDuration = GetTime() - danceDurationFix--Remove after testing of pause/resume
 --		local adjustment = 50-danceDuration--Remove after testing of pause/resume
