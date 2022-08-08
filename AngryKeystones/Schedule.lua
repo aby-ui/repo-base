@@ -76,7 +76,7 @@ local function UpdatePartyKeystones()
 					local color = RAID_CLASS_COLORS[class]
 					entry.Text:SetText(name)
 					entry.Text:SetTextColor(color:GetRGBA())
-					entry.Text2:SetText(keystoneName:gsub("塔扎维什：", ""))
+					entry.Text2:SetText(keystoneName:gsub("塔扎维什：", ""):gsub("重返卡拉赞（(.-)层）", "卡拉赞%1"))
 					e = e + 1
 				end
 			end

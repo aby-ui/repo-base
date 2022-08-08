@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2425, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220806032935")
+mod:SetRevision("20220807210815")
 mod:SetCreatureID(168112, 168113)
 mod:SetEncounterID(2417)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -646,7 +646,7 @@ function mod:OnTranscriptorSync(msg, targetName)
 			if self.Options.SetIconOnEruption2 then
 				self:SetIcon(targetName, 4, 4.5)--So icon clears 1 second after
 			end
-			warnReverberatingEruption:Show(targetName)
+			warnReverberatingEruption:Show(self.vb.eruptionCount, targetName)
 		end
 	elseif msg:find("334009") and targetName then--Leap Backup (if scan fails)
 		targetName = Ambiguate(targetName, "none")
@@ -654,7 +654,7 @@ function mod:OnTranscriptorSync(msg, targetName)
 			if self.Options.SetIconOnEruption2 then
 				self:SetIcon(targetName, 4, 4.5)--So icon clears 1 second after
 			end
-			warnReverberatingLeap:Show(targetName)
+			warnReverberatingLeap:Show(self.vb.eruptionCount, targetName)
 		end
 	end
 end

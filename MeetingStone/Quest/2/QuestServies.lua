@@ -47,15 +47,19 @@ function QuestServies:QSQ(_, active, questGroupData, progressData)
     self.active = active
     self.questGroup = questGroupData and QuestGroup:FromProto(questGroupData)
     if self.questGroup then
-        if self.questGroup.id ~= QuestType.GoldLeader then
-            if progressData then
-                self:QSP(nil, progressData)
-            else
-                self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
-            end
-        else
+        local localQuestData = QUEST_GROUP_DATA[self.questGroup.id]
+
+        if localQuestData then
+            self.questGroup:Fill(localQuestData.localQuest)
             self:QueryScore()
         end
+
+        if progressData then
+            self:QSP(nil, progressData)
+        else
+            self:SendMessage('MEETINGSTONE_QUEST_UPDATE')
+        end
+
     end
     self.fetched = true
     self.quering = nil
@@ -105,11 +109,14 @@ function QuestServies:QueryQuestProgress()
 end
 
 function QuestServies:QueryScore()
-    self:SendServer('QCS', UnitGUID('player'))
+    local localQuestData = QUEST_GROUP_DATA[self.questGroup.id]
+    if localQuestData.score then
+        self:SendServer('QCS', UnitGUID('player'))
+    end
 end
 
 function QuestServies:QCS(_, score)
-    self:SendMessage("MEETINGSTONE_UPDATE_SCORE", score)
+    self:SendMessage('MEETINGSTONE_UPDATE_SCORE', score)
 end
 
 QuestServies.QuestType = QuestType

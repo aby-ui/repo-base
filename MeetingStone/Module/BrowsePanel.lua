@@ -41,7 +41,9 @@ function BrowsePanel:OnInitialize()
                     elseif activity:IsApplication() then
                         return [[Interface\AddOns\MeetingStone\Media\Icons]], 0.5, 0.625, 0, 1
                     elseif activity:IsGoldLeader() then
-                        return [[Interface\AddOns\MeetingStone\Media\Icons]], 0.625, 0.75, 0, 1
+                        return [[Interface\AddOns\MeetingStone\Media\GlodLeaderIcon]], 0.0, 1.0, 0, 1
+                    elseif activity:IsSilverLeader() then
+                        return [[Interface\AddOns\MeetingStone\Media\SilverLeaderIcon]], 0.0, 1.0, 0, 1
                     elseif activity:IsAnyFriend() then
                         return [[Interface\AddOns\MeetingStone\Media\Icons]], 0, 0.125, 0, 1
                     end
@@ -288,11 +290,16 @@ function BrowsePanel:OnInitialize()
         ActivityList:SetCallback('OnGridEnter_@', function(_, button, activity)
             if not (activity:IsSelf() or
                 activity:IsInActivity() or
-                activity:IsApplication()) and
-                activity:IsGoldLeader() then
+                activity:IsApplication()) then
+                if activity:IsGoldLeader() then
                 GameTooltip:SetOwner(button.Icon, 'ANCHOR_RIGHT')
                 GameTooltip:SetText(L['金牌导师'],1.0, 1.0, 1.0)
                 GameTooltip:Show()
+                elseif activity:IsSilverLeader() then
+                    GameTooltip:SetOwner(button.Icon, 'ANCHOR_RIGHT')
+                    GameTooltip:SetText(L['银牌导师'],1.0, 1.0, 1.0)
+                    GameTooltip:Show()
+                end
             end
         end)
         ActivityList:SetCallback('OnGridLeave_@', GameTooltip_Hide)
@@ -569,9 +576,12 @@ function BrowsePanel:OnInitialize()
                                     [[|TInterface\AddOns\MeetingStone\Media\Icons:20:20:0:0:256:32:128:160:0:32|t %s]],
                                     L['申请中活动']), 1, 1, 1)
             local title = format(
-                [[|TInterface\AddOns\MeetingStone\Media\Icons:20:20:0:0:256:32:160:192:0:32|t %s]],-- 宽：高：左：右：上：下
+                [[|TInterface\AddOns\MeetingStone\Media\GlodLeaderIcon:20:20:0:0:128:128:0:128:0:128|t %s]],-- 宽：高：左：右：上：下
                 L['金牌导师'])
             GameTooltip:AddLine(title, 1, 1, 1)
+            GameTooltip:AddLine(format(
+                [[|TInterface\AddOns\MeetingStone\Media\SilverLeaderIcon:20:20:0:0:128:128:0:128:0:128|t %s]],
+                L['银牌导师']), 1, 1, 1)
             GameTooltip:AddLine(format([[|TInterface\AddOns\MeetingStone\Media\Icons:20:20:0:0:256:32:0:32:0:32|t %s]],
                                        L['好友或公会成员参与的活动']), 1, 1, 1)
             GameTooltip:Show()

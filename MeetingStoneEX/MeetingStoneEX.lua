@@ -7,6 +7,18 @@ Addon = LibStub('AceAddon-3.0'):GetAddon('MeetingStone')
 
 GUI = LibStub('NetEaseGUI-2.0')
 
+--当前版本的地下城副本
+ACTIVITY_NAMES = {
+    '麦卡贡垃圾场'
+    ,'麦卡贡车间'
+    ,'卡拉赞下层'
+    ,'卡拉赞上层'
+    ,'钢铁码头'
+    ,'恐轨车站'
+    ,'塔扎维什：琳彩天街'
+    ,'塔扎维什：索·莉亚的宏图'
+}
+
 local BrowsePanel = Addon:GetModule('BrowsePanel')
 local MainPanel = Addon:GetModule('MainPanel')
 
@@ -64,8 +76,16 @@ if MEETINGSTONE_UI_DB.FILTER_MULTY == nil then
 end
 
 --职责过滤
-local function CheckJobsFilter(data,tcount,hcount,dcount)
-
+local function CheckJobsFilter(data,tcount,hcount,dcount,ignore_same_job,activity)
+    if ignore_same_job and MEETINGSTONE_UI_DB.FILTER_JOB then
+        local _,myclass,_2 = UnitClass("player")
+        for i = 1, activity:GetNumMembers() do
+            local role, class = C_LFGList.GetSearchResultMemberInfo(activity:GetID(), i)
+            if role == 'DAMAGER' and class == myclass then
+                return false
+            end
+        end
+    end
     if MEETINGSTONE_UI_DB.FILTER_MULTY then
         local show = false
         if not MEETINGSTONE_UI_DB.FILTER_TANK and not MEETINGSTONE_UI_DB.FILTER_HEALTH  and not MEETINGSTONE_UI_DB.FILTER_DAMAGE then
@@ -124,12 +144,38 @@ BrowsePanel.ActivityList:RegisterFilter(function(activity, ...)
                 local tcount,hcount,dcount = 1,1,3
                 local activitytype = BrowsePanel.ActivityDropdown:GetText()
                 if activitytype == '地下城' then
-                    if not CheckJobsFilter(data,1,1,3) then
+                    if not CheckJobsFilter(data,1,1,3,true,activity) then
                         return false
                     end
                 elseif activitytype == '团队副本' then
                     if not CheckJobsFilter(data,2,6,22) then
                         return false
+                    end
+                elseif activitytype == '评级战场' then
+                    if not CheckJobsFilter(data,1,3,7) then
+                        return false
+                    end
+                elseif activitytype == '竞技场' then
+                    --来自白描MeetingStone_Happy的修改
+                    local arenatype = activity:GetName()
+                    if arenatype == '竞技场（2v2）' then
+                        if not CheckJobsFilter(data,1,1,2) then
+                            return false
+                        end
+                    end
+                    if arenatype == '竞技场（3v3）' then
+                        if not CheckJobsFilter(data,1,1,3) then
+                            return false
+                        end
+                    end
+                else
+                    --9.2.71 尝试修复部分插件地下城分类不一致导致的职责过滤失效问题
+                    for i,v in ipairs(ACTIVITY_NAMES) do
+                        if activity:GetName() == v..'（史诗钥石）' then
+                            if not CheckJobsFilter(data,1,1,3,true,activity) then
+                                return false
+                            end
+                        end
                     end
                 end
             end
@@ -198,20 +244,6 @@ function BrowsePanel:CreateExSearchPanel()
     self.ExSearchPanel = ExSearchPanel
     ExSearchPanel:SetShown(false)
 
-
-    local names = {
-        '伤逝剧场'
-        ,'凋魂之殇'
-        ,'塞兹仙林的迷雾'
-        ,'彼界'
-        ,'晋升高塔'
-        ,'赎罪大厅'
-        ,'赤红深渊'
-        ,'通灵战潮'
-        ,'塔扎维什：琳彩天街'
-        ,'塔扎维什：索·莉亚的宏图'
-    }
-
     local function RefreshExSearch()
         local item = self.ActivityDropdown:GetItem()
         if not self.inUpdateFilters and item and item.categoryId then
@@ -222,7 +254,7 @@ function BrowsePanel:CreateExSearchPanel()
 
     self.MD = {}
 
-    for i,v in ipairs(names) do
+    for i,v in ipairs(ACTIVITY_NAMES) do
 
         if not self.MDSearchs then
             self.MDSearchs = {}
@@ -295,31 +327,52 @@ function BrowsePanel:CreateExSearchPanel()
 
 end
 
-local function CreateMemberFilter(self,MainPanel,x,text,DB_Name)
+local function CreateMemberFilter(self,parent, orgin,x,y,text,DB_Name)
     if MEETINGSTONE_UI_DB[DB_Name] == nil then
         MEETINGSTONE_UI_DB[DB_Name] = false
     end
 
-    local TCount = CreateFrame('CheckButton', nil, self) do
-        TCount:SetNormalTexture([[Interface\Buttons\UI-CheckBox-Up]])
-        TCount:SetPushedTexture([[Interface\Buttons\UI-CheckBox-Down]])
-        TCount:SetHighlightTexture([[Interface\Buttons\UI-CheckBox-Highlight]])
-        TCount:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-Check]])
-        TCount:SetDisabledCheckedTexture([[Interface\Buttons\UI-CheckBox-Check-Disabled]])
-        TCount:SetSize(22, 22)
-        TCount:SetPoint('BOTTOMLEFT',MainPanel,x, 3)
-        TCount:SetFontString(TCount:CreateFontString(nil, 'ARTWORK'))
-        TCount:GetFontString():SetPoint('LEFT', TCount, 'RIGHT', 2, 0)
-        TCount:SetNormalFontObject('GameFontHighlightSmall')
-        TCount:SetHighlightFontObject('GameFontNormalSmall')
-        TCount:SetDisabledFontObject('GameFontDisableSmall')
-        TCount:SetScript('OnClick', function()
+    local memberFilterCheckBox = GUI:GetClass('CheckBox'):New(parent) do
+        memberFilterCheckBox:SetSize(24, 24)
+        memberFilterCheckBox:SetPoint(orgin,x,y)
+        memberFilterCheckBox:SetText(text)
+        memberFilterCheckBox:SetChecked(MEETINGSTONE_UI_DB[DB_Name])
+        memberFilterCheckBox:SetScript("OnClick", function()
             MEETINGSTONE_UI_DB[DB_Name] = not MEETINGSTONE_UI_DB[DB_Name]
             self.ActivityList:Refresh()
         end)
-        TCount:SetText(text)
-        TCount:SetChecked(MEETINGSTONE_UI_DB[DB_Name])
     end
+    local tooltip = (DB_Name == 'FILTER_DAMAGE' or DB_Name == 'FILTER_HEALTH' or DB_Name == 'FILTER_TANK') and "隐藏已有" .. text .. "职业的队伍"
+                    or (DB_Name == 'FILTER_JOB') and "五人副本时，隐藏已有" .. UnitClass("player") .. "DPS的队伍"
+                    or (DB_Name == 'IGNORE_TIPS_LOG') and "屏蔽了队长或同标题玩家时，聊天框里显示一次提示信息" or nil
+    if tooltip then
+        GUI:Embed(memberFilterCheckBox, 'Tooltip')
+        memberFilterCheckBox:SetTooltip("说明", tooltip)
+        memberFilterCheckBox:SetTooltipAnchor("ANCHOR_BOTTOMRIGHT")
+    end
+
+    return memberFilterCheckBox
+    -- local TCount = CreateFrame('CheckButton', nil, self) do
+    --     TCount:SetNormalTexture([[Interface\Buttons\UI-CheckBox-Up]])
+    --     TCount:SetPushedTexture([[Interface\Buttons\UI-CheckBox-Down]])
+    --     TCount:SetHighlightTexture([[Interface\Buttons\UI-CheckBox-Highlight]])
+    --     TCount:SetCheckedTexture([[Interface\Buttons\UI-CheckBox-Check]])
+    --     TCount:SetDisabledCheckedTexture([[Interface\Buttons\UI-CheckBox-Check-Disabled]])
+    --     TCount:SetSize(22, 22)
+    --     TCount:SetPoint(orgin or 'BOTTOMLEFT',MainPanel,x, 3)
+    --     TCount:SetFontString(TCount:CreateFontString(nil, 'ARTWORK'))
+    --     TCount:GetFontString():SetPoint('LEFT', TCount, 'RIGHT', 2, 0)
+    --     TCount:SetNormalFontObject('GameFontHighlightSmall')
+    --     TCount:SetHighlightFontObject('GameFontNormalSmall')
+    --     TCount:SetDisabledFontObject('GameFontDisableSmall')
+    --     TCount:SetScript('OnClick', function()
+    --         MEETINGSTONE_UI_DB[DB_Name] = not MEETINGSTONE_UI_DB[DB_Name]
+    --         self.ActivityList:Refresh()
+    --     end)
+    --     TCount:SetText(text)
+    --     TCount:SetChecked(MEETINGSTONE_UI_DB[DB_Name])
+    -- end
+    -- return TCount
 end
 
 local function CreateScoreFilter(self,text,score)
@@ -343,7 +396,7 @@ local function CreateScoreFilter(self,text,score)
         end)
         GUI:Embed(filterScoreCheckBox, 'Tooltip')
         filterScoreCheckBox:SetTooltip("说明", "过滤队长是0分的队伍, 可能有助于减少广告")
-        filterScoreCheckBox:SetTooltipAnchor("TOPLEFT")
+        filterScoreCheckBox:SetTooltipAnchor("ANCHOR_TOPLEFT")
     end
 end
 
@@ -371,32 +424,15 @@ function BrowsePanel:CreateExSearchButton( )
         self:SwitchPanel(self.AdvFilterPanel)
     end)
 
-    local ShowLogButton
-    ShowLogButton = CreateFrame('Button', nil, self) do
-        ShowLogButton:SetNormalFontObject('GameFontNormalSmall')
-        ShowLogButton:SetHighlightFontObject('GameFontHighlightSmall')
-        ShowLogButton:SetSize(70, 22)
-        ShowLogButton:SetPoint('BOTTOMRIGHT', MainPanel, -200, 3)
-        if MEETINGSTONE_UI_DB.IGNORE_TIPS_LOG then
-            ShowLogButton:SetText('隐藏屏蔽提示')
-        else
-            ShowLogButton:SetText('显示屏蔽提示')
-        end
-        ShowLogButton:RegisterForClicks('anyUp')
-        ShowLogButton:SetScript('OnClick', function()
-            MEETINGSTONE_UI_DB.IGNORE_TIPS_LOG = not MEETINGSTONE_UI_DB.IGNORE_TIPS_LOG
-            if MEETINGSTONE_UI_DB.IGNORE_TIPS_LOG then
-                ShowLogButton:SetText('隐藏屏蔽提示')
-            else
-                ShowLogButton:SetText('显示屏蔽提示')
-            end
-        end)
-    end
+    local checkbox = self.SignUpButton
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-160,-1,'多专精("或"条件)','FILTER_MULTY')
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'输出','FILTER_DAMAGE')
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'治疗','FILTER_HEALTH')
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'坦克','FILTER_TANK')
 
-    CreateMemberFilter(self,MainPanel,70,'坦克','FILTER_TANK')
-    CreateMemberFilter(self,MainPanel,130,'治疗','FILTER_HEALTH')
-    CreateMemberFilter(self,MainPanel,190,'输出','FILTER_DAMAGE')
-    CreateMemberFilter(self,MainPanel,250,'多专精("或"条件)','FILTER_MULTY')
+    checkbox = CreateMemberFilter(self,self.SignUpButton,'RIGHT',30,-1,'同职过滤','FILTER_JOB')
+
+    CreateMemberFilter(self,MainPanel,'TOPRIGHT',-200,0,'显示屏蔽提示','IGNORE_TIPS_LOG')
 
     CreateScoreFilter(self,'过滤队长0分队伍',1)
 
@@ -438,36 +474,45 @@ function BrowsePanel:ToggleActivityMenu(anchor, activity)
             tooltipText = not activity:IsApplication() and LFG_LIST_MUST_SIGN_UP_TO_WHISPER,
             tooltipOnButton = true,
             tooltipWhileDisabled = true,
-        }, {
+        }, 
+        -- {
+        --     text = LFG_LIST_REPORT_GROUP_FOR,
+        --     hasArrow = true,
+        --     menuTable = {
+        --         {
+        --             text = '不当的说明',
+        --             func = function()
+        --                 C_LFGList.ReportSearchResult(activity:GetID(),
+        --                                              activity:IsMeetingStone() and 'lfglistcomment' or 'lfglistname')
+        --             end,
+        --         }, {
+        --             text = LFG_LIST_BAD_DESCRIPTION,
+        --             func = function()
+        --                 C_LFGList.ReportSearchResult(activity:GetID(), 'lfglistcomment')
+        --             end,
+        --             disabled = activity:IsMeetingStone() or not activity:GetComment(),
+        --         }, {
+        --             text = LFG_LIST_BAD_VOICE_CHAT_COMMENT,
+        --             func = function()
+        --                 C_LFGList.ReportSearchResult(activity:GetID(), 'lfglistvoicechat')
+        --             end,
+        --             disabled = not activity:GetVoiceChat(),
+        --         }, {
+        --             text = LFG_LIST_BAD_LEADER_NAME,
+        --             func = function()
+        --                 C_LFGList.ReportSearchResult(activity:GetID(), 'badplayername')
+        --             end,
+        --             disabled = not activity:GetLeader(),
+        --         },
+        --     },
+        -- },
+        {
+            --20220603 易安玥 修改到新的举报菜单
             text = LFG_LIST_REPORT_GROUP_FOR,
-            hasArrow = true,
-            menuTable = {
-                {
-                    text = '不当的说明',
-                    func = function()
-                        C_LFGList.ReportSearchResult(activity:GetID(),
-                                                     activity:IsMeetingStone() and 'lfglistcomment' or 'lfglistname')
-                    end,
-                }, {
-                    text = LFG_LIST_BAD_DESCRIPTION,
-                    func = function()
-                        C_LFGList.ReportSearchResult(activity:GetID(), 'lfglistcomment')
-                    end,
-                    disabled = activity:IsMeetingStone() or not activity:GetComment(),
-                }, {
-                    text = LFG_LIST_BAD_VOICE_CHAT_COMMENT,
-                    func = function()
-                        C_LFGList.ReportSearchResult(activity:GetID(), 'lfglistvoicechat')
-                    end,
-                    disabled = not activity:GetVoiceChat(),
-                }, {
-                    text = LFG_LIST_BAD_LEADER_NAME,
-                    func = function()
-                        C_LFGList.ReportSearchResult(activity:GetID(), 'badplayername')
-                    end,
-                    disabled = not activity:GetLeader(),
-                },
-            },
+            func = function() 
+                LFGList_ReportListing(activity:GetID(), activity:GetLeader()); 
+                LFGListSearchPanel_UpdateResultList(LFGListFrame.SearchPanel); 
+            end;
         },
         {
             text = '屏蔽队长',

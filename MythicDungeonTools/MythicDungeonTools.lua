@@ -676,7 +676,7 @@ function MDT:MakeTopBottomTextures(frame)
     if MDT:IsFrameOffScreen() then
       MDT:ResetMainFramePos(true)
     else
-      local from, _, to, x, y = MDT.main_frame:GetPoint()
+      local from, _, to, x, y = MDT.main_frame:GetPoint(nil)
       db.anchorFrom = from
       db.anchorTo = to
       db.xoffset, db.yoffset = x, y
@@ -725,6 +725,7 @@ function MDT:MakeTopBottomTextures(frame)
     if MDT:IsFrameOffScreen() then
       MDT:ResetMainFramePos(true)
     else
+      ---@diagnostic disable-next-line: missing-parameter
       local from, _, to, x, y = MDT.main_frame:GetPoint()
       db.anchorFrom = from
       db.anchorTo = to
@@ -830,6 +831,7 @@ function MDT:MakeSidePanel(frame)
   frame.sidePanelNewButton:SetWidth(buttonWidth)
   --button fontInstance
   local fontInstance = CreateFont("MDTButtonFont")
+  if not fontInstance then return end
   fontInstance:CopyFontObject(frame.sidePanelNewButton.frame:GetNormalFontObject())
   local fontName, height = fontInstance:GetFont()
   fontInstance:SetFont(fontName, 12)
@@ -2007,6 +2009,7 @@ end
 function MDT:SetPingOffsets(mapScale)
   local scale = 0.35
   local offset = (10.25 / 1000) * mapScale
+  ---@diagnostic disable-next-line: redundant-parameter
   MDT.ping:SetTransform(offset, offset, 0, 0, 0, 0, scale)
 end
 
@@ -2067,13 +2070,14 @@ function MDT:GetEffectivePresetSeason(preset)
   if db.MDI.enabled then
     local mdiWeek = preset.mdi.beguiling
     season = (mdiWeek == 1 or mdiWeek == 2 or mdiWeek == 3) and 3 or mdiWeek == 13 and 2 or
-        (mdiWeek == 14 or mdiWeek == 15) and 4
+        (mdiWeek == 14 or mdiWeek == 15) and 4 or 4
   end
   return season
 end
 
 function MDT:ReturnToLivePreset()
   local preset, presetIdx = self:GetCurrentLivePreset()
+  ---@diagnostic disable-next-line: need-check-nil
   self:UpdateToDungeon(preset.value.currentDungeonIdx, true)
   db.currentPreset[db.currentDungeonIdx] = presetIdx
   self:UpdatePresetDropDown()
@@ -2232,7 +2236,7 @@ function MDT:MakeMapTexture(frame)
 end
 
 local function round(number, decimals)
-  return (("%%.%df"):format(decimals)):format(number)
+  return tonumber((("%%.%df"):format(decimals)):format(number))
 end
 
 function MDT:CalculateEnemyHealth(boss, baseHealth, level, ignoreFortified)
@@ -2374,8 +2378,9 @@ end
 ---Makes sure profiles are valid and have their fields set
 function MDT:EnsureDBTables()
   --dungeonIdx doesnt exist
+  local seasonList = MDT:GetSeasonList()
   if not MDT.dungeonList[db.currentDungeonIdx] or string.find(MDT.dungeonList[db.currentDungeonIdx], ">") or
-      not db.selectedDungeonList then
+      not db.selectedDungeonList or not seasonList[db.selectedDungeonList] then
     db.currentDungeonIdx = defaultSavedVars.global.currentDungeonIdx
     db.selectedDungeonList = defaultSavedVars.global.selectedDungeonList
   end

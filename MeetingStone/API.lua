@@ -123,9 +123,9 @@ function GetSafeSummaryLength(activityId, customId, mode, loot)
                                                         GetPlayerRaidProgression(activityId, customId),
                                                         GetPlayerPvPRating(activityId), 999, 999,
                                                         IsUsePvPRating(activityId) and 9999 or nil, GetAddonSource(),
-                                                        GetPlayerFullName(), GetPlayerSavedInstance(customId), format(
-                                                            '%s-%s-%s', GetModeName(mode), GetLootName(loot),
-                                                            GetActivityName(activityId, customId)), CompressNumber(
+                                                        GetPlayerFullName(), GetPlayerSavedInstance(customId),
+                                                        format('%s-%s-%s', GetModeName(mode), GetLootName(loot),
+                                                               GetActivityName(activityId, customId)), CompressNumber(
                                                             IsUseHonorLevel(activityId) and UnitHonorLevel('player') or
                                                                 nil)))
     return min(MAX_MEETINGSTONE_SUMMARY_LETTERS, MAX_SUMMARY_LETTERS - strlenutf8(data))
@@ -477,6 +477,11 @@ local function UrlButtonOnClick(self)
 end
 
 function ApplyUrlButton(button, url)
-    button:SetScript('OnClick', UrlButtonOnClick)
-    button.url = url
+    if url then
+        button:SetScript('OnClick', UrlButtonOnClick)
+        button.url = url
+    else
+        button:SetScript('OnClick', nil)
+        button.url = nil
+    end
 end

@@ -655,6 +655,8 @@ L["Interment Construct"] = "葬礼构造体"
 L["Interrogation Specialist"] = "审讯专员"
 L["Invalid import string"] = "無效的匯入字串"
 L["Iron Infantry"] = "钢铁步兵"
+--[[Translation missing --]]
+--[[ L["Iron Star"] = ""--]] 
 L["IronDocks"] = "鋼鐵碼頭"
 L["Ironhull Apprentice"] = "铁舟学徒"
 L["Irontide Bonesaw"] = "铁潮锯骨者"

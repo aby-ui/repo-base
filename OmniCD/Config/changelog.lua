@@ -13,6 +13,9 @@ v2.5.4.2720
 Previous changes can be found in the CHANGELOG file.
 ]=]
 else E.changelog = [=[
+v9.2.5.2721
+	Season 4 PvP trinkets added.
+
 v9.2.5.2720
 	Season 4 PvP changes.
 	Localization update.

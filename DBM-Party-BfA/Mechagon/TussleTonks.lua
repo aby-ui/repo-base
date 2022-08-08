@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2336, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220806225543")
 mod:SetCreatureID(144244, 145185)
 mod:SetEncounterID(2257)
 mod:SetBossHPInfoToHighest()
@@ -15,8 +15,8 @@ mod:RegisterEvents(
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 285020 283422 285388",
 	"SPELL_CAST_SUCCESS 285344 285152",
-	"SPELL_AURA_REMOVED 282801 285388",
-	"SPELL_AURA_REMOVED_DOSE 282801",
+	"SPELL_AURA_REMOVED 282801",
+--	"SPELL_AURA_REMOVED_DOSE 282801",
 	"UNIT_DIED"
 )
 
@@ -29,7 +29,7 @@ mod:RegisterEventsInCombat(
  --]]
 local warnLayMine					= mod:NewSpellAnnounce(285351, 2)
 local warnFoeFlipper				= mod:NewTargetNoFilterAnnounce(285153, 2)
-local warnVentJets					= mod:NewEndAnnounce(285388, 1)
+local warnPlating					= mod:NewFadesAnnounce(282801, 1)
 local warnMaxThrust					= mod:NewTargetNoFilterAnnounce(283565, 2)
 
 local specWarnWhirlingEdge			= mod:NewSpecialWarningDodge(285020, "Tank", nil, nil, 1, 2)
@@ -101,12 +101,12 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 285388 then
-		warnVentJets:Show()
-		timerVentJetsCD:Stop()
+	if spellId == 282801 then
+		warnPlating:Show()
+		timerWhirlingEdgeCD:Stop()
 	end
 end
-mod.SPELL_AURA_REMOVED_DOSE = mod.SPELL_AURA_REMOVED
+--mod.SPELL_AURA_REMOVED_DOSE = mod.SPELL_AURA_REMOVED
 
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)

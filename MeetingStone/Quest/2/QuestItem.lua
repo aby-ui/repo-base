@@ -22,21 +22,67 @@ local function RewardOnClick(self)
 end
 
 function QuestItem:Constructor()
-    self.Item:Disable()
+    for _, button in ipairs(self.Items) do
+        button:Disable()
+    end
+
     self.Reward:SetScript('OnClick', RewardOnClick)
     CountdownButton:Bind(self.Reward)
     self.Reward:SetCountdownObject(QuestItem)
+
+    local function UpdateProgressPoint()
+        local rightControl
+        if self.Reward:IsShown() then
+            rightControl = self.Reward
+        elseif self.Extern:IsShown() then
+            rightControl = self.Extern
+        end
+
+        if rightControl then
+            self.Progress:SetPoint('RIGHT', rightControl, 'LEFT', -10, 0)
+        else
+            self.Progress:SetPoint('RIGHT', self, -5, 0)
+        end
+    end
+
+    self.Reward:HookScript('OnShow', UpdateProgressPoint)
+    self.Reward:HookScript('OnHide', UpdateProgressPoint)
+    self.Extern:HookScript('OnShow', UpdateProgressPoint)
+    self.Extern:HookScript('OnHide', UpdateProgressPoint)
 end
 
 ---@param quest Quest
 function QuestItem:SetQuest(quest)
     self.Text:SetText(quest:GetTitle())
-    self.Reward:SetShown(quest.rewards)
+
+    self.Reward:SetShown(quest:CanReward())
     self.Reward:SetEnabled(quest:IsCompleted() and not quest.rewarded)
     self.Reward:SetText(quest.rewarded and '已领取' or '领取奖励')
-    self.Progress:SetFormattedText('%d/%d', quest.progressValue, quest.progressMaxValue)
-    self.Item:SetItem(quest.rewards[1].id)
-    self.Item:SetItemButtonCount(quest.rewards[1].count)
+
+    self.Extern:SetShown(quest.extern)
+    self.Extern:SetText(quest.extern)
+    ApplyUrlButton(self.Extern, quest.url)
+
+    if quest.progressValue and quest.progressMaxValue then
+        self.Progress:SetFormattedText('%d/%d', quest.progressValue, quest.progressMaxValue)
+    else
+        self.Progress:SetText('')
+    end
+
+    local rightButton
+    for i, button in ipairs(self.Items) do
+        local reward = quest.rewards[i]
+        if reward then
+            rightButton = button
+            button:Show()
+            button:SetItem(reward.id)
+            button:SetItemButtonCount(reward.count)
+        else
+            button:Hide()
+        end
+    end
+
+    self.Text:SetPoint('LEFT', rightButton, 'RIGHT', 5, 0)
 end
 
 function QuestItem:SetData(data)

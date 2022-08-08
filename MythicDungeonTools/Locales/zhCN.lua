@@ -553,10 +553,8 @@ L["HallsOfAtonementFloor1"] = "赎罪大厅"
 L["HallsOfAtonementFloor2"] = "痛苦中殿"
 L["HallsOfAtonementFloor3"] = "灵魂庇护所"
 L["Harbaron"] = "哈布隆"
---[[Translation missing --]]
---[[ L["hardResetPrompt"] = ""--]] 
---[[Translation missing --]]
---[[ L["hardResetPromptTitle"] = ""--]] 
+L["hardResetPrompt"] = "确定要将所有设置重置为默认值吗？这将重新加载界面！"
+L["hardResetPromptTitle"] = "删除所有设置"
 L["Harlan Sweete"] = "哈兰·斯威提"
 L["Harugia the Bloodthirsty"] = "嗜血的哈鲁吉亚"
 L["Hatchling Nest"] = "幼蜂之巢"
@@ -634,6 +632,7 @@ L["Interment Construct"] = "葬礼构造体"
 L["Interrogation Specialist"] = "审讯专员"
 L["Invalid import string"] = "导入字符串无效"
 L["Iron Infantry"] = "钢铁步兵"
+L["Iron Star"] = "钢铁之星"
 L["IronDocks"] = "钢铁码头"
 L["Ironhull Apprentice"] = "铁舟学徒"
 L["Irontide Bonesaw"] = "铁潮锯骨者"
@@ -957,8 +956,7 @@ L["receiveErrorUpdate"] = "MDT无法正确接收路线, 请确认传送者%s已�
 L["Receiving: ..."] = "正在接收: ..."
 L["Red, Green and Blue"] = "红绿蓝"
 L["Redo"] = "重做"
---[[Translation missing --]]
---[[ L["redoDrawing"] = ""--]] 
+L["redoDrawing"] = "重做绘图"
 L["Reformed Maiden"] = "洗心革面的侍女"
 L["Refreshment Vendor"] = "零食商贩"
 L["Regal Mistdancer"] = "皇家舞雾者"
@@ -1346,8 +1344,7 @@ L["Understone Demolisher"] = "顶石粉碎者"
 L["Understone Drudge"] = "顶石苦力"
 L["Understone Drummer"] = "顶石游荡者"
 L["Undo"] = "撤销"
---[[Translation missing --]]
---[[ L["undoDrawing"] = ""--]] 
+L["undoDrawing"] = "撤销绘图"
 L["Undying Servant"] = "亡灵仆从"
 L["Undying Stonefiend"] = "不死石精"
 L["Unknown"] = "未知"

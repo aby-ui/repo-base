@@ -1,5 +1,5 @@
 ## Interface: 90205
-## Version: 90207
+## Version: 90271
 ## Title: Meeting Stone EX
 ## Title-zhCN: |cffff565e[Doll]|r 网易集合石扩展
 ## Notes-zhCN: 让玩家能够进行大秘境过滤，以及更快速屏蔽工作室

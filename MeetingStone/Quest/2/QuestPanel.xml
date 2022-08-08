@@ -1,39 +1,68 @@
 <Ui xmlns:xsi="" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+    <ItemButton name="MeetingStoneItemButtonTemplate" parentArray="Items" motionScriptsWhileDisabled="true" virtual="true">
+        <Anchors>
+            <Anchor point="LEFT" x="20" y="0"/>
+        </Anchors>
+        <Scripts>
+            <OnEnter>
+                local item = self:GetItemID()
+                if item then
+                    GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+                    GameTooltip:SetItemByID(item)
+                    GameTooltip:Show()
+                end
+                self:GetParent():LockHighlight()
+            </OnEnter>
+            <OnLeave>
+                GameTooltip_Hide()
+                self:GetParent():UnlockHighlight()
+            </OnLeave>
+        </Scripts>
+    </ItemButton>
+    <Button name="MeetingStoneUrlButtonTemplate" virtual="true">
+		<ButtonText parentKey="Text"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
+    </Button>
     <Button name="MeetingStoneQuestItemTemplate" virtual="true">
         <Frames>
-            <ItemButton parentKey="Item" motionScriptsWhileDisabled="true">
+            <ItemButton parentKey="Item1" inherits="MeetingStoneItemButtonTemplate">
                 <Anchors>
                     <Anchor point="LEFT" x="20" y="0"/>
                 </Anchors>
-                <Scripts>
-                    <OnEnter>
-                        local item = self:GetItemID()
-                        if item then
-                            GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-                            GameTooltip:SetItemByID(item)
-                            GameTooltip:Show()
-                        end
-                        self:GetParent():LockHighlight()
-                    </OnEnter>
-                    <OnLeave>
-                        GameTooltip_Hide()
-                        self:GetParent():UnlockHighlight()
-                    </OnLeave>
-                </Scripts>
+            </ItemButton>
+            <ItemButton parentKey="Item2" inherits="MeetingStoneItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Item1" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
+            </ItemButton>
+            <ItemButton parentKey="Item3" inherits="MeetingStoneItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Item2" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
+            </ItemButton>
+            <ItemButton parentKey="Item4" inherits="MeetingStoneItemButtonTemplate">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Item3" relativePoint="RIGHT" x="0" y="0"/>
+                </Anchors>
             </ItemButton>
             <Button parentKey="Reward" inherits="UIPanelButtonTemplate" hidden="true" text="领取奖励">
                 <Size x="100" y="22"/>
                 <Anchors>
                     <Anchor point="RIGHT" x="-20" y="0"/>
                 </Anchors>
+            </Button>
+            <Button parentKey="Extern" inherits="MeetingStoneUrlButtonTemplate" hidden="true">
+                <Size x="100" y="22"/>
+                <Anchors>
+                    <Anchor point="RIGHT" x="-20" y="0"/>
+                </Anchors>
                 <Scripts>
-                    <OnShow>
-                        self:GetParent().Progress:SetPoint('RIGHT', self, 'LEFT', -10, 0)
-                    </OnShow>
-                    <OnHide>
-                        self:GetParent().Progress:SetPoint('RIGHT', self:GetParent(), 'RIGHT', -5, 0)
-                    </OnHide>
+                    <OnClick>
+                        self:GetParent():OnExternClick(self)
+                    </OnClick>
                 </Scripts>
             </Button>
         </Frames>
@@ -69,6 +98,20 @@
                     <Anchor point="TOPLEFT"/>
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
+                <Frames>
+                    <ScrollFrame parentKey="Quests">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="10" y="-40"/>
+                            <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+                        </Anchors>
+                    </ScrollFrame>
+                    <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="刷新">
+                        <Size x="60" y="22"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" x="10" y="-10"/>
+                        </Anchors>
+                    </Button>
+                </Frames>
                 <Layers>
                     <Layer level="BACKGROUND">
                         <Texture parentKey="Bg" file="interface\lfgframe\ui-lfg-background-warfronts" alpha="0.5" setAllPoints="true">
@@ -80,19 +123,18 @@
                                 <Anchor point="TOPRIGHT" x="-10" y="-10"/>
                             </Anchors>
                         </FontString>
+                        <FontString parentKey="ScoreLabel" inherits="GameFontHighlightSmallLeft" hidden="false" text="目前积分：">
+                            <Anchors>
+                                <Anchor point="LEFT" relativeKey="$parent.Refresh" relativePoint="RIGHT" x="5" y="0"/>
+                            </Anchors>
+                        </FontString>
                     </Layer>
                 </Layers>
                 <Frames>
-                    <ScrollFrame parentKey="Quests">
+                    <Button parentKey="Extern" inherits="MeetingStoneUrlButtonTemplate" text="查看">
+                        <Size x="60" y="22"/>
                         <Anchors>
-                            <Anchor point="TOPLEFT" x="10" y="-40"/>
-                            <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
-                        </Anchors>
-                    </ScrollFrame>
-                    <Button parentKey="Refresh" inherits="UIPanelButtonTemplate" text="刷新">
-                        <Size x="100" y="22"/>
-                        <Anchors>
-                            <Anchor point="TOPLEFT" x="10" y="-10"/>
+                            <Anchor point="LEFT" relativeKey="$parent.ScoreLabel" relativePoint="RIGHT" x="15" y="0"/>
                         </Anchors>
                     </Button>
                 </Frames>

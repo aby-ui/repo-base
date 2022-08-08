@@ -259,6 +259,28 @@ local function MakeMenuTable(list, baseFilter, menuType)
     return list
 end
 
+do
+    --[[ LFGList.lua - self=LFGListFrame.EntryCreation selectedCategory=2, selectedFilters=0, baseFilters=4
+    local filters = bit.bor(self.selectedFilters, self.baseFilters, Enum.LFGListFilter.Recommended);
+    local recGroups = C_LFGList.GetAvailableActivityGroups(self.selectedCategory, filters);
+    for i, group in ipairs(C_LFGList.GetAvailableActivityGroups(2, 5)) do
+      if i > 8 then break end
+      for _, act in ipairs(C_LFGList.GetAvailableActivities(2, group, 4)) do
+        local n, d = C_LFGList.GetActivityInfo(act)
+        if d == "史诗钥石" then print(group, act, n) end
+      end
+    end--]]
+    QuickActivities = { 180, 183, 679, 683, 1016, 1017, 471, 473 } --码头 恐轨 垃圾场 车间 天街 宏图 卡下 卡上
+    QuickActivitiesMenuTable = {}
+    for _, id in ipairs(QuickActivities) do
+        local fullName, shortName, categoryId, groupId, _, filters = C_LFGList.GetActivityInfo(id)
+        tinsert(QuickActivitiesMenuTable, {
+            --{activityId=1017,baseFilter=4,categoryId=2,filters=5,fullName="塔扎维什：索·莉亚的宏图（史诗钥石）",groupId=281,text="塔扎维什：索·莉亚的宏图（史诗钥石）",value="2-281-1017-0",} MenuTableAPI.lua:345
+            activityId=id,baseFilter=4,categoryId=categoryId,filters=filters,fullName=fullName,groupId=groupId,text=fullName,value=format("%d-%d-%d-0", categoryId, groupId, id),
+        })
+    end
+end
+
 function GetActivitesMenuTable(menuType)
     currentCodeCache = wipe(activityCodeCaches[menuType])
     wipe(makedCategorys)
@@ -267,6 +289,8 @@ function GetActivitesMenuTable(menuType)
     local list = {}
     MakeMenuTable(list, Enum.LFGListFilter.PvE, menuType)
     MakeMenuTable(list, Enum.LFGListFilter.PvP, menuType)
+
+    tinsert(list, 1, { text = L['|cffffff00赛季大秘|r'], notClickable = true, hasArrow = true, menuTable = QuickActivitiesMenuTable, })
 
     if menuType == ACTIVITY_FILTER_BROWSE or menuType == ACTIVITY_FILTER_CREATE then
         tinsert(list, 1, {

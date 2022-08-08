@@ -17,6 +17,27 @@ if not ELP_LAST_RAID_IDX then
     end
 end
 
+local seasonInstances = { 1194, 1178, 860, 536, 558, } --/dump EncounterJournal.instanceID
+function ELP_EJ_GetInstanceByIndex(index, isRaid)
+    if isRaid then
+        return EJ_GetInstanceByIndex(index, isRaid)
+    else
+        if index > #seasonInstances then return end
+        local a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18 = EJ_GetInstanceInfo(seasonInstances[index])
+        return seasonInstances[index],a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18
+    end
+end
+
+ELP_MYTHIC_PART = {
+    ["重返卡拉赞-上层"] = { 1836, 1817, 1818, 1838, },
+    ["重返卡拉赞-下层"] = {1820,1826,1827, 1825, 1835, 1837, },
+    ["塔扎维什-天街"] = {2437,2454,2436,2452,2451,},
+    ["塔扎维什-宏图"] = {2448,2449,2455,},
+    ["麦卡贡-车间"] = {2336,2339,2348,2331},
+    ["麦卡贡-垃圾场"] = {2357,2358,2360,2355,},
+}
+local t={} for k,v in pairs(ELP_MYTHIC_PART) do for _,id in ipairs(v) do t[id]=k end end ELP_MYTHIC_PART=t
+
 CoreDependCall("Blizzard_EncounterJournal", function()
     hooksecurefunc("EJTierDropDown_Initialize", function(self, level)
         if not level then return end

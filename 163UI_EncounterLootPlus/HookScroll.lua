@@ -84,6 +84,9 @@ EncounterJournal_SetLootButton_ELP = function(item)
         currentFrame.instance:SetText(instance or "")
 
         currentFrame.boss:SetFormattedText(BOSS_INFO_STRING, EJ_GetEncounterInfo(encounterID));
+        if encounterID and ELP_MYTHIC_PART[encounterID] then
+            currentFrame.instance:SetText(ELP_MYTHIC_PART[encounterID]) --一个副本分两个大秘 --/dump EncounterJournal.encounterID
+        end
 
         SetItemButtonQuality(currentFrame, 4, itemID);
 

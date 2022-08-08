@@ -50,11 +50,6 @@ function ActivitiesParent:OnInitialize()
         Blocker.SetText = nop
 
         Blocker:SetCallback('OnCheck', function()
-            --[=[@debug@
-            -- if true then
-            --     return
-            -- end
-            --@end-debug@]=]
             if not Activities:IsConnected() or not QuestServies:IsConnected() then
                 return true
             elseif not Activities:IsReady() then
@@ -106,7 +101,7 @@ function ActivitiesParent:OnInitialize()
             Blocker.Icon = Spinner
         end)
     end
-    
+
     MainPanel:FlashTabByPanel(self, true)
 
     self:RegisterMessage('MEETINGSTONE_ACTIVITIES_PERSONINFO_UPDATE')
@@ -124,6 +119,19 @@ function ActivitiesParent:OnInitialize()
     self.ScoreButton = ScoreButton
     self.PlayerInfoButton = PlayerInfoButton
     self:SetScript('OnShow', self.OnShow)
+
+    self.lockPanels = {}
+    self.subTitles = {}
+
+    local onChange = self.TabFrame.events.OnSelectChanged
+    self.TabFrame:SetCallback('OnSelectChanged', function(t, index, data)
+        onChange(t, index, data)
+
+        local subTitle = self.subTitles[data.name]
+        if subTitle then
+            self.Title:SetText(subTitle)
+        end
+    end)
 end
 
 function ActivitiesParent:Update()
@@ -136,32 +144,47 @@ function ActivitiesParent:Update()
 end
 
 local orig_RegisterPanel = ActivitiesParent.RegisterPanel
-function ActivitiesParent:RegisterPanel(name, ...)
+function ActivitiesParent:RegisterPanel(name, icon, panel, data)
     if not self:IsPanelRegistered(name) then
-        orig_RegisterPanel(self, name, ...)
+        orig_RegisterPanel(self, name, icon, panel, data)
+
+        self.subTitles[name] = nil
+
+        if data then
+            if data.lock  then
+                tinsert(self.lockPanels, {name = name, icon = icon, panel = panel, data = data})
+            end
+
+            self.subTitles[name] = data.subTitle
+        end
     end
 end
 
-function ActivitiesParent:MEETINGSTONE_QUEST_FETCHED()
-    if QuestServies:IsActive() then
-        if QuestServies.questGroup.id == QuestServies.QuestType.GoldLeader then
+function ActivitiesParent:ClearPanels()
+    local lockPanels = self.lockPanels
+    self.subTitles = {}
+    self.lockPanels = {}
 
-            self:RegisterPanel(L['金牌导师'], [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]],
-                               QuestPanel3, {before = L['魔兽主播活动']})
-            self:SelectPanel(QuestPanel3)
-        else
-            self:RegisterPanel(L['个人地下城周常'],
+    self:UnregisterAllPanels()
+
+    for _, v in ipairs(lockPanels) do
+        self:RegisterPanel(v.name, v.icon, v.panel, v.data)
+    end
+
+    self:SelectTab(1)
+end
+
+function ActivitiesParent:MEETINGSTONE_QUEST_FETCHED()
+    self:ClearPanels()
+
+    if QuestServies:IsActive() then
+        local localQuestData = QUEST_GROUP_DATA[QuestServies.questGroup.id]
+        if localQuestData then
+            self:RegisterPanel(localQuestData.title or L['个人地下城周常'],
                                [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]], QuestPanel,
-                               {before = L['魔兽主播活动']})
-            self:RegisterPanel(L['队伍地下城挑战'],
-                               [[Interface\ICONS\ACHIEVEMENT_GUILDPERK_HONORABLEMENTION_RANK2]], QuestPanel2,
-                               {before = L['魔兽主播活动']})
+                               {before = L['最新活动'], subTitle = localQuestData.subTitle})
             self:SelectPanel(QuestPanel)
         end
-
-    else
-        self:UnregisterPanel(L['个人地下城周常'])
-        self:UnregisterPanel(L['队伍地下城挑战'])
     end
 end
 
@@ -182,7 +205,7 @@ function ActivitiesParent:OnShow()
     end
     self:Refresh()
     DataCache:GetObject('ActivitiesData'):SetIsNew(false)
-    
+
     if not self.isFlash then
         MainPanel:FlashTabByPanel(self, false)
         self.isFlash = true

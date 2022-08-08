@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("GRDTrash", "DBM-Party-WoD", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220712012318")
+mod:SetRevision("20220806232022")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
 
 mod:RegisterEvents(
-	"SPELL_AURA_APPLIED 176025 166340",
+	"SPELL_AURA_APPLIED 176025 166340 171900",
 	"SPELL_AURA_APPLIED_DOSE 166340",
 	"SPELL_CAST_START 166675 176032",
 	"SPELL_CAST_SUCCESS 163966",
@@ -15,7 +15,9 @@ mod:RegisterEvents(
 	"SPELL_ABSORBED 176033"
 )
 
+--TODO, add https://www.wowhead.com/spell=166380/reckless-slash ?
 local warnLavaWreath					= mod:NewTargetNoFilterAnnounce(176025, 4)
+local warnThunderousBreath				= mod:NewSpellAnnounce(171900, 3)
 
 local specWarnActivating				= mod:NewSpecialWarningInterrupt(163966, false, nil, 2, 1, 8)
 local specWarnLavaWreath				= mod:NewSpecialWarningMoveAway(176025, nil, nil, nil, 1, 2)
@@ -36,6 +38,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 166340 and args:IsPlayer() and self:AntiSpam(2, 3) then
 		specWarnThunderzone:Show()
 		specWarnThunderzone:Play("watchfeet")
+	elseif spellId == 171900 then
+		warnThunderousBreath:Show()
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

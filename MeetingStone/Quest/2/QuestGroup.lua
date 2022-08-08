@@ -47,3 +47,12 @@ function QuestGroup:FromProto(data)
     end
     return group
 end
+
+function QuestGroup:Fill(d)
+    if not d then
+        return
+    end
+    for _, v in ipairs(d) do
+        table.insert(self.quests, Quest:FromProto(v))
+    end
+end

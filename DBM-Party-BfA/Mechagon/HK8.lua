@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2355, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220613012903")
+mod:SetRevision("20220805224015")
 mod:SetCreatureID(150190)
 mod:SetEncounterID(2291)
 
@@ -9,7 +9,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 295536 295939",
-	"SPELL_CAST_SUCCESS 302274 303885 301351 303553 295445 301177",
+	"SPELL_CAST_SUCCESS 302274 303885 301351 303553 301177",
 	"SPELL_AURA_APPLIED 296080 302274 303885 303252",
 	"SPELL_AURA_REMOVED 296080 303885",
 	"UNIT_DIED"
@@ -21,8 +21,9 @@ mod:RegisterEventsInCombat(
 --TODO, need log that lets HK lift off and MK1 or MK2 to start a new cycle of all abilities at least once
 --[[
 (ability.id = 295536 or ability.id = 295939) and type = "begincast"
- or ability.id = 302274 or ability.id = 303885 or ability.id = 301351 or ability.id = 295445 or ability.id = 301177) and type = "cast"
+ or (ability.id = 302274 or ability.id = 303885 or ability.id = 301351 or ability.id = 302279 or ability.id = 301177) and type = "cast"
  or (target.id = 150295 or target.id = 155760) and type = "death"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
  --]]
  --Stage 1
  mod:AddTimerLine(DBM:EJ_GetSectionInfo(20037))
@@ -30,14 +31,14 @@ local warnReinforcementRelay		= mod:NewSpellAnnounce(301351, 2)
 local warnFulminatingZap			= mod:NewTargetNoFilterAnnounce(302274, 2, nil, "Healer")
 
 local specWarnCannonBlast			= mod:NewSpecialWarningDodge(295536, nil, nil, nil, 2, 2)
-local specWarnWreck					= mod:NewSpecialWarningDefensive(295445, "Tank", nil, nil, 1, 2)
+local specWarnWreck					= mod:NewSpecialWarningDefensive(302279, "Tank", nil, nil, 1, 2)
 local specWarnFulminatingBurst		= mod:NewSpecialWarningMoveTo(303885, nil, nil, nil, 1, 2)
 local yellFulminatingBurst			= mod:NewYell(303885, nil, nil, nil, "YELL")
 local yellFulminatingBurstFades		= mod:NewShortFadesYell(303885, nil, nil, nil, "YELL")
 
 --local timerCannonBlastCD			= mod:NewCDTimer(7.7, 295536, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--7.7-13.4 variation, useless timer
 local timerReinforcementRelayCD		= mod:NewCDTimer(32.8, 301351, nil, nil, nil, 1)
-local timerWreckCD					= mod:NewCDTimer(24.3, 295445, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerWreckCD					= mod:NewCDTimer(24.3, 302279, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerFulminatingZapCD			= mod:NewCDTimer(17.0, 302274, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)--Assumed
 local timerFulminatingBurstCD		= mod:NewCDTimer(17.0, 303885, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)--Hard Mode
 --Stage 2
@@ -56,6 +57,7 @@ mod:AddNamePlateOption("NPAuraOnWalkieShockie", 296522, false)
 mod.vb.hard = false
 local unitTracked = {}
 
+--[[
 local function checkHardMode(self)
 	local found = false
 	for i = 1, 5 do
@@ -80,10 +82,14 @@ local function checkHardMode(self)
 		DBM:AddMsg("checkHardMode failed, tell DBM author")
 	end
 end
+--]]
 
 function mod:OnCombatStart(delay)
 	self.vb.hard = false
-	self:Schedule(2-delay, checkHardMode, self)
+--	self:Schedule(2-delay, checkHardMode, self)
+	timerFulminatingZapCD:Start(9.2)--SUCCESS
+	timerWreckCD:Start(15)
+	timerReinforcementRelayCD:Start(20.8)
 	table.wipe(unitTracked)
 	if self.Options.NPAuraOnWalkieShockie then
 		DBM:FireEvent("BossMod_EnableHostileNameplates")
@@ -152,7 +158,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif spellId == 301351 or spellId == 303553 then--Regular, Hard
 		warnReinforcementRelay:Show()
 		timerReinforcementRelayCD:Start()
-	elseif spellId == 295445 then
+	elseif spellId == 302279 then
 		specWarnWreck:Show()
 		specWarnWreck:Play("defensive")
 		timerWreckCD:Start()
@@ -167,6 +173,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerWreckCD:Start(15.7)--Assumed
 			timerReinforcementRelayCD:Start(19.8)--Assumed
 		end--]]
+		timerFulminatingZapCD:Start(16.7)--SUCCESS
+		timerWreckCD:Start(22.5)--Assumed
+		timerReinforcementRelayCD:Start(29.1)
 	end
 end
 

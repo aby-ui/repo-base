@@ -1,5 +1,5 @@
 ## Interface: 90205
-## Version: 90100.06
+## Version: 90205.05
 ## Title: Meeting Stone
 ## Title-zhCN: |cffff565e[网易]|r 集合石
 ## Notes-zhCN: 帮助您更好的组建队伍

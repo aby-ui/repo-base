@@ -3,6 +3,7 @@ local L = MDT.L
 L = L or {}
 
 --MDT
+L["Iron Star"] = "Iron Star"
 L["ironDocksIronStar"] = "Iron Star"
 L["manaDevourerNote"] = "Mana Devourer 1 is representing the Boss because it also awards enemy forces"
 L["Grom'kar Footsoldier"] = "Grom'kar Footsoldier"
@@ -2119,6 +2120,7 @@ L["Interment Construct"] = "Interment Construct"
 L["Interrogation Specialist"] = "Interrogation Specialist"
 L["Invalid import string"] = "Invalid import string"
 L["Iron Infantry"] = "Iron Infantry"
+L["Iron Star"] = "Iron Star"
 L["IronDocks"] = "Iron Docks"
 L["Ironhull Apprentice"] = "Ironhull Apprentice"
 L["Irontide Bonesaw"] = "Irontide Bonesaw"

@@ -713,10 +713,10 @@ E.spell_db = {
 		{ spellID = 356567, duration = 180, type = "trinket",   item = 186980,  },
 
 		{ spellID = 363117, duration = 180, type = "pvptrinket",item = 188524,  buff = 362699   },
+		{ spellID = 363121, duration = 0,   type = "pvptrinket",item = 188691   },
 		{ spellID = 363481, duration = 120, type = "trinket",   item = 188766   },
 		{ spellID = 363522, duration = 120, type = "trinket",   item = 188775   },
 		{ spellID = 363532, duration = 180, type = "trinket",   item = 188778,  icon = 3950358  },
-		{ spellID = 363121, duration = 0,   type = "pvptrinket",item = 188691   },
 	},
 	["RACIAL"] = {
 		{ spellID = 59752,  duration = 180, type = "racial",    race =  1   },

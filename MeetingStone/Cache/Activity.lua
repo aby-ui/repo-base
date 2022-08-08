@@ -186,9 +186,10 @@ function Activity:UpdateSortValue()
     self._statusSortValue = self:IsApplication() and (
                             self:IsApplicationFinished() and 1 or 0) or
                             self:IsDelisted() and 9 or
-                            self:IsAnyFriend() and 5 or
+                            self:IsAnyFriend() and 6 or
                             self:IsSelf() and 2 or
                             self:IsGoldLeader() and 4 or
+                            self:IsSilverLeader() and 5 or
                             self:IsInActivity() and 3 or 7
     self._baseSortValue = format('%d%04x%s%02x%02x%08x',
         self._statusSortValue,
@@ -318,5 +319,10 @@ end
 
 function Activity:IsGoldLeader()
     local Leader = self:GetLeaderFullName() 
-    return APP_LEADER_MAPS and APP_LEADER_MAPS[Leader]
+    return APP_GLOD_LEADER_MAPS and APP_GLOD_LEADER_MAPS[Leader]
+end
+
+function Activity:IsSilverLeader()
+    local Leader = self:GetLeaderFullName() 
+    return APP_SILVER_LEADER_MAPS and APP_SILVER_LEADER_MAPS[Leader]
 end

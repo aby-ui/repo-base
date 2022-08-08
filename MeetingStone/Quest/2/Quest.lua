@@ -76,3 +76,11 @@ end
 function Quest:GetTimeLimitText()
     return self.timeLimit and '在时限内'
 end
+
+function Quest:GetNoReset()
+    return self.noReset and '活动期间，累计'
+end
+
+function Quest:CanReward()
+    return self.rewards and not self.url
+end

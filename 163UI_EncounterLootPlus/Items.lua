@@ -82,7 +82,8 @@ function ELP_UpdateItemList()
         EncounterJournal_RefreshSlotFilterText()
     end
 
-    local range, lastRaid = db.range, nil
+    -- range: 1(01)全部团本; 2(10)最新大秘; 3(11)全部副本; 4(1 but lastRaid)最新团本; 5(3 but lastRaid)最新团本和5人大秘
+    local range, lastRaid = db.range, nil --没有lastRaid时表示所有的
     if range == 4 or range == 5 then
         lastRaid = ELP_LAST_RAID_IDX
         range = range == 4 and 1 or 3
@@ -91,7 +92,7 @@ function ELP_UpdateItemList()
     for i = 1, 2 do
         local index = (i == 1 and lastRaid or 1)
         while( bit.band(i, range) > 0 ) do
-            local insID, name, _, _, _, _, _, _, link = EJ_GetInstanceByIndex(index, i == 1)
+            local insID, name, _, _, _, _, _, _, link = ELP_EJ_GetInstanceByIndex(index, i == 1)
             if not insID then break end
             index = index + 1
             EJ_SelectInstance(insID)

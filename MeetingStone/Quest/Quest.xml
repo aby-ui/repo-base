@@ -6,7 +6,7 @@
     <Script file="2\QuestGroup.lua"/>
     <Script file="2\QuestItem.lua"/>
     <Script file="2\QuestPanel.lua"/>
-    <Script file="2\QuestPanel2.lua"/>
+    <!-- <Script file="2\QuestPanel2.lua" /> -->
     <Script file="2\QuestServies.lua"/>
-    <Script file="2\QuestPanel3.lua"/>
+    <!-- <Script file="2\QuestPanel3.lua" /> -->
 </Ui>
