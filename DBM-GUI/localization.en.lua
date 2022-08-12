@@ -117,7 +117,7 @@ L.DoNotLogLFG				= "Do not record LFG or LFR (queued content)"
 --Auto Logging: Recorded Content types
 L.Area_AutoLoggingContent	= "Auto Logging Content"
 L.LogCurrentMythicRaids		= "Current level Mythic raids"--Retail Only
-L.LogCurrentRaids			= "Current level non Mythic raids (Heroic, Normal, and LFR if LGF/LFR filter is disabled)"
+L.LogCurrentRaids			= "Current level non Mythic raids (Heroic, Normal, and LFR if LFG/LFR filter is disabled)"
 L.LogTWRaids				= "Timewalking or Chromie Time raids"--Retail Only
 L.LogTrivialRaids			= "Trivial (below character level) raids"
 L.LogCurrentMPlus			= "Current level M+ dungeons"--Retail Only
@@ -474,7 +474,7 @@ L.Panel_Range				= "Rangeframe"
 
 -- Panel: Nameplate
 L.Panel_Nameplates			= "Nameplates"
-L.UseNameplateHandoff		= "Hand off nameplate aura requests to supported nameplate addons (KuiNameplates, Threat Plates, Plater) instead of handling internally. This is recommended option as it allows more advanted features and configuration to be done via nameplate addon"
+L.UseNameplateHandoff		= "Hand off nameplate aura requests to supported nameplate addons (KuiNameplates, Threat Plates, Plater) instead of handling internally. This is recommended option as it allows more advanced features and configuration to be done via nameplate addon"
 L.Area_NPStyle				= "Style (Note: Only configures style when DBM is handling nameplates.)"
 L.NPAuraSize				= "Aura Pixel size (squared): %d"
 

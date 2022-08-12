@@ -2,9 +2,6 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local EV, G, L = T.Evie, T.Garrison, T.L
 
-local Nine = T.Nine or _G
-local C_Garrison = Nine.C_Garrison
-
 local roamingParty, easyDrop = T.MissionsUI.roamingParty, T.MissionsUI.easyDrop
 local MISSION_PAGE_FRAME = GarrisonMissionFrame.MissionTab.MissionPage
 local SHIP_MISSION_PAGE = GarrisonShipyardFrame.MissionTab.MissionPage
@@ -292,7 +289,7 @@ local function GetRewardsDesc(mid)
 			elseif v.icon then
 				r = r .. " |T" .. v.icon .. ":0|t"
 			elseif v.currencyID then
-				local c = select(3, Nine.GetCurrencyInfo(v.currencyID))
+				local c = C_CurrencyInfo.GetBasicCurrencyInfo(v.currencyID).icon
 				r = r .. " |T" .. (c or "Interface/Icons/Temp") .. ":0|t"
 			elseif v.itemID then
 				r = r .. " |T" .. GetItemIcon(v.itemID) .. ":0|t"
@@ -641,7 +638,7 @@ do -- Projected XP rewards
 end
 do -- Counter-follower lists
 	local itip = CreateFrame("GameTooltip", "MPInnerTip", nil, "GameTooltipTemplate") do
-		itip:SetBackdrop(nil)
+		itip.NineSlice:Hide()
 		itip:SetPadding(0, 0)
 		itip:SetScript("OnHide", function(self)
 			self:Hide()
@@ -680,23 +677,17 @@ do -- Counter-follower lists
 		end
 	end
 	
-	if false then --FIXME
-		hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(self, _info)
-			for i=1,#self.Abilities do
-				local ci = self.Abilities[i].CounterIcon
-				if ci:IsShown() then
-					ci:SetMask("")
-					ci:SetTexCoord(4/64,60/64,4/64,60/64)
-				end
+	hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(self, _info)
+		for i=1,#self.Abilities do
+			local ci = self.Abilities[i].CounterIcon
+			if ci:IsShown() then
+				ci:SetMask("")
+				ci:SetTexCoord(4/64,60/64,4/64,60/64)
 			end
-		end)
-	end
+		end
+	end)
 	
 	hooksecurefunc("GarrisonFollowerAbilityTooltipTemplate_SetAbility", function(self, aid)
-		if false then --FIXME
-			self.CounterIcon:SetMask("")
-			self.CounterIcon:SetTexCoord(4/64,60/64,4/64,60/64)
-		end
 		if not aid or not self.Details or aid >= 331 then
 			return
 		elseif self.Details:IsShown() then
@@ -704,6 +695,8 @@ do -- Counter-follower lists
 		else
 			itip:ActivateFor(self, "TOPLEFT", self.Description, "BOTTOMLEFT", -10, 12)
 		end
+		self.CounterIcon:SetMask("")
+		self.CounterIcon:SetTexCoord(4/64,60/64,4/64,60/64)
 		local tid = aid and not C_Garrison.GetFollowerAbilityIsTrait(aid) and C_Garrison.GetFollowerAbilityCounterMechanicInfo(aid)
 		if self.Details:IsShown() and tid then
 			G.SetThreatTooltip(itip, tid, nil, nil, nil, true)
@@ -712,6 +705,27 @@ do -- Counter-follower lists
 			return
 		end
 		itip:Show()
+	end)
+	local function GarrisonMissionMechanicFollowerCounter_OnEnterHook(self)
+		if self.info and (self.followerTypeID or 3) < 3 and not GameTooltip:IsVisible() then
+			ShowGarrisonFollowerAbilityTooltip(self, self.info.counterID, self.followerTypeID)
+		end
+	end
+	hooksecurefunc("GarrisonMissionMechanicFollowerCounter_OnEnter", GarrisonMissionMechanicFollowerCounter_OnEnterHook)
+	for k=1,2 do
+		local fa = (k == 1 and MISSION_PAGE_FRAME or SHIP_MISSION_PAGE).Followers
+		for i=1,fa and #fa or 0 do
+			for j = 1,#fa[i].Counters do
+				fa[i].Counters[j]:HookScript("OnEnter", GarrisonMissionMechanicFollowerCounter_OnEnterHook)
+			end
+		end
+	end
+	hooksecurefunc(GarrisonMissionMechanicTooltip, "SetParent", function(s)
+		local owner = GetMouseFocus()
+		s:SetOwner(owner, "ANCHOR_NONE")
+		s:ClearAllPoints()
+		s:SetPoint("TOPLEFT", owner, "BOTTOMRIGHT", 5, 0);
+		s:SetText(" ")
 	end)
 	GarrisonMissionMechanicFollowerCounterTooltip:HookScript("OnShow", function(self)
 		local mech = G.GetMechanicInfo(tostring(self.Icon:GetTexture()))
@@ -725,14 +739,16 @@ do -- Counter-follower lists
 			itip:Show()
 		end
 	end)
-	GarrisonMissionMechanicTooltip:HookScript("OnShow", function(self)
+	local function GarrisonMissionMechanicTooltip_OnShowHook(self)
 		local mech = self:GetParent().CloseMission and G.GetMechanicInfo(tostring(self.Icon:GetTexture()))
 		if mech then
 			itip:ActivateFor(self, "TOPLEFT", self.Description, "BOTTOMLEFT", -10, 16)
 			G.SetThreatTooltip(itip, mech, nil, self.missionLevel, nil, true)
 			itip:Show()
 		end
-	end)
+	end
+	GarrisonMissionMechanicTooltip:HookScript("OnShow", GarrisonMissionMechanicTooltip_OnShowHook)
+	hooksecurefunc(GarrisonMissionMechanicTooltip, "Show", GarrisonMissionMechanicTooltip_OnShowHook)
 end
 do -- suppress completion toast while missions UI is visible
 	local registered = false
@@ -759,7 +775,7 @@ do -- Mission page rewards
 					text = q .. text
 				end
 			elseif self.currencyID and self.currencyID > 0 and self.currencyQuantity then
-				text = self.currencyQuantity .. " " .. Nine.GetCurrencyLink(self.currencyID, self.currencyQuantity)
+				text = self.currencyQuantity .. " " .. C_CurrencyInfo.GetCurrencyLink(self.currencyID, self.currencyQuantity)
 			elseif self.title then
 				text = q .. self.title
 			end
@@ -847,7 +863,7 @@ do -- Follower headcounts
 		if nw > 0 then t = (t and t .. spacer or "") .. nw .. ico .. "255:208:0|t" end
 		if nm > 0 then t = (t and t .. spacer or "") .. nm .. ico .. "125:230:255|t" end
 		fs:SetText(t or "")
-		local _, nr = Nine.GetCurrencyInfo(824)
+		local nr = C_CurrencyInfo.GetCurrencyInfo(824).quantity
 		local low = nr and nr < 150 and 0 or 1
 		mf.Materials:SetTextColor(1, low, low)
 	end
@@ -877,7 +893,7 @@ do -- Garrison Resources in shipyard
 		end
 	end
 	local function sync()
-		local _, cur = Nine.GetCurrencyInfo(GARRISON_CURRENCY)
+		local cur = C_CurrencyInfo.GetCurrencyInfo(GARRISON_CURRENCY).quantity
 		fs:SetText(BreakUpLargeNumbers(cur or 0))
 	end
 	
@@ -1197,7 +1213,7 @@ do
 		ctlContainer.MaterialCount = t
 	end
 	local function sync()
-		ctlContainer.MaterialCount:SetText(BreakUpLargeNumbers(select(2, Nine.GetCurrencyInfo(1101)) or 0))
+		ctlContainer.MaterialCount:SetText(BreakUpLargeNumbers(C_CurrencyInfo.GetCurrencyInfo(1101).quantity or 0))
 		ctlContainer:SetFrameLevel(GarrisonShipyardFrame.BorderFrame:GetFrameLevel()+1)
 		ctlContainer:SetWidth((ctlContainer.MaterialCount:GetStringWidth() or 50) + 52)
 		if ctlContainer:IsVisible() then
@@ -1212,8 +1228,8 @@ do
 		GameTooltip:SetText("!")
 		GameTooltipTextLeft1:SetText("")
 		for i=1, 2 do
-			local on, oc, oi = Nine.GetCurrencyInfo(i == 1 and 1101 or 824)
-			GameTooltip:AddDoubleLine(("|T%s:0:0:0:0:64:64:6:58:6:58|t %s"):format(oi, on), NORMAL_FONT_COLOR_CODE .. BreakUpLargeNumbers(oc), 1,1,1)
+			local ci = C_CurrencyInfo.GetCurrencyInfo(i == 1 and 1101 or 824)
+			GameTooltip:AddDoubleLine(("|T%s:0:0:0:0:64:64:6:58:6:58|t %s"):format(ci.iconFileID, ci.name), NORMAL_FONT_COLOR_CODE .. BreakUpLargeNumbers(ci.quantity), 1,1,1)
 		end
 		local sid, name = C_Garrison.GetOwnedBuildingInfoAbbrev(98)
 		local ts, _, _, tl = select(5, C_Garrison.GetLandingPageShipmentInfo(sid))

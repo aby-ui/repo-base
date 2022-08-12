@@ -2,9 +2,6 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local G, L, EV = T.Garrison, T.L, T.Evie
 
-local Nine = T.Nine or _G
-local C_Garrison = Nine.C_Garrison
-
 local summaryTab = CreateFrame("Frame", nil, GarrisonMissionFrame, "GarrisonMissionBaseFrameTemplate") do
 	summaryTab:Hide()
 	summaryTab:SetSize(580, 565)

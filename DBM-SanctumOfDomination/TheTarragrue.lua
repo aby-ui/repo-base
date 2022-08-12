@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(2435, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220202092809")
+mod:SetRevision("20220809202533")
 mod:SetCreatureID(175611)
 mod:SetEncounterID(2423)
 mod:SetUsedIcons(1)
 mod:SetHotfixNoticeRev(20210706000000)--2021-07-06
 --mod:SetMinSyncRevision(20201222000000)
---mod.respawnTime = 29
+mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 

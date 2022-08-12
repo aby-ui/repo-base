@@ -69,15 +69,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220808140724"),
+	Revision = parseCurseDate("20220810145323"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "9.2.29 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 8, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "9.2.30 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 8, 9) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 243, "d58ab26"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.27 alpha"
@@ -3260,13 +3260,16 @@ do
 	local legionZones = {[1712]=true,[1520]=true,[1530]=true,[1676]=true,[1648]=true}
 	local bfaZones = {[1861]=true,[2070]=true,[2096]=true,[2164]=true,[2217]=true}
 	local challengeScenarios = {[1148]=true,[1698]=true,[1710]=true,[1703]=true,[1702]=true,[1684]=true,[1673]=true,[1616]=true,[2215]=true}
-	local pvpZones = {[30]=true,[489]=true,[529]=true,[559]=true,[562]=true,[566]=true,[572]=true,[617]=true,[618]=true,[628]=true,[726]=true,[727]=true,[761]=true,[968]=true,[980]=true,[998]=true,[1105]=true,[1134]=true,[1504]=true,[1552]=true,[1681]=true,[1803]=true,[1911]=true,[2106]=true,[2107]=true,[2118]=true,[2167]=true,[2177]=true,[2197]=true,[2245]=true,[2373]=true}
+	local pvpZones = {[30]=true,[489]=true,[529]=true,[559]=true,[562]=true,[566]=true,[572]=true,[617]=true,[618]=true,[628]=true,[726]=true,[727]=true,[761]=true,[968]=true,[980]=true,[998]=true,[1105]=true,[1134]=true,[1170]=true,[1504]=true,[1505]=true,[1552]=true,[1681]=true,[1672]=true,[1803]=true,[1825]=true,[1911]=true,[2106]=true,[2107]=true,[2118]=true,[2167]=true,[2177]=true,[2197]=true,[2245]=true,[2373]=true,[2509]=true,[2511]=true,[2547]=true,[2563]=true}
 	--This never wants to spam you to use mods for trivial content you don't need mods for.
 	--It's intended to suggest mods for content that's relevant to your level (TW, leveling up in dungeons, or even older raids you can't just roll over)
-	function DBM:CheckAvailableMods()
+	function DBM:CheckAvailableMods(wipeNag)
 		if _G["BigWigs"] or modAdvertisementShown then return end--If they are running two boss mods at once, lets assume they are only using DBM for a specific feature (such as brawlers) and not nag
 		if isRetail then
 			if not self:IsTrivial() then
+				if wipeNag then--Disable message after one wipe nag, don't want to rub in a person is wiping, just nudge (once) that a mod might help
+					modAdvertisementShown = true
+				end
 				if instanceDifficultyBylevel[LastInstanceMapID] and instanceDifficultyBylevel[LastInstanceMapID][2] == 2 and not GetAddOnInfo("DBM-Party-BC") then
 					AddMsg(self, L.MOD_AVAILABLE:format("DBM Dungeon mods"))
 				elseif (classicZones[LastInstanceMapID] or bcZones[LastInstanceMapID]) and not GetAddOnInfo("DBM-BlackTemple") then
@@ -4507,6 +4510,9 @@ do
 				sendSync("EE", encounterID.."\t"..success.."\t"..v.id.."\t"..(v.revision or 0))
 				return
 			end
+		end
+		if not success then
+			self:CheckAvailableMods(true)
 		end
 	end
 
@@ -6726,9 +6732,9 @@ function bossModPrototype:SetStage(stage)
 	end
 end
 
-function bossModPrototype:AffixEvent(eventType, customStage, timeAdjust, spellDebit)
+function bossModPrototype:AffixEvent(eventType, stage, timeAdjust, spellDebit)
 	if self.inCombat then--Safety, in event mod manages to run any phase change calls out of combat/during a wipe we'll just safely ignore it
-		fireEvent("DBM_AffixEvent", self, self.id, eventType, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, customStage or self.vb.phase or 1, timeAdjust, spellDebit)--Mod, modId, type (0 end, 1, begin, 2, timerExtend), Encounter Id (if available), stage, amount of time to extend to, spellDebit, whether to subtrack the previous extend arg from next timer
+		fireEvent("DBM_AffixEvent", self, self.id, eventType, self.multiEncounterPullDetection and self.multiEncounterPullDetection[1] or self.encounterId, stage or 1, timeAdjust, spellDebit)--Mod, modId, type (0 end, 1, begin, 2, timerExtend), Encounter Id (if available), stage, amount of time to extend to, spellDebit, whether to subtrack the previous extend arg from next timer
 	end
 end
 

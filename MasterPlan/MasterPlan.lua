@@ -5,9 +5,6 @@ if T.Mark ~= 50 then
 	return print("|cffffffff[Master Plan]: |cffff8000" .. m)
 end
 
-local Nine = T.Nine or _G
-local C_Garrison = Nine.C_Garrison
-
 local L = newproxy(true) do
 	local LL = type(T.L) == "table" and T.L or {}
 	getmetatable(L).__call = function(_, k)

@@ -1,8 +1,6 @@
 local _, T = ...
 if T.Mark ~= 50 then return end
 local G, L, E = T.Garrison, T.L, T.Evie
-local Nine = T.Nine or _G
-local C_Garrison = Nine.C_Garrison
 
 local function HookOnShow(self, OnShow)
 	self:HookScript("OnShow", OnShow)
@@ -55,7 +53,7 @@ end
 local function Ship_OnEnter(self, ...)
 	if self.buildingID == -1 and self.plotID == -42 then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		T.SetCacheTooltip(GameTooltip, select(2, Nine.GetCurrencyInfo(824)), G.GetResourceCacheInfo())
+		T.SetCacheTooltip(GameTooltip, C_CurrencyInfo.GetCurrencyInfo(824).quantity, G.GetResourceCacheInfo())
 		self.UpdateTooltip = Ship_OnEnter
 	elseif self.buildingID == -1 and self.plotID == -43 then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -139,7 +137,7 @@ local function addCacheResources(self, id)
 	end
 end
 local function addCacheResourcesByLink(self, idx)
-	addCacheResources(self, tonumber((Nine.GetCurrencyListLink(idx) or ""):match("currency:(%d+)") or 0))
+	addCacheResources(self, tonumber((C_CurrencyInfo.GetCurrencyListLink(idx) or ""):match("currency:(%d+)") or 0))
 end
 for i=1,GameTooltip ~= _G.GameTooltip and 2 or 1 do
 	local tip = i == 1 and GameTooltip or _G.GameTooltip

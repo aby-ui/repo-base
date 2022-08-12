@@ -3,9 +3,6 @@ if T.Mark ~= 50 then return end
 local G, L, EV = T.Garrison, T.L, T.Evie
 local countFreeFollowers = G.countFreeFollowers
 
-local Nine = T.Nine or _G
-local C_Garrison = Nine.C_Garrison
-
 local function HookOnShow(self, OnShow)
 	self:HookScript("OnShow", OnShow)
 	if self:IsVisible() then OnShow(self) end
@@ -411,6 +408,7 @@ local CreateClassSpecButton, ClassSpecButton_Set do
 			tipLoader.job = job
 			tipLoader:Show()
 		end
+		GameTooltip.NineSlice:SetCenterColor(0,0,0)
 	end
 	function EV:MP_REROLL_PROSPECTS_READY()
 		local mf = GetMouseFocus()

@@ -27,6 +27,8 @@ L["Achillite"] = "阿喀琉忒"
 L["Acidic Bile"] = "酸蚀胆汁"
 L["Adderis"] = "阿德里斯"
 L["Addled Thug"] = "混乱的暴徒"
+--[[Translation missing --]]
+--[[ L["AddOn Conflict"] = ""--]] 
 L["Adorned Starseer"] = "盛装的星辰先知"
 L["Advent Nevermore"] = "阿德文特·追惘"
 L["Advisor Melandrus"] = "顾问麦兰杜斯"
@@ -221,6 +223,8 @@ L["Colossal Tentacle"] = "巨型触须"
 L["Commander Shemdah'sohn"] = "指挥官什达索尼"
 L["Commander Zo'far"] = "指挥官佐·法"
 L["Commerce Enforcer"] = "贸易执行者"
+--[[Translation missing --]]
+--[[ L["conflictPrompt"] = ""--]] 
 L["Congealed Slime"] = "凝结软泥"
 L["ConnectedTip"] = [=[MDT 中連在一起群組不代表遊戲內的 NPC 也會連結在一起。
 ]=]
@@ -784,6 +788,8 @@ L["Mchimba the Embalmer"] = "殓尸者姆沁巴"
 L["MDI Mode"] = "MDI 模式"
 L["MDT: Error importing preset"] = "MDT: 匯入路線時發生錯誤"
 L["MDT: Spells for %s:"] = "MDT: %s 的技能:"
+--[[Translation missing --]]
+--[[ L["MDT: Use /mdt minimap to show the minimap icon again"] = ""--]] 
 L["Mech Jockey"] = "机甲驾驶员"
 L["Mechagon"] = "機械岡"
 L["Mechagon - Junkyard"] = "機械岡行動 - 廢料場"
@@ -802,6 +808,8 @@ L["Mechanical"] = "機械"
 L["Mechanized Peacekeeper"] = "机械化维和者"
 L["Mephistroth"] = "孟菲斯托斯"
 L["Merektha"] = "米利克萨"
+--[[Translation missing --]]
+--[[ L["Middle-click to disable Minimap Button"] = ""--]] 
 L["Midnight"] = "午夜"
 L["Mightstone Breaker"] = "巨石破坏者"
 L["Millhouse Manastorm"] = "米尔豪斯·法力风暴"

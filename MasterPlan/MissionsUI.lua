@@ -2,9 +2,6 @@ local _, T = ...
 if T.Mark ~= 50 then return end
 local L, EV, G, api = T.L, T.Evie, T.Garrison, {}
 
-local Nine = T.Nine or _G
-local C_Garrison = Nine.C_Garrison
-
 local function HookOnShow(self, OnShow)
 	self:HookScript("OnShow", OnShow)
 	if self:IsVisible() then OnShow(self) end
@@ -169,7 +166,7 @@ local GetAvailableResources do
 	end
 	function GetAvailableResources(ftID, dropCost, missions)
 		if ftID ~= ctID then
-			local n, _, r = 0, Nine.GetCurrencyInfo(ftID == 1 and GARRISON_CURRENCY or 1101)
+			local n, r = 0, C_CurrencyInfo.GetCurrencyInfo(ftID == 1 and GARRISON_CURRENCY or 1101).quantity
 			for k,v in pairs(G.GetFollowerInfo()) do
 				if v.isCombat and v.followerTypeID == ftID and (v.status == GARRISON_FOLLOWER_IN_PARTY or v.status == nil) and not T.config.ignore[v.followerID] and not G.GetFollowerTentativeMission(v.followerID) then
 					n = n + 1
@@ -897,7 +894,7 @@ local activeUI = CreateFrame("Frame", nil, missionList) do
 				elseif self.itemID then
 					link = select(2, GetItemInfo(self.itemID))
 				elseif self.currencyID and self.currencyID > 0 then
-					link = Nine.GetCurrencyLink(self.currencyID, tonumber(self.Quantity:GetText() or 1) or 1)
+					link = C_CurrencyInfo.GetCurrencyLink(self.currencyID, tonumber(self.Quantity:GetText() or 1) or 1)
 				end
 				if link then
 					ChatEdit_InsertLink(link)
@@ -955,7 +952,7 @@ local activeUI = CreateFrame("Frame", nil, missionList) do
 				icon, tooltipHeader, tooltipText = "Interface\\Icons\\INV_Misc_Coin_02", GARRISON_REWARD_MONEY, GetMoneyString(v.quantity)
 				quantity = floor(quantity/10000)
 			elseif v.currencyID then
-				_, _, icon = Nine.GetCurrencyInfo(v.currencyID)
+				icon = C_CurrencyInfo.GetBasicCurrencyInfo(v.currencyID).icon
 			end
 			if icon then
 				local ib = lootContainer.items[ni]
@@ -1304,7 +1301,7 @@ local availUI = CreateFrame("Frame", nil, missionList) do
 				end
 				rewards.xp, rewards[0] = nil
 				for cid, cq in pairs(rewards) do
-					rtext = rtext .. "  " .. floor(cq) .. " |T" .. (select(3,Nine.GetCurrencyInfo(cid)) or "Interface/Icons/Temp") .. ":12:12:0:0:64:64:4:60:4:60|t"
+					rtext = rtext .. "  " .. floor(cq) .. " |T" .. (C_CurrencyInfo.GetCurrencyInfo(cid).iconFileID or "Interface/Icons/Temp") .. ":12:12:0:0:64:64:4:60:4:60|t"
 				end
 				if rtext ~= "" then
 					GameTooltip:AddDoubleLine(L"Expected rewards:", rtext, nil, nil, nil, 1,1,1)
@@ -1520,7 +1517,8 @@ local interestUI = CreateFrame("Frame", nil, missionList) do
 						if key > 2e3 then
 							name, ico = GetItemInfo(key), GetItemIcon(key)
 						else
-							name, _, ico = Nine.GetCurrencyInfo(key)
+							local ci = C_CurrencyInfo.GetBasicCurrencyInfo(key)
+							name, ico = ci.name, ci.icon
 						end
 						mi.text, mi.placeholder = "|T" .. (ico or "Interaface\\Icons\\INV_Misc_QuestionMark") .. ":16:16:0:0:64:64:4:60:4:60|t " .. (name or ("#" .. key)), not name or nil
 					end
@@ -1994,7 +1992,7 @@ do -- CreateMissionButton
 				if self.itemID then
 					_, text = GetItemInfo(self.itemID)
 				elseif self.currencyID and self.currencyID ~= 0 then
-					text = Nine.GetCurrencyLink(self.currencyID, qt or 0)
+					text = C_CurrencyInfo.GetCurrencyLink(self.currencyID, qt or 0)
 				elseif self.tooltipTitle then
 					text = self.tooltipTitle
 				end
@@ -2306,7 +2304,7 @@ local GroupButtonBase = {} do
 		elseif ec > 0 and et == 1101 then
 			text = ("%d|TInterface\\Garrison\\GarrisonCurrencyIcons:0:0:0:2:128:128:70:104:68:104|t"):format(ec)
 		elseif ec > 0 and et == 823 then
-			text = ec .. " |T" .. select(3,Nine.GetCurrencyInfo(et)) .. ":0:0:0:1:64:64:4:60:4:60|t"
+			text = ec .. " |T" .. C_CurrencyInfo.GetBasicCurrencyInfo(et).icon .. ":0:0:0:1:64:64:4:60:4:60|t"
 		elseif ec >= 1e4 and et == 0 and G.HasSignificantRewards(mi) == "gold" then
 			text = GetMoneyString(ec - ec % 1e4)
 		else
@@ -2776,10 +2774,11 @@ do -- availMissionsHandle
 		end
 		
 		local cinfo, finfo, mlvl = G.GetCounterInfo(), G.GetFollowerInfo(), G.GetFMLevel(d)
-		local enemies, ename, edesc, etex, _ = d.enemies, d.envName, d.envDescription, d.envTexture
+		local enemies, ename, edesc, etex = d.enemies, d.envName, d.envDescription, d.envTexture
 		if not (enemies and ename and edesc and etex) then
-			_, _, ename, edesc, etex, _, _, enemies = C_Garrison.GetMissionInfo(d.missionID)
-			d.enemies, d.envName, d.envDescription, d.envTexture = enemies, ename, edesc, etex
+			local mdi = C_Garrison.GetMissionDeploymentInfo(d.missionID)
+			d.enemies, d.envName, d.envDescription, d.envTexture = mdi.enemies, mdi.environment, mdi.environmentDesc, mdi.environmentTexture
+			enemies, ename, edesc, etex = d.enemies, d.envName, d.envDescription, d.envTexture
 		end
 		local nt, tt, used = 1, self.threats, wipe(used) or used
 		for i=1,#enemies do
@@ -2850,9 +2849,9 @@ do -- availMissionsHandle
 				end
 			end
 			
-			local _, resq = Nine.GetCurrencyInfo(824)
+			local resq = C_CurrencyInfo.GetCurrencyInfo(824).quantity
 			cw[824] = resq < 3e3 and 10 or (resq < 7e3 and 6 or 3)
-			local _, oilq = Nine.GetCurrencyInfo(1101)
+			local oilq = C_CurrencyInfo.GetCurrencyInfo(1101).quantity
 			cw[1101] = C_Garrison.HasShipyard() and (oilq < 1e3 and 11 or 2) or 1
 			cw[823], cw[0], cw.minor = 4, 5, 1.5
 			
@@ -3295,7 +3294,7 @@ do -- interestMissionsHandle
 			local rq = d[3] * (1 + (best and best[4] or 0))
 			r.currencyID, r.itemID, r.tooltipTitle, r.tooltipText = rt
 			r.quantity:SetText(rq > 1 and rq or "")
-			r.icon:SetTexture((select(3,Nine.GetCurrencyInfo(rt))))
+			r.icon:SetTexture(C_CurrencyInfo.GetBasicCurrencyInfo(rt).icon)
 		else
 			r.itemID, r.currencyID, r.tooltipTitle, r.tooltipText = rt
 			r.quantity:SetText(d[3] > 1 and d[3] or "")
@@ -3458,8 +3457,11 @@ do -- Ships
 	end
 	local ShipMission_OnEnter do
 		local tipGroup = GarrisonShipyardMapMissionTooltip:CreateFontString(nil, "ARTWORK", "GameFontHighlightLeft")
+		tipGroup.yspacing = 10
 		tipGroup:SetTextColor(0.5, 0.8, 1)
-		hooksecurefunc("GarrisonShipyardMapMission_SetTooltip", function() tipGroup:Hide() end)
+		GarrisonShipyardMapMissionTooltip.Lines[#GarrisonShipyardMapMissionTooltip.Lines+1] = tipGroup
+		tipGroup:Hide()
+		GarrisonShipyardMapMissionTooltip:HookScript("OnHide", function() tipGroup:Hide() end)
 		local function describeGroup(sg, mi)
 			local exp, sp = G.GetMissionGroupXP(sg, mi), sg[1]/100
 			local ex, ce, ct = exp >= 1 and ("; " .. (L"%s XP"):format(BreakUpLargeNumbers(floor(exp)))) or "", sg[3]*sp, sg[9]
@@ -3484,17 +3486,45 @@ do -- Ships
 					tipGroup:Show()
 					GarrisonShipyardMapMission_AnchorToBottomWidget(tipGroup, 0, -12)
 					GarrisonShipyardMapMission_SetBottomWidget(tipGroup)
-					tipGroup:SetWidth(math.max(180, (GarrisonShipyardMapMissionTooltip:GetWidth() or 16) - 12))
-					GarrisonShipyardMapMissionTooltip:SetHeight(GarrisonShipyardMapMissionTooltip:GetHeight() + tipGroup:GetHeight()+12)
-					return
+					GarrisonShipyardMapMission_UpdateTooltipSize(GarrisonShipyardMapMissionTooltip)
 				end
 			end
 		end
-		hooksecurefunc("GarrisonShipyardMapMission_UpdateTooltipSize", function(self)
-			if tipGroup:IsVisible() then
-				GarrisonShipyardMapMissionTooltip:SetHeight(self:GetHeight() + tipGroup:GetHeight()+12)
+	end
+	do -- Adjust naval map mission tooltips with item rewards to fail less at layout
+		local anchoredTo = {}
+		local function FixShipMissionTooltipLayout()
+			local tip = GarrisonShipyardMapMissionTooltip
+			if not (tip and tip.ItemTooltip:IsShown()) then return end
+			tip:Show()
+			wipe(anchoredTo)
+			for i=0,#tip.Lines do
+				i = tip.Lines[i] or tip.BonusEffect
+				anchoredTo[i:IsShown() and select(2, i:GetPoint()) or 0] = i
+			end
+			local it, eh = anchoredTo[tip.ItemTooltip], 0
+			while it do
+				eh, it = eh + it:GetHeight() + (it.yspacing or 0), anchoredTo[it]
+			end
+			if eh > 0 then
+				local tp, at, ap, ox = tip.ItemTooltip:GetPoint()
+				if tp == "BOTTOMLEFT" and ap == "BOTTOMLEFT" and at == tip then
+					tip.ItemTooltip:SetPoint("BOTTOMLEFT", ox, 13 + eh)
+				end
+			end
+		end
+		hooksecurefunc("GarrisonShipyardMapMission_SetBottomWidget", function(w, x, y)
+			if w == GarrisonShipyardMapMissionTooltip.ItemTooltip and x == -6 then
+				GarrisonShipyardMapMission_SetBottomWidget(w, 0, y)
 			end
 		end)
+		hooksecurefunc(GarrisonShipyardMapMissionTooltip.ItemTooltip, "SetPoint", function(_, a,b,c,x,y)
+			if a == "BOTTOMLEFT" and b == 10 and c == 13 and x == nil and y == nil then
+				-- Hello, GameTooltip_CalculatePadding, anchoring things to silly places.
+				FixShipMissionTooltipLayout()
+			end
+		end)
+		hooksecurefunc("GarrisonShipyardMapMission_UpdateTooltipSize", FixShipMissionTooltipLayout)
 	end
 	local function getGroupColor(s)
 		local c = T.config
@@ -3515,7 +3545,7 @@ do -- Ships
 	local function UpdateShipMissionMap()
 		local self = GarrisonShipyardFrame.MissionTab.MissionList
 		local sg = G.GetSuggestedGroupsForAllMissions(2)
-		local oil = select(2, Nine.GetCurrencyInfo(1101)) or 0
+		local oil = C_CurrencyInfo.GetCurrencyInfo(1101).quantity or 0
 		for i=1, #self.missions do
 			local mission, frame = self.missions[i], self.missionFrames[i]
 			if frame:IsShown() and not mission.inProgress then

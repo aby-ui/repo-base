@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2440, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220607193357")
+mod:SetRevision("20220809233017")
 mod:SetCreatureID(175559)
 mod:SetEncounterID(2422)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -182,6 +182,9 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 352293 then--Vengeful Destruction
 		--Stop KT timers
 		self:SetStage(2)
+		if self:IsFated() then
+			self:AffixEvent(0)
+		end
 		self.vb.addIcon = 8
 		self.vb.shardIcon = 8
 		self.vb.frostBlastCount = 0
@@ -349,6 +352,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnFrostBlast:Show(args.destName)
 		end
 	elseif spellId == 352051 then--Necrotic Surge
+		if self:IsFated() then
+			self:AffixEvent(1, 2)
+		end
 		if self.vb.phase == 2 then
 			self:SetStage(1)
 			warnNecroticSurge:Show(args.amount or 1)

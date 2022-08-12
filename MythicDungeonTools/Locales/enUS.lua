@@ -3,6 +3,10 @@ local L = MDT.L
 L = L or {}
 
 --MDT
+L["AddOn Conflict"] = "AddOn Conflict"
+L["conflictPrompt"] = "MDT has detected that you have certain AddOns installed that are conflicting with MDT.\n\nPlease remove the following AddOns:\n\n"
+L["Middle-click to disable Minimap Button"] = "Middle-click to disable Minimap Button"
+L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: Use /mdt minimap to show the minimap icon again"
 L["Iron Star"] = "Iron Star"
 L["ironDocksIronStar"] = "Iron Star"
 L["manaDevourerNote"] = "Mana Devourer 1 is representing the Boss because it also awards enemy forces"
@@ -1500,6 +1504,7 @@ L["Achillite"] = "Achillite"
 L["Acidic Bile"] = "Acidic Bile"
 L["Adderis"] = "Adderis"
 L["Addled Thug"] = "Addled Thug"
+L["AddOn Conflict"] = "AddOn Conflict"
 L["Adorned Starseer"] = "Adorned Starseer"
 L["Advent Nevermore"] = "Advent Nevermore"
 L["Advisor Melandrus"] = "Advisor Melandrus"
@@ -1690,6 +1695,11 @@ L["Colossal Tentacle"] = "Colossal Tentacle"
 L["Commander Shemdah'sohn"] = "Commander Shemdah'sohn"
 L["Commander Zo'far"] = "Commander Zo'far"
 L["Commerce Enforcer"] = "Commerce Enforcer"
+L["conflictPrompt"] = [=[MDT has detected that you have certain AddOns installed that are conflicting with MDT.
+
+Please remove the following AddOns:
+
+]=]
 L["Congealed Slime"] = "Congealed Slime"
 L["ConnectedTip"] = "Group connections in MDT do not reflect if NPCs are linked together in the game world."
 L["Control Undead"] = "Control Undead"
@@ -2249,6 +2259,7 @@ L["Mchimba the Embalmer"] = "Mchimba the Embalmer"
 L["MDI Mode"] = "MDI Mode"
 L["MDT: Error importing preset"] = "MDT: Error importing route"
 L["MDT: Spells for %s:"] = "MDT: Spells for %s:"
+L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: Use /mdt minimap to show the minimap icon again"
 L["Mech Jockey"] = "Mech Jockey"
 L["Mechagon"] = "Mechagon"
 L["Mechagon - Junkyard"] = "Mechagon - Junkyard"
@@ -2267,6 +2278,7 @@ L["Mechanical"] = "Mechanical"
 L["Mechanized Peacekeeper"] = "Mechanized Peacekeeper"
 L["Mephistroth"] = "Mephistroth"
 L["Merektha"] = "Merektha"
+L["Middle-click to disable Minimap Button"] = "Middle-click to disable Minimap Button"
 L["Midnight"] = "Midnight"
 L["Mightstone Breaker"] = "Mightstone Breaker"
 L["Millhouse Manastorm"] = "Millhouse Manastorm"

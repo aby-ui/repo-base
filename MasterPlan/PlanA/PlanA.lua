@@ -1,7 +1,6 @@
 local addonName, T = ...
 local E, api, cdata = T.Evie, {}
-local Nine = T.Nine or _G
-local C = Nine.C_Garrison
+local C = C_Garrison
 
 local function gett(t, k, ...)
 	if not k then
@@ -220,14 +219,14 @@ end
 function E:SHOW_LOOT_TOAST(rt, rl, q, _4, _5, _6, source)
 	if rt == "currency" and source == 10 and rl:match("currency:824") then
 		cdata.lastCacheTime = GetServerTime()
-		cdata.cacheSize = (Nine.IsQuestFlaggedCompleted(37485) or q > 500) and 1000 or cdata.cacheSize
+		cdata.cacheSize = (C_QuestLog.IsQuestFlaggedCompleted(37485) or q > 500) and 1000 or cdata.cacheSize
 		CheckCacheWarning()
 	end
 end
 function E:PLAYER_LOGOUT()
 	if cdata.lastCacheTime then
-		local _, gr = Nine.GetCurrencyInfo(824)
-		local _, oil = Nine.GetCurrencyInfo(1101)
+		local gr = C_CurrencyInfo.GetCurrencyInfo(824).quantity
+		local oil = C_CurrencyInfo.GetCurrencyInfo(1101).quantity
 		cdata.curRes, cdata.curOil = gr and gr > 0 and gr or nil, oil and oil > 0 and oil or nil
 	elseif next(MasterPlanAG.IgnoreRewards) == nil then
 		MasterPlanAG.IgnoreRewards = nil
