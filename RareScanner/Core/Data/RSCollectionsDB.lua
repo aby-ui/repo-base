@@ -277,6 +277,7 @@ local function UpdateNotCollectedPetIDs(routines, routineTextOutput)
 	-- Prepare filters
 	C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED, false)
 	C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED, true)
+	C_PetJournal.SetAllPetTypesChecked(true)
 	C_PetJournal.ClearSearchFilter()
 	
 	for i=1,C_PetJournal.GetNumPetSources() do

@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: HandyNotes
 ## Notes: Handy notes for your maps
 ## Notes-frFR: Notes pratiques pour vos cartes.

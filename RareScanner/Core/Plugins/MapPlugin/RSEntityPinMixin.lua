@@ -133,6 +133,10 @@ function RSEntityPinMixin:ShowOverlay()
 	end
 
 	if (overlay) then
+		-- Checks if the overlay is already shown, in which case is already active in the minimap
+		local hasOverlayActive = RSGeneralDB.HasOverlayActive(self.POI.entityID);
+		
+		-- In the worldmap we always have to add it
 		local r, g, b, replacedEntityID = RSGeneralDB.AddOverlayActive(self.POI.entityID)
 
 		-- Cleans the replaced overlay
@@ -154,7 +158,9 @@ function RSEntityPinMixin:ShowOverlay()
 		end
 		
 		-- Adds the new one to the minimap
-		RSMinimap.AddOverlay(self.POI.entityID)
+		if (not hasOverlayActive) then
+			RSMinimap.AddOverlay(self.POI.entityID)
+		end
 	end
 end
 

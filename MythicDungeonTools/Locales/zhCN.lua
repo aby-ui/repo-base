@@ -25,8 +25,7 @@ L["Achillite"] = "阿喀琉忒"
 L["Acidic Bile"] = "酸蚀胆汁"
 L["Adderis"] = "阿德里斯"
 L["Addled Thug"] = "混乱的暴徒"
---[[Translation missing --]]
---[[ L["AddOn Conflict"] = ""--]] 
+L["AddOn Conflict"] = "插件冲突"
 L["Adorned Starseer"] = "盛装的星辰先知"
 L["Advent Nevermore"] = "阿德文特·追惘"
 L["Advisor Melandrus"] = "顾问麦兰杜斯"
@@ -161,6 +160,9 @@ L["Borka the Brute"] = "野蛮的波尔卡"
 L["Bottom Feeder"] = "食泥蟹"
 L["Bound Energy"] = "被束缚的能量"
 L["Bound Voidlord"] = "被束缚的空灵领主"
+--[[Translation missing --]]
+--[[ L[ [=[Bounty stacks 
+after this pull]=] ] = ""--]] 
 L["Brawling Patron"] = "打架的顾客"
 L["Brittlebone Crossbowman"] = "脆骨弩手"
 L["Brittlebone Mage"] = "脆骨法师"
@@ -215,8 +217,7 @@ L["Colossal Tentacle"] = "巨型触须"
 L["Commander Shemdah'sohn"] = "指挥官什达索尼"
 L["Commander Zo'far"] = "指挥官佐·法"
 L["Commerce Enforcer"] = "贸易执行者"
---[[Translation missing --]]
---[[ L["conflictPrompt"] = ""--]] 
+L["conflictPrompt"] = "MDT 检测到您安装了某些与 MDT 冲突的插件。\\n\\n请删除以下插件:\\n\\n"
 L["Congealed Slime"] = "凝结软泥"
 L["ConnectedTip"] = "MDT中的组连接没有反映出游戏世界中NPC是否连接在一起"
 L["Control Undead"] = "控制亡灵"
@@ -762,8 +763,7 @@ L["Mchimba the Embalmer"] = "殓尸者姆沁巴"
 L["MDI Mode"] = "MDI模式"
 L["MDT: Error importing preset"] = "MDT: 导入路线时发生错误"
 L["MDT: Spells for %s:"] = "MDT: %s 的法术:"
---[[Translation missing --]]
---[[ L["MDT: Use /mdt minimap to show the minimap icon again"] = ""--]] 
+L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: 输入 /mdt minimap 再次显示小地图按钮"
 L["Mech Jockey"] = "机甲驾驶员"
 L["Mechagon"] = "麦卡贡"
 L["Mechagon - Junkyard"] = "麦卡贡行动 - 垃圾场"
@@ -782,8 +782,7 @@ L["Mechanical"] = "机械"
 L["Mechanized Peacekeeper"] = "机械化维和者"
 L["Mephistroth"] = "孟菲斯托斯"
 L["Merektha"] = "米利克萨"
---[[Translation missing --]]
---[[ L["Middle-click to disable Minimap Button"] = ""--]] 
+L["Middle-click to disable Minimap Button"] = "鼠标中键点击禁用小地图按钮"
 L["Midnight"] = "午夜"
 L["Mightstone Breaker"] = "巨石破坏者"
 L["Millhouse Manastorm"] = "米尔豪斯·法力风暴"

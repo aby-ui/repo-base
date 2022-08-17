@@ -98,6 +98,8 @@ local RelicToggle = newCheckbox("RelicToggle",  L["relictoggle"], "relictoggle")
 local ArtifactPowerToggle = newCheckbox("ArtifactPowerToggle",  L["artifactpowertoggle"], "artifactpowertoggle")
 -- RevivePets
 local ReviveBattlePet = newCheckbox("ReviveBattlePet", L["ReviveBattlePetLabel"], "reviveBattlePet")
+-- Dismiss the Kyrian Steward instantly
+local DismissKyrianSteward = newCheckbox("DismissKyrianSteward", L["DismissKyrianStewardLabel"], "dismisskyriansteward")
 
 -- Auto toggle key
 local ToggleKeyConst = {NONE_KEY, ALT_KEY, CTRL_KEY, SHIFT_KEY}
@@ -130,6 +132,7 @@ ToDarkMoon:SetPoint("TOPLEFT", ShowRewardText, "BOTTOMLEFT", 0, -10)
 DarkMoonCannon:SetPoint("TOPLEFT", ToDarkMoon, "BOTTOMLEFT", 0, -10)
 DarkMoonAutoStart:SetPoint("TOPLEFT", DarkMoonCannon, "BOTTOMLEFT", 0, -10)
 ReviveBattlePet:SetPoint("TOPLEFT", CompleteOnly, "BOTTOMLEFT", 0, -30)
+DismissKyrianSteward:SetPoint("TOPLEFT", CompleteOnly, "BOTTOMLEFT", 0, -70)
 Debug:SetPoint("TOPLEFT", ResetButton, "BOTTOMLEFT", 0, -10)
 ToggleKeyDropDown:SetPoint("TOPLEFT", DarkMoonAutoStart, "BOTTOMLEFT", -15, -22)
 ShowQuestLevel:SetPoint("TOPLEFT", ToggleKeyDropDown, "BOTTOMLEFT", 16, -10)
@@ -167,6 +170,7 @@ OptionsPanel.refresh = function()
     AcceptShared:SetChecked(ptable.TempConfig.acceptshare)
 	RelicToggle:SetChecked(ptable.TempConfig.relictoggle)
 	ArtifactPowerToggle:SetChecked(ptable.TempConfig.artifactpowertoggle)	
+	DismissKyrianSteward:SetChecked(ptable.TempConfig.dismisskyriansteward)
 
 	UIDropDownMenu_SetSelectedID(ToggleKeyDropDown, ptable.TempConfig.togglekey)
 	UIDropDownMenu_SetText(ToggleKeyDropDown, ToggleKeyConst[ptable.TempConfig.togglekey])

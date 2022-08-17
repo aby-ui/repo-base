@@ -1,6 +1,6 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: AutoTurnIn
-## Version: 7.5.2
+## Version: 7.5.3
 ## Author: Alex Shubert
 ## Notes: Quest handling automation
 ## Notes-ruRU: Автоматическая обработка заданий

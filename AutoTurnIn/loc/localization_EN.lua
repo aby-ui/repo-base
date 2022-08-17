@@ -51,6 +51,8 @@ privateTable.L = setmetatable({
 	["ReviveBattlePetQ"]="I'd like to heal and revive my battle pets.",
 	["ReviveBattlePetA"]="A small fee for supplies is required.",
 	
+	["DismissKyrianStewardLabel"]="Dismiss Kyrian Steward.",
+
 	["The Jade Forest"]="The Jade Forest",
     ["Scared Pandaren Cub"]="Scared Pandaren Cub",
 	
@@ -70,7 +72,8 @@ privateTable.L = setmetatable({
 	["stopitemfound"]="There is %s in rewards. Choose and equip an item yourself.",
 	["relictoggle"]="Disable relic reward autoloot",
 	["artifactpowertoggle"]="Disable artifact power reward autoloot",
-	["ivechosen"]="I have chosen first option for you.",
+	["ivechosen"]="I have chosen the first option for you.",
+	["ivechosenfive"]="I have chosen the fifth option for you.",
 	["norewardsettings"]="No reward preferences found. Auto equipping disabled.",
 	["ignorenpc"]="Ignore this NPC",
 	["cantstopignore"]="Can't stop ignoring this NPC",

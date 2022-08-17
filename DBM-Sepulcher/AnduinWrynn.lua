@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220618204835")
+mod:SetRevision("20220817001403")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -379,6 +379,7 @@ function mod:SPELL_CAST_START(args)
 				DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(365966))
 				DBM.InfoFrame:Show(20, "playerdebuffremaining", 365966)
 			end
+			--If an intermission was skipped, affix timer does NOT reset, it continues from previous reset (intermission)
 		end
 	end
 end
@@ -564,6 +565,9 @@ function mod:SPELL_AURA_APPLIED(args)
 				DBM.RangeCheck:Show(8)
 			end
 		end
+		if self:IsFated() then
+			self:AffixEvent(0)
+		end
 	elseif spellId == 362774 and not args:IsPlayer() then
 		specWarnSoulReaperTaunt:Show(args.destName)
 		specWarnSoulReaperTaunt:Play("tauntboss")
@@ -635,6 +639,9 @@ function mod:SPELL_AURA_REMOVED(args)
 				DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(365966))
 				DBM.InfoFrame:Show(20, "playerdebuffremaining", 365966)
 			end
+		end
+		if self:IsFated() then
+			self:AffixEvent(1, 2)
 		end
 	end
 end

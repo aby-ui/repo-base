@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: Zereth Mortis Puzzle Helper
 ## Author: Httpsx
 ## Version: 1.5.1

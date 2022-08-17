@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: HandyNotes_LunarFestival
 ## Notes: Displays the locations of Lunar Festival elders.
 ## Author: Ravendwyr

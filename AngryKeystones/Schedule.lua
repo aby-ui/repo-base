@@ -438,7 +438,7 @@ function Mod:CHALLENGE_MODE_COMPLETED()
 end
 
 function Mod:CHALLENGE_MODE_UPDATED()
-	self:CheckCurrentKeystone()
+	self:CheckCurrentKeystone(false)
 end
 
 function Mod:Startup()

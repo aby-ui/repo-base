@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220808154611")
+mod:SetRevision("20220813181758")
 --mod:SetModelID(47785)
 mod:SetZone(2441, 2097, 1651, 1208, 1195)--All of the S4 SL M+ Dungeons
 
@@ -25,7 +25,7 @@ mod:RegisterEvents(
 local warnExplosion							= mod:NewCastAnnounce(240446, 4)
 local warnNightmareCloud					= mod:NewCastAnnounce(373370, 4)--S4
 local warnHypnosisBat						= mod:NewTargetNoFilterAnnounce(373552, 3)--S4
-local warnBloodBarrier						= mod:NewTargetNoFilterAnnounce(373552, 4)--S4
+local warnBloodBarrier						= mod:NewTargetNoFilterAnnounce(373724, 4)--S4
 local warnShadowClaws						= mod:NewStackAnnounce(373509, 2, nil, "Tank|Healer")--S4
 
 local specWarnQuake							= mod:NewSpecialWarningMoveAway(240447, nil, nil, nil, 1, 2)

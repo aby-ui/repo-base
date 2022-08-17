@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 
 ## Title: Masque: Cirque
 ## Notes: Cirque skins for Masque.
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Cirque для Masque.
 ## Notes-zhTW: Masque的Cirque皮膚。
 
-## Version: 9.2.5
+## Version: 9.2.7
 ## Author: StormFX
 ## Dependencies: Masque
 

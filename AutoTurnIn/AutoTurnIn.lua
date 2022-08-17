@@ -164,7 +164,13 @@ function AutoTurnIn:RegisterGossipEvents()
 			StaticPopup1Button1:Click() 
 		end 
 	end
-	
+	local gossipFunc5 = function() 
+		if AutoTurnInCharacterDB.dismisskyriansteward then
+			AutoTurnIn:Print(L["ivechosenfive"])
+			C_GossipInfo.SelectOption(5)
+		end
+	end
+
 	AutoTurnIn.knownGossips = {
 		["93188"]=gossipFunc1, -- Mongar
 		["96782"]=gossipFunc1, -- Lucian Trias
@@ -175,6 +181,7 @@ function AutoTurnIn:RegisterGossipEvents()
 		["54334"]=gossipFunc3, -- travel to Darkmoon
 		["55382"]=gossipFunc3, -- travel to Darkmoon
 		["57850"]=gossipFunc4, -- DarkmoonFaireTeleportologist
+		["166663"]=gossipFunc5, -- Kyrian Steward
 	}
 end
 

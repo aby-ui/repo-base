@@ -173,8 +173,8 @@ local function filterItem(cell, args)
 end
 
 local function showAchievementTooltip(cell, achievementLink)
-	ItemToolTip:SetScale(0.7 * RSConfigDB.GetWorldMapTooltipsScale())
-	ItemToolTip:SetOwner(cell:GetParent(), "ANCHOR_LEFT")
+	ItemToolTip:SetScale(RSConfigDB.GetWorldMapLootAchievTooltipsScale())
+	ItemToolTip:SetOwner(cell:GetParent():GetParent():GetParent(), "ANCHOR_LEFT")
 	ItemToolTip:SetHyperlink(achievementLink)
 	ItemToolTip:Show()
 end

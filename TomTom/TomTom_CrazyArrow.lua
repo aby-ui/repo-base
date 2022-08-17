@@ -347,27 +347,17 @@ local dropdown_info = {
 			-- Clear waypoint from crazy arrow
 			text = L["Clear waypoint from crazy arrow"],
 			func = function()
-				local prior = active_point
-
-				active_point = nil
-				if TomTom.profile.arrow.setclosest then
-					local uid = TomTom:GetClosestWaypoint()
-					if uid and uid ~= prior then
-						TomTom:SetClosestWaypoint()
-						return
-					end
-				end
+				TomTom:ClearCrazyArrowPoint(false)
 			end,
 		},
 		{
 			-- Remove a waypoint
 			text = L["Remove waypoint"],
 			func = function()
-				local uid = active_point
-				TomTom:RemoveWaypoint(uid)
+				TomTom:ClearCrazyArrowPoint(true)
 			end,
 		},
-        {
+		{
             -- Remove all waypoints from this zone
             text = L["Remove all waypoints from this zone"],
             func = function()
@@ -677,4 +667,26 @@ function TomTom:DebugCrazyArrow()
         msg = string.format("|cffffff78TomTom:|r CrazyArrow point=%s frame=%s rpoint=%s xo=%.2f yo=%.2f",  point, relativeTo, relativePoint, xOfs, yOfs)
         ChatFrame1:AddMessage(msg)
     end
+end
+
+-- Clear the waypoint from the crazy arrow
+--   remove: true if the waypoint should be removed entirely, otherwise
+--   this method only clears it from the crazy arrow itself.
+function TomTom:ClearCrazyArrowPoint(remove)
+	if active_point then
+		if remove then
+			local uid = active_point
+			TomTom:RemoveWaypoint(uid)
+		else
+			local prior = active_point
+			active_point = nil
+			if TomTom.profile.arrow.setclosest then
+				local uid = TomTom:GetClosestWaypoint()
+				if uid and uid ~= prior then
+					TomTom:SetClosestWaypoint()
+					return
+				end
+			end
+		end
+	end
 end

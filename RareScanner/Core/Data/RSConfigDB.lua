@@ -1146,11 +1146,11 @@ function RSConfigDB.IsShowingWorldMapSearcher()
 end
 
 function RSConfigDB.SetClearingWorldMapSearcher(value)
-	private.db.map.cleanWorldMapSearcherOnHide = value
+	private.db.map.cleanWorldMapSearcherOnChange = value
 end
 
 function RSConfigDB.IsClearingWorldMapSearcher()
-	return private.db.map.cleanWorldMapSearcherOnHide
+	return private.db.map.cleanWorldMapSearcherOnChange
 end
 
 ---============================================================================
