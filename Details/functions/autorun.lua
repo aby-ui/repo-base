@@ -35,7 +35,7 @@ end
 
 autoRunCodeEventFrame.OnEventFunc = function(self, event)
     --> ignore events triggered more than once in a small time window
-    if (autoRunCodeEventFrame [event] and not autoRunCodeEventFrame [event]._cancelled) then
+    if (autoRunCodeEventFrame [event] and not autoRunCodeEventFrame [event]:IsCancelled()) then
         return
     end
 

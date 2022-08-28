@@ -8,7 +8,7 @@
     <Include file="..\..\163UI_ChatHistory\Cfg163UI_ChatHistory.lua"/>
     <Include file="..\..\163UI_Chat\Cfg163UI_Chat.lua"/>
     <Include file="..\..\163UI_CombatTimer\Cfg163UI_CombatTimer.lua"/>
-    <Include file="..\..\163UI_EncounterLootPlus\Cfg163UI_EncounterLootPlus.lua"/>
+    <Include file="..\..\AbyEncounterLootPlus\CfgAbyEncounterLootPlus.lua"/>
     <Include file="..\..\163UI_MoreOptions\Cfg163UI_MoreOptions.lua"/>
     <Include file="..\..\163UI_Plugins\Cfg163UI_Plugins.lua"/>
     <Include file="..\..\163UI_TeamStats\Cfg163UI_TeamStats.lua"/>

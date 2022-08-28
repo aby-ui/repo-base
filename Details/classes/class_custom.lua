@@ -2290,7 +2290,7 @@
 			desc = "Show overall damage done on the fly.",
 			source = false,
 			target = false,
-			script_version = 7,
+			script_version = 8,
 			script = [[
 				--init:
 				local combat, instance_container, instance = ...
@@ -2353,12 +2353,13 @@
 
 				--overall
 				local player = OverallCombat [1]:GetActor (actor.nome)
-				playerTotal = playerTotal + player.total
-				local playerSpells = player:GetSpellList()
-				for spellID, spellTable in pairs (playerSpells) do
-					AllSpells [spellID] = spellTable.total
+				if (player) then
+					playerTotal = playerTotal + player.total
+					local playerSpells = player:GetSpellList()
+					for spellID, spellTable in pairs (playerSpells) do
+						AllSpells [spellID] = spellTable.total
+					end
 				end
-
 				--current
 				if (Details.in_combat) then
 					local player = CurrentCombat [1]:GetActor (actor.nome)

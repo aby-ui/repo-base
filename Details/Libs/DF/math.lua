@@ -70,6 +70,12 @@ function DF:GetDotProduct (value1, value2)
 	return (value1.x * value2.x) + (value1.y * value2.y)
 end
 
+function DF:GetBezierPoint(value, point1, point2, point3)
+	local bP1 = Lerp(point1, point2, value)
+	local bP2 = Lerp(point2, point3, value)
+	return Lerp(bP1, bP2, value)
+end
+
 --normalized value 0-1 result in the value on the range given, e.g 200-400 range with a value of .5 result in 300
 function DF:LerpNorm (minValue, maxValue, value)
 	return (minValue + value * (maxValue - minValue))

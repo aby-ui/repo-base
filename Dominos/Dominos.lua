@@ -5,7 +5,6 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 local KeyBound = LibStub('LibKeyBound-1.0')
 
 local ADDON_VERSION = GetAddOnMetadata(AddonName, 'Version')
-local ADDON_BUILD = GetAddOnMetadata(AddonName, 'X-Build') or UNKNOWN
 local CONFIG_ADDON_NAME = AddonName .. '_Config'
 local CONFIG_VERSION = 1
 
@@ -48,10 +47,6 @@ function Addon:OnInitialize()
 end
 
 function Addon:OnEnable()
-    if self:IsWrongBuild() then
-        self:Printf(L.WrongBuildWarning, AddonName, ADDON_BUILD, self:GetWowBuild())
-    end
-
     self:UpdateUseOverrideUI()
     self:Load()
 end
@@ -61,7 +56,7 @@ function Addon:OnUpgradeDatabase(oldVersion, newVersion)
 end
 
 function Addon:OnUpgradeAddon(oldVersion, newVersion)
-    self:Printf(L.Updated, ADDON_VERSION, ADDON_BUILD)
+    self:Printf(L.Updated, ADDON_VERSION, self:GetWowBuild())
 end
 
 -- keybound events
@@ -202,7 +197,7 @@ end
 function Addon:GetDatabaseDefaults()
     return {
         profile = {
-            possessBar = self:IsBuild('retail') and 1 or "pet",
+            possessBar = self:IsBuild('retail', 'wrath') and 1 or "pet",
             -- if true, applies a default dominos skin to buttons
             -- when masque is not enabled
             applyButtonTheme = true,
@@ -214,19 +209,19 @@ function Addon:GetDatabaseDefaults()
             showEquippedItemBorders = true,
             showTooltips = true,
             showTooltipsCombat = true,
-            useOverrideUI = self:IsBuild('retail'),
+            useOverrideUI = self:IsBuild('retail', 'wrath'),
 
-            minimap = {minimapPos = 10, hide = false},
+            minimap = { minimapPos = 10, hide = false },
 
-            ab = {count = 10, showgrid = true, rightClickUnit = 'player'},
+            ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
 
-            frames = {bags = {point = 'BOTTOMRIGHT', oneBag = false, keyRing = true, spacing = 2}},
+            frames = { bags = { point = 'BOTTOMRIGHT', oneBag = false, keyRing = true, spacing = 2 } },
 
-            alignmentGrid = {enabled = true, size = 32},
+            alignmentGrid = { enabled = true, size = 32 },
 
             -- what modules are enabled
             -- module[id] = enabled
-            modules = {['**'] = true}
+            modules = { ['**'] = true }
         }
     }
 end
@@ -606,24 +601,25 @@ function Addon:SetUseOverrideUI(enable)
 end
 
 function Addon:UsingOverrideUI()
-    return self.db.profile.useOverrideUI and self:IsBuild('retail')
+    return self.db.profile.useOverrideUI and self:IsBuild('retail', 'wrath')
 end
 
 function Addon:UpdateUseOverrideUI()
-    local overrideBar = _G.OverrideActionBar
-    if not overrideBar then
-        return
-    end
+    if not self.OverrideController then return end
 
-    local usingOverrideUI = self:UsingOverrideUI()
+    local useOverrideUi = self:UsingOverrideUI()
 
-    self.OverrideController:SetAttribute('state-useoverrideui', usingOverrideUI)
+    self.OverrideController:SetAttribute('state-useoverrideui', useOverrideUi)
 
-    overrideBar:ClearAllPoints()
-    if usingOverrideUI then
-        overrideBar:SetPoint('BOTTOM')
-    else
-        overrideBar:SetPoint('LEFT', overrideBar:GetParent(), 'RIGHT', 100, 0)
+    local oab = _G.OverrideActionBar
+    if oab then
+        oab:ClearAllPoints()
+
+        if useOverrideUi then
+            oab:SetPoint('BOTTOM')
+        else
+            oab:SetPoint('LEFT', oab:GetParent(), 'RIGHT', 100, 0)
+        end
     end
 end
 
@@ -767,19 +763,33 @@ end
 
 -- display the current addon build being used
 function Addon:PrintVersion()
-    self:Printf('%s-%s', ADDON_VERSION, ADDON_BUILD)
+    self:Printf('%s-%s', ADDON_VERSION, self:GetWowBuild())
 end
 
 -- get the current World of Warcraft build being used
 function Addon:GetWowBuild()
     local project = WOW_PROJECT_ID
 
+    if project == WOW_PROJECT_MAINLINE then
+        return 'retail'
+    end
+
     if project == WOW_PROJECT_CLASSIC then
         return 'classic'
-    elseif project == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+    end
+
+    local exLevel = LE_EXPANSION_LEVEL_CURRENT
+
+    if exLevel == LE_EXPANSION_WRATH_OF_THE_LICH_KING or exLevel == LE_EXPANSION_NORTHREND then
+        return 'wrath'
+    end
+
+    if exLevel == LE_EXPANSION_BURNING_CRUSADE then
         return 'bcc'
-    elseif project == WOW_PROJECT_MAINLINE then
-        return 'retail'
+    end
+
+    if exLevel == LE_EXPANSION_CLASSIC then
+        return 'classic'
     end
 
     return 'unknown'
@@ -796,13 +806,6 @@ function Addon:IsBuild(...)
     end
 
     return false
-end
-
--- checks to see if we're running a version of the addon intended to actually
--- run on this server. Twitch likes to push classic versions to retail and I
--- need to check for that
-function Addon:IsWrongBuild()
-    return not self:IsBuild(ADDON_BUILD)
 end
 
 -- exports

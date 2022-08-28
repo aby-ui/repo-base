@@ -39,6 +39,7 @@ AnduinWrynn.lua
 LordsofDread.lua
 Rygelon.lua
 TheJailer.lua
-SepulcherTrash.lua
+# SepulcherTrash.lua
+
 
 ## X-Vendor: AbyUI

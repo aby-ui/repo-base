@@ -12,6 +12,7 @@ local segmentos = _detalhes.segmentos
 --lua locals
 local _math_ceil = math.ceil
 local _math_floor = math.floor
+local floor = _math_floor
 local _math_max = math.max
 local _ipairs = ipairs
 local _pairs = pairs
@@ -4053,6 +4054,10 @@ end
 
 _detalhes.barras_criadas = 0
 
+local getActor = function(self)
+	return self.minha_tabela
+end
+
 --> search key: ~row ~barra  ~newbar ~createbar ~createrow
 function gump:CreateNewLine (instancia, index)
 
@@ -4067,6 +4072,8 @@ function gump:CreateNewLine (instancia, index)
 	newLine.instance_id = instancia.meu_id
 	newLine.animacao_fim = 0
 	newLine.animacao_fim2 = 0
+
+	newLine.GetActor = getActor
 	
 	--> set point, almost irrelevant here, it recalc this on SetBarGrowDirection()
 	local y = instancia.row_height * (index-1)
@@ -4087,37 +4094,19 @@ function gump:CreateNewLine (instancia, index)
 	newLine:EnableMouse (true)
 	newLine:RegisterForClicks ("LeftButtonDown", "RightButtonDown")
 	
-	--> statusbar
+	--statusbar
 	newLine.statusbar = CreateFrame ("StatusBar", "DetailsBarra_Statusbar_"..instancia.meu_id.."_"..index, newLine)
 	newLine.statusbar.value = 0
-	--[[ Deprecation of right_to_left_texture in favor of StatusBar:SetReverseFill 5/2/2022 - Flamanis
-	--> right to left texture
-	newLine.statusbar.right_to_left_texture = newLine.statusbar:CreateTexture (nil, "overlay")
-	newLine.statusbar.right_to_left_texture:SetPoint ("topright", newLine.statusbar, "topright")
-	newLine.statusbar.right_to_left_texture:SetPoint ("bottomright", newLine.statusbar, "bottomright")
-	newLine.statusbar.right_to_left_texture:SetWidth (0.000000001)
-	newLine.statusbar.right_to_left_texture:Hide()
-	newLine.right_to_left_texture = newLine.statusbar.right_to_left_texture
-	]]
-	--> frame for hold the backdrop border
-	newLine.border = CreateFrame ("Frame", "DetailsBarra_Border_" .. instancia.meu_id .. "_" .. index, newLine.statusbar,"BackdropTemplate")
+
+	--frame for hold the backdrop border
+	newLine.border = CreateFrame ("Frame", "DetailsBarra_Border_" .. instancia.meu_id .. "_" .. index, newLine.statusbar, "BackdropTemplate")
 	newLine.border:SetFrameLevel (newLine.statusbar:GetFrameLevel()+2)
 	newLine.border:SetAllPoints (newLine)
-	
+
 	--border
 	newLine.lineBorder = DetailsFramework:CreateFullBorder(newLine:GetName() .. "Border", newLine.border)
-	--[=[
-	if (DetailsFramework.IsTBCWow()) then
-		lineBorder = DetailsFramework:CreateFullBorder(nil, newLine)
-		--lineBorder = CreateFrame("frame", nil, newLine, "DFNamePlateFullBorderTemplate, BackdropTemplate")
-	else
-		lineBorder = CreateFrame("frame", nil, newLine, "NamePlateFullBorderTemplate, BackdropTemplate")
-	end
-	newLine.lineBorder = lineBorder
-	--]=]
-	-- search key: ~model
-	
-	--low 3d bar
+
+	--low 3d bar --search key: ~model
 	newLine.modelbox_low = CreateFrame ("playermodel", "DetailsBarra_ModelBarLow_" .. instancia.meu_id .. "_" .. index, newLine) --rowframe
 	newLine.modelbox_low:SetFrameLevel (newLine.statusbar:GetFrameLevel()-1)
 	newLine.modelbox_low:SetPoint ("topleft", newLine, "topleft")
@@ -4349,10 +4338,23 @@ function Details:RefreshTitleBar()
 
 	local texturePath = SharedMedia:Fetch("statusbar", texture)
 
-	self.baseframe.titleBar:SetShown(shown)
-	self.baseframe.titleBar:SetHeight(height)
-	self.baseframe.titleBar.texture:SetTexture(texturePath)
-	self.baseframe.titleBar.texture:SetVertexColor(DetailsFramework:ParseColors(color))
+	local titleBar = self.baseframe.titleBar
+	titleBar:SetShown(shown)
+
+	--menu_attribute_string is nil in tbc (20 jun 2022)
+	if (not self.menu_attribute_string) then
+		return
+	end
+
+	if (shown) then
+		titleBar:SetHeight(height)
+		titleBar.texture:SetTexture(texturePath)
+		titleBar.texture:SetVertexColor(DetailsFramework:ParseColors(color))
+
+		self.menu_attribute_string:SetParent(titleBar)
+	else
+		self.menu_attribute_string:SetParent(self.baseframe)
+	end
 end
 
 function _detalhes:SetBarModel (upper_enabled, upper_model, upper_alpha, lower_enabled, lower_model, lower_alpha)
@@ -4424,7 +4426,41 @@ function _detalhes:SetBarSpecIconSettings (enabled, iconfile, fulltrack)
 	self:ReajustaGump()
 end
 
-function _detalhes:SetBarSettings (height, texture, colorclass, fixedcolor, backgroundtexture, backgroundcolorclass, backgroundfixedcolor, alpha, iconfile, barstart, spacement, texture_custom)
+function Details:SetBarArenaRoleIconSettings(show_icon, icon_size_offset)
+	if (type(show_icon) ~= "boolean") then
+		show_icon = self.row_info.show_arena_role_icon
+	end
+
+	if (not icon_size_offset or type(icon_size_offset) ~= "number") then
+		icon_size_offset = self.row_info.arena_role_icon_size_offset
+	end
+
+	self.row_info.show_arena_role_icon = show_icon
+	self.row_info.arena_role_icon_size_offset = icon_size_offset
+
+	self:InstanceReset()
+	self:InstanceRefreshRows()
+	self:ReajustaGump()
+end
+
+function Details:SetBarFactionIconSettings(show_faction_icon, faction_icon_size_offset)
+	if (type(show_faction_icon) ~= "boolean") then
+		show_faction_icon = self.row_info.show_faction_icon
+	end
+
+	if (not faction_icon_size_offset or type(faction_icon_size_offset) ~= "number") then
+		faction_icon_size_offset = self.row_info.faction_icon_size_offset
+	end
+
+	self.row_info.show_faction_icon = show_faction_icon
+	self.row_info.faction_icon_size_offset = faction_icon_size_offset
+
+	self:InstanceReset()
+	self:InstanceRefreshRows()
+	self:ReajustaGump()
+end
+
+function _detalhes:SetBarSettings (height, texture, colorclass, fixedcolor, backgroundtexture, backgroundcolorclass, backgroundfixedcolor, alpha, iconfile, barstart, spacement, texture_custom, icon_size_offset)
 	
 	--> bar start
 	if (type (barstart) == "boolean") then
@@ -4499,6 +4535,10 @@ function _detalhes:SetBarSettings (height, texture, colorclass, fixedcolor, back
 		c [1], c [2], c [3], c [4] = red, green, blue, alpha
 	end
 
+	if (icon_size_offset and type(icon_size_offset) == "number") then
+		self.row_info.icon_size_offset = icon_size_offset
+	end
+
 	self:InstanceReset()
 	self:InstanceRefreshRows()
 	self:ReajustaGump()
@@ -4558,7 +4598,7 @@ end
 
 --/script _detalhes:InstanceRefreshRows (_detalhes.tabela_instancias[1])
 
---> on update function
+--onupdate function for 'Fast Updates' feature
 local fast_ps_func = function (self)
 	local instance = self.instance
 	
@@ -4566,8 +4606,16 @@ local fast_ps_func = function (self)
 		return
 	end
 	
-	local combat_time = instance.showing:GetCombatTime()
-	local ps_type = _detalhes.ps_abbreviation
+	local combatTime = instance.showing:GetCombatTime()
+	local abbreviationType = _detalhes.ps_abbreviation
+	local abbreviationFunc = tok_functions[abbreviationType]
+
+	local isInLineTextEnabled = instance.use_multi_fontstrings
+	local instanceShowDataSettings = instance.row_info.textR_show_data
+
+	local showingAllData = instanceShowDataSettings[3] and instanceShowDataSettings[2] and instanceShowDataSettings[1]
+	local showingTotalAndPS = not instanceShowDataSettings[3] and instanceShowDataSettings[2] and instanceShowDataSettings[1]
+	local showingOnlyPS = not instanceShowDataSettings[3] and instanceShowDataSettings[2] and not instanceShowDataSettings[1]
 
 	if (instance.rows_fit_in_window) then
 		for i = 1, instance.rows_fit_in_window do --instance:GetNumRows()
@@ -4575,14 +4623,21 @@ local fast_ps_func = function (self)
 			if (row and row:IsShown()) then
 				local actor = row.minha_tabela
 				if (actor) then
-					local dps_text = row.ps_text
-					if (dps_text) then
-						local new_dps = _math_floor (actor.total / combat_time)
-						local formated_dps = tok_functions [ps_type] (_, new_dps)
 
-						--row.lineText4:SetText (row.lineText4:GetText():gsub (dps_text, formated_dps))
-						row.lineText4:SetText (( row.lineText4:GetText() or "" ):gsub (dps_text, formated_dps))
-						row.ps_text = formated_dps
+					local currentDps = floor(actor.total / combatTime) --can also be hps
+					if (isInLineTextEnabled) then
+						if (showingAllData) then
+							row.lineText3:SetText(abbreviationFunc(nil, currentDps))
+						elseif (showingTotalAndPS or showingOnlyPS) then
+							row.lineText4:SetText(abbreviationFunc(nil, currentDps))
+						end
+					else
+						local dpsText = row.ps_text
+						if (dpsText) then
+							local formatedDps = abbreviationFunc(nil, currentDps)
+							row.lineText4:SetText((row.lineText4:GetText() or ""):gsub(dpsText, formatedDps))
+							row.ps_text = formatedDps
+						end
 					end
 				end
 			end
@@ -4997,6 +5052,35 @@ function Details:SetBarOverlaySettings(overlayTexture, overlayColor)
 	self.row_info.overlay_color[3] = overlayColor[3]
 	self.row_info.overlay_color[4] = overlayColor[4]
 	self:InstanceRefreshRows()
+end
+
+--adjust to which frame the wallpaper texture is parented to
+--dependind on the frame it can be shown above or below background textures
+function Details:SetInstanceWallpaperLevel(wallpaperLevel)
+	if (type(wallpaperLevel) ~= "number") then
+		wallpaperLevel = self.wallpaper.level
+	end
+
+	self.wallpaper.level = wallpaperLevel
+
+	--refresh the wallpaper parent
+	local wallpaperTexture = self.baseframe.wallpaper
+
+	if (wallpaperLevel == 0) then
+		wallpaperTexture:SetParent(self.baseframe.titleBar) --framelevel +0 (parented to titleBar)
+
+	elseif (wallpaperLevel == 1) then
+		wallpaperTexture:SetParent(self.baseframe) --framelevel +0
+
+	elseif (wallpaperLevel == 2) then
+		wallpaperTexture:SetParent(self.rowframe) --framelevel +3
+
+	elseif (wallpaperLevel == 3) then
+		wallpaperTexture:SetParent(self.windowSwitchButton) --framelevel +4
+	end
+
+	--debug
+	--/run Details:GetWindow(1):SetInstanceWallpaperLevel(0)
 end
 
 -- search key: ~wallpaper
@@ -7300,6 +7384,9 @@ function Details:ChangeSkin(skin_name)
 	--> update title bar
 		self:RefreshTitleBar()
 	
+	--> update the wallpaper level
+		self:SetInstanceWallpaperLevel()
+
 	--> clear any control sscript running in this instance
 	self.bgframe:SetScript ("OnUpdate", nil)
 	self.bgframe.skin_script = nil

@@ -743,7 +743,7 @@
 			function_cache [str] = func
 		end
 	
-		local okey, value = _pcall (func, parameters_cache [1], parameters_cache [2], parameters_cache [3], parameters_cache [4])
+		local okey, value = _pcall (func, parameters_cache [1], parameters_cache [2], parameters_cache [3], parameters_cache [4], arguments_cache[1], arguments_cache[2], arguments_cache[3])
 		if (not okey) then
 			_detalhes:Msg ("|cFFFF9900error on custom text|r:", value)
 			return 0

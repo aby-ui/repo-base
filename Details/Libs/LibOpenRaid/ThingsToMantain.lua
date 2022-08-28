@@ -195,6 +195,9 @@ LIB_OPEN_RAID_GEM_IDS = {
     [173129] = true, --Versatile Jewel Cluster (blue, versatility)
     [173127] = true, --Deadly Jewel Cluster (blue, crit)
     [173128] = true, --Quick Jewel Cluster (blue, haste)
+    [168636] = true, --Leviathan's Eye of Strength (purple, strength)
+    [169220] = true, --Straddling Sage Agate (blue, movement speed)
+    [173126] = true, --Straddling Jewel Doublet (green, movement speed)
 }
 
 --/dump GetWeaponEnchantInfo()
@@ -963,6 +966,9 @@ if (GetBuildInfo():match ("%d") == "1") then
 		LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {}
 
 elseif (GetBuildInfo():match ("%d") == "2") then
+	LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {}
+
+elseif (GetBuildInfo():match ("%d") == "3") then
 	LIB_OPEN_RAID_SPELL_CUSTOM_NAMES = {}
 
 else

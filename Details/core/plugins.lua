@@ -461,6 +461,9 @@ local _
 		--> menu background
 			local menuBackground = CreateFrame ("frame", "$parentMenuFrame", f,"BackdropTemplate")
 			_detalhes:FormatBackground (menuBackground)
+			local menuBackgroundTexture = menuBackground:CreateTexture("$parentBackgroundTexture", "background", nil, -2)
+			menuBackgroundTexture:SetAllPoints()
+			menuBackgroundTexture:SetColorTexture(0.2, 0.2, 0.2, .5)
 			
 		--> statusbar
 			local statusBar = CreateFrame ("frame", nil, menuBackground,"BackdropTemplate")

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2446, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220810222513")
+mod:SetRevision("20220822021157")
 mod:SetCreatureID(175731)
 mod:SetEncounterID(2436)
 mod:SetUsedIcons(1, 2, 3)
@@ -49,7 +49,6 @@ local yellThreatNeutralization					= mod:NewShortPosYell(350496, 37859)
 local yellThreatNeutralizationFades				= mod:NewIconFadesYell(350496, 37859)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
---mod:AddTimerLine(BOSS)
 local timerEliminationPatternCD					= mod:NewCDCountTimer(31.6, 350735, 350732, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Time between casts not known, but link reset kinda works
 local timerDisintegrationCD						= mod:NewCDCountTimer(34.6, 352833, 182908, nil, nil, 3)--Continues whether linked or not
 local timerFormSentryCD							= mod:NewCDTimer(72.6, 352660, nil, nil, nil, 1)--Time between casts not known, but link reset kinda works

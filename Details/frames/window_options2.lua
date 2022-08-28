@@ -126,6 +126,7 @@ function Details.options.InitializeOptionsWindow(instance)
     
     local instanceSelection = DF:NewDropDown (f, _, "$parentInstanceSelectDropdown", "instanceDropdown", 200, 18, buildInstanceMenu) --, nil, options_dropdown_template
     instanceSelection:SetPoint("bottomright", f, "bottomright", -7, 09)
+    instanceSelection:SetTemplate(options_dropdown_template)
     instanceSelection:SetHook("OnEnter", function()
         GameCooltip:Reset()
         GameCooltip:Preset (2)
@@ -155,107 +156,109 @@ function Details.options.InitializeOptionsWindow(instance)
     editingGroupLabel:SetPoint("bottomleft", instances_string, "topleft", 0, 5)
     editingGroupCheckBox:SetPoint("left", editingGroupLabel, "right", 2, 0)
 
-	--create bars
-    DF:NewColor ("C_OptionsButtonOrange", 0.9999, 0.8196, 0, 1)
+	--> create test bars
+        DF:NewColor ("C_OptionsButtonOrange", 0.9999, 0.8196, 0, 1)
 
-    local create_test_bars_func = function()
-        _detalhes.CreateTestBars()
-        if (not _detalhes.test_bar_update) then
-            _detalhes:StartTestBarUpdate()
-        else
-            _detalhes:StopTestBarUpdate()
+        local create_test_bars_func = function()
+            _detalhes.CreateTestBars()
+            if (not _detalhes.test_bar_update) then
+                _detalhes:StartTestBarUpdate()
+            else
+                _detalhes:StopTestBarUpdate()
+            end
         end
-    end
-    local fillbars = DF:NewButton (f, _, "$parentCreateExampleBarsButton", nil, 140, 20, create_test_bars_func, nil, nil, nil, Loc ["STRING_OPTIONS_TESTBARS"], 1)
-    fillbars:SetPoint ("bottomleft", f.widget, "bottomleft", 10, 10)
-    fillbars:SetTemplate(options_button_template)
-    fillbars:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {323/512, 365/512, 42/512, 78/512}, {1, 1, 1, 0.6}, 4, 2)
+        local fillbars = DF:NewButton (f, _, "$parentCreateExampleBarsButton", nil, 140, 20, create_test_bars_func, nil, nil, nil, Loc ["STRING_OPTIONS_TESTBARS"], 1)
+        fillbars:SetPoint ("bottomleft", f.widget, "bottomleft", 10, 10)
+        fillbars:SetTemplate(options_button_template)
+        fillbars:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {323/512, 365/512, 42/512, 78/512}, {1, 1, 1, 0.6}, 4, 2)
 
-    --change log
-    local changelog = DF:NewButton (f, _, "$parentOpenChangeLogButton", nil, 140, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
-    changelog:SetPoint ("left", fillbars, "right", 10, 0)
-    changelog:SetTemplate (options_button_template)
-    changelog:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {367/512, 399/512, 43/512, 76/512}, {1, 1, 1, 0.8}, 4, 2)
+    --> change log
+        local changelog = DF:NewButton (f, _, "$parentOpenChangeLogButton", nil, 140, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
+        changelog:SetPoint ("left", fillbars, "right", 10, 0)
+        changelog:SetTemplate (options_button_template)
+        changelog:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {367/512, 399/512, 43/512, 76/512}, {1, 1, 1, 0.8}, 4, 2)
 
-    --search field
-	local searchBox = DF:CreateTextEntry(f, function()end, 150, 20, _, _, _, options_dropdown_template)
-	searchBox:SetPoint ("topright", f, "topright", -5, -30)
+    --> search field
+        local searchBox = DF:CreateTextEntry(f, function()end, 140, 20, _, _, _, options_dropdown_template)
+        searchBox:SetPoint ("bottomleft", fillbars, "topleft", 0, 5)
 
-	local searchLabel = DF:CreateLabel(f, "Search:", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
-	searchLabel:SetPoint ("right", searchBox, "left", -2, 0)
+        local searchLabel = DF:CreateLabel(f, "Search:", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")) --localize-me
+        searchLabel:SetPoint ("bottomleft", searchBox, "topleft", 0, 2)
+        searchLabel.fontface = "GameFontNormal"
+        searchLabel.fontsize = 12
 
-    searchBox:SetHook("OnChar", function()
-        if (searchBox.text ~= "") then
-            local searchSection = f.sectionFramesContainer[19]
-            searchSection.sectionButton:Enable()
-            searchSection.sectionButton:Click()
+        searchBox:SetHook("OnChar", function()
+            if (searchBox.text ~= "") then
+                local searchSection = f.sectionFramesContainer[19]
+                searchSection.sectionButton:Enable()
+                searchSection.sectionButton:Click()
 
-            local searchingFor = searchBox.text
-            local allSectionFrames = f.sectionFramesContainer
+                local searchingFor = searchBox.text
+                local allSectionFrames = f.sectionFramesContainer
 
-            local allSectionNames = {}
-            local allSectionOptions = {}
+                local allSectionNames = {}
+                local allSectionOptions = {}
 
-            for i = 1, #allSectionFrames do
-                local sectionFrame = allSectionFrames[i]
-                local sectionOptionsTable = sectionFrame.sectionOptions
+                for i = 1, #allSectionFrames do
+                    local sectionFrame = allSectionFrames[i]
+                    local sectionOptionsTable = sectionFrame.sectionOptions
 
-                allSectionNames[#allSectionNames+1] = sectionFrame.name
-                allSectionOptions[#allSectionOptions+1] = sectionOptionsTable
-            end
-
-            --this table will hold all options
-            local allOptions = {}
-            --start the fill process filling 'allOptions' with each individual option from each tab
-            for i = 1, #allSectionOptions do
-                local sectionOptions = allSectionOptions[i]
-                local lastLabel = nil
-                for k, setting in pairs(sectionOptions) do
-                    if (setting.type == "label") then
-                        lastLabel = setting
-                    end
-                    if (setting.name) then
-                        allOptions[#allOptions+1] = {setting = setting, label = lastLabel, header = allSectionNames[i]}
-                    end
+                    allSectionNames[#allSectionNames+1] = sectionFrame.name
+                    allSectionOptions[#allSectionOptions+1] = sectionOptionsTable
                 end
-            end
 
-            local searchingText = string.lower(searchingFor)
-            searchBox:SetFocus()
-
-            local options = {}
-
-            local lastTab = nil
-            local lastLabel = nil
-            for i = 1, #allOptions do
-                local optionData = allOptions[i]
-                local optionName = string.lower(optionData.setting.name)
-                if (optionName:find(searchingText)) then
-                    if optionData.header ~= lastTab then
-                        if lastTab ~= nil then
-                            options[#options+1] = {type = "label", get = function() return "" end, text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")} -- blank
+                --this table will hold all options
+                local allOptions = {}
+                --start the fill process filling 'allOptions' with each individual option from each tab
+                for i = 1, #allSectionOptions do
+                    local sectionOptions = allSectionOptions[i]
+                    local lastLabel = nil
+                    for k, setting in pairs(sectionOptions) do
+                        if (setting.type == "label") then
+                            lastLabel = setting
                         end
-                        options[#options+1] = {type = "label", get = function() return optionData.header end, text_template = {color = "silver", size = 14, font = DF:GetBestFontForLanguage()}}
-                        lastTab = optionData.header
-                        lastLabel = nil
+                        if (setting.name) then
+                            allOptions[#allOptions+1] = {setting = setting, label = lastLabel, header = allSectionNames[i]}
+                        end
                     end
-                    if optionData.label ~= lastLabel then
-                        options[#options+1] = optionData.label
-                        lastLabel = optionData.label
-                    end
-                    options[#options+1] = optionData.setting
                 end
+
+                local searchingText = string.lower(searchingFor)
+                searchBox:SetFocus()
+
+                local options = {}
+
+                local lastTab = nil
+                local lastLabel = nil
+                for i = 1, #allOptions do
+                    local optionData = allOptions[i]
+                    local optionName = string.lower(optionData.setting.name)
+                    if (optionName:find(searchingText)) then
+                        if optionData.header ~= lastTab then
+                            if lastTab ~= nil then
+                                options[#options+1] = {type = "label", get = function() return "" end, text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")} -- blank
+                            end
+                            options[#options+1] = {type = "label", get = function() return optionData.header end, text_template = {color = "silver", size = 14, font = DF:GetBestFontForLanguage()}}
+                            lastTab = optionData.header
+                            lastLabel = nil
+                        end
+                        if optionData.label ~= lastLabel then
+                            options[#options+1] = optionData.label
+                            lastLabel = optionData.label
+                        end
+                        options[#options+1] = optionData.setting
+                    end
+                end
+
+                local startX = 200
+                local startY = -60
+
+                DF:BuildMenuVolatile(searchSection, options, startX, startY, 560, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template, globalCallback)
+
+            else
+                f.sectionFramesContainer[19].sectionButton:Disable()
             end
-
-            local startX = 200
-            local startY = -40
-
-            DF:BuildMenuVolatile(searchSection, options, startX, startY, 500, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template, globalCallback)
-
-        else
-            f.sectionFramesContainer[19].sectionButton:Disable()
-        end
-    end)
+        end)
 
     local sectionsName = { --section names
         [1] = Loc ["STRING_OPTIONSMENU_DISPLAY"],
@@ -316,8 +319,20 @@ function Details.options.InitializeOptionsWindow(instance)
         if (type(sectionId) == "number") then
 
             local sectionFrame = CreateFrame("frame", "$parentTab" .. sectionId, f, "BackdropTemplate")
-            sectionFrame:SetAllPoints()
+            --sectionFrame:SetAllPoints()
+            --sectionFrame:ClearAllPoints()
+            sectionFrame:SetPoint("topleft", f, "topleft", -40, 22)
+            sectionFrame:SetSize(f:GetSize())
             sectionFrame:EnableMouse(false)
+
+            local realBackdropAreaFrame = CreateFrame("frame", "$parentTab" .. sectionId .. "BackdropArea", f, "BackdropTemplate")
+            realBackdropAreaFrame:SetFrameLevel(f:GetFrameLevel()-1)
+            realBackdropAreaFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+            realBackdropAreaFrame:SetBackdropColor(0, 0, 0, .1)
+            realBackdropAreaFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, .05)
+            realBackdropAreaFrame:SetPoint("topleft", f, "topleft", 150, -27)
+            realBackdropAreaFrame:SetSize(770, 570)
+
             sectionFrame.name = sectionsName[sectionId]
             --tinsert(f.sectionFramesContainer, sectionFrame)
             f.sectionFramesContainer[sectionId] = sectionFrame

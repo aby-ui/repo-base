@@ -57,6 +57,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["characteristics"] = {
       ["Taunt"] = true;
       ["Silence"] = true;
+      ["Root"] = true;
+      ["Fear"] = true;
       ["Disorient"] = true;
       ["Stun"] = true;
       ["Slow"] = true;
@@ -87,6 +89,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["y"] = -263.45446927374;
         ["g"] = 2;
         ["sublevel"] = 1;
+        ["disguised"] = true;
       };
       [4] = {
         ["x"] = 658.49915762309;
@@ -152,6 +155,8 @@ MDT.dungeonEnemies[dungeonIndex] = {
       ["Taunt"] = true;
       ["Incapacitate"] = true;
       ["Silence"] = true;
+      ["Root"] = true;
+      ["Fear"] = true;
       ["Disorient"] = true;
       ["Stun"] = true;
       ["Slow"] = true;
@@ -212,6 +217,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["characteristics"] = {
       ["Taunt"] = true;
       ["Incapacitate"] = true;
+      ["Root"] = true;
       ["Disorient"] = true;
       ["Stun"] = true;
       ["Slow"] = true;
@@ -504,6 +510,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["level"] = 60;
     ["characteristics"] = {
       ["Taunt"] = true;
+      ["Disorient"] = true;
       ["Stun"] = true;
     };
     ["spells"] = {
@@ -549,6 +556,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["characteristics"] = {
       ["Taunt"] = true;
       ["Incapacitate"] = true;
+      ["Root"] = true;
       ["Fear"] = true;
       ["Disorient"] = true;
       ["Imprison"] = true;
@@ -1372,6 +1380,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["level"] = 60;
     ["characteristics"] = {
       ["Taunt"] = true;
+      ["Incapacitate"] = true;
       ["Silence"] = true;
       ["Disorient"] = true;
       ["Stun"] = true;
@@ -1629,6 +1638,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
       ["Taunt"] = true;
       ["Incapacitate"] = true;
       ["Silence"] = true;
+      ["Root"] = true;
       ["Fear"] = true;
       ["Disorient"] = true;
       ["Stun"] = true;
@@ -1684,6 +1694,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["characteristics"] = {
       ["Taunt"] = true;
       ["Silence"] = true;
+      ["Root"] = true;
       ["Fear"] = true;
       ["Banish"] = true;
       ["Disorient"] = true;
@@ -2099,7 +2110,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["name"] = "Nathrezim Infiltrator";
     ["id"] = 189878;
     ["count"] = 3;
-    ["health"] = 67389;
+    ["health"] = 261167;
     ["scale"] = 1.2;
     ["displayId"] = 101016;
     ["creatureType"] = "Demon";
@@ -2231,13 +2242,21 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["scale"] = 0.7;
         ["shrouded"] = true;
       };
+      [16] = {
+        ["x"] = 664.99849565238;
+        ["y"] = -263.45446927374;
+        ["g"] = 2;
+        ["sublevel"] = 1;
+        ["scale"] = 0.8;
+        ["shrouded"] = true;
+      };
     };
   };
   [37] = {
     ["name"] = "Zul'gamux";
     ["id"] = 190128;
     ["count"] = 9;
-    ["health"] = 531786;
+    ["health"] = 639150;
     ["scale"] = 1.8;
     ["displayId"] = 101106;
     ["creatureType"] = "Demon";
@@ -2267,72 +2286,6 @@ MDT.dungeonEnemies[dungeonIndex] = {
         ["sublevel"] = 1;
         ["scale"] = 0.6;
         ["shrouded"] = true;
-      };
-    };
-  };
-  [38] = {
-    ["name"] = "Shady Dealer";
-    ["id"] = 180315;
-    ["count"] = 0;
-    ["health"] = 999999;
-    ["scale"] = 1;
-    ["displayId"] = 93594;
-    ["creatureType"] = "Humanoid";
-    ["level"] = 60;
-    ["characteristics"] = {
-      ["Taunt"] = true;
-    };
-    ["spells"] = {
-    };
-    ["clones"] = {
-      [1] = {
-        ["x"] = 426.10033900562;
-        ["y"] = -324.79442694978;
-        ["g"] = 28;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [2] = {
-        ["x"] = 376.99295745706;
-        ["y"] = -358.16337155465;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [3] = {
-        ["x"] = 363.33146150204;
-        ["y"] = -172.88177293298;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [4] = {
-        ["x"] = 334.85501178455;
-        ["y"] = -150.4005367927;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [5] = {
-        ["x"] = 478.0580361773;
-        ["y"] = -304.56370562997;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [6] = {
-        ["x"] = 446.75995518067;
-        ["y"] = -315.23678576772;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [7] = {
-        ["x"] = 232.48843058711;
-        ["y"] = -178.94424691233;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
-      };
-      [8] = {
-        ["x"] = 422.04037868945;
-        ["y"] = -131.60883050281;
-        ["sublevel"] = 1;
-        ["disguised"] = true;
       };
     };
   };

@@ -1228,6 +1228,22 @@ GTFO.SpellID["354659"] = {
   sound = 3;
 };
 
+GTFO.SpellID["353328"] = {
+  --desc = "Soul Ruin (Empowered Mawsworn Woebringer)";
+  sound = 3;
+};
+
+GTFO.SpellID["354511"] = {
+  --desc = "Exploding Soul (Troz'igal the Oppressor)";
+  sound = 3;
+};
+
+GTFO.SpellID["354490"] = {
+  --desc = "Torturing Swipe (Troz'igal the Oppressor)";
+  applicationOnly = true;
+  sound = 3;
+};
+
 --- ******************
 --- * Castle Nathria *
 --- ******************
@@ -1778,6 +1794,11 @@ GTFO.SpellID["364904"] = {
 
 GTFO.SpellID["366692"] = {
   --desc = "Refracted Blast (Vigilant Guardian)";
+  sound = 3;
+};
+
+GTFO.SpellID["361941"] = {
+  --desc = "Crushed (Vigilant Guardian)";
   sound = 3;
 };
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2352, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220823210137")
 mod:SetCreatureID(151881)
 mod:SetEncounterID(2298)
 mod:SetUsedIcons(4, 6)
@@ -63,7 +63,6 @@ local specWarnToxicJav					= mod:NewSpecialWarningYou(295607, nil, nil, nil, 1, 
 local yellToxicJav						= mod:NewPosYell(295607, DBM_CORE_L.AUTO_YELL_CUSTOM_POSITION2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(300961, nil, nil, nil, 1, 8)
 
---mod:AddTimerLine(BOSS)
 local timerCrushingReverbCD				= mod:NewCDTimer(22.3, 295332, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON, nil, mod:IsMelee() and 2, 4)
 local timerOverwhelmingBarrageCD		= mod:NewCDTimer(40, 296551, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON, nil, 1, 4)
 local timerOverflowCD					= mod:NewCDTimer(40.1, 295346, nil, nil, nil, 3)--31.6 previously, but 40 as of mythic testing

@@ -131,7 +131,7 @@ LIB_OPEN_RAID_CAN_LOAD = false
 
     local isTimewalkWoW = function()
         local gameVersion = GetBuildInfo()
-        if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2") then
+        if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2" or gameVersion:match("%d") == "3") then
             return true
         end
     end
@@ -352,7 +352,7 @@ LIB_OPEN_RAID_CAN_LOAD = false
         local currentSchedule = registeredUniqueTimers[namespace] and registeredUniqueTimers[namespace][scheduleName]
 
         if (currentSchedule) then
-            if (not currentSchedule._cancelled) then
+            if (not currentSchedule:IsCancelled()) then
                 currentSchedule:Cancel()
             end
             registeredUniqueTimers[namespace][scheduleName] = nil
@@ -364,7 +364,7 @@ LIB_OPEN_RAID_CAN_LOAD = false
         local registeredUniqueTimers = openRaidLib.Schedules.registeredUniqueTimers
         for namespace, schedulesTable in pairs(registeredUniqueTimers) do
             for scheduleName, timerObject in pairs (schedulesTable) do
-                if (timerObject and not timerObject._cancelled) then
+                if (timerObject and not timerObject:IsCancelled()) then
                     timerObject:Cancel()
                 end
             end
@@ -1436,7 +1436,7 @@ local cooldownStartTicker = function(spellId, cooldownTimeLeft)
         end
 
         --cancel the existing ticker
-        if (not existingTicker._cancelled) then
+        if (not existingTicker:IsCancelled()) then
             existingTicker:Cancel()
         end
     end

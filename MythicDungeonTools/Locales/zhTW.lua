@@ -13,10 +13,8 @@ L["%s is in sublevel: %s"] = "%s 在子區域: %s"
 L["(G %d)"] = "(G %d)"
 L["*Live*"] = "*連線*"
 L["+ Add pull"] = "+ 新增拉怪"
---[[Translation missing --]]
---[[ L["<New Preset>"] = ""--]] 
---[[Translation missing --]]
---[[ L["> More Dungeons"] = ""--]] 
+L["<New Preset>"] = "<新路線>"
+L["> More Dungeons"] = "> 更多地城"
 L["4.RF-4.RF"] = "4.RF-4.RF"
 L["Aberration"] = "變異怪"
 L["Abstract Nullifier"] = "抽象终结者"
@@ -27,8 +25,7 @@ L["Achillite"] = "阿喀琉忒"
 L["Acidic Bile"] = "酸蚀胆汁"
 L["Adderis"] = "阿德里斯"
 L["Addled Thug"] = "混乱的暴徒"
---[[Translation missing --]]
---[[ L["AddOn Conflict"] = ""--]] 
+L["AddOn Conflict"] = "插件衝突"
 L["Adorned Starseer"] = "盛装的星辰先知"
 L["Advent Nevermore"] = "阿德文特·追惘"
 L["Advisor Melandrus"] = "顾问麦兰杜斯"
@@ -117,8 +114,7 @@ L["Beguiling 1 Void"] = "誘惑 1 虛無"
 L["Beguiling 2 Tides"] = "誘惑 2 海潮"
 L["Beguiling 3 Ench."] = "誘惑 3 秘能"
 L["Bewitched Captain"] = "着魔的队长"
---[[Translation missing --]]
---[[ L["BFA"] = ""--]] 
+L["BFA"] = "決戰艾澤拉斯"
 L["Big Money Crab"] = "值钱的螃蟹"
 L["Bilespray Lasher"] = "喷怨鞭笞者"
 L["Bilge Rat Brinescale"] = "水鼠帮盐鳞战士"
@@ -167,9 +163,9 @@ L["Borka the Brute"] = "野蛮的波尔卡"
 L["Bottom Feeder"] = "食泥蟹"
 L["Bound Energy"] = "被束缚的能量"
 L["Bound Voidlord"] = "被束缚的空灵领主"
---[[Translation missing --]]
---[[ L[ [=[Bounty stacks 
-after this pull]=] ] = ""--]] 
+L[ [=[Bounty stacks 
+after this pull]=] ] = [=[這波拉怪後
+連帶幾堆]=]
 L["Brawling Patron"] = "打架的顾客"
 L["Brittlebone Crossbowman"] = "脆骨弩手"
 L["Brittlebone Mage"] = "脆骨法师"
@@ -226,11 +222,9 @@ L["Colossal Tentacle"] = "巨型触须"
 L["Commander Shemdah'sohn"] = "指挥官什达索尼"
 L["Commander Zo'far"] = "指挥官佐·法"
 L["Commerce Enforcer"] = "贸易执行者"
---[[Translation missing --]]
---[[ L["conflictPrompt"] = ""--]] 
+L["conflictPrompt"] = "MDT 偵測到你所安裝的某些插件會與地城規劃工具衝突，請移除下列的插件:"
 L["Congealed Slime"] = "凝结软泥"
-L["ConnectedTip"] = [=[MDT 中連在一起群組不代表遊戲內的 NPC 也會連結在一起。
-]=]
+L["ConnectedTip"] = "MDT 中連在一起的群組不代表遊戲內的 NPC 也會連結在一起。"
 L["Control Undead"] = "控制不死生物"
 L["Copy"] = "複製"
 L["Cordana Felsong"] = "科达娜·邪歌"
@@ -268,8 +262,7 @@ L["Dargrul"] = "达古尔"
 L["Dark Acolyte"] = "黑暗助祭"
 L["Darkheart Thicket"] = "暗心灌木林"
 L["Darkheart Thicket Sublevel"] = "暗心灌木林"
---[[Translation missing --]]
---[[ L["DataImportButtonTooltip"] = ""--]] 
+L["DataImportButtonTooltip"] = "匯入外部 NPC 資料。"
 L["Dazar'ai Augur"] = "达萨莱占卜师"
 L["Dazar'ai Colossus"] = "达萨莱巨像"
 L["Dazar'ai Confessor"] = "达萨莱神官"
@@ -281,8 +274,7 @@ L["Death Speaker"] = "亡语者"
 L["Decaying Flesh Giant"] = "腐烂的血肉巨人"
 L["Decrease Brush Size"] = "縮小筆刷"
 L["Deepsea Ritualist"] = "深海祭师"
---[[Translation missing --]]
---[[ L["Default"] = ""--]] 
+L["Default"] = "預設"
 L["defaultPresetName"] = "路線"
 L["Defective Sorter"] = "损坏的分拣机"
 L["Defender of Many Eyes"] = "万眼防御者"
@@ -355,8 +347,7 @@ L["Drust Harvester"] = "德鲁斯特收割者"
 L["Drust Soulcleaver"] = "德鲁斯特斩魂者"
 L["Drust Spiteclaw"] = "德鲁斯特恶爪者"
 L["Dul'zak"] = "杜尔扎克"
---[[Translation missing --]]
---[[ L["Dungeon Data Missing"] = ""--]] 
+L["Dungeon Data Missing"] = "缺少地城資料"
 L["Dungeon Level"] = "地城層數"
 L["Duskwatch Arcanist"] = "暮色卫队奥术师"
 L["Duskwatch Guard"] = "暮色卫队卫兵"
@@ -375,13 +366,11 @@ L["Embalming Fluid"] = "防腐液"
 L["Emberhusk Dominator"] = "烬壳统御者"
 L["Embershard Scorpion"] = "裂烬蝎虫"
 L["Emissary of the Tides"] = "潮汐使者"
---[[Translation missing --]]
---[[ L["Empty"] = ""--]] 
+L["Empty"] = "空白"
 L["Enable Minimap Button"] = "啟用小地圖按鈕"
 L["Enchanted Broodling"] = "魔化巢蛛"
 L["Enchanted Emissary"] = "魔力使者"
---[[Translation missing --]]
---[[ L["Encrypted"] = ""--]] 
+L["Encrypted"] = "加密"
 L["Enemies related to seasonal affixes are currently hidden"] = "目前已隱藏季詞綴相關的敵人"
 L["Enemy Info"] = "敵人資訊"
 L["Enemy Info NPC Creature Type"] = "種類"
@@ -580,10 +569,8 @@ L["HallsOfAtonementFloor1"] = "贖罪之殿"
 L["HallsOfAtonementFloor2"] = "痛苦中殿"
 L["HallsOfAtonementFloor3"] = "靈魂聖所"
 L["Harbaron"] = "哈布隆"
---[[Translation missing --]]
---[[ L["hardResetPrompt"] = ""--]] 
---[[Translation missing --]]
---[[ L["hardResetPromptTitle"] = ""--]] 
+L["hardResetPrompt"] = "是否確定要重置所有設定，恢復成預設值? 將會需要重新載入介面!"
+L["hardResetPromptTitle"] = "刪除所有設定"
 L["Harlan Sweete"] = "哈兰·斯威提"
 L["Harugia the Bloodthirsty"] = "嗜血的哈鲁吉亚"
 L["Hatchling Nest"] = "幼蜂之巢"
@@ -791,8 +778,7 @@ L["Mchimba the Embalmer"] = "殓尸者姆沁巴"
 L["MDI Mode"] = "MDI 模式"
 L["MDT: Error importing preset"] = "MDT: 匯入路線時發生錯誤"
 L["MDT: Spells for %s:"] = "MDT: %s 的技能:"
---[[Translation missing --]]
---[[ L["MDT: Use /mdt minimap to show the minimap icon again"] = ""--]] 
+L["MDT: Use /mdt minimap to show the minimap icon again"] = "MDT: 輸入 /mdt minimap 再次顯示小地圖按鈕。"
 L["Mech Jockey"] = "机甲驾驶员"
 L["Mechagon"] = "機械岡"
 L["Mechagon - Junkyard"] = "機械岡行動 - 廢料場"
@@ -811,8 +797,7 @@ L["Mechanical"] = "機械"
 L["Mechanized Peacekeeper"] = "机械化维和者"
 L["Mephistroth"] = "孟菲斯托斯"
 L["Merektha"] = "米利克萨"
---[[Translation missing --]]
---[[ L["Middle-click to disable Minimap Button"] = ""--]] 
+L["Middle-click to disable Minimap Button"] = "中鍵: 停用小地圖按鈕"
 L["Midnight"] = "午夜"
 L["Mightstone Breaker"] = "巨石破坏者"
 L["Millhouse Manastorm"] = "米尔豪斯·法力风暴"
@@ -1003,8 +988,7 @@ L["receiveErrorUpdate"] = "MDT 無法正確接收路線，請確認傳送者 %s 
 L["Receiving: ..."] = "正在接受: ..."
 L["Red, Green and Blue"] = "紅綠藍"
 L["Redo"] = "重做"
---[[Translation missing --]]
---[[ L["redoDrawing"] = ""--]] 
+L["redoDrawing"] = "重做繪圖"
 L["Reformed Maiden"] = "洗心革面的侍女"
 L["Refreshment Vendor"] = "零食商贩"
 L["Regal Mistdancer"] = "皇家舞雾者"
@@ -1138,8 +1122,7 @@ L["Shadowguard Subjugator"] = "影卫征服者"
 L["Shadowguard Trickster"] = "影卫欺诈者"
 L["Shadowguard Voidbender"] = "影卫缚灵师"
 L["Shadowlands"] = "暗影之境"
---[[Translation missing --]]
---[[ L["Shadowlands Season 4"] = ""--]] 
+L["Shadowlands Season 4"] = "暗影之境第4季"
 L["Shady Dealer"] = "神秘卖家"
 L["Shalebiter"] = "页岩啃噬者"
 L["Shambling Arbalest"] = "蹒跚的弩手"
@@ -1401,8 +1384,7 @@ L["Understone Demolisher"] = "顶石粉碎者"
 L["Understone Drudge"] = "顶石苦力"
 L["Understone Drummer"] = "顶石游荡者"
 L["Undo"] = "還原"
---[[Translation missing --]]
---[[ L["undoDrawing"] = ""--]] 
+L["undoDrawing"] = "還原繪圖"
 L["Undying Servant"] = "亡灵仆从"
 --[[Translation missing --]]
 --[[ L["Undying Stonefiend"] = ""--]] 

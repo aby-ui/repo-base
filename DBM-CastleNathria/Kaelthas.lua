@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2422, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220805031818")
+mod:SetRevision("20220823210043")
 mod:SetCreatureID(165759)
 mod:SetEncounterID(2402)
 mod:DisableIEEUCombatDetection()--kael gets stuck on boss frames well after encounter has ended, therefor must not re-engage boss off this bug
@@ -731,7 +731,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif spellId == 323402 then--Reflection of Guilt (Shade Leaving)
 		self:SetStage(1)
-		if self:IsFated() then
+		if self:IsFated() and (DBM:UnitBuff("boss1", 372418) or DBM:UnitBuff("boss2", 372418)) then
 			self:AffixEvent(2, nil, 18.8, true)--Triggers a no cast window on affix (at least barrier)
 		end
 		self.vb.shadeActive = false

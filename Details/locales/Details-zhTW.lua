@@ -1324,8 +1324,8 @@ L["STRING_OPTIONS_WINDOW"] = "選項面板"
 L["STRING_OPTIONS_WINDOW_ANCHOR_ANCHORS"] = "位置:"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE"] = "忽略大量切換"
 L["STRING_OPTIONS_WINDOW_IGNOREMASSTOGGLE_DESC"] = "啟用時，這個視窗不會受到隱藏、顯示或切換所有視窗動作的影響。"
-L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = "\"行的區域顏色\""
-L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = "設置顯示行時區域背景的顏色。"
+L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR"] = "計量條區域顏色"
+L["STRING_OPTIONS_WINDOW_ROWAREA_COLOR_DESC"] = "設定計量條顯示時，區域的背景顏色。"
 L["STRING_OPTIONS_WINDOW_SCALE"] = "縮放大小"
 L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[調整視窗的縮放大小。
 
@@ -1333,7 +1333,10 @@ L["STRING_OPTIONS_WINDOW_SCALE_DESC"] = [=[調整視窗的縮放大小。
 
 |cFFFFFF00目前是|r: %s]=]
 L["STRING_OPTIONS_WINDOW_SKIN_COLOR"] = "外觀顏色"
-L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = "修改應用於此視窗的外觀顏色。 |cFFFFFF00重要|r：啟用時，此處選擇的透明度將被 |cFFFFFF00自動透明度|r 值覆蓋。|cFFFFFF00重要|r：選擇外觀顏色會覆蓋應用於狀態欄的任何自定義顏色。"
+L["STRING_OPTIONS_WINDOW_SKIN_COLOR_DESC"] = [=[修改套用於此視窗的外觀顏色。
+
+|cFFFFFF00重要|r: 啟用時，此處選擇的透明度將被 |cFFFFFF00自動透明度|r 值覆蓋。
+|cFFFFFF00重要|r: 選擇外觀顏色會覆蓋套用於狀態欄的任何自訂顏色。]=]
 L["STRING_OPTIONS_WINDOW_TITLE"] = "視窗一般設定"
 L["STRING_OPTIONS_WINDOW_TITLE_DESC"] = "這些選項控制所選視窗的外觀。"
 L["STRING_OPTIONS_WINDOWSPEED"] = "更新間隔時間"

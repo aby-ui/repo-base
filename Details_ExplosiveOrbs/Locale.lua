@@ -183,17 +183,13 @@ elseif locale == 'ptBR' then
 elseif locale == 'ruRU' then
 --[[Translation missing --]]
 --[[ L["Dynamic Overall Explosive Orbs"] = "Dynamic Overall Explosive Orbs"--]] 
-L["Explosive Orbs"] = "Взрывоопасная сфера"
+L["Explosive Orbs"] = "Взрывоопасные сферы"
 L["Hit: "] = "Урон:"
---[[Translation missing --]]
---[[ L["Only Show Hit"] = "Only Show Hit"--]] 
---[[Translation missing --]]
---[[ L["Only show the hit of Explosive Orbs, without target."] = "Only show the hit of Explosive Orbs, without target."--]] 
+L["Only Show Hit"] = "Показать только урон"
+L["Only show the hit of Explosive Orbs, without target."] = "Показывать только урон от взрывоопасных шаров, без цели"
 L["Show how many explosive orbs players target and hit."] = "Отображает, сколько взрывоопасных сфер игроки выделяют и бьют."
 L["Target: "] = "Цель:"
---[[Translation missing --]]
---[[ L["Use Short Text"] = "Use Short Text"--]] 
---[[Translation missing --]]
---[[ L["Use short text for Explosive Orbs."] = "Use short text for Explosive Orbs."--]] 
+L["Use Short Text"] = "Использовать короткий текст"
+L["Use short text for Explosive Orbs."] = "Использовать короткий текст для взрывоопасных сфер."
 
 end

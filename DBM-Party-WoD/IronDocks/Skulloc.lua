@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20220712012318")
+mod:SetRevision("20220823223407")
 mod:SetCreatureID(83612)
 mod:SetEncounterID(1754)
 
@@ -13,24 +13,30 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED 168398",
 	"SPELL_CAST_START 168929 168227 169129",
-	"UNIT_SPELLCAST_INTERRUPTED boss1",
+	"UNIT_SPELLCAST_INTERRUPTED boss1 boss2 boss3",
 	"UNIT_DIED"
 )
 
+--[[
+(ability.id = 168227 or ability.id = 168929 or ability.id = 169129) and type = "begincast"
+ or ability.id = 168398 and type = "applydebuff"
+ or type = "interrupt"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 --TODO, verify gron smash numbers and see if it is time based or damage based.
 local warnRapidFire			= mod:NewTargetNoFilterAnnounce(168398, 3)
 local warnBackdraft			= mod:NewCastAnnounce(169129, 4)
+local warnCannonBarrageEnd	= mod:NewEndAnnounce(168929, 1)
 
 local specWarnRapidFire		= mod:NewSpecialWarningMoveAway(168398, nil, nil, nil, 1, 2)
 local yellRapidFire			= mod:NewYell(168398)
 local specWarnGronSmash		= mod:NewSpecialWarningSpell(168227, nil, nil, nil, 2, 2)
 local specWarnCannonBarrage	= mod:NewSpecialWarningSpell(168929, nil, nil, nil, 3, 2)--Use the one time cast trigger instead of drycode when relogging
-local specWarnCannonBarrageE= mod:NewSpecialWarningEnd(168929, nil, nil, nil, 1, 2)
 
-local timerRapidFireCD		= mod:NewNextTimer(12, 168398, nil, nil, nil, 3)
+local timerRapidFireCD		= mod:NewCDTimer(11.5, 168398, nil, nil, nil, 3)
 local timerRapidFire		= mod:NewTargetTimer(5, 168398, nil, "-Tank", nil, 5)
-local timerGronSmashCD		= mod:NewCDTimer(70, 168227, nil, nil, nil, 2)--Timer is too variable, which is why i never enabled. every time i kill boss it's diff. today 2nd gron smash happened at 49 seconds, 21 seconds sooner than this timer
-
+local timerGronSmashCD		= mod:NewCDTimer(54.1, 168227, nil, nil, nil, 2)--Timer is too variable, 49-70, but the avereage is 54-60, so if users want to keep complaining about their timer, they can have an iffy timer
+local timerBackdraftCD		= mod:NewCDTimer(13.3, 169129, nil, nil, nil, 3)
 mod.vb.flameCast = false
 
 function mod:OnCombatStart(delay)
@@ -55,10 +61,13 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 168227 then
-		timerRapidFireCD:Cancel()
+		timerRapidFireCD:Stop()
 		specWarnGronSmash:Show()
 		specWarnGronSmash:Play("carefly")
---		timerGronSmashCD:Start()
+		if self:IsHard() then
+			timerBackdraftCD:Start(13.3)
+		end
+		timerGronSmashCD:Start()
 		self.vb.flameCast = false
 	elseif spellId == 168929 then
 		specWarnCannonBarrage:Show()
@@ -66,14 +75,15 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 169129 and not self.vb.flameCast then
 		self.vb.flameCast = true
 		warnBackdraft:Show()
+		--timerBackdraftCD:Start()
 	end
 end
 
 --Not completely reliable. if you reach him between barrages, before he casts a new one, you won't interrupt any cast and get no event for it.
 function mod:UNIT_SPELLCAST_INTERRUPTED(uId, _, spellId)
 	if spellId == 168929 then
-		specWarnCannonBarrageE:Show()
-		specWarnCannonBarrageE:Play("phasechange")
+		warnCannonBarrageEnd:Show()
+		timerBackdraftCD:Stop()
 	end
 end
 

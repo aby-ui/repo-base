@@ -5,7 +5,10 @@ local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local L = DBM_CORE_L
 
 local LibStub = _G["LibStub"]
-local LibLatency, LibDurability = LibStub("LibLatency", true), LibStub("LibDurability", true)
+local LibLatency, LibDurability
+if LibStub then
+	LibLatency, LibDurability = LibStub("LibLatency", true), LibStub("LibDurability", true)
+end
 
 local function Pull(timer)
 	local LFGTankException = isRetail and IsPartyLFG() and UnitGroupRolesAssigned("player") == "TANK"--Tanks in LFG need to be able to send pull timer even if someone refuses to pass lead. LFG locks roles so no one can abuse this.

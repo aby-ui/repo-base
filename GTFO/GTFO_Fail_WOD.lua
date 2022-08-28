@@ -364,6 +364,18 @@ GTFO.SpellID["164618"] = {
 -- * Grimrail Depot *
 -- ******************
 
+GTFO.SpellID["164170"] = {
+  --desc = "Dash (Grimrail Overseer)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["161089"] = {
+  --desc = "Mad Dash (Borka the Brute)";
+  sound = 3;
+  tankSound = 0;
+};
+
 GTFO.SpellID["162513"] = {
 	--desc = "VX18-B Target Eliminator (Railmaster Rocketspark)";
 	sound = 3;
@@ -392,6 +404,11 @@ GTFO.SpellID["162057"] = {
 -- **************
 -- * Iron Docks *
 -- **************
+
+GTFO.SpellID["172631"] = {
+	--desc = "Knocked Down";
+	sound = 3;
+};
 
 GTFO.SpellID["163668"] = {
 	--desc = "Flaming Slash (Makogg Emberblade)";

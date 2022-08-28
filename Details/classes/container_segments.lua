@@ -398,7 +398,7 @@ function _detalhes:CheckFreeze (instancia, index_liberado, tabela)
 	end
 end
 
-function _detalhes:SetOverallResetOptions (reset_new_boss, reset_new_challenge, reset_on_logoff)
+function _detalhes:SetOverallResetOptions (reset_new_boss, reset_new_challenge, reset_on_logoff, reset_new_pvp)
 	if (reset_new_boss == nil) then
 		reset_new_boss = _detalhes.overall_clear_newboss
 	end
@@ -408,10 +408,14 @@ function _detalhes:SetOverallResetOptions (reset_new_boss, reset_new_challenge, 
 	if (reset_on_logoff == nil) then
 		reset_on_logoff = _detalhes.overall_clear_logout
 	end
+	if (reset_new_pvp == nil) then
+		reset_new_pvp = _detalhes.overall_clear_pvp
+	end
 	
 	_detalhes.overall_clear_newboss = reset_new_boss
 	_detalhes.overall_clear_newchallenge = reset_new_challenge
 	_detalhes.overall_clear_logout = reset_on_logoff
+	_detalhes.overall_clear_pvp	 = reset_new_pvp
 end
 
 function historico:resetar_overall()

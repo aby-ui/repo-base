@@ -1,46 +1,42 @@
 local _, Addon = ...
+local CLASS = UnitClassBase('player')
 
-local function apply(func, arg, ...)
-    if select('#', ...) > 0 then
-        return func(arg), apply(func, ...)
+local function hide(...)
+    for i = 1, select('#', ...) do
+        local frame = select(i, ...)
+
+        if frame then
+            frame:Hide()
+            frame:SetParent(Addon.ShadowUIParent)
+            frame.ignoreFramePositionManager = true
+
+            -- with 8.2, there's more restrictions on frame anchoring if something
+            -- happens to be attached to a restricted frame. This causes issues with
+            -- moving the action bars around, so we perform a clear all points to avoid
+            -- some frame dependency issues
+            -- we then follow it up with a SetPoint to handle the cases of bits of the
+            -- UI code assuming that this element has a position
+            frame:ClearAllPoints()
+            frame:SetPoint('CENTER')
+        end
     end
-
-    return func(arg)
-end
-
-local function hide(frame)
-    if not frame then
-        return
-    end
-
-    frame:Hide()
-    frame:SetParent(Addon.ShadowUIParent)
-    frame.ignoreFramePositionManager = true
-
-    -- with 8.2, there's more restrictions on frame anchoring if something
-    -- happens to be attached to a restricted frame. This causes issues with
-    -- moving the action bars around, so we perform a clear all points to avoid
-    -- some frame dependency issues
-    -- we then follow it up with a SetPoint to handle the cases of bits of the
-    -- UI code assuming that this element has a position
-    frame:ClearAllPoints()
-    frame:SetPoint('CENTER')
 end
 
 -- disables override bar transition animations
-local function disableSlideOutAnimations(frame)
-    if not (frame and frame.slideOut) then
-        return
-    end
+local function disableSlideOutAnimations(...)
+    for i = 1, select('#', ...) do
+        local frame = select(i, ...)
 
-    local animation = (frame.slideOut:GetAnimations())
-    if animation then
-        animation:SetOffset(0, 0)
+        if frame and frame.slideOut then
+            local animation = (frame.slideOut:GetAnimations())
+            if animation then
+                animation:SetOffset(0, 0)
+            end
+        end
     end
 end
 
-apply(
-    hide,
+hide(
     ActionBarDownButton,
     ActionBarUpButton,
     MainMenuBarPerformanceBarFrame,
@@ -49,12 +45,21 @@ apply(
     MultiBarBottomRight,
     MultiBarLeft,
     MultiBarRight,
-    MultiCastActionBarFrame,
     PetActionBarFrame,
     StanceBarFrame
 )
 
-apply(disableSlideOutAnimations, MainMenuBar, MultiBarLeft, MultiBarRight, OverrideActionBar)
+if not (CLASS == 'SHAMAN' and Addon:IsBuild('wrath')) then
+    hide(MultiCastActionBarFrame)
+end
+
+disableSlideOutAnimations(
+    MainMenuBar,
+    MultiBarLeft,
+    MultiBarRight,
+    OverrideActionBar,
+    MultiCastActionBarFrame
+)
 
 -- we don't completely disable the main menu bar, as there's some logic
 -- dependent on it being visible
@@ -105,6 +110,7 @@ end
 
 if VerticalMultiBarsContainer then
     VerticalMultiBarsContainer:UnregisterAllEvents()
+
     hide(VerticalMultiBarsContainer)
 
     -- a hack to preserve the multi action bar spacing behavior for the quest log
@@ -130,13 +136,13 @@ if VerticalMultiBarsContainer then
 end
 
 -- set the stock action buttons to hidden by default
-local function disableActionButton(name)
-    local button = _G[name]
+local function disableActionButton(buttonName)
+    local button = _G[buttonName]
     if button then
         button:SetAttribute('statehidden', true)
         button:Hide()
     else
-        Addon:Printf('Action Button %q could not be found', name)
+        Addon:Printf('Action Button %q could not be found', buttonName)
     end
 end
 

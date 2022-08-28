@@ -248,6 +248,18 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_LOCKSEGMENTS"],
                 desc = Loc ["STRING_OPTIONS_LOCKSEGMENTS_DESC"],
+                boxfirst = true,
+            },
+            {--animate bars
+                type = "toggle",
+                get = function() return _detalhes.use_row_animations end,
+                set = function (self, fixedparam, value)
+                    _detalhes:SetUseAnimations(value)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_ANIMATEBARS"],
+                desc = Loc ["STRING_OPTIONS_ANIMATEBARS_DESC"],
+                boxfirst = true,
             },
             {--scroll speed
                 type = "range",
@@ -290,16 +302,6 @@ do
                 end,
                 name = Loc ["STRING_NUMERALSYSTEM"],
                 desc = Loc ["STRING_NUMERALSYSTEM_DESC"],
-            },
-            {--animate bars
-                type = "toggle",
-                get = function() return _detalhes.use_row_animations end,
-                set = function (self, fixedparam, value)
-                    _detalhes:SetUseAnimations(value)
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_ANIMATEBARS"],
-                desc = Loc ["STRING_OPTIONS_ANIMATEBARS_DESC"],
             },
             {--update speed
                 type = "range",
@@ -346,6 +348,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_CLEANUP"],
                 desc = Loc ["STRING_OPTIONS_CLEANUP_DESC"],
+                boxfirst = true,
             },
             {--auto erase world segments
                 type = "toggle",
@@ -356,6 +359,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_PERFORMANCE_ERASEWORLD"],
                 desc = Loc ["STRING_OPTIONS_PERFORMANCE_ERASEWORLD_DESC"],
+                boxfirst = true,
             },
             {--erase chart data
                 type = "toggle",
@@ -366,6 +370,28 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_ERASECHARTDATA"],
                 desc = Loc ["STRING_OPTIONS_ERASECHARTDATA_DESC"],
+                boxfirst = true,
+            },
+
+            {--battleground remote parser
+                type = "toggle",
+                get = function() return _detalhes.use_battleground_server_parser end,
+                set = function (self, fixedparam, value)
+                    _detalhes.use_battleground_server_parser = value
+                 end,
+                name = Loc ["STRING_OPTIONS_BG_UNIQUE_SEGMENT"],
+                desc = Loc ["STRING_OPTIONS_BG_UNIQUE_SEGMENT_DESC"],
+                boxfirst = true,
+            },
+            {--battleground show enemies
+                type = "toggle",
+                get = function() return _detalhes.pvp_as_group end,
+                set = function (self, fixedparam, value)
+                    _detalhes.pvp_as_group = value
+                 end,
+                name = Loc ["STRING_OPTIONS_BG_ALL_ALLY"],
+                desc = Loc ["STRING_OPTIONS_BG_ALL_ALLY_DESC"],
+                boxfirst = true,
             },
 
             {--max segments
@@ -396,25 +422,6 @@ do
                 desc = Loc ["STRING_OPTIONS_SEGMENTSSAVE_DESC"],
             },
 
-            {--battleground remote parser
-                type = "toggle",
-                get = function() return _detalhes.use_battleground_server_parser end,
-                set = function (self, fixedparam, value)
-                    _detalhes.use_battleground_server_parser = value
-                 end,
-                name = Loc ["STRING_OPTIONS_BG_UNIQUE_SEGMENT"],
-                desc = Loc ["STRING_OPTIONS_BG_UNIQUE_SEGMENT_DESC"],
-            },
-            {--battleground show enemies
-                type = "toggle",
-                get = function() return _detalhes.pvp_as_group end,
-                set = function (self, fixedparam, value)
-                    _detalhes.pvp_as_group = value
-                 end,
-                name = Loc ["STRING_OPTIONS_BG_ALL_ALLY"],
-                desc = Loc ["STRING_OPTIONS_BG_ALL_ALLY_DESC"],
-            },
-
             {type = "blank"},
 
             {--pvp frags
@@ -426,6 +433,19 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_PVPFRAGS"],
                 desc = Loc ["STRING_OPTIONS_PVPFRAGS_DESC"],
+                boxfirst = true,
+            },
+
+            {--damage taken everything
+                type = "toggle",
+                get = function() return _detalhes.damage_taken_everything end,
+                set = function (self, fixedparam, value)
+                    _detalhes.damage_taken_everything = value
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_DTAKEN_EVERYTHING"],
+                desc = Loc ["STRING_OPTIONS_DTAKEN_EVERYTHING_DESC"],
+                boxfirst = true,
             },
 
             {--death log size
@@ -451,17 +471,6 @@ do
                 desc = Loc ["STRING_OPTIONS_DEATHLOG_MINHEALING_DESC"],
             },
 
-            {--pvp frags
-                type = "toggle",
-                get = function() return _detalhes.damage_taken_everything end,
-                set = function (self, fixedparam, value)
-                    _detalhes.damage_taken_everything = value
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_DTAKEN_EVERYTHING"],
-                desc = Loc ["STRING_OPTIONS_DTAKEN_EVERYTHING_DESC"],
-            },
-
             {type = "breakline"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_OVERALL_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
@@ -474,6 +483,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_OVERALL_NEWBOSS"],
                 desc = Loc ["STRING_OPTIONS_OVERALL_NEWBOSS_DESC"],
+                boxfirst = true,
             },
             {--erase overall data on mythic plus
                 type = "toggle",
@@ -484,6 +494,18 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_OVERALL_MYTHICPLUS"],
                 desc = Loc ["STRING_OPTIONS_OVERALL_MYTHICPLUS_DESC"],
+                boxfirst = true,
+            },
+            {--erase overall data on logout
+                type = "toggle",
+                get = function() return _detalhes.overall_clear_pvp end,
+                set = function (self, fixedparam, value)
+                    _detalhes:SetOverallResetOptions(nil, nil, nil, value)
+                    afterUpdate()
+                end,
+                name = "Clear On Start PVP", --localize-me
+                desc = "When enabled, overall data is automatically wiped when a new arena or battleground starts.", --localize-me
+                boxfirst = true,
             },
             {--erase overall data on logout
                 type = "toggle",
@@ -494,6 +516,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_OVERALL_LOGOFF"],
                 desc = Loc ["STRING_OPTIONS_OVERALL_LOGOFF_DESC"],
+                boxfirst = true,
             },
 
             {type = "blank"},
@@ -572,6 +595,7 @@ do
                 end,
                 name = "Click Through",
                 desc = "Click Through",
+                boxfirst = true,
             },
             {--click only in combat
                 type = "toggle",
@@ -582,6 +606,7 @@ do
                 end,
                 name = "Click Through Only in Combat",
                 desc = "Click Through Only in Combat",
+                boxfirst = true,
             },
 
             {type = "blank"},
@@ -596,6 +621,7 @@ do
                 end,
                 name = "Show pets when solo", --localize-me
                 desc = "Show pets when solo",
+                boxfirst = true,
             },
 
             {--always show players even on stardard mode
@@ -607,6 +633,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_ALWAYSSHOWPLAYERS"],
                 desc = Loc ["STRING_OPTIONS_ALWAYSSHOWPLAYERS_DESC"],
+                boxfirst = true,
             },
 
 
@@ -646,6 +673,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_IGNORENICKNAME"],
                 desc = Loc ["STRING_OPTIONS_IGNORENICKNAME_DESC"],
+                boxfirst = true,
             },
 
             {--remove realm name
@@ -657,6 +685,7 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_REALMNAME"],
                 desc = Loc ["STRING_OPTIONS_REALMNAME_DESC"],
+                boxfirst = true,
             },
 
             {type = "blank"},
@@ -671,6 +700,7 @@ do
                 end,
                 name = "Use Different Color for You",
                 desc = "Use a different color on your own bar",
+                boxfirst = true,
             },
 
 			{--player bar color
@@ -687,12 +717,13 @@ do
 				end,
 				name = "Your Bar Color",
 				desc = "Your Bar Color",
+                boxfirst = true,
             },
 
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection) --optionsSection is declared on boot.lua
@@ -1046,7 +1077,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -1405,39 +1436,6 @@ do
             },
 
             {type = "breakline"},
-            {type = "label", get = function() return "Arena Team Color" end, text_template = subSectionTitleTextTemplate},
-			{--team 1 color
-                type = "color",
-                get = function()
-                    local r, g, b = unpack(Details.class_colors.ARENA_GREEN)
-                    return {r, g, b, 1}
-                end,
-                set = function (self, r, g, b, a)
-                    Details.class_colors.ARENA_GREEN[1] = r
-                    Details.class_colors.ARENA_GREEN[2] = g
-                    Details.class_colors.ARENA_GREEN[3] = b
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_COLOR"],
-                desc = "Arena team color",
-            },
-			{--team 2 color
-                type = "color",
-                get = function()
-                    local r, g, b = unpack(Details.class_colors.ARENA_YELLOW)
-                    return {r, g, b, 1}
-                end,
-                set = function (self, r, g, b, a)
-                    Details.class_colors.ARENA_YELLOW[1] = r
-                    Details.class_colors.ARENA_YELLOW[2] = g
-                    Details.class_colors.ARENA_YELLOW[3] = b
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_COLOR"],
-                desc = "Arena team color",
-            },
-
-            {type = "blank"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_TEXT_ROWICONS_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
             {--select icon file
@@ -1486,7 +1484,7 @@ do
                 desc = Loc ["STRING_CUSTOM_TEXTURE_GUIDE"],
             },
 
-            {--bar start at
+            {--bar start after icon
                 type = "toggle",
                 get = function() return currentInstance.row_info.start_after_icon end,
                 set = function (self, fixedparam, value)
@@ -1497,61 +1495,83 @@ do
                 desc = Loc ["STRING_OPTIONS_BARSTART_DESC"],
             },
 
-            {type = "blank"},
-            {type = "label", get = function() return Loc ["STRING_OPTIONS_BAR_BACKDROP_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
-
-            {--border enabled
-                type = "toggle",
-                get = function() return currentInstance.row_info.backdrop.enabled end,
-                set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", value)
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_ENABLED"],
-                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_ENABLED_DESC"],
-            },
-
-			{--border color
-                type = "color",
-                get = function()
-                    local r, g, b, a = unpack(currentInstance.row_info.backdrop.color)
-                    return {r, g, b, a}
-                end,
-                set = function (self, r, g, b, a)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, {r, g, b, a})
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_COLOR"],
-                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_COLOR_DESC"],
-            },
-
-            {--border size
+            {--icon size offset
                 type = "range",
-                get = function() return tonumber (currentInstance.row_info.backdrop.size) end,
+                get = function() return tonumber (currentInstance.row_info.icon_size_offset) end,
                 set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, value)
+                    editInstanceSetting(currentInstance, "SetBarSettings", nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, value)
                     afterUpdate()
                 end,
-                min = 0,
-                max = 10,
-                step = 1,
+                min = -20,
+                max = 20,
                 usedecimals = true,
-                name = Loc ["STRING_OPTIONS_SIZE"],
-                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_SIZE_DESC"],
-            },
-
-            {--border uses class colors
-                type = "toggle",
-                get = function() return currentInstance.row_info.backdrop.use_class_colors end,
-                set = function (self, fixedparam, value)
-                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, nil, value)
-                    afterUpdate()
-                end,
-                name = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS"],
-                desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
+                step = 0.5,
+                name = "Icon Size Offset", --localize-me
+                desc = "Icon Size Offset",
+                thumbscale = 2.2,
             },
 
             {type = "blank"},
+
+            {--show faction icon
+                type = "toggle",
+                get = function() return currentInstance.row_info.show_faction_icon end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarFactionIconSettings", value)
+                    afterUpdate()
+                end,
+                name = "Show Faction Icon", --localize-me
+                desc = "When showing a player from the opposite faction, show the faction icon.",
+            },
+
+            {--faction icon size offset
+                type = "range",
+                get = function() return tonumber (currentInstance.row_info.faction_icon_size_offset) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarFactionIconSettings", nil, value)
+                    afterUpdate()
+                end,
+                min = -20,
+                max = 20,
+                usedecimals = true,
+                step = 0.5,
+                name = "Faction Icon Size Offset", --localize-me
+                desc = "Faction Icon Size Offset",
+                thumbscale = 2.2,
+            },
+
+            {type = "blank"},
+
+            {--show role icon
+                type = "toggle",
+                get = function() return currentInstance.row_info.show_arena_role_icon end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarArenaRoleIconSettings", value)
+                    afterUpdate()
+                end,
+                name = "Show Arena Role Icon", --localize-me
+                desc = "When showing a player from arena, show the role icon.",
+            },
+
+            {--role icon size offset
+                type = "range",
+                get = function() return tonumber (currentInstance.row_info.arena_role_icon_size_offset) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarArenaRoleIconSettings", nil, value)
+                    afterUpdate()
+                end,
+                min = -20,
+                max = 20,
+                usedecimals = true,
+                step = 0.5,
+                name = "Arena Role Icon Size Offset", --localize-me
+                desc = "Arena Role Icon Size Offset",
+                thumbscale = 2.2,
+            },
+
+
+            {type = "blank"},
+            --{type = "breakline"},
             {type = "label", get = function() return Loc["STRING_OPTIONS_ALIGNED_TEXT_COLUMNS"] end, text_template = subSectionTitleTextTemplate},
 
             {--inline text enabled
@@ -1643,6 +1663,7 @@ do
             },
 
             {type = "breakline"},
+
             {type = "label", get = function() return Loc ["STRING_OPTIONS_TOTALBAR_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
 
             {--total bar enabled
@@ -1679,10 +1700,98 @@ do
                 name = Loc ["STRING_COLOR"],
                 desc = Loc ["STRING_OPTIONS_SHOW_TOTALBAR_COLOR_DESC"],
             },
+
+            {type = "blank"},
+            {type = "label", get = function() return "Arena Team Color" end, text_template = subSectionTitleTextTemplate}, --localize-me
+			{--team 1 color
+                type = "color",
+                get = function()
+                    local r, g, b = unpack(Details.class_colors.ARENA_GREEN)
+                    return {r, g, b, 1}
+                end,
+                set = function (self, r, g, b, a)
+                    Details.class_colors.ARENA_GREEN[1] = r
+                    Details.class_colors.ARENA_GREEN[2] = g
+                    Details.class_colors.ARENA_GREEN[3] = b
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_COLOR"],
+                desc = "Arena team color", --localize-me
+            },
+			{--team 2 color
+                type = "color",
+                get = function()
+                    local r, g, b = unpack(Details.class_colors.ARENA_YELLOW)
+                    return {r, g, b, 1}
+                end,
+                set = function (self, r, g, b, a)
+                    Details.class_colors.ARENA_YELLOW[1] = r
+                    Details.class_colors.ARENA_YELLOW[2] = g
+                    Details.class_colors.ARENA_YELLOW[3] = b
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_COLOR"],
+                desc = "Arena team color", --localize-me
+            },
+
+            {type = "blank"},
+            {type = "label", get = function() return Loc ["STRING_OPTIONS_BAR_BACKDROP_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+            {--border enabled
+                type = "toggle",
+                get = function() return currentInstance.row_info.backdrop.enabled end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", value)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_ENABLED"],
+                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_ENABLED_DESC"],
+            },
+
+			{--border color
+                type = "color",
+                get = function()
+                    local r, g, b, a = unpack(currentInstance.row_info.backdrop.color)
+                    return {r, g, b, a}
+                end,
+                set = function (self, r, g, b, a)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, {r, g, b, a})
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_COLOR"],
+                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_COLOR_DESC"],
+            },
+
+            {--border size
+                type = "range",
+                get = function() return tonumber (currentInstance.row_info.backdrop.size) end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, value)
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 10,
+                step = 1,
+                usedecimals = true,
+                name = Loc ["STRING_OPTIONS_SIZE"],
+                desc = Loc ["STRING_OPTIONS_BAR_BACKDROP_SIZE_DESC"],
+                thumbscale = 1.5,
+            },
+
+            {--border uses class colors
+                type = "toggle",
+                get = function() return currentInstance.row_info.backdrop.use_class_colors end,
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetBarBackdropSettings", nil, nil, nil, value)
+                    afterUpdate()
+                end,
+                name = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS"],
+                desc = Loc ["STRING_OPTIONS_BAR_COLORBYCLASS_DESC"],
+            },
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize+20, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -2042,7 +2151,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
         local separatorOption = sectionFrame.widget_list[23]
         local bracketOption = sectionFrame.widget_list[24]
@@ -2594,7 +2703,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -2977,7 +3086,7 @@ do
             
         }
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -3091,7 +3200,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
         do --> micro displays
             
@@ -3724,7 +3833,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -3964,7 +4073,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -4340,7 +4449,7 @@ do
         }
         
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
         refreshToggleAnchor()
     end
 
@@ -4488,7 +4597,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -4865,6 +4974,20 @@ do
                 desc = Loc ["STRING_OPTIONS_WP_ALIGN"],
             },
 
+            {--wallpaper level
+                type = "range",
+                get = function() return currentInstance.wallpaper.level end, --default 2
+                set = function (self, fixedparam, value)
+                    editInstanceSetting(currentInstance, "SetInstanceWallpaperLevel", value)
+                    afterUpdate()
+                end,
+                min = 0,
+                max = 3,
+                step = 1,
+                name = "Level",
+                desc = "Change where the wallpaper is placed.", --localize-me
+            },
+
             {--edit wallpaper
                 type = "execute",
                 func = function(self)
@@ -4893,7 +5016,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
         sectionFrame:SetScript("OnShow", function()
             sectionFrame:UpdateWallpaperInfo()
@@ -5224,7 +5347,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(autoSwitchFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(autoSwitchFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
 
 	--> combat alpha modifier
@@ -5806,7 +5929,7 @@ do --raid tools
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -5819,7 +5942,7 @@ do
 
         local button_width = 160
 
-        --> streamer plugin - a.k.a. player spell tracker 
+        --> streamer plugin - a.k.a. Action Tracker
 			--> title anchor
             DF:NewLabel (sectionFrame, _, "$parentStreamerPluginAnchor", "streamerPluginAnchor", "Action Tracker", "GameFontNormal")
             sectionFrame.streamerPluginAnchor:SetPoint("topleft", sectionFrame, "topleft", startX, startY - 20)
@@ -5828,71 +5951,87 @@ do
 			streamerTitleDesc:SetSize (270, 40)
 			streamerTitleDesc:SetJustifyV ("top")
 			streamerTitleDesc:SetPoint ("topleft", sectionFrame.streamerPluginAnchor, "bottomleft", 0, -4)
-			
-			local streamerTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 256, 41, "overlay", {0.5, 1, 0.49, 0.57})
+
+			local streamerTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2.blp]], 268*0.75, 59*0.75, "overlay", {0, 268/512, 454/512, 1})
 			streamerTitleImage:SetPoint ("topleft", sectionFrame.streamerPluginAnchor, "bottomleft", 0, -40)
-			
+
 			--> get the plugin object
-			local StreamerPlugin = _detalhes:GetPlugin ("DETAILS_PLUGIN_STREAM_OVERLAY")
+			local StreamerPlugin = Details:GetPlugin("DETAILS_PLUGIN_STREAM_OVERLAY")
 			if (StreamerPlugin) then
-				--> get the plugin settings table
-				local tPluginSettings = _detalhes:GetPluginSavedTable ("DETAILS_PLUGIN_STREAM_OVERLAY")
+				--get the plugin settings table
+				local tPluginSettings = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
 				if (tPluginSettings) then
+                    local enablePluginFunc = function()
+                        tPluginSettings.enabled = not tPluginSettings.enabled
+                        StreamerPlugin.__enabled = tPluginSettings.enabled
+
+                        if (not tPluginSettings.enabled) then
+                            sectionFrame.enableActionTrackerButtton:SetText("Enable")
+                            Details:SendEvent("PLUGIN_DISABLED", StreamerPlugin)
+                        else
+                            sectionFrame.enableActionTrackerButtton:SetText("Disable") --enableButton is nil value
+							Details:SendEvent("PLUGIN_ENABLED", StreamerPlugin)
+                        end
+                    end
+
+                    local openOptions = function()
+                        StreamerPlugin.OpenOptionsPanel(true)
+                        C_Timer.After(0.2, function()
+                            _G.DetailsOptionsWindow:Hide()
+                        end)
+                    end
+
+                    --create the enable, disable and options button
+                    local enableActionTrackerButtton = DF:CreateButton(sectionFrame, enablePluginFunc, 100, 20, "Enable", false, false, "", false, false, false, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+                    enableActionTrackerButtton:SetPoint("topleft", streamerTitleImage, "bottomleft", 0, -7)
+
+                    local actionTrackerOptionsButtton = DF:CreateButton(sectionFrame, openOptions, 100, 20, "Options", false, false, "", false, false, false, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+                    actionTrackerOptionsButtton:SetPoint("left", enableActionTrackerButtton, "right", 5, 0)
+
+                    sectionFrame.enableActionTrackerButtton = enableActionTrackerButtton
+                    sectionFrame.actionTrackerOptionsButtton = actionTrackerOptionsButtton
+
 					local bIsPluginEnabled = tPluginSettings.enabled
-					--> plugin already enabled
+
+					--plugin already enabled
 					if (bIsPluginEnabled) then
-						--> config button
-						local configure_streamer_plugin = function()
-							StreamerPlugin.OpenOptionsPanel (true)
-							C_Timer.After (0.2, function()
-								_G.DetailsOptionsWindow:Hide()
-							end)
-						end
-						local configurePluginButton = DF:NewButton (sectionFrame, _, "$parentConfigureStreamerPluginButton", "configureStreamerPlugin", 100, 20, configure_streamer_plugin, nil, nil, nil, "Action Tracker Options", nil, options_button_template)
-						configurePluginButton:SetWidth (button_width)
-						configurePluginButton:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -7)
-						
-						--> text telling how to disable
-						local pluginAlreadyEnabled = DF:NewLabel (sectionFrame, _, "$parentStreamerAlreadyEnabledText", "StreamerAlreadyEnabledTextLabel", "Plugin is enabled. You may disable it on Plugin Management section.", "GameFontNormal", 10, "white")
-						pluginAlreadyEnabled:SetJustifyV ("top")
-						pluginAlreadyEnabled:SetSize (270, 40)
-						pluginAlreadyEnabled:SetPoint ("topleft", configurePluginButton, "bottomleft", 0, -7)
+                        enableActionTrackerButtton:SetText("Disable")
 					else
-						--> plugin isnt enabled, create the enable button
-						local enable_streamer_plugin = function()
-							tPluginSettings.enabled = true
-							StreamerPlugin.__enabled = true
-							_detalhes:SendEvent ("PLUGIN_ENABLED", StreamerPlugin)
-							
-							sectionFrame.enableStreamerPluginButton:Hide()
-							
-							--> config button
-							local configure_streamer_plugin = function()
-								StreamerPlugin.OpenOptionsPanel()
-							end
-							local configurePluginButton = DF:NewButton (sectionFrame, _, "$parentConfigureStreamerPluginButton", "configureStreamerPlugin", 100, 20, configure_streamer_plugin, nil, nil, nil, "Action Tracker Options", nil, options_button_template)
-							configurePluginButton:SetWidth (button_width)
-							configurePluginButton:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -7)
-							
-							--> text telling how to disable
-							local pluginAlreadyEnabled = DF:NewLabel (sectionFrame, _, "$parentStreamerAlreadyEnabledText", "StreamerAlreadyEnabledTextLabel", "Plugin is enabled. You may disable it on Plugin Management section.", "GameFontNormal", 10, "white")
-							pluginAlreadyEnabled:SetJustifyV ("top")
-							pluginAlreadyEnabled:SetSize (270, 40)
-							pluginAlreadyEnabled:SetPoint ("topleft", configurePluginButton, "bottomleft", 0, -7)
-						end
-						
-						local enablePluginButton = DF:NewButton (sectionFrame, _, "$parentEnableStreamerPluginButton", "enableStreamerPluginButton", 100, 20, enable_streamer_plugin, nil, nil, nil, "Enable Plugin", nil, options_button_template)
-						enablePluginButton:SetWidth (button_width)
-						enablePluginButton:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -5)
+                        enableActionTrackerButtton:SetText("Enable")
 					end
 				end
 			else
-				--> plugin is disabled at the addon control panel
-				local pluginDisabled = DF:NewLabel (sectionFrame, _, "$parentStreamerDisabledText", "StreamerDisabledTextLabel", "Details!: Streamer Plugin is disabled on the AddOns Control Panel.", "GameFontNormal", 10, "red")
-				pluginDisabled:SetSize (270, 40)
-				pluginDisabled:SetPoint ("topleft", streamerTitleImage, "bottomleft", 0, -2)
+				--plugin is disabled at the addon control panel
+				local pluginDisabled = DF:NewLabel(sectionFrame, _, "$parentStreamerDisabledText", "StreamerDisabledTextLabel", "Enable 'Details!: Streamer' addon at the AddOns Control Panel.", "GameFontNormal", 10, "red")
+				pluginDisabled:SetSize(270, 40)
+				pluginDisabled:SetPoint("topleft", streamerTitleImage, "bottomleft", 0, -2)
 			end
-		
+
+            sectionFrame:SetScript("OnShow", function()
+                local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
+                local pluginObject = Details:GetPlugin("DETAILS_PLUGIN_STREAM_OVERLAY")
+    
+                if (pluginObject) then
+                    if (pluginStable.enabled) then
+                        sectionFrame.enableActionTrackerButtton:SetText("Disable")
+                    else
+                        sectionFrame.enableActionTrackerButtton:SetText("Enable")
+                    end
+                end
+
+                if (Details.event_tracker.enabled) then
+                    sectionFrame.enableEventTrackerButtton:SetText("Disable")
+                else
+                    sectionFrame.enableEventTrackerButtton:SetText("Enable")
+                end
+
+                if (Details.realtime_dps_meter.enabled) then
+                    sectionFrame.enableArenaDPSTrackerButtton:SetText("Disable")
+                else
+                    sectionFrame.enableArenaDPSTrackerButtton:SetText("Enable")
+                end
+            end)
+
 		
 		--> event tracker
             DF:NewLabel (sectionFrame, _, "$parentEventTrackerAnchor", "eventTrackerAnchor", "Event Tracker", "GameFontNormal")
@@ -5906,72 +6045,96 @@ do
 			local eventTrackerTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 256, 50, "overlay", {0.5, 1, 134/512, 184/512})
 			eventTrackerTitleImage:SetPoint ("topleft", sectionFrame.eventTrackerAnchor, "bottomleft", 0, -40)
 			
-			--> enable feature checkbox
-				DF:NewLabel (sectionFrame, _, "$parentEnableEventTrackerLabel", "EventTrackerLabel", "Enable Event Tracker", "GameFontHighlightLeft")
-				DF:NewSwitch (sectionFrame, _, "$parentEventTrackerSlider", "EventTrackerSlider", 60, 20, _, _, _detalhes.event_tracker.enabled, nil, nil, nil, nil, options_switch_template)
+            local enableEventTracker = function()
+                Details.event_tracker.enabled = not Details.event_tracker.enabled
+                Details:LoadFramesForBroadcastTools()
+                afterUpdate()
 
-				sectionFrame.EventTrackerSlider:SetPoint ("left", sectionFrame.EventTrackerLabel, "right", 2)
-				sectionFrame.EventTrackerSlider:SetAsCheckBox()
-				sectionFrame.EventTrackerSlider.OnSwitch = function (_, _, value)
-					_detalhes.event_tracker.enabled = not _detalhes.event_tracker.enabled
-					Details:LoadFramesForBroadcastTools()
-					afterUpdate()
-				end
-				sectionFrame.EventTrackerLabel:SetPoint ("topleft", eventTrackerTitleImage, "bottomleft", 0, -20)
-				sectionFrame.EventTrackerSlider:SetPoint ("left", sectionFrame.EventTrackerLabel, "right", 2, 0)
-				
-			--> configure feature button
-				local configure_event_tracker = function()
-					_detalhes:OpenEventTrackerOptions (true)
-					C_Timer.After (0.2, function()
-						_G.DetailsOptionsWindow:Hide()
-					end)
-				end
-				local configureEventTrackerButton = DF:NewButton (sectionFrame, _, "$parentConfigureEventTrackerButton", "configureEventTracker", 100, 20, configure_event_tracker, nil, nil, nil, "Event Tracker Options", nil, options_button_template)
-				configureEventTrackerButton:SetWidth (button_width)
-				configureEventTrackerButton:SetPoint ("topleft", sectionFrame.EventTrackerLabel, "bottomleft", 0, -7)
+                if (Details.event_tracker.enabled) then
+                    sectionFrame.enableEventTrackerButtton:SetText("Disable")
+                else
+                    sectionFrame.enableEventTrackerButtton:SetText("Enable")
+                end
+            end
+
+            local openEventTrackerOptions = function()
+                Details:OpenEventTrackerOptions(true)
+                C_Timer.After(0.2, function()
+                    _G.DetailsOptionsWindow:Hide()
+                end)
+            end
+
+            --create the enable, disable and options button
+            local enableEventTrackerButtton = DF:CreateButton(sectionFrame, enableEventTracker, 100, 20, "Enable", false, false, "", false, false, false, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+            enableEventTrackerButtton:SetPoint("topleft", eventTrackerTitleImage, "bottomleft", 0, -7)
+
+            local actionTrackerOptionsButtton = DF:CreateButton(sectionFrame, openEventTrackerOptions, 100, 20, "Options", false, false, "", false, false, false, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+            actionTrackerOptionsButtton:SetPoint("left", enableEventTrackerButtton, "right", 5, 0)
+
+            sectionFrame.enableEventTrackerButtton = enableEventTrackerButtton
+            sectionFrame.actionTrackerOptionsButtton = actionTrackerOptionsButtton
 
 
-		--> current dps
-            DF:NewLabel (sectionFrame, _, "$parentCurrentDPSAnchor", "currentDPSAnchor", "The Real Current DPS", "GameFontNormal")
-            sectionFrame.currentDPSAnchor:SetPoint("topleft", sectionFrame, "topleft", startX + 350, startY - 20)
+		--> arena kamehameha bar
+            DF:NewLabel (sectionFrame, _, "$parentCurrentDPSAnchor", "currentDPSAnchor", "Arena DPS Bar", "GameFontNormal")
+            sectionFrame.currentDPSAnchor:SetPoint("topleft", sectionFrame, "topleft", startX, startY - 340)
 
-			local currentDPSTitleDesc = DF:NewLabel (sectionFrame, _, "$parentCurrentDPSTitleDescText", "CurrentDPSTitleDescTextLabel", "Show a frame with DPS done only in the last 5 seconds. Useful for arena matches and mythic dungeons.", "GameFontNormal", 10, "white")
+			local currentDPSTitleDesc = DF:NewLabel (sectionFrame, _, "$parentCurrentDPSTitleDescText", "CurrentDPSTitleDescTextLabel", "Show a bar which grows to the side of the team doing most damage in the last 5 seconds.", "GameFontNormal", 10, "white")
 			currentDPSTitleDesc:SetJustifyV ("top")
 			currentDPSTitleDesc:SetSize (270, 40)
 			currentDPSTitleDesc:SetPoint ("topleft", sectionFrame.currentDPSAnchor, "bottomleft", 0, -4)
 			
-			local currentDPSTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 250, 61, "overlay", {259/512, 509/512, 186/512, 247/512})
+			local currentDPSTitleImage = DF:CreateImage (sectionFrame, [[Interface\AddOns\Details\images\icons2]], 256, 32, "overlay", {0/512, 256/512, 421/512, 453/512})
 			currentDPSTitleImage:SetPoint ("topleft", sectionFrame.currentDPSAnchor, "bottomleft", 0, -40)
 			
-			--> enable feature checkbox
-				DF:NewLabel (sectionFrame, _, "$parentEnableCurrentDPSLabel", "CurrentDPSLabel", "Enable The Real Current Dps", "GameFontHighlightLeft")
-				DF:NewSwitch (sectionFrame, _, "$parentCurrentDPSSlider", "CurrentDPSSlider", 60, 20, _, _, _detalhes.current_dps_meter.enabled, nil, nil, nil, nil, options_switch_template)
+            local enableArenaDPS = function()
+                Details.realtime_dps_meter.enabled = not Details.realtime_dps_meter.enabled
+                Details:LoadFramesForBroadcastTools()
+                afterUpdate()
 
-				sectionFrame.CurrentDPSSlider:SetPoint ("left", sectionFrame.CurrentDPSLabel, "right", 2)
-				sectionFrame.CurrentDPSSlider:SetAsCheckBox()
-				sectionFrame.CurrentDPSSlider.OnSwitch = function (_, _, value)
-					_detalhes.current_dps_meter.enabled = not _detalhes.current_dps_meter.enabled
-					Details:LoadFramesForBroadcastTools()
-					afterUpdate()
-				end
-				
-				sectionFrame.CurrentDPSLabel:SetPoint ("topleft", currentDPSTitleImage, "bottomleft", 0, -10)
-				sectionFrame.CurrentDPSSlider:SetPoint ("left", sectionFrame.CurrentDPSLabel, "right", 2, 0)
-				
-			--> configure feature button
-				local configure_current_dps = function()
-					_detalhes:OpenCurrentRealDPSOptions (true)
-					C_Timer.After (0.2, function()
-						_G.DetailsOptionsWindow:Hide()
-					end)
-				end
-				local configureCurrentDPSButton = DF:NewButton (sectionFrame, _, "$parentConfigureCurrentDPSButton", "configureCurrentDPS", 100, 20, configure_current_dps, nil, nil, nil, "Current Real DPS Options", nil, options_button_template)
-				configureCurrentDPSButton:SetWidth (button_width)
-				configureCurrentDPSButton:SetPoint ("topleft", sectionFrame.CurrentDPSLabel, "bottomleft", 0, -7)
+                if (Details.realtime_dps_meter.enabled) then
+                    sectionFrame.enableArenaDPSTrackerButtton:SetText("Disable")
+                else
+                    sectionFrame.enableArenaDPSTrackerButtton:SetText("Enable")
+                end
+            end
+
+            local openArenaDPSOptions = function()
+                Details:OpenCurrentRealDPSOptions(true)
+                C_Timer.After(0.2, function()
+                    _G.DetailsOptionsWindow:Hide()
+                end)
+            end
+
+            --create the enable, disable and options button
+            local enableArenaDPSTrackerButtton = DF:CreateButton(sectionFrame, enableArenaDPS, 100, 20, "Enable", false, false, "", false, false, false, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+            enableArenaDPSTrackerButtton:SetPoint("topleft", currentDPSTitleImage, "bottomleft", 0, -7)
+
+            local arenaDPSTrackerOptionsButtton = DF:CreateButton(sectionFrame, openArenaDPSOptions, 100, 20, "Options", false, false, "", false, false, false, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+            arenaDPSTrackerOptionsButtton:SetPoint("left", enableArenaDPSTrackerButtton, "right", 5, 0)
+
+            sectionFrame.enableArenaDPSTrackerButtton = enableArenaDPSTrackerButtton
+            sectionFrame.arenaDPSTrackerOptionsButtton = arenaDPSTrackerOptionsButtton
+
+        --create a gray texture below each plugin section
+        local createBackgroupTexture = function()
+            local texture = sectionFrame:CreateTexture(nil, "background")
+            texture:SetColorTexture(1, 1, 1, .1)
+            texture:SetSize(300, 150)
+            return texture
+        end
+
+        local backgroundTexture1 = createBackgroupTexture()
+        backgroundTexture1:SetPoint("topleft", sectionFrame.streamerPluginAnchor.widget, "topleft", -5, 5)
+
+        local backgroundTexture2 = createBackgroupTexture()
+        backgroundTexture2:SetPoint("topleft", sectionFrame.eventTrackerAnchor.widget, "topleft", -5, 5)
+
+        local backgroundTexture3 = createBackgroupTexture()
+        backgroundTexture3:SetPoint("topleft", sectionFrame.currentDPSAnchor.widget, "topleft", -5, 5)
 
 
-
+        --options
         local sectionOptions = {
             {type = "label", get = function() return Loc ["STRING_GERAL"] .. ":" end, text_template = subSectionTitleTextTemplate},
 
@@ -6045,7 +6208,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX + 350, startY - 20 - 200, heightSize + 300, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX + 350, startY - 20, heightSize + 300, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -6206,7 +6369,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -6626,7 +6789,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -6712,7 +6875,7 @@ do
         }
 
         sectionFrame.sectionOptions = sectionOptions
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -6726,7 +6889,7 @@ do
 
         }
 
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)
@@ -6741,7 +6904,7 @@ do
 
         }
 
-        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DF:BuildMenu(sectionFrame, sectionOptions, startX, startY-20, heightSize, false, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
     end
 
     tinsert(Details.optionsSection, buildSection)

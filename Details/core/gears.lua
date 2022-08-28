@@ -10,16 +10,6 @@ local GetNumGroupMembers = GetNumGroupMembers
 
 local CONST_INSPECT_ACHIEVEMENT_DISTANCE = 1 --Compare Achievements, 28 yards
 
-local ItemUpgradeInfo = LibStub ("LibItemUpgradeInfo-1.0")
---local LibGroupInSpecT = LibStub ("LibGroupInSpecT-1.1") --disabled due to classic wow
-local ItemUpgradeInfo
-local LibGroupInSpecT
-
-if (DetailsFramework.IsTimewalkWoW()) then
-	ItemUpgradeInfo = false
-	LibGroupInSpecT = false
-end
-
 local storageDebug = false --remember to turn this to false!
 local store_instances = _detalhes.InstancesToStoreData
 
@@ -1921,13 +1911,8 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 				if (item) then
 					local _, _, itemRarity, iLevel, _, _, _, _, equipSlot = GetItemInfo (item)
 					if (iLevel) then
-						if (ItemUpgradeInfo) then
-							local ilvl = ItemUpgradeInfo:GetUpgradedItemLevel (item)
-							item_level = item_level + (ilvl or iLevel)
-						else
-							item_level = item_level + iLevel
-						end
-						
+						item_level = item_level + iLevel
+
 						--> 16 = main hand 17 = off hand
 						-->  if using a two-hand, ignore the off hand slot
 						if (equip_id == 16 and two_hand [equipSlot]) then
@@ -2301,36 +2286,6 @@ function _detalhes:GetSpecFromSerial (guid)
 	return _detalhes.cached_specs [guid]
 end
 
-if (LibGroupInSpecT) then
-	function _detalhes:LibGroupInSpecT_UpdateReceived (event, guid, unitid, info)
-		--> update talents
-		local talents = _detalhes.cached_talents [guid] or {}
-		local i = 1
-		for talentId, _ in pairs (info.talents) do 
-			talents [i] = talentId
-			i = i + 1
-		end
-		_detalhes.cached_talents [guid] = talents
-		
-		if (_detalhes.debug) then
-			_detalhes:Msg ("(debug) received GroupInSpecT_Update from user", guid)
-		end
-		
-		--> update spec
-		if (info.global_spec_id and info.global_spec_id ~= 0) then
-			if (not _detalhes.class_specs_coords [info.global_spec_id]) then
-				print ("Details! Spec Id Invalid:", info.global_spec_id, info.name)
-			else
-				_detalhes.cached_specs [guid] = info.global_spec_id
-			end
-		end
-		
-		--print ("LibGroupInSpecT Received from", info.name, info.global_spec_id)
-	end
-	LibGroupInSpecT.RegisterCallback (_detalhes, "GroupInSpecT_Update", "LibGroupInSpecT_UpdateReceived")
-end
-
-
 --------------------------------------------------------------------------------------------------------------------------------------------
 --compress data
 
@@ -2417,7 +2372,7 @@ if (DetailsFramework.IsTBCWow()) then
 	end)
 
 	talentWatchClassic:SetScript("OnEvent", function(self, event, ...)
-		if (talentWatchClassic.delayedUpdate and not talentWatchClassic.delayedUpdate._cancelled) then
+		if (talentWatchClassic.delayedUpdate and not talentWatchClassic.delayedUpdate:IsCancelled()) then
 			return
 		else
 			talentWatchClassic.delayedUpdate = C_Timer.NewTimer(5, Details.GetOldSchoolTalentInformation)
@@ -2426,7 +2381,7 @@ if (DetailsFramework.IsTBCWow()) then
 
 	function Details.GetOldSchoolTalentInformation()
 		--cancel any schedule
-		if (talentWatchClassic.delayedUpdate and not talentWatchClassic.delayedUpdate._cancelled) then
+		if (talentWatchClassic.delayedUpdate and not talentWatchClassic.delayedUpdate:IsCancelled()) then
 			talentWatchClassic.delayedUpdate:Cancel()
 		end
 		talentWatchClassic.delayedUpdate = nil
@@ -2511,12 +2466,7 @@ if (DetailsFramework.IsTBCWow()) then
 					if (item) then
 						local _, _, itemRarity, iLevel, _, _, _, _, equipSlot = GetItemInfo(item)
 						if (iLevel) then
-							if (ItemUpgradeInfo) then
-								local ilvl = ItemUpgradeInfo:GetUpgradedItemLevel (item)
-								item_level = item_level + (ilvl or iLevel)
-							else
-								item_level = item_level + iLevel
-							end
+							item_level = item_level + iLevel
 							
 							--> 16 = main hand 17 = off hand
 							-->  if using a two-hand, ignore the off hand slot
@@ -2691,14 +2641,18 @@ if (DetailsFramework.IsTBCWow()) then
 		ShamanEnhancement = 263,
 		ShamanRestoration = 264,
 
-		WarlockCurses = 265,
-		WarlockDestruction = 266,
-		WarlockSummoning = 267,
+		WarlockCurses = 265, --affliction
+		WarlockSummoning = 266, --demo
+		WarlockDestruction = 267, --destruction
 
 		--WarriorArm = 71,
 		WarriorArms = 71,
 		WarriorFury = 72,
 		WarriorProtection = 73,
+
+		DeathKnightBlood = 250,
+		DeathKnightFrost = 251,
+		DeathKnightUnholy = 252,
 	}
 
 
@@ -2739,6 +2693,10 @@ if (DetailsFramework.IsTBCWow()) then
 		[71] = "WarriorArms",
 		[72] = "WarriorFury",
 		[73] = "WarriorProtection",
+
+		[250] = "DeathKnightBlood",
+		[251] = "DeathKnightFrost",
+		[252] = "DeathKnightUnholy",
 	}
 
 	function Details.IsValidSpecId (specId)

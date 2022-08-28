@@ -6,6 +6,7 @@
 	We do this via clearing specific showgrid reasons on all the buttons on
 	each MultiActionBar whenever the showgrid value changes
 --]]
+
 local _, Addon = ...
 
 if not Addon:IsBuild('retail') then
@@ -41,7 +42,7 @@ local OnAttributeChanged = ([[
 ]]):format(ACTION_BUTTON_SHOW_GRID_REASON_CVAR, ACTION_BUTTON_SHOW_GRID_REASON_SPELLBOOK)
 
 -- apply to every multi bar action button
-for _, barName in pairs {'MultiBarBottomLeft', 'MultiBarBottomRight', 'MultiBarLeft', 'MultiBarRight'} do
+for _, barName in pairs { 'MultiBarBottomLeft', 'MultiBarBottomRight', 'MultiBarLeft', 'MultiBarRight' } do
     for i = 1, NUM_MULTIBAR_BUTTONS do
         local buttonName = ('%sButton%d'):format(barName, i)
         local button = _G[buttonName]

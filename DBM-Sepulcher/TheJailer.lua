@@ -1,28 +1,23 @@
 local mod	= DBM:NewMod(2464, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220817001403")
+mod:SetRevision("20220823210043")
 mod:SetCreatureID(180990)
 mod:SetEncounterID(2537)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
 mod:SetHotfixNoticeRev(20220423160000)
 mod:SetMinSyncRevision(20220329000000)
 --mod.respawnTime = 29
---mod.NoSortAnnounce = true--Disables DBM automatically sorting announce objects by diff announce types
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 362028 360373 359856 364942 360562 364488 365033 365212 365169 366374 366678 367851 360378",--363179
 	"SPELL_CAST_SUCCESS 359809 367051 363893 365436 360279 366284 365147 363332 370071 363772",
---	"SPELL_SUMMON 363175",
 	"SPELL_AURA_APPLIED 362401 360281 366285 365150 365153 362075 365219 365222 362192 368383 360174 368593 363748 368591 181089",--362024 360180
---	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED 362401 360281 366285 365150 365153 365222 368383 360174 368593 363748 368591",--360180
 	"SPELL_PERIODIC_DAMAGE 360425 365174",
 	"SPELL_PERIODIC_MISSED 360425 365174",
---	"UNIT_DIED",
---	"UNIT_SPELLCAST_START boss1",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
@@ -478,11 +473,9 @@ function mod:SPELL_CAST_START(args)
 			warnTyranny:Schedule(8)
 			timerTyrany:Start(8)--hit is at 11, so we do hit minus 3 for the cast (which is hidden)
 		end
-		if self:IsFated() then
+		if spellId == 367851 and self:IsFated() then
 			self:AffixEvent(0)--Stop Affix Bars
 		end
---	elseif spellId == 366022 then
---		warnTyranny:Show()
 	elseif spellId == 360373 then
 		self.vb.unholyCount = self.vb.unholyCount + 1
 		warnUnholyAttunement:Show(self.vb.unholyCount)
@@ -722,11 +715,6 @@ function mod:SPELL_AURA_APPLIED(args)
 			DBM.InfoFrame:SetHeader(args.spellName)
 			DBM.InfoFrame:Show(20, "playerabsorb", spellId)
 		end
---	elseif spellId == 362024 then
---		if args:IsPlayer() then
---			specWarnRelentingDomination:Show(DBM_COMMON_L.BREAK_LOS)
---			specWarnRelentingDomination:Play("findshelter")
---		end
 	elseif spellId == 362075 then
 		warnDomination:CombinedShow(1, args.destName)
 	elseif spellId == 365219 then
@@ -941,15 +929,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
---[[
-function mod:UNIT_DIED(args)
-	local cid = self:GetCIDFromGUID(args.destGUID)
-	if cid == 183787 then
-
-	end
-end
---]]
-
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
 	if (spellId == 360425 or spellId == 365174) and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
 		specWarnGTFO:Show(spellName)
@@ -982,11 +961,3 @@ mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 	--	end
 	--end
 --end
-
---[[
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 360507 then--Trigger Azeroth Visibility (may not be reliable for mythic, replace with diff P3 trigger if possible)
-
-	end
-end
---]]

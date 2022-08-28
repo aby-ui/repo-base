@@ -1,4 +1,4 @@
-U1RegisterAddon("163UI_EncounterLootPlus", {
+U1RegisterAddon("AbyEncounterLootPlus", {
     title = "爱不易装备搜索",
     defaultEnable = 1,
 

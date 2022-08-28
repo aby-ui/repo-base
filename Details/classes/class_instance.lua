@@ -314,6 +314,48 @@ function Details:GetNumLinesShown() --alis of _detalhes:GetNumRows()
 	return self.rows_fit_in_window
 end
 
+--@attributeId: DETAILS_ATTRIBUTE_DAMAGE, DETAILS_ATTRIBUTE_HEAL
+function Details:GetTop5Actors(attributeId)
+	local combatObject = self.showing
+	if (combatObject) then
+		local container = combatObject:GetContainer(attributeId)
+		if (container) then
+            local actorTable = container._ActorTable
+			return actorTable[1], actorTable[2], actorTable[3], actorTable[4], actorTable[5]
+		end
+	end
+end
+
+--@attributeId: DETAILS_ATTRIBUTE_DAMAGE, DETAILS_ATTRIBUTE_HEAL
+--@rankIndex: the rank id of the actor shown in the window
+function Details:GetActorByRank(attributeId, rankIndex)
+	local combatObject = self.showing
+	if (combatObject) then
+		local container = combatObject:GetContainer(attributeId)
+		if (container) then
+			return container._ActorTable[rankIndex]
+		end
+	end
+
+	--[=[
+	local firstRow = window1:GetLine(1)
+	if (firstRow and firstRow:IsShown()) then
+		local actor = firstRow:GetActor()
+		if (actor) then
+			local total = actor.total
+			local combatTime = Details:GetCurrentCombat():GetCombatTime()
+			print("dps:", total/combatTime)
+		end
+	end
+
+	local actorTable = container._ActorTable
+	for i = 1, #actorTable do
+		local actor = actorTable[rankIndex]
+		return actor
+	end	
+	--]=]
+end
+
 ------------------------------------------------------------------------------------------------------------------------
 
 --> retorna se a inst�ncia esta ou n�o ativa

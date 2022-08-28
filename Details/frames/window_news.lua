@@ -66,7 +66,7 @@ function Details:CreateOrOpenNewsWindow()
 	if (not frame) then
 		--build news frame
 
-		frame = DetailsFramework:CreateSimplePanel(UIParent, 480, 460, "Details! Damage Meter " .. Details.version, "DetailsNewsWindow", panel_options, db)
+		frame = DetailsFramework:CreateSimplePanel(UIParent, 480, 560, "Details! Damage Meter " .. Details.version, "DetailsNewsWindow", panel_options, db)
 		tinsert(UISpecialFrames, "DetailsNewsWindow")
 		frame:SetPoint("left", UIParent, "left", 10, 0)
 		frame:SetFrameStrata("FULLSCREEN")
@@ -83,7 +83,7 @@ function Details:CreateOrOpenNewsWindow()
 		frame.imageFrame.texture = frame.imageFrame:CreateTexture(nil, "overlay")
 		frame.imageFrame.texture:SetPoint("topleft", frame.imageFrame, "topleft")
 
-		local dumpFrame = g:CreateTextEntry(frame, function()end, 500, 512, "DumpTable", "$parentDumpTable")
+		local dumpFrame = g:CreateTextEntry(frame, function()end, 500, 612, "DumpTable", "$parentDumpTable")
 		dumpFrame.editbox:SetMultiLine (true)
 		
 		dumpFrame:SetPoint("topleft", frame, "topleft", 8, -68)
@@ -100,7 +100,7 @@ function Details:CreateOrOpenNewsWindow()
 		frame_lower:SetSize (450, 2000)
 		frame_upper:SetPoint ("topleft", frame, "topleft", 10, -30)
 		frame_upper:SetWidth(445)
-		frame_upper:SetHeight(400)
+		frame_upper:SetHeight(500)
 		frame_upper:SetBackdrop({
 				bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", 
 				tile = true, tileSize = 16,
@@ -119,14 +119,14 @@ function Details:CreateOrOpenNewsWindow()
 		
 		slider:SetThumbTexture (slider.thumb)
 		slider:SetOrientation ("vertical");
-		slider:SetSize (16, 399)
+		slider:SetSize (16, 499)
 		slider:SetPoint ("topleft", frame_upper, "topright")
 		slider:SetMinMaxValues (0, 2000)
 		slider:SetValue(0)
 		slider:SetScript("OnValueChanged", function (self)
 		      frame_upper:SetVerticalScroll (self:GetValue())
 		end)
-  
+
 		frame_upper:EnableMouseWheel (true)
 		frame_upper:SetScript("OnMouseWheel", function (self, delta)
 		      local current = slider:GetValue()

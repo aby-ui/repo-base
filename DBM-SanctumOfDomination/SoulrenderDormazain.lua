@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2445, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220216010021")
+mod:SetRevision("20220822021157")
 mod:SetCreatureID(175727)
 mod:SetEncounterID(2434)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -59,7 +59,6 @@ local specWarnAgonizingSpike				= mod:NewSpecialWarningInterruptCount(351779, "f
 local specWarnWarmongerShackles				= mod:NewSpecialWarningSwitch(350415, nil, nil, nil, 1, 2)
 --local specWarnGTFO						= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
---mod:AddTimerLine(BOSS)
 local timerTormentCD						= mod:NewCDCountTimer(35, 352158, nil, nil, nil, 3, nil, nil, true)--Ability is reset by eruption?
 local timerTormentedEruptionsCD				= mod:NewCDCountTimer(160.7, 349985, nil, nil, nil, 3, nil, nil, true)--Tied to bosses energy cycle
 local timerSpawnMawswornCD					= mod:NewCDCountTimer(57.5, 350615, nil, nil, nil, 1, nil, nil, true)--Ability is reset by eruption?

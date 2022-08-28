@@ -1935,7 +1935,7 @@ end
 -- icon Interface\Icons\warlock_summon_doomguard
 -- text_size 72
 
-function _detalhes:InitializeAuraCreationWindow()
+function _detalhes:InitializeAuraCreationWindow() if true then return end
     local DetailsAuraPanel = CreateFrame ("frame", "DetailsAuraPanel", UIParent,"BackdropTemplate")
     DetailsAuraPanel.Frame = DetailsAuraPanel
     DetailsAuraPanel.__name = L["STRING_CREATEAURA"]

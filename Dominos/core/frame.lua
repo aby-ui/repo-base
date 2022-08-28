@@ -78,7 +78,9 @@ function Frame:New(id)
 
     frame:LoadSettings()
 
-    Addon.OverrideController:Add(frame)
+    if Addon.OverrideController then
+        Addon.OverrideController:Add(frame)
+    end
 
     frame:OnAcquire(id)
     FlyPaper.AddFrame(AddonName, id, frame)
@@ -134,8 +136,13 @@ function Frame:Free(deleteSettings)
     active[self.id] = nil
 
     UnregisterStateDriver(self, 'display', 'show')
+
     Addon.FadeManager:Remove(self)
-    Addon.OverrideController:Remove(self)
+
+    if Addon.OverrideController then
+        Addon.OverrideController:Remove(self)
+    end
+
     FlyPaper.RemoveFrame(AddonName, self.id, self)
 
     self:ClearAllPoints()

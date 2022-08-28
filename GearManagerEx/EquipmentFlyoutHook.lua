@@ -40,19 +40,35 @@ if EquipmentFlyout_CreateButton then
         end
     end)
 
-    hooksecurefunc("EquipmentFlyout_DisplayButton", function(button, paperDollItemSlot)
-        button.labelBank:Hide()
-        if ( button.location == EQUIPMENTFLYOUT_IGNORESLOT_LOCATION ) then
-            return
-        elseif ( button.location == EQUIPMENTFLYOUT_UNIGNORESLOT_LOCATION ) then
-            return
-        elseif ( button.location == EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION ) then
-            return
-        elseif button.location then
-            local player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(button.location);
-            if bank then
-                button.labelBank:Show()
+    if EquipmentFlyout_UpdateItems then
+        --hooksecurefunc("EquipmentFlyout_DisplayButton", --NPC升级装备界面不调用这个方法
+        local function EquipmentFlyout_DisplayButton(button, paperDollItemSlot)
+            button.labelBank:Hide()
+            if type(button.location) == "table" then
+                return
+            end
+            if ( button.location == EQUIPMENTFLYOUT_IGNORESLOT_LOCATION ) then
+                return
+            elseif ( button.location == EQUIPMENTFLYOUT_UNIGNORESLOT_LOCATION ) then
+                return
+            elseif ( button.location == EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION ) then
+                return
+            elseif button.location then
+                local player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(button.location);
+                if bank then
+                    button.labelBank:Show()
+                end
             end
         end
-    end)
+
+        hooksecurefunc("EquipmentFlyout_UpdateItems", function()
+            local flyout = EquipmentFlyoutFrame;
+            local buttons = flyout.buttons;
+            for i, button in ipairs(buttons) do
+                if button:IsShown() then
+                    EquipmentFlyout_DisplayButton(button)
+                end
+            end
+        end)
+    end
 end

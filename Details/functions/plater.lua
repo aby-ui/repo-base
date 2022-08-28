@@ -127,7 +127,7 @@ function Details:RefreshPlaterIntegration()
 		plater_integration_frame.PlayerGUID = UnitGUID ("player")
 		
 		--> cancel the timer if already have one
-		if (plater_integration_frame.CleanUpTimer and not plater_integration_frame.CleanUpTimer._cancelled) then
+		if (plater_integration_frame.CleanUpTimer and not plater_integration_frame.CleanUpTimer:IsCancelled()) then
 			plater_integration_frame.CleanUpTimer:Cancel()
 		end
 		
@@ -149,7 +149,7 @@ function Details:RefreshPlaterIntegration()
 		plater_integration_frame.OnTickFrame:SetScript ("OnUpdate", nil)
 		
 		--> stop the cleanup process
-		if (plater_integration_frame.CleanUpTimer and not plater_integration_frame.CleanUpTimer._cancelled) then
+		if (plater_integration_frame.CleanUpTimer and not plater_integration_frame.CleanUpTimer:IsCancelled()) then
 			plater_integration_frame.CleanUpTimer:Cancel()
 		end
 	end

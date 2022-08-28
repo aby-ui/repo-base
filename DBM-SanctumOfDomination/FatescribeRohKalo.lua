@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2447, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220813015145")
+mod:SetRevision("20220823210043")
 mod:SetCreatureID(175730)
 mod:SetEncounterID(2431)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -396,7 +396,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				timerRunicAffinityCD:Start(timer, self.vb.affinityCount+1)
 			end
 		end
-	elseif spellId == 357739 then
+	elseif spellId == 357739 then--Realign Fate
 		self:SetStage(2)
 		if self:IsFated() then
 			self:AffixEvent(0)

@@ -5,14 +5,12 @@
 -- entering a pet battle, or using the override UI
 --------------------------------------------------------------------------------
 
-local AddonName,Addon = ...
+local AddonName, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 local MICRO_BUTTONS
 
-if Addon:IsBuild('bcc', 'classic') then
-    MICRO_BUTTONS = _G.MICRO_BUTTONS
-else
+if Addon:IsBuild('retail') then
     MICRO_BUTTONS = {
         'CharacterMicroButton',
         'SpellbookMicroButton',
@@ -27,6 +25,8 @@ else
         'MainMenuMicroButton'
         -- "HelpMicroButton"
     }
+else
+    MICRO_BUTTONS = _G.MICRO_BUTTONS
 end
 
 local MICRO_BUTTON_NAMES = {

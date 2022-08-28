@@ -64,6 +64,7 @@ L.ShowFramesDesc = 'Shows the given <frameList>'
 L.Shown = "Shown"
 L.ShowOptionsDesc = 'Shows the options menu'
 L.ShowOptionsTip = 'Right Click to show the options menu'
+L.TotemBarDisplayName = "Totem Bar"
 L.TipRollBar = 'Displays frames for rolling on items when in a group.'
 L.TipVehicleBar = [[Displays controls to aim and exit a vehicle.\nAll other vehicle actions are displayed on the possess bar.]]
 L.ToggleFramesDesc = 'Toggles the given <frameList>'

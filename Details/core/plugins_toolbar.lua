@@ -48,12 +48,12 @@
 		button.__name = pluginname
 		
 		--> blizzard built-in animation
-		local FourCornerAnimeFrame = CreateFrame ("frame", framename.."Blink", button, "IconIntroAnimTemplate")
-		FourCornerAnimeFrame:SetPoint ("center", button)
-		FourCornerAnimeFrame:SetWidth (w or 14)
-		FourCornerAnimeFrame:SetHeight (w or 14)
-		FourCornerAnimeFrame.glow:SetScript ("OnFinished", nil)
-		button.blink = FourCornerAnimeFrame
+		--local FourCornerAnimeFrame = CreateFrame ("frame", framename.."Blink", button) --, "IconIntroAnimTemplate" --stop using 'IconIntroAnimTemplate' as older versions of the game doesn't have it
+		--FourCornerAnimeFrame:SetPoint ("center", button)
+		--FourCornerAnimeFrame:SetWidth (w or 14)
+		--FourCornerAnimeFrame:SetHeight (w or 14)
+		--FourCornerAnimeFrame.glow:SetScript ("OnFinished", nil)
+		--button.blink = FourCornerAnimeFrame
 		
 		_detalhes.ToolBar.AllButtons [#_detalhes.ToolBar.AllButtons+1] = button
 		
@@ -97,12 +97,12 @@
 		if (Effect) then
 			if (type (Effect) == "string") then
 				if (Effect == "blink") then
-					Button.blink.glow:Play()
+					--Button.blink.glow:Play() --.blink and .glow doesn't exists anymore due to removal of the template 'IconIntroAnimTemplate'
 				elseif (Effect == "star") then
-					Button.StarAnim:Play()
+					--Button.StarAnim:Play()
 				end
 			elseif (Effect) then
-				Button.blink.glow:Play()
+				--Button.blink.glow:Play()
 			end
 		end
 		

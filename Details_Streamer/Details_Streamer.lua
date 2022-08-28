@@ -851,7 +851,7 @@ local function CreatePluginFrames()
 			StreamOverlay:RefreshInUse()
 		end
 	end
-	
+
 	function StreamOverlay:SetBackgroundColor (r, g, b, a)
 		if (not r) then
 			r, g, b, a = unpack (StreamOverlay.db.main_frame_color)
@@ -861,7 +861,10 @@ local function CreatePluginFrames()
 		end
 		SOF:SetBackdropColor (r, g, b, a)
 	end
-	
+
+	function StreamOverlay:ApplyBackgroundColor(r, g, b, a)
+		SOF:SetBackdropColor(r, g, b, a)
+	end
 end
 
 local playername = UnitName ("player")
@@ -1187,6 +1190,8 @@ listener.track_spell_cast = function()
 			local line = StreamOverlay.squares[i]
 			local castinfo = CastsTable[content.CastID]
 			
+			StreamOverlay:ApplyBackgroundColor(0, 0, 0, 0)
+
 			if (not castinfo.Done and line) then
 
 				--> is being casted?
@@ -1277,7 +1282,7 @@ function listener:RegisterMyEvents()
 	listener:RegisterEvent ("UNIT_SPELLCAST_CHANNEL_UPDATE")
 	listener:RegisterEvent ("UNIT_SPELLCAST_STOP")
 
-	if (not DetailsFramework.IsTBCWow()) then
+	if (not DetailsFramework.IsTBCWow() and not DetailsFramework.IsWotLKWow()) then
 		listener:RegisterEvent ("UNIT_SPELLCAST_INTERRUPTIBLE")
 		listener:RegisterEvent ("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 	end
@@ -1296,7 +1301,7 @@ function listener:UnregisterMyEvents()
 	listener:UnregisterEvent ("UNIT_SPELLCAST_CHANNEL_UPDATE")
 	listener:UnregisterEvent ("UNIT_SPELLCAST_STOP")
 
-	if (not DetailsFramework.IsTBCWow()) then
+	if (not DetailsFramework.IsTBCWow() and not DetailsFramework.IsWotLKWow()) then
 		listener:UnregisterEvent ("UNIT_SPELLCAST_INTERRUPTIBLE")
 		listener:UnregisterEvent ("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
 	end
@@ -1677,8 +1682,57 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 		options_frame:SetBackdropColor (0, 0, 0, 0.5)
 		options_frame:SetBackdropBorderColor (0, 0, 0, 1)
 		options_frame:SetWidth (520)
-		options_frame:SetHeight (520)
-		
+		options_frame:SetHeight (625)
+
+		local selectModeFrame = CreateFrame("frame", nil, options_frame, "BackdropTemplate")
+		DetailsFramework:ApplyStandardBackdrop(selectModeFrame)
+		selectModeFrame:SetPoint("topleft", options_frame, "topleft", 5, -95)
+		selectModeFrame:SetSize(options_frame:GetWidth()-10, 120)
+
+		local selectedFrame = CreateFrame("frame", nil, selectModeFrame, "BackdropTemplate")
+		selectedFrame:SetSize(260, 81)
+		selectedFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 3})
+		selectedFrame:SetBackdropBorderColor(1, 1, 0, 0.75)
+
+		local selectClassicMode = function()
+			StreamOverlay.db.use_square_mode = false
+			StreamOverlay:Refresh()
+			selectedFrame:SetPoint("topleft", selectModeFrame.classicModeSelectButton.widget, "topleft", -3, 3)
+			selectedFrame:SetSize(238, 84)
+		end
+
+		local selectSquareMode = function()
+			StreamOverlay.db.use_square_mode = true
+			StreamOverlay:Refresh()
+			selectedFrame:SetPoint("topleft", selectModeFrame.squareModeSelectButton.widget, "topleft", -6, 3)
+			selectedFrame:SetSize(240, 84)
+		end
+
+		local selectModeLabel = DetailsFramework:CreateLabel(selectModeFrame, "Select Mode (test casting some spells)", 14, "orange")
+		selectModeLabel:SetPoint("top", options_frame, "top", 0, -100)
+
+		local classicModeSelectButton = DetailsFramework:CreateButton(selectModeFrame, selectClassicMode, 256, 77, "")
+		classicModeSelectButton:SetPoint("topleft", options_frame, "topleft", 15, -120)
+		local classicModeTexture = classicModeSelectButton:CreateTexture(nil, "overlay")
+		classicModeTexture:SetTexture([[Interface\Addons\Details_Streamer\images\tracker_full]])
+		classicModeTexture:SetAllPoints()
+		classicModeTexture:SetTexCoord(0, 1, .15, .75)
+
+		local squareModeSelectButton = DetailsFramework:CreateButton(selectModeFrame, selectSquareMode, 200, 77, "")
+		squareModeSelectButton:SetPoint("left", classicModeSelectButton, "right", 0, 0)
+		local squareModeTexture = squareModeSelectButton:CreateTexture(nil, "overlay")
+		squareModeTexture:SetTexture([[Interface\Addons\Details_Streamer\images\tracker_square]])
+		squareModeTexture:SetPoint("center", 25, -10)
+
+		selectModeFrame.classicModeSelectButton = classicModeSelectButton
+		selectModeFrame.squareModeSelectButton = squareModeSelectButton
+
+		if (StreamOverlay.db.use_square_mode) then
+			selectSquareMode()
+		else
+			selectClassicMode()
+		end
+
 		-- select texture
 		local set_row_texture = function (_, _, value)
 			StreamOverlay.db.row_texture = value
@@ -1763,45 +1817,6 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 
 		local options = {
 			{
-				get = function() return StreamOverlay.db.use_square_mode end,
-				set = function (self, fixedParam, value) 
-					StreamOverlay.db.use_square_mode = value
-					StreamOverlay:Refresh()
-				end,
-				type = "toggle",
-				name = "Use Square Mode",
-				desc = "You need to /reload after change.",
-			},
-			{
-				type = "range",
-				get = function() return StreamOverlay.db.square_amount end,
-				set = function (self, fixedparam, value) 
-					StreamOverlay.db.square_amount = value
-					StreamOverlay:Refresh()
-				end,
-				min = 3,
-				max = 16,
-				step = 1,
-				desc = "Square Amount",
-				name = "Square Amount",
-			},
-			{
-				type = "range",
-				get = function() return StreamOverlay.db.square_size end,
-				set = function (self, fixedparam, value) 
-					StreamOverlay.db.square_size = value
-					StreamOverlay:RefreshAllBoxesStyle()
-				end,
-				min = 10,
-				max = 256,
-				step = 1,
-				desc = "Square Size",
-				name = "Square Size",
-			},
-
-			{type = "space"},
-
-			{
 				type = "toggle",
 				name = "Locked",
 				desc = "Can't move or interact within the frame when it's locked.",
@@ -1811,7 +1826,21 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 					StreamOverlay:SetLocked (not StreamOverlay.db.main_frame_locked)
 				end,
 			},
-			
+
+			{
+				type = "toggle",
+				name = "Minimap Icon",
+				desc = "Show/Hide minimap icon.",
+				order = 1,
+				get = function() return not StreamOverlay.db.minimap.hide end,
+				set = function (self, fixedParam, val) 
+					StreamOverlay.db.minimap.hide = not StreamOverlay.db.minimap.hide
+					if (LDBIcon) then
+						LDBIcon:Refresh ("DetailsStreamer", StreamOverlay.db.minimap)
+					end
+				end,
+			},
+
 			{
 				type = "color",
 				get = function() return StreamOverlay.db.main_frame_color end,
@@ -1979,23 +2008,36 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 				end,
 			},
 
-			{type = "space"},
-			
+			{type = "breakline"},
+
 			{
-				type = "toggle",
-				name = "Minimap Icon",
-				desc = "Show/Hide minimap icon.",
-				order = 1,
-				get = function() return not StreamOverlay.db.minimap.hide end,
-				set = function (self, fixedParam, val) 
-					StreamOverlay.db.minimap.hide = not StreamOverlay.db.minimap.hide
-					if (LDBIcon) then
-						LDBIcon:Refresh ("DetailsStreamer", StreamOverlay.db.minimap)
-					end
+				type = "range",
+				get = function() return StreamOverlay.db.square_amount end,
+				set = function (self, fixedparam, value) 
+					StreamOverlay.db.square_amount = value
+					StreamOverlay:Refresh()
 				end,
+				min = 3,
+				max = 16,
+				step = 1,
+				desc = "Square Amount",
+				name = "Square Amount",
 			},
-			
-			{type = "space"},
+			{
+				type = "range",
+				get = function() return StreamOverlay.db.square_size end,
+				set = function (self, fixedparam, value) 
+					StreamOverlay.db.square_size = value
+					StreamOverlay:RefreshAllBoxesStyle()
+				end,
+				min = 10,
+				max = 256,
+				step = 1,
+				desc = "Square Size",
+				name = "Square Size",
+			},
+
+			{type = "blank"},
 			
 			{
 				type = "select",
@@ -2098,7 +2140,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 			
 		}
 		
-		fw:BuildMenu (options_frame, options, 15, -120, 560, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+		fw:BuildMenu (options_frame, options, 15, -235, 860, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 		
 		--select profile dropdown
 		local select_profile = function (_, _, profileName)
@@ -2148,7 +2190,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 		local label_profile = Details.gump:CreateLabel (options_frame, "Profile" .. ": ", Details.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE"))
 		local dropdown_profile = Details.gump:CreateDropDown (options_frame, select_profile_fill, nil, 160, 20, "dropdown_profile", nil, Details.gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 		dropdown_profile:SetPoint ("left", label_profile, "right", 2, 0)
-		label_profile:SetPoint ("topleft", options_frame, "topleft", 15, -75)
+		label_profile:SetPoint ("topleft", options_frame, "topleft", 15, -65)
 		
 		local pname = UnitName ("player") .. " - " .. GetRealmName()
 		dropdown_profile:Select (Details_StreamerDB.characters [pname])
@@ -2203,7 +2245,7 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 		local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
 
 		local toggleButton = DetailsFramework:CreateButton(options_frame, toggle_OnOff, 120, 20, pluginStable.enabled and "Disable Plugin" or "Start Plugin")
-		toggleButton:SetPoint ("topleft", options_frame, "topleft", 15, -45)
+		toggleButton:SetPoint ("topleft", options_frame, "topleft", 15, -35)
 		toggleButton:SetTemplate(DetailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
 
 		options_frame.toggleButton = toggleButton
@@ -2216,6 +2258,21 @@ function StreamOverlay.OpenOptionsPanel (from_options_panel)
 				end)
 			end
 		end)
+
+		options_frame:SetScript("OnShow", function()
+			local pluginStable = Details:GetPluginSavedTable("DETAILS_PLUGIN_STREAM_OVERLAY")
+			local pluginObject = Details:GetPlugin("DETAILS_PLUGIN_STREAM_OVERLAY")
+
+			if (pluginObject) then
+				if (pluginStable.enabled) then
+					toggleButton:SetText("Disable Plugin")
+				else
+					toggleButton:SetText("Enable Plugin")
+				end
+			end
+		end)
+
+
 		
 	end
 	

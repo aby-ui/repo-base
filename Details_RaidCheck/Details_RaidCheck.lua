@@ -1,4 +1,9 @@
 
+--do not load if this is a classic version of the game
+if (DetailsFramework.IsTBCWow() or DetailsFramework.IsWotLKWow()) then
+	return
+end
+
 local UnitAura = UnitAura
 local UnitBuff = UnitBuff
 local GetSpellInfo = GetSpellInfo

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FatedAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220817001403")
+mod:SetRevision("20220825200607")
 --mod:SetModelID(47785)
 mod:SetZone(2296, 2450, 2481)--Shadowlands Raids
 
@@ -25,6 +25,10 @@ mod:RegisterEvents(
 (ability.id = 372419 or ability.id = 372642 or ability.id = 372418 or ability.id = 372647 or ability.id = 372424) and type = "applybuff"
  or ability.id = 372638 and type = "begincast" or ability.id = 371254
  or (ability.id = 369505 or ability.id = 371447 or ability.id = 372286) and (type = "applybuff" or type = "applydebuff")
+ or (ability.id = 328921 or ability.id = 330959 or ability.id = 323402 or ability.id = 348805 or ability.id = 328117 or ability.id = 355525 or ability.id = 357739 or ability.id = 362505 or ability.id = 361200 or ability.id = 360300 or ability.id = 360304) and (type = "removebuff")
+ or (ability.id = 347376 or ability.id = 330959 or ability.id = 357729 or ability.id = 326005) and type = "cast"
+ or (ability.id = 348805 or ability.id = 350857 or ability.id = 348146 or ability.id = 355525 or ability.id = 352051 or ability.id = 357739 or ability.id = 362505 or ability.id = 360300 or ability.id = 360304 or ability.id = 368383 or ability.id = 181089 or ability.id = 323402) and type = "applybuff"
+ or (ability.id = 348974 or ability.id = 328117 or ability.id = 333932 or ability.id = 352293 or ability.id = 359235 or ability.id = 359236 or ability.id = 363130 or ability.id = 360717 or ability.id = 363533 or ability.id = 364114 or ability.id = 367851 or ability.id = 367290 or ability.id = 352660 or ability.id = 352538) and type = "begincast"
  or ability.id = 371597 or ability.id = 372634
 --]]
 local warnChaoticDestruction					= mod:NewCastAnnounce(372638, 3)--Add activating
@@ -57,10 +61,10 @@ local specialTimers = {
 			--Castle Nathria
 			[2418] = {75},--Huntsman Altimor
 			[2412] = {75, 75},--Council of Blood (always 75, but restarts after dances)
-			[2402] = {},--Kael
+			[2402] = {75},--Kael
 			[2398] = {},--Shriekwing
 			[2405] = {},--Artificer XyMox
-			[2383] = {},--Hungering Destroyer
+			[2383] = {75},--Hungering Destroyer
 			[2406] = {},--Lady Inerva Darkvein
 			[2399] = {},--Sludgefist
 			[2417] = {},--Stoneborne Generals
@@ -91,36 +95,36 @@ local specialTimers = {
 		},
 		[1] = {--Initial pull/new stages (pull count reduced by 1 due to delayed start)
 			--Castle Nathria
-			[2418] = {3.8},--Huntsman Altimor
-			[2412] = {3.8, 3.2},--Council of Blood
-			[2402] = {},--Kael
+			[2418] = {4.8},--Huntsman Altimor
+			[2412] = {4.8, 3.2},--Council of Blood
+			[2402] = {4.8},--Kael
 			[2398] = {},--Shriekwing
 			[2405] = {},--Artificer XyMox
-			[2383] = {},--Hungering Destroyer
+			[2383] = {4.8},--Hungering Destroyer
 			[2406] = {},--Lady Inerva Darkvein
 			[2399] = {},--Sludgefist
 			[2417] = {},--Stoneborne Generals
-			[2407] = {23.9, 10.5, 29.5},--Sire Denathrius (sometimes sire will skip first cast in stage 2)
+			[2407] = {24.9, 10.5, 29.5},--Sire Denathrius (sometimes sire will skip first cast in stage 2)
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
 			[2433] = {},--The Eye of the Jailer
 			[2429] = {},--The Nine
-			[2432] = {3.8},--Remnant of Ner'zhul
+			[2432] = {4.8},--Remnant of Ner'zhul
 			[2434] = {},--Soulrender Dormazain
 			[2430] = {},--Painsmith Raznal
 			[2436] = {},--Guardian of the First Ones
-			[2431] = {3.8, 10, 10},--Fatescribe Roh-Kalo
+			[2431] = {4.8, 10, 10},--Fatescribe Roh-Kalo
 			[2422] = {},--Kel'Thuzad
 			[2435] = {},--Sylvanas Windrunner
 			--Sepulcher of the First Ones
 			[2512] = {},--Vigilant Guardian
-			[2542] = {3.8},--Skolex, the Insatiable Ravener
+			[2542] = {4.8},--Skolex, the Insatiable Ravener
 			[2553] = {},--Artificer Xy'mox
 			[2540] = {},--Dausegne, the Fallen Oracle
-			[2544] = {3.8},--Prototype Pantheon
+			[2544] = {4.8},--Prototype Pantheon
 			[2539] = {},--Lihuvim, Principal Architect
 			[2529] = {},--Halondrus the Reclaimer
-			[2546] = {3.8, 8.6},--Anduin Wrynn
+			[2546] = {4.8, 8.6},--Anduin Wrynn
 			[2543] = {},--Lords of Dread
 			[2549] = {},--Rygelon
 			[2537] = {},--The Jailer
@@ -132,12 +136,12 @@ local specialTimers = {
 			[2418] = {},--Huntsman Altimor
 			[2412] = {},--Council of Blood
 			[2402] = {},--Kael
-			[2398] = {},--Shriekwing
+			[2398] = {58.8, 58.8},--Shriekwing
 			[2405] = {58.8},--Artificer XyMox
 			[2383] = {},--Hungering Destroyer
-			[2406] = {},--Lady Inerva Darkvein
+			[2406] = {58.8},--Lady Inerva Darkvein
 			[2399] = {58.8},--Sludgefist
-			[2417] = {},--Stoneborne Generals
+			[2417] = {58.8},--Stoneborne Generals
 			[2407] = {},--Sire Denathrius
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
@@ -168,24 +172,24 @@ local specialTimers = {
 			[2418] = {},--Huntsman Altimor
 			[2412] = {},--Council of Blood
 			[2402] = {},--Kael
-			[2398] = {},--Shriekwing
-			[2405] = {10},--Artificer XyMox
+			[2398] = {11, 12.4},--Shriekwing
+			[2405] = {11},--Artificer XyMox
 			[2383] = {},--Hungering Destroyer
-			[2406] = {},--Lady Inerva Darkvein
-			[2399] = {10},--Sludgefist
-			[2417] = {},--Stoneborne Generals
+			[2406] = {11},--Lady Inerva Darkvein
+			[2399] = {11},--Sludgefist
+			[2417] = {11},--Stoneborne Generals
 			[2407] = {},--Sire Denathrius
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
-			[2433] = {10, 3.3, 35.1},--The Eye of the Jailer
+			[2433] = {11, 3.3, 35.1},--The Eye of the Jailer
 			[2429] = {},--The Nine
 			[2432] = {},--Remnant of Ner'zhul
 			[2434] = {},--Soulrender Dormazain
-			[2430] = {10, 17.3, 17.3},--Painsmith Raznal
+			[2430] = {11, 17.3, 17.3},--Painsmith Raznal
 			[2436] = {},--Guardian of the First Ones
 			[2431] = {},--Fatescribe Roh-Kalo
 			[2422] = {},--Kel'Thuzad
-			[2435] = {10, 0, 26},--Sylvanas Windrunner (stage 2 timers are chaotic and not quite figured out yet, so disabled)
+			[2435] = {11, 0, 26},--Sylvanas Windrunner (stage 2 timers are chaotic and not quite figured out yet, so disabled)
 			--Sepulcher of the First Ones
 			[2512] = {},--Vigilant Guardian
 			[2542] = {},--Skolex, the Insatiable Ravener
@@ -193,7 +197,7 @@ local specialTimers = {
 			[2540] = {},--Dausegne, the Fallen Oracle
 			[2544] = {},--Prototype Pantheon
 			[2539] = {},--Lihuvim, Principal Architect
-			[2529] = {10, 17.4},--Halondrus the Reclaimer
+			[2529] = {11, 17.4},--Halondrus the Reclaimer
 			[2546] = {},--Anduin Wrynn
 			[2543] = {},--Lords of Dread
 			[2549] = {0, 15.7},--Rygelon (doesn't use affix on engage at all. Instead, affix is disabled and only enabled in singularity stages)
@@ -208,10 +212,10 @@ local specialTimers = {
 			[2412] = {},--Council of Blood
 			[2402] = {60},--Kael (always 60 but reflection of guilt fading causes an ICD that delays current cast, but not one after it)
 			[2398] = {},--Shriekwing
-			[2405] = {},--Artificer XyMox
+			[2405] = {60},--Artificer XyMox
 			[2383] = {60},--Hungering Destroyer
 			[2406] = {},--Lady Inerva Darkvein
-			[2399] = {},--Sludgefist
+			[2399] = {70},--Sludgefist
 			[2417] = {},--Stoneborne Generals
 			[2407] = {},--Sire Denathrius
 			--Sanctum of Domination
@@ -242,35 +246,35 @@ local specialTimers = {
 			--Castle Nathria
 			[2418] = {},--Huntsman Altimor
 			[2412] = {},--Council of Blood
-			[2402] = {13.8},--Kael
+			[2402] = {14.8},--Kael
 			[2398] = {},--Shriekwing
-			[2405] = {},--Artificer XyMox
-			[2383] = {13.8},--Hungering Destroyer
+			[2405] = {14.8},--Artificer XyMox
+			[2383] = {14.8},--Hungering Destroyer
 			[2406] = {},--Lady Inerva Darkvein
-			[2399] = {},--Sludgefist
+			[2399] = {35},--Sludgefist
 			[2417] = {},--Stoneborne Generals
 			[2407] = {},--Sire Denathrius
 			--Sanctum of Domination
-			[2423] = {13.8},--The Tarragrue
+			[2423] = {14.8},--The Tarragrue
 			[2433] = {},--The Eye of the Jailer
 			[2429] = {},--The Nine
 			[2432] = {},--Remnant of Ner'zhul
-			[2434] = {13.8},--Soulrender Dormazain
+			[2434] = {14.8},--Soulrender Dormazain
 			[2430] = {},--Painsmith Raznal
 			[2436] = {},--Guardian of the First Ones
 			[2431] = {},--Fatescribe Roh-Kalo
-			[2422] = {13.8, 15},--Kel'Thuzad
+			[2422] = {14.8, 15},--Kel'Thuzad
 			[2435] = {},--Sylvanas Windrunner
 			--Sepulcher of the First Ones
 			[2512] = {},--Vigilant Guardian
 			[2542] = {},--Skolex, the Insatiable Ravener
-			[2553] = {13.8},--Artificer Xy'mox
-			[2540] = {13.8},--Dausegne, the Fallen Oracle
+			[2553] = {14.8},--Artificer Xy'mox
+			[2540] = {14.8},--Dausegne, the Fallen Oracle
 			[2544] = {},--Prototype Pantheon
 			[2539] = {},--Lihuvim, Principal Architect
 			[2529] = {},--Halondrus the Reclaimer
 			[2546] = {},--Anduin Wrynn
-			[2543] = {19, 19},--Lords of Dread
+			[2543] = {20, 19},--Lords of Dread
 			[2549] = {},--Rygelon
 			[2537] = {},--The Jailer
 		},
@@ -279,8 +283,8 @@ local specialTimers = {
 	[372647] = {-- Creation Spark
 		[0] = {--Repeating Timer
 			--Castle Nathria
-			[2418] = {},--Huntsman Altimor
-			[2412] = {},--Council of Blood
+			[2418] = {44.9},--Huntsman Altimor
+			[2412] = {44.9, 44.9},--Council of Blood
 			[2402] = {},--Kael
 			[2398] = {44.9, 44.9},--Shriekwing
 			[2405] = {},--Artificer XyMox
@@ -288,7 +292,7 @@ local specialTimers = {
 			[2406] = {44.9},--Lady Inerva Darkvein
 			[2399] = {},--Sludgefist
 			[2417] = {44.9},--Stoneborne Generals
-			[2407] = {},--Sire Denathrius
+			[2407] = {57.9, 84.9, 70},--Sire Denathrius
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
 			[2433] = {},--The Eye of the Jailer
@@ -315,39 +319,39 @@ local specialTimers = {
 		},
 		[1] = {--Initial pull/new stages (pull count reduced by 1 due to delayed start)
 			--Castle Nathria
-			[2418] = {},--Huntsman Altimor
-			[2412] = {},--Council of Blood
+			[2418] = {19.9},--Huntsman Altimor
+			[2412] = {19.9, 18.2},--Council of Blood
 			[2402] = {},--Kael
-			[2398] = {18.9, 20},--Shriekwing
+			[2398] = {19.9, 20},--Shriekwing
 			[2405] = {},--Artificer XyMox
 			[2383] = {},--Hungering Destroyer
-			[2406] = {18.9},--Lady Inerva Darkvein
+			[2406] = {19.9},--Lady Inerva Darkvein
 			[2399] = {},--Sludgefist
-			[2417] = {18.9},--Stoneborne Generals
-			[2407] = {},--Sire Denathrius
+			[2417] = {19.9},--Stoneborne Generals
+			[2407] = {3, 24.5, 39.5},--Sire Denathrius
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
 			[2433] = {},--The Eye of the Jailer
-			[2429] = {18.9},--The Nine
+			[2429] = {19.9},--The Nine
 			[2432] = {},--Remnant of Ner'zhul
 			[2434] = {},--Soulrender Dormazain
 			[2430] = {},--Painsmith Raznal
-			[2436] = {29, 9},--Guardian of the First Ones
+			[2436] = {30, 9},--Guardian of the First Ones
 			[2431] = {},--Fatescribe Roh-Kalo
 			[2422] = {},--Kel'Thuzad
 			[2435] = {},--Sylvanas Windrunner
 			--Sepulcher of the First Ones
-			[2512] = {18.9},--Vigilant Guardian
+			[2512] = {19.9},--Vigilant Guardian
 			[2542] = {},--Skolex, the Insatiable Ravener
 			[2553] = {},--Artificer Xy'mox
 			[2540] = {},--Dausegne, the Fallen Oracle
 			[2544] = {},--Prototype Pantheon
-			[2539] = {18.9, 20},--Lihuvim, Principal Architect
+			[2539] = {19.9, 20},--Lihuvim, Principal Architect
 			[2529] = {},--Halondrus the Reclaimer
 			[2546] = {},--Anduin Wrynn
 			[2543] = {},--Lords of Dread
 			[2549] = {},--Rygelon
-			[2537] = {18.9, 20.9, 33.9, 0},--The Jailer (stage 4 not yet known)
+			[2537] = {19.9, 20.9, 33.9, 0},--The Jailer (stage 4 not yet known)
 		},
 
 	},
@@ -646,41 +650,73 @@ function mod:SPELL_AURA_REMOVED(args)
 end
 
 do
-	local function CheckBosses(eID)
-		local vulnerable = false
-		for i = 1, 5 do
+	local function CheckBosses(eID, delay)
+		local found = false
+		for i = 1, 8 do
 			local unitID = "boss"..i
 			local unitGUID = UnitGUID(unitID)
-			if UnitExists(unitID) and not activeBosses[eID] then
-				activeBosses[eID] = 1
+			if UnitExists(unitID) then
 				--Currently it's only possible for bosses to have one of them
 				--However, we don't elseif rule it because it future proofs support for a case boss might later support 2+
 				--Code will break if more than one boss pulled at same time with same affix though
 				--All timers are minus 1
-				if DBM:UnitBuff(unitID, 372419) then--Fated Power: Reconfiguration Emitter
+				if DBM:UnitBuff(unitID, 372419) and not activeAffixes[372419] then--Fated Power: Reconfiguration Emitter
+					found = true
 					activeAffixes[372419] = eID
 					borrowedTime[372419] = nil
-					timerReconfigurationEmitterCD:Start(specialTimers[372419][1][eID][1] or 3.9)
+					local timer = (specialTimers[372419][1][eID][1] or 4.9)-delay
+					if timer > 0 then
+						timerReconfigurationEmitterCD:Start(timer)
+					end
 				end
-				if DBM:UnitBuff(unitID, 372642) then--Fated Power: Chaotic Essence
+				if DBM:UnitBuff(unitID, 372642) and not activeAffixes[372642] then--Fated Power: Chaotic Essence
+					found = true
 					activeAffixes[372642] = eID
 					borrowedTime[372642] = nil
-					timerChaoticEssenceCD:Start(specialTimers[372642][1][eID][1] or 10.1)
+					local timer = (specialTimers[372642][1][eID][1] or 11)-delay
+					if timer > 0 then
+						timerChaoticEssenceCD:Start(timer)
+					end
 				end
-				if DBM:UnitBuff(unitID, 372418) then--Fated Power: Protoform Barrier
+				if DBM:UnitBuff(unitID, 372418) and not activeAffixes[372418] then--Fated Power: Protoform Barrier
+					found = true
 					activeAffixes[372418] = eID
 					borrowedTime[372418] = nil
-					timerProtoformBarrierCD:Start(specialTimers[372418][1][eID][1] or 14)
+					local timer = (specialTimers[372418][1][eID][1] or 15)-delay
+					if timer > 0 then
+						timerProtoformBarrierCD:Start(timer)
+					end
 				end
-				if DBM:UnitBuff(unitID, 372647) then--Fated Power: Creation Spark
+				if DBM:UnitBuff(unitID, 372647) and not activeAffixes[372647] then--Fated Power: Creation Spark
+					found = true
 					activeAffixes[372647] = eID
 					borrowedTime[372647] = nil
-					timerCreationSparkCD:Start(specialTimers[372647][1][eID][1] or 18.9)
+					local timer = (specialTimers[372647][1][eID][1] or 19.9)-delay
+					if timer > 0 then
+						timerCreationSparkCD:Start(timer)
+					end
 				end
-				if DBM:UnitBuff(unitID, 372424) then--Fated Power: Replicating Essence
+				if DBM:UnitBuff(unitID, 372424) and not activeAffixes[372424] then--Fated Power: Replicating Essence
+					found = true
 					activeAffixes[372424] = eID
 					borrowedTime[372424] = nil
-					timerReplicatingEssenceCD:Start(1)--specialTimers[372424][1][eID][1] or
+					--local timer = specialTimers[372424][1][eID][1]
+					--if timer > 0 then
+						timerReplicatingEssenceCD:Start(1)
+					--end
+				end
+				if found then
+					activeBosses[eID] = 1
+				end
+			end
+		end
+		if not found then
+			--Failed to find any affix on any boss ID, in a raid that's fated, try again after delay
+			if delay < 10 then
+				mod:Schedule(2, CheckBosses, eID, delay+2)
+			else
+				if not activeBosses[eID] then
+					DBM:AddMsg("Failed to detect Fated affix after 10 seconds of scanning, notify DBM authors with this ID: "..eID)
 				end
 			end
 		end
@@ -691,13 +727,14 @@ do
 		--Delay check to make sure INSTANCE_ENCOUNTER_ENGAGE_UNIT has fired and boss unit Ids are valid
 		--Yet we avoid using INSTANCE_ENCOUNTER_ENGAGE_UNIT directly since that increases timer start variation versus ENCOUNTER_START by a few milliseconds
 		self:Unschedule(CheckBosses, eID)
-		self:Schedule(1, CheckBosses, eID)
+		self:Schedule(1, CheckBosses, eID, 1)
 	end
 
 	function mod:ENCOUNTER_END(eID)
 		--Carefully only terminate fated timers if fated was active for fight and specific affix was active for fight
 		--This way we can try to avoid canceling timers for other fights that might be engaged at same time
 		if activeBosses[eID] then
+			self:Unschedule(CheckBosses, eID)
 			if activeAffixes[372419] then--Fated Power: Reconfiguration Emitter
 				activeAffixes[372419] = nil
 				borrowedTime[372419] = nil

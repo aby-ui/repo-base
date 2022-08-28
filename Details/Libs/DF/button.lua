@@ -1200,8 +1200,8 @@ end
 local color_button_height = 16
 local color_button_width = 16
 
-local set_colorpick_color = function (button, r, g, b, a)
-	a = a or 1
+local setColorPickColor = function (button, r, g, b, a)
+	r, g, b, a = DF:ParseColors(r, g, b, a)
 	button.color_texture:SetVertexColor (r, g, b, a)
 end
 
@@ -1209,20 +1209,24 @@ local colorpick_cancel = function (self)
 	ColorPickerFrame:Hide()
 end
 
+local getColorPickColor = function(self)
+	return self.color_texture:GetVertexColor()
+end
+
 function DF:CreateColorPickButton (parent, name, member, callback, alpha, button_template)
 	return DF:NewColorPickButton (parent, name, member, callback, alpha, button_template)
 end
 
 function DF:NewColorPickButton (parent, name, member, callback, alpha, button_template)
-
 	--button
 	local button = DF:NewButton (parent, _, name, member, color_button_width, color_button_height, pickcolor, alpha, "param2", nil, nil, nil, button_template)
 	button.color_callback = callback
 	button.Cancel = colorpick_cancel
-	button.SetColor = set_colorpick_color
-	
+	button.SetColor = setColorPickColor
+	button.GetColor = getColorPickColor
+
 	button.HookList.OnColorChanged = {}
-	
+
 	if (not button_template) then
 		button:InstallCustomTexture()
 		button:SetBackdrop ({edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]], edgeSize = 6,
@@ -1242,7 +1246,6 @@ function DF:NewColorPickButton (parent, name, member, callback, alpha, button_te
 	img:SetPoint ("topleft", button.widget, "topleft", 0, 0)
 	img:SetPoint ("bottomright", button.widget, "bottomright", 0, 0)
 	img:SetDrawLayer ("background", 3)
-	
+
 	return button
-	
 end

@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220823030710")
 mod:SetCreatureID(114262, 114264)--114264 midnight
 mod:SetEncounterID(1960)--Verify
 mod:SetUsedIcons(1)
@@ -14,6 +14,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 227363 227365 227339 227493 228852",
+	"VEHICLE_ANGLE_UPDATE",
 	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2"
 )
 
@@ -27,7 +28,6 @@ local specWarnMortalStrike			= mod:NewSpecialWarningDefensive(227493, "Tank", ni
 local specWarnSharedSuffering		= mod:NewSpecialWarningMoveTo(228852, nil, nil, nil, 3, 2)
 local yellSharedSuffering			= mod:NewYell(228852)
 
-local timerPresenceCD				= mod:NewAITimer(11, 227404, nil, "Healer", nil, 5, nil, DBM_COMMON_L.HEALER_ICON)--FIXME, one day
 local timerMortalStrikeCD			= mod:NewNextTimer(11, 227493, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerSharedSufferingCD		= mod:NewNextTimer(19, 228852, nil, nil, nil, 3, nil, nil, nil, 1, 4)
 
@@ -73,15 +73,11 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 227338 then--Riderless
-		timerPresenceCD:Stop()
 		timerMortalStrikeCD:Start()
 		timerSharedSufferingCD:Start()
 	elseif spellId == 227584 or spellId == 227601 then--Mounted or Intermission
 		timerMortalStrikeCD:Stop()
 		timerSharedSufferingCD:Stop()
-		timerPresenceCD:Start(2)
-	elseif spellId == 227404 then--Intangible Presence
-		timerPresenceCD:Start()
 	end
 end
 

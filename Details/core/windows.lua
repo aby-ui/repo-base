@@ -1380,7 +1380,7 @@
 						end
 
 					elseif (button == "RightButton") then
-					
+						--minimap menu
 						GameTooltip:Hide()
 						local GameCooltip = GameCooltip
 						
@@ -1599,7 +1599,7 @@ function Details:LoadFramesForBroadcastTools()
 		end
 	
 	--> current dps
-		local bIsEnabled = _detalhes.current_dps_meter.enabled and (_detalhes.current_dps_meter.arena_enabled or _detalhes.current_dps_meter.mythic_dungeon_enabled)
+		local bIsEnabled = _detalhes.realtime_dps_meter.enabled and (_detalhes.realtime_dps_meter.arena_enabled or _detalhes.realtime_dps_meter.mythic_dungeon_enabled)
 		
 		--> if enabled and not loaded, load it
 		if (bIsEnabled and not _detalhes.Broadcaster_CurrentDpsLoaded) then
@@ -1608,7 +1608,7 @@ function Details:LoadFramesForBroadcastTools()
 		
 		--> if enabled, check if can show
 		if (bIsEnabled and _detalhes.Broadcaster_CurrentDpsLoaded) then
-			if (_detalhes.current_dps_meter.mythic_dungeon_enabled) then
+			if (_detalhes.realtime_dps_meter.mythic_dungeon_enabled) then
 				local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
 				if (difficultyID == 8) then
 					--> player is inside a mythic dungeon
@@ -1616,7 +1616,7 @@ function Details:LoadFramesForBroadcastTools()
 				end
 			end
 			
-			if (_detalhes.current_dps_meter.arena_enabled) then	
+			if (_detalhes.realtime_dps_meter.arena_enabled) then	
 				local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
 				if (instanceType == "arena") then
 					--> player is inside an arena

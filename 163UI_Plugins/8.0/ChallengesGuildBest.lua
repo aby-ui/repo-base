@@ -290,7 +290,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         [169] = "码头",
         [227] = "卡下",
         [234] = "卡上",
-        [166] = "恐轨",
+        [166] = "车站",
     }
     local PORTAL_SPELLS = {
         [375] = 354464, --"仙林",
@@ -376,20 +376,38 @@ CoreDependCall("Blizzard_ChallengesUI", function()
             local btn = _G["AbyDungeonPortal"..i]
             if not btn then
                 btn = WW:Button("AbyDungeonPortal"..i, nil, "SecureActionButtonTemplate")
-                :SetAttribute("type", "macro")
+                :SetAttribute("type1", "macro")
+                :SetScript("PreClick", function(self, button)
+                    if button == "RightButton" then
+                        if ELP_CHALLENGE_MAPID_FILTER_INDEX and ELP_CHALLENGE_MAPID_FILTER_INDEX[icon.mapID] then
+                            if not EncounterJournal or not EncounterJournal:IsShown() then
+                                if not InCombatLockdown() then
+                                    ToggleEncounterJournal();
+                                else
+                                    CoreUIToggleFrame(EncounterJournal)
+                                end
+                            end
+                            ELP_MenuOnClick(self, "range", ELP_CHALLENGE_MAPID_FILTER_INDEX[icon.mapID])
+                        end
+                    end
+                end)
                 :SetScript("OnEnter", function(self)
                     local s = self.hook:GetScript("OnEnter")
                     if s then
                         s(icon)
                         local spell = icon.mapID and PORTAL_SPELLS[icon.mapID]
                         if spell then
+                            GameTooltip:AddLine(" ")
+                            if ELP_CHALLENGE_MAPID_FILTER_INDEX and ELP_CHALLENGE_MAPID_FILTER_INDEX[icon.mapID] then
+                                GameTooltip:AddLine("右键点击查询掉落")
+                                GameTooltip:Show()
+                            end
                             if IsSpellKnown(spell) then
-                                GameTooltip:AddLine(" ")
                                 local start,duration = GetSpellCooldown(spell)
                                 if start and duration and duration > 1.5 then --1.5 is GCD
                                     GameTooltip:AddLine("传送冷却：" .. MinutesToTime((start+duration-GetTime())/60))
                                 else
-                                    GameTooltip:AddLine("点击施法：" .. (GetSpellInfo(spell) or spell))
+                                    GameTooltip:AddLine("左键点击施法：" .. (GetSpellInfo(spell) or spell))
                                 end
                                 GameTooltip:Show()
                             end
@@ -401,12 +419,13 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 btn.hook = icon
             end
             WW(btn):SetParent(icon):ClearAllPoints():SetAllPoints(icon):Show()
+            :RegisterForClicks("AnyUp")
             :SetFrameStrata(icon:GetFrameStrata()):AddFrameLevel(1, icon)
             :un()
             if icon and icon.mapID and GetSpellInfo(PORTAL_SPELLS[icon.mapID]) then
-                btn:SetAttribute("macrotext", format("/stopcasting\n/cast %s", (GetSpellInfo(PORTAL_SPELLS[icon.mapID]))))
+                btn:SetAttribute("macrotext1", format("/stopcasting\n/cast %s", (GetSpellInfo(PORTAL_SPELLS[icon.mapID]))))
             else
-                btn:SetAttribute("macrotext", nil)
+                btn:SetAttribute("macrotext1", nil)
             end
         end
     end

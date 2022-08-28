@@ -13,7 +13,7 @@ local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 
 local isTimewalkWoW = function()
     local gameVersion = GetBuildInfo()
-    if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2") then
+    if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2" or gameVersion:match("%d") == "3") then
         return true
     end
 end

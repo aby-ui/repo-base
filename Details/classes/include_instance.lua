@@ -275,6 +275,7 @@ _detalhes.instance_defaults = {
 			--space between bars
 				space = {left = 3, right = -5, between = 1},
 			--icon file
+				icon_size_offset = 0,
 				icon_file = [[Interface\AddOns\Details\images\classes_small]],
 				no_icon = false,
 				start_after_icon = true,
@@ -304,6 +305,12 @@ _detalhes.instance_defaults = {
 			--show spec icons
 				use_spec_icons = false,
 				spec_file = [[Interface\AddOns\Details\images\spec_icons_normal]],
+			--show faction icon
+				show_faction_icon = true,
+				faction_icon_size_offset = -10,
+			--show arena role icon
+				show_arena_role_icon = false,
+				arena_role_icon_size_offset = -10,
 		},
 	--instance window color
 		color = {1, 1, 1, 1},
@@ -415,7 +422,8 @@ _detalhes.instance_defaults = {
 			texcoord = {0, 1, 0, 1},
 			width = 0,
 			height = 0,
-			overlay = {1, 1, 1, 1}
+			overlay = {1, 1, 1, 1},
+			level = 2,
 		},
 	--tooltip amounts
 	tooltip = {

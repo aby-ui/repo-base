@@ -303,8 +303,6 @@
 
 	--> ignore soul link (damage from the warlock on his pet - current to demonology only)
 	local SPELLID_WARLOCK_SOULLINK = 108446
-	--> when checking if can start a new combat, ignore the damage from warlock's burning rush
-	local SPELLID_WARLOCK_BURNINGRUSH = 111400
 	--> brewmaster monk guard talent
 	local SPELLID_MONK_GUARD = 115295
 	--> brewmaster monk stagger mechanics
@@ -448,6 +446,17 @@
 		Details.KyrianWeaponActorSpellId = 328351 --for the icon
 		Details.KyrianWeaponColor = {0.729, 0.917, 1} --color
 
+		--cannon weapons on grimrail depot --remove on 10.0
+		--these detect the cannon weapon actor by the damage spellId
+		Details.GrimrailDepotCannonWeaponSpellIds = {
+			[160776] = true, --Homing Shell
+			[166545] = true, --Sharpnel Cannon
+			[161073] = true, --Blackrock Grenade
+		}
+		Details.GrimrailDepotCannonWeaponActorName = "Cannon"
+		Details.GrimrailDepotCannonWeaponActorSpellId = 166545 --for the icon
+		Details.GrimrailDepotCannonWeaponColor = {1, 0.353, 0.082} --color
+
 		--sanguine affix for m+
 		Details.SanguineHealActorName = GetSpellInfo(SPELLID_SANGUINE_HEAL)
 
@@ -463,6 +472,15 @@
 			--add kyrian weapons
 			Details.SpecialSpellActorsName[Details.KyrianWeaponActorName] = Details.KyrianWeaponActorSpellId
 			for spellId in pairs(Details.KyrianWeaponSpellIds) do
+				local spellName = GetSpellInfo(spellId)
+				if (spellName) then
+					Details.SpecialSpellActorsName[spellName] = spellId
+				end
+			end
+
+			--add grimrail depot cannon weapons
+			Details.SpecialSpellActorsName[Details.GrimrailDepotCannonWeaponActorName] = Details.GrimrailDepotCannonWeaponActorSpellId
+			for spellId in pairs(Details.GrimrailDepotCannonWeaponSpellIds) do
 				local spellName = GetSpellInfo(spellId)
 				if (spellName) then
 					Details.SpecialSpellActorsName[spellName] = spellId
@@ -621,6 +639,13 @@
 		--kyrian weapons
 		if (Details.KyrianWeaponSpellIds[spellid]) then
 			who_name = Details.KyrianWeaponActorName
+			who_flags = 0x514
+			who_serial = "Creature-0-3134-2289-28065-" .. spellid .. "-000164C698"
+		end
+
+		--grimail depot cannon
+		if (Details.GrimrailDepotCannonWeaponSpellIds[spellid]) then
+			who_name = Details.GrimrailDepotCannonWeaponActorName
 			who_flags = 0x514
 			who_serial = "Creature-0-3134-2289-28065-" .. spellid .. "-000164C698"
 		end
@@ -853,7 +878,7 @@
 	------------------------------------------------------------------------------------------------
 	--> check if need start an combat
 	
-		if (not _in_combat) then
+		if (not _in_combat) then --~startcombat ~combatstart
 			if (	token ~= "SPELL_PERIODIC_DAMAGE" and
 				(
 					(who_flags and _bit_band (who_flags, AFFILIATION_GROUP) ~= 0 and _UnitAffectingCombat (who_name) )
@@ -883,7 +908,9 @@
 				--> entrar em combate se for dot e for do jogador e o ultimo combate ter sido a mais de 10 segundos atr�s
 				if (token == "SPELL_PERIODIC_DAMAGE" and who_name == _detalhes.playername) then
 					--> ignora burning rush se o jogador estiver fora de combate
-					if (spellid == SPELLID_WARLOCK_BURNINGRUSH) then
+					--111400 warlock's burning rush
+					--368637 is buff from trinket "Scars of Fraternal Strife" which make the player bleed even out-of-combat
+					if (spellid == 111400 or spellid == 368637) then
 						return
 					end
 					--> faz o calculo dos 10 segundos
@@ -4891,6 +4918,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			if (_detalhes.debug) then
 				_detalhes:Msg ("(debug) zone type is now 'pvp'.")
 			end
+			if(not _detalhes.is_in_battleground and _detalhes.overall_clear_pvp) then
+				_detalhes.tabela_historico:resetar_overall()
+			end
 			
 			_detalhes.is_in_battleground = true
 			
@@ -4930,6 +4960,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			end
 		
 			if (not _detalhes.is_in_arena) then
+				if (_detalhes.overall_clear_pvp) then
+					_detalhes.tabela_historico:resetar_overall()
+				end
 				--> reset spec cache if broadcaster requested
 				if (_detalhes.streamer_config.reset_spec_cache) then
 					wipe (_detalhes.cached_specs)
@@ -5422,7 +5455,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	
 	function _detalhes.parser_functions:PLAYER_TALENT_UPDATE()
 		if (IsInGroup() or IsInRaid()) then
-			if (_detalhes.SendTalentTimer and not _detalhes.SendTalentTimer._cancelled) then
+			if (_detalhes.SendTalentTimer and not _detalhes.SendTalentTimer:IsCancelled()) then
 				_detalhes.SendTalentTimer:Cancel()
 			end
 			_detalhes.SendTalentTimer = C_Timer.NewTimer (11, function()
@@ -5450,7 +5483,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 		
 		if (IsInGroup() or IsInRaid()) then
-			if (_detalhes.SendTalentTimer and not _detalhes.SendTalentTimer._cancelled) then
+			if (_detalhes.SendTalentTimer and not _detalhes.SendTalentTimer:IsCancelled()) then
 				_detalhes.SendTalentTimer:Cancel()
 			end
 			_detalhes.SendTalentTimer = C_Timer.NewTimer (11, function()
@@ -5568,7 +5601,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_detalhes:SchedulePetUpdate (2)
 				
 				--> send char data
-				if (_detalhes.SendCharDataOnGroupChange and not _detalhes.SendCharDataOnGroupChange._cancelled) then
+				if (_detalhes.SendCharDataOnGroupChange and not _detalhes.SendCharDataOnGroupChange:IsCancelled()) then
 					return
 				end
 				_detalhes.SendCharDataOnGroupChange = C_Timer.NewTimer (11, function()
@@ -5819,12 +5852,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	-- ~parserstart ~startparser ~cleu
 
 	function _detalhes.OnParserEvent()
-		-- 8.0 changed
 		local time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12 = _CombatLogGetCurrentEventInfo()
 		
 		local funcao = token_list [token]
 		if (funcao) then
-			funcao (nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
+			return funcao (nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
 		else
 			return
 		end
@@ -6093,11 +6125,11 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 
 		if (_in_combat) then
-			if (not _auto_regen_thread or _auto_regen_thread._cancelled) then
+			if (not _auto_regen_thread or _auto_regen_thread:IsCancelled()) then
 				_auto_regen_thread = C_Timer.NewTicker (AUTO_REGEN_PRECISION / 10, regen_power_overflow_check)
 			end
 		else
-			if (_auto_regen_thread and not _auto_regen_thread._cancelled) then
+			if (_auto_regen_thread and not _auto_regen_thread:IsCancelled()) then
 				_auto_regen_thread:Cancel()
 				_auto_regen_thread = nil
 			end

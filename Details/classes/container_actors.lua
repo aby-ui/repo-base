@@ -270,6 +270,14 @@
 						actorObject.displayName = Details.KyrianWeaponActorName
 						actorObject.customColor = Details.KyrianWeaponColor
 						nome = Details.KyrianWeaponActorName
+
+					elseif (Details.GrimrailDepotCannonWeaponSpellIds[spellId]) then
+						actorObject.spellicon = GetSpellTexture(Details.GrimrailDepotCannonWeaponActorSpellId)
+						actorObject.nome = Details.GrimrailDepotCannonWeaponActorName
+						actorObject.displayName = Details.GrimrailDepotCannonWeaponActorName
+						actorObject.customColor = Details.GrimrailDepotCannonWeaponColor
+						nome = Details.GrimrailDepotCannonWeaponActorName
+
 					else
 						actorObject.spellicon = GetSpellTexture(spellId)
 					end

@@ -1285,3 +1285,195 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 	return SliderObject, with_label
 	
 end
+
+DF.AdjustmentSliderOptions = {
+	width = 120,
+	height = 20,
+	speed = 20, --speed is how many pixels the mouse has moved
+}
+
+DF.AdjustmentSliderFunctions = {
+	SetCallback = function(self, func)
+		self.callback = func
+	end,
+
+	SetPayload = function(self, ...)
+		self.payload = {...}
+	end,
+
+	RunCallback = function(adjustmentSlider, valueX, valueY, isLiteral)
+		local result, errorText = pcall(adjustmentSlider.callback, adjustmentSlider, valueX, valueY, isLiteral, adjustmentSlider:DumpPayload())
+		if (not result) then
+			DF:Msg("AdjustmentSlider callback Error:", errorText)
+			return false
+		end
+	end,
+
+	--calculate if the mouse has moved and call a callback
+	PressingOnUpdate = function(adjustmentSlider, deltaTime)
+		if (GetTime() > adjustmentSlider.NextTick) then
+			--get currentr mouse position
+			local mouseX, mouseY = GetCursorPosition()
+			local verticalValue
+			local horizontalValue
+
+			--find distance
+			local xDelta = adjustmentSlider.MouseX - mouseX --moving the mouse to right or up result in a negative delta
+			local yDelta = adjustmentSlider.MouseY - mouseY
+
+			if (adjustmentSlider.buttonPressed ~= "center") then
+				if (adjustmentSlider.buttonPressedTime+0.5 < GetTime()) then
+					if (adjustmentSlider.buttonPressed == "left") then
+						DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, -1, 0, true)
+					elseif (adjustmentSlider.buttonPressed == "right") then
+						DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, 1, 0, true)
+					end
+				end
+
+			elseif (xDelta ~= 0 or yDelta ~= 0) then
+				if (adjustmentSlider.buttonPressed == "center") then
+					--invert axis as left is positive and right is negative in the deltas
+					xDelta = xDelta * -1
+					yDelta = yDelta * -1
+
+					horizontalValue = DF:MapRangeClamped(-20, 20, -1, 1, xDelta)
+					verticalValue = DF:MapRangeClamped(-20, 20, -1, 1, yDelta)
+				end
+
+				DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, horizontalValue, verticalValue, false)
+
+				adjustmentSlider.MouseX = mouseX
+				adjustmentSlider.MouseY = mouseY
+			end
+
+			adjustmentSlider.NextTick = GetTime() + 0.05
+		end
+	end,
+
+	--button can be the left or right button
+	OnButtonDownkHook = function(button)
+		button = button.MyObject
+
+		--change the icon
+		if (button.direction == "left") then
+			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Down]])
+		elseif (button.direction == "right") then
+			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Down]])
+		end
+
+		local adjustmentSlider = button:GetParent()
+		adjustmentSlider.NextTick = GetTime() + 0.05
+
+		--save where the mouse is on the moment of the click
+		local mouseX, mouseY = GetCursorPosition()
+		adjustmentSlider.MouseX = mouseX
+		adjustmentSlider.MouseY = mouseY
+
+		adjustmentSlider.buttonPressed = button.direction
+
+		--start monitoring the mouse moviment
+		adjustmentSlider.buttonPressedTime = GetTime()
+		adjustmentSlider:SetScript("OnUpdate", DF.AdjustmentSliderFunctions.PressingOnUpdate)
+	end,
+
+	--button can be the left or right button
+	OnButtonUpHook = function(button)
+		button = button.MyObject
+
+		--change the icon
+		if (button.direction == "left") then
+			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Up]])
+		elseif (button.direction == "right") then
+			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Up]])
+		end
+
+		local adjustmentSlider = button:GetParent()
+
+		--check if the mouse did not moved at all, if not send a callback with a value of 1
+		local mouseX, mouseY = GetCursorPosition()
+		if (mouseX == adjustmentSlider.MouseX and mouseY == adjustmentSlider.MouseY and adjustmentSlider.buttonPressedTime+0.5 > GetTime()) then
+			if (button.direction == "left") then
+				DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, -1, 0, true)
+			elseif (button.direction == "right") then
+				DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, 1, 0, true)
+			end
+		end
+
+		adjustmentSlider:SetScript("OnUpdate", nil)
+	end,
+
+	Disable = function(adjustmentSlider)
+		adjustmentSlider.leftButton:Disable()
+		adjustmentSlider.rightButton:Disable()
+		adjustmentSlider.centerButton:Disable()
+	end,
+
+	Enable = function(adjustmentSlider)
+		adjustmentSlider.leftButton:Enable()
+		adjustmentSlider.rightButton:Enable()
+		adjustmentSlider.centerButton:Enable()
+	end,
+}
+
+local createAdjustmentSliderFrames = function(parent, options, name)
+	--frame it self
+	local adjustmentSlider = CreateFrame("frame", name, parent, "BackdropTemplate")
+
+	DF:Mixin(adjustmentSlider, DF.OptionsFunctions)
+	DF:Mixin(adjustmentSlider, DF.AdjustmentSliderFunctions)
+	DF:Mixin(adjustmentSlider, DF.PayloadMixin)
+
+	adjustmentSlider:BuildOptionsTable(DF.AdjustmentSliderOptions, options)
+
+	adjustmentSlider:SetSize(adjustmentSlider.options.width, adjustmentSlider.options.height)
+
+	--two buttons
+	local leftButton = DF:CreateButton(adjustmentSlider, function()end, 20, 20, "", "left", -1, nil, nil, name .. "LeftButton")
+	local rightButton = DF:CreateButton(adjustmentSlider, function()end, 20, 20, "", "right", 1, nil, nil, name .. "RightButton")
+
+	leftButton:SetHook("OnMouseDown", DF.AdjustmentSliderFunctions.OnButtonDownkHook)
+	rightButton:SetHook("OnMouseDown", DF.AdjustmentSliderFunctions.OnButtonDownkHook)
+	leftButton:SetHook("OnMouseUp", DF.AdjustmentSliderFunctions.OnButtonUpHook)
+	rightButton:SetHook("OnMouseUp", DF.AdjustmentSliderFunctions.OnButtonUpHook)
+
+	leftButton:SetPoint("left", adjustmentSlider, "left", 0, 0)
+	rightButton:SetPoint("right", adjustmentSlider, "right", 0, 0)
+	leftButton:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Up]])
+	rightButton:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Up]])
+	leftButton.direction = "left"
+	rightButton.direction = "right"
+
+	--center button
+	local centerButton = DF:CreateButton(adjustmentSlider, function()end, 20, 20, "", "center", 0, nil, nil, name .. "CenterButton")
+	centerButton:SetPoint("center", adjustmentSlider, "center", 0, 0)
+	centerButton:SetIcon([[Interface\BUTTONS\YellowOrange64_Radial]])
+	centerButton.direction = "center"
+	centerButton:SetHook("OnMouseDown", DF.AdjustmentSliderFunctions.OnButtonDownkHook)
+	centerButton:SetHook("OnMouseUp", DF.AdjustmentSliderFunctions.OnButtonUpHook)
+
+	adjustmentSlider.leftButton = leftButton
+	adjustmentSlider.rightButton = rightButton
+	adjustmentSlider.centerButton = centerButton
+
+	return adjustmentSlider
+end
+
+--creates a slider with left and right buttons and a center button, on click the hold, mouse moviments adjust the value and trigger a callback with a normallized x and y values of the mouse movement
+--@parent: who is the parent of this frame
+--@callback: run when there's a change in any of the two axis
+--@options: a table containing options for the frame, see /dump DetailsFramework.AdjustmentSliderOptions
+--@name: the name of the frame, if none a generic name is created
+function DF:CreateAdjustmentSlider(parent, callback, options, name, ...)
+	if (not name) then
+		name = "DetailsFrameworkAdjustmentSlider" .. DF.SliderCounter
+		DF.SliderCounter = DF.SliderCounter + 1
+
+	elseif (not parent) then
+		return error("Details! FrameWork: parent not found.", 2)
+	end
+
+	local ASFrame = createAdjustmentSliderFrames(parent, options, name)
+	ASFrame:SetPayload(...)
+	ASFrame.callback = callback
+	return ASFrame
+end

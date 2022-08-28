@@ -44,16 +44,16 @@ function PetBar:UpdateOverrideBar()
     self:UpdateDisplayConditions()
 end
 
-if Addon:IsBuild('bcc', 'classic') then
+if Addon:IsBuild('retail', 'wrath') then
+    function PetBar:GetDisplayConditions()
+        return '[@pet,exists,nopossessbar]show;hide'
+    end
+else
     function PetBar:GetDisplayConditions()
         if self:IsOverrideBar() then
             return '[@pet,exists][bonusbar:5]show;hide'
         end
         return '[@pet,exists,nobonusbar:5]show;hide'
-    end
-else
-    function PetBar:GetDisplayConditions()
-        return '[@pet,exists,nopossessbar]show;hide'
     end
 end
 
