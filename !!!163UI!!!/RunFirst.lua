@@ -11,6 +11,7 @@ DisableAddOn("DBM-SpellTimers")
 DisableAddOn("DBM-RaidLeadTools")
 DisableAddOn("DPMCore")
 DisableAddOn("DBM-VictorySound")
+DisableAddOn("163UI_EncounterLootPlus")
 
 -- 一些常用的变量会被莫名其妙重置的, 必须在VARIABLES_LOADED里设置
 local f01 = CreateFrame("Frame")
