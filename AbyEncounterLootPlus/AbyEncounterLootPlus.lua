@@ -209,6 +209,10 @@ function ELP_Iterate_Loot(insID, bosses, lootTable)
                 --拾取列表方式只处理列表里的
             else
                 if bosses == "all" or bosses[info.encounterID] then --只保留指定boss
+                    if lootTable and lootTable[itemID] and ELP_LOOT_TABLE_LOOTS_ALL[itemID] ~= insID then
+                        insID = ELP_LOOT_TABLE_LOOTS_ALL[itemID]
+                        info.encounterID = nil
+                    end
                     ELP_UpdateCurrItem(itemID, insID, info.encounterID, info.link)
                 end
             end
@@ -217,12 +221,13 @@ function ELP_Iterate_Loot(insID, bosses, lootTable)
 end
 
 --筛选部位下拉菜单, 仅支持单一副本(支持指定boss和特定过滤, 但不支持属性过滤)
-function ELP_Iterate_Loot_FilterType(insID, bosses)
-    local isLootSlotPresent = {}
+function ELP_Iterate_Loot_FilterType(isLootSlotPresent, insID, bosses, lootTable)
     local numLoot = EJ_GetNumLoot();
     for i = 1, numLoot do
         local itemInfo = C_EncounterJournal.GetLootInfoByIndex(i);
-        if bosses == "all" or bosses[itemInfo.encounterID]
+        if lootTable and not lootTable[itemInfo.itemID] then
+            --忽略不在拾取列表里的装备
+        elseif (bosses == "all" or bosses[itemInfo.encounterID])
                 and not itemInfo.displayAsPerPlayerLoot
                 and not ELP_ShouldHideLootItem(itemInfo.itemID, insID)
         then
@@ -232,7 +237,6 @@ function ELP_Iterate_Loot_FilterType(insID, bosses)
             end
         end
     end
-    return isLootSlotPresent
 end
 
 function ELP_SetInstanceTitleToFilterName(filter, name)
@@ -262,10 +266,10 @@ function ELP_UpdateItemList()
     if filter.otherInstances then
         u1copy(filter.otherInstances, tempInstances)
     end
-    for insID, bosses in pairs(tempInstances) do
+    for insID, insData in pairs(tempInstances) do
         EJ_SelectInstance(insID)
         --ELP_SetBestDifficulty(insID) --这个是没有用的, 要响应 EJ_DIFFICULTY_UPDATE 才行, 过于复杂, 所以默认都紫装
-        ELP_Iterate_Loot(insID, bosses, filter.lootTable)
+        ELP_Iterate_Loot(insID, insData.bosses, insData.lootTable)
     end
 
     EncounterJournal:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
@@ -360,7 +364,7 @@ function EncounterJournal_InitLootFilter_ELP(self, level)
     end
 
     if (UIDROPDOWNMENU_MENU_VALUE == "range") then
-        makeSubInfo(info, "正常(单一副本)", 0, "range", level)
+        makeSubInfo(info, "正常(暴雪原始功能)", 0, "range", level)
         for i, v in ipairs(ELP_FILTERS) do
             local prefix = v.type == "dungeon" and "地下城：" or v.type == "raid" and "团本：" or ""
             makeSubInfo(info, prefix .. v.text, i, "range", level)
@@ -402,9 +406,16 @@ function EncounterJournal_InitLootSlotFilter_ELP(self, level)
     if efilter.type ~= "multi" then
         --单一副本获取全部部位列表, 但选了属性的话仍然不准确, 意义不大
         C_EncounterJournal.ResetSlotFilter();
-        local insID, bosses = next(efilter.instances)
-        EJ_SelectInstance(insID)
-        isLootSlotPresent = ELP_Iterate_Loot_FilterType(insID, bosses)
+        wipe(tempInstances)
+        u1copy(efilter.instances, tempInstances)
+        if efilter.otherInstances then
+            u1copy(efilter.otherInstances, tempInstances)
+        end
+        isLootSlotPresent = {}
+        for insID, insData in pairs(tempInstances) do
+            EJ_SelectInstance(insID)
+            ELP_Iterate_Loot_FilterType(isLootSlotPresent, insID, insData.bosses, insData.lootTable)
+        end
         C_EncounterJournal.SetSlotFilter(slotFilter);
     end
 
@@ -503,7 +514,7 @@ EncounterJournal_SetLootButton_ELP = function(item)
         instance = instance and EJ_GetInstanceInfo(instance)
         currentFrame.instance:SetText(instance or "")
 
-        currentFrame.boss:SetFormattedText(BOSS_INFO_STRING, EJ_GetEncounterInfo(encounterID));
+        currentFrame.boss:SetFormattedText(BOSS_INFO_STRING, encounterID and EJ_GetEncounterInfo(encounterID) or "未知");
         if encounterID and ELP_ENCOUNTER_INSTANCE_NAME[encounterID] then
             currentFrame.instance:SetText(ELP_ENCOUNTER_INSTANCE_NAME[encounterID]) --一个副本分两个大秘 --/dump EncounterJournal.encounterID
         end
@@ -553,15 +564,17 @@ EncounterJournal_Loot_OnClick_ELP = function(self)
     EncounterJournal.encounter.info.lootScroll.scrollBar:SetValue(old)
 
     --scroll boss list to selected encounter
-    local bs = EncounterJournal.encounter.info.bossesScroll
-    for i=1, 20 do
-        local bb = _G["EncounterJournalBossButton"..i]
-        if not bb then break end
-        if bb.encounterID == encounterID then
-            local offset = bs:GetTop() - bs.child:GetHeight() - (bb:GetTop() - bb:GetHeight())
-            if offset <= 0 then offset = bb:GetTop() - bs:GetTop() end
-            if offset > 0 then RunOnNextFrame(function() EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(offset) end) end
-            break
+    if encounterID then
+        local bs = EncounterJournal.encounter.info.bossesScroll
+        for i=1, 20 do
+            local bb = _G["EncounterJournalBossButton"..i]
+            if not bb then break end
+            if bb.encounterID == encounterID then
+                local offset = bs:GetTop() - bs.child:GetHeight() - (bb:GetTop() - bb:GetHeight())
+                if offset <= 0 then offset = bb:GetTop() - bs:GetTop() end
+                if offset > 0 then RunOnNextFrame(function() EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(offset) end) end
+                break
+            end
         end
     end
 end

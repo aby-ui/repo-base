@@ -44,9 +44,28 @@ ELP_SEASON_MYTHICS = {
 
 --为了能够利用系统筛选, 只能选择多个副本然后再筛掉
 ELP_LOOT_TABLES = {
-    [536] = { lootTable = ELP_LOOT_LIST.Grimrail, otherInstances = { [558] = "all" } }, --恐轨车站
-    [558] = { lootTable = ELP_LOOT_LIST.IronDocks, otherInstances = { [536] = "all" } }, --钢铁码头
+    [536] = { lootTable = ELP_LOOT_LIST.Grimrail, otherInstances = { 558 } }, --恐轨车站
+    [558] = { lootTable = ELP_LOOT_LIST.IronDocks, otherInstances = { 536 } }, --钢铁码头
 }
+ELP_LOOT_TABLE_LOOTS = {}       --每个副本的lootTable, 初始化FILTER后丢弃
+ELP_LOOT_TABLE_LOOTS_ALL = {}   --全部lootTable, 给多副本模式用, 初始化FILTER后丢弃
+do
+    for insID, v in pairs(ELP_LOOT_TABLES) do
+        for itemID in pairs(v.lootTable) do v.lootTable[itemID] = insID end --保存每件装备的副本ID, 列表时需要
+        ELP_LOOT_TABLE_LOOTS[insID] = v.lootTable
+        u1copy(v.lootTable, ELP_LOOT_TABLE_LOOTS_ALL) --给全部副本搜索用
+    end
+end
+ELP_LOOT_TABLE_OTHER = {}       --每个副本的关联副本, 初始化FILTER后丢弃
+do
+    for k, v in pairs(ELP_LOOT_TABLES) do
+        ELP_LOOT_TABLE_OTHER[k] = {}
+        for _, insID in ipairs(v.otherInstances) do
+            ELP_LOOT_TABLE_OTHER[k][insID] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[k] } --lootTable要用副本自身的
+        end
+    end
+end
+ELP_LOOT_TABLES = nil
 
 ELP_LINK_REPLACE = {
     [ 536 ] = "::::::::60:65::33:8:7359:8253:8765:8136:8116:6652:3173:6646:1:28:1279:::::",
@@ -86,25 +105,40 @@ ELP_CHALLENGE_MAPID_FILTER_INDEX = {} --ChallengesGuildBest.lua里用
 
 function ELP_InitFilters()
     local FILTERS = {}
-    --type = "multi/dungeon/raid", text="下拉菜单名称", short="过滤文本名"
-    --instances = { [副本ID1] = "all", [副本ID2] = { [bossID]=true, [bossID2]=true} } }
-    local mythics = {}; for _, v in ipairs(ELP_SEASON_MYTHICS) do mythics[v[1]] = "all" end
+    --[[
+        type = "multi/dungeon/raid",
+        text="下拉菜单名称",
+        short="过滤文本名",
+        instances = {
+            [副本ID1] = {
+                bosses = "all" / { [bossID1]=true, [bossID2]=true} },
+                lootTable = { [itemID] = instanceID }, --如果instanceID不是当前instance则设置encounterID为最后一个
+            }
+        },
+        bosslist = { bossID1, bossID2 }, --单副本模式boss列表要用到原始的顺序
+        otherInstances = { 结构同上但不能有lootTable也不需要bosslist, 且bosses必然为"all" }, --仅当单副本且lootTable的时候用, 表示额外获取其他副本的数据，以便职业过滤
+    --]]
+    local mythics = {}; for _, v in ipairs(ELP_SEASON_MYTHICS) do mythics[v[1]] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] and ELP_LOOT_TABLE_LOOTS_ALL or nil } end
     FILTERS[1] = { type = "multi", text = "全部赛季地下城", short = "赛季大秘", instances = mythics}
-    local mythics_and_week = u1copy(mythics, { [ELP_WEEK_RAID] = "all" })
+    local mythics_and_week = u1copy(mythics, { [ELP_WEEK_RAID] = { bosses = "all" } })
     FILTERS[2] = { type = "multi", text = "全部赛季地下城和宿命团本", short = "本周副本", instances = mythics_and_week }
-    local raids = {}; for _, v in ipairs(ELP_SEASON_RAIDS) do raids[v[1]] = "all" end
+    local raids = {}; for _, v in ipairs(ELP_SEASON_RAIDS) do raids[v[1]] = { bosses = "all" } end
     FILTERS[3] = { type = "multi", text = "全部团本", instances = raids }
     local all = u1copy(mythics); u1copy(raids, all)
     FILTERS[4] = { type = "multi", text = "全部赛季地下城和全部团本", short = "全部副本", instances = all }
 
     for i, v in ipairs(ELP_SEASON_MYTHICS) do
-        local lt = ELP_LOOT_TABLES[v[1]]
-        tinsert(FILTERS, { type = "dungeon", text = v[3], instances = { [v[1]] = v[4] }, bosslist = v[5], lootTable = lt and lt.lootTable, otherInstances = lt and lt.otherInstances } )
+        tinsert(FILTERS, { type = "dungeon", text = v[3], instances = { [v[1]] = { bosses = v[4], lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] } }, bosslist = v[5], otherInstances = ELP_LOOT_TABLE_OTHER[v[1]] })
         ELP_CHALLENGE_MAPID_FILTER_INDEX[v[2]] = #FILTERS
     end
     for i, v in ipairs(ELP_SEASON_RAIDS) do
-        tinsert(FILTERS, { type = "raid", text = v[3], instances = { [v[1]] = v[4] }})
+        tinsert(FILTERS, { type = "raid", text = v[3], instances = { [v[1]] = { bosses = v[4] } }})
     end
+
+    ELP_LOOT_TABLE_OTHER = nil
+    ELP_LOOT_TABLE_LOOTS = nil
+    ELP_SEASON_RAIDS = nil
+
     return FILTERS
 end
 ELP_FILTERS = ELP_InitFilters()
