@@ -6,6 +6,7 @@
 	local _
 	local DetailsFramework = DetailsFramework
 	local isTBC = DetailsFramework.IsTBCWow()
+	local isWOTLK = DetailsFramework.IsWotLKWow()
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> local pointers
@@ -297,6 +298,8 @@
 		[169429] = true,
 		[169428] = true,
 		[169430] = true,
+		
+		[189706] = true, --Chaotic Essence from Fated Affix --Remove on 10.0
 	}
 
 	local ignored_npcids = {}
@@ -2798,7 +2801,7 @@
 						escudo [alvo_name][spellid][who_name] = amount
 						
 						if (overheal > 0) then
-							return parser:heal (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, nil, 0, _math_ceil (overheal), 0, 0, nil, true)
+							return parser:heal (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, nil, 0, _math_ceil (overheal), 0, nil, true)
 						end
 					end
 				
@@ -6302,7 +6305,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		for i = 1, players do
 			local name, killingBlows, honorableKills, deaths, honorGained, faction, race, rank, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec
-			if (isTBC) then
+			if (isTBC or isWOTLK) then
 				name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)
 			else
 				name, killingBlows, honorableKills, deaths, honorGained, faction, race, class, classToken, damageDone, healingDone, bgRating, ratingChange, preMatchMMR, mmrChange, talentSpec = GetBattlefieldScore(i)

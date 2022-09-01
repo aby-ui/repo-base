@@ -1,6 +1,6 @@
 
 
-local dversion = 331
+local dversion = 334
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -720,6 +720,20 @@ function DF:SetFontShadow (fontString, r, g, b, a, x, y)
 	y = y or offSetY
 	
 	fontString:SetShadowOffset (x, y)
+end
+
+function DF:SetFontRotation(fontString, degrees)
+	if (type(degrees) == "number") then
+		if (not fontString.__rotationAnimation) then
+			fontString.__rotationAnimation = DF:CreateAnimationHub(fontString)
+			fontString.__rotationAnimation.rotator = DF:CreateAnimation(fontString.__rotationAnimation, "rotation", 1, 0, 0)
+			fontString.__rotationAnimation.rotator:SetEndDelay(math.huge)
+			fontString.__rotationAnimation.rotator:SetSmoothProgress(1)
+		end
+		fontString.__rotationAnimation.rotator:SetDegrees(degrees)
+		fontString.__rotationAnimation:Play()
+		fontString.__rotationAnimation:Pause()
+	end
 end
 
 function DF:AddClassColorToText (text, class)

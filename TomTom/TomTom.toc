@@ -1,7 +1,7 @@
 ## Interface: 90207
 ## Title: TomTom
 ## Author: Cladhaire, Ludovicus
-## Version: v3.1.3
+## Version: v3.1.4
 ## License: All Rights Reserved
 ## Notes: Acts as your portable navigation assistant
 ## Notes-frFR: Agit comme un assistant de navigation portable

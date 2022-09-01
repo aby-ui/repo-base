@@ -66,30 +66,30 @@ function AbyBackdrop(frame)
     end
 end
 
-ActionButton_UpdateHighlightMark = function(b) return b:UpdateHighlightMark() end
+--ActionButton_UpdateHighlightMark = function(b) return b:UpdateHighlightMark() end
 --hook ActionBarButtonEventsFrame_RegisterFrame
-ActionButton_OnLoad = function(b) return b:OnLoad() end
-ActionButton_UpdateHotkeys = function(b) return b:UpdateHotkeys() end
-ActionButton_UpdateAction = function(b) return b:UpdateAction() end
-ActionButton_Update = function(b) return b:Update() end
-ActionButton_UpdateHighlightMark = function(b) return b:UpdateHighlightMark() end
-ActionButton_UpdateSpellHighlightMark = function(b) return b:UpdateSpellHighlightMark() end
-ActionButton_ShowGrid = function(b) return b:ShowGrid() end
-ActionButton_HideGrid = function(b) return b:HideGrid() end
-ActionButton_UpdateState = function(b) return b:UpdateState() end
-ActionButton_UpdateUsable = function(b) return b:UpdateUsable() end
-ActionButton_UpdateCount = function(b) return b:UpdateCount() end
-ActionButton_OnCooldownDone = ActionButtonCooldown_OnCooldownDone
-ActionButton_UpdateOverlayGlow = function(b) return b:UpdateOverlayGlow() end
-ActionButton_OverlayGlowAnimOutFinished = function(b) return b:OverlayGlowAnimOutFinished() end
-ActionButton_SetTooltip = function(b) return b:SetTooltip() end
-ActionButton_OnUpdate = function(b) return b:OnUpdate() end
-ActionButton_GetPagedID = function(b) return b:GetPagedID() end
-ActionButton_UpdateFlash = function(b) return b:UpdateFlash() end
-ActionButton_ClearFlash = function(b) return b:ClearFlash() end
-ActionButton_StartFlash = function(b) return b:StartFlash() end
-ActionButton_StopFlash = function(b) return b:StopFlash() end
-ActionButton_IsFlashing = function(b) return b:IsFlashing() end
+--ActionButton_OnLoad = function(b) return b:OnLoad() end
+--ActionButton_UpdateHotkeys = function(b) return b:UpdateHotkeys() end
+--ActionButton_UpdateAction = function(b) return b:UpdateAction() end
+--ActionButton_Update = function(b) return b:Update() end
+--ActionButton_UpdateHighlightMark = function(b) return b:UpdateHighlightMark() end
+--ActionButton_UpdateSpellHighlightMark = function(b) return b:UpdateSpellHighlightMark() end
+--ActionButton_ShowGrid = function(b) return b:ShowGrid() end
+--ActionButton_HideGrid = function(b) return b:HideGrid() end
+--ActionButton_UpdateState = function(b) return b:UpdateState() end
+--ActionButton_UpdateUsable = function(b) return b:UpdateUsable() end
+--ActionButton_UpdateCount = function(b) return b:UpdateCount() end
+--ActionButton_OnCooldownDone = ActionButtonCooldown_OnCooldownDone
+--ActionButton_UpdateOverlayGlow = function(b) return b:UpdateOverlayGlow() end
+--ActionButton_OverlayGlowAnimOutFinished = function(b) return b:OverlayGlowAnimOutFinished() end
+--ActionButton_SetTooltip = function(b) return b:SetTooltip() end
+--ActionButton_OnUpdate = function(b) return b:OnUpdate() end
+--ActionButton_GetPagedID = function(b) return b:GetPagedID() end
+--ActionButton_UpdateFlash = function(b) return b:UpdateFlash() end
+--ActionButton_ClearFlash = function(b) return b:ClearFlash() end
+--ActionButton_StartFlash = function(b) return b:StartFlash() end
+--ActionButton_StopFlash = function(b) return b:StopFlash() end
+--ActionButton_IsFlashing = function(b) return b:IsFlashing() end
 
 GetCurrencyInfo = function(ID)
     local i = C_CurrencyInfo.GetCurrencyInfo(ID)

@@ -7,10 +7,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10000
-		_detalhes.alpha_build_counter = 10000 --if this is higher than the regular counter, use it instead
-		_detalhes.bcc_counter = 41
-		_detalhes.wotlk_counter = 4
+		_detalhes.build_counter = 10018
+		_detalhes.alpha_build_counter = 10018 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. _detalhes.build_counter
@@ -35,7 +33,7 @@ do
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
 	local news = {
-		{"v9.2.0.10000.146", "Aug 10th, 2022"},
+		{"v9.2.0.10001.146", "Aug 10th, 2022"},
 		"New feature: Arena DPS Bar, can be enabled at the Broadcaster Tools section, shows a bar in 'kamehameha' style showing which team is doing more damage in the latest 3 seconds.",
 		"/keystone now has more space for the dungeon name.",
 		"Revamp on the options section for Broadcaster tools.",

@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -281,6 +281,7 @@ function OptionsPrivate.CreateFrame()
       self.update.frame:Hide()
       self.texteditor.frame:Hide()
       self.codereview.frame:Hide()
+      self.debugLog.frame:Hide()
       if self.newView then
         self.newView.frame:Hide()
       end
@@ -355,6 +356,11 @@ function OptionsPrivate.CreateFrame()
         self.update.frame:Show()
       else
         self.update.frame:Hide()
+      end
+      if self.window == "debuglog" then
+        self.debugLog.frame:Show()
+      else
+        self.debugLog.frame:Hide()
       end
       if self.window == "default" then
         if self.loadProgessVisible then
@@ -542,6 +548,7 @@ function OptionsPrivate.CreateFrame()
   frame.texteditor = OptionsPrivate.TextEditor(frame)
   frame.codereview = OptionsPrivate.CodeReview(frame)
   frame.update = OptionsPrivate.UpdateFrame(frame)
+  frame.debugLog = OptionsPrivate.DebugLog(frame)
 
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
@@ -1149,9 +1156,9 @@ function OptionsPrivate.CreateFrame()
       containerScroll:AddChild(simpleLabel)
 
       local button = AceGUI:Create("WeakAurasNewButton")
-      button:SetTitle(L["From Template"])
+      button:SetTitle(L["Premade Auras"])
       button:SetDescription(L["Offer a guided way to create auras for your character"])
-      button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
+      button:SetIcon("Interface\\Icons\\Inv_misc_book_09")
       button:SetClick(function()
         OptionsPrivate.OpenTriggerTemplate(nil, self:GetTargetAura())
       end)

@@ -25,7 +25,7 @@ end
 
 -- events
 function ActionBarsModule:OnOverrideBarUpdated()
-    if InCombatLockdown() or (not Addon.OverrideController:OverrideBarActive()) then
+    if InCombatLockdown() or not (Addon.OverrideController and Addon.OverrideController:OverrideBarActive()) then
         return
     end
 

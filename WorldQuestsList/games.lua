@@ -1,4 +1,5 @@
 local GlobalAddonName, WQLdb = ...
+local ActionButton_ShowOverlayGlow, ActionButton_HideOverlayGlow = CoreUIShowOverlayGlow, CoreUIHideOverlayGlow
 
 local ELib = WQLdb.ELib
 

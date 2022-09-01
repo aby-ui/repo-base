@@ -390,7 +390,7 @@ function MDTcommsObject:OnCommReceived(prefix, message, distribution, sender)
       MDT:UpdateMap()
       if sender ~= UnitFullName("player") and MDT:GetCurrentSubLevel() == sublevel then
         local poiFrame = MDT:POI_GetFrameForPOI(poiIdx)
-        if poiFrame then UIFrameFlash(poiFrame, 0.5, 1, 1, true, 1, 0); end
+        if poiFrame then UICoreFrameFlash(poiFrame, 0.5, 1, 1, true, 1, 0); end
       end
     end
   end

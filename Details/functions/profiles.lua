@@ -1284,6 +1284,7 @@ local default_global_data = {
 		},
 		current_exp_raid_encounters = {},
 		installed_skins_cache = {},
+		titletext_showtimer_always = false,
 
 	--> keystone cache
 		keystone_cache = {},

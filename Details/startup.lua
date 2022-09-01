@@ -558,69 +558,6 @@ function Details:StartMeUp() --I'll never stop!
 		end)
 	end
 
-	if (DetailsFramework.IsTBCWow()) then
-		--remover isso em versões mais atualizadas
-		if (_detalhes.bcc_counter == 18 or _detalhes.bcc_counter == 19) then
-			_detalhes.trash_auto_remove = false
-		end
-		
-		local originalPosition
-		local isOnOriginalPosition = true
-
-		local taintWarning = CreateFrame ("frame", nil, UIParent, "BackdropTemplate")
-		taintWarning:SetSize (500, 35)
-		taintWarning:SetFrameStrata ("low")
-
-		DetailsFramework:ApplyStandardBackdrop(taintWarning)
-	
-		local warningMessage = taintWarning:CreateFontString (nil, "overlay", "GameFontNormal")
-		warningMessage:SetText ("< right click and choose 'Enter Battle' if 'Enter Battle' button does not work")
-		
-		C_Timer.NewTicker(3, function() -- default = 1
-			if (not Details.DontMoveMinimapIconOnBattlegroundError) then
-				if (StaticPopup1:IsShown() or StaticPopup2:IsShown()) then
-					if (StaticPopup1.which == "ADDON_ACTION_FORBIDDEN" or (StaticPopup2 and StaticPopup2:IsShown() and StaticPopup2.which == "ADDON_ACTION_FORBIDDEN")) then
-
-						if (StaticPopup2:IsShown()) then
-							if (StaticPopup2.which == "ADDON_ACTION_FORBIDDEN") then
-								StaticPopup_Hide("ADDON_ACTION_FORBIDDEN")
-							end
-						end
-		
-						
-						if (MiniMapBattlefieldFrame:IsShown())then
-							taintWarning:Show()
-							taintWarning:SetPoint ("topleft", StaticPopup1, "bottomleft", 0, -10)
-							if (not originalPosition) then
-								local a = {}
-								for i = 1, MiniMapBattlefieldFrame:GetNumPoints() do
-									a[#a + 1] = {MiniMapBattlefieldFrame:GetPoint(i)}
-								end
-								originalPosition = a
-							end
-		
-							MiniMapBattlefieldFrame:ClearAllPoints()
-							MiniMapBattlefieldFrame:SetPoint("left", taintWarning, "left", 10, -2)
-							warningMessage:SetPoint ("left", MiniMapBattlefieldFrame, "right", 9, 0)
-							MiniMapBattlefieldFrame:SetFrameStrata("HIGH")
-
-							isOnOriginalPosition = false
-						end
-					end
-				else
-					if (originalPosition and not isOnOriginalPosition) then
-						MiniMapBattlefieldFrame:ClearAllPoints()
-						for i = 1, #originalPosition do
-							MiniMapBattlefieldFrame:SetPoint(unpack (originalPosition[i]))
-						end
-						taintWarning:Hide()
-						isOnOriginalPosition = true
-					end
-				end
-			end
-		end)
-	end
-
 	hooksecurefunc(GameCooltip, "SetMyPoint", function()
 		if (DetailsAllAttributesFrame) then
 			DetailsAllAttributesFrame:Hide()

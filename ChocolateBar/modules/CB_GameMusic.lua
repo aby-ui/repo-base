@@ -5,11 +5,13 @@ local debug = ChocolateBar and ChocolateBar.debug or function() end
 local GameMusic = {}
 local addonName = "CB_Entertainer"
 
+local volumeText = "Master: "..math.floor((_G.GetCVar("Sound_MasterVolume")*100)).."%"
+
 local dataobj = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
 	type = "data source",
 	--icon = "Interface\\AddOns\\ChocolateBar\\pics\\ChocolatePiece",
 	label = addonName,
-	text  = "Volume: ---",
+	text  = volumeText,
 	OnClick = OnClick,
 	OnMouseWheel = OnMouseWheel,
 	ChocolateBar = true
@@ -27,7 +29,7 @@ function dataobj:OnMouseWheel(vector)
 	vol = vol + step
 	if vol > 1 then vol = 1 end
 	if vol < 0 then vol = 0 end
-	SetCVar(vol, voltypeCVar);
+	SetCVar(cVar, vol);
 	dataobj.text = "Master: "..math.floor((_G.GetCVar(cVar)*100)).."%"
 end
 

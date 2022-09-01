@@ -182,7 +182,21 @@ local LabelMetaFunctions = _G[DF.GlobalWidgetControlNames ["label"]]
 	local smember_outline = function (_object, _value)
 		DF:SetFontOutline (_object.label, _value)
 	end
-	
+
+	local smember_rotation = function(object, rotation)
+		if (type(rotation) == "number") then
+			if (not object.__rotationAnimation) then
+				object.__rotationAnimation = DF:CreateAnimationHub(object.label)
+				object.__rotationAnimation.rotator = DF:CreateAnimation(object.__rotationAnimation, "rotation", 1, 0, 0)
+				object.__rotationAnimation.rotator:SetEndDelay(math.huge)
+				object.__rotationAnimation.rotator:SetSmoothProgress(1)
+			end
+			object.__rotationAnimation.rotator:SetDegrees(rotation)
+			object.__rotationAnimation:Play()
+			object.__rotationAnimation:Pause()
+		end
+	end
+
 	LabelMetaFunctions.SetMembers = LabelMetaFunctions.SetMembers or {}
 	LabelMetaFunctions.SetMembers["show"] = smember_show
 	LabelMetaFunctions.SetMembers["hide"] = smember_hide
@@ -200,6 +214,7 @@ local LabelMetaFunctions = _G[DF.GlobalWidgetControlNames ["label"]]
 	LabelMetaFunctions.SetMembers["textsize"] = smember_textsize--alias
 	LabelMetaFunctions.SetMembers["shadow"] = smember_outline
 	LabelMetaFunctions.SetMembers["outline"] = smember_outline--alias
+	LabelMetaFunctions.SetMembers["rotation"] = smember_rotation--alias
 	
 	LabelMetaFunctions.__newindex = function (_table, _key, _value)
 		local func = LabelMetaFunctions.SetMembers [_key]

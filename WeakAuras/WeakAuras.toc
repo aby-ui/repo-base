@@ -1,7 +1,8 @@
 ## Interface: 90207
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 4.0.2
+## Version: 4.1.2
+## X-Flavor: Mainline
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
@@ -16,12 +17,13 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0, LibSpecialization
 
 # External code + initialization
 embeds.xml
 
 # Client flavor specific libs
+Libs\LibSpecialization\LibSpecialization.lua
 
 Init.lua
 locales.xml
@@ -29,6 +31,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Types_Retail.lua
 Types.lua
 Prototypes.lua
 Profiling.lua
@@ -40,11 +43,15 @@ Animations.lua
 Conditions.lua
 
 # Trigger systems
+LibSpecializationWrapper.lua
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
+
+# Helper Systems
 AuraWarnings.lua
 AuraEnvironment.lua
+DebugLog.lua
 
 # Region support
 RegionTypes\RegionPrototype.lua

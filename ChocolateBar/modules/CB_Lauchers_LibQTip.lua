@@ -31,7 +31,7 @@ dataobj = ldb:NewDataObject(addonName, {
     if button == "RightButton" then
 			if _G.IsModifierKeyDown() then
 				mainmenu(self, button, ...)
-			else
+			elseif dataobj.OpenOptions then
 				dataobj:OpenOptions()
 			end
 		else

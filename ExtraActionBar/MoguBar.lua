@@ -194,13 +194,18 @@ function MOGUBar_ToggleShowGrid(switch)
                 end
             end
         end
-    else MOGUBar_f97a2a7812f94d4bb34fcf1f04f5711e = false;
-    for MOGUBar_e914904fab9d05d3f54d52bfc31a0f3f = 1, U1BAR_MAX_BARS, 1 do
-        local MOGUBar_69072c73fde2ed407f863929fd1e7483 = getglobal("U1BAR" .. MOGUBar_e914904fab9d05d3f54d52bfc31a0f3f);
-        if (MOGUBar_69072c73fde2ed407f863929fd1e7483 and MOGUBar_69072c73fde2ed407f863929fd1e7483:IsVisible()) then
-            for MOGUBar_5e57ab95c762a48d9a126b104db1056f = 1, MOGUBar_MAX_BUTTONS, 1 do local MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5 = getglobal(MOGUBar_69072c73fde2ed407f863929fd1e7483:GetName() .. "AB" .. MOGUBar_5e57ab95c762a48d9a126b104db1056f); MOGUActionButton_HideGrid(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); ActionButton_Update(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); end
+    else
+        MOGUBar_f97a2a7812f94d4bb34fcf1f04f5711e = false;
+        for barid = 1, U1BAR_MAX_BARS, 1 do
+            local bar = getglobal("U1BAR" .. barid);
+            if (bar and bar:IsVisible()) then
+                for id = 1, MOGUBar_MAX_BUTTONS, 1 do
+                    local btn = getglobal(bar:GetName() .. "AB" .. id);
+                    MOGUActionButton_HideGrid(btn);
+                    btn:Update();
+                end
+            end
         end
-    end
     end
 end
 
@@ -520,7 +525,13 @@ CoreScheduleTimer(true, 2, function()
     end
 end)
 
-function MOGUBar_11e76fe10cb05184719f745e4db8a533(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5) local MOGUBar_9248008bbb6d0ee7ce13f6ee45680051 = getglobal(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:GetName() .. "NormalTexture"); MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5.hide = nil; MOGUBar_9248008bbb6d0ee7ce13f6ee45680051:SetAlpha(0.3); MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetAttribute("statehidden", nil); MOGUActionButton_UpdateGrid(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); return true;
+function MOGUBar_11e76fe10cb05184719f745e4db8a533(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5)
+    local MOGUBar_9248008bbb6d0ee7ce13f6ee45680051 = getglobal(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:GetName() .. "NormalTexture");
+    MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5.hide = nil;
+    MOGUBar_9248008bbb6d0ee7ce13f6ee45680051:SetAlpha(0.3);
+    MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetAttribute("statehidden", nil);
+    MOGUActionButton_UpdateGrid(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5);
+    return true;
 end
 
 function MOGUBar_572bc203d168039d0b16ee8ebdfc9d3a(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5) MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5.hide = 1; MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetAttribute("statehidden", true); MOGUActionButton_UpdateGrid(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); end
@@ -578,7 +589,7 @@ function U1BAR_CreateNewActionBar()
         bar.isLocked = nil; bar.minimized = nil; bar.sonID = 1; for MOGUBar_e914904fab9d05d3f54d52bfc31a0f3f = 1, MOGUBar_MAX_BUTTONS, 1 do
             local btn = getglobal(bar:GetName() .. "AB" .. MOGUBar_e914904fab9d05d3f54d52bfc31a0f3f);
             local MOGUBar_8d0febf2348ea712b2b375ae95601d5f = bar.sonID + (10 - bar:GetID()) * MOGUBar_MAX_BUTTONS;
-            btn:SetScript("OnEvent", MOGUActionButton_OnEvent);
+            --btn:SetScript("OnEvent", MOGUActionButton_OnEvent);
             btn:SetAttribute("action", MOGUBar_8d0febf2348ea712b2b375ae95601d5f);
             btn.bookFrameShow = nil;
             MOGUBar_11e76fe10cb05184719f745e4db8a533(btn);
@@ -651,7 +662,7 @@ if (not MOGUBar_d5559836e6861c025e096cb9c41eda8c) then MOGUBar_d5559836e6861c025
     local loc1 = MOGUBar_69072c73fde2ed407f863929fd1e7483.sonID + (10 - MOGUBar_69072c73fde2ed407f863929fd1e7483:GetID()) * MOGUBar_MAX_BUTTONS;
     MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetAttribute("action", loc1);
     MOGUBar_69072c73fde2ed407f863929fd1e7483.sonID = MOGUBar_69072c73fde2ed407f863929fd1e7483.sonID + 1;
-    MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetScript("OnEvent", MOGUActionButton_OnEvent);
+    --MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetScript("OnEvent", MOGUActionButton_OnEvent);
     if (MOGUBar_f97a2a7812f94d4bb34fcf1f04f5711e) then
         MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5:SetAttribute("showgrid", 1);
     else
@@ -725,7 +736,21 @@ function MOGUBar_4a8bce8af3e339e7256a76e8fd38aa73(self)
 end
 
 function MOGUBar_f7b216cf55af9a4d5e1d6041d1932933(self)
-    local MOGUBar_3e285ebeedd19f2a00429a2614a093d7 = U1BAR_FindBar(self); for MOGUBar_e914904fab9d05d3f54d52bfc31a0f3f = 1, MOGUBar_MAX_BUTTONS, 1 do local MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5 = getglobal(MOGUBar_3e285ebeedd19f2a00429a2614a093d7:GetName() .. "AB" .. MOGUBar_e914904fab9d05d3f54d52bfc31a0f3f); if (MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5 and MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5.hide) then MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5.minimized = nil; MOGUBar_11e76fe10cb05184719f745e4db8a533(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); end ActionButton_UpdateState(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); MOGUActionButton_UpdateGrid(MOGUBar_99f3cf2c6f1fdfadb0fd4ab6e0843bf5); end MOGUBar_3e285ebeedd19f2a00429a2614a093d7.minimized = nil; local MOGUBar_bba564c01b4659989f8d87879ec9fe5e = MOGUBar_45eed77ae29ae5fa45c281c9f2e34a2b(); local MOGUBar_info = MOGUBar_bba564c01b4659989f8d87879ec9fe5e[MOGUBar_3e285ebeedd19f2a00429a2614a093d7:GetName()]; U1BAR_SetAlign(MOGUBar_3e285ebeedd19f2a00429a2614a093d7, MOGUBar_info.arrangement); MOGUBar_9bf8053183f37cc485e2dcebb062ab02(MOGUBar_3e285ebeedd19f2a00429a2614a093d7);
+    local bar = U1BAR_FindBar(self);
+    for id = 1, MOGUBar_MAX_BUTTONS, 1 do
+        local btn = getglobal(bar:GetName() .. "AB" .. id);
+        if (btn and btn.hide) then
+            btn.minimized = nil;
+            MOGUBar_11e76fe10cb05184719f745e4db8a533(btn);
+        end
+        btn:UpdateState();
+        MOGUActionButton_UpdateGrid(btn);
+    end
+    bar.minimized = nil;
+    local MOGUBar_bba564c01b4659989f8d87879ec9fe5e = MOGUBar_45eed77ae29ae5fa45c281c9f2e34a2b();
+    local MOGUBar_info = MOGUBar_bba564c01b4659989f8d87879ec9fe5e[bar:GetName()];
+    U1BAR_SetAlign(bar, MOGUBar_info.arrangement);
+    MOGUBar_9bf8053183f37cc485e2dcebb062ab02(bar);
 end
 
 function MOGUBar_808a4bd835bd3741099c5cfacb463a5c(MOGUBar_7739b813d90aed43ab9d0eb84ec1c1ae) if (MOGUBar_7739b813d90aed43ab9d0eb84ec1c1ae) then DurabilityFrame:SetPoint("TOP", "MinimapCluster", "BOTTOM", -20, 15); else DurabilityFrame:SetPoint("TOP", "MinimapCluster", "BOTTOM", 40, 15); end end
@@ -798,6 +823,7 @@ function MOGUBarOpacitySlider_OnLeave(self)
     MOGU_DelayCall(MOGUBar_d4c4d4c5dde2baa01c763775a64361ff, 2);
 end
 
+--[[
 function U1BAR_ActionButton_Update (self)
 	local name = self:GetName();
 
@@ -1014,3 +1040,4 @@ function U1BAR_ActionButton_OnEvent (self, event, ...)
 		end
 	end
 end
+--]]

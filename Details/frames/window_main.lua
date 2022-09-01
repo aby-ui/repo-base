@@ -2166,7 +2166,7 @@ local icon_frame_on_enter = function (self)
 			_detalhes:AddTooltipHeaderStatusbar()
 			
 			local talent_string = ""
-			if (talents and not DetailsFramework.IsTBCWow()) then
+			if (talents and not (DetailsFramework.IsTBCWow() or DetailsFramework.IsWotLKWow())) then
 				for i = 1, #talents do
 					local talentID, name, texture, selected, available = GetTalentInfoByID(talents [i])
 					if (texture) then
@@ -4143,13 +4143,13 @@ function gump:CreateNewLine (instancia, index)
 	icone_classe:SetTexCoord (.75, 1, .75, 1)
 	newLine.icone_classe = icone_classe
 	
-	local icon_frame = CreateFrame ("frame", "DetailsBarra_IconFrame_" .. instancia.meu_id .. "_" .. index, newLine.statusbar)
-	icon_frame:SetPoint ("topleft", icone_classe, "topleft")
-	icon_frame:SetPoint ("bottomright", icone_classe, "bottomright")
-	icon_frame:SetFrameLevel (newLine.statusbar:GetFrameLevel()+1)
-	icon_frame.instance_id = instancia.meu_id
-	icon_frame.row = newLine
-	newLine.icon_frame = icon_frame
+	local iconFrame = CreateFrame ("frame", "DetailsBarra_IconFrame_" .. instancia.meu_id .. "_" .. index, newLine.statusbar)
+	iconFrame:SetPoint ("topleft", icone_classe, "topleft")
+	iconFrame:SetPoint ("bottomright", icone_classe, "bottomright")
+	iconFrame:SetFrameLevel (newLine.statusbar:GetFrameLevel()+1)
+	iconFrame.instance_id = instancia.meu_id
+	iconFrame.row = newLine
+	newLine.icon_frame = iconFrame
 	
 	icone_classe:SetPoint ("left", newLine, "left")
 	newLine.statusbar:SetPoint ("topleft", icone_classe, "topright")
@@ -7916,41 +7916,42 @@ function _detalhes:RefreshAttributeTextSize()
 end
 
 -- ~encounter ~timer
-function _detalhes:CheckForTextTimeCounter (combat_start)
-	if (combat_start) then
-		if (_detalhes.tabela_vigente.is_boss) then
-			local lower = _detalhes:GetLowerInstanceNumber()
-			if (lower) then
-				local instance = _detalhes:GetInstance (lower)
+function Details:CheckForTextTimeCounter(combatStart) --called from combat start function
+	if (combatStart) then
+		--if (Details.tabela_vigente.is_boss) then --is an encounter
+			local instanceId = Details:GetLowerInstanceNumber()
+			if (instanceId) then
+				local instance = Details:GetInstance(instanceId)
 				if (instance.baseframe and instance:IsEnabled()) then
-					if (instance.attribute_text.show_timer) then
-						if (_detalhes.instance_title_text_timer [instance:GetId()]) then
-							Details.Schedules.Cancel(_detalhes.instance_title_text_timer [instance:GetId()])
+					if (instance.attribute_text.show_timer) then --can show the timer
+						--start a new ticker of 1 second
+						if (Details.instance_title_text_timer[instance:GetId()]) then
+							Details.Schedules.Cancel(Details.instance_title_text_timer[instance:GetId()])
 						end
-						_detalhes.instance_title_text_timer[instance:GetId()] = Details.Schedules.NewTicker(1, Details.TitleTextTickTimer, Details, instance)
+						Details.instance_title_text_timer[instance:GetId()] = Details.Schedules.NewTicker(1, Details.TitleTextTickTimer, Details, instance)
 					end
 				end
 			else
-				return
+				return --there's no open window
 			end
-		else
-			if (_detalhes.in_combat and _detalhes.zone_type == "raid") then
-				Details.Schedules.NewTimer(3, Details.CheckForTextTimeCounter, Details, true)
-			end
-		end
+		--else --boss encounter not found
+		--	if (Details.in_combat and Details.zone_type == "raid") then
+		--		Details.Schedules.NewTimer(3, Details.CheckForTextTimeCounter, Details, true)
+		--	end
+		--end
 	else
-		for _, instance in ipairs (_detalhes.tabela_instancias) do
-			if (_detalhes.instance_title_text_timer [instance:GetId()] and instance.baseframe and instance:IsEnabled() and instance.menu_attribute_string) then
-				Details.Schedules.Cancel(_detalhes.instance_title_text_timer[instance:GetId()])
-				local current_text = instance:GetTitleBarText()
-				current_text = current_text:gsub ("%[.*%] ", "")
-				instance:SetTitleBarText(current_text)
+		for instanceId, instance in Details:ListInstances() do
+			if (Details.instance_title_text_timer[instance:GetId()] and instance.baseframe and instance:IsEnabled() and instance.menu_attribute_string) then --check if the instance is initialized
+				Details.Schedules.Cancel(Details.instance_title_text_timer[instance:GetId()])
+				local currentText = instance:GetTitleBarText()
+				currentText = currentText:gsub("%[.*%] ", "")
+				instance:SetTitleBarText(currentText)
 			end
 		end
 	end
 end
 
-local format_timer = function (t)
+local formatTime = function (t)
 	local m, s = _math_floor (t/60), _math_floor (t%60)
 	if (m < 1) then
 		m = "00"
@@ -7963,32 +7964,67 @@ local format_timer = function (t)
 	return "[" .. m .. ":" .. s .. "]"
 end
 
-function _detalhes:TitleTextTickTimer (instance)
+function _detalhes:TitleTextTickTimer (instance) --called on each 1 second tick
 	if (instance.attribute_text.enabled) then
+		--tick only during encounter
+		if (not Details.titletext_showtimer_always) then
+			if (IsEncounterInProgress) then
+				if (not IsEncounterInProgress()) then
+					return
+				end
+			else
+				if (not Details.tabela_vigente.is_boss) then
+					return
+				end
+			end
+		end
+
 		local currentText = instance.menu_attribute_string.originalText
 		if (currentText) then
-			local timer = format_timer (_detalhes.tabela_vigente:GetCombatTime())
+			local timer = formatTime(_detalhes.tabela_vigente:GetCombatTime())
 			instance:SetTitleBarText(timer .. " " .. currentText)
 		else
 			local current_text = instance:GetTitleBarText()
-			if (not current_text:find ("%[.*%]")) then
+			if (not current_text:find("%[.*%]")) then
 				instance:SetTitleBarText("[00:01] " .. current_text)
 			else
-				local timer = format_timer (_detalhes.tabela_vigente:GetCombatTime())
-				current_text = current_text:gsub ("%[.*%]", timer)
+				local timer = formatTime(_detalhes.tabela_vigente:GetCombatTime())
+				current_text = current_text:gsub("%[.*%]", timer)
 				instance:SetTitleBarText(current_text)
 			end
 		end
 	end
 end
 
-function _detalhes:SetTitleBarText(text)
-	if (self.attribute_text.enabled and self.menu_attribute_string) then
+function Details:RefreshTitleBarText()
+	local titleBarText = self.menu_attribute_string
+
+	if (titleBarText and self == titleBarText.owner_instance) then
+		local sName = self:GetInstanceAttributeText()
+		local instanceMode = self:GetMode()
+
+		if (instanceMode == DETAILS_MODE_GROUP or instanceMode == DETAILS_MODE_ALL) then
+			local segment = self:GetSegment()
+			if (segment == DETAILS_SEGMENTID_OVERALL) then
+				sName = sName .. " " .. Loc ["STRING_OVERALL"]
+
+			elseif (segment >= 2) then
+				sName = sName .. " [" .. segment .. "]"
+			end
+		end
+
+		titleBarText:SetText(sName)
+		titleBarText.originalText = sName
+	end
+end
+
+function Details:SetTitleBarText(text)
+	if (self.menu_attribute_string) then
 		self.menu_attribute_string:SetText(text)
 	end
 end
 
-function _detalhes:GetTitleBarText()
+function Details:GetTitleBarText()
 	if (self.menu_attribute_string) then
 		return self.menu_attribute_string:GetText()
 	end
@@ -8058,34 +8094,16 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 	end
 	
 	if (not self.menu_attribute_string) then 
-
 		--local label = gump:NewLabel (self.floatingframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
 		local label = gump:NewLabel (self.baseframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
 		self.menu_attribute_string = label
-		self.menu_attribute_string.text = _detalhes:GetSubAttributeName (self.atributo, self.sub_atributo)
+		self:RefreshTitleBarText()
 		self.menu_attribute_string.owner_instance = self
-		
 		self.menu_attribute_string.Enabled = true
 		self.menu_attribute_string.__enabled = true
 		
-		function self.menu_attribute_string:OnEvent (instance, attribute, subAttribute)
-			if (instance == label.owner_instance) then
-				local sName = instance:GetInstanceAttributeText()
-				local instanceMode = instance:GetMode()
-
-				if (instanceMode == DETAILS_MODE_GROUP or instanceMode == DETAILS_MODE_ALL) then
-					local segment = instance:GetSegment()
-					if (segment == DETAILS_SEGMENTID_OVERALL) then
-						sName = sName .. " " .. Loc ["STRING_OVERALL"]
-
-					elseif (segment >= 2) then
-						sName = sName .. " [" .. segment .. "]"
-					end
-				end
-
-				label.text = sName
-				label.originalText = sName
-			end
+		function self.menu_attribute_string:OnEvent(instance, attribute, subAttribute)
+			instance:RefreshTitleBarText()
 		end
 		
 		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEATTRIBUTE", self.menu_attribute_string.OnEvent)

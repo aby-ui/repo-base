@@ -129,6 +129,7 @@ end
 
 function OverrideController:Remove(frame)
 	self:SetFrameRef('FrameToUnregister', frame)
+
 	self:Execute([[
 		local frameToUnregister = self:GetFrameRef('FrameToUnregister')
 		for i, frame in pairs(myFrames) do

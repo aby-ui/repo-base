@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
@@ -188,7 +188,7 @@ local function modify(parent, region, data)
 
   local customTextFunc = nil
   if(Private.ContainsCustomPlaceHolder(data.displayText) and data.customText) then
-    customTextFunc = WeakAuras.LoadFunction("return "..data.customText, region.id, "custom text")
+    customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
   end
 
   local Update

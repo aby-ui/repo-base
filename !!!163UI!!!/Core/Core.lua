@@ -1868,12 +1868,12 @@ end
 Deal with UIFrameFlash & UIFrameFade
 /run UIFrameFlash(PlayerFrame, 1,1, -1,true,0,0,"test")
 ----------------------------------------------]]
-if deal_taint_other then
+if true or deal_taint_other then
     local L
     if GetLocale()=="zhTW" or GetLocale()=="zhCN" then
         L = {
             FADE_PREVENT = "!NoTaint阻止了对UIFrameFade的调用.",
-            FLASH_FAILED = "你的插件调用了UIFrameFlash，导致你可能无法切换天赋，请修改对应代码。",
+            FLASH_FAILED = "你的插件调用了UIFrameFlash，可能会导致卡动作条等问题，请联系插件作者", --换成UICoreFlashFrame
         }
     else
         L = {
@@ -1885,7 +1885,7 @@ if deal_taint_other then
     hooksecurefunc("UIFrameFlash", function (frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
         if ( frame ) then
             if not issecurevariable(frame, "syncId") or not issecurevariable(frame, "fadeInTime") or not issecurevariable(frame, "flashTimer") then
-                error(L.FLASH_FAILED)
+                error(L.FLASH_FAILED, 3)
                 --UIFrameFlashStop(frame)
                 --frameFlashManager:SetScript("OnUpdate", nil)
             end
@@ -1896,7 +1896,7 @@ end
 --[[----------------------------------------------------
 -- Deal with FCF_StartAlertFlash
 -- which is called only in ChatFrame_MessageEventHandler
--------------------------------------------------------]]
+-- (removed because LibChatAnim make a whole FCF_StartAlertFlash)
 if deal_taint_other then
     local function FCFTab_UpdateAlpha(chatFrame, alerting)
         local chatTab = _G[chatFrame:GetName().."Tab"];
@@ -1958,6 +1958,8 @@ if deal_taint_other then
         --FCFDockOverflowButton_UpdatePulseState(GENERAL_CHAT_DOCK.overflowButton);
     end)
 end
+-------------------------------------------------------]]
+
 -- ======================= 污染问题 end ==========================
 
 ---可以输出代码位置的调试方法

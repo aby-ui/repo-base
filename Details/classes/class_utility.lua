@@ -1690,7 +1690,7 @@ function atributo_misc:ToolTipBuffUptime (instancia, numero, barra)
 	local _combat_time = instancia.showing:GetCombatTime()
 	
 	for _spellid, _tabela in _pairs (minha_tabela) do
-		buffs_usados [#buffs_usados+1] = {_spellid, _tabela.uptime}
+		buffs_usados [#buffs_usados+1] = {_spellid, _tabela.uptime or 0}
 	end
 	--_table_sort (buffs_usados, Sort2Reverse)
 	_table_sort (buffs_usados, _detalhes.Sort2)

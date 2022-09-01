@@ -296,6 +296,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["displayId"] = 74335;
     ["creatureType"] = "Mechanical";
     ["level"] = 111;
+    ["characteristics"] = {
+      ["Taunt"] = true;
+    };
     ["spells"] = {
       [230050] = {
       };
@@ -577,6 +580,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["level"] = 110;
     ["characteristics"] = {
       ["Taunt"] = true;
+      ["Sap"] = true;
     };
     ["spells"] = {
       [229597] = {
@@ -827,6 +831,7 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["level"] = 112;
     ["characteristics"] = {
       ["Taunt"] = true;
+      ["Root"] = true;
       ["Disorient"] = true;
       ["Stun"] = true;
       ["Slow"] = true;
@@ -1001,6 +1006,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["displayId"] = 73838;
     ["creatureType"] = "Demon";
     ["level"] = 111;
+    ["characteristics"] = {
+      ["Taunt"] = true;
+    };
     ["spells"] = {
       [229608] = {
       };
@@ -1026,6 +1034,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
     ["displayId"] = 16293;
     ["creatureType"] = "Humanoid";
     ["level"] = 111;
+    ["characteristics"] = {
+      ["Taunt"] = true;
+    };
     ["spells"] = {
       [229427] = {
       };
@@ -1111,9 +1122,9 @@ MDT.dungeonEnemies[dungeonIndex] = {
     };
     ["clones"] = {
       [1] = {
-        ["x"] = 441.34070658681;
-        ["y"] = -303.40479297808;
-        ["sublevel"] = 8;
+        ["x"] = 449.63635738203;
+        ["y"] = -294.33741984929;
+        ["sublevel"] = 6;
       };
     };
   };

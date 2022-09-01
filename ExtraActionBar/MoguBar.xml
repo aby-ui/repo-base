@@ -4,9 +4,11 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
     <Script file="MOGUBar.lua"/>
     <CheckButton name="MOGUBarButtonTemplate" virtual="true" inherits="ActionBarButtonTemplate">
         <Scripts>
+<!--
             <OnLoad>
                 MOGUBarButton_OnLoad(self)
             </OnLoad>
+-->
         </Scripts>
     </CheckButton>
 

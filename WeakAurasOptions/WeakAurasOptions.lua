@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -877,6 +877,10 @@ end
 
 function OptionsPrivate.ImportFromString()
   frame.importexport:Open("import");
+end
+
+function OptionsPrivate.OpenDebugLog(text)
+  frame.debugLog:Open(text)
 end
 
 function OptionsPrivate.OpenUpdate(data, children, target, sender)

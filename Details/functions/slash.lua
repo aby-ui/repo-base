@@ -1696,16 +1696,10 @@ function SlashCmdList.DETAILS (msg, editbox)
 		print (" ")
 
 		if (DetailsFramework.IsWotLKWow()) then
-			--wraft of the lich kind classic
-			local v = _detalhes.game_version .. "." .. (_detalhes.wotlk_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00BCC" .. _detalhes.wotlk_counter)
+			--wraft of the lich kind classic, the retail version of details should work on lich king, so let's print here the retail build counter
+			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00W" .. _detalhes.build_counter)
 			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
 
-		elseif (DetailsFramework.IsTBCWow()) then
-			--the burning crusade classic
-			local v = _detalhes.game_version .. "." .. (_detalhes.bcc_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00BCC" .. _detalhes.bcc_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
 		else
 			--retail
 			local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)

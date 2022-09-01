@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -10,6 +10,7 @@ local printedWarnings = {}
 
 local function OnDelete(event, uid)
   warnings[uid] = nil
+  printedWarnings[uid] = nil
 end
 
 Private.callbacks:RegisterCallback("Delete", OnDelete)
@@ -37,6 +38,9 @@ local function UpdateWarning(uid, key, severity, message, printOnConsole)
   else
     if warnings[uid][key] then
       warnings[uid][key] = nil
+      if printedWarnings[uid] then
+        printedWarnings[uid][key] = nil
+      end
       Private.callbacks:Fire("AuraWarningsUpdated", uid)
     end
   end
@@ -73,7 +77,7 @@ local function AddMessages(result, messages, icon, mixedSeverity)
     end
     if mixedSeverity then
       if C_Texture.GetAtlasInfo(icon) then
-        result = result .. "|A" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
+        result = result .. "|A:" .. icon .. ":12:12:0:0|a"
       else
         result = result .. "|T" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
       end
