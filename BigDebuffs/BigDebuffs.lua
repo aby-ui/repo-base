@@ -1,5 +1,4 @@
---print("|cff00dfff[BigDebuffs-v4.9]|r原作者|c00FF9900Curse:Jordon|r,由|c00FF9900NGA:伊甸外|r于7.23日翻译修改,输入|cff33ff99/bd|r设置.")
---翻译汉化修改：NGA  @伊甸外  barristan@sina.com  http://bbs.ngacn.cc/nuke.php?func=ucp&uid=7350579
+
 -- BigDebuffs by Jordon
 
 local addonName, addon = ...
@@ -295,6 +294,8 @@ else
         SHAMAN = {
             Disease = true,
             Poison = true,
+            -- Shamans 'Cleanse Spirit' restoration talent
+            Curse = function () return IsUsableSpell(GetSpellInfo(51886)) end
         },
         WARLOCK = {
             -- Felhunter's Devour Magic or Doomguard's Dispel Magic
@@ -1053,10 +1054,25 @@ function BigDebuffs:COMBAT_LOG_EVENT_UNFILTERED()
             (UnitChannelInfo and select(7, UnitChannelInfo(unit)) == false))
         then
             local duration = spell.parent and self.Spells[spell.parent].duration or spell.duration
-            local _, class = UnitClass(unit)
 
-            if UnitBuffByName(unit, "Calming Waters") then
+            if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and UnitBuffByName(unit, "Calming Waters") then
                 duration = duration * 0.5
+            end
+
+            if WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+                local _, playerClass = UnitClass("player")
+                if playerClass == "PALADIN" then
+                    local improvedConcAuraRank = select(5, GetTalentInfo(2, 12))
+                    if improvedConcAuraRank > 0 and UnitBuffByName(unit, "Concentration Aura") then
+                        duration = duration * (1.0 - 0.1 * improvedConcAuraRank)
+                    end
+                end
+                if playerClass == "SHAMAN" then
+                    local focusedMindRank = select(5, GetTalentInfo(3, 14))
+                    if focusedMindRank > 0 then
+                        duration = duration * (1.0 - 0.1 * focusedMindRank)
+                    end
+                end
             end
 
             self.units[destGUID] = self.units[destGUID] or {}

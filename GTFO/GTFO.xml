@@ -21,6 +21,7 @@
   <Script file="GTFO_Spells_LGN.lua" />
   <Script file="GTFO_Spells_BFA.lua" />
   <Script file="GTFO_Spells_SL.lua" />
+  <Script file="GTFO_Spells_DF.lua" />
   <Script file="GTFO_Spells_Special.lua" />
   <Script file="GTFO_Fail_GenericRetail.lua" />
   <Script file="GTFO_Fail_GenericClassic.lua" />
@@ -34,6 +35,7 @@
   <Script file="GTFO_Fail_LGN.lua" />
   <Script file="GTFO_Fail_BFA.lua" />
   <Script file="GTFO_Fail_SL.lua" />
+  <Script file="GTFO_Fail_DF.lua" />
   <Script file="GTFO_FF_BC.lua" />
   <Script file="GTFO_FF_LK.lua" />
   <Script file="GTFO_FF_CAT.lua" />
@@ -42,6 +44,7 @@
   <Script file="GTFO_FF_LGN.lua" />
   <Script file="GTFO_FF_BFA.lua" />
   <Script file="GTFO_FF_SL.lua" />
+  <Script file="GTFO_FF_DF.lua" />
   <Script file="GTFO_Mobs.lua" />
      <GameTooltip name="GTFOSpellTooltip" frameStrata="TOOLTIP" hidden="true" parent="UIParent" inherits="GameTooltipTemplate"/>
      <Frame name="GTFOFrame" parent="UIParent" hidden="false">

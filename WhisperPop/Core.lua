@@ -17,7 +17,7 @@ local select = select
 local PlaySoundFile = PlaySoundFile
 local wipe = wipe
 local tremove = tremove
-local SendWho = SendWho
+local C_FriendList = C_FriendList
 local min = min
 local max = max
 local GetPlayerInfoByGUID = GetPlayerInfoByGUID
@@ -178,7 +178,7 @@ function addon:HandleAction(name, action)
 		end
 
 	elseif action == "WHO" then
-		SendWho("n-"..(bnName or name))
+        C_FriendList.SendWho(WHO_TAG_EXACT..name) --("n-"..(bnName or name))
 
 	elseif action == "INVITE" then
 		if bnId then

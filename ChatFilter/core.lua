@@ -331,9 +331,10 @@ if (Config.MergeCraftMSG) then
 	ChatFilter:RegisterEvent("TRADE_SKILL_SHOW")
 	ChatFilter:RegisterEvent("TRADE_SKILL_CLOSE")
 end
+--[[ --use BadBoy_Levels
 if (Config.FilterByLevel) then
-	local Org_SendWho = SendWho
-	SendWho = function(text)
+	local Org_SendWho = C_FriendList.SendWho
+    C_FriendList.SendWho = function(text)
 		queryTime = GetTime()
 		if (queryTime - (lastQueryTime or 0) <= 5) then return end
 		FriendsFrame:UnregisterEvent("WHO_LIST_UPDATE")
@@ -367,6 +368,7 @@ if (Config.FilterByLevel) then
 	ChatFilter:RegisterEvent("UNIT_TARGET")
 	ChatFilter:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 end
+--]]
 ChatFilter:RegisterEvent("ADDON_LOADED")
 ChatFilter:RegisterEvent("PLAYER_ENTERING_WORLD")
 
@@ -635,7 +637,8 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 				ShieldTable[player] = Now
 				return true
 			end
-		end
+        end
+        --[[ --use BadBoy_Levels
 		if (Config.FilterByLevel and (event == "CHAT_MSG_WHISPER" or (not Config.OnlyOnWhisper and event ~= "CHAT_MSG_WHISPER"))) then
 			local AllowLevel, queried = Config.AllowLevel, nil
 			if AllowLevel < 1 then return end
@@ -660,8 +663,9 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 					return true
 				end
 			end
-			if (not (Loading or queried or UnitIsInMyGuild(player) or WhoFrame:IsShown()) and Now - (queryTime or 0) > 5) then SendWho("a-"..player) end
+			if (not (Loading or queried or UnitIsInMyGuild(player) or WhoFrame:IsShown()) and Now - (queryTime or 0) > 5) then C_FriendList.SendWho("a-"..player) end
 		end
+		--]]
 		tinsert(CacheTable, Msg_Data)
 		prevLineId = lineId
 	end

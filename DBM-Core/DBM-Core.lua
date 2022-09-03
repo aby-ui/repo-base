@@ -29,8 +29,8 @@ local wowVersionString, wowBuild, _, wowTOC = GetBuildInfo()
 local testBuild = IsTestBuild()
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local isClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
-local isBCC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5) and wowTOC < 30000
-local isWrath = WOW_PROJECT_ID == 5 and wowTOC >= 30000
+local isBCC = WOW_PROJECT_ID == (WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5)
+local isWrath = WOW_PROJECT_ID == (WOW_PROJECT_WRATH_CLASSIC or 11)
 
 local DBMPrefix = isRetail and "D4" or isClassic and "D4C" or isBCC and "D4BC" or isWrath and "D4WC"
 private.DBMPrefix = DBMPrefix
@@ -69,7 +69,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20220831082150"),
+	Revision = parseCurseDate("20220902192702"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -88,8 +88,8 @@ elseif isBCC then
 	DBM.ReleaseRevision = releaseDate(2022, 8, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.8 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 8, 29) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "3.4.9 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 9, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls

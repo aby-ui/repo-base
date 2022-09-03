@@ -859,8 +859,6 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="�
     ["厄莫莫-冰风岗"]="爱不易劳模",
     ["波波祖先-冰风岗"]="爱不易劳模",
     ["微笑的科科呀-冰风岗"]="爱不易大股东",
-    ["闪电滚滚-冰风岗"]="爱不易大混混",
-    ["闪电糖糖-冰风岗"]="爱不易大混混",
     ["我从梦中醒来-冰风岗"]="爱不易指导员",
     ["爱笑的贝贝丶-冰风岗"]="爱不易大股东",
     ["莜面鱼鱼-冰风岗"]="爱不易大股东",
@@ -877,7 +875,6 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="�
     ["糖门欧洲人-冰风岗"]="爱不易龙虾供应商",
     ["部落炮艇火炮-凤凰之神"]="爱不易大股东",
     ["明天就减肥-冰风岗"]="爱不易大股东",
-    ["画圈灬诅咒你-冰风岗"]="爱不易大股东",
     ["月色丶秋风-冰风岗"]="爱不易大股东",
     ["Pigeonmonk-冰风岗"]="爱不易大股东",
     ["Stayreal-冰风岗"]="爱不易大股东",
@@ -891,18 +888,27 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="�
     ["小聪明大条-冰风岗"]="爱不易大股东",
     ["的鵝德-冰风岗"]="爱不易大股东",
 
+    ["Insomniazz-影之哀伤"]="爱不易小蟊贼",
+    ["小短腿柯柯-白银之手"]="爱不易妇女之友",
+    ["菜逼检验师-冰风岗"]="爱不易妇女之友",
+
+    ["闪电滚滚-冰风岗"]="提瑞斯法议会会长",
+    ["闪电糖糖-冰风岗"]="提瑞斯法议会会长",
+    ["点点薇蓝-死亡之翼"]="爱不易大祭司",
+    ["水凝非冰-死亡之翼"]="爱不易小甜心",
+    ["画圈灬诅咒你-冰风岗"]="爱不易大股东",
+
     ["我开嗜血了-冰风岗"]="爱不易全能王",
     ["菜逼分割线-冰风岗"]="爱不易妇女之友",
     ["旋转华丽-冰风岗"]="爱不易神级辅助",
-    ["水凝非冰-死亡之翼"]="爱不易小甜心",
     ["Vitamilk-冰风岗"]="爱不易首席戒律",
     ["巅峰传说-冰风岗"]="爱不易王牌车头",
     ["白发黑魔女-冰风岗"]="爱不易王牌车头",
+    ["欧丶皇丶族-冰风岗"]="爱不易首席替补",
     --["糖门不缺德-冰风岗"]="爱不易龙虾供应商", --"爱不易钟离先生的现任",
     --["无尘大师-冰风岗"]="爱不易熊猫人领导",
     --["依然贝斯-冰风岗"]="爱不易欧皇贝斯",
     --["绯流琥-冰风岗"]="爱不易大股东",
-    --["欧丶皇丶族-冰风岗"]="爱不易首席替补",
     --["恩然-冰风岗"] = "爱不易大股东",
     --["浮云丶天际-冰风岗"]="爱不易大学僧",
     --["Supercell-冰风岗"]="爱不易首席暗牧",
@@ -1205,26 +1211,26 @@ end)
 local deal_taint_dropdown = true
 local deal_taint_options = false
 local deal_taint_other = false
---[[
-/run for _, control in next, AudioOptionsSoundPanel.controls do print(control:GetName(), isv(control, "oldValue")) end
 
-local function AudioOptionsPanel_Refresh (self)
-	for _, control in next, self.controls do
-		BlizzardOptionsPanel_RefreshControl(control);
-		-- record values so we can cancel back to this state
-		control.oldValue = control.value;
-	end
-end
-在这里面，遇到一个dropdown的，就会开始污染
-/dump isv(AudioOptionsSoundPanelHardwareDropDown, "newValue") -> 1证明了是在下面两句里污染的
-
-			UIDropDownMenu_SetSelectedValue(self, selectedDriverIndex);
-			UIDropDownMenu_Initialize(self, AudioOptionsSoundPanelHardwareDropDown_Initialize);
-
-/dump isv(AudioOptionsSoundPanelSoundChannelsDropDown, "value") -> GearManagerEx
-进一步证明
-/dump isv(DropDownList1, "numButtons")
---]]
+--[[------------------------------------------------------------
+选项面板里有下拉菜单选项的问题
+(5.4已经改为securecall, 参见 RunControlsCallbacks BlizzardOptionsPanel_RefreshControl
+    /run for _, control in next, AudioOptionsSoundPanel.controls do print(control:GetName(), isv(control, "oldValue")) end
+    local function AudioOptionsPanel_Refresh (self)
+        for _, control in next, self.controls do
+            BlizzardOptionsPanel_RefreshControl(control);
+            -- record values so we can cancel back to this state
+            control.oldValue = control.value;
+        end
+    end
+    在这里面，遇到一个dropdown的，就会开始污染
+    /dump isv(AudioOptionsSoundPanelHardwareDropDown, "newValue") -> 1证明了是在下面两句里污染的
+                UIDropDownMenu_SetSelectedValue(self, selectedDriverIndex);
+                UIDropDownMenu_Initialize(self, AudioOptionsSoundPanelHardwareDropDown_Initialize);
+    /dump isv(AudioOptionsSoundPanelSoundChannelsDropDown, "value") -> GearManagerEx
+    进一步证明
+    /dump isv(DropDownList1, "numButtons")
+---------------------------------------------------------------]]
 
 --[[------------------------------------------------------------
 处理4.3 OnEvent循环调用 ActionButton_Update()时因为读取OverlayGlow导致的污染

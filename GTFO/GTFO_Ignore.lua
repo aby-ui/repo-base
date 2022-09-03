@@ -12,19 +12,19 @@ GTFO.IgnoreSpellCategory["Fatigue"] = {
 	override = true
 }
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 	GTFO.IgnoreSpellCategory["HagaraWateryEntrenchment"] = {
 		-- mobID = 55689; -- Hagara the Stormbinder
 		spellID = 110317,
-		desc = "Watery Entrenchment (Hagara)"
+		desc = "Watery Entrenchment (Hagara - Cataclysm)"
 	}
 
 	GTFO.IgnoreSpellCategory["GarroshDesecrated"] = {
 		-- Garrosh Hellscream
 		spellID = 144762,
 		desc = "Desecrated Axe (Garrosh Phase 1 & 2)",
-		tooltip = "Alert from the Desecrated Axe from Garrosh Hellscream (Phase 1 & 2)",
+		tooltip = "Alert from the Desecrated Axe from Garrosh Hellscream (Phase 1 & 2 - MOP)",
 		override = true
 	}
 

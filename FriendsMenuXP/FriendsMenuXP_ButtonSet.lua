@@ -287,7 +287,7 @@ FriendsMenuXP_Buttons["ACHIEVEMENTS"] = {
 
 FriendsMenuXP_Buttons["SEND_WHO"] = {
     text = FMXP_BUTTON_SEND_WHO,
-    func = function (name) SendWho("n-"..name); end,
+    func = function (name) C_FriendList.SendWho(WHO_TAG_EXACT..name); end,
 }
 
 FriendsMenuXP_Buttons["ADD_GUILD"] = {

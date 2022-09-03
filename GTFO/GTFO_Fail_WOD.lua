@@ -5,7 +5,7 @@
 GTFO Fail List - Warlords of Draenor
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 -- ***********
 -- * Draenor *

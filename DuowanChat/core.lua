@@ -352,10 +352,11 @@ function DuowanChat:WhoListUpdate()
     FriendsFrame:RegisterEvent("WHO_LIST_UPDATE") 
 end
 
+--[[
 local sendWhoQuery=function(name)
     SetWhoToUI(1)
     FriendsFrame:UnregisterEvent("WHO_LIST_UPDATE")
-    SendWho('n-"'..name..'"')
+    C_FriendList.SendWho(WHO_TAG_EXACT..name) --'n-"'..name..'"')
 end
 
 local function checkMessageSender(message,sender)
@@ -369,6 +370,7 @@ local function checkMessageSender(message,sender)
         end
     end 
 end
+--]]
 
 function DuowanChat.OnEvent(event, message, sender)
     local checkUnitIsStored=function(unit)
@@ -379,7 +381,7 @@ function DuowanChat.OnEvent(event, message, sender)
         end 
     end
     if string.find(event,"CHAT_MSG") then
-        checkMessageSender(message, sender)
+        --checkMessageSender(message, sender)
     elseif event=="GROUP_ROSTER_UPDATE" then
         if(IsInRaid())then
             local num = GetNumGroupMembers()

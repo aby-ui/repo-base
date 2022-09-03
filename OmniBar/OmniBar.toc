@@ -1,11 +1,9 @@
 ## Interface: 90207
 ## Title: OmniBar
 ## Notes: Tracks enemy cooldowns
-## Version: v13.1
+## Version: v14.1
 ## Author: Jordon
-## DefaultState: Enabled
 ## SavedVariables: OmniBarDB
-## OptionalDeps: Masque, LibStub, CallbackHandler-1.0, Ace3, LibDualSpec-1.0
 ## X-Curse-Project-ID: 85814
 ## X-Wago-ID: BO678XK3
 ## X-WoWI-ID: 23235
@@ -13,9 +11,7 @@
 
 Locales\Locales.xml
 OmniBar.xml
-Retail.lua
-#Classic.lua
-#BurningCrusade.lua
+OmniBar_Mainline.lua
 OmniBar.lua
 Options.lua
 

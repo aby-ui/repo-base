@@ -5,7 +5,7 @@
 GTFO Spell List - Battle for Azeroth
 ]]--
 
-if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode)) then
+if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
 --- ******************************
 --- * Battle for Azeroth (World) *

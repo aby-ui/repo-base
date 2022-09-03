@@ -1,14 +1,16 @@
 --------------------------------------------------------------------------
--- GTFO_FF_SL.lua 
+-- GTFO_Fail_DF.lua 
 --------------------------------------------------------------------------
 --[[
-GTFO Friendly Fire List - Shadowlands
+GTFO Fail List - Dragonflight
 ]]--
 
 if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
--- ***************
--- * Shadowlands *
--- ***************
+--- ************************
+--- * Dragon Isles (World) *
+--- ************************
+
 
 end
+

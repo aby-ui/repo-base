@@ -1,7 +1,5 @@
 local addonName, addon = ...
 
-if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
-
 local BUFF_DEFENSIVE = "buffs_defensive"
 local BUFF_OFFENSIVE = "buffs_offensive"
 local BUFF_OTHER = "buffs_other"
@@ -133,7 +131,7 @@ addon.Spells = {
     [209426] = { type = BUFF_DEFENSIVE }, -- Darkness
     [211881] = { type = CROWD_CONTROL }, -- Fel Eruption
     [212800] = { type = BUFF_DEFENSIVE }, -- Blur
-    [196555] = { type = BUFF_DEFENSIVE }, -- Netherwalk
+    [196555] = { type = IMMUNITY }, -- Netherwalk
     [217832] = { type = CROWD_CONTROL }, -- Imprison
         [221527] = { type = CROWD_CONTROL, parent = 217832 }, -- Imprison (PvP Talent)
     [203704] = { type = DEBUFF_OFFENSIVE }, -- Mana Break
@@ -154,11 +152,13 @@ addon.Spells = {
     [22842] = { type = BUFF_DEFENSIVE }, -- Frenzied Regeneration
     [29166] = { type = BUFF_OFFENSIVE }, -- Innervate
     [33786] = { type = CROWD_CONTROL }, -- Cyclone
+    [319439] = { type = BUFF_OFFENSIVE }, -- Bloodtalons
     [33891] = { type = BUFF_OFFENSIVE }, -- Incarnation: Tree of Life (for the menu entry - "Incarnation" tooltip isn't informative)
         [117679] = { type = BUFF_OFFENSIVE, parent = 33891 }, -- Incarnation (grants access to Tree of Life form)
     [45334] = { type = ROOT }, -- Immobilized (Wild Charge in Bear Form)
     [61336] = { type = BUFF_DEFENSIVE }, -- Survival Instincts
     [81261] = { type = CROWD_CONTROL }, -- Solar Beam
+    [197721] = { type = BUFF_DEFENSIVE }, -- Flourish
     [102342] = { type = BUFF_DEFENSIVE }, -- Ironbark
     [102359] = { type = ROOT }, -- Mass Entanglement
     [102543] = { type = BUFF_OFFENSIVE }, -- Incarnation: King of the Jungle
@@ -191,12 +191,17 @@ addon.Spells = {
     [338142] = { type = BUFF_OFFENSIVE }, -- Lone Empowerment (Kyrian Ability)
     [327037] = { type = BUFF_DEFENSIVE }, -- Kindred Protection (Kyrian Ability)
     [362486] = { type = IMMUNITY }, -- Keeper of the Grove
+    [274837] = { type = DEBUFF_OFFENSIVE }, -- Feral Frenzy
+    [363498] = { type = DEBUFF_OFFENSIVE }, -- Sickle of the Lion
 
     -- Hunter
 
     [136] = { type = BUFF_DEFENSIVE }, -- Mend Pet
     [1513] = { type = CROWD_CONTROL }, -- Scare Beast
     [3355] = { type = CROWD_CONTROL }, -- Freezing Trap
+    [356723] = { type = CROWD_CONTROL }, -- Scorpid Venom
+    [356727] = { type = CROWD_CONTROL }, -- Spider Venom
+    [324149] = { type = DEBUFF_OFFENSIVE }, -- Flayed Shot
         [203337] = { type = CROWD_CONTROL, parent = 3355 }, -- Diamond Ice (Survival PvP Talent)
     [5384] = { type = BUFF_DEFENSIVE }, -- Feign Death
     [19574] = { type = BUFF_OFFENSIVE }, -- Bestial Wrath
@@ -227,7 +232,7 @@ addon.Spells = {
     [190925] = { type = ROOT }, -- Harpoon
     [202748] = { type = BUFF_DEFENSIVE }, -- Survival Tactics (PvP Talent)
     [248519] = { type = IMMUNITY_SPELL }, -- Interlope (BM PvP Talent)
-    [356727] = { type = CROWD_CONTROL }, -- Spider Venom of Chimaeral Sting (Hunter PvP Talent)
+    [212431] = { type = DEBUFF_OFFENSIVE }, -- Explosive Shot
 
     -- Mage
 
@@ -275,6 +280,7 @@ addon.Spells = {
     [130] = { type = BUFF_OTHER }, -- Slow Fall
     [333100] = { type = BUFF_OFFENSIVE }, -- Firestorm (Fire Legendary)
     [324220] = { type = BUFF_OFFENSIVE }, -- Deathborne (Necrolord Ability)
+    [228358] = { type = DEBUFF_OFFENSIVE }, -- Winter's Chill
 
     -- Monk
 
@@ -359,6 +365,7 @@ addon.Spells = {
 
     -- Priest
 
+    [327661] = { type = BUFF_DEFENSIVE }, -- Fae Guardians
     [337661] = { type = BUFF_DEFENSIVE }, -- Translucent Image (Fade defensive Conduit)
     [213602] = { type = IMMUNITY }, -- Greater Fade (Holy/Shadow PvP Talent)
     [605] = { type = CROWD_CONTROL, priority = true }, -- Mind Control
@@ -386,10 +393,11 @@ addon.Spells = {
         [200200] = { type = CROWD_CONTROL, parent = 200196 }, -- Holy Word: Chastise (Stun)
     [205369] = { type = CROWD_CONTROL }, -- Mind Bomb (Countdown)
         [226943] = { type = CROWD_CONTROL, parent = 205369 }, -- Mind Bomb (Disorient)
-    [213610] = { type = BUFF_DEFENSIVE }, -- Holy Ward
+    [213610] = { type = IMMUNITY_SPELL }, -- Holy Ward
     --[27827] = { type = BUFF_DEFENSIVE }, -- Spirit of Redemption
     [215769] = { type = BUFF_DEFENSIVE }, -- Spirit of Redemption (Spirit of the Redeemer Holy PvP Talent)
-    [211336] = { type = BUFF_DEFENSIVE }, -- Archbishop Benedictus' Restitution (Holy Priest Revive Legendary)
+    [211336] = { type = BUFF_DEFENSIVE }, -- Archbishop Benedictus' Restitution (Resurrection Buff)
+    [211319] = { type = BUFF_DEFENSIVE }, -- Archbishop Benedictus' Restitution (Debuff)
     [289655] = { type = BUFF_DEFENSIVE }, -- Holy Word: Concentration
     [319952] = { type = BUFF_OFFENSIVE }, -- Surrender to Madness
     [322431] = { type = BUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Thoughtsteal (Buff)
@@ -450,6 +458,7 @@ addon.Spells = {
     [340094] = { type = BUFF_OFFENSIVE }, -- Master Assassin's Mark (Legendary)
     [345569] = { type = BUFF_OFFENSIVE }, -- Flagellation (Venthyr Ability)
     [347037] = { type = BUFF_OFFENSIVE }, -- Sepsis (Night Fae Ability)
+    [328305] = { type = DEBUFF_OFFENSIVE, priority = true}, -- Sepsis (Night Fae Ability)
 
     -- Shaman
 
@@ -503,7 +512,9 @@ addon.Spells = {
         [207498] = { type = BUFF_DEFENSIVE, parent = 207495 }, -- Ancestral Protection (Player)
 
     -- Warlock
-
+    [325640] = { type = DEBUFF_OFFENSIVE }, -- Soul Rot
+    [193359] = { type = BUFF_OFFENSIVE }, -- True Bearing
+    [193357] = { type = BUFF_OFFENSIVE }, -- Ruthless Precision
     [710] = { type = CROWD_CONTROL }, -- Banish
     [5484] = { type = CROWD_CONTROL }, -- Howl of Terror
     [6358] = { type = CROWD_CONTROL }, -- Seduction
@@ -540,7 +551,9 @@ addon.Spells = {
     -- Warrior
 
     [871] = { type = BUFF_DEFENSIVE }, -- Shield Wall
+    [198817] = { type = DEBUFF_OFFENSIVE }, -- Sharpen Blade
     [1719] = { type = BUFF_OFFENSIVE }, -- Recklessness
+    [52437] = {type = BUFF_OFFENSIVE }, -- Sudden Impact
     [5246] = { type = CROWD_CONTROL }, -- Intimidating Shout
         [316593] = { type = CROWD_CONTROL, parent = 5246 }, -- Menace (Prot Talent), main target
         [316595] = { type = CROWD_CONTROL, parent = 5246 }, -- Menace (Prot Talent), other targets
@@ -568,7 +581,6 @@ addon.Spells = {
     [236321] = { type = BUFF_DEFENSIVE }, -- War Banner (PvP Talent)
     [262228] = { type = BUFF_OFFENSIVE }, -- Deadly Calm
     [199085] = { type = CROWD_CONTROL }, -- Warpath (Prot PvP Talent)
-    [198817] = { type = BUFF_OFFENSIVE }, -- Sharpen Blade (Arms PvP Talent) - "next cast will..." buff
     [198819] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Mortal Strike when applied with Sharpen Blade (50% healing reduc)
     [202164] = { type = BUFF_SPEED_BOOST }, -- Bounding Stride
     [325886] = { type = CROWD_CONTROL }, -- Ancient Aftershock (Night Fae Ability)

@@ -163,7 +163,7 @@ do
 	IsIgnored = C_FriendList.IsIgnored;
 
 	-- Use C_FriendList.SendWho instead
-	SendWho = C_FriendList.SendWho;
+	-- SendWho = C_FriendList.SendWho;
 
 	-- Use C_FriendList.GetNumWhoResults instead
 	GetNumWhoResults = C_FriendList.GetNumWhoResults;

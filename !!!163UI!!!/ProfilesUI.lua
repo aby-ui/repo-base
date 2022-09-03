@@ -6,13 +6,13 @@ local L = _NS.L
 local U1Profiles = _G.U1Profiles
 
 StaticPopupDialogs['U1PROFILE_RELOADUI'] = {preferredIndex = 3,
-	text = L["Current addon enable states will be lost, are you SURE?"],
+	text = L["Current addon enable states will be lost, are you SURE?"] .. "%s",
 	button1 = YES,
 	button2 = NO,
     OnAccept = function(self, data)
-        local load_prof, load_opts = data[1], data[2]
+        local load_prof, load_opts, revert = data[1], data[2], data[3]
         _NS.PROFILE_CHANGED = true
-        U1Profiles:LoadProfile(load_prof, load_opts)
+        U1Profiles:LoadProfile(load_prof, load_opts, revert)
         ReloadUI()
     end,
 	hideOnEscape = 1,
@@ -281,8 +281,11 @@ do
         local index, ptype = f.detailframe:GetSelected()
         local prof = U1Profiles:GetProfileByIndex(index, ptype)
 
-        StaticPopup_Show("U1PROFILE_RELOADUI", nil, nil, { prof, opts })
+        local revert = IsShiftKeyDown() and IsControlKeyDown() and IsAltKeyDown()
+        StaticPopup_Show("U1PROFILE_RELOADUI", revert and "\n（按住了CTRL+ALT+SHIFT, 反向加载Profile中未开启的）" or "", nil, { prof, opts, revert})
     end)
+    df.load.tooltipAnchorPoint = "ANCHOR_BOTTOMRIGHT"
+    CoreUIEnableTooltip(df.load, "技巧", "按住ALT+CTRL+SHIFT点击, 可以'反向加载'，方便二分法定位问题。\n\n例如要加载的方案有15个插件, 当前启用了其中5个插件, '反向加载'会关闭当前这5个插件，然后加载方案里的另外10个。")
 end
 
 --df.export = TplPanelButton(df):SetText('导出'):Size(90, 30):TL(df.load, 'TOPRIGHT', 10, 0):SetScript('OnClick', function()

@@ -244,7 +244,7 @@ function BigDebuffs:SetupOptions()
             desc = {
                 order = 2,
                 type = "description",
-                name = "|cffffd700 "..L["Author"].."|r Jordon |cffffd700 翻译修改|r NGA-伊甸外\n",
+                name = "|cffffd700 "..L["Author"].."|r Jordon\n",
                 cmdHidden = true
             },
             test = {

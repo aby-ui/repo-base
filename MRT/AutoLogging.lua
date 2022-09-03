@@ -11,6 +11,10 @@ module.db.minPartyMapID = 1754
 module.db.mapsToLog = {}
 module.db.mapsToLog_5ppl = {
 	[1594] = true,	--MOTHERLODE
+    [2097] = true,  --9.27 Mechagon --no need
+    [1208] = true,   --9.27 Grimrail
+    [1195] = true,   --9.27 Irondock
+    [1651] = true,   --9.27 Karazan
 }
 
 function module.options:Load()

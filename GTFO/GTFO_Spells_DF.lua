@@ -1,14 +1,14 @@
 --------------------------------------------------------------------------
--- GTFO_FF_SL.lua 
+-- GTFO_Spells_DF.lua 
 --------------------------------------------------------------------------
 --[[
-GTFO Friendly Fire List - Shadowlands
+GTFO Spell List - Dragonflight
 ]]--
 
 if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 
--- ***************
--- * Shadowlands *
--- ***************
+--- ************************
+--- * Dragon Isles (World) *
+--- ************************
 
 end

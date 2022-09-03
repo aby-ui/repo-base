@@ -141,7 +141,7 @@ function Bag:RegisterEvents()
 			end
 
 			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
-			self:RegisterEvent('CURSOR_UPDATE', 'UpdateCursor')
+			self:RegisterEvent('CURSOR_CHANGED', 'UpdateCursor')
 		end
 	elseif self:IsCustomSlot() then
 		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')

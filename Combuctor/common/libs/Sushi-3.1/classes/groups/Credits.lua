@@ -97,7 +97,7 @@ do
 	elseif locale == 'pt' then
 		Group.title = 'Patronos'
 	elseif locale == 'ru' then
-		Group.title = 'покровители'
+		Group.title = 'Покровители'
 	else
 		Group.title = 'Patrons'
 	end

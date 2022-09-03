@@ -80,7 +80,7 @@ function WhoWhisperedMe_OnEvent(self, event, arg1, arg2 )
         if(newWhisp==true) then
             if(toggled=="ON") then
                 if(not lastplayers[name]) then
-                    SendWho(name);
+                    C_FriendList.SendWho(WHO_TAG_EXACT..name);
                     lastplayers[name] = true;
                 end
             end --end if toggled

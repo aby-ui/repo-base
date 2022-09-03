@@ -63,15 +63,19 @@ local bit_band = bit.band
 local date = date
 local tinsert = tinsert
 local wipe = wipe
+local tContains = tContains
 
 OmniBar = LibStub("AceAddon-3.0"):NewAddon("OmniBar", "AceEvent-3.0", "AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("OmniBar")
 
--- Apply cooldown reductions
+-- Apply cooldown adjustments
 for k,v in pairs(addon.Cooldowns) do
-	if v['decrease'] then
-		addon.Cooldowns[k]['duration'] = v['duration'] - v['decrease']
-		addon.Cooldowns[k]['decrease'] = nil
+	if v.duration and type(v.duration) == "number" then
+		local adjust = v.adjust or 0
+		if type(adjust) == "table" then
+			adjust = adjust.default or 0 -- use default for now
+		end
+		addon.Cooldowns[k].duration = v.duration + adjust
 	end
 end
 
@@ -772,7 +776,37 @@ local function GetCooldownDuration(cooldown, specID)
 	end
 end
 
-function OmniBar:AddSpellCast(event, sourceGUID, sourceName, sourceFlags, spellID, serverTime)
+function OmniBar:AddSpellCast(event, sourceGUID, sourceName, sourceFlags, spellID, serverTime, customDuration)
+	local isLocal = (not serverTime)
+	serverTime = serverTime or GetServerTime()
+
+	-- activate shared cooldowns
+	if (not customDuration) then
+		for i = 1, #addon.Shared do
+			local shared = addon.Shared[i]
+			if (shared.triggers and tContains(shared.triggers, spellID)) or tContains(shared.spells, spellID) then
+				for i = 1, #shared.spells do
+					if spellID ~= shared.spells[i] then
+						local amount = shared.amount
+						-- use default until we add spec detection
+						if type(amount) == "table" then amount = shared.amount.default end
+						if addon.Cooldowns[shared.spells[i]] and (not addon.Cooldowns[shared.spells[i]].parent) then
+							self:AddSpellCast(
+								event,
+								sourceGUID,
+								sourceName,
+								sourceFlags,
+								shared.spells[i],
+								nil, -- set to `serverTime` to disable sync
+								amount
+							)
+						end
+					end
+				end
+			end
+		end
+	end
+
 	if (not addon.Resets[spellID]) and (not addon.Cooldowns[spellID]) then return end
 
 	-- unset unknown sourceName
@@ -805,21 +839,23 @@ function OmniBar:AddSpellCast(event, sourceGUID, sourceName, sourceFlags, spellI
 	if (not addon.Cooldowns[spellID]) then return end
 
 	local now = GetTime()
-	local isLocal = (not serverTime)
-	serverTime = serverTime or GetServerTime()
 
 	-- make sure spellID is parent
 	spellID = addon.Cooldowns[spellID].parent or spellID
 
-	-- make sure we aren't adding a duplicate
-	if self.spellCasts[name] and self.spellCasts[name][spellID] and self.spellCasts[name][spellID].serverTime == serverTime then
+	-- make sure we aren't adding a duplicate,
+	-- and if it is a shared cooldown make sure we don't overwrite
+	if  self.spellCasts[name] and
+		self.spellCasts[name][spellID] and
+		(customDuration or self.spellCasts[name][spellID].serverTime == serverTime)
+	then
 		return
 	end
 
 	-- only track players and their pets
 	if (not ownerName) and bit_band(sourceFlags, COMBATLOG_OBJECT_TYPE_PLAYER) == 0 then return end
 
-	local duration = GetCooldownDuration(addon.Cooldowns[spellID])
+	local duration = customDuration or GetCooldownDuration(addon.Cooldowns[spellID])
 	local charges = addon.Cooldowns[spellID].charges
 
 	-- child doesn't have custom charges, use parent
@@ -857,6 +893,7 @@ function OmniBar:AddSpellCast(event, sourceGUID, sourceName, sourceFlags, spellI
 end
 
 function OmniBar:AlertGroup(...)
+	if (not IsInGroup()) then return end
 	local event, sourceGUID, sourceName, sourceFlags, spellID, serverTime = ...
 	self:SendCommMessage("OmniBarSpell", self:Serialize(...), GetDefaultCommChannel(), nil, "ALERT")
 end

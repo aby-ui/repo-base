@@ -161,7 +161,7 @@ function P:SaveProfile(prof)
     table.sort(self.db.manual, sortByDate)
 end
 
-function P:LoadProfile(prof, opts)
+function P:LoadProfile(prof, opts, revert)
     assert(prof and opts, "[U1Profiles:LoadProfile] usage: prof, opts")
 
     self:BackupSession(L["Before Load Profile"])
@@ -174,7 +174,28 @@ function P:LoadProfile(prof, opts)
     end
 
     if(opts.u1dbaddons and prof.u1dbaddons) then
-        U1DB.addons = copyTable(prof.u1dbaddons, U1DB.addons)
+        if revert then
+            --100个插件, 关掉其中30, 开70, 选中100个插件的方案, 已经关掉的30个打开, 开启的70个关闭
+            local revertProf = {}
+            for addon, state in pairs(prof.u1dbaddons) do
+                if state == 1 then
+                    if U1DB.addons[addon] == 0 then
+                        revertProf[addon] = 1 --方案里开启的, 当前未开启, 开启
+                    else
+                        if addon ~= "!!!163ui!!!" and addon ~= "wowlua" and addon ~= "!warbaby" then
+                            revertProf[addon] = 0 --方案里开启的, 当前未开启, 开启
+                        end
+                    end
+                else
+                    revertProf[addon] = 0
+                end
+            end
+            --方案里没有的插件不变
+            U1DB.addons = copyTable(revertProf, U1DB.addons)
+            self:EnableOrDisableAddOn(U1DB.addons)
+        else
+            U1DB.addons = copyTable(prof.u1dbaddons, U1DB.addons)
+        end
         self:EnableOrDisableAddOn(U1DB.addons)
     end
 end
