@@ -20,7 +20,7 @@ function ELP_GetNewestRaidAndEmpoweredRaid(tier)
             empowered = instanceID
         end
     end
-    return newest, empowered
+    return newest, empowered or newest or 1193
 end
 
 local PLAYER_CLASS_ID = select(3, UnitClass("player"))

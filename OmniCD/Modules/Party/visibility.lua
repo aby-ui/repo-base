@@ -38,7 +38,7 @@ P.userData = {
 	version = E.versionNum,
 }
 
-if E.isPreBCC then
+if E.isPreWOTLKC then
 	P.zoneEvents = {
 		arena = { "PLAYER_REGEN_DISABLED", "UPDATE_UI_WIDGET" },
 		pvp   = { "PLAYER_REGEN_DISABLED", "CHAT_MSG_BG_SYSTEM_NEUTRAL", "UPDATE_UI_WIDGET" },
@@ -134,7 +134,7 @@ do
 			local isObserver;
 			if ( P.isInDungeon ) then
 				local _,_, subgroup = GetRaidRosterInfo(i);
-				isObserver = (subgroup or 1) > 1;
+				isObserver = subgroup and subgroup > 1;
 			end
 
 
@@ -163,7 +163,7 @@ do
 
 
 					bar:UnregisterAllEvents()
-					if not E.isPreBCC and not isUser then
+					if not E.isPreWOTLKC and not isUser then
 						bar:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
 					end
 					if info.glowIcons[125174] or info.preActiveIcons[5384] then
@@ -172,7 +172,9 @@ do
 					if isDead then
 						bar:RegisterUnitEvent("UNIT_HEALTH", unit)
 					end
-					bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit])
+					if not E.isClassic then
+						bar:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, E.unitToPetId[unit])
+					end
 					bar:RegisterUnitEvent("UNIT_CONNECTION", unit)
 				end
 
@@ -251,19 +253,16 @@ do
 
 
 		if P.groupJoined or force then
-
-			if anchorTimer then
-				anchorTimer:Cancel()
-			end
-			anchorTimer = C_Timer_NewTicker(5, AnchorFix, 2)
-
 			if syncTimer then
 				syncTimer:Cancel()
 			end
-
-
 			syncTimer = C_Timer_NewTicker(size == 1 and 0 or MSG_INFO_REQUEST_DELAY, SendRequestSync, 1)
 		end
+
+		if anchorTimer then
+			anchorTimer:Cancel()
+		end
+		anchorTimer = C_Timer_NewTicker(6, AnchorFix, (E.customUF.active == "VuhDo" or E.customUF.active == "HealBot") and 2 or 1)
 
 		E.Comms:ToggleLazySync()
 	end
@@ -346,7 +345,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 
 	E.RegisterEvents(self, self.zoneEvents[instanceType])
 
-	self.isPvP = E.isPreBCC or (self.isInPvPInstance or (instanceType == "none" and C_PvP_IsWarModeDesired()))
+	self.isPvP = E.isPreWOTLKC or (self.isInPvPInstance or (instanceType == "none" and C_PvP_IsWarModeDesired()))
 
 
 	if self.isInPvPInstance then
@@ -355,7 +354,7 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 
 	if ( self.isInArena ) then
 		if ( not arenaTimer ) then
-			if ( E.isPreBCC ) then
+			if ( E.isPreWOTLKC ) then
 				arenaTimer = C_Timer_NewTicker(10, inspectAll, 7);
 			else
 				arenaTimer = C_Timer_NewTicker(5, inspectAll, 14);

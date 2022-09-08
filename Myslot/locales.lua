@@ -638,82 +638,56 @@ elseif locale == 'ruRU' then
 --[[ L["[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Key Binding [ %s ] , contact %s please"--]] 
 --[[Translation missing --]]
 --[[ L["[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"] = "[WARN] Ignore unsupported Slot Type [ %s ] , contact %s please"--]] 
---[[Translation missing --]]
---[[ L["All slots were restored"] = "All slots were restored"--]] 
---[[Translation missing --]]
---[[ L["Are you SURE to delete '%s'?"] = "Are you SURE to delete '%s'?"--]] 
---[[Translation missing --]]
---[[ L["Are you SURE to import ?"] = "Are you SURE to import ?"--]] 
+L["All slots were restored"] = "Все слоты восстановлены"
+L["Are you SURE to delete '%s'?"] = "Вы УВЕРЕНЫ, что хотите удалить \"%s\"?"
+L["Are you SURE to import ?"] = "Вы УВЕРЕНЫ, что хотите импортировать?"
 --[[Translation missing --]]
 --[[ L["Bad importing text [CRC32]"] = "Bad importing text [CRC32]"--]] 
 --[[Translation missing --]]
 --[[ L["Bad importing text [TEXT]"] = "Bad importing text [TEXT]"--]] 
---[[Translation missing --]]
---[[ L["Clear Action before applying"] = "Clear Action before applying"--]] 
---[[Translation missing --]]
---[[ L["Clear Binding before applying"] = "Clear Binding before applying"--]] 
---[[Translation missing --]]
---[[ L["Clear Macro before applying"] = "Clear Macro before applying"--]] 
---[[Translation missing --]]
---[[ L["Close"] = "Close"--]] 
---[[Translation missing --]]
---[[ L["DANGEROUS"] = "DANGEROUS"--]] 
---[[Translation missing --]]
---[[ L["Export"] = "Export"--]] 
---[[Translation missing --]]
---[[ L["Feedback"] = "Feedback"--]] 
---[[Translation missing --]]
---[[ L["Force Import"] = "Force Import"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Action"] = "Ignore Import/Export Action"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Key Binding"] = "Ignore Import/Export Key Binding"--]] 
---[[Translation missing --]]
---[[ L["Ignore Import/Export Macro"] = "Ignore Import/Export Macro"--]] 
+L["Clear Action before applying"] = "Очистить панель действий перед применением"
+L["Clear Binding before applying"] = "Очистить привязку клавиш перед применением"
+L["Clear Macro before applying"] = "Очистить макросы перед применением"
+L["Close"] = "Закрыть"
+L["DANGEROUS"] = "ОПАСНО "
+L["Export"] = "Экспорт"
+L["Feedback"] = "Обратная связь"
+L["Force Import"] = "Принудительно импортировать"
+L["Ignore Import/Export Action"] = "Игнорировать Импорт/Экспорт панели действий"
+L["Ignore Import/Export Key Binding"] = "Игнорировать Импорт/Экспорт привязки клавиш"
+L["Ignore Import/Export Macro"] = "Игнорировать Импорт/Экспорт Макросов"
 --[[Translation missing --]]
 --[[ L["Ignore unattained pet[id=%s], %s"] = "Ignore unattained pet[id=%s], %s"--]] 
---[[Translation missing --]]
---[[ L["Ignore unlearned skill [id=%s], %s"] = "Ignore unlearned skill [id=%s], %s"--]] 
---[[Translation missing --]]
---[[ L["Import"] = "Import"--]] 
+L["Ignore unlearned skill [id=%s], %s"] = "Игнорировать невыученные навыки [id=%s], %s"
+L["Import"] = "Импорт"
 --[[Translation missing --]]
 --[[ L["Import is not allowed when you are in combat"] = "Import is not allowed when you are in combat"--]] 
 --[[Translation missing --]]
 --[[ L["Importing text [ver:%s] is not compatible with current version"] = "Importing text [ver:%s] is not compatible with current version"--]] 
 --[[Translation missing --]]
 --[[ L["Macro %s was ignored, check if there is enough space to create"] = "Macro %s was ignored, check if there is enough space to create"--]] 
---[[Translation missing --]]
---[[ L["Minimap Icon"] = "Minimap Icon"--]] 
+L["Minimap Icon"] = "Иконка у мини-карты"
 --[[Translation missing --]]
 --[[ L["Myslot"] = "Myslot"--]] 
 --[[Translation missing --]]
 --[[ L["Name of exported text"] = "Name of exported text"--]] 
---[[Translation missing --]]
---[[ L["Open Myslot"] = "Open Myslot"--]] 
+L["Open Myslot"] = "Открыть Myslot"
 --[[Translation missing --]]
 --[[ L["Please type %s to confirm"] = "Please type %s to confirm"--]] 
---[[Translation missing --]]
---[[ L["Remove all Key Bindings"] = "Remove all Key Bindings"--]] 
---[[Translation missing --]]
---[[ L["Remove all Macros"] = "Remove all Macros"--]] 
---[[Translation missing --]]
---[[ L["Remove everything in ActionBar"] = "Remove everything in ActionBar"--]] 
---[[Translation missing --]]
---[[ L["Rename"] = "Rename"--]] 
+L["Remove all Key Bindings"] = "Удалить все привязки клавиш"
+L["Remove all Macros"] = "Удалить все макросы"
+L["Remove everything in ActionBar"] = "Удалить всё в панели действий"
+L["Rename"] = "Переименовать"
 --[[Translation missing --]]
 --[[ L["Skip bad CRC32"] = "Skip bad CRC32"--]] 
 --[[Translation missing --]]
 --[[ L["Skip CRC32, version and any other validation before importing. May cause unknown behavior"] = "Skip CRC32, version and any other validation before importing. May cause unknown behavior"--]] 
---[[Translation missing --]]
---[[ L["Skip unsupported version"] = "Skip unsupported version"--]] 
---[[Translation missing --]]
---[[ L["Time"] = "Time"--]] 
---[[Translation missing --]]
---[[ L["TOC_NOTES"] = "Myslot is for transferring settings between accounts. Feedback farmer1992@gmail.com"--]] 
+L["Skip unsupported version"] = "Пропустить неподдерживаемую версию"
+L["Time"] = "Время"
+L["TOC_NOTES"] = "Myslot предназначен для передачи настроек между аккаунтами. Обратная связь farmer1992@gmail.com"
 --[[Translation missing --]]
 --[[ L["Try force importing"] = "Try force importing"--]] 
---[[Translation missing --]]
---[[ L["Unsaved"] = "Unsaved"--]] 
+L["Unsaved"] = "Не сохранять"
 --[[Translation missing --]]
 --[[ L["Use random mount instead of an unattained mount"] = "Use random mount instead of an unattained mount"--]] 
 

@@ -13,8 +13,12 @@ function Comms:Enable()
 
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 	self:RegisterEvent("PLAYER_LEAVING_WORLD")
-	if E.isPreBCC then
-		self:RegisterEvent("CHARACTER_POINTS_CHANGED")
+	if E.isPreWOTLKC then
+		if E.isWOTLKC then
+			self:RegisterEvent("PLAYER_TALENT_UPDATE")
+		else
+			self:RegisterEvent("CHARACTER_POINTS_CHANGED")
+		end
 	else
 		self:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 		self:RegisterEvent("UNIT_PET")

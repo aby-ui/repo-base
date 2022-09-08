@@ -68,7 +68,7 @@ function Comms:GetNumSyncMembers()
 end
 
 function Comms:ToggleLazySync()
-	if ( E.isPreBCC ) then
+	if ( E.isPreWOTLKC ) then
 		return;
 	end
 
@@ -82,7 +82,7 @@ function Comms:ToggleLazySync()
 	end
 end
 
-if ( not E.isPreBCC ) then
+if ( not E.isPreWOTLKC ) then
 
 	function Comms:SyncLazyCDR(guid, cdstr)
 		local info = P.groupInfo[guid];
@@ -277,7 +277,7 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender)
 	info.invSlotData = {}
 	info.shadowlandsData = {}
 
-	if E.isPreBCC then
+	if E.isPreWOTLKC then
 		local s, e, v = 1
 		local i = 0
 		local isInvSlot = false
@@ -392,6 +392,9 @@ do
 		if change == -1 then
 			SendUpdatedSyncData()
 		end
+	end
+	function Comms:PLAYER_TALENT_UPDATE()
+		SendUpdatedSyncData()
 	end
 
 	function Comms:PLAYER_SPECIALIZATION_CHANGED(unit)

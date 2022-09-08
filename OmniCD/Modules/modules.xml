@@ -5,6 +5,8 @@
 	<Script file="Spells\spells.lua"/>
 	<Script file="Spells\modifiers.lua"/>
 	<!--
+	<Script file="Spells\spells-wotlkc.lua"/>
+	<Script file="Spells\modifiers-wotlkc.lua"/>
 	<Script file="Spells\spells-bcc.lua"/>
 	<Script file="Spells\modifiers-bcc.lua"/>
 	<Script file="Spells\spells-classic.lua"/>

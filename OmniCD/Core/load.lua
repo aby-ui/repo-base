@@ -90,7 +90,7 @@ end
 
 function E:OnEnable()
 
-	E.AddonMsgPrefix = E.isPreBCC and "OmniCD" or "OmniCD2"
+	E.AddonMsgPrefix = E.isPreWOTLKC and "OmniCD" or "OmniCD2"
 	self.Comms:RegisterComm(E.AddonMsgPrefix, "CHAT_MSG_ADDON")
 
 	for i = 1, 13 do
@@ -245,7 +245,7 @@ do
 	local f = CreateFrame("Frame")
 	E.dummyFrame = f
 
-	if E.isPreBCC then return end
+	if E.isPreWOTLKC then return end
 
 	local function ShowHideAllBars_OnEvent(f, event)
 		if event == "PET_BATTLE_OPENING_START" then

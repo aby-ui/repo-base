@@ -12,7 +12,6 @@ BINDING_NAME_BGDEFENDER_ANNOUNCE6     = "More than 5 incoming";
 BINDING_NAME_BGDEFENDER_ANNOUNCE_HELP = "Need help";
 BINDING_NAME_BGDEFENDER_ANNOUNCE_SAFE = "Node safe";
 
-
 ---------
 function BGD_OnLoad(self)
 ---------
@@ -62,17 +61,14 @@ function BGD_OnEvent(frame, event, ...)
     end
 
     if ((event == "ZONE_CHANGED_NEW_AREA") or (event == "ADDON_LOADED")) then
-        if(BGD_isInBG()) then
-			DEFAULT_CHAT_FRAME:AddMessage("PVP战场求助已加载", 1.0, 0.5, 0.5)
+        if(BGD_isInBG()) then            
+			--DEFAULT_CHAT_FRAME:AddMessage("BGD loaded", 1.0, 0.5, 0.5)
             BGD_Prefs.ShowUI = BGD_Toggle(true)
        else
             BGD_Prefs.ShowUI = BGD_Toggle(false)
        end
     end
-
-	-- BGD_PrintDebugInfo(frame, event)
 end
-
 
 ---------
 function BGD_PrintDebugInfo(frame, event, ...)
@@ -90,7 +86,6 @@ function BGD_PrintDebugInfo(frame, event, ...)
 	DEFAULT_CHAT_FRAME:AddMessage("[BGD] instance map id:"..tostring(instanceMapID), 1.0, 0.2, 0.2)
 end
 
-
 ---------
 function BGD_GetInstanceMapID()
 ---------
@@ -98,7 +93,6 @@ function BGD_GetInstanceMapID()
 	local name, _, _, _, _, _, _, instanceMapID, _ = GetInstanceInfo()
 	return instanceMapID, name
 end
-
 
 ---------
 function BGD_initLocale(locale)
@@ -120,14 +114,12 @@ function BGD_initLocale(locale)
     end
 end
 
-
 ---------
 function BGD_initCustomSubZones()
 ---------
 	BGD_rcSilverShardMines = BGD_RcSMZone();
 	BGD_rcDeepwindGorge = BGD_RcDwGZone();
 end
-
 
 ---------
 function BGD_StartMoving(self)
@@ -137,13 +129,11 @@ function BGD_StartMoving(self)
     end
 end
 
-
 ---------
 function BGD_StopMovingOrSizing(self)
 ---------
     self:StopMovingOrSizing()
 end
-
 
 ---------
 function BGD_Toggle_Movable()
@@ -156,7 +146,6 @@ function BGD_Toggle_Movable()
         Button11:SetText(" m ")
     end
 end
-
 
 ---------
 function BGD_SlashCommandHandler(msg, editBox)
@@ -184,7 +173,6 @@ function BGD_SlashCommandHandler(msg, editBox)
     end
 end
 
-
 ---------
 local function BGD_GetPlayerPosition()
 ---------
@@ -204,7 +192,6 @@ local function BGD_GetPlayerPosition()
 	end
     return nil
 end
-
 
 ---------
 local function BGD_GetSubZoneText()
@@ -234,7 +221,6 @@ local function BGD_GetSubZoneText()
         return GetSubZoneText()
     end
 end
-
 
 ---------
 function BGD_NumCall(arg1)
@@ -284,7 +270,6 @@ function BGD_NumCall(arg1)
     end
 end
 
-
 ---------
 function BGD_Msg(text)
 ---------
@@ -306,29 +291,35 @@ function BGD_isInRaidBG()
     return found
 end
 
-
 ---------
 function BGD_isInBG()
 ---------
     local bgInstanceMapIDs = {
-        [30] = "Alterac Valley",
-        [529] = "Arathi Basin",
-        -- [1105] = "Deepwind Gorge",
-        [566] = "Eye of the Storm",
-        [968] = "Eye of the Storm (Rated)",
-        [628] = "Isle of Conquest",
-        -- [1803] = "Seething Shore",
-        -- [727] = "Silvershard Mines",
-        [607] = "Strand of the Ancients",
-        -- [998] = "Temple of Kotmogu",
-        [761] = "The Battle for Gilneas",
-        [726] = "Twin Peaks",
-        [489] = "Warsong Gulch",
+		[30] = "Alterac Valley",
+		[489] = "Warsong Gulch",
+		[529] = "Arathi Basin(classic)",
+		[566] = "Eye of the Storm",
+		[607] = "Strand of the Ancients",
+		[628] = "Isle of Conquest",
+		[726] = "Twin Peaks",
+		[727] = "Silvershard Mines",
+		[761] = "The Battle for Gilneas",
+		-- [998] = "Temple of Kotmogu",
+		[968] = "Eye of the Storm (Rated)",
+		[1280] = "Southshore vs. Tarren Mill",
+		[1681] = "Arathi Basin(winter)",
+		[2107] = "Arathi Basin",
+		[2177] = "Arathi Basin Comp Stomp",
+		[1803] = "Seething Shore",
+		[2106] = "Warsong Gulch",
+		[2197] = "Korrak's Revenge",
+		[2245] = "Deepwind Gorge",
     }
+	
     -- New approach to check which BG we are in by using its InstanceID
     local tmp = bgInstanceMapIDs[BGD_GetInstanceMapID()]
     if tmp~=nil then
-        DEFAULT_CHAT_FRAME:AddMessage("[BGD] lookup instance map id: "..tmp, 1.0, 0.7, 0.2)
+        --DEFAULT_CHAT_FRAME:AddMessage("[BGD] lookup instance map id: "..tmp, 1.0, 0.7, 0.2)
         return true
     end
 
@@ -348,7 +339,6 @@ function BGD_isInBG()
     return found
 end
 
-
 ---------
 function BGD_isInNoSubZoneBG()
 ---------
@@ -366,7 +356,6 @@ function BGD_isInNoSubZoneBG()
 	end
     return found
 end
-
 
 ---------
 function BGD_ShowStatus()
@@ -436,13 +425,11 @@ function BGD_Toggle(state)
     end
 end
 
-
 ---------
 function BGD_Close()
 ---------
     BGD_Prefs.ShowUI = BGD_Toggle(false)
 end
-
 
 ---------
 function BGD_Options_Open()
@@ -453,7 +440,6 @@ function BGD_Options_Open()
     InterfaceOptionsFrame_OpenToCategory(BGD_Opt_Frame)
 end
 
-
 ---------
 function BGD_Opt_Frame_OnLoad(BGD_Opt_Frame)
 ---------
@@ -462,7 +448,6 @@ function BGD_Opt_Frame_OnLoad(BGD_Opt_Frame)
     BGD_Opt_Frame.default = function (self) BGD_Settings_Default(); BGD_Opt_Frame_UpdateViews(); end
     InterfaceOptions_AddCategory(BGD_Opt_Frame)
 end
-
 
 ---------
 function BGD_Opt_Frame_OnShow(BGD_Opt_Frame)
@@ -477,14 +462,12 @@ function BGD_Opt_Frame_OnShow(BGD_Opt_Frame)
     BGD_displayLocaleMessages()
 end
 
-
 ---------
 function BGD_Opt_Frame_Okay()
 ---------
     BGD_Prefs.BGChat   = BGD_Prefs.BGChatTemp
     BGD_Prefs.RaidChat = BGD_Prefs.RaidChatTemp
 end
-
 
 ---------
 function BGD_Settings_Default()
@@ -501,9 +484,6 @@ function BGD_Settings_Default()
     BGD_Prefs.ShowUI       = BGD_isInBG()
     BGD_Prefs.locale       = GetLocale()
 end
-
-
-
 
 BGD_Opt_Title = nil
 
@@ -593,7 +573,6 @@ function BGD_Opt_Frame_Setup()
     end
 end
 
-
 BGD_Opt_Messages  = nil
 BGD_Opt_Safe      = nil
 BGD_Opt_Inc       = nil
@@ -646,8 +625,6 @@ function BGD_displayLocaleMessages()
     call = string.gsub(call, "$base", GetSubZoneText())
     BGD_Opt_Help:SetText( "求救: |cFF00FF00" ..call )    
 end
-
-
 
 ---------
 function BGD_Opt_Drop1_Initialize()
@@ -716,7 +693,6 @@ function BGD_Opt_Drop1_Initialize()
     UIDropDownMenu_AddButton(info)
 end
 
-
 ---------
 function BGD_Opt_Drop2_Initialize()
 ---------
@@ -774,7 +750,6 @@ function BGD_Opt_Drop2_Initialize()
     end
     UIDropDownMenu_AddButton(info)
 end
-
 
 ---------
 function BGD_Opt_Drop3_Initialize()
@@ -870,7 +845,6 @@ function BGD_Opt_Drop3_Initialize()
     end
     UIDropDownMenu_AddButton(info)
 end
-
 
 ---------
 function BGD_Opt_Frame_UpdateViews()

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.6) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.7) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2021-11-11T17:02:56Z
+    This file was last updated on 2022-09-04T11:50:45Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ local function RegisterDecursive_Once() -- {{{
     --@end-debug@]==]
 
     D.name = "Decursive";
-    D.version = "2.7.8.6";
+    D.version = "2.7.8.7";
     D.author = "John Wellesz";
 
     D.DcrFullyInitialized = false;
@@ -233,7 +233,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Mages
-            [DSI["SPELL_REMOVE_CURSE"]] = {
+            [DSI["SPELL_REMOVE_CURSE_MAGE"]] = {
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
@@ -453,13 +453,13 @@ local function SetRuntimeConstants_Once () -- {{{
         -- SPELL TABLE -- must be parsed after spell translations have been loaded {{{
         DC.SpellsToUse = {
             -- Mage
-            [DSI["SPELL_REMOVE_LESSER_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
+            [DSI["SPELL_REMOVE_CURSE_DRUID"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=475/remove-lesser-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
             },
             -- Druid
-            [DSI["SPELL_REMOVE_CURSE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
+            [DSI["SPELL_REMOVE_CURSE_MAGE"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2782/remove-curse
                 Types = {DC.CURSE},
                 Better = 0,
                 Pet = false,
@@ -519,7 +519,7 @@ local function SetRuntimeConstants_Once () -- {{{
                 Pet = false,
             },
             -- Priest
-            [DSI["SPELL_CURE_DISEASE_SHAMAN"]] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
+            [not DC.WOTLK and DSI["SPELL_CURE_DISEASE_SHAMAN"] or false] = { -- WOW CLASSIC  https://classic.wowhead.com/spell=2870/cure-disease
                 Types = {DC.DISEASE},
                 Better = 0,
                 Pet = false,
@@ -559,6 +559,7 @@ local function SetRuntimeConstants_Once () -- {{{
             }
 
         }
+        DC.SpellsToUse[false] = nil; -- cleanup compatible layer invalid spells
         -- }}}
     end
     D:CreateClassColorTables();
@@ -580,12 +581,12 @@ local function InitVariables_Once() -- {{{
     -- A table UnitID=>IsDebuffed (boolean)
     D.UnitDebuffed = {};
 
-    D.Revision = "f6b141b"; -- not used here but some other add-on may request it from outside
-    D.date = "2022-06-13T00:58:02Z";
-    D.version = "2.7.8.6";
+    D.Revision = "90784a5"; -- not used here but some other add-on may request it from outside
+    D.date = "2022-09-04T13:07:06Z";
+    D.version = "2.7.8.7";
 
     if D.date ~= "@project".."-date-iso@" then
-        -- 1655081882 doesn't work
+        -- 1662296826 doesn't work
 
         --local example =  "2008-05-01T12:34:56Z";
 
@@ -651,7 +652,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
 
             if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
 
-                T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.6|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
+                T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.7|r\n\n" .. "|cFFFFAA66" .. L["TOC_VERSION_EXPIRED"] .. "|r");
 
                 self.db.global.LastExpirationAlert = time();
             end
@@ -660,7 +661,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         self.db.global.TocExpiredDetection = false;
     end
 
-    if (("2.7.8.6"):lower()):find("beta") or ("2.7.8.6"):find("RC") or ("2.7.8.6"):find("Candidate") or alpha then
+    if (("2.7.8.7"):lower()):find("beta") or ("2.7.8.7"):find("RC") or ("2.7.8.7"):find("Candidate") or alpha then
 
         D.RunningADevVersion = true;
 
@@ -673,7 +674,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
                 DC.DevVersionExpired = true;
                 -- Display the expiration notice only once evry 48 hours
                 if time() - self.db.global.LastExpirationAlert > 48 * 3600 or forceDisplay then
-                    T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.6|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
+                    T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.7|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_EXPIRED"] .. "|r");
 
                     self.db.global.LastExpirationAlert = time();
                 end
@@ -684,16 +685,16 @@ function D:VersionWarnings(forceDisplay) -- {{{
         end
 
         -- display a warning if this is a developpment version (avoid insults from people who don't know what they're doing)
-        if self.db.global.NonRelease ~= "2.7.8.6" then
-            self.db.global.NonRelease = "2.7.8.6";
-            T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.6|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
+        if self.db.global.NonRelease ~= "2.7.8.7" then
+            self.db.global.NonRelease = "2.7.8.7";
+            T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.7|r\n\n" .. "|cFFFFAA66" .. L["DEV_VERSION_ALERT"] .. "|r");
         end
     end
 
     --[==[@debug@
     fromCheckOut = true;
     if time() - self.db.global.LastUnpackagedAlert > 24 * 3600  then
-        T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.6|r\n\n" .. "|cFFFFAA66" ..
+        T._ShowNotice ("|cff00ff00Decursive version: 2.7.8.7|r\n\n" .. "|cFFFFAA66" ..
         [[
         |cFFFF0000You're using an unpackaged version of Decursive.|r
         Decursive is not meant to be used this way.
@@ -731,7 +732,7 @@ function D:VersionWarnings(forceDisplay) -- {{{
         if D.db.global.NewerVersionDetected > D.VersionTimeStamp and D.db.global.NewerVersionName ~= D.version then -- it's still newer than this one
             if time() - D.db.global.NewerVersionAlert > 3600 * 24 * 4 then -- it's been more than 4 days since the new version alert was shown
                 if not D.db.global.NewVersionsBugMeNot then -- the user did not disable new version alerts
-                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.8.6|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
+                    T._ShowNotice ("|cff55ff55Decursive version: 2.7.8.7|r\n\n" .. "|cFF55FFFF" .. (L["NEW_VERSION_ALERT"]):format(D.db.global.NewerVersionName or "none", date("%Y-%m-%d", D.db.global.NewerVersionDetected)) .. "|r");
                     D.db.global.NewerVersionAlert = time();
                 end
             end
@@ -1514,7 +1515,7 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ["SPELL_POLYMORPH"]             =  118,
             ["SPELL_COUNTERSPELL"]          =  2139,
             ["SPELL_CYCLONE"]               =  33786,
-            ["SPELL_REMOVE_CURSE"]          =  475,
+            ["SPELL_REMOVE_CURSE_MAGE"]     =  475,
             ["SPELL_CONSUME_MAGIC"]         =  278326,
             ["SPELL_SPELLSTEAL"]            =  30449, -- mages, not sure about this one
             ["SPELL_CLEANSE"]               =  4987,
@@ -1613,6 +1614,12 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 ["SPELL_REMOVE_CORRUPTION"] = 2782,
             } -- }}}
 
+            local DSI_REMOVED_OR_CHANGED_IN_WOTLK = { -- {{{
+                ['SPELL_CURE_DISEASE_SHAMAN']            = 2870,
+                ['Shadowmeld']                           = 20580,
+            } -- }}}
+
+
             -- remove invalid spells from the spell table
             for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_CLASSIC) do
                 T._C.DSI[name] = nil;
@@ -1620,8 +1627,8 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
 
             -- reassign the proper spells
             -- The new and changed spells in classic {{{
-            T._C.DSI["SPELL_REMOVE_LESSER_CURSE"] = 475;
-            T._C.DSI["SPELL_REMOVE_CURSE"]        = 2782;
+            T._C.DSI["SPELL_REMOVE_CURSE_DRUID"]  = 2782;
+            T._C.DSI["SPELL_REMOVE_CURSE_MAGE"]   = 475;
             T._C.DSI["SPELL_PURGE"]               = 370;
             T._C.DSI["SPELL_CLEANSE"]             = 4987;
             T._C.DSI["SPELL_FEAR"]                = 5782;
@@ -1644,6 +1651,20 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
                 {"SPELL_CURE_DISEASE_PRIEST", "SPELL_CURE_DISEASE_SHAMAN"},
                 {"SPELL_CURE_POISON_SHAMAN", "SPELL_CURE_POISON_DRUID"},
             }
+
+            if DC.WOTLK then
+                -- remove invalid spells from the spell table
+                for name, sid in pairs(DSI_REMOVED_OR_CHANGED_IN_WOTLK) do
+                    T._C.DSI[name] = nil;
+                end
+
+                -- reassign the proper spells for WotLK
+                T._C.DSI["Shadowmeld"] = 58984;
+
+                T._C.EXPECTED_DUPLICATES = {
+                {"SPELL_REMOVE_CURSE_DRUID", "SPELL_REMOVE_CURSE_MAGE"},
+                }
+            end
 
         end
     end
@@ -1824,7 +1845,7 @@ end -- }}}
 
 
 
-T._LoadedFiles["DCR_init.lua"] = "2.7.8.6";
+T._LoadedFiles["DCR_init.lua"] = "2.7.8.7";
 
 -------------------------------------------------------------------------------
 
@@ -1833,42 +1854,42 @@ TEST to see what keyword substitutions are actually working....
 
 Simple replacements
 
-147
+95
     Turns into the current revision of the file in integer form. e.g. 1234
     Note: does not work for git
 150
     Turns into the highest revision of the entire project in integer form. e.g. 1234
     Note: does not work for git
-f1d5853fd0edaeb207952020a11e5eea28387264
+cb0f926fa43c7e353ebb5057d279e486760b8d35
     Turns into the hash of the file in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-f6b141b0161551ab90a4a4979b30dfaa6710321c
+90784a5ef020f7a23e48cc288a21f06cc2b09f3d
     Turns into the hash of the entire project in hex form. e.g. 106c634df4b3dd4691bf24e148a23e9af35165ea
     Note: does not work for svn
-f1d5853
+cb0f926
     Turns into the abbreviated hash of the file in hex form. e.g. 106c63 Note: does not work for svn
-f6b141b
+90784a5
     Turns into the abbreviated hash of the entire project in hex form. e.g. 106c63
     Note: does not work for svn
 Archarodim
     Turns into the last author of the file. e.g. ckknight
 Archarodim
     Turns into the last author of the entire project. e.g. ckknight
-2021-11-11T17:02:56Z
+2022-09-04T11:50:45Z
     Turns into the last changed date (by UTC) of the file in ISO 8601. e.g. 2008-05-01T12:34:56Z
-2022-06-13T00:58:02Z
+2022-09-04T13:07:06Z
     Turns into the last changed date (by UTC) of the entire project in ISO 8601. e.g. 2008-05-01T12:34:56Z
-20211111170256
+20220904115045
     Turns into the last changed date (by UTC) of the file in a readable integer fashion. e.g. 20080501123456
-20220613005802
+20220904130706
     Turns into the last changed date (by UTC) of the entire project in a readable integer fashion. e.g. 2008050123456
-1636650176
+1662292245
     Turns into the last changed date (by UTC) of the file in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-1655081882
+1662296826
     Turns into the last changed date (by UTC) of the entire project in POSIX timestamp. e.g. 1209663296
     Note: does not work for git
-2.7.8.6
+2.7.8.7
     Turns into an approximate version of the project. The tag name if on a tag, otherwise it's up to the repo.
     :SVN returns something like "r1234"
     :Git returns something like "v0.1-873fc1"

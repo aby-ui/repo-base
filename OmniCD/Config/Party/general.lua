@@ -3,7 +3,7 @@ local E, L, C = select(2, ...):unpack()
 local P = E["Party"]
 
 local general = {
-	name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t " .. GENERAL,
+	name = GENERAL,
 	order = 10,
 	type = "group",
 	get = function(info) return E.DB.profile.Party[info[2]].general[info[#info]] end,
@@ -87,7 +87,7 @@ local general = {
 			set = P.setIcons,
 		},
 		showRange = {
-			name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t " .. L["Show Range"],
+			name = L["Show Range"],
 			desc = format("%s\n\n|cffff2020%s\n\n%sVuhdo, HealBot, GW2_UI, AltzUI.|r",
 				L["Fade out icons when the raid frame fades out for out of range units."],
 				L["Addons with raid frame scaling will also cause the icons to scale."],

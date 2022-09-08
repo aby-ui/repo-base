@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220820203945")
+mod:SetRevision("20220907235332")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -603,6 +603,9 @@ function mod:SPELL_AURA_REMOVED(args)
 			timerKingsmourneHungersCD:Start(48.6, 1)
 			timerBefouledBarrierCD:Start(80.6, 1)
 			timerPhaseCD:Start(self:IsMythic() and 171 or 156)
+			if self:IsFated() then
+				self:AffixEvent(1, 2)
+			end
 		else--end of 2.5
 			self:SetStage(3)
 			timerArmyofDeadCD:Stop()
@@ -615,9 +618,9 @@ function mod:SPELL_AURA_REMOVED(args)
 				DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(365966))
 				DBM.InfoFrame:Show(20, "playerdebuffremaining", 365966)
 			end
-		end
-		if self:IsFated() then
-			self:AffixEvent(1, 2)
+			if self:IsFated() then
+				self:AffixEvent(1, 3)
+			end
 		end
 	end
 end

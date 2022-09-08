@@ -79,7 +79,9 @@ local function ShowOverlayGlow(icon, d, isRefresh)
 	end
 	icon.isHighlighted = true
 
-	E.TimerAfter(d + 0.2, removeHighlightByTimer, icon)
+	if (not E.isClassic) then
+		E.TimerAfter(d + 0.2, removeHighlightByTimer, icon)
+	end
 end
 
 function P:HideOverlayGlow(icon)

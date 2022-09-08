@@ -182,13 +182,14 @@ spells.args.othersHeader = {
 
 for i = 1, MAX_CLASSES do
 	local class = CLASS_SORT_ORDER[i]
-
 	local name = LOCALIZED_CLASS_NAMES_MALE[class]
+
+
+	local icon = E.isWOTLKC and class == "DEATHKNIGHT" and "Interface\\Icons\\spell_deathknight_classicon" or (E.ICO.CLASS .. class)
+	local iconCoords = E.borderlessCoords
 	spells.args[class] = {
-
-		icon = E.ICO.CLASS .. class,
-
-		iconCoords = E.borderlessCoords,
+		icon = icon,
+		iconCoords = iconCoords,
 		name = name,
 		type = "group",
 		args = {}

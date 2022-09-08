@@ -22,7 +22,7 @@ local spell_linked = E.spell_linked
 local spell_merged = E.spell_merged
 local spell_preactive = E.spell_preactive
 local spell_updateOnCast = E.spell_updateOnCast
-local spell_sharedCDwTrinkets = E.spell_sharedCDwTrinkets
+local spell_shared_cds = E.spell_shared_cds
 local spell_benevolentFaeMajorCD = E.spell_benevolentFaeMajorCD
 local spell_symbolOfHopeMajorCD = E.spell_symbolOfHopeMajorCD
 local spell_cdmod_aura_temp = E.spell_cdmod_aura_temp
@@ -45,7 +45,7 @@ local covenant_IDToSpellID = E.covenant_IDToSpellID
 local RemoveHighlight = P.RemoveHighlight
 local userGUID = E.userGUID
 local BOOKTYPE_CATEGORY = E.BOOKTYPE_CATEGORY
-local FORBEARANCE_DURATION = E.isPreBCC and 60 or 30
+local FORBEARANCE_DURATION = E.isPreWOTLKC and (E.isWOTLKC and 120 or 60) or 30
 local SOULBIND_PODTENDER = 319217
 
 local _
@@ -213,7 +213,7 @@ local function ProcessSpell(spellID, guid)
 
 	local linked = spell_linked[mergedID or spellID]
 	if linked then
-		for i = 2, #linked do
+		for i = 1, #linked do
 			local k = linked[i]
 			local icon = info.spellIcons[k]
 			if icon then
@@ -222,11 +222,11 @@ local function ProcessSpell(spellID, guid)
 					icon.buff = spellID
 				end
 
-				if E.isPreBCC then
-					info.active[k] = {}
+				P:StartCooldown(icon, icon.duration)
+
+				if E.isPreWOTLKC then
 					info.active[k].castedLink = mergedID or spellID
 				end
-				P:StartCooldown(icon, k ~= spellID and k ~= mergedID and linked[1] or icon.duration)
 			end
 		end
 
@@ -286,6 +286,28 @@ local function ProcessSpell(spellID, guid)
 		P:StartCooldown(icon, icon.duration)
 	end
 
+	local shared = spell_shared_cds[spellID]
+	if shared then
+		local now = GetTime()
+		for i = 1, #shared, 2 do
+			local id = shared[i]
+			local sharedCD = shared[i+1]
+			local icon = info.spellIcons[id]
+			if icon then
+				local active = icon.active and info.active[id]
+				if not active or (active.startTime + active.duration - now < sharedCD) then
+					P:StartCooldown(icon, sharedCD)
+				end
+
+				if not E.isPreWOTLKC then
+					return
+				end
+			end
+		end
+
+		return
+	end
+
 	local reset = cd_reset_cast[spellID]
 	if reset then
 		for i = 1, #reset do
@@ -293,7 +315,7 @@ local function ProcessSpell(spellID, guid)
 			if i > 1 then
 				if k == "*" then
 					for id in pairs(info.active) do
-						if id ~= spellID then
+						if id ~= spellID and (not E.isWOTLKC or id ~= 19574) then
 							local icon = info.spellIcons[id]
 							if icon and icon.active and BOOKTYPE_CATEGORY[icon.category] then
 								P:ResetCooldown(icon)
@@ -304,20 +326,32 @@ local function ProcessSpell(spellID, guid)
 					break
 				end
 
-				local icon = info.spellIcons[k]
-				if icon and icon.active then
-					if E.isPreBCC and info.active[k].castedLink then
-						if k == info.active[k].castedLink then
-							for i = 2, #spell_linked[k] do
-								local id = spell_linked[k][i]
-								local icon = info.spellIcons[id]
-								if icon and icon.active then
-									P:ResetCooldown(icon)
-								end
+				if type(k) == "table" then
+					if P:IsTalent(k[1], guid) then
+						for j = 2, #k do
+							local id = k[j]
+							local icon = info.spellIcons[id]
+							if icon and icon.active then
+								P:ResetCooldown(icon)
 							end
 						end
-					else
-						P:ResetCooldown(icon)
+					end
+				else
+					local icon = info.spellIcons[k]
+					if icon and icon.active then
+						if E.isPreWOTLKC and info.active[k].castedLink then
+							if k == info.active[k].castedLink then
+								for i = 1, #spell_linked[k] do
+									local id = spell_linked[k][i]
+									local icon = info.spellIcons[id]
+									if icon and icon.active then
+										P:ResetCooldown(icon)
+									end
+								end
+							end
+						else
+							P:ResetCooldown(icon)
+						end
 					end
 				end
 			elseif k and not P:IsTalent(k, guid) then
@@ -325,30 +359,8 @@ local function ProcessSpell(spellID, guid)
 			end
 		end
 
-		return
 	end
 
-	if E.isPreBCC then return end
-
-	local shared = spell_sharedCDwTrinkets[spellID]
-	if shared then
-		local now = GetTime()
-		for i = 1, #shared do
-			local k = shared[i]
-			local icon = info.spellIcons[k]
-			if icon then
-				local active = icon.active and info.active[k]
-				local sharedCD = (spellID == 59752 or k == 59752) and 90 or 30
-				if not active or (active.startTime + active.duration - now < sharedCD) then
-					P:StartCooldown(icon, sharedCD)
-				end
-
-				break
-			end
-		end
-
-		return
-	end
 
 	local reducer = cd_reduce_cast[spellID]
 	if reducer then
@@ -1389,7 +1401,7 @@ do
 		if icon then
 			if info.auras.isSavedByGS then
 				info.auras.isSavedByGS = nil
-			elseif info.talentData[200209] then
+			elseif info.talentData[200209] or info.talentData[63231] then
 				P:StartCooldown(icon, 60)
 			end
 			RemoveHighlightByCLEU(info, srcGUID, spellID, destGUID)
@@ -1671,6 +1683,8 @@ do
 		end
 	end
 end
+
+
 
 
 
@@ -2064,11 +2078,11 @@ do
 			if icon then
 				local active = icon.active and info.active[k]
 				local remainingTime = active and (active.duration - now + active.startTime)
-				if v == true then
+				if v > 0 then
 					if not active then
-						P:StartCooldown(icon, FORBEARANCE_DURATION, nil, true)
-					elseif remainingTime < FORBEARANCE_DURATION then
-						P:UpdateCooldown(icon, remainingTime - FORBEARANCE_DURATION)
+						P:StartCooldown(icon, v, nil, true)
+					elseif remainingTime < v then
+						P:UpdateCooldown(icon, remainingTime - v)
 					end
 				else
 					local charges = active and active.charges
@@ -2565,7 +2579,7 @@ registeredHostileEvents.SPELL_ABSORBED.PALADIN = ReduceDivineShieldCD
 
 
 
-if ( not E.isPreBCC ) then
+if ( not E.isPreWOTLKC ) then
 	for k in pairs(E.sync_periodic) do
 		if ( registeredEvents.SPELL_CAST_SUCCESS[k] ) then
 			local func = registeredEvents.SPELL_CAST_SUCCESS[k]
@@ -2608,7 +2622,7 @@ function P:SetDisabledColorScheme(destInfo)
 end
 
 local function UpdateDeadStatus(destInfo)
-	if ( E.isPreBCC and UnitHealth(destInfo.unit) > 1 ) then
+	if ( E.isPreWOTLKC and UnitHealth(destInfo.unit) > 1 ) then
 		return;
 	end
 	P:SetDisabledColorScheme(destInfo)
@@ -2620,41 +2634,57 @@ if E.isClassic then
 	local spellNameToID = E.spellNameToID
 
 	function CD:COMBAT_LOG_EVENT_UNFILTERED()
-		local _, event, _, srcGUID, _, srcFlags, _, destGUID, _,_,_,_, spellName = CombatLogGetCurrentEventInfo()
+
+		local _, event, _, srcGUID, _, srcFlags, _, destGUID, destName, destFlags, _,_, spellName, _, amount, overkill, _, resisted, _,_, critical = CombatLogGetCurrentEventInfo()
+
 
 		if band(srcFlags, friendly) == 0 then
 			local destInfo = groupInfo[destGUID]
 			if destInfo and event == "UNIT_DIED" then
 				UpdateDeadStatus(destInfo)
 			end
-
 			return
 		end
 
-		if band(srcFlags, player) > 0 then
-			local info = groupInfo[srcGUID]
-			if not info then
-				return
-			end
 
-			if event == "SPELL_AURA_REMOVED" then
-				local spellID = spellNameToID[spellName]
-				if spellID then
-					StartCdOnAuraRemoved(info, srcGUID, spellID, destGUID)
-				end
+		local spellID = spellNameToID[spellName]
+		if (not spellID) then
+			return
+		end
+
+
+		srcGUID = E.Cooldowns.petGUIDS[srcGUID] or srcGUID
+		local info = groupInfo[srcGUID]
+		if (not info) then
+			return
+		end
+
+
+		if (spellID == 17116 or spellID == 16188) then
+			spellID = (info.class == "DRUID" and 17116) or 16188
+		end
+
+		local func = registeredEvents[event] and registeredEvents[event][spellID]
+		if func then
+			func(info, srcGUID, spellID, destGUID, critical, destFlags, amount, overkill, destName, resisted)
+		end
+
+
+		if (event == "SPELL_CAST_SUCCESS") then
+			if (P.spell_enabled[spellID] or E.spell_modifiers[spellID]) then
+				ProcessSpell(spellID, srcGUID)
 			end
 		end
 	end
-elseif E.isBCC then
+elseif E.isPreWOTLKC then
 	function CD:COMBAT_LOG_EVENT_UNFILTERED()
-		local _, event, _, srcGUID, srcName, srcFlags, _, destGUID, destName, destFlags, _, spellID, _,_, amount, overkill, _, resisted, _,_, critical = CombatLogGetCurrentEventInfo()
+		local _, event, _, srcGUID, _, srcFlags, _, destGUID, destName, destFlags, _, spellID, _,_, amount, overkill, _, resisted, _,_, critical = CombatLogGetCurrentEventInfo()
 
 		if band(srcFlags, friendly) == 0 then
 			local destInfo = groupInfo[destGUID]
 			if destInfo and event == "UNIT_DIED" then
 				UpdateDeadStatus(destInfo)
 			end
-
 			return
 		end
 
@@ -2664,7 +2694,6 @@ elseif E.isBCC then
 				if func and destGUID ~= userGUID then
 					func(nil, srcGUID, spellID, destGUID)
 				end
-
 				return
 			end
 
@@ -2705,7 +2734,7 @@ else
 	end
 
 	function CD:COMBAT_LOG_EVENT_UNFILTERED()
-		local _, event, _, srcGUID, srcName, srcFlags, _, destGUID, destName, destFlags, destRaidFlags, spellID, _,_, amount, overkill, _, resisted, _,_, critical = CombatLogGetCurrentEventInfo()
+		local _, event, _, srcGUID, _, srcFlags, _, destGUID, destName, destFlags, destRaidFlags, spellID, _,_, amount, overkill, _, resisted, _,_, critical = CombatLogGetCurrentEventInfo()
 
 
 		if band(srcFlags, friendly) == 0 then
@@ -2763,7 +2792,6 @@ else
 				if func and destGUID ~= userGUID then
 					func(nil, srcGUID, spellID, destGUID)
 				end
-
 				return
 			end
 

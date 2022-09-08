@@ -1,6 +1,6 @@
 local E, L, C = select(2, ...):unpack()
 
-if E.isPreBCC then return end
+if E.isPreWOTLKC then return end
 
 E.spell_db = {
 	["DEATHKNIGHT"] = {

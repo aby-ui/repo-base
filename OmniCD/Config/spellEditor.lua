@@ -5,7 +5,7 @@ local E, L, C = select(2, ...):unpack()
 local GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
 local GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
 local GetSpecializationInfoByID = GetSpecializationInfoByID
-if E.isPreBCC then
+if E.isPreWOTLKC then
 	GetNumSpecializationsForClassID = function() return 0 end
 	GetSpecializationInfoForClassID = E.Noop
 	GetSpecializationInfoByID = E.Noop
@@ -388,7 +388,7 @@ local customSpellInfo = {
 
 }
 
-if not E.isPreBCC then
+if not E.isPreWOTLKC then
 	local customSpellSpecInfo = {
 		enabled = {
 			name = ENABLE,

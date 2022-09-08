@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2335, "DBM-ZuldazarRaid", 2, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220905201556")
 mod:SetCreatureID(145616)--145644 Bwonsamdi
 mod:SetEncounterID(2272)
 mod:SetHotfixNoticeRev(18336)
@@ -38,7 +38,7 @@ mod:RegisterEventsInCombat(
 --TODO, 286772 now returns invalid spellID on live?
 --TODO, remove countdown object when countdown code updated to auto disable on .fade events
 --General
-local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
 --Stage One: Zandalari Honor Guard
 ----Prelate Za'lan
 local warnSealofPurification			= mod:NewTargetAnnounce(284662, 2)

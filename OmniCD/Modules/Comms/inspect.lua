@@ -220,7 +220,7 @@ function Comms:RequestInspect()
 			if ( not UnitIsConnected(unit) or elapsed > INS_TIME_LIMIT or info.isObserver ) then
 
 				self:DequeueInspect(guid)
-			elseif ( (E.isPreBCC and not CheckInteractDistance(unit,1)) or not CanInspect(unit) ) then
+			elseif ( (E.isPreWOTLKC and not CheckInteractDistance(unit,1)) or not CanInspect(unit) ) then
 
 
 				staleEntries[guid] = added
@@ -246,9 +246,10 @@ end
 local item_setBonus = E.item_setBonus
 local S_ITEM_SET_NAME  = "^" .. ITEM_SET_NAME:gsub("([%(%)])", "%%%1"):gsub("%%%d?$?d", "(%%d+)"):gsub("%%%d?$?s", "(.+)") .. "$"
 
-if E.isPreBCC then
+if E.isPreWOTLKC then
 	local item_equipBonus = E.item_equipBonus
 	local talentNameToRankID = E.talentNameToRankID
+	local MAX_NUM_TALENTS = E.isPreBCC and 25 or 31
 
 	function Comms:InspectUnit(guid)
 		local info = P.groupInfo[guid]
@@ -263,7 +264,8 @@ if E.isPreBCC then
 		info.invSlotData = {}
 
 		for i = 1, 3 do
-			for j = 1, 25 do
+			for j = 1, MAX_NUM_TALENTS do
+
 
 
 				local name, _,_,_, currentRank = GetTalentInfo(i, j, true, unit)
@@ -297,7 +299,7 @@ if E.isPreBCC then
 			if itemLink then
 				local itemID = GetItemInfoInstant(itemLink)
 				if itemID then
-					if i > 2 then
+					if i > 3 then
 
 						local equipBonusID = item_equipBonus[itemID]
 						if equipBonusID then
@@ -324,7 +326,7 @@ if E.isPreBCC then
 								end
 							end
 						end
-					elseif i < 3 then
+					else
 						itemID = item_merged[itemID] or itemID
 						info.invSlotData[itemID] = true
 					end
@@ -356,7 +358,7 @@ if E.isPreBCC then
 
 		local c = 0
 		for i = 1, 3 do
-			for j = 1, 25 do
+			for j = 1, MAX_NUM_TALENTS do
 				local name, _,_,_, currentRank = GetTalentInfo(i, j)
 				if not name then
 					break
@@ -384,6 +386,18 @@ if E.isPreBCC then
 							end
 						end
 					end
+				end
+			end
+		end
+
+
+		if E.isWOTLKC then
+			for i = 1, 6 do
+				local _,_, glyphSpellID = GetGlyphSocketInfo(i)
+				if glyphSpellID then
+					info.talentData[glyphSpellID] = true
+					c = c + 1
+					tmp[c] = glyphSpellID
 				end
 			end
 		end
@@ -434,7 +448,7 @@ if E.isPreBCC then
 					end
 
 					InspectTooltip:ClearLines()
-				elseif i < 3 then
+				else
 					if not isDelimiter then
 						c = c + 1
 						tmp[c] = "|"

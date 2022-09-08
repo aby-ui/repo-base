@@ -49,7 +49,8 @@ end
 local setDisabledItem = function(info) return GetDisabledItems(info) end
 
 local position = {
-	name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t " .. L["Position"],
+
+	name = L["Position"],
 	type = "group",
 	order = 20,
 	get = function(info) return E.DB.profile.Party[info[2]].position[info[#info]] end,
@@ -110,7 +111,7 @@ local position = {
 			end,
 		},
 		preset = {
-			name = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t " .. L["Position"],
+			name = L["Position"],
 			desc = format("%s\n\n%s", L["Set the spell bar position"], L["CENTER will keep the rows centered and grow icons bidirectionally."]),
 			order = 2,
 			type = "select",
@@ -280,6 +281,20 @@ local position = {
 			get = P.getExBar,
 			args = extraBarInfo
 		},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 }
 

@@ -178,6 +178,19 @@ function P:GetBuffDuration(unit, spellID)
 	end
 end
 
+if E.isClassic then
+	function P:GetBuffDuration(unit, spellID)
+		for i = 1, 40 do
+			local _,_,_,_,_,_,_,_,_, id = UnitBuff(unit, i)
+			if not id then return end
+			id = E.spell_merged[id] or id
+			if id == spellID then
+				return true
+			end
+		end
+	end
+end
+
 function P:GetDebuffDuration(unit, spellID)
 	for i = 1, 40 do
 		local _,_,_,_, duration, expTime,_,_,_, id = UnitDebuff(unit, i)

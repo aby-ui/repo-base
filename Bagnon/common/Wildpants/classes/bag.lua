@@ -140,8 +140,8 @@ function Bag:RegisterEvents()
 				self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')
 			end
 
+			self:RegisterEvent(Addon.IsClassic and 'CURSOR_UPDATE' or 'CURSOR_CHANGED', 'UpdateCursor')
 			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
-			self:RegisterEvent('CURSOR_CHANGED', 'UpdateCursor')
 		end
 	elseif self:IsCustomSlot() then
 		self:RegisterEvent('GET_ITEM_INFO_RECEIVED', 'Update')

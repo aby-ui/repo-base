@@ -44,7 +44,11 @@ NS[1].License = GetAddOnMetadata(AddOnName, "X-License")
 NS[1].WoWPatch, NS[1].WoWBuild, NS[1].WoWPatchReleaseDate, NS[1].TocVersion = GetBuildInfo()
 NS[1].LoginMessage = NS[1].userClassHexColor .. AddOnName .. " v" .. NS[1].Version .. "|r - /oc"
 NS[1].isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-NS[1].isBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+NS[1].isBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_BURNING_CRUSADE
 NS[1].isPreBCC = NS[1].isClassic or NS[1].isBCC
+NS[1].isWOTLKC = LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_WRATH_OF_THE_LICH_KING
+NS[1].isPreWOTLKC = NS[1].isPreBCC or NS[1].isWOTLKC
 
 OmniCD = NS
+
+

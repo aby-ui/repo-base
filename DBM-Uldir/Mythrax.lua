@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2194, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20220905201556")
 mod:SetCreatureID(134546)--138324 Xalzaix
 mod:SetEncounterID(2135)
 mod:SetBossHPInfoToHighest()
@@ -31,7 +31,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 274230 and type = "removebuff"
 --]]
 --Stage One: Oblivion's Call
-local warnPhase						= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+local warnPhase						= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
 local warnOblivionSphere			= mod:NewCountAnnounce(272407, 4)
 local warnVoidEchoes				= mod:NewCountAnnounce(279157, 4)
 --Stage Two:

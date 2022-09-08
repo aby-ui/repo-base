@@ -60,7 +60,7 @@ end
 -- Precreate so we can update font obj
 AceConfigDialog.tooltip = AceConfigDialog.tooltip or CreateFrame("GameTooltip", "AceConfigDialogTooltip-OmniCD", UIParent, BackdropTemplateMixin and "GameTooltipTemplate, BackdropTemplate" or "GameTooltipTemplate")
 --if select(4, GetBuildInfo()) > 90100 then -- 9.1.5 fix > Blizzard added this for classic era
-if WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+if WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC or LE_EXPANSION_LEVEL_CURRENT ~= LE_EXPANSION_BURNING_CRUSADE then
 	SharedTooltip_SetBackdropStyle(AceConfigDialog.tooltip, nil, true);
 end
 AceConfigDialog.tooltip:SetScript("OnHide", GameTooltip_OnHide)

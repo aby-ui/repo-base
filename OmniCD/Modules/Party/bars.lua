@@ -4,14 +4,18 @@ local tinsert = table.insert
 local tremove = table.remove
 local wipe = table.wipe
 local GetSpellLevelLearned = GetSpellLevelLearned
-if E.isPreBCC then
-	GetSpellLevelLearned = function() return 0 end
+local P = E["Party"]
+if E.isPreWOTLKC then
+	if E.spell_requiredLevel then
+		GetSpellLevelLearned = function(id) return not P.test and E.spell_requiredLevel[id] or 0 end
+	else
+		GetSpellLevelLearned = function() return 0 end
+	end
 end
 local UnitHealth = UnitHealth
 local UnitIsConnected = UnitIsConnected
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitSpellHaste = UnitSpellHaste
-local P = E["Party"]
 local unitToPetId = E.unitToPetId
 local spell_db = E.spell_db
 local spell_cdmod_haste = E.spell_cdmod_haste
@@ -146,7 +150,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 		if not UnitIsDeadOrGhost(unit) then
 			local currentHealth = UnitHealth(unit)
 			local maxHealth = UnitHealthMax(unit)
-			if E.isPreBCC then
+			if E.isPreWOTLKC then
 				local icon = info.spellIcons[20608]
 				if icon then
 
@@ -381,13 +385,18 @@ function P:UpdateUnitBar(guid, isGRU)
 
 
 
-	if not E.isPreBCC and isntUser then
+	if not E.isPreWOTLKC and isntUser then
 		f:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", unit)
+	end
+	if info.glowIcons[125174] or info.preActiveIcons[5384] then
+		f:RegisterUnitEvent("UNIT_AURA", unit)
 	end
 	if info.isDead then
 		f:RegisterUnitEvent("UNIT_HEALTH", unit)
 	end
-	f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, unitToPetId[unit])
+	if not E.isClassic then
+		f:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", unit, unitToPetId[unit])
+	end
 	f:RegisterUnitEvent("UNIT_CONNECTION", unit)
 
 	if ( info.isObserver ) then
@@ -465,7 +474,7 @@ function P:UpdateUnitBar(guid, isGRU)
 
 				if isValidSpell then
 					local cd = self:GetValueByType(spell.duration, guid, item2)
-					if not E.isPreBCC or not self.isInArena or cd < 900 then
+					if not E.isPreWOTLKC or not self.isInArena or cd < 900 then
 						local category, buffID, iconTexture = spell.class, spell.buff, spell.icon
 						local ch = self:GetValueByType(spell.charges, guid) or 1
 						if isInspectedUnit then
@@ -501,7 +510,7 @@ function P:UpdateUnitBar(guid, isGRU)
 								end
 
 								if spell_cdmod_haste[spellID] then
-									if E.isPreBCC then
+									if E.isPreWOTLKC then
 										cd = cd + (info.RAS or 0)
 									else
 										local haste = UnitSpellHaste(unit) or 0

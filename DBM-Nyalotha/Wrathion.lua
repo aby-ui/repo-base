@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2368, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217003806")
+mod:SetRevision("20220905201556")
 mod:SetCreatureID(156818)
 mod:SetEncounterID(2329)
 mod:SetUsedIcons(1, 2, 3)--Unknown number of burning targets, guessed for now
@@ -31,7 +31,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 306111) and type = "cast"
  or ability.id = 306995
  --]]
-local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
 --Stage One: The Black Emperor
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(20627))
 local warnSearingArmor						= mod:NewStackAnnounce(306015, 2, nil, "Tank")
