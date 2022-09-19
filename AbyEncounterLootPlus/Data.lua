@@ -45,7 +45,7 @@ ELP_SEASON_MYTHICS = {
 --为了能够利用系统筛选, 只能选择多个副本然后再筛掉
 ELP_LOOT_TABLES = {
     [536] = { lootTable = ELP_LOOT_LIST.Grimrail, otherInstances = { 558 } }, --恐轨车站
-    [558] = { lootTable = ELP_LOOT_LIST.IronDocks, otherInstances = { 536 } }, --钢铁码头
+    [558] = { lootTable = ELP_LOOT_LIST.IronDocks, otherInstances = { 536, 385, } }, --钢铁码头, 385是血渣熔炉裂胆战靴不在恐轨车站掉
 }
 ELP_LOOT_TABLE_LOOTS = {}       --每个副本的lootTable, 初始化FILTER后丢弃
 ELP_LOOT_TABLE_LOOTS_ALL = {}   --全部lootTable, 给多副本模式用, 初始化FILTER后丢弃

@@ -31,7 +31,7 @@ local defaultDB = {
     first_run = true,
     selectedTag = UI163_USER_MODE and "ALL" or "ABYUI",
     showOrigin = nil, --插件原名
-    disableLaterLoading = false,
+    disableLaterLoading = true,
     --框体位置
     frames = {
         ["RaidAlerter_Attack_Frame"] = {
@@ -1705,7 +1705,7 @@ function U1:ADDON_LOADED(event, name)
         CoreFireEvent("DB_LOADED");
 
         -- 此时InCombatLockdown不会返回true
-        if db.disableLaterLoading then
+        if true or db.disableLaterLoading then
             for name,info in pairs(addonInfo) do
                 if info.load == "LATER" then info.load = "LOGIN" end
             end

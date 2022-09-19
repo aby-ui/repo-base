@@ -185,6 +185,7 @@ U1RegisterAddon("!!!163UI!!!", {
             tip = "说明`无论单人还是小队，只要解除屏蔽，就总是显示默认的团队框架。`修改此选项后必须切换次上一选项。",
         }]]
     },
+    --[[
     {
         var = "disableLaterLoading",
         text = L["延迟加载插件"],
@@ -208,6 +209,7 @@ U1RegisterAddon("!!!163UI!!!", {
             end,
         }
     },
+    --]]
     {
         var = "soundRedirect",
         text = "插件声音通过主声道播放",

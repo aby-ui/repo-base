@@ -867,4 +867,12 @@ ELP.setupHooks = function()
 
     ELP_Replace("EJ_ResetLootFilter", EJ_ResetLootFilter_ELP)
     ELP_Replace("EJ_GetEncounterInfoByIndex", EJ_GetEncounterInfoByIndex_ELP) --副本拆成2个大秘时控制boss显示
+
+    EncounterJournal:HookScript("OnShow", function()
+        local mapID = C_ChallengeMode.GetActiveChallengeMapID()
+        local filterIndex = mapID and ELP_CHALLENGE_MAPID_FILTER_INDEX[mapID]
+        if filterIndex then
+            ELP_MenuOnClick(nil, "range", filterIndex)
+        end
+    end)
 end
