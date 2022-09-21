@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2424, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201522")
+mod:SetRevision("20220910194547")
 mod:SetCreatureID(167406)
 mod:SetEncounterID(2407)
 mod:SetUsedIcons(1, 2, 3, 4, 7, 8)
@@ -37,7 +37,7 @@ mod:RegisterEventsInCombat(
  or (source.type = "NPC" and source.firstSeen = timestamp) or (target.type = "NPC" and target.firstSeen = timestamp)
 --]]
 --General
-local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 
 mod:AddInfoFrameOption(nil, true)
 --Stage One: Sinners Be Cleansed
@@ -382,9 +382,9 @@ function mod:SPELL_CAST_START(args)
 		if timer then
 			timerHandofDestructionCD:Start(timer, self.vb.HandCount+1)
 		end
-		if self:IsFated() then
-			self:AffixEvent(2, self.vb.phase, 5)--Delay any affix until Hand has finished casting.
-		end
+--		if self:IsFated() then--Disabled until further review with multiple affixes, also seems to only affect barrier so far
+--			self:AffixEvent(2, self.vb.phase, 10)--Delay any affix by 5-10 seconds (was 5, now is 10?)
+--		end
 	elseif spellId == 344776 then
 		if not castsPerGUID[args.sourceGUID] then
 			castsPerGUID[args.sourceGUID] = 0

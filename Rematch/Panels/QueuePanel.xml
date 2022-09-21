@@ -114,8 +114,8 @@
 			<Button parentKey="DropButton" setAllPoints="true" hidden="true">
 				<Animations>
 					<AnimationGroup parentKey="Glow" looping="REPEAT">
-						<Alpha fromAlpha="1" toAlpha="0" change="-1.0" duration="0.9" order="1"/>
-						<Alpha fromAlpha="0" toAlpha="1" change="1.0" duration="0.9" order="2"/>
+						<Alpha fromAlpha="1" toAlpha="0" duration="0.9" order="1"/>
+						<Alpha fromAlpha="0" toAlpha="1" duration="0.9" order="2"/>
 					</AnimationGroup>
 				</Animations>
 				<Layers>

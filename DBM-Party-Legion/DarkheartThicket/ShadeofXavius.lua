@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1657, "DBM-Party-Legion", 2, 762)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(99192)
 mod:SetEncounterID(1839)
 mod:SetUsedIcons(2, 1)
@@ -23,7 +23,7 @@ local warnNightmare					= mod:NewTargetAnnounce(200243, 3)
 local warnParanoia					= mod:NewTargetAnnounce(200289, 3)
 local warnApocNightmare				= mod:NewSpellAnnounce(200050, 3)
 
-local specWarnFesteringRip			= mod:NewSpecialWarningDispel(200182, "Healer")--No disease dispeller in group? have fun wiping
+local specWarnFesteringRip			= mod:NewSpecialWarningDispel(200182, "RemoveMagic", nil, 2, 1, 2)
 local specWarnNightmare				= mod:NewSpecialWarningYou(200243, nil, nil, nil, 1, 2)
 local yellNightmare					= mod:NewYell(200243)
 local specWarnParanoia				= mod:NewSpecialWarningMoveAway(200289, nil, nil, nil, 1, 2)
@@ -60,6 +60,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 200182 then
 		specWarnFesteringRip:Show(args.destName)
+		specWarnFesteringRip:Play("helpdispel")
 	elseif spellId == 200243 then
 		if args:IsPlayer() then
 			specWarnNightmare:Show()

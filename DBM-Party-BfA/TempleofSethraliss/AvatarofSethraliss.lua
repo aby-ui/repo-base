@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2145, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220209045257")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(133392)
 mod:SetEncounterID(2127)
 mod.onlyHighest = true--Instructs DBM health tracking to literally only store highest value seen during fight, even if it drops below that
@@ -25,7 +25,7 @@ local warnLifeForce					= mod:NewSpellAnnounce(274149, 1)
 local specWarnChainLightning		= mod:NewSpecialWarningInterrupt(268061, nil, nil, nil, 1, 2)
 local specWarnRainofToads			= mod:NewSpecialWarningSpell(269688, nil, nil, nil, 2, 2)
 local specWarnPlague				= mod:NewSpecialWarningDispel(269686, "RemoveDisease", nil, nil, 1, 2)
-local specWarnSnakeCharm			= mod:NewSpecialWarningDispel(268008, "Healer", nil, nil, 1, 2)
+local specWarnSnakeCharm			= mod:NewSpecialWarningDispel(268008, "RemoveMagic", nil, 2, 1, 2)
 
 --local timerRainofToadsCD			= mod:NewCDTimer(20, 269688, nil, nil, nil, 1)--More work needed
 local timerPlague					= mod:NewTargetTimer(10, 269686, nil, "RemoveDisease", nil, 5, nil, DBM_COMMON_L.DISEASE_ICON)

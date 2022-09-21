@@ -31,8 +31,8 @@
 		<Animations>
 			<AnimationGroup parentKey="StarAnim">
 				<Rotation targetKey="$parent.$parent.Star" degrees="-90" duration="0.9" order="1"/>
-				<Alpha targetKey="$parent.$parent.Star" change="0.50" duration="0.3667" order="1"/>
-				<Alpha targetKey="$parent.$parent.Star" change="-0.50" duration="0.5333" order="2"/>
+				<Alpha targetKey="$parent.$parent.Star" duration="0.3667" order="1"/>
+				<Alpha targetKey="$parent.$parent.Star" duration="0.5333" order="2"/>
 			</AnimationGroup>
 		</Animations>
 

@@ -1,7 +1,7 @@
 ﻿local XLoot = select(2, ...)
 local lib = {
 	skins = {},
-	masque_tweaks = {}
+	masque_tweaks = {},
 }
 XLoot.Skin = lib
 local L = XLoot.L
@@ -56,7 +56,7 @@ local function subtable_insert(t, k, v)
 	table.insert(t[k], v)
 end
 
-do 
+do
 	local base = {
 		padding = 2,
 		size = 16,
@@ -80,7 +80,7 @@ do
 			a = .8
 		}
 	}
-	
+
 	local mt = {
 		__index = function(t, k)
 			local ttype = rawget(t, 'type')
@@ -90,55 +90,59 @@ do
 			return base[k] or nil
 		end
 	}
-	
+
 	local function meta(t)
 		return setmetatable(t, mt)
 	end
-	
+
 	local function update_borders(frame, options, borders, r, g, b, a)
 		local padding = options.padding
+		local size = options.size/2
+		r = r or options.r
+		g = g or options.g
+		b = b or options.b
+		a = a or options.a
 		for pos, tex in ipairs(borders) do
 			-- Set texture options
 			tex:SetDrawLayer(options.layer)
 			tex:SetTexture(options.texture)
 			tex:SetBlendMode(options.mode)
-			tex:SetWidth(options.size)
-			tex:SetHeight(options.size)
-			tex:SetVertexColor(r or options.r, g or options.g, b or options.b, a or options.a)
+			tex:SetWidth(size)
+			tex:SetHeight(size)
+			tex:SetVertexColor(r, g, b, a)
 
 			-- Position texture
 			tex:ClearAllPoints()
 			if pos == 1 then
-				tex:SetTexCoord(0, 1/3, 0, 1/3)
+				tex:SetTexCoord(0, 1/6, 0, 1/6)
 				tex:SetPoint("TOPLEFT", frame, "TOPLEFT", -padding, padding)
 			elseif pos == 2 then
-				tex:SetTexCoord(2/3, 1, 0, 1/3)
+				tex:SetTexCoord(5/6, 1, 0, 1/6)
 				tex:SetPoint("TOPRIGHT", frame, "TOPRIGHT", padding, padding)
 			elseif pos == 3 then
-				tex:SetTexCoord(0, 1/3, 2/3, 1)
+				tex:SetTexCoord(0, 1/6, 5/6, 1)
 				tex:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", -padding, -padding)
 			elseif pos == 4 then
-				tex:SetTexCoord(2/3, 1, 2/3, 1)
+				tex:SetTexCoord(5/6, 1, 5/6, 1)
 				tex:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", padding, -padding)
 			elseif pos == 5 then
-				tex:SetTexCoord(1/3, 2/3, 0, 1/3)
+				tex:SetTexCoord(1/6, 5/6, 0, 1/6)
 				tex:SetPoint("TOPLEFT", borders[1], "TOPRIGHT")
 				tex:SetPoint("TOPRIGHT", borders[2], "TOPLEFT")
 			elseif pos == 6 then
-				tex:SetTexCoord(1/3, 2/3, 2/3, 1)
+				tex:SetTexCoord(1/6, 5/6, 5/6, 1)
 				tex:SetPoint("BOTTOMLEFT", borders[3], "BOTTOMRIGHT")
 				tex:SetPoint("BOTTOMRIGHT", borders[4], "BOTTOMLEFT")
 			elseif pos == 7 then
-				tex:SetTexCoord(0, 1/3, 1/3, 2/3)
+				tex:SetTexCoord(0, 1/6, 1/6, 5/6)
 				tex:SetPoint("TOPLEFT", borders[1], "BOTTOMLEFT")
 				tex:SetPoint("BOTTOMLEFT", borders[3], "TOPLEFT")
 			elseif pos == 8 then
-				tex:SetTexCoord(2/3, 1, 1/3, 2/3)
+				tex:SetTexCoord(5/6, 1, 1/6, 5/6)
 				tex:SetPoint("TOPRIGHT", borders[2], "BOTTOMRIGHT")
 				tex:SetPoint("BOTTOMRIGHT", borders[4], "TOPRIGHT")
 			end
 		end
-		return tex
 	end
 
 	local function create_borders(frame, options)
@@ -172,11 +176,11 @@ do
 	local function GetBorderColor(self)
 		return self._skin_borders[1]:GetVertexColor()
 	end
-	
+
 	local function SetGradientColor(self, r, g, b, a)
 		self.gradient:SetGradientAlpha('VERTICAL', .1, .1, .1, 0, r, g, b, a)
 	end
-	
+
 	function lib:Gradient(frame)
 		local g = frame:CreateTexture(nil, 'BORDER')
 		frame.gradient = g
@@ -185,52 +189,52 @@ do
 		g:SetPoint('BOTTOMRIGHT', -3, 3)
 		-- g:SetBlendMode'ADD'
 		frame.SetGradientColor = SetGradientColor
-		frame:SetGradientColor(unpack(g_color))		
+		frame:SetGradientColor(unpack(g_color))
 	end
-	
+
 	function lib:Backdrop(frame, opt_backdrop)
 		frame:SetBackdrop(opt_backdrop or backdrop)
 		frame:SetBackdropColor(unpack(bd_color))
 	end
-	
+
 	-- Lib methods
 	-- Basic skin
 	function lib:Skin(frame, options)
 		-- Store options
 		frame._skin_options = meta(options)
-		
+
 		-- Apply backdrop
 		if options.backdrop ~= false then
 			self:Backdrop(frame, type(options.backdrop) == 'table' and options.backdrop or nil)
 		end
-		
+
 		-- Gradient
 		if options.gradient ~= false then
 			self:Gradient(frame)
 		end
-		
+
 		-- Borders
 		frame._skin_borders = create_borders(frame, options)
 		frame.SetBorderColor = SetBorderColor
 		frame.GetBorderColor = GetBorderColor
 	end
-	
+
 	function lib:SkinRaw(frame, options)
 		return create_borders(frame, meta(options)), SetBorderColor
 	end
-	
+
 	function lib:UpdateSkin(frame, options, r, g, b, a)
 		frame._skin_options = meta(options)
 		update_borders(frame, options, frame._skin_borders, r, g, b, a)
 	end
-	
+
 	-- Highlights
 	local function ShowHighlight(self, status)
 		for _, tex in ipairs(self._highlights) do
 			tex:Show()
 		end
 	end
-	
+
 	local function HideHighlight(self)
 		for _, tex in ipairs(self._highlights) do
 			tex:Hide()
@@ -246,14 +250,14 @@ do
 	local function GetHighlightColor(self)
 		return self._highlights[1]:GetVertexColor()
 	end
-	
+
 	local highlight = { type = 'highlight' }
-	
+
 	-- Add highlight borders to a frame
 	function lib:Highlight(frame, options)
 		-- Default options
 		options = meta(options or highlight)
-		
+
 		frame._highlights = create_borders(frame, options)
 		frame._higlight_options = options
 
@@ -265,7 +269,7 @@ do
 			frame:HideHighlight()
 		end
 	end
-	
+
 	function lib:UpdateHighlight(frame, options, r, g, b, a)
 		frame._higlight_options = meta(options)
 		update_borders(frame, options, frame._highlights, r, g, b, a)
@@ -318,7 +322,7 @@ do
 		return out
 	end
 
-	-- Re-compile and Re-apply all 
+	-- Re-compile and Re-apply all
 	local function Reskin(self)
 		local data = self._skin_data
 		-- Clear cache
@@ -339,7 +343,7 @@ do
 		end
 		return compile(data, data.default or next(data.sets))
 	end
-	
+
 	local function Skin(self, frame, set_name)
 		local data = self._skin_data
 		set_name = set_name or data.default
@@ -348,7 +352,7 @@ do
 		subtable_insert(data.skinned, set_name, frame)
 		return skin
 	end
-	
+
 	local function Highlight(self, frame, set_name)
 		local data = self._skin_data
 		set_name = set_name or data.default
@@ -385,9 +389,9 @@ local svelte = {
 }
 local legacy = {
 	name = ('|c2244dd22%s|r'):format(L.skin_legacy),
-	row_spacing = 3,	
+	row_spacing = 3,
 	texture = [[Interface\AddOns\XLoot\Textures\border_legacy]],
-	size = 14,
+	size = 16,
 	highlight = {
 		size = 12
 	},

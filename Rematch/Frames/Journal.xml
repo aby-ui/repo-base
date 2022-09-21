@@ -12,7 +12,6 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<!-- tabs along the bottom of the frame -->
 			<Frame parentKey="PanelTabs">
 				<Size x="570" y="32"/>
 				<Anchors>

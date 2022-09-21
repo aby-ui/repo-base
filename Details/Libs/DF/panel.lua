@@ -1495,18 +1495,17 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 	
 		DF.IconPickFrame = CreateFrame ("frame", "DetailsFrameworkIconPickFrame", UIParent, "BackdropTemplate")
 		tinsert (UISpecialFrames, "DetailsFrameworkIconPickFrame")
-		DF.IconPickFrame:SetFrameStrata ("TOOLTIP")
+		DF.IconPickFrame:SetFrameStrata ("FULLSCREEN")
 		
 		DF.IconPickFrame:SetPoint ("center", UIParent, "center")
-		DF.IconPickFrame:SetWidth (350)
-		DF.IconPickFrame:SetHeight (277)
+		DF.IconPickFrame:SetWidth (416)
+		DF.IconPickFrame:SetHeight (350)
 		DF.IconPickFrame:EnableMouse (true)
 		DF.IconPickFrame:SetMovable (true)
 		
-		DF:CreateTitleBar (DF.IconPickFrame, "Icon Picker")
+		DF:CreateTitleBar (DF.IconPickFrame, "Details! Framework Icon Picker")
 		
 		DF.IconPickFrame:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-
 		DF.IconPickFrame:SetBackdropBorderColor (0, 0, 0)
 		DF.IconPickFrame:SetBackdropColor (24/255, 24/255, 24/255, .8)
 		DF.IconPickFrame:SetFrameLevel (5000)
@@ -1559,12 +1558,12 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 			if (DF.IconPickFrame.searching == "") then
 				DF.IconPickFrameScroll:Show()
 				DF.IconPickFrame.searching = nil
-				DF.IconPickFrame.updateFunc()
+				DF.IconPickFrameScroll.RefreshIcons()
 			else
 				DF.IconPickFrameScroll:Hide()
 				FauxScrollFrame_SetOffset (DF.IconPickFrame, 1)
 				DF.IconPickFrame.last_filter_index = 1
-				DF.IconPickFrame.updateFunc()
+				DF.IconPickFrameScroll.RefreshIcons()
 			end
 		end)
 		
@@ -1611,51 +1610,46 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 		DF.IconPickFrame.customIconAccept:SetPoint ("left", DF.IconPickFrame.customIconEntry, "right", 2, 0)
 		
 		--fill with icons
-		
 		local MACRO_ICON_FILENAMES = {}
 		local SPELLNAMES_CACHE = {}
-		
-		local texturePathGetter = DF.IconPickFrame:CreateTexture(nil, "overlay")
 
-		DF.IconPickFrame:SetScript ("OnShow", function()
-			
-			MACRO_ICON_FILENAMES [1] = "INV_MISC_QUESTIONMARK"
+		DF.IconPickFrame:SetScript("OnShow", function()
+			MACRO_ICON_FILENAMES[1] = "INV_MISC_QUESTIONMARK"
 			local index = 2
 	
 			for i = 1, GetNumSpellTabs() do
-				local tab, tabTex, offset, numSpells, _ = GetSpellTabInfo (i)
+				local tab, tabTex, offset, numSpells, _ = GetSpellTabInfo(i)
 				offset = offset + 1
 				local tabEnd = offset + numSpells
 				
 				for j = offset, tabEnd - 1 do
 					--to get spell info by slot, you have to pass in a pet argument
-					local spellType, ID = GetSpellBookItemInfo (j, "player")
+					local spellType, ID = GetSpellBookItemInfo(j, "player")
 					if (spellType ~= "FLYOUT") then
-						MACRO_ICON_FILENAMES [index] = GetSpellBookItemTexture (j, "player") or 0
-						SPELLNAMES_CACHE [index] = GetSpellInfo (ID)
+						MACRO_ICON_FILENAMES [index] = GetSpellBookItemTexture(j, "player") or 0
+						SPELLNAMES_CACHE [index] = GetSpellInfo(ID)
 						index = index + 1
-						
+
 					elseif (spellType == "FLYOUT") then
-						local _, _, numSlots, isKnown = GetFlyoutInfo (ID)
+						local _, _, numSlots, isKnown = GetFlyoutInfo(ID)
 						if (isKnown and numSlots > 0) then
 							for k = 1, numSlots do 
-								local spellID, overrideSpellID, isKnown = GetFlyoutSlotInfo (ID, k)
+								local spellID, overrideSpellID, isKnown = GetFlyoutSlotInfo(ID, k)
 								if (isKnown) then
-									MACRO_ICON_FILENAMES [index] = GetSpellTexture (spellID) or 0
-									SPELLNAMES_CACHE [index] = GetSpellInfo (spellID)
+									MACRO_ICON_FILENAMES [index] = GetSpellTexture(spellID) or 0
+									SPELLNAMES_CACHE [index] = GetSpellInfo(spellID)
 									index = index + 1
 								end
 							end
 						end
-						
 					end
 				end
 			end
 			
-			GetLooseMacroItemIcons (MACRO_ICON_FILENAMES)
-			GetLooseMacroIcons (MACRO_ICON_FILENAMES)
-			GetMacroIcons (MACRO_ICON_FILENAMES)
-			GetMacroItemIcons (MACRO_ICON_FILENAMES)
+			GetLooseMacroItemIcons(MACRO_ICON_FILENAMES)
+			GetLooseMacroIcons(MACRO_ICON_FILENAMES)
+			GetMacroIcons(MACRO_ICON_FILENAMES)
+			GetMacroItemIcons(MACRO_ICON_FILENAMES)
 
 			--reset the custom icon text entry
 			DF.IconPickFrame.customIconEntry:SetText ("")
@@ -1663,16 +1657,16 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 			DF.IconPickFrame.search:SetText ("")
 		end)
 		
-		DF.IconPickFrame:SetScript ("OnHide", function()
-			wipe (MACRO_ICON_FILENAMES)
-			wipe (SPELLNAMES_CACHE)
+		DF.IconPickFrame:SetScript("OnHide", function()
+			wipe(MACRO_ICON_FILENAMES)
+			wipe(SPELLNAMES_CACHE)
 			DF.IconPickFrame.preview:Hide()
 			collectgarbage()
 		end)
 		
 		DF.IconPickFrame.buttons = {}
 		
-		local OnClickFunction = function (self) 
+		local onClickFunction = function(self) 
 		
 			DF:QuickDispatch (DF.IconPickFrame.callback, self.icon:GetTexture(), DF.IconPickFrame.param1, DF.IconPickFrame.param2)
 			
@@ -1681,208 +1675,158 @@ function DF:IconPick (callback, close_when_select, param1, param2)
 			end
 		end
 		
-		local onenter = function (self)
+		local onEnter = function (self)
 			DF.IconPickFrame.preview:SetPoint ("bottom", self, "top", 0, 2)
-			DF.IconPickFrame.preview.icon:SetTexture (self.icon:GetTexture())
+			DF.IconPickFrame.preview.icon:SetTexture(self.icon:GetTexture())
 			DF.IconPickFrame.preview:Show()
 			self.icon:SetBlendMode ("ADD")
 		end
-		local onleave = function (self)
+		local onLeave = function (self)
 			DF.IconPickFrame.preview:Hide()
 			self.icon:SetBlendMode ("BLEND")
 		end
 		
 		local backdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tile = true, tileSize = 16,
 		insets = {left = 0, right = 0, top = 0, bottom = 0}, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1}
-		
-		for i = 0, 9 do 
-			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..(i+1), DF.IconPickFrame, "BackdropTemplate")
-			local image = newcheck:CreateTexture ("DetailsFrameworkIconPickFrameButton"..(i+1).."Icon", "overlay")
-			newcheck.icon = image
-			image:SetPoint ("topleft", newcheck, "topleft", 2, -2) image:SetPoint ("bottomright", newcheck, "bottomright", -2, 2)
-			newcheck:SetSize (30, 28)
-			newcheck:SetBackdrop (backdrop)
-			
-			newcheck:SetScript ("OnClick", OnClickFunction)
-			newcheck.param1 = i+1
-			
-			newcheck:SetPoint ("topleft", DF.IconPickFrame, "topleft", 12 + (i*30), -60)
-			newcheck:SetID (i+1)
-			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
-			newcheck:SetScript ("OnEnter", onenter)
-			newcheck:SetScript ("OnLeave", onleave)
-		end
-		for i = 11, 20 do
-			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..i, DF.IconPickFrame, "BackdropTemplate")
-			local image = newcheck:CreateTexture ("DetailsFrameworkIconPickFrameButton"..i.."Icon", "overlay")
-			newcheck.icon = image
-			image:SetPoint ("topleft", newcheck, "topleft", 2, -2) image:SetPoint ("bottomright", newcheck, "bottomright", -2, 2)
-			newcheck:SetSize (30, 28)
-			newcheck:SetBackdrop (backdrop)
-			
-			newcheck:SetScript ("OnClick", OnClickFunction)
-			newcheck.param1 = i
-			
-			newcheck:SetPoint ("topleft", "DetailsFrameworkIconPickFrameButton"..(i-10), "bottomleft", 0, -1)
-			newcheck:SetID (i)
-			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
-			newcheck:SetScript ("OnEnter", onenter)
-			newcheck:SetScript ("OnLeave", onleave)
-		end
-		for i = 21, 30 do 
-			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..i, DF.IconPickFrame, "BackdropTemplate")
-			local image = newcheck:CreateTexture ("DetailsFrameworkIconPickFrameButton"..i.."Icon", "overlay")
-			newcheck.icon = image
-			image:SetPoint ("topleft", newcheck, "topleft", 2, -2) image:SetPoint ("bottomright", newcheck, "bottomright", -2, 2)
-			newcheck:SetSize (30, 28)
-			newcheck:SetBackdrop (backdrop)
-			
-			newcheck:SetScript ("OnClick", OnClickFunction)
-			newcheck.param1 = i
-			
-			newcheck:SetPoint ("topleft", "DetailsFrameworkIconPickFrameButton"..(i-10), "bottomleft", 0, -1)
-			newcheck:SetID (i)
-			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
-			newcheck:SetScript ("OnEnter", onenter)
-			newcheck:SetScript ("OnLeave", onleave)
-		end
-		for i = 31, 40 do 
-			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..i, DF.IconPickFrame, "BackdropTemplate")
-			local image = newcheck:CreateTexture ("DetailsFrameworkIconPickFrameButton"..i.."Icon", "overlay")
-			newcheck.icon = image
-			image:SetPoint ("topleft", newcheck, "topleft", 2, -2) image:SetPoint ("bottomright", newcheck, "bottomright", -2, 2)
-			newcheck:SetSize (30, 28)
-			newcheck:SetBackdrop (backdrop)
-			
-			newcheck:SetScript ("OnClick", OnClickFunction)
-			newcheck.param1 = i
-			
-			newcheck:SetPoint ("topleft", "DetailsFrameworkIconPickFrameButton"..(i-10), "bottomleft", 0, -1)
-			newcheck:SetID (i)
-			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
-			newcheck:SetScript ("OnEnter", onenter)
-			newcheck:SetScript ("OnLeave", onleave)
-		end
-		for i = 41, 50 do 
-			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..i, DF.IconPickFrame, "BackdropTemplate")
-			local image = newcheck:CreateTexture ("DetailsFrameworkIconPickFrameButton"..i.."Icon", "overlay")
-			newcheck.icon = image
-			image:SetPoint ("topleft", newcheck, "topleft", 2, -2) image:SetPoint ("bottomright", newcheck, "bottomright", -2, 2)
-			newcheck:SetSize (30, 28)
-			newcheck:SetBackdrop (backdrop)
-			
-			newcheck:SetScript ("OnClick", OnClickFunction)
-			newcheck.param1 = i
-			
-			newcheck:SetPoint ("topleft", "DetailsFrameworkIconPickFrameButton"..(i-10), "bottomleft", 0, -1)
-			newcheck:SetID (i)
-			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
-			newcheck:SetScript ("OnEnter", onenter)
-			newcheck:SetScript ("OnLeave", onleave)
-		end
-		for i = 51, 60 do 
-			local newcheck = CreateFrame ("Button", "DetailsFrameworkIconPickFrameButton"..i, DF.IconPickFrame, "BackdropTemplate")
-			local image = newcheck:CreateTexture ("DetailsFrameworkIconPickFrameButton"..i.."Icon", "overlay")
-			newcheck.icon = image
-			image:SetPoint ("topleft", newcheck, "topleft", 2, -2) image:SetPoint ("bottomright", newcheck, "bottomright", -2, 2)
-			newcheck:SetSize (30, 28)
-			newcheck:SetBackdrop (backdrop)
-			
-			newcheck:SetScript ("OnClick", OnClickFunction)
-			newcheck.param1 = i
-			
-			newcheck:SetPoint ("topleft", "DetailsFrameworkIconPickFrameButton"..(i-10), "bottomleft", 0, -1)
-			newcheck:SetID (i)
-			DF.IconPickFrame.buttons [#DF.IconPickFrame.buttons+1] = newcheck
-			newcheck:SetScript ("OnEnter", onenter)
-			newcheck:SetScript ("OnLeave", onleave)
-		end
 
 		for _, button in ipairs(DF.IconPickFrame.buttons) do
 			button:SetBackdropBorderColor(0, 0, 0, 1)
 		end
 		
-		local scroll = CreateFrame ("ScrollFrame", "DetailsFrameworkIconPickFrameScroll", DF.IconPickFrame, "ListScrollFrameTemplate", "BackdropTemplate")
-		DF:ReskinSlider (scroll)
+		local width = 412
+		local height = 248
+		local linesAmount = 6
+		local lineHeight = 40
 
-		local ChecksFrame_Update = function (self)
-
-			local numMacroIcons = #MACRO_ICON_FILENAMES
-			local macroPopupIcon, macroPopupButton
-			local macroPopupOffset = FauxScrollFrame_GetOffset (scroll)
-			local index
-
-			local texture
-			local filter
-			if (DF.IconPickFrame.searching) then
-				filter = string_lower (DF.IconPickFrame.searching)
-			end
-
-			local pool
-			local shown = 0
-			
-			if (filter and filter ~= "") then
-				--do the filter
-				pool = {}
-				for i = 1, #SPELLNAMES_CACHE do
-					if (SPELLNAMES_CACHE [i] and SPELLNAMES_CACHE [i]:lower():find (filter)) then
-						pool [#pool+1] = MACRO_ICON_FILENAMES [i]
-						shown = shown + 1
+		local updateIconScroll = function(self, data, offset, totalLines)
+            for i = 1, totalLines do
+                local index = i + offset
+                local iconsInThisLine = data[index]
+				if (iconsInThisLine) then
+					local line = self:GetLine(i)
+                    for o = 1, #iconsInThisLine do
+						local _, _, texture = GetSpellInfo(iconsInThisLine[o])
+						if (texture) then
+							line.buttons[o].icon:SetTexture(texture)
+							line.buttons[o].texture = texture
+						else
+							line.buttons[o].icon:SetTexture(iconsInThisLine[o])
+							line.buttons[o].texture = iconsInThisLine[o]
+						end
 					end
 				end
-			else
-				shown = nil
 			end
-			
-			if (not pool) then
-				pool = MACRO_ICON_FILENAMES
-			end
-			
-			for i = 1, 60 do
-				macroPopupIcon = _G ["DetailsFrameworkIconPickFrameButton"..i.."Icon"]
-				macroPopupButton = _G ["DetailsFrameworkIconPickFrameButton"..i]
-				index = (macroPopupOffset * 10) + i
-				texture = pool [index]
-				if ( index <= numMacroIcons and texture ) then
-
-					if (type (texture) == "number") then
-						macroPopupIcon:SetTexture (texture)
-					else
-						macroPopupIcon:SetTexture ("INTERFACE\\ICONS\\" .. texture)
-					end
-
-					macroPopupIcon:SetTexCoord (4/64, 60/64, 4/64, 60/64)
-					macroPopupButton.IconID = index
-					macroPopupButton:Show()
-				else
-					macroPopupButton:Hide()
-				end
-			end
-
-			pool = nil
-			
-			-- Scrollbar stuff
-			FauxScrollFrame_Update (scroll, ceil ((shown or numMacroIcons) / 10) , 5, 20 )
 		end
 
-		DF.IconPickFrame.updateFunc = ChecksFrame_Update
-		
-		scroll:SetPoint ("topleft", DF.IconPickFrame, "topleft", -18, -58)
-		scroll:SetWidth (330)
-		scroll:SetHeight (178)
-		scroll:SetScript ("OnVerticalScroll", function (self, offset) FauxScrollFrame_OnVerticalScroll (scroll, offset, 20, ChecksFrame_Update) end)
-		scroll.update = ChecksFrame_Update
+		local lower = string.lower
+
+		local scroll = DF:CreateScrollBox(DF.IconPickFrame, "DetailsFrameworkIconPickFrameScroll", updateIconScroll, {}, width, height, linesAmount, lineHeight)
+		DF:ReskinSlider(scroll)
+		scroll:SetPoint ("topleft", DF.IconPickFrame, "topleft", 2, -58)
+
+		function scroll.RefreshIcons()
+			--build icon list
+			local iconList = {}
+			local numMacroIcons = #MACRO_ICON_FILENAMES
+
+			local filter
+			if (DF.IconPickFrame.searching) then
+				filter = lower(DF.IconPickFrame.searching)
+			end
+
+			if (filter and filter ~= "") then
+				local index
+				local currentTable
+				for i = 1, #SPELLNAMES_CACHE do
+					if (SPELLNAMES_CACHE[i] and SPELLNAMES_CACHE[i]:lower():find(filter)) then
+						if (not index) then
+							index = 1
+							local t = {}
+							iconList[#iconList+1] = t
+							currentTable = t
+						end
+
+						currentTable[index] = SPELLNAMES_CACHE[i]
+
+						index = index + 1
+						if (index == 11) then
+							index = nil
+						end
+					end
+
+				end
+			else
+				for i = 1, #SPELLNAMES_CACHE, 10 do
+					local t = {}
+					iconList[#iconList+1] = t
+					for o = i, i+9 do
+						if (SPELLNAMES_CACHE[o]) then
+							t[#t+1] = SPELLNAMES_CACHE[o]
+						end
+					end
+				end
+
+				for i = 1, #MACRO_ICON_FILENAMES, 10 do
+					local t = {}
+					iconList[#iconList+1] = t
+					for o = i, i+9 do
+						if (MACRO_ICON_FILENAMES[o]) then
+							t[#t+1] = MACRO_ICON_FILENAMES[o]
+						end
+					end
+				end
+			end
+
+			--set data and refresh
+			scroll:SetData(iconList)
+			scroll:Refresh()
+		end
+
+		--create the lines and button of the scroll box
+		for i = 1, linesAmount do
+			scroll:CreateLine(function(self, index)
+				local line = CreateFrame("button", "$parentLine" .. index, self, "BackdropTemplate")
+				line:SetPoint("topleft", self, "topleft", 1, -((index-1)*(lineHeight+1)) - 1)
+				line:SetSize(width - 2, lineHeight)
+				line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+				line:SetBackdropColor(.2, .2, .2, .5)
+				line.buttons = {}
+			
+				local lastButton
+
+				for o = 1, 10 do
+					local button = CreateFrame("button", "$parentIcon" .. o, line)
+					if (not lastButton) then
+						button:SetPoint("left", line, "left", 0, 0)
+					else
+						button:SetPoint("left", lastButton, "right", 1, 0)
+					end
+					button:SetSize(lineHeight, lineHeight)
+					button.icon = button:CreateTexture("$parentIcon", "overlay")
+					button.icon:SetAllPoints()
+					button.icon:SetTexCoord(.1, .9, .1, .9)
+					line.buttons[o] = button
+
+					button:SetScript("OnEnter", onEnter)
+					button:SetScript("OnLeave", onLeave)
+					button:SetScript("OnClick", onClickFunction)
+
+					lastButton = button
+				end
+
+				return line
+			end)
+		end
+
 		DF.IconPickFrameScroll = scroll
 		DF.IconPickFrame:Hide()
-		
 	end
 	
 	DF.IconPickFrame.param1, DF.IconPickFrame.param2 = param1, param2
-	
 	DF.IconPickFrame:Show()
-	DF.IconPickFrameScroll.update (DF.IconPickFrameScroll)
 	DF.IconPickFrame.callback = callback or DF.IconPickFrame.emptyFunction
 	DF.IconPickFrame.click_close = close_when_select
+	DF.IconPickFrameScroll.RefreshIcons()
 	
 end	
 
@@ -3873,7 +3817,7 @@ local button_tab_template = DF.table.copy ({}, DF:GetTemplate ("button", "OPTION
 button_tab_template.backdropbordercolor = nil
 
 DF.TabContainerFunctions.CreateUnderlineGlow = function (button)
-	local selectedGlow = button:CreateTexture (nil, "background", -4)
+	local selectedGlow = button:CreateTexture (nil, "background", nil, -4)
 	selectedGlow:SetPoint ("topleft", button.widget, "bottomleft", -7, 0)
 	selectedGlow:SetPoint ("topright", button.widget, "bottomright", 7, 0)
 	selectedGlow:SetTexture ([[Interface\BUTTONS\UI-Panel-Button-Glow]])
@@ -5086,7 +5030,8 @@ function DF:ApplyStandardBackdrop (f, darkTheme, alphaScale)
 	alphaScale = alphaScale or 1.0
 
 	if(not f.SetBackdrop)then
-		print(debugstack(1,2,1))
+		--print(debugstack(1,2,1))
+		Mixin(f, BackdropTemplateMixin)
 	end
 
 	if (darkTheme) then
@@ -5330,6 +5275,7 @@ DF.IconRowFunctions = {
 				
 				iconFrame.Cooldown:SetReverse (self.options.cooldown_reverse)
 				iconFrame.Cooldown:SetDrawSwipe (self.options.cooldown_swipe_enabled)
+				iconFrame.Cooldown:SetEdgeTexture (self.options.cooldown_edge_texture)
 				iconFrame.Cooldown:SetHideCountdownNumbers (self.options.surpress_blizzard_cd_timer)
 			else
 				iconFrame.timeRemaining = nil
@@ -5622,7 +5568,8 @@ local default_icon_row_options = {
 	on_tick_cooldown_update = true,
 	decimal_timer = false,
 	cooldown_reverse = false,
-	cooldown_swipe = true,
+	cooldown_swipe_enabled = true,
+	cooldown_edge_texture = "Interface\\Cooldown\\edge",
 }
 
 function DF:CreateIconRow (parent, name, options)

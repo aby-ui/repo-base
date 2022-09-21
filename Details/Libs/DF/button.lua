@@ -378,7 +378,7 @@ local ButtonMetaFunctions = _G[DF.GlobalWidgetControlNames ["button"]]
 		if (normal) then
 			self.button:SetNormalTexture (normal)
 		elseif (_type (normal) ~= "boolean") then
-			self.button:SetNormalTexture (nil)
+			self.button:SetNormalTexture ("")
 		end
 		
 		if (_type (highlight) == "boolean") then
@@ -386,7 +386,7 @@ local ButtonMetaFunctions = _G[DF.GlobalWidgetControlNames ["button"]]
 				self.button:SetHighlightTexture (normal, "ADD")
 			end
 		elseif (highlight == nil) then
-			self.button:SetHighlightTexture (nil)
+			self.button:SetHighlightTexture ("")
 		else
 			self.button:SetHighlightTexture (highlight, "ADD")
 		end
@@ -396,7 +396,7 @@ local ButtonMetaFunctions = _G[DF.GlobalWidgetControlNames ["button"]]
 				self.button:SetPushedTexture (normal)
 			end
 		elseif (pressed == nil) then
-			self.button:SetPushedTexture (nil)
+			self.button:SetPushedTexture ("")
 		else
 			self.button:SetPushedTexture (pressed, "ADD")
 		end
@@ -406,7 +406,7 @@ local ButtonMetaFunctions = _G[DF.GlobalWidgetControlNames ["button"]]
 				self.button:SetDisabledTexture (normal)
 			end
 		elseif (disabled == nil) then
-			self.button:SetDisabledTexture (nil)
+			self.button:SetDisabledTexture ("")
 		else
 			self.button:SetDisabledTexture (disabled, "ADD")
 		end
@@ -544,10 +544,10 @@ local ButtonMetaFunctions = _G[DF.GlobalWidgetControlNames ["button"]]
 --> custom textures
 	function ButtonMetaFunctions:InstallCustomTexture (texture, rect, coords, use_split, side_textures, side_textures2)
 	
-		self.button:SetNormalTexture (nil)
-		self.button:SetPushedTexture (nil)
-		self.button:SetDisabledTexture (nil)
-		self.button:SetHighlightTexture (nil)
+		self.button:SetNormalTexture ("")
+		self.button:SetPushedTexture ("")
+		self.button:SetDisabledTexture ("")
+		self.button:SetHighlightTexture ("")
 
 		local button = self.button
 		
@@ -1098,12 +1098,13 @@ function DF:NewButton (parent, container, name, member, w, h, func, param1, para
 	ButtonObject.text_overlay = _G [name .. "_Text"]
 	ButtonObject.disabled_overlay = _G [name .. "_TextureDisabled"]
 	
+	texture = texture or ""
 	ButtonObject.button:SetNormalTexture (texture)
 	ButtonObject.button:SetPushedTexture (texture)
 	ButtonObject.button:SetDisabledTexture (texture)
 	ButtonObject.button:SetHighlightTexture (texture, "ADD")
 	
-	ButtonObject.button.text:SetText (text)
+	ButtonObject.button.text:SetText (text or "")
 	ButtonObject.button.text:SetPoint ("center", ButtonObject.button, "center")
 
 	local text_width = ButtonObject.button.text:GetStringWidth()

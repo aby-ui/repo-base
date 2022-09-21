@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2009, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201605")
+mod:SetRevision("20220908201401")
 mod:SetCreatureID(124158)--or 124158 or 125692
 mod:SetEncounterID(2082)
 --mod:SetBossHPInfoToHighest()
@@ -30,7 +30,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 247367 or ability.id = 250255 or ability.id = 247552 or ability.id = 247687 or ability.id = 254244) and type = "cast"
  or (ability.id = 248233 or ability.id = 250135) and (type = "applybuff" or type = "removebuff")
 --]]
-local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 
 local berserkTimer						= mod:NewBerserkTimer(420)
 

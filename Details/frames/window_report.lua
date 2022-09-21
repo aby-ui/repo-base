@@ -697,9 +697,9 @@ local function cria_drop_down (este_gump)
 		reverse_checkbox:SetBackdropColor (0, 0, 0, 0.3)
 		reverse_checkbox:SetPoint ("topleft", window.slider, "bottomleft", 0, -8)
 		reverse_checkbox:SetSize (14, 14)
-		reverse_checkbox:SetNormalTexture (nil)
-		reverse_checkbox:SetPushedTexture (nil)
-		reverse_checkbox:SetHighlightTexture (nil)
+		reverse_checkbox:SetNormalTexture ("")
+		reverse_checkbox:SetPushedTexture ("")
+		reverse_checkbox:SetHighlightTexture ("")
 		_G [reverse_checkbox:GetName().."Text"]:ClearAllPoints()
 		_G [reverse_checkbox:GetName().."Text"]:SetPoint ("left", reverse_checkbox, "right", 2, 0)
 		
@@ -709,9 +709,9 @@ local function cria_drop_down (este_gump)
 		tileSize = 64, insets = {left = 0, right = 0, top = 0, bottom = 0}})
 		window.enviar:SetBackdropBorderColor (0, 0, 0, 0.5)
 		window.enviar:SetBackdropColor (0, 0, 0, 0.3)
-		window.enviar.Left:Hide()
-		window.enviar.Middle:Hide()
-		window.enviar.Right:Hide()
+--		window.enviar.Left:Hide()
+--		window.enviar.Middle:Hide()
+--		window.enviar.Right:Hide()
 		
 		window.enviar:SetSize (342/2 - 15, 20)
 		
@@ -844,9 +844,9 @@ local function cria_drop_down (este_gump)
 		
 		window.enviar:ClearAllPoints()
 		window.enviar:SetPoint ("topleft", reverse_checkbox, "bottomleft", 0, -4)
-		window.enviar.Left:Show()
-		window.enviar.Middle:Show()
-		window.enviar.Right:Show()
+--		window.enviar.Left:Show()
+--		window.enviar.Middle:Show()
+--		window.enviar.Right:Show()
 		
 		window:SetWidth (342)
 		window:SetHeight (255)
@@ -861,10 +861,10 @@ local function cria_drop_down (este_gump)
 			local f = CreateFrame ("frame", window:GetName() .. "F", window, "ButtonFrameTemplate")
 			f:SetAllPoints()
 			
-			f.portrait:SetTexture ("Interface\\AddOns\\Details\\images\\report_frame_icons")
-			f.portrait:SetTexCoord (1/256, 64/256, 1/256, 64/256)
+			--f.portrait:SetTexture ("Interface\\AddOns\\Details\\images\\report_frame_icons")
+			--f.portrait:SetTexCoord (1/256, 64/256, 1/256, 64/256)
 			
-			f.TitleText:SetText (Loc ["STRING_REPORTFRAME_WINDOW_TITLE"])
+			--f.TitleText:SetText (Loc ["STRING_REPORTFRAME_WINDOW_TITLE"]) --10.0 fuck
 			f:SetFrameLevel (window:GetFrameLevel()-1)
 			
 			_G [window:GetName() .. "FCloseButton"]:SetFrameLevel (window:GetFrameLevel()+1)
@@ -958,7 +958,7 @@ local function cria_drop_down (este_gump)
 			function window:RefreshRecentlyReported()
 				for i = 1, window.max_last_buttons do
 					local b = window.recently_report_buttons [i]
-					b.icon:SetTexture (nil)
+					b.icon:SetTexture ("")
 					b:Hide()
 				end
 				
@@ -1088,11 +1088,12 @@ local function cria_drop_down (este_gump)
 		cria_wisper_field (window)
 		cria_check_buttons (window)
 
-		window.enviar = _CreateFrame ("Button", nil, window, "OptionsButtonTemplate,BackdropTemplate")
+		window.enviar = _CreateFrame ("Button", nil, window, "BackdropTemplate")
 		window.enviar:SetPoint ("topleft", window.editbox, "topleft", 61, -19)
 		window.enviar:SetWidth (60)
 		window.enviar:SetHeight (15)
 		window.enviar:SetText (Loc ["STRING_REPORTFRAME_SEND"])
+		DetailsFramework:ApplyStandardBackdrop(window.enviar)
 
 		Details.FadeHandler.Fader (window, 1)
 		gump:CreateFlashAnimation (window)

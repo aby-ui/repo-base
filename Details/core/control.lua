@@ -1008,31 +1008,42 @@
 		
 		function Details:CreateArenaSegment()
 			Details:GetPlayersInArena()
-		
+
 			Details.arena_begun = true
 			Details.start_arena = nil
-		
+
 			if (Details.in_combat) then
 				Details:SairDoCombate()
 			end
-		
+
 			--> registra os gr�ficos
 			Details:TimeDataRegister ("Your Team Damage", string_arena_myteam_damage, nil, "Details!", "v1.0", [[Interface\ICONS\Ability_DualWield]], true, true)
 			Details:TimeDataRegister ("Enemy Team Damage", string_arena_enemyteam_damage, nil, "Details!", "v1.0", [[Interface\ICONS\Ability_DualWield]], true, true)
-		
+
 			Details:TimeDataRegister ("Your Team Healing", string_arena_myteam_heal, nil, "Details!", "v1.0", [[Interface\ICONS\Ability_DualWield]], true, true)
 			Details:TimeDataRegister ("Enemy Team Healing", string_arena_enemyteam_heal, nil, "Details!", "v1.0", [[Interface\ICONS\Ability_DualWield]], true, true)
-		
+
+			Details.lastArenaStartTime = GetTime()
+
 			--> inicia um novo combate
 			Details:EntrarEmCombate()
-		
+
 			--> sinaliza que esse combate � arena
 			Details.tabela_vigente.arena = true
 			Details.tabela_vigente.is_arena = {name = Details.zone_name, zone = Details.zone_name, mapid = Details.zone_id}
 
 			Details:SendEvent("COMBAT_ARENA_START")
 		end
-		
+
+		--return the GetTime() of the current or latest arena match
+		function Details:GetArenaStartTime()
+			return Details.lastArenaStartTime
+		end
+
+		function Details:GetBattlegroundStartTime()
+			return Details.lastBattlegroundStartTime
+		end
+
 		function Details:StartArenaSegment(...)
 			if (Details.debug) then
 				Details:Msg("(debug) starting a new arena segment.")
@@ -1045,6 +1056,8 @@
 			end
 			Details.start_arena = Details:ScheduleTimer("CreateArenaSegment", timeSeconds)
 			Details:GetPlayersInArena()
+
+			--CHAT_MSG_BG_SYSTEM_NEUTRAL - "The Arena battle has begun!""
 		end
 
 		function Details:EnteredInArena()

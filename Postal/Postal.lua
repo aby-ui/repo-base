@@ -71,6 +71,7 @@ Postal.keepFreeOptions = {0, 1, 2, 3, 5, 10, 15, 20, 25, 30}
 
 Postal.WOWClassic = false
 Postal.WOWBCClassic = false
+Postal.WOWWotLKClassic = false
 Postal.WOWRetail = false
 
 -- Use a common frame and setup some common functions for the Postal dropdown menus
@@ -113,11 +114,12 @@ function Postal:OnInitialize()
 	-- Detect which release of WOW is running and set appropriate flags
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then Postal.WOWClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then Postal.WOWBCClassic = true end
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC then Postal.WOWWotLKClassic = true end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then Postal.WOWRetail = true end
--- if Postal.WOWClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Classic", 0.0, 0.69, 0.94) end
--- if Postal.WOWBCClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW BC Classic", 0.0, 0.69, 0.94) end
--- if Postal.WOWRetail then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Retail", 0.0, 0.69, 0.94) end
-
+--	if Postal.WOWClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Classic", 0.0, 0.69, 0.94) end
+--	if Postal.WOWBCClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW BC Classic", 0.0, 0.69, 0.94) end
+--	if Postal.WOWWotLKClassic then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW WotLK Classic", 0.0, 0.69, 0.94) end
+--	if Postal.WOWRetail then DEFAULT_CHAT_FRAME:AddMessage("Postal WOW Retail", 0.0, 0.69, 0.94) end
 	-- Version number
 	if not self.version then self.version = GetAddOnMetadata("Postal", "Version") end
 

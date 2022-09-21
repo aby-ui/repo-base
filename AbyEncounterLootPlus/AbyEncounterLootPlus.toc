@@ -3,7 +3,7 @@
 ## Notes: 增强冒险指南里副本掉落装备的筛选功能
 ## Author: warbaby
 ## SavedVariables: ELPDATA
-## X-DataVersion: 20220830
+## X-DataVersion: 20220922
 ## X-Vendor: AbyUI
 
 Utils.lua

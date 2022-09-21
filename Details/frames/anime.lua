@@ -233,8 +233,15 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 	Portrait.scale:SetDuration (0.21600000560284)
 	Portrait.scale:SetStartDelay (0)
 	Portrait.scale:SetEndDelay (0)
-	Portrait.scale:SetFromScale (0, 0)
-	Portrait.scale:SetToScale (1, 1)
+
+	if (DetailsFramework.IsDragonflight()) then
+		Portrait.scale:SetScaleFrom (0, 0)
+		Portrait.scale:SetScaleTo (1, 1)
+	else
+		Portrait.scale:SetFromScale (0, 0)
+		Portrait.scale:SetToScale (1, 1)
+	end
+	
 	Portrait.scale:SetOrigin ("center", 0, 0)
 	Portrait.alpha = MainAnimationGroup:CreateAnimation ("ALPHA")
 	Portrait.alpha:SetTarget (Portrait)

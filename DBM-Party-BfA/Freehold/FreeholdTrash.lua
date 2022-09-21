@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -37,7 +37,7 @@ local specWarnShatteringBellow			= mod:NewSpecialWarningCast(257732, "SpellCaste
 local specWarnBestialWrath				= mod:NewSpecialWarningDispel(257476, "RemoveEnrage", nil, 2, 1, 2)
 local specWarnBlindRage					= mod:NewSpecialWarningDispel(257739, "RemoveEnrage", nil, 2, 1, 2)
 local specWarnInfectedWound				= mod:NewSpecialWarningDispel(258323, "RemoveDisease", nil, nil, 1, 2)
-local specWarnOiledBlade				= mod:NewSpecialWarningDispel(257908, "Healer", nil, nil, 1, 2)
+local specWarnOiledBlade				= mod:NewSpecialWarningDispel(257908, "RemoveMagic", nil, 2, 1, 2)
 local specWarnGTFO						= mod:NewSpecialWarningGTFO(257274, nil, nil, nil, 1, 8)
 
 function mod:RicochetingTarget(targetname)

@@ -1187,6 +1187,10 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.npcId and select(6, strsplit('-', UnitGUID(unit) or '')) ~= triggerInfo.npcId then
+    return false
+  end
+
   if triggerInfo.nameChecker and not triggerInfo.nameChecker:Check(WeakAuras.UnitNameWithRealm(unit)) then
     return false
   end
@@ -1861,7 +1865,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   elseif event == "UNIT_PET" then
     local pet = WeakAuras.unitToPetUnit[arg1]
     if pet then
-      ScanGroupUnit(time, matchDataChanged, nil, pet)
+      ScanGroupUnit(time, matchDataChanged, "group", pet)
       RecheckActiveForUnitType("group", pet, deactivatedTriggerInfos)
       if not UnitExistsFixed(pet) then
         tinsert(unitsToRemove, pet)
@@ -1946,7 +1950,7 @@ if WeakAuras.IsRetail() then
 
     local deactivatedTriggerInfos = {}
     RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
-    RecheckActiveForUnitType("group", unit .. "pet", deactivatedTriggerInfos)
+    RecheckActiveForUnitType("group", WeakAuras.unitToPetUnit[unit], deactivatedTriggerInfos)
     DeactivateScanFuncs(deactivatedTriggerInfos)
 
     Private.StopProfileSystem("bufftrigger2")
@@ -2601,6 +2605,7 @@ function BuffTrigger.Add(data)
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
       local effectiveIgnoreInvisible = groupTrigger and trigger.ignoreInvisible
       local effectiveNameCheck = groupTrigger and trigger.useUnitName and trigger.unitName
+      local effectiveNpcId = trigger.unit == "nameplate" and trigger.useNpcId and trigger.npcId
 
       if trigger.unit == "multi" then
         BuffTrigger.InitMultiAura()
@@ -2669,7 +2674,8 @@ function BuffTrigger.Add(data)
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
         nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName),
-        includePets = trigger.use_includePets and trigger.includePets
+        includePets = trigger.use_includePets and trigger.includePets or nil,
+        npcId = effectiveNpcId
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation

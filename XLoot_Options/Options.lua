@@ -1,7 +1,7 @@
 --[=[ This addon provides options for all modules.
 Options are preferrably defined as "BetterOptions" tables, which functionally resemble AceOptionsTables but are much more concise.
 
-The point of this abstraction layer is that I (Xuerian) wanted to use AceDB/AceConfig to present a more standard configuration dialog to users. I am, however, not satisfied with the conventions and limitations of it, so this is a attempt to provide both a more concise format (BetterOptions), and a more featureful intermediate options format (Finalize(...)) to support it. 
+The point of this abstraction layer is that I (Xuerian) wanted to use AceDB/AceConfig to present a more standard configuration dialog to users. I am, however, not satisfied with the conventions and limitations of it, so this is a attempt to provide both a more concise format (BetterOptions), and a more featureful intermediate options format (Finalize(...)) to support it.
 
 
 Methods:
@@ -32,7 +32,7 @@ Features/Finalize:
 - Propagate .defaults to child nodes
 - Default type "toggle"
 - "alpha" and "scale" types with automatic localization
-- .requires = key and .requires_inverse = key 
+- .requires = key and .requires_inverse = key
 
 Features/BetterOptions:
 - Nested tables with implied ordering and table values:
@@ -441,7 +441,7 @@ function addon:OnEnable() -- Construct addon option tables here
 			local hex = select(4, GetItemQualityColor(i))
 			table.insert(item_qualities, { i, ("|c%s%s"):format(hex, _G["ITEM_QUALITY"..tostring(i).."_DESC"]) })
 		end
-	end 
+	end
 
 	local directions = {
 		{ "up", L.up },
@@ -634,6 +634,9 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "scale", "scale" },
 				{ "direction", directions, name = L.growth_direction },
 				{ "alignment", leftright, name = L.alignment },
+				{ "offsets", "header", name = '' },
+				{ "spacing", "range", -25, 25, 1, name = L.spacing, subtable = "anchor" },
+				{ "offset", "range", -25, 25, 1, name = L.offset, subtable = "anchor" },
 			}, defaults = { subtable = "anchor" } },
 			{ "thresholds", "group", {
 				{ "threshold_own", item_qualities, name = L.items_own },
@@ -729,11 +732,11 @@ function addon:OnEnable() -- Construct addon option tables here
 			whileDead = true,
 			hideOnEscape = true,
 		}
-	end--]=] 
+	end--]=]
 end
 
 function addon:OnInitialize()
-	
+
 end
 
 -------------------------------------------------------------------------------

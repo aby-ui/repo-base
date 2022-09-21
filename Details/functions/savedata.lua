@@ -5,9 +5,11 @@ local _detalhes = 		_G._detalhes
 function _detalhes:WipeConfig()
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 	
-	local b = CreateFrame ("button", "DetailsResetConfigButton", UIParent, "OptionsButtonTemplate")
+	local b = CreateFrame ("button", "DetailsResetConfigButton", UIParent)
 	tinsert (UISpecialFrames, "DetailsResetConfigButton")
 	
+	DetailsFramework:ApplyStandardBackdrop(b)
+
 	b:SetSize (250, 40)
 	b:SetText (Loc ["STRING_SLASH_WIPECONFIG_CONFIRM"])
 	b:SetScript ("OnClick", function() _detalhes.wipe_full_config = true; ReloadUI(); end)

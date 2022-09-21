@@ -52,7 +52,7 @@ privateTable.L = setmetatable({
 	["ReviveBattlePetA"]="A small fee for supplies is required.",
 	
 	["DismissKyrianStewardLabel"]="Dismiss Kyrian Steward.",
-
+	["CovenantSwapGossipCompletion"]="Complete Covenant Swap Dialog",
 	["The Jade Forest"]="The Jade Forest",
     ["Scared Pandaren Cub"]="Scared Pandaren Cub",
 	

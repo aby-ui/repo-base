@@ -5170,7 +5170,7 @@ do
 
         local sectionOptions = {
 
-            {type = "label", get = function() return "Switch by Role Out of Combat" end, text_template = subSectionTitleTextTemplate},
+            {type = "label", get = function() return "Switch by Role Out of Combat" end, text_template = subSectionTitleTextTemplate}, --localize-me
 
             {--DAMAGER role out of combat
                 type = "select",

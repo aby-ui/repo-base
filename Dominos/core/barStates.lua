@@ -54,6 +54,31 @@ local function addState(stateType, stateId, stateValue, stateText)
     }
 end
 
+-- some class states are a bit dynamic
+-- druid forms, for instance, can vary based on how many different abilities
+-- are known
+local function addFormState(stateType, stateId, spellID)
+    local lookupFormConditional = function()
+        for i = 1, GetNumShapeshiftForms() do
+            local _, _, _, formSpellID = GetShapeshiftFormInfo(i)
+
+            if spellID == formSpellID then
+                return ('[form:%d]'):format(i)
+            end
+        end
+    end
+
+    local name = (GetSpellInfo(spellID))
+
+    addState(stateType, stateId, lookupFormConditional, name)
+end
+
+local function getEquippedConditional(classId, subclassId)
+    local name = GetItemSubClassInfo(classId, subclassId)
+
+    return ('[equipped:%s]'):format(name)
+end
+
 -- keybindings
 addState('modifier', 'selfcast', '[mod:SELFCAST]', AUTO_SELF_CAST_KEY_TEXT)
 addState('modifier', 'ctrlAltShift', '[mod:alt,mod:ctrl,mod:shift]')
@@ -71,123 +96,96 @@ for i = 2, NUM_ACTIONBAR_PAGES do
 end
 
 -- class
-do
-    local class = UnitClassBase('player')
+local class = UnitClassBase('player')
+local race = select(2, UnitRace('player'))
 
-    local function getEquippedConditional(classId, subclassId)
-        local name = GetItemSubClassInfo(classId, subclassId)
+if class == 'DRUID' then
+    addState('class', 'bear', '[bonusbar:3]', GetSpellInfo(5487))
+    addState('class', 'prowl', '[bonusbar:1,stealth]', GetSpellInfo(5215))
+    addState('class', 'cat', '[bonusbar:1]', GetSpellInfo(768))
 
-        return ('[equipped:%s]'):format(name)
+    if Addon:IsBuild('retail') then
+        addState('class', 'moonkin', '[bonusbar:4]', GetSpellInfo(24858))
+
+        addFormState('class', 'tree', 114282)
+        addFormState('class', 'travel', 783)
+        addFormState('class', 'stag', 210053)
+    else
+        addFormState('class', 'moonkin', 24858)
+
+        if Addon:IsBuild('wrath', 'bcc') then
+            addFormState('class', 'tree', 33891)
+        end
+
+        addFormState('class', 'travel', 783)
+        addFormState('class', 'aquatic', 1066)
+
+        if Addon:IsBuild('wrath', 'bcc') then
+            -- flight form
+            addFormState('class', 'flight', 33943)
+
+            -- swift flight form
+            addFormState('class', 'flight', 40120)
+        end
+    end
+elseif class == 'PALADIN' then
+    if Addon:IsBuild('retail') then
+        addFormState('class', 'concentration', 317920)
+        addFormState('class', 'crusader', 32223)
+        addFormState('class', 'devotion', 465)
+        addFormState('class', 'retribution', 183435)
+
+        addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
+    elseif Addon:IsBuild('wrath') then
+        addFormState('class', 'concentration', 19746)
+        addFormState('class', 'crusader', 32223)
+        addFormState('class', 'devotion', 27149)
+        addFormState('class', 'fire', 27153)
+        addFormState('class', 'frost', 27152)
+        addFormState('class', 'retribution', 27150)
+        addFormState('class', 'shadow', 27151)
+    elseif Addon:IsBuild('bcc') then
+        addFormState('class', 'concentration', 19746)
+        addFormState('class', 'crusader', 32223)
+        addFormState('class', 'devotion', 10292)
+        addFormState('class', 'fire', 19899)
+        addFormState('class', 'frost', 19898)
+        addFormState('class', 'retribution', 10301)
+        addFormState('class', 'shadow', 19896)
+    end
+elseif class == 'PRIEST' then
+    if not Addon:IsBuild('retail') then
+        addState('class', 'shadowform', '[form:1]', GetSpellInfo(16592))
+    end
+elseif class == 'ROGUE' then
+    -- wrath shadowdance
+    if Addon:IsBuild('wrath') then
+        addState('class', 'shadowdance', '[bonusbar:2]', GetSpellInfo(51713))
+    -- retail
+    elseif GetSpellInfo(185313) then
+        addState('class', 'shadowdance', '[bonusbar:1,form:2]', GetSpellInfo(185313))
     end
 
-    -- some class states are a bit dynamic
-    -- druid forms, for instance, can vary based on how many different abilities
-    -- are known
-    local function addFormState(stateType, stateId, spellID)
-        local lookupFormConditional = function()
-            for i = 1, GetNumShapeshiftForms() do
-                local _, _, _, formSpellID = GetShapeshiftFormInfo(i)
-
-                if spellID == formSpellID then
-                    return ('[form:%d]'):format(i)
-                end
-            end
-        end
-
-        local name = (GetSpellInfo(spellID))
-
-        addState(stateType, stateId, lookupFormConditional, name)
+    addState('class', 'stealth', '[bonusbar:1]', GetSpellInfo(1784))
+elseif class == 'WARLOCK' then
+    if Addon:IsBuild('wrath') then
+        addState('class', 'metamorphosis', '[form:1]', GetSpellInfo(47241))
     end
-
-    if class == 'DRUID' then
-        addState('class', 'bear', '[bonusbar:3]', GetSpellInfo(5487))
-        addState('class', 'prowl', '[bonusbar:1,stealth]', GetSpellInfo(5215))
-        addState('class', 'cat', '[bonusbar:1]', GetSpellInfo(768))
-
-        if Addon:IsBuild('retail') then
-            addState('class', 'moonkin', '[bonusbar:4]', GetSpellInfo(24858))
-
-            addFormState('class', 'tree', 114282)
-            addFormState('class', 'travel', 783)
-            addFormState('class', 'stag', 210053)
-        else
-            addFormState('class', 'moonkin', 24858)
-
-            if Addon:IsBuild('wrath', 'bcc') then
-                addFormState('class', 'tree', 33891)
-            end
-
-            addFormState('class', 'travel', 783)
-            addFormState('class', 'aquatic', 1066)
-
-            if Addon:IsBuild('wrath', 'bcc') then
-                -- flight form
-                addFormState('class', 'flight', 33943)
-
-                -- swift flight form
-                addFormState('class', 'flight', 40120)
-            end
-        end
-    elseif class == 'PALADIN' then
-        if Addon:IsBuild('retail') then
-            addFormState('class', 'concentration', 317920)
-            addFormState('class', 'crusader', 32223)
-            addFormState('class', 'devotion', 465)
-            addFormState('class', 'retribution', 183435)
-
-            addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
-        elseif Addon:IsBuild('wrath') then
-            addFormState('class', 'concentration', 19746)
-            addFormState('class', 'crusader', 32223)
-            addFormState('class', 'devotion', 27149)
-            addFormState('class', 'fire', 27153)
-            addFormState('class', 'frost', 27152)
-            addFormState('class', 'retribution', 27150)
-            addFormState('class', 'shadow', 27151)
-        elseif Addon:IsBuild('bcc') then
-            addFormState('class', 'concentration', 19746)
-            addFormState('class', 'crusader', 32223)
-            addFormState('class', 'devotion', 10292)
-            addFormState('class', 'fire', 19899)
-            addFormState('class', 'frost', 19898)
-            addFormState('class', 'retribution', 10301)
-            addFormState('class', 'shadow', 19896)
-        end
-    elseif class == 'PRIEST' then
-        if not Addon:IsBuild('retail') then
-            addState('class', 'shadowform', '[form:1]', GetSpellInfo(16592))
-        end
-    elseif class == 'ROGUE' then
-        -- wrath shadowdance
-        if Addon:IsBuild('wrath') then
-            addState('class', 'shadowdance', '[bonusbar:2]', GetSpellInfo(51713))
-        -- retail
-        elseif GetSpellInfo(185313) then
-            addState('class', 'shadowdance', '[bonusbar:1,form:2]', GetSpellInfo(185313))
-        end
-
-        addState('class', 'stealth', '[bonusbar:1]', GetSpellInfo(1784))
-    elseif class == 'WARLOCK' then
-        if Addon:IsBuild('wrath') then
-            addState('class', 'metamorphosis', '[form:1]', GetSpellInfo(47241))
-        end
-    elseif class == 'WARRIOR' then
-        if not Addon:IsBuild('retail') then
-            addState('class', 'battle', '[bonusbar:1]', GetSpellInfo(2457))
-            addState('class', 'defensive', '[bonusbar:2]', GetSpellInfo(71))
-            addState('class', 'berserker', '[bonusbar:3]', GetSpellInfo(2458))
-        else
-            addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
-        end
+elseif class == 'WARRIOR' then
+    if not Addon:IsBuild('retail') then
+        addState('class', 'battle', '[bonusbar:1]', GetSpellInfo(2457))
+        addState('class', 'defensive', '[bonusbar:2]', GetSpellInfo(71))
+        addState('class', 'berserker', '[bonusbar:3]', GetSpellInfo(2458))
+    else
+        addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
     end
 end
 
 -- race
-do
-    local _, race = UnitRace('player')
+if race == 'NightElf' then
+    local name = (GetSpellInfo(58984) or GetSpellInfo(20580))
 
-    if race == 'NightElf' then
-        local name = (GetSpellInfo(58984) or GetSpellInfo(20580))
+    if name then
         addState('class', 'shadowmeld', '[stealth]', name)
     end
 end

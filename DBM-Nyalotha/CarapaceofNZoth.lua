@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2366, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201556")
+mod:SetRevision("20220908201350")
 mod:SetCreatureID(157439)--Fury of N'Zoth
 mod:SetEncounterID(2337)
 mod:SetUsedIcons(1, 2, 3)
@@ -33,7 +33,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 318108 and type = "applybuff"
 --]]
 --General
-local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnGiftofNzoth						= mod:NewTargetNoFilterAnnounce(313334, 2)
 local warnWillPower							= mod:NewCountAnnounce(307831, 3)
 

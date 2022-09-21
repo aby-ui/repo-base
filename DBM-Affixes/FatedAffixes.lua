@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FatedAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220907235332")
+mod:SetRevision("20220915014831")
 --mod:SetModelID(47785)
 mod:SetZone(2296, 2450, 2481)--Shadowlands Raids
 
@@ -61,14 +61,14 @@ local specialTimers = {
 			--Castle Nathria
 			[2418] = {75},--Huntsman Altimor
 			[2412] = {75, 75},--Council of Blood (always 75, but restarts after dances)
-			[2402] = {75},--Kael
+			[2402] = {75, 75},--Kael
 			[2398] = {},--Shriekwing
-			[2405] = {},--Artificer XyMox
+			[2405] = {75},--Artificer XyMox
 			[2383] = {75},--Hungering Destroyer
-			[2406] = {},--Lady Inerva Darkvein
-			[2399] = {},--Sludgefist
-			[2417] = {},--Stoneborne Generals
-			[2407] = {60, 79, 70},--Sire Denathrius (can spell queue higher like 79-84 for Stage 2 if hand of destruction cast pushes it back
+			[2406] = {75},--Lady Inerva Darkvein
+			[2399] = {67.9},--Sludgefist
+			[2417] = {75},--Stoneborne Generals
+			[2407] = {60, 79, 70},--Sire Denathrius (can spell queue higher like 79-89 for Stage 2 if hand of destruction cast pushes it back
 			--Sanctum of Domination
 			[2423] = {75},--The Tarragrue
 			[2433] = {},--The Eye of the Jailer
@@ -86,12 +86,12 @@ local specialTimers = {
 			[2553] = {75},--Artificer Xy'mox
 			[2540] = {75},--Dausegne, the Fallen Oracle
 			[2544] = {75},--Prototype Pantheon
-			[2539] = {},--Lihuvim, Principal Architect
-			[2529] = {},--Halondrus the Reclaimer
+			[2539] = {75, 75},--Lihuvim, Principal Architect
+			[2529] = {75, 75},--Halondrus the Reclaimer (unknown, 75s are placeholders)
 			[2546] = {75, 75, 75},--Anduin Wrynn
 			[2543] = {0, 0},--Lords of Dread (only cast once per phase cycle so no in between casts timers)
-			[2549] = {},--Rygelon
-			[2537] = {},--The Jailer
+			[2549] = {0, 0},--Rygelon
+			[2537] = {0, 0, 0, 0},--The Jailer (used on pull basically)
 		},
 		[1] = {--Initial pull/new stages (pull count reduced by 1 due to delayed start)
 			--Castle Nathria
@@ -99,12 +99,12 @@ local specialTimers = {
 			[2412] = {4.8, 3.2},--Council of Blood
 			[2402] = {4.8},--Kael
 			[2398] = {},--Shriekwing
-			[2405] = {},--Artificer XyMox
+			[2405] = {4.8},--Artificer XyMox
 			[2383] = {4.8},--Hungering Destroyer
-			[2406] = {},--Lady Inerva Darkvein
-			[2399] = {},--Sludgefist
-			[2417] = {},--Stoneborne Generals
-			[2407] = {24.9, 10.5, 29.5},--Sire Denathrius (sometimes sire will skip first cast in stage 2)
+			[2406] = {4.8},--Lady Inerva Darkvein
+			[2399] = {24.9},--Sludgefist
+			[2417] = {4.8},--Stoneborne Generals
+			[2407] = {24, 10.5, 29.5},--Sire Denathrius (sometimes sire will skip first cast in stage 2)
 			--Sanctum of Domination
 			[2423] = {4.8},--The Tarragrue
 			[2433] = {},--The Eye of the Jailer
@@ -122,27 +122,27 @@ local specialTimers = {
 			[2553] = {4.8},--Artificer Xy'mox
 			[2540] = {4.8},--Dausegne, the Fallen Oracle
 			[2544] = {4.8},--Prototype Pantheon
-			[2539] = {},--Lihuvim, Principal Architect
-			[2529] = {},--Halondrus the Reclaimer
+			[2539] = {4.8, 24.4},--Lihuvim, Principal Architect
+			[2529] = {4.8, 11},--Halondrus the Reclaimer
 			[2546] = {4.8, 8.6, 11.5},--Anduin Wrynn
 			[2543] = {10, 9.1},--Lords of Dread
-			[2549] = {},--Rygelon
-			[2537] = {},--The Jailer
+			[2549] = {0, 17.2},--Rygelon
+			[2537] = {1, 1, 14, 0},--The Jailer (basically used immeddiately on 3 of the 4 stages)
 		},
 	},
 	[372642] = {-- Chaotic Essence
 		[0] = {--Repeating Timer
 			--Castle Nathria
-			[2418] = {},--Huntsman Altimor
-			[2412] = {},--Council of Blood
-			[2402] = {},--Kael
+			[2418] = {58.8},--Huntsman Altimor
+			[2412] = {58.8, 58.8},--Council of Blood
+			[2402] = {58.8, 58.8},--Kael
 			[2398] = {58.8, 58.8},--Shriekwing
 			[2405] = {58.8},--Artificer XyMox
-			[2383] = {},--Hungering Destroyer
+			[2383] = {58.8},--Hungering Destroyer
 			[2406] = {58.8},--Lady Inerva Darkvein
-			[2399] = {58.8},--Sludgefist
+			[2399] = {67.9},--Sludgefist
 			[2417] = {58.8},--Stoneborne Generals
-			[2407] = {},--Sire Denathrius
+			[2407] = {58.8, 79.3, 58.8},--Sire Denathrius (P2 is 80-85)
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
 			[2433] = {54.7, 54.7, 54.7},--The Eye of the Jailer
@@ -157,28 +157,28 @@ local specialTimers = {
 			--Sepulcher of the First Ones
 			[2512] = {58.8},--Vigilant Guardian
 			[2542] = {},--Skolex, the Insatiable Ravener
-			[2553] = {},--Artificer Xy'mox
+			[2553] = {58.8},--Artificer Xy'mox
 			[2540] = {},--Dausegne, the Fallen Oracle
-			[2544] = {},--Prototype Pantheon
+			[2544] = {58.8},--Prototype Pantheon
 			[2539] = {58.8, 58.8},--Lihuvim, Principal Architect (not cast twice in any stage, used once per phasing cycle)
 			[2529] = {80, 80},--Halondrus the Reclaimer
 			[2546] = {},--Anduin Wrynn
-			[2543] = {},--Lords of Dread
+			[2543] = {0, 0},--Lords of Dread
 			[2549] = {0, 0},--Rygelon (has no CD, it's just synced to singularity stage beginnings and not recast any other time)
 			[2537] = {0, 0, 0, 0},--The Jailer
 		},
 		[1] = {--Initial pull/new stages (pull count reduced by 1 due to delayed start)
 			--Castle Nathria
-			[2418] = {},--Huntsman Altimor
-			[2412] = {},--Council of Blood
-			[2402] = {},--Kael
+			[2418] = {11},--Huntsman Altimor
+			[2412] = {11, 9.3},--Council of Blood
+			[2402] = {11},--Kael
 			[2398] = {11, 12.4},--Shriekwing
 			[2405] = {11},--Artificer XyMox
-			[2383] = {},--Hungering Destroyer
+			[2383] = {11},--Hungering Destroyer
 			[2406] = {11},--Lady Inerva Darkvein
-			[2399] = {11},--Sludgefist
+			[2399] = {32.5},--Sludgefist
 			[2417] = {11},--Stoneborne Generals
-			[2407] = {},--Sire Denathrius
+			[2407] = {37, 21, 35.9},--Sire Denathrius
 			--Sanctum of Domination
 			[2423] = {},--The Tarragrue
 			[2433] = {11, 3.3, 35.1},--The Eye of the Jailer
@@ -193,14 +193,14 @@ local specialTimers = {
 			--Sepulcher of the First Ones
 			[2512] = {11},--Vigilant Guardian
 			[2542] = {},--Skolex, the Insatiable Ravener
-			[2553] = {},--Artificer Xy'mox
+			[2553] = {11},--Artificer Xy'mox
 			[2540] = {},--Dausegne, the Fallen Oracle
-			[2544] = {},--Prototype Pantheon
+			[2544] = {11},--Prototype Pantheon
 			[2539] = {11, 30},--Lihuvim, Principal Architect
 			[2529] = {11, 17.4},--Halondrus the Reclaimer
 			[2546] = {},--Anduin Wrynn
-			[2543] = {},--Lords of Dread
-			[2549] = {0, 15.7},--Rygelon (doesn't use affix on engage at all. Instead, affix is disabled and only enabled in singularity stages)
+			[2543] = {16.2, 15.2},--Lords of Dread
+			[2549] = {0, 20.9},--Rygelon (used to be 15.7, but i think it was tweaked for multiple affixes support)
 			[2537] = {2.2, 3.5, 15, 2},--The Jailer
 		},
 
@@ -209,15 +209,15 @@ local specialTimers = {
 		[0] = {--Repeating Timer
 			--Castle Nathria
 			[2418] = {},--Huntsman Altimor
-			[2412] = {},--Council of Blood
+			[2412] = {60, 60, 60},--Council of Blood
 			[2402] = {60},--Kael (always 60 but reflection of guilt fading causes an ICD that delays current cast, but not one after it)
-			[2398] = {},--Shriekwing
+			[2398] = {60, 60},--Shriekwing
 			[2405] = {60},--Artificer XyMox
 			[2383] = {60},--Hungering Destroyer
-			[2406] = {},--Lady Inerva Darkvein
+			[2406] = {60},--Lady Inerva Darkvein
 			[2399] = {70},--Sludgefist
-			[2417] = {},--Stoneborne Generals
-			[2407] = {},--Sire Denathrius
+			[2417] = {60},--Stoneborne Generals
+			[2407] = {56.9, 79.9, 70},--Sire Denathrius
 			--Sanctum of Domination
 			[2423] = {60},--The Tarragrue
 			[2433] = {60, 60, 60},--The Eye of the Jailer
@@ -234,10 +234,10 @@ local specialTimers = {
 			[2542] = {},--Skolex, the Insatiable Ravener
 			[2553] = {60},--Artificer Xy'mox
 			[2540] = {60},--Dausegne, the Fallen Oracle
-			[2544] = {},--Prototype Pantheon
+			[2544] = {60},--Prototype Pantheon
 			[2539] = {},--Lihuvim, Principal Architect
 			[2529] = {60, 60},--Halondrus the Reclaimer
-			[2546] = {},--Anduin Wrynn
+			[2546] = {60, 60, 60},--Anduin Wrynn
 			[2543] = {0, 0},--Lords of Dread (no in between casts, since it's reset by both bosses specials)
 			[2549] = {0, 0},--Rygelon
 			[2537] = {},--The Jailer
@@ -245,15 +245,15 @@ local specialTimers = {
 		[1] = {--Initial pull/new stages (pull count reduced by 1 due to delayed start)
 			--Castle Nathria
 			[2418] = {},--Huntsman Altimor
-			[2412] = {},--Council of Blood
+			[2412] = {14.8, 13.7},--Council of Blood
 			[2402] = {14.8},--Kael
-			[2398] = {},--Shriekwing
+			[2398] = {14.8, 15},--Shriekwing
 			[2405] = {14.8},--Artificer XyMox
 			[2383] = {14.8},--Hungering Destroyer
-			[2406] = {},--Lady Inerva Darkvein
-			[2399] = {35},--Sludgefist
-			[2417] = {},--Stoneborne Generals
-			[2407] = {},--Sire Denathrius
+			[2406] = {14.8},--Lady Inerva Darkvein
+			[2399] = {34.9},--Sludgefist
+			[2417] = {14.8},--Stoneborne Generals
+			[2407] = {1, 14.4, 44.5},--Sire Denathrius (used near instantly on pull)
 			--Sanctum of Domination
 			[2423] = {14.8},--The Tarragrue
 			[2433] = {14.8, 30.4, 4.3},--The Eye of the Jailer
@@ -270,10 +270,10 @@ local specialTimers = {
 			[2542] = {},--Skolex, the Insatiable Ravener
 			[2553] = {14.8},--Artificer Xy'mox
 			[2540] = {14.8},--Dausegne, the Fallen Oracle
-			[2544] = {},--Prototype Pantheon
+			[2544] = {14.8},--Prototype Pantheon
 			[2539] = {},--Lihuvim, Principal Architect
 			[2529] = {14.8, 21, 21},--Halondrus the Reclaimer
-			[2546] = {},--Anduin Wrynn
+			[2546] = {14.8, 18.6, 22.1},--Anduin Wrynn
 			[2543] = {20, 19},--Lords of Dread
 			[2549] = {0, 14.7},--Rygelon (only used after big bang)
 			[2537] = {},--The Jailer
@@ -285,12 +285,12 @@ local specialTimers = {
 			--Castle Nathria
 			[2418] = {44.9},--Huntsman Altimor
 			[2412] = {44.9, 44.9},--Council of Blood
-			[2402] = {},--Kael
+			[2402] = {44.9, 44.9},--Kael
 			[2398] = {44.9, 44.9},--Shriekwing
-			[2405] = {},--Artificer XyMox
-			[2383] = {},--Hungering Destroyer
+			[2405] = {44.9},--Artificer XyMox
+			[2383] = {44.9},--Hungering Destroyer
 			[2406] = {44.9},--Lady Inerva Darkvein
-			[2399] = {},--Sludgefist
+			[2399] = {68.3},--Sludgefist (one of few bosses that has a diff timer)
 			[2417] = {44.9},--Stoneborne Generals
 			[2407] = {57.9, 84.9, 70},--Sire Denathrius
 			--Sanctum of Domination
@@ -307,26 +307,26 @@ local specialTimers = {
 			--Sepulcher of the First Ones
 			[2512] = {44.9},--Vigilant Guardian
 			[2542] = {44.9},--Skolex, the Insatiable Ravener
-			[2553] = {},--Artificer Xy'mox
+			[2553] = {44.9},--Artificer Xy'mox
 			[2540] = {},--Dausegne, the Fallen Oracle
 			[2544] = {44.9},--Prototype Pantheon
 			[2539] = {44.9, 44.9},--Lihuvim, Principal Architect
-			[2529] = {},--Halondrus the Reclaimer
+			[2529] = {44.9, 44.9},--Halondrus the Reclaimer
 			[2546] = {44.9, 44.9, 44.9},--Anduin Wrynn
 			[2543] = {},--Lords of Dread
-			[2549] = {},--Rygelon
+			[2549] = {0, 0},--Rygelon
 			[2537] = {44.9, 44.9, 44.9, 44.9},--The Jailer (stage 4 not yet known)
 		},
 		[1] = {--Initial pull/new stages (pull count reduced by 1 due to delayed start)
 			--Castle Nathria
 			[2418] = {19.9},--Huntsman Altimor
 			[2412] = {19.9, 18.2},--Council of Blood
-			[2402] = {},--Kael
+			[2402] = {19.9},--Kael
 			[2398] = {19.9, 20},--Shriekwing
-			[2405] = {},--Artificer XyMox
-			[2383] = {},--Hungering Destroyer
+			[2405] = {19.9},--Artificer XyMox
+			[2383] = {19.9},--Hungering Destroyer
 			[2406] = {19.9},--Lady Inerva Darkvein
-			[2399] = {},--Sludgefist
+			[2399] = {39.9},--Sludgefist
 			[2417] = {19.9},--Stoneborne Generals
 			[2407] = {3, 24.5, 39.5},--Sire Denathrius
 			--Sanctum of Domination
@@ -343,15 +343,15 @@ local specialTimers = {
 			--Sepulcher of the First Ones
 			[2512] = {19.9},--Vigilant Guardian
 			[2542] = {19.9},--Skolex, the Insatiable Ravener
-			[2553] = {},--Artificer Xy'mox
+			[2553] = {19.9},--Artificer Xy'mox
 			[2540] = {},--Dausegne, the Fallen Oracle
 			[2544] = {19.9},--Prototype Pantheon
 			[2539] = {19.9, 39.8},--Lihuvim, Principal Architect
-			[2529] = {},--Halondrus the Reclaimer
+			[2529] = {19.9, 26},--Halondrus the Reclaimer
 			[2546] = {19.9, 23.6, 26.6},--Anduin Wrynn
 			[2543] = {},--Lords of Dread
-			[2549] = {},--Rygelon
-			[2537] = {19.9, 20.9, 33.9, 0},--The Jailer (stage 4 cast immediately)
+			[2549] = {0, 5.1},--Rygelon
+			[2537] = {3.5, 3.4, 16.5, 3},--The Jailer (stage 4 used to be cast immediately, but now 3 seconds, or maybe that was due to 2nd affix, unsure)
 		},
 
 	},
@@ -733,8 +733,8 @@ do
 	function mod:ENCOUNTER_END(eID)
 		--Carefully only terminate fated timers if fated was active for fight and specific affix was active for fight
 		--This way we can try to avoid canceling timers for other fights that might be engaged at same time
+		self:Unschedule(CheckBosses, eID)
 		if activeBosses[eID] then
-			self:Unschedule(CheckBosses, eID)
 			if activeAffixes[372419] then--Fated Power: Reconfiguration Emitter
 				activeAffixes[372419] = nil
 				borrowedTime[372419] = nil

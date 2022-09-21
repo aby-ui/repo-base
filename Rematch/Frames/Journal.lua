@@ -41,7 +41,8 @@ rematch:InitModule(function()
 	end
 	journal:RegisterForDrag("LeftButton")
 	hooksecurefunc("SetItemRef",journal.SetItemRef)
-	SetPortraitToTexture(journal.portrait, "Interface\\Icons\\PetJournalPortrait")
+	-- PortraitContainer is used in 10.0
+	SetPortraitToTexture(journal.PortraitContainer and journal.PortraitContainer.portrait or journal.portrait, "Interface\\Icons\\PetJournalPortrait")
 end)
 
 -- called in ADDON_LOADED of Blizzard_Collctions (or during startup if already loaded)

@@ -229,7 +229,7 @@
 				end)
 			
 			--> background
-				f.bg1 = f:CreateTexture (nil, "background","BackdropTemplate")
+				f.bg1 = f:CreateTexture (nil, "background")
 				f.bg1:SetTexture ([[Interface\AddOns\Details\images\background]], true)
 				f.bg1:SetAlpha (0.7)
 				f.bg1:SetVertexColor (0.27, 0.27, 0.27)

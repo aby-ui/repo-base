@@ -23,7 +23,18 @@ end
 --function to dispatch events
 function Details:DispatchAutoRunCode(codeKey)
     local func = Details.AutoRunCode[codeKey]
-    DF:QuickDispatch(func)
+
+	if (type(func) ~= "function") then
+        Details:Msg("error running function for auto run script", codeKey)
+		return
+	end
+
+	local okay, errortext = pcall(func)
+
+	if (not okay) then
+        Details:Msg("error running auto run script: ", codeKey, errortext)
+		return
+	end
 end
 
 --auto run frame to dispatch scrtips for some events that details! doesn't handle

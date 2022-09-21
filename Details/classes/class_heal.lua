@@ -2337,7 +2337,7 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 		if (esta_magia.c_amt > 0) then	
 			local media_critico = esta_magia.c_curado/esta_magia.c_amt
 			local T = (meu_tempo*esta_magia.c_curado)/esta_magia.total
-			local P = media/media_critico*100
+			local P = media/max(media_critico, 0.0001)*100
 			T = P*T/100
 			local crit_hps = esta_magia.c_curado/T
 			if (not crit_hps) then

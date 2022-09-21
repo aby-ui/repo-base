@@ -68,15 +68,25 @@ end
 
 function rematch:MinimapButtonDragUpdate(elapsed)
 	local x,y = GetCursorPosition()
-	local minX,minY = Minimap:GetLeft(), Minimap:GetBottom()
 	local scale = Minimap:GetEffectiveScale()
-	RematchSettings.minimapButtonPosition = math.deg(math.atan2(y/scale-minY-70,minX-x/scale+70))
+	local minX,minY
+	if select(4,GetBuildInfo())>=100000 then
+		minX,minY = Minimap:GetCenter()
+		RematchSettings.minimapButtonPosition = math.deg(math.atan2(y/scale-minY,x/scale-minX))
+	else
+		minX,minY = Minimap:GetLeft(), Minimap:GetBottom()
+		RematchSettings.minimapButtonPosition = math.deg(math.atan2(y/scale-minY-70,minX-x/scale+70))
+	end
 	rematch:MinimapButtonPosition()
 end
 
 function rematch:MinimapButtonPosition()
 	local angle = RematchSettings.minimapButtonPosition or -162
-	RematchMinimapButton:SetPoint("TOPLEFT",Minimap,"TOPLEFT",52-(80*cos(angle)),(80*sin(angle))-52)
+	if select(4,GetBuildInfo())>=100000 then
+		RematchMinimapButton:SetPoint("CENTER",Minimap,"CENTER",(105*cos(angle)),(105*sin(angle)))
+	else
+		RematchMinimapButton:SetPoint("TOPLEFT",Minimap,"TOPLEFT",52-(80*cos(angle)),(80*sin(angle))-52)
+	end
 end
 
 -- from the right-click of the minimap button: generate a menu of favorite teams to load

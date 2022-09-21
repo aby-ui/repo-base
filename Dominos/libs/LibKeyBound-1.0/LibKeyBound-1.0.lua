@@ -1,6 +1,6 @@
 --[[
 Name: LibKeyBound-1.0
-Revision: $Rev: 119 $
+Revision: $Rev: 124 $
 Author(s): Gello, Maul, Toadkiller, Tuller
 Website: http://www.wowace.com/wiki/LibKeyBound-1.0
 Documentation: http://www.wowace.com/wiki/LibKeyBound-1.0
@@ -10,7 +10,7 @@ Dependencies: CallbackHandler-1.0
 --]]
 
 local MAJOR = 'LibKeyBound-1.0'
-local MINOR = 100000 + 2
+local MINOR = 100000 + 3
 
 --[[
 	LibKeyBound-1.0
@@ -43,6 +43,7 @@ LibKeyBound.L = L
 LibKeyBound.Binder = LibKeyBound.Binder or {}
 
 local SaveBindings = SaveBindings or AttemptToSaveBindings
+local WoW10 = select(4, GetBuildInfo()) >= 100000
 
 -- #NODOC
 function LibKeyBound:Initialize()
@@ -69,7 +70,7 @@ function LibKeyBound:Initialize()
 		f:SetScript('OnHide', function() PlaySound(SOUNDKIT and SOUNDKIT.GS_TITLE_OPTION_EXIT or 'gsTitleOptionExit') end)
 
 		f:RegisterForDrag('LeftButton')
-		f:SetScript('OnDragStart', function(f) f:StartMoving() end) 
+		f:SetScript('OnDragStart', function(f) f:StartMoving() end)
 		f:SetScript('OnDragStop', function(f) f:StopMovingOrSizing() end)
 
 		local header = f:CreateTexture(nil, 'ARTWORK')
@@ -91,7 +92,7 @@ function LibKeyBound:Initialize()
 		desc:SetText(format(L.BindingsHelp, GetBindingText('ESCAPE')))
 
 		-- Per character bindings checkbox
-		local perChar = CreateFrame('CheckButton', 'KeyboundDialogCheck', f, 'OptionsCheckButtonTemplate')
+		local perChar = CreateFrame('CheckButton', 'KeyboundDialogCheck', f, WoW10 and 'UICheckButtonTemplate' or 'OptionsCheckButtonTemplate')
 		_G[perChar:GetName() .. 'Text']:SetText(CHARACTER_SPECIFIC_KEYBINDINGS)
 
 		perChar:SetScript('OnShow', function(self)
@@ -105,7 +106,8 @@ function LibKeyBound:Initialize()
 		end)
 
 		-- Okay bindings checkbox
-		local okayBindings = CreateFrame('CheckButton', 'KeyboundDialogOkay', f, 'OptionsButtonTemplate')
+		local okayBindings = CreateFrame('CheckButton', 'KeyboundDialogOkay', f, WoW10 and 'UIPanelButtonTemplate' or 'OptionsButtonTemplate')
+		okayBindings:SetSize(100, 20)
 		getglobal(okayBindings:GetName() .. 'Text'):SetText(OKAY)
 
 		okayBindings:SetScript('OnClick', function(self)
@@ -134,7 +136,8 @@ function LibKeyBound:Initialize()
 		end)
 
 		-- Cancel bindings checkbox
-		local cancelBindings = CreateFrame('CheckButton', 'KeyboundDialogCancel', f, 'OptionsButtonTemplate')
+		local cancelBindings = CreateFrame('CheckButton', 'KeyboundDialogCancel', f, WoW10 and 'UIPanelButtonTemplate' or 'OptionsButtonTemplate')
+		cancelBindings:SetSize(100, 20)
 		getglobal(cancelBindings:GetName() .. 'Text'):SetText(CANCEL)
 
 		cancelBindings:SetScript('OnClick', function(self)

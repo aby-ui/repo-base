@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2169, "DBM-Uldir", nil, 1031)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201556")
+mod:SetRevision("20220908201350")
 mod:SetCreatureID(134445)--Zek'vhozj, 134503/qiraji-warrior
 mod:SetEncounterID(2136)
 mod:SetUsedIcons(1, 2, 3, 6, 7, 8)
@@ -28,7 +28,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 265360 and type = "applydebuff"
  or (ability.id = 267180 or ability.id = 270620) and type = "begincast"
 --]]
-local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnVoidLash						= mod:NewStackAnnounce(265264, 2, nil, "Tank")
 --Stage One: Chaos
 local warnEyeBeam						= mod:NewTargetCountAnnounce(264382, 2, nil, nil, nil, nil, nil, nil, true)

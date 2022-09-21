@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2331, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217031102")
+mod:SetRevision("20220903201813")
 mod:SetCreatureID(150396, 144249, 150397)
 mod:SetEncounterID(2260)
 mod:SetBossHPInfoToHighest()
@@ -10,7 +10,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 291865 291928 292264 291613",
-	"SPELL_CAST_SUCCESS 291626 283551 283143",
+	"SPELL_CAST_SUCCESS 291626 283551 283143 292750",
 --	"SPELL_AURA_APPLIED 283143",
 --	"SPELL_AURA_REMOVED 283143",
 	"UNIT_DIED",
@@ -21,7 +21,7 @@ mod:RegisterEventsInCombat(
 --TODO, warn tank if not in range in p2 for Ninety-Nine?
 --[[
 (ability.id = 291865 or ability.id = 291928 or ability.id = 292264 or ability.id = 291613) and type = "begincast"
- or (ability.id = 291626 or ability.id = 283551 or ability.id = 283143) and type = "cast"
+ or (ability.id = 291626 or ability.id = 283551 or ability.id = 283143 or ability.id = 292750) and type = "cast"
  or (target.id = 150396 or target.id = 144249) and type = "death"
 --]]
 --Stage One: Aerial Unit R-21/X
@@ -132,6 +132,10 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnMagnetoArm:Play("justrun")
 		specWarnMagnetoArm:ScheduleVoice(1.5, "keepmove")
 		timerMagnetoArmCD:Start()
+	elseif spellId == 292750 then--H.A.R.D.M.O.D.E.
+		specWarnHardMode:Show()
+		specWarnHardMode:Play("stilldanger")
+		timerHardModeCD:Start()
 	end
 end
 
@@ -164,10 +168,6 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
 		timerMagnetoArmCD:Start(34)
 	elseif spellId == 292807 then--Cancel Skull Aura (Annihilo-tron 5000 activating on pull)
 		timerHardModeCD:Start(32.2)
-	elseif spellId == 292750 then--H.A.R.D.M.O.D.E.
-		specWarnHardMode:Show()
-		specWarnHardMode:Play("stilldanger")
-		timerHardModeCD:Start()
 	end
 end
 

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2375, "DBM-Nyalotha", nil, 1180)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201556")
+mod:SetRevision("20220908201350")
 mod:SetCreatureID(158041)
 mod:SetEncounterID(2344)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -43,7 +43,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 309296 or ability.id = 309307) and type = "cast"
 --]]
 --General
-local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase								= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnGiftofNzoth						= mod:NewTargetNoFilterAnnounce(313334, 2)
 local warnSanity							= mod:NewCountAnnounce(307831, 3)
 

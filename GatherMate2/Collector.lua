@@ -2,6 +2,9 @@ local GatherMate = LibStub("AceAddon-3.0"):GetAddon("GatherMate2")
 local Collector = GatherMate:NewModule("Collector", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2",true)
 local NL = LibStub("AceLocale-3.0"):GetLocale("GatherMate2Nodes")   -- for get the local name of Gas Cloud´s
+
+local WoW10 = select(4, GetBuildInfo()) >= 100000
+
 local Display = nil
 -- prevSpell, curSpell are markers for what has been cast now and the lastcast
 -- gatherevents if a flag for wether we are listening to events
@@ -69,7 +72,11 @@ function Collector:RegisterGatherEvents()
 	self:RegisterEvent("UNIT_SPELLCAST_STOP","SpellStopped")
 	self:RegisterEvent("UNIT_SPELLCAST_FAILED","SpellFailed")
 	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED","SpellFailed")
-	self:RegisterEvent("CURSOR_UPDATE","CursorChange")
+	if WoW10 then
+		self:RegisterEvent("CURSOR_CHANGED","CursorChange")
+	else
+		self:RegisterEvent("CURSOR_UPDATE","CursorChange")
+	end
 	self:RegisterEvent("UI_ERROR_MESSAGE","UIError")
 	--self:RegisterEvent("LOOT_CLOSED","GatherCompleted")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "GasBuffDetector")
@@ -86,7 +93,11 @@ function Collector:UnregisterGatherEvents()
 	self:UnregisterEvent("UNIT_SPELLCAST_STOP")
 	self:UnregisterEvent("UNIT_SPELLCAST_FAILED")
 	self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-	self:UnregisterEvent("CURSOR_UPDATE")
+	if WoW10 then
+		self:UnregisterEvent("CURSOR_CHANGED")
+	else
+		self:UnregisterEvent("CURSOR_UPDATE")
+	end
 	self:UnregisterEvent("UI_ERROR_MESSAGE")
 	--self:UnregisterEvent("LOOT_CLOSED")
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")

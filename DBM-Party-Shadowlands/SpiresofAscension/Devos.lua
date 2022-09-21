@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2412, "DBM-Party-Shadowlands", 5, 1186)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220906000657")
 mod:SetCreatureID(162061)
 mod:SetEncounterID(2359)
 
@@ -22,7 +22,7 @@ mod:RegisterEventsInCombat(
  or (ability.id = 322818 or ability.id = 322893 or ability.id = 322908) and type = "cast"
  --]]
 --General
-local warnPhase						= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
+local warnPhase						= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
 --Stage 1
 local warnLostConfidence			= mod:NewTargetNoFilterAnnounce(322818, 2)
 local warnRunThrough				= mod:NewTargetNoFilterAnnounce(323943, 3)

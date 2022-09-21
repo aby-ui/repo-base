@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2332, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201556")
+mod:SetRevision("20220908201350")
 mod:SetCreatureID(145371)
 mod:SetEncounterID(2273)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6)
@@ -37,7 +37,7 @@ mod:RegisterEventsInCombat(
 --Eyes 2 first, Undying 2 second
 --Heroic https://www.warcraftlogs.com/reports/VNWqBp9v6JXzTYRd#fight=19&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20293653%20or%20ability.id%20%3D%20285185%20or%20ability.id%20%3D%20285416%20or%20ability.id%20%3D%20285376%20or%20ability.id%20%3D%20285345%20or%20ability.id%20%3D%20285453%20or%20ability.id%20%3D%20285820%20or%20ability.id%20%3D%20285638%20or%20ability.id%20%3D%20285427%20or%20ability.id%20%3D%20285562%20or%20ability.id%20%3D%20285685)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20284851%20or%20ability.id%20%3D%20285652)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20286310%20%20or%20(ability.id%20%3D%20284768%20or%20ability.id%20%3D%20284569%20or%20ability.id%20%3D%20284684)
 --Mythic https://www.warcraftlogs.com/reports/Dq1vBHCx6k3KnZJY#fight=47&view=events&pins=2%24Off%24%23244F4B%24expression%24(ability.id%20%3D%20293653%20or%20ability.id%20%3D%20285185%20or%20ability.id%20%3D%20285416%20or%20ability.id%20%3D%20285376%20or%20ability.id%20%3D%20285345%20or%20ability.id%20%3D%20285453%20or%20ability.id%20%3D%20285820%20or%20ability.id%20%3D%20285638%20or%20ability.id%20%3D%20285427%20or%20ability.id%20%3D%20285562%20or%20ability.id%20%3D%20285685)%20and%20type%20%3D%20%22begincast%22%20%20or%20(ability.id%20%3D%20284851%20or%20ability.id%20%3D%20285652)%20and%20type%20%3D%20%22cast%22%20%20or%20ability.id%20%3D%20286310%20%20or%20(ability.id%20%3D%20284768%20or%20ability.id%20%3D%20284569%20or%20ability.id%20%3D%20284684)
-local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnVoidShield					= mod:NewTargetNoFilterAnnounce(286310, 2, nil, nil, nil, nil, nil, 7)
 --Relics of Power
 local warnVoidRelic						= mod:NewTargetNoFilterAnnounce(284684, 1)

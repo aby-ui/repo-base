@@ -12,7 +12,7 @@ local function notEmptyString(str)
 end
 
 local function addCode(codes, text, code, ...)
-  -- The 4th paramter is a "check" if the code is active
+  -- The 4th parameter is a "check" if the code is active
   -- The following line let's distinguish between addCode(a, b, c, nil) and addCode(a, b, c)
   -- If the 4th parameter is nil, then we want to return
   if (select("#", ...) > 0) then
@@ -182,7 +182,7 @@ local function recurseUpdate(data, chunk)
   end
 end
 
-local ignoredForDiffChecking -- Needs to be created lazyly
+local ignoredForDiffChecking -- Needs to be created lazily
 local function RecurseDiff(ours, theirs)
   local diff, seen, same = {}, {}, true
   for key, ourVal in pairs(ours) do
@@ -315,7 +315,7 @@ local function BuildUidMap(data, children, type)
   idToUid[data.id] = data.uid
   for i, child in ipairs(children) do
     if idToUid[child.id] then
-      error("Diplicated id in import data")
+      error("Duplicate id in import data: "..child.id)
     end
     idToUid[child.id] = child.uid
   end
@@ -381,7 +381,7 @@ local function BuildUidMap(data, children, type)
     self.idToUid[data.id] = data.uid
     self.totalCount = self.totalCount + 1
 
-    -- clean up children/sortHybird
+    -- clean up children/sortHybrid
     -- The Update code first inserts children before it inserts us
     -- But not every child might be inserted, since empty groups aren't inserted
     -- so clean that up here
@@ -1242,7 +1242,7 @@ local function AddAuraList(container, uidMap, list, expandText)
 end
 
 local methods = {
-  Open = function(self, data, children, target, sender)
+  Open = function(self, data, children, target, sender, callbackFunc)
     if(self.optionsWindow.window == "importexport") then
       self.optionsWindow.importexport:Close();
     elseif(self.optionsWindow.window == "texture") then
@@ -1264,6 +1264,7 @@ local methods = {
     self.userChoices = {
 
     }
+    self.callbackFunc = callbackFunc
 
     self:ReleaseChildren()
     self:AddBasicInformationWidgets(data, sender)
@@ -1513,7 +1514,7 @@ local methods = {
       local onePhaseProgress = matchInfo.oldUidMap:GetTotalCount() + matchInfo.newUidMap:GetTotalCount()
       local IncProgress = function() self:IncProgress() end
 
-      -- The progress is more for appereance than anything resembling real calculation
+      -- The progress is more for appearances than anything resembling real calculation
       -- The estimate for the total work is wonky, as is how the code compensates for that
       -- But then again, lying progress bar is a industry standard pratice
       self:InitializeProgress(onePhaseProgress * 26)
@@ -1543,7 +1544,7 @@ local methods = {
       local GetPhase1Data   -- Getting the right data is a bit tricky, and depends on the mode
       local GetPhase2Data
       if userChoices.activeCategories.arrangement then
-        -- new arragement
+        -- new arrangement
         structureUidMap = matchInfo.newUidMap
         if not userChoices.activeCategories.oldchildren then
           -- Keep old children
@@ -1641,8 +1642,7 @@ local methods = {
     self.closeButton:SetEnabled(true)
     OptionsPrivate.Private.callbacks:Fire("Import")
 
-    self:Close()
-
+    self:Close(true, pendingPickData.id)
 
     if pendingPickData then
       OptionsPrivate.ClearPicks()
@@ -1940,9 +1940,12 @@ local methods = {
     self.progress = self.total
     self.progressBar:SetProgress(self.progress, self.total)
   end,
-  Close = function(self)
+  Close = function(self, success, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
+    if self.CallbackFunc then
+      self.CallbackFunc(success, id)
+    end
   end,
   AddBasicInformationWidgets = function(self, data, sender)
     local title = AceGUI:Create("Label")
@@ -2023,7 +2026,7 @@ local function ConstructUpdateFrame(frame)
   importButton:SetText(L["Import"])
 
   local closeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  closeButton:SetScript("OnClick", function() group:Close() end);
+  closeButton:SetScript("OnClick", function() group:Close(false) end);
   closeButton:SetPoint("BOTTOMRIGHT", -20, -24);
   closeButton:SetFrameLevel(closeButton:GetFrameLevel() + 1)
   closeButton:SetHeight(20);

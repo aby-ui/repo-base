@@ -83,6 +83,13 @@ function RSEventDB.IsInternalEventInMap(eventID, mapID)
 	return false;
 end
 
+function RSEventDB.IsWorldMap(eventID)
+	if (eventID) then
+		local eventInfo = RSEventDB.GetInternalEventInfo(eventID)
+		return eventInfo and eventInfo.worldmap
+	end
+end
+
 ---============================================================================
 -- Event quest IDs database
 ----- Stores Events hidden quest IDs
@@ -141,8 +148,14 @@ function RSEventDB.SetEventName(eventID, name)
 end
 
 function RSEventDB.GetEventName(eventID)
-	if (eventID and private.dbglobal.event_names[GetLocale()][eventID]) then
-		return private.dbglobal.event_names[GetLocale()][eventID]
+	if (eventID) then
+		if (private.dbglobal.event_names[GetLocale()][eventID]) then
+			return private.dbglobal.event_names[GetLocale()][eventID]
+		elseif (private.dbglobal.rare_names[GetLocale()][eventID]) then
+			local eventName = private.dbglobal.rare_names[GetLocale()][eventID]
+			RSEventDB.SetEventName(eventID, eventName)
+			return eventName
+		end
 	end
 
 	return nil

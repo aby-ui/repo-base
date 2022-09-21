@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2458, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201522")
+mod:SetRevision("20220908201246")
 mod:SetCreatureID(180773)
 mod:SetEncounterID(2512)
 mod:SetHotfixNoticeRev(20220301000000)
@@ -31,7 +31,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 360879
 --]]
 --General
-local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 
 --Automa
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24374))

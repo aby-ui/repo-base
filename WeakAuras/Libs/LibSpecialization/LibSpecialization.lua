@@ -1,4 +1,6 @@
 
+if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
+
 local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 4)
 if not LS then return end -- No upgrade needed
 
@@ -16,6 +18,9 @@ LS.positionTable = LS.positionTable or {
 	[103] = "MELEE", -- Feral (DPS Cat)
 	[104] = "MELEE", -- Guardian (Tank Bear)
 	[105] = "RANGED", -- Restoration (Heal)
+	-- Evoker
+	[1467] = "RANGED", -- Devastation (DPS)
+	[1468] = "RANGED", -- Preservation (Heal)
 	-- Hunter
 	[253] = "RANGED", -- Beast Mastery
 	[254] = "RANGED", -- Marksmanship
@@ -67,6 +72,9 @@ LS.roleTable = LS.roleTable or {
 	[103] = "DAMAGER", -- Feral (DPS Cat)
 	[104] = "TANK", -- Guardian (Tank Bear)
 	[105] = "HEALER", -- Restoration (Heal)
+	-- Evoker
+	[1467] = "DAMAGER", -- Devastation (DPS)
+	[1468] = "HEALER", -- Preservation (Heal)
 	-- Hunter
 	[253] = "DAMAGER", -- Beast Mastery
 	[254] = "DAMAGER", -- Marksmanship
@@ -125,6 +133,7 @@ local starterSpecs = {
 	[1454] = true, -- Warlock
 	[1455] = true, -- Death Knight
 	[1456] = true, -- Demon Hunter
+	[1465] = true, -- Evoker
 }
 
 local next, type, error, tonumber, format = next, type, error, tonumber, string.format

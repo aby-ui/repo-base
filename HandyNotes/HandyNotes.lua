@@ -181,11 +181,13 @@ local continentZoneList = WoWClassic and {
 	[1414] = true, -- Kalimdor
 	[1415] = true, -- Eastern Kingdoms
 	[1945] = true, -- Outlands
+	[113] = true, -- Northrend
 
 	-- mapFile compat entries
 	["Kalimdor"]              = 1414,
 	["Azeroth"]               = 1415,
 	["Expansion01"]           = 1945,
+	["Northrend"]             = 113,
 }
 or {
 	[12]  = true, -- Kalimdor
@@ -198,6 +200,7 @@ or {
 	[875] = true, -- Zandalar
 	[876] = true, -- Kul Tiras
 	[1550] = true, -- Shadowlands
+	[1978] = true, -- Dragon Isles
 
 	-- mapFile compat entries
 	["Kalimdor"]              = 12,
@@ -363,6 +366,11 @@ function HandyNotesWorldMapPinMixin:OnAcquired(pluginName, x, y, iconpath, scale
 	self.mapFile = legacyMapFile
 
 	self:SetPosition(x, y)
+
+	-- we need to handle right clicks for our nodes, so disable button pass-through
+	if self.SetPassThroughButtons then
+		self:SetPassThroughButtons("")
+	end
 
 	local size = 12 * db.icon_scale * scale
 	self:SetSize(size, size)

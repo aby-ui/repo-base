@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20220812202836")
+mod:SetRevision("20220917014323")
 mod:SetCreatureID(80805, 80816, 80808)
 mod:SetEncounterID(1748)
 mod:SetBossHPInfoToHighest()
@@ -13,14 +13,15 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 163665 163390 163379",
-	"SPELL_AURA_APPLIED 163689",
+	"SPELL_AURA_APPLIED 163689 181089",
 	"SPELL_AURA_REMOVED 163689",
-	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2 boss3"
+	"UNIT_DIED"
 )
 
 --[[
-(ability.id = 163689 or ability.id = 163390 or ability.id = 163379) and type = "begincast"
+(ability.id = 163390 or ability.id = 163379 or ability.id = 163665) and type = "begincast"
+ or (ability.id = 163689 or ability.id = 181089) and type = "applybuff"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 --Ahri'ok Dugru
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(10449))
@@ -45,9 +46,9 @@ local specWarnBigBoom			= mod:NewSpecialWarningSpell(163379, nil, nil, nil, 2, 2
 local timerOgreTrapsCD			= mod:NewCDTimer(25, 163390, nil, nil, nil, 3)--25-30 variation.
 
 function mod:OnCombatStart(delay)
-	timerFlamingSlashCD:Start(5-delay)
-	timerOgreTrapsCD:Start(19.5-delay)
-	timerLavaSwipeCD:Start(15 - delay)
+	timerFlamingSlashCD:Start(4.6-delay)
+	timerOgreTrapsCD:Start(11.5-delay)
+	timerLavaSwipeCD:Start(14.3 - delay)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -85,6 +86,14 @@ function mod:SPELL_AURA_APPLIED(args)
 				timerSanguineSphere:Start(expires-GetTime(), args.destName)
 			end
 		end
+	elseif args.spellId == 181089 then--Encounter event
+		specWarnLavaSwipe:Show()
+		specWarnLavaSwipe:Play("shockwave")
+		if self:IsHard() then
+			timerLavaSwipeCD:Start()--29
+		else
+			timerLavaSwipeCD:Start(41.5)
+		end
 	end
 end
 
@@ -104,17 +113,5 @@ function mod:UNIT_DIED(args)
 		timerOgreTrapsCD:Cancel()
 	elseif cid == 80816 then
 		timerSanguineSphere:Cancel()
-	end
-end
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 164956 and self:AntiSpam(5, 2) then
-		specWarnLavaSwipe:Show()
-		specWarnLavaSwipe:Play("shockwave")
-		if self:IsHard() then
-			timerLavaSwipeCD:Start()--29
-		else
-			timerLavaSwipeCD:Start(41.5)
-		end
 	end
 end

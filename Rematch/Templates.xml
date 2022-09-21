@@ -957,8 +957,8 @@
 		</Layers>
 		<Animations>
 			<AnimationGroup parentKey="anim">
-				<Alpha fromAlpha="0" toAlpha="1" change="1" duration="0.1" order="1"/>
-				<Alpha fromAlpha="1" toAlpha="0" change="-1" duration="0.5" order="2"/>
+				<Alpha fromAlpha="0" toAlpha="1" duration="0.1" order="1"/>
+				<Alpha fromAlpha="1" toAlpha="0" duration="0.5" order="2"/>
 				<Scripts>
 					<OnFinished>
 						self:GetParent():Hide()
@@ -1143,7 +1143,7 @@
 				<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
 			</Anchors>
 		</PushedTexture>
-		<HighlightTexture file="Interface\Store\minimap-delivery-highlight" blend="ADD"	alpha="0.5"/>
+		<HighlightTexture file="Interface\Store\minimap-delivery-highlight" alphaMode="ADD"	alpha="0.5"/>
 		<Scripts>
 			<OnLoad>
 				Rematch.FootnoteButtonOnLoad(self)

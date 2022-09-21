@@ -5,7 +5,7 @@ if (not DF or not DetailsFrameworkCanLoad) then
 end
 
 local _
-local APIDropDownFunctions = false
+local loadedAPIDropDownFunctions = false
 
 do
 	local metaPrototype = {
@@ -85,28 +85,28 @@ local DropDownMetaFunctions = _G[DF.GlobalWidgetControlNames["dropdown"]]
 	end
 
 	DropDownMetaFunctions.GetMembers = DropDownMetaFunctions.GetMembers or {}
-	DropDownMetaFunctions.GetMembers ["value"] = gmember_value
-	DropDownMetaFunctions.GetMembers ["text"] = gmember_text
-	DropDownMetaFunctions.GetMembers ["shown"] = gmember_shown
-	DropDownMetaFunctions.GetMembers ["width"] = gmember_width
-	DropDownMetaFunctions.GetMembers ["menuwidth"] = gmember_menuwidth
-	DropDownMetaFunctions.GetMembers ["height"] = gmember_height
-	DropDownMetaFunctions.GetMembers ["menuheight"] = gmember_menuheight
-	DropDownMetaFunctions.GetMembers ["tooltip"] = gmember_tooltip
-	DropDownMetaFunctions.GetMembers ["func"] = gmember_function	
+	DropDownMetaFunctions.GetMembers["value"] = gmember_value
+	DropDownMetaFunctions.GetMembers["text"] = gmember_text
+	DropDownMetaFunctions.GetMembers["shown"] = gmember_shown
+	DropDownMetaFunctions.GetMembers["width"] = gmember_width
+	DropDownMetaFunctions.GetMembers["menuwidth"] = gmember_menuwidth
+	DropDownMetaFunctions.GetMembers["height"] = gmember_height
+	DropDownMetaFunctions.GetMembers["menuheight"] = gmember_menuheight
+	DropDownMetaFunctions.GetMembers["tooltip"] = gmember_tooltip
+	DropDownMetaFunctions.GetMembers["func"] = gmember_function
 
-	DropDownMetaFunctions.__index = function(object, memberName)
-		local func = DropDownMetaFunctions.GetMembers[memberName]
+	DropDownMetaFunctions.__index = function(object, key)
+		local func = DropDownMetaFunctions.GetMembers[key]
 		if (func) then
-			return func(object, memberName)
+			return func(object, key)
 		end
 
-		local fromMe = rawget(object, memberName)
-		if (fromMe) then
-			return fromMe
+		local alreadyHaveKey = rawget(object, key)
+		if (alreadyHaveKey) then
+			return alreadyHaveKey
 		end
 
-		return DropDownMetaFunctions[memberName]
+		return DropDownMetaFunctions[key]
 	end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -420,7 +420,7 @@ local runCallbackFunctionForButton = function(button)
 		if (not success) then
 			error ("Details! Framework: dropdown " .. button:GetParent():GetParent():GetParent().MyObject:GetName() ..  " error: " .. errorText)
 		end
-		button:GetParent():GetParent():GetParent().MyObject:RunHooksForWidget ("OnOptionSelected", button:GetParent():GetParent():GetParent().MyObject, button.object.FixedValue, button.table.value)
+		button:GetParent():GetParent():GetParent().MyObject:RunHooksForWidget("OnOptionSelected", button:GetParent():GetParent():GetParent().MyObject, button.object.FixedValue, button.table.value)
 	end
 end
 
@@ -678,11 +678,11 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 
 		--has at least 1 option?
 		if (optionsTable and optionsTable[1]) then
-			local scrollFrame = _G [button:GetName() .. "_ScrollFrame"]
-			local scrollChild = _G [button:GetName() .. "_ScrollFrame_ScrollChild"]
-			local scrollBorder = _G [button:GetName() .. "_Border"]
-			local selectedTexture = _G [button:GetName() .. "_ScrollFrame_ScrollChild_SelectedTexture"]
-			local mouseOverTexture = _G [button:GetName() .. "_ScrollFrame_ScrollChild_MouseOverTexture"]
+			local scrollFrame = _G[button:GetName() .. "_ScrollFrame"]
+			local scrollChild = _G[button:GetName() .. "_ScrollFrame_ScrollChild"]
+			local scrollBorder = _G[button:GetName() .. "_Border"]
+			local selectedTexture = _G[button:GetName() .. "_ScrollFrame_ScrollChild_SelectedTexture"]
+			local mouseOverTexture = _G[button:GetName() .. "_ScrollFrame_ScrollChild_MouseOverTexture"]
 
 			local i = 1
 			local showing = 0
@@ -809,8 +809,8 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 				selectedTexture:SetWidth(frameWitdh-20)
 			end
 
-			for i = showing + 1, #object.menus do
-				object.menus[i]:Hide()
+			for o = showing + 1, #object.menus do
+				object.menus[o]:Hide()
 			end
 
 			local size = object.realsizeH
@@ -1059,7 +1059,7 @@ function DF:NewDropDown(parent, container, name, member, width, height, func, de
 		DF.DropDownCounter = DF.DropDownCounter + 1
 
 	elseif (not parent) then
-		return error("Details! FrameWork: parent not found.", 2)
+		return error("Details! Framework: parent not found.", 2)
 	end
 
 	if (not container) then
@@ -1096,8 +1096,8 @@ function DF:NewDropDown(parent, container, name, member, width, height, func, de
 	dropDownObject.widget = dropDownObject.dropdown
 	dropDownObject.dropdown.MyObject = dropDownObject
 
-	if (not APIDropDownFunctions) then
-		APIDropDownFunctions = true
+	if (not loadedAPIDropDownFunctions) then
+		loadedAPIDropDownFunctions = true
 		local idx = getmetatable(dropDownObject.dropdown).__index
 		for funcName, funcAddress in pairs(idx) do
 			if (not DropDownMetaFunctions[funcName]) then

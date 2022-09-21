@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220220013546")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(77734)
 mod:SetEncounterID(1714)
 
@@ -31,7 +31,7 @@ local warnDoom					= mod:NewTargetNoFilterAnnounce(156965, 3, nil, "Healer")
 
 --Basic Abilities
 local specWarnDrainLife			= mod:NewSpecialWarningInterrupt(156854, "HasInterrupt", nil, nil, 1, 2)
-local specWarnCorruption		= mod:NewSpecialWarningDispel(156842, "Healer", nil, nil, 1, 2)
+local specWarnCorruption		= mod:NewSpecialWarningDispel(156842, "RemoveMagic", nil, 2, 1, 2)
 local specWarnRainOfFire		= mod:NewSpecialWarningSpell(156857, nil, nil, nil, 2, 2)--156856 fires SUCCESS but do not use, it fires for any player walking in or out of it
 local specWarnRainOfFireMove	= mod:NewSpecialWarningGTFO(156857, nil, nil, nil, 1, 8)
 --Unknown Abilities
@@ -42,7 +42,7 @@ local specWarnSeedOfMelevolence	= mod:NewSpecialWarningMoveAway(156921, nil, nil
 local specWarnExhaustion		= mod:NewSpecialWarningDispel(164841, "RemoveCurse", nil, 2, 1, 2)
 --Destruction Abilities
 local specWarnChaosBolt			= mod:NewSpecialWarningInterrupt(156975, "HasInterrupt", nil, nil, 3, 2)
-local specWarnImmolate			= mod:NewSpecialWarningDispel(156964, "Healer", nil, nil, 1, 2)
+local specWarnImmolate			= mod:NewSpecialWarningDispel(156964, "RemoveMagic", nil, 2, 1, 2)
 --Demonic Abilities
 local specWarnDemonicLeap		= mod:NewSpecialWarningYou(157039, nil, nil, nil, 1, 2)
 local yellDemonicLeap			= mod:NewYell(157039)

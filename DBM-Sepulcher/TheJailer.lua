@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2464, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201522")
+mod:SetRevision("20220908201246")
 mod:SetCreatureID(180990)
 mod:SetEncounterID(2537)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -34,7 +34,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 366132 and type = "applydebuff"
 --]]
 --General
-local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase									= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnHealAzeroth							= mod:NewAnnounce("warnHealAzeroth", 3, 366401, nil, nil, nil, 366401)
 
 local timerPhaseCD								= mod:NewPhaseTimer(30)

@@ -16,7 +16,12 @@ local CreateImageEditorFrame = function()
 	window:SetClampedToScreen (true)
 	tinsert (UISpecialFrames, "DetailsFrameworkImageEdit")
 	window:SetFrameStrata ("TOOLTIP")
-	window:SetMaxResize (500, 500)
+
+	if (not DetailsFramework.IsDragonflight()) then
+		window:SetMaxResize(500, 500)
+	else
+		window:SetResizeBounds(100, 100, 500, 500)
+	end
 
 	_G.DetailsFrameworkImageEditTable = window
 	

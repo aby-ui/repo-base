@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BoralusTrash", "DBM-Party-BfA", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -33,7 +33,7 @@ local specWarnChokingWaters			= mod:NewSpecialWarningInterrupt(272571, false, ni
 local specWarnWatertightShellDispel	= mod:NewSpecialWarningDispel(256957, "MagicDispeller", nil, nil, 1, 2)
 local specWarnCursedSlash			= mod:NewSpecialWarningDispel(257168, "RemoveCurse", nil, nil, 1, 2)
 local specWarnFerocity				= mod:NewSpecialWarningDispel(272888, "RemoveEnrage", nil, 2, 1, 2)
-local specWarnChokingWatersDispel	= mod:NewSpecialWarningDispel(272571, "Healer", nil, nil, 1, 2)
+local specWarnChokingWatersDispel	= mod:NewSpecialWarningDispel(272571, "RemoveMagic", nil, 2, 1, 2)
 local specWarnFear					= mod:NewSpecialWarningSpell(257169, nil, nil, nil, 2, 2)
 
 function mod:SPELL_CAST_START(args)

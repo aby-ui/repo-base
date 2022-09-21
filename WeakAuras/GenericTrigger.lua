@@ -349,13 +349,13 @@ function Private.EndEvent(id, triggernum, force, state)
   end
 end
 
-local function RunOverlayFuncs(event, state, id)
+local function RunOverlayFuncs(event, state, id, errorHandler)
   state.additionalProgress = state.additionalProgress or {};
   local changed = false;
   for i, overlayFunc in ipairs(event.overlayFuncs) do
     state.additionalProgress[i] = state.additionalProgress[i] or {};
     local additionalProgress = state.additionalProgress[i];
-    local ok, a, b, c = xpcall(overlayFunc, Private.GetErrorHandlerId(id, L["Overlay %s"]:format(i)), event.trigger, state);
+    local ok, a, b, c = xpcall(overlayFunc, errorHandler or Private.GetErrorHandlerId(id, L["Overlay %s"]:format(i)), event.trigger, state);
     if (not ok) then
       additionalProgress.min = nil;
       additionalProgress.max = nil;
@@ -406,7 +406,7 @@ local function callFunctionForActivateEvent(func, trigger, fallback, errorHandle
   return ok and value or fallback
 end
 
-function Private.ActivateEvent(id, triggernum, data, state)
+function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
   local changed = state.changed or false;
   if (state.show ~= true) then
     state.show = true;
@@ -435,7 +435,7 @@ function Private.ActivateEvent(id, triggernum, data, state)
     state.inverse = nil;
     state.autoHide = autoHide;
   elseif (data.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = xpcall(data.durationFunc, Private.GetErrorHandlerId(id, L["Duration Function"]), data.trigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(data.durationFunc, errorHandler or Private.GetErrorHandlerId(id, L["Duration Function"]), data.trigger);
     arg1 = ok and type(arg1) == "number" and arg1 or 0;
     arg2 = ok and type(arg2) == "number" and arg2 or 0;
 
@@ -497,10 +497,10 @@ function Private.ActivateEvent(id, triggernum, data, state)
     end
   end
 
-  local name = callFunctionForActivateEvent(data.nameFunc, data.trigger, state.name, Private.GetErrorHandlerId(id, L["Name Function"]))
-  local icon = callFunctionForActivateEvent(data.iconFunc, data.trigger, state.icon, Private.GetErrorHandlerId(id, L["Icon Function"]))
-  local texture = callFunctionForActivateEvent(data.textureFunc, data.trigger, state.texture, Private.GetErrorHandlerId(id, L["Texture Function"]))
-  local stacks = callFunctionForActivateEvent(data.stacksFunc, data.trigger, state.stacks, Private.GetErrorHandlerId(id, L["Stacks Function"]))
+  local name = callFunctionForActivateEvent(data.nameFunc, data.trigger, state.name, errorHandler or Private.GetErrorHandlerId(id, L["Name Function"]))
+  local icon = callFunctionForActivateEvent(data.iconFunc, data.trigger, state.icon, errorHandler or Private.GetErrorHandlerId(id, L["Icon Function"]))
+  local texture = callFunctionForActivateEvent(data.textureFunc, data.trigger, state.texture, errorHandler or Private.GetErrorHandlerId(id, L["Texture Function"]))
+  local stacks = callFunctionForActivateEvent(data.stacksFunc, data.trigger, state.stacks, errorHandler or Private.GetErrorHandlerId(id, L["Stacks Function"]))
 
   if (state.name ~= name) then
     state.name = name;
@@ -520,7 +520,7 @@ function Private.ActivateEvent(id, triggernum, data, state)
   end
 
   if (data.overlayFuncs) then
-    RunOverlayFuncs(data, state, id);
+    RunOverlayFuncs(data, state, id, errorHandler);
   else
     state.additionalProgress = nil;
   end
@@ -601,7 +601,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       local state = allStates[""];
       local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
       if (ok and returnValue) or optionsEvent then
-        if(Private.ActivateEvent(id, triggernum, data, state)) then
+        if(Private.ActivateEvent(id, triggernum, data, state, (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil)) then
           updateTriggerState = true;
         end
       else
@@ -612,7 +612,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       if (ok and returnValue) or optionsEvent then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
-        if(Private.ActivateEvent(id, triggernum, data, state)) then
+        if(Private.ActivateEvent(id, triggernum, data, state, (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil)) then
           updateTriggerState = true;
         end
       else
@@ -620,6 +620,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     end
     if (untriggerCheck and not optionsEvent) then
+      errorHandler = (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or Private.GetErrorHandlerId(id, L["Untrigger %s"]:format(triggernum))
       if (data.statesParameter == "all") then
         if data.untriggerFunc then
           local ok, returnValue = xpcall(data.untriggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
@@ -678,7 +679,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     end
   end
   if updateTriggerState and watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
-    -- if this trigger's udpates are requested to be sent into one of the Aura's custom triggers
+    -- if this trigger's updates are requested to be sent into one of the Aura's custom triggers
     Private.AddToWatchedTriggerDelay(id, triggernum)
   end
   return updateTriggerState;
@@ -3358,6 +3359,7 @@ do
     if not(tenchFrame) then
       tenchFrame = CreateFrame("Frame");
       tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
+      tenchFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
       if WeakAuras.IsClassicOrBCCOrWrath() then
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
@@ -3417,11 +3419,9 @@ do
         Private.StopProfileSystem("generictrigger");
       end
 
-      tenchFrame:SetScript("OnEvent", function(self, event, arg1)
+      tenchFrame:SetScript("OnEvent", function()
         Private.StartProfileSystem("generictrigger");
-        if (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "UNIT_INVENTORY_CHANGED" then
-          timer:ScheduleTimer(tenchUpdate, 0.1);
-        end
+        timer:ScheduleTimer(tenchUpdate, 0.1);
         Private.StopProfileSystem("generictrigger");
       end);
 

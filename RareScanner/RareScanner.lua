@@ -148,9 +148,12 @@ scanner_button.FilterDisabledButton:SetScript("OnClick", function(self)
 		if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
 			RSConfigDB.SetNpcFiltered(npcID, false)
 			RSLogger:PrintMessage(AL["DISABLED_SEARCHING_RARE"]..self:GetParent().Title:GetText())
-		else
+		elseif (RSConstants.IsContainerAtlas(self:GetParent().atlasName)) then
 			RSConfigDB.SetContainerFiltered(npcID, false)
 			RSLogger:PrintMessage(string.format(AL["DISABLED_SEARCHING_CONTAINER"], self:GetParent().Title:GetText()))
+		else
+			RSConfigDB.SetEventFiltered(npcID, false)
+			RSLogger:PrintMessage(string.format(AL["DISABLED_SEARCHING_EVENT"], self:GetParent().Title:GetText()))
 		end
 		
 		self:Hide()
@@ -161,8 +164,10 @@ scanner_button.FilterDisabledButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 	if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
 		GameTooltip:SetText(AL["DISABLE_SEARCHING_RARE_TOOLTIP"])
-	else
+	elseif (RSConstants.IsContainerAtlas(self:GetParent().atlasName)) then
 		GameTooltip:SetText(AL["DISABLE_SEARCHING_CONTAINER_TOOLTIP"])
+	else
+		GameTooltip:SetText(AL["DISABLE_SEARCHING_EVENT_TOOLTIP"])
 	end
 	GameTooltip:Show()
 end)
@@ -181,9 +186,12 @@ scanner_button.FilterEnabledButton:SetScript("OnClick", function(self)
 		if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
 			RSConfigDB.SetNpcFiltered(npcID, true)
 			RSLogger:PrintMessage(AL["ENABLED_SEARCHING_RARE"]..self:GetParent().Title:GetText())
-		else
+		elseif (RSConstants.IsContainerAtlas(self:GetParent().atlasName)) then
 			RSConfigDB.SetContainerFiltered(npcID, true)
 			RSLogger:PrintMessage(string.format(AL["ENABLED_SEARCHING_CONTAINER"], self:GetParent().Title:GetText()))
+		else
+			RSConfigDB.SetEventFiltered(npcID, true)
+			RSLogger:PrintMessage(string.format(AL["ENABLED_SEARCHING_EVENT"], self:GetParent().Title:GetText()))
 		end
 		self:Hide()
 		self:GetParent().FilterDisabledButton:Show()
@@ -193,8 +201,10 @@ scanner_button.FilterEnabledButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 	if (RSConstants.IsNpcAtlas(self:GetParent().atlasName)) then
 		GameTooltip:SetText(AL["ENABLE_SEARCHING_RARE_TOOLTIP"])
-	else
+	elseif (RSConstants.IsContainerAtlas(self:GetParent().atlasName)) then
 		GameTooltip:SetText(AL["ENABLE_SEARCHING_CONTAINER_TOOLTIP"])
+	else
+		GameTooltip:SetText(AL["ENABLE_SEARCHING_EVENT_TOOLTIP"])
 	end
 	GameTooltip:Show()
 end)
@@ -829,6 +839,10 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName) and not RSConfigDB.IsScanningForEvents()) then
 		RSLogger:PrintDebugMessage(string.format("El evento [%s] se ignora por haber deshabilitado alertas de eventos", entityID))
 		return
+	-- disable alerts for filtered events. Check if the event is filtered, in which case we don't show anything
+	elseif (RSConstants.IsEventAtlas(vignetteInfo.atlasName) and RSConfigDB.IsEventFiltered(entityID) and not RSConfigDB.IsEventFilteredOnlyOnWorldMap()) then
+		RSLogger:PrintDebugMessage(string.format("El evento [%s] se ignora por estar filtrado", entityID))
+		return
 	-- disable alerts for filtered zones
 	elseif (not RSConfigDB.IsZoneFilteredOnlyOnWorldMap() and (RSConfigDB.IsZoneFiltered(mapID) or RSConfigDB.IsEntityZoneFiltered(entityID, vignetteInfo.atlasName))) then
 		RSLogger:PrintDebugMessage(string.format("La entidad [%s] se ignora por pertenecer a una zona filtrada", entityID))
@@ -1130,14 +1144,8 @@ function scanner_button:ShowButton()
 	end
 	
 	-- Toggle filter buttons
-	if (RSConstants.IsNpcAtlas(self.atlasName) or RSConstants.IsContainerAtlas(self.atlasName)) then
-		self.FilterEnabledButton:Hide()
-		self.FilterDisabledButton:Show()
-	else
-		self.FilterDisabledButton:Hide()
-		self.FilterEnabledButton:Hide()
-	end
-	
+	self.FilterEnabledButton:Hide()
+	self.FilterDisabledButton:Show()	
 	
 	-- show button
 	self:Show()

@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod("RTKTrash", "DBM-Party-Legion", 11)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220802030047")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 228255 228239 227917 227925 228625 228606 229714 227966",
-	"SPELL_AURA_APPLIED 228331 229706 229716 228610 229074",
+	"SPELL_AURA_APPLIED 228331 229716 228610 229074",--229706
 	"SPELL_AURA_APPLIED_DOSE 229074",
 	"SPELL_AURA_REFRESH 229074",
 	"SPELL_AURA_REMOVED 229489",
@@ -31,8 +31,8 @@ local specWarnVolatileCharge		= mod:NewSpecialWarningMoveAway(228331, nil, nil, 
 local yellVolatileCharge			= mod:NewYell(228331)
 local specWarnBurningBrand			= mod:NewSpecialWarningMoveAway(228610, nil, nil, nil, 1, 2)
 local yellBurningBrand				= mod:NewYell(228610)
-local specWarnLeechLife				= mod:NewSpecialWarningDispel(228606, "Healer", nil, nil, 1, 2)
-local specWarnCurseofDoom			= mod:NewSpecialWarningDispel(229716, "Healer", nil, nil, 1, 2)
+--local specWarnLeechLife				= mod:NewSpecialWarningDispel(228606, "RemoveMagic", nil, 2, 1, 2)
+local specWarnCurseofDoom			= mod:NewSpecialWarningDispel(229716, "RemoveMagic", nil, 2, 1, 2)
 local specWarnRoyalty				= mod:NewSpecialWarningSwitch(229489, nil, nil, nil, 1, 2)
 local specWarnFlashlight			= mod:NewSpecialWarningLookAway(227966, nil, nil, nil, 1, 2)
 
@@ -86,9 +86,9 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBurningBrand:Play("runout")
 			yellBurningBrand:Yell()
 		end
-	elseif spellId == 229706 then
-		specWarnLeechLife:Show(args.destName)
-		specWarnLeechLife:Play("dispelnow")
+--	elseif spellId == 229706 then
+--		specWarnLeechLife:Show(args.destName)
+--		specWarnLeechLife:Play("dispelnow")
 	elseif spellId == 229716 then
 		specWarnCurseofDoom:Show(args.destName)
 		specWarnCurseofDoom:Play("dispelnow")

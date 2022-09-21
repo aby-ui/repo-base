@@ -58,11 +58,12 @@ do
 end
 ELP_LOOT_TABLE_OTHER = {}       --每个副本的关联副本, 初始化FILTER后丢弃
 do
-    for k, v in pairs(ELP_LOOT_TABLES) do
-        ELP_LOOT_TABLE_OTHER[k] = {}
-        for _, insID in ipairs(v.otherInstances) do
-            ELP_LOOT_TABLE_OTHER[k][insID] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[k] } --lootTable要用副本自身的
+    for insID, v in pairs(ELP_LOOT_TABLES) do
+        ELP_LOOT_TABLE_OTHER[insID] = {}
+        for _, otherID in ipairs(v.otherInstances) do
+            ELP_LOOT_TABLE_OTHER[insID][otherID] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[insID] } --lootTable要用副本自身的
         end
+        v.otherInstances = nil
     end
 end
 ELP_LOOT_TABLES = nil
@@ -119,13 +120,15 @@ function ELP_InitFilters()
         otherInstances = { 结构同上但不能有lootTable也不需要bosslist, 且bosses必然为"all" }, --仅当单副本且lootTable的时候用, 表示额外获取其他副本的数据，以便职业过滤
     --]]
     local mythics = {}; for _, v in ipairs(ELP_SEASON_MYTHICS) do mythics[v[1]] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] and ELP_LOOT_TABLE_LOOTS_ALL or nil } end
-    FILTERS[1] = { type = "multi", text = "全部赛季地下城", short = "赛季大秘", instances = mythics}
+    --选出others里不是本赛季副本的,加到赛季大秘里
+    local others = {}; for _, v in pairs(ELP_LOOT_TABLE_OTHER) do for otherID, v2 in pairs(v) do if not mythics[otherID] then others[otherID] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS_ALL } end end end
+    FILTERS[1] = { type = "multi", text = "全部赛季地下城", short = "赛季大秘", instances = mythics, otherInstances = others}
     local mythics_and_week = u1copy(mythics, { [ELP_WEEK_RAID] = { bosses = "all" } })
-    FILTERS[2] = { type = "multi", text = "全部赛季地下城和宿命团本", short = "本周副本", instances = mythics_and_week }
+    FILTERS[2] = { type = "multi", text = "全部赛季地下城和宿命团本", short = "本周副本", instances = mythics_and_week, otherInstances = others }
     local raids = {}; for _, v in ipairs(ELP_SEASON_RAIDS) do raids[v[1]] = { bosses = "all" } end
     FILTERS[3] = { type = "multi", text = "全部团本", instances = raids }
     local all = u1copy(mythics); u1copy(raids, all)
-    FILTERS[4] = { type = "multi", text = "全部赛季地下城和全部团本", short = "全部副本", instances = all }
+    FILTERS[4] = { type = "multi", text = "全部赛季地下城和全部团本", short = "全部副本", instances = all, otherInstances = others }
 
     for i, v in ipairs(ELP_SEASON_MYTHICS) do
         tinsert(FILTERS, { type = "dungeon", text = v[3], instances = { [v[1]] = { bosses = v[4], lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] } }, bosslist = v[5], otherInstances = ELP_LOOT_TABLE_OTHER[v[1]] })

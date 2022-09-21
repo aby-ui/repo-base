@@ -37,8 +37,8 @@ do
 		panel.background:SetPoint (0, -25)
 		
 		--> title
-		panel.TitleText:SetText ("Paste & Copy")
-		panel.portrait:SetTexture ([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
+		--panel.TitleText:SetText ("Paste & Copy") --10.0 fuck
+		--panel.portrait:SetTexture ([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
 		
 		DetailsFrameWork:NewTextEntry (panel, _, "$parentTextEntry", "text", 476, 14)
 		panel.text:SetPoint (20, -127)

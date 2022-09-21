@@ -4,26 +4,24 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20220823223407")
+mod:SetRevision("20220917014128")
 mod:SetCreatureID(83612)
 mod:SetEncounterID(1754)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_AURA_APPLIED 168398",
+	"SPELL_AURA_APPLIED 168398 181089",
 	"SPELL_CAST_START 168929 168227 169129",
-	"UNIT_SPELLCAST_INTERRUPTED boss1 boss2 boss3",
 	"UNIT_DIED"
 )
 
 --[[
 (ability.id = 168227 or ability.id = 168929 or ability.id = 169129) and type = "begincast"
  or ability.id = 168398 and type = "applydebuff"
- or type = "interrupt"
+ or ability.id = 181089
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
---TODO, verify gron smash numbers and see if it is time based or damage based.
 local warnRapidFire			= mod:NewTargetNoFilterAnnounce(168398, 3)
 local warnBackdraft			= mod:NewCastAnnounce(169129, 4)
 local warnCannonBarrageEnd	= mod:NewEndAnnounce(168929, 1)
@@ -35,12 +33,12 @@ local specWarnCannonBarrage	= mod:NewSpecialWarningSpell(168929, nil, nil, nil, 
 
 local timerRapidFireCD		= mod:NewCDTimer(11.5, 168398, nil, nil, nil, 3)
 local timerRapidFire		= mod:NewTargetTimer(5, 168398, nil, "-Tank", nil, 5)
-local timerGronSmashCD		= mod:NewCDTimer(54.1, 168227, nil, nil, nil, 2)--Timer is too variable, 49-70, but the avereage is 54-60, so if users want to keep complaining about their timer, they can have an iffy timer
+local timerGronSmashCD		= mod:NewCDTimer(40.1, 168227, nil, nil, nil, 2)
 local timerBackdraftCD		= mod:NewCDTimer(13.3, 169129, nil, nil, nil, 3)
-mod.vb.flameCast = false
+mod.vb.smashActive = false
 
 function mod:OnCombatStart(delay)
-	self.vb.flameCast = false
+	self.vb.smashActive = false
 	timerGronSmashCD:Start(30-delay)
 end
 
@@ -55,6 +53,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		else
 			warnRapidFire:Show(args.destName)
 		end
+	elseif args.spellId == 181089 then--Encounter Event
+		self.vb.smashActive = false
+		warnCannonBarrageEnd:Show()
+		timerBackdraftCD:Stop()
+		timerGronSmashCD:Start(40.1)
 	end
 end
 
@@ -67,23 +70,15 @@ function mod:SPELL_CAST_START(args)
 		if self:IsHard() then
 			timerBackdraftCD:Start(13.3)
 		end
-		timerGronSmashCD:Start()
-		self.vb.flameCast = false
+		self.vb.smashActive = true
 	elseif spellId == 168929 then
 		specWarnCannonBarrage:Show()
 		specWarnCannonBarrage:Play("findshelter")
-	elseif spellId == 169129 and not self.vb.flameCast then
-		self.vb.flameCast = true
+	elseif spellId == 169129 then
 		warnBackdraft:Show()
-		--timerBackdraftCD:Start()
-	end
-end
-
---Not completely reliable. if you reach him between barrages, before he casts a new one, you won't interrupt any cast and get no event for it.
-function mod:UNIT_SPELLCAST_INTERRUPTED(uId, _, spellId)
-	if spellId == 168929 then
-		warnCannonBarrageEnd:Show()
-		timerBackdraftCD:Stop()
+		if self.vb.smashActive then--Only start timer if smash active, sometimes it can go off on transition but it won't be cast again
+			timerBackdraftCD:Start(6.5)
+		end
 	end
 end
 

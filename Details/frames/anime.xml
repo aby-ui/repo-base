@@ -25,11 +25,11 @@
 	
 	<Animations>
 		<AnimationGroup name="$parentAnimIn" parentKey="animIn">
-			<Alpha change="-1" duration="0" order="1"/>
-			<Alpha change="1" duration="0.2" order="2"/>
+			<Alpha  duration="0" order="1"/>
+			<Alpha  duration="0.2" order="2"/>
 		</AnimationGroup>
 		<AnimationGroup name="$parentWaitAndAnimOut" parentKey="waitAndAnimOut">
-			<Alpha startDelay="4.05" change="-1" duration="1.5" parentKey="animOut">
+			<Alpha startDelay="4.05"  duration="1.5" parentKey="animOut">
 				<Scripts>
 					<OnFinished>
 						self:GetRegionParent():Hide();
@@ -52,8 +52,8 @@
 				</Anchors>
 				<Animations>
 					<AnimationGroup name="$parentAnimIn" parentKey="animIn">
-						<Alpha change="1" duration="0.2" order="1"/>
-						<Alpha change="-1" duration="0.5" order="2"/>
+						<Alpha duration="0.2" order="1"/>
+						<Alpha duration="0.5" order="2"/>
 						<Scripts>
 							<OnFinished>
 								self:GetParent():Hide();
@@ -74,9 +74,9 @@
 				</Anchors>
 				<Animations>
 					<AnimationGroup name="$parentAnimIn" parentKey="animIn">
-						<Alpha change="1" duration="0.2" order="1"/>
+						<Alpha duration="0.2" order="1"/>
 						<Translation offsetX="200" offsetY="0" duration="0.85" order="2"/>
-						<Alpha startDelay="0.35" change="-1" duration="0.5" order="2"/>
+						<Alpha startDelay="0.35"  duration="0.5" order="2"/>
 						<Scripts>
 							<OnFinished>
 								self:GetParent():Hide();
@@ -229,8 +229,8 @@
 						<Texture name="$parentShine" alphaMode="ADD" alpha="0" hidden="true" parentKey="Shine">
 							<Animations>
 								<AnimationGroup name="$parentFlash" parentKey="Flash">
-									<Alpha startDelay="0" change="0.4" duration="0.25" order="1"/>
-									<Alpha startDelay="0.05" change="-0.4" duration="0.25" order="2"/>
+									<Alpha startDelay="0"  duration="0.25" order="1"/>
+									<Alpha startDelay="0.05"  duration="0.25" order="2"/>
 									<Scripts>
 										<OnStop>
 											self:GetParent():Hide();
@@ -257,8 +257,8 @@
 							</Anchors>
 							<Animations>
 								<AnimationGroup name="$parentFlash" parentKey="Flash">
-									<Alpha change="0.9" duration="0.25" order="1"/>
-									<Alpha startDelay="0.05" change="-0.9" duration="0.25" order="2"/>
+									<Alpha  duration="0.25" order="1"/>
+									<Alpha startDelay="0.05"  duration="0.25" order="2"/>
 									<Scripts>
 										<OnStop>
 											self:GetParent():Hide();

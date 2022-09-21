@@ -40,10 +40,10 @@
 	</Frame>
 
 	<Frame name="RematchTableTooltip" frameStrata="TOOLTIP" parent="UIParent" hidden="true">
-		<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+		<!-- <Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<EdgeSize val="16"/>
 			<BorderColor r="0.5" g="0.5" b="0.5"/>
-		</Backdrop>
+		</Backdrop> -->
 		<Layers>
 			<Layer level="BACKGROUND" textureSubLevel="-1">
 				<Texture>

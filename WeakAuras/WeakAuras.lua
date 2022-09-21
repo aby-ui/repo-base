@@ -36,7 +36,7 @@ local maxUpTime = 4294967; -- 2^32 / 1000
 Private.watched_trigger_events = {}
 
 -- The worlds simplest callback system.
--- That supports 1:N, but no deregistration and breaks if registrating in a callback
+-- That supports 1:N, but no de-registration and breaks if registering in a callback
 Private.callbacks = {}
 Private.callbacks.events = {}
 
@@ -653,7 +653,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
               if trigger["use_"..name] == true then
                 trigger["use_"..name] = false
                 trigger[name] = trigger[name] or {}
-                trigger[name].multi = trigger[name].multi or {};
+                trigger[name].multi = {};
                 if trigger[name].single ~= nil then
                   trigger[name].multi[trigger[name].single] = true;
                   trigger[name].single = nil
@@ -916,7 +916,7 @@ local function AddLegacyCompanionData()
 end
 
 function Private.PostAddCompanion()
-  -- add data from older verion of companion addons
+  -- add data from older version of companion addons
   AddLegacyCompanionData()
   -- nag if updates
   local count = Private.CountWagoUpdates()
@@ -5579,7 +5579,7 @@ do
     return coroutine.wrap(TraverseLeafs), data
   end
 
-  -- The root if it is a non-group, otherwise non-group childrens
+  -- The root if it is a non-group, otherwise non-group children
   function Private.TraverseLeafsOrAura(data)
     return coroutine.wrap(TraverseLeafsOrAura), data
   end

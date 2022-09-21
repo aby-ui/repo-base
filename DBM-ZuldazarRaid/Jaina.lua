@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2343, "DBM-ZuldazarRaid", 3, 1176)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201556")
+mod:SetRevision("20220908201350")
 mod:SetCreatureID(146409)
 mod:SetEncounterID(2281)
 mod:SetUsedIcons(1, 2, 3)
@@ -37,7 +37,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 288169 and type = "applydebuff"
 --]]
 --General
-local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnFrozenSolid					= mod:NewTargetNoFilterAnnounce(287490, 4)
 local warnJainaIceBlocked				= mod:NewTargetNoFilterAnnounce(287322, 2)
 --Stage One: Burning Seas

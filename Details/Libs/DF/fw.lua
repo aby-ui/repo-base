@@ -1,6 +1,6 @@
 
 
-local dversion = 334
+local dversion = 352
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary (major, minor)
 
@@ -51,32 +51,36 @@ if (not PixelUtil) then
 	end
 end
 
+function DF.IsDragonflight()
+	return select(4, GetBuildInfo()) >= 100000
+end
+
 function DF.IsTimewalkWoW()
-	return DF.IsClassicWow() or DF.IsTBCWow() or DF.IsWotLKWow()
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 40000) then
+        return true
+    end
 end
 
 function DF.IsClassicWow()
-	local gameVersion = GetBuildInfo()
-	if (gameVersion:match ("%d") == "1") then
-		return true
-	end
-	return false
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 20000) then
+        return true
+    end
 end
 
 function DF.IsTBCWow()
-	local gameVersion = GetBuildInfo()
-	if (gameVersion:match ("%d") == "2") then
-		return true
-	end
-	return false
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 30000 and buildInfo >= 20000) then
+        return true
+    end
 end
 
 function DF.IsWotLKWow()
-	local gameVersion = GetBuildInfo()
-	if (gameVersion:match ("%d") == "3") then
-		return true
-	end
-	return false
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 40000 and buildInfo >= 30000) then
+        return true
+    end
 end
 
 local roleBySpecTextureName = {
@@ -727,7 +731,7 @@ function DF:SetFontRotation(fontString, degrees)
 		if (not fontString.__rotationAnimation) then
 			fontString.__rotationAnimation = DF:CreateAnimationHub(fontString)
 			fontString.__rotationAnimation.rotator = DF:CreateAnimation(fontString.__rotationAnimation, "rotation", 1, 0, 0)
-			fontString.__rotationAnimation.rotator:SetEndDelay(math.huge)
+			fontString.__rotationAnimation.rotator:SetEndDelay(10^8)
 			fontString.__rotationAnimation.rotator:SetSmoothProgress(1)
 		end
 		fontString.__rotationAnimation.rotator:SetDegrees(degrees)
@@ -2446,8 +2450,8 @@ end
 			options_frame:Hide()
 			
 			options_frame:SetPoint ("center", UIParent, "center")
-			options_frame.TitleText:SetText (title)
-			options_frame.portrait:SetTexture ([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
+			options_frame.TitleText:SetText (title) --10.0 fuck
+			--options_frame.portrait:SetTexture ([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
 			
 			return options_frame
 	
@@ -2829,11 +2833,29 @@ end
 function DF:OpenInterfaceProfile()
 	-- OptionsFrame1/2 should be registered if created with DF:CreateAddOn, so open to them directly
 	if self.OptionsFrame1 then
-		InterfaceOptionsFrame_OpenToCategory (self.OptionsFrame1)
-		if self.OptionsFrame2 then
-			InterfaceOptionsFrame_OpenToCategory (self.OptionsFrame2)
+		if SettingsPanel then
+			--SettingsPanel:OpenToCategory(self.OptionsFrame1.name)
+			local category = SettingsPanel:GetCategoryList():GetCategory(self.OptionsFrame1.name)
+			if category then
+				SettingsPanel:Open()
+				SettingsPanel:SelectCategory(category)
+				if self.OptionsFrame2 and category:HasSubcategories() then
+					for _, subcategory in pairs(category:GetSubcategories()) do
+						if subcategory:GetName() == self.OptionsFrame2.name then
+							SettingsPanel:SelectCategory(subcategory)
+							break
+						end
+					end
+				end
+			end
+			return
+		elseif InterfaceOptionsFrame_OpenToCategory then
+			InterfaceOptionsFrame_OpenToCategory (self.OptionsFrame1)
+			if self.OptionsFrame2 then
+				InterfaceOptionsFrame_OpenToCategory (self.OptionsFrame2)
+			end
+			return
 		end
-		return
 	end
 	
 	-- fallback (broken as of ElvUI Skins in version 12.18+... maybe fix/change will come)
@@ -2905,8 +2927,14 @@ function DF:CreateAnimation (animation, type, order, duration, arg1, arg2, arg3,
 		anim:SetToAlpha (arg2)
 	
 	elseif (type == "SCALE") then
-		anim:SetFromScale (arg1, arg2)
-		anim:SetToScale (arg3, arg4)
+		if (DF.IsDragonflight()) then
+			anim:SetScaleFrom (arg1, arg2)
+			anim:SetScaleTo (arg3, arg4)
+		else
+			anim:SetFromScale (arg1, arg2)
+			anim:SetToScale (arg3, arg4)
+		end
+
 		anim:SetOrigin (arg5 or "center", arg6 or 0, arg7 or 0) --point, x, y
 	
 	elseif (type == "ROTATION") then
@@ -3867,6 +3895,7 @@ local specs_per_class = {
 	["WARLOCK"] = {265, 266, 267},
 	["PALADIN"] = {65, 66, 70},
 	["MONK"] = {268, 269, 270},
+	["EVOKER"] = {1467, 1468},
 }
 
 function DF:GetClassSpecIDs (class)
@@ -3966,6 +3995,7 @@ DF.ClassIndexToFileName = {
 	[11] = "DRUID",
 	[10] = "MONK",
 	[2] = "PALADIN",
+	[13] = "EVOKER",
 }
 
 
@@ -3982,6 +4012,7 @@ DF.ClassFileNameToIndex = {
 	["DRUID"] = 11,
 	["MONK"] = 10,
 	["PALADIN"] = 2,
+	["EVOKER"] = 13,
 }
 DF.ClassCache = {}
 
@@ -4303,6 +4334,10 @@ DF.ClassSpecs = {
 		[269] = true, 
 		[270] = true, 
 	},
+	["EVOKER"] = {
+		[1467] = true,
+		[1468] = true,
+	},
 }
 
 DF.SpecListByClass = {
@@ -4365,6 +4400,10 @@ DF.SpecListByClass = {
 		268, 
 		269, 
 		270, 
+	},
+	["EVOKER"] = {
+		1467,
+		1468,
 	},
 }
 

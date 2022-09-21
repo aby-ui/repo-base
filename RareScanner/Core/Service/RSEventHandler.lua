@@ -367,8 +367,8 @@ local function OnChatMsgMonsterYell(rareScannerButton, message, name)
 		end
 		RSLogger:PrintDebugMessage(string.format("CHAT_MSG_MONSTER_YELL npcID: [%s]", npcID))
 		
-		-- Enabled in Mechagon for every NPC
-		if (mapID == RSConstants.MECHAGON_MAPID) then
+		-- Enabled in Mechagon and Tanaan Jungle for every NPC
+		if (mapID == RSConstants.MECHAGON_MAPID or mapID == RSConstants.TANAAN_JUNGLE_MAPID) then
 			-- Arachnoid Harvester fix
 			if (npcID == 154342) then
 				npcID = 151934

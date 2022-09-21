@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("KingsRestTrash", "DBM-Party-BfA", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -36,7 +36,7 @@ local specWarnInduceRegeneration	= mod:NewSpecialWarningInterrupt(270901, "HasIn
 local specWarnHex					= mod:NewSpecialWarningInterrupt(270492, "HasInterrupt", nil, nil, 1, 2)
 local specWarnBladestorm			= mod:NewSpecialWarningRun(270927, nil, nil, nil, 4, 2)
 local specWarnChannelLighting		= mod:NewSpecialWarningRun(270889, nil, nil, nil, 4, 2)
-local specWarnSeduction				= mod:NewSpecialWarningDispel(270920, "Healer", nil, nil, 1, 2)
+local specWarnSeduction				= mod:NewSpecialWarningDispel(270920, "RemoveMagic", nil, 2, 1, 2)
 local specWarnAncestralFury			= mod:NewSpecialWarningDispel(269976, "RemoveEnrage", nil, 2, 1, 2)
 local specWarnHiddenBladeDispel		= mod:NewSpecialWarningDispel(270865, "RemovePoison", nil, nil, 1, 2)
 local specWarnHuntingLeap			= mod:NewSpecialWarningYou(270500, nil, nil, nil, 1, 2)

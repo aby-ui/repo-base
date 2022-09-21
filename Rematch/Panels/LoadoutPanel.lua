@@ -19,8 +19,8 @@ rematch:InitModule(function()
 	-- there's no event for when loadout pets change (really!) so we hooksecurefunc them
 	hooksecurefunc(C_PetJournal,"SetAbility",function() rematch:StartTimer("LoadoutsChanging",0,panel.UpdateLoadouts) end)
 	hooksecurefunc(C_PetJournal,"SetPetLoadOutInfo",function() rematch:StartTimer("LoadoutsChanging",0,panel.UpdateLoadouts) end)
-	-- to avoid watching CURSOR_UPDATE all the time, only registering for event on a PickupPet
-	hooksecurefunc(C_PetJournal,"PickupPet",rematch.CURSOR_UPDATE)
+	-- to avoid watching CURSOR_CHANGED all the time, only registering for event on a PickupPet
+	hooksecurefunc(C_PetJournal,"PickupPet",rematch.CURSOR_CHANGED)
 
 	panel.TargetPanel:Initialize()
 

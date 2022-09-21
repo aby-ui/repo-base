@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2441, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201522")
+mod:SetRevision("20220908201246")
 mod:SetCreatureID(175732)
 mod:SetEncounterID(2435)
 mod:SetUsedIcons(1, 2, 3)
@@ -41,7 +41,7 @@ mod:RegisterEventsInCombat(
 --Shadow dagger timer pruposely uses diff timer from
 local P1Info, P15Info, P2Info, P3Info = DBM:EJ_GetSectionInfo(23057), DBM:EJ_GetSectionInfo(22891), DBM:EJ_GetSectionInfo(23067), DBM:EJ_GetSectionInfo(22890)
 --General
-local warnPhase										= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase										= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 
 --local specWarnGTFO								= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 

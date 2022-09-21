@@ -1500,6 +1500,8 @@ end
 		--print ("fixing...", instance.meu_id)
 		--instance:ToolbarMenuButtons()
 	end
+	
+	
 
 --> ao reiniciar o addon esta fun��o � rodada para recriar a janela da inst�ncia
 --> search key: ~restaura ~inicio ~start
@@ -1525,14 +1527,14 @@ function _detalhes:RestauraJanela(index, temp, load_only)
 		self.rows_created = 0
 		self.rows_showing = 0
 		self.rows_max = 50
-		self.rows_fit_in_window = nil
 		self.largura_scroll = 26
 		self.bar_mod = 0
 		self.bgdisplay_loc = 0
 		self.last_modo = self.last_modo or modo_grupo
 		self.cached_bar_width = self.cached_bar_width or 0
 		self.row_height = self.row_info.height + self.row_info.space.between
-
+		self.rows_fit_in_window = _math_floor (self.posicao[self.mostrando].h / self.row_height)
+		
 	--> create frames
 		local isLocked = self.isLocked
 		local _baseframe, _bgframe, _bgframe_display, _scrollframe = gump:CriaJanelaPrincipal (self.meu_id, self)
@@ -1605,6 +1607,17 @@ function _detalhes:RestauraJanela(index, temp, load_only)
 			_detalhes.raid = self.meu_id
 		else
 			self.mostrando = "normal"
+		end
+
+		--fix for the weird white window default skin
+		--this is a auto detect for configuration corruption, happens usually when the user install Details! over old config settings
+		--check if the skin used in the window is the default skin, check if statusbar is in use and if the color of the window is full white
+		if (self.skin == _detalhes.default_skin_to_use and self.show_statusbar) then
+			if(self.color[1] == 1 and self.color[2] == 1 and self.color[3] == 1 and self.color[4] == 1) then
+				Details:Msg("error 0xFF85DD")
+				self.skin = "no skin"
+				self:ChangeSkin(_detalhes.default_skin_to_use)
+			end
 		end
 
 	--> internal stuff

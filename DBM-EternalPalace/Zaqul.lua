@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2349, "DBM-EternalPalace", nil, 1179)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220905201556")
+mod:SetRevision("20220908201350")
 mod:SetCreatureID(150859)
 mod:SetEncounterID(2293)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -33,7 +33,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 292963 or ability.id = 302503 or ability.id = 296018 or ability.id = 302504
 --]]
 --General
-local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, nil, 2)
+local warnPhase							= mod:NewPhaseChangeAnnounce(2, nil, nil, nil, nil, nil, 2)
 local warnDiscipleofNzoth				= mod:NewTargetNoFilterAnnounce(292981, 4)
 
 local specWarnHysteria					= mod:NewSpecialWarningStack(292971, nil, 15, nil, nil, 1, 6)

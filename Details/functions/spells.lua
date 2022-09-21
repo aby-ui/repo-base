@@ -8,7 +8,7 @@ do
 		_detalhes.PotionList [spellID] = true
 	end
 
-	if (DetailsFramework.IsTBCWow()) then
+	if (DetailsFramework.IsWotLKWow()) then
 		_detalhes.SpecSpellList = { --~spec
 
 			-- Balance Druid:
@@ -198,6 +198,62 @@ do
 
 	else
 		_detalhes.SpecSpellList = { --~spec
+
+		--spyro healer
+		[359816] = 1468, --dream flight
+		[370960] = 1468, --emerald communion
+		[370537] = 1468, --stasis
+		[373270] = 1468, --lifebind
+		[367226] = 1468, --spiritbloom
+		[371270] = 1468, --time keeper
+		[368412] = 1468, --time of need
+		[371426] = 1468, --life givers flame
+		[377509] = 1468, --dream projection
+		[373834] = 1468, --call of ysera
+		[371832] = 1468, --cycle of life
+		[373861] = 1468, --temporal anomaly
+		[363510] = 1468, --mastery life binder
+		[356810] = 1468, --preservation evoker
+		[376210] = 1468, --borrowed time
+		[376207] = 1468, --delay harm
+		[355936] = 1468, --dream breath
+		[377082] = 1468, --dreamwalker
+		[364343] = 1468, --echo
+		[376138] = 1468, --empath
+		[372233] = 1468, --energy loop
+
+		--spyro dps
+		[370837] = 1467, --engulfing blaze
+		[365937] = 1467, --ruby embers
+		[370452] = 1467, --shattering star
+		[362980] = 1467, --mastery giantkiller
+		[375797] = 1467, --animosity
+		[356809] = 1467, --devastation evoker
+		[375618] = 1467, --arcane intensity
+		[386342] = 1467, --arcane vigor
+		[375721] = 1467, --azure essence burst
+		[375801] = 1467, --burnout
+		[375796] = 1467, --cascading power
+		[386283] = 1467, --catalyze
+		[375777] = 1467, --causality
+		[370455] = 1467, --charged blast
+		[369375] = 1467, --continuum
+		[370962] = 1467, --dense energy
+		[375087] = 1467, --dragonrage
+		[375757] = 1467, --eternitys span
+		[370819] = 1467, --everburning flame
+		[369846] = 1467, --feed the flames
+		[386336] = 1467, --focusing iris
+		[370845] = 1467, --tyranny
+		[360995] = 1467, --rescue
+		[370843] = 1467, --focusing iris
+		[370839] = 1467, --power swell
+		[370783] = 1467, --snapfire
+		[359073] = 1467, --eternity surge
+		[368847] = 1467, --firestorm
+		[369089] = 1467, --volatility
+		[372048] = 1467, --oppressing roar
+		[384660] = 1467, --crippling force
 
 		-- havoc demon hunter --577
 		[188499]        =       577,    --      Blade Dance

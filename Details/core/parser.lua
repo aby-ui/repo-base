@@ -4950,6 +4950,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 					_detalhes.time_type = 1
 				end
 			end
+
+			Details.lastBattlegroundStartTime = GetTime()
 		
 		elseif (zoneType == "arena") then
 		
@@ -5618,7 +5620,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:SchedulePetUpdate (6)
 	end
 
-	function _detalhes.parser_functions:START_TIMER(...)
+	function _detalhes.parser_functions:START_TIMER(...) --~timer
 	
 		if (_detalhes.debug) then
 			_detalhes:Msg("(debug) found a timer.")
@@ -5657,7 +5659,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes.tabela_vigente.discard_segment = true
 			Details:EndCombat()
 		end
+
+		Details.lastBattlegroundStartTime = GetTime()
 		Details:StartCombat()
+
+		if (Details.debug) then
+			Details:Msg("(debug) a battleground has started.")
+		end		
 	end
 
 	-- ~load

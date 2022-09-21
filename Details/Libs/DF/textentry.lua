@@ -313,7 +313,8 @@ DF.TextEntryCounter = DF.TextEntryCounter or 1
 			self.editbox:SetBackdropColor (unpack (self.enabled_backdrop_color))
 			self.editbox:SetTextColor (unpack (self.enabled_text_color))
 			if (self.editbox.borderframe) then
-				self.editbox.borderframe:SetBackdropColor (unpack (self.editbox.borderframe.onleave_backdrop))
+				local r, g, b, a = DF:ParseColors(unpack(self.editbox.borderframe.onleave_backdrop))
+				self.editbox.borderframe:SetBackdropColor(r, g, b, a)
 			end
 		end
 	end

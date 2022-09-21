@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SethralissTrash", "DBM-Party-BfA", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -33,8 +33,8 @@ local specWarnNeurotoxinDispel		= mod:NewSpecialWarningDispel(273563, "RemovePoi
 local specWarnCytotoxin				= mod:NewSpecialWarningDispel(267027, "RemovePoison", nil, nil, 1, 2)
 local specWarnVenomousSpit			= mod:NewSpecialWarningDispel(272699, "RemovePoison", nil, nil, 1, 2)
 local specWarnElectrifiedScales		= mod:NewSpecialWarningDispel(272659, "MagicDispeller", nil, nil, 1, 2)
-local specWarnFlameShock			= mod:NewSpecialWarningDispel(268013, "Healer", nil, nil, 1, 2)
-local specWarnSnakeCharm			= mod:NewSpecialWarningDispel(268008, "Healer", nil, nil, 1, 2)
+local specWarnFlameShock			= mod:NewSpecialWarningDispel(268013, "RemoveMagic", nil, 2, 1, 2)
+local specWarnSnakeCharm			= mod:NewSpecialWarningDispel(268008, "RemoveMagic", nil, 2, 1, 2)
 local specWarnNeurotoxin			= mod:NewSpecialWarningYou(273563, nil, nil, nil, 1, 2)
 
 function mod:SPELL_CAST_START(args)

@@ -4,6 +4,8 @@ local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
 local HN = HandyNotes:GetModule("HandyNotes")
 local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
 
+local WoW10 = select(4, GetBuildInfo()) >= 100000
+
 local info = {}
 local backdrop2 = {
 	bgFile = nil,
@@ -200,14 +202,14 @@ HNEditFrame.continentcheckbox:SetHitRectInsets(0, -HNEditFrame.continentcheckbox
 HNEditFrame.continentcheckbox:SetPushedTextOffset(0, 0)
 
 -- Create the OK button
-HNEditFrame.okbutton = CreateFrame("Button", nil, HNEditFrame, "OptionsButtonTemplate")
+HNEditFrame.okbutton = CreateFrame("Button", nil, HNEditFrame, WoW10 and "UIPanelButtonTemplate" or "OptionsButtonTemplate")
 HNEditFrame.okbutton:SetWidth(150)
 HNEditFrame.okbutton:SetHeight(22)
 HNEditFrame.okbutton:SetPoint("TOPLEFT", HNEditFrame.leveldropdown or HNEditFrame.icondropdown, "BOTTOMLEFT", 15, 0)
 HNEditFrame.okbutton:SetText(OKAY)
 
 -- Create the Cancel button
-HNEditFrame.cancelbutton = CreateFrame("Button", nil, HNEditFrame, "OptionsButtonTemplate")
+HNEditFrame.cancelbutton = CreateFrame("Button", nil, HNEditFrame, WoW10 and "UIPanelButtonTemplate" or "OptionsButtonTemplate")
 HNEditFrame.cancelbutton:SetWidth(150)
 HNEditFrame.cancelbutton:SetHeight(22)
 HNEditFrame.cancelbutton:SetPoint("LEFT", HNEditFrame.okbutton, "RIGHT", 3, 0)

@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20220807021335")
+mod:SetRevision("20220917022927")
 mod:SetCreatureID(80005)
 mod:SetEncounterID(1736)
 
@@ -12,15 +12,15 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 162066 162058",
-	"SPELL_AURA_APPLIED 163447 161588",
+	"SPELL_AURA_APPLIED 163447 161588 181089",
 	"SPELL_AURA_APPLIED_DOSE 161588",
-	"SPELL_AURA_REMOVED 163447",
-	"CHAT_MSG_MONSTER_YELL"
+	"SPELL_AURA_REMOVED 163447"
 )
 
 --[[
 (ability.id = 162066 or ability.id = 162058) and type = "begincast"
  or (ability.id = 171900 or ability.id = 163447) and (type = "applybuff" or type = "applydebuff")
+ or ability.id = 181089 and type = "applybuff"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 local warnFreezingSnare			= mod:NewTargetAnnounce(162066, 3)
@@ -39,7 +39,7 @@ local timerFreezingSnareCD		= mod:NewCDTimer(16.6, 162066, nil, nil, nil, 3)
 local timerSpinningSpearCD		= mod:NewCDTimer(17, 162058, nil, "Tank", 2, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerMark					= mod:NewTargetTimer(5, 163447, nil, nil, nil, 5)
 local timerMarkCD				= mod:NewCDTimer(20, 163447, nil, nil, nil, 3)
-local timerThunderousBreathCD	= mod:NewCDTimer(17.5, 171900, nil, nil, nil, 3)
+local timerThunderousBreathCD	= mod:NewCDTimer(17.4, 171900, nil, nil, nil, 3)
 
 mod:AddRangeFrameOption(8, 163447)
 
@@ -65,9 +65,11 @@ function mod:FreezingSnareTarget(targetname, uId)
 	end
 end
 
---function mod:OnCombatStart(delay)
-
---end
+function mod:OnCombatStart(delay)
+	timerFreezingSnareCD:Start(5.8)
+	timerThunderousBreathCD:Start(7.8)
+	timerSpinningSpearCD:Start(14.3)
+end
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
@@ -108,6 +110,10 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args.spellId == 161588 and args:IsPlayer() and self:AntiSpam() then
 		specWarnDiffusedEnergy:Show()
 		specWarnDiffusedEnergy:Play("watchfeet")
+	elseif args.spellId == 181089 then--Encounter Event
+		specWarnThunderousBreath:Show()
+		specWarnThunderousBreath:Play("breathsoon")
+		timerThunderousBreathCD:Start()
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -118,21 +124,5 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
 		end
-	end
-end
-
-function mod:CHAT_MSG_MONSTER_YELL(msg, _, _, _, target)
-	if not self:IsInCombat() then return end
-	if target == L.Rakun then
-		self:SendSync("Breath")
-	end
-end
-
-function mod:OnSync(msg)
-	if not self:IsInCombat() then return end
-	if msg == "Breath" then
-		specWarnThunderousBreath:Show()
-		specWarnThunderousBreath:Play("breathsoon")
-		timerThunderousBreathCD:Start()
 	end
 end

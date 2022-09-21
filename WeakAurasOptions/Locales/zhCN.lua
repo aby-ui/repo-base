@@ -23,7 +23,7 @@ local L = WeakAuras.L
 	L["%s - Condition Custom Check %s"] = "%s - 条件自定义检查 %s"
 	L["%s - Condition Custom Code %s"] = "%s - 条件自定义代码 %s"
 	L["%s - Custom Anchor"] = "%s - 自定义锚点"
-	L["%s - Custom Grow"] = "%s - 自定义发光"
+	L["%s - Custom Grow"] = "%s - 自定义生长"
 	L["%s - Custom Sort"] = "%s - 自定义排序"
 	L["%s - Custom Text"] = "%s - 自定义文本"
 	L["%s - Finish"] = "%s - 结束"
@@ -81,7 +81,7 @@ local L = WeakAuras.L
 	L["|cFFffcc00Extra:|r %s and %s %s"] = "|cFFffcc00额外：|r%s 并且 %s %s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"] = "|cFFffcc00文字样式：|r|cFFFF0000%s|r，阴影|c%s颜色|r、偏移量|cFFFF0000%s/%s|r%s%s"
 	L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"] = "|cFFffcc00文字样式：|r|cFFFF0000%s|r，阴影|c%s颜色|r、偏移量|cFFFF0000%s/%s|r%s%s%s"
-	L["|cFFffcc00Format Options|r"] = "|cFFffcc00格式选项|r"
+	L["|cffffcc00Format Options|r"] = "|cffffcc00格式选项|r"
 	L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.
 • |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.
 |cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.
@@ -293,7 +293,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 
 |cFF4444FF例：|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
-	L["Custom Untrigger"] = "自定义失效触发器"
+	L["Custom Untrigger"] = "自定义取消触发器"
 	L["Custom Variables"] = "自定义变量"
 	L["Debuff Type"] = "减益类型"
 	L["Debug Console"] = "调试控制台"
@@ -400,6 +400,7 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Filter by Class"] = "根据职业过滤"
 	L["Filter by Group Role"] = "根据团队职责过滤"
 	L["Filter by Nameplate Type"] = "根据姓名版类型过滤"
+	L["Filter by Npc ID"] = "根据NPC ID过滤"
 	L["Filter by Raid Role"] = "根据团队职责过滤"
 	L["Filter by Specialization"] = "根据专精过滤"
 	L["Filter by Unit Name"] = "根据单位名称过滤"
@@ -618,6 +619,7 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Not Loaded"] = "未载入"
 	L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."] = "注意：无法在副本外自动发送“说”与“大喊”信息。"
 	L["Note: The legacy buff trigger is now permanently disabled. It will be removed in the near future."] = "注意：传统光环触发器现已被永久禁用。它将会在短期内被移除。"
+	L["Npc ID"] = "NPC ID"
 	L["Number of Entries"] = "条目数"
 	L["Offer a guided way to create auras for your character"] = "提供为角色创建光环的指导"
 	L["Offset by |cFFFF0000%s|r/|cFFFF0000%s|r"] = "偏移|cFFFF0000%s|r/|cFFFF0000%s|r"

@@ -34,6 +34,13 @@ function Details:CreateTestBars (alphabet, isArena)
     local pclass = select (2, UnitClass ("player"))
     
     local actors_name = {
+            {"Spiro", "EVOKER"},
+            {"Spiro", "EVOKER"},
+            {"Spiro", "EVOKER"},
+            {"Spiro", "EVOKER"},
+            {"Spiro", "EVOKER"},
+            {"Spiro", "EVOKER"},
+            {"Drakaris", "EVOKER"},
             {"Ragnaros", "MAGE", 63},
             {"The Lich King", "DEATHKNIGHT", }, 
             {"Your Neighbor", "SHAMAN", }, 

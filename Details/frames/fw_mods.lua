@@ -228,10 +228,10 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 	end
 	
 	function new_button:InstallCustomTexture (texture, rect)
-		new_button:SetNormalTexture(nil)
-		new_button:SetPushedTexture(nil)
-		new_button:SetDisabledTexture(nil)
-		new_button:SetHighlightTexture(nil)
+		new_button:SetNormalTexture("")
+		new_button:SetPushedTexture("")
+		new_button:SetDisabledTexture("")
+		new_button:SetHighlightTexture("")
 		texture = texture or "Interface\\AddOns\\Details\\images\\default_button"
 		new_button.texture = new_button:CreateTexture (nil, "background")
 		

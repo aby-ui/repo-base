@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2348, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217031102")
+mod:SetRevision("20220903201813")
 mod:SetCreatureID(144248)--Head Mechinist Sparkflux
 mod:SetEncounterID(2259)
 
@@ -9,9 +9,8 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 285440",
-	"SPELL_CAST_SUCCESS 285454",
-	"SPELL_AURA_APPLIED 285460",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"SPELL_CAST_SUCCESS 285454 294853 292332",
+	"SPELL_AURA_APPLIED 285460"
 )
 
 --TODO, can bomb be target scanned?
@@ -20,7 +19,7 @@ mod:RegisterEventsInCombat(
 --TODO, add Blossom Blast if it's not spammy
 --[[
 ability.id = 285440 and type = "begincast"
- or (ability.id = 285454 or ability.id = 294855) and type = "cast"
+ or (ability.id = 285454 or ability.id = 294855 or ability.id = 294853 or ability.id = 292332) and type = "cast"
 --]]
 local warnDiscomBomb				= mod:NewSpellAnnounce(285454, 2)
 local warnSelfTrimmingHedge			= mod:NewSpellAnnounce(294954, 2)
@@ -56,6 +55,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 285454 then
 		warnDiscomBomb:Show()
 		timerDiscomBombCD:Start()
+	elseif spellId == 294853 then--Activate Plant
+		warnPlant:Show()
+		timerPlantCD:Start()
+	elseif spellId == 292332 then--Self-Trimming Hedge
+		warnSelfTrimmingHedge:Show()
+		timerSelfTrimmingHedgeCD:Start()
 	end
 end
 
@@ -64,15 +69,5 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 285460 and self:CheckDispelFilter() then
 		specWarnDiscomBomb:Show(args.destName)
 		specWarnDiscomBomb:Play("helpdispel")
-	end
-end
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(_, _, spellId)
-	if spellId == 294853 then--Activate Plant
-		warnPlant:Show()
-		timerPlantCD:Start()
-	elseif spellId == 292332 then--Self-Trimming Hedge
-		warnSelfTrimmingHedge:Show()
-		timerSelfTrimmingHedgeCD:Start()
 	end
 end

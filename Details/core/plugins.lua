@@ -365,8 +365,8 @@ local _
 			options_frame:Hide()
 			
 			options_frame:SetPoint ("center", UIParent, "center")
-			options_frame.TitleText:SetText (title)
-			options_frame.portrait:SetTexture ([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
+			--options_frame.TitleText:SetText (title) --10.0 fuck
+			--options_frame.portrait:SetTexture ([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
 			
 			return options_frame
 	

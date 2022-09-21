@@ -92,6 +92,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			scanWorldmapVignette = false,
 			filteredRares = {},
 			filteredContainers = {},
+			filteredEvents = {},
 			filteredZones = {},
 			enableTomtomSupport = false,
 			autoTomtomWaypoints = false,
@@ -131,6 +132,10 @@ RSConstants.PROFILE_DEFAULTS = {
 			filterOnlyMap = false
 		},
 		containerFilters = {
+			filtersToggled = true,
+			filterOnlyMap = false
+		},
+		eventFilters = {
 			filtersToggled = true,
 			filterOnlyMap = false
 		},
@@ -291,6 +296,7 @@ RSConstants.EVENT_TORMENTORS_VIGNETTE = "Tormentors-Event"
 RSConstants.ALL_ZONES_CUSTOM_NPC = 0
 RSConstants.ALL_ZONES = "all"
 RSConstants.UNKNOWN_ZONE_ID = 0
+RSConstants.TANAAN_JUNGLE_MAPID = 534
 RSConstants.MECHAGON_MAPID = 1462
 RSConstants.VALLEY_OF_ETERNAL_BLOSSOMS_MAPID = 1530
 RSConstants.ULDUM_MAPID = 1527
@@ -367,6 +373,7 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	-- Bation
 	[176543] = 171008;
 	[171012] = 171040;
+	[356756] = 167078;
 	-- Revendredth
 	[165230] = 165206;
 	[166483] = 166521;

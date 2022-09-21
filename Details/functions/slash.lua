@@ -1706,6 +1706,10 @@ function SlashCmdList.DETAILS (msg, editbox)
 			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00R" .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter))
 			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
 		end
+
+		if (DetailsFramework.IsDragonflight()) then
+			print("Dragonflight BETA VERSION:", _detalhes.dragonflight_beta_version)
+		end
 	end
 end
 
@@ -1952,6 +1956,8 @@ end
 
 if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 	SLASH_KEYSTONE1 = "/keystone"
+	SLASH_KEYSTONE2 = "/keys"
+	SLASH_KEYSTONE3 = "/key"
 
 	function SlashCmdList.KEYSTONE(msg, editbox)
 		local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")

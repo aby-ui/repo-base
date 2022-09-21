@@ -35,7 +35,7 @@
 			</Layer>
 			<Layer level="BORDER">
 				<!-- favorite star -->
-				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon">
+				<Texture parentKey="Favorite" atlas="PetJournal-FavoritesIcon" hidden="true">
 					<Size x="20" y="20"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="-1" y="1"/>

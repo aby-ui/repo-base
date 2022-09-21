@@ -14,6 +14,7 @@ local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSMapDB = private.ImportLib("RareScannerMapDB")
+local RSEventDB  = private.ImportLib("RareScannerEventDB")
 
 -- RareScanner internal libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -1543,18 +1544,18 @@ local function GetContainerFilterOptions()
 					else
 						name = name..' ('..containerID..')'
 					end
-					if (not RSContainerDB.IsWorldMap(containerID) and RSContainerDB.IsInternalContainerInMap(containerID, zoneID, true) and ((containerName and RSUtils.Contains(name,containerName)) or not containerName)) then
+					if (RSContainerDB.IsInternalContainerInMap(containerID, zoneID, true) and ((containerName and RSUtils.Contains(name,containerName)) or not containerName)) then
 						container_filter_options.args.containerFilters.values[name] = containerID
 					end
 				end
 			end
 		end
 
-		local searchContainerByContinentID = function(continentID, npcName)
+		local searchContainerByContinentID = function(continentID, containerName)
 			if (continentID) then
 				table.foreach(RSMapDB.GetContinents()[continentID].zones, function(index, zoneID)
 					-- filter checkboxes
-					searchContainerByZoneID(zoneID, npcName)
+					searchContainerByZoneID(zoneID, containerName)
 				end)
 			end
 		end
@@ -1726,6 +1727,216 @@ local function GetContainerFilterOptions()
 	end
 
 	return container_filter_options
+end
+
+local event_filter_options
+
+local function GetEventFilterOptions()
+	if not event_filter_options then
+		-- load continent combo
+		local CONTINENT_MAP_IDS = {}
+		for k, v in pairs(RSMapDB.GetContinents()) do
+			if (v.npcfilter) then
+				if (v.id) then
+					CONTINENT_MAP_IDS[k] = RSMap.GetMapName(k)
+				else
+					CONTINENT_MAP_IDS[k] = AL["ZONES_CONTINENT_LIST"][k]
+				end
+			end
+		end
+
+		local searchEventByZoneID = function(zoneID, eventName)
+			if (zoneID) then
+				for eventID, info in pairs(RSEventDB.GetAllInternalEventInfo()) do
+					local name = RSEventDB.GetEventName(eventID)
+					if (not name) then
+						name = AL["EVENT"]..' ('..eventID..')'
+					else
+						name = name..' ('..eventID..')'
+					end
+					if (RSEventDB.IsInternalEventInMap(eventID, zoneID, true) and ((eventName and RSUtils.Contains(name, eventName)) or not eventName)) then
+						event_filter_options.args.eventFilters.values[name] = eventID
+					end
+				end
+			end
+		end
+
+		local searchEventByContinentID = function(eventID, eventName)
+			if (eventID) then
+				table.foreach(RSMapDB.GetContinents()[eventID].zones, function(index, zoneID)
+					-- filter checkboxes
+					searchEventByZoneID(zoneID, eventName)
+				end)
+			end
+		end
+
+		local loadSubmapsCombo = function(continentID)
+			if (continentID) then
+				event_filter_options.args.subzones.values = {}
+				private.event_filter_options_subzones = nil
+				table.foreach(RSMapDB.GetContinents()[continentID].zones, function(index, zoneID)
+					local zoneName = RSMap.GetMapName(zoneID)
+					if (zoneName) then
+						event_filter_options.args.subzones.values[zoneID] = zoneName
+					end
+				end)
+			end
+		end
+
+		event_filter_options = {
+			type = "group",
+			order = 1,
+			name = AL["EVENT_FILTER"],
+			handler = RareScanner,
+			desc = AL["EVENT_FILTER"],
+			args = {
+				filterOnlyMap = {
+					order = 1,
+					type = "toggle",
+					name = AL["FILTER_NPCS_ONLY_MAP"],
+					desc = AL["FILTER_EVENTS_ONLY_MAP_DESC"],
+					get = function() return RSConfigDB.IsEventFilteredOnlyOnWorldMap() end,
+					set = function(_, value)
+						RSConfigDB.SetEventFilteredOnlyOnWorldMap(value)
+						RSMinimap.RefreshAllData(true)
+					end,
+					width = "full",
+				},
+				eventFiltersSearch = {
+					order = 2,
+					type = "input",
+					name = AL["FILTERS_SEARCH"],
+					desc = AL["FILTERS_EVENTS_SEARCH_DESC"],
+					get = function(_, value) return private.event_filter_options_input end,
+					set = function(_, value)
+						private.event_filter_options_input = value
+						-- search
+						event_filter_options.args.eventFilters.values = {}
+						if (private.event_filter_options_subzones) then
+							searchEventByZoneID(private.event_filter_options_subzones, value)
+						else
+							searchEventByContinentID(private.event_filter_options_continents, value)
+						end
+					end,
+					width = "full",
+				},
+				continents = {
+					order = 3.1,
+					type = "select",
+					name = AL["FILTER_CONTINENT"],
+					desc = AL["FILTER_CONTINENT_DESC"],
+					values = CONTINENT_MAP_IDS,
+					sorting = sortValues(CONTINENT_MAP_IDS),
+					get = function(_, key)
+						-- initialize
+						if (not private.event_filter_options_continents) then
+							private.event_filter_options_continents = RSConstants.CURRENT_MAP_ID
+
+							-- load submaps combo
+							loadSubmapsCombo(private.event_filter_options_continents)
+
+							-- launch first search zone filters
+							searchEventByContinentID(private.event_filter_options_continents)
+						end
+
+						return private.event_filter_options_continents
+					end,
+					set = function(_, key, value)
+						private.event_filter_options_continents = key
+
+						-- load subzones combo
+						loadSubmapsCombo(key)
+
+						-- search
+						event_filter_options.args.eventFilters.values = {}
+						searchEventByContinentID(key, private.event_filter_options_input)
+					end,
+					width = 1.0,
+				},
+				subzones = {
+					order = 3.2,
+					type = "select",
+					name = AL["FILTER_ZONE"],
+					desc = AL["FILTER_ZONE_DESC"],
+					values = {},
+					sorting = function()
+						if (next(event_filter_options.args.subzones.values)) then
+							return sortValues(event_filter_options.args.subzones.values)
+						end
+						return nil;
+					end,
+					get = function(_, key) return private.event_filter_options_subzones end,
+					set = function(_, key, value)
+						private.event_filter_options_subzones = key
+
+						-- search
+						event_filter_options.args.eventFilters.values = {}
+						searchEventByZoneID(key, private.event_filter_options_input)
+					end,
+					width = 1.925,
+					disabled = function() return (next(event_filter_options.args.subzones.values) == nil) end,
+				},
+				eventFiltersClear = {
+					order = 3.3,
+					name = AL["CLEAR_FILTERS_SEARCH"],
+					desc = AL["CLEAR_FILTERS_SEARCH_DESC"],
+					type = "execute",
+					func = function()
+						private.event_filter_options_input = nil
+						event_filter_options.args.subzones.values = {}
+						private.event_filter_options_subzones = nil
+						private.event_filter_options_continents = RSConstants.CURRENT_MAP_ID
+						-- load subzones combo
+						loadSubmapsCombo(RSConstants.CURRENT_MAP_ID)
+						-- search
+						event_filter_options.args.eventFilters.values = {}
+						searchEventByContinentID(RSConstants.CURRENT_MAP_ID)
+					end,
+					width = 0.5,
+				},
+				separator = {
+					order = 4,
+					type = "header",
+					name = AL["EVENT_FILTER"],
+				},
+				eventFiltersToogleAll = {
+					order = 5,
+					name = AL["TOGGLE_FILTERS"],
+					desc = AL["TOGGLE_FILTERS_DESC"],
+					type = "execute",
+					func = function()
+						if (next(event_filter_options.args.eventFilters.values) ~= nil) then
+							if (private.db.eventFilters.filtersToggled) then
+								private.db.eventFilters.filtersToggled = false
+							else
+								private.db.eventFilters.filtersToggled = true
+							end
+
+							for k, eventID in pairs(event_filter_options.args.eventFilters.values) do
+								RSConfigDB.SetEventFiltered(eventID, private.db.eventFilters.filtersToggled)
+							end
+						end
+						RSMinimap.RefreshAllData(true)
+					end,
+					width = "full",
+				},
+				eventFilters = {
+					order = 6,
+					type = "multiselect",
+					name = AL["FILTER_EVENT_LIST"],
+					desc = AL["FILTER_EVENT_LIST_DESC"],
+					values = {},
+					get = function(_, eventID) return RSConfigDB.GetEventFiltered(eventID) end,
+					set = function(_, eventID, value)
+						RSConfigDB.SetEventFiltered(eventID, value)
+						RSMinimap.RefreshAllData(true)
+					end,
+				}
+			},
+		}
+	end
+
+	return event_filter_options
 end
 
 local zones_filter_options
@@ -2829,6 +3040,7 @@ function RareScanner:SetupOptions()
 	RSAC:RegisterOptionsTable("RareScanner Custom NPCs", GetCustomNpcOptions)
 	RSAC:RegisterOptionsTable("RareScanner NPC Filter", GetFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Container Filter", GetContainerFilterOptions)
+	RSAC:RegisterOptionsTable("RareScanner Event Filter", GetEventFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Zone Filter", GetZonesFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Loot Options", GetLootFilterOptions)
 	RSAC:RegisterOptionsTable("RareScanner Map", GetMapOptions)
@@ -2841,6 +3053,7 @@ function RareScanner:SetupOptions()
 	RSACD:AddToBlizOptions("RareScanner Custom NPCs", AL["CUSTOM_NPCS"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner NPC Filter", AL["FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Container Filter", AL["CONTAINER_FILTER"], "RareScanner")
+	RSACD:AddToBlizOptions("RareScanner Event Filter", AL["EVENT_FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Zone Filter", AL["ZONES_FILTER"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Loot Options", AL["LOOT_OPTIONS"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Map", AL["MAP_OPTIONS"], "RareScanner")

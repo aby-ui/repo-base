@@ -90,7 +90,7 @@
 						specId, specName, specDescription, specIconId, specRole, specClass = _G.GetSpecializationInfoByID(self.playerObject.spec)
 					end
 				else
-					self.specIcon:SetTexture(nil)
+					self.specIcon:SetTexture("")
 				end
 			end
 
@@ -101,14 +101,14 @@
 					self.roleIcon:SetTexture(roleIcon)
 					self.roleIcon:SetTexCoord(L, R, T, B)
 				else
-					self.roleIcon:SetTexture(nil)
+					self.roleIcon:SetTexture("")
 				end
 			else
-				self.roleIcon:SetTexture(nil)
+				self.roleIcon:SetTexture("")
 			end
 			
 			--do not show the role icon
-			self.roleIcon:SetTexture(nil)
+			self.roleIcon:SetTexture("")
 			
 			--set the player name
 			self.playerName:SetText(Details:GetOnlyName(self.playerObject.nome))

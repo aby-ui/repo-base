@@ -13,7 +13,7 @@
 			   <Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
 			</Anchors>
 			<!-- OnSizeChanged will give ScrollChild a size -->
-			<ScrollChild parentKey="ScrollChild">
+			<ScrollChild> <!-- parentKey="ScrollChild"> -->
 			   <Frame/>
 			</ScrollChild>
 			<Frames>
@@ -121,7 +121,7 @@
 					 </Button>
 					 <!-- these invisible buttons stretch between the top/bottom of the scrollbar and the thumb
 						  to capture clicks, to prevent using click behavior of bar for better stepping control -->
-					 <Button parentKey="PageUpButton" enabled="false">
+					 <Button parentKey="PageUpButton">
 						<Size x="18" y="0"/>
 						<NormalTexture>
 						   <Anchors>
@@ -138,7 +138,7 @@
 						   <Color r="1" g="1" b="1" a="0.05"/>
 						</PushedTexture>
 					 </Button>
-					 <Button parentKey="PageDownButton" enabled="false">
+					 <Button parentKey="PageDownButton">
 						<Size x="18" y="0"/>
 						<NormalTexture>
 						   <Anchors>
@@ -181,8 +181,8 @@
 					</Layers>
 					<Animations>
 						<AnimationGroup parentKey="Anim">
-							<Alpha fromAlpha="0" toAlpha="1" change="1" duration="0.1" order="1"/>
-							<Alpha fromAlpha="1" toAlpha="0" change="-1" duration="0.5" order="2"/>
+							<Alpha fromAlpha="0" toAlpha="1" duration="0.1" order="1"/>
+							<Alpha fromAlpha="1" toAlpha="0" duration="0.5" order="2"/>
 							<Scripts>
 								<OnFinished>
 									-- hide the frame when the animation ends

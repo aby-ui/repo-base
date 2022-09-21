@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SotSTrash", "DBM-Party-BfA", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -39,7 +39,7 @@ local specWarnDetectThoughtsKick	= mod:NewSpecialWarningInterrupt(268375, "HasIn
 local specWarnConsumingVoidKick		= mod:NewSpecialWarningInterrupt(276767, "HasInterrupt", nil, nil, 1, 2)
 local specWarnDetectThoughts		= mod:NewSpecialWarningDispel(268375, "MagicDispeller", nil, nil, 1, 2)
 local specWarnConsumingVoid			= mod:NewSpecialWarningDispel(276767, "MagicDispeller", nil, nil, 1, 2)
-local specWarnTouchofDrowned		= mod:NewSpecialWarningDispel(268322, "Healer", nil, nil, 1, 2)
+local specWarnTouchofDrowned		= mod:NewSpecialWarningDispel(268322, "RemoveMagic", nil, 2, 1, 2)
 local specWarnConsumingVoidStop		= mod:NewSpecialWarningReflect(276767, "CasterDps", nil, nil, 1, 2)
 local specWarnCarveFlesh			= mod:NewSpecialWarningMoveTo(268214, nil, nil, nil, 3, 2)
 local specWarnVoidSeed				= mod:NewSpecialWarningMoveAway(276297, nil, nil, nil, 1, 2)

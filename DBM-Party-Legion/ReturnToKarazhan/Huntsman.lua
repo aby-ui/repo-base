@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20220823030710")
+mod:SetRevision("20220828003056")
 mod:SetCreatureID(114262, 114264)--114264 midnight
 mod:SetEncounterID(1960)--Verify
 mod:SetUsedIcons(1)
@@ -18,7 +18,6 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED boss1 boss2"
 )
 
---TODO: Intangible Presence doesn't seem possible to support. How to tell right from wrong dispel is obfuscated
 --Most of midnights timers are too short to really be worth including. he either spams charge or spams spectral chargers.
 local specWarnMightyStomp			= mod:NewSpecialWarningCast(227363, "SpellCaster", nil, nil, 1, 2)
 local specWarnSpectralCharge		= mod:NewSpecialWarningDodge(227365, nil, nil, nil, 2, 2)

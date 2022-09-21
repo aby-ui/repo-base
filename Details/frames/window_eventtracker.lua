@@ -238,8 +238,14 @@ function Details:CreateEventTrackerFrame(parent, name)
 	--> main farame
 		local f = CreateFrame ("frame", name, parent or UIParent,"BackdropTemplate")
 		f:SetPoint ("center", UIParent, "center")
-		f:SetMinResize (150, 40)
-		f:SetMaxResize (800, 1024)
+
+		if (not DetailsFramework.IsDragonflight()) then
+			f:SetMinResize (150, 40)
+			f:SetMaxResize (800, 1024)
+		else
+			--f:SetResizeBounds(150, 40, 800, 1024)
+		end
+
 		f:SetSize (_detalhes.event_tracker.frame.width, _detalhes.event_tracker.frame.height)
 
 		f:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})

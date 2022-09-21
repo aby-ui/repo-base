@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2099, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(127490)
 mod:SetEncounterID(2103)
 
@@ -16,7 +16,7 @@ mod:RegisterEventsInCombat(
 local specWarnCinderflame			= mod:NewSpecialWarningDodge(256955, nil, nil, nil, 2, 2)
 local specWarnFuselighter			= mod:NewSpecialWarningYou(257028, nil, nil, nil, 1, 2)
 local yellFuselighter				= mod:NewYell(257028, nil, false)
-local specWarnFuselighterOther		= mod:NewSpecialWarningDispel(257028, "Healer", nil, nil, 1, 2)
+local specWarnFuselighterOther		= mod:NewSpecialWarningDispel(257028, "RemoveMagic", nil, 2, 1, 2)
 local specWarnIgnition				= mod:NewSpecialWarningSpell(256970, nil, nil, nil, 1, 2)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 

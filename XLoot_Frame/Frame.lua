@@ -17,7 +17,7 @@
 
 -- Include QDKP2 compatibility by request
 function XLootButtonOnClick(row, button, handled)
-	if not handled 
+	if not handled
 		and QDKP2_IsManagingSession
 		and IsAltKeyDown()
 		and button == 'LeftButton'
@@ -110,10 +110,10 @@ local defaults = {
 		loot_row_height = 30,
 
 		loot_highlight = true,
-		 
+
 		loot_alpha = 1.0,
 		loot_collapse = false,
-		
+
 		frame_snap = true,
 		frame_snap_offset_x = 0,
 		frame_snap_offset_y = 0,
@@ -123,7 +123,7 @@ local defaults = {
 		loot_padding_left = 10,
 		loot_padding_right = 10,
 		loot_padding_bottom = 10,
-		
+
 		frame_width_automatic = true,
 		frame_width = 150,
 
@@ -139,7 +139,7 @@ local defaults = {
 		},
 
 		autoloot_item_list = '',
-		
+
 		frame_draggable = true,
 
 		linkall_threshold = 2, -- Quality from 0 - 6, Poor - Artifact
@@ -187,11 +187,11 @@ function addon:OnEnable()
 
 	-- Register for escape close
 	table.insert(UISpecialFrames, "XLootFrame")
-	
+
 	-- Reattach master looter frame
-	MasterLooterFrame:SetScript('OnShow', 
+	MasterLooterFrame:SetScript('OnShow',
 	function(self)
-		if XLootFrame:IsVisible() then 
+		if XLootFrame:IsVisible() then
 			MasterLooterFrame:SetFrameLevel(XLootFrame:GetFrameLevel()+2)
 			MasterLooterFrame:ClearAllPoints()
 			MasterLooterFrame:SetPoint("BOTTOM",XLootFrame,"TOP")
@@ -252,7 +252,7 @@ function addon:ApplyOptions(in_options)
 		if C_CurrencyInfo then
 			for i,id in ipairs(preview_currency) do
 				local c = C_CurrencyInfo.GetCurrencyInfo(id)
-				if c.name then
+				if c and c.name then
 					local row =  Fake.rows[slot+i]
 					max_width = math.max(max_width, row:Update({
 						name = c.name,
@@ -315,7 +315,7 @@ do
 		local first_only = opt.linkall_first_only
 
 		for i=1, GetNumLootItems() do
-			if GetLootSlotType(i) == LOOT_SLOT_ITEM then 
+			if GetLootSlotType(i) == LOOT_SLOT_ITEM then
 				local _, _, quantity, _, rarity = GetLootSlotInfo(i)
 				local link = GetLootSlotLink(i)
 				if rarity >= linkthreshold then
@@ -353,11 +353,11 @@ do
 		return true
 	end
 
-	
+
 	local function Click(dropdown, channel)
 		LinkLoot(channel)
 	end
-	
+
 	LinkDropdown = CreateFrame('Frame', 'XLootLinkDropdown')
 	LinkDropdown.displayMode = 'MENU'
 	local channels = {
@@ -447,7 +447,7 @@ do
 		text:SetDrawLayer'OVERLAY'
 		text:SetHeight(10)
 		text:SetJustifyH'LEFT'
-		text.ext = ext
+		text.text = text
 	end
 
 	local function textpoints(text, item, row, x)
@@ -458,7 +458,7 @@ do
 	function RowPrototype:OffsetText(text, y)
 		text:SetPoint('TOP', self, 0, y)
 	end
-	
+
 	-- Color overrides
 	function RowPrototype:SetBorderColor(r, g, b, a)
 		self:_SetBorderColor(r, g, b, a or 1)
@@ -486,24 +486,24 @@ do
 			f(GameTooltip, self.slot)
 			CursorUpdate(self)
 		end
-		
+
 		function RowPrototype:ShowTooltip()
 			pcall(Row_ShowTooltip_Inner, self)
 		end
-	end		
-	
+	end
+
 	function RowPrototype:HighlightEnter()
 		if self._highlights then
 			self.frame_item:ShowHighlight()
 		end
 	end
-	
+
 	function RowPrototype:HighlightLeave()
 		if self._highlights then
 			self.frame_item:HideHighlight()
 		end
 	end
-	
+
 	function RowPrototype:OnEnter()
 		self:HighlightEnter(self)
 		mouse_focus = self
@@ -557,7 +557,7 @@ do
 	function RowPrototype:Auto_OnHide()
 		self.parent.text_name:SetPoint('RIGHT', self.parent, 'RIGHT', -6, 0)
 	end
-	
+
 	-- Appearance/skin updates
 	local resize_texts = {'text_name', 'text_info'}
 	function RowPrototype:UpdateAppearance()
@@ -576,7 +576,7 @@ do
 		self.text_button_auto:SetTextColor(owner:GetColor('loot_color_button_auto'))
 		self:SetAlpha(opt.loot_alpha)
 
-		
+
 		-- Text
 		self.text_name:SetFont(opt.font, opt.font_size_loot)
 		self.text_info:SetFont(opt.font, opt.font_size_info)
@@ -602,7 +602,7 @@ do
 		self.frame_item:SetWidth(opt.loot_icon_size)
 		self.frame_item:SetHeight(opt.loot_icon_size)
 		self:SetHeight(opt.loot_row_height)
-		
+
 		-- Calculated row height
 		owner.row_height = self:GetHeight() + owner.skin.row_spacing
 
@@ -638,31 +638,31 @@ do
 		local opt = owner.opt
 		local text_info, text_name, text_bind = '', '', ''
 		self.item_name = slotData.name
-		
+
 		-- Items
 		local layout = 'simple'
 		if slotData.slotType == LOOT_SLOT_ITEM then
 			r, g, b, hex = GetItemQualityColor(slotData.quality or 0)
-			
+
 			text_name = ('|c%s%s|r'):format(hex, slotData.name)
-			
+
 			if opt.loot_texts_info then -- This is a bit gnarly
 				local equip = slotData.typeName == ENCHSLOT_WEAPON and ENCHSLOT_WEAPON or slotData.equipLoc ~= '' and _G[slotData.equipLoc] or ''
 				local itemtype = (slotData.subTypeName == 'Junk' and slotData.quality > 0) and MISCELLANEOUS or slotData.subTypeName
 				text_info = ((type(equip) == 'string' and equip ~= '') and equip..', ' or '') .. itemtype
 				layout = 'detailed'
 			end
-			
+
 			if opt.loot_texts_bind and slotData.bindType then
 				text_bind = binds[slotData.bindType] or ''
 			end
-			
+
 		-- Currency
 		else
 			r, g, b = .4, .4, .4
 			text_name = slotData.name:gsub('\n', ', ')
 		end
-		
+
 		-- Strings
 		self.text_name:SetText(text_name)
 		self.text_info:SetText(text_info)
@@ -682,7 +682,7 @@ do
 		else
 			self.text_locked:Hide()
 		end
-		
+
 		-- Layout
 		if self.layout ~= layout then
 			self.layout = layout
@@ -697,14 +697,14 @@ do
 		if opt.quality_color_slot then
 			self:SetBorderColor(Darken(owner.skin.color_mod, r, g, b))
 		end
-		
+
 		-- Quest icon
 		if slotData.questID then
 			self.texture_bang:Show()
 		else
 			self.texture_bang:Hide()
 		end
-		
+
 		-- Autoloot button
 		if opt.loot_buttons_auto and (self.owner.fake or (opt.autoloots.list ~= 'never' and slotData.slotType == LOOT_SLOT_ITEM and not self.owner.auto_items[slotData.name])) then
 			self.button_auto:Show()
@@ -719,9 +719,9 @@ do
 		else
 			self:SetPoint('TOP', owner.rows[self.i-1], 'BOTTOM', 0, owner.skin.row_offset)
 		end
-		
+
 		self:Show()
-		
+
 		return max(self.text_info:GetStringWidth() + 2, name_width)
 	end
 
@@ -820,7 +820,7 @@ do
 
 		-- Apply appearance
 		row:UpdateAppearance()
-		
+
 		return row
 	end
 end
@@ -846,7 +846,7 @@ do
 			else
 				x = f:GetLeft() or x
 			end
-   
+
 			-- Vertical position
 			y = (y / s) + 25 * (opt.frame_grow_upwards and -1 or 1)
 			local sHeight, fHeight, uHeight = GetScreenHeight(), f:GetHeight(), UIParent:GetHeight()
@@ -858,7 +858,7 @@ do
 			x = opt.frame_position_x or x
 			y = opt.frame_position_y or y
 		end
-   
+
 		-- Apply
 		f:ClearAllPoints()
 		f:SetPoint((opt.frame_grow_upwards and "BOTTOMLEFT" or "TOPLEFT"), UIParent, "BOTTOMLEFT", x, y)
@@ -868,7 +868,7 @@ do
 	-- 	self.backdrop:SetAlpha(alpha)
 	-- end
 
-	
+
 	-- Link loot menu
 	function FramePrototype:LinkClick(button)
 		if button == 'RightButton' then
@@ -885,7 +885,7 @@ do
 		end
 		-- CloseLoot()
 	end
-	
+
 	-- Bottom buttons
 	local function BottomButton(frame, name, text, justify)
 		local b = CreateFrame('Button', name, frame)
@@ -941,19 +941,19 @@ do
 			self.link:Hide()
 		end
 	end
-	
+
 	function FramePrototype:SizeAndColor(max_width, max_quality)
 		-- Update frame
 		self:UpdateLinkButton()
 		self:UpdateHeight()
 		self:UpdateWidth(max_width)
-		
+
 		-- Color frame
 		if self.opt.quality_color_frame then
 			self.overlay:SetBorderColor(GetItemQualityColor(max_quality))
 		end
 	end
-	
+
 	-- Update skin/appearance
 	function FramePrototype:UpdateAppearance()
 		self.skin = self:Reskin()
@@ -965,12 +965,12 @@ do
 		self.overlay:SetBorderColor(self:GetColor('frame_color_border'))
 		self.overlay:SetGradientColor(self:GetColor('frame_color_gradient'))
 		self.overlay:SetBackdropColor(self:GetColor('frame_color_backdrop', 0.7))
-		
+
 		-- Update loot frames
 		for i, row in ipairs(self.rows) do
 			row:UpdateAppearance()
 		end
-		
+
 		-- Resize frame
 		if #self.slots > 0 and self.opt.frame_width_automatic then
 			local max_width, max = 0, math.max
@@ -1002,7 +1002,7 @@ do
 		f:SetFrameStrata('DIALOG')
 		f:SetFrameLevel(5)
 		f:EnableMouse(1)
-		
+
 		-- Set up frame skins
 		XLoot:MakeSkinner(f, {
 			item = {
@@ -1017,7 +1017,7 @@ do
 			}
 		})
 
-		
+
 		-- Use a secondary frame for backdrop/border to allow the "frame" opacity to be changed
 		local overlay = CreateFrame('Frame', nil, f, BackdropTemplateMixin and "BackdropTemplate")
 		overlay:SetFrameLevel(5)
@@ -1143,7 +1143,7 @@ function XLootFrame:Update(no_snap, is_refresh)
 	-- References
 	local rows, slots, slots_index = self.rows, wipe(self.slots), wipe(self.slots_index)
 	local bag_slots -- Only assigned if we start autolooting
-	
+
 	-- Autolooting options
 	local auto, auto_items = auto, auto_items
 	for k,v in pairs(opt.autoloots) do
@@ -1196,7 +1196,7 @@ function XLootFrame:Update(no_snap, is_refresh)
 				-- Autolooting currency
 				if (auto.all or auto.currency) and (slotType == LOOT_SLOT_MONEY or slotType == LOOT_SLOT_CURRENCY) then
 					autoloot = true
-				-- Quest items			
+				-- Quest items
 				elseif (auto.all or auto.quest) and (isQuestItem or startsQuest) then
 					autoloot = true
 				-- Autolooting items
@@ -1241,7 +1241,7 @@ function XLootFrame:Update(no_snap, is_refresh)
 				end
 			end
 
-				
+
 			-- Show slot
 			if
 				not autoloot
@@ -1250,17 +1250,17 @@ function XLootFrame:Update(no_snap, is_refresh)
 				our_slot = our_slot + 1
 				local row = rows[our_slot]
 				slots[our_slot] = row
-				
+
 				-- Default UI and tooltip data
 				row.item = slotData.link
 				row.quality = slotData.quality
 				row.slot = slot
 				row.frame_slot = our_slot
 				row:SetID(slot)
-				
+
 				-- Update row
 				local width = row:Update(slotData)
-				
+
 				max_width = max(width, max_width)
 				max_quality = max(slotData.quality or 0, max_quality)
 			end
@@ -1276,7 +1276,7 @@ function XLootFrame:Update(no_snap, is_refresh)
 		-- CloseLoot()
 		return nil
 	end
-	
+
 	self:SizeAndColor(max_width, max_quality)
 
 	-- Show

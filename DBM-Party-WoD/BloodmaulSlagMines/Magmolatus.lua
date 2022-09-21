@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20200912135206")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(74366, 74475)--74366 Forgemaster Gog'duh, 74475 Magmolatus
 mod:SetEncounterID(1655)
 mod:SetMainBossID(74475)
@@ -24,11 +24,11 @@ local specWarnRoughSmash		= mod:NewSpecialWarningDodge(149941, "Melee", nil, nil
 local specWarnRuination			= mod:NewSpecialWarningSwitch("ej8622", "-Healer", nil, nil, 1, 2)
 local specWarnCalamity			= mod:NewSpecialWarningSwitch("ej8626", "-Healer", nil, nil, 1, 2)
 local specWarnFirestorm			= mod:NewSpecialWarningInterrupt(149997, "HasInterrupt", nil, 2, 1, 2)
-local specWarnDancingFlames		= mod:NewSpecialWarningDispel(149975, "Healer", nil, nil, 1, 2)
+local specWarnDancingFlames		= mod:NewSpecialWarningDispel(149975, "RemoveMagic", nil, nil, 1, 2)
 local specWarnMagmolatus		= mod:NewSpecialWarningSwitch("ej8621", nil, nil, 2, 1, 2)--Dps can turn this on too I suppose but 5 seconds after boss spawns they are switching to add anyways, so this is mainly for tank to pick it up
 local specWarnSlagSmash			= mod:NewSpecialWarningDodge(150023, "Melee", nil, nil, 4, 2)
 local specWarnMoltenImpact		= mod:NewSpecialWarningSpell(150038, nil, nil, nil, 2, 2)
-local specWarnWitheringFlames	= mod:NewSpecialWarningDispel(150032, "Healer", nil, nil, 1, 2)
+local specWarnWitheringFlames	= mod:NewSpecialWarningDispel(150032, "RemoveMagic", nil, nil, 1, 2)
 
 local timerMoltenImpactCD		= mod:NewNextTimer(21.5, 150038, nil, nil, nil, 1)
 

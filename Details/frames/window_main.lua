@@ -3117,7 +3117,7 @@ function _detalhes:InstanceAlert (msg, icon, time, clickfunc, doflash, forceAler
 			self.alert.icon:SetTexCoord (0, 1, 0, 1)
 		end
 	else
-		self.alert.icon:SetTexture (nil)
+		self.alert.icon:SetTexture ("")
 	end
 	
 	self.alert.button.func = nil
@@ -3664,8 +3664,13 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 		baseframe:SetPoint ("center", _UIParent)
 		baseframe:EnableMouseWheel (false)
 		baseframe:EnableMouse (true)
-		baseframe:SetMinResize (150, 7)
-		baseframe:SetMaxResize (_detalhes.max_window_size.width, _detalhes.max_window_size.height)
+
+		if (not DetailsFramework.IsDragonflight()) then
+			baseframe:SetMinResize (150, 7)
+			baseframe:SetMaxResize (_detalhes.max_window_size.width, _detalhes.max_window_size.height)
+		else
+			--baseframe:SetResizeBounds(150, 7, _detalhes.max_window_size.width, _detalhes.max_window_size.height)
+		end
 
 		baseframe:SetBackdrop (gump_fundo_backdrop)
 		baseframe:SetBackdropColor (instancia.bg_r, instancia.bg_g, instancia.bg_b, instancia.bg_alpha)
@@ -4124,7 +4129,7 @@ function gump:CreateNewLine (instancia, index)
 	
 	--> row background texture
 	newLine.background = newLine:CreateTexture (nil, "background")
-	newLine.background:SetTexture()
+	newLine.background:SetTexture("")
 	newLine.background:SetAllPoints (newLine)
 
 	newLine.statusbar:SetStatusBarColor (0, 0, 0, 0)
@@ -5505,7 +5510,7 @@ function _detalhes:StatusBarAlert (text, icon, color, time)
 			statusbar.icon:SetTexCoord (0, 1, 0, 1)
 		end
 	else
-		statusbar.icon:SetTexture (nil)
+		statusbar.icon:SetTexture ("")
 	end
 	
 	if (color) then
@@ -7279,9 +7284,9 @@ function Details:ChangeSkin(skin_name)
 ----------> lock alpha head	
 	
 	if (not this_skin.can_change_alpha_head) then
-		self.baseframe.cabecalho.ball:SetAlpha (100)
+		self.baseframe.cabecalho.ball:SetAlpha(1)
 	else
-		self.baseframe.cabecalho.ball:SetAlpha (self.color[4])
+		self.baseframe.cabecalho.ball:SetAlpha(self.color[4])
 	end
 	
 ----------> update abbreviation function on the class files
@@ -7944,8 +7949,10 @@ function Details:CheckForTextTimeCounter(combatStart) --called from combat start
 			if (Details.instance_title_text_timer[instance:GetId()] and instance.baseframe and instance:IsEnabled() and instance.menu_attribute_string) then --check if the instance is initialized
 				Details.Schedules.Cancel(Details.instance_title_text_timer[instance:GetId()])
 				local currentText = instance:GetTitleBarText()
-				currentText = currentText:gsub("%[.*%] ", "")
-				instance:SetTitleBarText(currentText)
+				if (currentText) then
+					currentText = currentText:gsub("%[.*%] ", "")
+					instance:SetTitleBarText(currentText)
+				end
 			end
 		end
 	end
@@ -7964,34 +7971,68 @@ local formatTime = function (t)
 	return "[" .. m .. ":" .. s .. "]"
 end
 
-function _detalhes:TitleTextTickTimer (instance) --called on each 1 second tick
+local updateTimerInTheTitleBarText = function(instance, timer)
+	local originalText = instance.menu_attribute_string.originalText
+	if (originalText) then
+		local formattedTime = formatTime(timer)
+		instance:SetTitleBarText(formattedTime .. " " .. originalText)
+
+	else
+		local titleBarTitleText = instance:GetTitleBarText()
+		if (titleBarTitleText) then
+			if (not titleBarTitleText:find("%[.*%]")) then
+				instance:SetTitleBarText("[00:01] " .. titleBarTitleText)
+			else
+				local formattedTime = formatTime(timer)
+				titleBarTitleText = titleBarTitleText:gsub("%[.*%]", formattedTime)
+				instance:SetTitleBarText(titleBarTitleText)
+			end
+		end
+	end
+end
+
+--self is Details
+--this is a ticker callback, it is called on each 1 second
+function _detalhes:TitleTextTickTimer(instance)
+	--hold the time value to show in the title bar
+	local timer
+
 	if (instance.attribute_text.enabled) then
-		--tick only during encounter
-		if (not Details.titletext_showtimer_always) then
+		local zoneType = Details:GetZoneType()
+
+		if (zoneType == "arena") then
+			if (instance.attribute_text.show_timer_arena) then
+				timer = GetTime() - Details:GetArenaStartTime()
+			end
+
+		elseif (zoneType == "pvp") then
+			if (instance.attribute_text.show_timer_bg) then
+				timer = GetTime() - Details:GetBattlegroundStartTime()
+			end
+
+		elseif (zoneType == "raid" or zoneType == "party") then
+			--always attempt to show the time during a boss encounter
 			if (IsEncounterInProgress) then
-				if (not IsEncounterInProgress()) then
-					return
+				if (IsEncounterInProgress()) then
+					timer = Details:GetCurrentCombat():GetCombatTime()
 				end
 			else
-				if (not Details.tabela_vigente.is_boss) then
-					return
+				if (Details.tabela_vigente.is_boss) then
+					timer = Details:GetCurrentCombat():GetCombatTime()
 				end
 			end
 		end
 
-		local currentText = instance.menu_attribute_string.originalText
-		if (currentText) then
-			local timer = formatTime(_detalhes.tabela_vigente:GetCombatTime())
-			instance:SetTitleBarText(timer .. " " .. currentText)
-		else
-			local current_text = instance:GetTitleBarText()
-			if (not current_text:find("%[.*%]")) then
-				instance:SetTitleBarText("[00:01] " .. current_text)
-			else
-				local timer = formatTime(_detalhes.tabela_vigente:GetCombatTime())
-				current_text = current_text:gsub("%[.*%]", timer)
-				instance:SetTitleBarText(current_text)
+		if (not timer) then
+			if (instance.attribute_text.show_timer_always) then
+				timer = Details:GetCurrentCombat():GetCombatTime()
 			end
+		end
+
+		if (timer) then
+			local combatObject = instance:GetShowingCombat()
+			combatObject.hasTimer = timer
+			updateTimerInTheTitleBarText(instance, timer)
 		end
 	end
 end
@@ -8013,8 +8054,21 @@ function Details:RefreshTitleBarText()
 			end
 		end
 
-		titleBarText:SetText(sName)
-		titleBarText.originalText = sName
+		if (not Details.in_combat) then
+			local timer = false --self:GetShowingCombat().hasTimer
+			if (timer) then
+				local timeFormatted = formatTime(timer)
+				titleBarText.originalText = sName
+				sName = timeFormatted .. " " .. sName
+				titleBarText:SetText(sName)
+			else
+				titleBarText:SetText(sName)
+				titleBarText.originalText = sName
+			end
+		else
+			titleBarText:SetText(sName)
+			titleBarText.originalText = sName
+		end
 	end
 end
 
@@ -8031,8 +8085,9 @@ function Details:GetTitleBarText()
 end
 
 -- ~titletext
+--@timer_bg: battleground elapsed time
+--@timer_arena: arena match elapsed time
 function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side, shadow, timer_encounter, timer_bg, timer_arena)
-
 	if (type (enabled) ~= "boolean") then
 		enabled = self.attribute_text.enabled
 	end
@@ -8070,7 +8125,14 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 	if (type(timer_encounter) ~= "boolean") then
 		timer_encounter = self.attribute_text.show_timer
 	end
-	
+
+	if (type(timer_bg) ~= "boolean") then
+		timer_bg = self.attribute_text.show_timer_bg
+	end
+	if (type(timer_arena) ~= "boolean") then
+		timer_arena = self.attribute_text.show_timer_arena
+	end
+
 	self.attribute_text.enabled = enabled
 	self.attribute_text.anchor [1] = pos_x
 	self.attribute_text.anchor [2] = pos_y
@@ -8080,6 +8142,8 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 	self.attribute_text.side = side
 	self.attribute_text.shadow = shadow
 	self.attribute_text.show_timer = timer_encounter
+	self.attribute_text.show_timer_bg = timer_bg
+	self.attribute_text.show_timer_arena = timer_arena
 	
 	--> enabled
 	if (not enabled and self.menu_attribute_string) then
@@ -8097,7 +8161,6 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 		--local label = gump:NewLabel (self.floatingframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
 		local label = gump:NewLabel (self.baseframe, nil, "DetailsAttributeStringInstance" .. self.meu_id, nil, "", "GameFontHighlightSmall")
 		self.menu_attribute_string = label
-		self:RefreshTitleBarText()
 		self.menu_attribute_string.owner_instance = self
 		self.menu_attribute_string.Enabled = true
 		self.menu_attribute_string.__enabled = true
@@ -8106,9 +8169,11 @@ function _detalhes:AttributeMenu (enabled, pos_x, pos_y, font, size, color, side
 			instance:RefreshTitleBarText()
 		end
 		
-		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEATTRIBUTE", self.menu_attribute_string.OnEvent)
-		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEMODE", self.menu_attribute_string.OnEvent)
-		_detalhes:RegisterEvent (self.menu_attribute_string, "DETAILS_INSTANCE_CHANGESEGMENT", self.menu_attribute_string.OnEvent)
+		Details:RegisterEvent(self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEATTRIBUTE", self.menu_attribute_string.OnEvent)
+		Details:RegisterEvent(self.menu_attribute_string, "DETAILS_INSTANCE_CHANGEMODE", self.menu_attribute_string.OnEvent)
+		Details:RegisterEvent(self.menu_attribute_string, "DETAILS_INSTANCE_CHANGESEGMENT", self.menu_attribute_string.OnEvent)
+
+		self:RefreshTitleBarText()
 	end
 
 	self.menu_attribute_string:Show()

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TolDagorTrash", "DBM-Party-BfA", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220909231726")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -26,7 +26,7 @@ local specWarnFuselighter			= mod:NewSpecialWarningInterrupt(258634, "HasInterru
 local specWarnInnerFlames			= mod:NewSpecialWarningInterrupt(258935, "HasInterrupt", nil, nil, 1, 2)
 local specWarnWateryDome			= mod:NewSpecialWarningDispel(258153, "MagicDispeller", nil, nil, 1, 2)
 local specWarnDarkStep				= mod:NewSpecialWarningDispel(258133, "MagicDispeller", nil, nil, 1, 2)
-local specWarnTorchStrike			= mod:NewSpecialWarningDispel(265889, "Healer", nil, nil, 1, 2)
+local specWarnTorchStrike			= mod:NewSpecialWarningDispel(265889, "RemoveMagic", nil, 2, 1, 2)
 local specWarnRiotShield			= mod:NewSpecialWarningReflect(258317, "CasterDps", nil, nil, 1, 2)
 
 function mod:SPELL_CAST_START(args)

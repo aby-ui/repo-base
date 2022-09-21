@@ -447,8 +447,15 @@ function addon.DropdownInit()
 
  	end	
 end
-UIDropDownMenu_Initialize(GroupLootDropDown, addon.DropdownInit, "MENU")
 
+local GroupLootDropDown = CreateFrame("Frame", nil, UIParent, "UIDropDownMenuTemplate")
+UIDropDownMenu_Initialize(GroupLootDropDown, addon.DropdownInit, "MENU")
+hooksecurefunc("MasterLooterFrame_Show", function(frame)
+	if frame == LootFrame.selectedLootButton then
+		ToggleDropDownMenu(1, nil, GroupLootDropDown, LootFrame.selectedLootButton, 0, 0);
+		MasterLooterFrame:Hide()
+	end
+end)
 
 BINDING_HEADER_XLOOTMASTER = "XLootMaster"
 

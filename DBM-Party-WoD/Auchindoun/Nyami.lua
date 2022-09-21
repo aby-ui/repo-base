@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(76177)
 mod:SetEncounterID(1685)
 
@@ -17,7 +17,7 @@ mod:RegisterEventsInCombat(
 --TODO, soul vessel is probably wrong now.
 --Even on CM, fights too short to get a good soulvessel timer. Still need better logs
 
-local specWarnSWP				= mod:NewSpecialWarningDispel(154477, "Healer", nil, nil, 1, 2)
+local specWarnSWP				= mod:NewSpecialWarningDispel(154477, "RemoveMagic", nil, 2, 1, 2)
 local specWarnSoulVessel		= mod:NewSpecialWarningSpell(155327, nil, nil, nil, 2, 2)
 local specWarnSoulVesselEnd		= mod:NewSpecialWarningEnd(155327, nil, nil, nil, 1, 2)
 local specWarnTornSpirits		= mod:NewSpecialWarningSwitch(153991, "-Healer", nil, nil, 1, 2)

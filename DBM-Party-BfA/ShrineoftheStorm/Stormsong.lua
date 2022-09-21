@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2155, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116185401")
+mod:SetRevision("20220909231726")
 mod:SetCreatureID(134060)
 mod:SetEncounterID(2132)
 
@@ -18,7 +18,7 @@ mod:RegisterEvents(
 )
 
 local specWarnVoidBolt				= mod:NewSpecialWarningInterruptCount(268347, "HasInterrupt", nil, nil, 1, 2)
-local specWarnMindRend				= mod:NewSpecialWarningDispel(268896, "Healer", nil, nil, 1, 2)
+local specWarnMindRend				= mod:NewSpecialWarningDispel(268896, "RemoveMagic", nil, 2, 1, 2)
 local specWarnWakentheVoid			= mod:NewSpecialWarningDodge(269097, nil, nil, nil, 2, 2)
 local specWarnAncientMindbender		= mod:NewSpecialWarningSwitch(269131, nil, nil, nil, 1, 2)
 local specWarnAncientMindbenderYou	= mod:NewSpecialWarningMoveTo(269131, nil, nil, nil, 1, 2)

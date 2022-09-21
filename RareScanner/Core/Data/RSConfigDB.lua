@@ -672,6 +672,14 @@ function RSConfigDB.SetShowingEvents(value)
 	private.db.map.displayEventIcons = value
 end
 
+function RSConfigDB.IsEventFilteredOnlyOnWorldMap()
+	return private.db.eventFilters.filterOnlyMap
+end
+
+function RSConfigDB.SetEventFilteredOnlyOnWorldMap(value)
+	private.db.eventFilters.filterOnlyMap = value
+end
+
 function RSConfigDB.IsShowingCompletedEvents()
 	return private.db.map.keepShowingAfterCompleted
 end
@@ -715,6 +723,35 @@ function RSConfigDB.SetMaxSeenEventTimeFilter(value, clearBak)
 	RSLogger:PrintDebugMessage(string.format("SetMaxSeenEventTimeFilter [maxSeenTimeEvent = %s]", value))
 	if (clearBak) then
 		private.db.map.maxSeenEventTimeBak = nil
+	end
+end
+
+function RSConfigDB.IsEventFiltered(eventID)
+	if (eventID) then
+		return private.db.general.filteredEvents[eventID] == false
+	end
+
+	return false
+end
+
+function RSConfigDB.GetEventFiltered(eventID)
+	if (eventID) then
+		local value = private.db.general.filteredEvents[eventID]
+		if (value == nil) then
+			return true
+		else
+			return value
+		end
+	end
+end
+
+function RSConfigDB.SetEventFiltered(eventID, value)
+	if (eventID) then
+		if (value == false) then
+			private.db.general.filteredEvents[eventID] = false
+		else
+			private.db.general.filteredEvents[eventID] = nil
+		end
 	end
 end
 

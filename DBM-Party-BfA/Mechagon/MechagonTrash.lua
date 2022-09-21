@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("MechagonTrash", "DBM-Party-BfA", 11)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20201116014239")
+mod:SetRevision("20220903201813")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -51,7 +51,7 @@ local specWarnCapacitorDischarge	= mod:NewSpecialWarningDodge(295169, nil, nil, 
 local specWarnConsume				= mod:NewSpecialWarningRun(300687, nil, nil, nil, 4, 2)--Toxic Monstrosity
 local specWarnGyroScrap				= mod:NewSpecialWarningRun(300159, "Melee", nil, nil, 4, 2)--Heavy Scrapbot
 local specWarnMegaDrill				= mod:NewSpecialWarningRun(294324, "Tank", nil, nil, 4, 2)--Waste Processing Unit
-local specWarnProcessWaste			= mod:NewSpecialWarningDefensive(294290, nil, nil, nil, 1, 2)--Waste Processing Unit
+local specWarnProcessWaste			= mod:NewSpecialWarningSpell(294290, nil, nil, nil, 1, 2)--Waste Processing Unit
 local specWarnSlimeBolt				= mod:NewSpecialWarningInterrupt(300764, "HasInterrupt", nil, nil, 1, 2)--Slime Elemental
 local specWarnSuffocatingSmog		= mod:NewSpecialWarningInterrupt(300650, "HasInterrupt", nil, nil, 1, 2)--Toxic Lurker
 local specWarnRepairProtocol		= mod:NewSpecialWarningInterrupt(300171, "HasInterrupt", nil, nil, 1, 2)--Heavy Scrapbot
@@ -195,7 +195,11 @@ function mod:SPELL_CAST_START(args)
 		specWarnMegaDrill:Play("justrun")
 	elseif spellId == 294290 and self:AntiSpam(3, 5) then
 		specWarnProcessWaste:Show()
-		specWarnProcessWaste:Play("defensive")
+		if self:IsTank() then
+			specWarnProcessWaste:Play("defensive")
+		else
+			specWarnProcessWaste:Play("shockwave")
+		end
 	elseif spellId == 294349 and self:AntiSpam(5, 4) then
 		warnVolatileWaste:Show()
 	elseif spellId == 293854 and self:AntiSpam(3, 6) then

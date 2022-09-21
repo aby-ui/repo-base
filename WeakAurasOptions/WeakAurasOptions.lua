@@ -883,8 +883,8 @@ function OptionsPrivate.OpenDebugLog(text)
   frame.debugLog:Open(text)
 end
 
-function OptionsPrivate.OpenUpdate(data, children, target, sender)
-  return frame.update:Open(data, children, target, sender)
+function OptionsPrivate.OpenUpdate(data, children, target, sender, callbackFunc)
+  return frame.update:Open(data, children, target, sender, callbackFunc)
 end
 
 function OptionsPrivate.ConvertDisplay(data, newType)
@@ -1496,6 +1496,7 @@ function OptionsPrivate.StartDrag(mainAura)
       end
     end
   end
+  OptionsPrivate.UpdateButtonsScroll()
 end
 
 function OptionsPrivate.DropIndicator()
@@ -1874,7 +1875,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
     headerOption =  {
       type = "execute",
       control = "WeakAurasExpandSmall",
-      name = L["|cFFffcc00Format Options|r"],
+      name = L["|cffffcc00Format Options|r"],
       width = WeakAuras.doubleWidth,
       func = function(info, button)
         setHidden(not hidden())
