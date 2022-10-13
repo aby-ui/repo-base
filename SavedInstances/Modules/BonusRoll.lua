@@ -21,7 +21,7 @@ local GetInstanceInfo = GetInstanceInfo
 local GetItemInfoInstant = GetItemInfoInstant
 local GetRealZoneText = GetRealZoneText
 local GetSubZoneText = GetSubZoneText
-local DIFFICULTY_DUNGEON_CHALLENGE = DIFFICULTY_DUNGEON_CHALLENGE
+local DifficultyUtil_ID_DungeonChallenge = DifficultyUtil.ID.DungeonChallenge
 
 local function BonusRollShow()
   local t = SI.db.Toons[SI.thisToon]
@@ -85,15 +85,15 @@ function Module:BONUS_ROLL_RESULT(event, rewardType, rewardLink, rewardQuantity,
   local now = time()
   local bossname
   -- Mythic+ Dungeon Roll
-  if GetBonusRollEncounterJournalLinkDifficulty() == DIFFICULTY_DUNGEON_CHALLENGE then
+  if GetBonusRollEncounterJournalLinkDifficulty() == DifficultyUtil_ID_DungeonChallenge then
     local name, _, difficultyID, difficultyName = GetInstanceInfo()
-    if difficultyID == DIFFICULTY_DUNGEON_CHALLENGE then
+    if difficultyID == DifficultyUtil_ID_DungeonChallenge then
       bossname = name .. ": " .. difficultyName
     else
       local tmp = {}
       for key, value in pairs(SI.db.History) do
         local _, name, _, diff = strsplit(":", key)
-        if tonumber(diff) == DIFFICULTY_DUNGEON_CHALLENGE then
+        if tonumber(diff) == DifficultyUtil_ID_DungeonChallenge then
           local tbl = {
             name = name .. ": " .. GetDifficultyInfo(diff),
             last = value.last,

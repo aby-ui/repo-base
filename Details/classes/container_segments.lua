@@ -16,30 +16,30 @@ local container_pets =		_detalhes.container_pets
 local timeMachine =		_detalhes.timeMachine
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> API
+--API
 
---> reset only the overall data
+--reset only the overall data
 function _detalhes:ResetSegmentOverallData()
 	return historico:resetar_overall()
 end
 
---> reset segments and overall data
+--reset segments and overall data
 function _detalhes:ResetSegmentData()
 	return historico:resetar()
 end
 
---> returns the current active segment
+--returns the current active segment
 function _detalhes:GetCurrentCombat()
 	return _detalhes.tabela_vigente
 end
 
---> returns a private table containing all stored segments
+--returns a private table containing all stored segments
 function _detalhes:GetCombatSegments()
 	return _detalhes.tabela_historico.tabelas
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internal
+--internal
 
 function historico:NovoHistorico()
 	local esta_tabela = {tabelas = {}}
@@ -55,13 +55,13 @@ function historico:adicionar_overall (tabela)
 	end
 
 	if (_detalhes.overall_clear_newboss) then
-		--> only for raids
+		--only for raids
 		if (tabela.instance_type == "raid" and tabela.is_boss) then
 			if (_detalhes.last_encounter ~= _detalhes.last_encounter2) then
 				if (_detalhes.debug) then
 					_detalhes:Msg ("(debug) new boss detected 'overall_clear_newboss' is true, cleaning overall data.")
 				end
-				for index, combat in ipairs (_detalhes.tabela_historico.tabelas) do 
+				for index, combat in ipairs(_detalhes.tabela_historico.tabelas) do 
 					combat.overall_added = false
 				end
 				historico:resetar_overall()
@@ -75,7 +75,7 @@ function historico:adicionar_overall (tabela)
 	end
 	local mythicInfo = tabela.is_mythic_dungeon
 	if (mythicInfo) then
-		--> do not add overall mythic+ dungeon segments
+		--do not add overall mythic+ dungeon segments
 		if (mythicInfo.TrashOverallSegment) then
 			_detalhes:Msg ("error > attempt to add a TrashOverallSegment > func historico:adicionar_overall()")
 			return
@@ -85,7 +85,7 @@ function historico:adicionar_overall (tabela)
 		end
 	end
 	
-	--> store the segments added to the overall data
+	--store the segments added to the overall data
 	_detalhes.tabela_overall.segments_added = _detalhes.tabela_overall.segments_added or {}
 	local this_clock = tabela.data_inicio
 	
@@ -93,7 +93,7 @@ function historico:adicionar_overall (tabela)
 	local combatTime = tabela:GetCombatTime()
 	local combatType = tabela:GetCombatType()
 	
-	tinsert (_detalhes.tabela_overall.segments_added, 1, {name = combatName, elapsed = combatTime, clock = this_clock, type = combatType})
+	tinsert(_detalhes.tabela_overall.segments_added, 1, {name = combatName, elapsed = combatTime, clock = this_clock, type = combatType})
 
 	if (#_detalhes.tabela_overall.segments_added > 40) then
 		tremove (_detalhes.tabela_overall.segments_added, 41)
@@ -142,30 +142,30 @@ function _detalhes:ScheduleAddCombatToOverall (combat) --deprecated (15/03/2019)
 	local canAdd = _detalhes:CanAddCombatToOverall (combat)
 	if (canAdd) then
 		_detalhes.schedule_add_to_overall = _detalhes.schedule_add_to_overall or {}
-		tinsert (_detalhes.schedule_add_to_overall, combat)
+		tinsert(_detalhes.schedule_add_to_overall, combat)
 	end
 end
 
 function _detalhes:CanAddCombatToOverall (tabela)
 
-	--> already added
+	--already added
 	if (tabela.overall_added) then
 		return false
 	end
 	
-	--> already scheduled to add
+	--already scheduled to add
 	if (_detalhes.schedule_add_to_overall) then --deprecated
-		for _, combat in ipairs (_detalhes.schedule_add_to_overall) do
+		for _, combat in ipairs(_detalhes.schedule_add_to_overall) do
 			if (combat == tabela) then
 				return false
 			end
 		end
 	end
 
-	--> special cases
+	--special cases
 	local mythicInfo = tabela.is_mythic_dungeon
 	if (mythicInfo) then
-		--> do not add overall mythic+ dungeon segments
+		--do not add overall mythic+ dungeon segments
 		if (mythicInfo.TrashOverallSegment) then
 			return false
 		elseif (mythicInfo.OverallSegment) then
@@ -173,7 +173,7 @@ function _detalhes:CanAddCombatToOverall (tabela)
 		end
 	end
 
-	--> raid boss - flag 0x1
+	--raid boss - flag 0x1
 	if (bit.band (_detalhes.overall_flag, 0x1) ~= 0) then 
 		if (tabela.is_boss and tabela.instance_type == "raid" and not tabela.is_pvp) then
 			if (tabela:GetCombatTime() >= 30) then
@@ -182,33 +182,33 @@ function _detalhes:CanAddCombatToOverall (tabela)
 		end
 	end
 	
-	--> raid trash - flag 0x2
+	--raid trash - flag 0x2
 	if (bit.band (_detalhes.overall_flag, 0x2) ~= 0) then 
 		if (tabela.is_trash and tabela.instance_type == "raid") then
 			return true
 		end
 	end
 	
-	--> dungeon boss - flag 0x4
+	--dungeon boss - flag 0x4
 	if (bit.band (_detalhes.overall_flag, 0x4) ~= 0) then 
 		if (tabela.is_boss and tabela.instance_type == "party" and not tabela.is_pvp) then
 			return true
 		end
 	end
 	
-	--> dungeon trash - flag 0x8
+	--dungeon trash - flag 0x8
 	if (bit.band (_detalhes.overall_flag, 0x8) ~= 0) then 
 		if ((tabela.is_trash or tabela.is_mythic_dungeon_trash) and tabela.instance_type == "party") then
 			return true
 		end
 	end
 	
-	--> any combat
+	--any combat
 	if (bit.band (_detalhes.overall_flag, 0x10) ~= 0) then 
 		return true
 	end
 	
-	--> is a PvP combat
+	--is a PvP combat
 	if (tabela.is_pvp or tabela.is_arena) then 
 		return true
 	end
@@ -216,25 +216,25 @@ function _detalhes:CanAddCombatToOverall (tabela)
 	return false
 end
 
---> sai do combate, chamou adicionar a tabela ao hist�rico
+--sai do combate, chamou adicionar a tabela ao hist�rico
 function historico:adicionar (tabela)
 
 	local tamanho = #self.tabelas
 	
-	--> verifica se precisa dar UnFreeze()
-	if (tamanho < _detalhes.segments_amount) then --> vai preencher um novo index vazio
+	--verifica se precisa dar UnFreeze()
+	if (tamanho < _detalhes.segments_amount) then --vai preencher um novo index vazio
 		local ultima_tabela = self.tabelas[tamanho]
-		if (not ultima_tabela) then --> n�o ha tabelas no historico, esta ser� a #1
-			--> pega a tabela do combate atual
+		if (not ultima_tabela) then --n�o ha tabelas no historico, esta ser� a #1
+			--pega a tabela do combate atual
 			ultima_tabela = tabela
 		end
 		_detalhes:InstanciaCallFunction (_detalhes.CheckFreeze, tamanho+1, ultima_tabela)
 	end
 
-	--> add to history table
+	--add to history table
 	_table_insert (self.tabelas, 1, tabela)
 	
-	--> count boss tries
+	--count boss tries
 	local boss = tabela.is_boss and tabela.is_boss.name
 	if (boss) then
 		local try_number = _detalhes.encounter_counter [boss]
@@ -260,7 +260,7 @@ function historico:adicionar (tabela)
 		tabela.is_boss.try_number = try_number
 	end
 	
-	--> see if can add the encounter to overall data
+	--see if can add the encounter to overall data
 	local canAddToOverall = _detalhes:CanAddCombatToOverall (tabela)
 	
 	if (canAddToOverall) then
@@ -277,25 +277,25 @@ function historico:adicionar (tabela)
 		--end
 	end
 	
-	--> erase trash segments
+	--erase trash segments
 	if (self.tabelas[2]) then
 		local _segundo_combate = self.tabelas[2]
 		local container_damage = _segundo_combate [1]
 		local container_heal = _segundo_combate [2]
 		
 		--regular cleanup
-		for _, jogador in ipairs (container_damage._ActorTable) do 
-			--> remover a tabela de last events
+		for _, jogador in ipairs(container_damage._ActorTable) do 
+			--remover a tabela de last events
 			jogador.last_events_table =  nil
-			--> verifica se ele ainda esta registrado na time machine
+			--verifica se ele ainda esta registrado na time machine
 			if (jogador.timeMachine) then
 				jogador:DesregistrarNaTimeMachine()
 			end
 		end
-		for _, jogador in ipairs (container_heal._ActorTable) do 
-			--> remover a tabela de last events
+		for _, jogador in ipairs(container_heal._ActorTable) do 
+			--remover a tabela de last events
 			jogador.last_events_table =  nil
-			--> verifica se ele ainda esta registrado na time machine
+			--verifica se ele ainda esta registrado na time machine
 			if (jogador.timeMachine) then
 				jogador:DesregistrarNaTimeMachine()
 			end
@@ -307,20 +307,20 @@ function historico:adicionar (tabela)
 			if (_terceiro_combate and not _terceiro_combate.is_mythic_dungeon_segment) then
 			
 				if ((_terceiro_combate.is_trash and not _terceiro_combate.is_boss) or (_terceiro_combate.is_temporary)) then
-					--> verificar novamente a time machine
-					for _, jogador in ipairs (_terceiro_combate [1]._ActorTable) do --> damage
+					--verificar novamente a time machine
+					for _, jogador in ipairs(_terceiro_combate [1]._ActorTable) do --damage
 						if (jogador.timeMachine) then
 							jogador:DesregistrarNaTimeMachine()
 						end
 					end
-					for _, jogador in ipairs (_terceiro_combate [2]._ActorTable) do --> heal
+					for _, jogador in ipairs(_terceiro_combate [2]._ActorTable) do --heal
 						if (jogador.timeMachine) then
 							jogador:DesregistrarNaTimeMachine()
 						end
 					end
-					--> remover
+					--remover
 					_table_remove (self.tabelas, 3)
-					_detalhes:SendEvent ("DETAILS_DATA_SEGMENTREMOVED", nil, nil)
+					_detalhes:SendEvent("DETAILS_DATA_SEGMENTREMOVED", nil, nil)
 				end
 				
 			end
@@ -329,12 +329,12 @@ function historico:adicionar (tabela)
 		
 	end
 
-	--> verifica se precisa apagar a �ltima tabela do hist�rico
+	--verifica se precisa apagar a �ltima tabela do hist�rico
 	if (#self.tabelas > _detalhes.segments_amount) then
 		
 		local combat_removed, combat_index
 		
-		--> verifica se est�o dando try em um boss e remove o combate menos relevante
+		--verifica se est�o dando try em um boss e remove o combate menos relevante
 		local bossid = tabela.is_boss and tabela.is_boss.id
 		
 		local last_segment = self.tabelas [#self.tabelas]
@@ -366,31 +366,31 @@ function historico:adicionar (tabela)
 			combat_index = #self.tabelas
 		end
 
-		--> verificar novamente a time machine
-		for _, jogador in ipairs (combat_removed [1]._ActorTable) do --> damage
+		--verificar novamente a time machine
+		for _, jogador in ipairs(combat_removed [1]._ActorTable) do --damage
 			if (jogador.timeMachine) then
 				jogador:DesregistrarNaTimeMachine()
 			end
 		end
-		for _, jogador in ipairs (combat_removed [2]._ActorTable) do --> heal
+		for _, jogador in ipairs(combat_removed [2]._ActorTable) do --heal
 			if (jogador.timeMachine) then
 				jogador:DesregistrarNaTimeMachine()
 			end
 		end
 		
-		--> remover
+		--remover
 		_table_remove (self.tabelas, combat_index)
-		_detalhes:SendEvent ("DETAILS_DATA_SEGMENTREMOVED")
+		_detalhes:SendEvent("DETAILS_DATA_SEGMENTREMOVED")
 	end
 	
-	--> chama a fun��o que ir� atualizar as inst�ncias com segmentos no hist�rico
+	--chama a fun��o que ir� atualizar as inst�ncias com segmentos no hist�rico
 	_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos_AfterCombat, self)
 	--_detalhes:InstanciaCallFunction (_detalhes.AtualizarJanela)
 end
 
---> verifica se tem alguma instancia congelada mostrando o segmento rec�m liberado
+--verifica se tem alguma instancia congelada mostrando o segmento rec�m liberado
 function _detalhes:CheckFreeze (instancia, index_liberado, tabela)
-	if (instancia.freezed) then --> esta congelada
+	if (instancia.freezed) then --esta congelada
 		if (instancia.segmento == index_liberado) then
 			instancia.showing = tabela
 			instancia:UnFreeze()
@@ -423,12 +423,12 @@ function historico:resetar_overall()
 	--	_detalhes:Msg (Loc ["STRING_ERASE_IN_COMBAT"])
 	--	_detalhes.schedule_remove_overall = true
 	--else
-		--> fecha a janela de informa��es do jogador
+		--fecha a janela de informa��es do jogador
 		_detalhes:FechaJanelaInfo()
 		
 		_detalhes.tabela_overall = combate:NovaTabela()
 		
-		for index, instancia in ipairs (_detalhes.tabela_instancias) do 
+		for index, instancia in ipairs(_detalhes.tabela_instancias) do 
 			if (instancia.ativa and instancia.segmento == -1) then
 				instancia:InstanceReset()
 				instancia:ReajustaGump()
@@ -440,7 +440,7 @@ function historico:resetar_overall()
 		end
 	--end
 	
-	--> stop bar testing if any
+	--stop bar testing if any
 	_detalhes:StopTestBarUpdate()
 	
 	_detalhes:ClockPluginTickOnSegment()
@@ -452,32 +452,32 @@ function historico:resetar()
 		_detalhes.bosswindow:Reset()
 	end
 	
-	--> stop bar testing if any
+	--stop bar testing if any
 	_detalhes:StopTestBarUpdate()
 	
-	if (_detalhes.tabela_vigente.verifica_combate) then --> finaliza a checagem se esta ou n�o no combate
+	if (_detalhes.tabela_vigente.verifica_combate) then --finaliza a checagem se esta ou n�o no combate
 		_detalhes:CancelTimer (_detalhes.tabela_vigente.verifica_combate)
 	end
 	
 	_detalhes.last_closed_combat = nil
 	
-	--> remove mythic dungeon schedules if any
+	--remove mythic dungeon schedules if any
 	_detalhes.schedule_mythicdungeon_trash_merge = nil
 	_detalhes.schedule_mythicdungeon_endtrash_merge = nil
 	_detalhes.schedule_mythicdungeon_overallrun_merge = nil
 	
-	--> clear other schedules
+	--clear other schedules
 	_detalhes.schedule_flag_boss_components = nil
 	_detalhes.schedule_store_boss_encounter = nil
 	--_detalhes.schedule_remove_overall = nil
 	
-	--> fecha a janela de informa��es do jogador
+	--fecha a janela de informa��es do jogador
 	_detalhes:FechaJanelaInfo()
 	
-	--> empty temporary tables
+	--empty temporary tables
 	_detalhes.atributo_damage:ClearTempTables()
 	
-	for _, combate in ipairs (_detalhes.tabela_historico.tabelas) do 
+	for _, combate in ipairs(_detalhes.tabela_historico.tabelas) do 
 		_table_wipe (combate)
 	end
 	_table_wipe (_detalhes.tabela_vigente)
@@ -489,7 +489,7 @@ function historico:resetar()
 	end
 	
 	_detalhes:LimparPets()
-	_detalhes:ResetSpecCache (true) --> for�ar
+	_detalhes:ResetSpecCache (true) --for�ar
 	
 	-- novo container de historico
 	_detalhes.tabela_historico = historico:NovoHistorico() --joga fora a tabela antiga e cria uma nova
@@ -507,13 +507,13 @@ function historico:resetar()
 	--zera o contador de combates
 	_detalhes:NumeroCombate (0)
 	
-	--> limpa o cache de magias
+	--limpa o cache de magias
 	_detalhes:ClearSpellCache()
 	
-	--> limpa a tabela de escudos
+	--limpa a tabela de escudos
 	_table_wipe (_detalhes.escudos)
 	
-	--> reinicia a time machine
+	--reinicia a time machine
 	timeMachine:Reiniciar()
 	
 	_table_wipe (_detalhes.cache_damage_group)
@@ -521,7 +521,7 @@ function historico:resetar()
 	_detalhes:UpdateParserGears()
 
 	if (not InCombatLockdown() and not UnitAffectingCombat ("player")) then
-		--> workarround for the "script run too long" issue while outside the combat lockdown
+		--workarround for the "script run too long" issue while outside the combat lockdown
 		local cleargarbage = function()
 			collectgarbage()
 		end
@@ -538,9 +538,9 @@ function historico:resetar()
 	_detalhes:InstanciaCallFunction(_detalhes.ResetaGump) --_detalhes:ResetaGump ("de todas as instancias")
 	_detalhes:InstanciaCallFunction(Details.FadeHandler.Fader, "IN", nil, "barras")
 	
-	_detalhes:RefreshMainWindow (-1) --atualiza todas as instancias
+	_detalhes:RefreshMainWindow(-1) --atualiza todas as instancias
 	
-	_detalhes:SendEvent ("DETAILS_DATA_RESET", nil, nil)
+	_detalhes:SendEvent("DETAILS_DATA_RESET", nil, nil)
 	
 end
 
@@ -558,7 +558,7 @@ end
 			
 			if (_terceiro_combate) then
 				if (_terceiro_combate.is_trash and _segundo_combate.is_trash and not _terceiro_combate.is_boss and not _segundo_combate.is_boss) then
-					--> tabela 2 deve ser deletada e somada a tabela 1
+					--tabela 2 deve ser deletada e somada a tabela 1
 					if (_detalhes.debug) then
 						detalhes:Msg ("(debug) concatenating two trash segments.")
 					end
@@ -568,20 +568,20 @@ end
 					
 					_segundo_combate.is_trash = true
 
-					--> verificar novamente a time machine
-					for _, jogador in ipairs (_terceiro_combate [1]._ActorTable) do --> damage
+					--verificar novamente a time machine
+					for _, jogador in ipairs(_terceiro_combate [1]._ActorTable) do --damage
 						if (jogador.timeMachine) then
 							jogador:DesregistrarNaTimeMachine()
 						end
 					end
-					for _, jogador in ipairs (_terceiro_combate [2]._ActorTable) do --> heal
+					for _, jogador in ipairs(_terceiro_combate [2]._ActorTable) do --heal
 						if (jogador.timeMachine) then
 							jogador:DesregistrarNaTimeMachine()
 						end
 					end
-					--> remover
+					--remover
 					_table_remove (self.tabelas, 3)
-					_detalhes:SendEvent ("DETAILS_DATA_SEGMENTREMOVED", nil, nil)
+					_detalhes:SendEvent("DETAILS_DATA_SEGMENTREMOVED", nil, nil)
 				end
 			end
 --]]

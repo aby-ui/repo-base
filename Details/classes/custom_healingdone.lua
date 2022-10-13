@@ -7,7 +7,7 @@
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _cstr = string.format --lua local
 	local _math_floor = math.floor --lua local
@@ -33,7 +33,7 @@
 	local _GetUnitName = GetUnitName -- api local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local atributo_custom = _detalhes.atributo_custom
 	
@@ -50,7 +50,7 @@
 
 	local temp_table = {}
 	
-	local target_func = function (main_table)
+	local target_func = function(main_table)
 		local i = 1
 		for name, amount in _pairs (main_table) do
 			local t = temp_table [i]
@@ -66,7 +66,7 @@
 		end
 	end
 	
-	local spells_used_func = function (main_table, target)
+	local spells_used_func = function(main_table, target)
 		local i = 1
 		for spellid, spell_table in _pairs (main_table) do
 			local target_amount = spell_table.targets [target]
@@ -99,7 +99,7 @@
 	end	
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> healing done tooltip
+--healing done tooltip
 	
 	
 	function atributo_custom:healdoneTooltip (actor, target, spellid, combat, instance)
@@ -127,7 +127,7 @@
 				
 				return
 			else
-				local name, _, icon = _GetSpellInfo (spellid)
+				local name, _, icon = _GetSpellInfo(spellid)
 				GameCooltip:AddLine (name)
 				GameCooltip:AddIcon (icon, 1, 1, 14, 14)
 				
@@ -186,7 +186,7 @@
 						break
 					end
 					
-					local name, _, icon = _GetSpellInfo (t[1])
+					local name, _, icon = _GetSpellInfo(t[1])
 					GameCooltip:AddLine (name, FormatTooltipNumber (_, t[2]))
 					GameCooltip:AddIcon (icon, 1, 1, 14, 14)
 				end
@@ -198,24 +198,24 @@
 	end
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> healing done search
+--healing done search
 	
 	function atributo_custom:healdone (actor, source, target, spellid, combat, instance_container)
 
-		if (spellid) then --> spell is always healing done
+		if (spellid) then --spell is always healing done
 			local spell = actor.spells._ActorTable [spellid]
 			local melee = actor.spells._ActorTable [1]
 			if (spell) then
 				if (target) then
 					if (target == "[all]") then
 						for target_name, amount in _pairs (spell.targets) do 
-							--> add amount
+							--add amount
 							
-							--> we need to pass a object here in order to get name and class, so we just get the main heal actor from the combat
+							--we need to pass a object here in order to get name and class, so we just get the main heal actor from the combat
 							instance_container:AddValue (combat (1, target_name), amount, true)
 							--
 							atributo_custom._TargetActorsProcessedTotal = atributo_custom._TargetActorsProcessedTotal + amount
-							--> add to processed container
+							--add to processed container
 							if (not atributo_custom._TargetActorsProcessed [target_name]) then
 								atributo_custom._TargetActorsProcessed [target_name] = true
 								atributo_custom._TargetActorsProcessedAmt = atributo_custom._TargetActorsProcessedAmt + 1
@@ -227,10 +227,10 @@
 						local roster = combat.raid_roster
 						for target_name, amount in _pairs (spell.targets) do 
 							if (roster [target_name]) then
-								--> add amount
+								--add amount
 								instance_container:AddValue (combat (1, target_name), amount, true)
 								atributo_custom._TargetActorsProcessedTotal = atributo_custom._TargetActorsProcessedTotal + amount
-								--> add to processed container
+								--add to processed container
 								if (not atributo_custom._TargetActorsProcessed [target_name]) then
 									atributo_custom._TargetActorsProcessed [target_name] = true
 									atributo_custom._TargetActorsProcessedAmt = atributo_custom._TargetActorsProcessedAmt + 1
@@ -242,10 +242,10 @@
 					elseif (target == "[player]") then
 						local target_amount = spell.targets [_detalhes.playername]
 						if (target_amount) then
-							--> add amount
+							--add amount
 							instance_container:AddValue (combat (1, _detalhes.playername), target_amount, true)
 							atributo_custom._TargetActorsProcessedTotal = atributo_custom._TargetActorsProcessedTotal + target_amount
-							--> add to processed container
+							--add to processed container
 							if (not atributo_custom._TargetActorsProcessed [_detalhes.playername]) then
 								atributo_custom._TargetActorsProcessed [_detalhes.playername] = true
 								atributo_custom._TargetActorsProcessedAmt = atributo_custom._TargetActorsProcessedAmt + 1
@@ -256,10 +256,10 @@
 					else
 						local target_amount = actor.targets [target]
 						if (target_amount) then
-							--> add amount
+							--add amount
 							instance_container:AddValue (combat (1, target), target_amount, true)
 							atributo_custom._TargetActorsProcessedTotal = atributo_custom._TargetActorsProcessedTotal + target_amount
-							--> add to processed container
+							--add to processed container
 							if (not atributo_custom._TargetActorsProcessed [target]) then
 								atributo_custom._TargetActorsProcessed [target] = true
 								atributo_custom._TargetActorsProcessedAmt = atributo_custom._TargetActorsProcessedAmt + 1

@@ -116,7 +116,7 @@ local function SetHooks_PetTracker_Journal()
 	else
 		PetTrackerTrackToggle:HookScript("OnClick", function()
 			if dbChar.collapsed and PetTracker.sets.trackPets then
-				ObjectiveTracker_MinimizeButton_OnClick()
+				KT:MinimizeButton_OnClick(true)
 			end
 		end)
 	end
@@ -238,10 +238,10 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.1.2") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.2.1") and db.addonPetTracker)
 
 	if self.isLoaded then
-		KT:Alert_IncompatibleAddon("PetTracker", "9.1.0")
+		KT:Alert_IncompatibleAddon("PetTracker", "9.2.0")
 
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)

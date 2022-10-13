@@ -4,6 +4,10 @@
 ## RequiredDeps: Details
 ## OptionalDeps: Ace3
 
+#@no-lib-strip@
+#embeds.xml
+#@end-no-lib-strip@
+
 enUS.lua
 
 Details_TinyThreat.lua

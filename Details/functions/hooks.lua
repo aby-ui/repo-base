@@ -29,9 +29,9 @@
 			return false, "Invalid hook type."
 		end
 		
-		for _, this_func in ipairs (_detalhes.hooks [hook_type]) do
+		for _, this_func in ipairs(_detalhes.hooks [hook_type]) do
 			if (this_func == func) then
-				--> already installed
+				--already installed
 				return
 			end
 		end
@@ -50,7 +50,7 @@
 			return false, "Invalid hook type."
 		end
 		
-		for index, this_func in ipairs (_detalhes.hooks [hook_type]) do 
+		for index, this_func in ipairs(_detalhes.hooks [hook_type]) do 
 		
 			if (this_func == func) then
 			

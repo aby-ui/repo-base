@@ -535,6 +535,7 @@ end
 function EO:OnDetailsEvent(event, combat)
     if event == 'COMBAT_PLAYER_ENTER' then
         EO.current = combat:GetCombatNumber()
+        EO.overall = Details:GetCombat(-1):GetCombatNumber()
         EO:Debug("COMBAT_PLAYER_ENTER: %s", EO.current)
     elseif event == 'COMBAT_PLAYER_LEAVE' then
         EO.current = combat:GetCombatNumber()
@@ -561,15 +562,7 @@ function EO:LoadHooks()
     self:SecureHook(_G.DetailsMythicPlusFrame, 'MergeTrashCleanup')
     self:SecureHook(_G.DetailsMythicPlusFrame, 'MergeRemainingTrashAfterAllBossesDone')
 
-    local originResetOverall = Details.historico.resetar_overall
-    Details.historico.resetar_overall = function(...)
-        originResetOverall(...)
-
-        EO:OnResetOverall()
-    end
-    if Details.tabela_historico then
-        self:SecureHook(Details.tabela_historico, 'resetar_overall', 'OnResetOverall')
-    end
+    self:SecureHook(Details.historico, 'resetar_overall', 'OnResetOverall')
     self.overall = Details:GetCombat(-1):GetCombatNumber()
 
     Details:InstallCustomObject(self.CustomDisplay)

@@ -4,14 +4,14 @@
 	local _
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _setmetatable = setmetatable --lua local
 	local _ipairs = ipairs --lua local
 	local _UnitAura = UnitAura --api local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local alvo_da_habilidade	=	_detalhes.alvo_da_habilidade
 	local habilidade_energy	=	_detalhes.habilidade_e_energy
@@ -20,7 +20,7 @@
 	local container_playernpc		= _detalhes.container_type.CONTAINER_PLAYERNPC
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internals
+--internals
 
 	function habilidade_energy:NovaTabela (id, link, token)
 

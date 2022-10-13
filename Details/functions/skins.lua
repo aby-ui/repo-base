@@ -3,7 +3,7 @@ local _detalhes = _G._detalhes
 local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 local _
 
-	--> install skin function:
+	--install skin function:
 	function _detalhes:InstallSkin (skin_name, skin_table)
 		if (not skin_name) then
 			return false
@@ -59,19 +59,19 @@ local _
 	end
 	
 	local reset_tooltip = function()
-		_detalhes:SetTooltipBackdrop ("Blizzard Tooltip", 16, {1, 1, 1, 1})
+		_detalhes:SetTooltipBackdrop("Blizzard Tooltip", 16, {1, 1, 1, 1})
 		_detalhes:DelayOptionsRefresh()
 	end
 	local set_tooltip_elvui1 = function()
-		_detalhes:SetTooltipBackdrop ("Blizzard Tooltip", 16, {0, 0, 0, 1})
+		_detalhes:SetTooltipBackdrop("Blizzard Tooltip", 16, {0, 0, 0, 1})
 		_detalhes:DelayOptionsRefresh()
 	end
 	local set_tooltip_elvui2 = function()
-		_detalhes:SetTooltipBackdrop ("Blizzard Tooltip", 16, {1, 1, 1, 0})
+		_detalhes:SetTooltipBackdrop("Blizzard Tooltip", 16, {1, 1, 1, 0})
 		_detalhes:DelayOptionsRefresh()
 	end
 	
-	--> install wow interface skin:
+	--install wow interface skin:
 	_detalhes:InstallSkin ("WoW Interface", {
 		file = [[Interface\AddOns\Details\images\skins\default_skin.blp]], 
 		author = "Details!", 
@@ -294,7 +294,7 @@ local _
 			instance:AttributeMenu (nil, nil, 4)
 			
 			if (_detalhes.options_group_edit) then
-				for _, this_instance in ipairs (instance:GetInstanceGroup()) do
+				for _, this_instance in ipairs(instance:GetInstanceGroup()) do
 					if (this_instance ~= instance) then
 						this_instance:ToolbarMenuSetButtonsOptions (nil, true)
 						this_instance:AttributeMenu (nil, nil, nil, nil, nil, nil, nil, true)
@@ -337,27 +337,29 @@ local _
 		icon_point_anchor_bottom = {-37, 12},
 		left_corner_anchor_bottom = {-107, 0},
 		right_corner_anchor_bottom = {96, 0},
-		
+
 		icon_on_top = true,
 		icon_ignore_alpha = true,
 		icon_titletext_position = {3, 3},
-		
 		--overwrites
 		instance_cprops = {
 			menu_icons_alpha = 0.92,
-			["menu_icons_size"] = 0.850000023841858,
+			["menu_icons_size"] = 0.82,
 			["color"] = {
-				0.0705882352941177, -- [1]
-				0.0705882352941177, -- [2]
-				0.0705882352941177, -- [3]
-				0.639196664094925, -- [4]
+				0.1215,
+				0.1176,
+				0.1294,
+				0.91,
 			},
 			["menu_anchor"] = {
-				16, -- [1]
-				0, -- [2]
+				20,
+				0,
 				["side"] = 2,
 			},
-			["bg_r"] = 0.0941176470588235,
+			["bg_r"] = 0.243,
+			["bg_g"] = 0.2352,
+			["bg_b"] = 0.2588,
+			["bg_alpha"] = 0.6,
 			["color_buttons"] = {
 				1, -- [1]
 				1, -- [2]
@@ -368,6 +370,9 @@ local _
 				16, -- [1]
 				-3, -- [2]
 			},
+
+			["toolbar_icon_file"] = "Interface\\AddOns\\Details\\images\\toolbar_icons_2_shadow",
+
 			["attribute_text"] = {
 				["enabled"] = true,
 				["shadow"] = false,
@@ -376,8 +381,8 @@ local _
 				["custom_text"] = "{name}",
 				["text_face"] = "Accidental Presidency",
 				["anchor"] = {
-					-18, -- [1]
-					3, -- [2]
+					1.4, -- [1]
+					2, -- [2]
 				},
 				["text_color"] = {
 					1, -- [1]
@@ -386,8 +391,8 @@ local _
 					1, -- [4]
 				},
 				["enable_custom_text"] = false,
+				["show_timer_always"] = true,
 			},
-			["bg_alpha"] = 0.183960914611816,
 			["plugins_grow_direction"] = 1,
 			["menu_icons"] = {
 				true, -- [1]
@@ -407,16 +412,15 @@ local _
 				0.333333333333333, -- [1]
 				0.333333333333333, -- [2]
 				0.333333333333333, -- [3]
-				
 				},
 			},
-			["hide_icon"] = true,
+			["hide_icon"] = false,
 			["instance_button_anchor"] = {
 				-27, -- [1]
 				1, -- [2]
 			},
 			["toolbar_side"] = 1,
-			["bg_g"] = 0.0941176470588235,
+			
 			["backdrop_texture"] = "Details Ground",
 			["show_statusbar"] = false,
 			["show_sidebars"] = false,
@@ -469,7 +473,7 @@ local _
 				["textL_custom_text"] = "{data1}. {data3}{data2}",
 				["font_size"] = 16,
 				["height"] = 21,
-				["texture_file"] = "Interface\\AddOns\\Details\\images\\BantoBar",
+				["texture_file"] = "Interface\\AddOns\\Details\\images\\bar_skyline",
 				["icon_file"] = "Interface\\AddOns\\Details\\images\\classes_small",
 				["textR_bracket"] = "(",
 				["textR_enable_custom_text"] = false,
@@ -480,7 +484,7 @@ local _
 				},
 				["textL_show_number"] = true,
 				["textR_custom_text"] = "{data1} ({data2}, {data3}%)",
-				["texture"] = "BantoBar",
+				["texture"] = "Skyline",
 				["use_spec_icons"] = true,
 				["textR_class_colors"] = false,
 				["textL_class_colors"] = false,
@@ -519,10 +523,9 @@ local _
 					["texture"] = "Details BarBorder 2",
 				},
 			},
-			["bg_b"] = 0.0941176470588235,
 		},
 		
-		callback = function (skin, instance, just_updating)
+		callback = function(skin, instance, just_updating)
 			--none
 		end,
 		
@@ -745,7 +748,7 @@ local _
 			["bg_b"] = 0.0941,
 		},
 		
-		callback = function (skin, instance, just_updating)
+		callback = function(skin, instance, just_updating)
 			--none
 		end,
 		
@@ -1035,20 +1038,20 @@ local _
 		local ElvUIRightChatDataPanel = RightChatDataPanel and RightChatDataPanel:IsShown()
 		
 		if (instance1.skin == "Forced Square") then
-			instance1.baseframe:SetSize (wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
-			instance2.baseframe:SetSize (wight/2 - 4 + 2, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
+			instance1.baseframe:SetSize(wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
+			instance2.baseframe:SetSize(wight/2 - 4 + 2, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
 			
 		elseif (instance1.skin == "ElvUI Frame Style") then
-			instance1.baseframe:SetSize (wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
-			instance2.baseframe:SetSize (wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
+			instance1.baseframe:SetSize(wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
+			instance2.baseframe:SetSize(wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
 			
 		elseif (instance1.skin == "ElvUI Style II") then
-			instance1.baseframe:SetSize (wight/2 - 4 - 2, height - 20 - 2 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
-			instance2.baseframe:SetSize (wight/2 - 4 - 2, height - 20 - 2 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
+			instance1.baseframe:SetSize(wight/2 - 4 - 2, height - 20 - 2 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
+			instance2.baseframe:SetSize(wight/2 - 4 - 2, height - 20 - 2 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
 			
 		else
-			instance1.baseframe:SetSize (wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
-			instance2.baseframe:SetSize (wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
+			instance1.baseframe:SetSize(wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled1 and 14 or 0))
+			instance2.baseframe:SetSize(wight/2 - 4, height-20 - (ElvUIRightChatDataPanel and 21 or 0) - 8 - (statusbar_enabled2 and 14 or 0))
 			
 		end
 
@@ -1056,8 +1059,8 @@ local _
 		instance1.snap [3] = 2; instance2.snap [1] = 1;
 		instance1.horizontalSnap = true; instance2.horizontalSnap = true
 		
-		instance1.baseframe:SetPoint ("bottomleft", RightChatDataPanel, "topleft", 1 - (instance1.skin == "Forced Square" and 1 or 0), 1 + (statusbar_enabled1 and 14 or 0) - (ElvUIRightChatDataPanel and 0 or 22))
-		instance2.baseframe:SetPoint ("bottomright", RightChatToggleButton, "topright", -1, 1 + (statusbar_enabled2 and 14 or 0) - (ElvUIRightChatDataPanel and 0 or 22))
+		instance1.baseframe:SetPoint("bottomleft", RightChatDataPanel, "topleft", 1 - (instance1.skin == "Forced Square" and 1 or 0), 1 + (statusbar_enabled1 and 14 or 0) - (ElvUIRightChatDataPanel and 0 or 22))
+		instance2.baseframe:SetPoint("bottomright", RightChatToggleButton, "topright", -1, 1 + (statusbar_enabled2 and 14 or 0) - (ElvUIRightChatDataPanel and 0 or 22))
 	
 		instance1:LockInstance (true)
 		instance2:LockInstance (true)
@@ -1107,7 +1110,7 @@ local _
 		right_corner_anchor_bottom = {96, 0},
 
 		--[[ callback function execute after all changes on the window, first argument is this skin table, second is the instance where the skin was applied --]]
-		callback = function (self, instance) end,
+		callback = function(self, instance) end,
 		--[[ control_script is a OnUpdate script, it start right after all changes on the window and also after the callback --]]
 		--[[ control_script_on_start run before the control_script, use it to reset values if needed --]]
 		control_script_on_start = nil,
@@ -1369,7 +1372,7 @@ local _
 		right_corner_anchor_bottom = {96, 0},
 
 		--[[ callback function execute after all changes on the window, first argument is this skin table, second is the instance where the skin was applied --]]
-		callback = function (self, instance) end,
+		callback = function(self, instance) end,
 		--[[ control_script is a OnUpdate script, it start right after all changes on the window and also after the callback --]]
 		--[[ control_script_on_start run before the control_script, use it to reset values if needed --]]
 		control_script_on_start = nil,
@@ -1620,7 +1623,7 @@ local _
 		right_corner_anchor_bottom = {96, 0},
 
 		--[[ callback function execute after all changes on the window, first argument is this skin table, second is the instance where the skin was applied --]]
-		callback = function (self, instance) end,
+		callback = function(self, instance) end,
 		--[[ control_script is a OnUpdate script, it start right after all changes on the window and also after the callback --]]
 		--[[ control_script_on_start run before the control_script, use it to reset values if needed --]]
 		control_script_on_start = nil,
@@ -1808,7 +1811,7 @@ local _
 		right_corner_anchor_bottom = {95, 0},
 
 		--[[ callback function execute after all changes on the window, first argument is this skin table, second is the instance where the skin was applied --]]
-		callback = function (self, instance) end,
+		callback = function(self, instance) end,
 		--[[ control_script is a OnUpdate script, it start right after all changes on the window and also after the callback --]]
 		--[[ control_script_on_start run before the control_script, use it to reset values if needed --]]
 		control_script_on_start = nil,
@@ -2506,7 +2509,7 @@ local _
 			["bars_inverted"] = false,
 		},
 		
-		callback = function (skin, instance, just_updating)
+		callback = function(skin, instance, just_updating)
 			--none
 		end,
 		
@@ -2790,7 +2793,7 @@ local _
 			["bars_sort_direction"] = 1,
 		},
 		
-		callback = function (skin, instance, just_updating)
+		callback = function(skin, instance, just_updating)
 			--none
 		end,
 		

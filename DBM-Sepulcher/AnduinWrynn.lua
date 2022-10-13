@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2469, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220907235332")
+mod:SetRevision("20220920224913")
 mod:SetCreatureID(181954)
 mod:SetEncounterID(2546)
 mod:SetUsedIcons(4, 5, 6, 7, 8)
@@ -411,7 +411,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			updateTimerFades(self)
 		end
-	elseif spellId == 364031 and playersSouled[playerName] and self:CheckDispelFilter() then
+	elseif spellId == 364031 and playersSouled[playerName] and self:CheckDispelFilter("magic") then
 		specWarnMalignantward:Show(args.destName)
 		specWarnMalignantward:Play("helpdispel")
 	elseif spellId == 361992 or spellId == 361993 then--361992 Overconfidence, 361993 Hopelessness

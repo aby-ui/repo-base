@@ -5,7 +5,7 @@
 ## Notes-ruRU: Отображает, сколько взрывоопасных сфер игроки берут в цель и бьют.
 ## RequiredDeps: Details
 ## Author: LiangYuxuan
-## Version: v9.2.7
+## Version: v9.2.8
 ## SavedVariablesPerCharacter: ExplosiveOrbsLog
 ## X-License: MIT
 ## X-Curse-Project-ID: 352367

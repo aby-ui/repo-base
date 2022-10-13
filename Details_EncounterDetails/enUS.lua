@@ -48,7 +48,7 @@ Loc ["STRING_INTERRIPT_HELP"] = " |cFFFFFF00Click|r on a bar:\nopen report windo
 Loc ["STRING_DISPELL_HELP"] = " \n|cFFFFFF00Click|r on a bar:\nopen report window."
 Loc ["STRING_DEATHS_HELP"] = " \n|cFFFFFF00Click|r on a bar:\nopen report window."
 
---> mechanic types
+--mechanic types
 Loc ["STRING_HEAL"] = "heal"
 Loc ["STRING_LOWDPS"] = "lowdps"
 Loc ["STRING_LOWHEAL"] = "lowheal"

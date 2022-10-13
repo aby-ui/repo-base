@@ -13,7 +13,7 @@ do
 	_error.__tostring = function()
 		return _error.errortext
 	end
-	_error.__call = function (_this)
+	_error.__call = function(_this)
 		print (_this.errortext)
 	end
 	

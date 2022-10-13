@@ -1668,7 +1668,6 @@ GTFO.SpellID["228519"] = {
 -- TODO: Wash Away (Mrrgria)
 -- TODO: Bubble Blast (Shoreline Tidespeaker)
 -- TODO: Severe Dusting (Babblet)
--- TODO: Mortal Strike (Attumen) -- Non-tank fail (Avoidable?)
 -- TODO: Will Breaker (Lord Crispin Ference) -- Non-tank fail
 -- TODO: Flame Wreath (Shade of Medivh) -- (If you cause it)
 -- TODO: Shadow Phlegm (Viz'aduum the Watcher) -- Avoidable?
@@ -1704,13 +1703,29 @@ GTFO.SpellID["227977"] = {
   sound = 3;
 };
 
+GTFO.SpellID["227493"] = {
+  --desc = "Mortal Strike (Attumen the Huntsman)";
+  sound = 3;
+  tankSound = 0;
+};
+
 GTFO.SpellID["227339"] = {
-  --desc = "Mezair (Midnight)";
+  --desc = "Mezair - Fire (Midnight)";
+  sound = 3;
+};
+
+GTFO.SpellID["254644"] = {
+  --desc = "Mezair - Physical (Midnight)";
   sound = 3;
 };
 
 GTFO.SpellID["227645"] = {
   --desc = "Spectral Charge (Midnight)";
+  sound = 3;
+};
+
+GTFO.SpellID["228603"] = {
+  --desc = "Charge (Spectral Charger)";
   sound = 3;
 };
 

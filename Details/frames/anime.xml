@@ -301,7 +301,7 @@
 								self.IconFlash:SetVertexColor(1, 0, 0);
 							</OnLoad>
 							<OnShow>
-                                UICoreFrameFlash(self, 0.75, 0.75, -1, nil);
+								UICoreFrameFlash(self, 0.75, 0.75, -1, nil);
 							</OnShow>
 							<OnHide>
 								UICoreFrameFlashStop(self);

@@ -178,11 +178,19 @@ function tabFrame1:Refresh()
 	end
 	self:SetHeight(#self.buttons * 16 + 8)
 	if #self.dropdown.values > #self.buttons then
-		tabFrame1List:Show()
+		if isDragonflight then
+			tabFrame1ScrollBar:Show()
+		else
+			tabFrame1List:Show()
+		end
 		tabFrame1ScrollBar:SetMinMaxValues(0, valuesWOButtons)
 	else
 		if #self.dropdown.values < #self.buttons then
-			tabFrame1List:Hide()
+			if isDragonflight then
+				tabFrame1ScrollBar:Hide()
+			else
+				tabFrame1List:Hide()
+			end
 			self:SetHeight(#self.dropdown.values * 16 + 8)
 		end
 		tabFrame1ScrollBar:SetValue(0)

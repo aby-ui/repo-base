@@ -172,7 +172,7 @@ do
 		return defaultColors
 	end
 	
-	for colorName, colorTable in pairs (defaultColors) do
+	for colorName, colorTable in pairs(defaultColors) do
 		DF.alias_text_colors [colorName] = colorTable
 	end
 	

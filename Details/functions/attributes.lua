@@ -4,7 +4,7 @@ do
 	local _detalhes = _G._detalhes
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 
-	--> Globals
+	--Globals
 	--[[global]] DETAILS_ATTRIBUTE_DAMAGE = 1
 	
 		--[[global]] DETAILS_SUBATTRIBUTE_DAMAGEDONE = 1
@@ -81,27 +81,27 @@ do
 		"aura", --debuff uptime
 	}
 	
-	--> Main Attributes
+	--Main Attributes
 	_detalhes.atributos = {
 
-		--> Attributes amount = 4: damage / heal / energy / misc
+		--Attributes amount = 4: damage / heal / energy / misc
 		[0] = 4, 
 		
 		--[[ DAMAGE ]]
-			dano = 1,	--> identifier
-			[1] = 8,	-->  sub attributes 
+			dano = 1,	--identifier
+			[1] = 8,	-- sub attributes 
 		
 		--[[ HEALING ]]
-			cura = 2,	--> identifier
-			[2] = 7,	-->  sub attributes 
+			cura = 2,	--identifier
+			[2] = 7,	-- sub attributes 
 		
 		--[[ ENERGY ]]
-			e_energy = 3,--> identifier
-			[3] = 6,	-->  sub attributes 
+			e_energy = 3,--identifier
+			[3] = 6,	-- sub attributes 
 		
 		--[[ MISC ]]
-			misc = 4,	--> identifier
-			[4] = 8,	-->  sub attributes 
+			misc = 4,	--identifier
+			[4] = 8,	-- sub attributes 
 			
 		--[[ CUSTOM ]]
 			custom = 5,
@@ -109,19 +109,19 @@ do
 		
 		--[[ String Names ]]
 		lista = {
-			Loc ["STRING_ATTRIBUTE_DAMAGE"],--> Damage
-			Loc ["STRING_ATTRIBUTE_HEAL"],	--> Healing
-			Loc ["STRING_ATTRIBUTE_ENERGY"],	--> Energy
-			Loc ["STRING_ATTRIBUTE_MISC"],	--> Misc
-			Loc ["STRING_SCRIPTS_TITLE"]	--> Custom
+			Loc ["STRING_ATTRIBUTE_DAMAGE"],--Damage
+			Loc ["STRING_ATTRIBUTE_HEAL"],	--Healing
+			Loc ["STRING_ATTRIBUTE_ENERGY"],	--Energy
+			Loc ["STRING_ATTRIBUTE_MISC"],	--Misc
+			Loc ["STRING_SCRIPTS_TITLE"]	--Custom
 		}
 	}
 
 	
-	--> Sub Attributes
+	--Sub Attributes
 	_detalhes.sub_atributos = {
 		{
-			--> Damage sub classes information
+			--Damage sub classes information
 			damage_done = 1,
 			dps = 2,
 			damage_taken = 3,
@@ -154,7 +154,7 @@ do
 		},
 
 		{
-			--> Healing sub classes information
+			--Healing sub classes information
 			healing_done = 1,
 			hps = 2, 
 			overheal = 3,
@@ -185,7 +185,7 @@ do
 		},
 		
 		{
-			--> Energy sub classes information
+			--Energy sub classes information
 			mana_ganha = 1, -- id 0
 			rage_ganha = 2, -- id 1
 			energy_ganha = 3, --id 3
@@ -212,7 +212,7 @@ do
 		},
 		
 		{
-			--> Misc sub classes information
+			--Misc sub classes information
 			cc_break = 1,
 			ress = 2,
 			kick = 3,
@@ -257,7 +257,7 @@ do
 				return CustomObject.name
 				
 			elseif (CustomObject and customName and CustomObject.name ~= customName) then
-				for _, custom in ipairs (_detalhes.custom) do
+				for _, custom in ipairs(_detalhes.custom) do
 					if (custom.name == customName) then
 						return custom.name
 					end

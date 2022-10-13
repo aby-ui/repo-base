@@ -121,7 +121,7 @@ function Details.packFunctions.PackCombatData(combatObject, flags)
         Details.packFunctions.PackUtility(combatObject)
     end
 
-    --> prepare data to send over network
+    --prepare data to send over network
         local exportedString = flags .. ","
 
         --add the combat info
@@ -572,7 +572,7 @@ function Details.packFunctions.PackDamage(combatObject)
 end
 
 --------------------------------------------------------------------------------------------------------------------------------
---> unpack
+--unpack
 
 --@currentCombat: details! combat object
 --@combatData: array with strings with combat information
@@ -616,7 +616,7 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
         actorObject.grupo = isActorInGroup(class, actorFlag)
         actorObject.flag_original = actorFlag
 
-        --> copy back the base damage
+        --copy back the base damage
             actorObject.total =               tonumber(combatData[tablePosition+1]) --[2]
             actorObject.totalabsorbed =       tonumber(combatData[tablePosition+2]) --[3]
             actorObject.damage_taken =        tonumber(combatData[tablePosition+3]) --[4]
@@ -625,7 +625,7 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
 
             tablePosition = tablePosition + 6 --increase table position
 
-        --> copy back the actor spells
+        --copy back the actor spells
             --amount of indexes used to store spells for this actor
             local spellsSize = tonumber(combatData [tablePosition]) --[7]
             if (isDebugging) then
@@ -649,7 +649,7 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
                 spellObject.counter = spellHits
                 spellObject.targets = targetTable
 
-                for targetName, amount in pairs (spellObject.targets) do
+                for targetName, amount in pairs(spellObject.targets) do
                     newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                 end
 
@@ -822,7 +822,7 @@ function Details.packFunctions.PackHeal(combatObject)
 end
 
 --------------------------------------------------------------------------------------------------------------------------------
---> unpack
+--unpack
 
 function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePosition)
 
@@ -864,7 +864,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
         actorObject.grupo = isActorInGroup(class, actorFlag)
         actorObject.flag_original = actorFlag
 
-        --> copy the base healing
+        --copy the base healing
             actorObject.total =                 tonumber(combatData[tablePosition+1]) --[2]
             actorObject.totalabsorb =           tonumber(combatData[tablePosition+2]) --[3]
             actorObject.totalover =             tonumber(combatData[tablePosition+3]) --[4]
@@ -873,7 +873,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
 
             tablePosition = tablePosition + 6
 
-        --> copy back the actor spells
+        --copy back the actor spells
             --amount of indexes used to store spells for this actor
             local spellsSize = tonumber(combatData [tablePosition]) --[7]
             if (isDebugging) then
@@ -897,7 +897,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
                 spellObject.counter = spellHits
                 spellObject.targets = targetTable
 
-                for targetName, amount in pairs (spellObject.targets) do
+                for targetName, amount in pairs(spellObject.targets) do
                     newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                 end
 
@@ -916,7 +916,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
 end
 
 --------------------------------------------------------------------------------------------------
---> pack utility data
+--pack utility data
 
 --pack utility passes the player utility info + pets the player own
 --each player will also send an enemy, the enemy will be in order of raidIndex of the player
@@ -1135,7 +1135,7 @@ function Details.packFunctions.PackUtility(combatObject)
 
         --]=]
 
-        --> cooldowns, pack player cooldowns used
+        --cooldowns, pack player cooldowns used
             actorUtilityInfo [#actorUtilityInfo + 1] = "C"
             local cooldownContainer = actor.cooldowns_defensive_spells and actor.cooldowns_defensive_spells._ActorTable
             local totalSpellIndexes = 0
@@ -1171,7 +1171,7 @@ function Details.packFunctions.PackUtility(combatObject)
                 actorUtilityInfo [#actorUtilityInfo + 1] = 0
             end
 
-        --> interrupts, pack player interrupts
+        --interrupts, pack player interrupts
             actorUtilityInfo [#actorUtilityInfo + 1] = "I"
             local interruptsContainer = actor.interrupt_spells and actor.interrupt_spells._ActorTable
             local totalSpellIndexes = 0
@@ -1219,7 +1219,7 @@ function Details.packFunctions.PackUtility(combatObject)
                 actorUtilityInfo [#actorUtilityInfo + 1] = 0
             end
 
-        --> cc break, pack player crowd control breaks
+        --cc break, pack player crowd control breaks
             actorUtilityInfo [#actorUtilityInfo + 1] = "B"
             local ccBreakContainer = actor.cc_break_spells and actor.cc_break_spells._ActorTable
             local totalSpellIndexes = 0
@@ -1267,7 +1267,7 @@ function Details.packFunctions.PackUtility(combatObject)
                 actorUtilityInfo [#actorUtilityInfo + 1] = 0
             end
 
-        --> dispel, pack player dispels done
+        --dispel, pack player dispels done
             actorUtilityInfo [#actorUtilityInfo + 1] = "D"
             local dispelsContainer = actor.dispell_spells and actor.dispell_spells._ActorTable
             local totalSpellIndexes = 0
@@ -1315,7 +1315,7 @@ function Details.packFunctions.PackUtility(combatObject)
                 actorUtilityInfo [#actorUtilityInfo + 1] = 0
             end
 
-        --> ress, pack player ress performed
+        --ress, pack player ress performed
             actorUtilityInfo [#actorUtilityInfo + 1] = "R"
             local ressContainer = actor.ress_spells and actor.ress_spells._ActorTable
             local totalSpellIndexes = 0
@@ -1402,7 +1402,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
             --D - dispels
             --R - ress
 
-            --> copy back the actor cooldowns spells
+            --copy back the actor cooldowns spells
                 tablePosition = tablePosition + 1
                 tablePosition = tablePosition + 1
 
@@ -1436,7 +1436,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         spellObject.counter = spellTotal
                         spellObject.targets = targetTable
 
-                        for targetName, amount in pairs (spellObject.targets) do
+                        for targetName, amount in pairs(spellObject.targets) do
                             newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                             newTotal = newTotal + amount
                         end
@@ -1449,7 +1449,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                     tablePosition = tablePosition + spellsSize --increase table position
                 end
 
-            --> copy back the actor interrupts spells
+            --copy back the actor interrupts spells
                 --tablePosition = tablePosition + 1
                 local startInterrupt = combatData[tablePosition]
                 tablePosition = tablePosition + 1
@@ -1482,7 +1482,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         spellObject.counter = spellTotal
                         spellObject.targets = targetTable
 
-                        for targetName, amount in pairs (spellObject.targets) do
+                        for targetName, amount in pairs(spellObject.targets) do
                             newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                             newTotal = newTotal + amount
                         end
@@ -1493,7 +1493,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local interruptWhatTable = Details.packFunctions.UnpackTable(combatData, spellIndex, true) --table[index] is nil
                         spellObject.interrompeu_oque = interruptWhatTable
 
-                        for targetName, amount in pairs (spellObject.targets) do
+                        for targetName, amount in pairs(spellObject.targets) do
                             newTargetWhatTable[targetName] = (newTargetWhatTable[targetName] or 0) + amount
                         end
 
@@ -1506,7 +1506,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                     tablePosition = tablePosition + spellsSize --increase table position
                 end
 
-           --> copy back the actor cc break spells
+           --copy back the actor cc break spells
                 --tablePosition = tablePosition + 1
                 local startCCBreak = combatData[tablePosition]
                 tablePosition = tablePosition + 1
@@ -1539,7 +1539,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         spellObject.cc_break = spellTotal
                         spellObject.targets = targetTable
 
-                        for targetName, amount in pairs (spellObject.targets) do
+                        for targetName, amount in pairs(spellObject.targets) do
                             newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                             newTotal = newTotal + amount
                         end
@@ -1551,7 +1551,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local ccBrokeWhatTable = Details.packFunctions.UnpackTable(combatData, spellIndex, true)
                         spellObject.cc_break_oque = ccBrokeWhatTable
 
-                        for targetName, amount in pairs (spellObject.cc_break_oque) do
+                        for targetName, amount in pairs(spellObject.cc_break_oque) do
                             newTargetWhatTable[targetName] = (newTargetWhatTable[targetName] or 0) + amount
                         end
 
@@ -1564,7 +1564,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                     tablePosition = tablePosition + spellsSize --increase table position
                 end
 
-            --> copy back the actor dispel spells
+            --copy back the actor dispel spells
                 --tablePosition = tablePosition + 1
                 tablePosition = tablePosition + 1
 
@@ -1596,7 +1596,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         spellObject.dispell = spellTotal
                         spellObject.targets = targetTable
 
-                        for targetName, amount in pairs (spellObject.targets) do
+                        for targetName, amount in pairs(spellObject.targets) do
                             newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                             newTotal = newTotal + amount
                         end
@@ -1607,7 +1607,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         local dispelWhatTable = Details.packFunctions.UnpackTable(combatData, spellIndex, true)
                         spellObject.dispell_oque = dispelWhatTable
 
-                        for spellId, amount in pairs (spellObject.dispell_oque) do
+                        for spellId, amount in pairs(spellObject.dispell_oque) do
                             newTargetWhatTable[spellId] = (newTargetWhatTable[spellId] or 0) + amount
                         end
 
@@ -1623,7 +1623,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
             --ress
             --ress_targets
             --ress_spells
-            --> copy back the actor ress spells
+            --copy back the actor ress spells
                 --tablePosition = tablePosition + 1
                 tablePosition = tablePosition + 1
 
@@ -1654,7 +1654,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
                         spellObject.ress = spellTotal
                         spellObject.targets = targetTable
 
-                        for targetName, amount in pairs (spellObject.targets) do
+                        for targetName, amount in pairs(spellObject.targets) do
                             newTargetsTable[targetName] = (newTargetsTable[targetName] or 0) + amount
                             newTotal = newTotal + amount
                         end
@@ -1805,7 +1805,7 @@ function Details.packFunctions.DeployPackedCombatData(packedCombatData)
 
         for i = 1, #allActors do
             local actor = allActors[i]
-            for targetName, amount in pairs (actor.targets) do
+            for targetName, amount in pairs(actor.targets) do
                 local actorIndex = damageContainer._NameIndexTable[targetName]
                 if (actorIndex) then
                     local targetActor = allActors[actorIndex]
@@ -1831,7 +1831,7 @@ function Details.packFunctions.DeployPackedCombatData(packedCombatData)
 
         for i = 1, #allActors do
             local actor = allActors[i]
-            for targetName, amount in pairs (actor.targets) do
+            for targetName, amount in pairs(actor.targets) do
                 local actorIndex = healingContainer._NameIndexTable[targetName]
                 if (actorIndex) then
                     local targetActor = allActors[actorIndex]

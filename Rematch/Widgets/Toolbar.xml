@@ -1,6 +1,6 @@
 <Ui>
 	<!-- secure button template for heal, bandage, treats, etc buttons -->
-	<Button name="RematchToolbarButtonTemplate" inherits="RematchSlotTemplate,SecureActionButtonTemplate" registerForClicks="AnyUp" virtual="true">
+	<Button name="RematchToolbarButtonTemplate" inherits="RematchSlotTemplate,SecureActionButtonTemplate" registerForClicks="AnyUp, AnyDown" virtual="true">
 		<Size x="32" y="32"/>
 		<Layers>
 			<Layer level="OVERLAY">
@@ -25,7 +25,7 @@
 					self.Icon:SetTexture(self.defaultIcon)
 					self.defaultIcon = nil
 				end
-				self:RegisterForClicks("AnyUp")
+				self:RegisterForClicks("AnyUp","AnyDown")
                 self:RegisterForDrag("LeftButton")
 			</OnLoad>
 			<OnEnter>

@@ -1,6 +1,6 @@
 
 
---> install data for raiding tiers
+--install data for raiding tiers
 
 local C_Timer = _G.C_Timer
 local DetailsFramework = _G.DetailsFramework
@@ -9,7 +9,7 @@ local tinsert = _G.tinsert
 function Details.InstallRaidInfo()
 
 	do
-		--> data for Sanctum of Domination (Shadowlands tier 1)
+		--data for Sanctum of Domination (Shadowlands tier 1)
 		local INSTANCE_EJID = 1193
 		local INSTANCE_MAPID = 2450
 		local HDIMAGESPATH = [[Details\images\raid]]
@@ -93,7 +93,7 @@ function Details.InstallRaidInfo()
 	end
 
 	do
-		--> data for Castle Nathria (Shadowlands tier 1)
+		--data for Castle Nathria (Shadowlands tier 1)
 		--F:\World of Warcraft\_retail_\BlizzardInterfaceArt\Interface\GLUES\LOADINGSCREENS\Expansion07\Main\LOADINGSCREEN_NzothRAID
 		local INSTANCE_EJID = 1190
 		local INSTANCE_MAPID = 2296
@@ -154,12 +154,12 @@ function Details.InstallRaidInfo()
 		for i = 1, #PORTRAIT_LIST do
 			local bossName = DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, INSTANCE_EJID)
 			if (bossName) then
-				tinsert (BOSSNAMES, bossName)
+				tinsert(BOSSNAMES, bossName)
 				local encounterTable = {
 					boss = bossName,
 					portrait = PORTRAIT_LIST [i],
 				}
-				tinsert (ENCOUNTERS, encounterTable)
+				tinsert(ENCOUNTERS, encounterTable)
 			else
 				break
 			end

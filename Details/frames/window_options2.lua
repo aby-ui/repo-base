@@ -61,14 +61,29 @@ function Details.options.InitializeOptionsWindow(instance)
 
     f:Hide()
 
-    --select the instance to edit
-    local onSelectInstance = function (_, _, instanceId)
-        local instance = _detalhes.tabela_instancias[instanceId]
+    local formatFooterText = function(object)
+        object.fontface = "GameFontNormal"
+        object.fontsize = 10
+        object.fontcolor = {1, 0.82, 0}
+    end
 
+    --create a floating frame to hold footer frames
+    local footerFrame = CreateFrame("frame", "$parentFooterFrame", f, "BackdropTemplate")
+    footerFrame:SetPoint("bottomleft", f, "bottomleft", 0, 0)
+    footerFrame:SetPoint("bottomright", f, "bottomright", 0, 0)
+    footerFrame:SetHeight(50)
+    footerFrame:SetFrameLevel(f:GetFrameLevel() + 10)
+    DF:ApplyStandardBackdrop(footerFrame)
+
+    local gradientBelowTheLine = DetailsFramework:CreateTexture(footerFrame, {gradient = "vertical", fromColor = {0, 0, 0, 0.25}, toColor = "transparent"}, 1, 90, "artwork", {0, 1, 0, 1}, "dogGradient")
+    gradientBelowTheLine:SetPoint("bottoms")
+
+    --select the instance to edit
+    local onSelectInstance = function(_, _, instanceId)
+        local instance = _detalhes.tabela_instancias[instanceId]
         if (not instance:IsEnabled() or not instance:IsStarted()) then
             _detalhes.CriarInstancia (_, _, instance.meu_id)
         end
-
         Details.options.SetCurrentInstance(instance)
         f.updateMicroFrames()
     end
@@ -123,8 +138,9 @@ function Details.options.InitializeOptionsWindow(instance)
         end
         return instanceList
     end
-    
-    local instanceSelection = DF:NewDropDown (f, _, "$parentInstanceSelectDropdown", "instanceDropdown", 200, 18, buildInstanceMenu) --, nil, options_dropdown_template
+
+    local instanceSelection = DF:NewDropDown (footerFrame, _, "$parentInstanceSelectDropdown", "instanceDropdown", 200, 18, buildInstanceMenu) --, nil, options_dropdown_template
+    f.instanceDropdown = instanceSelection
     instanceSelection:SetPoint("bottomright", f, "bottomright", -7, 09)
     instanceSelection:SetTemplate(options_dropdown_template)
     instanceSelection:SetHook("OnEnter", function()
@@ -137,28 +153,29 @@ function Details.options.InitializeOptionsWindow(instance)
         GameCooltip:Hide()
     end)
 
-    local instances_string = DF:NewLabel(f, nil, "$parentInstanceDropdownLabel", "instancetext", Loc ["STRING_OPTIONS_EDITINSTANCE"], "GameFontNormal", 12)
+    local instances_string = DF:NewLabel(footerFrame, nil, "$parentInstanceDropdownLabel", "instancetext", Loc ["STRING_OPTIONS_EDITINSTANCE"], "GameFontNormal", 12)
     instances_string:SetPoint("right", instanceSelection, "left", -2, 1)
+    formatFooterText(instances_string)
 
-    local bigdogImage = DF:NewImage(f, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 180*0.9, 200*0.9, nil, {1, 0, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
-    bigdogImage:SetPoint("bottomright", f, "bottomright", -3, 27)
+    local bigdogImage = DF:NewImage(footerFrame, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 180*0.9, 200*0.9, nil, {1, 0, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
+    bigdogImage:SetPoint("bottomright", footerFrame, "topright", 0, 0)
     bigdogImage:SetAlpha(.25)
 
     --editing group checkbox
     local onToggleEditingGroup = function(self, fixparam, value)
         _detalhes.options_group_edit = value
     end
-    local editingGroupCheckBox = DF:CreateSwitch(f, onToggleEditingGroup, _detalhes.options_group_edit, _, _, _, _, _, "$parentEditGroupCheckbox", _, _, _, _, DF:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
+    local editingGroupCheckBox = DF:CreateSwitch(footerFrame, onToggleEditingGroup, _detalhes.options_group_edit, _, _, _, _, _, "$parentEditGroupCheckbox", _, _, _, _, DF:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
     editingGroupCheckBox:SetAsCheckBox()
     editingGroupCheckBox.tooltip = Loc ["STRING_MINITUTORIAL_OPTIONS_PANEL2"]
 
-    local editingGroupLabel = DF:NewLabel(f, nil, "$parentEditingGroupLabel", "editingGroupLabel", "Editing Group:", "GameFontNormal", 12) --localize-me
+    local editingGroupLabel = DF:NewLabel(footerFrame, nil, "$parentEditingGroupLabel", "editingGroupLabel", "Editing Group:", "GameFontNormal", 12) --localize-me
     editingGroupLabel:SetPoint("bottomleft", instances_string, "topleft", 0, 5)
     editingGroupCheckBox:SetPoint("left", editingGroupLabel, "right", 2, 0)
+    formatFooterText(editingGroupLabel)
 
-	--> create test bars
-        DF:NewColor ("C_OptionsButtonOrange", 0.9999, 0.8196, 0, 1)
-
+	--create test bars
+        DF:NewColor("C_OptionsButtonOrange", 0.9999, 0.8196, 0, 1)
         local create_test_bars_func = function()
             _detalhes.CreateTestBars()
             if (not _detalhes.test_bar_update) then
@@ -167,25 +184,24 @@ function Details.options.InitializeOptionsWindow(instance)
                 _detalhes:StopTestBarUpdate()
             end
         end
-        local fillbars = DF:NewButton (f, _, "$parentCreateExampleBarsButton", nil, 140, 20, create_test_bars_func, nil, nil, nil, Loc ["STRING_OPTIONS_TESTBARS"], 1)
-        fillbars:SetPoint ("bottomleft", f.widget, "bottomleft", 10, 10)
+        local fillbars = DF:NewButton(footerFrame, _, "$parentCreateExampleBarsButton", nil, 140, 20, create_test_bars_func, nil, nil, nil, Loc ["STRING_OPTIONS_TESTBARS"], 1)
+        fillbars:SetPoint("bottomleft", f.widget, "bottomleft", 10, 10)
         fillbars:SetTemplate(options_button_template)
         fillbars:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {323/512, 365/512, 42/512, 78/512}, {1, 1, 1, 0.6}, 4, 2)
 
-    --> change log
-        local changelog = DF:NewButton (f, _, "$parentOpenChangeLogButton", nil, 140, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
-        changelog:SetPoint ("left", fillbars, "right", 10, 0)
+    --change log
+        local changelog = DF:NewButton(footerFrame, _, "$parentOpenChangeLogButton", nil, 140, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
+        changelog:SetPoint("left", fillbars, "right", 10, 0)
         changelog:SetTemplate (options_button_template)
         changelog:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {367/512, 399/512, 43/512, 76/512}, {1, 1, 1, 0.8}, 4, 2)
 
-    --> search field
-        local searchBox = DF:CreateTextEntry(f, function()end, 140, 20, _, _, _, options_dropdown_template)
-        searchBox:SetPoint ("bottomleft", fillbars, "topleft", 0, 5)
+    --search field
+        local searchBox = DF:CreateTextEntry(footerFrame, function()end, 140, 20, _, _, _, options_dropdown_template)
+        searchBox:SetPoint("left", changelog, "right", 10, 0)
 
-        local searchLabel = DF:CreateLabel(f, "Search:", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")) --localize-me
-        searchLabel:SetPoint ("bottomleft", searchBox, "topleft", 0, 2)
-        searchLabel.fontface = "GameFontNormal"
-        searchLabel.fontsize = 12
+        local searchLabel = DF:CreateLabel(footerFrame, "Search:") --localize-me
+        searchLabel:SetPoint("bottomleft", searchBox, "topleft", 0, 2)
+        formatFooterText(searchLabel)
 
         searchBox:SetHook("OnChar", function()
             if (searchBox.text ~= "") then
@@ -214,11 +230,13 @@ function Details.options.InitializeOptionsWindow(instance)
                     local sectionOptions = allSectionOptions[i]
                     local lastLabel = nil
                     for k, setting in pairs(sectionOptions) do
-                        if (setting.type == "label") then
-                            lastLabel = setting
-                        end
-                        if (setting.name) then
-                            allOptions[#allOptions+1] = {setting = setting, label = lastLabel, header = allSectionNames[i]}
+                        if (type(setting) == "table") then
+                            if (setting.type == "label") then
+                                lastLabel = setting
+                            end
+                            if (setting.name) then
+                                allOptions[#allOptions+1] = {setting = setting, label = lastLabel, header = allSectionNames[i]}
+                            end
                         end
                     end
                 end
@@ -302,25 +320,22 @@ function Details.options.InitializeOptionsWindow(instance)
             f.sectionFramesContainer[i]:Hide()
             if (f.sectionFramesContainer[i].sectionButton) then
                 f.sectionFramesContainer[i].sectionButton:SetTemplate(options_button_template)
+                f.sectionFramesContainer[i].sectionButton:SetIcon({.4, .4, .4}, 4, section_menu_button_height -4, "overlay")
             end
         end
 
         f.sectionFramesContainer[sectionId]:Show()
-        
         --hightlight the option button
         f.sectionFramesContainer[sectionId].sectionButton:SetTemplate(options_button_template_selected)
+        f.sectionFramesContainer[sectionId].sectionButton:SetIcon({1, 1, 0}, 4, section_menu_button_height -4, "overlay")
     end
 
     Details.options.SetCurrentInstance(instance)
 
     --create frames for sections
     for index, sectionId in ipairs(optionsSectionsOrder) do
-
         if (type(sectionId) == "number") then
-
             local sectionFrame = CreateFrame("frame", "$parentTab" .. sectionId, f, "BackdropTemplate")
-            --sectionFrame:SetAllPoints()
-            --sectionFrame:ClearAllPoints()
             sectionFrame:SetPoint("topleft", f, "topleft", -40, 22)
             sectionFrame:SetSize(f:GetSize())
             sectionFrame:EnableMouse(false)
@@ -328,13 +343,23 @@ function Details.options.InitializeOptionsWindow(instance)
             local realBackdropAreaFrame = CreateFrame("frame", "$parentTab" .. sectionId .. "BackdropArea", f, "BackdropTemplate")
             realBackdropAreaFrame:SetFrameLevel(f:GetFrameLevel()-1)
             realBackdropAreaFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-            realBackdropAreaFrame:SetBackdropColor(0, 0, 0, .1)
+            realBackdropAreaFrame:SetBackdropColor(0.1215, 0.1176, 0.1294, .1)
             realBackdropAreaFrame:SetBackdropBorderColor(0.2, 0.2, 0.2, .05)
             realBackdropAreaFrame:SetPoint("topleft", f, "topleft", 150, -27)
-            realBackdropAreaFrame:SetSize(770, 570)
+            realBackdropAreaFrame:SetSize(775, 570)
+
+			local leftGradient = DetailsFramework:CreateTexture(sectionFrame, {gradient = "horizontal", fromColor = {0, 0, 0, 0}, toColor = {0, 0, 0, 0.3}}, 10, 1, "artwork", {0, 1, 0, 1}, "leftGradient")
+			leftGradient:SetPoint("right-left", realBackdropAreaFrame, 1)
+
+			local rightGradient = DetailsFramework:CreateTexture(sectionFrame, {gradient = "horizontal", fromColor = {0, 0, 0, 0}, toColor = {0, 0, 0, 0.25}}, 110, 1, "overlay", nil, "rightGradient")
+			rightGradient:SetPoint("rights", realBackdropAreaFrame, 0)
+            rightGradient:Hide()
+
+			local bottomGradient = DetailsFramework:CreateTexture(realBackdropAreaFrame, {gradient = "vertical", fromColor = {0, 0, 0, 1}, toColor = {0, 0, 0, 0}}, 1, 20, "artwork", {0, 1, 0, 1}, "bottomGradient")
+            bottomGradient.sublevel = 7
+			bottomGradient:SetPoint("bottoms")
 
             sectionFrame.name = sectionsName[sectionId]
-            --tinsert(f.sectionFramesContainer, sectionFrame)
             f.sectionFramesContainer[sectionId] = sectionFrame
 
             local buildOptionSectionFunc = Details.optionsSection[sectionId]
@@ -344,12 +369,16 @@ function Details.options.InitializeOptionsWindow(instance)
 
                 --create a button for the section
                 local sectionButton = DF:CreateButton(f, function() Details.options.SelectOptionsSection(sectionId) end, section_menu_button_width, section_menu_button_height, sectionsName[sectionId], sectionId, nil, nil, nil, "$parentButtonSection" .. sectionId, nil, options_button_template, options_text_template)
+                sectionButton:SetIcon({.4, .4, .4}, 4, section_menu_button_height -4, "overlay")
                 sectionButton:SetPoint("topleft", f, "topleft", 10, buttonYPosition)
                 buttonYPosition = buttonYPosition - (section_menu_button_height + 1)
                 sectionFrame.sectionButton = sectionButton
 
                 if (sectionId == 19) then --search results
                     sectionButton:Disable()
+
+                elseif (sectionId == 1) then
+                    sectionButton:SetIcon({1, 1, 0}, 4, section_menu_button_height -4, "overlay")
                 end
             end
         else

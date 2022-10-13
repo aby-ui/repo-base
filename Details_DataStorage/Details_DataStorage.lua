@@ -13,18 +13,18 @@ function _detalhes:CreateStorageDB()
 	return DetailsDataStorage
 end
 
-local f = CreateFrame ("frame", nil, UIParent)
+local f = CreateFrame("frame", nil, UIParent)
 f:Hide()
 f:RegisterEvent ("ADDON_LOADED")
 
-f:SetScript ("OnEvent", function (self, event, addonName)
+f:SetScript("OnEvent", function(self, event, addonName)
 
 	if (addonName == "Details_DataStorage") then
 	
 		DetailsDataStorage = DetailsDataStorage or _detalhes:CreateStorageDB()
 		
 		if (DetailsDataStorage.VERSION < DETAILS_STORAGE_VERSION) then
-			--> do revisions
+			--do revisions
 			if (DetailsDataStorage.VERSION < 5) then
 				table.wipe (DetailsDataStorage)
 				DetailsDataStorage = _detalhes:CreateStorageDB()

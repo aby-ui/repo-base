@@ -23,8 +23,8 @@ local is_ignored = _detalhes.pets_ignored
 function container_pets:NovoContainer()
 	local esta_tabela = {}
 	_setmetatable (esta_tabela, _detalhes.container_pets)
-	esta_tabela.pets = {} --> armazena a pool -> uma dictionary com o [serial do pet] -> nome do dono
-	esta_tabela._ActorTable = {} --> armazena os 15 ultimos pets do jogador -> [jogador nome] -> {nil, nil, nil, ...}
+	esta_tabela.pets = {} --armazena a pool -> uma dictionary com o [serial do pet] -> nome do dono
+	esta_tabela._ActorTable = {} --armazena os 15 ultimos pets do jogador -> [jogador nome] -> {nil, nil, nil, ...}
 	return esta_tabela
 end
 
@@ -34,12 +34,12 @@ local PET_EM_GRUPO = 0x00001007
 
 function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 
-	--> sair se o pet estiver na ignore
+	--sair se o pet estiver na ignore
 	if (is_ignored [pet_serial]) then
 		return
 	end
 
-	--> buscar pelo pet no container de pets
+	--buscar pelo pet no container de pets
 	local busca = self.pets [pet_serial]
 	if (busca) then
 		--in merging operations, make sure to not add the owner name a second time in the name
@@ -52,18 +52,18 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 			pet_nome = pet_nome .. " <".. ownerName ..">"
 		end
 		
-		--return busca[6] or pet_nome, busca[1], busca[2], busca[3] --> busca[6] poderia estar causando problemas
-		return pet_nome, busca[1], busca[2], busca[3] --> [1] dono nome [2] dono serial [3] dono flag
+		--return busca[6] or pet_nome, busca[1], busca[2], busca[3] --busca[6] poderia estar causando problemas
+		return pet_nome, busca[1], busca[2], busca[3] --[1] dono nome [2] dono serial [3] dono flag
 	end
 	
-	--> buscar pelo pet na raide
+	--buscar pelo pet na raide
 	local dono_nome, dono_serial, dono_flags
 	
 	if (_IsInRaid()) then
 		for i = 1, _GetNumGroupMembers() do 
 			if (pet_serial == _UnitGUID ("raidpet"..i)) then
 				dono_serial = _UnitGUID ("raid"..i)
-				dono_flags = 0x00000417 --> emulate sourceflag flag
+				dono_flags = 0x00000417 --emulate sourceflag flag
 				
 				local nome, realm = _UnitName ("raid"..i)
 				if (realm and realm ~= "") then
@@ -77,7 +77,7 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 		for i = 1, _GetNumGroupMembers()-1 do 
 			if (pet_serial == _UnitGUID ("partypet"..i)) then
 				dono_serial = _UnitGUID ("party"..i)
-				dono_flags = 0x00000417 --> emulate sourceflag flag
+				dono_flags = 0x00000417 --emulate sourceflag flag
 				
 				local nome, realm = _UnitName ("party"..i)
 				if (realm and realm ~= "") then
@@ -94,15 +94,15 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 			dono_nome = _GetUnitName ("player")
 			dono_serial = _UnitGUID ("player")
 			if (_IsInGroup() or _IsInRaid()) then
-				dono_flags = 0x00000417 --> emulate sourceflag flag
+				dono_flags = 0x00000417 --emulate sourceflag flag
 			else
-				dono_flags = 0x00000411 --> emulate sourceflag flag
+				dono_flags = 0x00000411 --emulate sourceflag flag
 			end
 		end
 	end
 	
 	if (dono_nome) then
-		self.pets [pet_serial] = {dono_nome, dono_serial, dono_flags, _detalhes._tempo, true, pet_nome, pet_serial} --> adicionada a flag emulada
+		self.pets [pet_serial] = {dono_nome, dono_serial, dono_flags, _detalhes._tempo, true, pet_nome, pet_serial} --adicionada a flag emulada
 		
 		if (not pet_nome:find ("<")) then
 			pet_nome = pet_nome .. " <".. dono_nome ..">"
@@ -111,7 +111,7 @@ function container_pets:PegaDono (pet_serial, pet_nome, pet_flags)
 		return pet_nome, dono_nome, dono_serial, dono_flags
 	else
 		
-		if (pet_flags and _bit_band (pet_flags, OBJECT_TYPE_PET) ~= 0) then --> � um pet
+		if (pet_flags and _bit_band (pet_flags, OBJECT_TYPE_PET) ~= 0) then --� um pet
 			if (not _detalhes.pets_no_owner [pet_serial] and _bit_band (pet_flags, EM_GRUPO) ~= 0) then
 				_detalhes.pets_no_owner [pet_serial] = {pet_nome, pet_flags}
 				_detalhes:Msg ("couldn't find the owner of the pet:", pet_nome)
@@ -227,9 +227,9 @@ function _detalhes:WipePets()
 end
 
 function _detalhes:LimparPets()
-	--> erase old pet table by creating a new one
+	--erase old pet table by creating a new one
 	local newPetTable = {}
-	--> minimum of 90 minutes to clean a pet from the pet table data
+	--minimum of 90 minutes to clean a pet from the pet table data
 	for PetSerial, PetTable in _pairs (_detalhes.tabela_pets.pets) do 
 		if ( (PetTable[4] + 5400 > _detalhes._tempo + 1) or (PetTable[5] and PetTable[4] + 43200 > _detalhes._tempo) ) then
 			newPetTable [PetSerial] = PetTable

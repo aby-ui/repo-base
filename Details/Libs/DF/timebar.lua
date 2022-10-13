@@ -52,7 +52,7 @@ local TimeBarMetaFunctions = _G[DF.GlobalWidgetControlNames["timebar"]]
 TimeBarMetaFunctions.SetMembers = TimeBarMetaFunctions.SetMembers or {}
 TimeBarMetaFunctions.GetMembers = TimeBarMetaFunctions.GetMembers or {}
 
-TimeBarMetaFunctions.__index = function (table, key)
+TimeBarMetaFunctions.__index = function(table, key)
     local func = TimeBarMetaFunctions.GetMembers[key]
     if (func) then
         return func(table, key)
@@ -414,7 +414,7 @@ function DF:CreateTimeBar(parent, texture, width, height, value, member, name)
         end
     end
 
-    --> create widgets
+    --create widgets
         timeBar.statusBar:SetWidth(width)
 		timeBar.statusBar:SetHeight(height)
 		timeBar.statusBar:SetFrameLevel(parent:GetFrameLevel()+1)
@@ -445,7 +445,7 @@ function DF:CreateTimeBar(parent, texture, width, height, value, member, name)
         timeBar.statusBar.rightText:SetPoint("right", timeBar.statusBar, "right", -2, 0)
         timeBar.statusBar.rightText:SetJustifyH("left")
         
-	--> hooks
+	--hooks
 		timeBar.HookList = {
 			OnEnter = {},
 			OnLeave = {},

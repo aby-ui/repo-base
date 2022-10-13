@@ -28,9 +28,9 @@
 -- end
 -- @class file
 -- @name AceAddon-3.0.lua
--- @release $Id: AceAddon-3.0.lua 1238 2020-08-28 16:18:42Z nevcairiel $
+-- @release $Id: AceAddon-3.0.lua 1284 2022-09-25 09:15:30Z nevcairiel $
 
-local MAJOR, MINOR = "AceAddon-3.0", 99913
+local MAJOR, MINOR = "AceAddon-3.0", 13
 local AceAddon, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceAddon then return end -- No Upgrade needed.
@@ -48,10 +48,6 @@ local fmt, tostring = string.format, tostring
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local loadstring, assert, error = loadstring, assert, error
 local setmetatable, getmetatable, rawset, rawget = setmetatable, getmetatable, rawset, rawget
-
--- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
--- List them here for Mikk's FindGlobals script
--- GLOBALS: LibStub, IsLoggedIn, geterrorhandler
 
 --[[
 	 xpcall safecall implementation
@@ -623,8 +619,6 @@ local function onEvent(this, event, arg1)
 			AceAddon:InitializeAddon(addon)
 			tinsert(AceAddon.enablequeue, addon)
 		end
-
-		if U1IsBundleLoading and U1IsBundleLoading() and event == "ADDON_LOADED" then return end --XXX 163 U1Loading
 
 		if IsLoggedIn() then
 			while(#AceAddon.enablequeue > 0) do

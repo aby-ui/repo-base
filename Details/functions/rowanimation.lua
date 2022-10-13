@@ -12,7 +12,7 @@
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> basic functions
+--basic functions
 
 	_detalhes.current_row_animation = ""
 	_detalhes.row_animation_pool = {}
@@ -29,13 +29,13 @@
 			desc = ""
 		end
 		
-		tinsert (_detalhes.row_animation_pool, {name = name, desc = desc, func = func, options = options})
+		tinsert(_detalhes.row_animation_pool, {name = name, desc = desc, func = func, options = options})
 		return true
 		
 	end
 	
 	function _detalhes:SelectRowAnimation (name)
-		for key, value in ipairs (_detalhes.row_animation_pool) do 
+		for key, value in ipairs(_detalhes.row_animation_pool) do 
 			if (value.name == name) then
 				_detalhes.current_row_animation = name
 				return true
@@ -46,21 +46,21 @@
 	
 	function _detalhes:GetRowAnimationList()
 		local t = {}
-			for key, value in ipairs (_detalhes.row_animation_pool) do 
-				tinsert (t, value.name)
+			for key, value in ipairs(_detalhes.row_animation_pool) do 
+				tinsert(t, value.name)
 			end
 		return t
 	end
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> install default animations
+--install default animations
 	
 	do
-		local fade_func = function (row, state) 
+		local fade_func = function(row, state) 
 			if (state) then
-				Details.FadeHandler.Fader (row, "out")
+				Details.FadeHandler.Fader(row, "out")
 			else
-				Details.FadeHandler.Fader (row, "in")
+				Details.FadeHandler.Fader(row, "in")
 			end
 		end
 		local fade_desc = "Default animation, makes the bar fade in or fade out when showing or hiding in the window"

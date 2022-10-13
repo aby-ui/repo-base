@@ -4,7 +4,7 @@
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local alvo_da_habilidade	=	_detalhes.alvo_da_habilidade
 	local habilidade_cura		=	_detalhes.habilidade_cura
@@ -13,7 +13,7 @@
 	local container_playernpc	=	_detalhes.container_type.CONTAINER_PLAYERNPC
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internals
+--internals
 
 	function habilidade_cura:NovaTabela (id, link)
 
@@ -22,26 +22,26 @@
 			id = id,
 			counter = 0,
 			
-			--> totals
+			--totals
 			total = 0, 
 			totalabsorb = 0,
 			absorbed = 0,
 			overheal = 0,
 			totaldenied = 0,
 
-			--> normal hits		
+			--normal hits		
 			n_min = 0,
 			n_max = 0,
 			n_amt = 0,
 			n_curado = 0,
 			
-			--> critical hits 		
+			--critical hits 		
 			c_min = 0,
 			c_max = 0,
 			c_amt = 0,
 			c_curado = 0,
 
-			--> targets containers
+			--targets containers
 			targets = {},
 			targets_overheal = {},
 			targets_absorbs = {}
@@ -89,8 +89,8 @@
 			end
 			
 			if (critical) then
-				self.c_curado = self.c_curado+amount --> amount � o total de dano
-				self.c_amt = self.c_amt+1 --> amount � o total de dano
+				self.c_curado = self.c_curado+amount --amount � o total de dano
+				self.c_amt = self.c_amt+1 --amount � o total de dano
 				if (amount > self.c_max) then
 					self.c_max = amount
 				end

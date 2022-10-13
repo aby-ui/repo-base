@@ -7,7 +7,7 @@
 local addonName, addon = ...
 local KT = LibStub("AceAddon-3.0"):NewAddon(addon, addonName, "LibSink-2.0", "MSA-ProtRouter-1.0")
 KT:SetDefaultModuleState(false)
-KT.title = GetAddOnMetadata(addonName, "Title")
+KT.title = addonName --GetAddOnMetadata(addonName, "Title")
 KT.version = GetAddOnMetadata(addonName, "Version")
 KT.gameVersion = GetBuildInfo()
 KT.locale = GetLocale()
@@ -203,14 +203,15 @@ local function SetHeaders(type)
 			if type == "text" then
 				header.Text:SetFont(KT.font, db.fontSize+1, db.fontFlag)
 				if db.hdrBgr == 2 then
+					header.Button.Icon:SetVertexColor(1, 0.82, 0)
 					header.Text:SetTextColor(1, 0.82, 0)
 				else
+					header.Button.Icon:SetVertexColor(txtColor.r, txtColor.g, txtColor.b)
 					header.Text:SetTextColor(txtColor.r, txtColor.g, txtColor.b)
 				end
 				header.Text:SetShadowColor(0, 0, 0, db.fontShadow)
 				header.Text:SetPoint("LEFT", 4, 0.5)
 				header.animateReason = 0
-				header.Button.Icon:SetVertexColor(txtColor.r, txtColor.g, txtColor.b)
 			end
 		end
 	end
@@ -236,7 +237,7 @@ local function SlashHandler(msg, editbox)
 	if cmd == "config" or cmd == "option" then
 		KT:OpenOptions()
 	else
-		ObjectiveTracker_MinimizeButton_OnClick()
+		KT:MinimizeButton_OnClick()
 	end
 end
 
@@ -377,7 +378,7 @@ local function SetFrames()
 					else
 						KT.inScenario = true
 					end
-					KT:ToggleEmptyTracker(KT.inScenario)
+					KT:ToggleEmptyTracker(KT.inScenario and not db.collapseInInstance)
 				end)
 			end
 			if not newStage then
@@ -484,7 +485,7 @@ local function SetFrames()
 		if IsAltKeyDown() then
 			KT:OpenOptions()
 		elseif not KT:IsTrackerEmpty() and not KT.locked then
-			ObjectiveTracker_MinimizeButton_OnClick()
+			KT:MinimizeButton_OnClick()
 		end
 	end)
 	button:SetScript("OnEnter", function(self)
@@ -2085,6 +2086,12 @@ end
 -- External --
 --------------
 
+function KT:MinimizeButton_OnClick(autoClick)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+	ObjectiveTracker_Toggle()
+	self.collapsedByUser = autoClick and nil or dbChar.collapsed
+end
+
 function KT_WorldQuestPOIButton_OnClick(self)
 	local questID = self.questID
 	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
@@ -2551,7 +2558,7 @@ function KT:ToggleEmptyTracker(added)
 		end
 	else
 		if dbChar.collapsed then
-			if added and self.autoExpand and not (db.collapseInInstance and IsInInstance()) then --abyui
+			if added and not self.collapsedByUser then
 				ObjectiveTracker_Toggle()
 			else
 				KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.25)
@@ -2670,8 +2677,8 @@ function KT:OnInitialize()
 	self.inScenario = C_Scenario.IsInScenario() and not KT.IsScenarioHidden()
 	self.stopUpdate = true
 	self.questStateStopUpdate = false
+	self.collapsedByUser = false
 	self.locked = false
-	self.autoExpand = true
 	self.wqInitialized = false
 	self.initialized = false
 
@@ -2717,7 +2724,7 @@ function KT:OnEnable()
 	if self.AddonTomTom.isLoaded then self.AddonTomTom:Enable() end
 	self.AddonOthers:Enable()
 	if db.qiActiveButton then self.ActiveButton:Enable() end
-	--self.Help:Enable()
+	self.Help:Enable()
 
 	if self.db.global.version ~= self.version then
 		self.db.global.version = self.version

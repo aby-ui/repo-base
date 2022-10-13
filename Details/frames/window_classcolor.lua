@@ -4,7 +4,7 @@ local Details = _G.Details
 local DF = _G.DetailsFramework
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
---> config class colors
+--config class colors
 function Details:OpenClassColorsConfig()
     if (not _G.DetailsClassColorManager) then
         DF:CreateSimplePanel (UIParent, 300, 425, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
@@ -13,42 +13,42 @@ function Details:OpenClassColorsConfig()
         DF:ApplyStandardBackdrop(panel)
         panel:SetBackdropColor(.1, .1, .1, .9)
 
-        local upper_panel = CreateFrame ("frame", nil, panel,"BackdropTemplate")
-        upper_panel:SetAllPoints (panel)
+        local upper_panel = CreateFrame("frame", nil, panel,"BackdropTemplate")
+        upper_panel:SetAllPoints(panel)
         upper_panel:SetFrameLevel (panel:GetFrameLevel()+3)
 
         local y = -50
 
-        local callback = function (button, r, g, b, a, self)
+        local callback = function(button, r, g, b, a, self)
             self.MyObject.my_texture:SetVertexColor (r, g, b)
             Details.class_colors [self.MyObject.my_class][1] = r
             Details.class_colors [self.MyObject.my_class][2] = g
             Details.class_colors [self.MyObject.my_class][3] = b
-            Details:RefreshMainWindow (-1, true)
+            Details:RefreshMainWindow(-1, true)
         end
 
-        local set_color = function (self, button, class, index)
+        local set_color = function(self, button, class, index)
             local current_class_color = Details.class_colors [class]
             local r, g, b = unpack (current_class_color)
             DF:ColorPick (self, r, g, b, 1, callback)
         end
 
-        local reset_color = function (self, button, class, index)
+        local reset_color = function(self, button, class, index)
             local color_table = RAID_CLASS_COLORS [class]
             local r, g, b = color_table.r, color_table.g, color_table.b
             self.MyObject.my_texture:SetVertexColor (r, g, b)
             Details.class_colors [self.MyObject.my_class][1] = r
             Details.class_colors [self.MyObject.my_class][2] = g
             Details.class_colors [self.MyObject.my_class][3] = b
-            Details:RefreshMainWindow (-1, true)
+            Details:RefreshMainWindow(-1, true)
         end
 
-        local on_enter = function (self, capsule)
-            --Details:CooltipPreset (1)
+        local on_enter = function(self, capsule)
+            --Details:CooltipPreset(1)
             --GameCooltip:AddLine ("right click to reset")
             --GameCooltip:Show (self)
         end
-        local on_leave = function (self, capsule)
+        local on_leave = function(self, capsule)
             --GameCooltip:Hide()
         end
 
@@ -86,9 +86,9 @@ function Details:OpenClassColorsConfig()
             button.my_icon = icon
             button.my_texture = backgroundTexture
             button.my_class = className
-            button:SetHook ("OnEnter", on_enter)
-            button:SetHook ("OnLeave", on_leave)
-            button:SetClickFunction (reset_color, nil, nil, "RightClick")
+            button:SetHook("OnEnter", on_enter)
+            button:SetHook("OnLeave", on_leave)
+            button:SetClickFunction(reset_color, nil, nil, "RightClick")
             panel.buttons [className] = button
         end
 
@@ -130,7 +130,7 @@ function Details:OpenClassColorsConfig()
                 local colortable = colorTable[1]
                 local colorname = colorTable[2]
                 local value = colorname .. "@" .. barType
-                tinsert (result, {label = colorname, value = value, color = colortable, onclick = colorSelected})
+                tinsert(result, {label = colorname, value = value, color = colortable, onclick = colorSelected})
             end
 
             return result
@@ -197,7 +197,7 @@ function Details:OpenClassColorsConfig()
         deathLogColorsLabel:SetPoint("topleft", panel, "topleft", 5, -265)
     end
 
-    for class, button in pairs (_G.DetailsClassColorManager.buttons) do
+    for class, button in pairs(_G.DetailsClassColorManager.buttons) do
         button.my_texture:SetVertexColor (unpack (Details.class_colors [class]))
     end
 

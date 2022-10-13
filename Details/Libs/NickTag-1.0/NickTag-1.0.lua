@@ -1,6 +1,6 @@
---> Library NickTag is a small library for share individual nicknames and avatars.
+--Library NickTag is a small library for share individual nicknames and avatars.
 
---> Basic Functions:
+--Basic Functions:
 -- NickTag:SetNickname (name) -> set the player nick name, after set nicktag will broadcast the nick over addon guild channel.
 --
 
@@ -13,7 +13,7 @@ if (not NickTag) then
 	return
 end
 
---> fix for old nicktag version
+--fix for old nicktag version
 if (_G.NickTag) then
 	if (_G.NickTag.OnEvent) then
 		_G.NickTag:UnregisterComm ("NickTag")
@@ -22,7 +22,7 @@ if (_G.NickTag) then
 end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local CONST_INDEX_NICKNAME = 1
 	local CONST_INDEX_AVATAR_PATH = 2
@@ -39,12 +39,12 @@ end
 	--[[global]] NICKTAG_DEFAULT_BACKGROUND_CORDS = {0.129609375, 1, 1, 0}
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------
---> library stuff
+--library stuff
 
-	_G.NickTag = NickTag --> nicktag object over global container
+	_G.NickTag = NickTag --nicktag object over global container
 
-	local pool = {default = true} --> pointer to the cache pool and the default pool if no cache
-	local siblingsPools = {} --> pools registered by other addons
+	local pool = {default = true} --pointer to the cache pool and the default pool if no cache
+	local siblingsPools = {} --pools registered by other addons
 	--when this instance was the first to load
 	local isMaster = false
 
@@ -69,7 +69,7 @@ end
 		"ResetPlayerPersona"
 	}
 	function NickTag:Embed (target)
-		for k, v in pairs (embed_functions) do
+		for k, v in pairs(embed_functions) do
 			target[v] = self[v]
 		end
 		self.embeds [target] = true
@@ -211,7 +211,7 @@ end
 		{[[Interface\EncounterJournal\UI-EJ-BOSS-Witch Doctor Zumrah]], "Witch Doctor Zumrah"},
 	}
 ------------------------------------------------------------------------------------------------------------------------------------------------------
---> send and receive functions
+--send and receive functions
 
 	function NickTag:OnReceiveComm (prefix, data, channel, source)
 	
@@ -221,7 +221,7 @@ end
 	
 		local _type, serial, arg3, name, realm, version =  select (2, NickTag:Deserialize (data))
 
-		--> 0x1: received a full persona
+		--0x1: received a full persona
 		if (_type == CONST_COMM_FULLPERSONA) then
 			local receivedPersona = arg3
 			version = name
@@ -240,7 +240,7 @@ end
 				
 				storedPersona [CONST_INDEX_REVISION] = receivedPersona [CONST_INDEX_REVISION]
 				
-				--> we need to check if the received nickname fit in our rules.
+				--we need to check if the received nickname fit in our rules.
 				local allowNickName = NickTag:CheckName (receivedPersona [CONST_INDEX_NICKNAME])
 				if (allowNickName) then
 					storedPersona [CONST_INDEX_NICKNAME] = receivedPersona [CONST_INDEX_NICKNAME]
@@ -250,15 +250,15 @@ end
 				
 				storedPersona [CONST_INDEX_NICKNAME] = receivedPersona [CONST_INDEX_NICKNAME]
 				
-				--> update the rest
+				--update the rest
 				--avatar path
 				storedPersona [CONST_INDEX_AVATAR_PATH] = type (receivedPersona [CONST_INDEX_AVATAR_PATH]) == "string" and receivedPersona [CONST_INDEX_AVATAR_PATH] or ""
 				
 				--avatar texcoord
-				if (type (receivedPersona [CONST_INDEX_AVATAR_TEXCOORD]) == "boolean") then
+				if (type(receivedPersona [CONST_INDEX_AVATAR_TEXCOORD]) == "boolean") then
 					storedPersona [CONST_INDEX_AVATAR_TEXCOORD] = {0, 1, 0, 1}
 					
-				elseif (type (receivedPersona [CONST_INDEX_AVATAR_TEXCOORD]) == "table") then
+				elseif (type(receivedPersona [CONST_INDEX_AVATAR_TEXCOORD]) == "table") then
 					storedPersona [CONST_INDEX_AVATAR_TEXCOORD] = storedPersona [CONST_INDEX_AVATAR_TEXCOORD] or {}
 					storedPersona [CONST_INDEX_AVATAR_TEXCOORD][1] = type (receivedPersona [CONST_INDEX_AVATAR_TEXCOORD][1]) == "number" and receivedPersona [CONST_INDEX_AVATAR_TEXCOORD][1] or 0
 					storedPersona [CONST_INDEX_AVATAR_TEXCOORD][2] = type (receivedPersona [CONST_INDEX_AVATAR_TEXCOORD][2]) == "number" and receivedPersona [CONST_INDEX_AVATAR_TEXCOORD][2] or 1
@@ -269,10 +269,10 @@ end
 				end
 				
 				--background texcoord
-				if (type (receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD]) == "boolean") then
+				if (type(receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD]) == "boolean") then
 					storedPersona [CONST_INDEX_BACKGROUND_TEXCOORD] = {0, 1, 0, 1}
 					
-				elseif (type (receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD]) == "table") then
+				elseif (type(receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD]) == "table") then
 					storedPersona [CONST_INDEX_BACKGROUND_TEXCOORD] = storedPersona [CONST_INDEX_BACKGROUND_TEXCOORD] or {}
 					storedPersona [CONST_INDEX_BACKGROUND_TEXCOORD][1] = type (receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD][1]) == "number" and receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD][1] or 0
 					storedPersona [CONST_INDEX_BACKGROUND_TEXCOORD][2] = type (receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD][2]) == "number" and receivedPersona [CONST_INDEX_BACKGROUND_TEXCOORD][2] or 1
@@ -286,7 +286,7 @@ end
 				storedPersona [CONST_INDEX_BACKGROUND_PATH] = type (receivedPersona [CONST_INDEX_BACKGROUND_PATH]) == "string" and receivedPersona [CONST_INDEX_BACKGROUND_PATH] or ""
 				
 				--background color
-				if (type (receivedPersona [CONST_INDEX_BACKGROUND_COLOR]) == "table") then
+				if (type(receivedPersona [CONST_INDEX_BACKGROUND_COLOR]) == "table") then
 					storedPersona [CONST_INDEX_BACKGROUND_COLOR] = storedPersona [CONST_INDEX_BACKGROUND_COLOR] or {}
 					storedPersona [CONST_INDEX_BACKGROUND_COLOR][1] = type (receivedPersona [CONST_INDEX_BACKGROUND_COLOR][1]) == "number" and receivedPersona [CONST_INDEX_BACKGROUND_COLOR][1] or 1
 					storedPersona [CONST_INDEX_BACKGROUND_COLOR][2] = type (receivedPersona [CONST_INDEX_BACKGROUND_COLOR][2]) == "number" and receivedPersona [CONST_INDEX_BACKGROUND_COLOR][2] or 1
@@ -306,7 +306,7 @@ end
 	NickTag:RegisterComm ("NickTag", "OnReceiveComm")
 	
 	--frame for listening to event
-	NickTag.EventFrame = NickTag.EventFrame or CreateFrame ("frame")
+	NickTag.EventFrame = NickTag.EventFrame or CreateFrame("frame")
 	NickTag.EventFrame.InfoSendCooldown = 0
 	
 	function NickTag.OnEvent (self, event, ...)
@@ -324,7 +324,7 @@ end
 	NickTag.EventFrame:RegisterEvent ("GROUP_ROSTER_UPDATE")
 	NickTag.EventFrame:RegisterEvent ("PLAYER_LOGIN")
 	
-	NickTag.EventFrame:SetScript ("OnEvent", NickTag.OnEvent)
+	NickTag.EventFrame:SetScript("OnEvent", NickTag.OnEvent)
 
 	--send the persona in the guild comm chanel
 	function NickTag:SendPersona()
@@ -342,15 +342,15 @@ end
 		NickTag.EventFrame.ScheduledSend = nil
 		NickTag.EventFrame.InfoSendCooldown = time() + 29
 		
-		--> updating my own persona
+		--updating my own persona
 		NickTag.send_scheduled = false
 		
-		--> auto change nickname if we have an invalid nickname
+		--auto change nickname if we have an invalid nickname
 		if (NickTag:GetNickname (UnitName ("player")) == LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_INVALID_NAME"]) then
 			nickTable [CONST_INDEX_NICKNAME] = UnitName ("player")
 		end
 
-		--> broadcast over guild channel
+		--broadcast over guild channel
 		if (IsInGuild()) then
 			if (isMaster) then
 				NickTag:SyncSiblings()
@@ -361,9 +361,9 @@ end
 	end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
---> cache stuff
+--cache stuff
 
-	--> this will clear the information about the player within nicktag cache
+	--this will clear the information about the player within nicktag cache
 	function NickTag:ResetPlayerPersona()
 		local playerName = UnitName ("player")
 		
@@ -383,7 +383,7 @@ end
 		end
 	end
 	
-	--> reset cache
+	--reset cache
 	function NickTag:ResetCache()
 	
 		local playerName = UnitName ("player")
@@ -391,7 +391,7 @@ end
 		if (playerName) then
 			local player = NickTag:GetNicknameTable (playerName)
 			if (player and pool.last_version == minor) then
-				for thisPlayerName, _ in pairs (pool) do
+				for thisPlayerName, _ in pairs(pool) do
 					if (thisPlayerName ~= playerName) then
 						pool [thisPlayerName] = nil
 					end
@@ -401,10 +401,10 @@ end
 				table.wipe (pool)
 			end
 			
-			pool.nextreset = time() + (60*60*24*15) --> 15 days or 1296000 seconds
+			pool.nextreset = time() + (60*60*24*15) --15 days or 1296000 seconds
 			pool.last_version = minor
 		else
-			--> sometimes player guid isn't available right after logon, so, just schedule until it become available.
+			--sometimes player guid isn't available right after logon, so, just schedule until it become available.
 			NickTag:ScheduleTimer ("ResetCache", 0.3)
 		end
 	end
@@ -418,7 +418,7 @@ end
 			siblingsPools [#siblingsPools + 1] = _table
 
 			--copy all players into the sibling table
-			for key, value in pairs (pool) do
+			for key, value in pairs(pool) do
 				_table [key] = value
 			end
 
@@ -426,7 +426,7 @@ end
 		end
 		
 		pool = _table
-		isMaster = true --> this instance of nicktag will save data
+		isMaster = true --this instance of nicktag will save data
 		
 		if (not pool.nextreset) then
 			pool.nextreset = time() + (60*60*24*15)
@@ -444,15 +444,15 @@ end
 
 	function NickTag:SyncSiblings()
 		--copy all data into siblings table
-		for _, syblingTable in ipairs (siblingsPools) do
-			for key, value in pairs (pool) do
+		for _, syblingTable in ipairs(siblingsPools) do
+			for key, value in pairs(pool) do
 				syblingTable [key] = value
 			end
 		end
 	end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
---> basic functions
+--basic functions
 
 	local cyrillic = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЁЂЃЄЅІЇЈЉЊЋЌЎЏҐабвгдежзийклмнопрстуфхцчшщъыьэюяёђѓєѕіїјљњћќўџґАаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя"
 	local latin = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -474,19 +474,19 @@ end
 		alphabet["chinese"][letter] = true
 	end
 
-	--> trim from from http://lua-users.org/wiki/StringTrim
+	--trim from from http://lua-users.org/wiki/StringTrim
 	local function trim (s)
 		local from = s:match"^%s*()"
 		return from > #s and "" or s:match(".*%S", from)
 	end
 	--
-	local titlecase = function (first, rest)
+	local titlecase = function(first, rest)
 		return first:upper()..rest:lower()
 	end
 	--
 	local have_repeated = false
 	local count_spaces = 0
-	local check_repeated = function (char)
+	local check_repeated = function(char)
 		if (char == "  ") then
 			have_repeated = true
 		elseif (string.len (char) > 2) then
@@ -496,13 +496,13 @@ end
 		end
 	end
 
-	--> we need to keep game smooth checking and formating nicknames.
-	--> SetNickname and names comming from other player need to be check.
+	--we need to keep game smooth checking and formating nicknames.
+	--SetNickname and names comming from other player need to be check.
 	function NickTag:CheckName (name)
-		--> as nicktag only work internally in the guild, we think that is not necessary a work filter to avoid people using bad language.
+		--as nicktag only work internally in the guild, we think that is not necessary a work filter to avoid people using bad language.
 
-		if (type (name) ~= "string") then
-			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_4"] --> error 4 = name isn't a valid string
+		if (type(name) ~= "string") then
+			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_4"] --error 4 = name isn't a valid string
 		end
 
 		name = trim (name)
@@ -530,32 +530,32 @@ end
 			end
 		end
 
-		--> limit nickname to 12 characters, same as wow.
+		--limit nickname to 12 characters, same as wow.
 		--cyrillic seems to double the len using 2 bytes
 		local len = string.len (name)
 		if (len > maxLength) then
-			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_1"] --> error 1 = nickname is too long, max of 12 characters.
+			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_1"] --error 1 = nickname is too long, max of 12 characters.
 		end
 
-		--> check if contain any non allowed characters, by now only accpet letters, numbers and spaces.
-		--> by default wow do not accetp spaces, but here will allow.
-		--> tested over lua 5.2 and this capture was okey with accents, not sure why inside wow this doesn't work.
+		--check if contain any non allowed characters, by now only accpet letters, numbers and spaces.
+		--by default wow do not accetp spaces, but here will allow.
+		--tested over lua 5.2 and this capture was okey with accents, not sure why inside wow this doesn't work.
 		
 --		local notallow = string.find (name, "[^a-zA-Z�������%s]")
 --		if (notallow) then
---			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_2"] --> error 2 = nickname only support letters, numbers and spaces.
+--			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_2"] --error 2 = nickname only support letters, numbers and spaces.
 --		end
 		
 		--[=[
 		for letter in name:gmatch(".") do
 			if (not allowedLetters[letter]) then
-				return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_2"] --> error 2 = nickname only support letters, numbers and spaces.
+				return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_2"] --error 2 = nickname only support letters, numbers and spaces.
 			end
 		end
 		--]=]
 		
-		--> check if there is sequencial repeated characters, like "Jasooon" were repeats 3 times the "o" character.
-		--> got this from http://stackoverflow.com/questions/15608299/lua-pattern-matching-repeating-character
+		--check if there is sequencial repeated characters, like "Jasooon" were repeats 3 times the "o" character.
+		--got this from http://stackoverflow.com/questions/15608299/lua-pattern-matching-repeating-character
 		have_repeated = false
 		count_spaces = 0
 		string.gsub (name, '.', '\0%0%0'):gsub ('(.)%z%1','%1'):gsub ('%z.([^%z]+)', check_repeated)
@@ -563,48 +563,48 @@ end
 			have_repeated = true
 		end
 		if (have_repeated) then
-			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_3"] --> error 3 = cant use the same letter three times consecutively, 2 spaces consecutively or 3 or more spaces.
+			return false, LibStub ("AceLocale-3.0"):GetLocale ("NickTag-1.0")["STRING_ERROR_3"] --error 3 = cant use the same letter three times consecutively, 2 spaces consecutively or 3 or more spaces.
 		end
 		
 		return true
 	end
 
-	--> set the "player" nickname and schedule for send updated persona
+	--set the "player" nickname and schedule for send updated persona
 	function NickTag:SetNickname (name)
 	
-		--> check data before
-		assert (type (name) == "string", "NickTag 'SetNickname' expects a string on #1 argument.")
+		--check data before
+		assert (type(name) == "string", "NickTag 'SetNickname' expects a string on #1 argument.")
 		
-		--> check if the nickname is okey to allowed to use.
+		--check if the nickname is okey to allowed to use.
 		local okey, errortype = NickTag:CheckName (name)
 		if (not okey) then
 			NickTag:Msg ("SetNickname() invalid name ", name)
 			return false, errortype
 		end
 		
-		--> here we format the text to match titles, e.g converts name like "JASON NICKSHOW" into "Jason Nickshow". 
+		--here we format the text to match titles, e.g converts name like "JASON NICKSHOW" into "Jason Nickshow". 
 		name = name:gsub ("(%a)([%w_']*)", titlecase)
 		
 		local playerName = UnitName ("player")
 		
-		--> get the full nick table.
+		--get the full nick table.
 		local nickTable = NickTag:GetNicknameTable (playerName)
 		if (not nickTable) then
 			nickTable = NickTag:Create (playerName, true)
 		end
 		
-		--> change the nickname for the player nick table.
+		--change the nickname for the player nick table.
 		if (nickTable [CONST_INDEX_NICKNAME] ~= name) then
 			nickTable [CONST_INDEX_NICKNAME] = name
 			
 			--increase the table revision
 			NickTag:IncRevision()
 			
-			--> send the update for script which need it.
+			--send the update for script which need it.
 			NickTag.callbacks:Fire ("NickTag_Update", CONST_INDEX_NICKNAME)
 			
-			--> schedule a update for revision and broadcast full persona.
-			--> this is a kind of protection for scripts which call SetNickname, SetColor and SetAvatar one after other, so scheduling here avoid three revisions upgrades and 3 broadcasts to the guild.			
+			--schedule a update for revision and broadcast full persona.
+			--this is a kind of protection for scripts which call SetNickname, SetColor and SetAvatar one after other, so scheduling here avoid three revisions upgrades and 3 broadcasts to the guild.			
 			if (not NickTag.send_scheduled) then
 				NickTag.send_scheduled = true
 				NickTag:ScheduleTimer ("SendPersona", 1)
@@ -621,11 +621,11 @@ end
 
 		if (l == nil) then
 			l, r, t, b = 0, 1, 0, 1
-		elseif (type (l) == "table") then
+		elseif (type(l) == "table") then
 			l, r, t, b = unpack (l)
 		end
 		
-		--> check data before
+		--check data before
 		assert (texture and l and r and t and b, "NickTag 'SetNicknameAvatar' bad format. Usage NickTag:SetAvatar (texturepath [, L, R, T, B] or texturepath [, {L, R, T, B}])")
 		
 		local playerName = UnitName ("player")
@@ -641,8 +641,8 @@ end
 			--increase the table revision
 			NickTag:IncRevision()
 			
-			--> by default, CONST_INDEX_AVATAR_TEXCOORD comes as boolean false
-			if (type (nickTable [CONST_INDEX_AVATAR_TEXCOORD]) == "boolean") then
+			--by default, CONST_INDEX_AVATAR_TEXCOORD comes as boolean false
+			if (type(nickTable [CONST_INDEX_AVATAR_TEXCOORD]) == "boolean") then
 				nickTable [CONST_INDEX_AVATAR_TEXCOORD] = {}
 			end
 			
@@ -662,13 +662,13 @@ end
 		return true
 	end
 	
-	--> set the background
+	--set the background
 	function NickTag:SetNicknameBackground (path, texcoord, color, silent)
 	
 		if (not silent) then
-			assert (type (path) == "string", "NickTag 'SetNicknameBackground' expects a string on #1 argument.")
+			assert (type(path) == "string", "NickTag 'SetNicknameBackground' expects a string on #1 argument.")
 		else
-			if (type (path) ~= "string") then
+			if (type(path) ~= "string") then
 				return
 			end
 		end
@@ -722,7 +722,7 @@ end
 
 	function NickTag:GetNickname (playerName, default, silent)
 		if (not silent) then
-			assert (type (playerName) == "string", "NickTag 'GetNickname' expects a string or string on #1 argument.")
+			assert (type(playerName) == "string", "NickTag 'GetNickname' expects a string or string on #1 argument.")
 		end
 		
 		local _table = pool [playerName]
@@ -732,10 +732,10 @@ end
 		return _table [CONST_INDEX_NICKNAME] or default or nil
 	end
 	
-	--> return the avatar and the texcoord.
+	--return the avatar and the texcoord.
 	function NickTag:GetNicknameAvatar (playerName, default, silent)
 		if (not silent) then
-			assert (type (playerName) == "string", "NickTag 'GetNicknameAvatar' expects a string or string on #1 argument.")
+			assert (type(playerName) == "string", "NickTag 'GetNicknameAvatar' expects a string or string on #1 argument.")
 		end
 		
 		local _table = pool [playerName]
@@ -750,7 +750,7 @@ end
 
 	function NickTag:GetNicknameBackground (playerName, default_path, default_texcoord, default_color, silent)
 		if (not silent) then
-			assert (type (playerName) == "string", "NickTag 'GetNicknameBackground' expects a string or string on #1 argument.")
+			assert (type(playerName) == "string", "NickTag 'GetNicknameBackground' expects a string or string on #1 argument.")
 		end
 		
 		local _table = pool [playerName]
@@ -760,11 +760,11 @@ end
 		return _table [CONST_INDEX_BACKGROUND_PATH] or default_path, _table [CONST_INDEX_BACKGROUND_TEXCOORD] or default_texcoord, _table [CONST_INDEX_BACKGROUND_COLOR] or default_color
 	end
 	
-	--> get the full nicktag table 
+	--get the full nicktag table 
 	function NickTag:GetNicknameTable (playerName, silent)
-		--> check data before
+		--check data before
 		if (not silent) then
-			assert (type (playerName) == "string", "NickTag 'GetNicknameTable' expects a string on #1 argument.")
+			assert (type(playerName) == "string", "NickTag 'GetNicknameTable' expects a string on #1 argument.")
 		else
 			if (not playerName or type (playerName) ~= "string") then
 				return
@@ -775,20 +775,20 @@ end
 	end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
---> internal functions
+--internal functions
 	
-	--> create a empty nick table for the player
+	--create a empty nick table for the player
 	function NickTag:Create (playerName, isSelf)
-		--> check data before
-		assert (type (playerName) == "string", "NickTag 'Create' expects a string on #1 argument.")
+		--check data before
+		assert (type(playerName) == "string", "NickTag 'Create' expects a string on #1 argument.")
 		
-		--> check if alredy exists
+		--check if alredy exists
 		local alredyHave = pool [playerName]
 		if (alredyHave) then
 			return alredyHave
 		end
 		
-		--> create the table: 
+		--create the table: 
 		local newTable = { 
 			UnitName ("player"), --[1] player nickname
 			false, --[2] avatar texture path
@@ -799,7 +799,7 @@ end
 			1 --[7] revision
 		}
 		
-		--> if not my persona, set revision to 0, this make always get update after creation
+		--if not my persona, set revision to 0, this make always get update after creation
 		if (not isSelf) then
 			newTable [CONST_INDEX_REVISION] = 0
 		end
@@ -808,7 +808,7 @@ end
 		return newTable
 	end
 
-	--> inc the revision of the player persona after update nick or avatar
+	--inc the revision of the player persona after update nick or avatar
 	function NickTag:IncRevision()
 		local playerName = UnitName ("player")
 		local nickTable = NickTag:GetNicknameTable (playerName)
@@ -821,51 +821,51 @@ end
 		return true
 	end
 
-	--> convert GUID into serial number (deprecated, it uses player name - realm name)
+	--convert GUID into serial number (deprecated, it uses player name - realm name)
 	function NickTag:GetSerial (serial, silent)
 		return 0
 	end
 	
-	--> choose avatar window
+	--choose avatar window
 do
-	local avatar_pick_frame = CreateFrame ("frame", "AvatarPickFrame", UIParent,"BackdropTemplate")
-	avatar_pick_frame:SetFrameStrata ("DIALOG")
-	avatar_pick_frame:SetBackdrop ({bgFile = [[Interface\FrameGeneral\UI-Background-Marble]], edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]], tile = true, tileSize = 256, edgeSize = 32,	insets = {left = 11, right = 12, top = 12, bottom = 11}})
-	avatar_pick_frame:SetBackdropColor (.3, .3, .3, .9)
-	avatar_pick_frame:SetWidth (460)
-	avatar_pick_frame:SetHeight (240)
+	local avatar_pick_frame = CreateFrame("frame", "AvatarPickFrame", UIParent,"BackdropTemplate")
+	avatar_pick_frame:SetFrameStrata("DIALOG")
+	avatar_pick_frame:SetBackdrop({bgFile = [[Interface\FrameGeneral\UI-Background-Marble]], edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]], tile = true, tileSize = 256, edgeSize = 32,	insets = {left = 11, right = 12, top = 12, bottom = 11}})
+	avatar_pick_frame:SetBackdropColor(.3, .3, .3, .9)
+	avatar_pick_frame:SetWidth(460)
+	avatar_pick_frame:SetHeight(240)
 	
 	avatar_pick_frame.selected_avatar = 1
 	avatar_pick_frame.selected_background = 1
 	avatar_pick_frame.selected_color = {1, 1, 1}
 	avatar_pick_frame.selected_texcoord = {0, 1, 0, 1}
 	
-	avatar_pick_frame:SetPoint ("center", UIParent, "center", 200, 0)
+	avatar_pick_frame:SetPoint("center", UIParent, "center", 200, 0)
 	---
-		local avatar_texture = avatar_pick_frame:CreateTexture ("AvatarPickFrameAvatarPreview", "overlay")
-		avatar_texture:SetPoint ("topleft", avatar_pick_frame, "topleft", 167, -10)
-		avatar_texture:SetTexture ([[Interface\EncounterJournal\UI-EJ-BOSS-Default]])
+		local avatar_texture = avatar_pick_frame:CreateTexture("AvatarPickFrameAvatarPreview", "overlay")
+		avatar_texture:SetPoint("topleft", avatar_pick_frame, "topleft", 167, -10)
+		avatar_texture:SetTexture([[Interface\EncounterJournal\UI-EJ-BOSS-Default]])
 		--
-		local background_texture = avatar_pick_frame:CreateTexture ("AvatarPickFrameBackgroundPreview", "artwork")
-		background_texture:SetPoint ("topleft", avatar_pick_frame, "topleft", 167, 2)
-		background_texture:SetWidth (290)
-		background_texture:SetHeight (75)
-		background_texture:SetTexture (NickTag.background_pool[1][1])
+		local background_texture = avatar_pick_frame:CreateTexture("AvatarPickFrameBackgroundPreview", "artwork")
+		background_texture:SetPoint("topleft", avatar_pick_frame, "topleft", 167, 2)
+		background_texture:SetWidth(290)
+		background_texture:SetHeight(75)
+		background_texture:SetTexture(NickTag.background_pool[1][1])
 		background_texture:SetTexCoord (unpack (NickTag.background_pool[1][3]))
 		--
 		local name = avatar_pick_frame:CreateFontString ("AvatarPickFrameName", "overlay", "GameFontHighlightHuge")
-		name:SetPoint ("left", avatar_texture, "right", -11, -17)
-		name:SetText (UnitName ("player"))
+		name:SetPoint("left", avatar_texture, "right", -11, -17)
+		name:SetText(UnitName ("player"))
 	---
 
-	local OnClickFunction = function (button) 
+	local OnClickFunction = function(button) 
 		if (button.isAvatar) then
 			local avatar = NickTag.avatar_pool [button.IconID]
-			_G.AvatarPickFrameAvatarPreview:SetTexture ( avatar [1] )
+			_G.AvatarPickFrameAvatarPreview:SetTexture( avatar [1] )
 			avatar_pick_frame.selected_avatar = avatar [1]
 		elseif (button.isBackground) then
 			local background = NickTag.background_pool [button.IconID]
-			_G.AvatarPickFrameBackgroundPreview:SetTexture ( background [1] )
+			_G.AvatarPickFrameBackgroundPreview:SetTexture( background [1] )
 			_G.AvatarPickFrameBackgroundPreview:SetTexCoord (unpack (background [3]))
 			avatar_pick_frame.selected_background = background [1]
 			avatar_pick_frame.selected_texcoord = background [3]
@@ -880,38 +880,38 @@ do
 		avatar_pick_frame.selected_color[3] = b
 	end
 	
-	local okey = CreateFrame ("button", "AvatarPickFrameAccept", avatar_pick_frame)
-	okey:SetPoint ("bottomright", avatar_pick_frame, "bottomright", -37, 12)
-	okey:SetText ("Accept")
+	local okey = CreateFrame("button", "AvatarPickFrameAccept", avatar_pick_frame)
+	okey:SetPoint("bottomright", avatar_pick_frame, "bottomright", -37, 12)
+	okey:SetText("Accept")
 	okey:SetFrameLevel (avatar_pick_frame:GetFrameLevel()+2)
-	okey:SetScript ("OnClick", function (self) 
+	okey:SetScript("OnClick", function(self) 
 		avatar_pick_frame:Hide()
 		if (avatar_pick_frame.callback) then
 			avatar_pick_frame.callback (avatar_pick_frame.selected_avatar, {0, 1, 0, 1}, avatar_pick_frame.selected_background, avatar_pick_frame.selected_texcoord, avatar_pick_frame.selected_color)
 		end
 	end)
-	local change_color = CreateFrame ("button", "AvatarPickFrameColor", avatar_pick_frame)
-	change_color:SetPoint ("bottomright", avatar_pick_frame, "bottomright", -205, 12)
-	change_color:SetText ("Color")
+	local change_color = CreateFrame("button", "AvatarPickFrameColor", avatar_pick_frame)
+	change_color:SetPoint("bottomright", avatar_pick_frame, "bottomright", -205, 12)
+	change_color:SetText("Color")
 	change_color:SetFrameLevel (avatar_pick_frame:GetFrameLevel()+2)
 	
-	change_color:SetScript ("OnClick", function (self) 
+	change_color:SetScript("OnClick", function(self) 
 		ColorPickerFrame.func = selectedColor
 		ColorPickerFrame.hasOpacity = false
-		ColorPickerFrame:SetParent (avatar_pick_frame)
+		ColorPickerFrame:SetParent(avatar_pick_frame)
 		ColorPickerFrame:SetColorRGB (_G.AvatarPickFrameBackgroundPreview:GetVertexColor())
 		ColorPickerFrame:ClearAllPoints()
-		ColorPickerFrame:SetPoint ("left", avatar_pick_frame, "right", 0, -10)
+		ColorPickerFrame:SetPoint("left", avatar_pick_frame, "right", 0, -10)
 		ColorPickerFrame:Show()
 	end)
 	
 	local buttons = {}
 	for i = 0, 2 do 
-		local newbutton = CreateFrame ("button", "AvatarPickFrameAvatarScrollButton"..i+1, avatar_pick_frame)
-		newbutton:SetScript ("OnClick", OnClickFunction)
-		newbutton:SetWidth (128)
-		newbutton:SetHeight (64)
-		newbutton:SetPoint ("topleft", avatar_pick_frame, "topleft", 15, (i*70*-1) - 20)
+		local newbutton = CreateFrame("button", "AvatarPickFrameAvatarScrollButton"..i+1, avatar_pick_frame)
+		newbutton:SetScript("OnClick", OnClickFunction)
+		newbutton:SetWidth(128)
+		newbutton:SetHeight(64)
+		newbutton:SetPoint("topleft", avatar_pick_frame, "topleft", 15, (i*70*-1) - 20)
 		newbutton:SetID (i+1)
 		newbutton.isAvatar = true
 		buttons [#buttons+1] = newbutton
@@ -919,28 +919,28 @@ do
 	
 	local buttonsbg = {}
 	for i = 0, 2 do 
-		local newbutton = CreateFrame ("button", "AvatarPickFrameBackgroundScrollButton"..i+1, avatar_pick_frame)
-		newbutton:SetScript ("OnClick", OnClickFunction)
-		newbutton:SetWidth (275)
-		newbutton:SetHeight (60)
-		newbutton:SetPoint ("topleft", avatar_pick_frame, "topleft", 157, (i*50*-1) - 80)
+		local newbutton = CreateFrame("button", "AvatarPickFrameBackgroundScrollButton"..i+1, avatar_pick_frame)
+		newbutton:SetScript("OnClick", OnClickFunction)
+		newbutton:SetWidth(275)
+		newbutton:SetHeight(60)
+		newbutton:SetPoint("topleft", avatar_pick_frame, "topleft", 157, (i*50*-1) - 80)
 		newbutton:SetID (i+1)
 		newbutton.isBackground = true
 		buttonsbg [#buttonsbg+1] = newbutton
 	end
 	
 	--[=[
-	local avatar_list = CreateFrame ("ScrollFrame", "AvatarPickFrameAvatarScroll", avatar_pick_frame, "ListScrollFrameTemplate")
-	avatar_list:SetPoint ("topleft", avatar_pick_frame, "topleft", 10, -10)
-	local background_list = CreateFrame ("ScrollFrame", "AvatarPickFrameBackgroundScroll", avatar_pick_frame, "ListScrollFrameTemplate")
-	background_list:SetPoint ("topleft", avatar_pick_frame, "topleft", 147, -85)
+	local avatar_list = CreateFrame("ScrollFrame", "AvatarPickFrameAvatarScroll", avatar_pick_frame, "ListScrollFrameTemplate")
+	avatar_list:SetPoint("topleft", avatar_pick_frame, "topleft", 10, -10)
+	local background_list = CreateFrame("ScrollFrame", "AvatarPickFrameBackgroundScroll", avatar_pick_frame, "ListScrollFrameTemplate")
+	background_list:SetPoint("topleft", avatar_pick_frame, "topleft", 147, -85)
 
-	avatar_list:SetWidth (128)
-	avatar_list:SetHeight (220)
-	background_list:SetWidth (275)
-	background_list:SetHeight (140)
+	avatar_list:SetWidth(128)
+	avatar_list:SetHeight(220)
+	background_list:SetWidth(275)
+	background_list:SetHeight(140)
 
-	local avatar_scroll_update = function (self)
+	local avatar_scroll_update = function(self)
 		local numMacroIcons = #NickTag.avatar_pool
 		local macroPopupIcon, macroPopupButton, index, texture
 		local macroPopupOffset = FauxScrollFrame_GetOffset (avatar_list)
@@ -952,10 +952,10 @@ do
 
 			texture = NickTag.avatar_pool [index][1]
 			if ( index <= numMacroIcons and texture ) then
-				macroPopupButton:SetNormalTexture (texture)
-				macroPopupButton:SetPushedTexture (texture)
+				macroPopupButton:SetNormalTexture(texture)
+				macroPopupButton:SetPushedTexture(texture)
 				macroPopupButton:SetDisabledTexture (texture)
-				macroPopupButton:SetHighlightTexture (texture, "ADD")
+				macroPopupButton:SetHighlightTexture(texture, "ADD")
 				macroPopupButton.IconID = index
 				macroPopupButton:Show()
 			else
@@ -964,7 +964,7 @@ do
 		end
 		FauxScrollFrame_Update (avatar_list, numMacroIcons , 3, 64)
 	end
-	local background_scroll_update = function (self)
+	local background_scroll_update = function(self)
 		local numMacroIcons = #NickTag.background_pool
 		local macroPopupIcon, macroPopupButton, index, texture
 		local macroPopupOffset = FauxScrollFrame_GetOffset (background_list)
@@ -976,10 +976,10 @@ do
 
 			texture = NickTag.background_pool [index][1]
 			if ( index <= numMacroIcons and texture ) then
-				macroPopupButton:SetNormalTexture (texture)
-				macroPopupButton:SetPushedTexture (texture)
+				macroPopupButton:SetNormalTexture(texture)
+				macroPopupButton:SetPushedTexture(texture)
 				macroPopupButton:SetDisabledTexture (texture)
-				macroPopupButton:SetHighlightTexture (texture, "ADD")
+				macroPopupButton:SetHighlightTexture(texture, "ADD")
 				macroPopupButton.IconID = index
 				macroPopupButton:Show()
 			else
@@ -989,10 +989,10 @@ do
 		FauxScrollFrame_Update (background_list, numMacroIcons , 3, 40)
 	end
 	
-	avatar_list:SetScript ("OnVerticalScroll", function (self, offset) 
+	avatar_list:SetScript("OnVerticalScroll", function(self, offset) 
 		FauxScrollFrame_OnVerticalScroll (avatar_list, offset, 64, avatar_scroll_update) 
 	end)
-	background_list:SetScript ("OnVerticalScroll", function (self, offset) 
+	background_list:SetScript("OnVerticalScroll", function(self, offset) 
 		FauxScrollFrame_OnVerticalScroll (background_list, offset, 40, background_scroll_update) 
 	end)
 	
@@ -1000,37 +1000,37 @@ do
 	background_scroll_update (background_list)
 	
 	function avatar_pick_frame:SetAvatar (n)
-		if (type (n) ~= "number") then
+		if (type(n) ~= "number") then
 			n = 1
 		end
 		if (n > #NickTag.avatar_pool) then
 			n = 1
 		end
 		local avatar = NickTag.avatar_pool [n]
-		_G.AvatarPickFrameAvatarPreview:SetTexture ( avatar [1] )
+		_G.AvatarPickFrameAvatarPreview:SetTexture( avatar [1] )
 		avatar_pick_frame.selected_avatar = avatar [1]
 	end
 	function avatar_pick_frame:SetBackground (n)
-		if (type (n) ~= "number") then
+		if (type(n) ~= "number") then
 			n = 1
 		end
 		if (n > #NickTag.background_pool) then
 			n = 1
 		end
 		local background = NickTag.background_pool [n]
-		_G.AvatarPickFrameBackgroundPreview:SetTexture ( background [1] )
+		_G.AvatarPickFrameBackgroundPreview:SetTexture( background [1] )
 		_G.AvatarPickFrameBackgroundPreview:SetTexCoord (unpack (background [3]))
 		_G.AvatarPickFrameBackgroundPreview:SetVertexColor (unpack (avatar_pick_frame.selected_color))
 		avatar_pick_frame.selected_background = background [1]
 	end
 	function avatar_pick_frame:SetColor (r, g, b)
-		if (type (r) ~= "number" or r > 1) then
+		if (type(r) ~= "number" or r > 1) then
 			r = 1
 		end
-		if (type (g) ~= "number" or g > 1) then
+		if (type(g) ~= "number" or g > 1) then
 			g = 1
 		end
-		if (type (b) ~= "number" or b > 1) then
+		if (type(b) ~= "number" or b > 1) then
 			b = 1
 		end
 		_G.AvatarPickFrameBackgroundPreview:SetVertexColor (r, g, b)
@@ -1046,18 +1046,18 @@ do
 	local CONST_INDEX_BACKGROUND_TEXCOORD = 5
 	local CONST_INDEX_BACKGROUND_COLOR = 6	
 	
-	avatar_pick_frame:SetScript ("OnShow", function()
+	avatar_pick_frame:SetScript("OnShow", function()
 		--get player avatar
 		local avatar = NickTag:GetNicknameTable (UnitGUID ("player"))
 		if (avatar) then
-			_G.AvatarPickFrameName:SetText ( avatar [1] or UnitName ("player"))
+			_G.AvatarPickFrameName:SetText( avatar [1] or UnitName ("player"))
 			
-			_G.AvatarPickFrameAvatarPreview:SetTexture ( avatar [CONST_INDEX_AVATAR_PATH] or [[Interface\EncounterJournal\UI-EJ-BOSS-Default]] )
+			_G.AvatarPickFrameAvatarPreview:SetTexture( avatar [CONST_INDEX_AVATAR_PATH] or [[Interface\EncounterJournal\UI-EJ-BOSS-Default]] )
 			avatar_pick_frame.selected_avatar = avatar [CONST_INDEX_AVATAR_PATH] or [[Interface\EncounterJournal\UI-EJ-BOSS-Default]]
 			
-			_G.AvatarPickFrameAvatarPreview:SetTexCoord ( 0, 1, 0, 1 ) --> always
+			_G.AvatarPickFrameAvatarPreview:SetTexCoord ( 0, 1, 0, 1 ) --always
 			
-			_G.AvatarPickFrameBackgroundPreview:SetTexture ( avatar [CONST_INDEX_BACKGROUND_PATH] or [[Interface\PetBattles\Weather-ArcaneStorm]] )
+			_G.AvatarPickFrameBackgroundPreview:SetTexture( avatar [CONST_INDEX_BACKGROUND_PATH] or [[Interface\PetBattles\Weather-ArcaneStorm]] )
 			avatar_pick_frame.selected_background = avatar [CONST_INDEX_BACKGROUND_PATH] or [[Interface\PetBattles\Weather-ArcaneStorm]]
 			
 			if (avatar [CONST_INDEX_BACKGROUND_TEXCOORD]) then
@@ -1076,14 +1076,14 @@ do
 				avatar_pick_frame.selected_color = {1, 1, 1}
 			end
 		else
-			--> if none
-			_G.AvatarPickFrameAvatarPreview:SetTexture ( [[Interface\EncounterJournal\UI-EJ-BOSS-Default]] )
+			--if none
+			_G.AvatarPickFrameAvatarPreview:SetTexture( [[Interface\EncounterJournal\UI-EJ-BOSS-Default]] )
 			avatar_pick_frame.selected_avatar = [[Interface\EncounterJournal\UI-EJ-BOSS-Default]]
 			
 			local background = NickTag.background_pool [1]
 			
 			if (background) then
-				_G.AvatarPickFrameBackgroundPreview:SetTexture ( background [1] )
+				_G.AvatarPickFrameBackgroundPreview:SetTexture( background [1] )
 				avatar_pick_frame.selected_background = background [1]
 				_G.AvatarPickFrameBackgroundPreview:SetTexCoord (unpack (background [3]))
 				avatar_pick_frame.selected_texcoord = background [3]

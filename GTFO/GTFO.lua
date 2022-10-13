@@ -25,12 +25,12 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.68"; -- Version number (text format)
+	Version = "4.69"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 46800; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 46900; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 46800; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 46800; -- Numeric version number for checking out-of-date clients (TBC classic)
-	WrathVersionNumber = 46800; -- Numeric version number for checking out-of-date clients (Wrath classic)
+	WrathVersionNumber = 46900; -- Numeric version number for checking out-of-date clients (Wrath classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -72,6 +72,7 @@ GTFO = {
 		DisableGTFO = nil;
 	};
 	BetaMode = nil; -- WoW Beta/PTR client detection
+	DragonflightMode = nil; -- WoW Dragonflight UI client detection
 	RetailMode = nil; -- WoW Retail client detection
 	ClassicMode = nil; -- WoW Classic client detection
 	BurningCrusadeMode = nil; -- WoW TBC client detection
@@ -92,6 +93,10 @@ local buildNumber = select(4, GetBuildInfo());
 
 if (buildNumber >= 100000) then
 	GTFO.BetaMode = true;
+end
+if (buildNumber >= 100000) then
+	GTFO.DragonflightMode = true;
+	GTFO.SoundChannels[2].Name = _G.FX_VOLUME;
 end
 if (buildNumber <= 20000) then
 	GTFO.ClassicMode = true;
@@ -1017,11 +1022,180 @@ end
 
 -- Create Addon Menu options and interface
 function GTFO_RenderOptions()
-	if (GTFO.BetaMode) then
+	if (GTFO.DragonflightMode) then
 		-- TODO: Rebuild configuration menus in new Dragonflight format
-	else
-		GTFO.UIRendered = true;
+		-- Modern version (Dragonflight)
+		local ConfigurationPanel = CreateFrame("FRAME","GTFO_MainFrame");
+		ConfigurationPanel.name = "GTFO";
+		InterfaceOptions_AddCategory(ConfigurationPanel);
 
+		local IntroMessageHeader = ConfigurationPanel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
+		IntroMessageHeader:SetPoint("TOPLEFT", 10, -10);
+		IntroMessageHeader:SetText("GTFO "..GTFO.Version);
+
+		local EnabledButton = CreateFrame("CheckButton", "GTFO_EnabledButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		EnabledButton:SetPoint("TOPLEFT", 10, -35)
+		EnabledButton.tooltip = GTFOLocal.UI_EnabledDescription;
+		getglobal(EnabledButton:GetName().."Text"):SetText(GTFOLocal.UI_Enabled);
+		EnabledButton.optionKey = "Enabled";
+		EnabledButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local HighSoundButton = CreateFrame("CheckButton", "GTFO_HighSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		HighSoundButton:SetPoint("TOPLEFT", 10, -65)
+		HighSoundButton.tooltip = GTFOLocal.UI_HighDamageDescription;
+		getglobal(HighSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_HighDamage);
+		HighSoundButton.optionKey = "HighSound";
+		HighSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local LowSoundButton = CreateFrame("CheckButton", "GTFO_LowSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		LowSoundButton:SetPoint("TOPLEFT", 10, -95)
+		LowSoundButton.tooltip = GTFOLocal.UI_LowDamageDescription;
+		getglobal(LowSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_LowDamage);
+		LowSoundButton.optionKey = "LowSound";
+		LowSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local FailSoundButton = CreateFrame("CheckButton", "GTFO_FailSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		FailSoundButton:SetPoint("TOPLEFT", 10, -125)
+		FailSoundButton.tooltip = GTFOLocal.UI_FailDescription;
+		getglobal(FailSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_Fail);
+		FailSoundButton.optionKey = "FailSound";
+		FailSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local FriendlyFireSoundButton = CreateFrame("CheckButton", "GTFO_FriendlyFireSoundButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		FriendlyFireSoundButton:SetPoint("TOPLEFT", 10, -155)
+		FriendlyFireSoundButton.tooltip = GTFOLocal.UI_FriendlyFireDescription;
+		getglobal(FriendlyFireSoundButton:GetName().."Text"):SetText(GTFOLocal.UI_FriendlyFire);
+		FriendlyFireSoundButton.optionKey = "FriendlyFireSound";
+		FriendlyFireSoundButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local HighTestButton = CreateFrame("Button", "GTFO_HighTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		HighTestButton:SetPoint("TOPLEFT", 300, -65);
+		HighTestButton.tooltip = GTFOLocal.UI_TestDescription;
+		HighTestButton:SetScript("OnClick",GTFO_Option_HighTest);
+		getglobal(HighTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
+
+		local LowTestButton = CreateFrame("Button", "GTFO_LowTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		LowTestButton:SetPoint("TOPLEFT", 300, -95);
+		LowTestButton.tooltip = GTFOLocal.UI_TestDescription;
+		LowTestButton:SetScript("OnClick",GTFO_Option_LowTest);
+		getglobal(LowTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
+
+		local FailTestButton = CreateFrame("Button", "GTFO_FailTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		FailTestButton:SetPoint("TOPLEFT", 300, -125);
+		FailTestButton.tooltip = GTFOLocal.UI_TestDescription;
+		FailTestButton:SetScript("OnClick",GTFO_Option_FailTest);
+		getglobal(FailTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
+
+		local FriendlyFireTestButton = CreateFrame("Button", "GTFO_FriendlyFireTestButton", ConfigurationPanel, "UIPanelButtonTemplate");
+		FriendlyFireTestButton:SetPoint("TOPLEFT", 300, -155);
+		FriendlyFireTestButton.tooltip = GTFOLocal.UI_TestDescription;
+		FriendlyFireTestButton:SetScript("OnClick",GTFO_Option_FriendlyFireTest);
+		getglobal(FriendlyFireTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
+
+		local VolumeText = ConfigurationPanel:CreateFontString("GTFO_VolumeText","ARTWORK","GameFontNormal");
+		VolumeText:SetPoint("TOPLEFT", 170, -195);
+		VolumeText:SetText("");
+
+		local VolumeSlider = CreateFrame("Slider", "GTFO_VolumeSlider", ConfigurationPanel, "OptionsSliderTemplate");
+		VolumeSlider:SetPoint("TOPLEFT", 12, -195);
+		VolumeSlider.tooltip = GTFOLocal.UI_VolumeDescription;
+		VolumeSlider:SetScript("OnValueChanged",GTFO_Option_SetVolume);
+		getglobal(GTFO_VolumeSlider:GetName().."Text"):SetText(GTFOLocal.UI_Volume);
+		getglobal(GTFO_VolumeSlider:GetName().."High"):SetText(GTFOLocal.UI_VolumeMax);
+		getglobal(GTFO_VolumeSlider:GetName().."Low"):SetText(GTFOLocal.UI_VolumeMin);
+		VolumeSlider:SetMinMaxValues(1,5);
+		VolumeSlider:SetValueStep(1);
+		VolumeSlider:SetValue(GTFO.Settings.Volume);
+		GTFO_Option_SetVolumeText(GTFO.Settings.Volume);
+		
+		local UnmuteButton = CreateFrame("CheckButton", "GTFO_UnmuteButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		UnmuteButton:SetPoint("TOPLEFT", 10, -240)
+		UnmuteButton.tooltip = GTFOLocal.UI_UnmuteDescription.."\n\n("..GTFOLocal.UI_UnmuteDescription2..")";
+		getglobal(UnmuteButton:GetName().."Text"):SetText(GTFOLocal.UI_Unmute);
+		UnmuteButton.optionKey = "Unmute";
+		UnmuteButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local TrivialButton = CreateFrame("CheckButton", "GTFO_TrivialButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		TrivialButton:SetPoint("TOPLEFT", 10, -270)
+		TrivialButton.tooltip = GTFOLocal.UI_TrivialDescription.."\n\n"..GTFOLocal.UI_TrivialDescription2;
+		getglobal(TrivialButton:GetName().."Text"):SetText(GTFOLocal.UI_Trivial);
+		TrivialButton.optionKey = "Trivial";
+		TrivialButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local TrivialDamageText = ConfigurationPanel:CreateFontString("GTFO_TrivialDamageText","ARTWORK","GameFontNormal");
+		TrivialDamageText:SetPoint("TOPLEFT", 450, -270);
+		TrivialDamageText:SetText("");
+
+		local TrivialDamageSlider = CreateFrame("Slider", "GTFO_TrivialDamageSlider", ConfigurationPanel, "OptionsSliderTemplate");
+		TrivialDamageSlider:SetPoint("TOPLEFT", 300, -270);
+		TrivialDamageSlider.tooltip = GTFOLocal.UI_TrivialSlider;
+		TrivialDamageSlider:SetScript("OnValueChanged",GTFO_Option_SetTrivialDamage);
+		getglobal(GTFO_TrivialDamageSlider:GetName().."Text"):SetText(GTFOLocal.UI_TrivialSlider);
+		getglobal(GTFO_TrivialDamageSlider:GetName().."High"):SetText(" ");
+		getglobal(GTFO_TrivialDamageSlider:GetName().."Low"):SetText(" ");
+		TrivialDamageSlider:SetMinMaxValues(.5,10);
+		TrivialDamageSlider:SetValueStep(.5);
+		TrivialDamageSlider:SetValue(GTFO.Settings.TrivialDamagePercent);
+		GTFO_Option_SetTrivialDamageText(GTFO.Settings.TrivialDamagePercent);
+
+		local TestModeButton = CreateFrame("CheckButton", "GTFO_TestModeButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		TestModeButton:SetPoint("TOPLEFT", 10, -300)
+		TestModeButton.tooltip = GTFOLocal.UI_TestModeDescription.."\n\n"..string.format(GTFOLocal.UI_TestModeDescription2,"zensunim","gmail","com");
+		getglobal(TestModeButton:GetName().."Text"):SetText(GTFOLocal.UI_TestMode);
+		TestModeButton.optionKey = "TestMode";
+		TestModeButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		local ChannelText = ConfigurationPanel:CreateFontString("GTFO_ChannelText","ARTWORK","GameFontNormal");
+		ChannelText:SetPoint("TOPLEFT", 170, -350);
+		ChannelText:SetText("");
+
+		local ChannelIdSlider = CreateFrame("Slider", "GTFO_ChannelIdSlider", ConfigurationPanel, "OptionsSliderTemplate");
+		ChannelIdSlider:SetPoint("TOPLEFT", 12, -350);
+		ChannelIdSlider:SetScript("OnValueChanged",GTFO_Option_SetChannel);
+		ChannelIdSlider:SetMinMaxValues(1,5);
+		ChannelIdSlider:SetValueStep(1);
+		ChannelIdSlider:SetValue(GTFO_GetCurrentSoundChannelId(GTFO.Settings.SoundChannel));
+		getglobal(GTFO_ChannelIdSlider:GetName().."Text"):SetText(GTFOLocal.UI_SoundChannel);
+		getglobal(GTFO_ChannelIdSlider:GetName().."High"):SetText(" ");
+		getglobal(GTFO_ChannelIdSlider:GetName().."Low"):SetText(" ");
+		GTFO_Option_SetChannelIdText(GTFO_GetCurrentSoundChannelId(GTFO.Settings.SoundChannel));
+		
+		local VibrationButton = CreateFrame("CheckButton", "GTFO_VibrationButton", ConfigurationPanel, "ChatConfigCheckButtonTemplate");
+		VibrationButton:SetPoint("TOPLEFT", 10, -380)
+		VibrationButton.tooltip = GTFOLocal.UI_VibrationDescription;
+		getglobal(VibrationButton:GetName().."Text"):SetText(GTFOLocal.UI_Vibration);
+		VibrationButton.optionKey = "Vibration";
+		VibrationButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+
+		-- Special Alerts frame
+		local IgnoreOptionsPanel = CreateFrame("FRAME","GTFO_IgnoreOptionsFrame");
+		IgnoreOptionsPanel.name = GTFOLocal.UI_SpecialAlerts;
+		IgnoreOptionsPanel.parent = ConfigurationPanel.name;
+		InterfaceOptions_AddCategory(IgnoreOptionsPanel);
+
+		local IntroMessageHeader2 = IgnoreOptionsPanel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
+		IntroMessageHeader2:SetPoint("TOPLEFT", 10, -10);
+		IntroMessageHeader2:SetText("GTFO "..GTFO.Version.." - "..GTFOLocal.UI_SpecialAlertsHeader);
+
+		local yCount = -20;
+		for key, option in pairs(GTFO.IgnoreSpellCategory) do
+			if (GTFO.IgnoreSpellCategory[key].spellID) then
+				yCount = yCount - 30;
+
+				local IgnoreAlertButton = CreateFrame("CheckButton", "GTFO_IgnoreAlertButton_"..key, IgnoreOptionsPanel, "ChatConfigCheckButtonTemplate");
+				IgnoreAlertButton:SetPoint("TOPLEFT", 10, yCount)
+				getglobal(IgnoreAlertButton:GetName().."Text"):SetText(GTFO.IgnoreSpellCategory[key].desc);
+				if (GTFO.IgnoreSpellCategory[key].tooltip) then
+					_G["GTFO_IgnoreAlertButton_"..key].tooltip = GTFO.IgnoreSpellCategory[key].tooltip;
+				end
+				IgnoreAlertButton.optionKey = "Ignore"..key;
+				IgnoreAlertButton:SetScript("OnClick", GTFO.ToggleCheckboxOption);
+			end
+		end
+
+		GTFOSpellTooltip:ClearLines();
+	else
+		-- Classic version (pre-Dragonflight)
 		local ConfigurationPanel = CreateFrame("FRAME","GTFO_MainFrame");
 		ConfigurationPanel.name = "GTFO";
 		InterfaceOptions_AddCategory(ConfigurationPanel);
@@ -1146,62 +1320,6 @@ function GTFO_RenderOptions()
 		VibrationButton.tooltip = GTFOLocal.UI_VibrationDescription;
 		getglobal(VibrationButton:GetName().."Text"):SetText(GTFOLocal.UI_Vibration);
 
-		-- Custom Sounds frame - Work in Progres
-		--[[
-		local CustomSoundOptionsPanel = CreateFrame("FRAME","GTFO_CustomSoundOptionsFrame");
-		CustomSoundOptionsPanel.name = GTFOLocal.UI_CustomSounds;
-		CustomSoundOptionsPanel.parent = ConfigurationPanel.name;
-		InterfaceOptions_AddCategory(CustomSoundOptionsPanel);
-
-		local IntroMessageHeader3 = CustomSoundOptionsPanel:CreateFontString(nil, "ARTWORK","GameFontNormalLarge");
-		IntroMessageHeader3:SetPoint("TOPLEFT", 10, -10);
-		IntroMessageHeader3:SetText("GTFO "..GTFO.Version.." - "..GTFOLocal.UI_CustomSoundsHeader);
-
-		local HighSoundCustomButton = CreateFrame("CheckButton", "GTFO_HighSoundCustomButton", CustomSoundOptionsPanel, "ChatConfigCheckButtonTemplate");
-		HighSoundCustomButton:SetPoint("TOPLEFT", 10, -65)
-		HighSoundCustomButton.tooltip = GTFOLocal.UI_HighDamageDescription;
-		getglobal(HighSoundCustomButton:GetName().."Text"):SetText(GTFOLocal.UI_HighDamage);
-
-		local LowSoundCustomButton = CreateFrame("CheckButton", "GTFO_LowSoundCustomButton", CustomSoundOptionsPanel, "ChatConfigCheckButtonTemplate");
-		LowSoundCustomButton:SetPoint("TOPLEFT", 10, -95)
-		LowSoundCustomButton.tooltip = GTFOLocal.UI_LowDamageDescription;
-		getglobal(LowSoundCustomButton:GetName().."Text"):SetText(GTFOLocal.UI_LowDamage);
-
-		local FailSoundCustomButton = CreateFrame("CheckButton", "GTFO_FailSoundCustomButton", CustomSoundOptionsPanel, "ChatConfigCheckButtonTemplate");
-		FailSoundCustomButton:SetPoint("TOPLEFT", 10, -125)
-		FailSoundCustomButton.tooltip = GTFOLocal.UI_FailDescription;
-		getglobal(FailSoundCustomButton:GetName().."Text"):SetText(GTFOLocal.UI_Fail);
-
-		local FriendlyFireSoundCustomButton = CreateFrame("CheckButton", "GTFO_FriendlyFireSoundCustomButton", CustomSoundOptionsPanel, "ChatConfigCheckButtonTemplate");
-		FriendlyFireSoundCustomButton:SetPoint("TOPLEFT", 10, -155)
-		FriendlyFireSoundCustomButton.tooltip = GTFOLocal.UI_FriendlyFireDescription;
-		getglobal(FriendlyFireSoundCustomButton:GetName().."Text"):SetText(GTFOLocal.UI_FriendlyFire);
-
-		local HighCustomTestButton = CreateFrame("Button", "GTFO_HighCustomTestButton", CustomSoundOptionsPanel, "OptionsButtonTemplate");
-		HighCustomTestButton:SetPoint("TOPLEFT", 300, -65);
-		HighCustomTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		HighCustomTestButton:SetScript("OnClick",GTFO_Option_HighTest);
-		getglobal(HighCustomTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local LowCustomTestButton = CreateFrame("Button", "GTFO_LowCustomTestButton", CustomSoundOptionsPanel, "OptionsButtonTemplate");
-		LowCustomTestButton:SetPoint("TOPLEFT", 300, -95);
-		LowCustomTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		LowCustomTestButton:SetScript("OnClick",GTFO_Option_LowTest);
-		getglobal(LowCustomTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local FailCustomTestButton = CreateFrame("Button", "GTFO_FailCustomTestButton", CustomSoundOptionsPanel, "OptionsButtonTemplate");
-		FailCustomTestButton:SetPoint("TOPLEFT", 300, -125);
-		FailCustomTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		FailCustomTestButton:SetScript("OnClick",GTFO_Option_FailTest);
-		getglobal(FailCustomTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-
-		local FriendlyFireCustomTestButton = CreateFrame("Button", "GTFO_FriendlyFireCustomTestButton", CustomSoundOptionsPanel, "OptionsButtonTemplate");
-		FriendlyFireCustomTestButton:SetPoint("TOPLEFT", 300, -155);
-		FriendlyFireCustomTestButton.tooltip = GTFOLocal.UI_TestDescription;
-		FriendlyFireCustomTestButton:SetScript("OnClick",GTFO_Option_FriendlyFireTest);
-		getglobal(FriendlyFireCustomTestButton:GetName().."Text"):SetText(GTFOLocal.UI_Test);
-		]]--
-
 		-- Special Alerts frame
 		local IgnoreOptionsPanel = CreateFrame("FRAME","GTFO_IgnoreOptionsFrame");
 		IgnoreOptionsPanel.name = GTFOLocal.UI_SpecialAlerts;
@@ -1271,6 +1389,41 @@ function GTFO_RenderOptions()
 				GTFO_SetDefaults();
 			end
 	end
+
+	GTFO.UIRendered = true;
+end
+
+function GTFO.ToggleCheckboxOption(self)
+	local checked = self:GetChecked();
+	local optionKey = self.optionKey;
+
+	if (optionKey == "Enabled") then
+		GTFO.Settings.Active = checked;
+	elseif (optionKey == "HighSound") then
+		GTFO.Settings.Sounds[1] = checked;
+	elseif (optionKey == "LowSound") then
+		GTFO.Settings.Sounds[2] = checked;
+	elseif (optionKey == "FailSound") then
+		GTFO.Settings.Sounds[3] = checked;
+	elseif (optionKey == "FriendlyFireSound") then
+		GTFO.Settings.Sounds[4] = checked;
+	elseif (optionKey == "TestMode") then
+		GTFO.Settings.TestMode = checked;
+	elseif (optionKey == "Unmute") then
+		GTFO.Settings.UnmuteMode = checked;
+	elseif (optionKey == "Trivial") then
+		GTFO.Settings.TrivialMode = checked;
+	elseif (optionKey == "Vibration") then
+		GTFO.Settings.EnableVibration = checked;
+	end
+	
+	for key, option in pairs(GTFO.IgnoreSpellCategory) do
+		if (optionKey == "Ignore"..key) then
+			GTFO.Settings.IgnoreOptions[key] = not checked;
+		end
+	end
+	
+	GTFO_SaveSettings();
 end
 
 function GTFO_RefreshOptions()
@@ -1532,7 +1685,10 @@ function GTFO_Option_SetVolume()
 	GTFO.Settings.Volume = math.floor(getglobal("GTFO_VolumeSlider"):GetValue());
 	getglobal("GTFO_VolumeSlider"):SetValue(GTFO.Settings.Volume);
 	GTFO_GetSounds();
-	GTFO_Option_SetVolumeText(GTFO.Settings.Volume)
+	GTFO_Option_SetVolumeText(GTFO.Settings.Volume);
+	if (GTFO.DragonflightMode) then
+		GTFO_SaveSettings();
+	end
 end
 
 function GTFO_Option_SetVolumeText(iVolume)
@@ -1562,7 +1718,10 @@ function GTFO_Option_SetTrivialDamage()
 	GTFO.Settings.TrivialDamagePercent = math.floor(getglobal("GTFO_TrivialDamageSlider"):GetValue() * 10)/10;
 	getglobal("GTFO_TrivialDamageSlider"):SetValue(GTFO.Settings.TrivialDamagePercent);
 	GTFO_GetSounds();
-	GTFO_Option_SetTrivialDamageText(GTFO.Settings.TrivialDamagePercent)
+	GTFO_Option_SetTrivialDamageText(GTFO.Settings.TrivialDamagePercent);
+	if (GTFO.DragonflightMode) then
+		GTFO_SaveSettings();
+	end
 end
 
 function GTFO_Option_SetChannel()
@@ -1572,7 +1731,10 @@ function GTFO_Option_SetChannel()
 	local channelId = math.floor(getglobal("GTFO_ChannelIdSlider"):GetValue());
 	GTFO.Settings.SoundChannel = GTFO.SoundChannels[channelId].Code;
 	getglobal("GTFO_ChannelIdSlider"):SetValue(channelId);
-	GTFO_Option_SetChannelIdText(channelId)
+	GTFO_Option_SetChannelIdText(channelId);
+	if (GTFO.DragonflightMode) then
+		GTFO_SaveSettings();
+	end
 end
 
 function GTFO_Option_SetTrivialDamageText(iTrivialDamagePercent)
@@ -1747,7 +1909,9 @@ end
 -- Save settings to persistant storage, refresh UI options
 function GTFO_SaveSettings()
 	--GTFO_DebugPrint("Saving settings");
-	GTFO_Option_SetVolume();
+	if (not GTFO.DragonflightMode) then
+		GTFO_Option_SetVolume();
+	end
 
 	GTFOData.DataCode = GTFO.DataCode;
 	GTFOData.Active = GTFO.Settings.Active;
@@ -1780,9 +1944,11 @@ function GTFO_SaveSettings()
 		end
 	end
 
-	GTFO.Settings.OriginalVolume = GTFO.Settings.Volume;
-	GTFO.Settings.OriginalTrivialDamagePercent = GTFO.Settings.TrivialDamagePercent;
-	GTFO.Settings.OriginalChannelId = GTFO_GetCurrentSoundChannelId(GTFO.Settings.SoundChannel);
+	if (not GTFO.DragonflightMode) then
+		GTFO.Settings.OriginalVolume = GTFO.Settings.Volume;
+		GTFO.Settings.OriginalTrivialDamagePercent = GTFO.Settings.TrivialDamagePercent;
+		GTFO.Settings.OriginalChannelId = GTFO_GetCurrentSoundChannelId(GTFO.Settings.SoundChannel);
+	end
 	
 	if (GTFO.UIRendered) then
 		getglobal("GTFO_EnabledButton"):SetChecked(GTFO.Settings.Active);
@@ -2217,4 +2383,3 @@ function GTFO_GetCurrentSoundChannelId(sSoundChannel)
 	end
 	return 1; -- Default
 end
-

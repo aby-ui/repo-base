@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale("HandyNotes_CovenantSanctum", "zhTW
 if not L then return end
 -- Traditional Chinese localization by RainbowUI ( https://www.curseforge.com/members/rainbowui )
 if L then
+L["Blizzard"] = "遊戲內建"
+L["Both"] = "兩個都要"
 L["config_easy_waypoints"] = "快速導航"
 L["config_easy_waypoints_desc"] = "簡化建立路線導航的方法，只要點一下滑鼠右鍵便能設定導航目的地，CTRL + 右鍵點擊會有更多選項。"
 L["config_icon_alpha"] = "圖示透明度"
@@ -32,6 +34,8 @@ L["config_tab_general"] = "一般"
 L["config_travelguide_note"] = "|cFFFF0000*已透過 HandyNotes: TravelGuide 啟動。|r"
 L["config_vendor"] = "商人"
 L["config_vendor_desc"] = "顯示商人的位置。"
+L["config_waypoint_dropdown"] = "選擇"
+L["config_waypoint_dropdown_desc"] = "選擇要使用的導航方式。"
 L["config_weaponsmith"] = "武器鍛造師"
 L["config_weaponsmith_desc"] = "顯示武器鍛造師的位置。"
 L["config_what_to_display"] = "選擇要顯示什麼"
@@ -44,4 +48,5 @@ L["handler_tooltip_sanctum_feature"] = "升級聖所"
 L["handler_tooltip_TNTIER"] = "傳送網路第 %s 層。"
 L["Mailbox"] = "郵箱"
 L["Portal to Oribos"] = "奧睿博司傳送門"
+L["TomTom"] = true
 end

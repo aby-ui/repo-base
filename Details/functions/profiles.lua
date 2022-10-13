@@ -6,24 +6,24 @@
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> return the current profile name
+--Profiles:
+	--return the current profile name
 	
 function _detalhes:GetCurrentProfileName()
 
-	--> check is have a profile name
+	--check is have a profile name
 		if (_detalhes_database.active_profile == "") then --  or not _detalhes_database.active_profile
 			local character_key = UnitName ("player") .. "-" .. GetRealmName()
 			_detalhes_database.active_profile = character_key
 		end
 	
-	--> end
+	--end
 		return _detalhes_database.active_profile
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> create a new profile
+--Profiles:
+	--create a new profile
 
 function _detalhes:CreateProfile (name)
 
@@ -31,46 +31,46 @@ function _detalhes:CreateProfile (name)
 		return false
 	end
 
-	--> check if already exists
+	--check if already exists
 		if (_detalhes_global.__profiles [name]) then
 			return false
 		end
 		
-	--> copy the default table
+	--copy the default table
 		local new_profile = Details.CopyTable (_detalhes.default_profile)
 		new_profile.instances = {}
 	
-	--> add to global container
+	--add to global container
 		_detalhes_global.__profiles [name] = new_profile
 		
-	--> end
+	--end
 		return new_profile
 	
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> return the list os all profiles
+--Profiles:
+	--return the list os all profiles
 	
 function _detalhes:GetProfileList()
 	
-	--> build the table
+	--build the table
 		local t = {}
-		for name, profile in pairs (_detalhes_global.__profiles) do 
+		for name, profile in pairs(_detalhes_global.__profiles) do 
 			t [#t + 1] = name
 		end
 	
-	--> end
+	--end
 		return t
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> delete a profile
+--Profiles:
+	--delete a profile
 	
 function _detalhes:EraseProfile (profile_name)
 	
-	--> erase profile table
+	--erase profile table
 		_detalhes_global.__profiles [profile_name] = nil
 	
 		if (_detalhes_database.active_profile == profile_name) then
@@ -88,17 +88,17 @@ function _detalhes:EraseProfile (profile_name)
 		
 		end
 
-	--> end
+	--end
 		return true
 end
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> return the profile table requested
+--Profiles:
+	--return the profile table requested
 	
 function _detalhes:GetProfile (name, create)
 
-	--> get the profile, create and return
+	--get the profile, create and return
 		if (not name) then
 			name = _detalhes:GetCurrentProfileName()
 		end
@@ -113,7 +113,7 @@ function _detalhes:GetProfile (name, create)
 
 		end
 	
-	--> end
+	--end
 		return profile
 end	
 
@@ -125,7 +125,7 @@ function _detalhes:SetProfileCProp (name, cprop, value)
 	local profile = _detalhes:GetProfile (name, false)
 	
 	if (profile) then
-		if (type (value) == "table") then
+		if (type(value) == "table") then
 			rawset (profile, cprop, Details.CopyTable (value))
 		else
 			rawset (profile, cprop, value)
@@ -136,18 +136,18 @@ function _detalhes:SetProfileCProp (name, cprop, value)
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> reset the profile
+--Profiles:
+	--reset the profile
 function _detalhes:ResetProfile (profile_name)
 
-	--> get the profile
+	--get the profile
 		local profile = _detalhes:GetProfile (profile_name, true)
 		
 		if (not profile) then
 			return false
 		end
 	
-	--> reset all already created instances
+	--reset all already created instances
 		for index, instance in _detalhes:ListInstances() do
 			if (not instance.baseframe) then
 				instance:AtivarInstancia()
@@ -156,7 +156,7 @@ function _detalhes:ResetProfile (profile_name)
 			instance:ChangeSkin (_detalhes.default_skin_to_use)
 		end
 		
-		for index, instance in pairs (_detalhes.unused_instances) do
+		for index, instance in pairs(_detalhes.unused_instances) do
 			if (not instance.baseframe) then
 				instance:AtivarInstancia()
 			end
@@ -164,11 +164,11 @@ function _detalhes:ResetProfile (profile_name)
 			instance:ChangeSkin(_detalhes.default_skin_to_use)
 		end
 	
-	--> reset the profile
+	--reset the profile
 		table.wipe (profile.instances)
 
-		--> export first instance
-		local instance = _detalhes:GetInstance (1)
+		--export first instance
+		local instance = _detalhes:GetInstance(1)
 		local exported = instance:ExportSkin()
 		exported.__was_opened = instance:IsEnabled()
 		exported.__pos = Details.CopyTable (instance:GetPosition())
@@ -183,44 +183,44 @@ function _detalhes:ResetProfile (profile_name)
 		
 		_detalhes:ApplyProfile (profile_name, true)
 		
-	--> end
+	--end
 		return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> return the profile table requested
+--Profiles:
+	--return the profile table requested
 
 function _detalhes:CreatePanicWarning()
-	_detalhes.instance_load_failed = CreateFrame ("frame", "DetailsPanicWarningFrame", UIParent,"BackdropTemplate")
-	_detalhes.instance_load_failed:SetHeight (80)
-	--tinsert (UISpecialFrames, "DetailsPanicWarningFrame")
+	_detalhes.instance_load_failed = CreateFrame("frame", "DetailsPanicWarningFrame", UIParent,"BackdropTemplate")
+	_detalhes.instance_load_failed:SetHeight(80)
+	--tinsert(UISpecialFrames, "DetailsPanicWarningFrame")
 	_detalhes.instance_load_failed.text = _detalhes.instance_load_failed:CreateFontString (nil, "overlay", "GameFontNormal")
-	_detalhes.instance_load_failed.text:SetPoint ("center", _detalhes.instance_load_failed, "center")
+	_detalhes.instance_load_failed.text:SetPoint("center", _detalhes.instance_load_failed, "center")
 	_detalhes.instance_load_failed.text:SetTextColor (1, 0.6, 0)
-	_detalhes.instance_load_failed:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-	_detalhes.instance_load_failed:SetBackdropColor (1, 0, 0, 0.2)
-	_detalhes.instance_load_failed:SetPoint ("topleft", UIParent, "topleft", 0, -250)
-	_detalhes.instance_load_failed:SetPoint ("topright", UIParent, "topright", 0, -250)
+	_detalhes.instance_load_failed:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+	_detalhes.instance_load_failed:SetBackdropColor(1, 0, 0, 0.2)
+	_detalhes.instance_load_failed:SetPoint("topleft", UIParent, "topleft", 0, -250)
+	_detalhes.instance_load_failed:SetPoint("topright", UIParent, "topright", 0, -250)
 end
 
-local safe_load = function (func, param1, ...)
+local safe_load = function(func, param1, ...)
 	local okey, errortext = pcall (func, param1, ...)
 	if (not okey) then
 		if (not _detalhes.instance_load_failed) then
 			_detalhes:CreatePanicWarning()
 		end
 		_detalhes.do_not_save_skins = true
-		_detalhes.instance_load_failed.text:SetText ("Failed to load a Details! window.\n/reload or reboot the game client may fix the problem.\nIf the problem persist, try /details reinstall.\nError: " .. errortext .. "")
+		_detalhes.instance_load_failed.text:SetText("Failed to load a Details! window.\n/reload or reboot the game client may fix the problem.\nIf the problem persist, try /details reinstall.\nError: " .. errortext .. "")
 	end
 	return okey
 end
 
 function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 
-	--> get the profile
+	--get the profile
 		local profile = _detalhes:GetProfile (profile_name, true)
 
-	--> if the profile doesn't exist, just quit
+	--if the profile doesn't exist, just quit
 		if (not profile) then
 			_detalhes:Msg ("Profile Not Found.")
 			return false
@@ -228,34 +228,34 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 
 		profile.ocd_tracker = nil --moved to local character saved
 		
-	--> always save the previous profile, except if nosave flag is up
+	--always save the previous profile, except if nosave flag is up
 		if (not nosave) then
-			--> salva o profile ativo no momento
+			--salva o profile ativo no momento
 			_detalhes:SaveProfile()
 		end
 
-	--> update profile keys before go
-		for key, value in pairs (_detalhes.default_profile) do 
-			--> the entire key doesn't exist
+	--update profile keys before go
+		for key, value in pairs(_detalhes.default_profile) do 
+			--the entire key doesn't exist
 			if (profile [key] == nil) then
-				if (type (value) == "table") then
+				if (type(value) == "table") then
 					profile [key] = Details.CopyTable (_detalhes.default_profile [key])
 				else
 					profile [key] = value
 				end
 			
-			--> the key exist and is a table, check for missing values on sub tables
-			elseif (type (value) == "table") then
-				--> deploy only copy non existing data
+			--the key exist and is a table, check for missing values on sub tables
+			elseif (type(value) == "table") then
+				--deploy only copy non existing data
 				_detalhes.table.deploy (profile [key], value)
 			end
 		end
 		
-	--> apply the profile values
-		for key, _ in pairs (_detalhes.default_profile) do 
+	--apply the profile values
+		for key, _ in pairs(_detalhes.default_profile) do 
 			local value = profile [key]
 
-			if (type (value) == "table") then
+			if (type(value) == "table") then
 				if (key == "class_specs_coords") then
 					value = Details.CopyTable (_detalhes.default_profile.class_specs_coords)
 				end
@@ -267,21 +267,21 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			end
 		end
 		
-	--> set the current profile
+	--set the current profile
 	if (not is_copy) then
 		_detalhes.active_profile = profile_name
 		_detalhes_database.active_profile = profile_name
 	end
 	
-	--> apply the skin
+	--apply the skin
 		
-		--> first save the local instance configs
+		--first save the local instance configs
 		_detalhes:SaveLocalInstanceConfig()
 		
 		local saved_skins = profile.instances
 		local instance_limit = _detalhes.instances_amount
 		
-		--> then close all opened instances
+		--then close all opened instances
 		for index, instance in _detalhes:ListInstances() do
 			if (not getmetatable (instance)) then
 				instance.iniciada = false
@@ -294,20 +294,20 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			end
 		end
 
-		--> check if there is a skin saved or this is a empty profile
+		--check if there is a skin saved or this is a empty profile
 		if (#saved_skins == 0) then
-			local instance1 = _detalhes:GetInstance (1)
+			local instance1 = _detalhes:GetInstance(1)
 			if (not instance1) then
 				instance1 = _detalhes:CreateInstance (1)
 			end
 
-			--> apply default config on this instance (flat skin texture was 'ResetInstanceConfig' running).
+			--apply default config on this instance (flat skin texture was 'ResetInstanceConfig' running).
 			instance1.modo = 2
 			instance1:ResetInstanceConfig()
 			instance1.skin = "no skin"
 			instance1:ChangeSkin (_detalhes.default_skin_to_use)
 			
-			--> release the snap and lock
+			--release the snap and lock
 			instance1:LoadLocalInstanceConfig()
 			instance1.snap = {}
 			instance1.horizontalSnap = nil
@@ -323,40 +323,40 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			end
 		else
 		
-			--> load skins
+			--load skins
 			local instances_loaded = 0
 			
-			for index, skin in ipairs (saved_skins) do
+			for index, skin in ipairs(saved_skins) do
 				if (instance_limit < index) then
 					break
 				end
 
-				--> get the instance
-				local instance = _detalhes:GetInstance (index)
+				--get the instance
+				local instance = _detalhes:GetInstance(index)
 				if (not instance) then
-					--> create a instance without creating its frames (not initializing)
+					--create a instance without creating its frames (not initializing)
 					instance = _detalhes:CreateDisabledInstance (index, skin)
 				end
 				
-				--> copy skin
-				for key, value in pairs (skin) do
-					if (type (value) == "table") then
+				--copy skin
+				for key, value in pairs(skin) do
+					if (type(value) == "table") then
 						instance [key] = Details.CopyTable (value)
 					else
 						instance [key] = value
 					end
 				end
 				
-				--> apply default values if some key is missing
+				--apply default values if some key is missing
 				instance:LoadInstanceConfig()
 				
-				--> reset basic config
+				--reset basic config
 				instance.snap = {}
 				instance.horizontalSnap = nil
 				instance.verticalSnap = nil
 				instance:LockInstance (false)
 				
-				--> load data saved for this character only
+				--load data saved for this character only
 				instance:LoadLocalInstanceConfig()
 				if (skin.__was_opened) then
 					if (not safe_load (_detalhes.AtivarInstancia, instance, nil, true)) then
@@ -368,9 +368,9 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 
 				instance.modo = instance.modo or 2
 				
-				--> load data saved again
+				--load data saved again
 				instance:LoadLocalInstanceConfig()
-				--> check window positioning
+				--check window positioning
 				if (_detalhes.profile_save_pos) then
 					--print ("is profile save pos", skin.__pos.normal.x, skin.__pos.normal.y)
 					if (skin.__pos) then
@@ -397,7 +397,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 					end
 				end
 				
-				--> open the instance
+				--open the instance
 				if (instance:IsEnabled()) then
 					if (not instance.baseframe) then
 						instance:AtivarInstancia()
@@ -405,7 +405,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 
 					instance:LockInstance (instance.isLocked)
 					
-					--tinsert (_detalhes.resize_debug, #_detalhes.resize_debug+1, "libwindow X (427): " .. (instance.libwindow.x or 0))
+					--tinsert(_detalhes.resize_debug, #_detalhes.resize_debug+1, "libwindow X (427): " .. (instance.libwindow.x or 0))
 					instance:RestoreMainWindowPosition()
 					instance:ReajustaGump()
 					--instance:SaveMainWindowPosition()
@@ -418,7 +418,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				instances_loaded = instances_loaded + 1
 			end
 			
-			--> move unused instances for unused container
+			--move unused instances for unused container
 			if (#_detalhes.tabela_instancias > instances_loaded) then
 				for i = #_detalhes.tabela_instancias, instances_loaded+1, -1 do
 					_detalhes.unused_instances [i] = _detalhes.tabela_instancias [i]
@@ -426,22 +426,22 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 				end
 			end
 			
-			--> check all snaps for invalid entries
+			--check all snaps for invalid entries
 			for i = 1, instances_loaded do
-				local instance = _detalhes:GetInstance (i)
-				local previous_instance_id = _detalhes:GetInstance (i-1) and _detalhes:GetInstance (i-1):GetId() or 0
-				local next_instance_id = _detalhes:GetInstance (i+1) and _detalhes:GetInstance (i+1):GetId() or 0
+				local instance = _detalhes:GetInstance(i)
+				local previous_instance_id = _detalhes:GetInstance(i-1) and _detalhes:GetInstance(i-1):GetId() or 0
+				local next_instance_id = _detalhes:GetInstance(i+1) and _detalhes:GetInstance(i+1):GetId() or 0
 				
-				for snap_side, instance_id in pairs (instance.snap) do
-					if (instance_id < 1) then --> invalid instance
+				for snap_side, instance_id in pairs(instance.snap) do
+					if (instance_id < 1) then --invalid instance
 						instance.snap [snap_side] = nil
-					elseif (instance_id ~= previous_instance_id and instance_id ~= next_instance_id) then --> no match
+					elseif (instance_id ~= previous_instance_id and instance_id ~= next_instance_id) then --no match
 						instance.snap [snap_side] = nil
 					end
 				end
 			end
 			
-			--> auto realign windows
+			--auto realign windows
 			if (not _detalhes.initializing) then
 				for _, instance in _detalhes:ListInstances() do
 					if (instance:IsEnabled()) then
@@ -450,9 +450,9 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 					end
 				end
 			else
-				--> is in startup
+				--is in startup
 				for _, instance in _detalhes:ListInstances() do
-					for side, id in pairs (instance.snap) do
+					for side, id in pairs(instance.snap) do
 						local window = _detalhes.tabela_instancias [id]
 						if (not window.ativa) then
 							instance.snap [side] = nil
@@ -464,7 +464,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 						end
 					end
 					if (not instance:IsEnabled()) then
-						for side, id in pairs (instance.snap) do
+						for side, id in pairs(instance.snap) do
 							instance.snap [side] = nil
 						end
 						instance.horizontalSnap = false
@@ -475,7 +475,7 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			
 		end
 		
-		--> check instance amount
+		--check instance amount
 		_detalhes.opened_windows = 0
 		for index = 1, _detalhes.instances_amount do
 			local instance = _detalhes.tabela_instancias [index]
@@ -484,22 +484,22 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 			end
 		end
 		
-		--> update tooltip settings
+		--update tooltip settings
 		_detalhes:SetTooltipBackdrop()
 		
-		--> update player detail window
+		--update player detail window
 		_detalhes:ApplyPDWSkin()
 		
-		--> update the numerical system
+		--update the numerical system
 		_detalhes:SelectNumericalSystem()
 		
-		--> refresh the update interval
+		--refresh the update interval
 		_detalhes:RefreshUpdater()
 		
-		--> refresh animation functions
+		--refresh animation functions
 		_detalhes:RefreshAnimationFunctions()
 		
-		--> refresh broadcaster tools
+		--refresh broadcaster tools
 		_detalhes:LoadFramesForBroadcastTools()
 
 	if (_detalhes.initializing) then
@@ -510,12 +510,12 @@ function _detalhes:ApplyProfile (profile_name, nosave, is_copy)
 end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Profiles:
-	--> return the profile table requested
+--Profiles:
+	--return the profile table requested
 	
 function _detalhes:SaveProfile (saveas)
 	
-	--> get the current profile
+	--get the current profile
 	
 		local profile_name
 	
@@ -527,12 +527,12 @@ function _detalhes:SaveProfile (saveas)
 		
 		local profile = _detalhes:GetProfile (profile_name, true)
 
-	--> save default keys
-		for key, _ in pairs (_detalhes.default_profile) do 
+	--save default keys
+		for key, _ in pairs(_detalhes.default_profile) do 
 		
 			local current_value = _detalhes [key]
 
-			if (type (current_value) == "table") then
+			if (type(current_value) == "table") then
 				local ctable = Details.CopyTable (current_value)
 				profile [key] = ctable
 			else
@@ -541,345 +541,341 @@ function _detalhes:SaveProfile (saveas)
 
 		end
 
-	--> save skins
-		if (not _detalhes.do_not_save_skins) then
-			table.wipe (profile.instances)
-			for index, instance in ipairs (_detalhes.tabela_instancias) do
-				local exported = instance:ExportSkin()
-				exported.__was_opened = instance:IsEnabled()
-				exported.__pos = Details.CopyTable (instance:GetPosition())
-				exported.__locked = instance.isLocked
-				exported.__snap = Details.CopyTable (instance.snap)
-				exported.__snapH = instance.horizontalSnap
-				exported.__snapV = instance.verticalSnap
-				profile.instances [index] = exported
-			end
+	--save skins
+	if (not _detalhes.do_not_save_skins) then
+		table.wipe(profile.instances)
+		for index, instance in ipairs(_detalhes.tabela_instancias) do
+			local exported = instance:ExportSkin()
+			exported.__was_opened = instance:IsEnabled()
+			exported.__pos = Details.CopyTable(instance:GetPosition())
+			exported.__locked = instance.isLocked
+			exported.__snap = Details.CopyTable(instance.snap)
+			exported.__snapH = instance.horizontalSnap
+			exported.__snapV = instance.verticalSnap
+			profile.instances[index] = exported
 		end
-		_detalhes.do_not_save_skins = nil
-		
-		_detalhes:SaveLocalInstanceConfig()
+	end
+	_detalhes.do_not_save_skins = nil
+	_detalhes:SaveLocalInstanceConfig()
 
-	--> end
-		return profile
+	return profile
 end
 
 local default_profile = {
+	--spec coords, reset with: /run Details.class_specs_coords = nil
+	class_specs_coords = {
+		[577] = {128/512, 192/512, 256/512, 320/512}, --havoc demon hunter
+		[581] = {192/512, 256/512, 256/512, 320/512}, --vengeance demon hunter
 
-	--> spec coords
---	/run Details.class_specs_coords = nil
-		class_specs_coords = {
-			[577] = {128/512, 192/512, 256/512, 320/512}, --> havoc demon hunter
-			[581] = {192/512, 256/512, 256/512, 320/512}, --> vengeance demon hunter
-		
-			[250] = {0, 64/512, 0, 64/512}, --> blood dk
-			[251] = {64/512, 128/512, 0, 64/512}, --> frost dk
-			[252] = {128/512, 192/512, 0, 64/512}, --> unholy dk
-			
-			[102] = {192/512, 256/512, 0, 64/512}, -->  druid balance
-			[103] = {256/512, 320/512, 0, 64/512}, -->  druid feral
-			[104] = {320/512, 384/512, 0, 64/512}, -->  druid guardian
-			[105] = {384/512, 448/512, 0, 64/512}, -->  druid resto
+		[250] = {0, 64/512, 0, 64/512}, --blood dk
+		[251] = {64/512, 128/512, 0, 64/512}, --frost dk
+		[252] = {128/512, 192/512, 0, 64/512}, --unholy dk
 
-			[253] = {448/512, 512/512, 0, 64/512}, -->  hunter bm
-			[254] = {0, 64/512, 64/512, 128/512}, --> hunter marks
-			[255] = {64/512, 128/512, 64/512, 128/512}, --> hunter survivor
-			
-			[62] = {(128/512) + 0.001953125, 192/512, 64/512, 128/512}, --> mage arcane
-			[63] = {192/512, 256/512, 64/512, 128/512}, --> mage fire
-			[64] = {256/512, 320/512, 64/512, 128/512}, --> mage frost
-			
-			[268] = {320/512, 384/512, 64/512, 128/512}, --> monk bm
-			[269] = {448/512, 512/512, 64/512, 128/512}, --> monk ww
-			[270] = {384/512, 448/512, 64/512, 128/512}, --> monk mw
-			
-			[65] = {0, 64/512, 128/512, 192/512}, --> paladin holy
-			[66] = {64/512, 128/512, 128/512, 192/512}, --> paladin protect
-			[70] = {(128/512) + 0.001953125, 192/512, 128/512, 192/512}, --> paladin ret
-			
-			[256] = {192/512, 256/512, 128/512, 192/512}, --> priest disc
-			[257] = {256/512, 320/512, 128/512, 192/512}, --> priest holy
-			[258] = {(320/512) + (0.001953125 * 4), 384/512, 128/512, 192/512}, --> priest shadow
-			
-			[259] = {384/512, 448/512, 128/512, 192/512}, --> rogue assassination
-			[260] = {448/512, 512/512, 128/512, 192/512}, --> rogue combat
-			[261] = {0, 64/512, 192/512, 256/512}, --> rogue sub
-			
-			[262] = {64/512, 128/512, 192/512, 256/512}, --> shaman elemental
-			[263] = {128/512, 192/512, 192/512, 256/512}, --> shamel enhancement
-			[264] = {192/512, 256/512, 192/512, 256/512}, --> shaman resto
-			
-			[265] = {256/512, 320/512, 192/512, 256/512}, --> warlock aff
-			[266] = {320/512, 384/512, 192/512, 256/512}, --> warlock demo
-			[267] = {384/512, 448/512, 192/512, 256/512}, --> warlock destro
-			
-			[71] = {448/512, 512/512, 192/512, 256/512}, --> warrior arms
-			[72] = {0, 64/512, 256/512, 320/512}, --> warrior fury
-			[73] = {64/512, 128/512, 256/512, 320/512}, --> warrior protect
+		[102] = {192/512, 256/512, 0, 64/512}, -- druid balance
+		[103] = {256/512, 320/512, 0, 64/512}, -- druid feral
+		[104] = {320/512, 384/512, 0, 64/512}, -- druid guardian
+		[105] = {384/512, 448/512, 0, 64/512}, -- druid resto
 
-			[1467] = {256/512, 320/512, 256/512, 320/512}, -- Devastation
-			[1468] = {320/512, 384/512, 256/512, 320/512}, -- Preservation
+		[253] = {448/512, 512/512, 0, 64/512}, -- hunter bm
+		[254] = {0, 64/512, 64/512, 128/512}, --hunter marks
+		[255] = {64/512, 128/512, 64/512, 128/512}, --hunter survivor
+
+		[62] = {(128/512) + 0.001953125, 192/512, 64/512, 128/512}, --mage arcane
+		[63] = {192/512, 256/512, 64/512, 128/512}, --mage fire
+		[64] = {256/512, 320/512, 64/512, 128/512}, --mage frost
+
+		[268] = {320/512, 384/512, 64/512, 128/512}, --monk bm
+		[269] = {448/512, 512/512, 64/512, 128/512}, --monk ww
+		[270] = {384/512, 448/512, 64/512, 128/512}, --monk mw
+
+		[65] = {0, 64/512, 128/512, 192/512}, --paladin holy
+		[66] = {64/512, 128/512, 128/512, 192/512}, --paladin protect
+		[70] = {(128/512) + 0.001953125, 192/512, 128/512, 192/512}, --paladin ret
+
+		[256] = {192/512, 256/512, 128/512, 192/512}, --priest disc
+		[257] = {256/512, 320/512, 128/512, 192/512}, --priest holy
+		[258] = {(320/512) + (0.001953125 * 4), 384/512, 128/512, 192/512}, --priest shadow
+
+		[259] = {384/512, 448/512, 128/512, 192/512}, --rogue assassination
+		[260] = {448/512, 512/512, 128/512, 192/512}, --rogue combat
+		[261] = {0, 64/512, 192/512, 256/512}, --rogue sub
+
+		[262] = {64/512, 128/512, 192/512, 256/512}, --shaman elemental
+		[263] = {128/512, 192/512, 192/512, 256/512}, --shamel enhancement
+		[264] = {192/512, 256/512, 192/512, 256/512}, --shaman resto
+
+		[265] = {256/512, 320/512, 192/512, 256/512}, --warlock aff
+		[266] = {320/512, 384/512, 192/512, 256/512}, --warlock demo
+		[267] = {384/512, 448/512, 192/512, 256/512}, --warlock destro
+
+		[71] = {448/512, 512/512, 192/512, 256/512}, --warrior arms
+		[72] = {0, 64/512, 256/512, 320/512}, --warrior fury
+		[73] = {64/512, 128/512, 256/512, 320/512}, --warrior protect
+
+		[1467] = {256/512, 320/512, 256/512, 320/512}, -- Devastation
+		[1468] = {320/512, 384/512, 256/512, 320/512}, -- Preservation
+	},
+
+	--class icons and colors
+	class_icons_small = [[Interface\AddOns\Details\images\classes_small]],
+	class_coords = {
+		["DEMONHUNTER"] = {
+			0.73828126 / 2, -- [1]
+			1 / 2, -- [2]
+			0.5 / 2, -- [3]
+			0.75 / 2, -- [4]
+		},
+		["HUNTER"] = {
+			0, -- [1]
+			0.25 / 2, -- [2]
+			0.25 / 2, -- [3]
+			0.5 / 2, -- [4]
+		},
+		["WARRIOR"] = {
+			0, -- [1]
+			0.25 / 2, -- [2]
+			0, -- [3]
+			0.25 / 2, -- [4]
+		},
+		["ROGUE"] = {
+			0.49609375 / 2, -- [1]
+			0.7421875 / 2, -- [2]
+			0, -- [3]
+			0.25 / 2, -- [4]
+		},
+		["MAGE"] = {
+			0.25 / 2, -- [1]
+			0.49609375 / 2, -- [2]
+			0, -- [3]
+			0.25 / 2, -- [4]
+		},
+		["PET"] = {
+			0.25 / 2, -- [1]
+			0.49609375 / 2, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["DRUID"] = {
+			0.7421875 / 2, -- [1]
+			0.98828125 / 2, -- [2]
+			0, -- [3]
+			0.25 / 2, -- [4]
+		},
+		["MONK"] = {
+			0.5 / 2, -- [1]
+			0.73828125 / 2, -- [2]
+			0.5 / 2, -- [3]
+			0.75 / 2, -- [4]
+		},
+		["DEATHKNIGHT"] = {
+			0.25 / 2, -- [1]
+			0.5 / 2, -- [2]
+			0.5 / 2, -- [3]
+			0.75 / 2, -- [4]
+		},
+		["UNKNOW"] = {
+			0.5 / 2, -- [1]
+			0.75 / 2, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["PRIEST"] = {
+			0.49609375 / 2, -- [1]
+			0.7421875 / 2, -- [2]
+			0.25 / 2, -- [3]
+			0.5 / 2, -- [4]
+		},
+		["UNGROUPPLAYER"] = {
+			0.5 / 2, -- [1]
+			0.75 / 2, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["Alliance"] = {
+			0.49609375 / 2, -- [1]
+			0.742187 / 25, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["WARLOCK"] = {
+			0.7421875 / 2, -- [1]
+			0.98828125 / 2, -- [2]
+			0.25 / 2, -- [3]
+			0.5 / 2, -- [4]
+		},
+		["ENEMY"] = {
+			0, -- [1]
+			0.25 / 2, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["Horde"] = {
+			0.7421875 / 2, -- [1]
+			0.98828125 / 2, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["PALADIN"] = {
+			0, -- [1]
+			0.25 / 2, -- [2]
+			0.5 / 2, -- [3]
+			0.75 / 2, -- [4]
+		},
+		["MONSTER"] = {
+			0, -- [1]
+			0.25 / 2, -- [2]
+			0.75 / 2, -- [3]
+			1 / 2, -- [4]
+		},
+		["SHAMAN"] = {
+			0.25 / 2, -- [1]
+			0.49609375 / 2, -- [2]
+			0.25 / 2, -- [3]
+			0.5 / 2, -- [4]
+		},
+		["EVOKER"] = {
+			0.50390625, -- [1]
+			0.625, -- [2]
+			0, -- [3]
+			0.125, -- [4]
+		},
+	},
+
+	class_colors = {
+		["DEMONHUNTER"] = {
+			0.64,
+			0.19,
+			0.79,
+		},
+		["HUNTER"] = {
+			0.67, -- [1]
+			0.83, -- [2]
+			0.45, -- [3]
+		},
+		["WARRIOR"] = {
+			0.78, -- [1]
+			0.61, -- [2]
+			0.43, -- [3]
+		},
+		["PALADIN"] = {
+			0.96, -- [1]
+			0.55, -- [2]
+			0.73, -- [3]
+		},
+		["SHAMAN"] = {
+			0, -- [1]
+			0.44, -- [2]
+			0.87, -- [3]
+		},
+		["MAGE"] = {
+			0.41, -- [1]
+			0.8, -- [2]
+			0.94, -- [3]
+		},
+		["ROGUE"] = {
+			1, -- [1]
+			0.96, -- [2]
+			0.41, -- [3]
+		},
+		["UNKNOW"] = {
+			0.2, -- [1]
+			0.2, -- [2]
+			0.2, -- [3]
+		},
+		["PRIEST"] = {
+			1, -- [1]
+			1, -- [2]
+			1, -- [3]
+		},
+		["WARLOCK"] = {
+			0.58, -- [1]
+			0.51, -- [2]
+			0.79, -- [3]
+		},
+		["UNGROUPPLAYER"] = {
+			0.4, -- [1]
+			0.4, -- [2]
+			0.4, -- [3]
+		},
+		["ENEMY"] = {
+			0.94117, -- [1]
+			0, -- [2]
+			0.0196, -- [3]
+			1, -- [4]
+		},
+		["version"] = 1,
+		["PET"] = {
+			0.3, -- [1]
+			0.4, -- [2]
+			0.5, -- [3]
+		},
+		["DRUID"] = {
+			1, -- [1]
+			0.49, -- [2]
+			0.04, -- [3]
+		},
+		["MONK"] = {
+			0, -- [1]
+			1, -- [2]
+			0.59, -- [3]
+		},
+		["DEATHKNIGHT"] = {
+			0.77, -- [1]
+			0.12, -- [2]
+			0.23, -- [3]
+		},
+		["ARENA_GREEN"] = {
+			0.686, -- [1]
+			0.372, -- [2]
+			0.905, -- [3]
+		},
+		["ARENA_YELLOW"] = {
+			1, -- [1]
+			1, -- [2]
+			0.25, -- [3]
+		},
+		["NEUTRAL"] = {
+			1, -- [1]
+			1, -- [2]
+			0, -- [3]
+		},
+		["SELF"] = {
+			0.89019, -- [1]
+			0.32156, -- [2]
+			0.89019, -- [3]
 		},
 
-	--> class icons and colors
-		class_icons_small = [[Interface\AddOns\Details\images\classes_small]],
-		class_coords = {
-			["DEMONHUNTER"] = {
-				0.73828126 / 2, -- [1]
-				1 / 2, -- [2]
-				0.5 / 2, -- [3]
-				0.75 / 2, -- [4]
-			},
-			["HUNTER"] = {
-				0, -- [1]
-				0.25 / 2, -- [2]
-				0.25 / 2, -- [3]
-				0.5 / 2, -- [4]
-			},
-			["WARRIOR"] = {
-				0, -- [1]
-				0.25 / 2, -- [2]
-				0, -- [3]
-				0.25 / 2, -- [4]
-			},
-			["ROGUE"] = {
-				0.49609375 / 2, -- [1]
-				0.7421875 / 2, -- [2]
-				0, -- [3]
-				0.25 / 2, -- [4]
-			},
-			["MAGE"] = {
-				0.25 / 2, -- [1]
-				0.49609375 / 2, -- [2]
-				0, -- [3]
-				0.25 / 2, -- [4]
-			},
-			["PET"] = {
-				0.25 / 2, -- [1]
-				0.49609375 / 2, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["DRUID"] = {
-				0.7421875 / 2, -- [1]
-				0.98828125 / 2, -- [2]
-				0, -- [3]
-				0.25 / 2, -- [4]
-			},
-			["MONK"] = {
-				0.5 / 2, -- [1]
-				0.73828125 / 2, -- [2]
-				0.5 / 2, -- [3]
-				0.75 / 2, -- [4]
-			},
-			["DEATHKNIGHT"] = {
-				0.25 / 2, -- [1]
-				0.5 / 2, -- [2]
-				0.5 / 2, -- [3]
-				0.75 / 2, -- [4]
-			},
-			["UNKNOW"] = {
-				0.5 / 2, -- [1]
-				0.75 / 2, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["PRIEST"] = {
-				0.49609375 / 2, -- [1]
-				0.7421875 / 2, -- [2]
-				0.25 / 2, -- [3]
-				0.5 / 2, -- [4]
-			},
-			["UNGROUPPLAYER"] = {
-				0.5 / 2, -- [1]
-				0.75 / 2, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["Alliance"] = {
-				0.49609375 / 2, -- [1]
-				0.742187 / 25, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["WARLOCK"] = {
-				0.7421875 / 2, -- [1]
-				0.98828125 / 2, -- [2]
-				0.25 / 2, -- [3]
-				0.5 / 2, -- [4]
-			},
-			["ENEMY"] = {
-				0, -- [1]
-				0.25 / 2, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["Horde"] = {
-				0.7421875 / 2, -- [1]
-				0.98828125 / 2, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["PALADIN"] = {
-				0, -- [1]
-				0.25 / 2, -- [2]
-				0.5 / 2, -- [3]
-				0.75 / 2, -- [4]
-			},
-			["MONSTER"] = {
-				0, -- [1]
-				0.25 / 2, -- [2]
-				0.75 / 2, -- [3]
-				1 / 2, -- [4]
-			},
-			["SHAMAN"] = {
-				0.25 / 2, -- [1]
-				0.49609375 / 2, -- [2]
-				0.25 / 2, -- [3]
-				0.5 / 2, -- [4]
-			},
-			["EVOKER"] = {
-				0.50390625, -- [1]
-				0.625, -- [2]
-				0, -- [3]
-				0.125, -- [4]
-			},
+		["EVOKER"] = {
+			0.31764705882353, -- [1]
+			0.24313725490196, -- [2]
+			0.91372549019608, -- [3]
 		},
+	},
 
-		class_colors = {
-			["DEMONHUNTER"] = {
-				0.64,
-				0.19,
-				0.79,
-			},
-			["HUNTER"] = {
-				0.67, -- [1]
-				0.83, -- [2]
-				0.45, -- [3]
-			},
-			["WARRIOR"] = {
-				0.78, -- [1]
-				0.61, -- [2]
-				0.43, -- [3]
-			},
-			["PALADIN"] = {
-				0.96, -- [1]
-				0.55, -- [2]
-				0.73, -- [3]
-			},
-			["SHAMAN"] = {
-				0, -- [1]
-				0.44, -- [2]
-				0.87, -- [3]
-			},
-			["MAGE"] = {
-				0.41, -- [1]
-				0.8, -- [2]
-				0.94, -- [3]
-			},
-			["ROGUE"] = {
-				1, -- [1]
-				0.96, -- [2]
-				0.41, -- [3]
-			},
-			["UNKNOW"] = {
-				0.2, -- [1]
-				0.2, -- [2]
-				0.2, -- [3]
-			},
-			["PRIEST"] = {
-				1, -- [1]
-				1, -- [2]
-				1, -- [3]
-			},
-			["WARLOCK"] = {
-				0.58, -- [1]
-				0.51, -- [2]
-				0.79, -- [3]
-			},
-			["UNGROUPPLAYER"] = {
-				0.4, -- [1]
-				0.4, -- [2]
-				0.4, -- [3]
-			},
-			["ENEMY"] = {
-				0.94117, -- [1]
-				0, -- [2]
-				0.0196, -- [3]
-				1, -- [4]
-			},
-			["version"] = 1,
-			["PET"] = {
-				0.3, -- [1]
-				0.4, -- [2]
-				0.5, -- [3]
-			},
-			["DRUID"] = {
-				1, -- [1]
-				0.49, -- [2]
-				0.04, -- [3]
-			},
-			["MONK"] = {
-				0, -- [1]
-				1, -- [2]
-				0.59, -- [3]
-			},
-			["DEATHKNIGHT"] = {
-				0.77, -- [1]
-				0.12, -- [2]
-				0.23, -- [3]
-			},
-			["ARENA_GREEN"] = {
-				0.686, -- [1]
-				0.372, -- [2]
-				0.905, -- [3]
-			},
-			["ARENA_YELLOW"] = {
-				1, -- [1]
-				1, -- [2]
-				0.25, -- [3]
-			},
-			["NEUTRAL"] = {
-				1, -- [1]
-				1, -- [2]
-				0, -- [3]
-			},
-			["SELF"] = {
-				0.89019, -- [1]
-				0.32156, -- [2]
-				0.89019, -- [3]
-			},
-
-			["EVOKER"] = {
-				0.31764705882353, -- [1]
-				0.24313725490196, -- [2]
-				0.91372549019608, -- [3]
-			},
-		},
-
-		death_log_colors = {
-			damage = "red",
-			heal = "green",
-			friendlyfire = "darkorange",
-			cooldown = "yellow",
-			debuff = "purple",
-		},
+	death_log_colors = {
+		damage = "red",
+		heal = "green",
+		friendlyfire = "darkorange",
+		cooldown = "yellow",
+		debuff = "purple",
+	},
 
 	fade_speed = 0.15,
 	use_self_color = false,
 
-	--> minimap
+	--minimap
 		minimap = {hide = false, radius = 160, minimapPos = 220, onclick_what_todo = 1, text_type = 1, text_format = 3},
 		data_broker_text = "",
 		
-	--> hotcorner
+	--hotcorner
 		hotcorner_topleft = {hide = false},
 		
-	--> PvP
+	--PvP
 		only_pvp_frags = false,
 		color_by_arena_team = true,
 		show_arena_role_icon = false, --deprecated: this has been moved to instance settings 05.06.22 (tercio)
 
-	--> window settings
+	--window settings
 		max_window_size = {width = 480, height = 450},
 		new_window_size = {width = 310, height = 158},
 		window_clamp = {-8, 0, 21, -14},
@@ -891,7 +887,7 @@ local default_profile = {
 		disable_alldisplays_window = false,
 		damage_taken_everything = false,
 	
-	--> info window
+	--info window
 		player_details_window = {
 			skin = "ElvUI",
 			bar_texture = "Skyline",
@@ -902,13 +898,13 @@ local default_profile = {
 			scale = 1,
 		},
 		
-	--> segments
+	--segments
 		segments_amount = 40,
 		segments_amount_to_save = 40,
 		segments_panic_mode = false,
 		segments_auto_erase = 1,
 		
-	--> instances
+	--instances
 		instances_amount = 5,
 		instances_segments_locked = true,
 		instances_disable_bar_highlight = false,
@@ -916,16 +912,16 @@ local default_profile = {
 		instances_no_libwindow = false,
 		instances_suppress_trash = 0,
 		
-	--> if clear ungroup characters when logout
+	--if clear ungroup characters when logout
 		clear_ungrouped = true,
 		
-	--> if clear graphic data when logout
-		clear_graphic = true, 
+	--if clear graphic data when logout
+		clear_graphic = true,
 		
-	--> item level tracker
-		track_item_level = true,
+	--item level tracker
+		track_item_level = false,
 	
-	--> text settings
+	--text settings
 		font_sizes = {menus = 10},
 		font_faces = {menus = "Friz Quadrata TT"},
 		ps_abbreviation = 3,
@@ -933,7 +929,7 @@ local default_profile = {
 		numerical_system = 1,
 		numerical_system_symbols = "auto",
 	
-	--> performance
+	--performance
 		use_row_animations = true,
 		--default animation speed - % per second
 		animation_speed = 33,
@@ -957,28 +953,28 @@ local default_profile = {
 		trash_auto_remove = false,
 		world_combat_is_trash = false,
 		
-	--> death log
+	--death log
 		deadlog_limit = 16,
 		deadlog_events = 32,
 	
-	--> report
+	--report
 		report_lines = 5,
 		report_to_who = "",
 		report_heal_links = false,
 		report_schema = 1,
 		deny_score_messages = false,
 		
-	--> colors
+	--colors
 		default_bg_color = 0.0941,
 		default_bg_alpha = 0.5,
 		
-	--> fades
+	--fades
 		row_fade_in = {"in", 0.2},
 		windows_fade_in = {"in", 0.2},
 		row_fade_out = {"out", 0.2},
 		windows_fade_out = {"out", 0.2},
 
-	--> captures
+	--captures
 		capture_real = {
 			["damage"] = true,
 			["heal"] = true,
@@ -988,13 +984,13 @@ local default_profile = {
 			["spellcast"] = true,
 		},
 		
-	--> bookmark
+	--bookmark
 		bookmark_text_size = 11,
 	
-	--> cloud capture
+	--cloud capture
 		cloud_capture = true,
 	
-	--> combat
+	--combat
 		minimum_combat_time = 5, --combats with less then this in elapsed time is discarted
 		minimum_overall_combat_time = 10, --minimum time the combat must have to be added into the overall data
 		overall_flag = 0x10,
@@ -1012,7 +1008,7 @@ local default_profile = {
 		override_spellids = true,
 		all_players_are_group = false,
 	
-	--> skins
+	--skins
 		standard_skin = false,
 		skin = "Minimalistic",
 		profile_save_pos = true,
@@ -1026,10 +1022,10 @@ local default_profile = {
 			y_offset = 0,
 		},
 	
-	--> broadcaster options
+	--broadcaster options
 		broadcaster_enabled = false,
 		
-	--> event tracker
+	--event tracker
 		event_tracker = {
 			frame = {
 				locked = false,
@@ -1050,7 +1046,7 @@ local default_profile = {
 			line_color = {.1, .1, .1, 0.3},
 		},
 
-	--> current damage
+	--current damage
 		realtime_dps_meter = {
 			frame_settings = {
 				locked = true,
@@ -1079,7 +1075,7 @@ local default_profile = {
 			sample_size = 3, --in seconds
 		},
 		
-	--> streamer
+	--streamer
 --	_detalhes.streamer_config.
 		streamer_config = {
 			reset_spec_cache = false,
@@ -1090,7 +1086,7 @@ local default_profile = {
 			use_animation_accel = true,
 		},
 	
-	--> tooltip
+	--tooltip
 		tooltip = {
 			fontface = "Friz Quadrata TT", 
 			fontsize = 10,
@@ -1145,7 +1141,7 @@ local default_player_data = {
 			last_coach_name = false,
 		},
 
-	--> ocd tracker test
+	--ocd tracker test
 		ocd_tracker = {
 			enabled = false,
 			cooldowns = {},
@@ -1169,10 +1165,10 @@ local default_player_data = {
 			lines_per_column = 12,
 		},
 
-	--> force all fonts to have this outline
+	--force all fonts to have this outline
 		force_font_outline = "",
 
-	--> current combat number
+	--current combat number
 		cached_specs = {},
 		cached_talents = {},
 		cached_roles = {},
@@ -1195,26 +1191,26 @@ local default_player_data = {
 			ej_id = 0,
 			previous_boss_killed_at = 0,
 		},
-	--> nicktag cache
+	--nicktag cache
 		nick_tag_cache = {},
 		ignore_nicktag = false,
-	--> plugin data
+	--plugin data
 		plugin_database = {},
-	--> information about this character
+	--information about this character
 		character_data = {logons = 0},
-	--> version
+	--version
 		last_realversion = _detalhes.realversion,
 		last_version = "v1.0.0",
-	--> profile
+	--profile
 		active_profile = "",
-	--> plugins tables
+	--plugins tables
 		SoloTablesSaved = {},
 		RaidTablesSaved = {},
-	--> saved skins
+	--saved skins
 		savedStyles = {},
-	--> instance config
+	--instance config
 		local_instances_config = {},
-	--> announcements
+	--announcements
 		announce_deaths = {
 			enabled = false,
 			only_first = 5,
@@ -1247,18 +1243,18 @@ local default_player_data = {
 			enabled = true,
 			channel = "SELF",
 		},
-	--> benchmark
+	--benchmark
 		benchmark_db = {
 			frame = {},
 			
 		},
-	--> rank
+	--rank
 		rank_window = {
 			last_difficulty = 15,
 			last_raid = "",
 		},
 		
-	--> death panel buttons
+	--death panel buttons
 		on_death_menu = false,
 }
 
@@ -1266,7 +1262,7 @@ _detalhes.default_player_data = default_player_data
 
 local default_global_data = {
 
-	--> profile pool
+	--profile pool
 		__profiles = {},
 		latest_news_saw = "",
 		always_use_profile = false,
@@ -1300,31 +1296,48 @@ local default_global_data = {
 		current_exp_raid_encounters = {},
 		installed_skins_cache = {},
 
-	--> keystone cache
+	--spell category feedback
+		spell_category_savedtable = {},
+		spell_category_latest_query = 0,
+		spell_category_latest_save = 0,
+		spell_category_latest_sent = 0,
+
+	--class time played
+		class_time_played = {},
+
+	--keystone cache
 		keystone_cache = {},
 
-	--> all switch settings (panel shown when right click the title bar)
+	--all switch settings (panel shown when right click the title bar)
 		all_switch_config = {
 			scale = 1,
 			font_size = 10,
 		},
 
-	--> keystone window
+	--keystone window
 		keystone_frame = {
 			scale = 1,
 			position = {},
 		},
+
+	--aura tracker panel
+		aura_tracker_frame = {
+			position = {}, --for libwindow
+			scaletable = {
+				scale = 1
+			},
+		},
 		
-	--> profile by spec
+	--profile by spec
 		profile_by_spec = {},
 	
-	--> displays by spec
+	--displays by spec
 		displays_by_spec = {},
 		
-	--> death log
+	--death log
 		show_totalhitdamage_on_overkill = false,
 		
-	--> switch tables
+	--switch tables
 		switchSaved = {slots = 4, table = {
 			{["atributo"] = 1, ["sub_atributo"] = 1}, --damage done
 			{["atributo"] = 2, ["sub_atributo"] = 1}, --healing done
@@ -1333,7 +1346,7 @@ local default_global_data = {
 		}},
 		report_pos = {1, 1},
 		
-	--> tutorial
+	--tutorial
 		tutorial = {
 			logons = 0, 
 			unlock_button = 0, 
@@ -1355,16 +1368,16 @@ local default_global_data = {
 			["Dungeon"] = {enabled = false, update_speed = 1, use_row_animations = false, damage = true, heal = true, aura = true, energy = false, miscdata = true},
 		},
 		
-	--> auras (wa auras created from the aura panel)
+	--auras (wa auras created from the aura panel)
 		details_auras = {},
 		
-	--> ilvl
+	--ilvl
 		item_level_pool = {},
 		
-	--> latest report
+	--latest report
 		latest_report_table = {},
 		
-	--> death recap
+	--death recap
 		death_recap = {
 			enabled = true,
 			relevance_time = 7,
@@ -1379,14 +1392,14 @@ local default_global_data = {
 		encounter_spell_pool = {},
 		npcid_pool = {},
 		
-	--> aura creation frame libwindow
+	--aura creation frame libwindow
 		createauraframe = {},
 		
-	--> min health done on the death report
+	--min health done on the death report
 		deathlog_healingdone_min = 1,
 		deathlog_healingdone_min_arena = 400,
 		
-	--> mythic plus config
+	--mythic plus config
 		mythic_plus = {
 			always_in_combat = false, --
 			merge_boss_trash = true, --
@@ -1403,10 +1416,10 @@ local default_global_data = {
 			mythicrun_chart_frame_ready = {},
 		},
 	
-	--> plugin window positions
+	--plugin window positions
 		plugin_window_pos = {},
 	
-	--> run code
+	--run code
 		run_code = {
 			["on_specchanged"] = "\n-- run when the player changes its spec",
 			["on_zonechanged"] = "\n-- when the player changes zone, this code will run",
@@ -1416,7 +1429,7 @@ local default_global_data = {
 			["on_groupchange"] = "\n-- this code runs when the player enter or leave a group",
 		},
 		
-	--> plater integration
+	--plater integration
 		plater = {
 			realtime_dps_enabled = false,
 			realtime_dps_size = 12,
@@ -1438,18 +1451,18 @@ local default_global_data = {
 			
 		},
 	
-	--> dungeon information - can be accessed by plugins and third party mods
+	--dungeon information - can be accessed by plugins and third party mods
 		dungeon_data = {},
 	
-	--> raid information - can be accessed by plugins and third party mods
+	--raid information - can be accessed by plugins and third party mods
 		raid_data = {},
 
-	--> store all npcids blacklisted by the user
+	--store all npcids blacklisted by the user
 		npcid_ignored = {},
-	--> store all spellids blacklisted by the user
+	--store all spellids blacklisted by the user
 		spellid_ignored = {},
 
-	--> 9.0 exp (store data only used for the 9.0 expansion)
+	--9.0 exp (store data only used for the 9.0 expansion)
 		exp90temp = {
 			delete_damage_TCOB = true, --delete damage on the concil of blood encounter
 		},
@@ -1457,8 +1470,8 @@ local default_global_data = {
 
 _detalhes.default_global_data = default_global_data
 
-function _detalhes:GetTutorialCVar (key, default)
-	--> is disabling all popups from the streamer options
+function _detalhes:GetTutorialCVar(key, default)
+	--is disabling all popups from the streamer options
 	if (_detalhes.streamer_config.no_alerts) then
 		return true
 	end
@@ -1476,16 +1489,16 @@ end
 
 function _detalhes:SaveProfileSpecial()
 	
-	--> get the current profile
+	--get the current profile
 		local profile_name = _detalhes:GetCurrentProfileName()
 		local profile = _detalhes:GetProfile (profile_name, true)
 
-	--> save default keys
-		for key, _ in pairs (_detalhes.default_profile) do 
+	--save default keys
+		for key, _ in pairs(_detalhes.default_profile) do 
 
 			local current_value = _detalhes_database [key] or _detalhes_global [key] or _detalhes.default_player_data [key] or _detalhes.default_global_data [key]
 
-			if (type (current_value) == "table") then
+			if (type(current_value) == "table") then
 				local ctable = Details.CopyTable (current_value)
 				profile [key] = ctable
 			else
@@ -1494,21 +1507,21 @@ function _detalhes:SaveProfileSpecial()
 
 		end
 
-	--> save skins
+	--save skins
 		table.wipe (profile.instances)
 
 		if (_detalhes.tabela_instancias) then
-			for index, instance in ipairs (_detalhes.tabela_instancias) do
+			for index, instance in ipairs(_detalhes.tabela_instancias) do
 				local exported = instance:ExportSkin()
 				profile.instances [index] = exported
 			end
 		end
 
-	--> end
+	--end
 		return profile
 end
 
---> save things for the mythic dungeon run
+--save things for the mythic dungeon run
 function _detalhes:SaveState_CurrentMythicDungeonRun (runID, zoneName, zoneID, startAt, segmentID, level, ejID, latestBossAt)
 	local savedTable = _detalhes.mythic_dungeon_currentsaved
 	savedTable.started = true
@@ -1561,13 +1574,13 @@ function _detalhes:RestoreState_CurrentMythicDungeonRun()
 		ejID = DetailsFramework.EncounterJournal.EJ_GetInstanceForMap (mapID) or 0
 	end
 
-	--> is there a saved state for the dungeon?
+	--is there a saved state for the dungeon?
 	if (savedTable.started) then
-		--> player are within the same zone?
+		--player are within the same zone?
 		if (zoneName == savedTable.dungeon_name and currentZoneID == savedTable.dungeon_zone_id) then
-			--> is there a mythic run ongoing and the level is the same as the saved state?
+			--is there a mythic run ongoing and the level is the same as the saved state?
 			if (mythicLevel and mythicLevel == savedTable.level) then
-				--> restore the state
+				--restore the state
 				_detalhes.MythicPlus.Started = true
 				_detalhes.MythicPlus.DungeonName = zoneName
 				_detalhes.MythicPlus.DungeonID = currentZoneID
@@ -1582,7 +1595,7 @@ function _detalhes:RestoreState_CurrentMythicDungeonRun()
 				print("D! (debug) mythic dungeon state restored.")
 				
 				C_Timer.After (2, function()
-					_detalhes:SendEvent ("COMBAT_MYTHICDUNGEON_START")
+					_detalhes:SendEvent("COMBAT_MYTHICDUNGEON_START")
 				end)
 				return
 			else
@@ -1592,7 +1605,7 @@ function _detalhes:RestoreState_CurrentMythicDungeonRun()
 			print("D! (debug) zone name or zone Id isn't the same:", zoneName, savedTable.dungeon_name, currentZoneID, savedTable.dungeon_zone_id)
 		end
 		
-		--> mythic run is over
+		--mythic run is over
 		savedTable.started = false
 	else
 		--print("D! savedTable.stated isn't true.")
@@ -1655,7 +1668,7 @@ function Details:ExportCurrentProfile()
 	--data saved inside the profile
 	local profileObject = Details:GetProfile (Details:GetCurrentProfileName())
 	if (not profileObject) then
-		Details:Msg ("fail to get the current profile.")
+		Details:Msg("fail to get the current profile.")
 		return false
 	end
 	
@@ -1667,18 +1680,18 @@ function Details:ExportCurrentProfile()
 	local globaData = {}
 	
 	--fill player and global data tables
-	for key, _ in pairs (defaultPlayerData) do
+	for key, _ in pairs(defaultPlayerData) do
 		if (not exportProfileBlacklist[key]) then
-			if (type (Details[key]) == "table") then
+			if (type(Details[key]) == "table") then
 				playerData [key] = DetailsFramework.table.copy ({}, Details[key])
 			else
 				playerData [key] = Details[key]
 			end
 		end
 	end
-	for key, _ in pairs (defaultGlobalData) do
+	for key, _ in pairs(defaultGlobalData) do
 		if (not exportProfileBlacklist[key]) then
-			if (type (Details[key]) == "table") then
+			if (type(Details[key]) == "table") then
 				globaData [key] = DetailsFramework.table.copy ({}, Details[key])
 			else
 				globaData [key] = Details[key]
@@ -1700,7 +1713,7 @@ end
 function Details:ImportProfile (profileString, newProfileName)
 
 	if (not newProfileName or type (newProfileName) ~= "string" or string.len (newProfileName) < 2) then
-		Details:Msg ("invalid profile name or profile name is too short.") --localize-me
+		Details:Msg("invalid profile name or profile name is too short.") --localize-me
 		return
 	end
 	
@@ -1715,7 +1728,7 @@ function Details:ImportProfile (profileString, newProfileName)
 			--profile doesn't exists, create new
 			profileObject = Details:CreateProfile (newProfileName)
 			if (not profileObject) then
-				Details:Msg ("failed to create a new profile.")--localize-me
+				Details:Msg("failed to create a new profile.")--localize-me
 				return
 			end
 		end
@@ -1734,10 +1747,10 @@ function Details:ImportProfile (profileString, newProfileName)
 		local defaultProfileData = Details.default_profile
 		
 		--transfer player and global data tables from the profile to details object
-		for key, _ in pairs (defaultPlayerData) do
+		for key, _ in pairs(defaultPlayerData) do
 			local importedValue = playerData[key]
 			if (importedValue ~= nil) then
-				if (type (importedValue) == "table") then
+				if (type(importedValue) == "table") then
 					Details [key] = DetailsFramework.table.copy ({}, importedValue)
 				else
 					Details [key] = importedValue
@@ -1745,10 +1758,10 @@ function Details:ImportProfile (profileString, newProfileName)
 			end
 		end
 		
-		for key, _ in pairs (defaultGlobalData) do
+		for key, _ in pairs(defaultGlobalData) do
 			local importedValue = globalData[key]
 			if (importedValue ~= nil) then
-				if (type (importedValue) == "table") then
+				if (type(importedValue) == "table") then
 					Details [key] = DetailsFramework.table.copy ({}, importedValue)
 				else
 					Details [key] = importedValue
@@ -1757,10 +1770,10 @@ function Details:ImportProfile (profileString, newProfileName)
 		end
 		
 		--transfer data from the imported profile to the new profile object
-		for key, _ in pairs (defaultProfileData) do
+		for key, _ in pairs(defaultProfileData) do
 			local importedValue = profileData[key]
 			if (importedValue ~= nil) then
-				if (type (importedValue) == "table") then
+				if (type(importedValue) == "table") then
 					profileObject [key] = DetailsFramework.table.copy ({}, importedValue)
 				else
 					profileObject [key] = importedValue
@@ -1798,10 +1811,10 @@ function Details:ImportProfile (profileString, newProfileName)
 		end
 
 
-		Details:Msg ("profile successfully imported.")--localize-me
+		Details:Msg("profile successfully imported.")--localize-me
 		return true
 	else
-		Details:Msg ("failed to decompress profile data.")--localize-me
+		Details:Msg("failed to decompress profile data.")--localize-me
 	end
 end
 

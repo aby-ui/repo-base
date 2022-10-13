@@ -292,9 +292,9 @@ function BrowsePanel:OnInitialize()
                 activity:IsInActivity() or
                 activity:IsApplication()) then
                 if activity:IsGoldLeader() then
-                GameTooltip:SetOwner(button.Icon, 'ANCHOR_RIGHT')
-                GameTooltip:SetText(L['金牌导师'],1.0, 1.0, 1.0)
-                GameTooltip:Show()
+                    GameTooltip:SetOwner(button.Icon, 'ANCHOR_RIGHT')
+                    GameTooltip:SetText(L['金牌导师'],1.0, 1.0, 1.0)
+                    GameTooltip:Show()
                 elseif activity:IsSilverLeader() then
                     GameTooltip:SetOwner(button.Icon, 'ANCHOR_RIGHT')
                     GameTooltip:SetText(L['银牌导师'],1.0, 1.0, 1.0)

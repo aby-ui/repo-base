@@ -172,7 +172,7 @@ local options = {
 							name = "What's New",
 							type = "execute",
 							disabled = function()
-								return true --not KT.Help:IsEnabled()
+								return not KT.Help:IsEnabled()
 							end,
 							func = function()
 								KT.Help:ShowHelp(true)
@@ -183,12 +183,36 @@ local options = {
 							name = L"Help",
 							type = "execute",
 							disabled = function()
-								return true --return not KT.Help:IsEnabled()
+								return not KT.Help:IsEnabled()
 							end,
 							func = function()
-								--KT.Help:ShowHelp()
+								KT.Help:ShowHelp()
 							end,
 							order = 0.4,
+						},
+						supportersSpacer = {
+							name = " ",
+							type = "description",
+							width = "normal",
+							order = 0.51,
+						},
+						supportersLabel = {
+							name = "                |cff00ff00Become a Patron",
+							type = "description",
+							width = "normal",
+							fontSize = "medium",
+							order = 0.52,
+						},
+						supporters = {
+							name = "Supporters",
+							type = "execute",
+							disabled = function()
+								return not KT.Help:IsEnabled()
+							end,
+							func = function()
+								KT.Help:ShowSupporters()
+							end,
+							order = 0.53,
 						},
 					},
 				},
@@ -273,7 +297,8 @@ local options = {
 								overlayShown = not overlayShown
 								if overlayShown and not overlay then
 									overlay = CreateFrame("Frame", KTF:GetName().."Overlay", KTF)
-									overlay:SetFrameLevel(KTF:GetFrameLevel() + 11)
+									overlay:SetFrameLevel(KTF:GetFrameLevel() + 12)
+									overlay:EnableMouse(true)
 									overlay.texture = overlay:CreateTexture(nil, "BACKGROUND")
 									overlay.texture:SetAllPoints()
 									overlay.texture:SetColorTexture(0, 1, 0, 0.3)

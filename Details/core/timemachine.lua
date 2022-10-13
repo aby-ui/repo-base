@@ -5,7 +5,7 @@
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _table_insert = table.insert --lua local
 	local _ipairs = ipairs --lua local
@@ -18,25 +18,25 @@
 	local timeMachine = _detalhes.timeMachine --details local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 	local _tempo = _time()
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> core
+--core
 
 	timeMachine.ligada = false
 
-	local calc_for_pvp = function (self)
+	local calc_for_pvp = function(self)
 		for tipo, tabela in _pairs (self.tabelas) do
-			for nome, jogador in _ipairs (tabela) do
+			for nome, jogador in _ipairs(tabela) do
 				if (jogador) then
-					if (jogador.last_event+3 > _tempo) then --> okey o jogador esta dando dps
-						if (jogador.on_hold) then --> o dps estava pausado, retornar a ativa
+					if (jogador.last_event+3 > _tempo) then --okey o jogador esta dando dps
+						if (jogador.on_hold) then --o dps estava pausado, retornar a ativa
 							jogador:HoldOn (false)
 						end
 					else
-						if (not jogador.on_hold) then --> n�o ta pausado, precisa por em pausa
-							--> verifica se esta castando alguma coisa que leve + que 3 segundos
+						if (not jogador.on_hold) then --n�o ta pausado, precisa por em pausa
+							--verifica se esta castando alguma coisa que leve + que 3 segundos
 							jogador:HoldOn (true)
 						end
 					end
@@ -45,17 +45,17 @@
 		end
 	end
 	
-	local calc_for_pve = function (self)
+	local calc_for_pve = function(self)
 		for tipo, tabela in _pairs (self.tabelas) do
-			for nome, jogador in _ipairs (tabela) do
+			for nome, jogador in _ipairs(tabela) do
 				if (jogador) then
-					if (jogador.last_event+10 > _tempo) then --> okey o jogador esta dando dps
-						if (jogador.on_hold) then --> o dps estava pausado, retornar a ativa
+					if (jogador.last_event+10 > _tempo) then --okey o jogador esta dando dps
+						if (jogador.on_hold) then --o dps estava pausado, retornar a ativa
 							jogador:HoldOn (false)
 						end
 					else
-						if (not jogador.on_hold) then --> n�o ta pausado, precisa por em pausa
-							--> verifica se esta castando alguma coisa que leve + que 10 segundos
+						if (not jogador.on_hold) then --n�o ta pausado, precisa por em pausa
+							--verifica se esta castando alguma coisa que leve + que 10 segundos
 							jogador:HoldOn (true)
 						end
 					end
@@ -79,10 +79,10 @@
 	function timeMachine:Ligar()
 		self.atualizador = self:ScheduleRepeatingTimer ("Core", 1)
 		self.ligada = true
-		self.tabelas = {{}, {}} --> 1 dano 2 cura
+		self.tabelas = {{}, {}} --1 dano 2 cura
 		
 		local danos = _detalhes.tabela_vigente[1]._ActorTable
-		for _, jogador in _ipairs (danos) do
+		for _, jogador in _ipairs(danos) do
 			if (jogador.dps_started) then
 				jogador:RegistrarNaTimeMachine()
 			end
@@ -101,7 +101,7 @@
 	function timeMachine:Reiniciar()
 		table.wipe (self.tabelas[1])
 		table.wipe (self.tabelas[2])
-		self.tabelas = {{}, {}} --> 1 dano 2 cura
+		self.tabelas = {{}, {}} --1 dano 2 cura
 	end
 
 	function _detalhes:DesregistrarNaTimeMachine()
@@ -130,10 +130,10 @@
 	end 
 
 	function _detalhes:ManutencaoTimeMachine()
-		for tipo, tabela in _ipairs (timeMachine.tabelas) do
+		for tipo, tabela in _ipairs(timeMachine.tabelas) do
 			local t = {}
 			local removed = 0
-			for index, jogador in _ipairs (tabela) do
+			for index, jogador in _ipairs(tabela) do
 				if (jogador) then
 					t [#t+1] = jogador
 					jogador.timeMachine = #t
@@ -153,14 +153,14 @@
 	function _detalhes:Tempo()
 	
 		if (self.pvp) then
-			--> pvp timer
-			if (self.end_time) then --> o tempo do jogador esta trancado
+			--pvp timer
+			if (self.end_time) then --o tempo do jogador esta trancado
 				local t = self.end_time - self.start_time
 				if (t < 3) then
 					t = 3
 				end
 				return t
-			elseif (self.on_hold) then --> o tempo esta em pausa
+			elseif (self.on_hold) then --o tempo esta em pausa
 				local t = self.delay - self.start_time
 				if (t < 3) then
 					t = 3
@@ -183,14 +183,14 @@
 				return t
 			end
 		else
-			--> pve timer
-			if (self.end_time) then --> o tempo do jogador esta trancado
+			--pve timer
+			if (self.end_time) then --o tempo do jogador esta trancado
 				local t = self.end_time - self.start_time
 				if (t < 10) then
 					t = 10
 				end
 				return t
-			elseif (self.on_hold) then --> o tempo esta em pausa
+			elseif (self.on_hold) then --o tempo esta em pausa
 				local t = self.delay - self.start_time
 				if (t < 10) then
 					t = 10
@@ -231,19 +231,19 @@
 		self.end_time = _tempo
 	end
 
-	--> diz se o dps deste jogador esta em pausa
+	--diz se o dps deste jogador esta em pausa
 	function _detalhes:HoldOn (pausa)
 		if (pausa == nil) then 
 			return self.on_hold --retorna se o dps esta aberto ou fechado para este jogador
 			
-		elseif (pausa) then --> true - colocar como inativo
-			self.delay = _math_floor (self.last_event) --_tempo - 10
+		elseif (pausa) then --true - colocar como inativo
+			self.delay = _math_floor(self.last_event) --_tempo - 10
 			if (self.delay < self.start_time) then
 				self.delay = self.start_time
 			end
 			self.on_hold = true
 			
-		else --> false - retornar a atividade
+		else --false - retornar a atividade
 			local diff = _tempo - self.delay - 1
 			if (diff > 0) then
 				self.start_time = self.start_time + diff

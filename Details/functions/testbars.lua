@@ -32,15 +32,17 @@ end
 function Details:CreateTestBars (alphabet, isArena)
     local current_combat = Details:GetCombat ("current")
     local pclass = select (2, UnitClass ("player"))
-    
+
     local actors_name = {
-            {"Spiro", "EVOKER"},
-            {"Spiro", "EVOKER"},
-            {"Spiro", "EVOKER"},
-            {"Spiro", "EVOKER"},
-            {"Spiro", "EVOKER"},
-            {"Spiro", "EVOKER"},
-            {"Drakaris", "EVOKER"},
+            {"Spiro", "EVOKER", 1467},
+            {"Spiro", "EVOKER", 1467},
+            {"Spiro", "EVOKER", 1467},
+            {"Spiro", "EVOKER", 1467},
+            {"Spiro", "EVOKER", 1468},
+            {"Spiro", "EVOKER", 1468},
+            {"Spiro", "EVOKER", 1468},
+            {"Spiro", "EVOKER", 1468},
+            {"Drakaris", "EVOKER", 1468},
             {"Ragnaros", "MAGE", 63},
             {"The Lich King", "DEATHKNIGHT", }, 
             {"Your Neighbor", "SHAMAN", }, 
@@ -316,7 +318,7 @@ function Details:CreateTestBars (alphabet, isArena)
     current_combat.totals [1] = total_damage
     current_combat.totals [2] = total_heal
     
-    for _, instance in ipairs (Details.tabela_instancias) do 
+    for _, instance in ipairs(Details.tabela_instancias) do 
         if (instance:IsEnabled()) then
             instance:InstanceReset()
         end

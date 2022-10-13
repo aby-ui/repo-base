@@ -147,13 +147,15 @@ local filterStringToCooldownType = {
     ["interrupt"] = CONST_COOLDOWN_TYPE_INTERRUPT,
 }
 
-function openRaidLib.CooldownManager.DoesSpellPassFilter(spellId, filters)
+function openRaidLib.CooldownManager.DoesSpellPassFilters(spellId, filters)
     local allCooldownsData = LIB_OPEN_RAID_COOLDOWNS_INFO
     local cooldownData = allCooldownsData[spellId]
     if (cooldownData) then
         for filter in filters:gmatch("([^,%s]+)") do
             local cooldownType = filterStringToCooldownType[filter]
             if (cooldownData.type == cooldownType) then
+                return true
+            elseif (cooldownData[filter]) then --custom filter
                 return true
             end
         end
@@ -175,12 +177,49 @@ local getCooldownsForFilter = function(unitName, allCooldowns, unitDataFilteredC
 
         for spellId, cooldownInfo in pairs(allCooldowns) do
             local cooldownData = allCooldownsData[spellId]
-            if (cooldownData and cooldownData.type == filterStringToCooldownType[filter]) then
-                filterTable[spellId] = cooldownInfo
+            if (cooldownData) then
+                if (cooldownData.type == filterStringToCooldownType[filter]) then
+                    filterTable[spellId] = cooldownInfo
+
+                elseif (cooldownData[filter]) then --custom filter
+                    filterTable[spellId] = cooldownInfo
+                end
             end
         end
     end
     return filterTable
+end
+
+function openRaidLib.AddCooldownFilter(filterName, spells)
+    --integrity check
+    if (type(filterName) ~= "string") then
+        openRaidLib.DiagnosticError("Usage: openRaidLib.AddFilter(string: filterName, table: spells)", debugstack())
+        return false
+    end
+
+    if (type(spells) ~= "table") then
+        openRaidLib.DiagnosticError("Usage: openRaidLib.AddFilter(string: filterName, table: spells)", debugstack())
+        return false
+    end
+
+    --clear previous filter spell table of the same name
+    for spellId, cooldownData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+        cooldownData[filterName] = nil
+    end
+
+    local allCooldownsData = LIB_OPEN_RAID_COOLDOWNS_INFO
+    for spellIndex, spellId in ipairs(spells) do
+        local cooldownData = allCooldownsData[spellId]
+        cooldownData[filterName] = true
+    end
+
+    --tag all cache filters as dirt
+    local allUnitsCooldowns = openRaidLib.GetAllUnitsCooldown()
+    for unitName in pairs(allUnitsCooldowns) do
+        openRaidLib.CooldownManager.NeedRebuildFilters[unitName] = true
+    end
+
+    return true
 end
 
 --@allCooldowns: all cooldowns sent by an unit, {[spellId] = cooldownInfo}

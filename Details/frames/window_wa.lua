@@ -1,10 +1,10 @@
 local _detalhes = _G._detalhes
 local L = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 
---> default weaktable
+--default weaktable
 _detalhes.weaktable = {__mode = "v"}
 
---> globals
+--globals
 --[[global]] DETAILS_WA_AURATYPE_ICON = 1
 --[[global]] DETAILS_WA_AURATYPE_TEXT = 2
 --[[global]] DETAILS_WA_AURATYPE_BAR = 3
@@ -68,7 +68,7 @@ local text_dispell_prototype = {
         ["events"] = "COMBAT_LOG_EVENT_UNFILTERED, ENCOUNTER_START",
         ["use_spellName"] = false,
         ["use_spellId"] = false,
-        ["custom"] = "function (event, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)\n    if (event == \"COMBAT_LOG_EVENT_UNFILTERED\") then\n        \n        if ((token == \"SPELL_DISPEL\" or token == \"SPELL_STOLEN\") and extraSpellID == 159947) then\n            aura_env.dispelled = aura_env.dispelled + 1\n            aura_env.dispels_by [who_name] = (aura_env.dispels_by [who_name] or 0) + 1\n            \n            aura_env.text = aura_env.text .. \"|cffd2e8ff\" .. who_name ..  \" (\" .. aura_env.dispels_by [who_name] .. \") \".. \"|r\\n\"\n            \n            if (select (2, aura_env.text:gsub (\"\\n\", \"\")) == 9) then\n                aura_env.text = aura_env.text:gsub (\".-\\n\", \"\", 1)\n            end\n            return true\n        end        \n    else\n        aura_env.text = \"\"\n        aura_env.success = 0\n        aura_env.dispelled = 0\n        wipe (aura_env.dispels_by)\n        return true        \n    end\nend",
+        ["custom"] = "function(event, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)\n    if (event == \"COMBAT_LOG_EVENT_UNFILTERED\") then\n        \n        if ((token == \"SPELL_DISPEL\" or token == \"SPELL_STOLEN\") and extraSpellID == 159947) then\n            aura_env.dispelled = aura_env.dispelled + 1\n            aura_env.dispels_by [who_name] = (aura_env.dispels_by [who_name] or 0) + 1\n            \n            aura_env.text = aura_env.text .. \"|cffd2e8ff\" .. who_name ..  \" (\" .. aura_env.dispels_by [who_name] .. \") \".. \"|r\\n\"\n            \n            if (select (2, aura_env.text:gsub (\"\\n\", \"\")) == 9) then\n                aura_env.text = aura_env.text:gsub (\".-\\n\", \"\", 1)\n            end\n            return true\n        end        \n    else\n        aura_env.text = \"\"\n        aura_env.success = 0\n        aura_env.dispelled = 0\n        wipe (aura_env.dispels_by)\n        return true        \n    end\nend",
         ["spellIds"] = {
         },
         ["use_message"] = true,
@@ -176,7 +176,7 @@ local text_interrupt_prototype = {
         },
         ["use_spellName"] = false,
         ["use_spellId"] = false,
-        ["custom"] = "function (evento, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)\n    \n    if (evento == \"COMBAT_LOG_EVENT_UNFILTERED\") then\n        \n        if (token == \"SPELL_CAST_SUCCESS\" and spellid == 165416) then\n            aura_env.success = aura_env.success + 1\n            aura_env.text = aura_env.text .. \"SUCCESS! (\" .. aura_env.success .. \")\\n\"\n            \n            return true\n            \n        elseif (token == \"SPELL_INTERRUPT\" and extraSpellID == 165416) then\n            aura_env.interrupted = aura_env.interrupted + 1\n            aura_env.text = aura_env.text .. who_name ..  \" (\" .. aura_env.interrupted .. \") \".. \"\\n\"\n            return true\n        end\n    else\n        aura_env.text = \"\"\n        aura_env.success = 0\n        aura_env.interrupted = 0\n        return true        \n    end\n    \nend\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        ["custom"] = "function(evento, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)\n    \n    if (evento == \"COMBAT_LOG_EVENT_UNFILTERED\") then\n        \n        if (token == \"SPELL_CAST_SUCCESS\" and spellid == 165416) then\n            aura_env.success = aura_env.success + 1\n            aura_env.text = aura_env.text .. \"SUCCESS! (\" .. aura_env.success .. \")\\n\"\n            \n            return true\n            \n        elseif (token == \"SPELL_INTERRUPT\" and extraSpellID == 165416) then\n            aura_env.interrupted = aura_env.interrupted + 1\n            aura_env.text = aura_env.text .. who_name ..  \" (\" .. aura_env.interrupted .. \") \".. \"\\n\"\n            return true\n        end\n    else\n        aura_env.text = \"\"\n        aura_env.success = 0\n        aura_env.interrupted = 0\n        return true        \n    end\n    \nend\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
         ["events"] = "COMBAT_LOG_EVENT_UNFILTERED, ENCOUNTER_START",
         ["use_message"] = true,
         ["unevent"] = "timed",
@@ -1421,12 +1421,12 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
 
     --print (aura_type, spellid, use_spellid, spellname, name, icon_texture, target, stacksize, sound, chat, icon_text, icon_glow, encounter_id, group, icon_size, other_values)
 
-    --> check if wa is installed
+    --check if wa is installed
     if (not WeakAuras or not WeakAurasSaved) then
         return
     end
     
-    --> check if there is a group for our auras
+    --check if there is a group for our auras
 --[=[
     if (not WeakAurasSaved.displays ["Details! Aura Group"]) then
         local group = _detalhes.table.copy ({}, group_prototype)
@@ -1443,7 +1443,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         return Details:Msg("feature disabled due to 9.0 changes.")
     end
 
-    --> create the icon table
+    --create the icon table
     local new_aura
     icon_size = icon_size or 40
     
@@ -1457,7 +1457,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         new_aura = _detalhes.table.copy ({}, text_interrupt_prototype)
         
         new_aura.trigger.custom = [[
-            function (event, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)
+            function(event, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)
                 if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
                     if (token == "SPELL_CAST_SUCCESS" and spellid == @spellid) then
                         aura_env.success = aura_env.success + 1
@@ -1482,10 +1482,10 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         new_aura.trigger.custom = new_aura.trigger.custom:gsub ("@spellid", spellid)
         new_aura.trigger.custom = new_aura.trigger.custom:gsub ("@spell_casted", icon_text)
         
-        --> size
+        --size
         new_aura.fontSize = min (icon_size, 24)
         
-        --> combat only
+        --combat only
         if (in_combat) then
             new_aura.load.use_combat = true
         else
@@ -1502,7 +1502,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         new_aura = _detalhes.table.copy ({}, text_dispell_prototype)
         
         new_aura.trigger.custom = [[
-            function (event, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)
+            function(event, time, token, hidding, who_serial, who_name, who_flags, who_flags2, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, extraSpellID, extraSpellName, extraSchool)
                 if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
                     if ((token == "SPELL_DISPEL" or token == "SPELL_STOLEN") and extraSpellID == @spellid) then
                         aura_env.dispelled = aura_env.dispelled + 1
@@ -1528,10 +1528,10 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         new_aura.trigger.custom = new_aura.trigger.custom:gsub ("@spellid", spellid)
         new_aura.trigger.custom = new_aura.trigger.custom:gsub ("@title", icon_text)
 
-        --> size
+        --size
         new_aura.fontSize = min (icon_size, 24)
     
-        --> combat only
+        --combat only
         if (in_combat) then
             new_aura.load.use_combat = true
         else
@@ -1540,7 +1540,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
     
     elseif (other_values.dbm_timer_id or other_values.bw_timer_id) then --boss mods
     
-        --> create the default aura table
+        --create the default aura table
         if (aura_type == "icon") then
             new_aura = _detalhes.table.copy ({}, icon_dbm_timerbar_prototype)
         elseif (aura_type == "aurabar") then
@@ -1549,7 +1549,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             new_aura = _detalhes.table.copy ({}, text_dbm_timerbar_prototype)
         end
 
-        --> text and icon
+        --text and icon
         if (aura_type == "aurabar") then
             icon_text = icon_text:gsub ("= ", "")
             icon_text = icon_text:gsub (" =", "")
@@ -1561,7 +1561,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             new_aura.displayIcon = icon_texture
         end
         
-        --> size
+        --size
         if (aura_type == "icon") then
             new_aura.width = icon_size
             new_aura.height = icon_size
@@ -1572,7 +1572,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             new_aura.fontSize = min (icon_size, 72)
         end
         
-        --> trigger
+        --trigger
         if (aura_type == "text") then
             local init_start = [[
                 aura_env.ability_text = "@text"
@@ -1768,7 +1768,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
                 _detalhes.table.overwrite (new_aura, add)
             end
             
-            --> combat only
+            --combat only
             if (in_combat) then
                 new_aura.load = new_aura.load or {}
                 new_aura.load.use_combat = true
@@ -1779,10 +1779,10 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         else
             new_aura.trigger.spellId = tostring (spellid)
             new_aura.trigger.name = spellname
-            tinsert (new_aura.trigger.spellIds, spellid)
+            tinsert(new_aura.trigger.spellIds, spellid)
         end
         
-        --> if is a regular aura without using spells ids
+        --if is a regular aura without using spells ids
         if (not use_spellid) then
             new_aura.trigger.useExactSpellId = false
             new_aura.useName = true
@@ -1793,7 +1793,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             new_aura.auraspellids = {tostring(spellid)}
         end
         
-        --> check stack size
+        --check stack size
         if (stacksize and stacksize >= 1) then
             stacksize = floor (stacksize)
             local add = _detalhes.table.copy ({}, stack_prototype)
@@ -1801,7 +1801,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             _detalhes.table.overwrite (new_aura, add)
         end
         
-        --> icon text
+        --icon text
         if (icon_text and icon_text ~= "") then
             if (aura_type == "text") then
                 new_aura.displayText = icon_text
@@ -1812,7 +1812,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             end
         end
         
-        --> size
+        --size
         if (aura_type == "icon") then
             new_aura.width = icon_size
             new_aura.height = icon_size
@@ -1827,14 +1827,14 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
     new_aura.id = name
     new_aura.displayIcon = icon_texture		
 
-    --> load by encounter id
+    --load by encounter id
     if (encounter_id) then
         new_aura.load = new_aura.load or {}
         new_aura.load.use_encounterid = true
         new_aura.load.encounterid = tostring (encounter_id)
     end
 
-    --> using sound
+    --using sound
     if (sound and type (sound) == "table") then
         local add = _detalhes.table.copy ({}, sound_prototype_custom)
         add.actions.start.sound_path = sound.sound_path
@@ -1847,14 +1847,14 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         _detalhes.table.overwrite (new_aura, add)
     end
     
-    --> chat message
+    --chat message
     if (chat and chat ~= "") then
         local add = _detalhes.table.copy ({}, chat_prototype)
         add.actions.start.message = chat
         _detalhes.table.overwrite (new_aura, add)
     end
     
-    --> check if already exists a aura with this name
+    --check if already exists a aura with this name
     if (WeakAurasSaved.displays [new_aura.id]) then
         for i = 2, 100 do
             if (not WeakAurasSaved.displays [new_aura.id .. " (" .. i .. ")"]) then
@@ -1864,7 +1864,7 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         end
     end
     
-    --> check is is using glow effect
+    --check is is using glow effect
     if (icon_glow) then
         local add = _detalhes.table.copy ({}, glow_prototype)
         add.actions.start.glow_frame = "WeakAuras:" .. new_aura.id
@@ -1876,16 +1876,16 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
         new_aura.cooldownTextEnabled = true
     end
     
-    --> add the aura on a group
+    --add the aura on a group
     if (group) then
         new_aura.parent = group
         
         if (new_aura.regionType == "icon") then
-            --> adjust the width and height of the new aura following the existing auras on the group
+            --adjust the width and height of the new aura following the existing auras on the group
             local normalWidth, normalHeight, amount = 0, 0, 0
             local allAurasInTheGroup = WeakAurasSaved.displays [group].controlledChildren
             
-            for index, auraname in ipairs (allAurasInTheGroup) do
+            for index, auraname in ipairs(allAurasInTheGroup) do
                 local auraObject = WeakAurasSaved.displays [auraname]
                 if (auraObject and auraObject.regionType == "icon") then
                     amount = amount + 1
@@ -1902,15 +1902,15 @@ function _detalhes:CreateWeakAura (aura_type, spellid, use_spellid, spellname, n
             end
         end
         
-        tinsert (WeakAurasSaved.displays [group].controlledChildren, new_aura.id)
+        tinsert(WeakAurasSaved.displays [group].controlledChildren, new_aura.id)
     else
         new_aura.parent = nil
     end
     
-    --> add the aura
+    --add the aura
     WeakAuras.Add (new_aura)
     
-    --> check if the options panel has loaded
+    --check if the options panel has loaded
     local options_frame = WeakAuras.OptionsFrame and WeakAuras.OptionsFrame()
     if (options_frame) then
         if (options_frame and not options_frame:IsShown()) then
@@ -1936,7 +1936,7 @@ end
 -- text_size 72
 
 function _detalhes:InitializeAuraCreationWindow() if true then return end
-    local DetailsAuraPanel = CreateFrame ("frame", "DetailsAuraPanel", UIParent,"BackdropTemplate")
+    local DetailsAuraPanel = CreateFrame("frame", "DetailsAuraPanel", UIParent,"BackdropTemplate")
     DetailsAuraPanel.Frame = DetailsAuraPanel
     DetailsAuraPanel.__name = L["STRING_CREATEAURA"]
     DetailsAuraPanel.real_name = "DETAILS_CREATEAURA"
@@ -1958,7 +1958,7 @@ local empty_other_values = {}
 function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, triggertype, auratype, other_values)
     
     if (not spellname) then
-        spellname = select (1, GetSpellInfo (spellid))
+        spellname = select (1, GetSpellInfo(spellid))
     end
 
     wipe (empty_other_values)
@@ -1968,7 +1968,7 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         
         DetailsAuraPanel.Initialized = true
         
-        --> check if there is a group for our auras
+        --check if there is a group for our auras
         if (WeakAuras and WeakAurasSaved) then
             if (not WeakAurasSaved.displays ["Details! Aura Group"]) then
                 local group = _detalhes.table.copy ({}, group_prototype)
@@ -1980,26 +1980,26 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             end
         end
 
-        local f = DetailsAuraPanel or CreateFrame ("frame", "DetailsAuraPanel", UIParent,"BackdropTemplate")
-        f:SetSize (800, 600)
-        f:SetPoint ("center", UIParent, "center", 0, 150)
-        f:SetFrameStrata ("DIALOG")
+        local f = DetailsAuraPanel or CreateFrame("frame", "DetailsAuraPanel", UIParent,"BackdropTemplate")
+        f:SetSize(800, 600)
+        f:SetPoint("center", UIParent, "center", 0, 150)
+        f:SetFrameStrata("DIALOG")
         f:EnableMouse (true)
         f:SetMovable (true)
         f:SetToplevel (true)
         
         --background
-        f.bg1 = f:CreateTexture (nil, "background")
-        f.bg1:SetTexture ([[Interface\AddOns\Details\images\background]], true)
+        f.bg1 = f:CreateTexture(nil, "background")
+        f.bg1:SetTexture([[Interface\AddOns\Details\images\background]], true)
         f.bg1:SetAlpha (0.8)
         f.bg1:SetVertexColor (0.27, 0.27, 0.27)
         f.bg1:SetVertTile (true)
         f.bg1:SetHorizTile (true)
-        f.bg1:SetSize (790, 454)
+        f.bg1:SetSize(790, 454)
         f.bg1:SetAllPoints()
-        f:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
-        f:SetBackdropColor (.5, .5, .5, .7)
-        f:SetBackdropBorderColor (0, 0, 0, 1)
+        f:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
+        f:SetBackdropColor(.5, .5, .5, .7)
+        f:SetBackdropBorderColor(0, 0, 0, 1)
         
         --register to libwindow
         local LibWindow = LibStub ("LibWindow-1.1")
@@ -2008,40 +2008,40 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         LibWindow.MakeDraggable (f)
         LibWindow.SavePosition (f)
         
-        f:SetScript ("OnMouseDown", function (self, button)
+        f:SetScript("OnMouseDown", function(self, button)
             if (button == "RightButton") then
                 f:Hide()
             end
         end)
         
         --titlebar
-        f.TitleBar = CreateFrame ("frame", "$parentTitleBar", f,"BackdropTemplate")
-        f.TitleBar:SetPoint ("topleft", f, "topleft", 2, -3)
-        f.TitleBar:SetPoint ("topright", f, "topright", -2, -3)
-        f.TitleBar:SetHeight (20)
-        f.TitleBar:SetBackdrop ({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-        f.TitleBar:SetBackdropColor (.2, .2, .2, 1)
-        f.TitleBar:SetBackdropBorderColor (0, 0, 0, 1)
+        f.TitleBar = CreateFrame("frame", "$parentTitleBar", f,"BackdropTemplate")
+        f.TitleBar:SetPoint("topleft", f, "topleft", 2, -3)
+        f.TitleBar:SetPoint("topright", f, "topright", -2, -3)
+        f.TitleBar:SetHeight(20)
+        f.TitleBar:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+        f.TitleBar:SetBackdropColor(.2, .2, .2, 1)
+        f.TitleBar:SetBackdropBorderColor(0, 0, 0, 1)
         
         --close button
-        f.Close = CreateFrame ("button", "$parentCloseButton", f, "BackdropTemplate")
-        f.Close:SetPoint ("right", f.TitleBar, "right", -2, 0)
-        f.Close:SetSize (16, 16)
+        f.Close = CreateFrame("button", "$parentCloseButton", f, "BackdropTemplate")
+        f.Close:SetPoint("right", f.TitleBar, "right", -2, 0)
+        f.Close:SetSize(16, 16)
 
-        f.Close:SetNormalTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
-        f.Close:SetHighlightTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
-        f.Close:SetPushedTexture ([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+        f.Close:SetNormalTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+        f.Close:SetHighlightTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
+        f.Close:SetPushedTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
         f.Close:GetNormalTexture():SetDesaturated(true)
         f.Close:GetHighlightTexture():SetDesaturated(true)
         f.Close:GetPushedTexture():SetDesaturated(true)
 
         f.Close:SetAlpha (0.7)
-        f.Close:SetScript ("OnClick", function() f:Hide() end)
+        f.Close:SetScript("OnClick", function() f:Hide() end)
         
         --title
         f.Title = f.TitleBar:CreateFontString ("$parentTitle", "overlay", "GameFontNormal")
-        f.Title:SetPoint ("center", f.TitleBar, "center")
-        f.Title:SetText ("Details! Create Aura")
+        f.Title:SetPoint("center", f.TitleBar, "center")
+        f.Title:SetText("Details! Create Aura")
 
         local fw = _detalhes:GetFramework()
         
@@ -2052,14 +2052,14 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         local button_template = fw:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
         
         --aura name
-        local name_label = fw:CreateLabel (f, "Aura Name: ", nil, nil, "GameFontNormal")
+        local name_label = fw:CreateLabel(f, "Aura Name: ", nil, nil, "GameFontNormal")
         local name_textentry = fw:CreateTextEntry (f, _detalhes.empty_function, 150, 20, "AuraName", "$parentAuraName")
         name_textentry:SetTemplate (slider_template)
-        name_textentry:SetPoint ("left", name_label, "right", 2, 0)
+        name_textentry:SetPoint("left", name_label, "right", 2, 0)
         f.name = name_textentry
         
         --aura type
-        local on_select_aura_type = function (_, _, aura_type)
+        local on_select_aura_type = function(_, _, aura_type)
             if (f.UpdateLabels) then
                 f:UpdateLabels()
             end
@@ -2073,26 +2073,26 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             return aura_type_table
         end
         local aura_type = fw:CreateDropDown (f, aura_type_options, 1, 150, 20, "AuraTypeDropdown", "$parentAuraTypeDropdown")
-        local aura_type_label = fw:CreateLabel (f, "Aura Type: ", nil, nil, "GameFontNormal")
-        aura_type:SetPoint ("left", aura_type_label, "right", 2, 0)
+        local aura_type_label = fw:CreateLabel(f, "Aura Type: ", nil, nil, "GameFontNormal")
+        aura_type:SetPoint("left", aura_type_label, "right", 2, 0)
         aura_type:Hide()
         
         local Icon_IconAuraType = fw:CreateImage (f, [[Interface\AddOns\Details\images\icons2]], 32, 32, "overlay", {200/512, 232/512, 336/512, 368/512}, nil, nil)
-        Icon_IconAuraType:SetPoint ("topleft", aura_type_label, "bottomleft", 10, -16)
+        Icon_IconAuraType:SetPoint("topleft", aura_type_label, "bottomleft", 10, -16)
         
         local Icon_StatusbarAuraType = fw:CreateImage (f, [[Interface\AddOns\Details\images\icons2]], 92, 12, "overlay", {235/512, 327/512, 336/512, 348/512}, nil, nil)
-        Icon_StatusbarAuraType:SetPoint ("topleft", aura_type_label, "bottomleft", 60, -26)
+        Icon_StatusbarAuraType:SetPoint("topleft", aura_type_label, "bottomleft", 60, -26)
         
         local Icon_TextOnlyAuraType = fw:CreateImage (f, [[Interface\AddOns\Details\images\icons2]], 57, 8, "overlay", {250/512, 306/512, 360/512, 367/512}, nil, nil)
-        Icon_TextOnlyAuraType:SetPoint ("topleft", aura_type_label, "bottomleft", 170, -28)
+        Icon_TextOnlyAuraType:SetPoint("topleft", aura_type_label, "bottomleft", 170, -28)
         
         local AuraTypeSelectedColor = {1, 1, 1, 0.3}
         local AuraTypeBorderColor = {.3, .3, .3, 0.5}
         local AuraTypeBorderSelectedColor = {1, 1, 1, 0.4}
         
-        local OnSelectAuraType = function (self, fixedParam, auraType, noUpdate)
+        local OnSelectAuraType = function(self, fixedParam, auraType, noUpdate)
         
-            if (type (auraType) == "number") then
+            if (type(auraType) == "number") then
                 if (auraType == 1) then
                     auraType = "icon"
                 elseif (auraType == 2) then
@@ -2102,61 +2102,61 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
                 end
             end
             
-            f.IconAuraTypeButton:SetBackdropColor (0, 0, 0, 0.05)
-            f.StatusbarAuraTypeButton:SetBackdropColor (0, 0, 0, 0.05)
-            f.TextOnlyAuraTypeButton:SetBackdropColor (0, 0, 0, 0.05)
+            f.IconAuraTypeButton:SetBackdropColor(0, 0, 0, 0.05)
+            f.StatusbarAuraTypeButton:SetBackdropColor(0, 0, 0, 0.05)
+            f.TextOnlyAuraTypeButton:SetBackdropColor(0, 0, 0, 0.05)
             
-            f.IconAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderColor))
-            f.StatusbarAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderColor))
-            f.TextOnlyAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderColor))
+            f.IconAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderColor))
+            f.StatusbarAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderColor))
+            f.TextOnlyAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderColor))
             
             if (auraType == "icon") then
-                f.IconAuraTypeButton:SetBackdropColor (unpack (AuraTypeSelectedColor))
-                f.IconAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderSelectedColor))
+                f.IconAuraTypeButton:SetBackdropColor(unpack (AuraTypeSelectedColor))
+                f.IconAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderSelectedColor))
             elseif (auraType == "aurabar") then
-                f.StatusbarAuraTypeButton:SetBackdropColor (unpack (AuraTypeSelectedColor))
-                f.StatusbarAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderSelectedColor))
+                f.StatusbarAuraTypeButton:SetBackdropColor(unpack (AuraTypeSelectedColor))
+                f.StatusbarAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderSelectedColor))
             elseif (auraType == "text") then
-                f.TextOnlyAuraTypeButton:SetBackdropColor (unpack (AuraTypeSelectedColor))
-                f.TextOnlyAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderSelectedColor))
+                f.TextOnlyAuraTypeButton:SetBackdropColor(unpack (AuraTypeSelectedColor))
+                f.TextOnlyAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderSelectedColor))
             end
             
-            aura_type:SetValue (auraType)
+            aura_type:SetValue(auraType)
             if (f.UpdateLabels and not noUpdate) then
                 f:UpdateLabels()
             end
         end
         f.OnSelectAuraType = OnSelectAuraType
         
-        local AuraTypeBackground = f:CreateTexture (nil, "border")
+        local AuraTypeBackground = f:CreateTexture(nil, "border")
         AuraTypeBackground:SetColorTexture (.4, .4, .4, .1)
-        AuraTypeBackground:SetHeight (64)
-        AuraTypeBackground:SetPoint ("topleft", f, "topleft", 10, -79)
-        AuraTypeBackground:SetPoint ("topright", f, "topright", -10, -79)
+        AuraTypeBackground:SetHeight(64)
+        AuraTypeBackground:SetPoint("topleft", f, "topleft", 10, -79)
+        AuraTypeBackground:SetPoint("topright", f, "topright", -10, -79)
         
         local Icon_IconAuraTypeButton = fw:CreateButton (f, OnSelectAuraType, 46, 46, "", "icon", nil, nil, "IconAuraTypeButton")
         local Icon_StatusbarAuraTypeButton = fw:CreateButton (f, OnSelectAuraType, 100, 46, "", "aurabar", nil, nil, "StatusbarAuraTypeButton")
         local Icon_TextOnlyAuraTypeButton = fw:CreateButton (f, OnSelectAuraType, 69, 46, "", "text", nil, nil, "TextOnlyAuraTypeButton")
         
-        Icon_IconAuraTypeButton:SetPoint ("center", Icon_IconAuraType, "center")
-        Icon_StatusbarAuraTypeButton:SetPoint ("center", Icon_StatusbarAuraType, "center")
-        Icon_TextOnlyAuraTypeButton:SetPoint ("center", Icon_TextOnlyAuraType, "center")
+        Icon_IconAuraTypeButton:SetPoint("center", Icon_IconAuraType, "center")
+        Icon_StatusbarAuraTypeButton:SetPoint("center", Icon_StatusbarAuraType, "center")
+        Icon_TextOnlyAuraTypeButton:SetPoint("center", Icon_TextOnlyAuraType, "center")
         
-        Icon_IconAuraTypeButton:SetBackdrop ({edgeFile = [[Interface\AddOns\Details\images\dotted]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-        Icon_IconAuraTypeButton:SetBackdropColor (unpack (AuraTypeSelectedColor))
-        Icon_IconAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderColor))
+        Icon_IconAuraTypeButton:SetBackdrop({edgeFile = [[Interface\AddOns\Details\images\dotted]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+        Icon_IconAuraTypeButton:SetBackdropColor(unpack (AuraTypeSelectedColor))
+        Icon_IconAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderColor))
         
-        Icon_StatusbarAuraTypeButton:SetBackdrop ({edgeFile = [[Interface\AddOns\Details\images\dotted]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-        Icon_StatusbarAuraTypeButton:SetBackdropColor (0, 0, 0, 0.05)
-        Icon_StatusbarAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderColor))
+        Icon_StatusbarAuraTypeButton:SetBackdrop({edgeFile = [[Interface\AddOns\Details\images\dotted]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+        Icon_StatusbarAuraTypeButton:SetBackdropColor(0, 0, 0, 0.05)
+        Icon_StatusbarAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderColor))
         
-        Icon_TextOnlyAuraTypeButton:SetBackdrop ({edgeFile = [[Interface\AddOns\Details\images\dotted]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-        Icon_TextOnlyAuraTypeButton:SetBackdropColor (0, 0, 0, 0.05)
-        Icon_TextOnlyAuraTypeButton:SetBackdropBorderColor (unpack (AuraTypeBorderColor))
+        Icon_TextOnlyAuraTypeButton:SetBackdrop({edgeFile = [[Interface\AddOns\Details\images\dotted]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+        Icon_TextOnlyAuraTypeButton:SetBackdropColor(0, 0, 0, 0.05)
+        Icon_TextOnlyAuraTypeButton:SetBackdropBorderColor(unpack (AuraTypeBorderColor))
         
         --trigger list
         --target
-        local on_select_aura_trigger = function (_, _, aura_trigger)
+        local on_select_aura_trigger = function(_, _, aura_trigger)
             if (f.UpdateLabels) then
                 f:UpdateLabels()
             end
@@ -2185,8 +2185,8 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             return aura_on_table
         end
         local aura_on = fw:CreateDropDown (f, aura_on_options, 1, 150, 20, "AuraOnDropdown", "$parentAuraOnDropdown")
-        local aura_on_label = fw:CreateLabel (f, "Trigger On: ", nil, nil, "GameFontNormal")
-        aura_on:SetPoint ("left", aura_on_label, "right", 2, 0)
+        local aura_on_label = fw:CreateLabel(f, "Trigger On: ", nil, nil, "GameFontNormal")
+        aura_on:SetPoint("left", aura_on_label, "right", 2, 0)
         aura_on:Hide()
         
         local triggerList = {
@@ -2204,11 +2204,11 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             {name = "Spell Dispell", value = 42},
         }
         
-        local SetTriggerState = function (triggerID)
+        local SetTriggerState = function(triggerID)
             for i = 1, #triggerList do
-                triggerList[i].checkBox:SetValue (false)
+                triggerList[i].checkBox:SetValue(false)
                 if (triggerList[i].value == triggerID) then
-                    triggerList[i].checkBox:SetValue (true)
+                    triggerList[i].checkBox:SetValue(true)
                 end
             end
         end
@@ -2216,9 +2216,9 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         f.SetTriggerState = SetTriggerState
         f.TriggerList = triggerList
         
-        local OnChangeTriggerState = function (self, triggerID, state)
+        local OnChangeTriggerState = function(self, triggerID, state)
             SetTriggerState (triggerID)
-            aura_on:SetValue (triggerID)
+            aura_on:SetValue(triggerID)
             
             if (f.UpdateLabels) then
                 f:UpdateLabels()
@@ -2229,12 +2229,12 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             local checkBox = fw:CreateSwitch (f, OnChangeTriggerState, i == 1)
             checkBox:SetTemplate (fw:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"))
             checkBox:SetAsCheckBox()
-            checkBox:SetFixedParameter (triggerList [i].value)
+            checkBox:SetFixedParameter(triggerList [i].value)
             
-            checkBox:SetSize (20, 20)
-            checkBox:SetPoint ("topleft", aura_on_label, "bottomleft", 0, 12 + (-i*20))
-            local label = fw:CreateLabel (f, triggerList [i].name)
-            label:SetPoint ("left", checkBox, "right", 2, 0)
+            checkBox:SetSize(20, 20)
+            checkBox:SetPoint("topleft", aura_on_label, "bottomleft", 0, 12 + (-i*20))
+            local label = fw:CreateLabel(f, triggerList [i].name)
+            label:SetPoint("left", checkBox, "right", 2, 0)
             
             triggerList [i].checkBox = checkBox
         end
@@ -2243,80 +2243,80 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         
         
         --spellname
-        local spellname_label = fw:CreateLabel (f, "Spell Name: ", nil, nil, "GameFontNormal")
+        local spellname_label = fw:CreateLabel(f, "Spell Name: ", nil, nil, "GameFontNormal")
         local spellname_textentry = fw:CreateTextEntry (f, _detalhes.empty_function, 150, 20, "SpellName", "$parentSpellName")
         spellname_textentry:SetTemplate (slider_template)
-        spellname_textentry:SetPoint ("left", spellname_label, "right", 2, 0)
+        spellname_textentry:SetPoint("left", spellname_label, "right", 2, 0)
         f.spellname = spellname_textentry
         spellname_textentry.tooltip = "Spell/Debuff/Buff to be tracked."
         
         --spellid
-        local auraid_label = fw:CreateLabel (f, "Spell Id: ", nil, nil, "GameFontNormal")
+        local auraid_label = fw:CreateLabel(f, "Spell Id: ", nil, nil, "GameFontNormal")
         local auraid_textentry = fw:CreateTextEntry (f, _detalhes.empty_function, 150, 20, "AuraSpellId", "$parentAuraSpellId")
         auraid_textentry:SetTemplate (slider_template)
         auraid_textentry:Disable()
-        auraid_textentry:SetPoint ("left", auraid_label, "right", 2, 0)
+        auraid_textentry:SetPoint("left", auraid_label, "right", 2, 0)
         
         --use spellid
-        local usespellid_label = fw:CreateLabel (f, "Use SpellId: ", nil, nil, "GameFontNormal")
+        local usespellid_label = fw:CreateLabel(f, "Use SpellId: ", nil, nil, "GameFontNormal")
         local aura_use_spellid = fw:CreateSwitch (f, function(_, _, state) if (state) then auraid_textentry:Enable() else auraid_textentry:Disable() end end, false, nil, nil, nil, nil, "UseSpellId")
         aura_use_spellid:SetTemplate (fw:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"))
         aura_use_spellid:SetAsCheckBox()			
         
-        aura_use_spellid:SetPoint ("left", usespellid_label, "right", 2, 0)
+        aura_use_spellid:SetPoint("left", usespellid_label, "right", 2, 0)
         aura_use_spellid.tooltip = "Use the spell id instead of the spell name, for advanced users."
         
         --in combat only
-        local incombat_label = fw:CreateLabel (f, "Only in Combat: ", nil, nil, "GameFontNormal")
+        local incombat_label = fw:CreateLabel(f, "Only in Combat: ", nil, nil, "GameFontNormal")
         local aura_incombat = fw:CreateSwitch (f, function(_, _, state) end, true, nil, nil, nil, nil, "UseInCombat")
         aura_incombat:SetTemplate (fw:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"))
         aura_incombat:SetAsCheckBox()			
-        aura_incombat:SetPoint ("left", incombat_label, "right", 2, 0)
+        aura_incombat:SetPoint("left", incombat_label, "right", 2, 0)
         aura_incombat.tooltip = "Only active when in combat."
 
         --aura icon
-        local icon_label = fw:CreateLabel (f, "Icon: ", nil, nil, "GameFontNormal")
-        local icon_button_func = function (texture)
+        local icon_label = fw:CreateLabel(f, "Icon: ", nil, nil, "GameFontNormal")
+        local icon_button_func = function(texture)
             f.IconButton.icon.texture = texture
         end
-        local icon_pick_button = fw:NewButton (f, nil, "$parentIconButton", "IconButton", 20, 20, function() fw:IconPick (icon_button_func, true) end)
+        local icon_pick_button = fw:NewButton(f, nil, "$parentIconButton", "IconButton", 20, 20, function() fw:IconPick (icon_button_func, true) end)
         local icon_button_icon = fw:NewImage (icon_pick_button, [[Interface\ICONS\TEMP]], 19, 19, "background", nil, "icon", "$parentIcon")
         icon_pick_button:InstallCustomTexture()
         
-        icon_pick_button:SetPoint ("left", icon_label, "right", 2, 0)
-        icon_button_icon:SetPoint ("left", icon_label, "right", 2, 0)
+        icon_pick_button:SetPoint("left", icon_label, "right", 2, 0)
+        icon_button_icon:SetPoint("left", icon_label, "right", 2, 0)
         
         f.icon = icon_button_icon
         
         --is cooldown
-        local iscooldown_label = fw:CreateLabel (f, "Cooldown Animation: ", nil, nil, "GameFontNormal")
+        local iscooldown_label = fw:CreateLabel(f, "Cooldown Animation: ", nil, nil, "GameFontNormal")
         local aura_iscooldown = fw:CreateSwitch (f, function(_, _, state) end, true, nil, nil, nil, nil, "IsCooldown")
         aura_iscooldown:SetTemplate (fw:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"))
         aura_iscooldown:SetAsCheckBox()			
-        aura_iscooldown:SetPoint ("left", iscooldown_label, "right", 2, 0)
+        aura_iscooldown:SetPoint("left", iscooldown_label, "right", 2, 0)
         aura_iscooldown.tooltip = "Only active when in combat."
         
         --stack
         local stack_slider = fw:NewSlider (f, f, "$parentStackSlider", "StackSlider", 150, 20, 0, 30, 1, 0, true)
         stack_slider.useDecimals = true
         stack_slider:SetTemplate (slider_template)
-        local stack_label = fw:CreateLabel (f, "Trigger Stack Size: ", nil, nil, "GameFontNormal")
-        stack_slider:SetPoint ("left", stack_label, "right", 2, 0)
+        local stack_label = fw:CreateLabel(f, "Trigger Stack Size: ", nil, nil, "GameFontNormal")
+        stack_slider:SetPoint("left", stack_label, "right", 2, 0)
         stack_slider.tooltip = "Minimum amount of stacks to trigger the aura."
         
         --sound effect
-        local play_sound = function (self, fixedParam, file)
-            if (type (file) == "table") then
+        local play_sound = function(self, fixedParam, file)
+            if (type(file) == "table") then
                 PlaySoundFile (file.sound_path, "Master")
             else
                 PlaySoundFile (file, "Master")
             end
         end
         
-        local sort = function (t1, t2)
+        local sort = function(t1, t2)
             return t1.name < t2.name
         end
-        local titlecase = function (first, rest)
+        local titlecase = function(first, rest)
             return first:upper()..rest:lower()
         end
         local iconsize = {14, 14}
@@ -2358,7 +2358,7 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             local sounds = {}
             local already_added = {}
             
-            for name, soundFile in pairs (game_sounds) do
+            for name, soundFile in pairs(game_sounds) do
                 name = name:gsub ("(%a)([%w_']*)", titlecase)
                 if (not already_added [name]) then
                     sounds [#sounds+1] = {name = name, file = soundFile, gamesound = true}
@@ -2366,7 +2366,7 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
                 end
             end
             
-            for name, soundFile in pairs (LibStub:GetLibrary("LibSharedMedia-3.0"):HashTable ("sound")) do
+            for name, soundFile in pairs(LibStub:GetLibrary("LibSharedMedia-3.0"):HashTable ("sound")) do
                 name = name:gsub ("(%a)([%w_']*)", titlecase)
                 if (not already_added [name]) then
                     sounds [#sounds+1] = {name = name, file = soundFile}
@@ -2375,7 +2375,7 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             end
             
             if (WeakAuras and WeakAuras.sound_types) then
-                for soundFile, name in pairs (WeakAuras.sound_types) do
+                for soundFile, name in pairs(WeakAuras.sound_types) do
                     name = name:gsub ("(%a)([%w_']*)", titlecase)
                     if (not already_added [name]) then
                         sounds [#sounds+1] = {name = name, file = soundFile}
@@ -2385,39 +2385,39 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             
             table.sort (sounds, sort)
             
-            for _, sound in ipairs (sounds) do
-                if (sound.name:find ("D_")) then --> details sound
-                    tinsert (t, {color = "orange", label = sound.name, value = sound.file, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], onclick = play_sound, iconsize = iconsize})
-                elseif (sound.gamesound) then --> game sound
-                    tinsert (t, {color = "yellow", label = sound.name, value = {sound_path = sound.file}, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], onclick = play_sound, iconsize = iconsize})
+            for _, sound in ipairs(sounds) do
+                if (sound.name:find ("D_")) then --details sound
+                    tinsert(t, {color = "orange", label = sound.name, value = sound.file, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], onclick = play_sound, iconsize = iconsize})
+                elseif (sound.gamesound) then --game sound
+                    tinsert(t, {color = "yellow", label = sound.name, value = {sound_path = sound.file}, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], onclick = play_sound, iconsize = iconsize})
                 else
-                    tinsert (t, {label = sound.name, value = sound.file, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], onclick = play_sound, iconsize = iconsize})
+                    tinsert(t, {label = sound.name, value = sound.file, icon = [[Interface\Buttons\UI-GuildButton-MOTD-Up]], onclick = play_sound, iconsize = iconsize})
                 end
             end
             return t
         end
         local sound_effect = fw:CreateDropDown (f, sound_options, 1, 150, 20, "SoundEffectDropdown", "$parentSoundEffectDropdown")
         sound_effect:SetTemplate (slider_template)
-        local sound_effect_label = fw:CreateLabel (f, "Play Sound: ", nil, nil, "GameFontNormal")
-        sound_effect:SetPoint ("left", sound_effect_label, "right", 2, 0)
+        local sound_effect_label = fw:CreateLabel(f, "Play Sound: ", nil, nil, "GameFontNormal")
+        sound_effect:SetPoint("left", sound_effect_label, "right", 2, 0)
         sound_effect.tooltip = "Sound played when the aura triggers."
         
         --say something
-        local say_something_label = fw:CreateLabel (f, "/Say on Trigger: ", nil, nil, "GameFontNormal")
+        local say_something_label = fw:CreateLabel(f, "/Say on Trigger: ", nil, nil, "GameFontNormal")
         local say_something = fw:CreateTextEntry (f, _detalhes.empty_function, 150, 20, "SaySomething", "$parentSaySomething")
         say_something:SetTemplate (slider_template)
-        say_something:SetPoint ("left", say_something_label, "right", 2, 0)
+        say_something:SetPoint("left", say_something_label, "right", 2, 0)
         say_something.tooltip = "Your character /say this phrase when the aura triggers."
         
         --aura text
-        local aura_text_label = fw:CreateLabel (f, "Aura Text: ", nil, nil, "GameFontNormal")
+        local aura_text_label = fw:CreateLabel(f, "Aura Text: ", nil, nil, "GameFontNormal")
         local aura_text = fw:CreateTextEntry (f, _detalhes.empty_function, 150, 20, "AuraText", "$parentAuraText")
         aura_text:SetTemplate (slider_template)
-        aura_text:SetPoint ("left", aura_text_label, "right", 2, 0)
+        aura_text:SetPoint("left", aura_text_label, "right", 2, 0)
         aura_text.tooltip = "Text shown at aura's icon right side."
         
         --apply glow
-        local useglow_label = fw:CreateLabel (f, "Glow Effect: ", nil, nil, "GameFontNormal")
+        local useglow_label = fw:CreateLabel(f, "Glow Effect: ", nil, nil, "GameFontNormal")
         local useglow = fw:CreateSwitch (f, function(self, _, state) 
             if (state and self.glow_test) then  
                 self.glow_test:Show()
@@ -2432,40 +2432,40 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         useglow:SetTemplate (fw:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE"))
         useglow:SetAsCheckBox()			
         
-        useglow:SetPoint ("left", useglow_label, "right", 2, 0)
+        useglow:SetPoint("left", useglow_label, "right", 2, 0)
         useglow.tooltip = "Do not rename the aura on WeakAuras options panel or the glow effect may not work."
         
-        useglow.glow_test = CreateFrame ("frame", "DetailsAuraTextGlowTest", useglow.widget, "ActionBarButtonSpellActivationAlert")
-        useglow.glow_test:SetPoint ("topleft", useglow.widget, "topleft", -20, 2)
-        useglow.glow_test:SetPoint ("bottomright", useglow.widget, "bottomright", 20, -2)
+        useglow.glow_test = CreateFrame("frame", "DetailsAuraTextGlowTest", useglow.widget, "ActionBarButtonSpellActivationAlert")
+        useglow.glow_test:SetPoint("topleft", useglow.widget, "topleft", -20, 2)
+        useglow.glow_test:SetPoint("bottomright", useglow.widget, "bottomright", 20, -2)
         useglow.glow_test:Hide()
 
         --encounter id
-        local encounterid_label = fw:CreateLabel (f, "Encounter ID: ", nil, nil, "GameFontNormal")
+        local encounterid_label = fw:CreateLabel(f, "Encounter ID: ", nil, nil, "GameFontNormal")
         local encounterid = fw:CreateTextEntry (f, _detalhes.empty_function, 150, 20, "EncounterIdText", "$parentEncounterIdText")
         encounterid:SetTemplate (slider_template)
-        encounterid:SetPoint ("left", encounterid_label, "right", 2, 0)
+        encounterid:SetPoint("left", encounterid_label, "right", 2, 0)
         encounterid.tooltip = "Only load this aura for this raid encounter."
         
         --size
         local icon_size_slider = fw:NewSlider (f, f, "$parentIconSizeSlider", "IconSizeSlider", 150, 20, 8, 256, 1, 64)
-        local icon_size_label = fw:CreateLabel (f, "Size: ", nil, nil, "GameFontNormal")
+        local icon_size_label = fw:CreateLabel(f, "Size: ", nil, nil, "GameFontNormal")
         icon_size_slider:SetTemplate (slider_template)
-        icon_size_slider:SetPoint ("left", icon_size_label, "right", 2, 0)
+        icon_size_slider:SetPoint("left", icon_size_label, "right", 2, 0)
         icon_size_slider.tooltip = "Icon size, width and height."
         
         --aura addon
         local addon_options = function()
             local t = {}
             if (WeakAuras) then
-                tinsert (t, {label = "Weak Auras 2", value = "WA", icon = [[Interface\AddOns\WeakAuras\Media\Textures\icon]]})
+                tinsert(t, {label = "Weak Auras 2", value = "WA", icon = [[Interface\AddOns\WeakAuras\Media\Textures\icon]]})
             end
             return t
         end
         local aura_addon = fw:CreateDropDown (f, addon_options, 1, 150, 20, "AuraAddonDropdown", "$parentAuraAddonDropdown")
         aura_addon:SetTemplate (slider_template)
-        local aura_addon_label = fw:CreateLabel (f, "Addon: ", nil, nil, "GameFontNormal")
-        aura_addon:SetPoint ("left", aura_addon_label, "right", 2, 0)
+        local aura_addon_label = fw:CreateLabel(f, "Addon: ", nil, nil, "GameFontNormal")
+        aura_addon:SetPoint("left", aura_addon_label, "right", 2, 0)
         
         --weakauras - group
         
@@ -2473,26 +2473,26 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         local folder_texcoord = {435/512, 469/512, 189/512, 241/512}
         local folder_iconsize = {14, 14}
 
-        local sort_func = function (t1, t2) return t1.label < t2.label end
+        local sort_func = function(t1, t2) return t1.label < t2.label end
         
         local weakauras_folder_options = function()
             local t = {}
             if (WeakAuras and WeakAurasSaved) then
-                for display_name, aura_table in pairs (WeakAurasSaved.displays) do
+                for display_name, aura_table in pairs(WeakAurasSaved.displays) do
                     if (aura_table.regionType == "dynamicgroup" or aura_table.regionType == "group") then
-                        tinsert (t, {label = display_name, value = display_name, icon = folder_icon, texcoord = folder_texcoord, iconsize = folder_iconsize})
+                        tinsert(t, {label = display_name, value = display_name, icon = folder_icon, texcoord = folder_texcoord, iconsize = folder_iconsize})
                     end
                 end
             end
             table.sort (t, sort_func)
-            tinsert (t, 1, {label = "No Group", value = false, icon = folder_icon, texcoord = folder_texcoord, iconcolor = {0.8, 0.2, 0.2}, iconsize = folder_iconsize})
+            tinsert(t, 1, {label = "No Group", value = false, icon = folder_icon, texcoord = folder_texcoord, iconcolor = {0.8, 0.2, 0.2}, iconsize = folder_iconsize})
             return t
         end
         
-        local weakauras_folder_label = fw:CreateLabel (f, "WeakAuras Group: ", nil, nil, "GameFontNormal")
+        local weakauras_folder_label = fw:CreateLabel(f, "WeakAuras Group: ", nil, nil, "GameFontNormal")
         local weakauras_folder = fw:CreateDropDown (f, weakauras_folder_options, 1, 150, 20, "WeakaurasFolderDropdown", "$parentWeakaurasFolder")
         weakauras_folder:SetTemplate (slider_template)
-        weakauras_folder:SetPoint ("left", weakauras_folder_label, "right", 2, 0)
+        weakauras_folder:SetPoint("left", weakauras_folder_label, "right", 2, 0)
         
         --make new group
         local create_wa_group = function()
@@ -2533,21 +2533,21 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             
             --select the new group in the dropdown
             weakauras_folder:Refresh()
-            weakauras_folder:Select (groupName)
+            weakauras_folder:Select(groupName)
         end			
         
-        local weakauras_newgroup_label = fw:CreateLabel (f, "New WeakAuras Group: ", nil, nil, "GameFontNormal")
+        local weakauras_newgroup_label = fw:CreateLabel(f, "New WeakAuras Group: ", nil, nil, "GameFontNormal")
         local weakauras_newgroup_textentry = fw:CreateTextEntry (f, create_wa_group, 150, 20, "NewWeakaurasGroupTextEntry", "$parentNewWeakaurasGroup")
         weakauras_newgroup_textentry:SetTemplate (slider_template)
-        weakauras_newgroup_textentry:SetPoint ("left", weakauras_newgroup_label, "right", 2, 0)
+        weakauras_newgroup_textentry:SetPoint("left", weakauras_newgroup_label, "right", 2, 0)
         f.weakauras_newgroup = weakauras_newgroup_textentry
         weakauras_newgroup_textentry.tooltip = "Enter the name of the new group"
         
         local weakauras_newgroup_button = fw:CreateButton (f, create_wa_group, 106, 20, "Create Group")
         weakauras_newgroup_button:SetTemplate (slider_template)
         weakauras_newgroup_button:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE"))
-        weakauras_newgroup_button:SetWidth (100)
-        weakauras_newgroup_button:SetPoint ("left", weakauras_newgroup_textentry, "right", 2, 0)
+        weakauras_newgroup_button:SetWidth(100)
+        weakauras_newgroup_button:SetPoint("left", weakauras_newgroup_textentry, "right", 2, 0)
         
         
         --create
@@ -2589,11 +2589,11 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         local create_button = fw:CreateButton (f, create_func, 106, 20, L["STRING_CREATEAURA"])
         create_button:SetTemplate (slider_template)
         create_button:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE"))
-        create_button:SetWidth (160)
+        create_button:SetWidth(160)
         
         local cancel_button = fw:CreateButton (f, function() name_textentry:ClearFocus(); f:Hide() end, 106, 20, "Cancel")
         cancel_button:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGIN_BUTTON_TEMPLATE"))
-        cancel_button:SetWidth (160)
+        cancel_button:SetWidth(160)
         
         
         create_button:SetIcon ([[Interface\Buttons\UI-CheckBox-Check]], nil, nil, nil, {0.125, 0.875, 0.125, 0.875}, nil, 4, 2)
@@ -2604,36 +2604,36 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
         local y_start = 21
 
         --aura name and the type
-        name_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*1) + (25)) * -1)
-        aura_type_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*2) + (25)) * -1)
+        name_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*1) + (25)) * -1)
+        aura_type_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*2) + (25)) * -1)
         
         --triggers
-        aura_on_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*4) + (65)) * -1)
-        stack_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*17) + (65)) * -1)
-        encounterid_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*18) + (65)) * -1)
+        aura_on_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*4) + (65)) * -1)
+        stack_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*17) + (65)) * -1)
+        encounterid_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*18) + (65)) * -1)
         
         --about the spell
-        spellname_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*20) + (45)) * -1)
-        usespellid_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*21) + (45)) * -1)
-        auraid_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*22) + (45)) * -1)
-        incombat_label:SetPoint ("topleft", f, "topleft", x_start, ((y_start*23) + (45)) * -1)
+        spellname_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*20) + (45)) * -1)
+        usespellid_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*21) + (45)) * -1)
+        auraid_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*22) + (45)) * -1)
+        incombat_label:SetPoint("topleft", f, "topleft", x_start, ((y_start*23) + (45)) * -1)
 
         --configuration
-        icon_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*6) + (47)) * -1)
-        sound_effect_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*7) + (47)) * -1)
-        say_something_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*8) + (47)) * -1)
-        aura_text_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*9) + (47)) * -1)
-        useglow_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*10) + (47)) * -1)
-        iscooldown_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*11) + (47)) * -1)
-        icon_size_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*12) + (47)) * -1)
+        icon_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*6) + (47)) * -1)
+        sound_effect_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*7) + (47)) * -1)
+        say_something_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*8) + (47)) * -1)
+        aura_text_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*9) + (47)) * -1)
+        useglow_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*10) + (47)) * -1)
+        iscooldown_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*11) + (47)) * -1)
+        icon_size_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*12) + (47)) * -1)
         
-        aura_addon_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*17) + (60)) * -1)
-        weakauras_folder_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*18) + (60)) * -1)
-        weakauras_newgroup_label:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*19) + (60)) * -1)
+        aura_addon_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*17) + (60)) * -1)
+        weakauras_folder_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*18) + (60)) * -1)
+        weakauras_newgroup_label:SetPoint("topleft", f, "topleft", x2_start, ((y_start*19) + (60)) * -1)
         
         
-        create_button:SetPoint ("topleft", f, "topleft", x2_start, ((y_start*21) + (60)) * -1)
-        cancel_button:SetPoint ("left", create_button, "right", 20, 0)
+        create_button:SetPoint("topleft", f, "topleft", x2_start, ((y_start*21) + (60)) * -1)
+        cancel_button:SetPoint("left", create_button, "right", 20, 0)
         
         function f:UpdateLabels()
         
@@ -2642,7 +2642,7 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             
             f.StackSlider:Enable()
             f.StackSlider.tooltip = "Minimum amount of stacks to trigger the aura."
-            f.StackSlider:SetValue (0)
+            f.StackSlider:SetValue(0)
             f.SpellName:Enable()
             f.UseSpellId:Enable()
             f.AuraSpellId:Enable()
@@ -2654,41 +2654,41 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
             f.IconButton:Enable()
             f.AuraOnDropdown:Enable()
             f.AuraText:Enable()
-            f.AuraText:SetText ("")
+            f.AuraText:SetText("")
             aura_text_label.text = "Aura Text: "
             f.UseGlow:Enable()
             f.IsCooldown:Enable()
             
             if (aura_type == "icon") then
-                aura_text_label:SetText ("Icon Text: ")
-                icon_size_label:SetText ("Width/Height: ")
-                f.IconSizeSlider:SetValue (64)
+                aura_text_label:SetText("Icon Text: ")
+                icon_size_label:SetText("Width/Height: ")
+                f.IconSizeSlider:SetValue(64)
                 
             elseif (aura_type == "text") then
-                aura_text_label:SetText ("Text: ")
-                icon_size_label:SetText ("Font Size: ")
-                f.IconSizeSlider:SetValue (12)
+                aura_text_label:SetText("Text: ")
+                icon_size_label:SetText("Font Size: ")
+                f.IconSizeSlider:SetValue(12)
                 f.IsCooldown:Disable()
                 
             elseif (aura_type == "aurabar") then
-                aura_text_label:SetText ("Left Text: ")
-                icon_size_label:SetText ("Bar Width: ")
-                f.IconSizeSlider:SetValue (250)
+                aura_text_label:SetText("Left Text: ")
+                icon_size_label:SetText("Bar Width: ")
+                f.IconSizeSlider:SetValue(250)
                 f.IsCooldown:Disable()
             end
 
             if (trigger >= 1 and trigger <= 19) then --buff and debuff
-                stack_label:SetText ("Trigger Stack Size: ")
+                stack_label:SetText("Trigger Stack Size: ")
             
             elseif (trigger >= 20 and trigger <= 29) then --cast end cast start
-                stack_label:SetText ("Cast Duration: ")
-                f.StackSlider:SetValue (2)
+                stack_label:SetText("Cast Duration: ")
+                f.StackSlider:SetValue(2)
             
             elseif (trigger >= 30 and trigger <= 39) then --boss mods
-                stack_label:SetText ("Trigger Remaining Time:")
-                f.StackSlider:SetValue (4)
+                stack_label:SetText("Trigger Remaining Time:")
+                f.StackSlider:SetValue(4)
                 f.StackSlider.tooltip = "Will trigger when the bar remaining time reach this value."
-                f.IconSizeSlider:SetValue (64)
+                f.IconSizeSlider:SetValue(64)
                 f.SpellName:Disable()
                 f.UseSpellId:Disable()
                 
@@ -2696,7 +2696,7 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
                 f.StackSlider:Disable()
                 f.SpellName:Disable()
                 f.UseSpellId:Disable()
-                DetailsAuraPanel.AuraTypeDropdown:Select (2, true)
+                DetailsAuraPanel.AuraTypeDropdown:Select(2, true)
                 DetailsAuraPanel.OnSelectAuraType (nil, nil, 2, true)
                 f.IsCooldown:Disable()
                 
@@ -2704,19 +2704,19 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
                 f.SaySomething:Disable()
                 f.IconButton:Disable()
                 f.UseGlow:Disable()
-                icon_size_label:SetText ("Text Size: ")
-                f.IconSizeSlider:SetValue (11)
+                icon_size_label:SetText("Text Size: ")
+                f.IconSizeSlider:SetValue(11)
                 if (trigger == 41) then
-                    f.AuraText:SetText ("=Not Interrupted!=")
+                    f.AuraText:SetText("=Not Interrupted!=")
                     aura_text_label.text = "Not Interrupted: "
                 elseif (trigger == 42) then
-                    f.AuraText:SetText (DetailsAuraPanel.name.text:gsub ("%(d!%)", "") .. "Dispells")
+                    f.AuraText:SetText(DetailsAuraPanel.name.text:gsub ("%(d!%)", "") .. "Dispells")
                     aura_text_label.text = "Title Text: "
                 end
             end
             
             if (DetailsAuraPanel.other_values and DetailsAuraPanel.other_values.text) then
-                DetailsAuraPanel.AuraText:SetText (DetailsAuraPanel.other_values.text)
+                DetailsAuraPanel.AuraText:SetText(DetailsAuraPanel.other_values.text)
             end
             
         end
@@ -2731,19 +2731,19 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
     
     DetailsAuraPanel.WeakaurasFolderDropdown:Refresh()
     if (encounterid) then
-        DetailsAuraPanel.WeakaurasFolderDropdown:Select ("Details! Aura Group")
-        DetailsAuraPanel.IconSizeSlider:SetValue (128)
+        DetailsAuraPanel.WeakaurasFolderDropdown:Select("Details! Aura Group")
+        DetailsAuraPanel.IconSizeSlider:SetValue(128)
     else
-        DetailsAuraPanel.WeakaurasFolderDropdown:Select (1, true)
-        DetailsAuraPanel.IconSizeSlider:SetValue (64)
+        DetailsAuraPanel.WeakaurasFolderDropdown:Select(1, true)
+        DetailsAuraPanel.IconSizeSlider:SetValue(64)
     end
     
     if (DetailsAuraPanel.other_values.dbm_timer_id or DetailsAuraPanel.other_values.bw_timer_id) then
-        DetailsAuraPanel.WeakaurasFolderDropdown:Select ("Details! Boss Mods Group")
+        DetailsAuraPanel.WeakaurasFolderDropdown:Select("Details! Boss Mods Group")
     end
     
     if (DetailsAuraPanel.other_values.text_size) then
-        DetailsAuraPanel.IconSizeSlider:SetValue (DetailsAuraPanel.other_values.text_size)
+        DetailsAuraPanel.IconSizeSlider:SetValue(DetailsAuraPanel.other_values.text_size)
     end
     
     spellname = spellname or ""
@@ -2755,26 +2755,26 @@ function _detalhes:OpenAuraPanel (spellid, spellname, spellicon, encounterid, tr
     
     DetailsAuraPanel.UseGlow.glow_test.animIn:Stop()
     DetailsAuraPanel.UseGlow.glow_test.animOut:Play()
-    DetailsAuraPanel.UseGlow:SetValue (false)
+    DetailsAuraPanel.UseGlow:SetValue(false)
     
-    DetailsAuraPanel.StackSlider:SetValue (0)
-    DetailsAuraPanel.SoundEffectDropdown:Select (1, true)
-    DetailsAuraPanel.AuraText:SetText (DetailsAuraPanel.other_values.text or "")
-    DetailsAuraPanel.SaySomething:SetText ("")
+    DetailsAuraPanel.StackSlider:SetValue(0)
+    DetailsAuraPanel.SoundEffectDropdown:Select(1, true)
+    DetailsAuraPanel.AuraText:SetText(DetailsAuraPanel.other_values.text or "")
+    DetailsAuraPanel.SaySomething:SetText("")
     
     if (triggertype and type (triggertype) == "number") then
-        DetailsAuraPanel.AuraOnDropdown:Select (triggertype, true)
+        DetailsAuraPanel.AuraOnDropdown:Select(triggertype, true)
         DetailsAuraPanel.SetTriggerState (DetailsAuraPanel.TriggerList [triggertype].value) --passed by index not by the trigger ID
     else
-        DetailsAuraPanel.AuraOnDropdown:Select (1, true)
+        DetailsAuraPanel.AuraOnDropdown:Select(1, true)
         DetailsAuraPanel.SetTriggerState (1)
     end
     
     if (auratype and type (auratype) == "number") then
-        DetailsAuraPanel.AuraTypeDropdown:Select (auratype, true)
+        DetailsAuraPanel.AuraTypeDropdown:Select(auratype, true)
         DetailsAuraPanel.OnSelectAuraType (nil, nil, auratype)
     else
-        DetailsAuraPanel.AuraTypeDropdown:Select (1, true)
+        DetailsAuraPanel.AuraTypeDropdown:Select(1, true)
         DetailsAuraPanel.OnSelectAuraType (nil, nil, "icon")
     end
     

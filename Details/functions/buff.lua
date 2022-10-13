@@ -8,34 +8,34 @@
 	local _detalhes = _G._detalhes
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
-	--> initialize buffs name container
+	--initialize buffs name container
 	_detalhes.Buffs.BuffsTable = {} -- armazenara o [nome do buff] = { tabela do buff }
 	_detalhes.Buffs.__index = _detalhes.Buffs
 	
-	--> switch off recording buffs by default
+	--switch off recording buffs by default
 	_detalhes.RecordPlayerSelfBuffs = false
 	_detalhes.RecordPlayerAbilityWithBuffs = false
 	_detalhes.RecordPlayerSelfDebuffs = false
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
-	local _pairs = pairs --> lua local
-	local _ipairs = ipairs --> lua local
+	local _pairs = pairs --lua local
+	local _ipairs = ipairs --lua local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> details api functions
+--details api functions
 
-	--> return if the buff is already registred or not
+	--return if the buff is already registred or not
 	function _detalhes.Buffs:IsRegistred (buff)
-		if (type (buff) == "number") then
+		if (type(buff) == "number") then
 			for _, buffObject in _pairs (_detalhes.Buffs.BuffsTable) do 
 				if (buffObject.id == buff) then
 					return true
 				end
 			end
 			return false
-		elseif (type (buff) == "string") then
+		elseif (type(buff) == "string") then
 			for name, _ in _pairs (_detalhes.Buffs.BuffsTable) do 
 				if (name == buff) then
 					return true
@@ -45,10 +45,10 @@
 		end
 	end
 
-	--> register a new buff name
+	--register a new buff name
 	function _detalhes.Buffs:NewBuff (BuffName, BuffId)
 		if (not BuffName) then
-			BuffName = GetSpellInfo (BuffId)
+			BuffName = GetSpellInfo(BuffId)
 		end
 		if (_detalhes.Buffs.BuffsTable [BuffName]) then
 			return false
@@ -57,7 +57,7 @@
 		end
 	end
 
-	--> remove a registred buff
+	--remove a registred buff
 	function _detalhes.Buffs:RemoveBuff (BuffName)
 		if (not _detalhes.Buffs.BuffsTable [BuffName]) then
 			return false
@@ -67,7 +67,7 @@
 		end
 	end
 	
-	--> return a list of registred buffs
+	--return a list of registred buffs
 	function _detalhes.Buffs:GetBuffList()
 		local list = {}
 		for name, _ in _pairs (_detalhes.Buffs.BuffsTable) do 
@@ -76,7 +76,7 @@
 		return list
 	end
 
-	--> return a list of registred buffs ids
+	--return a list of registred buffs ids
 	function _detalhes.Buffs:GetBuffListIds()
 		local list = {}
 		for name, buffObject in _pairs (_detalhes.Buffs.BuffsTable) do 
@@ -87,7 +87,7 @@
 
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internal functions
+--internal functions
 	
 	function _detalhes.Buffs:UpdateBuff (method)
 		-- self = buff table
@@ -97,7 +97,7 @@
 			self.castedAmt = self.castedAmt + 1
 			self.active = true
 			self.appliedAt [#self.appliedAt+1] = _detalhes.tabela_vigente:GetCombatTime()
-			_detalhes:SendEvent ("BUFF_UPDATE")
+			_detalhes:SendEvent("BUFF_UPDATE")
 			
 		elseif (method == "refresh") then
 			
@@ -105,7 +105,7 @@
 			self.duration = self.duration + (_detalhes._tempo - self.start)
 			self.start = _detalhes._tempo
 			self.appliedAt [#self.appliedAt+1] = _detalhes.tabela_vigente:GetCombatTime()
-			_detalhes:SendEvent ("BUFF_UPDATE")
+			_detalhes:SendEvent("BUFF_UPDATE")
 			
 		elseif (method == "remove") then
 			
@@ -117,27 +117,27 @@
 			self.droppedAmt = self.droppedAmt + 1
 			self.start = nil
 			self.active = false
-			_detalhes:SendEvent ("BUFF_UPDATE")
+			_detalhes:SendEvent("BUFF_UPDATE")
 			
 		end
 	end
 
-	--> build buffs
+	--build buffs
 	function _detalhes.Buffs:BuildTables()
 		_detalhes.Buffs.built = true
 		if (_detalhes.savedbuffs) then
-			for _, BuffId in _ipairs (_detalhes.savedbuffs) do 
+			for _, BuffId in _ipairs(_detalhes.savedbuffs) do 
 				_detalhes.Buffs:NewBuff (nil, BuffId)
 			end
 		end
 	end
 
-	--> save buff list when addon exit
+	--save buff list when addon exit
 	function _detalhes.Buffs:SaveBuffs()
 		_detalhes_database.savedbuffs = _detalhes.Buffs:GetBuffListIds()
 	end
 
-	--> construct a buff table of the new buff registred
+	--construct a buff table of the new buff registred
 	function _detalhes.Buffs:BuildBuffTable (BuffName, BuffId)
 		local bufftable = {name = BuffName, id = BuffId, duration = 0, start = nil, castedAmt = 0, refreshAmt = 0, droppedAmt = 0, active = false, appliedAt = {}}
 		bufftable.IsBuff = true
@@ -146,7 +146,7 @@
 	end
 
 
-	--> update player buffs
+	--update player buffs
 	function _detalhes.Buffs:CatchBuffs()
 		
 		if (not _detalhes.Buffs.built) then
@@ -168,7 +168,7 @@
 			BuffTable.droppedAmt = 0
 		end
 		
-		--> catch buffs untracked yet
+		--catch buffs untracked yet
 		for buffIndex = 1, 41 do
 			local name = UnitAura ("player", buffIndex)
 			if (name) then

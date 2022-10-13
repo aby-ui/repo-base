@@ -48,6 +48,11 @@ L["config_weaponsmith_desc"] = "Show the weaponsmith locations."
 
 L["config_easy_waypoints"] = "Easy Waypoints"
 L["config_easy_waypoints_desc"] = "Activates simplified waypoint creation. \nAllows you to set a waypoint by right-clicking and access to more options by CTRL + right-clicking."
+L["config_waypoint_dropdown"] = "Choose"
+L["config_waypoint_dropdown_desc"] = "Choose how the waypoint should be created."
+L["Blizzard"] = true
+L["TomTom"] = true
+L["Both"] = true
 
 L["config_others"] = "Others"
 L["config_others_desc"] = "Show all the other POIs."
@@ -76,6 +81,7 @@ L["dev_config_show_prints_desc"] = "Show print() messages in the chat window."
 
 L["handler_context_menu_addon_name"] = "HandyNotes: Covenant Sanctum"
 L["handler_context_menu_add_tomtom"] = "Add to TomTom"
+L['handler_context_menu_add_map_pin'] = "Set map waypoint"
 L["handler_context_menu_hide_node"] = "Hide this node"
 
 --============================================TOOLTIPS============================================--

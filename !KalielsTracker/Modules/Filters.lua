@@ -237,7 +237,7 @@ local function IsInstanceQuest(questID)
 	return false
 end
 
-local function Filter_Quests(self, spec, idx)
+local function Filter_Quests(spec, idx)
 	if not spec then return end
 	local numEntries, _ = C_QuestLog.GetNumQuestLogEntries()
 
@@ -350,7 +350,7 @@ local function Filter_Quests(self, spec, idx)
 	end
 end
 
-local function Filter_Achievements(self, spec)
+local function Filter_Achievements(spec)
 	if not spec then return end
 	local trackedAchievements = { GetTrackedAchievements() }
 
@@ -530,13 +530,24 @@ local function DropDown_Toggle(level, button)
 	end
 end
 
-local function Filter_AutoTrack(self, id, spec)
+local function Filter_Menu_Quests(self, spec, idx)
+	KT.collapsedByUser = nil
+	Filter_Quests(spec, idx)
+end
+
+local function Filter_Menu_Achievements(self, spec)
+	KT.collapsedByUser = nil
+	Filter_Achievements(spec)
+end
+
+local function Filter_Menu_AutoTrack(self, id, spec)
 	db.filterAuto[id] = (db.filterAuto[id] ~= spec) and spec or nil
 	if db.filterAuto[id] then
+		KT.collapsedByUser = nil
 		if id == 1 then
-			Filter_Quests(self, spec)
+			Filter_Quests(spec)
 		elseif id == 2 then
-			Filter_Achievements(self, spec)
+			Filter_Achievements(spec)
 		end
 		KTF.FilterButton:GetNormalTexture():SetVertexColor(0, 1, 0)
 	else
@@ -557,7 +568,7 @@ local function Filter_AchievCat_CheckAll(self, state)
 		db.filterAchievCat[id] = state
 	end
 	if db.filterAuto[2] then
-		Filter_Achievements(_, db.filterAuto[2])
+		Filter_Menu_Achievements(self, db.filterAuto[2])
 		MSA_CloseDropDownMenus()
 	else
 		local listFrame = _G["MSA_DropDownList"..MSA_DROPDOWNMENU_MENU_LEVEL]
@@ -589,7 +600,7 @@ function DropDown_Initialize(self, level)
 
 		info.isTitle = false
 		info.disabled = (db.filterAuto[1])
-		info.func = Filter_Quests
+		info.func = Filter_Menu_Quests
 
 		info.text = L"All".." ("..dbChar.quests.num..")"
 		info.hasArrow = not (db.filterAuto[1])
@@ -639,7 +650,7 @@ function DropDown_Initialize(self, level)
 		info.arg1 = 1
 		info.arg2 = "zone"
 		info.checked = (db.filterAuto[info.arg1] == info.arg2)
-		info.func = Filter_AutoTrack
+		info.func = Filter_Menu_AutoTrack
 		MSA_DropDownMenu_AddButton(info)
 
 		MSA_DropDownMenu_AddSeparator(info)
@@ -661,7 +672,7 @@ function DropDown_Initialize(self, level)
 
 		info.keepShownOnClick = false
 		info.hasArrow = false
-		info.func = Filter_Achievements
+		info.func = Filter_Menu_Achievements
 
 		info.text = L"Favorites"
 		info.colorCode = "|cff009bff"
@@ -691,7 +702,7 @@ function DropDown_Initialize(self, level)
 		info.arg1 = 2
 		info.arg2 = "zone"
 		info.checked = (db.filterAuto[info.arg1] == info.arg2)
-		info.func = Filter_AutoTrack
+		info.func = Filter_Menu_AutoTrack
 		MSA_DropDownMenu_AddButton(info)
 
 		-- Addon - PetTracker
@@ -711,7 +722,7 @@ function DropDown_Initialize(self, level)
 			info.func = function()
 				PetTracker.Tracker:Toggle()
 				if dbChar.collapsed and PetTracker.sets.trackPets then
-					ObjectiveTracker_MinimizeButton_OnClick()
+					KT:MinimizeButton_OnClick(true)
 				end
 			end
 			MSA_DropDownMenu_AddButton(info)
@@ -728,7 +739,7 @@ function DropDown_Initialize(self, level)
 
 		if MSA_DROPDOWNMENU_MENU_VALUE == 1 then
 			info.arg1 = "group"
-			info.func = Filter_Quests
+			info.func = Filter_Menu_Quests
 
 			if numEntries > 0 then
 				local headerTitle, headerOnMap, headerCampaign, headerShown
@@ -779,7 +790,7 @@ function DropDown_Initialize(self, level)
 					info.func = function(_, arg)
 						db.filterAchievCat[arg] = not db.filterAchievCat[arg]
 						if db.filterAuto[2] then
-							Filter_Achievements(_, db.filterAuto[2])
+							Filter_Menu_Achievements(_, db.filterAuto[2])
 							MSA_CloseDropDownMenus()
 						end
 					end
@@ -807,7 +818,7 @@ local function SetFrames()
 				end
 			elseif event == "QUEST_POI_UPDATE" then
 				KT.questStateStopUpdate = true
-				Filter_Quests(_, "zone")
+				Filter_Quests("zone")
 				QuestSuperTracking_OnQuestTracked(pendingQuestID)
 				pendingQuestID = nil
 				KT.questStateStopUpdate = false
@@ -820,23 +831,19 @@ local function SetFrames()
 			elseif event == "ZONE_CHANGED_NEW_AREA" then
 				if not KT.IsInBetween() then
 					C_Timer.After(0, function()
-						KT.autoExpand = false
 						if db.filterAuto[1] == "zone" then
-							Filter_Quests(_, "zone")
+							Filter_Quests("zone")
 						end
 						if db.filterAuto[2] == "zone" then
-							Filter_Achievements(_, "zone")
+							Filter_Achievements("zone")
 						end
-						KT.autoExpand = true
 					end)
 				end
 			elseif event == "ZONE_CHANGED" or event == "ZONE_CHANGED_INDOORS" then
 				if not KT.IsInBetween() then
-					KT.autoExpand = false
 					if db.filterAuto[1] == "zone" then
-						Filter_Quests(_, "zone")
+						Filter_Quests("zone")
 					end
-					KT.autoExpand = true
 				end
 			end
 		end)

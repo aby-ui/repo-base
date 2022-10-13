@@ -115,6 +115,16 @@ do
 	function _detalhes:GetDisplayName (actor)
 		return self.displayName or actor and actor.displayName
 	end
+
+	function Details:SetDisplayName(actor, newDisplayName)
+		if (not newDisplayName) then
+			newDisplayName = actor
+			self.displayName = newDisplayName
+		else
+			actor.displayName = newDisplayName
+		end
+	end
+
 	function _detalhes:GetOnlyName (string)
 		if (string) then
 			return string:gsub (("%-.*"), "")
@@ -160,7 +170,7 @@ do
 		return self.pets
 	end
 	
-	--> inherits to all actors without placing it on _detalhes namespace.
+	--inherits to all actors without placing it on _detalhes namespace.
 	_detalhes.container_combatentes.guid = _detalhes.GetGUID
 	_detalhes.container_combatentes.name = _detalhes.GetName
 	_detalhes.container_combatentes.class = _detalhes.GetActorClass

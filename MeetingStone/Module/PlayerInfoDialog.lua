@@ -144,7 +144,7 @@ function PlayerInfoDialog:CheckInput()
             return L['收货地址不能为空']
         end
     end
-    
+
     if ContactInput:IsVisible() then
         local contact = ContactInput:GetText():trim()
         if contact == '' then
@@ -166,7 +166,7 @@ function PlayerInfoDialog:UpdateHeight()
     Summary:SetJustifyH(height > 150 and 'LEFT' or 'MIDDLE')
 
     if InfoParent:IsShown() then
-        height = height + InfoParent:GetHeight() + 10   
+        height = height + InfoParent:GetHeight() + 10
     end
 
     self:SetHeight(height)

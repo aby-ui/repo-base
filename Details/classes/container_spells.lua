@@ -4,12 +4,12 @@ local _detalhes = 		_G._detalhes
 local _
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _setmetatable = setmetatable --lua local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 	
 	local container_playernpc	=	_detalhes.container_type.CONTAINER_PLAYERNPC
 	local container_damage	=	_detalhes.container_type.CONTAINER_DAMAGE_CLASS
@@ -30,7 +30,7 @@ local _
 	local container_habilidades = 	_detalhes.container_habilidades
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internals
+--internals
 	
 	function container_habilidades:NovoContainer (tipo_do_container)
 		local _newContainer = {
@@ -56,7 +56,7 @@ local _
 	end
 	
 	function container_habilidades:ListActors()
-		return pairs (self._ActorTable)
+		return pairs(self._ActorTable)
 	end
 
 	function container_habilidades:GetOrCreateSpell(id, shouldCreate, token)
@@ -100,7 +100,7 @@ local _
 	end
 
 	function _detalhes.refresh:r_container_habilidades (container, shadow)
-		--> reconstr�i meta e indexes
+		--reconstr�i meta e indexes
 			_setmetatable (container, _detalhes.container_habilidades)
 			container.__index = _detalhes.container_habilidades
 			local func_criacao = container_habilidades:FuncaoDeCriacao (container.tipo)

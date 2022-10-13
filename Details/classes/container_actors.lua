@@ -8,7 +8,7 @@
 	local CONST_CLIENT_LANGUAGE = DF.ClientLanguage
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _UnitClass = UnitClass --api local
 	local _IsInInstance = IsInInstance --api local
@@ -29,7 +29,7 @@
 	local DeclineName = _G.DeclineName
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local combatente =			_detalhes.combatente
 	local container_combatentes =	_detalhes.container_combatentes
@@ -53,7 +53,7 @@
 
 	local container_pets = {}
 	
-	--> flags
+	--flags
 	local REACTION_HOSTILE	=	0x00000040
 	local IS_GROUP_OBJECT 	= 	0x00000007
 	local REACTION_FRIENDLY	=	0x00000010 
@@ -88,7 +88,7 @@
 	}
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> api functions
+--api functions
 
 	function container_combatentes:GetActor (actorName)
 		local index = self._NameIndexTable [actorName]
@@ -120,7 +120,7 @@
 	function container_combatentes:GetTotal (key)
 		local total = 0
 		key = key or "total"
-		for _, actor in _ipairs (self._ActorTable) do
+		for _, actor in _ipairs(self._ActorTable) do
 			total = total + (actor [key] or 0)
 		end
 		
@@ -131,7 +131,7 @@
 		local total = 0
 		key = key or "total"
 		local roster = combat.raid_roster
-		for _, actor in _ipairs (self._ActorTable) do
+		for _, actor in _ipairs(self._ActorTable) do
 			if (roster [actor.nome]) then
 				total = total + (actor [key] or 0)
 			end
@@ -141,13 +141,13 @@
 	end
 
 	function container_combatentes:ListActors()
-		return _ipairs (self._ActorTable)
+		return _ipairs(self._ActorTable)
 	end
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internals
+--internals
 
-	--> build a new actor container
+	--build a new actor container
 	function container_combatentes:NovoContainer (tipo_do_container, combat_table, combat_id)
 		local _newContainer = {
 			funcao_de_criacao = container_combatentes:FuncaoDeCriacao (tipo_do_container),
@@ -165,16 +165,16 @@
 		return _newContainer
 	end
 
-	--> try to get the actor class from name
+	--try to get the actor class from name
 	local function get_actor_class (novo_objeto, nome, flag, serial)
-		--> get spec
+		--get spec
 		if (_detalhes.track_specs) then
 			local have_cached = _detalhes.cached_specs [serial]
 			if (have_cached) then
 				novo_objeto.spec = have_cached
-				--> check is didn't changed the spec:
+				--check is didn't changed the spec:
 				if (_detalhes.streamer_config.quick_detection) then
-					--> validate the spec more times if on quick detection
+					--validate the spec more times if on quick detection
 					_detalhes:ScheduleTimer("ReGuessSpec", 2, {novo_objeto})
 					_detalhes:ScheduleTimer("ReGuessSpec", 4, {novo_objeto})
 					_detalhes:ScheduleTimer("ReGuessSpec", 6, {novo_objeto})
@@ -183,7 +183,7 @@
 				--print (nome, "spec em cache:", have_cached)
 			else
 				if (_detalhes.streamer_config.quick_detection) then
-					--> shoot detection early if in quick detection
+					--shoot detection early if in quick detection
 					_detalhes:ScheduleTimer("GuessSpec", 1, {novo_objeto, nil, 1})
 				else
 					_detalhes:ScheduleTimer("GuessSpec", 3, {novo_objeto, nil, 1})
@@ -198,7 +198,7 @@
 			return
 		else	
 			if (flag) then
-				--> conferir se o jogador � um player
+				--conferir se o jogador � um player
 				if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
 					novo_objeto.classe = "UNGROUPPLAYER"
 					return
@@ -234,11 +234,11 @@
 		return nickname
 	end
 
-	--> read the actor flag
+	--read the actor flag
 	local read_actor_flag = function(actorObject, dono_do_pet, serial, flag, nome, container_type)
 
 		if (flag) then
-			--> this is player actor
+			--this is player actor
 			if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
 				if (not _detalhes.ignore_nicktag) then
 					actorObject.displayName = checkValidNickname(Details:GetNickname(nome, false, true), nome) --defaults to player name
@@ -295,9 +295,9 @@
 					end
 				end
 
-				--> pvp duel
+				--pvp duel
 				if (_detalhes.duel_candidates [serial]) then
-					--> check if is recent
+					--check if is recent
 					if (_detalhes.duel_candidates [serial]+20 > GetTime()) then
 						actorObject.grupo = true
 						actorObject.enemy = true
@@ -376,7 +376,7 @@
 					end
 				end
 			
-			--> � um pet
+			--� um pet
 			elseif (dono_do_pet) then
 				actorObject.owner = dono_do_pet
 				actorObject.ownerName = dono_do_pet.nome
@@ -393,7 +393,7 @@
 				--end
 				
 			else
-				--> anything else that isn't a player or a pet
+				--anything else that isn't a player or a pet
 				actorObject.displayName = nome
 				
 				--[=[
@@ -406,14 +406,14 @@
 				--]=]
 			end
 			
-			--> check if is hostile
+			--check if is hostile
 			if (_bit_band (flag, REACTION_HOSTILE) ~= 0) then 
 			
 				if (_bit_band (flag, OBJECT_TYPE_PLAYER) == 0) then
-					--> is hostile and isn't a player
+					--is hostile and isn't a player
 					
 					if (_bit_band (flag, OBJECT_TYPE_PETGUARDIAN) == 0) then
-						--> isn't a pet or guardian
+						--isn't a pet or guardian
 						actorObject.monster = true
 					end
 					
@@ -436,7 +436,7 @@
 	local pet_text_object = _G ["DetailsPetOwnerFinderTextLeft2"] --not in use
 	local follower_text_object = _G ["DetailsPetOwnerFinderTextLeft3"] --not in use
 
-	local find_pet_found_owner = function (ownerName, serial, nome, flag, self)
+	local find_pet_found_owner = function(ownerName, serial, nome, flag, self)
 		local ownerGuid = _UnitGUID (ownerName)
 		if (ownerGuid) then
 			_detalhes.tabela_pets:Adicionar (serial, nome, flag, ownerGuid, ownerName, 0x00000417)
@@ -452,12 +452,12 @@
 		end
 	end
 	
-	--> check pet owner name with correct declension for ruRU locale (from user 'denis-kam' on github)
-	local find_name_declension = function (petTooltip, playerName)
-		--> 2 - male, 3 - female
+	--check pet owner name with correct declension for ruRU locale (from user 'denis-kam' on github)
+	local find_name_declension = function(petTooltip, playerName)
+		--2 - male, 3 - female
 		for gender = 3, 2, -1 do
 			for declensionSet = 1, GetNumDeclensionSets(playerName, gender) do
-				--> check genitive case of player name
+				--check genitive case of player name
 				local genitive = DeclineName(playerName, gender, declensionSet)
 				if petTooltip:find(genitive) then
 					--print("found genitive: ", gender, declensionSet, playerName, petTooltip:find(genitive))
@@ -469,12 +469,12 @@
 		return false
 	end
 
-	local find_pet_owner = function (serial, nome, flag, self)
+	local find_pet_owner = function(serial, nome, flag, self)
 		if (not _detalhes.tabela_vigente) then
 			return
 		end
 		
-		pet_tooltip_frame:SetOwner (WorldFrame, "ANCHOR_NONE")
+		pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
 		pet_tooltip_frame:SetHyperlink ("unit:" .. serial or "")
 
 		Details.tabela_vigente.raid_roster_indexed = Details.tabela_vigente.raid_roster_indexed or {}
@@ -548,11 +548,11 @@
 			--print (nome, flag)
 		--end
 	
-		--> verifica se � um pet, se for confere se tem o nome do dono, se n�o tiver, precisa por
+		--verifica se � um pet, se for confere se tem o nome do dono, se n�o tiver, precisa por
 		local dono_do_pet
 		serial = serial or "ns"
 		
-		if (container_pets [serial]) then --> � um pet reconhecido
+		if (container_pets [serial]) then --� um pet reconhecido
 			--[[statistics]]-- _detalhes.statistics.container_pet_calls = _detalhes.statistics.container_pet_calls + 1
 
 			local nome_dele, dono_nome, dono_serial, dono_flag = _detalhes.tabela_pets:PegaDono (serial, nome, flag)
@@ -561,11 +561,11 @@
 				dono_do_pet = self:PegarCombatente (dono_serial, dono_nome, dono_flag, true)
 			end
 			
-		elseif (not pet_blacklist [serial]) then --> verifica se � um pet
+		elseif (not pet_blacklist [serial]) then --verifica se � um pet
 		
 			pet_blacklist [serial] = true
 		
-			--> try to find the owner
+			--try to find the owner
 			if (flag and _bit_band (flag, OBJECT_TYPE_PETGUARDIAN) ~= 0) then
 				--[[statistics]]-- _detalhes.statistics.container_unknow_pet = _detalhes.statistics.container_unknow_pet + 1
 				local find_nome, find_owner = find_pet_owner (serial, nome, flag, self)
@@ -575,13 +575,13 @@
 			end
 		end
 		
-		--> pega o index no mapa
+		--pega o index no mapa
 		local index = self._NameIndexTable [nome]
-		--> retorna o actor
+		--retorna o actor
 		if (index) then
 			return self._ActorTable [index], dono_do_pet, nome
 		
-		--> n�o achou, criar
+		--n�o achou, criar
 		elseif (criar) then
 	
 			local novo_objeto = self.funcao_de_criacao (_, serial, nome)
@@ -589,7 +589,7 @@
 			novo_objeto.flag_original = flag
 			novo_objeto.serial = serial
 
-			--> seta a classe default para desconhecido, assim nenhum objeto fica com classe nil
+			--seta a classe default para desconhecido, assim nenhum objeto fica com classe nil
 			novo_objeto.classe = "UNKNOW"
 			local forceClass
 
@@ -625,7 +625,7 @@
 		-- tipo do container
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	
 
-			if (self.tipo == container_damage) then --> CONTAINER DAMAGE
+			if (self.tipo == container_damage) then --CONTAINER DAMAGE
 
 				local shouldScanOnce = get_actor_class (novo_objeto, nome, flag, serial)
 				
@@ -641,13 +641,13 @@
 					end
 				end
 				
-				if (novo_objeto.classe == "UNGROUPPLAYER") then --> is a player
-					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --> is hostile
+				if (novo_objeto.classe == "UNGROUPPLAYER") then --is a player
+					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --is hostile
 						novo_objeto.enemy = true 
 					end
 					
-					--> try to guess his class
-					if (self.shadow) then --> n�o executar 2x
+					--try to guess his class
+					if (self.shadow) then --n�o executar 2x
 						_detalhes:ScheduleTimer ("GuessClass", 1, {novo_objeto, self, 1})
 					end
 					
@@ -660,7 +660,7 @@
 					novo_objeto.avoidance = _detalhes:CreateActorAvoidanceTable()
 				end
 				
-			elseif (self.tipo == container_heal) then --> CONTAINER HEALING
+			elseif (self.tipo == container_heal) then --CONTAINER HEALING
 				
 				local shouldScanOnce = get_actor_class (novo_objeto, nome, flag, serial)
 				read_actor_flag (novo_objeto, dono_do_pet, serial, flag, nome, "heal")
@@ -675,19 +675,19 @@
 					end
 				end
 				
-				if (novo_objeto.classe == "UNGROUPPLAYER") then --> is a player
-					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --> is hostile
+				if (novo_objeto.classe == "UNGROUPPLAYER") then --is a player
+					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --is hostile
 						novo_objeto.enemy = true --print (nome.." EH UM INIMIGO -> " .. engRace)
 					end
 					
-					--> try to guess his class
-					if (self.shadow) then --> n�o executar 2x
+					--try to guess his class
+					if (self.shadow) then --n�o executar 2x
 						_detalhes:ScheduleTimer ("GuessClass", 1, {novo_objeto, self, 1})
 					end
 				end
 				
 				
-			elseif (self.tipo == container_energy) then --> CONTAINER ENERGY
+			elseif (self.tipo == container_energy) then --CONTAINER ENERGY
 				
 				local shouldScanOnce = get_actor_class (novo_objeto, nome, flag, serial)
 				read_actor_flag (novo_objeto, dono_do_pet, serial, flag, nome, "energy")
@@ -696,18 +696,18 @@
 					AddUnique (dono_do_pet.pets, nome)
 				end
 				
-				if (novo_objeto.classe == "UNGROUPPLAYER") then --> is a player
-					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --> is hostile
+				if (novo_objeto.classe == "UNGROUPPLAYER") then --is a player
+					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --is hostile
 						novo_objeto.enemy = true
 					end
 					
-					--> try to guess his class
-					if (self.shadow) then --> n�o executar 2x
+					--try to guess his class
+					if (self.shadow) then --n�o executar 2x
 						_detalhes:ScheduleTimer ("GuessClass", 1, {novo_objeto, self, 1})
 					end
 				end
 				
-			elseif (self.tipo == container_misc) then --> CONTAINER MISC
+			elseif (self.tipo == container_misc) then --CONTAINER MISC
 				
 				local shouldScanOnce = get_actor_class (novo_objeto, nome, flag, serial)
 				read_actor_flag (novo_objeto, dono_do_pet, serial, flag, nome, "misc")
@@ -716,20 +716,20 @@
 					AddUnique (dono_do_pet.pets, nome)
 				end
 
-				if (novo_objeto.classe == "UNGROUPPLAYER") then --> is a player
-					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --> is hostile
+				if (novo_objeto.classe == "UNGROUPPLAYER") then --is a player
+					if (_bit_band (flag, REACTION_HOSTILE ) ~= 0) then --is hostile
 						novo_objeto.enemy = true
 					end
 					
-					--> try to guess his class
-					if (self.shadow) then --> n�o executar 2x
+					--try to guess his class
+					if (self.shadow) then --n�o executar 2x
 						_detalhes:ScheduleTimer ("GuessClass", 1, {novo_objeto, self, 1})
 					end
 				end
 			
-			elseif (self.tipo == container_damage_target) then --> CONTAINER ALVO DO DAMAGE
+			elseif (self.tipo == container_damage_target) then --CONTAINER ALVO DO DAMAGE
 			
-			elseif (self.tipo == container_energy_target) then --> CONTAINER ALVOS DO ENERGY
+			elseif (self.tipo == container_energy_target) then --CONTAINER ALVOS DO ENERGY
 			
 				novo_objeto.mana = 0
 				novo_objeto.e_rage = 0
@@ -742,10 +742,10 @@
 				novo_objeto.actived = false
 				novo_objeto.activedamt = 0
 
-			elseif (self.tipo == container_misc_target) then --> CONTAINER ALVOS DO MISC
+			elseif (self.tipo == container_misc_target) then --CONTAINER ALVOS DO MISC
 
 				
-			elseif (self.tipo == container_friendlyfire) then --> CONTAINER FRIENDLY FIRE
+			elseif (self.tipo == container_friendlyfire) then --CONTAINER FRIENDLY FIRE
 				
 				local shouldScanOnce = get_actor_class (novo_objeto, nome, serial)
 
@@ -759,8 +759,8 @@
 	------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	-- grava o objeto no mapa do container
 			local size = #self._ActorTable+1
-			self._ActorTable [size] = novo_objeto --> grava na tabela de indexes
-			self._NameIndexTable [nome] = size --> grava no hash map o index deste jogador
+			self._ActorTable [size] = novo_objeto --grava na tabela de indexes
+			self._NameIndexTable [nome] = size --grava no hash map o index deste jogador
 
 			if (_detalhes.is_in_battleground or _detalhes.is_in_arena) then
 				novo_objeto.pvp = true
@@ -790,7 +790,7 @@
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> core
+--core
 	
 	--_detalhes:AddToNpcIdCache (novo_objeto)
 	function _detalhes:AddToNpcIdCache (actor)
@@ -843,20 +843,20 @@
 		end
 	end
 
-	--> chama a fun��o para ser executada em todos os atores
+	--chama a fun��o para ser executada em todos os atores
 	function container_combatentes:ActorCallFunction (funcao, ...)
-		for index, actor in _ipairs (self._ActorTable) do
+		for index, actor in _ipairs(self._ActorTable) do
 			funcao (nil, actor, ...)
 		end
 	end
 
 	local bykey
-	local sort = function (t1, t2)
+	local sort = function(t1, t2)
 		return (t1 [bykey] or 0) > (t2 [bykey] or 0)
 	end
 	
 	function container_combatentes:SortByKey (key)
-		assert (type (key) == "string", "Container:SortByKey() expects a keyname on parameter 1.")
+		assert (type(key) == "string", "Container:SortByKey() expects a keyname on parameter 1.")
 		bykey = key
 		_table_sort (self._ActorTable, sort)
 		self:remapear()
@@ -875,19 +875,19 @@
 	end
 
 	function _detalhes.refresh:r_container_combatentes (container, shadow)
-		--> reconstr�i meta e indexes
+		--reconstr�i meta e indexes
 			_setmetatable (container, _detalhes.container_combatentes)
 			container.__index = _detalhes.container_combatentes
 			container.funcao_de_criacao = container_combatentes:FuncaoDeCriacao (container.tipo)
 
-		--> repara mapa
+		--repara mapa
 			local mapa = {}
 			for i = 1, #container._ActorTable do
 				mapa [container._ActorTable[i].nome] = i
 			end
 			container._NameIndexTable = mapa
 
-		--> seta a shadow
+		--seta a shadow
 			container.shadow = shadow
 	end
 

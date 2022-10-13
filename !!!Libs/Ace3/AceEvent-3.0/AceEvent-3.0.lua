@@ -12,7 +12,7 @@
 -- @release $Id: AceEvent-3.0.lua 1202 2019-05-15 23:11:22Z nevcairiel $
 local CallbackHandler = LibStub("CallbackHandler-1.0")
 
-local MAJOR, MINOR = "AceEvent-3.0", 99994
+local MAJOR, MINOR = "AceEvent-3.0", 4
 local AceEvent = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceEvent then return end
@@ -93,15 +93,6 @@ local mixins = {
 -- @param message The message to send
 -- @param ... Any arguments to the message
 
-local sp_events = {
-    COMBAT_LOG_EVENT_UNFILTERED = true, --45625
-    UNIT_AURA = true, --24192
-    UNIT_POWER_UPDATE = true, --13044 --Gladius
-    UNIT_HEAL_PREDICTION = true, --12316 --GridStatusHeals
-    UNIT_POWER_FREQUENT = true,
-    --UNIT_HEALTH = true, --7389
-    --UNIT_SPELLCAST_SUCCEEDED = true, --4550
-}
 
 -- Embeds AceEvent into the target object making the functions from the mixins list available on target:..
 -- @param target target object to embed AceEvent in
@@ -110,50 +101,6 @@ function AceEvent:Embed(target)
 		target[v] = self[v]
 	end
 	self.embeds[target] = true
-	
-    --warbaby make frequent event direct
-    hooksecurefunc(target, "RegisterEvent", function(self, event, method, ...)
-        if sp_events[event] then
-            self:UnregisterEvent(event, 163)
-            local eventframe = "_ef_".. event
-            self[eventframe] = self[eventframe] or CreateFrame("Frame")
-            self[eventframe]:RegisterEvent(event)
-            method = method or event
-            local regfunc
-            if type(method) == "string" then
-                if select("#",...)>=1 then	-- this is not the same as testing for arg==nil!
-                    local arg=select(1,...)
-                    regfunc = function(...) return self[method](self,arg,...) end
-                else
-                    regfunc = function(...) return self[method](self,...) end
-                end
-            else
-                if select("#",...)>=1 then	-- this is not the same as testing for arg==nil!
-                    local arg=select(1,...)
-                    regfunc = function(...) return method(arg,...) end
-                else
-                    regfunc = method
-                end
-            end
-            if regfunc then
-                self[eventframe]:SetScript("OnEvent", function(_, ...) return regfunc(...) end)
-            end
-        end
-    end)
-    hooksecurefunc(target, "UnregisterEvent", function(self, event, flag)
-        if flag==163 then return end
-        if sp_events[event] then
-            local eventframe = self["_ef_".. event]
-            if eventframe then eventframe:UnregisterEvent(event) end
-        end
-    end)
-    hooksecurefunc(target, "UnregisterAllEvents", function(self)
-        for sp_event,_ in pairs(sp_events) do
-            local eventframe = self["_ef_"..sp_event]
-            if eventframe then eventframe:UnregisterEvent(sp_event) end
-        end
-    end)
-    
 	return target
 end
 
@@ -170,15 +117,6 @@ end
 -- Script to fire blizzard events into the event listeners
 local events = AceEvent.events
 AceEvent.frame:SetScript("OnEvent", function(this, event, ...)
---[[
-	if DEBUG_MODE then
-		if not AceEvent.eventCounts then
-			AceEvent.eventCounts = {}
-			hooksecurefunc("ResetCPUUsage", function() table.wipe(AceEvent.eventCounts) end)
-		end
-		AceEvent.eventCounts[event] = (AceEvent.eventCounts[event] or 0) + 1 
-	end
-]]
 	events:Fire(event, ...)
 end)
 

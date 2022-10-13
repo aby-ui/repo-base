@@ -7,7 +7,7 @@ local pairs, type = pairs, type
 -- WoW API / Variables
 local C_ContributionCollector_GetName = C_ContributionCollector.GetName
 local C_ContributionCollector_GetState = C_ContributionCollector.GetState
-local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
+local C_QuestLog_IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
 local UnitLevel = UnitLevel
 
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
@@ -85,10 +85,10 @@ function Module:UpdateQuest()
       -- faction is not ready on Neutral Pandaren or first login
       t.Warfront[index] = {
         scenario = {},
-        boss = IsQuestFlaggedCompleted(curr.boss),
+        boss = C_QuestLog_IsQuestFlaggedCompleted(curr.boss),
       }
       for i, v in pairs(curr.scenario) do
-        t.Warfront[index].scenario[i] = IsQuestFlaggedCompleted(v)
+        t.Warfront[index].scenario[i] = C_QuestLog_IsQuestFlaggedCompleted(v)
       end
     end
   end

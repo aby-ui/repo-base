@@ -11,8 +11,8 @@ local _detalhes = 		_G._detalhes
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 
 function _detalhes:ResetInstanceConfig (maintainsnap)
-	for key, value in pairs (_detalhes.instance_defaults) do 
-		if (type (value) == "table") then
+	for key, value in pairs(_detalhes.instance_defaults) do 
+		if (type(value) == "table") then
 			self [key] = Details.CopyTable (value)
 		else
 			self [key] = value
@@ -57,9 +57,9 @@ _detalhes.instance_skin_ignored_values = {
 }
 
 function _detalhes:ResetInstanceConfigKeepingValues (maintainsnap)
-	for key, value in pairs (_detalhes.instance_defaults) do 
+	for key, value in pairs(_detalhes.instance_defaults) do 
 		if (not _detalhes.instance_skin_ignored_values [key]) then
-			if (type (value) == "table") then
+			if (type(value) == "table") then
 				self [key] = Details.CopyTable (value)
 			else
 				self [key] = value
@@ -75,18 +75,18 @@ function _detalhes:ResetInstanceConfigKeepingValues (maintainsnap)
 end
 
 function _detalhes:LoadInstanceConfig()
-	for key, value in pairs (_detalhes.instance_defaults) do 
+	for key, value in pairs(_detalhes.instance_defaults) do 
 		if (self [key] == nil) then
-			if (type (value) == "table") then
+			if (type(value) == "table") then
 				self [key] = Details.CopyTable (_detalhes.instance_defaults [key])
 			else
 				self [key] = value
 			end
 			
-		elseif (type (value) == "table") then
-			for key2, value2 in pairs (value) do 
+		elseif (type(value) == "table") then
+			for key2, value2 in pairs(value) do 
 				if (self [key] [key2] == nil) then
-					if (type (value2) == "table") then
+					if (type(value2) == "table") then
 						self [key] [key2] = Details.CopyTable (_detalhes.instance_defaults [key] [key2])
 					else
 						self [key] [key2] = value2
@@ -99,13 +99,13 @@ end
 
 _detalhes.instance_defaults = {
 
-	--> click through settings
+	--click through settings
 	clickthrough_toolbaricons = false,
 	clickthrough_rows = false,
 	clickthrough_window = false,
 	clickthrough_incombatonly = true,
 
-	--> window settings
+	--window settings
 		ignore_mass_showhide = false,
 	--skin
 		skin = _detalhes.default_skin_to_use,

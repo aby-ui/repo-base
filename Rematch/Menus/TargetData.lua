@@ -103,6 +103,22 @@ rematch.targetData = {
     {DUNGEONS,571,72291,33137,6,25,1317}, -- Yu'la, Broodling of Yu'lon
     {DUNGEONS,571,72290,33137,6,25,1319}, -- Zao, Calfling of Niuzao
 
+    -- expansionID 9: Dragonflight
+
+    -- mapID 2022: The Waking Shores
+    {9,2022,196264,66551,4,25,3386,3387,3388}, -- Haniko
+    {9,2022,189376,66588,4,25,3268}, -- Swog
+    -- mapID 2023: Ohn'ahran Plains
+    {9,2023,197102,71140,4,25,3392,3391}, -- Bakhushek
+    {9,2023,197447,71206,4,25,3402}, -- Stormamu
+    -- mapID 2024: The Azure Span
+    {9,2024,197417,71202,4,25,3401}, -- Arcantus
+    {9,2024,196069,71145,4,25,1155,844,242}, -- Patchu
+    {9,2024,196206,70732,4,25,3377}, -- Gwosh
+    -- mapID 2025: Thaldraszus
+    {9,2025,197336,71166,4,25,3396}, -- Enyobon
+    {9,2025,197350,71180,4,25,393,459,646}, -- Setimothes
+
     -- expansionID 8: Shadowlands
 
     -- mapID 424: Pandaria
@@ -487,3 +503,13 @@ rematch.targetRedirects = {
     [85675] = 85627, -- Samm
     [85676] = 85627, -- Archimedes
 }
+
+-- on Shadowlands clients remove the Dragonflight targets
+if select(4,GetBuildInfo())<100000 then
+    for i=#rematch.targetData,1,-1 do
+        if rematch.targetData[i][1]==9 then
+            tremove(rematch.targetData,i)
+        end
+    end
+end
+

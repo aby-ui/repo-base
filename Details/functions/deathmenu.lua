@@ -4,10 +4,10 @@ local Details = _G.Details
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> extra buttons at the death options (release, death recap)
+--extra buttons at the death options (release, death recap)
 
-local detailsOnDeathMenu = CreateFrame ("frame", "DetailsOnDeathMenu", UIParent, "BackdropTemplate")
-detailsOnDeathMenu:SetHeight (30)
+local detailsOnDeathMenu = CreateFrame("frame", "DetailsOnDeathMenu", UIParent, "BackdropTemplate")
+detailsOnDeathMenu:SetHeight(30)
 detailsOnDeathMenu.Debug = false
 
 detailsOnDeathMenu:RegisterEvent ("PLAYER_REGEN_ENABLED")
@@ -16,14 +16,14 @@ DetailsFramework:ApplyStandardBackdrop (detailsOnDeathMenu)
 detailsOnDeathMenu:SetAlpha (0.75)
 
 --disable text
-detailsOnDeathMenu.disableLabel = Details.gump:CreateLabel (detailsOnDeathMenu, "you can disable this at /details > Raid Tools", 9)
+detailsOnDeathMenu.disableLabel = Details.gump:CreateLabel(detailsOnDeathMenu, "you can disable this at /details > Raid Tools", 9)
 
-detailsOnDeathMenu.warningLabel = Details.gump:CreateLabel (detailsOnDeathMenu, "", 11)
+detailsOnDeathMenu.warningLabel = Details.gump:CreateLabel(detailsOnDeathMenu, "", 11)
 detailsOnDeathMenu.warningLabel.textcolor = "red"
-detailsOnDeathMenu.warningLabel:SetPoint ("bottomleft", detailsOnDeathMenu, "bottomleft", 5, 2)
+detailsOnDeathMenu.warningLabel:SetPoint("bottomleft", detailsOnDeathMenu, "bottomleft", 5, 2)
 detailsOnDeathMenu.warningLabel:Hide()
 
-detailsOnDeathMenu:SetScript ("OnEvent", function (self, event, ...)
+detailsOnDeathMenu:SetScript("OnEvent", function(self, event, ...)
 	if (event == "ENCOUNTER_END") then
 		C_Timer.After (0.5, detailsOnDeathMenu.ShowPanel)
 	end
@@ -108,7 +108,7 @@ end
 --encounter breakdown button
 detailsOnDeathMenu.breakdownButton = Details.gump:CreateButton (detailsOnDeathMenu, detailsOnDeathMenu.OpenEncounterBreakdown, 120, 20, "Encounter Breakdown", "breakdownButton")
 detailsOnDeathMenu.breakdownButton:SetTemplate (Details.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
-detailsOnDeathMenu.breakdownButton:SetPoint ("topleft", detailsOnDeathMenu, "topleft", 5, -5)
+detailsOnDeathMenu.breakdownButton:SetPoint("topleft", detailsOnDeathMenu, "topleft", 5, -5)
 detailsOnDeathMenu.breakdownButton:Hide()
 
 detailsOnDeathMenu.breakdownButton.CoolTip = {
@@ -129,22 +129,22 @@ detailsOnDeathMenu.breakdownButton.CoolTip = {
 			GameCooltip2:AddLine ("Encounter Breakdown plugin is disabled in the Addon Control Panel.", "", 1, "red")
 		end
 		
-	end, --> called when user mouse over the frame
-	OnEnterFunc = function (self) 
+	end, --called when user mouse over the frame
+	OnEnterFunc = function(self) 
 		detailsOnDeathMenu.button_mouse_over = true
 	end,
-	OnLeaveFunc = function (self) 
+	OnLeaveFunc = function(self) 
 		detailsOnDeathMenu.button_mouse_over = false
 	end,
 	FixedValue = "none",
 	ShowSpeed = .5,
 	Options = function()
-		GameCooltip:SetOption ("MyAnchor", "top")
-		GameCooltip:SetOption ("RelativeAnchor", "bottom")
-		GameCooltip:SetOption ("WidthAnchorMod", 0)
-		GameCooltip:SetOption ("HeightAnchorMod", -13)
-		GameCooltip:SetOption ("TextSize", 10)
-		GameCooltip:SetOption ("FixedWidth", 220)
+		GameCooltip:SetOption("MyAnchor", "top")
+		GameCooltip:SetOption("RelativeAnchor", "bottom")
+		GameCooltip:SetOption("WidthAnchorMod", 0)
+		GameCooltip:SetOption("HeightAnchorMod", -13)
+		GameCooltip:SetOption("TextSize", 10)
+		GameCooltip:SetOption("FixedWidth", 220)
 	end
 }
 GameCooltip2:CoolTipInject (detailsOnDeathMenu.breakdownButton)
@@ -152,7 +152,7 @@ GameCooltip2:CoolTipInject (detailsOnDeathMenu.breakdownButton)
 --player endurance button
 detailsOnDeathMenu.enduranceButton = Details.gump:CreateButton (detailsOnDeathMenu, detailsOnDeathMenu.OpenPlayerEndurance, 120, 20, "Player Endurance", "enduranceButton")
 detailsOnDeathMenu.enduranceButton:SetTemplate (Details.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
-detailsOnDeathMenu.enduranceButton:SetPoint ("topleft", detailsOnDeathMenu.breakdownButton, "topright", 2, 0)
+detailsOnDeathMenu.enduranceButton:SetPoint("topleft", detailsOnDeathMenu.breakdownButton, "topright", 2, 0)
 detailsOnDeathMenu.enduranceButton:Hide()
 
 detailsOnDeathMenu.enduranceButton.CoolTip = {
@@ -170,22 +170,22 @@ detailsOnDeathMenu.enduranceButton.CoolTip = {
 			GameCooltip2:AddLine ("Advanced Death Logs plugin is disabled or not installed, check the Addon Control Panel or download it from the Curseforge APP.", "", 1, "red")
 		end
 
-	end, --> called when user mouse over the frame
-	OnEnterFunc = function (self) 
+	end, --called when user mouse over the frame
+	OnEnterFunc = function(self) 
 		detailsOnDeathMenu.button_mouse_over = true
 	end,
-	OnLeaveFunc = function (self) 
+	OnLeaveFunc = function(self) 
 		detailsOnDeathMenu.button_mouse_over = false
 	end,
 	FixedValue = "none",
 	ShowSpeed = .5,
 	Options = function()
-		GameCooltip:SetOption ("MyAnchor", "top")
-		GameCooltip:SetOption ("RelativeAnchor", "bottom")
-		GameCooltip:SetOption ("WidthAnchorMod", 0)
-		GameCooltip:SetOption ("HeightAnchorMod", -13)
-		GameCooltip:SetOption ("TextSize", 10)
-		GameCooltip:SetOption ("FixedWidth", 220)
+		GameCooltip:SetOption("MyAnchor", "top")
+		GameCooltip:SetOption("RelativeAnchor", "bottom")
+		GameCooltip:SetOption("WidthAnchorMod", 0)
+		GameCooltip:SetOption("HeightAnchorMod", -13)
+		GameCooltip:SetOption("TextSize", 10)
+		GameCooltip:SetOption("FixedWidth", 220)
 	end
 }
 GameCooltip2:CoolTipInject (detailsOnDeathMenu.enduranceButton)
@@ -193,7 +193,7 @@ GameCooltip2:CoolTipInject (detailsOnDeathMenu.enduranceButton)
 --spells
 detailsOnDeathMenu.spellsButton = Details.gump:CreateButton (detailsOnDeathMenu, detailsOnDeathMenu.OpenPlayerSpells, 48, 20, "Spells", "SpellsButton")
 detailsOnDeathMenu.spellsButton:SetTemplate (Details.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
-detailsOnDeathMenu.spellsButton:SetPoint ("topleft", detailsOnDeathMenu.enduranceButton, "topright", 2, 0)
+detailsOnDeathMenu.spellsButton:SetPoint("topleft", detailsOnDeathMenu.enduranceButton, "topright", 2, 0)
 detailsOnDeathMenu.spellsButton:Hide()
 
 detailsOnDeathMenu.spellsButton.CoolTip = {
@@ -202,22 +202,22 @@ detailsOnDeathMenu.spellsButton.CoolTip = {
 		GameCooltip2:Preset (2)
 		GameCooltip2:AddLine ("Open your player Details! breakdown.")
 		
-	end, --> called when user mouse over the frame
-	OnEnterFunc = function (self) 
+	end, --called when user mouse over the frame
+	OnEnterFunc = function(self) 
 		detailsOnDeathMenu.button_mouse_over = true
 	end,
-	OnLeaveFunc = function (self) 
+	OnLeaveFunc = function(self) 
 		detailsOnDeathMenu.button_mouse_over = false
 	end,
 	FixedValue = "none",
 	ShowSpeed = .5,
 	Options = function()
-		GameCooltip:SetOption ("MyAnchor", "top")
-		GameCooltip:SetOption ("RelativeAnchor", "bottom")
-		GameCooltip:SetOption ("WidthAnchorMod", 0)
-		GameCooltip:SetOption ("HeightAnchorMod", -13)
-		GameCooltip:SetOption ("TextSize", 10)
-		GameCooltip:SetOption ("FixedWidth", 220)
+		GameCooltip:SetOption("MyAnchor", "top")
+		GameCooltip:SetOption("RelativeAnchor", "bottom")
+		GameCooltip:SetOption("WidthAnchorMod", 0)
+		GameCooltip:SetOption("HeightAnchorMod", -13)
+		GameCooltip:SetOption("TextSize", 10)
+		GameCooltip:SetOption("FixedWidth", 220)
 	end
 }
 GameCooltip2:CoolTipInject (detailsOnDeathMenu.spellsButton)
@@ -232,11 +232,11 @@ function detailsOnDeathMenu.CanShowPanel()
 			return true
 		end
 		
-		--> check if the player just wiped in an encounter
+		--check if the player just wiped in an encounter
 		if (IsInRaid()) then
 			local isInInstance = IsInInstance()
 			if (isInInstance) then
-				--> check if all players in the raid are out of combat
+				--check if all players in the raid are out of combat
 				for i = 1, GetNumGroupMembers() do
 					if (UnitAffectingCombat ("raid" .. i)) then
 						C_Timer.After (0.5, detailsOnDeathMenu.ShowPanel)
@@ -261,11 +261,11 @@ function detailsOnDeathMenu.ShowPanel()
 	end
 	
 	if (ElvUI) then
-		detailsOnDeathMenu:SetPoint ("topleft", StaticPopup1, "bottomleft", 0, -1)
-		detailsOnDeathMenu:SetPoint ("topright", StaticPopup1, "bottomright", 0, -1)
+		detailsOnDeathMenu:SetPoint("topleft", StaticPopup1, "bottomleft", 0, -1)
+		detailsOnDeathMenu:SetPoint("topright", StaticPopup1, "bottomright", 0, -1)
 	else
-		detailsOnDeathMenu:SetPoint ("topleft", StaticPopup1, "bottomleft", 4, 2)
-		detailsOnDeathMenu:SetPoint ("topright", StaticPopup1, "bottomright", -4, 2)
+		detailsOnDeathMenu:SetPoint("topleft", StaticPopup1, "bottomleft", 4, 2)
+		detailsOnDeathMenu:SetPoint("topright", StaticPopup1, "bottomright", -4, 2)
 	end
 	
 	detailsOnDeathMenu.breakdownButton:Show()
@@ -274,14 +274,14 @@ function detailsOnDeathMenu.ShowPanel()
 	
 	detailsOnDeathMenu:Show()
 	
-	detailsOnDeathMenu:SetHeight (30)
+	detailsOnDeathMenu:SetHeight(30)
 	
-	if (not Details:GetTutorialCVar ("DISABLE_ONDEATH_PANEL")) then
+	if (not Details:GetTutorialCVar("DISABLE_ONDEATH_PANEL")) then
 		detailsOnDeathMenu.disableLabel:Show()
-		detailsOnDeathMenu.disableLabel:SetPoint ("bottomleft", detailsOnDeathMenu, "bottomleft", 5, 1)
+		detailsOnDeathMenu.disableLabel:SetPoint("bottomleft", detailsOnDeathMenu, "bottomleft", 5, 1)
 		detailsOnDeathMenu.disableLabel.color = "gray"
 		detailsOnDeathMenu.disableLabel.alpha = 0.5
-		detailsOnDeathMenu:SetHeight (detailsOnDeathMenu:GetHeight() + 10)
+		detailsOnDeathMenu:SetHeight(detailsOnDeathMenu:GetHeight() + 10)
 		
 		if (math.random (1, 3) == 3) then
 			Details:SetTutorialCVar ("DISABLE_ONDEATH_PANEL", true)
@@ -289,7 +289,7 @@ function detailsOnDeathMenu.ShowPanel()
 	end
 end
 
-hooksecurefunc ("StaticPopup_Show", function (which, text_arg1, text_arg2, data, insertedFrame)
+hooksecurefunc ("StaticPopup_Show", function(which, text_arg1, text_arg2, data, insertedFrame)
 	if (which == "DEATH") then
 		if (detailsOnDeathMenu.Debug) then
 			C_Timer.After (0.5, detailsOnDeathMenu.ShowPanel)
@@ -297,7 +297,7 @@ hooksecurefunc ("StaticPopup_Show", function (which, text_arg1, text_arg2, data,
 	end
 end)
 
-hooksecurefunc ("StaticPopup_Hide", function (which, data)
+hooksecurefunc ("StaticPopup_Hide", function(which, data)
 	if (which == "DEATH") then
 		detailsOnDeathMenu:Hide()
 	end

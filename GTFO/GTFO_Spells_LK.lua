@@ -92,6 +92,17 @@ GTFO.SpellID["56867"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["56858"] = {
+	--desc = "Flamestrike (Twilight Worshipper - Old Kingdom)";
+	sound = 1;
+};
+
+GTFO.SpellID["61568"] = {
+	--desc = "Flamestrike (Twilight Worshipper - Old Kingdom - Heroic)";
+	sound = 1;
+};
+
+
 GTFO.SpellID["48381"] = {
 	--desc = "Spirit Fount (King Ymiron)";
 	sound = 1;

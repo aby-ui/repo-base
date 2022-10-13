@@ -1791,6 +1791,7 @@ local options_button_template = DF.table.copy({}, DF:GetTemplate ("button", "OPT
 options_button_template.backdropcolor = {.2, .2, .2, .6}
 options_button_template.backdropbordercolor = {0, 0, 0, 1}
 configButton:SetTemplate(options_button_template)
+configButton:Hide()
 
 if (UsePFGButton) then
 	configButton:SetPoint("right", UsePFGButton, "left", -8, 0)
@@ -1812,6 +1813,9 @@ end)
 
 function kspam.OnSortResults(results)
 	--check if the feature is enabled
+
+	if true then return end
+
 	if (not WorldQuestTracker.db.profile.groupfinder.kfilter.enabled) then
 		return
 	end

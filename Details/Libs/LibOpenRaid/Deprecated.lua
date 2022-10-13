@@ -6,7 +6,7 @@ end
 
 local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 
---> comm prefix deprecated
+--comm prefix deprecated
 openRaidLib.commPrefixDeprecated = {
     
 }
@@ -25,7 +25,7 @@ local spamLimit = {}
         end
     end
 
---> deprecated: 'RequestAllPlayersInfo' has been replaced by 'RequestAllData'
+--deprecated: 'RequestAllPlayersInfo' has been replaced by 'RequestAllData'
     function openRaidLib.RequestAllPlayersInfo()
         if (not spamLimit["openRaidLib.RequestAllData"]) then
             spamLimit["openRaidLib.RequestAllData"] = true
@@ -33,7 +33,7 @@ local spamLimit = {}
         end
     end
     
---> deprecated: 'playerInfoManager' has been replaced by 'UnitInfoManager'
+--deprecated: 'playerInfoManager' has been replaced by 'UnitInfoManager'
     openRaidLib.playerInfoManager = {}
     local deprecatedMetatable = {
         __newindex = function()
@@ -63,7 +63,7 @@ local spamLimit = {}
     end
     setmetatable(openRaidLib.playerInfoManager, deprecatedMetatable)
 
---> deprecated: 'gearManager' has been replaced by 'GearManager'
+--deprecated: 'gearManager' has been replaced by 'GearManager'
     openRaidLib.gearManager = {}
     local deprecatedMetatable = {
         __newindex = function()
@@ -91,7 +91,7 @@ local spamLimit = {}
     end
     setmetatable(openRaidLib.gearManager, deprecatedMetatable)
 
---> deprecated: 'cooldownManager' has been replaced by 'CooldownManager'
+--deprecated: 'cooldownManager' has been replaced by 'CooldownManager'
     openRaidLib.cooldownManager = {}
     local deprecatedMetatable = {
         __newindex = function()

@@ -4,7 +4,7 @@
 -- /run Details:OpenPlayerDetails(windowN)
 function Details:OpenPlayerDetails(window)
 	window = window or 1
-	local instance = Details:GetInstance (window)
+	local instance = Details:GetInstance(window)
 	if (instance) then
 		local display, subDisplay = instance:GetDisplay()
 		if (display == 1) then

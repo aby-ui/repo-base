@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.8) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.9) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2020-11-12T11:34:16Z
+    This file was last updated on 2022-09-14T10:38:02Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -630,13 +630,26 @@ function D:isSpellReady(spellID, isPetAbility)
         -- so we need to get back to the corresponding current spell id using
         -- the name of the spell.
 
-        local spellName = (GetSpellInfo(spellID));
-        local spellType, id = GetSpellBookItemInfo(spellName);
+        local spellName = (GetSpellInfo(spellID)); -- may return nil if the spell is not known depending on wow version and whether it is a pet ability or not...
 
-        if spellType == "PETACTION" then
-            spellID = bit.band(0xffffff, id);
-        elseif spellType then
-           D:Debug("Pet ability update lookup failed", spellID, spellName, spellType, id);
+        if not DC.WOTLK then -- but ranks are back in wotlk and former ranks disappear when the next one is learned...
+            local spellType, id
+
+            if spellName then
+                spellType, id = GetSpellBookItemInfo(spellName);
+            end
+
+            if id and spellType == "PETACTION" then
+                spellID = bit.band(0xffffff, id);
+            elseif spellType then
+                D:Debug("Pet ability update lookup failed", spellID, spellName, spellType, id);
+            end
+        else
+            if spellName then
+                spellID = select(7, GetSpellInfo(spellName));
+            else
+                D:Debug("Pet ability update lookup failed", spellID, spellName, "GetSpellInfo(spellName):", GetSpellInfo(spellName));
+            end
         end
     end
 
@@ -645,7 +658,7 @@ function D:isSpellReady(spellID, isPetAbility)
         return GetSpecialization() == 2
     end
 
-    return IsSpellKnown(spellID, isPetAbility);
+    return spellID and IsSpellKnown(spellID, isPetAbility);
 end
 
 function D:GetItemFromLink(link)
@@ -986,4 +999,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.8.8";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.8.9";

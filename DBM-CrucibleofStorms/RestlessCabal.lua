@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2328, "DBM-CrucibleofStorms", nil, 1177)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116032237")
+mod:SetRevision("20221007005556")
 mod:SetCreatureID(144755, 144754)--144755 Zaxasj, 144754 Fa'thuul
 mod:SetEncounterID(2269)
 mod:SetBossHPInfoToHighest()
@@ -293,7 +293,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 282741 then
-		self.vb.umbrelTarget = DBM:GetEnemyUnitIdByGUID(args.destGUID)
+		self.vb.umbrelTarget = self:GetUnitIdFromGUID(args.destGUID)
 		local cid = self:GetCIDFromGUID(args.destGUID)
 		--146497 Zaxasj, 146495 Fa'thuul
 		if cid == 146497 then

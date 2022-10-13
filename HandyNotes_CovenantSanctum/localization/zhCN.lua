@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale("HandyNotes_CovenantSanctum", "zhCN
 if not L then return end
 -- Simplified Chinese localization by nbyang ( https://www.curseforge.com/members/nbyang )
 if L then
+L["Blizzard"] = "暴雪原生"
+L["Both"] = "同时显示"
 L["config_easy_waypoints"] = "便捷导航"
 L["config_easy_waypoints_desc"] = "使你可以更简单的建立导航路线, 你可以通过右键单击设定导航点或者使用CTRL+右键单击获得更多选项."
 L["config_icon_alpha"] = "图标透明度"
@@ -32,6 +34,8 @@ L["config_tab_general"] = "通用"
 L["config_travelguide_note"] = "|cFFFF0000* 由于 TravelGuide 的存在, 本模块不会启用 |r"
 L["config_vendor"] = "商人"
 L["config_vendor_desc"] = "显示商人的位置"
+L["config_waypoint_dropdown"] = "选择"
+L["config_waypoint_dropdown_desc"] = "选择如何建立导航点"
 L["config_weaponsmith"] = "武器兑换商"
 L["config_weaponsmith_desc"] = "显示武器兑换商的位置"
 L["config_what_to_display"] = "选择要显示的图标"
@@ -44,4 +48,5 @@ L["handler_tooltip_sanctum_feature"] = "圣所升级"
 L["handler_tooltip_TNTIER"] = "传送网络第 %s 层"
 L["Mailbox"] = "邮箱"
 L["Portal to Oribos"] = "奥利波斯传送门"
+L["TomTom"] = true
 end

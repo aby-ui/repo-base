@@ -71,7 +71,7 @@
 --     Returns an array with the set of unit ids for the current group.
 --]]
 
-local MAJOR, MINOR = "LibGroupInSpecT-1.1", 91
+local MAJOR, MINOR = "LibGroupInSpecT-1.1", 92
 
 if not LibStub then error(MAJOR.." requires LibStub") end
 local lib = LibStub:NewLibrary (MAJOR, MINOR)
@@ -190,7 +190,7 @@ local RegisterAddonMessagePrefix      = _G.C_ChatInfo.RegisterAddonMessagePrefix
 
 local MAX_TALENT_TIERS                = _G.MAX_TALENT_TIERS
 local NUM_TALENT_COLUMNS              = _G.NUM_TALENT_COLUMNS
-local NUM_PVP_TALENT_SLOTS            = 4
+local NUM_PVP_TALENT_SLOTS            = 3
 
 
 local global_spec_id_roles_detailed = {

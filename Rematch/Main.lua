@@ -944,7 +944,7 @@ end
 
 -- converts the default BasicFrameTemplate CloseButton to Rematch's icon decal overlaid over a blank red button
 function rematch:ConvertTitlebarCloseButton(button)
-	if not button.Icon then
+	if not button.Icon and select(4,GetBuildInfo())<100000 then
 		button:SetNormalTexture("Interface\\AddOns\\Rematch\\Textures\\TitlebarButtons")
 		button:GetNormalTexture():SetTexCoord(0,0.25,0,0.25)
 		button:SetPushedTexture("Interface\\AddOns\\Rematch\\Textures\\TitlebarButtons")
@@ -957,6 +957,8 @@ function rematch:ConvertTitlebarCloseButton(button)
 		button:SetScript("OnMouseDown",rematch.TitlebarButtonOnMouseDown)
 		button:SetScript("OnMouseUp",rematch.TitlebarButtonOnMouseUp)
 		button:SetScript("OnShow",rematch.TitlebarButtonOnMouseUp)
+	else
+		button:SetPoint("TOPRIGHT",0,1)
 	end
 end
 

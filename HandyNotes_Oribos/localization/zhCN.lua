@@ -84,8 +84,8 @@ L["config_onlymytrainers_desc"] = [[
 
 L["config_fmaster_waypoint"] = "飞行点导航"
 L["config_fmaster_waypoint_desc"] = "当你进入转移之环时, 自动在飞行点建立导航点."
-L["config_fmaster_waypoint_dropdown"] = "选择"
-L["config_fmaster_waypoint_dropdown_desc"] = "选择如何建立导航点"
+L["config_waypoint_dropdown"] = "选择"
+L["config_waypoint_dropdown_desc"] = "选择如何建立导航点"
 L["Blizzard"] = "暴雪原生"
 L["TomTom"] = true
 L["Both"] = "同时显示"

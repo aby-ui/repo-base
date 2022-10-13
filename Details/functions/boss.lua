@@ -3,12 +3,12 @@ do
 
 	local _detalhes = _G._detalhes
 	_detalhes.EncounterInformation = {}
-	local _ipairs = ipairs --> lua local
+	local _ipairs = ipairs --lua local
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> details api functions
+--details api functions
 	
-	--> return if the player is inside a raid supported by details
+	--return if the player is inside a raid supported by details
 	function _detalhes:IsInInstance()
 		local _, _, _, _, _, _, _, zoneMapID = GetInstanceInfo()
 		if (_detalhes.EncounterInformation [zoneMapID]) then
@@ -18,9 +18,9 @@ do
 		end
 	end
 
-	--> return the full table with all data for the instance
+	--return the full table with all data for the instance
 	function _detalhes:GetRaidInfoFromEncounterID (encounterID, encounterEJID)
-		for id, raidTable in pairs (_detalhes.EncounterInformation) do
+		for id, raidTable in pairs(_detalhes.EncounterInformation) do
 			if (encounterID) then
 				local ids = raidTable.encounter_ids2 --combatlog
 				if (ids) then
@@ -40,13 +40,13 @@ do
 		end
 	end
 	
-	--> return the ids of trash mobs in the instance
+	--return the ids of trash mobs in the instance
 	function _detalhes:GetInstanceTrashInfo (mapid)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].trash_ids
 	end
 	
 	function _detalhes:GetInstanceIdFromEncounterId (encounterid)
-		for id, instanceTable in pairs (_detalhes.EncounterInformation) do
+		for id, instanceTable in pairs(_detalhes.EncounterInformation) do
 			--combatlog encounter id
 			local ids = instanceTable.encounter_ids2
 			if (ids) then
@@ -64,11 +64,11 @@ do
 		end
 	end
 	
-	--> return the boss table using a encounter id
+	--return the boss table using a encounter id
 	function _detalhes:GetBossEncounterDetailsFromEncounterId (mapid, encounterid)
 		if (not mapid) then
 			local bossIndex, instance
-			for id, instanceTable in pairs (_detalhes.EncounterInformation) do
+			for id, instanceTable in pairs(_detalhes.EncounterInformation) do
 				local ids = instanceTable.encounter_ids2
 				if (ids) then
 					bossIndex = ids [encounterid]
@@ -100,12 +100,12 @@ do
 		end
 	end
 	
-	--> return the EJ boss id
+	--return the EJ boss id
 	function _detalhes:GetEncounterIdFromBossIndex (mapid, index)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounter_ids and _detalhes.EncounterInformation [mapid].encounter_ids [index]
 	end
 	
-	--> return the table which contain information about the start of a encounter
+	--return the table which contain information about the start of a encounter
 	function _detalhes:GetEncounterStartInfo (mapid, encounterid)
 		local bossindex = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounter_ids and _detalhes.EncounterInformation [mapid].encounter_ids [encounterid]
 		if (bossindex) then
@@ -113,7 +113,7 @@ do
 		end
 	end
 	
-	--> return the table which contain information about the end of a encounter
+	--return the table which contain information about the end of a encounter
 	function _detalhes:GetEncounterEndInfo (mapid, encounterid)
 		local bossindex = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounter_ids and _detalhes.EncounterInformation [mapid].encounter_ids [encounterid]
 		if (bossindex) then
@@ -121,7 +121,7 @@ do
 		end
 	end
 	
-	--> return the function for the boss
+	--return the function for the boss
 	function _detalhes:GetEncounterEnd (mapid, bossindex)
 		local t = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex]
 		if (t) then
@@ -133,17 +133,17 @@ do
 		return 
 	end
 	
-	--> generic boss find function
+	--generic boss find function
 	function _detalhes:GetRaidBossFindFunction (mapid)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].find_boss_encounter
 	end
 	
-	--> return if the boss need sync
+	--return if the boss need sync
 	function _detalhes:GetEncounterEqualize (mapid, bossindex)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex] and _detalhes.EncounterInformation [mapid].encounters [bossindex].equalize
 	end
 	
-	--> return the function for the boss
+	--return the function for the boss
 	function _detalhes:GetBossFunction (mapid, bossindex)
 		local func = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex] and _detalhes.EncounterInformation [mapid].encounters [bossindex].func
 		if (func) then
@@ -152,30 +152,30 @@ do
 		return 
 	end
 	
-	--> return the boss table with information about name, adds, spells, etc
+	--return the boss table with information about name, adds, spells, etc
 	function _detalhes:GetBossDetails (mapid, bossindex)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex]
 	end
 	
-	--> return a table with all names of boss enemies
+	--return a table with all names of boss enemies
 	function _detalhes:GetEncounterActors (mapid, bossindex)
 		
 	end
 	
-	--> return a table with spells id of specified encounter
+	--return a table with spells id of specified encounter
 	function _detalhes:GetEncounterSpells (mapid, bossindex)
 		local encounter = _detalhes:GetBossDetails (mapid, bossindex)
 		local habilidades_poll = {}
 		if (encounter.continuo) then
-			for index, spellid in _ipairs (encounter.continuo) do 
+			for index, spellid in _ipairs(encounter.continuo) do 
 				habilidades_poll [spellid] = true
 			end
 		end
 		local fases = encounter.phases
 		if (fases) then
-			for fase_id, fase in _ipairs (fases) do 
+			for fase_id, fase in _ipairs(fases) do 
 				if (fase.spells) then
-					for index, spellid in _ipairs (fase.spells) do 
+					for index, spellid in _ipairs(fase.spells) do 
 						habilidades_poll [spellid] = true
 					end
 				end
@@ -184,7 +184,7 @@ do
 		return habilidades_poll
 	end
 	
-	--> return a table with all boss ids from a raid instance
+	--return a table with all boss ids from a raid instance
 	function _detalhes:GetBossIds (mapid)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].boss_ids
 	end
@@ -196,17 +196,17 @@ do
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].is_raid
 	end
 	
-	--> return a table with all encounter names present in raid instance
+	--return a table with all encounter names present in raid instance
 	function _detalhes:GetBossNames (mapid)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].boss_names
 	end
 	
-	--> return the encounter name
+	--return the encounter name
 	function _detalhes:GetBossName (mapid, bossindex)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].boss_names [bossindex]
 	end
 	
-	--> same thing as GetBossDetails, just a alias
+	--same thing as GetBossDetails, just a alias
 	function _detalhes:GetBossEncounterDetails (mapid, bossindex)
 		return _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex]
 	end
@@ -224,7 +224,7 @@ do
 		end
 	end
 	
-	--> return the wallpaper for the raid instance
+	--return the wallpaper for the raid instance
 	function _detalhes:GetRaidBackground (mapid)
 		local bosstables = _detalhes.EncounterInformation [mapid]
 		if (bosstables) then
@@ -234,7 +234,7 @@ do
 			end
 		end
 	end
-	--> return the icon for the raid instance
+	--return the icon for the raid instance
 	function _detalhes:GetRaidIcon (mapid, ejID, instanceType)
 		local raidIcon = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].icon
 		if (raidIcon) then
@@ -271,7 +271,7 @@ do
 		end
 	end
 	
-	--> return the boss icon
+	--return the boss icon
 	function _detalhes:GetBossIcon (mapid, bossindex)
 		if (_detalhes.EncounterInformation [mapid]) then
 			local line = math.ceil (bossindex / 4)
@@ -280,7 +280,7 @@ do
 		end
 	end
 	
-	--> return the boss portrit
+	--return the boss portrit
 	function _detalhes:GetBossPortrait (mapid, bossindex, encounterName, ejID)
 		if (mapid and bossindex) then
 			local haveIcon = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex] and _detalhes.EncounterInformation [mapid].encounters [bossindex].portrait
@@ -302,7 +302,7 @@ do
 		return nil
 	end
 	
-	--> return a list with names of adds and bosses
+	--return a list with names of adds and bosses
 	function _detalhes:GetEncounterActorsName (EJ_EncounterID)
 		--code snippet from wowpedia
 		local actors = {}
@@ -387,7 +387,7 @@ do
 	end
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> core
+--core
 
 	function _detalhes:InstallEncounter (InstanceTable)
 		_detalhes.EncounterInformation [InstanceTable.id] = InstanceTable

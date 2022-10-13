@@ -42,7 +42,7 @@ do
 		local _, class = _UnitClass (name)
 		
 		if (not class) then
-			for index, container in _ipairs (_detalhes.tabela_overall) do
+			for index, container in _ipairs(_detalhes.tabela_overall) do
 				local index = container._NameIndexTable [name]
 				if (index) then
 					local actor = container._ActorTable [index]
@@ -80,9 +80,9 @@ do
 	
 		if (self.classe) then
 			c = self.classe
-		elseif (type (class) == "table" and class.classe) then
+		elseif (type(class) == "table" and class.classe) then
 			c = class.classe
-		elseif (type (class) == "string") then
+		elseif (type(class) == "string") then
 			c = class
 		else
 			c = "UNKNOW"
@@ -122,10 +122,10 @@ do
 		if (self.classe) then
 			return unpack (_detalhes.class_colors [self.classe] or default_color)
 			
-		elseif (type (class) == "table" and class.classe) then
+		elseif (type(class) == "table" and class.classe) then
 			return unpack (_detalhes.class_colors [class.classe] or default_color)
 		
-		elseif (type (class) == "string") then
+		elseif (type(class) == "string") then
 			return unpack (_detalhes.class_colors [class] or default_color)
 			
 		elseif (self.color) then
@@ -171,7 +171,7 @@ do
 			return false
 		end
 		
-		if (Actor.spells) then --> correcao pros containers misc, precisa pegar os diferentes tipos de containers de  l�
+		if (Actor.spells) then --correcao pros containers misc, precisa pegar os diferentes tipos de containers de  l�
 			for spellid, _ in _pairs (Actor.spells._ActorTable) do 
 				local class = _detalhes.ClassSpellList [spellid]
 				if (class) then
@@ -248,7 +248,7 @@ do
 			end
 		end
 		
-		for index, container in _ipairs (_detalhes.tabela_overall) do
+		for index, container in _ipairs(_detalhes.tabela_overall) do
 			local index = container._NameIndexTable [name]
 			if (index) then
 				local actor = container._ActorTable [index]
@@ -292,11 +292,11 @@ do
 		local Actor, container = t[1], t[2]
 		local SpecSpellList = _detalhes.SpecSpellList
 		
-		--> get from the spell cast list
+		--get from the spell cast list
 		if (_detalhes.tabela_vigente) then
 			local misc_actor = _detalhes.tabela_vigente (4, Actor.nome)
 			if (misc_actor and misc_actor.spell_cast) then
-				for spellid, _ in pairs (misc_actor.spell_cast) do
+				for spellid, _ in pairs(misc_actor.spell_cast) do
 					local spec = SpecSpellList [spellid]
 					if (spec) then
 						_detalhes.cached_specs [Actor.serial] = spec
@@ -402,7 +402,7 @@ do
 		--local misc_actor = info.instancia.showing (4, self:name())
 		--spell_cast
 		
-		--> get from the spec cache
+		--get from the spec cache
 		local spec = _detalhes.cached_specs [Actor.serial]
 		if (spec) then
 			Actor.spec = spec
@@ -422,12 +422,12 @@ do
 			return spec
 		end
 		
-		--> get from the spell cast list
+		--get from the spell cast list
 		if (_detalhes.tabela_vigente) then
 			local misc_actor = _detalhes.tabela_vigente (4, Actor.nome)
 			
 			if (misc_actor and misc_actor.spell_cast) then
-				for spellid, _ in pairs (misc_actor.spell_cast) do
+				for spellid, _ in pairs(misc_actor.spell_cast) do
 					local spec = SpecSpellList [spellid]
 					if (spec) then
 						_detalhes.cached_specs [Actor.serial] = spec
@@ -452,7 +452,7 @@ do
 					end
 				end
 			else
-				if (Actor.spells) then --> correcao pros containers misc, precisa pegar os diferentes tipos de containers de  l�
+				if (Actor.spells) then --correcao pros containers misc, precisa pegar os diferentes tipos de containers de  l�
 					for spellid, _ in _pairs (Actor.spells._ActorTable) do 
 						local spec = SpecSpellList [spellid]
 						if (spec) then
@@ -480,7 +480,7 @@ do
 			end
 		else
 			
-			if (Actor.spells) then --> correcao pros containers misc, precisa pegar os diferentes tipos de containers de  l�
+			if (Actor.spells) then --correcao pros containers misc, precisa pegar os diferentes tipos de containers de  l�
 				for spellid, _ in _pairs (Actor.spells._ActorTable) do 
 					local spec = SpecSpellList [spellid]
 					if (spec) then
@@ -583,26 +583,26 @@ end
 
 
 function _detalhes:AddColorString (player_name, class)
-	--> check if the class colors exists
+	--check if the class colors exists
 	local classColors = _G.RAID_CLASS_COLORS
 	if (classColors) then
 		local color = classColors [class]
-		--> check if the player name is valid
-		if (type (player_name) == "string" and color) then
+		--check if the player name is valid
+		if (type(player_name) == "string" and color) then
 			player_name = "|c" .. color.colorStr .. player_name .. "|r"
 			return player_name
 		end
 	end
 	
-	--> if failed, return the player name without modifications
+	--if failed, return the player name without modifications
 	return player_name
 end
 
 function _detalhes:AddRoleIcon (player_name, role, size)
-	--> check if is a valid role
+	--check if is a valid role
 	local roleIcon = _detalhes.role_texcoord [role]
-	if (type (player_name) == "string" and roleIcon and role ~= "NONE") then
-		--> add the role icon
+	if (type(player_name) == "string" and roleIcon and role ~= "NONE") then
+		--add the role icon
 		size = size or 14
 		player_name = "|TInterface\\LFGFRAME\\UI-LFG-ICON-ROLES:" .. size .. ":" .. size .. ":0:0:256:256:" .. roleIcon .. "|t " .. player_name
 		return player_name

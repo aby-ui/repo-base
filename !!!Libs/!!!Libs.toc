@@ -2,7 +2,9 @@
 ## Title: |cff880303[爱不易]|r !! 通用库
 ## OptionalDeps: !!!163UI!!!
 ## X-Vendor: AbyUI
+## AceAddon-3.0 AceEvent-3.0 LibDBIcon-1.0和163UI中不同, 需要和原始zip文件比较(但Ace3去掉了xml)
 
 Ace3.xml
 Libs.xml
 AbyCore.lua
+

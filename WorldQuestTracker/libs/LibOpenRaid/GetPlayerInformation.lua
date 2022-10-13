@@ -11,43 +11,133 @@ end
 
 local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0")
 
+local CONST_TALENT_VERSION_CLASSIC = 1
+local CONST_TALENT_VERSION_LEGION = 4
+local CONST_TALENT_VERSION_DRAGONFLIGHT = 5
+
 local isTimewalkWoW = function()
-    local gameVersion = GetBuildInfo()
-    if (gameVersion:match("%d") == "1" or gameVersion:match("%d") == "2") then
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 40000) then
         return true
     end
+end
+
+local IsDragonflight = function()
+	return select(4, GetBuildInfo()) >= 100000
+end
+
+function openRaidLib.GetTalentVersion()
+    local _, _, _, buildInfo = GetBuildInfo()
+    local gamePatch = buildInfo / 10000
+    if (gamePatch >= 1 and gamePatch <= 4) then --vanilla tbc wotlk cataclysm
+        return CONST_TALENT_VERSION_CLASSIC
+    end
+
+    if (gamePatch >= 7 and gamePatch <= 9) then --legion bfa shadowlands
+        return CONST_TALENT_VERSION_LEGION
+    end
+
+    if (gamePatch >= 10 and gamePatch <= 20) then --dragonflight
+        return CONST_TALENT_VERSION_DRAGONFLIGHT
+    end
+end
+
+local getDragonflightTalentsAsIndexTable = function()
+    local allTalents = {}
+    local configId = C_ClassTalents.GetActiveConfigID()
+    if (not configId) then
+        return allTalents
+    end
+
+    local configInfo = C_Traits.GetConfigInfo(configId)
+
+    for treeIndex, treeId in ipairs(configInfo.treeIDs) do
+        local treeNodes = C_Traits.GetTreeNodes(treeId)
+
+        for nodeIdIndex, treeNodeID in ipairs(treeNodes) do
+            local traitNodeInfo = C_Traits.GetNodeInfo(configId, treeNodeID)
+
+            if (traitNodeInfo) then
+                local activeEntry = traitNodeInfo.activeEntry
+                if (activeEntry) then
+                    local entryId = activeEntry.entryID
+                    local rank = activeEntry.rank
+                    if (rank > 0) then
+                        --get the entry info
+                        local traitEntryInfo = C_Traits.GetEntryInfo(configId, entryId)
+                        local definitionId = traitEntryInfo.definitionID
+
+                        --definition info
+                        local traitDefinitionInfo = C_Traits.GetDefinitionInfo(definitionId)
+                        local spellId = traitDefinitionInfo.overriddenSpellID or traitDefinitionInfo.spellID
+                        local spellName, _, spellTexture = GetSpellInfo(spellId)
+                        if (spellName) then
+                            allTalents[#allTalents+1] = spellId
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return allTalents
 end
 
 --creates two tables, one with indexed talents and another with pairs values ([talentId] = true)
 function openRaidLib.UnitInfoManager.GetPlayerTalentsAsPairsTable()
     local talentsPairs = {}
-    for i = 1, 7 do
-        for o = 1, 3 do
-            local talentId, _, _, selected = GetTalentInfo(i, o, 1)
-            if (selected) then
-                talentsPairs[talentId] = true
-                break
+    local talentVersion = openRaidLib.GetTalentVersion()
+
+    if (talentVersion == CONST_TALENT_VERSION_DRAGONFLIGHT) then
+        local allTalents = getDragonflightTalentsAsIndexTable()
+        for i = 1, #allTalents do
+            local spellId = allTalents[i]
+            talentsPairs[spellId] = true
+        end
+
+    elseif (talentVersion == CONST_TALENT_VERSION_LEGION) then
+        for i = 1, 7 do
+            for o = 1, 3 do
+                local talentId, _, _, selected = GetTalentInfo(i, o, 1)
+                if (selected) then
+                    talentsPairs[talentId] = true
+                    break
+                end
             end
         end
     end
+
     return talentsPairs
 end
 
 function openRaidLib.UnitInfoManager.GetPlayerTalents()
-    local talents = {0, 0, 0, 0, 0, 0, 0}
-    for talentTier = 1, 7 do
-        for talentColumn = 1, 3 do
-            local talentId, name, texture, selected, available = GetTalentInfo(talentTier, talentColumn, 1)
-            if (selected) then
-                talents[talentTier] = talentId
-                break
+    local talents = {}
+    local talentVersion = openRaidLib.GetTalentVersion()
+
+    if (talentVersion == CONST_TALENT_VERSION_DRAGONFLIGHT) then
+        talents = getDragonflightTalentsAsIndexTable()
+
+    elseif (talentVersion == CONST_TALENT_VERSION_LEGION) then
+        talents = {0, 0, 0, 0, 0, 0, 0}
+        for talentTier = 1, 7 do
+            for talentColumn = 1, 3 do
+                local talentId, name, texture, selected, available = GetTalentInfo(talentTier, talentColumn, 1)
+                if (selected) then
+                    talents[talentTier] = talentId
+                    break
+                end
             end
         end
     end
+
     return talents
 end
 
 function openRaidLib.UnitInfoManager.GetPlayerPvPTalents()
+    if (IsDragonflight()) then
+        return {}
+    end
+
     local talentsPvP = {0, 0, 0}
     local talentList = C_SpecializationInfo.GetAllSelectedPvpTalentIDs()
     for talentIndex, talentId in ipairs(talentList) do
@@ -75,6 +165,11 @@ function openRaidLib.GetPlayerSpecId()
 end
 
 function openRaidLib.UnitInfoManager.GetPlayerConduits()
+
+    if (IsDragonflight()) then
+        return {}
+    end
+
     local conduits = {}
     local soulbindID = C_Soulbinds.GetActiveSoulbindID()
 
@@ -121,12 +216,12 @@ end
 
 function openRaidLib.GearManager.GetPlayerItemLevel()
     if (_G.GetAverageItemLevel) then
-        local _, _itemLevel = GetAverageItemLevel()
-        itemLevel = floor(_itemLevel)
+        local _, itemLevel = GetAverageItemLevel()
+        itemLevel = floor(itemLevel)
+        return itemLevel
     else
-        itemLevel = 0
+        return 0
     end
-    return itemLevel
 end
 
 --return an integer between zero and one hundret indicating the player gear durability
@@ -420,5 +515,9 @@ openRaidLib.specAttribute = {
 		[268] = 2,
 		[269] = 2,
 		[270] = 1,
-    }
+    },
+    ["EVOKER"] = {
+        [1467] = 1, --Devastation
+        [1468] = 1, --Preservation
+    },
 }

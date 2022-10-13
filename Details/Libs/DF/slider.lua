@@ -1,21 +1,10 @@
 
-local DF = _G ["DetailsFramework"]
+local DF = _G["DetailsFramework"]
 if (not DF or not DetailsFrameworkCanLoad) then
-	return 
+	return
 end
 
 local _
-local _rawset = rawset --> lua local
-local _rawget = rawget --> lua local
-local _setmetatable = setmetatable --> lua local
-local _unpack = unpack --> lua local
-local _type = type --> lua local
-local _math_floor = math.floor --> lua local
-local loadstring = loadstring --> lua local
-
-local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
-
-local cleanfunction = function() end
 local APISliderFunctions = false
 
 do
@@ -25,14 +14,13 @@ do
 		HasHook = DF.HasHook,
 		ClearHooks = DF.ClearHooks,
 		RunHooksForWidget = DF.RunHooksForWidget,
-		
 		dversion = DF.dversion
 	}
 
 	--check if there's a metaPrototype already existing
 	if (_G[DF.GlobalWidgetControlNames["slider"]]) then
 		--get the already existing metaPrototype
-		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["slider"]]
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames["slider"]]
 		--check if is older
 		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
 			--the version is older them the currently loading one
@@ -43,281 +31,229 @@ do
 		end
 	else
 		--first time loading the framework
-		_G[DF.GlobalWidgetControlNames ["slider"]] = metaPrototype
+		_G[DF.GlobalWidgetControlNames["slider"]] = metaPrototype
 	end
 end
 
-local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
+local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames["slider"]]
+
+DF:Mixin(DFSliderMetaFunctions, DF.SetPointMixin)
+DF:Mixin(DFSliderMetaFunctions, DF.FrameMixin)
 
 ------------------------------------------------------------------------------------------------------------
---> metatables
+--metatables
 
-	DFSliderMetaFunctions.__call = function (_table, value)
+	DFSliderMetaFunctions.__call = function(object, value)
 		if (not value) then
-			if (_table.isSwitch) then
-			
-				if (type (value) == "boolean") then --> false
-					return _table.slider:SetValue (1)
+			if (object.isSwitch) then
+				if (type(value) == "boolean") then
+					object.slider:SetValue(1)
+					return
 				end
-			
-				if (_table.slider:GetValue() == 1) then
+
+				if (object.slider:GetValue() == 1) then
 					return false
 				else
 					return true
 				end
 			end
-			return _table.slider:GetValue()
+
+			return object.slider:GetValue()
 		else
-			if (_table.isSwitch) then
-				if (type (value) == "boolean") then
+			if (object.isSwitch) then
+				if (type(value) == "boolean") then
 					if (value) then
-						_table.slider:SetValue (2)
+						object.slider:SetValue(2)
 					else
-						_table.slider:SetValue (1)
+						object.slider:SetValue(1)
 					end
 				else
-					_table.slider:SetValue (value)
+					object.slider:SetValue(value)
 				end
 				return
 			end
-			
-			return _table.slider:SetValue (value)
+
+			return object.slider:SetValue(value)
 		end
 	end
 
 ------------------------------------------------------------------------------------------------------------
---> members
+--members
 
-	--> tooltip
-	local gmember_tooltip = function (_object)
-		return _object:GetTooltip()
+	--tooltip
+	local gmember_tooltip = function(object)
+		return object:GetTooltip()
 	end
-	--> shown
-	local gmember_shown = function (_object)
-		return _object:IsShown()
+
+	--shown
+	local gmember_shown = function(object)
+		return object:IsShown()
 	end
-	--> frame width
-	local gmember_width = function (_object)
-		return _object.slider:GetWidth()
+
+	--frame width
+	local gmember_width = function(object)
+		return object.slider:GetWidth()
 	end
-	--> frame height
-	local gmember_height = function (_object)
-		return _object.slider:GetHeight()
+
+	--frame height
+	local gmember_height = function(object)
+		return object.slider:GetHeight()
 	end
-	--> locked
-	local gmember_locked = function (_object)
-		return _rawget (_object, "lockdown")
+
+	--locked
+	local gmember_locked = function(object)
+		return rawget(object, "lockdown")
 	end
-	--> fractional
-	local gmember_fractional = function (_object)
-		return _rawget (_object, "useDecimals")
-	end	
-	--> value
-	local gmember_value = function (_object)
-		return _object()
-	end	
+
+	--fractional
+	local gmember_fractional = function(object)
+		return rawget(object, "useDecimals")
+	end
+
+	--value
+	local gmember_value = function(object)
+		return object()
+	end
 
 	DFSliderMetaFunctions.GetMembers = DFSliderMetaFunctions.GetMembers or {}
-	DFSliderMetaFunctions.GetMembers ["tooltip"] = gmember_tooltip
-	DFSliderMetaFunctions.GetMembers ["shown"] = gmember_shown
-	DFSliderMetaFunctions.GetMembers ["width"] = gmember_width
-	DFSliderMetaFunctions.GetMembers ["height"] = gmember_height
-	DFSliderMetaFunctions.GetMembers ["locked"] = gmember_locked
-	DFSliderMetaFunctions.GetMembers ["fractional"] = gmember_fractional
-	DFSliderMetaFunctions.GetMembers ["value"] = gmember_value
+	DFSliderMetaFunctions.GetMembers["tooltip"] = gmember_tooltip
+	DFSliderMetaFunctions.GetMembers["shown"] = gmember_shown
+	DFSliderMetaFunctions.GetMembers["width"] = gmember_width
+	DFSliderMetaFunctions.GetMembers["height"] = gmember_height
+	DFSliderMetaFunctions.GetMembers["locked"] = gmember_locked
+	DFSliderMetaFunctions.GetMembers["fractional"] = gmember_fractional
+	DFSliderMetaFunctions.GetMembers["value"] = gmember_value
 
-	DFSliderMetaFunctions.__index = function (_table, _member_requested)
-
-		local func = DFSliderMetaFunctions.GetMembers [_member_requested]
+	DFSliderMetaFunctions.__index = function(object, key)
+		local func = DFSliderMetaFunctions.GetMembers[key]
 		if (func) then
-			return func (_table, _member_requested)
+			return func(object, key)
 		end
-		
-		local fromMe = _rawget (_table, _member_requested)
+
+		local fromMe = rawget(object, key)
 		if (fromMe) then
 			return fromMe
 		end
-		
-		return DFSliderMetaFunctions [_member_requested]
+
+		return DFSliderMetaFunctions[key]
 	end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
-	--> tooltip
-	local smember_tooltip = function (_object, _value)
-		return _object:SetTooltip (_value)
+
+	--tooltip
+	local smember_tooltip = function(object, value)
+		return object:SetTooltip(value)
 	end
-	--> show
-	local smember_show = function (_object, _value)
-		if (_value) then
-			return _object:Show()
+
+	--show
+	local smember_show = function(object, value)
+		if (value) then
+			return object:Show()
 		else
-			return _object:Hide()
+			return object:Hide()
 		end
 	end
-	--> hide
-	local smember_hide = function (_object, _value)
-		if (not _value) then
-			return _object:Show()
+
+	--hide
+	local smember_hide = function(object, value)
+		if (not value) then
+			return object:Show()
 		else
-			return _object:Hide()
+			return object:Hide()
 		end
 	end
-	--> frame width
-	local smember_width = function (_object, _value)
-		return _object.slider:SetWidth (_value)
+
+	--frame width
+	local smember_width = function(object, value)
+		return object.slider:SetWidth(value)
 	end
-	--> frame height
-	local smember_height = function (_object, _value)
-		return _object.slider:SetHeight (_value)
+
+	--frame height
+	local smember_height = function(object, value)
+		return object.slider:SetHeight(value)
 	end
-	--> locked
-	local smember_locked = function (_object, _value)
-		if (_value) then
-			return self:Disable()
+
+	--locked
+	local smember_locked = function(object, value)
+		if (value) then
+			return object:Disable()
 		else
-			return self:Enable()
+			return object:Enable()
 		end
-	end	
-	--> backdrop
-	local smember_backdrop = function (_object, _value)
-		return _object.slider:SetBackdrop (_value)
 	end
-	--> fractional
-	local smember_fractional = function (_object, _value)
-		return _rawset (_object, "useDecimals", _value)
+
+	--backdrop
+	local smember_backdrop = function(object, value)
+		return object.slider:SetBackdrop(value)
 	end
-	--> value
-	local smember_value = function (_object, _value)
-		_object (_value)
+
+	--fractional
+	local smember_fractional = function(object, value)
+		return rawset(object, "useDecimals", value)
 	end
-	
+
+	--value
+	local smember_value = function(object, value)
+		object(value)
+	end
+
 	DFSliderMetaFunctions.SetMembers = DFSliderMetaFunctions.SetMembers or {}
-	DFSliderMetaFunctions.SetMembers ["tooltip"] = smember_tooltip
-	DFSliderMetaFunctions.SetMembers ["show"] = smember_show
-	DFSliderMetaFunctions.SetMembers ["hide"] = smember_hide
-	DFSliderMetaFunctions.SetMembers ["backdrop"] = smember_backdrop
-	DFSliderMetaFunctions.SetMembers ["width"] = smember_width
-	DFSliderMetaFunctions.SetMembers ["height"] = smember_height
-	DFSliderMetaFunctions.SetMembers ["locked"] = smember_locked
-	DFSliderMetaFunctions.SetMembers ["fractional"] = smember_fractional
-	DFSliderMetaFunctions.SetMembers ["value"] = smember_value
-	
-	DFSliderMetaFunctions.__newindex = function (_table, _key, _value)
-		local func = DFSliderMetaFunctions.SetMembers [_key]
+	DFSliderMetaFunctions.SetMembers["tooltip"] = smember_tooltip
+	DFSliderMetaFunctions.SetMembers["show"] = smember_show
+	DFSliderMetaFunctions.SetMembers["hide"] = smember_hide
+	DFSliderMetaFunctions.SetMembers["backdrop"] = smember_backdrop
+	DFSliderMetaFunctions.SetMembers["width"] = smember_width
+	DFSliderMetaFunctions.SetMembers["height"] = smember_height
+	DFSliderMetaFunctions.SetMembers["locked"] = smember_locked
+	DFSliderMetaFunctions.SetMembers["fractional"] = smember_fractional
+	DFSliderMetaFunctions.SetMembers["value"] = smember_value
+
+	DFSliderMetaFunctions.__newindex = function(object, key, value)
+		local func = DFSliderMetaFunctions.SetMembers[key]
 		if (func) then
-			return func (_table, _value)
+			return func(object, value)
 		else
-			return _rawset (_table, _key, _value)
+			return rawset(object, key, value)
 		end
-	end	
-	
+	end
+
 ------------------------------------------------------------------------------------------------------------
---> methods
+--methods
 
---> show & hide
-	function DFSliderMetaFunctions:IsShown()
-		return self.slider:IsShown()
-	end
-	function DFSliderMetaFunctions:Show()
-		return self.slider:Show()
-	end
-	function DFSliderMetaFunctions:Hide()
-		return self.slider:Hide()
-	end
-	
---> fixed value
-	function DFSliderMetaFunctions:SetFixedParameter (value)
-		_rawset (self, "FixedValue", value)
-	end
-	
---> set value
-	function DFSliderMetaFunctions:SetValue (value)
-		return self (value)
-	end
-	
--- thumb size
-	function DFSliderMetaFunctions:SetThumbSize (w, h)
-		if (not w) then
-			w = self.thumb:GetWidth()
-		end
-		if (not h) then
-			h = self.thumb:GetHeight()
-		end
-		return self.thumb:SetSize (w, h)
-	end	
-	
-	function DFSliderMetaFunctions:SetBackdrop(...)
-			return self.slider:SetBackdrop(...)
+	--fixed value
+	function DFSliderMetaFunctions:SetFixedParameter(value)
+		rawset(self, "FixedValue", value)
 	end
 
-	function DFSliderMetaFunctions:SetBackdropColor(...)
-		return self.slider:SetBackdropColor(...)
+	--set value
+	function DFSliderMetaFunctions:SetValue(value)
+		return self(value)
 	end
 
-	function DFSliderMetaFunctions:SetBackdropBorderColor(...)
-		return self.slider:SetBackdropBorderColor(...)
+	-- thumb size
+	function DFSliderMetaFunctions:SetThumbSize(width, height)
+		if (not width) then
+			width = self.thumb:GetWidth()
+		end
+		if (not height) then
+			height = self.thumb:GetHeight()
+		end
+		return self.thumb:SetSize(width, height)
 	end
 
-	
--- setpoint
-	function DFSliderMetaFunctions:SetPoint (v1, v2, v3, v4, v5)
-		v1, v2, v3, v4, v5 = DF:CheckPoints (v1, v2, v3, v4, v5, self)
-		if (not v1) then
-			print ("Invalid parameter for SetPoint")
-			return
-		end
-		return self.widget:SetPoint (v1, v2, v3, v4, v5)
-	end
-
--- sizes
-	function DFSliderMetaFunctions:SetSize (w, h)
-		if (w) then
-			self.slider:SetWidth (w)
-		end
-		if (h) then
-			return self.slider:SetHeight (h)
-		end
-	end
-	
--- tooltip
-	function DFSliderMetaFunctions:SetTooltip (tooltip)
+	--tooltip
+	function DFSliderMetaFunctions:SetTooltip(tooltip)
 		if (tooltip) then
-			return _rawset (self, "have_tooltip", tooltip)
+			return rawset(self, "have_tooltip", tooltip)
 		else
-			return _rawset (self, "have_tooltip", nil)
+			return rawset(self, "have_tooltip", nil)
 		end
 	end
 	function DFSliderMetaFunctions:GetTooltip()
-		return _rawget (self, "have_tooltip")
-	end
-	
--- frame levels
-	function DFSliderMetaFunctions:GetFrameLevel()
-		return self.slider:GetFrameLevel()
-	end
-	function DFSliderMetaFunctions:SetFrameLevel (level, frame)
-		if (not frame) then
-			return self.slider:SetFrameLevel (level)
-		else
-			local framelevel = frame:GetFrameLevel (frame) + level
-			return self.slider:SetFrameLevel (framelevel)
-		end
+		return rawget(self, "have_tooltip")
 	end
 
--- frame stratas
-	function DFSliderMetaFunctions:SetFrameStrata()
-		return self.slider:GetFrameStrata()
-	end
-	function DFSliderMetaFunctions:SetFrameStrata (strata)
-		if (_type (strata) == "table") then
-			self.slider:SetFrameStrata (strata:GetFrameStrata())
-		else
-			self.slider:SetFrameStrata (strata)
-		end
-	end
-	
--- clear focus
+	--clear focus
 	function DFSliderMetaFunctions:ClearFocus()
 		local editbox = DFSliderMetaFunctions.editbox_typevalue
 		if editbox and self.typing_value then
@@ -327,33 +263,32 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 			editbox:GetParent().MyObject.value = self.typing_value_started
 		end
 	end
-	
--- enabled
+
+	--enabled
 	function DFSliderMetaFunctions:IsEnabled()
-		return not _rawget (self, "lockdown")
+		return not rawget(self, "lockdown")
 	end
-		
+
 	function DFSliderMetaFunctions:Enable()
 		self.slider:Enable()
 		if (not self.is_checkbox) then
 			if (not self.lock_texture) then
-				DF:NewImage (self, [[Interface\PetBattles\PetBattle-LockIcon]], 12, 12, "overlay", {0.0546875, 0.9453125, 0.0703125, 0.9453125}, "lock_texture", "$parentLockTexture")
-				self.lock_texture:SetDesaturated (true)
-				self.lock_texture:SetPoint ("center", self.amt, "center")
+				DF:NewImage(self, [[Interface\PetBattles\PetBattle-LockIcon]], 12, 12, "overlay", {0.0546875, 0.9453125, 0.0703125, 0.9453125}, "lock_texture", "$parentLockTexture")
+				self.lock_texture:SetDesaturated(true)
+				self.lock_texture:SetPoint("center", self.amt, "center")
 			end
 			self.lock_texture:Hide()
 		end
 		self.slider.amt:Show()
-		self:SetAlpha (1)
-		
+		self:SetAlpha(1)
+
 		if (self.is_checkbox) then
 			self.checked_texture:Show()
 		end
-		return _rawset (self, "lockdown", false)
+		return rawset(self, "lockdown", false)
 	end
-	
+
 	function DFSliderMetaFunctions:Disable()
-	
 		self:ClearFocus()
 		self.slider:Disable()
 		self.slider.amt:Hide()
@@ -362,30 +297,28 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		if (not self.is_checkbox) then
 			if (not self.lock_texture) then
 				DF:NewImage (self, [[Interface\PetBattles\PetBattle-LockIcon]], 12, 12, "overlay", {0.0546875, 0.9453125, 0.0703125, 0.9453125}, "lock_texture", "$parentLockTexture")
-				self.lock_texture:SetDesaturated (true)
-				self.lock_texture:SetPoint ("center", self.amt, "center")
+				self.lock_texture:SetDesaturated(true)
+				self.lock_texture:SetPoint("center", self.amt, "center")
 			end
 			self.lock_texture:Show()
 		end
-		
+
 		if (self.is_checkbox) then
 			self.checked_texture:Show()
 		end
-		
-		--print ("result 2:", self.checked_texture:IsShown(), self.checked_texture:GetAlpha(), self.checked_texture:GetSize())
-		
-		return _rawset (self, "lockdown", true)
+
+		return rawset(self, "lockdown", true)
 	end
 
 ------------------------------------------------------------------------------------------------------------
---> scripts
+--scripts
 
-	local OnEnter = function (slider)
-		if (_rawget (slider.MyObject, "lockdown")) then
+	local OnEnter = function(slider)
+		if (rawget (slider.MyObject, "lockdown")) then
 			return
 		end
 	
-		DetailsFrameworkSliderButtons1:ShowMe (slider)
+		DetailsFrameworkSliderButtons1:ShowMe(slider)
 	
 		local capsule = slider.MyObject
 		local kill = capsule:RunHooksForWidget ("OnEnter", slider, capsule)
@@ -396,24 +329,24 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		slider.thumb:SetAlpha (1)
 	
 		if (slider.MyObject.onenter_backdrop_border_color) then
-			slider:SetBackdropBorderColor (unpack (slider.MyObject.onenter_backdrop_border_color))
+			slider:SetBackdropBorderColor(unpack (slider.MyObject.onenter_backdrop_border_color))
 		end
 	
 		if (slider.MyObject.have_tooltip and slider.MyObject.have_tooltip ~= "Right Click to Type the Value") then
 			GameCooltip2:Preset (2)
 			GameCooltip2:AddLine (slider.MyObject.have_tooltip)
-			GameCooltip2:ShowCooltip (slider, "tooltip")
+			GameCooltip2:ShowCooltip(slider, "tooltip")
 		else
 			GameCooltip2:Preset (2)
 			GameCooltip2:AddLine ("Right Click to Type the Value", "", 1, "", "", 10)
 			GameCooltip2:AddIcon ([[Interface\TUTORIALFRAME\UI-TUTORIAL-FRAME]], 1, 1, 16, 16, 0.015625, 0.15671875, 0.640625, 0.798828125)
-			GameCooltip2:ShowCooltip (slider, "tooltip")
+			GameCooltip2:ShowCooltip(slider, "tooltip")
 		end
 	end
 	
-	local OnLeave = function (slider)
+	local OnLeave = function(slider)
 	
-		if (_rawget (slider.MyObject, "lockdown")) then
+		if (rawget (slider.MyObject, "lockdown")) then
 			return
 		end
 	
@@ -428,10 +361,10 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		slider.thumb:SetAlpha (.7)
 	
 		if (slider.MyObject.onleave_backdrop_border_color) then
-			slider:SetBackdropBorderColor (unpack (slider.MyObject.onleave_backdrop_border_color))
+			slider:SetBackdropBorderColor(unpack (slider.MyObject.onleave_backdrop_border_color))
 		end
 	
-		GameCooltip2:ShowMe (false)
+		GameCooltip2:ShowMe(false)
 
 	end
 	
@@ -446,7 +379,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		t = t + elapsed
 		if (t > 0.3) then
 			f:Hide()
-			f:SetScript ("OnUpdate", nil)
+			f:SetScript("OnUpdate", nil)
 			f.isGoingToHide = false
 		end
 	end
@@ -454,14 +387,14 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 	function f:ShowMe(host)
 		f:SetParent(host)
 		f:ClearAllPoints()
-		f:SetPoint ("bottomleft", host, "topleft", -5, -5)
-		f:SetPoint ("bottomright", host, "topright", 5, -5)
+		f:SetPoint("bottomleft", host, "topleft", -5, -5)
+		f:SetPoint("bottomright", host, "topright", 5, -5)
 
-		f:SetFrameStrata ("FULLSCREEN")
+		f:SetFrameStrata("FULLSCREEN")
 		f:SetFrameLevel (host:GetFrameLevel() + 1000)
 		f:Show()
 		if (f.isGoingToHide) then
-			f:SetScript ("OnUpdate", nil)
+			f:SetScript("OnUpdate", nil)
 			f.isGoingToHide = false
 		end
 
@@ -471,45 +404,45 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 	function f:PrepareToHide()
 		f.isGoingToHide = true
 		t = 0
-		f:SetScript ("OnUpdate", goingHide)
+		f:SetScript("OnUpdate", goingHide)
 	end
 	
-	local buttonPlus = CreateFrame ("button", "DetailsFrameworkSliderButtonsPlusButton", f, "BackdropTemplate")
-	local buttonMinor = CreateFrame ("button", "DetailsFrameworkSliderButtonsMinorButton", f, "BackdropTemplate")
-	buttonPlus:SetFrameStrata (f:GetFrameStrata())
-	buttonMinor:SetFrameStrata (f:GetFrameStrata())
+	local buttonPlus = CreateFrame("button", "DetailsFrameworkSliderButtonsPlusButton", f, "BackdropTemplate")
+	local buttonMinor = CreateFrame("button", "DetailsFrameworkSliderButtonsMinorButton", f, "BackdropTemplate")
+	buttonPlus:SetFrameStrata(f:GetFrameStrata())
+	buttonMinor:SetFrameStrata(f:GetFrameStrata())
 	
-	buttonPlus:SetScript ("OnEnter", function (self)
+	buttonPlus:SetScript("OnEnter", function(self)
 		if (f.isGoingToHide) then
-			f:SetScript ("OnUpdate", nil)
+			f:SetScript("OnUpdate", nil)
 			f.isGoingToHide = false
 		end
 	end)
-	buttonMinor:SetScript ("OnEnter", function (self)
+	buttonMinor:SetScript("OnEnter", function(self)
 		if (f.isGoingToHide) then
-			f:SetScript ("OnUpdate", nil)
+			f:SetScript("OnUpdate", nil)
 			f.isGoingToHide = false
 		end
 	end)
 	
-	buttonPlus:SetScript ("OnLeave", function (self)
+	buttonPlus:SetScript("OnLeave", function(self)
 		f:PrepareToHide()
 	end)
-	buttonMinor:SetScript ("OnLeave", function (self)
+	buttonMinor:SetScript("OnLeave", function(self)
 		f:PrepareToHide()
 	end)
 	
-	buttonPlus:SetNormalTexture ([[Interface\Buttons\UI-PlusButton-Up]])
-	buttonMinor:SetNormalTexture ([[Interface\Buttons\UI-MinusButton-Up]])
+	buttonPlus:SetNormalTexture([[Interface\Buttons\UI-PlusButton-Up]])
+	buttonMinor:SetNormalTexture([[Interface\Buttons\UI-MinusButton-Up]])
 	
-	buttonPlus:SetPushedTexture ([[Interface\Buttons\UI-PlusButton-Down]])
-	buttonMinor:SetPushedTexture ([[Interface\Buttons\UI-MinusButton-Down]])
+	buttonPlus:SetPushedTexture([[Interface\Buttons\UI-PlusButton-Down]])
+	buttonMinor:SetPushedTexture([[Interface\Buttons\UI-MinusButton-Down]])
 	
 	buttonPlus:SetDisabledTexture ([[Interface\Buttons\UI-PlusButton-Disabled]])
 	buttonMinor:SetDisabledTexture ([[Interface\Buttons\UI-MinusButton-Disabled]])
 	
-	buttonPlus:SetHighlightTexture ([[Interface\Buttons\UI-PlusButton-Hilight]])
-	buttonMinor:SetHighlightTexture ([[Interface\Buttons\UI-PlusButton-Hilight]])
+	buttonPlus:SetHighlightTexture([[Interface\Buttons\UI-PlusButton-Hilight]])
+	buttonMinor:SetHighlightTexture([[Interface\Buttons\UI-PlusButton-Hilight]])
 
 	local plusNormalTexture = buttonPlus:GetNormalTexture()
 	plusNormalTexture:SetDesaturated(true)
@@ -518,11 +451,11 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 
 	buttonMinor:ClearAllPoints()
 	buttonPlus:ClearAllPoints()
-	buttonMinor:SetPoint ("bottomright", f, "bottomright", 13, -13)
-	buttonPlus:SetPoint ("left", buttonMinor, "right", -2, 0)
+	buttonMinor:SetPoint("bottomright", f, "bottomright", 13, -13)
+	buttonPlus:SetPoint("left", buttonMinor, "right", -2, 0)
 	
-	buttonPlus:SetSize (16, 16)
-	buttonMinor:SetSize (16, 16)
+	buttonPlus:SetSize(16, 16)
+	buttonMinor:SetSize(16, 16)
 	
 	local timer = 0
 	local change_timer = 0
@@ -535,35 +468,35 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		local editbox = DFSliderMetaFunctions.editbox_typevalue
 		
 		if (f.host.fine_tuning) then
-			f.host:SetValue (current + f.host.fine_tuning)
+			f.host:SetValue(current + f.host.fine_tuning)
 			if (editbox and DFSliderMetaFunctions.editbox_typevalue:IsShown()) then
-				DFSliderMetaFunctions.editbox_typevalue:SetText (tostring (string.format ("%.2f", current + f.host.fine_tuning)))
+				DFSliderMetaFunctions.editbox_typevalue:SetText(tostring (string.format("%.2f", current + f.host.fine_tuning)))
 			end
 		else
 			if (f.host.useDecimals) then
-				f.host:SetValue (current + 0.1)
+				f.host:SetValue(current + 0.1)
 				if (editbox and DFSliderMetaFunctions.editbox_typevalue:IsShown()) then
-					DFSliderMetaFunctions.editbox_typevalue:SetText (string.format ("%.2f", current + 0.1))
+					DFSliderMetaFunctions.editbox_typevalue:SetText(string.format("%.2f", current + 0.1))
 				end
 			else
-				f.host:SetValue (current + 1)
+				f.host:SetValue(current + 1)
 				if (editbox and DFSliderMetaFunctions.editbox_typevalue:IsShown()) then
-					DFSliderMetaFunctions.editbox_typevalue:SetText (tostring (math.floor (current + 1)))
+					DFSliderMetaFunctions.editbox_typevalue:SetText(tostring (math.floor (current + 1)))
 				end
 			end
 		end
 
 	end
 	
-	buttonPlus:SetScript ("OnMouseUp", function (self)
+	buttonPlus:SetScript("OnMouseUp", function(self)
 		if (not buttonPlus.got_click) then
 			plus_button_script()
 		end
 		buttonPlus.got_click = false
-		self:SetScript ("OnUpdate", nil)
+		self:SetScript("OnUpdate", nil)
 	end)
 	
-	local on_update = function (self, elapsed)
+	local on_update = function(self, elapsed)
 		timer = timer + elapsed
 		if (timer > 0.4) then
 			change_timer = change_timer + elapsed
@@ -574,10 +507,10 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 			end
 		end
 	end
-	buttonPlus:SetScript ("OnMouseDown", function (self)
+	buttonPlus:SetScript("OnMouseDown", function(self)
 		timer = 0
 		change_timer = 0
-		self:SetScript ("OnUpdate", on_update)
+		self:SetScript("OnUpdate", on_update)
 	end)
 	
 	-- -- --
@@ -587,34 +520,34 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		local editbox = DFSliderMetaFunctions.editbox_typevalue
 		
 		if (f.host.fine_tuning) then
-			f.host:SetValue (current - f.host.fine_tuning)
+			f.host:SetValue(current - f.host.fine_tuning)
 			if (editbox and DFSliderMetaFunctions.editbox_typevalue:IsShown()) then
-				DFSliderMetaFunctions.editbox_typevalue:SetText (tostring (string.format ("%.2f", current - f.host.fine_tuning)))
+				DFSliderMetaFunctions.editbox_typevalue:SetText(tostring (string.format("%.2f", current - f.host.fine_tuning)))
 			end
 		else
 			if (f.host.useDecimals) then
-				f.host:SetValue (current - 0.1)
+				f.host:SetValue(current - 0.1)
 				if (editbox and DFSliderMetaFunctions.editbox_typevalue:IsShown()) then
-					DFSliderMetaFunctions.editbox_typevalue:SetText (string.format ("%.2f", current - 0.1))
+					DFSliderMetaFunctions.editbox_typevalue:SetText(string.format("%.2f", current - 0.1))
 				end
 			else
-				f.host:SetValue (current - 1)
+				f.host:SetValue(current - 1)
 				if (editbox and DFSliderMetaFunctions.editbox_typevalue:IsShown()) then
-					DFSliderMetaFunctions.editbox_typevalue:SetText (tostring (math.floor (current - 1)))
+					DFSliderMetaFunctions.editbox_typevalue:SetText(tostring (math.floor (current - 1)))
 				end
 			end
 		end
 	end
 	
-	buttonMinor:SetScript ("OnMouseUp", function (self)
+	buttonMinor:SetScript("OnMouseUp", function(self)
 		if (not buttonMinor.got_click) then
 			minor_button_script()
 		end
 		buttonMinor.got_click = false
-		self:SetScript ("OnUpdate", nil)
+		self:SetScript("OnUpdate", nil)
 	end)
 	
-	local on_update = function (self, elapsed)
+	local on_update = function(self, elapsed)
 		timer = timer + elapsed
 		if (timer > 0.4) then
 			change_timer = change_timer + elapsed
@@ -625,14 +558,14 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 			end
 		end
 	end
-	buttonMinor:SetScript ("OnMouseDown", function (self)
+	buttonMinor:SetScript("OnMouseDown", function(self)
 		timer = 0
 		change_timer = 0
-		self:SetScript ("OnUpdate", on_update)
+		self:SetScript("OnUpdate", on_update)
 	end)
 	
-	local do_precision = function (text)
-		if (type (text) == "string" and text:find ("%.")) then
+	local do_precision = function(text)
+		if (type(text) == "string" and text:find ("%.")) then
 			local left, right = strsplit (".", text)
 			left = tonumber (left)
 			right = tonumber (right)
@@ -656,30 +589,30 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		
 			if (not DFSliderMetaFunctions.editbox_typevalue) then
 			
-				local editbox = CreateFrame ("EditBox", "DetailsFrameworkSliderEditBox", UIParent, "BackdropTemplate")
+				local editbox = CreateFrame("EditBox", "DetailsFrameworkSliderEditBox", UIParent, "BackdropTemplate")
 				
-				editbox:SetSize (40, 20)
-				editbox:SetJustifyH ("center")
-				editbox:SetBackdrop ({bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
+				editbox:SetSize(40, 20)
+				editbox:SetJustifyH("center")
+				editbox:SetBackdrop({bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
 				edgeFile = "Interface\\Buttons\\UI-SliderBar-Border", --edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
 				tile = true, edgeSize = 8, tileSize = 5})
 				editbox:SetFontObject ("GameFontHighlightSmall")
 
-				editbox:SetScript ("OnEnterPressed", function()
+				editbox:SetScript("OnEnterPressed", function()
 					editbox:ClearFocus()
 					editbox:Hide()
 					editbox:GetParent().MyObject.typing_value = false
 					editbox:GetParent().MyObject.value = tonumber (editbox:GetText()) --do_precision (editbox:GetText())
 				end)
 				
-				editbox:SetScript ("OnEscapePressed", function()
+				editbox:SetScript("OnEscapePressed", function()
 					editbox:ClearFocus()
 					editbox:Hide()
 					editbox:GetParent().MyObject.typing_value = false
 					editbox:GetParent().MyObject.value = self.typing_value_started --do_precision (self.typing_value_started)
 				end)
 
-				editbox:SetScript ("OnTextChanged", function()
+				editbox:SetScript("OnTextChanged", function()
 					editbox:GetParent().MyObject.typing_can_change = true
 					editbox:GetParent().MyObject.value = tonumber (editbox:GetText()) --do_precision 
 					editbox:GetParent().MyObject.typing_can_change = false
@@ -689,21 +622,21 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 			end
 			
 			local pvalue = self.previous_value [2]
-			self:SetValue (pvalue)
+			self:SetValue(pvalue)
 			
 			self.typing_value = true
 			self.typing_value_started = pvalue
 			
-			DFSliderMetaFunctions.editbox_typevalue:SetSize (self.width, self.height)
-			DFSliderMetaFunctions.editbox_typevalue:SetPoint ("center", self.widget, "center")
+			DFSliderMetaFunctions.editbox_typevalue:SetSize(self.width, self.height)
+			DFSliderMetaFunctions.editbox_typevalue:SetPoint("center", self.widget, "center")
 			DFSliderMetaFunctions.editbox_typevalue:SetFocus()
-			DFSliderMetaFunctions.editbox_typevalue:SetParent (self.widget)
+			DFSliderMetaFunctions.editbox_typevalue:SetParent(self.widget)
 			DFSliderMetaFunctions.editbox_typevalue:SetFrameLevel (self.widget:GetFrameLevel()+1)
 			
 			if (self.useDecimals) then
-				DFSliderMetaFunctions.editbox_typevalue:SetText (tostring (string.format ("%.1f", self.value)))
+				DFSliderMetaFunctions.editbox_typevalue:SetText(tostring (string.format("%.1f", self.value)))
 			else
-				DFSliderMetaFunctions.editbox_typevalue:SetText (tostring (math.floor (self.value)))
+				DFSliderMetaFunctions.editbox_typevalue:SetText(tostring (math.floor (self.value)))
 			end
 			
 			DFSliderMetaFunctions.editbox_typevalue:HighlightText()
@@ -712,7 +645,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		end
 	end
 	
-	local OnMouseDown = function (slider, button)
+	local OnMouseDown = function(slider, button)
 		slider.MyObject.IsValueChanging = true
 		
 		local capsule = slider.MyObject
@@ -726,7 +659,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		end
 	end
 	
-	local OnMouseUp = function (slider, button)
+	local OnMouseUp = function(slider, button)
 		slider.MyObject.IsValueChanging = nil
 		
 		local capsule = slider.MyObject
@@ -736,7 +669,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		end
 	end
 	
-	local OnHide = function (slider)
+	local OnHide = function(slider)
 		local capsule = slider.MyObject
 		local kill = capsule:RunHooksForWidget ("OnHide", slider, capsule)
 		if (kill) then
@@ -745,12 +678,12 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		
 		if (slider.MyObject.typing_value) then
 			DFSliderMetaFunctions.editbox_typevalue:ClearFocus()
-			DFSliderMetaFunctions.editbox_typevalue:SetText ("")
+			DFSliderMetaFunctions.editbox_typevalue:SetText("")
 			slider.MyObject.typing_valu = false
 		end
 	end
 	
-	local OnShow = function (slider)
+	local OnShow = function(slider)
 		local capsule = slider.MyObject
 		local kill = capsule:RunHooksForWidget ("OnShow", slider, capsule)
 		if (kill) then
@@ -761,7 +694,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 	local table_insert = table.insert
 	local table_remove = table.remove
 	
-	local OnValueChanged = function (slider)
+	local OnValueChanged = function(slider)
 	
 		local amt
 		if (slider.MyObject.useDecimals) then
@@ -771,7 +704,7 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		end
 
 		if (slider.MyObject.typing_value and not slider.MyObject.typing_can_change) then
-			slider.MyObject:SetValue (slider.MyObject.typing_value_started)
+			slider.MyObject:SetValue(slider.MyObject.typing_value_started)
 			return
 		end
 
@@ -799,63 +732,63 @@ local DFSliderMetaFunctions = _G[DF.GlobalWidgetControlNames ["slider"]]
 		end
 		
 		if (slider.MyObject.useDecimals) then
-			slider.amt:SetText (string.format ("%.2f", amt))
+			slider.amt:SetText(string.format("%.2f", amt))
 		else
-			slider.amt:SetText (math.floor (amt))
+			slider.amt:SetText(math.floor (amt))
 		end
 		slider.MyObject.ivalue = amt
 
 	end
 
 ------------------------------------------------------------------------------------------------------------
---> object constructor
+--object constructor
 
-local SwitchOnClick = function (self, button, forced_value, value)
+local SwitchOnClick = function(self, button, forced_value, value)
 
 	local slider = self.MyObject
 	
-	if (_rawget (slider, "lockdown")) then
+	if (rawget (slider, "lockdown")) then
 		return
 	end
 	
 	if (forced_value) then
-		_rawset (slider, "value", not value)
+		rawset (slider, "value", not value)
 	end
 
-	if (_rawget (slider, "value")) then --actived
-		_rawset (slider, "value", false)
+	if (rawget (slider, "value")) then --actived
+		rawset (slider, "value", false)
 		
 		if (slider.backdrop_disabledcolor) then
-			slider:SetBackdropColor (unpack (slider.backdrop_disabledcolor))
+			slider:SetBackdropColor(unpack (slider.backdrop_disabledcolor))
 		else
-			slider:SetBackdropColor (1, 0, 0, 0.4)
+			slider:SetBackdropColor(1, 0, 0, 0.4)
 		end
 		
 		if (slider.is_checkbox) then
 			slider.checked_texture:Hide()
 		else
-			slider._text:SetText (slider._ltext)
+			slider._text:SetText(slider._ltext)
 			slider._thumb:ClearAllPoints()
-			slider._thumb:SetPoint ("left", slider.widget, "left")
+			slider._thumb:SetPoint("left", slider.widget, "left")
 		end
 	else
-		_rawset (slider, "value", true)
+		rawset (slider, "value", true)
 		if (slider.backdrop_enabledcolor) then
-			slider:SetBackdropColor (unpack (slider.backdrop_enabledcolor))
+			slider:SetBackdropColor(unpack (slider.backdrop_enabledcolor))
 		else
-			slider:SetBackdropColor (0, 0, 1, 0.4)
+			slider:SetBackdropColor(0, 0, 1, 0.4)
 		end
 		if (slider.is_checkbox) then
 			slider.checked_texture:Show()
 		else
-			slider._text:SetText (slider._rtext)
+			slider._text:SetText(slider._rtext)
 			slider._thumb:ClearAllPoints()
-			slider._thumb:SetPoint ("right", slider.widget, "right")
+			slider._thumb:SetPoint("right", slider.widget, "right")
 		end
 	end
 
 	if (slider.OnSwitch and not forced_value) then
-		local value = _rawget (slider, "value")
+		local value = rawget (slider, "value")
 		if (slider.return_func) then
 			value = slider:return_func (value)
 		end
@@ -865,13 +798,13 @@ local SwitchOnClick = function (self, button, forced_value, value)
 			return
 		end
 
-		--> trigger hooks
+		--trigger hooks
 		slider:RunHooksForWidget ("OnSwitch", slider, slider.FixedValue, value)
 	end
 
 end
 
-local default_switch_func = function (self, passed_value)
+local default_switch_func = function(self, passed_value)
 	if (self.value) then
 		return false
 	else
@@ -879,11 +812,11 @@ local default_switch_func = function (self, passed_value)
 	end
 end
 
-local switch_get_value = function (self)
+local switch_get_value = function(self)
 	return self.value
 end
 
-local switch_set_value = function (self, value)
+local switch_set_value = function(self, value)
 	if (self.switch_func) then
 		value = self:switch_func (value)
 	end
@@ -891,11 +824,11 @@ local switch_set_value = function (self, value)
 	SwitchOnClick (self.widget, nil, true, value)
 end
 
-local switch_set_fixparameter = function (self, value)
-	_rawset (self, "FixedValue", value)
+local switch_set_fixparameter = function(self, value)
+	rawset (self, "FixedValue", value)
 end
 
-local switch_disable = function (self)	
+local switch_disable = function(self)	
 	
 	if (self.is_checkbox) then
 		self.checked_texture:Hide()
@@ -904,17 +837,17 @@ local switch_disable = function (self)
 		if (not self.lock_texture) then
 			DF:NewImage (self, [[Interface\PetBattles\PetBattle-LockIcon]], 12, 12, "overlay", {0.0546875, 0.9453125, 0.0703125, 0.9453125}, "lock_texture", "$parentLockTexture")
 			self.lock_texture:SetDesaturated (true)
-			self.lock_texture:SetPoint ("center", self._thumb, "center")
+			self.lock_texture:SetPoint("center", self._thumb, "center")
 		end
 		self.lock_texture:Show()
 	end
 	
 	self:SetAlpha (.4)
-	_rawset (self, "lockdown", true)
+	rawset (self, "lockdown", true)
 end
-local switch_enable = function (self)
+local switch_enable = function(self)
 	if (self.is_checkbox) then
-		if (_rawget (self, "value")) then
+		if (rawget (self, "value")) then
 			self.checked_texture:Show()
 		else
 			self.checked_texture:Hide()
@@ -923,27 +856,27 @@ local switch_enable = function (self)
 		if (not self.lock_texture) then
 			DF:NewImage (self, [[Interface\PetBattles\PetBattle-LockIcon]], 12, 12, "overlay", {0.0546875, 0.9453125, 0.0703125, 0.9453125}, "lock_texture", "$parentLockTexture")
 			self.lock_texture:SetDesaturated (true)
-			self.lock_texture:SetPoint ("center", self._thumb, "center")
+			self.lock_texture:SetPoint("center", self._thumb, "center")
 		end
 		self.lock_texture:Hide()
 		self._text:Show()
 	end
 	
 	self:SetAlpha (1)
-	return _rawset (self, "lockdown", false)
+	return rawset (self, "lockdown", false)
 end
 
-local set_switch_func = function (self, newFunction)
+local set_switch_func = function(self, newFunction)
 	self.OnSwitch = newFunction
 end
 
-local set_as_checkbok = function (self)
+local set_as_checkbok = function(self)
 	if self.is_checkbox and self.checked_texture then return end
-	local checked = self:CreateTexture (self:GetName() .. "CheckTexture", "overlay")
-	checked:SetTexture ([[Interface\Buttons\UI-CheckBox-Check]])
-	checked:SetPoint ("center", self.button, "center", -1, -1)
+	local checked = self:CreateTexture(self:GetName() .. "CheckTexture", "overlay")
+	checked:SetTexture([[Interface\Buttons\UI-CheckBox-Check]])
+	checked:SetPoint("center", self.button, "center", -1, -1)
 	local size_pct = self:GetWidth()/32
-	checked:SetSize (32*size_pct, 32*size_pct)
+	checked:SetSize(32*size_pct, 32*size_pct)
 	self.checked_texture = checked
 	
 	self._thumb:Hide()
@@ -951,19 +884,19 @@ local set_as_checkbok = function (self)
 	
 	self.is_checkbox = true
 	
-	if (_rawget (self, "value")) then
+	if (rawget (self, "value")) then
 		self.checked_texture:Show()
 		if (self.backdrop_enabledcolor) then
-			self:SetBackdropColor (unpack (self.backdrop_enabledcolor))
+			self:SetBackdropColor(unpack (self.backdrop_enabledcolor))
 		else
-			self:SetBackdropColor (0, 0, 1, 0.4)
+			self:SetBackdropColor(0, 0, 1, 0.4)
 		end		
 	else
 		self.checked_texture:Hide()
 		if (self.backdrop_disabledcolor) then
-			self:SetBackdropColor (unpack (self.backdrop_disabledcolor))
+			self:SetBackdropColor(unpack (self.backdrop_disabledcolor))
 		else
-			self:SetBackdropColor (0, 0, 1, 0.4)
+			self:SetBackdropColor(0, 0, 1, 0.4)
 		end
 	end
 
@@ -979,7 +912,7 @@ end
 
 function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, default_value, color_inverted, switch_func, return_func, with_label, switch_template, label_template)
 
---> early checks
+--early checks
 	if (not name) then
 		name = "DetailsFrameWorkSlider" .. DF.SwitchCounter
 		DF.SwitchCounter = DF.SwitchCounter + 1
@@ -990,15 +923,15 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 		container = parent
 	end
 	
---> defaults
+--defaults
 	ltext = ltext or "OFF"
 	rtext = rtext or "ON"
 	
---> build frames
+--build frames
 	w = w or 60
 	h = h or 20
 	
-	local slider = DF:NewButton (parent, container, name, member, w, h)
+	local slider = DF:NewButton(parent, container, name, member, w, h)
 	slider.HookList.OnSwitch = {}
 	
 	slider.switch_func = switch_func
@@ -1016,18 +949,18 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 		parent [member] = slider
 	end
 	
-	slider:SetBackdrop ({edgeFile = [[Interface\Buttons\UI-SliderBar-Border]], edgeSize = 8,
+	slider:SetBackdrop({edgeFile = [[Interface\Buttons\UI-SliderBar-Border]], edgeSize = 8,
 	bgFile = [[Interface\AddOns\Details\images\background]], insets = {left = 3, right = 3, top = 5, bottom = 5}})
 	
-	local thumb = slider:CreateTexture (nil, "artwork")
-	thumb:SetTexture ("Interface\\Buttons\\UI-ScrollBar-Knob")
-	thumb:SetSize (34+(h*0.2), h*1.2)
+	local thumb = slider:CreateTexture(nil, "artwork")
+	thumb:SetTexture("Interface\\Buttons\\UI-ScrollBar-Knob")
+	thumb:SetSize(34+(h*0.2), h*1.2)
 	thumb:SetAlpha (0.7)
-	thumb:SetPoint ("left", slider.widget, "left")
+	thumb:SetPoint("left", slider.widget, "left")
 	
 	local text = slider:CreateFontString (nil, "overlay", "GameFontHighlightSmall")
 	text:SetTextColor (.8, .8, .8, 1)
-	text:SetPoint ("center", thumb, "center")
+	text:SetPoint("center", thumb, "center")
 	
 	slider._text = text
 	slider._thumb = thumb
@@ -1037,9 +970,9 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 
 	slider.invert_colors = color_inverted
 	
-	slider:SetScript ("OnClick", SwitchOnClick)
+	slider:SetScript("OnClick", SwitchOnClick)
 
-	slider:SetValue (default_value)
+	slider:SetValue(default_value)
 
 	slider.isSwitch = true
 	
@@ -1048,9 +981,9 @@ function DF:NewSwitch (parent, container, name, member, w, h, ltext, rtext, defa
 	end
 	
 	if (with_label) then
-		local label = DF:CreateLabel (slider.widget, with_label, nil, nil, nil, "label", nil, "overlay")
+		local label = DF:CreateLabel(slider.widget, with_label, nil, nil, nil, "label", nil, "overlay")
 		label.text = with_label
-		slider.widget:SetPoint ("left", label.widget, "right", 2, 0)
+		slider.widget:SetPoint("left", label.widget, "right", 2, 0)
 		with_label = label
 		
 		if (label_template) then
@@ -1065,64 +998,64 @@ function DFSliderMetaFunctions:SetTemplate (template)
 
 	--slider e switch
 	if (template.width) then
-		self:SetWidth (template.width)
+		self:SetWidth(template.width)
 	end
 	if (template.height) then
-		self:SetHeight (template.height)
+		self:SetHeight(template.height)
 	end
 	
 	if (template.backdrop) then
-		self:SetBackdrop (template.backdrop)
+		self:SetBackdrop(template.backdrop)
 	end
 	if (template.backdropcolor) then
-		local r, g, b, a = DF:ParseColors (template.backdropcolor)
-		self:SetBackdropColor (r, g, b, a)
+		local r, g, b, a = DF:ParseColors(template.backdropcolor)
+		self:SetBackdropColor(r, g, b, a)
 	end
 	if (template.backdropbordercolor) then
-		local r, g, b, a = DF:ParseColors (template.backdropbordercolor)
-		self:SetBackdropBorderColor (r, g, b, a)
+		local r, g, b, a = DF:ParseColors(template.backdropbordercolor)
+		self:SetBackdropBorderColor(r, g, b, a)
 		self.onleave_backdrop_border_color = {r, g, b, a}
 	end
 	
 	if (template.onenterbordercolor) then
-		local r, g, b, a = DF:ParseColors (template.onenterbordercolor)
+		local r, g, b, a = DF:ParseColors(template.onenterbordercolor)
 		self.onenter_backdrop_border_color = {r, g, b, a}
 	end
 	
 	if (template.onleavebordercolor) then
-		local r, g, b, a = DF:ParseColors (template.onleavebordercolor)
+		local r, g, b, a = DF:ParseColors(template.onleavebordercolor)
 		self.onleave_backdrop_border_color = {r, g, b, a}
 	end
 
 	if (template.thumbtexture) then
 		if (self.thumb) then
-			self.thumb:SetTexture (template.thumbtexture)
+			self.thumb:SetTexture(template.thumbtexture)
 		end
 	end
 	if (template.thumbwidth) then
 		if (self.thumb) then
-			self.thumb:SetWidth (template.thumbwidth)
+			self.thumb:SetWidth(template.thumbwidth)
 		end
 	end
 	if (template.thumbheight) then
 		if (self.thumb) then
-			self.thumb:SetHeight (template.thumbheight)
+			self.thumb:SetHeight(template.thumbheight)
 		end
 	end
 	if (template.thumbcolor) then
 		if (self.thumb) then
-			local r, g, b, a = DF:ParseColors (template.thumbcolor)
+			local r, g, b, a = DF:ParseColors(template.thumbcolor)
 			self.thumb:SetVertexColor (r, g, b, a)
 		end
 	end
 	
 	--switch only
 	if (template.enabled_backdropcolor) then
-		local r, g, b, a = DF:ParseColors (template.enabled_backdropcolor)
+		local r, g, b, a = DF:ParseColors(template.enabled_backdropcolor)
 		self.backdrop_enabledcolor = {r, g, b, a}
 	end
 	if (template.disabled_backdropcolor) then
-		local r, g, b, a = DF:ParseColors (template.disabled_backdropcolor)
+		local r, g, b, a = DF:ParseColors(template.disabled_backdropcolor)
 		self.backdrop_disabledcolor = {r, g, b, a}
 	end
 end
@@ -1134,7 +1067,7 @@ end
 
 function DF:NewSlider (parent, container, name, member, w, h, min, max, step, defaultv, isDecemal, isSwitch, with_label, slider_template, label_template)
 	
---> early checks
+--early checks
 	if (not name) then
 		name = "DetailsFrameworkSlider" .. DF.SliderCounter
 		DF.SliderCounter = DF.SliderCounter + 1
@@ -1164,7 +1097,7 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 		container = container.widget
 	end
 	
---> defaults	
+--defaults	
 	min = min or 1
 	max = max or 2
 	step = step or 1
@@ -1173,11 +1106,11 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 	w = w or 130
 	h = h or 19
 	
-	--> default members:
+	--default members:
 		SliderObject.lockdown = false
 		SliderObject.container = container
 		
-	SliderObject.slider = CreateFrame ("slider", name, parent,"BackdropTemplate")
+	SliderObject.slider = CreateFrame("slider", name, parent,"BackdropTemplate")
 	SliderObject.widget = SliderObject.slider
 
 	SliderObject.useDecimals = isDecemal or false
@@ -1191,9 +1124,9 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 	if (not APISliderFunctions) then
 		APISliderFunctions = true
 		local idx = getmetatable (SliderObject.slider).__index
-		for funcName, funcAddress in pairs (idx) do 
+		for funcName, funcAddress in pairs(idx) do 
 			if (not DFSliderMetaFunctions [funcName]) then
-				DFSliderMetaFunctions [funcName] = function (object, ...)
+				DFSliderMetaFunctions [funcName] = function(object, ...)
 					local x = loadstring ( "return _G['"..object.slider:GetName().."']:"..funcName.."(...)")
 					return x (...)
 				end
@@ -1202,19 +1135,19 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 	end
 	
 	SliderObject.slider.MyObject = SliderObject
-	SliderObject.slider:SetWidth (w)
-	SliderObject.slider:SetHeight (h)
+	SliderObject.slider:SetWidth(w)
+	SliderObject.slider:SetHeight(h)
 	SliderObject.slider:SetOrientation ("horizontal")
 	SliderObject.slider:SetMinMaxValues (min, max)
-	SliderObject.slider:SetValue (defaultv)
+	SliderObject.slider:SetValue(defaultv)
 	SliderObject.ivalue = defaultv
 
-	SliderObject.slider:SetBackdrop ({edgeFile = "Interface\\Buttons\\UI-SliderBar-Border", edgeSize = 8})
-	SliderObject.slider:SetBackdropColor (0.9, 0.7, 0.7, 1.0)
+	SliderObject.slider:SetBackdrop({edgeFile = "Interface\\Buttons\\UI-SliderBar-Border", edgeSize = 8})
+	SliderObject.slider:SetBackdropColor(0.9, 0.7, 0.7, 1.0)
 
-	SliderObject.thumb = SliderObject.slider:CreateTexture (nil, "artwork")
-	SliderObject.thumb:SetTexture ("Interface\\Buttons\\UI-ScrollBar-Knob")
-	SliderObject.thumb:SetSize (30+(h*0.2), h*1.2)
+	SliderObject.thumb = SliderObject.slider:CreateTexture(nil, "artwork")
+	SliderObject.thumb:SetTexture("Interface\\Buttons\\UI-ScrollBar-Knob")
+	SliderObject.thumb:SetSize(30+(h*0.2), h*1.2)
 	SliderObject.thumb.originalWidth = SliderObject.thumb:GetWidth()
 	SliderObject.thumb.originalHeight =SliderObject.thumb:GetHeight()
 	SliderObject.thumb:SetAlpha (0.7)
@@ -1233,18 +1166,18 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 	end
 	
 	if (SliderObject.useDecimals) then
-		SliderObject.amt:SetText (string.format ("%.2f", amt))
+		SliderObject.amt:SetText(string.format("%.2f", amt))
 	else
-		SliderObject.amt:SetText (math.floor (amt))
+		SliderObject.amt:SetText(math.floor (amt))
 	end
 	
 	SliderObject.amt:SetTextColor (.8, .8, .8, 1)
-	SliderObject.amt:SetPoint ("center", SliderObject.thumb, "center")
+	SliderObject.amt:SetPoint("center", SliderObject.thumb, "center")
 	SliderObject.slider.amt = SliderObject.amt
 
 	SliderObject.previous_value = {defaultv or 0, 0, 0}
 	
-	--> hooks
+	--hooks
 	SliderObject.HookList = {
 		OnEnter = {},
 		OnLeave = {},
@@ -1257,20 +1190,20 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 		OnValueChanged = {},
 	}
 	
-	SliderObject.slider:SetScript ("OnEnter", OnEnter)
-	SliderObject.slider:SetScript ("OnLeave", OnLeave)
-	SliderObject.slider:SetScript ("OnHide", OnHide)
-	SliderObject.slider:SetScript ("OnShow", OnShow)
-	SliderObject.slider:SetScript ("OnValueChanged", OnValueChanged)
-	SliderObject.slider:SetScript ("OnMouseDown", OnMouseDown)
-	SliderObject.slider:SetScript ("OnMouseUp", OnMouseUp)
+	SliderObject.slider:SetScript("OnEnter", OnEnter)
+	SliderObject.slider:SetScript("OnLeave", OnLeave)
+	SliderObject.slider:SetScript("OnHide", OnHide)
+	SliderObject.slider:SetScript("OnShow", OnShow)
+	SliderObject.slider:SetScript("OnValueChanged", OnValueChanged)
+	SliderObject.slider:SetScript("OnMouseDown", OnMouseDown)
+	SliderObject.slider:SetScript("OnMouseUp", OnMouseUp)
 
-	_setmetatable (SliderObject, DFSliderMetaFunctions)
+	setmetatable (SliderObject, DFSliderMetaFunctions)
 	
 	if (with_label) then
-		local label = DF:CreateLabel (SliderObject.slider, with_label, nil, nil, nil, "label", nil, "overlay")
+		local label = DF:CreateLabel(SliderObject.slider, with_label, nil, nil, nil, "label", nil, "overlay")
 		label.text = with_label
-		SliderObject.slider:SetPoint ("left", label.widget, "right", 2, 0)
+		SliderObject.slider:SetPoint("left", label.widget, "right", 2, 0)
 		with_label = label
 		
 		if (label_template) then
@@ -1287,12 +1220,20 @@ function DF:NewSlider (parent, container, name, member, w, h, min, max, step, de
 end
 
 DF.AdjustmentSliderOptions = {
-	width = 120,
+	width = 70,
 	height = 20,
-	speed = 20, --speed is how many pixels the mouse has moved
+	scale_factor = 1,
 }
 
 DF.AdjustmentSliderFunctions = {
+	SetScaleFactor = function(self, scalar)
+		self.options.scale_factor = scalar or 1
+	end,
+
+	GetScaleFactor = function(self, scalar)
+		return self.options.scale_factor
+	end,
+
 	SetCallback = function(self, func)
 		self.callback = func
 	end,
@@ -1322,11 +1263,13 @@ DF.AdjustmentSliderFunctions = {
 			local yDelta = adjustmentSlider.MouseY - mouseY
 
 			if (adjustmentSlider.buttonPressed ~= "center") then
-				if (adjustmentSlider.buttonPressedTime+0.5 < GetTime()) then
+				if (adjustmentSlider.buttonPressedTime + 0.5 < GetTime()) then
+					local scaleResultBy = adjustmentSlider:GetScaleFactor()
 					if (adjustmentSlider.buttonPressed == "left") then
-						DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, -1, 0, true)
+						DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, -1 * scaleResultBy, 0, true)
+
 					elseif (adjustmentSlider.buttonPressed == "right") then
-						DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, 1, 0, true)
+						DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, 1 * scaleResultBy, 0, true)
 					end
 				end
 
@@ -1338,9 +1281,17 @@ DF.AdjustmentSliderFunctions = {
 
 					horizontalValue = DF:MapRangeClamped(-20, 20, -1, 1, xDelta)
 					verticalValue = DF:MapRangeClamped(-20, 20, -1, 1, yDelta)
+
+					local speed = 6 --how fast it moves
+					local mouseDirection = CreateVector2D(mouseX - adjustmentSlider.initialMouseX, mouseY - adjustmentSlider.initialMouseY)
+					local length = DF:MapRangeClamped(-100, 100, -1, 1, mouseDirection:GetLength())
+					mouseDirection:Normalize()
+					mouseDirection:ScaleBy(speed * length)
+					adjustmentSlider.centerArrowArtwork:SetPoint("center", adjustmentSlider.centerButton.widget, "center", mouseDirection:GetXY())
 				end
 
-				DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, horizontalValue, verticalValue, false)
+				local scaleResultBy = adjustmentSlider:GetScaleFactor()
+				DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, horizontalValue * scaleResultBy, verticalValue * scaleResultBy, false)
 
 				adjustmentSlider.MouseX = mouseX
 				adjustmentSlider.MouseY = mouseY
@@ -1355,10 +1306,8 @@ DF.AdjustmentSliderFunctions = {
 		button = button.MyObject
 
 		--change the icon
-		if (button.direction == "left") then
-			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Down]])
-		elseif (button.direction == "right") then
-			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Down]])
+		if (button.direction == "center") then
+			DF:DisableOnEnterScripts()
 		end
 
 		local adjustmentSlider = button:GetParent()
@@ -1368,6 +1317,8 @@ DF.AdjustmentSliderFunctions = {
 		local mouseX, mouseY = GetCursorPosition()
 		adjustmentSlider.MouseX = mouseX
 		adjustmentSlider.MouseY = mouseY
+		adjustmentSlider.initialMouseX = mouseX
+		adjustmentSlider.initialMouseY = mouseY
 
 		adjustmentSlider.buttonPressed = button.direction
 
@@ -1381,10 +1332,8 @@ DF.AdjustmentSliderFunctions = {
 		button = button.MyObject
 
 		--change the icon
-		if (button.direction == "left") then
-			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Up]])
-		elseif (button.direction == "right") then
-			button:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Up]])
+		if (button.direction == "center") then
+			DF:EnableOnEnterScripts()
 		end
 
 		local adjustmentSlider = button:GetParent()
@@ -1398,6 +1347,8 @@ DF.AdjustmentSliderFunctions = {
 				DF.AdjustmentSliderFunctions.RunCallback(adjustmentSlider, 1, 0, true)
 			end
 		end
+
+		adjustmentSlider.centerArrowArtwork:SetPoint("center", adjustmentSlider.centerButton.widget, "center", 0, 0)
 
 		adjustmentSlider:SetScript("OnUpdate", nil)
 	end,
@@ -1422,12 +1373,12 @@ local createAdjustmentSliderFrames = function(parent, options, name)
 	DF:Mixin(adjustmentSlider, DF.OptionsFunctions)
 	DF:Mixin(adjustmentSlider, DF.AdjustmentSliderFunctions)
 	DF:Mixin(adjustmentSlider, DF.PayloadMixin)
+	DF:Mixin(adjustmentSlider, DF.SetPointMixin)
+	--DF:Mixin(adjustmentSlider, DF.FrameMixin)
 
 	adjustmentSlider:BuildOptionsTable(DF.AdjustmentSliderOptions, options)
-
 	adjustmentSlider:SetSize(adjustmentSlider.options.width, adjustmentSlider.options.height)
 
-	--two buttons
 	local leftButton = DF:CreateButton(adjustmentSlider, function()end, 20, 20, "", "left", -1, nil, nil, name .. "LeftButton")
 	local rightButton = DF:CreateButton(adjustmentSlider, function()end, 20, 20, "", "right", 1, nil, nil, name .. "RightButton")
 
@@ -1438,22 +1389,31 @@ local createAdjustmentSliderFrames = function(parent, options, name)
 
 	leftButton:SetPoint("left", adjustmentSlider, "left", 0, 0)
 	rightButton:SetPoint("right", adjustmentSlider, "right", 0, 0)
-	leftButton:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-PrevPage-Up]])
-	rightButton:SetIcon([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Up]])
+
+	leftButton:SetIcon("Minimal_SliderBar_Button_Left", 8, 14)
+	rightButton:SetIcon("Minimal_SliderBar_Button_Right", 8, 14)
+
 	leftButton.direction = "left"
 	rightButton.direction = "right"
 
 	--center button
 	local centerButton = DF:CreateButton(adjustmentSlider, function()end, 20, 20, "", "center", 0, nil, nil, name .. "CenterButton")
-	centerButton:SetPoint("center", adjustmentSlider, "center", 0, 0)
-	centerButton:SetIcon([[Interface\BUTTONS\YellowOrange64_Radial]])
+	centerButton:SetPoint("center", adjustmentSlider, "center", -3, 0)
+	centerButton:SetIcon("Minimal_SliderBar_Button", nil, nil, nil, nil, "transparent")
 	centerButton.direction = "center"
 	centerButton:SetHook("OnMouseDown", DF.AdjustmentSliderFunctions.OnButtonDownkHook)
 	centerButton:SetHook("OnMouseUp", DF.AdjustmentSliderFunctions.OnButtonUpHook)
 
+	local centerArrowArtwork = centerButton:CreateTexture("$parentCenterArrowArtwork", "artwork")
+	centerArrowArtwork:SetAtlas("Minimal_SliderBar_Button")
+	centerArrowArtwork:SetPoint("center", centerButton.widget, "center", 0, 0)
+	centerArrowArtwork:SetSize(16, 16)
+	centerArrowArtwork:SetAlpha(1)
+
 	adjustmentSlider.leftButton = leftButton
 	adjustmentSlider.rightButton = rightButton
 	adjustmentSlider.centerButton = centerButton
+	adjustmentSlider.centerArrowArtwork = centerArrowArtwork
 
 	return adjustmentSlider
 end
@@ -1469,11 +1429,36 @@ function DF:CreateAdjustmentSlider(parent, callback, options, name, ...)
 		DF.SliderCounter = DF.SliderCounter + 1
 
 	elseif (not parent) then
-		return error("Details! FrameWork: parent not found.", 2)
+		return error("DF:CreateAdjustmentSlider(): parent not found.", 2)
 	end
 
 	local ASFrame = createAdjustmentSliderFrames(parent, options, name)
 	ASFrame:SetPayload(...)
 	ASFrame.callback = callback
+
 	return ASFrame
+end
+
+----------------------------------------------------------------------------------------------------------------
+function DF:DisableOnEnterScripts()
+	local ignoreOnEnterZone = DF:CreateOnEnterIgnoreZone()
+	ignoreOnEnterZone:Show()
+end
+
+function DF:EnableOnEnterScripts()
+	local ignoreOnEnterZone = DF:CreateOnEnterIgnoreZone()
+	ignoreOnEnterZone:Hide()
+end
+
+function DF:CreateOnEnterIgnoreZone()
+	if (not _G.DetailsFrameworkIgnoreHoverOverFrame) then
+		local ignoreOnEnterFrame = CreateFrame("frame", "DetailsFrameworkIgnoreHoverOverFrame", UIParent)
+		ignoreOnEnterFrame:SetFrameStrata("TOOLTIP")
+		ignoreOnEnterFrame:SetFrameLevel(9999)
+		ignoreOnEnterFrame:SetAllPoints()
+		ignoreOnEnterFrame:EnableMouse(true)
+		ignoreOnEnterFrame:Hide()
+	end
+
+	return _G.DetailsFrameworkIgnoreHoverOverFrame
 end

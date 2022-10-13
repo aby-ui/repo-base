@@ -8,6 +8,9 @@ local ipairs, sort, strsplit, tonumber, wipe = ipairs, sort, strsplit, tonumber,
 -- WoW API / Variables
 local C_ChallengeMode_GetKeystoneLevelRarityColor = C_ChallengeMode.GetKeystoneLevelRarityColor
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo
+local C_Container_GetContainerItemID = C_Container and C_Container.GetContainerItemID or GetContainerItemID
+local C_Container_GetContainerItemLink = C_Container and C_Container.GetContainerItemLink or GetContainerItemLink
+local C_Container_GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
 local C_MythicPlus_GetRunHistory = C_MythicPlus.GetRunHistory
 local C_MythicPlus_RequestMapInfo = C_MythicPlus.RequestMapInfo
 local C_MythicPlus_GetRewardLevelFromKeystoneLevel = C_MythicPlus.GetRewardLevelFromKeystoneLevel
@@ -15,9 +18,6 @@ local C_WeeklyRewards_GetActivities = C_WeeklyRewards.GetActivities
 local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
 local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
 local CreateFrame = CreateFrame
-local GetContainerItemID = GetContainerItemID
-local GetContainerItemLink = GetContainerItemLink
-local GetContainerNumSlots = GetContainerNumSlots
 local SendChatMessage = SendChatMessage
 
 local StaticPopup_Show = StaticPopup_Show
@@ -115,12 +115,14 @@ function Module:RefreshMythicKeyInfo()
   t.MythicKey = wipe(t.MythicKey or {})
   t.TimewornMythicKey = wipe(t.TimewornMythicKey or {})
   for bagID = 0, 4 do
-    for invID = 1, GetContainerNumSlots(bagID) do
-      local itemID = GetContainerItemID(bagID, invID)
-      if itemID and itemID == 180653 then
-        self:ProcessKey(GetContainerItemLink(bagID, invID), t.MythicKey)
+    for invID = 1, C_Container_GetContainerNumSlots(bagID) do
+      local itemID = C_Container_GetContainerItemID(bagID, invID)
+      if itemID and itemID == 180653 then -- Shadowlands, drop on DF Season 1
+        self:ProcessKey(C_Container_GetContainerItemLink(bagID, invID), t.MythicKey)
+      elseif itemID and itemID == 186159 then -- Dragonflight
+        self:ProcessKey(C_Container_GetContainerItemLink(bagID, invID), t.MythicKey)
       elseif itemID and itemID == 187786 then
-        self:ProcessKey(GetContainerItemLink(bagID, invID), t.TimewornMythicKey)
+        self:ProcessKey(C_Container_GetContainerItemLink(bagID, invID), t.TimewornMythicKey)
       end
     end
   end
@@ -255,7 +257,7 @@ function Module:ExportKeys(index)
 end
 
 StaticPopupDialogs["SAVEDINSTANCES_REPORT_KEYS"] = {
-  preferredIndex = STATICPOPUPS_NUMDIALOGS, -- reduce the chance of UI taint
+  preferredIndex = STATICPOPUP_NUMDIALOGS, -- reduce the chance of UI taint
   text = L["Are you sure you want to report all your keys to %s?"],
   button1 = OKAY,
   button2 = CANCEL,

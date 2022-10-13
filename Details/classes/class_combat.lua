@@ -7,7 +7,7 @@
 --[[global]] DETAILS_TOTALS_ONLYGROUP = true
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _setmetatable = setmetatable -- lua local
 	local _ipairs = ipairs -- lua local
@@ -21,7 +21,7 @@
 	local _GetTime = GetTime
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local combate 	=	_detalhes.combate
 	local container_combatentes = _detalhes.container_combatentes
@@ -37,10 +37,10 @@
 	local _tempo = _GetTime()
 	
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> api functions
+--api functions
 
 	--combat (container type, actor name)
-	_detalhes.call_combate = function (self, class_type, name)
+	_detalhes.call_combate = function(self, class_type, name)
 		local container = self[class_type]
 		local index_mapa = container._NameIndexTable [name]
 		local actor = container._ActorTable [index_mapa]
@@ -202,7 +202,7 @@
 	--[[global]] DETAILS_SEGMENTTYPE_PVP_BATTLEGROUND = 21
 
 	function combate:GetCombatType()
-		--> mythic dungeon
+		--mythic dungeon
 		local isMythicDungeon = is_mythic_dungeon_segment
 		if (isMythicDungeon) then
 			local isMythicDungeonTrash = self.is_mythic_dungeon_trash
@@ -226,19 +226,19 @@
 			end
 		end
 		
-		--> arena
+		--arena
 		local arenaInfo = self.is_arena
 		if (arenaInfo) then
 			return DETAILS_SEGMENTTYPE_PVP_ARENA
 		end
 		
-		--> battleground
+		--battleground
 		local battlegroundInfo = self.is_pvp
 		if (battlegroundInfo) then
 			return DETAILS_SEGMENTTYPE_PVP_BATTLEGROUND
 		end
 		
-		--> dungeon or raid
+		--dungeon or raid
 		local instanceType = self.instance_type
 		
 		if (instanceType == "party") then
@@ -258,7 +258,7 @@
 			end
 		end
 		
-		--> overall data
+		--overall data
 		if (self == _detalhes.tabela_overall) then
 			return DETAILS_SEGMENTTYPE_OVERALL
 		end
@@ -282,7 +282,7 @@
 	--return the combat time in seconds
 	function combate:GetFormatedCombatTime()
 		local time = self:GetCombatTime()
-		local m, s = _math_floor (time/60), _math_floor (time%60)
+		local m, s = _math_floor(time/60), _math_floor(time%60)
 		return m, s
 	end
 	
@@ -322,7 +322,7 @@
 			end
 			
 		elseif (attribute == 3) then
-			if (subAttribute == 5) then --> resources
+			if (subAttribute == 5) then --resources
 				return self.totals.resources or 0
 			end
 			if (onlyGroup) then
@@ -435,7 +435,7 @@
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internals
+--internals
 
 	function combate:CreateNewCombatTable()
 		return combate:NovaTabela()
@@ -446,72 +446,72 @@
 
 		local esta_tabela = {true, true, true, true, true}
 		
-		esta_tabela [1] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_DAMAGE_CLASS, esta_tabela, combatId) --> Damage
-		esta_tabela [2] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_HEAL_CLASS, esta_tabela, combatId) --> Healing
-		esta_tabela [3] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_ENERGY_CLASS, esta_tabela, combatId) --> Energies
-		esta_tabela [4] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_MISC_CLASS, esta_tabela, combatId) --> Misc
-		esta_tabela [5] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_DAMAGE_CLASS, esta_tabela, combatId) --> place holder for customs
+		esta_tabela [1] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_DAMAGE_CLASS, esta_tabela, combatId) --Damage
+		esta_tabela [2] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_HEAL_CLASS, esta_tabela, combatId) --Healing
+		esta_tabela [3] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_ENERGY_CLASS, esta_tabela, combatId) --Energies
+		esta_tabela [4] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_MISC_CLASS, esta_tabela, combatId) --Misc
+		esta_tabela [5] = container_combatentes:NovoContainer (_detalhes.container_type.CONTAINER_DAMAGE_CLASS, esta_tabela, combatId) --place holder for customs
 		
 		_setmetatable (esta_tabela, combate)
 		
 		_detalhes.combat_counter = _detalhes.combat_counter + 1
 		esta_tabela.combat_counter = _detalhes.combat_counter
 		
-		--> try discover if is a pvp combat
+		--try discover if is a pvp combat
 		local who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags = ...
-		if (who_serial) then --> aqui ir� identificar o boss ou o oponente
-			if (alvo_name and _bit_band (alvo_flags, REACTION_HOSTILE) ~= 0) then --> tentando pegar o inimigo pelo alvo
+		if (who_serial) then --aqui ir� identificar o boss ou o oponente
+			if (alvo_name and _bit_band (alvo_flags, REACTION_HOSTILE) ~= 0) then --tentando pegar o inimigo pelo alvo
 				esta_tabela.contra = alvo_name
 				if (_bit_band (alvo_flags, CONTROL_PLAYER) ~= 0) then
-					esta_tabela.pvp = true --> o alvo � da fac��o oposta ou foi dado mind control
+					esta_tabela.pvp = true --o alvo � da fac��o oposta ou foi dado mind control
 				end
-			elseif (who_name and _bit_band (who_flags, REACTION_HOSTILE) ~= 0) then --> tentando pegar o inimigo pelo who caso o mob � quem deu o primeiro hit
+			elseif (who_name and _bit_band (who_flags, REACTION_HOSTILE) ~= 0) then --tentando pegar o inimigo pelo who caso o mob � quem deu o primeiro hit
 				esta_tabela.contra = who_name
 				if (_bit_band (who_flags, CONTROL_PLAYER) ~= 0) then
-					esta_tabela.pvp = true --> o who � da fac��o oposta ou foi dado mind control
+					esta_tabela.pvp = true --o who � da fac��o oposta ou foi dado mind control
 				end
 			else
-				esta_tabela.pvp = true --> se ambos s�o friendly, seria isso um PVP entre jogadores da mesma fac��o?
+				esta_tabela.pvp = true --se ambos s�o friendly, seria isso um PVP entre jogadores da mesma fac��o?
 			end
 		end
 
-		--> start/end time (duration)
+		--start/end time (duration)
 		esta_tabela.data_fim = 0
 		esta_tabela.data_inicio = 0
 		esta_tabela.tempo_start = _tempo
 		
-		--> record deaths
+		--record deaths
 		esta_tabela.last_events_tables = {}
 		
-		--> last events from players
+		--last events from players
 		esta_tabela.player_last_events = {}
 		
-		--> players in the raid
+		--players in the raid
 		esta_tabela.raid_roster = {}
 		esta_tabela.raid_roster_indexed = {}
 		
-		--> frags
+		--frags
 		esta_tabela.frags = {}
 		esta_tabela.frags_need_refresh = false
 		
-		--> alternate power
+		--alternate power
 		esta_tabela.alternate_power = {}
 		
-		--> time data container
+		--time data container
 		esta_tabela.TimeData = _detalhes:TimeDataCreateCombatTables()
 		esta_tabela.PhaseData = {{1, 1}, damage = {}, heal = {}, damage_section = {}, heal_section = {}} --[1] phase number [2] phase started
 		
-		--> for external plugin usage, these tables are guaranteed to be saved with the combat
+		--for external plugin usage, these tables are guaranteed to be saved with the combat
 		esta_tabela.spells_cast_timeline = {}
 		esta_tabela.aura_timeline = {}
 		esta_tabela.cleu_timeline = {}
 		
-		--> cleu events
+		--cleu events
 		esta_tabela.cleu_events = {
 			n = 1 --event counter
 		}
 		
-		--> Skill cache (not used)
+		--Skill cache (not used)
 		esta_tabela.CombatSkillCache = {}
 
 		-- a tabela sem o tempo de inicio � a tabela descartavel do inicio do addon
@@ -531,7 +531,7 @@
 		esta_tabela[4].need_refresh = true
 		esta_tabela[5].need_refresh = true
 		
-		if (_tabela_overall) then --> link � a tabela de combate do overall
+		if (_tabela_overall) then --link � a tabela de combate do overall
 			esta_tabela[1].shadow = _tabela_overall[1]
 			esta_tabela[2].shadow = _tabela_overall[2]
 			esta_tabela[3].shadow = _tabela_overall[3]
@@ -539,49 +539,49 @@
 		end
 
 		esta_tabela.totals = {
-			0, --> dano
-			0, --> cura
-			{--> e_energy
-				[0] = 0, --> mana
-				[1] = 0, --> rage
-				[3] = 0, --> energy (rogues cat)
-				[6] = 0, --> runepower (dk)
+			0, --dano
+			0, --cura
+			{--e_energy
+				[0] = 0, --mana
+				[1] = 0, --rage
+				[3] = 0, --energy (rogues cat)
+				[6] = 0, --runepower (dk)
 				alternatepower = 0,
 			},
-			{--> misc
-				cc_break = 0, --> armazena quantas quebras de CC
-				ress = 0, --> armazena quantos pessoas ele reviveu
-				interrupt = 0, --> armazena quantos interrupt a pessoa deu
-				dispell = 0, --> armazena quantos dispell esta pessoa recebeu
-				dead = 0, --> armazena quantas vezes essa pessia morreu
-				cooldowns_defensive = 0, --> armazena quantos cooldowns a raid usou
-				buff_uptime = 0, --> armazena quantos cooldowns a raid usou
-				debuff_uptime = 0 --> armazena quantos cooldowns a raid usou
+			{--misc
+				cc_break = 0, --armazena quantas quebras de CC
+				ress = 0, --armazena quantos pessoas ele reviveu
+				interrupt = 0, --armazena quantos interrupt a pessoa deu
+				dispell = 0, --armazena quantos dispell esta pessoa recebeu
+				dead = 0, --armazena quantas vezes essa pessia morreu
+				cooldowns_defensive = 0, --armazena quantos cooldowns a raid usou
+				buff_uptime = 0, --armazena quantos cooldowns a raid usou
+				debuff_uptime = 0 --armazena quantos cooldowns a raid usou
 			},
 			
-			--> avoid using this values bellow, they aren't updated by the parser, only on demand by a user interaction.
+			--avoid using this values bellow, they aren't updated by the parser, only on demand by a user interaction.
 				voidzone_damage = 0,
 				frags_total = 0,
-			--> end
+			--end
 		}
 		
 		esta_tabela.totals_grupo = {
-			0, --> dano
-			0, --> cura
-			{--> e_energy
-				[0] = 0, --> mana
-				[1] = 0, --> rage
-				[3] = 0, --> energy (rogues cat)
-				[6] = 0, --> runepower (dk)
+			0, --dano
+			0, --cura
+			{--e_energy
+				[0] = 0, --mana
+				[1] = 0, --rage
+				[3] = 0, --energy (rogues cat)
+				[6] = 0, --runepower (dk)
 				alternatepower = 0,
 			}, 
-			{--> misc
-				cc_break = 0, --> armazena quantas quebras de CC
-				ress = 0, --> armazena quantos pessoas ele reviveu
-				interrupt = 0, --> armazena quantos interrupt a pessoa deu
-				dispell = 0, --> armazena quantos dispell esta pessoa recebeu
-				dead = 0, --> armazena quantas vezes essa oessia morreu		
-				cooldowns_defensive = 0, --> armazena quantos cooldowns a raid usou
+			{--misc
+				cc_break = 0, --armazena quantas quebras de CC
+				ress = 0, --armazena quantos pessoas ele reviveu
+				interrupt = 0, --armazena quantos interrupt a pessoa deu
+				dispell = 0, --armazena quantos dispell esta pessoa recebeu
+				dead = 0, --armazena quantas vezes essa oessia morreu		
+				cooldowns_defensive = 0, --armazena quantos cooldowns a raid usou
 				buff_uptime = 0,
 				debuff_uptime = 0
 			}
@@ -591,7 +591,7 @@
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> core
+--core
 
 	function combate:CreateLastEventsTable (player_name)
 		local t = {}
@@ -606,7 +606,7 @@
 	--trava o tempo dos jogadores ap�s o t�rmino do combate.
 	function combate:TravarTempos()
 		if (self [1]) then
-			for _, jogador in _ipairs (self [1]._ActorTable) do --> damage
+			for _, jogador in _ipairs(self [1]._ActorTable) do --damage
 				if (jogador:Iniciar()) then -- retorna se ele esta com o dps ativo
 					jogador:TerminarTempo()
 					jogador:Iniciar (false) --trava o dps do jogador
@@ -621,7 +621,7 @@
 			end
 		end
 		if (self [2]) then
-			for _, jogador in _ipairs (self [2]._ActorTable) do --> healing
+			for _, jogador in _ipairs(self [2]._ActorTable) do --healing
 				if (jogador:Iniciar()) then -- retorna se ele esta com o dps ativo
 					jogador:TerminarTempo()
 					jogador:Iniciar (false) --trava o dps do jogador
@@ -664,57 +664,57 @@
 		tabela_combate.shadow = nil
 	end
 
-	combate.__sub = function (combate1, combate2)
+	combate.__sub = function(combate1, combate2)
 
 		if (combate1 ~= _detalhes.tabela_overall) then
 			return
 		end
 
-		--> sub dano
-			for index, actor_T2 in _ipairs (combate2[1]._ActorTable) do
+		--sub dano
+			for index, actor_T2 in _ipairs(combate2[1]._ActorTable) do
 				local actor_T1 = combate1[1]:PegarCombatente (actor_T2.serial, actor_T2.nome, actor_T2.flag_original, true)
 				actor_T1 = actor_T1 - actor_T2
 				actor_T2:subtract_total (combate1)
 			end
 			combate1 [1].need_refresh = true
 			
-		--> sub heal
-			for index, actor_T2 in _ipairs (combate2[2]._ActorTable) do
+		--sub heal
+			for index, actor_T2 in _ipairs(combate2[2]._ActorTable) do
 				local actor_T1 = combate1[2]:PegarCombatente (actor_T2.serial, actor_T2.nome, actor_T2.flag_original, true)
 				actor_T1 = actor_T1 - actor_T2
 				actor_T2:subtract_total (combate1)
 			end
 			combate1 [2].need_refresh = true
 			
-		--> sub energy
-			for index, actor_T2 in _ipairs (combate2[3]._ActorTable) do
+		--sub energy
+			for index, actor_T2 in _ipairs(combate2[3]._ActorTable) do
 				local actor_T1 = combate1[3]:PegarCombatente (actor_T2.serial, actor_T2.nome, actor_T2.flag_original, true)
 				actor_T1 = actor_T1 - actor_T2
 				actor_T2:subtract_total (combate1)
 			end
 			combate1 [3].need_refresh = true
 			
-		--> sub misc
-			for index, actor_T2 in _ipairs (combate2[4]._ActorTable) do
+		--sub misc
+			for index, actor_T2 in _ipairs(combate2[4]._ActorTable) do
 				local actor_T1 = combate1[4]:PegarCombatente (actor_T2.serial, actor_T2.nome, actor_T2.flag_original, true)
 				actor_T1 = actor_T1 - actor_T2
 				actor_T2:subtract_total (combate1)
 			end
 			combate1 [4].need_refresh = true
 
-		--> reduz o tempo 
+		--reduz o tempo 
 			combate1.start_time = combate1.start_time + combate2:GetCombatTime()
 			
-		--> apaga as mortes da luta diminuida
-			local amt_mortes =  #combate2.last_events_tables --> quantas mortes teve nessa luta
+		--apaga as mortes da luta diminuida
+			local amt_mortes =  #combate2.last_events_tables --quantas mortes teve nessa luta
 			if (amt_mortes > 0) then
 				for i = #combate1.last_events_tables, #combate1.last_events_tables-amt_mortes, -1 do 
 					_table_remove (combate1.last_events_tables, #combate1.last_events_tables)
 				end
 			end
 			
-		--> frags
-			for fragName, fragAmount in pairs (combate2.frags) do 
+		--frags
+			for fragName, fragAmount in pairs(combate2.frags) do 
 				if (fragAmount) then
 					if (combate1.frags [fragName]) then
 						combate1.frags [fragName] = combate1.frags [fragName] - fragAmount
@@ -725,9 +725,9 @@
 			end
 			combate1.frags_need_refresh = true
 		
-		--> alternate power
+		--alternate power
 			local overallPowerTable = combate1.alternate_power
-			for actorName, powerTable in pairs (combate2.alternate_power) do 
+			for actorName, powerTable in pairs(combate2.alternate_power) do 
 				local power = overallPowerTable [actorName]
 				if (power) then
 					power.total = power.total - powerTable.total
@@ -739,7 +739,7 @@
 		
 	end
 
-	combate.__add = function (combate1, combate2)
+	combate.__add = function(combate1, combate2)
 
 		local all_containers = {combate2 [class_type_dano]._ActorTable, combate2 [class_type_cura]._ActorTable, combate2 [class_type_e_energy]._ActorTable, combate2 [class_type_misc]._ActorTable}
 		local custom_combat
@@ -747,8 +747,8 @@
 			custom_combat = combate1
 		end
 		
-		for class_type, actor_container in ipairs (all_containers) do
-			for _, actor in ipairs (actor_container) do
+		for class_type, actor_container in ipairs(all_containers) do
+			for _, actor in ipairs(actor_container) do
 				local shadow
 				
 				if (class_type == class_type_dano) then
@@ -767,9 +767,9 @@
 			end
 		end
 		
-		--> alternate power
+		--alternate power
 			local overallPowerTable = combate1.alternate_power
-			for actorName, powerTable in pairs (combate2.alternate_power) do 
+			for actorName, powerTable in pairs(combate2.alternate_power) do 
 				local power = overallPowerTable [actorName]
 				if (not power) then
 					power = combate1:CreateAlternatePowerTable (actorName)

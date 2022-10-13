@@ -6,15 +6,15 @@ local module = ExRT:New("AutoLogging",ExRT.L.Logging)
 local ELib,L = ExRT.lib,ExRT.L
 
 module.db.minRaidMapID = 1861
-module.db.minPartyMapID = 1754
+--module.db.minPartyMapID = 1754
+module.db.minPartyMapID = 959	--Since stupid overuse old content for m+
 
 module.db.mapsToLog = {}
 module.db.mapsToLog_5ppl = {
 	[1594] = true,	--MOTHERLODE
-    [2097] = true,  --9.27 Mechagon --no need
-    [1208] = true,   --9.27 Grimrail
-    [1195] = true,   --9.27 Irondock
-    [1651] = true,   --9.27 Karazan
+	[1208] = true, -- Grimrail Depot
+	[1195] = true, -- Iron Docks
+	[1651] = true, -- Return to Karazhan
 }
 
 function module.options:Load()

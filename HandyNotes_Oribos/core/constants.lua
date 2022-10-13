@@ -70,6 +70,7 @@ constants.defaults = {
         fmaster_waypoint = false,
         fmaster_waypoint_dropdown = 1,
         easy_waypoint = true,
+        easy_waypoint_dropdown = 1,
 
         force_nodes = false,
         show_prints = false,
@@ -108,8 +109,8 @@ constants.icongroup = {
     "zonegateway"
 }
 
-local left, right, top, bottom = GetObjectIconTextureCoords("4772") --MagePortalAlliance
-local left2, right2, top2, bottom2 = GetObjectIconTextureCoords("4773") --MagePortalHorde
+local left, right, top, bottom = GetObjectIconTextureCoords(4772) --MagePortalAlliance
+local left2, right2, top2, bottom2 = GetObjectIconTextureCoords(4773) --MagePortalHorde
 
 constants.icon = {
     portal = {

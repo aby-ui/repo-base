@@ -7,6 +7,7 @@ local time, pairs, ipairs, tonumber, floor = time, pairs, ipairs, tonumber, floo
 -- WoW API / Variables
 local C_QuestLog_GetBountiesForMapID = C_QuestLog.GetBountiesForMapID
 local C_QuestLog_GetTitleForQuestID = C_QuestLog.GetTitleForQuestID
+local C_QuestLog_IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
 local C_TaskQuest_GetQuestTimeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes
 local GetNumQuestLogRewardCurrencies = GetNumQuestLogRewardCurrencies
 local GetNumQuestLogRewards = GetNumQuestLogRewards
@@ -14,7 +15,6 @@ local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardInfo = GetQuestLogRewardInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
-local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 local QuestUtils_GetBestQualityItemRewardIndex = QuestUtils_GetBestQualityItemRewardIndex
 
 local Emissaries = {
@@ -63,7 +63,7 @@ function Module:QUEST_LOG_UPDATE()
     if not SI.db.Emissary.Expansion[expansionLevel] then SI.db.Emissary.Expansion[expansionLevel] = {} end
     local currExpansion = SI.db.Emissary.Expansion[expansionLevel]
     if not t.Emissary[expansionLevel] then t.Emissary[expansionLevel] = {} end
-    if IsQuestFlaggedCompleted(tbl.questID) then
+    if C_QuestLog_IsQuestFlaggedCompleted(tbl.questID) then
       t.Emissary[expansionLevel].unlocked = true
       if not t.Emissary[expansionLevel].days then t.Emissary[expansionLevel].days = {} end
       local BountyQuest = C_QuestLog_GetBountiesForMapID(tbl.UiMapID)

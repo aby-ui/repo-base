@@ -1,36 +1,26 @@
 
-local DF = _G ["DetailsFramework"]
-if (not DF or not DetailsFrameworkCanLoad) then
-	return 
+local detailsFramework = _G["DetailsFramework"]
+if (not detailsFramework or not DetailsFrameworkCanLoad) then
+	return
 end
 
 local _
-local _rawset = rawset --> lua local
-local _rawget = rawget --> lua local
-local _setmetatable = setmetatable --> lua local
-local _unpack = unpack --> lua local
-local _type = type --> lua local
-local _math_floor = math.floor --> lua local
-local loadstring = loadstring --> lua local
-
-local cleanfunction = function() end
 local APIImageFunctions = false
 
 do
 	local metaPrototype = {
 		WidgetType = "image",
-		SetHook = DF.SetHook,
-		RunHooksForWidget = DF.RunHooksForWidget,
-
-		dversion = DF.dversion,
+		SetHook = detailsFramework.SetHook,
+		RunHooksForWidget = detailsFramework.RunHooksForWidget,
+		dversion = detailsFramework.dversion,
 	}
 
 	--check if there's a metaPrototype already existing
-	if (_G[DF.GlobalWidgetControlNames["image"]]) then
+	if (_G[detailsFramework.GlobalWidgetControlNames["image"]]) then
 		--get the already existing metaPrototype
-		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["image"]]
+		local oldMetaPrototype = _G[detailsFramework.GlobalWidgetControlNames["image"]]
 		--check if is older
-		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
+		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < detailsFramework.dversion) ) then
 			--the version is older them the currently loading one
 			--copy the new values into the old metatable
 			for funcName, _ in pairs(metaPrototype) do
@@ -39,277 +29,319 @@ do
 		end
 	else
 		--first time loading the framework
-		_G[DF.GlobalWidgetControlNames ["image"]] = metaPrototype
+		_G[detailsFramework.GlobalWidgetControlNames["image"]] = metaPrototype
 	end
 end
 
-local ImageMetaFunctions = _G[DF.GlobalWidgetControlNames ["image"]]
+local ImageMetaFunctions = _G[detailsFramework.GlobalWidgetControlNames["image"]]
+
+detailsFramework:Mixin(ImageMetaFunctions, detailsFramework.SetPointMixin)
 
 ------------------------------------------------------------------------------------------------------------
---> metatables
+--metatables
 
-	ImageMetaFunctions.__call = function (_table, value)
-		return self.image:SetTexture (value)
+	ImageMetaFunctions.__call = function(object, value)
+		return object.image:SetTexture(value)
 	end
-	
+
 ------------------------------------------------------------------------------------------------------------
---> members
+--members
 
-	--> shown
-	local gmember_shown = function (_object)
-		return _object:IsShown()
+	--frame width
+	local gmember_width = function(object)
+		return object.image:GetWidth()
 	end
-	--> frame width
-	local gmember_width = function (_object)
-		return _object.image:GetWidth()
+
+	--frame height
+	local gmember_height = function(object)
+		return object.image:GetHeight()
 	end
-	--> frame height
-	local gmember_height = function (_object)
-		return _object.image:GetHeight()
+
+	--texture
+	local gmember_texture = function(object)
+		return object.image:GetTexture()
 	end
-	--> texture
-	local gmember_texture = function (_object)
-		return _object.image:GetTexture()
+
+	--alpha
+	local gmember_alpha = function(object)
+		return object.image:GetAlpha()
 	end
-	--> alpha
-	local gmember_alpha = function (_object)
-		return _object.image:GetAlpha()
+
+	--saturation
+	local gmember_saturation = function(object)
+		return object.image:GetDesaturated()
+	end
+
+	--atlas
+	local gmember_atlas = function(object)
+		return object.image:GetAtlas()
+	end
+
+	--texcoords
+	local gmember_texcoord = function(object)
+		return object.image:GetTexCoord()
 	end
 
 	ImageMetaFunctions.GetMembers = ImageMetaFunctions.GetMembers or {}
-	ImageMetaFunctions.GetMembers ["shown"] = gmember_shown
-	ImageMetaFunctions.GetMembers ["alpha"] = gmember_alpha
-	ImageMetaFunctions.GetMembers ["width"] = gmember_width
-	ImageMetaFunctions.GetMembers ["height"] = gmember_height
-	ImageMetaFunctions.GetMembers ["texture"] = gmember_texture
+	detailsFramework:Mixin(ImageMetaFunctions.GetMembers, detailsFramework.DefaultMetaFunctionsGet)
+	detailsFramework:Mixin(ImageMetaFunctions.GetMembers, detailsFramework.LayeredRegionMetaFunctionsGet)
 
-	ImageMetaFunctions.__index = function (_table, _member_requested)
+	ImageMetaFunctions.GetMembers["alpha"] = gmember_alpha
+	ImageMetaFunctions.GetMembers["width"] = gmember_width
+	ImageMetaFunctions.GetMembers["height"] = gmember_height
+	ImageMetaFunctions.GetMembers["texture"] = gmember_texture
+	ImageMetaFunctions.GetMembers["blackwhite"] = gmember_saturation
+	ImageMetaFunctions.GetMembers["desaturated"] = gmember_saturation
+	ImageMetaFunctions.GetMembers["atlas"] = gmember_atlas
+	ImageMetaFunctions.GetMembers["texcoord"] = gmember_texcoord
 
-		local func = ImageMetaFunctions.GetMembers [_member_requested]
+	ImageMetaFunctions.__index = function(object, key)
+		local func = ImageMetaFunctions.GetMembers[key]
 		if (func) then
-			return func (_table, _member_requested)
+			return func(object, key)
 		end
-		
-		local fromMe = _rawget (_table, _member_requested)
+
+		local fromMe = rawget(object, key)
 		if (fromMe) then
 			return fromMe
 		end
-		
-		return ImageMetaFunctions [_member_requested]
+
+		return ImageMetaFunctions[key]
 	end
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	--> show
-	local smember_show = function (_object, _value)
-		if (_value) then
-			return _object:Show()
+	--texture
+	local smember_texture = function(object, value)
+		if (type(value) == "table") then
+			local red, green, blue, alpha = detailsFramework:ParseColors(value)
+			object.image:SetTexture(red, green, blue, alpha)
 		else
-			return _object:Hide()
-		end
-	end
-	--> hide
-	local smember_hide = function (_object, _value)
-		if (not _value) then
-			return _object:Show()
-		else
-			return _object:Hide()
-		end
-	end
-	--> texture
-	local smember_texture = function (_object, _value)
-		if (type (_value) == "table") then
-			local r, g, b, a = DF:ParseColors (_value)
-			_object.image:SetTexture (r, g, b, a or 1)
-		else
-			if (DF:IsHtmlColor (_value)) then
-				local r, g, b, a = DF:ParseColors (_value)
-				_object.image:SetTexture (r, g, b, a or 1)
+			if (detailsFramework:IsHtmlColor(value)) then
+				local red, green, blue, alpha = detailsFramework:ParseColors(value)
+				object.image:SetTexture(red, green, blue, alpha)
 			else
-				_object.image:SetTexture (_value)
+				object.image:SetTexture(value)
 			end
 		end
 	end
-	--> width
-	local smember_width = function (_object, _value)
-		return _object.image:SetWidth (_value)
+
+	--width
+	local smember_width = function(object, value)
+		return object.image:SetWidth(value)
 	end
-	--> height
-	local smember_height = function (_object, _value)
-		return _object.image:SetHeight (_value)
+
+	--height
+	local smember_height = function(object, value)
+		return object.image:SetHeight(value)
 	end
-	--> alpha
-	local smember_alpha = function (_object, _value)
-		return _object.image:SetAlpha (_value)
-	end	
-	--> color
-	local smember_color = function (_object, _value)
-		local r, g, b, a = DF:ParseColors (_value)
-		_object.image:SetColorTexture (r, g, b, a or 1)
+
+	--alpha
+	local smember_alpha = function(object, value)
+		return object.image:SetAlpha(value)
 	end
-	--> vertex color
-	local smember_vertexcolor = function (_object, _value)
-		local r, g, b, a = DF:ParseColors (_value)
-		_object.image:SetVertexColor (r, g, b, a or 1)
-	end	
-	--> desaturated
-	local smember_desaturated = function (_object, _value)
-		if (_value) then
-			_object:SetDesaturated (true)
+
+	--color
+	local smember_color = function(object, value)
+		local red, green, blue, alpha = detailsFramework:ParseColors(value)
+		object.image:SetColorTexture(red, green, blue, alpha)
+	end
+
+	--vertex color
+	local smember_vertexcolor = function(object, value)
+		local red, green, blue, alpha = detailsFramework:ParseColors(value)
+		object.image:SetVertexColor(red, green, blue, alpha)
+	end
+
+	--desaturated
+	local smember_desaturated = function(object, value)
+		if (value) then
+			object:SetDesaturated(true)
 		else
-			_object:SetDesaturated (false)
+			object:SetDesaturated(false)
 		end
 	end
-	--> texcoords
-	local smember_texcoord = function (_object, _value)
-		if (_value) then
-			_object:SetTexCoord (unpack (_value))
+
+	--texcoords
+	local smember_texcoord = function(object, value)
+		if (value) then
+			object:SetTexCoord(unpack(value))
 		else
-			_object:SetTexCoord (0, 1, 0, 1)
+			object:SetTexCoord(0, 1, 0, 1)
+		end
+	end
+
+	--atlas
+	local smember_atlas = function(object, value)
+		if (value) then
+			object:SetAtlas(value)
+		end
+	end
+
+	--gradient
+	local smember_gradient = function(object, value)
+		if (type(value) == "table" and value.gradient and value.fromColor and value.toColor) then
+			object.image:SetColorTexture(1, 1, 1, 1)
+			local fromColor = detailsFramework:FormatColor("tablemembers", value.fromColor)
+			local toColor = detailsFramework:FormatColor("tablemembers", value.toColor)
+			object.image:SetGradient(value.gradient, fromColor, toColor)
+		else
+			error("texture.gradient expect a table{gradient = 'gradient type', fromColor = 'color', toColor = 'color'}")
 		end
 	end
 
 	ImageMetaFunctions.SetMembers = ImageMetaFunctions.SetMembers or {}
-	ImageMetaFunctions.SetMembers ["show"] = smember_show
-	ImageMetaFunctions.SetMembers ["hide"] = smember_hide
-	ImageMetaFunctions.SetMembers ["alpha"] = smember_alpha
-	ImageMetaFunctions.SetMembers ["width"] = smember_width
-	ImageMetaFunctions.SetMembers ["height"] = smember_height
-	ImageMetaFunctions.SetMembers ["texture"] = smember_texture
-	ImageMetaFunctions.SetMembers ["texcoord"] = smember_texcoord
-	ImageMetaFunctions.SetMembers ["color"] = smember_color
-	ImageMetaFunctions.SetMembers ["vertexcolor"] = smember_vertexcolor
-	ImageMetaFunctions.SetMembers ["blackwhite"] = smember_desaturated
+	detailsFramework:Mixin(ImageMetaFunctions.SetMembers, detailsFramework.DefaultMetaFunctionsSet)
+	detailsFramework:Mixin(ImageMetaFunctions.SetMembers, detailsFramework.LayeredRegionMetaFunctionsSet)
 
-	ImageMetaFunctions.__newindex = function (_table, _key, _value)
-		local func = ImageMetaFunctions.SetMembers [_key]
+	ImageMetaFunctions.SetMembers["alpha"] = smember_alpha
+	ImageMetaFunctions.SetMembers["width"] = smember_width
+	ImageMetaFunctions.SetMembers["height"] = smember_height
+	ImageMetaFunctions.SetMembers["texture"] = smember_texture
+	ImageMetaFunctions.SetMembers["texcoord"] = smember_texcoord
+	ImageMetaFunctions.SetMembers["color"] = smember_color
+	ImageMetaFunctions.SetMembers["vertexcolor"] = smember_vertexcolor
+	ImageMetaFunctions.SetMembers["blackwhite"] = smember_desaturated
+	ImageMetaFunctions.SetMembers["desaturated"] = smember_desaturated
+	ImageMetaFunctions.SetMembers["atlas"] = smember_atlas
+	ImageMetaFunctions.SetMembers["gradient"] = smember_gradient
+
+	ImageMetaFunctions.__newindex = function(object, key, value)
+		local func = ImageMetaFunctions.SetMembers[key]
 		if (func) then
-			return func (_table, _value)
+			return func(object, value)
 		else
-			return _rawset (_table, _key, _value)
+			return rawset(object, key, value)
 		end
 	end
-	
-------------------------------------------------------------------------------------------------------------
---> methods
---> show & hide
-	function ImageMetaFunctions:IsShown()
-		return self.image:IsShown()
-	end
-	function ImageMetaFunctions:Show()
-		return self.image:Show()
-	end
-	function ImageMetaFunctions:Hide()
-		return self.image:Hide()
-	end
-	
--- setpoint
-	function ImageMetaFunctions:SetPoint (v1, v2, v3, v4, v5)
-		v1, v2, v3, v4, v5 = DF:CheckPoints (v1, v2, v3, v4, v5, self)
-		if (not v1) then
-			print ("Invalid parameter for SetPoint")
-			return
-		end
-		return self.widget:SetPoint (v1, v2, v3, v4, v5)
-	end
-
--- sizes
-	function ImageMetaFunctions:SetSize (w, h)
-		if (w) then
-			self.image:SetWidth (w)
-		end
-		if (h) then
-			return self.image:SetHeight (h)
-		end
-	end
-	
-------------------------------------------------------------------------------------------------------------
---> scripts
 
 ------------------------------------------------------------------------------------------------------------
---> object constructor
-
-function DF:CreateImage (parent, texture, w, h, layer, coords, member, name)
-	return DF:NewImage (parent, texture, w, h, layer, coords, member, name)
-end
-
-function DF:NewImage (parent, texture, w, h, layer, coords, member, name)
-
-	if (not parent) then
-		return error ("Details! FrameWork: parent not found.", 2)
-	end
-	
-	if (not name) then
-		name = "DetailsFrameworkPictureNumber" .. DF.PictureNameCounter
-		DF.PictureNameCounter = DF.PictureNameCounter + 1
-	end
-	
-	if (name:find ("$parent")) then
-		local parentName = DF.GetParentName (parent)
-		name = name:gsub ("$parent", parentName)
-	end
-	
-	local ImageObject = {type = "image", dframework = true}
-
-	if (member) then
-		parent [member] = ImageObject
-	end
-	
-	if (parent.dframework) then
-		parent = parent.widget
+--methods
+	--size
+	function ImageMetaFunctions:SetSize(width, height)
+		if (width) then
+			self.image:SetWidth(width)
+		end
+		if (height) then
+			return self.image:SetHeight(height)
+		end
 	end
 
-	texture = texture or ""
-	
-	ImageObject.image = parent:CreateTexture (name, layer or "OVERLAY")
-	ImageObject.widget = ImageObject.image
-	DF:Mixin (ImageObject.image, DF.WidgetFunctions)
-	
-	if (not APIImageFunctions) then
-		APIImageFunctions = true
-		local idx = getmetatable (ImageObject.image).__index
-		for funcName, funcAddress in pairs (idx) do 
-			if (not ImageMetaFunctions [funcName]) then
-				ImageMetaFunctions [funcName] = function (object, ...)
-					local x = loadstring ( "return _G['"..object.image:GetName().."']:"..funcName.."(...)")
-					return x (...)
+	function ImageMetaFunctions:SetGradient(gradientType, fromColor, toColor)
+		fromColor = detailsFramework:FormatColor("tablemembers", fromColor)
+		toColor = detailsFramework:FormatColor("tablemembers", toColor)
+		self.image:SetGradient(gradientType, fromColor, toColor)
+	end
+
+------------------------------------------------------------------------------------------------------------
+--object constructor
+
+	function detailsFramework:CreateTexture(parent, texture, width, height, layer, coords, member, name)
+		return detailsFramework:NewImage(parent, texture, width, height, layer, coords, member, name)
+	end
+
+	function detailsFramework:CreateImage(parent, texture, width, height, layer, coords, member, name)
+		return detailsFramework:NewImage(parent, texture, width, height, layer, coords, member, name)
+	end
+
+	function detailsFramework:NewImage(parent, texture, width, height, layer, texCoord, member, name)
+		if (not parent) then
+			return error("DetailsFrameWork: NewImage() parent not found.", 2)
+		end
+
+		if (not name) then
+			name = "DetailsFrameworkPictureNumber" .. detailsFramework.PictureNameCounter
+			detailsFramework.PictureNameCounter = detailsFramework.PictureNameCounter + 1
+		end
+
+		if (name:find("$parent")) then
+			local parentName = detailsFramework.GetParentName(parent)
+			name = name:gsub("$parent", parentName)
+		end
+
+		local ImageObject = {type = "image", dframework = true}
+
+		if (member) then
+			parent[member] = ImageObject
+		end
+
+		if (parent.dframework) then
+			parent = parent.widget
+		end
+
+		texture = texture or ""
+
+		ImageObject.image = parent:CreateTexture(name, layer or "overlay")
+		ImageObject.widget = ImageObject.image
+
+		detailsFramework:Mixin(ImageObject.image, detailsFramework.WidgetFunctions)
+
+		if (not APIImageFunctions) then
+			APIImageFunctions = true
+			local idx = getmetatable(ImageObject.image).__index
+			for funcName, funcAddress in pairs(idx) do
+				if (not ImageMetaFunctions[funcName]) then
+					ImageMetaFunctions[funcName] = function(object, ...)
+						local x = loadstring( "return _G['" .. object.image:GetName() .. "']:" .. funcName .. "(...)")
+						return x(...)
+					end
 				end
 			end
 		end
-	end	
-	
-	ImageObject.image.MyObject = ImageObject
 
-	if (w) then
-		ImageObject.image:SetWidth(w)
-	end
-	if (h) then
-		ImageObject.image:SetHeight(h)
-	end
+		ImageObject.image.MyObject = ImageObject
 
-	if (texture) then
-		if (type (texture) == "table") then
-			local r, g, b = DF:ParseColors(texture)
-			ImageObject.image:SetColorTexture(r,g,b)
-			
-		else
-			if (DF:IsHtmlColor (texture)) then
-				local r, g, b = DF:ParseColors(texture)
-				ImageObject.image:SetColorTexture(r, g, b)
+		if (width) then
+			ImageObject.image:SetWidth(width)
+		end
+		if (height) then
+			ImageObject.image:SetHeight(height)
+		end
+
+		if (texture) then
+			if (type(texture) == "table") then
+				if (texture.gradient) then
+					if (detailsFramework.IsDragonflight()) then
+						ImageObject.image:SetColorTexture(1, 1, 1, 1)
+						local fromColor = detailsFramework:FormatColor("tablemembers", texture.fromColor)
+						local toColor = detailsFramework:FormatColor("tablemembers", texture.toColor)
+						ImageObject.image:SetGradient(texture.gradient, fromColor, toColor)
+					else
+						local fromR, fromG, fromB, fromA = detailsFramework:ParseColors(texture.fromColor)
+						local toR, toG, toB, toA = detailsFramework:ParseColors(texture.toColor)
+						ImageObject.image:SetColorTexture(1, 1, 1, 1)
+						ImageObject.image:SetGradientAlpha(texture.gradient, fromR, fromG, fromB, fromA, toR, toG, toB, toA)
+					end
+				else
+					local r, g, b, a = detailsFramework:ParseColors(texture)
+					ImageObject.image:SetColorTexture(r, g, b, a)
+				end
+
+			elseif (type(texture) == "string") then
+				local isAtlas = C_Texture.GetAtlasInfo(texture)
+				if (isAtlas) then
+					ImageObject.image:SetAtlas(texture)
+				else
+					if (detailsFramework:IsHtmlColor(texture)) then
+						local r, g, b = detailsFramework:ParseColors(texture)
+						ImageObject.image:SetColorTexture(r, g, b)
+					else
+						ImageObject.image:SetTexture(texture)
+					end
+				end
 			else
 				ImageObject.image:SetTexture(texture)
 			end
 		end
+
+		if (texCoord and type(texCoord) == "table" and texCoord[4]) then
+			ImageObject.image:SetTexCoord(unpack(texCoord))
+		end
+
+		ImageObject.HookList = {
+		}
+
+		setmetatable(ImageObject, ImageMetaFunctions)
+
+		return ImageObject
 	end
-	
-	if (coords and type (coords) == "table" and coords [4]) then
-		ImageObject.image:SetTexCoord(unpack (coords))
-	end
-	
-	ImageObject.HookList = {
-	}
-	
-	setmetatable (ImageObject, ImageMetaFunctions)
-	
-	return ImageObject
-end

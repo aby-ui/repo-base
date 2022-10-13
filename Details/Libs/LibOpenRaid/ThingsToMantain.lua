@@ -1,8 +1,47 @@
 
 --data which main need maintenance over time
 
+
 if (not LIB_OPEN_RAID_CAN_LOAD) then
+	if (not LIB_OPEN_RAID_COOLDOWNS_INFO) then
+		--the lib isn't loading in WotLK, some addons break due to this table not being initialized
+		LIB_OPEN_RAID_COOLDOWNS_INFO = {}
+		LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {}
+	end
 	return
+end
+
+--alert the user that something went wrong
+C_Timer.After(10, function()
+	if (not LIB_OPEN_RAID_DATABASE_LOADED) then
+		print("Details! > LibOpenRaid failed to load, check BugSack for errors and report.")
+	end
+end)
+
+local versionString, revision, launchDate, gameVersion = GetBuildInfo()
+
+local isExpansion_Dragonflight = function()
+	if (gameVersion >= 100000) then
+		return true
+	end
+end
+
+local isExpansion_Shadowlands = function()
+    if (gameVersion < 100000 and gameVersion >= 90000) then
+        return true
+    end
+end
+
+local isExpansion_LichKing = function()
+    if (gameVersion < 40000 and gameVersion >= 30000) then
+        return true
+    end
+end
+
+local isExpansion_Vanilla = function()
+    if (gameVersion < 20000) then
+        return true
+    end
 end
 
 --localization
@@ -78,62 +117,94 @@ elseif (gameLanguage == "zhTW") then
 	L["STRING_CRITICAL_ONLY"]  = "致命"
 end
 
-LIB_OPEN_RAID_MYTHICKEYSTONE_ITEMID = 180653
 
-LIB_OPEN_RAID_BLOODLUST = {
-	[2825] = true, --bloodlust
-	[32182] = true, --heroism
-	[80353] = true, --timewarp
-	[90355] = true, --ancient hysteria
-	[309658] = true, --current exp drums
-}
+LIB_OPEN_RAID_FOOD_BUFF = {} --default
+LIB_OPEN_RAID_FLASK_BUFF = {} --default
 
-LIB_OPEN_RAID_AUGMENTATED_RUNE = 347901
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Wrath of the Lich King
 
-LIB_OPEN_RAID_COVENANT_ICONS = {
-	[[Interface\ICONS\UI_Sigil_Kyrian]], --kyrian
-	[[Interface\ICONS\UI_Sigil_Venthyr]], --venthyr
-	[[Interface\ICONS\UI_Sigil_NightFae]], --nightfae
-	[[Interface\ICONS\UI_Sigil_Necrolord]], --necrolords
-}
+if (isExpansion_LichKing()) then
+	LIB_OPEN_RAID_BLOODLUST = {
+		[2825] = true, --bloodlust
+		[32182] = true, --heroism
+		[80353] = true, --timewarp
+		[90355] = true, --ancient hysteria
+		[309658] = true, --current exp drums
+	}
 
-LIB_OPEN_RAID_MELEE_SPECS = {
-	[251] = "DEATHKNIGHT",
-	[252] = "DEATHKNIGHT",
-	[577] = "DEMONHUNTER",
-	[103] = "DRUID",
-	--[255] = "Survival", --not in the list due to the long interrupt time
-	[269] = "MONK",
-	[70] = "PALADIN",
-	[259] = "ROGUE",
-	[260] = "ROGUE",
-	[261] = "ROGUE",
-	[263] = "SHAMAN",
-	[71] = "WARRIOR",
-	[72] = "WARRIOR",
-}
+	--which gear slots can be enchanted on the latest retail version of the game
+	--when the value is a number, the slot only receives enchants for a specific attribute
+	LIB_OPEN_RAID_ENCHANT_SLOTS = {
+		--[INVSLOT_NECK] = true,
+		[INVSLOT_BACK] = true, --for all
+		[INVSLOT_CHEST] = true, --for all
+		[INVSLOT_FINGER1] = true, --for all
+		[INVSLOT_FINGER2] = true, --for all
+		[INVSLOT_MAINHAND] = true, --for all
 
---which gear slots can be enchanted on the latest retail version of the game
---when the value is a number, the slot only receives enchants for a specific attribute
-LIB_OPEN_RAID_ENCHANT_SLOTS = {
-    --[INVSLOT_NECK] = true,
+		[INVSLOT_FEET] = 2, --agility only
+		[INVSLOT_WRIST] = 1, --intellect only
+		[INVSLOT_HAND] = 3, --strenth only
+	}
 
-    [INVSLOT_BACK] = true, --for all
-    [INVSLOT_CHEST] = true, --for all
-	[INVSLOT_FINGER1] = true, --for all
-    [INVSLOT_FINGER2] = true, --for all
-    [INVSLOT_MAINHAND] = true, --for all
+	LIB_OPEN_RAID_MYTHICKEYSTONE_ITEMID = 180653
+	LIB_OPEN_RAID_AUGMENTATED_RUNE = 0
 
-    [INVSLOT_FEET] = 2, --agility only
-    [INVSLOT_WRIST] = 1, --intellect only
-    [INVSLOT_HAND] = 3, --strenth only
-}
+	LIB_OPEN_RAID_COVENANT_ICONS = {}
 
--- how to get the enchantId:
--- local itemLink = GetInventoryItemLink("player", slotId)
--- local enchandId = select (3, strsplit(":", itemLink))
--- print("enchantId:", enchandId)
-LIB_OPEN_RAID_ENCHANT_IDS = {
+	LIB_OPEN_RAID_ENCHANT_IDS = {}
+
+	LIB_OPEN_RAID_GEM_IDS = {}
+
+	LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {}
+
+	LIB_OPEN_RAID_FOOD_BUFF = {}
+
+	LIB_OPEN_RAID_FLASK_BUFF = {}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Shadowlands
+
+elseif (isExpansion_Shadowlands()) then
+	LIB_OPEN_RAID_BLOODLUST = {
+		[2825] = true, --bloodlust
+		[32182] = true, --heroism
+		[80353] = true, --timewarp
+		[90355] = true, --ancient hysteria
+		[309658] = true, --current exp drums
+	}
+
+	LIB_OPEN_RAID_MYTHICKEYSTONE_ITEMID = 180653
+	LIB_OPEN_RAID_AUGMENTATED_RUNE = 347901
+
+	LIB_OPEN_RAID_COVENANT_ICONS = {
+		[[Interface\ICONS\UI_Sigil_Kyrian]], --kyrian
+		[[Interface\ICONS\UI_Sigil_Venthyr]], --venthyr
+		[[Interface\ICONS\UI_Sigil_NightFae]], --nightfae
+		[[Interface\ICONS\UI_Sigil_Necrolord]], --necrolords
+	}
+
+	--which gear slots can be enchanted on the latest retail version of the game
+	--when the value is a number, the slot only receives enchants for a specific attribute
+	LIB_OPEN_RAID_ENCHANT_SLOTS = {
+		--[INVSLOT_NECK] = true,
+		[INVSLOT_BACK] = true, --for all
+		[INVSLOT_CHEST] = true, --for all
+		[INVSLOT_FINGER1] = true, --for all
+		[INVSLOT_FINGER2] = true, --for all
+		[INVSLOT_MAINHAND] = true, --for all
+
+		[INVSLOT_FEET] = 2, --agility only
+		[INVSLOT_WRIST] = 1, --intellect only
+		[INVSLOT_HAND] = 3, --strenth only
+	}
+
+	-- how to get the enchantId:
+	-- local itemLink = GetInventoryItemLink("player", slotId)
+	-- local enchandId = select (3, strsplit(":", itemLink))
+	-- print("enchantId:", enchandId)
+	LIB_OPEN_RAID_ENCHANT_IDS = {
     --FEET
         --[6207] = INVSLOT_FEET, --[Enchant Boots - Speed of Soul]
         [6211] = INVSLOT_FEET, --[Enchant Boots - Eternal Agility] + 15 agi
@@ -167,7 +238,7 @@ LIB_OPEN_RAID_ENCHANT_IDS = {
         [6217] = INVSLOT_CHEST, --[Enchant Chest - Eternal Bounds] +20 int + 6% mana
         [6216] = INVSLOT_CHEST, --[Enchant Chest - Sacred Stats] +20 all stats
         [6230] = INVSLOT_CHEST, --[Enchant Chest - Eternal Stats] +30 all stats
-    
+
     --MAINHAND
         [6223] = INVSLOT_MAINHAND, --[Enchant Weapon - Lightless Force] + shadow wave damage
         [6226] = INVSLOT_MAINHAND, --[Enchant Weapon - Eternal Grace] + burst of healing done
@@ -182,33 +253,249 @@ LIB_OPEN_RAID_ENCHANT_IDS = {
 		[3368] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Fallen Crusader]
 		[3847] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Stoneskin Gargoyle]
 		[6244] = INVSLOT_MAINHAND, --[Runeforging: Rune of Unending Thirst]
-}
+	}
 
--- how to get the gemId:
--- local itemLink = GetInventoryItemLink("player", slotId)
--- local gemId = select (4, strsplit(":", itemLink))
--- print("gemId:", gemId)
-LIB_OPEN_RAID_GEM_IDS = {
-    [173126] = true, --Straddling Jewel Doublet (green, +12 speed)
-    [173125] = true, --Revitalizing Jewel Doublet (green, +100 health)
-    [173130] = true, --Masterful Jewel Cluster (blue, master)
-    [173129] = true, --Versatile Jewel Cluster (blue, versatility)
-    [173127] = true, --Deadly Jewel Cluster (blue, crit)
-    [173128] = true, --Quick Jewel Cluster (blue, haste)
-    [168636] = true, --Leviathan's Eye of Strength (purple, strength)
-    [168638] = true, --Leviathan's Eye of Intellect (purple, intellect)
-    [169220] = true, --Straddling Sage Agate (blue, movement speed)
-    [173126] = true, --Straddling Jewel Doublet (green, movement speed)
-}
+	-- how to get the gemId:
+	-- local itemLink = GetInventoryItemLink("player", slotId)
+	-- local gemId = select (4, strsplit(":", itemLink))
+	-- print("gemId:", gemId)
+	LIB_OPEN_RAID_GEM_IDS = {
+		[173126] = true, --Straddling Jewel Doublet (green, +12 speed)
+		[173125] = true, --Revitalizing Jewel Doublet (green, +100 health)
+		[173130] = true, --Masterful Jewel Cluster (blue, master)
+		[173129] = true, --Versatile Jewel Cluster (blue, versatility)
+		[173127] = true, --Deadly Jewel Cluster (blue, crit)
+		[173128] = true, --Quick Jewel Cluster (blue, haste)
+		[168636] = true, --Leviathan's Eye of Strength (purple, strength)
+		[168638] = true, --Leviathan's Eye of Intellect (purple, intellect)
+		[169220] = true, --Straddling Sage Agate (blue, movement speed)
+	}
 
---/dump GetWeaponEnchantInfo()
-LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {
-	[6188] = true, --shadowcore oil
-	[6190] = true, --embalmer's oil
-	[6201] = true, --weighted
-	[6200] = true, --sharpened
-	[5400] = true, --flametongue
-	[5401] = true, --windfury
+	--/dump GetWeaponEnchantInfo()
+	LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {
+		[6188] = true, --shadowcore oil
+		[6190] = true, --embalmer's oil
+		[6201] = true, --weighted
+		[6200] = true, --sharpened
+		[5400] = true, --flametongue
+		[5401] = true, --windfury
+	}
+
+	--buff spellId, the value of the food is the tier level
+	LIB_OPEN_RAID_FOOD_BUFF = {
+		[259454] = 1, --(agility) Feast of Gluttonous Hedonism
+		[308434] = 1, --(critical) Phantasmal Souffle and Fries
+		[308397] = 1, --(critical +18) Butterscotch Marinated Ribs
+		[308400] = 1, --(critical +30) Spinefin Souffle and Fries
+		[308488] = 1, --(haste) Tenebrous Crown Roast Aspic
+		[308404] = 1, --(haste +18) Cinnamon Bonefish Stew
+		[308405] = 1, --(haste +30) Tenebrous Crown Roast Aspic
+		[308506] = 1, --(mastery) Crawler Ravioli with Apple Sauce
+		[308412] = 1, --(mastery +18) Meaty Apple Dumplings
+		[308413] = 1, --(mastery +30) Iridescent Ravioli with Apple Sauce
+		[308525] = 1, --(stamina) Banana Beef Pudding
+		[308414] = 1, --(stamina +14) Pickled Meat Smoothie
+		[308415] = 1, --(stamina +22) Banana Beef Pudding
+		[308514] = 1, --(versatility) Steak a la Mode
+		[308425] = 1, --(versatility +18) Sweet Silvergill Sausages
+		[308426] = 1, --(versatility +30) Steak a la Mode
+		[308419] = 1, --(periodicaly damage) Smothered Shank
+		[327715] = 1, --(speed) Fried Bonefish
+
+		--feasts
+		[327706] = 2, --strength +20
+		[327707] = 2, --stamina +20
+		[327708] = 2, --intellect +20
+		[327709] = 2, --agility +20
+		[327704] = 2, --intellect +18
+		[327701] = 2, --strength +18
+		[327705] = 2, --agility +18
+	}
+
+	LIB_OPEN_RAID_FLASK_BUFF = {
+		[307185] = true, --Spectral Flask of Power
+		[307187] = true, --Spectral Stamina Flask
+		[307166] = true, --Eternal Flask
+	}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Dragonflight
+
+elseif (isExpansion_Dragonflight()) then
+	LIB_OPEN_RAID_BLOODLUST = {
+		[2825] = true, --bloodlust
+		[32182] = true, --heroism
+		[80353] = true, --timewarp
+		[90355] = true, --ancient hysteria
+		[309658] = true, --current exp drums
+	}
+
+	LIB_OPEN_RAID_MYTHICKEYSTONE_ITEMID = 180653
+	LIB_OPEN_RAID_AUGMENTATED_RUNE = 347901
+
+	LIB_OPEN_RAID_COVENANT_ICONS = {
+		[[Interface\ICONS\UI_Sigil_Kyrian]], --kyrian
+		[[Interface\ICONS\UI_Sigil_Venthyr]], --venthyr
+		[[Interface\ICONS\UI_Sigil_NightFae]], --nightfae
+		[[Interface\ICONS\UI_Sigil_Necrolord]], --necrolords
+	}
+
+	--which gear slots can be enchanted on the latest retail version of the game
+	--when the value is a number, the slot only receives enchants for a specific attribute
+	LIB_OPEN_RAID_ENCHANT_SLOTS = {
+		--[INVSLOT_NECK] = true,
+		[INVSLOT_BACK] = true, --for all
+		[INVSLOT_CHEST] = true, --for all
+		[INVSLOT_FINGER1] = true, --for all
+		[INVSLOT_FINGER2] = true, --for all
+		[INVSLOT_MAINHAND] = true, --for all
+
+		[INVSLOT_FEET] = 2, --agility only
+		[INVSLOT_WRIST] = 1, --intellect only
+		[INVSLOT_HAND] = 3, --strenth only
+	}
+
+	-- how to get the enchantId:
+	-- local itemLink = GetInventoryItemLink("player", slotId)
+	-- local enchandId = select (3, strsplit(":", itemLink))
+	-- print("enchantId:", enchandId)
+	LIB_OPEN_RAID_ENCHANT_IDS = {
+		--FEET
+			--[6207] = INVSLOT_FEET, --[Enchant Boots - Speed of Soul]
+			[6211] = INVSLOT_FEET, --[Enchant Boots - Eternal Agility] + 15 agi
+			[6212] = INVSLOT_FEET, --[Enchant Boots - Agile Soulwalker] + 10 agi
+
+		--WRIST
+			--[6222] = INVSLOT_WRIST, [Enchant Bracers - Shaded Hearthing]
+			[6219] = INVSLOT_WRIST, --[Enchant Bracers - Illuminated Soul] + 10 int
+			[6220] = INVSLOT_WRIST, --[Enchant Bracers - Eternal Intellect] + 15 int
+
+		--HAND
+			--[6205] = INVSLOT_HAND, --[Enchant Gloves - Shadowlands Gathering]
+			[6209] = INVSLOT_HAND, --[Enchant Gloves - Strength of Soul] +10 str
+			[6210] = INVSLOT_HAND, --[Enchant Gloves - Eternal Strength] +15 str
+
+		--FINGER
+			[6164] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Critical Strike] +16
+			[6166] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Haste] +16
+			[6168] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Mastery] +16
+			[6170] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Versatility] +16
+
+		--BACK
+			[6202] = INVSLOT_BACK, --[Enchant Cloak - Fortified Speed] +20 stam +30 speed
+			[6203] = INVSLOT_BACK, --[Enchant Cloak - Fortified Avoidance] +20 stam +30 avoidance
+			[6204] = INVSLOT_BACK, --[Enchant Cloak - Fortified Leech]
+			[6208] = INVSLOT_BACK, --[Enchant Cloak - Soul Vitality]
+
+		--CHEST
+			[6213] = INVSLOT_CHEST, --[Enchant Chest - Eternal Bulwark] +25 armor +20 agi or str
+			[6214] = INVSLOT_CHEST, --[Enchant Chest - Eternal Skirmish] +20 agi or str +more white damage
+			[6217] = INVSLOT_CHEST, --[Enchant Chest - Eternal Bounds] +20 int + 6% mana
+			[6216] = INVSLOT_CHEST, --[Enchant Chest - Sacred Stats] +20 all stats
+			[6230] = INVSLOT_CHEST, --[Enchant Chest - Eternal Stats] +30 all stats
+
+		--MAINHAND
+			[6223] = INVSLOT_MAINHAND, --[Enchant Weapon - Lightless Force] + shadow wave damage
+			[6226] = INVSLOT_MAINHAND, --[Enchant Weapon - Eternal Grace] + burst of healing done
+			[6227] = INVSLOT_MAINHAND, --[Enchant Weapon - Ascended Vigor] + healing received increased
+			[6228] = INVSLOT_MAINHAND, --[Enchant Weapon - Sinful Revelation] + 6% bleed damage
+			[6229] = INVSLOT_MAINHAND, --[Enchant Weapon - Celestial Guidance] + 5% agility
+			[6243] = INVSLOT_MAINHAND, --[Runeforging: Rune of Hysteria]
+			[3370] = INVSLOT_MAINHAND, --[Runeforging: Rune of Razorice]
+			[6241] = INVSLOT_MAINHAND, --[Runeforging: Rune of Sanguination]
+			[6242] = INVSLOT_MAINHAND, --[Runeforging: Rune of Spellwarding]
+			[6245] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Apocalypse]
+			[3368] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Fallen Crusader]
+			[3847] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Stoneskin Gargoyle]
+			[6244] = INVSLOT_MAINHAND, --[Runeforging: Rune of Unending Thirst]
+	}
+
+	-- how to get the gemId:
+	-- local itemLink = GetInventoryItemLink("player", slotId)
+	-- local gemId = select (4, strsplit(":", itemLink))
+	-- print("gemId:", gemId)
+	LIB_OPEN_RAID_GEM_IDS = {
+		[173126] = true, --Straddling Jewel Doublet (green, +12 speed)
+		[173125] = true, --Revitalizing Jewel Doublet (green, +100 health)
+		[173130] = true, --Masterful Jewel Cluster (blue, master)
+		[173129] = true, --Versatile Jewel Cluster (blue, versatility)
+		[173127] = true, --Deadly Jewel Cluster (blue, crit)
+		[173128] = true, --Quick Jewel Cluster (blue, haste)
+		[168636] = true, --Leviathan's Eye of Strength (purple, strength)
+		[168638] = true, --Leviathan's Eye of Intellect (purple, intellect)
+		[169220] = true, --Straddling Sage Agate (blue, movement speed)
+	}
+
+	--/dump GetWeaponEnchantInfo()
+	LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {
+		[6188] = true, --shadowcore oil
+		[6190] = true, --embalmer's oil
+		[6201] = true, --weighted
+		[6200] = true, --sharpened
+		[5400] = true, --flametongue
+		[5401] = true, --windfury
+	}
+
+	--buff spellId, the value of the food is the tier level
+	--use /details auras
+	LIB_OPEN_RAID_FOOD_BUFF = {
+		[382145] = {tier = {[220] = 1}, status = {"haste"}, localized = {STAT_HASTE}}, --Well Fed haste 220
+		[382146] = {tier = {[220] = 1}, status = {"critical"}, localized = {STAT_CRITICAL_STRIKE}}, --Well Fed crit 220
+		[382149] = {tier = {[220] = 1}, status = {"versatility"}, localized = {STAT_VERSATILITY}}, --Well Fed vers 220
+		[382150] = {tier = {[220] = 1}, status = {"mastery"}, localized = {STAT_MASTERY}}, --Well Fed mastery 220
+		[382152] = {tier = {[130] = 1}, status = {"haste", "critical"}, localized = {STAT_HASTE, STAT_CRITICAL_STRIKE}}, --Well Fed haste + crit 130
+		[382153] = {tier = {[130] = 1}, status = {"haste", "versatility"}, localized = {STAT_HASTE, STAT_VERSATILITY}}, --Well Fed haste + vers 130
+		[382154] = {tier = {[130] = 1}, status = {"haste", "mastery"}, localized = {STAT_HASTE, STAT_MASTERY}}, --Well Fed haste + mastery 130
+		[382155] = {tier = {[130] = 1}, status = {"critical", "versatility"}, localized = {STAT_CRITICAL_STRIKE, STAT_VERSATILITY}}, --Well Fed crit + vers 130
+		[382156] = {tier = {[130] = 1}, status = {"critical", "mastery"}, localized = {STAT_CRITICAL_STRIKE, STAT_MASTERY}}, --Well Fed crit + mastery 130
+		[382157] = {tier = {[130] = 1}, status = {"mastery", "versatility"}, localized = {STAT_MASTERY, STAT_VERSATILITY}}, --Well Fed vers + mastery 130
+	}
+
+	--use /details auras
+	LIB_OPEN_RAID_FLASK_BUFF = {
+		--phials
+		[371354] = {tier = {[131] = 1, [151] = 2, [174] = 3}}, --Phial of the Eye in the Storm
+		[370652] = {tier = {[470] = 1, [541] = 2, [622] = 3}}, --Phial of Static Empowerment
+		[371172] = {tier = {[236] = 1, [257] = 2, [279] = 3}}, --Phial of Tepid Versatility
+		[371204] = {tier = {[8125] = 1, [9344] = 2, [10746] = 3}}, --Phial of Still Air
+		[371036] = {tier = {[-4] = 1, [-5] = 2, [-6] = 3}}, --Phial of Icy Preservation
+		[374000] = {tier = {[690] = 1, [752] = 2, [814] = 3}}, --Iced Phial of Corrupting Rage
+		[371386] = {tier = {[432] = 1, [497] = 2, [572] = 3}}, --Phial of Charged Isolation
+		[373257] = {tier = {[4603] = 2, [3949] = 1, [5365] = 3}}, --Phial of Glacial Fury
+		[393700] = {tier = {[45] = 3, [38] = 2, [32] = 1}}, --Aerated Phial of Deftness
+		[393717] = {tier = {[45] = 3, [38] = 2, [32] = 1}}, --Steaming Phial of Finesse
+		[371186] = {tier = {[558] = 3, [473] = 1, [515] = 2}}, --Charged Phial of Alacrity
+		[393714] = {tier = {[45] = 3, [38] = 2, [32] = 1}}, --Crystalline Phial of Perception
+		[371339] = {tier = {[562] = 3, [476] = 1, [519] = 2}}, --Phial of Elemental Chaos
+	}
+
+	--spellId of healing from potions
+	LIB_OPEN_RAID_HEALING_POTIONS = {
+		[370511] = 1, --Refreshing Healing Potion
+		[371039] = 1, --Potion of Withering Vitality
+		[6262] = 1, --Warlock's Healthstone
+	}
+end
+
+
+--end of per expansion content
+--------------------------------------------------------------------------------------------
+
+
+LIB_OPEN_RAID_MELEE_SPECS = {
+	[251] = "DEATHKNIGHT",
+	[252] = "DEATHKNIGHT",
+	[577] = "DEMONHUNTER",
+	[103] = "DRUID",
+	--[255] = "Survival", --not in the list due to the long interrupt time
+	[269] = "MONK",
+	[70] = "PALADIN",
+	[259] = "ROGUE",
+	[260] = "ROGUE",
+	[261] = "ROGUE",
+	[263] = "SHAMAN",
+	[71] = "WARRIOR",
+	[72] = "WARRIOR",
 }
 
 --tells the duration, requirements and cooldown
@@ -216,6 +503,7 @@ LIB_OPEN_RAID_WEAPON_ENCHANT_IDS = {
 --if talent is required, use the command:
 --/dump GetTalentInfo (talentTier, talentColumn, 1)
 --example: to get the second talent of the last talent line, use: /dump GetTalentInfo (7, 2, 1)
+
 LIB_OPEN_RAID_COOLDOWNS_INFO = {
 
 	-- Filter Types:
@@ -225,7 +513,6 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	-- 4 raid defensive cooldown
 	-- 5 personal utility cooldown
 	-- 6 interrupt
-
 
 	--interrupts
 	[6552] = {class = "WARRIOR", specs = {71, 72, 73}, cooldown = 15, silence = 4, talent = false, cooldownWithTalent = false, cooldownTalentId = false, type = 6, charges = 1}, --Pummel
@@ -577,6 +864,7 @@ else
 end
 
 --interrupt list using proxy from cooldown list
+--this list should be expansion and combatlog safe
 LIB_OPEN_RAID_SPELL_INTERRUPT = {
 	[6552] = LIB_OPEN_RAID_COOLDOWNS_INFO[6552], --Pummel
 
@@ -606,6 +894,7 @@ LIB_OPEN_RAID_SPELL_INTERRUPT = {
 	[89766] = LIB_OPEN_RAID_COOLDOWNS_INFO[89766], --Axe Toss (pet felguard ability)
 }
 
+--override list of spells with more than one effect, example: multiple types of polymorph
 LIB_OPEN_RAID_SPELL_DEFAULT_IDS = {
 	--stampeding roar (druid)
 	[106898] = 77761,
@@ -634,7 +923,7 @@ LIB_OPEN_RAID_SPELL_DEFAULT_IDS = {
 	[191427] = 200166,
 	--187827 vengeance need to test these spellIds
 	--191427 havoc
-
 }
-
 --need to add mass dispell (32375)
+
+LIB_OPEN_RAID_DATABASE_LOADED = true

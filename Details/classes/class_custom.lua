@@ -1,4 +1,4 @@
---> customized display script
+--customized display script
 
 	local _detalhes = 		_G._detalhes
 	local gump = 			_detalhes.gump
@@ -7,7 +7,7 @@
 	_detalhes.custom_function_cache = {}
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local _cstr = string.format --lua local
 	local _math_floor = math.floor --lua local
@@ -37,7 +37,7 @@
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> constants
+--constants
 
 	local atributo_custom = _detalhes.atributo_custom
 	atributo_custom.mt = {__index = atributo_custom}
@@ -47,7 +47,7 @@
 		["healdone"] = 2,
 	}
 
-	--> hold the mini custom objects
+	--hold the mini custom objects
 	atributo_custom._InstanceActorContainer = {}
 	atributo_custom._InstanceLastCustomShown = {}
 	atributo_custom._InstanceLastCombatShown = {}
@@ -61,7 +61,7 @@
 	local UsingCustomLeftText = false
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> core
+--core
 
 	function atributo_custom:GetCombatContainerIndex (attribute)
 		return combat_containers [attribute]
@@ -69,17 +69,17 @@
 
 	function atributo_custom:RefreshWindow (instance, combat, force, export)
 
-		--> get the custom object
+		--get the custom object
 		local custom_object = instance:GetCustomObject()
 
 		if (not custom_object) then
 			return instance:ResetAttribute()
 		end
 
-		--> save the custom name in the instance
+		--save the custom name in the instance
 		instance.customName = custom_object:GetName()
 
-		--> get the container holding the custom actor objects for this instance
+		--get the container holding the custom actor objects for this instance
 		local instance_container = atributo_custom:GetInstanceCustomActorContainer (instance)
 
 		local last_shown = atributo_custom._InstanceLastCustomShown [instance:GetId()]
@@ -94,15 +94,15 @@
 		end
 		atributo_custom._InstanceLastCombatShown [instance:GetId()] = combat
 
-		--> declare the main locals
+		--declare the main locals
 		local total = 0
 		local top = 0
 		local amount = 0
 
-		--> check if is a custom script (if has .script)
+		--check if is a custom script (if has .script)
 		if (custom_object:IsScripted()) then
 
-			--> be save reseting the values on every refresh
+			--be save reseting the values on every refresh
 			instance_container:ResetCustomActorContainer()
 
 			local func
@@ -166,17 +166,17 @@
 			amount = _amount or 0
 			
 		else --does not have a .script
-			--> get the attribute
+			--get the attribute
 			local attribute = custom_object:GetAttribute() --"damagedone"
 
-			--> get the custom function (actor, source, target, spellid)
+			--get the custom function(actor, source, target, spellid)
 			local func = atributo_custom [attribute]
 			
-			--> get the combat container
+			--get the combat container
 			local container_index = self:GetCombatContainerIndex (attribute)
 			local combat_container = combat [container_index]._ActorTable
 
-			--> build container
+			--build container
 			total, top, amount = atributo_custom:BuildActorList (func, custom_object.source, custom_object.target, custom_object.spellid, combat, combat_container, container_index, instance_container, instance, custom_object)
 		end
 
@@ -190,7 +190,7 @@
 			if (force) then
 				if (instance:IsGroupMode()) then
 					for i = 1, instance.rows_fit_in_window  do
-						Details.FadeHandler.Fader (instance.barras [i], "in", Details.fade_speed)
+						Details.FadeHandler.Fader(instance.barras [i], "in", Details.fade_speed)
 					end
 				end
 			end
@@ -216,42 +216,42 @@
 				local total_script = _detalhes.custom_function_cache [instance.customName .. "Total"]
 				local okey
 				
-				for index, actor in _ipairs (instance_container._ActorTable) do
+				for index, actor in _ipairs(instance_container._ActorTable) do
 				
 					local percent, ptotal
 					
 					if (percent_script) then
-						okey, percent = _pcall (percent_script, _math_floor (actor.value), top, total, combat, instance, actor)
+						okey, percent = _pcall (percent_script, _math_floor(actor.value), top, total, combat, instance, actor)
 						if (not okey) then
 							_detalhes:Msg ("|cFFFF9900percent script error|r:", percent)
 							return _detalhes:EndRefresh (instance, 0, combat, combat [1])
 						end
 					else
-						percent = _cstr ("%.1f", _math_floor (actor.value) / total * 100)
+						percent = _cstr ("%.1f", _math_floor(actor.value) / total * 100)
 					end
 					
 					if (total_script) then
-						local okey, value = _pcall (total_script, _math_floor (actor.value), top, total, combat, instance, actor)
+						local okey, value = _pcall (total_script, _math_floor(actor.value), top, total, combat, instance, actor)
 						if (not okey) then
 							_detalhes:Msg ("|cFFFF9900total script error|r:", value)
 							return _detalhes:EndRefresh (instance, 0, combat, combat [1])
 						end
 						
-						if (type (value) == "number") then
+						if (type(value) == "number") then
 							value = SelectedToKFunction (_, value)
 						end
 						ptotal = value
 					else
-						ptotal = SelectedToKFunction (_, _math_floor (actor.value))
+						ptotal = SelectedToKFunction (_, _math_floor(actor.value))
 					end
 					
 					actor.report_value = ptotal .. " (" .. percent .. "%)"
 					
 					if (actor.id) then
 						if (actor.id == 1) then
-							actor.report_name = GetSpellLink (6603)
+							actor.report_name = GetSpellLink(6603)
 						elseif (actor.id > 10) then
-							actor.report_name = GetSpellLink (actor.id)
+							actor.report_name = GetSpellLink(actor.id)
 						else
 							actor.report_name = actor.nome
 						end
@@ -275,13 +275,13 @@
 
 	function atributo_custom:BuildActorList (func, source, target, spellid, combat, combat_container, container_index, instance_container, instance, custom_object)
 
-		--> do the loop
+		--do the loop
 		
 		local total = 0
 		local top = 0
 		local amount = 0
 		
-		--> check if is a spell target custom
+		--check if is a spell target custom
 		if (custom_object:IsSpellTarget()) then
 			table.wipe (atributo_custom._TargetActorsProcessed)
 			atributo_custom._TargetActorsProcessedAmt = 0
@@ -292,7 +292,7 @@
 		
 		if (source == "[all]") then
 			
-			for _, actor in _ipairs (combat_container) do 
+			for _, actor in _ipairs(combat_container) do 
 				local actortotal = func (_, actor, source, target, spellid, combat, instance_container)
 				if (actortotal > 0) then
 					total = total + actortotal
@@ -302,7 +302,7 @@
 						top = actortotal
 					end
 					
-					instance_container:SetValue (actor, actortotal)
+					instance_container:SetValue(actor, actortotal)
 				end
 			end
 			
@@ -316,7 +316,7 @@
 				end
 			end
 
-			for _, actor in _ipairs (combat_container) do
+			for _, actor in _ipairs(combat_container) do
 				if (actor.grupo) then
 					if (not func) then
 						Details:Msg("error on class_custom 'func' is invalid, backtrace:", debugstack())
@@ -332,7 +332,7 @@
 							top = actortotal
 						end
 						
-						instance_container:SetValue (actor, actortotal)
+						instance_container:SetValue(actor, actortotal)
 					end
 					
 				end
@@ -352,7 +352,7 @@
 						top = actortotal
 					end
 					
-					instance_container:SetValue (actor, actortotal)
+					instance_container:SetValue(actor, actortotal)
 				end
 			end
 		else
@@ -370,7 +370,7 @@
 						top = actortotal
 					end
 					
-					instance_container:SetValue (actor, actortotal)
+					instance_container:SetValue(actor, actortotal)
 				end
 			end
 		end
@@ -379,7 +379,7 @@
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> refresh functions
+--refresh functions
 
 	function atributo_custom:Refresh (instance, instance_container, combat, force, total, top, custom_object)
 		local whichRowLine = 1
@@ -390,7 +390,7 @@
 		UsingCustomLeftText = instance.row_info.textL_enable_custom_text
 		UsingCustomRightText = instance.row_info.textR_enable_custom_text
 		
-		--> total bar
+		--total bar
 		local use_total_bar = false
 		if (instance.total_bar.enabled) then
 			use_total_bar = true
@@ -418,17 +418,17 @@
 				
 				local row1 = barras_container [1]
 				row1.minha_tabela = nil
-				row1.lineText1:SetText (Loc ["STRING_TOTAL"])
-				row1.lineText4:SetText (_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
+				row1.lineText1:SetText(Loc ["STRING_TOTAL"])
+				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
 				
-				row1:SetValue (100)
+				row1:SetValue(100)
 				local r, g, b = unpack (instance.total_bar.color)
 				row1.textura:SetVertexColor (r, g, b)
 				
-				row1.icone_classe:SetTexture (instance.total_bar.icon)
+				row1.icone_classe:SetTexture(instance.total_bar.icon)
 				row1.icone_classe:SetTexCoord (0.0625, 0.9375, 0.0625, 0.9375)
 				
-				Details.FadeHandler.Fader (row1, "out")
+				Details.FadeHandler.Fader(row1, "out")
 				
 				for i = instance.barraS[1], iter_last, 1 do
 					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
@@ -454,25 +454,25 @@
 				
 				local row1 = barras_container [1]
 				row1.minha_tabela = nil
-				row1.lineText1:SetText (Loc ["STRING_TOTAL"])
-				row1.lineText4:SetText (_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
+				row1.lineText1:SetText(Loc ["STRING_TOTAL"])
+				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
 				
-				row1:SetValue (100)
+				row1:SetValue(100)
 				local r, g, b = unpack (instance.total_bar.color)
 				row1.textura:SetVertexColor (r, g, b)
 				
-				row1.icone_classe:SetTexture (instance.total_bar.icon)
+				row1.icone_classe:SetTexture(instance.total_bar.icon)
 				row1.icone_classe:SetTexCoord (0.0625, 0.9375, 0.0625, 0.9375)
 				
-				Details.FadeHandler.Fader (row1, "out")
+				Details.FadeHandler.Fader(row1, "out")
 				
-				for i = iter_last, instance.barraS[1], -1 do --> vai atualizar s� o range que esta sendo mostrado
+				for i = iter_last, instance.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
 					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
 					whichRowLine = whichRowLine+1
 				end
 			
 			else
-				for i = instance.barraS[2], instance.barraS[1], -1 do --> vai atualizar s� o range que esta sendo mostrado
+				for i = instance.barraS[2], instance.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
 					instance_container._ActorTable[i]:UpdateBar (barras_container, whichRowLine, percentage_type, i, total, top, instance, force, percent_script, total_script, combat, bars_show_data, bars_brackets, bars_separator)
 					whichRowLine = whichRowLine+1
 				end
@@ -483,14 +483,14 @@
 		if (force) then
 			if (instance:IsGroupMode()) then
 				for i = whichRowLine, instance.rows_fit_in_window  do
-					Details.FadeHandler.Fader (instance.barras [i], "in", Details.fade_speed)
+					Details.FadeHandler.Fader(instance.barras [i], "in", Details.fade_speed)
 				end
 			end
 		end
 		
 	end
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> custom object functions
+--custom object functions
 	
 	local actor_class_color_r, actor_class_color_g, actor_class_color_b
 	
@@ -506,7 +506,7 @@
 		local percent
 		local okey
 
-		--> percent
+		--percent
 			if (percent_script) then
 				--local value, top, total, combat, instance = ...
 				okey, percent = _pcall (percent_script, self.value, top, total, combat, instance, self)
@@ -526,7 +526,7 @@
 				percent = ""
 			end
 
-		--> total done
+		--total done
 			if (total_script) then
 				local okey, value = _pcall (total_script, self.value, top, total, combat, instance, self)
 				if (not okey) then
@@ -542,10 +542,10 @@
 					end
 
 				else
-					if (type (value) == "number") then
-						row.lineText4:SetText (SelectedToKFunction (_, value) .. bars_brackets[1] .. percent .. bars_brackets[2])
+					if (type(value) == "number") then
+						row.lineText4:SetText(SelectedToKFunction (_, value) .. bars_brackets[1] .. percent .. bars_brackets[2])
 					else
-						row.lineText4:SetText (value .. bars_brackets[1] .. percent .. bars_brackets[2])
+						row.lineText4:SetText(value .. bars_brackets[1] .. percent .. bars_brackets[2])
 					end
 					row.lineText3:SetText("")
 					row.lineText2:SetText("")
@@ -555,19 +555,19 @@
 				local rightText = formated_value .. bars_brackets[1] .. percent .. bars_brackets[2]
 
 				if (UsingCustomRightText) then
-					row.lineText4:SetText (_string_replace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
+					row.lineText4:SetText(_string_replace (instance.row_info.textR_custom_text, formated_value, "", percent, self, combat, instance, rightText))
 				else
 					if (instance.use_multi_fontstrings) then
 						instance:SetInLineTexts(row, "", formated_value, percent)
 					else
-						row.lineText4:SetText (rightText)
+						row.lineText4:SetText(rightText)
 						row.lineText3:SetText("")
 						row.lineText2:SetText("")
 					end
 				end
 			end
 		
-		local row_value = _math_floor ((self.value / top) * 100)
+		local row_value = _math_floor((self.value / top) * 100)
 
 		-- update tooltip function --
 
@@ -593,13 +593,13 @@
 	
 	function atributo_custom:RefreshBarra2 (esta_barra, instancia, tabela_anterior, forcar, esta_porcentagem, whichRowLine, barras_container)
 		
-		--> primeiro colocado
+		--primeiro colocado
 		if (esta_barra.colocacao == 1) then
 			if (not tabela_anterior or tabela_anterior ~= esta_barra.minha_tabela or forcar) then
-				esta_barra:SetValue (100)
+				esta_barra:SetValue(100)
 				
 				if (esta_barra.hidden or esta_barra.fading_in or esta_barra.faded) then
-					Details.FadeHandler.Fader (esta_barra, "out")
+					Details.FadeHandler.Fader(esta_barra, "out")
 				end
 				
 				return self:RefreshBarra (esta_barra, instancia)
@@ -610,8 +610,8 @@
 
 			if (esta_barra.hidden or esta_barra.fading_in or esta_barra.faded) then
 			
-				esta_barra:SetValue (esta_porcentagem)
-				Details.FadeHandler.Fader (esta_barra, "out")
+				esta_barra:SetValue(esta_porcentagem)
+				Details.FadeHandler.Fader(esta_barra, "out")
 				
 				if (instancia.row_info.texture_class_colors) then
 					esta_barra.textura:SetVertexColor (actor_class_color_r, actor_class_color_g, actor_class_color_b)
@@ -623,28 +623,28 @@
 				return self:RefreshBarra (esta_barra, instancia)
 				
 			else
-				--> agora esta comparando se a tabela da barra � diferente da tabela na atualiza��o anterior
-				if (not tabela_anterior or tabela_anterior ~= esta_barra.minha_tabela or forcar) then --> aqui diz se a barra do jogador mudou de posi��o ou se ela apenas ser� atualizada
+				--agora esta comparando se a tabela da barra � diferente da tabela na atualiza��o anterior
+				if (not tabela_anterior or tabela_anterior ~= esta_barra.minha_tabela or forcar) then --aqui diz se a barra do jogador mudou de posi��o ou se ela apenas ser� atualizada
 				
-					esta_barra:SetValue (esta_porcentagem)
+					esta_barra:SetValue(esta_porcentagem)
 				
-					esta_barra.last_value = esta_porcentagem --> reseta o ultimo valor da barra
+					esta_barra.last_value = esta_porcentagem --reseta o ultimo valor da barra
 					
 					if (_detalhes.is_using_row_animations and forcar) then
 						esta_barra.tem_animacao = 0
-						esta_barra:SetScript ("OnUpdate", nil)
+						esta_barra:SetScript("OnUpdate", nil)
 					end
 					
 					return self:RefreshBarra (esta_barra, instancia)
 					
-				elseif (esta_porcentagem ~= esta_barra.last_value) then --> continua mostrando a mesma tabela ent�o compara a porcentagem
-					--> apenas atualizar
+				elseif (esta_porcentagem ~= esta_barra.last_value) then --continua mostrando a mesma tabela ent�o compara a porcentagem
+					--apenas atualizar
 					if (_detalhes.is_using_row_animations) then
 						
 						local upRow = barras_container [whichRowLine-1]
 						if (upRow) then
 							if (upRow.statusbar:GetValue() < esta_barra.statusbar:GetValue()) then
-								esta_barra:SetValue (esta_porcentagem)
+								esta_barra:SetValue(esta_porcentagem)
 							else
 								instancia:AnimarBarra (esta_barra, esta_porcentagem)
 							end
@@ -652,7 +652,7 @@
 							instancia:AnimarBarra (esta_barra, esta_porcentagem)
 						end
 					else
-						esta_barra:SetValue (esta_porcentagem)
+						esta_barra:SetValue(esta_porcentagem)
 					end
 					esta_barra.last_value = esta_porcentagem
 				end
@@ -686,62 +686,62 @@
 
 		_detalhes:SetBarColors (esta_barra, instancia, actor_class_color_r, actor_class_color_g, actor_class_color_b)
 
-		--> we need a customized icon settings for custom displays.
+		--we need a customized icon settings for custom displays.
 		if (self.classe == "UNKNOW") then
-			esta_barra.icone_classe:SetTexture ("Interface\\LFGFRAME\\LFGROLE_BW")
+			esta_barra.icone_classe:SetTexture("Interface\\LFGFRAME\\LFGROLE_BW")
 			esta_barra.icone_classe:SetTexCoord (.25, .5, 0, 1)
 			esta_barra.icone_classe:SetVertexColor (1, 1, 1)
 
 		elseif (self.classe == "UNGROUPPLAYER") then
 			if (self.enemy) then
 				if (_detalhes.faction_against == "Horde") then
-					esta_barra.icone_classe:SetTexture ("Interface\\ICONS\\Achievement_Character_Orc_Male")
+					esta_barra.icone_classe:SetTexture("Interface\\ICONS\\Achievement_Character_Orc_Male")
 					esta_barra.icone_classe:SetTexCoord (0, 1, 0, 1)
 				else
-					esta_barra.icone_classe:SetTexture ("Interface\\ICONS\\Achievement_Character_Human_Male")
+					esta_barra.icone_classe:SetTexture("Interface\\ICONS\\Achievement_Character_Human_Male")
 					esta_barra.icone_classe:SetTexCoord (0, 1, 0, 1)
 				end
 			else
 				if (_detalhes.faction_against == "Horde") then
-					esta_barra.icone_classe:SetTexture ("Interface\\ICONS\\Achievement_Character_Human_Male")
+					esta_barra.icone_classe:SetTexture("Interface\\ICONS\\Achievement_Character_Human_Male")
 					esta_barra.icone_classe:SetTexCoord (0, 1, 0, 1)
 				else
-					esta_barra.icone_classe:SetTexture ("Interface\\ICONS\\Achievement_Character_Orc_Male")
+					esta_barra.icone_classe:SetTexture("Interface\\ICONS\\Achievement_Character_Orc_Male")
 					esta_barra.icone_classe:SetTexCoord (0, 1, 0, 1)
 				end
 			end
 			esta_barra.icone_classe:SetVertexColor (1, 1, 1)
 		
 		elseif (self.classe == "PET") then
-			esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)
+			esta_barra.icone_classe:SetTexture(instancia.row_info.icon_file)
 			esta_barra.icone_classe:SetTexCoord (0.25, 0.49609375, 0.75, 1)
 			esta_barra.icone_classe:SetVertexColor (actor_class_color_r, actor_class_color_g, actor_class_color_b)
 
 		else
 			if (self.id) then
 				esta_barra.icone_classe:SetTexCoord (0.078125, 0.921875, 0.078125, 0.921875)
-				esta_barra.icone_classe:SetTexture (self.icon)
+				esta_barra.icone_classe:SetTexture(self.icon)
 			else
 				if (instancia.row_info.use_spec_icons) then
 					if ((self.spec and self.spec ~= 0) or (self.my_actor.spec and self.my_actor.spec ~= 0)) then
-						esta_barra.icone_classe:SetTexture (instancia.row_info.spec_file)
+						esta_barra.icone_classe:SetTexture(instancia.row_info.spec_file)
 						esta_barra.icone_classe:SetTexCoord (_unpack (_detalhes.class_specs_coords [self.spec or self.my_actor.spec]))
 					else
-						esta_barra.icone_classe:SetTexture ([[Interface\AddOns\Details\images\classes_small]])
+						esta_barra.icone_classe:SetTexture([[Interface\AddOns\Details\images\classes_small]])
 						esta_barra.icone_classe:SetTexCoord (_unpack (CLASS_ICON_TCOORDS [self.classe]))
 					end
 				else
-					esta_barra.icone_classe:SetTexture (instancia.row_info.icon_file)
+					esta_barra.icone_classe:SetTexture(instancia.row_info.icon_file)
 					esta_barra.icone_classe:SetTexCoord (_unpack (CLASS_ICON_TCOORDS [self.classe]))
 				end
 			end
 			esta_barra.icone_classe:SetVertexColor (1, 1, 1)
 		end
 
-		--> left text
+		--left text
 		self:SetBarLeftText (esta_barra, instancia, enemy, arena_enemy, arena_ally, UsingCustomLeftText)
 
-		esta_barra.lineText1:SetSize (esta_barra:GetWidth() - esta_barra.lineText4:GetStringWidth() - 20, 15)
+		esta_barra.lineText1:SetSize(esta_barra:GetWidth() - esta_barra.lineText4:GetStringWidth() - 20, 15)
 		
 	end	
 
@@ -753,9 +753,9 @@
 	end
 	
 	function atributo_custom:ResetCustomActorContainer()
-		for _, actor in _ipairs (self._ActorTable) do
-			actor.value = actor.value - _math_floor (actor.value)
-			--actor.value = _detalhes:GetOrderNumber (actor.nome)
+		for _, actor in _ipairs(self._ActorTable) do
+			actor.value = actor.value - _math_floor(actor.value)
+			--actor.value = _detalhes:GetOrderNumber(actor.nome)
 		end
 	end
 	
@@ -786,27 +786,27 @@
 		return actor_table.value
 	end
 	
-	function atributo_custom:SetValue (actor, actortotal, name_complement)
+	function atributo_custom:SetValue(actor, actortotal, name_complement)
 		local actor_table = self:GetActorTable (actor, name_complement)
 		actor_table.my_actor = actor
 		actor_table.value = actortotal
 	end
 
-	function atributo_custom:UpdateClass (actors)
+	function atributo_custom:UpdateClass(actors)
 		actors.new_actor.classe = actors.actor.classe
 	end
 
-	function atributo_custom:HasActor (actor)
+	function atributo_custom:HasActor(actor)
 		return self._NameIndexTable [actor.nome or actor.name] and true or false
 	end
-	
+
 	function atributo_custom:GetNumActors()
 		return #self._ActorTable
 	end
-	
+
 	function atributo_custom:GetTotalAndHighestValue()
 		local total, top = 0, 0
-		for i, actor in ipairs (self._ActorTable) do
+		for i, actor in ipairs(self._ActorTable) do
 			if (actor.value > top) then
 				top = actor.value
 			end
@@ -814,19 +814,19 @@
 		end
 		return total, top
 	end
-	
+
 	local icon_cache = {}
-	
-	function atributo_custom:GetActorTable (actor, name_complement)
-		local index = self._NameIndexTable [actor.nome or actor.name]
-		
+
+	function atributo_custom:GetActorTable(actor, name_complement)
+		local index = self._NameIndexTable[actor.nome or actor.name]
+
 		if (index) then
-			return self._ActorTable [index]
+			return self._ActorTable[index]
 		else
-			--> if is a spell object
+			--if is a spell object
 			local class
 			if (actor.id) then
-				local spellname, _, icon = _GetSpellInfo (actor.id)
+				local spellname, _, icon = _GetSpellInfo(actor.id)
 				if (not icon_cache [spellname] and spellname) then
 					icon_cache [spellname] = icon
 				elseif (not spellname) then
@@ -848,7 +848,7 @@
 					class = "UNKNOW"
 				end
 				if (class == "UNKNOW") then
-					--> try once again
+					--try once again
 					class = _detalhes:GetClass (actor.nome or actor.name)
 					if (class and class ~= "UNKNOW") then
 						actor.classe = class
@@ -856,7 +856,7 @@
 				end
 			end
 		
-			local new_actor = _setmetatable ({
+			local newActor = _setmetatable ({
 				nome = actor.nome or actor.name,
 				classe = class,
 				value = _detalhes:GetOrderNumber(),
@@ -864,45 +864,46 @@
 				color = actor.color,
 			}, atributo_custom.mt)
 			
-			new_actor.name_complement = name_complement
-			new_actor.displayName = actor.displayName or (_detalhes:GetOnlyName (new_actor.nome) .. (name_complement or ""))
-			new_actor.spec = actor.spec
+			newActor.name_complement = name_complement
+			newActor.displayName = actor.displayName or (_detalhes:GetOnlyName (newActor.nome) .. (name_complement or ""))
+			newActor.spec = actor.spec
 			
-			new_actor.enemy = actor.enemy
-			new_actor.role = actor.role
-			new_actor.arena_enemy = actor.arena_enemy
-			new_actor.arena_ally = actor.arena_ally
-			new_actor.arena_team = actor.arena_team
+			newActor.enemy = actor.enemy
+			newActor.role = actor.role
+			newActor.arena_enemy = actor.arena_enemy
+			newActor.arena_ally = actor.arena_ally
+			newActor.arena_team = actor.arena_team
 			
 			if (actor.id) then
-				new_actor.id = actor.id
+				newActor.id = actor.id
 				--icon
 				if (icon_cache [actor.nome]) then
-					new_actor.icon = icon_cache [actor.nome]
+					newActor.icon = icon_cache [actor.nome]
 				else
-					local _, _, icon = _GetSpellInfo (actor.id)
+					local _, _, icon = _GetSpellInfo(actor.id)
 					if (icon) then
 						icon_cache [actor.nome] = icon
-						new_actor.icon =  icon
+						newActor.icon =  icon
 					end
 				end
 			else
-				if (not new_actor.classe) then
-					new_actor.classe = _detalhes:GetClass (actor.nome or actor.name) or "UNKNOW"
+				if (not newActor.classe) then
+					newActor.classe = Details:GetClass(actor.nome or actor.name) or "UNKNOW"
 				end
-				if (new_actor.classe == "UNGROUPPLAYER") then
-					atributo_custom:ScheduleTimer ("UpdateClass", 5, {new_actor = new_actor, actor = actor})
+				if (newActor.classe == "UNGROUPPLAYER") then
+					--atributo_custom:ScheduleTimer ("UpdateClass", 5, {newActor = newActor, actor = actor})
+					Details.Schedules.NewTimer(5, atributo_custom.UpdateClass, self, {new_actor = newActor, actor = actor})
 				end
 			end
 
 			index = #self._ActorTable+1
-			
-			self._ActorTable [index] = new_actor
-			self._NameIndexTable [actor.nome or actor.name] = index
-			return new_actor
+
+			self._ActorTable[index] = newActor
+			self._NameIndexTable[actor.nome or actor.name] = index
+			return newActor
 		end
 	end
-	
+
 	function atributo_custom:GetInstanceCustomActorContainer (instance)
 		if (not atributo_custom._InstanceActorContainer [instance:GetId()]) then
 			atributo_custom._InstanceActorContainer [instance:GetId()] = self:CreateCustomActorContainer()
@@ -923,7 +924,7 @@
 		}, {__index = atributo_custom})
 	end
 
-	local custom_sort = function (t1, t2)
+	local custom_sort = function(t1, t2)
 		return t1.value > t2.value
 	end
 	function atributo_custom:Sort (container)
@@ -941,14 +942,14 @@
 
 	function atributo_custom:ToolTip (instance, bar_number, row_object, keydown)
 	
-		--> get the custom object
+		--get the custom object
 		local custom_object = instance:GetCustomObject()
 		
 		if (custom_object.notooltip) then
 			return
 		end
 		
-		--> get the actor
+		--get the actor
 		local actor = self.my_actor
 		
 		local r, g, b
@@ -963,7 +964,7 @@
 		end
 		
 		if (actor.id) then
-			_detalhes:AddTooltipSpellHeaderText (select (1, _GetSpellInfo (actor.id)), "yellow", 1, select (3, _GetSpellInfo (actor.id)), 0.90625, 0.109375, 0.15625, 0.875)
+			_detalhes:AddTooltipSpellHeaderText (select (1, _GetSpellInfo(actor.id)), "yellow", 1, select (3, _GetSpellInfo(actor.id)), 0.90625, 0.109375, 0.15625, 0.875)
 		else
 			_detalhes:AddTooltipSpellHeaderText (custom_object:GetName(), "yellow", 1, custom_object:GetIcon(), 0.90625, 0.109375, 0.15625, 0.875)
 		end
@@ -984,14 +985,14 @@
 				end
 			end
 		else
-			--> get the attribute
+			--get the attribute
 			local attribute = custom_object:GetAttribute()
 			local container_index = atributo_custom:GetCombatContainerIndex (attribute)
 			
-			--> get the tooltip function
+			--get the tooltip function
 			local func = atributo_custom [attribute .. "Tooltip"]
 			
-			--> build the tooltip
+			--build the tooltip
 			func (_, actor, custom_object.target, custom_object.spellid, instance.showing, instance)
 		end
 		
@@ -1059,7 +1060,7 @@
 	function atributo_custom:SetSpellId (spellid)
 		self.spellid = spellid
 	end
-	function atributo_custom:SetScript (code)
+	function atributo_custom:SetScript(code)
 		self.script = code
 	end
 	function atributo_custom:SetScriptToolip (code)
@@ -1077,13 +1078,13 @@
 	function atributo_custom:RemoveCustom (index)
 	
 		if (not _detalhes.tabela_instancias) then
-			--> do not remove customs while the addon is loading.
+			--do not remove customs while the addon is loading.
 			return
 		end
 	
 		table.remove (_detalhes.custom, index)
 		
-		for _, instance in _ipairs (_detalhes.tabela_instancias) do 
+		for _, instance in _ipairs(_detalhes.tabela_instancias) do 
 			if (instance.atributo == 5 and instance.sub_atributo == index) then 
 				instance:ResetAttribute()
 			elseif (instance.atributo == 5 and instance.sub_atributo > index) then
@@ -1097,9 +1098,9 @@
 		_detalhes.switch:OnRemoveCustom (index)
 	end
 	
-	--> export for plugins
+	--export for plugins
 	function _detalhes:RemoveCustomObject (object_name)
-		for index, object in ipairs (_detalhes.custom) do
+		for index, object in ipairs(_detalhes.custom) do
 			if (object.name == object_name) then
 				return atributo_custom:RemoveCustom (index)
 			end
@@ -1111,16 +1112,16 @@
 	end
 	
 	function _detalhes.refresh:r_atributo_custom()
-		--> check for non used temp displays
+		--check for non used temp displays
 		if (_detalhes.tabela_instancias) then
 
 			for i = #_detalhes.custom, 1, -1 do
 				local custom_object = _detalhes.custom [i]
 				if (custom_object.temp) then
-					--> check if there is a instance showing this custom
+					--check if there is a instance showing this custom
 					local showing = false
 					
-					for index, instance in _ipairs (_detalhes.tabela_instancias) do
+					for index, instance in _ipairs(_detalhes.tabela_instancias) do
 						if (instance.atributo == 5 and instance.sub_atributo == i) then 
 							showing = true
 						end
@@ -1133,15 +1134,15 @@
 			end
 		end
 	
-		--> restore metatable and indexes
-		for index, custom_object in _ipairs (_detalhes.custom) do
+		--restore metatable and indexes
+		for index, custom_object in _ipairs(_detalhes.custom) do
 			_setmetatable (custom_object, atributo_custom)
 			custom_object.__index = atributo_custom
 		end
 	end
 
 	function _detalhes.clear:c_atributo_custom()
-		for _, custom_object in _ipairs (_detalhes.custom) do
+		for _, custom_object in _ipairs(_detalhes.custom) do
 			custom_object.__index = nil
 		end
 	end
@@ -1157,14 +1158,14 @@
 	function _detalhes:InstallCustomObject (object)
 		local have = false
 		if (object.script_version) then
-			for _, custom in ipairs (_detalhes.custom) do
+			for _, custom in ipairs(_detalhes.custom) do
 				if (custom.name == object.name and (custom.script_version and custom.script_version >= object.script_version) ) then
 					have = true
 					break
 				end
 			end
 		else
-			for _, custom in ipairs (_detalhes.custom) do
+			for _, custom in ipairs(_detalhes.custom) do
 				if (custom.name == object.name) then
 					have = true
 					break
@@ -1173,7 +1174,7 @@
 		end
 		
 		if (not have) then
-			for i, custom in ipairs (_detalhes.custom) do
+			for i, custom in ipairs(_detalhes.custom) do
 				if (custom.name == object.name) then
 					table.remove (_detalhes.custom, i)
 					break
@@ -1206,7 +1207,7 @@
 				local misc_container = combat:GetActorList ( DETAILS_ATTRIBUTE_MISC )
 				
 				--do the loop:
-				for _, player in ipairs ( misc_container ) do 
+				for _, player in ipairs( misc_container ) do 
 					
 					--only player in group
 					if (player:IsGroupPlayer()) then
@@ -1233,7 +1234,7 @@
 						--get the spell buff uptime container
 						local buff_uptime_container = player.buff_uptime and player.buff_uptime_spells and player.buff_uptime_spells._ActorTable
 						if (buff_uptime_container) then
-							for spellId, _ in pairs (DetailsFramework.PotionIDs) do
+							for spellId, _ in pairs(DetailsFramework.PotionIDs) do
 								local potionUsed = buff_uptime_container [spellId]
 				
 								if (potionUsed) then
@@ -1271,8 +1272,8 @@
 			if (debuff_uptime_container) then
 				local focus_potion = debuff_uptime_container [DETAILS_FOCUS_POTION_ID]
 				if (focus_potion) then
-				local name, _, icon = GetSpellInfo (DETAILS_FOCUS_POTION_ID)
-				GameCooltip:AddLine (name, 1) --> can use only 1 focus potion (can't be pre-potion)
+				local name, _, icon = GetSpellInfo(DETAILS_FOCUS_POTION_ID)
+				GameCooltip:AddLine (name, 1) --can use only 1 focus potion (can't be pre-potion)
 				_detalhes:AddTooltipBackgroundStatusbar()
 				GameCooltip:AddIcon (icon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
 				end
@@ -1281,11 +1282,11 @@
 			--get the misc actor container
 			local buff_uptime_container = player.buff_uptime and player.buff_uptime_spells and player.buff_uptime_spells._ActorTable
 			if (buff_uptime_container) then
-				for spellId, _ in pairs (DetailsFramework.PotionIDs) do
+				for spellId, _ in pairs(DetailsFramework.PotionIDs) do
 					local potionUsed = buff_uptime_container [spellId]
 			
 					if (potionUsed) then
-						local name, _, icon = GetSpellInfo (spellId)
+						local name, _, icon = GetSpellInfo(spellId)
 						GameCooltip:AddLine (name, potionUsed.activedamt)
 						_detalhes:AddTooltipBackgroundStatusbar()
 						GameCooltip:AddIcon (icon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
@@ -1296,14 +1297,14 @@
 		}
 		
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_POT_DEFAULT"] and (custom.script_version and custom.script_version >= PotionUsed.script_version) ) then
 				have = true
 				break
 			end
 		end
 		if (not have) then
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_POT_DEFAULT"]) then
 					table.remove (self.custom, i)
 				end
@@ -1333,10 +1334,10 @@
 			
 			--do the loop
 			local AllHealCharacters = combat:GetActorList (DETAILS_ATTRIBUTE_HEAL)
-			for index, character in ipairs (AllHealCharacters) do
+			for index, character in ipairs(AllHealCharacters) do
 				local AllSpells = character:GetSpellList()
 				local found = false
-				for spellid, spell in pairs (AllSpells) do
+				for spellid, spell in pairs(AllSpells) do
 					if (DETAILS_HEALTH_POTION_LIST [spellid]) then
 						instance_container:AddValue (character, spell.total)
 						total = total + spell.total
@@ -1366,28 +1367,28 @@
 				local hs = actor:GetSpell (6262)
 				if (hs) then
 					GameCooltip:AddLine (select (1, GetSpellInfo(6262)),  _detalhes:ToK(hs.total))
-					GameCooltip:AddIcon (select (3, GetSpellInfo (6262)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddIcon (select (3, GetSpellInfo(6262)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
 					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
 				end
 				
 				local pot = actor:GetSpell (DETAILS_HEALTH_POTION_ID)
 				if (pot) then
 					GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_HEALTH_POTION_ID)),  _detalhes:ToK(pot.total))
-					GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_HEALTH_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddIcon (select (3, GetSpellInfo(DETAILS_HEALTH_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
 					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
 				end
 				
 				local pot = actor:GetSpell (DETAILS_HEALTH_POTION2_ID)
 				if (pot) then
 					GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_HEALTH_POTION2_ID)),  _detalhes:ToK(pot.total))
-					GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_HEALTH_POTION2_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddIcon (select (3, GetSpellInfo(DETAILS_HEALTH_POTION2_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
 					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
 				end
 				
 				local pot = actor:GetSpell (DETAILS_REJU_POTION_ID)
 				if (pot) then
 					GameCooltip:AddLine (select (1, GetSpellInfo(DETAILS_REJU_POTION_ID)),  _detalhes:ToK(pot.total))
-					GameCooltip:AddIcon (select (3, GetSpellInfo (DETAILS_REJU_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
+					GameCooltip:AddIcon (select (3, GetSpellInfo(DETAILS_REJU_POTION_ID)), 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
 					GameCooltip:AddStatusBar (100, 1, R, G, B, A)
 				end
 				
@@ -1399,14 +1400,14 @@
 		}
 --	/run _detalhes:AddDefaultCustomDisplays()
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_HEALTHSTONE_DEFAULT"] and (custom.script_version and custom.script_version >= Healthstone.script_version) ) then
 				have = true
 				break
 			end
 		end
 		if (not have) then
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_HEALTHSTONE_DEFAULT"]) then
 					table.remove (self.custom, i)
 				end
@@ -1435,7 +1436,7 @@
 			]],
 			percent_script = [[
 				local value, top, total, combat, instance = ...
-				return string.format ("%.1f", value/top*100)
+				return string.format("%.1f", value/top*100)
 			]],
 			script = [[
 				--init:
@@ -1446,7 +1447,7 @@
 				local damage_container = combat:GetActorList ( DETAILS_ATTRIBUTE_DAMAGE )
 				
 				--do the loop:
-				for _, player in ipairs ( damage_container ) do 
+				for _, player in ipairs( damage_container ) do 
 					if (player.grupo) then
 						local activity = player:Tempo()
 						total = total + activity
@@ -1465,14 +1466,14 @@
 		}
 
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_ACTIVITY_DPS"] and (custom.script_version and custom.script_version >= DamageActivityTime.script_version) ) then
 				have = true
 				break
 			end
 		end
 		if (not have) then
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_ACTIVITY_DPS"]) then
 					table.remove (self.custom, i)
 				end
@@ -1499,7 +1500,7 @@
 			]],
 			percent_script = [[
 				local value, top, total, combat, instance = ...
-				return string.format ("%.1f", value/top*100)
+				return string.format("%.1f", value/top*100)
 			]],
 			script = [[
 				--init:
@@ -1510,7 +1511,7 @@
 				local damage_container = combat:GetActorList ( DETAILS_ATTRIBUTE_HEAL )
 				
 				--do the loop:
-				for _, player in ipairs ( damage_container ) do 
+				for _, player in ipairs( damage_container ) do 
 					if (player.grupo) then
 						local activity = player:Tempo()
 						total = total + activity
@@ -1529,14 +1530,14 @@
 		}
 
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_ACTIVITY_HPS"] and (custom.script_version and custom.script_version >= HealActivityTime.script_version) ) then
 				have = true
 				break
 			end
 		end
 		if (not have) then
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_ACTIVITY_HPS"]) then
 					table.remove (self.custom, i)
 				end
@@ -1566,7 +1567,7 @@
 
 				local misc_actors = combat:GetActorList (DETAILS_ATTRIBUTE_MISC)
 
-				for index, character in ipairs (misc_actors) do
+				for index, character in ipairs(misc_actors) do
 					if (character.cc_done and character:IsPlayer()) then
 						local cc_done = floor (character.cc_done)
 						instance_container:AddValue (character, cc_done)
@@ -1583,22 +1584,22 @@
 			tooltip = [[
 				local actor, combat, instance = ...
 				local spells = {}
-				for spellid, spell in pairs (actor.cc_done_spells._ActorTable) do
-				    tinsert (spells, {spellid, spell.counter})
+				for spellid, spell in pairs(actor.cc_done_spells._ActorTable) do
+				    tinsert(spells, {spellid, spell.counter})
 				end
 
 				table.sort (spells, _detalhes.Sort2)
 
-				for index, spell in ipairs (spells) do
-				    local name, _, icon = GetSpellInfo (spell [1])
+				for index, spell in ipairs(spells) do
+				    local name, _, icon = GetSpellInfo(spell [1])
 				    GameCooltip:AddLine (name, spell [2])
 				    _detalhes:AddTooltipBackgroundStatusbar()
 				    GameCooltip:AddIcon (icon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)
 				end
 
 				local targets = {}
-				for playername, amount in pairs (actor.cc_done_targets) do
-				    tinsert (targets, {playername, amount})
+				for playername, amount in pairs(actor.cc_done_targets) do
+				    tinsert(targets, {playername, amount})
 				end
 
 				table.sort (targets, _detalhes.Sort2)
@@ -1607,7 +1608,7 @@
 				local class, _, _, _, _, r, g, b = _detalhes:GetClass (actor.nome)
 				_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 0.6)
 
-				for index, target in ipairs (targets) do
+				for index, target in ipairs(targets) do
 				    GameCooltip:AddLine (target[1], target [2])
 				    _detalhes:AddTooltipBackgroundStatusbar()
 				    
@@ -1630,7 +1631,7 @@
 --		/run _detalhes:AddDefaultCustomDisplays()
 		
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_CC_DONE"] and (custom.script_version and custom.script_version >= CC_Done.script_version) ) then
 				have = true
 				break
@@ -1640,10 +1641,10 @@
 			setmetatable (CC_Done, _detalhes.atributo_custom)
 			CC_Done.__index = _detalhes.atributo_custom
 			
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_CC_DONE"]) then
 					table.remove (self.custom, i)
-					tinsert (self.custom, i, CC_Done)
+					tinsert(self.custom, i, CC_Done)
 					have = true
 				end
 			end
@@ -1672,10 +1673,10 @@
 				DETAILS_CUSTOM_CC_RECEIVED_CACHE = DETAILS_CUSTOM_CC_RECEIVED_CACHE or {}
 				wipe (DETAILS_CUSTOM_CC_RECEIVED_CACHE)
 
-				for index, character in ipairs (misc_actors) do
+				for index, character in ipairs(misc_actors) do
 				    if (character.cc_done and character:IsPlayer()) then
 					
-					for player_name, amount in pairs (character.cc_done_targets) do
+					for player_name, amount in pairs(character.cc_done_targets) do
 					    local target = combat (1, player_name) or combat (2, player_name)
 					    if (target and target:IsPlayer()) then
 						instance_container:AddValue (target, amount)
@@ -1701,25 +1702,25 @@
 				local spells, from = {}, {}
 				local misc_actors = combat:GetActorList (DETAILS_ATTRIBUTE_MISC)
 
-				for index, character in ipairs (misc_actors) do
+				for index, character in ipairs(misc_actors) do
 				    if (character.cc_done and character:IsPlayer()) then
 					local on_actor = character.cc_done_targets [name]
 					if (on_actor) then
-					    tinsert (from, {character:name(), on_actor})
+					    tinsert(from, {character:name(), on_actor})
 					    
-					    for spellid, spell in pairs (character.cc_done_spells._ActorTable) do
+					    for spellid, spell in pairs(character.cc_done_spells._ActorTable) do
 						
 						local spell_on_actor = spell.targets [name]
 						if (spell_on_actor) then
 						    local has_spell
-						    for index, spell_table in ipairs (spells) do
+						    for index, spell_table in ipairs(spells) do
 							if (spell_table [1] == spellid) then
 							    spell_table [2] = spell_table [2] + spell_on_actor
 							    has_spell = true
 							end
 						    end
 						    if (not has_spell) then
-							tinsert (spells, {spellid, spell_on_actor}) 
+							tinsert(spells, {spellid, spell_on_actor}) 
 						    end
 						end
 						
@@ -1731,8 +1732,8 @@
 				table.sort (from, _detalhes.Sort2)
 				table.sort (spells, _detalhes.Sort2)
 
-				for index, spell in ipairs (spells) do
-				    local name, _, icon = GetSpellInfo (spell [1])
+				for index, spell in ipairs(spells) do
+				    local name, _, icon = GetSpellInfo(spell [1])
 				    GameCooltip:AddLine (name, spell [2])
 				    _detalhes:AddTooltipBackgroundStatusbar()
 				    GameCooltip:AddIcon (icon, 1, 1, _detalhes.tooltip.line_height, _detalhes.tooltip.line_height)    
@@ -1741,7 +1742,7 @@
 				_detalhes:AddTooltipSpellHeaderText ("From", "yellow", #from)
 				_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 0.6)
 
-				for index, t in ipairs (from) do
+				for index, t in ipairs(from) do
 				    GameCooltip:AddLine (t[1], t[2])
 				    _detalhes:AddTooltipBackgroundStatusbar()
 				    
@@ -1764,7 +1765,7 @@
 --		/run _detalhes:AddDefaultCustomDisplays()
 		
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_CC_RECEIVED"] and (custom.script_version and custom.script_version >= CC_Received.script_version) ) then
 				have = true
 				break
@@ -1774,10 +1775,10 @@
 			setmetatable (CC_Received, _detalhes.atributo_custom)
 			CC_Received.__index = _detalhes.atributo_custom
 			
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_CC_RECEIVED"]) then
 					table.remove (self.custom, i)
-					tinsert (self.custom, i, CC_Received)
+					tinsert(self.custom, i, CC_Received)
 					have = true
 				end
 			end
@@ -1826,7 +1827,7 @@
 
 				if (player) then
 					local spells = player:GetSpellList()
-					for spellid, spell in pairs (spells) do
+					for spellid, spell in pairs(spells) do
 						instance_container:AddValue (spell, spell.total)
 						total = total + spell.total
 						if (top < spell.total) then
@@ -1835,10 +1836,10 @@
 						amount = amount + 1
 					end
 				    
-					for _, PetName in ipairs (player.pets) do
+					for _, PetName in ipairs(player.pets) do
 						local pet = combat (pet_attribute, PetName)
 						if (pet) then
-							for spellid, spell in pairs (pet:GetSpellList()) do
+							for spellid, spell in pairs(pet:GetSpellList()) do
 								instance_container:AddValue (spell, spell.total, nil, " (" .. PetName:gsub ((" <.*"), "") .. ")")
 								total = total + spell.total
 								if (top < spell.total) then
@@ -1865,7 +1866,7 @@
 
 			--get the cooltip object (we dont use the convencional GameTooltip here)
 			local GC = GameCooltip
-			GC:SetOption ("YSpacingMod", 0)
+			GC:SetOption("YSpacingMod", 0)
 
 			local role = DetailsFramework.UnitGroupRolesAssigned ("player")
 
@@ -1893,9 +1894,9 @@
 				local spell_cast = misc_actor.spell_cast and misc_actor.spell_cast [spell.id]
 				
 				if (not spell_cast and misc_actor.spell_cast) then
-				    local spellname = GetSpellInfo (spell.id)
-				    for casted_spellid, amount in pairs (misc_actor.spell_cast) do
-					local casted_spellname = GetSpellInfo (casted_spellid)
+				    local spellname = GetSpellInfo(spell.id)
+				    for casted_spellid, amount in pairs(misc_actor.spell_cast) do
+					local casted_spellname = GetSpellInfo(casted_spellid)
 					if (casted_spellname == spellname) then
 					    spell_cast = amount .. " (|cFFFFFF00?|r)"
 					end
@@ -2026,13 +2027,13 @@
 			percent_script = [[
 				local value, top, total, combat, instance = ...
 				local dps = _detalhes:ToK (floor (value) / combat:GetCombatTime())
-				local percent = string.format ("%.1f", value/total*100)
+				local percent = string.format("%.1f", value/total*100)
 				return dps .. ", " .. percent
 			]],
 		}
 
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_MYSPELLS"] and (custom.script_version and custom.script_version >= MySpells.script_version) ) then
 				have = true
 				break
@@ -2042,10 +2043,10 @@
 			setmetatable (MySpells, _detalhes.atributo_custom)
 			MySpells.__index = _detalhes.atributo_custom
 			
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_MYSPELLS"]) then
 					table.remove (self.custom, i)
-					tinsert (self.custom, i, MySpells)
+					tinsert(self.custom, i, MySpells)
 					have = true
 				end
 			end
@@ -2083,7 +2084,7 @@
 				-- 1: star
 				
 				--do the loop
-				for _, actor in ipairs (Combat:GetActorList (DETAILS_ATTRIBUTE_DAMAGE)) do
+				for _, actor in ipairs(Combat:GetActorList (DETAILS_ATTRIBUTE_DAMAGE)) do
 				    if (actor:IsPlayer()) then
 					if (actor.raid_targets [128]) then
 					    CustomContainer:AddValue (actor, actor.raid_targets [128])
@@ -2124,7 +2125,7 @@
 --		/run _detalhes:AddDefaultCustomDisplays()
 		
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_DAMAGEONSKULL"] and (custom.script_version and custom.script_version >= DamageOnSkullTarget.script_version) ) then
 				have = true
 				break
@@ -2134,10 +2135,10 @@
 			setmetatable (DamageOnSkullTarget, _detalhes.atributo_custom)
 			DamageOnSkullTarget.__index = _detalhes.atributo_custom
 			
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_DAMAGEONSKULL"]) then
 					table.remove (self.custom, i)
-					tinsert (self.custom, i, DamageOnSkullTarget)
+					tinsert(self.custom, i, DamageOnSkullTarget)
 					have = true
 				end
 			end
@@ -2165,7 +2166,7 @@
 				local total, top, amount = 0, 0, 0
 
 				--do the loop
-				for _, actor in ipairs (Combat:GetActorList (DETAILS_ATTRIBUTE_DAMAGE)) do
+				for _, actor in ipairs(Combat:GetActorList (DETAILS_ATTRIBUTE_DAMAGE)) do
 				    if (actor:IsPlayer()) then
 					local total = (actor.raid_targets [1] or 0) --star
 					total = total + (actor.raid_targets [2] or 0) --circle
@@ -2254,7 +2255,7 @@
 --		/run _detalhes:AddDefaultCustomDisplays()
 		
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_DAMAGEONANYMARKEDTARGET"] and (custom.script_version and custom.script_version >= DamageOnAnyTarget.script_version) ) then
 				have = true
 				break
@@ -2264,10 +2265,10 @@
 			setmetatable (DamageOnAnyTarget, _detalhes.atributo_custom)
 			DamageOnAnyTarget.__index = _detalhes.atributo_custom
 			
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_DAMAGEONANYMARKEDTARGET"]) then
 					table.remove (self.custom, i)
-					tinsert (self.custom, i, DamageOnAnyTarget)
+					tinsert(self.custom, i, DamageOnAnyTarget)
 					have = true
 				end
 			end
@@ -2311,7 +2312,7 @@
 				local damage_container_current = CurrentCombat:GetActorList ( DETAILS_ATTRIBUTE_DAMAGE )
 				
 				--do the loop:
-				for _, player in ipairs ( damage_container_overall ) do 
+				for _, player in ipairs( damage_container_overall ) do 
 					--only player in group
 					if (player:IsGroupPlayer()) then
 						instance_container:AddValue (player, player.total)
@@ -2319,7 +2320,7 @@
 				end
 				
 				if (Details.in_combat) then
-					for _, player in ipairs ( damage_container_current ) do 
+					for _, player in ipairs( damage_container_current ) do 
 						--only player in group
 						if (player:IsGroupPlayer()) then
 							instance_container:AddValue (player, player.total)        
@@ -2356,7 +2357,7 @@
 				if (player) then
 					playerTotal = playerTotal + player.total
 					local playerSpells = player:GetSpellList()
-					for spellID, spellTable in pairs (playerSpells) do
+					for spellID, spellTable in pairs(playerSpells) do
 						AllSpells [spellID] = spellTable.total
 					end
 				end
@@ -2366,15 +2367,15 @@
 					if (player) then
 						playerTotal = playerTotal + player.total
 						local playerSpells = player:GetSpellList()
-						for spellID, spellTable in pairs (playerSpells) do
+						for spellID, spellTable in pairs(playerSpells) do
 							AllSpells [spellID] = (AllSpells [spellID] or 0) + (spellTable.total or 0)
 						end
 					end
 				end
 
 				local sortedList = {}
-				for spellID, total in pairs (AllSpells) do
-					tinsert (sortedList, {spellID, total})
+				for spellID, total in pairs(AllSpells) do
+					tinsert(sortedList, {spellID, total})
 				end
 				table.sort (sortedList, Details.Sort2)
 
@@ -2384,10 +2385,10 @@
 
 				local topSpellTotal = sortedList and sortedList[1] and sortedList[1][2] or 0
 
-				for i, t in ipairs (sortedList) do
+				for i, t in ipairs(sortedList) do
 					local spellID, total = unpack (t)
 					if (total > 1) then
-						local spellName, _, spellIcon = Details.GetSpellInfo (spellID)
+						local spellName, _, spellIcon = Details.GetSpellInfo(spellID)
 						
 						local spellPercent = total / playerTotal * 100
 						local formatedSpellPercent = format("%.1f", spellPercent)
@@ -2434,14 +2435,14 @@
 		}
 
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_DYNAMICOVERAL"] and (custom.script_version and custom.script_version >= DynamicOverallDamage.script_version) ) then
 				have = true
 				break
 			end
 		end
 		if (not have) then
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_DYNAMICOVERAL"]) then
 					table.remove (self.custom, i)
 				end
@@ -2470,14 +2471,14 @@
 				local total, top, amount = 0, 0, 0
 
 				--do the loop
-				for index, actor in ipairs (Combat:GetActorList(1)) do
+				for index, actor in ipairs(Combat:GetActorList(1)) do
 				    if (actor:IsPlayer()) then
 					
 					--get the actor total damage absorbed
 					local totalAbsorb = actor.totalabsorbed
 					
 					--get the damage absorbed by all the actor pets
-					for petIndex, petName in ipairs (actor.pets) do
+					for petIndex, petName in ipairs(actor.pets) do
 					    local pet = Combat :GetActor (1, petName)
 					    if (pet) then
 						totalAbsorb = totalAbsorb + pet.totalabsorbed
@@ -2511,7 +2512,7 @@
 				local format_func = Details:GetCurrentToKFunction()
 
 				--get the damage absorbed by all the actor pets
-				for petIndex, petName in ipairs (actor.pets) do
+				for petIndex, petName in ipairs(actor.pets) do
 				    local pet = Combat :GetActor (1, petName)
 				    if (pet) then
 					totalAbsorb = totalAbsorb + pet.totalabsorbed
@@ -2521,7 +2522,7 @@
 				GameCooltip:AddLine (actor:Name(), format_func (_, actor.totalabsorbed))
 				Details:AddTooltipBackgroundStatusbar()
 
-				for petIndex, petName in ipairs (actor.pets) do
+				for petIndex, petName in ipairs(actor.pets) do
 				    local pet = Combat :GetActor (1, petName)
 				    if (pet) then
 					totalAbsorb = totalAbsorb + pet.totalabsorbed
@@ -2535,14 +2536,14 @@
 		}
 
 		local have = false
-		for _, custom in ipairs (self.custom) do
+		for _, custom in ipairs(self.custom) do
 			if (custom.name == Loc ["STRING_CUSTOM_DAMAGEONSHIELDS"] and (custom.script_version and custom.script_version >= DamageOnShields.script_version) ) then
 				have = true
 				break
 			end
 		end
 		if (not have) then
-			for i, custom in ipairs (self.custom) do
+			for i, custom in ipairs(self.custom) do
 				if (custom.name == Loc ["STRING_CUSTOM_DAMAGEONSHIELDS"]) then
 					table.remove (self.custom, i)
 				end

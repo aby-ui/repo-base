@@ -59,17 +59,20 @@ config.options = {
                 },
                 easy_waypoint = {
                     type = "toggle",
-                    width = "full",
-                    name = function()
-                        if IsAddOnLoaded("TomTom") then
-                            return L["config_easy_waypoints"]
-                        else
-                            return L["config_easy_waypoints"].." |cFFFF0000("..L["handler_tooltip_requires"].." TomTom)|r"
-                        end
-                    end,
-                    disabled = function() return not IsAddOnLoaded("TomTom") end,
+                    width = 1.3,
+                    name = L["config_easy_waypoints"],
                     desc = L["config_easy_waypoints_desc"],
                     order = 26,
+                },
+                easy_waypoint_dropdown = {
+                    type = "select",
+                    values = { L["Blizzard"], L["TomTom"], L["Both"] },
+                    disabled = function() return not private.db.easy_waypoint end,
+                    hidden = function() return not IsAddOnLoaded("TomTom") end,
+                    name = L["config_waypoint_dropdown"],
+                    desc = L["config_waypoint_dropdown_desc"],
+                    width = 0.7,
+                    order = 27,
                 },
                 unhide = {
                     type = "execute",
@@ -83,7 +86,7 @@ config.options = {
                         addon:Refresh()
                         print("Covenant Sanctum: "..L["config_restore_nodes_print"])
                     end,
-                    order = 27,
+                    order = 28,
                 },
             },
             },

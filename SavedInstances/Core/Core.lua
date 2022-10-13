@@ -23,8 +23,6 @@ local GRAY_COLOR = { 0.5, 0.5, 0.5, 1 }
 local INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED =
   INSTANCE_SAVED, TRANSFER_ABORT_TOO_MANY_INSTANCES, NO_RAID_INSTANCES_SAVED
 
-local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
-
 local ALREADY_LOOTED = ERR_LOOT_GONE:gsub("%(.*%)","")
 ALREADY_LOOTED = ALREADY_LOOTED:gsub("（.*）","") -- fix on zhCN and zhTW
 
@@ -1326,9 +1324,9 @@ function SI:UpdateToonData()
     RequestTimePlayed()
   end
   t.LFG1 = SI:GetTimeToTime(GetLFGRandomCooldownExpiration()) or t.LFG1
-  t.LFG2 = SI:GetTimeToTime(select(6, GetPlayerAuraBySpellID(71041))) or t.LFG2 -- GetLFGDeserterExpiration()
+  t.LFG2 = SI:GetTimeToTime(SI:GetPlayerAuraExpirationTime(71041)) or t.LFG2 -- GetLFGDeserterExpiration()
   if t.LFG2 then SI:updateSpellTip(71041) end
-  t.pvpdesert = SI:GetTimeToTime(select(6, GetPlayerAuraBySpellID(26013))) or t.pvpdesert
+  t.pvpdesert = SI:GetTimeToTime(SI:GetPlayerAuraExpirationTime(26013)) or t.pvpdesert
   if t.pvpdesert then SI:updateSpellTip(26013) end
   for toon, ti in pairs(SI.db.Toons) do
     if ti.LFG1 and (ti.LFG1 < now) then ti.LFG1 = nil end
@@ -2517,7 +2515,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "9.2.4" then
+  if versionString == "c8a347a" then
     versionString = "Dev"
   end
   --@end-debug@]==]
@@ -2629,8 +2627,10 @@ function SI:OnEnable()
   self:RegisterEvent("MYTHIC_PLUS_NEW_WEEKLY_RECORD", "UpdateToonData")
   self:RegisterEvent("ZONE_CHANGED_NEW_AREA", RequestRatedInfo)
   self:RegisterEvent("PLAYER_ENTERING_WORLD", function()
-    RequestRatedInfo()
-    C_Timer.After(1, RequestRaidInfo)
+    C_Timer.After(1, function()
+      RequestRatedInfo()
+      RequestRaidInfo()
+    end)
 
     SI:UpdateToonData()
   end)
@@ -3025,7 +3025,7 @@ function SI:QuestRefresh(recoverdaily, nextreset, weeklyreset)
 
   for _, qinfo in pairs(SI:specialQuests()) do
     local qid = qinfo.quest
-    if IsQuestFlaggedCompleted(qid) then
+    if C_QuestLog.IsQuestFlaggedCompleted(qid) then
       local q = tiq[qid] or {}
       tiq[qid] = q
       q.Title = qinfo.name
@@ -3051,7 +3051,7 @@ function SI:QuestRefresh(recoverdaily, nextreset, weeklyreset)
     end
     if recoverdaily or (scope ~= "Daily") then
       for qid, mapid in pairs(list) do
-        if tonumber(qid) and IsQuestFlaggedCompleted(qid) and not questlist[qid] and -- recovering a lost quest
+        if tonumber(qid) and C_QuestLog.IsQuestFlaggedCompleted(qid) and not questlist[qid] and -- recovering a lost quest
           (list.expires == nil or list.expires > now) then -- don't repop darkmoon quests from last faire
           local title, link = SI:QuestInfo(qid)
           if title then
@@ -3156,7 +3156,7 @@ function SI:Refresh(recoverdaily)
   end
   for _,einfo in pairs(SI.WorldBosses) do
     if weeklyreset and (
-      (einfo.quest and IsQuestFlaggedCompleted(einfo.quest)) or
+      (einfo.quest and C_QuestLog.IsQuestFlaggedCompleted(einfo.quest)) or
       wbsave[einfo.savename or einfo.name]
       ) then
       local truename = einfo.name
@@ -3411,17 +3411,6 @@ local function OpenLFR(self, instanceid, button)
   end
   if RaidFinderFrame and RaidFinderFrame:IsVisible() and RaidFinderQueueFrame_SetRaid then
     RaidFinderQueueFrame_SetRaid(instanceid)
-  end
-end
-
-local function OpenLFS(self, instanceid, button)
-  if ScenarioFinderFrame and ScenarioFinderFrame:IsVisible() and ScenarioQueueFrame.type ~= instanceid then
-  -- changing entries
-  else
-    PVEFrame_ToggleFrame("GroupFinderFrame", ScenarioFinderFrame)
-  end
-  if ScenarioFinderFrame and ScenarioFinderFrame:IsVisible() and ScenarioQueueFrame_SetType then
-    ScenarioQueueFrame_SetType(instanceid)
   end
 end
 
@@ -3782,11 +3771,7 @@ function SI:ShowTooltip(anchorframe)
           end
           local tstr = SecondsToTime(d.Expires - time(), false, false, 1)
           tooltip:SetCell(row, columns[toon..1], ClassColorise(t.Class,tstr), "CENTER",maxcol)
-          if info.Scenario then
-            tooltip:SetLineScript(row, "OnMouseDown", OpenLFS, info.LFDID)
-          else
-            tooltip:SetLineScript(row, "OnMouseDown", OpenLFD, info.LFDID)
-          end
+          tooltip:SetLineScript(row, "OnMouseDown", OpenLFD, info.LFDID)
         end
       end
     end

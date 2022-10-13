@@ -52,7 +52,7 @@ GTFOLocal =
 	UI_VolumeNormal = "3: Normal (Recommended)",
 	UI_VolumeQuiet = "1: Quiet",
 	UI_VolumeSoft = "2: Soft",
-	UI_VolumeLouder = "5: Loud",
+	UI_VolumeLouder = "5: That Bastard Chap",
 	-- 3.0
 	UI_Unmute = "Play sounds when muted",
 	-- 3.1

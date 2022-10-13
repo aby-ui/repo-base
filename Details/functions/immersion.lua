@@ -40,7 +40,7 @@ function immersionFrame.CheckIfCanEnableImmersion()
 end
 
 --check events
-immersionFrame:SetScript("OnEvent", function (_, event, ...)
+immersionFrame:SetScript("OnEvent", function(_, event, ...)
     if (event == "ZONE_CHANGED_NEW_AREA") then
         C_Timer.After(3, immersionFrame.CheckIfCanEnableImmersion)
     end
@@ -61,7 +61,7 @@ Details.Immersion.IconDatabase = {
     ["166151"] = {file = iconPath1, iconId = 9, interest = true, class = "WARRIOR"}, --moriaz the red, a npc inside torghast
 }
 
-Details.Immersion.IconDatabase = {} --abyui TODO
+Details.Immersion.IconDatabase = {} --abyui TODO too big
 
 local customIconsDB = Details.Immersion.IconDatabase
 

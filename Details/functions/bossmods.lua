@@ -2,7 +2,7 @@
 local Details = _G.Details
 
 
---> get the total of damage and healing of a phase of an encounter
+--get the total of damage and healing of a phase of an encounter
 function Details:OnCombatPhaseChanged()
 
     local current_combat = Details:GetCurrentCombat()
@@ -23,13 +23,13 @@ function Details:OnCombatPhaseChanged()
         current_combat.PhaseData.heal [current_phase] = phase_healing_container
     end
     
-    for index, damage_actor in ipairs (Details.cache_damage_group) do
+    for index, damage_actor in ipairs(Details.cache_damage_group) do
         local phase_damage = damage_actor.total - (phase_damage_section [damage_actor.nome] or 0)
         phase_damage_section [damage_actor.nome] = damage_actor.total
         phase_damage_container [damage_actor.nome] = (phase_damage_container [damage_actor.nome] or 0) + phase_damage
     end
     
-    for index, healing_actor in ipairs (Details.cache_healing_group) do
+    for index, healing_actor in ipairs(Details.cache_healing_group) do
         local phase_heal = healing_actor.total - (phase_healing_section [healing_actor.nome] or 0)
         phase_healing_section [healing_actor.nome] = healing_actor.total
         phase_healing_container [healing_actor.nome] = (phase_healing_container [healing_actor.nome] or 0) + phase_heal
@@ -79,11 +79,11 @@ function Details:BossModsLink()
                 local cur_combat = Details:GetCurrentCombat()
                 local time = cur_combat:GetCombatTime()
                 if (time > 5) then
-                    tinsert (cur_combat.PhaseData, {phase, time})
+                    tinsert(cur_combat.PhaseData, {phase, time})
                 end
                 
-                Details:SendEvent ("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
-                --Details:Msg ("Current phase is now:", phase)
+                Details:SendEvent("COMBAT_ENCOUNTER_PHASE_CHANGED", nil, phase)
+                --Details:Msg("Current phase is now:", phase)
             end
         end
 
@@ -104,8 +104,8 @@ function Details:CreateCallbackListeners()
     local current_table_dbm = {}
     local current_table_bigwigs = {}
 
-    local event_frame = CreateFrame ("frame", nil, UIParent, "BackdropTemplate")
-    event_frame:SetScript ("OnEvent", function (self, event, ...)
+    local event_frame = CreateFrame("frame", nil, UIParent, "BackdropTemplate")
+    event_frame:SetScript("OnEvent", function(self, event, ...)
         if (event == "ENCOUNTER_START") then
             local encounterID, encounterName, difficultyID, raidSize = select (1, ...)
             current_encounter = encounterID
@@ -114,7 +114,7 @@ function Details:CreateCallbackListeners()
             if (current_encounter) then
                 if (_G.DBM) then
                     local db = Details.boss_mods_timers
-                    for spell, timer_table in pairs (current_table_dbm) do
+                    for spell, timer_table in pairs(current_table_dbm) do
                         if (not db.encounter_timers_dbm [timer_table[1]]) then
                             timer_table.id = current_encounter
                             db.encounter_timers_dbm [timer_table[1]] = timer_table
@@ -123,7 +123,7 @@ function Details:CreateCallbackListeners()
                 end
                 if (BigWigs) then
                     local db = Details.boss_mods_timers
-                    for timer_id, timer_table in pairs (current_table_bigwigs) do
+                    for timer_id, timer_table in pairs(current_table_bigwigs) do
                         if (not db.encounter_timers_bw [timer_id]) then
                             timer_table.id = current_encounter
                             db.encounter_timers_bw [timer_id] = timer_table
@@ -142,7 +142,7 @@ function Details:CreateCallbackListeners()
     event_frame:RegisterEvent ("PLAYER_REGEN_ENABLED")
 
     if (_G.DBM) then
-        local dbm_timer_callback = function (bar_type, id, msg, timer, icon, bartype, spellId, colorId, modid)
+        local dbm_timer_callback = function(bar_type, id, msg, timer, icon, bartype, spellId, colorId, modid)
             local spell = tostring (spellId)
             if (spell and not current_table_dbm [spell]) then
                 current_table_dbm [spell] = {spell, id, msg, timer, icon, bartype, spellId, colorId, modid}
@@ -158,7 +158,7 @@ function Details:CreateCallbackListeners()
             function Details:BigWigs_StartBar (event, module, spellid, bar_text, time, icon, ...)
                 spellid = tostring (spellid)
                 if (not current_table_bigwigs [spellid]) then
-                    current_table_bigwigs [spellid] = {(type (module) == "string" and module) or (module and module.moduleName) or "", spellid or "", bar_text or "", time or 0, icon or ""}
+                    current_table_bigwigs [spellid] = {(type(module) == "string" and module) or (module and module.moduleName) or "", spellid or "", bar_text or "", time or 0, icon or ""}
                 end
             end
             if (BigWigsLoader.RegisterMessage) then

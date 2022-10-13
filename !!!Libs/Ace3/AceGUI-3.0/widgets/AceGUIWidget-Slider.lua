@@ -14,10 +14,6 @@ local tonumber, pairs = tonumber, pairs
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
 
--- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
--- List them here for Mikk's FindGlobals script
--- GLOBALS: GameFontHighlightSmall
-
 --[[-----------------------------------------------------------------------------
 Support functions
 -------------------------------------------------------------------------------]]
@@ -31,13 +27,13 @@ local function UpdateText(self)
 end
 
 local function UpdateLabels(self)
-	local min, max = (self.min or 0), (self.max or 100)
+	local min_value, max_value = (self.min or 0), (self.max or 100)
 	if self.ispercent then
-		self.lowtext:SetFormattedText("%s%%", (min * 100))
-		self.hightext:SetFormattedText("%s%%", (max * 100))
+		self.lowtext:SetFormattedText("%s%%", (min_value * 100))
+		self.hightext:SetFormattedText("%s%%", (max_value * 100))
 	else
-		self.lowtext:SetText(min)
-		self.hightext:SetText(max)
+		self.lowtext:SetText(min_value)
+		self.hightext:SetText(max_value)
 	end
 end
 
@@ -175,13 +171,13 @@ local methods = {
 		self.label:SetText(text)
 	end,
 
-	["SetSliderValues"] = function(self, min, max, step)
+	["SetSliderValues"] = function(self, min_value, max_value, step)
 		local frame = self.slider
 		frame.setup = true
-		self.min = min
-		self.max = max
+		self.min = min_value
+		self.max = max_value
 		self.step = step
-		frame:SetMinMaxValues(min or 0,max or 100)
+		frame:SetMinMaxValues(min_value or 0,max_value or 100)
 		UpdateLabels(self)
 		frame:SetValueStep(step or 1)
 		if self.value then

@@ -7,9 +7,9 @@ local ipairs, pairs, wipe = ipairs, pairs, wipe
 -- WoW API / Variables
 local C_Covenants_GetActiveCovenantID = C_Covenants.GetActiveCovenantID
 local C_CurrencyInfo_GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
+local C_QuestLog_IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
 local GetItemCount = GetItemCount
 local GetMoney = GetMoney
-local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 
 local currency = {
   81, -- Epicurean Award
@@ -190,7 +190,7 @@ function Module:UpdateCurrency()
         if tbl.earnByQuest then
           ci.earnedThisWeek = 0
           for _, questID in ipairs(tbl.earnByQuest) do
-            if IsQuestFlaggedCompleted(questID) then
+            if C_QuestLog_IsQuestFlaggedCompleted(questID) then
               ci.earnedThisWeek = ci.earnedThisWeek + 1
             end
           end

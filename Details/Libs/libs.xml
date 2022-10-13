@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 	<Include file="NickTag-1.0\NickTag-1.0.lua" />
-	<Script file="..\..\!!!Libs\!External\LibGraph-2.0\LibGraph-2.0.lua"/>
+	<Script file="..\..\!!!Libs\!External\LibGraph-2.0\LibGraph-2.0\LibGraph-2.0.lua"/>
 	<!--
 	<Script file="LibWindow-1.1\LibWindow-1.1.lua"/>
 	<Include file="LibDeflate\lib.xml"/>

@@ -939,11 +939,19 @@ end
 
 local firstoptiongroup, lastoptiongroup
 function Config:ReopenConfigDisplay(f)
-  if _G.InterfaceOptionsFrame:IsShown() then
-    _G.InterfaceOptionsFrame:Hide();
-    InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
-    InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
-    InterfaceOptionsFrame_OpenToCategory(f)
+  if _G.SettingsPanel then
+    -- Dragonflight
+    if _G.SettingsPanel:IsShown() then
+      HideUIPanel(SettingsPanel)
+      Settings.OpenToCategory(firstoptiongroup.name)
+    end
+  else
+    if _G.InterfaceOptionsFrame:IsShown() then
+      _G.InterfaceOptionsFrame:Hide();
+      InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
+      InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
+      InterfaceOptionsFrame_OpenToCategory(f)
+    end
   end
 end
 
@@ -989,11 +997,20 @@ function Config:SetupOptions()
 end
 
 function Config:ShowConfig()
-  if _G.InterfaceOptionsFrame:IsShown() then
-    _G.InterfaceOptionsFrame:Hide()
+  if _G.SettingsPanel then
+    -- Dragonflight
+    if _G.SettingsPanel:IsShown() then
+      HideUIPanel(SettingsPanel)
+    else
+      Settings.OpenToCategory(firstoptiongroup.name)
+    end
   else
-    InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
-    InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
+    if _G.InterfaceOptionsFrame:IsShown() then
+      _G.InterfaceOptionsFrame:Hide()
+    else
+      InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
+      InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
+    end
   end
 end
 
@@ -1035,7 +1052,7 @@ local function DeleteCharacter(toon)
 end
 
 StaticPopupDialogs["SAVEDINSTANCES_RESET"] = {
-  preferredIndex = 3, -- reduce the chance of UI taint
+  preferredIndex = STATICPOPUP_NUMDIALOGS, -- reduce the chance of UI taint
   text = L["Are you sure you want to reset the SavedInstances character database? Characters will be re-populated as you log into them."],
   button1 = OKAY,
   button2 = CANCEL,
@@ -1048,7 +1065,7 @@ StaticPopupDialogs["SAVEDINSTANCES_RESET"] = {
 }
 
 StaticPopupDialogs["SAVEDINSTANCES_DELETE_CHARACTER"] = {
-  preferredIndex = STATICPOPUPS_NUMDIALOGS, -- reduce the chance of UI taint
+  preferredIndex = STATICPOPUP_NUMDIALOGS, -- reduce the chance of UI taint
   text = string.format(L["Are you sure you want to remove %s from the SavedInstances character database?"],"\n\n%s%s\n\n").."\n\n"..
   L["This should only be used for characters who have been renamed or deleted, as characters will be re-populated when you log into them."],
   button1 = OKAY,

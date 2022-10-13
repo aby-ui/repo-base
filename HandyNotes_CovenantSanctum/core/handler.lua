@@ -5,8 +5,9 @@
 local FOLDER_NAME, private = ...
 
 local addon = LibStub("AceAddon-3.0"):NewAddon(FOLDER_NAME, "AceEvent-3.0", "AceTimer-3.0")
-local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
 local AceDB = LibStub("AceDB-3.0")
+local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
+local HBD = LibStub('HereBeDragons-2.0')
 local L = LibStub("AceLocale-3.0"):GetLocale(FOLDER_NAME)
 private.locale = L
 
@@ -172,6 +173,19 @@ local function addTomTomWaypoint(button, uMapID, coord)
     end
 end
 
+local function addBlizzardWaypoint(button, uMapID, coord)
+    local x, y = HandyNotes:getXY(coord)
+    local parentMapID = C_Map.GetMapInfo(uMapID)["parentMapID"]
+    if (not C_Map.CanSetUserWaypointOnMap(uMapID)) then
+        local wx, wy = HBD:GetWorldCoordinatesFromZone(x, y, uMapID)
+        uMapID = parentMapID
+        x, y = HBD:GetZoneCoordinatesFromWorld(wx, wy, parentMapID)
+    end
+
+    C_Map.SetUserWaypoint(UiMapPoint.CreateFromCoordinates(uMapID, x, y))
+    C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+end
+
 --------------------------------------------CONTEXT MENU--------------------------------------------
 
 do
@@ -180,45 +194,50 @@ do
     local function generateMenu(button, level)
         if (not level) then return end
         if (level == 1) then
---      local spacer = {text='', disabled=true, notClickable=true, notCheckable=true}
 
             -- Create the title of the menu
-            info = UIDropDownMenu_CreateInfo()
-            info.isTitle = true
-            info.text = L["handler_context_menu_addon_name"]
-            info.notCheckable = true
-            UIDropDownMenu_AddButton(info, level)
+            UIDropDownMenu_AddButton({
+                isTitle = true,
+                text = L["handler_context_menu_addon_name"],
+                notCheckable = true
+            }, level)
 
---            UIDropDownMenu_AddButton(spacer, level)
-
-            if TomTom and not private.db.easy_waypoint then
-                -- Waypoint menu item
-                info = UIDropDownMenu_CreateInfo()
-                info.text = L["handler_context_menu_add_tomtom"]
-                info.notCheckable = true
-                info.func = addTomTomWaypoint
-                info.arg1 = currentMapID
-                info.arg2 = currentCoord
-                UIDropDownMenu_AddButton(info, level)
+            -- TomTom waypoint menu item
+            if (IsAddOnLoaded("TomTom")) then
+                UIDropDownMenu_AddButton({
+                    text = L["handler_context_menu_add_tomtom"],
+                    notCheckable = true,
+                    func = addTomTomWaypoint,
+                    arg1 = currentMapID,
+                    arg2 = currentCoord
+                }, level)
             end
 
-            -- Hide menu item
-            info = UIDropDownMenu_CreateInfo()
-            info.text         = L["handler_context_menu_hide_node"]
-            info.notCheckable = true
-            info.func         = hideNode
-            info.arg1         = currentMapID
-            info.arg2         = currentCoord
-            UIDropDownMenu_AddButton(info, level)
+            -- Blizzard waypoint menu item
+            UIDropDownMenu_AddButton({
+                text = L["handler_context_menu_add_map_pin"],
+                notCheckable = true,
+                func = addBlizzardWaypoint,
+                arg1 = currentMapID,
+                arg2 = currentCoord
+            }, level)
 
---          UIDropDownMenu_AddButton(spacer, level)
+            -- Hide menu item
+            UIDropDownMenu_AddButton({
+                text         = L["handler_context_menu_hide_node"],
+                notCheckable = true,
+                func         = hideNode,
+                arg1         = currentMapID,
+                arg2         = currentCoord
+            }, level)
 
             -- Close menu item
-            info = UIDropDownMenu_CreateInfo()
-            info.text         = CLOSE
-            info.func         = closeAllDropdowns
-            info.notCheckable = true
-            UIDropDownMenu_AddButton(info, level)
+            UIDropDownMenu_AddButton({
+                text         = CLOSE,
+                func         = closeAllDropdowns,
+                notCheckable = true
+            }, level)
+
         end
     end
 
@@ -227,22 +246,26 @@ do
     HL_Dropdown.initialize = generateMenu
 
     function PluginHandler:OnClick(button, down, uMapID, coord)
-        if ((down or button ~= "RightButton") and private.db.easy_waypoint and TomTom) then
-            return
-        end
-        if ((button == "RightButton" and not down) and (not private.db.easy_waypoint or not TomTom)) then
+        local TomTom = select(2, IsAddOnLoaded('TomTom'))
+        local dropdown = private.db.easy_waypoint_dropdown
+
+        if (down or button ~= "RightButton") then return end
+
+        if (button == "RightButton" and not down and not private.db.easy_waypoint) then
             currentMapID = uMapID
             currentCoord = coord
             ToggleDropDownMenu(1, nil, HL_Dropdown, self, 0, 0)
-        end
-        if (IsControlKeyDown() and private.db.easy_waypoint and TomTom) then
+        elseif (IsControlKeyDown() and private.db.easy_waypoint) then
             currentMapID = uMapID
             currentCoord = coord
             ToggleDropDownMenu(1, nil, HL_Dropdown, self, 0, 0)
-        else
-        if private.db.easy_waypoint and TomTom then
+        elseif (not TomTom or dropdown == 1) then
+            addBlizzardWaypoint(button, uMapID, coord)
+        elseif (TomTom and dropdown == 2) then
             addTomTomWaypoint(button, uMapID, coord)
-        end
+        else
+            addBlizzardWaypoint(button, uMapID, coord)
+            if (TomTom) then addTomTomWaypoint(button, uMapID, coord) end
         end
     end
 end

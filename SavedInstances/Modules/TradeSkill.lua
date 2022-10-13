@@ -7,19 +7,15 @@ local date, wipe, ipairs, tonumber, time = date, wipe, ipairs, tonumber, time
 local _G = _G
 
 -- WoW API / Variables
+local C_TradeSkillUI_GetAllRecipeIDs = C_TradeSkillUI.GetAllRecipeIDs
 local C_TradeSkillUI_GetFilteredRecipeIDs = C_TradeSkillUI.GetFilteredRecipeIDs
 local C_TradeSkillUI_GetRecipeCooldown = C_TradeSkillUI.GetRecipeCooldown
 local C_TradeSkillUI_IsTradeSkillGuild = C_TradeSkillUI.IsTradeSkillGuild
 local C_TradeSkillUI_IsTradeSkillLinked = C_TradeSkillUI.IsTradeSkillLinked
-local ExpandTradeSkillSubClass = ExpandTradeSkillSubClass
 local GetItemCooldown = GetItemCooldown
 local GetItemInfo = GetItemInfo
 local GetSpellInfo = GetSpellInfo
 local GetSpellLink = GetSpellLink
-local SetTradeSkillCategoryFilter = SetTradeSkillCategoryFilter
-local SetTradeSkillInvSlotFilter = SetTradeSkillInvSlotFilter
-local TradeSkillOnlyShowMakeable = TradeSkillOnlyShowMakeable
-local TradeSkillOnlyShowSkillUps = TradeSkillOnlyShowSkillUps
 
 local trade_spells = {
   -- Alchemy
@@ -321,57 +317,54 @@ function Module:RecordSkill(spellID, expires)
   return true
 end
 
-function Module:TradeSkillRescan(spellid)
-  local scan = self:TRADE_SKILL_LIST_UPDATE()
-  if _G.TradeSkillFrame and _G.TradeSkillFrame.filterTbl and
-    (scan == 0 or not self.seencds or not self.seencds[spellid]) then
+function Module:RescanTradeSkill(spellID)
+  local count = self:ScanTradeSkill()
+
+  if count == 0 or not self.cooldownFound or not self.cooldownFound[spellID] then
     -- scan failed, probably because the skill is hidden - try again
-    self.filtertmp = wipe(self.filtertmp or {})
-    for k,v in pairs(_G.TradeSkillFrame.filterTbl) do self.filtertmp[k] = v end
-    TradeSkillOnlyShowMakeable(false)
-    TradeSkillOnlyShowSkillUps(false)
-    SetTradeSkillCategoryFilter(-1)
-    SetTradeSkillInvSlotFilter(-1, 1, 1)
-    ExpandTradeSkillSubClass(0)
-    local rescan = self:TRADE_SKILL_LIST_UPDATE()
-    SI:Debug("Rescan: "..(rescan==scan and "Failed" or "Success"))
-    TradeSkillOnlyShowMakeable(self.filtertmp.hasMaterials)
-    TradeSkillOnlyShowSkillUps(self.filtertmp.hasSkillUp)
-    SetTradeSkillCategoryFilter(self.filtertmp.subClassValue or -1)
-    SetTradeSkillInvSlotFilter(self.filtertmp.slotValue or -1, 1, 1)
+    local rescanCount = self:ScanTradeSkill(true)
+    SI:Debug("Rescan: " .. (rescanCount == count and "Failed" or "Success"))
   end
+end
+
+function Module:ScanTradeSkill(isAll)
+  if C_TradeSkillUI_IsTradeSkillLinked() or C_TradeSkillUI_IsTradeSkillGuild() then return end
+
+  local count = 0
+  local data = isAll and C_TradeSkillUI_GetAllRecipeIDs() or C_TradeSkillUI_GetFilteredRecipeIDs()
+  for _, spellID in ipairs(data) do
+    local cooldown, isDayCooldown = C_TradeSkillUI_GetRecipeCooldown(spellID)
+    if (
+      cooldown and isDayCooldown -- GetRecipeCooldown often returns WRONG answers for daily cds
+      and not tonumber(trade_spells[spellID]) -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
+    ) then
+      cooldown = SI:GetNextDailySkillResetTime()
+    elseif cooldown then
+      cooldown = time() + cooldown -- on cooldown
+    else
+      cooldown = 0 -- off cooldown or no cooldown
+    end
+
+    self:RecordSkill(spellID, cooldown)
+    if cooldown then
+      self.cooldownFound = self.cooldownFound or {}
+      self.cooldownFound[spellID] = true
+      count = count + 1
+    end
+  end
+
+  return count
 end
 
 function Module:TRADE_SKILL_LIST_UPDATE()
-  local cnt = 0
-  if C_TradeSkillUI_IsTradeSkillLinked() or C_TradeSkillUI_IsTradeSkillGuild() then return end
-  local recipeids = C_TradeSkillUI_GetFilteredRecipeIDs()
-  for _, spellid in ipairs(recipeids) do
-    local cd, daily = C_TradeSkillUI_GetRecipeCooldown(spellid)
-    if cd and daily -- GetTradeSkillCooldown often returns WRONG answers for daily cds
-      and not tonumber(trade_spells[spellid]) then -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
-      cd = SI:GetNextDailySkillResetTime()
-    elseif cd then
-      cd = time() + cd  -- on cd
-    else
-      cd = 0 -- off cd or no cd
-    end
-    self:RecordSkill(spellid, cd)
-    if cd then
-      self.seencds = self.seencds or {}
-      self.seencds[spellid] = true
-      cnt = cnt + 1
-    end
-  end
-
-  return cnt
+  self:ScanTradeSkill()
 end
 
 function Module:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, spellID)
-  if unit ~= "player" then return end
-  if trade_spells[spellID] then
-    SI:Debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)",GetSpellLink(spellID),spellID)
-    if not self:RecordSkill(spellID) then return end
-    self:ScheduleTimer("TradeSkillRescan", 0.5, spellID)
-  end
+  if unit ~= "player" or not trade_spells[spellID] then return end
+
+  SI:Debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)", GetSpellLink(spellID), spellID)
+
+  if not self:RecordSkill(spellID) then return end
+  self:ScheduleTimer("RescanTradeSkill", 0.5, spellID)
 end

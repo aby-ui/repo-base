@@ -1,4 +1,4 @@
-local _
+
 
 local _detalhes	= 	_G._detalhes
 local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
@@ -10,6 +10,13 @@ local UIParent = UIParent
 local UnitGUID = UnitGUID 
 local tonumber= tonumber 
 local LoggingCombat = LoggingCombat
+
+SLASH_DUMPTABLE1 = "/dumpt"
+function SlashCmdList.DUMPTABLE(msg, editbox)
+	local result = "return function() return " .. msg .. " end"
+	local extractValue = loadstring(result)
+	return Details:Dump(extractValue()())
+end
 
 SLASH_DETAILS1, SLASH_DETAILS2, SLASH_DETAILS3 = "/details", "/dt", "/de"
 
@@ -46,7 +53,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local instance = rest:match ("^(%S*)%s*(.-)$")
 		instance = tonumber (instance)
 		if (instance) then
-			local this_instance = _detalhes:GetInstance (instance)
+			local this_instance = _detalhes:GetInstance(instance)
 			if (not this_instance) then
 				return _detalhes:Msg (Loc ["STRING_WINDOW_NOTFOUND"])
 			end
@@ -56,7 +63,36 @@ function SlashCmdList.DETAILS (msg, editbox)
 		else
 			_detalhes:ShutDownAllInstances()
 		end
-	
+
+	elseif (command == "perf") then
+		local performanceData = Details.performanceData
+		local framesLost = ceil(performanceData.deltaTime / 60)
+		local callStack = performanceData.callStack
+
+		local returnTable = {}
+
+		returnTable[#returnTable+1] = "Stuttering Information:"
+		returnTable[#returnTable+1] = "An addon feature, script is using: " .. performanceData.culpritFunc .. ""
+
+		returnTable[#returnTable+1] = ""
+
+		returnTable[#returnTable+1] = "Description: " .. performanceData.culpritDesc
+
+		returnTable[#returnTable+1] = ""
+
+		returnTable[#returnTable+1] = "You may first: disable the addon feature that uses the functionality."
+		returnTable[#returnTable+1] = "Second: disable a script which are using the function call: " .. performanceData.culpritFunc .. "."
+
+		returnTable[#returnTable+1] = ""
+
+		returnTable[#returnTable+1] = "Callstack for Debug:"
+		local callStackTable = DetailsFramework:SplitTextInLines(callStack)
+		for i = 1, #callStackTable do
+			returnTable[#returnTable+1] = callStackTable[i]
+		end
+
+		dumpt(returnTable)
+
 	elseif (command == "softhide") then
 		for instanceID, instance in _detalhes:ListInstances() do
 			if (instance:IsEnabled()) then
@@ -96,7 +132,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local instance = rest:match ("^(%S*)%s*(.-)$")
 		instance = tonumber (instance)
 		if (instance) then
-			local this_instance = _detalhes:GetInstance (instance)
+			local this_instance = _detalhes:GetInstance(instance)
 			if (not this_instance) then
 				return _detalhes:Msg (Loc ["STRING_WINDOW_NOTFOUND"])
 			end
@@ -140,17 +176,17 @@ function SlashCmdList.DETAILS (msg, editbox)
 		if (rest and tonumber (rest)) then
 			local instanceN = tonumber (rest)
 			if (instanceN > 0 and instanceN <= #_detalhes.tabela_instancias) then
-				local instance = _detalhes:GetInstance (instanceN)
+				local instance = _detalhes:GetInstance(instanceN)
 				_detalhes:OpenOptionsWindow (instance)
 			end
 		else
 			local lower_instance = _detalhes:GetLowerInstanceNumber()
 			if (not lower_instance) then
-				local instance = _detalhes:GetInstance (1)
+				local instance = _detalhes:GetInstance(1)
 				_detalhes.CriarInstancia (_, _, 1)
 				_detalhes:OpenOptionsWindow (instance)
 			else
-				_detalhes:OpenOptionsWindow (_detalhes:GetInstance (lower_instance))
+				_detalhes:OpenOptionsWindow (_detalhes:GetInstance(lower_instance))
 			end
 			
 		end
@@ -158,7 +194,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (command == Loc ["STRING_SLASH_WORLDBOSS"] or command == "worldboss") then
 		
 		local questIds = {{"Tarlna the Ageless", 81535}, {"Drov the Ruiner ", 87437}, {"Rukhmar", 87493}}
-		for _, _table in pairs (questIds) do 
+		for _, _table in pairs(questIds) do 
 			print (format ("%s: \124cff%s\124r", _table [1], IsQuestFlaggedCompleted (_table [2]) and "ff0000"..Loc ["STRING_KILLED"] or "00ff00"..Loc ["STRING_ALIVE"]))
 		end
 		
@@ -210,7 +246,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 			
 			Details:Dump (state)
 		else
-			Details:Msg ("Window 1 not found.")
+			Details:Msg("Window 1 not found.")
 		end
 
 	elseif (command == "bosstimers" or command == "bosstimer" or command == "timer" or command == "timers") then
@@ -258,12 +294,12 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local exiterrors = _detalhes_global.exit_errors
 		
 		print ("EXIT LOG:")
-		for index, text in ipairs (exitlog) do
+		for index, text in ipairs(exitlog) do
 			print (text)
 		end
 		print ("ERRORS:")
 		if (exiterrors) then
-			for index, text in ipairs (exiterrors) do
+			for index, text in ipairs(exiterrors) do
 				print (text)
 			end
 		else
@@ -272,18 +308,18 @@ function SlashCmdList.DETAILS (msg, editbox)
 	
 	elseif (msg == "tr") then
 		
-		local f = CreateFrame ("frame", nil, UIParent)
-		f:SetSize (300, 300)
-		f:SetPoint ("center")
+		local f = CreateFrame("frame", nil, UIParent)
+		f:SetSize(300, 300)
+		f:SetPoint("center")
 		
---		/run TTT:SetTexture ("Interface\\1024.tga")
-		local texture = f:CreateTexture ("TTT", "background")
+--		/run TTT:SetTexture("Interface\\1024.tga")
+		local texture = f:CreateTexture("TTT", "background")
 		texture:SetAllPoints()
-		texture:SetTexture ("Interface\\1023.tga")
+		texture:SetTexture("Interface\\1023.tga")
 		
 		local A = DetailsFramework:CreateAnimationHub (texture)
 		
-		local b = DetailsFramework:CreateAnimation (A, "ROTATION", 1, 40, 360)
+		local b = DetailsFramework:CreateAnimation(A, "ROTATION", 1, 40, 360)
 		b:SetTarget (texture)
 		A:Play()
 		
@@ -341,11 +377,11 @@ function SlashCmdList.DETAILS (msg, editbox)
 		instance1.baseframe:ClearAllPoints()
 		instance2.baseframe:ClearAllPoints()
 
-		instance1.baseframe:SetSize (w/2 - 4, h-20-21-8)
-		instance2.baseframe:SetSize (w/2 - 4, h-20-21-8)
+		instance1.baseframe:SetSize(w/2 - 4, h-20-21-8)
+		instance2.baseframe:SetSize(w/2 - 4, h-20-21-8)
 		
-		instance1.baseframe:SetPoint ("bottomleft", RightChatDataPanel, "topleft", 1, 1)
-		instance2.baseframe:SetPoint ("bottomright", RightChatToggleButton, "topright", -1, 1)
+		instance1.baseframe:SetPoint("bottomleft", RightChatDataPanel, "topleft", 1, 1)
+		instance2.baseframe:SetPoint("bottomright", RightChatToggleButton, "topright", -1, 1)
 		
 	elseif (msg == "addcombat") then
 		
@@ -403,7 +439,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos) -- atualiza o instancia.showing para as novas tabelas criadas
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset) -- verifica se precisa zerar as tabela da janela solo mode
 		_detalhes:InstanciaCallFunction (_detalhes.ResetaGump) --_detalhes:ResetaGump ("de todas as instancias")
-		_detalhes:RefreshMainWindow (-1, true) --atualiza todas as instancias
+		_detalhes:RefreshMainWindow(-1, true) --atualiza todas as instancias
 		
 		
 
@@ -411,7 +447,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local f = _detalhes:CreateListPanel()
 		
 		local i = 1
-		for k, v in pairs (_detalhes.tabela_pets.pets) do
+		for k, v in pairs(_detalhes.tabela_pets.pets) do
 			if (v[6] == "Guardian of Ancient Kings") then
 				_detalhes.ListPanel:add ( k.. ": " ..  v[1] .. " | " .. v[2] .. " | " .. v[3] .. " | " .. v[6], i)
 				i = i + 1
@@ -424,7 +460,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		_detalhes.tabela_vigente.saved_pets = {}
 		
-		for k, v in pairs (_detalhes.tabela_pets.pets) do
+		for k, v in pairs(_detalhes.tabela_pets.pets) do
 			_detalhes.tabela_vigente.saved_pets [k] = {v[1], v[2], v[3]}
 		end
 		
@@ -436,11 +472,11 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		local instance = _detalhes.tabela_instancias [1]
 		instance.baseframe:ClearAllPoints()
-		--instance.baseframe:SetPoint ("CENTER", UIParent, "CENTER", 300, 100)
-		instance.baseframe:SetPoint ("left", DetailsWelcomeWindow, "right", 10, 0)
+		--instance.baseframe:SetPoint("CENTER", UIParent, "CENTER", 300, 100)
+		instance.baseframe:SetPoint("left", DetailsWelcomeWindow, "right", 10, 0)
 	
 	elseif (msg == "model") then
-		local frame = CreateFrame ("PlayerModel");
+		local frame = CreateFrame("PlayerModel");
 		frame:SetPoint("center",UIParent,"center");
 		frame:SetHeight(600);
 		frame:SetWidth(300);
@@ -518,32 +554,32 @@ function SlashCmdList.DETAILS (msg, editbox)
 		_detalhes:PrintParserCacheIndexes()
 	
 	elseif (msg == "captures") then
-		for k, v in pairs (_detalhes.capture_real) do 
+		for k, v in pairs(_detalhes.capture_real) do 
 			print ("real -",k,":",v)
 		end
-		for k, v in pairs (_detalhes.capture_current) do 
+		for k, v in pairs(_detalhes.capture_current) do 
 			print ("current -",k,":",v)
 		end
 	
 	elseif (msg == "slider") then
 		
-		local f = CreateFrame ("frame", "TESTEDESCROLL", UIParent)
-		f:SetPoint ("center", UIParent, "center", 200, -2)
-		f:SetWidth (300)
-		f:SetHeight (150)
-		f:SetBackdrop ({bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})
-		f:SetBackdropColor (0, 0, 0, 1)
-		f:EnableMouseWheel (true)
+		local f = CreateFrame("frame", "TESTEDESCROLL", UIParent)
+		f:SetPoint("center", UIParent, "center", 200, -2)
+		f:SetWidth(300)
+		f:SetHeight(150)
+		f:SetBackdrop({bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})
+		f:SetBackdropColor(0, 0, 0, 1)
+		f:EnableMouseWheel(true)
 		
 		local rows = {}
 		for i = 1, 7 do 
-			local row = CreateFrame ("frame", nil, UIParent)
-			row:SetPoint ("topleft", f, "topleft", 10, -(i-1)*21)
-			row:SetWidth (200)
-			row:SetHeight (20)
-			row:SetBackdrop ({bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})
+			local row = CreateFrame("frame", nil, UIParent)
+			row:SetPoint("topleft", f, "topleft", 10, -(i-1)*21)
+			row:SetWidth(200)
+			row:SetHeight(20)
+			row:SetBackdrop({bgFile = "Interface\\AddOns\\Details\\images\\background", tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})
 			local t = row:CreateFontString (nil, "overlay", "GameFontHighlightSmall")
-			t:SetPoint ("left", row, "left")
+			t:SetPoint("left", row, "left")
 			row.text = t
 			rows [#rows+1] = row
 		end
@@ -562,12 +598,12 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local t = _detalhes.ResetButton:GetHighlightTexture()
 		t:SetVertexColor (0, 1, 0, 1)
 		--print (t:GetObjectType())
-		--_detalhes.ResetButton:SetHighlightTexture (t)
-		_detalhes.ResetButton:SetNormalTexture (t)
+		--_detalhes.ResetButton:SetHighlightTexture(t)
+		_detalhes.ResetButton:SetNormalTexture(t)
 		
 		print ("backdrop", _detalhes.ResetButton:GetBackdrop())
 		
-		_detalhes.ResetButton:SetBackdropColor (0, 0, 1, 1)
+		_detalhes.ResetButton:SetBackdropColor(0, 0, 1, 1)
 		
 		--Details.VarDump (_detalhes.ResetButton)
 	
@@ -584,8 +620,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local petGUID = UnitGUID ("target")
 
 		if (not _G.DetailsScanTooltip) then
-			local scanTool = CreateFrame ("GameTooltip", "DetailsScanTooltip", nil, "GameTooltipTemplate")
-			scanTool:SetOwner (WorldFrame, "ANCHOR_NONE")
+			local scanTool = CreateFrame("GameTooltip", "DetailsScanTooltip", nil, "GameTooltipTemplate")
+			scanTool:SetOwner(WorldFrame, "ANCHOR_NONE")
 		end
 		
 		function getPetOwner (petName)
@@ -637,8 +673,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 			end
 			
 			if (playerActor and playerActor.buff_uptime_spells and playerActor.buff_uptime_spells._ActorTable) then
-				for spellid, spellTable in pairs (playerActor.buff_uptime_spells._ActorTable) do 
-					local spellname = GetSpellInfo (spellid)
+				for spellid, spellTable in pairs(playerActor.buff_uptime_spells._ActorTable) do 
+					local spellname = GetSpellInfo(spellid)
 					if (spellname) then
 						print (spellid, spellname, spellTable.uptime)
 					end
@@ -656,7 +692,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 	
 	elseif (msg == "imageedit") then
 		
-		local callback = function (width, height, overlayColor, alpha, texCoords)
+		local callback = function(width, height, overlayColor, alpha, texCoords)
 			print (width, height, alpha)
 			print ("overlay: ", unpack (overlayColor))
 			print ("crop: ", unpack (texCoords))
@@ -675,7 +711,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (msg == "error") then
 		a = nil + 1
 		
-	--> debug
+	--debug
 	elseif (command == "resetcapture") then
 		_detalhes.capture_real = {
 			["damage"] = true,
@@ -688,7 +724,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		_detalhes:CaptureRefresh()
 		print (Loc ["STRING_DETAILS1"] .. "capture has been reseted.")
 
-	--> debug
+	--debug
 	elseif (command == "barra") then 
 	
 		local whichRowLine = rest and tonumber (rest) or 1
@@ -704,8 +740,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (msg == "opened") then 
 		print ("Instances opened: " .. _detalhes.opened_windows)
 	
-	--> debug, get a guid of something
-	elseif (command == "backdrop") then --> localize-me
+	--debug, get a guid of something
+	elseif (command == "backdrop") then --localize-me
 		local f = MacroFrameTextBackground
 		local backdrop = MacroFrameTextBackground:GetBackdrop()
 		
@@ -715,10 +751,10 @@ function SlashCmdList.DETAILS (msg, editbox)
 		print ("bgcolor:",f:GetBackdropColor())
 		print ("bordercolor",f:GetBackdropBorderColor())
 	
-	elseif (command == "myguid") then --> localize-me
+	elseif (command == "myguid") then --localize-me
 	
 		local g = UnitGUID ("player")
-		print (type (g))
+		print (type(g))
 		print (g)
 		print (string.len (g))
 		local serial = g:sub (12, 18)
@@ -741,16 +777,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 							tile = true, edgeSize = 1, tileSize = 5,
 						}
 					
-						Details.id_frame = CreateFrame ("Frame", "DetailsID", UIParent, "BackdropTemplate")
+						Details.id_frame = CreateFrame("Frame", "DetailsID", UIParent, "BackdropTemplate")
 						Details.id_frame:SetHeight(14)
 						Details.id_frame:SetWidth(120)
-						Details.id_frame:SetPoint ("center", UIParent, "center")
+						Details.id_frame:SetPoint("center", UIParent, "center")
 						Details.id_frame:SetBackdrop(backdrop)
 						
 						tinsert(UISpecialFrames, "DetailsID")
 						
-						Details.id_frame.texto = CreateFrame ("editbox", nil, Details.id_frame, "BackdropTemplate")
-						Details.id_frame.texto:SetPoint ("topleft", Details.id_frame, "topleft")
+						Details.id_frame.texto = CreateFrame("editbox", nil, Details.id_frame, "BackdropTemplate")
+						Details.id_frame.texto:SetPoint("topleft", Details.id_frame, "topleft")
 						Details.id_frame.texto:SetAutoFocus(false)
 						Details.id_frame.texto:SetFontObject (GameFontHighlightSmall)
 						Details.id_frame.texto:SetHeight(14)
@@ -759,15 +795,15 @@ function SlashCmdList.DETAILS (msg, editbox)
 						Details.id_frame.texto:EnableMouse(true)
 						Details.id_frame.texto:SetBackdropColor(0, 0, 0, 0.5)
 						Details.id_frame.texto:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
-						Details.id_frame.texto:SetText ("")
+						Details.id_frame.texto:SetText("")
 						Details.id_frame.texto.perdeu_foco = nil
 						
-						Details.id_frame.texto:SetScript ("OnEnterPressed", function ()
+						Details.id_frame.texto:SetScript("OnEnterPressed", function()
 							Details.id_frame.texto:ClearFocus()
 							Details.id_frame:Hide()
 						end)
 						
-						Details.id_frame.texto:SetScript ("OnEscapePressed", function()
+						Details.id_frame.texto:SetScript("OnEscapePressed", function()
 							Details.id_frame.texto:ClearFocus()
 							Details.id_frame:Hide()
 						end)
@@ -777,7 +813,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 					C_Timer.After(0.1, function()
 						Details.id_frame:Show()
 						Details.id_frame.texto:SetFocus()
-						Details.id_frame.texto:SetText ("" .. npcId)
+						Details.id_frame.texto:SetText("" .. npcId)
 						Details.id_frame.texto:HighlightText()
 					end)
 				end
@@ -797,16 +833,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 			tile = true, edgeSize = 1, tileSize = 5,
 			}
 		
-			_detalhes.id_frame = CreateFrame ("Frame", "DetailsID", UIParent)
+			_detalhes.id_frame = CreateFrame("Frame", "DetailsID", UIParent)
 			_detalhes.id_frame:SetHeight(14)
 			_detalhes.id_frame:SetWidth(120)
-			_detalhes.id_frame:SetPoint ("center", UIParent, "center")
+			_detalhes.id_frame:SetPoint("center", UIParent, "center")
 			_detalhes.id_frame:SetBackdrop(backdrop)
 			
-			tinsert (UISpecialFrames, "DetailsID")
+			tinsert(UISpecialFrames, "DetailsID")
 			
-			_detalhes.id_frame.texto = CreateFrame ("editbox", nil, _detalhes.id_frame)
-			_detalhes.id_frame.texto:SetPoint ("topleft", _detalhes.id_frame, "topleft")
+			_detalhes.id_frame.texto = CreateFrame("editbox", nil, _detalhes.id_frame)
+			_detalhes.id_frame.texto:SetPoint("topleft", _detalhes.id_frame, "topleft")
 			_detalhes.id_frame.texto:SetAutoFocus(false)
 			_detalhes.id_frame.texto:SetFontObject (GameFontHighlightSmall)			
 			_detalhes.id_frame.texto:SetHeight(14)
@@ -816,15 +852,15 @@ function SlashCmdList.DETAILS (msg, editbox)
 			_detalhes.id_frame.texto:SetBackdrop(ManualBackdrop)
 			_detalhes.id_frame.texto:SetBackdropColor(0, 0, 0, 0.5)
 			_detalhes.id_frame.texto:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
-			_detalhes.id_frame.texto:SetText ("") --localize-me
+			_detalhes.id_frame.texto:SetText("") --localize-me
 			_detalhes.id_frame.texto.perdeu_foco = nil
 			
-			_detalhes.id_frame.texto:SetScript ("OnEnterPressed", function () 
+			_detalhes.id_frame.texto:SetScript("OnEnterPressed", function() 
 				_detalhes.id_frame.texto:ClearFocus()
 				_detalhes.id_frame:Hide() 
 			end)
 			
-			_detalhes.id_frame.texto:SetScript ("OnEscapePressed", function() 
+			_detalhes.id_frame.texto:SetScript("OnEscapePressed", function() 
 				_detalhes.id_frame.texto:ClearFocus()
 				_detalhes.id_frame:Hide() 
 			end)
@@ -838,38 +874,14 @@ function SlashCmdList.DETAILS (msg, editbox)
 			local guid = UnitGUID ("target")
 			if (guid) then 
 				local g = _detalhes:GetNpcIdFromGuid (guid)
-				_detalhes.id_frame.texto:SetText ("" .. g)
+				_detalhes.id_frame.texto:SetText("" .. g)
 				_detalhes.id_frame.texto:HighlightText()
 			end
 		
 		else
 			print (pass_guid.. " -> " .. tonumber (pass_guid:sub(6, 10), 16))
-			_detalhes.id_frame.texto:SetText (""..tonumber (pass_guid:sub(6, 10), 16))
+			_detalhes.id_frame.texto:SetText(""..tonumber (pass_guid:sub(6, 10), 16))
 			_detalhes.id_frame.texto:HighlightText()
-		end
-		
-	--> debug
-	
-	elseif (msg == "auras") then
-		if (IsInRaid()) then
-			for raidIndex = 1, GetNumGroupMembers() do 
-				for buffIndex = 1, 41 do
-					local name, _, _, _, _, _, _, unitCaster, _, _, spellid  = UnitAura ("raid"..raidIndex, buffIndex, nil, "HELPFUL")
-					print (name, unitCaster, "==", "raid"..raidIndex)
-					if (name and unitCaster == "raid"..raidIndex) then
-						
-						local playerName, realmName = UnitName ("raid"..raidIndex)
-						if (realmName and realmName ~= "") then
-							playerName = playerName .. "-" .. realmName
-						end
-						
-						_detalhes.parser:add_buff_uptime (nil, GetTime(), UnitGUID ("raid"..raidIndex), playerName, 0x00000417, UnitGUID ("raid"..raidIndex), playerName, 0x00000417, spellid, name, in_or_out)
-						
-					else
-						--break
-					end
-				end
-			end
 		end
 		
 	elseif (command == "profile") then
@@ -880,6 +892,9 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		_detalhes:ApplyProfile (profile, false)
 	
+	elseif (msg == "version") then
+		Details.ShowCopyValueFrame(Details.GetVersionString())
+
 	elseif (msg == "users" or msg == "version" or msg == "versioncheck") then
 		Details.SendHighFive()
 
@@ -929,7 +944,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local container = _detalhes.tabela_vigente [t]._NameIndexTable
 		
 		local i = 0
-		for name, _ in pairs (container) do 
+		for name, _ in pairs(container) do 
 			i = i + 1
 			f:add (name, i)
 		end
@@ -954,13 +969,13 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		local container = _detalhes.tabela_vigente [t]._ActorTable
 		print (#container, "actors found.")
-		for index, actor in ipairs (container) do 
+		for index, actor in ipairs(container) do 
 			f:add (actor.nome, index, filter)
 		end
 	
 		f:Show()
 	
-	--> debug
+	--debug
 	elseif (msg == "save") then
 		print ("running... this is a debug command, details wont work until next /reload.")
 		_detalhes:PrepareTablesForSave()
@@ -983,7 +998,17 @@ function SlashCmdList.DETAILS (msg, editbox)
 			print("NPC ID:", tonumber((UnitGUID("target")):sub(-12, -9), 16) )
 		end
 
-	--> debug
+	--debug
+	elseif (command == "debugnet") then
+		if (_detalhes.debugnet) then
+			_detalhes.debugnet = false
+			print(Loc["STRING_DETAILS1"] .. "net diagnostic mode has been turned off.")
+			return
+		else
+			_detalhes.debugnet = true
+			print(Loc["STRING_DETAILS1"] .. "net diagnostic mode has been turned on.")
+		end
+
 	elseif (command == "debug") then
 		if (_detalhes.debug) then
 			_detalhes.debug = false
@@ -1006,7 +1031,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 			end
 		end
 	
-	--> debug combat log
+	--debug combat log
 	elseif (msg == "combatlog") then
 		if (_detalhes.isLoggingCombat) then
 			LoggingCombat (false)
@@ -1049,7 +1074,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		if (not DetailsPosBox) then
 			_detalhes.gump:CreateTextEntry (UIParent, function()end, 200, 20, nil, "DetailsPosBox")
-			DetailsPosBox:SetPoint ("center", UIParent, "center")
+			DetailsPosBox:SetPoint("center", UIParent, "center")
 		end
 		
 		local one, two = rest:match("^(%S*)%s*(.-)$")
@@ -1064,7 +1089,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 	elseif (msg == "outline") then
 	
 		local instancia = _detalhes.tabela_instancias [1]
-		for _, barra in ipairs (instancia.barras) do 
+		for _, barra in ipairs(instancia.barras) do 
 			local _, _, flags = barra.lineText1:GetFont()
 			print ("outline:",flags)
 		end
@@ -1147,7 +1172,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 				for o = 1, DetailsFramework.EncounterJournal.EJ_GetNumLoot() do
 					local name, icon, slot, armorType, itemID, link, encounterID = DetailsFramework.EncounterJournal.EJ_GetLootInfoByIndex (o)
 					r[slot] = r[slot] or {}
-					tinsert (r[slot], {itemID, encounterID})
+					tinsert(r[slot], {itemID, encounterID})
 					total = total + 1
 				end
 			end
@@ -1178,8 +1203,8 @@ function SlashCmdList.DETAILS (msg, editbox)
 					if (iLevel) then
 						item_level = item_level + iLevel
 						print (iLevel, item)
-						--> 16 = main hand 17 = off hand
-						-->  if using a two-hand, ignore the off hand slot
+						--16 = main hand 17 = off hand
+						-- if using a two-hand, ignore the off hand slot
 						if (equip_id == 16 and two_hand [equipSlot]) then
 							item_amount = 15
 							break
@@ -1208,7 +1233,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		if (not bar) then
 			bar = Details.gump:CreateBar (UIParent, nil, 600, 200, 100, nil, "DetailsTestBar")
 			_G.DetailsTestBar = bar
-			bar:SetPoint ("center", 0, 0)
+			bar:SetPoint("center", 0, 0)
 			bar.RightTextIsTimer = true
 			bar.BarIsInverse = true
 		end
@@ -1227,12 +1252,12 @@ function SlashCmdList.DETAILS (msg, editbox)
 	
 		local myframe = TestFrame
 		if (not myframe) then
-			myframe = TestFrame or CreateFrame ("frame", "TestFrame", UIParent)
-			myframe:SetPoint ("center", UIParent, "center")
-			myframe:SetSize (300, 300)
-			myframe.texture = myframe:CreateTexture (nil, "overlay")
+			myframe = TestFrame or CreateFrame("frame", "TestFrame", UIParent)
+			myframe:SetPoint("center", UIParent, "center")
+			myframe:SetSize(300, 300)
+			myframe.texture = myframe:CreateTexture(nil, "overlay")
 			myframe.texture:SetAllPoints()
-			myframe.texture:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_flag_common]])
+			myframe.texture:SetTexture([[Interface\AddOns\WorldQuestTracker\media\icon_flag_common]])
 		else
 			if (myframe.texture:IsShown()) then
 				myframe.texture:Hide()
@@ -1252,20 +1277,20 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local y = -50
 		local allspecs = {}
 		
-		for a, b in pairs (_detalhes.class_specs_coords) do
-			tinsert (allspecs, a)
+		for a, b in pairs(_detalhes.class_specs_coords) do
+			tinsert(allspecs, a)
 		end
 		
 		for i = 1, 10 do
 	
-			local a = CreateFrame ("statusbar", nil, UIParent)
-			a:SetPoint ("topleft", UIParent, "topleft", i*32, y)
-			a:SetSize (32, 32)
+			local a = CreateFrame("statusbar", nil, UIParent)
+			a:SetPoint("topleft", UIParent, "topleft", i*32, y)
+			a:SetSize(32, 32)
 			a:SetMinMaxValues (0, 1)
 			
-			local texture = a:CreateTexture (nil, "overlay")
-			texture:SetSize (32, 32)
-			texture:SetPoint ("topleft")
+			local texture = a:CreateTexture(nil, "overlay")
+			texture:SetSize(32, 32)
+			texture:SetPoint("topleft")
 			
 			if (i%10 == 0) then
 				y = y - 32
@@ -1275,30 +1300,30 @@ function SlashCmdList.DETAILS (msg, editbox)
 --	https://www.dropbox.com/s/ulyeqa2z0ummlu7/1024.tga?dl=0
 
 			local time = 0
-			a:SetScript ("OnUpdate", function (self, deltaTime)
+			a:SetScript("OnUpdate", function(self, deltaTime)
 				time = time + deltaTime
 				
-				--texture:SetSize (math.random (50, 300), math.random (50, 300))
+				--texture:SetSize(math.random (50, 300), math.random (50, 300))
 				--local spec = allspecs [math.random (#allspecs)]
-				texture:SetTexture ([[Interface\AddOns\Details\images\options_window]])
-				--texture:SetTexture ([[Interface\Store\Store-Splash]])
-				--texture:SetTexture ([[Interface\AddOns\Details\images\options_window]])
-				--texture:SetTexture ([[Interface\CHARACTERFRAME\Button_BloodPresence_DeathKnight]])
+				texture:SetTexture([[Interface\AddOns\Details\images\options_window]])
+				--texture:SetTexture([[Interface\Store\Store-Splash]])
+				--texture:SetTexture([[Interface\AddOns\Details\images\options_window]])
+				--texture:SetTexture([[Interface\CHARACTERFRAME\Button_BloodPresence_DeathKnight]])
 				--texture:SetTexCoord (unpack (_detalhes.class_specs_coords [spec]))
 				
 				--a:SetAlpha (abs (math.sin (time)))
-				--a:SetValue (abs (math.sin (time)))
+				--a:SetValue(abs (math.sin (time)))
 			end)
 		end
 	
 	elseif (msg == "alert") then
 		--local instancia = _detalhes.tabela_instancias [1]
-		local f = function (a, b, c, d, e, f, g) print (a, b, c, d, e, f, g) end
+		local f = function(a, b, c, d, e, f, g) print (a, b, c, d, e, f, g) end
 		--instancia:InstanceAlert (Loc ["STRING_PLEASE_WAIT"], {[[Interface\COMMON\StreamCircle]], 22, 22, true}, 5, {f, 1, 2, 3, 4, 5})
 	
 		local lower_instance = _detalhes:GetLowerInstanceNumber()
 		if (lower_instance) then
-			local instance = _detalhes:GetInstance (lower_instance)
+			local instance = _detalhes:GetInstance(lower_instance)
 			if (instance) then
 				local func = {_detalhes.OpenRaidHistoryWindow, _detalhes, "Hellfire Citadel", 1800, 15, "DAMAGER", "Rock Lobster", 2, "Keyspell"}
 				instance:InstanceAlert ("Boss Defeated, Open History! ", {[[Interface\AddOns\Details\images\icons]], 16, 16, false, 434/512, 466/512, 243/512, 273/512}, 40, func, true)
@@ -1317,7 +1342,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local icon = {[[Interface\PvPRankBadges\PvPRank08]], 16, 16, false, 0, 1, 0, 1}
 		
 		local lower_instance = _detalhes:GetLowerInstanceNumber()
-		local instance = _detalhes:GetInstance (lower_instance)
+		local instance = _detalhes:GetInstance(lower_instance)
 		
 		instance:InstanceAlert ("Boss Defeated! Show Ranking", icon, 10, func, true)
 	
@@ -1353,7 +1378,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 			for o = 1, 3 do
 				local talentID, name, texture, selected, available = GetTalentInfo (i, o, 1)
 				if (selected) then
-					tinsert (talents, talentID)
+					tinsert(talents, talentID)
 					break
 				end
 			end
@@ -1366,16 +1391,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 	
 	elseif (msg == "merge") then
 		
-		--> at this point, details! should not be in combat
+		--at this point, details! should not be in combat
 		if (_detalhes.in_combat) then
 			_detalhes:Msg ("already in combat, closing current segment.")
 			_detalhes:SairDoCombate()
 		end
 		
-		--> create a new combat to be the overall for the mythic run
+		--create a new combat to be the overall for the mythic run
 		_detalhes:EntrarEmCombate()
 		
-		--> get the current combat just created and the table with all past segments
+		--get the current combat just created and the table with all past segments
 		local newCombat = _detalhes:GetCurrentCombat()
 		local segmentHistory = _detalhes:GetCombatSegments()
 		local totalTime = 0
@@ -1383,7 +1408,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local lastSegment
 		local segmentsAdded = 0
 		
-		--> add all boss segments from this run to this new segment
+		--add all boss segments from this run to this new segment
 		for i = 1, 25 do
 			local pastCombat = segmentHistory [i]
 			if (pastCombat and pastCombat ~= newCombat) then
@@ -1406,7 +1431,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		_detalhes:Msg ("done merging, segments: " .. segmentsAdded .. ", total time: " .. DetailsFramework:IntegerToTimer (totalTime))
 
 		--[[ --mythic+ debug
-		--> tag the segment as mythic overall segment
+		--tag the segment as mythic overall segment
 		newCombat.is_mythic_dungeon = {
 			MapID = _detalhes.MythicPlus.Dungeon,
 			StartedAt = _detalhes.MythicPlus.StartedAt, --the start of the run
@@ -1419,17 +1444,17 @@ function SlashCmdList.DETAILS (msg, editbox)
 		}
 		--]]
 		
-		--> set some data
+		--set some data
 		newCombat:SetStartTime (GetTime() - totalTime)
 		newCombat:SetEndTime (GetTime())
 		
 		newCombat.data_inicio = startDate
 		newCombat.data_fim = endDate
 		
-		--> immediatly finishes the segment just started
+		--immediatly finishes the segment just started
 		_detalhes:SairDoCombate()
 		
-		--> cleanup the past segments table
+		--cleanup the past segments table
 		for i = 25, 1, -1 do
 			local pastCombat = segmentHistory [i]
 			if (pastCombat and pastCombat ~= newCombat) then
@@ -1438,14 +1463,14 @@ function SlashCmdList.DETAILS (msg, editbox)
 			end
 		end
 		
-		--> clear memory
+		--clear memory
 		collectgarbage()		
 
 		_detalhes:InstanciaCallFunction (Details.FadeHandler.Fader, "in", nil, "barras")
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSegmentos)
 		_detalhes:InstanciaCallFunction (_detalhes.AtualizaSoloMode_AfertReset)
 		_detalhes:InstanciaCallFunction (_detalhes.ResetaGump)
-		_detalhes:RefreshMainWindow (-1, true)
+		_detalhes:RefreshMainWindow(-1, true)
 	
 	elseif (msg == "ej") then	
 	
@@ -1463,23 +1488,23 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local nextID = {sectionInfo.siblingSectionID}
 		
 		while (nextID [1]) do
-			--> get the deepest section in the hierarchy
+			--get the deepest section in the hierarchy
 			local ID = tremove (nextID)
 			local sectionInfo = C_EncounterJournal.GetSectionInfo (ID)
 			
 			if (sectionInfo) then
-				tinsert (result, sectionInfo)
+				tinsert(result, sectionInfo)
 				
 				if (sectionInfo.spellID and type (sectionInfo.spellID) == "number" and sectionInfo.spellID ~= 0) then
-					tinsert (spellIDs, sectionInfo.spellID)
+					tinsert(spellIDs, sectionInfo.spellID)
 				end
 				
 				local nextChild, nextSibling = sectionInfo.firstChildSectionID, sectionInfo.siblingSectionID
 				if (nextSibling) then
-					tinsert (nextID, nextSibling)
+					tinsert(nextID, nextSibling)
 				end
 				if (nextChild) then
-					tinsert (nextID, nextChild)
+					tinsert(nextID, nextChild)
 				end
 			else
 				break
@@ -1493,7 +1518,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 		local instance1 = Details:GetInstance(1)
 		if (instance1) then
 			local exportedValues = {}
-			for key, _ in pairs (skin) do
+			for key, _ in pairs(skin) do
 				local value = instance1[key]
 				if (value) then
 					exportedValues[key] = value
@@ -1534,7 +1559,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 
 		local f = DetailsRecordFrameAnimation 
 		if (not f) then
-			f = CreateFrame ("frame", "DetailsRecordFrameAnimation", UIParent)
+			f = CreateFrame("frame", "DetailsRecordFrameAnimation", UIParent)
 			
 			--estrela no inicio dando um giro
 			--Interface\Cooldown\star4
@@ -1542,14 +1567,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 			--Interface\Artifacts\ArtifactAnim2
 			local animationHub = DetailsFramework:CreateAnimationHub (f, function() f:Show() end)
 
-			DetailsFramework:CreateAnimation (animationHub, "Scale", 1, .10, .9, .9, 1.1, 1.1)
-			DetailsFramework:CreateAnimation (animationHub, "Scale", 2, .10, 1.2, 1.2, 1, 1)
+			DetailsFramework:CreateAnimation(animationHub, "Scale", 1, .10, .9, .9, 1.1, 1.1)
+			DetailsFramework:CreateAnimation(animationHub, "Scale", 2, .10, 1.2, 1.2, 1, 1)
 		end
 	
 	--BFA BETA
 	--elseif (msg == "update") then
 	--	_detalhes:CopyPaste ([[https://www.wowinterface.com/downloads/info23056-DetailsDamageMeter8.07.3.5.html]])
 	
+	elseif (msg == "auras") then
+		Details.AuraTracker.Open()
 	
 	elseif (msg == "ec") then
 		if (rest and tonumber(rest)) then
@@ -1558,6 +1585,12 @@ function SlashCmdList.DETAILS (msg, editbox)
 			Details:Msg("combat erased.")
 		end
 		return
+
+	elseif (msg == "generatespelllist") then
+		Details.GenerateSpecSpellList()
+
+	elseif (msg == "survey") then
+		Details.Survey.OpenSurveyPanel()
 
 	elseif (msg == "share") then
 	
@@ -1578,17 +1611,17 @@ function SlashCmdList.DETAILS (msg, editbox)
 		
 		local keys = {}
 		
-		--> copy from table2 to table1 overwriting values
+		--copy from table2 to table1 overwriting values
 		function f.copy (t1, t2)
 			if (t1.Timer) then
 				t1, t2 = t1.t1, t1.t2
 			end
-			for key, value in pairs (t2) do 
+			for key, value in pairs(t2) do 
 				if (not ignoredKeys [key] and type (value) ~= "function") then
 					if (key == "targets") then
 						t1 [key] = {}
 					
-					elseif (type (value) == "table") then
+					elseif (type(value) == "table") then
 						t1 [key] = t1 [key] or {}
 						
 						--print (key, value)
@@ -1624,12 +1657,12 @@ function SlashCmdList.DETAILS (msg, editbox)
 		--end
 		
 		if (command) then
-			--> check if the line passed is a parameters in the default profile
+			--check if the line passed is a parameters in the default profile
 			if (_detalhes.default_profile [command]) then
 				if (rest and (rest ~= "" and rest ~= " ")) then
 					local whichType = type (_detalhes.default_profile [command])
 					
-					--> attempt to cast the passed value to the same value as the type in the profile
+					--attempt to cast the passed value to the same value as the type in the profile
 					if (whichType == "number") then
 						rest = tonumber (rest)
 						if (rest) then
@@ -1664,7 +1697,7 @@ function SlashCmdList.DETAILS (msg, editbox)
 				
 				else
 					local value = _detalhes [command]
-					if (type (value) == "boolean") then
+					if (type(value) == "boolean") then
 						value = value and "true" or "false"
 					end
 					print (Loc ["STRING_DETAILS1"] .. "config '" .. command .. "' current value is: " .. value)
@@ -1675,41 +1708,16 @@ function SlashCmdList.DETAILS (msg, editbox)
 			
 		end
 
-		print("|", msg)
-		
-		print (" ")
-		--local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)
-		--print (Loc ["STRING_DETAILS1"] .. "" .. v .. " [|cFFFFFF00CORE: " .. _detalhes.realversion .. "|r] " ..  Loc ["STRING_COMMAND_LIST"] .. ":")
-		
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_NEW"] .. "|r: " .. Loc ["STRING_SLASH_NEW_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_SHOW"] .. " " .. Loc ["STRING_SLASH_HIDE"] .. " " .. Loc ["STRING_SLASH_TOGGLE"] .. "|r|cfffcffb0 <" .. Loc ["STRING_WINDOW_NUMBER"] .. ">|r: " .. Loc ["STRING_SLASH_SHOWHIDETOGGLE_DESC"])
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_ENABLE"] .. " " .. Loc ["STRING_SLASH_DISABLE"] .. "|r: " .. Loc ["STRING_SLASH_CAPTURE_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_RESET"] .. "|r: " .. Loc ["STRING_SLASH_RESET_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_OPTIONS"] .. "|r|cfffcffb0 <" .. Loc ["STRING_WINDOW_NUMBER"] .. ">|r: " .. Loc ["STRING_SLASH_OPTIONS_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. "API" .. "|r: " .. Loc ["STRING_SLASH_API_DESC"])
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_CHANGES"] .. "|r: " .. Loc ["STRING_SLASH_CHANGES_DESC"])
-		--print ("|cffffaeae/details|r |cffffff33" .. Loc ["STRING_SLASH_WIPECONFIG"] .. "|r: " .. Loc ["STRING_SLASH_WIPECONFIG_DESC"])
 		print ("|cffffaeae/details|r |cffffff33" .. "me" .. "|r: open the player breakdown for you.") --localize-me
 		print ("|cffffaeae/details|r |cffffff33" .. "spells" .. "|r: list of spells already saw.") --localize-me
 
-		--print ("|cffffaeae/details " .. Loc ["STRING_SLASH_WORLDBOSS"] .. "|r: " .. Loc ["STRING_SLASH_WORLDBOSS_DESC"])
-		print (" ")
-
-		if (DetailsFramework.IsWotLKWow()) then
-			--wraft of the lich kind classic, the retail version of details should work on lich king, so let's print here the retail build counter
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00W" .. _detalhes.build_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
-
-		else
-			--retail
-			local v = _detalhes.game_version .. "." .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter)
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00DETAILS! VERSION|r: |cFFFFAA00R" .. (_detalhes.build_counter >= _detalhes.alpha_build_counter and _detalhes.build_counter or _detalhes.alpha_build_counter))
-			print (Loc ["STRING_DETAILS1"] .. "|cFFFFFF00GAME VERSION|r: |cFFFFAA00" .. _detalhes.game_version)
-		end
-
-		if (DetailsFramework.IsDragonflight()) then
-			print("Dragonflight BETA VERSION:", _detalhes.dragonflight_beta_version)
-		end
+		print("|cFFFFFF00DETAILS! VERSION|r:|cFFFFAA00" .. " " .. Details.GetVersionString())
+		print ("|cffffaeae/details|r |cffffff33" .. "version" .. "|r: copy version.")
+		
 	end
 end
 
@@ -1739,7 +1747,7 @@ function Details.RefreshUserList (ignoreIfHidden)
 			end
 
 			if (not foundPlayer) then
-				tinsert (newList, {playerName, "--", "--"})
+				tinsert(newList, {playerName, "--", "--"})
 			end
 		end
 	end
@@ -1751,11 +1759,11 @@ function Details:UpdateUserPanel (usersTable)
 
 	if (not Details.UserPanel) then
 		DetailsUserPanel = DetailsFramework:CreateSimplePanel (UIParent)
-		DetailsUserPanel:SetSize (707, 505)
+		DetailsUserPanel:SetSize(707, 505)
 		DetailsUserPanel:SetTitle ("Details! Version Check")
 		DetailsUserPanel.Data = {}
 		DetailsUserPanel:ClearAllPoints()
-		DetailsUserPanel:SetPoint ("left", UIParent, "left", 10, 0)
+		DetailsUserPanel:SetPoint("left", UIParent, "left", 10, 0)
 		DetailsUserPanel:Hide()
 
 		Details.UserPanel = DetailsUserPanel
@@ -1786,9 +1794,9 @@ function Details:UpdateUserPanel (usersTable)
 		}
 		
 		DetailsUserPanel.Header = DetailsFramework:CreateHeader (DetailsUserPanel, headerTable, headerOptions)
-		DetailsUserPanel.Header:SetPoint ("topleft", DetailsUserPanel, "topleft", 5, headerY)
+		DetailsUserPanel.Header:SetPoint("topleft", DetailsUserPanel, "topleft", 5, headerY)
 		
-		local scroll_refresh = function (self, data, offset, total_lines)
+		local scroll_refresh = function(self, data, offset, total_lines)
 
 			--store user names shown
 			local userShown = {}
@@ -1811,45 +1819,45 @@ function Details:UpdateUserPanel (usersTable)
 			end
 		end		
 		
-		local lineOnEnter = function (self)
+		local lineOnEnter = function(self)
 			if (self.IsCritical) then
-				self:SetBackdropColor (unpack (backdrop_color_is_critical_on_enter))
+				self:SetBackdropColor(unpack (backdrop_color_is_critical_on_enter))
 			else
-				self:SetBackdropColor (unpack (backdrop_color_on_enter))
+				self:SetBackdropColor(unpack (backdrop_color_on_enter))
 			end
 		end
 		
-		local lineOnLeave = function (self)
+		local lineOnLeave = function(self)
 			if (self.IsCritical) then
-				self:SetBackdropColor (unpack (backdrop_color_is_critical))
+				self:SetBackdropColor(unpack (backdrop_color_is_critical))
 			else
-				self:SetBackdropColor (unpack (backdrop_color))
+				self:SetBackdropColor(unpack (backdrop_color))
 			end
 			
 			GameTooltip:Hide()
 		end
 		
-		local scroll_createline = function (self, index)
-			local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
-			line:SetPoint ("topleft", self, "topleft", 3, -((index-1)*(scroll_line_height+1)) - 1)
-			line:SetSize (scroll_width - 2, scroll_line_height)
+		local scroll_createline = function(self, index)
+			local line = CreateFrame("button", "$parentLine" .. index, self, "BackdropTemplate")
+			line:SetPoint("topleft", self, "topleft", 3, -((index-1)*(scroll_line_height+1)) - 1)
+			line:SetSize(scroll_width - 2, scroll_line_height)
 			
-			line:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-			line:SetBackdropColor (unpack (backdrop_color))
+			line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+			line:SetBackdropColor(unpack (backdrop_color))
 			
 			DetailsFramework:Mixin (line, DetailsFramework.HeaderFunctions)
 			
-			line:SetScript ("OnEnter", lineOnEnter)
-			line:SetScript ("OnLeave", lineOnLeave)
+			line:SetScript("OnEnter", lineOnEnter)
+			line:SetScript("OnLeave", lineOnLeave)
 			
 			--username
-			local userNameText = DetailsFramework:CreateLabel (line)
+			local userNameText = DetailsFramework:CreateLabel(line)
 			
 			--realm
-			local realmText = DetailsFramework:CreateLabel (line)
+			local realmText = DetailsFramework:CreateLabel(line)
 			
 			--version
-			local versionText = DetailsFramework:CreateLabel (line)
+			local versionText = DetailsFramework:CreateLabel(line)
 			
 			line:AddFrameToHeaderAlignment (userNameText)
 			line:AddFrameToHeaderAlignment (realmText)
@@ -1865,8 +1873,8 @@ function Details:UpdateUserPanel (usersTable)
 		end
 		
 		local usersScroll = DetailsFramework:CreateScrollBox (DetailsUserPanel, "$parentUsersScroll", scroll_refresh, DetailsUserPanel.Data, scroll_width, scroll_height, scroll_lines, scroll_line_height)
-		DetailsFramework:ReskinSlider (usersScroll)
-		usersScroll:SetPoint ("topleft", DetailsUserPanel, "topleft", 5, scrollY)
+		DetailsFramework:ReskinSlider(usersScroll)
+		usersScroll:SetPoint("topleft", DetailsUserPanel, "topleft", 5, scrollY)
 		Details.UserPanel.ScrollBox = usersScroll
 		
 		--create lines
@@ -1874,10 +1882,10 @@ function Details:UpdateUserPanel (usersTable)
 			usersScroll:CreateLine (scroll_createline)
 		end
 		
-		DetailsUserPanel:SetScript ("OnShow", function()
+		DetailsUserPanel:SetScript("OnShow", function()
 		end)
 
-		DetailsUserPanel:SetScript ("OnHide", function()
+		DetailsUserPanel:SetScript("OnHide", function()
 		end)
 	end
 
@@ -1888,14 +1896,14 @@ end
 
 function _detalhes:CreateListPanel()
 	_detalhes.ListPanel = _detalhes.gump:NewPanel (UIParent, nil, "DetailsActorsFrame", nil, 300, 600)
-	_detalhes.ListPanel:SetPoint ("center", UIParent, "center", 300, 0)
+	_detalhes.ListPanel:SetPoint("center", UIParent, "center", 300, 0)
 	_detalhes.ListPanel.barras = {}
 	
-	tinsert (UISpecialFrames, "DetailsActorsFrame")
+	tinsert(UISpecialFrames, "DetailsActorsFrame")
 	_detalhes.ListPanel.close_with_right = true
 
-	local container_barras_window = CreateFrame ("ScrollFrame", "Details_ActorsBarrasScroll", _detalhes.ListPanel.widget) 
-	local container_barras = CreateFrame ("Frame", "Details_ActorsBarras", container_barras_window)
+	local container_barras_window = CreateFrame("ScrollFrame", "Details_ActorsBarrasScroll", _detalhes.ListPanel.widget) 
+	local container_barras = CreateFrame("Frame", "Details_ActorsBarras", container_barras_window)
 	_detalhes.ListPanel.container = container_barras
 
 	_detalhes.ListPanel.width = 500
@@ -1904,24 +1912,24 @@ function _detalhes:CreateListPanel()
 	container_barras_window:SetBackdrop({
 		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-gold-Border", tile = true, tileSize = 16, edgeSize = 5,
 		insets = {left = 1, right = 1, top = 0, bottom = 1},})
-	container_barras_window:SetBackdropBorderColor (0, 0, 0, 0)
+	container_barras_window:SetBackdropBorderColor(0, 0, 0, 0)
 	
 	container_barras:SetBackdrop({
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16,
 		insets = {left = 1, right = 1, top = 0, bottom = 1},})		
-	container_barras:SetBackdropColor (0, 0, 0, 0)
+	container_barras:SetBackdropColor(0, 0, 0, 0)
 
-	container_barras:SetAllPoints (container_barras_window)
-	container_barras:SetWidth (500)
-	container_barras:SetHeight (150)
+	container_barras:SetAllPoints(container_barras_window)
+	container_barras:SetWidth(500)
+	container_barras:SetHeight(150)
 	container_barras:EnableMouse (true)
-	container_barras:SetResizable (false)
+	container_barras:SetResizable(false)
 	container_barras:SetMovable (true)
 	
-	container_barras_window:SetWidth (460)
-	container_barras_window:SetHeight (550)
+	container_barras_window:SetWidth(460)
+	container_barras_window:SetHeight(550)
 	container_barras_window:SetScrollChild (container_barras)
-	container_barras_window:SetPoint ("TOPLEFT", _detalhes.ListPanel.widget, "TOPLEFT", 21, -10)
+	container_barras_window:SetPoint("TOPLEFT", _detalhes.ListPanel.widget, "TOPLEFT", 21, -10)
 
 	_detalhes.gump:NewScrollBar (container_barras_window, container_barras, -10, -17)
 	container_barras_window.slider:Altura (560)
@@ -1938,7 +1946,7 @@ function _detalhes:CreateListPanel()
 		if (not row) then
 			row = {text = _detalhes.ListPanel.container:CreateFontString (nil, "overlay", "GameFontNormal")}
 			_detalhes.ListPanel.barras [index] = row
-			row.text:SetPoint ("topleft", _detalhes.ListPanel.container, "topleft", 0, -index * 15)
+			row.text:SetPoint("topleft", _detalhes.ListPanel.container, "topleft", 0, -index * 15)
 		end
 		
 		if (filter and text:find (filter)) then
@@ -1947,7 +1955,7 @@ function _detalhes:CreateListPanel()
 			row.text:SetTextColor (1, 1, 1)
 		end
 		
-		row.text:SetText (text)
+		row.text:SetText(text)
 	end	
 	
 	return _detalhes.ListPanel

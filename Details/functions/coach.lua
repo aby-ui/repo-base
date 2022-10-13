@@ -444,10 +444,10 @@ function Details.Coach.WelcomePanel()
     local welcomePanel = _G.DETAILSCOACHPANEL
     if (not welcomePanel) then
 		welcomePanel = DetailsFramework:CreateSimplePanel(UIParent)
-		welcomePanel:SetSize (400, 280)
+		welcomePanel:SetSize(400, 280)
 		welcomePanel:SetTitle ("Details! Coach")
 		welcomePanel:ClearAllPoints()
-		welcomePanel:SetPoint ("left", UIParent, "left", 10, 0)
+		welcomePanel:SetPoint("left", UIParent, "left", 10, 0)
         welcomePanel:Hide()
         DetailsFramework:ApplyStandardBackdrop(welcomePanel)
 

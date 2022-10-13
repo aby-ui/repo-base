@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2457, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220907235332")
+mod:SetRevision("20220920224913")
 mod:SetCreatureID(181398, 181399)
 mod:SetEncounterID(2543)
 mod:SetUsedIcons(1, 2, 6, 7, 8)
@@ -360,7 +360,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBurstingDread:CancelVoice()
 		end
 		--Smart code that only warns player to dispel it, if they thesmelves aren't a victim of it and dispel is off CD
-		if self:CheckDispelFilter() and not playerDebuffed then
+		if self:CheckDispelFilter("magic") and not playerDebuffed then
 			specWarnBurstingDread:CombinedShow(0.3, args.destName)
 			specWarnBurstingDread:ScheduleVoice(0.3, "helpdispel")
 		end
@@ -371,7 +371,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnUnsettlingDreams:CancelVoice()
 		end
 		--Smart code that only warns player to dispel it, if they thesmelves aren't a victim of it and dispel is off CD
-		if self:CheckDispelFilter() and not playerDebuffed then
+		if self:CheckDispelFilter("magic") and not playerDebuffed then
 			specWarnUnsettlingDreams:CombinedShow(0.3, args.destName)
 			specWarnUnsettlingDreams:ScheduleVoice(0.3, "helpdispel")
 		end

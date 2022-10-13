@@ -4,7 +4,7 @@
 	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> local pointers
+--local pointers
 
 	local upper = string.upper --lua local
 	local _ipairs = ipairs --lua local
@@ -32,7 +32,7 @@
 	local gump = _detalhes.gump --details local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> fade handler
+--fade handler
 
 	Details.FadeHandler = {
 		frames = {}
@@ -204,13 +204,13 @@
 
 		elseif (upper(animationType) == "OUT") then --show the frame
 
-			if (frame:GetAlpha() == 1 and not frame.hidden and not frame.fading_in) then --> ja esta na tela
+			if (frame:GetAlpha() == 1 and not frame.hidden and not frame.fading_in) then --ja esta na tela
 				return
-			elseif (frame.fading_out) then --> j� ta com fading out
+			elseif (frame.fading_out) then --j� ta com fading out
 				return
 			end
 			
-			if (frame.fading_in) then --> se tiver uma anima��o de hidar em andamento se for true
+			if (frame.fading_in) then --se tiver uma anima��o de hidar em andamento se for true
 				frame.fading_in = false
 			end
 			
@@ -286,9 +286,9 @@
 	end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> details api functions
+--details api functions
 
-	--> get the npc id from guid
+	--get the npc id from guid
 	function _detalhes:GetNpcIdFromGuid (guid)
 		local NpcId = _select ( 6, _strsplit ( "-", guid ) )
 		if (NpcId) then
@@ -298,7 +298,7 @@
 	end
 	
 	function _detalhes:GetSourceFromNpcId (npcId)
-		for index, container in ipairs (_detalhes.tabela_vigente) do
+		for index, container in ipairs(_detalhes.tabela_vigente) do
 			if (index <= 4) then
 				local t = container._ActorTable
 				for i = 1, #t do
@@ -335,8 +335,8 @@
 		return playername, playerclass, deathtime, deathcombattime, deathtimestring, playermaxhealth, deathevents, lastcooldown
 	end
 
-	--> get the fractional number representing the alphabetical letter
-	function _detalhes:GetOrderNumber (who_name)
+	--get the fractional number representing the alphabetical letter
+	function _detalhes:GetOrderNumber(who_name)
 		--local name = upper (who_name .. "zz")
 		--local byte1 = _math_abs (_string_byte (name, 2)-91)/1000000
 		--return byte1 + _math_abs (_string_byte (name, 1)-91)/10000
@@ -345,7 +345,7 @@
 	
 	--/script print (tonumber (4/1000000)) - 4e-006
 	--0.000004
-	--> set all table keys to lower
+	--set all table keys to lower
 	local temptable = {}
 	function _detalhes:LowerizeKeys (_table)
 		for key, value in _pairs (_table) do
@@ -360,7 +360,7 @@
 	--krKR by @yuk6196 (http://wow.curseforge.com/profiles/yuk6196)
 	function _detalhes:UseEastAsianNumericalSystem()
 	
-		--> try to auto detect the language
+		--try to auto detect the language
 		local symbol_1K, symbol_10K, symbol_1B
 		if (LibStub("AceLocale-3.0"):NewLocale ("Details", "koKR")) then --Korea
 			symbol_1K, symbol_10K, symbol_1B = "천", "만", "억"
@@ -370,15 +370,15 @@
 			symbol_1K, symbol_10K, symbol_1B = "千", "萬", "億"
 		end
 		
-		--> override, force details! to use symbols for a specific language.
-		--> usage: _detalhes:SetNumericalSystemOverride (language)  language can be:  "kr", "cn", "tw"
+		--override, force details! to use symbols for a specific language.
+		--usage: _detalhes:SetNumericalSystemOverride (language)  language can be:  "kr", "cn", "tw"
 		
-		--> just in case the user mess up something
-		if (type (_detalhes.numerical_system_symbols) ~= "string") then
+		--just in case the user mess up something
+		if (type(_detalhes.numerical_system_symbols) ~= "string") then
 			_detalhes.numerical_system_symbols = "auto"
 		end
 		
-		--> do the override
+		--do the override
 		if (_detalhes.numerical_system_symbols ~= "auto") then
 			local locale = string.lower (_detalhes.numerical_system_symbols)
 			
@@ -392,8 +392,8 @@
 		end
 		
 		if (not symbol_1K) then
-			--> if a english client is trying to use east asian numeral system and there is no override, let's just use the chinese as default.
-			--> if the user is from kr or tw and want to use english client,  an override must be used.
+			--if a english client is trying to use east asian numeral system and there is no override, let's just use the chinese as default.
+			--if the user is from kr or tw and want to use english client,  an override must be used.
 			symbol_1K, symbol_10K, symbol_1B = "千", "万", "亿"
 		end
 	
@@ -414,7 +414,7 @@
 			elseif (numero > 999999) then
 				return _string_format ("%.2f", numero/10000) .. symbol_10K
 			elseif (numero > 99999) then
-				return _math_floor (numero/10000) .. symbol_10K
+				return _math_floor(numero/10000) .. symbol_10K
 			elseif (numero > 9999) then
 				return _string_format ("%.1f", (numero/10000)) .. symbol_10K
 			elseif (numero > 999) then
@@ -423,7 +423,7 @@
 			return _string_format ("%.1f", numero)
 		end
 		
-		--> short numbers no numbers after comma
+		--short numbers no numbers after comma
 		function _detalhes:ToK0 (numero)
 			if (numero > 100000000) then
 				return _string_format ("%.0f", numero/100000000) .. symbol_1B
@@ -452,7 +452,7 @@
 			elseif (numero > 999999) then
 				return _string_format ("%.2f", numero/10000) .. symbol_10K
 			elseif (numero > 99999) then
-				return _math_floor (numero/10000) .. symbol_10K
+				return _math_floor(numero/10000) .. symbol_10K
 			elseif (numero > 9999) then
 				return _string_format ("%.1f", (numero/10000)) .. symbol_10K
 			elseif (numero > 999) then
@@ -461,7 +461,7 @@
 			return _string_format ("%.1f", numero)
 		end
 		
-		--> short numbers no numbers after comma
+		--short numbers no numbers after comma
 		function _detalhes:ToK0Min (numero)
 			if (numero > 100000000) then
 				return _string_format ("%.0f", numero/100000000) .. symbol_1B
@@ -473,7 +473,7 @@
 			return _string_format ("%.0f", numero)
 		end
 		
-		--> short numbers no numbers after comma
+		--short numbers no numbers after comma
 		function _detalhes:ToKReport (numero)
 			if (numero > 100000000) then
 				return _string_format ("%.2f", numero/100000000) .. symbol_1B
@@ -486,7 +486,7 @@
 		end
 		
 		function _detalhes:Format (n, custom)
-			n = _math_floor (n)
+			n = _math_floor(n)
 			if (custom) then
 				if (n > 99999999) then
 					return _string_format (custom, n/100000000) .. symbol_1B
@@ -502,15 +502,15 @@
 			end
 		end
 		
-		--> no changes
+		--no changes
 		function _detalhes:NoToK (numero)
-			return _math_floor (numero)
+			return _math_floor(numero)
 		end
 		
 		-- thanks http://richard.warburton.it
 		function _detalhes:comma_value (n)
 			if (not n) then return "0" end
-			n = _math_floor (n)
+			n = _math_floor(n)
 			if (n == 0) then
 				return "0"
 			end
@@ -524,19 +524,19 @@
 		
 		wipe (_detalhes.ToKFunctions)
 		
-		tinsert (_detalhes.ToKFunctions, _detalhes.NoToK)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK2)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK0)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToKMin)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK2Min)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK0Min)
-		tinsert (_detalhes.ToKFunctions, _detalhes.comma_value)
+		tinsert(_detalhes.ToKFunctions, _detalhes.NoToK)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK2)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK0)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToKMin)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK2Min)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK0Min)
+		tinsert(_detalhes.ToKFunctions, _detalhes.comma_value)
 		
 	end	
 	
 	function _detalhes:UseWestNumericalSystem()
-		--> short numbers
+		--short numbers
 		function _detalhes:ToK (numero)
 			if (numero > 999999999) then
 				return format ("%.2f", numero/1000000000) .. "B"
@@ -555,7 +555,7 @@
 			elseif (numero > 999999) then
 				return _string_format ("%.2f", numero/1000000) .. "M"
 			elseif (numero > 99999) then
-				return _math_floor (numero/1000) .. "K"
+				return _math_floor(numero/1000) .. "K"
 			elseif (numero > 999) then
 				return _string_format ("%.1f", (numero/1000)) .. "K"
 			end
@@ -563,7 +563,7 @@
 			return _string_format ("%.0f", numero)
 		end
 		
-		--> short numbers no numbers after comma
+		--short numbers no numbers after comma
 		function _detalhes:ToK0 (numero)
 			if (numero > 999999999) then
 				return format ("%.2f", numero/1000000000) .. "B"
@@ -590,7 +590,7 @@
 			if (numero > 999999) then
 				return _string_format ("%.2f", numero/1000000) .. "m"
 			elseif (numero > 99999) then
-				return _math_floor (numero/1000) .. "k"
+				return _math_floor(numero/1000) .. "k"
 			elseif (numero > 999) then
 				return _string_format ("%.1f", (numero/1000)) .. "k"
 			end
@@ -598,7 +598,7 @@
 			return _string_format ("%.0f", numero)
 		end
 		
-		--> short numbers no numbers after comma
+		--short numbers no numbers after comma
 		function _detalhes:ToK0Min (numero)
 			if (numero > 1000000) then
 				return _string_format ("%.0f", numero/1000000) .. "m"
@@ -609,7 +609,7 @@
 			return _string_format ("%.0f", numero)
 		end
 		
-		--> short numbers no numbers after comma
+		--short numbers no numbers after comma
 		function _detalhes:ToKReport (numero)
 			if (numero > 1000000) then
 				return _string_format ("%.2f", numero/1000000) .. "M"
@@ -621,7 +621,7 @@
 		end
 		
 		function _detalhes:Format (n, custom)
-			n = _math_floor (n)
+			n = _math_floor(n)
 			if (custom) then
 				if (n > 999999) then
 					return _string_format (custom, n/1000000) .. "M"
@@ -635,15 +635,15 @@
 			end
 		end
 		
-		--> no changes
+		--no changes
 		function _detalhes:NoToK (numero)
-			return _math_floor (numero)
+			return _math_floor(numero)
 		end
 		
 		-- thanks http://richard.warburton.it
 		function _detalhes:comma_value (n)
 			if (not n) then return "0" end
-			n = _math_floor (n)
+			n = _math_floor(n)
 			if (n == 0) then
 				return "0"
 			end
@@ -657,19 +657,19 @@
 		
 		wipe (_detalhes.ToKFunctions)
 		
-		tinsert (_detalhes.ToKFunctions, _detalhes.NoToK)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK2)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK0)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToKMin)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK2Min)
-		tinsert (_detalhes.ToKFunctions, _detalhes.ToK0Min)
-		tinsert (_detalhes.ToKFunctions, _detalhes.comma_value)
+		tinsert(_detalhes.ToKFunctions, _detalhes.NoToK)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK2)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK0)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToKMin)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK2Min)
+		tinsert(_detalhes.ToKFunctions, _detalhes.ToK0Min)
+		tinsert(_detalhes.ToKFunctions, _detalhes.comma_value)
 		
 		--
 	end
 	
-	--> load western as default, the proper method is loaded within the profile
+	--load western as default, the proper method is loaded within the profile
 	_detalhes:UseWestNumericalSystem()
 
 	function _detalhes:GetCurrentToKFunction()
@@ -677,7 +677,7 @@
 	end
 	
 ------------------------------------------------------------------------------------------------------------
---> numerical system
+--numerical system
 
 	function _detalhes:SetNumericalSystemOverride (language)
 		if (not language) then
@@ -720,18 +720,18 @@
 	
 --------end of ToK functions----
 
-	--> replacing data for custom texts
+	--replacing data for custom texts
 	_detalhes.string = {}
 	
 	local function_cache = {}
 	local arguments_cache = {}
 	local parameters_cache = {}
 	
-	local replace_arg = function (i)
+	local replace_arg = function(i)
 		return arguments_cache [tonumber(i)]
 	end
-	local run_function = function (str)
-		--> cache functions
+	local run_function = function(str)
+		--cache functions
 		local func, errortext = function_cache [str]
 		if (not func) then
 			func = loadstring (str)
@@ -763,7 +763,7 @@
 		return (str:gsub ("{data(%d+)}", replace_arg):gsub ("{func(.-)}", run_function)) 
 	end
 	
-	--> remove a index from a hash table
+	--remove a index from a hash table
 	function _detalhes:tableRemove (tabela, indexName)
 		local newtable = {}
 		for hash, value in _pairs (tabela) do 
@@ -774,9 +774,9 @@
 		return newtable
 	end
 
-	--> return if the numeric table have an object
+	--return if the numeric table have an object
 	function _detalhes:tableIN (tabela, objeto)
-		for index, valor in _ipairs (tabela) do
+		for index, valor in _ipairs(tabela) do
 			if (valor == objeto) then
 				return index
 			end
@@ -784,7 +784,7 @@
 		return false
 	end
 
-	--> reverse numerical table
+	--reverse numerical table
 	function _detalhes:reverse_table (t)
 		local new = {}
 		local index = 1
@@ -809,8 +809,8 @@
 	--yah, i know
 	
 	function _detalhes.table.copy (t1, t2)
-		for key, value in pairs (t2) do 
-			if (type (value) == "table") then
+		for key, value in pairs(t2) do 
+			if (type(value) == "table") then
 				t1 [key] = Details.CopyTable (value)
 			else
 				t1 [key] = value
@@ -820,8 +820,8 @@
 	end
 	
 	function _detalhes.table.deploy (t1, t2)
-		for key, value in pairs (t2) do 
-			if (type (value) == "table") then
+		for key, value in pairs(t2) do 
+			if (type(value) == "table") then
 				t1 [key] = t1 [key] or {}
 				_detalhes.table.deploy (t1 [key], t2 [key])
 			elseif (t1 [key] == nil) then
@@ -831,8 +831,8 @@
 	end
 	
 	function _detalhes.table.overwrite (t1, t2)
-		for key, value in pairs (t2) do 
-			if (type (value) == "table") then
+		for key, value in pairs(t2) do 
+			if (type(value) == "table") then
 				t1 [key] = t1 [key] or {}
 				_detalhes.table.overwrite (t1 [key], t2 [key])
 			else
@@ -854,22 +854,22 @@
 			space = space .. "   "
 		end
 		
-		for key, value in pairs (t) do
+		for key, value in pairs(t) do
 			
 			local tpe = type (value)
 			
-			if (type (key) == "function") then
+			if (type(key) == "function") then
 				key = "#function#"
-			elseif (type (key) == "table") then
+			elseif (type(key) == "table") then
 				key = "#table#"
 			end
 			
-			if (type (key) ~= "string" and type (key) ~= "number") then
+			if (type(key) ~= "string" and type (key) ~= "number") then
 				key = "unknown?"
 			end
 			
 			if (tpe == "table") then
-				if (type (key) == "number") then
+				if (type(key) == "number") then
 					s = s .. space .. "[" .. key .. "] = |cFFa9ffa9table {|r\n"
 				else
 					s = s .. space .. "[\"" .. key .. "\"] = |cFFa9ffa9table {|r\n"
@@ -916,13 +916,13 @@
 		if (value < 50) then
 			r = 255
 		else
-			r = _math_floor ( 255 - (value * 2 - 100) * 255 / 100)
+			r = _math_floor( 255 - (value * 2 - 100) * 255 / 100)
 		end
 		
 		if (value > 50) then
 			g = 255
 		else
-			g = _math_floor ( (value * 2) * 255 / 100)
+			g = _math_floor( (value * 2) * 255 / 100)
 		end
 		
 		if (inverted) then
@@ -932,19 +932,19 @@
 		end
 	end
 
-	--> unpack more than 1 table
+	--unpack more than 1 table
 	-- http://www.dzone.com/snippets/lua-unpack-multiple-tables
 	function _detalhes:unpacks (...)
 		local values = {}
 		for i = 1, select ('#', ...) do
-			for _, value in _ipairs (select (i, ...)) do
+			for _, value in _ipairs(select (i, ...)) do
 				values[ #values + 1] = value
 			end
 		end
 		return unpack (values)
 	end
 
-	--> trim http://lua-users.org/wiki/StringTrim
+	--trim http://lua-users.org/wiki/StringTrim
 	function _detalhes:trim (s)
 		local from = s:match"^%s*()"
 		return from > #s and "" or s:match(".*%S", from)
@@ -1011,18 +1011,18 @@ do
 	end
 end
 
-	--> scale
+	--scale
 	function _detalhes:Scale (rangeMin, rangeMax, scaleMin, scaleMax, x)
 		return 1 + (x - rangeMin) * (scaleMax - scaleMin) / (rangeMax - rangeMin)
 	end
 
-	--> font color
-	function _detalhes:SetFontColor (fontString, r, g, b, a)
-		r, g, b, a = gump:ParseColors (r, g, b, a)
+	--font color
+	function _detalhes:SetFontColor(fontString, r, g, b, a)
+		r, g, b, a = gump:ParseColors(r, g, b, a)
 		fontString:SetTextColor (r, g, b, a)
 	end
 	
-	--> font size
+	--font size
 	function _detalhes:SetFontSize (fontString, ...)
 		local fonte, _, flags = fontString:GetFont()
 		fontString:SetFont (fonte, _math_max (...), flags)
@@ -1032,7 +1032,7 @@ end
 		return size
 	end
 
-	--> font face
+	--font face
 	function _detalhes:SetFontFace (fontString, fontface)
 		local _, size, flags = fontString:GetFont()
 		fontString:SetFont (fontface, size, flags)
@@ -1042,11 +1042,11 @@ end
 		return fontface
 	end	
 	
-	--> font outline
+	--font outline
 	function _detalhes:SetFontOutline (fontString, outline)
 		local fonte, size = fontString:GetFont()
 		if (outline) then
-			if (type (outline) == "boolean" and outline) then
+			if (type(outline) == "boolean" and outline) then
 				outline = "OUTLINE"
 			elseif (outline == 1) then
 				outline = "OUTLINE"
@@ -1081,7 +1081,7 @@ end
 	end
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> internal functions
+--internal functions
 
 	function _detalhes:HealthTick()
 		if (UnitExists ("boss1") and IsInRaid() and IsInInstance()) then
@@ -1095,7 +1095,7 @@ end
 		end
 	end
 
-	--> is in combat yet?
+	--is in combat yet?
 	function _detalhes:EstaEmCombate()
 
 		_detalhes:TimeDataTick()
@@ -1180,7 +1180,7 @@ end
 		for i = 1, instancia.rows_created, 1 do
 			local barra = instancia.barras[i]
 			local red, green, blue, alpha = barra.textura:GetVertexColor()
-			local grayscale = (red*0.03+green+blue) / 3 --> grayscale lightness method
+			local grayscale = (red*0.03+green+blue) / 3 --grayscale lightness method
 			gump:GradientEffect ( barra.textura, "texture", red, green, blue, alpha, grayscale, grayscale, grayscale, alpha, 1)
 		end
 	end
@@ -1192,18 +1192,18 @@ end
 		if (self.HaveGradientEffect) then
 			
 			local done = false
-			for index, ThisGradient in _ipairs (self.gradientes) do
+			for index, ThisGradient in _ipairs(self.gradientes) do
 			
 				if (not ThisGradient.done) then
 					
-					local percent = _math_min ((_GetTime() - ThisGradient.TimeStart) / ThisGradient.Duration * 100, 100)
+					local percent = _math_min((_GetTime() - ThisGradient.TimeStart) / ThisGradient.Duration * 100, 100)
 					local red_now = ThisGradient.StartRed + (percent  * ThisGradient.OnePercentRed)
 					local green_now = ThisGradient.StartGreen + (percent * ThisGradient.OnePercentGreen)
 					local blue_now = ThisGradient.StartBlue + (percent  * ThisGradient.OnePercentBlue)
 					local alpha_now = ThisGradient.StartAlpha + (percent  * ThisGradient.OnePercentAlpha)
 						
 					if (ThisGradient.ObjectType == "frame") then
-						ThisGradient.Object:SetBackdropColor (red_now, green_now, blue_now, alpha_now)
+						ThisGradient.Object:SetBackdropColor(red_now, green_now, blue_now, alpha_now)
 					elseif (ThisGradient.ObjectType == "texture") then
 						ThisGradient.Object:SetVertexColor (red_now, green_now, blue_now, alpha_now)
 					end
@@ -1242,23 +1242,23 @@ end
 		end
 		
 		if (not self.HaveGradientEffect) then
-			self:SetScript ("OnUpdate", nil)
+			self:SetScript("OnUpdate", nil)
 		end
 		
 	end
 	
 	function gump:GradientEffect (Object, ObjectType, StartRed, StartGreen, StartBlue, StartAlpha, EndRed, EndGreen, EndBlue, EndAlpha, Duration, EndFunction, FuncParam)
 		
-		if (type (StartRed) == "table" and type (StartGreen) == "table") then
+		if (type(StartRed) == "table" and type (StartGreen) == "table") then
 			Duration, EndFunction = StartBlue, StartAlpha
 			EndRed, EndGreen, EndBlue, EndAlpha = unpack (StartGreen)
 			StartRed, StartGreen, StartBlue, StartAlpha = unpack (StartRed)
 			
-		elseif (type (StartRed) == "table") then
+		elseif (type(StartRed) == "table") then
 			EndRed, EndGreen, EndBlue, EndAlpha, Duration, EndFunction = StartGreen, StartBlue, StartAlpha, EndRed, EndGreen, EndBlue
 			StartRed, StartGreen, StartBlue, StartAlpha = unpack (StartRed)
 			
-		elseif (type (EndRed) == "table") then
+		elseif (type(EndRed) == "table") then
 			Duration, EndFunction = EndGreen, EndBlue
 			EndRed, EndGreen, EndBlue, EndAlpha = unpack (EndRed)
 		end
@@ -1323,14 +1323,14 @@ end
 		Object.HaveGradientEffect = true
 		GradientFrameControl.HaveGradientEffect = true
 		
-		if (not GradientFrameControl:GetScript ("OnUpdate")) then
-			GradientFrameControl:SetScript ("OnUpdate", frame_task)
+		if (not GradientFrameControl:GetScript("OnUpdate")) then
+			GradientFrameControl:SetScript("OnUpdate", frame_task)
 		end
 
 	end
 	
-	--> work around to solve the UI Frame Flashes
-	local onFinish = function (self)
+	--work around to solve the UI Frame Flashes
+	local onFinish = function(self)
 		if (self.showWhenDone) then
 			self.frame:SetAlpha (1)
 		else
@@ -1343,12 +1343,12 @@ end
 		end
 	end
 	
-	local stop = function (self)
+	local stop = function(self)
 		local FlashAnimation = self.FlashAnimation
 		FlashAnimation:Stop()
 	end
 
-	local flash = function (self, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, loopType)
+	local flash = function(self, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, loopType)
 		
 		local FlashAnimation = self.FlashAnimation
 		
@@ -1358,10 +1358,10 @@ end
 		fadeIn:Stop()
 		fadeOut:Stop()
 	
-		fadeIn:SetDuration (fadeInTime or 1)
+		fadeIn:SetDuration(fadeInTime or 1)
 		fadeIn:SetEndDelay (flashInHoldTime or 0)
 		
-		fadeOut:SetDuration (fadeOutTime or 1)
+		fadeOut:SetDuration(fadeOutTime or 1)
 		fadeOut:SetEndDelay (flashOutHoldTime or 0)
 
 		FlashAnimation.duration = flashDuration
@@ -1380,13 +1380,13 @@ end
 	
 		local FlashAnimation = frame:CreateAnimationGroup() 
 		
-		FlashAnimation.fadeOut = FlashAnimation:CreateAnimation ("Alpha") --> fade out anime
+		FlashAnimation.fadeOut = FlashAnimation:CreateAnimation("Alpha") --fade out anime
 		FlashAnimation.fadeOut:SetOrder (1)
 		
 		FlashAnimation.fadeOut:SetFromAlpha (0)
 		FlashAnimation.fadeOut:SetToAlpha (1)
 		
-		FlashAnimation.fadeIn = FlashAnimation:CreateAnimation ("Alpha") --> fade in anime
+		FlashAnimation.fadeIn = FlashAnimation:CreateAnimation("Alpha") --fade in anime
 		FlashAnimation.fadeIn:SetOrder (2)
 		FlashAnimation.fadeIn:SetFromAlpha (0)
 		FlashAnimation.fadeIn:SetToAlpha (1)
@@ -1395,19 +1395,19 @@ end
 		FlashAnimation.frame = frame
 		FlashAnimation.onFinishFunc = onFinishFunc
 		
-		FlashAnimation:SetScript ("OnLoop", onLoopFunc)
-		FlashAnimation:SetScript ("OnFinished", onFinish)
+		FlashAnimation:SetScript("OnLoop", onLoopFunc)
+		FlashAnimation:SetScript("OnFinished", onFinish)
 		
 		frame.Flash = flash
 		frame.Stop = stop
 	
 	end
 
-	--> todo: remove the function creation everytime this function run.
+	--todo: remove the function creation everytime this function run.
 	
 
 	
-	local fade_OUT_finished_func = function (frame)
+	local fade_OUT_finished_func = function(frame)
 		if (frame:IsShown() and frame.fading_out) then
 			frame.hidden = false
 			frame.faded = false
@@ -1417,17 +1417,17 @@ end
 		end
 	end
 	
-	local just_fade_func = function (frame)
+	local just_fade_func = function(frame)
 		frame.hidden = false
 		frame.faded = true
 		frame.fading_in = false
 	end
 	
-	local anim_OUT_alpha_func = function (frame)
+	local anim_OUT_alpha_func = function(frame)
 		frame.fading_out = false
 	end
 
-	local anim_IN_alpha_func = function (frame)
+	local anim_IN_alpha_func = function(frame)
 		frame.fading_in = false
 	end
 
@@ -1437,23 +1437,23 @@ end
 
 		a = a + 1 --throw an error if called
 		
-		if (type (frame) == "table") then 
+		if (type(frame) == "table") then 
 		
-			if (frame.meu_id) then --> ups, � uma inst�ncia
-				if (parametros == "barras") then --> hida todas as barras da inst�ncia
+			if (frame.meu_id) then --ups, � uma inst�ncia
+				if (parametros == "barras") then --hida todas as barras da inst�ncia
 					if (velocidade) then
 						for i = 1, frame.rows_created, 1 do
-							Details.FadeHandler.Fader (frame.barras[i], tipo, velocidade)
+							Details.FadeHandler.Fader(frame.barras[i], tipo, velocidade)
 						end
 						return
 					else
 						velocidade = velocidade or 0.3
 						for i = 1, frame.rows_created, 1 do
-							Details.FadeHandler.Fader (frame.barras[i], tipo, 0.3+(i/10))
+							Details.FadeHandler.Fader(frame.barras[i], tipo, 0.3+(i/10))
 						end
 						return
 					end
-				elseif (parametros == "hide_barras") then --> hida todas as barras da inst�ncia
+				elseif (parametros == "hide_barras") then --hida todas as barras da inst�ncia
 					for i = 1, frame.rows_created, 1 do
 						local esta_barra = frame.barras[i]
 						if (esta_barra.fading_in or esta_barra.fading_out) then
@@ -1476,25 +1476,25 @@ end
 		
 		velocidade = velocidade or 0.3
 		
-		--> esse ALL aqui pode dar merda com as inst�ncias n�o ativadas
-		if (frame == "all") then --> todas as inst�ncias
-			for _, instancia in _ipairs (_detalhes.tabela_instancias) do
-				if (parametros == "barras") then --> hida todas as barras da inst�ncia
+		--esse ALL aqui pode dar merda com as inst�ncias n�o ativadas
+		if (frame == "all") then --todas as inst�ncias
+			for _, instancia in _ipairs(_detalhes.tabela_instancias) do
+				if (parametros == "barras") then --hida todas as barras da inst�ncia
 					for i = 1, instancia.rows_created, 1 do
-						Details.FadeHandler.Fader (instancia.barras[i], tipo, velocidade+(i/10))
+						Details.FadeHandler.Fader(instancia.barras[i], tipo, velocidade+(i/10))
 					end
 				end
 			end
 		
 		elseif (upper (tipo) == "IN") then
 
-			if (frame:GetAlpha() == 0 and frame.hidden and not frame.fading_out) then --> ja esta escondida
+			if (frame:GetAlpha() == 0 and frame.hidden and not frame.fading_out) then --ja esta escondida
 				return
-			elseif (frame.fading_in) then --> ja esta com uma anima��o, se for true
+			elseif (frame.fading_in) then --ja esta com uma anima��o, se for true
 				return
 			end
 			
-			if (frame.fading_out) then --> se tiver uma anima��o de aparecer em andamento se for true
+			if (frame.fading_out) then --se tiver uma anima��o de aparecer em andamento se for true
 				frame.fading_out = false
 			end
 
@@ -1504,15 +1504,15 @@ end
 			frame.fadeInfo.finishedFunc = fade_IN_finished_func
 			frame.fadeInfo.finishedArg1 = frame
 			
-		elseif (upper (tipo) == "OUT") then --> aparecer
+		elseif (upper (tipo) == "OUT") then --aparecer
 
-			if (frame:GetAlpha() == 1 and not frame.hidden and not frame.fading_in) then --> ja esta na tela
+			if (frame:GetAlpha() == 1 and not frame.hidden and not frame.fading_in) then --ja esta na tela
 				return
-			elseif (frame.fading_out) then --> j� ta com fading out
+			elseif (frame.fading_out) then --j� ta com fading out
 				return
 			end
 			
-			if (frame.fading_in) then --> se tiver uma anima��o de hidar em andamento se for true
+			if (frame.fading_in) then --se tiver uma anima��o de hidar em andamento se for true
 				frame.fading_in = false
 			end
 			
@@ -1523,7 +1523,7 @@ end
 			frame.fadeInfo.finishedFunc = fade_OUT_finished_func
 			frame.fadeInfo.finishedArg1 = frame
 				
-		elseif (tipo == 0) then --> for�a o frame a ser mostrado
+		elseif (tipo == 0) then --for�a o frame a ser mostrado
 			frame.hidden = false
 			frame.faded = false
 			frame.fading_out = false
@@ -1531,7 +1531,7 @@ end
 			frame:Show()
 			frame:SetAlpha (1)
 			
-		elseif (tipo == 1) then --> for�a o frame a ser hidado
+		elseif (tipo == 1) then --for�a o frame a ser hidado
 			frame.hidden = true
 			frame.faded = true
 			frame.fading_out = false
@@ -1539,14 +1539,14 @@ end
 			frame:SetAlpha (0)
 			frame:Hide()
 			
-		elseif (tipo == -1) then --> apenas da fade sem hidar
-			if (frame:GetAlpha() == 0 and frame.hidden and not frame.fading_out) then --> ja esta escondida
+		elseif (tipo == -1) then --apenas da fade sem hidar
+			if (frame:GetAlpha() == 0 and frame.hidden and not frame.fading_out) then --ja esta escondida
 				return
-			elseif (frame.fading_in) then --> ja esta com uma anima��o, se for true
+			elseif (frame.fading_in) then --ja esta com uma anima��o, se for true
 				return
 			end
 			
-			if (frame.fading_out) then --> se tiver uma anima��o de aparecer em andamento se for true
+			if (frame.fading_out) then --se tiver uma anima��o de aparecer em andamento se for true
 				frame.fading_out = false
 			end
 
@@ -1562,7 +1562,7 @@ end
 			frame:Show()
 			
 			if (currentApha < value) then
-				if (frame.fading_in) then --> se tiver uma anima��o de hidar em andamento se for true
+				if (frame.fading_in) then --se tiver uma anima��o de hidar em andamento se for true
 					frame.fading_in = false
 					frame.fadeInfo.finishedFunc = nil
 				end
@@ -1573,7 +1573,7 @@ end
 				frame.fadeInfo.finishedArg1 = frame
 
 			else
-				if (frame.fading_out) then --> se tiver uma anima��o de hidar em andamento se for true
+				if (frame.fading_out) then --se tiver uma anima��o de hidar em andamento se for true
 					frame.fading_out = false
 					frame.fadeInfo.finishedFunc = nil
 				end
@@ -1584,7 +1584,7 @@ end
 				frame.fadeInfo.finishedArg1 = frame
 			end
 
-		elseif (upper (tipo) == "ALPHA") then --> setando um alpha determinado
+		elseif (upper (tipo) == "ALPHA") then --setando um alpha determinado
 			if (frame.fading_in or frame.fading_out) then
 				frame.fadeInfo.finishedFunc = nil
 --				_UIFrameFadeIn (frame, velocidade, frame:GetAlpha(), frame:GetAlpha())
@@ -1601,19 +1601,19 @@ end
 	function _detalhes:name_space (barra)
 		--if (barra.icone_secundario_ativo) then
 		--	local tamanho = barra:GetWidth()-barra.lineText4:GetStringWidth()-16-barra:GetHeight()
-		--	barra.lineText1:SetSize (tamanho-2, 15)
+		--	barra.lineText1:SetSize(tamanho-2, 15)
 		--else
-			barra.lineText1:SetSize (barra:GetWidth()-barra.lineText4:GetStringWidth()-18, 15)
+			barra.lineText1:SetSize(barra:GetWidth()-barra.lineText4:GetStringWidth()-18, 15)
 		--end
 	end
 
 	function _detalhes:name_space_info (barra)
 		if (barra.icone_secundario_ativo) then
 			local tamanho = barra:GetWidth()-barra.lineText4:GetStringWidth()-16-barra:GetHeight()
-			barra.lineText1:SetSize (tamanho-10, 15)
+			barra.lineText1:SetSize(tamanho-10, 15)
 		else
 			local tamanho = barra:GetWidth()-barra.lineText4:GetStringWidth()-16
-			barra.lineText1:SetSize (tamanho-10, 15)
+			barra.lineText1:SetSize(tamanho-10, 15)
 		end
 	end
 
@@ -1621,10 +1621,10 @@ end
 		local texto_direita_tamanho = barra.lineText4:GetStringWidth()
 		local tamanho = barra:GetWidth()-texto_direita_tamanho-16
 		if (separador) then 
-			barra.lineText1:SetSize (tamanho+separador, 10)
-			barra.lineText4:SetSize (texto_direita_tamanho+15, 10)
+			barra.lineText1:SetSize(tamanho+separador, 10)
+			barra.lineText4:SetSize(texto_direita_tamanho+15, 10)
 		else
-			barra.lineText1:SetSize (tamanho-10, 15)
-			barra.lineText4:SetSize (texto_direita_tamanho+5, 15)
+			barra.lineText1:SetSize(tamanho-10, 15)
+			barra.lineText4:SetSize(texto_direita_tamanho+5, 15)
 		end
 	end

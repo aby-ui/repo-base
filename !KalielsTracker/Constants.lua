@@ -52,6 +52,16 @@ KT.PLAYER_FACTION_COLORS = {
     Alliance = "007fff"
 }
 
+KT.QUALITY_COLORS = {
+    Poor = "9d9d9d",
+    Common = "ffffff",
+    Uncommon = "1eff00",
+    Rare = "0070dd",
+    Epic = "a335ee",
+    Legendary = "ff8000",
+    Artifact = "e6cc80"
+}
+
 KT.AZERITE_CURRENCY_ID = C_CurrencyInfo.GetAzeriteCurrencyID()
 KT.WAR_RESOURCES_CURRENCY_ID = C_CurrencyInfo.GetWarResourcesCurrencyID()
 KT.ORDER_RESOURCES_CURRENCY_ID = 1220

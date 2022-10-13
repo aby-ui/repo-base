@@ -7,7 +7,7 @@ local ipairs, strmatch, type, tostring, wipe = ipairs, strmatch, type, tostring,
 
 -- WoW API / Variables
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest
-local C_TaskQuest_GetQuestTimeLeftSeconds = C_TaskQuest.GetQuestTimeLeftSeconds
+local C_QuestLog_IsQuestFlaggedCompleted = C_QuestLog.IsQuestFlaggedCompleted
 local C_TaskQuest_IsActive = C_TaskQuest.IsActive
 local C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo
 local C_WeeklyRewards_CanClaimRewards = C_WeeklyRewards.CanClaimRewards
@@ -15,7 +15,6 @@ local C_WeeklyRewards_GetConquestWeeklyProgress = C_WeeklyRewards.GetConquestWee
 local C_WeeklyRewards_HasAvailableRewards = C_WeeklyRewards.HasAvailableRewards
 local GetQuestObjectiveInfo = GetQuestObjectiveInfo
 local GetQuestProgressBarPercent = GetQuestProgressBarPercent
-local IsQuestFlaggedCompleted = C_QuestLog and C_QuestLog.IsQuestFlaggedCompleted or IsQuestFlaggedCompleted
 local UnitLevel = UnitLevel
 
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
@@ -111,9 +110,9 @@ end
 local function HorrificVisionUpdate(index)
   SI.db.Toons[SI.thisToon].Progress[index] = wipe(SI.db.Toons[SI.thisToon].Progress[index] or {})
   for i, questID in ipairs(Module.TrackedQuest[index].rewardQuestID) do
-    SI.db.Toons[SI.thisToon].Progress[index][i] = IsQuestFlaggedCompleted(questID)
+    SI.db.Toons[SI.thisToon].Progress[index][i] = C_QuestLog_IsQuestFlaggedCompleted(questID)
   end
-  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(58634) -- Opening the Gateway
+  SI.db.Toons[SI.thisToon].Progress[index].unlocked = C_QuestLog_IsQuestFlaggedCompleted(58634) -- Opening the Gateway
 end
 
 local function HorrificVisionShow(toon, index)
@@ -147,7 +146,7 @@ local function NZothAssaultUpdate(index)
   for _, questID in ipairs(Module.TrackedQuest[index].relatedQuest) do
     SI.db.Toons[SI.thisToon].Progress[index][questID] = C_TaskQuest_IsActive(questID)
   end
-  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(57362) -- Deeper Into the Darkness
+  SI.db.Toons[SI.thisToon].Progress[index].unlocked = C_QuestLog_IsQuestFlaggedCompleted(57362) -- Deeper Into the Darkness
 end
 
 local function NZothAssaultShow(toon, index)
@@ -200,7 +199,7 @@ end
 
 local function TorghastUpdate(index)
   SI.db.Toons[SI.thisToon].Progress[index] = wipe(SI.db.Toons[SI.thisToon].Progress[index] or {})
-  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(60136) -- Into Torghast
+  SI.db.Toons[SI.thisToon].Progress[index].unlocked = C_QuestLog_IsQuestFlaggedCompleted(60136) -- Into Torghast
 
   for i, data in ipairs(Module.TrackedQuest[index].widgetID) do
     local nameInfo = C_UIWidgetManager_GetTextWithStateWidgetVisualizationInfo(data[1])
@@ -249,7 +248,7 @@ local function CovenantAssaultUpdate(index)
   for _, questID in ipairs(Module.TrackedQuest[index].relatedQuest) do
     SI.db.Toons[SI.thisToon].Progress[index][questID] = C_TaskQuest_IsActive(questID)
   end
-  SI.db.Toons[SI.thisToon].Progress[index].unlocked = IsQuestFlaggedCompleted(64556) -- In Need of Assistance
+  SI.db.Toons[SI.thisToon].Progress[index].unlocked = C_QuestLog_IsQuestFlaggedCompleted(64556) -- In Need of Assistance
 end
 
 local function CovenantAssaultShow(toon, index)
@@ -455,7 +454,7 @@ function Module:UpdateAll()
         result.isFinish = finished
         result.numFulfilled = numFulfilled
         result.numRequired = numRequired
-        if IsQuestFlaggedCompleted(questID) then
+        if C_QuestLog_IsQuestFlaggedCompleted(questID) then
           result.unlocked = true
           result.isComplete = true
         else
