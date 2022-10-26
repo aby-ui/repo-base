@@ -289,6 +289,59 @@ private.NPC_GUIDE = {
 	}; --Hirukon (Pungent Blobfish)
 	["1809781355"] = { [RSConstants.FLAG] = { x = 0.728, y = 0.243, comment = AL["NOTE_180978_4"] } }; --Hirukon (Flipper Fish)
 	["180978205"] = { [RSConstants.FLAG] = { x = 0.347, y = 0.75, comment = AL["NOTE_180978_5"] } }; --Hirukon (Flipper Fish)
+	["1879452022"] = { 
+		[RSConstants.PATH_START] = { x = 0.5696, y = 0.3815 };
+	}; --Anhydros the Tidetaker
+	["1909712022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.2727, y = 0.6100 };
+	}; --Shas'ith
+	["1892892022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.2727, y = 0.6100 };
+	}; --Penumbrus
+	["1942702024"] = {
+		[RSConstants.DOT..1] = { x = 0.5293, y = 0.3710, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..2] = { x = 0.5339, y = 0.3655, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..3] = { x = 0.522, y = 0.3733, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..4] = { x = 0.5167, y = 0.3681, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..5] = { x = 0.5194, y = 0.3564, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..6] = { x = 0.5407, y = 0.3718, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..7] = { x = 0.5401, y = 0.3629, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..8] = { x = 0.5416, y = 0.3466, comment = AL["NOTE_194270_1"] }; 
+		[RSConstants.DOT..9] = { x = 0.5348, y = 0.3474, comment = AL["NOTE_194270_1"] }; 
+	}; --Arcane Devourer
+	["1848532022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.8174, y = 0.3713 };
+	}; --Primal Scythid Queen
+	["1960102023"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3642, y = 0.5339 };
+	}; --Researcher Sneakwing <The Sundered Flame>
+	["1909912022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3063, y = 0.5147 };
+	}; --Researcher Sneakwing <The Sundered Flame>
+	["1936582025"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4460, y = 0.6774 };
+	}; --Corrupted Proto-Dragon
+	["1932202025"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.5936, y = 0.6967 };
+	}; --Broodweaver Araznae <Mother of Spiders>
+	["1932542023"] = { 
+		[RSConstants.FLAG] = { x = 0.8571, y = 0.2072, comment = AL["NOTE_193254_1"] };
+	}; --Bloodgullet
+	["1931762025"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3857, y = 0.7658 };
+	}; --Sandana the Tempest <Timesand Thief>
+	["1936882025"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.6068, y = 0.6062 };
+	}; --Phenran
+	["1931752022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3615, y = 0.8982 };
+	}; --Slurpo, the Incredible Snail
+	["1932712022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4833, y = 0.7416 };
+	}; --Shadeslash Trakken
+	["1931322022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.6261, y = 0.5461 };
+	}; --Amethyzar the Glittering
 }
 
 ---============================================================================
@@ -727,6 +780,28 @@ private.CONTAINER_GUIDE = {
 	["220986554"] = {
 		[RSConstants.ENTRANCE] = { x = 0.172, y = 0.573 }; 
 	}; --Blackguard's Jetsam
+	["3778992022"] = {
+		[RSConstants.STEP1] = { x = 0.6446, y = 0.6910, comment = AL["NOTE_377899_1"] }; 
+		[RSConstants.STEP2] = { x = 0.3964, y = 0.8469, comment = AL["NOTE_377899_2"] }; 
+		[RSConstants.STEP3] = { x = 0.4773, y = 0.8363, comment = AL["NOTE_377899_3"] }; 
+		[RSConstants.STEP4] = { x = 0.6618, y = 0.5530, comment = AL["NOTE_377899_4"] }; 
+	}; --Hidden Hornswog Hostage
+	["3809912023"] = {
+		[RSConstants.DOT..1] = { x = 0.6093, y = 0.4377, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..2] = { x = 0.6093, y = 0.4295, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..3] = { x = 0.6122, y = 0.4183, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..4] = { x = 0.6162, y = 0.4120, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..5] = { x = 0.6178, y = 0.4145, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..6] = { x = 0.6186, y = 0.4218, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..7] = { x = 0.6138, y = 0.4141, comment = AL["NOTE_380991_1"] }; 
+		[RSConstants.DOT..8] = { x = 0.6104, y = 0.4236, comment = AL["NOTE_380991_1"] }; 
+	}; --Dirt Mound
+	["3810452022"] = {
+		[RSConstants.FLAG] = { x = 0.7542, y = 0.3398, comment = AL["NOTE_381045_1"] }; 
+	}; --Replica Dragon Goblet
+	["1959392022"] = {
+		[RSConstants.FLAG] = { x = 0.4093, y = 0.4147, comment = AL["NOTE_195939_1"] }; 
+	}; --Bubble Drifter
 }
 
 ---============================================================================

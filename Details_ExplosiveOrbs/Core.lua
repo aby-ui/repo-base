@@ -455,7 +455,9 @@ function EO:MergeTrashCleanup()
     -- 2   - boss trash combat
     -- 1   - boss combat
 
-    local runID = select(2, Details:GetCombat(1):IsMythicDungeon())
+    -- Combat 1 might be nil sometimes (#24)
+    local bossCombat = Details:GetCombat(1)
+    local runID = bossCombat and select(2, bossCombat:IsMythicDungeon())
 
     local baseCombat = Details:GetCombat(2)
     -- killed boss before any combat

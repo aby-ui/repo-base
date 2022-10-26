@@ -179,9 +179,9 @@ do
 			end
 		end)
 
-		hooksecurefunc("CompactUnitFrameProfiles_ApplyProfile", function(profile)
-			hookFunc()
-		end)
+		--hooksecurefunc("CompactUnitFrameProfiles_ApplyProfile", function(profile)
+		--	hookFunc()
+		--end)
 
 		self.hooked = true
 	end

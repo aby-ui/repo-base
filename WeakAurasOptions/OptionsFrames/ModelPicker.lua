@@ -68,7 +68,7 @@ local function ConstructModelPicker(frame)
   filterInput:SetPoint("TOP", group.frame, "TOP", 0, 1)
   filterInput:SetPoint("LEFT", group.frame, "LEFT", 7, 0)
   filterInput:SetWidth(200)
-  filterInput:SetFont(STANDARD_TEXT_FONT, 10)
+  filterInput:SetFont(STANDARD_TEXT_FONT, 10, "")
   group.frame.filterInput = filterInput
 
   -- Old X Y Z controls
@@ -221,6 +221,7 @@ local function ConstructModelPicker(frame)
   group:AddChild(modelTree);
 
   local model = CreateFrame("PlayerModel", nil, group.content);
+  model.SetTransformFixed = WeakAuras.IsDragonflight() and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform
   model:SetAllPoints(modelTree.content);
   model:SetFrameStrata("FULLSCREEN");
   group.model = model;
@@ -293,7 +294,7 @@ local function ConstructModelPicker(frame)
     self.selectedValues.model_st_us = model_us or self.selectedValues.model_st_us;
 
     WeakAuras.SetModel(self.model, self.selectedValues.model_path, self.selectedValues.model_fileId)
-    self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
+    self.model:SetTransformFixed(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
       rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
       self.selectedValues.model_st_us / 1000);
 
@@ -384,7 +385,7 @@ local function ConstructModelPicker(frame)
 
 
     if (self.selectedValues.api) then
-      self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
+      self.model:SetTransformFixed(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
         rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
         self.selectedValues.model_st_us / 1000);
 
@@ -466,8 +467,8 @@ local function ConstructModelPicker(frame)
         if(object) then
           self.givenModel[childId] = object.model_path;
           self.givenModelId[childId] = object.model_fileId;
-          self.givenApi[childId] = object.api;
-          if (object.api) then
+          self.givenApi[childId] = object.api
+          if object.api then
             self.givenTX[childId] = object.model_st_tx;
             self.givenTY[childId] = object.model_st_ty;
             self.givenTZ[childId] = object.model_st_tz;
@@ -488,9 +489,9 @@ local function ConstructModelPicker(frame)
 
       self.givenModel = object.model_path;
       self.givenModelId = object.model_fileId;
-      self.givenApi = object.api;
+      self.givenApi = object.api
 
-      if (object.api) then
+      if object.api then
         self.givenTX = object.model_st_tx;
         self.givenTY = object.model_st_ty;
         self.givenTZ = object.model_st_tz;

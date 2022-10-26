@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: tdCore
 ## Author: ldz5
 ## Version: 50100.06

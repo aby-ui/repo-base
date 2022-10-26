@@ -108,7 +108,7 @@ if not Jostle.hooks.UIParent_ManageFramePositions then
 	end)
 end
 
-if not Jostle.hooks.PlayerFrame_SequenceFinished then
+if PlayerFrame_SequenceFinished and not Jostle.hooks.PlayerFrame_SequenceFinished then
 	Jostle.hooks.PlayerFrame_SequenceFinished = true
 	hooksecurefunc("PlayerFrame_SequenceFinished", function()
 		if Jostle.PlayerFrame_SequenceFinished then

@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: SwitchSwitch
 ## Author: Geloch, Riukka (Sanguino - EU Horde)
 ## Version: 1.68
@@ -6,6 +6,7 @@
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: SwitchSwitchTalents, SwitchSwitchConfig
 ## SavedVariables: SwitchSwitchProfiles
+## Dependencies: TODO:abyui10
 
 localization/Loc.Core.lua
 localization/Loc.Core.zh_CN.lua

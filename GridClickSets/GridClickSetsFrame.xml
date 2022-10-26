@@ -117,6 +117,9 @@
         </Anchors>
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+            <KeyValue key="tabPadding" value="0" type="number"/>
+            <KeyValue key="minTabWidth" value="40" type="number"/>
+            <KeyValue key="maxTabWidth" value="2000" type="number"/>
         </KeyValues>
         <Layers>
             <Layer level="ARTWORK">
@@ -169,7 +172,7 @@
                 </Anchors>
                 <Scripts>
                     <OnClick>
-                        GridClickSetsFrame_CloseOnClick(self)
+                        GridClickSetsFrame:Hide()
                     </OnClick>
                 </Scripts>
             </Button>
@@ -242,13 +245,9 @@
                 </Scripts>
             </Frame>
 
-            <Button name="$parentTab1" inherits="OptionsFrameTabButtonTemplate" text="KEY_BUTTON1" id="1" hidden="false">
+            <Button name="$parentTab1" inherits="PanelTopTabButtonTemplate" text="KEY_BUTTON1" id="1" hidden="false">
                 <Anchors>
-                    <Anchor point="BOTTOMLEFT" relativeTo="$parentPanelContainer" relativePoint="TOPLEFT">
-                        <Offset>
-                            <AbsDimension x="-2" y="-1"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="BOTTOMLEFT" relativeTo="$parentPanelContainer" relativePoint="TOPLEFT" x="-2" y="-1"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -260,13 +259,9 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab2" inherits="OptionsFrameTabButtonTemplate" text="KEY_BUTTON2" id="2" hidden="false">
+            <Button name="$parentTab2" inherits="PanelTopTabButtonTemplate" text="KEY_BUTTON2" id="2" hidden="false">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT">
-                        <Offset>
-                            <AbsDimension x="-16" y="0"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -278,13 +273,9 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab3" inherits="OptionsFrameTabButtonTemplate" text="KEY_BUTTON3" id="3" hidden="false">
+            <Button name="$parentTab3" inherits="PanelTopTabButtonTemplate" text="KEY_BUTTON3" id="3" hidden="false">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parentTab2" relativePoint="TOPRIGHT">
-                        <Offset>
-                            <AbsDimension x="-16" y="0"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab2" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -296,13 +287,9 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab4" inherits="OptionsFrameTabButtonTemplate" text="4" id="4" hidden="false">
+            <Button name="$parentTab4" inherits="PanelTopTabButtonTemplate" mixin="PanelTopTabButtonMixin" text="4" id="4" hidden="false">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parentTab3" relativePoint="TOPRIGHT">
-                        <Offset>
-                            <AbsDimension x="-16" y="0"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab3" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -314,13 +301,9 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab5" inherits="OptionsFrameTabButtonTemplate" text="5" id="5" hidden="false">
+            <Button name="$parentTab5" inherits="PanelTopTabButtonTemplate" mixin="PanelTopTabButtonMixin" text="5" id="5" hidden="false">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parentTab4" relativePoint="TOPRIGHT">
-                        <Offset>
-                            <AbsDimension x="-16" y="0"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab4" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -332,13 +315,9 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab6" inherits="OptionsFrameTabButtonTemplate" text="GRIDCLICKSETS_SET_WHEEL_UP" id="6" hidden="false">
+            <Button name="$parentTab6" inherits="PanelTopTabButtonTemplate" mixin="PanelTopTabButtonMixin" text="GRIDCLICKSETS_SET_WHEEL_UP" id="6" hidden="false">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parentTab5" relativePoint="TOPRIGHT">
-                        <Offset>
-                            <AbsDimension x="-16" y="0"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab5" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -350,13 +329,9 @@
                     </OnClick>
                 </Scripts>
             </Button>
-            <Button name="$parentTab7" inherits="OptionsFrameTabButtonTemplate" text="GRIDCLICKSETS_SET_WHEEL_DOWN" id="7" hidden="false">
+            <Button name="$parentTab7" inherits="PanelTopTabButtonTemplate" text="GRIDCLICKSETS_SET_WHEEL_DOWN" id="7" hidden="false">
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parentTab6" relativePoint="TOPRIGHT">
-                        <Offset>
-                            <AbsDimension x="-16" y="0"/>
-                        </Offset>
-                    </Anchor>
+                    <Anchor point="TOPLEFT" relativeTo="$parentTab6" relativePoint="TOPRIGHT" x="-16" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnClick>
@@ -392,6 +367,9 @@
                 GridClickSetsFrameClose:SetText(self.lastFrame and PREVIOUS or CLOSE)
                 GridClickSetsFrame_TabOnClick();
             </OnShow>
+            <OnHide>
+                GridClickSetsFrame_OnHide()
+            </OnHide>
         </Scripts>
     </Frame>
 

@@ -1,0 +1,25 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Deprecated_10_0.lua"/>
+    <CheckButton name="TabButtonTemplate" virtual="true" inherits="PanelTopTabButtonTemplate"/>
+    <CheckButton name="OptionsCheckButtonTemplate" virtual="true" inherits="InterfaceOptionsCheckButtonTemplate"/>
+    <Button name="OptionsButtonTemplate" inherits="UIPanelButtonTemplate" virtual="true"><Size x="90" y="21"/></Button>
+    <Frame name="OptionsBoxTemplate" inherits="TooltipBorderBackdropTemplate" virtual="true">
+        <Layers>
+            <Layer level="BACKGROUND">
+                <FontString name="$parentTitle" inherits="GameFontHighlightSmall">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="5" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <KeyValues>
+            <KeyValue key="backdropBorderColor" value="DARKGRAY_COLOR" type="global"/>
+        </KeyValues>
+    </Frame>
+</Ui>    

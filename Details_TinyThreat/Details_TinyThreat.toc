@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Details!: Tiny Threat (plugin)
 ## Notes: Threat meter plugin, show threat for group members in the window. Select it from the Plugin menu in the Orange Cogwheel.
 ## RequiredDeps: Details

@@ -247,7 +247,7 @@ local function flareNew(name, tex, num, xOff)
 	f:SetNormalTexture("interface\\targetingframe\\ui-raidtargeting6icons") -- "interface\\minimap\\partyraidblips"
 	f:GetNormalTexture():SetTexCoord(tex[1],tex[2],tex[3],tex[4])
 	f:SetPoint("LEFT",lastFlare or wFlares.main,"RIGHT",xOff or 0,0)
-	f:SetAttribute("type", "macro")
+	f:SetAttribute("type", "macro") --TODO:abyui10
 	f:SetAttribute("macrotext1", string.format("/wm %d",num))
 	f:SetScript("OnEnter", function(self) if (wFlaresDB.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(string.format("%s %s",L[name],L["world marker"])); GameTooltip:Show() end end)
 	f:SetScript("OnLeave", function(self) GameTooltip:Hide() end)

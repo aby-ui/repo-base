@@ -49,7 +49,7 @@ local currentCombat = Details:GetCurrentCombat()
 
 @TITLE- Getting a specific combat:@
 
-@CODElocal combat = Details:GetCombat (segmentID = DETAILS_SEGMENTID_CURRENT)@
+@CODElocal combat = Details:GetCombat(segmentID = DETAILS_SEGMENTID_CURRENT)@
 
 @DESCFor overall use DETAILS_SEGMENTID_OVERALL, for older segments use the combat index (1 ... 25), when the current combat ends, it is added to index 1 on the old segments table.@
 
@@ -58,10 +58,10 @@ local currentCombat = Details:GetCurrentCombat()
 
 @DESCThere's several ways to get a player object, the quick way is:@
 
-@CODElocal player = Details:GetActor (segmentID = DETAILS_SEGMENTID_CURRENT, attributeID = DETAILS_ATTRIBUTE_DAMAGE, "PlayerName")@
+@CODElocal player = Details:GetActor(segmentID = DETAILS_SEGMENTID_CURRENT, attributeID = DETAILS_ATTRIBUTE_DAMAGE, "PlayerName")@
 
 @DESCThe segmentID is the same as described on GetCombat(), attributeID is the ID for the attribute type.
-there is an alias which receives the player name as the first parameter: Details:GetPlayer (playerName, segmentID, attributeID), combat also accept GetActor(): combat:GetActor (attributeID, playerName).
+there is an alias which receives the player name as the first parameter: Details:GetPlayer(playerName, segmentID, attributeID), combat also accept GetActor(): combat:GetActor(attributeID, playerName).
 Retriving actors is expensive, try to cache the object once you have it.
 @
 
@@ -71,7 +71,7 @@ Retriving actors is expensive, try to cache the object once you have it.
 @CODElocal combat = Details:GetCurrentCombat()
 
 @COMMENT--if the player is from a different realm, use 'playername-realmname'@
-local player = combat:GetActor (DETAILS_ATTRIBUTE_DAMAGE, "PlayerName")
+local player = combat:GetActor(DETAILS_ATTRIBUTE_DAMAGE, "PlayerName")
 
 local damageDone = player.total
 local combatTime = combat:GetCombatTime()
@@ -174,13 +174,13 @@ DETAILS_REJU_POTION_ID = 188018
 [[
 @TITLECombat Object:@
 
-actor = combat:GetActor ( attribute, character_name ) or actor = combat ( attribute, character_name )
+actor = combat:GetActor( attribute, character_name ) or actor = combat ( attribute, character_name )
 @COMMENTreturns an actor object@
 
 characterList = combat:GetActorList ( attribute )
 @COMMENTreturns a numeric table with all actors of the specific attribute, contains players, npcs, pets, etc.@
 
-combatName = combat:GetCombatName ( try_to_find )
+combatName = combat:GetCombatName( try_to_find )
 @COMMENTreturns the segment name, e.g. "Trainning Dummy", if try_to_find is true, it searches the combat for a enemy name.@
 
 bossInfo = combat:GetBossInfo()
@@ -266,7 +266,7 @@ returns a iterated table of actors inside the container.
 Usage: 'for index, actor in container:ListActors() do'
 Note: if the container is a spell container, returns pairs() instead: 'for spellid, spelltable in container:ListActors() do'
 
-actor = container:GetActor (character_name)
+actor = container:GetActor(character_name)
 returns the actor, for spell container use the spellid instead.
 
 container:GetSpell (spellid)
@@ -587,7 +587,7 @@ talentsTable = Details:GetTalents (guid)
 if available, returns a table with 7 indexes with the talentId selected for each tree {talentId, talentId, talentId, talentId, talentId, talentId, talentId}.
 use with GetTalentInfoByID()
 
-spec = Details:GetSpec (guid)
+spec = Details:GetSpec(guid)
 if available, return the spec id of the actor, use with GetSpecializationInfoByID()
 
 Details:SetDeathLogLimit (limit)
@@ -733,7 +733,7 @@ Total Code and Percent Code:
 *Total - the total made by all actors.
 
 local value, top, total, combat, instance = ...
-local result = floor (value)
+local result = floor(value)
 return total
 ]], 
 	
@@ -782,13 +782,13 @@ for i = 1, #Details.APIText do
 	local text = Details.APIText [i]
 	
 	--add the color to the text
-	text = text:gsub ([[@TITLE]], "|c" .. titleColor)
-	text = text:gsub ([[@CODE]], "|c" .. codeColor)
-	text = text:gsub ([[@DESC]], "|c" .. descColor)
-	text = text:gsub ([[@COMMENT]], "|c" .. luacomentColor)
+	text = text:gsub([[@TITLE]], "|c" .. titleColor)
+	text = text:gsub([[@CODE]], "|c" .. codeColor)
+	text = text:gsub([[@DESC]], "|c" .. descColor)
+	text = text:gsub([[@COMMENT]], "|c" .. luacomentColor)
 	
 	--add the end color
-	text = text:gsub ([[@]], "|r")
+	text = text:gsub([[@]], "|r")
 	
 	Details.APIText [i] = text
 end

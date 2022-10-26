@@ -11,7 +11,7 @@
 		</Scripts>
 	</Button>
 
-	<Button name="RematchFrame" parent="UIParent" frameStrata="MEDIUM" topLevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true">
+	<Button name="RematchFrame" parent="UIParent" inherits="BasicFrameTemplate" frameStrata="MEDIUM" topLevel="true" enableMouse="true" movable="true" clampedToScreen="true" hidden="true">
 		<Size x="570" y="604"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -25,35 +25,10 @@
 					<Anchor point="TOPRIGHT"/>
 				</Anchors>
 				<Frames>
-					<Button parentKey="CloseButton" inherits="UIPanelCloseButtonNoScripts">
-						<Anchors>
-							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
-								<Offset x="4" y="5"/>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnClick>
-								RematchFrame:Hide()
-							</OnClick>
-						</Scripts>
-					</Button>
 					<Button parentKey="LockButton" inherits="RematchTitlebarButtonTemplate">
-						<Size x="32" y="32"/>
 						<Anchors>
-							<Anchor point="TOPLEFT" x="-5" y="5"/>
+							<Anchor point="TOPLEFT" x="0" y="0"/>
 						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<!-- little texture to add bracket texture -->
-								<Texture file="Interface\FrameGeneral\UI-Frame">
-									<Size x="11" y="22"/>
-									<Anchors>
-										<Anchor point="RIGHT"/>
-									</Anchors>
-									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
-								</Texture>
-							</Layer>
-						</Layers>
 						<Scripts>
 							<OnClick>
 								RematchFrame:LockButtonOnClick()
@@ -61,22 +36,9 @@
 						</Scripts>
 					</Button>
 					<Button parentKey="MinimizeButton" inherits="RematchTitlebarButtonTemplate">
-						<Size x="32" y="32"/>
 						<Anchors>
-							<Anchor point="TOPRIGHT" x="-18" y="5"/>
+							<Anchor point="TOPRIGHT" x="-24" y="0"/>
 						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<!-- little texture to add bracket texture -->
-								<Texture file="Interface\FrameGeneral\UI-Frame">
-									<Size x="11" y="22"/>
-									<Anchors>
-										<Anchor point="LEFT" x="-1" y="0"/>
-									</Anchors>
-									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
-								</Texture>
-							</Layer>
-						</Layers>
 						<Scripts>
 							<OnClick>
 								RematchFrame:ToggleSize()
@@ -86,22 +48,9 @@
 					</Button>
 					<!-- Single Panel toggle button in topleft -->
 					<Button parentKey="SinglePanelButton" inherits="RematchTitlebarButtonTemplate,RematchTooltipScripts">
-						<Size x="32" y="32"/>
 						<Anchors>
-							<Anchor point="TOPLEFT" x="18" y="5"/>
+							<Anchor point="LEFT" relativeKey="$parent.LockButton" relativePoint="RIGHT" x="0" y="0"/>
 						</Anchors>
-						<Layers>
-							<Layer level="OVERLAY">
-								<!-- little texture to add bracket texture -->
-								<Texture file="Interface\FrameGeneral\UI-Frame">
-									<Size x="11" y="22"/>
-									<Anchors>
-										<Anchor point="RIGHT"/>
-									</Anchors>
-									<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
-								</Texture>
-							</Layer>
-						</Layers>
 						<Scripts>
 							<OnClick>
 								RematchSettings.SinglePanel = not RematchSettings.SinglePanel
@@ -110,44 +59,6 @@
 						</Scripts>
 					</Button>
 				</Frames>
-				<Layers>
-					<Layer level="BACKGROUND" textureSubLevel="-1">
-						<!-- background of just the titlebar -->
-						<Texture inherits="_UI-Frame-TitleTileBg">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="2" y="-3"/>
-								<Anchor point="TOPRIGHT" x="-25" y="-3"/>
-							</Anchors>
-						</Texture>
-					</Layer>
-					<Layer level="OVERLAY">
-						<!-- topleft of titlebar -->
-						<Texture inherits="UI-Frame-TopLeftCorner">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="-6" y="1"/>
-							</Anchors>
-						</Texture>
-						<!-- topright of titlebar -->
-						<Texture inherits="UI-Frame-TopCornerRight">
-							<Anchors>
-								<Anchor point="TOPRIGHT" x="0" y="1"/>
-							</Anchors>
-						</Texture>
-						<!-- foreground of titlebar (top to a normal BasicFrameTemplate) -->
-						<Texture inherits="_UI-Frame-TitleTile">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="26" y="1"/>
-								<Anchor point="TOPRIGHT" x="-33" y="1"/>
-							</Anchors>
-						</Texture>
-						<!-- title text -->
-						<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="TOP">
-							<Anchors>
-								<Anchor point="TOP" x="0" y="-5"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
 			</Frame>
 			<!-- tabs along the bottom of the frame -->
 			<Frame parentKey="PanelTabs">

@@ -1244,6 +1244,11 @@ GTFO.SpellID["354490"] = {
   sound = 3;
 };
 
+GTFO.SpellID["351621"] = {
+  --desc = "Impaling Spikes (Mawsworn Woebringer)";
+  sound = 3;
+};
+
 --- ******************
 --- * Castle Nathria *
 --- ******************

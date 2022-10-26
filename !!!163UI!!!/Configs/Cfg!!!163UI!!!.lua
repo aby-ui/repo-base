@@ -384,13 +384,6 @@ U1RegisterAddon("!!!163UI!!!", {
             callback = function(cfg, v, loading) if not MinimapCoordsButton then return end if v then MinimapCoordsButton:Show() else MinimapCoordsButton:Hide() end end,
         },
         {
-            var = "zoom",
-            default = 1,
-            text = L["隐藏缩小放大按钮"],
-            tip = L["说明`隐藏后用鼠标滚轮缩放小地图"],
-            callback = function(cfg, v, loading) CoreCall("U1MMB_MinimapZoom_Toggle", v) end,
-        },
-        {
             var = "mmp_elite",
             default = 1,
             text = "爱不易图标用精英边框",

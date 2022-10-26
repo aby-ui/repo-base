@@ -39,11 +39,16 @@ function Frames:Populate()
         self:AddCheck('sort')
 				self:AddCheck('search')
 				self:AddCheck('options')
-				self:AddCheck('broker')
 
 				if self.frame ~= 'vault' then
 					self:AddCheck('money')
+
+          if not Addon.IsClassic and self.frame ~= 'guild' then
+            self:AddCheck('currency')
+          end
 				end
+
+        self:AddCheck('broker')
 			end
 
 			if Config.tabs then

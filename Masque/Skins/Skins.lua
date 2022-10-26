@@ -13,7 +13,7 @@
 local _, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local error, setmetatable, type = error, setmetatable, type
@@ -47,7 +47,7 @@ end
 -- Adds data to the skin tables.
 local function AddSkin(SkinID, SkinData)
 	local Template = SkinData.Template
-	local Default = Skins.Default
+	local Default = Core.DEFAULT_SKIN
 
 	if Template then
 		setmetatable(SkinData, {__index = Skins[Template]})

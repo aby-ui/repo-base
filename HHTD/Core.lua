@@ -3,7 +3,7 @@ H.H.T.D. World of Warcraft Add-on
 Copyright (c) 2009-2018 by John Wellesz (hhtd@2072productions.com)
 All rights reserved
 
-Version 2.4.9.13
+Version 2.4.9.13-1-g781535e
 
 In World of Warcraft healers have to die. This is a cruel truth that you're
 taught very early in the game. This add-on helps you influence this unfortunate
@@ -37,7 +37,7 @@ local INFO      = 3;
 local INFO2     = 4;
 
 local UNPACKAGED = "@pro" .. "ject-version@";
-local VERSION = "2.4.9.13";
+local VERSION = "2.4.9.13-1-g781535e";
 
 local ADDON_NAME, T = ...;
 
@@ -256,11 +256,11 @@ function HHTD:HHTD_HEALER_BORN(selfevent, isFriend, healer)
     HHTD.Registry_by_GUID[isFriend][healer.guid] = healer;
     HHTD.Registry_by_Name[isFriend][healer.name] = healer;
 
-    --[=[@alpha@
+    --@alpha@
     if InCombatLockdown() then
         self:AddDelayedFunctionCall('test', self.Debug, self, INFO2, "After combat lock down test");
     end
-    --@end-alpha@]=]
+    --@end-alpha@
 
     -- if the player is human and friendly and is part of our group, set his/her role to HEALER
     if self.db.global.SetFriendlyHealersRole and not HHTD_C.WOWC then
@@ -553,7 +553,7 @@ do
                 name = L["OPT_VERSION"],
                 desc = L["OPT_VERSION_DESC"],
                 guiHidden = true,
-                func = function () HHTD:Print(L["VERSION"], '2.4.9.13,', L["RELEASE_DATE"], '2022-09-04T13:27:59Z') end,
+                func = function () HHTD:Print(L["VERSION"], '2.4.9.13-1-g781535e,', L["RELEASE_DATE"], '2022-10-26T09:27:47Z') end,
                 order = -5,
             },
             ShowGUI = {
@@ -571,7 +571,7 @@ do
                 args = {
                     Info_Header = {
                         type = 'header',
-                        name = L["VERSION"] .. ' 2.4.9.13 -- ' .. L["RELEASE_DATE"] .. ' 2022-09-04T13:27:59Z',
+                        name = L["VERSION"] .. ' 2.4.9.13-1-g781535e -- ' .. L["RELEASE_DATE"] .. ' 2022-10-26T09:27:47Z',
                         order = 1,
                     },
                     Pve = {
@@ -828,10 +828,10 @@ local DEFAULT__CONFIGURATION = {
         Enabled = true,
         Debug = false,
         DebugLevel = 1,
-        --[=[@alpha@
+        --@alpha@
         Debug = true,
         DebugLevel = 2,
-        --@end-alpha@]=]
+        --@end-alpha@
         Log = false,
         Pve = true,
         PvpHSpecsOnly = false,
@@ -1172,9 +1172,9 @@ do
     };
 
     function HHTD:UPDATE_BATTLEFIELD_SCORE()
-        --[=[@alpha@
+        --@alpha@
         self:Debug(INFO, "UPDATE_BATTLEFIELD_SCORE")
-        --@end-alpha@]=]
+        --@end-alpha@
 
         WIPRBSD[1] = false
     end

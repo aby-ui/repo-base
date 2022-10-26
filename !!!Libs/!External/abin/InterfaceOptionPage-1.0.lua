@@ -1014,7 +1014,7 @@ local function CreateRoundButton(self, name, parent, icon, text, disableInCombat
 
 	button.text = button:CreateFontString(name and name.."Text", "ARTWORK", "GameFontHighlight")
 	button.text:SetPoint("LEFT", button, "RIGHT", 1, 0)
-	button.text:SetFont(STANDARD_TEXT_FONT, 13)
+	button.text:SetFont(STANDARD_TEXT_FONT, 13, "")
 	button.text:SetText(text)
 
 	if disableInCombat then

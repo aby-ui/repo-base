@@ -77,7 +77,7 @@ end
 function templates.CreateIconFrame(parent)
 --163uiedit
 	-- local frame = CreateFrame("Frame", nil, parent)
-	local frame = CreateFrame('Button', '$parentIcon', parent, 'AuraButtonTemplate')
+	local frame = CreateFrame('Button', '$parentIcon', parent, 'ActionButtonTemplate')   --TODO:abyui10 AuraButtonTemplate
     frame:EnableMouse(false)
 	-- frame:SetSize(22, 22)
 

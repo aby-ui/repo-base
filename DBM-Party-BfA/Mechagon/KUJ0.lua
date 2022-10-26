@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2339, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116185401")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(144246)
 mod:SetEncounterID(2258)
 
@@ -28,8 +28,8 @@ local yellExplosiveLeap				= mod:NewYell(291972)
 local specWarnVentingFlames			= mod:NewSpecialWarningMoveTo(291946, nil, nil, nil, 3, 2)
 --local specWarnGTFO				= mod:NewSpecialWarningGTFO(238028, nil, nil, nil, 1, 8)
 
-local timerAurDropCD				= mod:NewNextTimer(34, 291930, nil, nil, nil, 3)
-local timerExplosiveLeapCD			= mod:NewCDTimer(33.4, 291972, nil, nil, nil, 3)
+local timerAurDropCD				= mod:NewNextTimer(32.7, 291930, nil, nil, nil, 3)
+local timerExplosiveLeapCD			= mod:NewCDTimer(31.9, 291972, nil, nil, nil, 3)
 local timerVentingFlamesCD			= mod:NewCDTimer(13.4, 291946, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerBlazingChompCD			= mod:NewCDTimer(15.8, 294929, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 

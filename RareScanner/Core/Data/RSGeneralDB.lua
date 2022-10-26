@@ -112,6 +112,7 @@ function RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(entityID)
 			local artID = C_Map.GetMapArtID(mapID)
 			if (mapPosition) then
 				local x, y = mapPosition:GetXY()
+				RSLogger:PrintDebugMessage(string.format("UpdateAlreadyFoundEntityPlayerPosition[%s]. Nueva posicion por cercania.", entityID))
 				RSGeneralDB.UpdateAlreadyFoundEntity(entityID, mapID, x, y, artID)
 			end
 		end

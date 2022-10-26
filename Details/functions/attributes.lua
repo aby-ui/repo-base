@@ -2,7 +2,7 @@
 
 do 
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 
 	--Globals
 	--[[global]] DETAILS_ATTRIBUTE_DAMAGE = 1

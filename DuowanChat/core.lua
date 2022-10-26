@@ -8,16 +8,11 @@ BACKDROP_DWCHAT_GOLD_BGONLY = {
 	insets = { left = 4, right = 4, top = 4, bottom = 4 },
 };
 
--- TODO
--- use realm based player database
-
-local L = LibStub('AceLocale-3.0'):GetLocale('DuowanChat') 
+local L = LibStub('AceLocale-3.0'):GetLocale('DuowanChat')
 DuowanChat = LibStub('AceAddon-3.0'):NewAddon('DuowanChat', 'AceEvent-3.0', 'AceHook-3.0', 'AceConsole-3.0', 'AceTimer-3.0') 
-DuowanChat._DEBUG = true
 DuowanChat.cbuttons = {};
 DuowanChat.lines = {};
 local raidRosters = {}; DuowanChat.raidRosters = raidRosters --保存小队ID
-
 
 local SCCN_Chan_Replace= {
     [L["Guild"]]=L["GuildShort"],
@@ -191,18 +186,7 @@ end
 function DuowanChat:OnInitialize()
     DWC_ChatFrame_Spacing=_G.ChatFrame1:GetSpacing() 
 
-    do
-        local realm = GetRealmName()
-        DuowanChatPlayerDB = DuowanChatPlayerDB or {}
-        DuowanChatPlayerDB[realm] = DuowanChatPlayerDB[realm] or {}
-        player_db = DuowanChatPlayerDB[realm]
-        self:ClearPlayerDB(player_db)
-
-        if(type(DuowanChatPerDB) == 'table') then
-            wipe(DuowanChatPerDB)
-            DuowanChatPerDB = nil
-        end
-    end
+    player_db = {} --改为内存DB, 重载就失效
 
     if(DEBUG_MODE) then
         local debugf = tekDebug and tekDebug:GetFrame'DuowanChat:Core'
@@ -331,13 +315,7 @@ local function getNameInfo(name)
     end
 end
 
-function dcTEST()
-    local p = UnitName'player'
-    print('player:', p)
-    print('getNameInfo():', getNameInfo(p))
-end
-
-local function storeName(name, lvl) 
+local function storeName(name, lvl)
     if (name and lvl) then
         player_db[name] = lvl.."@"..time()
     end
@@ -700,7 +678,6 @@ function DuowanChat:OnEnable()
     self:SecureHook("UIParent_ManageFramePositions");
     self:SecureHook("FCF_ResetChatWindows");
     --self:RawHook("FCF_UpdateDockPosition", true);
-    self:SecureHook("UIParent_ManageFramePosition");
     --SetCVar("chatStyle", "classic");
     dwChannel_RefreshMuteButton();
     storeName(UnitName("player"), UnitLevel("player"));

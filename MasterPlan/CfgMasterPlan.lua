@@ -1,4 +1,5 @@
 U1RegisterAddon("MasterPlanA", {
+    temporarilyForceDisable = 1,
     title = "要塞任务大师",
     defaultEnable = 0,
 

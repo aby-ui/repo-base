@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras;
@@ -918,7 +919,7 @@ Private.unit_threat_situation_types = {
 WeakAuras.class_types = {}
 for classID = 1, 20 do -- 20 is for GetNumClasses() but that function doesn't exists on Classic
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
-  if classInfo then
+  if classInfo and classID ~=14 then -- 14 == Adventurer
     WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, WA_GetClassColor(classInfo.classFile))
   end
 end
@@ -926,32 +927,41 @@ end
 
 WeakAuras.race_types = {}
 do
-  local unplayableRace = {
-    [12] = true,
-    [13] = true,
-    [14] = true,
-    [15] = true,
-    [16] = true,
-    [17] = true,
-    [18] = true,
-    [19] = true,
-    [20] = true,
-    [21] = true,
-    [23] = true,
-    [33] = true
+  local races = {
+    [1] = true,
+    [2] = true,
+    [3] = true,
+    [4] = true,
+    [5] = true,
+    [6] = true,
+    [7] = true,
+    [8] = true,
+    [9] = not WeakAuras.IsClassicOrBCCOrWrath() and true or nil, -- Goblin
+    [10] = true,
+    [11] = true,
+    [22] = true,
+    [24] = true,
+    [25] = true,
+    [26] = true,
+    [27] = true,
+    [28] = true,
+    [29] = true,
+    [30] = true,
+    [31] = true,
+    [32] = true,
+    [34] = true,
+    [35] = true,
+    [36] = true,
+    [37] = true,
+    [52] = true, -- Dracthyr
+    [70] = true, -- Dracthyr
   }
-  if WeakAuras.IsClassicOrBCCOrWrath() then
-    unplayableRace[9] = true
-  end
 
-  local raceID = 1
-  local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
-  while raceInfo do
-    if not unplayableRace[raceID] then
+  for raceId, enabled in pairs(races) do
+    local raceInfo = C_CreatureInfo.GetRaceInfo(raceId)
+    if raceInfo then
       WeakAuras.race_types[raceInfo.clientFileString] = raceInfo.raceName
     end
-    raceID = raceID + 1
-    raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
   end
 end
 
@@ -1196,25 +1206,12 @@ Private.power_types = {
   [17] = POWER_TYPE_FURY_DEMONHUNTER,
   [18] = POWER_TYPE_PAIN
 }
-
-Private.power_types_with_stagger = {
-  [0] = POWER_TYPE_MANA,
-  [1] = POWER_TYPE_RED_POWER,
-  [2] = POWER_TYPE_FOCUS,
-  [3] = POWER_TYPE_ENERGY,
-  [4] = COMBO_POINTS,
-  [6] = RUNIC_POWER,
-  [7] = SOUL_SHARDS_POWER,
-  [8] = POWER_TYPE_LUNAR_POWER,
-  [9] = HOLY_POWER,
-  [11] = POWER_TYPE_MAELSTROM,
-  [12] = CHI_POWER,
-  [13] = POWER_TYPE_INSANITY,
-  [16] = POWER_TYPE_ARCANE_CHARGES,
-  [17] = POWER_TYPE_FURY_DEMONHUNTER,
-  [18] = POWER_TYPE_PAIN,
-  [99] = STAGGER
-}
+if WeakAuras.IsRetail() then
+  Private.power_types[99] = STAGGER
+end
+if WeakAuras.IsDragonflight() then
+  Private.power_types[19] = POWER_TYPE_ESSENCE
+end
 
 Private.miss_types = {
   ABSORB = L["Absorb"],
@@ -1374,10 +1371,15 @@ local function update_specs()
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
-         .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
-         .. ":0|t"
-         .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+        if WeakAuras.IsShadowlands() then
+          Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
+          .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
+          .. ":0|t"
+          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+        elseif WeakAuras.IsDragonflight() then
+          Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
+          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+        end
       end
     end
   end
@@ -1385,7 +1387,11 @@ end
 
 
 Private.talent_types = {}
-if WeakAuras.IsRetail() then
+if WeakAuras.IsDragonflight() then
+  local spec_frame = CreateFrame("Frame");
+  spec_frame:RegisterEvent("PLAYER_LOGIN")
+  spec_frame:SetScript("OnEvent", update_specs);
+elseif WeakAuras.IsRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -2312,6 +2318,7 @@ do
     [174] = L["Heroic Party"],
     [175] = L["10 Player Raid"],
     [176] = L["25 Player Raid"],
+    [192] = L["Dungeon (Mythic+)"], -- "Challenge Level 1" TODO: check if this label is correct
     [193] = L["10 Player Raid (Heroic)"],
     [194] = L["25 Player Raid (Heroic)"],
   }
@@ -2383,6 +2390,12 @@ if WeakAuras.IsWrathOrRetail() then
     HEALER = INLINE_HEALER_ICON.." "..HEALER
   }
 end
+
+Private.group_member_types = {
+  LEADER = L["Leader"],
+  ASSIST = L["Assist"],
+  NONE = L["None"]
+}
 
 Private.classification_types = {
   worldboss = L["World Boss"],
@@ -2667,7 +2680,7 @@ Private.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicOrBCCOrWrath() then
   Private.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
   Private.pet_behavior_types.assist = nil
 end
@@ -2919,6 +2932,9 @@ Private.non_transmissable_fields = {
   skipWagoUpdate = true,
   ignoreWagoUpdate = true,
   preferToUpdate = true,
+  information = {
+    saved = true
+  }
 }
 
 -- For nested groups, we do transmit parent + controlledChildren
@@ -2927,9 +2943,12 @@ Private.non_transmissable_fields_v2000 = {
   skipWagoUpdate = true,
   ignoreWagoUpdate = true,
   preferToUpdate = true,
+  information = {
+    saved = true
+  }
 }
 
-WeakAuras.data_stub = {
+Private.data_stub = {
   -- note: this is the minimal data stub which prevents false positives in diff upon reimporting an aura.
   -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
   triggers = {

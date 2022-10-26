@@ -14,8 +14,6 @@
 
 ]]
 
--- GLOBALS: GetLocale
-
 if GetLocale() ~= "zhTW" then return end
 
 local _, Core = ...
@@ -30,7 +28,7 @@ L["API"] = "API"
 L["For more information, please visit one of the sites listed below."] = "更多訊息說明，請拜訪下列其中之一的網站。"
 L["Masque is a skinning engine for button-based add-ons."] = "Masque 是幫插件按鈕更換外觀的引擎。"
 L["Select to view."] = "選擇以查看。"
--- L["Supporters"] = "Supporters"
+L["Supporters"] = "支援者"
 L["You must have an add-on that supports Masque installed to use it."] = "必須安裝支援 Masque 按鈕外觀的插件才能使用。"
 
 ----------------------------------------

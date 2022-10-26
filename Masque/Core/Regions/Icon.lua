@@ -15,7 +15,7 @@
 local _, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local error, type = error, type
@@ -32,6 +32,7 @@ local hooksecurefunc = hooksecurefunc
 
 -- @ Core\Utility
 local GetSize, GetTexCoords, SetPoints = Core.GetSize, Core.GetTexCoords, Core.SetPoints
+local GetTypeSkin = Core.GetTypeSkin
 
 -- @ Core\Regions\Mask
 local SkinMask = Core.SkinMask
@@ -92,13 +93,12 @@ function Core.SkinIcon(Region, Button, Skin, xScale, yScale)
 	Region.__MSQ_Button = Button
 
 	-- Skin
-	local bType = Button.__MSQ_bType
-	Skin = Skin[bType] or Skin
+	Skin = GetTypeSkin(Button, Button.__MSQ_bType, Skin)
 
 	Region:SetParent(Button)
 	Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
 	Region:SetDrawLayer(Skin.DrawLayer or "BACKGROUND", Skin.DrawLevel or 0)
-	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale))
+	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
 
 	-- Mask

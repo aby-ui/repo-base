@@ -100,10 +100,10 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	local BaseTexture  = DetailsNewDamageRecord:CreateTexture("BaseTextureTexture", "ARTWORK")
 	BaseTexture:SetTexture([[Interface\ACHIEVEMENTFRAME\UI-Achievement-Alert-Background-Mini]])
-	BaseTexture:SetDrawLayer ("ARTWORK", -5)
+	BaseTexture:SetDrawLayer("ARTWORK", -5)
 	BaseTexture:SetPoint("center", DetailsNewDamageRecord, "center", 0, 0)
 	BaseTexture:SetSize(256, 64)
-	BaseTexture:SetVertexColor (0.99999779462814, 0.99999779462814, 0.99999779462814, 0.99999779462814)
+	BaseTexture:SetVertexColor(0.99999779462814, 0.99999779462814, 0.99999779462814, 0.99999779462814)
 	
 	--animations for BaseTexture
 
@@ -128,16 +128,16 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	local BigFlash  = DetailsNewDamageRecord:CreateTexture("BigFlashTexture", "OVERLAY")
 	BigFlash:SetTexture([[Interface\ACHIEVEMENTFRAME\UI-Achievement-Alert-Glow]])
-	BigFlash:SetDrawLayer ("OVERLAY", 0)
+	BigFlash:SetDrawLayer("OVERLAY", 0)
 	BigFlash:SetPoint("center", DetailsNewDamageRecord, "center", -2, 2)
 	BigFlash:SetSize(314, 100)
-	BigFlash:SetDesaturated (false)
-	BigFlash:SetTexCoord (0.0010000000149012, 0.77400001525879, 0.0010000000149012, 0.65800003051758)
+	BigFlash:SetDesaturated(false)
+	BigFlash:SetTexCoord(0.0010000000149012, 0.77400001525879, 0.0010000000149012, 0.65800003051758)
 	if (0 ~= 0) then
 	    BigFlash:SetRotation (0)
 	end
-	BigFlash:SetVertexColor (0.96470373868942, 0.98823314905167, 0.99999779462814, 0.99999779462814)
-	BigFlash:SetAlpha (1)
+	BigFlash:SetVertexColor(0.96470373868942, 0.98823314905167, 0.99999779462814, 0.99999779462814)
+	BigFlash:SetAlpha(1)
 	BigFlash:SetBlendMode("ADD")
 
 	--animations for BigFlash
@@ -163,16 +163,16 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	local FlashSwipe  = DetailsNewDamageRecord:CreateTexture("FlashSwipeTexture", "OVERLAY")
 	FlashSwipe:SetTexture([[Interface\ACHIEVEMENTFRAME\UI-Achievement-Alert-Glow]])
-	FlashSwipe:SetDrawLayer ("OVERLAY", 7)
+	FlashSwipe:SetDrawLayer("OVERLAY", 7)
 	FlashSwipe:SetPoint("center", DetailsNewDamageRecord, "center", -99, 0)
 	FlashSwipe:SetSize(100, 57)
-	FlashSwipe:SetDesaturated (false)
-	FlashSwipe:SetTexCoord (0.78199996948242, 0.91900001525879, 0.0010000000149012, 0.2760000038147)
+	FlashSwipe:SetDesaturated(false)
+	FlashSwipe:SetTexCoord(0.78199996948242, 0.91900001525879, 0.0010000000149012, 0.2760000038147)
 	if (0 ~= 0) then
 	    FlashSwipe:SetRotation (0)
 	end
-	FlashSwipe:SetVertexColor (0.86666476726532, 0.54117530584335, 0, 0.99999779462814)
-	FlashSwipe:SetAlpha (1)
+	FlashSwipe:SetVertexColor(0.86666476726532, 0.54117530584335, 0, 0.99999779462814)
+	FlashSwipe:SetAlpha(1)
 	FlashSwipe:SetBlendMode("ADD")
 
 	--animations for FlashSwipe
@@ -205,16 +205,16 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	local Portrait  = DetailsNewDamageRecord:CreateTexture("PortraitTexture", "OVERLAY")
 	Portrait:SetTexture([[Interface\ARCHEOLOGY\ARCH-FLAREEFFECT]])
-	Portrait:SetDrawLayer ("OVERLAY", -5)
+	Portrait:SetDrawLayer("OVERLAY", -5)
 	Portrait:SetPoint("center", DetailsNewDamageRecord, "center", 3, 0)
 	Portrait:SetSize(246, 44)
-	Portrait:SetDesaturated (false)
-	Portrait:SetTexCoord (0.051753740310669, 0.81701484680176, 0.086334381103516, 0.25102617263794)
+	Portrait:SetDesaturated(false)
+	Portrait:SetTexCoord(0.051753740310669, 0.81701484680176, 0.086334381103516, 0.25102617263794)
 	if (0 ~= 0) then
 	    Portrait:SetRotation (0)
 	end
-	Portrait:SetVertexColor (0.99999779462814, 0.99999779462814, 0.99999779462814, 0.99999779462814)
-	Portrait:SetAlpha (1)
+	Portrait:SetVertexColor(0.99999779462814, 0.99999779462814, 0.99999779462814, 0.99999779462814)
+	Portrait:SetAlpha(1)
 	Portrait:SetBlendMode("BLEND")
 
 	--animations for Portrait
@@ -256,16 +256,16 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	local DamageIcon  = DetailsNewDamageRecord:CreateTexture("DamageIconTexture", "OVERLAY")
 	DamageIcon:SetTexture([[Interface\LFGFRAME\UI-LFG-ICON-ROLES]])
-	DamageIcon:SetDrawLayer ("OVERLAY", 2)
+	DamageIcon:SetDrawLayer("OVERLAY", 2)
 	DamageIcon:SetPoint("center", DetailsNewDamageRecord, "center", -97, 1)
 	DamageIcon:SetSize(32, 32)
-	DamageIcon:SetDesaturated (false)
-	DamageIcon:SetTexCoord (0.27200000762939, 0.51899997711182, 0.25837841033936, 0.51399997711182)
+	DamageIcon:SetDesaturated(false)
+	DamageIcon:SetTexCoord(0.27200000762939, 0.51899997711182, 0.25837841033936, 0.51399997711182)
 	if (0 ~= 0) then
 	    DamageIcon:SetRotation (0)
 	end
-	DamageIcon:SetVertexColor (0.99999779462814, 0.99999779462814, 0.99999779462814, 0.99999779462814)
-	DamageIcon:SetAlpha (1)
+	DamageIcon:SetVertexColor(0.99999779462814, 0.99999779462814, 0.99999779462814, 0.99999779462814)
+	DamageIcon:SetAlpha(1)
 	DamageIcon:SetBlendMode("BLEND")
 
 	--animations for DamageIcon
@@ -289,14 +289,14 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	----------------------------------------------
 
-	local NewDamageRecord  = DetailsNewDamageRecord:CreateFontString ("NewDamageRecordFontString", "OVERLAY")
-	NewDamageRecord:SetFont ([=[Fonts\FRIZQT__.TTF]=], 12, "OUTLINE")
+	local NewDamageRecord  = DetailsNewDamageRecord:CreateFontString("NewDamageRecordFontString", "OVERLAY")
+	NewDamageRecord:SetFont([=[Fonts\FRIZQT__.TTF]=], 12, "OUTLINE")
 	NewDamageRecord:SetText("Damage Record!")
-	NewDamageRecord:SetDrawLayer ("OVERLAY", 0)
+	NewDamageRecord:SetDrawLayer("OVERLAY", 0)
 	NewDamageRecord:SetPoint("center", DetailsNewDamageRecord, "center", 18, 7)
 	NewDamageRecord:SetSize(181, 20)
-	NewDamageRecord:SetTextColor (1, 1, 1)
-	NewDamageRecord:SetAlpha (1)
+	NewDamageRecord:SetTextColor(1, 1, 1)
+	NewDamageRecord:SetAlpha(1)
 	NewDamageRecord:SetJustifyH("CENTER")
 
 	--animations for NewDamageRecord
@@ -328,14 +328,14 @@ function _detalhes.PlayBestDamageOnGuild (damage)
 
 	----------------------------------------------
 
-	local DamageAmount  = DetailsNewDamageRecord:CreateFontString ("DamageAmountFontString", "OVERLAY")
-	DamageAmount:SetFont ([=[Fonts\FRIZQT__.TTF]=], 12, "THICKOUTLINE")
+	local DamageAmount  = DetailsNewDamageRecord:CreateFontString("DamageAmountFontString", "OVERLAY")
+	DamageAmount:SetFont([=[Fonts\FRIZQT__.TTF]=], 12, "THICKOUTLINE")
 	DamageAmount:SetText(_detalhes:comma_value (damage))
-	DamageAmount:SetDrawLayer ("OVERLAY", 0)
+	DamageAmount:SetDrawLayer("OVERLAY", 0)
 	DamageAmount:SetPoint("center", DetailsNewDamageRecord, "center", 18, -7)
 	DamageAmount:SetSize(100, 20)
-	DamageAmount:SetTextColor (1, 1, 1)
-	DamageAmount:SetAlpha (1)
+	DamageAmount:SetTextColor(1, 1, 1)
+	DamageAmount:SetAlpha(1)
 	DamageAmount:SetJustifyH("CENTER")
 
 	--animations for DamageAmount

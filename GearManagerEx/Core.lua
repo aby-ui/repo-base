@@ -527,7 +527,7 @@ BINDING_NAME_GEARMANAGEREX_WEARSET10 = L["wear set"].." 10"
 
 function GearManagerEx_Toggle(noCreate)
     -- 关闭
-    if PaperDollEquipmentManagerPane:IsVisible() then
+    if PaperDollFrame.EquipmentManagerPane:IsVisible() then
         ToggleCharacter("PaperDollFrame")
         return
     end
@@ -542,8 +542,8 @@ function GearManagerEx_Toggle(noCreate)
         PaperDollFrame_SetSidebar(PaperDollSidebarTab3, PaperDollSidebarTab3:GetID())
         if not noCreate then
             --from GearSetButton_OnClick
-            GearManagerDialogPopup:Show();
-            PaperDollEquipmentManagerPane.selectedSetName = nil;
+            GearManagerPopupFrame:Show();
+            PaperDollFrame.EquipmentManagerPane.selectedSetName = nil;
             PaperDollFrame_ClearIgnoredSlots();
             PaperDollEquipmentManagerPane_Update(true);
             -- Ignore shirt and tabard by default

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SotSTrash", "DBM-Party-BfA", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -123,7 +123,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnConsumingVoidStop:Show(args.destName)
 			specWarnConsumingVoidStop:Play("stopattack")
 		end
-	elseif spellId == 268322 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(2, 3) then
+	elseif spellId == 268322 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") and self:AntiSpam(2, 3) then
 		specWarnTouchofDrowned:Show(args.destName)
 		specWarnTouchofDrowned:Play("helpdispel")
 	elseif spellId == 268214 then

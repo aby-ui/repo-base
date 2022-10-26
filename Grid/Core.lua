@@ -504,7 +504,8 @@ function Grid:SetupOptions()
 		end
 	end)
 
-	InterfaceOptionsFrame:HookScript("OnShow", function()
+	local SettingsPanel = (SettingsPanel or InterfaceOptionsFrame)
+	SettingsPanel:HookScript("OnShow", function()
 		Dialog:Close(GRID)
 	end)
 
@@ -534,17 +535,20 @@ function Grid:SetupOptions()
 	end)
 
 	self.optionsPanels = {
-		Dialog:AddToBlizOptions(GRID, GRID, nil, "general") -- "appName", "panelName", "parentName", ... "optionsPath"
+		Dialog:AddToBlizOptions(GRID, GRID, nil, "Extra163"); -- "appName", "panelName", "parentName", ... "optionsPath"
+		Dialog:AddToBlizOptions(GRID, L["General"], GRID, "general");
 	}
 
 	local noop = function() end
 	for i = 1, #panels do
 		local path = panels[i]
 		local name = self.options.args[path].name
-		local f = Dialog:AddToBlizOptions(GRID, name, GRID, path)
-		f.obj:SetTitle(GRID .. " - " .. name) -- workaround for AceConfig deficiency
-		f.obj.SetTitle = noop
-		self.optionsPanels[i+1] = f
+		if path ~= "Extra163" then
+			local f = Dialog:AddToBlizOptions(GRID, name, GRID, path)
+			f.obj:SetTitle(GRID .. " - " .. name) -- workaround for AceConfig deficiency
+			f.obj.SetTitle = noop
+			self.optionsPanels[i+1] = f
+		end
 	end
 
 	self.SetupOptions = nil

@@ -1,4 +1,4 @@
-
+--@curseforge-project-slug: libchatanims@
 local MAJOR, MINOR = "LibChatAnims", 4 -- Bump minor on changes
 local LCA = LibStub:NewLibrary(MAJOR, MINOR)
 if not LCA then return end -- No upgrade needed

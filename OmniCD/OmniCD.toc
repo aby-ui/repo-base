@@ -1,6 +1,6 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: OmniCD
-## Version: 9.2.7.2722
+## Version: 3.4.0.2724
 ## Author: Treebonker
 ## Notes: Tracks party cooldowns. Use /oc or /omnicd to open options
 ## X-Credits:

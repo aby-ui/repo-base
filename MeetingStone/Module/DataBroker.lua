@@ -255,10 +255,10 @@ function DataBroker:UpdateFlash()
 end
 
 function DataBroker:SetMinimapButtonGlow(enable)
-    QueueStatusMinimapButton_SetGlowLock(QueueStatusMinimapButton, 'lfglist-applicant', enable)
+    QueueStatusButton:SetGlowLock("lfglist-applicant", enable);
 end
 
-local org_OnLoop = QueueStatusMinimapButton.EyeHighlightAnim:GetScript('OnLoop')
+local org_OnLoop = QueueStatusButton.EyeHighlightAnim:GetScript('OnLoop')
 function DataBroker:SetMinimapButtonSound(enable)
-    QueueStatusMinimapButton.EyeHighlightAnim:SetScript('OnLoop', enable and org_OnLoop or nil)
+    QueueStatusButton.EyeHighlightAnim:SetScript('OnLoop', enable and org_OnLoop or nil)
 end

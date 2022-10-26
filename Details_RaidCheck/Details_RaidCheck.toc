@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Details!: Raid Check (plugin)
 ## Notes: Show talents and item level for all members in your group, also shows food and flask state.
 ## RequiredDeps: Details

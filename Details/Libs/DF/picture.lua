@@ -10,8 +10,6 @@ local APIImageFunctions = false
 do
 	local metaPrototype = {
 		WidgetType = "image",
-		SetHook = detailsFramework.SetHook,
-		RunHooksForWidget = detailsFramework.RunHooksForWidget,
 		dversion = detailsFramework.dversion,
 	}
 
@@ -36,6 +34,7 @@ end
 local ImageMetaFunctions = _G[detailsFramework.GlobalWidgetControlNames["image"]]
 
 detailsFramework:Mixin(ImageMetaFunctions, detailsFramework.SetPointMixin)
+detailsFramework:Mixin(ImageMetaFunctions, detailsFramework.ScriptHookMixin)
 
 ------------------------------------------------------------------------------------------------------------
 --metatables

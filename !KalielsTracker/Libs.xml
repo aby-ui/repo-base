@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+..\..\FrameXML\UI.xsd">
 	<Include file="Libs\MSA-Ace-3.0\MSA-Ace-3.0.xml"/>
 	<Include file="Libs\MSA-DropDownMenu-1.0\MSA-DropDownMenu-1.0.xml"/>
 	<Include file="Libs\MSA-ProtRouter-1.0\MSA-ProtRouter-1.0.xml"/>

@@ -75,7 +75,7 @@ MOGUBar_1107aed32aff112f82fac829c22d1591 = 0.5;
 MOGUBar_Info = {};
 MOGUBar_3062be796f02383eadecd6c8e48ebc4b = nil;
 MOGUBar_f97a2a7812f94d4bb34fcf1f04f5711e = nil;
-StaticPopupDialogs["CLOSE_BAR"] = {preferredIndex = 3, text = MOGUBAR_CLOSE_BAR_INFO, button1 = TEXT(YES), button2 = TEXT(NO), OnAccept = function(self, data) MOGUBar_503ed091c79944be5b7079c0602f8146(data); end, OnCancel = function(self, MOGUBar_3a41fa2f33897b6c190993d845e6b222) end, showAlert = 1, timeout = 0, whileDead = 1};
+StaticPopupDialogs["CLOSE_BAR"] = {preferredIndex = 3, text = MOGUBAR_CLOSE_BAR_INFO, button1 = YES, button2 = NO, OnAccept = function(self, data) MOGUBar_503ed091c79944be5b7079c0602f8146(data); end, OnCancel = function(self, MOGUBar_3a41fa2f33897b6c190993d845e6b222) end, showAlert = 1, timeout = 0, whileDead = 1};
 function MOGUBarButton_OnLoad(self)
     self.buttonType = "MOGUBarActionButton";
     --copy from ActionButton_OnLoad, remove ActionBarButtonEventsFrame_RegisterFrame
@@ -488,8 +488,10 @@ function MOGUActionButton_UpdateGrid(button)
         button:Hide();
     elseif (HasAction(button:GetAttribute("action"))) then
         button:Show();
-    elseif (button:GetAttribute("showgrid") >= 1) then button:Show();
-    else button:Hide();
+    elseif ((button:GetAttribute("showgrid") or 0)>= 1) then
+        button:Show();
+    else
+        button:Hide();
     end
 end
 

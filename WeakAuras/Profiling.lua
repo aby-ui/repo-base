@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -13,7 +14,7 @@ profileData.auras = {}
 local currentProfileState, ProfilingTimer
 
 local RealTimeProfilingWindow = CreateFrame("Frame", nil, UIParent)
-WeakAuras.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
+Private.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
 RealTimeProfilingWindow.width = 500
 RealTimeProfilingWindow.height = 300
 RealTimeProfilingWindow.barHeight = 20

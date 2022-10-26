@@ -1,11 +1,11 @@
 
-local DF = _G ["DetailsFramework"]
+local DF = _G["DetailsFramework"]
 if (not DF or not DetailsFrameworkCanLoad) then
 	return
 end
 
 local C_Timer = _G.C_Timer
-local unpack = _G.unpack
+local unpack = table.unpack or _G.unpack
 
 --make a namespace for schedules
 DF.Schedules = DF.Schedules or {}

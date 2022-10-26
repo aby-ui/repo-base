@@ -29,27 +29,3 @@ ef:SetScript("OnEvent", function(self)
     end
     self:UnregisterEvent("BAG_UPDATE_DELAYED")
 end)
-
-hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", function(self, button)
-    if button == "RightButton" and IsControlKeyDown() and IsAltKeyDown() then
-        local bag = self:GetParent():GetID()
-        local slot = self:GetID()
-        local link = GetContainerItemLink(bag, slot)
-        if not link then return end
-        local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo(link)
-        if (quality <= 3 and equipSlot) then
-            if CanIMogIt and CanIMogIt:GetTooltipText(nil, bag, slot) == CanIMogIt.UNKNOWN then
-                UseContainerItem(bag, slot)
-                if (StaticPopup1:IsVisible() and StaticPopup1.which == "EQUIP_BIND") then
-                    StaticPopup1Button1:Click()
-                    U1Message("快捷解锁外观：" .. link)
-                    ef.time = GetTime()
-                    ef.bag, ef.slot = bag, slot
-                    ef:RegisterEvent("BAG_UPDATE_DELAYED")
-                end
-            else
-                U1Message(CanIMogIt and "此物品外观已解锁或不能被当前角色解锁" or "快捷解锁失败：未启用幻化提示(CanIMogIt)插件")
-            end
-        end
-    end
-end)

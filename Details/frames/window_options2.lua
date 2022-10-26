@@ -7,7 +7,7 @@ local Details = _G.Details
 local DF = _G.DetailsFramework
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 --local SharedMedia = _G.LibStub:GetLibrary("LibSharedMedia-3.0")
---local LDB = _G.LibStub ("LibDataBroker-1.1", true)
+--local LDB = _G.LibStub("LibDataBroker-1.1", true)
 --local LDBIcon = LDB and _G.LibStub("LibDBIcon-1.0", true)
 
 --options panel namespace
@@ -22,13 +22,13 @@ local preset_version = 3
 Details.preset_version = preset_version
 
 --templates
-local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
-local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
+local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
 
-local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
-local options_button_template_selected = DF.table.copy({}, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
+local options_button_template_selected = DF.table.copy({}, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
 options_button_template_selected.backdropbordercolor = {1, .8, .2}
 
 --options
@@ -50,7 +50,6 @@ function Details.options.InitializeOptionsWindow(instance)
 	f.__icon = [[Interface\Scenarios\ScenarioIcon-Interact]]
     _G.DetailsPluginContainerWindow.EmbedPlugin(f, f, true)
     f.sectionFramesContainer = {}
-    Details:FormatBackground(f)
 
     DF:ApplyStandardBackdrop(f)
     local titleBar = DF:CreateTitleBar(f, "Options Panel")
@@ -145,7 +144,7 @@ function Details.options.InitializeOptionsWindow(instance)
     instanceSelection:SetTemplate(options_dropdown_template)
     instanceSelection:SetHook("OnEnter", function()
         GameCooltip:Reset()
-        GameCooltip:Preset (2)
+        GameCooltip:Preset(2)
         GameCooltip:AddLine(Loc ["STRING_MINITUTORIAL_OPTIONS_PANEL1"])
         GameCooltip:ShowCooltip(instanceSelection.widget, "tooltip")
     end)
@@ -192,7 +191,7 @@ function Details.options.InitializeOptionsWindow(instance)
     --change log
         local changelog = DF:NewButton(footerFrame, _, "$parentOpenChangeLogButton", nil, 140, 20, _detalhes.OpenNewsWindow, "change_log", nil, nil, Loc ["STRING_OPTIONS_CHANGELOG"], 1)
         changelog:SetPoint("left", fillbars, "right", 10, 0)
-        changelog:SetTemplate (options_button_template)
+        changelog:SetTemplate(options_button_template)
         changelog:SetIcon ("Interface\\AddOns\\Details\\images\\icons", nil, nil, nil, {367/512, 399/512, 43/512, 76/512}, {1, 1, 1, 0.8}, 4, 2)
 
     --search field
@@ -254,7 +253,7 @@ function Details.options.InitializeOptionsWindow(instance)
                     if (optionName:find(searchingText)) then
                         if optionData.header ~= lastTab then
                             if lastTab ~= nil then
-                                options[#options+1] = {type = "label", get = function() return "" end, text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")} -- blank
+                                options[#options+1] = {type = "label", get = function() return "" end, text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")} -- blank
                             end
                             options[#options+1] = {type = "label", get = function() return optionData.header end, text_template = {color = "silver", size = 14, font = DF:GetBestFontForLanguage()}}
                             lastTab = optionData.header

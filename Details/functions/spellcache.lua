@@ -6,11 +6,11 @@ do
 --On The Fly SpellCache
 
 	local _detalhes = 	_G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
-	local _rawget	=	rawget
-	local _rawset	=	rawset
-	local _setmetatable =	setmetatable
+	local rawget	=	rawget
+	local rawset	=	rawset
+	local setmetatable =	setmetatable
 	local _GetSpellInfo =	GetSpellInfo
 	local _unpack	=	unpack
 
@@ -61,9 +61,9 @@ do
 
 	--reset spell cache
 	function _detalhes:ClearSpellCache()
-		_detalhes.spellcache = _setmetatable ({}, 
+		_detalhes.spellcache = setmetatable({}, 
 				{__index = function(tabela, valor) 
-					local esta_magia = _rawget (tabela, valor)
+					local esta_magia = rawget (tabela, valor)
 					if (esta_magia) then
 						return esta_magia
 					end
@@ -85,19 +85,19 @@ do
 				end})
 
 		--default overwrites
-		--_rawset (_detalhes.spellcache, 1, {Loc ["STRING_MELEE"], 1, "Interface\\AddOns\\Details\\images\\melee.tga"})
-		--_rawset (_detalhes.spellcache, 2, {Loc ["STRING_AUTOSHOT"], 1, "Interface\\AddOns\\Details\\images\\autoshot.tga"})
+		--rawset (_detalhes.spellcache, 1, {Loc ["STRING_MELEE"], 1, "Interface\\AddOns\\Details\\images\\melee.tga"})
+		--rawset (_detalhes.spellcache, 2, {Loc ["STRING_AUTOSHOT"], 1, "Interface\\AddOns\\Details\\images\\autoshot.tga"})
 		
 		--built-in overwrites
 		for spellId, spellTable in pairs(_detalhes.SpellOverwrite) do
 			local name, _, icon = _GetSpellInfo(spellId)
-			_rawset (_detalhes.spellcache, spellId, {spellTable.name or name, 1, spellTable.icon or icon})
+			rawset (_detalhes.spellcache, spellId, {spellTable.name or name, 1, spellTable.icon or icon})
 		end
 		
 		--user overwrites
 		-- [1] spellid [2] spellname [3] spellicon
 		for index, spellTable in ipairs(_detalhes.savedCustomSpells) do
-			_rawset (_detalhes.spellcache, spellTable [1], {spellTable [2], 1, spellTable [3]})
+			rawset (_detalhes.spellcache, spellTable [1], {spellTable [2], 1, spellTable [3]})
 		end
 	end
 	
@@ -143,6 +143,44 @@ do
 			[8] = {name = Loc ["STRING_ENVIRONMENTAL_SLIME"], icon = [[Interface\ICONS\Ability_Creature_Poison_02]]},
 		}
 
+	elseif (DetailsFramework.IsShadowlandsWow()) then
+		defaultSpellCustomization = {
+			[1] = {name = Loc ["STRING_MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
+			[2] = {name = Loc ["STRING_AUTOSHOT"], icon = [[Interface\ICONS\INV_Weapon_Bow_07]]},
+			[3] = {name = Loc ["STRING_ENVIRONMENTAL_FALLING"], icon = [[Interface\ICONS\Spell_Magic_FeatherFall]]},
+			[4] = {name = Loc ["STRING_ENVIRONMENTAL_DROWNING"], icon = [[Interface\ICONS\Ability_Suffocate]]},
+			[5] = {name = Loc ["STRING_ENVIRONMENTAL_FATIGUE"], icon = [[Interface\ICONS\Spell_Arcane_MindMastery]]},
+			[6] = {name = Loc ["STRING_ENVIRONMENTAL_FIRE"], icon = [[Interface\ICONS\INV_SummerFest_FireSpirit]]},
+			[7] = {name = Loc ["STRING_ENVIRONMENTAL_LAVA"], icon = [[Interface\ICONS\Ability_Rhyolith_Volcano]]},
+			[8] = {name = Loc ["STRING_ENVIRONMENTAL_SLIME"], icon = [[Interface\ICONS\Ability_Creature_Poison_02]]},
+			[98021] = {name = Loc ["STRING_SPIRIT_LINK_TOTEM"]},
+			[108271] = {name = GetSpellInfo(108271), icon = "Interface\\Addons\\Details\\images\\icon_astral_shift"},
+			[196917] = {name = lightOfTheMartyr_Name .. " (" .. Loc ["STRING_DAMAGE"] .. ")", icon = lightOfTheMartyr_Icon},
+			[77535] = {name = GetSpellInfo(77535), icon = "Interface\\Addons\\Details\\images\\icon_blood_shield"},
+
+			--bfa trinkets (deprecated)
+			[278155] = {name = GetSpellInfo(278155) .. " (Trinket)"}, --[Twitching Tentacle of Xalzaix]
+			[279664] = {name = GetSpellInfo(279664) .. " (Trinket)"}, --[Vanquished Tendril of G'huun]
+			[278227] = {name = GetSpellInfo(278227) .. " (Trinket)"}, --[T'zane's Barkspines]
+			[278383] = {name = GetSpellInfo(278383) .. " (Trinket)"}, --[Azurethos' Singed Plumage]
+			[278862] = {name = GetSpellInfo(278862) .. " (Trinket)"}, --[Drust-Runed Icicle]
+			[278359] = {name = GetSpellInfo(278359) .. " (Trinket)"}, --[Doom's Hatred]
+			[278812] = {name = GetSpellInfo(278812) .. " (Trinket)"}, --[Lion's Grace]
+			[270827] = {name = GetSpellInfo(270827) .. " (Trinket)"}, --[Vessel of Skittering Shadows]
+			[271071] = {name = GetSpellInfo(271071) .. " (Trinket)"}, --[Conch of Dark Whispers]
+			[270925] = {name = GetSpellInfo(270925) .. " (Trinket)"}, --[Hadal's Nautilus]
+			[271115] = {name = GetSpellInfo(271115) .. " (Trinket)"}, --[Ignition Mage's Fuse]
+			[271462] = {name = GetSpellInfo(271462) .. " (Trinket)"}, --[Rotcrusted Voodoo Doll]
+			[271465] = {name = GetSpellInfo(271465) .. " (Trinket)"}, --[Rotcrusted Voodoo Doll]
+			[268998] = {name = GetSpellInfo(268998) .. " (Trinket)"}, --[Balefire Branch]
+			[271671] = {name = GetSpellInfo(271671) .. " (Trinket)"}, --[Lady Waycrest's Music Box]
+			[277179] = {name = GetSpellInfo(277179) .. " (Trinket)"}, --[Dread Gladiator's Medallion]
+			[277187] = {name = GetSpellInfo(277187) .. " (Trinket)"}, --[Dread Gladiator's Emblem]
+			[277181] = {name = GetSpellInfo(277181) .. " (Trinket)"}, --[Dread Gladiator's Insignia]
+			[277185] = {name = GetSpellInfo(277185) .. " (Trinket)"}, --[Dread Gladiator's Badge]
+			[278057] = {name = GetSpellInfo(278057) .. " (Trinket)"}, --[Vigilant's Bloodshaper]
+		}
+
 	else
 		defaultSpellCustomization = {
 			[1] = {name = Loc ["STRING_MELEE"], icon = [[Interface\ICONS\INV_Sword_04]]},
@@ -156,6 +194,8 @@ do
 			[98021] = {name = Loc ["STRING_SPIRIT_LINK_TOTEM"]},
 			[108271] = {name = GetSpellInfo(108271), icon = "Interface\\Addons\\Details\\images\\icon_astral_shift"},
 			[196917] = {name = lightOfTheMartyr_Name .. " (" .. Loc ["STRING_DAMAGE"] .. ")", icon = lightOfTheMartyr_Icon},
+
+			[77535] = {name = GetSpellInfo(77535), icon = "Interface\\Addons\\Details\\images\\icon_blood_shield"},
 
 			--bfa trinkets (deprecated)
 			[278155] = {name = GetSpellInfo(278155) .. " (Trinket)"}, --[Twitching Tentacle of Xalzaix]
@@ -194,7 +234,7 @@ do
 		local t = _detalhes.savedCustomSpells[index]
 		if (t) then
 			t [2], t [3] = name or t [2], icon or t [3]
-			return _rawset (_detalhes.spellcache, t [1], {t [2], 1, t [3]})
+			return rawset (_detalhes.spellcache, t [1], {t [2], 1, t [3]})
 		else
 			return false
 		end
@@ -218,7 +258,7 @@ do
 				icon = [[Interface\InventoryItems\WoWUnknownItem01]]
 			end
 			
-			_rawset (_detalhes.spellcache, spellid, {name, 1, icon})
+			rawset (_detalhes.spellcache, spellid, {name, 1, icon})
 			
 			t[2] = name
 			t[3] = icon
@@ -248,7 +288,7 @@ do
 			if (spellid > 10) then
 				local exists = _GetSpellInfo(spellid)
 				if (not exists) then
-					tremove (_detalhes.savedCustomSpells, i)
+					tremove(_detalhes.savedCustomSpells, i)
 				end
 			end
 		end
@@ -267,7 +307,7 @@ do
 		if (not is_overwrite) then
 			tinsert(_detalhes.savedCustomSpells, {spellid, name, icon})
 		end
-		return _rawset (_detalhes.spellcache, spellid, {name, 1, icon})
+		return rawset (_detalhes.spellcache, spellid, {name, 1, icon})
 	end
 	
 	function _detalhes:UserCustomSpellRemove (index)
@@ -276,9 +316,9 @@ do
 			local spellid = t [1]
 			local name, _, icon = _GetSpellInfo(spellid)
 			if (name) then
-				_rawset (_detalhes.spellcache, spellid, {name, 1, icon})
+				rawset (_detalhes.spellcache, spellid, {name, 1, icon})
 			end
-			return tremove (_detalhes.savedCustomSpells, index)
+			return tremove(_detalhes.savedCustomSpells, index)
 		end
 		
 		return false
@@ -286,7 +326,7 @@ do
 	
 	--overwrite for API GetSpellInfo function
 	
-	_detalhes.getspellinfo = function(spellid) return _unpack (_detalhes.spellcache[spellid]) end
+	_detalhes.getspellinfo = function(spellid) return _unpack(_detalhes.spellcache[spellid]) end
 	_detalhes.GetSpellInfo = _detalhes.getspellinfo
 
 	--overwrite SpellInfo if the spell is a DoT, so Details.GetSpellInfo will return the name modified
@@ -294,9 +334,9 @@ do
 		local spellName, rank, spellIcon = _GetSpellInfo(spellid)
 		
 		if (spellName) then
-			_rawset (_detalhes.spellcache, spellid, {spellName .. Loc ["STRING_DOT"], rank, spellIcon})
+			rawset (_detalhes.spellcache, spellid, {spellName .. Loc ["STRING_DOT"], rank, spellIcon})
 		else
-			_rawset (_detalhes.spellcache, spellid, {"Unknown DoT Spell? " .. Loc ["STRING_DOT"], rank, [[Interface\InventoryItems\WoWUnknownItem01]]})
+			rawset (_detalhes.spellcache, spellid, {"Unknown DoT Spell? " .. Loc ["STRING_DOT"], rank, [[Interface\InventoryItems\WoWUnknownItem01]]})
 		end
 	end
 
@@ -317,7 +357,7 @@ do
 			load_frame = CreateFrame("frame", "DetailsLoadSpellCache", UIParent)
 			load_frame:SetFrameStrata("DIALOG")
 			
-			local progress_label = load_frame:CreateFontString ("DetailsLoadSpellCacheProgress", "overlay", "GameFontHighlightSmall")
+			local progress_label = load_frame:CreateFontString("DetailsLoadSpellCacheProgress", "overlay", "GameFontHighlightSmall")
 			progress_label:SetText("Loading Spells: 0%")
 			function _detalhes:BuildSpellListSlowTick()
 				progress_label:SetText("Loading Spells: " .. load_frame:GetProgress() .. "%")
@@ -325,7 +365,7 @@ do
 			load_frame.tick = _detalhes:ScheduleRepeatingTimer ("BuildSpellListSlowTick", 1)
 			
 			function load_frame:GetProgress()
-				return math.floor (step / max * 100)
+				return math.floor(step / max * 100)
 			end
 		end
 		
@@ -356,7 +396,7 @@ do
 				step = max
 				_G.DetailsLoadSpellCache.completed = true
 				_G.DetailsLoadSpellCache.inprogress = false
-				_detalhes:CancelTimer (_G.DetailsLoadSpellCache.tick)
+				_detalhes:CancelTimer(_G.DetailsLoadSpellCache.tick)
 				DetailsLoadSpellCacheProgress:Hide()
 				load_frame:SetScript("OnUpdate", nil)
 			end

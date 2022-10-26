@@ -45,6 +45,7 @@ function RSGroupPinMixin:OnAcquired(POI)
 		self.RightTexture:SetTexture(nil)
 	end
 	self:SetPosition(POI.x, POI.y);
+	self:SetPassThroughButtons("MiddleButton");
 end
 
 function RSGroupPinMixin:OnMouseEnter()

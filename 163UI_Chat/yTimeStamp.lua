@@ -15,12 +15,16 @@ local LINK_LEN = #LINK_NAME
 
 local ts = '|cff68ccef|H'..LINK_NAME..'|h%s|h|r %s'
 local AddMessage = function(self, text, ...)
-    if U1DBG.config_timestamp and U1DBG.config_timestamp ~= '' and CHAT_TIMESTAMP_FORMAT then
-        local date = BetterDate(CHAT_TIMESTAMP_FORMAT, time())
-        if text:sub(1, #date) == date then
-            text = format(ts, date:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1'), text:sub(#date + 1))
-        else
-            text = format(ts, date:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1'), text)
+    local betterts = U1GetCfgValue("163ui_chat/betterts")
+    if betterts then
+        local cvalue = GetCVar("showTimestamps")
+        if cvalue ~= "none" then
+            local date = BetterDate(cvalue, time())
+            if text:sub(1, #date) == date then
+                text = format(ts, date, text:sub(#date + 1))
+            else
+                text = format(ts, date, text)
+            end
         end
     end
     return origs[self](self, text, ...)
@@ -68,7 +72,6 @@ local borderManipulation = function(...)
     end
 end
 
-local eb = ChatFrame1EditBox
 local newSetItemRef = function(link, text, button, ...)
     if(link:sub(1, LINK_LEN) ~= LINK_NAME) then return end
 

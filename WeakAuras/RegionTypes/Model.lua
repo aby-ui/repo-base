@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
@@ -83,7 +84,11 @@ local function create(parent)
   region.regionType = "model"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  if region.SetResizeBounds then
+    region:SetResizeBounds(1, 1)
+  else
+    region:SetMinResize(1, 1)
+  end
 
   -- Border region
   local border = CreateFrame("Frame", nil, region, "BackdropTemplate");
@@ -101,8 +106,15 @@ local function create(parent)
   return region;
 end
 
+function Private.ModelSetTransformFixed(self, tx, ty, tz, rx, ry, rz, s)
+  -- In Dragonflight the api changed, this converts to the new api
+  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), s)
+end
+
 local function CreateModel()
-  return CreateFrame("PlayerModel", nil, UIParent)
+  local frame = CreateFrame("PlayerModel", nil, UIParent)
+  frame.SetTransformFixed = WeakAuras.IsDragonflight() and  Private.ModelSetTransformFixed or frame.SetTransform
+  return frame
 end
 
 -- Keep the two model apis separate
@@ -122,9 +134,9 @@ local function ConfigureModel(region, model, data)
   WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   model:ClearTransform()
-  if (data.api) then
+  if data.api then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+    model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
   else
     model:SetPosition(data.model_z, data.model_x, data.model_y);
@@ -265,8 +277,8 @@ local function modify(parent, region, data)
   function region:Rotate(degrees)
     region.rotation = degrees;
     if region.model then
-      if (data.api) then
-        region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+      if data.api then
+        region.model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
           rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000);
       else
         region.model:SetFacing(rad(region.rotation));
@@ -274,7 +286,7 @@ local function modify(parent, region, data)
     end
   end
 
-  if (data.api) then
+  if data.api then
     region:Rotate(data.model_st_rz);
   else
     region:Rotate(data.rotation);
@@ -307,7 +319,7 @@ end
 do
   function Private.PreShowModels(self, event)
     Private.StartProfileSystem("model");
-    for id, data in pairs(WeakAuras.regions) do
+    for id, data in pairs(Private.regions) do
       Private.StartProfileAura(id);
       if data.region.toShow then
         if (data.regionType == "model") then

@@ -35,7 +35,7 @@ local function GetItemLevelFrame(self, category)
         end
         self.ItemLevelFrame = CreateFrame("Frame", nil, self)
         self.ItemLevelFrame:SetScale(max(0.75, h<32 and h/32 or 1))
-        self.ItemLevelFrame:SetFrameLevel(8)
+        self.ItemLevelFrame:SetFrameLevel(self:GetFrameLevel()+2)
         self.ItemLevelFrame:SetSize(w, h)
         self.ItemLevelFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
         self.ItemLevelFrame.slotString = self.ItemLevelFrame:CreateFontString(nil, "OVERLAY")
@@ -214,15 +214,23 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
 end)
 
 -- Bag
-hooksecurefunc("ContainerFrame_Update", function(self)
-    local id = self:GetID()
-    local name = self:GetName()
-    local button
-    for i = 1, self.size do
-        button = _G[name.."Item"..i]
-        SetItemLevel(button, GetContainerItemLink(id, button:GetID()), "Bag", id, button:GetID())
+
+do
+    local function hook_ContainerFrame_Update(self)
+        local id = self:GetBagID()
+        local name = self:GetName()
+        local button
+        for i = 1, self.size do
+            button = _G[name.."Item"..i]
+            SetItemLevel(button, GetContainerItemLink(id, button:GetID()), "Bag", id, button:GetID())
+        end
     end
-end)
+    for i, frame in ContainerFrameUtil_EnumerateContainerFrames() do
+        hooksecurefunc(frame, "Update", hook_ContainerFrame_Update)
+    end
+    --hooksecurefunc("ContainerFrame_Update", hook_ContainerFrame_Update)
+end
+
 
 -- Bank
 hooksecurefunc("BankFrameItemButton_Update", function(self)
@@ -243,19 +251,21 @@ hooksecurefunc("TradeFrame_UpdateTargetItem", function(id)
     SetItemLevel(_G["TradeRecipientItem"..id.."ItemButton"], GetTradeTargetItemLink(id), "Trade")
 end)
 
--- Loot
-hooksecurefunc("LootFrame_UpdateButton", function(index)
-    local button = _G["LootButton"..index]
-    local numLootItems = LootFrame.numLootItems
-    local numLootToShow = LOOTFRAME_NUMBUTTONS
-    if (numLootItems > LOOTFRAME_NUMBUTTONS) then
-		numLootToShow = numLootToShow - 1
-	end
-    local slot = (numLootToShow * (LootFrame.page - 1)) + index
-    if (button:IsShown()) then
-        SetItemLevel(button, GetLootSlotLink(slot), "Loot")
-    end
-end)
+-- Loot --TODO:abyui10
+if LootFrame_UpdateButton then
+    hooksecurefunc("LootFrame_UpdateButton", function(index)
+        local button = _G["LootButton"..index]
+        local numLootItems = LootFrame.numLootItems
+        local numLootToShow = LOOTFRAME_NUMBUTTONS
+        if (numLootItems > LOOTFRAME_NUMBUTTONS) then
+            numLootToShow = numLootToShow - 1
+        end
+        local slot = (numLootToShow * (LootFrame.page - 1)) + index
+        if (button:IsShown()) then
+            SetItemLevel(button, GetLootSlotLink(slot), "Loot")
+        end
+    end)
+end
 
 -- GuildBank
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98

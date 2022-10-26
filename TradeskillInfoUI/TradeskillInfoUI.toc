@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: TradeSkillInfo UI
 ## Notes: Complete tradeskill information browser module.
 ## Notes-zhCN: 商业技能资料库设置窗口

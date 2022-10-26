@@ -25,6 +25,8 @@ local ELib,L = ExRT.lib,ExRT.L
 
 local cooldownsModule = ExRT.A.ExCD2
 
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 module.db.inspectDB = {}
 module.db.inspectDBAch = {}
 module.db.inspectQuery = {}
@@ -32,6 +34,8 @@ module.db.inspectItemsOnly = {}
 module.db.inspectNotItemsOnly = {}
 module.db.inspectID = nil
 module.db.inspectCleared = nil
+
+module.db.inspectTrees = {}
 
 cooldownsModule.db.inspectDB = module.db.inspectDB	--Quick fix for other modules
 
@@ -196,6 +200,12 @@ local function InspectNext()
 	for name,timeAdded in pairs(module.db.inspectQuery) do
 		if name and UnitName(name) and (not ExRT.isClassic or CheckInteractDistance(name,1)) and CanInspect(name) and (not lastCheckNext[name] or nowTime - lastCheckNext[name] > 30) and (ExRT.isClassic or (select(4,UnitPosition'player') == select(4,UnitPosition(name)))) then
 			lastCheckNext[name] = nowTime
+			if ExRT.isLK then
+				MuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
+				C_Timer.After(2,function()
+					UnmuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
+				end)
+			end
 			NotifyInspect(name)
 
 			if (VMRT and VMRT.InspectViewer and VMRT.InspectViewer.EnableA4ivs) and not module.db.inspectDBAch[name] and not ExRT.isClassic then
@@ -217,7 +227,7 @@ local function InspectNext()
 end
 
 local function InspectQueue()
-	if RaidInCombat() or ExRT.isClassic then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
+	if RaidInCombat() or (ExRT.isClassic and not ExRT.isLK) then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
 		return
 	end
 	local n = GetNumGroupMembers() or 0
@@ -628,12 +638,19 @@ function module.main:ADDON_LOADED()
 
 	module:Enable()
 
-	for senderFull,str in pairs(VMRT.Inspect.Soulbinds) do
-		local sender
-		if select(2,strsplit("-",senderFull)) == ExRT.SDB.realmKey then
-			sender = strsplit("-",senderFull)
+	if UnitLevel'player' <= 60 then
+		for senderFull,str in pairs(VMRT.Inspect.Soulbinds) do
+			local sender
+			if select(2,strsplit("-",senderFull)) == ExRT.SDB.realmKey then
+				sender = strsplit("-",senderFull)
+			end
+			module:ParseSoulbind(sender or senderFull,str)
 		end
-		module:ParseSoulbind(sender or senderFull,str)
+	else
+		for _ in pairs(VMRT.Inspect.Soulbinds) do
+			wipe(VMRT.Inspect.Soulbinds)
+			break
+		end
 	end
 end
 
@@ -744,6 +761,7 @@ do
 		lastInspectTime[arg] = currTime
 		local _,_,_,race,_,name,realm = GetPlayerInfoByGUID(arg)
 		if name then
+			if ExRT.is10 then for i=#name,1,-1 do if name:sub(i,i) ~= string.char(0) then name = name:sub(1,i) break end end end	--TEMP fix
 			if realm and realm ~= "" then name = name.."-"..realm end
 			local inspectedName = name
 			if UnitName("target") == DelUnitNameServer(name) then 
@@ -820,66 +838,257 @@ do
 				end
 			end
 
-			for i=0,20 do
-				local row,col = (i-i%3)/3+1,i%3+1
+			if ExRT.is10 then
+				local activeConfig = Constants.TraitConsts.INSPECT_TRAIT_CONFIG_ID--C_ClassTalents.GetActiveConfigID()
+				local config = C_Traits.GetConfigInfo(activeConfig)
+				local treeID = config.treeIDs[1]
+				local treeInfo = C_Traits.GetTreeInfo(activeConfig,treeID)
+				local nodes = C_Traits.GetTreeNodes(treeID)
 
-				local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(row,col,specIndex,true,inspectedName)
-				if selected then
-					data[row] = col
-					data.talentsIDs[row] = talentID
-				end
+				if not module.db.inspectTrees[data.spec] then
+					local tree = {
+						minX = math.huge,
+						maxX = 0,
+						minY = math.huge,
+						maxY = 0,
+						spellIDtoNode = {},
+						nodeIDToNum = {},
+					}
+					module.db.inspectTrees[data.spec] = tree
 
-				--------> ExCD2
-				if spellID then
-					local list = cooldownsModule.db.spell_talentsList[class]
-					if not list then
-						list = {}
-						cooldownsModule.db.spell_talentsList[class] = list
-					end
+					for i=1,#nodes do
+						local nodeID = nodes[i]
+						local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
+						if node and node.ID ~= 0 and node.entryIDs then
+							for j=1,#node.entryIDs do
+								local entryID = node.entryIDs[j]
+								local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
+								if entry then
+									local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
+									if definitionInfo and definitionInfo.spellID then
+										local spellID = definitionInfo.spellID
+										if j==1 then
+											tree[#tree+1] = {
+												spellID = spellID,
+												x = node.posX,
+												y = node.posY,
+												max = node.maxRanks and node.maxRanks > 1 and node.maxRanks or nil,
+											}
+											if tree.minX > node.posX then tree.minX = node.posX end
+											if tree.maxX < node.posX then tree.maxX = node.posX end
+											if tree.minY > node.posY then tree.minY = node.posY end
+											if tree.maxY < node.posY then tree.maxY = node.posY end
+											if node.visibleEdges then
+												for k=1,#node.visibleEdges do
+													local edge = node.visibleEdges[k]
+													local targetNode = edge.targetNode
 
-					list[specIndex] = list[specIndex] or {}
-
-					list[specIndex][i+1] = spellID
-					if selected or grantedByAura then
-						cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
-
-						if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
-							for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
-								cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+													tree[#tree].edges = tree[#tree].edges or {}
+													tinsert(tree[#tree].edges,targetNode)
+												end
+											end
+										else
+											if not tree[#tree].spellIDs then
+												tree[#tree].spellIDs = {tree[#tree].spellID}
+											end
+											tinsert(tree[#tree].spellIDs,spellID)
+										end
+										tree.spellIDtoNode[spellID] = #tree
+										tree.nodeIDToNum[nodeID] = #tree
+									end
+								end
 							end
 						end
 					end
-
-					cooldownsModule.db.spell_isTalent[spellID] = true
 				end
-				--------> /ExCD2
-			end
+				
 
-			for i=1,4 do
-				local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
-				if talentID then
-					data[i+7] = 1
-					data.talentsIDs[i+7] = talentID
+				local c = 0
+				for i=1,#nodes do
+					local nodeID = nodes[i]
+					local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
+					if node and node.ID ~= 0 and node.activeEntry then
+						local entryID = node.activeEntry.entryID
+						local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
+						if entry then
+							local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
+							if definitionInfo then
+								local spellID = definitionInfo.spellID
+								--------> ExCD2
+								if spellID then
+									local list = cooldownsModule.db.spell_talentsList[class]
+									if not list then
+										list = {}
+										cooldownsModule.db.spell_talentsList[class] = list
+									end
+				
+									list[specIndex] = list[specIndex] or {}
+				
+									if not ExRT.F.table_find(list[specIndex],spellID) then
+										list[specIndex][ #list[specIndex]+1 ] = spellID
+									end
+									if node.currentRank and node.currentRank > 0 then
+										c = c + 1
+										data[c] = spellID
+										if node.maxRanks and node.maxRanks > 1 then
+											data[-c] = node.activeRank
+										end
 
-					local _, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetPvpTalentInfoByID(talentID)
+										cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+				
+										if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
+											for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
+												cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+											end
+										end
+									end
+				
+									cooldownsModule.db.spell_isTalent[spellID] = true
+								end
+								--------> /ExCD2
+							end
+						end
+					end
+				end
+				for i=c+1,1000 do
+					if not data[i] then
+						break
+					end
+					data[i] = nil
+					data[-i] = nil
+				end
+
+				for i=1,4 do
+					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
+					if talentID then	
+						local _, _, _, _, available, spellID = GetPvpTalentInfoByID(talentID)
+						if spellID then
+							local list = cooldownsModule.db.spell_talentsList[class]
+							if not list then
+								list = {}
+								cooldownsModule.db.spell_talentsList[class] = list
+							end
+	
+							list[-1] = list[-1] or {}
+	
+							list[-1][spellID] = spellID
+	
+							cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
+	
+							--cooldownsModule.db.spell_isTalent[spellID] = true
+							cooldownsModule.db.spell_isPvpTalent[spellID] = true
+						end
+					end
+				end
+			elseif not ExRT.isClassic then
+				for i=0,20 do
+					local row,col = (i-i%3)/3+1,i%3+1
+	
+					local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(row,col,specIndex,true,inspectedName)
+					if selected then
+						data[row] = col
+						data.talentsIDs[row] = talentID
+					end
+	
+					--------> ExCD2
 					if spellID then
 						local list = cooldownsModule.db.spell_talentsList[class]
 						if not list then
 							list = {}
 							cooldownsModule.db.spell_talentsList[class] = list
 						end
+	
+						list[specIndex] = list[specIndex] or {}
+	
+						list[specIndex][i+1] = spellID
+						if selected or grantedByAura then
+							cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+	
+							if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
+								for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
+									cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+								end
+							end
+						end
+	
+						cooldownsModule.db.spell_isTalent[spellID] = true
+					end
+					--------> /ExCD2
+				end
 
-						list[-1] = list[-1] or {}
-
-						list[-1][spellID] = spellID
-
-						cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
-
-						--cooldownsModule.db.spell_isTalent[spellID] = true
-						cooldownsModule.db.spell_isPvpTalent[spellID] = true
+				for i=1,4 do
+					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
+					if talentID then
+						data[i+7] = 1
+						data.talentsIDs[i+7] = talentID
+	
+						local _, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetPvpTalentInfoByID(talentID)
+						if spellID then
+							local list = cooldownsModule.db.spell_talentsList[class]
+							if not list then
+								list = {}
+								cooldownsModule.db.spell_talentsList[class] = list
+							end
+	
+							list[-1] = list[-1] or {}
+	
+							list[-1][spellID] = spellID
+	
+							cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
+	
+							--cooldownsModule.db.spell_isTalent[spellID] = true
+							cooldownsModule.db.spell_isPvpTalent[spellID] = true
+						end
 					end
 				end
 			end
+
+			if ExRT.isLK then
+				local talentsStr = module:GetInspectTalentsClassicData(class)
+
+				data.talentsStr = talentsStr and time()..":"..talentsStr or nil
+
+				--------> ExCD2
+				local c = 0
+				while talentsStr do
+					local spellID,spellRanks,on = strsplit(":",talentsStr,3)
+					talentsStr = on
+
+					spellID = tonumber(spellID)
+					if spellID and spellID ~= 0 then
+						local rankSelected = spellRanks:sub(1,1)
+						local rankMax = spellRanks:sub(2,2)
+
+						local list = cooldownsModule.db.spell_talentsList[class]
+						if not list then
+							list = {}
+							cooldownsModule.db.spell_talentsList[class] = list
+						end
+	
+						list[0] = list[0] or {}
+	
+						if not ExRT.F.table_find(list[0],spellID) then
+							list[0][ #list[0]+1 ] = spellID
+						end
+						if rankSelected and (tonumber(rankSelected) or 0) > 0 then
+							cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+	
+							if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
+								for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
+									cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
+								end
+							end
+
+							cooldownsModule:SetTalentClassicRank(name,spellID,tonumber(rankSelected))
+						end
+	
+						cooldownsModule.db.spell_isTalent[GetSpellInfo(spellID) or "spell:"..spellID] = true
+						cooldownsModule.db.spell_isTalent[spellID] = true
+					end
+				end
+				--------> /ExCD2
+			end
+
 			InspectItems(name, inspectedName, module.db.inspectID, true)
 
 			cooldownsModule:UpdateAllData() 	--------> ExCD2
@@ -941,7 +1150,7 @@ do
 end
 
 function module.main:UNIT_INVENTORY_CHANGED(arg)
-	if ExRT.isClassic then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
+	if ExRT.isClassic and not ExRT.isLK then	--Temp fix for 'Unknown unit' or 'Out of Range' errors
 		return
 	end
 	if arg=='player' then return end
@@ -963,6 +1172,9 @@ local function sortSoulbindTree(a,b)
 end
 function module:PrepCovenantData()
 	if ExRT.isClassic then
+		return
+	end
+	if UnitLevel'player' > 60 then
 		return
 	end
 
@@ -988,7 +1200,7 @@ function module:PrepCovenantData()
 			if node.state == Enum.SoulbindNodeState.Selected then
 				if node.conduitID ~= 0 then
 					soulbinds = soulbinds .. ":" .. node.conduitID .. "-".. (node.conduitRank + (node.socketEnhanced and 2 or 0)) .. "-"..node.conduitType
-				else
+				elseif node.spellID ~= 0 then
 					soulbinds = soulbinds .. ":" .. node.spellID
 				end
 			end
@@ -1001,7 +1213,60 @@ function module:SoulbindReq(unit)
 	ExRT.F.SendExMsg("inspect","REQ\tS\t"..unit)
 end
 
-if ExRT.isBC then
+if ExRT.isLK then
+	module.TALENTDATA = {
+		DEATHKNIGHT = {
+			{[1]={48979,48997,49182},[2]={48978,49004,55107},[3]={48982,48987,49467},[4]={48985,[3]=49145,[4]=49015},[5]={48977,[3]=49006,[4]=49005},[6]={[2]=48988,[3]=53137},[7]={49027,49016,50365},[8]={62905,49018,55233},[9]={49189,55050,49023},[10]={[2]=61154},[11]={[2]=49028}},
+			{[1]={49175,49455,49042},[2]={[2]=55061,[3]=49140,[4]=49226},[3]={50880,49039,51468},[4]={[2]=51123,[3]=49149,[4]=49137},[5]={[2]=49186,[3]=49471,[4]=49796},[6]={55610,49024,49188},[7]={50040,49203,50384},[8]={65661,54639,51271},[9]={49200,49143,50187},[10]={[2]=49202},[11]={[2]=49184}},
+			{[1]={51745,48962,55129},[2]={49036,48963,49588,48965},[3]={49013,51459,49158},[4]={[2]=49146,[3]=49219,[4]=55620},[5]={49194,49220,49223},[6]={55666,49224,49208,52143},[7]={66799,51052,50391,63560},[8]={[2]=49032,[3]=49222},[9]={49217,51099,55090},[10]={[2]=50117},[11]={[2]=49206}},
+		},
+		DRUID = {
+			{[1]={[2]=16814,[3]=57810},[2]={16845,35363,[4]=16821},[3]={16836,16880,57865,16819},[4]={[2]=16909,[3]=16850},[5]={33589,5570,57849},[6]={33597,16896,33592},[7]={[2]=24858,[3]=48384,[4]=33600},[8]={48389,[3]=33603},[9]={48516,50516,33831,48488},[10]={[2]=48506},[11]={[2]=48505}},
+			{[1]={[2]=16934,[3]=16858},[2]={16947,16998,16929},[3]={17002,61336,16942},[4]={16966,16972,37116,48409},[5]={16940,[3]=49377,[4]=33872},[6]={57878,17003,33853},[7]={[2]=17007,[3]=34297,[4]=33851},[8]={57873,[3]=33859,[4]=48483},[9]={48492,33917,48532},[10]={[2]=48432,[3]=63503},[11]={[2]=50334}},
+			{[1]={17050,17063,17056},[2]={17069,17118,16833},[3]={17106,16864,48411},[4]={[2]=24968,[3]=17111},[5]={17116,17104,[4]=17123},[6]={33879,[3]=17074},[7]={34151,18562,33881},[8]={[2]=33886,[3]=48496},[9]={48539,65139,48535},[10]={63410,[3]=51179},[11]={[2]=48438}},
+		},
+		HUNTER = {
+			{[1]={[2]=19552,[3]=19583},[2]={35029,19549,19609,24443},[3]={19559,53265,19616},[4]={[2]=19572,[3]=19598},[5]={19578,19577,[4]=19590},[6]={34453,[3]=19621},[7]={34455,19574,34462},[8]={53252,[3]=34466},[9]={53262,34692,53256},[10]={[2]=56314},[11]={[2]=53270}},
+			{[1]={19407,53620,19426},[2]={34482,19421,19485},[3]={34950,19454,19434,34948},[4]={[2]=19464,[3]=19416},[5]={35100,23989,19461},[6]={34475,[4]=19507},[7]={53234,19506,35104},[8]={[2]=34485,[3]=53228},[9]={53215,34490,53221},[10]={[2]=53241},[11]={[2]=53209}},
+			{[1]={52783,19498,19159},[2]={19290,19184,19376,34494},[3]={19255,19503,19295,19286},[4]={[2]=56333,[4]=56342},[5]={56339,19370,19306},[6]={19168,[3]=34491},[7]={34500,19386,34497},[8]={34506,53295},[9]={53298,3674,[4]=53302},[10]={[3]=53290},[11]={[2]=53301}},
+		},
+		MAGE = {
+			{[1]={11210,11222,11237},[2]={28574,29441,11213},[3]={11247,11242,44397,54646},[4]={11252,11255,18462,29447},[5]={31569,12043,[4]=11232},[6]={31574,15058,31571},[7]={31579,12042,44394},[8]={[2]=44378,[3]=31584},[9]={[2]=31589,[3]=44404},[10]={[2]=44400,[3]=35578},[11]={[2]=44425}},
+			{[1]={11078,18459,11069},[2]={11119,54747,11108},[3]={11100,11103,11366,11083},[4]={11095,11094,[4]=29074},[5]={31638,11115,11113},[6]={31641,[3]=11124},[7]={34293,11129,31679},[8]={64353,[3]=31656},[9]={44442,31661,44445},[10]={[2]=44449},[11]={[2]=44457}},
+			{[1]={11071,11070,31670},[2]={11207,11189,29438,11175},[3]={11151,12472,11185},[4]={16757,11160,11170},[5]={[2]=11958,[3]=11190,[4]=31667},[6]={55091,[3]=11180},[7]={44745,11426,31674},[8]={[2]=31682,[3]=44543},[9]={44546,31687,44557},[10]={[2]=44566},[11]={[2]=44572}},
+		},
+		PALADIN = {
+			{[1]={[2]=20205,[3]=20224},[2]={20237,20257,9453},[3]={31821,20210,20234},[4]={20254,[3]=20244,[4]=53660},[5]={31822,20216,20359},[6]={31825,[3]=5923},[7]={31833,20473,31828},[8]={53551,[3]=31837},[9]={31842,[3]=53671},[10]={[2]=53569,[3]=53556},[11]={[2]=53563}},
+			{[1]={[2]=63646,[3]=20262},[2]={31844,20174,20096},[3]={64205,20468,20143},[4]={53527,20487,20138},[5]={[2]=20911,[3]=20177},[6]={31848,[3]=20196},[7]={31785,20925,31850},[8]={20127,[3]=31858},[9]={53590,31935,53583},[10]={[2]=53709,[3]=53695},[11]={[2]=53595}},
+			{[1]={[2]=20060,[3]=20101},[2]={25956,20335,20042},[3]={9452,20117,20375,26022},[4]={9799,[3]=32043,[4]=31866},[5]={20111,[3]=31869},[6]={[2]=20049,[3]=31871},[7]={53486,20066,31876},[8]={[2]=31879,[3]=53375},[9]={53379,35395,53501},[10]={[2]=53380},[11]={[2]=53385}},
+		},
+		PRIEST = {
+			{[1]={[2]=14522,[3]=47586},[2]={14523,14747,14749,14531},[3]={14521,14751,14748},[4]={33167,14520,[4]=14750},[5]={33201,18551,63574},[6]={33186,[3]=34908},[7]={45234,10060,63504},[8]={57470,47535,47507},[9]={47509,33206,47516},[10]={[2]=52795},[11]={[2]=47540}},
+			{[1]={14913,14908,14889},[2]={[2]=27900,[3]=18530},[3]={19236,27811,[4]=14892},[4]={27789,14912,14909},[5]={14911,20711,14901},[6]={33150,[3]=14898},[7]={34753,724,33142},[8]={64127,33158,63730},[9]={63534,34861,47558},[10]={[2]=47562},[11]={[2]=47788}},
+			{[1]={15270,15337,15259},[2]={15318,15275,15260},[3]={15392,15273,15407},[4]={[2]=15274,[3]=17322,[4]=15257},[5]={15487,15286,27839,33213},[6]={14910,[3]=63625},[7]={[2]=15473,[3]=33221},[8]={47569,[3]=33191},[9]={64044,34914,47580},[10]={[3]=47573},[11]={[2]=47585}},
+		},
+		ROGUE = {
+			{[1]={14162,14144,14138},[2]={14156,51632,[4]=13733},[3]={14983,14168,14128},[4]={[2]=16513,[3]=14113},[5]={31208,14177,14174,31244},[6]={[2]=14186,[3]=14158},[7]={51625,58426,31380},[8]={51634,[3]=31234},[9]={31226,1329,51627},[10]={[2]=51664},[11]={[2]=51662}},
+			{[1]={13741,13732,13715},[2]={14165,13713,[4]=13705},[3]={13742,14251,13706},[4]={13754,13743,13712,18427},[5]={13709,13877,13960},[6]={[2]=30919,[3]=31124},[7]={31122,13750,31130},[8]={5952,[3]=35541},[9]={51672,32601,51682},[10]={[2]=51685},[11]={[2]=51690}},
+			{[1]={14179,13958,14057},[2]={30892,14076,13975},[3]={13981,14278,14171},[4]={13983,13976,14079},[5]={30894,14185,14082,16511},[6]={31221,[3]=30902},[7]={31211,14183,31228},[8]={[2]=31216,[3]=51692},[9]={51698,36554,58414},[10]={[2]=51708},[11]={[2]=51713}},
+		},
+		SHAMAN = {
+			{[1]={[2]=16039,[3]=16035},[2]={16038,28996,30160},[3]={16040,16164,16089},[4]={16086,[4]=29062},[5]={28999,16041,[4]=30664},[6]={30672,[3]=16578},[7]={[2]=16166,[3]=51483},[8]={63370,51466,30675},[9]={51474,30706,51480},[10]={[2]=62097},[11]={[2]=51490}},
+			{[1]={16259,16043,17485},[2]={16258,16255,16262,16261},[3]={16266,[3]=43338,[4]=16254},[4]={[2]=16256,[3]=16252},[5]={29192,16268,51883},[6]={30802,[3]=29082,[4]=63373},[7]={30816,30798,17364},[8]={51525,60103,51521},[9]={30812,30823,51523},[10]={[2]=51528},[11]={[2]=51533}},
+			{[1]={[2]=16182,[3]=16173},[2]={16184,29187,16179},[3]={16180,16181,55198,16176},[4]={[2]=16187,[3]=16194},[5]={29206,[3]=16188,[4]=30864},[6]={[3]=16178},[7]={30881,16190,51886},[8]={51554,30872,30867},[9]={51556,974,51560},[10]={[2]=51562},[11]={[2]=61295}},
+		},
+		WARLOCK = {
+			{[1]={18827,18174,17810},[2]={18179,18213,18182,17804},[3]={53754,17783,18288},[4]={18218,18094,[4]=32381},[5]={32385,63108,18223},[6]={54037,18271},[7]={47195,30060,18220},[8]={30054,[3]=32477},[9]={47198,30108,58435},[10]={[2]=47201},[11]={[2]=48181}},
+			{[1]={18692,18694,18697,47230},[2]={18703,18705,18731},[3]={18754,19028,18708,30143},[4]={[2]=18769,[3]=18709},[5]={30326,[3]=18767},[6]={[2]=23785,[3]=47245},[7]={30319,47193,35691},[8]={[2]=30242,[3]=63156},[9]={54347,30146,63117},[10]={[2]=47236},[11]={[2]=59672}},
+			{[1]={[2]=17793,[3]=17788},[2]={18119,63349,17778},[3]={18126,17877,17959},[4]={18135,17917,[4]=17927},[5]={34935,17815,18130},[6]={30299,[3]=17954},[7]={[2]=17962,[3]=30293,[4]=18096},[8]={[2]=30288,[3]=54117},[9]={47258,30283,47220},[10]={[2]=47266},[11]={[2]=50796}},
+		},
+		WARRIOR = {
+			{[1]={12282,16462,12286},[2]={12285,12300,12295},[3]={12290,12296,16493,12834},[4]={[2]=12163,[3]=56636},[5]={12700,12328,12284,12281},[6]={20504,[3]=12289,[4]=46854},[7]={29834,12294,46865,12862},[8]={64976,35446,46859},[9]={29723,29623,29836},[10]={[2]=46867},[11]={[2]=46924}},
+			{[1]={61216,12321,12320},[2]={[2]=12324,[3]=12322},[3]={12329,12323,16487,12318},[4]={23584,20502,12317},[5]={29590,12292,29888},[6]={20500,[3]=12319},[7]={46908,23881,[4]=29721},[8]={46910,[4]=29759},[9]={60970,29801,46913},[10]={[2]=56927},[11]={[2]=46917}},
+			{[1]={12301,12298,12287},[2]={[2]=50685,[3]=12297},[3]={12975,12797,29598,12299},[4]={59088,12313,12308},[5]={12312,12809,12311},[6]={[3]=16538},[7]={29593,50720,29787},[8]={[2]=29140,[3]=46945},[9]={57499,20243,47294},[10]={[2]=46951,[3]=58872},[11]={[2]=46968}},
+		},
+	}
+elseif ExRT.isBC then
 	module.TALENTDATA = {
 		WARRIOR = {
 			{12282,16462,12286,12285,12300,12287,12290,12296,12834,12163,16493,12700,12292,12284,12281,29888,12289,29723,29836,12294,29834,35446,29623,},
@@ -1098,17 +1363,56 @@ elseif ExRT.isClassic then
 		},
 	}
 end
-function module:PrepTalentsClassicData()
-	if not ExRT.isClassic then
+
+if ExRT.isLK then
+	function module:PrepTalentsClassicData()
+		if not ExRT.isClassic then
+			return
+		end
+		local class = select(2,UnitClass("player"))
+		local talents
+		for spec=1,3 do
+			for talPos=1,31 do
+				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfoClassic(spec, talPos)
+				if name and maxRank > 0 and rank > 0 then
+					talents = (talents and talents..":" or "") .. (module.TALENTDATA[class][spec][tier][column] or 0) .. ":" .. rank .. maxRank
+				end
+			end
+		end
+		return talents
+	end
+else
+	function module:PrepTalentsClassicData()
+		if not ExRT.isClassic then
+			return
+		end
+		local class = select(2,UnitClass("player"))
+		local talents
+		for spec=1,3 do
+			for talPos=1,31 do
+				local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfoClassic(spec, talPos, 1)
+				if name and maxRank > 0 and rank > 0 then
+					talents = (talents and talents..":" or "") .. module.TALENTDATA[class][spec][talPos] .. ":" .. rank .. maxRank
+				end
+			end
+		end
+		return talents
+	end
+end
+
+function module:GetInspectTalentsClassicData(class)
+	if not ExRT.isLK then
 		return
 	end
-	local class = select(2,UnitClass("player"))
+	if not module.TALENTDATA[class or ""] then
+		return
+	end
 	local talents
 	for spec=1,3 do
-		for talPos=1,24 do
-			local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfoClassic(spec, talPos, 1)
+		for talPos=1,31 do
+			local name, iconTexture, tier, column, rank, maxRank, isExceptional, available = GetTalentInfoClassic(spec, talPos, true)
 			if name and maxRank > 0 and rank > 0 then
-				talents = (talents and talents..":" or "") .. module.TALENTDATA[class][spec][talPos] .. ":" .. rank .. maxRank
+				talents = (talents and talents..":" or "") .. (module.TALENTDATA[class][spec][tier][column] or 0) .. ":" .. rank .. maxRank
 			end
 		end
 	end
@@ -1195,20 +1499,80 @@ function module.main:ENCOUNTER_START()
 
 
 	local tal = ""
-	for tier=1,7 do
-		local tierSpellID
-		for col=1,3 do
-			local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(tier,col,1)
-			if selected then
-				tierSpellID = spellID
-				break
+	if ExRT.is10 then
+		--[[
+		local configID = C_ClassTalents.GetActiveConfigID()
+		local configInfo = C_Traits.GetConfigInfo(configID)
+		local treeID = configInfo.treeIDs[1]
+		if not ((ClassTalentFrame) and (ClassTalentFrame.TalentsTab) and (ClassTalentFrame.TalentsTab.GetLoadoutExportString)) then
+			LoadAddOn("Blizzard_ClassTalentUI")
+		end
+
+		local exportStream = ExportUtil.MakeExportDataStream()
+		local currentSpecID = PlayerUtil.GetCurrentSpecID()
+		local treeInfo = C_Traits.GetTreeInfo(configID,treeID)
+		local treeHash = C_Traits.GetTreeHash(treeInfo.ID)
+		local serializationVersion = C_Traits.GetLoadoutSerializationVersion()
+	
+		ClassTalentFrame.TalentsTab:WriteLoadoutHeader(exportStream, serializationVersion, currentSpecID, treeHash)
+		ClassTalentFrame.TalentsTab:WriteLoadoutContent(exportStream, configID, treeInfo.ID)
+
+		tal = exportStream:GetExportString()
+		]]
+
+		local activeConfig = C_ClassTalents.GetActiveConfigID()
+		local config = C_Traits.GetConfigInfo(activeConfig)
+		local treeID = config.treeIDs[1]
+		local treeInfo = C_Traits.GetTreeInfo(activeConfig,treeID)
+		local nodes = C_Traits.GetTreeNodes(treeID)
+
+		for i=1,#nodes do
+			local nodeID = nodes[i]
+			local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
+			if node and node.ID ~= 0 and node.activeEntry and node.currentRank and node.currentRank > 0 then
+				local entryID = node.activeEntry.entryID
+				local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
+				if entry then
+					local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
+					if definitionInfo then
+						local spellID = definitionInfo.spellID
+						if spellID then
+							tal = tal .. ":" .. (spellID or 0)
+							if node.maxRanks and node.maxRanks > 1 then
+								tal = tal .. "-" .. (node.activeRank)
+							end
+						end
+					end
+				end
 			end
 		end
 
-		tal = tal .. ":" .. (tierSpellID or 0)
+		if tal ~= "" then
+			local compressed = LibDeflate:CompressDeflate(tal,{level = 9})
+			local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
+			
+			if encoded then
+				tal = encoded:gsub("%^","##")
+				ExRT.F.SendExMsg("inspect","R\tY"..tal)	
+			end
+			tal = ""
+		end
+	else
+		for tier=1,7 do
+			local tierSpellID
+			for col=1,3 do
+				local talentID, _, _, selected, available, spellID, _, _, _, _, grantedByAura = GetTalentInfo(tier,col,1)
+				if selected then
+					tierSpellID = spellID
+					break
+				end
+			end
+	
+			tal = tal .. ":" .. (tierSpellID or 0)
+		end
 	end
 	if tal ~= "" then
-		str = str .. (str ~= "" and "^" or "") .. "T" .. tal
+		str = str .. (str ~= "" and "^" or "") .. (ExRT.is10 and "Y" or "T") .. tal
 	end
 
 	if isAzeriteItemEnabled then
@@ -1250,10 +1614,14 @@ end
 
 function module.main:ENCOUNTER_START_SIM()
 	local f = ExRT.F.SendExMsg
-	ExRT.F.SendExMsg = print
+	local y
+	local function o(...)y=select(2,...):sub(3) print(...) end
+	ExRT.F.SendExMsg = o
 	module.main:ENCOUNTER_START()
 	ExRT.F.SendExMsg = f
+	module:addonMessage(UnitName'player', "inspect", "R", y)
 end
+--/run GMRT.A.Inspect.main:ENCOUNTER_START_SIM()
 
 function module:ParseSoulbind(sender,main)
 	if cooldownsModule:IsEnabled() then
@@ -1383,6 +1751,56 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 							end
 						end
 					end
+				elseif key == "Y" then
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"talent")
+					end
+
+					local str2 = main:sub(2):gsub("##","^")
+						
+					local decoded = LibDeflate:DecodeForWoWAddonChannel(str2)
+					if not decoded then return end
+					local decompressed = LibDeflate:DecompressDeflate(decoded)
+					if not decompressed then return end
+
+					local inspectData = module.db.inspectDB[sender]
+
+					local list = decompressed
+					local c = 0
+					while list do
+						local spellID,on = strsplit(":",list,2)
+						list = on
+						local rank
+
+						spellID,rank = strsplit("-",spellID)
+						spellID = tonumber(spellID or "?")
+						if spellID then
+							if spellID ~= 0 then
+								if cooldownsModule:IsEnabled() then
+									cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
+									cooldownsModule.db.spell_isTalent[spellID] = true
+									--print(sender,'added talent',spellID)
+								end
+								if inspectData then
+									c = c + 1
+									inspectData[c] = spellID
+									rank = tonumber(rank or "")
+									if rank then
+										inspectData[-c] = rank
+									end
+								end
+							end
+						end
+					end
+					if inspectData then
+						for i=c+1,1000 do
+							if not inspectData[i] then
+								break
+							end
+							inspectData[i] = nil
+							inspectData[-i] = nil
+						end
+					end
 				elseif key == "A" then
 					if cooldownsModule:IsEnabled() then
 						cooldownsModule:ClearSessionDataReason(sender,"azerite")
@@ -1431,7 +1849,9 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						end
 					end
 
-					VMRT.Inspect.Soulbinds[senderFull] = time()..main:sub(2)
+					if UnitLevel'player' <= 60 then
+						VMRT.Inspect.Soulbinds[senderFull] = time()..main:sub(2)
+					end
 				elseif key == "t" and ExRT.isClassic then
 					if cooldownsModule:IsEnabled() then
 						cooldownsModule:ClearSessionDataReason(sender,"talent")
@@ -1446,6 +1866,9 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						if spellID and spellID ~= 0 and cooldownsModule:IsEnabled() then
 							cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
 							--cooldownsModule.db.spell_isTalent[spellID] = true
+
+							cooldownsModule.db.spell_isTalent[GetSpellInfo(spellID) or "spell:"..spellID] = true	
+							cooldownsModule.db.spell_isTalent[spellID] = true
 						end
 					end
 

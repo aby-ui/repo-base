@@ -835,9 +835,12 @@ function RSExplorerRareList:SelectNpc(npcID)
 	end
 	
 	-- Achievement
-	if (npcPOI.achievementLink) then
-		mainFrame.RareInfo.AchievementIcon.achievementLink = npcPOI.achievementLink
-		mainFrame.RareInfo.AchievementIcon:Show()
+	if (RSUtils.GetTableLength(npcPOI.achievementIDs) > 0) then
+		for _, achievementID in ipairs(npcPOI.achievementIDs) do
+			mainFrame.RareInfo.AchievementIcon.achievementLink = RSAchievementDB.GetCachedAchievementInfo(achievementID).link
+			mainFrame.RareInfo.AchievementIcon:Show()
+			break
+		end
 	else
 		mainFrame.RareInfo.AchievementIcon:Hide()
 	end

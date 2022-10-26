@@ -23,22 +23,6 @@ function Addon:OnLoad()
     frame:RegisterEvent('PLAYER_LOGIN')
     frame:RegisterEvent('PLAYER_LOGOUT')
 
-    -- setup the config ui loader
-    if self:IsConfigAddonEnabled() then
-        frame.name = ADDON
-
-        -- load the config addon when this frame is shown
-        frame:SetScript(
-            'OnShow',
-            function(f)
-                f:SetScript('OnShow', nil)
-                LoadAddOn(CONFIG_ADDON)
-            end
-        )
-
-        InterfaceOptions_AddCategory(frame)
-    end
-
     self.frame = frame
 
     -- setup slash commands
@@ -95,12 +79,12 @@ end
 
 -- utility methods
 function Addon:ShowOptionsFrame()
-    if self:IsConfigAddonEnabled() then
-        if not InterfaceOptionsFrame:IsShown() then
-            InterfaceOptionsFrame_Show()
-        end
+    if self:IsConfigAddonEnabled() and LoadAddOn(CONFIG_ADDON) then
+        local dialog = LibStub('AceConfigDialog-3.0')
 
-        InterfaceOptionsFrame_OpenToCategory(self.frame)
+        dialog:Open(ADDON)
+        dialog:SelectGroup(ADDON, "themes", DEFAULT)
+
         return true
     end
 

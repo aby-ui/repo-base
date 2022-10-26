@@ -1167,7 +1167,7 @@ function Initialize()
     text:SetTextHeight(12)
     text:SetText(COMERGY_OPTION_FRAME_MESSAGE)
 
-    local button = CreateFrame("Button", nil, f, "OptionsButtonTemplate")
+    local button = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
     button:SetPoint("TOPLEFT", 16, -70)
     button:SetText(COMERGY_OPTION_FRAME_BUTTON)
     button:SetHeight(24)
@@ -1222,17 +1222,17 @@ function ChiStatus()
     local class, chiType = status.playerClass, nil
 
     if (class == MONK and GetSpecialization() == 3) then
-        chiType = SPELL_POWER_CHI
+        chiType = Enum.PowerType.Chi
     elseif (class == PALADIN) then
-        chiType = SPELL_POWER_HOLY_POWER
+        chiType = Enum.PowerType.HolyPower
     elseif (class == WARLOCK) then
-        chiType = SPELL_POWER_SOUL_SHARDS
+        chiType = Enum.PowerType.SoulShards
     elseif (class == MAGE) then
-        chiType = GetSpecialization() == 1 and SPELL_POWER_ARCANE_CHARGES
+        chiType = GetSpecialization() == 1 and Enum.PowerType.ArcaneCharges
     elseif (class == ROGUE) then
-        chiType = SPELL_POWER_COMBO_POINTS
+        chiType = Enum.PowerType.ComboPoints
     elseif (class == DRUID) then
-        chiType = UnitPowerType(status.curUnit) == SPELL_POWER_ENERGY and SPELL_POWER_COMBO_POINTS or nil
+        chiType = UnitPowerType(status.curUnit) == Enum.PowerType.Energy and Enum.PowerType.ComboPoints or nil
     elseif (class == DEATHKNIGHT) then
         status.runeEnabled = true
     end
@@ -1271,8 +1271,8 @@ function ReadStatus()
     status.energyFlashing = 0
     status.energyBGFlashing = 0
 
-    status.curMana = UnitPower(status.curUnit, SPELL_POWER_MANA)
-    status.maxMana = UnitPowerMax(status.curUnit, SPELL_POWER_MANA)
+    status.curMana = UnitPower(status.curUnit, Enum.PowerType.Mana)
+    status.maxMana = UnitPowerMax(status.curUnit, Enum.PowerType.Mana)
 
     if (status.chiEnabled) then
         status.curChi = UnitPower(status.curUnit, status.curChiType)
@@ -1602,9 +1602,9 @@ function EventHandlers.UPDATE_SHAPESHIFT_FORM()
             status.maxEnergy = UnitPowerMax(status.curUnit)
             ResizeEnergyBars()
             FrameResize()
-            status.curEnergy = UnitPower(status.curUnit, SPELL_POWER_ENERGY)
+            status.curEnergy = UnitPower(status.curUnit, Enum.PowerType.Energy)
             EnergyChanged()
-            status.curMana = UnitPower(status.curUnit, SPELL_POWER_MANA)
+            status.curMana = UnitPower(status.curUnit, Enum.PowerType.Mana)
             ManaChanged()
         end
         MainFrameToggle()
@@ -1808,7 +1808,7 @@ end
 
 function EventHandlers.UNIT_MAXPOWER()
     status.maxEnergy = UnitPowerMax(status.curUnit)
-    status.maxMana = UnitPowerMax(status.curUnit, SPELL_POWER_MANA)
+    status.maxMana = UnitPowerMax(status.curUnit, Enum.PowerType.Mana)
     SetMaxChi()
     ResizeChiBars()
     ResizeEnergyBars()
@@ -1842,7 +1842,7 @@ end
 
 function EventHandlers.UNIT_POWER_UPDATE()
     status.curEnergy = UnitPower(status.curUnit)
-    status.curMana = UnitPower(status.curUnit, SPELL_POWER_MANA)
+    status.curMana = UnitPower(status.curUnit, Enum.PowerType.Mana)
     MainFrameToggle()
     if (status.chiEnabled) then
         if (status.curChi ~= UnitPower(status.curUnit, status.curChiType)) then
@@ -2152,7 +2152,7 @@ function OnPeriodicUpdate()
     end
 
     if (status.manaEnabled) then
-        local curMana = UnitPower(status.curUnit, SPELL_POWER_MANA)
+        local curMana = UnitPower(status.curUnit, Enum.PowerType.Mana)
         if (status.curMana ~= curMana) then
             if ((curMana > status.curMana) and ((not Comergy_Settings.ShowOnlyInCombat) or (status.playerInCombat))) then
                 local sound = false

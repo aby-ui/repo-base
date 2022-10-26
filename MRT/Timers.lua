@@ -51,6 +51,8 @@ local defaultSpecTimers = {
 	[270] = 10, -- Monk: Mistweaver
 	[577] = 10, -- Demon Hunter: Havoc
 	[581] = 10, -- Demon Hunter: Vengeance	
+	[1467] = 10,
+	[1468] = 10,
 }
 
 module.db.specIcons = ExRT.GDB.ClassSpecializationIcons
@@ -448,9 +450,9 @@ function module.options:Load()
 		VMRT.Timers.specTimes[spec] = val
 	end
 	
-	self.scrollFrame = ELib:ScrollFrame(self):Size(678,220):Point("TOP",0,-413):Height(600):Shown(not ExRT.isClassic)
+	self.scrollFrame = ELib:ScrollFrame(self):Size(678,220):Point("TOP",0,-413):Height(700):Shown(not ExRT.isClassic)
 	ELib:Border(self.scrollFrame,0)
-	self.scrollFrameText = ELib:Text(self,L.TimerSpecTimerHeader,12):Size(620,30):Point("BOTTOMLEFT",self.scrollFrame,"TOPLEFT",5,5):Bottom():Shown(not ExRT.isClassic)
+	self.scrollFrameText = ELib:Text(self,L.TimerSpecTimerHeader,12):Size(620,30):Point("BOTTOMLEFT",self.scrollFrame,"TOPLEFT",5,1):Bottom():Shown(not ExRT.isClassic)
 	self.scrollFrame.C.classTitles = {}
 	self.scrollFrame.C.classFrames = {}
 	for key, class in ipairs(module.db.classNames) do
@@ -481,7 +483,7 @@ function module.options:Load()
 			specFrame.specEditBox.id = spec
 		end
 	end
-	self.scrollFrame.C.ButtonToDefaultTimers = ELib:Button(self.scrollFrame.C,L.TimerSpecTimerDefault):Size(255,20):Point("TOP",0,-560):OnClick(function()
+	self.scrollFrame.C.ButtonToDefaultTimers = ELib:Button(self.scrollFrame.C,L.TimerSpecTimerDefault):Size(255,20):Point("TOP",0,-670):OnClick(function()
 		VMRT.Timers.specTimes = tableCopy(defaultSpecTimers)
 		for key, class in ipairs(module.db.classNames) do
 			for specRow, spec in ipairs(module.db.specByClass[class]) do

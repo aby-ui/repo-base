@@ -725,7 +725,11 @@ function Templates:ExRTButtonModernTemplate(parent,isSecure)
 
 	self.Texture = self:CreateTexture(nil,"BACKGROUND")
 	self.Texture:SetColorTexture(1,1,1,1)
-	self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+	if ExRT.is10 then
+		self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
+	else
+		self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+	end
 	self.Texture:SetPoint("TOPLEFT")
 	self.Texture:SetPoint("BOTTOMRIGHT")
 
@@ -1449,7 +1453,7 @@ function Templates:ExRTRadioButtonModernTemplate(parent)
 	self.NormalTexture:SetTexture("Interface\\Addons\\"..GlobalAddonName.."\\media\\radioModern")
 	self.NormalTexture:SetAllPoints()
 	self.NormalTexture:SetTexCoord(0,0.25,0,1)
-	self:SetNormalTexture(self.PushedTexture)
+	self:SetNormalTexture(self.NormalTexture)
 
 	self.HighlightTexture = self:CreateTexture()
 	self.HighlightTexture:SetTexture("Interface\\Addons\\"..GlobalAddonName.."\\media\\radioModern")
@@ -1526,7 +1530,11 @@ do
 		return self
 	end
 	local function Widget_Gradient(self,...)
-		self:SetGradientAlpha(...)
+		if ExRT.is10 then
+			self:SetGradient(...,CreateColor(select(2,...)), CreateColor(select(6,...)))
+		else
+			self:SetGradientAlpha(...)
+		end
 		return self
 	end
 	local function Widget_Texture(self,texture,cG,cB,cA)
@@ -2148,7 +2156,11 @@ do
 
 		tip.gradientTexture = tip:CreateTexture()
 		tip.gradientTexture:SetColorTexture(1,1,1,1)
-		tip.gradientTexture:SetGradientAlpha("VERTICAL",0,0,0,0,.8,.8,.8,.2)
+		if ExRT.is10 then
+			tip.gradientTexture:SetGradient("VERTICAL",CreateColor(0,0,0,0), CreateColor(.8,.8,.8,.2))
+		else
+			tip.gradientTexture:SetGradientAlpha("VERTICAL",0,0,0,0,.8,.8,.8,.2)
+		end
 		tip.gradientTexture:SetPoint("TOPLEFT",2.5,-2.5)
 		tip.gradientTexture:SetPoint("BOTTOMRIGHT",-2.5,2.5)
 
@@ -2789,7 +2801,11 @@ do
 		local self = ELib:Template(template,parent) or CreateFrame("EditBox",nil,parent,template or (BackdropTemplateMixin and "BackdropTemplate"))
 		if not template then
 			local GameFontNormal_Font = GameFontNormal:GetFont()
-			self:SetFont(GameFontNormal_Font,12)
+			if ExRT.is10 then
+				self:SetFont(GameFontNormal_Font,12,"")
+			else
+				self:SetFont(GameFontNormal_Font,12)
+			end
 			self:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8X8",edgeFile = DEFAULT_BORDER,edgeSize = 8,tileSize = 0,insets = {left = 2.5,right = 2.5,top = 2.5,bottom = 2.5}})
 			self:SetBackdropColor(0, 0, 0, 0.8) 
 			self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
@@ -3086,7 +3102,11 @@ do
 		return self
 	end
 	local function Widget_SetVertical(self)
-		self.Texture:SetGradientAlpha("HORIZONTAL",0.20,0.21,0.25,1, 0.05,0.06,0.09,1)
+		if ExRT.is10 then
+			self.Texture:SetGradient("HORIZONTAL",CreateColor(0.20,0.21,0.25,1), CreateColor(0.05,0.06,0.09,1))
+		else
+			self.Texture:SetGradientAlpha("HORIZONTAL",0.20,0.21,0.25,1, 0.05,0.06,0.09,1)
+		end
 		self.TextObj = self:GetTextObj()
 		self.TextObj:SetPoint("CENTER",-5,0)
 		
@@ -3417,7 +3437,7 @@ do
 		local self = CreateFrame("Button",nil,parent,"MainHelpPlateButton")	-- После использования кнопки не дает юзать спелл дизенчант. лень искать решение, не юзайте кнопку часто [5.4]
 		self:SetPoint("CENTER",parent,"TOPLEFT",0,0) 
 		self:SetScale(0.8)
-		local interfaceStrata = InterfaceOptionsFrame:GetFrameStrata()
+		local interfaceStrata = nil-- InterfaceOptionsFrame:GetFrameStrata()
 		interfaceStrata = "FULLSCREEN_DIALOG"
 		self:SetFrameStrata(interfaceStrata)
 		if interfaceStrata == "FULLSCREEN" or interfaceStrata == "FULLSCREEN_DIALOG" or interfaceStrata == "TOOLTIP" then
@@ -3984,7 +4004,7 @@ do
 		self:Show()
 	end
 	local function PopupFrameOnShow(self)
-		local interfaceStrata = InterfaceOptionsFrame:GetFrameStrata()
+		local interfaceStrata = InterfaceOptionsFrame and InterfaceOptionsFrame:GetFrameStrata()
 		if interfaceStrata == "FULLSCREEN" or interfaceStrata == "FULLSCREEN_DIALOG" or interfaceStrata == "TOOLTIP" then
 			self:SetFrameStrata(interfaceStrata)
 		end
@@ -6198,7 +6218,11 @@ function ELib:DecorationLine(parent,isGradient,layer,layerCounter)
 
 	if isGradient then
 		self:SetColorTexture(1,1,1,1)
-		self:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
+		if ExRT.is10 then
+			self:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
+		else
+			self:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
+		end
 	else
 		self:SetColorTexture(.24,.25,.30,1)
 	end

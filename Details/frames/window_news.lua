@@ -15,7 +15,7 @@ function Details:OpenNewsWindow(textToShow, dumpValues, keeptext)
 		return
 	end
 
-	if (textToShow and type (textToShow) == "table") then
+	if (textToShow and type(textToShow) == "table") then
 		DetailsNewsWindowLower:SetSize(450, 5000)
 		DetailsNewsWindowSlider:SetMinMaxValues(0, 5000)
 		DetailsNewsWindowText:SetHeight(5000)
@@ -103,7 +103,7 @@ function Details:CreateOrOpenNewsWindow()
 				tile = true, tileSize = 16,
 				insets = {left = 1, right = 1, top = 0, bottom = 1},})
 		frameUpper:SetBackdropColor(.1, .1, .1, .3)
-		frameUpper:SetScrollChild (frameLower)
+		frameUpper:SetScrollChild(frameLower)
 		
 		local slider = CreateFrame("slider", "DetailsNewsWindowSlider", frame, "BackdropTemplate")
 		slider.bg = slider:CreateTexture(nil, "background")
@@ -115,10 +115,10 @@ function Details:CreateOrOpenNewsWindow()
 		slider.thumb:SetSize(25, 25)
 		
 		slider:SetThumbTexture (slider.thumb)
-		slider:SetOrientation ("vertical");
+		slider:SetOrientation("vertical");
 		slider:SetSize(16, 499)
 		slider:SetPoint("topleft", frameUpper, "topright")
-		slider:SetMinMaxValues (0, 2000)
+		slider:SetMinMaxValues(0, 2000)
 		slider:SetValue(0)
 		slider:SetScript("OnValueChanged", function(self)
 		      frameUpper:SetVerticalScroll (self:GetValue())
@@ -155,7 +155,7 @@ function Details:CreateOrOpenNewsWindow()
 		local onToggleAutoOpen = function(_, _, state)
 			Details.auto_open_news_window = state
 		end
-		local autoOpenCheckbox = DetailsFramework:CreateSwitch(statusBar, onToggleAutoOpen, Details.auto_open_news_window, _, _, _, _, "AutoOpenCheckbox", _, _, _, _, _, DetailsFramework:GetTemplate ("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
+		local autoOpenCheckbox = DetailsFramework:CreateSwitch(statusBar, onToggleAutoOpen, Details.auto_open_news_window, _, _, _, _, "AutoOpenCheckbox", _, _, _, _, _, DetailsFramework:GetTemplate("switch", "OPTIONS_CHECKBOX_BRIGHT_TEMPLATE"))
 		autoOpenCheckbox:SetAsCheckBox()
 		autoOpenCheckbox:SetPoint("left", statusBar, "left", 2, 0)
 
@@ -163,7 +163,7 @@ function Details:CreateOrOpenNewsWindow()
 		autoOpenText:SetPoint("left", autoOpenCheckbox, "right", 2, 0)
 
 		DetailsFramework:ApplyStandardBackdrop(statusBar)
-		statusBar:SetAlpha (0.8)
+		statusBar:SetAlpha(0.8)
 		DetailsFramework:BuildStatusbarAuthorInfo(statusBar, "", "")
 		statusBar.authorName:SetPoint("left", statusBar, "left", 207, 0)
 

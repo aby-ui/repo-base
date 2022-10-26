@@ -1,4 +1,4 @@
-
+--@curseforge-project-slug: libdurability@
 local LD = LibStub:NewLibrary("LibDurability", 2)
 if not LD then return end -- No upgrade needed
 

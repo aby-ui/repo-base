@@ -193,7 +193,7 @@ function TradeskillInfo:OnEnable()
 	self:PopulateProfessionNames()
 
 	self:HookTradeSkillUI()
-	self:SecureHook("ContainerFrameItemButton_OnModifiedClick")
+	--self:SecureHook("ContainerFrameItemButton_OnModifiedClick") --TODO:abyui10
 	self:SecureHook("BankFrameItemButtonGeneric_OnModifiedClick")
 	self:SecureHook("MerchantItemButton_OnModifiedClick")
 	self:SecureHook("ChatFrame_OnHyperlinkShow")
@@ -205,7 +205,7 @@ function TradeskillInfo:OnEnable()
 
 	-- Merchant/bank/bag colouring
 	self:SecureHook("MerchantFrame_UpdateMerchantInfo")
-	self:SecureHook("ContainerFrame_UpdateCooldown")
+	--self:SecureHook("ContainerFrame_UpdateCooldown") --TODO:abyui10
 	self:SecureHook("BankFrameItemButton_Update")
 
 	local tooltipLib = LibStub("LibExtraTip-1", true)

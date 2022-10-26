@@ -1424,7 +1424,7 @@ function DF:GetSpellsForEncounterFromJournal (instanceEJID, encounterEJID)
 	local name, description, encounterID, rootSectionID, link = DetailsFramework.EncounterJournal.EJ_GetEncounterInfo (encounterEJID) --taloc (primeiro boss de Uldir)
 	
 	if (not name) then
-		print ("DetailsFramework: Encounter Info Not Found!", instanceEJID, encounterEJID)
+		print("DetailsFramework: Encounter Info Not Found!", instanceEJID, encounterEJID)
 		return {}
 	end
 	
@@ -1436,11 +1436,11 @@ function DF:GetSpellsForEncounterFromJournal (instanceEJID, encounterEJID)
 	
 	while (nextID [1]) do
 		--get the deepest section in the hierarchy
-		local ID = tremove (nextID)
+		local ID = tremove(nextID)
 		local sectionInfo = C_EncounterJournal.GetSectionInfo (ID)
 		
 		if (sectionInfo) then
-			if (sectionInfo.spellID and type (sectionInfo.spellID) == "number" and sectionInfo.spellID ~= 0) then
+			if (sectionInfo.spellID and type(sectionInfo.spellID) == "number" and sectionInfo.spellID ~= 0) then
 				tinsert(spellIDs, sectionInfo.spellID)
 			end
 			

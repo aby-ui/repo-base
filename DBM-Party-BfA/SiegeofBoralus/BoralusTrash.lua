@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BoralusTrash", "DBM-Party-BfA", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -75,14 +75,14 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 256957 and self:IsValidWarning(args.sourceGUID) and not args:IsDestTypePlayer() then
 		specWarnWatertightShellDispel:CombinedShow(1, args.destName)
 		specWarnWatertightShellDispel:ScheduleVoice(1, "helpdispel")
-	elseif spellId == 257168 and self:IsValidWarning(args.sourceGUID) and self:CheckDispelFilter() then
+	elseif spellId == 257168 and self:IsValidWarning(args.sourceGUID) and self:CheckDispelFilter("curse") then
 		specWarnCursedSlash:Show(args.destName)
 		specWarnCursedSlash:Play("helpdispel")
 	elseif spellId == 272421 and args:IsPlayer() then
 		specWarnSightedArt:Show()
 		specWarnSightedArt:Play("targetyou")
 		yellSightedArt:Yell()
-	elseif spellId == 272571 and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+	elseif spellId == 272571 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") then
 		specWarnChokingWatersDispel:Show(args.destName)
 		specWarnChokingWatersDispel:Play("helpdispel")
 	elseif spellId == 272888 and self:IsValidWarning(args.sourceGUID) then

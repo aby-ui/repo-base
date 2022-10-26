@@ -1,4 +1,5 @@
 U1RegisterAddon("FriendsMenuXP", {
+    temporarilyForceDisable = 1,
     title = "玩家菜单增强",
     defaultEnable = 1,
     secure = 1, --secure button

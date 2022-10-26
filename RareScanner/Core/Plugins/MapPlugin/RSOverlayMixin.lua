@@ -30,6 +30,7 @@ function RSOverlayMixin:OnAcquired(x, y, r, g, b, pin)
 	self.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
 	self.Texture:SetVertexColor(r, g, b, 0.9)
 	self:SetPosition(RSUtils.FixCoord(x), RSUtils.FixCoord(y));
+	self:SetPassThroughButtons("MiddleButton");
 end
 
 function RSOverlayMixin:OnMouseEnter()

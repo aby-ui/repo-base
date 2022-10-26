@@ -36,7 +36,6 @@ rematch:InitModule(function()
 	for i=1,6 do
 		card.Front.Bottom.Abilities[i]:RegisterForClicks("AnyUp")
 	end
-	rematch:ConvertTitlebarCloseButton(card.CloseButton)
 	rematch:SetTitlebarButtonIcon(card.PinButton,"pin")
 
 	-- "Unwrap Pet" menu that replaces regular pet menu when a wrapped pet is right clicked

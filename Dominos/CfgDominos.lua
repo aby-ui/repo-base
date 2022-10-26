@@ -1,4 +1,5 @@
 ﻿U1RegisterAddon("Dominos", {
+    temporarilyForceDisable = 1,
     title = "多米诺动作条",
     optdeps = {"Masque"},
     defaultEnable = 0,

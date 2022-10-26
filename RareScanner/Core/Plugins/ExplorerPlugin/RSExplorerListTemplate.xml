@@ -5,7 +5,7 @@
     <Size x="300" y="575"/>
     <Layers>
       <Layer level="BACKGROUND">
-        <Texture parentKey="background" atlas="adventures-followers-bg">
+        <Texture parentKey="background" atlas="Dragonflight-Landingpage-Background">
           <Anchors>
             <Anchor point="TOPLEFT"/>
             <Anchor point="BOTTOMRIGHT"/>
@@ -22,8 +22,8 @@
         <Frames>
           <Slider name="$parentScrollBar" inherits="RSExplorerScrollBarTemplate" parentKey="scrollBar">
             <Anchors>
-              <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-14" y="-30"/>
-              <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-14" y="30"/>
+              <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-18" y="-30"/>
+              <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="-18" y="30"/>
             </Anchors>
             <Scripts>
               <OnLoad>
@@ -35,18 +35,7 @@
           </Slider>
         </Frames>
       </ScrollFrame>
-      <Frame parentKey="ElevatedFrame" framelevel="50" setAllPoints="true">
-        <Layers>
-          <Layer level="OVERLAY" textureSubLayer="5">
-            <Texture atlas="adventures-followers-frame" useAtlasSize="true">
-              <Anchors>
-                <Anchor point="TOPLEFT"/>
-                <Anchor point="BOTTOMRIGHT"/>
-              </Anchors>
-            </Texture>
-          </Layer>
-        </Layers>
-      </Frame>
+      <Frame parentKey="ElevatedFrame" framelevel="50" setAllPoints="true" />
     </Frames>
   </Frame>
   

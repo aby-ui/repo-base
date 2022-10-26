@@ -203,7 +203,7 @@ local mirrorbars = setmetatable({}, {
 		bar:SetBackdropColor(0,0,0)
 		bar.Text = bar:CreateFontString(nil, "OVERLAY")
 		bar.TimeText = bar:CreateFontString(nil, "OVERLAY")
-		bar.Icon = bar:CreateTexture(nil, "DIALOG")
+		bar.Icon = bar:CreateTexture(nil, "ARTWORK")
 		if k == 1 then
 			bar:SetMovable(true)
 			bar:RegisterForDrag("LeftButton")

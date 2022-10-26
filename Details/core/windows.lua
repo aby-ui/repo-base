@@ -1,30 +1,24 @@
 
-	local _detalhes =	_G._detalhes
+	local Details =	_G._detalhes
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 	local libwindow = LibStub("LibWindow-1.1")
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---local pointers
-
-	local _math_floor = math.floor --lua local
-	local _type = type --lua local
-	local _math_abs = math.abs --lua local
-	local _math_min = math.min
-	local _math_max = math.max
-	local _ipairs = ipairs --lua local
-
-	local _UIParent = UIParent --wow api local
-
-	local gump = _detalhes.gump --details local
 	local _
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---constants
+--local pointers
+	local floor = math.floor --lua local
+	local type = type --lua local
+	local abs = math.abs --lua local
+	local _math_min = math.min
+	local _math_max = math.max
+	local ipairs = ipairs --lua local
+	local gump = Details.gump --details local
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--constants
 	local end_window_spacement = 0
 
 --settings
-
 	local animation_speed = 33
 	local animation_speed_hightravel_trigger = 5
 	local animation_speed_hightravel_maxspeed = 3
@@ -38,7 +32,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --core
 
-	function _detalhes:AnimarSplit (barra, goal)
+	function Details:AnimarSplit(barra, goal)
 		barra.inicio = barra.split.barra:GetValue()
 		barra.fim = goal
 		barra.proximo_update = 0
@@ -46,7 +40,7 @@
 		barra:SetScript("OnUpdate", self.FazerAnimacaoSplit)
 	end
 
-	function _detalhes:FazerAnimacaoSplit (elapsed)
+	function Details:FazerAnimacaoSplit(elapsed)
 		local velocidade = 0.8
 
 		if (self.fim > self.inicio) then
@@ -73,13 +67,9 @@
 		self.proximo_update = 0
 	end
 
-
-
-	function _detalhes:PerformAnimations (amt_barras)
-
+	function Details:PerformAnimations(amtLines)
 		if (self.bars_sort_direction == 2) then
-
-			for i = _math_min(self.rows_fit_in_window, amt_barras) - 1, 1, -1 do
+			for i = _math_min(self.rows_fit_in_window, amtLines) - 1, 1, -1 do
 				local row = self.barras [i]
 				local row_proxima = self.barras [i-1]
 
@@ -108,7 +98,7 @@
 					end
 				else
 					if (row.animacao_fim ~= row.animacao_fim2) then
-						_detalhes:AnimarBarra (row, row.animacao_fim)
+						Details:AnimarBarra (row, row.animacao_fim)
 						row.animacao_fim2 = row.animacao_fim
 					end
 				end
@@ -143,7 +133,7 @@
 					end
 				else
 					if (row.animacao_fim ~= row.animacao_fim2) then
-						_detalhes:AnimarBarra (row, row.animacao_fim)
+						Details:AnimarBarra (row, row.animacao_fim)
 						row.animacao_fim2 = row.animacao_fim
 					end
 				end
@@ -202,7 +192,7 @@
 	animation_func_left  = animation_left_simple
 	animation_func_right = animation_right_simple
 
-	function _detalhes:AnimarBarra (esta_barra, fim)
+	function Details:AnimarBarra (esta_barra, fim)
 		esta_barra.inicio = esta_barra.statusbar.value
 		esta_barra.fim = fim
 		esta_barra.tem_animacao = true
@@ -214,8 +204,8 @@
 		end
 	end
 
-	function _detalhes:RefreshAnimationFunctions()
-		if (_detalhes.streamer_config.use_animation_accel) then
+	function Details:RefreshAnimationFunctions()
+		if (Details.streamer_config.use_animation_accel) then
 			animation_func_left  = animation_left_with_accel
 			animation_func_right = animation_right_with_accel
 
@@ -224,14 +214,14 @@
 			animation_func_right = animation_right_simple
 		end
 
-		animation_speed = _detalhes.animation_speed
-		animation_speed_hightravel_trigger = _detalhes.animation_speed_triggertravel
-		animation_speed_hightravel_maxspeed = _detalhes.animation_speed_maxtravel
-		animation_speed_lowtravel_minspeed = _detalhes.animation_speed_mintravel
+		animation_speed = Details.animation_speed
+		animation_speed_hightravel_trigger = Details.animation_speed_triggertravel
+		animation_speed_hightravel_maxspeed = Details.animation_speed_maxtravel
+		animation_speed_lowtravel_minspeed = Details.animation_speed_mintravel
 	end
 
 	--deprecated
-	function _detalhes:FazerAnimacao_Esquerda (deltaTime)
+	function Details:FazerAnimacao_Esquerda (deltaTime)
 		self.inicio = self.inicio - (animation_speed * deltaTime)
 		self:SetValue(self.inicio)
 		if (self.inicio-1 <= self.fim) then
@@ -239,7 +229,8 @@
 			self:SetScript("OnUpdate", nil)
 		end
 	end
-	function _detalhes:FazerAnimacao_Direita (deltaTime)
+
+	function Details:FazerAnimacao_Direita (deltaTime)
 		self.inicio = self.inicio + (animation_speed * deltaTime)
 		self:SetValue(self.inicio)
 		if (self.inicio+0.1 >= self.fim) then
@@ -248,7 +239,7 @@
 		end
 	end
 
-	function _detalhes:AtualizaPontos()
+	function Details:AtualizaPontos()
 		local _x, _y = self:GetPositionOnScreen()
 		if (not _x) then
  			return
@@ -287,7 +278,7 @@
 	--LibWindow-1.1 by Mikk http://www.wowace.com/profiles/mikk/
 	--this is the restore function from Libs\LibWindow-1.1\LibWindow-1.1.lua.
 	--we can't schedule a new save after restoring, we save it inside the instance without frame references and always attach to UIparent.
-	function _detalhes:RestoreLibWindow()
+	function Details:RestoreLibWindow()
 		local frame = self.baseframe
 		if (frame) then
 			if (self.libwindow.x) then
@@ -319,7 +310,7 @@
 				if not point then	-- we have position, but no point, which probably means we're going from data stored by the addon itself before LibWindow was added to it. It was PROBABLY topleft->bottomleft anchored. Most do it that way.
 					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", x, y) --frame:SetPoint("TOPLEFT", frame:GetParent(), "BOTTOMLEFT", x, y)
 					-- make it compute a better attachpoint (on next update)
-					--_detalhes:ScheduleTimer ("SaveLibWindow", 0.05, self)
+					--_detalhes:ScheduleTimer("SaveLibWindow", 0.05, self)
 					return
 				end
 
@@ -333,12 +324,12 @@
 	--this is the save function from Libs\LibWindow-1.1\LibWindow-1.1.lua.
 	--we need to make it save inside the instance object without frame references and also we must always use UIParent due to embed settings for ElvUI and LUI.
 
-		function _detalhes:SaveLibWindow()
+		function Details:SaveLibWindow()
 			local frame = self.baseframe
 			if (frame) then
 				local left = frame:GetLeft()
 				if (not left) then
-					return _detalhes:ScheduleTimer ("SaveLibWindow", 0.05, self)
+					return Details:ScheduleTimer("SaveLibWindow", 0.05, self)
 				end
 					--Details: we are always using UIParent here or the addon break when using Embeds.
 					local parent = UIParent --local parent = frame:GetParent() or nilParent
@@ -387,18 +378,17 @@
 	--end for libwindow-1.1
 --------------------------------------------------------------------------------------------------------
 
-	function _detalhes:SaveMainWindowSize()
-
+	function Details:SaveMainWindowSize()
 		local baseframe_width = self.baseframe:GetWidth()
 		if (not baseframe_width) then
-			return _detalhes:ScheduleTimer ("SaveMainWindowSize", 1, self)
+			return Details:ScheduleTimer("SaveMainWindowSize", 1, self)
 		end
 		local baseframe_height = self.baseframe:GetHeight()
 
 		--calc position
 		local _x, _y = self:GetPositionOnScreen()
 		if (not _x) then
- 			return _detalhes:ScheduleTimer ("SaveMainWindowSize", 1, self)
+ 			return Details:ScheduleTimer("SaveMainWindowSize", 1, self)
  		end
 
 		--save the position
@@ -442,8 +432,7 @@
 		return {altura = self.baseframe:GetHeight(), largura = self.baseframe:GetWidth(), x = _x, y = _y}
 	end
 
-	function _detalhes:SaveMainWindowPosition (instance)
-
+	function Details:SaveMainWindowPosition (instance)
 		if (instance) then
 			self = instance
 		end
@@ -452,14 +441,14 @@
 		--get sizes
 		local baseframe_width = self.baseframe:GetWidth()
 		if (not baseframe_width) then
-			return _detalhes:ScheduleTimer ("SaveMainWindowPosition", 1, self)
+			return Details:ScheduleTimer("SaveMainWindowPosition", 1, self)
 		end
 		local baseframe_height = self.baseframe:GetHeight()
 
 		--calc position
 		local _x, _y = self:GetPositionOnScreen()
 		if (not _x) then
- 			return _detalhes:ScheduleTimer ("SaveMainWindowPosition", 1, self)
+ 			return Details:ScheduleTimer("SaveMainWindowPosition", 1, self)
  		end
 
 		if (self.mostrando ~= "solo") then
@@ -505,9 +494,8 @@
 		return {altura = self.baseframe:GetHeight(), largura = self.baseframe:GetWidth(), x = _x, y = _y}
 	end
 
-	function _detalhes:RestoreMainWindowPosition (pre_defined)
-
-		if (not pre_defined and self.libwindow.x and self.mostrando == "normal" and not _detalhes.instances_no_libwindow) then
+	function Details:RestoreMainWindowPosition (pre_defined)
+		if (not pre_defined and self.libwindow.x and self.mostrando == "normal" and not Details.instances_no_libwindow) then
 			local s = self.window_scale
 			self.baseframe:SetScale(s)
 			self.rowframe:SetScale(s)
@@ -525,7 +513,7 @@
 		self.rowframe:SetScale(s)
 
 		local _scale = self.baseframe:GetEffectiveScale()
-		local _UIscale = _UIParent:GetScale()
+		local _UIscale = UIParent:GetScale()
 
 		local novo_x = self.posicao[self.mostrando].x*_UIscale/_scale
 		local novo_y = self.posicao[self.mostrando].y*_UIscale/_scale
@@ -537,24 +525,22 @@
 			self.posicao[self.mostrando].h = pre_defined.altura
 
 		elseif (pre_defined and not pre_defined.x) then
-			_detalhes:Msg ("invalid pre_defined table for resize, please rezise the window manually.")
+			Details:Msg("invalid pre_defined table for resize, please rezise the window manually.")
 		end
 
 		self.baseframe:SetWidth(self.posicao[self.mostrando].w)
 		self.baseframe:SetHeight(self.posicao[self.mostrando].h)
 
 		self.baseframe:ClearAllPoints()
-		self.baseframe:SetPoint("CENTER", _UIParent, "CENTER", novo_x, novo_y)
-
+		self.baseframe:SetPoint("CENTER", UIParent, "CENTER", novo_x, novo_y)
 	end
 
-	function _detalhes:RestoreMainWindowPositionNoResize (pre_defined, x, y)
-
+	function Details:RestoreMainWindowPositionNoResize (pre_defined, x, y)
 		x = x or 0
 		y = y or 0
 
 		local _scale = self.baseframe:GetEffectiveScale()
-		local _UIscale = _UIParent:GetScale()
+		local _UIscale = UIParent:GetScale()
 
 		local novo_x = self.posicao[self.mostrando].x*_UIscale/_scale
 		local novo_y = self.posicao[self.mostrando].y*_UIscale/_scale
@@ -567,11 +553,11 @@
 		end
 
 		self.baseframe:ClearAllPoints()
-		self.baseframe:SetPoint("CENTER", _UIParent, "CENTER", novo_x + x, novo_y + y)
+		self.baseframe:SetPoint("CENTER", UIParent, "CENTER", novo_x + x, novo_y + y)
 		self.baseframe.BoxBarrasAltura = self.baseframe:GetHeight() - end_window_spacement --espa�o para o final da janela
 	end
 
-	function _detalhes:CreatePositionTable()
+	function Details:CreatePositionTable()
 		local t = {pos_table = true}
 
 		if (self.libwindow) then
@@ -592,7 +578,7 @@
 		return t
 	end
 
-	function _detalhes:RestorePositionFromPositionTable (t)
+	function Details:RestorePositionFromPositionTable (t)
 		if (not t.pos_table) then
 			return
 		end
@@ -613,8 +599,8 @@
 		return self:RestoreMainWindowPosition()
 	end
 
-	function _detalhes:ResetaGump (instancia, tipo, segmento)
-		if (not instancia or _type(instancia) == "boolean") then
+	function Details:ResetaGump (instancia, tipo, segmento)
+		if (not instancia or type(instancia) == "boolean") then
 			segmento = tipo
 			tipo = instancia
 			instancia = self
@@ -645,24 +631,22 @@
 		end
 		instancia.need_rolagem = false
 		instancia.bar_mod = nil
-
 	end
 
-	function _detalhes:ReajustaGump()
-
+	function Details:ReajustaGump()
 		if (self.mostrando == "normal") then --somente alterar o tamanho das barras se tiver mostrando o gump normal
-
 			if (not self.baseframe.isStretching and self.stretchToo and #self.stretchToo > 0) then
 				if (self.eh_horizontal or self.eh_tudo or (self.verticalSnap and not self.eh_vertical)) then
-					for _, instancia in _ipairs(self.stretchToo) do
+					for _, instancia in ipairs(self.stretchToo) do
 						instancia.baseframe:SetWidth(self.baseframe:GetWidth())
 						local mod = (self.baseframe:GetWidth() - instancia.baseframe._place.largura) / 2
 						instancia:RestoreMainWindowPositionNoResize (instancia.baseframe._place, mod, nil)
 						instancia:BaseFrameSnap()
 					end
 				end
-				if ( (self.eh_vertical or self.eh_tudo or not self.eh_horizontal) and (not self.verticalSnap or self.eh_vertical)) then
-					for _, instancia in _ipairs(self.stretchToo) do
+
+				if ((self.eh_vertical or self.eh_tudo or not self.eh_horizontal) and (not self.verticalSnap or self.eh_vertical)) then
+					for _, instancia in ipairs(self.stretchToo) do
 						if (instancia.baseframe) then --esta criada
 							instancia.baseframe:SetHeight(self.baseframe:GetHeight())
 							local mod
@@ -676,15 +660,17 @@
 						end
 					end
 				end
+
 			elseif (self.baseframe.isStretching and self.stretchToo and #self.stretchToo > 0) then
 				if (self.baseframe.stretch_direction == "top") then
-					for _, instancia in _ipairs(self.stretchToo) do
+					for _, instancia in ipairs(self.stretchToo) do
 						instancia.baseframe:SetHeight(self.baseframe:GetHeight())
 						local mod = (self.baseframe:GetHeight() - (instancia.baseframe._place.altura or instancia.baseframe:GetHeight())) / 2
 						instancia:RestoreMainWindowPositionNoResize (instancia.baseframe._place, nil, mod)
 					end
+
 				elseif (self.baseframe.stretch_direction == "bottom") then
-					for _, instancia in _ipairs(self.stretchToo) do
+					for _, instancia in ipairs(self.stretchToo) do
 						instancia.baseframe:SetHeight(self.baseframe:GetHeight())
 						local mod = (self.baseframe:GetHeight() - instancia.baseframe._place.altura) / 2
 						mod = mod * -1
@@ -699,7 +685,7 @@
 
 			--reajusta o freeze
 			if (self.freezed) then
-				_detalhes:Freeze (self)
+				Details:Freeze (self)
 			end
 
 			-- -4 difere a precis�o de quando a barra ser� adicionada ou apagada da barra
@@ -707,14 +693,14 @@
 
 			local T = self.rows_fit_in_window
 			if (not T) then --primeira vez que o gump esta sendo reajustado
-				T = _math_floor(self.baseframe.BoxBarrasAltura / self.row_height)
+				T = floor(self.baseframe.BoxBarrasAltura / self.row_height)
 			end
 
 			--reajustar o local do rel�gio
 			local meio = self.baseframe:GetWidth() / 2
 			local novo_local = meio - 25
 
-			self.rows_fit_in_window = _math_floor( self.baseframe.BoxBarrasAltura / self.row_height)
+			self.rows_fit_in_window = floor( self.baseframe.BoxBarrasAltura / self.row_height)
 
 			--verifica se precisa criar mais barras
 			if (self.rows_fit_in_window > #self.barras) then--verifica se precisa criar mais barras
@@ -758,6 +744,7 @@
 				local fim_iterator = self.barraS[2] --posi��o atual
 				fim_iterator = fim_iterator+barras_diff --nova posi��o
 				local excedeu_iterator = fim_iterator - X --total que ta sendo mostrado - fim do iterator
+
 				if (excedeu_iterator > 0) then --extrapolou
 					fim_iterator = X --seta o fim do iterator pra ser na ultima barra
 					self.barraS[2] = fim_iterator --fim do iterator setado
@@ -794,7 +781,7 @@
 				local fim_iterator = self.barraS[2] --posi��o atual
 				if (not (fim_iterator == X and fim_iterator < C)) then --calcula primeiro as barras que foram perdidas s�o barras que n�o estavam sendo usadas
 					--perdi X barras, diminui X posi��es no iterator
-					local perdeu = _math_abs (barras_diff)
+					local perdeu = abs(barras_diff)
 
 					if (fim_iterator == X) then --se o iterator tiver na ultima posi��o
 						perdeu = perdeu - (C - X)
@@ -827,6 +814,7 @@
 					self:EsconderScrollBar()
 				end
 				self.need_rolagem = false
+
 			else --ligar ou atualizar a rolagem
 				if (not self.rolagem and not self.baseframe.isStretching) then
 					self:MostrarScrollBar()
@@ -841,15 +829,13 @@
 				local tabela = esta_barra.minha_tabela
 
 				if (tabela) then --a barra esta mostrando alguma coisa
-
 					if (tabela._custom) then
 						tabela (esta_barra, self)
 					elseif (tabela._refresh_window) then
 						tabela:_refresh_window (esta_barra, self)
 					else
-						tabela:RefreshBarra (esta_barra, self, true)
+						tabela:RefreshBarra(esta_barra, self, true)
 					end
-
 				end
 
 				whichRowLine = whichRowLine+1
@@ -857,7 +843,6 @@
 
 			--for�a o pr�ximo refresh
 			self.showing[self.atributo].need_refresh = true
-
 		end
 	end
 
@@ -868,7 +853,7 @@
 	local preset3_backdrop = {bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]], edgeFile = [[Interface\AddOns\Details\images\border_3]], tile=true,
 	edgeSize = 16, tileSize = 64, insets = {left = 3, right = 3, top = 4, bottom = 4}}
 
-	_detalhes.cooltip_preset3_backdrop = preset3_backdrop
+	Details.cooltip_preset3_backdrop = preset3_backdrop
 
 	local white_table = {1, 1, 1, 1}
 	local black_table = {0, 0, 0, 1}
@@ -876,10 +861,10 @@
 
 	local preset2_backdrop = {bgFile = [[Interface\AddOns\Details\images\background]], edgeFile = [[Interface\Buttons\WHITE8X8]], tile=true,
 	edgeSize = 1, tileSize = 64, insets = {left = 0, right = 0, top = 0, bottom = 0}}
-	_detalhes.cooltip_preset2_backdrop = preset2_backdrop
+	Details.cooltip_preset2_backdrop = preset2_backdrop
 
 	--"Details BarBorder 3"
-	function _detalhes:CooltipPreset(preset)
+	function Details:CooltipPreset(preset)
 		local GameCooltip = GameCooltip
 
 		GameCooltip:Reset()
@@ -931,39 +916,37 @@
 			GameCooltip:SetColor (1, 0.5, 0.5, 0.5, 0.5)
 
 			GameCooltip:SetBackdrop(1, preset3_backdrop, nil, white_table)
-
 		end
 	end
 
 --yes no panel
 
 	do
-		_detalhes.yesNo = _detalhes.gump:NewPanel (UIParent, _, "DetailsYesNoWindow", _, 500, 80)
-		_detalhes.yesNo:SetPoint("center", UIParent, "center")
-		_detalhes.gump:NewLabel(_detalhes.yesNo, _, "$parentAsk", "ask", "")
-		_detalhes.yesNo ["ask"]:SetPoint("center", _detalhes.yesNo, "center", 0, 25)
-		_detalhes.yesNo ["ask"]:SetWidth(480)
-		_detalhes.yesNo ["ask"]:SetJustifyH("center")
-		_detalhes.yesNo ["ask"]:SetHeight(22)
-		_detalhes.gump:NewButton(_detalhes.yesNo, _, "$parentNo", "no", 100, 30, function() _detalhes.yesNo:Hide() end, nil, nil, nil, Loc ["STRING_NO"])
-		_detalhes.gump:NewButton(_detalhes.yesNo, _, "$parentYes", "yes", 100, 30, nil, nil, nil, nil, Loc ["STRING_YES"])
-		_detalhes.yesNo ["no"]:SetPoint(10, -45)
-		_detalhes.yesNo ["yes"]:SetPoint(390, -45)
-		_detalhes.yesNo ["no"]:InstallCustomTexture()
-		_detalhes.yesNo ["yes"]:InstallCustomTexture()
-		_detalhes.yesNo ["yes"]:SetHook("OnMouseUp", function() _detalhes.yesNo:Hide() end)
-		function _detalhes:Ask (msg, func, ...)
-			_detalhes.yesNo ["ask"].text = msg
+		Details.yesNo = Details.gump:NewPanel(UIParent, _, "DetailsYesNoWindow", _, 500, 80)
+		Details.yesNo:SetPoint("center", UIParent, "center")
+		Details.gump:NewLabel(Details.yesNo, _, "$parentAsk", "ask", "")
+		Details.yesNo ["ask"]:SetPoint("center", Details.yesNo, "center", 0, 25)
+		Details.yesNo ["ask"]:SetWidth(480)
+		Details.yesNo ["ask"]:SetJustifyH("center")
+		Details.yesNo ["ask"]:SetHeight(22)
+		Details.gump:NewButton(Details.yesNo, _, "$parentNo", "no", 100, 30, function() Details.yesNo:Hide() end, nil, nil, nil, Loc ["STRING_NO"])
+		Details.gump:NewButton(Details.yesNo, _, "$parentYes", "yes", 100, 30, nil, nil, nil, nil, Loc ["STRING_YES"])
+		Details.yesNo ["no"]:SetPoint(10, -45)
+		Details.yesNo ["yes"]:SetPoint(390, -45)
+		Details.yesNo ["no"]:InstallCustomTexture()
+		Details.yesNo ["yes"]:InstallCustomTexture()
+		Details.yesNo ["yes"]:SetHook("OnMouseUp", function() Details.yesNo:Hide() end)
+		function Details:Ask (msg, func, ...)
+			Details.yesNo ["ask"].text = msg
 			local p1, p2 = ...
-			_detalhes.yesNo ["yes"]:SetClickFunction(func, p1, p2)
-			_detalhes.yesNo:Show()
+			Details.yesNo ["yes"]:SetClickFunction(func, p1, p2)
+			Details.yesNo:Show()
 		end
-		_detalhes.yesNo:Hide()
+		Details.yesNo:Hide()
 	end
 
 --cria o frame de wait for plugin
-	function _detalhes:CreateWaitForPlugin()
-
+	function Details:CreateWaitForPlugin()
 		local WaitForPluginFrame = CreateFrame("frame", "DetailsWaitForPluginFrame" .. self.meu_id, UIParent,"BackdropTemplate")
 		local WaitTexture = WaitForPluginFrame:CreateTexture(nil, "overlay")
 		WaitTexture:SetTexture("Interface\\CHARACTERFRAME\\Disconnect-Icon")
@@ -981,7 +964,7 @@
 		--RotateAnimGroup:SetLooping ("repeat")
 		rotate:SetTarget(WaitTexture)
 
-		local bgpanel = gump:NewPanel (WaitForPluginFrame, WaitForPluginFrame, "DetailsWaitFrameBG"..self.meu_id, nil, 120, 30, false, false, false)
+		local bgpanel = gump:NewPanel(WaitForPluginFrame, WaitForPluginFrame, "DetailsWaitFrameBG"..self.meu_id, nil, 120, 30, false, false, false)
 		bgpanel:SetPoint("center", WaitForPluginFrame, "center")
 		bgpanel:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"})
 		bgpanel:SetBackdropColor(.2, .2, .2, 1)
@@ -997,11 +980,10 @@
 		self.wait_for_plugin_created = true
 
 		function self:WaitForPlugin()
-
 			self:ChangeIcon ([[Interface\GossipFrame\ActiveQuestIcon]])
 
 			--if (WaitForPluginFrame:IsShown() and WaitForPluginFrame:GetParent() == self.baseframe) then
-			--	self.waiting_pid = self:ScheduleTimer ("ExecDelayedPlugin1", 5, self)
+			--	self.waiting_pid = self:ScheduleTimer("ExecDelayedPlugin1", 5, self)
 			--end
 
 			WaitForPluginFrame:SetParent(self.baseframe)
@@ -1010,7 +992,7 @@
 			bgpanel:SetPoint("topleft", self.baseframe, 0, 0)
 			bgpanel:SetPoint("bottomright", self.baseframe, 0, 0)
 
-			--local size = math.max (self.baseframe:GetHeight()* 0.35, 100)
+			--local size = math.max(self.baseframe:GetHeight()* 0.35, 100)
 			--WaitForPluginFrame.wheel:SetWidth(size)
 			--WaitForPluginFrame.wheel:SetHeight(size)
 			WaitForPluginFrame:Show()
@@ -1020,7 +1002,7 @@
 
 			self.waiting_raid_plugin = true
 
-			self.waiting_pid = self:ScheduleTimer ("ExecDelayedPlugin1", 5, self)
+			self.waiting_pid = self:ScheduleTimer("ExecDelayedPlugin1", 5, self)
 		end
 
 		function self:CancelWaitForPlugin()
@@ -1040,11 +1022,11 @@
 			label:Hide()
 			bgpanel:Hide()
 
-			if (self.meu_id == _detalhes.solo) then
-				_detalhes.SoloTables:switch (nil, _detalhes.SoloTables.Mode)
+			if (self.meu_id == Details.solo) then
+				Details.SoloTables:switch(nil, Details.SoloTables.Mode)
 
-			elseif (self.modo == _detalhes._detalhes_props["MODO_RAID"]) then
-				_detalhes.RaidTables:EnableRaidMode (self)
+			elseif (self.modo == Details._detalhes_props["MODO_RAID"]) then
+				Details.RaidTables:EnableRaidMode (self)
 
 			end
 		end
@@ -1064,7 +1046,7 @@
 		rotate:SetDuration(60)
 		RotateAnimGroup:SetLooping ("repeat")
 
-		local bgpanel = gump:NewPanel (UIParent, UIParent, "DetailsWaitFrameBG", nil, 120, 30, false, false, false)
+		local bgpanel = gump:NewPanel(UIParent, UIParent, "DetailsWaitFrameBG", nil, 120, 30, false, false, false)
 		bgpanel:SetPoint("center", WaitForPluginFrame, "center")
 		bgpanel:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background"})
 		bgpanel:SetBackdropColor(.2, .2, .2, 1)
@@ -1077,17 +1059,16 @@
 
 		WaitForPluginFrame:Hide()
 
-		function _detalhes:WaitForSoloPlugin (instancia)
-
+		function Details:WaitForSoloPlugin(instancia)
 			instancia:ChangeIcon ([[Interface\GossipFrame\ActiveQuestIcon]])
 
 			if (WaitForPluginFrame:IsShown() and WaitForPluginFrame:GetParent() == instancia.baseframe) then
-				return _detalhes:ScheduleTimer ("ExecDelayedPlugin", 5, instancia)
+				return Details:ScheduleTimer("ExecDelayedPlugin", 5, instancia)
 			end
 
 			WaitForPluginFrame:SetParent(instancia.baseframe)
 			WaitForPluginFrame:SetAllPoints(instancia.baseframe)
-			local size = math.max (instancia.baseframe:GetHeight()* 0.35, 100)
+			local size = math.max(instancia.baseframe:GetHeight()* 0.35, 100)
 			WaitForPluginFrame.wheel:SetWidth(size)
 			WaitForPluginFrame.wheel:SetHeight(size)
 			WaitForPluginFrame:Show()
@@ -1095,50 +1076,48 @@
 			bgpanel:Show()
 			RotateAnimGroup:Play()
 
-			return _detalhes:ScheduleTimer ("ExecDelayedPlugin", 5, instancia)
+			return Details:ScheduleTimer("ExecDelayedPlugin", 5, instancia)
 		end
 
-		function _detalhes:CancelWaitForPlugin()
+		function Details:CancelWaitForPlugin()
 			RotateAnimGroup:Stop()
 			WaitForPluginFrame:Hide()
 			label:Hide()
 			bgpanel:Hide()
 		end
 
-		function _detalhes:ExecDelayedPlugin (instancia)
+		function Details:ExecDelayedPlugin(instancia)
 			RotateAnimGroup:Stop()
 			WaitForPluginFrame:Hide()
 			label:Hide()
 			bgpanel:Hide()
 
-			if (instancia.meu_id == _detalhes.solo) then
-				_detalhes.SoloTables:switch (nil, _detalhes.SoloTables.Mode)
+			if (instancia.meu_id == Details.solo) then
+				Details.SoloTables:switch(nil, Details.SoloTables.Mode)
 
-			elseif (instancia.meu_id == _detalhes.raid) then
-				_detalhes.RaidTables:switch (nil, _detalhes.RaidTables.Mode)
+			elseif (instancia.meu_id == Details.raid) then
+				Details.RaidTables:switch(nil, Details.RaidTables.Mode)
 
 			end
 		end
 	end
 
-
 --feedback window
-	function _detalhes:OpenFeedbackWindow()
-
+	function Details:OpenFeedbackWindow()
 		if (not _G.DetailsFeedbackPanel) then
 
-			gump:CreateSimplePanel (UIParent, 340, 300, Loc ["STRING_FEEDBACK_SEND_FEEDBACK"], "DetailsFeedbackPanel")
+			gump:CreateSimplePanel(UIParent, 340, 300, Loc ["STRING_FEEDBACK_SEND_FEEDBACK"], "DetailsFeedbackPanel")
 			local panel = _G.DetailsFeedbackPanel
 
 			local label = gump:CreateLabel(panel, Loc ["STRING_FEEDBACK_PREFERED_SITE"])
 			label:SetPoint("topleft", panel, "topleft", 15, -60)
 
-			local wowi = gump:NewImage (panel, [[Interface\AddOns\Details\images\icons2]], 101, 34, "artwork", {0/512, 101/512, 163/512, 200/512})
-			local curse = gump:NewImage (panel, [[Interface\AddOns\Details\images\icons2]], 101, 34, "artwork", {0/512, 101/512, 201/512, 242/512})
-			local mmoc = gump:NewImage (panel, [[Interface\AddOns\Details\images\icons2]], 101, 34, "artwork", {0/512, 101/512, 243/512, 285/512})
-			wowi:SetDesaturated (true)
-			curse:SetDesaturated (true)
-			mmoc:SetDesaturated (true)
+			local wowi = gump:NewImage(panel, [[Interface\AddOns\Details\images\icons2]], 101, 34, "artwork", {0/512, 101/512, 163/512, 200/512})
+			local curse = gump:NewImage(panel, [[Interface\AddOns\Details\images\icons2]], 101, 34, "artwork", {0/512, 101/512, 201/512, 242/512})
+			local mmoc = gump:NewImage(panel, [[Interface\AddOns\Details\images\icons2]], 101, 34, "artwork", {0/512, 101/512, 243/512, 285/512})
+			wowi:SetDesaturated(true)
+			curse:SetDesaturated(true)
+			mmoc:SetDesaturated(true)
 
 			wowi:SetPoint("topleft", panel, "topleft", 17, -100)
 			curse:SetPoint("topleft", panel, "topleft", 17, -160)
@@ -1166,40 +1145,40 @@
 			mmoc_desc:SetPoint("topleft", mmoc_title, "bottomleft", 0, -1)
 
 			local on_enter = function(self, capsule)
-				capsule.image:SetDesaturated (false)
+				capsule.image:SetDesaturated(false)
 			end
 			local on_leave = function(self, capsule)
-				capsule.image:SetDesaturated (true)
+				capsule.image:SetDesaturated(true)
 			end
 
 			local on_click = function(_, _, website)
 				if (website == 1) then
-					_detalhes:CopyPaste ([[http://www.wowinterface.com/downloads/addcomment.php?action=addcomment&fileid=23056]])
+					Details:CopyPaste ([[http://www.wowinterface.com/downloads/addcomment.php?action=addcomment&fileid=23056]])
 
 				elseif (website == 2) then
-					_detalhes:CopyPaste ([[http://www.curse.com/addons/wow/details]])
+					Details:CopyPaste ([[http://www.curse.com/addons/wow/details]])
 
 				elseif (website == 3) then
-					_detalhes:CopyPaste ([[http://www.mmo-champion.com/threads/1480721-New-damage-meter-%28Details!%29-need-help-with-tests-and-feedbacks]])
+					Details:CopyPaste ([[http://www.mmo-champion.com/threads/1480721-New-damage-meter-%28Details!%29-need-help-with-tests-and-feedbacks]])
 
 				end
 			end
 
-			local wowi_button = gump:CreateButton (panel, on_click, 103, 34, "", 1)
+			local wowi_button = gump:CreateButton(panel, on_click, 103, 34, "", 1)
 			wowi_button:SetPoint("topleft", wowi, "topleft", -1, 0)
 			wowi_button:InstallCustomTexture (nil, nil, nil, nil, true)
 			wowi_button.image = wowi
 			wowi_button:SetHook("OnEnter", on_enter)
 			wowi_button:SetHook("OnLeave", on_leave)
 
-			local curse_button = gump:CreateButton (panel, on_click, 103, 34, "", 2)
+			local curse_button = gump:CreateButton(panel, on_click, 103, 34, "", 2)
 			curse_button:SetPoint("topleft", curse, "topleft", -1, 0)
 			curse_button:InstallCustomTexture (nil, nil, nil, nil, true)
 			curse_button.image = curse
 			curse_button:SetHook("OnEnter", on_enter)
 			curse_button:SetHook("OnLeave", on_leave)
 
-			local mmoc_button = gump:CreateButton (panel, on_click, 103, 34, "", 3)
+			local mmoc_button = gump:CreateButton(panel, on_click, 103, 34, "", 3)
 			mmoc_button:SetPoint("topleft", mmoc, "topleft", -1, 0)
 			mmoc_button:InstallCustomTexture (nil, nil, nil, nil, true)
 			mmoc_button.image = mmoc
@@ -1209,9 +1188,7 @@
 		end
 
 		_G.DetailsFeedbackPanel:Show()
-
 	end
-
 
 	--interface menu
 	local f = CreateFrame("frame", "DetailsInterfaceOptionsPanel", UIParent,"BackdropTemplate")
@@ -1230,36 +1207,37 @@
 	f.options_button:SetHeight(170)
 	f.options_button:SetWidth(170)
 	f.options_button:SetScript("OnClick", function(self)
-		local lower_instance = _detalhes:GetLowerInstanceNumber()
+		local lower_instance = Details:GetLowerInstanceNumber()
 		if (not lower_instance) then
 			--no window opened?
-			local instance1 = _detalhes.tabela_instancias [1]
+			local instance1 = Details.tabela_instancias [1]
 			if (instance1) then
 				instance1:Enable()
-				return _detalhes:OpenOptionsWindow (instance1)
+				return Details:OpenOptionsWindow (instance1)
 			else
-				instance1 = _detalhes:CriarInstancia (_, true)
+				instance1 = Details:CriarInstancia(_, true)
 				if (instance1) then
-					return _detalhes:OpenOptionsWindow (instance1)
+					return Details:OpenOptionsWindow (instance1)
 				else
-					_detalhes:Msg ("couldn't open options panel: no window available.")
+					Details:Msg("couldn't open options panel: no window available.")
 				end
 			end
 		end
-		_detalhes:OpenOptionsWindow (_detalhes:GetInstance(lower_instance))
+		Details:OpenOptionsWindow (Details:GetInstance(lower_instance))
 	end)
+
 	--create new window
 	f.new_window_button = CreateFrame("button", nil, f)
 	f.new_window_button:SetText(Loc ["STRING_MINIMAPMENU_NEWWINDOW"])
 	f.new_window_button:SetPoint("topleft", f, "topleft", 10, -125)
 	f.new_window_button:SetWidth(170)
 	f.new_window_button:SetScript("OnClick", function(self)
-		_detalhes:CriarInstancia (_, true)
+		Details:CriarInstancia(_, true)
 	end)
 
 
 --update details version window
-	function _detalhes:OpenUpdateWindow()
+	function Details:OpenUpdateWindow()
 
 		if (not _G.DetailsUpdateDialog) then
 			local updatewindow_frame = CreateFrame("frame", "DetailsUpdateDialog", UIParent, "ButtonFrameTemplate")
@@ -1271,7 +1249,7 @@
 
 			--updatewindow_frame.TitleText:SetText("A New Version Is Available!") --10.0 fuck
 
-			updatewindow_frame.midtext = updatewindow_frame:CreateFontString (nil, "artwork", "GameFontNormal")
+			updatewindow_frame.midtext = updatewindow_frame:CreateFontString(nil, "artwork", "GameFontNormal")
 			updatewindow_frame.midtext:SetText("Good news everyone!\nA new version has been forged and is waiting to be looted.")
 			updatewindow_frame.midtext:SetPoint("topleft", updatewindow_frame, "topleft", 10, -90)
 			updatewindow_frame.midtext:SetJustifyH("center")
@@ -1281,11 +1259,11 @@
 			updatewindow_frame.gnoma:SetPoint("topright", updatewindow_frame, "topright", -3, -59)
 			updatewindow_frame.gnoma:SetTexture("Interface\\AddOns\\Details\\images\\icons2")
 			updatewindow_frame.gnoma:SetSize(105*1.05, 107*1.05)
-			updatewindow_frame.gnoma:SetTexCoord (0.2021484375, 0, 0.7919921875, 1)
+			updatewindow_frame.gnoma:SetTexCoord(0.2021484375, 0, 0.7919921875, 1)
 
-			local editbox = _detalhes.gump:NewTextEntry (updatewindow_frame, nil, "$parentTextEntry", "text", 387, 14)
+			local editbox = Details.gump:NewTextEntry(updatewindow_frame, nil, "$parentTextEntry", "text", 387, 14)
 			editbox:SetPoint(20, -136)
-			editbox:SetAutoFocus (false)
+			editbox:SetAutoFocus(false)
 			editbox:SetHook("OnEditFocusGained", function()
 				editbox.text = "http://www.curse.com/addons/wow/details"
 				editbox:HighlightText()
@@ -1313,25 +1291,23 @@
 				editbox:ClearFocus()
 			end)
 
-			function _detalhes:UpdateDialogSetFocus()
+			function Details:UpdateDialogSetFocus()
 				DetailsUpdateDialog:Show()
 				DetailsUpdateDialogTextEntry.MyObject:SetFocus()
 				DetailsUpdateDialogTextEntry.MyObject:HighlightText()
 			end
-			_detalhes:ScheduleTimer ("UpdateDialogSetFocus", 1)
+			Details:ScheduleTimer("UpdateDialogSetFocus", 1)
 		end
 	end
 
 
 
 --minimap icon and hotcorner
-	function _detalhes:RegisterMinimap()
-
-		local LDB = LibStub ("LibDataBroker-1.1", true)
-		local LDBIcon = LDB and LibStub ("LibDBIcon-1.0", true)
+	function Details:RegisterMinimap()
+		local LDB = LibStub("LibDataBroker-1.1", true)
+		local LDBIcon = LDB and LibStub("LibDBIcon-1.0", true)
 
 		if LDB then
-
 			local databroker = LDB:NewDataObject ("Details", {
 				type = "data source",
 				icon = [[Interface\AddOns\Details\images\minimap]],
@@ -1340,14 +1316,13 @@
 				HotCornerIgnore = true,
 
 				OnClick = function(self, button)
-
 					if (button == "LeftButton") then
 						if (IsControlKeyDown()) then
-							_detalhes:ToggleWindows()
+							Details:ToggleWindows()
 							return
 						end
 						--1 = open options panel
-						if (_detalhes.minimap.onclick_what_todo == 1) then
+						if (Details.minimap.onclick_what_todo == 1) then
 
 							if (_G.DetailsOptionsWindow) then
 								if (_G.DetailsOptionsWindow:IsShown()) then
@@ -1356,27 +1331,27 @@
 								end
 							end
 
-							local lower_instance = _detalhes:GetLowerInstanceNumber()
+							local lower_instance = Details:GetLowerInstanceNumber()
 							if (not lower_instance) then
-								local instance = _detalhes:GetInstance(1)
-								_detalhes.CriarInstancia (_, _, 1)
-								_detalhes:OpenOptionsWindow (instance)
+								local instance = Details:GetInstance(1)
+								Details.CriarInstancia (_, _, 1)
+								Details:OpenOptionsWindow (instance)
 							else
-								_detalhes:OpenOptionsWindow (_detalhes:GetInstance(lower_instance))
+								Details:OpenOptionsWindow (Details:GetInstance(lower_instance))
 							end
 
 						--2 = reset data
-						elseif (_detalhes.minimap.onclick_what_todo == 2) then
-							_detalhes.tabela_historico:resetar()
+						elseif (Details.minimap.onclick_what_todo == 2) then
+							Details.tabela_historico:resetar()
 
 						--3 = show hide windows
-						elseif (_detalhes.minimap.onclick_what_todo == 3) then
-							local opened = _detalhes:GetOpenedWindowsAmount()
+						elseif (Details.minimap.onclick_what_todo == 3) then
+							local opened = Details:GetOpenedWindowsAmount()
 
 							if (opened == 0) then
-								_detalhes:ReabrirTodasInstancias()
+								Details:ReabrirTodasInstancias()
 							else
-								_detalhes:ShutDownAllInstances()
+								Details:ShutDownAllInstances()
 							end
 						end
 
@@ -1399,40 +1374,40 @@
 						--GameCooltip:SetBannerText (1, "Mini Map Menu", {"left", "right", 2, -5}, "white", 10)
 
 						--reset
-						GameCooltip:AddMenu (1, _detalhes.tabela_historico.resetar, true, nil, nil, Loc ["STRING_ERASE_DATA"], nil, true)
+						GameCooltip:AddMenu (1, Details.tabela_historico.resetar, true, nil, nil, Loc ["STRING_ERASE_DATA"], nil, true)
 						GameCooltip:AddIcon ([[Interface\COMMON\VOICECHAT-MUTED]], 1, 1, 14, 14)
 
-						GameCooltip:AddLine ("$div")
+						GameCooltip:AddLine("$div")
 
 						--nova instancia
-						GameCooltip:AddMenu (1, _detalhes.CriarInstancia, true, nil, nil, Loc ["STRING_MINIMAPMENU_NEWWINDOW"], nil, true)
+						GameCooltip:AddMenu (1, Details.CriarInstancia, true, nil, nil, Loc ["STRING_MINIMAPMENU_NEWWINDOW"], nil, true)
 						--GameCooltip:AddIcon ([[Interface\Buttons\UI-AttributeButton-Encourage-Up]], 1, 1, 10, 10, 4/16, 12/16, 4/16, 12/16)
 						GameCooltip:AddIcon ([[Interface\AddOns\Details\images\icons]], 1, 1, 12, 11, 462/512, 473/512, 1/512, 11/512)
 
 						--reopen all windows
-						GameCooltip:AddMenu (1, _detalhes.ReabrirTodasInstancias, true, nil, nil, Loc ["STRING_MINIMAPMENU_REOPENALL"], nil, true)
+						GameCooltip:AddMenu (1, Details.ReabrirTodasInstancias, true, nil, nil, Loc ["STRING_MINIMAPMENU_REOPENALL"], nil, true)
 						GameCooltip:AddIcon ([[Interface\Buttons\UI-MicroStream-Green]], 1, 1, 14, 14, 0.1875, 0.8125, 0.84375, 0.15625)
 						--close all windows
-						GameCooltip:AddMenu (1, _detalhes.ShutDownAllInstances, true, nil, nil, Loc ["STRING_MINIMAPMENU_CLOSEALL"], nil, true)
+						GameCooltip:AddMenu (1, Details.ShutDownAllInstances, true, nil, nil, Loc ["STRING_MINIMAPMENU_CLOSEALL"], nil, true)
 						GameCooltip:AddIcon ([[Interface\Buttons\UI-MicroStream-Red]], 1, 1, 14, 14, 0.1875, 0.8125, 0.15625, 0.84375)
 
-						GameCooltip:AddLine ("$div")
+						GameCooltip:AddLine("$div")
 
 						--lock
-						GameCooltip:AddMenu (1, _detalhes.TravasInstancias, true, nil, nil, Loc ["STRING_MINIMAPMENU_LOCK"], nil, true)
+						GameCooltip:AddMenu (1, Details.TravasInstancias, true, nil, nil, Loc ["STRING_MINIMAPMENU_LOCK"], nil, true)
 						GameCooltip:AddIcon ([[Interface\PetBattles\PetBattle-LockIcon]], 1, 1, 14, 14, 0.0703125, 0.9453125, 0.0546875, 0.9453125)
 
-						GameCooltip:AddMenu (1, _detalhes.DestravarInstancias, true, nil, nil, Loc ["STRING_MINIMAPMENU_UNLOCK"], nil, true)
+						GameCooltip:AddMenu (1, Details.DestravarInstancias, true, nil, nil, Loc ["STRING_MINIMAPMENU_UNLOCK"], nil, true)
 						GameCooltip:AddIcon ([[Interface\PetBattles\PetBattle-LockIcon]], 1, 1, 14, 14, 0.0703125, 0.9453125, 0.0546875, 0.9453125, "gray")
 
-						GameCooltip:AddLine ("$div")
+						GameCooltip:AddLine("$div")
 
 						--disable minimap icon
 						local disable_minimap = function()
-							_detalhes.minimap.hide = not value
+							Details.minimap.hide = not value
 
-							LDBIcon:Refresh ("Details", _detalhes.minimap)
-							if (_detalhes.minimap.hide) then
+							LDBIcon:Refresh ("Details", Details.minimap)
+							if (Details.minimap.hide) then
 								LDBIcon:Hide ("Details")
 							else
 								LDBIcon:Show ("Details")
@@ -1443,7 +1418,7 @@
 
 						--
 
-						GameCooltip:SetBackdrop(1, _detalhes.tooltip_backdrop, nil, _detalhes.tooltip_border_color)
+						GameCooltip:SetBackdrop(1, Details.tooltip_backdrop, nil, Details.tooltip_border_color)
 						GameCooltip:SetWallpaper (1, [[Interface\SPELLBOOK\Spellbook-Page-1]], {.6, 0.1, 0.64453125, 0}, {.8, .8, .8, 0.2}, true)
 
 						GameCooltip:SetOwner(self, "topright", "bottomleft")
@@ -1453,16 +1428,16 @@
 					end
 				end,
 				OnTooltipShow = function(tooltip)
-					tooltip:AddLine ("Details!", 1, 1, 1)
-					if (_detalhes.minimap.onclick_what_todo == 1) then
-						tooltip:AddLine (Loc ["STRING_MINIMAP_TOOLTIP1"])
-					elseif (_detalhes.minimap.onclick_what_todo == 2) then
-						tooltip:AddLine (Loc ["STRING_MINIMAP_TOOLTIP11"])
-					elseif (_detalhes.minimap.onclick_what_todo == 3) then
-						tooltip:AddLine (Loc ["STRING_MINIMAP_TOOLTIP12"])
+					tooltip:AddLine("Details!", 1, 1, 1)
+					if (Details.minimap.onclick_what_todo == 1) then
+						tooltip:AddLine(Loc ["STRING_MINIMAP_TOOLTIP1"])
+					elseif (Details.minimap.onclick_what_todo == 2) then
+						tooltip:AddLine(Loc ["STRING_MINIMAP_TOOLTIP11"])
+					elseif (Details.minimap.onclick_what_todo == 3) then
+						tooltip:AddLine(Loc ["STRING_MINIMAP_TOOLTIP12"])
 					end
-					tooltip:AddLine (Loc ["STRING_MINIMAP_TOOLTIP2"])
-					tooltip:AddLine ("|cFFCFCFCFctrl + left click|r: show/hide windows")
+					tooltip:AddLine(Loc ["STRING_MINIMAP_TOOLTIP2"])
+					tooltip:AddLine("|cFFCFCFCFctrl + left click|r: show/hide windows")
 				end,
 			})
 
@@ -1470,51 +1445,50 @@
 				LDBIcon:Register ("Details", databroker, self.minimap)
 			end
 
-			_detalhes.databroker = databroker
-
+			Details.databroker = databroker
 		end
 	end
 
-	function _detalhes:DoRegisterHotCorner()
+	function Details:DoRegisterHotCorner()
 		--register lib-hotcorners
 		local on_click_on_hotcorner_button = function(frame, button)
-			if (_detalhes.hotcorner_topleft.onclick_what_todo == 1) then
-				local lower_instance = _detalhes:GetLowerInstanceNumber()
+			if (Details.hotcorner_topleft.onclick_what_todo == 1) then
+				local lower_instance = Details:GetLowerInstanceNumber()
 				if (not lower_instance) then
-					local instance = _detalhes:GetInstance(1)
-					_detalhes.CriarInstancia (_, _, 1)
-					_detalhes:OpenOptionsWindow (instance)
+					local instance = Details:GetInstance(1)
+					Details.CriarInstancia (_, _, 1)
+					Details:OpenOptionsWindow (instance)
 				else
-					_detalhes:OpenOptionsWindow (_detalhes:GetInstance(lower_instance))
+					Details:OpenOptionsWindow (Details:GetInstance(lower_instance))
 				end
 
-			elseif (_detalhes.hotcorner_topleft.onclick_what_todo == 2) then
-				_detalhes.tabela_historico:resetar()
+			elseif (Details.hotcorner_topleft.onclick_what_todo == 2) then
+				Details.tabela_historico:resetar()
 			end
 		end
 
 		local quickclick_func1 = function(frame, button)
-			_detalhes.tabela_historico:resetar()
+			Details.tabela_historico:resetar()
 		end
 
 		local quickclick_func2 = function(frame, button)
-			local lower_instance = _detalhes:GetLowerInstanceNumber()
+			local lower_instance = Details:GetLowerInstanceNumber()
 			if (not lower_instance) then
-				local instance = _detalhes:GetInstance(1)
-				_detalhes.CriarInstancia (_, _, 1)
-				_detalhes:OpenOptionsWindow (instance)
+				local instance = Details:GetInstance(1)
+				Details.CriarInstancia (_, _, 1)
+				Details:OpenOptionsWindow (instance)
 			else
-				_detalhes:OpenOptionsWindow (_detalhes:GetInstance(lower_instance))
+				Details:OpenOptionsWindow (Details:GetInstance(lower_instance))
 			end
 		end
 
 		local tooltip_hotcorner = function()
-			GameTooltip:AddLine ("Details!", 1, 1, 1, 1)
-			if (_detalhes.hotcorner_topleft.onclick_what_todo == 1) then
-				GameTooltip:AddLine ("|cFF00FF00Left Click:|r open options panel.", 1, 1, 1, 1)
+			GameTooltip:AddLine("Details!", 1, 1, 1, 1)
+			if (Details.hotcorner_topleft.onclick_what_todo == 1) then
+				GameTooltip:AddLine("|cFF00FF00Left Click:|r open options panel.", 1, 1, 1, 1)
 
-			elseif (_detalhes.hotcorner_topleft.onclick_what_todo == 2) then
-				GameTooltip:AddLine ("|cFF00FF00Left Click:|r clear all segments.", 1, 1, 1, 1)
+			elseif (Details.hotcorner_topleft.onclick_what_todo == 2) then
+				GameTooltip:AddLine("|cFF00FF00Left Click:|r clear all segments.", 1, 1, 1, 1)
 
 			end
 		end
@@ -1526,7 +1500,7 @@
 				--corner
 				"TOPLEFT",
 				--config table
-				_detalhes.hotcorner_topleft,
+				Details.hotcorner_topleft,
 				--frame _G name
 				"DetailsLeftCornerButton",
 				--icon
@@ -1555,8 +1529,8 @@
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- ~API
 
-function _detalhes:InitializeAPIWindow()
-	local DetailsAPI2Frame = gump:CreateSimplePanel (UIParent, 700, 480, "Details! API", "DetailsAPI2Frame")
+function Details:InitializeAPIWindow()
+	local DetailsAPI2Frame = gump:CreateSimplePanel(UIParent, 700, 480, "Details! API", "DetailsAPI2Frame")
 	DetailsAPI2Frame.Frame = DetailsAPI2Frame
 	DetailsAPI2Frame.__name = "API"
 	DetailsAPI2Frame.real_name = "DETAILS_APIWINDOW"
@@ -1566,11 +1540,11 @@ function _detalhes:InitializeAPIWindow()
 	DetailsPluginContainerWindow.EmbedPlugin(DetailsAPI2Frame, DetailsAPI2Frame, true)
 
 	function DetailsAPI2Frame.RefreshWindow()
-		_detalhes.OpenAPI()
+		Details.OpenAPI()
 	end
 end
 
-function _detalhes.OpenAPI()
+function Details.OpenAPI()
 	--create the window if not loaded yet
 	Details:CreateAPI2Frame()
 
@@ -1579,75 +1553,73 @@ function _detalhes.OpenAPI()
 	DetailsPluginContainerWindow.OpenPlugin(DetailsAPI2Frame)
 end
 
-
-
 function Details:LoadFramesForBroadcastTools()
 	--event tracker
-		--if enabled and not loaded, load it
-		if (_detalhes.event_tracker.enabled and not _detalhes.Broadcaster_EventTrackerLoaded) then
-			Details:CreateEventTrackerFrame(UIParent, "DetailsEventTracker")
-		end
+	--if enabled and not loaded, load it
+	if (Details.event_tracker.enabled and not Details.Broadcaster_EventTrackerLoaded) then
+		Details:CreateEventTrackerFrame(UIParent, "DetailsEventTracker")
+	end
 
-		--if enabled and loaded, refresh and show
-		if (_detalhes.event_tracker.enabled and _detalhes.Broadcaster_EventTrackerLoaded) then
-			_detalhes:UpdateEventTrackerFrame()
-			_G.DetailsEventTracker:Show()
-		end
+	--if enabled and loaded, refresh and show
+	if (Details.event_tracker.enabled and Details.Broadcaster_EventTrackerLoaded) then
+		Details:UpdateEventTrackerFrame()
+		_G.DetailsEventTracker:Show()
+	end
 
-		--if not enabled but loaded, hide it
-		if (not _detalhes.event_tracker.enabled and _detalhes.Broadcaster_EventTrackerLoaded) then
-			_G.DetailsEventTracker:Hide()
-		end
+	--if not enabled but loaded, hide it
+	if (not Details.event_tracker.enabled and Details.Broadcaster_EventTrackerLoaded) then
+		_G.DetailsEventTracker:Hide()
+	end
 
 	--current dps
-		local bIsEnabled = _detalhes.realtime_dps_meter.enabled and (_detalhes.realtime_dps_meter.arena_enabled or _detalhes.realtime_dps_meter.mythic_dungeon_enabled)
+	local bIsEnabled = Details.realtime_dps_meter.enabled and (Details.realtime_dps_meter.arena_enabled or Details.realtime_dps_meter.mythic_dungeon_enabled)
 
-		--if enabled and not loaded, load it
-		if (bIsEnabled and not _detalhes.Broadcaster_CurrentDpsLoaded) then
-			Details:CreateCurrentDpsFrame(UIParent, "DetailsCurrentDpsMeter")
-		end
+	--if enabled and not loaded, load it
+	if (bIsEnabled and not Details.Broadcaster_CurrentDpsLoaded) then
+		Details:CreateCurrentDpsFrame(UIParent, "DetailsCurrentDpsMeter")
+	end
 
-		--if enabled, check if can show
-		if (bIsEnabled and _detalhes.Broadcaster_CurrentDpsLoaded) then
-			if (_detalhes.realtime_dps_meter.mythic_dungeon_enabled) then
-				local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
-				if (difficultyID == 8) then
-					--player is inside a mythic dungeon
-					_G.DetailsCurrentDpsMeter:StartForMythicDungeon()
-				end
-			end
-
-			if (_detalhes.realtime_dps_meter.arena_enabled) then
-				local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
-				if (instanceType == "arena") then
-					--player is inside an arena
-					_G.DetailsCurrentDpsMeter:StartForArenaMatch()
-				end
+	--if enabled, check if can show
+	if (bIsEnabled and Details.Broadcaster_CurrentDpsLoaded) then
+		if (Details.realtime_dps_meter.mythic_dungeon_enabled) then
+			local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
+			if (difficultyID == 8) then
+				--player is inside a mythic dungeon
+				_G.DetailsCurrentDpsMeter:StartForMythicDungeon()
 			end
 		end
 
-		--if not enabled but loaded, hide it
-		if (not bIsEnabled and _detalhes.Broadcaster_CurrentDpsLoaded) then
-			_G.DetailsCurrentDpsMeter:Hide()
+		if (Details.realtime_dps_meter.arena_enabled) then
+			local zoneName, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
+			if (instanceType == "arena") then
+				--player is inside an arena
+				_G.DetailsCurrentDpsMeter:StartForArenaMatch()
+			end
 		end
+	end
+
+	--if not enabled but loaded, hide it
+	if (not bIsEnabled and Details.Broadcaster_CurrentDpsLoaded) then
+		_G.DetailsCurrentDpsMeter:Hide()
+	end
 end
 
 
-function _detalhes:FormatBackground (f)
-	f:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
-	f:SetBackdropColor(.5, .5, .5, .5)
-	f:SetBackdropBorderColor(0, 0, 0, 1)
+function Details:FormatBackground(frame) --deprecated I guess
+	frame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
+	frame:SetBackdropColor(.5, .5, .5, .5)
+	frame:SetBackdropBorderColor(0, 0, 0, 1)
 
-	if (not f.__background) then
-		f.__background = f:CreateTexture(nil, "background")
+	if (not frame.__background) then
+		frame.__background = frame:CreateTexture(nil, "background")
 	end
 
-	f.__background:SetTexture([[Interface\AddOns\Details\images\background]], true)
-	f.__background:SetAlpha (0.7)
-	f.__background:SetVertexColor (0.27, 0.27, 0.27)
-	f.__background:SetVertTile (true)
-	f.__background:SetHorizTile (true)
-	f.__background:SetAllPoints()
+	frame.__background:SetTexture([[Interface\AddOns\Details\images\background]], true)
+	frame.__background:SetAlpha(0.7)
+	frame.__background:SetVertexColor(0.27, 0.27, 0.27)
+	frame.__background:SetVertTile(true)
+	frame.__background:SetHorizTile(true)
+	frame.__background:SetAllPoints()
 end
 
 

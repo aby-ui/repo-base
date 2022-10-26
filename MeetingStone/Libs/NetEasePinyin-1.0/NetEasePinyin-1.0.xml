@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <Script file="data.lua" notouch="true" />
+    <Script file="data.lua"/>
     <Script file="utf8.lua" />
     <Script file="pinyin.lua" />
     <Script file="filter.lua" />

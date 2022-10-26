@@ -3,6 +3,8 @@ local GlobalAddonName, ExRT = ...
 local module = ExRT:New("WAChecker",ExRT.L.WAChecker)
 local ELib,L = ExRT.lib,ExRT.L
 
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 module.db.responces = {}
 module.db.lastReq = {}
 
@@ -121,6 +123,10 @@ function module.options:Load()
 			else
 				ChatFrame_OpenChat(link)
 			end
+		else
+			local db = self:GetParent().db
+			local id = db and db.data and db.data.id or "--"
+			module:SendReq({[id]=true})
 		end
 	end
 	local function LineName_ShareButton_OnEnter(self)
@@ -488,30 +494,40 @@ function module.options:Load()
 	end
 end
 
-function module:SendReq()
-	local isFirst = true
+function module:SendReq(ownList)
 	local str = ""
-	for WA_name,WA_data in pairs(WeakAurasSaved.displays) do
-		if (#str + #WA_name) > 240 then
-			str = str:gsub("''$","")
-			if isFirst then
-				ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("G","H",str))
-				isFirst = nil
-			else
-				ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("G",str))
-			end
-			str = ""
+	local c = 0
+	if type(ownList) == "table" then
+		for WA_name in pairs(ownList) do
+			str = str..WA_name.."''"
+			c = c + 1
 		end
-		str = str..WA_name.."''"
+	else
+		for WA_name,WA_data in pairs(WeakAurasSaved.displays) do
+			str = str..WA_name.."''"
+			c = c + 1
+		end
 	end
-	if #str > 0 then
-		str = str:gsub("''$","")
-		if isFirst then
-			ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("G","H",str))
-			isFirst = nil
+	str = str:gsub("''$","")
+
+	if #str == 0 then
+		return
+	end
+
+	local compressed = LibDeflate:CompressDeflate(str,{level = 7})
+	local encoded = LibDeflate:EncodeForWoWAddonChannel(compressed)
+	encoded = encoded .. "##F##"
+	local parts = ceil(#encoded / 245)
+
+	--print(#str,#encoded,parts,c)
+
+	for i=1,parts do
+		local msg = encoded:sub( (i-1)*245+1 , i*245 )
+		if i == 1 then
+			ExRT.F.SendExMsg("wac2", ExRT.F.CreateAddonMsg("G","H",msg))
 		else
-			ExRT.F.SendExMsg("wachk", ExRT.F.CreateAddonMsg("G",str))
-		end	
+			ExRT.F.SendExMsg("wac2", ExRT.F.CreateAddonMsg("G",msg))
+		end
 	end
 end
 
@@ -627,6 +643,42 @@ function module:addonMessage(sender, prefix, prefix2, ...)
 			
 			if module.options:IsVisible() and module.options.UpdatePage then
 				module.options.UpdatePage()
+			end
+		end
+	elseif prefix == "wac2" then
+		if prefix2 == "G" then
+			local time = GetTime()
+			if lastSender ~= sender and (time - lastSenderTime) < 1.5 then
+				return
+			end
+			lastSender = sender
+			lastSenderTime = time
+			if ... == "H" then
+				wipe(module.db.lastReq)
+				module.db.syncStr = ""
+			end
+
+			local str = table.concat({select(... == "H" and 2 or 1,...)}, "\t")
+			module.db.syncStr = module.db.syncStr or ""
+			module.db.syncStr = module.db.syncStr .. str
+			if module.db.syncStr:find("##F##$") then
+				local str = module.db.syncStr:sub(1,-6)
+				module.db.syncStr = nil
+		
+				local decoded = LibDeflate:DecodeForWoWAddonChannel(str)
+				local decompressed = LibDeflate:DecompressDeflate(decoded)
+		
+				while decompressed:find("''") do
+					local wa_name,o = decompressed:match("^(.-)''(.*)$")
+				
+					module.db.lastReq[#module.db.lastReq + 1] = wa_name
+				
+					decompressed = o
+				end
+				
+				module.db.lastReq[#module.db.lastReq + 1] = decompressed
+			
+				module:SendResp()
 			end
 		end
 	end

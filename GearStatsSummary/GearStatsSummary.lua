@@ -105,7 +105,7 @@ function GearStatsSummary_OnLoad(self)
 
 	InspectLess:RegisterCallback("InspectLess_InspectItemReady", GearStatsSummary_InspectItemReady)
 	--InspectLess:RegisterCallback("InspectLess_InspectReady", GearStatsSummary_InspectReady)
-	SetOrHookScript(GearManagerDialogPopup, "OnShow", GearStatsSummary_InspectFrame_OnHide)
+	SetOrHookScript(GearManagerPopupFrame, "OnShow", GearStatsSummary_InspectFrame_OnHide)
 	if CoreDependCall then --why do this?
 		CoreDependCall("Blizzard_TradeSkillUI", function()
 			SetOrHookScript(TradeSkillFrame, "OnShow", GearStatsSummary_InspectFrame_OnHide)

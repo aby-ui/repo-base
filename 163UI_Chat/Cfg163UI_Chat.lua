@@ -117,79 +117,56 @@ U1RegisterAddon("163UI_Chat", {
         }
     },
     {
-        var = "format3",
-        getvalue = function() return U1DBG.config_timestamp end, --因为和cvar联动，所以只能用全局值，不能用default，不能通过更新强制设置默认值
-        type = "drop",
-        text = "聊天时间戳格式",
-        tip = "说明`修改系统设置，美化颜色，并且可以点击时间戳复制这一行聊天文本。` `这里稍微有点绕，从这里设置时间戳会显示为浅蓝色，且对非聊天记录也能有效，暴雪的时间戳设置那边会显示为自定义。` `而如果选了不改变暴雪样式，则相当于关闭插件功能（不修改时间戳颜色也无法点击），并把系统的时间戳改为默认格式。",
-        options = function()
-            local exampleTime = time({ year = 2010, month = 12, day = 15, hour = 15, min = 27, sec = 32, })
-            local tsFormat = { TIMESTAMP_FORMAT_HHMM, TIMESTAMP_FORMAT_HHMMSS, TIMESTAMP_FORMAT_HHMM_AMPM, TIMESTAMP_FORMAT_HHMMSS_AMPM, TIMESTAMP_FORMAT_HHMM_24HR, TIMESTAMP_FORMAT_HHMMSS_24HR }
-            local tsOptions = { "不改变暴雪样式", "", "无", "none", }
-            for _, v in ipairs(tsFormat) do tinsert(tsOptions, BetterDate(v, exampleTime)); tinsert(tsOptions, '|cff68ccef' .. v .. '|r') end
-            return tsOptions
-        end,
-        confirm = "需要重载页面才能生效，是否确定",
-        reload = true,
+        var = "betterts",
+        default = true,
+        text = "聊天时间戳点击复制",
+        tip = "说明`修改系统设置，美化颜色，并且可以点击时间戳复制这一行聊天文本。` `设置后时间戳会显示为浅蓝色，且对非聊天记录也能有效，时间戳格式需要在暴雪界面的社交-聊天时间戳里设置。",
         callback = function(cfg, v, loading)
             local cvalue = GetCVar("showTimestamps")
-
             if loading then
-                --print(format("'%s'", cvalue or 'nil'), format("'%s'", U1DBG.config_timestamp or 'nil'), format("'%s'", v or 'nil'), U1DB.configs["163ui_chat/format"], U1DB.configs["163ui_chat/format3"])
-                U1DB.showTimestamps = nil
-                local old1 = U1DB.configs["163ui_chat/format"] --v1版'无'或''表示没有，此外有"%M:%S"是旧值
-                local old2 = U1DB.configs["163ui_chat/format2"] --v2版''表示没有，可能为'none'
-                local oldv = old1 or old2 or nil --值只会是nil和字符串, nil表示没有这个版本的数据, 优先取old1
-                if oldv ~= nil then
-                    if U1DBG.config_timestamp == nil then
-                        --旧版数据兼容, 如果之前有值, 尽量设置为之前的值, 然后删掉他们
-                        if oldv == '无' or oldv == '' or oldv == 'none' then
-                            v = 'none'
-                        else
-                            v = '|cff68ccef' .. oldv .. '|r'
-                        end
-                        -- 我们的旧版会设置为"none", 如果不是none则表示用户改过.
-                        if cvalue == "none" or cvalue == "无" or cvalue == "" then
-                            SetCVar("showTimestamps", v)
-                            CHAT_TIMESTAMP_FORMAT = v ~= 'none' and v or nil --可能会污染社区面板, 但只在新老切换时设置, 问题不大
-                        end
-                    end
-                    U1DB.configs["163ui_chat/format"] = nil
-                    U1DB.configs["163ui_chat/format2"] = nil
+                U1DB.configs["163ui_chat/format"] = nil
+                U1DB.configs["163ui_chat/format2"] = nil
+                U1DB.configs["163ui_chat/format3"] = nil
+                local options = {
+                    ["none"] = true,
+                    [TIMESTAMP_FORMAT_HHMM] = true,
+                    [TIMESTAMP_FORMAT_HHMMSS] = true,
+                    [TIMESTAMP_FORMAT_HHMM_AMPM] = true,
+                    [TIMESTAMP_FORMAT_HHMMSS_AMPM] = true,
+                    [TIMESTAMP_FORMAT_HHMM_24HR] = true,
+                    [TIMESTAMP_FORMAT_HHMMSS_24HR] = true,
+                }
+                if not options[cvalue] then
+                    SetCVar("showTimestamps", TIMESTAMP_FORMAT_HHMMSS_24HR)
+                    CHAT_TIMESTAMP_FORMAT = nil --初次修正强制为nil,10没有这个变量也无所谓了
+                    U1Message("重置了聊天时间戳格式，请在选项-游戏功能-社交里修改")
+                end
+                if v and not U1DBG.first_run_betterts and GetCVar("showTimestamps") == "none" then
+                    SetCVar("showTimestamps", TIMESTAMP_FORMAT_HHMMSS_24HR)
+                    U1Message("自动设置聊天时间戳格式为" .. TIMESTAMP_FORMAT_HHMMSS_24HR)
+                end
+                U1DBG.first_run_betterts = true
 
-                else
-                    --正常进入游戏，以cvar为主来设置插件，如果用其他号设置了cvar，这边会把设置同步过来。但是如果其他号是非|c开头的，那我们也保持原样，只是把设置改为''
-                    if cvalue == 'none' or cvalue == '无' or cvalue == '' or cvalue == '|cff68ccefnone|r ' or cvalue == '|cff68ccefnone|r' then
-                        if v ~= '' then v = 'none' end --保持住不修改默认
-                    elseif cvalue and cvalue:sub(1,2) ~= "|c" then
-                        v = '' --暴雪的格式，我们改成不修改暴雪样式
-                    else
-                        v = cvalue --|c开头的，表示是我们设置的，那我们就保存起来
-                    end
-                    if U1DBG.config_timestamp == nil then
-                        v = '|cff68ccef' .. TIMESTAMP_FORMAT_HHMMSS_24HR .. '|r' --默认值 default
-                        U1Message("重置了聊天时间戳格式，请在控制面板-聊天增强里修改")
-                    end
+            elseif v then
+                if GetCVar("showTimestamps") == "none" then
+                    SetCVar("showTimestamps", TIMESTAMP_FORMAT_HHMMSS_24HR)
+                    U1Message("自动设置聊天时间戳格式为" .. TIMESTAMP_FORMAT_HHMMSS_24HR)
+                end
+            end
+        end,
 
-                    if v ~= cvalue and v ~= '' and v ~= '无' then
-                        SetCVar("showTimestamps", v)
-                        CHAT_TIMESTAMP_FORMAT = v ~= 'none' and v or nil
+        {
+            text = "设置聊天时间戳格式",
+            callback = function()
+                if not SettingsPanel then return end
+                for _, cat in ipairs(SettingsPanel:GetAllCategories()) do
+                    if cat:GetName() == SOCIAL_LABEL then
+                        Settings.OpenToCategory(cat:GetID(), TIMESTAMPS_LABEL)
+                        break
                     end
                 end
-
-                U1DBG.config_timestamp = v
-                return
-            end --loading
-
-            --如果选了不改变暴雪样式，则相当于关闭插件功能（不修改时间戳颜色也无法点击），并把系统的时间戳改为默认格式。
-            if v == '' then
-                SetCVar("showTimestamps", TIMESTAMP_FORMAT_HHMMSS_24HR);
-            else
-                SetCVar("showTimestamps", v);
             end
-            U1DBG.config_timestamp = v
-            ReloadUI()
-        end,
+        }
     },
     {
         var = "maxLines",

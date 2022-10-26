@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2099, "DBM-Party-BfA", 9, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(127490)
 mod:SetEncounterID(2103)
 
@@ -37,7 +37,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnFuselighter:Show()
 			specWarnFuselighter:Play("targetyou")
 			yellFuselighter:Yell()
-		elseif self:CheckDispelFilter() then
+		elseif self:CheckDispelFilter("magic") then
 			specWarnFuselighterOther:Show(args.destName)
 			specWarnFuselighterOther:Play("helpdispel")
 		end

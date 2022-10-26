@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TazaveshTrash", "DBM-Party-Shadowlands", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -145,13 +145,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 355888 and self:IsValidWarning(args.sourceGUID) then
 		warnHardLightBaton:Show(args.destName)
-	elseif spellId == 355915 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 5) then
+	elseif spellId == 355915 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") and self:AntiSpam(3, 5) then
 		specWarnGlyphofRestraint:Show(args.destName)
 		specWarnGlyphofRestraint:Play("helpdispel")
 	elseif spellId == 355980 and self:IsValidWarning(args.sourceGUID) and not args:IsDestTypePlayer() and self:AntiSpam(3, 5) then
 		specWarnRefractionShield:Show(args.destName)
 		specWarnRefractionShield:Play("helpdispel")
-	elseif spellId == 356407 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 5) then
+	elseif spellId == 356407 and args:IsDestTypePlayer() and self:CheckDispelFilter("curse") and self:AntiSpam(3, 5) then
 		specWarnAncientDreadDispel:Show(args.destName)
 		specWarnAncientDreadDispel:Play("helpdispel")
 	elseif spellId == 357229 and self:IsValidWarning(args.sourceGUID) and self:AntiSpam(3, 1) then

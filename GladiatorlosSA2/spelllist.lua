@@ -64,6 +64,7 @@
 			[1513] = "success", -- Scare Beast (Hunter)
 			[339] = "success", -- Entangling Roots
 			[235963] = "success", -- Entangling Roots Feral Talent
+			[360806] = "success", -- Sleepwalk (Evoker)
 
 			-- Covenant Abilities
 			[310143] = "soulshape", -- Nightfae Signature
@@ -99,7 +100,8 @@
 			[116888] = "Purgatory", -- Purgatory
 			[49039] = "lichborne", -- Lichborne
 			[288977] = "transfusion",
-			[315443] = "abominationLimb",
+			[315443] = "abominationLimb", -- covenant
+			[383269] = "abominationLimb", -- talent 
 			[311648] = "swarmingmist", -- Venthyr
 
 			-- Demon Hunter (Aura Applied)
@@ -143,7 +145,14 @@
 			[132158] = "naturesSwiftness",
 
 			-- Evoker (Aura Applied)
-			-- placeholder
+			[363916] = "obsidianScales",
+			[370553] = "tipTheScales",
+			[374348] = "renewingBlaze",
+			[375087] = "dragonRage",
+			[357170] = "timeDialation",
+			--[0] = "timeOfNeed",
+			[370562] = "stasisReady",
+			[359816] = "dreamFlight",
 
 			-- Hunter (Aura Applied)
 			[19263] = "deterrence",
@@ -313,55 +322,13 @@
 		},
 		auraRemoved = {					-- aura removed [spellid] = ".ogg file name",
 			-- Death Knight (Aura Removed)
-
-			-- Demon Hunter (Aura Removed)
-
-			-- Druid (Aura Removed)
-
-			-- Evoker (Aura Removed)
-			-- placeholder
-
-			-- Hunter (Aura Removed)
-			
-			-- Mage (Aura Removed)
-
-			-- Monk (Aura Removed)
-
-			-- Paladin (Aura Removed)
-
-			-- Priest (Aura Removed)
-
-			-- Rogue (Aura Removed)
-
-			-- Shaman (Aura Removed)
-
-			-- Warlock (Aura Removed)
-
-			-- Warrior (Aura Removed)
-			[642] = "bubbleDown",				--Divine Shield
-			[47585] = "dispersionDown",			--Dispersion
-			[1022] = "protectionDown",			--Blessing of Protection
-			[31224] = "cloakDown", 				--Cloak of Shadows
-			[871] = "shieldWallDown", 			--Shield Wall
-			[33206] = "PSDown",					--Pain Suppression
-			[5277] = "evasionDown", 			--Evasion
-			[45438] = "iceBlockDown", 			--Ice Block
 			[48792] = "iceboundFortitudeDown",	--Icebound Fortitude
-			[19263] = "deterrenceDown", 		--Deterrence
-			[186265] = "deterrenceDown",		--Aspect of the Turtle
 			[48707] = "AntiMagicShellDown",		--Anti-Magic Shell
-			[51690] = "killingSpreeDown",		--Killing Spree
-			[118038] = "dieByTheSwordDown",		--Die by the Sword
-			[108271] = "astralShiftDown",		--Astral Shift
-			[201318] = "fortifyingBrewDown",	--Fortifying Brew (Windwalker PvP talent)
-			[115203] = "fortifyingBrewDown",	--Fortifying Brew (Brewmaster)
-			[243435] = "fortifyingBrewDown",	--Fortifying Brew (Mistweaver)
-			[115176] = "zenMeditationDown",		--Zen Meditation (Brewmaster)
-			[122470] = "karmaDown",				--Touch of Karma
-			--[125174] = "karmaDown",				--Touch of Karma (Test)
 			[219809] = "tombstoneDown",			--Tombstone
 			--[206977] = "mirrorDown",			--Blood Mirror
 			[207319] = "corpseDown",			--Corpse Shield
+
+			-- Demon Hunter (Aura Removed)
 			[198589] = "blurDown",				--Blur
 			[212800] = "blurDown",				--Blur (Other ID)
 			[162264] = "metamorphDown",			--Metamorphosis
@@ -369,41 +336,98 @@
 			[188501] = "sightsDown",			--Spectral Sight
 			[196555] = "netherwalkDown",		--Netherwalk
 			--[207810] = "bondageDown",			--Nether Bond
-			[198111] = "temporalDown",			--Temporal Shield
-			[198144] = "iceFormDown",			--Ice Form
-			--[216113] = "fistingDown",			--Way of the Crane
-			[31850] = "defenderDown",			--Ardent Defender
-			[205191] = "eyeDown",				--Eye for an Eye
-			[184662] = "vengeanceShieldDown",	--Vengeance Shield
-			[213610] = "wardDown",				--Holy Ward
-			[197268] = "hopeDown",				--Ray of Hope
-			--[193223] = "madnessDown",			--Surrender to Madness
-			--[319952] = "madnessDown",			-- It's baaaack
-			[210918] = "etherealDown",			--Ethereal Form
-			[212295] = "netherWardDown",		--Nether Ward
-			[86659] = "kingsDown",				--Guardian of Ancient Kings
-			[228049] = "queensDown",			--Guardian of Forgotten Queens
-			[116849] = "lifeCocoonDown",		--Life Coccoon
+
+			-- Druid (Aura Removed)
+			[323557] = "ravenousFrenzyDown", -- Ravenous Frenzy
+			[108291] = "heartOfTheWildDown", -- Heart of the Wild
+			[108292] = "heartOfTheWildDown", -- Heart of the Wild
+			[108293] = "heartOfTheWildDown", -- Heart of the Wild
+			[108294] = "heartOfTheWildDown", -- Heart of the Wild
 			[102560] = "incarnationDown",		--Incarnation (Boomkin)
 			[102543] = "incarnationDown",		--Incarnation (Cat)
 			[102558] = "incarnationDown",		--Incarnation (Bear)
 			[33891] = "incarnationDown",		--Incarnation (Tree)
-			[197690] = "damageStance",			--Defensive Stance (Falling off)
+			--[200851] = "rageOfSleeperDown",		--Rage of the Sleeper
+			--[203727] = "thornsDown",			--Thorns (Resto)
+			--[236696] = "thornsDown",			--Thorns (Feral)
+			[305497] = "thornsDown",			--Thorns 8.2
+
+			-- Evoker (Aura Removed)
+			[363916] = "obsidianScalesDown",
+			[374348] = "renewingBlazeDown",
+			[375087] = "dragonRageDown",
+			[357170] = "timeDialationDown",
+			[370562] = "stasisDown",
+			[359816] = "dreamFlightDown",
+
+			-- Hunter (Aura Removed)
+			[19263] = "deterrenceDown", 		--Deterrence
+			[186265] = "deterrenceDown",		--Aspect of the Turtle
 			--[193526] = "trueShotDown",			--Trueshot
 			[288613] = "trueShotDown",
 			[193530] = "trueShotDown",			--Aspect of the Wild
 			[266779] = "trueShotDown",			--Coordinated Assault
-			[199754] = "riposteDown",			--Riposte
-			--[204293] = "spiritLinkDown",		--Spirit Link
-			--[200851] = "rageOfSleeperDown",		--Rage of the Sleeper
-			[343142] = "dreadbladesDown",		--Curse of the Dreadblades
+			
+			-- Mage (Aura Removed)
+			[45438] = "iceBlockDown", 			--Ice Block
+			[198111] = "temporalDown",			--Temporal Shield
+			[198144] = "iceFormDown",			--Ice Form
+			[110909] = "alterTimeDown", -- Alter Time
+			[342246] = "alterTimeDown", -- Alter Time again I guess
+			[108978] = "alterTimeDown", -- Alter Time again I guess again I guess
+
+			-- Monk (Aura Removed)
+			[201318] = "fortifyingBrewDown",	--Fortifying Brew (Windwalker PvP talent)
+			[115203] = "fortifyingBrewDown",	--Fortifying Brew (Brewmaster)
+			[243435] = "fortifyingBrewDown",	--Fortifying Brew (Mistweaver)
+			[115176] = "zenMeditationDown",		--Zen Meditation (Brewmaster)
+			[122470] = "karmaDown",				--Touch of Karma
+			--[125174] = "karmaDown",				--Touch of Karma (Test)
+			--[216113] = "fistingDown",			--Way of the Crane
+			[116849] = "lifeCocoonDown",		--Life Coccoon
+			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
+
+			-- Paladin (Aura Removed)
+			[642] = "bubbleDown",				--Divine Shield
+			[1022] = "protectionDown",			--Blessing of Protection
+			[31850] = "defenderDown",			--Ardent Defender
+			[205191] = "eyeDown",				--Eye for an Eye
+			[184662] = "vengeanceShieldDown",	--Vengeance Shield
+			[86659] = "kingsDown",				--Guardian of Ancient Kings
+			[228049] = "queensDown",			--Guardian of Forgotten Queens
+
+			-- Priest (Aura Removed)
+			[47585] = "dispersionDown",			--Dispersion
+			[33206] = "PSDown",					--Pain Suppression
+			[213610] = "wardDown",				--Holy Ward
+			[197268] = "hopeDown",				--Ray of Hope
+			--[193223] = "madnessDown",			--Surrender to Madness
+			--[319952] = "madnessDown",			-- It's baaaack
 			[194249] = "voidFormDown",			--Voidform
 			[218413] = "voidFormDown",			--Voidform
 			[15286] = "vampiricEmbraceDown",	--Vampiric Embrace
-			--[203727] = "thornsDown",			--Thorns (Resto)
-			--[236696] = "thornsDown",			--Thorns (Feral)
-			[305497] = "thornsDown",			--Thorns 8.2
-			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
+
+			-- Rogue (Aura Removed)
+			[31224] = "cloakDown", 				--Cloak of Shadows
+			[5277] = "evasionDown", 			--Evasion
+			[51690] = "killingSpreeDown",		--Killing Spree
+			[199754] = "riposteDown",			--Riposte
+			[343142] = "dreadbladesDown",		--Curse of the Dreadblades
+
+			-- Shaman (Aura Removed)
+			[108271] = "astralShiftDown",		--Astral Shift
+			[210918] = "etherealDown",			--Ethereal Form
+			--[204293] = "spiritLinkDown",		--Spirit Link
+
+			-- Warlock (Aura Removed)
+			[212295] = "netherWardDown",		--Nether Ward
+
+			-- Warrior (Aura Removed)
+			[871] = "shieldWallDown", 			--Shield Wall
+			[118038] = "dieByTheSwordDown",		--Die by the Sword
+			[197690] = "damageStance",			--Defensive Stance (Falling off)
+
+			
 			--[216890] = "SpellreflectionDown", 		-- Arms/Fury
 			[23920] = "SpellreflectionDown",			-- Protection
 			[330279] = "SpellReflectionDown",			-- Overwatch PvP Talent
@@ -435,14 +459,8 @@
 			[49039] = "lichborneDown", -- Lichborne
 			[288977] = "transfusionDown", -- Transfusion
 			[315443] = "abominationLimbDown", -- Abomination's Limb
-			[323557] = "ravenousFrenzyDown", -- Ravenous Frenzy
-			[108291] = "heartOfTheWildDown", -- Heart of the Wild
-			[108292] = "heartOfTheWildDown", -- Heart of the Wild
-			[108293] = "heartOfTheWildDown", -- Heart of the Wild
-			[108294] = "heartOfTheWildDown", -- Heart of the Wild
-			[110909] = "alterTimeDown", -- Alter Time
-			[342246] = "alterTimeDown", -- Alter Time again I guess
-			[108978] = "alterTimeDown", -- Alter Time again I guess again I guess
+
+
 			[147833] = "interveneDown",
 			[323095] = "UltimateFormDown", -- Necrolord
 			[323524] = "UltimateFormDown",
@@ -460,8 +478,6 @@
 			[310143] = "soulshapeDown", -- Nightfae Signature
 			[331937] = "euphoriaDown",
 			--[324867] = "fleshcraftDown", -- Necrolord Signature
-		--TANK TAUNTS
-			--[206891] = "tankTauntsOFF", 			-- Tank Taunts Down
 	
 			},
 		castStart = {					-- cast start [spellid] = ".ogg file name",
@@ -487,6 +503,7 @@
 			[2008] = "resurrection", -- Ancestral Spirit (Shaman)
 			[115178] = "resurrection", -- Resusicate (Monk)
 			[50769] = "resurrection",  -- Revive (Druid)
+			[361227] = "resurrection", -- Return (Evoker)
 			-- Non-Combat Mass Resurrections
 			[212040] = "resurrection", -- Revitalize (Druid Mass Rez)
 			[212051] = "resurrection", -- Reawaken (Monk Mass Rez)
@@ -519,8 +536,13 @@
 			[329042] = "emeraldSlumber",
 
 			-- Evoker (Spell Casting)
-			-- placeholder
-			
+			[360806] = "sleepWalk",
+			[382411] = "eternitySurge",
+			[382266] = "fireBreath",
+			[382614] = "dreamBreath",
+			[382731] = "spiritBloom",
+			[370960] = "emeraldCommunion",
+
 			-- Hunter (Spell Casting)
 			[982] = "revivePet",
 			[19434] = "aimedShot",
@@ -632,6 +654,7 @@
 			[213634] = "cure", 		-- Purify Disease (Shadow Priest)
 			[218164] = "cure", 		-- Detox (Brewmaster/Windwalker Monk)
 			[475] = "cure",			-- Remove Curse (Mage)
+			[365585] = "cure",		-- Expunge (Evoker)
 			
 			-- Dispel (Healer (Magic) Dispel)
 			[4987] = "dispel", 		-- Cleanse (Holy Paladin)
@@ -645,6 +668,7 @@
 			[119905] = "dispel",	-- Singe Magic 2, Electric Boogaloo
 			[212623] = "dispel",	-- Singe Magic (PvP Talent)
 			[212620] = "dispel",	-- Singe Magic (PvP Talent, looks to be unused)
+			[360823] = "dispel",	-- Naturalize (Evoker, Healer)
 			
 			-- CastSuccess (Major, cast-time CCs that went off)
 			[113724] = "success", -- Ring of Frost
@@ -673,6 +697,7 @@
 			[204361] = "bloodLust",
 			[272678] = "bloodLust",	--Primal Rage (Hunter)
 			[204362] = "bloodLust",
+			[390386] = "bloodLust", -- Evoker
 			[107079] = "quakingPalm",
 			[20549] = "warStomp",
 			[28730] = "arcaneTorrent",
@@ -705,6 +730,8 @@
 			[255654] = "BullRush", -- Bull Rush (Highmountain Racial)
 			[356567] = "maledict",
 			[363481] = "resonator",
+			[368970] = "tailSwipe", -- Dracthyr Racial
+			[357214] = "wingBuffet", -- Dracthyr Racial
 
 			-- Covenant (Cast Success)
 			[324631] = "fleshcraft", -- Necrolord signature
@@ -729,6 +756,7 @@
 			[77606] = "darkSimulacrum",
 			[51052] = "antiMagicZone",
 			[108194] = "asphyxiate",
+			[221562] = "asphyxiate",
 			[108199] = "gorefiendGrasp",
 			--[196770] = "remorselessWinter", -- Disabled since RW is rotational now, alert applied to succesful stuns.
 			[152280] = "Defile",
@@ -816,7 +844,20 @@
 			[274837] = "FeralFrenzy",
 
 			-- Evoker (Cast Success)
-			-- placeholder
+			[351338] = "quell",
+			[358385] = "landslide",
+			[357210] = "deepBreath",
+			[374251] = "cauterizingFlame",
+			[368432] = "unravel",
+			[370665] = "rescue",
+			[372048] = "oppressingRoar",
+			[374227] = "zephyr",
+			[374968] = "timeSpiral",
+			[370452] = "shatterStar",
+			[358267] = "hover",
+			[360995] = "verdantEmbrace",
+			[363534] = "rewind",
+			[370537] = "stasis",
 			
 			-- Hunter (Cast Success)
 			[147362] = "counterShot",
@@ -1105,6 +1146,7 @@
 			[147362] = "lockout", -- Counter Shot
 			[183752] = "lockout", -- Consume Magic (Demon Hunter)
 			[187707] = "lockout", -- Muzzle (Survival Hunter)
+			[351338] = "lockout", -- Quell (Evoker)
 		},
 		friendlyInterrupted = {			--friendly interrupt [spellid] = ".ogg file name",
 			[19647] = "interrupted", -- Spell Lock
@@ -1126,6 +1168,7 @@
 			[147362] = "interrupted", -- Counter Shot
 			[183752] = "interrupted", -- Consume Magic (Demon Hunter)
 			[187707] = "interrupted", -- Muzzle (Survival Hunter)
+			[351338] = "interrupted", -- Quell (Evoker)
 		},
 	}
 end

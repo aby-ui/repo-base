@@ -82,7 +82,7 @@ end
 
 function E.SetFont(fontString, db, size)
 	local flag = db.flag
-	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, db.font == "Homespun" and "MONOCHROMEOUTLINE" or flag)
+	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, db.font == "Homespun" and "MONOCHROMEOUTLINE" or (flag == "NONE" and "" or flag))
 
 	if flag == "NONE" then
 		fontString:SetShadowOffset(1, -1)

@@ -536,6 +536,7 @@ function Display:addMiniPin(pin, refresh)
 		alpha = 2 - dist
 		if alpha < 0 then
 			pin.keep = nil
+			alpha = 0
 		end
 	end
 	-- finally show and SetPoint the pin

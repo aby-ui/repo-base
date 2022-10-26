@@ -40,7 +40,7 @@ L.MOD_AVAILABLE					= "%s在此區域有模組可用。你可以在Curse、Wago�
 
 L.COMBAT_STARTED				= "%s開戰。祝好運與盡興! :)"
 L.COMBAT_STARTED_IN_PROGRESS	= "與%s開戰已進行的戰鬥。祝好運與盡興! :)"
-L.GUILD_COMBAT_STARTED			= "%s已經開戰，在%s的公會團隊於%s之後！"
+L.GUILD_COMBAT_STARTED			= "%s已經與%s的公會團隊開戰！"
 L.SCENARIO_STARTED				= "%s開始。祝好運與盡興! :)"
 L.SCENARIO_STARTED_IN_PROGRESS	= "加入進行中的%s事件。祝好運與盡興! :)"
 L.BOSS_DOWN						= "擊敗%s，用了%s!"
@@ -376,6 +376,7 @@ L.AUTO_SPEC_WARN_TEXTS.switch				= "%s - 快更換目標!"
 L.AUTO_SPEC_WARN_TEXTS.switchcount			= "%s - 快更換目標！(%%s)"
 L.AUTO_SPEC_WARN_TEXTS.gtfo					= "%%s 傷害 - 快移動"
 L.AUTO_SPEC_WARN_TEXTS.adds					= "小怪出現 - 快更換目標！"
+L.AUTO_SPEC_WARN_TEXTS.addscount			= "小怪出現 - 快更換目標！(%%s)"
 L.AUTO_SPEC_WARN_TEXTS.addscustom			= "小怪來了 - %%s"
 L.AUTO_SPEC_WARN_TEXTS.targetchange			= "更換目標 - 轉火 %%s"
 
@@ -421,6 +422,8 @@ L.AUTO_SPEC_WARN_OPTIONS.switch 			= "特別提示：針對$spell:%s需要轉換
 L.AUTO_SPEC_WARN_OPTIONS.switchcount		= "特別提示：針對$spell:%s需要轉換目標 (包含計數)"
 L.AUTO_SPEC_WARN_OPTIONS.gtfo 				= "特別提示：當地板出現危險的東西需要躲開時"
 L.AUTO_SPEC_WARN_OPTIONS.adds				= "特別提示：當小怪出現需要更換目標時"
+L.AUTO_SPEC_WARN_OPTIONS.addscount			= "特別提示：當小怪出現需要更換目標時 (包含計數)"
+
 L.AUTO_SPEC_WARN_OPTIONS.addscustom			= "特別提示：即將到來的小怪"
 L.AUTO_SPEC_WARN_OPTIONS.targetchange		= "特別提示：當需要更換主要目標時"
 
@@ -469,6 +472,8 @@ L.AUTO_TIMER_OPTIONS.addscustom				= "計時條：小怪出現"
 L.AUTO_TIMER_OPTIONS.roleplay				= "計時條：劇情持續時間"
 
 L.AUTO_ICONS_OPTION_TARGETS					= "為$spell:%s的目標設置標記"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_A			= "為$spell:%s的目標設置標記，優先等級為坦克高於近戰高於遠程，並以字母順序優先"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_R			= "為$spell:%s的目標設置標記，優先等級為坦克高於近戰高於遠程，並以團隊陣容優先"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_A			= "為$spell:%s的目標設置標記，以近戰和字母順序優先"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R			= "為$spell:%s的目標設置標記，以近戰和團隊陣容優先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A		= "為$spell:%s的目標設置標記，以遠程和字母順序優先"

@@ -105,7 +105,6 @@ function DWC:ShowOptions()
 end 
 
 function DWC:SetupOptions()
-	InterfaceOptionsFrame:SetFrameStrata("DIALOG") 
 	self.optionsFrames = {}
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("DuowanChat", getOptions) 
 	self:RegisterModuleOptions("Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db), "Profiles") 

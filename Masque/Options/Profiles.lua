@@ -15,7 +15,7 @@
 local MASQUE, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local pairs = pairs
@@ -56,7 +56,9 @@ function Setup.Profiles(self)
 	end
 
 	self.Options.args.Profiles = Options
-	self.ProfilesPanel = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(MASQUE, L["Profile Settings"], MASQUE, "Profiles")
+
+	local Path = "Profiles"
+	self:AddOptionsPanel(Path, LibStub("AceConfigDialog-3.0"):AddToBlizOptions(MASQUE, L["Profile Settings"], MASQUE, Path))
 
 	-- GC
 	Setup.Profiles = nil

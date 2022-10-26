@@ -10,6 +10,14 @@ L['covenant_required'] = '需要 %s 誓盟成員。'
 L['anima_channeled'] = '靈魄連接到 %s'
 
 -------------------------------------------------------------------------------
+--------------------------------- SHADOWLANDS ---------------------------------
+-------------------------------------------------------------------------------
+
+L['squirrels_note'] = nil
+L['options_icons_squirrels'] = '{achievement:14731}'
+L['options_icons_squirrels_desc'] = nil
+
+-------------------------------------------------------------------------------
 --------------------------------- ARDENWEALD ----------------------------------
 -------------------------------------------------------------------------------
 
@@ -92,6 +100,31 @@ L['glitterdust_note'] = '亞登曠野的生物或許看起來很溫馴，不過�
 L['lost_book_note'] = '把這本遺失的書交回給在記憶林地的 {npc:165867}'
 L['options_icons_faerie_tales'] = '{achievement:14788}'
 L['options_icons_faerie_tales_desc'] = '顯示 {achievement:14788} 成就中遺失的書的位置'
+
+L['options_icons_wild_hunting'] = '{achievement:14779}'
+L['options_icons_wild_hunting_desc'] = '顯示 {achievement:14779} 成就所需的野獸位置'
+
+L['options_icons_wildseed_spirits'] = nil
+L['options_icons_wildseed_spirits_desc'] = nil
+
+L['divine_martial_spirit'] = nil
+L['divine_dutiful_spirit'] = nil
+L['divine_prideful_spirit'] = nil
+L['divine_untamed_spirit'] = nil
+
+L['martial_spirit_label'] = '{item:178874}'
+L['dutiful_spirit_label'] = '{item:178881}'
+L['prideful_spirit_label'] = '{item:178882}'
+L['untamed_spirit_label'] = '{item:177698}'
+
+L['0x_wildseed_root_grain'] = '0個 {item:176832}'
+L['1x_wildseed_root_grain'] = '1個 {item:176832}'
+L['2x_wildseed_root_grain'] = '2個或3個 {item:176832}'
+L['4x_wildseed_root_grain'] = '4個 {item:176832}'
+
+L['soulshape_cat_note'] = nil
+L['soulshape_corgi_note'] = nil
+L['soulshape_well_fed_cat_note'] = nil
 
 -------------------------------------------------------------------------------
 ----------------------------------- BASTION -----------------------------------
@@ -232,6 +265,8 @@ L['options_icons_hymns_desc'] = '顯示 {achievement:14768} 成就中頌歌的�
 L['stratios_note'] = '就算是規模再小的戰爭，也要慎重以對。等你準備好了，就展示你的隊伍。'
 L['thenia_note'] = '這裡有如此廣大的開放平原。正好適合拿來戰鬥。你準備好了嗎？'
 L['zolla_note'] = '我們非常嚴肅看待我們的防禦。無論大小，我們都致力於善用每一分資源，保護昇靈堡。'
+
+L['soulshape_otter_soul'] = nil
 
 -------------------------------------------------------------------------------
 ----------------------------------- KORTHIA -----------------------------------
@@ -408,6 +443,32 @@ L['dundley_note'] = '我會一路過關斬將，直到獲得我應得的尊敬�
 L['maximillian_note'] = '我等了這麼多年，就是想要一個好對手。贏家擁有所有戰利品！'
 L['rotgut_note'] = '腐腸、殘渣。多出來的。你要打。'
 
+L['ashen_ink_label'] = '{item:183690}'
+L['ashen_ink_note'] = nil
+
+L['jagged_bonesaw_label'] = '{item:183692}'
+L['jagged_bonesaw_note'] = nil
+
+L['discarded_grimoire_label'] = '{item:183394}'
+L['discarded_grimoire_note'] = nil
+
+L['sorcerers_blade_label'] = '{item:183397}'
+L['sorcerers_blade_note'] = nil
+
+L['mucosal_pigment_label'] = '{item:183691}'
+L['mucosal_pigment_note'] = nil
+
+L['amethystine_dye_label'] = '{item:183401}'
+L['amethystine_dye_note'] = nil
+
+L['ritualists_mantle_label'] = '{item:183399}'
+L['ritualists_mantle_note'] = nil
+
+L['options_icons_crypt_couture'] = '{achievement:14763}'
+L['options_icons_crypt_couture_desc'] = nil
+
+L['soulshape_saurid_note'] = nil
+
 -------------------------------------------------------------------------------
 --------------------------------- REVENDRETH ----------------------------------
 -------------------------------------------------------------------------------
@@ -483,6 +544,15 @@ L['inquisitor_note'] = '把100個 {currency:1816} 交給 {npc:160248} 有機會�
 L['options_icons_inquisitors'] = '{achievement:14276}'
 L['options_icons_inquisitors_desc'] = '顯示 {achievement:14276} 成就中審判官的位置。'
 
+L['bell_of_shame_note'] = nil
+L['atonement_crypt_label'] = nil
+L['atonement_crypt_note'] = nil
+L['atonement_crypts_opened'] = nil
+L['atonement_crypt_key_label'] = '{item:172957}'
+L['atonement_crypt_key_note'] = nil
+L['options_icons_crypt_kicker'] = '{achievement:14273}'
+L['options_icons_crypt_kicker_desc'] = nil
+
 L['broken_mirror'] = '破損的鏡子'
 L['broken_mirror_note'] = '每天會有三個為一組的破損的鏡子被啟動. 使用 {item:181363} 來維修每一個鏡子並且可以打開裡面的 |cFFFFFD00被遺忘的箱子|r'
 L['broken_mirror_crypt'] = '在墓穴內'
@@ -494,6 +564,10 @@ L['broken_mirror_61819'] = '在一個小房間內的一樓'
 L['broken_mirror_61827'] = '在一個小房間內'
 L['options_icons_broken_mirror'] = '破損的鏡子'
 L['options_icons_broken_mirror_desc'] = '顯示破損的鏡子的位置'
+
+L['soulshape_chicken_note'] = nil
+L['spectral_feed_label'] = '{item:187811}'
+L['spectral_feed_note'] = nil
 
 -------------------------------------------------------------------------------
 ----------------------------------- THE MAW -----------------------------------
@@ -677,6 +751,70 @@ L['options_icons_mawsworn_blackguard_desc'] = '{achievement:14742} 成就所需�
 
 L['mawsworn_blackguard'] = '淵誓黑衣衛'
 L['mawsworn_blackguard_note'] = '簡單的選取一個潛行的 {npc:183173}:'
+
+L['options_icons_covenant_assaults'] = 'Covenant Assaults'
+L['options_icons_covenant_assaults_desc'] = 'Rewards for covenant assaults'
+
+L['assault_sublabel_US'] = nil
+L['assault_sublabel_EU'] = nil
+L['assault_sublabel_CN'] = nil
+
+L['necrolord_assault'] = '{quest:63543}'
+L['necrolord_assault_note'] = nil
+L['necrolord_assault_quantity_note'] = nil
+L['venthyr_assault'] = '{quest:63822}'
+L['venthyr_assault_note'] = nil
+L['venthyr_assault_quantity_note'] = nil
+L['night_fae_assault'] = '{quest:63823}'
+L['night_fae_assault_note'] = nil
+L['night_fae_assault_quantity_note'] = nil
+L['kyrian_assault'] = '{quest:63824}'
+L['kyrian_assault_note'] = nil
+L['kyrian_assault_quantity_note1'] = nil
+L['kyrian_assault_quantity_note2'] = nil
+
+-------------------------------------------------------------------------------
+---------------------- TORGHAST, THE TOWER OF THE DAMNED ----------------------
+-------------------------------------------------------------------------------
+
+L['torghast_the_tower_of_the_damned'] = nil
+L['torghast_reward_sublabel'] = nil
+L['torghast_boss_note'] = nil
+L['torghast_vendor_note'] = nil
+L['torghast_reward_note'] = nil
+L['torghast_soulshape_note'] = nil
+L['colossal_umbrahide_mawrat_note'] = nil
+
+L['skoldus_hall'] = nil
+L['fracture_chambers'] = nil
+L['the_soulforges'] = nil
+L['coldheart_interstitia'] = nil
+L['mortregar'] = nil
+L['the_upper_reaches'] = nil
+L['adamant_vaults'] = nil
+L['twisting_corridors'] = nil
+L['the_jailers_gauntlet'] = nil
+
+L['torghast_layer1'] = nil
+L['torghast_layer2'] = nil
+L['torghast_layer3'] = nil
+L['torghast_layer4'] = nil
+L['torghast_layer6'] = nil
+L['torghast_layer8'] = nil
+
+L['phantasma_note'] = nil
+L['bloating_fodder_note'] = nil
+L['flawless_master_note'] = nil
+L['tower_ranger_note'] = nil
+
+L['the_jailers_gauntlet_note'] = nil
+
+L['the_box_of_many_things'] = nil
+L['the_box_of_many_things_note'] = nil
+L['many_many_things_section'] = nil
+
+L['the_runecarver'] = '{npc:164937}'
+L['clearing_the_fog_suffix'] = nil
 
 -------------------------------------------------------------------------------
 -------------------------------- ZERETH MORTIS --------------------------------
@@ -884,6 +1022,9 @@ L['coreless_automa_note'] = '裝備一個有 {spell:364480} 的裝備會讓 |cFF
 L['coreless_automa_warning'] = '|cFFFF8C00請等待自主機真的跟隨你了再告訴波克波可離開自主機, 如此可以避免發生需要你重登的錯誤.|r'
 
 L['olea_manu'] = '清單中的價格須使用 {currency:1979}'
+
+L['venaris_fate_sublabel'] = nil
+L['venaris_fate_note'] = nil
 
 L['options_icons_code_creature'] = '{achievement:15211}'
 L['options_icons_code_creature_desc'] = '顯示 {achievement:15211} 成就的生物位置'

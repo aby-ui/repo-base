@@ -326,6 +326,8 @@ function RSContainerDB.GetContainerName(containerID)
 			return AL["NOTE_FIRIM_EXILE"]
 		elseif (private.dbglobal.object_names[GetLocale()][containerID]) then
 			return private.dbglobal.object_names[GetLocale()][containerID]
+		elseif (AL[string.format("CONTAINER_%s", containerID)] ~= string.format("CONTAINER_%s", containerID)) then
+			return AL[string.format("CONTAINER_%s", containerID)]
 		end
 	end
 

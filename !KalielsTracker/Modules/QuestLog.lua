@@ -19,7 +19,7 @@ local dropDownFrame
 --------------
 
 local function SetHooks()
-	-- DropDown
+	-- DropDown - QuestMapFrame.lua
 	function QuestMapQuestOptionsDropDown_Initialize(self)	-- R
 		local info = MSA_DropDownMenu_CreateInfo();
 		info.isNotRadio = true;
@@ -78,7 +78,6 @@ local function SetHooks()
 					MSA_CloseDropDownMenus();
 				end
 				dropDownFrame.questID = self.questID;
-				QuestMapFrame.questID = self.questID;	-- for Abandon
 				MSA_ToggleDropDownMenu(1, nil, dropDownFrame, "cursor", 6, -6, nil, nil, MSA_DROPDOWNMENU_SHOW_TIME);
 			elseif button == "LeftButton" then
 				if IsModifiedClick(db.menuWowheadURLModifier) then

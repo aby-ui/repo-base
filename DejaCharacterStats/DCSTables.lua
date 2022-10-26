@@ -322,23 +322,17 @@ DCS_TableData.StatData.ItemLevelFrame = {
 }
 
 --[[
-DCS_TableData.StatData.ActiBlizzWalkout = {
+DCS_TableData.StatData.Diversity = {
     category   = true,
-    frame      = char_ctats_pane.ActiBlizzWalkout,
+    frame      = char_ctats_pane.Diversity,
     updateFunc = function()	end
 }
-]]
+--]]
 
 DCS_TableData.StatData.GeneralCategory = {
     category   = true,
     frame      = char_ctats_pane.GeneralCategory,
     updateFunc = function()	end
-}
-
-DCS_TableData.StatData.CorruptionCategory = {
-    category   = true,
-    frame      = char_ctats_pane.CorruptionCategory,
-    updateFunc = function() end
 }
 
 DCS_TableData.StatData.AttributesCategory = {
@@ -892,60 +886,6 @@ DCS_TableData.StatData.PARRY_RATING = {
 DCS_TableData.StatData.SPEED_RATING = {
 	updateFunc = function(statFrame, unit)
 		statframeratings(statFrame, unit, CR_SPEED)
-	end
-}
-
-DCS_TableData.StatData.CR_CORRUPTION = {
-	updateFunc = function(statFrame, unit)
-		if ( unit ~= "player" ) then
-			statFrame:Hide();
-			return;
-		end
-		local ratingname = L["Base Corruption"]
-		local basecorruption = GetCorruption()
-
-		local c, r = GetCorruption(), GetCorruptionResistance()
-		CR_CORRUPTION = max(0, c - r)  -- max to prevent negative values
-
-		PaperDollFrame_SetLabelAndText(statFrame, ratingname, basecorruption, false, basecorruption);
-		statFrame.tooltip = highlight_code..ratingname.." "..basecorruption..font_color_close;
-		statFrame:Show();
-	end
-}
-
-DCS_TableData.StatData.CR_CORRUPTION_RESISTANCE = {
-	updateFunc = function(statFrame, unit)
-		if ( unit ~= "player" ) then
-			statFrame:Hide();
-			return;
-		end
-		local ratingname = L["Corruption Resistance"]
-		local corruptionresistance = GetCorruptionResistance()
-
-		CR_CORRUPTION_RESISTANCE = corruptionresistance
-
-		PaperDollFrame_SetLabelAndText(statFrame, ratingname, corruptionresistance, false, corruptionresistance);
-		statFrame.tooltip = highlight_code..ratingname.." "..corruptionresistance..font_color_close;
-		statFrame:Show();
-	end
-}
-
-DCS_TableData.StatData.CR_TOTAL_CORRUPTION = {
-	updateFunc = function(statFrame, unit)
-		if ( unit ~= "player" ) then
-			statFrame:Hide();
-			return;
-		end
-		local ratingname = L["Total Corruption"]
-		local c, r = GetCorruption(), GetCorruptionResistance()
-		local totalcorruption = max(0, c - r) -- max to prevent negative values
-		
-		local c, r = GetCorruption(), GetCorruptionResistance()
-		CR_TOTAL_CORRUPTION = max(0, c - r)  -- max to prevent negative values
-
-		PaperDollFrame_SetLabelAndText(statFrame, "|cff8787ED"..ratingname.."|r", "|cff8787ED"..totalcorruption.."|r", false, totalcorruption);
-		statFrame.tooltip = "|cff8787ED" .. ratingname .. " " .. totalcorruption .. "|r";
-		statFrame:Show();
 	end
 }
 

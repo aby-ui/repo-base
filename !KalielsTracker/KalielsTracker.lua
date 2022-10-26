@@ -547,7 +547,8 @@ local function SetFrames()
 	KTF.Bar = Bar
 
 	-- Blizzard frame
-	OTF:KTSetPoint("TOPLEFT")
+	OTF:KTSetPoint("TOPLEFT", 30, -1)
+	OTF:KTSetPoint("BOTTOMRIGHT")
 	OTF:KTSetParent(Child)
 	OTFHeader:Show()
 	OTFHeader.Hide = function() end
@@ -673,6 +674,19 @@ local function SetHooks()
 			KTF.Buttons:SetAlpha(1)
 		end
 	end
+
+	hooksecurefunc(OTF, "ClearAllPoints", function(self)
+		self:KTSetPoint("TOPLEFT", 30, -1)
+		self:KTSetPoint("BOTTOMRIGHT")
+	end)
+
+	hooksecurefunc(OTF, "OnEditModeEnter", function(self)
+		KTF:Hide()
+	end)
+
+	hooksecurefunc(OTF, "OnEditModeExit", function(self)
+		--ReloadUI()
+	end)
 
 	OTF:HookScript("OnEvent", function(self, event)
 		if event == "PLAYER_ENTERING_WORLD" and not KT.initialized then
@@ -883,75 +897,6 @@ local function SetHooks()
 		end
 
 		return QuestUtils_IsQuestWorldQuest(questID) and C_QuestLog.QuestHasWarModeBonus(questID) and not C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID);
-	end
-
-	function QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip, currencyContainerTooltip)  -- RO
-		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID);
-		local currencies = { };
-		local uniqueCurrencyIDs = { };
-		for i = 1, numQuestCurrencies do
-			local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i, questID);
-			local rarity = C_CurrencyInfo.GetCurrencyInfo(currencyID).quality;
-			local firstInstance = not uniqueCurrencyIDs[currencyID];
-			if firstInstance then
-				uniqueCurrencyIDs[currencyID] = true;
-			end
-			local currencyInfo = { name = name, texture = texture, numItems = numItems, currencyID = currencyID, rarity = rarity, firstInstance = firstInstance };
-			if(currencyID ~= ECHOS_OF_NYLOTHA_CURRENCY_ID or numQuestCurrencies == 1) then
-				tinsert(currencies, currencyInfo);
-			end
-		end
-
-		table.sort(currencies,
-			function(currency1, currency2)
-				if currency1.rarity ~= currency2.rarity then
-					return currency1.rarity > currency2.rarity;
-				end
-				return currency1.currencyID > currency2.currencyID;
-			end
-		);
-
-		local addedQuestCurrencies = 0;
-		local alreadyUsedCurrencyContainerId = 0; --In the case of multiple currency containers needing to displayed, we only display the first.
-		local warModeBonus = C_PvP.GetWarModeRewardBonus();
-
-		for i, currencyInfo in ipairs(currencies) do
-			local isCurrencyContainer = C_CurrencyInfo.IsCurrencyContainer(currencyInfo.currencyID, currencyInfo.numItems);
-			if ( currencyContainerTooltip and isCurrencyContainer and (alreadyUsedCurrencyContainerId == 0) ) then
-				if ( EmbeddedItemTooltip_SetCurrencyByID(currencyContainerTooltip, currencyInfo.currencyID, currencyInfo.numItems) ) then
-					if ShouldShowWarModeBonus(questID, currencyInfo.currencyID, currencyInfo.firstInstance) then
-						currencyContainerTooltip.Tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(warModeBonus));
-						currencyContainerTooltip.Tooltip:Show();
-					end
-
-					if ( not tooltip ) then
-						break;
-					end
-
-					addedQuestCurrencies = addedQuestCurrencies + 1;
-					alreadyUsedCurrencyContainerId = currencyInfo.currencyID;
-				end
-			elseif ( tooltip ) then
-				if( alreadyUsedCurrencyContainerId ~= currencyInfo.currencyID ) then --if there's already a currency container of this same type skip it entirely
-					local text, color
-					if currencyInfo.currencyID == 1553 then	-- Azerite
-						text = format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(currencyInfo.numItems))
-						color = { r = 1, g = 1, b = 1 }
-					else
-						text = BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(currencyInfo.texture, currencyInfo.numItems, currencyInfo.name)
-						color = GetColorForCurrencyReward(currencyInfo.currencyID, currencyInfo.numItems)
-					end
-					tooltip:AddLine(text, color.r, color.g, color.b)
-
-					if ShouldShowWarModeBonus(questID, currencyInfo.currencyID, currencyInfo.firstInstance) then
-						tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(warModeBonus));
-					end
-
-					addedQuestCurrencies = addedQuestCurrencies + 1;
-				end
-			end
-		end
-		return addedQuestCurrencies, alreadyUsedCurrencyContainerId > 0;
 	end
 
 	hooksecurefunc(DEFAULT_OBJECTIVE_TRACKER_MODULE, "OnBlockHeaderEnter", function(self, block)
@@ -1176,7 +1121,7 @@ local function SetHooks()
 				button.text:SetJustifyH("LEFT")
 				button.text:SetPoint("TOPLEFT", button.icon, 1, -3)
 
-				button:RegisterForClicks("AnyUp")
+				button:RegisterForClicks("AnyDown")
 
 				button:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
 				do local tex = button:GetNormalTexture()
@@ -1622,22 +1567,6 @@ local function SetHooks()
 		end
 	end)
 
-	hooksecurefunc("GossipFrameUpdate", function()
-		local gossipQuests = C_GossipInfo.GetActiveQuests()
-		for _, questInfo in ipairs(gossipQuests) do
-			if dbChar.quests.cache[questInfo.questID] and not C_QuestLog.IsComplete(questInfo.questID) then
-				QuestsCache_UpdateProperty(questInfo.questID, "startMapID", KT.GetCurrentMapAreaID())
-			end
-		end
-	end)
-
-	QuestFrame:HookScript("OnShow", function(self)
-		local questID = GetQuestID()
-		if dbChar.quests.cache[questID] and not C_QuestLog.IsComplete(questID) then
-			QuestsCache_UpdateProperty(questID, "startMapID", KT.GetCurrentMapAreaID())
-		end
-	end)
-
 	local bck_ObjectiveTracker_ReorderModules = ObjectiveTracker_ReorderModules
 	ObjectiveTracker_ReorderModules = function()
         --do return end --abyui82
@@ -1652,42 +1581,6 @@ local function SetHooks()
 			bck_ObjectiveTracker_ReorderModules()
 		end
 	end
-
-	local bck_QuestPOI_GetButton = QuestPOI_GetButton
-	QuestPOI_GetButton = function(parent, questID, style, index)
-		local poiButton = bck_QuestPOI_GetButton(parent, questID, style, index)
-		if poiButton then
-			poiButton.Glow.SetShown = function() end
-		end
-		return poiButton
-	end
-
-	hooksecurefunc(QuestUtil, "SetupWorldQuestButton", function(button, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, isEffectivelyTracked)
-        button.Glow:SetShown(false)
-    end)
-
-	local bck_UIErrorsFrame_OnEvent = UIErrorsFrame:GetScript("OnEvent")
-	UIErrorsFrame:SetScript("OnEvent", function(self, event, ...)
-		if db.messageQuest and event == "UI_INFO_MESSAGE" then
-			local _, text = ...
-			for _, patt in ipairs(msgPatterns) do
-				if strfind(text, patt) then
-					KT:SetMessage(text, 1, 1, 0, nil, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
-					return
-				end
-			end
-		end
-		bck_UIErrorsFrame_OnEvent(self, event, ...)
-	end)
-
-    --[[
-	function QuestMapFrame_OpenToQuestDetails(questID)  -- R
-		local mapID = GetQuestUiMapID(questID);
-		if ( mapID == 0 ) then mapID = nil; end
-		OpenQuestLog(mapID);  -- fix Blizz bug
-		QuestMapFrame_ShowQuestDetails(questID);
-	end
-	--]]
 
 	-- Item handler functions
 	--[=[
@@ -1757,6 +1650,134 @@ local function SetHooks()
 			end
 		end
 	end
+
+	-- GossipFrame.lua
+	-- TODO: Test it
+	hooksecurefunc(GossipFrameMixin, "Update", function(self)
+		local gossipQuests = C_GossipInfo.GetActiveQuests()
+		for _, questInfo in ipairs(gossipQuests) do
+			if dbChar.quests.cache[questInfo.questID] and not C_QuestLog.IsComplete(questInfo.questID) then
+				QuestsCache_UpdateProperty(questInfo.questID, "startMapID", KT.GetCurrentMapAreaID())
+			end
+		end
+	end)
+
+	-- QuestFrame.lua
+	QuestFrame:HookScript("OnShow", function(self)
+		local questID = GetQuestID()
+		if dbChar.quests.cache[questID] and not C_QuestLog.IsComplete(questID) then
+			QuestsCache_UpdateProperty(questID, "startMapID", KT.GetCurrentMapAreaID())
+		end
+	end)
+
+	-- QuestMapFrame.lua
+    --[[ --abyui
+	function QuestMapFrame_OpenToQuestDetails(questID)  -- R
+		local mapID = GetQuestUiMapID(questID);
+		if ( mapID == 0 ) then mapID = nil; end
+		OpenQuestLog(mapID);  -- fix Blizz bug
+		QuestMapFrame_ShowQuestDetails(questID);
+	end
+    --]]
+
+	-- QuestPOI.lua
+	local bck_QuestPOI_GetButton = QuestPOI_GetButton
+	QuestPOI_GetButton = function(parent, questID, style, index)
+		local poiButton = bck_QuestPOI_GetButton(parent, questID, style, index)
+		if poiButton then
+			poiButton.Glow.SetShown = function() end
+		end
+		return poiButton
+	end
+
+	-- QuestUtils.lua
+	function QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, tooltip, currencyContainerTooltip)  -- RO
+		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID);
+		local currencies = { };
+		local uniqueCurrencyIDs = { };
+		for i = 1, numQuestCurrencies do
+			local name, texture, numItems, currencyID = GetQuestLogRewardCurrencyInfo(i, questID);
+			local rarity = C_CurrencyInfo.GetCurrencyInfo(currencyID).quality;
+			local firstInstance = not uniqueCurrencyIDs[currencyID];
+			if firstInstance then
+				uniqueCurrencyIDs[currencyID] = true;
+			end
+			local currencyInfo = { name = name, texture = texture, numItems = numItems, currencyID = currencyID, rarity = rarity, firstInstance = firstInstance };
+			if(currencyID ~= ECHOS_OF_NYLOTHA_CURRENCY_ID or numQuestCurrencies == 1) then
+				tinsert(currencies, currencyInfo);
+			end
+		end
+
+		table.sort(currencies,
+			function(currency1, currency2)
+				if currency1.rarity ~= currency2.rarity then
+					return currency1.rarity > currency2.rarity;
+				end
+				return currency1.currencyID > currency2.currencyID;
+			end
+		);
+
+		local addedQuestCurrencies = 0;
+		local alreadyUsedCurrencyContainerId = 0; --In the case of multiple currency containers needing to displayed, we only display the first.
+		local warModeBonus = C_PvP.GetWarModeRewardBonus();
+
+		for i, currencyInfo in ipairs(currencies) do
+			local isCurrencyContainer = C_CurrencyInfo.IsCurrencyContainer(currencyInfo.currencyID, currencyInfo.numItems);
+			if ( currencyContainerTooltip and isCurrencyContainer and (alreadyUsedCurrencyContainerId == 0) ) then
+				if ( EmbeddedItemTooltip_SetCurrencyByID(currencyContainerTooltip, currencyInfo.currencyID, currencyInfo.numItems) ) then
+					if ShouldShowWarModeBonus(questID, currencyInfo.currencyID, currencyInfo.firstInstance) then
+						currencyContainerTooltip.Tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(warModeBonus));
+						currencyContainerTooltip.Tooltip:Show();
+					end
+
+					if ( not tooltip ) then
+						break;
+					end
+
+					addedQuestCurrencies = addedQuestCurrencies + 1;
+					alreadyUsedCurrencyContainerId = currencyInfo.currencyID;
+				end
+			elseif ( tooltip ) then
+				if( alreadyUsedCurrencyContainerId ~= currencyInfo.currencyID ) then --if there's already a currency container of this same type skip it entirely
+					local text, color
+					if currencyInfo.currencyID == 1553 then	-- Azerite
+						text = format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, FormatLargeNumber(currencyInfo.numItems))
+						color = { r = 1, g = 1, b = 1 }
+					else
+						text = BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format(currencyInfo.texture, currencyInfo.numItems, currencyInfo.name)
+						color = GetColorForCurrencyReward(currencyInfo.currencyID, currencyInfo.numItems)
+					end
+					tooltip:AddLine(text, color.r, color.g, color.b)
+
+					if ShouldShowWarModeBonus(questID, currencyInfo.currencyID, currencyInfo.firstInstance) then
+						tooltip:AddLine(WAR_MODE_BONUS_PERCENTAGE_FORMAT:format(warModeBonus));
+					end
+
+					addedQuestCurrencies = addedQuestCurrencies + 1;
+				end
+			end
+		end
+		return addedQuestCurrencies, alreadyUsedCurrencyContainerId > 0;
+	end
+
+	hooksecurefunc(QuestUtil, "SetupWorldQuestButton", function(button, worldQuestType, rarity, isElite, tradeskillLineIndex, inProgress, selected, isCriteria, isSpellTarget, isEffectivelyTracked)
+        button.Glow:SetShown(false)
+    end)
+
+	-- UIErrorsFrame.lua
+	local bck_UIErrorsFrame_OnEvent = UIErrorsFrame:GetScript("OnEvent")
+	UIErrorsFrame:SetScript("OnEvent", function(self, event, ...)
+		if db.messageQuest and event == "UI_INFO_MESSAGE" then
+			local _, text = ...
+			for _, patt in ipairs(msgPatterns) do
+				if strfind(text, patt) then
+					KT:SetMessage(text, 1, 1, 0, nil, "Interface\\GossipFrame\\AvailableQuestIcon", -2, 0)
+					return
+				end
+			end
+		end
+		bck_UIErrorsFrame_OnEvent(self, event, ...)
+	end)
 
 	-- DropDown
 	function ObjectiveTracker_ToggleDropDown(frame, handlerFunc)  -- R
@@ -2285,6 +2306,9 @@ end
 function KT:SetModuleHeader(module)
 	if not module.Header then return end
 	module.Header.Text:SetWidth(165)
+	module.Header.Text.ClearAllPoints = function() end
+	module.Header.Text:SetPoint("LEFT", 4, 1)
+	module.Header.Text.SetPoint = function() end
 	module.Header.PlayAddAnimation = function() end
 	module.Header.LineGlow:Hide()
 	module.Header.SoftGlow:Hide()
@@ -2690,6 +2714,7 @@ function KT:OnInitialize()
 
 	-- Blizzard frame resets
 	OTF.KTSetParent = OTF.SetParent
+	OTF:SetParent(UIParent)
 	OTF.SetParent = function() end
 	OTF.SetFrameStrata = function() end
 	OTF.SetFrameLevel = function() end
@@ -2698,11 +2723,17 @@ function KT:OnInitialize()
 	OTF:EnableMouse(false)
 	OTF.EnableMouse = function() end
 	OTF:SetMovable(false)
-	OTF.SetMovable = function() end
-	OTF:ClearAllPoints()
-	OTF.ClearAllPoints = function() end
 	OTF.SetAllPoints = function() end
-	OTF.KTSetPoint = OTF.SetPoint
+	if OTF.ClearAllPointsBase then
+		OTF:ClearAllPointsBase()  -- 10.0.0
+	else
+		OTF:ClearAllPoints()  -- 10.0.2
+	end
+	if OTF.SetPointBase then
+		OTF.KTSetPoint = OTF.SetPointBase  -- 10.0.0
+	else
+		OTF.KTSetPoint = OTF.SetPoint  -- 10.0.2
+	end
 	OTF.SetShown = function() end
 	OTF:Show()
 end
@@ -2711,7 +2742,6 @@ function KT:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
 
 	-- Blizzard frame resets
-	OTF.IsUserPlaced = function() return true end
 	OTF.SetPoint = function() end
 
 	SetFrames()

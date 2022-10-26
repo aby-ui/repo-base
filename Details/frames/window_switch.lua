@@ -188,7 +188,7 @@ do
 		texture_highlight_frame.texture = button.texture
 		texture_highlight_frame.MainFrame = button
 		
-		button.text = button:CreateFontString (nil, "overlay", "GameFontNormal")
+		button.text = button:CreateFontString(nil, "overlay", "GameFontNormal")
 		button.text:SetPoint("left", button.texture, "right", 2, 0)
 		button.attribute = attribute
 		button.sub_attribute = sub_attribute
@@ -223,9 +223,9 @@ do
 				title_icon:SetPoint("topleft", x, y)
 				local texture, l, r, t, b = Details:GetAttributeIcon (attribute)
 				title_icon:SetTexture(texture)
-				title_icon:SetTexCoord (l, r, t, b)
+				title_icon:SetTexCoord(l, r, t, b)
 				title_icon:SetSize(18, 18)
-				local title_str = allDisplaysFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+				local title_str = allDisplaysFrame:CreateFontString(nil, "overlay", "GameFontNormal")
 				title_str:SetPoint("left", title_icon, "right", 2, 0)
 				title_str:SetText(loc_attribute_name)
 				
@@ -242,7 +242,7 @@ do
 
 					allDisplaysFrame.check_text_size (button.text)
 					button.texture:SetTexture(Details.sub_atributos [attribute].icones [i] [1])
-					button.texture:SetTexCoord (unpack (Details.sub_atributos [attribute].icones [i] [2]))
+					button.texture:SetTexCoord(unpack(Details.sub_atributos [attribute].icones [i] [2]))
 					tinsert(allDisplaysFrame.buttons [attribute], button)
 					y = y - 17
 				end
@@ -266,7 +266,7 @@ do
 			title_icon:SetTexCoord(412/512, 441/512, 43/512, 79/512)
 			title_icon:SetVertexColor(.7, .6, .5, 1)
 			title_icon:SetSize(16, 16)
-			local title_str = allDisplaysFrame:CreateFontString (nil, "overlay", "GameFontNormal")
+			local title_str = allDisplaysFrame:CreateFontString(nil, "overlay", "GameFontNormal")
 			title_str:SetPoint("left", title_icon, "right", 2, 0)
 			title_str:SetText("Scripts")
 			
@@ -280,7 +280,7 @@ do
 				allDisplaysFrame.buttons[6] = {}
 				local title_icon = allDisplaysFrame:CreateTexture(nil, "overlay")
 				title_icon:SetTexture([[Interface\AddOns\Details\images\modo_icones]])
-				title_icon:SetTexCoord (32/256*3, 32/256*4, 0, 1)
+				title_icon:SetTexCoord(32/256*3, 32/256*4, 0, 1)
 				title_icon:SetSize(16, 16)
 
 				local title_str = allDisplaysFrame:CreateFontString(nil, "overlay", "GameFontNormal")
@@ -311,7 +311,7 @@ do
 
 			allDisplaysFrame.check_text_size (button.text)
 			button.texture:SetTexture(custom.icon)
-			button.texture:SetTexCoord (0.078125, 0.921875, 0.078125, 0.921875)
+			button.texture:SetTexCoord(0.078125, 0.921875, 0.078125, 0.921875)
 			button:Show()
 			
 			button_index = button_index + 1
@@ -354,7 +354,7 @@ do
 						
 						allDisplaysFrame.check_text_size(button.text)
 						button.texture:SetTexture(ptable[2])
-						button.texture:SetTexCoord (0.078125, 0.921875, 0.078125, 0.921875)
+						button.texture:SetTexCoord(0.078125, 0.921875, 0.078125, 0.921875)
 						button:Show()
 						
 						button_index = button_index + 1
@@ -523,7 +523,7 @@ function Details.switch:ShowMe(instancia)
 		
 			function Details.switch:CreateSegmentBlock()
 				local s = gump:CreateLabel(Details.switch.frame)
-				Details:SetFontSize (s, 9)
+				Details:SetFontSize(s, 9)
 				
 				local index = #Details.switch.segments_blocks
 				if (index == 1) then --overall button
@@ -532,17 +532,17 @@ function Details.switch:ShowMe(instancia)
 					index = index - 1
 				end
 				
-				local button = gump:CreateButton (Details.switch.frame, segment_switch, 100, 20, "", index)
+				local button = gump:CreateButton(Details.switch.frame, segment_switch, 100, 20, "", index)
 				button:SetPoint("topleft", s, "topleft", -17, 0)
 				button:SetPoint("bottomright", s, "bottomright", 0, 0)
 				button:SetClickFunction(segment_switch, nil, nil, "right")
 
-				local boss_texture = gump:CreateImage (button, nil, 16, 16)
+				local boss_texture = gump:CreateImage(button, nil, 16, 16)
 				boss_texture:SetPoint("right", s, "left", -2, 0)
 
 				local background = button:CreateTexture(nil, "background")
 				background:SetTexture("Interface\\SPELLBOOK\\Spellbook-Parts")
-				background:SetTexCoord (0.31250000, 0.96484375, 0.37109375, 0.52343750)
+				background:SetTexCoord(0.31250000, 0.96484375, 0.37109375, 0.52343750)
 				background:SetWidth(85)
 				background:SetPoint("topleft", s.widget, "topleft", -16, 3)
 				background:SetPoint("bottomright", s.widget, "bottomright", -3, -5)
@@ -586,8 +586,8 @@ function Details.switch:ShowMe(instancia)
 				
 				local window_width, window_height = Details.switch.current_instancia:GetSize()
 				
-				local horizontal_amt = floor (math.max (window_width / 100, 2))
-				local vertical_amt = floor ((window_height - y) / 20)
+				local horizontal_amt = floor(math.max(window_width / 100, 2))
+				local vertical_amt = floor((window_height - y) / 20)
 				local size = window_width / horizontal_amt
 				
 				local frame = Details.switch.frame
@@ -623,12 +623,12 @@ function Details.switch:ShowMe(instancia)
 			local block1 = Details.switch:GetSegmentBlock (1)
 			block1:SetText(Loc["STRING_CURRENTFIGHT"])
 			block1.texture:SetTexture([[Interface\Scenarios\ScenariosParts]])
-			block1.texture:SetTexCoord (55/512, 81/512, 368/512, 401/512)
+			block1.texture:SetTexCoord(55/512, 81/512, 368/512, 401/512)
 			
 			local block2 = Details.switch:GetSegmentBlock (2)
 			block2:SetText(Loc["STRING_SEGMENT_OVERALL"])
 			block2.texture:SetTexture([[Interface\Scenarios\ScenariosParts]])
-			block2.texture:SetTexCoord (55/512, 81/512, 368/512, 401/512)
+			block2.texture:SetTexCoord(55/512, 81/512, 368/512, 401/512)
 		end
 		
 		Details.switch:ClearSegmentBlocks()
@@ -648,7 +648,7 @@ function Details.switch:ShowMe(instancia)
 				local L, R, T, B, Texture = Details:GetBossIcon (combat.is_boss.mapid, combat.is_boss.index)
 				if (L) then
 					block.texture:SetTexture(Texture)
-					block.texture:SetTexCoord (L, R, T, B)
+					block.texture:SetTexCoord(L, R, T, B)
 				else
 					block.texture:SetTexture([[Interface\Scenarios\ScenarioIcon-Boss]])
 				end
@@ -694,7 +694,7 @@ function Details.switch:ShowMe(instancia)
 	Details.switch.frame:SetPoint("bottomright", instancia.baseframe, "bottomright", 0, 1)
 
 	local altura = instancia.baseframe:GetHeight()
-	local mostrar_quantas = floor (altura / Details.switch.button_height) * 2
+	local mostrar_quantas = floor(altura / Details.switch.button_height) * 2
 	
 	local precisa_mostrar = 0
 	for i = 1, #Details.switch.table do
@@ -932,7 +932,7 @@ function Details.switch:Update()
 		local button = Details.switch.buttons [i]
 		if (not button) then
 			button = Details.switch:NewSwitchButton (Details.switch.frame, i, x, y, jump)
-			button:SetFrameLevel (Details.switch.frame:GetFrameLevel()+2)
+			button:SetFrameLevel(Details.switch.frame:GetFrameLevel()+2)
 			Details.switch.showing = Details.switch.showing + 1
 		end
 

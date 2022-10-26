@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = 		_G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ function _detalhes:ApplyBasicKeys()
 
 	--who is
 		self.playername = UnitName ("player")
-		self.playerserial = UnitGUID ("player")
+		self.playerserial = UnitGUID("player")
 		
 	--player faction and enemy faction
 		self.faction = UnitFactionGroup ("player")
@@ -64,7 +64,7 @@ function _detalhes:ApplyBasicKeys()
 	--load default profile keys
 		for key, value in pairs(_detalhes.default_profile) do 
 			if (type(value) == "table") then
-				local ctable = Details.CopyTable (value)
+				local ctable = Details.CopyTable(value)
 				self [key] = ctable
 			else
 				self [key] = value
@@ -86,7 +86,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 	
 		--it exists?
 		if (not _detalhes_database) then
-			_detalhes_database = Details.CopyTable (_detalhes.default_player_data)
+			_detalhes_database = Details.CopyTable(_detalhes.default_player_data)
 		end
 
 		--load saved values
@@ -95,7 +95,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 			--check if key exists, e.g. a new key was added
 			if (_detalhes_database [key] == nil) then
 				if (type(value) == "table") then
-					_detalhes_database [key] = Details.CopyTable (_detalhes.default_player_data [key])
+					_detalhes_database [key] = Details.CopyTable(_detalhes.default_player_data [key])
 				else
 					_detalhes_database [key] = value
 				end
@@ -107,7 +107,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 				for key2, value2 in pairs(_detalhes.default_player_data [key]) do
 					if (_detalhes_database [key] [key2] == nil) then
 						if (type(value2) == "table") then
-							_detalhes_database [key] [key2] = Details.CopyTable (_detalhes.default_player_data [key] [key2])
+							_detalhes_database [key] [key2] = Details.CopyTable(_detalhes.default_player_data [key] [key2])
 						else
 							_detalhes_database [key] [key2] = value2
 						end
@@ -117,7 +117,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 			
 			--copy the key from saved table to details object
 			if (type(value) == "table") then
-				_detalhes [key] = Details.CopyTable (_detalhes_database [key])
+				_detalhes [key] = Details.CopyTable(_detalhes_database [key])
 			else
 				_detalhes [key] = _detalhes_database [key]
 			end
@@ -126,7 +126,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 	
 	--check and build the default container for account database
 		if (not _detalhes_global) then
-			_detalhes_global = Details.CopyTable (_detalhes.default_global_data)
+			_detalhes_global = Details.CopyTable(_detalhes.default_global_data)
 		end
 		
 		for key, value in pairs(_detalhes.default_global_data) do 
@@ -134,7 +134,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 			--check if key exists
 			if (_detalhes_global [key] == nil) then
 				if (type(value) == "table") then
-					_detalhes_global [key] = Details.CopyTable (_detalhes.default_global_data [key])
+					_detalhes_global [key] = Details.CopyTable(_detalhes.default_global_data [key])
 				else
 					_detalhes_global [key] = value
 				end
@@ -155,7 +155,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 					for key2, value2 in pairs(_detalhes.default_global_data [key]) do
 						if (_detalhes_global [key] [key2] == nil) then
 							if (type(value2) == "table") then
-								_detalhes_global [key] [key2] = Details.CopyTable (_detalhes.default_global_data [key] [key2])
+								_detalhes_global [key] [key2] = Details.CopyTable(_detalhes.default_global_data [key] [key2])
 							else
 								_detalhes_global [key] [key2] = value2
 							end
@@ -166,7 +166,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 			
 			--copy the key from saved table to details object
 			if (type(value) == "table") then
-				_detalhes [key] = Details.CopyTable (_detalhes_global [key])
+				_detalhes [key] = Details.CopyTable(_detalhes_global [key])
 			else
 				_detalhes [key] = _detalhes_global [key]
 			end
@@ -201,7 +201,7 @@ function _detalhes:LoadCombatTables()
 				-- pets
 				_detalhes.tabela_pets = _detalhes.container_pets:NovoContainer()
 				if (_detalhes_database.tabela_pets) then
-					_detalhes.tabela_pets.pets = Details.CopyTable (_detalhes_database.tabela_pets)
+					_detalhes.tabela_pets.pets = Details.CopyTable(_detalhes_database.tabela_pets)
 				end
 				_detalhes:UpdateContainerCombatentes()
 				
@@ -382,16 +382,16 @@ function _detalhes:LoadConfig()
 					local instance = _detalhes.tabela_instancias [index]
 					if (instance) then
 						saved_skin.__was_opened = instance.ativa
-						saved_skin.__pos = Details.CopyTable (instance.posicao)
+						saved_skin.__pos = Details.CopyTable(instance.posicao)
 						saved_skin.__locked = instance.isLocked
-						saved_skin.__snap = Details.CopyTable (instance.snap)
+						saved_skin.__snap = Details.CopyTable(instance.snap)
 						saved_skin.__snapH = instance.horizontalSnap
 						saved_skin.__snapV = instance.verticalSnap
 
 						for key, value in pairs(instance) do
 							if (_detalhes.instance_defaults [key] ~= nil) then
 								if (type(value) == "table") then
-									saved_skin [key] = Details.CopyTable (value)
+									saved_skin [key] = Details.CopyTable(value)
 								else
 									saved_skin [key] = value
 								end
@@ -402,14 +402,14 @@ function _detalhes:LoadConfig()
 
 				for index, instance in _detalhes:ListInstances() do
 					_detalhes.local_instances_config [index] = {
-						pos = Details.CopyTable (instance.posicao),
+						pos = Details.CopyTable(instance.posicao),
 						is_open = instance.ativa,
 						attribute = instance.atributo,
 						sub_attribute = instance.sub_atributo,
 						mode = instance.modo or 2,
 						modo = instance.modo or 2,
 						segment = instance.segmento,
-						snap = Details.CopyTable (instance.snap),
+						snap = Details.CopyTable(instance.snap),
 						horizontalSnap = instance.horizontalSnap,
 						verticalSnap = instance.verticalSnap,
 						sub_atributo_last = instance.sub_atributo_last,

@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: !!!|cff880303[爱不易]|r 控制台和基本库
 ## Author: AbyUI (warbaby & yleaf)
 
@@ -22,10 +22,11 @@ Core\copy\copy.xml
 Core\Core.lua
 Core\UI\UI.xml
 
-Deprecated_8.0.lua
-Deprecated_8_1_0.lua
-Deprecated_8_2_5.lua
-Deprecated_9.0.lua
+Deprecated\Deprecated_8.0.lua
+Deprecated\Deprecated_8_1_0.lua
+Deprecated\Deprecated_8_2_5.lua
+Deprecated\Deprecated_9.0.lua
+Deprecated\Deprecated_10_0.xml
 
 #4K
 RunSecond.lua
@@ -66,6 +67,7 @@ Donators.lua
 
 RunLast.lua
 
+PluginCore\GlobalHooks.lua
 PluginCore\BlizzBugsSuck.lua
 #PluginCore\MasqueDummy.lua
 ..\!!!Libs\LibSharedMedia-3.0\LibSharedMedia-3.0\LibSharedMedia-3.0.lua

@@ -50,7 +50,7 @@ L.NumRemainingWithdrawals = '%d Withdrawals Remaining'
 --action tooltips
 L.TipChangePlayer = '%s to view another character\'s items.'
 L.TipCleanItems = '%s to clean items.'
-L.TipConfigure = '%s to configure this window.'
+L.TipConfigure = '%s to configure.'
 L.TipDepositReagents = '%s to deposit reagents at the bank.'
 L.TipDeposit = '%s to deposit.'
 L.TipWithdraw = '%s to withdraw (%s remaining).'

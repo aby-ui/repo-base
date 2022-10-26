@@ -13,7 +13,7 @@ local panel = Details:CreateWelcomePanel ("DetailsWindowOptionsBarTextEditor", n
 panel:SetPoint("center", UIParent, "center")
 panel:Hide()
 panel:SetFrameStrata("FULLSCREEN")
-DF:ApplyStandardBackdrop (panel)
+DF:ApplyStandardBackdrop(panel)
 DF:CreateTitleBar (panel, "Details! Custom Line Text Editor")
 
 function panel:Open (text, callback, host, default)
@@ -22,7 +22,7 @@ function panel:Open (text, callback, host, default)
         panel:SetPoint("center", host, "center")
     end
     
-    text = text:gsub ("||", "|")
+    text = text:gsub("||", "|")
     panel.default_text = text
     panel.editbox:SetText(text)
     panel.callback = callback
@@ -31,12 +31,12 @@ function panel:Open (text, callback, host, default)
 end
 
 local y = -32
-local buttonTemplate = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+local buttonTemplate = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 
-local textentry = DF:NewSpecialLuaEditorEntry (panel, scrollWidth, 555, "editbox", "$parentEntry")
+local textentry = DF:NewSpecialLuaEditorEntry(panel, scrollWidth, 555, "editbox", "$parentEntry")
 textentry:SetPoint("topleft", panel, "topleft", 10, y)
-DF:ApplyStandardBackdrop (textentry)
-DF:SetFontSize (textentry.editbox, 14)
+DF:ApplyStandardBackdrop(textentry)
+DF:SetFontSize(textentry.editbox, 14)
 DF:ReskinSlider(textentry.scroll)
 
 local arg1_button = DF:NewButton(panel, nil, "$parentButton1", nil, 80, 20, function() textentry.editbox:Insert ("{data1}") end, nil, nil, nil, string.format(Loc ["STRING_OPTIONS_TEXTEDITOR_DATA"], "1"), 1)
@@ -45,9 +45,9 @@ local arg3_button = DF:NewButton(panel, nil, "$parentButton3", nil, 80, 20, func
 arg1_button:SetPoint("topright", panel, "topright", -12, y)
 arg2_button:SetPoint("topright", panel, "topright", -12, y - (20*1))
 arg3_button:SetPoint("topright", panel, "topright", -12, y - (20*2))
-arg1_button:SetTemplate (buttonTemplate)
-arg2_button:SetTemplate (buttonTemplate)
-arg3_button:SetTemplate (buttonTemplate)
+arg1_button:SetTemplate(buttonTemplate)
+arg2_button:SetTemplate(buttonTemplate)
+arg3_button:SetTemplate(buttonTemplate)
 
 arg1_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_DATA_TOOLTIP"]
 arg2_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_DATA_TOOLTIP"]
@@ -165,10 +165,10 @@ end
 local func_button = DF:NewButton(panel, nil, "$parentButton4", nil, 80, 20, function() textentry.editbox:Insert ("{func local player, combat = ...; return 0;}") end, nil, nil, nil, Loc ["STRING_OPTIONS_TEXTEDITOR_FUNC"], 1)
 local color_button = DF:NewColorPickButton (panel, "$parentButton5", nil, color_func)
 color_button:SetSize(80, 20)
-color_button:SetTemplate (buttonTemplate)
+color_button:SetTemplate(buttonTemplate)
 
 func_button:SetPoint("topright", panel, "topright", -12, y - (20*3))
-func_button:SetTemplate (buttonTemplate)
+func_button:SetTemplate(buttonTemplate)
 
 color_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_COLOR_TOOLTIP"]
 func_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_FUNC_TOOLTIP"]
@@ -179,20 +179,20 @@ local done = function()
 end
 
 local apply_button = DF:NewButton(panel, nil, "$parentApply", nil, 80, 20, function() panel.callback(panel.editbox:GetText()) end, nil, nil, nil, "Apply", 1) --localize-me
-apply_button:SetTemplate (buttonTemplate)
+apply_button:SetTemplate(buttonTemplate)
 apply_button:SetPoint("topright", panel, "topright", -14, -128)
 
 local ok_button = DF:NewButton(panel, nil, "$parentButtonOk", nil, 80, 20, done, nil, nil, nil, Loc ["STRING_OPTIONS_TEXTEDITOR_DONE"], 1)
 ok_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_DONE_TOOLTIP"]
-ok_button:SetTemplate (buttonTemplate)
+ok_button:SetTemplate(buttonTemplate)
 ok_button:SetPoint("topright", panel, "topright", -14, -194)
 
 local reset_button = DF:NewButton(panel, nil, "$parentDefaultOk", nil, 80, 20, function() textentry.editbox:SetText(panel.default); panel.callback(panel.editbox:GetText()) end, nil, nil, nil, Loc ["STRING_OPTIONS_TEXTEDITOR_RESET"], 1)
 reset_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_RESET_TOOLTIP"]
-reset_button:SetTemplate (buttonTemplate)
+reset_button:SetTemplate(buttonTemplate)
 reset_button:SetPoint("topright", panel, "topright", -14, -150)
 
 local cancel_button = DF:NewButton(panel, nil, "$parentDefaultCancel", nil, 80, 20, function() textentry.editbox:SetText(panel.default_text); done(); end, nil, nil, nil, Loc ["STRING_OPTIONS_TEXTEDITOR_CANCEL"], 1)
 cancel_button.tooltip = Loc ["STRING_OPTIONS_TEXTEDITOR_CANCEL_TOOLTIP"]
-cancel_button:SetTemplate (buttonTemplate)
+cancel_button:SetTemplate(buttonTemplate)
 cancel_button:SetPoint("topright", panel, "topright", -14, -172)

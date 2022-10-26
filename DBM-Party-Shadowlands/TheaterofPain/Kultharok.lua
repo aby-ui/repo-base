@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2389, "DBM-Party-Shadowlands", 6, 1187)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(162309)
 mod:SetEncounterID(2364)
 
@@ -84,7 +84,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 319626 then
 		local dispelWarned = false
-		if self.Options.SpecWarn319626dispel and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+		if self.Options.SpecWarn319626dispel and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") then
 			specWarnPhantasmalParasiteDPL:Show(args.destName)
 			specWarnPhantasmalParasiteDPL:Play("helpdispel")
 			dispelWarned = true

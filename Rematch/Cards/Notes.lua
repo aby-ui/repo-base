@@ -7,7 +7,6 @@ rematch:InitModule(function()
 	rematch.Notes = notes
 	settings = RematchSettings
 	notes.needsInit = true
-	rematch:ConvertTitlebarCloseButton(notes.CloseButton)
 end)
 
 -- if maybe is true, notes only hide if card isn't locked; otherwise hide regardless

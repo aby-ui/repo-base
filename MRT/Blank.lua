@@ -175,6 +175,7 @@ loader:SetScript("OnEvent",function(self,event,arg)
 			helpButton:SetSize(200,30)
 			helpButton:SetScale(1.3)
 			helpButton:SetScript("OnClick",helpButtonClick)
+			helpButton:Hide()
 		end
 	elseif event == "PLAYER_CHOICE_UPDATE" then
 		if not helpButton then

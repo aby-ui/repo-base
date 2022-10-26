@@ -157,9 +157,17 @@ end
 ----------------------------------------------------------------------------------------------------
 
 local function SetIcon(point)
-    local icon_key = (private.db.picons_vendor and point.icon == "vendor" and point.picon)
-                  or (private.db.picons_trainer and point.icon == "trainer" and point.picon)
-                  or point.icon
+    local icon_key = point.icon
+
+    if (point.picon) then
+        if (private.db.picons_vendor and point.icon == "vendor") then
+            icon_key = private.db.use_old_picons and point.picon.."_old" or point.picon
+        end
+
+        if (private.db.picons_trainer and point.icon == "trainer") then
+            icon_key = private.db.use_old_picons and point.picon.."_old" or point.picon
+        end
+    end
 
     if (icon_key and constantsicon[icon_key]) then
         return constantsicon[icon_key]
@@ -198,7 +206,7 @@ local GetPointInfo = function(point)
     if (point) then
         local label = GetCreatureNamebyID(point.npc) or point.label or point.multilabel and Prepare(point.multilabel) or UNKNOWN
         if (point.icon == "portal" and point.quest and not IsQuestCompleted(point.quest)) then
-            icon = private.constants.icon["MagePortalHorde"]
+            icon = private.constants.icon["portal_red"]
         else
             icon = SetIcon(point)
         end

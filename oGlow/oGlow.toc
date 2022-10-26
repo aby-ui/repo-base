@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: oGlow
 ## Author: Haste
 ## Version: 2.2.2
@@ -30,7 +30,7 @@ pipes\trade.lua
 pipes\merchant.lua
 pipes\mail.lua
 pipes\char-flyout.lua
-pipes\voidstorage.lua
+#pipes\voidstorage.lua --TODO:abyui10
 pipes\loot.lua
 
 displays\border.lua

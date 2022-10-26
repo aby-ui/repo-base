@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("BSMTrash", "DBM-Party-WoD", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -30,7 +30,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 151548 and not args:IsDestTypePlayer() and self:IsValidWarning(args.sourceGUID) then--Antispam
 		specWarnBloodRage:Show(args.destName)
 		specWarnBloodRage:Play("helpdispel")
-	elseif spellId == 151697 and self:CheckDispelFilter() then
+	elseif spellId == 151697 and self:CheckDispelFilter("magic") then
 		specWarnSubjugate:Show(args.destName)
 		specWarnSubjugate:Play("helpdispel")
 	elseif spellId == 151965 then

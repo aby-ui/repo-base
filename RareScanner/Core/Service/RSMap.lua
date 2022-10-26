@@ -27,6 +27,7 @@ local RSNpcPOI = private.ImportLib("RareScannerNpcPOI")
 local RSContainerPOI = private.ImportLib("RareScannerContainerPOI")
 local RSEventPOI = private.ImportLib("RareScannerEventPOI")
 local RSGroupPOI = private.ImportLib("RareScannerGroupPOI")
+local RSDragonGlyphPOI = private.ImportLib("RareScannerDragonGlyphPOI")
 local RSRecentlySeenTracker = private.ImportLib("RareScannerRecentlySeenTracker")
 
 
@@ -51,8 +52,8 @@ local function CreateGroups(POIs)
 	for _, POI in ipairs (POIs) do
 		local POIchecked = false;
 		
-		-- Skip POIs that are shown in the worldmap
-		if (not POI.worldmap) then
+		-- Skip POIs that are shown in the worldmap and POIs that shouldnt group up
+		if (not POI.worldmap and POI.grouping) then
 			for _, checkedPOI in ipairs (checkedPOIs) do
 				if (POI.entityID ~= checkedPOI.entityID and not checkedPOI.worldmap) then
 					local distance = RSUtils.Distance(POI, checkedPOI)
@@ -102,6 +103,21 @@ end
 
 local MapPOIs = {}
 
+local function GetMapDragonGlyphsPOIs(mapID)
+	-- Skip if not showing dragon glyphs
+	if (not RSConfigDB.IsShowingDragonGlyphs()) then
+		return
+	end
+
+	-- Add icons
+	local dragonGlyphsPOIs = RSDragonGlyphPOI.GetDragonGlyphPOIs(mapID)
+	if (RSUtils.GetTableLength(dragonGlyphsPOIs) > 0) then
+		for _, POI in ipairs (dragonGlyphsPOIs) do
+			tinsert(MapPOIs,POI)
+		end
+	end
+end
+
 local function GetMapNotDiscoveredPOIs(mapID, questTitles, vignetteGUIDs, onWorldMap, onMiniMap)
 	-- Skip if not showing 'not discovered' icons
 	if (not RSConfigDB.IsShowingNotDiscoveredMapIcons()) then
@@ -115,19 +131,19 @@ local function GetMapNotDiscoveredPOIs(mapID, questTitles, vignetteGUIDs, onWorl
 
 	-- Add icons
 	local notDiscoveredNpcPOIs = RSNpcPOI.GetMapNotDiscoveredNpcPOIs(mapID, questTitles, vignetteGUIDs, onWorldMap, onMiniMap)
-	if (notDiscoveredNpcPOIs) then
+	if (RSUtils.GetTableLength(notDiscoveredNpcPOIs) > 0) then
 		for _, POI in ipairs (notDiscoveredNpcPOIs) do
 			tinsert(MapPOIs,POI)
 		end
 	end
 	local notDiscoveredContainerPOIs = RSContainerPOI.GetMapNotDiscoveredContainerPOIs(mapID, vignetteGUIDs, onWorldMap, onMiniMap)
-	if (notDiscoveredContainerPOIs) then
+	if (RSUtils.GetTableLength(notDiscoveredContainerPOIs) > 0) then
 		for _, POI in ipairs (notDiscoveredContainerPOIs) do
 			tinsert(MapPOIs,POI)
 		end
 	end
 	local notDiscoveredEventPOIs = RSEventPOI.GetMapNotDiscoveredEventPOIs(mapID, vignetteGUIDs, onWorldMap, onMiniMap)
-	if (notDiscoveredEventPOIs) then
+	if (RSUtils.GetTableLength(notDiscoveredEventPOIs) > 0) then
 		for _, POI in ipairs (notDiscoveredEventPOIs) do
 			tinsert(MapPOIs,POI)
 		end
@@ -180,13 +196,13 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	if (RSUtils.GetTableLength(recentlySeenEntities) > 0) then
 		for entityID, entityInfo in pairs (recentlySeenEntities) do
 			if (type(entityInfo) == "table") then
-				for time, info in pairs (entityInfo) do
+				for xy, info in pairs (entityInfo) do
 					if (info.mapID == mapID) then
 						local entityInfo = {}
 						entityInfo.mapID = mapID
 						entityInfo.coordX = info.x
 						entityInfo.coordY = info.y
-						entityInfo.foundTime = time
+						entityInfo.foundTime = info.time
 					
 						local POI = nil
 						if (RSConstants.IsNpcAtlas(info.atlasName)) then
@@ -222,6 +238,9 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 
 	-- Extract POIs not discovered
 	GetMapNotDiscoveredPOIs(mapID, questTitles, vignetteGUIDs, onWorldMap, onMiniMap)
+	
+	-- Extract POIs dragon glyphs
+	GetMapDragonGlyphsPOIs(mapID)
 
 	-- Create groups if the pins go in the worldmap
 	if (onWorldMap) then
@@ -283,7 +302,7 @@ end
 
 local worldMapButton
 function RSMap.LoadWorldMapButton()
-	local rwm = LibStub('Krowi_WorldMapButtons-1.3')
+	local rwm = LibStub('Krowi_WorldMapButtons-1.4')
 	worldMapButton = rwm:Add("RSWorldMapButtonTemplate", 'DROPDOWNTOGGLEBUTTON')
 	if (not RSConfigDB.IsShowingWorldmapButton()) then 
 		worldMapButton:Hide() 

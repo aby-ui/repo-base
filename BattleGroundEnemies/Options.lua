@@ -2,13 +2,351 @@ local AddonName, Data = ...
 local GetAddOnMetadata = GetAddOnMetadata
 
 local L = Data.L
-local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 
 
-local CTimerNewTicker = C_Timer.NewTicker
+local function GetAllModuleAnchors(moduleName)
+	local moduleAnchors = {}
+	for moduleNamee, moduleFrame in pairs(BattleGroundEnemies.ButtonModules) do
+		if moduleName ~= moduleNamee then --cant anchor to itself
+			moduleAnchors[moduleNamee] = moduleFrame.localizedModuleName
+		end
+	end
+	moduleAnchors.Button = L.Button
+	return moduleAnchors
+end
+
+
+local function GetAllModuleFrames()
+	local t = {}
+	for moduleNamee, moduleFrame in pairs(BattleGroundEnemies.ButtonModules) do
+		t[moduleNamee] = moduleFrame.localizedModuleName
+	end
+	return t
+end
+
+local BGSizeToLocale = {
+	[5] = ARENA,
+	[15] = L.BGSize_15,
+	[40] = L.BGSize_40
+}
+
+
+
+-- Points
+-- TOPLEFT 		TOP 		TOPRIGHT
+-- LEFT 		CENTER 		RIGHT
+-- BOTTOMLEFT 	BOTTOM 		BOTTOMRIGHT
+
+local function isInSameHorizontal(Point1, Point2)
+    local p1 = (Point1.Point:match("(TOP)")) or (Point1.Point:match("(BOTTOM)")) or false
+    local p2 = (Point2.Point:match("(TOP)")) or (Point2.Point:match("(BOTTOM)")) or false
+    if p1=="TOP" and p2=="TOP" then
+        return true
+    elseif not (p1=="TOP" or p2=="TOP" or p1=="BOTTOM" or p2=="BOTTOM") then
+        return true
+    elseif p1=="BOTTOM" and p2=="BOTTOM" then
+        return true
+    end
+end
+
+local function isInSameVertical(Point1, Point2)
+    local p1 = (Point1.Point:match("(LEFT)")) or (Point1.Point:match("(RIGHT)")) or false
+    local p2 = (Point2.Point:match("(LEFT)")) or (Point2.Point:match("(RIGHT)")) or false
+    if p1=="LEFT" and p2=="LEFT" then
+        return true
+    elseif not (p1=="LEFT" or p2=="LEFT" or p1=="RIGHT" or p2=="RIGHT") then
+        return true
+    elseif p1=="RIGHT" and p2=="RIGHT" then
+        return true
+    end
+end
+
+function BattleGroundEnemies:GetActivePoints(config)
+	if not config.Points then return end
+	local activePoints = {}
+	for i = 1, config.ActivePoints do
+		activePoints[i] = config.Points[i]
+	end
+	return activePoints
+end
+
+function BattleGroundEnemies:FrameNeedsHeight(Point1, Point2)
+	if not Point1 and not Point2 then return end
+	if Point1 and not Point2 then return true end
+	return isInSameHorizontal(Point1, Point2)
+end
+
+function BattleGroundEnemies:ModuleFrameNeedsHeight(moduleFrame, config)
+	local flags = moduleFrame.flags
+
+	if flags.HasDynamicSize then return false end
+
+	local heightFlag = flags.Width
+
+	if heightFlag == "Fixed" then return end
+	
+	local activePoints = self:GetActivePoints(config)
+	if not activePoints then return end
+	return BattleGroundEnemies:FrameNeedsWidth(activePoints[1], activePoints[2])
+end
+
+
+function BattleGroundEnemies:FrameNeedsWidth(Point1, Point2)
+	if not Point1 and not Point2 then return end
+	if Point1 and not Point2 then return true end
+	return isInSameVertical(Point1, Point2)
+end
+
+function BattleGroundEnemies:ModuleFrameNeedsWidth(moduleFrame, config)
+	local flags = moduleFrame.flags
+
+	if flags.HasDynamicSize then return false end
+
+	local widthFlag = flags.Width
+
+	if widthFlag == "Fixed" then return end
+
+	local activePoints = self:GetActivePoints(config)
+	if not activePoints then return end
+	return BattleGroundEnemies:FrameNeedsWidth(activePoints[1], activePoints[2])
+end
+
+local function canAddPoint(location, moduleFrame)
+	local activePoints = location.ActivePoints
+	if activePoints >1 then return false end
+	if activePoints == 0 then return true end
+
+	--if only 1 point is set
+	if moduleFrame.flags.HasDynamicSize then return false end --Containers can only have 1 point
+	if moduleFrame.flags.Width == "Fixed" and moduleFrame.flags.Height == "Fixed" then return false end
+
+	return true
+end
+
+--user wants to anchor the module to the relative frame, check if the relative frame is already anchored to that module
+local function validateAnchor(playerType, moduleName, relativeFrame)
+	local players = BattleGroundEnemies[playerType].Players
+	if players then
+		local i = 0
+		for playerName, playerButton in pairs(players) do
+			i = i + 0
+			local anchor = playerButton:GetAnchor(relativeFrame)
+			local isDependant = BattleGroundEnemies:IsFrameDependentOnFrame(anchor, playerButton[moduleName])
+			if isDependant then
+				--thats bad, dont allow this setting
+				BattleGroundEnemies:Information("You can't anchor this module's frame to this frame because this would result in looped frame anchoring because the frame or one of the frame that this frame is dependant on are already attached to this module.")
+				return false
+			else
+				return true
+			end
+			--we basically end the loop after just one player since all player frames are using same options
+		end
+		if i == 0 then
+			BattleGroundEnemies:Information("There are currently no players for the selected option available. You can start the testmode to add some players. Otherwise your selected frame can't be validated and there might be frame looping issues, therefore your selected frame is not saved to avoid this issue.")
+			return false
+		end
+	else
+		BattleGroundEnemies:Information("There are currently no players for the selected option available. You can start the testmode to add some players. Otherwise your selected frame can't be validated and there might be frame looping issues, therefore your selected frame is not saved to avoid this issue.")
+		return false
+	end
+end
+
+
+
+function Data.AddPositionSetting(location, moduleName, moduleFrame, playerType)
+	local numPoints = location.ActivePoints
+	local temp = {}
+	temp.Parent = {
+		type = "select",
+		name = "Parent",
+		values = GetAllModuleAnchors(moduleName),
+		order = 2
+	}
+	temp.Fake1 = Data.AddVerticalSpacing(3)
+	if location.Points and numPoints then
+
+		for i = 1, numPoints do
+			temp["Point"..i] = {
+				type = "group",
+				name = L.Point.." "..i,
+				desc = "",
+				get =  function(option)
+					return Data.GetOption(location.Points[i], option)
+				end,
+				set = function(option, ...)
+					return Data.SetOption(location.Points[i], option, ...)
+				end,
+				inline = true,
+				order = i + 3,
+				args = {
+					Point = {
+						type = "select",
+						name = L.Point,
+						values = Data.AllPositions,
+						confirm = function()
+							return "Are you sure you want to change this value?"
+						end,
+						order = 1
+					},
+					RelativeFrame = {
+						type = "select",
+						name = "RelativeFrame",
+						values = GetAllModuleAnchors(moduleName),
+						validate = function(option, value)
+
+							if validateAnchor(playerType, moduleName, value) then
+								-- print("validated")
+								return true
+							else
+								--invalid anchor, there might be some looping issues
+							--	print("hier")
+								PlaySound(882)
+								BattleGroundEnemies:NotifyChange()
+								return false
+							end
+						end,
+						order = 2
+					},
+					RelativePoint = {
+						type = "select",
+						name = "Relative Point",
+						values = Data.AllPositions,
+						order = 3
+					},
+					OffsetX = {
+						type = "range",
+						name = L.OffsetX,
+						min = -100,
+						max = 100,
+						step = 1,
+						order = 4
+					},
+					OffsetY = {
+						type = "range",
+						name = L.OffsetY,
+						min = -100,
+						max = 100,
+						step = 1,
+						order = 5
+					},
+					DeletePoint = {
+						type = "execute",
+						name = L.DeletePoint:format(i),
+						func = function()
+							location.ActivePoints = i - 1
+							BattleGroundEnemies:NotifyChange()
+						end,
+						disabled = i ~= numPoints or i == 1, --only allow to remove the last point, dont allow removal of all Points
+						width = "full",
+						order = 6,
+					}
+				}
+			}
+
+		end
+	end
+
+	temp.AddPoint = {
+		type = "execute",
+		name = L.AddPoint,
+		func = function()
+			location.ActivePoints = numPoints + 1
+			location.Points = location.Points or {}
+			location.Points[numPoints + 1] = location.Points[numPoints + 1] or {
+				Point = "TOPLEFT",
+				RelativeFrame = "Button",
+				RelativePoint = "TOPLEFT"
+			}
+			BattleGroundEnemies:NotifyChange()
+		end,
+		disabled = function()
+			if not location.Points then return false end
+
+			--dynamic containers with dynamic width and height can have a maximum of 1 point
+			return not canAddPoint(location, moduleFrame)
+		end,
+		width = "full",
+		order = numPoints + 4
+	}
+	temp.WidthGroup = {
+		type = "group",
+		name = L.Width,
+		order = numPoints + 5,
+		hidden = function()
+			local widthNeeded = BattleGroundEnemies:ModuleFrameNeedsWidth(moduleFrame, location)
+			if not widthNeeded then
+				return true
+			end
+		end,
+		inline = true,
+		args = {
+			UseButtonHeightAsWidth = {
+				type = "toggle",
+				name = L.UseButtonHeight,
+				order = 1
+			},
+			Width = {
+				type = "range",
+				name = L.Width,
+				min = 0,
+				max = 100,
+				step = 1,
+				hidden = function()
+					local hidden = location.UseButtonHeightAsWidth
+					if hidden then
+						BattleGroundEnemies:NotifyChange()
+						return true
+					end
+				end,
+				order = 2
+			}
+		}
+	}
+	temp.HeightGroup = {
+		type = "group",
+		name = L.Height,
+		order = numPoints + 6,
+		hidden = function()
+			local heightNeeded = BattleGroundEnemies:ModuleFrameNeedsHeight(moduleFrame, location)
+			if not heightNeeded then
+				return true
+			end
+		end,
+		inline = true,
+		args = {
+			UseButtonHeightAsHeight = {
+				type = "toggle",
+				name = L.UseButtonHeight,
+				order = 1
+			},
+			Height = {
+				type = "range",
+				name = L.Height,
+				min = 0,
+				max = 100,
+				step = 1,
+				hidden = function()
+					local hidden = location.UseButtonHeightAsHeight
+					if hidden then
+						location.Height = false
+						BattleGroundEnemies:NotifyChange()
+						return true
+					end
+				end,
+				order = 2
+			}
+		}
+	}
+
+
+	return temp
+end
+
+
+
 
 
 local function copy(obj)
@@ -17,59 +355,10 @@ local function copy(obj)
 	for k, v in pairs(obj) do res[copy(k)] = copy(v) end
 	return res
 end
-						
-local function addStaticPopupForPlayerTypeConfigImport(playerType, oppositePlayerType)
-	StaticPopupDialogs["CONFIRM_OVERRITE_"..AddonName..playerType] = {
-	  text = L.ConfirmProfileOverride:format(L[playerType], L[oppositePlayerType]),
-	  button1 = YES,
-	  button2 = NO,
-	  OnAccept = function (self) 
-			BattleGroundEnemies.db.profile[playerType] = copy(BattleGroundEnemies.db.profile[oppositePlayerType])
-			BattleGroundEnemies:ProfileChanged()
-			AceConfigRegistry:NotifyChange("BattleGroundEnemies")
-	  end,
-	  OnCancel = function (self) end,
-	  OnHide = function (self) self.data = nil; self.selectedIcon = nil; end,
-	  hideOnEscape = 1,
-	  timeout = 30,
-	  exclusive = 1,
-	  whileDead = 1,
-	}
-end
-addStaticPopupForPlayerTypeConfigImport("Enemies", "Allies")
-addStaticPopupForPlayerTypeConfigImport("Allies", "Enemies")
 
 
-local function addStaticPopupBGTypeConfigImport(playerType, oppositePlayerType, BGSize)
-	StaticPopupDialogs["CONFIRM_OVERRITE_"..AddonName..playerType..BGSize] = {
-	  text = L.ConfirmProfileOverride:format(L[playerType]..": "..L["BGSize_"..BGSize], L[oppositePlayerType]..": "..L["BGSize_"..BGSize]),
-	  button1 = YES,
-	  button2 = NO,
-	  OnAccept = function (self) 
-			BattleGroundEnemies.db.profile[playerType][BGSize] = copy(BattleGroundEnemies.db.profile[oppositePlayerType][BGSize])
-			if BattleGroundEnemies.BGSize and BattleGroundEnemies.BGSize == tonumber(BGSize) then BattleGroundEnemies[playerType]:ApplyBGSizeSettings() end
-			AceConfigRegistry:NotifyChange("BattleGroundEnemies")
-	  end,
-	  OnCancel = function (self) end,
-	  OnHide = function (self) self.data = nil; self.selectedIcon = nil; end,
-	  hideOnEscape = 1,
-	  timeout = 30,
-	  exclusive = 1,
-	  whileDead = 1,
-	}
-end
-addStaticPopupBGTypeConfigImport("Enemies", "Allies", "5")
-addStaticPopupBGTypeConfigImport("Allies", "Enemies", "5")
-addStaticPopupBGTypeConfigImport("Enemies", "Allies", "15")
-addStaticPopupBGTypeConfigImport("Allies", "Enemies", "15")
-addStaticPopupBGTypeConfigImport("Enemies", "Allies", "40")
-addStaticPopupBGTypeConfigImport("Allies", "Enemies", "40")
-
-
-
-local function getOption(location, option)
+function Data.GetOption(location, option)
 	local value = location[option[#option]]
-
 	if type(value) == "table" then
 		--BattleGroundEnemies:Debug("is table")
 		return unpack(value)
@@ -79,23 +368,22 @@ local function getOption(location, option)
 end
 
 
-local function setOption(location, option, ...)
+function Data.SetOption(location, option, ...)
 	local value
 	if option.type == "color" then
-		value = {...}   -- local r, g, b, alpha = ...
+		value = {...}  local r, g, b, alpha = ...
 	else
 		value = ...
-	end
-
+	end	
 	location[option[#option]] = value
 	BattleGroundEnemies:ApplyAllSettings()
-	
+
 
 	--BattleGroundEnemies.db.profile[key] = value
 end
 
 
-local function addVerticalSpacing(order)
+function Data.AddVerticalSpacing(order)
 	local verticalSpacing = {
 		type = "description",
 		name = " ",
@@ -106,308 +394,295 @@ local function addVerticalSpacing(order)
 	return verticalSpacing
 end
 
-local function addHorizontalSpacing(order)
+function Data.AddHorizontalSpacing(order)
 	local horizontalSpacing = {
 		type = "description",
 		name = " ",
-		width = "half",	
+		width = "half",
 		order = order,
 	}
 	return horizontalSpacing
 end
 
 
-local function addIconPositionSettings(location, optionname)
-	local size = optionname.."_Size"
-	local horizontalDirection = optionname.."_HorizontalGrowDirection"
-	local horizontalSpacing	= optionname.."_HorizontalSpacing"
-	local verticalDirection = optionname.."_VerticalGrowdirection"
-	local verticalSpacing =	optionname.."_VerticalSpacing"
-	local iconsPerRow = optionname.."_IconsPerRow"
-	
-	local options = {
-		[size] = {
+function Data.AddContainerSettings(location)
+	return {
+		IconSize = {
 			type = "range",
 			name = L.Size,
 			min = 0,
 			max = 80,
 			step = 1,
-			order = 1
+			order = 1,
+			hidden = function() return location.UseButtonHeightAsSize end,
 		},
-		[iconsPerRow] = {
+		UseButtonHeightAsSize = {
+			type = "toggle",
+			name = L.UseButtonHeight,
+			desc = L.UseButtonHeight_Desc,
+			order = 2
+		},
+		IconsPerRow = {
 			type = "range",
 			name = L.IconsPerRow,
 			min = 4,
 			max = 30,
 			step = 1,
-			order = 2
+			order = 3
 		},
-		Fake = addVerticalSpacing(3),
-		[horizontalDirection] = {
+		Fake = Data.AddVerticalSpacing(4),
+		HorizontalGrowDirection = {
 			type = "select",
 			name = L.HorizontalGrowdirection,
-			width = "normal",
 			values = Data.HorizontalDirections,
-			order = 4
+			order = 5
 		},
-		[horizontalSpacing] = {
+		HorizontalSpacing = {
 			type = "range",
 			name = L.HorizontalSpacing,
 			min = 0,
 			max = 20,
 			step = 1,
-			order = 5
+			order = 6
 		},
-		Fake1 = addVerticalSpacing(6),
-		[verticalDirection] = {
+		Fake1 = Data.AddVerticalSpacing(7),
+		VerticalGrowdirection = {
 			type = "select",
 			name = L.VerticalGrowdirection,
-			width = "half",
 			values = Data.VerticalDirections,
-			order = 7
+			order = 8
 		},
-		[verticalSpacing] = {
+		VerticalSpacing = {
 			type = "range",
 			name = L.VerticalSpacing,
 			min = 0,
 			max = 20,
 			step = 1,
-			order = 8
+			order = 9
 		}
 	}
-	return options
 end
 
+local JustifyHValues = {
+	LEFT = L.LEFT,
+	CENTER = L.CENTER,
+	RIGHT = L.RIGHT
+}
 
--- all positions, corners, middle, left etc.
-local function addContainerPositionSettings(location, optionname)
-	local point = optionname.."_Point"
-	local relativeTo = optionname.."_RelativeTo"
-	local relativePoint = optionname.."_RelativePoint"
-	local ofsx = optionname.."_OffsetX"
-	local ofsy = optionname.."_OffsetY"
-	
-	local options = {
-		[point] = {
-			type = "select",
-			name = L.Point,
-			width = "normal",
-			values = Data.AllPositions,
-			order = 1
-		},
-		[relativeTo] = {
-			type = "select",
-			name = L.AttachToObject,
-			desc = L.AttachToObject_Desc,
-			values = Data.Frames,
-			order = 2
-		},
-		Fake = addVerticalSpacing(3),
-		[relativePoint] = {
-			type = "select",
-			name = L.PointAtObject,
-			width = "half",
-			values = Data.AllPositions,
-			order = 4
-		},
-		[ofsx] = {
-			type = "range",
-			name = L.OffsetX,
-			min = -20,
-			max = 20,
-			step = 1,
-			order = 5
-		},
-		[ofsy] = {
-			type = "range",
-			name = L.OffsetY,
-			min = -20,
-			max = 20,
-			step = 1,
-			order = 6
-		}
-	}
-	return options
-end
+local JustifyVValues = {
+	TOP = L.TOP,
+	MIDDLE = L.MIDDLE,
+	BOTTOM = L.BOTTOM
+}
 
--- sets 2 points, user can choose left and right, 1 point at TOP..setting, and another point BOTTOM..setting is set
-local function addBasicPositionSettings(location, optionname)
-	local point = optionname.."_BasicPoint"
-	local relativeTo = optionname.."_RelativeTo"
-	local relativePoint = optionname.."_RelativePoint"
-	local ofsx = optionname.."_OffsetX"
-	local ofsy = optionname.."_OffsetY"
-	
-	local options = {
-		[point] = {
-			type = "select",
-			name = L.Side,
-			width = "normal",
-			values = Data.BasicPositions,
-			order = 1
-		},
-		[relativeTo] = {
-			type = "select",
-			name = L.AttachToObject,
-			desc = L.AttachToObject_Desc,
-			values = Data.Frames,
-			order = 2
-		},
-		Fake = addVerticalSpacing(3),
-		[relativePoint] = {
-			type = "select",
-			name = L.SideAtObject,
-			width = "half",
-			values = Data.BasicPositions,
-			order = 4
-		},
-		[ofsx] = {
-			type = "range",
-			name = L.OffsetX,
-			min = -20,
-			max = 20,
-			step = 1,
-			order = 5
-		}
-	}
-	return options
-end
+local FontOutlines = {
+	[""] = L.None,
+	["OUTLINE"] = L.Normal,
+	["THICKOUTLINE"] = L.Thick,
+}
 
-local function addNormalTextSettings(location, optionname)
-	local fontsize = optionname.."_Fontsize"
-	local textcolor = optionname.."_Textcolor"
-	local outline = optionname.."_Outline"
-	local enableTextShadow = optionname.."_EnableTextshadow"
-	local textShadowcolor = optionname.."_TextShadowcolor"
-		
-	local options = {
-		[fontsize] = {
+function Data.AddNormalTextSettings(location)
+	return {
+		JustifyH = {
+			type = "select",
+			name = L.JustifyH,
+			desc = L.JustifyH_Desc,
+			values = JustifyHValues
+		},
+		JustifyV = {
+			type = "select",
+			name = L.JustifyV,
+			desc = L.JustifyV_Desc,
+			values = JustifyVValues
+		},
+		FontSize = {
 			type = "range",
-			name = L.Fontsize,
-			desc = L["Fontsize_Desc"],
+			name = L.FontSize,
+			desc = L.FontSize_Desc,
 			min = 1,
 			max = 40,
 			step = 1,
 			width = "normal",
 			order = 1
 		},
-		[outline] = {
+		FontOutline = {
 			type = "select",
 			name = L.Font_Outline,
 			desc = L.Font_Outline_Desc,
-			values = Data.FontOutlines,
+			values = FontOutlines,
 			order = 2
 		},
-		Fake = addVerticalSpacing(3),
-		[textcolor] = {
+		Fake = Data.AddVerticalSpacing(3),
+		FontColor = {
 			type = "color",
 			name = L.Fontcolor,
-			desc = L["Fontcolor_Desc"],
+			desc = L.Fontcolor_Desc,
 			hasAlpha = true,
-			width = "half",
 			order = 4
 		},
-		[enableTextShadow] = {
+		EnableShadow = {
 			type = "toggle",
 			name = L.FontShadow_Enabled,
 			desc = L.FontShadow_Enabled_Desc,
 			order = 5
 		},
-		[textShadowcolor] = {
+		ShadowColor = {
 			type = "color",
 			name = L.FontShadowColor,
 			desc = L.FontShadowColor_Desc,
-			disabled = function() 
-				return not location[enableTextShadow]
+			disabled = function()
+				return not location.EnableShadow
 			end,
 			hasAlpha = true,
 			order = 6
 		}
 	}
-	return options
 end
 
 
-local function addCooldownTextsettings(location, optionname)
-	local showNumbers = optionname.."_ShowNumbers"
-	local fontsize = optionname.."_Cooldown_Fontsize"
-	local outline = optionname.."_Cooldown_Outline"
-	local enableTextShadow = optionname.."_Cooldown_EnableTextshadow"
-	local textShadowcolor = optionname.."_Cooldown_TextShadowcolor"	
-
-	local options = {
-		[showNumbers] = {
+function Data.AddCooldownSettings(location)
+	return {
+		ShowNumber = {
 			type = "toggle",
 			name = L.ShowNumbers,
-			desc = L["ShowNumbers_Desc"],
+			desc = L.ShowNumbers_Desc,
 			order = 1
 		},
 		asdfasdf = {
 			type = "group",
 			name = "",
 			desc = "",
-			disabled = function() 
-				return not location[showNumbers]
-			end, 
+			disabled = function()
+				return not location.ShowNumber
+			end,
 			inline = true,
 			order = 2,
 			args = {
-				[fontsize] = {
+				FontSize = {
 					type = "range",
-					name = L.Fontsize,
-					desc = L.Fontsize_Desc,
+					name = L.FontSize,
+					desc = L.FontSize_Desc,
 					min = 6,
 					max = 40,
 					step = 1,
 					width = "normal",
 					order = 3
 				},
-				[outline] = {
+				FontOutline = {
 					type = "select",
 					name = L.Font_Outline,
 					desc = L.Font_Outline_Desc,
-					values = Data.FontOutlines,
+					values = FontOutlines,
 					order = 4
 				},
-				Fake1 = addVerticalSpacing(5),
-				[enableTextShadow] = {
+				Fake1 = Data.AddVerticalSpacing(5),
+				EnableShadow = {
 					type = "toggle",
 					name = L.FontShadow_Enabled,
 					desc = L.FontShadow_Enabled_Desc,
 					order = 6
 				},
-				[textShadowcolor] = {
+				ShadowColor = {
 					type = "color",
 					name = L.FontShadowColor,
 					desc = L.FontShadowColor_Desc,
 					disabled = function()
-						return not location[enableTextShadow] 
-					end, 
+						return not location.EnableShadow
+					end,
 					hasAlpha = true,
 					order = 7
 				}
 			}
 		}
 	}
-	return options
 end
 
-local function addEnemyAndAllySettings(self)
-	local playerType = self.PlayerType
+function BattleGroundEnemies:AddModuleSettings(location, defaults, playerType, BGSize)
+	local i = 1
+	local temp = {}
+	for moduleName, moduleFrame in pairs(self.ButtonModules) do
+
+		local locationn = location.ButtonModules[moduleName]
+
+		temp[moduleName]  = {
+			type = "group",
+			name = moduleFrame.localizedModuleName,
+			order = moduleFrame.order,
+			get =  function(option)
+				return Data.GetOption(locationn, option)
+			end,
+			set = function(option, ...)
+				return Data.SetOption(locationn, option, ...)
+			end,
+			disabled = function() return not BattleGroundEnemies:IsModuleEnabledOnThisExpansion(moduleName) end,
+			childGroups = "tab",
+			args = {
+				Enabled = {
+					type = "toggle",
+					name = VIDEO_OPTIONS_ENABLED,
+					width = "normal",
+					order = 1
+				},
+				PositionSetting = {
+					type = "group",
+					name = L.Position .. " " .. L.AND .. " " .. L.Size,
+					get =  function(option)
+						return Data.GetOption(locationn, option)
+					end,
+					set = function(option, ...)
+						return Data.SetOption(locationn, option, ...)
+					end,
+					disabled  = function() return not locationn.Enabled end,
+					order = 2,
+					args = Data.AddPositionSetting(locationn, moduleName, moduleFrame, playerType)
+				},
+				ModuleSettings = {
+					type = "group",
+					name = L.ModuleSpecificSettings,
+					get =  function(option)
+						return Data.GetOption(locationn, option)
+					end,
+					set = function(option, ...)
+						return Data.SetOption(locationn, option, ...)
+					end,
+					disabled  = function() return not locationn.Enabled or not moduleFrame.options end,
+					order = 3,
+					args = type(moduleFrame.options) == "function" and moduleFrame.options(locationn, playerType) or moduleFrame.options or {}
+				},
+				Reset = {
+					type = "execute",
+					name = L.ResetModule,
+					desc = L.ResetModule_Desc:format(L[playerType], BGSizeToLocale[tonumber(BGSize)]),
+					func = function()
+						location.ButtonModules[moduleName] = copy(defaults.ButtonModules[moduleName])
+						BattleGroundEnemies:NotifyChange()
+					end,
+					width = "full",
+					order = 4,
+				}
+			}
+		}
+	end
+	return temp
+end
+
+
+local function addEnemyAndAllySettings(self, mainFrame)
+	local playerType = mainFrame.PlayerType
 	local oppositePlayerType = playerType == "Enemies" and "Allies" or "Enemies"
 	local settings = {}
 	local location = BattleGroundEnemies.db.profile[playerType]
 
-	
+
 	settings.GeneralSettings = {
 		type = "group",
 		name = GENERAL,
 		desc = L["GeneralSettings"..playerType],
 		get =  function(option)
-			return getOption(location, option)
+			return Data.GetOption(location, option)
 		end,
-		set = function(option, ...) 
-			return setOption(location, option, ...)
+		set = function(option, ...)
+			return Data.SetOption(location, option, ...)
 		end,
 		--childGroups = "tab",
 		order = 1,
@@ -418,17 +693,19 @@ local function addEnemyAndAllySettings(self)
 				desc = "test",
 				order = 1
 			},
-			Fake = addHorizontalSpacing(2),
-			Fake1 = addHorizontalSpacing(3),
-			Fake2 = addHorizontalSpacing(4),
+			Fake = Data.AddHorizontalSpacing(2),
+			Fake1 = Data.AddHorizontalSpacing(3),
+			Fake2 = Data.AddHorizontalSpacing(4),
 			CopySettings = {
 				type = "execute",
 				name = L.CopySettings:format(L[oppositePlayerType]),
 				desc = L.CopySettings_Desc:format(L[oppositePlayerType])..L.NotAvailableInCombat,
 				disabled = InCombatLockdown,
 				func = function()
-					StaticPopup_Show("CONFIRM_OVERRITE_"..AddonName..playerType)
+					BattleGroundEnemies.db.profile[playerType] = copy(BattleGroundEnemies.db.profile[oppositePlayerType])
+					BattleGroundEnemies:NotifyChange()
 				end,
+				confirm = function() return L.ConfirmProfileOverride:format(L[playerType], L[oppositePlayerType]) end,
 				width = "double",
 				order = 5
 			},
@@ -452,7 +729,7 @@ local function addEnemyAndAllySettings(self)
 						get = function() return Data[playerType.."ItemIDToRange"][location.RangeIndicator_Range] end,
 						set = function(option, value)
 							value = Data[playerType.."RangeToItemID"][value]
-							return setOption(location, option, value)
+							return Data.SetOption(location, option, value)
 						end,
 						values = Data[playerType.."RangeToRange"],
 						width = "half",
@@ -468,7 +745,7 @@ local function addEnemyAndAllySettings(self)
 						step = 0.05,
 						order = 3
 					},
-					Fake = addVerticalSpacing(4),
+					Fake = Data.AddVerticalSpacing(4),
 					RangeIndicator_Everything = {
 						type = "toggle",
 						name = L.RangeIndicator_Everything,
@@ -483,64 +760,13 @@ local function addEnemyAndAllySettings(self)
 						get = function(option, key)
 							return location.RangeIndicator_Frames[key]
 						end,
-						set = function(option, key, state) 
+						set = function(option, key, state)
 							location.RangeIndicator_Frames[key] = state
 							BattleGroundEnemies:ApplyAllSettings()
 						end,
 						width = "double",
-						values = Data.RangeFrames,
+						values = function() return GetAllModuleFrames() end,
 						order = 7
-					}
-				}
-			},
-			Name = {
-				type = "group",
-				name = L.Name,
-				desc = L.Name_Desc,
-				order = 7,
-				args = {
-					ConvertCyrillic = {
-						type = "toggle",
-						name = L.ConvertCyrillic,
-						desc = L.ConvertCyrillic_Desc,
-						width = "normal",
-						order = 1
-					},
-					ShowRealmnames = {
-						type = "toggle",
-						name = L.ShowRealmnames,
-						desc = L.ShowRealmnames_Desc,
-						width = "normal",
-						order = 2
-					},
-					Fake = addVerticalSpacing(3),
-					LevelTextSettings = {
-						type = "group",
-						name = L.LevelTextSettings,
-						inline = true,
-						order = 4,
-						args = {
-							LevelText_Enabled = {
-								type = "toggle",
-								name = L.LevelText_Enabled,
-								order = 1
-							},
-							LevelText_OnlyShowIfNotMaxLevel = {
-								type = "toggle",
-								name = L.LevelText_OnlyShowIfNotMaxLevel,
-								disabled = function() return not location.LevelText_Enabled end,
-								order = 2
-							},
-							LevelTextTextSettings = {
-								type = "group",
-								name = "",
-								--desc = L.TrinketSettings_Desc,
-								disabled = function() return not location.LevelText_Enabled end,
-								inline = true,
-								order = 3,
-								args = addNormalTextSettings(location, "LevelText")
-							}
-						}
 					}
 				}
 			},
@@ -550,7 +776,7 @@ local function addEnemyAndAllySettings(self)
 				desc = L.KeybindSettings_Desc..L.NotAvailableInCombat,
 				disabled = InCombatLockdown,
 				--childGroups = "tab",
-				order = 9,
+				order = 7,
 				args = {
 					UseClique = {
 						type = "toggle",
@@ -635,22 +861,23 @@ local function addEnemyAndAllySettings(self)
 			}
 		}
 	}
-	
+
 
 	for k, BGSize in pairs({"5", "15", "40"}) do
 		local location = BattleGroundEnemies.db.profile[playerType][BGSize]
+		local defaults = BattleGroundEnemies.db.defaults.profile[playerType][BGSize]
 		settings[BGSize] = {
-			type = "group", 
+			type = "group",
 			name = L["BGSize_"..BGSize],
 			desc = L["BGSize_"..BGSize.."_Desc"]:format(L[playerType]),
-			disabled = function() return not self.config.Enabled end,
+			disabled = function() return not mainFrame.config.Enabled end,
 			get =  function(option)
-				return getOption(location, option)
+				return Data.GetOption(location, option)
 			end,
 			set = function(option, ...)
-				return setOption(location, option, ...)
+				return Data.SetOption(location, option, ...)
 			end,
-			order = k + 1, 
+			order = k + 1,
 			args = {
 				Enabled = {
 					type = "toggle",
@@ -658,13 +885,18 @@ local function addEnemyAndAllySettings(self)
 					desc = "test",
 					order = 1
 				},
-				Fake = addHorizontalSpacing(2),
+				Fake = Data.AddHorizontalSpacing(2),
 				CopySettings = {
 					type = "execute",
 					name = L.CopySettings:format(L[oppositePlayerType]..": "..L["BGSize_"..BGSize]),
 					desc = L.CopySettings_Desc:format(L[oppositePlayerType]..": "..L["BGSize_"..BGSize]),
 					func = function()
-						StaticPopup_Show("CONFIRM_OVERRITE_"..AddonName..playerType..BGSize)
+						print("func called")
+						BattleGroundEnemies.db.profile[playerType][BGSize] = copy(BattleGroundEnemies.db.profile[oppositePlayerType][BGSize])
+						BattleGroundEnemies:NotifyChange()
+					end,
+					confirm = function()
+						return L.ConfirmProfileOverride:format(L[playerType]..": "..L["BGSize_"..BGSize], L[oppositePlayerType]..": "..L["BGSize_"..BGSize])
 					end,
 					width = "double",
 					order = 3
@@ -690,10 +922,16 @@ local function addEnemyAndAllySettings(self)
 						PlayerCount = {
 							type = "group",
 							name = L.PlayerCount_Enabled,
+							get = function(option)
+								return Data.GetOption(location.PlayerCount, option)
+							end,
+							set = function(option, ...)
+								return Data.SetOption(location.PlayerCount, option, ...)
+							end,
 							order = 2,
 							inline = true,
 							args = {
-								PlayerCount_Enabled = {
+								Enabled = {
 									type = "toggle",
 									name = L.PlayerCount_Enabled,
 									desc = L.PlayerCount_Enabled_Desc,
@@ -701,12 +939,17 @@ local function addEnemyAndAllySettings(self)
 								},
 								PlayerCountTextSettings = {
 									type = "group",
-									name = "",
-									--desc = L.TrinketSettings_Desc,
-									disabled = function() return not location.PlayerCount_Enabled end,
+									name = L.TextSettings,
+									disabled = function() return not location.PlayerCount.Enabled end,
+									get = function(option)
+										return Data.GetOption(location.PlayerCount.Text, option)
+									end,
+									set = function(option, ...)
+										return Data.SetOption(location.PlayerCount.Text, option, ...)
+									end,
 									inline = true,
 									order = 2,
-									args = addNormalTextSettings(location, "PlayerCount")
+									args = Data.AddNormalTextSettings(location.PlayerCount.Text)
 								}
 							}
 						}
@@ -714,8 +957,7 @@ local function addEnemyAndAllySettings(self)
 				},
 				BarSettings = {
 					type = "group",
-					name = L.BarSettings,
-					desc = L.BarSettings_Desc,
+					name = L.Button,
 					disabled = function() return not location.Enabled end,
 					--childGroups = "tab",
 					order = 5,
@@ -754,7 +996,7 @@ local function addEnemyAndAllySettings(self)
 							desc = L.VerticalSpacing..L.NotAvailableInCombat,
 							disabled = InCombatLockdown,
 							min = 0,
-							max = 20,
+							max = 100,
 							step = 1,
 							order = 4
 						},
@@ -788,921 +1030,17 @@ local function addEnemyAndAllySettings(self)
 							step = 1,
 							order = 7
 						},
-						HealthBarSettings = {
+						ModuleSettings = {
 							type = "group",
-							name = L.HealthBarSettings,
-							desc = L.HealthBarSettings_Desc,
+							name = L.ModuleSettings,
 							order = 8,
-							args = {
-								General = {
-									type = "group",
-									name = L.General,
-									desc = "",
-									--inline = true,
-									order = 7,
-									args = {
-										HealthBar_Texture = {
-											type = "select",
-											name = L.BarTexture,
-											desc = L.HealthBar_Texture_Desc,
-											dialogControl = 'LSM30_Statusbar',
-											values = AceGUIWidgetLSMlists.statusbar,
-											width = "normal",
-											order = 1
-										},
-										Fake = addHorizontalSpacing(2),
-										HealthBar_Background = {
-											type = "color",
-											name = L.BarBackground,
-											desc = L.HealthBar_Background_Desc,
-											hasAlpha = true,
-											width = "normal",
-											order = 3
-										},
-										Fake = addVerticalSpacing(4),
-										HealthBar_HealthPrediction_Enabled = {
-											type = "toggle",
-											name = COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION,
-											width = "normal",
-											order = 5,
-										}
-									}
-								},
-								Name = {
-									type = "group",
-									name = L.Name,
-									desc = L.Name_Desc,
-									order = 2,
-									args = {
-										NameTextSettings = {
-											type = "group",
-											name = "",
-											--desc = L.TrinketSettings_Desc,
-											inline = true,
-											order = 1,
-											args = addNormalTextSettings(location, "Name")
-										},
-									}
-								},
-								RoleIconSettings = {
-									type = "group",
-									name = L.RoleIconSettings,
-									desc = L.RoleIconSettings_Desc,
-									order = 3,
-									args = {
-										RoleIcon_Enabled = {
-											type = "toggle",
-											name = L.RoleIcon_Enabled,
-											desc = L.RoleIcon_Enabled_Desc,
-											width = "normal",
-											order = 1
-										},
-										RoleIcon_Size = {
-											type = "range",
-											name = L.Size,
-											desc = L.RoleIcon_Size_Desc,
-											disabled = function() return not location.RoleIcon_Enabled end,
-											min = 2,
-											max = 80,
-											step = 1,
-											width = "normal",
-											order = 2
-										},
-										RoleIcon_VerticalPosition = {
-											type = "range",
-											name = L.VerticalPosition,
-											disabled = function() return not location.RoleIcon_Enabled end,
-											min = 0,
-											max = 50,
-											step = 1,
-											width = "normal",
-											order = 3,
-										}
-									}
-								},
-								CovenantIconSettings = {
-									type = "group",
-									name = L.CovenantIconSettings,
-									desc = L.CovenantIconSettings_Desc,
-									order = 4,
-									args = {
-										CovenantIcon_Enabled = {
-											type = "toggle",
-											name = L.CovenantIcon_Enabled,
-											desc = L.CovenantIcon_Enabled_Desc,
-											width = "normal",
-											order = 1
-										},
-										CovenantIcon_Size = {
-											type = "range",
-											name = L.Size,
-											desc = L.CovenantIcon_Size_Desc,
-											disabled = function() return not location.CovenantIcon_Enabled end,
-											min = 2,
-											max = 80,
-											step = 1,
-											width = "normal",
-											order = 2
-										},
-										CovenantIcon_VerticalPosition = {
-											type = "range",
-											name = L.VerticalPosition,
-											disabled = function() return not location.CovenantIcon_Enabled end,
-											min = 0,
-											max = 50,
-											step = 1,
-											width = "normal",
-											order = 3,
-										}
-									}
-								},
-								TargetIndicator = {
-									type = "group",
-									name = L.TargetIndicator,
-									desc = L.TargetIndicator_Desc,
-									--childGroups = "select",
-									--inline = true,
-									order = 4,
-									args = {
-										NumericTargetindicator_Enabled = {
-											type = "toggle",
-											name = L.NumericTargetindicator,
-											desc = L.NumericTargetindicator_Enabled_Desc:format(L[playerType == "Enemies" and "enemies" or "allies"]),
-											width = "full",
-											order = 1
-										},
-										NumericTargetindicatorTextSettings = {
-											type = "group",
-											name = "",
-											--desc = L.TrinketSettings_Desc,
-											disabled = function() return not location.NumericTargetindicator_Enabled end,
-											inline = true,
-											order = 2,
-											args = addNormalTextSettings(location, "NumericTargetindicator")
-										},
-										Fake2 = addVerticalSpacing(3),
-										SymbolicTargetindicator_Enabled = {
-											type = "toggle",
-											name = L.SymbolicTargetindicator_Enabled,
-											desc = L.SymbolicTargetindicator_Enabled_Desc:format(L[playerType == "Enemies" and "enemy" or "ally"]),
-											width = "full",
-											order = 4
-										}
-									}
-								}
-							}
-						},
-						PowerBarSettings = {
-							type = "group",
-							name = L.PowerBarSettings,
-							desc = L.PowerBarSettings_Desc,
-							order = 8,
-							args = {
-								PowerBar_Enabled = {
-									type = "toggle",
-									name = L.PowerBar_Enabled,
-									desc = L.PowerBar_Enabled_Desc,
-									order = 1
-								},
-								PowerBar_Height = {
-									type = "range",
-									name = L.Height,
-									desc = L.PowerBar_Height_Desc,
-									disabled = function() return not location.PowerBar_Enabled end,
-									min = 1,
-									max = 10,
-									step = 1,
-									width = "normal",
-									order = 2
-								},
-								PowerBar_Texture = {
-									type = "select",
-									name = L.BarTexture,
-									desc = L.PowerBar_Texture_Desc,
-									disabled = function() return not location.PowerBar_Enabled end,
-									dialogControl = 'LSM30_Statusbar',
-									values = AceGUIWidgetLSMlists.statusbar,
-									width = "normal",
-									order = 3
-								},
-								Fake = addHorizontalSpacing(4),
-								PowerBar_Background = {
-									type = "color",
-									name = L.BarBackground,
-									desc = L.PowerBar_Background_Desc,
-									disabled = function() return not location.PowerBar_Enabled end,
-									hasAlpha = true,
-									width = "normal",
-									order = 5
-								}
-							}
-						},
-						TrinketSettings = {
-							type = "group",
-							name = L.TrinketSettings,
-							desc = L.TrinketSettings_Desc,
-							order = 9,
-							args = {
-								Trinket_Enabled = {
-									type = "toggle",
-									name = L.Trinket_Enabled,
-									desc = L.Trinket_Enabled_Desc,
-									order = 1
-								},
-								TrinketPositioning = {
-									type = "group",
-									name = L.Position,
-									disabled = function() return not location.Trinket_Enabled end,
-									order = 2,
-									args = addBasicPositionSettings(location, "Trinket")
-								},
-								Trinket_Width = {
-									type = "range",
-									name = L.Width,
-									desc = L.Trinket_Width_Desc,
-									disabled = function() return not location.Trinket_Enabled end,
-									min = 1,
-									max = 80,
-									step = 1,
-									order = 3
-								},
-								TrinketCooldownTextSettings = {
-									type = "group",
-									name = L.Countdowntext,
-									--desc = L.TrinketSettings_Desc,
-									disabled = function() return not location.Trinket_Enabled end,
-									order = 4,
-									args = addCooldownTextsettings(location, "Trinket")
-								}
-							}
-						},
-						RacialSettings = {
-							type = "group",
-							name = L.RacialSettings,
-							desc = L.RacialSettings_Desc,
-							order = 10,
-							args = {
-								Racial_Enabled = {
-									type = "toggle",
-									name = L.Racial_Enabled,
-									desc = L.Racial_Enabled_Desc,
-									order = 1
-								},
-								RacialPositioning = {
-									type = "group",
-									name = L.Position,
-									disabled = function() return not location.Racial_Enabled end,
-									order = 2,
-									args = addBasicPositionSettings(location, "Racial")
-								},
-								Racial_Width = {
-									type = "range",
-									name = L.Width,
-									desc = L.Racial_Width_Desc,
-									disabled = function() return not location.Racial_Enabled end,
-									min = 1,
-									max = 80,
-									step = 1,
-									order = 3
-								},
-								RacialCooldownTextSettings = {
-									type = "group",
-									name = L.Countdowntext,
-									--desc = L.TrinketSettings_Desc,
-									disabled = function() return not location.Racial_Enabled end,
-									order = 4,
-									args = addCooldownTextsettings(location, "Racial")
-								},
-								RacialFilteringSettings = {
-									type = "group",
-									name = FILTER,
-									desc = L.RacialFilteringSettings_Desc,
-									disabled = function() return not location.Racial_Enabled end,
-									--inline = true,
-									order = 5,
-									args = {
-										RacialFiltering_Enabled = {
-											type = "toggle",
-											name = L.Filtering_Enabled,
-											desc = L.RacialFiltering_Enabled_Desc,
-											width = 'normal',
-											order = 1
-										},
-										Fake = addHorizontalSpacing(2),
-										RacialFiltering_Filterlist = {
-											type = "multiselect",
-											name = L.Filtering_Filterlist,
-											desc = L.RacialFiltering_Filterlist_Desc,
-											disabled = function() return not location.RacialFiltering_Enabled or not location.Racial_Enabled end,
-											get = function(option, key)
-												for spellID in pairs(Data.RacialNameToSpellIDs[key]) do
-													return location.RacialFiltering_Filterlist[spellID]
-												end
-											end,
-											set = function(option, key, state) -- value = spellname
-												for spellID in pairs(Data.RacialNameToSpellIDs[key]) do
-													location.RacialFiltering_Filterlist[spellID] = state or nil
-												end
-											end,
-											values = Data.Racialnames,
-											order = 3
-										}
-									}
-								}
-							}
-						},
-						SpecSettings = {
-							type = "group",
-							name = L.SpecSettings,
-							desc = L.SpecSettings_Desc,
-							order = 11,
-							args = {
-								Spec_Enabled = {
-									type = "toggle",
-									name = L.Spec_Enabled,
-									desc = L.Spec_Enabled_Desc,
-									order = 1
-								},
-								Spec_Width = {
-									type = "range",
-									name = L.Width,
-									desc = L.Spec_Width_Desc,
-									disabled = function() return not location.Spec_Enabled end,
-									min = 1,
-									max = 80,
-									step = 1,
-									order = 2
-								},
-								Fake = addVerticalSpacing(3),
-								Spec_AuraDisplay_Enabled = {
-									type = "toggle",
-									name = L.Spec_AuraDisplay_Enabled,
-									desc = L.Spec_AuraDisplay_Enabled_Desc,
-									order = 4,
-								},
-								Fake1 = addVerticalSpacing(5),
-								Spec_AuraDisplay_CooldownTextSettings = {
-									type = "group",
-									name = L.Countdowntext,
-									--desc = L.TrinketSettings_Desc,
-									disabled = function() return not location.Spec_AuraDisplay_Enabled end,
-									inline = true,
-									order = 6,
-									args = addCooldownTextsettings(location, "Spec_AuraDisplay")
-								}
-							}
-						},
-						DrTrackingSettings = {
-							type = "group",
-							name = L.DrTrackingSettings,
-							desc = L.DrTrackingSettings_Desc,
-							order = 12,
-							args = {
-								DrTracking_Enabled = {
-									type = "toggle",
-									name = L.DrTracking_Enabled,
-									desc = L.DrTracking_Enabled_Desc,
-									order = 1
-								},
-								DrTracking_Container_PositioningSettings = {
-									type = "group",
-									name = L.Position,
-									disabled = function() return not location.DrTracking_Enabled end,
-									order = 2,
-									args = addBasicPositionSettings(location, "DrTracking_Container")
-								},
-								DrTracking_HorizontalSpacing = {
-									type = "range",
-									name = L.DrTracking_Spacing,
-									desc = L.DrTracking_Spacing_Desc,
-									disabled = function() return not location.DrTracking_Enabled end,
-									min = 0,
-									max = 10,
-									step = 1,
-									order = 3
-								},
-								DrTracking_Container_Color = {
-									type = "color",
-									name = L.Container_Color,
-									desc = L.DrTracking_Container_Color_Desc,
-									disabled = function() return not location.DrTracking_Enabled end,
-									hasAlpha = true,
-									order = 4
-								},
-								DrTracking_Container_BorderThickness = {
-									type = "range",
-									name = L.BorderThickness,
-									min = 1,
-									max = 6,
-									step = 1,
-									disabled = function() return not location.DrTracking_Enabled end,
-									order = 5
-								},
-								DrTracking_DisplayType = {
-									type = "select",
-									name = L.DisplayType,
-									desc = L.DrTracking_DisplayType_Desc,
-									disabled = function() return not location.DrTracking_Enabled end,
-									values = Data.DisplayType,
-									order = 6
-								},
-								DrTracking_GrowDirection = {
-									type = "select",
-									name = L.VerticalGrowdirection,
-									desc = L.VerticalGrowdirection_Desc,
-									disabled = function() return not location.DrTracking_Enabled end,
-									values = Data.HorizontalDirections,
-									order = 7
-								},
-								DrTrackingCooldownTextSettings = {
-									type = "group",
-									name = L.Countdowntext,
-									--desc = L.TrinketSettings_Desc,
-									disabled = function() return not location.DrTracking_Enabled end,
-									order = 8,
-									args = addCooldownTextsettings(location, "DrTracking")
-								},
-								Fake1 = addVerticalSpacing(6),
-								DrTrackingFilteringSettings = {
-									type = "group",
-									name = FILTER,
-									--desc = L.DrTrackingFilteringSettings_Desc,
-									disabled = function() return not location.DrTracking_Enabled end,
-									--inline = true,
-									order = 9,
-									args = {
-										DrTrackingFiltering_Enabled = {
-											type = "toggle",
-											name = L.Filtering_Enabled,
-											desc = L.DrTrackingFiltering_Enabled_Desc,
-											width = 'normal',
-											order = 1
-										},
-										DrTrackingFiltering_Filterlist = {
-											type = "multiselect",
-											name = L.Filtering_Filterlist,
-											desc = L.DrTrackingFiltering_Filterlist_Desc,
-											disabled = function() return not location.DrTrackingFiltering_Enabled end,
-											get = function(option, key)
-												return location.DrTrackingFiltering_Filterlist[key]
-											end,
-											set = function(option, key, state) -- key = category name
-												location.DrTrackingFiltering_Filterlist[key] = state or nil
-											end,
-											values = Data.DrCategorys,
-											order = 2
-										}
-									}
-								}
-							}
-						},
-						AurasSettings = {
-							type = "group",
-							name = L.AurasSettings,
-							desc = L.AurasSettings_Desc,
-							order = 13,
-							args = {
-								Auras_Enabled = {
-									type = "toggle",
-									name = L.Auras_Enabled,
-									desc = L.Auras_Enabled_Desc,
-									order = 1
-								},
-								Auras_BuffsSettings = {
-									type = "group",
-									name = L.Buffs,
-									disabled = function() return not location.Auras_Enabled end,
-									order = 2,
-									args = {
-										Auras_Buffs_Enabled = {
-											type = "toggle",
-											name = ENABLE,
-											desc = SHOW_BUFFS,
-											order = 1
-										},
-										Auras_Buffs_Container_IconSettings = {
-											type = "group",
-											name = L.BuffIcon,
-											disabled = function() return not location.Auras_Buffs_Enabled end,
-											order = 2,
-											args = addIconPositionSettings(location, "Auras_Buffs"),
-										},
-										Auras_Buffs_Container_PositioningSettings = {
-											type = "group",
-											name = L.ContainerPosition,
-											disabled = function() return not location.Auras_Buffs_Enabled end,
-											args = addContainerPositionSettings(location, "Auras_Buffs_Container"),
-											order = 3
-										},
-										Auras_Buffs_StacktextSettings = {
-											type = "group",
-											name = L.AurasStacktextSettings,
-											--desc = L.MyAuraSettings_Desc,
-											disabled = function() return not location.Auras_Buffs_Enabled end,
-											order = 4,
-											args = addNormalTextSettings(location, "Auras_Buffs")
-										},
-										Auras_Buffs_CooldownTextSettings = {
-											type = "group",
-											name = L.Countdowntext,
-											--desc = L.TrinketSettings_Desc,
-											disabled = function() return not location.Auras_Buffs_Enabled end,
-											order = 5,
-											args = addCooldownTextsettings(location, "Auras_Buffs")
-										},
-										Auras_Buffs_FilteringSettings = {
-											type = "group",
-											name = FILTER,
-											desc = L.AurasFilteringSettings_Desc,
-											disabled = function() return not location.Auras_Buffs_Enabled end,
-											order = 9,
-											args = {
-												Auras_Buffs_Filtering_Enabled = {
-													type = "toggle",
-													name = L.Filtering_Enabled,
-													width = 'normal',
-													order = 1
-												},
-												Auras_Buffs_FilterSettings = {
-													type = "group",
-													name = L.FilterSettings,
-													desc = L.AurasFilteringSettings_Desc,
-													disabled = function() return not location.Auras_Buffs_Filtering_Enabled end,
-													order = 2,
-													args = {
-														Auras_Buffs_Filtering_Mode = {
-															type = "select",
-															name = L.Auras_Filtering_Mode,
-															desc = L.Auras_Filtering_Mode_Desc,
-															width = 'normal',
-															values = {
-																Custom = L.AurasCustomConditions,
-																Blizz = L.BlizzlikeAuraFiltering
-															},
-															order = 1
-														},
-														Fake1 = addVerticalSpacing(2),
-														Auras_Buffs_CustomFilteringSettings = {
-															type = "group",
-															name = L.AurasCustomConditions,
-															disabled = function() 
-																return not (location.Auras_Buffs_Filtering_Mode == "Custom")
-															end,
-															inline = true,
-															order = 3,
-															args = {
-																Auras_Buffs_CustomFiltering_ConditionsMode = {
-																	type = "select",
-																	name = L.Auras_CustomFiltering_ConditionsMode,
-																	desc = L.Auras_CustomFiltering_ConditionsMode_Desc,
-																	width = 'normal',
-																	values = {
-																		All = L.Auras_CustomFiltering_Conditions_All,
-																		Any = L.Auras_CustomFiltering_Conditions_Any
-																	},
-																	order = 1
-																},
-
-																Fake = addVerticalSpacing(2),
-																Auras_Buffs_SourceFilter_Enabled = {
-																	type = "toggle",
-																	name = L.SourceFilter,
-																	order = 3,
-																},
-																Auras_Buffs_ShowMine = {
-																	type = "toggle",
-																	name = L.ShowMine,
-																	desc = L.ShowMine_Desc:format(L.Buffs),
-																	hidden = function() return not (location.Auras_Buffs_Filtering_Enabled and location.Auras_Buffs_SourceFilter_Enabled) end,
-																	width = "double",
-																	order = 4,
-																},
-																Fake1 = addVerticalSpacing(5),
-																Auras_Buffs_DispellFilter_Enabled = {
-																	type = "toggle",
-																	name = L.DispellFilter,
-																	order = 6,
-																},
-																Auras_Buffs_ShowDispellable = {
-																	type = "toggle",
-																	name = L.ShowDispellable,
-																	desc = L.ShowDispellable_Desc:format(L.Buffs),
-																	hidden = function() return not (location.Auras_Buffs_Filtering_Enabled and location.Auras_Buffs_DispellFilter_Enabled) end,
-																	order = 7,
-																},
-																Fake2 = addVerticalSpacing(8),
-																Auras_Buffs_SpellIDFiltering_Enabled = {
-																	type = "toggle",
-																	name = L.SpellID_Filtering,
-																	order = 9
-																},
-																Auras_Buffs_SpellIDFiltering__AddSpellID = {
-																	type = "input",
-																	name = L.AurasFiltering_AddSpellID,
-																	desc = L.AurasFiltering_AddSpellID_Desc,
-																	hidden = function() return not (location.Auras_Buffs_Filtering_Enabled and location.Auras_Buffs_SpellIDFiltering_Enabled) end,
-																	get = function() return "" end,
-																	set = function(option, value, state)
-																		local spellIDs = {strsplit(",", value)}
-																		for i = 1, #spellIDs do
-																			local spellID = tonumber(spellIDs[i])
-																			location.Auras_Buffs_SpellIDFiltering_Filterlist[spellID] = true
-																		end
-																	end,
-																	width = 'double',
-																	order = 10
-																},
-																Fake3 = addVerticalSpacing(11),
-																Auras_Buffs_SpellIDFiltering_Filterlist = {
-																	type = "multiselect",
-																	name = L.Filtering_Filterlist,
-																	desc = L.AurasFiltering_Filterlist_Desc:format(L.Buffs),
-																	hidden = function() return not (location.Auras_Buffs_Filtering_Enabled and location.Auras_Buffs_SpellIDFiltering_Enabled) end,
-																	get = function()
-																		return true --to make it checked
-																	end,
-																	set = function(option, value) 
-																		location.Auras_Buffs_SpellIDFiltering_Filterlist[value] = nil
-																	end,
-																	values = function()
-																		local valueTable = {}
-																		for spellID in pairs(location.Auras_Buffs_SpellIDFiltering_Filterlist) do
-																			valueTable[spellID] = spellID..": "..(GetSpellInfo(spellID) or "")
-																		end
-																		return valueTable
-																	end,
-																	order = 12
-																}
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								},
-								Auras_DebuffsSettings = {
-									type = "group",
-									name = L.Debuffs,
-									disabled = function() return not location.Auras_Enabled end,
-									order = 3,
-									args = {
-										Auras_Debuffs_Enabled = {
-											type = "toggle",
-											name = ENABLE,
-											desc = SHOW_DEBUFFS,
-											order = 1
-										},
-										Fake = addVerticalSpacing(2),
-										Auras_Debuffs_Coloring_Enabled = {
-											type = "toggle",
-											name = L.Auras_Debuffs_Coloring_Enabled,
-											desc = L.Auras_Debuffs_Coloring_Enabled_Desc,
-											disabled = function() return not location.Auras_Debuffs_Enabled end,
-											order = 3
-										},
-										Auras_Debuffs_DisplayType = {
-											type = "select",
-											name = L.DisplayType,
-											disabled = function() return not location.Auras_Debuffs_Coloring_Enabled end,
-											values = Data.DisplayType,
-											order = 4
-										},
-										Auras_Debuffs_Container_IconSettings = {
-											type = "group",
-											name = L.DebuffIcon,
-											disabled = function() return not (location.Auras_Debuffs_Enabled) end,
-											order = 5,
-											args = addIconPositionSettings(location, "Auras_Debuffs"),
-										},
-										Auras_Debuffs_Container_PositioningSettings = {
-											type = "group",
-											name = L.ContainerPosition,
-											disabled = function() return not location.Auras_Debuffs_Enabled end,
-											args = addContainerPositionSettings(location, "Auras_Debuffs_Container"),
-											order = 6
-										},
-										Auras_Debuffs_StacktextSettings = {
-											type = "group",
-											name = L.AurasStacktextSettings,
-											--desc = L.MyAuraSettings_Desc,
-											disabled = function() return not location.Auras_Debuffs_Enabled end,
-											order = 7,
-											args = addNormalTextSettings(location, "Auras_Debuffs")
-										},
-										Auras_Debuffs_CooldownTextSettings = {
-											type = "group",
-											name = L.Countdowntext,
-											--desc = L.TrinketSettings_Desc,
-											disabled = function() return not location.Auras_Debuffs_Enabled end,
-											order = 8,
-											args = addCooldownTextsettings(location, "Auras_Debuffs")
-										},
-										Auras_Debuffs_FilteringSettings = {
-											type = "group",
-											name = FILTER,
-											desc = L.AurasFilteringSettings_Desc,
-											disabled = function() return not location.Auras_Debuffs_Enabled end,
-											order = 9,
-											args = {
-												Auras_Debuffs_Filtering_Enabled = {
-													type = "toggle",
-													name = L.Filtering_Enabled,
-													width = 'normal',
-													order = 1
-												},
-												Auras_Debuffs_FilterSettings = {
-													type = "group",
-													name = L.FilterSettings,
-													desc = L.AurasFilteringSettings_Desc,
-													disabled = function() return not location.Auras_Debuffs_Filtering_Enabled end,
-													order = 2,
-													args = {
-														Auras_Debuffs_Filtering_Mode = {
-															type = "select",
-															name = L.Auras_Filtering_Mode,
-															desc = L.Auras_Filtering_Mode_Desc,
-															width = 'normal',
-															values = {
-																Custom = L.AurasCustomConditions,
-																Blizz = L.BlizzlikeAuraFiltering
-															},
-															order = 1
-														},
-														Auras_Debuffs_CustomFilteringSettings = {
-															type = "group",
-															name = L.AurasCustomConditions,
-															disabled = function() 
-																return not (location.Auras_Debuffs_Filtering_Mode == "Custom" )
-															end,
-															inline = true,
-															order = 2,
-															args = {
-																Auras_Debuffs_CustomFiltering_ConditionsMode = {
-																	type = "select",
-																	name = L.Auras_CustomFiltering_ConditionsMode,
-																	desc = L.Auras_CustomFiltering_ConditionsMode_Desc,
-																	width = 'normal',
-																	values = {
-																		All = L.Auras_CustomFiltering_Conditions_All,
-																		Any = L.Auras_CustomFiltering_Conditions_Any
-																	},
-																	order = 1
-																},
-
-																Fake = addVerticalSpacing(2),
-																Auras_Debuffs_SourceFilter_Enabled = {
-																	type = "toggle",
-																	name = L.SourceFilter,
-																	order = 3,
-																},
-																Auras_Debuffs_ShowMine = {
-																	type = "toggle",
-																	name = L.ShowMine,
-																	desc = L.ShowMine_Desc:format(L.Debuffs),
-																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_SourceFilter_Enabled) end,
-																	order = 4,
-																},
-																Fake1 = addVerticalSpacing(5),
-																Auras_Debuffs_DispellFilter_Enabled = {
-																	type = "toggle",
-																	name = L.DispellFilter,
-																	order = 6,
-																},
-																Auras_Debuffs_ShowDispellable = {
-																	type = "toggle",
-																	name = L.ShowDispellable,
-																	desc = L.ShowMine_Desc:format(L.Buffs),
-																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_DispellFilter_Enabled) end,
-																	order = 7,
-																},
-																Fake2 = addVerticalSpacing(8),
-																Auras_Debuffs_DebuffTypeFiltering_Enabled = {
-																	type = "toggle",
-																	name = L.DebuffType_Filtering,
-																	desc = L.DebuffType_Filtering_Desc,
-																	width = 'normal',
-																	order = 9
-																},
-																Auras_Debuffs_DebuffTypeFiltering_Filterlist = {
-																	type = "multiselect",
-																	name = "",
-																	desc = "",
-																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_DebuffTypeFiltering_Enabled) end,
-																	get = function(option, key)
-																		return location.Auras_Debuffs_DebuffTypeFiltering_Filterlist[key]
-																	end,
-																	set = function(option, key, state) -- value = spellname
-																		location.Auras_Debuffs_DebuffTypeFiltering_Filterlist[key] = state
-																	end,
-																	width = 'normal',
-																	values = Data.DebuffTypes,
-																	order = 10
-																},
-																Auras_Debuffs_SpellIDFiltering_Enabled = {
-																	type = "toggle",
-																	name = L.SpellID_Filtering,
-																	order = 11
-																},
-																Auras_Debuffs_SpellIDFiltering__AddSpellID = {
-																	type = "input",
-																	name = L.AurasFiltering_AddSpellID,
-																	desc = L.AurasFiltering_AddSpellID_Desc,
-																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_SpellIDFiltering_Enabled) end,
-																	get = function() return "" end,
-																	set = function(option, value, state)
-																		local spellIDs = {strsplit(",", value)}
-																		for i = 1, #spellIDs do
-																			local spellID = tonumber(spellIDs[i])
-																			location.Auras_Debuffs_SpellIDFiltering_Filterlist[spellID] = true
-																		end
-																	end,
-																	width = 'double',
-																	order = 12
-																},
-																Fake3 = addVerticalSpacing(13),
-																Auras_Debuffs_SpellIDFiltering_Filterlist = {
-																	type = "multiselect",
-																	name = L.Filtering_Filterlist,
-																	desc = L.AurasFiltering_Filterlist_Desc:format(L.debuff),
-																	hidden = function() return not (location.Auras_Debuffs_Filtering_Enabled and location.Auras_Debuffs_SpellIDFiltering_Enabled) end,
-																	get = function()
-																		return true --to make it checked
-																	end,
-																	set = function(option, value) 
-																		location.Auras_Debuffs_SpellIDFiltering_Filterlist[value] = nil
-																	end,
-																	values = function()
-																		local valueTable = {}
-																		for spellID in pairs(location.Auras_Debuffs_SpellIDFiltering_Filterlist) do
-																			valueTable[spellID] = spellID..": "..(GetSpellInfo(spellID) or "")
-																		end
-																		return valueTable
-																	end,
-																	order = 14
-																}
-															}
-		
-														}
-
-													}
-												}
-
-												
-											}
-										}
-									}
-								}
-							}
+							args = self:AddModuleSettings(location, defaults, playerType, BGSize)
 						}
 					}
 				}
 			}
 		}
 	end
-	local BGSize = "15"
-	
-	settings["15"].args.BarSettings.args.ObjectiveAndRespawnSettings = {
-		type = "group",
-		name = L.ObjectiveAndRespawnSettings,
-		desc = L.ObjectiveAndRespawnSettings_Desc,
-		order = 13,
-		args = {
-			ObjectiveAndRespawn_ObjectiveEnabled = {
-				type = "toggle",
-				name = L.ObjectiveAndRespawn_ObjectiveEnabled,
-				desc = L.ObjectiveAndRespawn_ObjectiveEnabled_Desc,
-				order = 1
-			},
-			ObjectiveAndRespawnPositioning = {
-				type = "group",
-				name = L.Position,
-				disabled = function() return not location["15"].ObjectiveAndRespawn_ObjectiveEnabled end,
-				order = 2,
-				args = addBasicPositionSettings(location["15"], "ObjectiveAndRespawn")
-			},
-			ObjectiveAndRespawn_Width = {
-				type = "range",
-				name = L.Width,
-				desc = L.ObjectiveAndRespawn_Width_Desc,
-				disabled = function() return not location["15"].ObjectiveAndRespawn_ObjectiveEnabled end,
-				min = 1,
-				max = 50,
-				step = 1,
-				order = 3
-			},
-			ObjectiveAndRespawnTextSettings = {
-				type = "group",
-				name = "",
-				--desc = L.TrinketSettings_Desc,
-				disabled = function() return not location["15"].ObjectiveAndRespawn_ObjectiveEnabled end,
-				inline = true,
-				order = 4,
-				args = addNormalTextSettings(location["15"], "ObjectiveAndRespawn")
-			}
-		}
-	}	
-	
 	return settings
 end
 
@@ -1718,16 +1056,16 @@ function BattleGroundEnemies:SetupOptions()
 		name = "BattleGroundEnemies " .. GetAddOnMetadata(AddonName, "Version"),
 		childGroups = "tab",
 		get = function(option)
-			return getOption(location, option)
+			return Data.GetOption(location, option)
 		end,
 		set = function(option, ...)
-			return setOption(location, option, ...)
+			return Data.SetOption(location, option, ...)
 		end,
 		args = {
 			TestmodeSettings = {
 				type = "group",
 				name = L.TestmodeSettings,
-				disabled = function() return InCombatLockdown() or (self:IsShown() and not self.TestmodeActive) end,
+				disabled = function() return InCombatLockdown() or (self:IsShown() and not self.Testmode.Active) end,
 				inline = true,
 				order = 1,
 				args = {
@@ -1735,22 +1073,20 @@ function BattleGroundEnemies:SetupOptions()
 						type = "select",
 						name = L.BattlegroundSize,
 						order = 1,
-						get = function() return self.BGSize end,
+						get = function() return self.Testmode.BGSizeTestmode end,
 						set = function(option, value)
-							self.Allies:UpdatePlayerCount(value)
-							self.Enemies:UpdatePlayerCount(value)
-							
-							if self.TestmodeActive then
-								self:FillData()
+							self.Testmode.BGSizeTestmode = value
+							if self.Testmode.Active then
+								self:CreateFakePlayers()
 							end
 						end,
-						values = {[5] = ARENA, [15] = L.BGSize_15, [40] = L.BGSize_40}
+						values = BGSizeToLocale
 					},
 					Testmode_Enabled = {
 						type = "execute",
 						name = L.Testmode_Toggle,
 						desc = L.Testmode_Toggle_Desc,
-						disabled = function() return InCombatLockdown() or (self:IsShown() and not self.TestmodeActive) or not self.BGSize end,
+						disabled = function() return InCombatLockdown() or (self:IsShown() and not self.Testmode.Active) or not self.BGSize end,
 						func = self.ToggleTestmode,
 						order = 2
 					},
@@ -1758,17 +1094,25 @@ function BattleGroundEnemies:SetupOptions()
 						type = "execute",
 						name = L.Testmode_ToggleAnimation,
 						desc = L.Testmode_ToggleAnimation_Desc,
-						disabled = function() return InCombatLockdown() or not self.TestmodeActive end,
+						disabled = function() return InCombatLockdown() or not self.Testmode.Active end,
 						func = self.ToggleTestmodeOnUpdate,
 						order = 3
-					}
+					},
+					Testmode_UseTeammates = {
+						type = "toggle",
+						name = L.Testmode_UseTeammates,
+						desc = L.Testmode_UseTeammates_Desc,
+						disabled = function() return self.Testmode.Active end,
+						width = "full",
+						order = 4
+					},
 				}
 			},
 			GeneralSettings = {
 				type = "group",
 				name = L.GeneralSettings,
 				desc = L.GeneralSettings_Desc,
-				order = 3,
+				order = 2,
 				args = {
 					Locked = {
 						type = "toggle",
@@ -1780,8 +1124,8 @@ function BattleGroundEnemies:SetupOptions()
 						type = "toggle",
 						name = L.DisableArenaFrames,
 						desc = L.DisableArenaFrames_Desc,
-						set = function(option, value) 
-							setOption(location, option, value)
+						set = function(option, value)
+							Data.SetOption(location, option, value)
 							self:ToggleArenaFrames()
 						end,
 						order = 3
@@ -1808,26 +1152,53 @@ function BattleGroundEnemies:SetupOptions()
 						hasAlpha = true,
 						order = 8
 					},
-					Fake1 = addVerticalSpacing(10),
+					Fake1 = Data.AddVerticalSpacing(10),
 					ShowTooltips = {
 						type = "toggle",
 						name = L.ShowTooltips,
 						desc = L.ShowTooltips_Desc,
 						order = 11
+					},
+					ConvertCyrillic = {
+						type = "toggle",
+						name = L.ConvertCyrillic,
+						desc = L.ConvertCyrillic_Desc,
+						width = "normal",
+						order = 12
+					},
+					UseBigDebuffsPriority = {
+						type = "toggle",
+						name = L.UseBigDebuffsPriority,
+						desc = L.UseBigDebuffsPriority_Desc:format(L.Buffs, L.Debuffs, L.HighestPriorityAura),
+						order = 13
 					}
 				}
+			},
+			EnemySettings = {
+				type = "group",
+				name = L.Enemies,
+				childGroups = "tab",
+				order = 3,
+				args = addEnemyAndAllySettings(self, self.Enemies)
+			},
+			AllySettings = {
+				type = "group",
+				name = L.Allies,
+				childGroups = "tab",
+				order = 4,
+				args = addEnemyAndAllySettings(self, self.Allies)
 			},
 			RBGSettings = {
 				type = "group",
 				name = L.RBGSpecificSettings,
 				desc = L.RBGSpecificSettings_Desc,
 				--inline = true,
-				order = 14,
+				order = 5,
 				get = function(option)
-					return getOption(location.RBG, option)
+					return Data.GetOption(location.RBG, option)
 				end,
 				set = function(option, ...)
-					return setOption(location.RBG, option, ...)
+					return Data.SetOption(location.RBG, option, ...)
 				end,
 				args = {
 					Notifications = {
@@ -1855,7 +1226,7 @@ function BattleGroundEnemies:SetupOptions()
 										step = 1,
 										disabled = function() return not location.RBG.EnemiesTargetingMe_Enabled end,
 										order = 2
-										
+
 									},
 									EnemiesTargetingMe_Sound = {
 										type = "select",
@@ -1866,10 +1237,10 @@ function BattleGroundEnemies:SetupOptions()
 										disabled = function() return not location.RBG.EnemiesTargetingMe_Enabled end,
 										order = 3
 									}
-									
+
 								}
-								
-								
+
+
 
 							},
 							EnemiesTargetingAllies = {
@@ -1892,7 +1263,7 @@ function BattleGroundEnemies:SetupOptions()
 										step = 1,
 										disabled = function() return not location.RBG.EnemiesTargetingAllies_Enabled end,
 										order = 2
-										
+
 									},
 									EnemiesTargetingAllies_Sound = {
 										type = "select",
@@ -1903,12 +1274,8 @@ function BattleGroundEnemies:SetupOptions()
 										disabled = function() return not location.RBG.EnemiesTargetingAllies_Enabled end,
 										order = 3
 									}
-
 								}
-								
-
 							}
-							
 						}
 					},
 					-- PositiveSound = {
@@ -1930,28 +1297,6 @@ function BattleGroundEnemies:SetupOptions()
 						-- order = 3
 					-- },
 
-					
-					ObjectiveAndRespawn = {
-						type = "group",
-						name = L.ObjectiveAndRespawn_RespawnEnabled,
-						order = 4,
-						args = {
-							ObjectiveAndRespawn_RespawnEnabled = {
-								type = "toggle",
-								name = ENABLE,
-								desc = L.ObjectiveAndRespawn_RespawnEnabled_Desc,
-								order = 1
-							},
-							ObjectiveAndRespawnCooldownTextSettings = {
-								type = "group",
-								name = L.Countdowntext,
-								--desc = L.TrinketSettings_Desc,
-								disabled = function() return not location.RBG.ObjectiveAndRespawn_RespawnEnabled end,
-								order = 5,
-								args = addCooldownTextsettings(location.RBG, "ObjectiveAndRespawn")
-							}
-						}
-					},
 					TargetCallingSettings = {
 						type = "group",
 						name = L.TargetCalling,
@@ -1980,47 +1325,58 @@ function BattleGroundEnemies:SetupOptions()
 								order = 3,
 								width = "full",
 							}
-								
-							
+
+
 							-- Sounds = {
 							-- 	type = "group",
 							-- 	name = SOUNDS,
 							-- 	order = 2,
 							-- 	args = {
-		
-							-- 		
+
+							--
 							-- 	}
-		
+
 							-- }
 						}
-						
+
 					}
 				}
 			},
-			EnemySettings = {
+			MoreProfileOptions = {
 				type = "group",
-				name = L.Enemies,
+				name = L.MoreProfileOptions,
 				childGroups = "tab",
-				order = 4,
-				args = addEnemyAndAllySettings(self.Enemies)
-			},
-			AllySettings = {
-				type = "group",
-				name = L.Allies,
-				childGroups = "tab",
-				order = 5,
-				args = addEnemyAndAllySettings(self.Allies)
+				order = 6,
+				args = {
+					ImportButton = {
+						type = "execute",
+						name = L.ImportButton,
+						desc = L.ImportButton_Desc,
+						func = function()
+							BattleGroundEnemies:ImportExportFrameSetupForMode("Import")
+						end,
+						order = 1,
+					},
+					ExportButton = {
+						type = "execute",
+						name = L.ExportButton,
+						desc = L.ExportButton_Desc,
+						func = function()
+							BattleGroundEnemies:ExportDataViaPrint(BattleGroundEnemies.db.profile)
+						end,
+						order = 2,
+					}
+				}
 			}
-
 		}
 	}
 
 
 	AceConfigRegistry:RegisterOptionsTable("BattleGroundEnemies", self.options)
-		
-	
-	
-	--add profile tab to the options 
+
+
+
+	--add profile tab to the options
 	self.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	self.options.args.profiles.order = -1
 	self.options.args.profiles.disabled = InCombatLockdown

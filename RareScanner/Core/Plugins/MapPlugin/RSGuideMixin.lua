@@ -28,6 +28,7 @@ function RSGuideMixin:OnAcquired(POI)
 	self.Texture:SetTexture(POI.texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
 	self:SetPosition(POI.x, POI.y);
+	self:SetPassThroughButtons("MiddleButton");
 end
 
 function RSGuideMixin:OnMouseEnter()

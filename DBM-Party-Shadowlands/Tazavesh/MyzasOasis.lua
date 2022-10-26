@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2452, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221015205747")
 mod:SetCreatureID(176564)
 mod:SetEncounterID(2440)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -97,7 +97,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 350916 or spellId == 359028 then
-		if self:IsTanking("player", nil, nil, nil, args.sourceGUID) then
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
 			specWarnSecuritySlam:Show()
 			specWarnSecuritySlam:Play("defensive")
 		else

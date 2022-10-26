@@ -6,7 +6,7 @@
 
 	<Script file="title.lua"/>
 	<Script file="brokerPlugin.lua"/>
-	<Script file="brokerDisplay.lua"/>
+	<Script file="brokerCarrousel.lua"/>
 	<Script file="optionsToggle.lua"/>
 	<Script file="searchFrame.lua"/>
 	<Script file="searchToggle.lua"/>

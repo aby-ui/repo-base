@@ -1,0 +1,6 @@
+<Bindings>
+	<Binding name="BIND_TEST" header="HEADER_NIHAO" category="BINDING_HEADER_MOVEMENT1">
+		U1Chat_SetChatType("SAY")
+	</Binding>
+	<!-- <Binding name="CLICK GameMenuButtonEditMode:LeftButton" category="BINDING_HEADER_MOVEMENT" /> -->
+</Bindings>

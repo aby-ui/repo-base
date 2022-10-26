@@ -16,7 +16,7 @@ local unpack = unpack
 
 local CreateFrame = CreateFrame
 local GetSpecializationInfoByID = GetSpecializationInfoByID
-local GetSpellInfo = GetSpellInfo
+local GetSpellInfoOrigin = GetSpellInfo local GetSpellInfo = function(id) local name = GetSpellInfoOrigin(id) return name or "" end
 local GetTime = GetTime
 local UnitAura = UnitAura
 local UnitClass = UnitClass

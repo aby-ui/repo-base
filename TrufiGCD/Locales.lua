@@ -38,4 +38,15 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
     L["Fade"] = "消失方向"
     L["Size icons"] = "图标大小"
     L["Number of icons"] = "图标数量"
+    L["Combat only"] = "仅战斗中"
+
+    L["Select spell"] = "选择左侧列表中的法术"
+    L["Enter spell name or spell ID"] = "输入法术名称或法术ID"
+    L["You can only blacklist known abilities by ID!"] = "黑名单是通过法术ID进行屏蔽的"
+    L["Load saving blacklist"] = "加载备份的黑名单"
+    L["Save blacklist to cache"] = "备份黑名单"
+    L["Restore default blacklist"] = "恢复默认的黑名单"
+    L["Delete"] = "删除"
+    L["Add"] = "添加"
+    L["[TrufiGCD]: converted \"%s\" to spell id %s. If this is not the desired spell id, provide the exact spell id of the spell you wish to blacklist as multiple spells with this name may exist."] = "[TrufiGCD]: 将\"%s\"转为ID %s. 为了区分同名法术，最好直接输入法术ID而不是法术名称."
 end

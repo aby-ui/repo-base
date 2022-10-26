@@ -16,7 +16,7 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 
 		local DF = _detalhes.gump
 	
-		local f = DF:CreateSimplePanel (UIParent, 700, 400, "Details! Arena Damage Bar Options", "DetailsCurrentRealDPSOptions")
+		local f = DF:CreateSimplePanel(UIParent, 700, 400, "Details! Arena Damage Bar Options", "DetailsCurrentRealDPSOptions")
 		f:SetPoint("center", UIParent, "center")
 		f:SetScript("OnMouseDown", nil)
 		f:SetScript("OnMouseUp", nil)
@@ -24,16 +24,16 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 		--scale bar
 		local scaleBar = DF:CreateScaleBar(f, _detalhes.realtime_dps_meter.options_frame)
 
-		local LibWindow = LibStub ("LibWindow-1.1")
-		LibWindow.RegisterConfig (f, _detalhes.realtime_dps_meter.options_frame)
-		LibWindow.MakeDraggable (f)
-		LibWindow.RestorePosition (f)
+		local LibWindow = LibStub("LibWindow-1.1")
+		LibWindow.RegisterConfig(f, _detalhes.realtime_dps_meter.options_frame)
+		LibWindow.MakeDraggable(f)
+		LibWindow.RestorePosition(f)
 		
-		local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
-		local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-		local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-		local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
-		local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+		local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+		local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+		local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+		local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+		local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 		
 		--status bar
 		local statusBar = DF:CreateStatusBar(f)
@@ -94,7 +94,7 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 		--options table
 		local options = {
 		
-			{type = "label", get = function() return "Frame Settings:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+			{type = "label", get = function() return "Frame Settings:" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE")},
 			--enabled
 			{
 				type = "toggle",
@@ -200,7 +200,7 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 
 			--[=[
 			{type = "breakline"},
-			{type = "label", get = function() return "Enabled On:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+			{type = "label", get = function() return "Enabled On:" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE")},
 			--arenas
 			{
 				type = "toggle",
@@ -226,7 +226,7 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 			--]=]
 
 			{type = "breakline"},
-			{type = "label", get = function() return "Text Settings:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+			{type = "label", get = function() return "Text Settings:" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE")},
 			--font size
 			{
 				type = "range",
@@ -301,7 +301,7 @@ function Details:OpenCurrentRealDPSOptions(from_options_panel)
 
 			--reopen the options panel
 			if (f.FromOptionsPanel) then
-				C_Timer.After (0.2, function()
+				C_Timer.After(0.2, function()
 					Details:OpenOptionsWindow(Details:GetInstance(1))
 				end)
 			end
@@ -343,10 +343,10 @@ function Details:CreateCurrentDpsFrame(parent, name)
 		f:SetSize(_detalhes.realtime_dps_meter.frame_settings.width, _detalhes.realtime_dps_meter.frame_settings.height)
 
 		f:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}})
-		f:SetBackdropColor(unpack (_detalhes.realtime_dps_meter.frame_settings.backdrop_color))
-		f:EnableMouse (true)
-		f:SetMovable (true)
-		f:SetClampedToScreen (true)
+		f:SetBackdropColor(unpack(_detalhes.realtime_dps_meter.frame_settings.backdrop_color))
+		f:EnableMouse(true)
+		f:SetMovable(true)
+		f:SetClampedToScreen(true)
 
 		f.movemeLabel = f:CreateFontString(nil, "overlay", "GameFontNormal")
 		f.movemeLabel:SetText("Move-Me")
@@ -367,10 +367,10 @@ function Details:CreateCurrentDpsFrame(parent, name)
 
 		f.PlayerTeam = 0
 
-		local LibWindow = LibStub ("LibWindow-1.1")
-		LibWindow.RegisterConfig (f, _detalhes.realtime_dps_meter.frame_settings)
-		LibWindow.MakeDraggable (f)
-		LibWindow.RestorePosition (f)
+		local LibWindow = LibStub("LibWindow-1.1")
+		LibWindow.RegisterConfig(f, _detalhes.realtime_dps_meter.frame_settings)
+		LibWindow.MakeDraggable(f)
+		LibWindow.RestorePosition(f)
 
 		local lockCallback = function()
 			local f = _G.DetailsCurrentDpsMeter
@@ -464,14 +464,14 @@ function Details:CreateCurrentDpsFrame(parent, name)
 			rightOrnamentTexture:SetAlpha(0.6)
 
 	--title bar
-		local TitleString = f:CreateFontString (nil, "overlay", "GameFontNormal")
+		local TitleString = f:CreateFontString(nil, "overlay", "GameFontNormal")
 		TitleString:SetPoint("top", f, "top", 0, -5)
 		TitleString:SetText("Details! Arena Real Time DPS Tracker")
-		DF:SetFontSize (TitleString, 9)
+		DF:SetFontSize(TitleString, 9)
 		local TitleBackground = f:CreateTexture(nil, "artwork")
 		TitleBackground:SetTexture([[Interface\Tooltips\UI-Tooltip-Background]])
-		TitleBackground:SetVertexColor (.1, .1, .1, .9)
-		TitleBackground:SetVertexColor (.1, .1, .1, 0)
+		TitleBackground:SetVertexColor(.1, .1, .1, .9)
+		TitleBackground:SetVertexColor(.1, .1, .1, 0)
 		TitleBackground:SetPoint("topleft", f, "topleft")
 		TitleBackground:SetPoint("topright", f, "topright")
 		TitleBackground:SetHeight(header_size)
@@ -489,21 +489,21 @@ function Details:CreateCurrentDpsFrame(parent, name)
 			yellow_team_color = Details.class_colors.ARENA_YELLOW
 
 			if (f.PlayerTeam == 0) then
-				labelPlayerTeam:SetTextColor (unpack (yellow_team_color))
-				labelYellowTeam:SetTextColor (unpack (green_team_color))
+				labelPlayerTeam:SetTextColor(unpack(yellow_team_color))
+				labelYellowTeam:SetTextColor(unpack(green_team_color))
 			else
-				labelPlayerTeam:SetTextColor (unpack (green_team_color))
-				labelYellowTeam:SetTextColor (unpack (yellow_team_color))
+				labelPlayerTeam:SetTextColor(unpack(green_team_color))
+				labelYellowTeam:SetTextColor(unpack(yellow_team_color))
 			end
 		end
 
 	--labels for mythic dungeon / group party
-		local labelGroupDamage = f:CreateFontString (nil, "overlay", "GameFontNormal")
+		local labelGroupDamage = f:CreateFontString(nil, "overlay", "GameFontNormal")
 		labelGroupDamage:SetText("Real Time Group DPS")
-		DF:SetFontSize (labelGroupDamage, 14)
+		DF:SetFontSize(labelGroupDamage, 14)
 		DF:SetFontOutline (labelGroupDamage, "NONE")
 		
-		local labelGroupDamage_DPS = f:CreateFontString (nil, "overlay", "GameFontNormal")
+		local labelGroupDamage_DPS = f:CreateFontString(nil, "overlay", "GameFontNormal")
 		labelGroupDamage_DPS:SetText("0")
 		
 		labelGroupDamage:SetPoint("center", f, "center", 0, 10)
@@ -564,12 +564,12 @@ function Details:CreateCurrentDpsFrame(parent, name)
 				--update arena labels
 				DF:SetFontColor(labelPlayerTeam_DPS, _detalhes.realtime_dps_meter.font_color)
 				DF:SetFontFace (labelPlayerTeam_DPS, _detalhes.realtime_dps_meter.font_face)
-				DF:SetFontSize (labelPlayerTeam_DPS, _detalhes.realtime_dps_meter.font_size)
+				DF:SetFontSize(labelPlayerTeam_DPS, _detalhes.realtime_dps_meter.font_size)
 				DF:SetFontOutline (labelPlayerTeam_DPS, _detalhes.realtime_dps_meter.font_shadow)
 
 				DF:SetFontColor(labelYellowTeam_DPS, _detalhes.realtime_dps_meter.font_color)
 				DF:SetFontFace (labelYellowTeam_DPS, _detalhes.realtime_dps_meter.font_face)
-				DF:SetFontSize (labelYellowTeam_DPS, _detalhes.realtime_dps_meter.font_size)
+				DF:SetFontSize(labelYellowTeam_DPS, _detalhes.realtime_dps_meter.font_size)
 				DF:SetFontOutline (labelYellowTeam_DPS, _detalhes.realtime_dps_meter.font_shadow)
 
 				--wipe current data for arena
@@ -608,7 +608,7 @@ function Details:CreateCurrentDpsFrame(parent, name)
 
 				DF:SetFontColor(labelGroupDamage_DPS, _detalhes.realtime_dps_meter.font_color)
 				DF:SetFontFace (labelGroupDamage_DPS, _detalhes.realtime_dps_meter.font_face)
-				DF:SetFontSize (labelGroupDamage_DPS, _detalhes.realtime_dps_meter.font_size)
+				DF:SetFontSize(labelGroupDamage_DPS, _detalhes.realtime_dps_meter.font_size)
 				DF:SetFontOutline (labelGroupDamage_DPS, _detalhes.realtime_dps_meter.font_shadow)
 
 				--wipe current data for mythic dungeon
@@ -632,20 +632,20 @@ function Details:CreateCurrentDpsFrame(parent, name)
 			
 			--frame position
 			f:SetSize(_detalhes.realtime_dps_meter.frame_settings.width, _detalhes.realtime_dps_meter.frame_settings.height)
-			LibWindow.RegisterConfig (f, _detalhes.realtime_dps_meter.frame_settings)
-			LibWindow.RestorePosition (f)
+			LibWindow.RegisterConfig(f, _detalhes.realtime_dps_meter.frame_settings)
+			LibWindow.RestorePosition(f)
 
 			--backdrop color
-			f:SetBackdropColor(unpack (_detalhes.realtime_dps_meter.frame_settings.backdrop_color))
+			f:SetBackdropColor(unpack(_detalhes.realtime_dps_meter.frame_settings.backdrop_color))
 			
 			--set frame size
 			f:SetSize(_detalhes.realtime_dps_meter.frame_settings.width, _detalhes.realtime_dps_meter.frame_settings.height)
 			
 			--frame is locked
 			if (_detalhes.realtime_dps_meter.frame_settings.locked) then
-				f:EnableMouse (false)
+				f:EnableMouse(false)
 			else
-				f:EnableMouse (true)
+				f:EnableMouse(true)
 			end
 			
 			--frame can show title
@@ -725,19 +725,19 @@ function Details:CreateCurrentDpsFrame(parent, name)
 					f.YellowDamage = f.YellowDamage + yellowDamageDone
 					
 					--remove player team damage
-					local removedDamage = tremove (f.PlayerTeamBuffer, f.MaxBufferIndex+1)
+					local removedDamage = tremove(f.PlayerTeamBuffer, f.MaxBufferIndex+1)
 					if (removedDamage) then
 						f.PlayerTeamDamage = f.PlayerTeamDamage - removedDamage
 						--be save
-						f.PlayerTeamDamage = max (0, f.PlayerTeamDamage)
+						f.PlayerTeamDamage = max(0, f.PlayerTeamDamage)
 					end
 					
 					--remove yellow damage
-					local removedDamage = tremove (f.YellowTeamBuffer, f.MaxBufferIndex+1)
+					local removedDamage = tremove(f.YellowTeamBuffer, f.MaxBufferIndex+1)
 					if (removedDamage) then
 						f.YellowDamage = f.YellowDamage - removedDamage
 						--be save
-						f.YellowDamage = max (0, f.YellowDamage)
+						f.YellowDamage = max(0, f.YellowDamage)
 					end
 					
 					self.NextScreenUpdate = self.NextScreenUpdate - time_fraction --always 0.1
@@ -772,8 +772,8 @@ function Details:CreateCurrentDpsFrame(parent, name)
 							end
 						else
 							--not in use, player team is forced to 0
-							dpsBarFrame:SetLeftColor(unpack (yellow_team_color))
-							dpsBarFrame:SetRightColor(unpack (green_team_color))
+							dpsBarFrame:SetLeftColor(unpack(yellow_team_color))
+							dpsBarFrame:SetRightColor(unpack(green_team_color))
 						end
 
 						if (Details.realtime_dps_meter.frame_settings.locked) then
@@ -820,12 +820,12 @@ function Details:CreateCurrentDpsFrame(parent, name)
 					f.GroupTotalDamage = f.GroupTotalDamage + groupDamageDoneOnThisTick
 					
 					--cicle buffer removing the last index and subtract its damage
-					local removedDamage = tremove (f.GroupBuffer, f.MaxBufferIndex+1)
+					local removedDamage = tremove(f.GroupBuffer, f.MaxBufferIndex+1)
 					if (removedDamage) then
 						--remove the value from the total damage
 						f.GroupTotalDamage = f.GroupTotalDamage - removedDamage
 						--be save
-						f.GroupTotalDamage = max (0, f.GroupTotalDamage)
+						f.GroupTotalDamage = max(0, f.GroupTotalDamage)
 					end
 					
 					self.NextScreenUpdate = self.NextScreenUpdate - time_fraction
@@ -901,11 +901,11 @@ function Details:CreateCurrentDpsFrame(parent, name)
 			end
 		end
 
-		eventListener:RegisterEvent ("COMBAT_ARENA_START", "ArenaStarted")
-		eventListener:RegisterEvent ("COMBAT_ARENA_END", "ArenaEnded")
-		eventListener:RegisterEvent ("COMBAT_MYTHICDUNGEON_START", "MythicDungeonStarted")
-		eventListener:RegisterEvent ("COMBAT_MYTHICDUNGEON_END", "MythicDungeonEnded")
-		eventListener:RegisterEvent ("COMBAT_PLAYER_ENTER", "ResetBuffer")
+		eventListener:RegisterEvent("COMBAT_ARENA_START", "ArenaStarted")
+		eventListener:RegisterEvent("COMBAT_ARENA_END", "ArenaEnded")
+		eventListener:RegisterEvent("COMBAT_MYTHICDUNGEON_START", "MythicDungeonStarted")
+		eventListener:RegisterEvent("COMBAT_MYTHICDUNGEON_END", "MythicDungeonEnded")
+		eventListener:RegisterEvent("COMBAT_PLAYER_ENTER", "ResetBuffer")
 
 	_detalhes.Broadcaster_CurrentDpsLoaded = true
 	_detalhes.Broadcaster_CurrentDpsFrame = f
@@ -936,8 +936,8 @@ function DetailsTestSplitBar()
 		local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 		barFrame.splitBar:SetTexture(SharedMedia:Fetch("statusbar", "Details Flat"))
 
-		barFrame.splitBar:SetLeftColor(unpack (green_team_color))
-		barFrame.splitBar:SetRightColor(unpack (yellow_team_color))
+		barFrame.splitBar:SetLeftColor(unpack(green_team_color))
+		barFrame.splitBar:SetRightColor(unpack(yellow_team_color))
 
 	--test the splitbar
 		local loopTime = 0.1

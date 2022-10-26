@@ -55,6 +55,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	local POI = {}
 	POI.entityID = containerID
 	POI.isContainer = true
+	POI.grouping = true
 	POI.name = RSContainerDB.GetContainerName(containerID) or AL["CONTAINER"]
 	POI.mapID = mapID
 	if (alreadyFoundInfo and alreadyFoundInfo.mapID == mapID) then
@@ -66,7 +67,7 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 	POI.foundTime = alreadyFoundInfo and alreadyFoundInfo.foundTime
 	POI.isOpened = RSContainerDB.IsContainerOpened(containerID)
 	POI.isDiscovered = POI.isOpened or alreadyFoundInfo ~= nil
-	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLinkByMap(containerID, mapID)
+	POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(containerID, mapID)
 	if (containerInfo) then
 		POI.worldmap = containerInfo.worldmap
 	end
@@ -76,11 +77,11 @@ function RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alrea
 		POI.Texture = RSConstants.BLUE_CONTAINER_TEXTURE
 	elseif (RSRecentlySeenTracker.IsRecentlySeen(containerID, POI.x, POI.y)) then
 		POI.Texture = RSConstants.PINK_CONTAINER_TEXTURE
-	elseif (not POI.isDiscovered and not POI.achievementLink) then
+	elseif (not POI.isDiscovered and RSUtils.GetTableLength(POI.achievementIDs) == 0) then
 		POI.Texture = RSConstants.RED_CONTAINER_TEXTURE
-	elseif (not POI.isDiscovered and POI.achievementLink) then
+	elseif (not POI.isDiscovered and RSUtils.GetTableLength(POI.achievementIDs) > 0) then
 		POI.Texture = RSConstants.YELLOW_CONTAINER_TEXTURE
-	elseif (POI.achievementLink) then
+	elseif (RSUtils.GetTableLength(POI.achievementIDs) > 0) then
 		POI.Texture = RSConstants.GREEN_CONTAINER_TEXTURE
 	else
 		POI.Texture = RSConstants.NORMAL_CONTAINER_TEXTURE
@@ -137,20 +138,20 @@ local function IsContainerPOIFiltered(containerID, mapID, zoneQuestID, vignetteG
 	end
 
 	-- Skip if an ingame vignette is already showing this entity (on Vignette)
---	for _, vignetteGUID in ipairs(vignetteGUIDs) do
---		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
---		if (vignetteInfo and vignetteInfo.objectGUID) then
---			local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
---			if (tonumber(vignetteNPCID) == containerID and onWorldMap and vignetteInfo.onWorldMap) then
---				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", containerID))
---				return true
---			end
---			if (tonumber(vignetteNPCID) == containerID and onMinimap and vignetteInfo.onMinimap) then
---				RSLogger:PrintDebugMessageEntityID(npcID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", containerID))
---				return true
---			end
---		end
---	end
+	for _, vignetteGUID in ipairs(vignetteGUIDs) do
+		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
+		if (vignetteInfo and vignetteInfo.objectGUID) then
+			local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
+			if (tonumber(vignetteNPCID) == containerID and onWorldMap and vignetteInfo.onWorldMap) then
+				RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", containerID))
+				return true
+			end
+			if (tonumber(vignetteNPCID) == containerID and onMinimap and vignetteInfo.onMinimap) then
+				RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", containerID))
+				return true
+			end
+		end
+	end
 
 	return false
 end

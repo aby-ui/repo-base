@@ -74,7 +74,7 @@ local function NeedPlayerFrame_AdjustAttachments(frame)
 end
 
 local function saveDefaultPos(frame)
-    local settings = frame.settings
+    local settings = frame._settings_
     settings.default = settings.default or {}
     local def = settings.default
     table.wipe(def)
@@ -87,7 +87,7 @@ local function saveDefaultPos(frame)
 end
 
 local function OnShow(self, ...)
-    local settings = self.settings
+    local settings = self._settings_
     if settings then
         if not settings.default then -- set defaults
             saveDefaultPos(self);
@@ -149,7 +149,7 @@ end
 local function OnDragStart(self, button)
     if button == "RightButton" then return end
     local frameToMove = self.frameToMove
-    local settings = frameToMove.settings
+    local settings = frameToMove._settings_
     if settings and not settings.default then -- set defaults
         saveDefaultPos(frameToMove);
     end
@@ -162,7 +162,7 @@ end
 
 local function OnDragStop(self)
     local frameToMove = self.frameToMove
-    local settings = frameToMove.settings
+    local settings = frameToMove._settings_
     frameToMove:StopMovingOrSizing()
     frameToMove.isMoving = false
     if settings then
@@ -182,8 +182,8 @@ local function OnMouseWheel(self, value, ...)
     if self.noNeedControlKey or IsControlKeyDown() then
         local frameToMove = self.frameToMove
         local scale = frameToMove:GetScale() or 1
-        if frameToMove.settings and not frameToMove.settings.defaultScale then
-            frameToMove.settings.defaultScale = scale
+        if frameToMove._settings_ and not frameToMove._settings_.defaultScale then
+            frameToMove._settings_.defaultScale = scale
         end
         if(value == 1) then --scale up
             scale = scale +.05
@@ -198,8 +198,8 @@ local function OnMouseWheel(self, value, ...)
         end
         frameToMove.__blizzMove = 1
         CoreUISetScale(frameToMove, scale) --frameToMove:SetScale(scale)
-        if frameToMove.settings then
-            frameToMove.settings.scale = scale
+        if frameToMove._settings_ then
+            frameToMove._settings_.scale = scale
         end
         if frameToMove:IsMovable() then
             --frameToMove:StartMoving(); --这句会导致飘. 如果没有这句reload后的位置不对, 修改CoreUISetScale支持anchor=nil后, 去掉这句没问题
@@ -212,12 +212,12 @@ end
 
 local function resetFrame(f)
     f.__blizzMove = 1
-    if f and f.settings then
-        local defScale = f.settings.defaultScale
+    if f and f._settings_ then
+        local defScale = f._settings_.defaultScale
         if(defScale) then
             f:SetScale(defScale)
         end
-        local def = f.settings.default
+        local def = f._settings_.default
         if def then
             f:ClearAllPoints()
             for _, v in ipairs(def) do
@@ -225,11 +225,11 @@ local function resetFrame(f)
             end
         end
         --warbaby 重置默认值，在resetDB时也有用。
-        table.wipe(f.settings)
-        f.settings.defaultScale= defScale;
-        f.settings.default= def;
+        table.wipe(f._settings_)
+        f._settings_.defaultScale= defScale;
+        f._settings_.default= def;
         if f:GetName() and defaultDB[f:GetName()] then
-            for k, v in pairs(defaultDB[f:GetName()]) do f.settings[k] = v end
+            for k, v in pairs(defaultDB[f:GetName()]) do f._settings_[k] = v end
         end
     end
     NeedPlayerFrame_AdjustAttachments(f);
@@ -245,7 +245,7 @@ local function OnMouseUp(self, ...)
             return
         end
 
-        local settings = frameToMove.settings
+        local settings = frameToMove._settings_
         --toggle save
         if settings then
             settings.save = not settings.save
@@ -263,7 +263,7 @@ local function OnMouseUp(self, ...)
             if settings.relativeTo then
                 settings.relativeTo = settings.relativeTo:GetName()
             end
-            frameToMove.settings = settings
+            frameToMove._settings_ = settings
         end
     end
 end
@@ -278,7 +278,7 @@ function BM_SetMoveHandlerWith(frameNameToMove, loadWith, callback)
     end
 end
 function BM_SetMoveHandler(frameToMove, handler, multiHandler)
-    if not frameToMove or (not multiHandler and frameToMove.settings) then
+    if not frameToMove or (not multiHandler and frameToMove._settings_) then
         return
     end
     if not handler then
@@ -293,7 +293,7 @@ function BM_SetMoveHandler(frameToMove, handler, multiHandler)
     --if not settings.save then
     --    settings.default = nil settings.defaultScale = nil --始终重置默认值，取游戏初始值，因为多个handler的问题，统一在ADDON_LOADED里清理
     --end
-    frameToMove.settings = settings
+    frameToMove._settings_ = settings
     handler.frameToMove = frameToMove
 
     if not handler.EnableMouse then return end
@@ -413,7 +413,7 @@ local function OnEvent(self, event, arg1, arg2)
         CoreDependCall("Blizzard_MawBuffs", function()
             local function adjust()
                 if not bg then return end
-                local settings = bg.settings
+                local settings = bg._settings_
                 local point, relativeTo, relativePoint, xOfs, yOfs = settings.point,settings.relativeTo, settings.relativePoint, settings.xOfs,settings.yOfs
                 if point == nil and settings.default and #settings.default == 1 then
                     point, relativeTo, relativePoint, xOfs, yOfs = unpack(settings.default[1])
@@ -501,8 +501,10 @@ local function OnEvent(self, event, arg1, arg2)
             BM_SetMoveHandler(WarlockPowerFrame)
             BM_SetMoveHandler(MageArcaneChargesFrame)
 
-            --BM_SetMoveHandler(MonkHarmonyBarFrame)
-            for i=1,5 do BM_SetMoveHandler(MonkHarmonyBarFrame, MonkHarmonyBarFrame.LightEnergy[i], true) end
+            for i=1,5 do
+                local tables = MonkHarmonyBarFrame.classResourceButtonTable or MonkHarmonyBarFrame.LightEnergy
+                BM_SetMoveHandler(MonkHarmonyBarFrame, tables[i], true)
+            end
 
             BM_SetMoveHandler(ComboPointPlayerFrame)
         end
@@ -612,8 +614,13 @@ local function OnEvent(self, event, arg1, arg2)
         --9.0
         BM_SetMoveHandler(ItemTextFrame)
         BM_SetMoveHandlerWith("WeeklyRewardsFrame", "Blizzard_WeeklyRewards");
+
+        --10.0
+        BM_SetMoveHandler(QuickKeybindFrame)
+        BM_SetMoveHandler(SettingsPanel)
+
         frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-        
+
     elseif event=="ADDON_LOADED" then
         local frame = loadWithTable[arg1]
         if frame then

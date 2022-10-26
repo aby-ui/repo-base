@@ -96,10 +96,11 @@ addon.DependOn("Grid", function()
         desc = GRIDCLICKSETS_MENUTIP,
         order = 0.1,
         func = function()
-            if InterfaceOptionsFrame:IsVisible() then
-                InterfaceOptionsFrame.lastFrame = nil
-                HideUIPanel(InterfaceOptionsFrame, true)
-                GridClickSetsFrame.lastFrame = InterfaceOptionsFrame
+            local BlizFrame = SettingsPanel or InterfaceOptionsFrame
+            if BlizFrame:IsVisible() then
+                BlizFrame.lastFrame = nil
+                BlizFrame:Hide()
+                GridClickSetsFrame.lastFrame = BlizFrame
             else
                 LibStub("AceConfigDialog-3.0"):Close("Grid")
                 GridClickSetsFrame.lastFrame = function() LibStub("AceConfigDialog-3.0"):Open("Grid") end

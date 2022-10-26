@@ -1,6 +1,6 @@
 
 local _detalhes = _G._detalhes
-local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 local _
 
 	--install skin function:
@@ -473,7 +473,7 @@ local _
 				["textL_custom_text"] = "{data1}. {data3}{data2}",
 				["font_size"] = 16,
 				["height"] = 21,
-				["texture_file"] = "Interface\\AddOns\\Details\\images\\bar_skyline",
+				["texture_file"] = "Interface\\AddOns\\Details\\images\\bar_hyanda",
 				["icon_file"] = "Interface\\AddOns\\Details\\images\\classes_small",
 				["textR_bracket"] = "(",
 				["textR_enable_custom_text"] = false,
@@ -484,7 +484,7 @@ local _
 				},
 				["textL_show_number"] = true,
 				["textR_custom_text"] = "{data1} ({data2}, {data3}%)",
-				["texture"] = "Skyline",
+				["texture"] = "Details Hyanda",
 				["use_spec_icons"] = true,
 				["textR_class_colors"] = false,
 				["textL_class_colors"] = false,
@@ -1004,7 +1004,7 @@ local _
 	local align_right_chat = function()
 	
 		if (not RightChatPanel or not RightChatPanel:IsShown()) then
-			_detalhes:Msg ("Right Chat Panel isn't shown.")
+			_detalhes:Msg("Right Chat Panel isn't shown.")
 			return
 		end
 		
@@ -1055,7 +1055,7 @@ local _
 			
 		end
 
-		table.wipe (instance1.snap); table.wipe (instance2.snap)
+		table.wipe(instance1.snap); table.wipe(instance2.snap)
 		instance1.snap [3] = 2; instance2.snap [1] = 1;
 		instance1.horizontalSnap = true; instance2.horizontalSnap = true
 		
@@ -1068,10 +1068,10 @@ local _
 		instance1:SaveMainWindowPosition()
 		instance2:SaveMainWindowPosition()
 
-		_detalhes.move_janela_func (instance1.baseframe, true, instance1)
-		_detalhes.move_janela_func (instance1.baseframe, false, instance1)
-		_detalhes.move_janela_func (instance2.baseframe, true, instance2)
-		_detalhes.move_janela_func (instance2.baseframe, false, instance2)
+		_detalhes.move_janela_func(instance1.baseframe, true, instance1)
+		_detalhes.move_janela_func(instance1.baseframe, false, instance1)
+		_detalhes.move_janela_func(instance2.baseframe, true, instance2)
+		_detalhes.move_janela_func(instance2.baseframe, false, instance2)
 		
 	end
 	

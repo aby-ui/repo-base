@@ -66,44 +66,42 @@ local function BootstrapDevelopmentEnvironment()
     local changed = {}
     local max_quest_id = 100000
 
-    local function DebugQuest(...)
-        if ns:GetOpt('show_debug_quest') then ns.Debug(...) end
-    end
-
-    C_Timer.After(2, function()
-        -- Give some time for quest info to load in before we start
-        for id = 0, max_quest_id do
-            quests[id] = C_QuestLog.IsQuestFlaggedCompleted(id)
-        end
-        QTFrame:SetScript('OnUpdate', function()
-            if GetTime() - lastCheck > 1 and ns:GetOpt('show_debug_quest') then
-                for id = 0, max_quest_id do
-                    local s = C_QuestLog.IsQuestFlaggedCompleted(id)
-                    if s ~= quests[id] then
-                        changed[#changed + 1] = {time(), id, quests[id], s}
-                        quests[id] = s
-                    end
-                end
-                if #changed <= 10 then
-                    -- changing zones will sometimes cause thousands of quest
-                    -- ids to flip state, we do not want to report on those
-                    for i, args in ipairs(changed) do
-                        table.insert(history, 1, args)
-                        DebugQuest('Quest', args[2], 'changed:', args[3], '=>',
-                            args[4])
-                    end
-                end
-                if #history > 100 then
-                    for i = #history, 101, -1 do
-                        history[i] = nil
-                    end
-                end
-                lastCheck = GetTime()
-                wipe(changed)
+    if ns:GetOpt('show_debug_quest') then
+        C_Timer.After(2, function()
+            -- Give some time for quest info to load in before we start
+            for id = 65000, max_quest_id do
+                quests[id] = C_QuestLog.IsQuestFlaggedCompleted(id)
             end
+            QTFrame:SetScript('OnUpdate', function()
+                if GetTime() - lastCheck > 5 and ns:GetOpt('show_debug_quest') then
+                    for id = 65000, max_quest_id do
+                        local s = C_QuestLog.IsQuestFlaggedCompleted(id)
+                        if s ~= quests[id] then
+                            changed[#changed + 1] = {time(), id, quests[id], s}
+                            quests[id] = s
+                        end
+                    end
+                    if #changed <= 10 then
+                        -- changing zones will sometimes cause thousands of quest
+                        -- ids to flip state, we do not want to report on those
+                        for i, args in ipairs(changed) do
+                            table.insert(history, 1, args)
+                            print('Quest', args[2], 'changed:', args[3], '=>',
+                                args[4])
+                        end
+                    end
+                    if #history > 100 then
+                        for i = #history, 101, -1 do
+                            history[i] = nil
+                        end
+                    end
+                    lastCheck = GetTime()
+                    wipe(changed)
+                end
+            end)
+            print('Quest IDs are now being tracked')
         end)
-        DebugQuest('Quest IDs are now being tracked')
-    end)
+    end
 
     -- Listen for LCTRL + LALT when the map is open to force display nodes
     local IQFrame = CreateFrame('Frame', ADDON_NAME .. 'IQ', WorldMapFrame)

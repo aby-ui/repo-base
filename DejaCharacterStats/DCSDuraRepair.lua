@@ -917,15 +917,14 @@ local function DCS_Item_Level_Center()
 end
 ]]--
 
-local getItemQualityColor = GetItemQualityColor
-
 local function attempt_ilvl(v,attempts)
 	if attempts > 0 then
-		local item = Item:CreateFromEquipmentSlot(v:GetID())
-		local value = item:GetCurrentItemLevel()
+		local nItem = Item:CreateFromEquipmentSlot(v:GetID())
+		local value = nItem:GetCurrentItemLevel()
 		if value then --ilvl of nil probably indicates that there's no tem in that slot
 			if value > 0 then --ilvl of 0 probably indicates that item is not fully loaded
-				v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
+				local r, g, b = GetItemQualityColor(nItem:GetItemQuality());
+				v.ilevel:SetTextColor(r, g, b, 1) --upvalue call
 				v.ilevel:SetText(value)
 			else
 				C_Timer.After(0.2, function() attempt_ilvl(v,attempts-1) end)

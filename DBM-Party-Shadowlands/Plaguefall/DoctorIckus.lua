@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2403, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(164967)
 mod:SetEncounterID(2384)
 
@@ -32,7 +32,7 @@ local warnSlimeInjection			= mod:NewStackAnnounce(329110, 2, nil, "Tank|Healer")
 local warnSlimeLunge				= mod:NewCountAnnounce(329217, 3)
 --Oozes
 local warnCorrosiveGunk				= mod:NewTargetAnnounce(319070, 3)
-local warnWitheringFilth			= mod:NewTargetNoFilterAnnounce(322410, 3, nil, "Healer", 2)--Not special warning, because it's not as urgent to remove as tank debuff (same dispel type)
+local warnWitheringFilth			= mod:NewTargetNoFilterAnnounce(322410, 3, nil, "RemoveMagic", 2)--Not special warning, because it's not as urgent to remove as tank debuff (same dispel type)
 
 --General
 local specWarnSlimeLunge			= mod:NewSpecialWarningSpell(329217, nil, nil, nil, 2, 2)
@@ -109,10 +109,10 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 322410 and self:CheckDispelFilter() then
+	if spellId == 322410 and self:CheckDispelFilter("magic") then
 		warnWitheringFilth:CombinedShow(0.3, args.destName)
 	elseif spellId == 319070 then
-		if self.Options.SpecWarn319070dispel and self:CheckDispelFilter() then
+		if self.Options.SpecWarn319070dispel and self:CheckDispelFilter("disease") then
 			specWarnCorrosiveGunk:Show(args.destName)
 			specWarnCorrosiveGunk:Play(args.destName)
 		else

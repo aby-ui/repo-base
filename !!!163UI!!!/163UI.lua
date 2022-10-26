@@ -1,7 +1,7 @@
 local floor,ceil,format,tostring=floor,ceil,format,tostring
 local pairs,ipairs,next,wipe,assert,type,tinsert,select,tremove,GetTime = pairs,ipairs,next,wipe,assert,type,tinsert,select,tremove,GetTime
 local n2s,safecall,u1copy,tinsertdata,tremovedata = n2s,safecall,u1copy,tinsertdata,tremovedata
-local U2, _, U1 = 163, ...
+local _, U1 = ...
 local L = U1.L;
 U1.PINYIN = U1.PINYIN or {}
 
@@ -12,7 +12,6 @@ local currTags = {} --左侧的标签
 local additionalFilter -- 额外过滤器 [string] (enabled|disabled)
 local reloadList = {} --需要reload的情况
 local initComplete 	--- 是否已经延迟加载完所有插件
-local currList = strrep(strchar(U2%65),U2%0x10); --插件名保护
 local AceDBs = {}
 local loadedNormalAddons = {}
 --U1.variableLoaded     --- if VARIABLES_LOADED event is fired.
@@ -66,7 +65,6 @@ gai = function(...) return U1GetAddonInfo(...) end
 --多重依赖的情况，适应其他整合插件
 local knownAddonPacks = { "elvui", "duowan", "bigfoot", "mogu", "ace2", "ace3", "fish!!!" }
 local function getInitialAddonInfo()
-    local x = strchar(33) x={x,x,x,163,"ui",x,x,x} x=table.concat(x); GetNumAddons = strlower(_)==x  --插件名称保护
     for i = 1, GetNumAddOns() do
         local name, title, notes, _, reason = GetAddOnInfo(i)
         title = title:gsub("%|cff880303%[爱不易%]%|r ", ""):gsub("%|cff880303%[爱不易%]%|r ", "")
@@ -526,10 +524,27 @@ function U1RegisterAddon(name, infoReg)
     end
 
     infoReg.parent = infoReg.parent and infoReg.parent~="" and infoReg.parent~=0 and infoReg.parent:lower() or nil
-end if strupper(...) ~= currList..tostring(0xA3).."\85\73"..currList then return end --插件名称保护
+
+    if infoReg.temporarilyForceDisable and infoReg.vendor then
+        if GetAddOnEnableState(U1PlayerName, name) == 2 then
+            U1_message_temporarilyForceDisable = (U1_message_temporarilyForceDisable or 0) + 1
+            U1Message(format("版本更新，暂时禁用|cffffff00【%s】|r(%s)，请耐心等待修复", infoReg.title, infoReg.name))
+        end
+        DisableAddOn(name)
+        infoReg.originEnabled = false
+        for i, _ in ipairs(infoReg) do
+            infoReg[i] = nil
+        end
+        infoReg.desc = "|cffff0000暂时禁用，请耐心等待更新|r``" .. (infoReg.desc or "")
+    end
+end
 
 --- Called in ConfigsLoaded.lua and after all calls of U1RegisterAddon()
 function U1ConfigsLoaded()
+    --if U1_message_temporarilyForceDisable then
+    --    U1Message(format("版本差异，暂时禁用部分插件(|cffffff00%d个|r)，请耐心等待更新", U1_message_temporarilyForceDisable))
+    --end
+
     local addonInfo = U1.addonInfo;
 
     --处理在reg里注册了parent但却不存在的
@@ -1234,9 +1249,8 @@ end
 
 function U1ToggleChildren(name, enabled, noset, deepToggleChildren, bundleSim)
     --启用子插件, 需要在前面
-    local s = "return U1IterateAllAddons" if strlower(_)=="!\33\033163\117\105\33\033!" then s=s.."()" end --插件名称保护
     local reloadChildren = false
-    for subName, subInfo in loadstring(s)() do
+    for subName, subInfo in U1IterateAllAddons() do
         if(subInfo.parent==name) then
             --这里逻辑有点绕，其实如果先Enable/Disable然后再根据结果LoadAddOn会更好
             --2016.08.28 ignoreLoadAll的不会随父插件一起打开
@@ -1271,6 +1285,10 @@ function U1ToggleAddon(name, enabled, noset, deepToggleChildren, bundleSim)
 
     local info = addonInfo[name];
     if not info then
+        return
+    end
+    if info.temporarilyForceDisable and info.vendor then
+        U1Message(format("版本更新，暂时禁用部分插件，请耐心等待修复", info.title, info.name)) --|cffffff00【%s】|r(%s)
         return
     end
     local reload = false;

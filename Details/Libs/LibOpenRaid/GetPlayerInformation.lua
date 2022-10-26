@@ -15,6 +15,8 @@ local CONST_TALENT_VERSION_CLASSIC = 1
 local CONST_TALENT_VERSION_LEGION = 4
 local CONST_TALENT_VERSION_DRAGONFLIGHT = 5
 
+local CONST_BTALENT_VERSION_COVENANTS = 9
+
 local isTimewalkWoW = function()
     local _, _, _, buildInfo = GetBuildInfo()
     if (buildInfo < 40000) then
@@ -26,6 +28,38 @@ local IsDragonflight = function()
 	return select(4, GetBuildInfo()) >= 100000
 end
 
+local IsShadowlands = function()
+    local versionString, revision, launchDate, gameVersion = GetBuildInfo()
+    if (gameVersion >= 90000 and gameVersion < 100000) then
+        return true
+    end
+end
+
+--information about the player character to send, each expansion has its own system and data can be different
+--it's always a number
+function openRaidLib.UnitInfoManager.GetPlayerInfo1()
+    if (IsShadowlands()) then
+        --return the renown level within the player covenant
+        local renown = C_CovenantSanctumUI.GetRenownLevel() or 1
+        return renown
+    end
+
+    return 0
+end
+
+--information about the player character to send, each expansion has its own system and data can be different
+--it's always a number
+function openRaidLib.UnitInfoManager.GetPlayerInfo2()
+    if (IsShadowlands()) then
+        --return which covenant the player picked
+        local covenant = C_Covenants.GetActiveCovenantID() or 0
+        return covenant
+    end
+
+    return 0
+end
+
+--default player class-spec talent system
 function openRaidLib.GetTalentVersion()
     local _, _, _, buildInfo = GetBuildInfo()
 
@@ -39,6 +73,13 @@ function openRaidLib.GetTalentVersion()
 
     if (buildInfo >= 100000 and buildInfo <= 200000) then --dragonflight
         return CONST_TALENT_VERSION_DRAGONFLIGHT
+    end
+end
+
+--secondary talent tree, can be a legendary weapon talent tree, covenant talent tree, etc...
+function openRaidLib.GetBorrowedTalentVersion()
+    if (IsShadowlands()) then
+        return CONST_BTALENT_VERSION_COVENANTS
     end
 end
 
@@ -164,12 +205,8 @@ function openRaidLib.GetPlayerSpecId()
     end
 end
 
+--borrowed talent tree from shadowlands
 function openRaidLib.UnitInfoManager.GetPlayerConduits()
-
-    if (IsDragonflight()) then
-        return {}
-    end
-
     local conduits = {}
     local soulbindID = C_Soulbinds.GetActiveSoulbindID()
 
@@ -213,6 +250,17 @@ function openRaidLib.UnitInfoManager.GetPlayerConduits()
 
     return conduits
 end
+
+function openRaidLib.UnitInfoManager.GetPlayerBorrowedTalents()
+    local borrowedTalentVersion = openRaidLib.GetBorrowedTalentVersion()
+
+    if (borrowedTalentVersion == CONST_BTALENT_VERSION_COVENANTS) then
+        return openRaidLib.UnitInfoManager.GetPlayerConduits()
+    end
+
+    return {}
+end
+
 
 function openRaidLib.GearManager.GetPlayerItemLevel()
     if (_G.GetAverageItemLevel) then

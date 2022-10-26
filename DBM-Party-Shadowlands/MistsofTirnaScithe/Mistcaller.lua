@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2402, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221015205747")
 mod:SetCreatureID(164501)
 mod:SetEncounterID(2392)
 mod:SetUsedIcons(1, 2, 3, 4)
@@ -77,7 +77,7 @@ function mod:SPELL_CAST_START(args)
 		warnFreezeTag:Show()
 		timerFreezeTagCD:Start()
 	elseif spellId == 321828 then
-		if self:IsTanking("player", "boss1", nil, nil, nil, true) then
+		if self:IsTanking("player", "boss1", nil, true, nil, true) then
 			--Only target of spell can interrupt it
 			specWarnPattyCake:Show(args.sourceName)
 			specWarnPattyCake:Play("kickcast")

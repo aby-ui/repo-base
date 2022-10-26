@@ -58,6 +58,7 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	local POI = {}
 	POI.entityID = npcID
 	POI.isNpc = true
+	POI.grouping = true
 	POI.name = RSNpcDB.GetNpcName(npcID)
 	POI.mapID = mapID
 	if (alreadyFoundInfo and alreadyFoundInfo.mapID == mapID) then
@@ -70,7 +71,7 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 	POI.isDead = RSNpcDB.IsNpcKilled(npcID)
 	POI.isDiscovered = POI.isDead or alreadyFoundInfo ~= nil
 	POI.isFriendly = RSNpcDB.IsInternalNpcFriendly(npcID)
-	POI.achievementLink = RSAchievementDB.GetNotCompletedAchievementLinkByMap(npcID, mapID)
+	POI.achievementIDs = RSAchievementDB.GetNotCompletedAchievementIDsByMap(npcID, mapID)
 	if (npcInfo) then
 		POI.worldmap = npcInfo.worldmap
 	end
@@ -82,11 +83,11 @@ function RSNpcPOI.GetNpcPOI(npcID, mapID, npcInfo, alreadyFoundInfo)
 		POI.Texture = RSConstants.LIGHT_BLUE_NPC_TEXTURE
 	elseif (RSRecentlySeenTracker.IsRecentlySeen(npcID, POI.x, POI.y)) then
 		POI.Texture = RSConstants.PINK_NPC_TEXTURE
-	elseif (not POI.isDiscovered and not POI.achievementLink) then
+	elseif (not POI.isDiscovered and RSUtils.GetTableLength(POI.achievementIDs) == 0) then
 		POI.Texture = RSConstants.RED_NPC_TEXTURE
-	elseif (not POI.isDiscovered and POI.achievementLink) then
+	elseif (not POI.isDiscovered and RSUtils.GetTableLength(POI.achievementIDs) > 0) then
 		POI.Texture = RSConstants.YELLOW_NPC_TEXTURE
-	elseif (POI.achievementLink) then
+	elseif (RSUtils.GetTableLength(POI.achievementIDs) > 0) then
 		POI.Texture = RSConstants.GREEN_NPC_TEXTURE
 	else
 		POI.Texture = RSConstants.NORMAL_NPC_TEXTURE

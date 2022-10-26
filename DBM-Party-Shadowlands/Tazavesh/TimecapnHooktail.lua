@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2449, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221023022028")
 mod:SetCreatureID(175546)
 mod:SetEncounterID(2419)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -9,9 +9,9 @@ mod:SetHotfixNoticeRev(20220405000000)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 347149 350517 347151",
+	"SPELL_CAST_START 350517 347151",
 	"SPELL_CAST_SUCCESS 352345",
-	"SPELL_AURA_APPLIED 354334",
+	"SPELL_AURA_APPLIED 354334 350134",
 	"SPELL_PERIODIC_DAMAGE 358947",
 	"SPELL_PERIODIC_MISSED 358947"
 )
@@ -21,6 +21,7 @@ mod:RegisterEventsInCombat(
 --[[
 (ability.id = 347149 or ability.id = 350517 or ability.id = 347151) and type = "begincast"
  or ability.id = 352345 and type = "cast"
+ or ability.id = 350134 and type = "applydebuff"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 --Boss
@@ -56,7 +57,7 @@ function mod:OnCombatStart(delay)
 	self.vb.breathCount = 0
 	self.vb.anchorCount = 0
 --	timerHookSwipeCD:Start(8.2-delay)--April 5th hotfixes broke it and he doesn't cast this anymore
-	timerInfiniteBreathCD:Start(15-delay)
+	timerInfiniteBreathCD:Start(12-delay)
 	timerDoubleTimeCD:Start(55-delay)
 	--Cannoneers
 	timerAnchorShotCD:Start(58.9-delay)
@@ -64,12 +65,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 347149 then
-		self.vb.breathCount = self.vb.breathCount + 1
-		specWarnInfiniteBreath:Show(self.vb.breathCount)
-		specWarnInfiniteBreath:Play("breathsoon")
-		timerInfiniteBreathCD:Start()
-	elseif spellId == 350517 then
+	if spellId == 350517 then
 		warnDoubleTime:Show()
 		timerDoubleTimeCD:Start()
 		--When he casts double time it removes 5 seconds from current breath timer
@@ -103,6 +99,11 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 354334 then
 		warnHookd:Show(args.destName)
+	elseif spellId == 350134 then
+		self.vb.breathCount = self.vb.breathCount + 1
+		specWarnInfiniteBreath:Show(self.vb.breathCount)
+		specWarnInfiniteBreath:Play("breathsoon")
+		timerInfiniteBreathCD:Start()
 	end
 end
 

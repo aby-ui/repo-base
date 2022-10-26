@@ -92,6 +92,7 @@ module.db.energyLocale = {
 	[16] = "|cff"..format("%02x%02x%02x",0,255,255)..L.BossWatcherEnergyType16,
 	[17] = "|cff"..format("%02x%02x%02x",209,76,223)..L.BossWatcherEnergyType17,
 	[18] = "|cff"..format("%02x%02x%02x",255,147,0)..L.BossWatcherEnergyType18,
+	[19] = "|cff"..format("%02x%02x%02x",170,169,53)..(L.BossWatcherEnergyType19 or "Essence"),
 }
 
 module.db.energyPerClass = {
@@ -111,6 +112,10 @@ module.db.energyPerClass = {
 	["NO"] = 	{{0,1,2,3,6,10},{0,1,2,3,6,10,5,7,8,9,11,12,13,14,15,16,17,18}},
 	["ALL"] =	{{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25},{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}},
 }
+if ExRT.is10 then
+	module.db.energyPerClass["EVOKER"] = {{0,19,10},	{0,19,10}}
+	module.db.energyPerClass["NO"] = 	{{0,1,2,3,6,10},{0,1,2,3,6,10,5,7,8,9,11,12,13,14,15,16,17,18,19}}
+end
 local energyPerClass = module.db.energyPerClass
 
 module.db.schoolsDefault = {0x1,0x2,0x4,0x8,0x10,0x20,0x40}
@@ -321,7 +326,11 @@ do
 			BWInterfaceFrameLoad()
 		end
 		if isBWInterfaceFrameLoaded then
-			InterfaceOptionsFrame:Hide()
+			if ExRT.is10 then
+				SettingsPanel:Hide()
+			else
+				InterfaceOptionsFrame:Hide()
+			end
 			BWInterfaceFrame:Show()
 		end
 		CloseDropDownMenus() 
@@ -389,7 +398,11 @@ function module.options:Load()
 	end
 
 	self.showButton = ELib:Button(self,L.BossWatcherGoToBossWatcher):Size(550,20):Point("TOP",0,-200):OnClick(function ()
-		InterfaceOptionsFrame:Hide()
+		if ExRT.is10 then
+			SettingsPanel:Hide()
+		else
+			InterfaceOptionsFrame:Hide()
+		end
 		ExRT.Options.Frame:Hide()
 		BWInterfaceFrameLoadFunc()
 	end)
@@ -2694,7 +2707,11 @@ function BWInterfaceFrameLoad()
 	BWInterfaceFrame.border = ELib:Shadow(BWInterfaceFrame,20)
 
 	BWInterfaceFrame.DecorationLine = ELib:Frame(BWInterfaceFrame):Point("TOPLEFT",BWInterfaceFrame,0,-40):Point("BOTTOMRIGHT",BWInterfaceFrame,"TOPRIGHT",0,-60):Texture(1,1,1,1):TexturePoint('x')
-	BWInterfaceFrame.DecorationLine.texture:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
+	if ExRT.is10 then
+		BWInterfaceFrame.DecorationLine.texture:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
+	else
+		BWInterfaceFrame.DecorationLine.texture:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
+	end
 
 	BWInterfaceFrame.backToInterface.tooltipText = L.BossWatcherBackToInterface
 	BWInterfaceFrame.buttonClose.tooltipText = L.BossWatcherButtonClose
@@ -2818,7 +2835,11 @@ function BWInterfaceFrameLoad()
 		elseif isConfirmedGradient then
 			local school1,school2 = isConfirmedGradient[1],isConfirmedGradient[2]
 			self:SetVertexColor(1,1,1,1)
-			self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+			if ExRT.is10 then
+				self:SetGradient("HORIZONTAL",CreateColor(module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1), CreateColor(module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1))
+			else
+				self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+			end
 		else
 			local school1,school2 = nil
 			for i=1,#module.db.schoolsDefault do
@@ -2831,7 +2852,11 @@ function BWInterfaceFrameLoad()
 			end
 			if school1 and school2 then
 				self:SetVertexColor(1,1,1,1)
-				self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+				if ExRT.is10 then
+					self:SetGradient("HORIZONTAL",CreateColor(module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1), CreateColor(module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1))
+				else
+					self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+				end
 			elseif school1 and not school2 then
 				self:SetVertexColor(module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b, 1)
 			else
@@ -3204,7 +3229,11 @@ function BWInterfaceFrameLoad()
 		--TLframe.texture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\bar9.tga")
 		--TLframe.texture:SetVertexColor(0.3, 1, 0.3, 1)
 		TLframe.texture:SetColorTexture(1, 1, 1, 1)
-		TLframe.texture:SetGradientAlpha("VERTICAL",1,0.82,0,.7,0.95,0.65,0,.7)
+		if ExRT.is10 then
+			TLframe.texture:SetGradient("VERTICAL",CreateColor(1,0.82,0,.7), CreateColor(0.95,0.65,0,.7))
+		else
+			TLframe.texture:SetGradientAlpha("VERTICAL",1,0.82,0,.7,0.95,0.65,0,.7)
+		end
 		TLframe.texture:SetAllPoints()
 
 		TLframe.textLeft = ELib:Text(TLframe,"",12):Size(200,16):Point("BOTTOMLEFT",TLframe,"BOTTOMLEFT", 2, 2):Top():Color():Shadow()
@@ -3213,7 +3242,11 @@ function BWInterfaceFrameLoad()
 
 		TLframe.lifeUnderLine = TLframe:CreateTexture(nil, "BACKGROUND")
 		TLframe.lifeUnderLine:SetColorTexture(1,1,1,1)
-		TLframe.lifeUnderLine:SetGradientAlpha("VERTICAL", 1,0.2,0.2, 0, 1,0.2,0.2, 0.7)
+		if ExRT.is10 then
+			TLframe.lifeUnderLine:SetGradient("VERTICAL",CreateColor(1,0.2,0.2,0), CreateColor(1,0.2,0.2, 0.7))
+		else
+			TLframe.lifeUnderLine:SetGradientAlpha("VERTICAL", 1,0.2,0.2, 0, 1,0.2,0.2, 0.7)
+		end
 		TLframe.lifeUnderLine._SetPoint = TLframe.lifeUnderLine.SetPoint
 		TLframe.lifeUnderLine.SetPoint = function(self,start,_end)
 			self:ClearAllPoints()
@@ -3236,7 +3269,11 @@ function BWInterfaceFrameLoad()
 		TLframe.arrow.G3:SetSize(15,30)
 		TLframe.arrow.G3:SetPoint("LEFT",6,0)
 		TLframe.arrow.G3:SetColorTexture(1,1,1)
-		TLframe.arrow.G3:SetGradientAlpha("HORIZONTAL",0,1,0,1,0,1,0,0)
+		if ExRT.is10 then
+			TLframe.arrow.G3:SetGradient("HORIZONTAL",CreateColor(0,1,0,1), CreateColor(0,1,0,0))
+		else
+			TLframe.arrow.G3:SetGradientAlpha("HORIZONTAL",0,1,0,1,0,1,0,0)
+		end
 		TLframe.arrow:Hide()
 
 		TLframe.timeSegments = {}
@@ -3665,7 +3702,11 @@ function BWInterfaceFrameLoad()
 		--TLframe.ImprovedSelectSegment.Texture:SetTexture("Interface\\AddOns\\"..GlobalAddonName.."\\media\\bar9.tga")
 		--TLframe.ImprovedSelectSegment.Texture:SetVertexColor(0, 0.65, 0.9, .7)
 		TLframe.ImprovedSelectSegment.Texture:SetColorTexture(1, 1, 1, 1)
-		TLframe.ImprovedSelectSegment.Texture:SetGradientAlpha("VERTICAL",0.3,0.75,0.90,.7,0,0.62,0.90,.7)
+		if ExRT.is10 then
+			TLframe.ImprovedSelectSegment.Texture:SetGradient("VERTICAL",CreateColor(0.3,0.75,0.90,.7), CreateColor(0,0.62,0.90,.7))
+		else
+			TLframe.ImprovedSelectSegment.Texture:SetGradientAlpha("VERTICAL",0.3,0.75,0.90,.7,0,0.62,0.90,.7)
+		end
 		TLframe.ImprovedSelectSegment.Texture:SetHeight(30)
 		TLframe.ImprovedSelectSegment.Texture:Hide()
 
@@ -5259,8 +5300,16 @@ function BWInterfaceFrameLoad()
 			dps = dps or 0
 			line.dps:SetFormattedText("%s.%s",FormatLargeNumber(floor(dps)),format("%.2f",dps % 1):gsub("^.-%.",""))
 		end
-		line.overall:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
-		line.overall_black:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+		if ExRT.is10 then
+			line.overall:SetGradient("HORIZONTAL",CreateColor(0,0,0,0), CreateColor(0,0,0,0))
+		else
+			line.overall:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+		end
+		if ExRT.is10 then
+			line.overall_black:SetGradient("HORIZONTAL",CreateColor(0,0,0,0), CreateColor(0,0,0,0))
+		else
+			line.overall_black:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+		end
 		if class then
 			local classColorArray = type(CUSTOM_CLASS_COLORS)=="table" and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			if classColorArray then
@@ -7642,7 +7691,11 @@ function BWInterfaceFrameLoad()
 		elseif isConfirmedGradient then
 			local school1,school2 = isConfirmedGradient[1],isConfirmedGradient[2]
 			self:SetColorTexture(1,1,1,1)
-			self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+			if ExRT.is10 then
+				self:SetGradient("HORIZONTAL",CreateColor(module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1), CreateColor(module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1))
+			else
+				self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+			end
 		else
 			local school1,school2 = nil
 			for i=1,#module.db.schoolsDefault do
@@ -7655,7 +7708,11 @@ function BWInterfaceFrameLoad()
 			end
 			if school1 and school2 then
 				self:SetColorTexture(1,1,1,1)
-				self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+				if ExRT.is10 then
+					self:SetGradient("HORIZONTAL",CreateColor(module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1), CreateColor(module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1))
+				else
+					self:SetGradientAlpha("HORIZONTAL", module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b,1,module.db.schoolsColors[school2].r,module.db.schoolsColors[school2].g,module.db.schoolsColors[school2].b,1)
+				end
 			elseif school1 and not school2 then
 				self:Color(1,1,1,1)
 				self:SetColorTexture(module.db.schoolsColors[school1].r,module.db.schoolsColors[school1].g,module.db.schoolsColors[school1].b, 1)
@@ -9222,7 +9279,7 @@ function BWInterfaceFrameLoad()
 			local healLine = heal[i]
 			local class = nil
 			if healLine.guid and healLine.guid ~= "" then
-				class = select(2,GetPlayerInfoByGUID(healLine.guid))
+				class = select(2,ExRT.F:SafeCall(GetPlayerInfoByGUID,healLine.guid))
 			end
 			local icon = ""
 			if class and CLASS_ICON_TCOORDS[class] then
@@ -10420,8 +10477,16 @@ function BWInterfaceFrameLoad()
 			dps = dps or 0
 			line.dps:SetFormattedText("%s.%s",FormatLargeNumber(floor(dps)),format("%.2f",dps % 1):gsub("^.-%.",""))
 		end
-		line.overall:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
-		line.overall_black:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+		if ExRT.is10 then
+			line.overall:SetGradient("HORIZONTAL",CreateColor(0,0,0,0), CreateColor(0,0,0,0))
+		else
+			line.overall:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+		end
+		if ExRT.is10 then
+			line.overall_black:SetGradient("HORIZONTAL",CreateColor(0,0,0,0), CreateColor(0,0,0,0))
+		else
+			line.overall_black:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+		end
 		if class then
 			local classColorArray = type(CUSTOM_CLASS_COLORS)=="table" and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
 			if classColorArray then
@@ -10981,7 +11046,11 @@ function BWInterfaceFrameLoad()
 			line.back = line:CreateTexture(nil, "BACKGROUND")
 			line.back:SetAllPoints()
 			line.back:SetColorTexture( 1, 1, 1, 1)
-			line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 0, 0, 0, 0, 0)
+			if ExRT.is10 then
+				line.back:SetGradient("HORIZONTAL",CreateColor(0,0,0,0), CreateColor(0,0,0,0))
+			else
+				line.back:SetGradientAlpha("HORIZONTAL", 0,0,0,0,0,0,0,0)
+			end
 
 			line:SetScript("OnEnter",DeathTab_LineOnEnter)
 			line:SetScript("OnLeave",DeathTab_LineOnLeave)
@@ -10991,7 +11060,11 @@ function BWInterfaceFrameLoad()
 		end
 		line.time:SetText(textTime)
 		line.text:SetText(textText)
-		line.back:SetGradientAlpha("HORIZONTAL", gradientR,gradientG,gradientB, 0.3, gradientR,gradientG,gradientB, 0)
+		if ExRT.is10 then
+			line.back:SetGradient("HORIZONTAL",CreateColor(gradientR,gradientG,gradientB, 0.3), CreateColor(gradientR,gradientG,gradientB, 0))
+		else
+			line.back:SetGradientAlpha("HORIZONTAL", gradientR,gradientG,gradientB, 0.3, gradientR,gradientG,gradientB, 0)
+		end
 		line.spellLink = spellID and "spell:"..spellID
 		line.clickToLog = clickToLog
 		line.arrowPos = arrowPos

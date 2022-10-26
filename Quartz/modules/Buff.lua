@@ -144,7 +144,7 @@ local framefactory = {
 		bar:SetBackdropColor(0,0,0)
 		bar.text = bar:CreateFontString(nil, "OVERLAY")
 		bar.timetext = bar:CreateFontString(nil, "OVERLAY")
-		bar.icon = bar:CreateTexture(nil, "DIALOG")
+		bar.icon = bar:CreateTexture(nil, "ARTWORK")
 		if k == 1 then
 			bar:SetMovable(true)
 			bar:RegisterForDrag("LeftButton")

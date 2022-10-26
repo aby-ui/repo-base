@@ -21,6 +21,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 local media = LibStub("LibSharedMedia-3.0")
 local db
 
+local WoW10 = select(4, GetBuildInfo()) >= 100000
+
 ----------------------------
 -- Upvalues
 -- GLOBALS: LibStub, QuartzDB
@@ -177,7 +179,8 @@ function Quartz3:ShowUnlockDialog()
 		desc:SetPoint("BOTTOMRIGHT", -18, 48)
 		desc:SetText(L["Bars unlocked. Move them now and click Lock when you are done."])
 
-		local lockBars = CreateFrame("CheckButton", "Quartz3UnlockDialogLock", f, "OptionsButtonTemplate")
+		local lockBars = CreateFrame("CheckButton", "Quartz3UnlockDialogLock", f, WoW10 and "UIPanelButtonTemplate" or "OptionsButtonTemplate")
+		lockBars:SetWidth(150)
 		_G[lockBars:GetName() .. "Text"]:SetText(L["Lock"])
 
 		lockBars:SetScript("OnClick", function(frame)

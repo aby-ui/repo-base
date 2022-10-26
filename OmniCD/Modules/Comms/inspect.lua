@@ -263,12 +263,13 @@ if E.isPreWOTLKC then
 		info.talentData = {}
 		info.invSlotData = {}
 
+		local talentGroup = GetActiveTalentGroup(true, nil)
 		for i = 1, 3 do
 			for j = 1, MAX_NUM_TALENTS do
 
 
 
-				local name, _,_,_, currentRank = GetTalentInfo(i, j, true, unit)
+				local name, _,_,_, currentRank = GetTalentInfo(i, j, true, unit, talentGroup)
 				if not name then break end
 				if currentRank > 0 then
 					local talent = talentNameToRankID[name]

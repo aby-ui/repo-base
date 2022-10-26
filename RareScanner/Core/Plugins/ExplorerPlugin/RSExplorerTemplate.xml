@@ -1,34 +1,32 @@
 <?xml version="1.0"?>
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
 
   <Script file="RSExplorerMixin.lua"/>
  
   <Frame name="RSExplorerUITemplate" virtual="true">
     <Layers>
-      <Layer level="BACKGROUND" textureSubLevel="-1">
-        <Texture parentKey="BackgroundTile" atlas="Adventures-Missions-BG-02" horizTile="true" vertTile="true">
-          <Anchors>
-            <Anchor point="TOPLEFT"/>
-            <Anchor point="BOTTOMRIGHT"/>
-          </Anchors>
-        </Texture>
-      </Layer>
+		<Layer level="BACKGROUND">
+			<Texture parentKey="Background" atlas="Dragonflight-Landingpage-Background" useAtlasSize="true">
+				<Anchors>
+            		<Anchor point="TOPLEFT" x="5" y="-5"/>
+            		<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+				</Anchors>
+			</Texture>
+		</Layer>
     </Layers>
     <Frames>
-      <Button parentKey="CloseButton" inherits="UIPanelCloseButton" frameLevel="3020">
+      <Button parentKey="CloseButton" inherits="UIPanelCloseButton" frameLevel="800">
         <Anchors>
-          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
-            <Offset x="4" y="5"/>
-          </Anchor>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT"/>
         </Anchors>
       </Button>
     </Frames>
   </Frame>
-  
   <Frame name="RSExplorerRareInfoBaseFrameTemplate" virtual="true">
     <Layers>
       <Layer level="BORDER">
-        <Texture parentKey="BaseFrameBackground" atlas="Adventures-Missions-BG-01" horizTile="true" vertTile="true">
+        <Texture parentKey="BaseFrameBackground" atlas="Dragonflight-Landingpage-Background" horizTile="true" vertTile="true">
           <Anchors>
             <Anchor point="TOPLEFT"/>
             <Anchor point="BOTTOMRIGHT"/>
@@ -36,41 +34,7 @@
         </Texture>
       </Layer>
       <Layer level="BORDER" textureSubLevel="1">
-        <Texture parentKey="BaseFrameTop" atlas="_Garr_InfoBoxMission-Top" horizTile="true" useAtlasSize="false">
-          <Size y="4"/>
-          <Anchors>
-            <Anchor point="TOPLEFT" x="1" y="-7"/>
-            <Anchor point="TOPRIGHT" x="-1" y="-7"/>
-          </Anchors>
-          <Color r="1" g="1" b="1" a=".65"/>
-        </Texture>
-        <Texture parentKey="BaseFrameBottom" atlas="_Garr_InfoBoxMission-Top" horizTile="true" useAtlasSize="false">
-          <Size y="4"/>
-          <Anchors>
-            <Anchor point="BOTTOMLEFT" y="7"/>
-            <Anchor point="BOTTOMRIGHT" y="7"/>
-          </Anchors>
-          <Color r="1" g="1" b="1" a=".65"/>
-          <TexCoords left="0.0" right="1.0" top="1.0" bottom="0.0"/>
-        </Texture>
-        <Texture parentKey="BaseFrameLeft" atlas="!Garr_InfoBoxMission-Left" vertTile="true" useAtlasSize="false">
-          <Size x="4"/>
-          <Anchors>
-            <Anchor point="TOPLEFT" x="7"/>
-            <Anchor point="BOTTOMLEFT" x="7"/>
-          </Anchors>
-          <Color r="1" g="1" b="1" a=".65"/>
-        </Texture>
-        <Texture parentKey="BaseFrameRight" atlas="!Garr_InfoBoxMission-Left" vertTile="true" useAtlasSize="false">
-          <Size x="4"/>
-          <Anchors>
-            <Anchor point="TOPRIGHT" x="-7"/>
-            <Anchor point="BOTTOMRIGHT" x="-7"/>
-          </Anchors>
-          <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
-          <Color r="1" g="1" b="1" a=".55"/>
-        </Texture>
-        <Texture parentKey="BoardDropShadow" atlas="Adventures-Missions-Shadow">
+        <Texture parentKey="BoardDropShadow" atlas="Dragonflight-Landingpage-Background">
           <Anchors>
             <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT"/>
             <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT"/>
@@ -82,57 +46,63 @@
       <Frame parentKey="RaisedFrameEdges" setAllPoints="true" frameLevel="50">
         <Layers>
           <Layer level="BORDER" textureSubLevel="4">
-            <Texture parentKey="BaseFrameTopEdge" atlas="_AdventuresFrame-Small-Top" horizTile="true" useAtlasSize="true">
+            <Texture parentKey="BaseFrameTopEdge" atlas="_Dragonflight-Nineslice-EdgeTop" horizTile="true" useAtlasSize="false">
               <Anchors>
-                <Anchor point="TOPLEFT" y="3"/>
-                <Anchor point="TOPRIGHT" y="3"/>
+                <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" y="2" />
+                <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" y="615"/>
               </Anchors>
             </Texture>
-            <Texture parentKey="BaseFrameBottomEdge" atlas="_AdventuresFrame-Small-Top" horizTile="true" useAtlasSize="true">
+            <Texture parentKey="BaseFrameBottomEdge" atlas="_Dragonflight-Nineslice-EdgeBottom" horizTile="true" useAtlasSize="false">
               <Anchors>
-                <Anchor point="BOTTOMLEFT" y="-3"/>
-                <Anchor point="BOTTOMRIGHT" y="-3"/>
+                <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" y="-620"/>
+                <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" y="-7" />
               </Anchors>
-              <TexCoords left="0.0" right="1.0" top="1.0" bottom="0.0"/>
             </Texture>
-            <Texture parentKey="BaseFrameLeftEdge" atlas="!AdventuresFrame-Left" vertTile="true" useAtlasSize="true">
+            <Texture parentKey="BaseFrameLeftEdge" atlas="!Dragonflight-NineSlice-EdgeLeft" vertTile="true" useAtlasSize="false">
               <Anchors>
-                <Anchor point="TOPLEFT" x="-3"/>
-                <Anchor point="BOTTOMLEFT" x="-3"/>
+                <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="-2" />
+                <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="-565" y="-3" />
               </Anchors>
-              <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
             </Texture>
-            <Texture parentKey="BaseFrameRightEdge" atlas="!AdventuresFrame-Right" vertTile="true" useAtlasSize="true">
+            <Texture parentKey="BaseFrameRightEdge" atlas="!Dragonflight-NineSlice-EdgeRight" vertTile="true" useAtlasSize="false">
               <Anchors>
-                <Anchor point="TOPRIGHT" x="3"/>
-                <Anchor point="BOTTOMRIGHT" x="3"/>
+                <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="563" />
+                <Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="3" y="-3" />
               </Anchors>
-              <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
             </Texture>
           </Layer>
           <Layer level="BORDER" textureSubLevel="5">
-            <Texture parentKey="BaseFrameTopLeftCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+            <Texture parentKey="BaseFrameTopLeftCorner" atlas="Dragonflight-NineSlice-CornerTopLeft" useAtlasSize="false">
+              <Size>
+    			<AbsDimension x="32" y="32"/>
+  			  </Size>
               <Anchors>
-                <Anchor point="TOPLEFT"/>
+                <Anchor point="TOPLEFT" x="-4" y="-1"/>
               </Anchors>
             </Texture>
-            <Texture parentKey="BaseFrameTopRightCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+            <Texture parentKey="BaseFrameTopRightCorner" atlas="Dragonflight-NineSlice-CornerTopRight" useAtlasSize="false">
+              <Size>
+    			<AbsDimension x="32" y="32"/>
+  			  </Size>
               <Anchors>
-                <Anchor point="TOPRIGHT"/>
+                <Anchor point="TOPRIGHT" x="4" y="-1"/>
               </Anchors>
-              <TexCoords left="1.0" right="0.0" top="0.0" bottom="1.0"/>
             </Texture>
-            <Texture parentKey="BaseFrameBottomLeftCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+            <Texture parentKey="BaseFrameBottomLeftCorner" atlas="Dragonflight-NineSlice-CornerBottomLeft" useAtlasSize="false">
+              <Size>
+    			<AbsDimension x="32" y="32"/>
+  			  </Size>
               <Anchors>
-                <Anchor point="BOTTOMLEFT"/>
+                <Anchor point="BOTTOMLEFT" x="-5" y="-2"/>
               </Anchors>
-              <TexCoords left="0.0" right="1.0" top="1.0" bottom="0.0"/>
             </Texture>
-            <Texture parentKey="BaseFrameBottomRightCorner" atlas="AdventuresFrame-Corner-Small-TopLeft" useAtlasSize="true">
+            <Texture parentKey="BaseFrameBottomRightCorner" atlas="Dragonflight-NineSlice-CornerBottomRight" useAtlasSize="false">
+              <Size>
+    			<AbsDimension x="32" y="32"/>
+  			  </Size>
               <Anchors>
-                <Anchor point="BOTTOMRIGHT"/>
+                <Anchor point="BOTTOMRIGHT" x="4" y="-1"/>
               </Anchors>
-              <TexCoords left="1.0" right="0.0" top="1.0" bottom="0.0"/>
             </Texture>
           </Layer>
         </Layers>
@@ -230,7 +200,6 @@
        </Layer>
      </Layers>
   </Frame>
-  
   <Frame name="RSExplorerRareInfoTemplate" inherits="RSExplorerRareInfoBaseFrameTemplate" virtual="true">
     <Layers>
       <Layer level="BORDER" textureSubLevel="3">
@@ -264,7 +233,6 @@
 	        <Texture file="Interface\AchievementFrame\UI-Achievement-Progressive-Shield">
 	          <Size x="54" y="52"/>
 	        </Texture>
-	        <TexCoords left="0" right="0.75" top="0" bottom="0.75"/>
 	      </Layer>
 	    </Layers>
 	    <Scripts>
@@ -275,13 +243,13 @@
       <Frame parentKey="Map">
         <Anchors>
           <Anchor point="BOTTOMLEFT" relativeKey="$parent.Header" relativePoint="BOTTOMLEFT"/>
-          <Anchor point="TOPRIGHT" x="-5" y="-450"/>
+          <Anchor point="TOPRIGHT" x="0" y="-450"/>
         </Anchors>
       </Frame>
       <Frame parentKey="Mounts" inherits="RSExplorerRareInfoLootTemplate">
         <Anchors>
-     	  <Anchor point="TOPLEFT" relativeKey="$parent.Map" relativePoint="BOTTOMLEFT" x="10" y="5" />
-    	  <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Map" relativePoint="BOTTOM" x="0" y="-55"/>
+     	  <Anchor point="TOPLEFT" relativeKey="$parent.Map" relativePoint="BOTTOMLEFT" x="8" y="10" />
+    	  <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Map" relativePoint="BOTTOM" x="0" y="-50"/>
         </Anchors>
       </Frame>
       <Frame parentKey="Pets" inherits="RSExplorerRareInfoLootTemplate">
@@ -309,7 +277,7 @@
     <Frames>
       <CheckButton parentKey="AutoFilterCheckButton" inherits="ChatConfigCheckButtonTemplate">
       	<Anchors>
-	      <Anchor point="LEFT" x="20" y="5" />
+	      <Anchor point="LEFT" x="25" y="5" />
     	</Anchors>
         <Scripts>
 		  <OnEnter>
@@ -391,7 +359,8 @@
       </Frame>
       <Frame parentKey="RaisedBorder" inherits="NineSlicePanelTemplate" frameLevel="2">
         <KeyValues>
-          <KeyValue key="layoutType" value="CovenantMissionFrame" type="string"/>
+		  <KeyValue key="layoutType" value="UniqueCornersLayout" type="string"/>
+		  <KeyValue key="layoutTextureKit" value="Dragonflight" type="string"/>
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT"/>
@@ -400,8 +369,8 @@
       </Frame>
       <Frame parentKey="Filters" mixin="RSExplorerFilters" name="$parentFilters" frameLevel="4">
         <Anchors>
-          <Anchor point="TOPLEFT" x="60" y="-25" relativePoint="TOPLEFT"/>
-          <Anchor point="BOTTOMRIGHT" x="-60" y="-65" relativePoint="TOPRIGHT"/>
+          <Anchor point="TOPLEFT" x="60" y="-30" relativePoint="TOPLEFT"/>
+          <Anchor point="BOTTOMRIGHT" x="-60" y="-70" relativePoint="TOPRIGHT"/>
         </Anchors>
         <Frames>
 	      <Button parentKey="RestartScanningButton" inherits="SharedButtonSmallTemplate">
@@ -432,15 +401,15 @@
         </Anchors>
       </Frame>
       <Frame parentKey="RareInfo" hidden="true" inherits="RSExplorerRareInfoTemplate" frameLevel="3">
-	    <Size x="574" y="638"/>
+	    <Size x="565" y="625"/>
 	    <Anchors>
-			<Anchor point="TOPRIGHT" x="-38" y="-61"/>
+			<Anchor point="TOPRIGHT" x="-58" y="-70"/>
 		</Anchors>
 	  </Frame>
       <Frame parentKey="Control" inherits="RSExplorerControlTemplate" mixin="RSExplorerControl" hidden="true" frameLevel="4">
 	    <Size x="574" y="60"/>
 	    <Anchors>
-			<Anchor point="TOPLEFT" relativeKey="$parent.RareNPCList" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+			<Anchor point="TOPLEFT" relativeKey="$parent.RareNPCList" relativePoint="BOTTOMLEFT" x="0" y="0"/>
 			<Anchor point="BOTTOMRIGHT" x="-38" y="20"/>
 		</Anchors>
 	  </Frame>

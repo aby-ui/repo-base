@@ -605,7 +605,7 @@ function rf.IsTargetARare()
 	end
 end
 
-rf:SetScript ("OnEvent", function (self, event, ...)
+rf:SetScript("OnEvent", function (self, event, ...)
 
 	if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
 
@@ -706,7 +706,7 @@ function WorldQuestTracker.RareWidgetOnEnter (self)
 		GameCooltip:Show()
 		GameTooltip:Hide()
 		
-		parent.TextureCustom:SetBlendMode ("ADD")
+		parent.TextureCustom:SetBlendMode("ADD")
 	end
 	 
 end
@@ -716,7 +716,7 @@ function WorldQuestTracker.RareWidgetOnLeave (self)
 	if (not WorldMapFrame.isMaximized) then
 		GameCooltipFrame1:SetParent (UIParent)
 	end
-	self:GetParent().TextureCustom:SetBlendMode ("BLEND")
+	self:GetParent().TextureCustom:SetBlendMode("BLEND")
 end
 
 function WorldQuestTracker.RareWidgetOnClick (self, button)
@@ -805,13 +805,13 @@ function WorldQuestTracker.UpdateRareIcons (mapID)
 					end
 					
 					local pin = WorldQuestTrackerDataProvider:GetMap():AcquirePin ("WorldQuestTrackerRarePinTemplate", "rarePin")
-					pin:SetSize (1, 1)
+					pin:SetSize(1, 1)
 					
 					if (not pin.InitializedForRare) then
 						pin.InitializedForRare = true
 						local widget = WorldQuestTracker.GetOrCreateZoneWidget (math.random (1, 99999999))
 						WorldQuestTracker.ResetWorldQuestZoneButton (widget)
-						widget:SetPoint ("center", pin, "center")
+						widget:SetPoint("center", pin, "center")
 						pin.RareWidget = widget
 					end
 					
@@ -828,8 +828,8 @@ function WorldQuestTracker.UpdateRareIcons (mapID)
 					pin.RareWidget.RareOverlay:Show()
 					
 					pin.RareWidget.Texture:Hide()
-					pin.RareWidget.TextureCustom:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_star]])
-					pin.RareWidget.TextureCustom:SetSize (22, 22)
+					pin.RareWidget.TextureCustom:SetTexture([[Interface\AddOns\WorldQuestTracker\media\icon_star]])
+					pin.RareWidget.TextureCustom:SetSize(22, 22)
 					pin.RareWidget.TextureCustom:Show()
 					
 					pin.RareWidget:Show()

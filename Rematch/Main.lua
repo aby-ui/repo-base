@@ -248,7 +248,7 @@ function rematch:InitSavedVars()
 		end
 	end
 	settings.SelectedTab = settings.SelectedTab or 1
-
+	settings.MiniMinimized = nil -- disabling this setting
 	rematch:ValidateTeams() -- make sure teams are okay
 end
 
@@ -917,48 +917,50 @@ end
 
 --[[ RematchTitlebarButtonTemplate: for red buttons atop BasicFrameTemplate titlebars (close, minimize, etc) ]]
 
-function rematch:TitlebarButtonOnMouseDown()
-	self.Icon:SetPoint("CENTER",-1,-2)
-	self.Icon:SetVertexColor(0.85,0.85,0.85)
-end
+-- function rematch:TitlebarButtonOnMouseDown()
+-- 	self.Icon:SetPoint("CENTER",-1,-2)
+-- 	self.Icon:SetVertexColor(0.85,0.85,0.85)
+-- end
 
-function rematch:TitlebarButtonOnMouseUp()
-	self.Icon:SetPoint("CENTER")
-	self.Icon:SetVertexColor(1,1,1)
-end
+-- function rematch:TitlebarButtonOnMouseUp()
+-- 	self.Icon:SetPoint("CENTER")
+-- 	self.Icon:SetVertexColor(1,1,1)
+-- end
 
--- texcoords into TitlebarButtons.tga
-local titleIconTexCoords = {
-	pin = {0.75,1,0,0.25}, minimize = {0,0.25,0.25,0.5}, maximize = {0.25,0.5,0.25,0.5},
-	lock = {0.5,0.75,0.25,0.5}, unlock = {0.75,1,0.25,0.5}, left = {0,0.25,0.5,0.75},
-	right = {0.25,0.5,0.5,0.75}, up = {0.5,0.75,0.5,0.75}, down = {0.75,1,0.5,0.75}
+-- -- texcoords into TitlebarButtons.tga
+-- local titleIconTexCoords = {
+-- 	pin = {0.75,1,0,0.25}, minimize = {0,0.25,0.25,0.5}, maximize = {0.25,0.5,0.25,0.5},
+-- 	lock = {0.5,0.75,0.25,0.5}, unlock = {0.75,1,0.25,0.5}, left = {0,0.25,0.5,0.75},
+-- 	right = {0.25,0.5,0.5,0.75}, up = {0.5,0.75,0.5,0.75}, down = {0.75,1,0.5,0.75}
+-- }
+
+-- -- this changes the icon of a titlebar button
+-- function rematch:SetTitlebarButtonIcon(button,icon)
+-- 	local coords = titleIconTexCoords[icon]
+-- 	if coords then
+-- 		button.Icon:SetTexCoord(coords[1],coords[2],coords[3],coords[4])
+-- 	end
+-- end
+
+local titleButtonTexCoords = {
+
+	close = {0.0078125,0.140625,0.01171875,0.14453125},
+	minimize = {0.15625,0.2890625,0.01171875,0.14453125},
+	maximize = {0.3046875,0.4375,0.01171875,0.14453125},
+	pin = {0.453125,0.5859375,0.01171875,0.14453125},
+	lock = {0.0078125,0.140625,0.48828125,0.62109375},
+	unlock = {0.15625,0.2890625,0.48828125,0.62109375},
+	left = {0.3046875,0.4375,0.48828125,0.62109375},
+	right = {0.453125,0.5859375,0.48828125,0.62109375}
 }
 
--- this changes the icon of a titlebar button
 function rematch:SetTitlebarButtonIcon(button,icon)
-	local coords = titleIconTexCoords[icon]
+	local coords = titleButtonTexCoords[icon]
 	if coords then
-		button.Icon:SetTexCoord(coords[1],coords[2],coords[3],coords[4])
-	end
-end
-
--- converts the default BasicFrameTemplate CloseButton to Rematch's icon decal overlaid over a blank red button
-function rematch:ConvertTitlebarCloseButton(button)
-	if not button.Icon and select(4,GetBuildInfo())<100000 then
-		button:SetNormalTexture("Interface\\AddOns\\Rematch\\Textures\\TitlebarButtons")
-		button:GetNormalTexture():SetTexCoord(0,0.25,0,0.25)
-		button:SetPushedTexture("Interface\\AddOns\\Rematch\\Textures\\TitlebarButtons")
-		button:GetPushedTexture():SetTexCoord(0.25,0.5,0,0.25)
-		button.Icon = button:CreateTexture(nil,"OVERLAY")
-		button.Icon:SetSize(32,32)
-		button.Icon:SetPoint("CENTER")
-		button.Icon:SetTexture("Interface\\AddOns\\Rematch\\Textures\\TitlebarButtons")
-		button.Icon:SetTexCoord(0.5,0.75,0,0.25)
-		button:SetScript("OnMouseDown",rematch.TitlebarButtonOnMouseDown)
-		button:SetScript("OnMouseUp",rematch.TitlebarButtonOnMouseUp)
-		button:SetScript("OnShow",rematch.TitlebarButtonOnMouseUp)
-	else
-		button:SetPoint("TOPRIGHT",0,1)
+		local yoff = 41/256
+		button:GetNormalTexture():SetTexCoord(coords[1],coords[2],coords[3],coords[4])
+		button:GetDisabledTexture():SetTexCoord(coords[1],coords[2],coords[3]+yoff,coords[4]+yoff)
+		button:GetPushedTexture():SetTexCoord(coords[1],coords[2],coords[3]+2*yoff,coords[4]+2*yoff)
 	end
 end
 

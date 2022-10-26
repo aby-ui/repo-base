@@ -29,7 +29,7 @@ function Group:RegisterEvents()
 	self:RegisterSignal('UPDATE_ALL', 'RequestLayout')
 
 	if self:IsCached() then
-		self:RegisterEvent('VOID_STORAGE_OPEN', 'RegisterEvents')
+		self:RegisterEvent(C_PlayerInteractionManager and 'PLAYER_INTERACTION_MANAGER_FRAME_SHOW' or 'VOID_STORAGE_OPEN', 'RegisterEvents')
 	else
 		local type = self:GetType()
 		if type == DEPOSIT then

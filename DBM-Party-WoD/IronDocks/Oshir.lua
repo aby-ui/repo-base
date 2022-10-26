@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20220917014128")
+mod:SetRevision("20221015214135")
 mod:SetCreatureID(79852)
 mod:SetEncounterID(1750)
 
@@ -47,7 +47,6 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args.spellId == 162415 then
-		timerTimeToFeedCD:Start()
 		if args:IsPlayer() then
 			specWarnTimeToFeed:Show()
 			specWarnTimeToFeed:Play("defensive")

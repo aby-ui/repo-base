@@ -343,9 +343,6 @@ CoreDependCall("Blizzard_OrderHallUI", function()
 end)
 --]]
 
---被世界任务完成框遮挡
-CastingBarFrame:SetFrameStrata("DIALOG")
-
 do
     -- 初次拾取钥石的信息
     -- 7.0 "\124cffa335ee\124Hitem:158923::::::::120:65:4063232:::248:9:9:11:2:::\124h[史诗钥石]\124h\124r",

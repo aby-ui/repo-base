@@ -229,6 +229,8 @@ local DIFF_TO_MAX_GROUP = {
 	[7] = 5,	--lfr [legacy]
 	[33] = 6,	--timewalk raid
 	[18] = 8,	--event 40ppl
+	[193] = 2,	--10ppl hc
+	[194] = 5,	--25ppl hc
 }
 function ExRT.F.GetRaidDiffMaxGroup()
 	local _,instance_type,difficulty = GetInstanceInfo()
@@ -245,7 +247,7 @@ end
 
 function ExRT.F.GetDifficultyForCooldownReset()
 	local _,_,difficulty = GetInstanceInfo()
-	if difficulty == 3 or difficulty == 4 or difficulty == 5 or difficulty == 6 or difficulty == 7 or difficulty == 14 or difficulty == 15 or difficulty == 16 or difficulty == 17 then
+	if difficulty == 3 or difficulty == 4 or difficulty == 5 or difficulty == 6 or difficulty == 7 or difficulty == 14 or difficulty == 15 or difficulty == 16 or difficulty == 17 or (ExRT.isLK and (difficulty == 175 or difficulty == 176 or difficulty == 193 or difficulty == 194)) then
 		return true
 	end
 	return false
@@ -854,6 +856,13 @@ function ExRT.F.vpairs(t)
 	return it
 end
 
+function ExRT.F:SafeCall(func, ...)
+	local res, arg1, arg2, arg3, arg4, arg5, arg6, arg7 = xpcall(func, ...)
+	if res then
+		return arg1, arg2, arg3, arg4, arg5, arg6, arg7
+	end
+end
+
 do
 	-- UTF8
 
@@ -1359,6 +1368,41 @@ do
 
 end
 
+do
+	local exportWindow
+	function ExRT.F:Export2(stringData)
+		if not exportWindow then
+			exportWindow = ExRT.lib:Popup("Export"):Size(650,50)
+			exportWindow.Edit = ExRT.lib:Edit(exportWindow):Point("TOP",0,-20):Size(640,25)
+			exportWindow:SetScript("OnHide",function(self)
+				self.Edit:SetText("")	
+			end)
+			exportWindow.Edit:SetScript("OnEditFocusGained", function(self)
+				self:HighlightText()
+			end)
+			exportWindow.Edit:SetScript("OnMouseUp", function(self, button)
+				self:HighlightText()
+				if button == "RightButton" then
+					self:GetParent():Hide()
+				end
+			end)
+			exportWindow.Edit:SetScript("OnKeyUp", function(self, c)
+				if (c == "c" or c == "C") and IsControlKeyDown() then
+					self:GetParent():Hide()
+				end
+			end)
+			function exportWindow:OnShow()
+				self.Edit:SetFocus()
+			end  
+		end
+
+		exportWindow:NewPoint("CENTER",UIParent,0,0)
+		exportWindow.Edit:SetText(stringData)
+		exportWindow:Show()
+	end
+
+end
+
 ---------------> Import/Export data <---------------
 do
 	local function StringToText(str)
@@ -1689,7 +1733,6 @@ do
 	end
 end
 
-
 -------------------> Data <--------------------
 
 ExRT.GDB.ClassSpecializationIcons = {
@@ -1729,6 +1772,8 @@ ExRT.GDB.ClassSpecializationIcons = {
 	[270] = "Interface\\Icons\\spell_monk_mistweaver_spec",
 	[577] = "Interface\\Icons\\ability_demonhunter_specdps",
 	[581] = "Interface\\Icons\\ability_demonhunter_spectank",
+	[1467] = "Interface\\Icons\\classicon_evoker_devastation",
+	[1468] = "Interface\\Icons\\classicon_evoker_preservation",
 }
 
 ExRT.GDB.ClassList = {
@@ -1745,6 +1790,9 @@ ExRT.GDB.ClassList = {
 	"DRUID",
 	"DEMONHUNTER",
 }
+if ExRT.is10 then
+	tinsert(ExRT.GDB.ClassList,"EVOKER")
+end
 
 ExRT.GDB.ClassSpecializationList = {
 	["WARRIOR"] = {71, 72, 73},
@@ -1760,6 +1808,9 @@ ExRT.GDB.ClassSpecializationList = {
 	["DRUID"] = {102, 103, 104, 105},
 	["DEMONHUNTER"] = {577, 581},
 }
+if ExRT.is10 then
+	ExRT.GDB.ClassSpecializationList["EVOKER"] = {1467,1468}
+end
 
 ExRT.GDB.ClassArmorType = {
 	WARRIOR="PLATE",
@@ -1775,6 +1826,9 @@ ExRT.GDB.ClassArmorType = {
 	DRUID="LEATHER",
 	DEMONHUNTER="LEATHER",
 }
+if ExRT.is10 then
+	ExRT.GDB.ClassArmorType.EVOKER = "MAIL"
+end
 
 ExRT.GDB.ClassSpecializationRole = {
 	[62] = 'RANGE',
@@ -1813,6 +1867,8 @@ ExRT.GDB.ClassSpecializationRole = {
 	[270] = 'HEAL',
 	[577] = 'MELEE',
 	[581] = 'TANK',
+	[1467] = 'RANGE',
+	[1468] = 'HEAL',
 }
 
 ExRT.GDB.ClassID = {
@@ -1829,6 +1885,9 @@ ExRT.GDB.ClassID = {
 	DRUID=11,
 	DEMONHUNTER=12,
 }
+if ExRT.is10 then
+	ExRT.GDB.ClassArmorType.EVOKER = 13
+end
 
 
 if ExRT.isClassic then
@@ -1884,6 +1943,9 @@ if ExRT.isClassic then
 		[537] = {name="Tenacity",class=0,role="TANK",desc="",icon=132121},
 		[577] = {name="Havoc",class=12,role="DAMAGER",desc="A brooding master of warglaives and the destructive power of Fel magic.|n|nPreferred Weapons: Warglaives, Swords, Axes, Fist Weapons",icon=1247264},
 		[581] = {name="Vengeance",class=12,role="TANK",desc="Embraces the demon within to incinerate enemies and protect their allies.|n|nPreferred Weapons: Warglaives, Swords, Axes, Fist Weapons",icon=1247265},
+		[1467] = {name="Devastation",class=13,role="DAMAGER",desc="Releases innate power as chaotic Red flames or focused Blue magic to bathe the battlefield in destruction. Preferred Weapon: Staff, Sword, Dagger, Mace",icon=4511811},
+		[1468] = {name="Preservation",class=13,role="HEALER",desc="Calls upon the Emerald Dream to rejuvenate life, and the Bronze sands of time to prevent harm. Preferred Weapon: Staff, Sword, Dagger, Mace",icon=4511812},
+
 	}
 
 	ExRT.Classic.GetSpecializationInfoByID = function(id) 
@@ -2050,6 +2112,15 @@ ExRT.GDB.EncountersList = {
 	{1679,2395,2394,2400,2396},
 	{1675,2360,2361,2362,2363},
 
+	{2096,2570,2568,2567,2569},
+	{2071,2555,2556,2557,2558,2559},
+	{2093,2637,2636,2581,2580},
+	{2080,2613,2612,2610,2611},
+	{2097,2562,2563,2564,2565},
+	{2095,2609,2606,2623},
+	{2073,2582,2585,2583,2584},
+	{2082,2615,2616,2617,2618},
+
         {610,1721,1706,1720,1722,1719,1723,1705},--HM
 	{596,1696,1691,1693,1694,1689,1692,1690,1713,1695,1704},--BF
 	{661,1778,1785,1787,1798,1786,1783,1788,1794,1777,1800,1784,1795,1799},--HFC
@@ -2066,22 +2137,31 @@ ExRT.GDB.EncountersList = {
 	{1735,2398,2418,2402,2383,2405,2406,2412,2399,2417,2407},	--castle Nathria
 	{1998,2423,2433,2429,2432,2434,2430,2436,2431,2422,2435},	--sod
 	{2047,2512,2540,2553,2544,2539,2542,2529,2546,2543,2549,2537},	--sfo
+
+	{2119,2587,2639,2590,2592,2635,2605,2614,2607},	--voti
 }
 
-function ExRT.F.GetEncountersList(onlyRaid,onlySL,reverse)
+
+local ACTUAL_RAID = 1735
+local ACTUAL_DUNG = 1666
+if UnitLevel'player' > 60 then
+	ACTUAL_DUNG = 2096
+	ACTUAL_RAID = 2119
+end
+function ExRT.F.GetEncountersList(onlyRaid,onlyActual,reverse)
 	local new = {}
 
-	local isSL,isRaid
+	local isActual,isRaid
 	for _,v in ipairs(ExRT.GDB.EncountersList) do
 		if v[1] == 610 then
 			isRaid = true
-			isSL = false
-		elseif v[1] == 1666 then
-			isSL = true
-		elseif v[1] == 1735 then
-			isSL = true
+			isActual = false
+		elseif v[1] == ACTUAL_DUNG then
+			isActual = true
+		elseif v[1] == ACTUAL_RAID then
+			isActual = true
 		end
-		if (not onlySL or isSL) and (not onlyRaid or isRaid) then
+		if (not onlyActual or isActual) and (not onlyRaid or isRaid) then
 			new[#new+1] = v
 		end
 	end

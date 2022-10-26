@@ -1156,10 +1156,13 @@ function Config:OnInitialize()
 
 	acr:RegisterOptionsTable("GatherMate 2", generalOptions)
 	local options = acd:AddToBlizOptions("GatherMate 2", "GatherMate 2")
-	options:HookScript("OnShow", function()
-		local p = findPanel("GatherMate 2")
-		if p and p.element.collapsed then OptionsListButtonToggle_OnClick(p.toggle) end
-	end)
+
+	if InterfaceOptionsFrameAddOns then
+		options:HookScript("OnShow", function()
+			local p = findPanel("GatherMate 2")
+			if p and p.element.collapsed then OptionsListButtonToggle_OnClick(p.toggle) end
+		end)
+	end
 
 	acr:RegisterOptionsTable("GM2/Minimap", minimapOptions)
 	acd:AddToBlizOptions("GM2/Minimap", "Minimap", "GatherMate 2")

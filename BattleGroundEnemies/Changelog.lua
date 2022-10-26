@@ -2,6 +2,34 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "9.2.7.2",
+		General = "This is the long awaited update with many changes and new features. It is recommended to reset the settings of the addon in the profile tab, especially when you didnt use the default settings. This is due to the fact that the saved variables format changed. So please take a few minutes and check out the testmode :)",
+		Sections = {
+			{
+				Header = "New Features:",
+				Entries = {
+					"Added seperate modules for important buffs and debuffs",
+					"Unified code for the containers used by the DR Tracking and Buffs, Debuffs.",
+					"Added a seperate module for class icons, the spec icon is stacked ontop of the class icon by default. This enables you to show the two icons side by side if wanted.",
+					"Added the ability to add health numbers (percentage, lost health and current health)",
+					"Added an option to disable target icons.",
+					"Added the option to export and import profiles to and from a string.",
+					"Added the option to reset modules individually to the default setting.",
+					"Added an option to use the priority of Auras and Interrupts from BigDebuffs",
+					"Pretty much all of the stuff is now individually movable and sizable",
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"Reworked the aura system once again. it now should update the auras of enemies more often if an unit ID is available.",
+					"Only send infos about a missing localization entry once.",
+					"Toc updates for Classic, TBCC, Wrath and Retail"
+				}
+			}
+		}
+	},
+	{
 		Version = "9.2.0.11",
 		Sections = {
 			{
@@ -86,7 +114,8 @@ Data.changelog = {
 			{
 				Header = "New Features:",
 				Entries = {
-					"Added support for Classic"
+					"Added support for Classic",
+					"Added a Castbar module which is enabled in Arenas by default."
 				}
 			},
 			{

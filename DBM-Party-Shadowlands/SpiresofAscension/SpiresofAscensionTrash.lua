@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("SpiresofAscensionTrash", "DBM-Party-Shadowlands", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -69,15 +69,15 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 317936 and self:AntiSpam(3, 5) then
 		specWarnForswornDoctrineDispel:Show(args.destName)
 		specWarnForswornDoctrineDispel:Play("helpdispel")
-	elseif spellId == 317963 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 5) then
+	elseif spellId == 317963 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") and self:AntiSpam(3, 5) then
 		specWarnBurdenofKnowledgeDispel:Show(args.destName)
 		specWarnBurdenofKnowledgeDispel:Play("helpdispel")
-	elseif spellId == 317661 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 5) then
+	elseif spellId == 317661 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") and self:AntiSpam(3, 5) then
 		specWarnInsidiousVenomDispel:Show(args.destName)
 		specWarnInsidiousVenomDispel:Play("helpdispel")
 	elseif spellId == 328331 then
 		local dispelWarned = false
-		if self.Options.SpecWarn328331dispel and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 5) then
+		if self.Options.SpecWarn328331dispel and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") and self:AntiSpam(3, 5) then
 			specWarnForcedConfessionDispel:Show(args.destName)
 			specWarnForcedConfessionDispel:Play("helpdispel")
 			dispelWarned = true

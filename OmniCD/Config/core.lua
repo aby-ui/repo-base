@@ -67,7 +67,7 @@ local changelog = E.changelog:gsub("^[ \t\n]*", E.PROJECT_HEX_C[WOW_PROJECT_ID])
 		isFound = true
 		return "|cff9d9d9d\n\nv"..ver
 	end
-end):gsub("\t", "        ")
+end):gsub("\t", "\32\32\32\32\32\32")
 
 local function GetOptions()
 	if not E.options then

@@ -244,8 +244,8 @@ do
 
     StaticPopupDialogs["ABYUI_CLOSE_PROFANITYFILTER"] = {preferredIndex = 3,
         text = "爱不易监测到你使用了|cff00ff00'强制关闭语言过滤器'|r的功能，这可能会导致暴雪的客服支持面板一直转圈或报错。如果你现在需要客服支持，点击'是'会恢复语言过滤设置，并自动|cffff0000重载界面|r，然后就可以使用了。是否确定？",
-        button1 = TEXT(YES),
-        button2 = TEXT(CANCEL),
+        button1 = YES,
+        button2 = CANCEL,
         OnAccept = function(self, data)
             U1ChangeCfg("163UI_MoreOptions/profanityFilter", false)
             ReloadUI()

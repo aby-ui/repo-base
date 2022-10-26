@@ -59,7 +59,7 @@ L["Custom unit name"] = "Custom Unit Name"
 L["Dest unit"] = "Destination Unit"
 L["Dest type"] = "Destination Type"
 
-L["GladiatorlosSACredits"] = "Customizable PvP Announcer addon for vocalizing many important spells cast by your enemies.|n|n|cffFFF569Created by|r |cff9482C9Abatorlos|r |cffFFF569of Spinebreaker|r|n|cffFFF569Legion/BfA/Shadowlands support by|r |cFF00FF96Treasuretail|r |cffFFF569of Wyrmrest Accord (With permission from zuhligan)|r|n|n|cffFFF569Special Thanks|r|n|cffA330C9superk521|r (Past Project Manager)|n|cffA330C9DuskAshes|r (Chinese Support)|n|cffA330C9N30Ex|r (Mists of Pandaria Support; Shadowlands voice recordings)|n|cffA330C9zuhligan|r (Warlords of Draenor & French Support)|n|cffA330C9jungwan2|r (Korean Support)|n|cffA330C9Mini_Dragon|r (Chinese support for WoD & Legion)|n|cffA330C9LordKuper|r (Russian support for Legion)|n|cffA330C9Tzanee - Wyrmrest Accord|r (Placeholder Voice Lines)|n|cffA330C9Gnulkion - Illidan|r (Alert only from opponent in duels feature)|n|nAll feedback, questions, suggestions, and bug reports are welcome at the addon's page on Curse:|nhttps://wow.curseforge.com/projects/gladiatorlossa2|nOR GitHub:|nhttps://github.com/Rhykes/GladiatorlosSA2"
+L["GladiatorlosSACredits"] = "Customizable PvP Announcer addon for vocalizing many important spells cast by your enemies.|n|n|cffFFF569Created by|r |cff9482C9Abatorlos|r |cffFFF569of Spinebreaker|r|r|n|n|cffFFF569Special Thanks|r|n|cffA330C9superk521|r (Past Project Manager)|n|cffA330C9DuskAshes|r (Chinese Support)|n|cffA330C9N30Ex|r (Mists of Pandaria Support; Shadowlands voice recordings)|n|cffA330C9zuhligan|r (Warlords of Draenor & French Support)|n|cffA330C9jungwan2|r (Korean Support)|n|cffA330C9Mini_Dragon|r (Chinese support for WoD & Legion)|n|cffA330C9LordKuper|r (Russian support for Legion)|n|cffA330C9Tzanee - Wyrmrest Accord|r (Placeholder Voice Lines)|n|cffA330C9Gnulkion - Illidan|r (Alert only from opponent in duels feature)|n|nAll feedback, questions, suggestions, and bug reports are welcome at the addon's page on Curse:|nhttps://wow.curseforge.com/projects/gladiatorlossa2|nOR GitHub:|nhttps://github.com/Rhykes/GladiatorlosSA2"
 L["PVP Voice Alert"] = true
 L["Load Configuration"] = "<-- Load GSA2 Menus"
 L["Load Configuration Options"] = true
@@ -169,7 +169,7 @@ L["DPSDispel_Desc"] = "Generic alert for hybrid class dispels that do not remove
 L["HealerDispel"] = "Magic Dispels"
 L["HealerDispel_Desc"] = "Generic alert for healing class (and warlocks) dispels that remove Magic effects.|n|nNature's Cure (Druid)|nDetox (Monk)|nCleanse (Paladin)|nPurify (Priest)|nPurify Spirit (Shaman)|nSinge Magic (Warlock)"
 L["CastingSuccess"] = "CC Cast Success"
-L["CastingSuccess_Desc"] = "Enables generic 'success' alert when a major enemy cast-time Crowd Control ability is applied to an ally.|n|n|cffC41F3BWARNING: ALL of the abilities below will announce their success if this is enabled, even if you have some of them disabled in Spell Casting.|r|n|nCyclone (Druid)|nEntangling Roots (Druid)|nHibernate (Druid)|nScare Beast (Hunter)|nPolymorph (Mage)|nRing of Frost (Mage)|nRepentance (Paladin)|nMind Control (Priest)|nHex (Shaman)|nFear (Warlock)"
+L["CastingSuccess_Desc"] = "Enables generic 'success' alert when a major enemy cast-time Crowd Control ability is applied to an ally.|n|n|cffC41F3BWARNING: ALL of the abilities below will announce their success if this is enabled, even if you have some of them disabled in Spell Casting.|r|n|nCyclone (Druid)|nEntangling Roots (Druid)|nHibernate (Druid)|nSleepwalk (Evoker)|nScare Beast (Hunter)|nPolymorph (Mage)|nRing of Frost (Mage)|nRepentance (Paladin)|nMind Control (Priest)|nHex (Shaman)|nFear (Warlock)"
 
 L["DispelKickback"] = "Dispel Penalties"
 
@@ -206,6 +206,9 @@ L["FeralDR"] = "Feral"
 L["BalanceDR"] = "Balance"
 L["RestorationDR"] = "Restoration"
 L["GuardianDR"] = "Guardian"
+
+L["DevastationEV"] = "Devastation" 
+L["PreservationEV"] = "Preservation" 
 
 L["MarksmanshipHN"] = "Marksmanship"
 L["SurvivalHN"] = "Survival"
@@ -259,3 +262,5 @@ L["EXPAC_DF"] = "Dragonflight"
 L["GladiatorlosSA2"] = true
 
 L["GSA_EXPERIMENTAL_BUILD"] = Colors.DeathKnight .. "This is an experimental build of GladiatorlosSA2 and has NOT been tested on TBC. Although I am confident that everything still works correctly, please reach out if you run into problems and downgrade to GSA2_TBC1.1 if necessary. This message will not be displayed again." .. "|r"
+
+L["RacialAbilities"] = "Racial Abilities"

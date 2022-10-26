@@ -428,10 +428,13 @@ do
 
 			--Devastation Evoker:
 			[368847] = 1467, --Firestorm
+			[369374] = 1467, --Firestorm
 			[370452] = 1467, --Shattering Star
 			[375087] = 1467, --Dragonrage
 			[359073] = 1467, --Eternity Surge
+			[359077] = 1467, --Eternity Surge
 			[357211] = 1467, --Pyre
+			[357212] = 1467, --Pyre
 
 			--Preservation Evoker:
 			[370960] = 1468, --Emerald Communion
@@ -2960,8 +2963,34 @@ do
 		[20243]	=	"WARRIOR", --devastate
 		[115767]	=	"WARRIOR", --deep wounds
 		[109128]	=	"WARRIOR", --charge
-		[109128]	=	"WARRIOR", --charge
 		[12880]	=	"WARRIOR", --enrage
+
+	--evoker:
+		[368847] = "EVOKER", --Firestorm
+		[370452] = "EVOKER", --Shattering Star
+		[375087] = "EVOKER", --Dragonrage
+		[359073] = "EVOKER", --Eternity Surge
+		[369374] = "EVOKER", --Firestorm
+		[357211] = "EVOKER", --Pyre
+		[357212] = "EVOKER", --Pyre
+		[370960] = "EVOKER", --Emerald Communion
+		[370537] = "EVOKER", --Stasis
+		[367226] = "EVOKER", --Spiritbloom
+		[361178] = "EVOKER", --Mass Return
+		[359816] = "EVOKER", --Dream Flight
+		[355936] = "EVOKER", --Dream Breath
+		[357170] = "EVOKER", --Time Dilation
+		[363534] = "EVOKER", --Rewind
+		[360823] = "EVOKER", --Naturalize
+		[373861] = "EVOKER", --Temporal Anomaly
+		[366155] = "EVOKER", --Reversion
+		[364343] = "EVOKER", --Echo	
+		[356995] = "EVOKER", --Desintegrate
+		[357209] = "EVOKER", --Fire Breath
+		[359077] = "EVOKER", --Eternity Surge
+		[361500] = "EVOKER", --Living Flame
+		[353759] = "EVOKER", --Deep Breath
+		[387036] = "EVOKER", --Burning Embers
 	}
 
 	_detalhes.AbsorbSpells = {
@@ -3900,7 +3929,7 @@ do
 	}
 	
 
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	_detalhes.SpellOverwrite = {
 		--[124464] = {name = GetSpellInfo(124464) .. " (" .. Loc ["STRING_MASTERY"] .. ")"}, --shadow word: pain mastery proc (priest)
 	}
@@ -3949,11 +3978,11 @@ do
 		return _detalhes.spells_school [school] and _detalhes.spells_school [school].formated or ""
 	end
 	local default_school_color = {145/255, 180/255, 228/255}
-	function _detalhes:GetSpellSchoolColor (school)
-		return unpack (_detalhes.spells_school [school] and _detalhes.spells_school [school].decimals or default_school_color)
+	function _detalhes:GetSpellSchoolColor(school)
+		return unpack(_detalhes.spells_school [school] and _detalhes.spells_school [school].decimals or default_school_color)
 	end
 	function _detalhes:GetCooldownList (class)
-		class = class or select (2, UnitClass ("player"))
+		class = class or select(2, UnitClass("player"))
 		return _detalhes.DefensiveCooldownSpells [class]
 	end
 end

@@ -443,7 +443,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
         end)
     end)
 
-    hooksecurefunc("ChallengesFrame_Update", function(self)
+    hooksecurefunc(ChallengesFrame, "Update", function(self)
         pcall(function() ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText("") end)
 
         CoreLeaveCombatCall("ChallengesGuildBest", nil, showPortalSecureButton)

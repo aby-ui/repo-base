@@ -19,8 +19,7 @@ function Item:Construct()
 	return b
 end
 
-function Item:GetBlizzard()
-end
+function Item:GetBlizzard() end
 
 
 --[[ Interaction ]]--
@@ -56,25 +55,24 @@ function Item:OnDragStart()
 	self:OnClick('LeftButton')
 end
 
+function Item:UpdateTooltip()
+	if not self.info.cached then
+		GameTooltip:SetOwner(self:GetTipAnchor())
 
---[[ Tooltip ]]--
+		if self:GetBag() == 'vault' then
+			GameTooltip:SetVoidItem(1, self:GetID())
+		elseif self:GetBag() == DEPOSIT then
+			GameTooltip:SetVoidDepositItem(self:GetID())
+		else
+			GameTooltip:SetVoidWithdrawalItem(self:GetID())
+		end
 
-function Item:ShowTooltip()
-	GameTooltip:SetOwner(self:GetTipAnchor())
+		GameTooltip:Show()
+		CursorUpdate(self)
 
-	if self:GetBag() == 'vault' then
-		GameTooltip:SetVoidItem(1, self:GetID())
-	elseif self:GetBag() == DEPOSIT then
-		GameTooltip:SetVoidDepositItem(self:GetID())
-	else
-		GameTooltip:SetVoidWithdrawalItem(self:GetID())
-	end
-
-	GameTooltip:Show()
-	CursorUpdate(self)
-
-	if IsModifiedClick('DRESSUP') then
-		ShowInspectCursor()
+		if IsModifiedClick('DRESSUP') then
+			ShowInspectCursor()
+		end
 	end
 end
 

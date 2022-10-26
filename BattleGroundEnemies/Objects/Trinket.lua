@@ -1,91 +1,168 @@
-local BattleGroundEnemies = BattleGroundEnemies
 local AddonName, Data = ...
+local BattleGroundEnemies = BattleGroundEnemies
+local L = Data.L
+local CreateFrame = CreateFrame
 local GetTime = GetTime
+local GetSpellTexture = GetSpellTexture
+local GameTooltip = GameTooltip
 
-local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local IsTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-local isClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
-BattleGroundEnemies.Objects.Trinket = {}
+local defaultSettings = {
+	Enabled = true,
+	Parent = "Button",
+	UseButtonHeightAsHeight = true,
+	UseButtonHeightAsWidth = true,
+	Cooldown = {
+		ShowNumber = true,
+		FontSize = 12,
+		FontOutline = "OUTLINE",
+		EnableShadow = false,
+		ShadowColor = {0, 0, 0, 1},
+	}
+}
 
-function BattleGroundEnemies.Objects.Trinket.New(playerButton)
-				-- trinket
-	local Trinket = CreateFrame("Frame", nil, playerButton)
+local options = function(location)
+	return {
+		CooldownTextSettings = {
+			type = "group",
+			name = L.Countdowntext,
+			inline = true,
+			order = 1,
+			get = function(option)
+				return Data.GetOption(location.Cooldown, option)
+			end,
+			set = function(option, ...)
+				return Data.SetOption(location.Cooldown, option, ...)
+			end,
+			args = Data.AddCooldownSettings(location.Cooldown)
+		}
+	}
+end
 
-	Trinket:HookScript("OnEnter", function(self)
-		if self.SpellID then
-			BattleGroundEnemies:ShowTooltip(self, function() 
-				if isClassic then return end
-				GameTooltip:SetSpellByID(self.SpellID)
+local trinket = BattleGroundEnemies:NewButtonModule({
+	moduleName = "Trinket",
+	localizedModuleName = L.Trinket,
+	defaultSettings = defaultSettings,
+	options = options,
+	events = {"ShouldQueryAuras", "CareAboutThisAura", "UnitAura", "SPELL_CAST_SUCCESS"},
+	expansions = "All"
+})
+
+function trinket:AttachToPlayerButton(playerButton)
+
+	local frame = CreateFrame("frame", nil, playerButton)
+	-- trinket
+	frame:HookScript("OnEnter", function(self)
+		if self.spellId then
+			BattleGroundEnemies:ShowTooltip(self, function()
+				if IsClassic then return end
+				GameTooltip:SetSpellByID(self.spellId)
 			end)
 		end
 	end)
-	
-	Trinket:HookScript("OnLeave", function(self)
+
+	frame:HookScript("OnLeave", function(self)
 		if GameTooltip:IsOwned(self) then
 			GameTooltip:Hide()
 		end
 	end)
 
-	
-	Trinket.Icon = Trinket:CreateTexture()
-	Trinket.Icon:SetAllPoints()
-	Trinket:SetScript("OnSizeChanged", function(self, width, height)
+
+	frame.Icon = frame:CreateTexture()
+	frame.Icon:SetAllPoints()
+	frame:SetScript("OnSizeChanged", function(self, width, height)
 		BattleGroundEnemies.CropImage(self.Icon, width, height)
 	end)
-	
-	Trinket.Cooldown = BattleGroundEnemies.MyCreateCooldown(Trinket)
 
-	Trinket.ApplySettings = function(self)
-		local conf = playerButton.bgSizeConfig
-		-- trinket
-		self:Enable()
-		self:SetPosition()
-		self.Cooldown:ApplyCooldownSettings(conf.Trinket_ShowNumbers, false, true, {0, 0, 0, 0.75})
-		self.Cooldown.Text:ApplyFontStringSettings(conf.Trinket_Cooldown_Fontsize, conf.Trinket_Cooldown_Outline, conf.Trinket_Cooldown_EnableTextshadow, conf.Trinket_Cooldown_TextShadowcolor)
-	end
-	
-	Trinket.Enable = function(self)
-		if playerButton.bgSizeConfig.Trinket_Enabled then
-			self:Show()
-			self:SetWidth(playerButton.bgSizeConfig.Trinket_Width)
-		else
-			--dont SetWidth before Hide() otherwise it won't work as aimed
-			self:Hide()
-			self:SetWidth(0.01)
+	frame.Cooldown = BattleGroundEnemies.MyCreateCooldown(frame)
+
+
+	function frame:TrinketCheck(spellId)
+		if not Data.TrinketData[spellId] then return end
+		self:DisplayTrinket(spellId, Data.TrinketData[spellId].fileID or GetSpellTexture(spellId))
+		if Data.TrinketData[spellId].cd then
+			self:SetTrinketCooldown(GetTime(), Data.TrinketData[spellId].cd or 0)
 		end
 	end
-	
-	Trinket.TrinketCheck = function(self, spellID)
-		if not playerButton.bgSizeConfig.Trinket_Enabled then return end
-		if not Data.TrinketData[spellID] then return end
-		self:DisplayTrinket(spellID, Data.TrinketData[spellID].fileID or GetSpellTexture(spellID))
-		if Data.TrinketData[spellID].cd then
-			self:SetTrinketCooldown(GetTime(), Data.TrinketData[spellID].cd or 0)
-		end
-	end
-	
-	Trinket.DisplayTrinket = function(self, spellID, texture)
-		self.SpellID = spellID
+
+	function frame:DisplayTrinket(spellId, texture)
+		self.spellId = spellId
 		self.Icon:SetTexture(texture)
 	end
 
-	Trinket.SetTrinketCooldown = function(self, startTime, duration)
+	function frame:SetTrinketCooldown(startTime, duration)
 		if (startTime ~= 0 and duration ~= 0) then
 			self.Cooldown:SetCooldown(startTime, duration)
 		else
 			self.Cooldown:Clear()
 		end
 	end
-	
-	Trinket.Reset = function(self)
-		self.SpellID = false
+
+	function frame:ShouldQueryAuras(unitID, filter)
+		return filter == "HARMFUL"
+	end
+
+
+	function frame:CareAboutThisAura(unitID, filter, aura)
+		local spellId = aura.spellId
+		if spellId == 336139 then return true end
+
+		return not self.spellId and Data.cCdurationBySpellID[spellId]
+	end
+
+
+	function frame:UnitAura(unitID, filter, aura)
+		if filter == "HELPFUL" then return end
+
+		local spellId = aura.spellId
+		if spellId == 336139 then --adapted debuff > adaptation
+			local currentTime = GetTime()
+			self:DisplayTrinket(spellId, GetSpellTexture(214027))
+			self:SetTrinketCooldown(currentTime, aura.expirationTime - currentTime)
+			return -- we are done don't do relentless check
+		end
+
+
+		--BattleGroundEnemies:Debug(operation, spellId)
+		local continue = not self.spellId and Data.cCdurationBySpellID[spellId]
+		if not continue then return end
+
+		local Racefaktor = 1
+	--[[ 	if drCat == "stun" and playerButton.PlayerRace == "Orc" then
+			--Racefaktor = 0.8	--Hardiness, but since september 5th hotfix hardiness no longer stacks with relentless so we have no way of determing if the player is running relentless or not
+			return
+		end ]]
+
+
+		--local diminish = actualduraion/(Racefaktor * normalDuration * Trinketfaktor)
+		--local trinketFaktor * diminish = duration/(Racefaktor * normalDuration)
+		--trinketTimesDiminish = trinketFaktor * diminish
+		--trinketTimesDiminish = without relentless : 1, 0.5, 0.25, with relentless: 0.8, 0.4, 0.2
+
+		local trinketTimesDiminish = aura.duration/(Racefaktor * Data.cCdurationBySpellID[spellId])
+
+		if trinketTimesDiminish == 0.8 or trinketTimesDiminish == 0.4 or trinketTimesDiminish == 0.2 then --Relentless
+			self.spellId = 336128
+			self.Icon:SetTexture(GetSpellTexture(196029))
+		end
+	end
+
+	function frame:SPELL_CAST_SUCCESS(srcName, destName, spellId)
+		self:TrinketCheck(spellId)
+	end
+
+
+	function frame:Reset()
+		self.spellId = false
 		self.Icon:SetTexture(nil)
 		self.Cooldown:Clear()	--reset Trinket Cooldown
 	end
 
-	Trinket.SetPosition = function(self)
-		BattleGroundEnemies.SetBasicPosition(self, playerButton.bgSizeConfig.Trinket_BasicPoint, playerButton.bgSizeConfig.Trinket_RelativeTo, playerButton.bgSizeConfig.Trinket_RelativePoint, playerButton.bgSizeConfig.Trinket_OffsetX)
+	function frame:ApplyAllSettings()
+
+		local moduleSettings = self.config
+		self.Cooldown:ApplyCooldownSettings(moduleSettings.Cooldown, false, true, {0, 0, 0, 0.5})
 	end
-	return Trinket
+	playerButton.Trinket = frame
 end

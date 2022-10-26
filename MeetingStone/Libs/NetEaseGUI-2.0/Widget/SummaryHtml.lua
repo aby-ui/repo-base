@@ -8,7 +8,7 @@ if not SummaryHtml then
 end
 
 function SummaryHtml:Constructor()
-    self:SetFontObject('GameFontHighlightLeft')
+    self:SetFontObject('p', 'GameFontHighlightLeft')
     self:SetFontObject('h1', 'GameFontNormalLeft')
     self:SetFontObject('h2', 'GameFontNormalLargeLeft')
     self:SetFontObject('h3', 'QuestFont_Super_Huge')

@@ -108,6 +108,28 @@ end
 function Item:IsMet() return ns.PlayerHasItem(self.id, self.count) end
 
 -------------------------------------------------------------------------------
+--------------------------------- PROFESSION ----------------------------------
+-------------------------------------------------------------------------------
+
+local Profession = Class('Profession', Requirement)
+
+function Profession:Initialize(profession, skillID)
+    self.profession = profession
+    self.text = C_TradeSkillUI.GetTradeSkillDisplayName(skillID)
+end
+
+function Profession:IsMet()
+    local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
+    local professions = {prof1, prof2, archaeology, fishing, cooking}
+    for i = 1, #professions do
+        if professions[i] ~= nil then
+            if self.profession == professions[i] then return true end
+        end
+    end
+    return false
+end
+
+-------------------------------------------------------------------------------
 ------------------------------------ QUEST ------------------------------------
 -------------------------------------------------------------------------------
 
@@ -179,6 +201,7 @@ ns.requirement = {
     GarrisonTalent = GarrisonTalent,
     GarrisonTalentRank = GarrisonTalentRank,
     Item = Item,
+    Profession = Profession,
     Quest = Quest,
     Reputation = Reputation,
     Requirement = Requirement,

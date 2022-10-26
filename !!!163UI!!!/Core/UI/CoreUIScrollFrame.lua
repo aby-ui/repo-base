@@ -58,7 +58,7 @@ function CoreUICreateModernScrollBar(parent, offsetX, offsetY, hook, barWidth, t
     back:SetBackdropColor(1,1,1,backAlpha);
     back:SetFrameLevel(bar:GetFrameLevel());
 
-    local thumb = bar:Texture():Key("thumbTexture"):SetColorTexture(1,1,1):SetGradientAlpha("HORIZONTAL",r,g,b,start,r*factor,g*factor,b*factor,stop);
+    local thumb = bar:Texture():Key("thumbTexture"):SetColorTexture(1,1,1):SetGradient("HORIZONTAL",CreateColor(r,g,b,start),CreateColor(r*factor,g*factor,b*factor,stop));
     thumb:SetWidth(barWidth-1):SetHeight(thumbHeight);
     bar:SetThumbTexture(thumb);
     bar:SetMinMaxValues(0, bar:GetParent():GetVerticalScrollRange());

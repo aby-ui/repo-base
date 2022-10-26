@@ -25,11 +25,11 @@ local hooksecurefunc = hooksecurefunc
 ---
 
 -- @ Skins\Default
-local Default = Core.Skins.Default.QuestBorder
+local Default = Core.DEFAULT_SKIN.QuestBorder
 
 -- @ Core\Utility
-local GetColor, GetSize = Core.GetColor, Core.GetSize
-local GetTexCoords, SetPoints = Core.GetTexCoords, Core.SetPoints
+local GetColor, GetSize, GetTexCoords = Core.GetColor, Core.GetSize, Core.GetTexCoords
+local GetTypeSkin, SetPoints = Core.GetTypeSkin, Core.SetPoints
 
 ----------------------------------------
 -- Locals
@@ -72,6 +72,7 @@ end
 -- Skins the 'QuestBorder' region of a button.
 function Core.SkinQuestBorder(Region, Button, Skin, xScale, yScale)
 	local Texture = Region.__MSQ_Texture or Region:GetTexture()
+	Skin = GetTypeSkin(Button, Button.__MSQ_bType, Skin)
 
 	if Button.__MSQ_Enabled then
 		Region.__MSQ_Skin = Skin

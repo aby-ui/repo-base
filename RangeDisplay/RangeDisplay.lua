@@ -10,7 +10,7 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v4.9.9"
+local VERSION = AppName .. "-v4.9.10"
 --[===[@debug@
 local VERSION = AppName .. "-r" .. ("$Revision: 406 $"):match("%d+")
 --@end-debug@]===]
@@ -504,7 +504,7 @@ local function createFrame(ud)
     ud.mainFrame = CreateFrame("Frame", "RangeDisplayMainFrame_" .. unit, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
     ud.mainFrame:SetFrameStrata(ud.db.strata)
     ud.mainFrame:EnableMouse(false)
-    ud.mainFrame:SetClampedToScreen()
+    ud.mainFrame:SetClampedToScreen(true)
     ud.mainFrame:SetMovable(true)
     ud.mainFrame:SetWidth(ud.db.frameWidth)
     ud.mainFrame:SetHeight(ud.db.frameHeight)

@@ -21,7 +21,6 @@ rematch:InitModule(function()
 	petButton:SetScript("OnLeave",function(self) rematch:HidePetCard(true) end)
 	petButton:SetScript("OnClick",function(self,button) rematch.PetListButtonOnClick(self,button) end)
 	dialog.TabPicker.Label:SetText(L["Tab:"])
-	rematch:ConvertTitlebarCloseButton(dialog.CloseButton)
 end)
 
 -- dialogName: a string to reference the dialog (rematch:IsDialogOpen("SaveDialog"))

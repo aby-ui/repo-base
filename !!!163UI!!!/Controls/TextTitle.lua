@@ -52,7 +52,7 @@ local creator = function()
     ct:HookScript("OnEnter", titleOnEnter);
     ct:HookScript("OnLeave", titleOnLeave);
     local r,g,b,factor,start,stop=1,1,0,0.5,0.8,0.1
-    ct.sep = ct:CreateTexture():SetSize(100, 1):SetColorTexture(1,0.82,0,1):SetGradientAlpha("HORIZONTAL",r,g,b,start,r*factor,g*factor,b*factor,stop):TL(2, 0):TR(1, 0);
+    ct.sep = ct:CreateTexture():SetSize(100, 1):SetColorTexture(1,0.82,0,1):SetGradient("HORIZONTAL",CreateColor(r,g,b,start),CreateColor(r*factor,g*factor,b*factor,stop)):TL(2, 0):TR(1, 0);
     ct.title = ct:CreateFontString():SetFontObject(CtlFontNormalSmall):TL(2, -4);
     CtlExtend(ct);
     CtlExtend(ct, methods);

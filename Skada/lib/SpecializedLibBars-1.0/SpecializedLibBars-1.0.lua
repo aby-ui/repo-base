@@ -314,7 +314,7 @@ function barListPrototype:AddButton(title, description, normaltex, highlighttex,
 	btn:SetHeight(12)
 	btn:SetWidth(12)
 	btn:SetNormalTexture(normaltex)
-	btn:SetHighlightTexture(highlighttex, 1.0)
+	btn:SetHighlightTexture(highlighttex)
 	btn:SetAlpha(0.25)
 	btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	btn:SetScript("OnClick", clickfunc)
@@ -496,8 +496,7 @@ do
 		list:SetHeight(height)
 		list:SetWidth(length)
 		list:SetResizable(true)
-		list:SetMinResize(60,40)
-		list:SetMaxResize(800,800)
+		list:SetResizeBounds(60,40,800,800)
 
 		list.showIcon = true
 		list.showLabel = true

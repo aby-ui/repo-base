@@ -13,7 +13,7 @@
 local MASQUE, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local pairs, tostring = pairs, tostring

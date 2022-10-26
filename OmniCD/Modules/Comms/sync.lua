@@ -43,13 +43,7 @@ function Comms:SendSync(sender)
 	if E.syncData == "" then
 		self:InspectPlayer()
 	end
-
-	if sender then
-
-		self:SendCommMessage(E.AddonMsgPrefix, strjoin(",", MSG_INFO, E.syncData), "WHISPER", sender)
-	else
-		SendComm(MSG_INFO_UPDATE, E.syncData)
-	end
+	SendComm(sender or MSG_INFO_UPDATE, E.syncData)
 end
 
 function Comms:Desync()
@@ -260,7 +254,7 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender)
 		end
 		return;
 	elseif header == MSG_INFO_REQUEST then
-		self:SendSync(sender)
+		self:SendSync(guid)
 	elseif header == MSG_INFO_UPDATE then
 		if not isSyncedUnit then
 			return
@@ -270,6 +264,8 @@ function Comms:CHAT_MSG_ADDON(prefix, message, dist, sender)
 			self.syncGUIDS[guid] = nil
 		end
 		self:ToggleLazySync()
+		return
+	elseif header ~= userGUID then
 		return
 	end
 

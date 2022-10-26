@@ -19,11 +19,11 @@ end
 
 function Details:Dump (...)
 	if (not DetailsDumpFrame) then
-		DetailsDumpFrame = DetailsFramework:CreateSimplePanel (_G.UIParent)
+		DetailsDumpFrame = DetailsFramework:CreateSimplePanel(_G.UIParent)
 		DetailsDumpFrame:SetSize(700, 600)
-		DetailsDumpFrame:SetTitle ("Details! Dump Table [|cFFFF3333Ready Only|r]")
+		DetailsDumpFrame:SetTitle("Details! Dump Table [|cFFFF3333Ready Only|r]")
 		
-		local text_editor = DetailsFramework:NewSpecialLuaEditorEntry (DetailsDumpFrame, 680, 560, "Editbox", "$parentEntry", true)
+		local text_editor = DetailsFramework:NewSpecialLuaEditorEntry(DetailsDumpFrame, 680, 560, "Editbox", "$parentEntry", true)
 		text_editor:SetPoint("topleft", DetailsDumpFrame, "topleft", 10, -30)
 		
 		text_editor.scroll:SetBackdrop(nil)
@@ -39,11 +39,11 @@ function Details:Dump (...)
 		text_editor:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 		text_editor:SetBackdropBorderColor(0, 0, 0, 1)
 		
-		text_editor.__background:SetColorTexture (0.2317647, 0.2317647, 0.2317647)
-		text_editor.__background:SetVertexColor (0.27, 0.27, 0.27)
-		text_editor.__background:SetAlpha (0.8)
-		text_editor.__background:SetVertTile (true)
-		text_editor.__background:SetHorizTile (true)
+		text_editor.__background:SetColorTexture(0.2317647, 0.2317647, 0.2317647)
+		text_editor.__background:SetVertexColor(0.27, 0.27, 0.27)
+		text_editor.__background:SetAlpha(0.8)
+		text_editor.__background:SetVertTile(true)
+		text_editor.__background:SetHorizTile(true)
 		text_editor.__background:SetAllPoints()	
 	end
 
@@ -53,14 +53,13 @@ function Details:Dump (...)
 		return
 	else
 		if (type(t) == "table") then
-			local s = Details.table.dump(t)
+			local s = DetailsFramework.table.dump(t)
 			DetailsDumpFrame.Editbox:SetText(s)
 		else
 			t = {...}
+			local s = DetailsFramework.table.dump(t)
+			DetailsDumpFrame.Editbox:SetText(s)
 		end
-
-		local s = Details.table.dump(t)
-		DetailsDumpFrame.Editbox:SetText(s)
 	end
 
 	DetailsDumpFrame:Show()
@@ -80,12 +79,12 @@ end
 
 function _detalhes:ShowImportWindow (defaultText, confirmFunc, titleText)
 	if (not _G.DetailsExportWindow) then
-		local importWindow = DetailsFramework:CreateSimplePanel (_G.UIParent, 800, 610, "Details! Dump String", "DetailsExportWindow")
+		local importWindow = DetailsFramework:CreateSimplePanel(_G.UIParent, 800, 610, "Details! Dump String", "DetailsExportWindow")
 		importWindow:SetFrameStrata("FULLSCREEN")
 		importWindow:SetPoint("center")
-		DetailsFramework:ApplyStandardBackdrop (importWindow, false, 1.2)
+		DetailsFramework:ApplyStandardBackdrop(importWindow, false, 1.2)
 	
-		local importTextEditor = DetailsFramework:NewSpecialLuaEditorEntry (importWindow, 780, 540, "ImportEditor", "$parentEditor", true)
+		local importTextEditor = DetailsFramework:NewSpecialLuaEditorEntry(importWindow, 780, 540, "ImportEditor", "$parentEditor", true)
 		importTextEditor:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
 		importTextEditor:SetBackdropColor(.2, .2, .2, .5)
 		importTextEditor:SetBackdropBorderColor(0, 0, 0, 1)
@@ -104,11 +103,11 @@ function _detalhes:ShowImportWindow (defaultText, confirmFunc, titleText)
 		importTextEditor:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 		importTextEditor:SetBackdropBorderColor(0, 0, 0, 1)
 		
-		importTextEditor.__background:SetColorTexture (0.2317647, 0.2317647, 0.2317647)
-		importTextEditor.__background:SetVertexColor (0.27, 0.27, 0.27)
-		importTextEditor.__background:SetAlpha (0.8)
-		importTextEditor.__background:SetVertTile (true)
-		importTextEditor.__background:SetHorizTile (true)
+		importTextEditor.__background:SetColorTexture(0.2317647, 0.2317647, 0.2317647)
+		importTextEditor.__background:SetVertexColor(0.27, 0.27, 0.27)
+		importTextEditor.__background:SetAlpha(0.8)
+		importTextEditor.__background:SetVertTile(true)
+		importTextEditor.__background:SetHorizTile(true)
 		importTextEditor.__background:SetAllPoints()	
 		
 		--import button
@@ -118,12 +117,12 @@ function _detalhes:ShowImportWindow (defaultText, confirmFunc, titleText)
 			end
 			importWindow:Hide()
 		end
-		local okayButton = DetailsFramework:CreateButton (importTextEditor, onClickImportButton, 120, 20, "Okay", -1, nil, nil, nil, nil, nil, _detalhes.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), _detalhes.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")) --localize-me
+		local okayButton = DetailsFramework:CreateButton(importTextEditor, onClickImportButton, 120, 20, "Okay", -1, nil, nil, nil, nil, nil, _detalhes.gump:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), _detalhes.gump:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")) --localize-me
 		okayButton:SetIcon ([[Interface\BUTTONS\UI-Panel-BiggerButton-Up]], 20, 20, "overlay", {0.1, .9, 0.1, .9})
 		importTextEditor.OkayButton = okayButton
 	
 		--cancel button
-		local cancelButton = DetailsFramework:CreateButton (importTextEditor, function() importWindow:Hide() end, 120, 20, "Cancel", -1, nil, nil, nil, nil, nil, _detalhes.gump:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), _detalhes.gump:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")) --localize-me
+		local cancelButton = DetailsFramework:CreateButton(importTextEditor, function() importWindow:Hide() end, 120, 20, "Cancel", -1, nil, nil, nil, nil, nil, _detalhes.gump:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), _detalhes.gump:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")) --localize-me
 		cancelButton:SetIcon ([[Interface\BUTTONS\UI-Panel-MinimizeButton-Up]], 20, 20, "overlay", {0.1, .9, 0.1, .9})
 
 		okayButton:SetPoint("topright", importTextEditor, "bottomright", 0, -10)
@@ -138,8 +137,8 @@ function _detalhes:ShowImportWindow (defaultText, confirmFunc, titleText)
 	titleText = titleText or "Details! Dump String"
 	_G.DetailsExportWindow.Title:SetText(titleText)
 	
-	C_Timer.After (.2, function()
-		_G.DetailsExportWindow.ImportEditor:SetFocus (true)
+	C_Timer.After(.2, function()
+		_G.DetailsExportWindow.ImportEditor:SetFocus(true)
 		_G.DetailsExportWindow.ImportEditor.editbox:HighlightText (0)
 	end)
 end

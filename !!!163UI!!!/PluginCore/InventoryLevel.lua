@@ -144,17 +144,22 @@ function U1GetInventoryLevelColor(avgLevel, quality)
     --CTM 绿 272-333 蓝 308-359 紫 353-
     --WLK 绿 187 蓝 200 紫 200 - 284
     --如果带了quality，则灰白绿橙保持原样，仅处理蓝色紫色
-    if quality and (quality < 3 or quality > 4) then return GetItemQualityColor(quality) end
+    if quality and (quality < 3 or quality > 4) then
+        local r,g,b = GetItemQualityColor(quality)
+        return r,g,b --GetItemQualityColor会多返回一个colorCode, U1GetInventoryLevelColor直接用于SetTextColor不行
+    end
     if not avgLevel or avgLevel<=0 then return .5, .5, .5 end
     if avgLevel < STEP1 then
         return 1, 1, 1
     elseif avgLevel <= STEP2 then
         --return 1-(avgLevel-STEP1)/(STEP2 - STEP1), 1, 1-(avgLevel-STEP1)/(STEP2-STEP1) --1,1,1->0,1,0 白到绿
-        return GetItemQualityColor(2) --绿装
+        local r,g,b = GetItemQualityColor(2) --绿装
+        return r,g,b
     elseif avgLevel <= STEP3 then
         --return 0, 1-(avgLevel-STEP2)/(STEP3-STEP2)/2, 0.5+(avgLevel-STEP2)/(STEP3-STEP2)/2 --0,1,0.5 -> 0,0.5,1 绿到蓝
         --return (avgLevel-STEP2)/(STEP3-STEP2), 0.5, 1  --0,0.5,1 -> 1,0.5,1 蓝到粉紫
-        return GetItemQualityColor(3) --蓝装
+        local r,g,b = GetItemQualityColor(3) --蓝装
+        return r,g,b
     elseif avgLevel <= STEP4 then
         --return (avgLevel-STEP3)/(STEP4-STEP3), 0.5, 1
         --return 1, 0.5-(avgLevel-STEP3)/(STEP4-STEP3)/2, 1 --(avgLevel-STEP3)/(STEP4-STEP3)/2 --1,0.5,1 -> 1,0,0.5 粉紫到紫红（最后用紫）

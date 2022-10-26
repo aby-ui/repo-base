@@ -1,5 +1,5 @@
-## Interface: 90207
-## X-Max-Interface: 90207
+## Interface: 100000
+## X-Max-Interface: 100000
 ## X-Min-Interface: 11403
 
 
@@ -19,7 +19,7 @@
 
 
 ## Author: John Wellesz
-## Version: 2.4.9.13
+## Version: 2.4.9.13-1-g781535e
 
 ## LoadManagers: AddonLoader
 
@@ -34,7 +34,7 @@
 ## OptionalDeps: Ace3, LibNameplateRegistry-1.0
 ## X-Embeds: Ace3, LibNameplateRegistry-1.0
 
-## X-ReleaseDate: "2022-09-04T13:27:59Z"
+## X-ReleaseDate: "2022-10-26T09:27:47Z"
 ## X-Category: PvP
 ## X-eMail: hhtd@2072productions.com
 ## X-Website: https://www.2072productions.com/to/HHTD.php

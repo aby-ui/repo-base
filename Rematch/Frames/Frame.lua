@@ -16,11 +16,9 @@ rematch:InitModule(function()
 	for i=1,4 do
 		frame.PanelTabs.Tabs[i]:SetScript("OnClick",frame.PanelTabOnClick)
 	end
-	frame.TitleBar.Title:SetText(L["Rematch"])
+	frame.TitleText:SetText(L["Rematch"])
 	frame.TitleBar.SinglePanelButton.tooltipTitle = L["Toggle Single Panel Mode"]
 	frame.TitleBar.SinglePanelButton.tooltipBody = L["Toggle between one panel or two panels side by side."]
-
-	rematch:ConvertTitlebarCloseButton(frame.TitleBar.CloseButton)
 end)
 
 -- this is UpdateUI stuff, just title and lock button status

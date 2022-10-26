@@ -248,22 +248,13 @@ local function SetupTutorials()
 					cWarning.."Warning:|r Hacks may affect other addons!",
 		},
 		{	-- 12
-			text = cTitle.."         What's NEW in version |r|cffffffff4.5.0|r\n\n"..
-					"- ADDED - Support for WoW 9.2.7\n"..
-					"- ADDED - Support for WoW 9.2.5\n"..
-					"- ADDED - Support for WoW 9.2.0\n"..
-					"- ADDED - Help - Supporters (Patreon)\n"..
-					"- FIXED - Wrong color of header collapsing button with specific header"..
-					offs.."background\n"..
-					"- IMPROVED - Auto Zone filter - Tracker auto expand\n"..
-					"- IMPROVED - Option \"Show Max. height overlay\"\n"..
-					"- UPDATED - Addon support - Masque 9.2.7\n"..
-					"- UPDATED - Addon support - PetTracker 9.2.1\n"..
-					"- UPDATED - Addon support - TomTom v3.1.4\n"..
-					"- UPDATED - Addon support - ElvUI 12.91, Tukui 20.28\n"..
-					"- UPDATED - Libs\n\n"..
+			text = cTitle.."         What's NEW in version |r|cffffffff5.0.0|r\n\n"..
+					"- ADDED - Support for WoW 10.0.0\n"..
+					"- UPDATED - Help - Supporters (Patreon)\n"..
+					"- UPDATED - Libs\n"..
+					"- "..cBold.."Note:|r Addons support will be updated later!\n\n"..
 
-					cTitle.."WoW 9.2.7 - Known issues w/o solution|r\n"..
+					cTitle.."WoW 10.0.0 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n\n"..
 
@@ -332,11 +323,13 @@ local function SetupTutorials()
 			text = cTitle.."         Become a Patron|r\n\n"..
 					"If you like "..KT.title..", support me on |cfff34a54Patreon|r.\n\n"..
 					"Click on button  |T"..helpPath.."help_patreon:20:154:1:0:256:32:0:156:0:20|t  on CurseForge addon page.\n\n"..
-					"After 10 years of working on an addon, I'm launching Patreon. It's created as\na compensation for the amount "..
+					"After 10 years of working on an addon, I started Patreon. It's created as\na compensation for the amount "..
 					"of time that addon development requires.\n\n"..
 					"                                    Many thanks to all supporters  |T"..helpPath.."help_patreon:16:16:0:0:256:32:157:173:0:16|t\n\n"..
 					cTitle.."Patrons|r\n"..
 					SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
+					SetFormatedPatronName("Epic", "Squishses", "Area 52")..
+					SetFormatedPatronName("Uncommon", "Flex (drantor)")..
 					SetFormatedPatronName("Uncommon", "Kyle Fuller")..
 					SetFormatedPatronName("Uncommon", "Torresman", "Drak'thul")..
 					SetFormatedPatronName("Uncommon", "Xeelee", "Razorfen")..
@@ -376,13 +369,13 @@ function M:OnEnable()
 end
 
 function M:ShowHelp(index)
-	InterfaceOptionsFrame:Hide()
+	HideUIPanel(SettingsPanel)
 	T.ResetTutorial(helpName)
 	T.TriggerTutorial(helpName, helpNumPages, index or false)
 end
 
 function M:ShowSupporters()
-	InterfaceOptionsFrame:Hide()
+	HideUIPanel(SettingsPanel)
 	T.ResetTutorial(supportersName)
 	T.TriggerTutorial(supportersName, supportersNumPages)
 end

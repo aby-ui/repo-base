@@ -2,7 +2,29 @@ local _ = ...;
 local L = select(2, ...).L
 
 --必须在hook之前设置
-QueueStatusMinimapButton:SetPoint("TOPLEFT", 17, -94)
+if QueueStatusMinimapButton then
+    QueueStatusMinimapButton:SetPoint("TOPLEFT", 17, -94)
+else
+    --TODO:abyui10
+    --[[
+    local ldb = LibStub("LibDataBroker-1.1"):NewDataObject("AbyQueueStatusButton", {
+        type = "launcher",
+        icon = "",
+    })
+    local db = {}
+    db.minimapPos = db.minimapPos or 180
+    local LibDBIcon = LibStub("LibDBIcon-1.0")
+    LibDBIcon:Register("AbyQueueStatusButton", ldb, db)
+
+    local mmb = LibDBIcon10_AbyQueueStatusButton
+    QueueStatusButton:ClearAllPoints()
+    QueueStatusButton:SetParent(mmb)
+    QueueStatusButton:SetPoint("CENTER", -5, 0)
+    QueueStatusButton:RegisterForDrag("LeftButton")
+    SetOrHookScript(QueueStatusButton, "OnDragStart", function() mmb:GetScript("OnDragStart")(mmb) end)
+    SetOrHookScript(QueueStatusButton, "OnDragStop", function() mmb:GetScript("OnDragStop")(mmb) end)
+    --]]
+end
 
 function U1MMB_HasConflictAddons()
     return MBB_Version or MBBFrame or MBFversion or (NxMapDock and NxMapDock:IsVisible()) or IsAddOnLoaded("Mappy")
@@ -209,7 +231,7 @@ end
 ---@param manully表示当玩家手工把一个图标收回时, 才记录到collectList里
 function U1_MMBCollect(btn, manually)
     if U1MMB_HasConflictAddons() then return end
-    
+
     local container = U1MMB_GetContainer()
 
     btn._base = btn._base or btn;
@@ -324,7 +346,13 @@ function U1_MMBUpdateUI()
 
     local compact = GameMenuFrame:IsVisible()
 
-    local MAX_HEIGHT = compact and GameMenuFrame:GetHeight() or select(2, UUI():GetMinResize())
+    local _, minH
+    if UIParent.GetResizeBounds then
+        _, minH = UUI():GetResizeBounds()
+    else
+        _, minH = UUI():GetMinResize()
+    end
+    local MAX_HEIGHT = compact and GameMenuFrame:GetHeight() or minH
     local OFFSET_X  = compact and 13 or 6;
     local OFFSET_Y  = compact and 12 or 5;
     local PADDING_X = compact and 1 or -1
@@ -489,18 +517,6 @@ WW:Frame("MinimapZoom", Minimap):SetFrameStrata("LOW"):EnableMouse(false):ALL():
         if MinimapZoomOut:IsEnabled() then Minimap_ZoomOutClick(); end
     end
 end):un();
-
-function U1MMB_MinimapZoom_Toggle(enable)
-    if enable then
-        MinimapZoomIn:Hide();
-        MinimapZoomOut:Hide();
-        MinimapZoom:Show();
-    else
-        MinimapZoomIn:Show();
-        MinimapZoomOut:Show();
-        MinimapZoom:Hide();
-    end
-end
 
 function U1_MMBCreateCoordsButton()
     local btn = CreateFrameAby("Button","MinimapCoordsButton",UIParent)

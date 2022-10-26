@@ -5,8 +5,8 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
-	local _setmetatable = setmetatable --lua local
-	local _ipairs = ipairs --lua local
+	local setmetatable = setmetatable --lua local
+	local ipairs = ipairs --lua local
 	local _UnitAura = UnitAura --api local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@
 
 	function habilidade_misc:Add (serial, nome, flag, who_nome, token, spellID, spellName)
 
-		--print (self.id, GetSpellInfo(self.id))
+		--print(self.id, GetSpellInfo(self.id))
 	
 		if (spellID == "BUFF_OR_DEBUFF") then
 			

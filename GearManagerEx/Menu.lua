@@ -16,7 +16,7 @@ local _G = _G
 
 local _, addon = ...
 local L = addon.L
-local EMPANEL = PaperDollEquipmentManagerPane
+local EMPANEL = PaperDollFrame.EquipmentManagerPane
 local curSetName, curSetIcon, curSetID
 
 local function OnMenuResaveSet()
@@ -186,9 +186,8 @@ EMPANEL:HookScript("OnShow", function(self)
 		return
 	end
 	managerPaneShown = 1
-	local i
-	for i = 1, NUM_GEARSET_ICONS_SHOWN do
-		local button = _G[EMPANEL:GetName().."Button"..i]
+	for i = 1, 20 do
+		local button = nil --_G[EMPANEL:GetName().."Button"..i] --TODO:abyui10
 		if button then
 			button:HookScript("OnMouseDown", GearSetButton_OnMouseDown)
 		end

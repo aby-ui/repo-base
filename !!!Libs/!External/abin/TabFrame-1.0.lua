@@ -235,12 +235,12 @@ local function Frame_AddTab(self, text, data, tooltipText)
 	local name = self:GetName().."Tab"..index
 
 	self.numTabs = index
-	local button = CreateFrame("Button", name, self, "OptionsFrameTabButtonTemplate")
-	button.text = _G[name.."Text"]
+	local button = CreateFrame("Button", name, self, "PanelTopTabButtonTemplate")
+	button.text = button.Text
 	button.data = data
 	button.tooltipText = tooltipText
 	button:SetID(index)
-	button.text:SetFont(STANDARD_TEXT_FONT, 13)
+	button.text:SetFont(STANDARD_TEXT_FONT, 13, "")
 	button:SetFontString(button.text)
 	button:SetText(text)
 
@@ -248,17 +248,17 @@ local function Frame_AddTab(self, text, data, tooltipText)
 	button:SetHitRectInsets(10, 10, 5, 0)
 
 	button.deselectTextures = {}
-	tinsert(button.deselectTextures, _G[name.."Left"])
-	tinsert(button.deselectTextures, _G[name.."Middle"])
-	tinsert(button.deselectTextures, _G[name.."Right"])
+	tinsert(button.deselectTextures, button.Left)
+	tinsert(button.deselectTextures, button.Middle)
+	tinsert(button.deselectTextures, button.Right)
 
 	button.selectTextures = {}
-	tinsert(button.selectTextures, _G[name.."LeftDisabled"])
-	tinsert(button.selectTextures, _G[name.."MiddleDisabled"])
-	tinsert(button.selectTextures, _G[name.."RightDisabled"])
+	tinsert(button.selectTextures, button.LeftActive)
+	tinsert(button.selectTextures, button.MiddleActive)
+	tinsert(button.selectTextures, button.RightActive)
 
 	if self.lastTab then
-		button:SetPoint("LEFT", self.lastTab, "RIGHT", -18, 0)
+		button:SetPoint("LEFT", self.lastTab, "RIGHT", 3, 0)
 	else
 		button:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 6, -3)
 	end

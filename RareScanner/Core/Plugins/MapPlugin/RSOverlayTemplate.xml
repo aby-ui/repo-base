@@ -20,8 +20,6 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnMouseEnter method="OnMouseEnter"/>
-			<OnMouseLeave method="OnMouseLeave"/>
 			<OnMouseDown method="OnMouseDown"/>
 		</Scripts>
 	</Frame>

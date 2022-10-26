@@ -21,6 +21,7 @@ local RSTooltip = private.ImportLib("RareScannerTooltip")
 local RSGuidePOI = private.ImportLib("RareScannerGuidePOI")
 local RSTomtom = private.ImportLib("RareScannerTomtom")
 local RSWaypoints = private.ImportLib("RareScannerWaypoints")
+local RSEntityStateHandler = private.ImportLib("RareScannerEntityStateHandler")
 
 -- RareScanner general libraries
 local RSUtils = private.ImportLib("RareScannerUtils")
@@ -37,6 +38,7 @@ function RSEntityPinMixin:OnAcquired(POI)
 	self.Texture:SetTexture(POI.Texture)
 	self.Texture:SetScale(RSConfigDB.GetIconsWorldMapScale())
 	self:SetPosition(RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y));
+	self:SetPassThroughButtons("MiddleButton");
 end
 
 function RSEntityPinMixin:OnMouseEnter()
@@ -54,37 +56,17 @@ function RSEntityPinMixin:OnMouseDown(button)
 		--Toggle state
 		if (IsShiftKeyDown() and IsAltKeyDown()) then
 			if (self.POI.isNpc) then
-				if (self.POI.isDead) then
-					RSNpcDB.DeleteNpcKilled(self.POI.entityID)
-				else
-					RareScanner:ProcessKill(self.POI.entityID, true)
-					self:Hide();
-				end
+				RSConfigDB.SetNpcFiltered(self.POI.entityID, false)
+				self:Hide();
 			elseif (self.POI.isContainer) then
-				if (self.POI.isOpened) then
-					RSContainerDB.DeleteContainerOpened(self.POI.entityID)
-				else
-					RareScanner:ProcessOpenContainer(self.POI.entityID, true)
-					self:Hide();
-				end
+				RSConfigDB.SetContainerFiltered(self.POI.entityID, false)
+				self:Hide();
 			elseif (self.POI.isEvent) then
-				if (self.POI.isCompleted) then
-					RSEventDB.DeleteEventCompleted(self.POI.entityID)
-				else
-					RareScanner:ProcessCompletedEvent(self.POI.entityID, true)
-					self:Hide();
-				end
+				RSConfigDB.SetEventFiltered(self.POI.entityID, false)
+				self:Hide();
 			end
 			self:GetMap():RefreshAllDataProviders();
 			RSMinimap.RefreshEntityState(self.POI.entityID)
-		-- Add waypoint
-		elseif (IsShiftKeyDown()) then
-			if (RSConfigDB.IsAddingWorldMapTomtomWaypoints()) then
-				RSTomtom.AddWorldMapTomtomWaypoint(self.POI.mapID, self.POI.x, self.POI.y, self.POI.name)
-			end
-			if (RSConfigDB.IsAddingWorldMapIngameWaypoints()) then
-				RSWaypoints.AddWorldMapWaypoint(self.POI.mapID, self.POI.x, self.POI.y)
-			end
 		-- Toggle overlay
 		elseif (not IsShiftKeyDown() and not IsAltKeyDown()) then
 			-- If overlay showing then hide it
@@ -102,23 +84,34 @@ function RSEntityPinMixin:OnMouseDown(button)
 			end
 		end
 	elseif (button == "RightButton") then
-		-- If guide showing then hide it
-		local guideEntityID = RSGeneralDB.GetGuideActive()
-		if (guideEntityID) then
-			self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
-			if (guideEntityID ~= self.POI.entityID) then
-				self:ShowGuide(self.POI.mapID)
-			else
-				RSGeneralDB.RemoveGuideActive()
-				RSMinimap.RemoveGuide(self.POI.entityID)
+		-- Add waypoint
+		if (IsShiftKeyDown()) then
+			if (RSConfigDB.IsAddingWorldMapTomtomWaypoints()) then
+				RSTomtom.AddWorldMapTomtomWaypoint(self.POI.mapID, self.POI.x, self.POI.y, self.POI.name)
 			end
+			if (RSConfigDB.IsAddingWorldMapIngameWaypoints()) then
+				RSWaypoints.AddWorldMapWaypoint(self.POI.mapID, self.POI.x, self.POI.y)
+			end
+		-- Toggle guide
 		else
-			self:ShowGuide(self.POI.mapID)
-		end
-		
-		-- Hide the tooltip
-		if (RSTooltip.HideTooltip(self.tooltip)) then
-			self.tooltip = nil
+			-- If guide showing then hide it
+			local guideEntityID = RSGeneralDB.GetGuideActive()
+			if (guideEntityID) then
+				self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
+				if (guideEntityID ~= self.POI.entityID) then
+					self:ShowGuide(self.POI.mapID)
+				else
+					RSGeneralDB.RemoveGuideActive()
+					RSMinimap.RemoveGuide(self.POI.entityID)
+				end
+			else
+				self:ShowGuide(self.POI.mapID)
+			end
+			
+			-- Hide the tooltip
+			if (RSTooltip.HideTooltip(self.tooltip)) then
+				self.tooltip = nil
+			end
 		end
 	end
 end

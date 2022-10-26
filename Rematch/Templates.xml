@@ -1098,8 +1098,19 @@
 		</Scripts>
 	</Button>
 
-	<!-- these are for titlebar buttons such as close, minimize, lock, pin, etc -->
 	<Button name="RematchTitlebarButtonTemplate" virtual="true">
+		<Size x="22" y="22"/>
+		<HitRectInsets left="-2" right="-2" top="-2" bottom="-2"/>
+		<NormalTexture file="Interface\AddOns\Rematch\Textures\newtitlebarbuttons"/>
+		<DisabledTexture file="Interface\AddOns\Rematch\Textures\newtitlebarbuttons"/>
+		<PushedTexture file="Interface\AddOns\Rematch\Textures\newtitlebarbuttons"/>
+		<HighlightTexture file="Interface\Buttons\redbutton2x" alphaMode="ADD" alpha="0.5">
+			<TexCoords left="0.6015625" right="0.734375" top="0.0234375" bottom="0.2890625"/>
+		</HighlightTexture>
+	</Button>
+
+	<!-- these are for titlebar buttons such as close, minimize, lock, pin, etc -->
+	<Button name="RematcholdTitlebarButtonTemplate" virtual="true">
 		<Size x="32" y="32"/>
 		<NormalTexture file="Interface\AddOns\Rematch\Textures\TitlebarButtons">
 			<TexCoords left="0" right="0.25" top="0" bottom="0.25"/>

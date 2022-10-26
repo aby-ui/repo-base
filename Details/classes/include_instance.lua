@@ -13,7 +13,7 @@ local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 function _detalhes:ResetInstanceConfig (maintainsnap)
 	for key, value in pairs(_detalhes.instance_defaults) do 
 		if (type(value) == "table") then
-			self [key] = Details.CopyTable (value)
+			self [key] = Details.CopyTable(value)
 		else
 			self [key] = value
 		end
@@ -60,7 +60,7 @@ function _detalhes:ResetInstanceConfigKeepingValues (maintainsnap)
 	for key, value in pairs(_detalhes.instance_defaults) do 
 		if (not _detalhes.instance_skin_ignored_values [key]) then
 			if (type(value) == "table") then
-				self [key] = Details.CopyTable (value)
+				self [key] = Details.CopyTable(value)
 			else
 				self [key] = value
 			end
@@ -78,7 +78,7 @@ function _detalhes:LoadInstanceConfig()
 	for key, value in pairs(_detalhes.instance_defaults) do 
 		if (self [key] == nil) then
 			if (type(value) == "table") then
-				self [key] = Details.CopyTable (_detalhes.instance_defaults [key])
+				self [key] = Details.CopyTable(_detalhes.instance_defaults [key])
 			else
 				self [key] = value
 			end
@@ -87,7 +87,7 @@ function _detalhes:LoadInstanceConfig()
 			for key2, value2 in pairs(value) do 
 				if (self [key] [key2] == nil) then
 					if (type(value2) == "table") then
-						self [key] [key2] = Details.CopyTable (_detalhes.instance_defaults [key] [key2])
+						self [key] [key2] = Details.CopyTable(_detalhes.instance_defaults [key] [key2])
 					else
 						self [key] [key2] = value2
 					end

@@ -7,7 +7,7 @@
 	<Frame name="_detalhes_listener">
 		<Scripts>
 			<OnLoad>
-				self:RegisterEvent ("ADDON_LOADED");
+				self:RegisterEvent("ADDON_LOADED");
 			</OnLoad>
 			<OnEvent>
 				_detalhes.OnEvent (self, event, ...);

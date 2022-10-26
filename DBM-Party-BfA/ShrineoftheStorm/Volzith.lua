@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2156, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20221016053021")
 mod:SetCreatureID(134069)
 mod:SetEncounterID(2133)
 
@@ -72,7 +72,11 @@ function mod:SPELL_ENERGIZE(_, _, _, _, destGUID, _, _, _, spellId, _, _, amount
 		local bossPower = UnitPower("boss1")
 		bossPower = bossPower / 2--2 energy per second, grasp every 50 seconds there abouts.
 		local remaining = 50-bossPower
-		local newTimer = 50-remaining
-		timerGraspCD:Update(newTimer, 50)
+		if remaining > 0 then
+			local newTimer = 50-remaining
+			timerGraspCD:Update(newTimer, 50)
+		else
+			timerGraspCD:Stop()
+		end
 	end
 end

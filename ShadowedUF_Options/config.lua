@@ -948,7 +948,7 @@ local function loadGeneralOptions()
 								set = setColor,
 								get = function(info)
 									if( not ShadowUF.db.profile.bars.backgroundColor ) then
-										return {r = 0, g = 0, b = 0}
+										return 0, 0, 0
 									end
 
 									return getColor(info)
@@ -7198,7 +7198,7 @@ local function loadAuraIndicatorsOptions()
 							create = {
 								order = 3,
 								type = "execute",
-								name = L["Add aura"],
+								name = L["Add Aura"],
 								disabled = function(info) return not addAura.name or (not addAura.group and not addAura.custom) end,
 								func = function(info)
 									local group = string.trim(addAura.custom or "")

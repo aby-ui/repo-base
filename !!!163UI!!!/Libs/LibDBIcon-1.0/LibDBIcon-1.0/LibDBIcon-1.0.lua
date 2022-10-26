@@ -1,4 +1,4 @@
-
+--@curseforge-project-slug: libdbicon-1-0@
 -----------------------------------------------------------------------
 -- LibDBIcon-1.0
 --
@@ -149,7 +149,7 @@ do
 			y = max(-h, min(y*diagRadiusH, h))
 		end
 		button:ClearAllPoints()
-		button:SetPoint("CENTER", Minimap, "CENTER", x, y)
+		button:SetPoint("CENTER", Minimap, "CENTER", x-3, y+1)
 	end
 end
 

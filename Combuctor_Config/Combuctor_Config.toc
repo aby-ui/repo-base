@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Combuctor Config
 ## Author: Tuller and Jaliborc (João Cardoso)
 ## Notes: An options menu for Combuctor

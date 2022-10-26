@@ -3,8 +3,8 @@
 ---------------------------------------------------------------]]
 StaticPopupDialogs["163UI_CHAT_CLEAR"] = {preferredIndex = 3,
     text = "即将|cffff0000清除|r聊天窗口|cffffff00[%1$s]|r的全部信息，你确定要这么做吗？",
-    button1 = TEXT(YES),
-    button2 = TEXT(CANCEL),
+    button1 = YES,
+    button2 = CANCEL,
     OnAccept = function(self, data)
         (data or SELECTED_CHAT_FRAME):Clear();
         local lines = U1GetCfgValue("163ui_chat", "maxLines") --CoreGetParaParam("Gamma", 17, 4);
@@ -66,11 +66,13 @@ local function CreateResizeButton(cf)
     btn:GetPushedTexture():SetTexCoord(1,1,1,0,0,1,0,0)
     btn:SetScript("OnMouseDown", chatFrameResizeOnMouseDown);
     btn:SetScript("OnMouseUp", chatFrameResizeOnMouseUp);
+--[[ --TODO:abyui10
     hooksecurefunc(cf.ResizeButton, "Show", chatFrameResizeOnShow);
     hooksecurefunc(cf.ResizeButton, "Hide", chatFrameResizeOnHide);
     hooksecurefunc(cf.ResizeButton, "SetShown", function(self, show)
         if show then U1Chat_ChatFrameResizeOnShow(self) else chatFrameResizeOnHide(self) end
     end)
+]]
 end
 WithAllChatFrame(CreateResizeButton);
 
@@ -103,14 +105,19 @@ SetCVar("chatMouseScroll", 1)
 CoreOnEvent("PLAYER_LOGIN", function()
     WithAllChatFrame(function(cf)
         CoreHookScript(cf, "OnMouseWheel", chatFrameOnMouseWheel, true)
-        cf:SetMaxResize((UIParent:GetWidth() or 1024)-100, "800");
+        if UIParent.SetResizeBounds then --abyui10
+            local minW, minH, maxW, maxH = cf:GetResizeBounds()
+            cf:SetResizeBounds(minW, minH, (UIParent:GetWidth() or 1024)-100, (UIParent:GetHeight() or 800)-100);
+        else
+            cf:SetMaxResize((UIParent:GetWidth() or 1024)-100, "800");
+        end
         cf.editBox:SetAltArrowKeyMode(false)
 
         --5.4聊天框历史记录
         cf.editBox["historyIndex"] = 1;
         hooksecurefunc(cf.editBox, "AddHistoryLine", U1_Chat_AddHistoryLine);
         hooksecurefunc(cf.editBox, "ClearHistory", U1_Chat_ClearHistory);
-        cf.editBox:SetScript("OnArrowPressed", U1_Chat_OnArrowPressed);
+        cf.editBox:HookScript("OnArrowPressed", U1_Chat_OnArrowPressed);
     end);
     return true;
 end, true);
@@ -202,6 +209,10 @@ function U1_Chat_ClearHistory(self)
 end
 
 function U1_Chat_OnArrowPressed(self, key)
+    local autoComplete = AutoCompleteBox;
+    if ( autoComplete:IsShown() and autoComplete.parent == self ) then
+        return
+    end
 	if ( key == "UP" ) then
 		return ChatHistory_FetchNext(self, true);
 	elseif ( key == "DOWN" ) then

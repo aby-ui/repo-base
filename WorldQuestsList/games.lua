@@ -1402,6 +1402,7 @@ AStewardforEveryOccasion.QuestMobs = {
 	[169024]=true,
 	[169022]=true,
 	[169026]=true,
+	[169025]=true,
 }
 
 AStewardforEveryOccasion:SetScript("OnEvent",function(self,event,arg1,arg2)

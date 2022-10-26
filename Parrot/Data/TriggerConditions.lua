@@ -169,21 +169,21 @@ Parrot:RegisterPrimaryTriggerCondition {
 
 local powerTypeChoices = {
 	[-1] = L["Any"],
-	[SPELL_POWER_MANA] = MANA,
-	[SPELL_POWER_RAGE] = RAGE,
-	[SPELL_POWER_FOCUS] = FOCUS,
-	[SPELL_POWER_ENERGY] = ENERGY,
-	[SPELL_POWER_RUNES] = RUNES,
-	[SPELL_POWER_RUNIC_POWER] = RUNIC_POWER,
-	[SPELL_POWER_SOUL_SHARDS] = SOUL_SHARDS,
-	[SPELL_POWER_LUNAR_POWER] = LUNAR_POWER,
-	[SPELL_POWER_HOLY_POWER] = HOLY_POWER,
-	[SPELL_POWER_MAELSTROM] = MAELSTROM,
-	[SPELL_POWER_CHI] = CHI,
-	[SPELL_POWER_INSANITY] = INSANITY,
-	[SPELL_POWER_ARCANE_CHARGES] = ARCANE_CHARGES,
-	[SPELL_POWER_FURY] = FURY,
-	[SPELL_POWER_PAIN] = PAIN
+	[Enum.PowerType.Mana] = MANA,
+	[Enum.PowerType.Rage] = RAGE,
+	[Enum.PowerType.Focus] = FOCUS,
+	[Enum.PowerType.Energy] = ENERGY,
+	[Enum.PowerType.Runes] = RUNES,
+	[Enum.PowerType.RunicPower] = RUNIC_POWER,
+	[Enum.PowerType.SoulShards] = SOUL_SHARDS,
+	[Enum.PowerType.LunarPower] = LUNAR_POWER,
+	[Enum.PowerType.HolyPower] = HOLY_POWER,
+	[Enum.PowerType.Maelstrom] = MAELSTROM,
+	[Enum.PowerType.Chi] = CHI,
+	[Enum.PowerType.Insanity] = INSANITY,
+	[Enum.PowerType.ArcaneCharges] = ARCANE_CHARGES,
+	[Enum.PowerType.Fury] = FURY,
+	[Enum.PowerType.Pain] = PAIN
 }
 
 local unitPowerStates = {

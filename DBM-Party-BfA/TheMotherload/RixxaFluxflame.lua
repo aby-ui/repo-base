@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2115, "DBM-Party-BfA", 7, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(129231)
 mod:SetEncounterID(2107)
 
@@ -61,7 +61,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 259853 and self:CheckDispelFilter() then
+	if spellId == 259853 and self:CheckDispelFilter("magic") then
 		specWarnChemBurn:CombinedShow(1, args.destName)
 		specWarnChemBurn:ScheduleVoice(1, "dispelnow")
 	end

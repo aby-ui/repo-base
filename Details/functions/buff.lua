@@ -6,7 +6,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
 	--initialize buffs name container
 	_detalhes.Buffs.BuffsTable = {} -- armazenara o [nome do buff] = { tabela do buff }
@@ -20,8 +20,8 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
-	local _pairs = pairs --lua local
-	local _ipairs = ipairs --lua local
+	local pairs = pairs --lua local
+	local ipairs = ipairs --lua local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --details api functions
@@ -29,14 +29,14 @@
 	--return if the buff is already registred or not
 	function _detalhes.Buffs:IsRegistred (buff)
 		if (type(buff) == "number") then
-			for _, buffObject in _pairs (_detalhes.Buffs.BuffsTable) do 
+			for _, buffObject in pairs(_detalhes.Buffs.BuffsTable) do 
 				if (buffObject.id == buff) then
 					return true
 				end
 			end
 			return false
 		elseif (type(buff) == "string") then
-			for name, _ in _pairs (_detalhes.Buffs.BuffsTable) do 
+			for name, _ in pairs(_detalhes.Buffs.BuffsTable) do 
 				if (name == buff) then
 					return true
 				end
@@ -70,7 +70,7 @@
 	--return a list of registred buffs
 	function _detalhes.Buffs:GetBuffList()
 		local list = {}
-		for name, _ in _pairs (_detalhes.Buffs.BuffsTable) do 
+		for name, _ in pairs(_detalhes.Buffs.BuffsTable) do 
 			list [#list+1] = name
 		end
 		return list
@@ -79,7 +79,7 @@
 	--return a list of registred buffs ids
 	function _detalhes.Buffs:GetBuffListIds()
 		local list = {}
-		for name, buffObject in _pairs (_detalhes.Buffs.BuffsTable) do 
+		for name, buffObject in pairs(_detalhes.Buffs.BuffsTable) do 
 			list [#list+1] = buffObject.id
 		end
 		return list
@@ -126,7 +126,7 @@
 	function _detalhes.Buffs:BuildTables()
 		_detalhes.Buffs.built = true
 		if (_detalhes.savedbuffs) then
-			for _, BuffId in _ipairs(_detalhes.savedbuffs) do 
+			for _, BuffId in ipairs(_detalhes.savedbuffs) do 
 				_detalhes.Buffs:NewBuff (nil, BuffId)
 			end
 		end
@@ -141,7 +141,7 @@
 	function _detalhes.Buffs:BuildBuffTable (BuffName, BuffId)
 		local bufftable = {name = BuffName, id = BuffId, duration = 0, start = nil, castedAmt = 0, refreshAmt = 0, droppedAmt = 0, active = false, appliedAt = {}}
 		bufftable.IsBuff = true
-		setmetatable (bufftable, _detalhes.Buffs)
+		setmetatable(bufftable, _detalhes.Buffs)
 		return bufftable
 	end
 
@@ -153,7 +153,7 @@
 			_detalhes.Buffs:BuildTables()
 		end
 		
-		for _, BuffTable in _pairs (_detalhes.Buffs.BuffsTable) do 
+		for _, BuffTable in pairs(_detalhes.Buffs.BuffsTable) do 
 			if (BuffTable.active) then
 				BuffTable.start = _detalhes._tempo
 				BuffTable.castedAmt = 1
@@ -180,7 +180,7 @@
 				end
 				
 				--[[
-				for index, BuffName in _pairs (_detalhes.SoloTables.BuffsTableNameCache) do
+				for index, BuffName in pairs(_detalhes.SoloTables.BuffsTableNameCache) do
 					if (BuffName == name) then
 						local BuffObject = _detalhes.SoloTables.SoloBuffUptime [name]
 						if (not BuffObject) then

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2360, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220217031102")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(153755, 150712)
 mod:SetEncounterID(2312)
 mod:SetBossHPInfoToHighest()
@@ -38,7 +38,7 @@ local specWarnPedaltotheMetal		= mod:NewSpecialWarningDodge(298651, nil, nil, ni
 
 local timerRoadKillCD				= mod:NewCDTimer(27, 298946, nil, nil, nil, 3)
 local timerBoltBusterCD				= mod:NewCDTimer(18.2, 298940, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerPedaltotheMetalCD		= mod:NewCDTimer(60, 298651, nil, nil, nil, 3)
+--local timerPedaltotheMetalCD		= mod:NewCDTimer(60, 298651, nil, nil, nil, 3)
 
 mod.vb.MetalCast = 0
 
@@ -59,7 +59,7 @@ end
 
 function mod:OnCombatStart(delay)
 	self.vb.MetalCast = 0
-	timerPedaltotheMetalCD:Start(4.4)
+--	timerPedaltotheMetalCD:Start(4.4)
 	timerMegaTazeCD:Start(25.5-delay)
 	timerBoltBusterCD:Start(36.4-delay)
 	timerRoadKillCD:Start(31.6-delay)
@@ -92,11 +92,11 @@ function mod:SPELL_CAST_START(args)
 		specWarnPedaltotheMetal:Play("chargemove")
 		--"Pedal to the Metal-298651-npc:153756 = pull:14.8, 60.7", -- [36]
 		--"Pedal to the Metal-299164-npc:153756 = pull:4.4, 61.5", -- [37]
-		if self.vb.MetalCast % 2 == 0 then
-			timerPedaltotheMetalCD:Start(50)--51.1, but small sample so 50 used
-		else
-			timerPedaltotheMetalCD:Start(9.6)
-		end
+--		if self.vb.MetalCast % 2 == 0 then
+--			timerPedaltotheMetalCD:Start(50)--51.1, but small sample so 50 used
+--		else
+--			timerPedaltotheMetalCD:Start(9.6)
+--		end
 	elseif spellId == 298571 then
 		warnBurnout:Show()
 	end
@@ -106,7 +106,7 @@ end
 function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 153755 then--Naeno
-		timerPedaltotheMetalCD:Stop()
+--		timerPedaltotheMetalCD:Stop()
 		timerRoadKillCD:Stop()
 		timerBoltBusterCD:Stop()
 	elseif cid == 150712 then--Trixie

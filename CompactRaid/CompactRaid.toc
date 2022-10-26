@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: CompactRaid
 ## Version: 5.10
 ## Author: Abin
@@ -10,6 +10,7 @@
 ## X-Curse-Project-Name: CompactRaid
 ## X-Curse-Project-ID: compactraid
 ## X-Curse-Repository-ID: wow/compactraid/mainline
+## Dependencies: TODO:abyui10
 
 ..\!!!Libs\!External\abin\LibAddonManager.lua
 ..\!!!Libs\!External\abin\Pre80API.lua

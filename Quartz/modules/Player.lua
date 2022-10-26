@@ -24,8 +24,10 @@ local Player = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 
 local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
 
+local WOW_INTERFACE_VER = select(4, GetBuildInfo())
 local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
-local WoWBC = (WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+local WoWBC = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and WOW_INTERFACE_VER >= 20500 and WOW_INTERFACE_VER < 30000
+local WoWWrath = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and WOW_INTERFACE_VER >= 30400 and WOW_INTERFACE_VER < 40000
 
 ----------------------------
 -- Upvalues
@@ -124,24 +126,49 @@ function Player:ApplySettings()
 	db = self.db.profile
 
 	-- obey the hideblizz setting no matter if disabled or not
-	if db.hideblizz then
-		CastingBarFrame.RegisterEvent = function() end
-		CastingBarFrame:UnregisterAllEvents()
-		CastingBarFrame:Hide()
+	if PlayerCastingBarFrame then
+		if db.hideblizz then
+			PlayerCastingBarFrame.RegisterEvent = function() end
+			PlayerCastingBarFrame:UnregisterAllEvents()
+			PlayerCastingBarFrame:Hide()
+		else
+			self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+			self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
+			self:RegisterEvent("PLAYER_ENTERING_WORLD")
+		end
 	else
-		CastingBarFrame.RegisterEvent = nil
-		CastingBarFrame:UnregisterAllEvents()
-		CastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
-		CastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
-		CastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-		CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-		CastingBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+		if db.hideblizz then
+			CastingBarFrame.RegisterEvent = function() end
+			CastingBarFrame:UnregisterAllEvents()
+			CastingBarFrame:Hide()
+		else
+			CastingBarFrame.RegisterEvent = nil
+			CastingBarFrame:UnregisterAllEvents()
+			CastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+			CastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+			CastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
+			CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+			CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_DELAYED")
+			CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
+			CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+			CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
+			if WoWRetail then
+				CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+				CastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+			end
+			CastingBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+		end
 	end
 
 	self.Bar:SetConfig(db)
@@ -206,7 +233,28 @@ local function setBarTicks(ticknum, duration, ticks)
 	end
 end
 
-local channelingTicks = WoWBC and {
+local channelingTicks = WoWWrath and {
+	--- Wrath
+	-- druid
+	[GetSpellInfo(740)] = 4, -- tranquility
+	[GetSpellInfo(16914)] = 10, -- hurricane
+	-- hunter
+	[GetSpellInfo(1510)] = 6, -- volley
+	-- mage
+	[GetSpellInfo(10)] = 8, -- blizzard
+	[5143] = 3, -- arcane missiles r1
+	[5144] = 4, -- arcane missiles r2
+	[GetSpellInfo(5145)] = 5, -- arcane missiles
+	-- priest
+	[GetSpellInfo(15407)] = 3, -- mind flay
+	-- warlock
+	[GetSpellInfo(1949)] = 15, -- hellfire
+	[GetSpellInfo(5740)] = 4, -- rain of fire
+	[GetSpellInfo(5138)] = 5, -- drain mana
+	[GetSpellInfo(689)] = 5, -- drain life
+	[GetSpellInfo(1120)] = 5, -- drain soul
+	[GetSpellInfo(755)] = 10, -- health funnel
+} or WoWBC and {
 	--- BCC
 	-- druid
 	[GetSpellInfo(740)] = 4, -- tranquility

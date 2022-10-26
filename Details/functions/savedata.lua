@@ -3,7 +3,7 @@
 local _detalhes = 		_G._detalhes
 
 function _detalhes:WipeConfig()
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	
 	local b = CreateFrame("button", "DetailsResetConfigButton", UIParent)
 	tinsert(UISpecialFrames, "DetailsResetConfigButton")
@@ -33,14 +33,14 @@ function _detalhes:SaveLocalInstanceConfig()
 		local a1, a2 = instance:GetDisplay()
 		
 		local t = {
-			pos = Details.CopyTable (instance:GetPosition()),
+			pos = Details.CopyTable(instance:GetPosition()),
 			is_open = instance:IsEnabled(),
 			attribute = a1 or 1,
 			sub_attribute = a2 or 1,
 			modo = instance:GetMode() or 2,
 			mode = instance:GetMode() or 2,
 			segment = instance:GetSegment() or 0,
-			snap = Details.CopyTable (instance.snap),
+			snap = Details.CopyTable(instance.snap),
 			horizontalSnap = instance.horizontalSnap,
 			verticalSnap = instance.verticalSnap,
 			sub_atributo_last = instance.sub_atributo_last or {1, 1, 1, 1, 1},
@@ -56,10 +56,10 @@ function _detalhes:SaveLocalInstanceConfig()
 			local cprofile = _detalhes:GetProfile()
 			local skin = cprofile.instances [instance:GetId()]
 			if (skin) then
-				t.pos = Details.CopyTable (skin.__pos)
+				t.pos = Details.CopyTable(skin.__pos)
 				t.horizontalSnap = skin.__snapH
 				t.verticalSnap = skin.__snapV
-				t.snap = Details.CopyTable (skin.__snap)
+				t.snap = Details.CopyTable(skin.__snap)
 				t.is_open = skin.__was_opened
 				t.isLocked = skin.__locked
 			end
@@ -91,10 +91,10 @@ function _detalhes:SaveConfig()
 			_detalhes_database.tabela_pets = _detalhes.tabela_pets.pets
 		end
 		
-		xpcall (_detalhes.TimeDataCleanUpTemporary, _detalhes.saver_error_func)
+		xpcall(_detalhes.TimeDataCleanUpTemporary, _detalhes.saver_error_func)
 		
 	--buffs
-		xpcall (_detalhes.Buffs.SaveBuffs, _detalhes.saver_error_func)
+		xpcall(_detalhes.Buffs.SaveBuffs, _detalhes.saver_error_func)
 	
 	--date
 		_detalhes.last_day = date ("%d")

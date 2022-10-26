@@ -55,17 +55,15 @@
 			</OnHide>
 		</Scripts>
 	</Frame>
-	<Button name="OmniCDButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
+	<CheckButton name="OmniCDButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
 		<Size>
 			<AbsDimension x="36" y="36"/>
 		</Size>
 		<Anchors>
-			<Anchors>
-				<Anchor point="CENTER"/>
-			</Anchors>
+			<Anchor point="CENTER"/>
 		</Anchors>
 		<Layers>
-			<Layer level="BACKGROUND" textureSubLevel="1" hidden="true">
+			<Layer level="BACKGROUND" textureSubLevel="1">
 				<Texture parentKey="borderTop">
 					<Color r="0" g="0" b="0"/>
 				</Texture>
@@ -207,7 +205,7 @@
 				_G["AceConfigDialogTooltip-OmniCD"]:Hide();
 			</OnLeave>
 		</Scripts>
-	</Button>
+	</CheckButton>
 	<Frame name="OmniCDButtonSpellActivationAlert" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">

@@ -13,7 +13,7 @@ function ContainerFrameItemButton_CIMIUpdateIcon(self)
         self:SetScript("OnUpdate", nil)
         return
     end
-    local bag, slot = self:GetParent():GetParent():GetID(), self:GetParent():GetID()
+    local bag, slot = self:GetParent():GetBagID(), self:GetParent():GetID()
     -- need to catch 0, 0 and 100, 0 here because the bank frame doesn't
     -- load everything immediately, so the OnUpdate needs to run until those frames are opened.
     if (bag == 0 and slot == 0) or (bag == 100 and slot == 0) then return end
@@ -132,9 +132,10 @@ CanIMogIt.frame:AddEventFunction(OnGuildBankOpened)
 -- void storage
 local voidStorageLoaded = false
 
-local function OnVoidStorageOpened(event, ...)
+local function OnVoidStorageOpened(event, addonName, ...)
     -- Add the overlay to the void storage frame.
-    if event ~= "VOID_STORAGE_OPEN" then return end
+    if event ~= "ADDON_LOADED" then return end
+    if addonName ~= "Blizzard_VoidStorageUI" then return end
     if voidStorageLoaded == true then return end
     voidStorageLoaded = true
     for i=1,CanIMogIt.NUM_VOID_STORAGE_FRAMES do
@@ -167,6 +168,27 @@ local function ContainersOverlayEvents(event, ...)
         not update on some characters. The After(0,...) call makes it update
         next frame instead.
     ]]
+    -- bag frames
+    if event == "BAG_UPDATE_DELAYED" then
+        for i=1,NUM_CONTAINER_FRAMES do
+            for j=1,CanIMogIt.MAX_CONTAINER_ITEMS do
+                local frame = _G["ContainerFrame"..i.."Item"..j]
+                if frame then
+                    ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay)
+                end
+            end
+        end
+
+        -- main bank frame
+        for i=1,NUM_BANKGENERIC_SLOTS do
+            local frame = _G["BankFrameItem"..i]
+            if frame then
+                C_Timer.After(0, function() ContainerFrameItemButton_CIMIUpdateIcon(frame.CanIMogItOverlay) end)
+            end
+        end
+    end
+
+
     -- void storage frames
     if voidStorageLoaded then
         VoidStorageFrame_CIMIOnClick()
@@ -193,5 +215,5 @@ local function UpdateContainerIcon(button, ...)
 end
 
 CanIMogIt.frame:AddOverlayEventFunction(ContainersOverlayEvents)
-hooksecurefunc("ContainerFrameItemButton_UpdateItemUpgradeIcon", UpdateContainerIcon)
+hooksecurefunc(ContainerFrameItemButtonMixin, "UpdateItemUpgradeIcon", UpdateContainerIcon)
 hooksecurefunc("BankFrameItemButton_Update", UpdateContainerIcon)

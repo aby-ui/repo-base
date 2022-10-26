@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -40,10 +40,10 @@
 	
 	function _detalhes:RaidPluginInstalled (plugin_name)
 		if (self.waiting_raid_plugin) then
-			--print (self.meu_id, 2, self.last_raid_plugin, " == ", plugin_name)
+			--print(self.meu_id, 2, self.last_raid_plugin, " == ", plugin_name)
 			if (self.last_raid_plugin == plugin_name) then
 				if (self.waiting_pid) then
-					self:CancelTimer (self.waiting_pid, true)
+					self:CancelTimer(self.waiting_pid, true)
 				end
 				self:CancelWaitForPlugin()
 				_detalhes.RaidTables:EnableRaidMode (self, plugin_name)
@@ -107,7 +107,7 @@
 
 		--last check if the name is okey
 		if (self:IsAvailable (plugin_name, instance)) then
-			self:switch (nil, plugin_name, instance)
+			self:switch(nil, plugin_name, instance)
 			
 			if (from_mode_menu) then
 				--refresh
@@ -161,7 +161,7 @@
 
 	----------------
 	
-	function _detalhes.RaidTables:switch (_, plugin_name, instance)
+	function _detalhes.RaidTables:switch(_, plugin_name, instance)
 	
 		local update_menu = false
 		if (not self) then --came from cooltip
@@ -214,7 +214,7 @@
 			plugin_object.instance_id = instance:GetId()
 			plugin_object.Frame:SetPoint("TOPLEFT", instance.bgframe)
 			plugin_object.Frame:Show()
-			instance:ChangeIcon (plugin_object.__icon)--; print (instance:GetId(),"icon",plugin_object.__icon)
+			instance:ChangeIcon (plugin_object.__icon)--; print(instance:GetId(),"icon",plugin_object.__icon)
 			_detalhes:SendEvent("DETAILS_INSTANCE_CHANGEATTRIBUTE", nil, instance, instance.atributo, instance.sub_atributo)
 			
 			if (update_menu) then
@@ -270,7 +270,7 @@
 			SendChatMessage (msg, channel, nil, towho)
 		
 		elseif (channel == "PRINT") then
-			print (msg)
+			print(msg)
 		
 		else --say channel?
 			if (IsInInstance()) then --patch 80205 cannot use 'say' channel outside instances
@@ -323,9 +323,9 @@
 			end
 			
 			if (custom ~= "") then
-				custom = custom:gsub ("{spell}", spellname)
-				custom = custom:gsub ("{target}", alvo_name or "")
-				custom = custom:gsub ("{next}", next)
+				custom = custom:gsub("{spell}", spellname)
+				custom = custom:gsub("{target}", alvo_name or "")
+				custom = custom:gsub("{next}", next)
 				_detalhes:SendMsgToChannel (custom, channel, _detalhes.announce_interrupts.whisper)
 			else
 				local msg = _cstr (Loc ["STRING_OPTIONS_RT_INTERRUPT"], spellname)
@@ -348,14 +348,14 @@
 			end
 
 			if (custom ~= "") then
-				custom = custom:gsub ("{spell}", spellname)
-				custom = custom:gsub ("{next}", who_name)
-				custom = custom:gsub ("{target}", alvo_name or "")
+				custom = custom:gsub("{spell}", spellname)
+				custom = custom:gsub("{next}", who_name)
+				custom = custom:gsub("{target}", alvo_name or "")
 				_detalhes:SendMsgToChannel (custom, "PRINT")
 			else
 				local minute, second = _detalhes:GetCombat():GetFormatedCombatTime()
 				
-				local _, class = _UnitClass (who_name)
+				local _, class = _UnitClass(who_name)
 				local class_color = "|cFFFF3333"
 				
 				if (class) then
@@ -366,7 +366,7 @@
 				if (second < 10) then
 					second = "0" .. second
 				end
-				local msg = "|cFFFFFF00[|r".. minute ..  ":" .. second .. "|cFFFFFF00]|r Interrupt: " .. spellname .. " (" .. class_color .. _detalhes:GetOnlyName (who_name) .. "|r)"
+				local msg = "|cFFFFFF00[|r".. minute ..  ":" .. second .. "|cFFFFFF00]|r Interrupt: " .. spellname .. " (" .. class_color .. _detalhes:GetOnlyName(who_name) .. "|r)"
 				
 				_detalhes:SendMsgToChannel (msg, "PRINT")
 			end
@@ -424,8 +424,8 @@
 			local custom = _detalhes.announce_cooldowns.custom
 			
 			if (custom ~= "") then
-				custom = custom:gsub ("{spell}", spellname)
-				custom = custom:gsub ("{target}", alvo_name or "")
+				custom = custom:gsub("{spell}", spellname)
+				custom = custom:gsub("{target}", alvo_name or "")
 				_detalhes:SendMsgToChannel (custom, channel, _detalhes.announce_interrupts.whisper)
 			else
 				local msg
@@ -457,10 +457,10 @@
 			local msg
 			local minute, second = _detalhes:GetCombat():GetFormatedCombatTime()
 			
-			local _, class = _UnitClass (who_name)
+			local _, class = _UnitClass(who_name)
 			local class_color = "|cFFFFFFFF"
 			
-			local _, class2 = _UnitClass (alvo_name)
+			local _, class2 = _UnitClass(alvo_name)
 			local class_color2 = "|cFFFFFFFF"
 			
 			if (class) then
@@ -471,7 +471,7 @@
 			if (class2) then
 				local coords = CLASS_ICON_TCOORDS [class2]
 				class_color2 = " -> |TInterface\\AddOns\\Details\\images\\classes_small_alpha:12:12:0:0:128:128:" .. coords[1]*128 .. ":" .. coords[2]*128 .. ":" .. coords[3]*128 .. ":" .. coords[4]*128 .. "|t |c" .. RAID_CLASS_COLORS [class2].colorStr
-				alvo_name = _detalhes:GetOnlyName (alvo_name)
+				alvo_name = _detalhes:GetOnlyName(alvo_name)
 			else
 				alvo_name = ""
 			end
@@ -486,7 +486,7 @@
 			if (second < 10) then
 				second = "0" .. second
 			end
-			msg = "|cFF8F8FFF[|r".. minute ..  ":" .. second .. "|cFF8F8FFF]|r Cooldown: " .. spellname .. " (" .. class_color .. _detalhes:GetOnlyName (who_name) .. "|r" .. class_color2 .. alvo_name .. "|r)"
+			msg = "|cFF8F8FFF[|r".. minute ..  ":" .. second .. "|cFF8F8FFF]|r Cooldown: " .. spellname .. " (" .. class_color .. _detalhes:GetOnlyName(who_name) .. "|r" .. class_color2 .. alvo_name .. "|r)"
 
 			_detalhes:SendMsgToChannel (msg, "PRINT")
 			
@@ -544,7 +544,7 @@
 			end
 			
 			local only_first = _detalhes.announce_deaths.only_first
-			--_detalhes:GetCombat ("current"):GetDeaths() is the same thing, but, it's faster without using the API.
+			--_detalhes:GetCombat("current"):GetDeaths() is the same thing, but, it's faster without using the API.
 			if (zone == "raid" and not _detalhes.tabela_vigente.is_boss) then
 				return
 			end
@@ -552,11 +552,11 @@
 				return
 			end
 			
-			alvo_name = _detalhes:GetOnlyName (alvo_name)
+			alvo_name = _detalhes:GetOnlyName(alvo_name)
 			
 			local msg
 			if (where == 4) then --observer
-				local _, class = _UnitClass (alvo_name)
+				local _, class = _UnitClass(alvo_name)
 				local class_color = "|cFFFFFFFF"
 				
 				if (class) then

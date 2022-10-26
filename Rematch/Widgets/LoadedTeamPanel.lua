@@ -8,7 +8,6 @@ rematch:InitModule(function()
 	settings = RematchSettings
 	panel:RegisterForClicks("AnyUp")
 	panel:RegisterForDrag("LeftButton")
-	rematch:ConvertTitlebarCloseButton(panel.Footnotes.Close)
 	rematch:SetTitlebarButtonIcon(panel.Footnotes.Maximize,"maximize")
 end)
 

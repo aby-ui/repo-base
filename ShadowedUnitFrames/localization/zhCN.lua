@@ -818,17 +818,11 @@ L["This bar will automatically hide when you are at the level cap, or you do not
 L[ [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
 Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=] ] = [=[这个颜色作用于显示你自己的指示器, 仅应用于未使用图标的时候
 有助于你了解假如一个目标有 回春 , 但你也想知道这个 回春 是不是你施放的.]=]
-L[ [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
-Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=] ] = [=[这个颜色作用于显示你自己的指示器，仅应用于未使用图标的时候
-有助于你了解假如一个目标有 回春 ，但你也想知道这个 回春 是不是你施放的.]=]
 L["This filter has no aura types set to filter out."] = "这个过滤器没有要过滤的光环类型。"
 L["This filter has no auras in it, you will have to add some using the dialog above."] = "这个过滤器内没有光环，你可以使用上面的对话框来添加。"
 L["This is a good guide on how to get started with programming in Lua, while you do not need to read the entire thing it is a helpful for understanding the basics of Lua syntax and API's."] = "这是一个如何开始Lua编程的很好的指南，然而你并不需要阅读整个事情，它有助于了解Lua的语法和API的基础知识。"
 L["This unit depends on another to work, disabling %s will disable %s."] = "这个头像必须依靠另一个才能正常工作，禁用 %s 将同时禁用 %s。"
 L["This unit has child units that depend on it, you need to enable this unit before you can enable its children."] = "这个头像有子头像，你需要首先启用他的子头像来启用这个头像。"
-L[ [=[This will be set for your current class only.
-If no custom spells are set, defaults appropriate for your class will be used.]=] ] = [=[这只能对你当前职业设置。
-如果没有设定自定义法术，将会使用适于你当前职业的默认设置。]=]
 L[ [=[This will be set for your current class only.
 If no custom spells are set, defaults appropriate for your class will be used.]=] ] = [=[这只能对你当前职业设置。
 如果没有设定自定义法术，将会使用适于你当前职业的默认设置。]=]

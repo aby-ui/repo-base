@@ -7,7 +7,7 @@ AutoTurnIn.RewardPanel.parent = addonName
 local RewardPanel = AutoTurnIn.RewardPanel
 
 local function CreateCheckbox(name, parent, marginx, marginy, text)
-	local cb = CreateFrame("CheckButton", "$parent"..name,  parent, "OptionsCheckButtonTemplate")
+	local cb = CreateFrame("CheckButton", "$parent"..name,  parent, "InterfaceOptionsCheckButtonTemplate")
 	cb:SetPoint("TOPLEFT", parent, marginx, marginy)
 	_G[cb:GetName().."Text"]:SetText(text and text or name)
 	cb:SetScript("OnClick", function(self)
@@ -18,7 +18,7 @@ local function CreateCheckbox(name, parent, marginx, marginy, text)
 end 
 
 local function CreatePanel(name, text, w, h)
-	local panel = CreateFrame("Frame", O..name,  RewardPanel, "OptionsBoxTemplate")
+	local panel = CreateFrame("Frame", O..name,  RewardPanel, "OptionsBoxTemplate") --TODO:abyui10
 	panel:SetWidth(w)
 	panel:SetHeight(h)
 	panel.buttons = {}
@@ -119,7 +119,7 @@ CreateCheckbox('ITEM_MOD_SPIRIT_SHORT', SecStatPanel, 206, -72, ITEM_MOD_SPIRIT_
 
 
 -- 'Greed' CheckBox
-local GreedAfterNeed = CreateFrame("CheckButton", O.."Enable", RewardPanel, "OptionsCheckButtonTemplate")
+local GreedAfterNeed = CreateFrame("CheckButton", O.."Enable", RewardPanel, "InterfaceOptionsCheckButtonTemplate")
 _G[GreedAfterNeed:GetName().."Text"]:SetText(L["greedifnothing"])
 GreedAfterNeed:SetScript("OnClick", function(self)
 	ptable.TempConfig.greedifnothingfound = self:GetChecked()

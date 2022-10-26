@@ -1,7 +1,7 @@
 -- L.Core
 -- Diablohu(diablohudream@gmail.com)
 -- yleaf(yaroot@gmail.com)
--- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20220808
+-- Mini Dragon(projecteurs@gmail.com) <流浪者酒馆-Brilla@金色平原> 20221022
 
 if GetLocale() ~= "zhCN" then return end
 if not DBM_CORE_L then DBM_CORE_L = {} end
@@ -45,7 +45,7 @@ L.MOD_AVAILABLE				= L.DBM .. "已经为%s制作了相关模块。你可以在Cu
 
 L.COMBAT_STARTED				= "%s作战开始，祝你走运 :)"
 L.COMBAT_STARTED_IN_PROGRESS	= "已进行的战斗-%s正在作战。祝你走运 :)"
---L.GUILD_COMBAT_STARTED		= "公会版%s作战开始"--Uncomment when updated, args have changed
+L.GUILD_COMBAT_STARTED		= "%2$s开组的公会版%1$s作战开始"
 L.SCENARIO_STARTED			= "场景战役-%s作战开始。祝你走运 :)"
 L.SCENARIO_STARTED_IN_PROGRESS	= "已进行的场景战役-%s正在作战。祝你走运 :)"
 L.BOSS_DOWN					= "%s战斗胜利！用时%s！"
@@ -55,14 +55,14 @@ L.BOSS_DOWN_NR				= "%s战斗胜利！用时%s！新的纪录诞生了！原纪�
 L.RAID_DOWN					= "%s目标达成，用时%s！"
 L.RAID_DOWN_L				= "%s目标达成，用时%s！最快用时%s！"
 L.RAID_DOWN_NR				= "%s目标达成，用时%s！最快用时%s！新的纪录诞生了！原纪录为%s！"
---L.GUILD_BOSS_DOWN			= "公会版%s战斗胜利！用时%s！"--Uncomment when updated, args have changed
+L.GUILD_BOSS_DOWN			= "%2$s开组的公会版%1$s战斗胜利！用时%3$s！"
 L.SCENARIO_COMPLETE			= "场景战役-%s战斗胜利！用时%s!"
 L.SCENARIO_COMPLETE_I		= "场景战役-%s战斗胜利！总计%d次胜利。"
 L.SCENARIO_COMPLETE_L		= "场景战役-%s战斗胜利！用时%s！上次用时%s，最快用时%s。总计%d次胜利。"
 L.SCENARIO_COMPLETE_NR		= "场景战役-%s战斗胜利！用时%s！新的纪录诞生了！原纪录为%s。总计%d次胜利。"
 L.COMBAT_ENDED_AT			= "%s （%s）作战结束，用时%s。"
 L.COMBAT_ENDED_AT_LONG		= "%s （%s）作战结束，用时%s。该难度下总计失败%d次。"
---L.GUILD_COMBAT_ENDED_AT		= "公会版%s （%s）作战结束，用时%s。"--Uncomment when updated, args have changed
+L.GUILD_COMBAT_ENDED_AT		= "%s开组的公会版%s （%s）作战结束，用时%s。"
 L.SCENARIO_ENDED_AT			= "场景战役-%s作战结束，用时%s。"
 L.SCENARIO_ENDED_AT_LONG		= "场景战役-%s作战结束，用时%s。该难度下总计失败%d次。"
 L.COMBAT_STATE_RECOVERED		= "%s作战%s前开始，正在恢复计时条……"
@@ -377,6 +377,7 @@ L.AUTO_SPEC_WARN_TEXTS.switch			= "%s - 转换目标"
 L.AUTO_SPEC_WARN_TEXTS.switchcount		= "%s - 转换目标 (%%s)"
 L.AUTO_SPEC_WARN_TEXTS.gtfo				= "注意%%s - 快躲开"
 L.AUTO_SPEC_WARN_TEXTS.adds				= "小怪出现 - 转换目标"
+L.AUTO_SPEC_WARN_TEXTS.addscount		= "小怪出现 - 转换目标 (%%s)"
 L.AUTO_SPEC_WARN_TEXTS.addscustom		= "小怪出现 - %%s"
 L.AUTO_SPEC_WARN_TEXTS.targetchange		= "更换目标 - 请选择 %%s"
 
@@ -423,6 +424,7 @@ L.AUTO_SPEC_WARN_OPTIONS.switch 			= "特殊警报：针对$spell:%s需要转换
 L.AUTO_SPEC_WARN_OPTIONS.switchcount		= "特殊警报：针对$spell:%s需要转换目标(带计数)"
 L.AUTO_SPEC_WARN_OPTIONS.gtfo			= "特殊警报：需要躲开地上的有害技能"
 L.AUTO_SPEC_WARN_OPTIONS.adds			= "特殊警报：需要攻击小怪"
+L.AUTO_SPEC_WARN_OPTIONS.addscount		= "特殊警报：需要攻击小怪(带计数)"
 L.AUTO_SPEC_WARN_OPTIONS.addscustom		= "特殊警报：小怪(自定义)"
 L.AUTO_SPEC_WARN_OPTIONS.targetchange	= "特殊警报：需要立刻切换目标时"
 
@@ -472,6 +474,8 @@ L.AUTO_TIMER_OPTIONS.addscustom			= "计时条：下一波小怪"
 L.AUTO_TIMER_OPTIONS.roleplay			= "计时条：剧情"
 
 L.AUTO_ICONS_OPTION_TARGETS				= "为$spell:%s的目标添加团队标记"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_A		= "为$spell:%s的目标添加团队标记，以坦克高于近战再高于远程排序，并以字母顺序优先"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_R		= "为$spell:%s的目标添加团队标记，以坦克高于近战再高于远程排序，并以团队阵容优先"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "为$spell:%s的目标添加团队标记，以近战和字母顺序优先"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "为$spell:%s的目标添加团队标记，以近战和团队阵容优先"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "为$spell:%s的目标添加团队标记，以远程和字母顺序优先"

@@ -35,7 +35,7 @@
 --    LibStub("AceConfig-3.0"):RegisterOptionsTable("MyAddOn", options)
 -- end
 
-local MAJOR, MINOR = "LibAboutPanel-2.0", 104 -- bump MINOR quite a lot due to switch from SVN to Git
+local MAJOR, MINOR = "LibAboutPanel-2.0", 106 -- MINOR incremented manually
 assert(LibStub, MAJOR .. " requires LibStub")
 local AboutPanel, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not AboutPanel then return end  -- no upgrade necessary
@@ -91,7 +91,6 @@ elseif locale == "deDE" then
 	L["Localizations"] = "Lokalisierungen"
 	--[[Translation missing --]]
 	L["on the %s realm"] = "on the %s realm"
-	--[[Translation missing --]]
 	L["Repository"] = "Repository"
 	L["Version"] = "Version"
 	L["Website"] = "Webseite"

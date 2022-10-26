@@ -68,10 +68,10 @@ function frame:ConfigureFrame()
 	end
 
 	rematch:SetTitlebarButtonIcon(frame.TitleBar.MinimizeButton,settings.Minimized and "maximize" or "minimize")
-	frame.TitleBar:SetShown(not settings.Minimized or not settings.MiniMinimized)
-	frame.PanelTabs:SetShown(not settings.Minimized or not settings.MiniMinimized)
+	-- frame.TitleBar:SetShown(not settings.Minimized or not settings.MiniMinimized)
+	-- frame.PanelTabs:SetShown(not settings.Minimized or not settings.MiniMinimized)
 	frame:UpdateSinglePanelButton()
-	frame.TitleBar.Title:SetPoint("TOP",settings.Minimized and -10 or 0,-5)
+	frame.TitleText:SetPoint("TOP",settings.Minimized and -10 or 0,-5)
 
 	-- set the size of the whole standalone window
 	frame:SetSize(config.frameWidth,config.frameHeight)

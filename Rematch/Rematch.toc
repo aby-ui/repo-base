@@ -1,8 +1,8 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Rematch
 ## Notes: A pet journal alternative for managing pets and teams.
 ## Author: Gello
-## Version: 4.13.3
+## Version: 4.14.1
 ## X-WoWI-ID: 22190
 ## X-Wago-ID: e56nOpK9
 ## X-Curse-Project-ID: 66047
@@ -23,6 +23,7 @@ Widgets\PetListButtons.lua
 Widgets\Toolbar.xml
 Widgets\Toolbar.lua
 Widgets\MinimapButton.lua
+Widgets\PanelTabTemplate.xml
 Widgets\PanelTabs.xml
 Widgets\PanelTabs.lua
 Widgets\TextureHighlight.lua

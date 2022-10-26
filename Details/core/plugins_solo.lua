@@ -2,12 +2,12 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
-	local _pairs = pairs --lua locals
+	local pairs = pairs --lua locals
 	local _math_floor = math.floor --lua locals
 
 	local _UnitAura = UnitAura
@@ -39,7 +39,7 @@
 		
 		button:SetScript("OnClick", function()
 			if (not button.close_confirmation) then
-				button.close_confirmation = gump:CreateSimplePanel (button, 296, 60, "", plugin.real_name .. "CloseConfirmation")
+				button.close_confirmation = gump:CreateSimplePanel(button, 296, 60, "", plugin.real_name .. "CloseConfirmation")
 				button.close_confirmation:SetPoint("center", frame, 0, 0)
 				_G [button.close_confirmation:GetName() .. "TitleBar"]:Hide()
 				local fade_background = button.close_confirmation:CreateTexture(nil, "background")
@@ -60,8 +60,8 @@
 					instance.baseframe.cabecalho.modo_selecao:GetScript("OnEnter")(instance.baseframe.cabecalho.modo_selecao)
 				end
 				
-				local close_window = gump:NewButton(button.close_confirmation, nil, "$parentCloseWindowButton", "CloseWindowButton", 140, 20, close_func, nil, nil, nil, Loc ["STRING_MENU_CLOSE_INSTANCE"], 1, gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
-				local back_to_group_and_raid = gump:NewButton(button.close_confirmation, nil, "$parentBackToGroupButton", "BackToGroupButton", 140, 20, group_func, nil, nil, nil, Loc ["STRING_SWITCH_TO"] .. ": " .. Loc ["STRING_MODE_GROUP"], 2, gump:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+				local close_window = gump:NewButton(button.close_confirmation, nil, "$parentCloseWindowButton", "CloseWindowButton", 140, 20, close_func, nil, nil, nil, Loc ["STRING_MENU_CLOSE_INSTANCE"], 1, gump:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+				local back_to_group_and_raid = gump:NewButton(button.close_confirmation, nil, "$parentBackToGroupButton", "BackToGroupButton", 140, 20, group_func, nil, nil, nil, Loc ["STRING_SWITCH_TO"] .. ": " .. Loc ["STRING_MODE_GROUP"], 2, gump:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 				
 				close_window:SetIcon ([[Interface\Buttons\UI-Panel-MinimizeButton-Up]], nil, nil, nil, {0.143125, 0.8653125, 0.1446875, 0.8653125}, nil, nil, 2)
 				back_to_group_and_raid:SetIcon ([[Interface\AddOns\Details\images\modo_icones]], nil, nil, nil, {32/256, 32/256*2, 0, 1}, nil, nil, 2)
@@ -77,7 +77,7 @@
 		
 		button:SetWidth(20)
 		button:SetHeight(20)
-		--button:GetNormalTexture():SetDesaturated (true)
+		--button:GetNormalTexture():SetDesaturated(true)
 		return button
 	end
 	
@@ -138,13 +138,13 @@
 				if (not _detalhes.SoloTables.Plugins [_detalhes.SoloTables.Mode]) then
 					_detalhes.SoloTables.Mode = first_enabled_plugin_index
 				end
-				_detalhes.SoloTables:switch (nil, _detalhes.SoloTables.Mode)
+				_detalhes.SoloTables:switch(nil, _detalhes.SoloTables.Mode)
 			end
 
 		else
 		
-			--print ("--------------------------------")
-			--print (debugstack())
+			--print("--------------------------------")
+			--print(debugstack())
 		
 			if (_detalhes.PluginCount.SOLO > 0) then
 				local solo_frame = _detalhes.SoloTables.Plugins [_detalhes.SoloTables.Mode].Frame
@@ -198,7 +198,7 @@
 		
 		instance:SoloMode (true)
 		
-		_detalhes.SoloTables:switch (nil, plugin_name)
+		_detalhes.SoloTables:switch(nil, plugin_name)
 	end
 	
 	--Build Solo Mode Tables and Functions
@@ -215,7 +215,7 @@
 			return _detalhes.SoloTables.Mode
 		end
 		
-		function _detalhes.SoloTables:switch (_, _switchTo)
+		function _detalhes.SoloTables:switch(_, _switchTo)
 
 			--just hide all
 			if (not _switchTo) then 
@@ -257,7 +257,7 @@
 
 			_detalhes.SoloTables.Plugins [_detalhes.SoloTables.Mode].Frame:Show()
 			_detalhes.SoloTables.Plugins [_detalhes.SoloTables.Mode].Frame:SetPoint("TOPLEFT",_detalhes.SoloTables.instancia.bgframe)
-			_detalhes.SoloTables.Plugins [_detalhes.SoloTables.Mode].Frame:SetFrameLevel (20)
+			_detalhes.SoloTables.Plugins [_detalhes.SoloTables.Mode].Frame:SetFrameLevel(20)
 			
 			_detalhes.SoloTables.instancia:ChangeIcon (_detalhes.SoloTables.Menu [_detalhes.SoloTables.Mode] [2])
 			
@@ -276,7 +276,7 @@
 			return
 		end
 		
-		for SpellId, DebuffTable in _pairs (SoloDebuffUptime) do
+		for SpellId, DebuffTable in pairs(SoloDebuffUptime) do
 			if (DebuffTable.start) then
 				DebuffTable.duration = DebuffTable.duration + (_detalhes._tempo - DebuffTable.start) --time do parser ser� igual ao time()?
 				DebuffTable.start = nil
@@ -290,7 +290,7 @@
 		--reset bufftables
 		_detalhes.SoloTables.SoloBuffUptime = _detalhes.SoloTables.SoloBuffUptime or {}
 		
-		for spellname, BuffTable in _pairs (_detalhes.SoloTables.SoloBuffUptime) do
+		for spellname, BuffTable in pairs(_detalhes.SoloTables.SoloBuffUptime) do
 			--local BuffEntryTable = _detalhes.SoloTables.BuffTextEntry [BuffTable.tableIndex]
 			
 			if (BuffTable.Active) then
@@ -314,7 +314,7 @@
 		for buffIndex = 1, 41 do
 			local name = _UnitAura ("player", buffIndex)
 			if (name) then
-				for index, BuffName in _pairs (_detalhes.SoloTables.BuffsTableNameCache) do
+				for index, BuffName in pairs(_detalhes.SoloTables.BuffsTableNameCache) do
 					if (BuffName == name) then
 						local BuffObject = _detalhes.SoloTables.SoloBuffUptime [name]
 						if (not BuffObject) then
@@ -334,7 +334,7 @@
 		
 		
 		if (instancia.modo == modo_alone) then
-			--print ("arrumando a instancia "..instancia.meu_id)
+			--print("arrumando a instancia "..instancia.meu_id)
 			if (instancia.iniciada) then
 				_detalhes:AlteraModo (instancia, modo_grupo)
 				instancia:SoloMode (false)

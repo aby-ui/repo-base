@@ -1,14 +1,15 @@
-## Interface: 90207
-## Title: BagBrother
-## Notes: Stores data about your characters inventory, bank, vault and guild bank, so that you may view them from anywhere.
+## Interface: 100000
+## Title: |TInterface/Addons/BagBrother/Art/Bagnon-Small:16:16|t|TInterface/Addons/BagBrother/Art/Bagnonium-Small:16:16|t BagBrother
+## Notes: Bagnon and Bagnonium's shared data storage to view inventories,|nbanks, vaults and guild banks from anywhere.|n|cffbbbbbbBy João Cardoso|r|n|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Patreon:12:12:0:-4|t |cff82c5ffpatreon.com/jaliborc|r
 ## Author: Jaliborc (João Cardoso)
 ## SavedVariables: BrotherBags
-## OptionalDeps: LibStub, WoWUnit
+## OptionalDeps: WoWUnit
 
-Startup.lua
-Events.lua
-API.lua
-Interface.lua
+Code\Startup.lua
+Code\Events.lua
+Code\API.lua
+Code\Interface.lua
+
 
 ## Title-zhCN: |cff880303[爱不易]|r BagBrother 离线背包
 ## Notes-zhCN: 储存银行、背包的离线信息

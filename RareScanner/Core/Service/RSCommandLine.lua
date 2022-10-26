@@ -68,12 +68,15 @@ SlashCmdList["RARESCANNER_CMD"] = function(command, ...)
 		if (RSConfigDB.IsWaypointsSupportEnabled() and not RSConfigDB.IsAddingWaypointsAutomatically()) then
 			RSWaypoints.AddWaypoint(tonumber(npcID))
 		end
+	elseif (command == RSConstants.CMD_TOGGLE_DRAGON_GLYPHS) then
+		RSCommandLine.CmdToggleDragonGlyphs()
 	else
 		print("|cFFFBFF00"..AL["CMD_HELP1"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_EVENTS.." |cFF00FFFB"..AL["CMD_HELP3"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_RARES.." |cFF00FFFB"..AL["CMD_HELP5"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_DRAGON_GLYPHS.." |cFF00FFFB"..AL["CMD_HELP11"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_ALERTS.." |cFF00FFFB"..AL["CMD_HELP6"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_EVENTS_ALERTS.." |cFF00FFFB"..AL["CMD_HELP7"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_TREASURES_ALERTS.." |cFF00FFFB"..AL["CMD_HELP8"])
@@ -177,5 +180,15 @@ function RSCommandLine.CmdToggleScanningWorldmapVignettes()
 	else
 		private.db.general.scanWorldmapVignette = true
 		RSLogger:PrintMessage(AL["CMD_ENABLE_SCANNING_WORLDMAP_VIGNETTES"])
+	end
+end
+
+function RSCommandLine.CmdToggleDragonGlyphs()
+	if (private.db.map.displayDragonGlyphsIcons) then
+		private.db.map.displayDragonGlyphsIcons = false
+		RSLogger:PrintMessage(AL["CMD_HIDE_DRAGON_GLYPHS"])
+	else
+		private.db.map.displayDragonGlyphsIcons = true
+		RSLogger:PrintMessage(AL["CMD_SHOW_DRAGON_GLYPHS"])
 	end
 end

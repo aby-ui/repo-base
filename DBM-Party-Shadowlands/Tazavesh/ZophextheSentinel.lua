@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2437, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(175616)
 mod:SetEncounterID(2425)
 mod:SetHotfixNoticeRev(20220405000000)
@@ -12,9 +12,9 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 346204",
 	"SPELL_CAST_SUCCESS 346006",
 	"SPELL_AURA_APPLIED 347949 348128 345770 345990",
-	"SPELL_AURA_REMOVED 345770 345990"
---	"SPELL_PERIODIC_DAMAGE",
---	"SPELL_PERIODIC_MISSED"
+	"SPELL_AURA_REMOVED 345770 345990",
+	"SPELL_PERIODIC_DAMAGE 348366",
+	"SPELL_PERIODIC_MISSED 348366"
 )
 
 --Improve/add timers for armed/disarmed phases because it'll probably alternate a buffactive timer instead of CD
@@ -36,7 +36,7 @@ local yellInterrogation				= mod:NewYell(347949)
 local specWarnInterrogationOther	= mod:NewSpecialWarningSwitch(347949, "Dps", nil, nil, 1, 2)
 local specWarnContainmentCell		= mod:NewSpecialWarningYou(345990, false, nil, nil, 1, 2)--Optional, but probably don't need, you already know it's you from targetting debuff
 local specWarnInpoundContraband		= mod:NewSpecialWarningYou(345770, nil, nil, nil, 1, 2)
---local specWarnGTFO				= mod:NewSpecialWarningGTFO(320366, nil, nil, nil, 1, 8)
+local specWarnGTFO					= mod:NewSpecialWarningGTFO(348366, nil, nil, nil, 1, 8)
 
 --Timers have spell queuing and ordering issues. min times lazily used because it's a 5 man and not worth effort to detect/auto update when spell queuing occurs
 local timerInterrogationCD			= mod:NewCDTimer(30.8, 347949, nil, nil, nil, 3)--30.8-32
@@ -121,12 +121,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	end
 end
 
---[[
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spellName)
-	if spellId == 320366 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
+	if spellId == 348366 and destGUID == UnitGUID("player") and self:AntiSpam(2, 1) then
 		specWarnGTFO:Show(spellName)
 		specWarnGTFO:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
---]]

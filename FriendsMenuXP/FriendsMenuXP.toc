@@ -1,7 +1,8 @@
-## Interface: 90207
+## Interface: 100000
 ## Author: Warbaby @ 爱不易 github.com/aby-ui
 ## Title: FriendsMenuXP
 ## Notes: Greatly extends the player drop down menu without secure taint.
+## Dependencies: TODO:abyui10
 localization.enUS.lua
 localization.zhCN.lua
 localization.zhTW.lua

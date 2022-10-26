@@ -15,6 +15,7 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSMapDB = private.ImportLib("RareScannerMapDB")
 local RSEventDB  = private.ImportLib("RareScannerEventDB")
+local RSCollectionsDB  = private.ImportLib("RareScannerCollectionsDB")
 
 -- RareScanner internal libraries
 local RSLogger = private.ImportLib("RareScannerLogger")
@@ -2223,7 +2224,6 @@ local function GetLootFilterOptions()
 							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 						}
 					},
-					disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 				},
 				tooltips = {
 					type = "group",
@@ -2278,8 +2278,44 @@ local function GetLootFilterOptions()
 					handler = RareScanner,
 					desc = AL["LOOT_FILTERS_DESC"],
 					args = {
-						test = {
+						separator_explorer = {
 							order = 1,
+							type = "header",
+							name = AL["LOOT_EXPLORER"],
+						},
+						filter_explorer_desc = {
+							order = 2,
+							type = "description",
+							name = AL["LOOT_EXPLORER_FILTER_LONG_DESC"]
+						},
+						filter_explorer = {
+							order = 3,
+							type = "toggle",
+							name = AL["LOOT_EXPLORER_FILTER"],
+							desc = AL["LOOT_EXPLORER_FILTER_DESC"],
+							get = function() return RSConfigDB.IsFilteringByExplorerResults() end,
+							set = function(_, value)
+								RSConfigDB.SetFilteringByExplorerResults(value)
+							end,
+							width = "full"
+						},
+						open_explorer = {
+							order = 4,
+							name = AL["LOOT_EXPLORER_OPEN"],
+							desc = AL["LOOT_EXPLORER_OPEN"],
+							type = "execute",
+							func = function() 
+								RSExplorerFrame:Show()
+							end,
+							width = "normal",
+						},
+						separator_reset = {
+							order = 5,
+							type = "header",
+							name = AL["LOOT_RESET"],
+						},
+						reset = {
+							order = 6,
 							name = AL["LOOT_RESET"],
 							desc = AL["LOOT_RESET_DESC"],
 							type = "execute",
@@ -2291,7 +2327,7 @@ local function GetLootFilterOptions()
 						},
 						category_filters = {
 							type = "group",
-							order = 2,
+							order = 7,
 							name = AL["LOOT_CATEGORY_FILTERS"],
 							handler = RareScanner,
 							desc = AL["LOOT_CATEGORY_FILTERS_DESC"],
@@ -2320,7 +2356,7 @@ local function GetLootFilterOptions()
 										loadSubCategory(key)
 									end,
 									width = "normal",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								separator = {
 									order = 2,
@@ -2344,7 +2380,7 @@ local function GetLootFilterOptions()
 										end
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								lootFilters = {
 									order = 4,
@@ -2357,14 +2393,13 @@ local function GetLootFilterOptions()
 										RSLogger:PrintDebugMessage(string.format("Cambiando el valor de ClassID [%s], SubClassID [%s]", mainCategoryID, key))
 										RSConfigDB.SetLootFilterByCategory(mainCategoryID, key, value);
 									end,
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								}
 							},
-							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 						},
 						individual = {
 							type = "group",
-							order = 3,
+							order = 8,
 							name = AL["LOOT_INDIVIDUAL_FILTERS"],
 							handler = RareScanner,
 							desc = AL["LOOT_INDIVIDUAL_FILTERS_DESC"],
@@ -2382,7 +2417,7 @@ local function GetLootFilterOptions()
 										searchItem(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filteredItems = {
 									order = 2,
@@ -2394,13 +2429,13 @@ local function GetLootFilterOptions()
 									set = function(_, itemID, value)
 										RSConfigDB.SetItemFiltered(itemID, value)
 									end,
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								}
 							}
 						},
 						other_filters = {
 							type = "group",
-							order = 4,
+							order = 9,
 							name = AL["LOOT_OTHER_FILTERS"],
 							handler = RareScanner,
 							desc = AL["LOOT_OTHER_FILTERS_DESC"],
@@ -2416,7 +2451,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetLootFilterMinQuality(value)
 									end,
 									width = "double",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterNotEquipableItems = {
 									order = 2,
@@ -2428,7 +2463,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringLootByNotEquipableItems(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								showOnlyTransmogItems = {
 									order = 3,
@@ -2440,7 +2475,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringLootByTransmog(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterCollectedItems = {
 									order = 4,
@@ -2452,7 +2487,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringByCollected(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterItemsCompletedQuest = {
 									order = 5,
@@ -2464,7 +2499,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringLootByCompletedQuest(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterNotMatchingClass = {
 									order = 6,
@@ -2476,7 +2511,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringLootByNotMatchingClass(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterNotMatchingFaction = {
 									order = 7,
@@ -2488,7 +2523,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringLootByNotMatchingFaction(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterAnimaItems = {
 									order = 8,
@@ -2500,7 +2535,7 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringAnimaItems(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 								filterNotUsableConduits = {
 									order = 9,
@@ -2512,10 +2547,9 @@ local function GetLootFilterOptions()
 										RSConfigDB.SetFilteringConduitItems(value)
 									end,
 									width = "full",
-									disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
+									disabled = function() return RSConfigDB.IsFilteringByExplorerResults() or (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 								},
 							},
-							disabled = function() return (not RSConfigDB.IsDisplayingLootBar() and not RSConfigDB.IsShowingLootOnWorldMap()) end,
 						},
 					},
 				},
@@ -2709,13 +2743,30 @@ local function GetMapOptions()
 							width = "full",
 							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
 						},
-						separatorNotDiscovered = {
+						separatorOthers = {
 							order = 12,
+							type = "header",
+							name = AL["MAP_OTHER_ICONS"],
+						},
+						displayDragonGlyphsIcons = {
+							order = 13,
+							type = "toggle",
+							name = AL["DISPLAY_MAP_DRAGON_GLYPHS_ICONS"],
+							desc = AL["DISPLAY_MAP_DRAGON_GLYPHS_ICONS_DESC"],
+							get = function() return RSConfigDB.IsShowingDragonGlyphs() end,
+							set = function(_, value)
+								RSConfigDB.SetShowingDragonGlyphs(value)
+								RSMinimap.RefreshAllData(true)
+							end,
+							width = "full",
+						},
+						separatorNotDiscovered = {
+							order = 14,
 							type = "header",
 							name = AL["MAP_NOT_DISCOVERED_ICONS"],
 						},
 						displayNotDiscoveredMapIcons = {
-							order = 13,
+							order = 15,
 							type = "toggle",
 							name = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS"],
 							desc = AL["DISPLAY_MAP_NOT_DISCOVERED_ICONS_DESC"],
@@ -2728,7 +2779,7 @@ local function GetMapOptions()
 							disabled = function() return (not RSConfigDB.IsShowingNpcs() and not RSConfigDB.IsShowingContainers() and not RSConfigDB.IsShowingEvents()) end,
 						},
 						displayOldNotDiscoveredMapIcons = {
-							order = 14,
+							order = 16,
 							type = "toggle",
 							name = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS"],
 							desc = AL["DISPLAY_MAP_OLD_NOT_DISCOVERED_ICONS_DESC"],
@@ -3046,7 +3097,7 @@ function RareScanner:SetupOptions()
 	RSAC:RegisterOptionsTable("RareScanner Map", GetMapOptions)
 	RSAC:RegisterOptionsTable("RareScanner Profiles", RareScanner:GetOptionsTable())
 
-	local RSACD = LibStub("AceConfigDialog-3.0-RSmod")
+	local RSACD = LibStub("AceConfigDialogRSmod-3.0")
 	RSACD:AddToBlizOptions("RareScanner General", _G.GENERAL_LABEL, "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Sound", AL["SOUND"], "RareScanner")
 	RSACD:AddToBlizOptions("RareScanner Display", AL["DISPLAY"], "RareScanner")

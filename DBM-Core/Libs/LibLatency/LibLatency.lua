@@ -1,4 +1,4 @@
-
+--@curseforge-project-slug: liblatency@
 local LL = LibStub:NewLibrary("LibLatency", 2)
 if not LL then return end -- No upgrade needed
 

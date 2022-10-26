@@ -123,7 +123,7 @@ local function ConstructMover(frame)
   offscreenText:Hide()
   offscreenText:SetPoint("CENTER", arrow, "CENTER")
 
-  local lineX = frame:CreateLine(nil, "OVERLAY", 7)
+  local lineX = frame:CreateLine(nil, "OVERLAY")
   lineX:SetThickness(2)
   lineX:SetColorTexture(1,1,0)
   lineX:SetStartPoint("BOTTOMLEFT", UIParent)
@@ -131,7 +131,7 @@ local function ConstructMover(frame)
   lineX:Hide()
   lineX:SetIgnoreParentAlpha(true)
 
-  local lineY = frame:CreateLine(nil, "OVERLAY", 7)
+  local lineY = frame:CreateLine(nil, "OVERLAY")
   lineY:SetThickness(2)
   lineY:SetColorTexture(1,1,0)
   lineY:SetStartPoint("TOPLEFT", UIParent)
@@ -381,8 +381,8 @@ local function BuildAlignLines(mover)
     skipIds[child.id] = true
   end
 
-  for k, v in pairs(WeakAuras.displayButtons) do
-    local region = v.view.region
+  for k, v in pairs(OptionsPrivate.displayButtons) do
+    local region = WeakAuras.GetRegion(v.data.id)
     if not skipIds[k] and v.view.visibility ~= 0 and region then
       local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
       if not IsControlKeyDown() then
@@ -651,7 +651,8 @@ local function ConstructMoverSizer(parent)
       end
       OptionsPrivate.Private.AddParents(data)
       WeakAuras.FillOptions()
-      OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+      OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main,
+                                     OptionsPrivate.Private.EnsureRegion(data.id), false, nil, true)
       -- hide alignment lines
       frame.lineY:Hide()
       frame.lineX:Hide()
@@ -775,7 +776,8 @@ local function ConstructMoverSizer(parent)
         frame.text:Hide()
         frame:SetScript("OnUpdate", nil)
         WeakAuras.FillOptions()
-        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main,
+                                       OptionsPrivate.Private.EnsureRegion(data.id), false, nil, true)
         -- hide alignment lines
         frame.lineY:Hide()
         frame.lineX:Hide()

@@ -26,6 +26,9 @@ Simulationcraft.RoleTable = {
   [103] = 'attack',
   [104] = 'tank',
   [105] = 'attack',
+  -- Evoker
+  [1467] = 'spell',
+  [1468] = 'attack',
   -- Hunter
   [253] = 'attack',
   [254] = 'attack',
@@ -106,6 +109,9 @@ Simulationcraft.SpecNames = {
   [103] = 'Feral',
   [104] = 'Guardian',
   [105] = 'Restoration',
+-- Evoker
+  [1467] = 'Devastation',
+  [1468] = 'Preservation',
 -- Hunter 
   [253] = 'Beast Mastery',
   [254] = 'Marksmanship',
@@ -348,10 +354,21 @@ local ITEM_MOD_TYPE_DROP_LEVEL = 9
 local ITEM_MOD_TYPE_CRAFT_STATS_1 = 29
 local ITEM_MOD_TYPE_CRAFT_STATS_2 = 30
 
+local WeeklyRewards         = _G.C_WeeklyRewards
+
+-- Shadowlands
 local Covenants             = _G.C_Covenants
 local Soulbinds             = _G.C_Soulbinds
 local CovenantSanctumUI     = _G.C_CovenantSanctumUI
-local WeeklyRewards         = _G.C_WeeklyRewards
+
+-- New talents for Dragonflight
+local ClassTalents          = _G.C_ClassTalents
+local Traits                = _G.C_Traits
+
+-- Talent string export
+local bitWidthHeaderVersion         = 8
+local bitWidthSpecID                = 16
+local bitWidthRanksPurchased        = 6
 
 -- load stuff from extras.lua
 local upgradeTable        = Simulationcraft.upgradeTable
@@ -369,7 +386,7 @@ local zandalariLoaBuffs   = Simulationcraft.zandalariLoaBuffs
 
 function Simulationcraft:OnInitialize()
   -- init databroker
-  self.db = LibStub("AceDB-3.0"):New("SimulationcraftAbyUIDB", {
+  self.db = LibStub("AceDB-3.0"):New("SimulationcraftAbyUIDB", {  --abyui
     profile = {
       minimap = {
         hide = false,
@@ -385,7 +402,7 @@ function Simulationcraft:OnInitialize()
       },
     },
   });
-  --[[
+  --[[ --abyui
   LibDBIcon:Register("SimulationCraft", SimcLDB, self.db.profile.minimap)
   Simulationcraft:UpdateMinimapButton()
 
@@ -432,7 +449,7 @@ function Simulationcraft:HandleChatCommand(input)
       noBags = true
     elseif arg == 'merchant' then
       showMerchant = true
---[[
+--[[ --abyui
     elseif arg == 'minimap' then
       self.db.profile.minimap.hide = not self.db.profile.minimap.hide
       DEFAULT_CHAT_FRAME:AddMessage("SimulationCraft: Minimap button is now " .. (self.db.profile.minimap.hide and "hidden" or "shown"))
@@ -542,6 +559,124 @@ local function CreateSimcTalentString()
     else
       str = str .. '0'
     end
+  end
+
+  return str
+end
+
+-- class_talents= builder for dragonflight
+local function GetTalentString(configId)
+  local entryStrings = {}
+
+  local active = false
+  if configId == ClassTalents.GetActiveConfigID() then
+    active = true
+  end
+
+  local configInfo = Traits.GetConfigInfo(configId)
+  for _, treeId in pairs(configInfo.treeIDs) do
+    local nodes = Traits.GetTreeNodes(treeId)
+    for _, nodeId in pairs(nodes) do
+      local node = Traits.GetNodeInfo(configId, nodeId)
+      if node.ranksPurchased > 0 then
+        entryStrings[#entryStrings + 1] = node.activeEntry.entryID .. ":" .. node.activeEntry.rank
+      end
+    end
+  end
+
+  local str = "class_talents=" .. table.concat(entryStrings, '/')
+  if not active then
+    -- comment out the class_talents and then prepend a comment with the loadout name
+    str = '# ' .. str
+    str = '# Saved Loadout: ' .. configInfo.name .. '\n' .. str
+  end
+
+  return str
+end
+
+local function WriteLoadoutHeader(exportStream, serializationVersion, specID, treeHash)
+  exportStream:AddValue(bitWidthHeaderVersion, serializationVersion)
+  exportStream:AddValue(bitWidthSpecID, specID)
+  for i, hashVal in ipairs(treeHash) do
+    exportStream:AddValue(8, hashVal)
+  end
+end
+
+local function GetActiveEntryIndex(treeNode)
+  for i, entryID in ipairs(treeNode.entryIDs) do
+    if(entryID == treeNode.activeEntry.entryID) then
+      return i;
+    end
+  end
+
+  return 0;
+end
+
+local function WriteLoadoutContent(exportStream, configID, treeID)
+  local treeNodes = C_Traits.GetTreeNodes(treeID)
+  for i, treeNodeID in ipairs(treeNodes) do
+    local treeNode = C_Traits.GetNodeInfo(configID, treeNodeID);
+
+    local isNodeSelected = treeNode.ranksPurchased > 0;
+    local isPartiallyRanked = treeNode.ranksPurchased ~= treeNode.maxRanks;
+    local isChoiceNode = treeNode.type == Enum.TraitNodeType.Selection;
+
+    exportStream:AddValue(1, isNodeSelected and 1 or 0);
+    if(isNodeSelected) then
+      exportStream:AddValue(1, isPartiallyRanked and 1 or 0);
+      if(isPartiallyRanked) then
+        exportStream:AddValue(bitWidthRanksPurchased, treeNode.ranksPurchased);
+      end
+
+      exportStream:AddValue(1, isChoiceNode and 1 or 0);
+      if(isChoiceNode) then
+        local entryIndex = GetActiveEntryIndex(treeNode);
+        if(entryIndex <= 0 or entryIndex > 4) then
+          error("Error exporting tree node " .. treeNode.ID .. ". The active choice node entry index (" .. entryIndex .. ") is out of bounds. ");
+        end
+        
+        -- store entry index as zero-index
+        exportStream:AddValue(2, entryIndex - 1);
+      end
+    end
+  end
+end
+
+local function GetExportString(configID)
+  local active = false
+  if configID == ClassTalents.GetActiveConfigID() then
+    active = true
+  end
+
+  local exportStream = ExportUtil.MakeExportDataStream();
+  local configInfo = Traits.GetConfigInfo(configID)
+  local currentSpecID = PlayerUtil.GetCurrentSpecID();
+
+  local treeID = configInfo.treeIDs[1]
+
+  local serializationVersion;
+  local treeHash;
+
+  if C_Traits.GetLoadoutSerializationVersion then
+    -- 10.0.2 Beta
+    treeHash = C_Traits.GetTreeHash(treeID)
+    serializationVersion = C_Traits.GetLoadoutSerializationVersion()
+  else
+    -- 10.0.0 PTR
+    serializationVersion = 1
+    treeHash = C_Traits.GetTreeHash(configID, treeID)
+  end
+
+  local nodes = Traits.GetTreeNodes(treeID)
+
+  WriteLoadoutHeader(exportStream, serializationVersion, currentSpecID, treeHash )
+  WriteLoadoutContent(exportStream, configID, treeID)
+
+  local str = "talents=" .. exportStream:GetExportString()
+  if not active then
+    -- comment out the talents and then prepend a comment with the loadout name
+    str = '# ' .. str
+    str = '# Saved Loadout: ' .. configInfo.name .. '\n' .. str
   end
 
   return str
@@ -756,10 +891,23 @@ function Simulationcraft:GetBagItemStrings()
             -- instead of 4, possible blizz is leaving the door open to more expansion in the future?
             --
             -- 2020/01/24 - Change magic number to 51. Not sure why this changed again but it did! See y'all in 2022?
+            --
+            -- 2022/10/02 - Oh hai, GetContainerItemInfo is no longer global and is now on C_Container. The 2022
+            -- comment above was an actual joke in 2020. And here we are. See y'all in 2024?
             container = BANK_CONTAINER
             slot = slot - 51
           end
-          local _, _, _, _, _, _, itemLink, _, _, _ = GetContainerItemInfo(container, slot)
+
+          local itemLink
+          if C_Container and C_Container.GetContainerItemLink then
+            -- Dragonflight
+            itemLink = C_Container.GetContainerItemLink(container, slot)
+          else
+            -- Shadowlands
+            local _, _, _, _, _, _, il, _, _, _ = GetContainerItemInfo(container, slot)
+            itemLink = il
+          end
+
           if itemLink then
             local name, _, quality, _, _, _, _, _, _, _, _ = GetItemInfo(itemLink)
 
@@ -912,7 +1060,14 @@ function Simulationcraft:GetMainFrame(text)
 
     -- resizing
     f:SetResizable(true)
-    f:SetMinResize(150, 100)
+    if f.SetMinResize then
+      -- older function from shadowlands and before
+      -- Can remove when Dragonflight is in full swing
+      f:SetMinResize(150, 100)
+    else
+      -- new func for dragonflight
+      f:SetResizeBounds(150, 100, nil, nil)
+    end
     local rb = CreateFrame("Button", "SimcResizeButton", f)
     rb:SetPoint("BOTTOMRIGHT", -6, 7)
     rb:SetSize(16, 16)
@@ -944,11 +1099,39 @@ function Simulationcraft:GetMainFrame(text)
   return SimcFrame
 end
 
+-- Adapted from https://github.com/philanc/plc/blob/master/plc/checksum.lua
+local function adler32(s)
+  -- return adler32 checksum  (uint32)
+  -- adler32 is a checksum defined by Mark Adler for zlib
+  -- (based on the Fletcher checksum used in ITU X.224)
+  -- implementation based on RFC 1950 (zlib format spec), 1996
+  local prime = 65521 --largest prime smaller than 2^16
+  local s1, s2 = 1, 0
+
+  -- limit s size to ensure that modulo prime can be done only at end
+  -- 2^40 is too large for WoW Lua so limit to 2^30
+  if #s > (bit.lshift(1, 30)) then error("adler32: string too large") end
+
+  for i = 1,#s do
+    local b = string.byte(s, i)
+    s1 = s1 + b
+    s2 = s2 + s1
+    -- no need to test or compute mod prime every turn.
+  end
+
+  s1 = s1 % prime
+  s2 = s2 % prime
+
+  return (bit.lshift(s2, 16)) + s1
+end --adler32()
+
 -- This is the workhorse function that constructs the profile
 function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, links)
   -- addon metadata
   local versionComment = '# SimC Addon ' .. 'in AbyUI' --abyui GetAddOnMetadata('Simulationcraft', 'Version')
-  local simcVersionWarning = '# Requires SimulationCraft 920-01 or newer'
+  local wowVersion, wowBuild, _, wowToc = GetBuildInfo()
+  local wowVersionComment = '# WoW ' .. wowVersion .. '.' .. wowBuild .. ', TOC ' .. wowToc
+  local simcVersionWarning = '# Requires SimulationCraft 1000-01 or newer'
 
   -- Basic player info
   local _, realmName, _, _, _, _, region, _, _, realmLatinName, _ = nil --abyui LibRealmInfo:GetRealmInfoByUnit('player')
@@ -986,7 +1169,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
   if specId then
     globalSpecID,_,_,_,_,role = GetSpecializationInfo(specId)
   end
-  local playerSpec = specNames[ globalSpecID ]
+  local playerSpec = specNames[ globalSpecID ] or 'unknown'
 
   -- Professions
   local pid1, pid2 = GetProfessions()
@@ -1023,12 +1206,9 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
   playerLevel = 'level=' .. playerLevel
   playerRace = 'race=' .. Tokenize(playerRace)
   playerRole = 'role=' .. TranslateRole(globalSpecID, role)
-  playerSpec = 'spec=' .. Tokenize(playerSpec)
+  local playerSpecStr = 'spec=' .. Tokenize(playerSpec)
   playerRealm = 'server=' .. Tokenize(playerRealm)
   playerRegion = 'region=' .. Tokenize(playerRegion)
-
-  -- Talents are more involved - method to handle them
-  local playerTalents = CreateSimcTalentString()
 
   -- Build the output string for the player (not including gear)
   local simcPrintError = nil
@@ -1036,6 +1216,7 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
 
   simulationcraftProfile = simulationcraftProfile .. headerComment .. '\n'
   simulationcraftProfile = simulationcraftProfile .. versionComment .. '\n'
+  simulationcraftProfile = simulationcraftProfile .. wowVersionComment .. '\n'
   simulationcraftProfile = simulationcraftProfile .. simcVersionWarning .. '\n'
   simulationcraftProfile = simulationcraftProfile .. '\n'
 
@@ -1052,8 +1233,31 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
   simulationcraftProfile = simulationcraftProfile .. playerRealm .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerRole .. '\n'
   simulationcraftProfile = simulationcraftProfile .. playerProfessions .. '\n'
-  simulationcraftProfile = simulationcraftProfile .. playerTalents .. '\n'
-  simulationcraftProfile = simulationcraftProfile .. playerSpec .. '\n'
+  simulationcraftProfile = simulationcraftProfile .. playerSpecStr .. '\n'
+  simulationcraftProfile = simulationcraftProfile .. '\n'
+
+  if playerSpec == 'unknown' then
+    -- do nothing
+    -- Player does not have a spec / is in starting player area
+  elseif ClassTalents then
+    -- DRAGONFLIGHT
+    -- new dragonflight talents
+    local currentConfigId = ClassTalents.GetActiveConfigID()
+
+    simulationcraftProfile = simulationcraftProfile .. GetExportString(currentConfigId) .. '\n'
+    simulationcraftProfile = simulationcraftProfile .. '\n'
+
+    local specConfigs = ClassTalents.GetConfigIDsBySpecID(globalSpecID)
+
+    for _, configId in pairs(specConfigs) do
+      simulationcraftProfile = simulationcraftProfile .. GetExportString(configId) .. '\n'
+    end
+  else
+    -- old talents
+    local playerTalents = CreateSimcTalentString()
+    simulationcraftProfile = simulationcraftProfile .. playerTalents .. '\n'
+  end
+
   simulationcraftProfile = simulationcraftProfile .. '\n'
 
   -- SHADOWLANDS SYSTEMS
@@ -1209,6 +1413,13 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
   if specId==nil then
     simcPrintError = "Error: You need to pick a spec!"
   end
+
+  simulationcraftProfile = simulationcraftProfile .. '\n'
+
+  -- Simple checksum to provide a lightweight verification that the input hasn't been edited/modified
+  local checksum = adler32(simulationcraftProfile)
+
+  simulationcraftProfile = simulationcraftProfile .. '# Checksum: ' .. string.format('%x', checksum)
 
 
   local f = Simulationcraft:GetMainFrame(simcPrintError or simulationcraftProfile)

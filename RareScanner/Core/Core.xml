@@ -16,6 +16,7 @@
 	<Include file="Data\RSContainerDB.lua"/>
 	<Include file="Data\RSEventDB.lua"/>
 	<Include file="Data\RSNpcDB.lua"/>
+	<Include file="Data\RSDragonGlyphDB.lua"/>
 	<Include file="Data\RSConfigDB.lua"/>
 	<Include file="Data\RSGeneralDB.lua"/>
 	<Include file="Data\RSAchievementDB.lua"/>
@@ -30,6 +31,7 @@
 	<Include file="Service\POI\RSNpcPOI.lua"/>
 	<Include file="Service\POI\RSContainerPOI.lua"/>
 	<Include file="Service\POI\RSEventPOI.lua"/>
+	<Include file="Service\POI\RSDragonGlyphPOI.lua"/>
 	<Include file="Service\POI\RSGroupPOI.lua"/>
 	<Include file="Service\POI\RSGuidePOI.lua"/>
 	
@@ -42,6 +44,7 @@
 	<Include file="Service\RSRespawnTracker.lua"/>
 	<Include file="Service\RSNotificationTracker.lua"/>
 	<Include file="Service\RSMinimap.lua"/>
+	<Include file="Service\RSEntityStateHandler.lua"/>
 	<Include file="Service\RSLoot.lua"/>
 	<Include file="Service\RSLootTooltip.lua"/>
 	<Include file="Service\RSWaypoints.lua"/>

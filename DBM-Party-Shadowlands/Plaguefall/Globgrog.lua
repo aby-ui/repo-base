@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2419, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(164255)
 mod:SetEncounterID(2382)
 
@@ -97,7 +97,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 324652 and self:CheckDispelFilter() then
+	if spellId == 324652 and self:CheckDispelFilter("disease") then
 		specWarnDebilitatingPlague:CombinedShow(0.3, args.destName)
 		specWarnDebilitatingPlague:ScheduleVoice(0.3, args.destName)
 	end

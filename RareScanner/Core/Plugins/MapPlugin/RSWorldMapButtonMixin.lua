@@ -22,6 +22,7 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 local SHOW_RARE_NPC_ICONS = "rsHideRareNpcs"
 local SHOW_CONTAINER_ICONS = "rsHideContainers"
 local SHOW_EVENT_ICONS = "rsHideEvents"
+local SHOW_DRAGON_GLYPHS_ICONS = "rsHideDragonGlyphs"
 local SHOW_NOT_DISCOVERED_ICONS = "rsHideNotDiscovered"
 local SHOW_NOT_DISCOVERED_ICONS_OLD = "rsHideNotDiscoveredOld"
 local DISABLE_LAST_SEEN_FILTER = "rsDisableLastSeenFilter"
@@ -89,6 +90,13 @@ local function WorldMapButtonDropDownMenu_Initialize(dropDown)
 				RSConfigDB.EnableMaxSeenEventTimeFilter()
 			end
 			RSMinimap.RefreshAllData(true)
+		elseif (value == SHOW_DRAGON_GLYPHS_ICONS) then
+			if (RSConfigDB.IsShowingDragonGlyphs()) then
+				RSConfigDB.SetShowingDragonGlyphs(false)
+			else
+				RSConfigDB.SetShowingDragonGlyphs(true)
+			end
+			RSMinimap.RefreshAllData(true)
 		end
 		WorldMapFrame:RefreshAllDataProviders();
 	end
@@ -112,6 +120,11 @@ local function WorldMapButtonDropDownMenu_Initialize(dropDown)
 		info.text = AL["MAP_MENU_SHOW_EVENTS"];
 		info.arg1 = SHOW_EVENT_ICONS;
 		info.checked = RSConfigDB.IsShowingEvents()
+		LibDD:UIDropDownMenu_AddButton(info);
+	
+		info.text = AL["MAP_MENU_SHOW_DRAGON_GLYPHS"];
+		info.arg1 = SHOW_DRAGON_GLYPHS_ICONS;
+		info.checked = RSConfigDB.IsShowingDragonGlyphs()
 		LibDD:UIDropDownMenu_AddButton(info);
 	
 		info.text = AL["MAP_MENU_DISABLE_LAST_SEEN_FILTER"];
@@ -166,5 +179,5 @@ function RSWorldMapButtonMixin:OnEnter()
 end
 
 function RSWorldMapButtonMixin:Refresh()
-	-- Remove when this error is fixed: https://www.curseforge.com/wow/addons/krowis-world-map-buttons#c1
+	-- Needed even if not used
 end

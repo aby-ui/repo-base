@@ -190,26 +190,34 @@ function EventFrame:QUEST_GREETING()
 end
 
 local function titleButtonOnClick(self)
-    local id = self:GetParent():GetID();
-    if self.type=="available" then
+    self = self:GetParent()
+    local index, isAvailable
+    if self.GetElementData then
+        index = self:GetElementData().index --10.0中GetID() 得到的是questID而不是index
+        isAvailable = self:GetElementData().buttonType == GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST
+    else
+        index = self:GetID(); --9.0
+        isAvailable = self.type=="available"
+    end
+    if isAvailable then
         local quests = C_GossipInfo.GetAvailableQuests()
-        autoName = quests[id].title
-        C_GossipInfo.SelectAvailableQuest(id)
+        autoName = quests[index].title
+        C_GossipInfo.SelectAvailableQuest(self:GetID()) --10.0改为选择任务ID
     else
         local quests = C_GossipInfo.GetActiveQuests()
-        autoName = quests[id].title
-        C_GossipInfo.SelectActiveQuest(id)
+        autoName = quests[index].title
+        C_GossipInfo.SelectActiveQuest(self:GetID())
     end
 end
 
 local function titleButtonOnClickQuest(self)
     local id = self:GetParent():GetID();
-    if self.type=="available" then
-        autoName = GetAvailableTitle(id)
-        SelectAvailableQuest(id)
-    else
+    if self:GetParent().isActive == 1 then --QuestTitleButton_OnClick --TODO:abyui10 没测试
         autoName = GetActiveTitle(id)
         SelectActiveQuest(id)
+    else
+        autoName = GetAvailableTitle(id)
+        SelectAvailableQuest(id)
     end
 end
 
@@ -220,30 +228,64 @@ local function createButtons(titleButton, questNotGossip)
     CoreUISetButtonFonts(titleButton.btnComplete, DialogButtonNormalText, DialogButtonHighlightText)
 end
 
-hooksecurefunc("GossipFrameUpdate", function()
-    --local GossipQuests = C_GossipInfo.GetActiveQuests();
-    for titleButton, _ in pairs(GossipFrame.titleButtonPool.activeObjects) do
-        if not titleButton.btnComplete then createButtons(titleButton) end
-        if titleButton:IsShown() then
-            if titleButton.type == "Active" then
-                local titleTex = titleButton.Icon:GetTexture()
-                if type(titleTex) == "number" then titleTex = titleButton.Icon:GetAtlas() or "" end
-                if titleTex:find("Incomplete") then --QuestUtil.GetQuestIconActive
+local function SetupHook(self, questInfo)
+    local data = self.GetElementData and self:GetElementData() --buttonType, index, info (frequency, isIgnored, isLegendary, isTrivial, questID, questLevel, repeatable, title)
+    if not data then return end
+
+    local titleButton = self
+    if not titleButton.btnComplete then createButtons(titleButton) end
+
+    if data.buttonType == GOSSIP_BUTTON_TYPE_ACTIVE_QUEST then
+        local titleTex = titleButton.Icon:GetTexture()
+        if type(titleTex) == "number" then titleTex = titleButton.Icon:GetAtlas() or "" end
+        if titleTex:find("Incomplete") then --@see QuestUtil.GetQuestIconActive
+            titleButton.btnComplete:Hide()
+        elseif titleButton.Icon:GetTexture() == 365195 then --/dump GetMouseFocus().Icon:GetTexture()
+            titleButton.btnComplete:Hide()
+        else
+            titleButton.btnComplete:Show()
+        end
+        titleButton.btnAccept:Hide()
+    elseif data.buttonType == GOSSIP_BUTTON_TYPE_AVAILABLE_QUEST then
+        titleButton.btnAccept:Show()
+        titleButton.btnComplete:Hide()
+    else
+        titleButton.btnAccept:Hide()
+        titleButton.btnComplete:Hide()
+    end
+end
+
+if GossipAvailableQuestButtonMixin then
+    hooksecurefunc(GossipAvailableQuestButtonMixin, "Setup", SetupHook)
+    hooksecurefunc(GossipActiveQuestButtonMixin, "Setup", SetupHook)
+end
+
+if GossipFrameUpdate then
+    hooksecurefunc("GossipFrameUpdate", function()
+        --local GossipQuests = C_GossipInfo.GetActiveQuests();
+        for titleButton, _ in pairs(GossipFrame.titleButtonPool.activeObjects) do
+            if not titleButton.btnComplete then createButtons(titleButton) end
+            if titleButton:IsShown() then
+                if titleButton.type == "Active" then
+                    local titleTex = titleButton.Icon:GetTexture()
+                    if type(titleTex) == "number" then titleTex = titleButton.Icon:GetAtlas() or "" end
+                    if titleTex:find("Incomplete") then --QuestUtil.GetQuestIconActive
+                        titleButton.btnComplete:Hide()
+                    else
+                        titleButton.btnComplete:Show()
+                    end
+                    titleButton.btnAccept:Hide()
+                elseif titleButton.type == "Available" then
+                    titleButton.btnAccept:Show()
                     titleButton.btnComplete:Hide()
                 else
-                    titleButton.btnComplete:Show()
+                    titleButton.btnAccept:Hide()
+                    titleButton.btnComplete:Hide()
                 end
-                titleButton.btnAccept:Hide()
-            elseif titleButton.type == "Available" then
-                titleButton.btnAccept:Show()
-                titleButton.btnComplete:Hide()
-            else
-                titleButton.btnAccept:Hide()
-                titleButton.btnComplete:Hide()
             end
         end
-    end
-end)
+    end)
+end
 
 QuestFrameGreetingPanel:HookScript("OnShow", function()
 	local numActiveQuests = GetNumActiveQuests();

@@ -72,7 +72,6 @@ function rematch:RegisterCard(cardName,frame,showFunc,title,isFloating)
 	frame.LockFrame.TitleText:SetText(title)
 	frame.LockFrame.PinButton.tooltipTitle = isFloating and L["Toggle Lock"] or L["Unpin Card"]
 	frame.LockFrame.PinButton.tooltipBody = isFloating and L["While locked, this card cannot be moved unless Shift is held. It will also remain on screen when ESC is pressed."] or L["While pinned, this card will stay wherever you move it.\n\nClick this to unpin the card and snap it back to the button that spawned it."]
-	rematch:ConvertTitlebarCloseButton(frame.LockFrame.CloseButton)
 
 	-- if card doesn't have a saved position, then set a default to center of screen
 	if not settings[cardName.."XPos"] then

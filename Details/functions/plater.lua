@@ -43,14 +43,14 @@ plater_integration_frame.OnTickFrameFunc = function(self, deltaTime)
 			tinsert(damageTable.RealTimeBufferFromPlayer, 1, damageOnThisUpdateFromPlayer)
 			
 			--remove the damage from the buffer
-			local damageRemoved = tremove (damageTable.RealTimeBuffer, CONST_BUFFER_SIZE + 1)
+			local damageRemoved = tremove(damageTable.RealTimeBuffer, CONST_BUFFER_SIZE + 1)
 			if (damageRemoved) then
-				damageTable.CurrentDamage = max (damageTable.CurrentDamage - damageRemoved, 0)
+				damageTable.CurrentDamage = max(damageTable.CurrentDamage - damageRemoved, 0)
 			end
 			
-			local damageRemovedFromPlayer = tremove (damageTable.RealTimeBufferFromPlayer, CONST_BUFFER_SIZE + 1)
+			local damageRemovedFromPlayer = tremove(damageTable.RealTimeBufferFromPlayer, CONST_BUFFER_SIZE + 1)
 			if (damageRemovedFromPlayer) then
-				damageTable.CurrentDamageFromPlayer = max (damageTable.CurrentDamageFromPlayer - damageRemovedFromPlayer, 0)
+				damageTable.CurrentDamageFromPlayer = max(damageTable.CurrentDamageFromPlayer - damageRemovedFromPlayer, 0)
 			end
 		end
 		
@@ -117,14 +117,14 @@ function Details:RefreshPlaterIntegration()
 		wipe (plater_integration_frame.DamageTaken)
 		
 		--read cleu events
-		plater_integration_frame:RegisterEvent ("COMBAT_LOG_EVENT_UNFILTERED")
+		plater_integration_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		
 		--start the real time dps updater
 		plater_integration_frame.OnTickFrame.NextUpdate = CONST_REALTIME_UPDATE_TIME
 		plater_integration_frame.OnTickFrame:SetScript("OnUpdate", plater_integration_frame.OnTickFrameFunc)
 
 		--cache the player serial
-		plater_integration_frame.PlayerGUID = UnitGUID ("player")
+		plater_integration_frame.PlayerGUID = UnitGUID("player")
 		
 		--cancel the timer if already have one
 		if (plater_integration_frame.CleanUpTimer and not plater_integration_frame.CleanUpTimer:IsCancelled()) then
@@ -132,7 +132,7 @@ function Details:RefreshPlaterIntegration()
 		end
 		
 		--cleanup the old tables
-		plater_integration_frame.CleanUpTimer = C_Timer.NewTicker (10, function()
+		plater_integration_frame.CleanUpTimer = C_Timer.NewTicker(10, function()
 			local now = time()
 			for GUID, damageTable in pairs(plater_integration_frame.DamageTaken) do
 				if (damageTable.LastEvent + 9.9 < now) then

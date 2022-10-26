@@ -18,12 +18,12 @@
 
     {
         text = "测试模式",
+        secure = 1,
         callback = function(cfg, v, loading)
-            if BattleGroundEnemies.TestmodeActive then --disable testmode
-                BattleGroundEnemies.BGSize = false
+            if BattleGroundEnemies.Testmode.Active then --disable testmode
                 BattleGroundEnemies:DisableTestMode()
             else --enable Testmode
-                BattleGroundEnemies:BGSizeCheck(15)
+                BattleGroundEnemies.Testmode.BGSizeTestmode = 15
                 BattleGroundEnemies:EnableTestMode()
             end
         end

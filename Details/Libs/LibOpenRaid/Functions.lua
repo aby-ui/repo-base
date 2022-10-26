@@ -138,7 +138,7 @@ function openRaidLib.GetUnitID(playerName)
 end
 
 
-local filterStringToCooldownType = {
+local filterStringToCooldownType = { --report: "filterStringToCooldownType doesn't include the new filters."
     ["defensive-raid"] = CONST_COOLDOWN_TYPE_DEFENSIVE_RAID,
     ["defensive-target"] = CONST_COOLDOWN_TYPE_DEFENSIVE_TARGET,
     ["defensive-personal"] = CONST_COOLDOWN_TYPE_DEFENSIVE_PERSONAL,

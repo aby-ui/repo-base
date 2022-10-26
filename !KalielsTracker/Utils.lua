@@ -400,7 +400,7 @@ StaticPopupDialogs[addonName.."_WowheadURL"] = {
         local www = KT.locale:sub(1, 2)
         if www == "zh" then www = "cn" end
         self.text:SetText(self.text:GetText().."\n|cffff7f00"..name.."|r")
-        self.editBox.text = "http://"..www..".wowhead.com/"..self.text.text_arg1.."="..self.text.text_arg2
+        self.editBox.text = "https://"..www..".wowhead.com/"..self.text.text_arg1.."="..self.text.text_arg2
         self.editBox:SetText(self.editBox.text)
         self.editBox:SetFocus()
     end,

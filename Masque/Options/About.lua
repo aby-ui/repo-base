@@ -37,6 +37,7 @@ local Supporters = {
 	-- [1]
 	COLOR_1.."Amenitra|r",
 	COLOR_1.."S9th|r",
+	COLOR_1.."Stormseer|r",
 }
 
 ----------------------------------------

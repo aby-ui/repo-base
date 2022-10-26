@@ -443,7 +443,6 @@ end
 
 local b = "|cffffd200"
 local cbt = "UICheckButtonTemplate"
-if not InterfaceOptionsFrame:IsMovable() then InterfaceOptionsFrame:SetMovable(true); InterfaceOptionsFrame:SetScript("OnMouseDown", function(self) self:StartMoving() end); InterfaceOptionsFrame:SetScript("OnMouseUp", function(self) self:StopMovingOrSizing() end) end
 local header = options:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 header:SetPoint("TOPLEFT", options, 20,-20)
 header:SetText(wM)

@@ -13,7 +13,7 @@
 local _, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local error, pairs, type = error, pairs, type

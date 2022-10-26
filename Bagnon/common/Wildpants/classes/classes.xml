@@ -5,6 +5,8 @@
 
 	<Script file="item.lua"/>
 	<Script file="itemGroup.lua"/>
+	<Script file="currency.lua"/>
+	<Script file="currencyTracker.lua"/>
 	<Script file="bag.lua"/>
 	<Script file="bagGroup.lua"/>
 	<Script file="bagToggle.lua"/>

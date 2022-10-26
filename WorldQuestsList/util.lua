@@ -967,7 +967,7 @@ do
 		
 		self.Texture = self:CreateTexture(nil,"BACKGROUND")
 		self.Texture:SetColorTexture(1,1,1,1)
-		self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+		self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
 		self.Texture:SetPoint("TOPLEFT")
 		self.Texture:SetPoint("BOTTOMRIGHT")
 	

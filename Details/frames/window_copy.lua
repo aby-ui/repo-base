@@ -13,8 +13,8 @@ do
 		panel:SetFrameStrata("TOOLTIP")
 		panel:SetPoint("center", UIParent, "center")
 		panel.locked = false
-		panel:SetToplevel (true)
-		panel:SetMovable (true)
+		panel:SetToplevel(true)
+		panel:SetMovable(true)
 		panel:SetScript("OnMouseDown", function(self, button)
 			if (self.isMoving) then
 				return
@@ -33,14 +33,14 @@ do
 			end
 		end)
 		
-		DetailsFrameWork:NewImage (panel, "Interface\\AddOns\\Details\\images\\copy", 512, 128, "overlay", nil, "background", "$parentBackGround")
+		DetailsFrameWork:NewImage(panel, "Interface\\AddOns\\Details\\images\\copy", 512, 128, "overlay", nil, "background", "$parentBackGround")
 		panel.background:SetPoint(0, -25)
 		
 		--title
 		--panel.TitleText:SetText("Paste & Copy") --10.0 fuck
 		--panel.portrait:SetTexture([[Interface\CHARACTERFRAME\TEMPORARYPORTRAIT-FEMALE-BLOODELF]])
 		
-		DetailsFrameWork:NewTextEntry (panel, _, "$parentTextEntry", "text", 476, 14)
+		DetailsFrameWork:NewTextEntry(panel, _, "$parentTextEntry", "text", 476, 14)
 		panel.text:SetPoint(20, -127)
 		panel.text:SetHook("OnEditFocusLost", function() panel:Hide() end)
 		panel.text:SetHook("OnChar", function() panel:Hide() end)

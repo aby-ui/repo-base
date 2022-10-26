@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: QuakeAssist
 ## Version: 1.10
 ## Author: Abin

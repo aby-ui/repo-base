@@ -245,6 +245,8 @@ do
 			self:Hide() 
 			return
 		end
+
+		--print(targetX,targetY,x,y)
 		
 		if targetType == "player" then
 			targetY, targetX = UnitPosition(targetPlayer)

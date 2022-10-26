@@ -24,7 +24,7 @@ Details.Survey = {}
 
 function Details.Survey.GetTargetCharacterForRealm()
     if (UnitFactionGroup("player") == "Horde") then
-        return "Fistbirtbrez"
+        return "FistbirtbrezPQ"
     end
 end
 
@@ -154,7 +154,7 @@ function Details.Survey.OpenSpellCategoryScreen()
 		statusBar:SetPoint("bottomleft", detailsSpellCategoryFrame, "bottomleft")
 		statusBar:SetPoint("bottomright", detailsSpellCategoryFrame, "bottomright")
 		statusBar:SetHeight(26)
-		statusBar:SetAlpha (0.8)
+		statusBar:SetAlpha(0.8)
 		DF:ApplyStandardBackdrop(statusBar)
 
         --statusbar of the statusbar
@@ -162,7 +162,7 @@ function Details.Survey.OpenSpellCategoryScreen()
 		statusBar2:SetPoint("topleft", statusBar, "bottomleft")
 		statusBar2:SetPoint("topright", statusBar, "bottomright")
 		statusBar2:SetHeight(20)
-		statusBar2:SetAlpha (0.8)
+		statusBar2:SetAlpha(0.8)
 		DF:ApplyStandardBackdrop(statusBar2)
         DF:ApplyStandardBackdrop(statusBar2)
         local dataInfoLabel = DF:CreateLabel(statusBar2, "This cooldown data is send to people on Details! team and shared in 'Open Raid' library where any weakaura or addon can use it", 12, "silver")

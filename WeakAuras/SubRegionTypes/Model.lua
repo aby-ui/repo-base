@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local L = WeakAuras.L;
@@ -65,7 +66,7 @@ local function PreShow(self)
   self:ClearTransform()
   if (data.api) then
     self:MakeCurrentCameraCustom()
-    self:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+    self:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
       data.model_st_us / 1000);
   else
@@ -78,6 +79,7 @@ end
 local function CreateModel()
   local model =  CreateFrame("PlayerModel", nil, UIParent)
   model.PreShow = PreShow;
+  model.SetTransformFixed = WeakAuras.IsDragonflight() and  Private.ModelSetTransformFixed or model.SetTransform
   return model
 end
 
@@ -129,7 +131,7 @@ local function AcquireModel(region, data)
   model:ClearTransform()
   if (data.api) then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+    model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
       data.model_st_us / 1000);
   else

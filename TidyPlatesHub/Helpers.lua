@@ -110,7 +110,8 @@ local function ConvertDebuffListTable(source, target, order)
 				if order then order[item] = index end
 			end
 		end
-    end
+	end
+
 end
 
 local function AddHubFunction(functionTable, menuTable, functionPointer, functionDescription, functionKey )

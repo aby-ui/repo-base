@@ -47,7 +47,10 @@ module.db.otherIconsList = {
 if MRT.isClassic then
 	tremove(module.db.otherIconsList,12)
 	tremove(module.db.otherIconsList,10)
-	tremove(module.db.otherIconsList,6)
+	if not MRT.isLK then tremove(module.db.otherIconsList,6) end
+end
+if MRT.is10 then
+	tinsert(module.db.otherIconsList,13,{"{"..L.classLocalizate["EVOKER"] .."}","interface/icons/classicon_evoker"})
 end
 
 module.db.iconsLocalizatedNames = {
@@ -150,6 +153,7 @@ local classList = {
 	[L.classLocalizate.MONK:lower()] = 10,
 	[L.classLocalizate.DRUID:lower()] = 11,
 	[L.classLocalizate.DEMONHUNTER:lower()] = 12,
+	[L.classLocalizate.EVOKER:lower()] = 13,
 	["warrior"] = 1,
 	["paladin"] = 2,
 	["hunter"] = 3,
@@ -162,6 +166,7 @@ local classList = {
 	["monk"] = 10,
 	["druid"] = 11,
 	["demonhunter"] = 12,
+	["evoker"] = 13,
 	["war"] = 1,
 	["pal"] = 2,
 	["hun"] = 3,
@@ -172,6 +177,7 @@ local classList = {
 	["lock"] = 9,
 	["dru"] = 11,
 	["dh"] = 12,
+	["dragon"] = 13,
 	["1"] = 1,
 	["2"] = 2,
 	["3"] = 3,
@@ -184,6 +190,7 @@ local classList = {
 	["10"] = 10,
 	["11"] = 11,
 	["12"] = 12,
+	["13"] = 13,
 }
 
 local function GSUB_Class(anti,list,msg)
@@ -387,7 +394,7 @@ local function GSUB_Time(preText,t,msg,newlinesym)
 		end
 	end
 
-	if not msg:find(MRT.SDB.charName) and VMRT.Note.TimerOnlyMy and not isAllParam then
+	if not msg:find(MRT.SDB.charName) and not msg:find("{everyone}") and VMRT.Note.TimerOnlyMy and not isAllParam then
 		return ""
 	end
 
@@ -429,7 +436,9 @@ local function GSUB_Phase(anti,phase,msg)
 	end
 end
 
-local allIcons = {}
+local allIcons = {
+	["everyone"] = "",
+}
 for i=1,8 do
 	local icon = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_"..i..":0|t"
 	allIcons[ module.db.iconsLocalizatedNames[i] ] = icon
@@ -524,6 +533,15 @@ function module.options:Load()
 		106898,192077,46968,119381,179057,192058,30283,0,
 		29166,32375,114018,108199,49576,0,
 		0,
+		370615,370649,370597,393780,396094,396023,394917,396031,373088,394904,396022,390715,0,
+		382458,386400,381315,376279,383073,394347,377166,378861,380487,388393,391322,381576,396351,0,
+		386440,371591,372315,372394,372027,371836,372275,386289,396328,386370,372056,386375,0,
+		373817,374112,372539,372051,372648,372129,372044,372045,372030,371976,372736,372055,373559,371983,371979,373027,396795,373405,372082,388016,0,
+		375580,390449,384273,384637,376851,388410,375424,376943,387627,391717,388302,387849,387943,388562,391686,385812,0,
+		374881,372456,376063,377780,375828,395894,393296,374916,374554,374917,396243,374918,374620,391268,374022,374621,374779,373678,391019,393429,372514,390548,382563,375792,374623,374705,374217,374485,375824,374321,372517,391055,375825,393309,371971,390920,374861,0,
+		376266,375871,390573,376073,388644,375485,375842,396265,388918,388716,375879,390561,375630,375653,375829,378782,375457,378787,390710,375575,375809,376257,392193,375870,375475,375716,396649,0,
+		388635,388643,377322,386410,377662,395929,381615,381251,382530,392086,394583,377594,377658,391281,385182,388631,385574,387261,390763,394584,391989,388431,389214,385068,385541,394582,385560,391285,388115,376126,377467,377612,0,
+		0,
 		367555,367571,360403,360202,360528,361001,366822,367342,359608,366692,367561,364962,360414,360176,364904,363447,364447,360412,0,
 		359770,359778,364522,359981,364778,359913,360098,359976,367486,360448,359829,360193,359904,360411,366070,0,
 		364040,362849,364373,365752,365801,365745,362885,363413,365577,362801,363485,363114,362841,362837,362721,365681,0,
@@ -535,28 +553,6 @@ function module.options:Load()
 		359960,360418,361945,360148,361923,360319,360420,360304,360374,360229,360241,361913,362158,360145,359963,362585,363184,360428,361934,362152,360300,363191,360006,360417,364985,0,
 		364114,363533,363115,366379,363109,366992,362172,362273,364381,364386,361553,362088,364432,366606,362081,364569,368080,362384,362206,362275,361462,361548,361463,362184,362390,0,
 		366408,360565,366377,360282,363952,360425,365371,365151,365419,366381,362617,362192,366776,366777,362194,362415,365219,366401,365174,365033,365810,366782,359868,365385,366665,362058,360373,366030,365153,363886,362075,362189,366285,363893,367053,362631,0,
-		0,
-		347369,352398,347283,347490,347269,346986,352368,347671,346985,352389,347668,352382,347286,347274,0,
-		350847,350763,348074,349028,350803,349979,355245,351401,350828,351994,348054,350604,348969,350713,350028,355246,355232,355240,351826,0,
-		350482,350157,350475,350283,350206,350555,350098,350385,350184,351399,350687,350467,350339,350287,350031,350039,350109,350365,352744,350202,0,
-		349889,350388,349890,350671,350469,351066,350073,350076,350490,0,
-		350650,351779,350422,350801,353554,350648,350217,351946,349985,350851,351229,348985,354231,353429,0,
-		355568,348255,348463,355504,355786,348508,348363,355778,0,
-		352660,352394,352833,350734,352538,352589,356090,352385,356093,355352,347359,350732,0,
-		353195,353160,350826,353122,353696,350355,353149,353603,353162,354964,354365,351969,353435,353432,353931,351680,0,
-		348428,355055,352002,354103,347291,348756,355127,352348,352051,352090,354206,352355,352144,355935,349805,352293,348953,348744,352379,346459,355948,352530,348071,348978,354289,0,
-		355540,347807,348627,351179,351117,348109,350598,351670,347670,353955,351451,351562,347609,347704,353642,352650,348146,354147,351092,355849,351109,347928,353929,356024,347504,354070,349458,350857,348145,347607,350746,351869,356023,353413,350865,351075,355827,0,
-		0,
-		341489,345397,328897,343365,340324,342923,328857,328921,345425,343005,342863,341684,330711,342074,0,
-		334695,338609,345902,334797,334960,334852,334860,334504,334884,334404,334893,334971,334708,338615,343259,335114,334757,339639,338593,335303,0,
-		333145,337865,325442,328248,325590,325877,341308,335581,328885,329561,325665,328731,329509,335598,326430,341473,326078,333002,328254,329539,336398,326455,329470,323402,339251,326456,328579,343026,325440,0,
-		329770,340533,325361,340860,325399,328437,340870,328880,327414,329458,327887,326271,340842,0,
-		329455,329774,329298,334522,334755,338614,329742,332375,332294,332295,0,
-		325225,331844,331573,325908,331527,325382,326538,325384,342287,331550,325718,342280,325117,325184,341746,324983,342320,335322,325596,341590,329618,0,
-		346692,331634,330968,346934,346694,330978,328497,330848,346035,330964,327503,346681,334909,346945,346891,330965,346690,346651,346303,346939,346660,347350,337110,327619,346790,0,
-		335354,335300,340803,331209,332318,332443,331212,332197,341102,341482,335297,341250,332969,339189,332687,335361,335295,332572,0,
-		334765,333913,344740,342733,334929,333387,343881,336212,332683,339728,343086,343898,339690,344655,342425,342256,336231,342985,339645,343063,340038,334771,342741,332412,339693,339885,329636,342253,0,
-		332734,341366,338689,330137,344313,338738,330627,330580,338582,326707,327227,327842,335875,329906,326851,332585,344776,327089,332797,328098,340685,332619,326823,338683,338510,327123,326824,330871,329974,341391,326699,338685,328936,336008,335873,329785,327992,328839,328276,338687,336162,327796,0,
 	}
 	if MRT.isBC then
 		module.db.otherIconsAdditionalList = {
@@ -566,7 +562,7 @@ function module.options:Load()
 		}
 	end
 
-	function self:DebugGetIcons(notUseJJBox)
+	function self:DebugGetIcons(bossCount,notUseJJBox)
 		local L,U,F,C,P
 		function F(eID)
 			local f=select(4,EJ_GetEncounterInfoByIndex(eID))
@@ -599,7 +595,7 @@ function module.options:Load()
 			end 
 		end 
 		local i = 1
-		while _G["EncounterJournalBossButton"..i] and _G["EncounterJournalBossButton"..i]:IsShown() do
+		while i <= bossCount do
 			L,U={},{} 
 			local f=F(i) 
 			C(f)
@@ -615,8 +611,11 @@ function module.options:Load()
 			end
 			i = i + 1
 		end
+		if notUseJJBox then
+			GMRT.F:Export2(RES)
+		end
 	end
-	--/run GMRT.A.Note.options:DebugGetIcons()
+	--/run GMRT.A.Note.options:DebugGetIcons(8,true)
 
 	if not MRT.isClassic then
 		module.db.encountersList = MRT.F.GetEncountersList(true,false,true)
@@ -1209,6 +1208,7 @@ function module.options:Load()
 			else
 				module.options.buttonsend:Anim(false)
 			end
+			module.frame:UpdateText()
 		end
 	end
 	local last_highlight_start,last_highlight_end,last_cursor_pos = 0,0,0
@@ -1303,11 +1303,19 @@ function module.options:Load()
 
 				local c = 0.05 * (self.t > 2 and (4-self.t) or self.t)
 
-				self.Texture:SetGradientAlpha("VERTICAL",0.0+c,0.06+c,0.0+c,1, 0.05+c,0.21+c,0.05+c,1)
+				if MRT.is10 then
+					self.Texture:SetGradient("VERTICAL",CreateColor(0.0+c,0.06+c,0.0+c,1), CreateColor(0.05+c,0.21+c,0.05+c,1))
+				else
+					self.Texture:SetGradientAlpha("VERTICAL",0.0+c,0.06+c,0.0+c,1, 0.05+c,0.21+c,0.05+c,1)
+				end
 			end)
 		else
 			self:SetScript("OnUpdate",nil)
-			self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+			if MRT.is10 then
+				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
+			else
+				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+			end
 		end
 	end
 
@@ -1380,7 +1388,7 @@ function module.options:Load()
 		button.iconText = module.db.iconsLocalizatedNames[i]
 		button:SetScript("OnClick", AddTextToEditBox)
 	end
-	for i=1,12 do
+	for i=1,(MRT.is10 and 13 or 12) do
 		local button = CreateFrame("Button", nil,self.tab.tabs[1])
 		self.buttonicons[i] = button
 		button:SetSize(18,18)
@@ -1421,7 +1429,7 @@ function module.options:Load()
 		local GetSpellInfo = GetSpellInfo
 		local line = 1
 		local inLine = 0
-		for i=13,#module.db.otherIconsList-3 do
+		for i=(MRT.is10 and 14 or 13),#module.db.otherIconsList-3 do
 			local iconData = module.db.otherIconsList[i]
 			local icon = CreateOtherIcon(5+inLine*20,-2-(line-1)*20,iconData[2],iconData[1])
 			if iconData[3] then
@@ -1825,8 +1833,8 @@ function module.options:Load()
 	local LCG = LibStub("LibCustomGlow-1.0",true)
 	if LCG then
 		LCG.PixelGlow_Start(self.frameTypeGlow1.f,nil,nil,nil,nil,2,1,1) 
-		LCG.ButtonGlow_Start(self.frameTypeGlow2.f)
 		LCG.AutoCastGlow_Start(self.frameTypeGlow3.f)
+		LCG.ButtonGlow_Start(self.frameTypeGlow2.f)
 	end
 
 	if VMRT.Note.TimerGlowType == 2 then
@@ -1915,7 +1923,11 @@ module.frame:SetScript("OnDragStop", function(self)
 end)
 module.frame:SetFrameStrata("HIGH")
 module.frame:SetResizable(true)
-module.frame:SetMinResize(30, 30)
+if MRT.is10 then
+	module.frame:SetResizeBounds(30, 30, 2000, 2000)
+else
+	module.frame:SetMinResize(30, 30)
+end
 module.frame:SetScript("OnSizeChanged", function (self, width, height)
 	local width_, height_ = self:GetSize()
 	if VMRT and VMRT.Note then

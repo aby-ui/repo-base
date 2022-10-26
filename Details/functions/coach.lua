@@ -445,7 +445,7 @@ function Details.Coach.WelcomePanel()
     if (not welcomePanel) then
 		welcomePanel = DetailsFramework:CreateSimplePanel(UIParent)
 		welcomePanel:SetSize(400, 280)
-		welcomePanel:SetTitle ("Details! Coach")
+		welcomePanel:SetTitle("Details! Coach")
 		welcomePanel:ClearAllPoints()
 		welcomePanel:SetPoint("left", UIParent, "left", 10, 0)
         welcomePanel:Hide()
@@ -503,7 +503,7 @@ function Details.Coach.WelcomePanel()
 
         end, 80, 20, "Start Coaching!")
         startCoachButton:SetPoint("bottomright", welcomePanel, "bottomright", -10, 10)
-        startCoachButton:SetTemplate(DetailsFramework:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+        startCoachButton:SetTemplate(DetailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
 
         function welcomePanel.Update()
             local good = 0

@@ -27,21 +27,9 @@
 		<Frames>
 			<!-- lock to left of titlebar -->
 			<CheckButton parentKey="LockButton" inherits="RematchTitlebarButtonTemplate,RematchTooltipScripts">
-				<Size x="32" y="32"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" x="-5" y="5"/>
+					<Anchor point="TOPLEFT"/>
 				</Anchors>
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture file="Interface\FrameGeneral\UI-Frame">
-							<Size x="11" y="22"/>
-							<Anchors>
-								<Anchor point="RIGHT"/>
-							</Anchors>
-							<TexCoords left="0.6640625" right="0.75" top="0.015625" bottom="0.1875"/>
-						</Texture>
-					</Layer>
-				</Layers>
 				<Scripts>
 					<OnClick>
 						RematchNotes.LockButtonOnClick(self)

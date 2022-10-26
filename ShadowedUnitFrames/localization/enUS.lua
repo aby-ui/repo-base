@@ -319,6 +319,7 @@ L["Enabling advanced settings will give you access to more configuration options
 L["Energy"] = "Energy"
 L["Enlarge auras for"] = "Enlarge auras for"
 L["Error"] = "Error"
+L["Essence"] = "Essence"
 L["Events"] = "Events"
 L["Events that should be used to trigger an update of this tag. Separate each event with a single space."] = "Events that should be used to trigger an update of this tag. Separate each event with a single space."
 L["Everywhere else"] = "Everywhere else"
@@ -819,9 +820,6 @@ L["This bar will automatically hide when you are at the level cap, or you do not
 L[ [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
 Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=] ] = [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
 Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=]
---[[Translation missing --]]
-L[ [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
-Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=] ] = ""
 L["This filter has no aura types set to filter out."] = "This filter has no aura types set to filter out."
 L["This filter has no auras in it, you will have to add some using the dialog above."] = "This filter has no auras in it, you will have to add some using the dialog above."
 L["This is a good guide on how to get started with programming in Lua, while you do not need to read the entire thing it is a helpful for understanding the basics of Lua syntax and API's."] = "This is a good guide on how to get started with programming in Lua, while you do not need to read the entire thing it is a helpful for understanding the basics of Lua syntax and API's."
@@ -830,9 +828,6 @@ L["This unit has child units that depend on it, you need to enable this unit bef
 L[ [=[This will be set for your current class only.
 If no custom spells are set, defaults appropriate for your class will be used.]=] ] = [=[This will be set for your current class only.
 If no custom spells are set, defaults appropriate for your class will be used.]=]
---[[Translation missing --]]
-L[ [=[This will be set for your current class only.
-If no custom spells are set, defaults appropriate for your class will be used.]=] ] = ""
 L["This will disable the automatic detection of what events this tag will need, you should leave this unchecked unless you know what you are doing."] = "This will disable the automatic detection of what events this tag will need, you should leave this unchecked unless you know what you are doing."
 L["This will override all background colorings for bars including custom set ones."] = "This will override all background colorings for bars including custom set ones."
 L["Threat"] = "Threat"

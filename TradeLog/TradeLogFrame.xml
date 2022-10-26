@@ -48,31 +48,7 @@
 		<Layers>
 			<Layer level="BACKGROUND">
 
-				<Texture name="$parentS11e" file="Interface\Buttons\UI-EmptySlot">
-					<Size>
-						<AbsDimension x="2" y="2"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPRIGHT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentSaaae" file="Interface\Buttons\UI-EmptySlot">
-					<Size>
-						<AbsDimension x="2" y="2"/>
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="0" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</Texture>
-				<Texture name="$parentSlotTexture" file="Interface\Buttons\UI-EmptySlot">
+				<Texture name="$parentSlotTexture" parentKey="SlotTexture" file="Interface\Buttons\UI-EmptySlot">
 					<Size>
 						<AbsDimension x="40" y="40" />
 					</Size>
@@ -196,7 +172,6 @@
 
 
 	<Frame name="TradeLogFrame" parent="UIParent" movable="true" toplevel="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
-		<TitleRegion setAllPoints="true"/>
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_TOAST_12_12" type="global"/>
         </KeyValues>
@@ -553,7 +528,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentSendItemNum" inherits="GameFontNormalSmall" justifyH="LEFT" Text="x3">
+				<FontString name="$parentSendItemNum" inherits="GameFontNormalSmall" justifyH="LEFT" text="x3">
 					<Size>
 						<AbsDimension x="27" y="14"/>
 					</Size>
@@ -590,7 +565,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentReceiveItemNum" inherits="GameFontNormalSmall" justifyH="LEFT" Text="x2">
+				<FontString name="$parentReceiveItemNum" inherits="GameFontNormalSmall" justifyH="LEFT" text="x2">
 					<Size>
 						<AbsDimension x="27" y="14"/>
 					</Size>
@@ -649,7 +624,6 @@
 	</Button>
 
 	<Frame name="TradeListFrame" parent="UIParent" movable="true" enableMouse="true" hidden="true" inherits="BackdropTemplate">
-		<TitleRegion setAllPoints="true"/>
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_TOAST_12_12" type="global"/>
         </KeyValues>
@@ -675,7 +649,7 @@
 				</Anchors>
 			</Button>
 
-			<Button name="TradeListKeepOnlyTodayButton" inherits="UIPanelButtonTemplate" Text="TRADE_LIST_CLEAR_HISTORY">
+			<Button name="TradeListKeepOnlyTodayButton" inherits="UIPanelButtonTemplate" text="TRADE_LIST_CLEAR_HISTORY">
 				<Size>
 					<AbsDimension x="90" y="26"/>
 				</Size>
@@ -693,7 +667,8 @@
 				</Scripts>
 			</Button>
 
-			<Slider name="TradeLogFrameScaleSlider" inherits="OptionsSliderTemplate">
+			<Slider name="TradeLogFrameScaleSlider" inherits="UISliderTemplateWithLabels">
+				<Size x="144" y="17"/>
 				<Anchors>
 					<Anchor point="LEFT" relativeTo="TradeListKeepOnlyTodayButton" relativePoint="RIGHT">
 						<Offset>

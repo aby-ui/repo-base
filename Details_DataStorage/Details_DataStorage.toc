@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Details!: Storage
 ## Notes: Stores information for Details! Damage Meter
 ## DefaultState: Enabled

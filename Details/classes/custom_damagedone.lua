@@ -19,22 +19,22 @@ local _
 local _cstr = string.format --lua local
 local _math_floor = math.floor --lua local
 local _table_sort = table.sort --lua local
-local _table_insert = table.insert --lua local
+local tinsert = table.insert --lua local
 local _table_size = table.getn --lua local
-local _setmetatable = setmetatable --lua local
-local _ipairs = ipairs --lua local
-local _pairs = pairs --lua local
-local _rawget= rawget --lua local
+local setmetatable = setmetatable --lua local
+local ipairs = ipairs --lua local
+local pairs = pairs --lua local
+local rawget= rawget --lua local
 local _math_min = math.min --lua local
 local _math_max = math.max --lua local
 local _bit_band = bit.band --lua local
 local _unpack = unpack --lua local
-local _type = type --lua local
+local type = type --lua local
 
 local _GetSpellInfo = _detalhes.getspellinfo -- api local
-local _IsInRaid = IsInRaid -- api local
-local _IsInGroup = IsInGroup -- api local
-local _GetNumGroupMembers = GetNumGroupMembers -- api local
+local IsInRaid = IsInRaid -- api local
+local IsInGroup = IsInGroup -- api local
+local GetNumGroupMembers = GetNumGroupMembers -- api local
 local _GetNumPartyMembers = GetNumPartyMembers or GetNumSubgroupMembers -- api local
 local _GetNumRaidMembers = GetNumRaidMembers or GetNumGroupMembers -- api local
 local _GetUnitName = GetUnitName -- api local
@@ -59,7 +59,7 @@ local temp_table = {}
 
 local target_func = function(main_table)
 	local i = 1
-	for name, amount in _pairs (main_table) do
+	for name, amount in pairs(main_table) do
 		local t = temp_table [i]
 		if (not t) then
 			t = {"", 0}
@@ -75,7 +75,7 @@ end
 
 local spells_used_func = function(main_table, target)
 	local i = 1
-	for spellid, spell_table in _pairs (main_table) do
+	for spellid, spell_table in pairs(main_table) do
 		local target_amount = spell_table.targets [target]
 		if (target_amount) then
 			local t = temp_table [i]
@@ -117,14 +117,14 @@ function atributo_custom:damagedoneTooltip (actor, target, spellid, combat, inst
 			local this_actor = combat (1, targetname)
 			
 			if (this_actor) then
-				for name, _ in _pairs (this_actor.damage_from) do 
+				for name, _ in pairs(this_actor.damage_from) do 
 					local aggressor = combat (1, name)
 					if (aggressor) then
 						local spell = aggressor.spells._ActorTable [spellid]
 						if (spell) then
 							local on_me = spell.targets [targetname]
 							if (on_me) then
-								GameCooltip:AddLine (aggressor.nome, FormatTooltipNumber (_, on_me))
+								GameCooltip:AddLine(aggressor.nome, FormatTooltipNumber (_, on_me))
 								_detalhes:AddTooltipBackgroundStatusbar()
 							end
 						end
@@ -135,12 +135,12 @@ function atributo_custom:damagedoneTooltip (actor, target, spellid, combat, inst
 			return
 		else
 			local name, _, icon = _GetSpellInfo(spellid)
-			GameCooltip:AddLine (name)
+			GameCooltip:AddLine(name)
 			GameCooltip:AddIcon (icon, 1, 1, 14, 14)
 			
-			GameCooltip:AddLine (Loc ["STRING_DAMAGE"] .. ": ", spell.total)
-			GameCooltip:AddLine (Loc ["STRING_HITS"] .. ": ", spell.counter)
-			GameCooltip:AddLine (Loc ["STRING_CRITICAL_HITS"] .. ": ", spell.c_amt)
+			GameCooltip:AddLine(Loc ["STRING_DAMAGE"] .. ": ", spell.total)
+			GameCooltip:AddLine(Loc ["STRING_HITS"] .. ": ", spell.counter)
+			GameCooltip:AddLine(Loc ["STRING_CRITICAL_HITS"] .. ": ", spell.c_amt)
 		end
 	
 	elseif (target) then
@@ -154,7 +154,7 @@ function atributo_custom:damagedoneTooltip (actor, target, spellid, combat, inst
 					break
 				end
 				
-				GameCooltip:AddLine (t[1], FormatTooltipNumber (_, t[2]))
+				GameCooltip:AddLine(t[1], FormatTooltipNumber (_, t[2]))
 				_detalhes:AddTooltipBackgroundStatusbar()
 				GameCooltip:AddIcon ([[Interface\FriendsFrame\StatusIcon-Offline]], 1, 1, 14, 14)
 			end
@@ -172,7 +172,7 @@ function atributo_custom:damagedoneTooltip (actor, target, spellid, combat, inst
 				end
 				
 				if (roster [t[1]]) then
-					GameCooltip:AddLine (t[1], FormatTooltipNumber (_, t[2]))
+					GameCooltip:AddLine(t[1], FormatTooltipNumber (_, t[2]))
 					_detalhes:AddTooltipBackgroundStatusbar()
 				end
 			end
@@ -180,7 +180,7 @@ function atributo_custom:damagedoneTooltip (actor, target, spellid, combat, inst
 		elseif (target == "[player]") then
 			local target_amount = actor.targets [_detalhes.playername]
 			if (target_amount) then
-				GameCooltip:AddLine (targetactor.nome, FormatTooltipNumber (_, target_amount))
+				GameCooltip:AddLine(targetactor.nome, FormatTooltipNumber (_, target_amount))
 				_detalhes:AddTooltipBackgroundStatusbar()
 			end
 		else
@@ -194,7 +194,7 @@ function atributo_custom:damagedoneTooltip (actor, target, spellid, combat, inst
 				end
 				
 				local name, _, icon = _GetSpellInfo(t[1])
-				GameCooltip:AddLine (name, FormatTooltipNumber (_, t[2]))
+				GameCooltip:AddLine(name, FormatTooltipNumber (_, t[2]))
 				_detalhes:AddTooltipBackgroundStatusbar()
 				GameCooltip:AddIcon (icon, 1, 1, 14, 14)
 			end
@@ -219,7 +219,7 @@ function atributo_custom:damagedone (actor, source, target, spellid, combat, ins
 		if (spell) then
 			if (target) then
 				if (target == "[all]") then
-					for target_name, amount in _pairs (spell.targets) do 
+					for target_name, amount in pairs(spell.targets) do 
 						--add amount
 						
 						--we need to pass a object here in order to get name and class, so we just get the main damage actor from the combat
@@ -236,7 +236,7 @@ function atributo_custom:damagedone (actor, source, target, spellid, combat, ins
 					
 				elseif (target == "[raid]") then
 					local roster = combat.raid_roster
-					for target_name, amount in _pairs (spell.targets) do 
+					for target_name, amount in pairs(spell.targets) do 
 						if (roster [target_name]) then
 							--add amount
 							instance_container:AddValue (combat (1, target_name), amount, true)
@@ -289,14 +289,14 @@ function atributo_custom:damagedone (actor, source, target, spellid, combat, ins
 
 		if (target == "[all]") then
 			local total = 0
-			for target_name, amount in _pairs (actor.targets) do
+			for target_name, amount in pairs(actor.targets) do
 				total = total + amount
 			end
 			return total
 			
 		elseif (target == "[raid]") then
 			local total = 0
-			for target_name, amount in _pairs (actor.targets) do
+			for target_name, amount in pairs(actor.targets) do
 				if (combat.raid_roster [target_name]) then
 					total = total + amount
 				end

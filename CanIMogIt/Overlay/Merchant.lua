@@ -75,7 +75,7 @@ CanIMogIt.frame:AddEventFunction(HookOverlayMerchant)
 ------------------------
 
 local function MerchantOverlayEvents(event, ...)
-    MerchantFrame_CIMIOnClick()
+    C_Timer.After(.1, function () MerchantFrame_CIMIOnClick() end)
 end
 
 CanIMogIt.frame:AddOverlayEventFunction(MerchantOverlayEvents)

@@ -1,8 +1,8 @@
---	15.04.2022
+--	25.10.2022
 
 local GlobalAddonName, MRT = ...
 
-MRT.V = 4630
+MRT.V = 4680
 MRT.T = "R"
 
 MRT.Slash = {}			--> функции вызова из коммандной строки
@@ -30,7 +30,7 @@ do
 	local version, buildVersion, buildDate, uiVersion = GetBuildInfo()
 	
 	MRT.clientUIinterface = uiVersion
-	local expansion,majorPatch,minorPatch = (version or "3.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
+	local expansion,majorPatch,minorPatch = (version or "5.0.0"):match("^(%d+)%.(%d+)%.(%d+)")
 	MRT.clientVersion = (expansion or 0) * 10000 + (majorPatch or 0) * 100 + (minorPatch or 0)
 end
 if MRT.clientVersion < 20000 then
@@ -45,8 +45,14 @@ elseif MRT.clientVersion < 40000 then
 	MRT.isBC = true
 	MRT.isLK = true
 	MRT.T = "WotLK"
-elseif MRT.clientVersion >= 90100 then
-	MRT.is91 = true
+elseif MRT.clientVersion < 50000 then
+	MRT.isClassic = true
+	MRT.isBC = true
+	MRT.isLK = true
+	MRT.isCata = true
+	MRT.T = "Cataclysm"
+elseif MRT.clientVersion >= 100000 then
+	MRT.is10 = true
 end
 -------------> smart DB <-------------
 MRT.SDB = {}

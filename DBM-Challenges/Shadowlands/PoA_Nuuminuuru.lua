@@ -3,15 +3,19 @@ local mod	= DBM:NewMod("Nuuminuuru", "DBM-Challenges", 1)
 
 mod.statTypes = "normal,heroic,mythic,challenge"
 
-mod:SetRevision("20220530062110")
+mod:SetRevision("20221023053638")
 mod:SetCreatureID(172410)
+mod.soloChallenge = true
 
 mod:RegisterCombat("combat")
+mod:SetReCombatTime(7, 5)
+mod:SetWipeTime(30)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 345680",
 	"SPELL_CAST_SUCCESS 345441",
-	"UNIT_SPELLCAST_SUCCEEDED"
+	"UNIT_SPELLCAST_SUCCEEDED",
+	"CRITERIA_COMPLETE"
 )
 
 local specWarnSymbioticShield			= mod:NewSpecialWarningSwitch(345441, nil, nil, nil, 1, 2)
@@ -53,3 +57,21 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		timerNewFaerieCD:Start()
 	end
 end
+
+do
+	local function checkForWipe(self)
+		if UnitInVehicle("player") then--success
+			DBM:EndCombat(self)
+		else--fail
+			DBM:EndCombat(self, true)
+		end
+	end
+
+	function mod:CRITERIA_COMPLETE(criteriaID)
+		if criteriaID == 48408 then
+			self:Unschedule(checkForWipe)
+			self:Schedule(3, checkForWipe, self)
+		end
+	end
+end
+

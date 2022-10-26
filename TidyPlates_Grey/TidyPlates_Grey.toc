@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Tidy Plates: Grey Theme
 ## Notes: Use apostrophes wisely.
 ## Author: Binny

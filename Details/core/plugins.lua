@@ -1,7 +1,7 @@
 local _
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _detalhes = _G._detalhes
 	local PixelUtil = PixelUtil or DFPixelUtil
 
@@ -29,7 +29,7 @@ local _
 		local instance = self:GetPluginInstance()
 		if (instance) then
 			self.row_info = self.row_info or {}
-			_detalhes.table.copy (self.row_info, instance.row_info)
+			_detalhes.table.copy(self.row_info, instance.row_info)
 			self.bars_grow_direction = instance.bars_grow_direction
 			self.row_height = instance.row_height
 			self:SetBarGrowDirection()
@@ -94,14 +94,14 @@ local _
 		for key, value in pairs(default) do 
 			if (type(value) == "table") then
 				if (type(current [key]) ~= "table") then
-					current [key] = Details.CopyTable (value)
+					current [key] = Details.CopyTable(value)
 				else
 					_detalhes:CheckDefaultTable (current [key], value)
 				end
 			else
 				if (current [key] == nil) then
 					current [key] = value
-				--elseif (type(current [key]) ~= type (value)) then
+				--elseif (type(current [key]) ~= type(value)) then
 				--	current [key] = value
 				end
 			end
@@ -111,7 +111,7 @@ local _
 	function _detalhes:InstallPlugin (PluginType, PluginName, PluginIcon, PluginObject, PluginAbsoluteName, MinVersion, Author, Version, DefaultSavedTable)
 
 		if (MinVersion and MinVersion > _detalhes.realversion) then
-			print (PluginName, Loc ["STRING_TOOOLD"])
+			print(PluginName, Loc ["STRING_TOOOLD"])
 			return _detalhes:NewError ("Details version is out of date.")
 		end
 		
@@ -136,7 +136,7 @@ local _
 		end
 		
 		if (_G [PluginAbsoluteName]) then
-			print (Loc ["STRING_PLUGIN_NAMEALREADYTAKEN"] .. ": " .. PluginName .. " name: " .. PluginAbsoluteName)
+			print(Loc ["STRING_PLUGIN_NAMEALREADYTAKEN"] .. ": " .. PluginName .. " name: " .. PluginAbsoluteName)
 			return
 		else
 			_G [PluginAbsoluteName] = PluginObject
@@ -192,7 +192,7 @@ local _
 			
 			_detalhes.PluginCount.RAID = _detalhes.PluginCount.RAID + 1
 			
-			_detalhes:InstanceCall ("RaidPluginInstalled", PluginAbsoluteName)
+			_detalhes:InstanceCall("RaidPluginInstalled", PluginAbsoluteName)
 			
 		elseif (PluginType == "TOOLBAR") then
 			
@@ -249,7 +249,7 @@ local _
 
 	local OnDisableFunction = function(self)
 		_detalhes:SendEvent("HIDE", self.__parent)
-		if (bit.band (self.__parent.__options, DETAILSPLUGIN_ALWAYSENABLED) == 0) then
+		if (bit.band(self.__parent.__options, DETAILSPLUGIN_ALWAYSENABLED) == 0) then
 			self.__parent.Enabled = false
 		end
 	end
@@ -263,17 +263,17 @@ local _
 	end
 	
 	local temp_event_function = function()
-		print ("=====================")
-		print ("Hello There plugin developer!")
-		print ("Please make sure you are declaring")
-		print ("A member called 'OnDetailsEvent' on your plugin object")
-		print ("With a function to receive the events like bellow:")
-		print ("function PluginObject:OnDetailsEvent (event, ...) end")
-		print ("Thank You Sir!===================")
+		print("=====================")
+		print("Hello There plugin developer!")
+		print("Please make sure you are declaring")
+		print("A member called 'OnDetailsEvent' on your plugin object")
+		print("With a function to receive the events like bellow:")
+		print("function PluginObject:OnDetailsEvent (event, ...) end")
+		print("Thank You Sir!===================")
 	end
 
 	local register_event_func = function(self, event)
-		self.Frame:RegisterEvent (event)
+		self.Frame:RegisterEvent(event)
 	end
 	local unregister_event_func = function(self, event)
 		self.Frame:UnregisterEvent (event)
@@ -285,8 +285,8 @@ local _
 		local NewPlugin = {__options = PluginOptions, __enabled = true, RegisterEvent = register_event_func, UnregisterEvent = unregister_event_func}
 		
 		local Frame = CreateFrame("Frame", FrameName, UIParent,"BackdropTemplate")
-		Frame:RegisterEvent ("PLAYER_LOGIN")
-		Frame:RegisterEvent ("PLAYER_LOGOUT")
+		Frame:RegisterEvent("PLAYER_LOGIN")
+		Frame:RegisterEvent("PLAYER_LOGOUT")
 		
 		Frame:SetScript("OnEvent", function(self, event, ...) 
 			if (NewPlugin.OnEvent) then
@@ -300,12 +300,12 @@ local _
 		end)
 		
 		Frame:SetFrameStrata("HIGH")
-		Frame:SetFrameLevel (6)
+		Frame:SetFrameLevel(6)
 
 		Frame:Hide()
 		Frame.__parent = NewPlugin
 		
-		if (bit.band (PluginOptions, DETAILSPLUGIN_ALWAYSENABLED) ~= 0) then
+		if (bit.band(PluginOptions, DETAILSPLUGIN_ALWAYSENABLED) ~= 0) then
 			NewPlugin.Enabled = true
 		else
 			NewPlugin.Enabled = false
@@ -324,7 +324,7 @@ local _
 		--temporary details event function
 		NewPlugin.OnDetailsEvent = temp_event_function
 		
-		setmetatable (NewPlugin, _detalhes)
+		setmetatable(NewPlugin, _detalhes)
 		
 		return NewPlugin
 	end
@@ -357,10 +357,10 @@ local _
 				end
 			end)
 			
-			options_frame:SetMovable (true)
-			options_frame:EnableMouse (true)
+			options_frame:SetMovable(true)
+			options_frame:EnableMouse(true)
 			options_frame:SetFrameStrata("DIALOG")
-			options_frame:SetToplevel (true)
+			options_frame:SetToplevel(true)
 			
 			options_frame:Hide()
 			
@@ -395,10 +395,10 @@ local _
 				end
 			end)
 			
-			options_frame:SetMovable (true)
-			options_frame:EnableMouse (true)
+			options_frame:SetMovable(true)
+			options_frame:EnableMouse(true)
 			options_frame:SetFrameStrata("DIALOG")
-			options_frame:SetToplevel (true)
+			options_frame:SetToplevel(true)
 			
 			options_frame:Hide()
 			
@@ -409,12 +409,12 @@ local _
 			insets = {left = 1, right = 1, top = 1, bottom = 1}})
 			options_frame:SetBackdropColor(0, 0, 0, .7)
 
-			Details.gump:ApplyStandardBackdrop (options_frame)
+			Details.gump:ApplyStandardBackdrop(options_frame)
 			Details.gump:CreateTitleBar (options_frame, title)
 
-			local bigdog = _detalhes.gump:NewImage (options_frame, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 110, 120, nil, {1, 0, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
+			local bigdog = _detalhes.gump:NewImage(options_frame, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 110, 120, nil, {1, 0, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
 			bigdog:SetPoint("bottomright", options_frame, "bottomright", -3, 0)
-			bigdog:SetAlpha (.25)
+			bigdog:SetAlpha(.25)
 			
 			return options_frame
 		end
@@ -423,8 +423,8 @@ local _
 	function _detalhes:CreatePluginWindowContainer()
 
 		local f = CreateFrame("frame", "DetailsPluginContainerWindow", UIParent,"BackdropTemplate")
-		f:EnableMouse (true)
-		f:SetMovable (true)
+		f:EnableMouse(true)
+		f:SetMovable(true)
 		f:SetPoint("center", UIParent, "center")
 		f:SetBackdrop(_detalhes.PluginDefaults and _detalhes.PluginDefaults.Backdrop or {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 		f:SetBackdropColor(0, 0, 0, 0.3)
@@ -452,27 +452,26 @@ local _
 		
 		--lib window
 			f:SetSize(f.FrameWidth, f.FrameHeight)
-			local LibWindow = LibStub ("LibWindow-1.1")
-			LibWindow.RegisterConfig (f, _detalhes.plugin_window_pos)
-			LibWindow.RestorePosition (f)
-			LibWindow.MakeDraggable (f)
-			LibWindow.SavePosition (f)
+			local LibWindow = LibStub("LibWindow-1.1")
+			LibWindow.RegisterConfig(f, _detalhes.plugin_window_pos)
+			LibWindow.RestorePosition(f)
+			LibWindow.MakeDraggable(f)
+			LibWindow.SavePosition(f)
 			
 		--menu background
-			local menuBackground = CreateFrame("frame", "$parentMenuFrame", f,"BackdropTemplate")
-			_detalhes:FormatBackground (menuBackground)
-			local menuBackgroundTexture = menuBackground:CreateTexture("$parentBackgroundTexture", "background", nil, -2)
-			menuBackgroundTexture:SetAllPoints()
-			menuBackgroundTexture:SetColorTexture(0.2, 0.2, 0.2, .5)
-			
+			local menuBackground = CreateFrame("frame", "$parentMenuFrame", f, "BackdropTemplate")
+			DetailsFramework:ApplyStandardBackdrop(menuBackground)
+
 		--statusbar
 			local statusBar = CreateFrame("frame", nil, menuBackground,"BackdropTemplate")
 			statusBar:SetPoint("topleft", menuBackground, "bottomleft", 0, 1)
 			statusBar:SetPoint("topright", f, "bottomright", 0, 1)
 			statusBar:SetHeight(20)
-			statusBar:SetAlpha (1)
-			DetailsFramework:BuildStatusbarAuthorInfo (statusBar)
-			DetailsFramework:ApplyStandardBackdrop (statusBar)
+			statusBar:SetAlpha(1)
+
+			DetailsFramework:BuildStatusbarAuthorInfo(statusBar)
+			DetailsFramework:ApplyStandardBackdrop(statusBar)
+
 			local extraDarkTexture = statusBar:CreateTexture(nil, "background")
 			extraDarkTexture:SetAllPoints()
 			extraDarkTexture:SetColorTexture(.2, .2, .2, .8)
@@ -480,16 +479,16 @@ local _
 			--
 			local right_click_to_back = _detalhes.gump:CreateLabel(statusBar, "right click to close", 10, "gray")
 			right_click_to_back:SetPoint("bottomright", statusBar, "bottomright", -1, 5)
-			right_click_to_back:SetAlpha (.4)
+			right_click_to_back:SetAlpha(.4)
 
 			--point
 			menuBackground:SetPoint("topright", f, "topleft", -2, 0)
 			menuBackground:SetPoint("bottomright", f, "bottomleft", -2, 0)
 			menuBackground:SetWidth(f.MenuButtonWidth + 6)
 			
-			local bigdog = _detalhes.gump:NewImage (menuBackground, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 180*0.7, 200*0.7, "overlay", {0, 1, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
+			local bigdog = _detalhes.gump:NewImage(menuBackground, [[Interface\MainMenuBar\UI-MainMenuBar-EndCap-Human]], 180*0.7, 200*0.7, "overlay", {0, 1, 0, 1}, "backgroundBigDog", "$parentBackgroundBigDog")
 			bigdog:SetPoint("bottomleft", custom_window, "bottomleft", 0, 1)
-			bigdog:SetAlpha (0.3)
+			bigdog:SetAlpha(0.3)
 
 			local gradientBelowTheLine = DetailsFramework:CreateTexture(menuBackground, {gradient = "vertical", fromColor = {0, 0, 0, 0.45}, toColor = "transparent"}, 1, 95, "artwork", {0, 1, 0, 1}, "dogGradient")
 			gradientBelowTheLine:SetPoint("bottoms")
@@ -498,22 +497,22 @@ local _
 			bigdogRow:SetPoint("bottomleft", menuBackground, "bottomleft", 1, 1)
 			bigdogRow:SetPoint("bottomright", menuBackground, "bottomright", -1, 1)
 			bigdogRow:SetHeight(20)
-			bigdogRow:SetColorTexture (.5, .5, .5, .1)
+			bigdogRow:SetColorTexture(.5, .5, .5, .1)
 			bigdogRow:Hide()
 
 			--
 		--plugins menu title bar
 			local titlebar_plugins = CreateFrame("frame", nil, menuBackground,"BackdropTemplate")
-			PixelUtil.SetPoint (titlebar_plugins, "topleft", menuBackground, "topleft", 2, -3)
-			PixelUtil.SetPoint (titlebar_plugins, "topright", menuBackground, "topright", -2, -3)
+			PixelUtil.SetPoint(titlebar_plugins, "topleft", menuBackground, "topleft", 2, -3)
+			PixelUtil.SetPoint(titlebar_plugins, "topright", menuBackground, "topright", -2, -3)
 			titlebar_plugins:SetHeight(f.TitleHeight)
 			titlebar_plugins:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
 			titlebar_plugins:SetBackdropColor(.5, .5, .5, 1)
 			titlebar_plugins:SetBackdropBorderColor(0, 0, 0, 1)
 			--title
 			local titleLabel = _detalhes.gump:NewLabel(titlebar_plugins, titlebar_plugins, nil, "titulo", "Plugins", "GameFontHighlightLeft", 12, {227/255, 186/255, 4/255})
-			PixelUtil.SetPoint (titleLabel, "center", titlebar_plugins , "center", 0, 0)
-			PixelUtil.SetPoint (titleLabel, "top", titlebar_plugins , "top", 0, -5)
+			PixelUtil.SetPoint(titleLabel, "center", titlebar_plugins , "center", 0, 0)
+			PixelUtil.SetPoint(titleLabel, "top", titlebar_plugins , "top", 0, -5)
 			
 		--plugins menu title bar
 			local titlebar_tools = CreateFrame("frame", nil, menuBackground,"BackdropTemplate")
@@ -523,19 +522,19 @@ local _
 			titlebar_tools:SetBackdropBorderColor(0, 0, 0, 1)
 			--title
 			local titleLabel = _detalhes.gump:NewLabel(titlebar_tools, titlebar_tools, nil, "titulo", "Tools", "GameFontHighlightLeft", 12, {227/255, 186/255, 4/255})
-			PixelUtil.SetPoint (titleLabel, "center", titlebar_tools , "center", 0, 0)
-			PixelUtil.SetPoint (titleLabel, "top", titlebar_tools , "top", 0, -5)
+			PixelUtil.SetPoint(titleLabel, "center", titlebar_tools , "center", 0, 0)
+			PixelUtil.SetPoint(titleLabel, "top", titlebar_tools , "top", 0, -5)
 		
 		--scripts
 			f:SetScript("OnShow", function()
 				--check if the window isn't out of screen
-				C_Timer.After (1, function()
+				C_Timer.After(1, function()
 					local right = f:GetRight()
 					if (right and right > GetScreenWidth() + 500) then
 						f:ClearAllPoints()
 						f:SetPoint("center", UIParent, "center", 0, 0)
-						LibWindow.SavePosition (f)
-						_detalhes:Msg ("detected options panel out of screen, position has reset")
+						LibWindow.SavePosition(f)
+						_detalhes:Msg("detected options panel out of screen, position has reset")
 					end
 				end)
 			end)
@@ -553,7 +552,7 @@ local _
 			f.Debug = false
 			function f.DebugMsg (...)
 				if (f.Debug) then
-					print ("[Details! Debug]", ...)
+					print("[Details! Debug]", ...)
 				end
 			end
 		
@@ -588,13 +587,13 @@ local _
 
 			--re set the point of the frame within the main plugin window
 			f.RefreshFrame (pluginObject.__var_Frame)
-			C_Timer.After (0.016, function()
+			C_Timer.After(0.016, function()
 				f.RefreshFrame (pluginObject.__var_Frame)
 			end)
 
 			--show the plugin window
 			if (pluginObject.RefreshWindow and callRefresh) then
-				DetailsFramework:QuickDispatch (pluginObject.RefreshWindow)
+				DetailsFramework:QuickDispatch(pluginObject.RefreshWindow)
 			end
 
 			--highlight the plugin button on the menu
@@ -603,10 +602,10 @@ local _
 				
 				if (button.PluginAbsName == pluginAbsName) then
 					--emphatizate this button
-					button:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTONSELECTED_TEMPLATE"))
+					button:SetTemplate(_detalhes.gump:GetTemplate("button", "DETAILS_PLUGINPANEL_BUTTONSELECTED_TEMPLATE"))
 				else
 					--make this button regular
-					button:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
+					button:SetTemplate(_detalhes.gump:GetTemplate("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
 				end
 			end
 
@@ -618,13 +617,13 @@ local _
 		
 		function f.CreatePluginMenuButton (pluginObject, isUtility)
 			--create the button
-			local newButton = _detalhes.gump:CreateButton (f, f.OnMenuClick, f.MenuButtonWidth, f.MenuButtonHeight, pluginObject.__name, pluginObject.real_name, true)
+			local newButton = _detalhes.gump:CreateButton(f, f.OnMenuClick, f.MenuButtonWidth, f.MenuButtonHeight, pluginObject.__name, pluginObject.real_name, true)
 			newButton.PluginAbsName = pluginObject.real_name
 			newButton.PluginName = pluginObject.__name
 			newButton.IsUtility = isUtility
 			
 			--add a template
-			newButton:SetTemplate (_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
+			newButton:SetTemplate(_detalhes.gump:GetTemplate("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
 			newButton:SetText(pluginObject.__name)
 			newButton.textsize = 10
 			
@@ -642,14 +641,14 @@ local _
 		end
 		
 		function f.RefreshFrame (frame)
-			frame:EnableMouse (false)
+			frame:EnableMouse(false)
 			frame:SetSize(f.FrameWidth, f.FrameHeight)
 			frame:SetScript("OnMouseDown", nil)
 			frame:SetScript("OnMouseUp", nil)
 			--frame:SetScript("OnHide", on_hide)
 			frame:HookScript ("OnHide", on_hide)
 			frame:ClearAllPoints()
-			PixelUtil.SetPoint (frame, "topleft", f, "topleft", 0, 0)
+			PixelUtil.SetPoint(frame, "topleft", f, "topleft", 0, 0)
 			frame:Show()
 		end
 
@@ -696,13 +695,13 @@ local _
 					if (not addingTools) then
 						--add the header
 						addingTools = true
-						PixelUtil.SetPoint (titlebar_tools, "topleft", menuBackground, "topleft", 2, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index - 20)
-						PixelUtil.SetPoint (titlebar_tools, "topright", menuBackground, "topright", -2, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index - 20)
+						PixelUtil.SetPoint(titlebar_tools, "topleft", menuBackground, "topleft", 2, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index - 20)
+						PixelUtil.SetPoint(titlebar_tools, "topright", menuBackground, "topright", -2, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index - 20)
 					end
 
-					PixelUtil.SetPoint (button, "top", menuBackground, "top", 0, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index - 40)
+					PixelUtil.SetPoint(button, "top", menuBackground, "top", 0, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index - 40)
 				else
-					PixelUtil.SetPoint (button, "top", menuBackground, "top", 0, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index)
+					PixelUtil.SetPoint(button, "top", menuBackground, "top", 0, f.MenuY + ( (index-1) * -f.MenuButtonHeight ) - index)
 				end
 			end
 
@@ -751,13 +750,13 @@ local _
 				end
 				
 				--check if passed a plugin name, remove spaces and make it lower case
-				wildcard = string.lower (wildcard)
-				wildcard = wildcard:gsub ("%s", "")
+				wildcard = string.lower(wildcard)
+				wildcard = wildcard:gsub("%s", "")
 				
 				for index, pluginInfoTable in ipairs(_detalhes.ToolBar.Menu) do
 					local pluginName = pluginInfoTable [1]
-					pluginName = string.lower (pluginName)
-					pluginName = pluginName:gsub ("%s", "")
+					pluginName = string.lower(pluginName)
+					pluginName = pluginName:gsub("%s", "")
 					
 					if (pluginName ==  wildcard) then
 						local pluginObject = pluginInfoTable [3]

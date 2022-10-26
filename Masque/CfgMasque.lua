@@ -205,8 +205,7 @@ U1RegisterAddon("Masque", {
         var = "hidecap",
         default = 1,
         callback = function(cfg, v, loading)
-            CoreUIShowOrHide(MainMenuBarLeftEndCap or MainMenuBarArtFrame.LeftEndCap, not v)
-            CoreUIShowOrHide(MainMenuBarRightEndCap or MainMenuBarArtFrame.RightEndCap, not v)
+            CoreUIShowOrHide(MainMenuBar.EndCaps, not v)
         end
     },
     {
@@ -214,8 +213,9 @@ U1RegisterAddon("Masque", {
         var = "hidebg",
         default = 1,
         callback = function(cfg, v, loading)
-            CoreUIShowOrHide(MainMenuBarArtFrameBackground, not v);
-            CoreUIShowOrHide(MainMenuBarArtFrame and MainMenuBarArtFrame.PageNumber, not v);
+            CoreUIShowOrHide(MainMenuBar.Background, not v)
+            CoreUIShowOrHide(MainMenuBar.BorderArt, not v)
+            for i=1, 11 do CoreUIShowOrHide(_G["ActionButton"..i].RightDivider, not v) end --TODO:abyui10
         end
 	},
     {
@@ -312,7 +312,7 @@ CoreDependCall("Masque", function()
         AddButtonToGroup('MultiBarBottomLeftButton%d', NUM_MULTIBAR_BUTTONS, '左下动作条')
         AddButtonToGroup('MultiBarBottomRightButton%d', NUM_MULTIBAR_BUTTONS, '右下动作条')
         AddButtonToGroup('PossessButton%d', NUM_POSSESS_SLOTS, '控制动作条')
-        AddButtonToGroup('StanceButton%d', NUM_STANCE_SLOTS, '姿态动作条')
+        --AddButtonToGroup('StanceButton%d', NUM_STANCE_SLOTS, '姿态动作条')
         Masque:Group(GroupName, '区域技能按钮'):AddButton(ZoneAbilityFrame.SpellButton)
         --[[ocal group = '载具动作条'
         local SetPoint = ActionButton1Count.SetPoint

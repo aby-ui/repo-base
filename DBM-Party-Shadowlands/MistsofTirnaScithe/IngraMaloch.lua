@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2400, "DBM-Party-Shadowlands", 3, 1184)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(164567)
 mod:SetEncounterID(2397)
 
@@ -103,7 +103,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		--Droman
 		timerBewilderingPollenCD:Stop()
 		timerTearsoftheForestCD:Stop()
-	elseif spellId == 323137 and self:CheckDispelFilter() then
+	elseif spellId == 323137 and self:CheckDispelFilter("magic") then
 		specWarnBewilderingPollenDispel:CombinedShow(0.3, args.destName)
 		specWarnBewilderingPollenDispel:ScheduleVoice(0.3, "helpdispel")
 	end

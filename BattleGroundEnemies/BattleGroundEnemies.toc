@@ -1,6 +1,6 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: BattleGroundEnemies
-## Version: 9.2.0.11
+## Version: 9.2.7.2
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
 ## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibPlayerSpells-1.0
@@ -14,9 +14,7 @@ embeds.xml
 
 Libs\LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua
 
-Locales\enUS.lua
-Locales\zhCN.lua
-Locales\zhTW.lua
+Locales.lua
 
 Data.lua
 Defaults.lua
@@ -24,15 +22,28 @@ Main.lua
 Messaging.lua
 TargetCall.lua
 Changelog.lua
+ImportExport.lua
 
-
-Objects\Auracontainer.lua
+Objects\ContainerTemplate.lua
+Objects\Auracontainer2.lua
+Objects\CastBar.lua
+Objects\Covenant.lua
 Objects\DR.lua
+Objects\HealthBar.lua
+Objects\HighestActivePriority.lua
+Objects\Level.lua
+Objects\Name.lua
 Objects\ObjectiveAndRespawn.lua
+Objects\Power.lua
 Objects\Racial.lua
+Objects\RaidTargetIcon.lua
+Objects\Role.lua
+Objects\SpecAndClass.lua
+Objects\TargetIndicatorNumeric.lua
+Objects\TargetIndicatorSymbolic.lua
 Objects\Trinket.lua
 
-Testmode.lua
+
 Options.lua
 
 

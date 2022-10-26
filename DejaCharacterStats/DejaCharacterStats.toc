@@ -1,5 +1,5 @@
-## Interface: 90207
-## Version: R90205r1
+## Interface: 100000
+## Version: R100000b4
 ## Title: |TInterface\Addons\DejaCharacterStats\DCSArt\DejoLogo:26:26|t|cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.
@@ -25,6 +25,7 @@ DCSExpand.lua
 DCSDecimals.lua
 DCSDuraRepair.lua
 DCSAbout.lua
+#DCSAprilFools.lua
 
 
 ## Title: |cff880303[爱不易]|r Deja 角色详细属性

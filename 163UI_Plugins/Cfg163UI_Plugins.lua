@@ -180,8 +180,8 @@ U1RegisterAddon("163UI_Plugins", {
     },
 
     {
-        var = "FriendsGuildTab", text = "好友/公会切换按钮", default = true, callback = load,
-        tip = "说明`在好友面板和公会面板右下角添加切换到另一个面板的标签页。",
+        var = "FriendsGuildTab", text = "好友面板公会切换按钮", default = true, callback = load,
+        tip = "说明`在好友面板右下角添加切换到公会面板的按钮",
     },
 
     {
@@ -192,19 +192,6 @@ U1RegisterAddon("163UI_Plugins", {
     {
         var = "FixBlizGuild", text = U1_NEW_ICON.."延迟加载公会新闻", default = true, callback = load,
         tip = "说明`打开公会面板时不加载公会新闻，可能会减少初次打开公会卡死的问题。",
-    },
-
-    {
-        text = "打开旧版公会界面",
-        tip = "说明`暴雪用社区界面代替了原来的公会界面，但是之前有些功能新的界面无法实现，目前旧公会界面仍然在客户端中，可以临时查看，快捷命令 /oldguild",
-        callback = function(cfg, v, loading)
-            SlashCmdList["OLD_GUILD"]("")
-        end,
-    },
-
-    {
-        var = "MerchantFilterButtons", text = "商人面板过滤按钮", default = true, callback = load,
-        tip = "说明`在NPC商人购买面板上方，显示'职业、专精、是否装备绑定'等过滤按钮，替代系统的下拉菜单方式。",
     },
 
     {

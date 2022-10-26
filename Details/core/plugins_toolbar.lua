@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 	local _
 	
@@ -17,7 +17,7 @@
 
 		--random name if nameless
 		if (not framename) then
-			framename = "DetailsToolbarButton" .. math.random (1, 100000)
+			framename = "DetailsToolbarButton" .. math.random(1, 100000)
 		end
 
 		--create button from template
@@ -42,7 +42,7 @@
 		--textures
 		button:SetNormalTexture(icon)
 		button:SetPushedTexture(icon)
-		button:SetDisabledTexture (icon)
+		button:SetDisabledTexture(icon)
 		button:SetHighlightTexture(icon, "ADD")
 		button.__icon = icon
 		button.__name = pluginname
@@ -90,7 +90,7 @@
 		
 		if (instance.auto_hide_menu.left and not instance.is_interacting) then
 			instance:ToolbarMenuButtons()
-			Button:SetAlpha (0)
+			Button:SetAlpha(0)
 			return
 		end
 
@@ -143,7 +143,7 @@ do
 	background:SetPoint("bottomright", 0, 0)
 	PluginDescPanel.background = background
 	
-	local icon, title, desc = PluginDescPanel:CreateTexture(nil, "overlay"), PluginDescPanel:CreateFontString (nil, "overlay", "GameFontNormal"), PluginDescPanel:CreateFontString (nil, "overlay", "GameFontNormal")
+	local icon, title, desc = PluginDescPanel:CreateTexture(nil, "overlay"), PluginDescPanel:CreateFontString(nil, "overlay", "GameFontNormal"), PluginDescPanel:CreateFontString(nil, "overlay", "GameFontNormal")
 	icon:SetPoint("topleft", 10, -10)
 	icon:SetSize(16, 16)
 	title:SetPoint("left", icon, "right", 2, 0)
@@ -166,7 +166,7 @@ end
 	
 		if (button.tooltip) then
 			if (button.menu) then
-				_detalhes.gump:QuickDispatch (button.menu)
+				_detalhes.gump:QuickDispatch(button.menu)
 				
 				local next_check = 0.8
 				
@@ -199,13 +199,13 @@ end
 			f.icon:SetTexture(button.__icon)
 			f.title:SetText(button.__name)
 			f.desc:SetText(plugin_object:GetPluginDescription())
-			_detalhes:SetFontSize (f.desc, _detalhes.font_sizes.menus)
+			_detalhes:SetFontSize(f.desc, _detalhes.font_sizes.menus)
 			_detalhes:SetFontFace (f.desc, _detalhes.font_faces.menus)
 			
 			--f.background:SetTexture(_detalhes.tooltip.menus_bg_texture)
-			f.background:SetTexCoord (unpack (_detalhes.tooltip.menus_bg_coords))
-			f.background:SetVertexColor (unpack (_detalhes.tooltip.menus_bg_color))
-			--f.background:SetDesaturated (true)
+			f.background:SetTexCoord(unpack(_detalhes.tooltip.menus_bg_coords))
+			f.background:SetVertexColor(unpack(_detalhes.tooltip.menus_bg_color))
+			--f.background:SetDesaturated(true)
 			
 			f.BackdropTable.bgFile = _detalhes.tooltip_backdrop.bgFile
 			f.BackdropTable.edgeFile = [[Interface\Buttons\WHITE8X8]] --_detalhes.tooltip_backdrop.edgeFile
@@ -237,8 +237,8 @@ end
 		end
 	end	
 
-	_detalhes:RegisterEvent (_detalhes.ToolBar, "DETAILS_INSTANCE_OPEN", "OnInstanceOpen")
-	_detalhes:RegisterEvent (_detalhes.ToolBar, "DETAILS_INSTANCE_CLOSE", "OnInstanceClose")
+	_detalhes:RegisterEvent(_detalhes.ToolBar, "DETAILS_INSTANCE_OPEN", "OnInstanceOpen")
+	_detalhes:RegisterEvent(_detalhes.ToolBar, "DETAILS_INSTANCE_CLOSE", "OnInstanceClose")
 	_detalhes.ToolBar.Enabled = true --must have this member or wont receive the event
 	_detalhes.ToolBar.__enabled = true
 

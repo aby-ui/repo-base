@@ -387,7 +387,7 @@ function ns.CreateGroupOptions(map, group)
                     width = 'full',
                     func = function()
                         if not WorldMapFrame:IsShown() then
-                            InterfaceOptionsFrame:Hide()
+                            HideUIPanel(SettingsPanel)
                             HideUIPanel(GameMenuFrame)
                         end
                         OpenWorldMap(map.id)

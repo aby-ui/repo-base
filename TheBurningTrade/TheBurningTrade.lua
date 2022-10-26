@@ -143,9 +143,11 @@ function TBTFrame_OnLoad(self)
             local f = getglobal("ContainerFrame"..i.."Item"..j);
             if(f) then
                 SetOrHookScript(f, "PreClick", TBT_ContainerItemPreClick);
+                hooksecurefunc(f, "OnModifiedClick", TBT_ContainerFrameItemButton_OnModifiedClick)
             end
         end
     end
+    hooksecurefunc(ContainerFrameItemButtonMixin, "OnModifiedClick", TBT_ContainerFrameItemButton_OnModifiedClick) --for later created.
 
     CoreDependCall("Bagnon", function()
         for i=1, 1000 do
@@ -183,74 +185,73 @@ function TBTFrame_OnLoad(self)
             end
         end
     end)
+end
 
-    --for alt+leftclick quick trade
-    hooksecurefunc("ContainerFrameItemButton_OnModifiedClick", function(self, button)
-        local bag, item = self:GetParent():GetID(), self:GetID();
-        local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, item);
-        if texture and not locked then
-            if(button == "LeftButton" and IsAltKeyDown() ) then
-                if AuctionHouseFrame and AuctionHouseFrame:IsVisible() then
-                    AuctionHouseFrameSellTab:Click()
-                    PickupContainerItem(bag, item)
-                    AuctionHouseFrame.ItemSellFrame.ItemDisplay:Click()
-                end
-                if(TradeFrame:IsVisible() and not InCombatLockdown()) then
-                    PickupContainerItem(bag, item);
-                    StackSplitFrame:Hide();
-                    TradeFrame_OnMouseUp();
-                    return
-                end
-                if(InboxFrame and InboxFrame:IsVisible()) then
-                    MailFrameTab_OnClick(nil, 2);
-                end
-                if(SendMailAttachment1 and SendMailAttachment1:IsVisible()) then
-                    UseContainerItem(bag, item);
-                elseif(SellItemButton and SellItemButton:IsVisible()) then
-                    PickupContainerItem(bag, item);
-                    SellItemButton:Click();
-                    AuctionsFrameAuctions_ValidateAuction();
-                    if(CursorHasItem()) then ClearCursor(); end;
-                elseif(AuctionsItemButton and AuctionsItemButton:IsVisible()) then
-                    PickupContainerItem(bag, item);
-                    ClickAuctionSellItemButton();
-                    AuctionsFrameAuctions_ValidateAuction();
-                    if(CursorHasItem()) then ClearCursor(); end;
-                end
-                if ItemSocketingSocket1 and ItemSocketingSocket1:IsVisible() then
-                    PickupContainerItem(bag, item);
-                    ClickSocketButton(ItemSocketingSocket1:GetID())
-                end
+--for alt+leftclick quick trade
+function TBT_ContainerFrameItemButton_OnModifiedClick(self, button)
+    local bag, item = self:GetParent():GetID(), self:GetID();
+    local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, item);
+    if texture and not locked then
+        if(button == "LeftButton" and IsAltKeyDown() ) then
+            if AuctionHouseFrame and AuctionHouseFrame:IsVisible() then
+                AuctionHouseFrameSellTab:Click()
+                PickupContainerItem(bag, item)
+                AuctionHouseFrame.ItemSellFrame.ItemDisplay:Click()
             end
-
-            --for shift+leftclick start auction search directly.
-            if(button == "LeftButton" and IsShiftKeyDown() and AuctionFrame and AuctionFrame:IsVisible() and AuctionFrameBrowse:IsVisible()) then
-                --AuctionFrameTab_OnClick(AuctionFrameTab1, 1);
-                BrowseResetButton:GetScript("OnClick")(BrowseResetButton);
-                ChatEdit_InsertLink(GetContainerItemLink(bag, item));
-                AuctionFrameBrowse_Search();
+            if(TradeFrame:IsVisible() and not InCombatLockdown()) then
+                PickupContainerItem(bag, item);
+                StackSplitFrame:Hide();
+                TradeFrame_OnMouseUp();
+                return
             end
-
-            --[[--quick sell same item, no need
-            if(button=="RightButton" and IsControlKeyDown() and IsAltKeyDown() and AuctionsItemButton and AuctionsItemButton:IsVisible()) then
-                PickupContainerItem(self:GetParent():GetID(), self:GetID());
-                ClickAuctionSellItemButton();
-                local name, texture, count, quality, canUse, price = GetAuctionSellItemInfo();
-                if ( name == LAST_ITEM_AUCTIONED and count == LAST_ITEM_COUNT) then
-                    MoneyInputFrame_SetCopper(StartPrice, LAST_ITEM_START_BID);
-                    MoneyInputFrame_SetCopper(BuyoutPrice, LAST_ITEM_BUYOUT);
-                end
+            if(InboxFrame and InboxFrame:IsVisible()) then
+                MailFrameTab_OnClick(nil, 2);
+            end
+            if(SendMailAttachment1 and SendMailAttachment1:IsVisible()) then
+                UseContainerItem(bag, item);
+            elseif(SellItemButton and SellItemButton:IsVisible()) then
+                PickupContainerItem(bag, item);
+                SellItemButton:Click();
                 AuctionsFrameAuctions_ValidateAuction();
-                if(AuctionsCreateAuctionButton:IsEnabled()==1) then
-                    AuctionsCreateAuctionButton_OnClick();
-                else
-                    DEFAULT_CHAT_FRAME:AddMessage(TBT_CANT_CREATE_AUCTION);
-                end
+                if(CursorHasItem()) then ClearCursor(); end;
+            elseif(AuctionsItemButton and AuctionsItemButton:IsVisible()) then
+                PickupContainerItem(bag, item);
+                ClickAuctionSellItemButton();
+                AuctionsFrameAuctions_ValidateAuction();
+                if(CursorHasItem()) then ClearCursor(); end;
             end
-            --]]
+            if ItemSocketingSocket1 and ItemSocketingSocket1:IsVisible() then
+                PickupContainerItem(bag, item);
+                ClickSocketButton(ItemSocketingSocket1:GetID())
+            end
         end
-    end)
 
+        --for shift+leftclick start auction search directly.
+        if(button == "LeftButton" and IsShiftKeyDown() and AuctionFrame and AuctionFrame:IsVisible() and AuctionFrameBrowse:IsVisible()) then
+            --AuctionFrameTab_OnClick(AuctionFrameTab1, 1);
+            BrowseResetButton:GetScript("OnClick")(BrowseResetButton);
+            ChatEdit_InsertLink(GetContainerItemLink(bag, item));
+            AuctionFrameBrowse_Search();
+        end
+
+        --[[--quick sell same item, no need
+        if(button=="RightButton" and IsControlKeyDown() and IsAltKeyDown() and AuctionsItemButton and AuctionsItemButton:IsVisible()) then
+            PickupContainerItem(self:GetParent():GetID(), self:GetID());
+            ClickAuctionSellItemButton();
+            local name, texture, count, quality, canUse, price = GetAuctionSellItemInfo();
+            if ( name == LAST_ITEM_AUCTIONED and count == LAST_ITEM_COUNT) then
+                MoneyInputFrame_SetCopper(StartPrice, LAST_ITEM_START_BID);
+                MoneyInputFrame_SetCopper(BuyoutPrice, LAST_ITEM_BUYOUT);
+            end
+            AuctionsFrameAuctions_ValidateAuction();
+            if(AuctionsCreateAuctionButton:IsEnabled()==1) then
+                AuctionsCreateAuctionButton_OnClick();
+            else
+                DEFAULT_CHAT_FRAME:AddMessage(TBT_CANT_CREATE_AUCTION);
+            end
+        end
+        --]]
+    end
 end
 
 function TBTFrame_SetButtonSpell(button, spell)

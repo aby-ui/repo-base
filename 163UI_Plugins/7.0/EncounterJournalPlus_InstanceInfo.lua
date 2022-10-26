@@ -2,6 +2,11 @@
 --## Notes: Adds saved instances info to EncounterJournal
 --## Author: PeckZeg
 
+--local GetNumSavedInstances = function() return 1 end
+--local GetSavedInstanceInfo = function(i)
+--    if i == 1 then return unpack({ "初诞者圣墓", 330182970, 32220, 15, false, true, 524746752, true, 30, "英雄", 11, 7, false, }) end
+--end
+
 if GetLocale() == "zhCN" then
     EJPlus_InstanceInfo_TXT = {
         ["SAVED_INSTANCES_OVERVIEW"] = "本周已保存%s：%s"
@@ -107,7 +112,7 @@ end
 
 local function GetEncounterJournalInstanceTabs()
     if EncounterJournal ~= nil then
-        return EncounterJournal.instanceSelect.dungeonsTab, EncounterJournal.instanceSelect.raidsTab;
+        return EncounterJournal.dungeonsTab, EncounterJournal.raidsTab;
     end
 
     return nil, nil;
@@ -144,8 +149,8 @@ end
 
 local function HandleEncounterJournalScrollInstances(func)
     if EncounterJournal then
-        table.foreach(EncounterJournal.instanceSelect.scroll.child, function(instanceButtonKey, instanceButton)
-            if string.match(instanceButtonKey, "instance%d+") and type(instanceButton) == "table" then
+        table.foreach(EncounterJournal.instanceSelect.ScrollBox.view.frames, function(index, instanceButton)
+            if type(instanceButton) == "table" and instanceButton.instanceID then
                 func(instanceButton);
             end
         end);
@@ -156,7 +161,7 @@ local function ResetEncounterJournalScrollInstancesInfo()
     HandleEncounterJournalScrollInstances(function(instanceButton)
         if instanceButton.instanceInfoDifficulty == nil then
             instanceButton.instanceInfoDifficulty = instanceButton:CreateFontString(
-                instanceButton:GetName() .. "InstanceInfoDifficulty",
+                nil,
                 "OVERLAY",
                 "QuestTitleFontBlackShadow"
             );
@@ -164,7 +169,7 @@ local function ResetEncounterJournalScrollInstancesInfo()
 
         if instanceButton.instanceInfoEncounterProgress == nil then
             instanceButton.instanceInfoEncounterProgress = instanceButton:CreateFontString(
-                instanceButton:GetName() .. "InstanceInfoEncounterProgress",
+                nil,
                 "OVERLAY",
                 "QuestTitleFontBlackShadow"
             );
@@ -310,7 +315,7 @@ end
 
 local function EncounterJournalInstanceTab_OnClick()
     for _, tab in ipairs({ "dungeonsTab", "raidsTab" }) do
-        EncounterJournal.instanceSelect[tab]:HookScript("OnClick", function(self, button, down)
+        EncounterJournal[tab]:HookScript("OnClick", function(self, button, down)
             ResetEncounterJournalScrollInstancesInfo();
             RequestRaidInfo();
         end);
@@ -351,7 +356,7 @@ function EncounterJournalPlus_InstanceInfo_OnEvent(self, event, arg1)
             end
         end);
 
-        --EncounterJournalEncounter_OnHook();
+        --EncounterJournalEncounter_OnHook(); --TODO:abyui10
         --EncounterJournalTierDropdown_OnSelect();
         EncounterJournalInstanceTab_OnClick();
     elseif event == "UPDATE_INSTANCE_INFO" then

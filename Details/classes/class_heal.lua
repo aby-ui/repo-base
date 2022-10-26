@@ -2,33 +2,33 @@
 --lua locals
 local _cstr = string.format
 local _math_floor = math.floor
-local _setmetatable = setmetatable
-local _pairs = pairs
-local _ipairs = ipairs
+local setmetatable = setmetatable
+local pairs = pairs
+local ipairs = ipairs
 local _unpack = unpack
-local _type = type
+local type = type
 local _table_sort = table.sort
 local _cstr = string.format
-local _table_insert = table.insert
+local tinsert = table.insert
 local _bit_band = bit.band
 local _math_min = math.min
 local _math_ceil = math.ceil
 --api locals
 local GetSpellInfo = GetSpellInfo
 local _GetSpellInfo = _detalhes.getspellinfo
-local _IsInRaid = IsInRaid
-local _IsInGroup = IsInGroup
+local IsInRaid = IsInRaid
+local IsInGroup = IsInGroup
 local _UnitName = UnitName
-local _GetNumGroupMembers = GetNumGroupMembers
+local GetNumGroupMembers = GetNumGroupMembers
 
 local _string_replace = _detalhes.string.replace --details api
 
 local _detalhes = 		_G._detalhes
 local _
 
-local AceLocale = LibStub ("AceLocale-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
 local Loc = AceLocale:GetLocale ( "Details" )
-local Translit = LibStub ("LibTranslit-1.0")
+local Translit = LibStub("LibTranslit-1.0")
 
 local gump = 			_detalhes.gump
 
@@ -76,16 +76,16 @@ function atributo_heal:NovaTabela (serial, nome, link)
 	local _new_healActor = {
 
 		tipo = class_type, --atributo 2 = cura
-		
+
 		total = alphabetical,
 		totalover = alphabetical,
 		totalabsorb = alphabetical,
 		totaldenied = alphabetical,
 		custom = 0,
-		
+
 		total_without_pet = alphabetical,
 		totalover_without_pet = alphabetical,
-		
+
 		healing_taken = alphabetical, --total de cura que este jogador recebeu
 		healing_from = {}, --armazena os nomes que deram cura neste jogador
 
@@ -100,7 +100,7 @@ function atributo_heal:NovaTabela (serial, nome, link)
 		start_time = 0,
 
 		pets = {}, --nome j� formatado: pet nome <owner nome>
-		
+
 		heal_enemy = {}, --quando o jogador cura um inimigo
 		heal_enemy_amt = 0,
 
@@ -111,8 +111,8 @@ function atributo_heal:NovaTabela (serial, nome, link)
 		targets_overheal = {},
 		targets_absorbs = {}
 	}
-	
-	_setmetatable (_new_healActor, atributo_heal)
+
+	setmetatable(_new_healActor, atributo_heal)
 
 	return _new_healActor
 end
@@ -163,7 +163,7 @@ function _detalhes:ContainerSortHeal (container, amount, keyName2)
 	keyName = keyName2
 	_table_sort (container, _detalhes.SortKeySimpleHeal)
 
-	if (amount) then 
+	if (amount) then
 		for i = amount, 1, -1 do --de tr�s pra frente
 			if (container[i][keyName] < 1) then
 				amount = amount-1
@@ -171,7 +171,7 @@ function _detalhes:ContainerSortHeal (container, amount, keyName2)
 				break
 			end
 		end
-		
+
 		return amount
 	end
 end
@@ -179,9 +179,9 @@ end
 function atributo_heal:ContainerRefreshHps (container, combat_time)
 
 	local total = 0
-	
-	if (_detalhes.time_type == 2 or not _detalhes:CaptureGet ("heal")) then
-		for _, actor in _ipairs(container) do
+
+	if (_detalhes.time_type == 2 or not _detalhes:CaptureGet("heal")) then
+		for _, actor in ipairs(container) do
 			if (actor.grupo) then
 				actor.last_hps = actor.total / combat_time
 			else
@@ -190,12 +190,12 @@ function atributo_heal:ContainerRefreshHps (container, combat_time)
 			total = total + actor.last_hps
 		end
 	else
-		for _, actor in _ipairs(container) do
+		for _, actor in ipairs(container) do
 			actor.last_hps = actor.total / actor:Tempo()
 			total = total + actor.last_hps
 		end
 	end
-	
+
 	return total
 end
 
@@ -203,10 +203,10 @@ function atributo_heal:ReportSingleDamagePreventedLine (actor, instancia)
 	local barra = instancia.barras [actor.minha_barra]
 
 	local reportar = {"Details!: " .. actor.nome .. " - " .. Loc ["STRING_ATTRIBUTE_HEAL_PREVENT"]}
-	for i = 2, GameCooltip:GetNumLines()-2 do 
+	for i = 2, GameCooltip:GetNumLines()-2 do
 		local texto_left, texto_right = GameCooltip:GetText (i)
-		if (texto_left and texto_right) then 
-			texto_left = texto_left:gsub (("|T(.*)|t "), "")
+		if (texto_left and texto_right) then
+			texto_left = texto_left:gsub(("|T(.*)|t "), "")
 			reportar [#reportar+1] = ""..texto_left.." "..texto_right..""
 		end
 	end
@@ -215,7 +215,7 @@ function atributo_heal:ReportSingleDamagePreventedLine (actor, instancia)
 end
 
 function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, exportar)
-	
+
 	local showing = tabela_do_combate [class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura
 
 	--n�o h� barras para mostrar -- not have something to show
@@ -225,21 +225,21 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 	end
 
 	--total
-	local total = 0 
+	local total = 0
 	--top actor #1
 	instancia.top = 0
-	
+
 	local using_cache = false
-	
+
 	local sub_atributo = instancia.sub_atributo --o que esta sendo mostrado nesta inst�ncia
 	local conteudo = showing._ActorTable
 	local amount = #conteudo
 	local modo = instancia.modo
-	
+
 	--pega qual a sub key que ser� usada
 	if (exportar) then
-	
-		if (_type(exportar) == "boolean") then 
+
+		if (type(exportar) == "boolean") then
 			if (sub_atributo == 1) then --healing DONE
 				keyName = "total"
 			elseif (sub_atributo == 2) then --HPS
@@ -262,7 +262,7 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 	elseif (instancia.atributo == 5) then --custom
 		keyName = "custom"
 		total = tabela_do_combate.totals [instancia.customName]
-	else	
+	else
 		if (sub_atributo == 1) then --healing DONE
 			keyName = "total"
 		elseif (sub_atributo == 2) then --HPS
@@ -283,10 +283,10 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 	if (instancia.atributo == 5) then --custom
 		--faz o sort da categoria e retorna o amount corrigido
 		amount = _detalhes:ContainerSortHeal (conteudo, amount, keyName)
-		
+
 		--grava o total
 		instancia.top = conteudo[1][keyName]
-	
+
 	elseif (instancia.modo == modo_ALL or sub_atributo == 5 or sub_atributo == 7) then --mostrando ALL
 
 		amount = _detalhes:ContainerSortHeal (conteudo, amount, keyName)
@@ -301,39 +301,39 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 
 		--grava o total
 		instancia.top = conteudo[1][keyName]
-		
+
 	elseif (instancia.modo == modo_GROUP) then --mostrando GROUP
-	
+
 		if (_detalhes.in_combat and instancia.segmento == 0 and not exportar) then
 			using_cache = true
 		end
-		
+
 		if (using_cache) then
-		
+
 			conteudo = _detalhes.cache_healing_group
 
 			if (sub_atributo == 2) then --hps
 				local combat_time = instancia.showing:GetCombatTime()
 				atributo_heal:ContainerRefreshHps (conteudo, combat_time)
 			end
-			
+
 			if (#conteudo < 1) then
 				return _detalhes:EsconderBarrasNaoUsadas (instancia, showing), "", 0, 0
 			end
-		
+
 			_detalhes:ContainerSortHeal (conteudo, nil, keyName)
-		
+
 			if (conteudo[1][keyName] < 1) then
 				amount = 0
 			else
 				instancia.top = conteudo[1][keyName]
 				amount = #conteudo
 			end
-			
-			for i = 1, amount do 
+
+			for i = 1, amount do
 				total = total + conteudo[i][keyName]
 			end
-			
+
 		else
 			if (sub_atributo == 2) then --hps
 				local combat_time = instancia.showing:GetCombatTime()
@@ -344,7 +344,7 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 		end
 		--
 		if (not using_cache) then
-			for index, player in _ipairs(conteudo) do
+			for index, player in ipairs(conteudo) do
 				if (player.grupo) then --� um player e esta em grupo
 					if (player[keyName] < 1) then --dano menor que 1, interromper o loop
 						amount = index - 1
@@ -352,7 +352,7 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 					elseif (index == 1) then --esse IF aqui, precisa mesmo ser aqui? n�o daria pra pega-lo com uma chave [1] nad grupo == true?
 						instancia.top = conteudo[1][keyName]
 					end
-					
+
 					total = total + player[keyName]
 				else
 					amount = index-1
@@ -360,25 +360,25 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 				end
 			end
 		end
-		
+
 	end
-	
+
 	--refaz o mapa do container
 	--se for cache n�o precisa remapear
 	showing:remapear()
-	
-	if (exportar) then 
+
+	if (exportar) then
 		return total, keyName, instancia.top, amount
 	end
-	
+
 	if (amount < 1) then --n�o h� barras para mostrar
 		instancia:EsconderScrollBar()
 		return _detalhes:EndRefresh (instancia, total, tabela_do_combate, showing) --retorna a tabela que precisa ganhar o refresh
 	end
-	
+
 	--estra mostrando ALL ent�o posso seguir o padr�o correto? primeiro, atualiza a scroll bar...
 	instancia:RefreshScrollBar (amount)
-	
+
 	--depois faz a atualiza��o normal dele atrav�s dos iterators
 	local whichRowLine = 1
 	local barras_container = instancia.barras --evita buscar N vezes a key .barras dentro da inst�ncia
@@ -387,20 +387,20 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 	local bars_brackets = instancia:GetBarBracket()
 	local bars_separator = instancia:GetBarSeparator()
 	local baseframe = instancia.baseframe
-	
+
 	local use_animations = _detalhes.is_using_row_animations and (not baseframe.isStretching and not forcar and not baseframe.isResizing)
- 	
+
 	if (total == 0) then
 		total = 0.00000001
-	end	
-	
+	end
+
 	local myPos
 	local following = instancia.following.enabled
-	
+
 	if (following) then
 		if (using_cache) then
 			local pname = _detalhes.playername
-			for i, actor in _ipairs(conteudo) do
+			for i, actor in ipairs(conteudo) do
 				if (actor.nome == pname) then
 					myPos = i
 					break
@@ -410,30 +410,30 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 			myPos = showing._NameIndexTable [_detalhes.playername]
 		end
 	end
-	
+
 	local combat_time = instancia.showing:GetCombatTime()
 	UsingCustomLeftText = instancia.row_info.textL_enable_custom_text
 	UsingCustomRightText = instancia.row_info.textR_enable_custom_text
-	
+
 	local use_total_bar = false
 	if (instancia.total_bar.enabled) then
 		use_total_bar = true
-		
-		if (instancia.total_bar.only_in_group and (not _IsInGroup() and not _IsInRaid())) then
+
+		if (instancia.total_bar.only_in_group and (not IsInGroup() and not IsInRaid())) then
 			use_total_bar = false
 		end
 	end
-	
+
 	if (instancia.bars_sort_direction == 1) then --top to bottom
-		
+
 		if (use_total_bar and instancia.barraS[1] == 1) then
-		
+
 			whichRowLine = 2
 			local iter_last = instancia.barraS[2]
 			if (iter_last == instancia.rows_fit_in_window) then
 				iter_last = iter_last - 1
 			end
-			
+
 			local row1 = barras_container [1]
 			row1.minha_tabela = nil
 			row1.lineText1:SetText(Loc ["STRING_TOTAL"])
@@ -442,31 +442,31 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 			else
 				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
 			end
-			
+
 			row1:SetValue(100)
-			local r, g, b = unpack (instancia.total_bar.color)
-			row1.textura:SetVertexColor (r, g, b)
-			
+			local r, g, b = unpack(instancia.total_bar.color)
+			row1.textura:SetVertexColor(r, g, b)
+
 			row1.icone_classe:SetTexture(instancia.total_bar.icon)
-			row1.icone_classe:SetTexCoord (0.0625, 0.9375, 0.0625, 0.9375)
-			
+			row1.icone_classe:SetTexCoord(0.0625, 0.9375, 0.0625, 0.9375)
+
 			Details.FadeHandler.Fader(row1, "out")
-			
+
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
 				for i = instancia.barraS[1], iter_last-1, 1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
-				
-				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+
+				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 				whichRowLine = whichRowLine+1
 			else
-			
+
 				for i = instancia.barraS[1], iter_last, 1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
@@ -476,33 +476,33 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
 				for i = instancia.barraS[1], instancia.barraS[2]-1, 1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
-				
-				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+
+				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 				whichRowLine = whichRowLine+1
 			else
 				for i = instancia.barraS[1], instancia.barraS[2], 1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
 			end
 		end
-		
+
 	elseif (instancia.bars_sort_direction == 2) then --bottom to top
-	
+
 		if (use_total_bar and instancia.barraS[1] == 1) then
-		
+
 			whichRowLine = 2
 			local iter_last = instancia.barraS[2]
 			if (iter_last == instancia.rows_fit_in_window) then
 				iter_last = iter_last - 1
 			end
-			
+
 			local row1 = barras_container [1]
 			row1.minha_tabela = nil
 			row1.lineText1:SetText(Loc ["STRING_TOTAL"])
@@ -512,70 +512,70 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 			else
 				row1.lineText4:SetText(_detalhes:ToK2 (total) .. " (" .. _detalhes:ToK (total / combat_time) .. ")")
 			end
-			
+
 			row1:SetValue(100)
-			local r, g, b = unpack (instancia.total_bar.color)
-			row1.textura:SetVertexColor (r, g, b)
-			
+			local r, g, b = unpack(instancia.total_bar.color)
+			row1.textura:SetVertexColor(r, g, b)
+
 			row1.icone_classe:SetTexture(instancia.total_bar.icon)
-			row1.icone_classe:SetTexCoord (0.0625, 0.9375, 0.0625, 0.9375)
-			
+			row1.icone_classe:SetTexCoord(0.0625, 0.9375, 0.0625, 0.9375)
+
 			Details.FadeHandler.Fader(row1, "out")
-			
+
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
-				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 				whichRowLine = whichRowLine+1
 				for i = iter_last-1, instancia.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
 			else
 				for i = iter_last, instancia.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
 			end
 		else
 			if (following and myPos and myPos > instancia.rows_fit_in_window and instancia.barraS[2] < myPos) then
-				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+				conteudo[myPos]:RefreshLine(instancia, barras_container, whichRowLine, myPos, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 				whichRowLine = whichRowLine+1
 				for i = instancia.barraS[2]-1, instancia.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
 			else
 				for i = instancia.barraS[2], instancia.barraS[1], -1 do --vai atualizar s� o range que esta sendo mostrado
 					if (conteudo[i]) then
-						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator) 
+						conteudo[i]:RefreshLine(instancia, barras_container, whichRowLine, i, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 						whichRowLine = whichRowLine+1
 					end
 				end
 			end
 		end
-		
+
 	end
 
 	if (use_animations) then
 		instancia:PerformAnimations (whichRowLine - 1)
 	end
-	
+
 	if (instancia.atributo == 5) then --custom
 		--zerar o .custom dos Actors
-		for index, player in _ipairs(conteudo) do
-			if (player.custom > 0) then 
+		for index, player in ipairs(conteudo) do
+			if (player.custom > 0) then
 				player.custom = 0
 			else
 				break
 			end
 		end
 	end
-	
+
 	--beta, hidar barras n�o usadas durante um refresh for�ado
 	if (forcar) then
 		if (instancia.modo == 2) then --group
@@ -589,7 +589,7 @@ function atributo_heal:RefreshWindow (instancia, tabela_do_combate, forcar, expo
 
 	-- showing.need_refresh = false
 	return Details:EndRefresh (instancia, total, tabela_do_combate, showing) --retorna a tabela que precisa ganhar o refresh
-	
+
 end
 
 local actor_class_color_r, actor_class_color_g, actor_class_color_b
@@ -598,27 +598,27 @@ local actor_class_color_r, actor_class_color_g, actor_class_color_b
 function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lugar, total, sub_atributo, forcar, keyName, combat_time, percentage_type, use_animations, bars_show_data, bars_brackets, bars_separator)
 
 	local thisLine = instancia.barras[whichRowLine] --pega a refer�ncia da barra na janela
-	
+
 	if (not thisLine) then
-		print ("DEBUG: problema com <instancia.thisLine> "..whichRowLine.." "..lugar)
+		print("DEBUG: problema com <instancia.thisLine> "..whichRowLine.." "..lugar)
 		return
 	end
-	
+
 	local tabela_anterior = thisLine.minha_tabela
-	
+
 	thisLine.minha_tabela = self --grava uma refer�ncia dessa classe de dano na barra
 	self.minha_barra = thisLine --salva uma refer�ncia da barra no objeto do jogador
-	
+
 	thisLine.colocacao = lugar --salva na barra qual a coloca��o dela.
 	self.colocacao = lugar --salva qual a coloca��o do jogador no objeto dele
-	
+
 	local healing_total = self.total --total de dano que este jogador deu
 	local hps
-	
+
 	--local porcentagem = self [keyName] / total * 100
 	local porcentagem
 	local esta_porcentagem
-	
+
 	if (percentage_type == 1) then
 		porcentagem = _cstr ("%.1f", self [keyName] / total * 100)
 
@@ -626,9 +626,9 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 		porcentagem = _cstr ("%.1f", self [keyName] / instancia.top * 100)
 	end
 
-	if ((_detalhes.time_type == 2 and self.grupo) or (not _detalhes:CaptureGet ("heal") and not _detalhes:CaptureGet ("aura")) or instancia.segmento == -1) then
+	if ((_detalhes.time_type == 2 and self.grupo) or (not _detalhes:CaptureGet("heal") and not _detalhes:CaptureGet("aura")) or instancia.segmento == -1) then
 		if (instancia.segmento == -1 and combat_time == 0) then
-			local p = _detalhes.tabela_vigente (2, self.nome)
+			local p = _detalhes.tabela_vigente(2, self.nome)
 			if (p) then
 				local t = p:Tempo()
 				hps = healing_total / t
@@ -641,20 +641,20 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			hps = healing_total / combat_time
 			self.last_hps = hps
 		end
-	else -- /dump _detalhes:GetCombat (2)(1, "Ditador").on_hold
+	else -- /dump _detalhes:GetCombat(2)(1, "Ditador").on_hold
 		if (not self.on_hold) then
 			hps = healing_total/self:Tempo() --calcula o dps deste objeto
 			self.last_hps = hps --salva o dps dele
 		else
 			hps = self.last_hps
-			
+
 			if (hps == 0) then --n�o calculou o dps dele ainda mas entrou em standby
 				hps = healing_total/self:Tempo()
 				self.last_hps = hps
 			end
 		end
 	end
-	
+
 	-- >>>>>>>>>>>>>>> texto da direita
 	if (instancia.atributo == 5) then --custom
 		--
@@ -664,15 +664,15 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			thisLine.lineText4:SetText(_detalhes:ToK (self.custom) .. " (" .. porcentagem .. "%)")
 		end
 		esta_porcentagem = _math_floor((self.custom/instancia.top) * 100)
-		
+
 	else
 		if (sub_atributo == 1) then --mostrando healing done
-		
+
 			hps = _math_floor(hps)
 			local formated_heal = SelectedToKFunction (_, healing_total)
 			local formated_hps = SelectedToKFunction (_, hps)
 			thisLine.ps_text = formated_hps
-		
+
 			if (not bars_show_data [1]) then
 				formated_heal = ""
 			end
@@ -684,7 +684,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				porcentagem = porcentagem .. "%"
 			end
-			
+
 			local rightText = formated_heal .. bars_brackets[1] .. formated_hps .. bars_separator .. porcentagem .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_heal, formated_hps, porcentagem, self, instancia.showing, instancia, rightText))
@@ -696,14 +696,14 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 				end
 			end
 			esta_porcentagem = _math_floor((healing_total/instancia.top) * 100)
-			
+
 		elseif (sub_atributo == 2) then --mostrando hps
-		
+
 			hps = _math_floor(hps)
 			local formated_heal = SelectedToKFunction (_, healing_total)
 			local formated_hps = SelectedToKFunction (_, hps)
 			thisLine.ps_text = formated_hps
-			
+
 			if (not bars_show_data [1]) then
 				formated_hps = ""
 			end
@@ -715,7 +715,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				porcentagem = porcentagem .. "%"
 			end
-			
+
 			local rightText = formated_hps .. bars_brackets[1] .. formated_heal .. bars_separator .. porcentagem .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_hps, formated_heal, porcentagem, self, instancia.showing, instancia, rightText))
@@ -726,20 +726,20 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 					thisLine.lineText4:SetText(rightText)
 				end
 			end
-			
+
 			esta_porcentagem = _math_floor((hps/instancia.top) * 100)
-			
+
 		elseif (sub_atributo == 3) then --mostrando overall
-		
+
 			local formated_overheal = SelectedToKFunction (_, self.totalover)
-			
+
 			local percent = self.totalover / (self.totalover + self.total) * 100
 			local overheal_percent = _cstr ("%.1f", percent)
-			
+
 			local rr, gg, bb = _detalhes:percent_color (percent, true)
 			rr, gg, bb = _detalhes:hex (_math_floor(rr*255)), _detalhes:hex (_math_floor(gg*255)), _detalhes:hex (_math_floor(bb*255))
 			overheal_percent = "|cFF" .. rr .. gg .. bb .. overheal_percent .. "|r"
-			
+
 			if (not bars_show_data [1]) then
 				formated_overheal = ""
 			end
@@ -748,7 +748,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				overheal_percent = overheal_percent .. "%"
 			end
-			
+
 			local rightText = formated_overheal .. bars_brackets[1] .. overheal_percent .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_overheal, "", overheal_percent, self, instancia.showing, instancia, rightText))
@@ -759,13 +759,13 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 					thisLine.lineText4:SetText(rightText)
 				end
 			end
-			
+
 			esta_porcentagem = _math_floor((self.totalover/instancia.top) * 100)
-			
+
 		elseif (sub_atributo == 4) then --mostrando healing taken
-		
+
 			local formated_healtaken = SelectedToKFunction (_, self.healing_taken)
-			
+
 			if (not bars_show_data [1]) then
 				formated_healtaken = ""
 			end
@@ -774,7 +774,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				porcentagem = porcentagem .. "%"
 			end
-			
+
 			local rightText = formated_healtaken .. bars_brackets[1] .. porcentagem .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_healtaken, "", porcentagem, self, instancia.showing, instancia, rightText))
@@ -785,13 +785,13 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 					thisLine.lineText4:SetText(rightText)
 				end
 			end
-			
+
 			esta_porcentagem = _math_floor((self.healing_taken/instancia.top) * 100)
-		
+
 		elseif (sub_atributo == 5) then --mostrando enemy heal
-		
+
 			local formated_enemyheal = SelectedToKFunction (_, self.heal_enemy_amt)
-		
+
 			if (not bars_show_data [1]) then
 				formated_enemyheal = ""
 			end
@@ -800,7 +800,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				porcentagem = porcentagem .. "%"
 			end
-		
+
 			local rightText = formated_enemyheal .. bars_brackets[1] .. porcentagem .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_enemyheal, "", porcentagem, self, instancia.showing, instancia, rightText))
@@ -812,11 +812,11 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 				end
 			end
 			esta_porcentagem = _math_floor((self.heal_enemy_amt/instancia.top) * 100)
-			
+
 		elseif (sub_atributo == 6) then --mostrando damage prevented
-		
+
 			local formated_absorbs = SelectedToKFunction (_, self.totalabsorb)
-		
+
 			if (not bars_show_data [1]) then
 				formated_absorbs = ""
 			end
@@ -825,7 +825,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				porcentagem = porcentagem .. "%"
 			end
-			
+
 			local rightText = formated_absorbs .. bars_brackets[1] .. porcentagem .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_absorbs, "", porcentagem, self, instancia.showing, instancia, rightText))
@@ -837,11 +837,11 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 				end
 			end
 			esta_porcentagem = _math_floor((self.totalabsorb/instancia.top) * 100)
-			
+
 		elseif (sub_atributo == 7) then --mostrando cura negada
-			
+
 			local formated_absorbs = SelectedToKFunction (_, self.totaldenied)
-		
+
 			if (not bars_show_data [1]) then
 				formated_absorbs = ""
 			end
@@ -850,7 +850,7 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 			else
 				porcentagem = porcentagem .. "%"
 			end
-			
+
 			local rightText = formated_absorbs .. bars_brackets[1] .. porcentagem .. bars_brackets[2]
 			if (UsingCustomRightText) then
 				thisLine.lineText4:SetText(_string_replace (instancia.row_info.textR_custom_text, formated_absorbs, "", porcentagem, self, instancia.showing, instancia, rightText))
@@ -862,71 +862,71 @@ function atributo_heal:RefreshLine(instancia, barras_container, whichRowLine, lu
 				end
 			end
 			esta_porcentagem = _math_floor((self.totaldenied/instancia.top) * 100)
-			
+
 		end
 	end
-	
+
 	if (thisLine.mouse_over and not instancia.baseframe.isMoving) then --precisa atualizar o tooltip
 		gump:UpdateTooltip (whichRowLine, thisLine, instancia)
 	end
 
 	actor_class_color_r, actor_class_color_g, actor_class_color_b = self:GetBarColor()
-	
-	return self:RefreshBarra2 (thisLine, instancia, tabela_anterior, forcar, esta_porcentagem, whichRowLine, barras_container, use_animations)	
+
+	return self:RefreshBarra2 (thisLine, instancia, tabela_anterior, forcar, esta_porcentagem, whichRowLine, barras_container, use_animations)
 end
 
 function atributo_heal:RefreshBarra2 (thisLine, instancia, tabela_anterior, forcar, esta_porcentagem, whichRowLine, barras_container, use_animations)
-	
+
 	--primeiro colocado
 	if (thisLine.colocacao == 1) then
 		if (not tabela_anterior or tabela_anterior ~= thisLine.minha_tabela or forcar) then
 			thisLine:SetValue(100)
-			
+
 			if (thisLine.hidden or thisLine.fading_in or thisLine.faded) then
 				Details.FadeHandler.Fader(thisLine, "out")
 			end
-			
-			return self:RefreshBarra (thisLine, instancia)
+
+			return self:RefreshBarra(thisLine, instancia)
 		else
 			return
 		end
 	else
 
 		if (thisLine.hidden or thisLine.fading_in or thisLine.faded) then
-		
+
 			thisLine:SetValue(esta_porcentagem)
 			if (use_animations) then
 				thisLine.animacao_fim = esta_porcentagem
 			else
 				thisLine.animacao_ignorar = true
 			end
-			
+
 			Details.FadeHandler.Fader(thisLine, "out")
-			
+
 			if (instancia.row_info.texture_class_colors) then
-				thisLine.textura:SetVertexColor (actor_class_color_r, actor_class_color_g, actor_class_color_b)
+				thisLine.textura:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 			end
 			if (instancia.row_info.texture_background_class_color) then
-				thisLine.background:SetVertexColor (actor_class_color_r, actor_class_color_g, actor_class_color_b)
+				thisLine.background:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 			end
-			
-			return self:RefreshBarra (thisLine, instancia)
-			
+
+			return self:RefreshBarra(thisLine, instancia)
+
 		else
 			--agora esta comparando se a tabela da barra � diferente da tabela na atualiza��o anterior
 			if (not tabela_anterior or tabela_anterior ~= thisLine.minha_tabela or forcar) then --aqui diz se a barra do jogador mudou de posi��o ou se ela apenas ser� atualizada
-			
+
 				if (use_animations) then
 					thisLine.animacao_fim = esta_porcentagem
 				else
 					thisLine:SetValue(esta_porcentagem)
 					thisLine.animacao_ignorar = true
 				end
-			
+
 				thisLine.last_value = esta_porcentagem --reseta o ultimo valor da barra
-				
-				return self:RefreshBarra (thisLine, instancia)
-				
+
+				return self:RefreshBarra(thisLine, instancia)
+
 			elseif (esta_porcentagem ~= thisLine.last_value) then --continua mostrando a mesma tabela ent�o compara a porcentagem
 				--apenas atualizar
 				if (use_animations) then
@@ -935,64 +935,63 @@ function atributo_heal:RefreshBarra2 (thisLine, instancia, tabela_anterior, forc
 					thisLine:SetValue(esta_porcentagem)
 				end
 				thisLine.last_value = esta_porcentagem
-				
-				return self:RefreshBarra (thisLine, instancia)
+
+				return self:RefreshBarra(thisLine, instancia)
 			end
 		end
 
 	end
-	
+
 end
 
-function atributo_heal:RefreshBarra (thisLine, instancia, from_resize)
-	
+function atributo_heal:RefreshBarra(thisLine, instancia, from_resize)
+
 	local class, enemy, arena_enemy, arena_ally = self.classe, self.enemy, self.arena_enemy, self.arena_ally
-	
+
 	if (from_resize) then
 		actor_class_color_r, actor_class_color_g, actor_class_color_b = self:GetBarColor()
 	end
-	
+
 	--icon
 	self:SetClassIcon (thisLine.icone_classe, instancia, class)
 	--texture color
-	self:SetBarColors (thisLine, instancia, actor_class_color_r, actor_class_color_g, actor_class_color_b)
+	self:SetBarColors(thisLine, instancia, actor_class_color_r, actor_class_color_g, actor_class_color_b)
 	--left text
 	self:SetBarLeftText (thisLine, instancia, enemy, arena_enemy, arena_ally, UsingCustomLeftText)
-	
+
 	thisLine.lineText1:SetSize(thisLine:GetWidth() - thisLine.lineText4:GetStringWidth() - 20, 15)
-	
+
 end
 
-function _detalhes:CloseShields (combat)
-
+function _detalhes:CloseShields(combat)
 	local escudos = _detalhes.escudos
 	local container = combat[2]
-	local time = time()
+	local timeNow = time()
 	local parser = _detalhes.parser
 	local GetSpellInfo = GetSpellInfo --n�o colocar no cache de spells
-	
-	for alvo_name, spellid_table in _pairs (escudos) do
-	
+
+	for alvo_name, spellid_table in pairs(escudos) do
+
 		local tgt = container:PegarCombatente (_, alvo_name)
 		if (tgt) then
-		
-			for spellid, owner_table in _pairs (spellid_table) do
-		
+
+			for spellid, owner_table in pairs(spellid_table) do
+
 				local spellname = GetSpellInfo(spellid)
-				for owner, amount in _pairs (owner_table) do
-				
+				for owner, amount in pairs(owner_table) do
+
 					if (amount > 0) then
 						local obj = container:PegarCombatente (_, owner)
 						if (obj) then
-							parser:heal ("SPELL_AURA_REMOVED", time, obj.serial, owner, obj.flag_original, tgt.serial, alvo_name, tgt.flag_original, nil, spellid, spellname, nil, 0, _math_ceil (amount), 0, 0, nil, true)
+							parser:heal ("SPELL_AURA_REMOVED", timeNow, obj.serial, owner, obj.flag_original, tgt.serial, alvo_name, tgt.flag_original, nil, spellid, spellname, nil, 0, _math_ceil (amount), 0, 0, nil, true)
 						end
 					end
-					
+
 				end
 			end
-			
+
 		end
-		
+
 	end
 
 	--escudo [alvo_name] [spellid] [who_name]
@@ -1009,10 +1008,10 @@ function atributo_heal:ToolTip (instancia, numero, barra, keydown)
 		return self:TooltipForCustom (barra)
 	else
 		--GameTooltip:ClearLines()
-		--GameTooltip:AddLine (barra.colocacao..". "..self.nome)
+		--GameTooltip:AddLine(barra.colocacao..". "..self.nome)
 		if (instancia.sub_atributo <= 3) then --healing done, HPS or Overheal
 			return self:ToolTip_HealingDone (instancia, numero, barra, keydown)
-		elseif (instancia.sub_atributo == 6) then --healing done, HPS or Overheal	
+		elseif (instancia.sub_atributo == 6) then --healing done, HPS or Overheal
 			return self:ToolTip_HealingDone (instancia, numero, barra, keydown)
 		elseif (instancia.sub_atributo == 4) then --healing taken
 			return self:ToolTip_HealingTaken (instancia, numero, barra, keydown)
@@ -1030,49 +1029,49 @@ function atributo_heal:ToolTip_HealingDenied (instancia, numero, barra, keydown)
 
 	local owner = self.owner
 	if (owner and owner.classe) then
-		r, g, b = unpack (_detalhes.class_colors [owner.classe])
+		r, g, b = unpack(_detalhes.class_colors [owner.classe])
 	else
-		r, g, b = unpack (_detalhes.class_colors [self.classe])
+		r, g, b = unpack(_detalhes.class_colors [self.classe])
 	end
 
 	local container = instancia.showing [2]
 	local totalDenied = self.totaldenied
-	
+
 	local spellList = {} --spells the player used to deny heal
 	local targetList = {} --all players affected
 	local spellsDenied = {} --all spells which had heal denied
-	local healersDenied = {} --heal denied on healers 
-	
+	local healersDenied = {} --heal denied on healers
+
 	local icon_size = _detalhes.tooltip.icon_size
 	local icon_border = _detalhes.tooltip.icon_border_texcoord
-	
-	for spellID, spell in _pairs (self.spells._ActorTable) do 
+
+	for spellID, spell in pairs(self.spells._ActorTable) do
 		if (spell.totaldenied > 0 and spell.heal_denied) then
 			--my spells which denied heal
-			tinsert(spellList, {spell, spell.totaldenied}) 
-			
+			tinsert(spellList, {spell, spell.totaldenied})
+
 			--players affected
-			for playerName, amount in _pairs (spell.targets) do
+			for playerName, amount in pairs(spell.targets) do
 				targetList [playerName] = (targetList [playerName] or 0) + amount
 			end
-			
+
 			--spells with heal denied
-			for spellID, amount in _pairs (spell.heal_denied) do 
+			for spellID, amount in pairs(spell.heal_denied) do
 				spellsDenied [spellID] = (spellsDenied [spellID] or 0) + amount
 			end
-			
+
 			--healers denied
-			for healerName, amount in _pairs (spell.heal_denied_healers) do 
+			for healerName, amount in pairs(spell.heal_denied_healers) do
 				healersDenied [healerName] = (healersDenied [healerName] or 0) + amount
 			end
 		end
 	end
 
-	--Spells 
+	--Spells
 		table.sort (spellList, _detalhes.Sort2)
 		_detalhes:AddTooltipSpellHeaderText ("Spells", headerColor, #spellList, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
 		_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
-		
+
 		local ismaximized = false
 		if (keydown == "shift" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 3) then
 			GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_shift]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay2)
@@ -1087,17 +1086,17 @@ function atributo_heal:ToolTip_HealingDenied (instancia, numero, barra, keydown)
 		if (ismaximized) then
 			tooltip_max_abilities = 99
 		end
-		
+
 		for i = 1, _math_min(tooltip_max_abilities, #spellList) do
-			local spellObject, spellTotal = unpack (spellList [i])
-		
+			local spellObject, spellTotal = unpack(spellList [i])
+
 			if (spellTotal < 1) then
 				break
 			end
 
 			local spellName, _, spellIcon = _GetSpellInfo(spellObject.id)
-			
-			GameCooltip:AddLine (spellName .. ": ", FormatTooltipNumber (_, spellTotal) .. " (" .. _cstr ("%.1f", spellTotal / totalDenied) .."%)")
+
+			GameCooltip:AddLine(spellName .. ": ", FormatTooltipNumber (_, spellTotal) .. " (" .. _cstr ("%.1f", spellTotal / totalDenied) .."%)")
 
 			GameCooltip:AddIcon (spellIcon, nil, nil, icon_size.W, icon_size.H, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
 			_detalhes:AddTooltipBackgroundStatusbar()
@@ -1107,13 +1106,13 @@ function atributo_heal:ToolTip_HealingDenied (instancia, numero, barra, keydown)
 
 	--Target Players
 		local playerSorted = {}
-		for playerName, amount in _pairs (targetList) do
+		for playerName, amount in pairs(targetList) do
 			tinsert(playerSorted, {playerName, amount})
 		end
 		table.sort (playerSorted, _detalhes.Sort2)
 		_detalhes:AddTooltipSpellHeaderText ("Targets", headerColor, #playerSorted, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
-		_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)	
-	
+		_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
+
 		local ismaximized = false
 		if (keydown == "ctrl" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 4) then
 			GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_ctrl]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay2)
@@ -1123,19 +1122,19 @@ function atributo_heal:ToolTip_HealingDenied (instancia, numero, barra, keydown)
 			GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_ctrl]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay1)
 			_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 		end
-		
+
 		local tooltip_max_abilities2 = _detalhes.tooltip.tooltip_max_targets
 		if (ismaximized) then
 			tooltip_max_abilities2 = 99
 		end
-		
+
 		for i = 1, _math_min(tooltip_max_abilities2, #playerSorted) do
-		
-			local playerName, amountDenied = unpack (playerSorted [i])
-			
-			GameCooltip:AddLine (playerName .. ": ", FormatTooltipNumber (_, amountDenied) .." (" .. _cstr ("%.1f", amountDenied / totalDenied * 100) .. "%)")
+
+			local playerName, amountDenied = unpack(playerSorted [i])
+
+			GameCooltip:AddLine(playerName .. ": ", FormatTooltipNumber (_, amountDenied) .." (" .. _cstr ("%.1f", amountDenied / totalDenied * 100) .. "%)")
 			_detalhes:AddTooltipBackgroundStatusbar()
-			
+
 			local targetActor = container:PegarCombatente (nil, playerName) or instancia.showing [1]:PegarCombatente (nil, playerName)
 			if (targetActor) then
 				local classe = targetActor.classe
@@ -1145,62 +1144,62 @@ function atributo_heal:ToolTip_HealingDenied (instancia, numero, barra, keydown)
 				if (classe == "UNKNOW") then
 					GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, 14, 14, .25, .5, 0, 1)
 				else
-					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, 14, 14, _unpack (_detalhes.class_coords [classe]))
+					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, 14, 14, _unpack(_detalhes.class_coords [classe]))
 				end
 			end
-		
+
 		end
 
 	-- Spells Affected
 		local spellsSorted = {}
-		for spellID, amount in _pairs (spellsDenied) do
+		for spellID, amount in pairs(spellsDenied) do
 			tinsert(spellsSorted, {spellID, amount})
 		end
 		table.sort (spellsSorted, _detalhes.Sort2)
 		_detalhes:AddTooltipSpellHeaderText ("Spells Affected", headerColor, #spellsSorted, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
 		_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
-	
+
 		local ismaximized = false
 		local tooltip_max_abilities3 = _detalhes.tooltip.tooltip_max_targets
 		if (keydown == "alt" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 5) then
 			tooltip_max_abilities3 = 99
 			ismaximized = true
 		end
-	
+
 		for i = 1, _math_min(tooltip_max_abilities3, #spellsSorted) do
-	
-			local spellID, spellTotal = unpack (spellsSorted [i])
-		
+
+			local spellID, spellTotal = unpack(spellsSorted [i])
+
 			if (spellTotal < 1) then
 				break
 			end
 
 			local spellName, _, spellIcon = _GetSpellInfo(spellID)
-			
-			GameCooltip:AddLine (spellName .. ": ", FormatTooltipNumber (_, spellTotal) .. " (" .. _cstr ("%.1f", spellTotal / totalDenied) .."%)")
+
+			GameCooltip:AddLine(spellName .. ": ", FormatTooltipNumber (_, spellTotal) .. " (" .. _cstr ("%.1f", spellTotal / totalDenied) .."%)")
 
 			GameCooltip:AddIcon (spellIcon, nil, nil, icon_size.W, icon_size.H, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
 			_detalhes:AddTooltipBackgroundStatusbar()
-	
+
 		end
-		
+
 	--healers denied
-	
+
 		_detalhes:AddTooltipSpellHeaderText ("Healers", headerColor, #spellsSorted, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
 		_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
-	
+
 		local healersSorted = {}
-		for healerName, amount in _pairs (healersDenied) do
+		for healerName, amount in pairs(healersDenied) do
 			tinsert(healersSorted, {healerName, amount})
 		end
 		table.sort (healersSorted, _detalhes.Sort2)
-			
+
 		for i = 1, #healersSorted do
-			local playerName, amountDenied = unpack (healersSorted [i])
-			
-			GameCooltip:AddLine (playerName .. ": ", FormatTooltipNumber (_, amountDenied) .." (" .. _cstr ("%.1f", amountDenied / totalDenied * 100) .. "%)")
+			local playerName, amountDenied = unpack(healersSorted [i])
+
+			GameCooltip:AddLine(playerName .. ": ", FormatTooltipNumber (_, amountDenied) .." (" .. _cstr ("%.1f", amountDenied / totalDenied * 100) .. "%)")
 			_detalhes:AddTooltipBackgroundStatusbar()
-			
+
 			local targetActor = container:PegarCombatente (nil, playerName) or instancia.showing [1]:PegarCombatente (nil, playerName)
 			if (targetActor) then
 				local classe = targetActor.classe
@@ -1210,11 +1209,11 @@ function atributo_heal:ToolTip_HealingDenied (instancia, numero, barra, keydown)
 				if (classe == "UNKNOW") then
 					GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, 14, 14, .25, .5, 0, 1)
 				else
-					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, 14, 14, _unpack (_detalhes.class_coords [classe]))
+					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, 14, 14, _unpack(_detalhes.class_coords [classe]))
 				end
 			end
 	end
-	
+
 	return true
 end
 
@@ -1223,20 +1222,20 @@ function atributo_heal:ToolTip_HealingTaken (instancia, numero, barra, keydown)
 
 	local owner = self.owner
 	if (owner and owner.classe) then
-		r, g, b = unpack (_detalhes.class_colors [owner.classe])
+		r, g, b = unpack(_detalhes.class_colors [owner.classe])
 	else
-		r, g, b = unpack (_detalhes.class_colors [self.classe])
+		r, g, b = unpack(_detalhes.class_colors [self.classe])
 	end
 
 	local curadores = self.healing_from
 	local total_curado = self.healing_taken
-	
+
 	local tabela_do_combate = instancia.showing
 	local showing = tabela_do_combate [class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
-	
+
 	local meus_curadores = {}
-	
-	for nome, _ in _pairs (curadores) do --agressores seria a lista de nomes
+
+	for nome, _ in pairs(curadores) do --agressores seria a lista de nomes
 		local este_curador = showing._ActorTable[showing._NameIndexTable[nome]]
 		if (este_curador) then --checagem por causa do total e do garbage collector que n�o limpa os nomes que deram dano
 			local alvos = este_curador.targets
@@ -1246,12 +1245,12 @@ function atributo_heal:ToolTip_HealingTaken (instancia, numero, barra, keydown)
 			end
 		end
 	end
-	
+
 	_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_FROM"], headerColor, #meus_curadores, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
 	_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 
 	local ismaximized = false
-	
+
 	if (keydown == "shift" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 3) then
 		GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_shift]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay2)
 		_detalhes:AddTooltipHeaderStatusbar (r, g, b, 1)
@@ -1266,11 +1265,11 @@ function atributo_heal:ToolTip_HealingTaken (instancia, numero, barra, keydown)
 	if (max > 9) then
 		max = 9
 	end
-	
+
 	if (ismaximized) then
 		max = 99
 	end
-	
+
 	local lineHeight = _detalhes.tooltip.line_height
 
 	for i = 1, _math_min(max, #meus_curadores) do
@@ -1281,7 +1280,7 @@ function atributo_heal:ToolTip_HealingTaken (instancia, numero, barra, keydown)
 			onyName = Translit:Transliterate(onyName, "!")
 		end
 
-		GameCooltip:AddLine (onyName, FormatTooltipNumber (_, meus_curadores[i][2]).." (".._cstr ("%.1f", (meus_curadores[i][2]/total_curado) * 100).."%)")
+		GameCooltip:AddLine(onyName, FormatTooltipNumber (_, meus_curadores[i][2]).." (".._cstr ("%.1f", (meus_curadores[i][2]/total_curado) * 100).."%)")
 		local classe = meus_curadores[i][3]
 		if (not classe) then
 			classe = "UNKNOW"
@@ -1289,19 +1288,19 @@ function atributo_heal:ToolTip_HealingTaken (instancia, numero, barra, keydown)
 		if (classe == "UNKNOW") then
 			GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, lineHeight, lineHeight, .25, .5, 0, 1)
 		else
-			local specID = _detalhes:GetSpec (meus_curadores[i][1])
+			local specID = _detalhes:GetSpec(meus_curadores[i][1])
 			if (specID) then
 				local texture, l, r, t, b = _detalhes:GetSpecIcon (specID, false)
 				GameCooltip:AddIcon (texture, 1, 1, lineHeight, lineHeight, l, r, t, b)
 			else
-				GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, lineHeight, lineHeight, _unpack (_detalhes.class_coords [classe]))
+				GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, lineHeight, lineHeight, _unpack(_detalhes.class_coords [classe]))
 			end
 		end
-		
+
 		_detalhes:AddTooltipBackgroundStatusbar (false, meus_curadores[i][2] / meus_curadores[1][2] * 100)
-		
+
 	end
-	
+
 	return true
 end
 
@@ -1309,78 +1308,78 @@ end
 local background_heal_vs_absorbs = {value = 100, color = {1, 1, 0, .25}, specialSpark = false, texture = [[Interface\AddOns\Details\images\bar4_glass]]}
 
 function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
-	
+
 	local owner = self.owner
 	if (owner and owner.classe) then
-		r, g, b = unpack (_detalhes.class_colors [owner.classe])
+		r, g, b = unpack(_detalhes.class_colors [owner.classe])
 	else
-		r, g, b = unpack (_detalhes.class_colors [self.classe])
+		r, g, b = unpack(_detalhes.class_colors [self.classe])
 	end
-	
+
 	local ActorHealingTable = {}
 	local ActorHealingTargets = {}
 	local ActorSkillsContainer = self.spells._ActorTable
-	
+
 	local actor_key, skill_key = "total", "total"
 	if (instancia.sub_atributo == 3) then
 		actor_key, skill_key = "totalover", "overheal"
 	elseif (instancia.sub_atributo == 6) then
 		actor_key, skill_key = "totalabsorb", "totalabsorb"
 	end
-	
+
 	local meu_tempo
 	if (_detalhes.time_type == 1 or not self.grupo) then
 		meu_tempo = self:Tempo()
 	elseif (_detalhes.time_type == 2) then
 		meu_tempo = instancia.showing:GetCombatTime()
 	end
-	
+
 	local ActorTotal = self [actor_key]
-	
+
 	--add actor spells
-	for _spellid, _skill in _pairs (ActorSkillsContainer) do 
+	for _spellid, _skill in pairs(ActorSkillsContainer) do
 		local SkillName, _, SkillIcon = _GetSpellInfo(_spellid)
 		if (_skill [skill_key] > 0 or _skill.anti_heal) then
-			_table_insert (ActorHealingTable, {
-				_spellid, 
-				_skill [skill_key], 
-				_skill [skill_key]/ActorTotal*100, 
-				{SkillName, nil, SkillIcon}, 
-				_skill [skill_key]/meu_tempo, 
+			tinsert(ActorHealingTable, {
+				_spellid,
+				_skill [skill_key],
+				_skill [skill_key]/ActorTotal*100,
+				{SkillName, nil, SkillIcon},
+				_skill [skill_key]/meu_tempo,
 				_skill.total,
 				false,
 				_skill.anti_heal,
 			})
 		end
 	end
-	
+
 	--add actor pets
-	for petIndex, petName in _ipairs(self:Pets()) do
+	for petIndex, petName in ipairs(self:Pets()) do
 		local petActor = instancia.showing[class_type]:PegarCombatente (nil, petName)
 		if (petActor) then
-			for _spellid, _skill in _pairs (petActor:GetActorSpells()) do
+			for _spellid, _skill in pairs(petActor:GetActorSpells()) do
 				if (_skill [skill_key] > 0) then
 					local SkillName, _, SkillIcon = _GetSpellInfo(_spellid)
-					local petName = petName:gsub ((" <.*"), "")
+					local petName = petName:gsub((" <.*"), "")
 					ActorHealingTable [#ActorHealingTable+1] = {
-						_spellid, 
-						_skill [skill_key], 
-						_skill [skill_key]/ActorTotal*100, 
-						{SkillName, nil, SkillIcon}, 
-						_skill [skill_key]/meu_tempo, 
-						_skill.total, 
+						_spellid,
+						_skill [skill_key],
+						_skill [skill_key]/ActorTotal*100,
+						{SkillName, nil, SkillIcon},
+						_skill [skill_key]/meu_tempo,
+						_skill.total,
 						petName
 					}
 				end
 			end
 		end
 	end
-	
+
 	_table_sort (ActorHealingTable, _detalhes.Sort2)
-	
+
 	--TOP Curados
 	ActorSkillsContainer = self.targets
-	for target_name, amount in _pairs (ActorSkillsContainer) do
+	for target_name, amount in pairs(ActorSkillsContainer) do
 		if (amount > 0) then
 
 			--translate cyrillic alphabet to western alphabet by Vardex (https://github.com/Vardex May 22, 2019)
@@ -1388,7 +1387,7 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 				target_name = Translit:Transliterate(target_name, "!")
 			end
 
-			_table_insert (ActorHealingTargets, {target_name, amount, amount / ActorTotal * 100})
+			tinsert(ActorHealingTargets, {target_name, amount, amount / ActorTotal * 100})
 		end
 	end
 	_table_sort (ActorHealingTargets, _detalhes.Sort2)
@@ -1414,12 +1413,12 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 	if (ismaximized) then
 		tooltip_max_abilities = 99
 	end
-	
+
 	local icon_size = _detalhes.tooltip.icon_size
 	local icon_border = _detalhes.tooltip.icon_border_texcoord
-	
+
 	local topAbility = ActorHealingTable [1] and ActorHealingTable [1][2] or 0
-	
+
 	for i = 1, _math_min(tooltip_max_abilities, #ActorHealingTable) do
 		if (ActorHealingTable[i][2] < 1) then
 			local antiHeal = ActorHealingTable[i][8]
@@ -1427,62 +1426,62 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 				break
 			end
 		end
-		
+
 		local spellName = ActorHealingTable[i][4][1]
-		
+
 		local petName = ActorHealingTable[i][7]
 		if (petName) then
 			spellName = spellName .. " (|cFFCCBBBB" .. petName .. "|r)"
 		end
-		
+
 		if (instancia.sub_atributo == 2) then --hps
-		
+
 			local formatedTotal = FormatTooltipNumber (_,  _math_floor(ActorHealingTable[i][5]))
 			local antiHeal = ActorHealingTable[i][8]
 			if (antiHeal) then
 				formatedTotal = formatedTotal .. " [|cFFFF5500" .. FormatTooltipNumber (_, _math_floor(antiHeal)) .." " .. Loc ["STRING_DAMAGE"] .."|r] "
 			end
-			
-			GameCooltip:AddLine (spellName , formatedTotal .. " (".._cstr ("%.1f", ActorHealingTable[i][3]).."%)")
-			
+
+			GameCooltip:AddLine(spellName , formatedTotal .. " (".._cstr ("%.1f", ActorHealingTable[i][3]).."%)")
+
 		elseif (instancia.sub_atributo == 3) then --overheal
 			local overheal = ActorHealingTable[i][2]
 			local total = ActorHealingTable[i][6]
 			local formatedTotal = FormatTooltipNumber (_,  _math_floor(ActorHealingTable[i][2]))
-			
+
 			local antiHeal = ActorHealingTable[i][8]
 			if (antiHeal) then
 				formatedTotal = formatedTotal .. " [|cFFFF5500" .. FormatTooltipNumber (_, _math_floor(antiHeal)) .." " .. Loc ["STRING_DAMAGE"] .."|r] "
 			end
-			
-			GameCooltip:AddLine (spellName .." (|cFFFF3333" .. _math_floor( (overheal / (overheal+total)) *100)  .. "%|r)", formatedTotal .. " (".._cstr ("%.1f", ActorHealingTable[i][3]).."%)")
-			
+
+			GameCooltip:AddLine(spellName .." (|cFFFF3333" .. _math_floor( (overheal / (overheal+total)) *100)  .. "%|r)", formatedTotal .. " (".._cstr ("%.1f", ActorHealingTable[i][3]).."%)")
+
 		else
 			local formatedTotal = FormatTooltipNumber (_, ActorHealingTable[i][2])
 			local antiHeal = ActorHealingTable[i][8]
 			if (antiHeal) then
 				formatedTotal = formatedTotal .. " [|cFFFF5500" .. FormatTooltipNumber (_, _math_floor(antiHeal)) .." " .. Loc ["STRING_DAMAGE"] .."|r] "
 			end
-			GameCooltip:AddLine (spellName , formatedTotal .. " (" .. _cstr ("%.1f", ActorHealingTable[i][3]) .. "%)")
-			
+			GameCooltip:AddLine(spellName , formatedTotal .. " (" .. _cstr ("%.1f", ActorHealingTable[i][3]) .. "%)")
+
 		end
-		
+
 		GameCooltip:AddIcon (ActorHealingTable[i][4][3], nil, nil, icon_size.W+4, icon_size.H+4, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
-		
+
 		_detalhes:AddTooltipBackgroundStatusbar (false, ActorHealingTable[i][2] / topAbility * 100)
 	end
-	
+
 	if (instancia.sub_atributo == 6) then
-		GameCooltip:AddLine ("")
-		GameCooltip:AddLine (Loc ["STRING_REPORT_LEFTCLICK"], nil, 1, _unpack (self.click_to_report_color))
+		GameCooltip:AddLine("")
+		GameCooltip:AddLine(Loc ["STRING_REPORT_LEFTCLICK"], nil, 1, _unpack(self.click_to_report_color))
 		GameCooltip:AddIcon ([[Interface\TUTORIALFRAME\UI-TUTORIAL-FRAME]], 1, 1, 12, 16, 0.015625, 0.13671875, 0.4375, 0.59765625)
-		
+
 		GameCooltip:ShowCooltip()
 	end
-	
+
 	local container = instancia.showing [2]
 	local topTarget = ActorHealingTargets [1] and ActorHealingTargets [1][2] or 0
-	
+
 	if (instancia.sub_atributo == 1) then -- 1 or 2 -> healing done or hps
 		_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
 		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_TARGETS"], headerColor, #ActorHealingTargets, [[Interface\TUTORIALFRAME\UI-TutorialFrame-LevelUp]], 0.10546875, 0.89453125, 0.05859375, 0.6796875)
@@ -1496,27 +1495,27 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 			GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_ctrl]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay1)
 			_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 		end
-		
+
 		local tooltip_max_abilities2 = _detalhes.tooltip.tooltip_max_targets
 		if (ismaximized) then
 			tooltip_max_abilities2 = 99
 		end
-		
+
 		for i = 1, _math_min(tooltip_max_abilities2, #ActorHealingTargets) do
 			if (ActorHealingTargets[i][2] < 1) then
 				break
 			end
-			
-			if (ismaximized and ActorHealingTargets[i][1]:find (_detalhes.playername)) then
-				GameCooltip:AddLine (ActorHealingTargets[i][1], FormatTooltipNumber (_, ActorHealingTargets[i][2]) .." (".._cstr ("%.1f", ActorHealingTargets[i][3]).."%)", nil, "yellow")
+
+			if (ismaximized and ActorHealingTargets[i][1]:find(_detalhes.playername)) then
+				GameCooltip:AddLine(ActorHealingTargets[i][1], FormatTooltipNumber (_, ActorHealingTargets[i][2]) .." (".._cstr ("%.1f", ActorHealingTargets[i][3]).."%)", nil, "yellow")
 				GameCooltip:AddStatusBar (100, 1, .5, .5, .5, .7)
 			else
-				GameCooltip:AddLine (ActorHealingTargets[i][1], FormatTooltipNumber (_, ActorHealingTargets[i][2]) .." (".._cstr ("%.1f", ActorHealingTargets[i][3]).."%)")
+				GameCooltip:AddLine(ActorHealingTargets[i][1], FormatTooltipNumber (_, ActorHealingTargets[i][2]) .." (".._cstr ("%.1f", ActorHealingTargets[i][3]).."%)")
 				_detalhes:AddTooltipBackgroundStatusbar (false, ActorHealingTargets[i][2] / topTarget * 100)
 			end
-			
+
 			local targetActor = container:PegarCombatente (nil, ActorHealingTargets[i][1])
-			
+
 			if (targetActor) then
 				local classe = targetActor.classe
 				if (not classe) then
@@ -1525,26 +1524,26 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 				if (classe == "UNKNOW") then
 					GameCooltip:AddIcon ("Interface\\LFGFRAME\\LFGROLE_BW", nil, nil, icon_size.W, icon_size.H, .25, .5, 0, 1)
 				else
-					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, icon_size.W, icon_size.H, _unpack (_detalhes.class_coords [classe]))
+					GameCooltip:AddIcon ("Interface\\AddOns\\Details\\images\\classes_small", nil, nil, icon_size.W, icon_size.H, _unpack(_detalhes.class_coords [classe]))
 				end
 			end
 		end
 	end
-	
+
 	--PETS
 	local meus_pets = self.pets
 
 	if (#meus_pets > 0 and (instancia.sub_atributo == 1 or instancia.sub_atributo == 2 or instancia.sub_atributo == 3)) then --teve ajudantes
-		
+
 		local quantidade = {} --armazena a quantidade de pets iguais
 		local totais = {} --armazena o dano total de cada objeto
-		
-		for index, nome in _ipairs(meus_pets) do
+
+		for index, nome in ipairs(meus_pets) do
 			if (not quantidade [nome]) then
 				quantidade [nome] = 1
-				
+
 				local my_self = instancia.showing [class_type]:PegarCombatente (nil, nome)
-				
+
 				if (my_self) then
 					local meu_tempo
 					if (_detalhes.time_type == 1 or not self.grupo) then
@@ -1552,7 +1551,7 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 					elseif (_detalhes.time_type == 2) then
 						meu_tempo = instancia.showing:GetCombatTime()
 					end
-					
+
 					if (instancia.sub_atributo == 3) then
 						totais [#totais+1] = {nome, my_self.totalover, my_self.total_without_pet}
 					else
@@ -1560,25 +1559,25 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 					end
 
 				end
-				
+
 			else
 				quantidade [nome] = quantidade [nome]+1
 			end
 		end
-		
+
 		local added_logo = false
 
 		_table_sort (totais, _detalhes.Sort2)
-		
+
 		local ismaximized = false
 		if (keydown == "alt" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 5) then
 			ismaximized = true
 		end
-		
-		for index, _table in _ipairs(totais) do
-			
+
+		for index, _table in ipairs(totais) do
+
 			if (_table [2] >= 1 and (index < 3 or ismaximized)) then
-		
+
 				if (not added_logo) then
 					added_logo = true
 					_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
@@ -1591,24 +1590,24 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 						GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_alt]], 1, 2, _detalhes.tooltip_key_size_width, _detalhes.tooltip_key_size_height, 0, 1, 0, 0.640625, _detalhes.tooltip_key_overlay1)
 						_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
 					end
-					
+
 				end
-			
-				local n = _table [1]:gsub (("%s%<.*"), "")
+
+				local n = _table [1]:gsub(("%s%<.*"), "")
 				if (instancia.sub_atributo == 3) then --overheal
-					GameCooltip:AddLine (n .. " (|cFFFF3333" .. _math_floor( (_table [2] / (_table [2] + _table [3])) * 100)  .. "%|r):", FormatTooltipNumber (_,  _math_floor(_table [2])) .. " (" .. _math_floor( (_table [2] / (_table [2] + _table [3])) * 100) .. "%)")
-					
+					GameCooltip:AddLine(n .. " (|cFFFF3333" .. _math_floor( (_table [2] / (_table [2] + _table [3])) * 100)  .. "%|r):", FormatTooltipNumber (_,  _math_floor(_table [2])) .. " (" .. _math_floor( (_table [2] / (_table [2] + _table [3])) * 100) .. "%)")
+
 				elseif (instancia.sub_atributo == 2) then --hps
-					GameCooltip:AddLine (n, FormatTooltipNumber (_,  _math_floor(_table [3])) .. " (" .. _math_floor(_table [2]/self.total*100) .. "%)")
+					GameCooltip:AddLine(n, FormatTooltipNumber (_,  _math_floor(_table [3])) .. " (" .. _math_floor(_table [2]/self.total*100) .. "%)")
 				else
-					GameCooltip:AddLine (n, FormatTooltipNumber (_, _table [2]) .. " (" .. _math_floor(_table [2]/self.total*100) .. "%)")
+					GameCooltip:AddLine(n, FormatTooltipNumber (_, _table [2]) .. " (" .. _math_floor(_table [2]/self.total*100) .. "%)")
 				end
 				_detalhes:AddTooltipBackgroundStatusbar()
 				GameCooltip:AddIcon ([[Interface\AddOns\Details\images\classes_small]], 1, 1, icon_size.W, icon_size.H, 0.25, 0.49609375, 0.75, 1)
 			end
 		end
 	end
-	
+
 	--~Phases
 	if (instancia.sub_atributo == 1 or instancia.sub_atributo == 2) then
 		local segment = instancia:GetShowingCombat()
@@ -1620,19 +1619,19 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 					_detalhes:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true) --add a space
 					_detalhes:AddTooltipSpellHeaderText ("Healing by Encounter Phase", headerColor, 1, [[Interface\Garrison\orderhall-missions-mechanic8]], 11/64, 53/64, 11/64, 53/64)
 					_detalhes:AddTooltipHeaderStatusbar (r, g, b, barAlha)
-					
+
 					local playerPhases = {}
 					local totalDamage = 0
-					
+
 					for phase, playersTable in pairs(phasesInfo.heal) do --each phase
-					
+
 						local allPlayers = {} --all players for this phase
 						for playerName, amount in pairs(playersTable) do
 							tinsert(allPlayers, {playerName, amount})
 							totalDamage = totalDamage + amount
 						end
 						table.sort (allPlayers, function(a, b) return a[2] > b[2] end)
-						
+
 						local myRank = 0
 						for i = 1, #allPlayers do
 							if (allPlayers [i] [1] == self.nome) then
@@ -1640,15 +1639,15 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 								break
 							end
 						end
-						
+
 						tinsert(playerPhases, {phase, playersTable [self.nome] or 0, myRank, (playersTable [self.nome] or 0) / totalDamage * 100})
 					end
-					
+
 					table.sort (playerPhases, function(a, b) return a[1] < b[1] end)
-					
+
 					for i = 1, #playerPhases do
 						--[1] Phase Number [2] Amount Done [3] Rank [4] Percent
-						GameCooltip:AddLine ("|cFFF0F0F0Phase|r " .. playerPhases [i][1], FormatTooltipNumber (_, playerPhases [i][2]) .. " (|cFFFFFF00#" .. playerPhases [i][3] ..  "|r, " .. _cstr ("%.1f", playerPhases [i][4]) .. "%)")
+						GameCooltip:AddLine("|cFFF0F0F0Phase|r " .. playerPhases [i][1], FormatTooltipNumber (_, playerPhases [i][2]) .. " (|cFFFFFF00#" .. playerPhases [i][3] ..  "|r, " .. _cstr ("%.1f", playerPhases [i][4]) .. "%)")
 						GameCooltip:AddIcon ([[Interface\Garrison\orderhall-missions-mechanic9]], 1, 1, 14, 14, 11/64, 53/64, 11/64, 53/64)
 						_detalhes:AddTooltipBackgroundStatusbar()
 					end
@@ -1656,7 +1655,7 @@ function atributo_heal:ToolTip_HealingDone (instancia, numero, barra, keydown)
 			end
 		end
 	end
-	
+
 	return true
 end
 
@@ -1682,9 +1681,9 @@ function atributo_heal:MontaInfoHealTaken()
 	local showing = tabela_do_combate [class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
 	local barras = info.barras1
 	local meus_curandeiros = {}
-	
-	local este_curandeiro	
-	for nome, _ in _pairs (curandeiros) do
+
+	local este_curandeiro
+	for nome, _ in pairs(curandeiros) do
 		este_curandeiro = showing._ActorTable[showing._NameIndexTable[nome]]
 		if (este_curandeiro) then
 			local alvos = este_curandeiro.targets
@@ -1694,65 +1693,65 @@ function atributo_heal:MontaInfoHealTaken()
 			end
 		end
 	end
-	
+
 	local amt = #meus_curandeiros
-	
+
 	if (amt < 1) then
 		return true
 	end
-	
+
 	_table_sort (meus_curandeiros, _detalhes.Sort2)
-	
+
 	gump:JI_AtualizaContainerBarras (amt)
 
 	local max_ = meus_curandeiros [1] and meus_curandeiros [1][2] or 0
-	
+
 	local barra
-	for index, tabela in _ipairs(meus_curandeiros) do
+	for index, tabela in ipairs(meus_curandeiros) do
 		barra = barras [index]
 		if (not barra) then
 			barra = gump:CriaNovaBarraInfo1 (instancia, index)
 		end
 
-		self:FocusLock (barra, tabela[1])
-		
-		--hes:UpdadeInfoBar (row, index, spellid, name, value, max, percent, icon, detalhes)
-		
+		self:FocusLock(barra, tabela[1])
+
+		--hes:UpdadeInfoBar(row, index, spellid, name, value, max, percent, icon, detalhes)
+
 		local texCoords = CLASS_ICON_TCOORDS [tabela[4]]
 		if (not texCoords) then
 			texCoords = _detalhes.class_coords ["UNKNOW"]
 		end
-		
+
 		local formated_value = SelectedToKFunction (_, _math_floor(tabela[2]))
-		self:UpdadeInfoBar (barra, index, tabela[1], tabela[1], tabela[2], formated_value, max_, tabela[3], "Interface\\AddOns\\Details\\images\\classes_small", true, texCoords)
-	end	
-	
+		self:UpdadeInfoBar(barra, index, tabela[1], tabela[1], tabela[2], formated_value, max_, tabela[3], "Interface\\AddOns\\Details\\images\\classes_small", true, texCoords)
+	end
+
 end
 
 function atributo_heal:MontaInfoOverHealing()
 --pegar as habilidade de dar sort no heal
-	
+
 	local instancia = info.instancia
 	local total = self.totalover
 	local tabela = self.spells._ActorTable
 	local minhas_curas = {}
 	local barras = info.barras1
 
-	for spellid, tabela in _pairs (tabela) do
+	for spellid, tabela in pairs(tabela) do
 		local nome, _, icone = _GetSpellInfo(spellid)
-		_table_insert (minhas_curas, {spellid, tabela.overheal, tabela.overheal/total*100, nome, icone})
+		tinsert(minhas_curas, {spellid, tabela.overheal, tabela.overheal/total*100, nome, icone})
 	end
-	
+
 	--add pets
 	local ActorPets = self.pets
 	local class_color = "FFDDDDDD"
-	for _, PetName in _ipairs(ActorPets) do
+	for _, PetName in ipairs(ActorPets) do
 		local PetActor = instancia.showing (class_type, PetName)
-		if (PetActor) then 
+		if (PetActor) then
 			local PetSkillsContainer = PetActor.spells._ActorTable
-			for _spellid, _skill in _pairs (PetSkillsContainer) do --da foreach em cada spellid do container
+			for _spellid, _skill in pairs(PetSkillsContainer) do --da foreach em cada spellid do container
 				local nome, _, icone = _GetSpellInfo(_spellid)
-				_table_insert (minhas_curas, {_spellid, _skill.overheal, _skill.overheal/total*100, nome .. " (|c" .. class_color .. PetName:gsub ((" <.*"), "") .. "|r)", icone, PetActor})
+				tinsert(minhas_curas, {_spellid, _skill.overheal, _skill.overheal/total*100, nome .. " (|c" .. class_color .. PetName:gsub((" <.*"), "") .. "|r)", icone, PetActor})
 			end
 		end
 	end
@@ -1764,20 +1763,20 @@ function atributo_heal:MontaInfoOverHealing()
 
 	local max_ = minhas_curas[1] and minhas_curas[1][2] or 0
 
-	for index, tabela in _ipairs(minhas_curas) do
+	for index, tabela in ipairs(minhas_curas) do
 
 		local barra = barras [index]
 
 		if (not barra) then
 			barra = gump:CriaNovaBarraInfo1 (instancia, index)
-			barra.textura:SetStatusBarColor (1, 1, 1, 1)
+			barra.textura:SetStatusBarColor(1, 1, 1, 1)
 			barra.on_focus = false
 		end
 
 		if (not info.mostrando_mouse_over) then
 			if (tabela[1] == self.detalhes) then --tabela [1] = spellid = spellid que esta na caixa da direita
 				if (not barra.on_focus) then --se a barra n�o tiver no foco
-					barra.textura:SetStatusBarColor (129/255, 125/255, 69/255, 1)
+					barra.textura:SetStatusBarColor(129/255, 125/255, 69/255, 1)
 					barra.on_focus = true
 					if (not info.mostrando) then
 						info.mostrando = barra
@@ -1785,12 +1784,12 @@ function atributo_heal:MontaInfoOverHealing()
 				end
 			else
 				if (barra.on_focus) then
-					barra.textura:SetStatusBarColor (1, 1, 1, 1) --volta a cor antiga
-					barra:SetAlpha (.9) --volta a alfa antiga
+					barra.textura:SetStatusBarColor(1, 1, 1, 1) --volta a cor antiga
+					barra:SetAlpha(.9) --volta a alfa antiga
 					barra.on_focus = false
 				end
 			end
-		end		
+		end
 
 		if (index == 1) then
 			barra.textura:SetValue(100)
@@ -1799,7 +1798,7 @@ function atributo_heal:MontaInfoOverHealing()
 		end
 
 		barra.lineText1:SetText(index..instancia.divisores.colocacao..tabela[4]) --seta o texto da esqueda
-		
+
 		local formated_value = SelectedToKFunction (_, _math_floor(tabela[2]))
 		barra.lineText4:SetText(formated_value .." (".. _cstr ("%.1f", tabela[3]) .."%)")
 
@@ -1814,54 +1813,54 @@ function atributo_heal:MontaInfoOverHealing()
 			self:MontaDetalhes (self.detalhes, barra)
 		end
 	end
-	
+
 	--TOP OVERHEALED
 	local jogadores_overhealed = {}
 	tabela = self.targets_overheal
 	local heal_container = instancia.showing[2]
-	for target_name, amount in _pairs (tabela) do
+	for target_name, amount in pairs(tabela) do
 		local classe = "UNKNOW"
 		local actor_object = heal_container._ActorTable [heal_container._NameIndexTable [tabela.nome]]
 		if (actor_object) then
 			classe = actor_object.classe
 		end
-		_table_insert (jogadores_overhealed, {target_name, amount, amount/total*100, classe})
+		tinsert(jogadores_overhealed, {target_name, amount, amount/total*100, classe})
 	end
 	_table_sort (jogadores_overhealed, _detalhes.Sort2)
-	
+
 	local amt_alvos = #jogadores_overhealed
 	gump:JI_AtualizaContainerAlvos (amt_alvos)
-	
+
 	local max_inimigos = jogadores_overhealed[1] and jogadores_overhealed[1][2] or 0
-	
-	for index, tabela in _ipairs(jogadores_overhealed) do
-	
+
+	for index, tabela in ipairs(jogadores_overhealed) do
+
 		local barra = info.barras2 [index]
-		
+
 		if (not barra) then
 			barra = gump:CriaNovaBarraInfo2 (instancia, index)
-			barra.textura:SetStatusBarColor (1, 1, 1, 1)
+			barra.textura:SetStatusBarColor(1, 1, 1, 1)
 		end
-		
+
 		if (index == 1) then
 			barra.textura:SetValue(100)
 		else
 			barra.textura:SetValue(tabela[2]/max_*100)
 		end
-		
+
 		barra.lineText1:SetText(index..instancia.divisores.colocacao..tabela[1]) --seta o texto da esqueda
 		barra.lineText4:SetText(_detalhes:comma_value (tabela[2]) .." ".. instancia.divisores.abre .. _cstr ("%.1f", tabela[3]) .. instancia.divisores.fecha)
 		barra.lineText1:SetWidth(barra:GetWidth() - barra.lineText4:GetStringWidth() - 30)
-		
+
 		-- icon
 		barra.icone:SetTexture([[Interface\AddOns\Details\images\classes_small]])
-		
+
 		local texCoords = _detalhes.class_coords [tabela[4]]
 		if (not texCoords) then
 			texCoords = _detalhes.class_coords ["UNKNOW"]
 		end
-		barra.icone:SetTexCoord (_unpack (texCoords))
-		
+		barra.icone:SetTexCoord(_unpack(texCoords))
+
 		barra.minha_tabela = self
 		barra.nome_inimigo = tabela [1]
 
@@ -1872,7 +1871,7 @@ end
 function atributo_heal:MontaInfoHealingDone()
 
 	--pegar as habilidade de dar sort no heal
-	
+
 	local instancia = info.instancia
 	local total = self.total
 	local tabela = self.spells._ActorTable
@@ -1886,44 +1885,44 @@ function atributo_heal:MontaInfoHealingDone()
 	elseif (_detalhes.time_type == 2) then
 		meu_tempo = info.instancia.showing:GetCombatTime()
 	end
-	
-	for spellid, tabela in _pairs (tabela) do
+
+	for spellid, tabela in pairs(tabela) do
 		local nome, rank, icone = _GetSpellInfo(spellid)
-		_table_insert (minhas_curas, {
-			spellid, 
-			tabela.total, 
-			tabela.total/total*100, 
-			nome, 
+		tinsert(minhas_curas, {
+			spellid,
+			tabela.total,
+			tabela.total/total*100,
+			nome,
 			icone,
 			false, --not a pet
 			tabela.anti_heal,
 		})
 	end
-	
+
 	info:SetStatusbarText()
 
 	--add pets
 	local ActorPets = self.pets
 	--local class_color = RAID_CLASS_COLORS [self.classe] and RAID_CLASS_COLORS [self.classe].colorStr
 	local class_color = "FFDDDDDD"
-	for _, PetName in _ipairs(ActorPets) do
+	for _, PetName in ipairs(ActorPets) do
 		local PetActor = instancia.showing (class_type, PetName)
-		if (PetActor) then 
+		if (PetActor) then
 			local PetSkillsContainer = PetActor.spells._ActorTable
-			for _spellid, _skill in _pairs (PetSkillsContainer) do --da foreach em cada spellid do container
+			for _spellid, _skill in pairs(PetSkillsContainer) do --da foreach em cada spellid do container
 				local nome, _, icone = _GetSpellInfo(_spellid)
-				_table_insert (minhas_curas, {
-					_spellid, 
-					_skill.total, 
-					_skill.total/total*100, 
-					nome .. " (|c" .. class_color .. PetName:gsub ((" <.*"), "") .. "|r)", 
-					icone, 
+				tinsert(minhas_curas, {
+					_spellid,
+					_skill.total,
+					_skill.total/total*100,
+					nome .. " (|c" .. class_color .. PetName:gsub((" <.*"), "") .. "|r)",
+					icone,
 					PetActor
 				})
 			end
 		end
 	end
-	
+
 	_table_sort (minhas_curas, _detalhes.Sort2)
 
 	local amt = #minhas_curas
@@ -1932,29 +1931,29 @@ function atributo_heal:MontaInfoHealingDone()
 	local max_ = minhas_curas[1] and minhas_curas[1][2] or 0
 	local foundSpellDetail = false
 
-	for index, tabela in _ipairs(minhas_curas) do
+	for index, tabela in ipairs(minhas_curas) do
 
 		local barra = barras [index]
 
 		if (not barra) then
 			barra = gump:CriaNovaBarraInfo1 (instancia, index)
-			barra.textura:SetStatusBarColor (1, 1, 1, 1)
+			barra.textura:SetStatusBarColor(1, 1, 1, 1)
 			barra.on_focus = false
 		end
 
 		self:FocusLock(barra, tabela[1])
-		
+
 		barra.other_actor = tabela [6]
-		
+
 		if (info.sub_atributo == 2) then
 			local formated_value = SelectedToKFunction (_, _math_floor(tabela[2]/meu_tempo))
-			self:UpdadeInfoBar (barra, index, tabela[1], tabela[4], tabela[2], formated_value, max_, tabela[3], tabela[5], true)
+			self:UpdadeInfoBar(barra, index, tabela[1], tabela[4], tabela[2], formated_value, max_, tabela[3], tabela[5], true)
 		else
 			local formated_value = SelectedToKFunction (_, _math_floor(tabela[2]))
 			if (tabela [7]) then
 				formated_value = formated_value .. " [|cFFFF5500" .. SelectedToKFunction (_, _math_floor(tabela [7])) .." " .. Loc ["STRING_DAMAGE"] .."|r] "
 			end
-			self:UpdadeInfoBar (barra, index, tabela[1], tabela[4], tabela[2], formated_value, max_, tabela[3], tabela[5], true)
+			self:UpdadeInfoBar(barra, index, tabela[1], tabela[4], tabela[2], formated_value, max_, tabela[3], tabela[5], true)
 		end
 
 		barra.minha_tabela = self
@@ -1967,61 +1966,60 @@ function atributo_heal:MontaInfoHealingDone()
 			foundSpellDetail = true
 		end
 	end
-	
+
 	--TOP CURADOS
 	local healedTargets = {}
 	tabela = self.targets
-	for target_name, amount in _pairs (tabela) do
-		_table_insert (healedTargets, {target_name, amount, amount / total*100})
+	for target_name, amount in pairs(tabela) do
+		tinsert(healedTargets, {target_name, amount, amount / total*100})
 	end
 	_table_sort(healedTargets, _detalhes.Sort2)
 
 	gump:JI_AtualizaContainerAlvos(#healedTargets)
-	local topHealingDone = healedTargets[1] and healedTargets[1][2]
+	local topHealingDone = max(healedTargets[1] and healedTargets[1][2] or 0, 0.0001)
 
-	for index, tabela in _ipairs(healedTargets) do
-	
-		local barra = info.barras2 [index]
-		
+	for index, healDataTable in ipairs(healedTargets) do
+		local barra = info.barras2[index]
+
 		if (not barra) then
-			barra = gump:CriaNovaBarraInfo2 (instancia, index)
-			barra.textura:SetStatusBarColor (1, 1, 1, 1)
+			barra = gump:CriaNovaBarraInfo2(instancia, index)
+			barra.textura:SetStatusBarColor(1, 1, 1, 1)
 		end
-		
-		local healingDone = tabela[2]
+
+		local healingDone = healDataTable[2]
 
 		if (index == 1) then
 			barra.textura:SetValue(100)
 		else
 			barra.textura:SetValue(healingDone / topHealingDone * 100)
 		end
-		
-		local target_actor = instancia.showing (2, tabela[1])
+
+		local target_actor = instancia.showing(2, healDataTable[1])
 		if (target_actor) then
-			target_actor:SetClassIcon (barra.icone, instancia, target_actor.classe)
+			target_actor:SetClassIcon(barra.icone, instancia, target_actor.classe)
 		else
 			barra.icone:SetTexture([[Interface\AddOns\Details\images\classes_small_alpha]]) --CLASSE
 			local texCoords = _detalhes.class_coords ["ENEMY"]
-			barra.icone:SetTexCoord (_unpack (texCoords))
+			barra.icone:SetTexCoord(_unpack(texCoords))
 		end
-		
-		barra.lineText1:SetText(index .. ". " .. _detalhes:GetOnlyName (tabela[1]))
+
+		barra.lineText1:SetText(index .. ". " .. _detalhes:GetOnlyName(healDataTable[1]))
 		barra.textura:SetStatusBarColor(1, 1, 1, 1)
-		
+
 		if (info.sub_atributo == 2) then
-			barra.lineText4:SetText(_detalhes:comma_value (_math_floor(healingDone/meu_tempo)) .." (" .. _cstr ("%.1f", tabela[3]) .. "%)")
+			barra.lineText4:SetText(_detalhes:comma_value(_math_floor(healingDone/meu_tempo)) .." (" .. _cstr ("%.1f", healDataTable[3]) .. "%)")
 		else
-			barra.lineText4:SetText(SelectedToKFunction (_, healingDone) .. " (" .. _cstr ("%.1f", tabela[3]) .. "%)")
+			barra.lineText4:SetText(SelectedToKFunction(_, healingDone) .. " (" .. _cstr ("%.1f", healDataTable[3]) .. "%)")
 		end
-		
+
 		barra.minha_tabela = self
-		barra.nome_inimigo = tabela [1]
-		
+		barra.nome_inimigo = healDataTable[1]
+
 		-- no lugar do spell id colocar o que?
-		barra.spellid = tabela[5]
+		barra.spellid = healDataTable[5]
 		barra:Show()
 	end
-	
+
 end
 
 function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
@@ -2031,9 +2029,9 @@ function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
 	local habilidades = {}
 	local total
 	local sub_atributo = info.instancia.sub_atributo
-	
+
 	local targets_key = ""
-	
+
 	if (sub_atributo == 3) then --overheal
 		total = self.totalover
 		targets_key = "_overheal"
@@ -2046,8 +2044,8 @@ function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
 	GameCooltip:SetOption("MinWidth", max(230, thisLine:GetWidth()*0.98))
 
 	--add spells
-	for spellid, tabela in _pairs (container) do
-		for target_name, amount in _pairs (tabela ["targets" .. targets_key]) do
+	for spellid, tabela in pairs(container) do
+		for target_name, amount in pairs(tabela ["targets" .. targets_key]) do
 			if (target_name == inimigo) then
 				local nome, _, icone = _GetSpellInfo(spellid)
 				habilidades [#habilidades+1] = {nome, amount, icone}
@@ -2057,25 +2055,25 @@ function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
 
 	--add pets
 	local ActorPets = self.pets
-	for _, PetName in _ipairs(ActorPets) do
+	for _, PetName in ipairs(ActorPets) do
 		local PetActor = instancia.showing (class_type, PetName)
-		if (PetActor) then 
+		if (PetActor) then
 			local PetSkillsContainer = PetActor.spells._ActorTable
-			for _spellid, _skill in _pairs (PetSkillsContainer) do
+			for _spellid, _skill in pairs(PetSkillsContainer) do
 
-				for target_name, amount in _pairs (_skill ["targets" .. targets_key]) do
+				for target_name, amount in pairs(_skill ["targets" .. targets_key]) do
 					if (target_name == inimigo) then
 						local nome, _, icone = _GetSpellInfo(_spellid)
 						habilidades [#habilidades+1] = {nome, amount, icone}
 					end
 				end
-				
+
 			end
 		end
-	end	
-	
+	end
+
 	_table_sort (habilidades, _detalhes.Sort2)
-	
+
 	--get time type
 	local meu_tempo
 	if (_detalhes.time_type == 1 or not self.grupo) then
@@ -2083,29 +2081,29 @@ function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
 	elseif (_detalhes.time_type == 2) then
 		meu_tempo = info.instancia.showing:GetCombatTime()
 	end
-	
+
 	local is_hps = info.instancia.sub_atributo == 2
-	
+
 	if (is_hps) then
-		--GameTooltip:AddLine (index..". "..inimigo)
-		--GameTooltip:AddLine (Loc ["STRING_HEALING_HPS_FROM"] .. ":")
-		--GameTooltip:AddLine (" ")
-		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_HEALING_HPS_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack (_detalhes.tooltip_spell_icon.coords))
+		--GameTooltip:AddLine(index..". "..inimigo)
+		--GameTooltip:AddLine(Loc ["STRING_HEALING_HPS_FROM"] .. ":")
+		--GameTooltip:AddLine(" ")
+		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_HEALING_HPS_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack(_detalhes.tooltip_spell_icon.coords))
 		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 1)
 	else
-		--GameTooltip:AddLine (index..". "..inimigo)
-		--GameTooltip:AddLine (Loc ["STRING_HEALING_FROM"] .. ":")
-		--GameTooltip:AddLine (" ")
-		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_HEALING_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack (_detalhes.tooltip_spell_icon.coords))
+		--GameTooltip:AddLine(index..". "..inimigo)
+		--GameTooltip:AddLine(Loc ["STRING_HEALING_FROM"] .. ":")
+		--GameTooltip:AddLine(" ")
+		_detalhes:AddTooltipSpellHeaderText (Loc ["STRING_HEALING_FROM"] .. ":", {1, 0.9, 0.0, 1}, 1, _detalhes.tooltip_spell_icon.file, unpack(_detalhes.tooltip_spell_icon.coords))
 		_detalhes:AddTooltipHeaderStatusbar (1, 1, 1, 1)
 	end
-	
+
 	local icon_size = _detalhes.tooltip.icon_size
 	local icon_border = _detalhes.tooltip.icon_border_texcoord
 	local topSpellHeal = habilidades[1] and habilidades[1][2]
 
 	if (topSpellHeal) then
-		for index, tabela in _ipairs(habilidades) do
+		for index, tabela in ipairs(habilidades) do
 			if (tabela [2] < 1) then
 				break
 			end
@@ -2113,9 +2111,9 @@ function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
 			local spellName, spellIcon = tabela[1], tabela [3]
 
 			if (is_hps) then
-				GameCooltip:AddLine (spellName, _detalhes:comma_value (_math_floor(tabela[2]/meu_tempo)).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)")
+				GameCooltip:AddLine(spellName, _detalhes:comma_value (_math_floor(tabela[2]/meu_tempo)).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)")
 			else
-				GameCooltip:AddLine (spellName, SelectedToKFunction (_, tabela[2]).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)")
+				GameCooltip:AddLine(spellName, SelectedToKFunction (_, tabela[2]).." (".. _cstr ("%.1f", tabela[2]/total*100).."%)")
 			end
 
 			GameCooltip:AddIcon (spellIcon, nil, nil, icon_size.W + 4, icon_size.H + 4, icon_border.L, icon_border.R, icon_border.T, icon_border.B)
@@ -2124,9 +2122,9 @@ function atributo_heal:MontaTooltipAlvos (thisLine, index, instancia)
 	end
 
 	GameCooltip:Show()
-	
+
 	return true
-	
+
 end
 
 function atributo_heal:MontaDetalhes (spellid, barra)
@@ -2140,45 +2138,45 @@ end
 
 function atributo_heal:MontaDetalhesHealingTaken (nome, barra)
 
-	for _, barra in _ipairs(info.barras3) do 
+	for _, barra in ipairs(info.barras3) do
 		barra:Hide()
 	end
 
 	local barras = info.barras3
 	local instancia = info.instancia
-	
+
 	local tabela_do_combate = info.instancia.showing
 	local showing = tabela_do_combate [class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
 
 	local este_curandeiro = showing._ActorTable[showing._NameIndexTable[nome]]
-	local conteudo = este_curandeiro.spells._ActorTable --_pairs[] com os IDs das magias
-	
+	local conteudo = este_curandeiro.spells._ActorTable --pairs[] com os IDs das magias
+
 	local actor = info.jogador.nome
-	
+
 	local total = este_curandeiro.targets [actor]
 
 	local minhas_magias = {}
 
-	for spellid, tabela in _pairs (conteudo) do --da foreach em cada spellid do container
+	for spellid, tabela in pairs(conteudo) do --da foreach em cada spellid do container
 		if (tabela.targets [actor]) then
 			local spell_nome, _, icone = _GetSpellInfo(spellid)
-			_table_insert (minhas_magias, {spellid, tabela.targets [actor], tabela.targets [actor] / total*100, spell_nome, icone})
+			tinsert(minhas_magias, {spellid, tabela.targets [actor], tabela.targets [actor] / total*100, spell_nome, icone})
 		end
 	end
 
 	_table_sort (minhas_magias, _detalhes.Sort2)
 
 	local max_ = minhas_magias[1] and minhas_magias[1][2] or 0 --dano que a primeiro magia vez
-	
+
 	local barra
-	for index, tabela in _ipairs(minhas_magias) do
+	for index, tabela in ipairs(minhas_magias) do
 		barra = barras [index]
 
 		if (not barra) then --se a barra n�o existir, criar ela ent�o
 			barra = gump:CriaNovaBarraInfo3 (instancia, index)
-			barra.textura:SetStatusBarColor (1, 1, 1, 1) --isso aqui � a parte da sele��o e descele��o
+			barra.textura:SetStatusBarColor(1, 1, 1, 1) --isso aqui � a parte da sele��o e descele��o
 		end
-		
+
 		if (index == 1) then
 			barra.textura:SetValue(100)
 		else
@@ -2187,12 +2185,12 @@ function atributo_heal:MontaDetalhesHealingTaken (nome, barra)
 
 		barra.lineText1:SetText(index..instancia.divisores.colocacao..tabela[4]) --seta o texto da esqueda
 		barra.lineText4:SetText(_detalhes:comma_value (tabela[2]) .." ".. instancia.divisores.abre .._cstr("%.1f", tabela[3]) .."%".. instancia.divisores.fecha)
-		
+
 		barra.icone:SetTexture(tabela[5])
 
 		barra:Show() --mostra a barra
-		
-		if (index == 15) then 
+
+		if (index == 15) then
 			break
 		end
 	end
@@ -2215,20 +2213,20 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 	else
 		esta_magia = self.spells._ActorTable [spellid]
 	end
-	
+
 	if (not esta_magia) then
 		return
 	end
-	
+
 	--icone direito superior
 	local _, _, icone = _GetSpellInfo(spellid)
 	info.spell_icone:SetTexture(icone)
 
 	local total = self.total
-	
+
 	local overheal = esta_magia.overheal
 	local meu_total = esta_magia.total + overheal
-	
+
 	local meu_tempo
 	if (_detalhes.time_type == 1 or not self.grupo) then
 		meu_tempo = self:Tempo()
@@ -2239,35 +2237,35 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 	local total_hits = esta_magia.counter
 	local index = 1
 	local data = data_table
-	
-	table.wipe (t1)
-	table.wipe (t2)
-	table.wipe (t3)
-	table.wipe (t4)
-	table.wipe (data)
-	
+
+	table.wipe(t1)
+	table.wipe(t2)
+	table.wipe(t3)
+	table.wipe(t4)
+	table.wipe(data)
+
 	if (esta_magia.total > 0) then
-	
+
 	--GERAL
 		local media = esta_magia.total/total_hits
-		
+
 		local this_hps = nil
 		if (esta_magia.counter > esta_magia.c_amt) then
 			this_hps = Loc ["STRING_HPS"] .. ": " .. _detalhes:comma_value (esta_magia.total/meu_tempo)
 		else
 			this_hps = Loc ["STRING_HPS"] .. ": " .. Loc ["STRING_SEE_BELOW"]
 		end
-		
+
 		local heal_string
 		if (esta_magia.is_shield) then
 			heal_string = Loc ["STRING_SHIELD_HEAL"]
 		else
 			heal_string = Loc ["STRING_HEAL"]
 		end
-		
+
 		local hits_string = "" .. total_hits
 		local cast_string = Loc ["STRING_CAST"] .. ": "
-		
+
 		local misc_actor = info.instancia.showing (4, self:name())
 		if (misc_actor) then
 			local buff_uptime = misc_actor.buff_uptime_spells and misc_actor.buff_uptime_spells._ActorTable [spellid] and misc_actor.buff_uptime_spells._ActorTable [spellid].uptime
@@ -2276,10 +2274,10 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 			end
 
 			local spell_cast = misc_actor.spell_cast and misc_actor.spell_cast [spellid]
-			
+
 			if (not spell_cast and misc_actor.spell_cast) then
 				local spellname = GetSpellInfo(spellid)
-				for casted_spellid, amount in _pairs (misc_actor.spell_cast) do
+				for casted_spellid, amount in pairs(misc_actor.spell_cast) do
 					local casted_spellname = GetSpellInfo(casted_spellid)
 					if (casted_spellname == spellname) then
 						spell_cast = amount .. " (|cFFFFFF00?|r)"
@@ -2290,30 +2288,30 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 				spell_cast = "(|cFFFFFF00?|r)"
 			end
 			cast_string = cast_string .. spell_cast
-		end		
-		
-		gump:SetaDetalheInfoTexto ( index, 100,
-			--Loc ["STRING_GERAL"], 
-			cast_string, 
-			heal_string .. ": " .. _detalhes:ToK (esta_magia.total), 
+		end
+
+		gump:SetaDetalheInfoTexto( index, 100,
+			--Loc ["STRING_GERAL"],
+			cast_string,
+			heal_string .. ": " .. _detalhes:ToK (esta_magia.total),
 			"", --Loc ["STRING_PERCENTAGE"] .. ": " .. _cstr ("%.1f", esta_magia.total/total*100) .. "%",
-			Loc ["STRING_AVERAGE"] .. ": " .. _detalhes:comma_value (media), 
+			Loc ["STRING_AVERAGE"] .. ": " .. _detalhes:comma_value (media),
 			this_hps,
-			Loc ["STRING_HITS"] .. ": " .. hits_string) 
-	
+			Loc ["STRING_HITS"] .. ": " .. hits_string)
+
 	--NORMAL
 		local normal_hits = esta_magia.n_amt
 		if (normal_hits > 0) then
 			local normal_curado = esta_magia.n_curado
 			local media_normal = normal_curado/normal_hits
-			media_normal = max (media_normal, 0.000001)
-			
+			media_normal = max(media_normal, 0.000001)
+
 			local T = (meu_tempo*normal_curado)/esta_magia.total
 			local P = media/media_normal*100
 			T = P*T/100
 
 			data[#data+1] = t1
-			
+
 			if (esta_magia.is_shield) then
 				t1[3] = Loc ["STRING_ABSORBED"]
 				normal_table.p = esta_magia.total / (esta_magia.total+esta_magia.overheal) * 100
@@ -2321,7 +2319,7 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 				t1[3] = heal_string
 				normal_table.p = normal_hits/total_hits*100
 			end
-			
+
 			t1[1] = esta_magia.n_amt
 			t1[2] = normal_table
 
@@ -2334,7 +2332,7 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 		end
 
 	--CRITICO
-		if (esta_magia.c_amt > 0) then	
+		if (esta_magia.c_amt > 0) then
 			local media_critico = esta_magia.c_curado/esta_magia.c_amt
 			local T = (meu_tempo*esta_magia.c_curado)/esta_magia.total
 			local P = media/max(media_critico, 0.0001)*100
@@ -2343,10 +2341,10 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 			if (not crit_hps) then
 				crit_hps = 0
 			end
-			
+
 			data[#data+1] = t2
 			critical_table.p = esta_magia.c_amt/total_hits*100
-			
+
 			t2[1] = esta_magia.c_amt
 			t2[2] = critical_table
 			t2[3] = Loc ["STRING_HEAL_CRIT"]
@@ -2355,45 +2353,45 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 			t2[6] = Loc ["STRING_AVERAGE"] .. ": " .. _detalhes:comma_value (media_critico)
 			t2[7] = Loc ["STRING_HPS"] .. ": " .. _detalhes:comma_value (crit_hps)
 			t2[8] = esta_magia.c_amt .. " [|cFFC0C0C0".. _cstr ("%.1f", esta_magia.c_amt / max(total_hits, 0.001) * 100) .. "%|r]"
-			
+
 		end
 	end
 
 	_table_sort (data, _detalhes.Sort1)
-	
+
 --	for i = #data+1, 2 do --para o antiheal aparecer na penultima barra
 --		data[i] = nil
---	end	
-	
+--	end
+
 	--anti heal
 		if (esta_magia.anti_heal and esta_magia.anti_heal > 0) then
 			local porcentagem_anti_heal = esta_magia.anti_heal / meu_total * 100
 			data[3] = t3
-			
+
 			anti_heal_table.p = porcentagem_anti_heal
-			
+
 			t3[1] = esta_magia.anti_heal
 			t3[2] = anti_heal_table
 			t3[3] = "Anti Heal"
-			
+
 			t3[4] = ""
 			t3[5] = ""
 			t3[6] = ""
 			t3[7] = ""
 			t3[8] = _detalhes:comma_value (esta_magia.anti_heal) .. " / " .. _cstr ("%.1f", porcentagem_anti_heal) .. "%"
 		end
-	
+
 --	for i = #data+1, 3 do --para o overheal aparecer na ultima barra
 --		data[i] = nil
 --	end
-	
+
 	--overhealing
 		if (overheal > 0) then
 			local porcentagem_overheal = overheal/meu_total*100
 			data[4] = t4
-			
+
 			overhealing_table.p = porcentagem_overheal
-			
+
 			t4[1] = overheal
 			t4[2] = overhealing_table
 
@@ -2402,20 +2400,20 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 			else
 				t4[3] = Loc ["STRING_OVERHEAL"]
 			end
-			
+
 			t4[4] = ""
 			t4[5] = ""
 			t4[6] = ""
 			t4[7] = ""
 			t4[8] = _detalhes:comma_value (overheal) .. " / " .. _cstr ("%.1f", porcentagem_overheal) .. "%"
 		end
-	
+
 	for index = 1, 4 do
 		local tabela = data[index]
 		if (not tabela) then
 			gump:HidaDetalheInfo (index+1)
 		else
-			gump:SetaDetalheInfoTexto (index+1, tabela[2], tabela[3], tabela[4], tabela[5], tabela[6], tabela[7], tabela[8])
+			gump:SetaDetalheInfoTexto(index+1, tabela[2], tabela[3], tabela[4], tabela[5], tabela[6], tabela[7], tabela[8])
 		end
 	end
 
@@ -2423,7 +2421,7 @@ end
 
 --controla se o dps do jogador esta travado ou destravado
 function atributo_heal:Iniciar (iniciar)
-	if (iniciar == nil) then 
+	if (iniciar == nil) then
 		return self.iniciar_hps --retorna se o dps esta aberto ou fechado para este jogador
 	elseif (iniciar) then
 		self.iniciar_hps = true
@@ -2457,8 +2455,8 @@ end
 			if (self.grupo) then
 				combat_table.totals_grupo [class_type] = combat_table.totals_grupo [class_type] + self.total
 			end
-		end		
-		
+		end
+
 	--restaura a tabela de last event
 		function atributo_heal:r_last_events_table (actor)
 			if (not actor) then
@@ -2466,132 +2464,132 @@ end
 			end
 			--actor.last_events_table = _detalhes:CreateActorLastEventTable()
 		end
-		
+
 	--restaura e liga o ator com a sua shadow durante a inicializa��o
 		function atributo_heal:r_onlyrefresh_shadow (actor)
-		
+
 			--criar uma shadow desse ator se ainda n�o tiver uma
 				local overall_cura = _detalhes.tabela_overall [2]
 				local shadow = overall_cura._ActorTable [overall_cura._NameIndexTable [actor.nome]]
 
-				if (not shadow) then 
+				if (not shadow) then
 					shadow = overall_cura:PegarCombatente (actor.serial, actor.nome, actor.flag_original, true)
-					
+
 					shadow.classe = actor.classe
-					shadow.spec = actor.spec
+					shadow:SetSpecId(actor.spec)
 					shadow.grupo = actor.grupo
 					shadow.pvp = actor.pvp
 					shadow.isTank = actor.isTank
 					shadow.boss = actor.boss
 					shadow.boss_fight_component = actor.boss_fight_component
 					shadow.fight_component = actor.fight_component
-					
+
 					shadow.start_time = time() - 3
 					shadow.end_time = time()
 				end
-			
+
 			--restaura a meta e indexes ao ator
 				_detalhes.refresh:r_atributo_heal (actor, shadow)
-				
+
 			--copia o container de alvos (captura de dados)
-				for target_name, amount in _pairs (actor.targets) do
+				for target_name, amount in pairs(actor.targets) do
 					shadow.targets [target_name] = 0
 				end
-				for target_name, amount in _pairs (actor.targets_overheal) do
+				for target_name, amount in pairs(actor.targets_overheal) do
 					shadow.targets_overheal [target_name] = 0
 				end
-				for target_name, amount in _pairs (actor.targets_absorbs) do
+				for target_name, amount in pairs(actor.targets_absorbs) do
 					shadow.targets_absorbs [target_name] = 0
 				end
-			
+
 			--copia o container de habilidades (captura de dados)
-				for spellid, habilidade in _pairs (actor.spells._ActorTable) do 
+				for spellid, habilidade in pairs(actor.spells._ActorTable) do
 					--cria e soma o valor
 					local habilidade_shadow = shadow.spells:PegaHabilidade (spellid, true, nil, true)
 					--refresh e soma os valores dos alvos
-					
-					for target_name, amount in _pairs (habilidade.targets) do
+
+					for target_name, amount in pairs(habilidade.targets) do
 						if (not habilidade_shadow.targets [target_name]) then
 							habilidade_shadow.targets [target_name] = 0
 						end
 					end
-					for target_name, amount in _pairs (habilidade.targets_overheal) do
+					for target_name, amount in pairs(habilidade.targets_overheal) do
 						if (not habilidade_shadow.targets_overheal [target_name]) then
 							habilidade_shadow.targets_overheal [target_name] = 0
 						end
 					end
-					for target_name, amount in _pairs (habilidade.targets_absorbs) do
+					for target_name, amount in pairs(habilidade.targets_absorbs) do
 						if (not habilidade_shadow.targets_absorbs [target_name]) then
 							habilidade_shadow.targets_absorbs [target_name] = 0
 						end
 					end
-					
+
 					--copia o container de heal negado se ele existir
 					if (habilidade.heal_denied) then
 						--cria o container na shadow de ele n�o existir
 						habilidade_shadow.heal_denied = habilidade_shadow.heal_denied or {}
 						habilidade_shadow.heal_denied_healers = habilidade_shadow.heal_denied_healers or {}
 						--copia
-						for spellID, amount in _pairs (habilidade.heal_denied) do
+						for spellID, amount in pairs(habilidade.heal_denied) do
 							if (not habilidade_shadow.heal_denied [spellID]) then
 								habilidade_shadow.heal_denied [spellID] = 0
 							end
 						end
-						for healerName, amount in _pairs (habilidade.heal_denied_healers) do
+						for healerName, amount in pairs(habilidade.heal_denied_healers) do
 							if (not habilidade_shadow.heal_denied_healers [healerName]) then
 								habilidade_shadow.heal_denied_healers [healerName] = 0
 							end
-						end						
+						end
 					end
 
 				end
-			
+
 			return shadow
 		end
-	
+
 		function atributo_heal:r_connect_shadow (actor, no_refresh, combat_object)
-		
+
 			local host_combat = combat_object or _detalhes.tabela_overall
-		
+
 			--criar uma shadow desse ator se ainda n�o tiver uma
 				local overall_cura = host_combat [2]
 				local shadow = overall_cura._ActorTable [overall_cura._NameIndexTable [actor.nome]]
 
-				if (not shadow) then 
+				if (not shadow) then
 					shadow = overall_cura:PegarCombatente (actor.serial, actor.nome, actor.flag_original, true)
-					
+
 					shadow.classe = actor.classe
-					shadow.spec = actor.spec
+					shadow:SetSpecId(actor.spec)
 					shadow.grupo = actor.grupo
 					shadow.pvp = actor.pvp
 					shadow.isTank = actor.isTank
 					shadow.boss = actor.boss
 					shadow.boss_fight_component = actor.boss_fight_component
 					shadow.fight_component = actor.fight_component
-					
+
 					shadow.start_time = time() - 3
 					shadow.end_time = time()
 				end
-			
+
 			--restaura a meta e indexes ao ator
 				if (not no_refresh) then
 					_detalhes.refresh:r_atributo_heal (actor, shadow)
 				end
-			
+
 			--tempo decorrido (captura de dados)
 				local end_time = actor.end_time
 				if (not actor.end_time) then
 					end_time = time()
 				end
-				
+
 				local tempo = end_time - actor.start_time
 				shadow.start_time = shadow.start_time - tempo
 
 			--pets (add unique pet names)
-			for _, petName in _ipairs(actor.pets) do
+			for _, petName in ipairs(actor.pets) do
 				DetailsFramework.table.addunique (shadow.pets, petName)
 			end
-				
+
 			--total de cura (captura de dados)
 				shadow.total = shadow.total + actor.total
 			--total de overheal (captura de dados)
@@ -2613,70 +2611,70 @@ end
 				if (actor.grupo) then
 					host_combat.totals_grupo[2] = host_combat.totals_grupo[2] + actor.total
 				end
-				
+
 			--copia o healing_from  (captura de dados)
-				for nome, _ in _pairs (actor.healing_from) do 
+				for nome, _ in pairs(actor.healing_from) do
 					shadow.healing_from [nome] = true
 				end
-				
+
 			--copia o heal_enemy (captura de dados)
-				for spellid, amount in _pairs (actor.heal_enemy) do 
-					if (shadow.heal_enemy [spellid]) then 
+				for spellid, amount in pairs(actor.heal_enemy) do
+					if (shadow.heal_enemy [spellid]) then
 						shadow.heal_enemy [spellid] = shadow.heal_enemy [spellid] + amount
 					else
 						shadow.heal_enemy [spellid] = amount
 					end
 				end
-			
+
 			--copia o container de alvos (captura de dados)
-				for target_name, amount in _pairs (actor.targets) do
+				for target_name, amount in pairs(actor.targets) do
 					shadow.targets [target_name] = (shadow.targets [target_name] or 0) + amount
 				end
-				for target_name, amount in _pairs (actor.targets_overheal) do
+				for target_name, amount in pairs(actor.targets_overheal) do
 					shadow.targets_overheal [target_name] = (shadow.targets_overheal [target_name] or 0) + amount
 				end
-				for target_name, amount in _pairs (actor.targets_absorbs) do
+				for target_name, amount in pairs(actor.targets_absorbs) do
 					shadow.targets_absorbs [target_name] = (shadow.targets_absorbs [target_name] or 0) + amount
 				end
-			
+
 			--copia o container de habilidades (captura de dados)
-				for spellid, habilidade in _pairs (actor.spells._ActorTable) do 
+				for spellid, habilidade in pairs(actor.spells._ActorTable) do
 					--cria e soma o valor
 					local habilidade_shadow = shadow.spells:PegaHabilidade (spellid, true, nil, true)
-					
+
 					--refresh e soma os valores dos alvos
-					for target_name, amount in _pairs (habilidade.targets) do 
+					for target_name, amount in pairs(habilidade.targets) do
 						habilidade_shadow.targets [target_name] = (habilidade_shadow.targets [target_name] or 0) + amount
 					end
-					for target_name, amount in _pairs (habilidade.targets_overheal) do 
+					for target_name, amount in pairs(habilidade.targets_overheal) do
 						habilidade_shadow.targets_overheal [target_name] = (habilidade_shadow.targets_overheal [target_name] or 0) + amount
 					end
-					for target_name, amount in _pairs (habilidade.targets_absorbs) do 
+					for target_name, amount in pairs(habilidade.targets_absorbs) do
 						habilidade_shadow.targets_absorbs [target_name] = (habilidade_shadow.targets_absorbs [target_name] or 0) + amount
 					end
-					
+
 					--copia o container de heal negado se ele existir
 					if (habilidade.heal_denied) then
 						--cria o container na shadow de ele n�o existir
 						habilidade_shadow.heal_denied = habilidade_shadow.heal_denied or {}
 						habilidade_shadow.heal_denied_healers = habilidade_shadow.heal_denied_healers or {}
 						--copia
-						for spellID, amount in _pairs (habilidade.heal_denied) do
+						for spellID, amount in pairs(habilidade.heal_denied) do
 							habilidade_shadow.heal_denied [spellID] = (habilidade_shadow.heal_denied [spellID] or 0) + amount
 						end
-						for healerName, amount in _pairs (habilidade.heal_denied_healers) do
+						for healerName, amount in pairs(habilidade.heal_denied_healers) do
 							habilidade_shadow.heal_denied_healers [healerName] = (habilidade_shadow.heal_denied_healers [healerName] or 0) + amount
 						end
-					end					
-					
+					end
+
 					--soma todos os demais valores
-					for key, value in _pairs (habilidade) do 
-						if (_type(value) == "number") then
+					for key, value in pairs(habilidade) do
+						if (type(value) == "number") then
 							if (key ~= "id") then
-								if (not habilidade_shadow [key]) then 
+								if (not habilidade_shadow [key]) then
 									habilidade_shadow [key] = 0
 								end
-								
+
 								if (key == "n_min" or key == "c_min") then
 									if (habilidade_shadow [key] > value) then
 										habilidade_shadow [key] = value
@@ -2688,13 +2686,13 @@ end
 								else
 									habilidade_shadow [key] = habilidade_shadow [key] + value
 								end
-								
+
 							end
 						end
 					end
 
 				end
-			
+
 			return shadow
 		end
 
@@ -2718,72 +2716,72 @@ atributo_heal.__add = function(tabela1, tabela2)
 		tabela1.heal_enemy_amt = tabela1.heal_enemy_amt + tabela2.heal_enemy_amt
 	--total de cura negada
 		tabela1.totaldenied = tabela1.totaldenied + tabela2.totaldenied
-		
+
 	--total sem pets
 		tabela1.total_without_pet = tabela1.total_without_pet + tabela2.total_without_pet
 		tabela1.totalover_without_pet = tabela1.totalover_without_pet + tabela2.totalover_without_pet
 	--total de cura recebida
 		tabela1.healing_taken = tabela1.healing_taken + tabela2.healing_taken
-		
+
 	--soma o healing_from
-		for nome, _ in _pairs (tabela2.healing_from) do 
+		for nome, _ in pairs(tabela2.healing_from) do
 			tabela1.healing_from [nome] = true
 		end
-	
+
 	--somar o heal_enemy
-		for spellid, amount in _pairs (tabela2.heal_enemy) do 
-			if (tabela1.heal_enemy [spellid]) then 
+		for spellid, amount in pairs(tabela2.heal_enemy) do
+			if (tabela1.heal_enemy [spellid]) then
 				tabela1.heal_enemy [spellid] = tabela1.heal_enemy [spellid] + amount
 			else
 				tabela1.heal_enemy [spellid] = amount
 			end
 		end
-	
+
 	--somar o container de alvos
-		for target_name, amount in _pairs (tabela2.targets) do
+		for target_name, amount in pairs(tabela2.targets) do
 			tabela1.targets [target_name] = (tabela1.targets [target_name] or 0) + amount
 		end
-		for target_name, amount in _pairs (tabela2.targets_overheal) do 
+		for target_name, amount in pairs(tabela2.targets_overheal) do
 			tabela1.targets_overheal [target_name] = (tabela1.targets_overheal [target_name] or 0) + amount
 		end
-		for target_name, amount in _pairs (tabela2.targets_absorbs) do 
+		for target_name, amount in pairs(tabela2.targets_absorbs) do
 			tabela1.targets_absorbs [target_name] = (tabela1.targets_absorbs [target_name] or 0) + amount
 		end
-	
+
 	--soma o container de habilidades
-		for spellid, habilidade in _pairs (tabela2.spells._ActorTable) do 
+		for spellid, habilidade in pairs(tabela2.spells._ActorTable) do
 			--pega a habilidade no primeiro ator
 			local habilidade_tabela1 = tabela1.spells:PegaHabilidade (spellid, true, "SPELL_HEAL", false)
 			--soma os alvos
-			for target_name, amount in _pairs (habilidade.targets) do 
+			for target_name, amount in pairs(habilidade.targets) do
 				habilidade_tabela1.targets = (habilidade_tabela1.targets [target_name] or 0) + amount
 			end
-			for target_name, amount in _pairs (habilidade.targets_overheal) do 
+			for target_name, amount in pairs(habilidade.targets_overheal) do
 				habilidade_tabela1.targets_overheal = (habilidade_tabela1.targets_overheal [target_name] or 0) + amount
 			end
-			for target_name, amount in _pairs (habilidade.targets_absorbs) do 
+			for target_name, amount in pairs(habilidade.targets_absorbs) do
 				habilidade_tabela1.targets_absorbs = (habilidade_tabela1.targets_absorbs [target_name] or 0) + amount
 			end
-			
+
 			--copia o container de heal negado se ele existir
 			if (habilidade.heal_denied) then
 				--cria o container na shadow de ele n�o existir
 				habilidade_tabela1.heal_denied = habilidade_tabela1.heal_denied or {}
 				habilidade_tabela1.heal_denied_healers = habilidade_tabela1.heal_denied_healers or {}
 				--copia
-				for spellID, amount in _pairs (habilidade.heal_denied) do
+				for spellID, amount in pairs(habilidade.heal_denied) do
 					habilidade_tabela1.heal_denied [spellID] = (habilidade_tabela1.heal_denied [spellID] or 0) + amount
 				end
-				for healerName, amount in _pairs (habilidade.heal_denied_healers) do
+				for healerName, amount in pairs(habilidade.heal_denied_healers) do
 					habilidade_tabela1.heal_denied_healers [healerName] = (habilidade_tabela1.heal_denied_healers [healerName] or 0) + amount
 				end
 			end
-			
+
 			--soma os valores da habilidade
-			for key, value in _pairs (habilidade) do 
-				if (_type(value) == "number") then
+			for key, value in pairs(habilidade) do
+				if (type(value) == "number") then
 					if (key ~= "id") then
-						if (not habilidade_tabela1 [key]) then 
+						if (not habilidade_tabela1 [key]) then
 							habilidade_tabela1 [key] = 0
 						end
 						if (key == "n_min" or key == "c_min") then
@@ -2801,7 +2799,7 @@ atributo_heal.__add = function(tabela1, tabela2)
 				end
 			end
 		end
-	
+
 	return tabela1
 end
 
@@ -2821,7 +2819,7 @@ atributo_heal.__sub = function(tabela1, tabela2)
 		tabela1.heal_enemy_amt = tabela1.heal_enemy_amt - tabela2.heal_enemy_amt
 	--total de cura negada
 		tabela1.totaldenied = tabela1.totaldenied - tabela2.totaldenied
-	
+
 	--total sem pets
 		tabela1.total_without_pet = tabela1.total_without_pet - tabela2.total_without_pet
 		tabela1.totalover_without_pet = tabela1.totalover_without_pet - tabela2.totalover_without_pet
@@ -2829,71 +2827,71 @@ atributo_heal.__sub = function(tabela1, tabela2)
 		tabela1.healing_taken = tabela1.healing_taken - tabela2.healing_taken
 
 	--reduz o heal_enemy
-		for spellid, amount in _pairs (tabela2.heal_enemy) do 
-			if (tabela1.heal_enemy [spellid]) then 
+		for spellid, amount in pairs(tabela2.heal_enemy) do
+			if (tabela1.heal_enemy [spellid]) then
 				tabela1.heal_enemy [spellid] = tabela1.heal_enemy [spellid] - amount
 			else
 				tabela1.heal_enemy [spellid] = amount
 			end
 		end
-		
+
 	--reduz o container de alvos
-		for target_name, amount in _pairs (tabela2.targets) do 
+		for target_name, amount in pairs(tabela2.targets) do
 			if (tabela1.targets [target_name]) then
 				tabela1.targets [target_name] = tabela1.targets [target_name] - amount
 			end
 		end
-		for target_name, amount in _pairs (tabela2.targets_overheal) do 
+		for target_name, amount in pairs(tabela2.targets_overheal) do
 			if (tabela1.targets_overheal [target_name]) then
 				tabela1.targets_overheal [target_name] = tabela1.targets_overheal [target_name] - amount
 			end
 		end
-		for target_name, amount in _pairs (tabela2.targets_absorbs) do 
+		for target_name, amount in pairs(tabela2.targets_absorbs) do
 			if (tabela1.targets_absorbs [target_name]) then
 				tabela1.targets_absorbs [target_name] = tabela1.targets_absorbs [target_name] - amount
 			end
 		end
 
 	--reduz o container de habilidades
-		for spellid, habilidade in _pairs (tabela2.spells._ActorTable) do 
+		for spellid, habilidade in pairs(tabela2.spells._ActorTable) do
 			--pega a habilidade no primeiro ator
 			local habilidade_tabela1 = tabela1.spells:PegaHabilidade (spellid, true, "SPELL_HEAL", false)
 			--alvos
-			for target_name, amount in _pairs (habilidade.targets) do 
+			for target_name, amount in pairs(habilidade.targets) do
 				if (habilidade_tabela1.targets [target_name]) then
 					habilidade_tabela1.targets [target_name] = habilidade_tabela1.targets [target_name] - amount
 				end
 			end
-			for target_name, amount in _pairs (habilidade.targets_overheal) do 
+			for target_name, amount in pairs(habilidade.targets_overheal) do
 				if (habilidade_tabela1.targets_overheal [target_name]) then
 					habilidade_tabela1.targets_overheal [target_name] = habilidade_tabela1.targets_overheal [target_name] - amount
 				end
 			end
-			for target_name, amount in _pairs (habilidade.targets_absorbs) do 
+			for target_name, amount in pairs(habilidade.targets_absorbs) do
 				if (habilidade_tabela1.targets_absorbs [target_name]) then
 					habilidade_tabela1.targets_absorbs [target_name] = habilidade_tabela1.targets_absorbs [target_name] - amount
 				end
 			end
-			
+
 			--copia o container de heal negado se ele existir
 			if (habilidade.heal_denied) then
 				--cria o container na shadow de ele n�o existir
 				habilidade_tabela1.heal_denied = habilidade_tabela1.heal_denied or {}
 				habilidade_tabela1.heal_denied_healers = habilidade_tabela1.heal_denied_healers or {}
 				--copia
-				for spellID, amount in _pairs (habilidade.heal_denied) do
+				for spellID, amount in pairs(habilidade.heal_denied) do
 					habilidade_tabela1.heal_denied [spellID] = (habilidade_tabela1.heal_denied [spellID] or 0) - amount
 				end
-				for healerName, amount in _pairs (habilidade.heal_denied_healers) do
+				for healerName, amount in pairs(habilidade.heal_denied_healers) do
 					habilidade_tabela1.heal_denied_healers [healerName] = (habilidade_tabela1.heal_denied_healers [healerName] or 0) - amount
 				end
 			end
-			
+
 			--soma os valores da habilidade
-			for key, value in _pairs (habilidade) do 
-				if (_type(value) == "number") then
+			for key, value in pairs(habilidade) do
+				if (type(value) == "number") then
 					if (key ~= "id") then
-						if (not habilidade_tabela1 [key]) then 
+						if (not habilidade_tabela1 [key]) then
 							habilidade_tabela1 [key] = 0
 						end
 						if (key == "n_min" or key == "c_min") then
@@ -2911,14 +2909,14 @@ atributo_heal.__sub = function(tabela1, tabela2)
 				end
 			end
 		end
-	
+
 	return tabela1
 end
 
 function _detalhes.refresh:r_atributo_heal (este_jogador, shadow)
-	_setmetatable (este_jogador, atributo_heal)
+	setmetatable(este_jogador, atributo_heal)
 	este_jogador.__index = atributo_heal
-	
+
 	_detalhes.refresh:r_container_habilidades (este_jogador.spells, shadow and shadow.spells)
 end
 
@@ -2927,6 +2925,6 @@ function _detalhes.clear:c_atributo_heal (este_jogador)
 	este_jogador.shadow = nil
 	este_jogador.links = nil
 	este_jogador.minha_barra = nil
-	
+
 	_detalhes.clear:c_container_habilidades (este_jogador.spells)
 end

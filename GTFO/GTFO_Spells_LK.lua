@@ -63,7 +63,7 @@ GTFO.SpellID["55847"] = {
 };
 
 GTFO.SpellID["59014"] = {
-	--desc = "Shadow Void (Risen Drakkari Soulmage - Drak'Tharon Keep - Normal)";
+	--desc = "Shadow Void (Risen Drakkari Soulmage - Drak'Tharon Keep - Heroic)";
 	sound = 1;
 };
 

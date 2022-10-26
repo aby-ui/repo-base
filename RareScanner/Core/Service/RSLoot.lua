@@ -82,7 +82,38 @@ local function IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassI
 	return false
 end
 
-function RSLoot.IsFiltered(itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)
+local function IsCollectionFiltered(type, entityID, itemID, classIndex)
+	if (RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()) == 0) then
+		return true
+	end
+	
+	local collectionsLoot = RSCollectionsDB.GetAllEntitiesCollectionsLoot()[type]
+	if (collectionsLoot and collectionsLoot[entityID]) then
+		-- If mount
+		if (collectionsLoot[entityID][RSConstants.ITEM_TYPE.MOUNT] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.MOUNT], itemID)) then
+			return false
+		-- If pet
+		elseif (collectionsLoot[entityID][RSConstants.ITEM_TYPE.PET] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.PET], itemID)) then
+			return false
+		-- If toy
+		elseif (collectionsLoot[entityID][RSConstants.ITEM_TYPE.TOY] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.TOY], itemID)) then
+			return false
+		-- If appearance
+		elseif (collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE] and collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex], itemID)) then
+			return false
+		end
+	end
+	
+	return true
+end
+
+function RSLoot.IsFiltered(entityID, itemID, itemLink, itemRarity, itemEquipLoc, itemClassID, itemSubClassID)
+	-- Filter by explorer results
+	if (RSConfigDB.IsFilteringByExplorerResults() and RSUtils.GetTableLength(RSCollectionsDB.GetAllEntitiesCollectionsLoot()) > 0) then
+		local _, _, classIndex = UnitClass("player");
+		return IsCollectionFiltered(RSConstants.ITEM_SOURCE.NPC, entityID, itemID, classIndex) and IsCollectionFiltered(RSConstants.ITEM_SOURCE.CONTAINER, entityID, itemID, classIndex)
+	end
+	
 	-- Quality filter
 	if (itemRarity < tonumber(RSConfigDB.GetLootFilterMinQuality())) then
 		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su calidad.", itemID))

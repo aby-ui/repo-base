@@ -73,11 +73,11 @@ local GetPointInfo = function(point)
     local icon
     if point then
         local label = getCreatureNamebyID(point.npc) or point.label or UNKNOWN
-        local MagePortalHorde = private.constants.icon["MagePortalHorde"]
+        local portal_red = private.constants.icon["portal_red"]
 
         if (point.icon == "portal" and point.sanctumtalent) then
             local TALENT = C_Garrison.GetTalentInfo(point.sanctumtalent)
-            icon = TALENT["researched"] and SetIcon(point) or MagePortalHorde
+            icon = TALENT["researched"] and SetIcon(point) or portal_red
         else
             icon = SetIcon(point)
         end

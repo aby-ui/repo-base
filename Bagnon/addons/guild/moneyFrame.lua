@@ -11,7 +11,6 @@ Money.Type = 'GUILDBANK'
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Sushi = LibStub('Sushi-3.1')
 
-
 function Money:RegisterEvents()
 	self:RegisterEvent('GUILDBANK_UPDATE_MONEY', 'Update')
 	self:Update()

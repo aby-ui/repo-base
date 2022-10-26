@@ -1,6 +1,6 @@
 --[[
-	tooltipCounts.lua
-		Adds item counts to tooltips
+	tipCounts.lua
+		Adds item counts to tips
 ]]--
 
 local ADDON, Addon = ...
@@ -54,8 +54,8 @@ local function FormatCounts(color, ...)
 	return total, total > 0 and text
 end
 
-local function AddOwners(tooltip, link)
-	if not Addon.sets.tipCount or tooltip.__tamedCounts then
+local function AddOwners(tip, link)
+	if not Addon.sets.tipCount or tip.__tamedCounts then
 		return
 	end
 
@@ -123,52 +123,57 @@ local function AddOwners(tooltip, link)
 		end
 
 		if count > 0 then
-			tooltip:AddDoubleLine(Addon.Owners:GetIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
+			tip:AddDoubleLine(Addon.Owners:GetIconString(info, 12,0,0) .. ' ' .. color:format(info.name), text)
 			total = total + count
 			players = players + 1
 		end
 	end
 
 	if players > 1 and total > 0 then
-		tooltip:AddDoubleLine(TOTAL, SILVER:format(total))
+		tip:AddDoubleLine(TOTAL, SILVER:format(total))
 	end
 
-	tooltip.__tamedCounts = true
-	tooltip:Show()
+	tip.__tamedCounts = true
+	tip:Show()
 end
 
 
 --[[ Hooking ]]--
 
-local function OnItem(tooltip)
-	local name, link = tooltip:GetItem()
+local function OnItem(tip)
+	local name, link = tip:GetItem()
 	if name ~= '' then
-		AddOwners(tooltip, link)
+		AddOwners(tip, link)
 	end
 end
 
-local function OnTradeSkill(tooltip, recipe, reagent)
-	AddOwners(tooltip, tonumber(reagent) and C_TradeSkillUI.GetRecipeReagentItemLink(recipe, reagent) or C_TradeSkillUI.GetRecipeItemLink(recipe))
+local function OnQuest(tip, type, quest)
+	AddOwners(tip, GetQuestItemLink(type, quest))
 end
 
-local function OnQuest(tooltip, type, quest)
-	AddOwners(tooltip, GetQuestItemLink(type, quest))
+local function OnTradeSkill(api)
+	return function(tip, recipeID, ...)
+		AddOwners(tip, tonumber(recipeID) and C_TradeSkillUI[api](recipeID, ...)) end
 end
 
-local function OnClear(tooltip)
-	tooltip.__tamedCounts = false
+local function OnClear(tip)
+	tip.__tamedCounts = false
 end
 
-local function HookTip(tooltip)
-	tooltip:HookScript('OnTooltipCleared', OnClear)
-	tooltip:HookScript('OnTooltipSetItem', OnItem)
+local function HookTip(tip)
+	tip:HookScript('OnTooltipCleared', OnClear)
+	tip:HookScript('OnTooltipSetItem', OnItem)
 
-	hooksecurefunc(tooltip, 'SetQuestItem', OnQuest)
-	hooksecurefunc(tooltip, 'SetQuestLogItem', OnQuest)
+	hooksecurefunc(tip, 'SetQuestItem', OnQuest)
+	hooksecurefunc(tip, 'SetQuestLogItem', OnQuest)
 
 	if C_TradeSkillUI then
-		hooksecurefunc(tooltip, 'SetRecipeReagentItem', OnTradeSkill)
-		hooksecurefunc(tooltip, 'SetRecipeResultItem', OnTradeSkill)
+		if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
+			hooksecurefunc(tip, 'SetRecipeReagentItem', OnTradeSkill('GetRecipeFixedReagentItemLink'))
+		else
+			hooksecurefunc(tip, 'SetRecipeReagentItem', OnTradeSkill('GetRecipeReagentItemLink'))
+			hooksecurefunc(tip, 'SetRecipeResultItem', OnTradeSkill('GetRecipeItemLink'))
+		end
 	end
 end
 

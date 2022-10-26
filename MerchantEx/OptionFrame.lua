@@ -296,9 +296,9 @@ local function AddDragDropSupport(frame, ...)
 	local children = select("#", ...)
 	if children > 0 then
 		frame.children = { ... }
-		frame:RegisterEvent("CURSOR_UPDATE")
+		frame:RegisterEvent("CURSOR_CHANGED")
 		frame:HookScript("OnEvent", function(self, event)
-			if event == "CURSOR_UPDATE" then
+			if event == "CURSOR_CHANGED" then
 				local empty = not GetCursorInfo()
 				local child
 				for _, child in ipairs(self.children) do
@@ -379,7 +379,7 @@ function list:OnButtonCreated(button)
 	button.delete:SetPoint("RIGHT", -4, 0)
 	button.delete:SetScript("OnClick", DeleteButton_OnClick)
 
-	button.check = CreateFrame("CheckButton", button:GetName().."Check", button, "InterfaceOptionsSmallCheckButtonTemplate")
+	button.check = CreateFrame("CheckButton", button:GetName().."Check", button, "InterfaceOptionsCheckButtonTemplate")
 	_G[button.check:GetName().."Text"]:SetText(L["char"])
 	button.check:SetPoint("RIGHT", button.delete, "LEFT", -45, 0)
 	button.check:SetHitRectInsets(0, 0, 0, 0)

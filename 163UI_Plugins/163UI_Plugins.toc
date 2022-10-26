@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: |cff880303[爱不易]|r AbyUI 小功能集合
 ## SavedVariables: SimulationcraftAbyUIDB
 ## X-Vendor: AbyUI
@@ -13,7 +13,6 @@ ExtraActionButton.lua
 FiveCombo.lua
 FriendsGuildTab.lua
 GuildRosterButtons.lua
-MerchantFilterButtons.lua
 PingPing.lua
 ProfessionTabs.lua
 QuestFont.lua
@@ -28,8 +27,6 @@ SlashCommands.lua
 yClassColors\core.lua
 yClassColors\battlefield.lua
 yClassColors\friends.lua
-#blizzard already colored yClassColors\guild.lua
-yClassColors\lfr.lua
 yClassColors\who.lua
 
 7.0\BattlePetCurrentStats.lua

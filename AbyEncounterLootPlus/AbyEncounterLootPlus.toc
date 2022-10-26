@@ -1,10 +1,11 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: |cff880303[爱不易]|r AbyUI 装备搜索增强
 ## Notes: 增强冒险指南里副本掉落装备的筛选功能
 ## Author: warbaby
 ## SavedVariables: ELPDATA
 ## X-DataVersion: 20220922
 ## X-Vendor: AbyUI
+## Dependencies: TODO:abyui10
 
 Utils.lua
 Data.lua

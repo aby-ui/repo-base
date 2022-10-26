@@ -34,7 +34,11 @@ ELib:ShadowInside(Options)
 Options.bossButton:Hide()
 Options.backToInterface:SetScript("OnClick",function ()
 	MRT.Options.Frame:Hide()
-	InterfaceOptionsFrame:Show()
+	if MRT.is10 then
+		SettingsPanel:Show()
+	else
+		InterfaceOptionsFrame:Show()
+	end
 end)
 
 
@@ -143,20 +147,37 @@ Options.modulesList:Update()
 
 MRT.Options.InBlizzardInterface = CreateFrame( "Frame", nil )
 MRT.Options.InBlizzardInterface.name = "Method Raid Tools"
-InterfaceOptions_AddCategory(MRT.Options.InBlizzardInterface)
+if MRT.is10 then
+	local category = Settings.RegisterCanvasLayoutCategory(MRT.Options.InBlizzardInterface, "Method Raid Tools")
+	Settings.RegisterAddOnCategory(category)
+else
+	InterfaceOptions_AddCategory(MRT.Options.InBlizzardInterface)
+end
 MRT.Options.InBlizzardInterface:Hide()
 
 MRT.Options.InBlizzardInterface:SetScript("OnShow",function (self)
-	if InterfaceOptionsFrame:IsShown() then
-		InterfaceOptionsFrame:Hide()
+	if MRT.is10 then
+		if SettingsPanel:IsShown() then
+			SettingsPanel:Hide()
+		end
+	else
+		if InterfaceOptionsFrame:IsShown() then
+			InterfaceOptionsFrame:Hide()
+		end
 	end
 	MRT.Options:Open()
 	self:SetScript("OnShow",nil)
 end)
 
 MRT.Options.InBlizzardInterface.button = ELib:Button(MRT.Options.InBlizzardInterface,"Method Raid Tools",0):Size(400,25):Point("TOP",0,-100):OnClick(function ()
-	if InterfaceOptionsFrame:IsShown() then
-		InterfaceOptionsFrame:Hide()
+	if MRT.is10 then
+		if SettingsPanel:IsShown() then
+			SettingsPanel:Hide()
+		end
+	else
+		if InterfaceOptionsFrame:IsShown() then
+			InterfaceOptionsFrame:Hide()
+		end
 	end
 	MRT.Options:Open()
 end)
@@ -288,11 +309,11 @@ local function IconMoveButton(self)
 		local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
 		local quadTable = minimapShapes[minimapShape]
 		if quadTable[q] then
-			x, y = x*80, y*80
+			x, y = x*111, y*111
 		else
-			local diagRadius = 103.13708498985 --math.sqrt(2*(80)^2)-10
-			x = math.max(-80, math.min(x*diagRadius, 80))
-			y = math.max(-80, math.min(y*diagRadius, 80))
+			local diagRadius = 146.97770542341 --103.13708498985 --math.sqrt(2*(80)^2)-10
+			x = math.max(-111, math.min(x*diagRadius, 111))
+			y = math.max(-111, math.min(y*diagRadius, 111))
 		end
 		self:ClearAllPoints()
 		self:SetPoint("CENTER", Minimap, "CENTER", x, y)
@@ -892,8 +913,8 @@ do
 			askFrame:SetSize(M_WIDTH,M_HEIGHT)
 			askFrame:SetPoint("CENTER")
 			askFrame:SetFrameStrata("DIALOG")
-			local mainbg = ELib:Texture(askFrame,[[Interface\AddOns\MRT\media\askjt]]):TexCoord(0,1,0,650/1024):Size(M_WIDTH,M_HEIGHT):Point("TOPLEFT")
-			local hiddenask = ELib:Texture(askFrame,[[Interface\AddOns\MRT\media\askjt]]):TexCoord(0,146/1024,651/1024,874/1024):Size(147,223):Point("CENTER",mainbg,35,-112)
+			local mainbg = ELib:Texture(askFrame,[[Interface\AddOns\MRT\media\askjt]],"BACKGROUND"):TexCoord(0,1,0,650/1024):Size(M_WIDTH,M_HEIGHT):Point("TOPLEFT")
+			local hiddenask = ELib:Texture(askFrame,[[Interface\AddOns\MRT\media\askjt]],"BORDER"):TexCoord(0,146/1024,651/1024,874/1024):Size(147,223):Point("CENTER",mainbg,35,-112)
 			hiddenask:SetAlpha(0)
 
 			askFrame:SetMovable(true)
@@ -1130,7 +1151,7 @@ end
 OptionsFrame.Changelog = ELib:ScrollFrame(OptionsFrame):Size(680,180):Point("TOP",0,-335):OnShow(function(self)
 	local text = MRT.Options.Changelog or ""
 	text = text:gsub("(v%.%d+([^\n]*).-\n\n)",function(a,b)
-		if (b == "-Classic" and MRT.isClassic and not MRT.isBC) or (b == "-BC" and MRT.isBC) or ((b ~= "-Classic" and b ~= "-BC") and not MRT.isClassic) then
+		if (b == "-Classic" and MRT.isClassic and not MRT.isBC) or (b == "-BC" and MRT.isBC and not MRT.isLK) or (b == "-LK" and MRT.isLK) or ((b ~= "-Classic" and b ~= "-BC" and b ~= "-LK") and not MRT.isClassic) then
 			return a
 		else
 			return ""

@@ -12,8 +12,9 @@ local POPUP_ID = MODULE .. 'Purchase'
 local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local Sushi = LibStub('Sushi-3.1')
 
-
---[[ Events ]]--
+CloseVoidStorageFrame = CloseVoidStorageFrame or function()
+	C_PlayerInteractionManager.ClearInteraction(Enum.PlayerInteractionType.VoidStorageBanker)
+end
 
 function Vault:OnEnable()
 	self:RegisterMessage('CACHE_VAULT_OPENED', 'OnOpen')

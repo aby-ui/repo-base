@@ -1,12 +1,12 @@
-## Interface: 90207
-## X-Min-Interface: 90207
+## Interface: 100000
+## X-Min-Interface: 100000
 ## X-Min-Interface-Classic: 11403
 ## X-Min-Interface-BCC: 20504
 ## X-Min-Interface-Wrath: 30400
 ## Title: GTFO
 ## Notes: GTFO, you're dying!
 ## Author: Zensunim of Dragonblight
-## Version: 4.69
+## Version: 4.69.1
 ## DefaultState: Enabled
 ## SavedVariables: GTFOData
 ## X-WoWI-ID: 17996

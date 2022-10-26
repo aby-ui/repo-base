@@ -102,8 +102,8 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Message Type"],
         order = 2,
         values = OptionsPrivate.Private.send_chat_message_types,
+        sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.send_chat_message_types),
         disabled = function() return not data.actions.start.do_message end,
-        control = "WeakAurasSortedDropdown"
       },
       start_message_warning = {
         type = "description",
@@ -219,8 +219,8 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Sound"],
         order = 8.4,
         values = OptionsPrivate.Private.sound_types,
+        sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_types),
         disabled = function() return not data.actions.start.do_sound end,
-        control = "WeakAurasSortedDropdown"
       },
       start_sound_channel = {
         type = "select",
@@ -517,8 +517,8 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Message Type"],
         order = 22,
         values = OptionsPrivate.Private.send_chat_message_types,
+        sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.send_chat_message_types),
         disabled = function() return not data.actions.finish.do_message end,
-        control = "WeakAurasSortedDropdown"
       },
       finish_message_warning = {
         type = "description",
@@ -580,7 +580,7 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Voice"],
         order = 23.2,
         disabled = function() return not data.actions.finish.do_message end,
-        hidden = function() return (not WeakAuras.IsRetail()) or data.actions.finish.message_type ~= "TTS" end,
+        hidden = function() return (WeakAuras.IsClassic()) or data.actions.finish.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
         desc = L["Available Voices are system specific"]
       },
@@ -607,8 +607,8 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Sound"],
         order = 28.1,
         values = OptionsPrivate.Private.sound_types,
+        sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_types),
         disabled = function() return not data.actions.finish.do_sound end,
-        control = "WeakAurasSortedDropdown"
       },
       finish_sound_channel = {
         type = "select",

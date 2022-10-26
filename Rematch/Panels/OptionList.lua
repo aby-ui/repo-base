@@ -79,7 +79,6 @@ panel.opts = {
 	{ "check", "DontMinTabToggle", L["Or With Panel Tabs"], L["Don't let the Pets, Teams, Queue or Options tabs minimize the standalone window."], "LockDrawer" },
 	{ "check", "LowerStrata", L["Lower Window Behind UI"], L["Push the standalone window back behind other parts of the UI so other parts of the UI can appear ontop."], nil, true, true },
 	{ "check", "PanelTabsToRight", L["Move Panel Tabs To Right"], L["Align the Pets, Teams, Queue and Options tabs to the right side of the standalone window."], nil, true, true },
-	{ "check", "MiniMinimized", L["Minimal Minimized Window"], L["Remove the titlebar and tabs when the standalone window is minimized."] },
 	{ "header", L["Appearance Options"], 3 },
 	{ "check", "SlimListButtons", L["Compact List Format"], L["Use an alternate style of lists for Pets, Teams, Queue and Targets to display more on the screen at once."], nil, true },
 	{ "check", "SlimListSmallText", L["Use Smaller Text Too"], L["Also use smaller text in the Compact List Format so more text displays on each button."], "SlimListButtons", true },

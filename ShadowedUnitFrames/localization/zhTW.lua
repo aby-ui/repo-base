@@ -319,6 +319,7 @@ L["Enabling advanced settings will give you access to more configuration options
 L["Energy"] = "能量"
 L["Enlarge auras for"] = "放大光環於"
 L["Error"] = "錯誤"
+L["Essence"] = "精華"
 L["Events"] = "事件"
 L["Events that should be used to trigger an update of this tag. Separate each event with a single space."] = "用來觸發此更新標籤的事件，用單獨的區隔來分開每個事件。"
 L["Everywhere else"] = "其他任何地方"
@@ -819,8 +820,6 @@ L["This bar will automatically hide when you are at the level cap, or you do not
 L[ [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
 Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=] ] = [=[這個顏色作用於顯示你自己的標記，僅用於未使用圖示的時候。
 有助於你了解如一個目標有回春術，但你也想知道這個回春術是不是你施放的。]=]
-L[ [=[This color will be used if the indicator shown is your own, only applies if icons are not used.
-Handy if you want to know if a target has a Rejuvenation on them, but you also want to know if you were the one who casted the Rejuvenation.]=] ] = "如果顯示的指示器是您自己的，則將使用此顏色，僅在未使用圖示時適用。 這很方便於如果你想知道一個目標是否有回春術，但你也想知道你是否是那個進行回春術的人。"
 L["This filter has no aura types set to filter out."] = "在篩選中設定要篩選的光環類型。"
 L["This filter has no auras in it, you will have to add some using the dialog above."] = "沒有光環在篩選中，你必須使用上面的對話框來新增。"
 L["This is a good guide on how to get started with programming in Lua, while you do not need to read the entire thing it is a helpful for understanding the basics of Lua syntax and API's."] = "這是一份如何開始 Lua 程式設計的很好的指南，只是你並不需要閱讀所有部分，它有助於理解 Lua 的語法和 API 的基礎知識。"
@@ -829,8 +828,6 @@ L["This unit has child units that depend on it, you need to enable this unit bef
 L[ [=[This will be set for your current class only.
 If no custom spells are set, defaults appropriate for your class will be used.]=] ] = [=[這只會為當前職業設置。
 如果沒有設置自訂的法術，將會使用你職業預設適當的法術。]=]
-L[ [=[This will be set for your current class only.
-If no custom spells are set, defaults appropriate for your class will be used.]=] ] = "這將僅為您當前的職業設置。 如果未設置自定義法術，則將使用適合您職業的預設值。"
 L["This will disable the automatic detection of what events this tag will need, you should leave this unchecked unless you know what you are doing."] = "這將停用自動檢測什麼事件需要此標記功能，你應保持這個未勾選除非你知道你在做什麽。"
 L["This will override all background colorings for bars including custom set ones."] = "這將覆蓋所有計量條的背景顏色，包括自訂設定的。"
 L["Threat"] = "仇恨"

@@ -45,7 +45,7 @@ end
 hooksecurefunc ("TaskPOI_OnEnter", function (self)
 	WorldQuestTracker.CurrentHoverQuest = self.questID
 	if (self.Texture and self.IsZoneQuestButton) then
-		self.Texture:SetBlendMode ("ADD")
+		self.Texture:SetBlendMode("ADD")
 	end
 end)
 
@@ -53,7 +53,7 @@ end)
 hooksecurefunc ("TaskPOI_OnLeave", function (self)
 	WorldQuestTracker.CurrentHoverQuest = nil
 	if (self.Texture and self.IsZoneQuestButton) then
-		self.Texture:SetBlendMode ("BLEND")
+		self.Texture:SetBlendMode("BLEND")
 	end
 end)
 
@@ -97,7 +97,7 @@ local check_for_quests_on_unknown_map = function()
 	
 end
 
-local add_checkmark_icon = function (isOptionEnabled, isMainMenu)
+local add_checkmark_icon = function(isOptionEnabled, isMainMenu)
 	if (isMainMenu) then
 		if (isOptionEnabled) then
 			GameCooltip:AddIcon ([[Interface\BUTTONS\UI-CheckBox-Check]], 1, 1, 16, 16)
@@ -114,7 +114,7 @@ local add_checkmark_icon = function (isOptionEnabled, isMainMenu)
 end
 
 --~mapchange ~map change ~change map ~changemap
-WorldQuestTracker.OnMapHasChanged = function (self)
+WorldQuestTracker.OnMapHasChanged = function(self)
 	
 	local mapID = WorldMapFrame.mapID
 	WorldQuestTracker.InitializeWorldWidgets()
@@ -299,7 +299,7 @@ local deny_auto_switch = function()
 end
 
 --apos o click, verifica se pode mostrar os widgets e permitir que o mapa seja alterado no proximo tick
-local allow_map_change = function (...)
+local allow_map_change = function(...)
 	if (currentMap == WorldQuestTracker.GetCurrentMapAreaID()) then
 		WorldQuestTracker.CanShowWorldMapWidgets (true)
 	else
@@ -357,7 +357,7 @@ end)
 hooksecurefunc ("WorldMap_GetOrCreateTaskPOI", function (index)
 	local button = _G ["WorldMapFrameTaskPOI" .. index]
 	if (button:GetScript ("OnClick") ~= WorldQuestTracker.OnQuestButtonClick) then
-		--button:SetScript ("OnClick", WorldQuestTracker.OnQuestButtonClick)
+		--button:SetScript("OnClick", WorldQuestTracker.OnQuestButtonClick)
 		tinsert (WorldQuestTracker.AllTaskPOIs, button)
 	end
 end)
@@ -377,16 +377,16 @@ WorldMapFrame:HookScript ("OnHide", function()
 	C_Timer.After (0.2, WorldQuestTracker.RefreshTrackerWidgets)
 end)
 
-WorldQuestTracker.UpdateWorldMapFrameAnchor = function (resetLeft)
+WorldQuestTracker.UpdateWorldMapFrameAnchor = function(resetLeft)
     do return end
 	if (WorldQuestTracker.db.profile.map_frame_anchor == "center") then
 		if (not resetLeft) then
 			WorldMapFrame:ClearAllPoints()
-			WorldMapFrame:SetPoint ("center", UIParent, "center", 100, 0)
+			WorldMapFrame:SetPoint("center", UIParent, "center", 100, 0)
 		else
 			C_Timer.After (0.1, function() 
 				WorldMapFrame:ClearAllPoints()
-				WorldMapFrame:SetPoint ("center", UIParent, "center", 100, 0)
+				WorldMapFrame:SetPoint("center", UIParent, "center", 100, 0)
 			end)
 		end
 		
@@ -400,7 +400,7 @@ WorldQuestTracker.UpdateWorldMapFrameAnchor = function (resetLeft)
 end
 
 local defaultWorldMapScale
-WorldQuestTracker.UpdateWorldMapFrameScale = function (reset)
+WorldQuestTracker.UpdateWorldMapFrameScale = function(reset)
 
 	--this feature is having some problem in 8.1 retail -- ~review
 	if (true) then
@@ -427,7 +427,7 @@ end
 
 -- ~toggle
 local firstAnchorRun = true
-WorldQuestTracker.OnToggleWorldMap = function (self)
+WorldQuestTracker.OnToggleWorldMap = function(self)
 
 	if (not WorldMapFrame:IsShown()) then
 		--closed
@@ -483,14 +483,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				local f = DF:CreateSimplePanel (UIParent, 460, 90, "Discord Server", "WorldQuestTrackerSharePanel")
 				f:SetFrameStrata ("TOOLTIP")
-				f:SetPoint ("center", UIParent, "center", 0, 0)
+				f:SetPoint("center", UIParent, "center", 0, 0)
 				
 				DF:CreateBorder (f)
 				
 				local LinkBox = DF:CreateTextEntry (f, function()end, 380, 20, "ExportLinkBox", _, _, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
-				LinkBox:SetPoint ("center", f, "center", 0, -10)
+				LinkBox:SetPoint("center", f, "center", 0, -10)
 				
-				f:SetScript ("OnShow", function()
+				f:SetScript("OnShow", function()
 					LinkBox:SetText (DF.AuthorInfo.Discord)
 					C_Timer.After (1, function()
 						LinkBox:SetFocus (true)
@@ -516,11 +516,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 					local f = DF:CreateSimplePanel (UIParent, config.scroll_width + 30, config.scroll_height + 30, "World Quest Tracker Quest Blacklist", "WorldQuestTrackerBanPanel")
 					f:SetFrameStrata ("DIALOG")
-					f:SetPoint ("center", UIParent, "center")
+					f:SetPoint("center", UIParent, "center")
 					
 					DF:CreateBorder (f)
 					
-					local banQuestRefresh = function (self, questList, offset, totalLines)
+					local banQuestRefresh = function(self, questList, offset, totalLines)
 						
 						for i = 1, totalLines do
 							local index = i + offset
@@ -533,7 +533,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 									line.name:SetText (questTitle)
 									line.questIDLabel:SetText (questID)
 									line.questID = questID
-									line.icon:SetTexture (WorldQuestTracker.MapData.FactionIcons [factionID])
+									line.icon:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
 									
 									line.removebutton.questID = questID
 									line.addbutton.questID = questID
@@ -553,9 +553,9 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					
 					local banQuestScroll = DF:CreateScrollBox (f, "$parentBanQuestScroll", banQuestRefresh, {}, config.scroll_width, config.scroll_height, config.scroll_lines, config.scroll_line_height)
 					DF:ReskinSlider (banQuestScroll)
-					banQuestScroll:SetPoint ("topleft", f, "topleft", 5, -25)
+					banQuestScroll:SetPoint("topleft", f, "topleft", 5, -25)
 					
-					local onclick_add_button = function (self)
+					local onclick_add_button = function(self)
 						local questID = self.questID
 						
 						WorldQuestTracker.db.profile.banned_quests [questID] = true
@@ -570,7 +570,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						f:UpdateQuestList()
 					end
 					
-					local onclick_remove_button = function (self)
+					local onclick_remove_button = function(self)
 						local questID = self.questID
 						WorldQuestTracker.db.profile.banned_quests [questID] = nil
 
@@ -587,8 +587,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					end
 					
 					local highlightColor = {1, .2, .1}
-					local line_onenter = function (self)
-						self:SetBackdropColor (unpack (config.backdrop_color_highlight))
+					local line_onenter = function(self)
+						self:SetBackdropColor(unpack (config.backdrop_color_highlight))
 						
 						if (self.questID) then
 							if (WorldQuestTrackerAddon.GetCurrentZoneType() == "world") then
@@ -600,21 +600,21 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						end
 					end
 					
-					local line_onleave = function (self)
-						self:SetBackdropColor (unpack (config.backdrop_color))
+					local line_onleave = function(self)
+						self:SetBackdropColor(unpack (config.backdrop_color))
 						WorldQuestTracker.HideMapQuestHighlight()
 					end
 
 					--create the scroll widgets
-					local createLine = function (self, index)
+					local createLine = function(self, index)
 						local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
-						line:SetPoint ("topleft", self, "topleft", 1, -((index-1)*(config.scroll_line_height+1)) - 1)
-						line:SetSize (config.scroll_width - 2, config.scroll_line_height)
-						line:SetScript ("OnEnter", line_onenter)
-						line:SetScript ("OnLeave", line_onleave)
+						line:SetPoint("topleft", self, "topleft", 1, -((index-1)*(config.scroll_line_height+1)) - 1)
+						line:SetSize(config.scroll_width - 2, config.scroll_line_height)
+						line:SetScript("OnEnter", line_onenter)
+						line:SetScript("OnLeave", line_onleave)
 						
-						line:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-						line:SetBackdropColor (unpack (config.backdrop_color))
+						line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+						line:SetBackdropColor(unpack (config.backdrop_color))
 						
 						local name = line:CreateFontString ("$parentName", "overlay", "GameFontNormal")
 						local questIDLabel = line:CreateFontString ("$parentName", "overlay", "GameFontNormal")
@@ -622,36 +622,36 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						DF:SetFontSize (name, 10)
 						DF:SetFontSize (questIDLabel, 10)
 						
-						local icon = line:CreateTexture ("$parentIcon", "overlay")
-						icon:SetSize (config.scroll_line_height - 2, config.scroll_line_height - 2)
-						icon:SetTexCoord (.1, .9, .1, .9)
+						local icon = line:CreateTexture("$parentIcon", "overlay")
+						icon:SetSize(config.scroll_line_height - 2, config.scroll_line_height - 2)
+						icon:SetTexCoord(.1, .9, .1, .9)
 
 						local add_button = CreateFrame ("button", "$parentRemoveButton", line, "UIPanelCloseButton")
-						add_button:SetSize (21, 21)
-						add_button:SetScript ("OnClick", onclick_add_button)
+						add_button:SetSize(21, 21)
+						add_button:SetScript("OnClick", onclick_add_button)
 						add_button:SetNormalTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
 						add_button:SetPushedTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
 						add_button:GetNormalTexture():SetDesaturated (true)
 						add_button:GetPushedTexture():SetDesaturated (true)
 						add_button:GetPushedTexture():ClearAllPoints()
-						add_button:GetPushedTexture():SetPoint ("center")
-						add_button:GetPushedTexture():SetSize (18, 18)
+						add_button:GetPushedTexture():SetPoint("center")
+						add_button:GetPushedTexture():SetSize(18, 18)
 						
 						local remove_button = CreateFrame ("button", "$parentRemoveButton", line, "UIPanelCloseButton")
-						remove_button:SetSize (21, 21)
-						remove_button:SetScript ("OnClick", onclick_remove_button)
+						remove_button:SetSize(21, 21)
+						remove_button:SetScript("OnClick", onclick_remove_button)
 						remove_button:SetNormalTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
 						remove_button:SetPushedTexture([[Interface\GLUES\LOGIN\Glues-CheckBox-Check]])
 						remove_button:GetPushedTexture():ClearAllPoints()
-						remove_button:GetPushedTexture():SetPoint ("center")
-						remove_button:GetPushedTexture():SetSize (18, 18)
+						remove_button:GetPushedTexture():SetPoint("center")
+						remove_button:GetPushedTexture():SetSize(18, 18)
 						
-						icon:SetPoint ("left", line, "left", 2, 0)
-						name:SetPoint ("left", icon, "right", 4, 0)
+						icon:SetPoint("left", line, "left", 2, 0)
+						name:SetPoint("left", icon, "right", 4, 0)
 
-						add_button:SetPoint ("right", line, "right", -2, 0)
-						remove_button:SetPoint ("right", line, "right", -2, 0)
-						questIDLabel:SetPoint ("right", line, "right", -26, 0)
+						add_button:SetPoint("right", line, "right", -2, 0)
+						remove_button:SetPoint("right", line, "right", -2, 0)
+						questIDLabel:SetPoint("right", line, "right", -26, 0)
 						
 						line.icon = icon
 						line.name = name
@@ -742,16 +742,16 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			--looks like ElvUI removes the highlight texture from the button
 			local closeButtonHighlightTexture = WorldMapFrame.SidePanelToggle.CloseButton:GetHighlightTexture()
 			if (closeButtonHighlightTexture) then
-				closeButtonHighlightTexture:SetAlpha (toggleButtonsAlpha)
+				closeButtonHighlightTexture:SetAlpha(toggleButtonsAlpha)
 			end
 			
 			local openButtonHighlightTexture = WorldMapFrame.SidePanelToggle.OpenButton:GetHighlightTexture()
 			if (openButtonHighlightTexture) then
-				openButtonHighlightTexture:SetAlpha (toggleButtonsAlpha)
+				openButtonHighlightTexture:SetAlpha(toggleButtonsAlpha)
 			end
 			
-			WorldMapFrame.SidePanelToggle.CloseButton:SetFrameLevel (anchorFrame:GetFrameLevel()+2)
-			WorldMapFrame.SidePanelToggle.OpenButton:SetFrameLevel (anchorFrame:GetFrameLevel()+2)
+			WorldMapFrame.SidePanelToggle.CloseButton:SetFrameLevel(anchorFrame:GetFrameLevel()+2)
+			WorldMapFrame.SidePanelToggle.OpenButton:SetFrameLevel(anchorFrame:GetFrameLevel()+2)
 			
 			local navigateButtonsSize = {22, 30}
 			local navigateButtonsbackdropColor = {.2, .2, .2, .7}
@@ -762,7 +762,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			--[=[
 				local AllianceWorldQuestButton = CreateFrame ("button", "WorldQuestTrackerGoToAllianceButton", anchorFrame, "BackdropTemplate")
 				AllianceWorldQuestButton:SetSize(unpack(navigateButtonsSize))
-				AllianceWorldQuestButton:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
+				AllianceWorldQuestButton:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
 
 				AllianceWorldQuestButton:SetBackdrop(navigateButtonsBackdrop)
 				AllianceWorldQuestButton:SetBackdropBorderColor(unpack(navigateButtonsBorderColor))
@@ -776,14 +776,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				AllianceWorldQuestButton:GetNormalTexture():SetPoint("bottomright", -1, 1)
 				AllianceWorldQuestButton:GetNormalTexture():SetTexCoord(64/256, 92/256, 0, 1)
 				
-				AllianceWorldQuestButton.Highlight = AllianceWorldQuestButton:CreateTexture (nil, "highlight")
+				AllianceWorldQuestButton.Highlight = AllianceWorldQuestButton:CreateTexture(nil, "highlight")
 				AllianceWorldQuestButton.Highlight:SetColorTexture(.9, .9, .9, .3)
 				AllianceWorldQuestButton.Highlight:SetBlendMode("ADD")
 				AllianceWorldQuestButton.Highlight:SetAlpha(toggleButtonsAlpha)
 				AllianceWorldQuestButton.Highlight:SetSize(unpack(navigateButtonsSize))
 				AllianceWorldQuestButton.Highlight:SetPoint("center")
 				
-				AllianceWorldQuestButton:SetScript ("OnClick", function()
+				AllianceWorldQuestButton:SetScript("OnClick", function()
 					WorldMapFrame:SetMapID(WorldQuestTracker.MapData.ZoneIDs.KULTIRAS)
 					WorldQuestTracker.UpdateWorldQuestsOnWorldMap(true)
 					WorldQuestTracker.AllianceWorldQuestButton_Click = GetTime()
@@ -791,8 +791,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			--Horde
 				local HordeWorldQuestButton = CreateFrame ("button", "WorldQuestTrackerGoToHordeButton", anchorFrame, "BackdropTemplate")
-				HordeWorldQuestButton:SetSize (unpack(navigateButtonsSize))
-				HordeWorldQuestButton:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
+				HordeWorldQuestButton:SetSize(unpack(navigateButtonsSize))
+				HordeWorldQuestButton:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
 
 				HordeWorldQuestButton:SetBackdrop(navigateButtonsBackdrop)
 				HordeWorldQuestButton:SetBackdropBorderColor(unpack(navigateButtonsBorderColor))
@@ -806,14 +806,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				HordeWorldQuestButton:GetNormalTexture():SetPoint("bottomright", -1, 1)
 				HordeWorldQuestButton:GetNormalTexture():SetTexCoord(32/256, 64/256, 0, 1)
 				
-				HordeWorldQuestButton.Highlight = HordeWorldQuestButton:CreateTexture (nil, "highlight")
+				HordeWorldQuestButton.Highlight = HordeWorldQuestButton:CreateTexture(nil, "highlight")
 				HordeWorldQuestButton.Highlight:SetColorTexture(.9, .9, .9, .3)
-				HordeWorldQuestButton.Highlight:SetBlendMode ("ADD")
-				HordeWorldQuestButton.Highlight:SetAlpha (toggleButtonsAlpha)
-				HordeWorldQuestButton.Highlight:SetSize (unpack(navigateButtonsSize))
-				HordeWorldQuestButton.Highlight:SetPoint ("center")
+				HordeWorldQuestButton.Highlight:SetBlendMode("ADD")
+				HordeWorldQuestButton.Highlight:SetAlpha(toggleButtonsAlpha)
+				HordeWorldQuestButton.Highlight:SetSize(unpack(navigateButtonsSize))
+				HordeWorldQuestButton.Highlight:SetPoint("center")
 				
-				HordeWorldQuestButton:SetScript ("OnClick", function()
+				HordeWorldQuestButton:SetScript("OnClick", function()
 					WorldMapFrame:SetMapID(WorldQuestTracker.MapData.ZoneIDs.ZANDALAR)
 					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
 					WorldQuestTracker.HordeWorldQuestButton_Click = GetTime()
@@ -821,8 +821,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 			--legion
 				local LegionWorldQuestButton = CreateFrame ("button", "WorldQuestTrackerGoToLegionButton", anchorFrame, "BackdropTemplate")
-				LegionWorldQuestButton:SetSize (unpack(navigateButtonsSize))
-				LegionWorldQuestButton:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
+				LegionWorldQuestButton:SetSize(unpack(navigateButtonsSize))
+				LegionWorldQuestButton:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
 
 				LegionWorldQuestButton:SetNormalTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
 				LegionWorldQuestButton:SetPushedTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
@@ -836,14 +836,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				LegionWorldQuestButton:SetBackdropBorderColor(unpack(navigateButtonsBorderColor))
 				LegionWorldQuestButton:SetBackdropColor(unpack(navigateButtonsbackdropColor))
 
-				LegionWorldQuestButton.Highlight = LegionWorldQuestButton:CreateTexture (nil, "highlight")
+				LegionWorldQuestButton.Highlight = LegionWorldQuestButton:CreateTexture(nil, "highlight")
 				LegionWorldQuestButton.Highlight:SetColorTexture(.9, .9, .9, .3)
-				LegionWorldQuestButton.Highlight:SetBlendMode ("ADD")
-				LegionWorldQuestButton.Highlight:SetAlpha (toggleButtonsAlpha)
-				LegionWorldQuestButton.Highlight:SetSize (unpack(navigateButtonsSize))
-				LegionWorldQuestButton.Highlight:SetPoint ("center")
+				LegionWorldQuestButton.Highlight:SetBlendMode("ADD")
+				LegionWorldQuestButton.Highlight:SetAlpha(toggleButtonsAlpha)
+				LegionWorldQuestButton.Highlight:SetSize(unpack(navigateButtonsSize))
+				LegionWorldQuestButton.Highlight:SetPoint("center")
 				
-				LegionWorldQuestButton:SetScript ("OnClick", function()
+				LegionWorldQuestButton:SetScript("OnClick", function()
 					WorldMapFrame:SetMapID(WorldQuestTracker.MapData.ZoneIDs.ZANDALAR)
 					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true)
 					WorldQuestTracker.LegionWorldQuestButton_Click = GetTime()
@@ -853,8 +853,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 
 			--azeroth
 			local AzerothWorldQuestButton = CreateFrame ("button", "WorldQuestTrackerGoToAzerothButton", anchorFrame, "BackdropTemplate")
-			AzerothWorldQuestButton:SetSize (unpack(navigateButtonsSize))
-			AzerothWorldQuestButton:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
+			AzerothWorldQuestButton:SetSize(unpack(navigateButtonsSize))
+			AzerothWorldQuestButton:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
 			
 			AzerothWorldQuestButton:SetNormalTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
 			AzerothWorldQuestButton:SetPushedTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
@@ -873,14 +873,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			AzerothWorldQuestButton:SetBackdropBorderColor(unpack(navigateButtonsBorderColor))
 			AzerothWorldQuestButton:SetBackdropColor(unpack(navigateButtonsbackdropColor))
 			
-			AzerothWorldQuestButton.Highlight = AzerothWorldQuestButton:CreateTexture (nil, "highlight")
+			AzerothWorldQuestButton.Highlight = AzerothWorldQuestButton:CreateTexture(nil, "highlight")
 			AzerothWorldQuestButton.Highlight:SetColorTexture(.9, .9, .9, .3)
-			AzerothWorldQuestButton.Highlight:SetBlendMode ("ADD")
-			AzerothWorldQuestButton.Highlight:SetAlpha (toggleButtonsAlpha)
-			AzerothWorldQuestButton.Highlight:SetSize (unpack(navigateButtonsSize))
-			AzerothWorldQuestButton.Highlight:SetPoint ("center")
+			AzerothWorldQuestButton.Highlight:SetBlendMode("ADD")
+			AzerothWorldQuestButton.Highlight:SetAlpha(toggleButtonsAlpha)
+			AzerothWorldQuestButton.Highlight:SetSize(unpack(navigateButtonsSize))
+			AzerothWorldQuestButton.Highlight:SetPoint("center")
 			
-			AzerothWorldQuestButton:SetScript ("OnClick", function()
+			AzerothWorldQuestButton:SetScript("OnClick", function()
 				WorldMapFrame:SetMapID(WorldQuestTracker.MapData.ZoneIDs.AZEROTH)
 				WorldQuestTracker.UpdateWorldQuestsOnWorldMap(true)
 				WorldQuestTracker.AzerothWorldQuestButton_Click = GetTime()
@@ -888,8 +888,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 
 			--broken isles
 				local BrokenIslesWorldQuestButton = CreateFrame ("button", "WorldQuestTrackerGoToAzerothButton", anchorFrame, "BackdropTemplate")
-				BrokenIslesWorldQuestButton:SetSize (unpack(navigateButtonsSize))
-				BrokenIslesWorldQuestButton:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
+				BrokenIslesWorldQuestButton:SetSize(unpack(navigateButtonsSize))
+				BrokenIslesWorldQuestButton:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
 				
 				BrokenIslesWorldQuestButton:SetNormalTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
 				BrokenIslesWorldQuestButton:SetPushedTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
@@ -908,14 +908,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				BrokenIslesWorldQuestButton:SetBackdropBorderColor(unpack(navigateButtonsBorderColor))
 				BrokenIslesWorldQuestButton:SetBackdropColor(unpack(navigateButtonsbackdropColor))
 				
-				BrokenIslesWorldQuestButton.Highlight = BrokenIslesWorldQuestButton:CreateTexture (nil, "highlight")
+				BrokenIslesWorldQuestButton.Highlight = BrokenIslesWorldQuestButton:CreateTexture(nil, "highlight")
 				BrokenIslesWorldQuestButton.Highlight:SetColorTexture(.9, .9, .9, .3)
-				BrokenIslesWorldQuestButton.Highlight:SetBlendMode ("ADD")
-				BrokenIslesWorldQuestButton.Highlight:SetAlpha (toggleButtonsAlpha)
-				BrokenIslesWorldQuestButton.Highlight:SetSize (unpack(navigateButtonsSize))
-				BrokenIslesWorldQuestButton.Highlight:SetPoint ("center")
+				BrokenIslesWorldQuestButton.Highlight:SetBlendMode("ADD")
+				BrokenIslesWorldQuestButton.Highlight:SetAlpha(toggleButtonsAlpha)
+				BrokenIslesWorldQuestButton.Highlight:SetSize(unpack(navigateButtonsSize))
+				BrokenIslesWorldQuestButton.Highlight:SetPoint("center")
 				
-				BrokenIslesWorldQuestButton:SetScript ("OnClick", function()
+				BrokenIslesWorldQuestButton:SetScript("OnClick", function()
 					WorldMapFrame:SetMapID(WorldQuestTracker.MapData.ZoneIDs.BROKENISLES)
 					WorldQuestTracker.UpdateWorldQuestsOnWorldMap(true)
 					WorldQuestTracker.BrokenIslesWorldQuestButton_Click = GetTime()
@@ -923,8 +923,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 
 			--shadowlands
 				local ShadowlandsWorldQuestButton = CreateFrame ("button", "WorldQuestTrackerGoToShadowlandsButton", anchorFrame, "BackdropTemplate")
-				ShadowlandsWorldQuestButton:SetSize (unpack(navigateButtonsSize))
-				ShadowlandsWorldQuestButton:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
+				ShadowlandsWorldQuestButton:SetSize(unpack(navigateButtonsSize))
+				ShadowlandsWorldQuestButton:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel())
 
 				ShadowlandsWorldQuestButton:SetNormalTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
 				ShadowlandsWorldQuestButton:SetPushedTexture([[Interface\AddOns\WorldQuestTracker\media\icon_worlds]])
@@ -943,7 +943,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				ShadowlandsWorldQuestButton:SetBackdropBorderColor(unpack(navigateButtonsBorderColor))
 				ShadowlandsWorldQuestButton:SetBackdropColor(unpack(navigateButtonsbackdropColor))
 
-				ShadowlandsWorldQuestButton.Highlight = ShadowlandsWorldQuestButton:CreateTexture (nil, "highlight")
+				ShadowlandsWorldQuestButton.Highlight = ShadowlandsWorldQuestButton:CreateTexture(nil, "highlight")
 				ShadowlandsWorldQuestButton.Highlight:SetColorTexture(.9, .9, .9, .3)
 				ShadowlandsWorldQuestButton.Highlight:SetBlendMode("ADD")
 				ShadowlandsWorldQuestButton.Highlight:SetAlpha(toggleButtonsAlpha)
@@ -957,13 +957,13 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end)
 
 			--arrange alliance and horde buttons
-			--LegionWorldQuestButton:SetPoint ("right", WorldMapFrame.SidePanelToggle, "left", -1, -2)
-			--AllianceWorldQuestButton:SetPoint ("right", LegionWorldQuestButton, "left", -1, 0)
-			--HordeWorldQuestButton:SetPoint ("right", AllianceWorldQuestButton, "left", -1, 0)
-			--ShadowlandsWorldQuestButton:SetPoint ("right", HordeWorldQuestButton, "left", -1, 0)
-			BrokenIslesWorldQuestButton:SetPoint ("right", WorldMapFrame.SidePanelToggle, "left", -1, -1)
-			AzerothWorldQuestButton:SetPoint ("right", BrokenIslesWorldQuestButton, "left", -1, 0)
-			ShadowlandsWorldQuestButton:SetPoint ("right", AzerothWorldQuestButton, "left", -1, 0)
+			--LegionWorldQuestButton:SetPoint("right", WorldMapFrame.SidePanelToggle, "left", -1, -2)
+			--AllianceWorldQuestButton:SetPoint("right", LegionWorldQuestButton, "left", -1, 0)
+			--HordeWorldQuestButton:SetPoint("right", AllianceWorldQuestButton, "left", -1, 0)
+			--ShadowlandsWorldQuestButton:SetPoint("right", HordeWorldQuestButton, "left", -1, 0)
+			BrokenIslesWorldQuestButton:SetPoint("right", WorldMapFrame.SidePanelToggle, "left", -1, -1)
+			AzerothWorldQuestButton:SetPoint("right", BrokenIslesWorldQuestButton, "left", -1, 0)
+			ShadowlandsWorldQuestButton:SetPoint("right", AzerothWorldQuestButton, "left", -1, 0)
 			local locationAlphaButton = 0.75
 			BrokenIslesWorldQuestButton:SetAlpha(locationAlphaButton)
 			AzerothWorldQuestButton:SetAlpha(locationAlphaButton)
@@ -995,7 +995,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			ToggleQuestsSummaryButton.ShadowBelow:SetSize(100, 13)
 			
 			ToggleQuestsSummaryButton.TextLabel = DF:CreateLabel (ToggleQuestsSummaryButton, "Toggle Summary", DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
-			ToggleQuestsSummaryButton.TextLabel:SetPoint ("center", ToggleQuestsSummaryButton, "center")
+			ToggleQuestsSummaryButton.TextLabel:SetPoint("center", ToggleQuestsSummaryButton, "center")
 			
 			function ToggleQuestsSummaryButton:UpdateText()
 				if (WorldQuestTracker.db.profile.world_map_config.summary_showbyzone) then
@@ -1008,7 +1008,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			end
 			
-			ToggleQuestsSummaryButton:SetScript ("OnClick", function()
+			ToggleQuestsSummaryButton:SetScript("OnClick", function()
 				if (WorldQuestTracker.db.profile.world_map_config.summary_showbyzone) then
 					--show by type
 					WorldQuestTracker.db.profile.world_map_config.summary_show = true
@@ -1030,18 +1030,18 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			ToggleQuestsSummaryButton:UpdateText()
 			
-			ToggleQuestsSummaryButton:SetScript ("OnMouseDown", function()
-				ToggleQuestsSummaryButton.TextLabel:SetPoint ("center", ToggleQuestsSummaryButton, "center", -1, -1)
+			ToggleQuestsSummaryButton:SetScript("OnMouseDown", function()
+				ToggleQuestsSummaryButton.TextLabel:SetPoint("center", ToggleQuestsSummaryButton, "center", -1, -1)
 			end)
 			
-			ToggleQuestsSummaryButton:SetScript ("OnMouseUp", function()
-				ToggleQuestsSummaryButton.TextLabel:SetPoint ("center", ToggleQuestsSummaryButton, "center")
+			ToggleQuestsSummaryButton:SetScript("OnMouseUp", function()
+				ToggleQuestsSummaryButton.TextLabel:SetPoint("center", ToggleQuestsSummaryButton, "center")
 			end)
 			
 			ToggleQuestsSummaryButton:Hide()			
 		
 			-- �ptionsfunc ~optionsfunc
-			local options_on_click = function (_, _, option, value, value2, mouseButton)
+			local options_on_click = function(_, _, option, value, value2, mouseButton)
 			
 				if (option == "accessibility") then
 					if (value == "extra_tracking_indicator") then
@@ -1446,8 +1446,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			-- world map summary ~summary ~worldsummary
 			local worldSummary = WorldQuestTracker.WorldSummary
 			worldSummary:SetWidth (100)
-			worldSummary:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-			worldSummary:SetBackdropColor (0, 0, 0, 0)
+			worldSummary:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+			worldSummary:SetBackdropColor(0, 0, 0, 0)
 			worldSummary:SetBackdropBorderColor (0, 0, 0, 0)
 			
 			worldSummary.WidgetIndex = 1
@@ -1526,12 +1526,12 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				local anchorSide = worldSummary.GetAnchorSide (true)
 				
 				if (anchorSide == "left") then
-					worldSummary:SetPoint ("topleft")
-					worldSummary:SetPoint ("bottomleft")
+					worldSummary:SetPoint("topleft")
+					worldSummary:SetPoint("bottomleft")
 					
 				elseif (anchorSide == "right") then
-					worldSummary:SetPoint ("topright")
-					worldSummary:SetPoint ("bottomright")
+					worldSummary:SetPoint("topright")
+					worldSummary:SetPoint("bottomright")
 					
 				end
 				
@@ -1560,7 +1560,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			end
 
 			-- �nchorbutton ~anchorbutton
-			local on_click_anchor_button = function (self, button, param1, param2)
+			local on_click_anchor_button = function(self, button, param1, param2)
 				local anchor = self.MyObject.Anchor
 				local questsToTrack = {}
 				
@@ -1597,7 +1597,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end)
 			end
 			
-			local on_select_anchor_options = function (self, fixedParam, configTable, configName, configValue)
+			local on_select_anchor_options = function(self, fixedParam, configTable, configName, configValue)
 				if (configName == "Enabled") then
 					configTable.Enabled = configValue
 					WorldQuestTracker.UpdateWorldQuestsOnWorldMap (true, true, false, true)
@@ -1620,10 +1620,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			--create anchors
 			for i = 1, worldSummary.AnchorAmount do
 				local anchor = CreateFrame ("frame", nil, worldSummary, "BackdropTemplate")
-				anchor:SetSize (1, 1)
+				anchor:SetSize(1, 1)
 				
-				anchor:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-				anchor:SetBackdropColor (0, 0, 0, 0)
+				anchor:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+				anchor:SetBackdropColor(0, 0, 0, 0)
 				anchor:SetBackdropBorderColor (0, 0, 0, 0)
 				
 				anchor.Title = DF:CreateLabel (anchor)
@@ -1635,9 +1635,9 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				--config on hover over
 					anchor.ConfigFrame = CreateFrame ("frame", nil, anchor, "BackdropTemplate")
-					anchor.ConfigFrame:SetSize (40, 12)
-					anchor.ConfigFrame:SetPoint ("bottomleft", anchor.Title.widget, "bottomleft")
-					anchor.ConfigFrame:SetPoint ("bottomright", anchor.Title.widget, "bottomright")
+					anchor.ConfigFrame:SetSize(40, 12)
+					anchor.ConfigFrame:SetPoint("bottomleft", anchor.Title.widget, "bottomleft")
+					anchor.ConfigFrame:SetPoint("bottomright", anchor.Title.widget, "bottomright")
 					
 					local createMenu = function()
 						GameCooltip:Preset (2)
@@ -1668,12 +1668,12 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					anchor.ConfigFrame.CoolTip = {
 						Type = "menu",
 						BuildFunc = createMenu, --> called when user mouse over the frame
-						OnEnterFunc = function (self) 
+						OnEnterFunc = function(self) 
 							anchor.ConfigFrame.button_mouse_over = true
 							anchor.Title.textcolor = {1, .9, .7, 1}
 							--button_onenter (self)
 						end,
-						OnLeaveFunc = function (self) 
+						OnLeaveFunc = function(self) 
 							anchor.ConfigFrame.button_mouse_over = false
 							anchor.Title.textcolor = {1, .8, .2, .854}
 							--GameCooltip:Hide()
@@ -1695,10 +1695,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				--button to track all quests in the anchor
 				local anchorButton = DF:CreateButton (anchor, on_click_anchor_button, 20, 20, "", anchorID)
-				anchorButton:SetFrameLevel (anchor:GetFrameLevel()-1)
-				anchorButton.Texture = anchorButton:CreateTexture (nil, "overlay")
-				anchorButton.Texture:SetTexture ([[Interface\MINIMAP\SuperTrackerArrow]])
-				anchorButton.Texture:SetAlpha (.5)
+				anchorButton:SetFrameLevel(anchor:GetFrameLevel()-1)
+				anchorButton.Texture = anchorButton:CreateTexture(nil, "overlay")
+				anchorButton.Texture:SetTexture([[Interface\MINIMAP\SuperTrackerArrow]])
+				anchorButton.Texture:SetAlpha(.5)
 				anchor.Button = anchorButton
 				anchorButton.Anchor = anchor
 				
@@ -1712,7 +1712,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				anchor.PinAnchor = pinAnchor
 				
 				anchorButton:SetHook ("OnEnter", function()
-					anchorButton.Texture:SetBlendMode ("ADD")
+					anchorButton.Texture:SetBlendMode("ADD")
 					GameCooltip:Preset (2)
 					GameCooltip:AddLine (" " .. L["S_WORLDMAP_TOOLTIP_TRACKALL"])
 					GameCooltip:AddIcon ([[Interface\AddOns\WorldQuestTracker\media\ArrowFrozen]], 1, 1, 20, 20, 0.1171, 0.6796, 0.1171, 0.7343)
@@ -1720,11 +1720,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end)
 				
 				anchorButton:SetHook ("OnLeave", function()
-					anchorButton.Texture:SetBlendMode ("BLEND")
+					anchorButton.Texture:SetBlendMode("BLEND")
 					GameCooltip:Hide()
 				end)
 				
-				anchor:SetScript ("OnHide", function()
+				anchor:SetScript("OnHide", function()
 					anchorButton:Hide()
 				end)
 				
@@ -1761,11 +1761,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 								--not using the scale since there's the scale options already, text color why?, alpha the default is okay
 								--anchor:SetScale (1 + config.ScaleOffset)
 								--anchor.Title.textcolor = config.TextColor
-								--anchor:SetAlpha (config.Alpha)
+								--anchor:SetAlpha(config.Alpha)
 							
 							WorldQuestTracker.UpdateWorldMapAnchors (x, y, anchor.PinAnchor)
 							anchor:ClearAllPoints()
-							anchor:SetPoint ("center", anchor.PinAnchor, "center", 0, 0)
+							anchor:SetPoint("center", anchor.PinAnchor, "center", 0, 0)
 							anchor.Title:SetText (anchor.AnchorTitle)
 						end
 					end
@@ -1790,16 +1790,16 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							if (previousAnchor) then
 								local spacePadding = padding
 								local addSecondLine = previousAnchor.WidgetsAmount > worldSummary.MaxWidgetsPerRow and -40 or 0
-								anchor:SetPoint ("topleft", previousAnchor, "bottomleft", 0, (spacePadding + addSecondLine) * summaryScale)
+								anchor:SetPoint("topleft", previousAnchor, "bottomleft", 0, (spacePadding + addSecondLine) * summaryScale)
 							else
-								anchor:SetPoint ("topleft", worldSummary, "topleft", 2, Y)
+								anchor:SetPoint("topleft", worldSummary, "topleft", 2, Y)
 							end
 						else
 							if (previousAnchor) then
 								local addSecondLine = previousAnchor.WidgetsAmount > worldSummary.MaxWidgetsPerRow and -40 or 0
-								anchor:SetPoint ("topright", previousAnchor, "bottomright", 0, (padding + addSecondLine) * summaryScale)
+								anchor:SetPoint("topright", previousAnchor, "bottomright", 0, (padding + addSecondLine) * summaryScale)
 							else
-								anchor:SetPoint ("topright", worldSummary, "topright", -4, Y)
+								anchor:SetPoint("topright", worldSummary, "topright", -4, Y)
 							end
 						end
 						
@@ -1975,13 +1975,13 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					--make the squares grow to right direction
 					growDirection = "right"
 					anchor.Title:ClearAllPoints()
-					anchor.Title:SetPoint ("bottomleft", anchor, "topleft", 0, 0)
+					anchor.Title:SetPoint("bottomleft", anchor, "topleft", 0, 0)
 					
 				elseif (anchorSide == "right") then
 					--make the squares grow to left direction
 					growDirection = "left"
 					anchor.Title:ClearAllPoints()
-					anchor.Title:SetPoint ("bottomright", anchor, "topright", 2, 0)
+					anchor.Title:SetPoint("bottomright", anchor, "topright", 2, 0)
 				end
 				
 				local X, Y = 1, -1
@@ -1997,7 +1997,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						widget.WidgetAnchorID = i
 					
 					if (growDirection == "right") then
-						widget:SetPoint ("topleft", anchor, "topleft", X, Y)
+						widget:SetPoint("topleft", anchor, "topleft", X, Y)
 						X = X + 25
 						if (i == nextBreakLine) then
 							trackAllButtonAnchor = widget
@@ -2007,7 +2007,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						end
 						
 					elseif (growDirection == "left") then
-						widget:SetPoint ("topright", anchor, "topright", X, Y)
+						widget:SetPoint("topright", anchor, "topright", X, Y)
 						X = X - 25
 						if (i == nextBreakLine) then
 							trackAllButtonAnchor = widget
@@ -2023,14 +2023,14 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				anchor.Button.Texture:ClearAllPoints()
 				
 				if (growDirection == "right") then
-					anchor.Button:SetPoint ("left", trackAllButtonAnchor, "right", 1, 0)
+					anchor.Button:SetPoint("left", trackAllButtonAnchor, "right", 1, 0)
 					anchor.Button.Texture:SetRotation (math.pi * 2 * .75)
-					anchor.Button.Texture:SetPoint ("left", anchor.Button.widget, "left", -16, 0)
+					anchor.Button.Texture:SetPoint("left", anchor.Button.widget, "left", -16, 0)
 					
 				elseif (growDirection == "left") then
-					anchor.Button:SetPoint ("right", trackAllButtonAnchor, "left", -1, 0)
+					anchor.Button:SetPoint("right", trackAllButtonAnchor, "left", -1, 0)
 					anchor.Button.Texture:SetRotation (math.pi / 2)
-					anchor.Button.Texture:SetPoint ("right", anchor.Button.widget, "right", 16, 0)
+					anchor.Button.Texture:SetPoint("right", anchor.Button.widget, "right", 16, 0)
 					
 				end
 				anchor.Button:Show()
@@ -2057,16 +2057,16 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						if (factionsOfTheMap[factionButton.FactionID]) then
 							if (anchorSide == "left") then
 								if (buttonId == 1) then
-									factionButton:SetPoint ("center", factionAnchor, "topleft", 0, 0)
+									factionButton:SetPoint("center", factionAnchor, "topleft", 0, 0)
 								else
-									factionButton:SetPoint ("center", factionAnchor, "topleft", widgetWidget * (buttonId-1), 0)
+									factionButton:SetPoint("center", factionAnchor, "topleft", widgetWidget * (buttonId-1), 0)
 								end
 								
 							elseif (anchorSide == "right") then	
 								if (buttonId == 1) then
-									factionButton:SetPoint ("center", factionAnchor, "topright", 0, 0)
+									factionButton:SetPoint("center", factionAnchor, "topright", 0, 0)
 								else
-									factionButton:SetPoint ("center", factionAnchor, "topright", -widgetWidget * (buttonId-1), 0)
+									factionButton:SetPoint("center", factionAnchor, "topright", -widgetWidget * (buttonId-1), 0)
 								end
 							end
 							
@@ -2108,8 +2108,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					end
 				end
 				
-				factionAnchor:SetSize (anchorWidth, anchorHeight) --~factionachor
-				factionAnchor:SetPoint ("bottomright", _G.WorldQuestTrackerGoToShadowlandsButton, "topleft", 13, WorldQuestTracker.db.profile.bar_anchor == "top" and -43 or -25)
+				factionAnchor:SetSize(anchorWidth, anchorHeight) --~factionachor
+				factionAnchor:SetPoint("bottomright", _G.WorldQuestTrackerGoToShadowlandsButton, "topleft", 13, WorldQuestTracker.db.profile.bar_anchor == "top" and -43 or -25)
 
 				if (WorldQuestTracker.db.profile.show_faction_frame) then
 					factionAnchor:Show()
@@ -2125,15 +2125,15 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				--anchor frame
 				local factionAnchor = CreateFrame ("frame", nil, worldSummary, "BackdropTemplate")
-				factionAnchor:SetSize (1, 1)
+				factionAnchor:SetSize(1, 1)
 				factionAnchor.Widgets = {}
 				factionAnchor.WidgetsByFactionID = {}
 				worldSummary.FactionAnchor = factionAnchor
-				factionAnchor:SetAlpha (ALPHA_BLEND_AMOUNT)
+				factionAnchor:SetAlpha(ALPHA_BLEND_AMOUNT)
 				
 				--scripts
-				local buttonOnEnter = function (self)
-					self.MyObject.Icon:SetBlendMode ("BLEND")
+				local buttonOnEnter = function(self)
+					self.MyObject.Icon:SetBlendMode("BLEND")
 					
 					local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (self.MyObject.FactionID)
 					barMax = barMax - barMin
@@ -2193,8 +2193,8 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					WorldQuestTracker.PlayTick (2)
 				end
 				
-				local buttonOnLeave = function (self)
-					self.MyObject.Icon:SetBlendMode ("BLEND")
+				local buttonOnLeave = function(self)
+					self.MyObject.Icon:SetBlendMode("BLEND")
 					GameCooltip:Hide()
 					
 					if (self.MyObject.OnEnterAnimation:IsPlaying()) then
@@ -2244,7 +2244,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						DF:CreateBorder (factionButton.widget, 0.85, 0, 0)
 						
 						factionButton.OverlayFrame = CreateFrame ("frame", nil, factionButton.widget, "BackdropTemplate")
-						factionButton.OverlayFrame:SetFrameLevel (factionButton:GetFrameLevel()+1)
+						factionButton.OverlayFrame:SetFrameLevel(factionButton:GetFrameLevel()+1)
 						factionButton.OverlayFrame:SetAllPoints()
 						DF:CreateBorder (factionButton.OverlayFrame, 1, 0, 0)
 						factionButton.OverlayFrame:SetBorderColor (1, .85, 0)
@@ -2254,7 +2254,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						paragonRewardIcon:SetTexture([[Interface\GossipFrame\VendorGossipIcon]])
 						paragonRewardIcon:SetPoint("topright", factionButton.widget, "topright", 6, 10)
 
-						local glowTexture = factionButton:CreateTexture(nil, "orverlay")
+						local glowTexture = factionButton:CreateTexture(nil, "overlay")
 						glowTexture:SetTexture([[Interface\PETBATTLES\PetBattle-SelectedPetGlow]])
 						glowTexture:SetSize(32, 32)
 						glowTexture:SetPoint("center", paragonRewardIcon, "center")
@@ -2273,36 +2273,36 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						paragonRewardIcon:Hide()
 						factionButton.paragonRewardIcon = paragonRewardIcon
 						
-						local selectedBorder = factionButton:CreateTexture (nil, "overlay")
-						selectedBorder:SetPoint ("center")
-						selectedBorder:SetTexture ([[Interface\Artifacts\Artifacts]])
-						selectedBorder:SetTexCoord (137/1024, 195/1024, 920/1024, 978/1024)
-						selectedBorder:SetBlendMode ("BLEND")
-						selectedBorder:SetSize (28, 28)
-						selectedBorder:SetAlpha (0)
+						local selectedBorder = factionButton:CreateTexture(nil, "overlay")
+						selectedBorder:SetPoint("center")
+						selectedBorder:SetTexture([[Interface\Artifacts\Artifacts]])
+						selectedBorder:SetTexCoord(137/1024, 195/1024, 920/1024, 978/1024)
+						selectedBorder:SetBlendMode("BLEND")
+						selectedBorder:SetSize(28, 28)
+						selectedBorder:SetAlpha(0)
 						factionButton.SelectedBorder = selectedBorder
 						
-						local factionIcon = factionButton:CreateTexture (nil, "artwork")
-						factionIcon:SetPoint ("topleft", factionButton.widget, "topleft", 0, 0)
-						factionIcon:SetPoint ("bottomright", factionButton.widget, "bottomright", 0, 0)
-						factionIcon:SetTexture (WorldQuestTracker.MapData.FactionIcons [factionID])
-						factionIcon:SetTexCoord (.1, .9, .1, .96)
+						local factionIcon = factionButton:CreateTexture(nil, "artwork")
+						factionIcon:SetPoint("topleft", factionButton.widget, "topleft", 0, 0)
+						factionIcon:SetPoint("bottomright", factionButton.widget, "bottomright", 0, 0)
+						factionIcon:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
+						factionIcon:SetTexCoord(.1, .9, .1, .96)
 						factionButton.Icon = factionIcon
 						
 						--add a highlight effect
-						local factionIconHighlight = factionButton:CreateTexture (nil, "highlight")
-						factionIconHighlight:SetPoint ("topleft", factionButton.widget, "topleft", 0, 0)
-						factionIconHighlight:SetPoint ("bottomright", factionButton.widget, "bottomright", 0, 0)
-						factionIconHighlight:SetTexture (WorldQuestTracker.MapData.FactionIcons [factionID])
-						factionIconHighlight:SetTexCoord (.1, .9, .1, .96)
-						factionIconHighlight:SetBlendMode ("ADD")
-						factionIconHighlight:SetAlpha (.5)
+						local factionIconHighlight = factionButton:CreateTexture(nil, "highlight")
+						factionIconHighlight:SetPoint("topleft", factionButton.widget, "topleft", 0, 0)
+						factionIconHighlight:SetPoint("bottomright", factionButton.widget, "bottomright", 0, 0)
+						factionIconHighlight:SetTexture(WorldQuestTracker.MapData.FactionIcons [factionID])
+						factionIconHighlight:SetTexCoord(.1, .9, .1, .96)
+						factionIconHighlight:SetBlendMode("ADD")
+						factionIconHighlight:SetAlpha(.5)
 						
-						--local amountQuestsBackground = factionButton:CreateTexture (nil, "artwork")
-						--amountQuestsBackground:SetPoint ("bottom", factionIcon, "top", 0, 0)
-						--amountQuestsBackground:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-						--amountQuestsBackground:SetSize (34, 12)
-						--amountQuestsBackground:SetAlpha (.5)
+						--local amountQuestsBackground = factionButton:CreateTexture(nil, "artwork")
+						--amountQuestsBackground:SetPoint("bottom", factionIcon, "top", 0, 0)
+						--amountQuestsBackground:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+						--amountQuestsBackground:SetSize(34, 12)
+						--amountQuestsBackground:SetAlpha(.5)
 						--amountQuestsBackground:Hide()
 
 						local amountQuestsBackground2 = factionButton:CreateTexture(nil, "artwork", nil, 3)
@@ -2312,9 +2312,9 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						amountQuestsBackground2:SetSize(10, 10)
 
 						local amountQuests = factionButton:CreateFontString (nil, "overlay", "GameFontNormal", nil, 4)
-						amountQuests:SetPoint ("center", amountQuestsBackground2, "center", 0, 0)
-						amountQuests:SetDrawLayer ("overlay", 6)
-						amountQuests:SetAlpha (.832)
+						amountQuests:SetPoint("center", amountQuestsBackground2, "center", 0, 0)
+						amountQuests:SetDrawLayer("overlay", 6)
+						amountQuests:SetAlpha(.832)
 						WorldQuestTracker:SetFontSize (amountQuests, 10)
 						factionButton.Text = amountQuests
 						factionButton.Text:SetText ("")
@@ -2336,9 +2336,9 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			function worldSummary.RefreshFactionButtons()
 				for i, factionButton in ipairs (worldSummary.FactionAnchor.Widgets) do
 					if (factionButton.FactionID == worldSummary.FactionSelected) then
-						factionButton.OverlayFrame:SetAlpha (1)
+						factionButton.OverlayFrame:SetAlpha(1)
 					else
-						factionButton.OverlayFrame:SetAlpha (0)
+						factionButton.OverlayFrame:SetAlpha(0)
 					end
 				end
 			end
@@ -2500,7 +2500,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				widget.Y = y
 
 				local okay, gold, resource, apower = WorldQuestTracker.UpdateWorldWidget(widget, questID, numObjectives, mapID, isCriteria, isNew, isUsingTracker, timeLeft, artifactPowerIcon)
-				widget.texture:SetTexCoord (.1, .9, .1, .9)
+				widget.texture:SetTexCoord(.1, .9, .1, .9)
 				
 				if (widget.FactionID == worldSummary.FactionSelected) then
 					--widget.factionBorder:Show()
@@ -2514,7 +2514,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					factionButton.Text:SetText (factionButton.AmountQuests)
 				end
 				
-				widget:SetAlpha (WQT_WORLDWIDGET_BLENDED)
+				widget:SetAlpha(WQT_WORLDWIDGET_BLENDED)
 				
 				if (okay) then
 					if (gold) then worldSummary.TotalGold = worldSummary.TotalGold + gold end
@@ -2551,23 +2551,23 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						local timePriority = WorldQuestTracker.db.profile.sort_time_priority and WorldQuestTracker.db.profile.sort_time_priority * 60 --4 8 12 16 24
 						
 						--reset the widget alpha
-						widget:SetAlpha (WQT_WORLDWIDGET_BLENDED)
+						widget:SetAlpha(WQT_WORLDWIDGET_BLENDED)
 						
 						if (timePriority and timePriority > 0) then
 							if (timeLeft <= timePriority) then
 								DF:SetFontColor (widget.timeLeftText, "yellow")
-								widget.timeLeftText:SetAlpha (1)
+								widget.timeLeftText:SetAlpha(1)
 							else
 								DF:SetFontColor (widget.timeLeftText, "white")
-								widget.timeLeftText:SetAlpha (0.8)
+								widget.timeLeftText:SetAlpha(0.8)
 								
 								if (WorldQuestTracker.db.profile.alpha_time_priority) then
-									widget:SetAlpha (ALPHA_BLEND_AMOUNT - 0.35)
+									widget:SetAlpha(ALPHA_BLEND_AMOUNT - 0.35)
 								end
 							end
 						else
 							DF:SetFontColor (widget.timeLeftText, "white")
-							widget.timeLeftText:SetAlpha (1)
+							widget.timeLeftText:SetAlpha(1)
 						end
 					
 						widget.timeLeftText:SetText (timeLeft > 1440 and floor (timeLeft/1440) .. "d" or timeLeft > 60 and floor (timeLeft/60) .. "h" or timeLeft .. "m")
@@ -2577,7 +2577,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 						widget.timeLeftText:Show()
 					else
 						widget.timeLeftText:Hide()
-						widget:SetAlpha (WQT_WORLDWIDGET_BLENDED)
+						widget:SetAlpha(WQT_WORLDWIDGET_BLENDED)
 					end
 				end
 				
@@ -2625,7 +2625,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							worldSummary.UpdateFaction()
 						end
 						--shutdown lazy updates
-						worldSummary:SetScript ("OnUpdate", nil)
+						worldSummary:SetScript("OnUpdate", nil)
 					end
 				end
 			end
@@ -2652,7 +2652,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				--copy the quest list
 				worldSummary.ScheduleToUpdate = DF.table.copy ({}, questList)
 				
-				worldSummary:SetScript ("OnUpdate", worldSummary.LazyUpdate)
+				worldSummary:SetScript("OnUpdate", worldSummary.LazyUpdate)
 
 				--adjust the artifact power icon for each region
 				local questHubByExp = WorldQuestTracker.MapData.ExpMaps[WorldMapFrame.mapID]
@@ -2675,20 +2675,20 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			-- ~bar ~statusbar
 			WorldQuestTracker.DoubleTapFrame = CreateFrame ("frame", "WorldQuestTrackerDoubleTapFrame", anchorFrame, "BackdropTemplate")
 			WorldQuestTracker.DoubleTapFrame:SetHeight (18)
-			WorldQuestTracker.DoubleTapFrame:SetFrameLevel (WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel()-1)
+			WorldQuestTracker.DoubleTapFrame:SetFrameLevel(WorldMapFrame.SidePanelToggle.CloseButton:GetFrameLevel()-1)
 			
 			--background
-			local doubleTapBackground = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "artwork")
-			doubleTapBackground:SetColorTexture (0, 0, 0, 0.5)
+			local doubleTapBackground = WorldQuestTracker.DoubleTapFrame:CreateTexture(nil, "artwork")
+			doubleTapBackground:SetColorTexture(0, 0, 0, 0.5)
 			doubleTapBackground:SetHeight (18)
 			WorldQuestTracker.DoubleTapFrame.Background = doubleTapBackground
 			
 			--border
-			local doubleTapBorder = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "overlay")
-			doubleTapBorder:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\golden_line]])
+			local doubleTapBorder = WorldQuestTracker.DoubleTapFrame:CreateTexture(nil, "overlay")
+			doubleTapBorder:SetTexture([[Interface\AddOns\WorldQuestTracker\media\golden_line]])
 			doubleTapBorder:SetHorizTile (true)
-			doubleTapBorder:SetPoint ("topleft", doubleTapBackground, "topleft")
-			doubleTapBorder:SetPoint ("topright", doubleTapBackground, "topright")
+			doubleTapBorder:SetPoint("topleft", doubleTapBackground, "topleft")
+			doubleTapBorder:SetPoint("topright", doubleTapBackground, "topright")
 			
 			WorldQuestTracker.DoubleTapFrame.BackgroundTexture = doubleTapBackground
 			WorldQuestTracker.DoubleTapFrame.BackgroundBorder = doubleTapBorder
@@ -2702,67 +2702,67 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			---------------------------------------------------------
 			
 			local SummaryFrame = CreateFrame ("frame", "WorldQuestTrackerSummaryPanel", WorldQuestTrackerWorldMapPOI, "BackdropTemplate")
-			SummaryFrame:SetPoint ("topleft", WorldQuestTrackerWorldMapPOI, "topleft", 0, 0)
-			SummaryFrame:SetPoint ("bottomright", WorldQuestTrackerWorldMapPOI, "bottomright", 0, 0)
-			SummaryFrame:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-			SummaryFrame:SetBackdropColor (0, 0, 0, 1)
+			SummaryFrame:SetPoint("topleft", WorldQuestTrackerWorldMapPOI, "topleft", 0, 0)
+			SummaryFrame:SetPoint("bottomright", WorldQuestTrackerWorldMapPOI, "bottomright", 0, 0)
+			SummaryFrame:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+			SummaryFrame:SetBackdropColor(0, 0, 0, 1)
 			SummaryFrame:SetBackdropBorderColor (0, 0, 0, 1)
 			SummaryFrame:SetFrameStrata ("DIALOG")
-			SummaryFrame:SetFrameLevel (3500)
+			SummaryFrame:SetFrameLevel(3500)
 			SummaryFrame:EnableMouse (true)
 			SummaryFrame:Hide()
 			
-			SummaryFrame.RightBorder = SummaryFrame:CreateTexture (nil, "overlay")
-			SummaryFrame.RightBorder:SetTexture ([[Interface\ACHIEVEMENTFRAME\UI-Achievement-HorizontalShadow]])
-			SummaryFrame.RightBorder:SetTexCoord (1, 0, 0, 1)
-			SummaryFrame.RightBorder:SetPoint ("topright")
-			SummaryFrame.RightBorder:SetPoint ("bottomright")
-			SummaryFrame.RightBorder:SetPoint ("topleft")
-			SummaryFrame.RightBorder:SetPoint ("bottomleft")
+			SummaryFrame.RightBorder = SummaryFrame:CreateTexture(nil, "overlay")
+			SummaryFrame.RightBorder:SetTexture([[Interface\ACHIEVEMENTFRAME\UI-Achievement-HorizontalShadow]])
+			SummaryFrame.RightBorder:SetTexCoord(1, 0, 0, 1)
+			SummaryFrame.RightBorder:SetPoint("topright")
+			SummaryFrame.RightBorder:SetPoint("bottomright")
+			SummaryFrame.RightBorder:SetPoint("topleft")
+			SummaryFrame.RightBorder:SetPoint("bottomleft")
 			SummaryFrame.RightBorder:SetWidth (125)
 			SummaryFrame.RightBorder:SetDesaturated (true)
-			SummaryFrame.RightBorder:SetDrawLayer ("background", -7)
+			SummaryFrame.RightBorder:SetDrawLayer("background", -7)
 			
 			local SummaryFrameUp = CreateFrame ("frame", "WorldQuestTrackerSummaryUpPanel", SummaryFrame, "BackdropTemplate")
-			SummaryFrameUp:SetPoint ("topleft", WorldQuestTrackerWorldMapPOI, "topleft", 0, 0)
-			SummaryFrameUp:SetPoint ("bottomright", WorldQuestTrackerWorldMapPOI, "bottomright", 0, 0)
-			SummaryFrameUp:SetFrameLevel (3501)
+			SummaryFrameUp:SetPoint("topleft", WorldQuestTrackerWorldMapPOI, "topleft", 0, 0)
+			SummaryFrameUp:SetPoint("bottomright", WorldQuestTrackerWorldMapPOI, "bottomright", 0, 0)
+			SummaryFrameUp:SetFrameLevel(3501)
 			SummaryFrameUp:Hide()
 			
 			local SummaryFrameDown = CreateFrame ("frame", "WorldQuestTrackerSummaryDownPanel", SummaryFrame, "BackdropTemplate")
-			SummaryFrameDown:SetPoint ("topleft", WorldQuestTrackerWorldMapPOI, "topleft", 0, 0)
-			SummaryFrameDown:SetPoint ("bottomright", WorldQuestTrackerWorldMapPOI, "bottomright", 0, 0)
-			SummaryFrameDown:SetFrameLevel (3499)
-			SummaryFrameDown:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-			SummaryFrameDown:SetBackdropColor (0, 0, 0, 1)
+			SummaryFrameDown:SetPoint("topleft", WorldQuestTrackerWorldMapPOI, "topleft", 0, 0)
+			SummaryFrameDown:SetPoint("bottomright", WorldQuestTrackerWorldMapPOI, "bottomright", 0, 0)
+			SummaryFrameDown:SetFrameLevel(3499)
+			SummaryFrameDown:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
+			SummaryFrameDown:SetBackdropColor(0, 0, 0, 1)
 			SummaryFrameDown:SetBackdropBorderColor (0, 0, 0, 1)
 			SummaryFrameDown:Hide()
 			
 			local CloseSummaryPanel = CreateFrame ("button", "WorldQuestTrackerCloseSummaryButton", SummaryFrameUp, "BackdropTemplate")
-			CloseSummaryPanel:SetSize (64, 32)
-			CloseSummaryPanel:SetPoint ("right", WorldMapFrame.SidePanelToggle, "left", -2, 0)
-			CloseSummaryPanel.Background = CloseSummaryPanel:CreateTexture (nil, "background")
-			CloseSummaryPanel.Background:SetSize (64, 32)
+			CloseSummaryPanel:SetSize(64, 32)
+			CloseSummaryPanel:SetPoint("right", WorldMapFrame.SidePanelToggle, "left", -2, 0)
+			CloseSummaryPanel.Background = CloseSummaryPanel:CreateTexture(nil, "background")
+			CloseSummaryPanel.Background:SetSize(64, 32)
 			CloseSummaryPanel.Background:SetAtlas ("MapCornerShadow-Right")
-			CloseSummaryPanel.Background:SetPoint ("bottomright", 2, -1)
+			CloseSummaryPanel.Background:SetPoint("bottomright", 2, -1)
 			CloseSummaryPanel:SetNormalTexture ([[Interface\AddOns\WorldQuestTracker\media\close_summary_button]])
-			CloseSummaryPanel:GetNormalTexture():SetTexCoord (0, 1, 0, .5)
+			CloseSummaryPanel:GetNormalTexture():SetTexCoord(0, 1, 0, .5)
 			CloseSummaryPanel:SetPushedTexture ([[Interface\AddOns\WorldQuestTracker\media\close_summary_button_pushed]])
-			CloseSummaryPanel:GetPushedTexture():SetTexCoord (0, 1, 0, .5)
+			CloseSummaryPanel:GetPushedTexture():SetTexCoord(0, 1, 0, .5)
 			
-			CloseSummaryPanel.Highlight = CloseSummaryPanel:CreateTexture (nil, "highlight")
-			CloseSummaryPanel.Highlight:SetTexture ([[Interface\Buttons\UI-Common-MouseHilight]])
-			CloseSummaryPanel.Highlight:SetBlendMode ("ADD")
-			CloseSummaryPanel.Highlight:SetSize (64*1.5, 32*1.5)
-			CloseSummaryPanel.Highlight:SetPoint ("center")
+			CloseSummaryPanel.Highlight = CloseSummaryPanel:CreateTexture(nil, "highlight")
+			CloseSummaryPanel.Highlight:SetTexture([[Interface\Buttons\UI-Common-MouseHilight]])
+			CloseSummaryPanel.Highlight:SetBlendMode("ADD")
+			CloseSummaryPanel.Highlight:SetSize(64*1.5, 32*1.5)
+			CloseSummaryPanel.Highlight:SetPoint("center")
 			
-			CloseSummaryPanel:SetScript ("OnClick", function()
+			CloseSummaryPanel:SetScript("OnClick", function()
 				SummaryFrame.HideAnimation:Play()
 				SummaryFrameUp.HideAnimation:Play()
 				SummaryFrameDown.HideAnimation:Play()
 			end)			
 			
-			SummaryFrame:SetScript ("OnMouseDown", function (self, button)
+			SummaryFrame:SetScript("OnMouseDown", function (self, button)
 				if (button == "RightButton") then
 					--SummaryFrame:Hide()
 					--SummaryFrameUp:Hide()
@@ -2777,42 +2777,42 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			local TitleTemplate = DF:GetTemplate ("font", "WQT_SUMMARY_TITLE")
 			
 			local accountLifeTime_Texture = DF:CreateImage (SummaryFrameUp, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 16, 16, "artwork", {5/32, 27/32, 5/32, 27/32})
-			accountLifeTime_Texture:SetPoint (x, -10)
-			accountLifeTime_Texture:SetAlpha (.7)
+			accountLifeTime_Texture:SetPoint(x, -10)
+			accountLifeTime_Texture:SetAlpha(.7)
 			
 			local characterLifeTime_Texture = DF:CreateImage (SummaryFrameUp, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 16, 16, "artwork", {5/32, 27/32, 5/32, 27/32})
-			characterLifeTime_Texture:SetPoint (x, -97)
-			characterLifeTime_Texture:SetAlpha (.7)
+			characterLifeTime_Texture:SetPoint(x, -97)
+			characterLifeTime_Texture:SetAlpha(.7)
 			
 			local graphicTime_Texture = DF:CreateImage (SummaryFrameUp, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 16, 16, "artwork", {5/32, 27/32, 5/32, 27/32})
-			graphicTime_Texture:SetPoint (x, -228)
-			graphicTime_Texture:SetAlpha (.7)
+			graphicTime_Texture:SetPoint(x, -228)
+			graphicTime_Texture:SetAlpha(.7)
 			
 			local otherCharacters_Texture = DF:CreateImage (SummaryFrameUp, [[Interface\BUTTONS\AdventureGuideMicrobuttonAlert]], 16, 16, "artwork", {5/32, 27/32, 5/32, 27/32})
-			otherCharacters_Texture:SetPoint ("topleft", SummaryFrameUp, "topright", -220, -10)
-			otherCharacters_Texture:SetAlpha (.7)			
+			otherCharacters_Texture:SetPoint("topleft", SummaryFrameUp, "topright", -220, -10)
+			otherCharacters_Texture:SetAlpha(.7)			
 
 			local accountLifeTime = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LIFETIMESTATISTICS_ACCOUNT"] .. " (BfA):", TitleTemplate)
-			accountLifeTime:SetPoint ("left", accountLifeTime_Texture, "right", 2, 1)
+			accountLifeTime:SetPoint("left", accountLifeTime_Texture, "right", 2, 1)
 			SummaryFrameUp.AccountLifeTime_Gold = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_GOLD"] .. ": %s")
 			SummaryFrameUp.AccountLifeTime_Resources = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_RESOURCE"] .. ": %s")
 			SummaryFrameUp.AccountLifeTime_APower = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_ARTIFACTPOWER"] .. ": %s")
 			SummaryFrameUp.AccountLifeTime_QCompleted = DF:CreateLabel (SummaryFrameUp, L["S_QUESTSCOMPLETED"] .. ": %s")
-			SummaryFrameUp.AccountLifeTime_Gold:SetPoint (x, -30)
-			SummaryFrameUp.AccountLifeTime_Resources:SetPoint (x, -45)
-			SummaryFrameUp.AccountLifeTime_APower:SetPoint (x, -60)
-			SummaryFrameUp.AccountLifeTime_QCompleted:SetPoint (x, -75)
+			SummaryFrameUp.AccountLifeTime_Gold:SetPoint(x, -30)
+			SummaryFrameUp.AccountLifeTime_Resources:SetPoint(x, -45)
+			SummaryFrameUp.AccountLifeTime_APower:SetPoint(x, -60)
+			SummaryFrameUp.AccountLifeTime_QCompleted:SetPoint(x, -75)
 			
 			local characterLifeTime = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LIFETIMESTATISTICS_CHARACTER"] .. " (BfA):", TitleTemplate)
-			characterLifeTime:SetPoint ("left", characterLifeTime_Texture, "right", 2, 1)
+			characterLifeTime:SetPoint("left", characterLifeTime_Texture, "right", 2, 1)
 			SummaryFrameUp.CharacterLifeTime_Gold = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_GOLD"] .. ": %s")
 			SummaryFrameUp.CharacterLifeTime_Resources = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_RESOURCE"] .. ": %s")
 			SummaryFrameUp.CharacterLifeTime_APower = DF:CreateLabel (SummaryFrameUp, L["S_QUESTTYPE_ARTIFACTPOWER"] .. ": %s")
 			SummaryFrameUp.CharacterLifeTime_QCompleted = DF:CreateLabel (SummaryFrameUp, L["S_QUESTSCOMPLETED"] .. ": %s")
-			SummaryFrameUp.CharacterLifeTime_Gold:SetPoint (x, -120)
-			SummaryFrameUp.CharacterLifeTime_Resources:SetPoint (x, -135)
-			SummaryFrameUp.CharacterLifeTime_APower:SetPoint (x, -150)
-			SummaryFrameUp.CharacterLifeTime_QCompleted:SetPoint (x, -165)
+			SummaryFrameUp.CharacterLifeTime_Gold:SetPoint(x, -120)
+			SummaryFrameUp.CharacterLifeTime_Resources:SetPoint(x, -135)
+			SummaryFrameUp.CharacterLifeTime_APower:SetPoint(x, -150)
+			SummaryFrameUp.CharacterLifeTime_QCompleted:SetPoint(x, -165)
 			
 			function WorldQuestTracker.UpdateSummaryFrame()
 				
@@ -2886,7 +2886,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					SummaryFrameDown:Show()
 				end,
 				function()
-					SummaryFrameDown:SetAlpha (.7)
+					SummaryFrameDown:SetAlpha(.7)
 				end
 			)
 			DF:CreateAnimation (SummaryFrameDown.ShowAnimation, "Alpha", 1, 3, 0, .7)
@@ -2922,42 +2922,42 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			local scroll_line_amount = 26
 			local scroll_width = 195
 			
-			local line_onenter = function (self)
+			local line_onenter = function(self)
 				if (self.questID) then
 					self.numObjectives = 10
 					self.UpdateTooltip = TaskPOI_OnEnter
 					TaskPOI_OnEnter (self)
-					self:SetBackdropColor (.5, .50, .50, 0.75)
+					self:SetBackdropColor(.5, .50, .50, 0.75)
 				end
 			end
-			local line_onleave = function (self)
+			local line_onleave = function(self)
 				TaskPOI_OnLeave (self)
-				self:SetBackdropColor (0, 0, 0, 0.2)
+				self:SetBackdropColor(0, 0, 0, 0.2)
 			end
 			local line_onclick = function()
 				
 			end
 			
-			local scroll_createline = function (self, index)
+			local scroll_createline = function(self, index)
 				local line = CreateFrame ("button", "$parentLine" .. index, self, "BackdropTemplate")
-				line:SetPoint ("topleft", self, "topleft", 0, -((index-1)*(scroll_line_height+1)))
-				line:SetSize (scroll_width, scroll_line_height)
-				line:SetScript ("OnEnter", line_onenter)
-				line:SetScript ("OnLeave", line_onleave)
-				line:SetScript ("OnClick", line_onclick)
+				line:SetPoint("topleft", self, "topleft", 0, -((index-1)*(scroll_line_height+1)))
+				line:SetSize(scroll_width, scroll_line_height)
+				line:SetScript("OnEnter", line_onenter)
+				line:SetScript("OnLeave", line_onleave)
+				line:SetScript("OnClick", line_onclick)
 				
-				line:SetBackdrop ({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-				line:SetBackdropColor (0, 0, 0, 0.2)
+				line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
+				line:SetBackdropColor(0, 0, 0, 0.2)
 				
-				local icon = line:CreateTexture ("$parentIcon", "overlay")
-				icon:SetSize (scroll_line_height, scroll_line_height)
+				local icon = line:CreateTexture("$parentIcon", "overlay")
+				icon:SetSize(scroll_line_height, scroll_line_height)
 				local name = line:CreateFontString ("$parentName", "overlay", "GameFontNormal")
 				DF:SetFontSize (name, 9)
-				icon:SetPoint ("left", line, "left", 2, 0)
-				name:SetPoint ("left", icon, "right", 2, 0)
+				icon:SetPoint("left", line, "left", 2, 0)
+				name:SetPoint("left", icon, "right", 2, 0)
 				local timeleft = line:CreateFontString ("$parentTimeLeft", "overlay", "GameFontNormal")
 				DF:SetFontSize (timeleft, 9)
-				timeleft:SetPoint ("right", line, "right", -2, 0)
+				timeleft:SetPoint("right", line, "right", -2, 0)
 				line.icon = icon
 				line.name = name
 				line.timeleft = timeleft
@@ -2967,19 +2967,19 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				return line
 			end
 			
-			local scroll_refresh = function (self, data, offset, total_lines)
+			local scroll_refresh = function(self, data, offset, total_lines)
 				for i = 1, total_lines do
 					local index = i + offset
 					local quest = data [index]
 					
 					if (quest) then
 						local line = self:GetLine (i)
-						line:SetAlpha (1)
+						line:SetAlpha(1)
 						line.questID = nil
 						if (quest [1] == "blank") then
 							line.name:SetText ("")
 							line.timeleft:SetText ("")
-							line.icon:SetTexture (nil)
+							line.icon:SetTexture(nil)
 							
 						elseif (quest [1] == true) then
 							local name, realm, class = WorldQuestTracker.GetCharInfo (quest [2])
@@ -2993,10 +2993,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							line.name:SetWidth (180)
 							
 							if (class) then
-								line.icon:SetTexture ([[Interface\WORLDSTATEFRAME\Icons-Classes]])
-								line.icon:SetTexCoord (unpack (CLASS_ICON_TCOORDS [class]))
+								line.icon:SetTexture([[Interface\WORLDSTATEFRAME\Icons-Classes]])
+								line.icon:SetTexCoord(unpack (CLASS_ICON_TCOORDS [class]))
 							else
-								line.icon:SetTexture (nil)
+								line.icon:SetTexture(nil)
 							end
 						else
 							local questInfo = quest [2]
@@ -3035,7 +3035,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 							
 							if (type (questInfo.rewardTexture) == "string" and questInfo.rewardTexture:find ("icon_artifactpower")) then
 								--for�ando sempre mostrar icone vermelho
-								line.icon:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\icon_artifactpower_blueT]])
+								line.icon:SetTexture([[Interface\AddOns\WorldQuestTracker\media\icon_artifactpower_blueT]])
 								
 								--format the artifact power amount
 								if (rewardAmount > 100000) then
@@ -3043,17 +3043,17 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 								end
 								
 							else
-								line.icon:SetTexture (questInfo.rewardTexture)
+								line.icon:SetTexture(questInfo.rewardTexture)
 							end
 							
 							line.name:SetText ("|cFFFFDD00[" .. rewardAmount .. "]|r |c" .. colorByRarity .. title .. "|r")
 							line.timeleft:SetText (timeLeft > 0 and "|c" .. color .. SecondsToTime (timeLeft * 60) .. "|r" or "|cFFFF5500" .. L["S_SUMMARYPANEL_EXPIRED"] .. "|r")
 							
-							line.icon:SetTexCoord (5/64, 59/64, 5/64, 59/64)
+							line.icon:SetTexCoord(5/64, 59/64, 5/64, 59/64)
 							line.name:SetWidth (100)
 							
 							if (timeLeft <= 0) then
-								line:SetAlpha (.5)
+								line:SetAlpha(.5)
 							end
 							
 							line.questID = quest [1]
@@ -3063,20 +3063,20 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			end
 
 			local ScrollTitle = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_OTHERCHARACTERS"] .. ":", TitleTemplate)
-			ScrollTitle:SetPoint ("left", otherCharacters_Texture, "right", 2, 1)
+			ScrollTitle:SetPoint("left", otherCharacters_Texture, "right", 2, 1)
 			
 			local CharsQuestsScroll = DF:CreateScrollBox (SummaryFrameUp, "$parentChrQuestsScroll", scroll_refresh, formated_quest_table, scroll_width, 400, scroll_line_amount, scroll_line_height)
-			CharsQuestsScroll:SetPoint ("topright", SummaryFrameUp, "topright", -25, -30)
+			CharsQuestsScroll:SetPoint("topright", SummaryFrameUp, "topright", -25, -30)
 			for i = 1, scroll_line_amount do 
 				CharsQuestsScroll:CreateLine (scroll_createline)
 			end
 			SummaryFrameUp.CharsQuestsScroll = CharsQuestsScroll
-			CharsQuestsScroll:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
-			CharsQuestsScroll:SetBackdropColor (0, 0, 0, .4)
+			CharsQuestsScroll:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
+			CharsQuestsScroll:SetBackdropColor(0, 0, 0, .4)
 
 			-----------
 			
-			local GF_LineOnEnter = function (self)
+			local GF_LineOnEnter = function(self)
 				GameCooltip:Preset (2)
 				GameCooltip:SetOption ("TextSize", 10)
 				GameCooltip:SetOption ("ButtonsYMod", -2)
@@ -3106,55 +3106,55 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				GameCooltip:ShowCooltip (self)
 			end
-			local GF_LineOnLeave = function (self)
+			local GF_LineOnLeave = function(self)
 				GameCooltip:Hide()
 			end
 
 			-- ~gframe
 			local GoldGraphic = DF:CreateGFrame (SummaryFrameUp, 422, 160, 28, GF_LineOnEnter, GF_LineOnLeave, "GoldGraphic", "WorldQuestTrackerGoldGraphic")
-			GoldGraphic:SetPoint ("topleft", 40, -248)
-			GoldGraphic:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
-			GoldGraphic:SetBackdropColor (0, 0, 0, .6)
+			GoldGraphic:SetPoint("topleft", 40, -248)
+			GoldGraphic:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
+			GoldGraphic:SetBackdropColor(0, 0, 0, .6)
 			
 			local GoldGraphicTextBg = CreateFrame ("frame", nil, GoldGraphic, "BackdropTemplate")
-			GoldGraphicTextBg:SetPoint ("topleft", GoldGraphic, "bottomleft", 0, -2)
-			GoldGraphicTextBg:SetPoint ("topright", GoldGraphic, "bottomright", 0, -2)
-			GoldGraphicTextBg:SetBackdrop ({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
-			GoldGraphicTextBg:SetBackdropColor (0, 0, 0, .4)
+			GoldGraphicTextBg:SetPoint("topleft", GoldGraphic, "bottomleft", 0, -2)
+			GoldGraphicTextBg:SetPoint("topright", GoldGraphic, "bottomright", 0, -2)
+			GoldGraphicTextBg:SetBackdrop({bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16})
+			GoldGraphicTextBg:SetBackdropColor(0, 0, 0, .4)
 			GoldGraphicTextBg:SetHeight (20)
 			--DF:CreateBorder (GoldGraphic, .4, .2, .05)
 			
 			local leftLine = DF:CreateImage (GoldGraphic)
-			leftLine:SetColorTexture (1, 1, 1, .35)
-			leftLine:SetSize (1, 160)
-			leftLine:SetPoint ("topleft", GoldGraphic, "topleft", -1, 0)
-			leftLine:SetPoint ("bottomleft", GoldGraphic, "bottomleft", -1, -20)
+			leftLine:SetColorTexture(1, 1, 1, .35)
+			leftLine:SetSize(1, 160)
+			leftLine:SetPoint("topleft", GoldGraphic, "topleft", -1, 0)
+			leftLine:SetPoint("bottomleft", GoldGraphic, "bottomleft", -1, -20)
 			
 			local bottomLine = DF:CreateImage (GoldGraphic)
-			bottomLine:SetColorTexture (1, 1, 1, .35)
-			bottomLine:SetSize (422, 1)
-			bottomLine:SetPoint ("bottomleft", GoldGraphic, "bottomleft", -35, -2)
-			bottomLine:SetPoint ("bottomright", GoldGraphic, "bottomright", 0, -2)
+			bottomLine:SetColorTexture(1, 1, 1, .35)
+			bottomLine:SetSize(422, 1)
+			bottomLine:SetPoint("bottomleft", GoldGraphic, "bottomleft", -35, -2)
+			bottomLine:SetPoint("bottomright", GoldGraphic, "bottomright", 0, -2)
 			
 			GoldGraphic.AmountIndicators = {}
 			for i = 0, 5 do
 				local text = DF:CreateLabel (GoldGraphic, "")
-				text:SetPoint ("topright", GoldGraphic, "topleft", -4, -(i*32) - 2)
+				text:SetPoint("topright", GoldGraphic, "topleft", -4, -(i*32) - 2)
 				text.align = "right"
 				text.textcolor = "silver"
 				tinsert (GoldGraphic.AmountIndicators, text)
 				local line = DF:CreateImage (GoldGraphic)
-				line:SetColorTexture (1, 1, 1, .05)
-				line:SetSize (420, 1)
-				line:SetPoint (0, -(i*32))
+				line:SetColorTexture(1, 1, 1, .05)
+				line:SetSize(420, 1)
+				line:SetPoint(0, -(i*32))
 			end
 			
 			local GoldGraphicTitle = DF:CreateLabel (SummaryFrameUp, L["S_SUMMARYPANEL_LAST15DAYS"] .. ":", TitleTemplate)
-			--GoldGraphicTitle:SetPoint ("bottomleft", GoldGraphic, "topleft", 0, 6)
-			GoldGraphicTitle:SetPoint ("left", graphicTime_Texture, "right", 2, 1)
+			--GoldGraphicTitle:SetPoint("bottomleft", GoldGraphic, "topleft", 0, 6)
+			GoldGraphicTitle:SetPoint("left", graphicTime_Texture, "right", 2, 1)
 			
 			local GraphicDataToUse = 1
-			local OnSelectGraphic = function (_, _, value)
+			local OnSelectGraphic = function(_, _, value)
 				GraphicDataToUse = value
 				SummaryFrameUp.RefreshGraphic()
 			end
@@ -3176,7 +3176,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			end
 			
 			local dropdown_diff = DF:CreateDropDown (SummaryFrameUp, graphic_options_func, 1, 180, 20, "dropdown_graphic", _, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
-			dropdown_diff:SetPoint ("left", GoldGraphicTitle, "right", 4, 0)
+			dropdown_diff:SetPoint("left", GoldGraphicTitle, "right", 4, 0)
 
 			local empty_day = {
 				["artifact"] = 0,
@@ -3253,11 +3253,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 				--customize text anchor
 				for _, line in ipairs (GoldGraphic._lines) do
-					line.timeline:SetPoint ("bottomright", line, "bottomright", -2, -18)
+					line.timeline:SetPoint("bottomright", line, "bottomright", -2, -18)
 				end
 			end
 	
-			GoldGraphic:SetScript ("OnShow", function (self)
+			GoldGraphic:SetScript("OnShow", function (self)
 				SummaryFrameUp.RefreshGraphic()
 			end)
 			
@@ -3265,45 +3265,45 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			local buttons_width = 65
 			
-			local setup_button = function (button, name)
-				button:SetSize (buttons_width, 16)
+			local setup_button = function(button, name)
+				button:SetSize(buttons_width, 16)
 			
 				button.Text = button:CreateFontString (nil, "overlay", "GameFontNormal")
 				button.Text:SetText (name)
 			
 				WorldQuestTracker:SetFontSize (button.Text, 10)
 				WorldQuestTracker:SetFontColor (button.Text, "orange")
-				button.Text:SetPoint ("center")
+				button.Text:SetPoint("center")
 				
-				local shadow = button:CreateTexture (nil, "background")
-				shadow:SetPoint ("center")
-				shadow:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-				shadow:SetSize (buttons_width+10, 10)
-				shadow:SetAlpha (.3)
+				local shadow = button:CreateTexture(nil, "background")
+				shadow:SetPoint("center")
+				shadow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+				shadow:SetSize(buttons_width+10, 10)
+				shadow:SetAlpha(.3)
 			end
 			
-			local button_onenter = function (self)
+			local button_onenter = function(self)
 				WorldQuestTracker:SetFontColor (self.Text, "WQT_ORANGE_ON_ENTER")
 			end
-			local button_onleave = function (self)
+			local button_onleave = function(self)
 				WorldQuestTracker:SetFontColor (self.Text, "orange")
 			end
 			
 			---------------------------------------------------------
 			--options button
 			local optionsButton = CreateFrame ("button", "WorldQuestTrackerOptionsButton", WorldQuestTracker.DoubleTapFrame, "BackdropTemplate")
-			optionsButton:SetPoint ("bottomleft", WorldQuestTracker.DoubleTapFrame, "bottomleft", 0, 2)
+			optionsButton:SetPoint("bottomleft", WorldQuestTracker.DoubleTapFrame, "bottomleft", 0, 2)
 			setup_button (optionsButton, L["S_MAPBAR_OPTIONS"]) --~options
 			
 			---------------------------------------------------------
 			
 			--sort options
 			local sortButton = CreateFrame ("button", "WorldQuestTrackerSortButton", WorldQuestTracker.DoubleTapFrame, "BackdropTemplate")
-			sortButton:SetPoint ("left", optionsButton, "right", 2, 0)
+			sortButton:SetPoint("left", optionsButton, "right", 2, 0)
 			setup_button (sortButton, L["S_MAPBAR_SORTORDER"])
 			
 			-- ~sort
-			local change_sort_mode = function (a, b, questType, _, _, mouseButton)
+			local change_sort_mode = function(a, b, questType, _, _, mouseButton)
 				local currentIndex = WorldQuestTracker.db.profile.sort_order [questType]
 				if (currentIndex < WQT_QUESTTYPE_MAX) then
 					for type, order in pairs (WorldQuestTracker.db.profile.sort_order) do
@@ -3324,7 +3324,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			end
 			
-			local change_sort_timeleft_mode = function (_, _, amount)
+			local change_sort_timeleft_mode = function(_, _, amount)
 				if (WorldQuestTracker.db.profile.sort_time_priority == amount) then
 					WorldQuestTracker.db.profile.sort_time_priority = 0
 				else
@@ -3376,11 +3376,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			sortButton.CoolTip = {
 				Type = "menu",
 				BuildFunc = BuildSortMenu, --> called when user mouse over the frame
-				OnEnterFunc = function (self) 
+				OnEnterFunc = function(self) 
 					sortButton.button_mouse_over = true
 					button_onenter (self)
 				end,
-				OnLeaveFunc = function (self) 
+				OnLeaveFunc = function(self) 
 					sortButton.button_mouse_over = false
 					button_onleave (self)
 				end,
@@ -3409,10 +3409,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			-- ~filter
 			local filterButton = CreateFrame ("button", "WorldQuestTrackerFilterButton", WorldQuestTracker.DoubleTapFrame, "BackdropTemplate")
-			filterButton:SetPoint ("left", sortButton, "right", 2, 0)
+			filterButton:SetPoint("left", sortButton, "right", 2, 0)
 			setup_button (filterButton, L["S_MAPBAR_FILTER"])
 			
-			local filter_quest_type = function (_, _, questType, _, _, mouseButton)
+			local filter_quest_type = function(_, _, questType, _, _, mouseButton)
 				WorldQuestTracker.db.profile.filters [questType] = not WorldQuestTracker.db.profile.filters [questType]
 			
 				GameCooltip:ExecFunc (filterButton)
@@ -3555,11 +3555,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			filterButton.CoolTip = {
 				Type = "menu",
 				BuildFunc = BuildFilterMenu, --> called when user mouse over the frame
-				OnEnterFunc = function (self) 
+				OnEnterFunc = function(self) 
 					filterButton.button_mouse_over = true
 					button_onenter (self)
 				end,
-				OnLeaveFunc = function (self) 
+				OnLeaveFunc = function(self) 
 					filterButton.button_mouse_over = false
 					button_onleave (self)
 				end,
@@ -3588,7 +3588,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			-- ~time left
 			
 			local timeLeftButton = CreateFrame ("button", "WorldQuestTrackerTimeLeftButton", WorldQuestTracker.DoubleTapFrame, "BackdropTemplate")
-			timeLeftButton:SetPoint ("left", filterButton, "right", 2, 0)
+			timeLeftButton:SetPoint("left", filterButton, "right", 2, 0)
 			setup_button (timeLeftButton, L["S_MAPBAR_SORTORDER_TIMELEFTPRIORITY_TITLE"])
 			
 			
@@ -3679,11 +3679,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			timeLeftButton.CoolTip = {
 				Type = "menu",
 				BuildFunc = BuildTimeLeftMenu, --> called when user mouse over the frame
-				OnEnterFunc = function (self) 
+				OnEnterFunc = function(self) 
 					timeLeftButton.button_mouse_over = true
 					button_onenter (self)
 				end,
-				OnLeaveFunc = function (self) 
+				OnLeaveFunc = function(self) 
 					timeLeftButton.button_mouse_over = false
 					button_onleave (self)
 				end,
@@ -3709,7 +3709,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			---------------------------------------------------------
 			--statistics button
 			local statisticsButton = CreateFrame ("button", "WorldQuestTrackerStatisticsButton", WorldQuestTracker.DoubleTapFrame, "BackdropTemplate")
-			statisticsButton:SetPoint ("left", timeLeftButton, "right", 2, 0)
+			statisticsButton:SetPoint("left", timeLeftButton, "right", 2, 0)
 			setup_button (statisticsButton, "Statistics")
 			--statisticsButton.Text:SetTextColor (.8, .8, .8, .65)
 			if (GameCooltip.InjectQuickTooltip) then
@@ -3719,7 +3719,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			statisticsButton:HookScript ("OnEnter", button_onenter)
 			statisticsButton:HookScript ("OnLeave", button_onleave)
-			statisticsButton:SetScript ("OnClick", function() SummaryFrame.ShowAnimation:Play() end)
+			statisticsButton:SetScript("OnClick", function() SummaryFrame.ShowAnimation:Play() end)
 			
 			---------------------------------------------------------
 			-- ~map ~anchor ~�nchor
@@ -3727,7 +3727,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			---------------------------------------------------------
 			
-			local button_onLeave = function (self)
+			local button_onLeave = function(self)
 				GameCooltip:Hide()
 				button_onleave (self)
 			end
@@ -4368,11 +4368,11 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			optionsButton.CoolTip = {
 				Type = "menu",
 				BuildFunc = BuildOptionsMenu, --> called when user mouse over the frame
-				OnEnterFunc = function (self) 
+				OnEnterFunc = function(self) 
 					optionsButton.button_mouse_over = true
 					button_onenter (self)
 				end,
-				OnLeaveFunc = function (self) 
+				OnLeaveFunc = function(self) 
 					optionsButton.button_mouse_over = false
 					button_onleave (self)
 				end,
@@ -4400,19 +4400,20 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			WorldQuestTracker.OptionsInterfaceMenu.name = L["World Quest Tracker"]
 			InterfaceOptions_AddCategory (WorldQuestTracker.OptionsInterfaceMenu)
 			
-			WorldQuestTracker.OptionsInterfaceMenu.options_button = CreateFrame ("button", nil, WorldQuestTracker.OptionsInterfaceMenu, "OptionsButtonTemplate")
+			WorldQuestTracker.OptionsInterfaceMenu.options_button = CreateFrame ("button", nil, WorldQuestTracker.OptionsInterfaceMenu)
+			DetailsFramework:ApplyStandardBackdrop(WorldQuestTracker.OptionsInterfaceMenu.options_button)
 			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetText ("Hover Over Me: Options Menu")
-			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetPoint ("topleft", WorldQuestTracker.OptionsInterfaceMenu, "topleft", 100, -300)
+			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetPoint("topleft", WorldQuestTracker.OptionsInterfaceMenu, "topleft", 100, -300)
 			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetWidth (270)
 			
 			WorldQuestTracker.OptionsInterfaceMenu.options_button.CoolTip = {
 				Type = "menu",
 				BuildFunc = BuildOptionsMenu, --> called when user mouse over the frame
-				OnEnterFunc = function (self) 
+				OnEnterFunc = function(self) 
 					WorldQuestTracker.OptionsInterfaceMenu.options_button.button_mouse_over = true
 					button_onenter (self)
 				end,
-				OnLeaveFunc = function (self) 
+				OnLeaveFunc = function(self) 
 					WorldQuestTracker.OptionsInterfaceMenu.options_button.button_mouse_over = false
 					button_onleave (self)
 				end,
@@ -4449,36 +4450,36 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			
 			-- ~resources ~recursos
 			local resource_GoldIcon = DF:CreateImage (resource_GoldFrame, [[Interface\AddOns\WorldQuestTracker\media\icons_resourcesT]], 16, 16, "overlay", {64/128, 96/128, 0, .25})
-			resource_GoldIcon:SetDrawLayer ("overlay", 7)
-			resource_GoldIcon:SetAlpha (.78)
+			resource_GoldIcon:SetDrawLayer("overlay", 7)
+			resource_GoldIcon:SetAlpha(.78)
 			local resource_GoldText = DF:CreateLabel (resource_GoldFrame, "", ResourceFontTemplate)
 			
 			local resource_ResourcesIcon = DF:CreateImage (resource_ResourcesFrame, [[Interface\AddOns\WorldQuestTracker\media\icons_resourcesT]], 16, 16, "overlay", {0, 32/128, 0, .25})
-			resource_ResourcesIcon:SetDrawLayer ("overlay", 7)
-			resource_ResourcesIcon:SetAlpha (.78)
+			resource_ResourcesIcon:SetDrawLayer("overlay", 7)
+			resource_ResourcesIcon:SetAlpha(.78)
 			local resource_ResourcesText = DF:CreateLabel (resource_ResourcesFrame, "", ResourceFontTemplate)
 
 			local resource_APowerIcon = DF:CreateImage (resource_APowerFrame, [[Interface\AddOns\WorldQuestTracker\media\icons_resourcesT]], 16, 16, "overlay", {32/128, 64/128, 0, .25})
-			resource_APowerIcon:SetDrawLayer ("overlay", 7)
-			resource_APowerIcon:SetAlpha (.78)
+			resource_APowerIcon:SetDrawLayer("overlay", 7)
+			resource_APowerIcon:SetAlpha(.78)
 			resource_APowerFrame.Icon = resource_APowerIcon
 			local resource_APowerText = DF:CreateLabel (resource_APowerFrame, "", ResourceFontTemplate)
 			
 			local resource_PetIcon = DF:CreateImage (resource_PetFrame, WorldQuestTracker.MapData.QuestTypeIcons [WQT_QUESTTYPE_PETBATTLE].icon, 16, 16, "overlay", {0.05, 0.95, 0.05, 0.95})
-			resource_PetIcon:SetDrawLayer ("overlay", 7)
-			resource_PetIcon:SetAlpha (.78)
+			resource_PetIcon:SetDrawLayer("overlay", 7)
+			resource_PetIcon:SetAlpha(.78)
 			local resource_PetText = DF:CreateLabel (resource_PetFrame, "", ResourceFontTemplate)
 			
-			resource_APowerIcon:SetPoint ("right", resource_APowerText, "left", -2, 0)
+			resource_APowerIcon:SetPoint("right", resource_APowerText, "left", -2, 0)
 
-			resource_ResourcesText:SetPoint ("right", resource_APowerIcon, "left", -10, 0)
-			resource_ResourcesIcon:SetPoint ("right", resource_ResourcesText, "left", -2, 0)
+			resource_ResourcesText:SetPoint("right", resource_APowerIcon, "left", -10, 0)
+			resource_ResourcesIcon:SetPoint("right", resource_ResourcesText, "left", -2, 0)
 
-			resource_GoldText:SetPoint ("right", resource_ResourcesIcon, "left", -10, 0)
-			resource_GoldIcon:SetPoint ("right", resource_GoldText, "left", -2, 0)
+			resource_GoldText:SetPoint("right", resource_ResourcesIcon, "left", -10, 0)
+			resource_GoldIcon:SetPoint("right", resource_GoldText, "left", -2, 0)
 			
-			resource_PetText:SetPoint ("right", resource_GoldIcon, "left", -2, 0)
-			resource_PetIcon:SetPoint ("right", resource_PetText, "left", -2, 0)
+			resource_PetText:SetPoint("right", resource_GoldIcon, "left", -2, 0)
+			resource_PetIcon:SetPoint("right", resource_PetText, "left", -2, 0)
 			
 			resource_PetText.text = 996
 
@@ -4492,7 +4493,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			WorldQuestTracker.WorldMap_ResourceIndicatorTexture = resource_ResourcesIcon
 			WorldQuestTracker.WorldMap_APowerIndicatorTexture = resource_APowerIcon
 			
-			local track_all_quests_thread = function (tickerObject)
+			local track_all_quests_thread = function(tickerObject)
 				local questsToTrack = tickerObject.questsToTrack
 				local widget = tremove (questsToTrack)
 				
@@ -4533,13 +4534,13 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			end
 			
-			local start_all_track_thread = function (questsToTrack)
+			local start_all_track_thread = function(questsToTrack)
 				local ticker = C_Timer.NewTicker (.04, track_all_quests_thread)
 				ticker.questsToTrack = questsToTrack
 			end
 			
 			-- ~trackall
-			local TrackAllFromType = function (self)
+			local TrackAllFromType = function(self)
 				local mapID
 				if (mapType == "zone") then
 					mapID = WorldQuestTracker.GetCurrentMapAreaID()
@@ -4641,10 +4642,10 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				
 			end
 			
-			resource_GoldFrame:SetScript ("OnClick", TrackAllFromType)
-			resource_ResourcesFrame:SetScript ("OnClick", TrackAllFromType)
-			resource_APowerFrame:SetScript ("OnClick", TrackAllFromType)
-			resource_PetFrame:SetScript ("OnClick", TrackAllFromType)
+			resource_GoldFrame:SetScript("OnClick", TrackAllFromType)
+			resource_ResourcesFrame:SetScript("OnClick", TrackAllFromType)
+			resource_APowerFrame:SetScript("OnClick", TrackAllFromType)
+			resource_PetFrame:SetScript("OnClick", TrackAllFromType)
 			
 			--animations
 			local animaSettings = {
@@ -4692,7 +4693,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			end
 			
 			--this function is called when the mouse enters the indicator area, here it handles only the animation
-			local indicatorsAnimationOnEnter = function (self, questType)
+			local indicatorsAnimationOnEnter = function(self, questType)
 			
 				--play sound
 				WorldQuestTracker.PlayTick (2)
@@ -4730,7 +4731,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				end
 			end
 			
-			local indicatorsAnimationOnLeave = function (self, questType)
+			local indicatorsAnimationOnLeave = function(self, questType)
 				if (self.OnEnterAnimation:IsPlaying()) then
 					self.OnEnterAnimation:Stop()
 				end
@@ -4756,41 +4757,41 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 			end
 			
 			
-			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "background")
-			shadow:SetPoint ("left", resource_GoldIcon.widget, "left", 2, 0)
-			shadow:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-			shadow:SetSize (58, 10)
-			shadow:SetAlpha (.3)
+			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture(nil, "background")
+			shadow:SetPoint("left", resource_GoldIcon.widget, "left", 2, 0)
+			shadow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+			shadow:SetSize(58, 10)
+			shadow:SetAlpha(.3)
 			
-			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "background")
-			shadow:SetPoint ("left", resource_ResourcesIcon.widget, "left", 2, 0)
-			shadow:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-			shadow:SetSize (58, 10)
-			shadow:SetAlpha (.3)
+			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture(nil, "background")
+			shadow:SetPoint("left", resource_ResourcesIcon.widget, "left", 2, 0)
+			shadow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+			shadow:SetSize(58, 10)
+			shadow:SetAlpha(.3)
 			
-			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "background")
-			shadow:SetPoint ("left", resource_APowerIcon.widget, "left", 2, 0)
-			shadow:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-			shadow:SetSize (58, 10)
-			shadow:SetAlpha (.3)
+			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture(nil, "background")
+			shadow:SetPoint("left", resource_APowerIcon.widget, "left", 2, 0)
+			shadow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+			shadow:SetSize(58, 10)
+			shadow:SetAlpha(.3)
 			
-			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture (nil, "background")
-			shadow:SetPoint ("left", resource_PetIcon.widget, "left", 2, 0)
-			shadow:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-			shadow:SetSize (58, 10)
-			shadow:SetAlpha (.3)
+			local shadow = WorldQuestTracker.DoubleTapFrame:CreateTexture(nil, "background")
+			shadow:SetPoint("left", resource_PetIcon.widget, "left", 2, 0)
+			shadow:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+			shadow:SetSize(58, 10)
+			shadow:SetAlpha(.3)
 			
-			resource_GoldFrame:SetSize (55, 20)
-			resource_ResourcesFrame:SetSize (55, 20)
-			resource_APowerFrame:SetSize (55, 20)
-			resource_PetFrame:SetSize (55, 20)
+			resource_GoldFrame:SetSize(55, 20)
+			resource_ResourcesFrame:SetSize(55, 20)
+			resource_APowerFrame:SetSize(55, 20)
+			resource_PetFrame:SetSize(55, 20)
 			
-			resource_GoldFrame:SetPoint ("left", resource_GoldIcon.widget, "left", -2, 0)
-			resource_ResourcesFrame:SetPoint ("left", resource_ResourcesIcon.widget, "left", -2, 0)
-			resource_APowerFrame:SetPoint ("left", resource_APowerIcon.widget, "left", -2, 0)
-			resource_PetFrame:SetPoint ("left", resource_PetIcon.widget, "left", -2, 0)
+			resource_GoldFrame:SetPoint("left", resource_GoldIcon.widget, "left", -2, 0)
+			resource_ResourcesFrame:SetPoint("left", resource_ResourcesIcon.widget, "left", -2, 0)
+			resource_APowerFrame:SetPoint("left", resource_APowerIcon.widget, "left", -2, 0)
+			resource_PetFrame:SetPoint("left", resource_PetIcon.widget, "left", -2, 0)
 			
-			resource_GoldFrame:SetScript ("OnEnter", function (self)
+			resource_GoldFrame:SetScript("OnEnter", function (self)
 				resource_GoldText.textcolor = "WQT_ORANGE_ON_ENTER"
 				
 				indicatorsAnimationOnEnter (self, QUESTTYPE_GOLD)
@@ -4822,7 +4823,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				GameCooltip:Show(self)
 			end)
 			
-			resource_ResourcesFrame:SetScript ("OnEnter", function (self)
+			resource_ResourcesFrame:SetScript("OnEnter", function (self)
 				resource_ResourcesText.textcolor = "WQT_ORANGE_ON_ENTER"
 				
 				indicatorsAnimationOnEnter (self, QUESTTYPE_RESOURCE)
@@ -4854,7 +4855,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				GameCooltip:Show(self)
 			end)
 			
-			resource_APowerFrame:SetScript ("OnEnter", function (self)
+			resource_APowerFrame:SetScript("OnEnter", function (self)
 				resource_APowerText.textcolor = "WQT_ORANGE_ON_ENTER"
 				
 				indicatorsAnimationOnEnter (self, QUESTTYPE_ARTIFACTPOWER)
@@ -4887,7 +4888,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				GameCooltip:Show(self)
 			end)
 			
-			resource_PetFrame:SetScript ("OnEnter", function (self)
+			resource_PetFrame:SetScript("OnEnter", function (self)
 				resource_PetText.textcolor = "WQT_ORANGE_ON_ENTER"
 				
 				indicatorsAnimationOnEnter (self, QUESTTYPE_PET)
@@ -4920,7 +4921,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				GameCooltip:Show(self)
 			end)
 			
-			local resource_IconsOnLeave = function (self)
+			local resource_IconsOnLeave = function(self)
 				GameCooltip:Hide()
 				resource_GoldText.textcolor = "WQT_ORANGE_RESOURCES_AVAILABLE"
 				resource_ResourcesText.textcolor = "WQT_ORANGE_RESOURCES_AVAILABLE"
@@ -4930,15 +4931,15 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				indicatorsAnimationOnLeave (self)
 			end
 			
-			resource_GoldFrame:SetScript ("OnLeave", resource_IconsOnLeave)
-			resource_ResourcesFrame:SetScript ("OnLeave", resource_IconsOnLeave)
-			resource_APowerFrame:SetScript ("OnLeave", resource_IconsOnLeave)
-			resource_PetFrame:SetScript ("OnLeave", resource_IconsOnLeave)
+			resource_GoldFrame:SetScript("OnLeave", resource_IconsOnLeave)
+			resource_ResourcesFrame:SetScript("OnLeave", resource_IconsOnLeave)
+			resource_APowerFrame:SetScript("OnLeave", resource_IconsOnLeave)
+			resource_PetFrame:SetScript("OnLeave", resource_IconsOnLeave)
 			
 			--------------
 			
 			--anima��o
-			worldFramePOIs:SetScript ("OnShow", function()
+			worldFramePOIs:SetScript("OnShow", function()
 				worldFramePOIs.fadeInAnimation:Play()
 			end)
 
@@ -5001,12 +5002,12 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 					
 					local lastNews = WorldQuestTracker.db.profile.last_news_time
 					
-					newsFrame.NewsScroll.OnUpdateLineHook = function (line, lineIndex, data)
+					newsFrame.NewsScroll.OnUpdateLineHook = function(line, lineIndex, data)
 						local thisEntryTime = data [1]
 						if (thisEntryTime > lastNews) then
 							line.backdrop_color = {.4, .4, .4, .6}
 							line.backdrop_color_highlight = {.5, .5, .5, .8}
-							line:SetBackdropColor (.4, .4, .4, .6)
+							line:SetBackdropColor(.4, .4, .4, .6)
 						end
 					end
 				end
@@ -5026,7 +5027,7 @@ WorldQuestTracker.OnToggleWorldMap = function (self)
 				-- /run WorldQuestTrackerAddon.db.profile.last_news_time = 0
 			
 				local openNewsButton = DF:CreateButton (WorldQuestTracker.DoubleTapFrame, WorldQuestTracker.OpenNewsWindow, 120, 20, L["S_WHATSNEW"], -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "WQT_NEWS_BUTTON"), DF:GetTemplate ("font", "WQT_TOGGLEQUEST_TEXT"))
-				openNewsButton:SetPoint ("bottom", WorldQuestTracker.DoubleTapFrame, "top", -5, 2)
+				openNewsButton:SetPoint("bottom", WorldQuestTracker.DoubleTapFrame, "top", -5, 2)
 				WorldQuestTracker.NewsButton = openNewsButton
 
 				local numNews = DF:GetNumNews (WorldQuestTracker.GetChangelogTable(), WorldQuestTracker.db.profile.last_news_time)
@@ -5066,7 +5067,7 @@ end
 
 hooksecurefunc ("ToggleWorldMap", WorldQuestTracker.OnToggleWorldMap)
 
-WorldQuestTracker.CheckIfLoaded = function (self)
+WorldQuestTracker.CheckIfLoaded = function(self)
 	if (not WorldQuestTracker.IsLoaded) then
 		if (WorldMapFrame:IsShown()) then
 			WorldQuestTracker.OnToggleWorldMap()

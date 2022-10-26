@@ -3,10 +3,13 @@ local mod	= DBM:NewMod("CravenCorinth", "DBM-Challenges", 1)
 
 mod.statTypes = "normal,heroic,mythic,challenge"
 
-mod:SetRevision("20220530062110")
+mod:SetRevision("20221023053638")
 mod:SetCreatureID(172412)
+mod.soloChallenge = true
 
 mod:RegisterCombat("combat")
+mod:SetReCombatTime(7, 5)
+mod:SetWipeTime(30)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 341868 341869 341870",
@@ -14,7 +17,8 @@ mod:RegisterEventsInCombat(
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED",
 --	"UNIT_DIED"
-	"UNIT_SPELLCAST_SUCCEEDED"
+	"UNIT_SPELLCAST_SUCCEEDED",
+	"CRITERIA_COMPLETE"
 )
 
 local warnFansCasts					= mod:NewCountAnnounce(341868, 2)
@@ -52,7 +56,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 337924 then
+	if spellId == 337924 and self:AntiSpam(3, 1) then
 		specWarnConsume:Show()
 		specWarnConsume:Play("targetchange")
 		timerConsumeCD:Start()
@@ -64,3 +68,21 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		DBM:EndCombat(self)
 	end
 end
+
+do
+	local function checkForWipe(self)
+		if UnitInVehicle("player") then--success
+			DBM:EndCombat(self)
+		else--fail
+			DBM:EndCombat(self, true)
+		end
+	end
+
+	function mod:CRITERIA_COMPLETE(criteriaID)
+		if criteriaID == 48408 then
+			self:Unschedule(checkForWipe)
+			self:Schedule(3, checkForWipe, self)
+		end
+	end
+end
+

@@ -17,7 +17,11 @@ if GetLocale() == "zhCN" then
     L["ItemLevel: %d, ItemID: %d"] = "物品等级：%d, 物品ID：%d";
     L["CurrentLevel: %d, Upgrade: %s"] = "当前等级：%d, 升级情况：%s";
     L["SpellID: "] = "法术ID：";
+    L["MawPowerID: %d, SpellID: %d"] = "MawPowerID: %d, 法术ID：%d";
+    L["MawPowerID: %d"] = "MawPowerID: %d";
     L["QuestLevel: %d, QuestID: %d"] = "任务等级：%d, 任务ID：%d";
+    L["QuestID: %d"] = "任务ID：%d";
+    L["QuestLevel: %d"] = "任务等级：%d";
     L["CurrencyID: %d"] = "货币ID：%d";
     L["Achievement Criteria |cff00ff00%d|r / |cffffffff%d|r"] = "成就目标 |cff00ff00%d|r / |cffffffff%d|r";
     L["AchievementID: %d, CategoryID: %d"] = "成就ID：%d, 分类ID：%d";
@@ -35,7 +39,11 @@ elseif GetLocale() == "zhTW" then
     L["ItemLevel: %d, ItemID: %d"] = "物品等級: %d, 物品ID: %d";
     L["CurrentLevel: %d, Upgrade: %s"] = "當前等級: %d, 提升等级: %s";
     L["SpellID: "] = "法術ID: ";
+    L["MawPowerID: %d, SpellID: %d"] = "MawPowerID: %d, 法術ID: %d";
+    L["MawPowerID: %d"] = "MawPowerID: %d";
     L["QuestLevel: %d, QuestID: %d"] = "任務等級: %d, 任務ID: %d";
+    L["QuestID: %d"] = "任務ID: %d";
+    L["QuestLevel: %d"] = "任務等級: %d";
     L["CurrencyID: %d"] = "貨幣ID: %d";
     L["Achievement Criteria |cff00ff00%d|r / |cffffffff%d|r"] = "成就目標 |cff00ff00%d|r / |cffffffff%d|r";
     L["AchievementID: %d, CategoryID: %d"] = "成就ID: %d, 分類ID: %d";

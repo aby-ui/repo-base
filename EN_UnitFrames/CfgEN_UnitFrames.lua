@@ -1,4 +1,5 @@
 U1RegisterAddon("EN_UnitFrames", {
+    temporarilyForceDisable = 1,
     title = "系统头像增强",
     load = "LOGIN",
     secure = 1,

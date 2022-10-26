@@ -52,7 +52,7 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 7,
-      width = WeakAuras.normalWidth
+      width = WeakAuras.normalWidth,
     },
     portraitZoom = {
       type = "toggle",
@@ -223,6 +223,12 @@ local function createOptions(id, data)
   };
 end
 
+-- Duplicated because Private does not exist when we want to create the first thumnail
+local function ModelSetTransformFixed(self, tx, ty, tz, rx, ry, rz, s)
+  -- In Dragonflight the api changed, this converts to the new api
+  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), s)
+end
+
 local function createThumbnail()
   local borderframe = CreateFrame("Frame", nil, UIParent);
   borderframe:SetWidth(32);
@@ -235,6 +241,8 @@ local function createThumbnail()
 
   local model = CreateFrame("PlayerModel", nil, borderframe);
   borderframe.model = model;
+  model.SetTransformFixed = WeakAuras.IsDragonflight() and ModelSetTransformFixed
+                                                        or model.SetTransform
   model:SetFrameStrata("FULLSCREEN");
 
   return borderframe;
@@ -254,8 +262,8 @@ local function modifyThumbnail(parent, region, data)
   model:SetScript("OnShow", function()
     WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0)
-    if (data.api) then
-      model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+    if data.api then
+      model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
         data.model_st_us / 1000);
     else
@@ -265,8 +273,8 @@ local function modifyThumbnail(parent, region, data)
     end
   end);
 
-  if (data.api) then
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+  if data.api then
+    model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
       data.model_st_us / 1000);
   else

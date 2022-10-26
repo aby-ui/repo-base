@@ -227,12 +227,14 @@ function Addon:PLAYER_LOGIN(event)
         -- hook any pet button events we need to take care of
         -- register events on update initially, and wipe out their individual on
         -- update handlers.
+        --[[ --TODO:abyui10
         hooksecurefunc('PetActionButton_OnUpdate', petButton_OnUpdate)
         hooksecurefunc('PetActionBar_Update', petActionBar_Update)
 
         if self:EnableFlashAnimations() then
             hooksecurefunc('PetActionButton_StartFlash', button_StartFlash)
         end
+        --]]
     end
 
     -- get rid of the handler, as we don't need it anymore

@@ -3,10 +3,13 @@ local mod	= DBM:NewMod("AlderynandMynir", "DBM-Challenges", 1)
 
 mod.statTypes = "normal,heroic,mythic,challenge"
 
-mod:SetRevision("20220530062110")
+mod:SetRevision("20221023053638")
 mod:SetCreatureID(172408, 172409)
+mod.soloChallenge = true
 
 mod:RegisterCombat("combat")
+mod:SetReCombatTime(7, 5)
+mod:SetWipeTime(30)
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 337175 337013",
@@ -14,7 +17,8 @@ mod:RegisterEventsInCombat(
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED",
 --	"UNIT_DIED",
-	"UNIT_SPELLCAST_SUCCEEDED"
+	"UNIT_SPELLCAST_SUCCEEDED",
+	"CRITERIA_COMPLETE"
 )
 
 local specWarnAnimaSeed				= mod:NewSpecialWarningSoak(337175, nil, nil, nil, 1, 2)
@@ -50,3 +54,21 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 		DBM:EndCombat(self)
 	end
 end
+
+do
+	local function checkForWipe(self)
+		if UnitInVehicle("player") then--success
+			DBM:EndCombat(self)
+		else--fail
+			DBM:EndCombat(self, true)
+		end
+	end
+
+	function mod:CRITERIA_COMPLETE(criteriaID)
+		if criteriaID == 48408 then
+			self:Unschedule(checkForWipe)
+			self:Schedule(3, checkForWipe, self)
+		end
+	end
+end
+

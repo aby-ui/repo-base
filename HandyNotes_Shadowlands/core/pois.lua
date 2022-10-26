@@ -180,6 +180,45 @@ function Path:Draw(pin, type, xy1, xy2)
 end
 
 -------------------------------------------------------------------------------
+-------------------------------- SHAPE: CIRCLE --------------------------------
+-------------------------------------------------------------------------------
+
+local function Circle(attrs)
+    local coords = {}
+    local origin = attrs.origin
+    local oX, oY = HandyNotes:getXY(origin)
+    local radius = attrs.radius
+    local segments = attrs.segments or 32
+    for d = 0, segments, 1 do
+        local angle = math.rad(d * (360 / segments))
+        local x = oX + ((radius / 100) * math.sin(angle)) * 1.0
+        local y = oY + ((radius / 100) * math.cos(angle)) * 1.5
+        table.insert(coords, HandyNotes:getCoord(x, y))
+    end
+
+    return unpack(coords)
+end
+
+-------------------------------------------------------------------------------
+-------------------------------- SHAPE: SQUARE --------------------------------
+-------------------------------------------------------------------------------
+
+local function Square(attrs)
+    local coords = {}
+    local origin = attrs.origin
+    local oX, oY = HandyNotes:getXY(origin)
+    local width = attrs.width
+    local calculate = {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}, {-1, -1}}
+    for i = 1, #calculate, 1 do
+        local x = oX + ((width / 100) * calculate[i][1] * 1.0)
+        local y = oY + ((width / 100) * calculate[i][2] * 1.5)
+        table.insert(coords, HandyNotes:getCoord(x, y))
+    end
+
+    return unpack(coords)
+end
+
+-------------------------------------------------------------------------------
 ------------------------------------ LINE -------------------------------------
 -------------------------------------------------------------------------------
 
@@ -264,4 +303,12 @@ end
 
 -------------------------------------------------------------------------------
 
-ns.poi = {POI = POI, Glow = Glow, Path = Path, Line = Line, Arrow = Arrow}
+ns.poi = {
+    POI = POI,
+    Glow = Glow,
+    Path = Path,
+    Circle = Circle,
+    Square = Square,
+    Line = Line,
+    Arrow = Arrow
+}

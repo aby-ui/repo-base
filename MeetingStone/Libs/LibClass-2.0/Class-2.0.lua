@@ -155,6 +155,9 @@ function Object:SuperCall(method, ...)
         if super[method] == self[method] then
             super = super:GetSuper()
         else
+            if method == "SetText" and (...) == nil then
+                return super[method](self, "")
+            end
             return super[method](self, ...)
         end
     end

@@ -9,7 +9,7 @@ License: MIT
 
 --- DRList-1.0
 -- @module DRList-1.0
-local MAJOR, MINOR = "DRList-1.0", 29 -- Don't forget to change this in Spells.lua aswell!
+local MAJOR, MINOR = "DRList-1.0", 46 -- Don't forget to change this in Spells.lua aswell!
 local Lib = assert(LibStub, MAJOR .. " requires LibStub."):NewLibrary(MAJOR, MINOR)
 if not Lib then return end -- already loaded
 
@@ -30,6 +30,8 @@ L["TAUNTS"] = "Taunts"
 L["FEARS"] = "Fears"
 L["RANDOM_ROOTS"] = "Random roots"
 L["RANDOM_STUNS"] = "Random stuns"
+L["OPENER_STUN"] = "Opener Stuns"
+L["HORROR"] = "Horrors"
 L["SCATTERS"] = "Scatters"
 L["SLEEPS"] = GetSpellInfo(1090) or "Sleep"
 L["MIND_CONTROL"] = GetSpellInfo(605) or "Mind Control"
@@ -39,8 +41,9 @@ L["DEATH_COIL"] = GetSpellInfo(28412) or "Death Coil"
 L["UNSTABLE_AFFLICTION"] = GetSpellInfo(31117) or "Unstable Affliction"
 L["CHASTISE"] = GetSpellInfo(44041) or "Chastise"
 L["COUNTERATTACK"] = GetSpellInfo(19306) or "Counterattack"
-L["FREEZING_TRAP"] = GetSpellInfo(27753) or "Freezing Trap" -- DEPRECATED
-L["SCATTER_SHOT"] = GetSpellInfo(23601) or "Scatter Shot" -- DEPRECATED
+L["CYCLONE"] = GetSpellInfo(33786) or "Cyclone"
+L["BANISH"] = GetSpellInfo(710) or "Banish"
+L["CHARGE"] = GetSpellInfo(100) or "Charge"
 
 -- luacheck: push ignore 542
 local locale = GetLocale()
@@ -125,13 +128,14 @@ end
 Lib.gameExpansion = ({
     [WOW_PROJECT_MAINLINE] = "retail",
     [WOW_PROJECT_CLASSIC] = "classic",
-    [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "tbc"
+    [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "tbc",
+    [WOW_PROJECT_WRATH_CLASSIC or 11] = "wotlk",
 })[WOW_PROJECT_ID]
 
 -- How long it takes for a DR to expire, in seconds.
 Lib.resetTimes = {
     retail = {
-        ["default"] = 18.5,
+        ["default"] = 18.5, -- 18 sec + 0.5 latency
         ["npc"] = 23, -- Against mobs it seems to last slightly longer, depending on server load
         ["knockback"] = 10, -- Knockbacks are immediately immune and only DRs for 10s
     },
@@ -143,6 +147,11 @@ Lib.resetTimes = {
 
     tbc = {
         ["default"] = 19, -- dynamic between 15 and 20s
+        ["npc"] = 23,
+    },
+
+    wotlk = {
+        ["default"] = 19,  -- dynamic between 15 and 20s
         ["npc"] = 23,
     },
 }
@@ -188,13 +197,30 @@ Lib.categoryNames = {
         ["unstable_affliction"] = L.UNSTABLE_AFFLICTION,
         ["chastise"] = L.CHASTISE,
         ["counterattack"] = L.COUNTERATTACK,
-        ["sleep"] = L.SLEEPS, -- DEPRECATED
-        ["freezing_trap"] = L.FREEZING_TRAP, -- DEPRECATED
-        ["scatter_shot"] = L.SCATTER_SHOT, -- DEPRECATED
+    },
+
+    wotlk = {
+        ["incapacitate"] = L.INCAPACITATES,
+        ["stun"] = L.STUNS,
+        ["random_stun"] = L.RANDOM_STUNS,
+        ["random_root"] = L.RANDOM_ROOTS,
+        ["root"] = L.ROOTS,
+        ["disarm"] = L.DISARMS,
+        ["fear"] = L.FEARS,
+        ["scatter"] = L.SCATTERS,
+        ["silence"] = L.SILENCES,
+        ["horror"] = L.HORROR,
+        ["mind_control"] = L.MIND_CONTROL,
+        ["cyclone"] = L.CYCLONE,
+        ["charge"] = L.CHARGE,
+        ["opener_stun"] = L.OPENER_STUN,
+        ["counterattack"] = L.COUNTERATTACK,
     },
 }
 
 -- Categories that have DR against normal mobs.
+-- Note that this is only for normal mobs on retail. Special mobs or pets have DR on all categories,
+-- see UnitClassification() and UnitIsQuestBoss().
 Lib.categoriesPvE = {
     retail = {
         ["taunt"] = L.TAUNTS, -- Lib.categoryNames.retail.taunt
@@ -211,6 +237,13 @@ Lib.categoriesPvE = {
         ["stun"] = L.STUNS,
         ["random_stun"] = L.RANDOM_STUNS,
         ["kidney_shot"] = L.KIDNEY_SHOT,
+    },
+
+    wotlk = {
+        --["taunt"] = L.TAUNTS,
+        ["stun"] = L.STUNS,
+        ["random_stun"] = L.RANDOM_STUNS,
+        ["opener_stun"] = L.OPENER_STUN,
     },
 }
 
@@ -230,6 +263,10 @@ Lib.diminishedDurations = {
     },
 
     tbc = {
+        ["default"] = { 0.50, 0.25 },
+    },
+
+    wotlk = {
         ["default"] = { 0.50, 0.25 },
     },
 }
@@ -257,6 +294,8 @@ end
 
 --- Get table of all categories that DRs in PvE only.
 -- Key is unlocalized name used for API functions, value is localized name used for UI.
+-- Note that this is only for normal mobs on retail. Special mobs or pets have DR on all categories,
+-- see UnitClassification() and UnitIsQuestBoss().
 -- Tip: you can combine :GetPvECategories() and :IterateSpellsByCategory() to get spellIDs only for PvE aswell.
 -- @treturn table {string=string}
 function Lib:GetPvECategories()
@@ -271,9 +310,11 @@ function Lib:GetResetTime(category)
 end
 
 --- Get unlocalized DR category by spell ID.
--- For Classic you should pass in the spell name instead of ID.
+-- For Classic (vanilla) you should pass in the spell name instead of ID.
 -- For Classic you also get an optional second return value
--- which is the spell ID of the spell name you passed in.
+-- which is the hardcoded spell ID of the spell name you passed in.
+-- You should use this ID to query additional info from Blizzard API if needed, as
+-- spell names only works for the player if they have the spell in their current spellbook.
 -- @tparam number spellID
 -- @treturn[1] string|nil The category name.
 -- @treturn[2] number|nil The spell ID. (Classic only)
@@ -296,9 +337,8 @@ function Lib:GetCategoryLocalization(category)
 end
 
 --- Check if a category has DR against mobs.
--- Note that this is only for mobs, player pets have DR on all categories.
--- Also taunt, root, disorient & incap only have DR against special mobs.
--- See UnitClassification() and UnitIsQuestBoss().
+-- Note that this is only for normal mobs on retail. Special mobs or pets have DR on all categories,
+-- see UnitClassification() and UnitIsQuestBoss().
 -- @tparam string category Unlocalized category name
 -- @treturn bool
 function Lib:IsPvECategory(category)

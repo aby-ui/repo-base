@@ -26,7 +26,8 @@ local function OnEvent(self, event, addon)
 		end
 		if not debuff then break end
 	end
-	
+
+	--[[ --TODO:abyui10
 	for i=1, NUM_TEMP_ENCHANT_FRAMES do
 		local f = _G["TempEnchant"..i]
 		--_G["TempEnchant"..i.."Border"].SetTexture = NULL
@@ -35,6 +36,7 @@ local function OnEvent(self, event, addon)
 		end
 		_G["TempEnchant"..i.."Border"]:SetVertexColor(.75, 0, 1)
 	end
+	--]]
 	
 	f:SetScript("OnEvent", nil)
 end

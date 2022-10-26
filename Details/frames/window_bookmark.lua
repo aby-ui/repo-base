@@ -8,7 +8,7 @@ local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 function Details:OpenBookmarkConfig()
 
     if (not _G.DetailsBookmarkManager) then
-        DF:CreateSimplePanel (UIParent, 465, 460, Loc ["STRING_OPTIONS_MANAGE_BOOKMARKS"], "DetailsBookmarkManager")
+        DF:CreateSimplePanel(UIParent, 465, 460, Loc ["STRING_OPTIONS_MANAGE_BOOKMARKS"], "DetailsBookmarkManager")
         local panel = _G.DetailsBookmarkManager
         DF:ApplyStandardBackdrop(panel)
         panel:SetBackdropColor(.1, .1, .1, .9)
@@ -62,7 +62,7 @@ function Details:OpenBookmarkConfig()
         end
         
         for i = 1, 40 do
-            local clear = DF:CreateButton (panel, clear_func, 16, 16, nil, i, nil, [[Interface\Glues\LOGIN\Glues-CheckBox-Check]])
+            local clear = DF:CreateButton(panel, clear_func, 16, 16, nil, i, nil, [[Interface\Glues\LOGIN\Glues-CheckBox-Check]])
             if (i%2 ~= 0) then
                 --impar
                 clear:SetPoint(15, (( i*10 ) * -1) - 35) --left
@@ -72,7 +72,7 @@ function Details:OpenBookmarkConfig()
                 clear:SetPoint(250, (( o*10 ) * -1) - 35) --right
             end
         
-            local set = DF:CreateButton (panel, set_att, 16, 16, nil, i)
+            local set = DF:CreateButton(panel, set_att, 16, 16, nil, i)
             set:SetPoint("left", clear, "right")
             set:SetPoint("right", clear, "right", 180, 0)
             set:SetBackdrop(button_backdrop)
@@ -81,13 +81,13 @@ function Details:OpenBookmarkConfig()
             set:SetHook("OnLeave", set_onleave)
         
             --set:InstallCustomTexture (nil, nil, nil, nil, true)
-            set:SetTemplate (DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"))
+            set:SetTemplate(DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
             
-            local bg_texture = DF:CreateImage (set, [[Interface\AddOns\Details\images\bar_skyline]], 135, 30, "background")
+            local bg_texture = DF:CreateImage(set, [[Interface\AddOns\Details\images\bar_skyline]], 135, 30, "background")
             bg_texture:SetAllPoints()
             set.bg = bg_texture
         
-            local icon = DF:CreateImage (set, nil, 16, 16, nil, nil, "icon")
+            local icon = DF:CreateImage(set, nil, 16, 16, nil, nil, "icon")
             icon:SetPoint("left", clear, "right", 4, 0)
             
             local label = DF:CreateLabel(set, "")
@@ -112,12 +112,12 @@ function Details:OpenBookmarkConfig()
                             this_block.label.text = "-- x -- x --"
                             this_block.icon.texture = "Interface\\ICONS\\Ability_DualWield"
                             this_block.icon.texcoord = normal_coords
-                            this_block.bg:SetVertexColor (.4, .1, .1, .12)
+                            this_block.bg:SetVertexColor(.4, .1, .1, .12)
                         else
                             this_block.label.text = CustomObject.name
                             this_block.icon.texture = CustomObject.icon
                             this_block.icon.texcoord = normal_coords
-                            this_block.bg:SetVertexColor (.4, .4, .4, .6)
+                            this_block.bg:SetVertexColor(.4, .4, .4, .6)
                         end
                     else
                         bookmark.atributo = bookmark.atributo or 1
@@ -125,16 +125,16 @@ function Details:OpenBookmarkConfig()
                         this_block.label.text = Details.sub_atributos [bookmark.atributo] and Details.sub_atributos [bookmark.atributo].lista [bookmark.sub_atributo]
                         this_block.icon.texture = Details.sub_atributos [bookmark.atributo] and Details.sub_atributos [bookmark.atributo].icones [bookmark.sub_atributo] [1]
                         this_block.icon.texcoord = Details.sub_atributos [bookmark.atributo] and Details.sub_atributos [bookmark.atributo].icones [bookmark.sub_atributo] [2]
-                        this_block.bg:SetVertexColor (.4, .4, .4, .6)
+                        this_block.bg:SetVertexColor(.4, .4, .4, .6)
                     end
                     
-                    this_block.button:SetAlpha (1)
+                    this_block.button:SetAlpha(1)
                 else
                     this_block.label.text = "-- x -- x --"
                     this_block.icon.texture = [[Interface\AddOns\Details\images\icons]]
                     this_block.icon.texcoord = unknown_coords
-                    this_block.bg:SetVertexColor (.1, .1, .1, .12)
-                    this_block.button:SetAlpha (0.3)
+                    this_block.bg:SetVertexColor(.1, .1, .1, .12)
+                    this_block.button:SetAlpha(0.3)
                 end
             end
         end

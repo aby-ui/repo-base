@@ -11,12 +11,13 @@ private.CONTINENT_ZONE_IDS = {
 	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,70,71,76,77,78,80,81,83,97,103,106,198,199,249,327,338,1332,1469,1527,1571} }; --Kalimdor
 	[113] = { zonefilter = true, npcfilter = true, id = 4, zones = {114,115,116,117,118,119,120,121,126} }; --Northrend
 	[424] = { zonefilter = true, npcfilter = true, id = 6, zones = {371,376,379,388,390,418,422,433,507,504,554,1530,1570} }; --Pandaria
-	[101] = { zonefilter = true, npcfilter = true, id = 3, zones = {94,95,100,102,104,105,106,107,108,109} }; --Outland
+	[101] = { zonefilter = true, npcfilter = true, id = 3, zones = {100,102,104,105,106,107,108,109} }; --Outland
 	[948] = { zonefilter = true, npcfilter = true, id = 5, zones = {207} }; --The Maelstrom
 	[876] = { zonefilter = true, npcfilter = true, id = 10, zones = {895,896,942,1161,1462} }; --Kul Tiras
 	[875] = { zonefilter = true, npcfilter = true, id = 11, zones = {862,863,864,1165} }; --Zandalar
 	[1355] = { zonefilter = true, npcfilter = true, id = 12, zones = {1355} }; --Nazjatar
-	[1550] = { zonefilter = true, npcfilter = true, id = 13, zones = {1409,1525,1533,1536,1543,1565,1618,1961,1970,2030}, current = { "all" } }; --Shadowlands
+	[1550] = { zonefilter = true, npcfilter = true, id = 13, zones = {1409,1525,1533,1536,1543,1565,1618,1961,1970,2030} }; --Shadowlands
+	[1978] = { zonefilter = true, npcfilter = true, id = 14, zones = {2022,2023,2024,2025,2107}, current = { "all" } }; --Dragon Isles
 	[9999] = { zonefilter = true, npcfilter = true, zones = {276,378,628,629,672,734,702,695,747,739} }; --Class Halls
 	[9998] = { zonefilter = true, npcfilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
 	[9997] = { zonefilter = true, npcfilter = true, zones = {11,35,219,229,237,243,251,274,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041,1663,1666,1675,1669,1674,1677,1683,1692} }; --Dungeons or scenarios
@@ -211,6 +212,10 @@ private.RESETABLE_KILLS_ZONE_IDS = {
 	[1961] = { "all" }; --Korthia (Shadowlands)
 	[1970] = { "all" }; --Zereth Mortis (Shadowlands)
 	[2030] = { "all" }; --Zereth Mortis (Nexus of Actualization) (Shadowlands)
+	[2022] = { "all" }; --The Walking Shores (Nexus of Actualization) (Shadowlands)
+	[2023] = { "all" }; --Ohn'Ahran Plains (Nexus of Actualization) (Shadowlands)
+	[2024] = { "all" }; --The Azure Span (Dragonflight)
+	[2025] = { "all" }; --Thaldraszus (Dragonflight)
 }
 
 private.RESETABLE_WARFRONT_KILLS_ZONE_IDS = {

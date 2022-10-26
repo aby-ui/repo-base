@@ -842,11 +842,13 @@ end
 
 function tipPrototype:SetCellMarginH(size)
     if #self.lines > 0 then
-        error("Unable to set horizontal margin while the tooltip has lines.", 2)
+       -- error("Unable to set horizontal margin while the tooltip has lines.", 2)
+       return
     end
 
     if not size or type(size) ~= "number" or size < 0 then
-        error("Margin size must be a positive number or zero.", 2)
+        --error("Margin size must be a positive number or zero.", 2)
+        return
     end
 
     self.cell_margin_h = size

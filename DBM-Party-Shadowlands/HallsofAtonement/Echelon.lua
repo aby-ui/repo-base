@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2387, "DBM-Party-Shadowlands", 4, 1185)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(164185)
 mod:SetEncounterID(2380)
 
@@ -96,7 +96,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 319603 then
-		if self.Options.SpecWarn319603dispel and self:CheckDispelFilter() then
+		if self.Options.SpecWarn319603dispel and self:CheckDispelFilter("curse") then
 			specWarnCurseofStoneDispel:CombinedShow(0.3, args.destName)
 			specWarnCurseofStoneDispel:ScheduleVoice(0.3, "helpdispel")
 		elseif args:IsPlayer() then

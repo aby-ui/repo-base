@@ -1,4 +1,5 @@
 U1RegisterAddon("163UI_Buff", {
+    temporarilyForceDisable = 1,
     title = "增益设置",
     defaultEnable = 1,
 

@@ -7,7 +7,7 @@ local CTimerNewTicker = C_Timer.NewTicker
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local max = math.max
 
-local BGE_VERSION = "9.2.0.11"
+local BGE_VERSION = "9.2.7.2"
 local AddonPrefix = "BGE"
 local versionQueryString, versionResponseString = "Q^%s", "V^%s"
 local targetCallVolunteerQueryString = "TVQ^%s" -- wil be send to all the viewers to show if you are volunteering vor target calling
@@ -31,16 +31,36 @@ C_ChatInfo.RegisterAddonMessagePrefix(AddonPrefix)
 	targetcallilng, thoughts:
 	The group leader can decice who the target caller will be
 	the addon then automatically marks the target of the target caller with a raid icon (can be choosen from the menu) via SetRaidTarget()
-	RAID_TARGET_UPDATE fires when a raid target changes. 
-	
-	
-	the addon then reacts to that and shows the icon on the playerbutton as well and notifies the player when the target changed. 
+	RAID_TARGET_UPDATE fires when a raid target changes.
+
+
+	the addon then reacts to that and shows the icon on the playerbutton as well and notifies the player when the target changed.
 ]]
 
---[[ 
+--[[
 LE_PARTY_CATEGORY_HOME will query information about your "real" group -- the group you were in on your Home realm, before entering any instance/battleground.
 LE_PARTY_CATEGORY_INSTANCE will query information about your "fake" group -- the group created by the instance/battleground matching mechanism.
  ]]
+ local function IsFirstNewerThanSecond(versionString1, versionString2)
+	--versionString can be "9.2.0.10" for example, another player can have "9.2.0.9"
+	-- we cant make a simple comparison like "9.2.0.10" > "9.2.0.9" because this would result in false
+
+	local firstVersion = {strsplit(".", versionString1)}
+	local secondVersion = {strsplit(".", versionString2)}
+
+	for i = 1, max(#firstVersion, #secondVersion) do
+		local firstVersionNumber = tonumber(firstVersion[i]) or 0
+		local secondVersionNumber = tonumber(secondVersion[i]) or 0
+
+		if firstVersionNumber > secondVersionNumber then
+			return true
+		elseif firstVersionNumber < secondVersionNumber then --otherwise its equal and we compare the next table item
+			return false
+		end
+	end
+	return false --we didnt return anything yet since all numbers where equal, we are at the end of the arrays so both versions are equal
+end
+
 
 SLASH_BattleGroundEnemiesVersion1 = "/bgev"
 SLASH_BattleGroundEnemiesVersion2 = "/BGEV"
@@ -53,7 +73,7 @@ SlashCmdList.BattleGroundEnemiesVersion = function()
 	local function coloredNameVersion(playerDetails, version)
 		local coloredName = BattleGroundEnemies:GetColoredName(playerDetails)
 		if version ~= "" then
-			version = ("|cFFCCCCCC(%s%s)|r"):format(version, "") 
+			version = ("|cFFCCCCCC(%s%s)|r"):format(version, "")
 		end
 		return (coloredName..version)
 	end
@@ -73,19 +93,19 @@ SlashCmdList.BattleGroundEnemiesVersion = function()
 
 	--loop through all of the BattleGroundEnemies.Allies.Players to find out which one of them send us their addon version
 	for allyName, allyButton in pairs(BattleGroundEnemies.Allies.Players) do
-  
+
 		if versions[allyName] then
-			if versions[allyName] < highestVersion then
+			if IsFirstNewerThanSecond(highestVersion, versions[allyName]) then
 				results.old[#results.old+1] = coloredNameVersion(allyButton, versions[allyName])
 			else
-				results.current[#results.current+1] = coloredNameVersion(allyButton, versions[allyName])  
+				results.current[#results.current+1] = coloredNameVersion(allyButton, versions[allyName])
 			end
 		else
-			results.none[#results.none+1] = coloredNameVersion(allyButton, "")        
+			results.none[#results.none+1] = coloredNameVersion(allyButton, "")
 		end
 	end
 
-	
+
 	for state, names in pairs(results) do
 		if #names> 0 then
 			BattleGroundEnemies:Information(texts[state]..":", table.concat(names, ", "))
@@ -94,10 +114,10 @@ SlashCmdList.BattleGroundEnemiesVersion = function()
 end
 
 local timers = {}
---[[ 
-  we use timers to broadcast information, we do this because it may happen that 
+--[[
+  we use timers to broadcast information, we do this because it may happen that
 many players request the same information in a short time due to
- ingame events like GROUP_ROSTER_UPDATE, this way we only send out the information 
+ ingame events like GROUP_ROSTER_UPDATE, this way we only send out the information
 once when requested in a 3 second time frame, every new request resets the timer
  ]]
 
@@ -119,7 +139,7 @@ end
 -- function BattleGroundEnemies:BroadcastTargetCaller()
 --     if self.Allies.TargetCaller then
 --         if timers.BroadcastTargetCaller then timers.BroadcastTargetCaller:Cancel() end
---         timers.BroadcastTargetCaller = CTimerNewTicker(3, function() 
+--         timers.BroadcastTargetCaller = CTimerNewTicker(3, function()
 --             if IsInGroup() then
 --                 SendAddonMessage(AddonPrefix, targetCallVolunteerResponseString:format(self.Allies.TargetCaller.GUID), IsInGroup(2) and "INSTANCE_CHAT" or "RAID")
 --             end
@@ -128,43 +148,11 @@ end
 --     end
 -- end
 
---arguments are version tables. example: {"9", "2", ""0", "10"}
---return true only when the first version is bigger than the second, return false when equal or smaller
-local function FirstGreaterThanSecond(firstVersion, secondVersion, index)
-	for i = index or 1, max(#firstVersion, #secondVersion) do
-		local firstVersionNumber = tonumber(firstVersion[i]) or 0
-		local secondVersionNumber = tonumber(secondVersion[i]) or 0
-
-		if firstVersionNumber > secondVersionNumber then
-			return true
-		elseif firstVersionNumber == secondVersionNumber then
-			--continue to compare the next table element
-			return FirstGreaterThanSecond(firstVersion, secondVersion, i + 1)
-		else
-			return false
-		end
-	end
-	return false --we checked both arrays, both versions are equal
-end
-
-local function IsFirstNewerThanSecond(versionString1, versionString2)
-	--versionString can be "9.2.0.10" for example, another player can have "9.2.0.9"
-	-- we cant make a simple comparison like "9.2.0.10" > "9.2.0.9" because this would result in false
-	
-	
-	local firstVersion = {strsplit(".", versionString1)}
-	local secondVersion = {strsplit(".", versionString2)}
-	return FirstGreaterThanSecond(firstVersion, secondVersion)
-end
-
-
-
-
 
 
 local wasInGroup = nil
 function BattleGroundEnemies:RequestEverythingFromGroupmembers()
-	
+
 	local groupType = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and 3) or (IsInRaid() and 2) or (IsInGroup() and 1)
 	if (not wasInGroup and groupType) or (wasInGroup and groupType and wasInGroup ~= groupType) then
 		wasInGroup = groupType
@@ -183,7 +171,7 @@ end
 function BattleGroundEnemies:UpdateVersions(sender, prefix, version)
 	if prefix == "Q" then
 		if timers.VersionCheck then timers.VersionCheck:Cancel() end
-		timers.VersionCheck = CTimerNewTicker(3, function() 
+		timers.VersionCheck = CTimerNewTicker(3, function()
 			if IsInGroup() then
 				SendAddonMessage(AddonPrefix, versionResponseString, IsInGroup(2) and "INSTANCE_CHAT" or "RAID") -- LE_PARTY_CATEGORY_INSTANCE = 2
 			end
@@ -212,7 +200,7 @@ end
 -- function BattleGroundEnemies:UpdateTargetCallingVolunteers(sender, prefix, message)
 --     if prefix == "TVQ" then
 --         if timers.targetCallingVolunteering then timers.targetCallingVolunteering:Cancel() end
---         timers.targetCallingVolunteering = CTimerNewTicker(3, function() 
+--         timers.targetCallingVolunteering = CTimerNewTicker(3, function()
 --             SendAddonMessage(AddonPrefix, targetCallVolunteerResponseString:format(self.db.profile.targetCallingVolunteer and "y" or "n"), IsInGroup(2) and "INSTANCE_CHAT" or "RAID")
 --             timers.targetCallingVolunteering = nil
 --         end, 1)
@@ -236,7 +224,7 @@ end
 
 function BattleGroundEnemies:CHAT_MSG_ADDON(addonPrefix, message, channel, sender)  --the sender always contains the realm of the player, even when from same realm
 	if channel ~= "RAID" and channel ~= "PARTY" and channel ~= "INSTANCE_CHAT" or addonPrefix ~= AddonPrefix then return end
-	
+
 	local msgPrefix, msg = strsplit("^", message)
 	sender = Ambiguate(sender, "none")
 	if msgPrefix == "V" or msgPrefix == "Q" then
@@ -248,4 +236,4 @@ end
 
 
 --/run test = {"9.0.7.5", "9.2.7.5", "9.2.7.4"}; table.sort(test); for i =1, #test do print(test[i])end
--- sortiert aufsteigent 
+-- sortiert aufsteigent

@@ -52,9 +52,9 @@ config.options = {
                     end,
                     order = 30,
                 },
-                other_line = {
+                line_trade_skills = {
                     type = "header",
-                    name = "",
+                    name = TRADE_SKILLS, -- Professions
                     order = 31,
                 },
                 show_onlymytrainers = {
@@ -66,7 +66,7 @@ config.options = {
                 },
                 picons = {
                     type = "description",
-                    width = 0.9,
+                    width = 0.97,
                     name = L["config_picons"],
                     fontSize = "medium",
                     order = 33,
@@ -80,17 +80,30 @@ config.options = {
                 },
                 picons_trainer = {
                     type = "toggle",
-                    width = 0.6,
+                    width = 0.8,
                     name = L["config_trainer"],
                     desc = L["config_picons_trainer_desc"],
                     order = 33.2,
                 },
+                use_old_picons = {
+                    type = "toggle",
+                    width = "full",
+                    name = L["config_use_old_picons"],
+                    desc = L["config_use_old_picons_desc"],
+                    disabled = function() return not (private.db.picons_trainer or private.db.picons_vendor) end,
+                    order = 34,
+                },
+                line_misc = {
+                    type = "header",
+                    name = "",
+                    order = 35,
+                },
                 fmaster_waypoint = {
                     type = "toggle",
-                    width = 1.3,
+                    width = 1.57,
                     name = L["config_fmaster_waypoint"],
                     desc = L["config_fmaster_waypoint_desc"],
-                    order = 34,
+                    order = 36,
                 },
                 fmaster_waypoint_dropdown = {
                     type = "select",
@@ -100,14 +113,14 @@ config.options = {
                     name = L["config_waypoint_dropdown"],
                     desc = L["config_waypoint_dropdown_desc"],
                     width = 0.7,
-                    order = 35,
+                    order = 36.1,
                 },
                 easy_waypoint = {
                     type = "toggle",
-                    width = 1.3,
+                    width = 1.57,
                     name = L["config_easy_waypoints"],
                     desc = L["config_easy_waypoints_desc"],
-                    order = 36,
+                    order = 37,
                 },
                 easy_waypoint_dropdown = {
                     type = "select",
@@ -117,7 +130,7 @@ config.options = {
                     name = L["config_waypoint_dropdown"],
                     desc = L["config_waypoint_dropdown_desc"],
                     width = 0.7,
-                    order = 37,
+                    order = 37.1,
                 },
                 unhide = {
                     type = "execute",
@@ -187,7 +200,7 @@ for i, icongroup in ipairs(private.constants.icongroup) do
         desc = L["config_icon_scale_desc"],
         min = 0.25, max = 3, step = 0.01,
         arg = "icon_scale_"..icongroup,
-        width = 1.07,
+        width = 1.19,
         order = i *10 + 1,
     }
 
@@ -197,7 +210,7 @@ for i, icongroup in ipairs(private.constants.icongroup) do
         desc = L["config_icon_alpha_desc"],
         min = 0, max = 1, step = 0.01,
         arg = "icon_alpha_"..icongroup,
-        width = 1.07,
+        width = 1.19,
         order = i *10 + 2,
     }
 end

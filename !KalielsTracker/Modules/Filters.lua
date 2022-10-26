@@ -102,13 +102,6 @@ local function SetHooks()
 		end
 	end
 	
-	local bck_QuestMapQuestOptions_TrackQuest = QuestMapQuestOptions_TrackQuest
-	QuestMapQuestOptions_TrackQuest = function(questID)
-		if not db.filterAuto[1] then
-			bck_QuestMapQuestOptions_TrackQuest(questID)
-		end
-	end
-
 	hooksecurefunc("QuestObjectiveTracker_OnOpenDropDown", function(self)
 		local block = self.activeFrame
 
@@ -153,7 +146,14 @@ local function SetHooks()
 		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL)
 	end)
 
-	-- Quest Log
+	-- Quest Log - QuestMapFrame.lua
+	local bck_QuestMapQuestOptions_TrackQuest = QuestMapQuestOptions_TrackQuest
+	QuestMapQuestOptions_TrackQuest = function(questID)
+		if not db.filterAuto[1] then
+			bck_QuestMapQuestOptions_TrackQuest(questID)
+		end
+	end
+
 	hooksecurefunc("QuestMapFrame_UpdateQuestDetailsButtons", function()
 		if db.filterAuto[1] then
 			QuestMapFrame.DetailsFrame.TrackButton:Disable()
@@ -164,7 +164,7 @@ local function SetHooks()
 		end
 	end)
 
-	-- POI
+	-- POI - QuestPOI.lua
 	local bck_QuestPOIButton_OnClick = QuestPOIButton_OnClick
 	QuestPOIButton_OnClick = function(self)
 		if not QuestUtils_IsQuestWatched(self.questID) and db.filterAuto[1] then
@@ -178,20 +178,21 @@ local function SetHooks()
 	end
 end
 
+-- Blizzard_AchievementUI
 local function SetHooks_AchievementUI()
-	local bck_AchievementButton_ToggleTracking = AchievementButton_ToggleTracking
-	AchievementButton_ToggleTracking = function(id)
+	local bck_AchievementTemplateMixin_ToggleTracking = AchievementTemplateMixin.ToggleTracking
+	function AchievementTemplateMixin:ToggleTracking()
 		if not db.filterAuto[2] then
-			return bck_AchievementButton_ToggleTracking(id)
+			return bck_AchievementTemplateMixin_ToggleTracking(self)
 		end
 	end
 	
-	hooksecurefunc("AchievementButton_DisplayAchievement", function(button, category, achievement, selectionID, renderOffScreen)
-		if not button.completed then
+	hooksecurefunc(AchievementTemplateMixin, "Init", function(self, elementData)
+		if not self.completed then
 			if db.filterAuto[2] then
-				button.tracked:Disable()
+				self.Tracked:Disable()
 			else
-				button.tracked:Enable()
+				self.Tracked:Enable()
 			end
 		end
 	end)

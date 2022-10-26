@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local SharedMedia = LibStub:GetLibrary ("LibSharedMedia-3.0")
 	
 	local DEFAULT_CHILD_WIDTH = 60
@@ -16,7 +16,7 @@
 --local pointers
 
 	local _math_floor = math.floor --api local
-	local _ipairs = ipairs --api local
+	local ipairs = ipairs --api local
 
 	local UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
 	
@@ -47,13 +47,13 @@
 	function _detalhes.StatusBar:LockDisplays (instance, locked)
 		if (instance.StatusBar.center and instance.StatusBar.left and instance.StatusBar.right) then
 			if (locked) then
-				instance.StatusBar.center.frame:EnableMouse (false)
-				instance.StatusBar.left.frame:EnableMouse (false)
-				instance.StatusBar.right.frame:EnableMouse (false)
+				instance.StatusBar.center.frame:EnableMouse(false)
+				instance.StatusBar.left.frame:EnableMouse(false)
+				instance.StatusBar.right.frame:EnableMouse(false)
 			else
-				instance.StatusBar.center.frame:EnableMouse (true)
-				instance.StatusBar.left.frame:EnableMouse (true)
-				instance.StatusBar.right.frame:EnableMouse (true)
+				instance.StatusBar.center.frame:EnableMouse(true)
+				instance.StatusBar.left.frame:EnableMouse(true)
+				instance.StatusBar.right.frame:EnableMouse(true)
 			end
 		end
 	end
@@ -176,7 +176,7 @@
 
 	--disable all plugin childs attached to an specified instance and reactive the childs taking the instance statusbar anchors
 	function _detalhes.StatusBar:ReloadAnchors (instance)
-		for _, child in _ipairs(instance.StatusBar) do
+		for _, child in ipairs(instance.StatusBar) do
 			child.frame:ClearAllPoints()
 			child.frame:Hide()
 			child.anchor = nil
@@ -211,7 +211,7 @@
 		local byuser = false
 		
 		if (type(index) == "table") then
-			index, current_child, anchor = unpack (index)
+			index, current_child, anchor = unpack(index)
 			byuser = true
 		end
 	
@@ -242,7 +242,7 @@
 		local chosenChild = nil
 		
 		--procura pra ver se ja tem uma criada
-		for _, child_created in _ipairs(instance.StatusBar) do 
+		for _, child_created in ipairs(instance.StatusBar) do 
 			if (child_created.mainPlugin == pluginMestre) then
 				chosenChild = child_created
 				break
@@ -256,13 +256,13 @@
 
 		instance.StatusBar [anchor] = chosenChild
 		--copia os atributos do current para o chosen
-		local options_current = Details.CopyTable (current_child.options)
+		local options_current = Details.CopyTable(current_child.options)
 		
 		if (chosenChild.anchor) then
 			--o widget escolhido ja estava sendo mostrado...
 			-- copia os atributos do chosen para o current
 			
-			current_child.options = Details.CopyTable (chosenChild.options)
+			current_child.options = Details.CopyTable(chosenChild.options)
 			instance.StatusBar [chosenChild.anchor] = current_child
 		end
 		
@@ -276,12 +276,12 @@
 
 	function _detalhes.StatusBar:SetPlugin (instance, absolute_name, anchor)
 		if (absolute_name == -1) then --none
-			anchor = string.lower (anchor)
+			anchor = string.lower(anchor)
 			ChoosePlugin (nil, nil, -1, instance.StatusBar [anchor], anchor)
 		else
 			local index = _detalhes.StatusBar:GetIndexFromAbsoluteName (absolute_name)
 			if (index and anchor) then
-				anchor = string.lower (anchor)
+				anchor = string.lower(anchor)
 				ChoosePlugin (nil, nil, index, instance.StatusBar [anchor], anchor)
 			end
 		end
@@ -337,7 +337,7 @@
 
 		if (mouse == "LeftButton") then
 			if (not frame.child.Setup) then
-				print (Loc ["STRING_STATUSBAR_NOOPTIONS"])
+				print(Loc ["STRING_STATUSBAR_NOOPTIONS"])
 				return
 			end
 			frame.child:Setup()
@@ -349,7 +349,7 @@
 			
 			local current
 			
-			for index, _name_and_icon in _ipairs(_detalhes.StatusBar.Menu) do 
+			for index, _name_and_icon in ipairs(_detalhes.StatusBar.Menu) do 
 				GameCooltip:AddMenu (1, ChoosePlugin, {index, frame.child, frame.child.anchor}, nil, nil, _name_and_icon [1], _name_and_icon [2], true)
 				
 				local pluginMestre = _detalhes.StatusBar.Plugins [index]
@@ -435,13 +435,13 @@
 		ChoosePlugin (nil, nil, right_index, instance.StatusBar.right, "right")
 		
 		if (instance.StatusBarSaved.options and instance.StatusBarSaved.options [left]) then
-			instance.StatusBar.left.options = Details.CopyTable (instance.StatusBarSaved.options [left])
+			instance.StatusBar.left.options = Details.CopyTable(instance.StatusBarSaved.options [left])
 		end
 		if (instance.StatusBarSaved.options and instance.StatusBarSaved.options [center]) then
-			instance.StatusBar.center.options = Details.CopyTable (instance.StatusBarSaved.options [center])
+			instance.StatusBar.center.options = Details.CopyTable(instance.StatusBarSaved.options [center])
 		end
 		if (instance.StatusBarSaved.options and instance.StatusBarSaved.options [right]) then
-			instance.StatusBar.right.options = Details.CopyTable (instance.StatusBarSaved.options [right])
+			instance.StatusBar.right.options = Details.CopyTable(instance.StatusBarSaved.options [right])
 		end
 		
 		_detalhes.StatusBar:ApplyOptions (instance.StatusBar.left, "textcolor")
@@ -469,15 +469,15 @@
 	
 	--build-in function for create a frame for an plugin child
 	function _detalhes.StatusBar:CreateChildFrame (instance, name, w, h)
-		--local frame = _detalhes.gump:NewPanel (instance.baseframe.cabecalho.fechar, nil, name..instance:GetInstanceId(), nil, w or DEFAULT_CHILD_WIDTH, h or DEFAULT_CHILD_HEIGHT, false)
-		local frame = _detalhes.gump:NewPanel (instance.baseframe, nil, name..instance:GetInstanceId(), nil, w or DEFAULT_CHILD_WIDTH, h or DEFAULT_CHILD_HEIGHT, false)
-		frame:SetFrameLevel (instance.baseframe:GetFrameLevel()+4)
+		--local frame = _detalhes.gump:NewPanel(instance.baseframe.cabecalho.fechar, nil, name..instance:GetInstanceId(), nil, w or DEFAULT_CHILD_WIDTH, h or DEFAULT_CHILD_HEIGHT, false)
+		local frame = _detalhes.gump:NewPanel(instance.baseframe, nil, name..instance:GetInstanceId(), nil, w or DEFAULT_CHILD_WIDTH, h or DEFAULT_CHILD_HEIGHT, false)
+		frame:SetFrameLevel(instance.baseframe:GetFrameLevel()+4)
 
 		--create widgets
 		local text = _detalhes.gump:NewLabel(frame, nil, "$parentText", "text", "0")
 		text:SetPoint("right", frame, "right", 0, 0)
 		text:SetJustifyH("right")
-		_detalhes:SetFontSize (text, 9.8)
+		_detalhes:SetFontSize(text, 9.8)
 		
 		frame:SetHook("OnEnter", OnEnter)
 		frame:SetHook("OnLeave", OnLeave)
@@ -491,7 +491,7 @@
 		local _table = {}
 		
 		--treat as a class
-		setmetatable (_table, mainObject)
+		setmetatable(_table, mainObject)
 		
 		--default members
 		_table.instance = instance
@@ -504,7 +504,7 @@
 		if (not _table.options) then
 			_table.options = {
 			textStyle = 2,
-			textColor = {unpack (DEFAULT_CHILD_FONTCOLOR)},
+			textColor = {unpack(DEFAULT_CHILD_FONTCOLOR)},
 			textSize = DEFAULT_CHILD_FONTSIZE,
 			textAlign = 0,
 			textXMod = 0,
@@ -530,7 +530,7 @@
 
 	function _detalhes.StatusBar:ApplyOptions (child, option, value)
 
-		option = string.lower (option)
+		option = string.lower(option)
 		
 		if (option == "textxmod") then
 		
@@ -558,7 +558,7 @@
 		
 			child.options.textColor = value
 			local r, g, b, a = _detalhes.gump:ParseColors(child.options.textColor)
-			child.text:SetTextColor (r, g, b, a)
+			child.text:SetTextColor(r, g, b, a)
 			
 		elseif (option == "textsize") then
 		
@@ -567,7 +567,7 @@
 			end
 		
 			child.options.textSize = value or 9
-			child:SetFontSize (child.text, child.options.textSize)
+			child:SetFontSize(child.text, child.options.textSize)
 			
 		elseif (option == "textface") then
 		
@@ -598,7 +598,7 @@
 				end
 			end
 		else
-			if (child [option] and type (child [option]) == "function") then
+			if (child [option] and type(child [option]) == "function") then
 				child [option] (nil, child, value)
 			end
 		end
@@ -615,7 +615,7 @@ do
 		
 		-- handle event "COMBAT_PLAYER_ENTER"
 		function PDps:PlayerEnterCombat()
-			for index, child in _ipairs(PDps.childs) do
+			for index, child in ipairs(PDps.childs) do
 				if (child.enabled and child.instance:GetSegment() == 0) then
 					child.tick = _detalhes:ScheduleRepeatingTimer ("PluginDpsUpdate", 1, child)
 				end
@@ -624,9 +624,9 @@ do
 		
 		-- handle event "COMBAT_PLAYER_LEAVE"
 		function PDps:PlayerLeaveCombat()
-			for index, child in _ipairs(PDps.childs) do
+			for index, child in ipairs(PDps.childs) do
 				if (child.tick) then
-					_detalhes:CancelTimer (child.tick)
+					_detalhes:CancelTimer(child.tick)
 					child.tick = nil
 				end
 			end
@@ -634,7 +634,7 @@ do
 
 		-- handle event "DETAILS_INSTANCE_CHANGESEGMENT" 
 		function PDps:ChangeSegment (instance, segment)
-			for index, child in _ipairs(PDps.childs) do 
+			for index, child in ipairs(PDps.childs) do 
 				if (child.enabled and child.instance == instance) then
 					_detalhes:PluginDpsUpdate (child)
 				end
@@ -643,7 +643,7 @@ do
 		
 		--handle event "DETAILS_DATA_RESET"
 		function PDps:DataReset()
-			for index, child in _ipairs(PDps.childs) do 
+			for index, child in ipairs(PDps.childs) do 
 				if (child.enabled) then
 					child.text:SetText("0")
 				end
@@ -701,16 +701,16 @@ do
 		-- _detalhes:InstallPlugin ( Plugin Type | Plugin Display Name | Plugin Icon | Plugin Object | Plugin Real Name )
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_PDPSNAME"], "Interface\\Icons\\Achievement_brewery_3", PDps, "DETAILS_STATUSBAR_PLUGIN_PDPS")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end
 		
 		--Register needed events
 		-- here we are redirecting the event to an specified function, otherwise events need to be handle inside "PDps:OnDetailsEvent (event)"
-		_detalhes:RegisterEvent (PDps, "DETAILS_INSTANCE_CHANGESEGMENT", PDps.ChangeSegment)
-		_detalhes:RegisterEvent (PDps, "DETAILS_DATA_RESET", PDps.DataReset)
-		_detalhes:RegisterEvent (PDps, "COMBAT_PLAYER_ENTER", PDps.PlayerEnterCombat)
-		_detalhes:RegisterEvent (PDps, "COMBAT_PLAYER_LEAVE", PDps.PlayerLeaveCombat)
+		_detalhes:RegisterEvent(PDps, "DETAILS_INSTANCE_CHANGESEGMENT", PDps.ChangeSegment)
+		_detalhes:RegisterEvent(PDps, "DETAILS_DATA_RESET", PDps.DataReset)
+		_detalhes:RegisterEvent(PDps, "COMBAT_PLAYER_ENTER", PDps.PlayerEnterCombat)
+		_detalhes:RegisterEvent(PDps, "COMBAT_PLAYER_LEAVE", PDps.PlayerLeaveCombat)
 
 end
 
@@ -741,7 +741,7 @@ do
 		
 		function PSegment:Change()
 		
-			for index, child in _ipairs(PSegment.childs) do
+			for index, child in ipairs(PSegment.childs) do
 			
 				if (child.enabled and child.instance:IsEnabled()) then
 					
@@ -759,7 +759,7 @@ do
 						if (child.options.segmentType == 1) then
 							child.text:SetText(Loc ["STRING_CURRENT"])
 						else
-							local name = _detalhes.tabela_vigente:GetCombatName (true)
+							local name = _detalhes.tabela_vigente:GetCombatName(true)
 
 							if (name and name ~= Loc ["STRING_UNKNOW"]) then
 								if (child.options.segmentType == 2) then
@@ -770,7 +770,7 @@ do
 							else
 								child.text:SetText(Loc ["STRING_CURRENT"])
 								if (_detalhes.in_combat and PSegment.can_schedule <= 2) then
-									PSegment:ScheduleTimer ("SchduleGetName", 2)
+									PSegment:ScheduleTimer("SchduleGetName", 2)
 									PSegment.can_schedule = PSegment.can_schedule + 1
 									return
 								end
@@ -783,7 +783,7 @@ do
 							child.text:SetText(Loc ["STRING_FIGHTNUMBER"] .. child.instance.segmento)
 							
 						else
-							local name = child.instance.showing:GetCombatName (true)
+							local name = child.instance.showing:GetCombatName(true)
 							if (name ~= Loc ["STRING_UNKNOW"]) then
 								if (child.options.segmentType == 2) then
 									child.text:SetText(name)
@@ -830,8 +830,8 @@ do
 			-----------------------------------------------------------------------------------------------------------------------------
 			
 			--now we insert all widgets created on widgets table
-			table.insert (widgets, window.segmentOptionLabel)
-			table.insert (widgets, window.segmentTypeDropdown)
+			table.insert(widgets, window.segmentOptionLabel)
+			table.insert(widgets, window.segmentTypeDropdown)
 
 			--after first call we replace this function with widgets table
 			PSegment.ExtraOptions = widgets
@@ -855,14 +855,14 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_PSEGMENTNAME"], "Interface\\Icons\\inv_misc_enchantedscroll", PSegment, "DETAILS_STATUSBAR_PLUGIN_PSEGMENT")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end
 		
 		--Register needed events
-		_detalhes:RegisterEvent (PSegment, "DETAILS_INSTANCE_CHANGESEGMENT", PSegment.OnSegmentChange)
-		_detalhes:RegisterEvent (PSegment, "DETAILS_DATA_RESET", PSegment.Change)
-		_detalhes:RegisterEvent (PSegment, "COMBAT_PLAYER_ENTER", PSegment.NewCombat)
+		_detalhes:RegisterEvent(PSegment, "DETAILS_INSTANCE_CHANGESEGMENT", PSegment.OnSegmentChange)
+		_detalhes:RegisterEvent(PSegment, "DETAILS_DATA_RESET", PSegment.Change)
+		_detalhes:RegisterEvent(PSegment, "COMBAT_PLAYER_ENTER", PSegment.NewCombat)
 		
 end
 
@@ -881,7 +881,7 @@ do
 				instance, attribute, subAttribute = self.instance, self.instance.atributo, self.instance.sub_atributo
 			end
 			
-			for index, child in _ipairs(PAttribute.childs) do
+			for index, child in ipairs(PAttribute.childs) do
 				if (child.instance == instance and child.enabled and child.instance:IsEnabled()) then
 					local sName = child.instance:GetInstanceAttributeText()
 					child.text:SetText(sName)
@@ -903,12 +903,12 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_PATTRIBUTENAME"], "Interface\\Icons\\inv_misc_emberclothbolt", PAttribute, "DETAILS_STATUSBAR_PLUGIN_PATTRIBUTE")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end
 		
 		--Register needed events
-		_detalhes:RegisterEvent (PAttribute, "DETAILS_INSTANCE_CHANGEATTRIBUTE", PAttribute.Change)
+		_detalhes:RegisterEvent(PAttribute, "DETAILS_INSTANCE_CHANGEATTRIBUTE", PAttribute.Change)
 		
 end
 
@@ -929,7 +929,7 @@ do
 		end
 		--leave combat
 		function Clock:PlayerLeaveCombat()
-			_detalhes:CancelTimer (Clock.tick)
+			_detalhes:CancelTimer(Clock.tick)
 		end
 		
 		function _detalhes:ClockPluginTickOnSegment()
@@ -939,7 +939,7 @@ do
 		--1 sec tick
 		function _detalhes:ClockPluginTick (force)
 
-			for index, child in _ipairs(Clock.childs) do
+			for index, child in ipairs(Clock.childs) do
 				local instance = child.instance
 				if (child.enabled and instance:IsEnabled()) then
 					if (instance.showing and ( (instance.segmento ~= -1) or (instance.segmento == -1 and not _detalhes.in_combat) or force) ) then
@@ -966,7 +966,7 @@ do
 								getSegment = getSegment+1
 							end
 							
-							local lastFight = _detalhes:GetCombat (getSegment)
+							local lastFight = _detalhes:GetCombat(getSegment)
 							local currentCombatTime = instance.showing:GetCombatTime()
 							
 							if (lastFight) then
@@ -983,7 +983,7 @@ do
 		
 		--on reset
 		function Clock:DataReset()
-			for index, child in _ipairs(Clock.childs) do
+			for index, child in ipairs(Clock.childs) do
 				if (child.enabled and child.instance:IsEnabled()) then
 					child.text:SetText("0m 0s")
 				end
@@ -1017,8 +1017,8 @@ do
 			-----------------------------------------------------------------------------------------------------------------------------
 			
 			--now we insert all widgets created on widgets table
-			table.insert (widgets, window.ClockTypeLabel)
-			table.insert (widgets, window.ClockTypeDropdown)
+			table.insert(widgets, window.ClockTypeLabel)
+			table.insert(widgets, window.ClockTypeDropdown)
 
 			--after first call we replace this function with widgets table
 			Clock.ExtraOptions = widgets
@@ -1061,16 +1061,16 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_CLOCKNAME"], "Interface\\Icons\\Achievement_BG_grab_cap_flagunderXseconds", Clock, "DETAILS_STATUSBAR_PLUGIN_CLOCK")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end
 		
 		--Register needed events
-		_detalhes:RegisterEvent (Clock, "COMBAT_PLAYER_ENTER", Clock.PlayerEnterCombat)
-		_detalhes:RegisterEvent (Clock, "COMBAT_PLAYER_LEAVE", Clock.PlayerLeaveCombat)
-		_detalhes:RegisterEvent (Clock, "DETAILS_INSTANCE_CHANGESEGMENT", _detalhes.ClockPluginTickOnSegment)
-		_detalhes:RegisterEvent (Clock, "DETAILS_DATA_SEGMENTREMOVED", _detalhes.ClockPluginTick)
-		_detalhes:RegisterEvent (Clock, "DETAILS_DATA_RESET", Clock.DataReset)
+		_detalhes:RegisterEvent(Clock, "COMBAT_PLAYER_ENTER", Clock.PlayerEnterCombat)
+		_detalhes:RegisterEvent(Clock, "COMBAT_PLAYER_LEAVE", Clock.PlayerLeaveCombat)
+		_detalhes:RegisterEvent(Clock, "DETAILS_INSTANCE_CHANGESEGMENT", _detalhes.ClockPluginTickOnSegment)
+		_detalhes:RegisterEvent(Clock, "DETAILS_DATA_SEGMENTREMOVED", _detalhes.ClockPluginTick)
+		_detalhes:RegisterEvent(Clock, "DETAILS_DATA_RESET", Clock.DataReset)
 
 end
 
@@ -1080,7 +1080,7 @@ do
 
 		local _UnitDetailedThreatSituation = UnitDetailedThreatSituation --wow api
 		local _cstr = string.format --lua api
-		local _math_abs = math.abs --lua api
+		local abs = math.abs --lua api
 		
 		--Create the plugin Object
 		local Threat = _detalhes:NewPluginObject ("Details_TargetThreat", DETAILSPLUGIN_ALWAYSENABLED, "STATUSBAR")
@@ -1092,7 +1092,7 @@ do
 		Threat.isTank = nil
 
 		function Threat:PlayerEnterCombat()
-			local role = UnitGroupRolesAssigned ("player")
+			local role = UnitGroupRolesAssigned("player")
 			if (role == "TANK") then
 				Threat.isTank = true
 			else
@@ -1102,11 +1102,11 @@ do
 		end
 		
 		function Threat:PlayerLeaveCombat()
-			_detalhes:CancelTimer (Threat.tick)
+			_detalhes:CancelTimer(Threat.tick)
 		end
 		
 		function _detalhes:ThreatPluginTick()
-			for index, child in _ipairs(Threat.childs) do
+			for index, child in ipairs(Threat.childs) do
 				local instance = child.instance
 				if (child.enabled and instance:IsEnabled()) then
 					-- atualiza a threat
@@ -1115,17 +1115,17 @@ do
 						if (threatpct) then
 							child.text:SetText(_math_floor(threatpct).."%")
 							if (Threat.isTank) then
-								child.text:SetTextColor (_math_abs (threatpct-100)*0.01, threatpct*0.01, 0, 1)
+								child.text:SetTextColor(abs(threatpct-100)*0.01, threatpct*0.01, 0, 1)
 							else
-								child.text:SetTextColor (threatpct*0.01, _math_abs (threatpct-100)*0.01, 0, 1)
+								child.text:SetTextColor(threatpct*0.01, abs(threatpct-100)*0.01, 0, 1)
 							end
 						else
 							child.text:SetText("0%")
-							child.text:SetTextColor (1, 1, 1, 1)
+							child.text:SetTextColor(1, 1, 1, 1)
 						end
 					else
 						child.text:SetText("0%")
-						child.text:SetTextColor (1, 1, 1, 1)
+						child.text:SetTextColor(1, 1, 1, 1)
 					end
 				end
 			end
@@ -1138,7 +1138,7 @@ do
 			
 			local new_child = _detalhes.StatusBar:CreateChildTable (instance, Threat, myframe)
 
-			myframe.widget:RegisterEvent ("PLAYER_TARGET_CHANGED")
+			myframe.widget:RegisterEvent("PLAYER_TARGET_CHANGED")
 			myframe.widget:SetScript("OnEvent", function()
 				_detalhes:ThreatPluginTick()
 			end)
@@ -1149,13 +1149,13 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_THREATNAME"], "Interface\\Icons\\Ability_Hunter_ResistanceIsFutile", Threat, "DETAILS_STATUSBAR_PLUGIN_THREAT")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end
 		
 		--Register needed events
-		_detalhes:RegisterEvent (Threat, "COMBAT_PLAYER_ENTER", Threat.PlayerEnterCombat)
-		_detalhes:RegisterEvent (Threat, "COMBAT_PLAYER_LEAVE", Threat.PlayerLeaveCombat)
+		_detalhes:RegisterEvent(Threat, "COMBAT_PLAYER_ENTER", Threat.PlayerEnterCombat)
+		_detalhes:RegisterEvent(Threat, "COMBAT_PLAYER_LEAVE", Threat.PlayerLeaveCombat)
 
 
 end
@@ -1175,7 +1175,7 @@ do
 		end
 		
 		function PFps:OnDisable()
-			self:CancelTimer (self.srt, true)
+			self:CancelTimer(self.srt, true)
 		end
 
 		function PFps:OnEnable()
@@ -1192,7 +1192,7 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_FPS"], "Interface\\Icons\\Spell_Shadow_MindTwisting", PFps, "DETAILS_STATUSBAR_PLUGIN_PFPS")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end		
 
@@ -1214,7 +1214,7 @@ do
 		end
 		
 		function PLatency:OnDisable()
-			self:CancelTimer (self.srt, true)
+			self:CancelTimer(self.srt, true)
 		end
 
 		function PLatency:OnEnable()
@@ -1231,7 +1231,7 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_LATENCY"], "Interface\\FriendsFrame\\PlusManz-BattleNet", PLatency, "DETAILS_STATUSBAR_PLUGIN_PLATENCY")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end		
 
@@ -1263,7 +1263,7 @@ do
 			
 			if (items == 0) then
 				self.text:SetText(Loc ["STRING_UPTADING"])
-				return self:ScheduleTimer ("UpdateDurability", 5, self)
+				return self:ScheduleTimer("UpdateDurability", 5, self)
 			end
 			
 			percent = percent / items
@@ -1280,12 +1280,12 @@ do
 		end
 
 		function PDurability:OnEnable()
-			self.frame.widget:RegisterEvent ("PLAYER_DEAD")
-			self.frame.widget:RegisterEvent ("PLAYER_UNGHOST")
-			self.frame.widget:RegisterEvent ("UPDATE_INVENTORY_DURABILITY")
-			self.frame.widget:RegisterEvent ("MERCHANT_SHOW")
-			self.frame.widget:RegisterEvent ("MERCHANT_CLOSED")
-			self.frame.widget:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
+			self.frame.widget:RegisterEvent("PLAYER_DEAD")
+			self.frame.widget:RegisterEvent("PLAYER_UNGHOST")
+			self.frame.widget:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+			self.frame.widget:RegisterEvent("MERCHANT_SHOW")
+			self.frame.widget:RegisterEvent("MERCHANT_CLOSED")
+			self.frame.widget:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 			self:UpdateDurability()
 		end
 		
@@ -1298,7 +1298,7 @@ do
 			texture:SetPoint("right", myframe.text.widget, "left", -2, -1)
 			texture:SetWidth(10)
 			texture:SetHeight(10)
-			texture:SetTexCoord (0.216796875, 0.26171875, 0.0078125, 0.052734375)
+			texture:SetTexCoord(0.216796875, 0.26171875, 0.0078125, 0.052734375)
 			myframe.texture = texture
 			
 			myframe.widget:SetScript("OnEvent", function()
@@ -1311,7 +1311,7 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_DURABILITY"], "Interface\\ICONS\\INV_Chest_Chain_10", PDurability, "DETAILS_STATUSBAR_PLUGIN_PDURABILITY")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end		
 
@@ -1329,7 +1329,7 @@ do
 		end
 		
 		function PGold:GoldPluginTick()
-			for index, child in _ipairs(PGold.childs) do
+			for index, child in ipairs(PGold.childs) do
 				local instance = child.instance
 				if (child.enabled and instance:IsEnabled()) then
 					child:UpdateGold()
@@ -1356,11 +1356,11 @@ do
 			texture:SetHeight(12)
 			myframe.texture = texture
 			
-			myframe.widget:RegisterEvent ("PLAYER_MONEY")
-			myframe.widget:RegisterEvent ("PLAYER_ENTERING_WORLD")
+			myframe.widget:RegisterEvent("PLAYER_MONEY")
+			myframe.widget:RegisterEvent("PLAYER_ENTERING_WORLD")
 			myframe.widget:SetScript("OnEvent", function(event)
 				if (event == "PLAYER_ENTERING_WORLD") then
-					return PGold:ScheduleTimer ("GoldPluginTick", 10)
+					return PGold:ScheduleTimer("GoldPluginTick", 10)
 				end
 				PGold:GoldPluginTick()
 			end)
@@ -1371,7 +1371,7 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_GOLD"], "Interface\\Icons\\INV_Ore_Gold_01", PGold, "DETAILS_STATUSBAR_PLUGIN_PGold")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end		
 
@@ -1398,7 +1398,7 @@ do
 		end
 		
 		function PTime:OnDisable()
-			self:CancelTimer (self.srt, true)
+			self:CancelTimer(self.srt, true)
 		end
 
 		function PTime:OnEnable()
@@ -1431,8 +1431,8 @@ do
 			-----------------------------------------------------------------------------------------------------------------------------
 			
 			--now we insert all widgets created on widgets table
-			table.insert (widgets, window.TimeTypeLabel)
-			table.insert (widgets, window.TimeTypeDropdown)
+			table.insert(widgets, window.TimeTypeLabel)
+			table.insert(widgets, window.TimeTypeDropdown)
 
 			--after first call we replace this function with widgets table
 			PTime.ExtraOptions = widgets
@@ -1456,7 +1456,7 @@ do
 		--Install
 		local install = _detalhes:InstallPlugin ("STATUSBAR", Loc ["STRING_PLUGIN_TIME"], "Interface\\Icons\\Spell_Shadow_LastingAfflictions", PTime, "DETAILS_STATUSBAR_PLUGIN_PTIME")
 		if (type(install) == "table" and install.error) then
-			print (install.errortext)
+			print(install.errortext)
 			return
 		end
 		
@@ -1464,7 +1464,7 @@ end
 
 ---------default options panel ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local window = _detalhes.gump:NewPanel (UIParent, nil, "DetailsStatusBarOptions", nil, 300, 180)
+local window = _detalhes.gump:NewPanel(UIParent, nil, "DetailsStatusBarOptions", nil, 300, 180)
 tinsert(UISpecialFrames, "DetailsStatusBarOptions")
 window:SetPoint("center", UIParent, "center")
 window.locked = false
@@ -1477,7 +1477,7 @@ DetailsFramework:ApplyStandardBackdrop(window)
 --window:SetBackdrop({bgFile =  [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16, edgeFile = [[Interface\AddOns\Details\images\border_2]], edgeSize=12})
 --window:SetBackdropColor(0, 0, 0, 0.9)
 
-local extraWindow = _detalhes.gump:NewPanel (window, nil, "DetailsStatusBarOptions2", "extra", 300, 180)
+local extraWindow = _detalhes.gump:NewPanel(window, nil, "DetailsStatusBarOptions2", "extra", 300, 180)
 extraWindow:SetPoint("left", window, "right")
 extraWindow.close_with_right = true
 extraWindow.locked = false
@@ -1498,13 +1498,13 @@ end)
 		window.instance.StatusBar.center.options.textStyle = style
 		window.instance.StatusBar.right.options.textStyle = style
 
-		if (window.instance.StatusBar.left.Refresh and type (window.instance.StatusBar.left.Refresh) == "function") then
+		if (window.instance.StatusBar.left.Refresh and type(window.instance.StatusBar.left.Refresh) == "function") then
 			window.instance.StatusBar.left:Refresh (window.instance.StatusBar.left)
 		end
-		if (window.instance.StatusBar.center.Refresh and type (window.instance.StatusBar.center.Refresh) == "function") then
+		if (window.instance.StatusBar.center.Refresh and type(window.instance.StatusBar.center.Refresh) == "function") then
 			window.instance.StatusBar.center:Refresh (window.instance.StatusBar.center)
 		end
-		if (window.instance.StatusBar.right.Refresh and type (window.instance.StatusBar.right.Refresh) == "function") then
+		if (window.instance.StatusBar.right.Refresh and type(window.instance.StatusBar.right.Refresh) == "function") then
 			window.instance.StatusBar.right:Refresh (window.instance.StatusBar.right)
 		end
 		
@@ -1530,7 +1530,7 @@ end)
 		_detalhes.StatusBar:ApplyOptions (window.instance.StatusBar.right, "textcolor", color)
 	end
 	local canceledColor = function()
-		local r, g, b, a = unpack (ColorPickerFrame.previousValues)
+		local r, g, b, a = unpack(ColorPickerFrame.previousValues)
 		window.textcolortexture:SetTexture(r, g, b, a)
 		local color = {r, g, b, a}
 		_detalhes.StatusBar:ApplyOptions (window.instance.StatusBar.left, "textcolor", color)
@@ -1544,11 +1544,11 @@ end)
 		ColorPickerFrame.hasOpacity = false
 		ColorPickerFrame.previousValues = window.child.options.textColor
 		ColorPickerFrame:SetParent(window.widget)
-		ColorPickerFrame:SetColorRGB (unpack (window.child.options.textColor))
+		ColorPickerFrame:SetColorRGB (unpack(window.child.options.textColor))
 		ColorPickerFrame:Show()
 	end
 
-	_detalhes.gump:NewImage (window, nil, 160, 16, nil, nil, "textcolortexture", "$parentTextColorTexture")
+	_detalhes.gump:NewImage(window, nil, 160, 16, nil, nil, "textcolortexture", "$parentTextColorTexture")
 	window.textcolortexture:SetPoint("left", window.textcolor, "right", 2)
 	window.textcolortexture:SetTexture(1, 1, 1)
 	
@@ -1632,7 +1632,7 @@ end)
 		
 		_G.DetailsStatusBarOptionsTextStyleDropdown.MyObject:Select(child.options.textStyle, true)
 		
-		_G.DetailsStatusBarOptionsTextColorTexture:SetColorTexture (child.options.textColor[1], child.options.textColor[2], child.options.textColor[3], child.options.textColor[4])
+		_G.DetailsStatusBarOptionsTextColorTexture:SetColorTexture(child.options.textColor[1], child.options.textColor[2], child.options.textColor[3], child.options.textColor[4])
 
 		_G.DetailsStatusBarOptionsSliderFontSize.MyObject:SetFixedParameter(child)
 		_G.DetailsStatusBarOptionsSliderFontSize.MyObject:SetValue(child.options.textSize)

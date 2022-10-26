@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("FreeholdTrash", "DBM-Party-BfA", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -129,14 +129,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 257908 and args:IsDestTypePlayer() and self:AntiSpam(3, 12) then
 		--If tank can dispel self, no reason to tell tank to defensive through it, dispel is priority
-		if self.Options.SpecWarn257908dispel and self:CheckDispelFilter() then
+		if self.Options.SpecWarn257908dispel and self:CheckDispelFilter("magic") then
 			specWarnOiledBlade:Show(args.destName)
 			specWarnOiledBlade:Play("helpdispel")
 		elseif args:IsPlayer() then
 			specWarnOiledBladeSelf:Show()
 			specWarnOiledBladeSelf:Play("defensive")
 		end
-	elseif spellId == 258323 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 7) then
+	elseif spellId == 258323 and args:IsDestTypePlayer() and self:CheckDispelFilter("disease") and self:AntiSpam(3, 7) then
 		specWarnInfectedWound:Show(args.destName)
 		specWarnInfectedWound:Play("helpdispel")
 	end

@@ -2,7 +2,6 @@
 -- AddOn namespace.
 -----------------------------------------------------------------------
 local LibStub = _G.LibStub
-local RareScanner
 local ADDON_NAME, private = ...
 
 -- Range checker
@@ -15,11 +14,13 @@ local RSConfigDB = private.ImportLib("RareScannerConfigDB")
 local RSGeneralDB = private.ImportLib("RareScannerGeneralDB")
 local RSMapDB = private.ImportLib("RareScannerMapDB")
 local RSNpcDB = private.ImportLib("RareScannerNpcDB")
+local RSDragonGlyphDB = private.ImportLib("RareScannerDragonGlyphDB")
 local RSContainerDB = private.ImportLib("RareScannerContainerDB")
 local RSCollectionsDB = private.ImportLib("RareScannerCollectionsDB")
 
 -- RareScanner services
 local RSMinimap = private.ImportLib("RareScannerMinimap")
+local RSEntityStateHandler = private.ImportLib("RareScannerEntityStateHandler")
 
 -- RareScanner internal libraries
 local RSConstants = private.ImportLib("RareScannerConstants")
@@ -87,6 +88,16 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 						RSMinimap.RefreshEntityState(npcID)
 					end
 				end, 15)
+			end
+		end
+	elseif (unitType == "Object") then
+		local containerID = entityID and tonumber(entityID) or nil
+		print(unitType)
+		-- If the container didn't have a vignette this is the last chance to get the name
+		if (RSContainerDB.GetInternalContainerInfo(containerID) and not RSContainerDB.GetContainerName(containerID)) then
+			local containerName = UnitName(unitID)
+			if (containerName) then
+				RSContainerDB.SetContainerName(containerName)
 			end
 		end
 	end
@@ -192,7 +203,7 @@ local function OnCombatLogEventUnfiltered()
 	if (eventType == "PARTY_KILL") then
 		local _, _, _, _, _, id = strsplit("-", destGUID)
 		local npcID = id and tonumber(id) or nil
-		RareScanner:ProcessKill(npcID)
+		RSEntityStateHandler.SetDeadNpc(npcID)
 	elseif (eventType == "UNIT_DIED") then
 		local _, _, _, _, _, id = strsplit("-", destGUID)
 		local npcID = id and tonumber(id) or nil
@@ -202,7 +213,7 @@ local function OnCombatLogEventUnfiltered()
 			if (UnitExists("target") and destGUID == UnitGUID("target")) then
 				local unitClassification = UnitClassification("target")
 				if (unitClassification ~= "rare" and unitClassification ~= "rareelite") then
-					RareScanner:ProcessKill(npcID)
+					RSEntityStateHandler.SetDeadNpc(npcID)
 				end
 			end
 		end
@@ -256,13 +267,13 @@ local function OnPlayerTargetChanged()
 
 					if (completed) then
 						RSLogger:PrintDebugMessage(string.format("Encontrado NPC [%s] sin dragon plateado que se ha detectado como muerto gracias a su mision completada.", npcID))
-						RareScanner:ProcessKill(npcID)
+						RSEntityStateHandler.SetDeadNpc(npcID)
 					else
 						RSLogger:PrintDebugMessage(string.format("Encontrado NPC [%s] sin dragon plateado que sigue siendo rare NPC (por no haber completado su mision asociada).", npcID))
 						RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
 					end
 				else
-					RareScanner:ProcessKill(npcID)
+					RSEntityStateHandler.SetDeadNpc(npcID)
 				end
 			else
 				RSGeneralDB.UpdateAlreadyFoundEntityTime(npcID)
@@ -307,7 +318,7 @@ local function OnLootOpened()
 							RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(containerID)
 						end
 					
-						RareScanner:ProcessOpenContainer(containerID)
+						RSEntityStateHandler.SetContainerOpen(containerID)
 						containerLooted = true
 					end
 
@@ -330,6 +341,7 @@ local function OnLootOpened()
 					local itemLink = GetLootSlotLink(i)
 					if (itemLink) then
 						local _, _, _, lootType, id, _, _, _, _, _, _, _, _, _, name = string.find(itemLink, "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
+						
 						if (lootType == "item") then
 							local itemID = id and tonumber(id) or nil
 							RSNpcDB.AddItemToNpcLootFound(npcID, itemID)
@@ -433,7 +445,7 @@ local function OnQuestTurnedIn(rareScannerButton, questID, xpReward, moneyReward
 	local foundDebug = false
 	for eventID, eventInfo in pairs (private.EVENT_INFO) do
 		if (eventInfo.questID and RSUtils.Contains(eventInfo.questID, questID)) then
-			RareScanner:ProcessCompletedEvent(eventID)
+			RSEntityStateHandler.SetEventCompleted(eventID)
 			foundDebug = true
 			return
 		end
@@ -516,6 +528,18 @@ local function OnTransmogCollectionUpdated()
 end
 
 ---============================================================================
+-- Event: ACHIEVEMENT_EARNED
+-- Fired when a new achievement is earned
+---============================================================================
+
+local function OnAchievementEarned(achievementID)
+	if (achievementID and RSDragonGlyphDB.GetInternalDragonGlyphInfo(achievementID)) then
+		RSDragonGlyphDB.SetDragonGlyphCollected(achievementID)
+		RSMinimap.RefreshAllData(true)
+	end
+end
+
+---============================================================================
 -- Event handler
 ---============================================================================
 
@@ -556,6 +580,8 @@ local function HandleEvent(rareScannerButton, event, ...)
 		OnNewToyAdded(...)
 	elseif (event == "TRANSMOG_COLLECTION_UPDATED") then
 		OnTransmogCollectionUpdated()
+	elseif (event == "ACHIEVEMENT_EARNED") then
+		OnAchievementEarned(...)
 	end
 end
 
@@ -579,6 +605,7 @@ function RSEventHandler.RegisterEvents(rareScannerButton, addon)
 	rareScannerButton:RegisterEvent("NEW_PET_ADDED")
 	rareScannerButton:RegisterEvent("NEW_TOY_ADDED")
 	rareScannerButton:RegisterEvent("TRANSMOG_COLLECTION_UPDATED")
+	rareScannerButton:RegisterEvent("ACHIEVEMENT_EARNED")
 
 	-- Captures all events
 	rareScannerButton:SetScript("OnEvent", function(self, event, ...)

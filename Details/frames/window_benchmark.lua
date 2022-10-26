@@ -20,18 +20,18 @@ local libwindow = LibStub("LibWindow-1.1")
             f:SetSize(800, 600)
             f:SetPoint("left", UIParent, "left")
             f:SetFrameStrata("LOW")
-            f:EnableMouse (true)
-            f:SetMovable (true)
+            f:EnableMouse(true)
+            f:SetMovable(true)
             f:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
             f:SetBackdropColor(0, 0, 0, 0.9)
             f:SetBackdropBorderColor(0, 0, 0, 1)
             
             --register to libwindow
-            local LibWindow = LibStub ("LibWindow-1.1")
-            LibWindow.RegisterConfig (f, _detalhes.benchmark_db.frame)
-            LibWindow.RestorePosition (f)
-            LibWindow.MakeDraggable (f)
-            LibWindow.SavePosition (f)
+            local LibWindow = LibStub("LibWindow-1.1")
+            LibWindow.RegisterConfig(f, _detalhes.benchmark_db.frame)
+            LibWindow.RestorePosition(f)
+            LibWindow.MakeDraggable(f)
+            LibWindow.SavePosition(f)
             
             --titlebar
             f.TitleBar = CreateFrame("frame", "$parentTitleBar", f,"BackdropTemplate")
@@ -49,19 +49,19 @@ local libwindow = LibStub("LibWindow-1.1")
             f.Close:SetNormalTexture(_detalhes.gump.folder .. "icons")
             f.Close:SetHighlightTexture(_detalhes.gump.folder .. "icons")
             f.Close:SetPushedTexture(_detalhes.gump.folder .. "icons")
-            f.Close:GetNormalTexture():SetTexCoord (0, 16/128, 0, 1)
-            f.Close:GetHighlightTexture():SetTexCoord (0, 16/128, 0, 1)
-            f.Close:GetPushedTexture():SetTexCoord (0, 16/128, 0, 1)
-            f.Close:SetAlpha (0.7)
+            f.Close:GetNormalTexture():SetTexCoord(0, 16/128, 0, 1)
+            f.Close:GetHighlightTexture():SetTexCoord(0, 16/128, 0, 1)
+            f.Close:GetPushedTexture():SetTexCoord(0, 16/128, 0, 1)
+            f.Close:SetAlpha(0.7)
             f.Close:SetScript("OnClick", function() f:Hide() end)
             
             --title
-            f.Title = f.TitleBar:CreateFontString ("$parentTitle", "overlay", "GameFontNormal")
+            f.Title = f.TitleBar:CreateFontString("$parentTitle", "overlay", "GameFontNormal")
             f.Title:SetPoint("center", f.TitleBar, "center")
-            f.Title:SetTextColor (.8, .8, .8, 1)
+            f.Title:SetTextColor(.8, .8, .8, 1)
             f.Title:SetText("Details! Benchmark")
             
-            DF:InstallTemplate ("font", "DETAILS_BENCHMARK_NORMAL", {color = "white", size = 10, font = "Friz Quadrata TT"})
+            DF:InstallTemplate("font", "DETAILS_BENCHMARK_NORMAL", {color = "white", size = 10, font = "Friz Quadrata TT"})
             
             function f.CreateCombatObject()
                 local t = {}
@@ -93,8 +93,8 @@ local libwindow = LibStub("LibWindow-1.1")
             end
             
             --events
-            f:RegisterEvent ("PLAYER_REGEN_DISABLED")
-            f:RegisterEvent ("PLAYER_REGEN_ENABLED")
+            f:RegisterEvent("PLAYER_REGEN_DISABLED")
+            f:RegisterEvent("PLAYER_REGEN_ENABLED")
             
             f:SetScript("OnEvent", function(self, event, ...)
                 if (event == "PLAYER_REGEN_DISABLED") then
@@ -106,11 +106,11 @@ local libwindow = LibStub("LibWindow-1.1")
                 end
             end)
             
-            local normal_text_template = DF:GetTemplate ("font", "DETAILS_BENCHMARK_NORMAL")
-            local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-            local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-            local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
-            local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+            local normal_text_template = DF:GetTemplate("font", "DETAILS_BENCHMARK_NORMAL")
+            local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+            local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+            local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+            local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
             
         --locations
             f.FrameLocations = {
@@ -127,8 +127,8 @@ local libwindow = LibStub("LibWindow-1.1")
         
             --declaration
                 local summaryFrame = CreateFrame("frame", "$parentSummaryFrame", f,"BackdropTemplate")
-                summaryFrame:SetPoint("topleft", f, "topleft", unpack (f.FrameLocations.summary))
-                summaryFrame:SetSize(unpack (f.FrameSizes.default))
+                summaryFrame:SetPoint("topleft", f, "topleft", unpack(f.FrameLocations.summary))
+                summaryFrame:SetSize(unpack(f.FrameSizes.default))
                 summaryFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
                 summaryFrame:SetBackdropColor(0, 0, 0, 0.9)
                 summaryFrame:SetBackdropBorderColor(0, 0, 0, 1)
@@ -151,7 +151,7 @@ local libwindow = LibStub("LibWindow-1.1")
                 
             --description string and text entry
                 summaryFrame.DescriptionLabel = DF:CreateLabel(summaryFrame, "Description", normal_text_template)
-                summaryFrame.DescriptionEntry = DF:CreateTextEntry (summaryFrame, function()end, 120, 20, nil, _, nil, options_dropdown_template)
+                summaryFrame.DescriptionEntry = DF:CreateTextEntry(summaryFrame, function()end, 120, 20, nil, _, nil, options_dropdown_template)
                 
             --DPS Amount string
                 summaryFrame.DPSLabel = DF:CreateLabel(summaryFrame, "100K", normal_text_template)
@@ -209,8 +209,8 @@ local libwindow = LibStub("LibWindow-1.1")
             
             --declaration
                 local spellsFrame = CreateFrame("frame", "$parentSpellsFrame", f,"BackdropTemplate")
-                spellsFrame:SetPoint("topleft", f, "topleft", unpack (f.FrameLocations.spells))
-                spellsFrame:SetSize(unpack (f.FrameSizes.default))
+                spellsFrame:SetPoint("topleft", f, "topleft", unpack(f.FrameLocations.spells))
+                spellsFrame:SetSize(unpack(f.FrameSizes.default))
                 spellsFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
                 spellsFrame:SetBackdropColor(0, 0, 0, 0.9)
                 spellsFrame:SetBackdropBorderColor(0, 0, 0, 1)
@@ -228,8 +228,8 @@ local libwindow = LibStub("LibWindow-1.1")
             
             --declaration
                 local aurasFrame = CreateFrame("frame", "$parentAurasFrame", f,"BackdropTemplate")
-                aurasFrame:SetPoint("topleft", f, "topleft", unpack (f.FrameLocations.auras))
-                aurasFrame:SetSize(unpack (f.FrameSizes.default))
+                aurasFrame:SetPoint("topleft", f, "topleft", unpack(f.FrameLocations.auras))
+                aurasFrame:SetSize(unpack(f.FrameSizes.default))
                 aurasFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
                 aurasFrame:SetBackdropColor(0, 0, 0, 0.9)
                 aurasFrame:SetBackdropBorderColor(0, 0, 0, 1)
@@ -245,8 +245,8 @@ local libwindow = LibStub("LibWindow-1.1")
                 
             --declaration
                 local historyFrame = CreateFrame("frame", "$parentHistoryFrame", f,"BackdropTemplate")
-                historyFrame:SetPoint("topleft", f, "topleft", unpack (f.FrameLocations.history))
-                historyFrame:SetSize(unpack (f.FrameSizes.default))
+                historyFrame:SetPoint("topleft", f, "topleft", unpack(f.FrameLocations.history))
+                historyFrame:SetSize(unpack(f.FrameSizes.default))
                 historyFrame:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
                 historyFrame:SetBackdropColor(0, 0, 0, 0.9)
                 historyFrame:SetBackdropBorderColor(0, 0, 0, 1)

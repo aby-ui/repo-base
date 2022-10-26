@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2415, "DBM-Party-Shadowlands", 8, 1189)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(162103)
 mod:SetEncounterID(2361)
 
@@ -123,7 +123,7 @@ function mod:SPELL_AURA_APPLIED(args)
 				end
 			end, 1)
 		end
-	elseif spellId == 328494 and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+	elseif spellId == 328494 and args:IsDestTypePlayer() and self:CheckDispelFilter("curse") then
 		specWarnSintouchedAnima:Show(args.destName)
 		specWarnSintouchedAnima:Play("helpdispel")
 	end

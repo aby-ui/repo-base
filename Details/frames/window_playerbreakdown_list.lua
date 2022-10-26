@@ -153,7 +153,7 @@
 			line:SetScript("OnClick", lineOnClick)
 
 			line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-			line:SetBackdropColor(unpack (scrollbox_line_backdrop_color))
+			line:SetBackdropColor(unpack(scrollbox_line_backdrop_color))
 			line:SetBackdropBorderColor(0, 0, 0, 1)
 
 			local specIcon = line:CreateTexture("$parentSpecIcon", "artwork")
@@ -257,7 +257,7 @@
 					if (playerObject:IsPlayer()) then
 						local unitClassID = classIds [playerObject:Class()] or 13
 						local unitName = playerObject:Name()
-						local playerPosition = (((unitClassID or 0) + 128) ^ 4) + tonumber (string.byte(unitName, 1) .. "" .. string.byte(unitName, 2))
+						local playerPosition = (((unitClassID or 0) + 128) ^ 4) + tonumber(string.byte(unitName, 1) .. "" .. string.byte(unitName, 2))
 						tinsert(playerTable, {playerObject, playerPosition, playerObject.total})
 					end
 				end

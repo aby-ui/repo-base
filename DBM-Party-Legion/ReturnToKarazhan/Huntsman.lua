@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20220828003056")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(114262, 114264)--114264 midnight
 mod:SetEncounterID(1960)--Verify
 mod:SetUsedIcons(1)
@@ -23,7 +23,7 @@ local specWarnMightyStomp			= mod:NewSpecialWarningCast(227363, "SpellCaster", n
 local specWarnSpectralCharge		= mod:NewSpecialWarningDodge(227365, nil, nil, nil, 2, 2)
 --On Foot
 local specWarnMezair				= mod:NewSpecialWarningDodge(227339, nil, nil, nil, 1, 2)
-local specWarnMortalStrike			= mod:NewSpecialWarningDefensive(227493, "Tank", nil, nil, 2, 2)
+local specWarnMortalStrike			= mod:NewSpecialWarningDefensive(227493, nil, nil, 2, 1, 2)
 local specWarnSharedSuffering		= mod:NewSpecialWarningMoveTo(228852, nil, nil, nil, 3, 2)
 local yellSharedSuffering			= mod:NewYell(228852)
 
@@ -44,8 +44,10 @@ function mod:SPELL_CAST_START(args)
 		specWarnMezair:Show()
 		specWarnMezair:Play("chargemove")
 	elseif spellId == 227493 then
-		specWarnMortalStrike:Show()
-		specWarnMortalStrike:Play("defensive")
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
+			specWarnMortalStrike:Show()
+			specWarnMortalStrike:Play("defensive")
+		end
 	elseif spellId == 228852 then
 		local targetName = TANK
 		local unitIsPlayer = false

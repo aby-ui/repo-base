@@ -237,7 +237,7 @@ end
 
 local function ListButton_CreateText(self, justifyH, r, g, b)
 	local text = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLeft")
-	text:SetFont(STANDARD_TEXT_FONT, 13)
+	text:SetFont(STANDARD_TEXT_FONT, 13, "")
 	text:SetWordWrap(false)
 
 	if justifyH == "CENTER" or justifyH == "RIGHT" then

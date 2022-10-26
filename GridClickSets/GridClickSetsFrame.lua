@@ -1,5 +1,4 @@
-﻿local i
-local queue = false
+﻿local queue = false
 local function makeMovable(frame)
     local mover = _G[frame:GetName() .. "Mover"] or CreateFrame("Frame", frame:GetName() .. "Mover", frame)
     mover:EnableMouse(true)
@@ -84,7 +83,6 @@ end
 
 function GridClickSetsFrame_Resize()
     local k=0;
-    local id
     for id=1, 8 do
         local argF = getglobal("GridClickSetButton"..id.."Arg")
         if(argF:IsVisible()) then
@@ -250,8 +248,7 @@ function GridClickSetsFrame_CancelOnClick()
     GridClickSetsFrame_LoadSet( GridClickSetsFrame_GetTabSet(GridClickSetsFrame.selectedTab) );
 end
 
-function GridClickSetsFrame_CloseOnClick(self)
-    GridClickSetsFrame:Hide();
+function GridClickSetsFrame_OnHide(self)
     local last = GridClickSetsFrame.lastFrame
     GridClickSetsFrame.lastFrame = nil
     if last then

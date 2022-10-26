@@ -28,7 +28,7 @@ local GetQuestLogRewardCurrencyInfo = GetQuestLogRewardCurrencyInfo
 local GetQuestLogRewardMoney = GetQuestLogRewardMoney
 local GetNumQuestLogRewards = GetNumQuestLogRewards
 
-local triggerScheduledWidgetUpdate = function (timerObject)
+local triggerScheduledWidgetUpdate = function(timerObject)
 	local widget = timerObject.widget
 	local questID = widget.questID
 	

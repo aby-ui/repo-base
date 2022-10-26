@@ -137,6 +137,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		DEATHKNIGHT = {r = 0.77, g = 0.12 , b = 0.23},
 		MONK = {r = 0.0, g = 1.00 , b = 0.59},
 		DEMONHUNTER = {r = 0.64, g = 0.19, b = 0.79},
+		EVOKER = {r = 0.20, g = 0.58, b = 0.50},
 		PET = {r = 0.20, g = 0.90, b = 0.20},
 		VEHICLE = {r = 0.23, g = 0.41, b = 0.23},
 	}
@@ -167,6 +168,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 		STAGGER_GREEN = {r = 0.52, g = 1.0, b = 0.52},
 		STAGGER_YELLOW = {r = 1.0, g = 0.98, b = 0.72},
 		STAGGER_RED = {r = 1.0, g = 0.42, b = 0.42},
+		ESSENCE = {r = 0.40, g = 0.80, b = 1.00},
 	}
 	config.healthColors = {
 		tapped = {r = 0.5, g = 0.5, b = 0.5},
@@ -354,6 +356,7 @@ function ShadowUF:LoadDefaultLayout(useMerge)
 			holyPower = {anchorTo = "$parent", order = 60, height = 0.40, anchorPoint = "BR", x = -3, y = 6, size = 14, spacing = -4, growth = "LEFT", isBar = true, showAlways = true},
 			chi = {anchorTo = "$parent", order = 60, height = 0.40, anchorPoint = "BR", x = -3, y = 6, size = 14, spacing = -4, growth = "LEFT", isBar = true, showAlways = true},
 			arcaneCharges = {anchorTo = "$parent", order = 60, height = 0.40, anchorPoint = "BR", x = -8, y = 6, size = 12, spacing = -2, growth = "LEFT", isBar = true, showAlways = true},
+			essence = {anchorTo = "$parent", order = 60, height = 0.40, anchorPoint = "BR", x = -8, y = 6, size = 12, spacing = -2, growth = "LEFT", isBar = true, showAlways = true},
 			incHeal = {cap = 1},
 			incAbsorb = {cap = 1},
 			healAbsorb = {cap = 1},

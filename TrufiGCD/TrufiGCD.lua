@@ -78,6 +78,14 @@ local InnerBL = { --закрытый черный список, по ID
 	222031, -- Chaos Strike 1 (DemonHunter unverified fix)
 	197125, -- Chaos Strike 2 (DemonHunter unverified fix)
 	199547, -- Chaos Strike 3 (DemonHunter unverified fix)
+	227255, -- Spirit Bomb periodical
+	225919, -- Fracture double hit
+	225921, -- Fracture part 2
+	228478, -- Soul Cleave part 2
+	346665, -- Master of the Glaive (DH Class Tree Talent)
+	370966, -- The Hunt Impact (DH Class Tree Talent)
+	394007, -- Ready to Build (DF Engineering Accessoire)
+	391775, -- What's Cookin', Good Lookin'? (DF Cooking Accessoire)
 }
 local cross = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"
 local skull = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"
@@ -196,7 +204,7 @@ function TrufiGCDAddonLoaded(self, event, ...)
 		else TrGCDBL = TrufiGCDChSave["TrGCDBL"]
 		end
 		-- Проверка на пустые EnableIn
-		-- NEW MODE, TrufiGCDChSave["EnableIn"] - ["PvE"], ["Arena"], ["Bg"], ["World"] = true or false
+		-- NEW MODE, TrufiGCDChSave["EnableIn"] - ["PvE"], ["Arena"], ["Bg"], ["World"], ["Combat only"] = true or false
 		TrGCDNullOptions = false
 		if (TrufiGCDChSave["EnableIn"] == nil) then
 			TrGCDNullOptions = true
@@ -205,6 +213,7 @@ function TrufiGCDAddonLoaded(self, event, ...)
 			elseif (TrufiGCDChSave["EnableIn"]["Arena"] == nil) then TrGCDNullOptions = true
 			elseif (TrufiGCDChSave["EnableIn"]["Bg"] == nil) then TrGCDNullOptions = true
 			elseif (TrufiGCDChSave["EnableIn"]["World"] == nil) then TrGCDNullOptions = true
+			elseif (TrufiGCDChSave["EnableIn"]["Combat only"] == nil) then TrGCDNullOptions = true
 			elseif (TrufiGCDChSave["EnableIn"]["Enable"] == nil) then TrGCDNullOptions = true
 			end
 		end
@@ -214,6 +223,7 @@ function TrufiGCDAddonLoaded(self, event, ...)
 			TrufiGCDChSave["EnableIn"]["Arena"] = true
 			TrufiGCDChSave["EnableIn"]["Bg"] = true
 			TrufiGCDChSave["EnableIn"]["World"] = true
+			TrufiGCDChSave["EnableIn"]["Combat only"] = false
 			TrufiGCDChSave["EnableIn"]["Enable"] = true
 		end
 		-- проверка на пустой ModScroll VERSION 1.5
@@ -225,7 +235,7 @@ function TrufiGCDAddonLoaded(self, event, ...)
 
 		TrGCDCheckToEnableAddon()
 		-- Options Panel Frame
-		TrGCDGUI = CreateFrame ("Frame", nil, UIParent, "OptionsBoxTemplate")
+		TrGCDGUI = CreateFrame ("Frame", nil, UIParent)
 		TrGCDGUI:Hide()
 		TrGCDGUI.name = L"TrufiGCD"
 		--кнопка show/hide
@@ -264,6 +274,11 @@ function TrufiGCDAddonLoaded(self, event, ...)
 		TrGCDGUI.CheckEnableIn.Text:SetFont(GameFontNormal:GetFont(), 12)
 		TrGCDGUI.CheckEnableIn.Text:SetText(L"Enable in:")
 		TrGCDGUI.CheckEnableIn.Text:SetPoint("TOPRIGHT", TrGCDGUI, "TOPRIGHT",-53, -175)
+		TrGCDGUI.CheckEnableIn[6] = AddCheckButton(TrGCDGUI, "TOPRIGHT",-90,-110,L"Combat only","trgcdcheckenablein6",TrufiGCDChSave["EnableIn"]["Combat only"])
+		TrGCDGUI.CheckEnableIn[6]:SetScript("OnClick", function ()
+			TrufiGCDChSave["EnableIn"]["Combat only"] = ValueReverse(TrufiGCDChSave["EnableIn"]["Combat only"])
+			TrGCDCheckToEnableAddon(6)
+		end)
 		TrGCDGUI.CheckEnableIn[0] = AddCheckButton(TrGCDGUI, "TOPRIGHT",-90,-140,L"Enable addon","trgcdcheckenablein0",TrufiGCDChSave["EnableIn"]["Enable"])
 		TrGCDGUI.CheckEnableIn[0]:SetScript("OnClick", function ()
 			TrufiGCDChSave["EnableIn"]["Enable"] = ValueReverse(TrufiGCDChSave["EnableIn"]["Enable"])
@@ -388,7 +403,7 @@ function TrufiGCDAddonLoaded(self, event, ...)
 		end
 		InterfaceOptions_AddCategory(TrGCDGUI)
 		--добавления вкладки Spell Black List
-		TrGCDGUI.BL = CreateFrame ("Frame", nil, UIParent, "OptionsBoxTemplate")
+		TrGCDGUI.BL = CreateFrame ("Frame", nil, UIParent)
 		TrGCDGUI.BL:Hide()
 		TrGCDGUI.BL.name = L"Blacklist"
 		TrGCDGUI.BL.parent = L"TrufiGCD"
@@ -427,8 +442,8 @@ function TrufiGCDAddonLoaded(self, event, ...)
 		TrGCDGUI.BL.Spell = {}
 		TrGCDGUI.BL.TextSpell = TrGCDGUI.BL:CreateFontString(nil, "BACKGROUND")
 		TrGCDGUI.BL.TextSpell:SetFont(GameFontNormal:GetFont(), 12)
-		TrGCDGUI.BL.TextSpell:SetText("Select spell")
-		TrGCDGUI.BL.Delete = AddButton(TrGCDGUI.BL,"TOPLEFT",260,-130,22,100,"Delete")
+		TrGCDGUI.BL.TextSpell:SetText(L"Select spell")
+		TrGCDGUI.BL.Delete = AddButton(TrGCDGUI.BL,"TOPLEFT",260,-130,22,100,L"Delete")
 		TrGCDGUI.BL.TextSpell:SetPoint("TOPLEFT", TrGCDGUI.BL.Delete, "TOPLEFT", 5, 15)
 		for i=1,60 do
 			TrGCDGUI.BL.Spell[i] = AddButton(TrGCDGUI.BL.List,"TOP",0,(-(i-1)*16),15,192,_,11," ",true)
@@ -452,7 +467,7 @@ function TrufiGCDAddonLoaded(self, event, ...)
 		TrGCDGUI.BL.Delete:SetScript("OnClick", function ()
 			if (BLSpSel ~= nil) then
 				table.remove(TrGCDBL, BLSpSel.Number)
-				TrGCDGUI.BL.TextSpell:SetText("Select spell")
+				TrGCDGUI.BL.TextSpell:SetText(L"Select spell")
 				TrGCDLoadBlackList()
 			end
 		end)
@@ -462,29 +477,33 @@ function TrufiGCDAddonLoaded(self, event, ...)
 		TrGCDGUI.BL.AddEdit:SetHeight(20)
 		TrGCDGUI.BL.AddEdit:SetPoint("TOPLEFT", TrGCDGUI.BL, "TOPLEFT", 265, -200)
 		TrGCDGUI.BL.AddEdit:SetAutoFocus(false)
-		TrGCDGUI.BL.AddButt = AddButton(TrGCDGUI.BL,"TOPLEFT",260,-225,22,100,"Add",12,"Enter spell name or spell ID")
+		TrGCDGUI.BL.AddButt = AddButton(TrGCDGUI.BL,"TOPLEFT",260,-225,22,100,L"Add",12,L"Enter spell name or spell ID")
 		TrGCDGUI.BL.AddButt.Text:SetPoint("TOPLEFT",TrGCDGUI.BL.AddButt,"TOPLEFT", 5, 40)
 		TrGCDGUI.BL.AddButt:SetScript("OnClick", function (self) TrGCDBLAddSpell(self) end)
 		TrGCDGUI.BL.AddEdit:SetScript("OnEnterPressed", function (self) TrGCDBLAddSpell(self) end)
 		TrGCDGUI.BL.AddEdit:SetScript("OnEscapePressed", function (self) self:ClearFocus() end)
-		TrGCDGUI.BL.AddButt.Text2 = TrGCDGUI.BL.List:CreateFontString(nil, "BACKGROUND")
+    TrGCDGUI.BL.AddButt.Text2 = TrGCDGUI.BL.AddButt:CreateFontString(nil, "BACKGROUND")
 		TrGCDGUI.BL.AddButt.Text2:SetFont(GameFontNormal:GetFont(), 11)
-		--TrGCDGUI.BL.AddButt.Text2:SetText("Blacklist can be loaded from the saved settings,\nbut does not restore the default.")
-		TrGCDGUI.BL.AddButt.Text2:SetPoint("BOTTOMLEFT", TrGCDGUI.BL.AddButt, "BOTTOMLEFT", 0, -35)
+		TrGCDGUI.BL.AddButt.Text2:SetText(L"You can only blacklist known abilities by ID!")
+		TrGCDGUI.BL.AddButt.Text2:SetPoint("BOTTOMLEFT", TrGCDGUI.BL.AddButt, "BOTTOMLEFT",5, -15)
+
+
 		--кнопка загрузки настроек сохраненных в кэше
-		TrGCDGUI.BL.ButtonLoad = AddButton(TrGCDGUI.BL,"TOPRIGHT",-145,-30,22,100,"Load",10,"Load saving blacklist")
+		TrGCDGUI.BL.ButtonLoad = AddButton(TrGCDGUI.BL,"TOPRIGHT",-145,-30,22,100,L"Load",10,L"Load saving blacklist")
 		TrGCDGUI.BL.ButtonLoad:SetScript("OnClick", TrGCDBLLoadSetting)
 		--кнопки сохранения настроек в кэш
-		TrGCDGUI.BL.ButtonSave = AddButton(TrGCDGUI.BL,"TOPRIGHT",-260,-30,22,100,"Save",10,"Save blacklist to cache")
+		TrGCDGUI.BL.ButtonSave = AddButton(TrGCDGUI.BL,"TOPRIGHT",-260,-30,22,100,L"Save",10,L"Save blacklist to cache")
 		TrGCDGUI.BL.ButtonSave:SetScript("OnClick", TrGCDBLSaveSetting)
 		--кнопка восстановления стандартных настроек
-		TrGCDGUI.BL.ButtonRes = AddButton(TrGCDGUI.BL,"TOPRIGHT",-30,-30,22,100,"Default",10,"Restore default blacklist")
+		TrGCDGUI.BL.ButtonRes = AddButton(TrGCDGUI.BL,"TOPRIGHT",-30,-30,22,100,L"Default",10,L"Restore default blacklist")
 		TrGCDGUI.BL.ButtonRes:SetScript("OnClick", function () TrGCDBLDefaultSetting() TrGCDLoadBlackList() end)
 		InterfaceOptions_AddCategory(TrGCDGUI.BL)
 		-- Creating event enter arena/bg event frame
 		TrGCDEnterEventFrame = CreateFrame("Frame", nil, UIParent)
 		TrGCDEnterEventFrame:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND")
 		TrGCDEnterEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+		TrGCDEnterEventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+		TrGCDEnterEventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 		TrGCDEnterEventFrame:SetScript("OnEvent", TrGCDEnterEventHandler)
 		-- Creating event spell frame
 		TrGCDEventFrame = CreateFrame("Frame", nil, UIParent)
@@ -624,7 +643,7 @@ TrGCDLoadFrame:RegisterEvent("ADDON_LOADED")
 TrGCDLoadFrame:SetScript("OnEvent", TrufiGCDAddonLoaded)
 
 function TrGCDCheckToEnableAddon(t) -- проверяет галки EnableIn и от этого уже включен ли аддон
-	if (TrufiGCDChSave["EnableIn"]["Enable"] == false) then TrGCDEnable = false
+	if (TrufiGCDChSave["EnableIn"]["Enable"] == false) or (TrufiGCDChSave["EnableIn"]["Combat only"]) then TrGCDEnable = false
 	elseif (PlayerDislocation == 1) then TrGCDEnable = TrufiGCDChSave["EnableIn"]["World"]
 	elseif (PlayerDislocation == 2) then TrGCDEnable = TrufiGCDChSave["EnableIn"]["PvE"]
 	elseif (PlayerDislocation == 3) then TrGCDEnable = TrufiGCDChSave["EnableIn"]["Arena"]
@@ -632,14 +651,38 @@ function TrGCDCheckToEnableAddon(t) -- проверяет галки EnableIn и
 	elseif (PlayerDislocation == 5) then TrGCDEnable = TrufiGCDChSave["EnableIn"]["Raid"]
 	end
 	if (t ~= nil) then
-		if ((PlayerDislocation == t) or (t == 0)) then
+		if ((PlayerDislocation == t) or (t == 0) or (t == 6)) then
 			for i=1,12 do TrGCDClear(i) end
 		end
 	end
 end
 function TrGCDEnterEventHandler(self, event, ...) -- эвент, когда игрок заходит на бг, арену, пве, или наоборот выходит
 	local _, PlayerLocation = IsInInstance()
-	if (event == "PLAYER_ENTERING_BATTLEGROUND") then
+
+	if (event == "PLAYER_REGEN_DISABLED") and (TrufiGCDChSave["EnableIn"]["Combat only"]) then -- Entering combat, specific for each zone
+		if (PlayerLocation == "arena") then
+			PlayerDislocation = 3
+			if (TrufiGCDChSave["EnableIn"]["Arena"]) then TrGCDEnable = true
+			else TrGCDEnable = false end
+		elseif (PlayerLocation == "pvp") then
+			PlayerDislocation = 4
+			if (TrufiGCDChSave["EnableIn"]["Bg"]) then TrGCDEnable = true
+			else TrGCDEnable = false end
+		elseif (PlayerLocation == "party") then
+			PlayerDislocation = 2
+			if (TrufiGCDChSave["EnableIn"]["PvE"]) then TrGCDEnable = true
+			else TrGCDEnable = false end
+		elseif (PlayerLocation == "raid") then
+			PlayerDislocation = 5
+			if (TrufiGCDChSave["EnableIn"]["Raid"]) then TrGCDEnable = true
+			else TrGCDEnable = false end
+		elseif ((PlayerLocation ~= "arena") or (PlayerLocation ~= "pvp")) then
+			PlayerDislocation = 1
+			if (TrufiGCDChSave["EnableIn"]["World"]) then TrGCDEnable = true
+			else TrGCDEnable = false end
+		end
+	elseif (event == "PLAYER_REGEN_ENABLED") and (TrufiGCDChSave["EnableIn"]["Combat only"]) then TrGCDEnable = false -- Ending combat
+	elseif (event == "PLAYER_ENTERING_BATTLEGROUND") and not (TrufiGCDChSave["EnableIn"]["Combat only"]) then -- if not Combat only, try to load at locations
 		if (PlayerLocation == "arena") then
 			PlayerDislocation = 3
 			if (TrufiGCDChSave["EnableIn"]["Arena"]) then TrGCDEnable = true
@@ -649,7 +692,7 @@ function TrGCDEnterEventHandler(self, event, ...) -- эвент, когда иг
 			if (TrufiGCDChSave["EnableIn"]["Bg"]) then TrGCDEnable = true
 			else TrGCDEnable = false end
 		end
-	elseif (event == "PLAYER_ENTERING_WORLD") then
+	elseif (event == "PLAYER_ENTERING_WORLD") and not (TrufiGCDChSave["EnableIn"]["Combat only"]) then  -- if not Combat only, try to load at locations
 		if (PlayerLocation == "party") then
 			PlayerDislocation = 2
 			if (TrufiGCDChSave["EnableIn"]["PvE"]) then TrGCDEnable = true
@@ -663,19 +706,48 @@ function TrGCDEnterEventHandler(self, event, ...) -- эвент, когда иг
 			if (TrufiGCDChSave["EnableIn"]["World"]) then TrGCDEnable = true
 			else TrGCDEnable = false end
 		end
+			elseif (event == "PLAYER_ENTERING_BATTLEGROUND") and (TrufiGCDChSave["EnableIn"]["Combat only"]) then -- if Combat only and just loaded in location
+		if (PlayerLocation == "arena") then
+			PlayerDislocation = 3
+			if (TrufiGCDChSave["EnableIn"]["Arena"]) then TrGCDEnable = false end
+		elseif (PlayerLocation == "pvp") then
+			PlayerDislocation = 4
+			if (TrufiGCDChSave["EnableIn"]["Bg"]) then TrGCDEnable = false end
+		end
+	elseif (event == "PLAYER_ENTERING_WORLD") and (TrufiGCDChSave["EnableIn"]["Combat only"]) then  -- if Combat only and just loaded in location
+		if (PlayerLocation == "party") then
+			PlayerDislocation = 2
+			if (TrufiGCDChSave["EnableIn"]["PvE"]) then TrGCDEnable = false end
+		elseif (PlayerLocation == "raid") then
+			PlayerDislocation = 5
+			if (TrufiGCDChSave["EnableIn"]["Raid"]) then TrGCDEnable = false end
+		elseif ((PlayerLocation ~= "arena") or (PlayerLocation ~= "pvp")) then
+			PlayerDislocation = 1
+			if (TrufiGCDChSave["EnableIn"]["World"]) then TrGCDEnable = false end
+		end
 	end
 end
 function TrGCDLoadBlackList() -- загрузка черного списка
 	for i=1,60 do
-		if (TrGCDBL[i] ~= nil) then
-			local spellname = GetSpellInfo(TrGCDBL[i])
-            if (spellname == nil) then
-                spellname = TrGCDBL[i].."(未知或失效技能)"
-            elseif tonumber(TrGCDBL[i]) then
-                spellname = TrGCDBL[i].."(" ..spellname..")"
-            end
-			TrGCDGUI.BL.Spell[i]:Enable()
-			TrGCDGUI.BL.Spell[i].Text:SetText(spellname)
+    	local idOrName = TrGCDBL[i]
+		if (idOrName ~= nil) then
+			local name, _, _, _, _, _, spellId = GetSpellInfo(idOrName)
+
+			if spellId then
+				TrGCDGUI.BL.Spell[i]:Enable()
+				TrGCDGUI.BL.Spell[i].Text:SetText(spellId .. " - " .. name)
+
+				-- 10.0 change; only store IDs going forward
+				if tonumber(idOrName) ~= spellId then
+					table.insert(TrGCDBL, i, spellId)
+				end
+			else
+				-- 10.0 change; remove abilities from blacklist that are not resolvable to an id --TODO:abyui10
+				table.remove(TrGCDBL, i)
+				TrGCDGUI.BL.Spell[i]:Disable()
+				TrGCDGUI.BL.Spell[i].Text:SetText(nil)
+				TrGCDGUI.BL.Spell[i].Texture:SetAlpha(0)
+			end
 		else
 			TrGCDGUI.BL.Spell[i]:Disable()
 			TrGCDGUI.BL.Spell[i].Text:SetText(nil)
@@ -687,19 +759,19 @@ function TrGCDBLAddSpell(self)
 	if (TrGCDGUI.BL.AddEdit:GetText() ~= nil) then
 		local spellname = TrGCDGUI.BL.AddEdit:GetText()
 		if (#TrGCDBL < 60) then
-		--local spellicon = select(3, GetSpellInfo(TrGCDGUI.BL.AddEdit:GetText()))
-		--if (spellicon ~= nil) then
-			if tonumber(spellname) then
-				table.insert(TrGCDBL, tonumber(spellname))
-			else
-				table.insert(TrGCDBL, spellname)
-			end
-			TrGCDLoadBlackList()
-			--TrGCDGUI.BL.AddEdit:SetText("")
-			TrGCDGUI.BL.AddEdit:ClearFocus()
-			--TrGCDGUI.BL.AddButt.Text2:SetText()
-		--else TrGCDGUI.BL.AddButt.Text2:SetText('Spell not find, please try again.') end
-		end
+          --TODO:abyui10
+      		local spellId = select(7, GetSpellInfo(spellname))
+      		if (spellId ~= nil) then
+        		table.insert(TrGCDBL, spellId)
+        		if (spellId .. "") ~= spellname then -- only note if a string was passed
+          		print(format(L"[TrufiGCD]: converted \"%s\" to spell id %s. If this is not the desired spell id, provide the exact spell id of the spell you wish to blacklist as multiple spells with this name may exist.", spellname, spellId))
+        		end
+
+        		TrGCDLoadBlackList()
+        		TrGCDGUI.BL.AddEdit:SetText("")
+        		TrGCDGUI.BL.AddEdit:ClearFocus()
+      		end
+    	end
 	end
 end
 function TrGCDBLSaveSetting()
@@ -708,7 +780,9 @@ function TrGCDBLSaveSetting()
 	for i=1,#TrGCDBL do	TrufiGCDGlSave["TrGCDBL"][i] = TrufiGCDChSave["TrGCDBL"][i]	end
 end
 function TrGCDBLLoadSetting()
-	if ((TrufiGCDChSave ~= nil) and (TrufiGCDGlSave["TrGCDQueueFr"] ~= nil)) then
+	if ((TrufiGCDGlSave ~= nil) and (TrufiGCDGlSave["TrGCDBL"] ~= nil)) then
+		TrufiGCDChSave = TrufiGCDChSave or {}
+		TrufiGCDChSave["TrGCDBL"] = TrufiGCDChSave["TrGCDBL"] or {}
 		for i=1,#TrufiGCDGlSave["TrGCDBL"] do TrufiGCDChSave["TrGCDBL"][i] = TrufiGCDGlSave["TrGCDBL"][i] end
 		if (#TrufiGCDGlSave["TrGCDBL"] < #TrufiGCDChSave["TrGCDBL"]) then
 			for i=(#TrufiGCDGlSave["TrGCDBL"]+1),#TrufiGCDChSave["TrGCDBL"] do TrufiGCDChSave["TrGCDBL"][i] = nil end
@@ -748,6 +822,7 @@ function TrGCDSaveSettings()
 	TrufiGCDGlSave["EnableIn"]["Arena"] = TrufiGCDChSave["EnableIn"]["Arena"]
 	TrufiGCDGlSave["EnableIn"]["Bg"] = TrufiGCDChSave["EnableIn"]["Bg"]
 	TrufiGCDGlSave["EnableIn"]["World"] = TrufiGCDChSave["EnableIn"]["World"]
+	TrufiGCDGlSave["EnableIn"]["Combat only"] = TrufiGCDChSave["EnableIn"]["Combat only"]
 	TrufiGCDGlSave["EnableIn"]["Enable"] = TrufiGCDChSave["EnableIn"]["Enable"]
 	TrufiGCDGlSave["ModScroll"] = TrufiGCDChSave["ModScroll"]
 end
@@ -772,6 +847,7 @@ function TrGCDLoadSettings()
 			TrufiGCDChSave["EnableIn"]["Arena"] = TrufiGCDGlSave["EnableIn"]["Arena"]
 			TrufiGCDChSave["EnableIn"]["Bg"] = TrufiGCDGlSave["EnableIn"]["Bg"]
 			TrufiGCDChSave["EnableIn"]["World"] = TrufiGCDGlSave["EnableIn"]["World"]
+			TrufiGCDChSave["EnableIn"]["Combat only"] = TrufiGCDGlSave["EnableIn"]["Combat only"]
 			TrufiGCDChSave["EnableIn"]["Enable"] = TrufiGCDGlSave["EnableIn"]["Enable"]
 			if (TrufiGCDGlSave["EnableIn"]["Raid"] ~= nil) then
 				TrufiGCDChSave["EnableIn"]["Raid"] = TrufiGCDGlSave["EnableIn"]["Raid"]
@@ -823,6 +899,7 @@ function TrGCDRestoreDefaultSettings() -- восстановление стан�
 	TrufiGCDChSave["EnableIn"]["Arena"] = true
 	TrufiGCDChSave["EnableIn"]["Bg"] = true
 	TrufiGCDChSave["EnableIn"]["World"] = true
+	TrufiGCDChSave["EnableIn"]["Combat only"] = false
 	TrufiGCDChSave["EnableIn"]["Enable"] = true
 	TrufiGCDChSave["ModScroll"] = true
 end
@@ -849,6 +926,7 @@ function TrGCDUploadViewSetting()
 	TrGCDGUI.CheckEnableIn[3]:SetChecked(TrufiGCDChSave["EnableIn"]["Arena"])
 	TrGCDGUI.CheckEnableIn[4]:SetChecked(TrufiGCDChSave["EnableIn"]["Bg"])
 	TrGCDGUI.CheckEnableIn[5]:SetChecked(TrufiGCDChSave["EnableIn"]["Raid"])
+	TrGCDGUI.CheckEnableIn[6]:SetChecked(TrufiGCDChSave["EnableIn"]["Combat only"])
 	TrGCDGUI.CheckModScroll:SetChecked(TrufiGCDChSave["ModScroll"])
 end
 function TrGCDResizeQFr(i) -- ресайз после изменения размера очереди TrGCDQueueFr
@@ -1097,7 +1175,7 @@ function TrGCDEventHandler(self, event, who, _, spellId)
 		for l=1, #TrGCDBL do if ((TrGCDBL[l] == spellname) or (TrGCDBL[l] == spellId)) then blt = false end end -- проверка на черный список
 		for l=1, #InnerBL do if (InnerBL[l] == spellId) then sblt = false end end -- проверка на закрытый черный список
 		if ((spellicon ~= nil) and t and blt and sblt and (GetSpellLink(spellId) ~= nil)) then
-			if (spellId == 42292) then spellicon = trinket end --замена текстуры пвп тринкета				
+			if (spellId == 42292) then spellicon = trinket end --замена текстуры пвп тринкета
 			local IsChannel = TrGCDUnitChannelInfo(who) -- check for channeling spell
 			if (event == "UNIT_SPELLCAST_START") then
                 --if i==1 then not lastSpellSent[i] then return else lastSpellSent[i] = nil end end

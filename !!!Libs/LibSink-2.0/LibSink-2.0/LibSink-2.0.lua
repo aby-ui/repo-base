@@ -1,6 +1,7 @@
+--@curseforge-project-slug: libsink-2-0@
 --[[
 Name: Sink-2.0
-Revision: $Rev: 134 $
+Revision: $Rev: 147 $
 Author(s): Funkydude
 Description: Library that handles chat output.
 Dependencies: LibStub, SharedMedia-3.0 (optional)
@@ -155,7 +156,7 @@ do
 		L["OUTPUT_DESC"] = "Wohin die Ausgaben dieses Addons geleitet werden sollen."
 		L["ROUTE"] = "Die Ausgaben dieses Addons werden durch %s geleitet."
 		L["SCROLL"] = "Unterabschnitt"
-		L["SCROLL_DESC"] = [=[Stelle den Unterabschnitt ein, in dem die Nachrichten erscheinen sollen. 
+		L["SCROLL_DESC"] = [=[Stelle den Unterabschnitt ein, in dem die Nachrichten erscheinen sollen.
 
 		Dies ist nur für manche Ausgaben verfügbar.]=]
 		L["STICKY"] = "Fixiert"

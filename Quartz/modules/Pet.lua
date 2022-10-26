@@ -22,6 +22,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 local MODNAME = "Pet"
 local Pet = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
 
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+
 ----------------------------
 -- Upvalues
 -- GLOBALS: PetCastingBarFrame
@@ -104,8 +106,10 @@ function Pet:ApplySettings()
 		PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 		PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
 		PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_CHANNEL_UPDATE")
-		PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
-		PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+		if WoWRetail then
+			PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTIBLE")
+			PetCastingBarFrame:RegisterEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+		end
 		PetCastingBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 		PetCastingBarFrame:RegisterEvent("UNIT_PET")
 	end

@@ -8,7 +8,7 @@ function Details:ScrollDamage()
 	if (not DetailsScrollDamage) then
 		DetailsScrollDamage = DetailsFramework:CreateSimplePanel(UIParent)
 		DetailsScrollDamage:SetSize(427 - 40 - 20 - 20, 505 - 150 + 20 + 40)
-		DetailsScrollDamage:SetTitle ("Details! Scroll Damage (/details scroll)")
+		DetailsScrollDamage:SetTitle("Details! Scroll Damage (/details scroll)")
 		DetailsScrollDamage.Data = {}
 		DetailsScrollDamage:ClearAllPoints()
 		DetailsScrollDamage:SetPoint("left", UIParent, "left", 10, 0)
@@ -69,7 +69,7 @@ function Details:ScrollDamage()
 
 				if (spellTable) then
 					local line = self:GetLine(i)
-					local time, token, hidding, sourceSerial, sourceName, sourceFlag, sourceFlag2, targetSerial, targetName, targetFlag, targetFlag2, spellID, spellName, spellType, amount, overKill, school, resisted, blocked, absorbed, isCritical = unpack (spellTable)
+					local time, token, hidding, sourceSerial, sourceName, sourceFlag, sourceFlag2, targetSerial, targetName, targetFlag, targetFlag2, spellID, spellName, spellType, amount, overKill, school, resisted, blocked, absorbed, isCritical = unpack(spellTable)
 
 					local spellName, _, spellIcon
 
@@ -136,7 +136,7 @@ function Details:ScrollDamage()
 			line:SetSize(scroll_width - 2, scroll_line_height)
 
 			line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-			line:SetBackdropColor(unpack (backdrop_color))
+			line:SetBackdropColor(unpack(backdrop_color))
 
 			DF:Mixin(line, DF.HeaderFunctions)
 

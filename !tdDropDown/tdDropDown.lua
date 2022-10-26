@@ -9,8 +9,8 @@ local O = tdDropDown_Option
 
 StaticPopupDialogs["TDDROPDOWN_DELETE_ALL"] = {preferredIndex = 3,
     text = L.DelAll,
-    button1 = TEXT(YES),
-    button2 = TEXT(CANCEL),
+    button1 = YES,
+    button2 = CANCEL,
     OnAccept = function(self, profile)
         if tdDropDownDB[profile] then
             table.wipe(tdDropDownDB[profile])

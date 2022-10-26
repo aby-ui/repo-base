@@ -27,7 +27,7 @@ ResetButton:SetScript("OnClick", function()
 end)
 
 local function newCheckbox(name, caption, config)
-    local cb = CreateFrame("CheckButton", "$parent"..name, OptionsPanel, "OptionsCheckButtonTemplate")
+    local cb = CreateFrame("CheckButton", "$parent"..name, OptionsPanel, "InterfaceOptionsCheckButtonTemplate")
     _G[cb:GetName().."Text"]:SetText(caption and caption or name)
 	
     cb:SetScript("OnClick", function(self)

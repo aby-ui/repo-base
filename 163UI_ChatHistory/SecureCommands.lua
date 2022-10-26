@@ -9,9 +9,9 @@ addon.secure = {
 	"USERANDOM",
 	"CASTSEQUENCE",
 	"STOPCASTING",
+	"STOPSPELLTARGET",
 	"CANCELAURA",
 	"CANCELFORM",
-	"CASTGLYPH",
 	"EQUIP",
 	"EQUIP_TO_SLOT",
 	"CHANGEACTIONBAR",
@@ -31,10 +31,8 @@ addon.secure = {
 	"ASSIST",
 	"FOCUS",
 	"CLEARFOCUS",
-	"CLEARMAINTANK",
 	"MAINTANKON",
 	"MAINTANKOFF",
-	"CLEARMAINASSIST",
 	"MAINASSISTON",
 	"MAINASSISTOFF",
 	"DUEL",
@@ -45,6 +43,7 @@ addon.secure = {
 	"PET_STAY",
 	"PET_PASSIVE",
 	"PET_DEFENSIVE",
+	"PET_DEFENSIVEASSIST",
 	"PET_AGGRESSIVE",
 	"PET_ASSIST",
 	"PET_AUTOCASTON",
@@ -60,6 +59,16 @@ addon.secure = {
 	"RANDOMPET",
 	"RANDOMFAVORITEPET",
 	"DISMISSBATTLEPET",
+	"PET_DISMISS",
+	"USE_TOY",
+	"LOGOUT",
+	"QUIT",
+	"GUILD_UNINVITE",
+	"GUILD_PROMOTE",
+	"GUILD_DEMOTE",
+	"GUILD_LEADER",
+	"GUILD_LEAVE",
+	"GUILD_DISBAND",
 }
 
 local SecureCmdList = {}
@@ -67,13 +76,11 @@ local hash_SecureCmdList = {}
 for i=1,#addon.secure do SecureCmdList[addon.secure[i]]=true end
 
 for index, value in pairs(SecureCmdList) do
-	local i = 1;
-	local cmdString = _G["SLASH_"..index..i];
-	while ( cmdString ) do
+	for i = 1, 100 do
+		local cmdString = _G["SLASH_"..index..i];
+		if not cmdString then break end
 		cmdString = strupper(cmdString);
 		hash_SecureCmdList[cmdString] = value;	-- add to hash
-		i = i + 1;
-		cmdString = _G["SLASH_"..index..i];
 	end
 end
 

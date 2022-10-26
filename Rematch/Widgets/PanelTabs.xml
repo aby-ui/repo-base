@@ -1,6 +1,9 @@
 <Ui>
+
+	<!-- see PanelTabTemplate.xml/lua for the new panel tabs-->
+
 	<!-- styled like default's CharacterFrameTabButtonTemplate but buttons are never disabled -->
-	<Button name="RematchPanelTabButtonTemplate" virtual="true">
+	<Button name="RematchOldPanelTabButtonTemplate" virtual="true">
 		<Size x="100" y="32"/>
 		<Layers>
 			<Layer level="BACKGROUND">

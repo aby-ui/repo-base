@@ -368,7 +368,7 @@ end
 
 -- Name abbreviation
 local function abbreviateName(text)
-	return string.sub(text, 1, 1) .. "."
+	return (string.utf8sub or string.sub)(text, 1, 1) .. "."
 end
 
 Tags.abbrevCache = setmetatable({}, {

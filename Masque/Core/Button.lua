@@ -13,23 +13,36 @@
 local _, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local pairs, type = pairs, type
 
 ----------------------------------------
+-- WoW API
+---
+
+local hooksecurefunc = hooksecurefunc
+
+----------------------------------------
 -- Internal
 ---
+
+-- @ Masque
+local WOW_RETAIL = Core.WOW_RETAIL
+
+-- @ Skins\Default(_Classic)
+local DEFAULT_SKIN = Core.DEFAULT_SKIN
 
 -- @ Skins\Skins
 local Skins = Core.Skins
 
 -- @ Skins\Regions
-local RegTypes = Core.RegTypes
+local ActionTypes, AuraTypes, EmptyTypes = Core.ActionTypes, Core.AuraTypes, Core.EmptyTypes
+local ItemTypes, RegTypes = Core.ItemTypes, Core.RegTypes
 
 -- @ Core\Utility
-local GetScale = Core.GetScale
+local GetScale, GetTypeSkin = Core.GetScale, Core.GetTypeSkin
 
 -- @ Core\Regions\*
 local SkinBackdrop, SkinCooldown, SkinFrame = Core.SkinBackdrop, Core.SkinCooldown, Core.SkinFrame
@@ -44,6 +57,87 @@ local SkinTexture, UpdateSpellAlert = Core.SkinTexture, Core.UpdateSpellAlert
 
 local __Empty = {}
 
+-- Function to toggle the button art.
+local function SetButtonArt(Button)
+	local SlotArt, SlotBackground = Button.SlotArt, Button.SlotBackground
+
+	if Button.__MSQ_Enabled then
+		if SlotArt then
+			SlotArt:SetTexture()
+			SlotArt:Hide()
+		end
+		if SlotBackground then
+			SlotBackground:SetTexture()
+			SlotBackground:Hide()
+		end
+	else
+		if SlotArt then
+			SlotArt:SetAtlas("UI-HUD-ActionBar-IconFrame-Slot")
+		end
+		if SlotBackground then
+			SlotBackground:SetAtlas("UI-HUD-ActionBar-IconFrame-Background")
+		end
+	end
+end
+
+-- Hook to counter 10.0 `Action` button texture changes.
+local function Hook_UpdateArt(Button, HideDivider)
+	if Button.__MSQ_Exit_UpdateArt then return end
+
+	SetButtonArt(Button)
+
+	if not Button.__MSQ_Enabled then return end
+
+	local Pushed, Skin = Button.PushedTexture, Button.__MSQ_Skin
+
+	if Pushed and Skin then
+		SkinTexture("Pushed", Pushed, Skin.Pushed, Button, Button.__MSQ_PushedColor, GetScale(Button))
+	end
+end
+
+-- Hook to counter 10.0 `HotKey` position changes.
+local function Hook_UpdateHotKeys(Button, ActionButtonType)
+	if Button.__MSQ_Exit_UpdateHotKeys then return end
+
+	local HotKey, Skin = Button.HotKey, Button.__MSQ_Skin
+
+	if (HotKey and HotKey:GetText() ~= "") and Skin then
+		SkinText("HotKey", HotKey, Button, Skin.HotKey, GetScale(Button))
+	end
+end
+
+-- Hook to counter 10.0 `Bag` button texture changes.
+local function Hook_UpdateTextures(Button)
+	if Button.__MSQ_Exit_UpdateTextures then return end
+
+	local Skin = Button.__MSQ_Skin
+
+	if Skin then
+		local Pushed = Button:GetPushedTexture()
+		local Highlight = Button:GetHighlightTexture()
+		local SlotHighlight = Button.SlotHighlightTexture
+
+		local xScale, yScale = GetScale(Button)
+
+		if Pushed then
+			SkinTexture("Pushed", Pushed, Skin.Pushed, Button, Button.__MSQ_PushedColor, xScale, yScale)
+		end
+		if Highlight then
+			SkinTexture("Highlight", Highlight, Skin.Highlight, Button, Button.__MSQ_HighlightColor, xScale, yScale)
+		end
+		if SlotHighlight then
+			SkinTexture("SlotHighlight", SlotHighlight, Skin.SlotHighlight, Button, Button.__MSQ_SlotHighlightColor, xScale, yScale)
+		end
+	end
+end
+
+-- List of methods to hook.
+local Hook_Methods = {
+	UpdateArt = Hook_UpdateArt,
+	UpdateHotKeys = Hook_UpdateHotKeys,
+	UpdateTextures = Hook_UpdateTextures,
+}
+
 ----------------------------------------
 -- Core
 ---
@@ -57,15 +151,28 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 
 	if SkinID then
 		Skin = Skins[SkinID] or Skins.Classic
+		Button.__MSQ_Skin = Skin
 	else
 		local Addon = Button.__MSQ_Addon or false
-		Skin = Skins[Addon] or Skins.Default
+		Skin = Skins[Addon] or DEFAULT_SKIN
+		Button.__MSQ_Skin = nil
 		Disabled = true
 		Pulse = true
 	end
 
 	Button.__MSQ_Enabled = (not Disabled and true) or nil
 	Button.__MSQ_Shape = Skin.Shape
+
+	-- Set/remove type flags.
+	Button.__MSQ_IsAction = ActionTypes[bType]
+	Button.__MSQ_IsAura = AuraTypes[bType]
+	Button.__MSQ_IsItem = ItemTypes[bType]
+
+	-- Flag Retail `Action` buttons.
+	Button.__MSQ_ReSize = (WOW_RETAIL and ActionTypes[bType]) or nil
+
+	local EmptyType = EmptyTypes[bType]
+	Button.__MSQ_EmptyType = EmptyType
 
 	if Disabled or type(Colors) ~= "table" then
 		Colors = __Empty
@@ -77,17 +184,24 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	local Mask = Skin.Mask
 
 	if Mask then
+		if type(Mask) == "table" then
+			Mask = GetTypeSkin(Button, bType, Mask)
+		end
+
 		SkinMask(nil, Button, Mask, xScale, yScale)
 	end
 
 	-- Backdrop
-	local FloatingBG = Button.FloatingBG or Regions.Backdrop
+	-- * Only buttons that can be seen while empty need backdrops.
+	if EmptyType then
+		local FloatingBG = Button.FloatingBG or Regions.Backdrop
 
-	if Disabled then
-		Backdrop = (FloatingBG and true) or false
+		if Disabled then
+			Backdrop = (FloatingBG and true) or false
+		end
+
+		SkinBackdrop(Backdrop, FloatingBG, Button, Skin.Backdrop, Colors.Backdrop, xScale, yScale)
 	end
-
-	SkinBackdrop(Backdrop, FloatingBG, Button, Skin.Backdrop, Colors.Backdrop, xScale, yScale)
 
 	-- Icon
 	local Icon = Regions.Icon
@@ -121,6 +235,28 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 				else
 					SkinTexture(Layer, Region, Button, Skin[Layer], Colors[Layer], xScale, yScale)
 				end
+			end
+		end
+	end
+
+	-- Set the button art.
+	SetButtonArt(Button)
+
+	-- Hooks
+	for Method, Hook in pairs(Hook_Methods) do
+		if Button[Method] then
+			local Key = "__MSQ_"..Method
+			local ExitKey = "__MSQ_Exit_"..Method
+
+			if Disabled then
+				Button[ExitKey] = true
+			else
+				if not Button[Key] then
+					hooksecurefunc(Button, Method, Hook)
+					Button[Key] = true
+				end
+
+				Button[ExitKey] = nil
 			end
 		end
 	end

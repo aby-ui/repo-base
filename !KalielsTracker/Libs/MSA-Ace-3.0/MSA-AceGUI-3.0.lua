@@ -10,7 +10,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local math_max = math.max
 local xpcall = xpcall
 
-local width_multiplier = 170
+local width_multiplier = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and 184 or 170  -- MSA
 local margin_left = 16
 
 --------------
@@ -71,7 +71,7 @@ AceGUI:RegisterLayout("MSA-Flow",
 			-- Actually, it seems to be neccessary for many cases, we'll leave it in for now.
 			-- If widgets seem to anchor weirdly with this, provide a valid alignoffset for them.
 			-- TODO: Investigate moar!
-			frameoffset = (child.alignoffset or (frameheight / 2)) + 3	-- MSA
+			frameoffset = (child.alignoffset or (frameheight / 2)) + 3  -- MSA
 
 			if child.width == "relative" then
 				framewidth = width * child.relWidth
@@ -100,8 +100,8 @@ AceGUI:RegisterLayout("MSA-Flow",
 						break
 					end
 					--anchor the previous row, we will now know its height and offset
-					rowstart:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -(height + (rowoffset - rowstartoffset) + 2))	-- MSA
-					height = height + rowheight + 6    -- MSA
+					rowstart:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -(height + (rowoffset - rowstartoffset) + 2))  -- MSA
+					height = height + rowheight + 6  -- MSA
 					--save this as the rowstart so we can anchor it after the row is complete and we have the max height and offset of controls in it
 					rowstart = frame
 					rowstartoffset = frameoffset
@@ -120,19 +120,19 @@ AceGUI:RegisterLayout("MSA-Flow",
 					rowoffset = math_max(rowoffset, frameoffset)
 					rowheight = math_max(rowheight, rowoffset + (frameheight / 2))
 
-					frame:SetPoint("TOPLEFT", children[i-1].frame, "TOPRIGHT", margin_left, frameoffset - lastframeoffset)	-- MSA
-					usedwidth = framewidth + usedwidth + margin_left	-- MSA
+					frame:SetPoint("TOPLEFT", children[i-1].frame, "TOPRIGHT", margin_left, frameoffset - lastframeoffset)  -- MSA
+					usedwidth = framewidth + usedwidth + margin_left  -- MSA
 				end
 			end
 
 			-- MSA
-			if framewidth == (width_multiplier * 2) then -- double
+			if framewidth == (width_multiplier * 2) then  -- double
 				safelayoutcall(child, "SetWidth", framewidth + margin_left)
 				usedwidth = usedwidth + margin_left
-			elseif framewidth == (width_multiplier * 1.5) then -- normal+half
+			elseif framewidth == (width_multiplier * 1.5) then  -- normal+half
 				safelayoutcall(child, "SetWidth", framewidth + (margin_left / 2))
 				usedwidth = usedwidth + (margin_left / 2)
-			elseif framewidth == (width_multiplier / 2) then -- half
+			elseif framewidth == (width_multiplier / 2) then  -- half
 				safelayoutcall(child, "SetWidth", framewidth - (margin_left / 2))
 				usedwidth = usedwidth - (margin_left / 2)
 			end
@@ -143,7 +143,6 @@ AceGUI:RegisterLayout("MSA-Flow",
 
 				usedwidth = 0
 				rowstart = frame
-				rowstartoffset = frameoffset
 
 				if child.DoLayout then
 					child:DoLayout()

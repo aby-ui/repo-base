@@ -1,0 +1,41 @@
+## Interface: 100000
+## Version: 10.0.0-3-g8442e41
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Dragonflight)|r
+## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Dragonflight)|r
+## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Dragonflight)|r
+## Title-ruRU:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Мировые боссы (Драконы)|r
+## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0필드 보스 (용군단)|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0世界首領 (巨龍崛起)|r
+## Author: MysticalOS
+## LoadOnDemand: 1
+## RequiredDeps: DBM-Core
+## SavedVariables: DBMDragonIsles_AllSavedVars
+## SavedVariablesPerCharacter: DBMDragonIsles_SavedStats
+## X-DBM-Mod: 1
+## X-DBM-Mod-Type: RAID
+## X-DBM-Mod-Category: DRAGONFLIGHT
+## X-DBM-StatTypes: normal
+## X-DBM-Mod-Name: World Bosses (DF)
+## X-DBM-Mod-Name-esES: Jefes de Mundo (DF)
+## X-DBM-Mod-Name-esMX: Jefes de Mundo (DF)
+## X-DBM-Mod-Name-ruRU: Мировые боссы (Драконы)
+## X-DBM-Mod-Name-koKR: 필드 보스 (용군단)
+## X-DBM-Mod-Name-zhTW: 世界首領 (巨龍崛起)
+## X-DBM-Mod-World-Boss: 1
+## X-DBM-Mod-Sort: 210
+## X-DBM-Mod-MapID: 2574
+## X-DBM-Mod-LoadCID: 193534, 193535, 193532, 193533
+## X-DBM-Mod-MinCoreRevision: 17286
+## X-DBM-Mod-MinExpansion: 9
+## X-Curse-Project-ID: 3358
+## X-WoWI-ID: 8814
+## X-Wago-ID: qv633o6b
+
+localization.en.lua
+Strunraan.lua
+Liskanoth.lua
+Bazual.lua
+Basrikron.lua
+
+
+## X-Vendor: AbyUI

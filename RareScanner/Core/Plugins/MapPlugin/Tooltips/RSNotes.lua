@@ -46,6 +46,11 @@ function RSNotes.GetNote(entityID, mapID)
 		return AL[string.format("NOTE_%s_%s", entityID, mapID)]
 	end
 	
+	-- Notes for dragon glyphs
+	if (AL[string.format("NOTE_GLYPH_%s", entityID)] ~= string.format("NOTE_GLYPH_%s", entityID)) then
+		return AL[string.format("NOTE_GLYPH_%s", entityID)]
+	end
+	
 	-- Orator Kloe NPCs
 	if (RSUtils.Contains(RSConstants.ORATOR_KLOE_NPCS, entityID)) then
 		return AL["NOTE_ORATOR_KLOE_NPCS"]
@@ -112,5 +117,8 @@ function RSNotes.GetNote(entityID, mapID)
 	-- The maw stolen anima vessels (in the rift)
 	elseif (RSUtils.Contains(RSConstants.STOLEN_ANIMA_VESSEL_RIFT, entityID)) then
 		return AL["NOTE_STOLEN_ANIMA_VESSEL_RIFT"]
+	-- Disturbed dirt
+	elseif (RSUtils.Contains(RSConstants.DISTURBED_DIRT, entityID)) then
+		return AL["NOTE_DISTURBED_DIRT"]
 	end
 end

@@ -34,8 +34,8 @@ function Frame:New(id)
 	edit:SetPoint('TOPLEFT', 10, -75)
 	edit:Hide()
 
-	f.logToggles = Addon.LogToggle:NewSet(f)
-	f.log, f.editFrame = log, edit
+	f.LogToggles = Addon.LogToggle:NewSet(f)
+	f.Log, f.EditFrame = log, edit
 	return f
 end
 
@@ -57,16 +57,16 @@ function Frame:OnHide()
 end
 
 function Frame:OnLogSelected(_, logID)
-	self.itemGroup:SetShown(not logID)
-	self.editFrame:SetShown(logID == 3)
-	self.log:SetShown(logID and logID < 3)
+	self.ItemGroup:SetShown(not logID)
+	self.EditFrame:SetShown(logID == 3)
+	self.Log:SetShown(logID and logID < 3)
 end
 
 
 --[[ Proprieties ]]--
 
 function Frame:ListMenuButtons()
-	for i, toggle in ipairs(self.logToggles) do
+	for i, toggle in ipairs(self.LogToggles) do
 		tinsert(self.menuButtons, toggle)
 	end
 

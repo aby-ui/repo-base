@@ -1,11 +1,11 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Shadowed Unit Frames
 ## Notes: Moooooooooooooooooo
 ## Author: Shadowed
-## Version: v4.3.7
+## Version: v4.4.0
 ## SavedVariables: ShadowedUFDB
 ## X-Website: https://www.wowace.com/addons/shadowed-unit-frames/
-## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDualSpec-1.0, LibSpellRange-1.0, Clique
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDualSpec-1.0, LibSpellRange-1.0, UTF8, Clique
 ## X-Curse-Project-ID: 19268
 ## X-WoWI-ID: 13494
 
@@ -53,6 +53,8 @@ modules\aurapoints.lua
 modules\priest.lua
 modules\shaman.lua
 modules\arcanecharges.lua
+modules\essence.lua
+
 
 ## Title:  |cff880303[爱不易]|r SUF 头像增强
 ## X-Vendor: AbyUI

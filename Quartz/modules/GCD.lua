@@ -92,7 +92,7 @@ function GCD:OnEnable()
 		gcdbar:RegisterForDrag("LeftButton")
 		gcdbar:SetClampedToScreen(true)
 
-		gcdspark = gcdbar:CreateTexture(nil, "DIALOG")
+		gcdspark = gcdbar:CreateTexture(nil, "ARTWORK")
 		gcdbar:Hide()
 	end
 	self:ApplySettings()

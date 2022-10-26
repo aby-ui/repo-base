@@ -7,7 +7,7 @@
 -->
 
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\FrameXML\UI.xsd">
+..\..\FrameXML\UI.xsd">
     <Frame name="KT_ObjectiveTrackerBlockTemplate" hidden="true" virtual="true">
         <Size x="232" y="10"/>
         <Layers>

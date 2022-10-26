@@ -67,6 +67,9 @@ constants.defaults = {
         -- show_others = true,
 
         show_onlymytrainers = true,
+        use_old_picons = false,
+        picons_vendor = false,
+        picons_trainer = false,
         fmaster_waypoint = false,
         fmaster_waypoint_dropdown = 1,
         easy_waypoint = true,
@@ -109,25 +112,9 @@ constants.icongroup = {
     "zonegateway"
 }
 
-local left, right, top, bottom = GetObjectIconTextureCoords(4772) --MagePortalAlliance
-local left2, right2, top2, bottom2 = GetObjectIconTextureCoords(4773) --MagePortalHorde
-
 constants.icon = {
-    portal = {
-        icon = [[Interface\MINIMAP\OBJECTICONSATLAS]],
-        tCoordLeft = left,
-        tCoordRight = right,
-        tCoordTop = top,
-        tCoordBottom = bottom,
-    },
-
-    MagePortalHorde = {
-        icon = [[Interface\MINIMAP\OBJECTICONSATLAS]],
-        tCoordLeft = left2,
-        tCoordRight = right2,
-        tCoordTop = top2,
-        tCoordBottom = bottom2,
-    },
+    portal          = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\portal_blue",
+    portal_red      = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\portal_red",
 
     -- npc/poi icons
     auctioneer      = "Interface\\MINIMAP\\TRACKING\\Auctioneer",
@@ -152,19 +139,33 @@ constants.icon = {
     nightfae        = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\nightfae",
     venthyr         = "Interface\\AddOns\\"..FOLDER_NAME.."\\icons\\venthyr",
 
-    -- profession icons
-    alchemy         = "Interface\\ICONS\\trade_alchemy",
-    blacksmithing   = "Interface\\ICONS\\trade_blacksmithing",
-    cooking         = "Interface\\ICONS\\INV_Misc_Food_15",
-    enchanting      = "Interface\\ICONS\\trade_engraving",
-    engineering     = "Interface\\ICONS\\trade_engineering",
-    fishing         = "Interface\\ICONS\\trade_fishing",
-    herbalism       = "Interface\\ICONS\\spell_nature_naturetouchgrow",
-    inscription     = "Interface\\ICONS\\inv_inscription_tradeskill01",
-    jewelcrafting   = "Interface\\ICONS\\inv_misc_gem_01",
-    leatherworking  = "Interface\\ICONS\\inv_misc_armorkit_17",
-    mining          = "Interface\\ICONS\\trade_mining",
-    skinning        = "Interface\\ICONS\\inv_misc_pelt_wolf_01",
-    tailoring       = "Interface\\ICONS\\trade_tailoring"
+    -- profession icons (since Dragonflight)
+    alchemy = "Interface\\ICONS\\ui_profession_alchemy",
+    blacksmithing = "Interface\\ICONS\\ui_profession_blacksmithing",
+    cooking = "Interface\\ICONS\\ui_profession_cooking",
+    enchanting = "Interface\\ICONS\\ui_profession_enchanting",
+    engineering = "Interface\\ICONS\\ui_profession_engineering",
+    fishing = "Interface\\ICONS\\ui_profession_fishing",
+    herbalism = "Interface\\ICONS\\ui_profession_herbalism",
+    inscription = "Interface\\ICONS\\ui_profession_inscription",
+    jewelcrafting = "Interface\\ICONS\\ui_profession_jewelcrafting",
+    leatherworking = "Interface\\ICONS\\ui_profession_leatherworking",
+    mining = "Interface\\ICONS\\ui_profession_mining",
+    skinning = "Interface\\ICONS\\ui_profession_skinning",
+    tailoring = "Interface\\ICONS\\ui_profession_tailoring",
 
+    -- profession icons OLD
+    alchemy_old = "Interface\\ICONS\\trade_alchemy",
+    blacksmithing_old = "Interface\\ICONS\\trade_blacksmithing",
+    cooking_old = "Interface\\ICONS\\INV_Misc_Food_15",
+    enchanting_old = "Interface\\ICONS\\trade_engraving",
+    engineering_old = "Interface\\ICONS\\trade_engineering",
+    fishing_old = "Interface\\ICONS\\trade_fishing",
+    herbalism_old = "Interface\\ICONS\\spell_nature_naturetouchgrow",
+    inscription_old = "Interface\\ICONS\\inv_inscription_tradeskill01",
+    jewelcrafting_old = "Interface\\ICONS\\inv_misc_gem_01",
+    leatherworking_old = "Interface\\ICONS\\inv_misc_armorkit_17",
+    mining_old = "Interface\\ICONS\\trade_mining",
+    skinning_old = "Interface\\ICONS\\inv_misc_pelt_wolf_01",
+    tailoring_old = "Interface\\ICONS\\trade_tailoring"
 }

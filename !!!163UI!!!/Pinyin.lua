@@ -17,7 +17,8 @@ U1.ABBR={
     ["mythicdungeontools"] = "mdt",
     ["mrt"] = "exrt",
     ["dominationsockethelper"] = "dsh",
-    ["ZerethMortisPuzzleHelper"] = "zmph",
+    ["zerethmortispuzzlehelper"] = "zmph",
+	["battlegroundenemies"] = "bge",
 }
 U1.PINYIN={
 	['DBM:军团5人本']={'dbmjuntuanrenben','dbm:jt5rb'},

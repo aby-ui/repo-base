@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(76177)
 mod:SetEncounterID(1685)
 
@@ -31,7 +31,7 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args.spellId == 154477 and args:IsDestTypePlayer() and self:CheckDispelFilter() then
+	if args.spellId == 154477 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") then
 		specWarnSWP:Show(args.destName)
 		specWarnSWP:Play("dispelnow")
 	end

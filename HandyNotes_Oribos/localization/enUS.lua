@@ -95,6 +95,8 @@ L["Both"] = true
 L["config_picons"] = "Show profession icons for:"
 L["config_picons_vendor_desc"] = "Show profession icons for vendors instead of the vendor icons."
 L["config_picons_trainer_desc"] = "Show profession icons for trainers instead of the trainer icons."
+L["config_use_old_picons"] = "Show the old profession symbols"
+L["config_use_old_picons_desc"] = "Show the old profession icons again instead of the new ones (before Dragonflight)."
 
 L["config_restore_nodes"] = "Restore hidden nodes"
 L["config_restore_nodes_desc"] = "Restore all nodes that were hidden via the context menu."

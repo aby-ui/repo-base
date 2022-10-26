@@ -8,7 +8,6 @@ local L = LibStub('AceLocale-3.0'):NewLocale(CONFIG, 'enUS', true, 'raw')
 -- general
 L.GeneralOptionsDesc = 'These are general features that can be toggled depending on your preferences.'
 L.Locked = 'Lock Frames'
-L.Fading = 'Fading Effects'
 L.TipCount = 'Tooltip Item Count'
 L.CountGuild = 'Include Guild Banks'
 L.FlashFind = 'Flash Find'
@@ -30,12 +29,13 @@ itself as the standard ones do, such as the |cffffffffSpellbook|r
 or the |cffffffffDungeon Finder|r, and will not be movable.]]
 
 L.BagToggle = 'Bags Toggle'
-L.Money = 'Money'
 L.Broker = 'Databroker Plugins'
+L.Currency = 'Currencies'
+L.ExclusiveReagent = 'Separate Reagent Bank'
+L.Money = 'Money'
 L.Sort = 'Sort Button'
 L.Search = 'Search Toggle'
 L.Options = 'Options Button'
-L.ExclusiveReagent = 'Separate Reagent Bank'
 L.LeftTabs = 'Rulesets on Left'
 L.LeftTabsTip = [[
 If enabled, the side tabs will be
@@ -63,25 +63,25 @@ L.DisplayOptionsDesc = 'These settings allow you to configure when your inventor
 L.DisplayInventory = 'Display Inventory'
 L.CloseInventory = 'Close Inventory'
 
-L.DisplayBank = 'At the Bank'
-L.DisplayGuildbank = 'At the Guild Bank'
-L.DisplayAuction = 'At the Auction House'
-L.DisplayMail = 'At a Mailbox'
-L.DisplayTrade = 'Trading Items'
-L.DisplayScrapping = 'Scrapping Gear'
-L.DisplayGems = 'Socketing Items'
-L.DisplayCraft = 'Crafting'
-L.DisplayPlayer = 'Opening the Character Info'
-
-L.CloseCombat = 'Entering Combat'
-L.CloseVehicle = 'Entering a Vehicle'
-L.CloseBank = 'Leaving the Bank'
-L.CloseVendor = 'Leaving a Vendor'
-L.CloseMap = 'Opening the World Map'
+L.Auctioneer = 'At the Auction House'
+L.Banker = 'At the Bank'
+L.Combat = 'Entering Combat'
+L.Crafting = 'Crafting'
+L.GuildBanker = 'At the Guild Bank'
+L.VoidStorageBanker = 'At Void Storage'
+L.MailInfo = 'At a Mailbox'
+L.MapFrame = 'Opening the World Map'
+L.Merchant = 'Talking to Merchant'
+L.PlayerFrame = 'Opening the Character Info'
+L.ScrappingMachine = 'Scrapping Equipment'
+L.Socketing = 'Socketing Equipment'
+L.TradePartner = 'Trading'
+L.Vehicle = 'Entering a Vehicle'
 
 -- colors
 L.ColorOptions = 'Color Settings'
 L.ColorOptionsDesc = 'These settings allow you to change how item slots are presented on %s frames for easier identification.'
+
 L.GlowQuality = 'Color by Quality'
 L.GlowQuest = 'Color Quest Items'
 L.GlowUnusable = 'Color Unusable Items'

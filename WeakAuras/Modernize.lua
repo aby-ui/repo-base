@@ -1,43 +1,49 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
+
+--- @type string, Private
 local AddonName, Private = ...
 local L = WeakAuras.L
 
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
+--- Modernizes the aura data
+---@param data auraData
 function Private.Modernize(data)
-  if (not data.internalVersion or data.internalVersion < 2) then
+  if not data.internalVersion or data.internalVersion < 2 then
     WeakAuras.prettyPrint(string.format("Data for '%s' is too old, can't modernize.", data.id))
-    data.internalVersion = 2;
+    data.internalVersion = 2
   end
 
   -- Version 3 was introduced April 2018 in Legion
-  if (data.internalVersion < 3) then
-    if (data.parent) then
-      local parentData = WeakAuras.GetData(data.parent);
-      if(parentData and parentData.regionType == "dynamicgroup") then
+  if data.internalVersion < 3 then
+    if data.parent then
+      local parentData = WeakAuras.GetData(data.parent)
+      if parentData and parentData.regionType == "dynamicgroup" then
         -- Version 3 allowed for offsets for dynamic groups, before that they were ignored
         -- Thus reset them in the V2 to V3 upgrade
-        data.xOffset = 0;
-        data.yOffset = 0;
+        data.xOffset = 0
+        data.yOffset = 0
       end
     end
   end
 
   -- Version 4 was introduced July 2018 in BfA
-  if (data.internalVersion < 4) then
-    if (data.conditions) then
+  if data.internalVersion < 4 then
+    if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
-        if (condition.check) then
-          local triggernum = condition.check.trigger;
-          if (triggernum) then
-            local trigger;
-            if (triggernum == 0) then
-              trigger = data.trigger;
-            elseif(data.additional_triggers and data.additional_triggers[triggernum]) then
-              trigger = data.additional_triggers[triggernum].trigger;
+        if condition.check then
+          local triggernum = condition.check.trigger
+          if triggernum then
+            local trigger
+            if triggernum == 0 then
+              trigger = data.trigger
+            elseif data.additional_triggers and data.additional_triggers[triggernum] then
+              trigger = data.additional_triggers[triggernum].trigger
             end
-            if (trigger and trigger.event == "Cooldown Progress (Spell)") then
-              if (condition.check.variable == "stacks") then
-                condition.check.variable = "charges";
+            if trigger and trigger.event == "Cooldown Progress (Spell)" then
+              if condition.check.variable == "stacks" then
+                condition.check.variable = "charges"
               end
             end
           end
@@ -67,7 +73,7 @@ function Private.Modernize(data)
   if data.internalVersion < 6 then
     if data.triggers then
       for triggernum, triggerData in ipairs(data.triggers) do
-        local trigger = triggerData.trigger;
+        local trigger = triggerData.trigger
         if trigger and trigger.type == "aura" then
           if trigger.showOn == "showOnMissing" then
             trigger.buffShowOn = "showOnMissing"
@@ -88,9 +94,7 @@ function Private.Modernize(data)
 
   -- Version 7 was introduced September 1 2018 in BfA
   -- Triggers were cleaned up into a 1-indexed array
-
   if data.internalVersion < 7 then
-
     -- migrate trigger data
     data.triggers = data.additional_triggers or {}
     tinsert(data.triggers, 1, {
@@ -113,7 +117,9 @@ function Private.Modernize(data)
     data.disjunctive = nil
     -- migrate condition trigger references
     local function recurseRepairChecks(checks)
-      if not checks then return end
+      if not checks then
+        return
+      end
       for _, check in pairs(checks) do
         if check.trigger and check.trigger >= 0 then
           check.trigger = check.trigger + 1
@@ -136,28 +142,30 @@ function Private.Modernize(data)
   if data.internalVersion < 9 then
     local function repairCheck(check)
       if check and check.variable == "buffed" then
-        local trigger = check.trigger and data.triggers[check.trigger] and data.triggers[check.trigger].trigger;
-        if (trigger) then
-          if(trigger.buffShowOn == "showOnActive") then
-            check.variable = "show";
-          elseif (trigger.buffShowOn == "showOnMissing") then
-            check.variable = "show";
-            check.value = check.value == 0 and 1 or 0;
+        local trigger = check.trigger and data.triggers[check.trigger] and data.triggers[check.trigger].trigger
+        if trigger then
+          if trigger.buffShowOn == "showOnActive" then
+            check.variable = "show"
+          elseif trigger.buffShowOn == "showOnMissing" then
+            check.variable = "show"
+            check.value = check.value == 0 and 1 or 0
           end
         end
       end
     end
 
     local function recurseRepairChecks(checks)
-      if not checks then return end
+      if not checks then
+        return
+      end
       for _, check in pairs(checks) do
-        repairCheck(check);
-        recurseRepairChecks(check.checks);
+        repairCheck(check)
+        recurseRepairChecks(check.checks)
       end
     end
     for _, condition in pairs(data.conditions) do
-      repairCheck(condition.check);
-      recurseRepairChecks(condition.check.checks);
+      repairCheck(condition.check)
+      recurseRepairChecks(condition.check.checks)
     end
   end
 
@@ -177,7 +185,7 @@ function Private.Modernize(data)
   end
 
   -- Version 12 was introduced February 2019 in BfA
-  if (data.internalVersion < 12) then
+  if data.internalVersion < 12 then
     if data.cooldownTextEnabled ~= nil then
       data.cooldownTextDisabled = not data.cooldownTextEnabled
       data.cooldownTextEnabled = nil
@@ -190,7 +198,7 @@ function Private.Modernize(data)
       local selfPoints = {
         default = "CENTER",
         RIGHT = function(data)
-          if data.align  == "LEFT" then
+          if data.align == "LEFT" then
             return "TOPLEFT"
           elseif data.align == "RIGHT" then
             return "BOTTOMLEFT"
@@ -199,7 +207,7 @@ function Private.Modernize(data)
           end
         end,
         LEFT = function(data)
-          if data.align  == "LEFT" then
+          if data.align == "LEFT" then
             return "TOPRIGHT"
           elseif data.align == "RIGHT" then
             return "BOTTOMRIGHT"
@@ -258,11 +266,12 @@ function Private.Modernize(data)
   if data.internalVersion < 14 then
     if data.triggers then
       for triggerId, triggerData in pairs(data.triggers) do
-        if type(triggerData) == "table"
-        and triggerData.trigger
-        and triggerData.trigger.debuffClass
-        and type(triggerData.trigger.debuffClass) == "string"
-        and triggerData.trigger.debuffClass ~= ""
+        if
+          type(triggerData) == "table"
+          and triggerData.trigger
+          and triggerData.trigger.debuffClass
+          and type(triggerData.trigger.debuffClass) == "string"
+          and triggerData.trigger.debuffClass ~= ""
         then
           local idx = triggerData.trigger.debuffClass
           data.triggers[triggerId].trigger.debuffClass = { [idx] = true }
@@ -352,7 +361,7 @@ function Private.Modernize(data)
         text_anchorPoint = convertPoint(data.text1Containment, data.text1Point),
         anchorXOffset = 0,
         anchorYOffset = 0,
-        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowColor = { 0, 0, 0, 1 },
         text_shadowXOffset = 0,
         text_shadowYOffset = 0,
       }
@@ -371,7 +380,7 @@ function Private.Modernize(data)
         text_anchorPoint = convertPoint(data.text2Containment, data.text2Point),
         anchorXOffset = 0,
         anchorYOffset = 0,
-        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowColor = { 0, 0, 0, 1 },
         text_shadowXOffset = 0,
         text_shadowYOffset = 0,
       }
@@ -398,16 +407,16 @@ function Private.Modernize(data)
         text1Color = "sub.1.text_color",
         text1FontSize = "sub.1.text_fontSize",
         text2Color = "sub.2.text_color",
-        text2FontSize = "sub.2.text_fontSize"
+        text2FontSize = "sub.2.text_fontSize",
       }
 
       data.subRegions = data.subRegions or {}
       tinsert(data.subRegions, text1)
-      if (usetext2) then
+      if usetext2 then
         tinsert(data.subRegions, text2)
       end
 
-      if (data.conditions) then
+      if data.conditions then
         for conditionIndex, condition in ipairs(data.conditions) do
           for changeIndex, change in ipairs(condition.changes) do
             if propertyRenames[change.property] then
@@ -426,7 +435,7 @@ function Private.Modernize(data)
         HORIZONTAL_INVERSE = { "INNER_LEFT", "INNER_RIGHT" },
         HORIZONTAL = { "INNER_RIGHT", "INNER_LEFT" },
         VERTICAL_INVERSE = { "INNER_BOTTOM", "INNER_TOP" },
-        VERTICAL = {"INNER_TOP", "INNER_BOTTOM"}
+        VERTICAL = { "INNER_TOP", "INNER_BOTTOM" },
       }
 
       local positions = orientationToPostion[data.orientation] or { "INNER_LEFT", "INNER_RIGHT" }
@@ -443,10 +452,10 @@ function Private.Modernize(data)
         text_anchorPoint = positions[1],
         anchorXOffset = 0,
         anchorYOffset = 0,
-        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowColor = { 0, 0, 0, 1 },
         text_shadowXOffset = 1,
         text_shadowYOffset = -1,
-        rotateText = data.rotateText
+        rotateText = data.rotateText,
       }
 
       local text2 = {
@@ -461,10 +470,10 @@ function Private.Modernize(data)
         text_anchorPoint = positions[2],
         anchorXOffset = 0,
         anchorYOffset = 0,
-        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowColor = { 0, 0, 0, 1 },
         text_shadowXOffset = 1,
         text_shadowYOffset = -1,
-        rotateText = data.rotateText
+        rotateText = data.rotateText,
       }
 
       local text3 = {
@@ -479,10 +488,10 @@ function Private.Modernize(data)
         text_anchorPoint = "ICON_CENTER",
         anchorXOffset = 0,
         anchorYOffset = 0,
-        text_shadowColor = { 0, 0, 0, 1},
+        text_shadowColor = { 0, 0, 0, 1 },
         text_shadowXOffset = 1,
         text_shadowYOffset = -1,
-        rotateText = data.rotateText
+        rotateText = data.rotateText,
       }
 
       data.timer = nil
@@ -518,7 +527,7 @@ function Private.Modernize(data)
       tinsert(data.subRegions, text2)
       tinsert(data.subRegions, text3)
 
-      if (data.conditions) then
+      if data.conditions then
         for conditionIndex, condition in ipairs(data.conditions) do
           for changeIndex, change in ipairs(condition.changes) do
             if propertyRenames[change.property] then
@@ -527,7 +536,6 @@ function Private.Modernize(data)
           end
         end
       end
-
     end
   end
 
@@ -569,10 +577,10 @@ function Private.Modernize(data)
       end
 
       local propertyRenames = {
-        borderColor  = "sub.".. #data.subRegions..".border_color",
+        borderColor = "sub." .. #data.subRegions .. ".border_color",
       }
 
-      if (data.conditions) then
+      if data.conditions then
         for conditionIndex, condition in ipairs(data.conditions) do
           for changeIndex, change in ipairs(condition.changes) do
             if propertyRenames[change.property] then
@@ -596,7 +604,7 @@ function Private.Modernize(data)
               if value then
                 trigger.form = { multi = { [value] = true } }
               else
-                trigger.form = { multi = { } }
+                trigger.form = { multi = {} }
               end
             elseif trigger.use_form then
               trigger.form = { single = value }
@@ -632,7 +640,7 @@ function Private.Modernize(data)
       data.subRegions = data.subRegions or {}
       -- Need to check if glow is needed
 
-      local prefix = "sub.".. #data.subRegions + 1 .. "."
+      local prefix = "sub." .. #data.subRegions + 1 .. "."
       -- For Conditions
       local propertyRenames = {
         glow = prefix .. "glow",
@@ -650,7 +658,7 @@ function Private.Modernize(data)
       }
 
       local needsGlow = data.glow
-      if (not needsGlow and data.conditions) then
+      if not needsGlow and data.conditions then
         for conditionIndex, condition in ipairs(data.conditions) do
           for changeIndex, change in ipairs(condition.changes) do
             if propertyRenames[change.property] then
@@ -694,7 +702,7 @@ function Private.Modernize(data)
       data.glowXOffset = nil
       data.glowYOffset = nil
 
-      if (data.conditions) then
+      if data.conditions then
         for conditionIndex, condition in ipairs(data.conditions) do
           for changeIndex, change in ipairs(condition.changes) do
             if propertyRenames[change.property] then
@@ -732,16 +740,10 @@ function Private.Modernize(data)
 
   if data.internalVersion < 29 then
     if data.actions then
-      if data.actions.start
-      and data.actions.start.do_glow
-      and data.actions.start.glow_type == nil
-      then
+      if data.actions.start and data.actions.start.do_glow and data.actions.start.glow_type == nil then
         data.actions.start.glow_type = "buttonOverlay"
       end
-      if data.actions.finish
-      and data.actions.finish.do_glow
-      and data.actions.finish.glow_type == nil
-      then
+      if data.actions.finish and data.actions.finish.do_glow and data.actions.finish.glow_type == nil then
         data.actions.finish.glow_type = "buttonOverlay"
       end
     end
@@ -769,8 +771,8 @@ function Private.Modernize(data)
           sym = sym or symbol
           if sym == "p" or sym == "t" then
             data["displayText_format_" .. symbol .. "_format"] = "timed"
-            data["displayText_format_" .. symbol .. "_time_precision"],  data["displayText_format_" .. symbol .. "_time_dynamic"]
-               = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+            data["displayText_format_" .. symbol .. "_time_precision"], data["displayText_format_" .. symbol .. "_time_dynamic"] =
+              convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
           end
         end
         seenSymbols[symbol] = symbol
@@ -787,8 +789,8 @@ function Private.Modernize(data)
               sym = sym or symbol
               if sym == "p" or sym == "t" then
                 subRegionData["text_text_format_" .. symbol .. "_format"] = "timed"
-                subRegionData["text_text_format_" .. symbol .. "_time_precision"],  subRegionData["text_text_format_" .. symbol .. "_time_dynamic"]
-                   = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                subRegionData["text_text_format_" .. symbol .. "_time_precision"], subRegionData["text_text_format_" .. symbol .. "_time_dynamic"] =
+                  convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
               end
             end
             seenSymbols[symbol] = symbol
@@ -798,7 +800,7 @@ function Private.Modernize(data)
     end
 
     if data.actions then
-      for _, when in ipairs{ "start", "finish" } do
+      for _, when in ipairs({ "start", "finish" }) do
         if data.actions[when] then
           local seenSymbols = {}
           Private.ParseTextStr(data.actions[when].message, function(symbol)
@@ -807,8 +809,8 @@ function Private.Modernize(data)
               sym = sym or symbol
               if sym == "p" or sym == "t" then
                 data.actions[when]["message_format_" .. symbol .. "_format"] = "timed"
-                data.actions[when]["message_format_" .. symbol .. "_time_precision"],  data.actions[when]["message_format_" .. symbol .. "_time_dynamic"]
-                   = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                data.actions[when]["message_format_" .. symbol .. "_time_precision"], data.actions[when]["message_format_" .. symbol .. "_time_dynamic"] =
+                  convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
               end
             end
             seenSymbols[symbol] = symbol
@@ -828,8 +830,8 @@ function Private.Modernize(data)
                 sym = sym or symbol
                 if sym == "p" or sym == "t" then
                   change.value["message_format_" .. symbol .. "_format"] = "timed"
-                  change.value["message_format_" .. symbol .. "_time_precision"],  change.value["message_format_" .. symbol .. "_time_dynamic"]
-                     = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                  change.value["message_format_" .. symbol .. "_time_precision"], change.value["message_format_" .. symbol .. "_time_dynamic"] =
+                    convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
                 end
               end
               seenSymbols[symbol] = symbol
@@ -915,15 +917,17 @@ function Private.Modernize(data)
             end
 
             local function recurseRepairChecks(replacements, checks)
-              if not checks then return end
+              if not checks then
+                return
+              end
               for _, check in pairs(checks) do
-                repairCheck(replacements, check);
-                recurseRepairChecks(replacements, check.checks);
+                repairCheck(replacements, check)
+                recurseRepairChecks(replacements, check.checks)
               end
             end
             for _, condition in pairs(data.conditions) do
-              repairCheck(replacements, condition.check);
-              recurseRepairChecks(replacements, condition.check.checks);
+              repairCheck(replacements, condition.check)
+              recurseRepairChecks(replacements, condition.check.checks)
             end
           end
         end
@@ -952,13 +956,11 @@ function Private.Modernize(data)
         triggerData.trigger.blackauraspellids = nil
       end
     end
-
   end
 
   -- Introduced in July 2020 in Shadowlands
   if data.internalVersion < 34 then
-    if data.regionType == 'dynamicgroup'
-    and (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
+    if data.regionType == "dynamicgroup" and (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
       if data.arcLength == 360 then
         data.fullCircle = true
       else
@@ -968,7 +970,7 @@ function Private.Modernize(data)
   end
 
   if data.internalVersion < 35 then
-    if data.regionType == 'texture' then
+    if data.regionType == "texture" then
       data.textureWrapMode = "CLAMP"
     end
   end
@@ -1023,7 +1025,7 @@ function Private.Modernize(data)
   end
 
   if data.internalVersion < 39 then
-    if data.regionType == 'icon' or data.regionType == 'aurabar' then
+    if data.regionType == "icon" or data.regionType == "aurabar" then
       if data.auto then
         data.iconSource = -1
       else
@@ -1034,7 +1036,7 @@ function Private.Modernize(data)
 
   if data.internalVersion < 40 then
     data.information = data.information or {}
-    if data.regionType == 'group' then
+    if data.regionType == "group" then
       data.information.groupOffset = true
     end
     data.information.ignoreOptionsEventErrors = data.ignoreOptionsEventErrors
@@ -1208,7 +1210,7 @@ function Private.Modernize(data)
     end
 
     if data.actions then
-      for _, when in ipairs{ "start", "finish" } do
+      for _, when in ipairs({ "start", "finish" }) do
         if data.actions[when] then
           fixUp(data.actions[when], "message_format_")
         end
@@ -1237,13 +1239,13 @@ function Private.Modernize(data)
               trigger.use_instance_size = false
               trigger.instance_size.multi = {
                 arena = true,
-                ratedarena = true
+                ratedarena = true,
               }
             elseif trigger.instance_size.single == "pvp" then
               trigger.use_instance_size = false
               trigger.instance_size.multi = {
                 pvp = true,
-                ratedpvp = true
+                ratedpvp = true,
               }
             end
           end
@@ -1266,13 +1268,13 @@ function Private.Modernize(data)
         data.load.use_size = false
         data.load.size.multi = {
           arena = true,
-          ratedarena = true
+          ratedarena = true,
         }
       elseif data.load.size.single == "pvp" then
         data.load.use_size = false
         data.load.size.multi = {
           pvp = true,
-          ratedpvp = true
+          ratedpvp = true,
         }
       end
     elseif data.load.use_size == false then
@@ -1285,19 +1287,18 @@ function Private.Modernize(data)
         end
       end
     end
-
   end
 
-  if (data.internalVersion < 46) then
-    if (data.conditions) then
+  if data.internalVersion < 46 then
+    if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
-        if (condition.check) then
-          local triggernum = condition.check.trigger;
-          if (triggernum) then
+        if condition.check then
+          local triggernum = condition.check.trigger
+          if triggernum then
             local trigger = data.triggers[triggernum]
-            if (trigger and trigger.trigger and trigger.trigger.event == "Power") then
-              if (condition.check.variable == "chargedComboPoint") then
-                condition.check.variable = "chargedComboPoint1";
+            if trigger and trigger.trigger and trigger.trigger.event == "Power" then
+              if condition.check.variable == "chargedComboPoint" then
+                condition.check.variable = "chargedComboPoint1"
               end
             end
           end
@@ -1306,7 +1307,7 @@ function Private.Modernize(data)
     end
   end
 
-  if (data.internalVersion < 49) then
+  if data.internalVersion < 49 then
     if not data.regionType:match("group") then
       data.subRegions = data.subRegions or {}
       -- rename aurabar_bar into subforeground, and subbarmodel into submodel
@@ -1334,9 +1335,9 @@ function Private.Modernize(data)
                 local prefix, property = change.property:match("(sub%.%d+%.)(.*)")
                 if prefix and property then
                   if property == "bar_model_visible" then
-                    change.property = prefix.."model_visible"
+                    change.property = prefix .. "model_visible"
                   elseif property == "bar_model_alpha" then
-                    change.property = prefix.."model_alpha"
+                    change.property = prefix .. "model_alpha"
                   end
                 end
               end
@@ -1347,7 +1348,7 @@ function Private.Modernize(data)
     end
   end
 
-  if (data.internalVersion == 49) then
+  if data.internalVersion == 49 then
     -- Version 49 was a dud and contained a broken validation. Try to salvage the data, as
     -- best as we can.
     local broken = false
@@ -1363,7 +1364,7 @@ function Private.Modernize(data)
                 local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
                 if subRegionIndex and property then
                   broken = true
-                  for _, offset in ipairs({-1, 1}) do
+                  for _, offset in ipairs({ -1, 1 }) do
                     local newProperty = "sub." .. subRegionIndex + offset .. "." .. property
                     if properties[newProperty] then
                       change.property = newProperty
@@ -1381,7 +1382,7 @@ function Private.Modernize(data)
     end
   end
 
-  if (data.internalVersion < 51) then
+  if data.internalVersion < 51 then
     for triggerId, triggerData in ipairs(data.triggers) do
       if triggerData.trigger.event == "Threat Situation" then
         triggerData.trigger.unit = triggerData.trigger.threatUnit
@@ -1392,9 +1393,9 @@ function Private.Modernize(data)
     end
   end
 
-  if (data.internalVersion < 52) then
+  if data.internalVersion < 52 then
     local function matchTarget(input)
-      return input == "target" or input == "'target'" or input == "\"target\"" or input == "%t" or input == "'%t'" or input == "\"%t\""
+      return input == "target" or input == "'target'" or input == '"target"' or input == "%t" or input == "'%t'" or input == '"%t"'
     end
 
     if data.conditions then
@@ -1410,18 +1411,12 @@ function Private.Modernize(data)
       end
     end
 
-    if data.actions.start.do_message
-    and data.actions.start.message_type == "WHISPER"
-    and matchTarget(data.actions.start.message_dest)
-    then
+    if data.actions.start.do_message and data.actions.start.message_type == "WHISPER" and matchTarget(data.actions.start.message_dest) then
       data.actions.start.message_dest = "target"
       data.actions.start.message_dest_isunit = true
     end
 
-    if data.actions.finish.do_message
-    and data.actions.finish.message_type == "WHISPER"
-    and matchTarget(data.actions.finish.message_dest)
-    then
+    if data.actions.finish.do_message and data.actions.finish.message_type == "WHISPER" and matchTarget(data.actions.finish.message_dest) then
       data.actions.finish.message_dest = "target"
       data.actions.finish.message_dest_isunit = true
     end
@@ -1432,9 +1427,7 @@ function Private.Modernize(data)
       local seenSymbols = {}
       Private.ParseTextStr(text, function(symbol)
         if not seenSymbols[symbol] then
-          if table[prefix .. symbol .. "_format"] == "timed"
-              and table[prefix .. symbol .. "_time_format"] == 0
-          then
+          if table[prefix .. symbol .. "_format"] == "timed" and table[prefix .. symbol .. "_time_format"] == 0 then
             table[prefix .. symbol .. "_time_legacy_floor"] = true
           end
         end
@@ -1474,5 +1467,141 @@ function Private.Modernize(data)
     end
   end
 
-  data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
+  if data.internalVersion < 54 then
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.type == "aura" then
+        triggerData.trigger.type = "unit"
+        triggerData.trigger.event = "Conditions"
+        triggerData.trigger.use_alwaystrue = false
+      end
+    end
+  end
+
+  if data.internalVersion < 55 then
+    data.forceEvents = true
+  end
+
+  -- Internal version 55 contained a incorrect Modernize
+  if data.internalVersion < 56 then
+    data.information.forceEvents = data.forceEvents
+    data.forceEvents = nil
+  end
+
+  if data.internalVersion < 57 then
+    if WeakAuras.IsRetail() then
+      local function GetField(load, field)
+        local data = {}
+        if load["use_" .. field] == true then
+          if load[field].single then
+            table.insert(data, load[field].single)
+          end
+        elseif load["use_" .. field] == false then
+          for d in pairs(load[field].multi) do
+            table.insert(data, d)
+          end
+        end
+        return data
+      end
+      local function GetClassId(classFile)
+        for classID = 1, GetNumClasses() do
+          local _, thisClassFile = GetClassInfo(classID)
+          if classFile == thisClassFile then
+            return classID
+          end
+        end
+      end
+      local function SetSpec(load, specID)
+        if load.use_class_and_spec == true then
+          load.use_class_and_spec = false -- multi
+        elseif load.use_class_and_spec == nil then
+          load.use_class_and_spec = true -- single
+        end
+        load.class_and_spec = load.class_and_spec or {}
+        load.class_and_spec.single = specID
+        load.class_and_spec.multi = load.class_and_spec.multi or {}
+        load.class_and_spec.multi[specID] = true
+      end
+      local load = data.load
+      if load.use_class_and_spec == nil then
+        local classes = GetField(load, "class")
+        local specs = GetField(load, "spec")
+        for i, class in ipairs(classes) do
+          local classID = GetClassId(class)
+          if #specs == 0 then -- add all specs
+            for specIndex = 1, 4 do
+              local specID = GetSpecializationInfoForClassID(classID, specIndex)
+              if specID then
+                SetSpec(load, specID)
+              end
+            end
+          else
+            for j, specIndex in ipairs(specs) do
+              local specID = GetSpecializationInfoForClassID(classID, specIndex)
+              if specID then
+                SetSpec(load, specID)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 58 then
+    -- convert key use for talent load condition from talent's index to spellId
+    if WeakAuras.IsDragonflight() then
+      local function migrateTalent(load, specId, field)
+        if load[field] and load[field].multi then
+          local newData = {}
+          for key, value in pairs(load[field].multi) do
+            if value ~= nil and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
+              newData[Private.talentInfo[specId][key][2]] = value
+            end
+          end
+          load[field].multi = newData
+        end
+      end
+      local load = data.load
+      local specId = Private.checkForSingleLoadCondition(load, "class_and_spec")
+      if specId then
+        migrateTalent(load, specId, "talent")
+        migrateTalent(load, specId, "talent2")
+        migrateTalent(load, specId, "talent3")
+      end
+    end
+  end
+
+  if data.internalVersion < 59 then
+    -- convert key use for talent known trigger from talent's index to spellId
+    if WeakAuras.IsDragonflight() then
+      local function migrateTalent(load, specId, field)
+        if load[field] and load[field].multi then
+          local newData = {}
+          for key, value in pairs(load[field].multi) do
+            if value ~= nil and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
+              newData[Private.talentInfo[specId][key][2]] = value
+            end
+          end
+          load[field].multi = newData
+        end
+      end
+      for triggerId, triggerData in ipairs(data.triggers) do
+        if triggerData.trigger.type == "unit" and triggerData.trigger.event == "Talent Known" then
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == triggerData.trigger.class then
+              classId = i
+            end
+          end
+          if classId and triggerData.trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, triggerData.trigger.spec)
+            if specId then
+              migrateTalent(triggerData.trigger, specId, "talent")
+            end
+          end
+        end
+      end
+    end
+  end
+  data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end

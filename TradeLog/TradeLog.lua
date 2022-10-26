@@ -312,7 +312,7 @@ function TradeLog_Output(trade, func, plain)
 				func(msg)
 
 			else
-				local detailString = TradeLogFrame and ("|CFF00B4FF|Htradelog:"..TEXT(curr().id).."|h["..TRADE_LOG_DETAIL.."]|h|r") or TRADE_LOG_DETAIL;
+				local detailString = TradeLogFrame and ("|CFF00B4FF|Htradelog:"..tostring(curr().id).."|h["..TRADE_LOG_DETAIL.."]|h|r") or TRADE_LOG_DETAIL;
 				func(string.gsub(TRADE_LOG_SUCCESS, "%%t", whoLink)..detailString..":", 1, 1, 0);
 				if(#playerList>0) then
 					func("("..TRADE_LOG_HANDOUT..") "..table.concat(playerList, ","), 1, 0.8, 0.8);

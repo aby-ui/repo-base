@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20220828003056")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(114462)
 mod:SetEncounterID(1964)
 --mod:SetUsedIcons(1)
@@ -29,7 +29,7 @@ local warnAdds						= mod:NewSpellAnnounce(227267, 2)--if not cast too often mak
 local warnEvo						= mod:NewSpellAnnounce(227254, 1)
 local warnEvoOver					= mod:NewEndAnnounce(227254, 2)
 
-local specWarnPowerDischarge		= mod:NewSpecialWarningMove(227465, nil, nil, nil, 1, 2)
+local specWarnPowerDischarge		= mod:NewSpecialWarningGTFO(227465, nil, nil, nil, 1, 8)
 
 local timerSummonAddCD				= mod:NewNextTimer(9.7, 227267, nil, nil, nil, 1)
 local timerPowerDischargeCD			= mod:NewCDTimer(12.2, 227465, nil, nil, nil, 3)
@@ -77,7 +77,7 @@ end
 function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	if spellId == 227465 and destGUID == UnitGUID("player") and self:AntiSpam(2, 2) then
 		specWarnPowerDischarge:Show()
-		specWarnPowerDischarge:Play("runaway")
+		specWarnPowerDischarge:Play("watchfeet")
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE

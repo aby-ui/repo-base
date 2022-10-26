@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2448, "DBM-Party-Shadowlands", 9, 1194)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221015205747")
 mod:SetCreatureID(175663)
 mod:SetEncounterID(2426)
 mod:SetUsedIcons(1, 2)
@@ -110,7 +110,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 346116 then
-		if self:IsTanking("player", "boss1") then
+		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnShearingSwings:Show()
 			specWarnShearingSwings:Play("defensive")
 		end

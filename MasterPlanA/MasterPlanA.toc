@@ -1,11 +1,11 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Master Plan A
 ## Notes: A vital part of any Master Plan.|n|n|cff36e5ff"Stay cool; the alphabet has 28 more letters."
 ## SavedVariables: MasterPlanAG
 ## Globe-Main: MasterPlan
 ## Version: A
 ..\MasterPlan\PlanA\PlanA.xml
-
+## Dependencies: TODO:abyui10
 ## Title: |cff880303[爱不易]|r MasterPlan 库
 ## Notes-zhCN: 要塞任务大师依赖插件
 ## X-Vendor: AbyUI

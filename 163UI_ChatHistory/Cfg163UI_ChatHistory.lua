@@ -74,9 +74,9 @@ U1RegisterAddon("163UI_ChatHistory", {
         var = "maxlines",
         text = "设置输入历史最大数目",
         type = "radio",
-        default = 32,
+        default = 30,
         cols = 4,
-        options = {"默认", 0, "10", 10, "20", 20, "50", 50},
+        options = {"默认", 0, "15", 15, "30", 30, "50", 50},
         callback = function(cfg, v, loading)
             local db = ChatHistoryDB or _G["163UI_ChatHistory"].defaultDB;
             db.lines = v;

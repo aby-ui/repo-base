@@ -15,8 +15,8 @@ Frame.OpenSound = SOUNDKIT.UI_ETHEREAL_WINDOW_OPEN
 Frame.CloseSound = SOUNDKIT.UI_ETHEREAL_WINDOW_CLOSE
 Frame.ItemGroup = Addon.VaultItemGroup
 Frame.MoneyFrame = Addon.TransferButton
-Frame.MoneySpacing = 30
-Frame.BrokerSpacing = 2
+Frame.MoneySpacing = -24
+Frame.BrokerSpacing = -6
 Frame.Bags = {'vault'}
 
 
@@ -24,12 +24,12 @@ Frame.Bags = {'vault'}
 
 function Frame:New(id)
 	local f = self:Super(Frame):New(id)
-	f.deposit = self.ItemGroup:New(f, {DEPOSIT}, DEPOSIT)
-	f.deposit:SetPoint('TOPLEFT', 10, -55)
-	f.deposit:Hide()
-	f.withdraw = self.ItemGroup:New(f, {WITHDRAW}, WITHDRAW)
-	f.withdraw:SetPoint('TOPLEFT', f.deposit, 'BOTTOMLEFT', 0, -5)
-	f.withdraw:Hide()
+	f.Deposit = self.ItemGroup:New(f, {DEPOSIT}, DEPOSIT)
+	f.Deposit:SetPoint('TOPLEFT', 10, -55)
+	f.Deposit:Hide()
+	f.Withdraw = self.ItemGroup:New(f, {WITHDRAW}, WITHDRAW)
+	f.Withdraw:SetPoint('TOPLEFT', f.Deposit, 'BOTTOMLEFT', 0, -5)
+	f.Withdraw:Hide()
 	return f
 end
 
@@ -43,10 +43,13 @@ function Frame:OnHide()
 	CloseVoidStorageFrame()
 end
 
+
+--[[ Additions ]]--
+
 function Frame:TRANFER_TOGGLED(_, transfering)
-	self.deposit:SetShown(transfering)
-	self.withdraw:SetShown(transfering)
-	self.itemGroup:SetShown(not transfering)
+	self.Deposit:SetShown(transfering)
+	self.Withdraw:SetShown(transfering)
+	self.ItemGroup:SetShown(not transfering)
 
 	if transfering then
 		self.popup = Sushi.Popup {
@@ -93,6 +96,4 @@ end
 
 function Frame:IsBagGroupShown() end
 function Frame:HasBagToggle() end
-function Frame:HasMoneyFrame()
-	return true
-end
+function Frame:HasMoney() return true end

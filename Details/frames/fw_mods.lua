@@ -7,7 +7,7 @@ local CreateFrame = CreateFrame
 local GetTime = GetTime
 local GetCursorPosition = GetCursorPosition
 local GameTooltip = GameTooltip
-local _select = select
+local select = select
 
 local _detalhes = 		_G._detalhes
 local gump = 			_detalhes.gump
@@ -17,18 +17,18 @@ function gump:NewLabel2 (parent, container, member, text, font, size, color)
 
 	font = font or "GameFontHighlightSmall"
 
-	local newFontString = parent:CreateFontString (nil, "OVERLAY", font)
+	local newFontString = parent:CreateFontString(nil, "OVERLAY", font)
 	if (member) then
 		container [member] = newFontString
 	end
 	newFontString:SetText(text)
 	
 	if (size) then
-		_detalhes:SetFontSize (newFontString, size)
+		_detalhes:SetFontSize(newFontString, size)
 	end
 	
 	if (color) then
-		newFontString:SetTextColor (unpack (color))
+		newFontString:SetTextColor(unpack(color))
 	end
 	
 	newFontString:SetJustifyH("LEFT")
@@ -68,17 +68,17 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 	
 	new_button:SetNormalTexture(pic_up)
 	new_button:SetPushedTexture(pic_down)
-	new_button:SetDisabledTexture (pic_disabled)
+	new_button:SetDisabledTexture(pic_disabled)
 	new_button:SetHighlightTexture(pic_highlight, "ADD")
 
-	local new_text = new_button:CreateFontString (nil, "OVERLAY", "GameFontNormal")
+	local new_text = new_button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	new_text:SetPoint("center", new_button, "center")
 	new_button.text = new_text
 	
 	new_button.supportFrame = CreateFrame("frame", nil, new_button)
 	new_button.supportFrame:SetPoint("topleft", new_button, "topleft")
 	new_button.supportFrame:SetPoint("bottomright", new_button, "bottomright")
-	new_button.supportFrame:SetFrameLevel (new_button:GetFrameLevel()+1)
+	new_button.supportFrame:SetFrameLevel(new_button:GetFrameLevel()+1)
 
 	new_button.supportFrame.disable_overlay = new_button.supportFrame:CreateTexture(nil, "overlay")
 	new_button.supportFrame.disable_overlay:SetTexture("Interface\\AddOns\\Details\\images\\button_disable_overlay")
@@ -124,7 +124,7 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 		end
 		
 		if (new_button.texture) then
-			new_button.texture:SetTexCoord (0, 1, 0.5, 0.74609375)
+			new_button.texture:SetTexCoord(0, 1, 0.5, 0.74609375)
 		end
 		
 		if (options.OnGrab and options.OnGrab == "PassClick") then
@@ -157,9 +157,9 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 		
 		if (new_button.texture) then
 			if (new_button.enter) then 
-				new_button.texture:SetTexCoord (0, 1, 0.25, 0.49609375)
+				new_button.texture:SetTexCoord(0, 1, 0.25, 0.49609375)
 			else
-				new_button.texture:SetTexCoord (0, 1, 0, 0.24609375)
+				new_button.texture:SetTexCoord(0, 1, 0, 0.24609375)
 			end
 		end
 		
@@ -189,13 +189,13 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 			GameCooltip:Reset()
 			GameCooltip:SetType ("tooltip")
 			GameCooltip:SetColor ("main", "transparent")
-			GameCooltip:AddLine (new_button.tooltip)
+			GameCooltip:AddLine(new_button.tooltip)
 			GameCooltip:SetOwner(new_button)
 			GameCooltip:ShowCooltip()
 		end
 		
 		if (new_button.texture) then
-			new_button.texture:SetTexCoord (0, 1, 0.25+(0.0078125/2), 0.5+(0.0078125/2))
+			new_button.texture:SetTexCoord(0, 1, 0.25+(0.0078125/2), 0.5+(0.0078125/2))
 		end
 		
 		if (new_button.MouseOnEnterHook) then 
@@ -212,7 +212,7 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 		end
 		
 		if (new_button.texture) then
-			new_button.texture:SetTexCoord (0, 1, 0, 0.24609375)
+			new_button.texture:SetTexCoord(0, 1, 0, 0.24609375)
 		end
 		
 		if (new_button.MouseOnLeaveHook) then 
@@ -223,7 +223,7 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 	function new_button:ChangeIcon (icon1, icon2, icon3, icon4)
 		new_button:SetNormalTexture(icon1)
 		new_button:SetPushedTexture(icon2)
-		new_button:SetDisabledTexture (icon3)
+		new_button:SetDisabledTexture(icon3)
 		new_button:SetHighlightTexture(icon4, "ADD")
 	end
 	
@@ -242,7 +242,7 @@ function gump:NewDetailsButton (parent, container, instancia, func, param1, para
 			new_button.texture:SetPoint("bottomright", new_button, "bottomright", rect.x2, rect.y2)
 		end
 		
-		new_button.texture:SetTexCoord (0, 1, 0, 0.24609375)
+		new_button.texture:SetTexCoord(0, 1, 0, 0.24609375)
 		new_button.texture:SetTexture(texture)
 	end
 	
@@ -264,13 +264,13 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 	container [member] = editbox
 	options = options or {}
 	
-	editbox:SetAutoFocus (false)
-	editbox:SetFontObject (GameFontHighlightSmall)
+	editbox:SetAutoFocus(false)
+	editbox:SetFontObject(GameFontHighlightSmall)
 	
 	editbox:SetWidth(w)
 	editbox:SetHeight(h)
 	editbox:SetJustifyH("CENTER")
-	editbox:EnableMouse (true)
+	editbox:EnableMouse(true)
 	editbox:SetBackdrop(EditBoxBackdrop)
 	editbox:SetBackdropColor(0, 0, 0, 0.5)
 	editbox:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
@@ -286,7 +286,7 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 	
 	gump:NewLabel(editbox, editbox, nil, "label", "", "GameFontHighlightSmall")
 	editbox ["label"]: SetPoint ("right", editbox, "left", -2, 0)
-	editbox.label:SetTextColor (.8, .8, .8, 1)
+	editbox.label:SetTextColor(.8, .8, .8, 1)
 	
 	function editbox:SetPointAndSpace (MyAnchor, SnapTo, HisAnchor, x, y, Width)
 	
@@ -348,7 +348,7 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 		end
 	end
 	
-	function editbox:PressEnter (byScript)
+	function editbox:PressEnter(byScript)
 		EnterPress (byScript)
 	end
 	
@@ -374,7 +374,7 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 			GameCooltip:Reset()
 			GameCooltip:SetType ("tooltip")
 			GameCooltip:SetColor ("main", "transparent")
-			GameCooltip:AddLine (editbox.tooltip)
+			GameCooltip:AddLine(editbox.tooltip)
 			GameCooltip:SetOwner(editbox)
 			GameCooltip:ShowCooltip()
 		end
@@ -410,7 +410,7 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 
 	editbox:SetScript("OnEditFocusGained", function()
 		if (editbox.label) then
-			editbox.label:SetTextColor (1, 1, 1, 1)
+			editbox.label:SetTextColor(1, 1, 1, 1)
 		end
 		if (editbox.OnFocusGainedHook) then
 			editbox.OnFocusGainedHook()
@@ -435,7 +435,7 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 			end
 			
 			if (editbox.label) then
-				editbox.label:SetTextColor (.8, .8, .8, 1)
+				editbox.label:SetTextColor(.8, .8, .8, 1)
 			end
 			
 			if (editbox.OnFocusLostHook) then
@@ -472,12 +472,12 @@ function gump:NewTextBox (parent, container, member, func, param1, param2, w, h,
 	editbox.SetLabel = function(_, Label)
 		if (Label) then
 			editbox.label = Label
-			editbox.label:SetTextColor (.8, .8, .8, 1)
+			editbox.label:SetTextColor(.8, .8, .8, 1)
 		end
 	end
 	
 	function editbox:Blink()
-		editbox.label:SetTextColor (1, .2, .2, 1)
+		editbox.label:SetTextColor(1, .2, .2, 1)
 	end
 	
 	if (options.Label) then
@@ -491,7 +491,7 @@ end
 
 function gump:NewScrollBar2 (master, slave, x, y)
 
-	local slider_gump = CreateFrame("Slider", master:GetName() and master:GetName() .. "SliderGump" or "DetailsSliderGump" .. math.random (1, 10000000), master)
+	local slider_gump = CreateFrame("Slider", master:GetName() and master:GetName() .. "SliderGump" or "DetailsSliderGump" .. math.random(1, 10000000), master)
 	slider_gump.scrollMax = 560 --default - tamanho da janela de fundo
 
 	-- ///// SLIDER /////
@@ -507,7 +507,7 @@ function gump:NewScrollBar2 (master, slave, x, y)
 	slider_gump.thumb:SetSize(29, 30)
 	slider_gump:SetThumbTexture (slider_gump.thumb)
 	
-	slider_gump:SetOrientation ("VERTICAL")
+	slider_gump:SetOrientation("VERTICAL")
 	slider_gump:SetSize(16, 100)
 	slider_gump:SetMinMaxValues(0, slider_gump.scrollMax)
 	slider_gump:SetValue(0)
@@ -519,7 +519,7 @@ function gump:NewScrollBar2 (master, slave, x, y)
 	botao_cima:SetHeight(32)
 	botao_cima:SetNormalTexture([[Interface\Buttons\Arrow-Up-Up]])
 	botao_cima:SetPushedTexture([[Interface\Buttons\Arrow-Up-Down]])
-	botao_cima:SetDisabledTexture ([[Interface\Buttons\Arrow-Up-Disabled]])
+	botao_cima:SetDisabledTexture([[Interface\Buttons\Arrow-Up-Disabled]])
 	botao_cima:Show()
 	botao_cima:Disable()
 
@@ -536,7 +536,7 @@ function gump:NewScrollBar2 (master, slave, x, y)
 	botao_baixo:SetHeight(32)
 	botao_baixo:SetNormalTexture([[Interface\Buttons\Arrow-Down-Up]])
 	botao_baixo:SetPushedTexture([[Interface\Buttons\Arrow-Down-Down]])
-	botao_baixo:SetDisabledTexture ([[Interface\Buttons\Arrow-Down-Disabled]])
+	botao_baixo:SetDisabledTexture([[Interface\Buttons\Arrow-Down-Disabled]])
 	botao_baixo:Show()
 	botao_baixo:Disable()
 
@@ -690,7 +690,7 @@ function gump:NewScrollBar2 (master, slave, x, y)
 	
 		self.scrollMax = slave:GetHeight()-master:GetHeight()
 		if (self.scrollMax > 0) then
-			slider_gump:SetMinMaxValues (0, self.scrollMax)
+			slider_gump:SetMinMaxValues(0, self.scrollMax)
 			if (not slider_gump.ativo) then
 				slider_gump:Enable()
 				slider_gump.ativo = true

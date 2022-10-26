@@ -3,14 +3,14 @@ local Details = _G.Details
 
 
 function Details:TestBarsUpdate()
-    local current_combat = Details:GetCombat ("current")
+    local current_combat = Details:GetCombat("current")
     for index, actor in current_combat[1]:ListActors() do
-        actor.total = actor.total + (actor.total / 100 * math.random (1, 10))
-        actor.total = actor.total - (actor.total / 100 * math.random (1, 10))
+        actor.total = actor.total + (actor.total / 100 * math.random(1, 10))
+        actor.total = actor.total - (actor.total / 100 * math.random(1, 10))
     end
     for index, actor in current_combat[2]:ListActors() do
-        actor.total = actor.total + (actor.total / 100 * math.random (1, 10))
-        actor.total = actor.total - (actor.total / 100 * math.random (1, 10))
+        actor.total = actor.total + (actor.total / 100 * math.random(1, 10))
+        actor.total = actor.total - (actor.total / 100 * math.random(1, 10))
     end
     current_combat[1].need_refresh = true
     current_combat[2].need_refresh = true
@@ -18,20 +18,20 @@ end
 
 function Details:StartTestBarUpdate()
     if (Details.test_bar_update) then
-        Details:CancelTimer (Details.test_bar_update)
+        Details:CancelTimer(Details.test_bar_update)
     end
     Details.test_bar_update = Details:ScheduleRepeatingTimer ("TestBarsUpdate", 0.1)
 end
 function Details:StopTestBarUpdate()
     if (Details.test_bar_update) then
-        Details:CancelTimer (Details.test_bar_update)
+        Details:CancelTimer(Details.test_bar_update)
     end
     Details.test_bar_update = nil
 end
 
 function Details:CreateTestBars (alphabet, isArena)
-    local current_combat = Details:GetCombat ("current")
-    local pclass = select (2, UnitClass ("player"))
+    local current_combat = Details:GetCombat("current")
+    local pclass = select(2, UnitClass("player"))
 
     local actors_name = {
             {"Spiro", "EVOKER", 1467},
@@ -181,7 +181,7 @@ function Details:CreateTestBars (alphabet, isArena)
     
     for i = 1, 10 do
     
-        local who = actors_name [math.random (1, #actors_name)]
+        local who = actors_name [math.random(1, #actors_name)]
     
         local robot = current_combat[1]:PegarCombatente ("0x0000-0000-0000", who[1], 0x114, true)
         robot.grupo = true
@@ -201,45 +201,45 @@ function Details:CreateTestBars (alphabet, isArena)
         end
         
         if (who[3]) then
-            robot.spec = who[3]
+            robot:SetSpecId(who[3])
         elseif (robot.classe == "DEATHKNIGHT") then
             local specs = {250, 251, 252}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "DRUID") then
             local specs = {102, 103, 104, 105}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "HUNTER") then
             local specs = {253, 254, 255}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "MAGE") then
             local specs = {62, 63, 64}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "MONK") then
             local specs = {268, 269, 270}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "PALADIN") then
             local specs = {65, 66, 70}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "PRIEST") then
             local specs = {256, 257, 258}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "ROGUE") then
             local specs = {259, 260, 261}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "SHAMAN") then
             local specs = {262, 263, 264}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "WARLOCK") then
             local specs = {265, 266, 267}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "WARRIOR") then
             local specs = {71, 72, 73}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         end
         
-        robot.total = math.random (10000000, 60000000)
-        robot.damage_taken = math.random (10000000, 60000000)
-        robot.friendlyfire_total = math.random (10000000, 60000000)
+        robot.total = math.random(10000000, 60000000)
+        robot.damage_taken = math.random(10000000, 60000000)
+        robot.friendlyfire_total = math.random(10000000, 60000000)
         
         total_damage = total_damage + robot.total
         
@@ -249,60 +249,60 @@ function Details:CreateTestBars (alphabet, isArena)
             robot_death.classe = robot.classe
             local esta_morte = {{true, 96648, 100000, time(), 0, "Lady Holenna"}, {true, 96648, 100000, time()-52, 100000, "Lady Holenna"}, {true, 96648, 100000, time()-86, 200000, "Lady Holenna"}, {true, 96648, 100000, time()-101, 300000, "Lady Holenna"}, {false, 55296, 400000, time()-54, 400000, "King Djoffrey"}, {true, 14185, 0, time()-59, 400000, "Lady Holenna"}, {false, 87351, 400000, time()-154, 400000, "King Djoffrey"}, {false, 56236, 400000, time()-158, 400000, "King Djoffrey"} } 
             local t = {esta_morte, time(), robot.nome, robot.classe, 400000, "52m 12s",  ["dead"] = true}
-            table.insert (current_combat.last_events_tables, #current_combat.last_events_tables+1, t)
+            table.insert(current_combat.last_events_tables, #current_combat.last_events_tables+1, t)
             
         elseif (robot.nome == "Mr. President") then	
-            rawset (Details.spellcache, 56488, {"Nuke", 56488, [[Interface\ICONS\inv_gizmo_supersappercharge]]})
+            rawset(Details.spellcache, 56488, {"Nuke", 56488, [[Interface\ICONS\inv_gizmo_supersappercharge]]})
             robot.spells:PegaHabilidade (56488, true, "SPELL_DAMAGE")
             robot.spells._ActorTable [56488].total = robot.total
         end
         
-        local who = actors_name [math.random (1, #actors_name)]
+        local who = actors_name [math.random(1, #actors_name)]
         local robot = current_combat[2]:PegarCombatente ("0x0000-0000-0000", who[1], 0x114, true)
         robot.grupo = true
         robot.classe = who[2]
         
         if (who[3]) then
-            robot.spec = who[3]
+            robot:SetSpecId(who[3])
         elseif (robot.classe == "DEATHKNIGHT") then
             local specs = {250, 251, 252}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "DRUID") then
             local specs = {102, 103, 104, 105}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "HUNTER") then
             local specs = {253, 254, 255}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "MAGE") then
             local specs = {62, 63, 64}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "MONK") then
             local specs = {268, 269, 270}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "PALADIN") then
             local specs = {65, 66, 70}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "PRIEST") then
             local specs = {256, 257, 258}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "ROGUE") then
             local specs = {259, 260, 261}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "SHAMAN") then
             local specs = {262, 263, 264}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "WARLOCK") then
             local specs = {265, 266, 267}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         elseif (robot.classe == "WARRIOR") then
             local specs = {71, 72, 73}
-            robot.spec = specs [math.random (1, #specs)]
+            robot:SetSpecId(specs [math.random(1, #specs)])
         end
         
-        robot.total = math.random (10000000, 60000000)
-        robot.totalover = math.random (10000000, 60000000)
-        robot.totalabsorb = math.random (10000000, 60000000)
-        robot.healing_taken = math.random (10000000, 60000000)
+        robot.total = math.random(10000000, 60000000)
+        robot.totalover = math.random(10000000, 60000000)
+        robot.totalabsorb = math.random(10000000, 60000000)
+        robot.healing_taken = math.random(10000000, 60000000)
         
         total_heal = total_heal + robot.total
         

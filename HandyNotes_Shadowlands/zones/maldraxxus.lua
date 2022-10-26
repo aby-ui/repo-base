@@ -9,22 +9,28 @@ local Map = ns.Map
 local Collectible = ns.node.Collectible
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
+local Soulshape = ns.node.Soulshape
+local Squirrel = ns.node.Squirrel
 local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
 local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
-local Transmog = ns.reward.Transmog
 local Toy = ns.reward.Toy
+local Transmog = ns.reward.Transmog
 
+local Circle = ns.poi.Circle
+local Path = ns.poi.Path
 local POI = ns.poi.POI
 
 -------------------------------------------------------------------------------
 
 local NECROLORD = ns.covenants.NEC
+local NIGHTFAE = ns.covenants.FAE
 
 local map = Map({id = 1536, settings = true})
+local vos = Map({id = 1652}) -- Vault of Souls
 
 -------------------------------------------------------------------------------
 ------------------------------------ RARES ------------------------------------
@@ -692,3 +698,178 @@ Map({id = 1697}).nodes[45203680] = Kitten({
     rewards = {Achievement({id = 14634, criteria = 49425})},
     note = L['hairball']
 }) -- Hairball
+
+-------------------------------------------------------------------------------
+------------------------------- CRYPT COUTURE ---------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[28805160] = Collectible({
+    label = L['ashen_ink_label'],
+    icon = 134846,
+    quest = 62404,
+    note = L['ashen_ink_note'] .. '\n\n' .. L['zargox_the_reborn_note'],
+    requires = ns.requirement.Item(175841),
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183690, quest = 62404}), -- Ashen Ink
+        Achievement({id = 14763, criteria = 49929})
+    },
+    pois = {POI({26314280})}
+}) -- Ashen Ink
+
+map.nodes[49602360] = Collectible({
+    label = L['jagged_bonesaw_label'],
+    icon = 1064192,
+    quest = 62408,
+    note = L['jagged_bonesaw_note'],
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183692, quest = 62408}), -- Jagged Bonesaw
+        Achievement({id = 14763, criteria = 49930})
+    }
+}) -- Jagged Bonesaw
+
+map.nodes[70402780] = Collectible({
+    label = L['discarded_grimoire_label'],
+    icon = 133737,
+    quest = 62297, -- A Fatal Failure
+    note = L['discarded_grimoire_note'],
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183394, quest = 62266}), -- Discarded Grimoire
+        Achievement({id = 14763, criteria = 49931})
+    }
+}) -- Discarded Grimoire
+
+local sorcerersBlade = Collectible({
+    label = L['sorcerers_blade_label'],
+    icon = 463557,
+    quest = 62306, -- Casting Doubt
+    note = L['sorcerers_blade_note'],
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183397, quest = 62306}), -- Sorcerer's Blade
+        Achievement({id = 14763, criteria = 49932})
+    }
+}) -- Sorcerer's Blade
+
+map.nodes[70962857] = sorcerersBlade
+vos.nodes[46623172] = sorcerersBlade
+
+map.nodes[64007000] = Collectible({
+    label = L['mucosal_pigment_label'],
+    icon = 134877,
+    quest = 62405,
+    note = L['mucosal_pigment_note'],
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183691, quest = 62405}), -- Mucosal Pigment
+        Achievement({id = 14763, criteria = 49933})
+    },
+    pois = {
+        Path({
+            Circle({origin = 64007000, radius = 5}) -- House of Plagues
+        }), Path({
+            Circle({origin = 52663542, radius = 2}) -- Bubbleblood
+        })
+    }
+}) -- Mucosal Pigment
+
+map.nodes[71603280] = Collectible({
+    label = L['amethystine_dye_label'],
+    icon = 1385242,
+    quest = 62320, -- Regalia de Rigueur
+    note = L['amethystine_dye_note'],
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183401, quest = 62319}), -- Amethystine Dye
+        Achievement({id = 14763, criteria = 49934})
+    },
+    pois = {
+        POI({
+            70773279, 68993365, 69063276, 64682644, 65222826, 65042801,
+            68032986, 70183124, 71623558
+        })
+    }
+}) -- Amethystine Dye
+
+map.nodes[67803060] = Collectible({
+    label = L['ritualists_mantle_label'],
+    icon = 3087539,
+    quest = 62308, -- Mantle of Mastery
+    note = L['ritualists_mantle_note'],
+    group = ns.groups.CRYPT_COUTURE,
+    rewards = {
+        Item({item = 183399, quest = 62311}), -- Ritualists Mantle
+        Achievement({id = 14763, criteria = 49935})
+    }
+}) -- Ritualists Mantle
+
+-------------------------------------------------------------------------------
+------------------ TO ALL THE SQUIRRELS I'VE LOVED AND LOST -------------------
+-------------------------------------------------------------------------------
+
+map.nodes[49006010] = Squirrel({
+    id = 167353,
+    rewards = {Achievement({id = 14731, criteria = 50260})},
+    pois = {
+        POI({
+            270405900, 270605900, 310802820, 320002360, 440006140, 440006160,
+            440206380, 440406320, 440606060, 440805820, 440806180, 450006360,
+            450206340, 450405860, 450605920, 460205960, 460206060, 460406160,
+            460605760, 460605900, 460805980, 470206160, 470405740, 470406140,
+            470605880, 470806020, 480405820, 480605820, 480805940, 490005980,
+            630203120, 630203200, 640403220, 640603220, 650602520, 650803560,
+            660003520, 680002860, 680802280, 690203060, 690402540, 690402660
+        })
+    }
+}) -- Chittering Claw
+
+map.nodes[48506050] = Squirrel({
+    id = 167354,
+    rewards = {Achievement({id = 14731, criteria = 50261})},
+    pois = {
+        POI({
+            260043000, 270051080, 282051000, 298049060, 314031000, 318041040,
+            320041080, 322027060, 324066000, 330065060, 338031000, 354023000,
+            354047080, 366046080, 368046000, 374049080, 374050060, 378049000,
+            380050040, 380050060, 404074060, 452063080, 458057080, 458059080,
+            462057040, 470057080, 472062000, 482057080, 482065020, 484060020,
+            486060020, 486064040, 490064060, 500060060, 504066080, 510067020,
+            514068000, 522067080, 524036040, 524036060, 526065000, 550033060,
+            550068000, 552037040, 554032060, 554052000, 556033080, 558032060,
+            558054060, 560036080, 648034080
+        })
+    }
+}) -- Writhing Rachis
+
+map.nodes[57806650] = Squirrel({
+    id = 174650,
+    rewards = {Achievement({id = 14731, criteria = 50262})},
+    pois = {
+        POI({
+            40603120, 41803040, 41803200, 42203100, 43003360, 44203180,
+            44403260, 44603260, 45002880, 49202360, 49402240, 49402280,
+            49602300, 50001940, 50002080, 50202200, 50602120, 50801900,
+            51401820, 51402020, 51601900, 51801800, 51802000, 57206060,
+            57406180, 57406380, 57606380, 57606620, 58006500, 58406200,
+            59206140, 59206200, 59206280, 61204880, 61604900, 62005080,
+            62204980, 62604960, 63005120, 63006220, 63205180, 63404880,
+            63605000, 63805160, 63805520, 64205280, 66205200, 66405300,
+            69805040, 70804780, 71404980, 72805320
+        })
+    }
+}) -- Bubbling Refuse
+
+-------------------------------------------------------------------------------
+--------------------------------- SOULSHAPES ----------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[45006500] = Soulshape({
+    id = 182105,
+    icon = 2399239,
+    note = L['soulshape_saurid_note'],
+    rewards = {
+        Item({item = 187878, quest = 64995, covenant = NIGHTFAE}) -- Saurid Soul
+    }
+}) -- Saurid Soul

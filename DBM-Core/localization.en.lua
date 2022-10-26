@@ -391,6 +391,7 @@ L.AUTO_SPEC_WARN_TEXTS = {
 	switchcount							= "%s - switch targets (%%s)",
 	gtfo								= "%%s damage - move away",
 	adds								= "Incoming Adds - switch targets",--Basically a generic of switch
+	addscount							= "Incoming Adds - switch targets (%%s)",--Basically a generic of switch
 	addscustom							= "Incoming Adds - %%s",--Same as above, but more info, pretty much made for like 3 boss mods, such as akama
 	targetchange						= "Target Change - switch to %%s"
 }
@@ -439,6 +440,7 @@ L.AUTO_SPEC_WARN_OPTIONS = {
 	switchcount							= "Show special announce (with count) to switch targets for $spell:%s",
 	gtfo 								= "Show special announce to move out of bad stuff on ground",
 	adds								= "Show special announce to switch targets for incoming adds",
+	addscount							= "Show special announce (with count) to switch targets for incoming adds",
 	addscustom							= "Show special announce for incoming adds",
 	targetchange						= "Show special announce for priority target changes"
 }
@@ -493,6 +495,8 @@ L.AUTO_TIMER_OPTIONS = {
 }
 
 L.AUTO_ICONS_OPTION_TARGETS				= "Set icons on $spell:%s targets"--Usually used for player targets with no specific sorting
+L.AUTO_ICONS_OPTION_TARGETS_TANK_A		= "Set icons on $spell:%s targets with tank over melee over ranged priority and alphabetical fallback"
+L.AUTO_ICONS_OPTION_TARGETS_TANK_R		= "Set icons on $spell:%s targets with tank over melee over ranged priority and raid roster fallback"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_A		= "Set icons on $spell:%s targets with melee and alphabetical priority"
 L.AUTO_ICONS_OPTION_TARGETS_MELEE_R		= "Set icons on $spell:%s targets with melee and raid roster priority"
 L.AUTO_ICONS_OPTION_TARGETS_RANGED_A	= "Set icons on $spell:%s targets with ranged and alphabetical priority"

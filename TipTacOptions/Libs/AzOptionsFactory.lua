@@ -1,17 +1,23 @@
 --[[
-	———————————————— Rev 09 ———
-	- Fixed GetChecked() now returning a boolean instead of nil/1
-	——— 16.07.23 ——— Rev 10 ——— 7.0.3/Legion ———
+	———————————————— Rev 09 ——E	- Fixed GetChecked() now returning a boolean instead of nil/1
+	——E16.07.23 ——ERev 10 ——E7.0.3/Legion ——E
 	- Changed SetTexture(r,g,b,a) -> SetColorTexture(r,g,b,a)
-	——— 18.08.12 ——— Rev 11 ——— 8.0/BfA ———
+	——E18.08.12 ——ERev 11 ——E8.0/BfA ——E
 	- Added native LSM support to the dropdown
 	- The building of the options page is now done internally, instead of in the client addon.
 	- Some code restructure.
-	——— 20.10.31 ——— Rev 12 ——— 9.0.1/Shadowlands ———
+	——E20.10.31 ——ERev 12 ——E9.0.1/Shadowlands ——E
 	- CreateFrame() now uses the "BackdropTemplate"
+	21.12.22 Rev 13 9.1.5/Shadowlands #frozn45
+	- fixed selecting of "None" for backdrop/border texture and saving this settings.
+	22.01.03 Rev 14 9.1.5/Shadowlands #frozn45
+	- added a scroll frame to show a scroll bar if needed
+	- minor adjustments of some elements
+	22.03.30 Rev 15 9.2.0/Shadowlands #frozn45
+	- added a header element
 --]]
 
-local REVISION = 12;
+local REVISION = 15;
 if (type(AzOptionsFactory) == "table") and (AzOptionsFactory.vers >= REVISION) then
 	return;
 end
@@ -121,7 +127,10 @@ function azof:BuildOptionsPage(options,anchor,left,top,restrictToken)
 
 			obj.option = option;
 			obj.text:SetText(option.label);
-			obj.class.Init(obj,option,self:GetConfigValue(option.var));
+			
+			if (obj.class.Init) then
+				obj.class.Init(obj,option,self:GetConfigValue(option.var));
+			end
 
 			-- Anchor the frame
 			obj:ClearAllPoints();
@@ -218,6 +227,59 @@ azof.objects.Slider = {
 };
 
 --------------------------------------------------------------------------------------------------------
+--                                               Header                                               --
+--------------------------------------------------------------------------------------------------------
+
+local function Header_OnEnter(self)
+	self.text:SetTextColor(1, 1, 1);
+	if (self.option.tip) then
+		GameTooltip:SetOwner(self, "ANCHOR_TOP");
+		GameTooltip:AddLine(self.option.label, 1, 1, 1);
+		GameTooltip:AddLine(self.option.tip, nil, nil, nil, 1);
+		GameTooltip:Show();
+	end
+end
+
+local function Header_OnLeave(self)
+	self.text:SetTextColor(1, 0.82, 0);
+	GameTooltip:Hide();
+end
+
+-- New Header
+azof.objects.Header = {
+	xOffset = 10,
+	yOffset = 0,
+	CreateNew = function(self)
+		local f = CreateFrame("Frame", nil, self.owner);
+		f:SetSize(302, 18);
+		
+		f.text = f:CreateFontString("ARTWORK", nil, "GameFontNormalSmall");
+		f.text:SetPoint("TOP");
+		f.text:SetPoint("BOTTOM");
+		f.text:SetJustifyH("CENTER");
+
+		f.leftH = f:CreateTexture(nil, "BACKGROUND");
+		f.leftH:SetHeight(8);
+		f.leftH:SetPoint("RIGHT", f.text, "LEFT", -5, 0);
+		f.leftH:SetPoint("LEFT", 3, 0);
+		f.leftH:SetTexture(137057); -- Interface\\Tooltips\\UI-Tooltip-Border
+		f.leftH:SetTexCoord(0.81, 0.94, 0.5, 1);
+
+		f.rightH = f:CreateTexture(nil, "BACKGROUND");
+		f.rightH:SetHeight(8);
+		f.rightH:SetPoint("RIGHT", -3, 0);
+		f.rightH:SetPoint("LEFT", f.text, "RIGHT", 5, 0);
+		f.rightH:SetTexture(137057); -- Interface\\Tooltips\\UI-Tooltip-Border
+		f.rightH:SetTexCoord(0.81, 0.94, 0.5, 1);
+		
+		f:SetScript("OnEnter", Header_OnEnter);
+		f:SetScript("OnLeave", Header_OnLeave);
+
+		return f;
+	end,
+};
+
+--------------------------------------------------------------------------------------------------------
 --                                            Check Button                                            --
 --------------------------------------------------------------------------------------------------------
 
@@ -262,7 +324,7 @@ azof.objects.Check = {
 		f:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check");
 
 		f.text = f:CreateFontString("ARTWORK",nil,"GameFontNormalSmall");
-		f.text:SetPoint("LEFT",f,"RIGHT",0,1);
+		f.text:SetPoint("LEFT",f,"RIGHT",0,0);
 
 		return f;
 	end,
@@ -367,7 +429,7 @@ end
 -- New ColorButton
 azof.objects.Color = {
 	xOffset = 14,
-	yOffset = 6,
+	yOffset = 5,
 	Init = function(self,option,cfgValue)
 		self:SetHitRectInsets(0,self.text:GetWidth() * -1,0,0);
 		if (option.subType == 2) then
@@ -396,7 +458,7 @@ azof.objects.Color = {
 		f.border:SetColorTexture(1,1,1,1);
 
 		f.text = f:CreateFontString(nil,"ARTWORK","GameFontNormalSmall");
-		f.text:SetPoint("LEFT",f,"RIGHT",4,1);
+		f.text:SetPoint("LEFT",f,"RIGHT",4,-1);
 
 		f.color = CreateColor();
 		f.color.SetFromHexColorMarkup = SetFromHexColorMarkup;	-- extended the color object
@@ -450,28 +512,29 @@ azof.LibSharedMediaSubstitute = {
 		["Blizzard Character Skills Bar"] = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar",
 	},
 	sound = {
-        --abyui after 8.2 only number value can be registered
---		["Bell"] = "Sound\\Doodad\\BellTollHorde.ogg",
---		["Murmur"] = "Sound\\Creature\\Murmur\\MurmurWoundA.ogg",
---		["Alarm Warning 1"] = "Sound\\Interface\\AlarmClockWarning1.ogg",
---		["Alarm Warning 2"] = "Sound\\Interface\\AlarmClockWarning2.ogg",
---		["Alarm Warning 3"] = "Sound\\Interface\\AlarmClockWarning3.ogg",
---		["Raid Warning"] = "Sound\\Interface\\RaidWarning.ogg",
---		["Ready Check 1"] = "Sound\\Interface\\levelup2.ogg",
---		["Ready Check 2"] = "Sound\\Interface\\ReadyCheck.ogg",
---		["Takeoff"] = "Sound\\Universal\\FM_Takeoff.ogg",
---		["Map Ping"] = "Sound\\Interface\\MapPing.ogg",
---		["Auction Close"] = "Sound\\Interface\\AuctionWindowClose.ogg",
---		["Auction Open"] = "Sound\\Interface\\AuctionWindowOpen.ogg",
---		["Gnome Exploration"] = "Sound\\Interface\\GnomeExploration.ogg",
---		["Flag Capture Horde"] = "Sound\\Interface\\PVPFlagCapturedHordeMono.ogg",
---		["Flag Capture Alliance"] = "Sound\\Interface\\PVPFlagCapturedmono.ogg",
---		["Flag Taken Alliance"] = "Sound\\Interface\\PVPFlagTakenHordeMono.ogg",
---		["Flag Taken Horde"] = "Sound\\Interface\\PVPFlagTakenMono.ogg",
---		["PvP Warning"] = "Sound\\Interface\\PVPWARNING.ogg",
---		["PvP Warning Alliance"] = "Sound\\Interface\\PVPWarningAllianceMono.ogg",
---		["PvP Warning Horde"] = "Sound\\Interface\\PVPWarningHordeMono.ogg",
---		["LFG Denied"] = SOUNDKIT.LFG_DENIED,
+        --[[ abyui after 8.2 only number value can be registered, SharedMediaLib will ignore string value.
+		["Bell"] = "Sound\\Doodad\\BellTollHorde.ogg",
+		["Murmur"] = "Sound\\Creature\\Murmur\\MurmurWoundA.ogg",
+		["Alarm Warning 1"] = "Sound\\Interface\\AlarmClockWarning1.ogg",
+		["Alarm Warning 2"] = "Sound\\Interface\\AlarmClockWarning2.ogg",
+		["Alarm Warning 3"] = "Sound\\Interface\\AlarmClockWarning3.ogg",
+		["Raid Warning"] = "Sound\\Interface\\RaidWarning.ogg",
+		["Ready Check 1"] = "Sound\\Interface\\levelup2.ogg",
+		["Ready Check 2"] = "Sound\\Interface\\ReadyCheck.ogg",
+		["Takeoff"] = "Sound\\Universal\\FM_Takeoff.ogg",
+		["Map Ping"] = "Sound\\Interface\\MapPing.ogg",
+		["Auction Close"] = "Sound\\Interface\\AuctionWindowClose.ogg",
+		["Auction Open"] = "Sound\\Interface\\AuctionWindowOpen.ogg",
+		["Gnome Exploration"] = "Sound\\Interface\\GnomeExploration.ogg",
+		["Flag Capture Horde"] = "Sound\\Interface\\PVPFlagCapturedHordeMono.ogg",
+		["Flag Capture Alliance"] = "Sound\\Interface\\PVPFlagCapturedmono.ogg",
+		["Flag Taken Alliance"] = "Sound\\Interface\\PVPFlagTakenHordeMono.ogg",
+		["Flag Taken Horde"] = "Sound\\Interface\\PVPFlagTakenMono.ogg",
+		["PvP Warning"] = "Sound\\Interface\\PVPWARNING.ogg",
+		["PvP Warning Alliance"] = "Sound\\Interface\\PVPWarningAllianceMono.ogg",
+		["PvP Warning Horde"] = "Sound\\Interface\\PVPWarningHordeMono.ogg",
+		["LFG Denied"] = SOUNDKIT.LFG_DENIED,
+		--]]
 	},
 };
 
@@ -499,15 +562,26 @@ local function SharedMediaLib_Init(dropDown,list)
 		for _, name in next, LSM:List(query) do
 			local tbl = list[#list + 1];
 			tbl.text = name;
-			tbl.value = LSM:Fetch(query,name);
-			tbl.tip = tbl.value;
+			local value = LSM:Fetch(query,name);
+			local tip = value;
+			if ((query == "background" or query == "border") and value == nil) then
+				value = "nil";
+				tip = "";
+			end
+			tbl.value = value;
+			tbl.tip = tip;
 		end
 	else
 		for name, value in next, azof.LibSharedMediaSubstitute[query] do
 			local tbl = list[#list + 1];
 			tbl.text = name;
+			local tip = value;
+			if ((query == "background" or query == "border") and value == nil) then
+				value = "nil";
+				tip = "";
+			end
 			tbl.value = value;
-			tbl.tip = value;
+			tbl.tip = tip;
 		end
 	end
 	table.sort(list,function(a,b) return a.text < b.text end);
@@ -524,7 +598,7 @@ azof.objects.DropDown = {
 	CreateNew = function(self)
 		local f = AzDropDown:CreateDropDown(self.owner,180,nil,nil,true);
 		f.text = f:CreateFontString(nil,"ARTWORK","GameFontNormalSmall");
-		f.text:SetPoint("LEFT",-302 + f:GetWidth(),0);
+		f.text:SetPoint("LEFT",-302 + f:GetWidth(),-1);
 		return f;
 	end,
 };
@@ -566,7 +640,7 @@ azof.objects.Text = {
 		f:SetTextInsets(6,0,0,0);
 
 		f.text = f:CreateFontString(nil,"ARTWORK","GameFontNormalSmall");
-		f.text:SetPoint("LEFT",-120,1);
+		f.text:SetPoint("LEFT",-120,-1);
 
 		return f;
 	end,

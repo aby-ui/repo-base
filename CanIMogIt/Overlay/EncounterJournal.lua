@@ -67,7 +67,8 @@ local function OnEncounterJournalLoaded(event, addonName, ...)
     _G["EncounterJournalEncounterFrameInfoLootScrollFrameScrollBar"]:HookScript("OnValueChanged", EncounterJournalFrame_CIMIOnValueChanged)
 end
 
-CanIMogIt.frame:AddEventFunction(OnEncounterJournalLoaded)
+-- TODO: Fix the Encounter Journal!
+-- CanIMogIt.frame:AddEventFunction(OnEncounterJournalLoaded)
 
 
 ------------------------
@@ -81,4 +82,5 @@ local function EncounterJournalOverlayEvents(event, ...)
     end
 end
 
-CanIMogIt.frame:AddOverlayEventFunction(EncounterJournalOverlayEvents)
+-- TODO: Fix the Encounter Journal!
+-- CanIMogIt.frame:AddOverlayEventFunction(EncounterJournalOverlayEvents)

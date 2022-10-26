@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2145, "DBM-Party-BfA", 6, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(133392)
 mod:SetEncounterID(2127)
 mod.onlyHighest = true--Instructs DBM health tracking to literally only store highest value seen during fight, even if it drops below that
@@ -54,14 +54,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.NPAuraOnSnakeCharm then
 			DBM.Nameplate:Show(true, args.destGUID, spellId, nil, 15)
 		end
-	elseif spellId == 269686 and self:CheckDispelFilter() then
+	elseif spellId == 269686 and self:CheckDispelFilter("disease") then
 		specWarnPlague:Show(args.destName)
 		specWarnPlague:Play("helpdispel")
 		timerPlague:Start(args.destName)
 	elseif spellId == 268024 and self:AntiSpam(3, 1) then
 		warnPulse:Show()
 		timerPulseCD:Start()
-	elseif spellId == 268008 and self:AntiSpam(3, 3) and self:CheckDispelFilter() then
+	elseif spellId == 268008 and self:AntiSpam(3, 3) and self:CheckDispelFilter("magic") then
 		specWarnSnakeCharm:Show(args.destName)
 		specWarnSnakeCharm:Play("helpdispel")
 	end

@@ -146,7 +146,9 @@ local function optFunc()
 	-- open the profiles tab before, so the menu expands
 	InterfaceOptionsFrame_OpenToCategory(Mapster.optionsFrames.Profiles)
 	InterfaceOptionsFrame_OpenToCategory(Mapster.optionsFrames.Mapster)
-	InterfaceOptionsFrame:Raise()
+	if InterfaceOptionsFrame then
+		InterfaceOptionsFrame:Raise()
+	end
 end
 
 function Mapster:SetupOptions()
@@ -168,7 +170,7 @@ end
 
 function Mapster:SetupMapButton()
 	-- create button on the worldmap to toggle the options
-	self.optionsButton = CreateFrame("Button", "MapsterOptionsButton", WorldMapFrame.BorderFrame, "UIPanelButtonTemplate")
+	self.optionsButton = CreateFrame("Button", "MapsterOptionsButton", WorldMapFrame.BorderFrame.TitleContainer or WorldMapFrame, "UIPanelButtonTemplate")
 	self.optionsButton:SetWidth(95)
 	self.optionsButton:SetHeight(18)
 	self.optionsButton:SetText("Mapster")
@@ -179,7 +181,7 @@ function Mapster:SetupMapButton()
 		self.optionsButton:SetWidth(110)
 		self.optionsButton:SetHeight(22)
 	else
-		self.optionsButton:SetPoint("TOPRIGHT", WorldMapFrame.BorderFrame.TitleBg, "TOPRIGHT", -21, 1)
+		self.optionsButton:SetPoint("TOPRIGHT", WorldMapFrame.BorderFrame.TitleContainer, "TOPRIGHT", -48, -1)
 	end
 
 	if self.db.profile.hideMapButton then

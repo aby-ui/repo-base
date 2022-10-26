@@ -178,7 +178,7 @@ do
 	end
 
 	local function SetGradientColor(self, r, g, b, a)
-		self.gradient:SetGradientAlpha('VERTICAL', .1, .1, .1, 0, r, g, b, a)
+		self.gradient:SetGradient('VERTICAL', CreateColor(.1, .1, .1, 0), CreateColor(r, g, b, a))
 	end
 
 	function lib:Gradient(frame)

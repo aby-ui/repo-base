@@ -2,9 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Utility.lua"/>
 	<Script file="Core.lua"/>
-
 	<Include file="Regions\Regions.xml"/>
-
 	<Script file="Button.lua"/>
 	<Script file="Callback.lua"/>
 	<Script file="Group.lua"/>

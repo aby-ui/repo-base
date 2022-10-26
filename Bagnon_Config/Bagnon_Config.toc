@@ -1,7 +1,7 @@
-## Interface: 90207
-## Title: Bagnon Config
-## Author: Tuller and Jaliborc (João Cardoso)
-## Notes: An options menu for Bagnon
+## Interface: 100000
+## Title: |TInterface/Addons/BagBrother/Art/Bagnon-Small:16:16|t Bagnon |cffffffffConfig|r
+## Author: Tuller & Jaliborc (João Cardoso)
+## Notes: Load on demand configuration menus.|n|cffbbbbbbBy João Cardoso|r|n|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Patreon:12:12:0:-4|t |cff82c5ffpatreon.com/jaliborc|r|n|n
 ## Dependencies: Bagnon
 ## LoadOnDemand: 1
 

@@ -10,6 +10,8 @@ local Collectible = ns.node.Collectible
 local Node = ns.node.Node
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
+local Soulshape = ns.node.Soulshape
+local Squirrel = ns.node.Squirrel
 local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
@@ -26,6 +28,7 @@ local POI = ns.poi.POI
 
 local KYRIAN = ns.covenants.KYR
 local NECROLORD = ns.covenants.NEC
+local NIGHTFAE = ns.covenants.FAE
 
 local map = Map({id = 1533, settings = true})
 
@@ -144,7 +147,8 @@ map.nodes[66004367] = Rare({
             65844451, -- Mercia's Legacy: Chapter Seven
             66214333, -- Mercia's Legacy: Chapter Seven
             67394283, -- Mercia's Legacy: Chapter Seven
-            67604342 -- Mercia's Legacy: Chapter Seven
+            67604342, -- Mercia's Legacy: Chapter Seven
+            65304440 -- Mercia's Legacy: Chapter Seven
         })
     }
 }) -- Collector Astorestes
@@ -901,3 +905,48 @@ map.nodes[42202370] = WISDOM
 map.nodes[42502560] = WISDOM
 map.nodes[42902730] = WISDOM
 map.nodes[43182813] = WISDOM
+
+-------------------------------------------------------------------------------
+------------------ TO ALL THE SQUIRRELS I'VE LOVED AND LOST -------------------
+-------------------------------------------------------------------------------
+
+map.nodes[54901350] = Squirrel({
+    id = 170242,
+    rewards = {Achievement({id = 14731, criteria = 50248})},
+    pois = {POI({48202300, 56201320, 54801360, 54801340})}
+}) -- Dreadfur Kit
+
+map.nodes[37702750] = Squirrel({
+    id = 170006,
+    rewards = {Achievement({id = 14731, criteria = 50249})},
+    pois = {POI({24603020, 24603020, 24603020, 37402740, 37602760})}
+}) -- Darkened Wyrmling
+
+map.nodes[48007780] = Squirrel({
+    id = 168397,
+    rewards = {Achievement({id = 14731, criteria = 50250})},
+    pois = {
+        POI({
+            40605360, 41805460, 43205360, 43405540, 43405560, 45004420,
+            45604580, 45805600, 46805900, 47207280, 47407740, 47407760,
+            47607740, 47607880, 48007760, 48407520, 48407620, 48603040,
+            48605060, 48607640, 48806440, 49007660, 49205000, 52407120,
+            52607100, 53405680, 54006440, 55202980, 56402620, 57605540,
+            57605560, 57804720, 58604020, 58804460, 59409380, 59609380,
+            59804000, 59805140, 60009320, 60808020, 60808600, 62803160
+        })
+    }
+}) -- Soulwing Flitter
+
+-------------------------------------------------------------------------------
+--------------------------------- SOULSHAPES ----------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[50004700] = Soulshape({
+    id = 181682,
+    icon = 645906,
+    note = L['soulshape_otter_soul'],
+    rewards = {
+        Item({item = 187818, quest = 64959, covenant = NIGHTFAE}) -- Otter Soul
+    }
+}) -- Otter Soul

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("GRDTrash", "DBM-Party-WoD", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220806232022")
+mod:SetRevision("20221015205747")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -22,7 +22,7 @@ local warnThunderousBreath				= mod:NewSpellAnnounce(171900, 3)
 local specWarnActivating				= mod:NewSpecialWarningInterrupt(163966, false, nil, 2, 1, 8)
 local specWarnLavaWreath				= mod:NewSpecialWarningMoveAway(176025, nil, nil, nil, 1, 2)
 local specWarnFlametongueGround			= mod:NewSpecialWarningMove(176033, nil, nil, nil, 1, 8)--Ground aoe, may add an earlier personal warning if target scanning works.
-local specWarnShrapnelblast				= mod:NewSpecialWarningDodge(166675, "Tank", nil, nil, 3, 2)--160943 boss version, 166675 trash version.
+local specWarnShrapnelblast				= mod:NewSpecialWarningDodge(166675, nil, nil, 2, 3, 2)--160943 boss version, 166675 trash version.
 local specWarnThunderzone				= mod:NewSpecialWarningMove(166340, nil, nil, nil, 1, 8)
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -48,8 +48,10 @@ function mod:SPELL_CAST_START(args)
 	if not self.Options.Enabled then return end
 	local spellId = args.spellId
 	if spellId == 166675 and self:AntiSpam(2, 1) then
-		specWarnShrapnelblast:Show()
-		specWarnShrapnelblast:Play("shockwave")
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
+			specWarnShrapnelblast:Show()
+			specWarnShrapnelblast:Play("shockwave")
+		end
 	elseif spellId == 176032 then
 		if self:IsTank() then
 			specWarnFlametongueGround:Show()--Pre warn here for tanks, because this attack also massively buffs trash damage if they are standing in the fire too.

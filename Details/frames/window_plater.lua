@@ -4,7 +4,7 @@ local Details = _G.Details
 local DF = _G.DetailsFramework
 
 function Details:InitializePlaterIntegrationWindow()
-    local DetailsPlaterIntegrationPanel = DF:CreateSimplePanel (UIParent, 700, 480, "Details! Plater Nameplates Integration", "DetailsPlaterIntegrationPanel")
+    local DetailsPlaterIntegrationPanel = DF:CreateSimplePanel(UIParent, 700, 480, "Details! Plater Nameplates Integration", "DetailsPlaterIntegrationPanel")
     DetailsPlaterIntegrationPanel.Frame = DetailsPlaterIntegrationPanel
     DetailsPlaterIntegrationPanel.__name = "Plater Nameplates"
     DetailsPlaterIntegrationPanel.real_name = "DETAILS_PLATERWINDOW"
@@ -25,15 +25,15 @@ function Details.OpenPlaterIntegrationWindow()
         
         DetailsPlaterIntegrationPanel.Initialized = true
         
-        local f = DetailsPlaterIntegrationPanel or DF:CreateSimplePanel (UIParent, 700, 480, "Details! Plater Nameplates Integration", "DetailsPlaterIntegrationPanel")
+        local f = DetailsPlaterIntegrationPanel or DF:CreateSimplePanel(UIParent, 700, 480, "Details! Plater Nameplates Integration", "DetailsPlaterIntegrationPanel")
         
         --background
         f.bg1 = f:CreateTexture(nil, "background")
         f.bg1:SetTexture([[Interface\AddOns\Details\images\background]], true)
-        f.bg1:SetAlpha (0.8)
-        f.bg1:SetVertexColor (0.27, 0.27, 0.27)
-        f.bg1:SetVertTile (true)
-        f.bg1:SetHorizTile (true)
+        f.bg1:SetAlpha(0.8)
+        f.bg1:SetVertexColor(0.27, 0.27, 0.27)
+        f.bg1:SetVertTile(true)
+        f.bg1:SetHorizTile(true)
         f.bg1:SetSize(790, 454)
         f.bg1:SetAllPoints()
         f:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
@@ -61,7 +61,7 @@ function Details.OpenPlaterIntegrationWindow()
         
         local menu_table = {
         
-            {type = "label", get = function() return "Add Real Time DPS Info in the Nameplate:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+            {type = "label", get = function() return "Add Real Time DPS Info in the Nameplate:" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE")},
         
             --real time dps from all sources
             {
@@ -173,7 +173,7 @@ function Details.OpenPlaterIntegrationWindow()
                     },	
             
             {type = "breakline"},
-            {type = "label", get = function() return "Add Real Time DPS Info Only From You in the Nameplate:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+            {type = "label", get = function() return "Add Real Time DPS Info Only From You in the Nameplate:" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE")},
             
             --real time dps from the player only
             {
@@ -285,7 +285,7 @@ function Details.OpenPlaterIntegrationWindow()
                     },	
             
             {type = "breakline"},
-            {type = "label", get = function() return "Add Total Damage Taken in the Nameplate:" end, text_template = DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE")},
+            {type = "label", get = function() return "Add Total Damage Taken in the Nameplate:" end, text_template = DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE")},
             
             --total damage taken from all sources
             {
@@ -397,11 +397,11 @@ function Details.OpenPlaterIntegrationWindow()
                     },
         }
         
-        local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
-        local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-        local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-        local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
-        local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+        local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+        local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+        local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+        local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+        local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
         
         local titleBackground = CreateFrame("frame", nil, f,"BackdropTemplate")
         titleBackground:SetPoint("topleft", f, "topleft", 10, -30)
@@ -411,10 +411,10 @@ function Details.OpenPlaterIntegrationWindow()
         --background
         titleBackground.bg1 = titleBackground:CreateTexture(nil, "background")
         titleBackground.bg1:SetTexture([[Interface\AddOns\Details\images\background]])
-        titleBackground.bg1:SetAlpha (0.8)
-        titleBackground.bg1:SetVertexColor (0.27, 0.27, 0.27)
-        titleBackground.bg1:SetVertTile (true)
-        titleBackground.bg1:SetHorizTile (true)
+        titleBackground.bg1:SetAlpha(0.8)
+        titleBackground.bg1:SetVertexColor(0.27, 0.27, 0.27)
+        titleBackground.bg1:SetVertTile(true)
+        titleBackground.bg1:SetHorizTile(true)
         titleBackground.bg1:SetSize(790, 454)
         titleBackground.bg1:SetAllPoints()
         titleBackground:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1, bgFile = [[Interface\AddOns\Details\images\background]], tileSize = 64, tile = true})
@@ -424,7 +424,7 @@ function Details.OpenPlaterIntegrationWindow()
         local platerTitle = DF:CreateLabel(titleBackground, "Plater Nameplates Integration", 16, "white")
         local platerDesc1 = DF:CreateLabel(titleBackground, "Add DPS and Damage information directly into the nameplate", 11, "silver")
         local platerDesc2 = DF:CreateLabel(titleBackground, "See how much damage the enemy is taking in real time!", 11, "silver")
-        local platerImage = DF:CreateImage (titleBackground, "Interface\\AddOns\\Details\\images\\plater_image")
+        local platerImage = DF:CreateImage(titleBackground, "Interface\\AddOns\\Details\\images\\plater_image")
         platerImage:SetSize(256, 64)
         
         platerImage:SetPoint("topright", f, "topright", -150, -35)

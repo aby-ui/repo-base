@@ -1580,7 +1580,7 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
                             doneWithDebuffs = true;
                         end
                     end
-                elseif CompactUnitFrame_UtilShouldDisplayBuff(unitCaster, spellId, canApplyAura) then
+                elseif CompactUnitFrame_UtilShouldDisplayBuff and CompactUnitFrame_UtilShouldDisplayBuff(unitCaster, spellId, canApplyAura) then --TODO:abyui10
                     if not doneWithBuffs then
                         numUsedBuffs = numUsedBuffs + 1;
                         local buffFrame = frame.buffFrames[numUsedBuffs];

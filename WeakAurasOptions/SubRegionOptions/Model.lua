@@ -80,7 +80,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 14,
-      width = WeakAuras.normalWidth
+      width = WeakAuras.normalWidth,
     },
     model_z = {
       type = "range",

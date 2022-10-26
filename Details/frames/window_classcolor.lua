@@ -7,7 +7,7 @@ local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 --config class colors
 function Details:OpenClassColorsConfig()
     if (not _G.DetailsClassColorManager) then
-        DF:CreateSimplePanel (UIParent, 300, 425, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
+        DF:CreateSimplePanel(UIParent, 300, 425, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
         local panel = _G.DetailsClassColorManager
 
         DF:ApplyStandardBackdrop(panel)
@@ -15,12 +15,12 @@ function Details:OpenClassColorsConfig()
 
         local upper_panel = CreateFrame("frame", nil, panel,"BackdropTemplate")
         upper_panel:SetAllPoints(panel)
-        upper_panel:SetFrameLevel (panel:GetFrameLevel()+3)
+        upper_panel:SetFrameLevel(panel:GetFrameLevel()+3)
 
         local y = -50
 
         local callback = function(button, r, g, b, a, self)
-            self.MyObject.my_texture:SetVertexColor (r, g, b)
+            self.MyObject.my_texture:SetVertexColor(r, g, b)
             Details.class_colors [self.MyObject.my_class][1] = r
             Details.class_colors [self.MyObject.my_class][2] = g
             Details.class_colors [self.MyObject.my_class][3] = b
@@ -29,14 +29,14 @@ function Details:OpenClassColorsConfig()
 
         local set_color = function(self, button, class, index)
             local current_class_color = Details.class_colors [class]
-            local r, g, b = unpack (current_class_color)
+            local r, g, b = unpack(current_class_color)
             DF:ColorPick (self, r, g, b, 1, callback)
         end
 
         local reset_color = function(self, button, class, index)
             local color_table = RAID_CLASS_COLORS [class]
             local r, g, b = color_table.r, color_table.g, color_table.b
-            self.MyObject.my_texture:SetVertexColor (r, g, b)
+            self.MyObject.my_texture:SetVertexColor(r, g, b)
             Details.class_colors [self.MyObject.my_class][1] = r
             Details.class_colors [self.MyObject.my_class][2] = g
             Details.class_colors [self.MyObject.my_class][3] = b
@@ -45,7 +45,7 @@ function Details:OpenClassColorsConfig()
 
         local on_enter = function(self, capsule)
             --Details:CooltipPreset(1)
-            --GameCooltip:AddLine ("right click to reset")
+            --GameCooltip:AddLine("right click to reset")
             --GameCooltip:Show (self)
         end
         local on_leave = function(self, capsule)
@@ -62,7 +62,7 @@ function Details:OpenClassColorsConfig()
         panel.buttons = {}
 
         for index, className in ipairs(CLASS_SORT_ORDER) do
-            local icon = DF:CreateImage (upper_panel, [[Interface\Glues\CHARACTERCREATE\UI-CHARACTERCREATE-CLASSES]], 32, 32, nil, CLASS_ICON_TCOORDS [className], "icon_" .. className)
+            local icon = DF:CreateImage(upper_panel, [[Interface\Glues\CHARACTERCREATE\UI-CHARACTERCREATE-CLASSES]], 32, 32, nil, CLASS_ICON_TCOORDS [className], "icon_" .. className)
 
             if (index%2 ~= 0) then
                 icon:SetPoint(10, y)
@@ -77,7 +77,7 @@ function Details:OpenClassColorsConfig()
             local button = DF:CreateButton(panel, set_color, 135, 30, className, className, index)
             button:SetPoint("left", icon, "right", -32, 0)
             button:InstallCustomTexture(nil, nil, nil, nil, true)
-            button:SetFrameLevel (panel:GetFrameLevel()+1)
+            button:SetFrameLevel(panel:GetFrameLevel()+1)
 
             button.text_overlay:ClearAllPoints()
             button.text_overlay:SetPoint("left", icon.widget, "right", 2, 0)
@@ -102,7 +102,7 @@ function Details:OpenClassColorsConfig()
                 num = math.floor(num / 16)
             end
             if s == '' then s = '00' end
-            if (string.len (s) == 1) then
+            if (string.len(s) == 1) then
                 s = "0"..s
             end
             return s
@@ -185,11 +185,11 @@ function Details:OpenClassColorsConfig()
         }
 
         --templates
-        local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
-        local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-        local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-        local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
-        local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+        local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+        local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+        local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+        local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+        local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 
         DetailsFramework:BuildMenu(panel, deathLogOptions, 5, -285, 700, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
@@ -198,7 +198,7 @@ function Details:OpenClassColorsConfig()
     end
 
     for class, button in pairs(_G.DetailsClassColorManager.buttons) do
-        button.my_texture:SetVertexColor (unpack (Details.class_colors [class]))
+        button.my_texture:SetVertexColor(unpack(Details.class_colors [class]))
     end
 
 

@@ -20,6 +20,7 @@ local RSConstants = private.ImportLib("RareScannerConstants")
 
 -- RareScanner services libraries
 local RSTooltip = private.ImportLib("RareScannerTooltip")
+local RSEntityStateHandler = private.ImportLib("RareScannerEntityStateHandler")
 
 -- Next spawn timer
 local NEXT_RESPAWN = 600 --10 minutes
@@ -97,9 +98,9 @@ function RareScanner:ShadowlandsPrePatch_Initialize()
 		ShadowlandsPrePatch_CalculateSpawningTimers(npcID);
 	end
 
-	local original_ProcessKillByZone = self.ProcessKillByZone
-	function self:ProcessKillByZone(npcID, zoneID, forzed)
-		original_ProcessKillByZone(self, npcID, zoneID, forzed)
+	local original_SetDeadNpcByZone = RSEntityStateHandler.SetDeadNpcByZone
+	function RSEntityStateHandler.SetDeadNpcByZone(npcID, zoneID, forzed)
+		original_SetDeadNpcByZone(self, npcID, zoneID, forzed)
 		ShadowlandsPrePatch_PrintNextSpawn(npcID)
 	end
 

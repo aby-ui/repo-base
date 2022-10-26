@@ -13,7 +13,7 @@
 local MASQUE, Core = ...
 
 ----------------------------------------
--- Lua
+-- Lua API
 ---
 
 local pairs = pairs
@@ -464,7 +464,9 @@ function Setup.Skins(self)
 	end
 
 	self.Options.args.Skins = Options
-	self.SkinOptionsPanel = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(MASQUE, L["Skin Settings"], MASQUE, "Skins")
+
+	local Path = "Skins"
+	self:AddOptionsPanel(Path, LibStub("AceConfigDialog-3.0"):AddToBlizOptions(MASQUE, L["Skin Settings"], MASQUE, Path))
 
 	-- GC
 	Setup.Skins = nil

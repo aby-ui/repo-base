@@ -67,7 +67,7 @@ local format = string.format
 local strfind = string.find
 local round = function(n) return floor(n + 0.5) end
 
-local Lib = LibStub:NewLibrary('MSA-Tutorials-1.0', 10)
+local Lib = LibStub:NewLibrary('MSA-Tutorials-1.0', 11)
 if Lib then
 	Lib.NewFrame, Lib.NewButton, Lib.UpdateFrame = nil
 	Lib.numFrames = Lib.numFrames or 1
@@ -157,8 +157,9 @@ local function UpdateFrame(frame, i)
 	frame:ClearAllPoints()
 	frame:SetPoint(data.point, data.anchor, data.relPoint, data.x, data.y)
 	frame:SetWidth(data.width + 16)
-	frame.TitleText:SetPoint('TOP', 0, -5)
-	frame.TitleText:SetText(data.title)
+    local titleText = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and frame.TitleContainer.TitleText or frame.TitleText
+	titleText:SetPoint('TOP', 0, -5)
+	titleText:SetText(data.title)
 	
 	-- Cache inline texture
 	local j, idx = 1, 1
@@ -272,7 +273,7 @@ local function NewButton(frame, name, direction)
 	button:SetDisabledTexture(BUTTON_TEX:format(name, 'Disabled'))
 	button:SetPushedTexture(BUTTON_TEX:format(name, 'Down'))
 	button:SetNormalTexture(BUTTON_TEX:format(name, 'Up'))
-	button:SetPoint('BOTTOM'..((direction == -1) and 'LEFT' or 'RIGHT'), -(30 * direction), 2)
+	button:SetPoint('BOTTOM'..((direction == -1) and 'LEFT' or 'RIGHT'), -(30 * direction), 1)
 	button:SetSize(26, 26)
 	button:SetScript('OnClick', function()
 		UpdateFrame(frame, frame.i + direction)
@@ -291,8 +292,9 @@ local function NewFrame(data)
 		local scale = ConvertPixelsToUI(1, frame:GetEffectiveScale())
 		frame:SetScale(scale)  -- UIParent 0.64 scale correction
 	end
-	frame.portrait:SetPoint('TOPLEFT', data.icon and -4 or -3, data.icon and 6 or 5)
-	frame.portrait:SetTexture(data.icon or 'Interface\\TutorialFrame\\UI-HELP-PORTRAIT')
+	local portrait = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and frame:GetPortrait() or frame.portrait
+	portrait:SetPoint('TOPLEFT', -3, 5)
+	portrait:SetTexture(data.icon or 'Interface\\TutorialFrame\\UI-HELP-PORTRAIT')
 	frame.Inset:SetPoint('TOPLEFT', 4, -23)
 	frame.Inset.Bg:SetColorTexture(0, 0, 0)
 
@@ -308,7 +310,7 @@ local function NewFrame(data)
 	frame.next = NewButton(frame, 'Next', 1)
 	
 	frame.pageNum = frame:CreateFontString(nil, nil, 'GameFontHighlightSmall')
-	frame.pageNum:SetPoint('BOTTOM', 0, 10)
+	frame.pageNum:SetPoint('BOTTOM', 0, 9)
 	
 	frame:SetFrameStrata('DIALOG')
 	frame:SetClampedToScreen(true)

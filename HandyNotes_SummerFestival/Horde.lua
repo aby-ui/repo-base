@@ -333,7 +333,7 @@ points[422] = { -- "DreadWastes"
 }
 
 points[418] = { -- "Krasarang"
-	[77750354] = "32499:H",	-- Zhu's Watch
+	[74000950] = "32499:H",	-- Zhu's Watch
 }
 
 points[379] = { -- "KunLaiSummit"

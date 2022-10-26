@@ -1,4 +1,4 @@
-local VERSION = 104
+local VERSION = 105
 
 --[[
 Special icons for rares, pvp or pet battle quests in list
@@ -315,6 +315,8 @@ Wago update
 Bugfixes
 
 9.2 update
+
+toc update
 ]]
 
 local GlobalAddonName, WQLdb = ...
@@ -6292,7 +6294,7 @@ function WorldQuestList_Update(preMapID,forceUpdate)
 								texture = entry.icon
 							end
 							if WorldQuestList:IsAzeriteItemAtMaxLevel() then
-								RewardListColor[#RewardListStrings] = LE.BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_COMMON]
+								RewardListColor[#RewardListStrings] = LE.BAG_ITEM_QUALITY_COLORS[LE.LE_ITEM_QUALITY_COMMON]
 								RewardListType[#RewardListStrings] = (VWQL.SortPrio.other or defSortPrio.other)
 							else
 								RewardListColor[#RewardListStrings] = LE.BAG_ITEM_QUALITY_COLORS[6]
@@ -8634,9 +8636,9 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 		if not VWQL or VWQL.DisableLFG or not arg1 or C_LFGList.GetActiveEntryInfo() or VWQL.DisableLFG_Popup or (GetNumGroupMembers() or 0) > 1 then
 			return
 		end
-		--if true then	--disabled at all
-		--	return
-		--end
+		if true then	--disabled at all
+			return
+		end
 		if QuestUtils_IsQuestWorldQuest(arg1) and 					--is WQ
 			(not QuestCreationBox:IsShown() or (QuestCreationBox.type ~= 1 and QuestCreationBox.type ~= 4)) and	--popup if not busy
 			 CheckQuestPassPopup(arg1) 						--wq pass filters
@@ -8670,7 +8672,7 @@ QuestCreationBox:SetScript("OnEvent",function (self,event,arg1,arg2)
 	end
 end)
 
-do
+if false then
 	local button = LFGListSearchPanelScrollFrame.ScrollChild and LFGListSearchPanelScrollFrame.ScrollChild.StartGroupButton or LFGListSearchPanelScrollFrame.StartGroupButton
 	button:HookScript("OnClick",function()
 		if isAfterSearch then

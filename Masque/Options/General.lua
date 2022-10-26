@@ -195,7 +195,9 @@ function Setup.General(self)
 	}
 
 	self.Options.args.General = Options
-	self.ProfilesPanel = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(MASQUE, L["General Settings"], MASQUE, "General")
+
+	local Path = "General"
+	self:AddOptionsPanel(Path, LibStub("AceConfigDialog-3.0"):AddToBlizOptions(MASQUE, L["General Settings"], MASQUE, Path))
 
 	-- GC
 	Setup.General = nil

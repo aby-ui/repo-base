@@ -22,14 +22,25 @@ local _, Core = ...
 local Settings = Core.RegTypes.Legacy
 
 -- @ Skins\Default
-local Defaults = Core.Skins.Default
+local Defaults = Core.DEFAULT_SKIN
 
 -- @ Core\Utility
-local GetColor, GetSize = Core.GetColor, Core.GetSize
-local GetTexCoords, SetPoints = Core.GetTexCoords, Core.SetPoints
+local GetColor, GetSize, GetTexCoords = Core.GetColor, Core.GetSize, Core.GetTexCoords
+local GetTypeSkin, SetPoints = Core.GetTypeSkin, Core.SetPoints
 
 -- @ Core\Regions\Mask
 local SkinMask = Core.SkinMask
+
+----------------------------------------
+-- locals
+---
+
+-- Regions we need to store the colors for.
+local StoreColor = {
+	Pushed = true,
+	Highlight = true,
+	SlotHighlight = true,
+}
 
 ----------------------------------------
 -- Core
@@ -40,7 +51,7 @@ function Core.SkinTexture(Layer, Region, Button, Skin, Color, xScale, yScale)
 	local bType = Button.__MSQ_bType
 	local Config = Settings[Layer]
 
-	Skin = Skin[bType] or Skin
+	Skin = GetTypeSkin(Button, bType, Skin)
 	Config = Config[bType] or Config
 
 	if Config.CanHide and Skin.Hide then
@@ -49,16 +60,29 @@ function Core.SkinTexture(Layer, Region, Button, Skin, Color, xScale, yScale)
 		return
 	end
 
+	local Resize = true
 	local Default = Defaults[Layer]
-	Default = Default[bType] or Default
+	Default = GetTypeSkin(Button, bType, Default)
 
 	if not Config.NoTexture then
+		local Atlas = Skin.Atlas
 		local Texture = Skin.Texture
 		Color = Color or Skin.Color
+
+		if StoreColor[Layer] then
+			local ColorKey = "__MSQ_"..Layer.."Color"
+
+			if Button.__MSQ_ArtHook then
+				Button[ColorKey] = Color
+			else
+				Button[ColorKey] = nil
+			end
+		end
 
 		local SetColor = not Config.NoColor
 		local UseColor = Config.UseColor
 
+		-- Skin
 		if Skin.UseColor and UseColor then
 			Region:SetTexture()
 			Region:SetVertexColor(1, 1, 1, 1)
@@ -70,12 +94,25 @@ function Core.SkinTexture(Layer, Region, Button, Skin, Color, xScale, yScale)
 			if SetColor then
 				Region:SetVertexColor(GetColor(Color))
 			end
+		elseif Atlas then
+			local UseAtlasSize = Skin.UseAtlasSize
+
+			Region:SetAtlas(Atlas, UseAtlasSize)
+			Resize = not UseAtlasSize
+
+			if SetColor then
+				Region:SetVertexColor(GetColor(Default.Color))
+			end
+
+		-- Default
 		else
-			local Atlas = Default.Atlas
+			Atlas = Default.Atlas
 			Texture = Default.Texture
 
 			if Atlas then
-				Region:SetAtlas(Atlas)
+				local UseAtlasSize = Skin.UseAtlasSize
+				Region:SetAtlas(Atlas, UseAtlasSize)
+				Resize = not UseAtlasSize
 
 				if SetColor then
 					Region:SetVertexColor(GetColor(Default.Color))
@@ -96,8 +133,16 @@ function Core.SkinTexture(Layer, Region, Button, Skin, Color, xScale, yScale)
 	end
 
 	Region:SetBlendMode(Skin.BlendMode or Default.BlendMode or "BLEND")
-	Region:SetDrawLayer(Skin.DrawLayer or Default.DrawLayer, Skin.DrawLevel or Default.DrawLevel or 0)
-	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale))
+
+	if Layer == "Highlight" then
+		Region:SetDrawLayer("HIGHLIGHT", Skin.DrawLevel or Default.DrawLevel or 0)
+	else
+		Region:SetDrawLayer(Skin.DrawLayer or Default.DrawLayer, Skin.DrawLevel or Default.DrawLevel or 0)
+	end
+
+	if Resize then
+		Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+	end
 
 	local SetAllPoints = Skin.SetAllPoints or (not Skin.Point and Default.SetAllPoints)
 	SetPoints(Region, Button, Skin, Default, SetAllPoints)
@@ -114,7 +159,7 @@ function Core.SetTextureColor(Layer, Region, Button, Skin, Color)
 		local bType = Button.__MSQ_bType
 		local Config = Settings[Layer]
 
-		Skin = Skin[bType] or Skin
+		Skin = GetTypeSkin(Button, bType, Skin)
 		Config = Config[bType] or Config
 		Color = Color or Skin.Color
 

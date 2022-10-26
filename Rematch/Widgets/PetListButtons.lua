@@ -202,6 +202,11 @@ function rematch:PetListButtonOnClick(button)
 	if rematch.HandlePetRightClick(self,self.petID,button) then return end
 	if rematch.HandlePetShiftClick(self,self.petID) then return end
 
+	if SpellIsTargeting() then
+		C_PetJournal.SpellTargetBattlePet(self.petID)
+		return
+	end
+
 	local anchorTo = self.Pet
 	-- self.Pet.Pet = main loadout button
 	-- self.Pet (but no self.Pet.Pet) = petlist buttons

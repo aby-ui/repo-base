@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Regions.lua"/>
 	<Script file="Skins.lua"/>
+	<Script file="Default_Classic.lua"/>
 	<Script file="Default.lua"/>
 	<Script file="Classic.lua"/>
 	<Script file="Dream.lua"/>

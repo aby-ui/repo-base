@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Version: 1.6.1
 ## X-Date: 2021-07-05T20:55:15Z
 ## X-Website: https://www.wowace.com/projects/broker-lootspec

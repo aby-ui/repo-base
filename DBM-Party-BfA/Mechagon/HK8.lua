@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2355, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220805224015")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(150190)
 mod:SetEncounterID(2291)
 
@@ -39,7 +39,7 @@ local yellFulminatingBurstFades		= mod:NewShortFadesYell(303885, nil, nil, nil, 
 --local timerCannonBlastCD			= mod:NewCDTimer(7.7, 295536, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--7.7-13.4 variation, useless timer
 local timerReinforcementRelayCD		= mod:NewCDTimer(32.8, 301351, nil, nil, nil, 1)
 local timerWreckCD					= mod:NewCDTimer(24.3, 302279, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerFulminatingZapCD			= mod:NewCDTimer(17.0, 302274, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)--Assumed
+--local timerFulminatingZapCD			= mod:NewCDTimer(17.0, 302274, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)--Assumed
 local timerFulminatingBurstCD		= mod:NewCDTimer(17.0, 303885, nil, nil, nil, 3, nil, DBM_COMMON_L.HEALER_ICON)--Hard Mode
 --Stage 2
  mod:AddTimerLine(DBM:EJ_GetSectionInfo(20039))
@@ -87,7 +87,7 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.hard = false
 --	self:Schedule(2-delay, checkHardMode, self)
-	timerFulminatingZapCD:Start(9.2)--SUCCESS
+--	timerFulminatingZapCD:Start(9.2)--SUCCESS
 	timerWreckCD:Start(15)
 	timerReinforcementRelayCD:Start(20.8)
 	table.wipe(unitTracked)
@@ -152,7 +152,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 302274 then
-		timerFulminatingZapCD:Start()
+--		timerFulminatingZapCD:Start()
 	elseif spellId == 303885 then
 		timerFulminatingBurstCD:Start()
 	elseif spellId == 301351 or spellId == 303553 then--Regular, Hard
@@ -173,7 +173,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerWreckCD:Start(15.7)--Assumed
 			timerReinforcementRelayCD:Start(19.8)--Assumed
 		end--]]
-		timerFulminatingZapCD:Start(16.7)--SUCCESS
+--		timerFulminatingZapCD:Start(16.7)--SUCCESS
 		timerWreckCD:Start(22.5)--Assumed
 		timerReinforcementRelayCD:Start(29.1)
 	end
@@ -222,7 +222,7 @@ function mod:UNIT_DIED(args)
 	if cid == 150295 or cid == 155760 then--tank-buster-mk1/tank-buster-mk2
 		timerWreckCD:Stop()
 		timerReinforcementRelayCD:Stop()
-		timerFulminatingZapCD:Stop()
+--		timerFulminatingZapCD:Stop()
 		timerFulminatingBurstCD:Stop()
 	end
 end

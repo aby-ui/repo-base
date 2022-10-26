@@ -24,12 +24,12 @@ function Details:CreateAPI2Frame()
         local parametersAmount = 10
         local returnAmount = 10
 
-        --local Api2Frame = DetailsFramework:CreateSimplePanel (UIParent, panelWidth, panelHeight, "Details! API 2.0", "DetailsAPI2Frame")
+        --local Api2Frame = DetailsFramework:CreateSimplePanel(UIParent, panelWidth, panelHeight, "Details! API 2.0", "DetailsAPI2Frame")
         local Api2Frame = _G.DetailsAPI2Frame 
         
         Api2Frame:SetFrameStrata("FULLSCREEN")
         Api2Frame:SetPoint("center")
-        DetailsFramework:ApplyStandardBackdrop (Api2Frame, false, 1.2)
+        DetailsFramework:ApplyStandardBackdrop(Api2Frame, false, 1.2)
         
         --store
         local apiFunctionNames = {}
@@ -67,13 +67,13 @@ function Details:CreateAPI2Frame()
                     parameters = parameters .. parameterInfo.name .. ", "
                 end
             end
-            parameters = parameters:gsub (", $", "")
+            parameters = parameters:gsub(", $", "")
             
             local returnValues = "local "
             for returnIndex, returnInfo in ipairs(apiInfo.returnValues) do
                 returnValues = returnValues .. returnInfo.name .. ", "
             end
-            returnValues = returnValues:gsub (", $", "")
+            returnValues = returnValues:gsub(", $", "")
             returnValues = returnValues .. " = "
             
             if (parameters ~= "") then
@@ -82,7 +82,7 @@ function Details:CreateAPI2Frame()
                 Api2Frame.ApiCopy.text = returnValues .. "Details." .. apiName .. "()"
             end
             
-            Api2Frame.ApiCopy:SetFocus (true)
+            Api2Frame.ApiCopy:SetFocus(true)
             Api2Frame.ApiCopy:HighlightText()
             
             --parameters
@@ -134,9 +134,9 @@ function Details:CreateAPI2Frame()
                     line.index = index
                     
                     if (currentSelected == index) then
-                        line:SetBackdropColor(unpack (backdropColorSelected))
+                        line:SetBackdropColor(unpack(backdropColorSelected))
                     else
-                        line:SetBackdropColor(unpack (backdropColor))
+                        line:SetBackdropColor(unpack(backdropColor))
                     end
                 end
             end
@@ -152,7 +152,7 @@ function Details:CreateAPI2Frame()
         Api2Frame.scrollMenu = api2ScrollMenu
         
         local lineOnEnter = function(self)
-            self:SetBackdropColor(unpack (backdropColorOnEnter))
+            self:SetBackdropColor(unpack(backdropColorOnEnter))
             
             local apiName = apiFunctionNames [self.index]
             if (not apiName) then
@@ -167,15 +167,15 @@ function Details:CreateAPI2Frame()
             
             GameCooltip2:Preset(2)
             GameCooltip2:SetOwner(self, "left", "right", 2, 0)
-            GameCooltip2:AddLine (apiInfo.desc)
+            GameCooltip2:AddLine(apiInfo.desc)
             GameCooltip2:ShowCooltip()
         end
         
         local lineOnLeave = function(self)
             if (currentSelected == self.index) then
-                self:SetBackdropColor(unpack (backdropColorSelected))
+                self:SetBackdropColor(unpack(backdropColorSelected))
             else
-                self:SetBackdropColor(unpack (backdropColor))
+                self:SetBackdropColor(unpack(backdropColor))
             end
             
             GameCooltip2:Hide()
@@ -193,7 +193,7 @@ function Details:CreateAPI2Frame()
                 line:SetScript("OnLeave", lineOnLeave)
                 
                 line:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-                line:SetBackdropColor(unpack (backdropColor))
+                line:SetBackdropColor(unpack(backdropColor))
             
                 line.text = DetailsFramework:CreateLabel(line)
                 line.text:SetPoint("left", line, "left", 2, 0)
@@ -219,9 +219,9 @@ function Details:CreateAPI2Frame()
             --api func to copy
             local apiCopyString = DetailsFramework:CreateLabel(Api2Frame, "Copy String", 12, "orange")
             apiCopyString:SetPoint("topleft", Api2Frame.ApiFunctionDesc, "bottomleft", 0, -20)
-            Api2Frame.ApiCopy = DetailsFramework:CreateTextEntry (Api2Frame, function() end, infoWidth, 20)
+            Api2Frame.ApiCopy = DetailsFramework:CreateTextEntry(Api2Frame, function() end, infoWidth, 20)
             Api2Frame.ApiCopy:SetPoint("topleft", apiCopyString, "bottomleft", 0, -2)
-            Api2Frame.ApiCopy:SetTemplate (DetailsFramework:GetTemplate ("button", "DETAILS_CUSTOMDISPLAY_CODE_BOX"))
+            Api2Frame.ApiCopy:SetTemplate(DetailsFramework:GetTemplate("button", "DETAILS_CUSTOMDISPLAY_CODE_BOX"))
             
             --parameters
             local parametersYStart = yStart - 110
@@ -235,7 +235,7 @@ function Details:CreateAPI2Frame()
             parametersHeader:SetSize(infoWidth, 20)
             parametersHeader:SetPoint("topleft", Api2Frame, "topleft", xAnchorPoint, parametersYStart)
             parametersHeader:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-            parametersHeader:SetBackdropColor(unpack (backdropColor))
+            parametersHeader:SetBackdropColor(unpack(backdropColor))
             parametersHeader.name = DetailsFramework:CreateLabel(parametersHeader, "Name", 12, "yellow")
             parametersHeader.typeData = DetailsFramework:CreateLabel(parametersHeader, "Type", 12, "yellow")
             parametersHeader.required = DetailsFramework:CreateLabel(parametersHeader, "Is Required", 12, "yellow")
@@ -254,14 +254,14 @@ function Details:CreateAPI2Frame()
                 if (not apiInfo) then
                     return
                 end
-                GameCooltip2:AddLine (apiInfo.parameters [self.index].desc)
+                GameCooltip2:AddLine(apiInfo.parameters [self.index].desc)
                 GameCooltip2:ShowCooltip()
                 
-                self:SetBackdropColor(unpack (backdropColorOnEnter))
+                self:SetBackdropColor(unpack(backdropColorOnEnter))
             end
             local parameterOnLeave = function(self) 
                 GameCooltip2:Hide()
-                self:SetBackdropColor(unpack (backdropColor))
+                self:SetBackdropColor(unpack(backdropColor))
             end
             
             for i = 1, parametersAmount do
@@ -271,7 +271,7 @@ function Details:CreateAPI2Frame()
                 f:SetScript("OnEnter", parameterOnEnter)
                 f:SetScript("OnLeave", parameterOnLeave)
                 f:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-                f:SetBackdropColor(unpack (backdropColor))
+                f:SetBackdropColor(unpack(backdropColor))
                 f:Hide()
                 
                 f.name = DetailsFramework:CreateLabel(f)
@@ -301,17 +301,17 @@ function Details:CreateAPI2Frame()
             returnHeader:SetSize(infoWidth, 20)
             returnHeader:SetPoint("topleft", Api2Frame, "topleft", xAnchorPoint, returnYStart)
             returnHeader:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-            returnHeader:SetBackdropColor(unpack (backdropColor))
+            returnHeader:SetBackdropColor(unpack(backdropColor))
             returnHeader.name = DetailsFramework:CreateLabel(returnHeader, "Name", 12, "yellow")
             returnHeader.typeData = DetailsFramework:CreateLabel(returnHeader, "Type", 12, "yellow")
             returnHeader.name:SetPoint("left", returnHeader, "left", 2, 0)
             returnHeader.typeData:SetPoint("left", returnHeader, "left", space1, 0)
 
             local returnOnEnter = function(self) 
-                self:SetBackdropColor(unpack (backdropColorOnEnter))
+                self:SetBackdropColor(unpack(backdropColorOnEnter))
             end
             local returnOnLeave = function(self) 
-                self:SetBackdropColor(unpack (backdropColor))
+                self:SetBackdropColor(unpack(backdropColor))
             end
             
             for i = 1, returnAmount do
@@ -321,7 +321,7 @@ function Details:CreateAPI2Frame()
                 f:SetScript("OnEnter", returnOnEnter)
                 f:SetScript("OnLeave", returnOnLeave)
                 f:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], tileSize = 64, tile = true})
-                f:SetBackdropColor(unpack (backdropColor))
+                f:SetBackdropColor(unpack(backdropColor))
                 f:Hide()
                 
                 f.name = DetailsFramework:CreateLabel(f)

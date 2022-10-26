@@ -6,7 +6,7 @@ local _
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
-	local _setmetatable = setmetatable --lua local
+	local setmetatable = setmetatable --lua local
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --constants
@@ -39,7 +39,7 @@ local _
 			_ActorTable = {}
 		}
 		
-		_setmetatable (_newContainer, container_habilidades)
+		setmetatable(_newContainer, container_habilidades)
 		
 		return _newContainer
 	end
@@ -101,7 +101,7 @@ local _
 
 	function _detalhes.refresh:r_container_habilidades (container, shadow)
 		--reconstr�i meta e indexes
-			_setmetatable (container, _detalhes.container_habilidades)
+			setmetatable(container, _detalhes.container_habilidades)
 			container.__index = _detalhes.container_habilidades
 			local func_criacao = container_habilidades:FuncaoDeCriacao (container.tipo)
 			container.funcao_de_criacao = func_criacao

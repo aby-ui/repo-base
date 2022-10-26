@@ -1,4 +1,4 @@
-
+--@curseforge-project-slug: libspecialization@
 if WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE then return end
 
 local LS, oldminor = LibStub:NewLibrary("LibSpecialization", 4)

@@ -1,13 +1,7 @@
 
-
-
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---basic stuff
-
 	local _
 	local _detalhes = _G._detalhes
-	local Loc = LibStub ("AceLocale-3.0"):GetLocale ( "Details" )
+	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	
 	--mantain the enabled time captures
 	_detalhes.timeContainer = {}
@@ -55,7 +49,7 @@
 		end
 		
 		if (this_capture.do_not_save) then
-			return _detalhes:Msg ("This capture belongs to a plugin and cannot be edited.")
+			return _detalhes:Msg("This capture belongs to a plugin and cannot be edited.")
 		end
 		
 		this_capture [INDEX_NAME] = name or this_capture [INDEX_NAME]
@@ -116,7 +110,7 @@
 		end
 		
 		--check matrix
-		if (not matrix or type (matrix) ~= "table") then
+		if (not matrix or type(matrix) ~= "table") then
 			return "Couldn't register the time capture, matrix was invalid."
 		end
 		
@@ -137,14 +131,14 @@
 	--unregister
 	function _detalhes:TimeDataUnregister (name)
 		if (type(name) == "number") then
-			tremove (_detalhes.savedTimeCaptures, name)
+			tremove(_detalhes.savedTimeCaptures, name)
 			if (_G.DetailsOptionsWindow and _G.DetailsOptionsWindow:IsShown()) then
 				DetailsOptionsWindowTab17UserTimeCapturesFillPanel.MyObject:Refresh()
 			end
 		else
 			for index, t in ipairs(_detalhes.savedTimeCaptures) do
 				if (t [INDEX_NAME] == name) then
-					tremove (_detalhes.savedTimeCaptures, index)
+					tremove(_detalhes.savedTimeCaptures, index)
 					if (_G.DetailsOptionsWindow and _G.DetailsOptionsWindow:IsShown()) then
 						DetailsOptionsWindowTab17UserTimeCapturesFillPanel.MyObject:Refresh()
 					end
@@ -192,15 +186,15 @@
 					local func, errortext = loadstring (t [INDEX_FUNCTION])
 					if (func) then
 						DetailsFramework:SetEnvironment(func)
-						tinsert(exec, { func = func, data = data, attributes = Details.CopyTable (t [INDEX_MATRIX]), is_user = true })
+						tinsert(exec, { func = func, data = data, attributes = Details.CopyTable(t [INDEX_MATRIX]), is_user = true })
 					else
-						_detalhes:Msg ("|cFFFF9900error compiling script for time data (charts)|r: ", errortext)
+						_detalhes:Msg("|cFFFF9900error compiling script for time data (charts)|r: ", errortext)
 					end
 				else
 					--plugin
 					local func = t [INDEX_FUNCTION]
 					DetailsFramework:SetEnvironment(func)
-					tinsert(exec, { func = func, data = data, attributes = Details.CopyTable (t [INDEX_MATRIX]) })
+					tinsert(exec, { func = func, data = data, attributes = Details.CopyTable(t [INDEX_MATRIX]) })
 				end
 			
 			end
@@ -218,7 +212,7 @@
 		
 		local okey, result = _pcall (func, attributes)
 		if (not okey) then
-			_detalhes:Msg ("|cFFFF9900error on chart script function|r:", result)
+			_detalhes:Msg("|cFFFF9900error on chart script function|r:", result)
 			result = 0
 		end
 		
@@ -263,21 +257,21 @@
 		-- raid dps [1]
 		function()
 			local combat = _detalhes.tabela_vigente
-			local time = combat:GetCombatTime()
-			if (not time or time == 0) then
+			local combatTime = combat:GetCombatTime()
+			if (not combatTime or combatTime == 0) then
 				return 0
 			else
-				return ToKFunctions [_detalhes.minimap.text_format] (_, combat.totals_grupo[1] / time)
+				return ToKFunctions [_detalhes.minimap.text_format] (_, combat.totals_grupo[1] / combatTime)
 			end
 		end,
 		-- raid hps [2]
 		function()
 			local combat = _detalhes.tabela_vigente
-			local time = combat:GetCombatTime()
-			if (not time or time == 0) then
+			local combatTime = combat:GetCombatTime()
+			if (not combatTime or combatTime == 0) then
 				return 0
 			else
-				return ToKFunctions [_detalhes.minimap.text_format] (_, combat.totals_grupo[2] / time)
+				return ToKFunctions [_detalhes.minimap.text_format] (_, combat.totals_grupo[2] / combatTime)
 			end
 		end
 	}
@@ -419,7 +413,7 @@
 	end
 	
 	local get_player_dps = function()
-		local damage_player = _detalhes.tabela_vigente (1, _detalhes.playername)
+		local damage_player = _detalhes.tabela_vigente(1, _detalhes.playername)
 		if (damage_player) then
 			if (_detalhes.time_type == 1) then --activity time
 				local combat_time = damage_player:Tempo()
@@ -443,7 +437,7 @@
 	end
 	
 	local get_player_hps = function()
-		local heal_player = _detalhes.tabela_vigente (2, _detalhes.playername)
+		local heal_player = _detalhes.tabela_vigente(2, _detalhes.playername)
 		if (heal_player) then
 			if (_detalhes.time_type == 1) then --activity time
 				local combat_time = heal_player:Tempo()
@@ -494,7 +488,7 @@
 	end
 	
 	local get_player_heal = function()
-		local heal_player = _detalhes.tabela_vigente (2, _detalhes.playername)
+		local heal_player = _detalhes.tabela_vigente(2, _detalhes.playername)
 		if (heal_player) then
 			return ToKFunctions [_detalhes.minimap.text_format] (_, heal_player.total)
 		else
@@ -508,17 +502,17 @@
 			return
 		end
 		
-		text = text:gsub ("{dmg}", get_player_damage)
-		text = text:gsub ("{rdps}", get_raid_dps)
-		text = text:gsub ("{rhps}", get_raid_hps)
-		text = text:gsub ("{dps}", get_player_dps)
-		text = text:gsub ("{heal}", get_player_heal)
-		text = text:gsub ("{hps}", get_player_hps)
-		text = text:gsub ("{time}", get_combat_time)
-		text = text:gsub ("{dpos}", get_damage_position)
-		text = text:gsub ("{hpos}", get_heal_position)
-		text = text:gsub ("{ddiff}", get_damage_diff)
-		text = text:gsub ("{hdiff}", get_heal_diff)
+		text = text:gsub("{dmg}", get_player_damage)
+		text = text:gsub("{rdps}", get_raid_dps)
+		text = text:gsub("{rhps}", get_raid_hps)
+		text = text:gsub("{dps}", get_player_dps)
+		text = text:gsub("{heal}", get_player_heal)
+		text = text:gsub("{hps}", get_player_hps)
+		text = text:gsub("{time}", get_combat_time)
+		text = text:gsub("{dpos}", get_damage_position)
+		text = text:gsub("{hpos}", get_heal_position)
+		text = text:gsub("{ddiff}", get_damage_diff)
+		text = text:gsub("{hdiff}", get_heal_diff)
 
 		return text
 	end

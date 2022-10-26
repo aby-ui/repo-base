@@ -295,7 +295,7 @@ local CreatePluginFrames = function()
 		local runeIndicator = DF:CreateImage(line, "", scrollLineHeight, scrollLineHeight)
 
 		--no pre pot
-		--local PrePotIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
+		--local PrePotIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 		--using details!
 		--local DetailsIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 

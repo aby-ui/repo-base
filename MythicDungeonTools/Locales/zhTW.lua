@@ -879,6 +879,8 @@ L["Omega Buster"] = "欧米茄破坏者"
 --[[Translation missing --]]
 --[[ L["Oozing Leftovers"] = ""--]] 
 L["Open MDI override options"] = "打開 MDI 替代選項"
+--[[Translation missing --]]
+--[[ L["openSettingsTooltip"] = ""--]] 
 L["Opera Hall Balcony"] = "歌劇大廳露臺"
 --[[Translation missing --]]
 --[[ L["Opera Hall: Wikket"] = ""--]] 

@@ -20,7 +20,7 @@ function AppEmptyBlocker:Constructor()
 
     local Top = self:CreateTexture(nil, 'BACKGROUND') do
         Top:SetPoint('TOPLEFT', TopLeft, 'TOPRIGHT')
-        Top:SetGradientAlpha('HORIZONTAL', 1, 1, 1, 1, 0.3, 0.3, 0.3, 0.3)
+        Top:SetGradient('HORIZONTAL', CreateColor(1, 1, 1, 1), CreateColor(0.3, 0.3, 0.3, 0.3))
     end
 
     local TopRight = self:CreateTexture(nil, 'BACKGROUND') do
@@ -34,7 +34,7 @@ function AppEmptyBlocker:Constructor()
 
     local Bottom = self:CreateTexture(nil, 'BACKGROUND') do
         Bottom:SetPoint('TOPLEFT', BottomLeft, 'TOPRIGHT')
-        Bottom:SetGradientAlpha('HORIZONTAL', 1, 1, 1, 1, 0.3, 0.3, 0.3, 0.3)
+        Bottom:SetGradient('HORIZONTAL', CreateColor(1, 1, 1, 1), CreateColor(0.3, 0.3, 0.3, 0.3))
     end
 
     local BottomRight = self:CreateTexture(nil, 'BACKGROUND') do

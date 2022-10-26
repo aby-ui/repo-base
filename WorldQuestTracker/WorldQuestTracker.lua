@@ -580,10 +580,10 @@ function WorldQuestTracker:OnInit()
 	C_Timer.After (10, WorldQuestTracker.UpdateArrowFrequence)
 end
 
-local onStartClickAnimation = function (self)
+local onStartClickAnimation = function(self)
 	self:GetParent():Show()
 end
-local onEndClickAnimation = function (self)
+local onEndClickAnimation = function(self)
 	self:GetParent():Hide()
 end
 
@@ -754,7 +754,7 @@ end
 --local worldFramePOIs = CreateFrame ("frame", "WorldQuestTrackerWorldMapPOI", WorldMapFrame.BorderFrame)
 local worldFramePOIs = CreateFrame ("frame", "WorldQuestTrackerWorldMapPOI", WorldMapFrame.ScrollContainer, "BackdropTemplate")
 worldFramePOIs:SetAllPoints()
-worldFramePOIs:SetFrameLevel (6701)
+worldFramePOIs:SetFrameLevel(6701)
 local fadeInAnimation = worldFramePOIs:CreateAnimationGroup()
 local step1 = fadeInAnimation:CreateAnimation ("Alpha")
 step1:SetOrder (1)
@@ -762,15 +762,15 @@ step1:SetFromAlpha (0)
 step1:SetToAlpha (1)
 step1:SetDuration (0.3)
 worldFramePOIs.fadeInAnimation = fadeInAnimation
-fadeInAnimation:SetScript ("OnFinished", function()
-	worldFramePOIs:SetAlpha (1)
+fadeInAnimation:SetScript("OnFinished", function()
+	worldFramePOIs:SetAlpha(1)
 end)
 
 --[=[
-	local textureTest = worldFramePOIs:CreateTexture (nil, "overlay")
-	textureTest:SetSize (128, 128)
-	textureTest:SetColorTexture (1, 0, 0)
-	textureTest:SetPoint ("center", worldFramePOIs, "center")
+	local textureTest = worldFramePOIs:CreateTexture(nil, "overlay")
+	textureTest:SetSize(128, 128)
+	textureTest:SetColorTexture(1, 0, 0)
+	textureTest:SetPoint("center", worldFramePOIs, "center")
 --]=]
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -801,7 +801,7 @@ end)
 local re_ShowTutorialAlert = function()
 	WorldQuestTracker ["ShowTutorialAlert"]()
 end
-local hook_AlertCloseButton = function (self) 
+local hook_AlertCloseButton = function(self) 
 	re_ShowTutorialAlert()
 end
 local wait_ShowTutorialAlert = function()
@@ -814,15 +814,15 @@ local tutorial_one = function()
 	local widget = WorldQuestTracker.WorldSummaryQuestsSquares [1]
 
 	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert1", worldFramePOIs, "MicroButtonAlertTemplate")
-	alert:SetFrameLevel (302)
+	alert:SetFrameLevel(302)
 	alert.label = L["S_TUTORIAL_CLICKTOTRACK"]
 	alert.Text:SetSpacing (4)
 	MicroButtonAlert_SetText2 (alert, alert.label)
 	
 	if (widget and widget:IsShown()) then
-		alert:SetPoint ("bottom", widget, "top", 0, 28)
+		alert:SetPoint("bottom", widget, "top", 0, 28)
 	else
-		alert:SetPoint ("topleft", worldFramePOIs, "topleft", 64, -270)
+		alert:SetPoint("topleft", worldFramePOIs, "topleft", 64, -270)
 	end
 	
 	alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
@@ -834,16 +834,16 @@ end
 local tutorial_two = function()
 	if (WorldQuestTrackerToggleQuestsSummaryButton and WorldQuestTrackerToggleQuestsSummaryButton:IsShown()) then
 		local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert2", worldFramePOIs, "MicroButtonAlertTemplate")
-		alert:SetFrameLevel (302)
+		alert:SetFrameLevel(302)
 		alert.label = L["S_TUTORIAL_WORLDBUTTONS"]
 		alert.Text:SetSpacing (4)
 		MicroButtonAlert_SetText2 (alert, alert.label)
 		
-		alert:SetPoint ("bottom", WorldQuestTrackerToggleQuestsSummaryButton, "top", 0, 28)
+		alert:SetPoint("bottom", WorldQuestTrackerToggleQuestsSummaryButton, "top", 0, 28)
 		
 		alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
 		alert.Arrow:ClearAllPoints()
-		alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 70, 0)
+		alert.Arrow:SetPoint("topleft", alert, "bottomleft", 70, 0)
 		alert:Show()
 		
 		WorldQuestTracker.db.profile.TutorialPopupID = WorldQuestTracker.db.profile.TutorialPopupID + 1
@@ -855,13 +855,13 @@ end
 
 local tutorial_three = function()
 	local alert = CreateFrame ("frame", "WorldQuestTrackerTutorialAlert3", worldFramePOIs, "MicroButtonAlertTemplate")
-	alert:SetFrameLevel (302)
+	alert:SetFrameLevel(302)
 	alert.label = L["S_TUTORIAL_STATISTICS_BUTTON"]
 	alert.Text:SetSpacing (4)
 	MicroButtonAlert_SetText2 (alert, alert.label)
-	alert:SetPoint ("bottomleft", WorldQuestTrackerStatisticsButton, "topleft", 0, 32)
+	alert:SetPoint("bottomleft", WorldQuestTrackerStatisticsButton, "topleft", 0, 32)
 	alert.Arrow:ClearAllPoints()
-	alert.Arrow:SetPoint ("topleft", alert, "bottomleft", 10, 0)
+	alert.Arrow:SetPoint("topleft", alert, "bottomleft", 10, 0)
 	alert.CloseButton:HookScript ("OnClick", hook_AlertCloseButton)
 	alert:Show()
 	
@@ -934,9 +934,9 @@ function WorldQuestTracker.UpdateLoadingIconAnchor()
 	end
 	
 	if (adjust_anchor) then
-		WorldQuestTracker.LoadingAnimation:SetPoint ("bottom", WorldMapScrollFrame, "top", 0, -75)
+		WorldQuestTracker.LoadingAnimation:SetPoint("bottom", WorldMapScrollFrame, "top", 0, -75)
 	else
-		WorldQuestTracker.LoadingAnimation:SetPoint ("bottom", WorldMapScrollFrame, "top", 0, -75)
+		WorldQuestTracker.LoadingAnimation:SetPoint("bottom", WorldMapScrollFrame, "top", 0, -75)
 	end
 end
 function WorldQuestTracker.NeedUpdateLoadingIconAnchor()
@@ -958,9 +958,9 @@ end)
 
 function WorldQuestTracker.CreateLoadingIcon()
 	local f = CreateFrame ("frame", nil, WorldMapFrame, "BackdropTemplate")
-	f:SetSize (48, 48)
-	f:SetPoint ("bottom", WorldMapScrollFrame, "top", 0, -75) --289/2 = 144
-	f:SetFrameLevel (3000)
+	f:SetSize(48, 48)
+	f:SetPoint("bottom", WorldMapScrollFrame, "top", 0, -75) --289/2 = 144
+	f:SetFrameLevel(3000)
 	
 	local animGroup1 = f:CreateAnimationGroup()
 	local anim1 = animGroup1:CreateAnimation ("Alpha")
@@ -977,38 +977,38 @@ function WorldQuestTracker.CreateLoadingIcon()
 	anim2:SetFromAlpha (1)
 	anim2:SetToAlpha (0)
 	anim2:SetDuration (4)
-	animGroup2:SetScript ("OnFinished", function()
+	animGroup2:SetScript("OnFinished", function()
 		f:Hide()
 	end)
 	
 	f.Text = f:CreateFontString (nil, "overlay", "GameFontNormal")
 	f.Text:SetText ("please wait...")
-	f.Text:SetPoint ("left", f, "right", -5, 1)
-	f.TextBackground = f:CreateTexture (nil, "background")
-	f.TextBackground:SetPoint ("left", f, "right", -20, 0)
-	f.TextBackground:SetSize (160, 14)
-	f.TextBackground:SetTexture ([[Interface\COMMON\ShadowOverlay-Left]])
+	f.Text:SetPoint("left", f, "right", -5, 1)
+	f.TextBackground = f:CreateTexture(nil, "background")
+	f.TextBackground:SetPoint("left", f, "right", -20, 0)
+	f.TextBackground:SetSize(160, 14)
+	f.TextBackground:SetTexture([[Interface\COMMON\ShadowOverlay-Left]])
 	
 	f.Text:Hide()
 	f.TextBackground:Hide()
 	
 	f.CircleAnimStatic = CreateFrame ("frame", nil, f, "BackdropTemplate")
 	f.CircleAnimStatic:SetAllPoints()
-	f.CircleAnimStatic.Alpha = f.CircleAnimStatic:CreateTexture (nil, "overlay")
-	f.CircleAnimStatic.Alpha:SetTexture ([[Interface\COMMON\StreamFrame]])
+	f.CircleAnimStatic.Alpha = f.CircleAnimStatic:CreateTexture(nil, "overlay")
+	f.CircleAnimStatic.Alpha:SetTexture([[Interface\COMMON\StreamFrame]])
 	f.CircleAnimStatic.Alpha:SetAllPoints()
-	f.CircleAnimStatic.Background = f.CircleAnimStatic:CreateTexture (nil, "background")
-	f.CircleAnimStatic.Background:SetTexture ([[Interface\COMMON\StreamBackground]])
+	f.CircleAnimStatic.Background = f.CircleAnimStatic:CreateTexture(nil, "background")
+	f.CircleAnimStatic.Background:SetTexture([[Interface\COMMON\StreamBackground]])
 	f.CircleAnimStatic.Background:SetAllPoints()
 	
 	f.CircleAnim = CreateFrame ("frame", nil, f, "BackdropTemplate")
 	f.CircleAnim:SetAllPoints()
-	f.CircleAnim.Spinner = f.CircleAnim:CreateTexture (nil, "artwork")
-	f.CircleAnim.Spinner:SetTexture ([[Interface\COMMON\StreamCircle]])
-	f.CircleAnim.Spinner:SetVertexColor (.5, 1, .5, 1)
+	f.CircleAnim.Spinner = f.CircleAnim:CreateTexture(nil, "artwork")
+	f.CircleAnim.Spinner:SetTexture([[Interface\COMMON\StreamCircle]])
+	f.CircleAnim.Spinner:SetVertexColor(.5, 1, .5, 1)
 	f.CircleAnim.Spinner:SetAllPoints()
-	f.CircleAnim.Spark = f.CircleAnim:CreateTexture (nil, "overlay")
-	f.CircleAnim.Spark:SetTexture ([[Interface\COMMON\StreamSpark]])
+	f.CircleAnim.Spark = f.CircleAnim:CreateTexture(nil, "overlay")
+	f.CircleAnim.Spark:SetTexture([[Interface\COMMON\StreamSpark]])
 	f.CircleAnim.Spark:SetAllPoints()
 
 	local animGroup3 = f.CircleAnim:CreateAnimationGroup()
@@ -1052,17 +1052,18 @@ SLASH_WQTRACKER2 = "/worldquesttracker"
 function SlashCmdList.WQTRACKER (msg, editbox)
 
 	if (msg == "reinstall") then
-		local b = CreateFrame("button", "WQTResetConfigButton", UIParent, "OptionsButtonTemplate")
+		local b = CreateFrame("button", "WQTResetConfigButton", UIParent)
+		DetailsFramework:ApplyStandardBackdrop(b)
 		tinsert(UISpecialFrames, "WQTResetConfigButton")
 		
-		b:SetSize (250, 40)
+		b:SetSize(250, 40)
 		b:SetText ("REINSTALL")
-		b:SetScript ("OnClick", function() 
+		b:SetScript("OnClick", function() 
 			WQTrackerDB = {}
 			WQTrackerDBChr = {}
 			ReloadUI()
 		end)
-		b:SetPoint ("center", UIParent, "center", 0, 0)
+		b:SetPoint("center", UIParent, "center", 0, 0)
 
 	elseif (msg == "test") then
 		local playerLevel = UnitLevel("player")
@@ -1510,18 +1511,18 @@ end)
 function WorldQuestTracker.SetBountyAmountCompleted (self, numCompleted, numTotal)
 	if (not self.objectiveCompletedText) then
 		self.objectiveCompletedText = self:CreateFontString (nil, "overlay", "GameFontNormal")
-		self.objectiveCompletedText:SetPoint ("bottom", self, "top", 1, 0)
-		self.objectiveCompletedBackground = self:CreateTexture (nil, "background")
-		self.objectiveCompletedBackground:SetPoint ("bottom", self, "top", 0, -1)
-		self.objectiveCompletedBackground:SetTexture ([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
-		self.objectiveCompletedBackground:SetSize (42, 12)
+		self.objectiveCompletedText:SetPoint("bottom", self, "top", 1, 0)
+		self.objectiveCompletedBackground = self:CreateTexture(nil, "background")
+		self.objectiveCompletedBackground:SetPoint("bottom", self, "top", 0, -1)
+		self.objectiveCompletedBackground:SetTexture([[Interface\AddOns\WorldQuestTracker\media\background_blackgradientT]])
+		self.objectiveCompletedBackground:SetSize(42, 12)
 	end
 	if (numCompleted) then
 		self.objectiveCompletedText:SetText (numCompleted .. "/" .. numTotal)
-		self.objectiveCompletedBackground:SetAlpha (.4)
+		self.objectiveCompletedBackground:SetAlpha(.4)
 	else
 		self.objectiveCompletedText:SetText ("")
-		self.objectiveCompletedBackground:SetAlpha (0)
+		self.objectiveCompletedBackground:SetAlpha(0)
 	end
 end
 

@@ -243,8 +243,16 @@ end
 function UUI.SizeFitCols()
     local main = UUI();
     main:SetWidth(UUI.CalcWidth(main.center.cols));
-    main:SetMinResize(UUI.CalcWidth(1), UUI.TOP_HEIGHT + (UUI.BUTTON_H + UUI.BUTTON_OFFSET)*3 + 110)
-    main:SetMaxResize(UUI.CalcWidth(UUI.MAX_COL), UUI.TOP_HEIGHT + (UUI.BUTTON_H + UUI.BUTTON_OFFSET)*15 + 105)
+    local minW = UUI.CalcWidth(1)
+    local minH = UUI.TOP_HEIGHT + (UUI.BUTTON_H + UUI.BUTTON_OFFSET) * 3 + 110
+    local maxW = UUI.CalcWidth(UUI.MAX_COL)
+    local maxH = UUI.TOP_HEIGHT + (UUI.BUTTON_H + UUI.BUTTON_OFFSET) * 15 + 105
+    if UIParent.SetResizeBounds then --abyui10
+        main:SetResizeBounds(minW, minH, maxW, maxH)
+    else
+        main:SetMinResize(minW, minH)
+        main:SetMaxResize(maxW, maxH)
+    end
 end
 function UUI.CalcWidth(cols)
     return UUI.LEFT_WIDTH + (UUI.BUTTON_W + UUI.BUTTON_P) * cols + UUI.RIGHT_WIDTH + 48;
@@ -799,8 +807,8 @@ function UUI.Center.Create(main)
 
     StaticPopupDialogs["163UIUI_LOAD_ALL_CONFIRM"] = {preferredIndex = 3,
         text = "您确认吗？不建议您加载全部插件\n\n爱不易整合了非常多的优秀插件，但玩家一般用不到全部功能。建议您在默认方案的基础上选择几个自己需要的，不然会显得有点杂乱。",
-        button1 = TEXT(YES),
-        button2 = TEXT(CANCEL),
+        button1 = YES,
+        button2 = CANCEL,
         OnAccept = function(self, data)
             UUI.Center.BtnLoadAllOnClick()
         end,
@@ -811,8 +819,8 @@ function UUI.Center.Create(main)
     }
     StaticPopupDialogs["163UIUI_CONFLICT_CONFIRM"] = {preferredIndex = 3,
         text = "此插件与以下插件冲突：\n\n%1$s\n\n确认关闭这些插件并重载界面？",
-        button1 = TEXT(YES),
-        button2 = TEXT(CANCEL),
+        button1 = YES,
+        button2 = CANCEL,
         OnAccept = function(self, data)
             local info = U1GetAddonInfo(data[2])
             if info then
@@ -1297,10 +1305,10 @@ function UUI.Right.CreatePageDesc(right)
     local pageDesc = WW:Frame(nil, scroll):Size(scroll:GetWidth(), 10):un(); right.pageDesc = pageDesc
     local font = (U1.CN and ChatFontNormal or GameFontNormal):GetFont()
     WW:SimpleHTML(nil, right):Key("html"):TL(5, -5):Size(scroll:GetWidth()-10, 10)
-    :SetFont("P" ,font,U1.CN and 13 or 12):SetTextColor("P",0.81, 0.65, 0.48):SetSpacing("P",5) --cfa67f
-    :SetFont("H1",font,U1.CN and 14 or 13):SetTextColor("H1",.9,.9,.7):SetSpacing("H1",5)
-    :SetFont("H2",font,U1.CN and 13 or 12):SetTextColor("H2",.9,.9,.7):SetSpacing("H2",4)
-    :SetFont("H3",font,U1.CN and 12 or 11):SetTextColor("H3",.9,.9,.7):SetSpacing("H3",3):SetIndentedWordWrap("H3",true)
+    :SetFont("P" ,font,U1.CN and 13 or 12,""):SetTextColor("P",0.81, 0.65, 0.48):SetSpacing("P",5) --cfa67f
+    :SetFont("H1",font,U1.CN and 14 or 13,""):SetTextColor("H1",.9,.9,.7):SetSpacing("H1",5)
+    :SetFont("H2",font,U1.CN and 13 or 12,""):SetTextColor("H2",.9,.9,.7):SetSpacing("H2",4)
+    :SetFont("H3",font,U1.CN and 12 or 11,""):SetTextColor("H3",.9,.9,.7):SetSpacing("H3",3):SetIndentedWordWrap("H3",true)
     :un();
 
     --右侧说明的图片窗

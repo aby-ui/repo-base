@@ -5,6 +5,7 @@
 	<Script file="ContainerInfoTables.lua"/>
 	<Script file="ContainerLootTables.lua"/>
 	<Script file="EventInfoTables.lua"/>
+	<Script file="OthersInfoTables.lua"/>
 	<Script file="AchievementTables.lua"/>
 	<Script file="LootQuestsTables.lua"/>
 	<Script file="Conduits.lua"/>

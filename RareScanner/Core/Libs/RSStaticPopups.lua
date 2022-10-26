@@ -55,7 +55,7 @@ LibDialog:Register(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS, {
         {
             text = YES,
             on_click = function(self, mouseButton, down)
-				RSConfigDB.ApplyCollectionsLootFilters(); 
+				RSConfigDB.SetFilteringByExplorerResults(true); 
 				RSLogger:PrintMessage(AL["LOG_LOOT_FILTERS_APPLIED"])
             end,
         },

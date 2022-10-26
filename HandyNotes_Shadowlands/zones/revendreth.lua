@@ -2,23 +2,25 @@
 ---------------------------------- NAMESPACE ----------------------------------
 -------------------------------------------------------------------------------
 local ADDON_NAME, ns = ...
-local L = ns.locale
 local Class = ns.Class
+local L = ns.locale
 local Map = ns.Map
 
 local Collectible = ns.node.Collectible
-local NPC = ns.node.NPC
 local Node = ns.node.Node
+local NPC = ns.node.NPC
 local PetBattle = ns.node.PetBattle
 local Rare = ns.node.Rare
+local Soulshape = ns.node.Soulshape
+local Squirrel = ns.node.Squirrel
 local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
 local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
-local Transmog = ns.reward.Transmog
 local Toy = ns.reward.Toy
+local Transmog = ns.reward.Transmog
 
 local Arrow = ns.poi.Arrow
 local Path = ns.poi.Path
@@ -28,6 +30,8 @@ local POI = ns.poi.POI
 
 local NECROLORD = ns.covenants.NEC
 local VENTHYR = ns.covenants.VEN
+local NIGHTFAE = ns.covenants.FAE
+
 local map = Map({id = 1525, settings = true})
 
 -------------------------------------------------------------------------------
@@ -1001,6 +1005,132 @@ map.nodes[64485273] = Inquisitor({
 }) -- Grand Inquisitor Nicu
 
 -------------------------------------------------------------------------------
+--------------------------------- CRYPT KICKER --------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[72384967] = NPC({
+    id = 176056,
+    icon = 133706,
+    group = ns.groups.CRYPT_KICKER,
+    note = L['bell_of_shame_note'],
+    requires = ns.requirement.Quest(57928), -- Atonement Crypt Key
+    rewards = {
+        Achievement({
+            id = 14273,
+            criteria = ({
+                id = 1,
+                qty = true,
+                suffix = L['atonement_crypts_opened']
+            })
+        })
+    }
+}) -- Bell of Shame (Gahiji the Tomb Raider)
+
+local AtonementCrypt = Node({
+    label = L['atonement_crypt_label'],
+    icon = 'peg_gn',
+    scale = 1.2,
+    group = ns.groups.CRYPT_KICKER,
+    note = L['atonement_crypt_note'],
+    requires = ns.requirement.Quest(57928), -- Atonement Crypt Key
+    rewards = {
+        Achievement({
+            id = 14273,
+            criteria = ({
+                id = 1,
+                qty = true,
+                suffix = L['atonement_crypts_opened']
+            })
+        })
+    }
+}) -- Atonement Crypt
+
+map.nodes[68615334] = AtonementCrypt
+map.nodes[68925414] = AtonementCrypt
+map.nodes[68985535] = AtonementCrypt
+map.nodes[69065330] = AtonementCrypt
+map.nodes[69645376] = AtonementCrypt
+map.nodes[69815460] = AtonementCrypt
+map.nodes[69815523] = AtonementCrypt
+map.nodes[70235457] = AtonementCrypt
+map.nodes[70245522] = AtonementCrypt
+map.nodes[70405378] = AtonementCrypt
+map.nodes[70885403] = AtonementCrypt
+map.nodes[70915574] = AtonementCrypt
+map.nodes[70945491] = AtonementCrypt
+
+local AtonementCryptKey = Node({
+    label = L['atonement_crypt_key_label'],
+    icon = 'peg_bl',
+    scale = 1.0,
+    group = ns.groups.CRYPT_KICKER,
+    note = L['atonement_crypt_key_note'],
+    requires = ns.requirement.Quest(57928), -- Atonement Crypt Key
+    rewards = {
+        Achievement({
+            id = 14273,
+            criteria = ({
+                id = 1,
+                qty = true,
+                suffix = L['atonement_crypts_opened']
+            })
+        })
+    }
+}) -- Atonement Crypt Key
+
+map.nodes[67024378] = AtonementCryptKey
+map.nodes[69664544] = AtonementCryptKey
+map.nodes[70875231] = AtonementCryptKey
+map.nodes[71314407] = AtonementCryptKey
+map.nodes[71444970] = AtonementCryptKey
+map.nodes[72544471] = AtonementCryptKey
+map.nodes[72714666] = AtonementCryptKey
+map.nodes[73064493] = AtonementCryptKey
+map.nodes[73344700] = AtonementCryptKey
+map.nodes[73554968] = AtonementCryptKey
+map.nodes[74454970] = AtonementCryptKey
+map.nodes[75104712] = AtonementCryptKey
+
+-------------------------------------------------------------------------------
+------------------ TO ALL THE SQUIRRELS I'VE LOVED AND LOST -------------------
+-------------------------------------------------------------------------------
+
+map.nodes[70907650] = Squirrel({
+    id = 174844,
+    rewards = {Achievement({id = 14731, criteria = 50264})},
+    pois = {
+        POI({
+            700407640, 700407660, 700807660, 710007640, 720407740, 720607860,
+            720807800
+        })
+    }
+}) -- Shardling
+
+map.nodes[39004930] = Squirrel({
+    id = 165767,
+    rewards = {Achievement({id = 14731, criteria = 50265})},
+    pois = {
+        POI({
+            27204460, 27404240, 28004420, 28404320, 28804500, 29203940,
+            29404440, 30003780, 30203980, 30403880, 31403940, 31404040,
+            31604060, 33404140, 38404920, 38404960, 38804900, 38805140,
+            39204980, 39405220, 39405400, 39605200, 39805360, 39805540,
+            40004960, 40005280, 40005560, 40404900, 40604920, 40605480,
+            58207660, 58607620, 59206820, 59206880, 59207320, 59406960,
+            59407660, 59408000, 59606780, 59806700, 59806940, 59806960,
+            60006620, 60007120, 60007340, 60007660, 60007840, 60207220,
+            60207600, 60207900, 60807720, 61006680, 61006780, 61407620, 61807900
+        })
+    }
+}) -- Emaciated Bat
+
+map.nodes[56005800] = Squirrel({
+    id = 174646,
+    rewards = {Achievement({id = 14731, criteria = 50266})},
+    pois = {POI({56005820, 56205880})}
+}) -- Murky Creeper
+
+-------------------------------------------------------------------------------
 -------------------------------- BROKEN MIRRORS -------------------------------
 -------------------------------------------------------------------------------
 
@@ -1175,3 +1305,23 @@ function Blanchy.getters:note()
 end
 
 map.nodes[62874341] = Blanchy()
+
+-------------------------------------------------------------------------------
+--------------------------------- SOULSHAPES ----------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[63184276] = Soulshape({
+    id = 181660,
+    icon = 2027864,
+    note = L['soulshape_chicken_note'],
+    rewards = {
+        Item({item = 187813, quest = 64941, covenant = NIGHTFAE}) -- Chicken Soul
+    }
+}) -- Chicken Soul
+
+map.nodes[63756169] = Node({
+    label = L['spectral_feed_label'],
+    icon = 134058,
+    covenant = NIGHTFAE,
+    note = L['spectral_feed_note']
+}) -- Spectral Feed

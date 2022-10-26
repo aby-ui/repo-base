@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(74366, 74475)--74366 Forgemaster Gog'duh, 74475 Magmolatus
 mod:SetEncounterID(1655)
 mod:SetMainBossID(74475)
@@ -79,15 +79,13 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnFirestorm:Play("helpkick")
 		end
 	elseif spellId == 149975 then
-		if self:CheckDispelFilter() then--only show once. (prevent loud sound)
+		if self:CheckDispelFilter("magic") then--only show once. (prevent loud sound)
 			specWarnDancingFlames:CombinedShow(0.3, args.destName)
-			if self:AntiSpam(2, 2) then
-				specWarnDancingFlames:Play("dispelnow")
-			end
+			specWarnDancingFlames:ScheduleVoice(0.3, "dispelnow")
 		else
 			warnDancingFlames:CombinedShow(0.3, args.destName)--heroic is 2 targets so combined.
 		end
-	elseif spellId == 150032 and self:CheckDispelFilter() then
+	elseif spellId == 150032 and self:CheckDispelFilter("magic") then
 		specWarnWitheringFlames:Show(args.destName)
 		specWarnWitheringFlames:Play("dispelnow")
 	end

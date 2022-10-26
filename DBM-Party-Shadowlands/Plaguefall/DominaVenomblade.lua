@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2423, "DBM-Party-Shadowlands", 2, 1183)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(164266)
 mod:SetEncounterID(2385)
 
@@ -77,7 +77,7 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 325552 then
-		if self.Options.SpecWarn325552dispel and self:CheckDispelFilter() then
+		if self.Options.SpecWarn325552dispel and self:CheckDispelFilter("poison") then
 			specWarnCytotoxicSlash:Show(args.destName)
 			specWarnCytotoxicSlash:Play("helpdispel")
 		elseif args:IsPlayer() then

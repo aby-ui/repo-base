@@ -10,15 +10,12 @@ function rematch:SetupPanelTabs(frame,activeIndex,...)
 		local button = frame.Tabs[i]
 		local label = select(i,...)
 		button.Text:SetText(label)
-		local width = max(76,button.Text:GetStringWidth()+40-(rematch.localeSquish and 8 or 0))
-		button:SetWidth(width)
-		button.width = width-16
-		totalWidth = totalWidth + button.width
+		totalWidth = totalWidth + 63
 		local index = button:GetID()
 		if index==1 then
-			button:SetPoint("TOPLEFT")
+			button:SetPoint("TOPLEFT",3,frame==rematch.Frame.PanelTabs and 0 or 1)
 		elseif index>1 then
-			button:SetPoint("LEFT",frame.Tabs[index-1],"RIGHT",-16,0)
+			button:SetPoint("LEFT",frame.Tabs[index-1],"RIGHT",-3,0)
 		end
 	end
 	frame.activeTab = activeIndex or 1
@@ -30,14 +27,8 @@ end
 function rematch:UpdatePanelTabs(parent)
 	for i=1,#parent.Tabs do
 		local button = parent.Tabs[i]
-		local active = parent.activeTab==i
-		for i=1,3 do
-			button.Inactive[i]:SetShown(not active)
-			button.Active[i]:SetShown(active and true)
-		end
-		button.Text:SetPoint("CENTER",0,active and -3 or 2)
-		button.Highlight:SetPoint("BOTTOMRIGHT",-12,active and 1 or 7)
-		button:SetNormalFontObject(active and GameFontHighlightSmall or GameFontNormalSmall)
+		button.isSelected = parent.activeTab==i
+		button:Update()
 	end
 end
 
@@ -63,12 +54,13 @@ function rematch:ConfigureFrameTabs(parent)
 		if (parent.Tabs[3]:IsShown() and settings.SinglePanel and settings.UseMiniQueue) or (not parent.Tabs[3]:IsShown() and (not settings.SinglePanel or not settings.UseMiniQueue)) then
 			local show = not parent.Tabs[3]:IsShown()
 			parent.Tabs[3]:SetShown(show)
-			parent.Tabs[4]:SetPoint("LEFT",parent.Tabs[show and 3 or 2],"RIGHT",-16,0)
+			parent.Tabs[4]:SetPoint("LEFT",parent.Tabs[show and 3 or 2],"RIGHT",-3,0)
 			local width = 0 -- recalculate width of parent
 			for i=1,4 do
-				width = width + ((i~=3 or show) and parent.Tabs[i].width or 0)
+				width = width + ((i~=3 or show) and 63 or 0)
 			end
 			parent:SetWidth(width+16)
 		end
 	end
 end
+

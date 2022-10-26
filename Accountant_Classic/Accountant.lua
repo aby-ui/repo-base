@@ -146,9 +146,9 @@ function Accountant_OnLoad(self)
 
 	-- Confirm box
 	StaticPopupDialogs["ACCOUNTANT_RESET"] = {preferredIndex = 3,
-		text = TEXT("meh"),
-		button1 = TEXT(OKAY),
-		button2 = TEXT(CANCEL),
+		text = "meh",
+		button1 = OKAY,
+		button2 = CANCEL,
 		OnAccept = function()
 			Accountant_ResetConfirmed();
 		end,

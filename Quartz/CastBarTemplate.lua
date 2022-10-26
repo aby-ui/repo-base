@@ -24,6 +24,7 @@ local media = LibStub("LibSharedMedia-3.0")
 local lsmlist = AceGUIWidgetLSMlists
 
 local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+local WoWWrath = (WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC)
 local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 
 local LibClassicCasterino = WoWClassic and LibStub("LibClassicCasterino", true)
@@ -239,7 +240,7 @@ function CastBarTemplate:UNIT_SPELLCAST_START(event, unit, guid, spellID)
 	if not startTime or not endTime then return end
 
 	-- this property doesn't exist in BC, and aliases with the spellID
-	if not WoWRetail then
+	if not WoWRetail and not WoWWrath then
 		notInterruptible = false
 	end
 
@@ -1103,7 +1104,7 @@ function Quartz3.CastBarTemplate:new(parent, unit, name, localizedName, config)
 	bar.Bar      = Quartz3:CreateStatusBar(nil, bar) --CreateFrame("StatusBar", nil, bar)
 	bar.Text     = bar.Bar:CreateFontString(nil, "OVERLAY")
 	bar.TimeText = bar.Bar:CreateFontString(nil, "OVERLAY")
-	bar.Icon     = bar.Bar:CreateTexture(nil, "DIALOG")
+	bar.Icon     = bar.Bar:CreateTexture(nil, "ARTWORK")
 	bar.Spark    = bar.Bar:CreateTexture(nil, "OVERLAY")
 	if unit ~= "player" then
 		bar.Shield = bar.Bar:CreateTexture(nil, "ARTWORK")

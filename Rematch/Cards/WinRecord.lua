@@ -19,7 +19,6 @@ rematch:InitModule(function()
 		stat.Percent:SetTextColor(v[2],v[3],v[4])
 		stat.Label:SetTextColor(v[2],v[3],v[4])
 	end
-	rematch:ConvertTitlebarCloseButton(card.CloseButton)
 end)	
 
 -- returns the win record stats of a team

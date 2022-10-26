@@ -620,6 +620,14 @@ local function BuildUidMap(data, children, type)
     return self.map[uid].parent
   end
 
+  uidMap.UnsetParent = function(self, uid)
+    if not self.map[uid] then
+      error("GetParent for unknown uid")
+      return
+    end
+    self.map[uid].parent = nil
+  end
+
   uidMap.GetParentIsDynamicGroup = function(self, uid)
     if not self.map[uid] then
       error("GetParentIsDynamicGroup for unknown uid")
@@ -1527,14 +1535,20 @@ local methods = {
       self:SetMinimumProgress(1 * onePhaseProgress)
       coroutine.yield()
 
-      if userChoices.activeCategories.oldchildren then
-        self:RemoveUnmatchedOld(matchInfo.oldUidMap, matchInfo.oldUidMap:GetRootUID())
+      local removeOldGroups = matchInfo.activeCategories.arrangement and userChoices.activeCategories.arrangement
+      if userChoices.activeCategories.oldchildren or removeOldGroups then
+        self:RemoveUnmatchedOld(matchInfo.oldUidMap, matchInfo.oldUidMap:GetRootUID(), matchInfo.newUidMap,
+                                userChoices.activeCategories.oldchildren,
+                                removeOldGroups)
       end
 
       self:SetMinimumProgress(2 * onePhaseProgress)
 
-      if not userChoices.activeCategories.newchildren then
-        self:RemoveUnmatchedNew(matchInfo.newUidMap, matchInfo.newUidMap:GetRootUID())
+      local removeNewGroups = matchInfo.activeCategories.arrangement and not userChoices.activeCategories.arrangement
+      if userChoices.activeCategories.newchildren or removeNewGroups then
+        self:RemoveUnmatchedNew(matchInfo.newUidMap, matchInfo.newUidMap:GetRootUID(), matchInfo.oldUidMap,
+                                userChoices.activeCategories.newchildren,
+                                removeNewGroups)
       end
       self:SetMinimumProgress(3 * onePhaseProgress)
 
@@ -1662,7 +1676,7 @@ local methods = {
       uidMap:ChangeId(uid, existingData.id)
     else
       if WeakAuras.GetData(uidMap:GetIdFor(uid)) then
-        local newId = WeakAuras.FindUnusedId(uidMap:GetIdFor(uid))
+        local newId = OptionsPrivate.Private.FindUnusedId(uidMap:GetIdFor(uid))
         uidMap:ChangeId(uid, newId)
       end
     end
@@ -1717,7 +1731,7 @@ local methods = {
         if string.sub(data.id, 1, #targetName) == targetName then
           -- Our name is already prefixed with targetName, don't try to improve
         else
-          local newId = WeakAuras.FindUnusedId(targetName)
+          local newId = OptionsPrivate.Private.FindUnusedId(targetName)
           local oldid = data.id
           WeakAuras.Rename(data, newId)
           if targetName[aura.uid] then -- We can hope that the aura the squatter renames itself, so try again
@@ -1731,7 +1745,7 @@ local methods = {
     coroutine.yield()
     return changed
   end,
-  RemoveUnmatchedOld = function(self, uidMap, uid)
+  RemoveUnmatchedOld = function(self, uidMap, uid, otherMap, removeAuras, removeGroups)
     if uidMap:GetType() ~= "old" then
       error("Wrong map for delete")
     end
@@ -1739,8 +1753,8 @@ local methods = {
     local children = uidMap:GetChildren(uid)
     local removedAllChildren = true
     for index, childUid in ipairs_reverse(children) do
-      local removed = self:RemoveUnmatchedOld(uidMap, childUid)
-      if not removed then
+      local removed = self:RemoveUnmatchedOld(uidMap, childUid, otherMap, removeAuras, removeGroups)
+      if not removed and not uidMap:GetUIDMatch(childUid) then
         removedAllChildren = false
       end
     end
@@ -1751,21 +1765,30 @@ local methods = {
         error("Can't remove root")
       end
 
-      local data = OptionsPrivate.Private.GetDataByUID(uid)
-      if not data then
-        error("Can't find data")
+      if (uidMap:GetGroupRegionType(uid) and removeGroups)
+          or (uidMap:GetGroupRegionType(uid) == nil and removeAuras)
+        then
+
+        for index, childUid in ipairs_reverse(children) do
+          uidMap:UnsetParent(childUid)
+        end
+
+        local data = OptionsPrivate.Private.GetDataByUID(uid)
+        if not data then
+          error("Can't find data")
+        end
+        WeakAuras.Delete(data)
+        uidMap:Remove(uid)
+        self:IncProgress()
+        coroutine.yield()
+        return true
       end
-      WeakAuras.Delete(data)
-      uidMap:Remove(uid)
-      self:IncProgress()
-      coroutine.yield()
-      return true
     end
     self:IncProgress()
     coroutine.yield()
     return false
   end,
-  RemoveUnmatchedNew = function(self, uidMap, uid)
+  RemoveUnmatchedNew = function(self, uidMap, uid, otherMap, removeAuras, removeGroups)
     if uidMap:GetType() ~= "new" then
       error("Wrong map for delete")
     end
@@ -1773,8 +1796,8 @@ local methods = {
     local children = uidMap:GetChildren(uid)
     local removedAllChildren = true
     for index, childUid in ipairs_reverse(children) do
-      local removed = self:RemoveUnmatchedNew(uidMap, childUid)
-      if not removed then
+      local removed = self:RemoveUnmatchedNew(uidMap, childUid, otherMap, removeAuras, removeGroups)
+      if not removed and not uidMap:GetUIDMatch(childUid) then
         removedAllChildren = false
       end
     end
@@ -1785,10 +1808,19 @@ local methods = {
         error("Can't remove root")
       end
 
-      uidMap:Remove(uid)
-      self:IncProgress()
-      coroutine.yield()
-      return true
+      if (uidMap:GetGroupRegionType(uid) and removeGroups)
+          or (uidMap:GetGroupRegionType(uid) == nil and removeAuras)
+        then
+
+        for index, childUid in ipairs_reverse(children) do
+          uidMap:UnsetParent(childUid)
+        end
+
+        uidMap:Remove(uid)
+        self:IncProgress()
+        coroutine.yield()
+        return true
+      end
     end
     self:IncProgress()
     coroutine.yield()
@@ -1823,7 +1855,7 @@ local methods = {
       data.authorMode = nil
       WeakAuras.Add(data)
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
-      local button = WeakAuras.GetDisplayButton(data.id)
+      local button = OptionsPrivate.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
         local parentIsDynamicGroup = structureUidMap:GetParentIsDynamicGroup(uid)
@@ -1846,14 +1878,14 @@ local methods = {
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = OptionsPrivate.Private.GetDataByUID(uid)
-      local displayButton = WeakAuras.GetDisplayButton(data.id)
+      local displayButton = OptionsPrivate.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
   end,
   ImportPhase1 = function(self, uidMap, uid, phase2Order)
     tinsert(phase2Order, uid)
     local data = uidMap:GetPhase1Data(uid)
-    local newId = WeakAuras.FindUnusedId(data.id)
+    local newId = OptionsPrivate.Private.FindUnusedId(data.id)
     uidMap:ChangeId(uid, newId)
 
     data.preferToUpdate = false
@@ -1884,7 +1916,7 @@ local methods = {
       WeakAuras.Add(data)
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
 
-      local button = WeakAuras.GetDisplayButton(data.id)
+      local button = OptionsPrivate.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
         local parentIsDynamicGroup = uidMap:GetParentIsDynamicGroup(uid)
@@ -1906,7 +1938,7 @@ local methods = {
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = OptionsPrivate.Private.GetDataByUID(uid)
-      local displayButton = WeakAuras.GetDisplayButton(data.id)
+      local displayButton = OptionsPrivate.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
 
@@ -1943,8 +1975,8 @@ local methods = {
   Close = function(self, success, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
-    if self.CallbackFunc then
-      self.CallbackFunc(success, id)
+    if self.callbackFunc then
+      self.callbackFunc(success, id)
     end
   end,
   AddBasicInformationWidgets = function(self, data, sender)

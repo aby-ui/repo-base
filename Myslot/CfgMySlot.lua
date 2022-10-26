@@ -60,8 +60,8 @@ CoreDependCall("MySlot", function()
         --[[ --删除宏会导致其他专精都受影响，不能提供这个选项
         StaticPopupDialogs["ABYUI_MYSLOT_CLEAR_MACRO"] = {preferredIndex = 3,
             text = "确定要删除所有通用宏和角色专用宏吗？此功能仅用于清理未知宏，被删除的宏如果没有备份就会永久删除无法恢复！！如果你确实知道自己是在做什么，请按住CTRL+ALT键点击确认按钮",
-            button1 = TEXT(YES),
-            button2 = TEXT(CANCEL),
+            button1 = YES,
+            button2 = CANCEL,
             OnAccept = function(self, data)
                 if IsControlKeyDown() and IsAltKeyDown() then
                     for i=138,1,-1 do DeleteMacro(i) end

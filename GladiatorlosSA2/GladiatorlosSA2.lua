@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_VERSION = GetAddOnMetadata("GladiatorlosSA2", "Version")
- local GSA_GAME_VERSION = "9.2"
+ local GSA_GAME_VERSION = "10.0.0"
  local GSA_EXPANSION = ""
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -205,14 +205,6 @@
  function GladiatorlosSA:OnInitialize()
 	self:SetExpansion()
 
-	if not self.spellList then
-		if (GSA_EXPANSION == L["EXPAC_TBC"]) then
-			self.spellList = self:GetSpellList_TBC()
-		else
-			self.spellList = self:GetSpellList()
-		end
-	end
-
 	for _,v in pairs(self.spellList) do
 		for _,spell in pairs(v) do
 			if dbDefaults.profile[spell] == nil then dbDefaults.profile[spell] = true end
@@ -255,7 +247,11 @@
 		func = function()
 			if (GSA_EXPANSION == L["EXPAC_TBC"]) then
 				self:OnOptionCreate_TBC()
-				else
+			elseif (GSA_EXPANSION == L["EXPAC_WotLK"]) then
+				self:OnOptionCreate_WLK()
+			elseif (GSA_EXPANSION == L["EXPAC_SL"]) then
+				self:OnOptionCreate_SL()
+			else
 				self:OnOptionCreate()
 			end
 				bliz_options.args.load.disabled = true
@@ -569,14 +565,23 @@ function GladiatorlosSA:DUEL_REQUESTED(event, playerName)
 
  function GladiatorlosSA:SetExpansion()
 	 local _,_,_,interfaceNumber = GetBuildInfo()
-	 if (interfaceNumber >= 20000 and interfaceNumber <= 29999) then
-		 GSA_EXPANSION = L["EXPAC_TBC"]
-	 elseif (interfaceNumber >= 30000 and interfaceNumber <= 39999) then
-		 GSA_EXPANSION = L["EXPAC_WotLK"]
-	 elseif (interfaceNumber >= 90000 and interfaceNumber <= 99999) then
-		 GSA_EXPANSION = L["EXPAC_SL"]
-	--elseif (interfaceNumber >= ? and interfaceNumber <= ?9999) then
-	--	GSA_EXPANSION = L["EXPAC_DF"]
-	 end
-	 	return GSA_EXPANSION
+
+	 if not self.spellList then
+		if (interfaceNumber >= 20000 and interfaceNumber <= 29999) then
+			GSA_EXPANSION = L["EXPAC_TBC"]
+			self.spellList = self:GetSpellList_TBC()
+		elseif (interfaceNumber >= 30000 and interfaceNumber <= 39999) then
+			GSA_EXPANSION = L["EXPAC_WotLK"]
+			self.spellList = self:GetSpellList_WLK()
+		elseif (interfaceNumber >= 90000 and interfaceNumber <= 99999) then
+			GSA_EXPANSION = L["EXPAC_SL"]
+			self.spellList = self:GetSpellList_SL()
+		elseif (interfaceNumber >= 100000 and interfaceNumber <= 109999) then
+			GSA_EXPANSION = L["EXPAC_DF"]
+			self.spellList = self:GetSpellList()
+		end
+	end
+
+
+
  end

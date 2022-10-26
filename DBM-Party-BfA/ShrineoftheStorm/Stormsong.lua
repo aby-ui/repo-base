@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2155, "DBM-Party-BfA", 4, 1001)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 mod:SetCreatureID(134060)
 mod:SetEncounterID(2132)
 
@@ -41,7 +41,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 268896 and self:CheckDispelFilter() then
+	if spellId == 268896 and self:CheckDispelFilter("magic") then
 		specWarnMindRend:Show(args.destName)
 		specWarnMindRend:Play("helpdispel")
 	elseif spellId == 269131 then

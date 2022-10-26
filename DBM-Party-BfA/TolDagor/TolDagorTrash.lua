@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TolDagorTrash", "DBM-Party-BfA", 9)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -76,7 +76,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 258133 and not args:IsDestTypePlayer() and self:AntiSpam(5, 1) then
 		specWarnDarkStep:Show(args.destName)
 		specWarnDarkStep:Play("helpdispel")
-	elseif spellId == 265889 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(5, 2) then
+	elseif spellId == 265889 and args:IsDestTypePlayer() and self:CheckDispelFilter("magic") and self:AntiSpam(5, 2) then
 		specWarnTorchStrike:Show(args.destName)
 		specWarnTorchStrike:Play("helpdispel")
 	elseif spellId == 259188 and self:IsValidWarning(args.sourceGUID) and self:AntiSpam(5, 4) then

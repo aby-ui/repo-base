@@ -129,7 +129,7 @@ function S:OnInitialize()
 		self:ConstructCombo();
 		self:ConstructHitPoints();	-- 构建连击点
 	end
-	self:ConstructCastingBar();
+	--TODO:abyui10 self:ConstructCastingBar();
 	self:UpdateUnitFrame();
 end
 
@@ -875,6 +875,7 @@ function S:ConstructHitPoints()
 end
 
 function S:ToggleCastingBar(switch)
+	if not self.castBar then return end
 	if (switch) then
 		self.castBar.showCastbar = true;
 	else

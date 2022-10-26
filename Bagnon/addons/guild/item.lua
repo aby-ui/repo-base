@@ -21,8 +21,7 @@ function Item:Construct()
 	return b
 end
 
-function Item:GetBlizzard()
-end
+function Item:GetBlizzard() end
 
 
 --[[ Events ]]--
@@ -69,16 +68,18 @@ end
 
 --[[ Update ]]--
 
-function Item:ShowTooltip()
-	GameTooltip:SetOwner(self:GetTipAnchor())
+function Item:UpdateTooltip()
+	if not self.info.cached then
+		GameTooltip:SetOwner(self:GetTipAnchor())
 
-	local pet = {GameTooltip:SetGuildBankItem(self:GetSlot())}
-	if pet[1] and pet[1] > 0 then
-		BattlePetToolTip_Show(unpack(pet))
+		local pet = {GameTooltip:SetGuildBankItem(self:GetSlot())}
+		if pet[1] and pet[1] > 0 then
+			BattlePetToolTip_Show(unpack(pet))
+		end
+
+		GameTooltip:Show()
+		CursorUpdate(self)
 	end
-
-	GameTooltip:Show()
-	CursorUpdate(self)
 end
 
 function Item:SplitStack(split)
@@ -86,6 +87,7 @@ function Item:SplitStack(split)
 	SplitGuildBankItem(tab, slot, split)
 end
 
+function Item:UpdateFocus() end
 function Item:UpdateCooldown() end
 
 

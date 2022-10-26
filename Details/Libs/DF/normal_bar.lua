@@ -1,35 +1,27 @@
 
-local DF = _G ["DetailsFramework"]
+local DF = _G["DetailsFramework"]
 if (not DF or not DetailsFrameworkCanLoad) then
-	return 
+	return
 end
 
 local _
-local _rawset = rawset --lua locals
-local _rawget = rawget --lua locals
-local _setmetatable = setmetatable --lua locals
-local _unpack = unpack --lua locals
-local _type = type --lua locals
-local _math_floor = math.floor --lua locals
+local _unpack = unpack
+local type = type
+local _math_floor = math.floor
 
-local SharedMedia = LibStub:GetLibrary ("LibSharedMedia-3.0")
-
-local cleanfunction = function() end
+local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 local APIBarFunctions
 
 do
 	local metaPrototype = {
 		WidgetType = "normal_bar",
-		SetHook = DF.SetHook,
-		RunHooksForWidget = DF.RunHooksForWidget,
-
 		dversion = DF.dversion,
 	}
 
 	--check if there's a metaPrototype already existing
 	if (_G[DF.GlobalWidgetControlNames["normal_bar"]]) then
 		--get the already existing metaPrototype
-		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames["normal_bar"]]
 		--check if is older
 		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
 			--the version is older them the currently loading one
@@ -40,25 +32,26 @@ do
 		end
 	else
 		--first time loading the framework
-		_G[DF.GlobalWidgetControlNames ["normal_bar"]] = metaPrototype
+		_G[DF.GlobalWidgetControlNames["normal_bar"]] = metaPrototype
 	end
 end
 
-local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
+local BarMetaFunctions = _G[DF.GlobalWidgetControlNames["normal_bar"]]
+DF:Mixin(BarMetaFunctions, DF.ScriptHookMixin)
 
 ------------------------------------------------------------------------------------------------------------
 --metatables
 
-	BarMetaFunctions.__call = function(_table, value)
+	BarMetaFunctions.__call = function(object, value)
 		if (not value) then
-			return _table.statusbar:GetValue()
+			return object.statusbar:GetValue()
 		else
-			return _table.statusbar:SetValue(value)
+			return object.statusbar:SetValue(value)
 		end
 	end
 
-	BarMetaFunctions.__add = function(v1, v2) 
-		if (_type(v1) == "table") then
+	BarMetaFunctions.__add = function(v1, v2)
+		if (type(v1) == "table") then
 			local v = v1.statusbar:GetValue()
 			v = v + v2
 			v1.statusbar:SetValue(v)
@@ -69,8 +62,8 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 		end
 	end
 
-	BarMetaFunctions.__sub = function(v1, v2) 
-		if (_type(v1) == "table") then
+	BarMetaFunctions.__sub = function(v1, v2)
+		if (type(v1) == "table") then
 			local v = v1.statusbar:GetValue()
 			v = v - v2
 			v1.statusbar:SetValue(v)
@@ -170,7 +163,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 			return func (_table, _member_requested)
 		end
 		
-		local fromMe = _rawget (_table, _member_requested)
+		local fromMe = rawget (_table, _member_requested)
 		if (fromMe) then
 			return fromMe
 		end
@@ -227,26 +220,26 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	local smember_color = function(_object, _value)
 		local _value1, _value2, _value3, _value4 = DF:ParseColors(_value)
 
-		_object.statusbar:SetStatusBarColor (_value1, _value2, _value3, _value4)
+		_object.statusbar:SetStatusBarColor(_value1, _value2, _value3, _value4)
 		_object._texture.original_colors = {_value1, _value2, _value3, _value4}
-		_object.timer_texture:SetVertexColor (_value1, _value2, _value3, _value4)
+		_object.timer_texture:SetVertexColor(_value1, _value2, _value3, _value4)
 		
-		_object.timer_textureR:SetVertexColor (_value1, _value2, _value3, _value4)
+		_object.timer_textureR:SetVertexColor(_value1, _value2, _value3, _value4)
 
-		return _object._texture:SetVertexColor (_value1, _value2, _value3, _value4)
+		return _object._texture:SetVertexColor(_value1, _value2, _value3, _value4)
 	end
 	--background color
 	local smember_backgroundcolor = function(_object, _value)
 		local _value1, _value2, _value3, _value4 = DF:ParseColors(_value)
-		return _object.background:SetVertexColor (_value1, _value2, _value3, _value4)
+		return _object.background:SetVertexColor(_value1, _value2, _value3, _value4)
 	end
 	--icon
 	local smember_icon = function(_object, _value)
 		if (type(_value) == "table") then
-			local _value1, _value2 = _unpack (_value)
+			local _value1, _value2 = _unpack(_value)
 			_object._icon:SetTexture(_value1)
 			if (_value2) then
-				_object._icon:SetTexCoord (_unpack (_value2))
+				_object._icon:SetTexCoord(_unpack(_value2))
 			end
 		else
 			_object._icon:SetTexture(_value)
@@ -256,17 +249,17 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	--texture
 	local smember_texture = function(_object, _value)
 		if (type(_value) == "table") then
-			local _value1, _value2 = _unpack (_value)
+			local _value1, _value2 = _unpack(_value)
 			_object._texture:SetTexture(_value1)
 			_object.timer_texture:SetTexture(_value1)
 			_object.timer_textureR:SetTexture(_value1)
 			if (_value2) then
-				_object._texture:SetTexCoord (_unpack (_value2))
-				_object.timer_texture:SetTexCoord (_unpack (_value2))
-				_object.timer_textureR:SetTexCoord (_unpack (_value2))
+				_object._texture:SetTexCoord(_unpack(_value2))
+				_object.timer_texture:SetTexCoord(_unpack(_value2))
+				_object.timer_textureR:SetTexCoord(_unpack(_value2))
 			end
 		else
-			if (_value:find ("\\")) then
+			if (_value:find("\\")) then
 				_object._texture:SetTexture(_value)
 			else
 				local file = SharedMedia:Fetch ("statusbar", _value)
@@ -285,7 +278,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	end
 	--background texture
 	local smember_backgroundtexture = function(_object, _value)
-		if (_value:find ("\\")) then
+		if (_value:find("\\")) then
 			_object.background:SetTexture(_value)
 		else
 			local file = SharedMedia:Fetch ("statusbar", _value)
@@ -304,14 +297,14 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	end
 	--font size
 	local smember_textsize = function(_object, _value)
-		DF:SetFontSize (_object.textleft, _value)
-		return DF:SetFontSize (_object.textright, _value)
+		DF:SetFontSize(_object.textleft, _value)
+		return DF:SetFontSize(_object.textright, _value)
 	end
 	--font color
 	local smember_textcolor = function(_object, _value)
 		local _value1, _value2, _value3, _value4 = DF:ParseColors(_value)
-		_object.textleft:SetTextColor (_value1, _value2, _value3, _value4)
-		return _object.textright:SetTextColor (_value1, _value2, _value3, _value4)
+		_object.textleft:SetTextColor(_value1, _value2, _value3, _value4)
+		return _object.textright:SetTextColor(_value1, _value2, _value3, _value4)
 	end
 	--outline (shadow)
 	local smember_outline = function(_object, _value)
@@ -320,7 +313,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	end
 	--alpha 
 	local smember_alpha= function(_object, _value)
-		return _object:SetAlpha (_value)
+		return _object:SetAlpha(_value)
 	end
 	
 	BarMetaFunctions.SetMembers = BarMetaFunctions.SetMembers or {}
@@ -352,7 +345,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 		if (func) then
 			return func (_table, _value)
 		else
-			return _rawset (_table, _key, _value)
+			return rawset (_table, _key, _value)
 		end
 	end
 
@@ -387,7 +380,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	function BarMetaFunctions:SetPoint(v1, v2, v3, v4, v5)
 		v1, v2, v3, v4, v5 = DF:CheckPoints (v1, v2, v3, v4, v5, self)
 		if (not v1) then
-			print ("Invalid parameter for SetPoint")
+			print("Invalid parameter for SetPoint")
 			return
 		end
 		return self.widget:SetPoint(v1, v2, v3, v4, v5)
@@ -420,8 +413,8 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	function BarMetaFunctions:SetColor (r, g, b, a)
 		r, g, b, a = DF:ParseColors(r, g, b, a)
 		
-		self._texture:SetVertexColor (r, g, b, a)
-		self.statusbar:SetStatusBarColor (r, g, b, a)
+		self._texture:SetVertexColor(r, g, b, a)
+		self.statusbar:SetStatusBarColor(r, g, b, a)
 		self._texture.original_colors = {r, g, b, a}
 	end
 	
@@ -429,8 +422,8 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	function BarMetaFunctions:SetIcon (texture, ...)
 		self._icon:SetTexture(texture)
 		if (...) then
-			local L, R, U, D = _unpack (...)
-			self._icon:SetTexCoord (L, R, U, D)
+			local L, R, U, D = _unpack(...)
+			self._icon:SetTexCoord(L, R, U, D)
 		end
 	end
 
@@ -446,25 +439,25 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 -- tooltip
 	function BarMetaFunctions:SetTooltip (tooltip)
 		if (tooltip) then
-			return _rawset (self, "have_tooltip", tooltip)
+			return rawset (self, "have_tooltip", tooltip)
 		else
-			return _rawset (self, "have_tooltip", nil)
+			return rawset (self, "have_tooltip", nil)
 		end
 	end
 	function BarMetaFunctions:GetTooltip()
-		return _rawget (self, "have_tooltip")
+		return rawget (self, "have_tooltip")
 	end
 	
 -- frame levels
 	function BarMetaFunctions:GetFrameLevel()
 		return self.statusbar:GetFrameLevel()
 	end
-	function BarMetaFunctions:SetFrameLevel (level, frame)
+	function BarMetaFunctions:SetFrameLevel(level, frame)
 		if (not frame) then
-			return self.statusbar:SetFrameLevel (level)
+			return self.statusbar:SetFrameLevel(level)
 		else
 			local framelevel = frame:GetFrameLevel (frame) + level
-			return self.statusbar:SetFrameLevel (framelevel)
+			return self.statusbar:SetFrameLevel(framelevel)
 		end
 	end
 
@@ -473,7 +466,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 		return self.statusbar:GetFrameStrata()
 	end
 	function BarMetaFunctions:SetFrameStrata(strata)
-		if (_type(strata) == "table") then
+		if (type(strata) == "table") then
 			self.statusbar:SetFrameStrata(strata:GetFrameStrata())
 		else
 			self.statusbar:SetFrameStrata(strata)
@@ -490,7 +483,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 
 	local OnEnter = function(frame)
 		local capsule = frame.MyObject
-		local kill = capsule:RunHooksForWidget ("OnEnter", frame, capsule)
+		local kill = capsule:RunHooksForWidget("OnEnter", frame, capsule)
 		if (kill) then
 			return
 		end
@@ -499,7 +492,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 		
 		if (frame.MyObject.have_tooltip) then 
 			GameCooltip2:Reset()
-			GameCooltip2:AddLine (frame.MyObject.have_tooltip)
+			GameCooltip2:AddLine(frame.MyObject.have_tooltip)
 			GameCooltip2:ShowCooltip(frame, "tooltip")
 		end
 
@@ -507,7 +500,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	
 	local OnLeave = function(frame)
 		local capsule = frame.MyObject
-		local kill = capsule:RunHooksForWidget ("OnLeave", frame, capsule)
+		local kill = capsule:RunHooksForWidget("OnLeave", frame, capsule)
 		if (kill) then
 			return
 		end
@@ -521,7 +514,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	
 	local OnHide = function(frame)
 		local capsule = frame.MyObject
-		local kill = capsule:RunHooksForWidget ("OnHide", frame, capsule)
+		local kill = capsule:RunHooksForWidget("OnHide", frame, capsule)
 		if (kill) then
 			return
 		end
@@ -529,7 +522,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 	
 	local OnShow = function(frame)
 		local capsule = frame.MyObject
-		local kill = capsule:RunHooksForWidget ("OnShow", frame, capsule)
+		local kill = capsule:RunHooksForWidget("OnShow", frame, capsule)
 		if (kill) then
 			return
 		end
@@ -537,7 +530,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 
 	local OnMouseDown = function(frame, button)
 		local capsule = frame.MyObject
-		local kill = capsule:RunHooksForWidget ("OnMouseDown", frame, button, capsule)
+		local kill = capsule:RunHooksForWidget("OnMouseDown", frame, button, capsule)
 		if (kill) then
 			return
 		end
@@ -552,7 +545,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 
 	local OnMouseUp = function(frame, button)
 		local capsule = frame.MyObject
-		local kill = capsule:RunHooksForWidget ("OnMouseUp", frame, button, capsule)
+		local kill = capsule:RunHooksForWidget("OnMouseUp", frame, button, capsule)
 		if (kill) then
 			return
 		end
@@ -568,7 +561,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 
 	function BarMetaFunctions:OnTimerEnd()
 		local capsule = self
-		local kill = capsule:RunHooksForWidget ("OnTimerEnd", self.widget, capsule)
+		local kill = capsule:RunHooksForWidget("OnTimerEnd", self.widget, capsule)
 		if (kill) then
 			return
 		end
@@ -585,7 +578,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 			return
 		end
 		if (self.TimerScheduled) then
-			DF:CancelTimer (self.TimerScheduled)
+			DF:CancelTimer(self.TimerScheduled)
 			self.TimerScheduled = nil
 		else
 			if (self.statusbar:GetScript("OnUpdate")) then
@@ -604,18 +597,18 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 
 	local OnUpdate = function(self, elapsed)
 		--percent of elapsed
-		local pct = abs (self.end_timer - GetTime() - self.tempo) / self.tempo
+		local pct = abs(self.end_timer - GetTime() - self.tempo) / self.tempo
 
 		if (self.inverse) then
 			self.t:SetWidth(self.total_size * pct)
 		else
-			self.t:SetWidth(self.total_size * abs (pct-1))
+			self.t:SetWidth(self.total_size * abs(pct-1))
 		end
 		
 		--right text
 		self.remaining = self.remaining - elapsed
 		if (self.MyObject.RightTextIsTimer) then
-			self.righttext:SetText(DF:IntegerToTimer (self.remaining))
+			self.righttext:SetText(DF:IntegerToTimer(self.remaining))
 		else
 			self.righttext:SetText(_math_floor(self.remaining))
 		end
@@ -673,7 +666,7 @@ local BarMetaFunctions = _G[DF.GlobalWidgetControlNames ["normal_bar"]]
 		self.timer = true
 
 		self.HasTimer = true
-		self.TimerScheduled = DF:ScheduleTimer ("StartTimeBarAnimation", 0.1, self)
+		self.TimerScheduled = DF:ScheduleTimer("StartTimeBarAnimation", 0.1, self)
 	end
 
 	function DF:StartTimeBarAnimation (timebar)
@@ -699,7 +692,7 @@ local build_statusbar = function(self)
 	self.background:Hide()
 	self.background:SetAllPoints()
 	self.background:SetTexture([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
-	self.background:SetVertexColor (.3, .3, .3, .3)
+	self.background:SetVertexColor(.3, .3, .3, .3)
 
 	self.timertexture = self:CreateTexture("$parent_timerTexture", "ARTWORK")
 	self.timertexture:Hide()
@@ -718,7 +711,7 @@ local build_statusbar = function(self)
 	self.texture:SetSize(300, 14)
 	self.texture:SetTexture([[Interface\PaperDollInfoFrame\UI-Character-Skills-Bar]])
 	
-	self:SetStatusBarTexture (self.texture)
+	self:SetStatusBarTexture(self.texture)
 	
 	self.icontexture = self:CreateTexture("$parent_icon", "OVERLAY")
 	self.icontexture:SetSize(14, 14)
@@ -738,14 +731,14 @@ local build_statusbar = function(self)
 	self.sparktimer:SetBlendMode("ADD")
 	self.sparktimer:Hide()
 	
-	self.lefttext = self:CreateFontString ("$parent_TextLeft", "OVERLAY", "GameFontHighlight")
+	self.lefttext = self:CreateFontString("$parent_TextLeft", "OVERLAY", "GameFontHighlight")
 	self.lefttext:SetJustifyH("LEFT")
 	self.lefttext:SetPoint("LEFT", self.icontexture, "RIGHT", 3, 0)
-	DF:SetFontSize (self.lefttext, 10)
+	DF:SetFontSize(self.lefttext, 10)
 
-	self.righttext = self:CreateFontString ("$parent_TextRight", "OVERLAY", "GameFontHighlight")
+	self.righttext = self:CreateFontString("$parent_TextRight", "OVERLAY", "GameFontHighlight")
 	self.righttext:SetJustifyH("LEFT")
-	DF:SetFontSize (self.righttext, 10)
+	DF:SetFontSize(self.righttext, 10)
 	self.righttext:SetPoint("RIGHT", self, "RIGHT", -3, 0)
 	
 	DetailsFrameworkNormalBar_OnCreate (self)
@@ -762,14 +755,14 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 		DF.BarNameCounter = DF.BarNameCounter + 1
 
 	elseif (not parent) then
-		return error ("Details! FrameWork: parent not found.", 2)
+		return error("Details! FrameWork: parent not found.", 2)
 	elseif (not container) then
 		container = parent
 	end
 	
-	if (name:find ("$parent")) then
-		local parentName = DF.GetParentName (parent)
-		name = name:gsub ("$parent", parentName)
+	if (name:find("$parent")) then
+		local parentName = DF.GetParentName(parent)
+		name = name:gsub("$parent", parentName)
 	end
 	
 	local BarObject = {type = "bar", dframework = true}
@@ -797,7 +790,7 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 	
 	--create widgets
 		BarObject.statusbar = CreateFrame("statusbar", name, parent)
-		DF:Mixin (BarObject.statusbar, DF.WidgetFunctions)
+		DF:Mixin(BarObject.statusbar, DF.WidgetFunctions)
 		
 		build_statusbar (BarObject.statusbar)
 		
@@ -805,7 +798,7 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 		
 		if (not APIBarFunctions) then
 			APIBarFunctions = true
-			local idx = getmetatable (BarObject.statusbar).__index
+			local idx = getmetatable(BarObject.statusbar).__index
 			for funcName, funcAddress in pairs(idx) do 
 				if (not BarMetaFunctions [funcName]) then
 					BarMetaFunctions [funcName] = function(object, ...)
@@ -818,8 +811,8 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 		
 		BarObject.statusbar:SetHeight(h)
 		BarObject.statusbar:SetWidth(w)
-		BarObject.statusbar:SetFrameLevel (parent:GetFrameLevel()+1)
-		BarObject.statusbar:SetMinMaxValues (0, 100)
+		BarObject.statusbar:SetFrameLevel(parent:GetFrameLevel()+1)
+		BarObject.statusbar:SetMinMaxValues(0, 100)
 		BarObject.statusbar:SetValue(value or 50)
 		BarObject.statusbar.MyObject = BarObject
 
@@ -857,7 +850,7 @@ function DF:NewBar (parent, container, name, member, w, h, value, texture_name)
 		BarObject.statusbar:SetScript("OnMouseUp", OnMouseUp)
 		
 	--set class
-		_setmetatable (BarObject, BarMetaFunctions)
+		setmetatable(BarObject, BarMetaFunctions)
 
 	--set texture
 		if (texture_name) then

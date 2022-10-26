@@ -79,64 +79,79 @@ local function FriendsListButtonMixin_OnEnter_HOOK(self)
 	end
 end
 
+local function UpdateFriendButton(button)
+    local playerArea = GetRealZoneText()
+
+    local nameText, infoText
+
+    if not button:IsShown() then
+        return
+    end
+
+    if button.buttonType == FRIENDS_BUTTON_TYPE_WOW then
+        local info = C_FriendList.GetFriendInfoByIndex(button.id);
+        if(info.connected) then
+            nameText = ycc.classColor[info.className] .. info.name.."|r, "..format(FRIENDS_LEVEL_TEMPLATE, ycc.diffColor[info.level] .. info.level .. '|r', info.className)
+            if(info.area == playerArea) then
+                infoText = format('|cff00ff00%s|r', info.area)
+            end
+        end
+
+    elseif button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+        local accountInfo = C_BattleNet.GetFriendAccountInfo(button.id);
+        local gameInfo = accountInfo and accountInfo.gameAccountInfo
+        if gameInfo and gameInfo.clientProgram == BNET_CLIENT_WOW and gameInfo.className then
+            local class = CLASS_ENG[gameInfo.className]
+            if accountInfo.gameAccountInfo.isOnline and gameInfo.areaName == playerArea then
+                if ShowRichPresenceOnly(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.wowProjectID, accountInfo.gameAccountInfo.factionName, accountInfo.gameAccountInfo.realmID) then
+                    infoText = format('|cff00ff00%s|r', playerArea)
+                end
+            end
+            if class then
+                nameText = BNet_GetBNetAccountName(accountInfo) .. ' ' .. FRIENDS_WOW_NAME_COLOR_CODE..'('.. FONT_COLOR_CODE_CLOSE
+                        .. ycc.classColor[class] .. (gameInfo.characterName or "") .. FONT_COLOR_CODE_CLOSE .. FRIENDS_WOW_NAME_COLOR_CODE .. ')' .. FONT_COLOR_CODE_CLOSE
+                if gameInfo.wowProjectID == WOW_PROJECT_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
+                    infoText = "|cffaa0303经典怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
+                elseif gameInfo.wowProjectID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+                    infoText = "|cff03aa03TBC怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
+                elseif gameInfo.wowProjectID == WOW_PROJECT_WRATH_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_WRATH_CLASSIC then
+                    infoText = "|cff03aa03WLK怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
+                end
+            end
+        end
+    end
+
+    if(nameText) then
+        button.name:SetText(nameText)
+    end
+    if(infoText) then
+        button.info:SetText(infoText)
+    end
+end
+
 local function friendsFrame()
     local scrollFrame = FriendsListFrameScrollFrame
     local offset = HybridScrollFrame_GetOffset(scrollFrame)
     local buttons = scrollFrame.buttons
 
-    local playerArea = GetRealZoneText()
-
     for i = 1, #buttons do
-        local nameText, infoText, nameColor
+        local nameText, infoText
         local button = buttons[i]
-        local index = offset + i
         --if not button.__abyui_hooked then
         --    button.__abyui_hooked = true
         --    button:HookScript("OnEnter", FriendsListButtonMixin_OnEnter_HOOK)
         --end
 
-        if(button:IsShown()) then
-            if ( button.buttonType == FRIENDS_BUTTON_TYPE_WOW ) then
-                local name, level, class, area, connected, status, note = GetFriendInfo(button.id)
-                if(connected) then
-                    nameText = ycc.classColor[class] .. name.."|r, "..format(FRIENDS_LEVEL_TEMPLATE, ycc.diffColor[level] .. level .. '|r', class)
-                    if(areaName == playerArea) then
-                        infoText = format('|cff00ff00%s|r', area)
-                    end
-                end
-            elseif (button.buttonType == FRIENDS_BUTTON_TYPE_BNET) then
-                local accountInfo = C_BattleNet.GetFriendAccountInfo(button.id);
-                local gameInfo = accountInfo and accountInfo.gameAccountInfo
-                if gameInfo and gameInfo.clientProgram == BNET_CLIENT_WOW and gameInfo.className then
-                    local class = CLASS_ENG[gameInfo.className]
-                    if accountInfo.gameAccountInfo.isOnline and gameInfo.areaName == playerArea then
-                        if ShowRichPresenceOnly(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.wowProjectID, accountInfo.gameAccountInfo.factionName, accountInfo.gameAccountInfo.realmID) then
-                            infoText = format('|cff00ff00%s|r', playerArea)
-                        end
-                    end
-                    if class then
-                        nameText = BNet_GetBNetAccountName(accountInfo) .. ' ' .. FRIENDS_WOW_NAME_COLOR_CODE..'('.. FONT_COLOR_CODE_CLOSE
-                                .. ycc.classColor[class] .. (gameInfo.characterName or "") .. FONT_COLOR_CODE_CLOSE .. FRIENDS_WOW_NAME_COLOR_CODE .. ')' .. FONT_COLOR_CODE_CLOSE
-                        if gameInfo.wowProjectID == WOW_PROJECT_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
-                            infoText = "|cffaa0303经典怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
-                        elseif gameInfo.wowProjectID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and WOW_PROJECT_ID ~= WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-                            infoText = "|cff03aa03TBC怀旧|r " .. gameInfo.areaName .. " " .. LEVEL .. gameInfo.characterLevel
-                        end
-                    end
-                end
-            end
-        end
-
-        if(nameText) then
-            button.name:SetText(nameText)
-        end
-        if(infoText) then
-            button.info:SetText(infoText)
-        end
+        UpdateFriendButton(button)
     end
 end
-hooksecurefunc(FriendsListFrameScrollFrame, 'update', friendsFrame)
-hooksecurefunc('FriendsFrame_UpdateFriends', friendsFrame)
+
+if FriendsFrame_UpdateFriendButton then
+    hooksecurefunc('FriendsFrame_UpdateFriendButton', function(button, elementData) UpdateFriendButton(button) end)
+elseif FriendsListFrameScrollFrame then
+    hooksecurefunc(FriendsListFrameScrollFrame, 'update', friendsFrame)
+    hooksecurefunc('FriendsFrame_UpdateFriends', friendsFrame)
+end
 
 if FriendsTooltip then
 
@@ -156,17 +171,16 @@ if FriendsTooltip then
             return
         end
 
-        if not button.buttonType == FRIENDS_BUTTON_TYPE_BNET then
+        if not button.buttonType ~= FRIENDS_BUTTON_TYPE_BNET then
             return
         end
 
         local accountInfo = C_BattleNet.GetFriendAccountInfo(button.id);
         local gameInfo = accountInfo and accountInfo.gameAccountInfo
-        if not accountInfo.gameAccountInfo.isOnline then
+        if not gameInfo or not gameInfo.isOnline then
             return
         end
 
-        local maxWidth = self.maxWidth or 0
         local numGameAccounts = C_BattleNet.GetFriendNumGameAccounts(button.id);
         local gameAccountIndex = 0;
         for i = 1, numGameAccounts do

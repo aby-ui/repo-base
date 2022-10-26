@@ -167,9 +167,13 @@ private.NPC_INFO = {
 	[179811] = { zoneID = 0, displayID = 96336 }; --Deomen the Vortex
 	[180090] = { zoneID = 0, displayID = 101357 }; --Blacksmith Bob
 	[180974] = { zoneID = 0 }; --Protoform Lattice
+	[181265] = { zoneID = 0, displayID = 97275 }; --Observer Gast
+	[181656] = { zoneID = 0, displayID = 34547 }; --Atramedes [DNT]
 	[183204] = { zoneID = 0, displayID = 99068 }; --Annihilan Hopebreaker
+	[183984] = { zoneID = 0, displayID = 64922 }; --The Weeping Vilomah
 	[184043] = { zoneID = 0, displayID = 101970 }; --Excavation Leader
 	[184109] = { zoneID = 0, displayID = 98823 }; --Remnant of Creation
+	[184238] = { zoneID = 0, displayID = 102545 }; --Wild Water Whirlwind
 	[184295] = { zoneID = 0, displayID = 86425 }; --Brusier Gor
 	[184412] = { zoneID = 0, displayID = 98789 }; --Faulty Architect
 	[185098] = { zoneID = 0, displayID = 94814 }; --Bone Husk
@@ -200,11 +204,171 @@ private.NPC_INFO = {
 	[185124] = { zoneID = 0, displayID = 91889 }; --Gravitas
 	[185125] = { zoneID = 0, displayID = 92703 }; --Heartseeker
 	[185126] = { zoneID = 0, displayID = 93165 }; --Stoneward Trampler
+	[185381] = { zoneID = 0, displayID = 24835 }; --Galgresh
+	[185382] = { zoneID = 0, displayID = 100536 }; --[PH] Vignette, Wardog Alpha
+	[185383] = { zoneID = 0, displayID = 103507 }; --[PH] Vignette, the Stormbearer
+	[185384] = { zoneID = 0, displayID = 101656 }; --[PH] Vignette, the Iron Spear
 	[185423] = { zoneID = 0, displayID = 105332 }; --Reaving Automa: Neo
 	[185434] = { zoneID = 0, displayID = 101911 }; --Oracle of Torment
 	[185435] = { zoneID = 0, displayID = 101970 }; --Excavation Leader
 	[185436] = { zoneID = 0, displayID = 98823 }; --Remnant of Creation
 	[185567] = { zoneID = 0, displayID = 105515 }; --Nascent Prototype
+	[185897] = { zoneID = 0, displayID = 55139 }; --Nomadic Vinyeti <Vignette Placeholder>
+	[185918] = { zoneID = 0, displayID = 40954 }; --Bugchewer
+	[186168] = { zoneID = 0, displayID = 102031 }; --[DNT] Sootscale the Indomitable (5/1)
+	[186463] = { zoneID = 0, displayID = 101247 }; --Frostmaul
+	[186466] = { zoneID = 0, displayID = 103373 }; --Gur Grikpaw
+	[186837] = { zoneID = 0, displayID = 103279 }; --Eggkidu
+	[186859] = { zoneID = 0, displayID = 102449 }; --Worldcarver A'tir
+	[187026] = { zoneID = 0, displayID = 102911 }; --His Fuzziness
+	[187056] = { zoneID = 0, displayID = 106005 }; --Gorbo the Usurper <Even Bigger Guy>
+	[187219] = { zoneID = 0, displayID = 100207 }; --Nokhud Warmaster
+	[187298] = { zoneID = 0, displayID = 106004 }; --Herodofin <Gorloc Historian>
+	[187306] = { zoneID = 0, displayID = 107452 }; --Morchok <Harbinger of Twilight>
+	[187603] = { zoneID = 0, displayID = 55139 }; --Vinyeti <Vignette Placeholder>
+	[187612] = { zoneID = 0, displayID = 105340 }; --Balak the Breaker
+	[187614] = { zoneID = 0, displayID = 105353 }; --Hamiir of the Winds
+	[187619] = { zoneID = 0, displayID = 100207 }; --Kol Marsiik
+	[188024] = { zoneID = 0, displayID = 1293 }; --Creature Name
+	[188025] = { zoneID = 0, displayID = 1293 }; --Creature Name
+	[188033] = { zoneID = 0, displayID = 98797 }; --Automaton Rare
+	[188065] = { zoneID = 0, displayID = 106230 }; --Dragon Shrine Spirit
+	[188095] = { zoneID = 0, displayID = 103430 }; --Hunter of the Deep
+	[188387] = { zoneID = 0, displayID = 102552 }; --[DNT] Unstable Fumerole <(RARE ELITE) FIGHTER:LAVA>
+	[188388] = { zoneID = 0, displayID = 103250 }; --Terramaw <(T3 ELITE) FIGHTER:EARTH>
+	[189861] = { zoneID = 0, displayID = 105897 }; --Soulspeaker Han
+	[189871] = { zoneID = 0, displayID = 105337 }; --Weaponmaster Hasi
+	[189872] = { zoneID = 0, displayID = 107019 }; --Nakiin the Shatterer
+	[190161] = { zoneID = 0, displayID = 106316 }; --Sarana
+	[190465] = { zoneID = 0, displayID = 103588 }; --Venomous Stonegazer
+	[190514] = { zoneID = 0, displayID = 106434 }; --Tempisyn
+	[190518] = { zoneID = 0, displayID = 106025 }; --Vulkara
+	[190520] = { zoneID = 0, displayID = 106439 }; --Shatterfang
+	[190521] = { zoneID = 0, displayID = 105819 }; --Shaleheart
+	[190523] = { zoneID = 0, displayID = 106472 }; --General Galerend
+	[190538] = { zoneID = 0, displayID = 102505 }; --Lord Searsinge
+	[190574] = { zoneID = 0, displayID = 107164 }; --Rimecaller Hazek
+	[190599] = { zoneID = 0, displayID = 106015 }; --Stoneroot the Calm
+	[190601] = { zoneID = 0, displayID = 107188 }; --The Ravager
+	[190625] = { zoneID = 0, displayID = 106906 }; --Smokescale
+	[190634] = { zoneID = 0, displayID = 102949 }; --Glacierstomp
+	[190641] = { zoneID = 0, displayID = 102922 }; --Ascendant Soilclaw
+	[190713] = { zoneID = 0, displayID = 55139 }; --Vinyeti <Vignette Placeholder>
+	[190751] = { zoneID = 0, displayID = 107247 }; --Earthrender Kasrak
+	[190752] = { zoneID = 0, displayID = 107250 }; --The Drowned One
+	[190756] = { zoneID = 0, displayID = 108327 }; --Blade of the Tempest
+	[190757] = { zoneID = 0, displayID = 102719 }; --General Flarescale
+	[190907] = { zoneID = 0, displayID = 104743 }; --Blitztusk
+	[190968] = { zoneID = 0, displayID = 106754 }; --Norbett
+	[190985] = { zoneID = 0, displayID = 109963 }; --Death's Shadow
+	[191103] = { zoneID = 0, displayID = 107233 }; --Uranto the Swift
+	[191125] = { zoneID = 0, displayID = 107344 }; --Earth-Warder's Vault
+	[191130] = { zoneID = 0, displayID = 106024 }; --Apex Fire Proto
+	[191151] = { zoneID = 0, displayID = 107344 }; --Earth-Warder's Vault
+	[191356] = { zoneID = 0, displayID = 103182 }; --Frostpaw
+	[191450] = { zoneID = 0, displayID = 107239 }; --Boolk
+	[191462] = { zoneID = 0, displayID = 105963 }; --Towering Fickleshells
+	[191649] = { zoneID = 0, displayID = 104743 }; --Apex Mammoth
+	[191650] = { zoneID = 0, displayID = 106316 }; --Apex Sabertooth
+	[191651] = { zoneID = 0, displayID = 107581 }; --Apex Stomphoof
+	[191842] = { zoneID = 0, displayID = 82266 }; --Sulfurion
+	[191950] = { zoneID = 0, displayID = 106291 }; --Porta the Overgrown
+	[192453] = { zoneID = 0, displayID = 101440 }; --Vaniik the Stormtouched <Corrupted Child of Ohn'ahra>
+	[192519] = { zoneID = 0, displayID = 102555 }; --Ensorcelled Muck
+	[192557] = { zoneID = 0, displayID = 110389 }; --Quackers the Terrible
+	[193124] = { zoneID = 0, displayID = 24835 }; --[DNT]
+	[193125] = { zoneID = 0, displayID = 105553 }; --Goremaul the Gluttonous
+	[193140] = { zoneID = 0, displayID = 104144 }; --Zarizz
+	[193142] = { zoneID = 0, displayID = 102564 }; --Enraged Sapphire
+	[193143] = { zoneID = 0, displayID = 104007 }; --Razk'vex the Untamed
+	[193146] = { zoneID = 0, displayID = 108084 }; --Treasure-Mad Trambladd
+	[193149] = { zoneID = 0, displayID = 104874 }; --Skag the Thrower
+	[193161] = { zoneID = 0, displayID = 108094 }; --Woolfang
+	[193165] = { zoneID = 0, displayID = 108098 }; --Sparkspitter Vrak
+	[193167] = { zoneID = 0, displayID = 103563 }; --Swagraal the Swollen
+	[193178] = { zoneID = 0, displayID = 105638 }; --Blightfur
+	[193188] = { zoneID = 0, displayID = 108106 }; --Seeker Teryx
+	[193201] = { zoneID = 0, displayID = 108113 }; --Mucka the Raker
+	[193209] = { zoneID = 0, displayID = 101441 }; --Zenet Avis <The Hard Wind>
+	[193215] = { zoneID = 0, displayID = 108109 }; --Scaleseeker Mezeri
+	[193225] = { zoneID = 0, displayID = 103446 }; --Notfar the Unbearable
+	[193234] = { zoneID = 0, displayID = 100334 }; --Eldoren the Reborn <Jewel of the Skies>
+	[193251] = { zoneID = 0, displayID = 106545 }; --Gruffy
+	[193256] = { zoneID = 0, displayID = 108127 }; --Nulltheria the Void Gazer
+	[193260] = { zoneID = 0, displayID = 86742 }; --Hanmuk <Jaws of the Deep>
+	[193266] = { zoneID = 0, displayID = 108200 }; --Lepidoralia the Resplendent
+	[193269] = { zoneID = 0, displayID = 104743 }; --Grumbletrunk
+	[193272] = { zoneID = 0, displayID = 107364 }; --Nalrusza
+	[193311] = { zoneID = 0, displayID = 103584 }; --Melkhop
+	[193330] = { zoneID = 0, displayID = 108030 }; --Galzuda
+	[193341] = { zoneID = 0, displayID = 100537 }; --Angen
+	[193381] = { zoneID = 0, displayID = 102868 }; --Urveda the Stormbinder
+	[193412] = { zoneID = 0, displayID = 108274 }; --Ara'rotan the Corrupted
+	[193629] = { zoneID = 0, displayID = 9491 }; --PH [DNT]
+	[193632] = { zoneID = 0, displayID = 102545, questID = { 69948 } }; --Wilrive
+	[193634] = { zoneID = 0, displayID = 103584 }; --Swog'ranka <Lunker>
+	[193664] = { zoneID = 0, displayID = 6089 }; --Ancient Protector
+	[193674] = { zoneID = 0, displayID = 106471 }; --Voraazka
+	[193678] = { zoneID = 0, displayID = 108255 }; --Fieraan <Second Iceblade>
+	[193681] = { zoneID = 0, displayID = 108258 }; --Animated Earthen Core
+	[193687] = { zoneID = 0, displayID = 108263 }; --Mawgor
+	[193689] = { zoneID = 0, displayID = 108265 }; --Jareeza <<Passage Stalker>>
+	[193690] = { zoneID = 0, displayID = 108265 }; --Jareeza <<Passage Stalker>>
+	[193691] = { zoneID = 0, displayID = 108266 }; --Fisherman Tinnak
+	[193692] = { zoneID = 0, displayID = 103911 }; --Spined Terror
+	[193693] = { zoneID = 0, displayID = 103198 }; --Rusthide
+	[193704] = { zoneID = 0, displayID = 100214 }; --Honmor
+	[193706] = { zoneID = 0, displayID = 101244 }; --Snufflegust <Lunker>
+	[193710] = { zoneID = 0, displayID = 102545 }; --Seereel, the Spring <Lunker>
+	[193722] = { zoneID = 0, displayID = 104140 }; --Tomnu
+	[193724] = { zoneID = 0, displayID = 102372 }; --Uurtus
+	[193735] = { zoneID = 0, displayID = 55833 }; --Moth'go Deeploom <Lunker>
+	[193836] = { zoneID = 0, displayID = 102872 }; --Windmancer Navati
+	[193853] = { zoneID = 0, displayID = 38391 }; --Galnmor
+	[193885] = { zoneID = 0, displayID = 103585 }; --Salkii
+	[193896] = { zoneID = 0, displayID = 102554 }; --Borzgas
+	[194225] = { zoneID = 0, displayID = 103433 }; --Muugurv
+	[194240] = { zoneID = 0, displayID = 104037 }; --Gamgus
+	[194251] = { zoneID = 0, displayID = 109119 }; --Degmakh
+	[194390] = { zoneID = 0, displayID = 102556 }; --Barnacle Brashe
+	[194392] = { zoneID = 0, displayID = 103415 }; --Brackle
+	[194409] = { zoneID = 0, displayID = 105961 }; --Ergburk
+	[194438] = { zoneID = 0, displayID = 103769 }; --Khomuur
+	[194458] = { zoneID = 0, displayID = 108306 }; --Rokzul
+	[194489] = { zoneID = 0, displayID = 106631 }; --Elusive Elder Drake
+	[194491] = { zoneID = 0, displayID = 100223 }; --Elusive Elder Frigidpelt
+	[194601] = { zoneID = 0, displayID = 103765 }; --Zagdech
+	[194608] = { zoneID = 0, displayID = 104135 }; --Kholdeg
+	[194624] = { zoneID = 0, displayID = 104128 }; --Zumakh
+	[194761] = { zoneID = 0, displayID = 105554 }; --Khuumog
+	[194763] = { zoneID = 0, displayID = 104874 }; --Tenmod
+	[195093] = { zoneID = 0, displayID = 68370 }; --Moskhoi
+	[195204] = { zoneID = 0, displayID = 108800 }; --The Jolly Giant
+	[195223] = { zoneID = 0, displayID = 104703 }; --Rustlily <Nimblewing Matriarch>
+	[195283] = { zoneID = 0, displayID = 106545 }; --Yamakh
+	[195286] = { zoneID = 0, displayID = 102548 }; --Mantai
+	[195300] = { zoneID = 0, displayID = 74166 }; --Arkhuu
+	[195417] = { zoneID = 0, displayID = 105560 }; --Tsokorg
+	[195430] = { zoneID = 0, displayID = 103588 }; --Molkeej
+	[195431] = { zoneID = 0, displayID = 107658 }; --Diluu
+	[195465] = { zoneID = 0, displayID = 104065 }; --Elusive Tempest Lizard
+	[195472] = { zoneID = 0, displayID = 106316 }; --Elusive Ferocious Titanfang
+	[195492] = { zoneID = 0, displayID = 103433 }; --Elusive Deepwater Salamanther
+	[195509] = { zoneID = 0, displayID = 107445 }; --Elusive Proto Skyterror
+	[195541] = { zoneID = 0, displayID = 100337 }; --Elusive Flourishing Quillbloom
+	[195895] = { zoneID = 0, displayID = 108783 }; --Nergazurai
+	[196056] = { zoneID = 0, displayID = 102545 }; --Gushgut the Beaksinker
+	[196244] = { zoneID = 0, displayID = 104744 }; --Hen the Stomper
+	[196246] = { zoneID = 0, displayID = 109112 }; --Harat the Ancient
+	[196250] = { zoneID = 0, displayID = 107074 }; --Thunder Talek <Lord of the Plains>
+	[196324] = { zoneID = 0, displayID = 104705 }; --Milah the Galedancer
+	[196326] = { zoneID = 0, displayID = 101619 }; --Packleader Fenka <Shadepaw Pack>
+	[196334] = { zoneID = 0, displayID = 103920 }; --The Great Enla <Scourge of the Plains>
+	[196350] = { zoneID = 0, displayID = 103920 }; --Old Stormhide
+	[196535] = { zoneID = 0, displayID = 109225 }; --Nezascar the Sightless
+	[197409] = { zoneID = 0, displayID = 109531 }; --Rhuzast the Tempest
+	[197501] = { zoneID = 0, displayID = 109554 }; --Krolkoth the Mountain
+	[198571] = { zoneID = 0, displayID = 104693 }; --Enraged Sprout
 	[5809] = { zoneID = 1, artID = { 2 }, x = 5920, y = 5820, overlay = { "5920-5820" }, friendly = { "A" }, displayID = 33165 }; --Sergeant Curtis
 	[5823] = { zoneID = 1, artID = { 2 }, x = 3900, y = 4596, overlay = { "3440-4460","3480-4340","3540-4600","3640-4440","3720-4580","3720-4760","3800-4460","3840-4340","3840-4680","3880-4860","3960-4520","3980-4400" }, displayID = 2491 }; --Death Flayer
 	[5824] = { zoneID = 1, artID = { 2 }, x = 4242, y = 3741, overlay = { "3860-5380","4240-3860","4420-4980" }, displayID = 1343 }; --Captain Flat Tusk <Captain of the Battlegu>
@@ -845,26 +1009,26 @@ private.NPC_INFO = {
 	[32377] = { zoneID = 117, artID = { 122 }, x = 5020, y = 0480, overlay = { "5020-0480","5300-1200","6060-2000","6840-1640","6840-1760","7120-1380" }, displayID = 28051 }; --Perobas the Bloodthirster
 	[32386] = { zoneID = 117, artID = { 122 }, x = 6860, y = 4840, overlay = { "6800-4480","6840-4680","6860-4840","6900-5880","6940-5720","6980-4940","7040-5100","7060-5680","7100-5560","7120-5320","7140-4400","7140-4520","7140-4760","7240-4940","7240-5100","7240-5280","7260-4420","7260-6140","7280-4060","7280-4600","7340-4740","7400-4500","7400-5240","7420-4640","7440-4860","7440-5400","7440-5520","7440-5660","7440-6040","7480-5100","7480-5880","7500-4140","7520-4980","7540-4480","7540-4720","7580-4280" }, displayID = 27063 }; --Vigdis the War Maiden
 	[32398] = { zoneID = 117, artID = { 122 }, x = 2600, y = 6400, overlay = { "2600-6400","3080-7120","3120-5680","3200-7580","3320-8020" }, displayID = 27950 }; --King Ping
-	[174048] = { zoneID = 118, artID = { 123 }, x = 4417, y = 4916, overlay = { "4420-4900" }, displayID = 27407, resetTimer = 1200, questID = { 62326 } }; --Elder Nadox
-	[174049] = { zoneID = 118, artID = { 123 }, x = 2951, y = 6213, overlay = { "2940-6220" }, displayID = 30856, resetTimer = 1200, questID = { 62327 } }; --Prince Taldaram
-	[174050] = { zoneID = 118, artID = { 123 }, x = 6750, y = 5816, overlay = { "6740-5800" }, displayID = 27394, resetTimer = 1200, questID = { 62328 } }; --Krik'thir the Gatewatcher
-	[174051] = { zoneID = 118, artID = { 123 }, x = 5831, y = 3930, overlay = { "5840-3920" }, displayID = 26352, resetTimer = 1200, questID = { 62329 } }; --Trollgore
-	[174052] = { zoneID = 118, artID = { 123 }, x = 7788, y = 6610, overlay = { "7780-6600" }, displayID = 26292, resetTimer = 1200, questID = { 62330 } }; --Novos the Summoner
-	[174053] = { zoneID = 118, artID = { 123 }, x = 8031, y = 6134, overlay = { "8020-6120" }, displayID = 27072, resetTimer = 1200, questID = { 62331 } }; --The Prophet Tharon'ja
-	[174054] = { zoneID = 118, artID = { 123 }, x = 5017, y = 8809, overlay = { "5020-8820" }, displayID = 30972, resetTimer = 1200, questID = { 62332 } }; --Falric
-	[174055] = { zoneID = 118, artID = { 123 }, x = 5816, y = 8347, overlay = { "5820-8340" }, displayID = 30973, resetTimer = 1200, questID = { 62333 } }; --Marwyn
-	[174056] = { zoneID = 118, artID = { 123 }, x = 5910, y = 7237, overlay = { "5900-7220" }, displayID = 30843, resetTimer = 1200, questID = { 62334 } }; --Forgemaster Garfrost
-	[174057] = { zoneID = 118, artID = { 123 }, x = 4712, y = 6592, overlay = { "4720-6600" }, displayID = 30277, resetTimer = 1200, questID = { 62335 } }; --Scourgelord Tyrannus
-	[174058] = { zoneID = 118, artID = { 123 }, x = 7061, y = 3854, overlay = { "7060-3840" }, displayID = 30226, resetTimer = 1200, questID = { 62336 } }; --Bronjahm <Godfather of Souls>
-	[174059] = { zoneID = 118, artID = { 123 }, x = 6480, y = 2210, overlay = { "6480-2220" }, displayID = 29837, resetTimer = 1200, questID = { 62337 } }; --The Black Knight
-	[174060] = { zoneID = 118, artID = { 123 }, x = 5394, y = 4467, overlay = { "5380-4480" }, displayID = 30857, resetTimer = 1200, questID = { 62338 } }; --Prince Keleseth
-	[174061] = { zoneID = 118, artID = { 123 }, x = 5230, y = 5255, overlay = { "5240-5240" }, displayID = 26351, resetTimer = 1200, questID = { 62339 } }; --Ingvar the Plunderer
-	[174062] = { zoneID = 118, artID = { 123 }, x = 5762, y = 5593, overlay = { "5740-5600" }, displayID = 27418, resetTimer = 1200, questID = { 62340 } }; --Skadi the Ruthless
-	[174063] = { zoneID = 118, artID = { 123 }, x = 5117, y = 7854, overlay = { "5120-7840" }, displayID = 30893, resetTimer = 1200, questID = { 62341 } }; --Lady Deathwhisper
-	[174064] = { zoneID = 118, artID = { 123 }, x = 5708, y = 3052, overlay = { "5700-3040" }, displayID = 30881, resetTimer = 1200, questID = { 62342 } }; --Professor Putricide
-	[174065] = { zoneID = 118, artID = { 123 }, x = 4958, y = 3226, overlay = { "4940-3240" }, displayID = 31165, resetTimer = 1200, questID = { 62343 } }; --Blood Queen Lana'thel
-	[174066] = { zoneID = 118, artID = { 123 }, x = 3655, y = 6766, overlay = { "3640-6740" }, displayID = 16174, resetTimer = 1200, questID = { 62344 } }; --Patchwerk
-	[174067] = { zoneID = 118, artID = { 123 }, x = 3154, y = 7034, overlay = { "3140-7020" }, displayID = 16590, resetTimer = 1200, questID = { 62345 } }; --Noth the Plaguebringer
+	[174048] = { zoneID = 118, artID = { 123 }, x = 4417, y = 4916, overlay = { "4420-4900" }, displayID = 27407, resetTimer = 1200, questID = { 62326 }, event = 1 }; --Elder Nadox
+	[174049] = { zoneID = 118, artID = { 123 }, x = 2951, y = 6213, overlay = { "2940-6220" }, displayID = 30856, resetTimer = 1200, questID = { 62327 }, event = 1 }; --Prince Taldaram
+	[174050] = { zoneID = 118, artID = { 123 }, x = 6750, y = 5816, overlay = { "6740-5800" }, displayID = 27394, resetTimer = 1200, questID = { 62328 }, event = 1 }; --Krik'thir the Gatewatcher
+	[174051] = { zoneID = 118, artID = { 123 }, x = 5831, y = 3930, overlay = { "5840-3920" }, displayID = 26352, resetTimer = 1200, questID = { 62329 }, event = 1 }; --Trollgore
+	[174052] = { zoneID = 118, artID = { 123 }, x = 7788, y = 6610, overlay = { "7780-6600" }, displayID = 26292, resetTimer = 1200, questID = { 62330 }, event = 1 }; --Novos the Summoner
+	[174053] = { zoneID = 118, artID = { 123 }, x = 8031, y = 6134, overlay = { "8020-6120" }, displayID = 27072, resetTimer = 1200, questID = { 62331 }, event = 1 }; --The Prophet Tharon'ja
+	[174054] = { zoneID = 118, artID = { 123 }, x = 5017, y = 8809, overlay = { "5020-8820" }, displayID = 30972, resetTimer = 1200, questID = { 62332 }, event = 1 }; --Falric
+	[174055] = { zoneID = 118, artID = { 123 }, x = 5816, y = 8347, overlay = { "5820-8340" }, displayID = 30973, resetTimer = 1200, questID = { 62333 }, event = 1 }; --Marwyn
+	[174056] = { zoneID = 118, artID = { 123 }, x = 5910, y = 7237, overlay = { "5900-7220" }, displayID = 30843, resetTimer = 1200, questID = { 62334 }, event = 1 }; --Forgemaster Garfrost
+	[174057] = { zoneID = 118, artID = { 123 }, x = 4712, y = 6592, overlay = { "4720-6600" }, displayID = 30277, resetTimer = 1200, questID = { 62335 }, event = 1 }; --Scourgelord Tyrannus
+	[174058] = { zoneID = 118, artID = { 123 }, x = 7061, y = 3854, overlay = { "7060-3840" }, displayID = 30226, resetTimer = 1200, questID = { 62336 }, event = 1 }; --Bronjahm <Godfather of Souls>
+	[174059] = { zoneID = 118, artID = { 123 }, x = 6480, y = 2210, overlay = { "6480-2220" }, displayID = 29837, resetTimer = 1200, questID = { 62337 }, event = 1 }; --The Black Knight
+	[174060] = { zoneID = 118, artID = { 123 }, x = 5394, y = 4467, overlay = { "5380-4480" }, displayID = 30857, resetTimer = 1200, questID = { 62338 }, event = 1 }; --Prince Keleseth
+	[174061] = { zoneID = 118, artID = { 123 }, x = 5230, y = 5255, overlay = { "5240-5240" }, displayID = 26351, resetTimer = 1200, questID = { 62339 }, event = 1 }; --Ingvar the Plunderer
+	[174062] = { zoneID = 118, artID = { 123 }, x = 5762, y = 5593, overlay = { "5740-5600" }, displayID = 27418, resetTimer = 1200, questID = { 62340 }, event = 1 }; --Skadi the Ruthless
+	[174063] = { zoneID = 118, artID = { 123 }, x = 5117, y = 7854, overlay = { "5120-7840" }, displayID = 30893, resetTimer = 1200, questID = { 62341 }, event = 1 }; --Lady Deathwhisper
+	[174064] = { zoneID = 118, artID = { 123 }, x = 5708, y = 3052, overlay = { "5700-3040" }, displayID = 30881, resetTimer = 1200, questID = { 62342 }, event = 1 }; --Professor Putricide
+	[174065] = { zoneID = 118, artID = { 123 }, x = 4958, y = 3226, overlay = { "4940-3240" }, displayID = 31165, resetTimer = 1200, questID = { 62343 }, event = 1 }; --Blood Queen Lana'thel
+	[174066] = { zoneID = 118, artID = { 123 }, x = 3655, y = 6766, overlay = { "3640-6740" }, displayID = 16174, resetTimer = 1200, questID = { 62344 }, event = 1 }; --Patchwerk
+	[174067] = { zoneID = 118, artID = { 123 }, x = 3154, y = 7034, overlay = { "3140-7020" }, displayID = 16590, resetTimer = 1200, questID = { 62345 }, event = 1 }; --Noth the Plaguebringer
 	[32487] = { zoneID = 118, artID = { 123 }, x = 4380, y = 5780, overlay = { "4380-5720","4420-5580","4440-5400","4440-5900","4480-5100","4480-6040","4540-4980","4540-6180","4560-6320","4640-6520","4660-4860","4740-4740","4820-4520","4880-4280","4960-4160","5100-3980","5140-4180","5260-4120","5280-3880","5400-3840","5400-4120","5520-4120","5720-4060","5820-4160","5940-4060","6040-4240","6080-4120","6180-4240","6340-4380","6400-4540","6500-4740","6520-4860","6520-5100","6600-5240","6640-5420","6700-5600","6740-5800","6740-5920","6800-6040","6800-6260","6820-6900","6840-6480","6880-6760","6920-6300" }, displayID = 27979 }; --Putridus the Ancient
 	[32495] = { zoneID = 118, artID = { 123 }, x = 2840, y = 4580, overlay = { "2840-4580","3040-3840","3120-3980","3140-2820","3140-2960","3260-4040","3700-2440","5480-5220","5600-5320","5940-5860","5940-6220" }, displayID = 67148 }; --Hildana Deathstealer
 	[32501] = { zoneID = 118, artID = { 123 }, x = 3120, y = 6220, overlay = { "3120-6220","3120-6380","3120-6860","3140-6580","3160-6720","3200-6980","3340-7040","3440-6940","3520-7060","4640-8480","4720-8060","4740-7820","4740-8600","4780-8440","4800-8180","4840-8680","4860-7820","4860-8020","4900-8420","4960-8620","6700-3740","6740-3860","6780-3980","6800-4120","6960-4080","7080-3920","7080-4140","7120-3760","7200-3640","7200-3920","7280-3500","7380-3140","7400-3380" }, displayID = 27988 }; --High Thane Jorfus

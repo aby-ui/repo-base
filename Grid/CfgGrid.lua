@@ -100,7 +100,7 @@ U1RegisterAddon("PlexusStatusRaidDebuff", {title = "状态：团队减益", prot
 U1RegisterAddon("PlexusStatusRD_SL", {title = "团队减益：暗影之地", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("PlexusStatusRD_BfA", {title = "团队减益：争霸艾泽拉斯", protected = nil, hide = nil, load="NORMAL",});
 U1RegisterAddon("PlexusStatusRD_Legion", {title = "团队减益：军团再临", protected = nil, hide = nil, load="NORMAL",});
-U1RegisterAddon("PlexusStatusRD_Dungeon", {title = "团队减益：五人副本", protected = nil, hide = nil, load="NORMAL",});
+U1RegisterAddon("PlexusStatusDungeonDebuff", {title = "团队减益：五人副本", protected = nil, hide = nil, load="NORMAL",});
 
 
 

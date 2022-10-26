@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("UBRSTrash", "DBM-Party-WoD", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210119194132")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -33,7 +33,7 @@ local timerEruptionCD					= mod:NewCDTimer(10, 155037, nil, false, nil, 3)--10-1
 function mod:SPELL_AURA_APPLIED(args)
 	if not self.Options.Enabled or self:IsDifficulty("normal5") or self:IsTrivial() then return end
 	local spellId = args.spellId
-	if spellId == 155586 and self:CheckDispelFilter() then
+	if spellId == 155586 and self:CheckDispelFilter("curse") then
 		specWarnVeilofShadowDispel:Show(args.destName)
 		specWarnVeilofShadowDispel:Play("helpdispel")
 	elseif spellId == 155498 and not args:IsDestTypePlayer() then

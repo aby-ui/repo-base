@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheaterofPainTrash", "DBM-Party-Shadowlands", 6)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20220920232426")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -111,8 +111,5 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 333241 and args:IsPlayer() and self:AntiSpam(3, 7) then
 		specWarnGTFO:Show(args.spellName)
 		specWarnGTFO:Play("watchfeet")
---	elseif spellId == 258323 and args:IsDestTypePlayer() and self:CheckDispelFilter() and self:AntiSpam(3, 5) then
---		specWarnBestialWrath:Show(args.destName)
---		specWarnBestialWrath:Play("helpdispel")
 	end
 end

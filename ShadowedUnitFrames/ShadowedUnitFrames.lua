@@ -5,7 +5,7 @@
 ShadowUF = select(2, ...)
 
 local L = ShadowUF.L
-ShadowUF.dbRevision = 62
+ShadowUF.dbRevision = 63
 ShadowUF.playerUnit = "player"
 ShadowUF.enabledUnits = {}
 ShadowUF.modules = {}
@@ -112,6 +112,12 @@ end
 
 function ShadowUF:CheckUpgrade()
 	local revision = self.db.profile.revision or self.dbRevision
+	if (revision <= 62 ) then
+		-- evoker setup
+		self.db.profile.classColors.EVOKER = {r = 0.20, g = 0.58, b = 0.50}
+		self.db.profile.powerColors.ESSENCE = {r = 0.40, g = 0.80, b = 1.00}
+		self.db.profile.units.player.essence = {enabled = true, anchorTo = "$parent", order = 60, height = 0.40, anchorPoint = "BR", x = -8, y = 6, size = 12, spacing = -2, growth = "LEFT", isBar = true, showAlways = true}
+	end
 	if (revision <= 61 ) then
 		if self.db.profile.bars.texture == "Smooth" then
 			self.db.profile.bars.texture = "Smoother"
@@ -362,6 +368,7 @@ function ShadowUF:LoadUnitDefaults()
 	self.defaults.profile.units.player.chi = {enabled = true, isBar = true}
 	self.defaults.profile.units.player.indicators.lfdRole = {enabled = true, size = 0, x = 0, y = 0}
 	self.defaults.profile.units.player.auraPoints = {enabled = false, isBar = true}
+	self.defaults.profile.units.player.essence = {enabled = true, isBar = true}
 	table.insert(self.defaults.profile.units.player.text, {enabled = true, text = "", anchorTo = "", anchorPoint = "C", size = 0, x = 0, y = 0, default = true})
 	table.insert(self.defaults.profile.units.player.text, {enabled = true, text = "", anchorTo = "", anchorPoint = "C", size = 0, x = 0, y = 0, default = true})
 	table.insert(self.defaults.profile.units.player.text, {enabled = true, text = "", anchorTo = "", anchorPoint = "C", size = 0, x = 0, y = 0, default = true})
@@ -694,13 +701,21 @@ end
 local active_hiddens = {}
 function ShadowUF:HideBlizzardFrames()
 	if( self.db.profile.hidden.cast and not active_hiddens.cast ) then
-		hideBlizzardFrames(true, CastingBarFrame, PetCastingBarFrame)
+		hideBlizzardFrames(true, PlayerCastingBarFrame or CastingBarFrame, PetCastingBarFrame)
 	end
 
 	if( self.db.profile.hidden.party and not active_hiddens.party ) then
-		for i=1, MAX_PARTY_MEMBERS do
-			local name = "PartyMemberFrame" .. i
-			hideBlizzardFrames(false, _G[name], _G[name .. "HealthBar"], _G[name .. "ManaBar"])
+		if( PartyFrame ) then
+			hideBlizzardFrames(false, PartyFrame)
+			for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+				hideBlizzardFrames(false, memberFrame, memberFrame.HealthBar, memberFrame.ManaBar)
+			end
+			PartyFrame.PartyMemberFramePool:ReleaseAll()
+		else
+			for i=1, MAX_PARTY_MEMBERS do
+				local name = "PartyMemberFrame" .. i
+				hideBlizzardFrames(false, _G[name], _G[name .. "HealthBar"], _G[name .. "ManaBar"])
+			end
 		end
 
 		-- This stops the compact party frame from being shown
@@ -741,7 +756,7 @@ function ShadowUF:HideBlizzardFrames()
 	end
 
 	if( self.db.profile.hidden.buffs and not active_hiddens.buffs ) then
-		hideBlizzardFrames(false, BuffFrame, TemporaryEnchantFrame)
+		hideBlizzardFrames(false, BuffFrame, TemporaryEnchantFrame or DebuffFrame)
 	end
 
 	if( self.db.profile.hidden.player and not active_hiddens.player ) then
@@ -777,7 +792,11 @@ function ShadowUF:HideBlizzardFrames()
 	if( self.db.profile.hidden.boss and not active_hiddens.boss ) then
 		for i=1, MAX_BOSS_FRAMES do
 			local name = "Boss" .. i .. "TargetFrame"
-			hideBlizzardFrames(false, _G[name], _G[name .. "HealthBar"], _G[name .. "ManaBar"])
+			if _G[name].TargetFrameContent then
+				hideBlizzardFrames(false, _G[name], _G[name].TargetFrameContent.TargetFrameContentMain.HealthBar, _G[name].TargetFrameContent.TargetFrameContentMain.ManaBar)
+			else
+				hideBlizzardFrames(false, _G[name], _G[name .. "HealthBar"], _G[name .. "ManaBar"])
+			end
 		end
 	end
 

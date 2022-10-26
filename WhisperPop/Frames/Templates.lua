@@ -93,7 +93,7 @@ function templates.CreateIconButton(name, parent, icon, size, checkable)
 	button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
 	button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
 	if checkable then
-		button:SetCheckedTexture("Interface\\Buttons\\CheckButtonHilight", "ADD")
+		button:SetCheckedTexture("Interface\\Buttons\\UI-Quickslot-Depress", "ADD") --Interface\\Buttons\\CheckButtonHilight 会变黑
 	end
 
 	button.icon = button:CreateTexture(name and (name.."Icon"), "ARTWORK")

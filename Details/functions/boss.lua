@@ -3,7 +3,7 @@ do
 
 	local _detalhes = _G._detalhes
 	_detalhes.EncounterInformation = {}
-	local _ipairs = ipairs --lua local
+	local ipairs = ipairs --lua local
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --details api functions
@@ -127,7 +127,7 @@ do
 		if (t) then
 			local _end = t.combat_end
 			if (_end) then
-				return unpack (_end)
+				return unpack(_end)
 			end
 		end
 		return 
@@ -167,15 +167,15 @@ do
 		local encounter = _detalhes:GetBossDetails (mapid, bossindex)
 		local habilidades_poll = {}
 		if (encounter.continuo) then
-			for index, spellid in _ipairs(encounter.continuo) do 
+			for index, spellid in ipairs(encounter.continuo) do 
 				habilidades_poll [spellid] = true
 			end
 		end
 		local fases = encounter.phases
 		if (fases) then
-			for fase_id, fase in _ipairs(fases) do 
+			for fase_id, fase in ipairs(fases) do 
 				if (fase.spells) then
-					for index, spellid in _ipairs(fase.spells) do 
+					for index, spellid in ipairs(fase.spells) do 
 						habilidades_poll [spellid] = true
 					end
 				end
@@ -218,7 +218,7 @@ do
 			if (not name) then
 				return
 			end
-			if (name == encountername or name:find (encountername)) then
+			if (name == encountername or name:find(encountername)) then
 				return i, DetailsFramework.EncounterJournal.EJ_GetEncounterInfoByIndex (i, EJID)
 			end
 		end
@@ -230,7 +230,7 @@ do
 		if (bosstables) then
 			local bg = bosstables.backgroundFile
 			if (bg) then
-				return bg.file, unpack (bg.coords)
+				return bg.file, unpack(bg.coords)
 			end
 		end
 	end
@@ -281,7 +281,7 @@ do
 	end
 	
 	--return the boss portrit
-	function _detalhes:GetBossPortrait (mapid, bossindex, encounterName, ejID)
+	function _detalhes:GetBossPortrait(mapid, bossindex, encounterName, ejID)
 		if (mapid and bossindex) then
 			local haveIcon = _detalhes.EncounterInformation [mapid] and _detalhes.EncounterInformation [mapid].encounters [bossindex] and _detalhes.EncounterInformation [mapid].encounters [bossindex].portrait
 			if (haveIcon) then
@@ -317,8 +317,8 @@ do
 			if (displayInfo ~= 0 and abilityIcon == "") then
 				actors [title] = {model = displayInfo, info = description}
 			end
-			table.insert (stack, siblingID)
-			table.insert (stack, nextSectionID)
+			table.insert(stack, siblingID)
+			table.insert(stack, nextSectionID)
 			curSectionID = table.remove (stack)
 		until not curSectionID
 		
@@ -326,7 +326,7 @@ do
 	end
 	
 	function _detalhes:GetInstanceEJID (mapid)
-		mapid = mapid or select (8, GetInstanceInfo())
+		mapid = mapid or select(8, GetInstanceInfo())
 		if (mapid) then
 			local instance_info = _detalhes.EncounterInformation [mapid]
 			if (instance_info) then
@@ -341,7 +341,7 @@ do
 		local mapID = C_Map.GetBestMapForUnit ("player")
 		
 		if (not mapID) then
-			--print ("Details! exeption handled: zone has no map")
+			--print("Details! exeption handled: zone has no map")
 			return
 		end
 		

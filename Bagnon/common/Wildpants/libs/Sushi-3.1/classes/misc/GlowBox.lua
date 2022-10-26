@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2021 João Cardoso
+Copyright 2008-2022 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Box = LibStub('Sushi-3.1').Callable:NewSushi('Glowbox', 1, 'Frame', 'GlowBoxTemplate', true)
+local Box = LibStub('Sushi-3.1').Callable:NewSushi('Glowbox', 2, 'Frame', 'GlowBoxTemplate', true)
 if not Box then return end
 
 local Sides = {'BOTTOM', 'LEFT', 'TOP', 'RIGHT'}
@@ -59,7 +59,6 @@ function Box:Construct()
 	end
 
 	f.Text, f.Close = text, close
-	f:SetFrameStrata('DIALOG')
 	f:EnableMouse(true)
 	f:SetSize(220, 100)
 	return f
@@ -68,6 +67,7 @@ end
 function Box:New(parent, text, direction)
 	local f = self:Super(Box):New(parent)
 	f:SetDirection(direction or 'BOTTOM')
+	f:SetFrameStrata('DIALOG')
 	f:SetText(text)
 	return f
 end

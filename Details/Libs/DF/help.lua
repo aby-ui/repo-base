@@ -6,8 +6,8 @@ if (not DF or not DetailsFrameworkCanLoad) then
 end
 
 local _
-local _rawset = rawset --lua local
-local _rawget = rawget --lua local
+local rawset = rawset --lua local
+local rawget = rawget --lua local
 
 local APIHelpFunctions = false
 local HelpMetaFunctions = {}
@@ -21,7 +21,7 @@ local HelpMetaFunctions = {}
 			return func (_table, _member_requested)
 		end
 		
-		local fromMe = _rawget (_table, _member_requested)
+		local fromMe = rawget (_table, _member_requested)
 		if (fromMe) then
 			return fromMe
 		end
@@ -36,7 +36,7 @@ local HelpMetaFunctions = {}
 		if (func) then
 			return func (_table, _value)
 		else
-			return _rawset (_table, _key, _value)
+			return rawset (_table, _key, _value)
 		end
 	end
 	
@@ -52,7 +52,7 @@ end
 function HelpMetaFunctions:SetPoint(v1, v2, v3, v4, v5)
 	v1, v2, v3, v4, v5 = DF:CheckPoints (v1, v2, v3, v4, v5, self)
 	if (not v1) then
-		print ("Invalid parameter for SetPoint")
+		print("Invalid parameter for SetPoint")
 		return
 	end
 	return self.widget:SetPoint(v1, v2, v3, v4, v5)
@@ -80,7 +80,7 @@ function DF:NewHelp (parent, width, height, x, y, buttonWidth, buttonHeight, nam
 	
 	if (not APIHelpFunctions) then
 		APIHelpFunctions = true
-		local idx = getmetatable (helpButton).__index
+		local idx = getmetatable(helpButton).__index
 		for funcName, funcAddress in pairs(idx) do 
 			if (not HelpMetaFunctions [funcName]) then
 				HelpMetaFunctions [funcName] = function(object, ...)
@@ -116,7 +116,7 @@ function DF:NewHelp (parent, width, height, x, y, buttonWidth, buttonHeight, nam
 		help:ShowHelp()
 	end)
 
-	setmetatable (help, HelpMetaFunctions)
+	setmetatable(help, HelpMetaFunctions)
 	
 	return help
 	

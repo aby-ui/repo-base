@@ -3,10 +3,24 @@ local L = select(2, ...).L
 local _G = getfenv(0);
 local unpack = unpack;
 local UnitName = UnitName;
-local UnitQuestTrivialLevelRange = UnitQuestTrivialLevelRange;
 local gtt = GameTooltip;
 
 -- classic support
+local isWoWClassic, isWoWBcc, isWoWWotlkc, isWoWSl, isWoWRetail = false, false, false, false, false;
+if (_G["WOW_PROJECT_ID"] == _G["WOW_PROJECT_CLASSIC"]) then
+	isWoWClassic = true;
+elseif (_G["WOW_PROJECT_ID"] == _G["WOW_PROJECT_BURNING_CRUSADE_CLASSIC"]) then
+	isWoWBcc = true;
+elseif (_G["WOW_PROJECT_ID"] == _G["WOW_PROJECT_WRATH_CLASSIC"]) then
+	isWoWWotlkc = true;
+else -- retail
+	if (_G["LE_EXPANSION_LEVEL_CURRENT"] == _G["LE_EXPANSION_SHADOWLANDS"]) then
+		isWoWSl = true;
+	else
+		isWoWRetail = true;
+	end
+end
+
 local UnitIsWildBattlePet = UnitIsWildBattlePet or function() return false end;
 local UnitIsBattlePetCompanion = UnitIsBattlePetCompanion or function() return false end;
 
@@ -26,6 +40,7 @@ local TT_LevelMatch = "^"..TOOLTIP_UNIT_LEVEL:gsub("%%[^s ]*s",".+"); -- Was cha
 local TT_LevelMatchPet = "^"..TOOLTIP_WILDBATTLEPET_LEVEL_CLASS:gsub("%%[^s ]*s",".+");	-- "^Pet Level .+ .+"
 local TT_NotSpecified = L"Not specified";
 local TT_Targeting = BINDING_HEADER_TARGETING;	-- "Targeting"
+local TT_MythicPlusDungeonScore = CHALLENGE_COMPLETE_DUNGEON_SCORE; -- "Mythic+ Rating"
 local TT_Reaction = {
 	L"Tapped",					-- No localized string of this
 	FACTION_STANDING_LABEL2,	-- Hostile
@@ -46,19 +61,19 @@ local COL_LIGHTGRAY = "|cffc0c0c0";
 
 -- Returns the correct difficulty color compared to the player
 -- Az: Check out GetCreatureDifficultyColor, GetQuestDifficultyColor, GetScalingQuestDifficultyColor, GetRelativeDifficultyColor
-local function GetDifficultyLevelColor(level)
-	level = (level - tt.playerLevel);
-	if (level > 4) then
-		return "|cffff2020"; -- red
-	elseif (level > 2) then
-		return "|cffff8040"; -- orange
-	elseif (level >= -2) then
-		return "|cffffff00"; -- yellow
-	elseif (level >= -UnitQuestTrivialLevelRange("player")) then
-		return "|cff40c040"; -- green
+-- Frozn45: The above functions belong to the old color api. GetDifficultyColor() with C_PlayerInfo.GetContentDifficultyCreatureForPlayer() or C_PlayerInfo.GetContentDifficultyQuestForPlayer() belongs to the new color api.
+local function GetDifficultyLevelColor(unit, level) -- see GetDifficultyColor() in "UIParent.lua"
+	local difficultyColor;
+	
+	if (level == -1) then
+		difficultyColor = QuestDifficultyColors["impossible"];
 	else
-		return "|cff808080"; -- gray
+		difficultyColor = GetDifficultyColor and GetDifficultyColor(C_PlayerInfo.GetContentDifficultyCreatureForPlayer(unit)) or GetCreatureDifficultyColor(level);
 	end
+	
+	local difficultyColorMixin = CreateColor(difficultyColor.r, difficultyColor.g, difficultyColor.b, 1);
+	
+	return difficultyColorMixin:GenerateHexColorMarkup();
 end
 
 -- Add target
@@ -71,8 +86,8 @@ local function AddTarget(lineList,target,targetName)
 		lineList.next = targetReaction;
 		lineList.next = "[";
 		if (UnitIsPlayer(target)) then
-			local _, targetClassID = UnitClass(target);
-			lineList.next = (tt.ClassColorMarkup[targetClassID] or COL_LIGHTGRAY);
+			local _, targetClassFile = UnitClass(target);
+			lineList.next = (tt.ClassColorMarkup[targetClassFile] or COL_LIGHTGRAY);
 			lineList.next = targetName;
 			lineList.next = targetReaction;
 		else
@@ -120,10 +135,10 @@ function ttStyle:GeneratePlayerLines(u,first,unit)
 	lineInfo.next = UnitRace(unit);
 	-- class
 	lineInfo.next = " ";
-	lineInfo.next = (tt.ClassColorMarkup[u.classID] or COL_WHITE);
+	lineInfo.next = (tt.ClassColorMarkup[u.classFile] or COL_WHITE);
 	lineInfo.next = u.class;
 	-- name
-	lineName.next = (cfg.colorNameByClass and (tt.ClassColorMarkup[u.classID] or COL_WHITE) or u.reactionColor);
+	lineName.next = (cfg.colorNameByClass and (tt.ClassColorMarkup[u.classFile] or COL_WHITE) or u.reactionColor);
 	lineName.next = (cfg.nameType == "marysueprot" and u.rpName) or (cfg.nameType == "original" and u.originalName) or (cfg.nameType == "title" and UnitPVPName(unit)) or u.name;
 	if (u.realm) and (u.realm ~= "") and (cfg.showRealm ~= "none") then
 		if (cfg.showRealm == "show") then
@@ -265,7 +280,7 @@ function ttStyle:ModifyUnitTooltip(u,first)
 	-- Level + Classification
 	local level = (u.isPetWild or u.isPetCompanion) and UnitBattlePetLevel(unit) or UnitLevel(unit) or -1;
 	local classification = UnitClassification(unit) or "";
-	lineInfo.next = (UnitCanAttack(unit,"player") or UnitCanAttack("player",unit)) and GetDifficultyLevelColor(level ~= -1 and level or 500) or cfg.colLevel;
+	lineInfo.next = (UnitCanAttack(unit, "player") or UnitCanAttack("player", unit)) and GetDifficultyLevelColor(unit, level) or cfg.colLevel;
 	lineInfo.next = (cfg["classification_"..classification] or "%s? "):format(level == -1 and "??" or level);
 
 	-- Generate Line Modification
@@ -277,11 +292,16 @@ function ttStyle:ModifyUnitTooltip(u,first)
 		self:GenerateNpcLines(u,first,unit);
 	end
 
-	-- Target
-	if (cfg.showTarget ~= "none") then
-		self:GenerateTargetLines(unit,cfg.showTarget);
+	-- Current Unit Speed
+	if (cfg.showCurrentUnitSpeed) then
+		local currentUnitSpeed = GetUnitSpeed(unit);
+		if (currentUnitSpeed > 0) then
+			lineInfo.next = " " .. CreateAtlasMarkup("glueannouncementpopup-arrow");
+			lineInfo.next = COL_LIGHTGRAY;
+			lineInfo.next = string.format("%.0f%%", currentUnitSpeed / BASE_MOVEMENT_SPEED * 100);
+		end
 	end
-
+	
 	-- Reaction Text
 	if (cfg.reactText) then
 		lineInfo.next = "\n";
@@ -289,14 +309,36 @@ function ttStyle:ModifyUnitTooltip(u,first)
 		lineInfo.next = TT_Reaction[u.reactionIndex];
 	end
 
+	-- Mythic+ Dungeon Score
+	if (u.isPlayer) and (cfg.showMythicPlusDungeonScore) and (C_PlayerInfo.GetPlayerMythicPlusRatingSummary) then
+		local ratingSummary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit);
+		if (ratingSummary) then
+			local mythicPlusDungeonScore = ratingSummary.currentSeasonScore;
+			if (mythicPlusDungeonScore > 0) then
+				lineInfo.next = "\n|cffffd100";
+				lineInfo.next = TT_MythicPlusDungeonScore:format(C_ChallengeMode.GetDungeonScoreRarityColor(mythicPlusDungeonScore):WrapTextInColorCode(mythicPlusDungeonScore));
+			end
+		end
+	end
+
+	-- Target
+	if (cfg.showTarget ~= "none") then
+		self:GenerateTargetLines(unit,cfg.showTarget);
+	end
+
 	-- Name Line
 	GameTooltipTextLeft1:SetText(lineName:Concat());
 	lineName:Clear();
 
 	-- Info Line
+	for i = (gtt:NumLines() + 1), lineInfo.Index do
+		gtt:AddLine(" ");
+	end
+	
 	local gttLine = _G["GameTooltipTextLeft"..lineInfo.Index];
 	
 	-- 8.2 made the default XML template have only 2 lines, so it's possible to get here without the desired line existing (yet?)
+	-- Frozn45: The problem showed up in classic. Fixed it with adding the missing lines (see for-loop with gtt:AddLine() above).
 	if (gttLine) then
 		gttLine:SetText(lineInfo:Concat());
 		gttLine:SetTextColor(1,1,1);
@@ -313,36 +355,38 @@ function ttStyle:OnLoad()
 	cfg = TipTac_Config;
 end
 
-function ttStyle:OnStyleTip(tip,u,first)
+function ttStyle:OnStyleTip(tip,first)
 	-- some things only need to be done once initially when the tip is first displayed
 	if (first) then
 		-- Store Original Name
 		if (cfg.nameType == "original") then
-			u.originalName = GameTooltipTextLeft1:GetText();
+			tip.ttUnit.originalName = GameTooltipTextLeft1:GetText();
 		end
 
 		-- Az: RolePlay Experimental (Mary Sue Protocol)
-		if (u.isPlayer) and (cfg.nameType == "marysueprot") and (msp) then
+		if (tip.ttUnit.isPlayer) and (cfg.nameType == "marysueprot") and (msp) then
 			local field = "NA";
-			local name = UnitName(u.token);
+			local name = UnitName(tip.ttUnit.token);
 			msp:Request(name,field);	-- Az: does this return our request, or only storing it for later use? I'm guessing the info isn't available right away, but only after the person's roleplay addon replies.
 			if (msp.char[name]) and (msp.char[name].field[field] ~= "") then
-				u.rpName = msp.char[name].field[field] or name;
+				tip.ttUnit.rpName = msp.char[name].field[field] or name;
 			end
 		end
 
 		-- Find NPC Title -- 09.08.22: Should now work with colorblind mode
-		if (not u.isPlayer) then
-			u.title = (tt.isColorBlind and GameTooltipTextLeft3 or GameTooltipTextLeft2):GetText();
-			if (u.title) and (u.title:find(TT_LevelMatch)) then
-				u.title = nil;
+		if (not tip.ttUnit.isPlayer) then
+			tip.ttUnit.title = (tt.isColorBlind and GameTooltipTextLeft3 or GameTooltipTextLeft2):GetText();
+			if (tip.ttUnit.title) and (tip.ttUnit.title:find(TT_LevelMatch)) then
+				tip.ttUnit.title = nil;
 			end
 		end
 	end
 
-	self:ModifyUnitTooltip(u,first);
+	self:ModifyUnitTooltip(tip.ttUnit,first);
 end
 
-function ttStyle:OnCleared()
-	self.petLevelLineIndex = nil;
+function ttStyle:OnCleared(tip)
+	if (gtt == tip) then
+		self.petLevelLineIndex = nil;
+	end
 end

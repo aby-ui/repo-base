@@ -43,7 +43,7 @@ end
 
 --return the spell object and the spellId
 local getSpellObject = function(playerObject, spellId, isLiteral)
-	local parameterType = type (spellId)
+	local parameterType = type(spellId)
 	
 	if (parameterType == "number" and isLiteral) then
 		--is the id of a spell and literal, directly get the spell object
@@ -357,7 +357,7 @@ function Details.SegmentTotalDamage (segment)
 		return 0
 	end
 	
-	return floor (combatObject.totals_grupo [1])
+	return floor(combatObject.totals_grupo [1])
 end
 
 
@@ -394,7 +394,7 @@ function Details.SegmentTotalHealing (segment)
 		return 0
 	end
 	
-	return floor (combatObject.totals_grupo [2])
+	return floor(combatObject.totals_grupo [2])
 end
 
 --[=[
@@ -654,7 +654,7 @@ function Details.UnitDamage (unitId, segment)
 		return 0
 	end
 	
-	return floor (playerObject.total or 0)
+	return floor(playerObject.total or 0)
 end
 
 
@@ -714,7 +714,7 @@ function Details.UnitDamageByPhase (unitId, phaseNumber, segment)
 	end
 	
 	local phaseDamage = damagePhaseData [unitName] or 0
-	return floor (phaseDamage)
+	return floor(phaseDamage)
 end
 
 --[=[
@@ -771,10 +771,10 @@ function Details.UnitDamageInfo (unitId, segment)
 		return damageInfo
 	end
 	
-	damageInfo.total = floor (playerObject.total)
-	damageInfo.totalWithoutPet = floor (playerObject.total_without_pet)
-	damageInfo.damageAbsorbed = floor (playerObject.totalabsorbed)
-	damageInfo.damageTaken = floor (playerObject.damage_taken)
+	damageInfo.total = floor(playerObject.total)
+	damageInfo.totalWithoutPet = floor(playerObject.total_without_pet)
+	damageInfo.damageAbsorbed = floor(playerObject.totalabsorbed)
+	damageInfo.damageTaken = floor(playerObject.damage_taken)
 	damageInfo.friendlyFire = playerObject.friendlyfire_total
 	damageInfo.activityTime = playerObject:Tempo()
 	
@@ -1092,7 +1092,7 @@ function Details.UnitDamageTaken (unitId, segment)
 		return 0
 	end
 	
-	return floor (playerObject.damage_taken)
+	return floor(playerObject.damage_taken)
 end
 
 --[=[
@@ -1202,7 +1202,7 @@ function Details.UnitDamageTakenFromSpell (unitId, spellId, isLiteral, segment)
 	local damageContainer = combatObject:GetContainer (DETAILS_ATTRIBUTE_DAMAGE)
 	
 	local totalDamageTaken = 0
-	if (isLiteral and type (spellId) == "number") then
+	if (isLiteral and type(spellId) == "number") then
 		for i = 1, #damageContainer._ActorTable do
 			for thisSpellId, spellObject in pairs(damageContainer._ActorTable [i].spells._ActorTable) do
 				if (thisSpellId == spellId) then
@@ -1437,7 +1437,7 @@ function Details.UnitHealing (unitId, segment)
 		return 0
 	end
 	
-	return floor (playerObject.total or 0)
+	return floor(playerObject.total or 0)
 end
 
 
@@ -1498,14 +1498,14 @@ function Details.UnitHealingInfo (unitId, segment)
 		return healingInfo
 	end
 	
-	healingInfo.total = floor (playerObject.total)
-	healingInfo.totalWithoutPet = floor (playerObject.total_without_pet)
-	healingInfo.totalOverhealWithoutPet = floor (playerObject.totalover_without_pet)
-	healingInfo.overhealing = floor (playerObject.totalover)
-	healingInfo.absorbed = floor (playerObject.totalabsorb)
-	healingInfo.healingDenied = floor (playerObject.totaldenied)
-	healingInfo.healingEnemy = floor (playerObject.heal_enemy_amt)
-	healingInfo.healingTaken = floor (playerObject.healing_taken)
+	healingInfo.total = floor(playerObject.total)
+	healingInfo.totalWithoutPet = floor(playerObject.total_without_pet)
+	healingInfo.totalOverhealWithoutPet = floor(playerObject.totalover_without_pet)
+	healingInfo.overhealing = floor(playerObject.totalover)
+	healingInfo.absorbed = floor(playerObject.totalabsorb)
+	healingInfo.healingDenied = floor(playerObject.totaldenied)
+	healingInfo.healingEnemy = floor(playerObject.heal_enemy_amt)
+	healingInfo.healingTaken = floor(playerObject.healing_taken)
 	healingInfo.activityTime = playerObject:Tempo()
 
 	return healingInfo
@@ -1826,7 +1826,7 @@ function Details.UnitHealingTaken (unitId, segment)
 		return 0
 	end
 	
-	return floor (playerObject.healing_taken)
+	return floor(playerObject.healing_taken)
 end
 
 
@@ -1941,7 +1941,7 @@ function Details.UnitHealingTakenFromSpell (unitId, spellId, isLiteral, segment)
 	local healingContainer = combatObject:GetContainer (DETAILS_ATTRIBUTE_HEAL)
 	
 	local totalHealingTaken = 0
-	if (isLiteral and type (spellId) == "number") then
+	if (isLiteral and type(spellId) == "number") then
 		for i = 1, #healingContainer._ActorTable do
 			for thisSpellId, spellObject in pairs(healingContainer._ActorTable [i].spells._ActorTable) do
 				if (thisSpellId == spellId) then

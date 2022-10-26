@@ -2,19 +2,19 @@ local addonName, addon = ...
 _G[addonName] = addon
 addon.db = {}
 addon.defaultDB = {
-	keep_session = true,
-	character_only = false,
-	lines = 32,
+    keep_session = true,
+    character_only = false,
+    lines = 32,
     backlog = true,
-	historys = {
---[[
-		[ream_name] = {
-			box1 = {
-				{ line = "aaa", time = "aaa" }
-			}
-		}
-]]		
-	},
+    historys = {
+        --[[
+                [ream_name] = {
+                    box1 = {
+                        { line = "aaa", time = "aaa" }
+                    }
+                }
+        ]]
+    },
 }
 local charKey = GetRealmName().."-"..UnitName("player")
 local db
@@ -23,49 +23,54 @@ local boxes = {}
 
 --防止循环调用
 local function RawAdd(box, text)
-	box.rawadd = true;
-	box:AddHistoryLine(text);
-	box.rawadd = nil;
+    box.rawadd = true;
+    box:AddHistoryLine(text);
+    box.rawadd = nil;
 end
 
 local function RawClear(box)
-	box.rawclear = true;
-	box:ClearHistory();
-	box.rawclear = nil;
+    box.rawclear = true;
+    box:ClearHistory();
+    box.rawclear = nil;
 end
 
 --对所有EditBox调用回调函数
 local names = {} for i=1, NUM_CHAT_WINDOWS do names[i] = "ChatFrame"..i.."EditBox" end
 local function WithAllEditBoxes(func)
-	for i=1, NUM_CHAT_WINDOWS do
-		if _G[names[i]] then
-			func(_G[names[i]]);
-		end
-	end
+    for i=1, NUM_CHAT_WINDOWS do
+        if _G[names[i]] then
+            func(_G[names[i]]);
+        end
+    end
 end
 
 local function RemoveSame(historyCopy, line)
-	local i=1;
-	while i<=#historyCopy do
-		local v = historyCopy[i]
-		if line == v.line or addon:IsSecureCmd(v.line) then
-			table.remove(historyCopy, i);
-		else
-			i=i+1;
-		end
-	end
+    local i=1;
+    while i<=#historyCopy do
+        local v = historyCopy[i]
+        if line == v.line or addon:IsSecureCmd(v.line) then
+            table.remove(historyCopy, i);
+        else
+            i=i+1;
+        end
+    end
 end
 
 function U1ChatHistory_HookAddHistoryLine(self, line)
-    --print("AddHistoryLine "..line)
+    --print("AddHistoryLine "..line, "dirty:", self._abyDirty)
 
     --内部调用不处理, 不然就堆栈溢出了.
     if self.rawadd then return end
-    
+
     if db.lines <= 0 then return end
 
+    if line == "/rl" then return end
+
+    --暴雪输入框无法检测ALT+UP，虽然通过OnKeyDown脚本可以检测，但是暴雪的机制是按过之后就记录游标，再输入就更新后续的历史
+    --所以假设我们1-/target 2-/print 1 按两下上, 即使这个/target能保留安全的, 再输入的话, /print 1这一句就找不到了, 所以dirty机制无效, 只能保留一个安全指令, 因为安全指令也不能记录，所以无所谓
     if addon:IsSecureCmd(line) then return end --如果是安全则不处理HistoryLine，这样可以让安全命令保存到下一次输入非安全命令。下次输入非安全命令就会删除全部安全命令同时恢复刷新之前的记录。
 
+    --如果新加入的已经在旧的里面，大概率说明没改
     local historyCopy = db.historys[charKey][self:GetName()];
 
     --全部清理, 重新添加
@@ -88,21 +93,36 @@ end
 local function HookEditBox(box)
     local historyCopy = db.historys[charKey][box:GetName()];
 
-	hooksecurefunc(box, "AddHistoryLine", function(...) U1ChatHistory_HookAddHistoryLine(...) end);
+    hooksecurefunc(box, "AddHistoryLine", function(...) U1ChatHistory_HookAddHistoryLine(...) end);
 
-	hooksecurefunc(box, "ClearHistory", function(self)
-		--TODO 如果不是characteronly, 则删除其他角色的.
-		if self.rawclear then return end;
-		while #historyCopy > 0 do table.remove(historyCopy) end
-	end)
+    hooksecurefunc(box, "ClearHistory", function(self)
+        --TODO 如果不是characteronly, 则删除其他角色的.
+        if self.rawclear then return end;
+        while #historyCopy > 0 do table.remove(historyCopy) end
+    end)
 
-	--如果显示"未知的命令, 输入/help"的提示, 说明是一条无效命令, 根据配置决定是否添加
-	CoreRawHook(box.chatFrame, "AddMessage", function(self, message)
-		if message:find(HELP_TEXT_SIMPLE.."$") then
-			--print("HELP :"..self.editBox:GetText())
-			self.editBox:AddHistoryLine(self.editBox:GetText())
-		end
-	end)
+    --如果显示"未知的命令, 输入/help"的提示, 说明是一条无效命令, 根据配置决定是否添加
+    CoreRawHook(box.chatFrame, "AddMessage", function(self, message)
+        if message:find(HELP_TEXT_SIMPLE.."$") then
+            --print("HELP :"..self.editBox:GetText())
+            self.editBox:AddHistoryLine(self.editBox:GetText())
+        end
+    end)
+
+    --[[ --dirty机制是失败的
+    SetOrHookScript(box, "OnKeyDown", function(self, key)
+        if self._abyDirty then return end
+        if not IsAltKeyDown() then
+            local autoComplete = AutoCompleteBox;
+            if ( autoComplete:IsShown() and autoComplete.parent == self ) then
+                return
+            end
+        end
+        if (key == "UP" or key == "DOWN") and (IsAltKeyDown() or not self:GetAltArrowKeyMode()) then
+            self._abyDirty = true
+        end
+    end)
+    --]]
 
 end
 
@@ -126,46 +146,50 @@ local function upgradedb(db)
 end
 
 function addon:VARIABLES_LOADED()
-	self.db = upgradedb(ChatHistoryDB) or self.defaultDB
-	db = self.db
-	ChatHistoryDB = db
-	db.historys[charKey] = db.historys[charKey] or {};
-	local historys = db.historys[charKey];
-	WithAllEditBoxes(function(box) historys[box:GetName()] = historys[box:GetName()] or {}; end);
-	if not db.character_only then
-		--合并其他角色的历史记录
-		local combined = {}
-		WithAllEditBoxes(function(box)
-			local history = {}
-			combined[box:GetName()] = history;
-			for i, char in pairs(db.historys) do
-				for _, v in pairs(char[box:GetName()]) do
-					local skip = false;
-					for _, oldv in pairs(history) do
-						if oldv.line==v.line then
-							oldv.time = max(oldv.time, v.time);
-							skip = true;
-							break;
-						end
-					end
-					if not skip then table.insert(history, v); end
-				end
-			end
-			table.sort(history, function(a,b) return a.time < b.time end);
-			while #history > db.lines do table.remove(history, 1); end
-		end);
-		historys = combined;
-		db.historys[charKey] = historys;
-	end
-	if db.keep_session then
-		WithAllEditBoxes(function(box)
-			for _, v in pairs(historys[box:GetName()]) do
-				--print(v.line);
-				box:AddHistoryLine(v.line);
-			end
-		end)
-	end
-	WithAllEditBoxes(function(box) HookEditBox(box) end);
+    self.db = upgradedb(ChatHistoryDB) or self.defaultDB
+    db = self.db
+    ChatHistoryDB = db
+    db.historys[charKey] = db.historys[charKey] or {};
+    local historys = db.historys[charKey];
+    WithAllEditBoxes(function(box) historys[box:GetName()] = historys[box:GetName()] or {}; end);
+    if not db.character_only then
+        --合并其他角色的历史记录
+        local combined = {}
+        WithAllEditBoxes(function(box)
+            local history = {}
+            combined[box:GetName()] = history;
+            for i, char in pairs(db.historys) do
+                for _, v in pairs(char[box:GetName()]) do
+                    local skip = false;
+                    for _, oldv in pairs(history) do
+                        if oldv.line==v.line then
+                            oldv.time = max(oldv.time, v.time);
+                            skip = true;
+                            break;
+                        end
+                    end
+                    if not skip then table.insert(history, u1copy(v)); end
+                end
+            end
+            table.sort(history, function(a,b) return a.time < b.time end);
+            while #history > db.lines do table.remove(history, 1); end
+        end);
+        historys = combined;
+        db.historys[charKey] = historys;
+    end
+    if db.keep_session then
+        WithAllEditBoxes(function(box)
+            for _, v in pairs(historys[box:GetName()]) do
+                --print(v.line);
+                box:AddHistoryLine(v.line);
+            end
+        end)
+    else
+        WithAllEditBoxes(function(box)
+            wipe(historys[box:GetName()])
+        end)
+    end
+    WithAllEditBoxes(function(box) HookEditBox(box) end);
 
     --命令行出错时是否保存记录.
     -- 加入这个会导致所有错误堆栈顶点都显示是从163ChatHistory发起的.

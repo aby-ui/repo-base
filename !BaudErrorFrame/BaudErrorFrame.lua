@@ -121,8 +121,12 @@ function BaudErrorFrame_OnLoad(self)
     UIParent:UnregisterEvent("ADDON_ACTION_FORBIDDEN");
 
     self:SetResizable(true);
-    self:SetMinResize(400,300);
-    self:SetMaxResize(UIParent:GetWidth()-100,UIParent:GetHeight()-100);
+    if UIParent.SetResizeBounds then --abyui10
+        self:SetResizeBounds(400,300,UIParent:GetWidth()-100,UIParent:GetHeight()-100);
+    else
+        self:SetMinResize(400,300);
+        self:SetMaxResize(UIParent:GetWidth()-100,UIParent:GetHeight()-100);
+    end
     local btn = CreateFrame("Button", "$parentResizeButton", self);
     btn:SetSize(16, 16);
     btn:SetPoint("BOTTOMRIGHT", -4, 5);

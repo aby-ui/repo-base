@@ -1,4 +1,5 @@
-U1RegisterAddon("CastDelayBar", { 
+U1RegisterAddon("CastDelayBar", {
+    temporarilyForceDisable = 1,
     title = "施法条延迟",
     defaultEnable  = 1,
 

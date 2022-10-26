@@ -1,15 +1,121 @@
+--- @type string, Private
 local AddonName, Private = ...
 WeakAuras = {}
 WeakAuras.L = {}
-WeakAuras.frames = {}
+Private.frames = {}
+
+--- @alias uid string
+--- @alias auraId string
+
+--- @class state
+--- @field id auraId
+--- @field cloneId string?
+
+--- @class Private
+--- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, onlyConfig: boolean?)
+--- @field ActivateAuraEnvironmentForRegion fun(region: table, onlyConfig: boolean?)
+--- @field AuraWarnings AuraWarnings
+--- @field AuraEnvironmentWrappedSystem AuraEnvironmentWrappedSystem
+--- @field callbacks callbacks
+--- @field DebugLog debugLog
+--- @field clones table<auraId, table<string, table>>
+--- @field ExecEnv table
+--- @field LibSpecWrapper LibSpecWrapper
+--- @field regions table<auraId, table>
+--- @field UIDtoID fun(uid: uid): auraId
+
+--- @alias triggerTypes
+--- | "aura"
+--- | "aura2"
+--- | "custom"
+
+--- @class triggerData
+--- @field buffShowOn string
+--- @field event string|nil
+--- @field itemTypeName table|nil
+--- @field instance_size table|nil
+--- @field type triggerTypes
+--- @field use_showOn boolean|nil
+--- @field use_alwaystrue boolean|nil
+
+
+--- @class triggerUntriggerData
+--- @field trigger triggerData
+--- @field untrigger triggerData
+
+--- @class conditionCheck
+--- @field variable string
+--- @field trigger number
+--- @field checks conditionCheck[]|nil
+
+--- @class conditionChanges
+--- @field property string
+
+--- @class conditionData
+--- @field check conditionCheck
+--- @field changes conditionChanges
+
+--- @class subRegionData
+
+--- @class actionData
+--- @field do_glow boolean
+--- @field do_message boolean
+--- @field message string
+--- @field message_type string
+
+
+--- @class actions
+--- @field start actionData
+--- @field finish actionData
+
+--- @class load
+--- @field use_realm boolean
+--- @field itemtypeequipped table
+--- @field size table
+
+--- @alias regionTypes
+--- | "aurabar"
+--- | "dynamicgroup"
+--- | "fallback"
+--- | "group"
+--- | "icon"
+--- | "model"
+--- | "progresstexture"
+--- | "stopmotion"
+--- | "text"
+--- | "texture"
+
+--- @class information
+--- @field forceEvents boolean|nil
+--- @field ignoreOptionsEventErrors boolean|nil
+--- @field groupOffset boolean|nil
+
+
+--- @class auraData
+--- @field arcLength number
+--- @field actions actions
+--- @field conditions conditionData[]|nil
+--- @field controlledChildren auraId[]|nil
+--- @field displayText string|nil
+--- @field grow string|nil
+--- @field id auraId
+--- @field internalVersion number
+--- @field information information
+--- @field load load
+--- @field orientation string|nil
+--- @field parent auraId|nil
+--- @field regionType regionTypes
+--- @field subRegions subRegionData|nil
+--- @field triggers triggerUntriggerData[]
+--- @field url string|nil
 
 WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "4.1.4"
-local buildTime = "20220920104545"
+local versionString = "5.0.3"
+local buildTime = "20221026154055"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -21,7 +127,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "4.1.4" then
+if versionStringFromToc == "5.0.3" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -46,6 +152,15 @@ end
 
 function WeakAuras.IsRetail()
   return flavor == 10
+end
+
+function WeakAuras.IsShadowlands()
+  return WeakAuras.IsRetail() and not WeakAuras.IsDragonflight()
+end
+
+local IsDragonflight = floor(select(4, GetBuildInfo()) / 10000) == 10
+function WeakAuras.IsDragonflight()
+  return IsDragonflight
 end
 
 function WeakAuras.IsClassicOrBCC()
@@ -160,6 +275,8 @@ end
 
 function Private.StopProfileUID()
 end
+
+Private.ExecEnv = {}
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
 function WeakAuras.StartProfile()

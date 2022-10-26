@@ -297,9 +297,9 @@ addon:RegisterCallback(UpdateButtonsChecked)
 -- A check button on char page
 --------------------------------------------------
 
-local checkFrame = CreateFrameAby("Frame", "GearManagerExToolBarCheckFrame", PaperDollEquipmentManagerPane)
+local checkFrame = CreateFrameAby("Frame", "GearManagerExToolBarCheckFrame", PaperDollFrame.EquipmentManagerPane)
 checkFrame:SetBackdrop({ bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16, edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16, insets = {left = 5, right = 5, top = 5, bottom = 5 } })
-checkFrame:SetPoint("TOPLEFT", PaperDollEquipmentManagerPane, "BOTTOMLEFT", -4, -7)
+checkFrame:SetPoint("TOPLEFT", PaperDollFrame.EquipmentManagerPane, "BOTTOMLEFT", -4, -25)
 checkFrame:SetSize(200, 40)
 checkFrame:EnableMouse(true)
 
@@ -359,13 +359,15 @@ function frame:OnInitialize(moduleDB)
 
     UpdateCheckText()
 
-    PlayerFrameGroupIndicator:HookScript("OnShow", function()
-        PlayerFrameGroupIndicatorLeft:SetAlpha(0);
-        PlayerFrameGroupIndicatorRight:SetAlpha(0);
-        PlayerFrameGroupIndicatorMiddle:SetAlpha(0);
-        PlayerFrameGroupIndicator:ClearAllPoints();
-        PlayerFrameGroupIndicator:SetPoint("BOTTOMLEFT", "PlayerFrame", "TOPLEFT", 33, -9);
-    end)
+    if PlayerFrameGroupIndicator then --TODO:abyui10
+        PlayerFrameGroupIndicator:HookScript("OnShow", function()
+            PlayerFrameGroupIndicatorLeft:SetAlpha(0);
+            PlayerFrameGroupIndicatorRight:SetAlpha(0);
+            PlayerFrameGroupIndicatorMiddle:SetAlpha(0);
+            PlayerFrameGroupIndicator:ClearAllPoints();
+            PlayerFrameGroupIndicator:SetPoint("BOTTOMLEFT", "PlayerFrame", "TOPLEFT", 33, -9);
+        end)
+    end
 end
 
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")

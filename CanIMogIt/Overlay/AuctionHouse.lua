@@ -64,13 +64,23 @@ end
 ------------------------
 
 function AuctionHouseFrame_CIMIOnValueChanged()
-    local buttons = _G["AuctionHouseFrameScrollChild"]:GetParent().buttons
+    -- Add hook for the Auction House frames.
+    -- We should only ever create/recreate the same
+    -- frames over and over, so we shouldn't have
+    -- a memory leak (I think).
+    local scrollBox = _G["AuctionHouseFrame"].BrowseResultsFrame.ItemList.ScrollBox
+    local buttons = scrollBox:GetFrames()
     if buttons == nil then
         return
     end
 
     for i, button in pairs(buttons) do
-        AuctionHouseFrame_CIMIUpdateIcon(button.CanIMogItOverlay)
+        local frame = button
+        frame.CIMI_index = i
+        if frame then
+            CIMI_AddToFrame(frame, AuctionHouseFrame_CIMIUpdateIcon, "AuctionHouse"..i, "AUCTION_HOUSE")
+            AuctionHouseFrame_CIMIUpdateIcon(button.CanIMogItOverlay)
+        end
     end
 end
 
@@ -83,21 +93,11 @@ local function HookOverlayAuctionHouse(event)
     if event ~= "AUCTION_HOUSE_SHOW" then return end
     if (IsRestrictedAccount() or IsTrialAccount() or IsVeteranTrialAccount()) then return end
 
-    -- Add hook for the Auction House frames.
-    local buttons = _G["AuctionHouseFrameScrollChild"]:GetParent().buttons
-    if buttons == nil then
-        return
-    end
-
-    for i, button in pairs(buttons) do
-        local frame = button
-        frame.CIMI_index = i
-        if frame then
-            CIMI_AddToFrame(frame, AuctionHouseFrame_CIMIUpdateIcon, "AuctionHouse"..i, "AUCTION_HOUSE")
-        end
-    end
-    local scrollBar = _G["AuctionHouseFrame"].BrowseResultsFrame.ItemList.ScrollFrame.scrollBar
-    scrollBar:HookScript("OnValueChanged", AuctionHouseFrame_CIMIOnValueChanged)
+    -- We would normally add the frames here, but they don't
+    -- exist at creation anymore. Instead, we need to create
+    -- them when the values change.
+    local itemList = _G["AuctionHouseFrame"].BrowseResultsFrame.ItemList
+    itemList:HookScript("OnUpdate", AuctionHouseFrame_CIMIOnValueChanged)
 end
 
 CanIMogIt.frame:AddEventFunction(HookOverlayAuctionHouse)

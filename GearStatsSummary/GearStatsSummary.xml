@@ -14,7 +14,6 @@
 	</Frame>
 
     <Frame name="GearStatsSummarySelfFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent" inherits="BackdropTemplate">
-		<TitleRegion setAllPoints="true"/>
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
         </KeyValues>
@@ -54,7 +53,6 @@
     </Frame>
 
     <Frame name="GearStatsSummaryTargetFrame" frameStrata="MEDIUM" toplevel="true" enableMouse="true" movable="true" hidden="true"  parent="UIParent" inherits="BackdropTemplate">
-		<TitleRegion setAllPoints="true"/>
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
         </KeyValues>

@@ -4,7 +4,7 @@
 ---
 --- https://www.curseforge.com/wow/addons/msa-dropdownmenu-10
 
-local name, version = "MSA-DropDownMenu-1.0", 13
+local name, version = "MSA-DropDownMenu-1.0", 14
 
 local lib, oldVersion = LibStub:NewLibrary(name, version)
 if not lib then return end
@@ -206,9 +206,9 @@ local function CreateDropDownList(name, parent)
 
     local frame1
     if oldVersion and oldVersion > 8 then  -- WoW 9.0 compatibility
-        frame1 = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", DropDownList, BackdropTemplateMixin and "BackdropTemplate")
+        frame1 = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", DropDownList, "BackdropTemplate")
     else
-        frame1 = CreateFrame("Frame", name.."Backdrop", DropDownList, BackdropTemplateMixin and "BackdropTemplate")
+        frame1 = CreateFrame("Frame", name.."Backdrop", DropDownList, "BackdropTemplate")
     end
     frame1:SetAllPoints()
     frame1:SetBackdrop({
@@ -227,9 +227,9 @@ local function CreateDropDownList(name, parent)
 
     local frame2
     if oldVersion and oldVersion > 8 then  -- WoW 9.0 compatibility
-        frame2 = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", DropDownList, BackdropTemplateMixin and "BackdropTemplate")
+        frame2 = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", DropDownList, "BackdropTemplate")
     else
-        frame2 = CreateFrame("Frame", name.."MenuBackdrop", DropDownList, BackdropTemplateMixin and "BackdropTemplate")
+        frame2 = CreateFrame("Frame", name.."MenuBackdrop", DropDownList, "BackdropTemplate")
     end
     frame2:SetAllPoints()
     frame2:SetBackdrop({

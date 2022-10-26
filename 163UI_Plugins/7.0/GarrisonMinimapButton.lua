@@ -4,6 +4,7 @@
 local ProcessGarrisonLandingPageMMB = function()
     if LibDBIcon10_GLPMMB then return end
     local LibDBIcon = LibStub("LibDBIcon-1.0")
+    local GarrisonLandingPageMinimapButton = ExpansionLandingPageMinimapButton
     local glpmmb = GarrisonLandingPageMinimapButton
 
     local ldb = LibStub("LibDataBroker-1.1"):NewDataObject("GLPMMB", {
@@ -47,7 +48,7 @@ local ProcessGarrisonLandingPageMMB = function()
         dbicon:GetPushedTexture():SetAtlas(GLPMMB:GetPushedTexture():GetAtlas(), true)
     end
     hook_GLPMMB_UpdateIcon(glpmmb)
-    hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", hook_GLPMMB_UpdateIcon)
+    hooksecurefunc(GarrisonLandingPageMinimapButton, "UpdateIcon", hook_GLPMMB_UpdateIcon)
 
     glpmmb:ClearAllPoints()
     glpmmb:SetParent(dbicon)

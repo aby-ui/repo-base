@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras;
@@ -119,13 +120,13 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 function Private.GetAnchorsForData(parentData, type)
   local result
   if not parentData.controlledChildren then
-    if not WeakAuras.regionOptions[parentData.regionType] then
+    if not Private.regionOptions[parentData.regionType] then
       return
     end
 
     local anchors
-    if WeakAuras.regionOptions[parentData.regionType].getAnchors then
-      anchors = WeakAuras.regionOptions[parentData.regionType].getAnchors(parentData)
+    if Private.regionOptions[parentData.regionType].getAnchors then
+      anchors = Private.regionOptions[parentData.regionType].getAnchors(parentData)
     else
       anchors = Private.default_types_for_anchor
     end
@@ -469,7 +470,7 @@ end
 WeakAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
 
 function WeakAuras.regionPrototype.create(region)
-  local defaultsForRegion = WeakAuras.regionTypes[region.regionType] and WeakAuras.regionTypes[region.regionType].default;
+  local defaultsForRegion = Private.regionTypes[region.regionType] and Private.regionTypes[region.regionType].default;
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
   region.SoundRepeatStop = SoundRepeatStop;
@@ -519,7 +520,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   region.states = nil
   region.subRegionEvents:ClearSubscribers()
 
-  local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
+  local defaultsForRegion = Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].default;
 
   if region.SetRegionAlpha then
     region:SetRegionAlpha(data.alpha)
@@ -644,7 +645,7 @@ local regionsForFrameTick = {}
 
 local frameForFrameTick = CreateFrame("Frame");
 
-WeakAuras.frames["Frame Tick Frame"] = frameForFrameTick
+Private.frames["Frame Tick Frame"] = frameForFrameTick
 
 local function FrameTick()
   if WeakAuras.IsOptionsOpen() then
@@ -833,7 +834,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         return;
       end
       region.toShow = false;
-      region:SetScript("OnUpdate", nil)
 
       Private.PerformActions(data, "finish", region);
       if (not Private.Animate("display", data.uid, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then
@@ -889,7 +889,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         return;
       end
       region.toShow = false;
-      region:SetScript("OnUpdate", nil)
 
       Private.PerformActions(data, "finish", region);
       if (not Private.Animate("display", data.uid, "finish", data.animation.finish, region, false, hideRegion, nil, cloneId)) then

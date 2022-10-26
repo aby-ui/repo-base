@@ -51,6 +51,37 @@ GTFO.SpellID["376069"] = {
 --- * Neltharus *
 --- *************
 
+GTFO.SpellID["372372"] = {
+	--desc = "Magma Fist (Qalashi Trainee)";
+	sound = 1;
+};
+
+GTFO.SpellID["372208"] = {
+	--desc = "Djaradin Lava";
+	sound = 1;
+};
+
+GTFO.SpellID["372203"] = {
+	--desc = "Scorching Breath (Qalashi Irontorch)";
+	sound = 1;
+};
+
+GTFO.SpellID["372459"] = {
+	--desc = "Burning";
+	sound = 1;
+};
+
+GTFO.SpellID["375204"] = {
+	--desc = "Liquid Hot Magma (Magmatusk)";
+	sound = 1;
+};
+
+GTFO.SpellID["377542"] = {
+	--desc = "Burning Ground (Warlord Sargha)";
+	sound = 1;
+};
+
+
 --- *******************
 --- * The Azure Vault *
 --- *******************

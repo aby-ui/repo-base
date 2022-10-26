@@ -170,6 +170,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 				end
 			end)
 		
+			pin:SetPassThroughButtons("MiddleButton");
 			RSLogger:PrintDebugMessage(string.format("Sobreescrito contenedor del mapa del mundo: %s, [%s]", pin:GetObjectGUID(), pin:GetVignetteType()))
 			pin.initialized = true
 		end

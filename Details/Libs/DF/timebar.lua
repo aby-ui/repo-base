@@ -1,36 +1,26 @@
 
-
-local DF = _G ["DetailsFramework"]
+local DF = _G["DetailsFramework"]
 if (not DF or not DetailsFrameworkCanLoad) then
 	return
 end
 
 local _
-local rawset = rawset
-local rawget = rawget
-local setmetatable = setmetatable
-local unpack = unpack
 local type = type
 local floor = math.floor
 local GetTime = GetTime
 
-local SharedMedia = LibStub:GetLibrary ("LibSharedMedia-3.0")
-
-local cleanfunction = function() end
 local APITimeBarFunctions
 
 do
 	local metaPrototype = {
 		WidgetType = "timebar",
-		SetHook = DF.SetHook,
-		RunHooksForWidget = DF.RunHooksForWidget,
 		dversion = DF.dversion,
 	}
 
 	--check if there's a metaPrototype already existing
 	if (_G[DF.GlobalWidgetControlNames["timebar"]]) then
 		--get the already existing metaPrototype
-		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames ["timebar"]]
+		local oldMetaPrototype = _G[DF.GlobalWidgetControlNames["timebar"]]
 		--check if is older
 		if ( (not oldMetaPrototype.dversion) or (oldMetaPrototype.dversion < DF.dversion) ) then
 			--the version is older them the currently loading one
@@ -41,12 +31,12 @@ do
 		end
 	else
 		--first time loading the framework
-		_G[DF.GlobalWidgetControlNames ["timebar"]] = metaPrototype
+		_G[DF.GlobalWidgetControlNames["timebar"]] = metaPrototype
 	end
 end
 
 local TimeBarMetaFunctions = _G[DF.GlobalWidgetControlNames["timebar"]]
-
+DF:Mixin(TimeBarMetaFunctions, DF.ScriptHookMixin)
 
 --methods
 TimeBarMetaFunctions.SetMembers = TimeBarMetaFunctions.SetMembers or {}
@@ -62,7 +52,8 @@ TimeBarMetaFunctions.__index = function(table, key)
     if (fromMe) then
         return fromMe
     end
-    return TimeBarMetaFunctions [key]
+
+    return TimeBarMetaFunctions[key]
 end
 
 TimeBarMetaFunctions.__newindex = function(table, key, value)
@@ -364,16 +355,15 @@ end
 
 
 function DF:CreateTimeBar(parent, texture, width, height, value, member, name)
-
     if (not name) then
 		name = "DetailsFrameworkBarNumber" .. DF.BarNameCounter
 		DF.BarNameCounter = DF.BarNameCounter + 1
 
 	elseif (not parent) then
-		return error ("Details! FrameWork: parent not found.", 2)
+		return error("Details! FrameWork: parent not found.", 2)
 	end
 
-	if (name:find ("$parent")) then
+	if (name:find("$parent")) then
 		local parentName = DF.GetParentName(parent)
 		name = name:gsub("$parent", parentName)
 	end

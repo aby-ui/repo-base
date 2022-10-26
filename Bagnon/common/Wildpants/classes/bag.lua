@@ -9,6 +9,7 @@ local Bag = Addon.Tipped:NewClass('Bag', 'CheckButton')
 
 Bag.SIZE = 32
 Bag.TEXTURE_SIZE = 64 * (Bag.SIZE/36)
+Bag.FILTER_ICONS = {'bags-icon-equipment', 'bags-icon-consumables', 'bags-icon-tradegoods', 'bags-icon-junk', 'bags-icon-questitem'}
 Bag.GetSlot = Bag.GetID
 
 
@@ -159,9 +160,13 @@ end
 
 function Bag:Update()
 	local info = self:GetInfo()
+	local id = self:GetSlot()
 
 	self.FilterIcon:SetShown(not info.cached)
-	self.Count:SetText(info.free and info.free > 0 and info.free)
+	self.Count:SetText(info.free and info.free > 0 and info.free or '')
+	self:UpdateCursor()
+	self:UpdateToggle()
+	self:UpdateLock()
 
   if self:IsBackpack() or self:IsBank() then
 		self:SetIcon('Interface/Buttons/Button-Backpack-Up')
@@ -174,28 +179,19 @@ function Bag:Update()
 	  self.link = info.link
 
 		if not info.icon then
-			self.Count:SetText()
+			self.Count:SetText('')
 		end
 	end
 
-	for i = LE_BAG_FILTER_FLAG_EQUIPMENT, NUM_LE_BAG_FILTER_FLAGS do
-		local id = self:GetSlot()
-		local active = id > NUM_BAG_SLOTS and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i)
-
-		if active then
-			self.FilterIcon.Icon:SetAtlas(BAG_FILTER_ICONS[i])
+	if not self.cached then
+		for i, atlas in ipairs(self.FILTER_ICONS) do
+			local active = C_Container and (id > NUM_BAG_SLOTS and C_Container.GetBankBagSlotFlag(id - NUM_BAG_SLOTS, 2^i) or C_Container.GetBagSlotFlag(id, 2^i)) or
+										 GetBagSlotFlag and (id > NUM_BAG_SLOTS and GetBankBagSlotFlag(id - NUM_BAG_SLOTS, i) or GetBagSlotFlag(id, i))
+			if active then
+				return self.FilterIcon.Icon:SetAtlas(atlas)
+			end
 		end
 	end
-
-	self:UpdateLock()
-	self:UpdateCursor()
-	self:UpdateToggle()
-end
-
-function Bag:UpdateLock()
-	if self:IsCustomSlot() then
-    	SetItemButtonDesaturated(self, self:GetInfo().locked)
- 	end
 end
 
 function Bag:UpdateCursor()
@@ -210,6 +206,12 @@ end
 
 function Bag:UpdateToggle()
 	self:SetChecked(self:IsToggled())
+end
+
+function Bag:UpdateLock()
+	if self:IsCustomSlot() then
+    	SetItemButtonDesaturated(self, self:GetInfo().locked)
+ 	end
 end
 
 function Bag:UpdateTooltip()

@@ -427,7 +427,7 @@ panel.funcs.PanelTabsToRight = function()
 		anchorPoint, relativePoint, xoff = "TOPRIGHT", "BOTTOMRIGHT", -4
 	end
 	rematch.Frame.PanelTabs:ClearAllPoints()
-	rematch.Frame.PanelTabs:SetPoint(anchorPoint,RematchFrame,relativePoint,xoff,1)
+	rematch.Frame.PanelTabs:SetPoint(anchorPoint,RematchFrame,relativePoint,xoff,-1)
 end
 
 function panel:Resize(width)

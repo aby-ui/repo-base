@@ -692,7 +692,7 @@ SLASH_SRTI1 = "/srti";
 
 -- ugly quick hack to make old UIOptions style check box
 local function CreateCheckBox(name, parent)
-	local f = CreateFrame("CheckButton", name, parent, "OptionsCheckButtonTemplate")
+	local f = CreateFrame("CheckButton", name, parent, "InterfaceOptionsCheckButtonTemplate")
 	f:SetWidth(26)
 	f:SetHeight(26)
 	return f
@@ -952,7 +952,8 @@ function srti.Options()
 	srti.menu.test.model:SetPoint("TOPRIGHT",srti.menu.test,"TOPRIGHT",-6,-6);
 	srti.menu.test.model:SetPoint("BOTTOMLEFT",srti.menu.test,"BOTTOMLEFT",6,6);
 	srti.menu.test.model:SetRotation(0.61);
-	srti.menu.test.model:SetLight(true,false,-.5,-.2,-.6,0.5,1,1,1,1,1,1,0.8);
+	local lightValues = { omnidirectional = false, point = CreateVector3D(-.5,-.2,-.6), ambientIntensity = 0.5, ambientColor = CreateColor(1,1,1), diffuseIntensity = 1, diffuseColor = CreateColor(1,1,0.8) }
+	srti.menu.test.model:SetLight(true, lightValues);
 	srti.menu.test.model:SetScript("OnShow", function(self)
 			srti.menu.test.model:SetPosition(0,0,0);
 			srti.menu.test.model:SetUnit("player");

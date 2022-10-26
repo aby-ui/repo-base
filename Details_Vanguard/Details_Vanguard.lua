@@ -4,7 +4,7 @@ if (DetailsFramework.IsTBCWow() or DetailsFramework.IsWotLKWow()) then
 	return
 end
 
-local AceLocale = LibStub ("AceLocale-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
 local Loc = AceLocale:GetLocale ("Details")
 local SharedMedia = LibStub:GetLibrary ("LibSharedMedia-3.0")
 local DF = _G.DetailsFramework
@@ -15,14 +15,14 @@ local DF = _G.DetailsFramework
 --ignorar bloodlust, shield d priest
 --reler os tanks ao sair de um grupo
 
-local _GetTime = GetTime --wow api local
+local GetTime = GetTime --wow api local
 local _UFC = UnitAffectingCombat --wow api local
-local _IsInRaid = IsInRaid --wow api local
-local _IsInGroup = IsInGroup --wow api local
+local IsInRaid = IsInRaid --wow api local
+local IsInGroup = IsInGroup --wow api local
 local _UnitName = UnitName --wow api local
 local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned
-local _UnitHealth = UnitHealth --wow api local
-local _UnitHealthMax = UnitHealthMax --wow api local
+local UnitHealth = UnitHealth --wow api local
+local UnitHealthMax = UnitHealthMax --wow api local
 local _UnitIsPlayer = UnitIsPlayer --wow api local
 local _UnitClass = UnitClass --wow api local
 local _UnitDebuff = UnitDebuff --wow api local
@@ -36,12 +36,12 @@ local CONST_DEBUFF_AMOUNT = 5
 local CONST_MAX_TANKS = 2
 
 local _cstr = string.format --lua library local
-local _table_insert = table.insert --lua library local
+local tinsert = table.insert --lua library local
 local _table_remove = table.remove --lua library local
-local _ipairs = ipairs --lua library local
-local _pairs = pairs --lua library local
+local ipairs = ipairs --lua library local
+local pairs = pairs --lua library local
 local _math_floor = math.floor --lua library local
-local _math_abs = math.abs --lua library local
+local abs = math.abs --lua library local
 local _math_min = math.min --lua library local
 local _table_sort = table.sort
 
@@ -102,8 +102,8 @@ local function CreatePluginFrames (data)
 				str:SetPoint(15, -15)
 				str:SetWidth(375)
 				
-				local close_button = _detalhes.gump:CreateButton (welcome, function() welcome:Hide() end, 120, 20, "Close")
-				close_button:SetTemplate(_detalhes.gump:GetTemplate ("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
+				local close_button = _detalhes.gump:CreateButton(welcome, function() welcome:Hide() end, 120, 20, "Close")
+				close_button:SetTemplate(_detalhes.gump:GetTemplate("button", "DETAILS_PLUGINPANEL_BUTTON_TEMPLATE"))
 				close_button:SetPoint("center", welcome, "center")
 				close_button:SetPoint("bottom", welcome, "bottom", 0, 10)
 				
@@ -111,17 +111,17 @@ local function CreatePluginFrames (data)
 		
 			Vanguard.CurrentInstance = Vanguard:GetInstance(Vanguard.instance_id)
 			
-			VanguardFrame:RegisterEvent ("ROLE_CHANGED_INFORM")
-			VanguardFrame:RegisterEvent ("GROUP_ROSTER_UPDATE")
-			VanguardFrame:RegisterEvent ("PLAYER_TARGET_CHANGED")
+			VanguardFrame:RegisterEvent("ROLE_CHANGED_INFORM")
+			VanguardFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
+			VanguardFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 			
 			Vanguard:ResetBars()
 			
 			Vanguard:IdentifyTanks()
-			Vanguard.CurrentCombat = _detalhes:GetCombat ("current")
+			Vanguard.CurrentCombat = _detalhes:GetCombat("current")
 
 			VanguardFrame:SetFrameStrata(Vanguard.CurrentInstance.baseframe:GetFrameStrata())
-			VanguardFrame:SetFrameLevel (Vanguard.CurrentInstance.baseframe:GetFrameLevel()+5)
+			VanguardFrame:SetFrameLevel(Vanguard.CurrentInstance.baseframe:GetFrameLevel()+5)
 			
 			if (Vanguard:IsInCombat()) then
 				Vanguard:CombatStart()
@@ -133,14 +133,14 @@ local function CreatePluginFrames (data)
 		elseif (event == "COMBAT_PLAYER_ENTER") then --a new combat has been started
 		
 			Vanguard.CurrentInstance = Vanguard:GetInstance(Vanguard.instance_id)
-			Vanguard.CurrentCombat = select (1, ...)
+			Vanguard.CurrentCombat = select(1, ...)
 			Vanguard.Running = true
 			
 			Vanguard:CombatStart()
 			
 		elseif (event == "COMBAT_PLAYER_LEAVE") then --current combat has finished
 		
-			Vanguard.CurrentCombat = select (1, ...)
+			Vanguard.CurrentCombat = select(1, ...)
 			
 			Vanguard:CombatEnd()
 			Vanguard:ResetBars()
@@ -183,10 +183,10 @@ local function CreatePluginFrames (data)
 	--search for tanks in the raid or party group 
 	function Vanguard:IdentifyTanks()
 	
-		table.wipe (Vanguard.TankList)
-		table.wipe (Vanguard.TankHashNames)
-		table.wipe (Vanguard.TankIncDamage)
-		table.wipe (Vanguard.UnitIdCache)
+		table.wipe(Vanguard.TankList)
+		table.wipe(Vanguard.TankHashNames)
+		table.wipe(Vanguard.TankIncDamage)
+		table.wipe(Vanguard.UnitIdCache)
 
 		for i = 1, CONST_MAX_TANKS do 
 			Vanguard.auraUpdateFrames[i]:UnregisterEvent("UNIT_AURA")
@@ -196,7 +196,7 @@ local function CreatePluginFrames (data)
 		
 		if (IsInRaid()) then
 			for i = 1, GetNumGroupMembers(), 1 do
-				local role = _UnitGroupRolesAssigned ("raid" .. i)
+				local role = _UnitGroupRolesAssigned("raid" .. i)
 				if (role == "TANK") then
 					local name, realm = UnitName ("raid"..i)
 					if (realm) then
@@ -216,7 +216,7 @@ local function CreatePluginFrames (data)
 		elseif (IsInGroup()) then
 		
 			for i = 1, GetNumGroupMembers()-1, 1 do
-				local role = _UnitGroupRolesAssigned ("party"..i)
+				local role = _UnitGroupRolesAssigned("party"..i)
 				if (role == "TANK") then
 					local name, realm = UnitName ("party"..i)
 					if (realm) then
@@ -233,7 +233,7 @@ local function CreatePluginFrames (data)
 				end
 			end
 			
-			local role = _UnitGroupRolesAssigned ("player")
+			local role = _UnitGroupRolesAssigned("player")
 			if (role == "TANK") then
 				local name, realm = UnitName ("player")
 				if (realm) then
@@ -313,22 +313,22 @@ local function CreatePluginFrames (data)
 	
 	local SetTank = function(self, index)
 		local name = Vanguard.TankList [index]
-		self.tankname:SetText(Vanguard:GetOnlyName (name))
+		self.tankname:SetText(Vanguard:GetOnlyName(name))
 		self.tankname_string = name
 		
 		local bar = self.heal_inc
 		bar.tankname = name
 		
-		local class, left, right, top, bottom, r, g, b = Vanguard:GetClass (name)
+		local class, left, right, top, bottom, r, g, b = Vanguard:GetClass(name)
 		
 		local spec = Vanguard:GetSpec (name)
 		
 		if (spec) then
 			self.specicon:SetTexture(Vanguard.CurrentInstance.row_info.spec_file)
-			self.specicon:SetTexCoord (_unpack (Vanguard.class_specs_coords [spec]))
+			self.specicon:SetTexCoord(_unpack(Vanguard.class_specs_coords [spec]))
 		else
 			self.specicon:SetTexture(Vanguard.CurrentInstance.row_info.icon_file)
-			self.specicon:SetTexCoord (left, right, top, bottom)
+			self.specicon:SetTexCoord(left, right, top, bottom)
 		end
 		
 		self.unitFrame:SetUnit(Vanguard.UnitIdCache[name])
@@ -338,14 +338,14 @@ local function CreatePluginFrames (data)
 		self.unitFrame.healthBar:SetColor(r, g, b)
 		
 		bar.lefticon = Vanguard.CurrentInstance.row_info.icon_file
-		bar.iconleft:SetTexCoord (left, right, top, bottom)
-		bar:SetLeftText (Vanguard:GetOnlyName (name))
+		bar.iconleft:SetTexCoord(left, right, top, bottom)
+		bar:SetLeftText (Vanguard:GetOnlyName(name))
 		bar:SetLeftText (name)
 		
 		local width = Vanguard.db.tank_block_size
 		self:SetWidth(width)
-		self:SetBackdropColor(unpack (Vanguard.db.tank_block_color))
-		self.unitFrame.healthBar.background:SetColorTexture(unpack (Vanguard.db.tank_block_color))
+		self:SetBackdropColor(unpack(Vanguard.db.tank_block_color))
+		self.unitFrame.healthBar.background:SetColorTexture(unpack(Vanguard.db.tank_block_color))
 		self.unitFrame.healthBar.Settings.BackgroundColor = Vanguard.db.tank_block_color
 
 		--texture
@@ -397,7 +397,7 @@ local function CreatePluginFrames (data)
 		end
 		
 		f:SetBackdrop({bgFile = [[Interface\AddOns\Details\images\background]], tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
-		f:SetBackdropColor(unpack (Vanguard.db.tank_block_color))
+		f:SetBackdropColor(unpack(Vanguard.db.tank_block_color))
 		f:SetBackdropBorderColor(0, 0, 0, 1)
 		
 		--debuff icons
@@ -466,7 +466,7 @@ local function CreatePluginFrames (data)
 		
 			for i = 1, CONST_DEBUFF_AMOUNT do
 				local support_frame = CreateFrame("frame", "VanguardSupportFrame_"..index.."_"..i, f.unitFrame, "BackdropTemplate")
-				support_frame:SetFrameLevel (f.unitFrame:GetFrameLevel()+10)
+				support_frame:SetFrameLevel(f.unitFrame:GetFrameLevel()+10)
 				support_frame:SetSize(24, 24)
 				support_frame:SetScript("OnMouseUp", on_click)
 				
@@ -481,7 +481,7 @@ local function CreatePluginFrames (data)
 				support_frame:SetPoint("left", f, "left", 5 + xOffSet, -8)
 				
 				local dblock = CreateFrame("cooldown", "VanguardTankDebuffCooldown" .. index.. "_" .. i, support_frame, "CooldownFrameTemplate, BackdropTemplate")
-				dblock:SetAlpha (0.7)
+				dblock:SetAlpha(0.7)
 				dblock:SetPoint("topleft", texture, "topleft")
 				dblock:SetPoint("bottomright", texture, "bottomright")
 
@@ -499,7 +499,7 @@ local function CreatePluginFrames (data)
 				elevateStringsFrame:SetFrameLevel(dblock:GetFrameLevel()+10)
 				elevateStringsFrame:EnableMouse(false)
 
-				local stack = elevateStringsFrame:CreateFontString (elevateStringsFrame:GetName() .. "_StackText", "overlay", "GameFontNormal")
+				local stack = elevateStringsFrame:CreateFontString(elevateStringsFrame:GetName() .. "_StackText", "overlay", "GameFontNormal")
 				stack:SetPoint("bottomright", dblock, "bottomright", 0, 0)
 				DetailsFramework:SetFontColor(stack, "yellow")
 
@@ -680,7 +680,7 @@ local function CreatePluginFrames (data)
 	function Vanguard.AnimateLeftWithAccel(self, deltaTime)
 		local distance = (self.AnimationStart - self.AnimationEnd) / self.CurrentHealthMax * 100	--scale 1 - 100
 		local minTravel = min (distance / 10, 3) -- 10 = trigger distance to max speed 3 = speed scale on max travel
-		local maxTravel = max (minTravel, 0.45) -- 0.45 = min scale speed on low travel speed
+		local maxTravel = max(minTravel, 0.45) -- 0.45 = min scale speed on low travel speed
 		local calcAnimationSpeed = (self.CurrentHealthMax * (deltaTime * DB_ANIMATION_TIME_DILATATION)) * maxTravel --re-scale back to unit health, scale with delta time and scale with the travel speed
 		
 		self.AnimationStart = self.AnimationStart - (calcAnimationSpeed)
@@ -705,7 +705,7 @@ local function CreatePluginFrames (data)
 	function Vanguard.AnimateRightWithAccel(self, deltaTime)
 		local distance = (self.AnimationEnd - self.AnimationStart) / self.CurrentHealthMax * 100	--scale 1 - 100 basis
 		local minTravel = math.min (distance / 10, 3) -- 10 = trigger distance to max speed 3 = speed scale on max travel
-		local maxTravel = math.max (minTravel, 0.45) -- 0.45 = min scale speed on low travel speed
+		local maxTravel = math.max(minTravel, 0.45) -- 0.45 = min scale speed on low travel speed
 		local calcAnimationSpeed = (self.CurrentHealthMax * (deltaTime * DB_ANIMATION_TIME_DILATATION)) * maxTravel --re-scale back to unit health, scale with delta time and scale with the travel speed
 		
 		self.AnimationStart = self.AnimationStart + (calcAnimationSpeed)
@@ -768,16 +768,16 @@ local function CreatePluginFrames (data)
 			if (taken > 0 and heals > 0) then
 				if (taken > heals) then 
 					local p = heals / taken * 100
-					p = _math_abs (p - 100)
+					p = abs(p - 100)
 
 					p = p / 2
 					p = p + 50
-					p = _math_abs (p - 100)
+					p = abs(p - 100)
 					--tframe.heal_inc:SetSplit (p)
 					currentValue = p
 				else
 					local p = taken / heals * 100
-					p = _math_abs (p - 100)
+					p = abs(p - 100)
 					p = p / 2
 					p = p + 50
 					
@@ -822,7 +822,7 @@ local function CreatePluginFrames (data)
 		end
 		
 		if (Vanguard.track_incoming) then
-			Vanguard:CancelTimer (Vanguard.track_incoming)
+			Vanguard:CancelTimer(Vanguard.track_incoming)
 		end
 
 		Vanguard.track_incoming = Vanguard:ScheduleRepeatingTimer ("TrackIncoming", 0.1)
@@ -839,7 +839,7 @@ local function CreatePluginFrames (data)
 		end		
 	
 		if (Vanguard.track_incoming) then
-			Vanguard:CancelTimer (Vanguard.track_incoming)
+			Vanguard:CancelTimer(Vanguard.track_incoming)
 		end
 	
 		onUpdateFrame:SetScript("OnUpdate", nil)
@@ -849,11 +849,11 @@ local function CreatePluginFrames (data)
 
 	local formatTime = function(time)
 		if (time >= 3600) then
-			return floor (time / 3600) .. "h"
+			return floor(time / 3600) .. "h"
 		elseif (time >= 60) then
-			return floor (time / 60) .. "m"
+			return floor(time / 60) .. "m"
 		else
-			return floor (time)
+			return floor(time)
 		end
 	end
 
@@ -949,11 +949,11 @@ local build_options_panel = function()
 	local tank_texture_menu = texTable
 
 	--templates
-	local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
-	local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-	local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-	local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
-	local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+	local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+	local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+	local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+	local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+	local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 
 	local menu = {
 		{
@@ -984,8 +984,8 @@ local build_options_panel = function()
 			min = 10,
 			max = 50,
 			step = 1,
-			--desc = "Inc Damage Heigth",
-			name = "Incoming Damage Heigth",
+			--desc = "Inc Damage Height",
+			name = "Incoming Damage Height",
 		},
 		{type = "blank"},
 
@@ -1129,7 +1129,7 @@ function Vanguard:OnEvent (_, event, arg1, token, time, who_serial, who_name, wh
 				
 				local install, saveddata = _G._detalhes:InstallPlugin ("TANK", "Vanguard", "Interface\\Icons\\INV_Shield_04", Vanguard, "DETAILS_PLUGIN_VANGUARD", MINIMAL_DETAILS_VERSION_REQUIRED, "Terciob", "v3.0", default_saved_table)
 				if (type(install) == "table" and install.error) then
-					print (install.error)
+					print(install.error)
 				end
 
 				--Vanguard.db.first_run = false --debug
@@ -1138,15 +1138,15 @@ function Vanguard:OnEvent (_, event, arg1, token, time, who_serial, who_name, wh
 				CreatePluginFrames()
 
 				--Register needed events
-				_G._detalhes:RegisterEvent (Vanguard, "COMBAT_PLAYER_ENTER")
-				_G._detalhes:RegisterEvent (Vanguard, "COMBAT_PLAYER_LEAVE")
-				_G._detalhes:RegisterEvent (Vanguard, "DETAILS_INSTANCE_ENDRESIZE")
-				_G._detalhes:RegisterEvent (Vanguard, "DETAILS_INSTANCE_SIZECHANGED")
-				_G._detalhes:RegisterEvent (Vanguard, "GROUP_ONLEAVE")
-				_G._detalhes:RegisterEvent (Vanguard, "DETAILS_OPTIONS_MODIFIED")
+				_G._detalhes:RegisterEvent(Vanguard, "COMBAT_PLAYER_ENTER")
+				_G._detalhes:RegisterEvent(Vanguard, "COMBAT_PLAYER_LEAVE")
+				_G._detalhes:RegisterEvent(Vanguard, "DETAILS_INSTANCE_ENDRESIZE")
+				_G._detalhes:RegisterEvent(Vanguard, "DETAILS_INSTANCE_SIZECHANGED")
+				_G._detalhes:RegisterEvent(Vanguard, "GROUP_ONLEAVE")
+				_G._detalhes:RegisterEvent(Vanguard, "DETAILS_OPTIONS_MODIFIED")
 				
-				VanguardFrame:RegisterEvent ("ZONE_CHANGED_NEW_AREA")
-				VanguardFrame:RegisterEvent ("PLAYER_ENTERING_WORLD")
+				VanguardFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+				VanguardFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 			end
 		end
 	

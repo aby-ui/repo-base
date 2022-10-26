@@ -7,13 +7,13 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
-	local _table_insert = table.insert --lua local
-	local _ipairs = ipairs --lua local
-	local _pairs = pairs --lua local
+	local tinsert = table.insert --lua local
+	local ipairs = ipairs --lua local
+	local pairs = pairs --lua local
 	local _math_floor = math.floor --lua local
 	local _time = time --lua local
 	
-	local _GetTime = GetTime --api local
+	local GetTime = GetTime --api local
 	
 	local timeMachine = _detalhes.timeMachine --details local
 
@@ -27,8 +27,8 @@
 	timeMachine.ligada = false
 
 	local calc_for_pvp = function(self)
-		for tipo, tabela in _pairs (self.tabelas) do
-			for nome, jogador in _ipairs(tabela) do
+		for tipo, tabela in pairs(self.tabelas) do
+			for nome, jogador in ipairs(tabela) do
 				if (jogador) then
 					if (jogador.last_event+3 > _tempo) then --okey o jogador esta dando dps
 						if (jogador.on_hold) then --o dps estava pausado, retornar a ativa
@@ -46,8 +46,8 @@
 	end
 	
 	local calc_for_pve = function(self)
-		for tipo, tabela in _pairs (self.tabelas) do
-			for nome, jogador in _ipairs(tabela) do
+		for tipo, tabela in pairs(self.tabelas) do
+			for nome, jogador in ipairs(tabela) do
 				if (jogador) then
 					if (jogador.last_event+10 > _tempo) then --okey o jogador esta dando dps
 						if (jogador.on_hold) then --o dps estava pausado, retornar a ativa
@@ -82,7 +82,7 @@
 		self.tabelas = {{}, {}} --1 dano 2 cura
 		
 		local danos = _detalhes.tabela_vigente[1]._ActorTable
-		for _, jogador in _ipairs(danos) do
+		for _, jogador in ipairs(danos) do
 			if (jogador.dps_started) then
 				jogador:RegistrarNaTimeMachine()
 			end
@@ -93,14 +93,14 @@
 		self.ligada = false
 		self.tabelas = nil
 		if (self.atualizador) then
-			self:CancelTimer (self.atualizador)
+			self:CancelTimer(self.atualizador)
 			self.atualizador = nil
 		end
 	end
 
 	function timeMachine:Reiniciar()
-		table.wipe (self.tabelas[1])
-		table.wipe (self.tabelas[2])
+		table.wipe(self.tabelas[1])
+		table.wipe(self.tabelas[2])
 		self.tabelas = {{}, {}} --1 dano 2 cura
 	end
 
@@ -125,15 +125,15 @@
 		end
 
 		local esta_tabela = timeMachine.tabelas [self.tipo]
-		_table_insert (esta_tabela, self)
+		tinsert(esta_tabela, self)
 		self.timeMachine = #esta_tabela
 	end 
 
 	function _detalhes:ManutencaoTimeMachine()
-		for tipo, tabela in _ipairs(timeMachine.tabelas) do
+		for tipo, tabela in ipairs(timeMachine.tabelas) do
 			local t = {}
 			local removed = 0
-			for index, jogador in _ipairs(tabela) do
+			for index, jogador in ipairs(tabela) do
 				if (jogador) then
 					t [#t+1] = jogador
 					jogador.timeMachine = #t
@@ -145,7 +145,7 @@
 			timeMachine.tabelas [tipo] = t
 			
 			if (_detalhes.debug) then
-				--_detalhes:Msg ("timemachine r"..removed.."| e"..#t.."| t"..tipo)
+				--_detalhes:Msg("timemachine r"..removed.."| e"..#t.."| t"..tipo)
 			end
 		end
 	end
@@ -257,6 +257,6 @@
 	end
 
 	function _detalhes:PrintTimeMachineIndexes()
-		print ("timemachine damage", #timeMachine.tabelas [1])
-		print ("timemachine heal", #timeMachine.tabelas [2])
+		print("timemachine damage", #timeMachine.tabelas [1])
+		print("timemachine heal", #timeMachine.tabelas [2])
 	end

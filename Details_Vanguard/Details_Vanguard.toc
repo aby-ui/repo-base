@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Details!: Vanguard (plugin)
 ## Notes: Show the health and debuffs for tanks in your group.
 ## SavedVariablesPerCharacter: _detalhes_databaseVanguard

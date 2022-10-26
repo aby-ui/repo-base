@@ -1,6 +1,5 @@
-local addonName, Data = ...
+local AddonName, Data = ...
 local L = Data.L
-local LSM = LibStub("LibSharedMedia-3.0")
 
 -- local CloseDropDownMenus = CloseDropDownMenus
 -- local UIDropDownMenu_AddButton = UIDropDownMenu_AddButton

@@ -4,7 +4,7 @@
 	<Script file="Accountant.lua"/>
 
 	<!-- Item Row Template -->
-	<Button name="AccountantTabTemplate" inherits="CharacterFrameTabButtonTemplate" virtual="true">
+	<Button name="AccountantTabTemplate" inherits="PanelTabButtonTemplate" virtual="true">
 		<Scripts>
 			<OnClick>
 				AccountantTab_OnClick(self);

@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: Enigma Unit Frames
 ## Notes: Enhanced Unit Frames including HP/MP values, class, race, level tag, and more ...
 ## Version: 3.1.1
@@ -6,9 +6,10 @@
 ## SavedVariables: mg_EUF_Options
 ## LoadOnDemand:
 
+## Dependencies: TODO:abyui10
 EN_UnitFrames.xml
-
 SBuff_Buffs.lua
+
 ## Title: |cff880303[爱不易]|r EN_UnitF 头像增强
 ## Title-zhCN: |cff880303[爱不易]|r EN _UnitFrames头像增强
 ## Notes-zhCN: 增强显示头像，显示目标的目标的目标，小队头像显示队员职业等级，并显示生命值及法力值

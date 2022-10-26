@@ -10,8 +10,6 @@ local loadedAPILabelFunctions = false
 do
 	local metaPrototype = {
 		WidgetType = "label",
-		SetHook = detailsFramework.SetHook,
-		RunHooksForWidget = detailsFramework.RunHooksForWidget,
 		dversion = detailsFramework.dversion,
 	}
 
@@ -36,6 +34,7 @@ end
 local LabelMetaFunctions = _G[detailsFramework.GlobalWidgetControlNames ["label"]]
 
 detailsFramework:Mixin(LabelMetaFunctions, detailsFramework.SetPointMixin)
+detailsFramework:Mixin(LabelMetaFunctions, detailsFramework.ScriptHookMixin)
 
 ------------------------------------------------------------------------------------------------------------
 --metatables
@@ -285,7 +284,9 @@ detailsFramework:Mixin(LabelMetaFunctions, detailsFramework.SetPointMixin)
 			container = container.widget
 		end
 
-		font = font == "" and "GameFontHighlightSmall" or font or "GameFontHighlightSmall"
+		if (not font or font == "") then
+			font = "GameFontNormal"
+		end
 
 		labelObject.label = parent:CreateFontString(name, layer or "OVERLAY", font)
 		labelObject.widget = labelObject.label

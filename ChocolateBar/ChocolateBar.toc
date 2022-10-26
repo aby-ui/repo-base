@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: ChocolateBar
 ## Notes: A display for LibDataBroker-1.1
 ## Author: Kiatra - github.com/Kiatra/ChocolateBar/

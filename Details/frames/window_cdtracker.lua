@@ -173,6 +173,7 @@ end
         local spellIcon = GetSpellTexture(cooldownFrame.spellId)
         if (spellIcon) then
             cooldownFrame:SetIcon(spellIcon, .1, .9, .1, .9)
+
             local classColor = C_ClassColor.GetClassColor(cooldownFrame.class)
             cooldownFrame:SetStatusBarColor(classColor.r, classColor.g, classColor.b)
             cooldownFrame:SetLeftText(DF:RemoveRealmName(cooldownFrame.unitName))
@@ -369,11 +370,11 @@ end
             --enabled with a toggle button
             --execute to reset position
             --misc configs
-            local options_text_template = DF:GetTemplate ("font", "OPTIONS_FONT_TEMPLATE")
-            local options_dropdown_template = DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
-            local options_switch_template = DF:GetTemplate ("switch", "OPTIONS_CHECKBOX_TEMPLATE")
-            local options_slider_template = DF:GetTemplate ("slider", "OPTIONS_SLIDER_TEMPLATE")
-            local options_button_template = DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE")
+            local options_text_template = DF:GetTemplate("font", "OPTIONS_FONT_TEMPLATE")
+            local options_dropdown_template = DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE")
+            local options_switch_template = DF:GetTemplate("switch", "OPTIONS_CHECKBOX_TEMPLATE")
+            local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
+            local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 
             local generalOptions = {
                 {--enable ocd

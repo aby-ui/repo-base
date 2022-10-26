@@ -710,7 +710,7 @@ function module.options:Load()
 	self.textAddData.Button.isButton = true
 	self.textAddData.Button.isModern = true
 
-	self.imgpath = ELib:Edit(self,curr_imgpath):Size(250,20):Point("LEFT",self.curr_color_texture,"RIGHT",10,0):TopText("Image path:"):OnChange(function(self)
+	self.imgpath = ELib:Edit(self):Size(250,20):Point("LEFT",self.curr_color_texture,"RIGHT",10,0):TopText("Image path:"):Text(curr_imgpath):OnChange(function(self)
 		curr_imgpath = self:GetText():trim()
 		curr_imgpath = tonumber(curr_imgpath) or curr_imgpath
 		module.options.curr_color_texture:SetTexture(curr_imgpath)
@@ -983,6 +983,36 @@ function module.options:Load()
 
 		--151-160
 		{L.S_ZoneT28SFO..": "..L.bossName[2537],{"Interface/AddOns/"..GlobalAddonName.."/mediamodern/sotfo11"}},
+		{"Ulduar 1",{147,nil,nil,0.8}},
+		{"Ulduar 2",{148,nil,nil,0.8}},
+		{"Ulduar 3",{149,nil,nil,0.8}},
+		{"Ulduar 4",{150,nil,nil,0.8}},
+		{"Ulduar 5",{151,nil,nil,0.8}},
+		{"Ulduar 6",{152,nil,nil,0.8}},
+		{"Trial of the Crusader 1",{172,nil,nil,0.8}},
+		{"Trial of the Crusader 2",{173,nil,nil,0.8}},
+		{"Icecrown Citadel 1",{186,nil,nil,0.8}},
+
+		--161-170
+		{"Icecrown Citadel 2",{187,nil,nil,0.8}},
+		{"Icecrown Citadel 3",{188,nil,nil,0.8}},
+		{"Icecrown Citadel 4",{189,nil,nil,0.8}},
+		{"Icecrown Citadel 5",{190,nil,nil,0.8}},
+		{"Icecrown Citadel 6",{191,nil,nil,0.8}},
+		{"Icecrown Citadel 7",{192,nil,nil,0.8}},
+		{"Icecrown Citadel 8",{193,nil,nil,0.8}},
+		{"The Ruby Sanctum",{200,nil,nil,0.8}},
+		{"Onyxia's Lair",{"Interface/AddOns/"..GlobalAddonName.."/mediaclassic/ony"}},
+		{"The Eye of Eternity",{141,nil,nil,0.8}},
+
+		--171-180
+		{"The Obsidian Sanctum",{155,nil,nil,0.8}},
+		{"Naxxramas 1",{166,nil,nil,0.8}},
+		{"Naxxramas 2",{162,nil,nil,0.8}},
+		{"Naxxramas 3",{163,nil,nil,0.8}},
+		{"Naxxramas 4",{164,nil,nil,0.8}},
+		{"Naxxramas 5",{165,nil,nil,0.8}},
+		{"Naxxramas 6",{167,nil,nil,0.8}},
 	}
 	local mapsSorted = {
 		1,
@@ -999,7 +1029,33 @@ function module.options:Load()
 		{L.S_ZoneT22Uldir,9,8,11,7,6,5,4,2,3},
 		{DUNGEONS..": "..EXPANSION_NAME7,41,42,43,44,12,13,14,15,16,17,18,19},
 	}
-	if ExRT.isBC then
+	if ExRT.isLK then
+		mapsSorted = {
+			1,
+			{L.NoteColor,10,94,95,96,97,98,99},
+			{"The Ruby Sanctum",168},
+			{"Icecrown Citadel",160,161,162,163,164,165,166,167},
+			{"Onyxia's Lair",169},
+			{"Trial of the Crusader",158,159},
+			{"Ulduar",152,153,154,155,156,157},
+			{"The Eye of Eternity",170},
+			{"The Obsidian Sanctum",171},
+			{"Naxxramas",172,173,174,175,176,177},
+			{"Sunwell Plateau",139,140},
+			{"Battle for Mount Hyjal",135},
+			{"Black Temple",126,127,128,129,130,131,132,133},
+			{"Tempest Keep",138},
+			{"Serpentshrine Cavern",137},
+			{"Gruul's Lair",134},
+			{"Magtheridon's Lair",136},
+			{"Blackwing Lair","by Wollie",57,58,59,60,61,62,63,64},
+			{"Molten Core",65},
+			{"Naxxramas [classic]","by Wollie",71,72,73,74,75,76},
+			{"Ruins of Ahn'Qiraj",67},
+			{"Temple of Ahn'Qiraj",68,69,70},
+			{"Zul'gurub",66},
+		}
+	elseif ExRT.isBC then
 		mapsSorted = {
 			1,
 			{L.NoteColor,10,94,95,96,97,98,99},
@@ -3008,9 +3064,17 @@ function module.options:Load()
 	self.liveButton = ELib:Button(self,L.VisualNoteLiveSession):Size(90,20):Point("TOPLEFT",710,-55):OnClick(function(self)
 		if not isLiveSession then
 			module.options:GenerateString()
-			self.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
+			if ExRT.is10 then
+				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.26,0.09,1), CreateColor(0.20,0.41,0.25,1))
+			else
+				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
+			end
 		else
-			self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+			if ExRT.is10 then
+				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
+			else
+				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
+			end
 		end
 		isLiveSession = not isLiveSession
 	end)

@@ -6,7 +6,7 @@ local _
 -- ~run ~runcode
 
 function Details:InitializeRunCodeWindow()
-    local DetailsRunCodePanel = DF:CreateSimplePanel (UIParent, 700, 480, "Details! Run Code", "DetailsRunCodePanel")
+    local DetailsRunCodePanel = DF:CreateSimplePanel(UIParent, 700, 480, "Details! Run Code", "DetailsRunCodePanel")
     DetailsRunCodePanel.Frame = DetailsRunCodePanel
     DetailsRunCodePanel.__name = "Auto Run Code"
     DetailsRunCodePanel.real_name = "DETAILS_RUNCODEWINDOW"
@@ -30,10 +30,10 @@ function Details.OpenRunCodeWindow()
     
         DetailsRunCodePanel.Initialized = true
         
-        local f = DetailsRunCodePanel or DF:CreateSimplePanel (UIParent, 700, 480, "Details! Run Code", "DetailsRunCodePanel")
+        local f = DetailsRunCodePanel or DF:CreateSimplePanel(UIParent, 700, 480, "Details! Run Code", "DetailsRunCodePanel")
 
         --lua editor
-        local code_editor = DF:NewSpecialLuaEditorEntry (f, 885, 510, "text", "$parentCodeEditorWindow")
+        local code_editor = DF:NewSpecialLuaEditorEntry(f, 885, 510, "text", "$parentCodeEditorWindow")
         f.CodeEditor = code_editor
         code_editor:SetPoint("topleft", f, "topleft", 20, -56)
         
@@ -51,11 +51,11 @@ function Details.OpenRunCodeWindow()
             code_editor:SetBackdrop({edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
             code_editor:SetBackdropBorderColor(0, 0, 0, 1)
             
-            code_editor.__background:SetColorTexture (0.2317647, 0.2317647, 0.2317647)
-            code_editor.__background:SetVertexColor (0.27, 0.27, 0.27)
-            code_editor.__background:SetAlpha (0.8)
-            code_editor.__background:SetVertTile (true)
-            code_editor.__background:SetHorizTile (true)
+            code_editor.__background:SetColorTexture(0.2317647, 0.2317647, 0.2317647)
+            code_editor.__background:SetVertexColor(0.27, 0.27, 0.27)
+            code_editor.__background:SetAlpha(0.8)
+            code_editor.__background:SetVertTile(true)
+            code_editor.__background:SetHorizTile(true)
             code_editor.__background:SetAllPoints()
             
             --code compile error warning
@@ -69,7 +69,7 @@ function Details.OpenRunCodeWindow()
             
             DF:CreateFlashAnimation (errortext_frame)
             
-            local errortext_label = DF:CreateLabel(errortext_frame, "", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
+            local errortext_label = DF:CreateLabel(errortext_frame, "", DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
             errortext_label.textcolor = "red"
             errortext_label:SetPoint("left", errortext_frame, "left", 3, 0)
             code_editor.NextCodeCheck = 0.33
@@ -81,11 +81,11 @@ function Details.OpenRunCodeWindow()
                     local script = code_editor:GetText()
                     local func, errortext = loadstring (script, "Q")
                     if (not func) then
-                        local firstLine = strsplit ("\n", script, 2)
-                        errortext = errortext:gsub (firstLine, "")
-                        errortext = errortext:gsub ("%[string \"", "")
-                        errortext = errortext:gsub ("...\"]:", "")
-                        errortext = errortext:gsub ("Q\"]:", "")
+                        local firstLine = strsplit("\n", script, 2)
+                        errortext = errortext:gsub(firstLine, "")
+                        errortext = errortext:gsub("%[string \"", "")
+                        errortext = errortext:gsub("...\"]:", "")
+                        errortext = errortext:gsub("Q\"]:", "")
                         errortext = "Line " .. errortext
                         errortext_label.text = errortext
                     else
@@ -118,10 +118,10 @@ function Details.OpenRunCodeWindow()
             return t
         end
         
-        local code_type_label = DF:CreateLabel(f, "Event:", DF:GetTemplate ("font", "ORANGE_FONT_TEMPLATE"))
-        local code_type_dropdown = DF:CreateDropDown (f, build_CodeType_dropdown_options, 1, 160, 20, "CodeTypeDropdown", _, DF:GetTemplate ("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
+        local code_type_label = DF:CreateLabel(f, "Event:", DF:GetTemplate("font", "ORANGE_FONT_TEMPLATE"))
+        local code_type_dropdown = DF:CreateDropDown (f, build_CodeType_dropdown_options, 1, 160, 20, "CodeTypeDropdown", _, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
         code_type_dropdown:SetPoint("left", code_type_label, "right", 2, 0)
-        code_type_dropdown:SetFrameLevel (code_editor:GetFrameLevel() + 10)
+        code_type_dropdown:SetFrameLevel(code_editor:GetFrameLevel() + 10)
         code_type_label:SetPoint("bottomleft", code_editor, "topleft", 0, 8)
         
         --create save button
@@ -142,7 +142,7 @@ function Details.OpenRunCodeWindow()
         
         local button_y = -6
         
-        local save_script_button = DF:CreateButton (f, save_script, 120, 20, "Save", -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", "PLATER_BUTTON"))
+        local save_script_button = DF:CreateButton(f, save_script, 120, 20, "Save", -1, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", "PLATER_BUTTON"))
         save_script_button:SetIcon ([[Interface\BUTTONS\UI-Panel-ExpandButton-Up]], 20, 20, "overlay", {0.1, .9, 0.1, .9})
         save_script_button:SetPoint("topright", code_editor, "bottomright", 0, button_y)
         
@@ -153,7 +153,7 @@ function Details.OpenRunCodeWindow()
             code_editor:ClearFocus()
         end
         
-        local cancel_script_button = DF:CreateButton (f, cancel_script, 120, 20, "Cancel", -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", "PLATER_BUTTON"))
+        local cancel_script_button = DF:CreateButton(f, cancel_script, 120, 20, "Cancel", -1, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", "PLATER_BUTTON"))
         cancel_script_button:SetIcon ([[Interface\BUTTONS\UI-Panel-MinimizeButton-Up]], 20, 20, "overlay", {0.1, .9, 0.1, .9})
         cancel_script_button:SetPoint("topleft", code_editor, "bottomleft", 0, button_y)
         
@@ -165,13 +165,13 @@ function Details.OpenRunCodeWindow()
             
             if (func) then
                 DF:SetEnvironment(func)
-                DF:QuickDispatch (func)
+                DF:QuickDispatch(func)
             else
                 errortext_frame:Flash(0.2, 0.2, 0.4, true, nil, nil, "NONE")
             end
         end
         
-        local run_script_button = DF:CreateButton (f, execute_script, 120, 20, "Test Code", -1, nil, nil, nil, nil, nil, DF:GetTemplate ("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate ("font", "PLATER_BUTTON"))
+        local run_script_button = DF:CreateButton(f, execute_script, 120, 20, "Test Code", -1, nil, nil, nil, nil, nil, DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"), DF:GetTemplate("font", "PLATER_BUTTON"))
         run_script_button:SetIcon ([[Interface\BUTTONS\UI-SpellbookIcon-NextPage-Up]], 20, 20, "overlay", {0.05, 0.95, 0.05, 0.95})
         run_script_button:SetPoint("bottomright", code_editor, "topright", 0, 3)
         

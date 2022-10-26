@@ -1,6 +1,28 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4680
+* Updated for 10.0 Dragonflight
+
+v.4660
+* Updated for 10.0 Dragonflight beta
+* Updated 9.2.7 toc
+* Raid cooldowns: added option to growth from left to right
+* Raid Check: added option to disable chat report outside raids
+* Invite Tools: Fixed invite opposite faction via bnet
+* WeakAuras checks: fixed disconnect on requesting for people with huge number of weakauras [outdated MRT versions not supported]
+* WeakAuras checks: click on name will request info only for single line
+* Saving log: added all mop+wod+legion 5ppl for <5ppl mythic> logging
+
+v.4660-LK
+* Inspect/Raid cooldowns: Added support for talents
+* Raid cooldowns: added option to growth from left to right
+* Raid Check: added chat report options
+
+v.4650-LK
+* Updated to WotLK version
+* Marks Bar: second click on consumables button will hide consumables window
+
 v.4630
 * Raid Check: consumables on ready check: added support for Eternal Augment Rune
 * Minor fixes

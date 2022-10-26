@@ -1,13 +1,12 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: DuowanChat
 # Title-zhCN: 聊天增强
 # Title-zhTW: 聊天增强
 ## Author: Terry, dugu@bigfoot
 ## Version: 0.1
 ## X-DuowanAddon: 介面聊天
-## SavedVariables: DuowanChatDB, DuowanChatPlayerDB
-### SavedVariablesPerCharacter: DuowanChatPerDB
-## LoadOnDemand: 
+## SavedVariables: DuowanChatDB
+## LoadOnDemand:
 
 locale\locale.en.lua
 locale\locale.cn.lua

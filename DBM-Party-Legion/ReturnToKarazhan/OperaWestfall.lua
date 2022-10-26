@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "heroic,mythic,challenge"
 
-mod:SetRevision("20210614230033")
+mod:SetRevision("20220917170523")
 mod:SetCreatureID(114261, 114260, 999999)--Remove 9s if phase 1 and 2 don't fire UNIT_DIED events
 mod:SetEncounterID(1957)--Shared (so not used for encounter START since it'd fire 3 mods)
 mod:DisableESCombatDetection()--However, with ES disabled, EncounterID can be used for BOSS_KILL/ENCOUNTER_END
@@ -28,7 +28,7 @@ local specWarnLegSweep				= mod:NewSpecialWarningRun(227568, "Melee", nil, nil, 
 local specWarnThunderRitual			= mod:NewSpecialWarningMoveAway(227777, nil, nil, nil, 1, 2)
 local yellThunderRitual				= mod:NewYell(227777)
 local specWarnBubbleBlast			= mod:NewSpecialWarningInterrupt(227420, "HasInterrupt", nil, nil, 1, 2)
-local specWarnWashAway				= mod:NewSpecialWarningDodge(227783, nil, nil, nil, 1, 2)
+local specWarnWashAway				= mod:NewSpecialWarningDodge(227783, nil, nil, 2, 2, 2)
 
 --Stage One: Defias Brotherhood
 local timerLegSweepCD				= mod:NewAITimer(40, 227568, nil, "Melee", nil, 2)

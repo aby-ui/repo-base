@@ -28,17 +28,43 @@ function TransferButton:Construct()
 	return f
 end
 
-
---[[ Events ]]--
-
-function TransferButton:OnToggle(_, checked)
-	self.Button:SetChecked(checked)
+function TransferButton:RegisterEvents()
+	self:RegisterFrameSignal('TRANFER_TOGGLED', 'OnToggle')
+	self:RegisterEvent('VOID_STORAGE_DEPOSIT_UPDATE', 'Update')
+	self:RegisterEvent('VOID_STORAGE_CONTENTS_UPDATE', 'Update')
+	self:RegisterEvent('VOID_TRANSFER_DONE', 'Update')
+	self:Update()
 end
+
+
+--[[ Update ]]--
+
+function TransferButton:Update()
+	local hasTransfer = self:HasTransfer()
+	self.Button.Icon:SetDesaturated(not hasTransfer)
+	self.Button:EnableMouse(hasTransfer)
+	self:Super(TransferButton):Update()
+end
+
+function TransferButton:HasTransfer()
+	return not self:IsCached() and (GetNumVoidTransferWithdrawal() + GetNumVoidTransferDeposit()) > 0
+end
+
+function TransferButton:GetMoney()
+	return GetVoidTransferCost()
+end
+
+
+--[[ Interaction ]]--
 
 function TransferButton:OnClick()
 	if self:HasTransfer() then
 		self:SendFrameSignal('TRANFER_TOGGLED', self.Button:GetChecked())
 	end
+end
+
+function TransferButton:OnToggle(_, checked)
+	self.Button:SetChecked(checked)
 end
 
 function TransferButton:OnEnter()
@@ -59,30 +85,4 @@ function TransferButton:OnEnter()
 
 		GameTooltip:Show()
 	end
-end
-
-
---[[ Update ]]--
-
-function TransferButton:RegisterEvents()
-	self:RegisterFrameSignal('TRANFER_TOGGLED', 'OnToggle')
-	self:RegisterEvent('VOID_STORAGE_DEPOSIT_UPDATE', 'Update')
-	self:RegisterEvent('VOID_STORAGE_CONTENTS_UPDATE', 'Update')
-	self:RegisterEvent('VOID_TRANSFER_DONE', 'Update')
-	self:Update()
-end
-
-function TransferButton:Update()
-	local hasTransfer = self:HasTransfer()
-	self.Button.Icon:SetDesaturated(not hasTransfer)
-	self.Button:EnableMouse(hasTransfer)
-	self:Super(TransferButton):Update()
-end
-
-function TransferButton:HasTransfer()
-	return not self:IsCached() and (GetNumVoidTransferWithdrawal() + GetNumVoidTransferDeposit()) > 0
-end
-
-function TransferButton:GetMoney()
-	return GetVoidTransferCost()
 end

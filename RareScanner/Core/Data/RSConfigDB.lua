@@ -756,6 +756,18 @@ function RSConfigDB.SetEventFiltered(eventID, value)
 end
 
 ---============================================================================
+-- Dragon glyphs filters
+---============================================================================
+
+function RSConfigDB.IsShowingDragonGlyphs()
+	return private.db.map.displayDragonGlyphsIcons
+end
+
+function RSConfigDB.SetShowingDragonGlyphs(value)
+	private.db.map.displayDragonGlyphsIcons = value
+end
+
+---============================================================================
 -- Minimap
 ---============================================================================
 
@@ -937,6 +949,14 @@ function RSConfigDB.SetFilteringConduitItems(value)
 	private.db.loot.filterConduitItems = value
 end
 
+function RSConfigDB.IsFilteringByExplorerResults()
+	return private.db.loot.filterByExplorerResults
+end
+
+function RSConfigDB.SetFilteringByExplorerResults(value)
+	private.db.loot.filterByExplorerResults = value
+end
+
 ---============================================================================
 -- Collection filters
 ---============================================================================
@@ -1029,52 +1049,6 @@ function RSConfigDB.GetExplorerMapID()
 	return private.db.collections.mapID
 end
 
-function RSConfigDB.ApplyCollectionsLootFilters()
-	-- Quality Uncommon and supperior
-	RSConfigDB.SetLootFilterMinQuality(Enum.ItemQuality.Uncommon)
-	
-	-- Type/Subtype
-	for mainTypeID, subtypesIDs in pairs(private.ITEM_CLASSES) do
-		-- Everything else
-		if (RSUtils.Contains({ Enum.ItemClass.Consumable, Enum.ItemClass.Container, Enum.ItemClass.Gem, Enum.ItemClass.Reagent, Enum.ItemClass.Projectile, Enum.ItemClass.Tradegoods, Enum.ItemClass.ItemEnhancement, Enum.ItemClass.Recipe, Enum.ItemClass.Quiver, Enum.ItemClass.Questitem, Enum.ItemClass.Key, Enum.ItemClass.Glyph, Enum.ItemClass.Battlepet, Enum.ItemClass.WowToken }, mainTypeID)) then
-			for _, typeID in pairs (subtypesIDs) do
-				RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-			end
-		-- Armor and weapons
-		elseif (RSUtils.Contains({ Enum.ItemClass.Weapon, Enum.ItemClass.Armor }, mainTypeID)) then
-			for _, typeID in pairs (subtypesIDs) do
-				-- Rings/necklaces/trinkets
-				if (not RSConfigDB.IsSearchingAppearances() or (mainTypeID == Enum.ItemClass.Armor and typeID == Enum.ItemArmorSubclass.Generic)) then
-					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-				else
-					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, true)
-				end
-			end
-		-- Miscellaneous
-		elseif (mainTypeID == Enum.ItemClass.Miscellaneous) then
-			for _, typeID in pairs (subtypesIDs) do
-				-- Toys are usually in the next types, but the filter by category doesn't apply to toys (who wants to filter toys??)
-				if (RSUtils.Contains({ Enum.ItemMiscellaneousSubclass.Junk, Enum.ItemMiscellaneousSubclass.Reagent, Enum.ItemMiscellaneousSubclass.Other }, typeID)) then
-					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-				elseif (not RSConfigDB.IsSearchingMounts() and typeID == Enum.ItemMiscellaneousSubclass.Mount) then
-					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-				elseif (not RSConfigDB.IsSearchingPets() and typeID == Enum.ItemMiscellaneousSubclass.CompanionPet) then
-					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, false)
-				else
-					RSConfigDB.SetLootFilterByCategory(mainTypeID, typeID, true)
-				end
-			end
-		end
-	end
-	
-	-- Custom filters
-	RSConfigDB.SetFilteringLootByNotEquipableItems(true)
-	RSConfigDB.SetFilteringLootByTransmog(true)
-	RSConfigDB.SetFilteringByCollected(true)
-	RSConfigDB.SetFilteringLootByNotMatchingClass(false)
-	RSConfigDB.SetFilteringLootByNotMatchingFaction(false)
-end
-
 function RSConfigDB.ResetLootFilters()
 	-- Quality Uncommon and supperior
 	RSConfigDB.SetLootFilterMinQuality(Enum.ItemQuality.Poor)
@@ -1092,6 +1066,7 @@ function RSConfigDB.ResetLootFilters()
 	RSConfigDB.SetFilteringByCollected(true)
 	RSConfigDB.SetFilteringLootByNotMatchingClass(false)
 	RSConfigDB.SetFilteringLootByNotMatchingFaction(true)
+	RSConfigDB.SetFilteringByExplorerResults(false)
 end
 
 ---============================================================================

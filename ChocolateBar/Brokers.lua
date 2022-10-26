@@ -292,7 +292,7 @@ do
         dataobj.text = string.format('背包: %d/%d', freeslots, maxslots)
     end
 
-    hooksecurefunc('MainMenuBarBackpackButton_UpdateFreeSlots', update_slots)
+    --hooksecurefunc('MainMenuBarBackpackButton_UpdateFreeSlots', update_slots) --TODO:abyui10
     --AceEvent:RegisterEvent('BAG_UPDATE', update_slots)
     --update_slots()
 end

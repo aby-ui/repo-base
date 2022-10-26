@@ -862,6 +862,8 @@ L["Olmyr the Enlightened"] = "启迪者奥米尔"
 L["Omega Buster"] = "欧米茄破坏者"
 L["Oozing Leftovers"] = "渗漏的残躯"
 L["Open MDI override options"] = "打开MDI覆盖选项"
+--[[Translation missing --]]
+--[[ L["openSettingsTooltip"] = ""--]] 
 L["Opera Hall Balcony"] = "歌剧院楼座"
 L["Opera Hall: Wikket"] = "歌剧院：魔法坏女巫"
 L["Oppressive Banner"] = "压制战旗"

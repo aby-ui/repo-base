@@ -273,7 +273,7 @@ local unpackActorFlag = function(flag)
 end
 
 local isActorInGroup = function(class, flag)
-    if (bit.band (flag, IS_GROUP_OBJECT) ~= 0 and class ~= "UNKNOW" and class ~= "UNGROUPPLAYER" and class ~= "PET") then
+    if (bit.band(flag, IS_GROUP_OBJECT) ~= 0 and class ~= "UNKNOW" and class ~= "UNGROUPPLAYER" and class ~= "PET") then
         return true
     end
     return false
@@ -401,11 +401,11 @@ function Details.packFunctions.RetriveActorInformation(combatData, index)
     local serialNumber = combatData[index + 2]
     serialNumber = unpackActorSerial(serialNumber)
 
-    --class [4]
+    --class[4]
     local class = combatData[index + 3]
     class = unpackActorClass(class)
 
-    --spec [5]
+    --spec[5]
     local spec = tonumber(combatData[index + 4])
 
     --return the values
@@ -612,7 +612,7 @@ function Details.packFunctions.UnPackDamage(currentCombat, combatData, tablePosi
 
         --set the actor class, spec and group
         actorObject.classe = class
-        actorObject.spec = spec
+        actorObject:SetSpecId(spec)
         actorObject.grupo = isActorInGroup(class, actorFlag)
         actorObject.flag_original = actorFlag
 
@@ -860,7 +860,7 @@ function Details.packFunctions.UnPackHeal(currentCombat, combatData, tablePositi
 
         --set the actor class, spec and group
         actorObject.classe = class
-        actorObject.spec = spec
+        actorObject:SetSpecId(spec)
         actorObject.grupo = isActorInGroup(class, actorFlag)
         actorObject.flag_original = actorFlag
 
@@ -1392,7 +1392,7 @@ function Details.packFunctions.UnPackUtility(currentCombat, combatData, tablePos
 
             --set the actor class, spec and group
             actorObject.classe = class
-            actorObject.spec = spec
+            actorObject:SetSpecId(spec)
             actorObject.grupo = isActorInGroup(class, actorFlag)
             actorObject.flag_original = actorFlag
             --finished utility actor setup

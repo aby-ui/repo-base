@@ -598,7 +598,7 @@ local createDropdown = function(thisFrame)
 		window.fechar:SetHeight(20)
 		window.fechar:SetPoint("TOPRIGHT", window, "TOPRIGHT", 0, -3)
 		window.fechar:Show()
-		window.fechar:GetNormalTexture():SetDesaturated (true)
+		window.fechar:GetNormalTexture():SetDesaturated(true)
 
 		local recentReportButton = window.recently_report_buttons[10]
 		recentReportButton:Hide()
@@ -682,8 +682,8 @@ local createDropdown = function(thisFrame)
 			bg1:SetTexture([[Interface\AddOns\Details\images\background]], true)
 			bg1:SetAlpha(0.7)
 			bg1:SetVertexColor(0.27, 0.27, 0.27)
-			bg1:SetVertTile (true)
-			bg1:SetHorizTile (true)
+			bg1:SetVertTile(true)
+			bg1:SetHorizTile(true)
 			bg1:SetAllPoints()
 
 			tinsert(window.all_widgets, bg1)
@@ -713,7 +713,7 @@ local createDropdown = function(thisFrame)
 
 	function Details:DelayUpdateReportWindowRecentlyReported()
 		if (DetailsReportWindow) then
-			Details:ScheduleTimer ("UpdateRecentlyReported", 0.5)
+			Details:ScheduleTimer("UpdateRecentlyReported", 0.5)
 		end
 	end
 
@@ -766,12 +766,12 @@ local createDropdown = function(thisFrame)
 		window.recently_report_buttons = {}
 
 		local historyBlockBackground = window:CreateTexture(nil, "background")
-		historyBlockBackground:SetColorTexture (0, 0, 0, .3)
+		historyBlockBackground:SetColorTexture(0, 0, 0, .3)
 		historyBlockBackground:SetSize(160, 158)
 		historyBlockBackground:SetPoint("topleft", window, "topleft", 3, -25)
 
 		local separator = window:CreateTexture(nil, "border")
-		separator:SetColorTexture (0, 0, 0, .6)
+		separator:SetColorTexture(0, 0, 0, .6)
 		separator:SetSize(2, 158)
 		separator:SetPoint("topleft", historyBlockBackground, "topright", 0, 0)
 

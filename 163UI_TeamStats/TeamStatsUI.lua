@@ -6,13 +6,13 @@ local names = {} --当前列表里的玩家名称
 local MIN_WIDTH = 400
 
 local f = WW:Frame(TS.FRAME_NAME, UIParent, "ButtonFrameTemplate"):TOP(0, -40):Size(728,450):Hide():SetAlpha(0.95):SetMovable(true):SetToplevel(true)
-f:SetResizable(true):SetMinResize(MIN_WIDTH,200):SetMaxResize(728,1000):SetClampedToScreen(true)
+f:SetResizable(true):SetResizeBounds(MIN_WIDTH,200,728,1000):SetClampedToScreen(true)
 ButtonFrameTemplate_HidePortrait(f())
 CoreUIMakeMovable(f())
 table.insert(UISpecialFrames, TS.FRAME_NAME)
 
-f.portrait:SetTexture("Interface\\FriendsFrame\\FriendsFrameScrollIcon");
-f.TitleText:SetText(L["TitleText"])
+f.PortraitContainer.portrait:SetTexture("Interface\\FriendsFrame\\FriendsFrameScrollIcon");
+f.TitleContainer.TitleText:SetText(L["TitleText"])
 
 TS.DEFAULT_COL_WIDTH = 48
 TS.INNER_OFFSETY = -48 --滚动部分相对顶端的距离
@@ -152,8 +152,8 @@ function TS.SetTab(index)
         end
     end
     minWidth = minWidth and minWidth + 35
-    f:SetMinResize(max(minWidth, MIN_WIDTH), select(2,f:GetMinResize()))
-    f:SetMaxResize(max(minWidth, MIN_WIDTH), select(2,f:GetMaxResize()))
+    local _, minH, _, maxH = f:GetResizeBounds()
+    f:SetResizeBounds(max(minWidth, MIN_WIDTH), minH, max(minWidth, MIN_WIDTH), maxH)
     f:SetWidth(max(minWidth, MIN_WIDTH))
     RunOnNextFrame(function() f.scroll.scrollChild:SetWidth(f.scroll:GetWidth()) end) --Point似乎是下一帧才更新的
     f.scroll.update()
@@ -325,8 +325,8 @@ function TS.CreateButtons(f)
 
     StaticPopupDialogs["TEAMSTATS_ANN"] = {preferredIndex = 3,
         text = L["BtnAnnPopupText"],
-        button1 = TEXT(YES),
-        button2 = TEXT(CANCEL),
+        button1 = YES,
+        button2 = CANCEL,
         OnAccept = function(self)
             local tab = TS.TABS[f.tabIdx]
             SendChatMessage("【爱不易：团员信息统计】 - "..tab.tab.."：", self.data[1], nil, self.data[2]);

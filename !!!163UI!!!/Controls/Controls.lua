@@ -298,8 +298,8 @@ end
 
 StaticPopupDialogs["163UIUI_CONFIRM"] = {preferredIndex = 3,
     text = "%1$s",
-    button1 = TEXT(YES),
-    button2 = TEXT(CANCEL),
+    button1 = YES,
+    button2 = CANCEL,
     OnAccept = function(self, data)
         CtlRegularSaveValue(data[1], data[2], data[3], 1);
     end,

@@ -9,6 +9,7 @@ local _, ns = ...
 
 ns.COLORS = {
     Blue = 'FF0066FF',
+    Gold = 'FFFFD700',
     Gray = 'FF999999',
     Green = 'FF00FF00',
     LightBlue = 'FF8080FF',

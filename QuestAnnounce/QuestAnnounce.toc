@@ -1,17 +1,9 @@
-## Interface: 90207
+## Interface: 100002
 ## Title: Quest Announce
-## Version: 9.0.1.1
+## Version: 10.0.0.2
 ## Author: Michael Irving (original), Sommy aka Gyffes(Gilneas) (WoW 2.4), Kotenuki aka Cinnabuns(Doomhammer) (WoW 4.0+)
 ## Notes: QuestAnnounce sends a message as you advance in a quest.
 ## SavedVariables: QuestAnnounceDB
-## X-Curse-Packaged-Version: v9.0.0
-## X-Curse-Project-Name: Quest Announce 3
-## X-Curse-Project-ID: quest-announce-3-0
-## X-Curse-Repository-ID: wow/quest-announce-3-0/mainline
-## X-Curse-Packaged-Version: v9.0.0
-## X-Curse-Project-Name: Quest Announce 3
-## X-Curse-Project-ID: quest-announce-3-0
-## X-Curse-Repository-ID: wow/quest-announce-3-0/mainline
 
 ## OptionalDeps: Ace3
 

@@ -107,7 +107,7 @@ local function createDropdown(opts)
     local default = opts['default'] or ""
     local change = opts['changeFunc'] or function (dropdownVal) end
     local dropdown = CreateFrame("Frame", nil, aura_env.settingsFrame, 'UIDropDownMenuTemplate')
-    local dropdownText = dropdown:CreateFontString(dropdown, 'OVERLAY', 'GameFontNormal')
+    local dropdownText = dropdown:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     dropdownText:SetPoint("TOPLEFT", 20, 10)
     for _, item in pairs(menuItems) do 
         dropdownText:SetText(item)
@@ -252,7 +252,7 @@ sliderHeadText:SetText(L"SCALE")
 
 local optionsVersionText =  aura_env.settingsFrame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
 optionsVersionText:SetPoint("BOTTOM",  aura_env.settingsFrame, "BOTTOM", 0, 10)
-optionsVersionText:SetText("ZMPH 1.5.1")
+optionsVersionText:SetText("ZMPH 1.6.0")
 optionsVersionText:SetFont(fontMain, 12, "OUTLINE")
 
 local groupEnabled = CreateFrame('Frame', nil, aura_env.settingsFrame, 'BackdropTemplate')

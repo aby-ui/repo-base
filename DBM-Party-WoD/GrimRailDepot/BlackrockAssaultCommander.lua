@@ -4,7 +4,7 @@ local L		= mod:GetLocalizedStrings()
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 mod.upgradedMPlus = true
 
-mod:SetRevision("20220917022927")
+mod:SetRevision("20221015205747")
 mod:SetCreatureID(79545)
 mod:SetEncounterID(1732)
 
@@ -30,7 +30,7 @@ local warnPhase3				= mod:NewPhaseAnnounce(3, 2, nil, nil, nil, nil, nil, 2)
 
 local specWarnSupressiveFire	= mod:NewSpecialWarningYou(160681, nil, nil, nil, 1, 2)
 local yellSupressiveFire		= mod:NewYell(160681)
-local specWarnShrapnelblast		= mod:NewSpecialWarningDodge(160943, "Tank", nil, nil, 3, 2)--160943 boss version, 166675 trash version.
+local specWarnShrapnelblast		= mod:NewSpecialWarningDodge(160943, nil, nil, 2, 3, 2)--160943 boss version, 166675 trash version.
 local specWarnSlagBlast			= mod:NewSpecialWarningMove(166570, nil, nil, nil, 1, 8)
 
 local timerSupressiveFire		= mod:NewTargetTimer(10, 160681, nil, nil, nil, 5)
@@ -71,8 +71,10 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 160680 then
 		self:BossTargetScanner(79548, "SupressiveFireTarget", 0.2, 15)
 	elseif spellId == 160943 and self:AntiSpam(2, 1) then
-		specWarnShrapnelblast:Show()
-		specWarnShrapnelblast:Play("shockwave")
+		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then
+			specWarnShrapnelblast:Show()
+			specWarnShrapnelblast:Play("shockwave")
+		end
 	end
 end
 

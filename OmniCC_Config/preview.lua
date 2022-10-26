@@ -22,14 +22,14 @@ local function getRandomIcon()
 end
 
 -- preview dialog
-local PreviewDialog = CreateFrame("Frame", AddonName .. "PreviewDialog", InterfaceOptionsFrame, "UIPanelDialogTemplate")
+local PreviewDialog = CreateFrame("Frame", AddonName .. "PreviewDialog", UIParent, "UIPanelDialogTemplate")
 
 PreviewDialog:Hide()
 PreviewDialog:ClearAllPoints()
-PreviewDialog:SetPoint("LEFT", InterfaceOptionsFrame, "RIGHT", 0, 0)
+PreviewDialog:SetPoint("CENTER")
 PreviewDialog:EnableMouse(true)
 PreviewDialog:SetClampedToScreen(true)
-PreviewDialog:SetFrameStrata("DIALOG")
+PreviewDialog:SetFrameStrata("TOOLTIP")
 PreviewDialog:SetMovable(true)
 PreviewDialog:SetSize(165, 155)
 PreviewDialog:SetToplevel(true)

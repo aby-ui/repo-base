@@ -70,7 +70,7 @@ local function CreateBar(key)
 	f.anchor.text:SetText(name)
 	f.anchor.text:SetTextColor(1, 0.824, 0)
 	f.anchor.background:SetColorTexture(0, 0, 0, 1)
-	f.anchor.background:SetGradientAlpha("Horizontal", 1, 1, 1, 1, 1, 1, 1, .05)
+	f.anchor.background:SetGradient("Horizontal", CreateColor(1, 1, 1, 1), CreateColor(1, 1, 1, .05))
 	f.anchor:EnableMouse(true)
 
 	return f

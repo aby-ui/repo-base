@@ -1,7 +1,8 @@
-﻿## Interface: 90207
+﻿## Interface: 100000
 ## Title: BlinkHealthText
 ## Notes: BlinkHealthText 2.1
 ## Author: Kill & dugu @ Duowan
+## DefaultState: Disabled
 
 locale\locale.xml
 SimpleInfo.lua

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2357, "DBM-Party-BfA", 11, 1178)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20221016002954")
 mod:SetCreatureID(150159)
 mod:SetEncounterID(2290)
 
@@ -68,9 +68,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnElectricalCharge:Show()
 			specWarnElectricalCharge:Play("targetyou")
 			yellElectricalCharge:Yell()
-		else
-			warnElectricalCharge:Show(args.destName)
 		end
+		warnElectricalCharge:CombinedShow(0.5, args.destName)
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

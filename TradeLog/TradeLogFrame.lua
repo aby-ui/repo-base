@@ -120,8 +120,8 @@ function TradeLogFrame_UpdateItemDetail(frame, name, texture, numItems, isUsable
         buttonText:SetText(name);
     end
     buttonText:SetTextHeight(12);
-    TradeLogRecipientMoneyFrame:SetScale(0.9);
-    TradeLogPlayerMoneyFrame:SetScale(0.9);
+    TradeLogRecipientMoneyFrame:SetScale(1);
+    TradeLogPlayerMoneyFrame:SetScale(1);
     local tradeItemButton = getglobal(frameName.."ItemButton");
     local tradeItem = frame;
     SetItemButtonTexture(tradeItemButton, texture);
@@ -193,7 +193,7 @@ function TradeListScrollFrame_Update(self)
                     if(numSend>0)then
                         getglobal("TradeListFrameButton"..line.."SendItemIcon"):Show();
                         getglobal("TradeListFrameButton"..line.."SendItemNum"):Show();
-                        getglobal("TradeListFrameButton"..line.."SendItemNum"):SetText("x"..TEXT(numSend));
+                        getglobal("TradeListFrameButton"..line.."SendItemNum"):SetText("x"..tostring(numSend));
                     end
 
                     if(trade.targetMoney>0)then getglobal("TradeListFrameButton"..line.."ReceiveMoneyIcon"):Show(); end
@@ -202,7 +202,7 @@ function TradeListScrollFrame_Update(self)
                     if(numReceive>0)then
                         getglobal("TradeListFrameButton"..line.."ReceiveItemIcon"):Show();
                         getglobal("TradeListFrameButton"..line.."ReceiveItemNum"):Show();
-                        getglobal("TradeListFrameButton"..line.."ReceiveItemNum"):SetText("x"..TEXT(numReceive));
+                        getglobal("TradeListFrameButton"..line.."ReceiveItemNum"):SetText("x"..tostring(numReceive));
                     end
 
                     getglobal("TradeListFrameButton"..line.."Time"   ):SetTextColor(1.0, .82, 0.0);
@@ -232,9 +232,9 @@ function TradeListScrollFrame_Update(self)
 end
 
 StaticPopupDialogs["TRADE_LOG_CLEAR_HISTORY"] = {preferredIndex = 3,
-    text = TEXT("CLEAR TRADE HISTORY"),
-    button1 = TEXT(ACCEPT),
-    button2 = TEXT(CANCEL),
+    text = "CLEAR TRADE HISTORY",
+    button1 = ACCEPT,
+    button2 = CANCEL,
     whileDead = 1,
     OnShow = function(self)
         getglobal(self:GetName().."Text"):SetText(TRADE_LIST_CLEAR_CONFIRM);
