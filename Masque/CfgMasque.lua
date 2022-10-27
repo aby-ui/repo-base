@@ -205,7 +205,9 @@ U1RegisterAddon("Masque", {
         var = "hidecap",
         default = 1,
         callback = function(cfg, v, loading)
-            CoreUIShowOrHide(MainMenuBar.EndCaps, not v)
+            RunOnNextFrame(function()
+                CoreUIShowOrHide(MainMenuBar.EndCaps, not v)
+            end)
         end
     },
     {
@@ -213,9 +215,11 @@ U1RegisterAddon("Masque", {
         var = "hidebg",
         default = 1,
         callback = function(cfg, v, loading)
-            CoreUIShowOrHide(MainMenuBar.Background, not v)
-            CoreUIShowOrHide(MainMenuBar.BorderArt, not v)
-            for i=1, 11 do CoreUIShowOrHide(_G["ActionButton"..i].RightDivider, not v) end --TODO:abyui10
+            RunOnNextFrame(function()
+                CoreUIShowOrHide(MainMenuBar.Background, not v)
+                CoreUIShowOrHide(MainMenuBar.BorderArt, not v)
+                for i=1, 11 do CoreUIShowOrHide(_G["ActionButton"..i].RightDivider, not v) end --TODO:abyui10
+            end)
         end
 	},
     {

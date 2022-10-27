@@ -1441,7 +1441,7 @@ end
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     local Default_CompactUnitFrame_Util_IsPriorityDebuff = CompactUnitFrame_Util_IsPriorityDebuff
     local function CompactUnitFrame_Util_IsPriorityDebuff(spellId)
-        return BigDebuffs:IsPriorityBigDebuff(spellId) or Default_CompactUnitFrame_Util_IsPriorityDebuff(spellId)
+        return BigDebuffs:IsPriorityBigDebuff(spellId) --or Default_CompactUnitFrame_Util_IsPriorityDebuff(spellId) --TODO:abyui10
     end
 
     local function SetDebuffsHelper(debuffFrames, frameNum, maxDebuffs, filter, isBossAura, isBossBuff, auras)

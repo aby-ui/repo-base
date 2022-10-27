@@ -92,7 +92,6 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 		end
 	elseif (unitType == "Object") then
 		local containerID = entityID and tonumber(entityID) or nil
-		print(unitType)
 		-- If the container didn't have a vignette this is the last chance to get the name
 		if (RSContainerDB.GetInternalContainerInfo(containerID) and not RSContainerDB.GetContainerName(containerID)) then
 			local containerName = UnitName(unitID)
