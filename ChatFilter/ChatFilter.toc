@@ -15,5 +15,6 @@ core.lua
 #BadBoy_Levels.lua
 #NoGoldSeller.lua
 
+## Dependencies: TODO:abyui10
 ## Title: |cff880303[爱不易]|r ChatFilter 聊天过滤
 ## X-Vendor: AbyUI

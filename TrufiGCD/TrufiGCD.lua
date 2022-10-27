@@ -1044,7 +1044,8 @@ function TrGCDPlayerTarFocDetect(k) -- чек есть ли цель или фо
 			TrGCDIcon[k][j]:SetAlpha(TrGCDIcon[i][j]:GetAlpha())
 			TrGCDIcon[k][j].TimeStart = TrGCDIcon[i][j].TimeStart
 			if (TrGCDIcon[k][j].show) then
-				TrGCDIcon[k][j]:SetAlpha((1-(abs(TrGCDIcon[k][j].x) - width)/10))  --МИГАЕТ ПРИ РАЗНОМ РАЗМЕРЕ ОЧЕРЕДИ
+				local alpha = (1-(abs(TrGCDIcon[k][j].x) - width)/10) alpha = alpha > 1 and 1 or alpha < 0 and 0 or alpha
+				TrGCDIcon[k][j]:SetAlpha(alpha)  --МИГАЕТ ПРИ РАЗНОМ РАЗМЕРЕ ОЧЕРЕДИ
 				TrGCDIcon[k][j]:Show()
 			else TrGCDIcon[k][j]:Hide() end
 			TrGCDIcon[k][j].texture2.show = TrGCDIcon[i][j].texture2.show

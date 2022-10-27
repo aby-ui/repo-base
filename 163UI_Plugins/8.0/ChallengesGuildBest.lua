@@ -419,7 +419,7 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 btn.hook = icon
             end
             WW(btn):SetParent(icon):ClearAllPoints():SetAllPoints(icon):Show()
-            :RegisterForClicks("AnyUp")
+            :RegisterForClicks("AnyUp", "AnyDown")
             :SetFrameStrata(icon:GetFrameStrata()):AddFrameLevel(1, icon)
             :un()
             if icon and icon.mapID and GetSpellInfo(PORTAL_SPELLS[icon.mapID]) then

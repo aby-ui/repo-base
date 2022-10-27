@@ -182,6 +182,7 @@ function Core:ToggleOptions()
 			ACD:Close(MASQUE)
 		else
 			ACD:Open(MASQUE)
+			ACD:SelectGroup(MASQUE, "Skins", "Global")
 		end
 	-- Toggle the Interface Options frame.
 	else

@@ -66,35 +66,48 @@ do
 	}
 
 	-- Function to check for a sub-type.
-	local function GetSubType(Button, Type)
+	local function GetSubType(Button, bType, oType)
 		if not Button then return end
 
 		local Name = Button.GetName and Button:GetName()
-		local SubType = Type
+		local SubType = bType
 
-		if Type == "Action" then
+		if bType == "Action" then
 			if Name then
-				if Name:find("Pet") then
-					SubType = "Pet"
+				if Name:find("Stance") then
+					SubType = "Stance"
 				elseif Name:find("Possess") then
 					SubType = "Possess"
-				elseif Name:find("Stance") then
-					SubType = "Stance"
+				elseif Name:find("Pet") then
+					SubType = "Pet"
 				end
 			end
-		elseif Type == "Aura" then
+		elseif bType == "Item" then
+			if Name then
+				-- Retail Bag Buttons
+				if Button.SlotHighlightTexture then
+					if Name:find("Backpack") then
+						SubType = "Backpack"
+					elseif Name:find("CharacterBag") then
+						SubType = "BagSlot"
+					elseif Name:find("ReagentBag") then
+						SubType = "ReagentBag"
+					end
+
+				-- Classic Bag Buttons
+				elseif Button.__MSQ_oType == "CheckButton" then
+					if Name:find("Backpack") then
+						SubType = "Backpack"
+					elseif Name:find("CharacterBag") then
+						SubType = "BagSlot"
+					end
+				end
+			end
+		elseif bType == "Aura" then
 			local Border = Button.Border or (Name and _G[Name.."Border"])
 
 			if Border then
 				SubType = (Button.symbol and "Debuff") or "Enchant"
-			end
-		elseif Type == "Item" then
-			if Name then
-				if Name:find("Backpack") then
-					SubType = "Backpack"
-				elseif Name:find("Bag") then
-					SubType = "Bag"
-				end
 			end
 		end
 		return SubType
@@ -122,21 +135,21 @@ do
 			if oType == "CheckButton" then
 				-- Action
 				if Button.HotKey then
-					Type = GetSubType(Button, "Action")
+					Type = GetSubType(Button, "Action", oType)
 
 				-- Item
 				-- * Classic bag buttons are CheckButtons.
 				elseif Button.IconBorder then
-					Type = GetSubType(Button, "Item")
+					Type = GetSubType(Button, "Item", oType)
 				end
 			elseif oType == "Button" then
 				-- Item
 				if Button.IconBorder then
-					Type = GetSubType(Button, "Item")
+					Type = GetSubType(Button, "Item", oType)
 
 				-- Aura
 				elseif Button.duration then
-					Type = GetSubType(Button, "Aura")
+					Type = GetSubType(Button, "Aura", oType)
 				end
 			end
 		end

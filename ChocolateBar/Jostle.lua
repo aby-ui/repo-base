@@ -266,6 +266,7 @@ local function isClose(alpha, bravo)
 end
 
 function Jostle:Refresh(...)
+	do return end --TODO:abyui10
 	if not fullyInitted then
 		return
 	end

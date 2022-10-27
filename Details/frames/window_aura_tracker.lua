@@ -179,6 +179,8 @@ function Details.AuraTracker.CreatePanel()
     DetailsFramework:ReskinSlider(debuffScroll)
     debuffScroll:SetPoint("topleft", buffScroll, "bottomleft", 0, -2)
     auraTrackerFrame.DebuffScroll = debuffScroll
+
+    Details.AuraTracker.framesCreated = true
 end
 
 local cachedPoints = {}

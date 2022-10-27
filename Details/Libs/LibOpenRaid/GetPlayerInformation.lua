@@ -17,6 +17,8 @@ local CONST_TALENT_VERSION_DRAGONFLIGHT = 5
 
 local CONST_BTALENT_VERSION_COVENANTS = 9
 
+local CONST_SPELLBOOK_CLASSSPELLS_TABID = 2
+
 local isTimewalkWoW = function()
     local _, _, _, buildInfo = GetBuildInfo()
     if (buildInfo < 40000) then
@@ -410,28 +412,96 @@ local canAddCooldown = function(cooldownInfo)
     return true
 end
 
+local getSpellListAsHashTableFromSpellBook = function()
+    local completeListOfSpells = {}
+
+    --this line might not be compatible with classic
+    local specId, specName, _, specIconTexture = GetSpecializationInfo(GetSpecialization())
+    local classNameLoc, className, classId = UnitClass("player")
+
+	--get spells from the Spec spellbook
+    for i = 1, GetNumSpellTabs() do
+        local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(i)
+        if (tabTexture == specIconTexture) then
+            offset = offset + 1
+            local tabEnd = offset + numSpells
+            for entryOffset = offset, tabEnd - 1 do
+                local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+                if (spellId) then
+                    if (spellType == "SPELL") then
+                        spellId = C_SpellBook.GetOverrideSpell(spellId)
+                        local spellName = GetSpellInfo(spellId)
+                        local isPassive = IsPassiveSpell(entryOffset, "player")
+                        if (spellName and not isPassive) then
+                            completeListOfSpells[spellId] = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    --get class shared spells from the spell book
+    local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(CONST_SPELLBOOK_CLASSSPELLS_TABID)
+    offset = offset + 1
+    local tabEnd = offset + numSpells
+    for entryOffset = offset, tabEnd - 1 do
+        local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+        if (spellId) then
+            if (spellType == "SPELL") then
+                spellId = C_SpellBook.GetOverrideSpell(spellId)
+                local spellName = GetSpellInfo(spellId)
+                local isPassive = IsPassiveSpell(entryOffset, "player")
+                if (spellName and not isPassive) then
+                    completeListOfSpells[spellId] = true
+                end
+            end
+        end
+    end
+
+    return completeListOfSpells
+end
+
+local updateCooldownAvailableList = function()
+    table.wipe(LIB_OPEN_RAID_PLAYERCOOLDOWNS)
+
+    local _, playerClass = UnitClass("player")
+    local spellBookSpellList = getSpellListAsHashTableFromSpellBook()
+
+    --build a list of all spells assigned as cooldowns for the player class
+    for spellID, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
+        if (spellData.class == playerClass) then
+            if (spellBookSpellList[spellID]) then
+                LIB_OPEN_RAID_PLAYERCOOLDOWNS[spellID] = spellData
+            end
+        end
+    end
+end
+
 --build a list with the local player cooldowns
 --called only from SendAllPlayerCooldowns()
 function openRaidLib.CooldownManager.GetPlayerCooldownList()
-    --get the player specId
-    local specId = openRaidLib.GetPlayerSpecId()
-    if (specId) then
-        --get the cooldowns for the specialization
-        local playerCooldowns = LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specId]
-        if (not playerCooldowns) then
-            openRaidLib.DiagnosticError("CooldownManager|GetPlayerCooldownList|can't find player cooldowns for specId:", specId)
-            return {}, {}
-        end
+    --update the list of cooldowns the player has available
+    if (IsDragonflight()) then
+        --this fill the global LIB_OPEN_RAID_PLAYERCOOLDOWNS
+        updateCooldownAvailableList()
 
-        local cooldowns = {} --table to ship on comm
-        local cooldownsHash = {} --table with [spellId] = cooldownInfo
-        local talentsHash = openRaidLib.UnitInfoManager.GetPlayerTalentsAsPairsTable()
-        local timeNow = GetTime()
+        --get the player specId
+        local specId = openRaidLib.GetPlayerSpecId()
+        if (specId) then
+            --get the cooldowns for the specialization
+            local playerCooldowns = LIB_OPEN_RAID_PLAYERCOOLDOWNS
+            if (not playerCooldowns) then
+                openRaidLib.DiagnosticError("CooldownManager|GetPlayerCooldownList|LIB_OPEN_RAID_PLAYERCOOLDOWNS is nil")
+                return {}, {}
+            end
 
-        for cooldownSpellId, cooldownType in pairs(playerCooldowns) do
-            --get all the information about this cooldow
-            local cooldownInfo = LIB_OPEN_RAID_COOLDOWNS_INFO[cooldownSpellId]
-            if (cooldownInfo) then
+            local cooldowns = {} --table to ship on comm
+            local cooldownsHash = {} --table with [spellId] = cooldownInfo
+            local talentsHash = openRaidLib.UnitInfoManager.GetPlayerTalentsAsPairsTable()
+            local timeNow = GetTime()
+
+            for cooldownSpellId, cooldownInfo in pairs(playerCooldowns) do
                 --does this cooldown is based on a talent?
                 local talentId = cooldownInfo.talent
 
@@ -459,11 +529,13 @@ function openRaidLib.CooldownManager.GetPlayerCooldownList()
                     end
                 end
             end
+            return cooldowns, cooldownsHash
+        else
+            return {}, {}
         end
-        return cooldowns, cooldownsHash
-    else
-        return {}, {}
     end
+
+    return {}
 end
 
 --check if a player cooldown is ready or if is in cooldown

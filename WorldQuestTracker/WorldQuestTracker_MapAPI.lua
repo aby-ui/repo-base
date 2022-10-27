@@ -31,32 +31,32 @@ local GetNumQuestLogRewards = GetNumQuestLogRewards
 local triggerScheduledWidgetUpdate = function(timerObject)
 	local widget = timerObject.widget
 	local questID = widget.questID
-	
+
 	if (not widget:IsShown()) then
 		return
 	end
-	
+
 	if (HaveQuestRewardData (questID)) then
 		--is a zone widget placed in the world hub
 		if (widget.IsWorldZoneQuestButton) then
 			WorldQuestTracker.SetupWorldQuestButton (widget, true)
-		
+
 		--is a square button in the world map
 		elseif (widget.IsWorldQuestButton) then
 			WorldQuestTracker.UpdateWorldWidget (widget, true)
-		
+
 		--is a zone widget placed in the zone
 		elseif (widget.IsZoneQuestButton) then
 			WorldQuestTracker.SetupWorldQuestButton (widget, true)
-		
+
 		--is a zone widget placed in the taxi map
 		elseif (widget.IsTaxiQuestButton) then
 			WorldQuestTracker.SetupWorldQuestButton (widget, true)
-		
+
 		--is a zone widget placed in the zone summary frame
 		elseif (widget.IsZoneSummaryButton) then
 			WorldQuestTracker.SetupWorldQuestButton (widget, true)
-		
+
 		end
 	else
 		WorldQuestTracker.CheckQuestRewardDataForWidget (widget, false, true)
@@ -65,30 +65,30 @@ end
 
 function WorldQuestTracker.CheckQuestRewardDataForWidget (widget, noScheduleRefresh, noRequestData)
 	local questID = widget.questID
-	
+
 	if (not questID) then
 		return false
 	end
-	
-	if (not HaveQuestRewardData (questID)) then
-		
 
-		
+	if (not HaveQuestRewardData (questID)) then
+
+
+
 		--if this is from a re-schedule it already requested the data
 		if (not noRequestData) then
 			--ask que server for the reward data
 			C_TaskQuest.RequestPreloadRewardData (questID)
 		end
-	
+
 		if (not noScheduleRefresh) then
 			local timer = C_Timer.NewTimer (1, triggerScheduledWidgetUpdate)
 			timer.widget = widget
 			return false, true
 		end
-		
+
 		return false
 	end
-	
+
 	return true
 end
 
@@ -135,11 +135,11 @@ function WorldQuestTracker.IsNewEXPZone (mapID)
 	--battle for azeroth
 	--if (WorldQuestTracker.MapData.ZoneIDs.NAZJATAR == mapID) then
 	--	return true
-		
+
 	--elseif (WorldQuestTracker.MapData.ZoneIDs.MECHAGON == mapID) then
 	--	return true
 	--end
-	
+
 	--[=[
 	--Legion
 	if (WorldQuestTracker.MapData.ZoneIDs.ANTORAN == mapID) then
@@ -246,9 +246,9 @@ function WorldQuestTracker.GetZoneName (mapID)
 	if (not mapID) then
 		return ""
 	end
-	
+
 	local mapInfo = WorldQuestTracker.GetMapInfo (mapID)
-	
+
 	return mapInfo and mapInfo.name or ""
 end
 
@@ -307,7 +307,7 @@ end
 function WorldQuestTracker.GetCurrentMapAreaID()
 	--local mapID = WorldQuestTracker.DataProvider:GetMap():GetMapID()
 	local mapID = WorldMapFrame.mapID
-	
+
 	if (mapID) then
 		return mapID
 	else
@@ -327,17 +327,15 @@ end
 function WorldQuestTracker.CanShowQuest (info)
 	local canShowQuest = WorldQuestTracker.DataProvider:ShouldShowQuest (info)
 	return canShowQuest
-	--return not WorldQuestTracker.DataProvider.focusedQuestID and not WorldQuestTracker.DataProvider:IsQuestSuppressed(info.questId);
-	--return canShowQuest
 end
 
 -- ~filter
 function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
 	local filter, order
-	
+
 	--[=[
 		/run for key, value in pairs (_G) do if type(key) == "string" and key:find ("LE_QUEST_TAG") then print (key, value) end end
-	
+
 		LE_QUEST_TAG_TYPE_PVP = 3
 		LE_QUEST_TAG_TYPE_PET_BATTLE = 4
 		LE_QUEST_TAG_TYPE_NORMAL = 2
@@ -350,32 +348,32 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 		LE_QUEST_TAG_TYPE_INVASION_WRAPPER = 11
 	--]=]
 
---debug	
+--debug
 	if (worldQuestType == LE_QUEST_TAG_TYPE_NORMAL) then
 	--	print (LE_QUEST_TAG_TYPE_NORMAL, gold, rewardName, itemName, isArtifact, stackAmount, numRewardItems, rewardTexture)
 	end
-	
+
 	if (worldQuestType == LE_QUEST_TAG_TYPE_PET_BATTLE) then
 		return FILTER_TYPE_PET_BATTLES, WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_PETBATTLE]
-		
+
 	elseif (worldQuestType == LE_QUEST_TAG_TYPE_PVP) then
 		return FILTER_TYPE_PVP, WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_PVP]
-		
-	
+
+
 	elseif (worldQuestType == LE_QUEST_TAG_TYPE_PROFESSION) then
 		return FILTER_TYPE_PROFESSION, WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_PROFESSION]
-		
+
 	elseif (worldQuestType == LE_QUEST_TAG_TYPE_DUNGEON) then
 		filter = FILTER_TYPE_DUNGEON
 		order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_DUNGEON]
 	end
-	
+
 	if (gold and gold > 0) then
 		order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_GOLD]
 		filter = FILTER_TYPE_GOLD
-		
-	end	
-	
+
+	end
+
 	--print (rewardName, rewardTexture)
 
 	if (rewardName) then
@@ -384,24 +382,24 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 		if (WorldQuestTracker.MapData.ResourceIcons [rewardTexture]) then
 			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_RESOURCE]
 			filter = FILTER_TYPE_GARRISON_RESOURCE
-		
+
 		--reputation
 		elseif (WorldQuestTracker.MapData.ReputationIcons [rewardTexture]) then
 			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_REPUTATION]
 			filter = FILTER_TYPE_REPUTATION_TOKEN
-		
+
 		--trade skill
 		elseif (WorldQuestTracker.MapData.TradeSkillIcons [rewardTexture]) then
 			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_TRADE]
 			filter = FILTER_TYPE_TRADESKILL
 
 		end
-	end	
-	
+	end
+
 	if (isArtifact) then
 		order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_APOWER]
 		filter = FILTER_TYPE_ARTIFACT_POWER
-		
+
 	elseif (itemName) then
 		if (stackAmount > 1) then
 			order = WorldQuestTracker.db.profile.sort_order [WQT_QUESTTYPE_TRADE]
@@ -411,261 +409,27 @@ function WorldQuestTracker.GetQuestFilterTypeAndOrder (worldQuestType, gold, rew
 			filter = FILTER_TYPE_EQUIPMENT
 		end
 	end
-	
+
 	--> if dungeons are disabled, override the quest type to dungeon
 	if (worldQuestType == LE_QUEST_TAG_TYPE_DUNGEON) then
 		if (not WorldQuestTracker.db.profile.filters [FILTER_TYPE_DUNGEON]) then
 			filter = FILTER_TYPE_DUNGEON
 		end
 	end
-	
+
 	if (not filter) then
 		filter = FILTER_TYPE_GARRISON_RESOURCE
 		order = 9
 	end
-	
+
 	return filter, order
 end
 
 
 --create a tooltip scanner
 local GameTooltipFrame = CreateFrame ("GameTooltip", "WorldQuestTrackerScanTooltip", nil, "GameTooltipTemplate")
---local GameTooltipFrameTextLeft1 = _G ["WorldQuestTrackerScanTooltipTextLeft2"]
---local GameTooltipFrameTextLeft2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"]
---local GameTooltipFrameTextLeft3 = _G ["WorldQuestTrackerScanTooltipTextLeft4"]
---local GameTooltipFrameTextLeft4 = _G ["WorldQuestTrackerScanTooltipTextLeft5"]
+local ItemTooltipScan = CreateFrame ("GameTooltip", "WQTItemTooltipScan", UIParent, "InternalEmbeddedItemTooltipTemplate")
 
---attempt to get the item level of the item
-function WorldQuestTracker.RewardRealItemLevel (questID)
-	GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
-	--GameTooltipFrame:SetHyperlink (itemLink)
-	GameTooltipFrame:SetQuestLogItem ("reward", 1, questID)
-	
-	local Text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText() or _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText() or ""
-	local itemLevel = tonumber (Text:match ("%d+"))
-	
-	return itemLevel or 1
-end
-
---try to guess the amount of artifact power the item can give �rtifact ~artifact
-	
-	--asia
-	function WorldQuestTracker.RewardIsArtifactPowerAsian (itemLink) -- thanks @yuk6196 on curseforge
-
-		GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
-		GameTooltipFrame:SetHyperlink (itemLink)
-		local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
-
-		if (text and text:match ("|cFFE6CC80")) then
-			local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
-			if (power) then
-				local n = tonumber (power:match ("[%d.]+"))
-				if (power:find (SECOND_NUMBER)) then
-					n = n * 10000
-				elseif (power:find (THIRD_NUMBER)) then
-					n = n * 100000000
-				elseif (power:find (FOURTH_NUMBER)) then
-					n = n * 1000000000000
-				end
-				return 7, n or 0
-			end
-		end
-
-		local text2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText()
-		if (text2 and text2:match ("|cFFE6CC80")) then
-			local power = _G ["WorldQuestTrackerScanTooltipTextLeft5"] and _G ["WorldQuestTrackerScanTooltipTextLeft5"]:GetText()
-			if (power) then
-				local n = tonumber (power:match ("[%d.]+"))
-				if (power:find (SECOND_NUMBER)) then
-					n = n * 10000
-				elseif (power:find (THIRD_NUMBER)) then
-					n = n * 100000000
-				elseif (power:find (FOURTH_NUMBER)) then
-						n = n * 1000000000000
-					end
-					return 7, n or 0
-				end
-			end
-		end
-
-		--german
-		function WorldQuestTracker.RewardIsArtifactPowerGerman (itemLink) -- thanks @Superanuki on curseforge
-
-			local w1, w2, w3, w4 = "Millionen", "Million", "%d+,%d+", "([^,]+),([^,]+)" --works for German
-
-			if (WorldQuestTracker.GameLocale == "ptBR") then
-				w1, w2, w3, w4 = "milh", "milh", "%d+,%d+", "([^,]+).([^,]+)" --@tercio 11 october 2017: replaced the dot with a comma on "%d+,%d+"
-			elseif (WorldQuestTracker.GameLocale == "frFR") then
-				w1, w2, w3, w4 = "million", "million", "%d+,%d+", "([^,]+),([^,]+)"
-			end
-
-			GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
-			GameTooltipFrame:SetHyperlink (itemLink)
-			local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
-			
-			if (text and text:match ("|cFFE6CC80")) then
-				local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
-				if (power) then
-					if (power:find (w1) or power:find (w2)) then
-
-						local n=power:match(w3)
-						if n then 
-							local one,two=n:match(w4) n=one.."."..two 
-						end
-						n = tonumber (n)
-
-						if (not n) then
-							n = power:match (" %d+ ") --thanks @Arwarld_ on curseforge - ticket #427
-							n = tonumber (n)
-
-							if (n) then
-								n=n..".0"
-								n = tonumber (n)
-							end
-						end
-						
-						if (n) then
-							n = n * 1000000
-							return 7, n or 0
-						end
-					end
-					
-					if (WorldQuestTracker.GameLocale == "frFR") then
-						power = power:gsub ("%s", ""):gsub ("%p", ""):match ("%d+")
-					else
-						power = power:gsub ("%p", ""):match ("%d+")
-					end
-					
-					power = tonumber (power)
-					return 7, power or 0
-				end
-			end
-			
-			local text2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText()
-			if (text2 and text2:match ("|cFFE6CC80")) then
-				local power = _G ["WorldQuestTrackerScanTooltipTextLeft5"] and _G ["WorldQuestTrackerScanTooltipTextLeft5"]:GetText()
-				if (power) then
-				
-					if (power:find (w1) or power:find (w2)) then
-						local n=power:match(w3)
-						
-						if n then 
-							local one,two=n:match(w4) n=one.."."..two 
-						end
-						n = tonumber (n)
-						if (not n) then
-							n = power:match (" %d+ ")
-							n = tonumber (n)
-							n=n..".0"
-							n = tonumber (n)
-						end
-						
-						if (n) then
-							n = n * 1000000
-							return 7, n or 0
-						end
-					end
-					
-					if (WorldQuestTracker.GameLocale == "frFR") then
-						power = power:gsub ("%s", ""):gsub ("%p", ""):match ("%d+")
-					else
-						power = power:gsub ("%p", ""):match ("%d+")
-					end
-					
-					power = tonumber (power)
-					return 7, power or 0
-				end
-			end
-		end
-
--- /run for a, b in pairs (_G) do if(b=="Artifact Power") then print (a, b) end end
-
-		--global
-		function WorldQuestTracker.RewardIsArtifactPower (itemLink)
-
-			if (WorldQuestTracker.GameLocale == "koKR" or WorldQuestTracker.GameLocale == "zhTW" or WorldQuestTracker.GameLocale == "zhCN") then
-				return WorldQuestTracker.RewardIsArtifactPowerAsian (itemLink)
-			
-			elseif (WorldQuestTracker.GameLocale == "deDE" or WorldQuestTracker.GameLocale == "ptBR" or WorldQuestTracker.GameLocale == "frFR") then
-				return WorldQuestTracker.RewardIsArtifactPowerGerman (itemLink)
-			end
-
-			GameTooltipFrame:SetOwner (WorldFrame, "ANCHOR_NONE")
-			GameTooltipFrame:SetHyperlink (itemLink)
-
-			local text = _G ["WorldQuestTrackerScanTooltipTextLeft2"] and _G ["WorldQuestTrackerScanTooltipTextLeft2"]:GetText()
-			local power = _G ["WorldQuestTrackerScanTooltipTextLeft4"] and _G ["WorldQuestTrackerScanTooltipTextLeft4"]:GetText()
-			
-			if (
-				((text and text:match("|cFFE6CC80")) or (power and power:match(ARTIFACT_POWER)))-- or
-				--((text and text:match()))
-			) then --bfa legion
-			
-				if (power) then
-					if (power:find (SECOND_NUMBER)) then
-						local n = power:match (" %d+%.%d+ ")
-						n = tonumber (n)
-						if (not n) then
-							n = power:match (" %d+ ")
-							n = tonumber (n)
-						end
-						if (n) then
-							n = n * 1000000
-							return 7, n or 0
-						end
-						
-					elseif (power:find (THIRD_NUMBER)) then
-						local n = power:match (" %d+%.%d+ ")
-						n = tonumber (n)
-						if (not n) then
-							n = power:match (" %d+ ")
-							n = tonumber (n)
-						end
-						if (n) then
-							n = n * 1000000000
-							return 7, n or 0
-						end
-					end
-
-					if (WorldQuestTracker.GameLocale == "frFR") then
-						power = power:gsub ("%s", ""):gsub ("%p", ""):match ("%d+")
-					else
-						power = power:gsub ("%p", ""):match ("%d+")
-					end
-					
-					power = tonumber (power)
-					return 7, power or 0
-				end
-			end
-
-			local text2 = _G ["WorldQuestTrackerScanTooltipTextLeft3"] and _G ["WorldQuestTrackerScanTooltipTextLeft3"]:GetText() --thanks @Prejudice182 on curseforge
-			if (text2 and text2:match ("|cFFE6CC80")) then
-				local power = _G ["WorldQuestTrackerScanTooltipTextLeft5"] and _G ["WorldQuestTrackerScanTooltipTextLeft5"]:GetText()
-				if (power) then
-				
-					if (power:find (SECOND_NUMBER)) then
-						local n = power:match (" %d+%.%d+ ")
-						n = tonumber (n)
-						if (not n) then
-							n = power:match (" %d+ ")
-							n = tonumber (n)
-						end
-						if (n) then
-							n = n * 1000000
-							return true, n or 0
-						end
-					end
-				
-					if (WorldQuestTracker.GameLocale == "frFR") then
-						power = power:gsub ("%s", ""):gsub ("%p", ""):match ("%d+")
-					else
-						power = power:gsub ("%p", ""):match ("%d+")
-					end
-					power = tonumber (power)
-					return true, power or 0
-				end
-			end
-		end
 
 	--gold amount
 	function WorldQuestTracker.GetQuestReward_Gold (questID)
@@ -683,6 +447,8 @@ end
 	--resource amount
 	function WorldQuestTracker.GetQuestReward_Resource(questID)
 		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
+		--print(numQuestCurrencies, C_QuestLog.GetTitleForQuestID(questID))
+
 		if (numQuestCurrencies == 2) then
 			for i = 1, numQuestCurrencies do
 				local name, texture, numItems = GetQuestLogRewardCurrencyInfo(i, questID)
@@ -693,7 +459,7 @@ end
 							(type (texture) == "string" and (texture:find ("inv_datacrystal01") or texture:find ("inv_misc_summonable_boss_token")))
 						)
 					) then -- [[Interface\Icons\inv_datacrystal01]]
-					
+
 				--BFA invasion quest (this check will force it to get the second reward
 				elseif (not WorldQuestTracker.MapData.IgnoredRewardTexures [texture]) then
 					return name, texture, numItems
@@ -707,116 +473,151 @@ end
 		end
 	end
 
-	--local ItemTooltipScan = CreateFrame ("GameTooltip", "WQTItemTooltipScan", UIParent, "EmbeddedItemTooltip")
-	local ItemTooltipScan = CreateFrame ("GameTooltip", "WQTItemTooltipScan", UIParent, "InternalEmbeddedItemTooltipTemplate")
-	ItemTooltipScan.patern = ITEM_LEVEL:gsub ("%%d", "(%%d+)") --from LibItemUpgradeInfo-1.0
-	
+	function WorldQuestTracker.GetQuestRewardConduit(questID, itemID)
+		if (C_Soulbinds.IsItemConduitByItemInfo(itemID)) then
+			local conduitType, borderColor
+
+			for i = 1, 4 do
+				local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
+				local text = textString and textString:GetText()
+				if (text and text ~= "") then
+
+					--shadowlands
+					if (text == CONDUIT_TYPE_POTENCY) then
+						conduitType = CONDUIT_TYPE_POTENCY
+
+					elseif (text == CONDUIT_TYPE_FINESSE) then
+						conduitType = CONDUIT_TYPE_FINESSE
+
+					elseif (text == CONDUIT_TYPE_ENDURANCE) then
+						conduitType = CONDUIT_TYPE_ENDURANCE
+					end
+
+					if (conduitType) then
+						break
+					end
+				end
+			end
+
+			if (conduitType) then
+				if (not borderColor) then
+					borderColor = {.9, .9, .9, 1}
+				end
+				WorldQuestTracker.CachedConduitData[questID] = {conduitType, borderTexture, borderColor, itemLink}
+			end
+
+			return conduitType, borderColor
+		end
+	end
+
 	--pega o premio item da quest
+--[=[]]
+	[2031] = table {
+		["1"] = 'Dragonscale Expedition'
+		["2"] = 4687628
+		["3"] = 75
+		["4"] = 2031
+		["5"] = 1
+	 }
+	 [2109] = table {
+		["1"] = 'Iskaara Tuskarr'
+		["2"] = 4687629
+		["3"] = 75
+		["4"] = 2109
+		["5"] = 1
+	 }
+	 [2106] = table {
+		["1"] = 'Valdrakken Accord'
+		["2"] = 4687630
+		["3"] = 75
+		["4"] = 2106
+		["5"] = 1
+	 }
+	 --]=]
+	 	
+	aaaa = {}
 	function WorldQuestTracker.GetQuestReward_Item(questID)
-		if (not HaveQuestData (questID)) then
+		if (not HaveQuestData(questID)) then
 			if (WorldQuestTracker.__debug) then
 				WorldQuestTracker:Msg("no HaveQuestData(5) for quest", questID)
 			end
 			return
 		end
-		
+
 		local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
 		if (numQuestCurrencies == 1) then
 
 			--is artifact power? bfa
-			local name, texture, numItems = GetQuestLogRewardCurrencyInfo(1, questID)
-
-			--rep | item name, texture, amount of rep
-			--Ascended 3257748 175
-			--Wild Hunt 3575389 175
-			--Undying Army 3492310 175
-			--Court of Harvesters 3514227 175
-			--print (name, texture, numItems) --debug
-
-			if (texture == 1830317 or texture == 2065624) then
+			local name, texture, numItems, currencyId, quality = GetQuestLogRewardCurrencyInfo(1, questID)
+			if (texture == 1830317 or texture == 2065624) then --azerite textures
 				--numItems are now given the amount of azerite (BFA 17-09-2018), no more tooltip scan required
 				return name, texture, 0, 1, 1, false, 0, 8, numItems or 0, false, 1
 			end
+
+			--print("currency: ", name, texture, numItems, currencyId, quality)
+			--aaaa[currencyId] = {name, texture, numItems, currencyId, quality}
 		end
-		
+
 		local numQuestRewards = GetNumQuestLogRewards(questID)
 		if (numQuestRewards > 0) then
-			local itemName, itemTexture, quantity, itemQuality, isUsable, itemID = GetQuestLogRewardInfo(1, questID)
+			local itemName, itemTexture, quantity, itemQuality, isUsable, itemID, itemLevel = GetQuestLogRewardInfo(1, questID)
+			itemLevel = itemLevel or 0
+
+
 			if (itemID) then
-				local conduitType
-				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, itemClassID, itemSubClassID = GetItemInfo(itemID)
+				local itemName, itemLink, itemRarity, nopItemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, itemClassID, itemSubClassID = GetItemInfo(itemID)
 				local borderTexture
 				local borderColor
 
 				if (itemName) then
-					EmbeddedItemTooltip_SetItemByQuestReward(ItemTooltipScan, 1, questID)
-					
+					EmbeddedItemTooltip_SetItemByQuestReward(ItemTooltipScan, 1, questID) --GetQuestRewardConduit depends on this
+
 					borderTexture = ItemTooltipScan.IconOverlay:IsShown() and ItemTooltipScan.IconOverlay:GetTexture() == 3735314 and 3735314
 					if (borderTexture) then
 						borderColor = {ItemTooltipScan.IconOverlay:GetVertexColor()}
 					end
 
-					for i = 1, 4 do
-						local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
-						local text = textString and textString:GetText()
-						if (text and text ~= "") then
-
-							if (text == CONDUIT_TYPE_POTENCY) then
-								conduitType = CONDUIT_TYPE_POTENCY
-
-							elseif (text == CONDUIT_TYPE_FINESSE) then
-								conduitType = CONDUIT_TYPE_FINESSE
-
-							elseif (text == CONDUIT_TYPE_ENDURANCE) then
-								conduitType = CONDUIT_TYPE_ENDURANCE
-							end
-
-							local ilvl = tonumber (text:match (ItemTooltipScan.patern))
-							if (ilvl) then
-								itemLevel = ilvl
-								break
-							end
-						end
-					end
-
+					local conduitType, conduitBorderColor = WorldQuestTracker.GetQuestRewardConduit(questID, itemID)
 					if (conduitType) then
-						if (not borderColor) then
-							borderColor = {.9, .9, .9, 1}
-						end
-						WorldQuestTracker.CachedConduitData[questID] = {conduitType, borderTexture, borderColor, itemLink}
+						borderColor = conduitBorderColor
 					end
-				
-					local icon = WorldQuestTracker.MapData.EquipmentIcons [itemEquipLoc]
+
+					local icon = WorldQuestTracker.MapData.EquipmentIcons[itemEquipLoc]
 					if (not icon and itemClassID == 3 and itemSubClassID == 11) then
-						icon = WorldQuestTracker.MapData.EquipmentIcons ["Relic"]
+						icon = WorldQuestTracker.MapData.EquipmentIcons["Relic"]
 					end
-					
+
 					if (icon and not WorldQuestTracker.db.profile.use_old_icons) then
 						itemTexture = icon
 					end
-				
-					local isArtifact, artifactPower = WorldQuestTracker.RewardIsArtifactPower(itemLink)
+
+					local isArtifact, artifactPower = false, 0
 
 					if (not isArtifact) then
-						for i = 1, 4 do
-							local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
-							local text = textString and textString:GetText()
-							if (text and text ~= "") then
-								text = text:gsub("(|c).*(|r)", "")
-								if ((WORLD_QUEST_REWARD_FILTERS_ANIMA and text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA)) or (WORLD_QUEST_REWARD_FILTERS_ANIMA and text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA:lower()) or text:find("анимы"))) then
-									local animaAmount = tonumber(text:match("%d+"))
-									if (animaAmount) then
-										isArtifact = 9
-										artifactPower = animaAmount * quantity
-										break
+						--shadowlands
+						if (C_Item.IsAnimaItemByID(itemID)) then
+							local animaAmount = itemQuality == 3 and 35 * quantity or itemQuality == 4 and 250 * quantity or 35
+							isArtifact = 9
+							artifactPower = animaAmount
+
+							--scan for anima (shadowlands)
+							for i = 1, 4 do
+								local textString = _G ["WQTItemTooltipScanTooltipTextLeft" .. i]
+								local text = textString and textString:GetText()
+								if (text and text ~= "") then
+									text = text:gsub("(|c).*(|r)", "")
+									if ((WORLD_QUEST_REWARD_FILTERS_ANIMA and text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA)) or (WORLD_QUEST_REWARD_FILTERS_ANIMA and text:find(_G.WORLD_QUEST_REWARD_FILTERS_ANIMA:lower()) or text:find("анимы"))) then
+										local animaAmount = tonumber(text:match("%d+"))
+										if (animaAmount) then
+											isArtifact = 9
+											artifactPower = animaAmount * quantity
+											break
+										end
 									end
 								end
 							end
 						end
 					end
-
-					local hasUpgrade = WorldQuestTracker.RewardRealItemLevel(questID)
-					itemLevel = itemLevel > hasUpgrade and itemLevel or hasUpgrade
 
 					if (isArtifact) then
 						return itemName, itemTexture, itemLevel, quantity, itemQuality, isUsable, itemID, 9, artifactPower, itemStackCount > 1, itemStackCount, conduitType or false, borderTexture or "", borderColor or {1, 1, 1, 1}, itemLink

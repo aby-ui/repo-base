@@ -292,164 +292,176 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	-- 65 - Holy
 	-- 66 - Protection
 	-- 70 - Retribution
-
-	[31884] = 	{cooldown = 120, 	duration = 20, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 1}, --Avenging Wrath
-	[216331] = 	{cooldown = 120, 	duration = 20, 		specs = {65}, 			talent = false, charges = 1, class = "PALADIN", type = 1}, --Avenging Crusader
-	[498] = 	{cooldown = 60, 	duration = 8, 		specs = {65}, 			talent = false, charges = 1, class = "PALADIN", type = 2}, --Divine Protection
-	[642] = 	{cooldown = 300, 	duration = 8, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 2}, --Divine Shield
-	[105809] = 	{cooldown = 90, 	duration = 20, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 2}, --Holy Avenger
-	[152262] = 	{cooldown = 45, 	duration = 15, 		specs = {65,66,70},		talent = false, charges = 1, class = "PALADIN", type = 2}, --Seraphim
-	[633] = 	{cooldown = 600, 	duration = false, 	specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 3}, --Lay on Hands
-	[1022] = 	{cooldown = 300, 	duration = 10, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 3}, --Blessing of Protection
-	[6940] = 	{cooldown = 120, 	duration = 12, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 3}, --Blessing of Sacrifice
-	[31821] = 	{cooldown = 180, 	duration = 8, 		specs = {65},		 	talent = false, charges = 1, class = "PALADIN", type = 4}, --Aura Mastery
-	[1044] = 	{cooldown = 25, 	duration = 8, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 5}, --Blessing of Freedom
-	[853] = 	{cooldown = 60, 	duration = 6, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 5}, --Hammer of Justice
-	[115750] = 	{cooldown = 90, 	duration = 6, 		specs = {65,66,70}, 	talent = false, charges = 1, class = "PALADIN", type = 5}, --Blinding Light(talent)
-	[327193] = 	{cooldown = 90, 	duration = 15, 		specs = {66}, 			talent = false, charges = 1, class = "PALADIN", type = 1}, --Moment of Glory
-	[31850] = 	{cooldown = 120, 	duration = 8, 		specs = {66}, 			talent = false, charges = 1, class = "PALADIN", type = 2}, --Ardent Defender
-	[86659] = 	{cooldown = 300, 	duration = 8, 		specs = {66}, 			talent = false, charges = 1, class = "PALADIN", type = 2}, --Guardian of Ancient Kings
-	[204018] = 	{cooldown = 180, 	duration = 10, 		specs = {66}, 			talent = false, charges = 1, class = "PALADIN", type = 3}, --Blessing of Spellwarding
-	[231895] = 	{cooldown = 120, 	duration = 25, 		specs = {70}, 			talent = false, charges = 1, class = "PALADIN", type = 1}, --Crusade
-	[205191] = 	{cooldown = 60, 	duration = 10, 		specs = {70}, 			talent = false, charges = 1, class = "PALADIN", type = 2}, --Eye for an Eye
-	[184662] = 	{cooldown = 120, 	duration = 15, 		specs = {70}, 			talent = false, charges = 1, class = "PALADIN", type = 2}, --Shield of Vengeance
+	[31850] = {cooldown = 120,	duration = 8,	specs = {66},				talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Ardent Defender
+	[31821] = {cooldown = 180,	duration = 8,	specs = {65},				talent = false,	charges = 1,	class = "PALADIN",	type = 4}, --Aura Mastery
+	[216331] = {cooldown = 120,	duration = 20,	specs = {65},				talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Avenging Crusader
+	[31884] = {cooldown = 120,	duration = 20,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Avenging Wrath
+	[1044] = {cooldown = 25,	duration = 8,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 5}, --Blessing of Freedom
+	[1022] = {cooldown = 300,	duration = 10,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 3}, --Blessing of Protection
+	[6940] = {cooldown = 120,	duration = 12,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 3}, --Blessing of Sacrifice
+	[204018] = {cooldown = 180,	duration = 10,	specs = {66},				talent = false,	charges = 1,	class = "PALADIN",	type = 3}, --Blessing of Spellwarding
+	[115750] = {cooldown = 90,	duration = 6,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 8}, --Blinding Light
+	[231895] = {cooldown = 120,	duration = 25,	specs = {70},				talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Crusade
+	[498] = {cooldown = 60,	duration = 8,	specs = {65},				talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Divine Protection
+	[642] = {cooldown = 300,	duration = 8,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Divine Shield
+	[205191] = {cooldown = 60,	duration = 10,	specs = {70},				talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Eye for an Eye
+	[86659] = {cooldown = 300,	duration = 8,	specs = {66},				talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Guardian of Ancient Kings
+	[853] = {cooldown = 60,	duration = 6,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 8}, --Hammer of Justice
+	[105809] = {cooldown = 90,	duration = 20,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Holy Avenger
+	[633] = {cooldown = 600,	duration = 0,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 3}, --Lay on Hands
+	[327193] = {cooldown = 90,	duration = 15,	specs = {66},				talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Moment of Glory
+	[152262] = {cooldown = 45,	duration = 15,	specs = {65, 66, 70},	talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Seraphim
+	[184662] = {cooldown = 120,	duration = 15,	specs = {70},				talent = false,	charges = 1,	class = "PALADIN",	type = 2}, --Shield of Vengeance
+	--[384376] = {cooldown = 0,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Avenging Wrath (different spellId)
+	--[384442] = {cooldown = 0,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Avenging Wrath: Might (doesn't have a use, it maybe change the spellId)
+	--[375576] = {cooldown = 1 min cooldown,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Divine Toll
+	--[343527] = {cooldown = 1 min cooldown,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Execution Sentence
+	--[343721] = {cooldown = 1 min cooldown,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 1}, --Final Reckoning
+	--[391054] = {cooldown = 10 min cooldown,	duration = 0,	specs = {},			talent = false,	charges = 1,	class = "PALADIN",	type = 5}, --Intercession (battle ress)
 
 	--warrior
 	-- 71 - Arms
 	-- 72 - Fury
 	-- 73 - Protection
-
-	[107574] = 	{cooldown = 90, 	duration = 20, 		specs = {71,73}, 		talent = false, charges = 1, class = "WARRIOR", type = 1}, --Avatar
-	[227847] = 	{cooldown = 90, 	duration = 5, 		specs = {71},	 		talent = false, charges = 1, class = "WARRIOR", type = 1}, --Bladestorm
-	[46924] = 	{cooldown = 60, 	duration = 4, 		specs = {72},		 	talent = false, charges = 1, class = "WARRIOR", type = 1}, --Bladestorm
-	[152277] = 	{cooldown = 60, 	duration = 6, 		specs = {71},			talent = false, charges = 1, class = "WARRIOR", type = 1}, --Ravager
-	[228920] = 	{cooldown = 60, 	duration = 6, 		specs = {73}, 			talent = false, charges = 1, class = "WARRIOR", type = 1}, --Ravager
-	[118038] = 	{cooldown = 180, 	duration = 8, 		specs = {71},		 	talent = false, charges = 1, class = "WARRIOR", type = 2}, --Die by the Sword
-	[97462] = 	{cooldown = 180, 	duration = 10, 		specs = {71,72,73}, 	talent = false, charges = 1, class = "WARRIOR", type = 4}, --Rallying Cry
-	[1719] = 	{cooldown = 90, 	duration = 10, 		specs = {72},		 	talent = false, charges = 1, class = "WARRIOR", type = 1}, --Recklessness
-	[184364] = 	{cooldown = 120, 	duration = 8, 		specs = {72},		 	talent = false, charges = 1, class = "WARRIOR", type = 2}, --Enraged Regeneration
-	[12975] = 	{cooldown = 180, 	duration = 15, 		specs = {73}, 			talent = false, charges = 1, class = "WARRIOR", type = 2}, --Last Stand
-	[871] = 	{cooldown = 8, 		duration = 240, 	specs = {73}, 			talent = false, charges = 1, class = "WARRIOR", type = 2}, --Shield Wall
-	[64382]  = 	{cooldown = 180, 	duration = false, 	specs = {71,72,73}, 	talent = false, charges = 1, class = "WARRIOR", type = 5}, --Shattering Throw
-	[5246]  = 	{cooldown = 90, 	duration = 8, 		specs = {71,72,73}, 	talent = false, charges = 1, class = "WARRIOR", type = 5}, --Intimidating Shout
+	[107574] = {cooldown = 90,	duration = 20,	specs = {71, 73},			talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Avatar
+	[227847] = {cooldown = 90,	duration = 5,	specs = {71},				talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Bladestorm
+	[46924] = {cooldown = 60,	duration = 4,	specs = {72},				talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Bladestorm
+	[118038] = {cooldown = 180,	duration = 8,	specs = {71},				talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Die by the Sword
+	[184364] = {cooldown = 120,	duration = 8,	specs = {72},				talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Enraged Regeneration
+	[5246] = {cooldown = 90,	duration = 8,	specs = {71, 72, 73},		talent = false,	charges = 1,	class = "WARRIOR",	type = 8}, --Intimidating Shout
+	[12975] = {cooldown = 180,	duration = 15,	specs = {73},				talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Last Stand
+	[97462] = {cooldown = 180,	duration = 10,	specs = {71, 72, 73},		talent = false,	charges = 1,	class = "WARRIOR",	type = 4}, --Rallying Cry
+	[152277] = {cooldown = 60,	duration = 6,	specs = {71},				talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Ravager
+	[228920] = {cooldown = 60,	duration = 6,	specs = {73},				talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Ravager
+	[1719] = {cooldown = 90,	duration = 10,	specs = {72},				talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Recklessness
+	[64382] = {cooldown = 180,	duration = 0,	specs = {71, 72, 73},		talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Shattering Throw
+	[871] = {cooldown = 8,	duration = 240,		specs = {73},				talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Shield Wall
+	[383762] = {cooldown = 180,	duration = 0,	specs = {71, 72, 73},		talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Bitter Immunity
+	[1161] = {cooldown = 120,	duration = 0,	specs = {73},				talent = false,	charges = 1,	class = "WARRIOR",	type = 5}, --Challenging Shout
+	[376079] = {cooldown = 90,	duration = 4,	specs = {},					talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Spear of Bastion
+	[392966] = {cooldown = 90, 	duration = 20,	specs = {73},				talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Spell Block
+	[384318] = {cooldown = 90,	duration = 0,	specs = {71, 72, 73},		talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Thunderous Roar
 
 	--warlock
 	-- 265 - Affliction
 	-- 266 - Demonology
 	-- 267 - Destruction
-
-	[205180] = 	{cooldown = 180, 	duration = 20, 		specs = {265}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Summon Darkglare
-	[113860] = 	{cooldown = 120, 	duration = 20, 		specs = {265}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Dark Soul: Misery
-	[104773] = 	{cooldown = 180, 	duration = 8, 		specs = {265,266,267}, 	talent = false, charges = 1, class = "WARLOCK", type = 2}, --Unending Resolve
-	[108416] = 	{cooldown = 60, 	duration = 20, 		specs = {265,266,267}, 	talent = false, charges = 1, class = "WARLOCK", type = 2}, --Dark Pact
-	[265187] = 	{cooldown = 90, 	duration = 15, 		specs = {266}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Summon Demonic Tyrant
-	[111898] = 	{cooldown = 120, 	duration = 15, 		specs = {266}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Grimoire: Felguard
-	[267171] = 	{cooldown = 60, 	duration = false, 	specs = {266}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Demonic Strength
-	[267217] = 	{cooldown = 180, 	duration = 20, 		specs = {266}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Nether Portal
-	[1122] = 	{cooldown = 180, 	duration = 30, 		specs = {267}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Summon Infernal
-	[113858] = 	{cooldown = 120, 	duration = 20, 		specs = {267}, 			talent = false, charges = 1, class = "WARLOCK", type = 1}, --Dark Soul: Instability
-	[30283] = 	{cooldown = 60, 	duration = 3, 		specs = {265,266,267}, 	talent = false, charges = 1, class = "WARLOCK", type = 5}, --Shadowfury
-	[333889] = 	{cooldown = 180, 	duration = 15, 		specs = {265,266,267}, 	talent = false, charges = 1, class = "WARLOCK", type = 5}, --Fel Domination
-	[5484] = 	{cooldown = 40, 	duration = 20, 		specs = {265,266,267}, 	talent = false, charges = 1, class = "WARLOCK", type = 5}, --Howl of Terror
+	[108416] = {cooldown = 60,	duration = 20,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 2}, --Dark Pact
+	[113858] = {cooldown = 120,	duration = 20,	specs = {267},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Dark Soul: Instability
+	[113860] = {cooldown = 120,	duration = 20,	specs = {265},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Dark Soul: Misery
+	[267171] = {cooldown = 60,	duration = 0,	specs = {266},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Demonic Strength
+	[333889] = {cooldown = 180,	duration = 15,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Fel Domination
+	[111898] = {cooldown = 120,	duration = 15,	specs = {266},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Grimoire: Felguard
+	[5484] = {cooldown = 40,	duration = 20,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 8}, --Howl of Terror
+	[267217] = {cooldown = 180,	duration = 20,	specs = {266},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Nether Portal
+	[30283] = {cooldown = 60,	duration = 3,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 8}, --Shadowfury
+	[205180] = {cooldown = 180,	duration = 20,	specs = {265},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Summon Darkglare
+	[265187] = {cooldown = 90,	duration = 15,	specs = {266},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Summon Demonic Tyrant
+	[1122] = {cooldown = 180,	duration = 30,	specs = {267},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Summon Infernal
+	[104773] = {cooldown = 180,	duration = 8,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 2}, --Unending Resolve
 
 	--shaman
 	-- 262 - Elemental
 	-- 263 - Enchancment
 	-- 264 - Restoration
+	[108281] = {cooldown = 120,	duration = 10,	specs = {262, 263},			talent = false,	charges = 1,	class = "SHAMAN",	type = 4}, --Ancestral Guidance
+	[207399] = {cooldown = 240,	duration = 30,	specs = {264},				talent = false,	charges = 1,	class = "SHAMAN",	type = 4}, --Ancestral Protection Totem
+	[114051] = {cooldown = 180,	duration = 15,	specs = {263},				talent = false,	charges = 1,	class = "SHAMAN",	type = 1}, --Ascendance
+	[114050] = {cooldown = 180,	duration = 15,	specs = {262},				talent = false,	charges = 1,	class = "SHAMAN",	type = 1}, --Ascendance
+	[114052] = {cooldown = 180,	duration = 15,	specs = {264},				talent = false,	charges = 1,	class = "SHAMAN",	type = 4}, --Ascendance
+	[108271] = {cooldown = 90,	duration = 8,	specs = {262, 263, 264},	talent = false,	charges = 1,	class = "SHAMAN",	type = 2}, --Astral Shift
+	[192058] = {cooldown = 60,	duration = 0,	specs = {262, 263, 264},	talent = false,	charges = 1,	class = "SHAMAN",	type = 8}, --Capacitor Totem
+	[198103] = {cooldown = 300,	duration = 60,	specs = {262, 263, 264},	talent = false,	charges = 1,	class = "SHAMAN",	type = 2}, --Earth Elemental
+	[51533] = {cooldown = 120,	duration = 15,	specs = {263},				talent = false,	charges = 1,	class = "SHAMAN",	type = 1}, --Feral Spirit
+	[198067] = {cooldown = 150,	duration = 30,	specs = {262},				talent = false,	charges = 1,	class = "SHAMAN",	type = 1}, --Fire Elemental
+	[108280] = {cooldown = 180,	duration = 10,	specs = {264},				talent = false,	charges = 1,	class = "SHAMAN",	type = 4}, --Healing Tide Totem
+	[16191] = {cooldown = 180,	duration = 8,	specs = {264},				talent = false,	charges = 1,	class = "SHAMAN",	type = 5}, --Mana Tide Totem
+	[98008] = {cooldown = 180,	duration = 6,	specs = {264},				talent = false,	charges = 1,	class = "SHAMAN",	type = 4}, --Spirit Link Totem
+	[192249] = {cooldown = 150,	duration = 30,	specs = {262},				talent = false,	charges = 1,	class = "SHAMAN",	type = 1}, --Storm Elemental
+	[8143] = {cooldown = 60,	duration = 10,	specs = {262, 263, 264},	talent = false,	charges = 1,	class = "SHAMAN",	type = 5}, --Tremor Totem
+	[192077] = {cooldown = 120,	duration = 15,	specs = {262, 263, 264},	talent = false,	charges = 1,	class = "SHAMAN",	type = 5}, --Wind Rush Totem
+	--[198838] = {cooldown = 60,	duration = 15,	specs = {264},			talent = false,	charges = 1,	class = "SHAMAN",	type = 4}, --Earthen Wall Totem
+	[51485] = {cooldown = 60,	duration = 20,	specs = {262, 263, 264},		talent = false,	charges = 1,	class = "SHAMAN",	type = 8}, --Earthgrab Totem
 
-	[198067] = 	{cooldown = 150, 	duration = 30, 		specs = {262}, 			talent = false, charges = 1, class = "SHAMAN", type = 1}, --Fire Elemental
-	[192249] = 	{cooldown = 150, 	duration = 30, 		specs = {262}, 			talent = false, charges = 1, class = "SHAMAN", type = 1}, --Storm Elemental
-	[108271] = 	{cooldown = 90, 	duration = 8, 		specs = {262,263,264}, 	talent = false, charges = 1, class = "SHAMAN", type = 2}, --Astral Shift
-	[108281] = 	{cooldown = 120, 	duration = 10, 		specs = {262,263}, 		talent = false, charges = 1, class = "SHAMAN", type = 4}, --Ancestral Guidance
-	[51533] = 	{cooldown = 120, 	duration = 15, 		specs = {263}, 			talent = false, charges = 1, class = "SHAMAN", type = 1}, --Feral Spirit
-	[114050] = 	{cooldown = 180, 	duration = 15, 		specs = {262}, 			talent = false, charges = 1, class = "SHAMAN", type = 1}, --Ascendance
-	[114051] = 	{cooldown = 180, 	duration = 15, 		specs = {263}, 			talent = false, charges = 1, class = "SHAMAN", type = 1}, --Ascendance
-	[114052] = 	{cooldown = 180, 	duration = 15, 		specs = {264}, 			talent = false, charges = 1, class = "SHAMAN", type = 4}, --Ascendance
-	[98008] = 	{cooldown = 180, 	duration = 6, 		specs = {264}, 			talent = false, charges = 1, class = "SHAMAN", type = 4}, --Spirit Link Totem
-	[108280] = 	{cooldown = 180, 	duration = 10, 		specs = {264}, 			talent = false, charges = 1, class = "SHAMAN", type = 4}, --Healing Tide Totem
-	[207399] = 	{cooldown = 240, 	duration = 30, 		specs = {264}, 			talent = false, charges = 1, class = "SHAMAN", type = 4}, --Ancestral Protection Totem
-	[16191] = 	{cooldown = 180, 	duration = 8, 		specs = {264}, 			talent = false, charges = 1, class = "SHAMAN", type = 4}, --Mana Tide Totem
-	[198103] = 	{cooldown = 300, 	duration = 60, 		specs = {262,263,264}, 	talent = false, charges = 1, class = "SHAMAN", type = 2}, --Earth Elemental
-	[192058] = 	{cooldown = 60, 	duration = false, 	specs = {262,263,264}, 	talent = false, charges = 1, class = "SHAMAN", type = 5}, --Capacitor Totem
-	[8143] = 	{cooldown = 60, 	duration = 10, 		specs = {262,263,264}, 	talent = false, charges = 1, class = "SHAMAN", type = 5}, --Tremor Totem
-	[192077] = 	{cooldown = 120, 	duration = 15, 		specs = {262,263,264}, 	talent = false, charges = 1, class = "SHAMAN", type = 5}, --Wind Rush Totem
-	
 	--monk
 	-- 268 - Brewmaster
 	-- 269 - Windwalker
 	-- 270 - Restoration
+	[115399] = {cooldown = 120,	duration = 0,	specs = {268},				talent = false,	charges = 1,	class = "MONK",	type = 2}, --Black Ox Brew
+	[122278] = {cooldown = 120,	duration = 10,	specs = {268, 269, 270},	talent = false,	charges = 1,	class = "MONK",	type = 2}, --Dampen Harm
+	[122783] = {cooldown = 90,	duration = 6,	specs = {269, 270},			talent = false,	charges = 1,	class = "MONK",	type = 2}, --Diffuse Magic
+	[243435] = {cooldown = 90,	duration = 15,	specs = {269, 270},			talent = false,	charges = 1,	class = "MONK",	type = 2}, --Fortifying Brew
+	[115203] = {cooldown = 420,	duration = 15,	specs = {268},				talent = false,	charges = 1,	class = "MONK",	type = 2}, --Fortifying Brew
+	[132578] = {cooldown = 180,	duration = 25,	specs = {268},				talent = false,	charges = 1,	class = "MONK",	type = 1}, --Invoke Niuzao, the Black Ox
+	[123904] = {cooldown = 120,	duration = 24,	specs = {269},				talent = false,	charges = 1,	class = "MONK",	type = 1}, --Invoke Xuen, the White Tiger
+	[322118] = {cooldown = 180,	duration = 25,	specs = {270},				talent = false,	charges = 1,	class = "MONK",	type = 4}, --Invoke Yu'lon, the Jade Serpent
+	[119381] = {cooldown = 50,	duration = 3,	specs = {268, 269, 270},	talent = false,	charges = 1,	class = "MONK",	type = 8}, --Leg Sweep
+	[116849] = {cooldown = 120,	duration = 12,	specs = {270},				talent = false,	charges = 1,	class = "MONK",	type = 3}, --Life Cocoon
+	[197908] = {cooldown = 90,	duration = 10,	specs = {270},				talent = false,	charges = 1,	class = "MONK",	type = 5}, --Mana Tea
+	[115310] = {cooldown = 180,	duration = 0,	specs = {270},				talent = false,	charges = 1,	class = "MONK",	type = 4}, --Revival
+	[116844] = {cooldown = 45,	duration = 5,	specs = {268, 269, 270},	talent = false,	charges = 1,	class = "MONK",	type = 8}, --Ring of Peace
+	[152173] = {cooldown = 90,	duration = 12,	specs = {269},				talent = false,	charges = 1,	class = "MONK",	type = 1}, --Serenity
+	[137639] = {cooldown = 90,	duration = 15,	specs = {269},				talent = false,	charges = 1,	class = "MONK",	type = 1}, --Storm, Earth, and Fire
+	[115080] = {cooldown = 180,	duration = 0,	specs = {268, 269, 270},	talent = false,	charges = 1,	class = "MONK",	type = 1}, --Touch of Death
+	[122470] = {cooldown = 90,	duration = 6,	specs = {269},				talent = false,	charges = 1,	class = "MONK",	type = 2}, --Touch of Karma
+	[115176] = {cooldown = 300,	duration = 8,	specs = {268},				talent = false,	charges = 1,	class = "MONK",	type = 2}, --Zen Meditation
+	[388686] = {cooldown = 120,	duration = 30,	specs = {268, 269, 270},	talent = false,	charges = 1,	class = "MONK",	type = 1}, --Summon White Tiger Statue
+	--[322109] = {cooldown = 180,	duration = 0,	specs = {268, 269, 270},	talent = false,	charges = 1,	class = "MONK",	type = 1}, --Touch of Death
 
-	[132578] = 	{cooldown = 180, 	duration = 25, 		specs = {268}, 			talent = false, charges = 1, class = "MONK", type = 1}, --Invoke Niuzao, the Black Ox
-	[115080] = 	{cooldown = 180, 	duration = false, 	specs = {268,269,270}, 	talent = false, charges = 1, class = "MONK", type = 1}, --Touch of Death
-	[115203] = 	{cooldown = 420, 	duration = 15, 		specs = {268}, 			talent = false, charges = 1, class = "MONK", type = 2}, --Fortifying Brew
-	[115176] = 	{cooldown = 300, 	duration = 8, 		specs = {268}, 			talent = false, charges = 1, class = "MONK", type = 2}, --Zen Meditation
-	[115399] = 	{cooldown = 120, 	duration = false, 	specs = {268}, 			talent = false, charges = 1, class = "MONK", type = 2}, --Black Ox brew
-	[122278] = 	{cooldown = 120, 	duration = 10, 		specs = {268,269,270}, 	talent = false, charges = 1, class = "MONK", type = 2}, --Dampen Harm
-	[137639] = 	{cooldown = 90, 	duration = 15, 		specs = {269}, 			talent = false, charges = 1, class = "MONK", type = 1}, --Storm, Earth, and Fire
-	[123904] = 	{cooldown = 120, 	duration = 24, 		specs = {269}, 			talent = false, charges = 1, class = "MONK", type = 1}, --Invoke Xuen, the White Tiger
-	[152173] = 	{cooldown = 90, 	duration = 12, 		specs = {269}, 			talent = false, charges = 1, class = "MONK", type = 1}, --Serenity
-	[122470] = 	{cooldown = 90, 	duration = 6, 		specs = {269}, 			talent = false, charges = 1, class = "MONK", type = 2}, --Touch of Karma
-	[322118] = 	{cooldown = 180, 	duration = 25, 		specs = {270}, 			talent = false, charges = 1, class = "MONK", type = 4}, --Invoke Yulon, the Jade serpent
-	[243435] = 	{cooldown = 90, 	duration = 15, 		specs = {269,270}, 		talent = false, charges = 1, class = "MONK", type = 2}, --Fortifying Brew
-	[122783] = 	{cooldown = 90, 	duration = 6, 		specs = {269,270}, 		talent = false, charges = 1, class = "MONK", type = 2}, --Diffuse Magic
-	[116849] = 	{cooldown = 120, 	duration = 12, 		specs = {270}, 			talent = false, charges = 1, class = "MONK", type = 3}, --Life Cocoon
-	[115310] = 	{cooldown = 180, 	duration = false, 	specs = {270}, 			talent = false, charges = 1, class = "MONK", type = 4}, --Revival
-	[197908] = 	{cooldown = 90, 	duration = 10, 		specs = {270}, 			talent = false, charges = 1, class = "MONK", type = 5}, --Mana tea
-	[116844] = 	{cooldown = 45, 	duration = 5, 		specs = {268,269,270}, 	talent = false, charges = 1, class = "MONK", type = 5}, --Ring of peace
-	[119381] = 	{cooldown = 50, 	duration = 3, 		specs = {268,269,270}, 	talent = false, charges = 1, class = "MONK", type = 5}, --Leg Sweep
-	
+
 	--hunter
 	-- 253 - Beast Mastery
 	-- 254 - Marksmenship
 	-- 255 - Survival
-
-	[193530] = 	{cooldown = 120, 	duration = 20, 		specs = {253},		 	talent = false, charges = 1, class = "HUNTER", type = 1}, --Aspect of the Wild
-	[19574] = 	{cooldown = 90, 	duration = 12, 		specs = {253}, 			talent = false, charges = 1, class = "HUNTER", type = 1}, --Bestial Wrath
-	[201430] = 	{cooldown = 180, 	duration = 12, 		specs = {253}, 			talent = false, charges = 1, class = "HUNTER", type = 1}, --Stampede
-	[288613] = 	{cooldown = 180, 	duration = 15, 		specs = {254}, 			talent = false, charges = 1, class = "HUNTER", type = 1}, --Trueshot
-	[199483] = 	{cooldown = 60, 	duration = 60, 		specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 2}, --Camouflage
-	[281195] = 	{cooldown = 180, 	duration = 6, 		specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 2}, --Survival of the Fittest
-	[266779] = 	{cooldown = 120, 	duration = 20, 		specs = {255}, 			talent = false, charges = 1, class = "HUNTER", type = 1}, --Coordinated Assault
-	[186265] = 	{cooldown = 180, 	duration = 8, 		specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 2}, --Aspect of the Turtle
-	[109304] = 	{cooldown = 120, 	duration = false, 	specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 2}, --Exhilaration
-	[186257] = 	{cooldown = 144, 	duration = 14, 		specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 5}, --Aspect of the cheetah
-	[19577] = 	{cooldown = 60, 	duration = 5, 		specs = {253,255}, 		talent = false, charges = 1, class = "HUNTER", type = 5}, --Intimidation
-	[109248] = 	{cooldown = 45, 	duration = 10, 		specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 5}, --Binding Shot
-	[187650] = 	{cooldown = 25, 	duration = 60, 		specs = {253,254,255}, 	talent = false, charges = 1, class = "HUNTER", type = 5}, --Freezing Trap
-	[186289] = 	{cooldown = 72, 	duration = 15, 		specs = {255}, 			talent = false, charges = 1, class = "HUNTER", type = 5}, --Aspect of the eagle
+	[186257] = {cooldown = 144,	duration = 14,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Aspect of the Cheetah
+	[186289] = {cooldown = 72,	duration = 15,	specs = {255},				talent = false,	charges = 1,	class = "HUNTER",	type = 1}, --Aspect of the Eagle
+	[186265] = {cooldown = 180,	duration = 8,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Aspect of the Turtle
+	[193530] = {cooldown = 120,	duration = 20,	specs = {253},				talent = false,	charges = 1,	class = "HUNTER",	type = 1}, --Aspect of the Wild
+	[19574] = {cooldown = 90,	duration = 12,	specs = {253},				talent = false,	charges = 1,	class = "HUNTER",	type = 1}, --Bestial Wrath
+	[109248] = {cooldown = 45,	duration = 10,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 8}, --Binding Shot
+	[199483] = {cooldown = 60,	duration = 60,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Camouflage
+	[266779] = {cooldown = 120,	duration = 20,	specs = {255},				talent = false,	charges = 1,	class = "HUNTER",	type = 1}, --Coordinated Assault
+	[109304] = {cooldown = 120,	duration = 0,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Exhilaration
+	[187650] = {cooldown = 25,	duration = 60,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 8}, --Freezing Trap
+	[19577] = {cooldown = 60,	duration = 5,	specs = {253, 255},			talent = false,	charges = 1,	class = "HUNTER",	type = 8}, --Intimidation
+	[201430] = {cooldown = 180,	duration = 12,	specs = {253},				talent = false,	charges = 1,	class = "HUNTER",	type = 1}, --Stampede
+	[281195] = {cooldown = 180,	duration = 6,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Survival of the Fittest
+	[288613] = {cooldown = 180,	duration = 15,	specs = {254},				talent = false,	charges = 1,	class = "HUNTER",	type = 1}, --Trueshot
+	[264735] = {cooldown = 180,	duration = 0,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Survival of the Fittest
 
 	--druid
 	-- 102 - Balance
 	-- 103 - Feral
 	-- 104 - Guardian
 	-- 105 - Restoration
-
 	[22812] = {cooldown = 60,	duration = 12,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Barkskin
-	[106951] = {cooldown = 180,	duration = 15,	specs = {103, 104},				talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Berserk
-	[194223] = {cooldown = 180,	duration = 20,	specs = {102},					talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Celestial Alignment
+	[106951] = {cooldown = 180,	duration = 15,	specs = {103, 104},			talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Berserk
+	[194223] = {cooldown = 180,	duration = 20,	specs = {102},				talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Celestial Alignment
 	[391528] = {cooldown = 120,	duration = 4,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Convoke the Spirits
-	[197721] = {cooldown = 90,	duration = 8,	specs = {105},					talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Flourish
+	[197721] = {cooldown = 90,	duration = 8,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Flourish
 	[319454] = {cooldown = 300,	duration = 45,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Heart of the Wild
-	[102543] = {cooldown = 30,	duration = 180,	specs = {103},					talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Incarnation: Avatar of Ashamane
-	[102560] = {cooldown = 180,	duration = 30,	specs = {102},					talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Incarnation: Chosen of Elune
-	[102558] = {cooldown = 180,	duration = 30,	specs = {104},					talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Incarnation: Guardian of Ursoc
-	[33891] = {cooldown = 180,	duration = 30,	specs = {105},					talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Incarnation: Tree of Life
-	[99] = {cooldown = 30,		duration = 3,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Incapacitating Roar
-	[29166] = {cooldown = 180,	duration = 12,	specs = {102, 105},				talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Innervate
-	[102342] = {cooldown = 60,	duration = 12,	specs = {105},					talent = false,	charges = 1,	class = "DRUID",	type = 3}, --Ironbark
-	[203651] = {cooldown = 60,	duration = 0,	specs = {105},					talent = false,	charges = 1,	class = "DRUID",	type = 3}, --Overgrowth
+	[99] = {cooldown = 30,	duration = 3,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Incapacitating Roar
+	[102543] = {cooldown = 30,	duration = 180,	specs = {103},				talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Incarnation: Avatar of Ashamane
+	[102560] = {cooldown = 180,	duration = 30,	specs = {102},				talent = false,	charges = 1,	class = "DRUID",	type = 1}, --Incarnation: Chosen of Elune
+	[102558] = {cooldown = 180,	duration = 30,	specs = {104},				talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Incarnation: Guardian of Ursoc
+	[33891] = {cooldown = 180,	duration = 30,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Incarnation: Tree of Life
+	[29166] = {cooldown = 180,	duration = 12,	specs = {102, 105},			talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Innervate
+	[102342] = {cooldown = 60,	duration = 12,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 3}, --Ironbark
+	[203651] = {cooldown = 60,	duration = 0,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 3}, --Overgrowth
+	[20484] = {cooldown = 600,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Rebirth
 	[108238] = {cooldown = 90,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Renewal
-	[77761] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Stampeding Roar | 106898
-	[61336] = {cooldown = 120,	duration = 6,	specs = {103, 104},				talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Survival Instincts
-	[740] = {cooldown = 180,	duration = 8,	specs = {105},					talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Tranquility
+	[77761] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Stampeding Roar
+	[61336] = {cooldown = 120,	duration = 6,	specs = {103, 104},			talent = false,	charges = 1,	class = "DRUID",	type = 2}, --Survival Instincts
+	[740] = {cooldown = 180,	duration = 8,	specs = {105},				talent = false,	charges = 1,	class = "DRUID",	type = 4}, --Tranquility
 	[132469] = {cooldown = 30,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Typhoon
 	[102793] = {cooldown = 60,	duration = 10,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 8}, --Ursol's Vortex
+	[124974] = {cooldown = 90,	duration = 0,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 3}, --Nature's Vigil
+	[106898] = {cooldown = 120,	duration = 8,	specs = {102, 103, 104, 105},	talent = false,	charges = 1,	class = "DRUID",	type = 5}, --Stampeding Roar
 
 	--death knight
 	-- 252 - Unholy
 	-- 251 - Frost
 	-- 252 - Blood
-
 	[383269] = {cooldown = 120,	duration = 12,	specs = {250, 251, 252},	talent = false,	charges = 1,	class = "DEATHKNIGHT",	type = 1}, --Abomination Limb
 	[48707] = {cooldown = 60,	duration = 10,	specs = {250, 251, 252},	talent = false,	charges = 1,	class = "DEATHKNIGHT",	type = 2}, --Anti-Magic Shell
 	[51052] = {cooldown = 120,	duration = 10,	specs = {250, 251, 252},	talent = false,	charges = 1,	class = "DEATHKNIGHT",	type = 4}, --Anti-Magic Zone
@@ -476,7 +488,6 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	--demon hunter
 	-- 577 - Havoc
 	-- 581 - Vengance
-
 	[198589] = {cooldown = 60,	duration = 10,	specs = {577},				talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 2}, --Blur
 	[320341] = {cooldown = 90,	duration = 0,	specs = {581},				talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 2}, --Bulk Extraction
 	[179057] = {cooldown = 60,	duration = 2,	specs = {577},				talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 8}, --Chaos Nova
@@ -492,6 +503,7 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[202137] = {cooldown = 60,	duration = 8,	specs = {581},				talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 6}, --Sigil of Silence
 	[263648] = {cooldown = 30,	duration = 12,	specs = {581},				talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 2}, --Soul Barrier
 	[188501] = {cooldown = 30,	duration = 10,	specs = {577, 581},			talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 5}, --Spectral Sight
+	[370965] = {cooldown = 90,	duration = 0,	specs = {577, 581},			talent = false,	charges = 1,	class = "DEMONHUNTER",	type = 1}, --The Hunt
 
 	--mage
 	-- 62 - Arcane
@@ -517,7 +529,6 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	-- 256 - Discipline
 	-- 257 - Holy
 	-- 258 - Shadow
-
 	[200183] = {cooldown = 120,	duration = 20,	specs = {257},				talent = false,	charges = 1,	class = "PRIEST",	type = 2}, --Apotheosis
 	[19236] = {cooldown = 90,	duration = 10,	specs = {256, 257, 258},	talent = false,	charges = 1,	class = "PRIEST",	type = 2}, --Desperate Prayer
 	[47585] = {cooldown = 120,	duration = 6,	specs = {258},				talent = false,	charges = 1,	class = "PRIEST",	type = 2}, --Dispersion
@@ -547,7 +558,6 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	-- 259 - Assasination
 	-- 260 - Outlaw
 	-- 261 - Subtlety
-
 	[13750] = {cooldown = 180,	duration = 20,	specs = {260},				talent = false,	charges = 1,	class = "ROGUE",	type = 1}, --Adrenaline Rush
 	[2094] = {cooldown = 120,	duration = 60,	specs = {259, 260, 261},	talent = false,	charges = 1,	class = "ROGUE",	type = 8}, --Blind
 	[31224] = {cooldown = 120,	duration = 5,	specs = {259, 260, 261},	talent = false,	charges = 1,	class = "ROGUE",	type = 2}, --Cloak of Shadows
@@ -562,7 +572,11 @@ LIB_OPEN_RAID_COOLDOWNS_INFO = {
 	[79140] = {cooldown = 120,	duration = 20,	specs = {259},				talent = false,	charges = 1,	class = "ROGUE",	type = 1}, --Vendetta
 }
 
+--this table store all cooldowns the player currently have available
+LIB_OPEN_RAID_PLAYERCOOLDOWNS = {}
+
 LIB_OPEN_RAID_COOLDOWNS_BY_SPEC = {};
+
 for spellID,spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
 	for _,specID in ipairs(spellData.specs) do
 		LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID] = LIB_OPEN_RAID_COOLDOWNS_BY_SPEC[specID] or {};

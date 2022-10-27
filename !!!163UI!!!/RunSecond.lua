@@ -105,7 +105,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
             if not InCombatLockdown() then
                 if not blizBtn._163btn then
                     WW:Button(nil, blizBtn, "SecureActionButtonTemplate"):Key("_163btn")
-                    :RegisterForClicks("AnyUp"):SetAllPoints()
+                    :RegisterForClicks("AnyUp", "AnyDown"):SetAllPoints()
                     :CreateTexture():SetAllPoints():SetColorTexture(0, 1, 0, 0.3):up()
                     :SetScript("OnEnter", function(self) self:GetParent():GetScript("OnEnter")(self:GetParent()) end)
                     :SetScript("OnLeave", function(self) self:GetParent():GetScript("OnLeave")(self:GetParent()) end)
@@ -131,7 +131,7 @@ CoreDependCall("Blizzard_ObjectiveTracker", function()
         for bliz, btn163 in pairs(wqItems163) do
             if type(btn163) == "string" then
                 local link = btn163
-                btn163 = WW:Button(nil, UIParent, "SecureActionButtonTemplate"):RegisterForClicks("AnyUp"):SetFrameStrata("HIGH")
+                btn163 = WW:Button(nil, UIParent, "SecureActionButtonTemplate"):RegisterForClicks("AnyUp", "AnyDown"):SetFrameStrata("HIGH")
                 :CreateTexture():SetAllPoints():SetColorTexture(0, 1, 0, 0.1):up()
                 :SetScript("OnEnter", function(self) self.bliz:GetScript("OnEnter")(self.bliz) end)
                 :SetScript("OnLeave", function(self) self.bliz:GetScript("OnLeave")(self.bliz) end)

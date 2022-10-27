@@ -205,6 +205,8 @@ function TomTom:Enable(addon)
         self:EnableDisablePOIIntegration()
     end
     self:ReloadWaypoints()
+
+    self:CreateConfigPanels()
 end
 
 -- Some utility functions that can pack/unpack data from a waypoint

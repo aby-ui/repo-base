@@ -1,13 +1,15 @@
 local addonName, ptable = ...
 local L, C = ptable.L, ptable.CONST
 local O = addonName .. "RewardPanel"
+local dragonflight = ptable.defaults.interface10
+
 AutoTurnIn.RewardPanel = CreateFrame("Frame", O)
 AutoTurnIn.RewardPanel.name = QUEST_REWARDS
 AutoTurnIn.RewardPanel.parent = addonName
 local RewardPanel = AutoTurnIn.RewardPanel
 
 local function CreateCheckbox(name, parent, marginx, marginy, text)
-	local cb = CreateFrame("CheckButton", "$parent"..name,  parent, "InterfaceOptionsCheckButtonTemplate")
+	local cb = CreateFrame("CheckButton", "$parent"..name,  parent, dragonflight and "UICheckButtonTemplate" or "OptionsCheckButtonTemplate")
 	cb:SetPoint("TOPLEFT", parent, marginx, marginy)
 	_G[cb:GetName().."Text"]:SetText(text and text or name)
 	cb:SetScript("OnClick", function(self)
@@ -18,7 +20,7 @@ local function CreateCheckbox(name, parent, marginx, marginy, text)
 end 
 
 local function CreatePanel(name, text, w, h)
-	local panel = CreateFrame("Frame", O..name,  RewardPanel, "OptionsBoxTemplate") --TODO:abyui10
+	local panel = CreateFrame("Frame", O..name,  RewardPanel, "OptionsBoxTemplate") --TODO:abyui10 	--local panel = CreateFrame("Frame", O..name,  RewardPanel --[[, "OptionsBoxTemplate"--]])
 	panel:SetWidth(w)
 	panel:SetHeight(h)
 	panel.buttons = {}
@@ -38,8 +40,9 @@ local function CreatePanel(name, text, w, h)
 		elseif name == "SecStatPanel" then
 			return ptable.TempConfig.secondary		
 		end
-	end
-	_G[panel:GetName().."Title"]:SetText(text)
+	end	
+	-- _G[panel:GetName().."Title"]:SetText(text)
+	-- panel:SetTitle(text)
 	return panel
 end
 
@@ -119,7 +122,7 @@ CreateCheckbox('ITEM_MOD_SPIRIT_SHORT', SecStatPanel, 206, -72, ITEM_MOD_SPIRIT_
 
 
 -- 'Greed' CheckBox
-local GreedAfterNeed = CreateFrame("CheckButton", O.."Enable", RewardPanel, "InterfaceOptionsCheckButtonTemplate")
+local GreedAfterNeed = CreateFrame("CheckButton", O.."Enable", RewardPanel, dragonflight and "UICheckButtonTemplate" or "OptionsCheckButtonTemplate")
 _G[GreedAfterNeed:GetName().."Text"]:SetText(L["greedifnothing"])
 GreedAfterNeed:SetScript("OnClick", function(self)
 	ptable.TempConfig.greedifnothingfound = self:GetChecked()
@@ -176,4 +179,4 @@ end
 --RewardPanel.okay = function()end
 
 --[[ REGISTERING PANEL ]]--
-InterfaceOptions_AddCategory(RewardPanel)
+InterfaceOptions_AddCategory(AutoTurnIn.RewardPanel, true)

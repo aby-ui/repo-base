@@ -801,7 +801,7 @@ function Gladius:CreateButton(unit)
 	local secure = CreateFrame("Button", "GladiusButton"..unit, button, "SecureActionButtonTemplate")
 	secure:EnableMouse(true)
 	secure:EnableKeyboard(true)
-	secure:RegisterForClicks("AnyUp")
+	secure:RegisterForClicks("AnyUp", "AnyDown")
 	button.secure = secure
 	-- clique
 	ClickCastFrames = ClickCastFrames or {}

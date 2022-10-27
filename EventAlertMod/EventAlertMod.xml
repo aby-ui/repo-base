@@ -1,9 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="EventAlert_CreateFrames.lua" />	
-	<script file="EventAlert_SpellArray.lua" />	
+	<Script file="EventAlert_SpellArray.lua" />
 	<Script file="EventAlertMod.lua" />
-	<Frame visible="true" name="EA_Main_Frame" parent="UIParent" toplevel="true" frameStrata="HIGH">
+	<Frame name="EA_Main_Frame" parent="UIParent" toplevel="true" frameStrata="HIGH">
 		<Size>
 			<AbsDimension x="1" y="1" />
 		</Size>
@@ -21,7 +21,7 @@
 			<AbsDimension x="450" y="350" />
 		</Size>
 		<Anchors>
-			<Anchor relativepoint="CENTER" point="CENTER" />
+			<Anchor relativePoint="CENTER" point="CENTER" />
 		</Anchors>
         <KeyValues>
              <KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
@@ -32,7 +32,7 @@
 					<AbsDimension x="75" y="21" />
 				</Size>
 				<Anchors>
-					<Anchor relativepoint="BOTTOM" point="CENTER">
+					<Anchor relativePoint="BOTTOM" point="CENTER">
 						<Offset>
 							<AbsDimension x="0" y="25" />
 						</Offset>

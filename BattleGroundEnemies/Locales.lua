@@ -14,7 +14,7 @@ Data.L = setmetatable({}, { --key set by all non english clients, Table gets acc
         if defaultLocale[k] then
             if gameLocale ~= "enUS" and not missingReported then
                 C_Timer.After(3, function() 
-                    BattleGroundEnemies:OnetimeInformation("Missing localizations for your ingame language. You can help translating this addon on https://www.curseforge.com/wow/addons/battlegroundenemies/localization")
+                    --BattleGroundEnemies:OnetimeInformation("Missing localizations for your ingame language. You can help translating this addon on https://www.curseforge.com/wow/addons/battlegroundenemies/localization")
                 end)
                 missingReported = true
             end
@@ -22,7 +22,7 @@ Data.L = setmetatable({}, { --key set by all non english clients, Table gets acc
             return defaultLocale[k]
         else
             C_Timer.After(3, function() 
-                BattleGroundEnemies:OnetimeInformation("Missing localization entry for['"..k.."']. Please report this to the addon author.")
+                --BattleGroundEnemies:OnetimeInformation("Missing localization entry for['"..k.."']. Please report this to the addon author.")
             end)
             return k
         end
@@ -94,6 +94,8 @@ L["Coloring_Enabled"] = "Color by debuff type"
 L["Coloring_Enabled_Desc"] = "When this option is enabled you can choose whether the frame's border or the countdown text should be colored by debuff type (Like its know from the default UI, poisons are green, diseases blue etc.)"
 L["Columns"] = "Columns"
 L["Columns_Desc"] = "In how many colums the players are displayed."
+L["Combat"] = "In Combat"
+L["CombatIndicator"] = "Combat indicator"
 L["ConfirmProfileOverride"] = "Are you sure that you want to override the subprofile %s with the subprofile %s"
 L["Container_Color"] = "Container border color"
 L["ContainerPosition"] = "Container position"
@@ -208,6 +210,7 @@ L["HorizontalGrowdirection"] = "Horizontal grow direction"
 L["HorizontalGrowdirection_Desc"] = "Lets you choose if the rows grow to the left or to the right side"
 L["HorizontalSpacing"] = "Horizontal spacing"
 L["IAmTargeted"] = "I am targeted"
+L["Icon"] = "Icon"
 L["IconSize"] = "Icon size"
 L["IconsPerRow"] = "Icons per row"
 L["Import"] = "Import"
@@ -267,6 +270,7 @@ L["ObjectiveAndRespawnTimer"] = "Objective and respawn timer"
 L["OffsetX"] = "Offset X"
 L["OffsetY"] = "Offset Y"
 L["OldVersion"] = "Old version"
+L["OutOfCombat"] = "Out of combat"
 L["PlayerCount_Enabled"] = "Player Count"
 L["PlayerCount_Enabled_Desc"] = "If there should a text for the current number of players. Note that this count can be different than the current number of rows shown due to combat protection or leaving allies/enemies in a RBG"
 L["Point"] = "Point"
@@ -381,6 +385,8 @@ L["Trinket_Enabled"] = "Enable Trinkets"
 L["Trinket_Enabled_Desc"] = "When enabled there will be icons for Gladiator's Medallion, Adaptation and Relentless."
 L["Trinket_Width_Desc"] = "The width of the trinket."
 L["TrinketSettings_Desc"] = "Settings regarding Trinkets"
+L["UpdatePeriod"] = "Update period"
+L["UpdatePeriod_Desc"] = "The time between combat checks, dont put this too low because this can potentially cause performance issues."
 L["Upwards"] = "Upwards"
 L["UseBarHeight"] = "Use bar height"
 L["UseBigDebuffsPriority"] = "Use BigDebuffs priorities"
@@ -461,6 +467,8 @@ L["Coloring_Enabled"] = "Nach Schwächungszaubertyp färben"
 L["Coloring_Enabled_Desc"] = "Wenn diese Option aktiviert ist, kannst du auswählen ob der Rahmen oder der Countdown-Text nach Schwächungszaubertyp gefärbt werden soll. (So wie es auch das Standard-UI macht; Gifte sind grün, Magie blau etc.)"
 L["Columns"] = "Spalten"
 L["Columns_Desc"] = "In wieviele Spalten die Spieler unterteilt werden."
+L["Combat"] = "Im Kampf"
+L["CombatIndicator"] = "Kampfindikator"
 L["ConfirmProfileOverride"] = "Bist du sicher, dass du das Unterprofil %s mit dem Unterprofil %s unterschreiben willst?"
 L["Container_Color"] = "Container-Rahmenfarbe"
 L["ContainerPosition"] = "Containerposition"
@@ -575,6 +583,7 @@ L["HorizontalGrowdirection"] = "Horizontale Ausbreitungsrichtung"
 L["HorizontalGrowdirection_Desc"] = "Ob die Spalten sich nach links oder nach rechts erweitern sollen"
 L["HorizontalSpacing"] = "Horizontaler Abstand"
 L["IAmTargeted"] = "Ich werde anvisiert"
+L["Icon"] = "Symbol"
 L["IconSize"] = "Symbolgröße"
 L["IconsPerRow"] = "Symbole pro Reihe"
 L["Import"] = "Import"
@@ -634,6 +643,7 @@ L["ObjectiveAndRespawnTimer"] = "Ziel und Wiederbelebungstimer"
 L["OffsetX"] = "Versatz X"
 L["OffsetY"] = "Versatz Y"
 L["OldVersion"] = "Alte Version"
+L["OutOfCombat"] = "Außerhalb des Kampfs"
 L["PlayerCount_Enabled"] = "Spielerzahl"
 L["PlayerCount_Enabled_Desc"] = "Falls diese Option aktiviert ist, wird die momentane Spielerzahl angezeigt. Beachte, dass diese Zahl nicht unbedingt der Zahl der momentan gezeigten Spielerreihen entspricht. Falls ein Gegner ein gewertetes Schlachtfeld verlässt, besteht keine Möglichkeit herauszufinden wer gegangen ist, daher bleibt die Reihenzahl gleich. Ebenso kann es passieren, dass Gegner das Schlachtfeld betreten oder verlassen während du im Kampf bist. In diesem Fall besteht auch keine Möglichkeit eine Reihe hinzuzufügen oder zu entfernen. (Dies passiert sobald du den Kampf verlässt.)"
 L["Point"] = "Punkt"
@@ -746,6 +756,8 @@ L["Trinket_Enabled"] = "PvP-Talente aktivieren"
 L["Trinket_Enabled_Desc"] = "Falls diese Option aktiviert wird, wird angezeigt welches PvP-Talent der ersten Reihe der Gegner benutzt (Medaillon des Gladiators, Anpassung oder Unerbittlich)"
 L["Trinket_Width_Desc"] = "Die Breite der Anti-CC-Talente."
 L["TrinketSettings_Desc"] = "Einstellungen bezüglich des PvP-Talents in der ersten Reihe"
+L["UpdatePeriod"] = "Aktualisierungsperiode"
+L["UpdatePeriod_Desc"] = "Die Zeit zwischen den Abfragen ob jemand im Kampf ist oder nicht. Stelle diesen Wert nicht zu niedrig ein denn dies kann zu Leistungsproblemen führen."
 L["Upwards"] = "Nach oben"
 L["UseBarHeight"] = "Balkenhöhe verwenden"
 L["UseBigDebuffsPriority"] = "BigDebuffs-Prioritäten verwenden"

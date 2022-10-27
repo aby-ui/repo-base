@@ -12,6 +12,7 @@
 
 local _, Core = ...
 local WOW_RETAIL = Core.WOW_RETAIL
+local WOW_CLASSIC = not WOW_RETAIL
 
 ----------------------------------------
 -- Region Settings
@@ -378,7 +379,7 @@ local Item = {
 	Disabled = Legacy.Disabled,
 	Pushed = Legacy.Pushed,
 	Count = Legacy.Count,
-	Checked = (not WOW_RETAIL and Legacy.Checked) or nil, -- Classic Only
+	Checked = (WOW_CLASSIC and Legacy.Checked) or nil, -- Classic Only
 	Border = Legacy.Border, -- Backwards-Compatibility
 	IconBorder = Legacy.IconBorder,
 	SlotHighlight = (WOW_RETAIL and Legacy.SlotHighlight) or nil, -- Retail Only
@@ -404,13 +405,14 @@ local Types = {
 	Action = Action,
 	Aura = Aura,
 	Backpack = Item,
-	Bag = Item,
+	BagSlot = Item,
 	Buff = Aura,
 	Debuff = Debuff,
 	Enchant = Enchant,
 	Item = Item,
 	Pet = Action,
 	Possess = Action,
+	ReagentBag = Item,
 	Stance = Action,
 }
 
@@ -422,8 +424,10 @@ local BaseTypes = {
 
 local EmptyTypes = {
 	Action = true,
-	Bag = true,
+	Backpack = true,
+	BagSlot = true,
 	Pet = true,
+	ReagentBag = true,
 	Item = true,
 }
 
@@ -449,8 +453,9 @@ Core.AuraTypes = {
 }
 Core.ItemTypes = {
 	Backpack = true,
-	Bag = true,
+	BagSlot = true,
 	Item = true,
+	ReagentBag = true,
 }
 
 ----------------------------------------

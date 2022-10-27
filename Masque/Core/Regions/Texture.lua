@@ -18,11 +18,11 @@ local _, Core = ...
 -- Internal
 ---
 
--- @ Skins\Regions
-local Settings = Core.RegTypes.Legacy
-
 -- @ Skins\Default
 local Defaults = Core.DEFAULT_SKIN
+
+-- @ Skins\Regions
+local Settings = Core.RegTypes.Legacy
 
 -- @ Core\Utility
 local GetColor, GetSize, GetTexCoords = Core.GetColor, Core.GetSize, Core.GetTexCoords
@@ -71,12 +71,7 @@ function Core.SkinTexture(Layer, Region, Button, Skin, Color, xScale, yScale)
 
 		if StoreColor[Layer] then
 			local ColorKey = "__MSQ_"..Layer.."Color"
-
-			if Button.__MSQ_ArtHook then
-				Button[ColorKey] = Color
-			else
-				Button[ColorKey] = nil
-			end
+			Button[ColorKey] = Color
 		end
 
 		local SetColor = not Config.NoColor

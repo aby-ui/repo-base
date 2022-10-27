@@ -136,3 +136,24 @@ function Core.API:Group(Addon, Group, StaticID, Deprecated)
 
 	return GetGroup(Addon, Group, StaticID)
 end
+
+-- Method to retrieve an existing group by its StaticID.
+function Core.API:GetGroupByID(StaticID)
+	if type(StaticID) ~= "string" then
+		if Core.Debug then
+			error("Bad argument to API method 'GetGroupByID'. 'StaticID' must be a string.", 2)
+		end
+		return
+	end
+
+	local Group = Groups[StaticID]
+
+	if not Group then
+		if Core.Debug then
+			error("The requested group, '"..StaticID.."', does not exist.", 2)
+		end
+		return
+	end
+
+	return Groups[StaticID]
+end

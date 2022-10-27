@@ -1,6 +1,8 @@
 local addonName, ptable = ...
 local L = ptable.L
 local O = addonName .. "OptionsPanel"
+local dragonflight = ptable.defaults.interface10
+
 AutoTurnIn.OptionsPanel = CreateFrame("Frame", O)
 AutoTurnIn.OptionsPanel.name=addonName
 local OptionsPanel = AutoTurnIn.OptionsPanel
@@ -17,7 +19,7 @@ local subText = OptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight
 subText:SetText(notes)
 
 -- Reset button
-local ResetButton = CreateFrame("Button", nil, OptionsPanel, "OptionsButtonTemplate")
+local ResetButton = CreateFrame("Button", nil, OptionsPanel, dragonflight and "UIPanelButtonTemplate" or "OptionsButtonTemplate")
 ResetButton:SetText(L["resetbutton"])
 ResetButton:SetScript("OnClick", function()
 	ptable.TempConfig = CopyTable(AutoTurnIn.defaults)
@@ -27,7 +29,7 @@ ResetButton:SetScript("OnClick", function()
 end)
 
 local function newCheckbox(name, caption, config)
-    local cb = CreateFrame("CheckButton", "$parent"..name, OptionsPanel, "InterfaceOptionsCheckButtonTemplate")
+    local cb = CreateFrame("CheckButton", "$parent"..name, OptionsPanel, dragonflight and "UICheckButtonTemplate" or "OptionsCheckButtonTemplate")
     _G[cb:GetName().."Text"]:SetText(caption and caption or name)
 	
     cb:SetScript("OnClick", function(self)
@@ -207,4 +209,5 @@ OptionsPanel.okay = function()
 	--no need to update watch frame if no quests are being watched
 end
 
-InterfaceOptions_AddCategory(OptionsPanel)
+--[[ REGISTERING PANEL ]]--
+InterfaceOptions_AddCategory(AutoTurnIn.OptionsPanel, true)

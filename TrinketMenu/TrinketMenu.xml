@@ -10,7 +10,7 @@
 	<CheckButton name = "TrinketMenuMainTrinketTemplate" inherits = "ActionButtonTemplate,SecureActionButtonTemplate" virtual = "true">
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				self:RegisterForClicks("AnyUp", "AnyDown")
 				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 			</OnLoad>
 			<PostClick>

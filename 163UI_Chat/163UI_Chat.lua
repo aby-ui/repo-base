@@ -74,7 +74,7 @@ local function CreateResizeButton(cf)
     end)
 ]]
 end
-WithAllChatFrame(CreateResizeButton);
+--WithAllChatFrame(CreateResizeButton); --TODO:abyui10
 
 --[[------------------------------------------------------------
 鼠标滚轮增强

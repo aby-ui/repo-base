@@ -375,6 +375,7 @@ function templates.CreateActionButton(key, category, title, duration, ...)
 	end
 
 	local button = CreateFrame("Button", addon.frame:GetName().."Button"..key, addon.frame, "SecureActionButtonTemplate,SecureHandlerMouseWheelTemplate,SecureHandlerStateTemplate,SecureHandlerShowHideTemplate,SecureActionButtonTemplate,SecureHandlerMouseUpDownTemplate")
+	button:RegisterForClicks("AnyDown", "AnyUp")
 	button.key, button.category, button.title = key, category, title
 	button.duration = type(duration) == "number" and duration > 0 and duration or nil
 	button.triggerdList = {}
@@ -643,7 +644,7 @@ local function Button_OnTooltipRightText(self, tooltip, _, spell)
 end
 
 templates.RegisterTemplate("DUAL", function(button)
-	button:RegisterForClicks("LeftButtonUp", "RightButtonUp", 'MiddleButtonUp')
+	button:RegisterForClicks("AnyUp", "AnyDown")
 	button.OnTooltipRightText = Button_OnTooltipRightText
 end)
 

@@ -27,6 +27,9 @@ local error, type = error, type
 -- @ Skins\Default
 local Default = Core.DEFAULT_SKIN.Backdrop
 
+-- @ Skins\Regions
+local EmptyTypes = Core.EmptyTypes
+
 -- @ Core\Utility
 local GetColor, GetSize, GetTexCoords = Core.GetColor, Core.GetSize, Core.GetTexCoords
 local GetTypeSkin, SetPoints = Core.GetTypeSkin, Core.SetPoints
@@ -144,9 +147,10 @@ end
 
 -- Add or removes a 'Backdrop' region.
 function Core.SkinBackdrop(Enabled, Region, Button, Skin, Color, xScale, yScale)
-	Skin = GetTypeSkin(Button, Button.__MSQ_bType, Skin)
+	local bType = Button.__MSQ_bType
+	Skin = GetTypeSkin(Button, bType, Skin)
 
-	if Enabled and not Skin.Hide then
+	if Enabled and not Skin.Hide and EmptyTypes[bType] then
 		AddBackdrop(Region, Button, Skin, Color, xScale, yScale)
 	else
 		RemoveBackdrop(Region, Button)

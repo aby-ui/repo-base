@@ -6698,8 +6698,15 @@ end
 --]=]
 
 detailsFramework.StatusBarFunctions = {
-	SetTexture = function(self, texture)
+	SetTexture = function(self, texture, isTemporary)
 		self.barTexture:SetTexture(texture)
+		if (not isTemporary) then
+			self.barTexture.currentTexture = texture
+		end
+	end,
+
+	ResetTexture = function(self)
+		self.barTexture:SetTexture(self.barTexture.currentTexture)
 	end,
 
 	GetTexture = function(self)
@@ -7285,6 +7292,7 @@ function detailsFramework:CreateHealthBar (parent, name, settingsOverride)
 	detailsFramework:Mixin(healthBar, detailsFramework.StatusBarFunctions)
 
 	healthBar:CreateTextureMask()
+	healthBar:SetTexture([[Interface\WorldStateFrame\WORLDSTATEFINALSCORE-HIGHLIGHT]])
 
 	--settings and hooks
 	local settings = detailsFramework.table.copy({}, healthBarMetaFunctions.Settings)
@@ -7549,6 +7557,7 @@ function detailsFramework:CreatePowerBar(parent, name, settingsOverride)
 	detailsFramework:Mixin(powerBar, detailsFramework.StatusBarFunctions)
 
 	powerBar:CreateTextureMask()
+	powerBar:SetTexture([[Interface\WorldStateFrame\WORLDSTATEFINALSCORE-HIGHLIGHT]])
 
 	--settings and hooks
 	local settings = detailsFramework.table.copy({}, detailsFramework.PowerFrameFunctions.Settings)
@@ -8570,6 +8579,8 @@ function detailsFramework:CreateCastBar(parent, name, settingsOverride)
 	castBar:AddMaskTexture(castBar.flashTexture)
 	castBar:AddMaskTexture(castBar.background)
 	castBar:AddMaskTexture(castBar.extraBackground)
+
+	castBar:SetTexture([[Interface\WorldStateFrame\WORLDSTATEFINALSCORE-HIGHLIGHT]])
 
 	--settings and hooks
 	local settings = detailsFramework.table.copy({}, detailsFramework.CastFrameFunctions.Settings)

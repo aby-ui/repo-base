@@ -8,6 +8,10 @@
 	local isTBC = DetailsFramework.IsTBCWow()
 	local isWOTLK = DetailsFramework.IsWotLKWow()
 
+	Details.UnregisteredTokens = {}
+	Details.IgnoredDamageEvents = {}
+	Details.RogueRaceCache = {}
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
 
@@ -26,7 +30,6 @@
 	local bitBand = bit.band
 	local floor = math.floor
 	local ipairs = ipairs
-	local pairs = pairs
 	local type = type
 	local ceil = math.ceil
 	local wipe = table.wipe
@@ -430,7 +433,6 @@
 		local is_using_spellId_override = false
 
 	--is this a timewalking exp?
-		local is_classic_exp = DetailsFramework.IsClassicWow()
 		local is_timewalk_exp = DetailsFramework.IsTimewalkWoW()
 
 	--recording data options flags
@@ -576,13 +578,17 @@
 		local hitLine = self.HitBy or "|cFFFFBB00First Hit|r: *?*"
 		local targetLine = ""
 
-		for i = 1, 5 do
-			local boss = UnitExists("boss" .. i)
-			if (boss) then
-				local target = UnitName ("boss" .. i .. "target")
-				if (target and type(target) == "string") then
-					targetLine = " |cFFFFBB00Boss First Target|r: " .. target
-					break
+		if (Details.bossTargetAtPull) then
+			targetLine = " |cFFFFBB00Boss First Target|r: " .. Details.bossTargetAtPull
+		else
+			for i = 1, 5 do
+				local boss = UnitExists("boss" .. i)
+				if (boss) then
+					local target = UnitName ("boss" .. i .. "target")
+					if (target and type(target) == "string") then
+						targetLine = " |cFFFFBB00Boss First Target|r: " .. target
+						break
+					end
 				end
 			end
 		end
@@ -655,12 +661,14 @@
 		if (who_serial == "") then
 			if (who_flags and bitBand(who_flags, OBJECT_TYPE_PETS) ~= 0) then --� um pet
 				--pets must have a serial
+				Details.IgnoredDamageEvents[#Details.IgnoredDamageEvents+1] = {"INVALID SERIAL", token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected}
 				return
 			end
 		end
 
 		if (not alvo_name) then
 			--no target name, just quit
+			Details.IgnoredDamageEvents[#Details.IgnoredDamageEvents+1] = {"INVALID TARGET", token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected}
 			return
 
 		elseif (not who_name) then
@@ -672,19 +680,15 @@
 
 		--check if the spell isn't in the backlist
 		if (damage_spells_to_ignore[spellid]) then
+			Details.IgnoredDamageEvents[#Details.IgnoredDamageEvents+1] = {"SPELL IGNORED", token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spelltype, amount, overkill, school, resisted, blocked, absorbed, critical, glacing, crushing, isoffhand, isreflected}
 			return
 		end
 
-		if (is_classic_exp) then
-			spellid = spellname
-
-		else --retail
-			--REMOVE ON 10.0
-			if (spellid == SPELLID_KYRIAN_DRUID_DAMAGE) then
-				local ownerTable = druid_kyrian_bounds[who_name]
-				if (ownerTable) then
-					who_serial, who_name, who_flags = unpack(ownerTable)
-				end
+		--REMOVE ON 10.0
+		if (spellid == SPELLID_KYRIAN_DRUID_DAMAGE) then
+			local ownerTable = druid_kyrian_bounds[who_name]
+			if (ownerTable) then
+				who_serial, who_name, who_flags = unpack(ownerTable)
 			end
 		end
 
@@ -770,11 +774,6 @@
 						alvo_flags = 0xa48
 					end
 				end
-			end
-
-			--Jailer
-			if (_current_encounter_id == 2537) then
-
 			end
 
 		--npcId check for ignored npcs
@@ -952,7 +951,7 @@
 						_detalhes.WhoAggroTimer:Cancel()
 					end
 
-					_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.5, who_aggro)
+					_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.1, who_aggro)
 					_detalhes.WhoAggroTimer.HitBy = "|cFFFFFF00First Hit|r: " .. (link or "") .. " from " .. (who_name or "Unknown")
 				end
 
@@ -2167,10 +2166,6 @@
 		--check for banned spells
 		if (banned_healing_spells[spellid]) then
 			return
-		end
-
-		if (is_classic_exp) then
-			spellid = spellname
 		end
 
 		--spirit link toten
@@ -4943,10 +4938,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		if (zoneType == "party" or zoneType == "raid") then
 			_is_in_instance = true
 
-			if (DetailsFramework.IsDragonflight()) then
-				Details:Msg("friendly reminder to enabled combat logs (/combatlog) if you're recording them (Dragonflight Beta).")
-				Details:Msg("and if you wanna help, you may post them on Details! discord as well.")
-			end
+			--if (DetailsFramework.IsDragonflight()) then
+			--	Details:Msg("friendly reminder to enabled combat logs (/combatlog) if you're recording them (Dragonflight Beta).")
+			--	Details:Msg("and if you wanna help, you may post them on Details! discord as well.")
+			--end
 		end
 
 		if (_detalhes.last_zone_type ~= zoneType) then
@@ -5234,6 +5229,15 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	end
 
 	function _detalhes.parser_functions:PLAYER_REGEN_DISABLED(...)
+		C_Timer.After(0, function()
+			if (UnitExists("boss1")) then
+				local bossTarget = UnitName("boss1target")
+				Details.bossTargetAtPull = bossTarget
+			else
+				Details.bossTargetAtPull = nil
+			end
+		end)
+
 		if (_detalhes.zone_type == "pvp" and not _detalhes.use_battleground_server_parser) then
 			if (_in_combat) then
 				_detalhes:SairDoCombate()
@@ -5832,10 +5836,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	saver:SetScript("OnEvent", function(...)
 		--save the time played on this class, run protected
 		pcall(function()
-			local className = select(2, UnitClass("player"))
-			if (className) then
-				Details.class_time_played[className] = (Details.class_time_played[className] or 0) + GetTime() - Details.GetStartupTime()
-			end
+			Details.SavePlayTimeOnClass()
 		end)
 
 		local currentStep = 0
@@ -5923,14 +5924,14 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	end)
 
 	-- ~parserstart ~startparser ~cleu
-
-	function _detalhes.OnParserEvent()
+	function _detalhes.OnParserEvent(...)
 		local time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12 = CombatLogGetCurrentEventInfo()
 
 		local func = token_list[token]
 		if (func) then
 			return func(nil, token, time, who_serial, who_name, who_flags, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)
 		else
+			Details.UnregisteredTokens[token] = {time, token, hidding, who_serial, who_name, who_flags, who_flags2, target_serial, target_name, target_flags, target_flags2, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12}
 			return
 		end
 	end
@@ -6074,6 +6075,12 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 				if (auto_regen_power_specs[_detalhes.cached_specs[UnitGUID("raid" .. i)]]) then
 					auto_regen_cache[name] = auto_regen_power_specs[_detalhes.cached_specs[UnitGUID("raid" .. i)]]
+				end
+
+				local _, class = UnitClass("raid"..i)
+				if (class == "ROGUE") then
+					local _, race = UnitRace("raid"..i)
+					Details.RogueRaceCache[name] = race
 				end
 			end
 

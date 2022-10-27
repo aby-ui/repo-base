@@ -355,7 +355,7 @@ local flags = {
 	HasDynamicSize = true
 }
 
-local events = {"ShouldQueryAuras", "CareAboutThisAura", "FetchAllAuras", "BeforeFullAuraUpdate", "UnitAura", "AfterFullAuraUpdate", "UnitDied"}
+local events = {"ShouldQueryAuras", "CareAboutThisAura", "BeforeFullAuraUpdate", "NewAura", "AfterFullAuraUpdate", "UnitDied"}
 
 local nonPriorityBuffs = BattleGroundEnemies:NewButtonModule({
 	moduleName = "NonPriorityBuffs",
@@ -597,7 +597,7 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 		end
 	end
 
-	function auraContainer:UnitAura(unitID, filter, aura)
+	function auraContainer:NewAura(unitID, filter, aura)
 		if not (filter == self.filter) then return end
 		-- only used to gather new auras for the testmode and for testing :)
 		-- if true then

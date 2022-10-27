@@ -80,7 +80,7 @@ local format_for_taxy_nozoom_tracked = function(button, isOnlyTracked)
 	if (isOnlyTracked) then
 		button:SetScale (WorldQuestTracker.db.profile.taxy_tracked_scale * 1.4)
 	else
-		button:SetScale (WorldQuestTracker.db.profile.taxy_tracked_scale)
+		button:SetScale (WorldQuestTracker.db.profile.taxy_tracked_scale * 1.2)
 	end
 	
 	button:SetWidth (20)

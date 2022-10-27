@@ -268,7 +268,7 @@ function Trinket:CreateFrame(unit)
 
 	-- secure
 	local secure = CreateFrame("Button", "Gladius"..self.name.."SecureButton"..unit, button, "SecureActionButtonTemplate")
-	secure:RegisterForClicks("AnyUp")
+	secure:RegisterForClicks("AnyUp", "AnyDown")
 	self.frame[unit].secure = secure
 end
 

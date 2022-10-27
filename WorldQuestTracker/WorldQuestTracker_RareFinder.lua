@@ -105,9 +105,11 @@ function rf.SendRareList (channel)
 	if (type (channel) == "table") then
 		channel = "GUILD"
 	else
-		channel = channel or "GUILD"
+		if (type(channel) ~= "string") then
+			channel = "GUILD"
+		end
 	end
-	
+
 	--> make sure the player is in a local group
 	if (channel == "PARTY") then
 		if (not IsInGroup (LE_PARTY_CATEGORY_HOME)) then
@@ -139,7 +141,9 @@ function rf.SendRareList (channel)
 		end
 	end
 	
-	local data = LibStub ("AceSerializer-3.0"):Serialize ({rf.COMM_IDS.RARE_LIST, UnitName ("player"), listToSend, channel})
+	--print(rf.COMM_IDS.RARE_LIST, UnitName ("player"), listToSend, channel)
+	--print(type(rf.COMM_IDS.RARE_LIST), type(UnitName("player")), type(listToSend), type(channel))
+	local data = LibStub ("AceSerializer-3.0"):Serialize ({rf.COMM_IDS.RARE_LIST, UnitName("player"), listToSend, channel})
 	WorldQuestTracker:SendCommMessage (WorldQuestTracker.COMM_PREFIX, data, channel)
 	rf.FullRareListSendCooldown = time()
 	WorldQuestTracker.Debug ("SendRareList () > sent list of rares > COMM_IDS.RARE_LIST on channel " .. (channel or "invalid channel"))

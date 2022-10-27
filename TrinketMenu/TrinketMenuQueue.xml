@@ -864,11 +864,11 @@
 					</OnShow>
 				</Scripts>
 			</Frame>
-			<Scripts>
-				<OnLoad>
-					self:OnBackdropLoaded()
-				</OnLoad>
-			</Scripts>
 		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:OnBackdropLoaded()
+			</OnLoad>
+		</Scripts>
 	</Frame>
 </Ui>

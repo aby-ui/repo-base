@@ -22,7 +22,7 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("AnyUp")
+				self:RegisterForClicks("AnyUp", "AnyDown")
 			</OnLoad>
 			<OnEnter>
 				Wholly:ButtonEnter(self)

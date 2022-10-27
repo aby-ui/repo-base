@@ -94,7 +94,8 @@ local function CreateToolButton(id)
 
     local icon = button:CreateTexture(button:GetName().."Icon", "ARTWORK")
     button.icon = icon
-    button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    button:RegisterForClicks("AnyUp", "AnyDown")
+
 
     button:RegisterForDrag("LeftButton")
 

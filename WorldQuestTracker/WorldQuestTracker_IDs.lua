@@ -50,6 +50,14 @@ WorldQuestTracker.MapData.ZoneIDs = {
 	--Main Hub
 		AZEROTH =		947,
 
+	--Dragonflight
+		DRAGONISLES = 	1978,
+		AZURESSPAN = 	2024,
+		THALDRASZUS = 	2025,
+		OHNAHRANPLAINS = 	2023,
+		WAKINGSHORES = 	2022,
+		FORBIDDENREACH =	2026,
+
 	--Shadowlands
 		MALDRAXXUS =	1536,
 		BASTION = 		1533,
@@ -97,6 +105,13 @@ local zoneQuests = WorldQuestTracker.MapData.ZoneIDs
 
 --all zones with world quests
 WorldQuestTracker.MapData.WorldQuestZones = {
+	--Dragonflight
+		[zoneQuests.AZURESSPAN] = 	true,
+		[zoneQuests.THALDRASZUS] = 	true,
+		[zoneQuests.OHNAHRANPLAINS] = 	true,
+		[zoneQuests.WAKINGSHORES] = 	true,
+		[zoneQuests.FORBIDDENREACH] = 	true,
+
 	--Shadowlands
 		[zoneQuests.MALDRAXXUS] =	true,
 		[zoneQuests.BASTION] = 		true,
@@ -146,6 +161,7 @@ WorldQuestTracker.MapData.WorldQuestZones = {
 
 --quest hub by expansion
 WorldQuestTracker.MapData.ExpMaps = {
+	[zoneQuests.DRAGONISLES] = 10,
 	[zoneQuests.THESHADOWLANDS] = 9,
 	[zoneQuests.ZANDALAR] = 8,
 	[zoneQuests.KULTIRAS] = 8,
@@ -155,6 +171,7 @@ WorldQuestTracker.MapData.ExpMaps = {
 
 --list of map ids for world quest hubs
 WorldQuestTracker.MapData.QuestHubs = {
+	[zoneQuests.DRAGONISLES] = true, --dragon isles hub
 	[zoneQuests.THESHADOWLANDS] = true, --shadowlands hub
 	[zoneQuests.BROKENISLES] = true, --dalaran (~rev)
 	[zoneQuests.ARGUS] = true, --argus (~rev)
@@ -165,6 +182,58 @@ WorldQuestTracker.MapData.QuestHubs = {
 
 --world map anchors
 WorldQuestTracker.mapTables = {
+	--Dragon Isles (Dragonflight)
+
+		[zoneQuests.AZURESSPAN] = 		{
+			widgets = {},
+			Anchor_X = 0.995,
+			Anchor_Y = 0.68,
+			GrowRight = false,
+			show_on_map = {
+				[zoneQuests.DRAGONISLES] = true,
+			},
+		},
+
+		[zoneQuests.THALDRASZUS] = 		{
+			widgets = {},
+			Anchor_X = 0.995,
+			Anchor_Y = 0.48,
+			GrowRight = false,
+			show_on_map = {
+				[zoneQuests.DRAGONISLES] = true,
+			},
+		},
+
+		[zoneQuests.OHNAHRANPLAINS] = 		{
+			widgets = {},
+			Anchor_X = 0.002,
+			Anchor_Y = 0.48,
+			GrowRight = true,
+			show_on_map = {
+				[zoneQuests.DRAGONISLES] = true,
+			},
+		},
+
+		[zoneQuests.WAKINGSHORES] = 		{
+			widgets = {},
+			Anchor_X = 0.002,
+			Anchor_Y = 0.28,
+			GrowRight = true,
+			show_on_map = {
+				[zoneQuests.DRAGONISLES] = true,
+			},
+		},
+
+		[zoneQuests.FORBIDDENREACH] = 		{
+			widgets = {},
+			Anchor_X = 0.6,
+			Anchor_Y = 0.05,
+			GrowRight = false,
+			show_on_map = {
+				[zoneQuests.DRAGONISLES] = true,
+			},
+		},
+
 	--Shadowlands
 
 		[zoneQuests.ZERETH] = 		{
@@ -494,6 +563,7 @@ WorldQuestTracker.MapData.EquipmentIcons = {
 }
 
 WorldQuestTracker.MapData.ItemIcons = {
+	["DRAGONFLIGHT_ARTIFACT"] = "",
 	["LEGION_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifactpower_redT]],
 	["BFA_RESOURCE"] = [[Interface\AddOns\WorldQuestTracker\media\icon_resource]],
 	["BFA_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power]],
@@ -501,6 +571,7 @@ WorldQuestTracker.MapData.ItemIcons = {
 }
 
 WorldQuestTracker.MapData.ArtifactPowerSummaryIcons = {
+	["DRAGONFLIGHT_ARTIFACT"] = "",
 	["LEGION_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power_legion]],
 	["BFA_RESOURCE"] = [[Interface\AddOns\WorldQuestTracker\media\icon_resource]],
 	["BFA_ARTIFACT"] = [[Interface\AddOns\WorldQuestTracker\media\icon_artifact_power_bfa]],
@@ -508,6 +579,7 @@ WorldQuestTracker.MapData.ArtifactPowerSummaryIcons = {
 }
 
 WorldQuestTracker.MapData.ResourceIcons = {
+	--dragonflight tbd
 	[2032600] = true, --war resources BFA
 	[WorldQuestTracker.MapData.ItemIcons ["BFA_RESOURCE"]] = true, --custom icon for the BFA war resource
 	[1397630] = true, --order resources LEGION
@@ -516,51 +588,81 @@ WorldQuestTracker.MapData.ResourceIcons = {
 --which faction set to be used by the map id
 --this table isn't being in use at the moment
 WorldQuestTracker.MapData.FactionByMapID = { --not in use
-	[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = "BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = "BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.AZEROTH] = "BFA",
+	[zoneQuests.ZANDALAR] = "BFA",
+	[zoneQuests.KULTIRAS] = "BFA",
+	[zoneQuests.AZEROTH] = "BFA",
 
 	[619] = "LEGION", --brosken isles map
 	[905] = "LEGION", --argus map
 
-	[WorldQuestTracker.MapData.ZoneIDs.ZULDAZAAR] = 	"BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.NAZMIR] = 		"BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.VOLDUN] = 		"BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = 	"BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = 	"BFA",
-	[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 		"BFA",
+	[zoneQuests.ZULDAZAAR] = 	"BFA",
+	[zoneQuests.NAZMIR] = 		"BFA",
+	[zoneQuests.VOLDUN] = 		"BFA",
+	[zoneQuests.TIRAGARDE] = 	"BFA",
+	[zoneQuests.STORMSONG] = 	"BFA",
+	[zoneQuests.DRUSTVAR] = 	"BFA",
 }
 
 --start of factions
 
 -- texture ID of the reward when the world quest reward is a faction rep token
 WorldQuestTracker.MapData.ReputationIcons = {
-	[2032597] = true, --Talanji's Expedition BFA
-	[2032601] = true, --Zandalari Empire BFA
-	[2032599] = true, --Voldunai BFA
-	[2032593] = true, --Honorbound BFA
-	
-	[2032598] = true, --Tortollan Seekers BFA
-	[2032592] = true, --Champions of Azreroth BFA
+	--Dragonflight
+	[4687627] = true, --Maruuk Centaur
+	[4687628] = true, --Dragonscale Expedition
+	[4687630] = true, --Valdrakken Accord
+	[4687629] = true, --Iskaara Tuskarr
 
-	[2032596] = true, --Storm's Wake BFA
-	[2032594] = true, --Order of Embers BFA
-	[2032595] = true, --Proudmoore BFA
+	--Shadowlands
+	[3257748] = true, --Ascended
+	[3575389] = true, --Wild Hunt
+	[3492310] = true, --Undying Army
+	[3514227] = true, --Court of Harvesters
+	[4226232] = true, --The Enlightened
+
+	--BFA
+	[2032597] = true, --Talanji's Expedition
+	[2032601] = true, --Zandalari Empire
+	[2032599] = true, --Voldunai
+	[2032593] = true, --Honorbound
+
+	[2032598] = true, --Tortollan Seekers
+	[2032592] = true, --Champions of Azreroth
+
+	[2032596] = true, --Storm's Wake
+	[2032594] = true, --Order of Embers
+	[2032595] = true, --Proudmoore
 	[2032591] = true, --7th Legion
 
 	--[0] = true, --Rustbolt Resistance | 8.2
 	--[0] = true, --The Unshackled | 8.2
 	--[0] = true, --Rajani | 8.3
 	--[0] = true, --Uldum Accord | 8.3
-
-	[3257748] = true, --Ascended
-	[3575389] = true, --Wild Hunt
-	[3492310] = true, --Undying Army
-	[3514227] = true, --Court of Harvesters
-	[4226232] = true, --The Enlightened
 }
 
 WorldQuestTracker.MapData.AllFactionIds = {
+	--Dragonflight Factions
+	[2503] = true, --Maruuk Centaur
+	--[2506] = true, --Dragonflight
+	[2507] = true, --Dragonscale Expedition
+	[2510] = true, --Valdrakken Accord
+	[2511] = true, --Iskaara Tuskarr
+	--[2514] = true, --Primalists
+	--[2516] = true, --Djaradin
+	--[2517] = true, --Wrathion
+	--[2518] = true, --Sabellian
+	--[2519] = true, --Reclaimers
+	--[2523] = true, --Dark Talons
+	--[2524] = true, --Obsidian Warders
+	--[2525] = true, --Elemental, Fire
+	--[2526] = true, --Winterpelt Furbolg
+	--[2544] = true, --Artisan's Consortium - Dragon Isles Branch
+	--[2545] = true, --Maruuk Centaur (Renown)
+	--[2548] = true, --Valdrakken Accord (Renown)
+	--[2550] = true, --Cobalt Assembly
+	--[2553] = true, --Timewalkers
+
+
 	--Shadowlands Factions
 	[2410] = true, --The Undying Army
 	[2407] = true, --The Ascended
@@ -599,7 +701,14 @@ WorldQuestTracker.MapData.AllFactionIds = {
 	[1948] = true, --Valarjar
 }
 
+
 WorldQuestTracker.MapData.FactionMapId = {
+	--Dragonflight
+	[2503] = zoneQuests.OHNAHRANPLAINS, --Maruuk Centaur
+	[2507] = zoneQuests.WAKINGSHORES, --Dragonscale Expedition
+	[2510] = zoneQuests.THALDRASZUS, --Valdrakken Accord
+	[2511] = zoneQuests.AZURESSPAN, --Iskaara Tuskarr
+
 	--Shadowlands
 	[2410] = 1536, --The Undying Army | MALDRAXXUS
 	[2407] = 1533, --The Ascended | BASTION
@@ -611,6 +720,12 @@ WorldQuestTracker.MapData.FactionMapId = {
 }
 
 WorldQuestTracker.MapData.FactionIcons = {
+	--Dragonflight
+	[2503] = 4687627, --Maruuk Centaur
+	[2507] = 4687628, --Dragonscale Expedition
+	[2510] = 4687630, --Valdrakken Accord
+	[2511] = 4687629, --Iskaara Tuskarr
+
 	--Shadowlands
 	[2410] = 3492310, --The Undying Army
 	[2407] = 3257748, --The Ascended
@@ -648,6 +763,13 @@ WorldQuestTracker.MapData.FactionIcons = {
 	[1894] = "Interface\\ICONS\\INV_Legion_Faction_Warden", --The Wardens
 	[1948] = "Interface\\ICONS\\INV_Legion_Faction_Valarjar", --Valarjar
 --	/run for i =1, 3000 do local N={GetFactionInfoByID(i)}if(N[1])then print(N[1].." "..N[14])end end
+}
+
+local DragonflightFactions = {
+	[2503] = true, --Maruuk Centaur
+	[2507] = true, --Dragonscale Expedition
+	[2510] = true, --Valdrakken Accord
+	[2511] = true, --Iskaara Tuskarr
 }
 
 local ShadowlandsFactions = {
@@ -706,26 +828,35 @@ local LegionFactions = {
 --what are the factionIds belong to the map
 WorldQuestTracker.MapData.ReputationByMap = {
 	--world maps
-	[WorldQuestTracker.MapData.ZoneIDs.BROKENISLES] = LegionFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.ARGUS] = LegionFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.KULTIRAS] = BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.ZANDALAR] = BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.AZEROTH] = BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.THESHADOWLANDS] = ShadowlandsFactions,
+		[zoneQuests.DRAGONISLES] = DragonflightFactions,
+		[zoneQuests.THESHADOWLANDS] = ShadowlandsFactions,
+		[zoneQuests.KULTIRAS] = BFAFactions,
+		[zoneQuests.ZANDALAR] = BFAFactions,
+		[zoneQuests.AZEROTH] = BFAFactions,
+		[zoneQuests.BROKENISLES] = LegionFactions,
+		[zoneQuests.ARGUS] = LegionFactions,
 
 	--zones
-	[WorldQuestTracker.MapData.ZoneIDs.ZULDAZAAR] = 	BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.NAZMIR] = 		BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.VOLDUN] = 		BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.TIRAGARDE] = 	BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.STORMSONG] = 	BFAFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.DRUSTVAR] = 		BFAFactions,
+		--Dragonflight
+		[zoneQuests.OHNAHRANPLAINS] = DragonflightFactions,
+		[zoneQuests.WAKINGSHORES] = DragonflightFactions,
+		[zoneQuests.THALDRASZUS] = DragonflightFactions,
+		[zoneQuests.AZURESSPAN] = DragonflightFactions,
 
-	[WorldQuestTracker.MapData.ZoneIDs.BASTION] = 		ShadowlandsFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.MALDRAXXUS] = 	ShadowlandsFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.ARDENWEALD] = 	ShadowlandsFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.REVENDRETH] = 	ShadowlandsFactions,
-	[WorldQuestTracker.MapData.ZoneIDs.ZERETH] = 		ShadowlandsFactions,
+		--Shadowlands
+		[zoneQuests.BASTION] = 		ShadowlandsFactions,
+		[zoneQuests.MALDRAXXUS] = 	ShadowlandsFactions,
+		[zoneQuests.ARDENWEALD] = 	ShadowlandsFactions,
+		[zoneQuests.REVENDRETH] = 	ShadowlandsFactions,
+		[zoneQuests.ZERETH] = 		ShadowlandsFactions,
+
+		--BFA
+		[zoneQuests.ZULDAZAAR] = 	BFAFactions,
+		[zoneQuests.NAZMIR] = 		BFAFactions,
+		[zoneQuests.VOLDUN] = 		BFAFactions,
+		[zoneQuests.TIRAGARDE] = 	BFAFactions,
+		[zoneQuests.STORMSONG] = 	BFAFactions,
+		[zoneQuests.DRUSTVAR] = 		BFAFactions,
 }
 
 function WorldQuestTracker.GetFactionsAllowedOnMap(mapId)
@@ -748,6 +879,12 @@ end
 --/run for i = 1, 5000 do local name = GetFactionInfoByID (i) if(name)then print (i,name) end end
 WorldQuestTracker.MapData.ReputationByFaction = {
 	["Alliance"] = {
+		--Dragonflight
+		[2503] = GetFactionInfoByID(2503), --Maruuk Centaur
+		[2507] = GetFactionInfoByID(2507), --Dragonscale Expedition
+		[2510] = GetFactionInfoByID(2510), --Valdrakken Accord
+		[2511] = GetFactionInfoByID(2511), --Iskaara Tuskarr
+
 		--Shadowlands
 		[2410] = GetFactionInfoByID(2410), --The Undying Army
 		[2407] = GetFactionInfoByID(2407), --The Ascended
@@ -799,6 +936,12 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 	--Legion
 
 	["Horde"] = {
+		--Dragonflight
+		[2503] = GetFactionInfoByID(2503), --Maruuk Centaur
+		[2507] = GetFactionInfoByID(2507), --Dragonscale Expedition
+		[2510] = GetFactionInfoByID(2510), --Valdrakken Accord
+		[2511] = GetFactionInfoByID(2511), --Iskaara Tuskarr
+
 		--Shadowlands
 		[2410] = GetFactionInfoByID(2410), --The Undying Army
 		[2407] = GetFactionInfoByID(2407), --The Ascended
@@ -808,7 +951,7 @@ WorldQuestTracker.MapData.ReputationByFaction = {
 		[2472] = GetFactionInfoByID(2472), --The Archivists' Codex
 		[2432] = GetFactionInfoByID(2432), --Ve'nari
 		[2478] = GetFactionInfoByID(2478), --The Enlightened
-		
+
 		--BFA
 		[2103] = GetFactionInfoByID (2103), --Zandalari Empire
 		[2156] = GetFactionInfoByID (2156), --Talanji's Expedition

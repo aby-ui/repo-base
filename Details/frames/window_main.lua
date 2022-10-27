@@ -2057,6 +2057,7 @@ function Details:HandleTextsOnMouseClick(row, type)
 end
 
 local setBarValue = function(self, value)
+	value = Clamp(value, 0, 100)
 	self.statusbar:SetValue(value)
 	self.statusbar.value = value
 	if (self.using_upper_3dmodels) then

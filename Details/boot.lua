@@ -6,8 +6,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10144
-		_detalhes.alpha_build_counter = 10144 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10205
+		_detalhes.alpha_build_counter = 10205 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -995,7 +995,7 @@ do
 			end
 		end
 
-		function dumpt(value)
+		function dumpt(value) --[[GLOBAL]]
 			return Details:Dump(value)
 		end
 
@@ -1061,7 +1061,7 @@ do
 		Details.failed_to_load = C_Timer.NewTimer(1, function() Details.Schedules.NewTimer(20, _detalhes.WelcomeMsgLogon) end)
 
 	--key binds
-	--[=[
+	--[=
 		--header
 			_G ["BINDING_HEADER_Details"] = "Details!"
 			_G ["BINDING_HEADER_DETAILS_KEYBIND_SEGMENTCONTROL"] = Loc ["STRING_KEYBIND_SEGMENTCONTROL"]

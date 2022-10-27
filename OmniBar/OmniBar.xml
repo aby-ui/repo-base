@@ -75,9 +75,7 @@
 			<AbsDimension x="36" y="36"/>
 		</Size>
 		<Anchors>
-			<Anchors>
-				<Anchor point="CENTER"/>
-			</Anchors>
+			<Anchor point="CENTER"/>
 		</Anchors>
 		<Animations>
 			<AnimationGroup parentKey="newitemglowAnim" setToFinalAlpha="true">

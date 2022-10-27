@@ -245,7 +245,7 @@ function ToyPlus:Broker(self)
 								local timeRem = ToyPlus:GetCooldown(start, duration)
 								if start == 0 or timeRem == "" then 
 									tooltip:SetCell(tRow, 1, "|T"..toyIcon..":20:20:0:0:64:64:5:59:5:59|t "..toyName)
-									tooltip:SetLineTextColor(tRow,1,1,0); toyBtn:RegisterForClicks("LeftButtonUp")
+									tooltip:SetLineTextColor(tRow,1,1,0); toyBtn:RegisterForClicks("AnyUp", "AnyDown")
 								else 
 									tooltip:SetCell(tRow, 1, "|T"..toyIcon..":20:20:0:0:64:64:5:59:5:59|t "..toyName.." ("..timeRem..")")
 									tooltip:SetLineTextColor(tRow,1,0,0); toyBtn:RegisterForClicks()

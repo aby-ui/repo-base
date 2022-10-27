@@ -328,7 +328,7 @@ function Details:StartMeUp() --I'll never stop!
 	--restore cooltip anchor position, this is for the custom anchor in the screen
 	DetailsTooltipAnchor:Restore()
 
-	--check is this is the first run
+	--check is this is the first run ever
 	if (self.is_first_run) then
 		if (#self.custom == 0) then
 			Details:AddDefaultCustomDisplays()

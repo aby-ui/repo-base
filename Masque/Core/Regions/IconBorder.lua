@@ -71,18 +71,21 @@ end
 
 -- Skins the 'IconBorder' region of a button.
 function Core.SkinIconBorder(Region, Button, Skin, xScale, yScale)
-	local Texture = Region.__MSQ_Texture or Region:GetTexture()
 	Skin = GetTypeSkin(Button, Button.__MSQ_bType, Skin)
+
+	local Texture = Region.__MSQ_Texture or Region:GetTexture()
+
+	if Texture ~= DEFAULT_TEXTURE and Texture ~= RELIC_TEXTURE then
+		Texture = DEFAULT_TEXTURE
+	end
+
+	Region.__MSQ_Texture = Texture
 
 	if Button.__MSQ_Enabled then
 		Region.__MSQ_Skin = Skin
-		Region.__MSQ_Texture = Texture
-
 		Hook_SetTexture(Region, Texture)
 	else
 		Region.__MSQ_Skin = nil
-		Region.__MSQ_Texture = nil
-
 		Region:SetTexture(Texture)
 	end
 

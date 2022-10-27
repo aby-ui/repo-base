@@ -1,4 +1,4 @@
-## Interface: 100002
+## Interface: 100000
 ## Title: Quest Announce
 ## Version: 10.0.0.2
 ## Author: Michael Irving (original), Sommy aka Gyffes(Gilneas) (WoW 2.4), Kotenuki aka Cinnabuns(Doomhammer) (WoW 4.0+)

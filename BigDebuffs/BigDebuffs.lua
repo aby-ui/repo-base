@@ -790,6 +790,7 @@ function BigDebuffs:AttachUnitFrame(unit)
     if InCombatLockdown() then return end
 
     local frame = self.UnitFrames[unit]
+    if not frame then return end --TODO:abyui10
     local frameName = addonName .. unit .. "UnitFrame"
 
     if not frame then

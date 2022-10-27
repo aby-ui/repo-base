@@ -212,7 +212,7 @@ function GMT:RemoveButton(Button)
 	if Button then
 		local Regions = self.Buttons[Button]
 
-		if Regions then
+		if Regions and not self.db.Disabled then
 			SkinButton(Button, Regions, false)
 		end
 

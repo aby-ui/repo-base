@@ -641,6 +641,7 @@ function TS.SetupColumns(f)
                     if not target then
                         target = CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
                         target.line = line
+                        target:RegisterForClicks("AnyUp", "AnyDown")
                         target:SetAttribute("type", "macro")
                         target:SetAttribute("ctrl-type1", "macro")
                         target:SetFrameStrata("HIGH")

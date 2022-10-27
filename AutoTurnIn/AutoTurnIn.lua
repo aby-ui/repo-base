@@ -11,6 +11,7 @@ local C = ptable.CONST
 local TOCVersion = GetAddOnMetadata(addonName, "Version")
 local Q_ALL, Q_DAILY, Q_EXCEPTDAILY = 1, 2, 3
 local questNPCName = nil
+local dragonflight = ptable.defaults.interface10
 
 
 AutoTurnIn = LibStub("AceAddon-3.0"):NewAddon("AutoTurnIn", "AceEvent-3.0", "AceConsole-3.0")
@@ -25,7 +26,6 @@ AutoTurnIn.questCache={}	-- daily quest cache. Initially is built from player's 
 AutoTurnIn.knownGossips={}
 AutoTurnIn.ERRORVALUE = nil
 AutoTurnIn.IgnoreButton = {["quest"] = nil, ["gossip"] = nil}
-
 
 function AutoTurnIn:LibDataStructure()
 -- see https://github.com/tekkub/libdatabroker-1-1/wiki/api
@@ -59,18 +59,20 @@ end
 function AutoTurnIn:ShowOptions()
 	-- too much things became tainted if called in combat.
 	if InCombatLockdown() then return end
-	if (InterfaceOptionsFrame:IsVisible() and InterfaceOptionsFrameAddOns.selection) then
-		if (InterfaceOptionsFrameAddOns.selection:GetName() == AutoTurnIn.OptionsPanel:GetName()) then --"AutoTurnInOptionsPanel"
-			InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.RewardPanel)
-		elseif (InterfaceOptionsFrameAddOns.selection:GetName() == AutoTurnIn.RewardPanel:GetName() ) then --"AutoTurnInRewardPanel"
-		-- it used to be a cancel. But BlizzardUI contains weird bug which taints all the interface if InterfaceOptionsFrameCancel:Click() called 
-			InterfaceOptionsFrameOkay:Click()
-		end
-	else
-		-- http://wowpedia.org/Patch_5.3.0/API_changes double call is a workaround
-		InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.OptionsPanel)
-		InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.OptionsPanel)
-	end
+	InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.OptionsPanel)
+
+	-- if (InterfaceOptionsFrame:IsVisible() and InterfaceOptionsFrameAddOns.selection) then
+	-- 	if (InterfaceOptionsFrameAddOns.selection:GetName() == AutoTurnIn.OptionsPanel:GetName()) then --"AutoTurnInOptionsPanel"
+	-- 		InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.RewardPanel)
+	-- 	elseif (InterfaceOptionsFrameAddOns.selection:GetName() == AutoTurnIn.RewardPanel:GetName() ) then --"AutoTurnInRewardPanel"
+	-- 	-- it used to be a cancel. But BlizzardUI contains weird bug which taints all the interface if InterfaceOptionsFrameCancel:Click() called 
+	-- 		InterfaceOptionsFrameOkay:Click()
+	-- 	end
+	-- else
+	-- 	-- http://wowpedia.org/Patch_5.3.0/API_changes double call is a workaround
+	-- 	InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.OptionsPanel)
+	-- 	InterfaceOptionsFrame_OpenToCategory(AutoTurnIn.OptionsPanel)
+	-- end
 end
 
 function AutoTurnIn:OnInitialize()
@@ -444,7 +446,7 @@ function AutoTurnIn:QUEST_DETAIL()
 		if self:AllowedToHandle() and self:isAppropriate() and (not AutoTurnInCharacterDB.completeonly) then
 			--ignore trivial quests 
 			if (not C_QuestLog.IsQuestTrivial(GetQuestID()) or AutoTurnInCharacterDB.trivial) then
-				QuestInfoDescriptionText:SetAlphaGradient(0, -1)
+				QuestInfoDescriptionText:SetAlphaGradient(0, 5000)
 				QuestInfoDescriptionText:SetAlpha(1)
 				AcceptQuest()
 				return
@@ -485,7 +487,7 @@ function AutoTurnIn:QUEST_ACCEPTED(event, index)
 end
 
 function AutoTurnIn:QUEST_PROGRESS()
-    if  self:AllowedToHandle() and IsQuestCompletable() and self:isAppropriate() then
+    if  (self:AllowedToHandle() and IsQuestCompletable() and (self:isAppropriate() or self:IsWantedQuest(GetQuestID()))) then
 		CompleteQuest()
     end
 end
@@ -967,7 +969,7 @@ function AutoTurnIn:ShowIgnoreButton(frame)
 	if GlobalFrame == nil then return end
 	
 	--reusing existing button
-	if (not self.IgnoreButton[frame]) then self.IgnoreButton[frame] = CreateFrame("CheckButton", "NPCIgnoreButton" .. frame, GlobalFrame, "OptionsCheckButtonTemplate") end
+	if (not self.IgnoreButton[frame]) then self.IgnoreButton[frame] = CreateFrame("CheckButton", "NPCIgnoreButton" .. frame, GlobalFrame, dragonflight and "UICheckButtonTemplate" or "OptionsCheckButtonTemplate") end
 	
 	local IgnoreButton = self.IgnoreButton[frame]
 	IgnoreButton:SetPoint("TOPLEFT", 57, 21)
@@ -988,6 +990,10 @@ function AutoTurnIn:ShowIgnoreButton(frame)
 	--button text on global form
 	questNPCName = UnitName("target")
 	_G[IgnoreButton:GetName().."Text"]:SetText((GetLocale()=="zhCN" and "自动交接: " or "AutoTurnIn: ") .. L["ignorenpc"])
+end
+
+function AutoTurnIn:IsWantedQuest(questId)
+       return not not ptable.defaults.WANTED_QUESTS[questId]
 end
 
 -- gossip and quest interaction goes through a sequence of windows: gossip [shows a list of available quests] - quest[describes specified quest]

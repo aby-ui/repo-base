@@ -1,9 +1,9 @@
 ## Interface: 100000
 ## Title: BattleGroundEnemies
-## Version: 9.2.7.2
+## Version: 10.0.0.0
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
-## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibPlayerSpells-1.0
+## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
 
 ## X-Curse-Project-ID: 274066
 ## X-Wago-ID: nQN5aoNB
@@ -27,6 +27,7 @@ ImportExport.lua
 Objects\ContainerTemplate.lua
 Objects\Auracontainer2.lua
 Objects\CastBar.lua
+Objects\CombatIndicator.lua
 Objects\Covenant.lua
 Objects\DR.lua
 Objects\HealthBar.lua

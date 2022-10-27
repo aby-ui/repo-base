@@ -555,7 +555,7 @@ end
             DF:SetFontSize(warning1, 14)
             local animationHub = DF:CreateAnimationHub(warning1)
             local anim1 = DF:CreateAnimation(animationHub, "rotation", 1, 0, 35)
-            anim1:SetEndDelay(math.huge)
+            anim1:SetEndDelay(10000000)
             anim1:SetSmoothProgress(1)
             animationHub:Play()
             animationHub:Pause()

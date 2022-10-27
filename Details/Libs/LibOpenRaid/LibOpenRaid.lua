@@ -68,7 +68,7 @@ if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not isExpansion_Dragonflight()) t
 end
 
 local major = "LibOpenRaid-1.0"
-local CONST_LIB_VERSION = 64
+local CONST_LIB_VERSION = 66
 LIB_OPEN_RAID_CAN_LOAD = false
 
 local unpack = table.unpack or _G.unpack
@@ -719,6 +719,13 @@ end
         eventFrame = CreateFrame("frame", "OpenRaidLibFrame", UIParent)
     end
 
+    local talentChangedCallback = function()
+        openRaidLib.internalCallback.TriggerEvent("talentUpdate")
+    end
+    local delayedTalentChange = function()
+        openRaidLib.Schedules.NewUniqueTimer(0.5 + math.random(), talentChangedCallback, "TalentChangeEventGroup", "talentChangedCallback_Schedule")
+    end
+
     local eventFunctions = {
         --check if the player joined a group
         ["GROUP_ROSTER_UPDATE"] = function()
@@ -807,9 +814,14 @@ end
             openRaidLib.internalCallback.TriggerEvent("onEnterWorld")
         end,
 
-        --["PLAYER_SPECIALIZATION_CHANGED"] = function(...) end, --on changing spec, the talent_update event is also triggered
+        ["PLAYER_SPECIALIZATION_CHANGED"] = function(...)
+            delayedTalentChange()
+        end,
         ["PLAYER_TALENT_UPDATE"] = function(...)
-            openRaidLib.internalCallback.TriggerEvent("talentUpdate")
+            delayedTalentChange()
+        end,
+        ["TRAIT_CONFIG_UPDATED"] = function(...)
+            delayedTalentChange()
         end,
 
         ["PLAYER_PVP_TALENT_UPDATE"] = function(...)
@@ -913,6 +925,7 @@ end
             eventFrame:RegisterEvent("CHALLENGE_MODE_START")
             eventFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
             --eventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+            eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
         end
     end
 

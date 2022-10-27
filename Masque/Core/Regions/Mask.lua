@@ -32,17 +32,21 @@ local GetSize, SetPoints = Core.GetSize, Core.SetPoints
 -- Skins a button or region mask.
 function Core.SkinMask(Region, Button, Skin, xScale, yScale)
 	local ButtonMask = Button.__MSQ_Mask or Button.IconMask
+	local CircleMask = Button.CircleMask
+
+	-- Disable the bag slot mask in 10.0 to enable custom masks.
+	if CircleMask then
+		local Icon = Button.icon
+
+		if Icon then
+			Icon:RemoveMaskTexture(CircleMask)
+		end
+
+		CircleMask:SetTexture()
+	end
 
 	-- Region
 	if Region then
-		local CircleMask = Button.CircleMask
-
-		-- Disable the bag mask in 10.0 so we can use our own.
-		if CircleMask and not Button.__MSQ_NoBagMask then
-			Region:RemoveMaskTexture(CircleMask)
-			Button.__MSQ_NoBagMask = true
-		end
-
 		local SkinMask = Skin.Mask
 
 		-- Button Mask

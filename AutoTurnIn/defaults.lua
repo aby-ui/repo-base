@@ -1,11 +1,12 @@
 local addonName, privateTable = ...
 
 privateTable.defaults = {
+	interface10 = select(4, GetBuildInfo()) >= 100000,
 	enabled = false, 
 	all = 1, 
 	trivial = false, 
 	completeonly = false,
-    lootreward = 1, 
+	lootreward = 1,
 	tournament = 2,
 	darkmoonteleport = true, 
 	todarkmoon = true, 
@@ -40,9 +41,19 @@ privateTable.defaults = {
         ["107486"] = "Chatty Rumormonger in Courtofstars",
         ["147297"] = "Zekhan",
         ["146012"] = "Zekhan",
-        ["143555"] = "éƒ¨è½ç¬”è®°",
-        ["154002"] = "æ–°ç”Ÿå®¶å›­", --æ€»æ˜¯è¦åˆå‰‚ä»€ä¹ˆçš„
-        ["162804"] = "å¨å¨œè‰",  --å¼ºåˆ¶äº¤800å†¥æ®‡
+        ["143555"] = "²¿Âä±Ê¼Ç",
+        ["154002"] = "ĞÂÉú¼ÒÔ°", --×ÜÊÇÒªºÏ¼ÁÊ²Ã´µÄ
+        ["162804"] = "ÍşÄÈÀò",  --Ç¿ÖÆ½»800Ú¤éä
+	},
+	WANTED_NPC = {
+		["167881"] = "Ta'lan the Antiquary",
+		["167880"] = "Finder Ta'sul",
+		["158653"] = "Prince Renethal",
+	},
+	WANTED_QUESTS = {
+		["6942"] = "Frostwolf Soldier's Medal",
+		["6943"] = "Frostwolf Commander's Medal",
+		["6941"] = "Frostwolf Lieutenant's Medal",
 	}
 }
 

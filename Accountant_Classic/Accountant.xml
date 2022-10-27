@@ -27,15 +27,6 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<Button name="$parentDelete" inherits="UIPanelButtonTemplate">
-					<Anchors>
-						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
-							<Offset>
-								<AbsDimension x="3" y="-4"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</Button>
 				<FontString name="$parentIn" inherits="GameFontHighlightSmall">
 					<Anchors>
 						<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
@@ -56,6 +47,17 @@
 				</FontString>
 			</Layer>
 		</Layers>
+		<Frames>
+			<Button name="$parentDelete" inherits="UIPanelButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="3" y="-4"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
 	</Frame>
 
 	<!-- Compact Money Frame

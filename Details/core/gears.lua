@@ -3015,10 +3015,36 @@ function Details.FillTableWithPlayerSpells(completeListOfSpells)
     end
 end
 
+function Details.SavePlayTimeOnClass()
+	local className = select(2, UnitClass("player"))
+	if (className) then
+		--played time by  expansion
+		local expansionLevel = GetExpansionLevel()
+
+		local expansionTable = Details.class_time_played[expansionLevel]
+		if (not expansionTable) then
+			expansionTable = {}
+			Details.class_time_played[expansionLevel] = expansionTable
+		end
+
+		local playedTime = expansionTable[className] or 0
+		expansionTable[className] = playedTime + GetTime() - Details.GetStartupTime()
+	end
+end
+
 function Details.GetPlayTimeOnClass()
 	local className = select(2, UnitClass("player"))
 	if (className) then
-		local playedTime = Details.class_time_played[className]
+		--played time by  expansion
+		local expansionLevel = GetExpansionLevel()
+
+		local expansionTable = Details.class_time_played[expansionLevel]
+		if (not expansionTable) then
+			expansionTable = {}
+			Details.class_time_played[expansionLevel] = expansionTable
+		end
+
+		local playedTime = expansionTable[className]
 		if (playedTime) then
 			playedTime = playedTime + (GetTime() - Details.GetStartupTime())
 			return playedTime
@@ -3047,8 +3073,14 @@ timePlayerFrame:SetScript("OnEvent", function()
 	--C_Timer.After(0, function() print(Details.GetPlayTimeOnClassString()) end)
 end)
 
+--game freeze prevention, there are people calling UpdateAddOnMemoryUsage() making the game client on the end user to freeze, this is bad, really bad.
+--Details! replace the function call with one that do the same thing, but warns the player if the function freezes the client too many times.
 local stutterCounter = 0
+local bigStutterCounter = 0
 local UpdateAddOnMemoryUsage_Original = _G.UpdateAddOnMemoryUsage
+Details.UpdateAddOnMemoryUsage_Original = _G.UpdateAddOnMemoryUsage
+
+--to ignore this, use /run _G["UpdateAddOnMemoryUsage"] = Details.UpdateAddOnMemoryUsage_Original or add to any script that run on login
 _G["UpdateAddOnMemoryUsage"] = function()
 	local currentTime = debugprofilestop()
 	UpdateAddOnMemoryUsage_Original()
@@ -3059,6 +3091,14 @@ _G["UpdateAddOnMemoryUsage"] = function()
 		--ignore if is coming from the micro menu tooltip
 		if (callStack:find("MainMenuBarPerformanceBarFrame_OnEnter")) then
 			return
+		end
+
+		if (deltaTime >= 500) then
+			bigStutterCounter = bigStutterCounter + 1
+			if (bigStutterCounter >= 6) then
+				Details:Msg("an addon made your game freeze for more than a half second, use '/details perf' to know more.")
+				bigStutterCounter = -10000 --make this msg appear only once
+			end
 		end
 
 		stutterCounter = stutterCounter + 1
@@ -3077,7 +3117,7 @@ _G["UpdateAddOnMemoryUsage"] = function()
 				stutterDegree = 3
 			end
 
-			stutterCounter = 0
+			stutterCounter = -10000  --make this msg appear only once
 		end
 
 		Details.performanceData = {
@@ -3105,10 +3145,17 @@ function Details:HandleRogueCombatSpecIconByGameVersion()
 		rogueCombatCoords[2] = 64 / 512
 		rogueCombatCoords[3] = 384 / 512
 		rogueCombatCoords[4] = 448 / 512
+
+		--new versions of the game has a different icon for assassination
+		local rogueAssassinationCoords = Details.class_specs_coords[259]
+		rogueAssassinationCoords[1] = 64 / 512
+		rogueAssassinationCoords[2] = 128 / 512
+		rogueAssassinationCoords[3] = 384 / 512
+		rogueAssassinationCoords[4] = 448 / 512
 	end
 end
 
-function CopyText(text)
+function CopyText(text) --[[GLOBAL]]
 	if (not Details.CopyTextField) then
 		Details.CopyTextField = CreateFrame("Frame", "DetailsCopyText", UIParent, "BackdropTemplate")
 		Details.CopyTextField:SetHeight(14)

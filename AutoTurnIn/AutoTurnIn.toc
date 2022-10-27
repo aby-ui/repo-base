@@ -1,6 +1,6 @@
 ## Interface: 100000
 ## Title: AutoTurnIn
-## Version: 7.5.3
+## Version: 7.5.5
 ## Author: Alex Shubert
 ## Notes: Quest handling automation
 ## Notes-ruRU: Автоматическая обработка заданий
@@ -20,7 +20,7 @@ loc\localization_EN.lua
 loc\localization_CN.lua
 
 rewards_const.lua
-defaults.lua
+Defaults.lua
 AutoTurnIn.lua
 QuestLevel.lua
 

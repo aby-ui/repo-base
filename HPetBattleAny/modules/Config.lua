@@ -611,6 +611,7 @@ local InitSwathButton = function()
 	local itemCount = GetItemCount(86143)
 	local name = "PetJournalBandageButton"
 	local button = CreateFrame("Button","PetJournalBandageButton",nil,"SecureActionButtonTemplate")
+	button:RegisterForClicks("AnyUp", "AnyDown")
 	button:SetParent(PetJournal)
 
 

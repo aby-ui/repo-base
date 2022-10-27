@@ -2,6 +2,30 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.0.0",
+		General = "Just a small bugfix update. Please read the notes below if you haven't been using a version 9.2.7.X before",
+		Sections = {
+			{
+				Header = "New Features:",
+				Entries = {
+					"Added a new module 'Combat Indicator'. This module shows an icon depending on the state of the player. It can show an icon when the player is in combat or out of combat, it will show no icon if the status is unknown. (This can be the case for enemies that dont have a unitID assigned.) This module is not 100% finished yet and disabled by default. I will add a icon selector in the future, and its missing the testmode implementation. Feedback on this new feature is appreciated :)",
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"Toc update for 10.0.0"
+				}
+			},
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Auras gathered by the new UNIT_AURA 2nd argument get a priority applied"
+				}
+			}
+		}
+	},
+	{
 		Version = "9.2.7.2",
 		General = "This is the long awaited update with many changes and new features. It is recommended to reset the settings of the addon in the profile tab, especially when you didnt use the default settings. This is due to the fact that the saved variables format changed. So please take a few minutes and check out the testmode :)",
 		Sections = {

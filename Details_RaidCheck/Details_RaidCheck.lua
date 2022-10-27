@@ -295,7 +295,7 @@ local CreatePluginFrames = function()
 		local runeIndicator = DF:CreateImage(line, "", scrollLineHeight, scrollLineHeight)
 
 		--no pre pot
-		--local PrePotIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
+		--local PrePotIndicator = DF:CreateImage (line, "", scroll_line_height, scroll_line_height)
 		--using details!
 		--local DetailsIndicator = DF:CreateImage(line, "", scroll_line_height, scroll_line_height)
 
@@ -683,7 +683,7 @@ local CreatePluginFrames = function()
 				end
 			end
 
-			tinsert(PlayerData, {unitName, unitClassID,
+			tinsert (PlayerData, {unitName, unitClassID,
 				Name = unitName,
 				UnitNameRealm = unitNameWithRealm,
 				Class = unitClass,
@@ -727,7 +727,7 @@ local CreatePluginFrames = function()
 		raidCheckFrame:SetScript("OnUpdate", updateRaidCheckFrame)
 	end)
 
-	DetailsRaidCheck.ToolbarButton:SetScript("OnLeave", function(self)
+	DetailsRaidCheck.ToolbarButton:SetScript("OnLeave", function (self)
 		raidCheckFrame:SetScript("OnUpdate", nil)
 		raidCheckFrame:Hide()
 	end)
@@ -796,53 +796,55 @@ local CreatePluginFrames = function()
 
 		local function handleAuraBuff(aura)
 			local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID("player", aura.auraInstanceID)
-			local buffName = auraInfo.name
-			local spellId = auraInfo.spellId
+			if (auraInfo) then
+				local buffName = auraInfo.name
+				local spellId = auraInfo.spellId
 
-			if (buffName) then
-				local flashInfo = flaskList[spellId]
-				if (flashInfo) then
-					local flaskTier = openRaidLib.GetFlaskTierFromAura(auraInfo)
-					DetailsRaidCheck.unitsWithFlaskTable[unitSerial] = {spellId, flaskTier, auraInfo.icon}
-					consumableTable.Flask = consumableTable.Flask + 1
-				end
-
-				local foodInfo = foodInfoList[spellId]
-
-				if (DetailsRaidCheck.db.food_tier1) then
-					if (foodInfo) then
-						local foodTier = openRaidLib.GetFoodTierFromAura(auraInfo)
-						DetailsRaidCheck.unitWithFoodTable[unitSerial] = {spellId, foodTier or 1, auraInfo.icon}
-						consumableTable.Food = consumableTable.Food + 1
+				if (buffName) then
+					local flashInfo = flaskList[spellId]
+					if (flashInfo) then
+						local flaskTier = openRaidLib.GetFlaskTierFromAura(auraInfo)
+						DetailsRaidCheck.unitsWithFlaskTable[unitSerial] = {spellId, flaskTier, auraInfo.icon}
+						consumableTable.Flask = consumableTable.Flask + 1
 					end
-				end
 
-				if (DetailsRaidCheck.db.food_tier2) then
-					if (foodInfo) then
-						local foodTier = openRaidLib.GetFoodTierFromAura(auraInfo)
-						if (foodTier and foodTier >= 2) then
-							DetailsRaidCheck.unitWithFoodTable[unitSerial] = {spellId, foodTier, auraInfo.icon}
+					local foodInfo = foodInfoList[spellId]
+
+					if (DetailsRaidCheck.db.food_tier1) then
+						if (foodInfo) then
+							local foodTier = openRaidLib.GetFoodTierFromAura(auraInfo)
+							DetailsRaidCheck.unitWithFoodTable[unitSerial] = {spellId, foodTier or 1, auraInfo.icon}
 							consumableTable.Food = consumableTable.Food + 1
 						end
 					end
-				end
 
-				if (DetailsRaidCheck.db.food_tier3) then
-					if (foodInfo) then
-						local foodTier = openRaidLib.GetFoodTierFromAura(auraInfo)
-						if (foodTier and foodTier >= 3) then
-							DetailsRaidCheck.unitWithFoodTable[unitSerial] = {spellId, foodTier, auraInfo.icon}
-							consumableTable.Food = consumableTable.Food + 1
+					if (DetailsRaidCheck.db.food_tier2) then
+						if (foodInfo) then
+							local foodTier = openRaidLib.GetFoodTierFromAura(auraInfo)
+							if (foodTier and foodTier >= 2) then
+								DetailsRaidCheck.unitWithFoodTable[unitSerial] = {spellId, foodTier, auraInfo.icon}
+								consumableTable.Food = consumableTable.Food + 1
+							end
 						end
 					end
-				end
 
-				if (runeIds[spellId]) then
-					DetailsRaidCheck.havefocusaug_table[unitSerial] = spellId
-				end
+					if (DetailsRaidCheck.db.food_tier3) then
+						if (foodInfo) then
+							local foodTier = openRaidLib.GetFoodTierFromAura(auraInfo)
+							if (foodTier and foodTier >= 3) then
+								DetailsRaidCheck.unitWithFoodTable[unitSerial] = {spellId, foodTier, auraInfo.icon}
+								consumableTable.Food = consumableTable.Food + 1
+							end
+						end
+					end
 
-				if (buffName == localizedFoodDrink) then
-					DetailsRaidCheck.iseating_table[unitSerial] = true
+					if (runeIds[spellId]) then
+						DetailsRaidCheck.havefocusaug_table[unitSerial] = spellId
+					end
+
+					if (buffName == localizedFoodDrink) then
+						DetailsRaidCheck.iseating_table[unitSerial] = true
+					end
 				end
 			end
 		end
@@ -903,21 +905,21 @@ local buildOptionsPanel = function()
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.pre_pot_healers end,
-			set = function(self, fixedparam, value) DetailsRaidCheck.db.pre_pot_healers = value end,
+			set = function (self, fixedparam, value) DetailsRaidCheck.db.pre_pot_healers = value end,
 			desc = "If enabled, pre potion for healers are also shown.",
 			name = "Track Healers Pre Pot"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.pre_pot_tanks end,
-			set = function(self, fixedparam, value) DetailsRaidCheck.db.pre_pot_tanks = value end,
+			set = function (self, fixedparam, value) DetailsRaidCheck.db.pre_pot_tanks = value end,
 			desc = "If enabled, pre potion for tanks are also shown.",
 			name = "Track Tank Pre Pot"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.mythic_1_4 end,
-			set = function(self, fixedparam, value) DetailsRaidCheck.db.mythic_1_4 = value end,
+			set = function (self, fixedparam, value) DetailsRaidCheck.db.mythic_1_4 = value end,
 			desc = "When raiding on Mythic difficult, only check the first 4 groups.",
 			name = "Mythic 1-4 Group Only"
 		},
@@ -928,21 +930,21 @@ local buildOptionsPanel = function()
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.food_tier1 end,
-			set = function(self, fixedparam, value) DetailsRaidCheck.db.food_tier1 = value end,
+			set = function (self, fixedparam, value) DetailsRaidCheck.db.food_tier1 = value end,
 			desc = "Consider players using Tier 1 food.",
 			name = "Food Tier 1 [41]"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.food_tier2 end,
-			set = function(self, fixedparam, value) DetailsRaidCheck.db.food_tier2 = value end,
+			set = function (self, fixedparam, value) DetailsRaidCheck.db.food_tier2 = value end,
 			desc = "Consider players using Tier 2 food.",
 			name = "Food Tier 2 [55]"
 		},
 		{
 			type = "toggle",
 			get = function() return DetailsRaidCheck.db.food_tier3 end,
-			set = function(self, fixedparam, value) DetailsRaidCheck.db.food_tier3 = value end,
+			set = function (self, fixedparam, value) DetailsRaidCheck.db.food_tier3 = value end,
 			desc = "Consider players using Tier 3 food.",
 			name = "Food Tier 3 [>= 75]"
 		},
@@ -1003,7 +1005,7 @@ function DetailsRaidCheck:OnEvent(_, event, ...)
 				C_Timer.After(1, function()
 					--install
 					local install, savedData, isEnabled = _G.Details:InstallPlugin("TOOLBAR", Loc["STRING_RAIDCHECK_PLUGIN_NAME"], [[Interface\Buttons\UI-CheckBox-Check]], DetailsRaidCheck, "DETAILS_PLUGIN_RAIDCHECK", MINIMAL_DETAILS_VERSION_REQUIRED, "Terciob", version, defaultSettings)
-					if (type(install) == "table" and install.error) then
+					if (type (install) == "table" and install.error) then
 						return print(install.error)
 					end
 

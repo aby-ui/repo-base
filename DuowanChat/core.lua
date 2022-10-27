@@ -620,6 +620,7 @@ function DuowanChat:UIParent_ManageFramePosition(...)
 end
 -- Function for repositioning the chat dock depending on if there's a shapeshift bar/stance bar, etc...
 function DuowanChat:FCF_UpdateDockPosition()
+    do return end --TODO:abyui10
     if ( DEFAULT_CHAT_FRAME:IsUserPlaced() ) then
         if ( SIMPLE_CHAT ~= "1" ) then			
             return;

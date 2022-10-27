@@ -1273,7 +1273,7 @@ p:SetScript("OnEvent", function (self, event, arg1)
 
 		local displayInfo, cameraID, vo, duration, lineNumber, numLines, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo()
 		if (WorldQuestTracker.db.profile.talking_heads_heard[vo]) then
-			C_Timer.After(0.05, TalkingHeadFrame_CloseImmediately)
+			_G.TalkingHeadFrame:CloseImmediately()
 		else
 			if (vo) then
 				WorldQuestTracker.db.profile.talking_heads_heard[vo] = true
@@ -1409,12 +1409,14 @@ function WorldQuestTracker.InitiateFlyMasterTracker()
 
 			if (playerIsMoving) then
 				if (oribosFlyMasterFrame:GetAlpha() < 1) then
-					oribosFlyMasterFrame:SetAlpha(oribosFlyMasterFrame:GetAlpha() + (deltaTime*7))
+					local alphaAmount = oribosFlyMasterFrame:GetAlpha() + (deltaTime*7)
+					alphaAmount = Saturate(alphaAmount)
+					oribosFlyMasterFrame:SetAlpha(alphaAmount)
 				end
 				oribosFlyMasterFrame:EnableMouse(true)
 			else
 				if (oribosFlyMasterFrame:GetAlpha() > 0) then
-					oribosFlyMasterFrame:SetAlpha(oribosFlyMasterFrame:GetAlpha() - deltaTime/5)
+					oribosFlyMasterFrame:SetAlpha(Saturate(oribosFlyMasterFrame:GetAlpha() - deltaTime/5))
 				else
 					oribosFlyMasterFrame:EnableMouse(false)
 				end

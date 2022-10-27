@@ -2162,6 +2162,8 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 						--shows reputation statusbar
 						GameCooltip:AddLine (_G ["FACTION_STANDING_LABEL" .. standingID], HIGHLIGHT_FONT_COLOR_CODE.." "..format(REPUTATION_PROGRESS_FORMAT, BreakUpLargeNumbers(barValue), BreakUpLargeNumbers(barMax))..FONT_COLOR_CODE_CLOSE)
 						GameCooltip:AddIcon ("", 1, 1, 1, 20)
+						barValue = max(barValue, 0.001)
+						barMax = max(barMax, 0.001)
 						GameCooltip:AddStatusBar (barValue / barMax * 100, 1, 0, 0.65, 0, 0.7, nil, {value = 100, color = {.21, .21, .21, 0.8}, texture = [[Interface\Tooltips\UI-Tooltip-Background]]}, [[Interface\Tooltips\UI-Tooltip-Background]])
 					end
 

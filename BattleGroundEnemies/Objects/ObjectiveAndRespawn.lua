@@ -76,7 +76,7 @@ local objectiveAndRespawn = BattleGroundEnemies:NewButtonModule({
 	localizedModuleName = L.ObjectiveAndRespawnTimer,
 	defaultSettings = defaultSettings,
 	options = options,
-	events = {"ShouldQueryAuras", "CareAboutThisAura", "BeforeFullAuraUpdate", "UnitAura", "UnitDied", "ArenaOpponentShown", "ArenaOpponentHidden"},
+	events = {"ShouldQueryAuras", "CareAboutThisAura", "BeforeFullAuraUpdate", "NewAura", "UnitDied", "ArenaOpponentShown", "ArenaOpponentHidden"},
 	expansions = "All"
 })
 
@@ -195,7 +195,7 @@ function objectiveAndRespawn:AttachToPlayerButton(playerButton)
 		end
 	end
 
-	function frame:UnitAura(unitID, filter, aura)
+	function frame:NewAura(unitID, filter, aura)
 		if filter ~= "HARMFUL" then return end
 		if not self.continue then return end
 

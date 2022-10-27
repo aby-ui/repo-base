@@ -221,7 +221,7 @@ do
 			talking_heads_torgast = true,
 			talking_heads_dungeon = true,
 			talking_heads_raid = true,
-			talking_heads_openworld = true,
+			talking_heads_openworld = false,
 
 			flymaster_tracker_frame_pos = {},
 			flymaster_tracker_enabled = false,

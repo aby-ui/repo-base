@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2393, "DBM-CastleNathria", nil, 1190)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220822021157")
+mod:SetRevision("20221027045353")
 mod:SetCreatureID(164406)
 mod:SetEncounterID(2398)
 mod:SetUsedIcons(1, 2, 3)
@@ -188,7 +188,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnDeadlyDescent:Play("targetyou")
 			yellDeadlyDescent:Yell()
 		else
-			warnDeadlyDescent:CombinedShow(0.3, args.destName)
+			warnDeadlyDescent:CombinedShow(1, args.destName)
 		end
 	elseif spellId == 342077 then
 		local icon = self.vb.EchoIcon
