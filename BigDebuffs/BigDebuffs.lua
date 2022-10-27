@@ -7,6 +7,7 @@ BigDebuffs = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceEvent-3.0", "AceHoo
 local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 local LibClassicDurations = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and LibStub("LibClassicDurations")
 if LibClassicDurations then LibClassicDurations:Register(addonName) end
+local CompactUnitFrame_Util_ShouldDisplayDebuff = noop --TODO:abyui10
 
 -- Defaults
 local defaults = {
