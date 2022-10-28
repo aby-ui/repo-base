@@ -1,5 +1,4 @@
 ﻿U1RegisterAddon("CompactRaid", {
-    temporarilyForceDisable = 1,
     title = "团队框架CR",
     defaultEnable = 0,
     load = "NORMAL",

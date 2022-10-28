@@ -175,7 +175,7 @@ function Items:Layout()
 
 	local width, height = max(columns * size * scale, 1), max(y * size * scale, 1)
 	self:SetSize(self.Transposed and height or width, self.Transposed and width or height)
-	self:SendFrameSignal('ITEM_FRAME_RESIZED')
+	self:SendFrameSignal('ELEMENT_RESIZED')
 end
 
 function Items:ForAll(method, ...)

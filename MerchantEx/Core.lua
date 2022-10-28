@@ -150,7 +150,6 @@ function addon:SellTrash(silent)
 	end
 
 	local total = 0
-	local bag, slot
 	for bag = 0, 4 do
 		for slot = 1, GetContainerNumSlots(bag) do
 			local sold, link, count = CheckAndSellItem(bag, slot)

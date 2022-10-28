@@ -18,7 +18,7 @@ local MYSLOT_ALLOW_VER = {MYSLOT_VER, 24, 23, 22}
 
 -- local MYSLOT_IS_DEBUG = true
 local MYSLOT_LINE_SEP = IsWindowsClient() and "\r\n" or "\n"
-local MYSLOT_MAX_ACTIONBAR = 132
+local MYSLOT_MAX_ACTIONBAR = 180
 
 -- {{{ SLOT TYPE
 local MYSLOT_SPELL = _MySlot.Slot.SlotType.SPELL
@@ -468,12 +468,9 @@ function MySlot:RecoverData(msg, opt)
     local mounts = {}
 
     for i = 1, C_MountJournal.GetNumMounts() do
-        ClearCursor()
-        C_MountJournal.Pickup(i)
-        local _, mount_id = GetCursorInfo()
-
-        if mount_id then
-            mounts[mount_id] = i
+        local _, _, _, _, _, _, _, _, _, _, isCollected, mountId = C_MountJournal.GetDisplayedMountInfo(i)
+        if isCollected then
+            mounts[mountId] = i
         end
     end
 

@@ -62,4 +62,10 @@ if not U1_WOW10 then return end
 
 
 
+	EventRegistry:RegisterCallback("ContainerFrame.CloseBag", self.UpdateBagButtonHighlight, self);
+	EventRegistry:RegisterCallback("ContainerFrame.OpenBag", self.UpdateBagButtonHighlight, self);
+
+    ContainerIDToInventoryID(1) -> 31 PutItemInBag()
+
+    ActionButtonUseKeyDown
 --]]

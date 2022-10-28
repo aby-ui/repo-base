@@ -261,7 +261,7 @@ local function SetFrames()
 		button:SetScript("OnHide", QuestObjectiveItem_OnHide)
 		button:SetScript("OnEnter", QuestObjectiveItem_OnEnter)
 		button:SetScript("OnLeave", QuestObjectiveItem_OnLeave)
-		button:RegisterForClicks("AnyDown")
+		button:RegisterForClicks("AnyUp", "AnyDown")
 		button:SetAttribute("type", "item")
 		
 		button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")

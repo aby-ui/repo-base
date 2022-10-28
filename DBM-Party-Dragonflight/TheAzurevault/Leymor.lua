@@ -1,19 +1,19 @@
 local mod	= DBM:NewMod(2492, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220820005632")
+mod:SetRevision("20221028002025")
 mod:SetCreatureID(186644)
 mod:SetEncounterID(2582)
 mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221027000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 374364 374567 374720 386660",
---	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START 374364 374567 386660 374789",
+	"SPELL_CAST_SUCCESS 374720",
 	"SPELL_AURA_APPLIED 374567",
 --	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED 374567"
@@ -23,7 +23,12 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, verify number of players affected by explosive eruption
---TODO, who does Errupting Fissure target?
+--TODO, who does Errupting Fissure target? verify target scan
+--[[
+(ability.id = 374364 or ability.id = 374567 or ability.id = 386660 or ability.id = 374789) and type = "begincast"
+ or ability.id =  374720 and type = "cast"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 local warnLeylineSprouts						= mod:NewSpellAnnounce(374364, 3)
 local warnExplosiveEruption						= mod:NewTargetNoFilterAnnounce(374567, 4)
 
@@ -36,11 +41,11 @@ local yellEruptingFissure						= mod:NewYell(386660)
 local specWarnInfusedStrike						= mod:NewSpecialWarningDefensive(374789, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerLeylineSproutsCD						= mod:NewAITimer(35, 374364, nil, nil, nil, 3)
-local timerExplosiveEruptionCD					= mod:NewAITimer(35, 374567, nil, nil, nil, 3)
-local timerConsumingStompCD						= mod:NewAITimer(35, 374720, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
-local timerEruptingFissureCD					= mod:NewAITimer(35, 386660, nil, nil, nil, 3)
-local timerInfusedStrikeCD						= mod:NewAITimer(35, 374789, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerLeylineSproutsCD						= mod:NewCDTimer(43.7, 374364, nil, nil, nil, 3)
+local timerExplosiveEruptionCD					= mod:NewCDTimer(43.7, 374567, nil, nil, nil, 3)
+local timerConsumingStompCD						= mod:NewCDTimer(43.7, 374720, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerEruptingFissureCD					= mod:NewCDTimer(43.7, 386660, nil, nil, nil, 3)
+local timerInfusedStrikeCD						= mod:NewCDTimer(43.7, 374789, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -58,11 +63,11 @@ function mod:EruptionTarget(targetname)
 end
 
 function mod:OnCombatStart(delay)
-	timerLeylineSproutsCD:Start(1-delay)
-	timerExplosiveEruptionCD:Start(1-delay)
-	timerConsumingStompCD:Start(1-delay)
-	timerEruptingFissureCD:Start(1-delay)
-	timerInfusedStrikeCD:Start(1-delay)
+	timerLeylineSproutsCD:Start(3.2-delay)
+	timerInfusedStrikeCD:Start(10.5-delay)
+	timerEruptingFissureCD:Start(20.2-delay)
+	timerExplosiveEruptionCD:Start(31.1-delay)
+	timerConsumingStompCD:Start(40.8-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -82,10 +87,6 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 374567 then
 		self.vb.DebuffIcon = 1
 		timerExplosiveEruptionCD:Start()
-	elseif spellId == 374720 then
-		specWarnConsumingStomp:Show()
-		specWarnConsumingStomp:Play("aesoon")
-		timerConsumingStompCD:Start()
 	elseif spellId == 386660 then
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "EruptionTarget", 0.1, 8, true)
 		specWarnEruptingFissure:Show()
@@ -100,14 +101,14 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
---[[
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 362805 then
-
+	if spellId == 374720 then
+		specWarnConsumingStomp:Show()
+		specWarnConsumingStomp:Play("aesoon")
+		timerConsumingStompCD:Start()
 	end
 end
---]]
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId

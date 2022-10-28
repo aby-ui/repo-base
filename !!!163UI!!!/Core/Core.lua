@@ -1328,10 +1328,6 @@ WithAllChatFrame(function(frame)
     end
 end)
 
-if QuestLogFrame then
-    CoreHookScript(QuestLogFrame, "OnShow", function() QuestInfoDescriptionText:SetAlphaGradient(1024, QUEST_DESCRIPTION_GRADIENT_LENGTH); end, true)
-end
-
 -- 避免误操作关闭taint的插件
 if(StaticPopupDialogs) then
     StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].OnAccept = function() end

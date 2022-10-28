@@ -118,7 +118,7 @@ function Core.SkinIcon(Region, Button, Skin, xScale, yScale)
 	Region:SetParent(Button)
 	Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
 	Region:SetDrawLayer(Skin.DrawLayer or "BACKGROUND", Skin.DrawLevel or 0)
-	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
 
 	-- Mask

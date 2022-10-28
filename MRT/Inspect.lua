@@ -932,6 +932,8 @@ do
 										data[c] = spellID
 										if node.maxRanks and node.maxRanks > 1 then
 											data[-c] = node.activeRank
+
+											cooldownsModule:SetTalentClassicRank(name,spellID,node.activeRank)
 										end
 
 										cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
@@ -1105,12 +1107,12 @@ do
 		end
 		ExRT.F.dprint('INSPECT_ACHIEVEMENT_READY',guid)
 		if module.db.achievementCleared then
-			C_Timer.NewTimer(.3,ClearAchievementComparisonUnit)	--prevent client crash on opening statistic 
+			C_Timer.NewTimer(.3,function() ClearAchievementComparisonUnit() end)	--prevent client crash on opening statistic 
 			return
 		end
 		local currTime = GetTime()
 		if not guid or (lastInspectGUID == guid and (currTime - lastInspectTime) < 0.2) then
-			C_Timer.NewTimer(.3,ClearAchievementComparisonUnit)	--prevent client crash on opening statistic 
+			C_Timer.NewTimer(.3,function() ClearAchievementComparisonUnit() end)	--prevent client crash on opening statistic 
 			return
 		end
 		lastInspectGUID = guid
@@ -1144,7 +1146,7 @@ do
 			end
 		end
 		if not AchievementFrame or not AchievementFrame:IsShown() then
-			C_Timer.NewTimer(.3,ClearAchievementComparisonUnit)	--prevent client crash on opening statistic 
+			C_Timer.NewTimer(.3,function() ClearAchievementComparisonUnit() end)	--prevent client crash on opening statistic 
 		end
 	end
 end
@@ -1776,15 +1778,19 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						spellID = tonumber(spellID or "?")
 						if spellID then
 							if spellID ~= 0 then
+								rank = tonumber(rank or "")
 								if cooldownsModule:IsEnabled() then
 									cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
 									cooldownsModule.db.spell_isTalent[spellID] = true
 									--print(sender,'added talent',spellID)
+
+									if rank then
+										cooldownsModule:SetTalentClassicRank(sender,spellID,rank)
+									end
 								end
 								if inspectData then
 									c = c + 1
 									inspectData[c] = spellID
-									rank = tonumber(rank or "")
 									if rank then
 										inspectData[-c] = rank
 									end

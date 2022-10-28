@@ -1513,7 +1513,9 @@ function module.options:Load()
 		if module.db.page == 2 and ExRT.is10 then
 			local newmax = (floor(#nowDB / 2)+1)*module.options.talentsScrollFrame.HEIGHT
 			if select(2,module.options.talentsScrollFrame.ScrollBar.slider:GetMinMaxValues()) ~= newmax then
+				local val = module.options.talentsScrollFrame.ScrollBar.slider:GetValue()
 				module.options.talentsScrollFrame.ScrollBar:Range(0,newmax)
+				module.options.talentsScrollFrame.ScrollBar:SetTo(min(val,newmax))
 			end
 
 			local scrollNow = floor(module.options.talentsScrollFrame.ScrollBar.slider:GetValue() / module.options.talentsScrollFrame.HEIGHT) * 2 + 1

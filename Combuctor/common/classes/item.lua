@@ -177,10 +177,16 @@ function Item:OnPostClick(button)
 end
 
 function Item:OnEnter()
-	self:UpdateTooltip()
+	if self.info.cached then
+		self:AttachDummy()
+	else
+		self:SetScript('OnUpdate', self.UpdateTooltip)
+		self:UpdateTooltip()
+	end
 end
 
 function Item:OnLeave()
+	self:SetScript('OnUpdate', nil)
 	self:Super(Item):OnLeave()
 	ResetCursor()
 end
@@ -200,22 +206,18 @@ function Item:Update()
 	SetItemButtonCount(self, self.info.count)
 end
 
-function Item:UpdateLocked()
-	self.info = self:GetInfo()
-	self:SetLocked(self.info.locked)
-end
-
 function Item:UpdateSecondary()
 	if self:GetFrame() then
 		self:UpdateFocus()
 		self:UpdateSearch()
 		self:UpdateCooldown()
 		self:UpdateUpgradeIcon()
-
-		if GameTooltip:IsOwned(self) then
-			self:UpdateTooltip()
-		end
 	end
+end
+
+function Item:UpdateLocked()
+	self.info = self:GetInfo()
+	self:SetLocked(self.info.locked)
 end
 
 
@@ -223,20 +225,11 @@ end
 
 function Item:UpdateBorder()
 	local id, quality, link = self.info.id, self.info.quality, self.info.link
-	local overlay = (link and IsCorruptedItem and IsCorruptedItem(link) and 'Nzoth-inventory-icon') or (id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) and 'AzeriteIconFrame')
 	local new = Addon.sets.glowNew and self:IsNew()
 	local quest, questID = self:IsQuestItem()
+	local overlay = self:GetOverlay()
 	local paid = self:IsPaid()
-	local r,g,b
-
-	if new and not self.flashAnim:IsPlaying() then
-		self.flashAnim:Play()
-		self.newitemglowAnim:Play()
-	end
-
-	if overlay then
-		self.IconOverlay:SetAtlas(overlay)
-	end
+	local r,g,b = 0,0,0
 
 	if id then
 		if Addon.sets.glowQuest and quest then
@@ -248,6 +241,16 @@ function Item:UpdateBorder()
 		elseif Addon.sets.glowQuality and quality and quality > 1 then
 			r,g,b = GetItemQualityColor(quality)
 		end
+	end
+
+	if new and not self.flashAnim:IsPlaying() then
+		self.flashAnim:Play()
+		self.newitemglowAnim:Play()
+	end
+
+	if overlay then
+		self.IconOverlay:SetAtlas(overlay)
+		self.IconOverlay:SetVertexColor(r,g,b)
 	end
 
 	self.IconBorder:SetTexture(id and C_ArtifactUI and C_ArtifactUI.GetRelicInfoByItemID(id) and 'Interface/Artifacts/RelicIconFrame' or 'Interface/Common/WhiteIconFrame')
@@ -267,11 +270,15 @@ function Item:UpdateBorder()
 end
 
 function Item:UpdateSlotColor()
-	local color = not self.info.id and Addon.sets.colorSlots and Addon.sets[self:GetSlotType() .. 'Color'] or {}
-	local r,g,b = color[1] or 1, color[2] or 1, color[3] or 1
+	if not self.info.id then
+		local color = Addon.sets.colorSlots and Addon.sets[self:GetSlotType() .. 'Color'] or {}
+		local r,g,b = color[1] or 1, color[2] or 1, color[3] or 1
 
-	SetItemButtonTextureVertexColor(self, r,g,b)
-	self:GetNormalTexture():SetVertexColor(r,g,b)
+		SetItemButtonTextureVertexColor(self, r,g,b)
+		self:GetNormalTexture():SetVertexColor(r,g,b)
+	else
+		self:GetNormalTexture():SetVertexColor(1,1,1)
+	end
 end
 
 function Item:UpdateUpgradeIcon()
@@ -289,10 +296,14 @@ end
 
 function Item:UpdateCooldown()
 	if self.info.id and (not self.info.cached) then
-		ContainerFrame_UpdateCooldown(self:GetBag(), self)
+			local start, duration, enable = GetContainerItemCooldown(self:GetBag(), self:GetID())
+			local fade = duration > 0 and 0.4 or 1
+
+			CooldownFrame_Set(self.Cooldown, start, duration, enable)
+			SetItemButtonTextureVertexColor(self, fade,fade,fade)
 	else
+		CooldownFrame_Set(self.Cooldown, 0,0,0)
 		self.Cooldown:Hide()
-		CooldownFrame_Set(self.Cooldown, 0, 0, 0)
 	end
 end
 
@@ -333,92 +344,57 @@ end
 --[[ Tooltip ]]--
 
 function Item:UpdateTooltip()
-    if self.info.link or self.info.id then
-   		if self.info.link and self.info.cached then
-			self:ShowCachedTooltip()
-		else
-			self:ShowTooltip()
-			self:UpdateBorder()
-		end
-	else
-		self:OnLeave()
+	if not self.info.cached then
+		(self:GetInventorySlot() and BankFrameItemButton_OnEnter or
+		 ContainerFrameItemButtonMixin and ContainerFrameItemButtonMixin.OnUpdate or ContainerFrameItemButton_OnEnter)(self)
 	end
 end
 
-function Item:ShowTooltip()
-	local bag = self:GetBag()
-	local getSlot = Addon:IsBank(bag) and BankButtonIDToInvSlotID or
-									Addon:IsKeyring(bag) and KeyRingButtonIDToInvSlotID or
-									Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
+function Item:AttachDummy()
+	if not Item.Dummy then
+		local function updateTip(slot)
+			local parent = slot:GetParent()
+			local link = parent.info.link
+			if link then
+				GameTooltip:SetOwner(parent:GetTipAnchor())
+				parent:LockHighlight()
+				CursorUpdate(parent)
 
-	if getSlot then
-		GameTooltip:SetOwner(self:GetTipAnchor())
+				if link:find('battlepet:') then
+					local _, specie, level, quality, health, power, speed = strsplit(':', link)
+					local name = link:match('%[(.-)%]')
 
-		local _, _, _, speciesID, level, breedQuality, maxHealth, power, speed, name = GameTooltip:SetInventoryItem('player', getSlot(self:GetID()))
-		if speciesID and speciesID > 0 then
-			BattlePetToolTip_Show(speciesID, level, breedQuality, maxHealth, power, speed, name)
-		else
-			if BattlePetTooltip then
-				BattlePetTooltip:Hide()
-			end
-			GameTooltip:Show()
-		end
-
-		CursorUpdate(self)
-	else
-		ContainerFrameItemButton_OnEnter(self)
-	end
-end
-
-function Item:ShowCachedTooltip()
-	Item.dummy = Item.dummy or Item:CreateDummy()
-	Item.dummy:SetParent(self)
-	Item.dummy:SetAllPoints()
-	Item.dummy:Show()
-end
-
-function Item:CreateDummy()
-	local function showTooltip(slot)
-		local parent = slot:GetParent()
-		local link = parent.info.link
-		if link then
-			GameTooltip:SetOwner(parent:GetTipAnchor())
-			parent:LockHighlight()
-			CursorUpdate(parent)
-
-			if link:find('battlepet:') then
-				local _, specie, level, quality, health, power, speed = strsplit(':', link)
-				local name = link:match('%[(.-)%]')
-
-				BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
-			else
-				GameTooltip:SetHyperlink(link)
-				GameTooltip:Show()
+					BattlePetToolTip_Show(tonumber(specie), level, tonumber(quality), health, power, speed, name)
+				else
+					GameTooltip:SetHyperlink(link)
+					GameTooltip:Show()
+				end
 			end
 		end
+
+		Item.Dummy = CreateFrame('Button')
+		Item.Dummy:SetScript('OnEnter', updateTip)
+		Item.Dummy:SetScript('OnShow', updateTip)
+		Item.Dummy:RegisterForClicks('anyUp')
+		Item.Dummy:SetToplevel(true)
+
+		Item.Dummy:SetScript('OnClick', function(dummy, button)
+			local parent = dummy:GetParent()
+			if not HandleModifiedItemClick(parent.info.link) then
+				parent:FlashFind(button)
+			end
+		end)
+
+		Item.Dummy:SetScript('OnLeave', function(dummy)
+			dummy:GetParent():UnlockHighlight()
+			dummy:GetParent():OnLeave()
+			dummy:Hide()
+		end)
 	end
 
-	local slot = CreateFrame('Button')
-	slot.UpdateTooltip = showTooltip
-	slot:SetScript('OnEnter', showTooltip)
-	slot:SetScript('OnShow', showTooltip)
-	slot:RegisterForClicks('anyUp')
-	slot:SetToplevel(true)
-
-	slot:SetScript('OnClick', function(slot, button)
-		local parent = slot:GetParent()
-		if not HandleModifiedItemClick(parent.info.link) then
-			parent:FlashFind(button)
-		end
-	end)
-
-	slot:SetScript('OnLeave', function(slot)
-		slot:GetParent():UnlockHighlight()
-		slot:GetParent():OnLeave()
-		slot:Hide()
-	end)
-
-	return slot
+	Item.Dummy:SetParent(self)
+	Item.Dummy:SetAllPoints()
+	Item.Dummy:Show()
 end
 
 
@@ -436,10 +412,21 @@ function Item:IsQuestItem()
 end
 
 function Item:IsUpgrade()
-	local criteria = PawnIsContainerItemAnUpgrade or IsContainerItemAnUpgrade
-	if criteria then -- difference bettween nil and false
-		return criteria(self:GetBag(), self:GetID())
+	if PawnShouldItemLinkHaveUpgradeArrow then
+		return self:GetItem() and PawnShouldItemLinkHaveUpgradeArrow(self:GetItem()) or false
+	elseif IsContainerItemAnUpgrade then
+		return not self:IsCached() and IsContainerItemAnUpgrade(self:GetBag(), self:GetID())
+	else
+		return false
 	end
+end
+
+function Item:GetOverlay()
+	local id, link = self.info.id, self.info.link
+	return id and C_AzeriteEmpoweredItem and C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(id) and 'AzeriteIconFrame'
+			or id and IsCosmeticItem and IsCosmeticItem(id) and not C_TransmogCollection.PlayerHasTransmogByItemInfo(id) and 'CosmeticIconFrame'
+			or id and C_Soulbinds and C_Soulbinds.IsItemConduitByItemInfo(id) and 'ConduitIconFrame'
+			or link and IsCorruptedItem and IsCorruptedItem(link) and 'Nzoth-inventory-icon'
 end
 
 function Item:IsNew()
@@ -469,6 +456,14 @@ end
 function Item:GetSlotType()
 	local bag = self:GetFrame():GetBagInfo(self:GetBag())
 	return self.SlotTypes[bag.family] or 'normal'
+end
+
+function Item:GetInventorySlot()
+	local bag = self:GetBag()
+	local api = Addon:IsBank(bag) and BankButtonIDToInvSlotID or
+							Addon:IsKeyring(bag) and KeyRingButtonIDToInvSlotID or
+							Addon:IsReagents(bag) and ReagentBankButtonIDToInvSlotID
+	return api and api(self:GetID())
 end
 
 function Item:GetEmptyItemIcon()

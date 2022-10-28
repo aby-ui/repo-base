@@ -6,7 +6,7 @@
 local CONFIG = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(CONFIG)
 local ADDON, Addon = CONFIG:match('[^_]+'), _G[CONFIG:match('[^_]+')]
-local General = Addon.OptionsGroup('GeneralOptions')
+local General = Addon.OptionsGroup('GeneralOptions', '|TInterface/Addons/BagBrother/Art/'..ADDON..'-Small:16:16|t')
 
 function General:Populate()
 	self:AddCheck('locked')

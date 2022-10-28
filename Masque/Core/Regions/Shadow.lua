@@ -72,7 +72,7 @@ local function AddShadow(Button, Skin, Color, xScale, yScale)
 	Region:SetVertexColor(GetColor(Color or Skin.Color))
 	Region:SetBlendMode(Skin.BlendMode or "BLEND")
 	Region:SetDrawLayer(Skin.DrawLayer or "ARTWORK", Skin.DrawLevel or -1)
-	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
 
 	if Button.__MSQ_Empty then

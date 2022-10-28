@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2508, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220923021804")
+mod:SetRevision("20221028013542")
 mod:SetCreatureID(186738)
 mod:SetEncounterID(2584)
 --mod:SetUsedIcons(1, 2, 3)
@@ -12,7 +12,7 @@ mod:SetEncounterID(2584)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 384978 384699 385399 385075",
+	"SPELL_CAST_START 384978 384699 385399 385075 388804",
 --	"SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED 384978"
 --	"SPELL_AURA_APPLIED_DOSE",
@@ -24,37 +24,46 @@ mod:RegisterEventsInCombat(
 
 --TODO, Current under-tuning makes the crystals and fracture completely inconsiquential. Until that changes, not much to do with those.
 --TODO, target scan arcane eruption?
---TODO, it looks like blizzard killed off 385527 mechanic
+--TODO, Even on really long M+, Unleashed was never cast more than once, with upwards of 107 seconds between first cast and kill
+--TODO, Crystaline roar not in CLEU so can't be implemented yet.
+--TODO, Brittle not in CLEU so can't be implemented yet
+--[[
+(ability.id = 384978 or ability.id = 384699 or ability.id = 385399 or ability.id = 385075 or ability.id = 388804)  and type = "begincast"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 local warnArcaneEruption						= mod:NewSpellAnnounce(385075, 3)
 
 --local specWarnInfusedStrikes					= mod:NewSpecialWarningStack(361966, nil, 8, nil, nil, 1, 6)
-local specWarnDragonStomp						= mod:NewSpecialWarningDefensive(384978, nil, nil, nil, 1, 2)
-local specWarnDragonStompDebuff					= mod:NewSpecialWarningDispel(384978, "RemoveMagic", nil, nil, 1, 2)
+local specWarnDragonStrike						= mod:NewSpecialWarningDefensive(384978, nil, nil, nil, 1, 2)
+local specWarnDragonStrikeDebuff				= mod:NewSpecialWarningDispel(384978, "RemoveMagic", nil, nil, 1, 2)
 local specWarnCrystallineRoar					= mod:NewSpecialWarningDodge(384699, nil, nil, nil, 3, 2)
 local specWarnUnleashedDestruction				= mod:NewSpecialWarningSpell(385399, nil, nil, nil, 2, 2)
 --local yellInfusedStrikes						= mod:NewYell(361966)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerDragonStompCD						= mod:NewAITimer(35, 384978, nil, "Tank|Healer|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
+local timerDragonStrikeCD						= mod:NewCDTimer(8.5, 384978, nil, "Tank|Healer|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)--8.5-24, probably delayed by CLEU events I couldn't see
 local timerCrystallineRoarCD					= mod:NewAITimer(35, 384699, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
-local timerUnleashedDestructionCD				= mod:NewAITimer(35, 385399, nil, nil, nil, 2)
-local timerArcaneEruptionCD						= mod:NewAITimer(35, 385075, nil, nil, nil, 3)
+local timerUnleashedDestructionCD				= mod:NewCDTimer(35, 385399, nil, nil, nil, 2)--Not seen cast more than once even in a long pull
+local timerArcaneEruptionCD						= mod:NewCDTimer(54.6, 385075, nil, nil, nil, 3)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
 --mod:AddRangeFrameOption("8")
---mod:AddInfoFrameOption(385527, "RemoveCurse")
+mod:AddInfoFrameOption(388777, false)
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
+mod.vb.unleashedCast = 0
+
 function mod:OnCombatStart(delay)
-	timerDragonStompCD:Start(1-delay)
-	timerCrystallineRoarCD:Start(1-delay)
-	timerUnleashedDestructionCD:Start(1-delay)
-	timerArcaneEruptionCD:Start(1-delay)
---	if self.Options.InfoFrame then
---		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(385527))
---		DBM.InfoFrame:Show(5, "playerdebuffremaining", 385527)
---	end
+	self.vb.unleashedCast = 0
+	timerDragonStrikeCD:Start(7.1-delay)
+	timerCrystallineRoarCD:Start(1-delay)--Unknown, no CLEU event
+	timerArcaneEruptionCD:Start(28.9-delay)--28.9-37, Highly variable if it gets spell queued behind more tank casts
+	timerUnleashedDestructionCD:Start(48.2-delay)
+	if self.Options.InfoFrame then
+		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(388777))
+		DBM.InfoFrame:Show(5, "playerdebuffremaining", 388777)
+	end
 end
 
 function mod:OnCombatEnd()
@@ -70,18 +79,22 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 384978 then
 		if self:IsTanking("player", "boss1", nil, true) then
-			specWarnDragonStomp:Show()
-			specWarnDragonStomp:Play("defensive")
+			specWarnDragonStrike:Show()
+			specWarnDragonStrike:Play("defensive")
 		end
-		timerDragonStompCD:Start()
+		timerDragonStrikeCD:Start()
 	elseif spellId == 384699 then
 		specWarnCrystallineRoar:Show()
 		specWarnCrystallineRoar:Play("shockwave")
 		timerCrystallineRoarCD:Start()
-	elseif spellId == 385399 then
-		specWarnUnleashedDestruction:Show()
+	elseif spellId == 385399 or spellId == 388804 then--Easy, Hard
+		self.vb.unleashedCast = self.vb.unleashedCast + 1
+		specWarnUnleashedDestruction:Show(self.vb.unleashedCast)
 		specWarnUnleashedDestruction:Play("carefly")
-		timerUnleashedDestructionCD:Start()
+		if self.vb.unleashedCast >= 2 then
+			DBM:AddMsg("If you are logging this, please share your log with DBM authors, DBM is missing times for this many Unleashed Destruction casts")
+		end
+--		timerUnleashedDestructionCD:Start()
 	elseif spellId == 385075 then
 		warnArcaneEruption:Show()
 		timerArcaneEruptionCD:Start()
@@ -102,8 +115,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	if spellId == 384978 then
 		local uId = DBM:GetRaidUnitId(args.destName)
 		if self:IsTanking(uId) and self:CheckDispelFilter("magic") then
-			specWarnDragonStompDebuff:Show(args.destName)
-			specWarnDragonStompDebuff:Play("helpdispel")
+			specWarnDragonStrikeDebuff:Show(args.destName)
+			specWarnDragonStrikeDebuff:Play("helpdispel")
 		end
 	end
 end

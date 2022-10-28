@@ -1,5 +1,5 @@
 --[[
-Copyright 2011-2021 João Cardoso
+Copyright 2011-2022 João Cardoso
 Poncho is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Poncho.
 

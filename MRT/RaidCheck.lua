@@ -142,10 +142,14 @@ module.db.raidBuffs = {
 	{ATTACK_POWER_TOOLTIP or "AP","WARRIOR",6673,264761},
 	{SPELL_STAT3_NAME or "Stamina","PRIEST",21562,264764},
 	{SPELL_STAT4_NAME or "Int","MAGE",1459,264760},
+	{STAT_VERSATILITY or "Vers","DRUID",1126},
+	{TUTORIAL_TITLE2 or "Movement","EVOKER",381748,nil,{[381758]=true,[381732]=true,[381741]=true,[381746]=true,[381748]=true,[381750]=true,[381749]=true,[381751]=true,[381752]=true,[381753]=true,[381754]=true,[381756]=true,[381757]=true,}},
 }
 module.db.tableInt = {[1459]=true,[264760]=7,}
 module.db.tableStamina = {[21562]=true,[264764]=7,}
 module.db.tableAP = {[6673]=true,[264761]=7,}
+module.db.tableVers = {[1126]=true,}
+module.db.tableMove = {[381758]=true,[381732]=true,[381741]=true,[381746]=true,[381748]=true,[381750]=true,[381749]=true,[381751]=true,[381752]=true,[381753]=true,[381754]=true,[381756]=true,[381757]=true,}
 module.db.tableVantus = {
 	--uldir
 	[269276] = 1,
@@ -794,7 +798,7 @@ local function GetRaidBuffs(checkType)
 						end
 					else
 						for k=1,buffsListLen do
-							if auraSpellID == buffsList[k][3] then
+							if (auraSpellID == buffsList[k][3]) or (buffsList[k][5] and buffsList[k][5][auraSpellID]) then
 								isAnyBuff[k] = true
 								isAnyBuff[buffsListLen + k] = true
 							elseif auraSpellID == buffsList[k][4] then
@@ -1602,9 +1606,9 @@ function module:slash(arg)
 	end
 end
 
-local RCW_iconsList = {'food','flask','rune','vantus','int','ap','stam','dur'}
-local RCW_iconsListHeaders = {L.RaidCheckHeadFood,L.RaidCheckHeadFlask,L.RaidCheckHeadRune,L.RaidCheckHeadVantus,SPELL_STAT4_NAME or "Int",ATTACK_POWER_TOOLTIP or "AP",SPELL_STAT3_NAME or "Stamina",DURABILITY or "Durability"}
-local RCW_iconsListDebugIcons = {136000,967549,840006,1058937,135932,132333,135987,132281}
+local RCW_iconsList = {'food','flask','rune','vantus','int','ap','vers','stam','move','dur'}
+local RCW_iconsListHeaders = {L.RaidCheckHeadFood,L.RaidCheckHeadFlask,L.RaidCheckHeadRune,L.RaidCheckHeadVantus,SPELL_STAT4_NAME or "Int",ATTACK_POWER_TOOLTIP or "AP",STAT_VERSATILITY or "Vers",SPELL_STAT3_NAME or "Stamina",TUTORIAL_TITLE2 or "Movement",DURABILITY or "Durability"}
+local RCW_iconsListDebugIcons = {136000,967549,840006,1058937,135932,132333,136078,135987,4622448,132281}
 local RCW_iconsListWide = {}
 local RCW_liveToClassicDiff = 0
 
@@ -1649,20 +1653,20 @@ if ExRT.isClassic then
 end
 
 local RCW_liveToslDiff = 0
-if not ExRT.isClassic and UnitLevel'player' > 50 then
-	tinsert(RCW_iconsList,8,'oil')
-	tinsert(RCW_iconsListHeaders,8,WEAPON)
-	tinsert(RCW_iconsListDebugIcons,8,463543)
+if not ExRT.isClassic and UnitLevel'player' == 60 then
+	tinsert(RCW_iconsList,10,'oil')
+	tinsert(RCW_iconsListHeaders,10,WEAPON)
+	tinsert(RCW_iconsListDebugIcons,10,463543)
 
-	tinsert(RCW_iconsList,8,'kit')
-	tinsert(RCW_iconsListHeaders,8,BONUS_ARMOR)
-	tinsert(RCW_iconsListDebugIcons,8,3528447)
+	tinsert(RCW_iconsList,10,'kit')
+	tinsert(RCW_iconsListHeaders,10,BONUS_ARMOR)
+	tinsert(RCW_iconsListDebugIcons,10,3528447)
 
 	RCW_liveToslDiff = 60
 end
 
 module.frame = ELib:Template("ExRTDialogModernTemplate",UIParent)
-module.frame:SetSize(430+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff,100)
+module.frame:SetSize(430+60+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff,100)
 module.frame:SetPoint("CENTER",UIParent,"CENTER",0,0)
 module.frame:SetFrameStrata("DIALOG")
 module.frame:EnableMouse(true)
@@ -1918,7 +1922,7 @@ function module.frame:UpdateCols()
 	end
 	for i=1,40 do
 		local line = module.frame.lines[i]
-		line:SetSize(420+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff+colsAdd*30,14)
+		line:SetSize(420+60+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff+colsAdd*30,14)
 
 		local prevPointer = line[ RCW_iconsList[RCW_iconsList_ORIGIN].."pointer" ]
 
@@ -1933,7 +1937,7 @@ function module.frame:UpdateCols()
 		end
 		
 	end	
-	module.frame:SetWidth(430+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff+colsAdd*30)
+	module.frame:SetWidth(430+60+(ExRT.isClassic and 30*RCW_liveToClassicDiff or 0)+RCW_liveToslDiff+colsAdd*30)
 end
 
 function module.frame:Create()
@@ -2559,6 +2563,16 @@ function module.frame:UpdateData(onlyLine)
 						line.stam.text:SetText("")
 
 						buffCount = buffCount + 1
+					elseif module.db.tableVers[spellId] and not ExRT.isClassic then
+						line.vers.texture:SetTexture(icon)
+						line.vers.text:SetText("")
+
+						buffCount = buffCount + 1
+					elseif module.db.tableMove[spellId] and not ExRT.isClassic then
+						line.move.texture:SetTexture(icon)
+						line.move.text:SetText("")
+
+						--buffCount = buffCount + 1
 					elseif ExRT.isClassic and module.db.tableClassicBuff[spellId] then
 						local data = module.db.tableClassicBuff[spellId]
 
@@ -2746,7 +2760,7 @@ function module.frame:UpdateData(onlyLine)
 				if line.rc_status == 3 then
 					line.name:SetTextColor(1,.5,.5)
 					line.name:SetAlpha(1)
-				elseif line.rc_status == 2 and (buffCount >= 5 or ExRT.isClassic) then
+				elseif line.rc_status == 2 and (buffCount >= 6 or ExRT.isClassic) then
 					line.name:SetTextColor(1,1,1)
 					line.name:SetAlpha(.3)
 				elseif line.rc_status == 2 then
@@ -2935,14 +2949,16 @@ local function PrepareDataToChat(toSelf)
 		if VMRT.RaidCheck.BuffsCheck then
 			GetRaidBuffs(3)
 		end
-		C_Timer.After(1,function()
-			if VMRT.RaidCheck.KitsCheck and not ExRT.isClassic then
-				GetKits(3)
-			end
-			if VMRT.RaidCheck.OilsCheck and not ExRT.isClassic then
-				GetOils(3)
-			end
-		end)
+		if UnitLevel'player'==60 then
+			C_Timer.After(1,function()
+				if VMRT.RaidCheck.KitsCheck and not ExRT.isClassic then
+					GetKits(3)
+				end
+				if VMRT.RaidCheck.OilsCheck and not ExRT.isClassic then
+					GetOils(3)
+				end
+			end)
+		end
 	else
 		if VMRT.RaidCheck.disableLFR then
 			local _,_,difficulty = GetInstanceInfo()
@@ -2971,12 +2987,12 @@ local function PrepareDataToChat(toSelf)
 			ExRT.F.ScheduleTimer(ExRT.F.SendExMsg, 0.1, "raidcheck","BUFFS\t"..ExRT.V)
 		end
 		IsSendKitsByMe = nil
-		if VMRT.RaidCheck.KitsCheck and not ExRT.isClassic then
+		if VMRT.RaidCheck.KitsCheck and not ExRT.isClassic and UnitLevel'player'==60 then
 			IsSendKitsByMe = true
 			ExRT.F.ScheduleTimer(ExRT.F.SendExMsg, 0.1, "raidcheck","REPORT_KITS\t"..ExRT.V)
 		end
 		IsSendOilsByMe = nil
-		if VMRT.RaidCheck.OilsCheck and not ExRT.isClassic then
+		if VMRT.RaidCheck.OilsCheck and not ExRT.isClassic and UnitLevel'player'==60 then
 			IsSendOilsByMe = true
 			ExRT.F.ScheduleTimer(ExRT.F.SendExMsg, 0.1, "raidcheck","REPORT_OILS\t"..ExRT.V)
 		end
@@ -2991,10 +3007,10 @@ function module:SendConsumeData()
 	local kitNow, kitMax, kitTimeLeft, kitType = module:KitCheck()
 
 	ExRT.F.SendExMsg("raidcheck","DUR\t"..ExRT.V.."\t"..format("%.2f",module:DurabilityCheck())..
-		(not ExRT.isClassic and "\tKIT\t"..format("%d/%d",kitNow, kitMax) or "")..
-		(not ExRT.isClassic and "\tOIL\t"..format("%d",oilMH) or "")..
-		(not ExRT.isClassic and "\tOIL2\t"..format("%d",oilOH) or "")..
-		(not ExRT.isClassic and "\tKITT\t"..format("%d",kitType or 0) or "")
+		(not ExRT.isClassic and UnitLevel'player'==60 and "\tKIT\t"..format("%d/%d",kitNow, kitMax) or "")..
+		(not ExRT.isClassic and UnitLevel'player'==60 and "\tOIL\t"..format("%d",oilMH) or "")..
+		(not ExRT.isClassic and UnitLevel'player'==60 and "\tOIL2\t"..format("%d",oilOH) or "")..
+		(not ExRT.isClassic and UnitLevel'player'==60 and "\tKITT\t"..format("%d",kitType or 0) or "")
 	)
 end
 
@@ -3249,7 +3265,7 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 			button.click = CreateFrame("Button",nil,button,"SecureActionButtonTemplate")
 			button.click:SetAllPoints()
 			button.click:Hide()
-			button.click:RegisterForClicks("AnyUp")
+			button.click:RegisterForClicks("AnyUp", "AnyDown")
 			if i == 4 or i == 7 then
 				button.click:SetAttribute("type", "item")
 				button.click:SetAttribute("target-slot", i == 4 and "16" or "17")

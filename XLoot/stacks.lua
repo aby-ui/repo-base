@@ -15,7 +15,7 @@ do
 			self:StartMoving()
 		end
 	end
-	
+
 	function AnchorPrototype:OnDragStop()
 		self:StopMovingOrSizing()
 		self.data.x = self:GetLeft()
@@ -28,7 +28,7 @@ do
 		self.data.visible = true
 		self:_Show()
 	end
-	
+
 	function AnchorPrototype:Hide()
 		self:SetClampedToScreen(false)
 		if self.data.direction == 'up' then
@@ -93,7 +93,7 @@ do
 			self.data = {}
 		end
 	end
-	
+
 	local function Hide_OnClick(self)
 		self.parent:Hide()
 	end
@@ -122,7 +122,7 @@ do
 		anchor:SetScript('OnDragStart', anchor.OnDragStart)
 		anchor:SetScript('OnDragStop', anchor.OnDragStop)
 		anchor:SetAlpha(0.8)
-		
+
 		local hide = CreateFrame('Button', nil, anchor)
 		hide:SetHighlightTexture([[Interface\Buttons\UI-Panel-MinimizeButton-Highlight]])
 		hide:SetPoint('RIGHT', -3, 0)
@@ -146,12 +146,12 @@ do
 		label:SetJustifyH('MIDDLE')
 		label:SetText(text)
 		anchor.label = label
-		
+
 		anchor:SetHeight(20)
 		anchor:SetWidth(label:GetStringWidth() + 100)
 
 		anchor:UpdateSVData(svdata)
-		
+
 		return anchor
 	end
 end
@@ -218,5 +218,4 @@ do
 		return anchor
 	end
 end
-
 

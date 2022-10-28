@@ -51,8 +51,8 @@ local SetEmpty = Core.SetEmpty
 local SkinBackdrop, SkinCooldown, SkinFrame = Core.SkinBackdrop, Core.SkinCooldown, Core.SkinFrame
 local SkinGloss, SkinIcon, SkinIconBorder = Core.SkinGloss, Core.SkinIcon, Core.SkinIconBorder
 local SkinMask, SkinNewItem, SkinNormal = Core.SkinMask, Core.SkinNewItem, Core.SkinNormal
-local SkinQuestBorder, SkinShadow, SkinText = Core.SkinQuestBorder, Core.SkinShadow, Core.SkinText
-local SkinTexture, UpdateSpellAlert = Core.SkinTexture, Core.UpdateSpellAlert
+local SkinQuestBorder, SkinShadow, SkinSlotIcon = Core.SkinQuestBorder, Core.SkinShadow, Core.SkinSlotIcon
+local SkinText, SkinTexture, UpdateSpellAlert = Core.SkinText, Core.SkinTexture, Core.UpdateSpellAlert
 
 ----------------------------------------
 -- Locals
@@ -220,16 +220,15 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 		Pulse = true
 	end
 
-	Button.__MSQ_Enabled = (not Disabled and true) or nil
+	local Enabled = not Disabled
+
+	Button.__MSQ_Enabled = (Enabled and true) or nil
 	Button.__MSQ_Shape = Skin.Shape
 
 	-- Set/remove type flags.
 	Button.__MSQ_IsAction = ActionTypes[bType]
 	Button.__MSQ_IsAura = AuraTypes[bType]
 	Button.__MSQ_IsItem = ItemTypes[bType]
-
-	-- Flag Retail `Action` buttons.
-	Button.__MSQ_ReSize = (WOW_RETAIL and ActionTypes[bType]) or nil
 
 	local EmptyType = EmptyTypes[bType]
 	Button.__MSQ_EmptyType = EmptyType
@@ -252,26 +251,27 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	end
 
 	-- Backdrop
-	-- * Only buttons that can be seen while empty need backdrops.
-	if EmptyType then
-		local FloatingBG = Button.FloatingBG or Regions.Backdrop
+	local FloatingBG = Button.FloatingBG or Regions.Backdrop
 
-		if Disabled then
-			Backdrop = (FloatingBG and true) or false
-		end
-
-		SkinBackdrop(Backdrop, FloatingBG, Button, Skin.Backdrop, Colors.Backdrop, xScale, yScale)
+	if Disabled then
+		Backdrop = (FloatingBG and true) or false
 	end
 
-	-- Icon
-	local Icon = Regions.Icon
+	SkinBackdrop(Backdrop, FloatingBG, Button, Skin.Backdrop, Colors.Backdrop, xScale, yScale)
 
-	if Icon then
-		SkinIcon(Icon, Button, Skin.Icon, xScale, yScale)
+	-- Icon/SlotIcon
+	if bType == "Backpack" and WOW_RETAIL then
+		SkinSlotIcon(Enabled, Button, Skin.SlotIcon, Colors.SlotIcon, xScale, yScale)
+	else
+		local Icon = Regions.Icon
+
+		if Icon then
+			SkinIcon(Icon, Button, Skin.Icon, xScale, yScale)
+		end
 	end
 
 	-- Shadow
-	Shadow = (Shadow and not Disabled) or false
+	Shadow = (Shadow and Enabled) or false
 	SkinShadow(Shadow, Button, Skin.Shadow, Colors.Shadow, xScale, yScale)
 
 	-- Normal
@@ -299,36 +299,39 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 		end
 	end
 
-	-- Toggle Icon backdrops.
-	if Button.SetItemButtonTexture then
-		SetIconBackdrop(Button)
-	end
+	-- Dragonflight Stuff
+	if WOW_RETAIL then
+		-- Toggle Icon backdrops.
+		if Button.SetItemButtonTexture then
+			SetIconBackdrop(Button)
+		end
 
-	-- Set the button art.
-	if Button.UpdateButtonArt then
-		SetButtonArt(Button)
-	end
+		-- Set the button art.
+		if Button.UpdateButtonArt then
+			SetButtonArt(Button)
+		end
 
-	-- Set the button art.
-	if Button.UpdateTextures then
-		Hook_UpdateTextures(Button)
-	end
+		-- Set the button art.
+		if Button.UpdateTextures then
+			Hook_UpdateTextures(Button)
+		end
 
-	-- Hooks
-	for Method, Hook in pairs(Hook_Methods) do
-		if Button[Method] then
-			local Key = "__MSQ_"..Method
-			local ExitKey = "__MSQ_Exit_"..Method
+		-- Hooks
+		for Method, Hook in pairs(Hook_Methods) do
+			if Button[Method] then
+				local Key = "__MSQ_"..Method
+				local ExitKey = "__MSQ_Exit_"..Method
 
-			if Disabled then
-				Button[ExitKey] = true
-			else
-				if not Button[Key] then
-					hooksecurefunc(Button, Method, Hook)
-					Button[Key] = true
+				if Disabled then
+					Button[ExitKey] = true
+				else
+					if not Button[Key] then
+						hooksecurefunc(Button, Method, Hook)
+						Button[Key] = true
+					end
+
+					Button[ExitKey] = nil
 				end
-
-				Button[ExitKey] = nil
 			end
 		end
 	end
@@ -341,7 +344,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	end
 
 	-- Gloss
-	Gloss = (Gloss and not Disabled) or false
+	Gloss = (Gloss and Enabled) or false
 	SkinGloss(Gloss, Button, Skin.Gloss, Colors.Gloss, xScale, yScale)
 
 	-- NewItem

@@ -158,7 +158,7 @@ MRT.Options.InBlizzardInterface:Hide()
 MRT.Options.InBlizzardInterface:SetScript("OnShow",function (self)
 	if MRT.is10 then
 		if SettingsPanel:IsShown() then
-			SettingsPanel:Hide()
+			HideUIPanel(SettingsPanel)
 		end
 	else
 		if InterfaceOptionsFrame:IsShown() then
@@ -172,7 +172,7 @@ end)
 MRT.Options.InBlizzardInterface.button = ELib:Button(MRT.Options.InBlizzardInterface,"Method Raid Tools",0):Size(400,25):Point("TOP",0,-100):OnClick(function ()
 	if MRT.is10 then
 		if SettingsPanel:IsShown() then
-			SettingsPanel:Hide()
+			HideUIPanel(SettingsPanel)
 		end
 	else
 		if InterfaceOptionsFrame:IsShown() then
@@ -260,6 +260,13 @@ MiniMapIcon:SetScript("OnLeave", function(self)
 	self.anim:Stop()
 	self.iconMini:Hide()
 end)
+if MRT.is10 then
+	MiniMapIcon.icon:SetSize(20,20)
+	MiniMapIcon.iconMini:SetSize(20,20)
+	MiniMapIcon.icon:SetPoint("CENTER",1,0)
+	MiniMapIcon.iconMini:SetPoint("CENTER", 1, 0)
+end
+
 
 
 MiniMapIcon.anim = MiniMapIcon:CreateAnimationGroup()
@@ -308,12 +315,15 @@ local function IconMoveButton(self)
 		if y > 0 then q = q + 2 end
 		local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
 		local quadTable = minimapShapes[minimapShape]
+		local w = (Minimap:GetWidth() / 2) + 5
+		local h = (Minimap:GetHeight() / 2) + 5
 		if quadTable[q] then
-			x, y = x*111, y*111
+			x, y = x*w, y*h
 		else
-			local diagRadius = 146.97770542341 --103.13708498985 --math.sqrt(2*(80)^2)-10
-			x = math.max(-111, math.min(x*diagRadius, 111))
-			y = math.max(-111, math.min(y*diagRadius, 111))
+			local diagRadiusW = sqrt(2*(w)^2)-10
+			local diagRadiusH = sqrt(2*(h)^2)-10
+			x = max(-w, min(x*diagRadiusW, w))
+			y = max(-h, min(y*diagRadiusH, h))
 		end
 		self:ClearAllPoints()
 		self:SetPoint("CENTER", Minimap, "CENTER", x, y)

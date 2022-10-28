@@ -17,12 +17,14 @@ U1RegisterAddon("BlizzMove", {
         default = 1,
         --删除Callback是因为初始DB的情况无法处理，只能用U1GetCfgValue
     },
+--[[
     {
         var = "movecastbar",
         text = "允许移动施法条",
         tip = "说明`允许移动施法条，施法条出现的时候，用鼠标拖动就可以移了，建议炉石的时候移。注意，开启此选项后，鼠标将无法透过施法条点击，另外此选项可能跟某些插件冲突，导致找不到施法条，请关闭并重载界面。",
         reload = 1,
     },
+]]
     {
         text = "重置所有面板位置",
         callback = function(cfg, v, loading)

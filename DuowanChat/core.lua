@@ -219,7 +219,7 @@ function DuowanChat:OnInitialize()
     -- generateIconMap()
     if (not db.userPlaced) then
         db.userPlaced = true;
-        DEFAULT_CHAT_FRAME:SetUserPlaced(false);
+        --DEFAULT_CHAT_FRAME:SetUserPlaced(false);
     end
 
     wipe(self.cbuttons);
@@ -643,7 +643,7 @@ function DuowanChat:FCF_UpdateDockPosition()
 end
 
 function DuowanChat:FCF_ResetChatWindows()
-    DEFAULT_CHAT_FRAME:SetUserPlaced(false);
+    --DEFAULT_CHAT_FRAME:SetUserPlaced(false);
     self:FCF_UpdateDockPosition();
 end
 

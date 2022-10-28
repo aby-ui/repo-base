@@ -1,4 +1,4 @@
-﻿local XLoot = LibStub("AceAddon-3.0"):NewAddon(select(2, ...), "XLoot")
+local XLoot = LibStub("AceAddon-3.0"):NewAddon(select(2, ...), "XLoot")
 _G.XLoot = XLoot
 local L = XLoot.L
 local print, wprint = print, print
@@ -135,7 +135,7 @@ function XLoot:OnEnable()
 			DisableAddOn(name)
 			wprint(("|c2244dd22XLoot|r now includes |c2244dd22%s|r - the old version will be disabled on next load, and no longer needs to be installed."):format(name))
 		end
-	end	
+	end
 
 	-- Create option stub
 	local stub = CreateFrame("Frame", "XLootConfigPanel", UIParent)
@@ -145,5 +145,4 @@ function XLoot:OnEnable()
 	stub:SetScript("OnShow", function() self:ShowOptionPanel(self) end)
 	self:SetSlashCommand("xloot", function() self:ShowOptionPanel(self) end)
 end
-
 

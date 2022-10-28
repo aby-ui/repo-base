@@ -264,3 +264,10 @@ debugFrame:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 --endregion
+
+do
+    --10.0似乎改成了QuestInfoFrame, 但好像已经不是渐显的了
+    if QuestLogFrame then
+        CoreHookScript(QuestLogFrame, "OnShow", function() QuestInfoDescriptionText:SetAlphaGradient(1024, QUEST_DESCRIPTION_GRADIENT_LENGTH); end, true)
+    end
+end

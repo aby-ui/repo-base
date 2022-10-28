@@ -164,6 +164,8 @@ local function CreateToolButton(id)
             GameTooltip:AddLine("ALT+"..KEY_BUTTON1..": "..L["create new"])
         end
 
+        button:RegisterForClicks("AnyUp")
+
         button:SetScript("OnClick", function(self, arg1)
             if arg1 == "LeftButton" then
                 if (IsAltKeyDown() or IsControlKeyDown()) and not IsShiftKeyDown() then

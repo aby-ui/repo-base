@@ -162,7 +162,7 @@ CheckButton	ExRTRadioButtonModernTemplate
 local GlobalAddonName, ExRT = ...
 local isExRT = GlobalAddonName == "MRT"
 
-local libVersion = 42
+local libVersion = 43
 
 if type(ELib)=='table' and type(ELib.V)=='number' and ELib.V > libVersion then return end
 
@@ -1811,9 +1811,9 @@ do
 			self._Size = self.Size
 			self.Size = Widget_Size
 
-			self.text:SetFont(self.text:GetFont(),10)
-			self.Low:SetFont(self.Low:GetFont(),10)
-			self.High:SetFont(self.High:GetFont(),10)
+			self.text:SetFont(self.text:GetFont(),10,"")
+			self.Low:SetFont(self.Low:GetFont(),10,"")
+			self.High:SetFont(self.High:GetFont(),10,"")
 		end
 
 		return self
@@ -2635,7 +2635,7 @@ do
 		if template and size then
 			local filename = self:GetFont()
 			if filename then
-				self:SetFont(filename,size)
+				self:SetFont(filename,size,"")
 			end
 		end
 		self:SetJustifyH("LEFT")
@@ -3097,7 +3097,7 @@ do
 	end
 	local function Widget_SetFontSize(self,size)
 		local obj = self:GetFontString()
-		obj:SetFont(obj:GetFont(),size)
+		obj:SetFont(obj:GetFont(),size,"")
 
 		return self
 	end
@@ -3211,7 +3211,7 @@ do
 		return self
 	end
 	local function Widget_TextSize(self,size)
-		self.text:SetFont(self.text:GetFont(),size)
+		self.text:SetFont(self.text:GetFont(),size,"")
 		return self
 	end
 
@@ -3869,12 +3869,12 @@ do
 		self.fontSize = size
 		if not self.T then
 			for i=1,#self.List do
-				self.List[i].text:SetFont(self.List[i].text:GetFont(),size)
+				self.List[i].text:SetFont(self.List[i].text:GetFont(),size,"")
 			end
 		else
 			for i=1,#self.List do
 				for j=1,#self.T do
-					self.List[i]['text'..j]:SetFont(self.List[i]['text'..j]:GetFont(),size)
+					self.List[i]['text'..j]:SetFont(self.List[i]['text'..j]:GetFont(),size,"")
 				end
 			end
 		end
@@ -3885,12 +3885,12 @@ do
 		self.fontName = fontName
 		if not self.T then
 			for i=1,#self.List do
-				self.List[i].text:SetFont(fontName,fontSize)
+				self.List[i].text:SetFont(fontName,fontSize,"")
 			end
 		else
 			for i=1,#self.List do
 				for j=1,#self.T do
-					self.List[i]['text'..j]:SetFont(fontName,fontSize)
+					self.List[i]['text'..j]:SetFont(fontName,fontSize,"")
 				end
 			end
 		end
@@ -4092,7 +4092,7 @@ do
 		self:SetBackdrop({edgeFile = DEFAULT_BORDER, edgeSize = 8})
 
 		self:SetScript("OnEnter",function ()
-			self:SetBackdropBorderColor(0.5,1,0,5,1)
+			self:SetBackdropBorderColor(0.5,1,0.5,1)
 		end)
 		self:SetScript("OnLeave",function ()
 		  	self:SetBackdropBorderColor(1,1,1,1)
@@ -4478,7 +4478,7 @@ function ELib.ScrollDropDown:Reload(level)
 						if not font then
 							font = CreateFont(GlobalAddonName.."DropDownListFont"..now)
 						end
-						font:SetFont(data.font,12)
+						font:SetFont(data.font,12,"")
 						font:SetShadowOffset(1,-1)
 						font:SetShadowColor(0,0,0)
 						button:SetNormalFontObject(font)
@@ -5809,7 +5809,7 @@ do
 		self.posText:SetJustifyH("RIGHT")
 		self.posText:SetJustifyV("BOTTOM")
 		self.posText:SetPoint("BOTTOMRIGHT",-22,2)
-		self.posText:SetFont(self.posText:GetFont(),8)
+		self.posText:SetFont(self.posText:GetFont(),8,"")
 		self.posText:SetAlpha(0.4)
 
 		self.OnPosText = function(self)
@@ -6002,7 +6002,7 @@ function ELib:FixPreloadFont(parent,fontObj,font,size,params)
 				self:Hide()
 			end
 		else
-			fontObj:SetFont(GameFontWhite:GetFont(), size - 1)
+			fontObj:SetFont(GameFontWhite:GetFont(), size - 1,"")
 			fontObj:SetFont(font, size, params)
 			self:SetScript("OnUpdate",nil)
 			self:Hide()

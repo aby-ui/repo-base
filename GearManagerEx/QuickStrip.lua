@@ -124,7 +124,7 @@ local function StripOff()
                 if bag == 0 then
                     PutItemInBackpack()
                 else
-                    PutItemInBag(19 + bag)
+                    PutItemInBag(ContainerIDToInventoryID(bag))
                 end
             end
             addon.db.stripped = addon.db.stripped or {}

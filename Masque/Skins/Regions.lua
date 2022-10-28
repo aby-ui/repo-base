@@ -68,6 +68,10 @@ local Legacy = {
 			NoTexture = true,
 		},
 	},
+	SlotIcon = {
+		CanHide = true,
+		Ignore = true,
+	},
 	-- [ ARTWORK (-1) ]
 	Shadow = {
 		CanHide = true,

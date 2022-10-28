@@ -79,13 +79,13 @@ function Core.SkinMask(Region, Button, Skin, xScale, yScale)
 					ButtonMask:SetAtlas(Atlas, UseAtlasSize)
 
 					if not UseAtlasSize then
-						ButtonMask:SetSize(GetSize(SkinMask.Width, SkinMask.Height, xScale, yScale, Button.__MSQ_ReSize))
+						ButtonMask:SetSize(GetSize(SkinMask.Width, SkinMask.Height, xScale, yScale, Button))
 					end
 
 					SetPoints(RegionMask, Region, SkinMask, nil, SkinMask.SetAllPoints)
 				elseif Texture then
 					RegionMask:SetTexture(Texture, SkinMask.WrapH, SkinMask.WrapV)
-					RegionMask:SetSize(GetSize(SkinMask.Width, SkinMask.Height, xScale, yScale, Button.__MSQ_ReSize))
+					RegionMask:SetSize(GetSize(SkinMask.Width, SkinMask.Height, xScale, yScale, Button))
 					SetPoints(RegionMask, Region, SkinMask, nil, SkinMask.SetAllPoints)
 				end
 			elseif Type == "string" then
@@ -119,13 +119,13 @@ function Core.SkinMask(Region, Button, Skin, xScale, yScale)
 				ButtonMask:SetAtlas(Atlas, UseAtlasSize)
 
 				if not UseAtlasSize then
-					ButtonMask:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+					ButtonMask:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
 				end
 
 				SetPoints(ButtonMask, Button, Skin, nil, Skin.SetAllPoints)
 			elseif Texture then
 				ButtonMask:SetTexture(Texture, Skin.WrapH, Skin.WrapV)
-				ButtonMask:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+				ButtonMask:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
 				SetPoints(ButtonMask, Button, Skin, nil, Skin.SetAllPoints)
 			end
 		elseif Type == "string" then

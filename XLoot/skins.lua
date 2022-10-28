@@ -1,4 +1,4 @@
-﻿local XLoot = select(2, ...)
+local XLoot = select(2, ...)
 local lib = {
 	skins = {},
 	masque_tweaks = {},
@@ -178,7 +178,7 @@ do
 	end
 
 	local function SetGradientColor(self, r, g, b, a)
-		self.gradient:SetGradient('VERTICAL', CreateColor(.1, .1, .1, 0), CreateColor(r, g, b, a))
+		self.gradient:SetGradient('VERTICAL', CreateColor(0.1, 0.1, 0.1, 0), CreateColor(r, g, b, a))
 	end
 
 	function lib:Gradient(frame)
@@ -463,5 +463,4 @@ end
 function XLoot:SetSkin(name)
 	lib.current = lib.skins[lib.skins[name] and name or 'smooth']
 end
-
 

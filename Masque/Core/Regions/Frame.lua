@@ -58,7 +58,7 @@ local MSQ_SWIPE_CIRCLE = [[Interface\AddOns\Masque\Textures\Cooldown\Swipe-Circl
 
 -- Sets the size and points of a frame.
 local function SkinFrame(Region, Button, Skin, xScale, yScale)
-	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
 end
 

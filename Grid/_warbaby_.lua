@@ -554,7 +554,7 @@ end
 local onUpdateFrameFuncs
 local function hideBlizzardRaids(hide)
     if not GetDisplayedAllyFrames or not CompactRaidFrameManager or not CompactRaidFrameContainer then
-        DEFAULT_CHAT_FRAME:AddMessage("此选项不适合此游戏版本")
+        DEFAULT_CHAT_FRAME:AddMessage("此选项不适合此游戏版本(Grid屏蔽自带团队框体)") --TODO:abyui10
         return false
     end
     if InCombatLockdown() then DEFAULT_CHAT_FRAME:AddMessage("此选项无法在战斗中设置，请脱战后重试") return false end

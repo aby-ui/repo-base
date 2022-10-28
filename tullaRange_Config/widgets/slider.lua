@@ -7,7 +7,15 @@ local Slider = Addon.Classy:New('Slider')
 Addon.Slider = Slider
 
 function Slider:New(name, parent, low, high, step)
-    local f = self:Bind(CreateFrame('Slider', parent:GetName() .. '_' .. name, parent, 'OptionsSliderTemplate'))
+    local f
+
+    if SettingsPanel then
+        f = self:Bind(CreateFrame('Slider', parent:GetName() .. '_' .. name, parent, 'UISliderTemplateWithLabels'))
+        f:SetSize(144, 17)
+    else
+        f = self:Bind(CreateFrame('Slider', parent:GetName() .. '_' .. name, parent, 'OptionsSliderTemplate'))
+    end
+
     f:SetMinMaxValues(low, high)
     f:SetValueStep(step)
     f:EnableMouseWheel(true)

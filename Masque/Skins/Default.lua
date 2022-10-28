@@ -55,7 +55,7 @@ local Skin = {
 		OffsetY = 0,
 		BagSlot = {
 			Key = "CircleMask",
-			Texture = "Interface\\CharacterFrame\\TempPortraitAlphaMask",
+			Texture = [[Interface\CharacterFrame\TempPortraitAlphaMask]],
 			WrapH = "CLAMPTOBLACKADDITIVE",
 			WrapV = "CLAMPTOBLACKADDITIVE",
 			Width = 28,
@@ -167,6 +167,7 @@ local Skin = {
 			-- SetAllPoints = nil,
 		},
 	},
+	SlotIcon = Hidden,
 	Shadow = Hidden,
 	Normal = {
 		Atlas = "UI-HUD-ActionBar-IconFrame",
@@ -274,8 +275,8 @@ local Skin = {
 		RelPoint = "CENTER",
 		OffsetX = 1,
 		OffsetY = -0.5,
-		-- UseColor = nil,
 		-- SetAllPoints = nil,
+		-- UseColor = nil,
 		Backpack = {
 			Atlas = "bag-main",
 			UseAtlasSize = false,
@@ -291,6 +292,7 @@ local Skin = {
 			OffsetX = 0,
 			OffsetY = 0,
 			--SetAllPoints = true,
+			-- UseColor = nil,
 		},
 		BagSlot = {
 			Atlas = "bag-border",
@@ -307,6 +309,7 @@ local Skin = {
 			OffsetX = 0,
 			OffsetY = 0,
 			SetAllPoints = true,
+			-- UseColor = nil,
 		},
 		Item = {
 			Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
@@ -354,8 +357,8 @@ local Skin = {
 		RelPoint = "CENTER",
 		OffsetX = 0.5,
 		OffsetY = -0.5,
-		-- UseColor = nil,
 		-- SetAllPoints = nil,
+		-- UseColor = nil,
 		Item = {
 			Atlas = "bags-glow-flash",
 			UseAtlasSize = true,
@@ -369,8 +372,8 @@ local Skin = {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseColor = nil,
 			-- SetAllPoints = nil,
+			-- UseColor = nil,
 		},
 	},
 	HotKey = {
@@ -517,7 +520,7 @@ local Skin = {
 			OffsetY = 0,
 			-- SetAllPoints = nil,
 		},
-		IconBorder = {
+		Item = {
 			Texture = [[Interface\Common\WhiteIconFrame]],
 			-- TexCoords = {0, 1, 0, 1},
 			-- Color = {1, 1, 1, 1},
@@ -703,7 +706,7 @@ local Skin = {
 		-- SetAllPoints = nil,
 	},
 	NewItem = {
-		Atlas = "bags-glow-green",
+		Atlas = "bags-glow-white",
 		UseAtlasSize = true,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "ADD",
@@ -779,8 +782,8 @@ local Skin = {
 		RelPoint = "CENTER",
 		OffsetX = 0.5,
 		OffsetY = 0,
-		-- UseColor = nil,
 		-- SetAllPoints = nil,
+		-- UseColor = nil,
 		Backpack = {
 			Atlas = "bag-main-highlight",
 			UseAtlasSize = false,
@@ -796,6 +799,7 @@ local Skin = {
 			OffsetX = 0,
 			OffsetY = 0,
 			-- SetAllPoints = nil,
+			-- UseColor = nil,
 		},
 		BagSlot = {
 			Atlas = "bag-border-highlight",
@@ -812,6 +816,7 @@ local Skin = {
 			OffsetX = 0,
 			OffsetY = 0,
 			-- SetAllPoints = nil,
+			-- UseColor = nil,
 		},
 		Item = {
 			Texture = [[Interface\Buttons\ButtonHilight-Square]],
@@ -826,8 +831,8 @@ local Skin = {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseColor = nil,
 			-- SetAllPoints = nil,
+			-- UseColor = nil,
 		},
 	},
 	AutoCastShine = {

@@ -554,6 +554,7 @@ function OmniBar:AddBarToOptions(key, refresh)
 					set[option] = state
 					OmniBar_SavePosition(_G[key], set)
 					OmniBar_LoadPosition(_G[key])
+					OmniBar_Position(_G[key])
 				end,
 				args = {
 					reset = {
@@ -1101,7 +1102,7 @@ function OmniBar:SetupOptions()
 			vers = {
 				order = 1,
 				type = "description",
-				name = "|cffffd700"..L["Version"].."|r "..GetAddOnMetadata("OmniBar", "Version").."\n",
+				name = "|cffffd700"..L["Version"].."|r "..self.version.string.."\n",
 				cmdHidden = true
 			},
 			desc = {

@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2505, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220820005632")
+mod:SetRevision("20221028002025")
 mod:SetCreatureID(186739)
 mod:SetEncounterID(2585)
 --mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221027000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -13,32 +13,33 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 372222 385578 384223 373932 384132",
---	"SPELL_CAST_SUCCESS",
---	"SPELL_AURA_APPLIED",
---	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED 384132",
+	"SPELL_AURA_REMOVED 384132"
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
-	"UNIT_DIED"
---	"UNIT_SPELLCAST_SUCCEEDED boss1"
+--	"UNIT_DIED"
 )
 
 --TODO, number of images spawned for tracking
---TODO, change arcane orb to personal alert if target scanner works
+--TODO, change arcane orb to personal alert if target scanner works or remove yell if it doesn't
 --TODO, timers restart on overwhelming energy end? Does timer for next overwhelming start at cast of previous, or end of previous?
+--[[
+(ability.id = 372222 or ability.id = 385578 or ability.id = 384223 or ability.id = 384132) and type = "begincast"
+ or ability.id = 384132 and type = "removebuff"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 local warnSummonDraconicImage					= mod:NewSpellAnnounce(384223, 3)
 
-local specWarnArcaneSlicer						= mod:NewSpecialWarningSpell(372222, nil, nil, nil, 1, 2)
-local specWarnArcaneOrb							= mod:NewSpecialWarningDodge(385578, nil, nil, nil, 2, 2)
-local yellArcaneOrb								= mod:NewYell(385578)
+local specWarnArcaneCleave						= mod:NewSpecialWarningSpell(372222, nil, nil, nil, 1, 2)
+local specWarnAncientOrb						= mod:NewSpecialWarningDodge(385578, nil, nil, nil, 2, 2)
+local yellAncientOrb							= mod:NewYell(385578)
 local specWarnIllusionaryBolt					= mod:NewSpecialWarningInterrupt(373932, "HasInterrupt", nil, nil, 1, 2)
 local specWarnOverwhelmingEnergy				= mod:NewSpecialWarningSpell(384132, nil, nil, nil, 2, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerArcaneSlicerCD						= mod:NewAITimer(35, 372222, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
-local timerArcaneOrbCD							= mod:NewAITimer(35, 385578, nil, nil, nil, 3)
-local timerSummonDraconicImageCD				= mod:NewAITimer(35, 384223, nil, nil, nil, 1)
-local timerOverwhelmingenergyCD					= mod:NewAITimer(35, 384132, nil, nil, nil, 6)
+local timerArcaneCleaveCD						= mod:NewCDTimer(13.3, 372222, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--13.3-15
+local timerAncientOrbCD							= mod:NewCDTimer(15.7, 385578, nil, nil, nil, 3)
+local timerSummonDraconicImageCD				= mod:NewCDTimer(14.2, 384223, nil, nil, nil, 1)
+local timerOverwhelmingenergyCD					= mod:NewCDTimer(35, 384132, nil, nil, nil, 6)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -46,18 +47,18 @@ local timerOverwhelmingenergyCD					= mod:NewAITimer(35, 384132, nil, nil, nil, 
 --mod:AddInfoFrameOption(361651, true)
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
-function mod:EruptionTarget(targetname)
+function mod:OrbTarget(targetname)
 	if not targetname then return end
 	if targetname == UnitName("player") then
-		yellArcaneOrb:Yell()
+		yellAncientOrb:Yell()
 	end
 end
 
 function mod:OnCombatStart(delay)
-	timerArcaneSlicerCD:Start(1-delay)
-	timerArcaneOrbCD:Start(1-delay)
-	timerSummonDraconicImageCD:Start(1-delay)
-	timerOverwhelmingenergyCD:Start(1-delay)
+	timerSummonDraconicImageCD:Start(4-delay)
+	timerArcaneCleaveCD:Start(5.2-delay)
+	timerAncientOrbCD:Start(10.1-delay)
+	timerOverwhelmingenergyCD:Start(25.5-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -73,15 +74,15 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 372222 then
 		if self:IsTanking("player", "boss1", nil, true) then
-			specWarnArcaneSlicer:Show()
-			specWarnArcaneSlicer:Play("shockwave")
+			specWarnArcaneCleave:Show()
+			specWarnArcaneCleave:Play("shockwave")
 		end
-		timerArcaneSlicerCD:Start()
+		timerArcaneCleaveCD:Start()
 	elseif spellId == 385578 then
-		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "EruptionTarget", 0.1, 8, true)
-		specWarnArcaneOrb:Show()
-		specWarnArcaneOrb:Play("watchorb")
-		timerArcaneOrbCD:Start()
+		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "OrbTarget", 0.1, 8, true)
+		specWarnAncientOrb:Show()
+		specWarnAncientOrb:Play("watchorb")
+		timerAncientOrbCD:Start()
 	elseif spellId == 384223 then
 		warnSummonDraconicImage:Show()
 		timerSummonDraconicImageCD:Start()
@@ -89,19 +90,11 @@ function mod:SPELL_CAST_START(args)
 		specWarnIllusionaryBolt:Show(args.sourceName)
 		specWarnIllusionaryBolt:Play("kickcast")
 	elseif spellId == 384132 then
-		timerArcaneSlicerCD:Stop()
-		timerArcaneOrbCD:Stop()
+		timerArcaneCleaveCD:Stop()
+		timerAncientOrbCD:Stop()
 		timerSummonDraconicImageCD:Stop()
 		specWarnOverwhelmingEnergy:Show()
 		specWarnOverwhelmingEnergy:Play("phasechange")
-		--timerOverwhelmingenergyCD:Start()
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 362805 then
-
 	end
 end
 
@@ -111,15 +104,14 @@ function mod:SPELL_AURA_APPLIED(args)
 
 	end
 end
---mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 384132 then
-		timerArcaneSlicerCD:Start(2)
-		timerArcaneOrbCD:Start(2)
-		timerSummonDraconicImageCD:Start(2)
-		timerOverwhelmingenergyCD:Start(2)
+		timerSummonDraconicImageCD:Start(4.7)--4.7-5.4
+		timerArcaneCleaveCD:Start(7.1)--7.1-7.8
+		timerAncientOrbCD:Start(12)--12-12.7
+		timerOverwhelmingenergyCD:Start(45.5)
 	end
 end
 

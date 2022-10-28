@@ -1,9 +1,9 @@
 ## Interface: 100000
 ## Title: Postal
-## Version: v3.8.2
-## X-Build: 529
-## X-ReleaseDate: 2022-09-09T17:24:21Z
-## X-Revision: 529
+## Version: r531
+## X-Build: 531
+## X-ReleaseDate: 2022-10-28T4:40:13Z
+## X-Revision: 531
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
@@ -25,7 +25,7 @@ Localization.lua
 Postal.lua
 
 # Users can comment out any module (or delete the .lua) of any module they do not wish to load
-Modules\Express.lua
+##Modules\Express.lua
 Modules\OpenAll.lua
 Modules\Wire.lua
 Modules\Select.lua
@@ -35,7 +35,7 @@ Modules\BlackBook.lua
 Modules\DoNotWant.lua
 Modules\CarbonCopy.lua
 Modules\Forward.lua
-Modules\QuickAttach.lua
+##Modules\QuickAttach.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Postal 邮箱助手

@@ -248,7 +248,14 @@ local function SetupTutorials()
 					cWarning.."Warning:|r Hacks may affect other addons!",
 		},
 		{	-- 12
-			text = cTitle.."         What's NEW in version |r|cffffffff5.0.0|r\n\n"..
+			text = cTitle.."         What's NEW|r\n\n"..
+					cTitle.."Version 5.0.1|r\n"..
+					"- FIXED - Quests - Quest Item Buttons stopped working (Blizzard silent changes)\n"..
+					"- UPDATED - Addon support - TomTom v3.3.0-release\n"..
+					"- UPDATED - Addon support - ElvUI 12.95, Tukui 20.30\n"..
+					"- UPDATED - Help - Known issues w/o solution\n"..
+					"- IMPROVED - Addons version comparison\n\n"..
+					cTitle.."Version 5.0.0|r\n"..
 					"- ADDED - Support for WoW 10.0.0\n"..
 					"- UPDATED - Help - Supporters (Patreon)\n"..
 					"- UPDATED - Libs\n"..
@@ -256,7 +263,9 @@ local function SetupTutorials()
 
 					cTitle.."WoW 10.0.0 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
-					"- Header buttons Q and A don't work during combat.\n\n"..
+					"- Header buttons Q and A don't work during combat.\n"..
+					"- "..new.." Some errors in \"Edit Mode\". As an error prevention, "..KT.title..
+					offs.."provides Reload UI when exiting \"Edit Mode\".\n\n"..
 
 					cTitle.."Issue reporting|r\n"..
 					"For reporting please use "..cBold.."Tickets|r instead of Comments on CurseForge.\n\n\n\n"..

@@ -447,11 +447,11 @@ local function InitDB(db)
 end
 
 frame:RegisterEvent("VARIABLES_LOADED")
-frame:RegisterEvent("MERCHANT_SHOW")
-frame:RegisterEvent("MERCHANT_CLOSED")
+frame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW") --frame:RegisterEvent("MERCHANT_SHOW") --10.0 MERCHANT_SHOW的时候交互面板还没打开
+frame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE") --frame:RegisterEvent("MERCHANT_CLOSED")
 frame:RegisterEvent("PLAYER_MONEY")
 
-frame:SetScript("OnEvent", function(self, event)
+frame:SetScript("OnEvent", function(self, event, arg)
 	if event == "VARIABLES_LOADED" then
 		if type(MerchantExDB) ~= "table" then
 			MerchantExDB = {}
@@ -517,18 +517,24 @@ frame:SetScript("OnEvent", function(self, event)
             end)
         end
 
-	elseif event == "MERCHANT_SHOW" then
-        if MerchantFrame:IsVisible() then
-            addon.moneyBefore = GetMoney() or 0
-        end
-        addon.balance = addon:Interact()
-    elseif event == "MERCHANT_CLOSED" then
-        if addon.moneyBefore then
-            local total = (GetMoney() or 0) - addon.moneyBefore
-            local balance = addon.balance or 0
-            addon:Final(total, balance)
-            addon.moneyBefore = nil
-            addon.balance = nil
-        end
+	elseif event == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" and arg == Enum.PlayerInteractionType.Merchant then
+		RunOnNextFrame(function()
+			if MerchantFrame:IsVisible() then
+				addon.moneyBefore = GetMoney() or 0
+			else
+				addon.moneyBefore = nil
+			end
+			addon.balance = addon:Interact()
+		end)
+	elseif event == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" and arg == Enum.PlayerInteractionType.Merchant then
+		RunOnNextFrame(function()
+			if addon.moneyBefore then
+				local total = (GetMoney() or 0) - addon.moneyBefore
+				local balance = addon.balance or 0
+				addon:Final(total, balance)
+				addon.moneyBefore = nil
+				addon.balance = nil
+			end
+		end)
 	end
 end)

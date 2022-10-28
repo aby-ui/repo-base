@@ -4,10 +4,11 @@
 	<Script file="Backdrop.lua"/>
 	<Script file="Normal.lua"/>
 	<Script file="Icon.lua"/>
-	<Script file="Shadow.lua"/>
-	<Script file="Texture.lua"/>
 	<Script file="Gloss.lua"/>
+	<Script file="Shadow.lua"/>
+	<Script file="SlotIcon.lua"/>
 	<Script file="Text.lua"/>
+	<Script file="Texture.lua"/>
 	<Script file="IconBorder.lua"/>
 	<Script file="NewItem.lua"/>
 	<Script file="QuestBorder.lua"/>

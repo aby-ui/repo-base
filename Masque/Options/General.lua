@@ -78,6 +78,14 @@ function Setup.General(self)
 						order = 1,
 						fontSize = "medium",
 					},
+					Standlone = {
+						type = "toggle",
+						name = L["Stand-Alone GUI"],
+						desc = L["Use a resizable, stand-alone options window."],
+						get = function() return Core.db.profile.StandAlone end,
+						set = function(i, v) Core.db.profile.StandAlone = v end,
+						order = 3,
+					},
 					Icon = {
 						type = "toggle",
 						name = L["Minimap Icon"],
@@ -91,16 +99,23 @@ function Setup.General(self)
 								Core.LDBI:Show(MASQUE)
 							end
 						end,
-						order = 3,
+						order = 4,
 						disabled = function() return not Core.LDBI end,
 					},
-					Standalone = {
+					NoScale = {
 						type = "toggle",
-						name = L["Stand-Alone GUI"],
-						desc = L["Use a resizable, stand-alone options window."],
-						get = function() return Core.db.profile.StandAlone end,
-						set = function(i, v) Core.db.profile.StandAlone = v end,
-						order = 4,
+						name = L["Classic Scaling"],
+						desc = L["Use the old scaling method for action buttons."],
+						get = function() return Core.db.profile.NoScale end,
+						set = function(i, v)
+							Core.db.profile.NoScale = v
+								for ID, Group in pairs(Core.Groups) do
+									if Group.ActionButtons then
+										Group:ReSkin()
+									end
+								end
+							end,
+						order = 5,
 					},
 				},
 			},

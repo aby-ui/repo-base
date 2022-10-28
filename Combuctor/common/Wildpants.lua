@@ -46,7 +46,7 @@ local FrameDefaults = {
 	itemScale = Addon.ItemScale or 1,
 	spacing = 2,
 
-	brokerObject = Addon.Name .. 'Launcher',
+	brokerObject = 'Broker Currency', --163ui ADDON .. 'Launcher',
 	hiddenRules = {contain = true},
 	hiddenBags = {},
 
@@ -63,33 +63,40 @@ local ProfileDefaults = {
 	inventory = SetDefaults({
 		reversedTabs = true,
 		borderColor = {1, 1, 1, 1},
+		currency = true, broker = Addon.IsClassic,
 		point = 'BOTTOMRIGHT',
 		x = -50, y = 100,
-		columns = 8,
+		columns = 10,
 		width = 384,
 		height = 200,
 	}, FrameDefaults),
 
 	bank = SetDefaults({
+		exclusiveReagent = true,
 		borderColor = {1, 1, 0, 1},
+		currency = true,
 		point = 'LEFT',
-		columns = 12,
+		columns = 14,
 		width = 600,
 		height = 500,
+        showBags = true,
+        hiddenBags = {
+            [-3] = true,
+        },
 		x = 95
 	}, FrameDefaults),
 
 	vault = SetDefaults({
 		borderColor = {1, 0, 0.98, 1},
 		point = 'LEFT',
-		columns = 10,
+		columns = 14,
 		x = 95
 	}, FrameDefaults),
 
 	guild = SetDefaults({
 		borderColor = {0, 1, 0, 1},
 		point = 'CENTER',
-		columns = 7,
+		columns = 14,
 	}, FrameDefaults)
 }
 
@@ -97,7 +104,7 @@ local ProfileDefaults = {
 --[[ Startup ]]--
 
 function Addon:OnEnable()
-  CreateFrame('Frame', nil, InterfaceOptionsFrame):SetScript('OnShow', function()
+  CreateFrame('Frame', nil, InterfaceOptionsFrame or SettingsPanel):SetScript('OnShow', function()
     LoadAddOn(Addon.Name .. '_Config')
   end)
 
@@ -106,9 +113,8 @@ function Addon:OnEnable()
 		global = SetDefaults({}, ProfileDefaults),
 		profiles = {},
 
-		resetPlayer = true,
-		displayBank = true, closeBank = true, displayAuction = true, displayGuild = true, displayMail = true, displayTrade = true, displayCraft = true, displayScrapping = true,
-		flashFind = true, tipCount = true, fading = true, serverSort = true,
+		display = {banker = true, guildBanker = true, voidStorageBanker = true, crafting = true, tradePartner = true, socketing = true, auctioneer = true, merchant = true, mailInfo = true, scrappingMachine = true},
+		resetPlayer = true, flashFind = true, tipCount = true, serverSort = true,
 
 		glowAlpha = 0.5,
 		glowQuality = true, glowNew = true, glowQuest = true, glowSets = true, glowUnusable = true,

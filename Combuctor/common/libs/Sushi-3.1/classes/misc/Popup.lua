@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2021 João Cardoso
+Copyright 2008-2022 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Popup = LibStub('Sushi-3.1').Base:NewSushi('Popup', 1, 'Frame', 'StaticPopupTemplate', true)
+local Popup = LibStub('Sushi-3.1').Base:NewSushi('Popup', 2, 'Frame', 'StaticPopupTemplate', true)
 if not Popup then return end
 
 if not Popup.Layout then
@@ -37,6 +37,8 @@ function Popup:Construct()
 	f:SetScript('OnUpdate', f.OnUpdate)
 	f:SetScript('OnHide', nil)
 	f:SetScript('OnShow', nil)
+	f.text:SetPoint('TOPLEFT', 0,-20)
+	f.text:SetPoint('TOPRIGHT', 0,-20)
 	return f
 end
 
@@ -224,6 +226,8 @@ function Popup:Update()
 
 	self.data = info.item
   self.text:SetText(info.text)
+	self.text:Show()
+	self.text:SetHeight(self.text:GetNumLines() * 14)
   self.CoverFrame:SetShown(info.fullScreenCover)
 
   -- Show or hide the close button

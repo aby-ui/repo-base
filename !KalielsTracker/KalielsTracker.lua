@@ -1121,7 +1121,7 @@ local function SetHooks()
 				button.text:SetJustifyH("LEFT")
 				button.text:SetPoint("TOPLEFT", button.icon, 1, -3)
 
-				button:RegisterForClicks("AnyDown")
+				button:RegisterForClicks("AnyUp", "AnyDown")
 
 				button:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
 				do local tex = button:GetNormalTexture()

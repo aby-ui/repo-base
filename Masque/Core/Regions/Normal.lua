@@ -192,7 +192,7 @@ function Core.SkinNormal(Region, Button, Skin, Color, xScale, yScale)
 	Region:SetDrawLayer(Skin.DrawLayer or "ARTWORK", Skin.DrawLevel or 0)
 
 	if not Skin.UseAtlasSize then
-		Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button.__MSQ_ReSize))
+		Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
 	end
 
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)

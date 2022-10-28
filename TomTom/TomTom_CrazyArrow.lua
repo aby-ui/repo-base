@@ -9,6 +9,7 @@
 local sformat = string.format
 local L = TomTomLocals
 local ldb = LibStub("LibDataBroker-1.1")
+local ldd = LibStub('LibDropDown')
 
 local function ColorGradient(perc, ...)
 	local num = select("#", ...)
@@ -329,19 +330,52 @@ wayframe:SetScript("OnUpdate", OnUpdate)
 --  Dropdown
 -------------------------------------------------------------------------]]--
 
-local dropdown_info = {
-	-- Define level one elements here
-	[1] = {
+local function initDropdown(parent)
+	local menu = ldd:NewMenu(wayframe, 'MyFrameDropDown')
+	menu:SetAnchor("TOPLEFT", parent, "CENTER", 25, -25)
+
+	local dropdownInfo = {
 		{
-			-- Title
+			isTitle = true,
 			text = L["TomTom Waypoint Arrow"],
-			isTitle = 1,
 		},
 		{
-			-- Send waypoint
 			text = L["Send waypoint to"],
-			hasArrow = true,
-			value = "send",
+			menu = {
+				{
+					-- Title
+					text = L["Waypoint communication"],
+					isTitle = true,
+				},
+				{
+					-- Party
+					text = L["Send to party"],
+					func = function()
+						TomTom:SendWaypoint(TomTom.dropdown_uid, "PARTY")
+					end
+				},
+				{
+					-- Raid
+					text = L["Send to raid"],
+					func = function()
+						TomTom:SendWaypoint(TomTom.dropdown_uid, "RAID")
+					end
+				},
+				{
+					-- Battleground
+					text = L["Send to battleground"],
+					func = function()
+						TomTom:SendWaypoint(TomTom.dropdown_uid, "BATTLEGROUND")
+					end
+				},
+				{
+					-- Guild
+					text = L["Send to guild"],
+					func = function()
+						TomTom:SendWaypoint(TomTom.dropdown_uid, "GUILD")
+					end
+				},
+			},
 		},
 		{
 			-- Clear waypoint from crazy arrow
@@ -392,79 +426,18 @@ local dropdown_info = {
 			end,
 			isNotRadio = true,
 		}
-	},
-    [2] = {
-        send = {
-            {
-                -- Title
-                text = L["Waypoint communication"],
-                isTitle = true,
-            },
-            {
-                -- Party
-                text = L["Send to party"],
-                func = function()
-                    TomTom:SendWaypoint(TomTom.dropdown.uid, "PARTY")
-                end
-            },
-            {
-                -- Raid
-                text = L["Send to raid"],
-                func = function()
-                    TomTom:SendWaypoint(TomTom.dropdown.uid, "RAID")
-                end
-            },
-            {
-                -- Battleground
-                text = L["Send to battleground"],
-                func = function()
-                    TomTom:SendWaypoint(TomTom.dropdown.uid, "BATTLEGROUND")
-                end
-            },
-            {
-                -- Guild
-                text = L["Send to guild"],
-                func = function()
-                    TomTom:SendWaypoint(TomTom.dropdown.uid, "GUILD")
-                end
-            },
-        },
-    },
-}
+	}
 
-local function init_dropdown(self, level)
-	-- Make sure level is set to 1, if not supplied
-	level = level or 1
-
-	-- Get the current level from the info table
-	local info = dropdown_info[level]
-
-	-- If a value has been set, try to find it at the current level
-	if level > 1 and UIDROPDOWNMENU_MENU_VALUE then
-		if info[UIDROPDOWNMENU_MENU_VALUE] then
-			info = info[UIDROPDOWNMENU_MENU_VALUE]
-		end
-	end
-
-	-- Add the buttons to the menu
-	for idx,entry in ipairs(info) do
-		if type(entry.checked) == "function" then
-			-- Make this button dynamic
-			local new = {}
-			for k,v in pairs(entry) do new[k] = v end
-			new.checked = new.checked()
-			entry = new
-		end
-		UIDropDownMenu_AddButton(entry, level)
-	end
+	menu:AddLines(unpack(dropdownInfo))
+	return menu
 end
 
+local wayframeMenu = initDropdown(wayframe)
 local function WayFrame_OnClick(self, button)
 	if active_point then
 		if TomTom.db.profile.arrow.menu then
-			TomTom.dropdown.uid = active_point
-			UIDropDownMenu_Initialize(TomTom.dropdown, init_dropdown)
-			ToggleDropDownMenu(1, nil, TomTom.dropdown, "cursor", 0, 0)
+			TomTom.dropdown_uid = active_point
+			wayframeMenu:Toggle()
 		end
 	end
 end

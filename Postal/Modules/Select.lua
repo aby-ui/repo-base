@@ -105,7 +105,7 @@ function Postal_Select:OnEnable()
 	--now create the checkboxes
 	for i = 1, 7 do
 		if not _G["PostalInboxCB"..i] then
-			local CB = CreateFrame("CheckButton", "PostalInboxCB"..i, _G["MailItem"..i], "OptionsCheckButtonTemplate")
+			local CB = CreateFrame("CheckButton", "PostalInboxCB"..i, _G["MailItem"..i], "InterfaceOptionsCheckButtonTemplate")
 			CB:SetID(i)
 			CB:SetPoint("RIGHT", "MailItem"..i, "LEFT", 1, -5)
 			CB:SetWidth(24)

@@ -124,6 +124,7 @@ U1RegisterAddon("!!!163UI!!!", {
         },
     },
     --]]
+    --[==[ --TODO:abyui10
     {
         var = "hideCompactRaid",
         text = L["完全屏蔽默认的团队框架"],
@@ -133,7 +134,7 @@ U1RegisterAddon("!!!163UI!!!", {
         callback = function(cfg, v, loading)
             if loading and not v then return end
             if not GetDisplayedAllyFrames or not CompactRaidFrameManager or not CompactRaidFrameContainer then
-                U1Message(L["此选项不适合此游戏版本"])
+                U1Message(L["此选项不适合此游戏版本"]..format("(%s)", cfg.text))
                 return
             end
             if InCombatLockdown() then U1Message(L["此选项无法在战斗中设置，请脱战后重试"]) return end
@@ -185,6 +186,7 @@ U1RegisterAddon("!!!163UI!!!", {
             tip = "说明`无论单人还是小队，只要解除屏蔽，就总是显示默认的团队框架。`修改此选项后必须切换次上一选项。",
         }]]
     },
+    --]==]
     --[[
     {
         var = "disableLaterLoading",

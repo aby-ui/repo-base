@@ -1,5 +1,5 @@
 --[[
-Copyright 2008-2021 João Cardoso
+Copyright 2008-2022 João Cardoso
 Sushi is distributed under the terms of the GNU General Public License (or the Lesser GPL).
 This file is part of Sushi.
 
@@ -17,43 +17,37 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Group = LibStub('Sushi-3.1').Group:NewSushi('OptionsGroup', 1, 'Frame')
+local Group = LibStub('Sushi-3.1').Group:NewSushi('OptionsGroup', 2, 'Frame')
 if not Group then return end
-
-local function NewCategory(parent, name)
-	local f = CreateFrame('Frame', nil, InterfaceOptionsFrame)
-	f.parent, f.name = parent and parent.name, name
-	f:Hide()
-
-	InterfaceOptions_AddCategory(f)
-	return f
-end
 
 
 --[[ Construct ]]--
 
 function Group:Construct()
-	local f = self:Super(Group):Construct()
-	f.Footer = f:CreateFontString(nil, nil, 'GameFontDisableSmall')
-	f.Footer:SetPoint('BOTTOMRIGHT', -4, 4)
-	return f
+	local g = self:Super(Group):Construct()
+	g.Footer = g:CreateFontString(nil, nil, 'GameFontDisableSmall')
+	g.Footer:SetPoint('BOTTOMRIGHT', -4, 4)
+	return g
 end
 
 function Group:New(category, subcategory)
 	assert(category, 'First parameter to `OptionsGroup:New` is not optional')
-	if type(category) == 'string' then
-		category = NewCategory(nil, category)
-	elseif subcategory then
-		category = NewCategory(category, subcategory)
+
+	local dock = CreateFrame('Frame', nil, InterfaceOptionsFrame or SettingsPanel)
+	if subcategory then
+		dock.parent, dock.name = type(category) == 'table' and category.name or category, subcategory
+	else
+		dock.name = category
 	end
 
-	local f = self:Super(Group):New(category)
-	f.name = category.name
-	f:SetPoint('BOTTOMRIGHT', -4, 5)
-	f:SetPoint('TOPLEFT', 4, -11)
-	f:SetFooter(nil)
-	f:SetSize(0, 0)
-	f:SetCall('OnChildren', function(self)
+	local group = self:Super(Group):New(dock)
+	group.name, group.title = dock.name, dock.name
+	group.category = InterfaceOptions_AddCategory(dock)
+	group:SetPoint('BOTTOMRIGHT', -4, 5)
+	group:SetPoint('TOPLEFT', 4, -11)
+	group:SetFooter(nil)
+	group:SetSize(0, 0)
+	group:SetCall('OnChildren', function(self)
 		if self:GetTitle() then
 			self:Add('Header', self:GetTitle(), GameFontNormalLarge)
 		end
@@ -63,27 +57,33 @@ function Group:New(category, subcategory)
 		end
 	end)
 
-	category.default = function() f:FireCalls('OnDefaults')	end
-	category.cancel = function() f:FireCalls('OnCancel') end
-	category.okay = function() f:FireCalls('OnOkay') end
+	dock.default = function() group:FireCalls('OnDefaults')	end
+	dock.cancel = function() group:FireCalls('OnCancel') end
+	dock.okay = function() group:FireCalls('OnOkay') end
+	dock:Hide()
 
-	return f, category
+	return group
 end
 
 
 --[[ API ]]--
 
 function Group:Open()
-	InterfaceOptionsFrame:Show()
-	InterfaceOptionsFrame_OpenToCategory(self:GetParent())
+	if InterfaceOptionsFrame then
+		InterfaceOptionsFrame:Show()
+		InterfaceOptionsFrame_OpenToCategory(self:GetParent())
+	else
+		SettingsPanel:Show()
+		SettingsPanel:SelectCategory(self.category) -- GetCategory is bugged, must go direct
+	end
 end
 
 function Group:SetTitle(title)
-	self.name = title
+	self.title = title
 end
 
 function Group:GetTitle()
-	return self.name
+	return self.title
 end
 
 function Group:SetSubtitle(subtitle)

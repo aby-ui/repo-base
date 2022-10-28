@@ -65,7 +65,7 @@ for i=1, GetNumClasses() do
 end
 
 if QueueStatusMinimapButton then
-    QueueStatusMinimapButton:SetFrameStrata("HIGH")
+    QueueStatusMinimapButton:SetFrameStrata("HIGH")  --TODO:abyui10
 end
 
 --按ESC时, AceConfigDialog先关闭, 并阻止界面窗口和爱不易关闭

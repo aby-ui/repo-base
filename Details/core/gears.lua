@@ -1899,7 +1899,7 @@ function ilvl_core:CalcItemLevel (unitid, guid, shout)
 		unitid = unitid [1]
 	end
 
-	if (unitid and CanInspect(unitid) and UnitPlayerControlled(unitid) and CheckInteractDistance(unitid, CONST_INSPECT_ACHIEVEMENT_DISTANCE)) then
+	if (unitid and UnitPlayerControlled(unitid) and CheckInteractDistance(unitid, CONST_INSPECT_ACHIEVEMENT_DISTANCE) and CanInspect(unitid)) then
 
 		--16 = all itens including main and off hand
 		local item_amount = 16

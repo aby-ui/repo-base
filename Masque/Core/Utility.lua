@@ -19,6 +19,35 @@ local _, Core = ...
 local type = type
 
 ----------------------------------------
+-- locals
+---
+
+local ActionTypes, WOW_RETAIL = Core.ActionTypes, Core.WOW_RETAIL
+
+----------------------------------------
+-- Functions
+---
+
+-- An empty function.
+function Core.NoOp() end
+
+-- Returns the scale factor for a button.
+local function GetScaleSize(Button)
+	local ScaleSize = 36
+
+	if Button and not Core.db.profile.NoScale then
+		local bType = Button.__MSQ_bType
+
+--		if WOW_RETAIL and bType == "Action" then
+		if WOW_RETAIL and ActionTypes[bType] then
+			ScaleSize = 45
+		end
+	end
+
+	return ScaleSize
+end
+
+----------------------------------------
 -- Color
 ---
 
@@ -30,13 +59,6 @@ function Core.GetColor(Color, Alpha)
 		return 1, 1, 1, Alpha or 1
 	end
 end
-
-----------------------------------------
--- NoOp
----
-
--- An empty function.
-function Core.NoOp() end
 
 ----------------------------------------
 -- Points
@@ -84,7 +106,7 @@ end
 
 -- Returns the x and y scale of a button.
 function Core.GetScale(Button)
-	local ScaleSize = (Button.__MSQ_ReSize and 45) or 36
+	local ScaleSize = GetScaleSize(Button)
 	local w, h = Button:GetSize()
 	local x = (w or ScaleSize) / ScaleSize
 	local y = (h or ScaleSize) / ScaleSize
@@ -96,8 +118,8 @@ end
 ---
 
 -- Returns a height and width.
-function Core.GetSize(Width, Height, xScale, yScale, ReSize)
-	local ScaleSize = (ReSize and 45) or 36
+function Core.GetSize(Width, Height, xScale, yScale, Button)
+	local ScaleSize = GetScaleSize(Button)
 	local w = (Width or ScaleSize) * xScale
 	local h = (Height or ScaleSize) * yScale
 	return w, h

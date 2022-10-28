@@ -10,7 +10,6 @@
 ## X-Curse-Project-Name: CompactRaid
 ## X-Curse-Project-ID: compactraid
 ## X-Curse-Repository-ID: wow/compactraid/mainline
-## Dependencies: TODO:abyui10
 
 ..\!!!Libs\!External\abin\LibAddonManager.lua
 ..\!!!Libs\!External\abin\Pre80API.lua

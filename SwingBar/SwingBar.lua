@@ -3,6 +3,8 @@ local SwingBar
 local SwingBar_Enabled = false;
 local lastSpeedMain, lastSpeedOff = UnitAttackSpeed("player");
 local CASTING_BAR_FLASH_STEP = 0.2 --TODO:abyui10
+local CASTING_BAR_ALPHA_STEP = 0.05;
+
 ----------------------------------------------------------------------------------------------------
 -- 闪烁
 ----------------------------------------------------------------------------------------------------
