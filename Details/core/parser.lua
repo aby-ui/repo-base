@@ -595,6 +595,7 @@
 
 		_detalhes:Msg(hitLine .. targetLine)
 		_detalhes.WhoAggroTimer = nil
+		Details.bossTargetAtPull = nil
 	end
 
 	local lastRecordFound = {id = 0, diff = 0, combatTime = 0}
@@ -953,6 +954,7 @@
 
 					_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.1, who_aggro)
 					_detalhes.WhoAggroTimer.HitBy = "|cFFFFFF00First Hit|r: " .. (link or "") .. " from " .. (who_name or "Unknown")
+					print("debug:", _detalhes.WhoAggroTimer.HitBy)
 				end
 
 				_detalhes:EntrarEmCombate(who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags)
@@ -5088,7 +5090,17 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 
 		if (not _detalhes.WhoAggroTimer and _detalhes.announce_firsthit.enabled) then
-			_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.5, who_aggro)
+			_detalhes.WhoAggroTimer = C_Timer.NewTimer(0.1, who_aggro)
+			for i = 1, 5 do
+				local boss = UnitExists("boss" .. i)
+				if (boss) then
+					local targetName = UnitName ("boss" .. i .. "target")
+					if (targetName and type(targetName) == "string") then
+						Details.bossTargetAtPull = targetName
+						break
+					end
+				end
+			end
 		end
 
 		if (IsInGuild() and IsInRaid() and _detalhes.announce_damagerecord.enabled and _detalhes.StorageLoaded) then
@@ -5230,11 +5242,13 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 	function _detalhes.parser_functions:PLAYER_REGEN_DISABLED(...)
 		C_Timer.After(0, function()
-			if (UnitExists("boss1")) then
-				local bossTarget = UnitName("boss1target")
-				Details.bossTargetAtPull = bossTarget
-			else
-				Details.bossTargetAtPull = nil
+			if (not Details.bossTargetAtPull) then
+				if (UnitExists("boss1")) then
+					local bossTarget = UnitName("boss1target")
+					if (bossTarget) then
+						Details.bossTargetAtPull = bossTarget
+					end
+				end
 			end
 		end)
 

@@ -462,6 +462,7 @@ local accessButton = CreateFrame("CheckButton", nil, GarrisonMissionFrame) do
 	accessButton:SetPushedTexture("Interface/Buttons/UI-QuickSlot-Depress")
 	accessButton:SetHighlightTexture("Interface/Buttons/ButtonHilight-Square")
 	accessButton:SetCheckedTexture("Interface/Buttons/CheckButtonHilight")
+	accessButton:GetCheckedTexture():SetBlendMode("ADD")
 	accessButton:SetChecked(true)
 	accessButton:Hide()
 	local ico = accessButton:CreateTexture(nil, "ARTWORK")

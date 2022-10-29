@@ -68,4 +68,6 @@ if not U1_WOW10 then return end
     ContainerIDToInventoryID(1) -> 31 PutItemInBag()
 
     ActionButtonUseKeyDown
+
+    CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
 --]]

@@ -28,7 +28,6 @@ local Websites = {
 	"https://github.com/SFX-WoW/Masque_Entropy",
 	"https://www.curseforge.com/wow/addons/masque-entropy",
 	"https://addons.wago.io/addons/masque-entropy",
-	"https://www.wowace.com/projects/masque-entropy",
 	"https://www.wowinterface.com/downloads/info8873",
 }
 
@@ -40,11 +39,8 @@ local SKIN_DESC = L["A metallic version of Apathy in the color of %s ore."]
 ---
 
 MSQ:AddSkin("Entropy - Silver", {
-	API_VERSION = 90002,
+	API_VERSION = 100000,
 	Shape = "Square",
-	Group = "Entropy",
-	Title = "Silver",
-	Order = 11,
 
 	-- Info
 	Description = SKIN_DESC:format("Silver"),
@@ -52,12 +48,17 @@ MSQ:AddSkin("Entropy - Silver", {
 	Author = "StormFX",
 	Websites = Websites,
 
+	-- UI
+	Group = "Entropy",
+	Title = "Silver",
+	Order = 11,
+
 	-- Skin
 	-- Mask = nil,
 	Backdrop = {
 		Texture = [[Interface\AddOns\Masque\Textures\Backdrop\Action]],
 		-- TexCoords = {0, 1, 0, 1},
-		Color = {1, 1, 1, 1},
+		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "BACKGROUND",
 		DrawLevel = -1,
@@ -67,12 +68,12 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		-- UseColor = nil,
 		-- SetAllPoints = nil,
+		-- UseColor = nil,
 		Item = {
 			Texture = [[Interface\AddOns\Masque\Textures\Backdrop\Item]],
 			-- TexCoords = {0, 1, 0, 1},
-			Color = {1, 1, 1, 1},
+			-- Color = {1, 1, 1, 1},
 			BlendMode = "BLEND",
 			DrawLayer = "BACKGROUND",
 			DrawLevel = -1,
@@ -82,13 +83,13 @@ MSQ:AddSkin("Entropy - Silver", {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseColor = nil,
 			-- SetAllPoints = nil,
+			-- UseColor = nil,
 		},
 		Pet = {
 			Texture = [[Interface\AddOns\Masque\Textures\Backdrop\Pet]],
 			-- TexCoords = {0, 1, 0, 1},
-			Color = {1, 1, 1, 1},
+			-- Color = {1, 1, 1, 1},
 			BlendMode = "BLEND",
 			DrawLayer = "BACKGROUND",
 			DrawLevel = -1,
@@ -98,12 +99,27 @@ MSQ:AddSkin("Entropy - Silver", {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseColor = nil,
 			-- SetAllPoints = nil,
+			-- UseColor = nil,
 		},
 	},
 	Icon = {
 		TexCoords = {0.03, 0.97, 0.03, 0.97},
+		DrawLayer = "BACKGROUND",
+		DrawLevel = 0,
+		Width = 27,
+		Height = 27,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		TexCoords = {0.03, 0.97, 0.03, 0.97},
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
 		DrawLayer = "BACKGROUND",
 		DrawLevel = 0,
 		Width = 27,
@@ -145,8 +161,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		-- UseStates = nil,
 		-- SetAllPoints = nil,
+		-- UseStates = nil,
 		Item = {
 			Texture = [[Interface\AddOns\Masque_Entropy\Textures\Normal]],
 			-- TexCoords = {0, 1, 0, 1},
@@ -163,8 +179,8 @@ MSQ:AddSkin("Entropy - Silver", {
 			RelPoint = "CENTER",
 			OffsetX = 0,
 			OffsetY = 0,
-			-- UseStates = nil,
 			-- SetAllPoints = nil,
+			-- UseStates = nil,
 		},
 	},
 	-- Disabled = Default.Disabled,
@@ -181,8 +197,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		UseColor = true,
 		-- SetAllPoints = nil,
+		UseColor = true,
 	},
 	Flash = {
 		-- Texture = [[Interface\Buttons\UI-QuickslotRed]],
@@ -197,63 +213,44 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		UseColor = true,
 		-- SetAllPoints = nil,
+		UseColor = true,
 	},
 	HotKey = {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 32,
-		Height = 10,
+		Width = 0,
+		Height = 0,
+		Anchor = "Icon",
 		Point = "TOPRIGHT",
 		RelPoint = "TOPRIGHT",
-		OffsetX = -4,
-		OffsetY = -6.5,
-		Pet = {
-			JustifyH = "RIGHT",
-			JustifyV = "MIDDLE",
-			DrawLayer = "OVERLAY",
-			Width = 32,
-			Height = 10,
-			Point = "TOPRIGHT",
-			RelPoint = "TOPRIGHT",
-			OffsetX = -3,
-			OffsetY = -5,
-		},
+		OffsetX = 0,
+		OffsetY = -1.,
 	},
 	Count = {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 32,
-		Height = 10,
+		Width = 0,
+		Height = 0,
+		Anchor = "Icon",
 		Point = "BOTTOMRIGHT",
 		RelPoint = "BOTTOMRIGHT",
-		OffsetX = -4,
-		OffsetY = 5.5,
-		Item = {
-			JustifyH = "RIGHT",
-			JustifyV = "MIDDLE",
-			DrawLayer = "ARTWORK",
-			Width = 32,
-			Height = 10,
-			Point = "BOTTOMRIGHT",
-			RelPoint = "BOTTOMRIGHT",
-			OffsetX = -4,
-			OffsetY = 5.5,
-		},
+		OffsetX = 0,
+		OffsetY = 1.,
 	},
 	Duration = {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 32,
-		Height = 10,
+		Width = 0,
+		Height = 0,
+		Anchor = "Icon",
 		Point = "TOP",
 		RelPoint = "BOTTOM",
 		OffsetX = 0,
-		OffsetY = -1,
+		OffsetY = -2,
 	},
 	Checked = {
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
@@ -269,6 +266,18 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetX = 0,
 		OffsetY = 0,
 		-- SetAllPoints = nil,
+	},
+	Name = {
+		JustifyH = "CENTER",
+		JustifyV = "MIDDLE",
+		DrawLayer = "OVERLAY",
+		Width = 0,
+		Height = 0,
+		Anchor = "Icon",
+		Point = "BOTTOM",
+		RelPoint = "BOTTOM",
+		OffsetX = 0,
+		OffsetY = 1,
 	},
 	Border = {
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
@@ -345,38 +354,11 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	IconOverlay = {
-		-- Atlas = "AzeriteIconFrame",
-		-- Color = {1, 1, 1, 1},
-		BlendMode = "BLEND",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 1,
-		Width = 30,
-		Height = 30,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
-	IconOverlay2 = {
-		-- Atlas = "ConduitIconFrame-Corners",
-		-- Color = {1, 1, 1, 1},
-		BlendMode = "BLEND",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 1,
-		Width = 30,
-		Height = 30,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
 	NewAction = {
 		-- Atlas = "bags-newitem",
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Glow]],
-		Color = {1, 1, 1, 1},
+		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 1,
@@ -390,8 +372,9 @@ MSQ:AddSkin("Entropy - Silver", {
 	},
 	SpellHighlight = {
 		-- Atlas = "bags-newitem",
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Glow]],
-		Color = {1, 1, 1, 1},
+		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 1,
@@ -418,8 +401,24 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	IconOverlay = {
+		Atlas = "AzeriteIconFrame",
+		UseAtlasSize = false,
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 1,
+		Width = 30,
+		Height = 30,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	UpgradeIcon = {
 		Atlas = "bags-greenarrow",
+		UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -432,12 +431,26 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = -4,
 		-- SetAllPoints = nil,
 	},
-	NewItem = {
-		-- Atlas = "bags-glow-white",
-		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Glow]],
-		-- TexCoords = {0, 1, 0, 1},
+	IconOverlay2 = {
+		Atlas = "ConduitIconFrame-Corners",
+		UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
-		BlendMode = "ADD",
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 1,
+		Width = 30,
+		Height = 30,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	QuestBorder = {
+		Border = [[Interface\AddOns\Masque_Entropy\Textures\Quest]],
+		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
+		Color = {1, 0.8, 0, 1},
+		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 2,
 		Width = 32,
@@ -448,11 +461,13 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	QuestBorder = {
-		Border = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
-		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Quest]],
-		Color = {1, 0.8, 0, 1},
-		BlendMode = "BLEND",
+	NewItem = {
+		-- Atlas = "bags-glow-white",
+		-- UseAtlasSize = true,
+		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Glow]],
+		-- TexCoords = {0, 1, 0, 1},
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "ADD",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 2,
 		Width = 32,
@@ -476,8 +491,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		UseColor = true,
 		-- SetAllPoints = nil,
+		UseColor = true,
 	},
 	ContextOverlay = {
 		-- Texture = nil,
@@ -492,11 +507,12 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		UseColor = true,
 		-- SetAllPoints = nil,
+		UseColor = true,
 	},
 	JunkIcon = {
 		Atlas = "bags-junkcoin",
+		UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -508,17 +524,6 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetX = 5,
 		OffsetY = -4,
 		-- SetAllPoints = nil,
-	},
-	Name = {
-		JustifyH = "CENTER",
-		JustifyV = "MIDDLE",
-		DrawLayer = "OVERLAY",
-		Width = 32,
-		Height = 10,
-		Point = "BOTTOM",
-		RelPoint = "BOTTOM",
-		OffsetX = 0,
-		OffsetY = 5,
 	},
 	Highlight = {
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
@@ -533,8 +538,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		RelPoint = "CENTER",
 		OffsetX = 0,
 		OffsetY = 0,
-		-- UseColor = nil,
 		-- SetAllPoints = nil,
+		-- UseColor = nil,
 	},
 	AutoCastShine = {
 		Width = 26,
@@ -573,11 +578,13 @@ MSQ:AddSkin("Entropy - Silver", {
 
 MSQ:AddSkin("Entropy - Adamantite", {
 	Template = "Entropy - Silver",
-	Title = "Adamantite",
-	Order = 1,
 
 	-- Info
 	Description = SKIN_DESC:format("Adamantite"),
+
+	-- UI
+	Title = "Adamantite",
+	Order = 1,
 
 	-- Skin
 	Normal = {
@@ -626,11 +633,13 @@ MSQ:AddSkin("Entropy - Adamantite", {
 
 MSQ:AddSkin("Entropy - Bronze", {
 	Template = "Entropy - Silver",
-	Title = "Bronze",
-	Order = 2,
 
 	-- Info
 	Description = SKIN_DESC:format("Bronze"),
+
+	-- UI
+	Title = "Bronze",
+	Order = 2,
 
 	-- Skin
 	Normal = {
@@ -679,11 +688,13 @@ MSQ:AddSkin("Entropy - Bronze", {
 
 MSQ:AddSkin("Entropy - Cobalt", {
 	Template = "Entropy - Silver",
-	Title = "Cobalt",
-	Order = 3,
 
 	-- Info
 	Description = SKIN_DESC:format("Cobalt"),
+
+	-- UI
+	Title = "Cobalt",
+	Order = 3,
 
 	-- Skin
 	Normal = {
@@ -732,11 +743,13 @@ MSQ:AddSkin("Entropy - Cobalt", {
 
 MSQ:AddSkin("Entropy - Copper", {
 	Template = "Entropy - Silver",
-	Title = "Copper",
-	Order = 4,
 
 	-- Info
 	Description = SKIN_DESC:format("Copper"),
+
+	-- UI
+	Title = "Copper",
+	Order = 4,
 
 	-- Skin
 	Normal = {
@@ -785,11 +798,13 @@ MSQ:AddSkin("Entropy - Copper", {
 
 MSQ:AddSkin("Entropy - Fel Iron", {
 	Template = "Entropy - Silver",
-	Title = "Fel Iron",
-	Order = 5,
 
 	-- Info
 	Description = SKIN_DESC:format("Fel Iron"),
+
+	-- UI
+	Title = "Fel Iron",
+	Order = 5,
 
 	-- Skin
 	Normal = {
@@ -838,11 +853,13 @@ MSQ:AddSkin("Entropy - Fel Iron", {
 
 MSQ:AddSkin("Entropy - Gold", {
 	Template = "Entropy - Silver",
-	Title = "Gold",
-	Order = 6,
 
 	-- Info
 	Description = SKIN_DESC:format("Gold"),
+
+	-- UI
+	Title = "Gold",
+	Order = 6,
 
 	-- Skin
 	Normal = {
@@ -891,11 +908,13 @@ MSQ:AddSkin("Entropy - Gold", {
 
 MSQ:AddSkin("Entropy - Iron", {
 	Template = "Entropy - Silver",
-	Title = "Iron",
-	Order = 7,
 
 	-- Info
 	Description = SKIN_DESC:format("Iron"),
+
+	-- UI
+	Title = "Iron",
+	Order = 7,
 
 	-- Skin
 	Normal = {
@@ -944,11 +963,13 @@ MSQ:AddSkin("Entropy - Iron", {
 
 MSQ:AddSkin("Entropy - Khorium", {
 	Template = "Entropy - Silver",
-	Title = "Khorium",
-	Order = 8,
 
 	-- Info
 	Description = SKIN_DESC:format("Khorium"),
+
+	-- UI
+	Title = "Khorium",
+	Order = 8,
 
 	-- Skin
 	Normal = {
@@ -997,11 +1018,13 @@ MSQ:AddSkin("Entropy - Khorium", {
 
 MSQ:AddSkin("Entropy - Obsidium", {
 	Template = "Entropy - Silver",
-	Title = "Obsidium",
-	Order = 9,
 
 	-- Info
 	Description = SKIN_DESC:format("Obsidium"),
+
+	-- UI
+	Title = "Obsidium",
+	Order = 9,
 
 	-- Skin
 	Normal = {
@@ -1050,11 +1073,13 @@ MSQ:AddSkin("Entropy - Obsidium", {
 
 MSQ:AddSkin("Entropy - Saronite", {
 	Template = "Entropy - Silver",
-	Title = "Saronite",
-	Order = 10,
 
 	-- Info
 	Description = SKIN_DESC:format("Saronite"),
+
+	-- UI
+	Title = "Saronite",
+	Order = 10,
 
 	-- Skin
 	Normal = {
@@ -1103,11 +1128,13 @@ MSQ:AddSkin("Entropy - Saronite", {
 
 MSQ:AddSkin("Entropy - Titanium", {
 	Template = "Entropy - Silver",
-	Title = "Titanium",
-	Order = 12,
 
 	-- Info
 	Description = SKIN_DESC:format("Titanium"),
+
+	-- UI
+	Title = "Titanium",
+	Order = 12,
 
 	-- Skin
 	Normal = {

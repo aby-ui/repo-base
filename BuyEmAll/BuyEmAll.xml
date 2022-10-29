@@ -184,6 +184,7 @@
 						<Offset x="2" y="-45" />
 					</Anchor>
 				</Anchors>
+				
 				<Layers>
 					<Layer>
 						<Texture name="BuyEmAllCurrency1" file="nil">

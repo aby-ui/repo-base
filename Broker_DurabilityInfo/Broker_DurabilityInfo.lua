@@ -63,8 +63,9 @@ local merchantState = NOT_AT_MERCHANT
 
 local request = true
 
-local hiddenFrame = CreateFrame("GameTooltip")
+local hiddenFrame = CreateFrame("GameTooltip", "Broker_DurabilityHiddenTooltip") --abyui 奇怪的问题，必须加frameName否则装备价格显示错误
 hiddenFrame:SetOwner(WorldFrame, "ANCHOR_NONE")
+hiddenFrame:Hide()
 
 local REPAIR_ICON_COORDS = {0.28125, 0.5625, 0, 0.5625}
 local GUILD_REPAIR_ICON_COORDS = {0.5625, 0.84375, 0, 0.5625}
@@ -333,7 +334,7 @@ function addon:OnInitialize()
 end
 
 function addon:OnEnable()
-	self:ScheduleRepeatingTimer("MainUpdate", 1)
+	self:ScheduleRepeatingTimer("MainUpdate", 5)
 end
 
 -- LDB object

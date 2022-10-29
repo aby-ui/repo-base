@@ -16,7 +16,7 @@ local ui, core, handle = CreateFrame("Frame", "MPLandingPageAlts", GarrisonLandi
 	t:SetText(L"Characters are added to this list when they interact with the Command Table or Garrison Cache.")
 	t:SetWidth(680)
 	t, ui.NoDataText2 = CreateFrame("Button", "GarrisonLandingPageTab4", GarrisonLandingPage, "GarrisonLandingPageTabTemplate", 4), t
-	t:SetPoint("LEFT", GarrisonLandingPageTab3, "RIGHT", -5, 0)
+	t:SetPoint("LEFT", GarrisonLandingPageTab3, "RIGHT", 2, 0)
 	t:SetText(L"Other Characters")
 	ui.Tab = t
 	core, ui.List = api.createScrollList(ui, 740, 380)
@@ -40,7 +40,7 @@ local ui, core, handle = CreateFrame("Frame", "MPLandingPageAlts", GarrisonLandi
 		end
 	end
 	local function updateTabAnchor(self)
-		ui.Tab:SetPoint("LEFT", self.FleetTab:IsShown() and GarrisonLandingPageTab3 or GarrisonLandingPageTab2, "RIGHT", -5, 0)
+		ui.Tab:SetPoint("LEFT", self.FleetTab:IsShown() and GarrisonLandingPageTab3 or GarrisonLandingPageTab2, "RIGHT", 2, 0)
 		ui.Tab:SetShown(self.garrTypeID == 2)
 		if ui:IsShown() and not ui.Tab:IsShown() then
 			GarrisonLandingPageTab1:Click()

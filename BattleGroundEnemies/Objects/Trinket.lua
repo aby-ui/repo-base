@@ -80,13 +80,25 @@ function trinket:AttachToPlayerButton(playerButton)
 
 	function frame:TrinketCheck(spellId)
 		if not Data.TrinketData[spellId] then return end
-		self:DisplayTrinket(spellId, Data.TrinketData[spellId].fileID or GetSpellTexture(spellId))
+		self:DisplayTrinket(spellId, Data.TrinketData[spellId].itemID)
 		if Data.TrinketData[spellId].cd then
 			self:SetTrinketCooldown(GetTime(), Data.TrinketData[spellId].cd or 0)
 		end
 	end
 
-	function frame:DisplayTrinket(spellId, texture)
+	function frame:DisplayTrinket(spellId, itemID)
+		local texture
+		if(itemID and itemID ~= 0) then
+			texture = GetItemIcon(itemID)
+		else
+			if spellId == 336139 then --adapted
+				texture = GetSpellTexture(214027) --Adaptation
+			else
+				local spellTexture, spellTextureNoOverride = GetSpellTexture(spellId)
+				texture = spellTextureNoOverride
+			end
+		end
+
 		self.spellId = spellId
 		self.Icon:SetTexture(texture)
 	end
@@ -118,7 +130,7 @@ function trinket:AttachToPlayerButton(playerButton)
 		local spellId = aura.spellId
 		if spellId == 336139 then --adapted debuff > adaptation
 			local currentTime = GetTime()
-			self:DisplayTrinket(spellId, GetSpellTexture(214027))
+			self:DisplayTrinket(spellId)
 			self:SetTrinketCooldown(currentTime, aura.expirationTime - currentTime)
 			return -- we are done don't do relentless check
 		end

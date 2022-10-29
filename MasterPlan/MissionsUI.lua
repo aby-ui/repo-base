@@ -304,13 +304,16 @@ local missionList = CreateFrame("Frame", "MasterPlanMissionList", GarrisonMissio
 		missionList:SetScript("OnShow", function()
 			GarrisonMissionFrameMissionsTab1:SetParent(hidden)
 			GarrisonMissionFrameMissionsTab2:SetParent(hidden)
-			GarrisonMissionFrameMissionsListScrollFrame:SetParent(hidden)
+			GarrisonMissionFrameMissions.ScrollBox:SetParent(hidden)
+			GarrisonMissionFrameMissions.ScrollBar:SetParent(hidden)
 			GarrisonMissionFrameMissions.CompleteDialog:SetParent(hidden)
 		end)
 		missionList:SetScript("OnHide", function(self)
-			GarrisonMissionFrameMissionsTab1:SetParent(self:GetParent())
-			GarrisonMissionFrameMissionsTab2:SetParent(self:GetParent())
-			GarrisonMissionFrameMissionsListScrollFrame:SetParent(self:GetParent())
+			local p = self:GetParent()
+			GarrisonMissionFrameMissionsTab1:SetParent(p)
+			GarrisonMissionFrameMissionsTab2:SetParent(p)
+			GarrisonMissionFrameMissions.ScrollBox:SetParent(p)
+			GarrisonMissionFrameMissions.ScrollBar:SetParent(p)
 			GarrisonMissionFrameMissions.CompleteDialog:SetParent(GarrisonMissionFrameMissions)
 		end)
 	end
@@ -910,7 +913,7 @@ local activeUI = CreateFrame("Frame", nil, missionList) do
 				i.Icon = i:CreateTexture(nil, "ARTWORK")
 				i.Icon:SetPoint("TOPLEFT", 3*46/64, -3*46/64)
 				i.Icon:SetPoint("BOTTOMRIGHT", -3*46/64, 3*46/64)
-				i.Border = i:CreateTexture(nil, "ARTWORK", 2)
+				i.Border = i:CreateTexture(nil, "ARTWORK", nil, 2)
 				i.Border:SetAllPoints()
 				i.Border:SetTexture("Interface\\Buttons\\UI-Quickslot2")
 				i.Border:SetTexCoord(12/64,52/64,12/64,52/64)
@@ -958,7 +961,7 @@ local activeUI = CreateFrame("Frame", nil, missionList) do
 				local ib = lootContainer.items[ni]
 				ib:SetPoint("CENTER", lootContainer.followers[fn], "CENTER", 0, 4)
 				ib:SetIcon(icon)
-				ib.Quantity:SetText(quantity > 1 and quantity)
+				ib.Quantity:SetText(quantity > 1 and quantity or "")
 				ib.itemID, ib.currencyID, ib.tooltipHeader, ib.tooltipText, ib.tooltipExtra = v.itemID, v.currencyID, tooltipHeader, tooltipText, tooltipExtra
 				ib:Show()
 				ni, fn = ni + 1, fn + 1
@@ -1541,19 +1544,19 @@ do -- tabs
 	local availTab, followerTab = GarrisonMissionFrameTab1, GarrisonMissionFrameTab2
 	local interestTab = CreateFrame("Button", "GarrisonMissionFrameTab4", GarrisonMissionFrame, "GarrisonMissionFrameTabTemplate", 1)
 	missionList.activeTab, missionList.availTab, missionList.interestTab, missionList.followerTab = activeTab, availTab, interestTab, followerTab
-	activeTab:SetPoint("LEFT", availTab, "RIGHT", -5, 0)
-	interestTab:SetPoint("LEFT", activeTab, "RIGHT", -5, 0)
+	activeTab:SetPoint("LEFT", availTab, "RIGHT", 5, 0)
+	interestTab:SetPoint("LEFT", activeTab, "RIGHT", 5, 0)
 	activeTab.Pulse = activeTab:CreateAnimationGroup() do
-		local function cloneTexture(parent, key)
+		local function cloneTexture(parent, key, key2)
 			local t, o = parent:CreateTexture(nil, "BORDER"), parent[key]
 			t:SetTexture(o:GetTexture())
 			t:SetTexCoord(o:GetTexCoord())
-			t:SetAllPoints(o)
+			t:SetAllPoints(parent[key2] or o)
 			t:SetBlendMode(o:GetBlendMode())
 			return t
 		end
-		activeTab.p1, activeTab.p2 = cloneTexture(activeTab, "LeftHighlight"), cloneTexture(activeTab, "RightHighlight")
-		activeTab.p3, activeTab.p4 = cloneTexture(activeTab, "MiddleHighlight"), activeTab:CreateTexture(nil, "BACKGROUND", nil, 1)
+		activeTab.p1, activeTab.p2 = cloneTexture(activeTab, "LeftHighlight", "Left"), cloneTexture(activeTab, "RightHighlight", "Right")
+		activeTab.p3, activeTab.p4 = cloneTexture(activeTab, "MiddleHighlight", "Middle"), activeTab:CreateTexture(nil, "BACKGROUND", nil, 1)
 		activeTab.p4:SetPoint("TOPLEFT", activeTab.p3, "TOPLEFT", -16, -1)
 		activeTab.p4:SetPoint("BOTTOMRIGHT", activeTab.p3, "BOTTOMRIGHT", 6, 12)
 		activeTab.p4:SetTexture("Interface\\Buttons\\UI-ListBox-Highlight")
@@ -1566,7 +1569,7 @@ do -- tabs
 			local ap = ag:CreateAnimation("Alpha")
 			ap:SetDuration(1.25)
 			ap:SetFromAlpha(0)
-			ap:SetToAlpha(i < 4 and 0.5 or 0.2)
+			ap:SetToAlpha(i < 4 and 0.35 or 0.2)
 			ap:SetChildKey("p" .. i)
 		end
 		ag:Play()
@@ -1597,6 +1600,8 @@ do -- tabs
 		end
 	end
 	local updateMissionTabs = oncePerFrame(function()
+		GarrisonMissionFrameTab2:ClearAllPoints()
+		GarrisonMissionFrameTab2:SetPoint("LEFT", interestTab, "RIGHT", 5, 0)
 		local cm = GarrisonMissionFrame.MissionComplete.completeMissions
 		activeTab:SetFormattedText(L"Active Missions (%d)", math.max(#GarrisonMissionFrameMissions.inProgressMissions, cm and #cm or 0))
 		availTab:SetFormattedText(L"Available Missions (%d)", #GarrisonMissionFrameMissions.availableMissions)
@@ -2127,7 +2132,7 @@ do -- CreateMissionButton
 		t:SetTexCoord(1,0, 1,0)
 		t = b:CreateTexture(nil, "HIGHLIGHT", nil, 1)
 		t:SetAtlas("GarrMission_ListGlow-Highlight")
-		t:SetGradient("VERTICAL", 0.5, 0.5, 0.5, 1,1,1)
+		t:SetGradient("VERTICAL", {r=0.5,g=0.5,b=0.5,a=1}, {r=1,g=1,b=1,a=1})
 		t:SetPoint("TOPLEFT") t:SetPoint("TOPRIGHT")
 		t:SetHeight(30/44*h) -- SCALE
 		t = b:CreateTexture(nil, "BACKGROUND", nil, 5)
@@ -2153,7 +2158,7 @@ do -- CreateMissionButton
 		t, b.veil = t:CreateTexture(nil, "OVERLAY", nil, -1), t
 		t:SetAllPoints(b)
 		t:SetColorTexture(1,1,1)
-		t:SetGradient("VERTICAL", 0.8, 0.8, 0.8, 0.6, 0.6, 0.6)
+		t:SetGradient("VERTICAL", {r=0.8,g=0.8,b=0.8,a=1}, {r=0.6,g=0.6,b=0.6,a=1})
 		t:SetBlendMode("MOD")
 		
 		b.veil.tex, b.rewards = t, CreateRewards(b, 32/44*h)
@@ -2413,7 +2418,7 @@ do -- activeMissionsHandle
 			t:SetDuration(0.2)
 			t = g:CreateAnimation("Scale")
 			t:SetChildKey("banner")
-			t:SetFromScale(0.3, 1) t:SetToScale(1, 1)
+			t:SetScaleFrom(0.3, 1) t:SetScaleTo(1, 1)
 			t:SetDuration(0.4)
 			t = g:CreateAnimation("Alpha")
 			t:SetChildKey("banner")
@@ -2999,35 +3004,11 @@ do -- interestMissionsHandle
 			GarrisonMissionFrame.FollowerTab.followerList:ShowFollower(fid)
 			GarrisonMissionFrameTab2:Click()
 			EV("MP_FORCE_FOLLOWER_TAB", fid)
-			local fl, idx, btn = GarrisonMissionFrameFollowers.followers do
-				for i=1,#fl do
-					if fl[i].followerID == fid then
-						idx = i
-						break
+			GarrisonMissionFrameFollowers.ScrollBox:ScrollToElementDataByPredicate(function(a)
+					if a.follower.followerID == fid then
+						return true
 					end
-				end
-				if idx then
-					local fl = GarrisonMissionFrameFollowers.followersList
-					for j=1,2 do
-						for i=1,#fl do
-							if fl[i] == idx then
-								btn = i
-								break
-							end
-						end
-						if btn then
-							break
-						else
-							GarrisonMissionFrameFollowers.SearchBox:SetText("")
-						end
-					end
-				end
-			end
-			if btn then
-				local v = 62*btn - 62
-				GarrisonMissionFrameFollowersListScrollFrameScrollBar:SetValue(v)
-				HybridScrollFrame_SetOffset(GarrisonMissionFrameFollowersListScrollFrame, v)
-			end
+				end, 0.05)
 		end
 	end
 	local function InterestFollower_OnEnter(self, info)

@@ -1,4 +1,5 @@
 U1RegisterAddon("GarrisonMissionManager", {
+    temporarilyForceDisable = 1,
     title = "要塞任务管家",
     defaultEnable = 1,
     loadWith = "Blizzard_GarrisonUI",

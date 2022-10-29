@@ -78,7 +78,7 @@ function symbolicTargetIndicator:AttachToPlayerButton(playerButton)
 		local config = self.config
 		local symbol = self.Symbols[index]
 		if not symbol then return end
-		if not (config.IconWIconWidth and config.IconHeight) then return end
+		if not (config.IconWidth and config.IconHeight) then return end
 		symbol:SetSize(config.IconWidth, config.IconHeight)
 		symbol:SetPoint("TOP",floor(index/2)*(index%2==0 and -config.IconSpacing or config.IconSpacing), 0) --1: 0, 0 2: -10, 0 3: 10, 0 4: -20, 0 > i = even > left, uneven > right
 	end

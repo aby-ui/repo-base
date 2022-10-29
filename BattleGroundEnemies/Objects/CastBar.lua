@@ -48,7 +48,7 @@ local castBar = BattleGroundEnemies:NewButtonModule({
 		Height = "Fixed",
 		Width = "Fixed"
 	},
-	events = {"NewUnitID"},
+	events = {"UnitIdUpdate"},
 	expansions = "All"
 })
 
@@ -88,7 +88,7 @@ function castBar:AttachToPlayerButton(playerButton)
 	playerButton.CastBar = CreateFrame("frame", nil, playerButton)
 
 	--when unitID changes
-	playerButton.CastBar.NewUnitID = function(self, unitID)
+	playerButton.CastBar.UnitIdUpdate = function(self, unitID)
 		if not self.CastBar then return end
 		CastingBarFrame_SetUnit(self.CastBar, unitID);
 	end

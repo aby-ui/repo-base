@@ -841,12 +841,12 @@ do
 
 			local t = {}
 
-			for i, p in pairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
-				if p.name == panelName then
-					t.element = p
-					InterfaceOptionsListButton_ToggleSubCategories(t)
-				end
-			end
+			--for i, p in pairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
+			--	if p.name == panelName then
+			--		t.element = p
+			--		InterfaceOptionsListButton_ToggleSubCategories(t)
+			--	end
+			--end
 			fixed = true
 		end
 

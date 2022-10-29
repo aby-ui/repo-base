@@ -8,6 +8,9 @@ local flag = false
 
 function Postal_Rake:OnEnable()
 	self:RegisterEvent("MAIL_SHOW")
+	if Postal.WOWRetail then
+		MailFrame:HookScript("OnHide", self.MAIL_CLOSED)
+	end			
 end
 
 -- Disabling modules unregisters all events/hook automatically

@@ -1,7 +1,7 @@
 ## Interface: 100000
 ## Title: RangeDisplay Options
 ## Author: mitch0
-## Version: v4.9.10
+## Version: r410
 ## Notes: Configuration options for RangeDisplay
 ## X-Repple: 辅助
 ## OptionalDeps: AceGUI-3.0-SharedMediaWidgets

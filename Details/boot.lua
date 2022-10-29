@@ -30,7 +30,7 @@
 		local gameVersionPrefix = "Unknown Game Version - You're probably using a Details! not compatible with this version of the Game"
 		--these are the game versions currently compatible with this Details! versions
 		if (DetailsFramework.IsWotLKWow() or DetailsFramework.IsShadowlandsWow() or DetailsFramework.IsDragonflight()) then
-			gameVersionPrefix = "WSD"
+			gameVersionPrefix = "WD"
 		end
 
 		Details.gameVersionPrefix = gameVersionPrefix

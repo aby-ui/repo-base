@@ -1,6 +1,6 @@
 --[[
 Name: RangeDisplay
-Revision: $Revision: 406 $
+Revision: $Revision: 410 $
 Author(s): mitch0
 Website: http://www.wowace.com/projects/range-display/
 SVN: svn://svn.wowace.com/wow/range-display/mainline/trunk
@@ -10,9 +10,9 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v4.9.10"
+local VERSION = AppName .. "-r410"
 --[===[@debug@
-local VERSION = AppName .. "-r" .. ("$Revision: 406 $"):match("%d+")
+local VERSION = AppName .. "-r" .. ("$Revision: 410 $"):match("%d+")
 --@end-debug@]===]
 
 local rc = LibStub("LibRangeCheck-2.0")
@@ -896,7 +896,7 @@ end
 -- LoD Options muckery
 
 function RangeDisplay:setupDummyOptions()
-    if self.optionsLoaded then
+    if self.optionsLoaded or not InterfaceOptionsFrame then
         return
     end
     self.dummyOpts = CreateFrame("Frame", AppName .. "DummyOptions", UIParent)
@@ -929,7 +929,9 @@ function RangeDisplay:openConfigDialog(ud)
     -- this function will be overwritten by the Options module when loaded
     if not self.optionsLoaded then
         self:loadOptions()
-        InterfaceAddOnsList_Update()
+        if InterfaceAddOnsList_Update then
+            InterfaceAddOnsList_Update()
+        end
         return self:openConfigDialog(ud)
     end
     InterfaceOptionsFrame_OpenToCategory(self.dummyOpts)

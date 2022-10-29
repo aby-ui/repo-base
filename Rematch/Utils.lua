@@ -415,7 +415,7 @@ function rematch:ListBling(scrollFrame,var,value)
 	rematch.blingScrollFrame = scrollFrame
 	rematch.blingVar = var
 	rematch.blingValue = value
-	C_Timer.After(0.05,rematch.ListDoBling)
+	rematch:StartTimer("ListDoBling",0.05,rematch.ListDoBling)
 end
 
 -- does the actual glow effect after 0.05 seconds

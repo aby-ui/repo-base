@@ -170,7 +170,6 @@ end
 
 local L = AL3:NewLocale("QuestAnnounce", "ruRU")
 if L then
-
 L["Announce Every"] = "Анонсировать каждые"
 L["Announce progression every x number of steps (0 will announce on quest objective completion only)"] = "Анонсировать прогресс каждые X шагов (при 0 будет анонс только выполнения квеста)"
 L["Are you sure you want to announce to this channel?"] = "Вы уверены что хотите анонсировать в этот канал?"

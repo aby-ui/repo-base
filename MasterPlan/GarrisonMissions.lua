@@ -16,15 +16,107 @@ local function HookOnShow(self, OnShow)
 	if self:IsVisible() then OnShow(self) end
 end
 
-do -- Feed FrameXML updates to Evie
-	local function FollowerList_OnUpdateData(self)
-		local p = self:GetParent()
-		if not (p == GarrisonLandingPage and C_Garrison.GetLandingPageGarrisonType() == 3) then
-			EV("FXUI_GARRISON_FOLLOWER_LIST_UPDATE", p)
+do
+	local function UpdateStatusText(b, fi, mi)
+		local mid = mi and mi.missionID
+		local tmid = G.GetFollowerTentativeMission(fi.followerID)
+		local status, ns = b.info.status or ""
+		if tmid then
+			ns = tmid == mid and GARRISON_FOLLOWER_IN_PARTY or L"In Tentative Party"
+		elseif T.config.ignore[fi.followerID] then
+			if fi.status == nil and status == GARRISON_FOLLOWER_WORKING then
+				ns = L"Ignored"
+			elseif fi.status == GARRISON_FOLLOWER_INACTIVE or fi.status == GARRISON_FOLLOWER_WORKING then
+				ns = fi.status .. " " .. L"Ignored"
+			end
+			if not b.Status.Hooked then
+				b.Status.Hooked = 1
+				hooksecurefunc(b.Status, "SetText", function(_, text)
+					if text == ns then
+						b.Status.Hooked = 2
+					elseif b.Status.Hooked == 2 then
+						b.Status.Hooked = 1
+					end
+				end)
+			end
+		end
+		if ns then
+			b.Status:SetText(ns)
+		end
+		return ns or status
+	end
+	local function UpdateLevelText(b, fi, status)
+		if fi.level == T.FOLLOWER_LEVEL_CAP then
+			local upW, upA = G.GetUpgradeRange()
+			local _weaponItemID, weaponItemLevel, _armorItemID, armorItemLevel = C_Garrison.GetFollowerItems(fi.followerID)
+			local itext = GARRISON_FOLLOWER_ITEM_LEVEL:format(fi.iLevel)
+			if weaponItemLevel < upW or armorItemLevel < upA then
+				itext = itext .. "|cff20e020+|r"
+			end
+			if status == "" and weaponItemLevel ~= armorItemLevel then
+				itext = itext .. " (" .. weaponItemLevel .. "/" .. armorItemLevel .. ")"
+			end
+			b.ILevel:SetText(itext)
 		end
 	end
-	hooksecurefunc(GarrisonMissionFrame.FollowerList, "UpdateData", FollowerList_OnUpdateData)
-	hooksecurefunc(GarrisonLandingPage.FollowerList, "UpdateData", FollowerList_OnUpdateData)
+	
+	local function GetRewardsDesc(mid)
+		local r, mi = "", C_Garrison.GetBasicMissionInfo(mid)
+		if mi and mi.rewards then
+			for k,v in pairs(mi.rewards) do
+				if v.currencyID == 0 then
+					r = r .. " |TInterface\\MoneyFrame\\UI-GoldIcon:0|t"
+				elseif v.icon then
+					r = r .. " |T" .. v.icon .. ":0|t"
+				elseif v.currencyID then
+					local c = C_CurrencyInfo.GetBasicCurrencyInfo(v.currencyID).icon
+					r = r .. " |T" .. (c or "Interface/Icons/Temp") .. ":0|t"
+				elseif v.itemID then
+					r = r .. " |T" .. GetItemIcon(v.itemID) .. ":0|t"
+				end
+			end
+		end
+		return r
+	end
+	local function FollowerButton_OnEnter(self)
+		local tmid = self and self.id and G.GetFollowerTentativeMission(self.id)
+		if tmid then
+			GameTooltip:SetOwner(self, "ANCHOR_NONE")
+			GameTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 4, 4)
+			GameTooltip:SetText(L"In Tentative Party")
+			GameTooltip:AddDoubleLine(C_Garrison.GetMissionName(tmid), GetRewardsDesc(tmid), 1,1,1)
+			if MISSION_PAGE_FRAME:IsVisible() then
+				GameTooltip:AddLine("|n|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:14:12:0:-1:512:512:10:70:330:410|t " .. GARRISON_MISSION_ADD_FOLLOWER, 0.5, 0.8, 1)
+			end
+			GameTooltip:Show()
+		elseif GameTooltip:IsOwned(self) then
+			GameTooltip:Hide()
+		end
+	end
+	local function FollowerButton_OnLeave(self)
+		GarrisonFollowerTooltip:Hide()
+		if GameTooltip:IsOwned(self) then
+			GameTooltip:Hide()
+		end
+	end
+	T.RegisterCallback_OnInitializedFrame(GarrisonMissionFrame.FollowerList.ScrollBox, function(f, d)
+		local b, fid = f.Follower, d.follower and d.follower.followerID
+		local fi = b and fid and b:IsShown() and G.GetFollowerInfo()[d.follower.followerID]
+		if not fi then return end
+		local ns = UpdateStatusText(b, fi, MISSION_PAGE_FRAME.missionInfo)
+		UpdateLevelText(b, fi, ns)
+		b:SetScript("OnEnter", FollowerButton_OnEnter)
+		b:SetScript("OnLeave", FollowerButton_OnLeave)
+	end)
+	local function LandingFollowerButton_Initialized(f, d)
+		local b, fid = f.Follower, d.follower and d.follower.followerID
+		local fi = b and fid and b:IsShown() and G.GetFollowerInfo()[d.follower.followerID]
+		if not fi then return end
+		local ns = UpdateStatusText(b, fi)
+		UpdateLevelText(b, fi, ns)
+	end
+	T.RegisterCallback_OnInitializedFrame(GarrisonLandingPage.FollowerList.ScrollBox, LandingFollowerButton_Initialized)
+	hooksecurefunc("GarrisonFollowerList_InitButton", LandingFollowerButton_Initialized)
 end
 
 do -- GarrisonFollowerList_SortFollowers
@@ -36,7 +128,7 @@ do -- GarrisonFollowerList_SortFollowers
 	end)
 	
 	local missionFollowerSort do
-		local finfo, cinfo, tinfo, mlvl
+		local cinfo, tinfo, mlvl
 		local statusPriority = {
 		  [GARRISON_FOLLOWER_WORKING] = 5,
 		  [GARRISON_FOLLOWER_ON_MISSION] = 4,
@@ -44,8 +136,7 @@ do -- GarrisonFollowerList_SortFollowers
 		  [GARRISON_FOLLOWER_INACTIVE] = 2,
 		  [""]=1,
 		}
-		local function cmp(a, b)
-			local af, bf = finfo[a], finfo[b]
+		local function cmp(af, bf)
 			local ac, bc = af.isCollected and 1 or 0, bf.isCollected and 1 or 0
 			if ac == bc then
 				ac, bc = statusPriority[af.status] or 6, statusPriority[bf.status] or 6
@@ -73,10 +164,10 @@ do -- GarrisonFollowerList_SortFollowers
 			end
 			return ac > bc
 		end
-		function missionFollowerSort(t, followers, counters, traits, level)
-			finfo, cinfo, tinfo, mlvl = followers, counters, traits, level
-			table.sort(t, cmp)
-			finfo, cinfo, tinfo, mlvl = nil
+		function missionFollowerSort(followers, counters, traits, level)
+			cinfo, tinfo, mlvl = counters, traits, level
+			table.sort(followers, cmp)
+			cinfo, tinfo, mlvl = nil
 		end
 	end
 	local oldSortFollowers = GarrisonFollowerList_SortFollowers
@@ -95,7 +186,7 @@ do -- GarrisonFollowerList_SortFollowers
 		toggle:SetShown(GarrisonMissionFrame.MissionTab:IsShown())
 		local mi = MISSION_PAGE_FRAME.missionInfo
 		if followerCounters and followerTraits and GarrisonMissionFrame.MissionTab:IsVisible() and mi and MasterPlan:GetSortFollowers() then
-			return missionFollowerSort(self.followersList, self.followers, followerCounters, followerTraits, mi.level)
+			return missionFollowerSort(self.followers, followerCounters, followerTraits, mi.level)
 		end
 		return oldSortFollowers(self)
 	end
@@ -109,13 +200,7 @@ do -- GarrisonFollowerList_SortFollowers
 	end
 end
 
-local GarrisonFollower_OnDoubleClick do -- Adding followers to missions
-	local old = GarrisonFollowerListButton_OnClick
-	local function resetAndReturn(followerList, ...)
-		followerList.canExpand = true
-		followerList:UpdateData()
-		return ...
-	end
+do -- Adding tentatively-used ships to missions
 	local function AddToMission(fi)
 		local BASE = fi.followerTypeID == 1 and GarrisonMissionFrame or GarrisonShipyardFrame
 		local PAGE = fi.followerTypeID == 1 and MISSION_PAGE_FRAME or SHIP_MISSION_PAGE
@@ -147,31 +232,6 @@ local GarrisonFollower_OnDoubleClick do -- Adding followers to missions
 			end
 		end
 	end
-	function GarrisonFollowerListButton_OnClick(self, ...)
-		if self.PortraitFrame and self.PortraitFrame:IsMouseOver() and MISSION_PAGE_FRAME.missionInfo and MISSION_PAGE_FRAME:IsShown() then
-			local followerList = self:GetFollowerList()
-			followerList.canExpand = false
-			return resetAndReturn(followerList, old(self, ...))
-		end
-		return old(self, ...)
-	end
-	function GarrisonFollower_OnDoubleClick(self)
-		if self.PortraitFrame and self.PortraitFrame:IsMouseOver() then
-			local mi, fi = MISSION_PAGE_FRAME.missionInfo, self.info
-			if fi and fi.followerID and mi and mi.missionID and fi.status == nil then
-				GarrisonMissionFrame.FollowerList:CollapseButton(self)
-				AddToMission(fi, mi)
-			elseif fi and fi.status == GARRISON_FOLLOWER_IN_PARTY then
-				local f = MISSION_PAGE_FRAME.Followers
-				for i=1, #f do
-					if f[i].info and f[i].info.followerID == fi.followerID then
-						GarrisonMissionFrame:RemoveFollowerFromMission(f[i], true)
-						break
-					end
-				end
-			end
-		end
-	end
 	local function AddShipToMission(_, fid)
 		AddToMission(C_Garrison.GetFollowerInfo(fid))
 		GarrisonShipyardFrame.FollowerList:UpdateFollowers()
@@ -189,74 +249,30 @@ local GarrisonFollower_OnDoubleClick do -- Adding followers to missions
 		return origShipMenu(self, ...)
 	end
 end
-function EV:FXUI_GARRISON_FOLLOWER_LIST_UPDATE(frame)
-	local buttons = frame.FollowerList.listScroll.buttons
-	local mi = MISSION_PAGE_FRAME:IsShown() and MISSION_PAGE_FRAME.missionInfo
-	local mlvl = mi and G.GetFMLevel(mi)
-	for i=1, #buttons do
-		local btn = buttons[i]
-		if btn.Follower then btn = btn.Follower end
-		local follower = btn.info
-		if btn:IsShown() and follower and (follower.followerTypeID or 4) < 3 and btn.XPBar then
-			local st = btn.XPBar.statusText
-			if not st then
-				st = btn:CreateFontString(nil, "ARTWORK", "TextStatusBarText")
-				st:SetTextColor(0.7, 0.6, 0.85)
-				st:SetPoint("TOPRIGHT", -4, -44)
-				btn.UpArrow:ClearAllPoints() btn.UpArrow:SetPoint("TOP", 16, -38)
-				btn.DownArrow:ClearAllPoints() btn.DownArrow:SetPoint("TOP", 16, -38)
-				btn.XPBar.statusText = st
-				btn:SetScript("OnDoubleClick", GarrisonFollower_OnDoubleClick)
-			end
-			if mi then
-				local ef = G.GetLevelEfficiency(G.GetFMLevel(follower), mlvl)
-				if ef < 0.5 then
-					btn.PortraitFrame.Level:SetTextColor(1, 0.1, 0.1)
-				elseif ef < 1 then
-					btn.PortraitFrame.Level:SetTextColor(1, 0.5, 0.25)
-				else
-					btn.PortraitFrame.Level:SetTextColor(1, 1, 1)
-				end
-			else
-				btn.PortraitFrame.Level:SetTextColor(1, 1, 1)
-			end
-			if not follower.isCollected or follower.status == GARRISON_FOLLOWER_INACTIVE or follower.levelXP == 0 then
-				st:SetText("")
-			else
-				st:SetFormattedText(L"%s XP", BreakUpLargeNumbers(follower.levelXP - follower.xp))
-			end
-		end
-	end
-end
-local function FollowerList_UpdateShip(self)
-	local buttons = self.listScroll.buttons
+local function FollowerList_UpdateShip(btn, _einfo)
 	local mi = SHIP_MISSION_PAGE:IsShown() and SHIP_MISSION_PAGE.missionInfo
-	for i=1, #buttons do
-		local btn = buttons[i]
-		if btn:IsShown() then
-			local follower, st = btn.info, btn.XPBar.statusText
-			if not st then
-				st = btn:CreateFontString(nil, "ARTWORK", "TextStatusBarText")
-				st:SetTextColor(0.7, 0.6, 0.85)
-				st:SetPoint("BOTTOMLEFT", btn.XPBar, "TOPLEFT", 1, -3)
-				btn.XPBar.statusText = st
-			end
-			if not follower.isCollected or follower.status == GARRISON_FOLLOWER_INACTIVE or follower.levelXP == 0 then
-				st:SetText("")
-			else
-				st:SetFormattedText(L"%s XP", BreakUpLargeNumbers(follower.levelXP - follower.xp))
-			end
-			local tmid = G.GetFollowerTentativeMission(follower.followerID)
-			if follower.status == GARRISON_FOLLOWER_ON_MISSION then
-				btn.Status:SetText(C_Garrison.GetFollowerMissionTimeLeft(follower.followerID))
-			elseif follower.status == GARRISON_FOLLOWER_IN_PARTY and tmid and tmid ~= (mi and mi.missionID) then
-				btn.Status:SetFormattedText("%s: %s", L"In Tentative Party", C_Garrison.GetMissionName(tmid))
-			end
-		end
+	local follower, st = btn.info, btn.XPBar.statusText
+	if not st then
+		st = btn:CreateFontString(nil, "ARTWORK", "TextStatusBarText")
+		st:SetTextColor(0.7, 0.6, 0.85)
+		st:SetPoint("BOTTOMLEFT", btn.XPBar, "TOPLEFT", 1, -3)
+		btn.XPBar.statusText = st
+	end
+	if not follower.isCollected or follower.status == GARRISON_FOLLOWER_INACTIVE or follower.levelXP == 0 then
+		st:SetText("")
+	else
+		st:SetFormattedText(L"%s XP", BreakUpLargeNumbers(follower.levelXP - follower.xp))
+	end
+	local tmid = G.GetFollowerTentativeMission(follower.followerID)
+	if follower.status == GARRISON_FOLLOWER_ON_MISSION then
+		btn.Status:SetText(C_Garrison.GetFollowerMissionTimeLeft(follower.followerID))
+	elseif follower.status == GARRISON_FOLLOWER_IN_PARTY and tmid and tmid ~= (mi and mi.missionID) then
+		btn.Status:SetFormattedText("%s: %s", L"In Tentative Party", C_Garrison.GetMissionName(tmid))
 	end
 end
-hooksecurefunc(GarrisonShipyardFrame.FollowerList, "UpdateData", FollowerList_UpdateShip)
-hooksecurefunc(GarrisonLandingPage.ShipFollowerList, "UpdateData", FollowerList_UpdateShip)
+T.RegisterCallback_OnInitializedFrame(GarrisonShipyardFrame.FollowerList.ScrollBox, FollowerList_UpdateShip)
+T.RegisterCallback_OnInitializedFrame(GarrisonLandingPage.ShipFollowerList.ScrollBox, FollowerList_UpdateShip)
+
 do -- Follower counter button tooltips
 	local fake, old = {}
 	local function OnEnter(self, ...)
@@ -265,136 +281,19 @@ do -- Follower counter button tooltips
 	end
 	hooksecurefunc("GarrisonFollowerButton_UpdateCounters", function(_, self)
 		if old and (fake.info ~= old.info or not (old:IsShown() and old:IsMouseOver())) then
-			if false then --FIXME
-				GarrisonMissionMechanicFollowerCounter_OnLeave(fake)
-			end
+			GarrisonMissionMechanicFollowerCounter_OnLeave(old)
 			old, fake.info = nil
 		end
 		for i=1,#self.Counters do
 			local self = self.Counters[i]
 			self:SetScript("OnEnter", OnEnter)
-			if self:IsShown() and self:IsMouseOver() then
+			if self:IsShown() and self:IsMouseOver() and GetMouseFocus() == self then
 				OnEnter(self)
+				break
 			end
 		end
 	end)
 end
-
-local function GetRewardsDesc(mid)
-	local r, mi = "", C_Garrison.GetBasicMissionInfo(mid)
-	if mi and mi.rewards then
-		for k,v in pairs(mi.rewards) do
-			if v.currencyID == 0 then
-				r = r .. " |TInterface\\MoneyFrame\\UI-GoldIcon:0|t"
-			elseif v.icon then
-				r = r .. " |T" .. v.icon .. ":0|t"
-			elseif v.currencyID then
-				local c = C_CurrencyInfo.GetBasicCurrencyInfo(v.currencyID).icon
-				r = r .. " |T" .. (c or "Interface/Icons/Temp") .. ":0|t"
-			elseif v.itemID then
-				r = r .. " |T" .. GetItemIcon(v.itemID) .. ":0|t"
-			end
-		end
-	end
-	return r
-end
-local function FollowerButton_OnEnter(self)
-	if (not MISSION_PAGE_FRAME:IsVisible() and IsAddOnLoaded("SmartFollowerManager")) then
-		local info, id = self.info
-		local GetAbility = C_Garrison[info.garrFollowerID and "GetFollowerAbilityAtIndex" or "GetFollowerAbilityAtIndexByID"]
-		local GetTrait = C_Garrison[info.garrFollowerID and "GetFollowerTraitAtIndex" or "GetFollowerTraitAtIndexByID"]
-
-		id = info.followerID
-		GarrisonFollowerTooltip:ClearAllPoints()
-		GarrisonFollowerTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, 4)
-		GarrisonFollowerTooltip_Show(info.garrFollowerID or info.followerID,
-			not not info.isCollected, info.quality, info.level,
-			info.xp, info.levelXP, info.iLevel,
-			GetAbility(id, 1), GetAbility(id, 2), GetAbility(id, 3), GetAbility(id, 4),
-			GetTrait(id, 1), GetTrait(id, 2), GetTrait(id, 3), GetTrait(id, 4),
-			false
-		)
-		
-		return
-	end
-	
-	local tmid = self and self.id and G.GetFollowerTentativeMission(self.id)
-	if tmid then
-		GameTooltip:SetOwner(self, "ANCHOR_NONE")
-		GameTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 4, 4)
-		GameTooltip:SetText(L"In Tentative Party")
-		GameTooltip:AddDoubleLine(C_Garrison.GetMissionName(tmid), GetRewardsDesc(tmid), 1,1,1)
-		if MISSION_PAGE_FRAME:IsVisible() then
-			GameTooltip:AddLine("|n|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:14:12:0:-1:512:512:10:70:330:410|t " .. GARRISON_MISSION_ADD_FOLLOWER, 0.5, 0.8, 1)
-		end
-		GameTooltip:Show()
-	elseif GameTooltip:IsOwned(self) then
-		GameTooltip:Hide()
-	end
-end
-local function FollowerButton_OnLeave(self)
-	GarrisonFollowerTooltip:Hide()
-	if GameTooltip:IsOwned(self) then
-		GameTooltip:Hide()
-	end
-end
-function EV:FXUI_GARRISON_FOLLOWER_LIST_UPDATE(frame)
-	local buttons, fl = frame.FollowerList.listScroll.buttons, G.GetFollowerInfo()
-	local mi = MISSION_PAGE_FRAME.missionInfo
-	local mid = mi and mi.missionID
-	local upW, upA = G.GetUpgradeRange()
-	for i=1, #buttons do
-		local b = buttons[i].Follower
-		local fi = fl[b and b.id]
-		if fi and b and b:IsShown() then
-			local tmid = G.GetFollowerTentativeMission(fi.followerID)
-			local status, ns = b.info.status or ""
-			if tmid then
-				ns = tmid == mid and GARRISON_FOLLOWER_IN_PARTY or L"In Tentative Party"
-			elseif T.config.ignore[fi.followerID] then
-				if fi.status == nil and status == GARRISON_FOLLOWER_WORKING then
-					ns = L"Ignored"
-				elseif fi.status == GARRISON_FOLLOWER_INACTIVE or fi.status == GARRISON_FOLLOWER_WORKING then
-					ns = fi.status .. " " .. L"Ignored"
-				end
-			end
-			if ns then
-				b.Status:SetText(ns)
-			end
-			if fi.level == T.FOLLOWER_LEVEL_CAP then
-				local _weaponItemID, weaponItemLevel, _armorItemID, armorItemLevel = C_Garrison.GetFollowerItems(fi.followerID)
-				local itext = ITEM_LEVEL_ABBR .. " " .. fi.iLevel
-				if weaponItemLevel < upW or armorItemLevel < upA then
-					itext = itext .. "|cff20e020+|r"
-				end
-				if (ns or status) == "" and weaponItemLevel ~= armorItemLevel then
-					itext = itext .. " (" .. weaponItemLevel .. "/" .. armorItemLevel .. ")"
-				end
-				b.ILevel:SetText(itext)
-			end
-			if frame == GarrisonMissionFrame then
-				b:SetScript("OnEnter", FollowerButton_OnEnter)
-				b:SetScript("OnLeave", FollowerButton_OnLeave)
-			end
-		end
-	end
-end
-local function mousewheelListUpdate(self, ...)
-	HybridScrollFrame_OnMouseWheel(self, ...)
-	local buttons = self.buttons
-	for i = 1, #buttons do
-		if buttons[i]:IsMouseOver() then
-			local oe = buttons[i]:GetScript("OnEnter")
-			if oe then
-				oe(buttons[i])
-				return
-			end
-		end
-	end
-end
-GarrisonMissionFrame.FollowerList.listScroll:SetScript("OnMouseWheel", mousewheelListUpdate)
-GarrisonLandingPage.FollowerList.listScroll:SetScript("OnMouseWheel", mousewheelListUpdate)
-GarrisonRecruitSelectFrame.FollowerList.listScroll:SetScript("OnMouseWheel", mousewheelListUpdate)
 
 local function Mechanic_OnClick(self)
 	T.Mechanic_OnClick(self)
@@ -426,11 +325,11 @@ hooksecurefunc(GarrisonMissionFrame, "SetEnemies", function(_, f, enemies)
 end)
 local function UpdateHover(_, frame)
 	if frame:IsMouseOver() and frame:IsShown() then
-		local	ol, oe = frame:GetScript("OnLeave"), frame:GetScript("OnEnter")
+		local ol, oe = frame:GetScript("OnLeave"), frame:GetScript("OnEnter")
 		if ol then
 			securecall(ol, frame)
 		end
-		if oe then
+		if oe and GetMouseFocus() == frame then
 			oe(frame)
 		end
 	end
@@ -457,7 +356,7 @@ local lfgButton do
 	border:SetPoint("TOPLEFT", 1, -1.5)
 	border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
 	local ico = lfgButton:CreateTexture(nil, "ARTWORK")
-	ico:SetNonBlocking(false)
+	ico:SetBlockingLoadsRequested(true)
 	ico:SetTexture("Interface\\LFGFrame\\BattlenetWorking28")
 	ico:SetAllPoints()
 	local curIco, nextSwap = 28, 0.08
@@ -586,12 +485,9 @@ do -- Save tentative party on minimize
 		PAGE.CloseButton:SetPoint("TOPRIGHT", 2, 2)
 		PAGE:SetScript("OnClick", ClickMinimize)
 
-		local min = CreateFrame("Button", nil, PAGE, "UIPanelCloseButtonNoScripts")
+		local min = CreateFrame("Button", nil, PAGE, "UIPanelHideButtonNoScripts")
 		PAGE.MinimizeButton = min
-		min:SetNormalTexture("Interface\\Buttons\\UI-Panel-HideButton-Up")
-		min:SetPushedTexture("Interface\\Buttons\\UI-Panel-HideButton-Down")
-		min:SetPoint("RIGHT", PAGE.CloseButton, "LEFT", 8, 0)
-		min:SetHitRectInsets(0,8,0,0)
+		min:SetPoint("RIGHT", PAGE.CloseButton, "LEFT", -4, 2)
 		min:SetScript("OnClick", Minimize_OnClick)
 		min:SetScript("OnHide", Minimize_OnHide)
 	end

@@ -10,6 +10,7 @@ local top = addon_env.top
 local top_yield = addon_env.top_yield
 local top_unavailable = addon_env.top_unavailable
 local Widget = addon_env.Widget
+local GarrisonLandingPageMinimapButton = ExpansionLandingPageMinimapButton
 
 -- [AUTOLOCAL START]
 local After = C_Timer.After

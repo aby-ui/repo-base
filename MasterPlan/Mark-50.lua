@@ -1,7 +1,16 @@
 local _, T = ...
 T.Mark = 50
 
-function GarrisonMissionFrame_SelectTab() end
+local function noop() end
+if GarrisonMissionFrame_SelectTab == nil then
+	GarrisonMissionFrame_SelectTab = noop
+end
+if GarrisonLandingPageTab_OnEnter == nil then
+	GarrisonLandingPageTab_OnEnter = noop
+end
+if GarrisonLandingPageTab_OnLeave == nil then
+	GarrisonLandingPageTab_OnLeave = noop
+end
 
 hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(fr, data)
 	if fr and data and data.level == T.FOLLOWER_LEVEL_CAP and data.quality > 3 then
@@ -58,3 +67,17 @@ local CreateEdge do
 	end
 end
 T.CreateEdge = CreateEdge
+
+local function CallOwner(f, ...)
+	return f(...)
+end
+function T.RegisterCallback_OnInitializedFrame(box, f)
+	box:RegisterCallback("OnInitializedFrame", CallOwner, f)
+	if box:IsVisible() then
+		box:ForEachFrame(f)
+	end
+	if type(box:GetParent().buttonInitializer) == "function" then
+		-- GarrisonFollowerList:UpdateData, hiss.
+		hooksecurefunc(box:GetParent(), "buttonInitializer", f)
+	end
+end

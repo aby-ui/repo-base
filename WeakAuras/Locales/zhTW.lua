@@ -378,6 +378,12 @@ L["Elite"] = "精英"
 L["Emalon the Storm Watcher"] = "『風暴看守者』艾瑪隆"
 L["Emote"] = "表情動作"
 --[[Translation missing --]]
+L["Empower Cast End"] = "Empower Cast End"
+--[[Translation missing --]]
+L["Empower Cast Interrupt"] = "Empower Cast Interrupt"
+--[[Translation missing --]]
+L["Empower Cast Start"] = "Empower Cast Start"
+--[[Translation missing --]]
 L["Empowered"] = "Empowered"
 --[[Translation missing --]]
 L["Empowered 1"] = "Empowered 1"
@@ -843,7 +849,6 @@ L["Play"] = "播放"
 L["Player"] = "玩家"
 L["Player Character"] = "玩家角色"
 L["Player Class"] = "玩家職業"
-L["Player Covenant"] = "玩家誓盟"
 L["Player Effective Level"] = "玩家真實等級"
 L["Player Experience"] = "玩家經驗值"
 L["Player Faction"] = "玩家陣營"
@@ -1151,7 +1156,6 @@ L["Threat Percent"] = "仇恨百分比"
 L["Threat Situation"] = "仇恨狀況"
 L["Threat Value"] = "仇恨值"
 L["Tick"] = "每次進度指示"
-L["Tier "] = "天賦層級"
 L["Time Format"] = "時間格式"
 L["Time in GCDs"] = "GCD 時間"
 L["Timed"] = "時間"

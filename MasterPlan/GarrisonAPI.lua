@@ -304,7 +304,7 @@ local dropFollowers, missionEndTime = {}, {} do -- Start/Available capture
 		if next(startQueue) then
 			C_Timer.After(0.5, startQueuePing)
 		end
-		api.SuppressFollowerEvents(1) --FIXME: MP doesn't use false-start for ship groups
+		api.SuppressFollowerEvents(1)
 		for k, v in pairs(startQueue) do
 			pushStart(k, v[1], v[2], v[3])
 		end
@@ -2903,7 +2903,7 @@ function api.SetUpGroupTooltip(tip, g, mi)
 	end
 	if (g.cval or 0) > 0 then
 		local r = g.cslot == 3 and g.cval .. " |TInterface\\Garrison\\GarrisonCurrencyIcons:14:14:0:0:128:128:12:52:12:52|t" or GetMoneyString(g.cval)
-		tip:AddLine(REWARDS .. ": |cffffffff" .. r) --TODO
+		tip:AddLine(REWARDS .. ": |cffffffff" .. r)
 	end
 end
 function api.GetUnderLevelledFollower(g, mi)

@@ -1555,7 +1555,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local player, realm, zone = UnitName("player"), GetRealmName(), GetRealZoneText()
-  local spec, specId, covenant, role, raidRole = false, false, false, false, false
+  local spec, specId, role, raidRole = false, false, false, false
   local inPetBattle, vehicle, vehicleUi = false, false, false
   local zoneId = C_Map.GetBestMapForUnit("player")
   local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
@@ -1594,7 +1594,6 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     spec = GetSpecialization()
     specId = GetSpecializationInfo(spec)
     role = select(5, GetSpecializationInfo(spec))
-    covenant = C_Covenants.GetActiveCovenantID()
     inPetBattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
@@ -1643,10 +1642,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       elseif WeakAuras.IsWrathClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
-      elseif WeakAuras.IsShadowlands() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
-      elseif WeakAuras.IsDragonflight() then
+      elseif WeakAuras.IsRetail() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
       end
@@ -1740,11 +1736,8 @@ if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
   loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
-  if WeakAuras.IsDragonflight() then
-    loadFrame:RegisterEvent("COVENANT_CHOSEN")
-    loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
-    loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
-  end
+  loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
+  loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end
@@ -1809,7 +1802,7 @@ end
 local function UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
-    if Private.regions[id].region then
+    if Private.regions[id] and Private.regions[id].region then
       Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
     end
     if clones[id] then
@@ -4187,6 +4180,12 @@ local function startStopTimers(id, cloneId, triggernum, state)
             if (state.show ~= false and state.show ~= nil) then
               state.show = false;
               state.changed = true;
+
+              -- if the trigger has updated then check to see if it is flagged for WatchedTrigger and send to queue if it is
+              if Private.watched_trigger_events[id] and Private.watched_trigger_events[id][triggernum] then
+                Private.AddToWatchedTriggerDelay(id, triggernum)
+              end
+
               Private.UpdatedTriggerState(id);
             end
           end,

@@ -52,8 +52,7 @@ local L = WeakAuras.L
 	L["%s Keep Aspect Ratio"] = "%s 保持宽高比"
 	L["%s Name Function"] = "%s 名称函数"
 	L["%s Stacks Function"] = "%s 层数函数"
-	--[[Translation missing --]]
-	L["%s stores around %s KB of data"] = "%s stores around %s KB of data"
+	L["%s stores around %s KB of data"] = "%s已储存约%s KB数据"
 	L["%s Texture"] = "%s 材质"
 	L["%s Texture Function"] = "%s 材质函数"
 	L["%s total auras"] = "共%s个光环"
@@ -226,8 +225,7 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Choose"] = "选择"
 	L["Class"] = "职业"
 	L["Clear Debug Logs"] = "清除调试日志"
-	--[[Translation missing --]]
-	L["Clear Saved Data"] = "Clear Saved Data"
+	L["Clear Saved Data"] = "清空已储存数据"
 	L["Clip Overlays"] = "裁剪覆盖层"
 	L["Clipped by Progress"] = "被进度条遮挡"
 	L["Close"] = "关闭"
@@ -280,22 +278,20 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Custom Grow"] = "自定义生长"
 	L["Custom Options"] = "自定义选项"
 	L["Custom Sort"] = "自定义排序"
-	L["Custom Trigger"] = "自定义生效触发器"
-	L["Custom trigger event tooltip"] = [=[选择用于检查自订触发的事件。
+	L["Custom Trigger"] = "自定义触发器"
+	L["Custom trigger event tooltip"] = [=[选择用于检查自定义触发器的事件。
 如果有多个事件,可以用逗号或空白分隔。
 
 |cFF4444FF例：|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
-	L["Custom trigger status tooltip"] = [=[选择用于检查自订触发的事件。
+	L["Custom trigger status tooltip"] = [=[选择用于检查自定义触发器的事件。
 因为这一个是状态触发器, 指定的事件 可以被 WeakAuras 调用, 而不需指定参数.
 如果有多个事件,可以用逗号或空白分隔。
 
 |cFF4444FF例：|r
 UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
-	--[[Translation missing --]]
-	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "Custom Trigger: Ignore Lua Errors on OPTIONS event"
-	--[[Translation missing --]]
-	L["Custom Trigger: Send fake events instead of STATUS event"] = "Custom Trigger: Send fake events instead of STATUS event"
+	L["Custom Trigger: Ignore Lua Errors on OPTIONS event"] = "自定义触发器：忽略OPTIONS事件的Lua错误"
+	L["Custom Trigger: Send fake events instead of STATUS event"] = "自定义触发器：发送虚假事件而不是STATUS事件"
 	L["Custom Untrigger"] = "自定义取消触发器"
 	L["Custom Variables"] = "自定义变量"
 	L["Debuff Type"] = "减益类型"
@@ -710,8 +706,7 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Rows"] = "行"
 	L["Same"] = "相同"
 	L["Same texture as Foreground"] = "与前景材质相同"
-	--[[Translation missing --]]
-	L["Saved Data"] = "Saved Data"
+	L["Saved Data"] = "已储存数据"
 	L["Scale"] = "缩放"
 	L["Search"] = "搜索"
 	L["Select Talent"] = "选择天赋"
@@ -826,8 +821,7 @@ It might not work correctly!]=] ] = "此光环在一个不同版本（%s）的�
 It might not work correctly with your version!]=] ] = "此光环由更新版本的WeakAuras创建。它可能无法在已安装的WeakAuras版本下正常工作！"
 	L["This display is currently loaded"] = "此显示内容已加载"
 	L["This display is not currently loaded"] = "此显示内容未加载"
-	--[[Translation missing --]]
-	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."
+	L["This enables the collection of debug logs. Custom code can add debug information to the log through the function DebugPrint."] = "启用调试日志的收集。自定义代码可以使用DebugPrint函数向日志添加调试信息。"
 	L["This is a modified version of your aura, |cff9900FF%s.|r"] = "这是一个你光环的修改版本，|cff9900FF%s.|r"
 	L["This is a modified version of your group: |cff9900FF%s|r"] = "这是一个你群组的修改版本，|cff9900FF%s.|r"
 	L["This region of type \"%s\" is not supported."] = "不支持域类型\"%s\"。"

@@ -204,7 +204,7 @@ function rematch:CacheNpcIDs()
 		end
 		if failed and npcCacheTimeout>0 then
 			npcCacheTimeout = npcCacheTimeout - 1
-			C_Timer.After(1.0,rematch.CacheNpcIDs) -- some weren't cached, try again later
+			rematch:StartTimer("CacheNpcIDs",1.0,rematch.CacheNpcIDs) -- some weren't cached, try again later
 		else
 			rematch.notablesCached = true
 		end

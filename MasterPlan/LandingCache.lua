@@ -155,22 +155,17 @@ hooksecurefunc(GarrisonLandingPage.Report.shipmentsPool, "ReleaseAll", function(
 	end
 end)
 
-local function ShowReportMissionExpirationTime()
+local function ShowReportMissionExpirationTime(b, item)
 	if GarrisonLandingPage.garrTypeID >= 3 then return end
-	local items, buttons = GarrisonLandingPageReport.List.AvailableItems, GarrisonLandingPageReport.List.listScroll.buttons
-	for i=1,#buttons do
-		local item = buttons[i]:IsShown() and items[buttons[i].id]
-		if item and item.offerTimeRemaining and item.offerEndTime then
-			if item.offerEndTime - 8640000 <= GetTime() then
-				buttons[i].MissionType:SetFormattedText("%s |cffa0a0a0(%s %s)|r",
-					item.durationSeconds >= GARRISON_LONG_MISSION_TIME and (GARRISON_LONG_MISSION_TIME_FORMAT):format(item.duration) or item.duration,
-					L"Expires in:", item.offerTimeRemaining)
-			end
+	if item and item.offerTimeRemaining and item.offerEndTime then
+		if item.offerEndTime - 8640000 <= GetTime() then
+			b.MissionType:SetFormattedText("%s |cffa0a0a0(%s %s)|r",
+				item.durationSeconds >= GARRISON_LONG_MISSION_TIME and (GARRISON_LONG_MISSION_TIME_FORMAT):format(item.duration) or item.duration,
+				L"Expires in:", item.offerTimeRemaining)
 		end
 	end
 end
-hooksecurefunc("GarrisonLandingPageReportList_UpdateAvailable", ShowReportMissionExpirationTime)
-if GarrisonLandingPageReport:IsVisible() then ShowReportMissionExpirationTime() end
+T.RegisterCallback_OnInitializedFrame(GarrisonLandingPageReport.List.ScrollBox, ShowReportMissionExpirationTime)
 
 local hs = T.CreateLazyItemButton(GarrisonLandingPageReport, 110560)
 hs:SetSize(24, 24)

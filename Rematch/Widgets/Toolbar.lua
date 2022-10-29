@@ -283,7 +283,7 @@ function toolbar:ButtonPreClick()
 	if self==toolbar.Heal or self==toolbar.Bandage then
 		-- for heals or bandages, come back in a bit to load healthiest pet if options enabled
 		if settings.LoadHealthiest and settings.LoadHealthiestAfterBattle then
-			C_Timer.After(0.75,rematch.LoadHealthiestOfLoadedPets)
+			rematch:StartTimer("LoadHealthiestOfLoadedPets",0.75,rematch.LoadHealthiestOfLoadedPets)
 		end
 		
 		local roster = rematch.Roster

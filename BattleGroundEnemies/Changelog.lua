@@ -2,6 +2,27 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.0.1",
+		General = "Another bugfix update with other smaller changes. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed a typo that affected the target indicator symbols not to show up",
+					"Fixed a typo that let to an error for aura updates",
+					"Fixed a issue with incorrectly assigned to enemy players which let to stuff depending on it showing infos for different players like buffs, castbar, etc",
+					"Fixed a issue were running the testmode before entering a BG let to battleground specifig buffs show up when a player was shown in a arena frame",
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"There are now 2 settings to disable arena frames, one to hide them battlegrounds and one for arenas"
+				}
+			}
+		}
+	},
+	{
 		Version = "10.0.0.0",
 		General = "Just a small bugfix update. Please read the notes below if you haven't been using a version 9.2.7.X before",
 		Sections = {

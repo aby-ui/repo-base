@@ -236,7 +236,7 @@ end
 
 -- autofocus editboxes can lose focus now by clicking elsewhere
 function notes:OnFocusLost()
-	C_Timer.After(0.15,notes.OnFocusLostDelayed)
+	rematch:StartTimer("OnFocusLostDelayed",0.15,notes.OnFocusLostDelayed)
 end
 
 -- when focus lost, the control buttons are hidden and the notes are saved

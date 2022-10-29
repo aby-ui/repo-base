@@ -110,47 +110,32 @@ function BuyEmAll:MerchantFrame_OnHide(...)
     return self.OrigMerchantFrame_OnHide(...);
 end
 
-function BuyEmAll:CogsFreeBagSpace(itemID)
-    local freeSpace = 0;
-    local itemSubType = GetItemFamily(itemID);
+function BuyEmAll:GetFreeBagSpace(itemID)
+    local canFit = 0;
+    local itemType = GetItemFamily(itemID);
     local stackSize = select(8, GetItemInfo(itemID));
 
-    for theBag = 0, 4 do
-        local doBag = true;
+    for currentBag = 0, 4 do
+        local freeSpace, bagType = GetContainerNumFreeSlots(currentBag);
+        if (bagType == 0 or bagType == itemType or bit.band(itemType, bagType) == bagType) then
+            canFit = canFit + (freeSpace * stackSize);
 
-        if (theBag > 0) then -- 0 is always the backpack.
-        local bagLink = GetInventoryItemLink("player", 19 + theBag); -- Bag #1 is in inventory slot 20.
-        if (bagLink) then
-            local bagSubType = GetItemFamily(bagLink);
-            if (bagSubType == itemSubType) then
-                doBag = true;
-            elseif (bagSubType == 0) then
-                doBag = true;
-            elseif (bit.band(itemSubType, bagSubType) == bagSubType) then
-                doBag = true;
-            else doBag = false;
-            end
-        else
-            doBag = false;
-        end
-        end
+            local totalBagSlots = GetContainerNumSlots(currentBag);
+            local inventoryId = currentBag == 0 and 0 or ContainerIDToInventoryID(currentBag);
 
-        if (doBag) then
-            local numSlot = GetContainerNumSlots(theBag);
-            for theSlot = 1, numSlot do
-                local itemLink = GetContainerItemLink(theBag, theSlot);
-                if not (itemLink) then
-                    freeSpace = freeSpace + stackSize;
-                elseif (strfind(itemLink, "item:" .. itemID .. ":")) then
-                    local _, itemCount = GetContainerItemInfo(theBag, theSlot);
-                    freeSpace = freeSpace + stackSize - itemCount;
+            for currentSlot = 1, totalBagSlots do
+                local itemLink = GetContainerItemLink(inventoryId, currentSlot);
+                if (itemLink and strfind(itemLink, "item:" .. itemID .. ":")) then
+                    local itemCount = select(2, GetContainerItemInfo(inventoryId, currentSlot));
+                    print("Found " .. itemCount .. " existing items");
+                    canFit = canFit + (stackSize - itemCount);
                 end
             end
         end
     end
-    return freeSpace, stackSize;
-end
 
+    return canFit, stackSize;
+end
 
 -- Hooks left-clicks on merchant item buttons.
 
@@ -205,7 +190,7 @@ function BuyEmAll:MerchantItemButton_OnModifiedClick(frame, button)
         
         if (strmatch(self.itemLink, "item")) then -- Check if purchase is an item and setup the needed variables.
             self.itemID = tonumber(strmatch(self.itemLink, "item:(%d+):"));
-            local bagMax, stack = self:CogsFreeBagSpace(self.itemID);
+            local bagMax, stack = self:GetFreeBagSpace(self.itemID);
             self.stack = stack;
             self.fit = bagMax;
             self.partialFit = self.fit % stack;

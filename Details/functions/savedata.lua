@@ -4,16 +4,25 @@ local _detalhes = 		_G._detalhes
 
 function _detalhes:WipeConfig()
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
-	
-	local b = CreateFrame("button", "DetailsResetConfigButton", UIParent)
-	tinsert(UISpecialFrames, "DetailsResetConfigButton")
-	
-	DetailsFramework:ApplyStandardBackdrop(b)
 
-	b:SetSize(250, 40)
-	b:SetText(Loc ["STRING_SLASH_WIPECONFIG_CONFIRM"])
-	b:SetScript("OnClick", function() _detalhes.wipe_full_config = true; ReloadUI(); end)
-	b:SetPoint("center", UIParent, "center", 0, 0)
+	local wipeButton = CreateFrame("button", "DetailsResetConfigButton", UIParent, "BackdropTemplate")
+	wipeButton:SetSize(270, 40)
+	wipeButton:SetScript("OnClick", function() _detalhes.wipe_full_config = true; ReloadUI(); end)
+	wipeButton:SetPoint("center", UIParent, "center", 0, 0)
+
+	tinsert(UISpecialFrames, "DetailsResetConfigButton")
+
+	DetailsFramework:ApplyStandardBackdrop(wipeButton)
+
+	local label = DetailsFramework:CreateLabel(wipeButton, Loc ["STRING_SLASH_WIPECONFIG_CONFIRM"])
+	label:SetPoint("center", 0, 0)
+
+	wipeButton.close_button = CreateFrame("Button", nil, wipeButton, "UIPanelCloseButton")
+	wipeButton.close_button:SetWidth(16)
+	wipeButton.close_button:SetHeight(16)
+	wipeButton.close_button:SetPoint("TOPRIGHT", wipeButton, "TOPRIGHT", -1, -1)
+	wipeButton.close_button:SetText("X")
+	wipeButton.close_button:SetFrameLevel(wipeButton:GetFrameLevel()+5)
 end
 
 local is_exception = {

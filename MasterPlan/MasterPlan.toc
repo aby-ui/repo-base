@@ -1,13 +1,14 @@
 ## Interface: 100000
 ## Title: Master Plan
-## Notes: Garrison missions UI tweaks.
+## Version: 0.125
 ## Author: foxlit
+## Notes: Garrison missions UI tweaks.
 ## X-Website: https://www.townlong-yak.com/addons/master-plan/
+## License: All rights reserved. Do not redistribute, in whole or in part, without explicit prior permission from the author.
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## Version: 0.124
-## X-Version-Key: sky unsundered
+## X-Version-Key: stone cradle
 Libs/Evie.lua
 Libs/Reframe.lua
 Locale.lua
@@ -21,6 +22,7 @@ GarrisonFollowers.lua
 FollowerSummary.lua
 ShipMoI.lua
 LandingCache.lua
+LandingFleet.lua
 LandingAlts.lua
 
 

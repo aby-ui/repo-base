@@ -209,8 +209,8 @@ end
 
 local moiTab = CreateFrame("Button", "GarrisonShipyardFrameTab3", GarrisonShipyardFrame, "GarrisonMissionFrameTabTemplate", 3) do
 	local availTab, followerTab = GarrisonShipyardFrameTab1, GarrisonShipyardFrameTab2
-	moiTab:SetPoint("LEFT", availTab, "RIGHT", -5, 0)
-	followerTab:SetPoint("LEFT", moiTab, "RIGHT", -5, 0)
+	moiTab:SetPoint("TOPLEFT", availTab, "TOPRIGHT", 5, 0)
+	followerTab:SetPoint("TOPLEFT", moiTab, "TOPRIGHT", 5, 0)
 	moiTab:SetText(L"Missions of Interest")
 	PanelTemplates_DeselectTab(moiTab)
 	PanelTemplates_TabResize(moiTab, 10)

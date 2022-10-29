@@ -371,10 +371,10 @@ end
 function Data.SetOption(location, option, ...)
 	local value
 	if option.type == "color" then
-		value = {...}  local r, g, b, alpha = ...
+		value = {...}  --local r, g, b, alpha = ...
 	else
 		value = ...
-	end	
+	end
 	location[option[#option]] = value
 	BattleGroundEnemies:ApplyAllSettings()
 
@@ -1120,22 +1120,24 @@ function BattleGroundEnemies:SetupOptions()
 						desc = L.Locked_Desc,
 						order = 1
 					},
-					DisableArenaFrames = {
+					DisableArenaFramesInArena = {
 						type = "toggle",
-						name = L.DisableArenaFrames,
-						desc = L.DisableArenaFrames_Desc,
+						name = L.DisableArenaFramesInArena,
+						desc = L.DisableArenaFramesInArena_Desc,
 						set = function(option, value)
 							Data.SetOption(location, option, value)
 							self:ToggleArenaFrames()
 						end,
 						order = 3
 					},
-					Font = {
-						type = "select",
-						name = L.Font,
-						desc = L.Font_Desc,
-						dialogControl = "LSM30_Font",
-						values = AceGUIWidgetLSMlists.font,
+					DisableArenaFramesInBattlegrounds = {
+						type = "toggle",
+						name = L.DisableArenaFramesInBattlegrounds,
+						desc = L.DisableArenaFramesInBattlegrounds_Desc,
+						set = function(option, value)
+							Data.SetOption(location, option, value)
+							self:ToggleArenaFrames()
+						end,
 						order = 4
 					},
 					MyTarget_Color = {
@@ -1143,34 +1145,42 @@ function BattleGroundEnemies:SetupOptions()
 						name = L.MyTarget_Color,
 						desc = L.MyTarget_Color_Desc,
 						hasAlpha = true,
-						order = 7
+						order = 5
 					},
 					MyFocus_Color = {
 						type = "color",
 						name = L.MyFocus_Color,
 						desc = L.MyFocus_Color_Desc,
 						hasAlpha = true,
-						order = 8
+						order = 6
 					},
-					Fake1 = Data.AddVerticalSpacing(10),
+					Font = {
+						type = "select",
+						name = L.Font,
+						desc = L.Font_Desc,
+						dialogControl = "LSM30_Font",
+						values = AceGUIWidgetLSMlists.font,
+						order = 7
+					},
+					Fake1 = Data.AddVerticalSpacing(8),
 					ShowTooltips = {
 						type = "toggle",
 						name = L.ShowTooltips,
 						desc = L.ShowTooltips_Desc,
-						order = 11
+						order = 9
 					},
 					ConvertCyrillic = {
 						type = "toggle",
 						name = L.ConvertCyrillic,
 						desc = L.ConvertCyrillic_Desc,
 						width = "normal",
-						order = 12
+						order = 10
 					},
 					UseBigDebuffsPriority = {
 						type = "toggle",
 						name = L.UseBigDebuffsPriority,
 						desc = L.UseBigDebuffsPriority_Desc:format(L.Buffs, L.Debuffs, L.HighestPriorityAura),
-						order = 13
+						order = 11
 					}
 				}
 			},

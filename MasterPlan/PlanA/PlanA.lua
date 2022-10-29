@@ -1,6 +1,8 @@
 local addonName, T = ...
 local E, api, cdata = T.Evie, {}
 local C = C_Garrison
+local GarrisonLandingPageMinimapButton = ExpansionLandingPageMinimapButton
+
 
 local function gett(t, k, ...)
 	if not k then
@@ -23,13 +25,13 @@ local CheckCacheWarning do
 	GarrisonLandingPageMinimapButton.MPWarningTexture = tex
 	local SCALE_MAX, SCALE_MIN = 1.1, 0.9
 	local a = ag:CreateAnimation("Scale")
-	a:SetToScale(SCALE_MAX, SCALE_MAX)
+	a:SetScaleTo(SCALE_MAX, SCALE_MAX)
 	a:SetStartDelay(5)
 	a:SetDuration(1)
 	a:SetOrder(1)
 	a:SetChildKey("MPWarningTexture")
 	a = ag:CreateAnimation("Scale")
-	a:SetToScale(SCALE_MIN, SCALE_MIN)
+	a:SetScaleTo(SCALE_MIN, SCALE_MIN)
 	a:SetOrder(2)
 	a:SetDuration(1)
 	a:SetChildKey("MPWarningTexture")
@@ -86,16 +88,15 @@ local LoadMPOnShow, LoadMP do
 	end
 end
 do
+	local followerTabNames = {[2]=GARRISON_FOLLOWERS, [3]=FOLLOWERLIST_LABEL_CHAMPIONS, [9]=FOLLOWERLIST_LABEL_CHAMPIONS, [111]=COVENANT_MISSIONS_FOLLOWERS}
 	local function ShowLanding(_, page)
 		HideUIPanel(GarrisonLandingPage)
-		local b = GarrisonLandingPageFollowerList.listScroll.buttons
-		if ((page or C_Garrison.GetLandingPageGarrisonType()) == 111) ~= (b and b[1] and not b[1].DownArrow) then
-			for i=1,#b do
-				b[i]:Hide()
-			end
-			GarrisonLandingPageFollowerList.listScroll.buttons = nil
-		end
 		ShowGarrisonLandingPage(page)
+		local fn = followerTabNames[page or C.GetLandingPageGarrisonType()]
+		if fn then
+			GarrisonLandingPage.FollowerList.LandingPageHeader:SetText(fn)
+			GarrisonLandingPageTab2:SetText(fn)
+		end
 	end
 	local function MaybeStopSound(sound)
 		return sound and StopSound(sound)
@@ -166,16 +167,14 @@ hooksecurefunc("ShowGarrisonLandingPage", function(pg)
 		LoadMP()
 	end
 end)
-if (GARRISON_LANDING_COVIEW_PATCH_VERSION or 0) < 1 then
-	GARRISON_LANDING_COVIEW_PATCH_VERSION = 1
-	local lastNineMode = nil
+if (GARRISON_LANDING_COVIEW_PATCH_VERSION or 0) < 3 then
+	GARRISON_LANDING_COVIEW_PATCH_VERSION = 3
 	hooksecurefunc("ShowGarrisonLandingPage", function(pg)
-		if GARRISON_LANDING_COVIEW_PATCH_VERSION ~= 1 then
+		if GARRISON_LANDING_COVIEW_PATCH_VERSION ~= 3 then
 			return
 		end
 		pg = (pg or C_Garrison.GetLandingPageGarrisonType() or 0)
-		local thisNineMode = pg == 111 and 9 or 8
-		if thisNineMode ~= 9 and GarrisonLandingPage.SoulbindPanel then
+		if pg ~= 111 and GarrisonLandingPage.SoulbindPanel then
 			GarrisonLandingPage.FollowerTab.autoSpellPool:ReleaseAll()
 			GarrisonLandingPage.FollowerTab.autoCombatStatsPool:ReleaseAll()
 			GarrisonLandingPage.FollowerTab.AbilitiesFrame:Layout()
@@ -184,18 +183,12 @@ if (GARRISON_LANDING_COVIEW_PATCH_VERSION or 0) < 1 then
 		if pg > 2 and GarrisonThreatCountersFrame then
 			GarrisonThreatCountersFrame:Hide()
 		end
-		if lastNineMode and thisNineMode ~= lastNineMode then
-			for i=1,#GarrisonLandingPageFollowerList.listScroll.buttons do
-				GarrisonLandingPageFollowerList.listScroll.buttons[i]:Hide()
-			end
-			wipe(GarrisonLandingPageFollowerList.listScroll.buttons)
-			GarrisonLandingPageFollowerList.listScroll.buttons = nil
-			GarrisonLandingPageFollowerList:Initialize(GarrisonLandingPageFollowerList.followerType)
+		if pg > 3 then
+			GarrisonLandingPage.FollowerTab.NumFollowers:SetText("")
 		end
 		if GarrisonLandingPageReport.Sections then
-			GarrisonLandingPageReport.Sections:SetShown(thisNineMode == 9)
+			GarrisonLandingPageReport.Sections:SetShown(pg == 111)
 		end
-		lastNineMode = thisNineMode
 	end)
 end
 

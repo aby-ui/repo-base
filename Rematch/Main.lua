@@ -39,12 +39,12 @@ rematch.NMB = "\124TInterface\\TutorialFrame\\UI-Tutorial-Frame:12:12:0:0:512:51
 
 -- key bindings
 BINDING_HEADER_REMATCH = L["Rematch"]
-BINDING_NAME_REMATCH_WINDOW = L["Toggle Window"]
+BINDING_NAME_REMATCH_WINDOW = L["Show/Hide Rematch"]
 BINDING_NAME_REMATCH_AUTOLOAD = L["Auto Load"]
-BINDING_NAME_REMATCH_NOTES = L["Team Notes"]
-BINDING_NAME_REMATCH_PETS = L["Pets Tab"]
-BINDING_NAME_REMATCH_TEAMS = L["Teams Tab"]
-BINDING_NAME_REMATCH_QUEUE = L["Queue Tab"]
+BINDING_NAME_REMATCH_NOTES = L["Rematch Team Notes"]
+BINDING_NAME_REMATCH_PETS = L["Rematch Pets Tab"]
+BINDING_NAME_REMATCH_TEAMS = L["Rematch Teams Tab"]
+BINDING_NAME_REMATCH_QUEUE = L["Rematch Queue Tab"]
 
 -- backdrop definitions (used in templates.xml)
 REMATCH_BORDER_BACKGROUND_COLOR = CreateColor(0.5, 0.5, 0.5)
@@ -513,7 +513,7 @@ function rematch:PET_BATTLE_QUEUE_STATUS()
 		rematch:UpdateAutoLoadState(true)
 		rematch:UpdateUI()
 	elseif not rematch.pvpProposalAccepted then -- don't resume if flag set
-		C_Timer.After(0,rematch.UpdateQueue)
+		rematch:StartTimer("UpdateQueue",0,rematch.UpdateQueue)
 		rematch:UpdateAutoLoadState()
 	end
 end
@@ -524,7 +524,7 @@ function rematch:PLAYER_REGEN_ENABLED()
 	if frame.showAfterCombat then
 		frame:Show()
 	end
-	C_Timer.After(0,rematch.UpdateQueue)
+	rematch:StartTimer("UpdateQueue",0,rematch.UpdateQueue)
 	rematch:UpdateAutoLoadState()
 end
 
@@ -542,12 +542,12 @@ function rematch:PET_BATTLE_CLOSE()
 		if rematch.Notes:IsVisible() and not rematch.Notes.Content.ScrollFrame.EditBox:HasFocus() then
 			rematch:HideNotes()
 		end
-		C_Timer.After(0,rematch.UpdateQueue) -- waiting a frame (client thinks we can't swap pets right now)
+		rematch:StartTimer("UpdateQueue",0,rematch.UpdateQueue) -- waiting a frame (client thinks we can't swap pets right now)
 		rematch:UpdateAutoLoadState()
 		-- if option Load Healthiest Pets -> After Pet Battles Too is enabled (and a team is loaded)
 		if settings.LoadHealthiest and settings.LoadHealthiestAfterBattle then
 			-- then wait a bit and load healthiest pets
-			C_Timer.After(0.75,rematch.LoadHealthiestOfLoadedPets)
+			rematch:StartTimer("LoadHealthiestOfLoadedPets",0.75,rematch.LoadHealthiestOfLoadedPets)
 		end
 		rematch.wasInPVP = nil
 		
