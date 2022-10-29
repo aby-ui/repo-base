@@ -226,7 +226,7 @@ MSQ:AddSkin("Caith", {
 		OffsetY = -3,
 	},
 	Checked = {
-		Texture = [[Interface\AddOns\Masque_Fusion\Textures\Border]],
+		Texture = [[Interface\AddOns\Masque_Caith\Textures\Border]],
 		-- TexCoords = {0, 1, 0, 1},
 		Color = {0, 0.7, 0.9, 0.7},
 		BlendMode = "BLEND",

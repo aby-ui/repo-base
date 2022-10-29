@@ -100,20 +100,6 @@ function buttonMixin:GetStyle()
 	return self.Menu:GetStyle()
 end
 
---[[ Button:SetTimeout(_timeout_)
-See [Menu:SetTimeout(_timeout_)](Menu#menusettimeouttimeout).
---]]
-function buttonMixin:SetTimeout(...)
-	self.Menu:SetTimeout(...)
-end
-
---[[ Button:GetTimeout()
-See [Menu:GetTimeout()](Menu#menugettimeout).
---]]
-function buttonMixin:GetTimeout()
-	return self.Menu:GetTimeout()
-end
-
 --[[ Button:SetJustifyH(_..._)
 See [Widget:SetJustifyH](http://wowprogramming.com/docs/widgets/FontInstance/SetJustifyH).
 --]]
@@ -149,6 +135,13 @@ function buttonMixin:SetFormattedText(...)
 	self.Text:SetFormattedText(...)
 end
 
+--[[ Button:SetCheckAlignment(...)
+See [Menu:SetCheckAlignment(...)](Menu#menusetcheckalignment).
+--]]
+function buttonMixin:SetCheckAlignment(...)
+	self.Menu:SetCheckAlignment(...)
+end
+
 --[[ LibDropDown:NewButton(_parent[, name]_)
 Creates and returns a new menu button object.
 
@@ -162,7 +155,7 @@ function lib:NewButton(parent, name)
 		parent = _G[parent]
 	end
 
-	local Button = Mixin(CreateFrame('Frame', (name or parent:GetDebugName() .. 'MenuButton'), parent), buttonMixin, CallbackRegistryBaseMixin or CallbackRegistryMixin)
+	local Button = Mixin(CreateFrame('Frame', (name or parent:GetDebugName() .. 'MenuButton'), parent), buttonMixin, CallbackRegistryMixin)
 	Button:SetSize(165, 32)
 	Button:SetScript('OnHide', OnHide)
 	Button.Menu = lib:NewMenu(Button)

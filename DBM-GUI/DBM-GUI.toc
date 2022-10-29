@@ -25,7 +25,7 @@
 ## LoadOnDemand: 1
 ## DefaultState: enabled
 ## Author: MysticalOS, QartemisT
-## Version: e9585ea
+## Version: d108a30
 ## X-Website: https://deadlybossmods.com
 
 localization.en.lua

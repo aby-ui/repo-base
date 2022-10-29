@@ -70,4 +70,6 @@ if not U1_WOW10 then return end
     ActionButtonUseKeyDown
 
     CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
+
+    if type(Settings) == "table" and type(Settings.RegisterCanvasLayoutCategory) == "function" then
 --]]

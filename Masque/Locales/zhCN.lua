@@ -9,7 +9,7 @@
 
 	[ Notes ]
 
-	To help with translations, use the localization system on WoWAce (https://www.wowace.com/projects/masque/localization)
+	To help with translations, use the localization system on CurseForge (https://www.curseforge.com/wow/addons/masque/localization)
 	or contribute directly on GitHub (https://github.com/SFX-WoW/Masque).
 
 ]]
@@ -47,6 +47,18 @@ L["Load Options"] = "载入选项"
 L["Masque's options are load on demand. Click the button below to load them."] = "Masque 选项是按需载入。点击下面按钮加载它们。"
 L["This action will increase memory usage."] = "此操作将增加内存使用。"
 L["This section will allow you to view information about Masque and any skins you have installed."] = "此部分将允许查看关于 Masque 的信息或任意一款已安装的皮肤。"
+
+----------------------------------------
+-- Default Classic Skin
+---
+
+-- L["The default Classic button style."] = "The default Classic button style."
+
+----------------------------------------
+-- Default Skin
+---
+
+-- L["The default button style."] = "The default button style."
 
 ----------------------------------------
 -- Developer Settings
@@ -103,6 +115,7 @@ L["Websites"] = "网站"
 -- Interface Settings
 ---
 
+-- L["Classic Scaling"] = "Classic Scaling"
 L["Enable the Minimap icon."] = "启用小地图图标。"
 L["Interface"] = "界面"
 L["Interface Settings"] = "界面设置"
@@ -110,6 +123,7 @@ L["Minimap Icon"] = "小地图图标"
 L["Stand-Alone GUI"] = "独立用户界面"
 L["This section will allow you to adjust settings that affect Masque's interface."] = "此部分将允许调整影响 Masque 界面的设置。"
 L["Use a resizable, stand-alone options window."] = "使用可调整大小的独立选项窗口。"
+-- L["Use the old scaling method for action buttons."] = "Use the old scaling method for action buttons."
 
 ----------------------------------------
 -- LDB Launcher

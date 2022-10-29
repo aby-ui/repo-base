@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2514, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221016031101")
+mod:SetRevision("20221029034837")
 mod:SetCreatureID(190609)
 mod:SetEncounterID(2565)
 --mod:SetUsedIcons(1, 2, 3)
@@ -42,7 +42,7 @@ local yellEnergyBomb							= mod:NewYell(374352)
 local yellEnergyBombFades						= mod:NewShortFadesYell(374352)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(389007, nil, nil, nil, 1, 8)
 
-local timerAstralBreathCD						= mod:NewCDTimer(61.5, 374361, nil, nil, nil, 3)
+local timerAstralBreathCD						= mod:NewCDTimer(29, 374361, nil, nil, nil, 3)--29-32
 local timerPowerVacuumCD						= mod:NewCDTimer(23.4, 388822, nil, nil, nil, 2)--23-28
 local timerEnergyBombCD							= mod:NewCDTimer(14.1, 374352, nil, nil, nil, 3)--14.1-20
 --local timerDecaySprayCD						= mod:NewAITimer(35, 376811, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)

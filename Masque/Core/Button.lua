@@ -59,13 +59,35 @@ local SkinText, SkinTexture, UpdateSpellAlert = Core.SkinText, Core.SkinTexture,
 ---
 
 local __Empty = {}
+local IsBackground = {
+	[136511] = true,
+	["Interface\\PaperDoll\\UI-PaperDoll-Slot-Bag"] = true,
+	[4701874] = true,
+	["Interface\\ContainerFrame\\BagsItemSlot2x"] = true,
+}
 
 ----------------------------------------
--- SetButtonArt
+-- Functions
 ---
 
+-- Function to toggle the icon backdrops.
+local function SetIconBackdrop(Button, Limit)
+	local Icon = Button:GetItemButtonIconTexture()
+	local IconID = Icon:GetTexture()
+	local IsEmpty
+
+	if IsBackground[IconID] then
+		Icon:SetAlpha(0)
+		IsEmpty = true
+	else
+		Icon:SetAlpha(1)
+	end
+
+	SetEmpty(Button, IsEmpty, Limit)
+end
+
 -- Function to toggle the button art.
-local function SetButtonArt(Button)
+local function UpdateButtonArt(Button)
 	local SlotArt, SlotBackground = Button.SlotArt, Button.SlotBackground
 
 	if Button.__MSQ_Enabled then
@@ -87,31 +109,41 @@ local function SetButtonArt(Button)
 	end
 end
 
-----------------------------------------
--- SetIconBackdrop
----
+-- Function to update the textures.
+local function UpdateTextures(Button, Limit)
+	local Skin = Button.__MSQ_Skin
 
-local IsBackground = {
-	[136511] = true,
-	["Interface\\PaperDoll\\UI-PaperDoll-Slot-Bag"] = true,
-	[4701874] = true,
-	["Interface\\ContainerFrame\\BagsItemSlot2x"] = true,
-}
+	if Skin then
+		local IsEmpty
+		local BagID = Button.GetBagID and Button:GetBagID()
 
--- Function to toggle the icon backdrops.
-local function SetIconBackdrop(Button)
-	local Icon = Button:GetItemButtonIconTexture()
-	local IconID = Icon:GetTexture()
-	local IsEmpty
+		if BagID then
+			local Size = ContainerFrame_GetContainerNumSlots(BagID)
+			IsEmpty = (Size and Size == 0) or nil
+		end
 
-	if IsBackground[IconID] then
-		Icon:SetAlpha(0)
-		IsEmpty = true
-	else
-		Icon:SetAlpha(1)
+		SetEmpty(Button, IsEmpty, Limit)
+
+		local Normal = Button:GetNormalTexture()
+		local Pushed = Button:GetPushedTexture()
+		local Highlight = Button:GetHighlightTexture()
+		local SlotHighlight = Button.SlotHighlightTexture
+
+		local xScale, yScale = GetScale(Button)
+
+		if Normal then
+			SkinNormal(Normal, Button, Skin.Normal, Button.__MSQ_NormalColor, xScale, yScale)
+		end
+		if Pushed then
+			SkinTexture("Pushed", Pushed, Button, Skin.Pushed, Button.__MSQ_PushedColor, xScale, yScale)
+		end
+		if Highlight then
+			SkinTexture("Highlight", Highlight, Button, Skin.Highlight, Button.__MSQ_HighlightColor, xScale, yScale)
+		end
+		if SlotHighlight then
+			SkinTexture("SlotHighlight", SlotHighlight, Button, Skin.SlotHighlight, Button.__MSQ_SlotHighlightColor, xScale, yScale)
+		end
 	end
-
-	SetEmpty(Button, IsEmpty, true)
 end
 
 ----------------------------------------
@@ -129,7 +161,7 @@ end
 local function Hook_UpdateButtonArt(Button, HideDivider)
 	if Button.__MSQ_Exit_UpdateArt then return end
 
-	SetButtonArt(Button)
+	UpdateButtonArt(Button)
 
 	if not Button.__MSQ_Enabled then return end
 
@@ -155,40 +187,12 @@ end
 local function Hook_UpdateTextures(Button)
 	if Button.__MSQ_Exit_UpdateTextures then return end
 
-	local Skin = Button.__MSQ_Skin
-
-	if Skin then
-		local IsEmpty
-		local BagID = Button.GetBagID and Button:GetBagID()
-
-		if BagID then
-			local Size = ContainerFrame_GetContainerNumSlots(BagID)
-			IsEmpty = (Size and Size == 0) or nil
-		end
-
-		SetEmpty(Button, IsEmpty, true)
-
-		local Normal = Button:GetNormalTexture()
-		local Pushed = Button:GetPushedTexture()
-		local Highlight = Button:GetHighlightTexture()
-		local SlotHighlight = Button.SlotHighlightTexture
-
-		local xScale, yScale = GetScale(Button)
-
-		if Normal then
-			SkinNormal(Normal, Button, Skin.Normal, Button.__MSQ_NormalColor, xScale, yScale)
-		end
-		if Pushed then
-			SkinTexture("Pushed", Pushed, Button, Skin.Pushed, Button.__MSQ_PushedColor, xScale, yScale)
-		end
-		if Highlight then
-			SkinTexture("Highlight", Highlight, Button, Skin.Highlight, Button.__MSQ_HighlightColor, xScale, yScale)
-		end
-		if SlotHighlight then
-			SkinTexture("SlotHighlight", SlotHighlight, Button, Skin.SlotHighlight, Button.__MSQ_SlotHighlightColor, xScale, yScale)
-		end
-	end
+	UpdateTextures(Button)
 end
+
+----------------------------------------
+-- Core
+---
 
 -- List of methods to hook.
 local Hook_Methods = {
@@ -197,10 +201,6 @@ local Hook_Methods = {
 	UpdateHotKeys = Hook_UpdateHotKeys,
 	UpdateTextures = Hook_UpdateTextures,
 }
-
-----------------------------------------
--- Core
----
 
 -- Applies a skin to a button and its associated layers.
 function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Colors, Pulse)
@@ -261,7 +261,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 
 	-- Icon/SlotIcon
 	if bType == "Backpack" and WOW_RETAIL then
-		SkinSlotIcon(Enabled, Button, Skin.SlotIcon, Colors.SlotIcon, xScale, yScale)
+		SkinSlotIcon(Enabled, Button, Skin.SlotIcon, xScale, yScale)
 	else
 		local Icon = Regions.Icon
 
@@ -303,17 +303,17 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	if WOW_RETAIL then
 		-- Toggle Icon backdrops.
 		if Button.SetItemButtonTexture then
-			SetIconBackdrop(Button)
+			SetIconBackdrop(Button, true)
 		end
 
 		-- Set the button art.
 		if Button.UpdateButtonArt then
-			SetButtonArt(Button)
+			UpdateButtonArt(Button)
 		end
 
 		-- Set the button art.
 		if Button.UpdateTextures then
-			Hook_UpdateTextures(Button)
+			UpdateTextures(Button, true)
 		end
 
 		-- Hooks

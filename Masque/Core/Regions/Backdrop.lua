@@ -27,9 +27,6 @@ local error, type = error, type
 -- @ Skins\Default
 local Default = Core.DEFAULT_SKIN.Backdrop
 
--- @ Skins\Regions
-local EmptyTypes = Core.EmptyTypes
-
 -- @ Core\Utility
 local GetColor, GetSize, GetTexCoords = Core.GetColor, Core.GetSize, Core.GetTexCoords
 local GetTypeSkin, SetPoints = Core.GetTypeSkin, Core.SetPoints

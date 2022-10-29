@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2509, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221016053146")
+mod:SetRevision("20221029032107")
 mod:SetCreatureID(194181)
 mod:SetEncounterID(2562)
 --mod:SetUsedIcons(1, 2, 3)
@@ -88,7 +88,7 @@ function mod:SPELL_CAST_START(args)
 		--It seems to hold so far though, and if they are also energy based it would make sense since he doesn't gain energy for 3 seccond cast
 		--Of course if they are energy based, it also means the timers need to be corrected by SPELL_ENERGIZE as well :\
 		timerManaBombsCD:AddTime(3.5, self.vb.manaCount+1)
-		timerArcaneExpulsionCD:Addtime(3.5)
+		timerArcaneExpulsionCD:AddTime(3.5)
 	elseif spellId == 386173 then
 		--25.1, 23, 19.4, 23
 		self.vb.manaCount = self.vb.manaCount + 1

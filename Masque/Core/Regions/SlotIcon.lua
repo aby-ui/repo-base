@@ -26,6 +26,9 @@ local error, type = error, type
 local GetColor, GetSize, GetTexCoords = Core.GetColor, Core.GetSize, Core.GetTexCoords
 local SetPoints = Core.SetPoints
 
+-- @ Core\Regions\Mask
+local SkinMask = Core.SkinMask
+
 ----------------------------------------
 -- Locals
 ---
@@ -37,7 +40,7 @@ local DEF_TEXTURE = [[Interface\Icons\INV_Misc_Bag_08]]
 ---
 
 -- Skins or creates the 'SlotIcon' region of a button.
-local function AddSlotIcon(Button, Skin, Color, xScale, yScale)
+local function AddSlotIcon(Button, Skin, xScale, yScale)
 	local Region = Button.__MSQ_SlotIcon
 
 	if not Region then
@@ -49,10 +52,11 @@ local function AddSlotIcon(Button, Skin, Color, xScale, yScale)
 	Region:SetTexture(Skin.Texture or DEF_TEXTURE)
 	Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
 	Region:SetBlendMode(Skin.BlendMode or "BLEND")
-	Region:SetVertexColor(GetColor(Color or Skin.Color))
+	Region:SetVertexColor(GetColor(Skin.Color))
 	Region:SetDrawLayer(Skin.DrawLayer or "BACKGROUND", Skin.DrawLevel or 0)
 	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale))
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
+	SkinMask(Region, Button, Skin, xScale, yScale)
 end
 
 -- Removes the 'SlotIcon' region from a button.
@@ -72,20 +76,11 @@ end
 ---
 
 -- Skins or removes a 'SlotIcon' region.
-function Core.SkinSlotIcon(Enabled, Button, Skin, Color, xScale, yScale)
+function Core.SkinSlotIcon(Enabled, Button, Skin, xScale, yScale)
 	if Enabled and not Skin.Hide and Skin.Texture then
-		AddSlotIcon(Button, Skin, Color, xScale, yScale)
+		AddSlotIcon(Button, Skin, xScale, yScale)
 	else
 		RemoveSlotIcon(Button)
-	end
-end
-
--- Sets the color of the 'SlotIcon' region.
-function Core.SetSlotIconColor(Region, Button, Skin, Color)
-	Region = Region or Button.__MSQ_SlotIcon
-
-	if Region then
-		Region:SetVertexColor(GetColor(Color or Skin.Color))
 	end
 end
 

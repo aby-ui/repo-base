@@ -767,7 +767,6 @@ do
 				end
 			end
 		end
-		_G["DBM_GUI_OptionsFrame"]:DisplayFrame(panel.frame)
 	end
 
 	local category = {}
@@ -799,6 +798,7 @@ do
 							self:Hide()
 							self.headline:Hide()
 							CreateBossModTab(self.modid, self.modid.panel)
+							_G["DBM_GUI_OptionsFrame"]:DisplayFrame(self.modid.panel.frame)
 						end
 					end)
 					button:SetPoint("CENTER", 0, -20)

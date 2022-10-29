@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2512, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221016053021")
+mod:SetRevision("20221029034008")
 mod:SetCreatureID(186951)
 mod:SetEncounterID(2563)
 --mod:SetUsedIcons(1, 2, 3)
@@ -64,7 +64,7 @@ function mod:OnCombatStart(delay)
 	self.vb.germinateCount = 0
 	self.vb.barkCount = 0
 	timerBarkbreakerCD:Start(4.6-delay)
-	timerGerminateCD(13.1-delay, 1)
+	timerGerminateCD:Start(13.1-delay, 1)
 	timerBranchOutCD:Start(30.1-delay)
 	timerBurstForthCD:Start(47.1-delay)
 	if self.Options.InfoFrame and self:IsMythic() then

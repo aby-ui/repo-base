@@ -172,7 +172,7 @@ function frame:DisplayFrame(frame)
 	local scrollBar = _G["DBM_GUI_OptionsFramePanelContainerFOVScrollBar"]
 	scrollBar:Show()
 	local changed = DBM_GUI.currentViewing ~= frame
-	if DBM_GUI.currentViewing then
+	if DBM_GUI.currentViewing and changed then
 		DBM_GUI.currentViewing:Hide()
 	end
 	DBM_GUI.currentViewing = frame
@@ -180,7 +180,9 @@ function frame:DisplayFrame(frame)
 	local FOV = _G["DBM_GUI_OptionsFramePanelContainerFOV"]
 	FOV:SetScrollChild(frame)
 	FOV:Show()
-	frame:Show()
+	if changed then
+		frame:Show()
+	end
 	frame:SetSize(FOV:GetSize())
 	local mymax = resize(frame, true) - _G["DBM_GUI_OptionsFramePanelContainer"]:GetHeight()
 	if mymax <= 0 then

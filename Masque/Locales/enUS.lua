@@ -54,6 +54,18 @@ Core.Locale = setmetatable(L, {
 -- L["This section will allow you to view information about Masque and any skins you have installed."] = "This section will allow you to view information about Masque and any skins you have installed."
 
 ----------------------------------------
+-- Default Classic Skin
+---
+
+-- L["The default Classic button style."] = "The default Classic button style."
+
+----------------------------------------
+-- Default Skin
+---
+
+-- L["The default button style."] = "The default button style."
+
+----------------------------------------
 -- Developer Settings
 ---
 
@@ -108,6 +120,7 @@ Core.Locale = setmetatable(L, {
 -- Interface Settings
 ---
 
+-- L["Classic Scaling"] = "Classic Scaling"
 -- L["Enable the Minimap icon."] = "Enable the Minimap icon."
 -- L["Interface"] = "Interface"
 -- L["Interface Settings"] = "Interface Settings"
@@ -115,6 +128,7 @@ Core.Locale = setmetatable(L, {
 -- L["Stand-Alone GUI"] = "Stand-Alone GUI"
 -- L["This section will allow you to adjust settings that affect Masque's interface."] = "This section will allow you to adjust settings that affect Masque's interface."
 -- L["Use a resizable, stand-alone options window."] = "Use a resizable, stand-alone options window."
+-- L["Use the old scaling method for action buttons."] = "Use the old scaling method for action buttons."
 
 ----------------------------------------
 -- LDB Launcher

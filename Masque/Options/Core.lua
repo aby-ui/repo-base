@@ -101,12 +101,12 @@ function Setup.Core(self)
 								func = function()
 									if Setup.LoD then Setup("LoD") end
 
-									-- Force a sub-panel refresh.
 									if SettingsPanel then
 										SettingsPanel:OpenToCategory(self.OptionsPanels.Core)
 									else
 										local Frames = Core.OptionsPanels.Frames
 
+										-- Force a sub-panel refresh.
 										InterfaceOptionsFrame_OpenToCategory(Frames.Skins)
 										InterfaceOptionsFrame_OpenToCategory(Frames.Core)
 									end
