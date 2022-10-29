@@ -45,16 +45,18 @@ U1RegisterAddon("LiteBuff", {
         end,
     },
 
+    --[[ --10.0按钮尺寸固定
     {
         var = 'iconsize',
         text = '图标尺寸',
-        default = 36,
+        default = 45,
         type = "spin",
-        range = {24, 48, 1},
+        range = {24, 64, 1},
         callback = function(cfg, v, loading)
             if(not loading) then LiteBuff:RefreshLiteBuffs() end
         end,
     },
+    --]]
 
     {
         var = 'gap',
@@ -72,7 +74,7 @@ U1RegisterAddon("LiteBuff", {
         var = 'scale',
         text = '缩放',
         range = { .2, 3, .05 }, -- Limit from litebuff itself
-        default = 1,
+        default = 0.8,
         -- getvalue = function()
         --     if(LiteBuff) then
         --         return LiteBuff.profile.scale / 100
@@ -86,7 +88,7 @@ U1RegisterAddon("LiteBuff", {
                 scale = 100
             end
             LiteBuff.db.scale = scale
-            LiteBuff.frame:SetScale(scale / 100)
+            CoreUISetScale(LiteBuff.frame, scale / 100)
         end,
     },
     {

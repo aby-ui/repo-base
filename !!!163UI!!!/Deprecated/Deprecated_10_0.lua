@@ -72,4 +72,43 @@ if not U1_WOW10 then return end
     CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
 
     if type(Settings) == "table" and type(Settings.RegisterCanvasLayoutCategory) == "function" then
+
+    不需要SetOrHookScript了直接Hook即可
+    GetPoint() -> GetPoint(1) --不需要了
+    CreateFrame("GameTooltip") 必须加名字，否则有BUG，装备价格不显示
+
 --]]
+
+--[[------------------------------------------------------------
+10.0的按钮各个材质大小不是联动的，需要单独设置 @see BaseActionButtonMixin:UpdateButtonArt(hideDivider)
+---------------------------------------------------------------]]
+local scales = {}
+do
+    local testButton = CreateFrame("CheckButton", "_abyBtnCoreUISetActionButtonSize10", UIParent, "ActionBarButtonTemplate") testButton:Hide()
+    local w1, h1 = testButton:GetSize()
+    for k, v in pairs(testButton) do
+        if type(v) == "table" and v.GetSize then
+            if not v:GetPoint(2) then --ignore those SetAllPoints()
+                local w, h = v:GetSize()
+                scales[k] = { w / w1, h / h1 }
+            end
+        end
+    end
+
+    function CoreUISetActionButtonSize10(btn, size)
+        btn:SetNormalAtlas("UI-HUD-ActionBar-IconFrame-AddRow");
+        btn:SetPushedAtlas("UI-HUD-ActionBar-IconFrame-AddRow-Down");
+        if InCombatLockdown() then return end
+        btn:SetSize(size, size)
+        for k, v in pairs(btn) do
+            if type(v) == "table" and v.GetSize then
+                if not v:GetPoint(2) then
+                    local scale = scales[k]
+                    if scale then
+                        v:SetSize(size * scale[1], size * scale[2])
+                    end
+                end
+            end
+        end
+    end
+end

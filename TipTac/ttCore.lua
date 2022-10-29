@@ -203,7 +203,7 @@ for k,v in pairs({
    	tipBackdropBG = "Interface\\Tooltips\\UI-Tooltip-Background",
    	tipBackdropEdge = "Interface\\Tooltips\\UI-Tooltip-Border",
    	backdropEdgeSize = 16,
-   	backdropInsets = 5,
+   	backdropInsets = 2.5, --原来的5会弹跳一下
 
    	tipColor = { 0.1, 0.1, 0.2, 1 },			-- UI Default: For most: (0.1,0.1,0.2), World Objects?: (0,0.2,0.35)
    	tipBorderColor = { 1, 1, 1, 1 },		-- UI Default: (1,1,1,1)

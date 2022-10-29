@@ -5,7 +5,7 @@
 -- 2011/11/13
 ------------------------------------------------------------
  --163uiedit
-local ICON_SIZE = 36
+local ICON_SIZE = 45
 local BUTTON_GAP = 4
 
 local Masque, MasqueGroup
@@ -323,7 +323,7 @@ end
 
 local function Button_UpdateButton_163(self)
     local growth = U1GetCfgValue and ( U1GetCfgValue('LiteBuff', 'growh') and 'RIGHT' or 'DOWN' ) or 'RIGHT'
-    local iconsize = U1GetCfgValue and U1GetCfgValue('LiteBuff', 'iconsize') or 32
+    local iconsize = 45 --U1GetCfgValue and U1GetCfgValue('LiteBuff', 'iconsize') or 32 --10.0按钮NormalTexture等都是固定大小的
     local gap = U1GetCfgValue and U1GetCfgValue('LiteBuff', 'gap') or 6
 
     self:SetAttribute('x-growth', growth)

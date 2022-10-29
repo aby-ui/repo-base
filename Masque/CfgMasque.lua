@@ -16,12 +16,13 @@ local names = {
     ["CleanUI White"] = false, --"清爽: 白",
     ["CleanUI White and Black"] = false,
     Default = "默认",
+    ["Default (Classic)"] = "默认(经典)",
     Dominos = "多米诺默认",
-    Dream = "无边框",
+    Dream = false, --"无边框",
     ["Entropy - Adamantite"] = false, --"质感: 精金",
     ["Entropy - Bronze"] = false, --"质感: 青铜",
     ["Entropy - Cobalt"] = false, --"质感: 钴",
-    ["Entropy - Copper"] = "质感: 铜",
+    ["Entropy - Copper"] = false, --"质感: 铜",
     ["Entropy - Fel Iron"] = false, --"质感: 魔铁",
     ["Entropy - Gold"] = "质感: 金",
     ["Entropy - Iron"] = false, --"质感: 铁",
@@ -35,19 +36,25 @@ local names = {
     ["Gears - Black"] = "齿轮: 黑",
     ["Gears - Spark"] = "齿轮: 火花",
     ["Gears - Random"] = "齿轮: 随机",
-    ["Goldpaw's UI: Normal"] = "浮雕",
-    ["Goldpaw's UI: Normal Bright"] = "浮雕: 高亮",
+    ["Goldpaw's UI: Normal"] = false, --"浮雕",
+    ["Goldpaw's UI: Normal Bright"] = false, --"浮雕: 高亮",
     ["Goldpaw's UI: PetBar"] = false, --"浮雕: 中",
     ["Goldpaw's UI: Small"] = "浮雕: 小",
     ["Goldpaw's UI: Small Bright"] = "浮雕: 小高亮",
+    ["Masque: Shadow 1"] = "Shadow 1",
+    ["Masque: Shadow 2"] = "Shadow 2",
+    ["Masque: Shadow 3"] = "Shadow 3",
+    ["Masque: Shadow 4"] = "Shadow 4",
+    ["Masque: Shadow 5"] = "Shadow 5",
     Onyx = "三角指示标",
     ["Onyx Redux"] = false,
+    ["Onyx Classic"] = false,
     Parabole = "双线边框",
     ["Serenity"] = false,
     ["Serenity - Redux"] = "圆形白边框",
     ["Serenity - Square"] = false,
     ["Serenity - Square Redux"] = "方形白边框",
-    Zoomed = "无边框放大",
+    Zoomed = false, --"无边框放大",
     kenzo = "圆角细黑边",
 }
 
@@ -149,6 +156,24 @@ U1RegisterAddon("Masque", {
         callback = function() getGlobal():__Reset() end,
     },
     {
+        var = "noscale",
+        text = "经典模式按钮大小",
+        tip = "说明`使用10.0之前的按钮大小来缩放（10.0后标准按钮大小为45, 之前为36, 选中此项所有按钮以36为基础缩放, 会比不选中时要大一些）",
+        default = true,
+        callback = function(cfg, v, loading)
+            if loading then return end --会覆盖所有设置，只有手动设置时才调用
+            local core = U1GetMasqueCore()
+            if core and core.db and core.db.profile then
+                core.db.profile.NoScale = v
+                for ID, Group in pairs(core.Groups) do
+                    if Group.ActionButtons then
+                        Group:ReSkin()
+                    end
+                end
+            end
+        end,
+    },
+    {
         type = 'radio',
         var = "style",
         text = '请选择皮肤样式',
@@ -170,6 +195,7 @@ U1RegisterAddon("Masque", {
         callback = function() UUI.OpenToAddon("Dominos") end,
 
     },
+    --[[ --TODO:abyui10
     {
         var = 'hookbuff',
         default = nil,
@@ -189,6 +215,7 @@ U1RegisterAddon("Masque", {
         --     text = "剩余时间文字大小",
         -- }
     },
+    --]]
     -- {
     --     var = "nameSize",
     --     default = 13,
@@ -289,6 +316,7 @@ U1RegisterAddon("Masque_Onyx", { load = "NORMAL", protected = 1, hide = 1, });
 U1RegisterAddon("Masque_Parabole", { load = "NORMAL", protected = 1, hide = 1, });
 U1RegisterAddon("Masque_Serenity", { load = "NORMAL", protected = 1, hide = 1, });
 U1RegisterAddon("Masque_Cirque", { load = "NORMAL", protected = 1, hide = 1, });
+U1RegisterAddon("Masque_Shadow", { load = "NORMAL", protected = 1, hide = 1, });
 
 --支持暴雪默认动作条
 CoreDependCall("Masque", function()

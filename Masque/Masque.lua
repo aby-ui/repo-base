@@ -77,7 +77,7 @@ function Masque:OnInitialize()
 	local Defaults = {
 		profile = {
 			Debug = false,
-			NoScale = false,
+			NoScale = true,
 			SkinInfo = true,
 			StandAlone = true,
 			Groups = {

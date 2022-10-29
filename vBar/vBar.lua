@@ -18,16 +18,13 @@ end
 
 VB_BACKDROP = {bgFile = 'Interface/Tooltips/UI-Tooltip-Background'}
 
-VB_BUTTON_SIZE = 42
+VB_BUTTON_SIZE = 45 + 2 --10.0只能缩放不能设置尺寸
 VB_DRAG_HANDLE = 12
 VB_DRAG_WIDTH = 38
 VB_DRAG_HEIGHT = 16
-
-VB_SIZES = {
-   [1] = .8,
-   [.8] = .67,
-   [.67] = 1,
-}
+VB_BUTTON_SCALE_LARGE = 0.8
+VB_BUTTON_SCALE_MEDIUM = 0.8*0.8
+VB_BUTTON_SCALE_SMALL = 0.8*0.67
 
 VB_MENU = {
    hslot12 = '横排双行12键',
@@ -603,7 +600,7 @@ function VB_CheckValues()
       n.dft = '' end
    if not n.dst or VB_class == 'moonkin' then
       n.dst = '' end
-   if not n.size or not VB_SIZES[n.size] then
+   if not n.size then
       n.size = VB_DEFAULT_SIZE end
    if not n.left or n.left < 0 or n.left > 4000 then
       n.left = VB_DEFAULT_LEFT end
@@ -853,12 +850,9 @@ end
 ----------------------------------------------------------------------------------------------------
 function VB_SizeNumpad(size)
    if UnitAffectingCombat('player') == 1 then return end
-   if not VBar.size or not VB_SIZES[VBar.size] then
+   if not VBar.size then
       VBar.size = 1 end
-   if not size then
-      size = VB_SIZES[VBar.size] end
-   if not size then
-      size = 1 end
+   if not size then size = 1 end
    VBar.left = VBar.left * VBar.size / size
    VBar.top = VBar.top * VBar.size / size
    VBar.size = size
@@ -994,9 +988,9 @@ function VB_InitializeMenu()
       { text = VB_MENU.zfslot9, func = VBM_zfslot9, checked = (s == 'zfslot9') },
       { text = VB_MENU.zfslot12, func = VBM_zfslot12, checked = (s == 'zfslot12') },
       { text = VB_MENU.sslot12, func = VBM_sslot12, checked = (s == 'sslot12') },
-      { text = VB_MENU.large, func = VBM_large, checked = (VBar.size == 1) },
-      { text = VB_MENU.medium, func = VBM_medium, checked = (VBar.size == .8) },
-      { text = VB_MENU.small, func = VBM_small, checked = (VBar.size == .67) },
+      { text = VB_MENU.large, func = VBM_large, checked = (VBar.size == VB_BUTTON_SCALE_LARGE) },
+      { text = VB_MENU.medium, func = VBM_medium, checked = (VBar.size == VB_BUTTON_SCALE_MEDIUM) },
+      { text = VB_MENU.small, func = VBM_small, checked = (VBar.size == VB_BUTTON_SCALE_SMALL) },
       { text = VB_MENU.dft, func = VBM_dft, checked = (VBar.dft == 'dft') },
       { text = VB_MENU.dst, func = VBM_dst, checked = (VBar.dst == 'dst') },
       { text = VB_MENU.ddt, func = VBM_ddt, checked = (VBar.ddt == 'ddt') },
@@ -1025,9 +1019,9 @@ function VBM_hslot6() VB_ShapeNumpad('hslot6'); VB_DoneMenu(); end
 function VBM_zfslot12()      VB_ShapeNumpad('zfslot12'); VB_DoneMenu(); end
 function VBM_zfslot9()      VB_ShapeNumpad('zfslot9'); VB_DoneMenu(); end
 function VBM_sslot12()  VB_ShapeNumpad('sslot12'); VB_DoneMenu(); end
-function VBM_large()      VB_SizeNumpad(1); VB_DoneMenu(); end
-function VBM_medium()     VB_SizeNumpad(.8); VB_DoneMenu(); end
-function VBM_small()      VB_SizeNumpad(.67); VB_DoneMenu(); end
+function VBM_large()      VB_SizeNumpad(VB_BUTTON_SCALE_LARGE); VB_DoneMenu(); end
+function VBM_medium()     VB_SizeNumpad(VB_BUTTON_SCALE_MEDIUM); VB_DoneMenu(); end
+function VBM_small()      VB_SizeNumpad(VB_BUTTON_SCALE_SMALL); VB_DoneMenu(); end
 function VBM_dft()      VB_Toggledft(); VB_DoneMenu(); end
 function VBM_dst()        VB_Toggledst(); VB_DoneMenu(); end
 function VBM_ddt()      VB_Toggleddt(); VB_DoneMenu(); end

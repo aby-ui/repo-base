@@ -115,7 +115,7 @@ L["Websites"] = "網站"
 -- Interface Settings
 ---
 
--- L["Classic Scaling"] = "Classic Scaling"
+L["Classic Scaling"] = "經典模式按鈕大小"
 L["Enable the Minimap icon."] = "啟用小地圖按鈕。"
 L["Interface"] = "介面"
 L["Interface Settings"] = "介面設置"
@@ -123,7 +123,7 @@ L["Minimap Icon"] = "小地圖按鈕"
 L["Stand-Alone GUI"] = "獨立的圖形介面"
 L["This section will allow you to adjust settings that affect Masque's interface."] = "本部分允許您調整影響Masque介面的設置。"
 L["Use a resizable, stand-alone options window."] = "使用可調整大小的獨立選項視窗。"
--- L["Use the old scaling method for action buttons."] = "Use the old scaling method for action buttons."
+L["Use the old scaling method for action buttons."] = "使用10.0之前的按鈕大小來縮放(10.0後標準按鈕大小為45, 之前為36, 選中此項所有按鈕以36為基礎縮放, 會比不選中時要大一些)"
 
 ----------------------------------------
 -- LDB Launcher

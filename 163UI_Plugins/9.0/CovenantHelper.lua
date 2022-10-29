@@ -19,18 +19,18 @@ U1PLUG["CovenantHelper"] = function()
         end
     end)
 
-    CoreDependCall("Blizzard_TalentUI", function()
+    CoreDependCall("Blizzard_ClassTalentUI", function()
         LoadAddOn("Blizzard_Soulbinds")
 
-        local f = CreateFrame("Frame", "AbySoulbindFrame", PlayerTalentFrame)
+        local f = CreateFrame("Frame", "AbySoulbindFrame", ClassTalentFrame)
         f:Hide() --未Init之前Show会报错
 
         Mixin(f, BackdropTemplateMixin)
         f.tree = CreateFrame("Frame", nil, f, "SoulbindTreeTemplate")
 
-        local scale = 0.55
+        local scale = 0.7
         f:ClearAllPoints()
-        f:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPRIGHT")
+        f:SetPoint("TOPLEFT", ClassTalentFrame, "TOPRIGHT")
         f:SetSize(250*scale,855*scale)
         f:SetBackdrop({
             bgFile = [[Interface\TALENTFRAME\spec-blue-bg]],
@@ -45,13 +45,15 @@ U1PLUG["CovenantHelper"] = function()
         f.tree:SetScale(scale)
 
         local size = 36
-        f.cov = WW:CheckButton(nil, f, "ActionButtonTemplate"):BL(-41,8):Size(size):SetScale(0.8):SetEnabled(false):un()
+        f.cov = WW:CheckButton(nil, f, "ActionButtonTemplate"):BL(12,10):Size(size):SetScale(0.8):SetEnabled(false):un()
+        CoreUISetActionButtonSize10(f.cov, size)
 
         f.soulbinds = {}
         for i=1, 3 do
             local b = WW:CheckButton(nil, f, "ActionButtonTemplate"):Size(size):SetScale(1):un()
+            CoreUISetActionButtonSize10(b, size)
             if i == 1 then
-                b:SetPoint("BOTTOMLEFT", 9, 6)
+                b:SetPoint("LEFT", f.cov, "RIGHT", 7, 0)
             else
                 b:SetPoint("TOPLEFT", f.soulbinds[i-1], "TOPRIGHT", 7, 0)
             end
@@ -116,11 +118,13 @@ U1PLUG["CovenantHelper"] = function()
         --CoreUIShowOverlayGlow(grp.b1)
         --LibStub("LibCustomGlow-1.0", true).AutoCastGlow_Start(AbySoulbindFrame.soulbinds[1])
 
+        --[[ 10.0没有展开功能了
         hooksecurefunc("SetUIPanelAttribute", function(frame, prop, value)
             if frame and frame == PlayerTalentFrame and prop == "width" then
                 frame:SetAttributeNoHandler("UIPanelLayout-"..prop, value + 100);
             end
         end)
+        --]]
     end)
 end
 

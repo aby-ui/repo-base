@@ -10,10 +10,12 @@
 	<CheckButton name = "TrinketMenuMainTrinketTemplate" inherits = "ActionButtonTemplate,SecureActionButtonTemplate" virtual = "true">
 		<Scripts>
 			<OnLoad>
+				CoreUISetActionButtonSize10(self, 36)
 				self:RegisterForClicks("AnyUp", "AnyDown")
 				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 			</OnLoad>
 			<PostClick>
+				if down == true then return end
 				TrinketMenu.MainTrinket_OnClick(self)
 			</PostClick>
 			<OnEnter>
@@ -31,10 +33,12 @@
 	<CheckButton name = "TrinketMenuMenuTrinketTemplate" inherits = "ActionButtonTemplate" virtual = "true">
 		<Scripts>
 			<OnLoad>
+				CoreUISetActionButtonSize10(self, 36)
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 				self.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 			</OnLoad>
 			<PostClick>
+				if down == true then return end
 				TrinketMenu.MenuTrinket_OnClick(self)
 			</PostClick>
 			<OnEnter>

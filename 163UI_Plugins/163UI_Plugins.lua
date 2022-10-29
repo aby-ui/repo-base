@@ -311,3 +311,43 @@ CoreOnEvent("CHAT_MSG_LOOT", function(event, msg)
         end
     end
 end)
+
+do
+    local picked, hooking
+    hooksecurefunc("PickupAction", function(action, ignoreActionRemoval)
+        if hooking then return end
+        if not ignoreActionRemoval then
+            picked = action
+        end
+    end)
+    hooksecurefunc("PlaceAction", function(action)
+        if hooking then return end
+        local last = picked
+        picked = nil
+        if InCombatLockdown() then return end
+        local keys = (IsControlKeyDown() and 1 or 0) + (IsAltKeyDown() and 1 or 0) + (IsShiftKeyDown() and 1 or 0)
+        if keys >= 2 then
+            if last and GetActionInfo(last) == nil then
+                if GetCursorInfo() then
+                    for i = 180, 145, -1 do
+                        if GetActionInfo(i) == nil then
+                            hooking = 1
+                            PlaceAction(i)
+                            PickupAction(action, true)
+                            PlaceAction(last)
+                            PickupAction(i)
+                            hooking = nil
+                            U1Message("放下技能时按住多个功能键可保留原来的技能栏")
+                            return
+                        end
+                    end
+                else
+                    PickupAction(action, true)
+                    PlaceAction(last)
+                    U1Message("放下技能时按住多个功能键可保留原来的技能栏")
+                    return
+                end
+            end
+        end
+    end)
+end

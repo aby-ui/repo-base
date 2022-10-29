@@ -42,9 +42,9 @@ if TalentMicroButton then
             for i = 1, GetNumSpecializations() do
                 buttons[i] = CreateFrame("Button", "$parentSpecSwitch" .. i, TalentMicroButton, "UIPanelButtonTemplate") --"UIMenuButtonStretchTemplate")
                 buttons[i]:SetSize(60, 22)
-                    buttons[i]:SetText((select(2, GetSpecializationInfo(i))))
+                buttons[i]:SetText((select(2, GetSpecializationInfo(i))))
                 buttons[i]:SetFrameStrata("Tooltip")
-                    buttons[i].spec = i
+                buttons[i].spec = i
                 buttons[i]:SetScript("OnEnter", switchOnEnter)
                 buttons[i]:SetScript("OnLeave", switchOnLeave)
                 buttons[i]:SetScript("OnClick", switchOnClick)
@@ -101,15 +101,15 @@ if TalentMicroButton then
     SetOrHookScript(TalentMicroButton, "OnClick", function(self, button)
         if button == "RightButton" then
             if InCombatLockdown() then return end
-            if PlayerTalentFrame:IsVisible() then
-                HideUIPanel(PlayerTalentFrame)
+            if ClassTalentFrame:IsVisible() then
+                ClassTalentFrame:Hide()
             end
             showSwitchButtons()
         elseif (IsControlKeyDown()) then
             U1DB.configs[CONFIG_NAME] = not U1DB.configs[CONFIG_NAME]
             U1Message("切换天赋按钮已 "..(U1DB.configs[CONFIG_NAME] and "禁用" or "启用"))
-            if PlayerTalentFrame:IsVisible() then
-                HideUIPanel(PlayerTalentFrame)
+            if ClassTalentFrame:IsVisible() then
+                ClassTalentFrame:Hide()
             end
         else
             hideSwitchButtons()
@@ -133,9 +133,37 @@ if TalentMicroButton then
     --]]
 end
 
+CoreDependCall("Blizzard_ClassTalentUI", function()
+    local btn = {}
+    for i = 1, GetNumSpecializations() do
+        btn[i] = CreateFrame("Button", "$parentSpecSwitch" .. i, ClassTalentFrame.TalentsTab.ButtonsParent, "UIPanelButtonTemplate") --"UIMenuButtonStretchTemplate")
+        btn[i]:SetSize(60, 22)
+        btn[i]:SetText((select(2, GetSpecializationInfo(i))))
+        btn[i]:SetFrameStrata("MEDIUM")
+        btn[i].spec = i
+        btn[i]:SetScript("OnClick", switchOnClick)
+        btn[i]:SetMotionScriptsWhileDisabled(true)
+        if (i == 1) then
+            btn[i]:SetPoint("BOTTOMLEFT", 0, 0)
+        else
+            btn[i]:SetPoint("TOPLEFT", btn[i - 1], "TOPRIGHT", 0, 0)
+        end
+    end
+
+    local function update()
+        for i, b in ipairs(btn) do
+            CoreUIShowOrHide(b, not U1DB.configs[CONFIG_NAME])
+            b:SetEnabled(b.spec ~= GetSpecialization() and not InCombatLockdown())
+        end
+    end
+    ClassTalentFrame:HookScript("OnShow", update)
+    CoreOnEvent("PLAYER_SPECIALIZATION_CHANGED", update)
+    CoreOnEvent("PLAYER_REGEN_ENABLED", update)
+    CoreOnEvent("PLAYER_REGEN_DISABLED", update)
+end)
+
 --[[------------------------------------------------------------
-专精面板法术ID
----------------------------------------------------------------]]
+专精面板法术ID, 10.0自带
 CoreDependCall("Blizzard_TalentUI", function()
     local function hookAbilityButton(index)
         local btn = PlayerTalentFrameSpecialization.spellsScroll.child["abilityButton"..index]
@@ -157,3 +185,4 @@ CoreDependCall("Blizzard_TalentUI", function()
         hookAbilityButton(index)
     end)
 end)
+---------------------------------------------------------------]]

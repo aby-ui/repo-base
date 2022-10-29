@@ -550,7 +550,11 @@ local function OnEvent(self, event, arg1, arg2)
         --10.0
         BM_SetMoveHandler(QuickKeybindFrame)
         BM_SetMoveHandler(SettingsPanel)
-        BM_SetMoveHandlerWith("ClassTalentFrame", "Blizzard_ClassTalentUI")
+        BM_SetMoveHandlerWith(nil, "Blizzard_ClassTalentUI", function()
+            local mover = BM_CreateMover(ClassTalentFrame, 80, 30, 30, 0)
+            BM_SetMoveHandler(ClassTalentFrame, mover)
+            mover:SetFrameStrata("HIGH")
+        end)
 
         frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 

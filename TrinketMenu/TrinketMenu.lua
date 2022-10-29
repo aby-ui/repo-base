@@ -141,7 +141,11 @@ function TrinketMenu.OrientWindows()
 end
 
 function TrinketMenu.ScaleFrame(scale)
-	TrinketMenu.FrameToScale:SetScale(scale)
+	if CoreUISetScale and TrinketMenu_MainFrame == TrinketMenu.FrameToScale then
+		CoreUISetScale(TrinketMenu.FrameToScale, scale)
+	else
+		TrinketMenu.FrameToScale:SetScale(scale)
+	end
 end
 
 -- scan inventory and build MenuFrame
@@ -285,10 +289,12 @@ function TrinketMenu.Initialize()
 		TrinketMenu_MainFrame:SetPoint("TOPLEFT", "UIParent", "BOTTOMLEFT", TrinketMenuPerOptions.XPos, TrinketMenuPerOptions.YPos)
 	end
 	if TrinketMenuPerOptions.MainScale then
-		TrinketMenu_MainFrame:SetScale(TrinketMenuPerOptions.MainScale)
+		TrinketMenu.FrameToScale = TrinketMenu_MainFrame
+		TrinketMenu.ScaleFrame(TrinketMenuPerOptions.MainScale)
 	end
 	if TrinketMenuPerOptions.MenuScale then
-		TrinketMenu_MenuFrame:SetScale(TrinketMenuPerOptions.MenuScale)
+		TrinketMenu.FrameToScale = TrinketMenu_MenuFrame
+		TrinketMenu.ScaleFrame(TrinketMenuPerOptions.MenuScale)
 	end
 	TrinketMenu.ReflectAlpha()
 	TrinketMenu_Trinket0:SetAttribute("type", "item")

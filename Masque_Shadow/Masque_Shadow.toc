@@ -1,0 +1,11 @@
+## Interface: 100000
+## Author: Fedorenko R.D.
+## Title: Masque|cff36e5ff:|r|cff1784d1 Shadow|r 
+## Version: v6.2.2
+## Notes: |cff36e5ffChange the texture of your buttons.|r 
+## Dependencies: Masque
+
+Settings.lua
+
+## Title: |cff880303[爱不易]|r Masque 皮肤Shadow
+## X-Vendor: AbyUI

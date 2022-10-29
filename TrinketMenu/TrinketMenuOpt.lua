@@ -202,7 +202,8 @@ function TrinketMenu.OptMainScaleSlider_OnValueChanged(self, value)
 	if TrinketMenuPerOptions then
 		TrinketMenuPerOptions.MainScale = self:GetValue()
 		TrinketMenu_OptMainScaleSliderText:SetText(format(L"Main Scale: %.2f", TrinketMenuPerOptions.MainScale))
-		TrinketMenu_MainFrame:SetScale(TrinketMenuPerOptions.MainScale)
+		TrinketMenu.FrameToScale = TrinketMenu_MainFrame
+		TrinketMenu.ScaleFrame(TrinketMenuPerOptions.MainScale)
 	end
 end
 
@@ -218,7 +219,8 @@ function TrinketMenu.OptMenuScaleSlider_OnValueChanged(self, value)
 	if TrinketMenuPerOptions then
 		TrinketMenuPerOptions.MenuScale = self:GetValue()
 		TrinketMenu_OptMenuScaleSliderText:SetText(format(L"Menu Scale: %.2f", TrinketMenuPerOptions.MenuScale))
-		TrinketMenu_MenuFrame:SetScale(TrinketMenuPerOptions.MenuScale)
+		TrinketMenu.FrameToScale = TrinketMenu_MenuFrame
+		TrinketMenu.ScaleFrame(TrinketMenuPerOptions.MenuScale)
 	end
 end
 
