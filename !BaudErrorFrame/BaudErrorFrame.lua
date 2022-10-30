@@ -105,15 +105,42 @@ function BaudErrorFrame_OnLoad(self)
         EventFuncs[event](...);
     end);
     seterrorhandler(BaudErrorFrameHandler);
-    --[[
+
     if DisplayInterfaceActionBlockedMessage then
+        --UIParent CheckProtectedFunctionsAllowed() 和 OnEvent都会调用, 这里只处理前者
+        local CheckProtectedFunctionsAllowed_Fail
+        local function panelCheck(showOrHide)
+            return function(frame)
+                if CheckProtectedFunctionsAllowed_Fail then
+                    local name = frame and (frame:GetName() or "<unamed>") or "nil"
+                    BaudErrorFrameAdd(date("%H:%M:%S") .. " 插件导致界面行为失效-" .. showOrHide .. "(" .. name .. ")", 5);
+                end
+            end
+        end
+        local function cleanFail()
+            CheckProtectedFunctionsAllowed_Fail = nil
+        end
+        hooksecurefunc("ShowUIPanel", panelCheck("ShowUIPanel"))
+        hooksecurefunc("HideUIPanel", panelCheck("HideUIPanel"))
         hooksecurefunc("DisplayInterfaceActionBlockedMessage", function()
             if Config.Taint then
-                BaudErrorFrameAdd(date("%H:%M:%S") .. " 插件导致界面行为失效", 4);
+                CheckProtectedFunctionsAllowed_Fail = 1
+                RunNextFrame(cleanFail)
             end
         end)
     end
-    ]]
+
+    --/run UIFrameFlash(PlayerFrame, 1,1, -1,true,0,0,"test")
+    hooksecurefunc("UIFrameFlash", function (frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
+        if ( frame ) then
+            local sec, addon = issecurevariable(frame, "syncId")
+            if sec then sec, addon = issecurevariable(frame, "fadeInTime") end
+            if sec then sec, addon = issecurevariable(frame, "flashTimer") end
+            if not sec then
+                BaudErrorFrameAdd("插件" .. addon .. "调用了UIFrameFlash(), 可能会导致卡动作条等问题", 3)
+            end
+        end
+    end)
 
     UIParent:UnregisterEvent("MACRO_ACTION_BLOCKED");
     UIParent:UnregisterEvent("ADDON_ACTION_BLOCKED");

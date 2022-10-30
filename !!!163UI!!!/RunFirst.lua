@@ -4,13 +4,6 @@ U1.get_timestamp = function() return DEBUG_MODE and format(" (+%.3f)", (debugpro
 
 U1_WOW10 = select(4, GetBuildInfo()) >= 100000
 
-hooksecurefunc(EditModeManagerFrame, "ClearActiveChangesFlags", function(self)
-    for _, systemFrame in ipairs(self.registeredSystemFrames) do
-        systemFrame:SetHasActiveChanges(nil);
-    end
-    self:SetHasActiveChanges(nil);
-end)
-
 U1PlayerName = UnitName("player")
 U1PlayerClass = select(2, UnitClass("player"))
 

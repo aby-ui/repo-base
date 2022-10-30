@@ -10,6 +10,7 @@
 
 #U1DBG 23K, U1DB.addons=25K, configs=3K, tags=2K, frames=3K,
 
+Deprecated\!!NoTaint2.lua
 RunFirst.lua
 
 locale.en.lua
