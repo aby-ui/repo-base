@@ -36,6 +36,7 @@ U1RegisterAddon("Bagnon_Config", {
 });
 
 U1RegisterAddon("Bagnon_GuildBank", {
+    temporarilyForceDisable = 1,
     parent = "Bagnon",
     --load = "NORMAL",
     title = "公会银行",
@@ -44,6 +45,7 @@ U1RegisterAddon("Bagnon_GuildBank", {
 });
 
 U1RegisterAddon("Bagnon_VoidStorage", {
+    temporarilyForceDisable = 1,
     parent = "Bagnon",
     --load = "NORMAL",
     title = "虚空储存",

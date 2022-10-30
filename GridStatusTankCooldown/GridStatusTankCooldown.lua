@@ -379,7 +379,7 @@ end
 
 function GridStatusTankCooldown:OnStatusEnable(status)
 	if status == "alert_tankcd" or status == "alert_tankcd_secondary" then
-		self:RegisterEvent("UNIT_AURA", "ScanUnit")
+		self:RegisterEvent("UNIT_AURA")
 		self:RegisterMessage("Grid_UnitJoined")
 		self:UpdateAllUnits()
 	end
@@ -507,4 +507,8 @@ function GridStatusTankCooldown:ScanUnit(event, unitid, unitguid)
     end
     local _, clz = UnitClass(unitid)
     GridStatusTankCooldown:ScanSpells(active_by_class[clz] or active_by_class.OTHER, "alert_tankcd", active_by_class_2nd[clz] or active_by_class_2nd.OTHER, "alert_tankcd_secondary", unitid, unitguid)
+end
+
+function GridStatusTankCooldown:UNIT_AURA(event, unitid, payload)
+    return self:ScanUnit(event, unitid, unitid and UnitGUID(unitid) or nil)
 end

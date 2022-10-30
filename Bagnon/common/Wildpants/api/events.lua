@@ -79,7 +79,7 @@ function Events:UpdateBags()
 end
 
 function Events:UpdateBankBags()
-	for bag = 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+	for bag = 1, NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS do
 		if not self:UpdateSize(bag) then
 			self:UpdateType(bag)
 		end

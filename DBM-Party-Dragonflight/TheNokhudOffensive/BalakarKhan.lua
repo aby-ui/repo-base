@@ -1,34 +1,35 @@
 local mod	= DBM:NewMod(2477, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20221030050248")
 mod:SetCreatureID(186151)
 mod:SetEncounterID(2580)
 --mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221029000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 375943 375937 375929 376723 376725 376892 376827 376829",
+	"SPELL_CAST_START 375943 375937 375929 376723 376725 376892 376827 376829 376727",
 	"SPELL_CAST_SUCCESS 376634 376730 376864",
 	"SPELL_AURA_APPLIED 376634 376864 376827",
 --	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED 376634 376864",
+	"SPELL_AURA_REMOVED 376634 376864 376727",
 	"SPELL_PERIODIC_DAMAGE 376899",
 	"SPELL_PERIODIC_MISSED 376899",
 	"UNIT_DIED"
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, target scan or emote scan upheaval?
---TODO, timers with longer logs
+--TODO, timers with longer logs to verify upheavel and iron spear P1 timers
 --[[
-(ability.id = 375943 or ability.id = 376892 or ability.id = 375937 or ability.id = 376827 or ability.id = 375929 or ability.id = 376829 or ability.id = 376723) and type = "begincast"
+(ability.id = 375943 or ability.id = 376892 or ability.id = 375937 or ability.id = 376827 or ability.id = 375929 or ability.id = 376829 or ability.id = 376723 or ability.id = 376727) and type = "begincast"
  or (ability.id = 376634 or ability.id = 376730 or ability.id = 376864) and type = "cast"
  or target.id = 190294 and type = "death"
+ or ability.id = 376727 and type = "removebuff"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 --Stage One: Balakar's Might
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25185))
@@ -41,9 +42,9 @@ local yellIronSpearFades						= mod:NewShortFadesYell(376634)
 local specWarnUpheaval							= mod:NewSpecialWarningDodge(375943, nil, nil, nil, 2, 2)
 local specWarnRendingStrike						= mod:NewSpecialWarningDefensive(375937, nil, nil, nil, 1, 2)
 
-local timerIronSpearCD							= mod:NewAITimer(35, 376634, nil, nil, nil, 3)
-local timerUpheavalCD							= mod:NewAITimer(35, 375943, nil, nil, nil, 3)
-local timerRendingStrikeCD						= mod:NewAITimer(35, 375937, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both rending and savage
+local timerIronSpearCD							= mod:NewCDTimer(37, 376634, nil, nil, nil, 3)--Need more data
+local timerUpheavalCD							= mod:NewCDTimer(37, 375943, nil, nil, nil, 3)--Need data at all
+local timerRendingStrikeCD						= mod:NewCDCountTimer(35, 375937, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both rending and savage
 
 --Intermission: Stormwinds
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25192))
@@ -65,9 +66,9 @@ local specWarnConductiveStrike					= mod:NewSpecialWarningDefensive(376827, nil,
 local specWarnConductiveStrikeDispel			= mod:NewSpecialWarningDispel(376827, "RemoveMagic", nil, nil, 1, 2)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(376899, nil, nil, nil, 1, 8)
 
-local timerStaticSpearCD						= mod:NewAITimer(35, 376864, nil, nil, nil, 3)
-local timerCracklingUpheavalCD					= mod:NewAITimer(35, 376892, nil, nil, nil, 3)
-local timerConductiveStrikeCD					= mod:NewAITimer(35, 376827, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both Condutive and Thunder
+local timerStaticSpearCD						= mod:NewNextTimer(39, 376864, nil, nil, nil, 3)
+local timerCracklingUpheavalCD					= mod:NewNextTimer(39, 376892, nil, nil, nil, 3)
+local timerConductiveStrikeCD					= mod:NewCDCountTimer(35, 376827, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both Condutive and Thunder
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -76,13 +77,15 @@ local timerConductiveStrikeCD					= mod:NewAITimer(35, 376827, nil, nil, nil, 5,
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
 mod.vb.addsLeft = 0
+mod.vb.comboCount = 0
 
 function mod:OnCombatStart(delay)
 	self.vb.addsLeft = 0
+	self.vb.comboCount = 0
 	self:SetStage(1)
-	timerIronSpearCD:Start(1-delay)
-	timerUpheavalCD:Start(1-delay)
-	timerRendingStrikeCD:Start(1-delay)
+	timerRendingStrikeCD:Start(8-delay, 1)
+	timerIronSpearCD:Start(21.5-delay)
+	timerUpheavalCD:Start(37-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -105,29 +108,32 @@ function mod:SPELL_CAST_START(args)
 		specWarnCracklingUpheaval:Play("watchstep")
 		timerCracklingUpheavalCD:Start()
 	elseif spellId == 375937 then
+		self.vb.comboCount = self.vb.comboCount + 1
 		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnRendingStrike:Show()
 			specWarnRendingStrike:Play("defensive")
 		end
-		timerRendingStrikeCD:Start()
+		local timer = (self.vb.comboCount % 2 == 0) and 15 or 22
+		timerRendingStrikeCD:Start(timer, self.vb.comboCount+1)
 	elseif spellId == 376827 then
+		self.vb.comboCount = self.vb.comboCount + 1
 		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnConductiveStrike:Show()
 			specWarnConductiveStrike:Play("defensive")
 		end
-		timerConductiveStrikeCD:Start()
+		local timer = (self.vb.comboCount % 2 == 0) and 17 or 22
+		timerConductiveStrikeCD:Start(timer, self.vb.comboCount+1)
 	elseif spellId == 375929 then
 		warnSavageStrike:Show()
 	elseif spellId == 376829 then
 		warnThunderStrike:Show()
-	elseif spellId == 376723 then
+	elseif spellId == 376727 then--Boss casting Siphon Power
+		self:SetStage(1.5)
+		timerIronSpearCD:Stop()
+		timerUpheavalCD:Stop()
+		timerRendingStrikeCD:Stop()
+	elseif spellId == 376723 then--Adds casting Transfer Power
 		self.vb.addsLeft = self.vb.addsLeft + 1
-		if self.vb.phase == 1 then--Transfer Power
-			self:SetStage(1.5)
-			timerIronSpearCD:Stop()
-			timerUpheavalCD:Stop()
-			timerRendingStrikeCD:Stop()
-		end
 	elseif spellId == 376725 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnStormBolt:Show(args.sourceName)
 		specWarnStormBolt:Play("kickcast")
@@ -174,8 +180,17 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 361966 and args:IsPlayer() then
+	if spellId == 376634 and args:IsPlayer() then
 		yellIronSpearFades:Cancel()
+	elseif spellId == 376864 and args:IsPlayer() then
+		yellStaticSpearFades:Cancel()
+	elseif spellId == 376727 then
+		self:SetStage(2)
+		self.vb.comboCount = 0
+		warnPhase2:Show()
+		timerConductiveStrikeCD:Start(8, 1)
+		timerStaticSpearCD:Start(18)
+		timerCracklingUpheavalCD:Start(37)
 	end
 end
 
@@ -183,13 +198,7 @@ function mod:UNIT_DIED(args)
 	local cid = self:GetCIDFromGUID(args.destGUID)
 	if cid == 190294 then--Nokhud Stormcaster
 		self.vb.addsLeft = self.vb.addsLeft - 1
-		if self.vb.addsLeft == 0 then
-			self:SetStage(2)
-			warnPhase2:Show()
-			timerStaticSpearCD:Start(2)
-			timerCracklingUpheavalCD:Start(2)
-			timerConductiveStrikeCD:Start(2)
-		end
+		--Unused for now
 	end
 end
 

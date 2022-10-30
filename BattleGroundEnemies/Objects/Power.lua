@@ -71,12 +71,21 @@ local power = BattleGroundEnemies:NewButtonModule({
 function power:AttachToPlayerButton(playerButton)
 	playerButton.Power = CreateFrame('StatusBar', nil, playerButton)
 	playerButton.Power:SetMinMaxValues(0, 1)
+	playerButton.Power.maxValue = 1
 
 
 	--playerButton.Power.Background = playerButton.Power:CreateTexture(nil, 'BACKGROUND', nil, 2)
 	playerButton.Power.Background = playerButton.Power:CreateTexture(nil, 'BACKGROUND', nil, 2)
 	playerButton.Power.Background:SetAllPoints()
 	playerButton.Power.Background:SetTexture("Interface/Buttons/WHITE8X8")
+
+
+	function playerButton.Power:UpdateMinMaxValues(max)
+		if max and max ~= self.maxValue then
+			self:SetMinMaxValues(0, max)
+			self.maxValue = max
+		end
+	end
 
 	function playerButton.Power:CheckForNewPowerColor(powerToken)
 		if self.powerToken ~= powerToken then
@@ -110,8 +119,8 @@ function power:AttachToPlayerButton(playerButton)
 				powerType, powerToken, altR, altG, altB = UnitPowerType(unitID)
 			end
 			self:CheckForNewPowerColor(powerToken)
-			local value = UnitPower(unitID)/UnitPowerMax(unitID)
-			self:SetValue(value)
+			self:UpdateMinMaxValues(UnitPowerMax(unitID))
+			self:SetValue(UnitPower(unitID))
 		else
 			--for testmode
 			self:SetValue(math_random(0, 100)/100)

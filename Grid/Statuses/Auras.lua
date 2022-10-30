@@ -1749,8 +1749,8 @@ local player_buff_names_seen = {}
 local debuff_names_seen = {}
 local debuff_types_seen = {}
 
-function GridStatusAuras:ScanUnitAuras(event, unit, guid)
-	if not guid then guid = UnitGUID(unit) end
+function GridStatusAuras:ScanUnitAuras(event, unit, payload) --TODO:abyui10
+	local guid = UnitGUID(unit)
 	if not GridRoster:IsGUIDInRaid(guid) then
 		return
 	end
@@ -1769,7 +1769,7 @@ function GridStatusAuras:ScanUnitAuras(event, unit, guid)
 	end
 	]]
 
-	self:Debug("UNIT_AURA", unit, guid)
+	self:Debug("UNIT_AURA", unit, guid, payload)
 
 	now = GetTime()
 

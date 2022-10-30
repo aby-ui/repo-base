@@ -468,17 +468,6 @@ createTransCredit("Russian-ruRU", "katanaFAN, panzer48, RamyAlexis");
 createTransCredit("Simplified Chinese-zhCN", "zhTW, dll32");
 
 
-keyBinds = CreateFrame("Button","wMarkerKeyBindings",options,"GameMenuButtonTemplate");
-keyBinds:SetSize(100,20);
-keyBinds:SetText(L["Key bindings"]);
-keyBinds:SetPoint("BOTTOMRIGHT",options,-10,10);
-keyBinds:SetScript("OnClick",function(self)
-	KeyBindingFrame_LoadUI();
-	KeyBindingFrame.mode = 1;
-	ShowUIPanel(KeyBindingFrame);
-end);
-
-
 local lastCheckButton
 local function checkNew(parent,text,func)
 	local f = CreateFrame("CheckButton",nil,parent,"UICheckButtonTemplate")

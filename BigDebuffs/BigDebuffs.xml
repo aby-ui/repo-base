@@ -1,6 +1,37 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <Button name="BigDebuffsUnitFrameTemplate" inherits="ActionButtonTemplate" parent="UIParent" hidden="true" dontSavePosition="true" virtual="true">
+    <Font name="BigDebuffsFont" font="Fonts\FRIZQT__.TTF" inherits="GameFontHighlightSmallOutline" virtual="true">
+        <FontHeight>
+            <AbsValue val="8"/>
+        </FontHeight>
+    </Font>
+    <Button name="BigDebuffsDebuffTemplate" inherits="CompactDebuffTemplate" virtual="true">
+        <Scripts>
+            <OnUpdate>
+                if BigDebuffs.test then return end
+                if ( GameTooltip:IsOwned(self) ) then
+                    if ( self.isBossBuff ) then
+                        GameTooltip:SetUnitBuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
+                    else
+                        GameTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
+                    end
+                end
+            </OnUpdate>
+            <OnEnter>
+                if BigDebuffs.test then return end
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+                    if ( self.isBossBuff ) then
+                        GameTooltip:SetUnitBuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
+                    else
+                        GameTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
+                    end
+            </OnEnter>
+            <OnLeave>
+                GameTooltip:Hide();
+            </OnLeave>
+        </Scripts>
+    </Button>
+    <Button name="BigDebuffsUnitFrameTemplate" parent="UIParent" hidden="true" dontSavePosition="true" virtual="true">
         <Size>
             <AbsDimension x="36" y="36"/>
         </Size>
@@ -15,6 +46,57 @@
         </NormalTexture>
         <HighlightTexture/>
         <PushedTexture/>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentIcon" parentKey="icon"/>
+            </Layer>
+            <Layer level="ARTWORK" textureSubLevel="2">
+                <FontString name="$parentCount" inherits="NumberFontNormal" parentKey="Count" justifyH="RIGHT">
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="OVERLAY" textureSubLevel="1">
+                <FontString name="$parentName" parentKey="Name" inherits="BigDebuffsFont">
+                    <Size>
+                        <AbsDimension x="36" y="10"/>
+                    </Size>
+                    <FontHeight>
+                        <AbsValue val="6"/>
+                    </FontHeight>
+                    <Anchors>
+                        <Anchor point="BOTTOM">
+                            <Offset>
+                                <AbsDimension x="0" y="2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="flash" hidden="false" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-blue" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND" textureSubLevel="-1">
+                <Texture parentKey="TargetTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-purple" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="FocusTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
         <Frames>
             <Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="true" drawBling="false" drawEdge="false" hidden="true">
                 <Size x="36" y="36"/>

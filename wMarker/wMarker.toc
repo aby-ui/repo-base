@@ -3,7 +3,7 @@
 ## Notes: I'm going to to get my engineers to invent a combustible lemon that burns your house down!
 ## Author: Waky
 ## Dependencies: 
-## Version: 2.6
+## Version: 2.7
 ## SavedVariablesPerCharacter: wMarkerDB, wFlaresDB
 
 Localization\enUS.lua
@@ -12,6 +12,7 @@ Localization\zhTW.lua
 
 wMarker.lua
 config.lua
+
 
 ## Title: |cff880303[爱不易]|r wMarker 标记助手
 ## Notes-zhCN: 在界面上显示标记按钮和世界标记按钮

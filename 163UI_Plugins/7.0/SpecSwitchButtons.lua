@@ -2,7 +2,7 @@
 在专精和天赋按钮上稍作停留，就会出现快捷切换按钮
 ---------------------------------------------------------------]]
 if TalentMicroButton then
-    local CONFIG_NAME = "!!!163ui!!!/noSpecSwitch"
+    local CONFIG_NAME = "!!!163ui!!!/showSpecSwitch"
 
     local timer = "TalentSwitchButtonHideTimer"
     local buttons
@@ -35,7 +35,7 @@ if TalentMicroButton then
     end
 
     local function showSwitchButtons()
-        if InCombatLockdown() or U1DB.configs[CONFIG_NAME] then return end
+        if InCombatLockdown() or not U1DBG.global_configs[CONFIG_NAME] then return end
 
         if buttons == nil then
             buttons = {}
@@ -100,14 +100,15 @@ if TalentMicroButton then
 
     SetOrHookScript(TalentMicroButton, "OnClick", function(self, button)
         if button == "RightButton" then
-            if InCombatLockdown() then return end
+            if InCombatLockdown() or not ClassTalentFrame then return end
             if ClassTalentFrame:IsVisible() then
                 ClassTalentFrame:Hide()
             end
             showSwitchButtons()
         elseif (IsControlKeyDown()) then
-            U1DB.configs[CONFIG_NAME] = not U1DB.configs[CONFIG_NAME]
-            U1Message("切换天赋按钮已 "..(U1DB.configs[CONFIG_NAME] and "禁用" or "启用"))
+            U1DBG.global_configs[CONFIG_NAME] = not U1DBG.global_configs[CONFIG_NAME]
+            U1Message("切换天赋按钮已 "..(U1DBG.global_configs[CONFIG_NAME] and "禁用" or "启用"))
+            if InCombatLockdown() or not ClassTalentFrame then return end
             if ClassTalentFrame:IsVisible() then
                 ClassTalentFrame:Hide()
             end
@@ -131,36 +132,37 @@ if TalentMicroButton then
         end
     end)
     --]]
+
+    CoreDependCall("Blizzard_ClassTalentUI", function()
+        local btn = {}
+        for i = 1, GetNumSpecializations() do
+            btn[i] = CreateFrame("Button", "$parentSpecSwitch" .. i, ClassTalentFrame.TalentsTab.ButtonsParent, "UIPanelButtonTemplate") --"UIMenuButtonStretchTemplate")
+            btn[i]:SetSize(60, 22)
+            btn[i]:SetText((select(2, GetSpecializationInfo(i))))
+            btn[i]:SetFrameStrata("MEDIUM")
+            btn[i].spec = i
+            btn[i]:SetScript("OnClick", switchOnClick)
+            btn[i]:SetMotionScriptsWhileDisabled(true)
+            if (i == 1) then
+                btn[i]:SetPoint("BOTTOMLEFT", 0, 0)
+            else
+                btn[i]:SetPoint("TOPLEFT", btn[i - 1], "TOPRIGHT", 0, 0)
+            end
+        end
+
+        local function update()
+            for i, b in ipairs(btn) do
+                CoreUIShowOrHide(b, U1DBG.global_configs[CONFIG_NAME])
+                b:SetEnabled(b.spec ~= GetSpecialization() and not InCombatLockdown())
+            end
+        end
+        ClassTalentFrame._aby_spec_switch = update
+        ClassTalentFrame:HookScript("OnShow", update)
+        CoreOnEvent("PLAYER_SPECIALIZATION_CHANGED", update)
+        CoreOnEvent("PLAYER_REGEN_ENABLED", update)
+        CoreOnEvent("PLAYER_REGEN_DISABLED", update)
+    end)
 end
-
-CoreDependCall("Blizzard_ClassTalentUI", function()
-    local btn = {}
-    for i = 1, GetNumSpecializations() do
-        btn[i] = CreateFrame("Button", "$parentSpecSwitch" .. i, ClassTalentFrame.TalentsTab.ButtonsParent, "UIPanelButtonTemplate") --"UIMenuButtonStretchTemplate")
-        btn[i]:SetSize(60, 22)
-        btn[i]:SetText((select(2, GetSpecializationInfo(i))))
-        btn[i]:SetFrameStrata("MEDIUM")
-        btn[i].spec = i
-        btn[i]:SetScript("OnClick", switchOnClick)
-        btn[i]:SetMotionScriptsWhileDisabled(true)
-        if (i == 1) then
-            btn[i]:SetPoint("BOTTOMLEFT", 0, 0)
-        else
-            btn[i]:SetPoint("TOPLEFT", btn[i - 1], "TOPRIGHT", 0, 0)
-        end
-    end
-
-    local function update()
-        for i, b in ipairs(btn) do
-            CoreUIShowOrHide(b, not U1DB.configs[CONFIG_NAME])
-            b:SetEnabled(b.spec ~= GetSpecialization() and not InCombatLockdown())
-        end
-    end
-    ClassTalentFrame:HookScript("OnShow", update)
-    CoreOnEvent("PLAYER_SPECIALIZATION_CHANGED", update)
-    CoreOnEvent("PLAYER_REGEN_ENABLED", update)
-    CoreOnEvent("PLAYER_REGEN_DISABLED", update)
-end)
 
 --[[------------------------------------------------------------
 专精面板法术ID, 10.0自带

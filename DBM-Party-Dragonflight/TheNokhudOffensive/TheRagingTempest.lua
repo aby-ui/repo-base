@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2497, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220820005632")
+mod:SetRevision("20221030050248")
 mod:SetCreatureID(186615)
 mod:SetEncounterID(2636)
 --mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221029000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -22,9 +22,10 @@ mod:RegisterEventsInCombat(
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, timer updates with longer logs
+--TODO, do anything with Electrical Overload? I don't see much to do with it at mod level
 --[[
 (ability.id = 384316 or ability.id = 384620 or ability.id = 384686) and type = "begincast"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 local warnElectricalStorm						= mod:NewSpellAnnounce(384620, 3)
 local warnEnergySurge							= mod:NewSpellAnnounce(384686, 3, nil, "Tank|Healer")
@@ -34,9 +35,9 @@ local specWarnLightingStrike					= mod:NewSpecialWarningDodge(384316, nil, nil, 
 local specWarnEnergySurge						= mod:NewSpecialWarningDispel(384686, "MagicDispeller", nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerLightingStrikeCD						= mod:NewAITimer(35, 384316, nil, nil, nil, 3)
-local timerElectricStormCD						= mod:NewAITimer(35, 384620, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
-local timerEnergySurgeCD						= mod:NewAITimer(35, 384686, nil, "Tank|MagicDispeller", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
+local timerLightingStrikeCD						= mod:NewCDTimer(20.2, 384316, nil, nil, nil, 3)
+local timerElectricStormCD						= mod:NewNextTimer(63.4, 384620, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)--60+3sec cast
+local timerEnergySurgeCD						= mod:NewCDTimer(16.5, 384686, nil, "Tank|MagicDispeller", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -45,9 +46,9 @@ mod:AddInfoFrameOption(382628, false)
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
 function mod:OnCombatStart(delay)
-	timerLightingStrikeCD:Start(1-delay)
-	timerElectricStormCD:Start(1-delay)
-	timerEnergySurgeCD:Start(1-delay)
+	timerEnergySurgeCD:Start(7.5-delay)
+	timerLightingStrikeCD:Start(10.7-delay)
+	timerElectricStormCD:Start(30.6-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(382628))
 		DBM.InfoFrame:Show(5, "playerdebuffremaining", 382628)
@@ -72,6 +73,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 384620 then
 		warnElectricalStorm:Show()
 		timerElectricStormCD:Start()
+		timerLightingStrikeCD:Restart(18.2)
+		timerEnergySurgeCD:Restart(20.6)
 	elseif spellId == 384686 then
 		warnEnergySurge:Show()
 		timerEnergySurgeCD:Start()

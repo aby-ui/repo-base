@@ -75,4 +75,5 @@ local function TradeSkillEvents(event, addon)
     end
 end
 
-CanIMogIt.frame:AddEventFunction(TradeSkillEvents)
+-- TODO: Fix the TradeSkill window!
+-- CanIMogIt.frame:AddEventFunction(TradeSkillEvents)

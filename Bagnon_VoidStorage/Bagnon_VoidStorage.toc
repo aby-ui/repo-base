@@ -2,7 +2,7 @@
 ## Title: |TInterface/Addons/BagBrother/Art/Bagnon-Small:16:16|t Bagnon |cffffffffVoid Storage|r
 ## Author: Jaliborc (João Cardoso)
 ## Notes: Load on demand void storage display.|n|cffbbbbbbBy João Cardoso|r|n|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Patreon:12:12:0:-4|t |cff82c5ffpatreon.com/jaliborc|r|n|n
-## RequiredDeps: Bagnon
+## RequiredDeps: Bagnon, TODO:abyui10
 ## LoadOnDemand: 1
 
 ..\Bagnon\addons\vault\vault.xml

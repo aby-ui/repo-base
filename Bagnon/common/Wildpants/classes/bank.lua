@@ -9,7 +9,7 @@ Bank.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
 Bank.Bags = {BANK_CONTAINER}
 
 for slot = 1, NUM_BANKBAGSLOTS do
-	tinsert(Bank.Bags, slot + NUM_BAG_SLOTS)
+	tinsert(Bank.Bags, slot + NUM_TOTAL_EQUIPPED_BAG_SLOTS)
 end
 
 function Bank:OnHide()

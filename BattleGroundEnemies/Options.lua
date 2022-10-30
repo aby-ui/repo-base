@@ -1130,10 +1130,10 @@ function BattleGroundEnemies:SetupOptions()
 						end,
 						order = 3
 					},
-					DisableArenaFramesInBattlegrounds = {
+					DisableArenaFramesInBattleground = {
 						type = "toggle",
-						name = L.DisableArenaFramesInBattlegrounds,
-						desc = L.DisableArenaFramesInBattlegrounds_Desc,
+						name = L.DisableArenaFramesInBattleground,
+						desc = L.DisableArenaFramesInBattleground_Desc,
 						set = function(option, value)
 							Data.SetOption(location, option, value)
 							self:ToggleArenaFrames()

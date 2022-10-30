@@ -232,12 +232,13 @@ local changesSavedStack = {}
 local function changesSavedText()
     local frame = CreateFrame("Frame", "CanIMogIt_ChangesSaved", CanIMogIt.frame)
     local text = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    text:SetJustifyH("RIGHT")
     text:SetText(CanIMogIt.YELLOW .. L["Changes saved!"])
 
     text:SetAllPoints()
 
     frame:SetPoint("BOTTOMRIGHT", -20, 10)
-    frame:SetSize(100, 20)
+    frame:SetSize(200, 20)
     frame:SetShown(false)
     CanIMogIt.frame.changesSavedText = frame
 end

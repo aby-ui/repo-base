@@ -8,7 +8,7 @@ Data.defaultSettings = {
 		Debug = false,
 
 		DisableArenaFramesInArena = false,
-		DisableArenaFramesInBattlegrounds = false,
+		DisableArenaFramesInBattleground = false,
 
 		MyTarget_Color = {1, 1, 1, 1},
 		MyFocus_Color = {0, 0.988235294117647, 0.729411764705882, 1},

@@ -337,6 +337,7 @@ local enemyButtonFunctions = {}
 do
 
 	function enemyButtonFunctions:UpdateAll(temporaryUnitID)
+
 		local updateStuffWithEvents = false --only update health, power, etc for players that dont get events for that or that dont have a unitID assigned
 		local unitID
 		if temporaryUnitID then
@@ -350,11 +351,24 @@ do
 				end
 			end
 		end
+		--BattleGroundEnemies:LogToSavedVariables("UpdateAll", unitID, updateStuffWithEvents)
 		if not unitID then return end
+		--BattleGroundEnemies:LogToSavedVariables("UpdateAll", 1)
+
 		if not UnitExists(unitID) then return end
+
+		--this further checks dont seem necessary since they dont seem to rule out any other unitiDs (all unit ids that exist also are a button and are also this frame)
+
+
+		--[[ BattleGroundEnemies:LogToSavedVariables("UpdateAll", 2)
+
 		local playerButton = BattleGroundEnemies:GetPlayerbuttonByUnitID(unitID)
+
 		if not playerButton then return end
+		BattleGroundEnemies:LogToSavedVariables("UpdateAll", 3)
 		if playerButton ~= self then return	end
+		BattleGroundEnemies:LogToSavedVariables("UpdateAll", 4) ]]
+
 
 		if updateStuffWithEvents then
 			self:UNIT_POWER_FREQUENT(unitID)
@@ -2824,6 +2838,23 @@ function BattleGroundEnemies:ApplyAllSettings()
 end
 
 BattleGroundEnemies.DebugText = BattleGroundEnemies.DebugText or ""
+
+
+local function stringifyMultitArgs(...)
+	local args = {...}
+	local text = ""
+
+	for i = 1, #args do
+		text = text.. " ".. tostring(args[i])
+	end
+end
+
+local function addTimestamp()
+	local timestampFormat = "[%I:%M:%S] " --timestamp format
+	local stamp = BetterDate(timestampFormat, time())
+	return stamp
+end
+
 function BattleGroundEnemies:Debug(...)
 	if self.db and self.db.profile.Debug then
 
@@ -2831,16 +2862,7 @@ function BattleGroundEnemies:Debug(...)
 			self.debugFrame = CreatedebugFrame()
 		end
 
-		local args = {...}
-		local text = ""
-
-		local timestampFormat = "[%I:%M:%S] " --timestamp format
-		local stamp = BetterDate(timestampFormat, time())
-		text = stamp
-
-		for i = 1, #args do
-			text = text.. " ".. tostring(args[i])
-		end
+		local text = stringifyMultitArgs(addTimestamp(), ...)
 
 		self.debugFrame:AddMessage(text)
 	end
@@ -2849,19 +2871,12 @@ end
 function BattleGroundEnemies:LogToSavedVariables(...)
 	self.db.profile.log = self.db.profile.log or {}
 
-	local timestampFormat = "[%I:%M:%S] " --timestamp format
-	local stamp = BetterDate(timestampFormat, time())
-	local text = ""
-	local args = {...}
-	for i = 1, #args do
-		text = text.. " ".. tostring(args[i])
-	end
+	local text = stringifyMultitArgs(addTimestamp(), ...)
 
-	table_insert(self.db.profile.log, stamp .. ": "..text)
+	table_insert(self.db.profile.log, text)
 end
 
 local sentMessages = {}
-
 function BattleGroundEnemies:OnetimeInformation(...)
 	local message = table.concat({...}, ", ")
 	if sentMessages[message] then return end
@@ -3227,7 +3242,7 @@ do
 			if not InCombatLockdown() then
 				if IsInArena and self.db.profile.DisableArenaFramesInArena then
 					return disableArenaFrames()
-				elseif IsInBattleground and self.db.profile.DisableArenaFramesInBattlegrounds then
+				elseif IsInBattleground and self.db.profile.DisableArenaFramesInBattleground then
 					return disableArenaFrames()
 				end
 				checkEffectiveEnableStateForArenaFrames()

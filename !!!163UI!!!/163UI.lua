@@ -1636,6 +1636,7 @@ function U1:ADDON_LOADED(event, name)
 
         U1.db = db;
         U1DBG = U1DBG or { first_run = true }
+        U1DBG.global_configs = U1DBG.global_configs or {}
         U1DBG.ap_spell = nil
         U1DBG.AtlasLootReverseDBx = nil
         if U1DBG.lastReloadTime and math.abs(GetTime() - U1DBG.lastReloadTime) > 5 then U1DBG.lastReloadTime = nil end

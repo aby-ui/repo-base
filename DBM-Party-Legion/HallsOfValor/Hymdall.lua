@@ -1,17 +1,16 @@
 local mod	= DBM:NewMod(1485, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20210905144759")
+mod:SetRevision("20221030012954")
 mod:SetCreatureID(94960)
 mod:SetEncounterID(1805)
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 191284 193235 188404",
+	"SPELL_CAST_START 191284 193235 188404 193092",
 	"SPELL_PERIODIC_DAMAGE 193234",
-	"SPELL_PERIODIC_MISSED 193234",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
+	"SPELL_PERIODIC_MISSED 193234"
 )
 
 --Honestly I think all his stuff is health based. timers are useless
@@ -44,6 +43,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 188404 and self:AntiSpam(5, 2) then
 		warnBreath:Show()
 		warnBreath:Play("watchstep")
+	elseif spellId == 193092 then
+		warnSweep:Show()
 	end
 end
 
@@ -54,9 +55,3 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 	end
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 193092 then
-		warnSweep:Show()
-	end
-end

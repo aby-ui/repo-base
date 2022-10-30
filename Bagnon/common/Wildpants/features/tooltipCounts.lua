@@ -8,8 +8,8 @@ local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local TooltipCounts = Addon:NewModule('TooltipCounts')
 
 local SILVER = '|cffc7c7cf%s|r'
-local LAST_BANK_SLOT = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
-local FIRST_BANK_SLOT = NUM_BAG_SLOTS + 1
+local LAST_BANK_SLOT = NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS
+local FIRST_BANK_SLOT = NUM_TOTAL_EQUIPPED_BAG_SLOTS + 1
 local TOTAL = SILVER:format(L.Total)
 
 local ItemText, ItemCount
