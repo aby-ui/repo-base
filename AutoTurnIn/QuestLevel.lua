@@ -42,6 +42,7 @@ function AutoTurnIn:ShowQuestLevelInLog()
 end
 
 function AutoTurnIn:ShowQuestLevelInWatchFrame()
+	do return end --TODO:abyui10
 	if not AutoTurnInCharacterDB.watchlevel then 
 		return
 	end

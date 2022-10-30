@@ -5,6 +5,7 @@
 ## Version: 1.3
 ## SavedVariables: BaudErrorFrameConfig
 
+#..\!!!163UI!!!\Deprecated\Deprecated_10_0.xml
 ..\!!!Libs\Ace3\LibStub\LibStub.lua
 ..\!!!Libs\Ace3\CallbackHandler-1.0\CallbackHandler-1.0.lua
 ..\!!!Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
