@@ -526,7 +526,7 @@ local function OnEvent(self, event, arg1, arg2)
                 checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1);
                 checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1);
             end
-            local mover = BM_CreateMover(CollectionsJournal, 26, 30, 30, 0)
+            local mover = BM_CreateMover(CollectionsJournal, 26, 30, -30, 0)
             BM_SetMoveHandler(CollectionsJournal, mover)
         end)
         CoreDependCall("Rematch", function() RematchJournal:EnableMouse(false) end) --不能遮挡拖动
@@ -551,7 +551,7 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandler(QuickKeybindFrame)
         BM_SetMoveHandler(SettingsPanel)
         BM_SetMoveHandlerWith(nil, "Blizzard_ClassTalentUI", function()
-            local mover = BM_CreateMover(ClassTalentFrame, 80, 30, 30, 0)
+            local mover = BM_CreateMover(ClassTalentFrame, 60, 30, -30, 0)
             BM_SetMoveHandler(ClassTalentFrame, mover)
             mover:SetFrameStrata("HIGH")
         end)
