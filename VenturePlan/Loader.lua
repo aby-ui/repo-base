@@ -1,5 +1,5 @@
-﻿local _, T = ...
-local EV, U = T.Evie, T.Util
+local AN, T, EV, U = ...
+_G[AN], EV, U = 22, T.Evie, T.Util
 
 local mapOpened, addonLoaded
 function EV:ADVENTURE_MAP_OPEN(followerID)

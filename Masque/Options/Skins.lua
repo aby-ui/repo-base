@@ -136,6 +136,11 @@ do
 		return Parent and Parent.db.Disabled
 	end
 
+	-- Gets the disabled state of the Scale option.
+	local function GetDisabledScale(Info)
+		return not Info.arg.db.UseScale
+	end
+
 	----------------------------------------
 	-- Hidden
 	---
@@ -220,10 +225,20 @@ do
 					disabled = GetDisabled,
 					order = 3,
 				},
+				Reset = {
+					type = "execute",
+					name = L["Reset Skin"],
+					desc = L["Reset all skin options to the defaults."],
+					func = Reset,
+					arg = obj,
+					width = "full",
+					disabled = GetDisabled,
+					order = 4,
+				},
 				Spacer = {
 					type = "description",
 					name = " ",
-					order = 4,
+					order = 5,
 				},
 				Backdrop = {
 					type = "group",
@@ -231,7 +246,7 @@ do
 					arg = obj,
 					inline = true,
 					hidden = GetHidden,
-					order = 5,
+					order = 6,
 					args = {
 						Backdrop = {
 							type = "toggle",
@@ -262,7 +277,7 @@ do
 					arg = obj,
 					inline = true,
 					hidden = GetHidden,
-					order = 6,
+					order = 7,
 					args = {
 						Shadow = {
 							type = "toggle",
@@ -293,7 +308,7 @@ do
 					arg = obj,
 					inline = true,
 					hidden = GetHidden,
-					order = 7,
+					order = 8,
 					args = {
 						Gloss = {
 							type = "toggle",
@@ -324,7 +339,7 @@ do
 					arg = obj,
 					inline = true,
 					disabled = GetDisabled,
-					order = 8,
+					order = 9,
 					args = {
 						Color = {
 							type = "color",
@@ -355,7 +370,7 @@ do
 					set = SetColor,
 					inline = true,
 					disabled = GetDisabled,
-					order = 9,
+					order = 10,
 					args = {
 						Normal = {
 							type = "color",
@@ -400,15 +415,37 @@ do
 						},
 					},
 				},
-				Reset = {
-					type = "execute",
-					name = L["Reset Skin"],
-					desc = L["Reset all skin options to the defaults."],
-					func = Reset,
-					arg = obj,
-					width = "full",
-					disabled = GetDisabled,
-					order = -1,
+				Scale = {
+					type = "group",
+					name = L["Scale"],
+					--arg = obj,
+					inline = true,
+					order = 11,
+					args = {
+						UseScale = {
+							type = "toggle",
+							name = L["Enable"],
+							desc = L["Enable skin scaling."],
+							get = GetOption,
+							set = SetOption,
+							arg = obj,
+							disabled = GetDisabled,
+							order = 1,
+						},
+						Scale = {
+							type = "range",
+							name = L["Scale"],
+							desc = L["Adjust the scale of this group's skin."],
+							get = GetOption,
+							set = SetOption,
+							arg = obj,
+							min = 0.75,
+							max = 1.25,
+							step = 0.01,
+							disabled = GetDisabledScale,
+							order = 2,
+						},
+					},
 				},
 			},
 		}

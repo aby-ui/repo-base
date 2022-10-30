@@ -516,7 +516,7 @@ local panelevents = {}
 function panelevents:ACTIVE_TALENT_GROUP_CHANGED(self)
 	--print("Panel:Talent Group Changed")
 	ApplyPanelSettings()
-	--OnRefresh(TidyPlatesInterfacePanel)
+	if TidyPlatesInterfacePanel:IsVisible() then OnRefresh(TidyPlatesInterfacePanel) end
 end
 
 function panelevents:PLAYER_ENTERING_WORLD()
@@ -572,6 +572,7 @@ end
 
 TidyPlatesInterfacePanel:SetScript("OnEvent", function(self, event, ...) panelevents[event](self, ...) end)
 for eventname in pairs(panelevents) do TidyPlatesInterfacePanel:RegisterEvent(eventname) end
+TidyPlatesInterfacePanel:SetScript("OnShow", function() OnRefresh(TidyPlatesInterfacePanel) end) --abyui
 
 -------------------------------------------------------------------------------------
 -- Slash Commands

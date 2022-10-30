@@ -102,21 +102,6 @@ function Setup.General(self)
 						order = 4,
 						disabled = function() return not Core.LDBI end,
 					},
-					NoScale = {
-						type = "toggle",
-						name = L["Classic Scaling"],
-						desc = L["Use the old scaling method for action buttons."],
-						get = function() return Core.db.profile.NoScale end,
-						set = function(i, v)
-							Core.db.profile.NoScale = v
-								for ID, Group in pairs(Core.Groups) do
-									if Group.ActionButtons then
-										Group:ReSkin()
-									end
-								end
-							end,
-						order = 5,
-					},
 				},
 			},
 			Performance = {

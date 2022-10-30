@@ -1,4 +1,4 @@
-﻿local _, T = ...
+local _, T = ...
 local EV, L, U, S = T.Evie, T.L, T.Util, T.Shadows
 
 local SetAchievementReward do
@@ -13,36 +13,31 @@ local SetAchievementReward do
 		    	ar.icon:SetTexCoord(0.348, 0.578, 0.348, 0.535)
 			else
 				ar.icon:SetTexCoord(0.055, 0.289, 0.074, 0.262)
-	       end
+	        end
 		else
 			ar:Hide()
 		end
 	end
 end
+
 local MissionPage, MissionList
 function EV:GARRISON_MISSION_NPC_CLOSED()
 	if MissionList then
 		S[MissionList]:ReturnToTop()
 	end
 end
-local function LogCounter_OnClick()
-	local cb = MissionPage.CopyBox
-	cb.Title:SetText(L"Wanted: Adventure Reports")
-	cb.Intro:SetText(L"The Cursed Adventurer's Guide hungers. Only the tales of your companions' adventures, conveyed in excruciating detail, will satisfy it.")
-	cb.FirstInputBoxLabel:SetText(L"To submit your adventure reports," .. "|n" .. L"1. Visit:")
-	cb.SecondInputBoxLabel:SetText(L"2. Upload the following text in the logs channel:")
-	cb.ResetButton:SetText(L"Reset Adventure Reports")
-	cb.FirstInputBox:SetText("https://discord.gg/NKrmT28Nvk")
-	cb.FirstInputBox:SetCursorPosition(0)
-	cb.SecondInputBox:SetText(T.ExportMissionReports())
-	cb.SecondInputBox:SetCursorPosition(0)
-	cb:Show()
-	PlaySound(170567)
-end
-local function LogCounter_Update()
-	local lc, c = MissionPage.LogCounter, T.GetMissionReportCount()
-	lc:SetShown(c > 0)
-	lc:SetText("|cffffffff"..BreakUpLargeNumbers(c).."|r")
+
+local function Mission_OnHintRequested(me, isMotionInduced)
+	local ms = S[me]
+	local mid = ms.missionID
+	local ga = U.GetSuggestedGroups(mid, 4, 2, ms.offerEndTime)
+	if #ga.ord == 0 then return false end
+	U.FlushMissionPredictionQueue()
+	local gl, sl = T.CreateObject("Singleton", "GroupList")
+	sl:Acquire(me, me:GetParent():GetParent():ScrollToward(me) == 1, 0, isMotionInduced)
+	sl:SetGroups(mid, ms.offerEndTime, ms.baseCost, ga)
+	gl:SetFrameLevel(me:GetFrameLevel()+10)
+	return true
 end
 
 local bufferedTentativeGroup = {}
@@ -52,7 +47,7 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	local ms = S[me]
 	mi.encounterIconInfo, mi.isElite, mi.isRare = emi, emi.isElite, emi.isRare
 	
-	ms.missionID, ms.baseXPReward = mid, mi.xp or 0
+	ms.missionID, ms.baseXPReward, ms.winXPReward, ms.baseCost = mid, mi.xp or 0, mi.xp2 or 0, mi.cost
 	ms.Name:SetText(mi.name)
 	if (mi.description or "") ~= "" then
 		ms.Description:SetText(mi.description)
@@ -60,7 +55,7 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	
 	local timeNow = GetTime()
 	local expirePrefix, expireAt, expireRoundUp = false, nil, nil, false
-	ms.completableAfter = nil
+	ms.offerEndTime, ms.completableAfter = mi.offerEndTime, nil
 	if mi.offerEndTime then
 		expirePrefix = "|A:worldquest-icon-clock:0:0:0:0|a"
 		expireAt = mi.offerEndTime
@@ -91,11 +86,12 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	ms.Veil:SetShown(isMissionActive)
 	ms.ProgressBar:SetShown(isMissionActive and not mi.isFakeStart)
 	ms.ViewButton:SetShown(not isMissionActive)
+	ms.GroupHints:SetShown(not isMissionActive and U.HaveSuggestedGroups(mid))
 	ms.ViewButton:SetText(showPendingStart and L"Starting soon..." or isSufficientAnima and (showTentative and L"Edit party" or L"Select adventurers") or L"Insufficient anima")
 	ms.DoomRunButton:Hide()
 	ms.DoomRunButton:SetShown(showDoomRun)
 	ms.TentativeClear:SetShown(showTentative)
-	ms.TentativeMarker:SetShown(showTentative)
+        ms.TentativeMarker:SetShown(showTentative)
 	ms.ViewButton:SetPoint("BOTTOM", shiftView and 20 or 0, 12)
 	for i=1,#ms.Rewards do
 		ms.Rewards[i].RarityBorder:SetVertexColor(veilShade, veilShade, veilShade)
@@ -123,10 +119,11 @@ local function ConfigureMission(me, mi, haveSpareCompanions, availAnima)
 	ms.statLine:SetWidth(ms.duration:GetRight() - ms.statLine:GetLeft())
 	ms.TagText:SetText(tag)
 	ms:SetGroupPortraits(showTentative and U.GetTentativeGroup(mid, bufferedTentativeGroup) or U.GetInProgressGroup(mi.followers, bufferedTentativeGroup), isMissionActive, ms.Description)
+	ms.OnHintRequested = Mission_OnHintRequested
 	
 	me:Show()
 end
-local function cmpMissionInfo(a,b)
+local function cmpMissionInfo(a, b)
 	local ac, bc = a.completed or a.timeLeftSeconds == 0, b.completed or b.timeLeftSeconds == 0
 	if ac ~= bc then
 		return ac
@@ -205,33 +202,39 @@ local function UpdateMissions()
 		local m = missions[i]
 		local mid = m.missionID
 		if not m.timeLeftSeconds then
-			local sg = 0
+			local sg, xp2 = 0, 0
 			for j=1, m.rewards and #m.rewards or 0 do
 				local i = m.rewards[j]
-				if i.currencyID == 1828 and sg < 3 then
+				local iid = i.itemID
+				if i.followerXP and sg < 4 then
+					sg = haveRookies and 4 or j == 1 and -1 or sg
+				elseif iid and C_Item.IsAnimaItemByID(iid) and sg < 3 then
 					sg = 3
-				elseif i.followerXP and sg < 2 then
-					sg = haveRookies and 2 or j == 1 and -1 or sg
-				elseif i.itemID and C_Item.IsAnimaItemByID(i.itemID) and sg < 1 then
+				elseif i.currencyID == 0 and i.quantity and sg < 2 then
+					sg = 2
+				elseif iid and U.FOLLOWER_XP_ITEMS[iid] and sg < 1 then
 					sg = 1
 				elseif sg < 0 then
 					sg = 0
 				end
+				if i.followerXP then
+					xp2 = xp2 + i.followerXP
+				end
 			end
-			m.sortGroup = sg
+			m.sortGroup, m.xp2 = sg, (m.xp or 0) + xp2
 		end
 		m.hasTentativeGroup = U.MissionHasTentativeGroup(mid)
 		m.hasPendingStart = U.IsMissionStartingSoon(mid)
-	end
+	end	
 	for i=1,inProgressMissions and #inProgressMissions or 0 do
 		missions[#missions+1] = inProgressMissions[i]
-	end
-	
+	end	
 	local ni, anima = 1, C_CurrencyInfo.GetCurrencyInfo(1813)
 	anima = (anima and anima.quantity or 0)
 	ni = pushMissionSet(ni, cMissions, missions, haveUnassignedRookies, anima)
 	ni = pushMissionSet(ni, missions, nil, haveUnassignedRookies, anima)
 	ni = pushMissionSet(ni, inProgressMissions, missions, haveUnassignedRookies, anima)
+
 	MissionList.numMissions = ni-1
 	for i=ni, #MissionList.Missions do
 		MissionList.Missions[i]:Hide()
@@ -326,12 +329,9 @@ local function HookAndCallOnShow(frame, f)
 	end
 end
 function EV:I_ADVENTURES_UI_LOADED()
-	MissionPage = T.CreateObject("MissionPage", CovenantMissionFrame.MissionTab)
+	MissionPage = T.CreateObject("OneTime", "MissionPage", CovenantMissionFrame.MissionTab)
 	MissionList = MissionPage.MissionList
 	T.MissionList = MissionList
-	local lc = MissionPage.LogCounter
-	lc.tooltipHeader, lc.tooltipText = "|cff1eff00" .. L"Adventure Report", NORMAL_FONT_COLOR_CODE .. L"A detailed record of an adventure completed by your companions." .. "|n|n|cff1eff00" .. L"Use: Feed the Cursed Adventurer's Guide."
-	lc:SetScript("OnClick", LogCounter_OnClick)
 	HookAndCallOnShow(CovenantMissionFrame.MissionTab.MissionList, function(self)
 		self:Hide()
 		S[MissionPage]:Show()
@@ -339,9 +339,7 @@ function EV:I_ADVENTURES_UI_LOADED()
 	HookAndCallOnShow(S[MissionList], function()
 		CovenantMissionFrameFollowers:Hide()
 		UpdateMissions()
-		LogCounter_Update()
 	end)
-	EV.I_STORED_LOG_UPDATE = LogCounter_Update
 	EV.GARRISON_MISSION_LIST_UPDATE = QueueListSync
 	EV.GARRISON_MISSION_FINISHED = QueueListSync
 	EV.I_MISSION_LIST_UPDATE = QueueListSync
@@ -351,13 +349,18 @@ function EV:I_ADVENTURES_UI_LOADED()
 	EV.I_MISSION_QUEUE_CHANGED = UBSync
 	EV.I_COMPLETE_QUEUE_UPDATE = UBSync
 	EV.I_MISSION_COMPLETION_STEP = MissionComplete_Toast
-	MissionPage.CopyBox.ResetButton:SetScript("OnClick", function(self)
-		EV("I_RESET_STORED_LOGS")
-		self:GetParent():Hide()
-	end)
 	EV.I_UPDATE_CURRENCY_SHIFT = function(e, cid)
 		local p = MissionPage.ProgressCounter:GetScript("OnEvent")
 		p(MissionPage.ProgressCounter, e, cid)
+	end
+	local pqRunner = CreateFrame("Frame", nil, S[MissionPage])
+	pqRunner:SetScript("OnUpdate", function(s)
+		if U.RunMissionPredictionQueue(5) then
+			s:Hide()
+		end
+	end)
+	function EV.I_MPQ_ITEM_ADDED()
+		pqRunner:Show()
 	end
 	return "remove"
 end

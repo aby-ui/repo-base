@@ -517,18 +517,16 @@ do
 		ResetCursor()
 	end
 
-	local function LootButton_OnClick(self)
-		StaticPopup_Hide("CONFIRM_LOOT_DISTRIBUTION");
-		MasterLooterFrame:Hide();
-		LootSlot(self.slot);
-	end
-
 	function RowPrototype:OnClick(button)
 		if not XLootButtonOnClick(self, button) then
 			if IsModifiedClick() then
 				HandleModifiedItemClick(GetLootSlotLink(self.slot))
-			else
+			elseif LootButton_OnClick then
 				LootButton_OnClick(self, button)
+			else
+				StaticPopup_Hide("CONFIRM_LOOT_DISTRIBUTION")
+				LootSlot(self.slot)
+				EventRegistry:TriggerEvent("LootFrame.ItemLooted")
 			end
 		end
 	end
@@ -663,7 +661,7 @@ do
 				text_bind = binds[slotData.bindType] or ''
 			end
 
-			-- Currency
+		-- Currency
 		else
 			r, g, b = .4, .4, .4
 			text_name = slotData.name:gsub('\n', ', ')
@@ -811,7 +809,7 @@ do
 			row:RegisterForClicks()
 			row:SetScript('OnEnter', row.HighlightEnter)
 			row:SetScript('OnLeave', row.HighlightLeave)
-			-- Events for actual loot frame
+		-- Events for actual loot frame
 		else
 			row:RegisterForDrag('LeftButton')
 			row:RegisterForClicks('LeftButtonUp', 'RightButtonUp')
@@ -895,8 +893,8 @@ do
 	-- Bottom buttons
 	local function BottomButton(frame, name, text, justify)
 		local b = CreateFrame('Button', name, frame)
-		b.text = b:CreateFontString(name..'Text', 'OVERLAY', 'GameFontNormalSmall')
-		b.text:SetFont(frame.opt.font, frame.opt.font_size_bottombuttons, "")
+		b.text = b:CreateFontString(name..'Text', 'OVERLAY')
+		b.text:SetFont(frame.opt.font, frame.opt.font_size_bottombuttons)
 		b.text:SetText('|c22AAAAAA'..text)
 		b.text:SetJustifyH(justify)
 		b.text:SetAllPoints(b)

@@ -4,14 +4,14 @@
 ## Interface-WoTLK: 30400
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
-## Version: 10.0.0-1-alpha
+## Version: 10.0.0-3-alpha
 ## Author: Xuerian
 ## X-Category: Inventory
 ## X-Name: XLoot
 
 ## SavedVariables: XLootADB
 ## OptionalDeps: Ace3, LibStub, ButtonFacade, Masque, Pawn
-
+## Dependencies: TODO:abyui10
 
 localization.lua
 XLoot.lua

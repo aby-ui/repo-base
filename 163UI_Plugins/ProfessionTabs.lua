@@ -1,97 +1,6 @@
 U1PLUG["ProfessionTabs"] = function()
 
 --------------------------------------------------
--- Changelog
---------------------------------------------------
-
---[[
-
---------------------------------------------------
-
-Version: 1.2
-Date: 2012-10-20
-
-- Fixed issue with detecting profession ranks for races with profession skill bonuses
-
---------------------------------------------------
-
-Version: 1.1
-Date: 2012-08-31
-
-- The toc file has been updated for patch 5.0.4
-- Added support for TradeSkillDW
-- Surveying has been added as a tab
-- Tab selection accuracy has been improved
-- Some code optimizations have been added
-	- The GetProfessions and GetProfessionInfo APIs are now used rather than the IsSpellKnown API to obtain profession information
-	- Tabs are now only created on demand
-	- Tabs are now only updated when profession information changes
-
---------------------------------------------------
-
-Version: 1.0.7
-Date: 2010-11-13
-
-- Added Cataclysm Professions
-- Fixed TradeFrame tab positions
-- Fixed tab update bug with TradeFrame
-
---------------------------------------------------
-
-Version: 1.0.6
-Date: 2010-10-31
-
-- Adjusted the tab positions slightly. Shout out to EvilRick
-- Updated toc
-
---------------------------------------------------
-
-Version: 1.0.5
-Date: 2010-07-23
-
-- Updated to support the latest version of MrTrader
-- Small rewrite in preparation for Cataclysm
-
---------------------------------------------------
-
-Version: 1.0.4
-Date: 2010-02-12
-
-- Fixed the tab update problem with tradeskill based addons
-
---------------------------------------------------
-
-Version: 1.0.3
-Date: 02-12-10
-
-- Added support for MrTrader
-
---------------------------------------------------
-
-Version: 1.0.2
-Date: 2010-02-11
-
-- Code improvements
-
---------------------------------------------------
-
-Version: 1.0.1
-Date: 02-08-10
-
-- Added support for AdvancedTradeSkillWindow and Skillet
-
---------------------------------------------------
-
-Version: 1.0.0
-Date: 2010-02-07
-
-- Initial Release
-
---------------------------------------------------
-
---]]
-
---------------------------------------------------
 -- Initialization
 --------------------------------------------------
 
@@ -165,6 +74,7 @@ local function UpdateTab(object, name, rank, texture)
 	tab:SetNormalTexture(texture)
 	tab:SetAttribute("type", "spell")
 	tab:SetAttribute("spell", name)
+	tab:RegisterForClicks("AnyUp", "AnyDown")
 	tab:Show()
 
 	tab.name = name
@@ -234,16 +144,16 @@ local function HandleTabs(object)
 end
 
 function handler:TRADE_SKILL_SHOW(event)
-	local owner = ATSWFrame or MRTSkillFrame or SkilletFrame or TradeSkillFrame
+	local owner = ATSWFrame or MRTSkillFrame or SkilletFrame or ProfessionsFrame
 	
-	if IsAddOnLoaded("TradeSkillDW") and owner == TradeSkillFrame then
+	if IsAddOnLoaded("TradeSkillDW") and owner == ProfessionsFrame then
 		self:UnregisterEvent(event)
 	else
 		HandleTabs(owner)
 		self[event] = function() HandleTabs(owner) for object in next, tabs do UpdateSelectedTabs(object) end end
 		--abyui
-        if TradeSkillFrame and TradeSkillFrame.DetailsFrame and TradeSkillFrame.OptionalReagentList then
-            hooksecurefunc(TradeSkillFrame.DetailsFrame, "RefreshDisplay", function()
+        if ProfessionsFrame and ProfessionsFrame.DetailsFrame and ProfessionsFrame.OptionalReagentList then
+            hooksecurefunc(ProfessionsFrame.DetailsFrame, "RefreshDisplay", function()
                 self[event]()
             end)
         end

@@ -55,7 +55,7 @@ function Core.SkinMask(Region, Button, Skin, xScale, yScale)
 				Region:AddMaskTexture(ButtonMask)
 				Region.__MSQ_ButtonMask = true
 			end
-		elseif Region.__MSQ_ButtonMask then
+		elseif ButtonMask then
 			Region:RemoveMaskTexture(ButtonMask)
 			Region.__MSQ_ButtonMask = nil
 		end

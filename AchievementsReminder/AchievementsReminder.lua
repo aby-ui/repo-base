@@ -15,7 +15,7 @@ end
 
 ralldatabase()
 
-  achievementsreminderver=9.202
+  achievementsreminderver=10.001
 
 
 	if ralloptions==nil then ralloptions={1,1,0,0,0,0,1,0,0,0,0,0} end
@@ -623,7 +623,7 @@ if iclldrawtime1==nil then
 iclldrawtime1=1
 
 local t = zzralistach:CreateFontString()
-t:SetFont(GameFontNormal:GetFont(), 12)
+t:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 t:SetText(ralltitle2)
 t:SetJustifyH("LEFT")
 t:SetJustifyV("TOP")
@@ -657,7 +657,7 @@ rallradiobtn2:SetPoint("TOPLEFT", 593, -355)
 rallradiobtn2:SetScript("OnClick", function(self) rallradiobtn1:SetChecked(false) rallradiobtn2:SetChecked(true) rapsebf1:SetText("") rapsebf1:ClearFocus() end )
 
 local t2 = zzralistach:CreateFontString()
-t2:SetFont(GameFontNormal:GetFont(), 14)
+t2:SetFont(GameFontNormal:GetFont(), 14, 'MONOCHROME')
 t2:SetText(rallwhisper)
 t2:SetJustifyH("LEFT")
 t2:SetJustifyV("TOP")
@@ -679,7 +679,7 @@ psllinfframe:SetPoint("TOPRIGHT", psllinfscroll, "TOPRIGHT", 0, 0)
 psllinfframe:SetPoint("TOPLEFT", psllinfscroll, "TOPLEFT", 0, 0)
 psllinfframe:SetPoint("BOTTOMRIGHT", psllinfscroll, "BOTTOMRIGHT", 0, 0)
 psllinfframe:SetPoint("BOTTOMLEFT", psllinfscroll, "BOTTOMLEFT", 0, 0)
-psllinfframe:SetFont(GameFontNormal:GetFont(), 12) --ыытест как появится ТОП пролистывание, сменить размер на 12
+psllinfframe:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME') --ыытест как появится ТОП пролистывание, сменить размер на 12
 psllinfframe:SetMaxLines(100)
 psllinfframe:SetHyperlinksEnabled(true)
 psllinfframe:SetScript("OnHyperlinkClick", function(self,link,text,button) SetItemRef(link,text,button) end)
@@ -725,7 +725,7 @@ end
 
 
 rallbosstooltiptxt = zzralistach:CreateFontString()
-rallbosstooltiptxt:SetFont(GameFontNormal:GetFont(), 12)
+rallbosstooltiptxt:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 local ttyt=""
 if rallbosschaton then
 ttyt="|cff00ff00"..rallchatshowboss.."|r"
@@ -758,7 +758,7 @@ if i==8 then
 o=30
 end
 if i==1 or i==7 then
-local c = CreateFrame("CheckButton", nil, zzralistach, "OptionsCheckButtonTemplate")
+local c = CreateFrame("CheckButton", nil, zzralistach, "InterfaceOptionsCheckButtonTemplate")
 c:SetWidth("20")
 c:SetHeight("20")
 c:SetPoint("TOPLEFT", 20, -79-i*15-o)
@@ -776,9 +776,9 @@ end
 --txt
 local t = zzralistach:CreateFontString()
 if i==1 or i==7 then
-t:SetFont(GameFontNormal:GetFont(), 13)
+t:SetFont(GameFontNormal:GetFont(), 13, 'MONOCHROME')
 else
-t:SetFont(GameFontNormal:GetFont(), 11)
+t:SetFont(GameFontNormal:GetFont(), 11, 'MONOCHROME')
 end
 t:SetText(txttable[i])
 t:SetJustifyH("LEFT")
@@ -790,13 +790,13 @@ table.insert(psllcheckbuttontable2, t)
 end
 
 --only char achieves
-ralloptionTrackCharAchievesCB = CreateFrame("CheckButton", nil, zzralistach, "OptionsCheckButtonTemplate")
+ralloptionTrackCharAchievesCB = CreateFrame("CheckButton", nil, zzralistach, "InterfaceOptionsCheckButtonTemplate")
 ralloptionTrackCharAchievesCB:SetWidth("20")
 ralloptionTrackCharAchievesCB:SetHeight("20")
 ralloptionTrackCharAchievesCB:SetPoint("TOPLEFT", 350, -229)
 ralloptionTrackCharAchievesCB:SetScript("OnClick", function(self) if ralloptionTrackCharAchieves then ralloptionTrackCharAchieves=false icllcheckachieves() else ralloptionTrackCharAchieves=true icllcheckachieves() end end )
 local t2 = zzralistach:CreateFontString()
-t2:SetFont(GameFontNormal:GetFont(), 11)
+t2:SetFont(GameFontNormal:GetFont(), 11, 'MONOCHROME')
 t2:SetText("NEW! "..ralltextoptionCharAch)
 t2:SetJustifyH("LEFT")
 t2:SetPoint("TOPLEFT",372, -227)
@@ -813,7 +813,7 @@ if iclldrawtime2==nil then
 iclldrawtime2=1
 
 local t = zzralistach2:CreateFontString()
-t:SetFont(GameFontNormal:GetFont(), 12)
+t:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 t:SetText(ralltitle3)
 t:SetJustifyH("LEFT")
 t:SetJustifyV("TOP")
@@ -848,7 +848,7 @@ rallradiobtn22:SetScript("OnClick", function(self) rallradiobtn11:SetChecked(fal
 local ttm={{640,50,250,450},{-308,-200,-200,-200},{rallwhisper,rallmanualtxt1,rallmanualtxt2,rallmanualtxt3}}
 for tter=1,4 do
 local t2 = zzralistach2:CreateFontString()
-t2:SetFont(GameFontNormal:GetFont(), 14)
+t2:SetFont(GameFontNormal:GetFont(), 14, 'MONOCHROME')
 t2:SetText(ttm[3][tter])
 t2:SetJustifyH("LEFT")
 t2:SetJustifyV("TOP")
@@ -871,7 +871,7 @@ psllinfframe2:SetPoint("TOPRIGHT", psllinfscroll2, "TOPRIGHT", 0, 0)
 psllinfframe2:SetPoint("TOPLEFT", psllinfscroll2, "TOPLEFT", 0, 0)
 psllinfframe2:SetPoint("BOTTOMRIGHT", psllinfscroll2, "BOTTOMRIGHT", 0, 0)
 psllinfframe2:SetPoint("BOTTOMLEFT", psllinfscroll2, "BOTTOMLEFT", 0, 0)
-psllinfframe2:SetFont(GameFontNormal:GetFont(), 12) --ыытест как появится ТОП пролистывание, сменить размер на 12
+psllinfframe2:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME') --ыытест как появится ТОП пролистывание, сменить размер на 12
 psllinfframe2:SetMaxLines(100)
 psllinfframe2:SetHyperlinksEnabled(true)
 psllinfframe2:SetScript("OnHyperlinkClick", function(self,link,text,button) SetItemRef(link,text,button) end)
@@ -905,7 +905,7 @@ table.insert(psllcheckbuttontablem1, c)
 
 --txt
 local t = zzralistach2:CreateFontString()
-t:SetFont(GameFontNormal:GetFont(), 11)
+t:SetFont(GameFontNormal:GetFont(), 11, 'MONOCHROME')
 t:SetText(txttable[i])
 t:SetJustifyH("LEFT")
 t:SetPoint("TOPLEFT",42, -77-i*15)
@@ -949,7 +949,7 @@ if iclldrawtime3==nil then
 iclldrawtime3=1
 
 local t = zzralistach3:CreateFontString()
-t:SetFont(GameFontNormal:GetFont(), 12)
+t:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 t:SetText(ralltitle33)
 t:SetJustifyH("LEFT")
 t:SetJustifyV("TOP")
@@ -984,7 +984,7 @@ rallradiobtn32:SetScript("OnClick", function(self) rallradiobtn31:SetChecked(fal
 local ttm={{640,450},{-308,-115},{rallwhisper,ralltactictext1}}
 for tter=1,2 do
 local t2 = zzralistach3:CreateFontString()
-t2:SetFont(GameFontNormal:GetFont(), 14)
+t2:SetFont(GameFontNormal:GetFont(), 14, 'MONOCHROME')
 t2:SetText(ttm[3][tter])
 t2:SetJustifyH("LEFT")
 t2:SetJustifyV("TOP")
@@ -1007,7 +1007,7 @@ rallinfframe:SetPoint("BOTTOMLEFT", rallinfscroll, "BOTTOMLEFT", 0, 0)
 rallinfframe:SetScript("onescapepressed", function(self) rallinfframe:ClearFocus() end)
 rallinfframe:SetScript("OnEditFocusGained", function(self) if rallinfframe:GetText()==ralluilooktactic3 then rallinfframe:SetText("") end end)
 rallinfframe:SetScript("OnEditFocusLost", function(self)
-rallinfframe:SetFont(GameFontNormal:GetFont(), 12)
+rallinfframe:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 
 
 if zzralistach3_Button1:IsShown() then
@@ -1049,7 +1049,7 @@ end)
 
 
 
-rallinfframe:SetFont(GameFontNormal:GetFont(), 12)
+rallinfframe:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 rallinfframe:SetMultiLine(true)
 rallinfframe:SetAutoFocus(false)
 rallinfframe:SetHeight(470)
@@ -1063,7 +1063,7 @@ rallinfscroll:Show()
 rallzoneandachname = CreateFrame("ScrollingMessageFrame", "psllinfframetac", zzralistach3)
 
 rallzoneandachname:SetPoint("TOPLEFT",255,-144)
-rallzoneandachname:SetFont(GameFontNormal:GetFont(), 12)
+rallzoneandachname:SetFont(GameFontNormal:GetFont(), 12, 'MONOCHROME')
 rallzoneandachname:SetMaxLines(1)
 rallzoneandachname:SetHyperlinksEnabled(true)
 rallzoneandachname:SetScript("OnHyperlinkClick", function(self,link,text,button) SetItemRef(link,text,button) end)
@@ -1089,7 +1089,7 @@ table.insert(psllcheckbuttontablem31, c)
 
 --txt
 local t = zzralistach3:CreateFontString()
-t:SetFont(GameFontNormal:GetFont(), 11)
+t:SetFont(GameFontNormal:GetFont(), 11, 'MONOCHROME')
 t:SetText(txttable[i])
 t:SetJustifyH("LEFT")
 t:SetPoint("TOPLEFT",42, -101-i*15)

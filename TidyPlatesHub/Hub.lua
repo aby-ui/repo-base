@@ -506,6 +506,8 @@ local function BuildHubPanel(panel)
 		ConvertStringToTable(LocalVars.SpellCastAtPlayerList, LocalVars.SpellCastAtPlayerLookup)
 	end
 
+	panel:refresh()
+
 	--panel:Hide()
 end
 
@@ -536,6 +538,8 @@ local function CreateOptionsPanels()
     local GladiatorPanel = CreateHubInterfacePanel( "HubPanelSettingsGladiator", "|cFFAA6600竞技场", "Tidy Plates"  )
     BuildHubPanel(GladiatorPanel)
     function ShowTidyPlatesHubGladiatorPanel() TidyPlatesUtility.OpenInterfacePanel(GladiatorPanel) end
+
+	SettingsPanel.CategoryList:CreateCategories() --abyui Refresh Toggle Button
 end
 
 

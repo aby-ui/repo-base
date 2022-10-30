@@ -33,18 +33,8 @@ function Core.NoOp() end
 
 -- Returns the scale factor for a button.
 local function GetScaleSize(Button)
-	local ScaleSize = 36
-
-	if Button and not Core.db.profile.NoScale then
-		local bType = Button.__MSQ_bType
-
---		if WOW_RETAIL and bType == "Action" then
-		if WOW_RETAIL and ActionTypes[bType] then
-			ScaleSize = 45
-		end
-	end
-
-	return ScaleSize
+	local Scale = (Button and Button.__MSQ_Scale) or 1
+	return 36 / Scale
 end
 
 ----------------------------------------

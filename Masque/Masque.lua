@@ -77,7 +77,6 @@ function Masque:OnInitialize()
 	local Defaults = {
 		profile = {
 			Debug = false,
-			NoScale = true,
 			SkinInfo = true,
 			StandAlone = true,
 			Groups = {
@@ -88,13 +87,15 @@ function Masque:OnInitialize()
 					Gloss = false,
 					Inherit = true,
 					Pulse = true,
+					Scale = 1,
 					Shadow = false,
 					SkinID = "Classic",
+					UseScale = false,
 				},
 			},
 			LDB = {
 				hide = true,
-				minimapPos = 25,
+				minimapPos = 220,
 				radius = 80,
 			},
 		},

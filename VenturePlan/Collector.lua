@@ -1,10 +1,5 @@
 ﻿local _, T = ...
-local EV = T.Evie
-local LibParse = LibStub("LibParse");
-
-local function serialize(data)
-	return LibParse:JSONEncode(data)
-end
+local EV, U = T.Evie, T.Util
 
 local function GetCompletedMissionInfo(mid)
 	local ma = C_Garrison.GetCompleteMissions(123)
@@ -107,42 +102,17 @@ local function isNovelLog(cr, checkpoints)
 	local ok, ret, ret2 = pcall(checkSim, cr, checkpoints)
 	return not (ok and ret), ok, ret2
 end
-local function findReportSlot(logs, st, novel)
-	local nc, oc, nt, ot, ni, oi = 0, 0
-	for i=1,#logs do
-		local li = logs[i]
-		if li[1] == st then
-			return i
-		elseif li.novel then
-			nc = nc + 1
-			if nc == 1 or nt > li.ts then
-				nt, ni = li.ts, i
-			end
-		else
-			oc = oc + 1
-			if oc == 1 or ot > li.ts then
-				ot, oi = li.ts, i
-			end
-		end
-	end
-	if nc + oc < 20 then
-		return #logs+1
-	elseif novel then
-		return oc > 19 and oi or ni
-	else
-		return nc > 50 and ni or oi
-	end
-end
 function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _followerDeaths, autoCombatResult)
 	if not (autoCombatResult and autoCombatResult.combatLog and mid and C_Garrison.GetFollowerTypeByMissionID(mid) == 123) then return end
 	local cr = {
 		log=autoCombatResult.combatLog, winner=autoCombatResult.winner, missionID=mid,
-		meta={lc=GetLocale(), ts=math.floor(GetServerTime()/86400), cb=select(2,GetBuildInfo()), dv=1},
 	}
 	cr.encounters = C_Garrison.GetMissionCompleteEncounters(mid)
 	cr.environment = C_Garrison.GetAutoMissionEnvironmentEffect(mid)
 	for _, v in pairs(cr.encounters) do
 		v.scale, v.portraitFileDataID, v.mechanics, v.height, v.displayID = nil
+		local aa = v.autoCombatAutoAttack
+		v.auto, v.autoCombatAutoAttack = aa and aa.autoCombatSpellID
 		if v.autoCombatSpells then
 			for _, s in pairs(v.autoCombatSpells) do
 				s.previewMask, s.schoolMask, s.icon, s.spellTutorialFlag = nil
@@ -154,20 +124,24 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 		s.previewMask, s.schoolMask, s.icon, s.spellTutorialFlag = nil
 	end
 	
-	local fm, mi = {}, GetCompletedMissionInfo(mid)
+	local fm, fb, mi = {}, {}, GetCompletedMissionInfo(mid)
 	for i=1,#mi.followers do
 		local fid = mi.followers[i]
 		local mci = C_Garrison.GetFollowerMissionCompleteInfo(fid)
 		local stat = C_Garrison.GetFollowerAutoCombatStats(fid)
-		local spa = C_Garrison.GetFollowerAutoCombatSpells(fid, mci.level)
+		local spa, aa = C_Garrison.GetFollowerAutoCombatSpells(fid, mci.level)
 		for _, s in pairs(spa) do
 			s.previewMask, s.schoolMask, s.icon, s.spellTutorialFlag = nil
 		end
 		fm[fid] = {
 			name=mci.name, role=mci.role, level=mci.level,
 			boardIndex=mci.boardIndex, health=stat.currentHealth, maxHealth=stat.maxHealth, attack=stat.attack,
-			spells=spa,
+			spells=spa, auto=aa and aa.autoCombatSpellID
 		}
+		fb[1+mci.boardIndex] = C_Garrison.GetFollowerInfo(fid).garrFollowerID
+	end
+	if cr.winner then
+		U.SaveMissionGroup(mid, unpack(fb,1,5))
 	end
 	cr.followers = fm
 	cr.missionScalar = mi.missionScalar
@@ -175,30 +149,8 @@ function EV:GARRISON_MISSION_COMPLETE_RESPONSE(mid, _canCom, _suc, _bonusOK, _fo
 	local ok, checkpoints = generateCheckpoints(cr)
 	if ok then
 		local novel, nok, om = isNovelLog(cr, checkpoints)
-		cr.predictionCorrect = not novel
-		cr.differentOutcome = not om
-		cr.addonVersion = GetAddOnMetadata("VenturePlan", "Version")
-		local st = serialize(cr)
-		--if st == nil then return end;
-		VP_MissionReports = VP_MissionReports or {}
-		VP_MissionReports[findReportSlot(VP_MissionReports, st, novel)] = {st, ts=cr.meta.ts, novel=novel}
 		LR_MissionID, LR_Novelty = mid, nok and (novel and (om and 2 or 3) or 1) or 0
-		EV("I_STORED_LOG_UPDATE")
 	end
-end
-function EV:I_RESET_STORED_LOGS()
-	VP_MissionReports = nil
-	EV("I_STORED_LOG_UPDATE")
-end
-function T.GetMissionReportCount()
-	return type(VP_MissionReports) == "table" and #VP_MissionReports or 0
-end
-function T.ExportMissionReports()
-	local missionReportString = ""
-	for i=1,VP_MissionReports and #VP_MissionReports or 0 do
-		missionReportString = (i > 1 and missionReportString .. "\n" or "") .. VP_MissionReports[i][1]
-	end
-	return missionReportString
 end
 function T.GetMissionReportInfo(mid)
 	if mid == LR_MissionID then

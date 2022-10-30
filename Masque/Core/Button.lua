@@ -168,7 +168,7 @@ local function Hook_UpdateButtonArt(Button, HideDivider)
 	local Pushed, Skin = Button.PushedTexture, Button.__MSQ_Skin
 
 	if Pushed and Skin then
-		SkinTexture("Pushed", Pushed, Skin.Pushed, Button, Button.__MSQ_PushedColor, GetScale(Button))
+		SkinTexture("Pushed", Pushed, Button, Skin.Pushed, Button.__MSQ_PushedColor, GetScale(Button))
 	end
 end
 
@@ -203,7 +203,7 @@ local Hook_Methods = {
 }
 
 -- Applies a skin to a button and its associated layers.
-function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Colors, Pulse)
+function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Colors, Scale, Pulse)
 	if not Button then return end
 
 	local bType = Button.__MSQ_bType
@@ -223,6 +223,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	local Enabled = not Disabled
 
 	Button.__MSQ_Enabled = (Enabled and true) or nil
+	Button.__MSQ_Scale = Scale
 	Button.__MSQ_Shape = Skin.Shape
 
 	-- Set/remove type flags.

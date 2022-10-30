@@ -552,7 +552,7 @@ local Skin = {
 		Point = "CENTER",
 		RelPoint = "CENTER",
 		OffsetX = 0,
-		OffsetY = -1,
+		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {

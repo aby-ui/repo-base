@@ -160,7 +160,7 @@ function GMT:AddButton(Button, Regions, Type, Strict)
 	local db = self.db
 
 	if not db.Disabled and not self.Queued then
-		SkinButton(Button, Regions, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Pulse)
+		SkinButton(Button, Regions, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Scale, db.Pulse)
 	end
 end
 
@@ -235,14 +235,14 @@ function GMT:ReSkin(arg)
 			local Regions = self.Buttons[arg]
 
 			if Regions then
-				SkinButton(arg, Regions, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Pulse)
+				SkinButton(arg, Regions, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Scale, db.Pulse)
 			end
 		else
 			local SkinID, Backdrop, Shadow = db.SkinID, db.Backdrop, db.Shadow
 			local Gloss, Colors, Pulse = db.Gloss, db.Colors, db.Pulse
 
 			for Button, Regions in pairs(self.Buttons) do
-				SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Colors, Pulse)
+				SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Colors, db.Scale, Pulse)
 			end
 
 			if not arg then
@@ -295,6 +295,8 @@ end
 -- * This methods is intended for internal use only.
 function GMT:__Disable(Silent)
 	self.db.Disabled = true
+	self.db.Scale = 1
+	self.db.UseScale = false
 
 	for Button, Regions in pairs(self.Buttons) do
 		SkinButton(Button, Regions, false)
@@ -335,6 +337,8 @@ function GMT:__Reset()
 	self.db.Shadow = false
 	self.db.Gloss = false
 	self.db.Pulse = true
+	self.db.Scale = 1
+	self.db.UseScale = false
 
 	for Layer in pairs(self.db.Colors) do
 		self.db.Colors[Layer] = nil
@@ -364,6 +368,9 @@ function GMT:__Set(Option, Value)
 		end
 
 		self:ReSkin()
+	elseif Option == "Scale" then
+		db.Scale = Value or 1
+		self:ReSkin()
 	elseif db[Option] ~= nil then
 		Value = (Value and true) or false
 		db[Option] = Value
@@ -372,6 +379,9 @@ function GMT:__Set(Option, Value)
 			for Button in pairs(self.Buttons) do
 				SetPulse(Button, Value)
 			end
+		elseif Option == "UseScale" and not Value then
+			db.Scale = 1
+			self:ReSkin()
 		else
 			local func = Core["Skin"..Option]
 
@@ -469,11 +479,11 @@ function GMT:__Update(IsNew)
 		local p_db = self.Parent.db
 
 		if db.Inherit then
-			db.SkinID = p_db.SkinID
-			db.Backdrop = p_db.Backdrop
-			db.Shadow = p_db.Shadow
-			db.Gloss = p_db.Gloss
-			db.Pulse = p_db.Pulse
+			local Options = {"SkinID", "Backdrop", "Shadow", "Gloss", "Pulse", "Scale", "UseScale"}
+
+			for i, v in ipairs(Options) do
+				db[v] = p_db[v]
+			end
 
 			local Colors = db.Colors
 			local p_Colors = p_db.Colors

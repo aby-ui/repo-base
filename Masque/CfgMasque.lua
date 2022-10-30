@@ -155,6 +155,7 @@ U1RegisterAddon("Masque", {
         confirm = "会把所有皮肤的设置（比如颜色，光泽等）恢复到默认值，您确定吗？",
         callback = function() getGlobal():__Reset() end,
     },
+    --[[
     {
         var = "noscale",
         text = "经典模式按钮大小",
@@ -173,6 +174,7 @@ U1RegisterAddon("Masque", {
             end
         end,
     },
+    --]]
     {
         type = 'radio',
         var = "style",

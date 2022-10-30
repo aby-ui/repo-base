@@ -9,7 +9,7 @@
 </Frame>
 
 
-<Frame name="ARmain" hidden="true" toplevel="true" virtual="true" frameStrata="DIALOG" movable="true" enableMouse="true" parent="UIParent">
+<Frame name="ARmain" hidden="true" toplevel="true" virtual="true" frameStrata="DIALOG" movable="true" enableMouse="true" parent="UIParent" frameLevel="10">
 	<Size x="750" y="500"/>
 	<Anchors>
 		<Anchor point="CENTER"/>
@@ -29,13 +29,14 @@
 	<Anchor point="LEFT"/>
 	</Anchors>
 
-<frames>
+<Frames>
 
 
 <Frame name="icralistach" hidden="true" parent="ARmain1" inherits="BackdropTemplate">
 	<Scripts>
 		<OnLoad>
 					self.background = CreateFrame("Frame", nil, self, "BackdropTemplate")
+					self.background:SetFrameStrata("BACKGROUND")
 					self.background:SetAllPoints()
 					self.background:SetBackdrop(
 						{
@@ -46,7 +47,7 @@
 							edgeSize = 8,
 							insets = { left = 3, right = 3, top = 3, bottom = 3, },
 						})
-					self.background:SetBackdropColor(.03, .03, .03, .3)
+					self.background:SetBackdropColor(.03, .03, .03, 0.8)
 					self.background:SetBackdropBorderColor(.4, .4, .4)
 				</OnLoad>
 	</Scripts>
@@ -63,7 +64,11 @@
 	</FontString>
 	</Layer>
 	</Layers>
-<frames>
+	<KeyValues>
+		<KeyValue key="backdropColor" value="BLACK" type="global"/>
+        <KeyValue key="backdropBorderColor" value="WHITE" type="global"/>
+	</KeyValues>
+<Frames>
 <Button name="$parent_Button7" inherits="UIPanelButtonTemplate" text="rallsend">
 	<Size x="130" y="21"/><Anchors><Anchor point="TOPLEFT"><Offset x="610" y="-385"/></Anchor></Anchors>
 	<Scripts><OnClick>rallwhispbutfun()</OnClick></Scripts>
@@ -72,7 +77,7 @@
 	<Size x="240" y="36"/><Anchors><Anchor point="TOPRIGHT"><Offset x="-30" y="-100"/></Anchor></Anchors>
 	<Scripts><OnClick>PSFea_listachmanual()</OnClick></Scripts>
 	</Button>
-</frames>
+</Frames>
 
 	</Frame>
 
@@ -80,6 +85,7 @@
 	<Scripts>
 		<OnLoad>
 					self.background = CreateFrame("Frame", nil, self, "BackdropTemplate")
+					self.background:SetFrameLevel(1)
 					self.background:SetAllPoints()
 					self.background:SetBackdrop(
 						{
@@ -90,7 +96,7 @@
 							edgeSize = 8,
 							insets = { left = 3, right = 3, top = 3, bottom = 3, },
 						})
-					self.background:SetBackdropColor(.03, .03, .03, .3)
+					self.background:SetBackdropColor(.03, .03, .03, .8)
 					self.background:SetBackdropBorderColor(.4, .4, .4)
 				</OnLoad>
 	</Scripts>
@@ -107,7 +113,11 @@
 	</FontString>
 	</Layer>
 	</Layers>
-<frames>
+	<KeyValues>
+		<KeyValue key="backdropColor" value="BLACK" type="global"/>
+        <KeyValue key="backdropBorderColor" value="WHITE" type="global"/>
+	</KeyValues>
+<Frames>
 <Button name="$parent_Button7" inherits="UIPanelButtonTemplate" text="rallsend">
 	<Size x="130" y="21"/><Anchors><Anchor point="TOPLEFT"><Offset x="610" y="-385"/></Anchor></Anchors>
 	<Scripts><OnClick>rallwhispbutfun2()</OnClick></Scripts>
@@ -120,7 +130,7 @@
 	<Size x="170" y="30"/><Anchors><Anchor point="TOPLEFT"><Offset x="567" y="-217"/></Anchor></Anchors>
 	<Scripts><OnClick>rallonlycurrzone=nil icll_button3()</OnClick></Scripts>
 	</Button>
-</frames>
+</Frames>
 
 	</Frame>
 
@@ -155,7 +165,11 @@
 	</FontString>
 	</Layer>
 	</Layers>
-<frames>
+	<KeyValues>
+		<KeyValue key="backdropColor" value="BLACK" type="global"/>
+        <KeyValue key="backdropBorderColor" value="WHITE" type="global"/>
+	</KeyValues>
+<Frames>
 <Button name="$parent_Button7" inherits="UIPanelButtonTemplate" text="rallsend">
 	<Size x="130" y="21"/><Anchors><Anchor point="TOPLEFT"><Offset x="610" y="-385"/></Anchor></Anchors>
 	<Scripts><OnClick>rallwhispbutfun3()</OnClick></Scripts>
@@ -188,7 +202,7 @@
 	<Size x="32" y="32"/><Anchors><Anchor point="TOPLEFT"><Offset x="405" y="-128"/></Anchor></Anchors>
 	<Scripts><OnClick>openmenullch34(0)</OnClick></Scripts>
 	</Button>
-</frames>
+</Frames>
 
 	</Frame>
 
@@ -214,7 +228,7 @@
 	<Scripts><OnClick>icll_button33()</OnClick></Scripts>
 	</Button>
 
-</frames>
+</Frames>
 </Frame>
 
 </Ui>
