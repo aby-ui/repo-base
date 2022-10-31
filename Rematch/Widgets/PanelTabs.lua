@@ -13,7 +13,7 @@ function rematch:SetupPanelTabs(frame,activeIndex,...)
 		totalWidth = totalWidth + 63
 		local index = button:GetID()
 		if index==1 then
-			button:SetPoint("TOPLEFT",3,frame==rematch.Frame.PanelTabs and 0 or 1)
+			button:SetPoint("TOPLEFT",3,frame==rematch.Frame.PanelTabs and 3 or 1)
 		elseif index>1 then
 			button:SetPoint("LEFT",frame.Tabs[index-1],"RIGHT",-3,0)
 		end

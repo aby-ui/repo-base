@@ -33,13 +33,11 @@
 		<Size x="0" y="26"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="HeaderBack" file="Interface\AddOns\Rematch\Textures\backplate">
+				<Texture parentKey="HeaderBack" file="Interface\AddOns\Rematch\Textures\headers">
 					<Anchors>
 						<Anchor point="TOPLEFT"/>
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
-					<TexCoords left="0" right="1" top="0.5" bottom="1"/>
-					<Color r="0.25" g="0.25" b="0.25"/>
 				</Texture>
 			</Layer>		
 			<Layer level="BORDER">

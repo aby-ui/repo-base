@@ -64,6 +64,9 @@ function DF:CreateCoolTip()
 		return CONST_MENU_TYPE_MAINMENU
 	end
 
+	local languageFontEditBox = function()
+	end
+
 	--containers
 	gameCooltip.LeftTextTable = {}
 	gameCooltip.LeftTextTableSub = {}

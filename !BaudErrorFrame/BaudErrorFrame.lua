@@ -242,7 +242,7 @@ function BaudErrorFrameAdd(Error, Retrace)
     else
         tinsert(QueueError, Error);
     end
-    local error = {Error=Error,Count=1,Stack="\n"..debugstack(Retrace), locals={} }
+    local error = {Error=Error,Count=1,Stack="\n"..debugstack(Retrace, 100, 100), locals={} }
     tinsert(ErrorList,error);
     if(DEBUG_MODE) then
         for i=Retrace, 100 do local info = debuglocals(i) if info and #info>0 then error.locals[i-Retrace+1] = info end end

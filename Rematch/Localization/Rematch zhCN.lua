@@ -121,7 +121,7 @@ if GetLocale()=="zhCN" then
 	L["Toggle Rematch"] = "开启/关闭 Rematch"
 	L["Load this team?"] = "是否加载这个队伍?"
 	L["They do not appear to be online."] = "他们似乎不在线上"
-	L["has also been added to your leveling queue!"] = "已经加入升级队列!"
+	L["%s has also been added to your leveling queue!"] = "%s 已经加入升级队列!"
 	L["The team named '%s' can't be found."] = "无法找到名为 '%s' 的队伍"
 	L["Rematch Debug Info"] = "Rematch 调试信息"
 

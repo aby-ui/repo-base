@@ -661,35 +661,6 @@ if deal_taint_other then
     end
 end
 
---[[--------------------------------------------
-Deal with UIFrameFlash & UIFrameFade
-/run UIFrameFlash(PlayerFrame, 1,1, -1,true,0,0,"test")
-----------------------------------------------]]
-if true or deal_taint_other then
-    local L
-    if GetLocale()=="zhTW" or GetLocale()=="zhCN" then
-        L = {
-            FADE_PREVENT = "!NoTaint阻止了对UIFrameFade的调用.",
-            FLASH_FAILED = "你的插件调用了UIFrameFlash，可能会导致卡动作条等问题，请联系插件作者", --换成UICoreFlashFrame
-        }
-    else
-        L = {
-            FADE_PREVENT = "Call of UIFrameFade is prevented by !NoTaint.",
-            FLASH_FAILED = "AddOn calls UIFrameFlash, you may not be able to switch talent.",
-        }
-    end
-
-    hooksecurefunc("UIFrameFlash", function (frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
-        if ( frame ) then
-            if not issecurevariable(frame, "syncId") or not issecurevariable(frame, "fadeInTime") or not issecurevariable(frame, "flashTimer") then
-                error(L.FLASH_FAILED, 3)
-                --UIFrameFlashStop(frame)
-                --frameFlashManager:SetScript("OnUpdate", nil)
-            end
-        end
-    end)
-end
-
 --[[----------------------------------------------------
 -- Deal with FCF_StartAlertFlash
 -- which is called only in ChatFrame_MessageEventHandler

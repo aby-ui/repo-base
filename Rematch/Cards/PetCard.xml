@@ -198,7 +198,7 @@
 	</Button>
 
 	<!-- the card itself -->
-	<Frame name="RematchPetCard" frameStrata="FULLSCREEN" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" enableKeyboard="true" inherits="BasicFrameTemplate" hidden="true">
+	<Frame name="RematchPetCard" frameStrata="FULLSCREEN" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" enableKeyboard="true" inherits="RematchDefaultPanelTemplate" hidden="true">
 		<Size x="260" y="428"/>
 		<Anchors>
 			<Anchor point="CENTER"/>

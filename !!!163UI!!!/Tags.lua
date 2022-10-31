@@ -57,7 +57,7 @@ U1.TAGS = {
 
     CLASS = {
         order = 15,
-        text = _G["U1"..U1PlayerClass]..L["专用"],
+        text = UnitClass("player")..L["专用"],
         filter = function(name)
             return U1AddonHasTag(name, "CLASS") and U1AddonHasTag(name, U1PlayerClass);
         end

@@ -3,7 +3,7 @@
 	<Script file="EventAlert_CreateFrames.lua" />	
 	<Script file="EventAlert_SpellArray.lua" />
 	<Script file="EventAlertMod.lua" />
-	<Frame name="EA_Main_Frame" parent="UIParent" toplevel="true" frameStrata="HIGH">
+	<Frame name="EA_Main_Frame" parent="UIParent" toplevel="true" frameStrata="MEDIUM">
 		<Size>
 			<AbsDimension x="1" y="1" />
 		</Size>

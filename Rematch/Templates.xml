@@ -129,6 +129,164 @@
 		</Frames>
 	</Button>
 
+    <!-- RematchDefaultPanelTemplate and RematchDefaultPanelTemplateWithInset are intended to replace
+         BasicFrameTemplate and BasicFrameTemplateWithInset to be styled like DefaultPanelTemplate;
+         but without everything shifted 4 pixels to the right or the 500 framelevel craziness -->
+
+    <Frame name="RematchDefaultPanelTemplate" virtual="true">
+        <Frames>
+            <!-- red X in topright; not inheriting UIPanelCloseButton so it's not at 510 framelevel -->
+            <Button parentKey="CloseButton">
+                <Size x="24" y="24"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" x="-1" y="0"/>
+                </Anchors>
+                <DisabledTexture atlas="RedButton-Exit-Disabled"/>
+                <NormalTexture atlas="RedButton-Exit"/>
+                <PushedTexture atlas="RedButton-exit-pressed"/>
+                <HighlightTexture atlas="RedButton-Highlight" alphaMode="ADD"/>
+                <Scripts>
+                    <OnClick>
+                        self:GetParent():Hide()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture parentKey="TopLeft" atlas="UI-Frame-Metal-CornerTopLeft" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-12" y="16"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="TopRight" atlas="UI-Frame-Metal-CornerTopRight" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" x="2" y="16"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BottomLeft" atlas="UI-Frame-Metal-CornerBottomLeft" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" x="-12" y="-3"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="BottomRight" atlas="UI-Frame-Metal-CornerBottomRight" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-3"/>
+                    </Anchors>
+                    <Color r="0.85" g="0.85" b="0.85"/> <!-- Fix for Blizzard's version having this corner lighter than the rest -->
+                </Texture>
+                <Texture parentKey="Top" atlas="_UI-Frame-Metal-EdgeTop" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="TOPRIGHT"/>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.TopRight" relativePoint="TOPLEFT"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="Bottom" atlas="_UI-Frame-Metal-EdgeBottom" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeft" relativePoint="BOTTOMRIGHT"/>
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRight" relativePoint="BOTTOMLEFT"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="Left" atlas="!UI-Frame-Metal-EdgeLeft" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.TopLeft" relativePoint="BOTTOMLEFT"/>
+                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeft" relativePoint="TOPLEFT"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="Right" atlas="!UI-Frame-Metal-EdgeRight" useAtlasSize="true">
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativeKey="$parent.TopRight" relativePoint="BOTTOMRIGHT"/>
+                        <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRight" relativePoint="TOPRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND" textureSubLevel="-3">
+                <Texture parentKey="Bg" file="Interface\FrameGeneral\UI-Background-Rock" horizTile="true" vertTile="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-21"/>
+                        <Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND" textureSubLevel="-2">
+                <Texture parentKey="TopTileStreaks" inherits="_UI-Frame-TopTileStreaks">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="2" y="-21"/>
+                        <Anchor point="TOPRIGHT" x="-3" y="-21"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Title" inherits="GameFontNormal" wordwrap="false">
+                    <Size x="0" y="15"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="5" y="-5"/>
+                        <Anchor point="TOPRIGHT" x="-5" y="-5"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Frame>    
+
+    <Frame name="RematchDefaultPanelTemplateWithInset" inherits="RematchDefaultPanelTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture parentKey="InsetBg" file="Interface\FrameGeneral\UI-Background-Marble" horizTile="true" vertTile="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="5" y="-24" />
+						<Anchor point="BOTTOMRIGHT" x="-5" y="6" />
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BORDER" textureSubLevel="-1">
+				<Texture parentKey="InsetBorderTopLeft" inherits="UI-Frame-InnerTopLeft">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.InsetBg"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderTopRight" inherits="UI-Frame-InnerTopRight">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.InsetBg"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderBottomLeft" inherits="UI-Frame-InnerBotLeftCorner">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.InsetBg" y="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderBottomRight" inherits="UI-Frame-InnerBotRight">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.InsetBg" y="-1"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderTop" inherits="_UI-Frame-InnerTopTile">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.InsetBorderTopLeft" relativePoint="TOPRIGHT"/>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.InsetBorderTopRight" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderBottom" inherits="_UI-Frame-InnerBotTile">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.InsetBorderBottomLeft" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.InsetBorderBottomRight" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderLeft" inherits="!UI-Frame-InnerLeftTile">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.InsetBorderTopLeft" relativePoint="BOTTOMLEFT" x="0" y="0" />
+						<Anchor point="BOTTOMLEFT" relativeKey="$parent.InsetBorderBottomLeft" relativePoint="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="InsetBorderRight" inherits="!UI-Frame-InnerRightTile">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeKey="$parent.InsetBorderTopRight" relativePoint="BOTTOMRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.InsetBorderBottomRight" relativePoint="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+    </Frame>
+
 	<!-- Inset template without a background (bg) texture -->
 	<Frame name="RematchBaseInsetFrameTemplate" virtual="true">
 		<Layers>
@@ -1099,7 +1257,7 @@
 	</Button>
 
 	<Button name="RematchTitlebarButtonTemplate" virtual="true">
-		<Size x="22" y="22"/>
+		<Size x="24" y="24"/>
 		<HitRectInsets left="-2" right="-2" top="-2" bottom="-2"/>
 		<NormalTexture file="Interface\AddOns\Rematch\Textures\newtitlebarbuttons"/>
 		<DisabledTexture file="Interface\AddOns\Rematch\Textures\newtitlebarbuttons"/>

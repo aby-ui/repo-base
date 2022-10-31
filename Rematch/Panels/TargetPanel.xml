@@ -16,7 +16,7 @@
 				</Texture>
 			</Layer>
 			<Layer level="BORDER">
-				<Texture parentKey="Expand" file="Interface\AddOns\Rematch\Textures\expand_collapse" hidden="true">
+				<Texture parentKey="Expand" file="Interface\AddOns\Rematch\Textures\headers" hidden="true">
 					<Size x="26" y="26"/>
 					<Anchors>
 						<Anchor point="LEFT"/>

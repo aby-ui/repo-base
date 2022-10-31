@@ -271,3 +271,196 @@ do
         CoreHookScript(QuestLogFrame, "OnShow", function() QuestInfoDescriptionText:SetAlphaGradient(1024, QUEST_DESCRIPTION_GRADIENT_LENGTH); end, true)
     end
 end
+
+do
+    local CTAF = {}
+    ---用来返回CreateFrame, hooksecurefunc, getreplacehook, togglefunc的工厂方法
+    ---@param replaces 是要替换的全局函数, 要保证执行本函数时尚未被替换，而执行getreplacehook()时已经被替换
+    ---@param preCall 是togglefunc通用部分之前调用的, postCall则是之后调用的
+    function CoreToggleAddonFactory(name, replaces, preCall, postCall)
+        local _allframes, _allhooks, _CreateFrame, _hooksecurefunc, _getreplacehook, _togglefunc = {}, {}
+        local store = { status = true, _allframes, _allhooks, replaces, }
+        CTAF[name] = store
+
+        _CreateFrame = function(...)
+            local frame = CreateFrame(...)
+            _allframes[frame] = true
+            return frame
+        end
+
+        _hooksecurefunc = function(funcname, hookfunc, arg3)
+            local obj = nil
+            if arg3 then
+                obj = funcname
+                funcname = hookfunc
+                hookfunc = arg3
+            end
+            tinsert(_allhooks, hookfunc)
+            local id = #_allhooks
+            local newhook = function(...) if store.status then _allhooks[id](...) end end
+            if obj then
+                hooksecurefunc(obj, funcname, newhook)
+            else
+                hooksecurefunc(funcname, newhook)
+            end
+        end
+
+        for i=1, #replaces do
+            replaces[replaces[i]] = _G[replaces[i]]
+        end
+
+        _getreplacehook = function()
+            for i=1, #replaces do
+                replaces["HOOK."..replaces[i]] = _G[replaces[i]]
+            end
+        end
+
+        _togglefunc = function(force)
+            if force~=nil and force==store.status then return end
+            store.status = not store.status
+
+            if preCall then preCall(store) end
+
+            local _allframes, replaces = store[1], store[3]
+            if store.status then
+                for i=1, #replaces do
+                    _G[replaces[i]] = replaces["HOOK."..replaces[i]]
+                end
+                for f, _ in pairs(_allframes) do
+                    if f.___onevent then
+                        f:SetScript("OnEvent", f.___onevent)
+                        f.___onevent = nil
+                    end
+                    if f.___update then
+                        f:SetScript("OnUpdate", f.___update)
+                        f.___update = nil
+                    end
+
+                    if f.___shown then f:Show() end
+                    f.___shown = nil
+                end
+            else
+                for i=1, #replaces do
+                    _G[replaces[i]] = replaces[replaces[i]]
+                end
+                for f, _ in pairs(_allframes) do
+                    f.___onevent = f:GetScript("OnEvent")
+                    f:SetScript("OnEvent", nil)
+                    f.___update = f:GetScript("OnUpdate")
+                    f:SetScript("OnUpdate", nil)
+
+                    f.___shown = f:IsShown()
+                    f:Hide()
+                end
+            end
+
+            if postCall then postCall(store) end
+        end
+
+        return _CreateFrame, _hooksecurefunc, _getreplacehook, _togglefunc
+    end
+end
+
+--region performance 性能优化
+do
+CoreDependCall("Blizzard_TimeManager", function()
+    do return end--暂时屏蔽,这个会导致在 TimeManagerClockButton_OnUpdate 里之后调用 TimeManager_CheckAlarm 然后使 TimeManagerClockButton.currentMinuteCounter 被污染
+    function TimeManagerClockButton_Update(self)
+        local hour, minute = GetGameTime();
+        local _lastTime = hour * 60 + minute
+        if _lastTime ~=TimeManagerClockTicker._lastTime then
+            TimeManagerClockTicker:SetText(GameTime_GetTime(false));
+            TimeManagerClockTicker._lastTime = _lastTime
+        end
+    end
+end)
+--[==[-替换WorldFrame_OnUpdate，其中大量运算只是为了UIParent隐藏时, level>=60 是为了其中的Tutorial
+CoreOnEvent("PLAYER_LOGIN", function()
+    if UnitLevel("player")>=60 then
+        local timeLeft = 0
+        local function onupdate(self, elapsed)
+            timeLeft = timeLeft - elapsed
+            if ( timeLeft <= 0 ) then
+                timeLeft = 0.5;
+                if ( FramerateText:IsShown() ) then
+                    local framerate = GetFramerate();
+                    if framerate >= 100 then
+                        framerate = n2s(floor(framerate+0.5))
+                    else
+                        framerate = f2s(framerate, 1)
+                    end
+                    FramerateText:SetText(framerate);
+                    MapFramerateText:SetText(framerate);
+                end
+            end
+        end
+        --hooksecurefunc(UIParent, "Show", function() WorldFrame:SetScript("OnUpdate", onupdate) end)
+        --hooksecurefunc(UIParent, "Hide", function() WorldFrame:SetScript("OnUpdate", WorldFrame_OnUpdate) end) --TODO: 可能会导致各种污染
+        WorldFrame:SetScript("OnUpdate", onupdate)
+    end
+end)
+--]==]
+
+    --[=[-ChatFrame_OnUpdate只是为了显示滚动到最下面的那个按钮闪烁
+    do
+        local function onupdate(self, elapsed)
+            self._flashTimer163 = self._flashTimer163 + elapsed
+            if self._flashTimer163 >= 0.5 then
+                self._flashTimer163 = 0
+                local flash = self._flash163
+                if ( self:AtBottom() ) then
+                    flash:Hide();
+                else
+                    if ( flash:IsShown() ) then
+                        flash:Hide();
+                    else
+                        flash:Show();
+                    end
+                end
+            end
+        end
+        function ChatFrame_OnUpdate(self)
+            self._flash163 = _G[self:GetName().."ButtonFrameBottomButtonFlash"];
+            self._flashTimer163 = 0
+            self:SetScript("OnUpdate", self._flash163 and onupdate or nil)
+        end
+    end
+    --]=]
+
+    --[[
+    do
+        local militaryTime = GetCVarBool("timeMgrUseMilitaryTime")
+        CoreDependCall("Blizzard_TimeManager", function()
+            hooksecurefunc("TimeManager_ToggleTimeFormat", function()
+                militaryTime = GetCVarBool("timeMgrUseMilitaryTime")
+            end)
+        end)
+        function GameTime_GetFormattedTime(hour, minute, wantAMPM)
+            if ( militaryTime ) then
+                return n2s(hour, 2)..":"..n2s(minute, 2); --TIMEMANAGER_TICKER_24HOUR
+            else
+                if ( wantAMPM ) then
+                    local suffix = " AM";
+                    if ( hour == 0 ) then
+                        hour = 12;
+                    elseif ( hour == 12 ) then
+                        suffix = " PM";
+                    elseif ( hour > 12 ) then
+                        suffix = " PM";
+                        hour = hour - 12;
+                    end
+                    return n2s(hour)..":"..n2s(minute,2)..suffix; --TIME_TWELVEHOURAM
+                else
+                    if ( hour == 0 ) then
+                        hour = 12;
+                    elseif ( hour > 12 ) then
+                        hour = hour - 12;
+                    end
+                    return n2s(hour)..":"..n2s(minute, 2); --TIMEMANAGER_TICKER_12HOUR
+                end
+            end
+        end
+    end
+--]]
+end
+--endregion

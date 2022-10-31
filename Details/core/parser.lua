@@ -940,6 +940,11 @@
 					(not _detalhes.in_group and who_flags and bitBand(who_flags, AFFILIATION_GROUP) ~= 0)
 				)
 			) then
+				--avoid Fel Armor and Undulating Maneuvers to start a combat
+				if ((spellid == 387846 or spellid == 352561) and who_name == _detalhes.playername) then
+					return
+				end
+
 				if (_detalhes.encounter_table.id and _detalhes.encounter_table["start"] >= GetTime() - 3 and _detalhes.announce_firsthit.enabled) then
 					local link
 					if (spellid <= 10) then

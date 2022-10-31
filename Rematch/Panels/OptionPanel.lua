@@ -136,14 +136,21 @@ function panel:FillOptionListButton(index)
 		if self.optType=="header" then
 			self.headerIndex = opt[3]
 			self.CheckButton:SetPoint("LEFT")
-			self.CheckButton:SetTexture("Interface\\AddOns\\Rematch\\Textures\\expand_collapse")
-			local isExpanded = settings.ExpandedOptHeaders[opt[3]]
-			local expandedOffset = isExpanded and 0 or  0.5
-			self.CheckButton:SetTexCoord(0,1,expandedOffset,expandedOffset+0.5)
+			self.CheckButton:SetTexture("Interface\\AddOns\\Rematch\\Textures\\headers")
+			if settings.ExpandedOptHeaders[opt[3]] or (self.headerIndex==0 and not panel.allCollapsed) then -- is expanded
+				self.CheckButton:SetTexCoord(0.80078125,0.8515625,0,0.40625)
+			else
+				self.CheckButton:SetTexCoord(0.75,0.80078125,0,0.40625)
+			end
 			self.CheckButton:Show()
 			self.Text:SetPoint("LEFT",self.CheckButton,"RIGHT",2,0)
 			self.Text:SetText(opt[2])
 			self.Text:SetTextColor(1,0.82,0)
+			if settings.SinglePanel then
+				self.HeaderBack:SetTexCoord(0,0.59765625,0.5,0.90625)
+			else
+				self.HeaderBack:SetTexCoord(0,0.48046875,0,0.40625)
+			end
 			self.HeaderBack:Show()
 			-- if a search is happening, don't show the +/- buttons
 			if panel.searchPattern then
@@ -151,9 +158,9 @@ function panel:FillOptionListButton(index)
 			end
 
 			-- special handling for "All Options" header with all headers collapsed
-			if self.headerIndex==0 and not panel.allCollapsed then
-				self.CheckButton:SetTexCoord(0,1,0,0.5) -- change +/- to +
-			end
+			-- if self.headerIndex==0 and not panel.allCollapsed then
+			-- 	self.CheckButton:SetTexCoord(0,1,0,0.5) -- change +/- to +
+			-- end
 
 		elseif self.optType=="check" then
 			self.isChecked = settings[opt[2]]
@@ -424,7 +431,7 @@ end
 panel.funcs.PanelTabsToRight = function()
 	local anchorPoint, relativePoint, xoff = "TOPLEFT", "BOTTOMLEFT", 0
 	if settings.PanelTabsToRight then
-		anchorPoint, relativePoint, xoff = "TOPRIGHT", "BOTTOMRIGHT", -4
+		anchorPoint, relativePoint, xoff = "TOPRIGHT", "BOTTOMRIGHT", -2
 	end
 	rematch.Frame.PanelTabs:ClearAllPoints()
 	rematch.Frame.PanelTabs:SetPoint(anchorPoint,RematchFrame,relativePoint,xoff,-1)

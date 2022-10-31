@@ -213,6 +213,19 @@ function MySlot:GetBindingInfo(index)
 end
 -- }}}
 
+local function GetTalentTreeString()
+    ClassTalentFrame_LoadUI()
+    if (ClassTalentFrame) and (ClassTalentFrame.TalentsTab) and (ClassTalentFrame.TalentsTab.GetLoadoutExportString) then
+        if ClassTalentFrame.TalentsTab.GetConfigID and ClassTalentFrame.TalentsTab.GetTalentTreeID then
+            if (not ClassTalentFrame.TalentsTab:GetConfigID()) or (not ClassTalentFrame.TalentsTab:GetTalentTreeID()) then
+                return nil
+            end
+        end
+        ClassTalentFrame.TalentsTab:UpdateTreeInfo()
+        
+        return ClassTalentFrame.TalentsTab:GetLoadoutExportString()
+    end
+end
 
 function MySlot:Export(opt)
     -- ver nop nop nop crc32 crc32 crc32 crc32
@@ -276,11 +289,16 @@ function MySlot:Export(opt)
     -- }}}
     
     -- {{{ OUTPUT
+    local talent = GetTalentTreeString()
+
     local s = ""
     s = "@ --------------------" .. MYSLOT_LINE_SEP .. s
     s = "@ " .. L["Feedback"] .. "  farmer1992@gmail.com" .. MYSLOT_LINE_SEP .. s
     s = "@ " .. MYSLOT_LINE_SEP .. s
     s = "@ " .. LEVEL .. ":" ..UnitLevel("player") .. MYSLOT_LINE_SEP .. s
+    if talent then
+        s = "@ " .. TALENTS .. ":" .. talent .. MYSLOT_LINE_SEP .. s
+    end
     s = "@ " .. SPECIALIZATION ..":" .. ( GetSpecialization() and select(2, GetSpecializationInfo(GetSpecialization())) or NONE_CAPS ) .. MYSLOT_LINE_SEP .. s
     s = "@ " .. CLASS .. ":" ..UnitClass("player") .. MYSLOT_LINE_SEP .. s
     s = "@ " .. PLAYER ..":" ..UnitName("player") .. MYSLOT_LINE_SEP .. s
@@ -419,7 +437,6 @@ function MySlot:FindOrCreateMacro(macroInfo)
     end
 end
 -- }}}
-
 
 function MySlot:RecoverData(msg, opt)
 

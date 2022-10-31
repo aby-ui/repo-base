@@ -943,21 +943,20 @@ end
 -- end
 
 local titleButtonTexCoords = {
-
-	close = {0.0078125,0.140625,0.01171875,0.14453125},
-	minimize = {0.15625,0.2890625,0.01171875,0.14453125},
-	maximize = {0.3046875,0.4375,0.01171875,0.14453125},
-	pin = {0.453125,0.5859375,0.01171875,0.14453125},
-	lock = {0.0078125,0.140625,0.48828125,0.62109375},
-	unlock = {0.15625,0.2890625,0.48828125,0.62109375},
-	left = {0.3046875,0.4375,0.48828125,0.62109375},
-	right = {0.453125,0.5859375,0.48828125,0.62109375}
+	close = {0.00390625, 0.144531, 0.0078125/2, 0.304688/2},
+	minimize = {0.152344, 0.292969, 0.0078125/2, 0.304688/2},
+	maximize = {0.300781, 0.441406, 0.0078125/2, 0.304688/2},
+	pin = {0.449219, 0.589844, 0.0078125/2, 0.304688/2},
+	lock = {0.00390625, 0.144531, 0.0078125/2+0.48046875, 0.304688/2+0.48046875},
+	unlock = {0.152344, 0.292969, 0.0078125/2+0.48046875, 0.304688/2+0.48046875},
+	left = {0.300781, 0.441406, 0.0078125/2+0.48046875, 0.304688/2+0.48046875},
+	right = {0.449219, 0.589844, 0.0078125/2+0.48046875, 0.304688/2+0.48046875}
 }
 
 function rematch:SetTitlebarButtonIcon(button,icon)
 	local coords = titleButtonTexCoords[icon]
 	if coords then
-		local yoff = 41/256
+		local yoff = 0.3124995/2 -- 41/256
 		button:GetNormalTexture():SetTexCoord(coords[1],coords[2],coords[3],coords[4])
 		button:GetDisabledTexture():SetTexCoord(coords[1],coords[2],coords[3]+yoff,coords[4]+yoff)
 		button:GetPushedTexture():SetTexCoord(coords[1],coords[2],coords[3]+2*yoff,coords[4]+2*yoff)

@@ -190,11 +190,13 @@ function panel:FillHeader(button,targetIndex)
     if targetIndex==HEADER_ALL then -- "All Targets" has expanded state saved in panel.somethingExpanded, not settings.ExpandedTargetHeaders
         isExpanded = panel.somethingExpanded
     end
-    local expandOffset = isExpanded and 0 or 0.5
-    button.Expand:SetTexCoord(0,1,expandOffset,expandOffset+0.5)
-    button.Expand:SetShown(not panel.searchPattern)
     button.npcID = nil
-    button.Back:SetTexCoord(0,1,0.5,1)
+    button.Back:SetTexture("Interface\\AddOns\\Rematch\\Textures\\headers")
+    if settings.SinglePanel then
+        button.Back:SetTexCoord(0,0.59765625,0.5,0.90625)
+    else
+        button.Back:SetTexCoord(0,0.48046875,0,0.40625)
+    end
     button.Back:SetPoint("TOPLEFT",0,0)
     button.Back:SetPoint("BOTTOMRIGHT",0,0)
     button.Name:ClearAllPoints()
@@ -202,18 +204,25 @@ function panel:FillHeader(button,targetIndex)
     button.Name:SetPoint("BOTTOMRIGHT",-2,0)
     button.HasTeam:Hide()
     if isExpHeader then -- expansion header
-        button.Back:SetVertexColor(0.25,0.25,0.25)
+        button.Back:SetVertexColor(1,1,1)
         button.Name:SetTextColor(1,0.82,0)
         button.Name:SetText(panel:GetExpansionNameFromHeader(targetIndex))
-        button.Expand:SetDesaturated(false)
-        button.Expand:SetVertexColor(1,1,1)
+        if isExpanded then
+            button.Expand:SetTexCoord(0.80078125,0.8515625,0,0.40625)
+        else
+            button.Expand:SetTexCoord(0.75,0.80078125,0,0.40625)
+        end        
     elseif isMapHeader then -- map header
-        button.Back:SetVertexColor(0.2,0.2,0.2)
+        button.Back:SetVertexColor(0.75,0.75,0.75)
         button.Name:SetTextColor(0.5,0.75,1)
         button.Name:SetText(panel:GetMapNameFromHeader(targetIndex))
-        button.Expand:SetDesaturated(true)
-        button.Expand:SetVertexColor(0.5,0.75,1)
+        if isExpanded then
+            button.Expand:SetTexCoord(0.80078125,0.8515625,0.5,0.90625)
+        else
+            button.Expand:SetTexCoord(0.75,0.80078125,0.5,0.90625)
+        end        
     end
+    button.Expand:SetShown(not panel.searchPattern)
 end
 
 -- styles a list button to display the "Targets with a (green check) have a saved team."
@@ -300,6 +309,7 @@ function panel:FillTargetListButton()
         else -- a regular target listing, display pets
 
             -- common stuff for both normal and compact target list buttons
+            self.Back:SetTexture("Interface\\AddOns\\Rematch\\Textures\\backplate")
             self.Back:SetTexCoord(0,1,0,0.5)
             self.Back:SetVertexColor(1,1,1)
             self.Name:SetTextColor(1,1,1)

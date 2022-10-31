@@ -4,16 +4,17 @@ U1PLUG["CovenantHelper"] = function()
     local selectTime
     CoreOnEvent("GOSSIP_SHOW", function(event, covenant)
         if not U1GetCfgValue(addonName, 'CovenantHelper') then return end
+        local options = C_GossipInfo.GetOptions()
         if covenants[covenant or ""] then
-            if C_GossipInfo.GetNumOptions() == 1 then
-                C_GossipInfo.SelectOption(1)
+            if #options == 1 then
+                C_GossipInfo.SelectOption(options[1].gossipOptionID)
                 U1Message("小功能集合-盟约助手：自动选择了对话项目")
                 selectTime = GetTime()
             end
         else
             if GetTime() - (selectTime or 0) < 1 then
-                if C_GossipInfo.GetNumOptions() == 2 then
-                    C_GossipInfo.SelectOption(1)
+                if #options == 2 then
+                    C_GossipInfo.SelectOption(options[1].gossipOptionID)
                 end
             end
         end

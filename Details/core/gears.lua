@@ -60,6 +60,7 @@ end
 	
 		local current_enabled_state = _detalhes.chat_tab_embed.enabled
 		local current_name = _detalhes.chat_tab_embed.tab_name
+		local current_is_single = _detalhes.chat_tab_embed.single_window
 	
 		tab_name = tab_name or _detalhes.chat_tab_embed.tab_name
 		if (is_enabled == nil) then
@@ -92,6 +93,15 @@ end
 						_detalhes.chat_tab_embed.w1_pos = pos
 					end
 				end
+				local window2 = _detalhes:GetInstance(2)
+				if (window2) then
+					window2:SaveMainWindowPosition()
+					if (window2.libwindow) then
+						local pos = window2:CreatePositionTable()
+						_detalhes.chat_tab_embed.w2_pos = pos
+					end
+				end
+			elseif (not is_single and current_is_single) then
 				local window2 = _detalhes:GetInstance(2)
 				if (window2) then
 					window2:SaveMainWindowPosition()
@@ -253,9 +263,12 @@ end
 		local window2 = _detalhes:GetInstance(2)
 		
 		if (second_window) then
+			window2:UngroupInstance()
 			window2.baseframe:ClearAllPoints()
 			window2.baseframe:SetParent(UIParent)
 			window2.rowframe:SetParent(UIParent)
+			window2.rowframe:ClearAllPoints()
+			window2.windowSwitchButton:SetParent(UIParent)
 			window2.baseframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2.rowframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2:LockInstance (false)
@@ -267,10 +280,11 @@ end
 			end
 			return
 		end
-		
+		window1:UngroupInstance();
 		window1.baseframe:ClearAllPoints()
 		window1.baseframe:SetParent(UIParent)
 		window1.rowframe:SetParent(UIParent)
+		window1.windowSwitchButton:SetParent(UIParent)
 		window1.baseframe:SetPoint("center", UIParent, "center")
 		window1.rowframe:SetPoint("center", UIParent, "center")
 		window1:LockInstance (false)
@@ -282,9 +296,12 @@ end
 		end
 		
 		if (not _detalhes.chat_tab_embed.single_window and window2) then
+			
+			window2:UngroupInstance()
 			window2.baseframe:ClearAllPoints()
 			window2.baseframe:SetParent(UIParent)
 			window2.rowframe:SetParent(UIParent)
+			window2.windowSwitchButton:SetParent(UIParent);
 			window2.baseframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2.rowframe:SetPoint("center", UIParent, "center", 200, 0)
 			window2:LockInstance (false)
@@ -300,7 +317,7 @@ end
 	function _detalhes.chat_embed:GetTab (tabname)
 		tabname = tabname or _detalhes.chat_tab_embed.tab_name
 		for i = 1, 20 do
-			local tabtext = _G ["ChatFrame" .. i .. "TabText"]
+			local tabtext = _G ["ChatFrame" .. i .. "Tab"]
 			if (tabtext) then
 				if (tabtext:GetText() == tabname) then
 					return _G ["ChatFrame" .. i], _G ["ChatFrame" .. i .. "Tab"], _G ["ChatFrame" .. i .. "Background"], i

@@ -77,6 +77,8 @@ if not U1_WOW10 then return end
     GetPoint() -> GetPoint(1) --不需要了
     CreateFrame("GameTooltip") 必须加名字，否则有BUG，装备价格不显示
 
+    C_GossipInfo.GetNumOptions() 没了,直接 C_GossipInfo.GetOptions(), C_GossipInfo.SelectOption(需要选择 gossipOptionID,而不是index)
+
 --]]
 
 --[[------------------------------------------------------------

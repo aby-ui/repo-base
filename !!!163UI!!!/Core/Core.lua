@@ -6,67 +6,6 @@ local n2s_small,n2s_big,n2s_float,n2s_format,n2s_pad_cache={},{},{},{"%.1f","%.2
 for i=0, 100 do n2s_small[i] = tostring(i) end
 for i=0, 9 do for j=0, 9 do n2s_float[i+j/10] = format("%.1f", i+j/10) end end
 
-function noop() end
-function pdebug(...) print("params", ...); print(debugstack(2)) end
-local start_old, last_reset = debugprofilestart, 0
-debugprofilestart = function() last_reset = last_reset + debugprofilestop() return start_old() end
-u1debugprofilestop = function() return debugprofilestop() + last_reset end
-
-function find_global(pattern)
-    for k,v in pairs(_G) do
-        if type(v) == "string" and v:find(pattern) then
-            print(k,v)
-        end
-    end
-    print("=========================")
-end
-
-function find_global_key(patternOrObject)
-    for k,v in pairs(_G) do
-        if type(k) == "string" and v == patternOrObject or (type(patternOrObject)=="string" and k:find(patternOrObject)) then
-            print(k,v)
-        end
-    end
-    print("=========================")
-end
-
-function FindParentKey(frame)
-    if frame then
-        if frame.GetName and frame:GetName() then
-            print(frame:GetName())
-        else
-            local parent = frame:GetParent();
-            local path, found
-            while parent do
-                found = false
-                for k, v in pairs(parent) do
-                    if v==frame then
-                        found = true
-                        path = k..(path and "."..path or "")
-                        break
-                    end
-                end
-                if not found or parent:GetName() then
-                    path = (parent:GetName() or "[UNKNOWN]").."."..(path or "nil")
-                    break;
-                else
-                    frame = parent
-                    parent = frame:GetParent()
-                end
-            end
-            print(path)
-        end
-    end
-end
-
-function GetMouseFocusParentKey()
-    return FindParentKey(GetMouseFocus())
-end
-
-SLASH_MOUSEFOCUSNAME1 = "/getmn"
-SLASH_MOUSEFOCUSNAME2 = "/getmouseparentkey"
-SlashCmdList["MOUSEFOCUSNAME"] = GetMouseFocusParentKey
-
 _empty_table = {};
 _temp_table = {};
 
@@ -272,7 +211,6 @@ function f2s(n, radius)
     end
 end
 
-local n2s,safecall,u1copy,tinsertdata,tremovedata,f2s = n2s,safecall,u1copy,tinsertdata,tremovedata,f2s
 LibStub("AceTimer-3.0"):Embed(core)
 function CoreScheduleTimer(repeating, delay, callback, arg)
     if(repeating)then
@@ -566,84 +504,6 @@ function CoreHideOnPetBattle(frame)
     petBattleHideFrames[frame] = true
 end
 
----直接调用Blizzard的dump
-function dump(...)
-    if not IsAddOnLoaded("Blizzard_DebugTools") then LoadAddOn("Blizzard_DebugTools") end
-    DevTools_Dump(...);
-end
-
-function dump2(value, depth)
-    if not IsAddOnLoaded("Blizzard_DebugTools") then LoadAddOn("Blizzard_DebugTools") end
-    local old_DEVTOOLS_DEPTH_CUTOFF = DEVTOOLS_DEPTH_CUTOFF
-    local old_DEVTOOLS_MAX_ENTRY_CUTOFF = DEVTOOLS_MAX_ENTRY_CUTOFF
-    DEVTOOLS_DEPTH_CUTOFF = (depth or 1)
-    DEVTOOLS_MAX_ENTRY_CUTOFF = 100
-    DevTools_Dump(value)
-    DEVTOOLS_DEPTH_CUTOFF = old_DEVTOOLS_DEPTH_CUTOFF
-    DEVTOOLS_MAX_ENTRY_CUTOFF = old_DEVTOOLS_MAX_ENTRY_CUTOFF
-end
-
-SlashCmdList["DUMPB"] = function(cmd)
-    local var, depth = cmd:match("^(.*)[ ]+([0-9]+)$")
-    print("dump2 " .. cmd .. " ---------------")
-    dump2(loadstring("return "..(var or cmd))(), tonumber(depth or 1))
-end
-SLASH_DUMPB1 = "/dump2"
-
-local function dumpt_tostring(v)
-    if type(v) == "table" and v.GetObjectType then
-        return "|cffffcc00[" .. tostring(v:GetObjectType() or nil) .. "]|r " .. tostring(v)
-    elseif type(v) == "function" then
-        return "|cff88ff88<function>|r"
-    else
-        return tostring(v)
-    end
-end
-U1_DUMPP_FUNCTION = nil --只显示func或不显示func
-function dumpp(tbl, curr_depth, expect_depth)
-    if(type(tbl)~="table") then return print(dumpt_tostring(tbl)) end
-    curr_depth = curr_depth or 1
-    expect_depth = max(expect_depth or 1, curr_depth)
-    if(expect_depth == curr_depth) then print(dumpt_tostring(tbl)) end
-    local keys = {}
-    for k, v in pairs(tbl) do
-        table.insert(keys, k)
-    end
-    table.sort(keys, function(a,b) return tostring(a) < tostring(b) end)
-    for _, k in ipairs(keys) do
-        local v = tbl[k]
-        if k == 0 and tostring(v):sub(1,9) == "userdata:" then
-            --continue
-        else
-            if U1_DUMPP_FUNCTION == nil or U1_DUMPP_FUNCTION == (type(v) == "function") then
-                print(strrep(" │", expect_depth - curr_depth) .. " ├|cff88ccff" .. tostring(k) .. "|r = " .. dumpt_tostring(v))
-            end
-            if curr_depth > 1 and type(v)=="table" then dumpp(v, curr_depth -1, expect_depth) end
-        end
-    end
-end
-SlashCmdList["DUMPP"] = function(cmd)
-    local var, depth = cmd:match("^(.*)[ ]+([0-9]+)$")
-    dumpp(loadstring("return "..(var or cmd))(), tonumber(depth or 1))
-end
-SLASH_DUMPP1 = "/dumpp"
-
-SlashCmdList["DUMPPF"] = function(cmd)
-    local var, depth = cmd:match("^(.*)[ ]+([0-9]+)$")
-    U1_DUMPP_FUNCTION = true
-    dumpp(loadstring("return "..(var or cmd))(), tonumber(depth or 1))
-    U1_DUMPP_FUNCTION = nil
-end
-SLASH_DUMPPF1 = "/dumppf"
-
-SlashCmdList["DUMPPN"] = function(cmd)
-    local var, depth = cmd:match("^(.*)[ ]+([0-9]+)$")
-    U1_DUMPP_FUNCTION = false
-    dumpp(loadstring("return "..(var or cmd))(), tonumber(depth or 1))
-    U1_DUMPP_FUNCTION = nil
-end
-SLASH_DUMPPN1 = "/dumppn"
-
 ---转换为浏览器地址
 function EncodeURL(obj)
     local currentIndex = 1;
@@ -762,13 +622,6 @@ function CoreCall(funcName, ...)
     return func and func(...);
 end
 
-function GetClassName(engClass)
-    return _G["U1"..engClass];
-end
-function GetClassTalentName(engClass, tab)
-    return _G["U1TALENT_"..engClass..tab];
-end
-
 --- 自动判断是SetScript还是HookScript，如果提供keep参数，则会防止SetScript冲掉原来的Hook
 function CoreHookScript(frame, scriptName, func, keep)
     if( frame:GetScript(scriptName) ) then
@@ -861,6 +714,7 @@ function CoreIsTextureExists(name)
     return status
 end
 --]]
+
 core.frame.tex = core.frame:CreateTexture()
 function CoreIsTextureExists(picAddOn, name)
     return false --select(5, GetAddOnInfo(picAddOn))~="MISSING" and U1IsAddonRegistered(name) and not U1GetAddonInfo(name).nopic;
@@ -890,7 +744,6 @@ end
 --[[------------------------------------------------------------
 protection area
 ---------------------------------------------------------------]]
-
 U1STAFF={["心耀-冰风岗"]="爱不易开发者",["大狸花猫-冰风岗"]="爱不易开发者",
     ["心钥-凤凰之神"]="爱不易开发者",
     ["三月十二-冰风岗"]="爱不易开发者",
@@ -1047,222 +900,6 @@ debugFrame:SetScript("OnEvent", function(self, event, ...)
     end
 end)
 
---[==[-替换WorldFrame_OnUpdate，其中大量运算只是为了UIParent隐藏时, level>=60 是为了其中的Tutorial
-CoreOnEvent("PLAYER_LOGIN", function()
-    if UnitLevel("player")>=60 then
-        local timeLeft = 0
-        local function onupdate(self, elapsed)
-            timeLeft = timeLeft - elapsed
-            if ( timeLeft <= 0 ) then
-                timeLeft = 0.5;
-                if ( FramerateText:IsShown() ) then
-                    local framerate = GetFramerate();
-                    if framerate >= 100 then
-                        framerate = n2s(floor(framerate+0.5))
-                    else
-                        framerate = f2s(framerate, 1)
-                    end
-                    FramerateText:SetText(framerate);
-                    MapFramerateText:SetText(framerate);
-                end
-            end
-        end
-        --hooksecurefunc(UIParent, "Show", function() WorldFrame:SetScript("OnUpdate", onupdate) end)
-        --hooksecurefunc(UIParent, "Hide", function() WorldFrame:SetScript("OnUpdate", WorldFrame_OnUpdate) end) --TODO: 可能会导致各种污染
-        WorldFrame:SetScript("OnUpdate", onupdate)
-    end
-end)
---]==]
-
---[=[-ChatFrame_OnUpdate只是为了显示滚动到最下面的那个按钮闪烁
-do
-    local function onupdate(self, elapsed)
-        self._flashTimer163 = self._flashTimer163 + elapsed
-        if self._flashTimer163 >= 0.5 then
-            self._flashTimer163 = 0
-            local flash = self._flash163
-            if ( self:AtBottom() ) then
-                flash:Hide();
-            else
-                if ( flash:IsShown() ) then
-                    flash:Hide();
-                else
-                    flash:Show();
-                end
-            end
-        end
-    end
-    function ChatFrame_OnUpdate(self)
-        self._flash163 = _G[self:GetName().."ButtonFrameBottomButtonFlash"];
-        self._flashTimer163 = 0
-        self:SetScript("OnUpdate", self._flash163 and onupdate or nil)
-    end
-end
---]=]
-
---[[
-do
-    local militaryTime = GetCVarBool("timeMgrUseMilitaryTime")
-    CoreDependCall("Blizzard_TimeManager", function()
-        hooksecurefunc("TimeManager_ToggleTimeFormat", function()
-            militaryTime = GetCVarBool("timeMgrUseMilitaryTime")
-        end)
-    end)
-    function GameTime_GetFormattedTime(hour, minute, wantAMPM)
-        if ( militaryTime ) then
-            return n2s(hour, 2)..":"..n2s(minute, 2); --TIMEMANAGER_TICKER_24HOUR
-        else
-            if ( wantAMPM ) then
-                local suffix = " AM";
-                if ( hour == 0 ) then
-                    hour = 12;
-                elseif ( hour == 12 ) then
-                    suffix = " PM";
-                elseif ( hour > 12 ) then
-                    suffix = " PM";
-                    hour = hour - 12;
-                end
-                return n2s(hour)..":"..n2s(minute,2)..suffix; --TIME_TWELVEHOURAM
-            else
-                if ( hour == 0 ) then
-                    hour = 12;
-                elseif ( hour > 12 ) then
-                    hour = hour - 12;
-                end
-                return n2s(hour)..":"..n2s(minute, 2); --TIMEMANAGER_TICKER_12HOUR
-            end
-        end
-    end
-end
---]]
-
-CoreDependCall("Blizzard_TimeManager", function()
-    do return end--暂时屏蔽,这个会导致在 TimeManagerClockButton_OnUpdate 里之后调用 TimeManager_CheckAlarm 然后使 TimeManagerClockButton.currentMinuteCounter 被污染
-    function TimeManagerClockButton_Update(self)
-        local hour, minute = GetGameTime();
-        local _lastTime = hour * 60 + minute
-        if _lastTime ~=TimeManagerClockTicker._lastTime then
-            TimeManagerClockTicker:SetText(GameTime_GetTime(false));
-            TimeManagerClockTicker._lastTime = _lastTime
-        end
-    end
-end)
-
----可以输出代码位置的调试方法
-function CoreDebug(...)
-    local stack = debugstack(2, 1, 0);
-    local pos = stack:find("\n")
-    stack = pos and stack:sub(1, pos-1) or stack;
-    --Interface\AddOns\163SettingPack\Main.lua:37: in function <Interface\AddOns\163SettingPack\Main.lua:30>
-    --[string "@Interface\AddOns\163UI_Plugins\8.0\ChallengesGuildBest.lua"]:143: in function <...ace\AddOns\163UI_Plugins\8.0\ChallengesGuildBest.lua:123>
-    --[string "CoreDebug("aaa")"]:1: in main chunk
-    local parts = {strsplit(":", stack)};
-    local params = {...}
-    for i=1,#params do params[i] = tostring(params[i]) end
-    if #parts >= 3 then
-        parts[1] = parts[1]:gsub('^%[string "@(.*)"%]$', '%1')
-        local _,_,addon = strfind(parts[1], "^Interface\\AddOns\\(.-)\\.*");
-        local _,_,file = strfind(parts[1], ".*\\(.-%.[%a]-)$");
-        local line = tonumber(parts[2]);
-        print(format("%s |cff3f3f3f%s/%s:%d|r", table.concat(params, ", "), addon or "macro", file or "string", line));
-        --local _,_,func = strfind(parts[3], " in function `(.-)'");
-        --if not func then func = "?" end
-        --print(format("|cff3f3f3f[%s]|r %s |cff3f3f3f@%s:%s():%d|r", addon or "macro", table.concat(params, ", "), file or "string", func, line));
-    else
-        print(stack);
-        print(format("|cff3f3f3f[%s]|r %s", core:GetName(), table.concat(params, ", ")));
-    end
-end
-
-u1log = CoreDebug
-
-local CTAF = {}
----用来返回CreateFrame, hooksecurefunc, getreplacehook, togglefunc的工厂方法
----@param replaces 是要替换的全局函数, 要保证执行本函数时尚未被替换，而执行getreplacehook()时已经被替换
----@param preCall 是togglefunc通用部分之前调用的, postCall则是之后调用的
-function CoreToggleAddonFactory(name, replaces, preCall, postCall)
-    local _allframes, _allhooks, _CreateFrame, _hooksecurefunc, _getreplacehook, _togglefunc = {}, {}
-    local store = { status = true, _allframes, _allhooks, replaces, }
-    CTAF[name] = store
-
-    _CreateFrame = function(...)
-        local frame = CreateFrame(...)
-        _allframes[frame] = true
-        return frame
-    end
-
-    _hooksecurefunc = function(funcname, hookfunc, arg3)
-        local obj = nil
-        if arg3 then
-            obj = funcname
-            funcname = hookfunc
-            hookfunc = arg3
-        end
-        tinsert(_allhooks, hookfunc)
-        local id = #_allhooks
-        local newhook = function(...) if store.status then _allhooks[id](...) end end
-        if obj then
-            hooksecurefunc(obj, funcname, newhook)
-        else
-            hooksecurefunc(funcname, newhook)
-        end
-    end
-
-    for i=1, #replaces do
-        replaces[replaces[i]] = _G[replaces[i]]
-    end
-
-    _getreplacehook = function()
-        for i=1, #replaces do
-            replaces["HOOK."..replaces[i]] = _G[replaces[i]]
-        end
-    end
-
-    _togglefunc = function(force)
-        if force~=nil and force==store.status then return end
-        store.status = not store.status
-
-        if preCall then preCall(store) end
-
-        local _allframes, replaces = store[1], store[3]
-        if store.status then
-            for i=1, #replaces do
-                _G[replaces[i]] = replaces["HOOK."..replaces[i]]
-            end
-            for f, _ in pairs(_allframes) do
-                if f.___onevent then
-                    f:SetScript("OnEvent", f.___onevent)
-                    f.___onevent = nil
-                end
-                if f.___update then
-                    f:SetScript("OnUpdate", f.___update)
-                    f.___update = nil
-                end
-
-                if f.___shown then f:Show() end
-                f.___shown = nil
-            end
-        else
-            for i=1, #replaces do
-                _G[replaces[i]] = replaces[replaces[i]]
-            end
-            for f, _ in pairs(_allframes) do
-                f.___onevent = f:GetScript("OnEvent")
-                f:SetScript("OnEvent", nil)
-                f.___update = f:GetScript("OnUpdate")
-                f:SetScript("OnUpdate", nil)
-
-                f.___shown = f:IsShown()
-                f:Hide()
-            end
-        end
-
-        if postCall then postCall(store) end
-    end
-
-    return _CreateFrame, _hooksecurefunc, _getreplacehook, _togglefunc
-end
-
 --将一个数字保存进cvar里.只支持整数
 function CoreSetParaParam(cvar, data, start, len)
     local c = GetCVar(cvar)
@@ -1301,13 +938,6 @@ function CoreUIGetUIPanelWindowInfo(frame, name)
 	end
 	return frame:GetAttribute("UIPanelLayout-"..name);
 end
-
---[[------------------------------------------------------------
-        5.2 API rename
----------------------------------------------------------------]]
-
-_G.SetRaidDifficulty = SetRaidDifficultyID
-_G.GetRaidDifficulty = GetRaidDifficultyID
 
 ------------ from RunSecond --------------
 --防止战斗中初次调用时，会无法设置
@@ -1362,43 +992,6 @@ function U1UnitFullName(unit)
     return name and name .. "-" .. (realm and realm~="" and realm or GetRealmName())
 end
 
---[[ tdCooldown用的
-if SetActionUIButton then
-    U1Hook_SetActionUIButton = {}
-    local shown = U1Hook_SetActionUIButton
-    local onShow = function(self) shown[self] = true end
-    local onHide = function(self) shown[self] = nil end
-
-    local add = function(btn, action, cd)
-        if(not cd.tcdAction) then
-            cd.type = 'ACTION'
-            cd:HookScript('OnShow', onShow)
-            cd:HookScript('OnHide', onHide)
-            if(cd:IsShown()) then
-                shown[cd] = true
-            end
-        end
-        cd.tcdAction = action
-    end
-
-    hooksecurefunc('SetActionUIButton', function(...)
-        return add(...)
-    end)
-
-    for _, btn in next, ActionBarButtonEventsFrame.frames do
-        add(btn, btn.action, btn.cooldown)
-    end
-end
---]]
-
---[[
-./AddOns/Blizzard_GlyphUI/Blizzard_GlyphUI.lua
-        130     [174]   GETGLOBAL       7 -36   ; _
-        131     [174]   GETGLOBAL       8 -36   ; _
---]]
--- hooksecurefunc('GetGlyphClearInfo', function() _G._ = nil end)
-
-
 --[[------------------------------------------------------------
 TESTING
 ---------------------------------------------------------------]]
@@ -1417,12 +1010,3 @@ CoreOnEvent("PLAYER_ENTERING_WORLD", function()
     U1FramePosRestore("TEST");
 end)
 ]]
-
-if DEBUG_MODE and EclipseBarFrame then
-    local function hookEclipseBarMarker() EclipseBarFrame.marker:SetSize(60,60) EclipseBarFrame.powerText:SetAlpha(.5) end
-    if EclipseBarFrame:IsShown() then hookEclipseBarMarker() end
-    EclipseBarFrame:HookScript("OnShow", hookEclipseBarMarker)
-end
---[[------------------------------------------------------------
---protection area end
----------------------------------------------------------------]]

@@ -1527,6 +1527,91 @@ function SlashCmdList.DETAILS (msg, editbox)
 			Details:Dump(exportedValues)
 		end
 
+	elseif (msg == "parselog") then
+
+		local splitLineInArguments = function(lineText)
+			local parsedLine = {}
+			for piece in lineText:gmatch("([^,]+)") do
+				parsedLine[#parsedLine+1] = piece
+			end
+			return unpack(parsedLine)
+		end
+
+		local spellsWithMorePayload = {
+			["SPELL_DAMAGE"] = true,
+			["SPELL_HEAL"] = true,
+			["SWING_DAMAGE"] = true,
+			["SWING_DAMAGE_LANDED"] = true,
+			["RANGE_DAMAGE"] = true,
+			["SPELL_DRAIN"] = true,
+			["SPELL_ENERGIZE"] = true,
+			["DAMAGE_SPLIT"] = true,
+			["SPELL_PERIODIC_ENERGIZE"] = true,
+			["SPELL_PERIODIC_DAMAGE"] = true,
+			["SPELL_PERIODIC_HEAL"] = true,
+		}
+
+		local data = DETAILS_EXTERNAL_LOG
+		local t = DetailsFramework:SplitTextInLines(data)
+		local a = {}
+
+		local parser = _detalhes.LogParserEvent
+
+		for i = 1, #t do
+			print("line:", i)
+			local line = t[i]
+			line = line:gsub("\"", "")
+			local tokenId = line:match("%s%s(.*)"):match("^(.-),")
+
+			if (tokenId == "ENCOUNTER_START") then
+				Details:StartCombat()
+			end
+
+			if (tokenId == "ENCOUNTER_END") then
+				Details:EndCombat()
+			end
+
+			local newPayload = {0, tokenId, false}
+			local payload = {splitLineInArguments(line)}
+
+			if (spellsWithMorePayload[tokenId]) then
+				if (tokenId == "SWING_DAMAGE") then
+					for o = 2, 9 do
+						newPayload[#newPayload+1] = payload[o]
+					end
+
+					for o = 9+17, #payload do
+						newPayload[#newPayload+1] = payload[o]
+					end
+				else
+					for o = 2, 12 do
+						newPayload[#newPayload+1] = payload[o]
+					end
+
+					for o = 12+17, #payload do
+						newPayload[#newPayload+1] = payload[o]
+					end
+				end
+
+				parser(unpack(newPayload))
+			else
+				for o = 2, #payload do
+					newPayload[#newPayload+1] = payload[o]
+					print(o, payload[o])
+				end
+				parser(unpack(newPayload))
+			end
+
+			--local payload = {splitLineInArguments(line)}
+			--if (#payload > 25) then
+			--	a[tokenId] = payload
+			--end
+		end
+
+		--for tokenId, payload in pairs(a) do
+		--	print(tokenId, unpack(payload))
+		--end
+
 	elseif (msg == "coach") then
 		--if (not UnitIsGroupLeader("player")) then
 		--	Details:Msg("you aren't the raid leader.")

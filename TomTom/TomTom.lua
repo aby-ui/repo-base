@@ -337,6 +337,9 @@ function TomTom:ShowHideWorldCoords()
         -- Create the frame if it doesn't exist
         if not TomTomWorldFrame then
             TomTomWorldFrame = CreateFrame("Frame", "TomTomWorldFrame", WorldMapFrame.BorderFrame)
+            TomTomWorldFrame:SetFrameStrata("HIGH")
+            TomTomWorldFrame:SetFrameLevel(9000)
+            TomTomWorldFrame:SetAllPoints(true)
             TomTomWorldFrame.Player = TomTomWorldFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             TomTomWorldFrame.Cursor = TomTomWorldFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
             TomTomWorldFrame:SetScript("OnUpdate", WorldMap_OnUpdate)

@@ -116,23 +116,11 @@
 		</Layers>
 	</Frame>
 
-	<Frame name="RematchWinRecordCard" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" inherits="BasicFrameTemplate" hidden="true">
+	<Frame name="RematchWinRecordCard" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" inherits="RematchDefaultPanelTemplate" hidden="true">
 		<Size x="260" y="238"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
 		</Anchors>
-		<Layers>
-			<Layer level="ARTWORK">
-				<!-- the "Win Record" title in titlebar (not to be confused with "Title" frame that contains top portion of card -->
-				<FontString parentKey="Title" inherits="GameFontNormal" justifyH="CENTER" justifyV="TOP">
-					<Size x="0" y="14"/>
-					<Anchors>
-						<Anchor point="TOPLEFT" x="6" y="-5"/>
-						<Anchor point="TOPRIGHT" x="-6" y="-5"/>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
 		<Frames>
 			<Button parentKey="KeyCapture">
 				<Scripts>

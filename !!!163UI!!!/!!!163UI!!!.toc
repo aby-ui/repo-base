@@ -20,6 +20,7 @@ locale.tw.lua
 #273K
 Libs\CoreLibs.xml
 Core\copy\copy.xml
+Core\Dev.lua
 Core\Core.lua
 Core\UI\UI.xml
 

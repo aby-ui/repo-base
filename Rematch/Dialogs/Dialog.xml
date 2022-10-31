@@ -60,20 +60,13 @@
 		</Frames>
 	</Frame>
 
-	<Frame name="RematchDialog" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true"  toplevel="true" inherits="BasicFrameTemplateWithInset" hidden="true">
+	<Frame name="RematchDialog" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true"  toplevel="true" inherits="RematchDefaultPanelTemplateWithInset" hidden="true">
 		<Size x="420" y="200"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
 		</Anchors>
 		<Layers>
 			<Layer level="ARTWORK">
-				<!-- the text in the title bar -->
-				<FontString parentKey="Title" inherits="GameFontNormal" wordwrap="false">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="8" y="-5"/>
-						<Anchor point="TOPRIGHT" x="-8" y="-5"/>
-					</Anchors>
-				</FontString>
 				<!-- reused text widget -->
 				<FontString parentKey="Text" inherits="GameFontNormal" nonspacewrap="true" justifyH="LEFT" justifyV="CENTER"/>
 				<!-- another text widget with small grey text -->
@@ -308,7 +301,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.InsetBg:SetPoint("BOTTOMRIGHT",-6,26)
+				self.InsetBg:SetPoint("BOTTOMRIGHT",-5,26)
 			</OnLoad>
 			<OnMouseDown>
 				self:StartMoving()

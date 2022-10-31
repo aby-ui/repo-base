@@ -168,7 +168,7 @@ function CreateFrames_CreateSpellFrame(index, typeIndex)
 	end
 
 	eaf:ClearAllPoints();
-	eaf:SetFrameStrata("HIGH");
+	eaf:SetFrameStrata("MEDIUM");
 	eaf.redsectext = false;
 	eaf.whitesectext = false;
 	eaf.overgrow = false;
@@ -253,7 +253,7 @@ function CreateFrames_SpecialFrames_Show(index)
 	end
 
 	eaf:ClearAllPoints();
-	eaf:SetFrameStrata("HIGH");
+	eaf:SetFrameStrata("MEDIUM");
 	eaf.spellName:SetFontObject(ChatFontNormal);
 	eaf.spellName:SetPoint("TOP", eaf, "BOTTOM", 0, -EA_Config.IconSize * 0.1);
 

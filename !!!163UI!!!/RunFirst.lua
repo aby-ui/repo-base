@@ -88,9 +88,9 @@ function WithAllChatFrame(func, ...)
         for _, chatFrameName in pairs(CHAT_FRAMES) do
             local frame = _G[chatFrameName];
             if frame then
-                frame.u1funcs = frame.u1funcs or {}
-                if not frame.u1funcs[func] then
-                    frame.u1funcs[func] = true
+                frame._aby_u1funcs = frame._aby_u1funcs or {}
+                if not frame._aby_u1funcs[func] then
+                    frame._aby_u1funcs[func] = true
                     func(frame, unpack(args, 1, args_len))
                 end
             end

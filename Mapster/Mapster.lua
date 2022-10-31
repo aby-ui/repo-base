@@ -70,7 +70,7 @@ function Mapster:OnEnable()
 	end
 
 	-- hook Show events for fading
-	self:HookScript(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow")
+	self:SecureHookScript(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow") --abyui10taint
 
 	-- hooks for scale
 	if HelpPlate_Show then
@@ -188,6 +188,7 @@ function Mapster:SetPosition()
 end
 
 function Mapster:SetFadeAlpha()
+	do return end --abyui10taint
 	PlayerMovementFrameFader.RemoveFrame(WorldMapFrame)
 	PlayerMovementFrameFader.AddDeferredFrame(WorldMapFrame, db.fadealpha, 1.0, .5, function() return GetCVarBool("mapFade") and not WorldMapFrame:IsMouseOver() end)
 end

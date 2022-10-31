@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("AtonementTrash", "DBM-Party-Shadowlands", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221030212932")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -27,6 +27,7 @@ local specWarnCollectSins				= mod:NewSpecialWarningInterrupt(325700, "HasInterr
 local specWarnSiphonLife				= mod:NewSpecialWarningInterrupt(325701, "HasInterrupt", nil, nil, 1, 2)
 --Notable Echelon Trash
 local specWarnTurntoStone				= mod:NewSpecialWarningInterrupt(326607, "HasInterrupt", nil, nil, 1, 2)
+local specWarnTurnToStoneOther			= mod:NewSpecialWarningDodge(326607, nil, nil, nil, 2, 2)
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 generalized
 
@@ -49,9 +50,14 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 325701 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnSiphonLife:Show(args.sourceName)
 		specWarnSiphonLife:Play("kickcast")
-	elseif spellId == 326607 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-		specWarnTurntoStone:Show(args.sourceName)
-		specWarnTurntoStone:Play("kickcast")
+	elseif spellId == 326607 then
+		if self:CheckInterruptFilter(args.sourceGUID, false, true) then
+			specWarnTurntoStone:Show(args.sourceName)
+			specWarnTurntoStone:Play("kickcast")
+		elseif self:AntiSpam(3, 2) then
+			specWarnTurnToStoneOther:Show()
+			specWarnTurnToStoneOther:Play("watchstep")
+		end
 	end
 end
 

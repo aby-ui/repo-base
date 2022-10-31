@@ -56,11 +56,13 @@ do
             if GossipFrame:IsShown() then
                 -- Stop if NPC has quests or quest turn-ins
                 if C_GossipInfo.GetNumAvailableQuests() > 0 or C_GossipInfo.GetNumActiveQuests() > 0 then return end
-                if C_GossipInfo.GetNumOptions() == 1 then
+                local options = C_GossipInfo.GetOptions()
+                if #options == 1 then
                     U1Message("你通过双击空格选择了唯一对话选项,这个小功能暂时没有开关")
-                    C_GossipInfo.SelectOption(1)
+                    C_GossipInfo.SelectOption(options[1].gossipOptionID)
                 end
             end
+            -- RareScanner
             if scanner_button and scanner_button:IsShown() and not InCombatLockdown() then
                 scanner_button:Hide()
             end
@@ -69,7 +71,7 @@ do
 
     _G["U1Toggle_SkipTalkingHead"] = function(enable)
         if enable then
-            _f:Hide()
+            _f:Show() --为了双击空格的其他功能, 始终显示
             UIParent:UnregisterEvent("TALKINGHEAD_REQUESTED");
             if TalkingHeadFrame then TalkingHeadFrame:UnregisterEvent("TALKINGHEAD_REQUESTED"); end
         else
@@ -259,6 +261,15 @@ CoreDependCall("Blizzard_QuestNavigation", function()
                 return SuperTrackedFrame:abyGetTargetAlphaBaseValue()
             end
         end
+
+        hooksecurefunc(SuperTrackedFrame, "UpdateDistanceText", function(self)
+            if self.DistanceText:IsShown() then
+                local distance = C_Navigation.GetDistance();
+                if distance >= 1000 then
+                    self.DistanceText:SetText(IN_GAME_NAVIGATION_RANGE:format(AbbreviateNumbers163(Round(distance))))
+                end
+            end
+        end)
     end
 
     --[[ --from AutoTrackMapPin

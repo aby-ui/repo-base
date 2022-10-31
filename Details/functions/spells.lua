@@ -1974,6 +1974,9 @@ do
 		[71] = "WARRIOR", -- Arms Warrior
 		[72] = "WARRIOR", -- Fury Warrior
 		[73] = "WARRIOR", -- Protection Warrior
+
+		[1467] = "EVOKER", --Devastation Evoker
+		[1468] = "EVOKER", --Preservation Evoker
 	}
 
 	_detalhes.ClassSpellList = {

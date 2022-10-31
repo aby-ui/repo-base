@@ -742,7 +742,7 @@ function HPetAllInfoFrame:Init()
 	self.ready=true
 	self:Hide()
 
-	--hooksecurefunc("PetJournal_UpdatePetCard",self.Update)
+	hooksecurefunc("PetJournal_UpdatePetCard",self.Update)
 	PetJournal:SetScript("OnHide",function() self:Hide() end)
 end
 

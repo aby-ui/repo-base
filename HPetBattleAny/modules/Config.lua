@@ -23,7 +23,7 @@ local addonname,addon = ...
 local L = addon.L
 
 
-local HPetOption = CreateFrameAby("Frame","HPetOption",InterfaceOptionsFramePanelContainer)
+local HPetOption = CreateFrameAby("Frame","HPetOption", UIParent)
 
 HPetOption:Hide()
 --~ tinsert(UISpecialFrames, "HPetOption")
@@ -540,12 +540,7 @@ function HPetOption:Open()
 end
 
 function HPetOption:Toggle()
-	if HPetOption:IsShown() and InterfaceOptionsFrame.selectedTab == 2 and InterfaceOptionsFrame:IsShown() then
-		InterfaceOptionsFrame_Show()
-	else
-		InterfaceOptionsFrame_Show()
-		InterfaceOptionsFrame_OpenToCategory(HPetOption)
-	end
+	InterfaceOptionsFrame_OpenToCategory(HPetOption)
 end
 
 ----------new init

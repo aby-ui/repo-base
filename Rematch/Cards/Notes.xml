@@ -1,5 +1,5 @@
 <Ui>
-	<Frame name="RematchNotes" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" resizable="true" toplevel="true" inherits="BasicFrameTemplate" hidden="true">
+	<Frame name="RematchNotes" frameStrata="DIALOG" parent="UIParent" clampedToScreen="true" enableMouse="true" movable="true" resizable="true" toplevel="true" inherits="RematchDefaultPanelTemplate" hidden="true">
 		<Size x="250" y="200"/>
 		<Anchors>
 			<Anchor point="CENTER"/>

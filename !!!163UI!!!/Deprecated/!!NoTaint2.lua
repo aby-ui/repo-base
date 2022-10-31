@@ -47,13 +47,22 @@ hooksecurefunc(EditModeManagerFrame, "ClearActiveChangesFlags", function(self)
     self:SetHasActiveChanges(nil);
 end)
 
+-- not sure if this is of any use. PetFrame and ActionBar call it.
+hooksecurefunc(EditModeManagerFrame, "HideSystemSelections", function(self)
+    if self.editModeActive == false then
+        self.editModeActive = nil
+    end
+end)
+
 hooksecurefunc(EditModeManagerFrame, "IsEditModeLocked", function()
     NoTaint2_CleanGlobal()
 end)
 
 local function cleanAll()
-    if not issecurevariable(DropDownList1, "numButtons") or not issecurevariable("UIDROPDOWNMENU_MAXLEVELS") then
-        print("!!NoTaint2 works!")
+    if DEBUG_MODE then
+        if not issecurevariable(DropDownList1, "numButtons") or not issecurevariable("UIDROPDOWNMENU_MAXLEVELS") then
+            print("!!NoTaint2 works!")
+        end
     end
     NoTaint2_CleanDropDownList()
     NoTaint2_CleanStaticPopups()
@@ -73,6 +82,8 @@ end)
 
 -- In case the stack check is failed, assure the game menu entrance.
 -- Running cleanAll() multi times has no side effects.
-GameMenuButtonEditMode:HookScript("PreClick", function()
-    cleanAll()
-end)
+GameMenuButtonEditMode:HookScript("PreClick", cleanAll)
+
+local eventframe = CreateFrame("Frame")
+eventframe:RegisterEvent("PLAYER_LEAVING_WORLD")
+eventframe:SetScript("OnEvent", cleanAll)

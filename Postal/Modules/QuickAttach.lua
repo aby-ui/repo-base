@@ -26,16 +26,15 @@ end
 
 -- Create QuickAttach button
 local function CreateQAButton(name, texture, classID, subclassID, toolTip)
-	local ofsxBase, ofsyBase, ofsyIndex = 376, 0, -40
-	local buttonWidth, buttonHeight, scale = 36, 36, 0.8
+	local ofsxBase, ofsyBase, ofsyGap = 0, 0, 0
+	local scale = 0.73 -- gives good results for classic and retail
 	local TempButton, QAButtonCharName
 	TempButton = CreateFrame("Button", name, SendMailFrame, "ActionButtonTemplate")
+	local buttonHeight = math.floor(TempButton:GetHeight() + 0.5)
+	TempButton:SetScale(scale)
 	TempButton.icon:SetTexture(texture) 
-	TempButton:SetSize(math.floor(buttonWidth * scale), math.floor(buttonHeight * scale))
 	TempButton:ClearAllPoints()
-	TempButton:SetPoint("TOPRIGHT", "SendMailFrame", "TOPLEFT", ofsxBase - (buttonWidth - math.floor(buttonWidth * scale)), ofsyBase + math.floor(ofsyIndex * QAButtonPos * scale))
-	TempButton.NormalTexture:SetPoint("TOPLEFT", TempButton ,"TOPLEFT", math.floor(-15 * scale), math.floor(15 * scale))
-	TempButton.NormalTexture:SetPoint("BOTTOMRIGHT", TempButton ,"BOTTOMRIGHT", math.floor(15 * scale), math.floor(-15 * scale))
+	TempButton:SetPoint("TOPLEFT", "MailFrame", "TOPRIGHT", ofsxBase, ofsyBase - (buttonHeight + ofsyGap) * QAButtonPos)
 	TempButton:RegisterForClicks("AnyUp")
 	TempButton:SetScript("OnClick", function(self, button, down) Postal_QuickAttachButtonClick(button, classID, subclassID) end)
 	TempButton:SetFrameLevel(TempButton:GetFrameLevel() + 1)
