@@ -542,7 +542,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="com_mithrandir_whollyConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="com_mithrandir_whollyConfigFrame" parent="UIParent">
 		<Scripts>
 			<OnShow>
 				Wholly:ConfigFrame_OnShow(self)
@@ -550,7 +550,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="com_mithrandir_whollyTitleAppearanceConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="com_mithrandir_whollyTitleAppearanceConfigFrame" parent="UIParent">
 		<Scripts>
 			<OnShow>
 				Wholly:ConfigFrame_OnShow(self)
@@ -558,7 +558,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="com_mithrandir_whollyWorldMapConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="com_mithrandir_whollyWorldMapConfigFrame" parent="UIParent">
 		<Scripts>
 			<OnShow>
 				Wholly:ConfigFrame_OnShow(self)
@@ -566,7 +566,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="com_mithrandir_whollyWidePanelConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="com_mithrandir_whollyWidePanelConfigFrame" parent="UIParent">
 		<Scripts>
 			<OnShow>
 				Wholly:ConfigFrame_OnShow(self)
@@ -574,7 +574,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="com_mithrandir_whollyLoadDataConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="com_mithrandir_whollyLoadDataConfigFrame" parent="UIParent">
 		<Scripts>
 			<OnShow>
 				Wholly:ConfigFrame_OnShow(self)
@@ -582,7 +582,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="com_mithrandir_whollyOtherConfigFrame" parent="InterfaceOptionsFramePanelContainer">
+	<Frame name="com_mithrandir_whollyOtherConfigFrame" parent="UIParent">
 		<Scripts>
 			<OnShow>
 				Wholly:ConfigFrame_OnShow(self)

@@ -6,6 +6,7 @@
 ## Dependencies: Grail
 ## OptionalDeps: LibStub, LibDataBroker, TomTom, Gatherer, Questie
 ## SavedVariablesPerCharacter: WhollyDatabase
+## Dependencies: TODO:abyui10
 
 Wholly.lua
 Wholly.xml

@@ -217,18 +217,18 @@ end)
 
 do
     local function hook_ContainerFrame_Update(self)
-        local id = self:GetBagID()
-        local name = self:GetName()
-        local button
-        for i = 1, self.size do
-            button = _G[name.."Item"..i]
-            SetItemLevel(button, GetContainerItemLink(id, button:GetID()), "Bag", id, button:GetID())
+        --10.0 see ContainerFrameMixin:Update() -> ContainerFrameMixin:UpdateItems()
+        for i, button in self:EnumerateValidItems() do
+            local bagID = button:GetBagID();
+            SetItemLevel(button, GetContainerItemLink(bagID, button:GetID()), "Bag", bagID, button:GetID())
         end
     end
-    for i, frame in ContainerFrameUtil_EnumerateContainerFrames() do
+    for i, frame in ipairs(UIParent.ContainerFrames) do
         hooksecurefunc(frame, "Update", hook_ContainerFrame_Update)
     end
-    --hooksecurefunc("ContainerFrame_Update", hook_ContainerFrame_Update)
+    if ContainerFrameCombinedBags then
+        hooksecurefunc(ContainerFrameCombinedBags, "Update", hook_ContainerFrame_Update)
+    end
 end
 
 

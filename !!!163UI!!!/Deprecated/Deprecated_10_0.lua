@@ -79,6 +79,7 @@ if not U1_WOW10 then return end
 
     C_GossipInfo.GetNumOptions() 没了,直接 C_GossipInfo.GetOptions(), C_GossipInfo.SelectOption(需要选择 gossipOptionID,而不是index)
 
+    ContainerFrameUtil_EnumerateContainerFrames() 不要用
 --]]
 
 --[[------------------------------------------------------------
