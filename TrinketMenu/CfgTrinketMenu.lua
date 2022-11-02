@@ -24,27 +24,6 @@ U1RegisterAddon("TrinketMenu", {
         end
     end,
     {
-        var = "masque",
-        text = "支持按钮美化",
-        default = 1,
-        callback = function(cfg, v, loading)
-            local Masque = LibStub and LibStub('Masque', true)
-            if Masque then
-                local group  = Masque:Group("饰品增强", "饰品按钮")
-                if loading then
-                    group:AddButton(TrinketMenu_Trinket0)
-                    group:AddButton(TrinketMenu_Trinket1)
-                end
-                if v then group:Enable() else group:Disable() end
-                group = Masque:Group("饰品增强", "饰品选择菜单")
-                for i=1, 30 do
-                    if loading then group:AddButton(_G["TrinketMenu_Menu"..i]) end
-                    if v then group:Enable() else group:Disable() end
-                end
-            end
-        end
-    },
-    {
         text = "配置选项",
         tip = "快捷命令`/trinketmenu opt",
         callback = function(cfg, v, loading) SlashCmdList["TrinketMenuCOMMAND"]("opt") end,

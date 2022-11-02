@@ -7,41 +7,6 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LibChangelog = LibStub("LibChangelog")
 
-local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local IsTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-local IsWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
-
-local HasSpeccs = not (IsClassic or IsTBCC or IsWrath) or GetNumSpecializationsForClassID
-local HasRBG = not (IsClassic or IsTBCC or IsWrath)
-
-local MaxLevel = GetMaxPlayerLevel()
-
-
-local myBGFaction
-
-
-local LGIST
-if HasSpeccs then
-	LGIST=LibStub:GetLibrary("LibGroupInSpecT-1.1")
-end
-
---LSM:Register("font", "PT Sans Narrow Bold", [[Interface\AddOns\BattleGroundEnemies\Fonts\PT Sans Narrow Bold.ttf]])
-LSM:Register("statusbar", "UI-StatusBar", "Interface\\TargetingFrame\\UI-StatusBar")
-
-local BattleGroundEnemies = CreateFrame("Frame", "BattleGroundEnemies", UIParent)
-BattleGroundEnemies.Counter = {}
-
---todo: add icon selector for combat indicator and add the module to testmode
--- add castbars to testmode
--- check whats going on in RBGs GetPlayerInfoByGUID(GUID)
--- re enable in update battlfield score : self.Enemies:CreateOrUpdatePlayer()
--- filter (any works, all doesnt)
-
--- for Clique Support
-ClickCastFrames = ClickCastFrames or {}
-
-
 --upvalues
 local _G = _G
 local math_floor = math.floor
@@ -65,23 +30,19 @@ local GetBattlefieldArenaFaction = GetBattlefieldArenaFaction
 local GetBattlefieldScore = GetBattlefieldScore
 local GetBattlefieldTeamInfo = GetBattlefieldTeamInfo
 local GetBestMapForUnit = C_Map.GetBestMapForUnit
-local GetItemIcon = GetItemIcon
 local GetNumBattlefieldScores = GetNumBattlefieldScores
 local GetNumGroupMembers = GetNumGroupMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
 local GetSpecializationInfoByID = GetSpecializationInfoByID
 local GetSpellInfo = GetSpellInfo
-local GetSpellTexture = GetSpellTexture
 local GetTime = GetTime
 local GetUnitName = GetUnitName
 local InCombatLockdown = InCombatLockdown
 local IsInBrawl = C_PvP.IsInBrawl
-local isInGroup =  IsInGroup
 local IsInInstance = IsInInstance
 local IsInRaid = IsInRaid
 local IsItemInRange = IsItemInRange
 local IsRatedBattleground = C_PvP.IsRatedBattleground
-local PowerBarColor = PowerBarColor --table
 local RequestBattlefieldScoreData = RequestBattlefieldScoreData
 local RequestCrowdControlSpell = C_PvP.RequestCrowdControlSpell
 local SetBattlefieldScoreFaction = SetBattlefieldScoreFaction
@@ -94,6 +55,36 @@ local UnitLevel = UnitLevel
 local UnitName = UnitName
 local UnitRace = UnitRace
 local UnitRealmRelationship = UnitRealmRelationship
+
+local IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local IsTBCC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+local IsWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+
+local HasSpeccs = not not GetNumSpecializationsForClassID
+local HasRBG = not not IsRatedBattleground
+
+local MaxLevel = GetMaxPlayerLevel()
+
+local LGIST
+if HasSpeccs then
+	LGIST=LibStub:GetLibrary("LibGroupInSpecT-1.1")
+end
+
+--LSM:Register("font", "PT Sans Narrow Bold", [[Interface\AddOns\BattleGroundEnemies\Fonts\PT Sans Narrow Bold.ttf]])
+LSM:Register("statusbar", "UI-StatusBar", "Interface\\TargetingFrame\\UI-StatusBar")
+
+local BattleGroundEnemies = CreateFrame("Frame", "BattleGroundEnemies", UIParent)
+BattleGroundEnemies.Counter = {}
+
+--todo: add icon selector for combat indicator and add the module to testmode
+-- add castbars to testmode
+
+-- for Clique Support
+ClickCastFrames = ClickCastFrames or {}
+
+
+
 
 if not GetUnitName then
 	GetUnitName = function(unit, showServerName)
@@ -137,7 +128,6 @@ BattleGroundEnemies.ButtonModules = {} --contains moduleFrames, key is the modul
 
 local playerFaction = UnitFactionGroup("player")
 local PlayerButton --the button of the Player himself
-local PlayerLevel = UnitLevel("player")
 local IsInArena --wheter or not the player is in a arena map
 local IsInBattleground
 local specCache = {} -- key = GUID, value = specName (localized)
@@ -461,9 +451,11 @@ do
 	function buttonFunctions:UpdateAll(temporaryUnitID)
 		local updateStuffWithEvents = false --only update health, power, etc for players that dont get events for that or that dont have a unitID assigned
 		local unitID
+		local updateAuras = false
 		if temporaryUnitID then
 			updateStuffWithEvents = true
 			unitID = temporaryUnitID
+			updateAuras = true
 		else
 			if self.unitID then
 				unitID = self.unitID
@@ -494,8 +486,11 @@ do
 		if updateStuffWithEvents then
 			self:UNIT_POWER_FREQUENT(unitID)
 			self:UNIT_HEALTH(unitID)
-			self:UNIT_AURA(unitID) --probably overkill, but this is the only way to update auras of group member targets
+			if updateAuras then
+				self:UNIT_AURA(unitID) --throttle aura updates
+			end
 		end
+		
 		self:UpdateRange(IsItemInRange(self.config.RangeIndicator_Range, unitID))
 		self:UpdateTarget()
 	end
@@ -582,8 +577,6 @@ do
 					self.unit = unitID
 					self:SetAttribute('unit', unitID)
 					BattleGroundEnemies.Allies:SortPlayers()
-				else
-					C_Timer.After(1, function() return BattleGroundEnemies:GROUP_ROSTER_UPDATE() end)
 				end
 			end
 
@@ -1663,11 +1656,11 @@ local function PopulateMainframe(playerType)
 
 		local barHeight = config.BarHeight
 		local barWidth = config.BarWidth
-		local verticalSpacing = config.BarVerticalSpacing
-		local growDownwards = (config.BarVerticalGrowdirection == "downwards")
 
+		local verticalSpacing = config.BarVerticalSpacing
 		local horizontalSpacing = config.BarHorizontalSpacing
 
+		local growDownwards = (config.BarVerticalGrowdirection == "downwards")
 		local growRightwards = (config.BarHorizontalGrowdirection == "rightwards")
 
 		local playerCount = #orderedPlayers
@@ -1731,6 +1724,10 @@ local function PopulateMainframe(playerType)
 				row = 1
 			end
 		end
+	end
+
+	function mainframe:BeforePlayerUpdate()
+		wipe(self.NewPlayerDetails)
 	end
 
 	function mainframe:CreateOrUpdatePlayer(name, race, classTag, specName, additionalData)
@@ -2154,7 +2151,7 @@ do
 				continue = false
 			end
 			if continue then
-				wipe(mainFrame.NewPlayerDetails)
+				mainFrame:BeforePlayerUpdate()
 
 				local healerAmount = math_random(2, 3)
 				local tankAmount = math_random(1)
@@ -2836,7 +2833,7 @@ function BattleGroundEnemies.Enemies:CreateArenaEnemies()
 		end
 		return
 	end
-	wipe(self.NewPlayerDetails)
+	self:BeforePlayerUpdate()
 	local foundEnemies = 0
 	for i = 1, MAX_ARENA_ENEMIES or 5 do
 		local unitID = "arena"..i
@@ -3102,18 +3099,34 @@ function CombatLogevents.UNIT_DIED(self, _, destName, _, _, _)
 end
 
 
-function BattleGroundEnemies:UpdateEnemmiesFoundByGUID()
-	if InCombatLockdown() then
-		C_Timer.After(1, function ()
-			BattleGroundEnemies:UpdateEnemmiesFoundByGUID()
-		end)
-	else
-		for guid, data in pairs(self.PlayerGUIDs) do
-			if data.IsEnemy then
+function BattleGroundEnemies:UpdateEnemiesFromCombatlogScanning()
+	self.Enemies:BeforePlayerUpdate()
+	for guid, data in pairs(self.PlayerGUIDs) do
+		if data.IsEnemy then
+			--check if its still a enemy, a ally might have joined and we might have gotten a combat log event before that
+			if self.Allies.Players[data.name] then
+				data.IsEnemy = false
+			else
+				-- its still a enemy
 				self.Enemies:CreateOrUpdatePlayer(data.name, data.race, data.classToken, data.spec)
 			end
 		end
-		self.Enemies:DeleteAndCreateNewPlayers()
+	end
+	self.Enemies:DeleteAndCreateNewPlayers()
+end
+
+local doStuffAfterCombatFrame = CreateFrame("frame")
+
+function BattleGroundEnemies:InitEnemyUpdateByGUID()
+	print("UpdateEnemmiesFoundByGUID")
+	if InCombatLockdown() then
+		doStuffAfterCombatFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+		doStuffAfterCombatFrame:SetScript("OnEvent", function()
+			doStuffAfterCombatFrame:UnregisterEvent("PLAYER_REGEN_ENABLED")
+			BattleGroundEnemies:InitEnemyUpdateByGUID()
+		end)
+	else
+		self:UpdateEnemiesFromCombatlogScanning()
 	end
 end
 
@@ -3126,12 +3139,15 @@ function BattleGroundEnemies:COMBAT_LOG_EVENT_UNFILTERED()
 				self.SearchedGUIDs[srcGUID] = true
 				if not self.PlayerGUIDs[srcGUID] then
 					-- see if its a player			
-					local name, race, classToken, spec
-					local localizedClass, englishClass, localizedRace, englishRace, sex, namee, realm = GetPlayerInfoByGUID(srcGUID)
-					if localizedClass then
-						local ambiguatedName = Ambiguate(namee.."-"..realm, "none")
+					local localizedClass, englishClass, localizedRace, englishRace, sex, name, realm = GetPlayerInfoByGUID(srcGUID)
+					
+					if localizedClass then --we have a actual player
+						if realm and realm ~= "" then
+							name = name.."-"..realm
+						end
+						local ambiguatedName = Ambiguate(name, "none")
 						local isEnemy = false
-						--we have a actual player
+						
 						local scoreInfo = C_PvP.GetScoreInfoByPlayerGuid(srcGUID)
 						self.PlayerGUIDs[srcGUID] = {
 							name = ambiguatedName,
@@ -3140,7 +3156,7 @@ function BattleGroundEnemies:COMBAT_LOG_EVENT_UNFILTERED()
 							scoreInfo = scoreInfo
 						}
 						
-						if scoreInfo and type(scoreInfo) =="table" then
+				--[[ 		if scoreInfo and type(scoreInfo) =="table" then
 							if scoreInfo.faction ~= myBGFaction then
 								isEnemy = true
 								self.PlayerGUIDs[srcGUID].spec = scoreInfo.talentSpec
@@ -3149,13 +3165,14 @@ function BattleGroundEnemies:COMBAT_LOG_EVENT_UNFILTERED()
 							if not self.Allies[ambiguatedName] then
 								isEnemy = true
 							end
-						end
-						if isEnemy then
+						end ]]
+						if not self.Allies.Players[ambiguatedName] then
+							print("ambiguatedName",ambiguatedName, "is not an allie")
 							self.PlayerGUIDs[srcGUID].IsEnemy = true
 							if UpdateEnemmiesFoundByGUIDTicker then UpdateEnemmiesFoundByGUIDTicker:Cancel() end -- use a timer to apply changes after 1 second, this prevents from too many updates after each player is found
 	
 							UpdateEnemmiesFoundByGUIDTicker = CTimerNewTicker(1, function()
-								BattleGroundEnemies:UpdateEnemmiesFoundByGUID()
+								BattleGroundEnemies:InitEnemyUpdateByGUID()
 								UpdateEnemmiesFoundByGUIDTicker = nil
 							end, 1)
 						end
@@ -3386,25 +3403,25 @@ local function checkEffectiveEnableStateForArenaFrames()
 end
 
 function BattleGroundEnemies:EnableFallbacktoCombatlogScanning()
+	if not self.combatlogScanningEnabled then
+		self:Information(L.CombatLogScanningForEnemiesEnabled)
+
+		self.SearchedGUIDs = {}
+		self.PlayerGUIDs = {}
+	end
 	self.combatlogScanningEnabled = true
-
-	self.SearchedGUIDs = {}
-	self.PlayerGUIDs = {}
-
-	local myScoreInfo =  C_PvP.GetScoreInfoByPlayerGuid(UnitGUID("player"))
-	myBGFaction = myScoreInfo.faction
 end
 
 function BattleGroundEnemies:DisableFallbacktoCombatlogScanning()
+	if self.combatlogScanningEnabled then
+		self:Information(L.CombatLogScanningForEnemiesDisabled)
+		self.SearchedGUIDs = nil
+		self.PlayerGUIDs = nil
+	end
 	self.combatlogScanningEnabled = false
-
-	self.SearchedGUIDs = nil
-	self.PlayerGUIDs = nil
 end
 
 function BattleGroundEnemies:ToggleArenaFrames()
-	if not self then self = BattleGroundEnemies end
-
 	if not InCombatLockdown() then
 		if IsInArena and self.db.profile.DisableArenaFramesInArena then
 			return disableArenaFrames()
@@ -3412,7 +3429,10 @@ function BattleGroundEnemies:ToggleArenaFrames()
 			return disableArenaFrames()
 		end
 		checkEffectiveEnableStateForArenaFrames()
-		C_Timer.After(0.1, self.ToggleArenaFrames)
+	else
+		C_Timer.After(1, function ()
+			BattleGroundEnemies:ToggleArenaFrames()
+		end)
 	end
 end
 function BattleGroundEnemies:ArenaEnemiesAtBeginn()
@@ -3543,14 +3563,16 @@ do
 
 			if InCombatLockdown() then return end
 
-			self.Enemies:UpdatePlayerCount(numEnemies)
-			self.Allies:UpdatePlayerCount(numAllies)
+			if numEnemies then
+				self.Enemies:UpdatePlayerCount(numEnemies)
+			end
 
+			if numAllies then
+				self.Allies:UpdatePlayerCount(numAllies)
+			end
 
-
-
-			wipe(self.Enemies.NewPlayerDetails) --use a local table to not create an unnecessary new button if another player left
-			wipe(self.Allies.NewPlayerDetails) --use a local table to not create an unnecessary new button if another player left
+			self.Enemies:BeforePlayerUpdate()  --use a local table to not create an unnecessary new button if another player left
+			self.Allies:BeforePlayerUpdate()
 
 			local numScores = GetNumBattlefieldScores()
 			self:Debug("numScores:", numScores)
@@ -3583,20 +3605,18 @@ do
 			end
 
 			if foundEnemies == 0 then
-				if numEnemies ~= 0 then
-					self:Debug("Missing Enemies, probably the ally tab is selected")
-					if self.IsRatedBG and IsRetail then
-						self:EnableFallbacktoCombatlogScanning()
-					end
+				self:Debug("Missing Enemies, probably the ally tab is selected")
+				if self.IsRatedBG and IsRetail then
+					self:EnableFallbacktoCombatlogScanning()
 				end
 			else
+				self:DisableFallbacktoCombatlogScanning()
+				
 				self.Enemies:DeleteAndCreateNewPlayers()
 			end
 
 			if foundAllies == 0 then
-				if numAllies ~= 0 then
-					self:Debug("Missing Allies, probably the enemy tab is selected")
-				end
+				self:Debug("Missing Allies, probably the enemy tab is selected")
 			else
 				self.Allies:DeleteAndCreateNewPlayers()
 			end
@@ -3653,7 +3673,7 @@ do
 	local lastRun = GetTime()
 	function BattleGroundEnemies:GROUP_ROSTER_UPDATE()
 
-		wipe(self.Allies.NewPlayerDetails)
+		self.Allies:BeforePlayerUpdate()
 		self.Allies.groupLeader = nil
 		self.Allies.assistants = {}
 

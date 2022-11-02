@@ -2,14 +2,35 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
-		Version = "10.0.0.2",
-		General = "Another bugfix update with other smaller changes. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
+		Version = "10.0.0.3",
+		General = "This version fixed a code loop.. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
 		Sections = {
 			{
 				Header = "Bugfixes:",
 				Entries = {
+					"Fixed a code loop which potentially can result in a game freeze. Thanks to everyone contributing and reporting :)",
+				}
+			}
+		}
+	},
+	{
+		Version = "10.0.0.2",
+		General = "This version brings a new features and fixes reported errors and issues. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
+		Sections = {
+			{
+				Header = "New Features:",
+				Entries = {
+					"Added support for combat log scanning to detect enemy players in Rated Battlegrounds on Dragonflight. Please note that this means its no longer possible to get the spec of a player. Thanks at l3uGsY at Github for doing some tests.",
+				}
+			},
+			{
+				Header = "Bugfixes:",
+				Entries = {
 					"Fixed a Lua error reported by creepshow11483 at curseforge.",
-					"Fixed a Lua error reported by GeT_LeNiN at curseforge."
+					"Fixed a Lua error reported by GeT_LeNiN at curseforge.",
+					"Reduced the amount of aura scans for enemies targeted by Allies, this hopefully fixes the problem with the game being unresponsive",
+					"Fixed a bug regarding custom aura filtering of non priority auras reported by Seadu at curseforge",
+					"Fixed a issue where the powerbar was chaning color when a player had a alternative ressource update like a rogue gaining a combo point"
 				}
 			},
 			{
@@ -17,7 +38,7 @@ Data.changelog = {
 				Entries = {
 					"Player names are now truncated if they dont fit into the frame and dont wrap into two lines anymore.",
 					"Updated the default settings for arena to avoid overlapping modules.",
-					"Health text is now abbreviated if too long. (Same as its done on Default Blizzard frames)"
+					"Health text is now abbreviated if too long. (Same as its done on Default Blizzard frames)",
 				}
 			}
 		}

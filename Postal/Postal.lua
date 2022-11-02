@@ -145,6 +145,7 @@ function Postal:OnInitialize()
 	Postal_ModuleMenuButton:SetWidth(25)
 	Postal_ModuleMenuButton:SetHeight(25)
 	Postal_ModuleMenuButton:SetPoint("TOPRIGHT", -22, 2)
+	if Postal.WOWRetail then Postal_ModuleMenuButton:SetFrameLevel(501) end -- Seems like a Blizzard bug to need this to make Postal menu visible.
 	Postal_ModuleMenuButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up")
 	Postal_ModuleMenuButton:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Round")
 	Postal_ModuleMenuButton:SetDisabledTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Disabled")

@@ -638,10 +638,9 @@ function CoreHookScript(frame, scriptName, func, keep)
     end
 end
 
---- @param creationFuncHook function(obj, frameType, template) 新创建对象时会调用此方法
-function CoreUIHookPoolCollection(poolCollection, creationFuncHook)
+local function createEnumAndHookClosure(creationFuncHook)
     local flag = "_aby_hooked"
-    local function enumAndHook(pool, includeInactive)
+    return function (pool, includeInactive)
         RunNextFrame(function()
             for one in pool:EnumerateActive() do
                 if not one[flag] then
@@ -650,7 +649,7 @@ function CoreUIHookPoolCollection(poolCollection, creationFuncHook)
                 end
             end
             if includeInactive ~= "includeInactive" then return end
-            for one in pool:EnumerateInactive() do
+            for _, one in pool:EnumerateInactive() do
                 if not one[flag] then
                     creationFuncHook(one, pool.frameType, pool.frameTemplate)
                     one[flag] = true
@@ -658,6 +657,10 @@ function CoreUIHookPoolCollection(poolCollection, creationFuncHook)
             end
         end)
     end
+end
+--- @param creationFuncHook function(obj, frameType, template) 新创建对象时会调用此方法
+function CoreUIHookPoolCollection(poolCollection, creationFuncHook)
+    local enumAndHook = createEnumAndHookClosure(creationFuncHook)
     for poolKey, pool in pairs(poolCollection.pools) do
         hooksecurefunc(pool, "creationFunc", enumAndHook)
         enumAndHook(pool, "includeInactive")
@@ -668,6 +671,12 @@ function CoreUIHookPoolCollection(poolCollection, creationFuncHook)
             hooksecurefunc(pool, "creationFunc", enumAndHook)
         end
     end)
+end
+
+function CoreUIHookPool(pool, creationFuncHook)
+    local enumAndHook = createEnumAndHookClosure(creationFuncHook)
+    hooksecurefunc(pool, "creationFunc", enumAndHook)
+    enumAndHook(pool, "includeInactive")
 end
 
 --[[------------------------------------------------------------

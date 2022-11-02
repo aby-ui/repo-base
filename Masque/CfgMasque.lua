@@ -334,28 +334,41 @@ CoreDependCall("Masque", function()
                 end
             end
         end
+        local AddButtonToGroupForPool = function(group, pool)
+            CoreUIHookPool(pool, function(obj)
+                group:AddButton(obj)
+            end)
+        end
 
         local group = '主动作条'
         AddButtonToGroup('ActionButton%d', NUM_ACTIONBAR_BUTTONS, group, function(btn)
             if not InCombatLockdown() then btn:SetFrameStrata'HIGH' end
         end)
+        --ActionBarMixin:ActionBar_OnLoad()
         --AddButtonToGroup('BonusActionButton%d', NUM_BONUS_ACTION_SLOTS, '额外动作条')
-        AddButtonToGroup('PetActionButton%d', NUM_PET_ACTION_SLOTS, '宠物动作条')
-        AddButtonToGroup('MultiBarLeftButton%d', NUM_MULTIBAR_BUTTONS, '右侧动作条1')
-        AddButtonToGroup('MultiBarRightButton%d', NUM_MULTIBAR_BUTTONS, '右侧动作条2')
-        AddButtonToGroup('MultiBarBottomLeftButton%d', NUM_MULTIBAR_BUTTONS, '左下动作条')
-        AddButtonToGroup('MultiBarBottomRightButton%d', NUM_MULTIBAR_BUTTONS, '右下动作条')
-        AddButtonToGroup('PossessButton%d', NUM_POSSESS_SLOTS, '控制动作条')
-        --AddButtonToGroup('StanceButton%d', NUM_STANCE_SLOTS, '姿态动作条')
-        Masque:Group(GroupName, '区域技能按钮'):AddButton(ZoneAbilityFrame.SpellButton)
-        --[[ocal group = '载具动作条'
+        AddButtonToGroup('PetActionButton%d', PetActionBar.numButtons, '宠物动作条')
+        AddButtonToGroup('MultiBarLeftButton%d', MultiBarLeft.numButtons, '右侧动作条1')
+        AddButtonToGroup('MultiBarRightButton%d', MultiBarRight.numButtons, '右侧动作条2')
+        AddButtonToGroup('MultiBarBottomLeftButton%d', MultiBarBottomLeft.numButtons, '左下动作条')
+        AddButtonToGroup('MultiBarBottomRightButton%d', MultiBarBottomRight.numButtons, '右下动作条')
+        for i = 5, 7 do
+            AddButtonToGroup('MultiBar' .. i .. 'Button%d', _G['MultiBar'..i].numButtons, '动作条' .. (i+1))
+        end
+        AddButtonToGroup('PossessButton%d', PossessActionBar.numButtons, '控制动作条')
+        AddButtonToGroup('StanceButton%d', StanceBar.numButtons, '姿态动作条')
+        --AddButtonToGroupForPool(Masque:Group(GroupName, '区域技能按钮'), ZoneAbilityFrame.SpellButtonContainer.contentFramePool) --不好看
+
+        --[[
+        local group = '载具动作条'
         local SetPoint = ActionButton1Count.SetPoint
         AddButtonToGroup('VehicleMenuBarActionButton%d', VEHICLE_MAX_ACTIONBUTTONS, group, function(btn)
             local hotkey = _G[btn:GetName() .. 'HotKey']
             if(hotkey and hotkey.SetPoint ~= SetPoint) then
                 hotkey.SetPoint = SetPoint
             end
-        end)--]]
+        end)
+        --]]
+
         --直接运行不可以
         RunOnNextFrame(function() Masque:Group(GroupName):Enable() end);
     end)

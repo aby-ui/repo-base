@@ -515,6 +515,7 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 		local canApplyAura = aura.canApplyAura
 		local debuffType = aura.dispelName
 		local unitCaster = aura.sourceUnit
+		
 
 		if aura.Priority then
 			return self.isPriorityContainer -- its an important aura, we dont do any special filtering, we only care about if the container is for important auras
@@ -543,30 +544,29 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 				return true
 			end
 		else --custom filtering
-
 			local conditions = {}
 			local customFilterConfig = filteringConfig.CustomFiltering
 
 			if customFilterConfig.SourceFilter_Enabled then
 				local isMine = unitCaster == "player"
-				table_insert(conditions, config.ShowMine == isMine)
+				table_insert(conditions, customFilterConfig.ShowMine == isMine)
 			end
 
 			if customFilterConfig.SpellIDFiltering_Enabled then
-				table_insert(conditions, not not config.SpellIDFiltering_Filterlist[spellId])  -- the not not is necessary to cast nil to false the loop in conditionFuncs, otherwise the for loop does not loop thorugh the item since its nil
+				table_insert(conditions, not not customFilterConfig.SpellIDFiltering_Filterlist[spellId])  -- the not not is necessary to cast nil to false the loop in conditionFuncs, otherwise the for loop does not loop thorugh the item since its nil
 			end
 			if customFilterConfig.DebuffTypeFiltering_Enabled then
-				table_insert(conditions, config.DebuffTypeFiltering_Filterlist[debuffType])
+				table_insert(conditions, customFilterConfig.DebuffTypeFiltering_Filterlist[debuffType])
 			end
 
 			if aura.isStealable ~= nil then
 				if customFilterConfig.DispelFilter_Enabled then
-					table_insert(conditions, config.CanStealOrPurge == aura.isStealable)
+					table_insert(conditions, customFilterConfig.CanStealOrPurge == aura.isStealable)
 				end
 			end
 			if aura.duration ~= nil then
 				if customFilterConfig.DurationFilter_Enabled then
-					table_insert(conditions, aura.duration <= config.DurationFilter_CustomMaxDuration)
+					table_insert(conditions, aura.duration <= customFilterConfig.DurationFilter_CustomMaxDuration)
 				end
 			end
 

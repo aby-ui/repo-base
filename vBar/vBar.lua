@@ -1,7 +1,7 @@
 VB_VESRION = '6.1'
 
 --163ui_edit
-local MasqueGroupName, MasqueGroup = "vBar Buttons", nil
+local MasqueGroupName, MasqueGroup = U1GetAddonInfo("vBar").title, nil
 local function applyMasque(icon)
     if MasqueGroup == nil then
         local Masque = LibStub and LibStub('Masque', true)

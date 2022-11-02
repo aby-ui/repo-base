@@ -108,7 +108,7 @@ local ModTimeIndent = 3; -- время, через которое иконки �
 --Masque
 local Masque = LibStub("Masque", true)
 if Masque then
-	TrGCDMasqueIcons = Masque:Group("TrufiGCD", "All Icons")
+	TrGCDMasqueIcons = Masque:Group(U1GetAddonInfo("TrufiGCD").title, "All Icons")
 end
 
 SLASH_TRUFI1, SLASH_TRUFI2 = '/tgcd', '/trufigcd' --слэшкоманды

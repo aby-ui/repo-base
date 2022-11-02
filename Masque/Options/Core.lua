@@ -34,6 +34,7 @@ local CRLF = "\n "
 Core.CRLF = CRLF
 
 local WOW_RETAIL = Core.WOW_RETAIL
+local OPT_FRAME
 
 ----------------------------------------
 -- Setup
@@ -80,44 +81,6 @@ function Setup.Core(self)
 						hidden = function() return not Core.OptionsLoaded end,
 						fontSize = "medium",
 					},
-					-- Necessary when manually navigating to the InterfaceOptionsFrame prior to the options being loaded.
-					Load = {
-						type = "group",
-						name = "",
-						inline = true,
-						hidden = function() return Core.OptionsLoaded end,
-						--order = 100,
-						args = {
-							Desc = {
-								type = "description",
-								name = L["Masque's options are load on demand. Click the button below to load them."]..CRLF,
-								order = 0,
-								fontSize = "medium",
-							},
-							Button = {
-								type = "execute",
-								name = L["Load Options"],
-								desc = L["Click to load Masque's options."],
-								func = function()
-									if Setup.LoD then Setup("LoD") end
-
-									if SettingsPanel then
-										SettingsPanel:OpenToCategory(self.OptionsPanels.Core)
-									else
-										local Frames = Core.OptionsPanels.Frames
-
-										-- Force a sub-panel refresh.
-										InterfaceOptionsFrame_OpenToCategory(Frames.Skins)
-										InterfaceOptionsFrame_OpenToCategory(Frames.Core)
-									end
-									Core.Options.args.Core.args.Load = nil -- GC
-								end,
-								order = 1,
-								confirm = true,
-								confirmText = L["This action will increase memory usage."].."\n",
-							},
-						},
-					},
 				},
 			},
 		},
@@ -129,6 +92,9 @@ function Setup.Core(self)
 
 	local Path = "Core"
 	self:AddOptionsPanel(Path, ACD:AddToBlizOptions(MASQUE, MASQUE, nil, Path))
+
+	OPT_FRAME = CreateFrame("Frame", "MSQ_OPT_FRAME", SettingsPanel or InterfaceOptionsFrame)
+	OPT_FRAME:SetScript("OnShow", function() Setup("LoD") end)
 
 	-- GC
 	Setup.Core = nil
@@ -145,6 +111,10 @@ function Setup.LoD(self)
 	Setup("Profiles")
 
 	-- GC
+	if OPT_FRAME then
+		OPT_FRAME:SetScript("OnShow", nil)
+	end
+
 	Setup.LoD = nil
 end
 

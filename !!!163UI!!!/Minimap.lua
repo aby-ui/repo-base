@@ -509,6 +509,7 @@ function U1MMB_PLAYER_LOGOUT(event)
     end
 end
 
+--[[
 WW:Frame("MinimapZoom", Minimap):SetFrameStrata("LOW"):EnableMouse(false):ALL():SetScript("OnMouseWheel", function(self, delta)
     if IsModifierKeyDown() then return end
     if ( delta > 0 ) then
@@ -517,6 +518,7 @@ WW:Frame("MinimapZoom", Minimap):SetFrameStrata("LOW"):EnableMouse(false):ALL():
         if MinimapZoomOut:IsEnabled() then Minimap_ZoomOutClick(); end
     end
 end):un();
+]]
 
 function U1_MMBCreateCoordsButton()
     local btn = CreateFrameAby("Button","MinimapCoordsButton",UIParent)

@@ -1,5 +1,5 @@
 U1RegisterAddon("vBar", {
-    title = "额外动作条v",
+    title = "额外动作条V",
     defaultEnable = 0,
     load = "NORMAL",
     tags = { TAG_COMBATINFO, },

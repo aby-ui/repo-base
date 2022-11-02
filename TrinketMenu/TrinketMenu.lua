@@ -252,7 +252,7 @@ function TrinketMenu.Initialize()
 	local options = TrinketMenuOptions
 	-- Set TrinketMenu Skin
 	if (Masque and not TrinketMenu.MasqueGroup) then
-		local group = Masque:Group("TrinketMenu")
+		local group = Masque:Group(U1GetAddonInfo("TrinketMenu").title)
 		TrinketMenu.MasqueGroup = group
 		group:AddButton(TrinketMenu_Trinket0)
 		group:AddButton(TrinketMenu_Trinket1)

@@ -64,7 +64,7 @@ local power = BattleGroundEnemies:NewButtonModule({
 	flags = flags,
 	defaultSettings = defaultSettings,
 	options = options,
-	events = {"UpdatePower", "SetSpecAndRole"},
+	events = {"UnitIdUpdate", "UpdatePower", "SetSpecAndRole"},
 	expansions = "All"
 })
 
@@ -98,7 +98,14 @@ function power:AttachToPlayerButton(playerButton)
 			end
 		end
 	end
-	--
+
+	function playerButton.Power:UnitIdUpdate(unitID)
+		if unitID then
+			local powerType, powerToken, altR, altG, altB = UnitPowerType(unitID)
+		
+			self:CheckForNewPowerColor(powerToken)
+		end
+	end
 
 	function playerButton.Power:SetSpecAndRole()
 		if not playerButton.PlayerClass then return end
@@ -121,9 +128,6 @@ function power:AttachToPlayerButton(playerButton)
 	function playerButton.Power:UpdatePower(unitID)
 		--BattleGroundEnemies:LogToSavedVariables("UpdatePower", unitID, powerToken)
 		if unitID then
-			local powerType, powerToken, altR, altG, altB = UnitPowerType(unitID)
-		
-			self:CheckForNewPowerColor(powerToken)
 			self:UpdateMinMaxValues(UnitPowerMax(unitID))
 			self:SetValue(UnitPower(unitID))
 		else
