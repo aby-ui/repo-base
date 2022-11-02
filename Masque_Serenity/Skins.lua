@@ -23,6 +23,7 @@ local AddOn, Core = ...
 
 -- Locale
 local L = Core.Locale
+local API_VERSION = 100000
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -39,7 +40,7 @@ local Websites = {
 ---
 
 MSQ:AddSkin("Serenity", {
-	API_VERSION = 100000,
+	API_VERSION = API_VERSION,
 	Shape = "Circle",
 
 	-- Info
@@ -202,7 +203,7 @@ MSQ:AddSkin("Serenity", {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 32,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOPRIGHT",
@@ -213,7 +214,7 @@ MSQ:AddSkin("Serenity", {
 			JustifyH = "CENTER",
 			JustifyV = "MIDDLE",
 			DrawLayer = "ARTWORK",
-			Width = 0,
+			Width = 32,
 			Height = 0,
 			Anchor = "Icon",
 			Point = "TOP",
@@ -250,7 +251,7 @@ MSQ:AddSkin("Serenity", {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 32,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOP",
@@ -273,11 +274,26 @@ MSQ:AddSkin("Serenity", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	SlotHighlight = {
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Glow]],
+		-- TexCoords = {0, 1, 0, 1},
+		Color = {1, 1, 1, 0.4},
+		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 0,
+		Width = 34,
+		Height = 34,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	Name = {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "OVERLAY",
-		Width = 0,
+		Width = 32,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "BOTTOM",
@@ -330,21 +346,6 @@ MSQ:AddSkin("Serenity", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	SlotHighlight = {
-		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Glow]],
-		-- TexCoords = {0, 1, 0, 1},
-		Color = {1, 1, 1, 0.4},
-		BlendMode = "ADD",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 0,
-		Width = 34,
-		Height = 34,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
 	Gloss = {
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Gloss]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -362,6 +363,7 @@ MSQ:AddSkin("Serenity", {
 	},
 	NewAction = {
 		-- Atlas = "bags-newitem",
+		-- UseAtlasSize = true,
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Glow]],
 		Color = {1, 1, 0.6, 1},
 		BlendMode = "ADD",
@@ -377,6 +379,7 @@ MSQ:AddSkin("Serenity", {
 	},
 	SpellHighlight = {
 		-- Atlas = "bags-newitem",
+		-- UseAtlasSize = true,
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Glow]],
 		Color = {1, 1, 0.6, 1},
 		BlendMode = "ADD",
@@ -407,6 +410,7 @@ MSQ:AddSkin("Serenity", {
 	},
 	IconOverlay = {
 		-- Atlas = "AzeriteIconFrame",
+		-- UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -421,6 +425,7 @@ MSQ:AddSkin("Serenity", {
 	},
 	UpgradeIcon = {
 		Atlas = "bags-greenarrow",
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -433,9 +438,24 @@ MSQ:AddSkin("Serenity", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	IconOverlay2 = {
+		-- Atlas = "ConduitIconFrame-Corners",
+		-- UseAtlasSize = false,
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 32,
+		Height = 32,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	QuestBorder = {
-		Border = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
-		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Quest]],
+		Border = [[Interface\AddOns\Masque_Serenity\Textures\Round\Quest]],
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
 		Color = {1, 0.8, 0, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -450,6 +470,7 @@ MSQ:AddSkin("Serenity", {
 	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
+		-- UseAtlasSize = true,
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Glow]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
@@ -498,6 +519,7 @@ MSQ:AddSkin("Serenity", {
 	},
 	JunkIcon = {
 		Atlas = "bags-junkcoin",
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -587,6 +609,21 @@ MSQ:AddSkin("Serenity - Redux", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	SlotHighlight = {
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
+		-- TexCoords = {0, 1, 0, 1},
+		Color = {1, 1, 1, 0.4},
+		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 0,
+		Width = 44,
+		Height = 44,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	Border = {
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -632,21 +669,6 @@ MSQ:AddSkin("Serenity - Redux", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	SlotHighlight = {
-		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Border]],
-		-- TexCoords = {0, 1, 0, 1},
-		Color = {1, 1, 1, 0.4},
-		BlendMode = "ADD",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 0,
-		Width = 44,
-		Height = 44,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
 })
 
 ----------------------------------------
@@ -654,8 +676,8 @@ MSQ:AddSkin("Serenity - Redux", {
 ---
 
 MSQ:AddSkin("Serenity - Square", {
+	API_VERSION = API_VERSION,
 	Shape = "Square",
-	Masque_Version = 100000,
 
 	-- Info
 	Authors = Authors,
@@ -665,8 +687,8 @@ MSQ:AddSkin("Serenity - Square", {
 
 	-- UI
 	Group = "Serenity",
-	Order = 3,
 	Title = "Square",
+	Order = 3,
 
 	-- Skin
 	Mask = {
@@ -818,7 +840,7 @@ MSQ:AddSkin("Serenity - Square", {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 32,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOPRIGHT",
@@ -829,7 +851,7 @@ MSQ:AddSkin("Serenity - Square", {
 			JustifyH = "CENTER",
 			JustifyV = "MIDDLE",
 			DrawLayer = "ARTWORK",
-			Width = 0,
+			Width = 32,
 			Height = 0,
 			Anchor = "Icon",
 			Point = "TOP",
@@ -866,7 +888,7 @@ MSQ:AddSkin("Serenity - Square", {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 32,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOP",
@@ -889,11 +911,26 @@ MSQ:AddSkin("Serenity - Square", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	SlotHighlight = {
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Glow]],
+		-- TexCoords = {0, 1, 0, 1},
+		Color = {1, 1, 1, 0.4},
+		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 0,
+		Width = 30,
+		Height = 30,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	Name = {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "OVERLAY",
-		Width = 0,
+		Width = 32,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "BOTTOM",
@@ -946,21 +983,6 @@ MSQ:AddSkin("Serenity - Square", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	SlotHighlight = {
-		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Glow]],
-		-- TexCoords = {0, 1, 0, 1},
-		Color = {1, 1, 1, 0.4},
-		BlendMode = "ADD",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 0,
-		Width = 30,
-		Height = 30,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
 	Gloss = {
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Gloss]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -978,6 +1000,7 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	NewAction = {
 		-- Atlas = "bags-newitem",
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Glow]],
 		Color = {1, 1, 0.6, 1},
 		BlendMode = "ADD",
@@ -993,6 +1016,7 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	SpellHighlight = {
 		-- Atlas = "bags-newitem",
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Glow]],
 		Color = {1, 1, 0.6, 1},
 		BlendMode = "ADD",
@@ -1023,6 +1047,7 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	IconOverlay = {
 		-- Atlas = "AzeriteIconFrame",
+		-- UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -1037,6 +1062,7 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	UpgradeIcon = {
 		Atlas = "bags-greenarrow",
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -1049,9 +1075,24 @@ MSQ:AddSkin("Serenity - Square", {
 		OffsetY = -4,
 		-- SetAllPoints = nil,
 	},
+	IconOverlay2 = {
+		-- Atlas = "ConduitIconFrame-Corners",
+		-- UseAtlasSize = false,
+		-- Color = {1, 1, 1, 1},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 2,
+		Width = 32,
+		Height = 32,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	QuestBorder = {
-		Border = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
-		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Quest]],
+		Border = [[Interface\AddOns\Masque_Serenity\Textures\Square\Quest]],
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
 		Color = {1, 0.8, 0, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -1066,6 +1107,7 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Glow]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
@@ -1114,6 +1156,7 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	JunkIcon = {
 		Atlas = "bags-junkcoin",
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -1203,6 +1246,21 @@ MSQ:AddSkin("Serenity - Square Redux", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	SlotHighlight = {
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
+		-- TexCoords = {0, 1, 0, 1},
+		Color = {1, 1, 1, 0.4},
+		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 0,
+		Width = 40,
+		Height = 40,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	Border = {
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -1238,21 +1296,6 @@ MSQ:AddSkin("Serenity - Square Redux", {
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 0,
-		Width = 40,
-		Height = 40,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
-	SlotHighlight = {
-		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Border]],
-		-- TexCoords = {0, 1, 0, 1},
-		Color = {1, 1, 1, 0.4},
-		BlendMode = "ADD",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 0,
 		Width = 40,

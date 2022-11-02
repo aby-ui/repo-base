@@ -638,6 +638,38 @@ function CoreHookScript(frame, scriptName, func, keep)
     end
 end
 
+--- @param creationFuncHook function(obj, frameType, template) 新创建对象时会调用此方法
+function CoreUIHookPoolCollection(poolCollection, creationFuncHook)
+    local flag = "_aby_hooked"
+    local function enumAndHook(pool, includeInactive)
+        RunNextFrame(function()
+            for one in pool:EnumerateActive() do
+                if not one[flag] then
+                    creationFuncHook(one, pool.frameType, pool.frameTemplate)
+                    one[flag] = true
+                end
+            end
+            if includeInactive ~= "includeInactive" then return end
+            for one in pool:EnumerateInactive() do
+                if not one[flag] then
+                    creationFuncHook(one, pool.frameType, pool.frameTemplate)
+                    one[flag] = true
+                end
+            end
+        end)
+    end
+    for poolKey, pool in pairs(poolCollection.pools) do
+        hooksecurefunc(pool, "creationFunc", enumAndHook)
+        enumAndHook(pool, "includeInactive")
+    end
+    hooksecurefunc(poolCollection, "CreatePool", function(self, frameType, parent, template, resetterFunc, forbidden, specialization)
+        local pool = self:GetPool(template, specialization)
+        if pool then
+            hooksecurefunc(pool, "creationFunc", enumAndHook)
+        end
+    end)
+end
+
 --[[------------------------------------------------------------
  TimeCache
 ---------------------------------------------------------------]]

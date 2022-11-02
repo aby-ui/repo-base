@@ -196,9 +196,11 @@ function Postal_Express:ContainerFrameItemButton_OnModifiedClick(this, button, .
 end
 
 function Postal_Express.HandleModifiedItemClick(itemLink, itemLocation)
-	local button = GetMouseButtonClicked()
-	local bag, slot = itemLocation.bagID, itemLocation.slotIndex
-	Postal_Express:ContainerFrameItemButtonOnModifiedClick(bag, slot, button)	
+	if itemLocation ~= nil then -- item location is only not nil for bag item clicks
+		local button = GetMouseButtonClicked()
+		local bag, slot = itemLocation.bagID, itemLocation.slotIndex
+		Postal_Express:ContainerFrameItemButtonOnModifiedClick(bag, slot, button)
+	end
 end
 
 function Postal_Express.SetEnableAltClick(dropdownbutton, arg1, arg2, checked)

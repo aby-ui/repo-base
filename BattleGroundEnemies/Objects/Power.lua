@@ -64,7 +64,7 @@ local power = BattleGroundEnemies:NewButtonModule({
 	flags = flags,
 	defaultSettings = defaultSettings,
 	options = options,
-	events = {"UNIT_POWER_FREQUENT", "SetSpecAndRole"},
+	events = {"UpdatePower", "SetSpecAndRole"},
 	expansions = "All"
 })
 
@@ -88,6 +88,8 @@ function power:AttachToPlayerButton(playerButton)
 	end
 
 	function playerButton.Power:CheckForNewPowerColor(powerToken)
+		--BattleGroundEnemies:LogToSavedVariables("CheckForNewPowerColor", powerToken)
+
 		if self.powerToken ~= powerToken then
 			local color = PowerBarColor[powerToken]
 			if color then
@@ -102,22 +104,25 @@ function power:AttachToPlayerButton(playerButton)
 		if not playerButton.PlayerClass then return end
 		
 		local powerToken
-		if playerButton.PlayerSpecName then
-			powerToken = Data.Classes[playerButton.PlayerClass][playerButton.PlayerSpecName].Ressource
-		else
-			powerToken = Data.Classes[playerButton.PlayerClass].Ressource
+		if playerButton.PlayerClass then
+			local t = Data.Classes[playerButton.PlayerClass]
+			if t then
+				if playerButton.PlayerSpecName then
+					t = t[playerButton.PlayerSpecName]
+				end
+			end
+			if t then powerToken = t.Ressource end
 		end
-
+		
 		self:CheckForNewPowerColor(powerToken)
 	end
 	
 	
-	function playerButton.Power:UNIT_POWER_FREQUENT(unitID, powerToken)
+	function playerButton.Power:UpdatePower(unitID)
+		--BattleGroundEnemies:LogToSavedVariables("UpdatePower", unitID, powerToken)
 		if unitID then
-			if not powerToken then
-				local powerType, altR, altG, altB
-				powerType, powerToken, altR, altG, altB = UnitPowerType(unitID)
-			end
+			local powerType, powerToken, altR, altG, altB = UnitPowerType(unitID)
+		
 			self:CheckForNewPowerColor(powerToken)
 			self:UpdateMinMaxValues(UnitPowerMax(unitID))
 			self:SetValue(UnitPower(unitID))
@@ -134,10 +139,5 @@ function power:AttachToPlayerButton(playerButton)
 		self:SetStatusBarTexture(LSM:Fetch("statusbar", self.config.Texture))--self.healthBar:SetStatusBarTexture(137012)
 		self.Background:SetVertexColor(unpack(self.config.Background))
 		self:SetSpecAndRole()
-	end
-
-	function playerButton.Power:Disable()
-		-- power
-		self:SetHeight(0.001) --set to make sure the healthbar is properly full height of the button
 	end
 end

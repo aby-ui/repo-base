@@ -4,7 +4,7 @@
     <Include file="..\..\!!!163UI!!!\Configs\CfgExample.lua"/>
     <Include file="..\..\!BaudErrorFrame\Cfg!BaudErrorFrame.lua"/>
     <Include file="..\..\!tdDropDown\Cfg!tdDropDown.lua"/>
-    <Include file="..\..\163UI_Buff\Cfg163UI_Buff.lua"/>
+    <Include file="..\..\AbyBuff\CfgAbyBuff.lua"/>
     <Include file="..\..\163UI_ChatHistory\Cfg163UI_ChatHistory.lua"/>
     <Include file="..\..\163UI_Chat\Cfg163UI_Chat.lua"/>
     <Include file="..\..\163UI_CombatTimer\Cfg163UI_CombatTimer.lua"/>

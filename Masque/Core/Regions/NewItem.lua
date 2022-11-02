@@ -61,17 +61,20 @@ local function Hook_SetAtlas(Region, Atlas, UseAtlasSize)
 	Region.__MSQ_Atlas = Atlas
 
 	local Skin = Region.__MSQ_Skin
-	local SkinAtlas, Texture = Skin.Atlas, Skin.Texture
+	local SkinAtlas = Skin.Atlas
+	local Texture = Skin.Texture
+	local Coords
 
 	if SkinAtlas then
 		Region.__ExitHook = true
 		Region:SetAtlas(SkinAtlas, Skin.UseAtlasSize)
 		Region.__ExitHook = nil
 	elseif Texture then
+		Coords = Skin.TexCoords
 		Region:SetTexture(Texture)
-		Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
 	end
 
+	Region:SetTexCoord(GetTexCoords(Coords))
 	Region:SetVertexColor(GetColor(Colors[Atlas]))
 end
 
@@ -87,14 +90,16 @@ function Core.SkinNewItem(Region, Button, Skin, xScale, yScale)
 	Region.__MSQ_Atlas = Atlas
 	Region.__MSQ_Skin = Skin
 
-	local SkinAtlas, UseAtlasSize = Skin.Atlas, Skin.UseAtlasSize
+	local SkinAtlas = Skin.Atlas
+	local UseAtlasSize = Skin.UseAtlasSize
 	local Texture = Skin.Texture
+	local Coords
 
 	if SkinAtlas then
 		Hook_SetAtlas(Region, Atlas)
 	elseif Texture then
+		Coords = Skin.TexCoords
 		Region:SetTexture(Texture)
-		Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
 		Region:SetVertexColor(GetColor(Colors[Atlas]))
 	else
 		Region.__MSQ_Skin = nil
@@ -104,6 +109,7 @@ function Core.SkinNewItem(Region, Button, Skin, xScale, yScale)
 		Region:SetVertexColor(GetColor(DEF_COLOR))
 	end
 
+	Region:SetTexCoord(GetTexCoords(Coords))
 	Region:SetBlendMode(Skin.BlendMode or "ADD")
 	Region:SetDrawLayer(Skin.DrawLayer or "OVERLAY", Skin.DrawLevel or 2)
 

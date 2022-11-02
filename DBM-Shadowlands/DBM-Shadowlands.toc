@@ -1,5 +1,5 @@
 ## Interface: 100000
-## Version: 10.0.0-8-g790b45a
+## Version: 10.0.0-11-gd68a38e
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0World Bosses (Shadowlands)|r
 ## Title-esES:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Jefes de Mundo (Shadowlands)|r

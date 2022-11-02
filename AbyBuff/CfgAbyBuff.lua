@@ -1,12 +1,11 @@
-U1RegisterAddon("163UI_Buff", {
-    temporarilyForceDisable = 1,
+U1RegisterAddon("AbyBuff", {
     title = "增益设置",
     defaultEnable = 1,
 
     tags = { TAG_COMBATINFO },
     icon = [[Interface\Icons\Achievement_Reputation_KirinTor]],
 
-    author = "SonicBuff",
+    author = "warbaby",
     modifier = "|cffcd1a1c[爱不易]|r",
 
     desc = "玩家的增益效果和负面效果显示精确到秒，无持续时间的状态可以显示'N/A'。``鼠标移动到状态图标上可以显示此效果的施法者",
@@ -18,7 +17,7 @@ U1RegisterAddon("163UI_Buff", {
         callback = function(cfg, v, loading)
             SetCVar("buffDurations", 1)
             SetCVar("noBuffDebuffFilterOnTarget", 0)
-            U1CfgResetAddOn("163UI_Buff")
+            U1CfgResetAddOn("AbyBuff")
         end,
     },
     {
@@ -31,8 +30,8 @@ U1RegisterAddon("163UI_Buff", {
                 default = 1,
                 text = "无时间的显示为N/A",
                 callback = function(cfg, v, loading)
-                    _G["163UI_Buff"].cfg_showna = v
-                    if not loading then SBuff_Refresh() end
+                    _G["AbyBuff"].cfg_showna = v
+                    if not loading then _G["AbyBuff"]:UpdateConfigNA() end
                 end,
             },
             {
@@ -40,18 +39,15 @@ U1RegisterAddon("163UI_Buff", {
                 default = 1,
                 text = "BUFF时间精确到秒",
                 callback = function(cfg, v, loading)
-                    _G["163UI_Buff"].cfg_showsec = v
-                    -- for dura, _ in pairs(SBuff_AuraDurationProcessed) do
-                    --     SBuff_Aura_ChangeBuffFontSize(dura, true)
-                    -- end
-                    -- SBuff_ResetAuraDurationFontSize()
+                    _G["AbyBuff"].cfg_showsec = v
+                    if not loading then _G['AbyBuff']:UpdateConfigFontSize() end
                 end,
                 {
                     var = 'time10',
                     default = nil,
                     text = '十分钟以上不显示秒',
                     callback = function(cfg, v, loading)
-                        _G['163UI_Buff'].cfg_showsec_10 = v
+                        _G['AbyBuff'].cfg_showsec_10 = v
                     end,
                 },
             },
@@ -63,7 +59,7 @@ U1RegisterAddon("163UI_Buff", {
                 range = {1, 32, 1},
                 text = "BUFF时间文字大小",
                 callback = function(cfg, v, loading)
-                    return SBuff_ResetAuraDurationFontSize()
+                    return _G['AbyBuff']:UpdateConfigFontSize()
                 end,
             },
         }),
@@ -89,12 +85,8 @@ U1RegisterAddon("163UI_Buff", {
             callback = function(cfg, v, loading)
                 if v and not loading and not IsAddOnLoaded("OmniCC") then
                     U1Message("显示计时数字需要开启OmniCC【技能冷却计时】")
-                    for i = 1, TargetFrame._163buffFrames or 0 do
-                        _G["TargetFrameBuff"..(i).."Cooldown"].noCooldownCount = not v
-                    end
-                    for i = 1, FocusFrame._163buffFrames or 0 do
-                        _G["FocusFrameBuff"..(i).."Cooldown"].noCooldownCount = not v
-                    end
+                else
+                    _G['AbyBuff']:UpdateTargetAuraCooldown()
                 end
             end
         },
@@ -122,12 +114,8 @@ U1RegisterAddon("163UI_Buff", {
             callback = function(cfg, v, loading)
                 if v and not loading and not IsAddOnLoaded("OmniCC") then
                     U1Message("显示计时数字需要开启OmniCC【技能冷却计时】")
-                    for i = 1, TargetFrame._163debuffFrames or 0 do
-                        _G["TargetFrameDebuff"..(i).."Cooldown"].noCooldownCount = not v
-                    end
-                    for i = 1, FocusFrame._163debuffFrames or 0 do
-                        _G["FocusFrameDebuff"..(i).."Cooldown"].noCooldownCount = not v
-                    end
+                else
+                    _G['AbyBuff']:UpdateTargetAuraCooldown()
                 end
             end
         },
@@ -149,6 +137,7 @@ U1RegisterAddon("163UI_Buff", {
         },
     },
 
+    --[=[
     {
         text = "其他增益相关设置", type = "text",
         {
@@ -164,7 +153,7 @@ U1RegisterAddon("163UI_Buff", {
             end
         },
         {
-            text = "显示TOT状态层数",
+            text = "显示TOT状态层数", --TODO:abyui10
             tip = "说明`开启此选项则显示目标的目标的Debuff状态层数，不开启则显示剩余时间。",
             var = "totdebuffcount",
             reload = 1,
@@ -214,4 +203,5 @@ U1RegisterAddon("163UI_Buff", {
             end
         },
     }
+    --]=]
 });

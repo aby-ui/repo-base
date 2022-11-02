@@ -98,27 +98,6 @@ local conditionFuncs = {
 	end
 }
 
-local function myAuraFiltering(config, isMine)
-	return config.ShowMine and isMine
-end
-
-local function debuffTypeFiltering(config, debuffType)
-	return config.DebuffTypeFiltering_Filterlist[debuffType]
-end
-
-local function spellIDFiltering(config, spellId)
-	return not not config.SpellIDFiltering_Filterlist[spellId] -- the not not is necessary for the loop in conditionFuncs, otherwise the for loop does not loop thorugh the item since its nil
-end
-
-local function canStealorPurgeFiltering(config, canStealOrPurge)
-	return config.CanStealOrPurge and canStealOrPurge
-end
-
-local function maxDurationFiltering(config, duration)
-	return duration <= config.DurationFilter_CustomMaxDuration
-end
-
-
 local function AddFilteringSettings(location, filter)
 	return {
 		Enabled = {
@@ -144,18 +123,18 @@ local function AddFilteringSettings(location, filter)
 					type = "select",
 					name = L.Auras_Filtering_Mode,
 					desc = L.Auras_Filtering_Mode_Desc,
-					width = 'normal',
 					values = {
 						Custom = L.AurasCustomConditions,
-						Blizz = L.BlizzlikeAuraFiltering
+						Blizzlike = L.BlizzlikeAuraFiltering
 					},
+					width = "full",
 					order = 1
 				},
 				CustomFilteringSettings = {
 					type = "group",
 					name = L.AurasCustomConditions,
-					disabled = function()
-						return not location.Filtering_Mode == "Custom"
+					hidden = function()
+						return not (location.Mode == "Custom")
 					end,
 					get = function(option)
 						return Data.GetOption(location.CustomFiltering, option)
@@ -170,11 +149,11 @@ local function AddFilteringSettings(location, filter)
 							type = "select",
 							name = L.Auras_CustomFiltering_ConditionsMode,
 							desc = L.Auras_CustomFiltering_ConditionsMode_Desc,
-							width = 'normal',
 							values = {
 								All = L.Auras_CustomFiltering_Conditions_All,
 								Any = L.Auras_CustomFiltering_Conditions_Any
 							},
+							width = "full",
 							order = 1
 						},
 
@@ -536,7 +515,6 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 		local canApplyAura = aura.canApplyAura
 		local debuffType = aura.dispelName
 		local unitCaster = aura.sourceUnit
-		local isMine = unitCaster and UnitName(unitCaster) == BattleGroundEnemies.PlayerDetails.PlayerName
 
 		if aura.Priority then
 			return self.isPriorityContainer -- its an important aura, we dont do any special filtering, we only care about if the container is for important auras
@@ -570,24 +548,25 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 			local customFilterConfig = filteringConfig.CustomFiltering
 
 			if customFilterConfig.SourceFilter_Enabled then
-				table_insert(conditions, myAuraFiltering(customFilterConfig, isMine))
+				local isMine = unitCaster == "player"
+				table_insert(conditions, config.ShowMine == isMine)
 			end
 
 			if customFilterConfig.SpellIDFiltering_Enabled then
-				table_insert(conditions, spellIDFiltering(customFilterConfig, spellId))
+				table_insert(conditions, not not config.SpellIDFiltering_Filterlist[spellId])  -- the not not is necessary to cast nil to false the loop in conditionFuncs, otherwise the for loop does not loop thorugh the item since its nil
 			end
 			if customFilterConfig.DebuffTypeFiltering_Enabled then
-				table_insert(conditions, debuffTypeFiltering(customFilterConfig, debuffType))
+				table_insert(conditions, config.DebuffTypeFiltering_Filterlist[debuffType])
 			end
 
 			if aura.isStealable ~= nil then
 				if customFilterConfig.DispelFilter_Enabled then
-					table_insert(conditions, canStealorPurgeFiltering(customFilterConfig, aura.isStealable))
+					table_insert(conditions, config.CanStealOrPurge == aura.isStealable)
 				end
 			end
 			if aura.duration ~= nil then
 				if customFilterConfig.DurationFilter_Enabled then
-					table_insert(conditions, maxDurationFiltering(customFilterConfig, aura.duration))
+					table_insert(conditions, aura.duration <= config.DurationFilter_CustomMaxDuration)
 				end
 			end
 

@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Entropy для Masque.
 ## Notes-zhTW: Masque的Entropy皮膚。
 
-## Version: 10.0.0
+## Version: 10.0.1
 ## Author: StormFX
 ## Dependencies: Masque
 

@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Serenity для Masque.
 ## Notes-zhTW: Masque的Serenity皮膚。
 
-## Version: 10.0.0
+## Version: 10.0.1
 ## Author: StormFX
 ## Dependencies: Masque
 

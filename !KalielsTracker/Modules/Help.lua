@@ -235,23 +235,42 @@ local function SetupTutorials()
 			shineRight = 11,
 		},
 		{	-- 11
-			text = cTitle.."LFG Hack|r\n\n"..
+			text = cTitle.."         Hacks|r\n\n"..
+					cWarning.."Warning:|r Hacks may affect other addons!\n\n\n"..
+					cTitle.."LFG Hack|r\n\n"..
 					cBold.."Affects the small Eye buttons|r for finding groups inside the tracker. When the hack is active, "..
 					"the buttons work without errors. When hack is inactive, the buttons are not available.\n\n"..
-					cWarning2.."Negative|r impacts:|r\n"..
+					cWarning2.."Negative|r impacts:\n"..
 					"- Inside the dialog for create Premade Group is hidden item \"Goal\".\n"..
 					"- Tooltips of items in the list of Premade Groups have a hidden 2nd (green) row"..
 					offs.."with \"Goal\".\n"..
 					"- Inside the dialog for create Premade Group, no automatically set the \"Title\","..
 					offs.."e.g. keystone level for Mythic+.\n\n"..
-					"LFG Hack is enabled by default, you can disable it in "..KT.title.." Options (section \"Hacks\").\n\n"..
-					cWarning.."Warning:|r Hacks may affect other addons!",
+					"LFG Hack is enabled by default, you can disable it in "..KT.title.." Options (section \"Hacks\").\n\n\n"..
+					cTitle.."Edit Mode Hack|r "..new.."\n\n"..
+					cBold.."Affects Edit Mode|r and remove errors. But if you want to edit Target or Focus frames, you have to display them manually by chat command.\n\n"..
+					"- For Target frame use command ... /target player\n"..
+					"- For Focus frame use command ... /focus player\n\n"..
+					cWarning2.."Negative|r impacts:\n"..
+					"- Item \"Target and Focus\" is always enabled, but Target and Focus frames are"..
+					offs.."not displayed.\n"..
+					"- Target or Focus frames you display by chat command (see above).\n"..
+					"- Tracker perform Reload UI when exiting Edit Mode.\n\n"..
+					"Edit Mode Hack is always enabled and cannot be disabled.",
+			textY = -20,
 		},
 		{	-- 12
 			text = cTitle.."         What's NEW|r\n\n"..
+					cTitle.."Version 5.0.2|r\n"..
+					"- ADDED - Edit Mode Hack - errors are gone, but Kaliel's Tracker still perform"..
+					offs.."Reload UI when exiting \"Edit Mode\" (this must stay), see Help page 11\n"..
+					"- FIXED - Quests - Quest Item Buttons stopped working only for some players"..
+					offs.."(temporary fix for some servers)\n"..
+					"- UPDATED - Addon support - TomTom 3.3.2-release\n"..
+					"- UPDATED - Addon support - ElvUI 12.98\n\n"..
 					cTitle.."Version 5.0.1|r\n"..
 					"- FIXED - Quests - Quest Item Buttons stopped working (Blizzard silent changes)\n"..
-					"- UPDATED - Addon support - TomTom v3.3.0-release\n"..
+					"- UPDATED - Addon support - TomTom 3.3.0-release\n"..
 					"- UPDATED - Addon support - ElvUI 12.95, Tukui 20.30\n"..
 					"- UPDATED - Help - Known issues w/o solution\n"..
 					"- IMPROVED - Addons version comparison\n\n"..
@@ -265,19 +284,18 @@ local function SetupTutorials()
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n"..
 					"- "..new.." Some errors in \"Edit Mode\". As an error prevention, "..KT.title..
-					offs.."provides Reload UI when exiting \"Edit Mode\".\n\n"..
+					offs.."perform Reload UI when exiting \"Edit Mode\".\n\n"..
 
 					cTitle.."Issue reporting|r\n"..
 					"For reporting please use "..cBold.."Tickets|r instead of Comments on CurseForge.\n\n\n\n"..
 
-					cWarning.."Before reporting of error, please deactivate all other addons and make sure the bug is not caused by a collision with another addon.|r\n\n"..
-					cWarning2.."All error reports with general information \"addon does not work\" or only with an error log without a description, I ignore|r ... Please don't waste my time.",
+					cWarning.."Before reporting of error, please deactivate all other addons and make sure the bug is not caused by a collision with another addon.|r",
 			textY = -20,
 			editbox = {
 				{
 					text = "https://www.curseforge.com/wow/addons/kaliels-tracker/issues",
 					width = 450,
-					bottom = 75,
+					bottom = 40,
 				}
 			},
 			shine = KTF,

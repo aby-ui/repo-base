@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Onyx для Masque.
 ## Notes-zhTW: Masque的Onyx皮膚。
 
-## Version: 10.0.0
+## Version: 10.0.1
 ## Author: StormFX
 ## Dependencies: Masque
 

@@ -2,6 +2,27 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.0.2",
+		General = "Another bugfix update with other smaller changes. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed a Lua error reported by creepshow11483 at curseforge.",
+					"Fixed a Lua error reported by GeT_LeNiN at curseforge."
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"Player names are now truncated if they dont fit into the frame and dont wrap into two lines anymore.",
+					"Updated the default settings for arena to avoid overlapping modules.",
+					"Health text is now abbreviated if too long. (Same as its done on Default Blizzard frames)"
+				}
+			}
+		}
+	},
+	{
 		Version = "10.0.0.1",
 		General = "Another bugfix update with other smaller changes. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
 		Sections = {

@@ -115,7 +115,6 @@ L["Websites"] = "网站"
 -- Interface Settings
 ---
 
-L["Classic Scaling"] = "经典模式按钮大小"
 L["Enable the Minimap icon."] = "启用小地图图标。"
 L["Interface"] = "界面"
 L["Interface Settings"] = "界面设置"
@@ -123,7 +122,6 @@ L["Minimap Icon"] = "小地图图标"
 L["Stand-Alone GUI"] = "独立用户界面"
 L["This section will allow you to adjust settings that affect Masque's interface."] = "此部分将允许调整影响 Masque 界面的设置。"
 L["Use a resizable, stand-alone options window."] = "使用可调整大小的独立选项窗口。"
-L["Use the old scaling method for action buttons."] = "使用10.0之前的按钮大小来缩放（10.0后标准按钮大小为45, 之前为36, 选中此项所有按钮以36为基础缩放, 会比不选中时要大一些）"
 
 ----------------------------------------
 -- LDB Launcher
@@ -154,6 +152,7 @@ L["Profile Settings"] = "配置文件设置"
 -- Skin Settings
 ---
 
+-- L["Adjust the scale of this group's skin."] = "Adjust the scale of this group's skin."
 L["Backdrop"] = "背景设置"
 L["Checked"] = "已选中"
 L["Color"] = "颜色"
@@ -163,6 +162,7 @@ L["Disable"] = "禁用"
 L["Disable the skinning of this group."] = "禁用此群组换肤。"
 L["Disabled"] = "已禁用"
 L["Enable"] = "启用"
+-- L["Enable skin scaling."] = "Enable skin scaling."
 L["Enable the Backdrop texture."] = "启用背景材质。"
 L["Enable the Gloss texture."] = "启用光泽材质。"
 L["Enable the Shadow texture."] = "启用阴影材质。"
@@ -176,6 +176,7 @@ L["Normal"] = "正常"
 L["Pushed"] = "按下"
 L["Reset all skin options to the defaults."] = "重置所有皮肤选项为默认。"
 L["Reset Skin"] = "重置皮肤"
+-- L["Scale"] = "Scale"
 L["Set the color of the Backdrop texture."] = "设置背景材质颜色。"
 L["Set the color of the Checked texture."] = "设置已选中材质颜色。"
 L["Set the color of the Cooldown animation."] = "设置冷却动画颜色。"

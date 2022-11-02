@@ -40,7 +40,7 @@ function Core.SkinText(Layer, Region, Button, Skin, xScale, yScale)
 	Region:SetJustifyV(Skin.JustifyV or "MIDDLE")
 	Region:SetDrawLayer(Skin.DrawLayer or Default.DrawLayer)
 
-	local Width = (Layer == "Name" and 36) or 0
+	local Width = (Layer ~= "Count" and 36) or 0
 
 	Region:SetSize(GetSize(Skin.Width or Width, Skin.Height or 0, xScale, yScale, Button))
 	SetPoints(Region, Button, Skin, Default)

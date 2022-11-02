@@ -535,6 +535,7 @@ local function SetFrames()
 	local Child = CreateFrame("Frame", addonName.."ScrollChild", KTF.Scroll)
 	Child:SetSize(trackerWidth-8, 8000)
 	KTF.Scroll:SetScrollChild(Child)
+	KTF.Child = Child
 
 	-- Scroll indicator
 	local Bar = CreateFrame("Frame", addonName.."ScrollBar", KTF)
@@ -675,17 +676,15 @@ local function SetHooks()
 		end
 	end
 
+	hooksecurefunc(OTF, "SetParent", function(self, parent)
+		if parent and parent ~= KTF.Child then
+			self:SetParent(KTF.Child)
+		end
+	end)
+
 	hooksecurefunc(OTF, "ClearAllPoints", function(self)
 		self:KTSetPoint("TOPLEFT", 30, -1)
 		self:KTSetPoint("BOTTOMRIGHT")
-	end)
-
-	hooksecurefunc(OTF, "OnEditModeEnter", function(self)
-		KTF:Hide()
-	end)
-
-	hooksecurefunc(OTF, "OnEditModeExit", function(self)
-		--ReloadUI()
 	end)
 
 	OTF:HookScript("OnEvent", function(self, event)
@@ -1121,7 +1120,7 @@ local function SetHooks()
 				button.text:SetJustifyH("LEFT")
 				button.text:SetPoint("TOPLEFT", button.icon, 1, -3)
 
-				button:RegisterForClicks("AnyUp", "AnyDown")
+				button:RegisterForClicks("AnyDown", "AnyUp")  -- TODO: Change it in 10.0.2
 
 				button:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
 				do local tex = button:GetNormalTexture()
@@ -1516,29 +1515,21 @@ local function SetHooks()
 		end
 	end)
 
-	function ObjectiveTracker_Collapse()  -- R
-		_DBG("--------------------------------")
+	hooksecurefunc("ObjectiveTracker_Collapse", function()
 		_DBG("COLLAPSE")
-		OTF.collapsed = true
 		dbChar.collapsed = OTF.collapsed
-		OTF.BlocksFrame:Hide()
 		KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0, 0.25)
-		OTFHeader.Title:Show()
 		MSA_CloseDropDownMenus()
 		MawBuffs.List:Hide()
-	end
+	end)
 
-	function ObjectiveTracker_Expand()  -- R
-		_DBG("--------------------------------")
+	hooksecurefunc("ObjectiveTracker_Expand", function()
 		_DBG("EXPAND")
         KT_ForceHideTracker(false)
-		OTF.collapsed = nil
 		dbChar.collapsed = OTF.collapsed
-		OTF.BlocksFrame:Show()
 		KTF.MinimizeButton:GetNormalTexture():SetTexCoord(0, 0.5, 0.25, 0.5)
-		OTFHeader.Title:Hide()
 		MSA_CloseDropDownMenus()
-	end
+	end)
 
 	local bck_BonusObjectiveTracker_OnBlockAnimOutFinished = BonusObjectiveTracker_OnBlockAnimOutFinished
 	BonusObjectiveTracker_OnBlockAnimOutFinished = function(self)
@@ -2715,7 +2706,6 @@ function KT:OnInitialize()
 	-- Blizzard frame resets
 	OTF.KTSetParent = OTF.SetParent
 	OTF:SetParent(UIParent)
-	OTF.SetParent = function() end
 	OTF.SetFrameStrata = function() end
 	OTF.SetFrameLevel = function() end
 	OTF:SetClampedToScreen(false)
@@ -2724,25 +2714,14 @@ function KT:OnInitialize()
 	OTF.EnableMouse = function() end
 	OTF:SetMovable(false)
 	OTF.SetAllPoints = function() end
-	if OTF.ClearAllPointsBase then
-		OTF:ClearAllPointsBase()  -- 10.0.0
-	else
-		OTF:ClearAllPoints()  -- 10.0.2
-	end
-	if OTF.SetPointBase then
-		OTF.KTSetPoint = OTF.SetPointBase  -- 10.0.0
-	else
-		OTF.KTSetPoint = OTF.SetPoint  -- 10.0.2
-	end
+	OTF:ClearAllPointsBase()
+	OTF.KTSetPoint = OTF.SetPointBase
 	OTF.SetShown = function() end
 	OTF:Show()
 end
 
 function KT:OnEnable()
 	_DBG("|cff00ff00Enable|r - "..self:GetName(), true)
-
-	-- Blizzard frame resets
-	OTF.SetPoint = function() end
 
 	SetFrames()
 	SetHooks()

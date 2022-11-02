@@ -261,7 +261,7 @@ local function SetFrames()
 		button:SetScript("OnHide", QuestObjectiveItem_OnHide)
 		button:SetScript("OnEnter", QuestObjectiveItem_OnEnter)
 		button:SetScript("OnLeave", QuestObjectiveItem_OnLeave)
-		button:RegisterForClicks("AnyUp", "AnyDown")
+		button:RegisterForClicks("AnyDown", "AnyUp")  -- TODO: Change it in 10.0.2
 		button:SetAttribute("type", "item")
 		
 		button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")

@@ -1426,6 +1426,32 @@ local options = {
 						},
 					},
 				},
+				sec2 = {
+					name = "Edit Mode",
+					type = "group",
+					inline = true,
+					order = 2,
+					args = {
+						hackEditMode = {
+							name = " Edit Mode Hack",
+							type = "description",
+							fontSize = "medium",
+							order = 2.1,
+						},
+						hackEditModeDesc = {
+							name = cBold.."          Affects Edit Mode|r and remove errors. But if you want to edit Target or Focus frames,\n"..
+									"          you have to display them manually by chat command.\n\n"..
+									"          - For Target frame use command ... /target player\n"..
+									"          - For Focus frame use command ... /focus player\n\n"..
+									"          Negative impacts:\n"..
+									"          - Item \"Target and Focus\" is always enabled, but Target and Focus frames are not displayed.\n"..
+									"          - Target or Focus frames you display by chat command (see above).\n"..
+									"          - Tracker perform Reload UI when exiting Edit Mode.",
+							type = "description",
+							order = 2.2,
+						},
+					},
+				},
 			},
 		},
 	},

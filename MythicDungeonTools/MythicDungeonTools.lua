@@ -119,7 +119,7 @@ end
 local defaultSavedVars = {
   global = {
     toolbarExpanded = true,
-    currentSeason = 9,
+    currentSeason = 8,
     scale = 1,
     nonFullscreenScale = 1.3,
     enemyForcesFormat = 2,
@@ -183,9 +183,7 @@ do
       if not db.minimap.hide then
         minimapIcon:Show("MythicDungeonTools")
       end
-      local version = GetAddOnMetadata(AddonName, "Version")
-      local isAlpha = string.find(version, "Alpha")
-      if db.newDataCollectionActive or isAlpha then
+      if db.newDataCollectionActive or MDT:IsOnBetaServer() then
         MDT.DataCollection:Init()
         MDT.DataCollection:InitHealthTrack()
       end
@@ -364,6 +362,11 @@ MDT.dungeonList = {
   [28] = "-",
   [39] = "-",
 }
+
+function MDT:IsOnBetaServer()
+  local realm = GetRealmName()
+  return realm == "Valdrakken"
+end
 
 function MDT:GetNumDungeons() return #MDT.dungeonList - 1 end
 
@@ -1662,6 +1665,17 @@ function MDT:ExportCurrentZoomPanSettings()
   MDT.main_frame.ExportFrameEditbox:HighlightText(0, string.len(output))
   MDT.main_frame.ExportFrameEditbox:SetFocus()
   MDT.main_frame.ExportFrameEditbox:SetLabel("Current pan/zoom settings");
+end
+
+function MDT:SetViewPortPosition(zoomScale, horizontalPan, verticalPan)
+  local scaledSizeX = MDTMapPanelFrame:GetWidth() * zoomScale
+  local scaledSizeY = MDTMapPanelFrame:GetHeight() * zoomScale
+  MDTScrollFrame.maxX = (scaledSizeX - MDTMapPanelFrame:GetWidth()) / zoomScale
+  MDTScrollFrame.maxY = (scaledSizeY - MDTMapPanelFrame:GetHeight()) / zoomScale
+  MDTScrollFrame.zoomedIn = abs(zoomScale - 1) > 0.02
+  MDTMapPanelFrame:SetScale(zoomScale)
+  MDTScrollFrame:SetHorizontalScroll(horizontalPan * MDT:GetScale())
+  MDTScrollFrame:SetVerticalScroll(verticalPan * MDT:GetScale())
 end
 
 function MDT:ZoomMapToDefault()

@@ -67,12 +67,27 @@ local function AddShadow(Button, Skin, Color, xScale, yScale)
 	end
 
 	Region:SetParent(Button)
-	Region:SetTexture(Skin.Texture)
-	Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
+
+	local Atlas = Skin.Atlas
+	local UseAtlasSize = Skin.UseAtlasSize
+	local Coords
+
+	if Atlas then
+		Region:SetAtlas(Atlas, UseAtlasSize)
+	else
+		Coords = Skin.TexCoords
+		Region:SetTexture(Skin.Texture)
+	end
+
+	Region:SetTexCoord(GetTexCoords(Coords))
 	Region:SetVertexColor(GetColor(Color or Skin.Color))
 	Region:SetBlendMode(Skin.BlendMode or "BLEND")
 	Region:SetDrawLayer(Skin.DrawLayer or "ARTWORK", Skin.DrawLevel or -1)
-	Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
+
+	if not UseAtlasSize then
+		Region:SetSize(GetSize(Skin.Width, Skin.Height, xScale, yScale, Button))
+	end
+
 	SetPoints(Region, Button, Skin, nil, Skin.SetAllPoints)
 
 	if Button.__MSQ_Empty then
@@ -100,7 +115,7 @@ end
 function Core.SkinShadow(Enabled, Button, Skin, Color, xScale, yScale)
 	Skin = GetTypeSkin(Button, Button.__MSQ_bType, Skin)
 
-	if Enabled and not Skin.Hide and Skin.Texture then
+	if Enabled and not Skin.Hide and (Skin.Atlas or Skin.Texture) then
 		AddShadow(Button, Skin, Color, xScale, yScale)
 	else
 		RemoveShadow(Button)

@@ -47,8 +47,8 @@ Data.defaultSettings = {
 
 				Position_X = false,
 				Position_Y = false,
-				BarWidth = 220,
-				BarHeight = 40,
+				BarWidth = 240,
+				BarHeight = 47,
 				BarVerticalGrowdirection = "downwards",
 				BarVerticalSpacing = 40,
 				BarColumns = 1,
@@ -65,10 +65,9 @@ Data.defaultSettings = {
 						ShadowColor = {0, 0, 0, 1},
 					}
 				},
-
 				ButtonModules = {
 					Class = {
-						Width = 46,
+						Width = 52,
 					},
 					CastBar = {
 						Enabled = true,
@@ -78,45 +77,35 @@ Data.defaultSettings = {
 								RelativeFrame = "Button",
 								RelativePoint = "LEFT",
 								OffsetX = -3
-							},
-						},
+							}
+						}
 					},
-					PriorityBuffs = {
-						Enabled = true,
+					Covenant = {
+						Enabled = false
+					},
+					DRTracking = {
 						Points = {
 							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "DRTracking",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -2,
-								OffsetY = 1
+								Point = "TOPRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetY = -2
 							}
 						},
 						Container = {
 							UseButtonHeightAsSize = false,
-							IconSize = 20,
-							IconsPerRow = 8,
+							IconSize = 31,
 							HorizontalGrowDirection = "leftwards",
-							VerticalGrowdirection = "upwards",
-						},
+							VerticalGrowdirection = "downwards",
+						}
 					},
-					PriorityDebuffs = {
-						Enabled = true,
-						Points = {
-							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "PriorityBuffs",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -8
-							}
-						},
-						Container = {
-							UseButtonHeightAsSize = false,
-							IconSize = 20,
-							IconsPerRow = 8,
-							HorizontalGrowDirection = "leftwards",
-							VerticalGrowdirection = "upwards",
-						},
+					healthBar = {
+						HealthTextEnabled = true,
+						HealthTextType = "health",
+						HealthText = {
+							FontSize = 18,
+							JustifyV = "BOTTOM"
+						}
 					},
 					Name = {
 						Text = {
@@ -137,7 +126,7 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityDebuffs = {
 						Enabled = false,
@@ -152,48 +141,47 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					DRTracking = {
+					Power = {
+						Height = 8,
+					},
+					PriorityBuffs = {
+						Enabled = true,
 						Points = {
 							{
-								Point = "TOPRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetY = -2
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "DRTracking",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -2,
+								OffsetY = 1
 							}
 						},
 						Container = {
 							UseButtonHeightAsSize = false,
-							IconSize = 31,
+							IconSize = 25,
+							IconsPerRow = 8,
 							HorizontalGrowDirection = "leftwards",
-							VerticalGrowdirection = "downwards",
-						},
+							VerticalGrowdirection = "upwards",
+						}
 					},
-					healthBar = {
-						HealthTextEnabled = true,
-						HealthTextType = "health",
-						HealthText = {
-							FontSize = 18,
-							JustifyV = "BOTTOM"
-						},
-					},
-					Trinket = {
-						ActivePoints = 2,
+					PriorityDebuffs = {
+						Enabled = true,
 						Points = {
 							{
-								Point = "TOPLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPRIGHT",
-								OffsetX = 1
-							},
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 1
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "PriorityBuffs",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -8
 							}
 						},
+						Container = {
+							UseButtonHeightAsSize = false,
+							IconSize = 25,
+							IconsPerRow = 8,
+							HorizontalGrowDirection = "leftwards",
+							VerticalGrowdirection = "upwards",
+						}
 					},
 					Racial = {
 						ActivePoints = 2,
@@ -210,7 +198,27 @@ Data.defaultSettings = {
 								RelativePoint = "BOTTOMRIGHT",
 								OffsetX = 1
 							}
-						},
+						}
+					},
+					RaidTargetIcon = {
+						Enabled = false
+					},
+					Trinket = {
+						ActivePoints = 2,
+						Points = {
+							{
+								Point = "TOPLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPRIGHT",
+								OffsetX = 1
+							},
+							{
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 1
+							}
+						}
 					}
 				},
 
@@ -253,38 +261,20 @@ Data.defaultSettings = {
 								RelativePoint = "LEFT",
 								OffsetX = -3
 							},
-						},
+						}
 					},
-					PriorityBuffs = {
-						Enabled = true,
+					DRTracking = {
 						Points = {
 							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "DRTracking",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -2,
-								OffsetY = 1
+								Point = "TOPRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPLEFT",
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
-					},
-					PriorityDebuffs = {
-						Enabled = true,
-						Points = {
-							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "PriorityBuffs",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -8
-							}
-						},
-						Container = {
-							HorizontalGrowDirection = "leftwards",
-							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityBuffs = {
 						Enabled = false,
@@ -300,7 +290,7 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityDebuffs = {
 						Enabled = false,
@@ -315,36 +305,37 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					DRTracking = {
+					PriorityBuffs = {
+						Enabled = true,
 						Points = {
 							{
-								Point = "TOPRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPLEFT",
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "DRTracking",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -2,
+								OffsetY = 1
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					Trinket = {
-						ActivePoints = 2,
+					PriorityDebuffs = {
+						Enabled = true,
 						Points = {
 							{
-								Point = "TOPLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPRIGHT",
-								OffsetX = 1
-							},
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 1
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "PriorityBuffs",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -8
 							}
+						},
+						Container = {
+							HorizontalGrowDirection = "leftwards",
+							VerticalGrowdirection = "upwards",
 						},
 					},
 					Racial = {
@@ -362,7 +353,24 @@ Data.defaultSettings = {
 								RelativePoint = "BOTTOMRIGHT",
 								OffsetX = 1
 							}
-						},
+						}
+					},
+					Trinket = {
+						ActivePoints = 2,
+						Points = {
+							{
+								Point = "TOPLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPRIGHT",
+								OffsetX = 1
+							},
+							{
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 1
+							}
+						}
 					}
 				},
 
@@ -406,40 +414,21 @@ Data.defaultSettings = {
 								RelativeFrame = "Button",
 								RelativePoint = "LEFT",
 								OffsetX = -3
-							},
-						},
+							}
+						}
 					},
-					Power = {
-						Enabled = false
-					},
-					PriorityBuffs = {
+					DRTracking = {
 						Points = {
 							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "DRTracking",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -2,
-								OffsetY = 1
+								Point = "TOPRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPLEFT",
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
-					},
-					PriorityDebuffs = {
-						Points = {
-							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "PriorityBuffs",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -8
-							}
-						},
-						Container = {
-							HorizontalGrowDirection = "leftwards",
-							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityBuffs = {
 						Points = {
@@ -454,7 +443,7 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityDebuffs = {
 						Points = {
@@ -468,37 +457,39 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					DRTracking = {
+					Power = {
+						Enabled = false,
+					},
+					PriorityBuffs = {
 						Points = {
 							{
-								Point = "TOPRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPLEFT",
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "DRTracking",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -2,
+								OffsetY = 1
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "leftwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					Trinket = {
-						ActivePoints = 2,
+					PriorityDebuffs = {
 						Points = {
 							{
-								Point = "TOPLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPRIGHT",
-								OffsetX = 1
-							},
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 1
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "PriorityBuffs",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -8
 							}
 						},
+						Container = {
+							HorizontalGrowDirection = "leftwards",
+							VerticalGrowdirection = "upwards",
+						}
 					},
 					Racial = {
 						ActivePoints = 2,
@@ -515,7 +506,24 @@ Data.defaultSettings = {
 								RelativePoint = "BOTTOMRIGHT",
 								OffsetX = 1
 							}
-						},
+						}
+					},
+					Trinket = {
+						ActivePoints = 2,
+						Points = {
+							{
+								Point = "TOPLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPRIGHT",
+								OffsetX = 1
+							},
+							{
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 1
+							}
+						}
 					}
 				},
 
@@ -545,8 +553,8 @@ Data.defaultSettings = {
 
 				Position_X = false,
 				Position_Y = false,
-				BarWidth = 220,
-				BarHeight = 40,
+				BarWidth = 240,
+				BarHeight = 47,
 				BarVerticalGrowdirection = "downwards",
 				BarVerticalSpacing = 40,
 				BarColumns = 1,
@@ -565,9 +573,6 @@ Data.defaultSettings = {
 				},
 
 				ButtonModules = {
-					Class = {
-						Width = 46,
-					},
 					CastBar = {
 						Enabled = true,
 						Points = {
@@ -579,84 +584,11 @@ Data.defaultSettings = {
 							},
 						},
 					},
-					healthBar = {
-						HealthTextEnabled = true,
-						HealthTextType = "health",
-						HealthText = {
-							FontSize = 18,
-							JustifyV = "BOTTOM"
-						},
+					Class = {
+						Width = 52,
 					},
-					Name = {
-						Text = {
-							JustifyV = "TOP"
-						}
-					},
-					PriorityBuffs = {
-						Enabled = true,
-						Points = {
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "DRTracking",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 2,
-								OffsetY = 1
-							}
-						},
-						Container = {
-							UseButtonHeightAsSize = false,
-							IconSize = 20,
-							HorizontalGrowDirection = "rightwards",
-							VerticalGrowdirection = "upwards",
-						},
-					},
-					PriorityDebuffs = {
-						Enabled = true,
-						Points = {
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "PriorityBuffs",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 8
-							}
-						},
-						Container = {
-							UseButtonHeightAsSize = false,
-							IconSize = 20,
-							HorizontalGrowDirection = "rightwards",
-							VerticalGrowdirection = "upwards",
-						},
-					},
-					NonPriorityBuffs = {
-						Enabled = false,
-						Points = {
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "PriorityDebuffs",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 2,
-								OffsetY = 1
-							}
-						},
-						Container = {
-							HorizontalGrowDirection = "rightwards",
-							VerticalGrowdirection = "upwards",
-						},
-					},
-					NonPriorityDebuffs = {
-						Enabled = false,
-						Points = {
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "NonPriorityBuffs",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 8
-							}
-						},
-						Container = {
-							HorizontalGrowDirection = "rightwards",
-							VerticalGrowdirection = "upwards",
-						},
+					Covenant = {
+						Enabled = false
 					},
 					DRTracking = {
 						Points = {
@@ -672,24 +604,89 @@ Data.defaultSettings = {
 							IconSize = 31,
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "downwards",
-						},
+						}
 					},
-					Trinket = {
-						ActivePoints = 2,
+					healthBar = {
+						HealthTextEnabled = true,
+						HealthTextType = "health",
+						HealthText = {
+							FontSize = 18,
+							JustifyV = "BOTTOM"
+						}
+					},
+					Name = {
+						Text = {
+							JustifyV = "TOP"
+						}
+					},
+					NonPriorityBuffs = {
+						Enabled = false,
 						Points = {
 							{
-								Point = "TOPRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPLEFT",
-								OffsetX = -1
-							},
-							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -1
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "PriorityDebuffs",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 2,
+								OffsetY = 1
 							}
 						},
+						Container = {
+							HorizontalGrowDirection = "rightwards",
+							VerticalGrowdirection = "upwards",
+						}
+					},
+					NonPriorityDebuffs = {
+						Enabled = false,
+						Points = {
+							{
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "NonPriorityBuffs",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 8
+							}
+						},
+						Container = {
+							HorizontalGrowDirection = "rightwards",
+							VerticalGrowdirection = "upwards",
+						}
+					},
+					Power = {
+						Height = 8,
+					},
+					PriorityBuffs = {
+						Enabled = true,
+						Points = {
+							{
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "DRTracking",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 2,
+								OffsetY = 1
+							}
+						},
+						Container = {
+							UseButtonHeightAsSize = false,
+							IconSize = 25,
+							HorizontalGrowDirection = "rightwards",
+							VerticalGrowdirection = "upwards",
+						}
+					},
+					PriorityDebuffs = {
+						Enabled = true,
+						Points = {
+							{
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "PriorityBuffs",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 8
+							}
+						},
+						Container = {
+							UseButtonHeightAsSize = false,
+							IconSize = 25,
+							HorizontalGrowDirection = "rightwards",
+							VerticalGrowdirection = "upwards",
+						}
 					},
 					Racial = {
 						ActivePoints = 2,
@@ -706,7 +703,27 @@ Data.defaultSettings = {
 								RelativePoint = "BOTTOMLEFT",
 								OffsetX = -1
 							}
-						},
+						}
+					},
+					RaidTargetIcon = {
+						Enabled = false
+					},
+					Trinket = {
+						ActivePoints = 2,
+						Points = {
+							{
+								Point = "TOPRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPLEFT",
+								OffsetX = -1
+							},
+							{
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -1
+							}
+						}
 					}
 				},
 
@@ -753,30 +770,12 @@ Data.defaultSettings = {
 							},
 						},
 					},
-					PriorityBuffs = {
-						Enabled = true,
+					DRTracking = {
 						Points = {
 							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "DRTracking",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 2,
-								OffsetY = 1
-							}
-						},
-						Container = {
-							HorizontalGrowDirection = "rightwards",
-							VerticalGrowdirection = "upwards",
-						},
-					},
-					PriorityDebuffs = {
-						Enabled = true,
-						Points = {
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "PriorityBuffs",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 8
+								Point = "TOPLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPRIGHT",
 							}
 						},
 						Container = {
@@ -813,37 +812,38 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					DRTracking = {
+					PriorityBuffs = {
+						Enabled = true,
 						Points = {
 							{
-								Point = "TOPLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPRIGHT",
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "DRTracking",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 2,
+								OffsetY = 1
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					Trinket = {
-						ActivePoints = 2,
+					PriorityDebuffs = {
+						Enabled = true,
 						Points = {
 							{
-								Point = "TOPRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPLEFT",
-								OffsetX = -1
-							},
-							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -1
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "PriorityBuffs",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 8
 							}
 						},
+						Container = {
+							HorizontalGrowDirection = "rightwards",
+							VerticalGrowdirection = "upwards",
+						}
 					},
 					Racial = {
 						ActivePoints = 2,
@@ -860,7 +860,24 @@ Data.defaultSettings = {
 								RelativePoint = "BOTTOMLEFT",
 								OffsetX = -1
 							}
-						},
+						}
+					},
+					Trinket = {
+						ActivePoints = 2,
+						Points = {
+							{
+								Point = "TOPRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPLEFT",
+								OffsetX = -1
+							},
+							{
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -1
+							}
+						}
 					}
 				},
 
@@ -903,40 +920,21 @@ Data.defaultSettings = {
 								RelativeFrame = "Button",
 								RelativePoint = "RIGHT",
 								OffsetX = 28,
-							},
-						},
+							}
+						}
 					},
-					Power = {
-						Enabled = false
-					},
-					PriorityBuffs = {
+					DRTracking = {
 						Points = {
 							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "DRTracking",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 2,
-								OffsetY = 1
+								Point = "TOPLEFT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPRIGHT",
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "upwards",
-						},
-					},
-					PriorityDebuffs = {
-						Points = {
-							{
-								Point = "BOTTOMLEFT",
-								RelativeFrame = "PriorityBuffs",
-								RelativePoint = "BOTTOMRIGHT",
-								OffsetX = 8
-							}
-						},
-						Container = {
-							HorizontalGrowDirection = "rightwards",
-							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityBuffs = {
 						Points = {
@@ -951,7 +949,7 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
 					NonPriorityDebuffs = {
 						Points = {
@@ -965,37 +963,39 @@ Data.defaultSettings = {
 						Container = {
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					DRTracking = {
+					Power = {
+						Enabled = false,
+					},
+					PriorityBuffs = {
 						Points = {
 							{
-								Point = "TOPLEFT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPRIGHT",
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "DRTracking",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 2,
+								OffsetY = 1
 							}
 						},
 						Container = {
 							HorizontalGrowDirection = "rightwards",
 							VerticalGrowdirection = "upwards",
-						},
+						}
 					},
-					Trinket = {
-						ActivePoints = 2,
+					PriorityDebuffs = {
 						Points = {
 							{
-								Point = "TOPRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "TOPLEFT",
-								OffsetX = -1
-							},
-							{
-								Point = "BOTTOMRIGHT",
-								RelativeFrame = "Button",
-								RelativePoint = "BOTTOMLEFT",
-								OffsetX = -1
+								Point = "BOTTOMLEFT",
+								RelativeFrame = "PriorityBuffs",
+								RelativePoint = "BOTTOMRIGHT",
+								OffsetX = 8
 							}
 						},
+						Container = {
+							HorizontalGrowDirection = "rightwards",
+							VerticalGrowdirection = "upwards",
+						}
 					},
 					Racial = {
 						ActivePoints = 2,
@@ -1012,7 +1012,24 @@ Data.defaultSettings = {
 								RelativePoint = "BOTTOMLEFT",
 								OffsetX = -1
 							}
-						},
+						}
+					},
+					Trinket = {
+						ActivePoints = 2,
+						Points = {
+							{
+								Point = "TOPRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "TOPLEFT",
+								OffsetX = -1
+							},
+							{
+								Point = "BOTTOMRIGHT",
+								RelativeFrame = "Button",
+								RelativePoint = "BOTTOMLEFT",
+								OffsetX = -1
+							}
+						}
 					}
 				},
 

@@ -45,18 +45,12 @@ function raidTargetIcon:AttachToPlayerButton(playerButton)
 	playerButton.RaidTargetIcon.Icon:SetAllPoints()
 
 
-	function playerButton.RaidTargetIcon:UpdateRaidTargetIcon()
-		local unit = playerButton:GetUnitID()
-		if unit then
-			local index = GetRaidTargetIndex(unit)
-			if index then
-				SetRaidTargetIconTexture(self.Icon, index)
-				self:Show()
-			else
-				self:Hide()
-			end
+	function playerButton.RaidTargetIcon:UpdateRaidTargetIcon(raidTargetIconIndex)
+		if raidTargetIconIndex then
+			SetRaidTargetIconTexture(self.Icon, raidTargetIconIndex)
+			self.Icon:Show()
 		else
-			self:Hide()
+			self.Icon:Hide()
 		end
 	end
 

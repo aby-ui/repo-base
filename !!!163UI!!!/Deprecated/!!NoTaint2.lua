@@ -1,4 +1,33 @@
 --code since !NoTaint, test: /run StaticPopup_Show('PARTY_INVITE',"a") /dump issecurevariable(StaticPopup1, "which")
+--[[
+if NoTaint2_TestAndShowWarning then return end
+do
+    local shown = false
+    NoTaint2_TestAndShowWarning = function(frame, property)
+        if U1DBG and U1DBG.notaint2 then return end
+        if shown then return end
+        local secure, tainted = issecurevariable(frame, property)
+        if not secure then
+            InvasionAlertSystem:AddAlert(nil, "爱不易提醒：插件污染,尽快/RL", false, 0, 0)
+            U1Message("你的插件被|cffff0000[" .. tainted .. "]|r污染，很快就可能出现动作条按键失效等问题，建议尽快/reload（运行/notaint2不再提示此信息）") --, "WHISPER", nil, UnitName("player"))
+            if BaudErrorFrameAdd then
+                BaudErrorFrameAdd((frame:GetName() or "[frame]").."."..property.. "被[" .. tainted .. "]污染", 4)
+            end
+            shown = true
+        end
+    end
+    --/run CompactUnitFrame_SetMaxDispelDebuffs(PlayerFrame, 1)
+    hooksecurefunc(EditModeManagerFrame, "SetEnableSnap", function(self) NoTaint2_TestAndShowWarning(self, "snapEnabled") end)
+    hooksecurefunc(EditModeManagerFrame, "UpdateAccountSettingMap", function(self) NoTaint2_TestAndShowWarning(self, "accountSettingMap") end)
+
+    SLASH_NOTAINT1 = "/notaint2"
+    SlashCmdList["NOTAINT"] = function()
+        U1DBG.notaint2 = not U1DBG.notaint2 or nil
+        U1Message((U1DBG.notaint2 and "不再显示" or "显示") .. "插件污染的警告")
+    end
+end
+--]]
+
 function NoTaint2_CleanStaticPopups()
     for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
         local frame = _G["StaticPopup"..index];
@@ -86,4 +115,15 @@ GameMenuButtonEditMode:HookScript("PreClick", cleanAll)
 
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("PLAYER_LEAVING_WORLD")
-eventframe:SetScript("OnEvent", cleanAll)
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+--eventframe:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED")
+eventframe:SetScript("OnEvent", function(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        cleanAll()
+        EditModeManagerFrame:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED")
+    elseif event == "PLAYER_LEAVING_WORLD" then
+        EditModeManagerFrame:UnregisterEvent("EDIT_MODE_LAYOUTS_UPDATED")
+    elseif event == "EDIT_MODE_LAYOUTS_UPDATED" then
+    end
+end)
+

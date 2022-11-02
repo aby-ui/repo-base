@@ -29,7 +29,8 @@ local defaultSettings = {
 		EnableShadow = true,
 		ShadowColor = {0, 0, 0, 1},
 		JustifyH = "LEFT",
-		JustifyV = "MIDDLE"
+		JustifyV = "MIDDLE",
+		WordWrap = false
 	},
 	ShowRealmnames = true
 }

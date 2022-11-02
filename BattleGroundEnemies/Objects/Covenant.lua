@@ -25,8 +25,12 @@ local covenant = BattleGroundEnemies:NewButtonModule({
 	moduleName = "Covenant",
 	localizedModuleName = L.Covenant,
 	defaultSettings = defaultSettings,
+	flags = {
+		SetZeroHeightWhenDisabled = true,
+		SetZeroWidthWhenDisabled = true
+	},
 	options = nil,
-	events = nil,
+	events = {},
 	expansions = {WOW_PROJECT_MAINLINE}
 })
 
@@ -35,7 +39,7 @@ function covenant:AttachToPlayerButton(playerButton)
 	playerButton.Covenant = CreateFrame("Frame", nil, playerButton)
 
 	playerButton.Covenant:HookScript("OnEnter", function(self)
-		BattleGroundEnemies:ShowTooltip(self, function() 
+		BattleGroundEnemies:ShowTooltip(self, function()
 			if self.covenantID then
 				GameTooltip:SetText(C_Covenants.GetCovenantData(self.covenantID).name)
 			end
@@ -51,19 +55,25 @@ function covenant:AttachToPlayerButton(playerButton)
 	playerButton.Covenant.Icon = playerButton.Covenant:CreateTexture(nil, 'OVERLAY')
 	playerButton.Covenant.Icon:SetAllPoints()
 
-	playerButton.Covenant.DisplayCovenant = function(self, covenantID)
+	playerButton.Covenant.DisplayCovenant = function(self)
+		if self.covenantID then
+			local texture = Data.CovenantIcons[self.covenantID]
+			if texture then
+				self.Icon:SetTexture(texture)
+			end
+		end
+	end
+
+	playerButton.Covenant.UpdateCovenant = function(self, covenantID)
 		self.covenantID = covenantID
-		self.Icon:SetTexture(Data.CovenantIcons[covenantID])
-		self:ApplyAllSettings()
+		self:DisplayCovenant()
+	end
+
+	playerButton.Covenant.ApplyAllSettings = function(self)
+		self:DisplayCovenant()
 	end
 
 	playerButton.Covenant.Reset = function(self)
 		self.covenantID = false
-		self:Hide()
-		self:SetSize(0.01, 0.01)
-	end
-
-	playerButton.Covenant.ApplyAllSettings = function(self)
-		self:Show()
 	end
 end

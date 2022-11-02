@@ -1,7 +1,6 @@
 ## Interface: 100000
 ## LoadOnDemand: 0
 ## Notes:  增益时间精确到秒，显示施法者等。
-## Dependencies: TODO:abyui10
 
 SBuff_BuffTimer.lua
 CastBy.lua

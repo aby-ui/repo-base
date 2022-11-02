@@ -49,6 +49,69 @@ local function Hack_LFG()
     end
 end
 
+-- Edit Mode
+-- Affects Edit Mode and remove errors. But if you want to edit Target or Focus frames, you have to display them manually by chat command.
+-- - For Target frame use command ... /target player
+-- - For Focus frame use command ... /focus player
+-- Negative impacts:
+-- - Item "Target and Focus" is always enabled, but Target and Focus frames are not displayed.
+-- - Target or Focus frames you display by chat command (see above).
+-- - Tracker perform Reload UI when exiting Edit Mode.
+local function Hack_EditMode()
+    hooksecurefunc(ObjectiveTrackerFrame, "HighlightSystem", function(self)
+        self.Selection:Hide()
+    end)
+
+    hooksecurefunc(ObjectiveTrackerFrame, "OnEditModeEnter", function(self)
+        ObjectiveTracker_Update()
+    end)
+
+    hooksecurefunc(ObjectiveTrackerFrame, "OnEditModeExit", function(self)
+        if EditModeManagerFrame:IsEditModeLocked() then
+            ObjectiveTracker_Update()
+        else
+            ReloadUI()
+        end
+    end)
+
+    function EditModeManagerFrame.AccountSettings.Settings.TargetAndFocus:ShouldEnable()
+        return false
+    end
+
+    hooksecurefunc(EditModeManagerFrame.AccountSettings, "OnEditModeEnter", function(self)
+        print("EditModeManagerFrame.AccountSettings ... OnEditModeEnter")
+        if not self.KTinfo then
+            print(".....")
+            self.Settings.TargetAndFocus.Button:SetPoint("TOPLEFT")
+            local infoText = self.Settings.TargetAndFocus:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+            infoText:SetWidth(180)
+            infoText:SetPoint("TOPLEFT", self.Settings.TargetAndFocus.Label, "BOTTOMLEFT",  0, 6)
+            infoText:SetJustifyH("LEFT")
+            infoText:SetText("|cff00ffffDisabled by "..KT.title..".\n\nFor display use commands:\n- Target frame ... |cffffffff/target player\n|cff00ffff- Focus frame ... |cffffffff/focus player")
+            self.KTinfo = true
+        end
+    end)
+
+    function EditModeManagerFrame.AccountSettings:RefreshTargetAndFocus()  -- R
+        print("EditModeManagerFrame.AccountSettings ... RefreshTargetAndFocus")
+        self.Settings.TargetAndFocus:SetControlChecked(true)
+
+        TargetFrame:HighlightSystem()
+        FocusFrame:HighlightSystem()
+
+        self:RegisterEvent("PLAYER_TARGET_CHANGED")
+        self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    end
+
+    function EditModeManagerFrame.AccountSettings:ResetTargetAndFocus()  -- R
+        self:UnregisterEvent("PLAYER_TARGET_CHANGED")
+        self:UnregisterEvent("PLAYER_FOCUS_CHANGED")
+
+        TargetFrame:ClearHighlight()
+        FocusFrame:ClearHighlight()
+    end
+end
+
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
@@ -57,4 +120,5 @@ end
 function M:OnEnable()
     _DBG("|cff00ff00Enable|r - "..self:GetName(), true)
     Hack_LFG()
+    Hack_EditMode()
 end

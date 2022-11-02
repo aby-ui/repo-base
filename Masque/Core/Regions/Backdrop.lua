@@ -99,12 +99,17 @@ local function AddBackdrop(Region, Button, Skin, Color, xScale, yScale)
 		Region:SetTexture()
 		Region:SetVertexColor(1, 1, 1, 1)
 		Region:SetColorTexture(GetColor(Color or DEF_COLOR))
-	elseif Atlas then
-		Region:SetAtlas(Atlas, UseAtlasSize)
-		Region:SetVertexColor(GetColor(Color or DEF_COLOR))
 	else
-		Region:SetTexture(Skin.Texture or DEF_TEXTURE)
-		Region:SetTexCoord(GetTexCoords(Skin.TexCoords))
+		local Coords
+
+		if Atlas then
+			Region:SetAtlas(Atlas, UseAtlasSize)
+		else
+			Coords = Skin.TexCoords
+			Region:SetTexture(Skin.Texture or DEF_TEXTURE)
+		end
+
+		Region:SetTexCoord(GetTexCoords(Coords))
 		Region:SetVertexColor(GetColor(Color or DEF_COLOR))
 	end
 

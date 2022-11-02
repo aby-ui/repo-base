@@ -236,36 +236,13 @@ hookPetJournal.init = function()
 	end)
 	--------------- "PJSTooltip"
 		--滚动条
-		--for i = 1, 12 do
-		--	_G["PetJournalListScrollFrameButton"..i].dragButton:HookScript("OnEnter",hookPetJournal.PJSTooltip)
-		--	_G["PetJournalListScrollFrameButton"..i].dragButton:HookScript("OnLeave",GameTooltip_Hide)
-		--end
-		do
-			--hooksecurefunc("PetJournal_InitPetButton", function(pet, elementData)  is called every update
-			local poolCollection = PetJournal.ScrollBox.view.poolCollection
-			local hookScroll
-			hookScroll = function()
-				local pool = poolCollection:GetPool("CompanionListButtonTemplate")
-				if not pool then
-					hooksecurefunc(poolCollection, "CreatePool", hookScroll)
-					hookScroll = nil --only hook once
-					return
-				end
-				local function hookElement()
-					for one in pool:EnumerateActive() do
-						if not one._aby_hooked then
-							one.dragButton:HookScript("OnEnter",hookPetJournal.PJSTooltip)
-							one.dragButton:HookScript("OnLeave",GameTooltip_Hide)
-							one._aby_hooked = true
-						end
-					end
-				end
-				hookElement()
-				hooksecurefunc(pool, "creationFunc", hookElement)
-			end
-			hookScroll()
-		end
-		--loadout	
+		----hooksecurefunc("PetJournal_InitPetButton", function(pet, elementData)  is called every update
+		CoreUIHookPoolCollection(PetJournal.ScrollBox.view.poolCollection, function(obj, frameType, template)
+			obj.dragButton:HookScript("OnEnter",hookPetJournal.PJSTooltip)
+			obj.dragButton:HookScript("OnLeave",GameTooltip_Hide)
+		end)
+
+		--loadout
 		for i = 1, 3 do
 			_G["PetJournalLoadoutPet"..i].dragButton:HookScript("OnEnter",hookPetJournal.PJSTooltip)
 			_G["PetJournalLoadoutPet"..i].dragButton:HookScript("OnLeave",GameTooltip_Hide)

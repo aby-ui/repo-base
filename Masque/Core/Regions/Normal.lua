@@ -41,8 +41,10 @@ local GetTypeSkin, SetPoints = Core.GetTypeSkin, Core.SetPoints
 -- Locals
 ---
 
+local DEF_ATLAS = Default.Atlas
 local DEF_COLOR = Default.Color
 local DEF_TEXTURE = Default.Texture
+local DEF_USESIZE = Default.UseAtlasSize
 
 ----------------------------------------
 -- UpdateNormal
@@ -52,31 +54,34 @@ local DEF_TEXTURE = Default.Texture
 local function UpdateNormal(Button, IsEmpty)
 	IsEmpty = IsEmpty or Button.__MSQ_Empty
 
-	local Normal = Button.__MSQ_Normal
+	local Region = Button.__MSQ_Normal
 	local Skin = Button.__MSQ_NormalSkin
 
-	if Normal and (Skin and not Skin.Hide) then
+	if Region and (Skin and not Skin.Hide) then
 		local Atlas = Skin.Atlas
-		local Texture = Button.__MSQ_Random or Skin.Texture or DEF_TEXTURE
-		local Coords = Skin.TexCoords
+		local Texture = Button.__MSQ_Random or Skin.Texture
 		local Color = Button.__MSQ_NormalColor or DEF_COLOR
+		local UseEmpty = Button.__MSQ_EmptyType and IsEmpty
+		local Coords
 
-		-- Empty settings for types that can be empty.
-		if Button.__MSQ_EmptyType and IsEmpty then
-			Atlas = Skin.EmptyAtlas or Atlas
-			Texture = Skin.EmptyTexture or Texture
-			Coords = Skin.EmptyCoords or Coords
-			Color = Skin.EmptyColor or Color
-		end
+		Color = (UseEmpty and Skin.EmptyColor) or Color
 
 		if Atlas then
-			Normal:SetAtlas(Atlas, Skin.UseAtlasSize)
+			Atlas = (UseEmpty and Skin.EmptyAtlas) or Atlas
+			Region:SetAtlas(Atlas, Skin.UseAtlasSize)
 		elseif Texture then
-			Normal:SetTexture(Texture)
-			Normal:SetTexCoord(GetTexCoords(Coords))
+			Texture = (UseEmpty and Skin.EmptyTexture) or Texture
+			Coords = (UseEmpty and Skin.EmptyCoords) or Skin.TexCoords
+			Region:SetTexture(Texture)
+		elseif DEF_ATLAS then
+			Region:SetAtlas(DEF_ATLAS, DEF_USESIZE)
+		elseif DEF_TEXTURE then
+			Coords = Default.TexCoords
+			Region:SetTexture(DEF_TEXTURE)
 		end
 
-		Normal:SetVertexColor(GetColor(Color))
+		Region:SetTexCoord(GetTexCoords(Coords))
+		Region:SetVertexColor(GetColor(Color))
 	end
 end
 
@@ -145,7 +150,6 @@ function Core.SkinNormal(Region, Button, Skin, Color, xScale, yScale)
 		if Region then
 			-- Fix for BT4's Pet buttons.
 			Region:SetAlpha(0)
-
 			Region:SetTexture()
 			Region:Hide()
 		end

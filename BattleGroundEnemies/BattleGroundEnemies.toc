@@ -1,6 +1,6 @@
 ## Interface: 100000
 ## Title: BattleGroundEnemies
-## Version: 10.0.0.1
+## Version: 10.0.0.1-23-gb091548
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
 ## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets

@@ -120,17 +120,17 @@ local function attachToPlayerButton(playerButton, type)
 
 	frame.SetSpecAndRole = function(self)
 		if self.type == "Class" then
-				--either no spec or the player wants to always see it > display it
-				if playerButton.PlayerClass then
-					self.Icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
-					self.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[playerButton.PlayerClass]))
-				else
-					self.Icon:SetTexture(nil)
-				end
-			
+			--either no spec or the player wants to always see it > display it
+			if playerButton.PlayerClass then
+				self.Icon:SetTexture("Interface\\TargetingFrame\\UI-Classes-Circles")
+				self.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[playerButton.PlayerClass]))
+			else
+				self.Icon:SetTexture(nil)
+			end		
 		else -- "Spec"
-			if playerButton.PlayerSpecName then
-				self.Icon:SetTexture(Data.Classes[playerButton.PlayerClass][playerButton.PlayerSpecName].specIcon)
+			local specData = playerButton:GetSpecData()
+			if specData then
+				self.Icon:SetTexture(specData.specIcon)
 			end
 		end
 

@@ -23,6 +23,7 @@ local AddOn, Core = ...
 
 -- Locale
 local L = Core.Locale
+local API_VERSION = 100000
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -38,7 +39,7 @@ local Websites = {
 ---
 
 MSQ:AddSkin("Cirque", {
-	API_VERSION = 100000,
+	API_VERSION = API_VERSION,
 	Shape = "Circle",
 
 	-- Info
@@ -181,7 +182,7 @@ MSQ:AddSkin("Cirque", {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 38,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOPRIGHT",
@@ -205,7 +206,7 @@ MSQ:AddSkin("Cirque", {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 38,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOP",
@@ -228,11 +229,26 @@ MSQ:AddSkin("Cirque", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	SlotHighlight = {
+		Texture = [[Interface\AddOns\Masque_Cirque\Textures\Indicator]],
+		-- TexCoords = {0, 1, 0, 1},
+		Color = {1, 1, 1, 0.4},
+		BlendMode = "ADD",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 0,
+		Width = 40,
+		Height = 40,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	Name = {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "OVERLAY",
-		Width = 0,
+		Width = 38,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "BOTTOM",
@@ -275,21 +291,6 @@ MSQ:AddSkin("Cirque", {
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 0,
-		Width = 40,
-		Height = 40,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
-	SlotHighlight = {
-		Texture = [[Interface\AddOns\Masque_Cirque\Textures\Indicator]],
-		-- TexCoords = {0, 1, 0, 1},
-		Color = {1, 1, 1, 0.4},
-		BlendMode = "ADD",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 0,
 		Width = 40,
@@ -363,8 +364,8 @@ MSQ:AddSkin("Cirque", {
 		-- SetAllPoints = nil,
 	},
 	IconOverlay = {
-		Atlas = "AzeriteIconFrame",
-		UseAtlasSize = false,
+		-- Atlas = "AzeriteIconFrame",
+		-- UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -379,7 +380,7 @@ MSQ:AddSkin("Cirque", {
 	},
 	UpgradeIcon = {
 		Atlas = "bags-greenarrow",
-		UseAtlasSize = false,
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -393,8 +394,8 @@ MSQ:AddSkin("Cirque", {
 		-- SetAllPoints = nil,
 	},
 	IconOverlay2 = {
-		Atlas = "ConduitIconFrame-Corners",
-		UseAtlasSize = false,
+		-- Atlas = "ConduitIconFrame-Corners",
+		-- UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -424,7 +425,7 @@ MSQ:AddSkin("Cirque", {
 	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
-		-- UseAtlasSize = true,
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Cirque\Textures\Glow]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
@@ -473,7 +474,7 @@ MSQ:AddSkin("Cirque", {
 	},
 	JunkIcon = {
 		Atlas = "bags-junkcoin",
-		UseAtlasSize = false,
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",

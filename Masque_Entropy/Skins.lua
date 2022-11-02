@@ -21,6 +21,7 @@ local AddOn, Core = ...
 
 -- Locale
 local L = Core.Locale
+local API_VERSION = 100000
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -39,7 +40,7 @@ local SKIN_DESC = L["A metallic version of Apathy in the color of %s ore."]
 ---
 
 MSQ:AddSkin("Entropy - Silver", {
-	API_VERSION = 100000,
+	API_VERSION = API_VERSION,
 	Shape = "Square",
 
 	-- Info
@@ -220,13 +221,13 @@ MSQ:AddSkin("Entropy - Silver", {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 27,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOPRIGHT",
 		RelPoint = "TOPRIGHT",
 		OffsetX = 0,
-		OffsetY = -1.,
+		OffsetY = -1,
 	},
 	Count = {
 		JustifyH = "RIGHT",
@@ -238,13 +239,13 @@ MSQ:AddSkin("Entropy - Silver", {
 		Point = "BOTTOMRIGHT",
 		RelPoint = "BOTTOMRIGHT",
 		OffsetX = 0,
-		OffsetY = 1.,
+		OffsetY = 1,
 	},
 	Duration = {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "ARTWORK",
-		Width = 0,
+		Width = 27,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "TOP",
@@ -267,11 +268,26 @@ MSQ:AddSkin("Entropy - Silver", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
+	SlotHighlight = {
+		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
+		-- TexCoords = {0, 1, 0, 1},
+		Color = {0, 0.7, 0.9, 0.7},
+		BlendMode = "BLEND",
+		DrawLayer = "OVERLAY",
+		DrawLevel = 0,
+		Width = 32,
+		Height = 32,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
 	Name = {
 		JustifyH = "CENTER",
 		JustifyV = "MIDDLE",
 		DrawLayer = "OVERLAY",
-		Width = 0,
+		Width = 27,
 		Height = 0,
 		Anchor = "Icon",
 		Point = "BOTTOM",
@@ -313,21 +329,6 @@ MSQ:AddSkin("Entropy - Silver", {
 		-- RelicTexture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
-		BlendMode = "BLEND",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 0,
-		Width = 32,
-		Height = 32,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
-	SlotHighlight = {
-		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Border]],
-		-- TexCoords = {0, 1, 0, 1},
-		Color = {0, 0.7, 0.9, 0.7},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
 		DrawLevel = 0,
@@ -402,8 +403,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		-- SetAllPoints = nil,
 	},
 	IconOverlay = {
-		Atlas = "AzeriteIconFrame",
-		UseAtlasSize = false,
+		-- Atlas = "AzeriteIconFrame",
+		-- UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -418,7 +419,7 @@ MSQ:AddSkin("Entropy - Silver", {
 	},
 	UpgradeIcon = {
 		Atlas = "bags-greenarrow",
-		UseAtlasSize = false,
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -432,8 +433,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		-- SetAllPoints = nil,
 	},
 	IconOverlay2 = {
-		Atlas = "ConduitIconFrame-Corners",
-		UseAtlasSize = false,
+		-- Atlas = "ConduitIconFrame-Corners",
+		-- UseAtlasSize = false,
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
@@ -463,7 +464,7 @@ MSQ:AddSkin("Entropy - Silver", {
 	},
 	NewItem = {
 		-- Atlas = "bags-glow-white",
-		-- UseAtlasSize = true,
+		-- UseAtlasSize = false,
 		Texture = [[Interface\AddOns\Masque_Entropy\Textures\Glow]],
 		-- TexCoords = {0, 1, 0, 1},
 		-- Color = {1, 1, 1, 1},
@@ -512,7 +513,7 @@ MSQ:AddSkin("Entropy - Silver", {
 	},
 	JunkIcon = {
 		Atlas = "bags-junkcoin",
-		UseAtlasSize = false,
+		UseAtlasSize = false, -- true
 		-- Color = {1, 1, 1, 1},
 		BlendMode = "BLEND",
 		DrawLayer = "OVERLAY",
