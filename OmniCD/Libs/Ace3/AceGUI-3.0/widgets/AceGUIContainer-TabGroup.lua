@@ -144,7 +144,7 @@ local methods = {
 		local tab = CreateFrame("Button", tabname, self.border, "OptionsFrameTabButtonTemplate")
 		]]
 		local tabname = ("AceGUITabGroup%dTab%d-OmniCD"):format(self.num, id)
-		local tab = CreateFrame("Button", tabname, self.border, BackdropTemplateMixin and "OptionsFrameTabButtonTemplate, BackdropTemplate" or "OptionsFrameTabButtonTemplate")
+		local tab = CreateFrame("Button", tabname, self.border, BackdropTemplateMixin and "PanelTopTabButtonTemplate, BackdropTemplate" or "PanelTopTabButtonTemplate")
 		-- e
 		tab.obj = self
 		tab.id = id
@@ -185,15 +185,15 @@ local methods = {
 		fadeOut:SetSmoothing("OUT")
 
 		--tab:DisableDrawLayer("BORDER") -- can't do this. backdrop is in this layer.
-		_G[tabname .. "LeftDisabled"]:SetTexture(nil)
-		_G[tabname .. "MiddleDisabled"]:SetTexture(nil)
-		_G[tabname .. "RightDisabled"]:SetTexture(nil)
-		_G[tabname .. "Left"]:SetTexture(nil)
-		_G[tabname .. "Middle"]:SetTexture(nil)
-		_G[tabname .. "Right"]:SetTexture(nil)
+		tab.Left:SetTexture(nil)
+		tab.Middle:SetTexture(nil)
+		tab.Right:SetTexture(nil)
+		tab.LeftActive:SetTexture(nil)
+		tab.MiddleActive:SetTexture(nil)
+		tab.RightActive:SetTexture(nil)
 		-- e
 
-		tab.text = _G[tabname .. "Text"]
+		tab.text = tab.Text
 		tab.text:ClearAllPoints()
 		--[[ s r
 		tab.text:SetPoint("LEFT", 14, -3)

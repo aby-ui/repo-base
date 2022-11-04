@@ -335,7 +335,7 @@ local function Constructor()
 	button.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
 	button.Right:Hide()
 	button.Middle:Hide()
-	button:SetHighlightTexture(nil)
+	button:SetHighlightTexture("")
 	OmniCD[1].BackdropTemplate(button)
 	button:SetBackdropColor(0.725, 0.008, 0.008)
 	button:SetBackdropBorderColor(0.2, 0.2, 0.25)

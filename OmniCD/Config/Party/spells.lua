@@ -294,7 +294,7 @@ end
 function P:AddSpellPickerSpells()
 	for j = 1, MAX_CLASSES + numOthers do
 		local class = j > MAX_CLASSES and E.OTHER_SORT_ORDER[j - MAX_CLASSES] or CLASS_SORT_ORDER[j]
-		local classSpells = E.spell_db[class]
+		local classSpells = E.spell_db[class] or {}
 		local numClassSpells = #classSpells
 		local order = 1
 

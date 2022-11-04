@@ -194,10 +194,10 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		]]
 		if not isExpanded then
 			button.toggle:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-plus]])
-			button.toggle:SetPushedTexture(nil)
+			button.toggle:SetPushedTexture("")
 		else
 			button.toggle:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-minus]])
-			button.toggle:SetPushedTexture(nil)
+			button.toggle:SetPushedTexture("")
 		end
 		-- e
 		toggle:Show()
@@ -785,7 +785,8 @@ local methods = {
 		if maxtreewidth > 100 and status.treewidth > maxtreewidth then
 			self:SetTreeWidth(maxtreewidth, status.treesizable)
 		end
-		treeframe:SetMaxResize(maxtreewidth, 1600)
+		local mw, mh = treeframe:GetResizeBounds()
+		treeframe:SetResizeBounds(mw or 1, mh or 1, maxtreewidth, 1600)
 	end,
 
 	["OnHeightSet"] = function(self, height)
@@ -881,8 +882,7 @@ local function Constructor()
 	treeframe:SetBackdropBorderColor(0, 0, 0)
 	treeframe:SetResizable(false) -- resizing disabled
 	-- e
-	treeframe:SetMinResize(100, 1)
-	treeframe:SetMaxResize(400, 1600)
+	treeframe:SetResizeBounds(100, 1, 400, 1600)
 	treeframe:SetScript("OnUpdate", FirstFrameUpdate)
 	treeframe:SetScript("OnSizeChanged", Tree_OnSizeChanged)
 	treeframe:SetScript("OnMouseWheel", Tree_OnMouseWheel)

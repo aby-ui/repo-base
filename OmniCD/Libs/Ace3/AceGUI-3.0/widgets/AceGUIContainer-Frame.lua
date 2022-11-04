@@ -222,7 +222,7 @@ local function Constructor()
 	frame:SetBackdropBorderColor(0, 0, 0, 1)
 	--frame:SetClampedToScreen(true) -- s a let's not
 	-- e
-	frame:SetMinResize(400, 200)
+	frame:SetResizeBounds(400, 200)
 	frame:SetToplevel(true)
 	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)

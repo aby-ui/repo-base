@@ -126,7 +126,7 @@ local function Constructor()
 	frame.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
 	frame.Right:Hide()
 	frame.Middle:Hide()
-	frame:SetHighlightTexture(nil)
+	frame:SetHighlightTexture("")
 	OmniCD[1].BackdropTemplate(frame)
 	frame:SetBackdropColor(0.725, 0.008, 0.008)
 	frame:SetBackdropBorderColor(0, 0, 0)
