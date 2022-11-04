@@ -1,5 +1,4 @@
 U1RegisterAddon("CastDelayBar", {
-    temporarilyForceDisable = 1,
     title = "施法条延迟",
     defaultEnable  = 1,
 
@@ -20,9 +19,9 @@ U1RegisterAddon("CastDelayBar", {
             CastDelayBar.showremain = not v
             CastDelayBar.delayText:ClearAllPoints()
             if v then
-                CastDelayBar.delayText:SetPoint("LEFT", CastingBarFrame, "RIGHT", 8, 3);
+                CastDelayBar.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", 8, 3);
             else
-                CastDelayBar.delayText:SetPoint("RIGHT", CastingBarFrame, "RIGHT", -4, 3);
+                CastDelayBar.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", -22, -11);
             end
         end,
     }

@@ -53,7 +53,6 @@ function ButtonBar:AttachButton(index)
         button:SetParent(self)
         button:EnableMouse(not self:GetClickThrough())
         self:OnAttachButton(button)
-        button:Show()
 
         self.buttons[index] = button
     end

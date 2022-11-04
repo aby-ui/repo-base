@@ -153,7 +153,7 @@ local function createBar(parent, key, r, g, b)
 end
 
 local function CreateUI()
-    local f = WW:Frame("SwingBar", UIParent, ABY_BD_TPL):Size(180,18):BOTTOM("CastingBarFrame","TOP",0,"20"):Backdrop([[Interface\GLUES\COMMON\Glue-Tooltip-Background]], [[Interface\GLUES\COMMON\TextPanel-Border]], 12, 2)
+    local f = WW:Frame("SwingBar", UIParent, ABY_BD_TPL):Size(180,18):BOTTOM("PlayerCastingBarFrame","TOP",0,"20"):Backdrop([[Interface\GLUES\COMMON\Glue-Tooltip-Background]], [[Interface\GLUES\COMMON\TextPanel-Border]], 12, 2)
 
     createBar(f, "main", 1, .7, 0):TL(3,-1):BR(-2,3):un()
     createBar(f, "off", 0, .7, 0):BL(3, 3):BR(-2,3):SetHeight(8):un()

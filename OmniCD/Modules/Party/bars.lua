@@ -283,6 +283,7 @@ local function GetIcon(f, iconIndex)
 		numIcons = numIcons + 1
 		icon = CreateFrame("Button", "OmniCDIcon" .. numIcons, UIParent, "OmniCDButtonTemplate")
 		icon.counter = icon.cooldown:GetRegions()
+		icon.NormalTexture:Hide() --abyui
 		for _, pieceName in ipairs(textureUVs) do
 			local region = icon[pieceName];
 			if region then

@@ -1,15 +1,11 @@
+if not MultiCastActionBarFrame then return end
+
 --------------------------------------------------------------------------------
 -- Totem bar
 -- Lets you move around the bar for totems
 --------------------------------------------------------------------------------
 
 local AddonName, Addon = ...
-
-local MultiCastActionBarFrame = _G.MultiCastActionBarFrame
-if not MultiCastActionBarFrame then
-    return
-end
-
 if not (UnitClassBase('player') == 'SHAMAN' and Addon:IsBuild('wrath')) then
     return
 end

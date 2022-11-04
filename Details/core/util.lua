@@ -1203,6 +1203,11 @@ end
 					local blue_now = ThisGradient.StartBlue + (percent  * ThisGradient.OnePercentBlue)
 					local alpha_now = ThisGradient.StartAlpha + (percent  * ThisGradient.OnePercentAlpha)
 
+					red_now = Saturate(red_now)
+					green_now = Saturate(green_now)
+					blue_now = Saturate(blue_now)
+					alpha_now = Saturate(alpha_now)
+
 					if (ThisGradient.ObjectType == "frame") then
 						ThisGradient.Object:SetBackdropColor(red_now, green_now, blue_now, alpha_now)
 					elseif (ThisGradient.ObjectType == "texture") then

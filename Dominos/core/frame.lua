@@ -146,7 +146,7 @@ function Frame:Free(deleteSettings)
     FlyPaper.RemoveFrame(AddonName, self.id, self)
 
     self:ClearAllPoints()
-    self:SetUserPlaced(nil)
+    self:SetUserPlaced(false)
     self:Hide()
 
     self:OnRelease(self.id, deleteSettings)
@@ -942,7 +942,7 @@ end
 --------------------------------------------------------------------------------
 
 function Frame:GetDisplayName()
-    return L.AbyDisplayNames[self.id] or L.BarDisplayName:format(tostring(self.id):gsub('^%l', string.upper))
+    return L.BarDisplayName:format(tostring(self.id):gsub('^%l', string.upper))
 end
 
 function Frame:GetDescription()
@@ -1029,10 +1029,34 @@ function Frame:MaybeCallMethod(method, ...)
     end
 end
 
-function Frame:ForAll(method, ...)
+function Frame:ForEach(method, ...)
     for _, frame in self:GetAll() do
         frame:MaybeCallMethod(method, ...)
     end
+end
+
+function Frame:All(method, ...)
+    for _, frame in self:GetAll() do
+        local func = self[method]
+
+        if type(func) == 'function' and not func(frame, ...) then
+            return false
+        end
+    end
+
+    return true
+end
+
+function Frame:Any(method, ...)
+    for _, frame in self:GetAll() do
+        local func = self[method]
+
+        if type(func) == 'function' and func(frame, ...) then
+            return true
+        end
+    end
+
+    return false
 end
 
 -- takes a frameId, and performs the specified action on that frame
@@ -1040,7 +1064,7 @@ end
 -- a range of IDs
 function Frame:ForFrame(id, method, ...)
     if id == 'all' then
-        self:ForAll(method, ...)
+        self:ForEach(method, ...)
     else
         local startID, endID = tostring(id):match('(%d+)-(%d+)')
 

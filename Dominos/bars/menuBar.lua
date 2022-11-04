@@ -12,18 +12,18 @@ local MICRO_BUTTONS
 
 if Addon:IsBuild('retail') then
     MICRO_BUTTONS = {
-        'CharacterMicroButton',
-        'SpellbookMicroButton',
-        'TalentMicroButton',
-        'AchievementMicroButton',
-        'QuestLogMicroButton',
-        'GuildMicroButton',
-        'LFDMicroButton',
-        'CollectionsMicroButton',
-        'EJMicroButton',
-        'StoreMicroButton',
-        'MainMenuMicroButton'
-        -- "HelpMicroButton"
+        "CharacterMicroButton",
+        "SpellbookMicroButton",
+        "TalentMicroButton",
+        "AchievementMicroButton",
+        "QuestLogMicroButton",
+        "GuildMicroButton",
+        "LFDMicroButton",
+        "CollectionsMicroButton",
+        "EJMicroButton",
+        "StoreMicroButton",
+        -- "HelpMicroButton",
+        "MainMenuMicroButton"
     }
 else
     MICRO_BUTTONS = _G.MICRO_BUTTONS
@@ -124,12 +124,21 @@ MenuBar:Extend(
 )
 
 function MenuBar:GetDefaults()
-    return {
-        displayLayer = 'LOW',
-        point = 'BOTTOMRIGHT',
-        x = -244,
-        y = 0
-    }
+    if Addon:IsBuild("retail") then
+        return {
+            displayLayer = 'LOW',
+            point = 'BOTTOMRIGHT',
+            x = 0,
+            y = 48
+        }
+    else
+        return {
+            displayLayer = 'LOW',
+            point = 'BOTTOMRIGHT',
+            x = 0,
+            y = 0
+        }
+    end
 end
 
 function MenuBar:AcquireButton(index)
@@ -140,10 +149,12 @@ function MenuBar:NumButtons()
     return #self.activeButtons
 end
 
-function MenuBar:GetButtonInsets()
-    local l, r, t, b = MenuBar.proto.GetButtonInsets(self)
+if not Addon:IsBuild("retail") then
+    function MenuBar:GetButtonInsets()
+        local l, r, t, b = MenuBar.proto.GetButtonInsets(self)
 
-    return l, r + 1, t + 3, b
+        return l, r + 1, t + 3, b
+    end
 end
 
 function MenuBar:UpdateActiveButtons()
@@ -324,21 +335,12 @@ end
 local MenuBarModule = Addon:NewModule('MenuBar')
 
 function MenuBarModule:OnInitialize()
-    -- fix blizzard nil bug
-    -- luacheck: push ignore 111 113
-    if not AchievementMicroButton_Update then
-        AchievementMicroButton_Update = function()
-        end
-    end
-    -- luacheck: pop
-
     -- the performance bar actually appears under the game menu button if you
     -- move it somewhere else
-    local MainMenuBarPerformanceBar = MainMenuBarPerformanceBar
-    local MainMenuMicroButton = MainMenuMicroButton
-    if MainMenuBarPerformanceBar and MainMenuMicroButton then
-        MainMenuBarPerformanceBar:ClearAllPoints()
-        MainMenuBarPerformanceBar:SetPoint('BOTTOM', MainMenuMicroButton, 'BOTTOM')
+    local perf = MainMenuMicroButton and MainMenuMicroButton.MainMenuBarPerformanceBar
+    if perf then
+        perf:ClearAllPoints()
+        perf:SetPoint('BOTTOM', 0, 0)
     end
 end
 

@@ -1137,6 +1137,11 @@ local default_profile = {
 			line_height = 17,
 		},
 
+	--new window
+		all_in_one_windows = {
+			
+		},
+
 }
 
 _detalhes.default_profile = default_profile

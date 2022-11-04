@@ -157,9 +157,6 @@ end
 --endregion
 
 --region !!!163UI!!!
--- RunSecond.lua
---被世界任务完成框遮挡
-CastingBarFrame:SetFrameStrata("DIALOG")
 
 -- Minimap.lua
 function U1MMB_MinimapZoom_Toggle(enable)

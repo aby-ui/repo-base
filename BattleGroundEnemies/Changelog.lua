@@ -2,6 +2,24 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.0.4",
+		General = "This version fixes a error message and hopefully makes RBGs fully working. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed a error that occured when going from a BG into a arena reported by dankNstein_ at curseforge.",
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"This release now fully workes in RBGs, thanks at l3uGsY at GitHub for testing things out and providing data :)",
+				}
+			}
+		}
+	},
+	{
 		Version = "10.0.0.3",
 		General = "This version fixed a code loop.. Please read the notes from version 9.2.7.2 below if you haven't been using a version 9.2.7.X before",
 		Sections = {

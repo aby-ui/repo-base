@@ -3,10 +3,9 @@
 ## Notes: A main actionbar replacement
 ## Notes-zhCN: 一种动作条替换方案
 ## Author: Tuller
-## Version: 9.3.5
+## Version: 10.0.0
 ## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper, LibDualSpec-1.0
-## Dependencies: TODO:abyui10
 # stuff required for the addon to work
 embeds.xml
 localization.xml
@@ -21,29 +20,32 @@ core\fadeManager.lua
 core\overrideController.lua
 #core\overrideController.bcc.lua
 core\tooltipController.lua
+core\blizzardHider.lua
+#core\blizzardHider.classic.lua
 # builtin bars
-bars\actionButtonMixin.lua
-bars\actionButtons.lua
-bars\actionBar.lua
-bars\actionBarMenu.lua
-bars\actionBarModule.lua
-bars\petBar.lua
-bars\stanceBar.lua
+bars\actionBar\actionButtonMap.lua
+bars\actionBar\button.lua
+bars\actionBar\bar.lua
+bars\actionBar\menu.lua
+bars\actionBar\module.lua
 bars\bagBar.lua
-bars\menuBar.lua
-bars\possessBar.lua
-bars\vehicleBar.lua
 bars\extraAbilityBar.lua
+bars\encounterBar.lua
+bars\menuBar.lua
+bars\petBar.lua
+#bars\petBar.classic.lua
+bars\possessBar.lua
+bars\queueStatusBar.lua
+bars\stanceBar.lua
+#bars\stanceBar.classic.lua
+bars\talkingHeadBar.lua
 bars\totemBar.lua
 # stuff you should be able to comment out and still have Dominos work
 plugins\slashCommands.lua
 plugins\launcher.lua
-plugins\blizzardHider.lua
 plugins\buttonThemer.lua
-plugins\multiActionBarFixer.lua
 #plugins\multiActionBarFixer.classic.lua
-plugins\quickBindings.lua
-#plugins\getActionReagentUses.lua
+plugins\showGridFixes.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Dominos 多米诺动作条

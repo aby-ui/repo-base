@@ -135,7 +135,7 @@ elseif class == 'PALADIN' then
         addFormState('class', 'devotion', 465)
         addFormState('class', 'retribution', 183435)
 
-        addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
+        addState('class', 'shield', getEquippedConditional(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Shield))
     elseif Addon:IsBuild('wrath') then
         addFormState('class', 'concentration', 19746)
         addFormState('class', 'crusader', 32223)
@@ -172,12 +172,16 @@ elseif class == 'WARLOCK' then
         addState('class', 'metamorphosis', '[form:1]', GetSpellInfo(47241))
     end
 elseif class == 'WARRIOR' then
-    if not Addon:IsBuild('retail') then
+    if Addon:IsBuild('retail') then
+        addFormState('class', 'battle', 386164)
+        addFormState('class', 'defensive', 386208)
+        addFormState('class', 'berserker', 386196)
+
+        addState('class', 'shield', getEquippedConditional(Enum.ItemClass.Armor, Enum.ItemArmorSubclass.Shield))
+    else
         addState('class', 'battle', '[bonusbar:1]', GetSpellInfo(2457))
         addState('class', 'defensive', '[bonusbar:2]', GetSpellInfo(71))
         addState('class', 'berserker', '[bonusbar:3]', GetSpellInfo(2458))
-    else
-        addState('class', 'shield', getEquippedConditional(LE_ITEM_CLASS_ARMOR, LE_ITEM_ARMOR_SHIELD))
     end
 end
 

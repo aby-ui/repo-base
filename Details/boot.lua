@@ -6,8 +6,8 @@
 
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10205
-		_detalhes.alpha_build_counter = 10205 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10259
+		_detalhes.alpha_build_counter = 10259 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -63,6 +63,14 @@ do
 	_detalhes.resize_debug = {}
 
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
+
+	--[=[
+	- 
+	- 
+	- this is an empty comment section
+	- 
+	- 
+	--]=]
 
 	local news = {
 		{"v9.2.0.10001.146", "Aug 10th, 2022"},

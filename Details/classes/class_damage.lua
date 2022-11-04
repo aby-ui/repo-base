@@ -3074,6 +3074,7 @@ function Details:SetClassIcon(texture, instance, class) --[[ exported]]
 	elseif (class == "PET") then
 		texture:SetTexture(instance and instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
 		texture:SetTexCoord(0.25, 0.49609375, 0.75, 1)
+		actor_class_color_r, actor_class_color_g, actor_class_color_b = DetailsFramework:ParseColors(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 		texture:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 
 	else

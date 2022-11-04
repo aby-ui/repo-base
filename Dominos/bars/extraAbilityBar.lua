@@ -1,7 +1,4 @@
-local ExtraAbilityContainer = _G.ExtraAbilityContainer
-if not ExtraAbilityContainer then
-    return
-end
+if not ExtraAbilityContainer then return end
 
 local AddonName, Addon = ...
 local L = LibStub("AceLocale-3.0"):GetLocale(AddonName)
@@ -11,34 +8,25 @@ local BAR_ID = 'extra'
 local ExtraAbilityBar = Addon:CreateClass('Frame', Addon.Frame)
 
 function ExtraAbilityBar:New()
-    local bar = ExtraAbilityBar.proto.New(self, BAR_ID)
-
-    -- drop need for showstates for this case
-    if bar:GetUserDisplayConditions() == '[extrabar]show;hide' then
-        bar:SetUserDisplayConditions(nil)
-    end
-
-    return bar
+    return ExtraAbilityBar.proto.New(self, BAR_ID)
 end
 
 function ExtraAbilityBar:GetDisplayName()
     return L.ExtraBarDisplayName
 end
 
-ExtraAbilityBar:Extend(
-    'OnAcquire', function(self)
-        local container = ExtraAbilityContainer
+ExtraAbilityBar:Extend('OnAcquire',  function(self)
+    local container = ExtraAbilityContainer
 
-        container:ClearAllPoints()
-        container:SetPoint('CENTER', self)
-        container:SetParent(self)
+    container:ClearAllPoints()
+    container:SetPoint('CENTER', self)
+    container:SetParent(self)
 
-        self.container = container
+    self.container = container
 
-        self:Layout()
-        self:UpdateShowBlizzardTexture()
-    end
-)
+    self:Layout()
+    self:UpdateShowBlizzardTexture()
+end)
 
 function ExtraAbilityBar:ThemeBar(enable)
     if HasExtraActionBar() then
@@ -52,11 +40,10 @@ function ExtraAbilityBar:ThemeBar(enable)
         end
     end
 
-    local zoneAbilities = C_ZoneAbility.GetActiveAbilities()
+    local zoneAbilities = C_ZoneAbility and C_ZoneAbility.GetActiveAbilities() or 0
 
     if #zoneAbilities > 0 then
-        local container = ZoneAbilityFrame and ZoneAbilityFrame.SpellButtonContainer
-        for button in container:EnumerateActive() do
+        for button in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
             if button then
                 if enable then
                     Addon:GetModule('ButtonThemer'):Register(
@@ -141,39 +128,10 @@ end
 
 local ExtraAbilityBarModule = Addon:NewModule('ExtraAbilityBar')
 
-function ExtraAbilityBarModule:OnEnable()
-    self:ApplyTitanPanelWorkarounds()
-end
-
 function ExtraAbilityBarModule:Load()
-    if not self.initialized then
-        self.initialized = true
-
-        -- disable mouse interactions on the extra action bar
-        -- as it can sometimes block the UI from being interactive
-        if ExtraActionBarFrame:IsMouseEnabled() then
-            ExtraActionBarFrame:EnableMouse(false)
-        end
-
-        -- prevent the stock UI from messing with the extra ability bar position
-        ExtraAbilityContainer.ignoreFramePositionManager = true
-
-        -- onshow/hide call UpdateManagedFramePositions on the blizzard end so
-        -- turn that bit off
-        ExtraAbilityContainer:SetScript("OnShow", nil)
-        ExtraAbilityContainer:SetScript("OnHide", nil)
-
-        -- watch for new frames to be added to the container as we will want to
-        -- possibly theme them later (if they're new buttons)
-        hooksecurefunc(
-            ExtraAbilityContainer, 'AddFrame', function()
-                if self.frame then
-                    self.frame:ThemeBar(not self.frame:ShowingBlizzardTexture())
-                end
-            end
-        )
-
-        Addon.BindableButton:AddQuickBindingSupport(_G.ExtraActionButton1)
+    if not self.loaded then
+        self:OnFirstLoad()
+        self.loaded = true
     end
 
     self.frame = ExtraAbilityBar:New()
@@ -183,6 +141,34 @@ function ExtraAbilityBarModule:Unload()
     if self.frame then
         self.frame:Free()
     end
+end
+
+function ExtraAbilityBarModule:OnFirstLoad()
+    self:ApplyTitanPanelWorkarounds()
+
+    -- disable mouse interactions on the extra action bar
+    -- as it can sometimes block the UI from being interactive
+    if ExtraActionBarFrame:IsMouseEnabled() then
+        ExtraActionBarFrame:EnableMouse(false)
+    end
+
+    -- prevent the stock UI from messing with the extra ability bar position
+    ExtraAbilityContainer.ignoreFramePositionManager = true
+
+    -- onshow/hide call UpdateManagedFramePositions on the blizzard end so
+    -- turn that bit off
+    ExtraAbilityContainer:SetScript("OnShow", nil)
+    ExtraAbilityContainer:SetScript("OnHide", nil)
+
+    -- watch for new frames to be added to the container as we will want to
+    -- possibly theme them later (if they're new buttons)
+    hooksecurefunc(
+        ExtraAbilityContainer, 'AddFrame', function()
+            if self.frame then
+                self.frame:ThemeBar(not self.frame:ShowingBlizzardTexture())
+            end
+        end
+    )
 end
 
 -- Titan panel will attempt to take control of the ExtraActionBarFrame and break

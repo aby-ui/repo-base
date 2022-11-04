@@ -1,14 +1,17 @@
 ## Interface: 100000
 ## Title: Dominos Extras
 ## Title-zhCN: |cFF0099FFDominos|r Extras 模块
-## Notes: Makes additional frames movable
+## Notes: This addon is deprecated and should be removed
 ## Notes-zhCN: 使玩家高级能量条(PlayerPowerBarAlt)可移动
-## Author: Tuller (with help from Goranaws)
-## Dependencies: Dominos
-encounterBar.lua
-talkingHeadBar.lua
+## Author: Tuller
+## Dependencies: Dominos-Deprecated
+## DefaultState: disabled
+main.lua
+
+#encounterBar.lua
+#talkingHeadBar.lua
 
 
-## Title-zhCN: |cff880303[爱不易]|r Dominos 特殊能量条
-## Notes-zhCN: 多米诺-特殊能量条模块
+## Title-zhCN: |cff880303[爱不易]|r Dominos 废弃模块
+## Notes-zhCN: 多米诺-特殊能量条模块, 10.0已废弃
 ## X-Vendor: AbyUI

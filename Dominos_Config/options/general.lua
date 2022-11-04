@@ -48,15 +48,15 @@ Addon:AddOptionsPanel(
                 width = 1.5,
             },
             h(L.ActionBarBehavior),
-            check(L.LockActionButtons) {
-                get = function()
-                    return LOCK_ACTIONBAR == "1"
-                end,
-                set = function()
-                    InterfaceOptionsActionBarsPanelLockActionBars:Click()
-                end,
-                width = 1.5
-            },
+            -- check(L.LockActionButtons) {
+            --     get = function()
+            --         return LOCK_ACTIONBAR == "1"
+            --     end,
+            --     set = function()
+            --         InterfaceOptionsActionBarsPanelLockActionBars:Click()
+            --     end,
+            --     width = 1.5
+            -- },
             select(L.RightClickUnit) {
                 values = {
                     player = L.RCUPlayer,

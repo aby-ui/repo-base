@@ -3,7 +3,7 @@ local PageBar = Dominos:CreateClass('Frame', Dominos.ButtonBar)
 Dominos.PageBar = PageBar
 
 local L = LibStub('AceLocale-3.0'):GetLocale('Dominos')
-local buttons = {ActionBarUpButton, ActionBarDownButton}
+local buttons = { MainMenuBar.ActionBarPageNumber }
 
 function PageBar:New()
 	local f = PageBar.proto.New(self, 'page')
@@ -24,8 +24,8 @@ function PageBar:GetDefaults()
 		spacing = 0,
 		y = 0,
 		columns = 1,
-        scale=0.9,
-        fadeAlpha=0.35,
+        scale=1,
+        fadeAlpha=0.5,
 	}
 end
 

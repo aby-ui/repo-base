@@ -26,7 +26,7 @@ function CastingBar:Create(...)
 
 	bar:SetFrameStrata('DIALOG')
 
-	local cbf = _G.CastingBarFrame
+	local cbf = _G.PlayerCastingBarFrame
 
 	cbf:SetParent(bar)
 	cbf:ClearAllPoints()
@@ -101,7 +101,7 @@ local CastingBarController = Dominos:NewModule('CastingBar')
 
 function CastingBarController:OnInitialize()
 	-- make sure the position manager doesn't mess with the casting bar
-	_G.CastingBarFrame.ignoreFramePositionManager = true
+	_G.PlayerCastingBarFrame.ignoreFramePositionManager = true
 end
 
 function CastingBarController:Load()

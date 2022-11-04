@@ -570,12 +570,10 @@
 	end
 
 	function Details:SendPartyData(type, ...)
-		local isInInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
-		if (isInInstanceGroup) then
-			Details:SendCommMessage(DETAILS_PREFIX_NETWORK, Details:Serialize(type, UnitName("player"), GetRealmName(), Details.realversion, ...), "INSTANCE_CHAT")
-		else
-			Details:SendCommMessage (DETAILS_PREFIX_NETWORK, Details:Serialize(type, UnitName("player"), GetRealmName(), Details.realversion, ...), "PARTY")
-		end
+		local prefix = DETAILS_PREFIX_NETWORK
+		local data = Details:Serialize(type, UnitName("player"), GetRealmName(), Details.realversion, ...)
+		local channel = IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or "PARTY"
+		Details:SendCommMessage(prefix, data, channel)
 	end
 
 	function Details:SendRaidOrPartyData(type, ...)

@@ -34,27 +34,6 @@ local function SBuff_SecondsToTimeAbbrev(seconds)
     end
 end
 
-local doneButtons = {}
-
-local function SBuff_SetFontSize(dura, size)
-    local fontfile, height, flags = dura:GetFont()
-    dura:SetFont(fontfile, size, flags)
-end
-
-local function SBuff_Aura_ChangeBuffFontSize(dura)
-    if(dura.__sbuff_proccessed) then return end
-    doneButtons[dura] = true
-    dura.__sbuff_proccessed = true
-    dura:SetWidth(80)
-
-    -- if U1GetCfgValue then
-    --     local displaySeconds = U1GetCfgValue(_ADDONNAME, 'time')
-    -- end
-
-    local size = U1GetCfgValue(_ADDONNAME, 'cvar_buffDurations/buffSize')
-    SBuff_SetFontSize(dura, size)
-end
-
 local function updateAll(buttons, func)
     for _, btn in ipairs(buttons) do
         func(btn, btn.buttonInfo)

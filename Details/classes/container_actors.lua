@@ -473,12 +473,12 @@
 		if (not _detalhes.tabela_vigente) then
 			return
 		end
-		
+
 		pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
-		pet_tooltip_frame:SetHyperlink ("unit:" .. serial or "")
+		pet_tooltip_frame:SetHyperlink ("unit:" .. (serial or ""))
 
 		Details.tabela_vigente.raid_roster_indexed = Details.tabela_vigente.raid_roster_indexed or {}
-		
+
 		local line1 = _G ["DetailsPetOwnerFinderTextLeft2"]
 		local text1 = line1 and line1:GetText()
 		if (text1 and text1 ~= "") then
@@ -502,11 +502,18 @@
 				else
 					if (text1:find(playerName)) then
 						return find_pet_found_owner (pName, serial, nome, flag, self)
+					else
+						local ownerName = (string.match(text1, string.gsub(UNITNAME_TITLE_PET, "%%s", "(%.*)")) or string.match(text1, string.gsub(UNITNAME_TITLE_MINION, "%%s", "(%.*)")) or string.match(text1, string.gsub(UNITNAME_TITLE_GUARDIAN, "%%s", "(%.*)")))
+						if (ownerName) then
+							if (_detalhes.tabela_vigente.raid_roster[ownerName]) then
+								return find_pet_found_owner (ownerName, serial, nome, flag, self)
+							end
+						end
 					end
 				end
 			end
 		end
-	
+
 		local line2 = _G ["DetailsPetOwnerFinderTextLeft3"]
 		local text2 = line2 and line2:GetText()
 		if (text2 and text2 ~= "") then
@@ -527,6 +534,13 @@
 				else
 					if (text2:find(playerName)) then
 						return find_pet_found_owner (pName, serial, nome, flag, self)
+					else
+						local ownerName = (string.match(text2, string.gsub(UNITNAME_TITLE_PET, "%%s", "(%.*)")) or string.match(text2, string.gsub(UNITNAME_TITLE_MINION, "%%s", "(%.*)")) or string.match(text2, string.gsub(UNITNAME_TITLE_GUARDIAN, "%%s", "(%.*)")))
+						if (ownerName) then
+							if (_detalhes.tabela_vigente.raid_roster[ownerName]) then
+								return find_pet_found_owner (ownerName, serial, nome, flag, self)
+							end
+						end
 					end
 				end
 			end

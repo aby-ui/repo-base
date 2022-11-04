@@ -69,24 +69,22 @@ L.TipRollBar = '在团队中显示物品掷点面板'
 L.TipVehicleBar = [[
 显示瞄准和离开载具的控制按钮.
 其他载具按钮将在心灵控制条上显示.]]
-
-L.AbyDisplayNames = {artifact="神器",exp="经验声望",page="翻\n页",vehicle="离开\n载具",pet="宠物技能",menu="菜单",bags="背包",roll="掷骰框",alerts="提示框",extra="特殊\n动作",encounter="战斗能量",cast="施法条",cast_new="美化施法条",zone="区域\n技能",class="职业", talk="剧情对话" }
+L.VehicleBarDisplayName = "离开\n载具" --HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL or BINDING_NAME_VEHICLEEXIT
 
 L.BarDisplayName = "%s 条"
 L.ActionBarDisplayName = "动作条 %s"
-L.ActionButtonDisplayName = "Action Button %d"
 L.AlertsBarDisplayName = "提示框"
-L.AvailableProfiles = 'Available Profiles'
 L.BagBarDisplayName = "背包"
-L.ClassBarDisplayName = "职业"
-L.ExtraBarDisplayName = "特殊\n动作"
+--L.ClassBarDisplayName = "姿态条"
+--L.ExtraBarDisplayName = "特殊\n动作"
 L.MenuBarDisplayName = "菜单"
-L.PossessBarDisplayName = '支配'
-L.PetBarDisplayName = "宠物技能"
+--L.PossessBarDisplayName = '附身条'
+--L.PetBarDisplayName = "宠物条"
 L.RollBarDisplayName = "掷骰框"
-L.VehicleDisplayName = "离开\n载具"
+L.VehicleDisplayName = "退出\n载具"
 L.PageBarDisplayName = "翻\n页"
-L.CastingBarDisplayName = "施法条"
+L.CastingBarDisplayName = "暴雪施法条"
+L.QueueStatusBarDisplayName = "排队\n状态"
 L.KeyboardMovementTip = "按方向键(WASD)来微调位置."
 
 L.ShowAlignmentGrid = "布局网格"

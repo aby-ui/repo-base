@@ -15,28 +15,27 @@ local CHANNELDELAY = "|cffff2020%-.2f|r"
 local CASTDELAY = "|cffff2020%.1f|r"
 local CASTCURR = "|cffFFFFFF%.1f|r"
 local CASTMAX = "|cffFFFFFF%.1f|r"
-local sendTime, timeDiff;
 
 function C:OnInitialize()	
 	self.playerName = UnitName("player");
-	self.delayText = CastingBarFrame:CreateFontString(nil, "ARTWORK");
-	self.delayText:SetPoint("RIGHT", CastingBarFrame, "RIGHT", -3, 2);
+	self.delayText = PlayerCastingBarFrame:CreateFontString(nil, "ARTWORK");
+	self.delayText:SetPoint("RIGHT", PlayerCastingBarFrame, "RIGHT", -3, 2);
 	self.delayText:SetFont(GameFontHighlight:GetFont(), 13);
 
-	self.delayBar = CastingBarFrame:CreateTexture("StatusBar", "BACKGROUND");
-	self.delayBar:SetHeight(CastingBarFrame:GetHeight());
+	self.delayBar = PlayerCastingBarFrame:CreateTexture("StatusBar");
+	self.delayBar:SetDrawLayer("ARTWORK", 2)
+	self.delayBar:SetHeight(PlayerCastingBarFrame:GetHeight()-2);
 	self.delayBar:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	self.delayBar:SetVertexColor(1, 0, 0, 0.95)
+	self.delayBar:SetVertexColor(1, 0, 0, 0.8)
 	self.delayBar:Hide()
-    SetOrHookScript(CastingBarFrame, "OnUpdate", function(...)
-        self:CastingBarFrame_OnUpdate(...)
+    SetOrHookScript(PlayerCastingBarFrame, "OnUpdate", function(...)
+        self:PlayerCastingBarFrame_OnUpdate(...)
     end);
 end
 
 function C:Toggle(switch)
 	if (switch) then
-		--self:RegisterEvent("UNIT_SPELLCAST_SENT"); --7.0
-        self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED"); --7.0
+        self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED"); --self:RegisterEvent("UNIT_SPELLCAST_SENT"); --7.0 SENT 和 START 相同
 		self:RegisterEvent("UNIT_SPELLCAST_START");
 		self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");		
 		self:RegisterEvent("UNIT_SPELLCAST_DELAYED");
@@ -72,7 +71,7 @@ end
 
 --7.0 from Quartz
 function C:CURRENT_SPELL_CAST_CHANGED(event)
-	self.sendTime = nil
+	self.sendTime = GetTime()
 end
 
 function C:UNIT_SPELLCAST_SUCCEEDED(event, unit)
@@ -90,33 +89,26 @@ function C:GetLatency()
 end
 
 function C:ShowDelayBar(maxValue)
-    if (self.enable and self.timeDiff) then
+    if (self.enable and self.timeDiff and self.timeDiff > 0) then
         local modulus = self.timeDiff / maxValue;
         if modulus > 1 then
             modulus = 1;
-        elseif modulus < 0 then
-            modulus = 0;
+        elseif modulus <= 0 then
+            modulus = 0.001;
         end
-        --local dl, up, _, latency = GetNetStats()
-        --local modulus = latency / maxValue / 1000
-        if(modulus <= 0) then modulus = 0.001 end
-        if(modulus > 1) then modulus = 1 end
-        self.delayBar:SetWidth(CastingBarFrame:GetWidth() * modulus);
-        self.delayBar:ClearAllPoints()
-        if (self.casting) then
-            self.delayBar:SetPoint("RIGHT", CastingBarFrame, "RIGHT",  0, 0);
-        elseif (self.channeling) then
-            self.delayBar:SetPoint("LEFT", CastingBarFrame, "LEFT",  0, 0);
-        end
+        self.delayBar:SetWidth((PlayerCastingBarFrame:GetWidth() - 4) * modulus);
+		local point = self.casting and "RIGHT" or self.channeling and "LEFT"
+		if point and point ~= self.lastPoint then
+			self.delayBar:ClearAllPoints()
+			self.delayBar:SetPoint(point, PlayerCastingBarFrame, point,  point=="RIGHT" and -2 or 2, 0);
+			self.lastPoint = point
+		end
         self.delayBar:Show();
     else
         self.delayBar:Hide()
     end
 end
 
---function C:UNIT_SPELLCAST_START(event, unit)
---    RunOnNextFrame(C.UNIT_SPELLCAST_START_BACKEND, C, event, unit)
---end
 function C:UNIT_SPELLCAST_START(event, unit)
 	if unit ~= "player" then return end
 	local _, _, _,startTime, endTime = UnitCastingInfo(unit);
@@ -128,10 +120,12 @@ function C:UNIT_SPELLCAST_START(event, unit)
 	self.fadeOut = nil;
     local maxValue = (endTime - startTime) / 1000
 
-	self.timeDiff = self.sendTime and (GetTime() - self.sendTime) or self:GetLatency(); --print(self.timeDiff)
+	self.timeDiff = self.sendTime and (GetTime() - self.sendTime) or self:GetLatency();
     self.sendTime = nil
 	local castlength = endTime - startTime;
-	self.timeDiff = self.timeDiff > castlength and castlength or self.timeDiff;
+	if self.timeDiff > castlength then
+		self.timeDiff = castlength
+	end
     self:ShowDelayBar(maxValue)
 end
 
@@ -230,7 +224,7 @@ function C:UNIT_SPELLCAST_INTERRUPTED(event, unit)
 end
 ----- END  ----
 
-function C:CastingBarFrame_OnUpdate(frame, elapsed, ...)
+function C:PlayerCastingBarFrame_OnUpdate(frame, elapsed, ...)
 	if frame.unit ~= "player" then return end
     if not (self.casting or self.channeling) then
         self.delayText:Hide()
@@ -241,11 +235,12 @@ function C:CastingBarFrame_OnUpdate(frame, elapsed, ...)
 	local startTime = self.startTime;
 	local endTime = self.endTime;
 	local timeLeft,finishTime;
-	if(endTime and startTime and self.timeDiff)then
-		finishTime = endTime - startTime -self.timeDiff;
-		timeLeft = currentTime - startTime - self.timeDiff;
-		if(timeLeft<0)then 
-			timeLeft=currentTime - startTime;
+	local diff = self.timeDiff --表示已经施法但得到开始事件晚了
+	if(endTime and startTime and diff)then
+		finishTime = endTime - startTime - diff
+		timeLeft = currentTime - startTime - diff;
+		if (timeLeft < 0) then
+			timeLeft = 0;
 		end
 
 		local castTime = finishTime - timeLeft;
@@ -253,10 +248,8 @@ function C:CastingBarFrame_OnUpdate(frame, elapsed, ...)
 
 		if (self.showremain) then
 			-- 倒数计时
-			if(castTime > 0)then			
+			if(castTime > 0)then
 				self.delayText:SetText(format(CASTCURR, castTime))
-			else
-				self.delayText:SetText(format(CASTCURR, castTime));
 			end
             self.delayText:Show()
 		else

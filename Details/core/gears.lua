@@ -2394,6 +2394,71 @@ function Details:DecompressData (data, dataType)
 	end
 end
 
+Details.specToRole = {
+	--DRUID
+	[102] = "DAMAGER", --BALANCE
+	[103] = "DAMAGER", --FERAL DRUID
+	[105] = "HEALER", --RESTORATION
+
+	--HUNTER
+	[253] = "DAMAGER", --BM
+	[254] = "DAMAGER", --MM
+	[255] = "DAMAGER", --SURVIVOR
+
+	--MAGE
+	[62] = "DAMAGER", --ARCANE
+	[64] = "DAMAGER", --FROST
+	[63] = "DAMAGER", ---FIRE
+
+	--PALADIN
+	[70] = "DAMAGER", --RET
+	[65] = "HEALER", --HOLY
+	[66] = "TANK", --PROT
+
+	--PRIEST
+	[257] = "HEALER", --HOLY
+	[256] = "HEALER", --DISC
+	[258] = "DAMAGER", --SHADOW
+
+	--ROGUE
+	[259] = "DAMAGER", --ASSASSINATION
+	[260] = "DAMAGER", --COMBAT
+	[261] = "DAMAGER", --SUB
+
+	--SHAMAN
+	[262] = "DAMAGER", --ELEMENTAL
+	[263] = "DAMAGER", --ENHAN
+	[264] = "HEALER", --RESTO
+
+	--WARLOCK
+	[265] = "DAMAGER", --AFF
+	[266] = "DAMAGER", --DESTRO
+	[267] = "DAMAGER", --DEMO
+
+	--WARRIOR
+	[71] = "DAMAGER", --ARMS
+	[72] = "DAMAGER", --FURY
+	[73] = "TANK", --PROT
+	
+	--DK
+	[250] = "TANK", --Blood
+	[251] = "DAMAGER", --Frost
+	[252] = "DAMAGER", --Unholy
+
+	--MONK
+	[268] = "TANK", -- Brewmaster Monk
+	[269] = "DAMAGER", -- Windwalker Monk
+	[270] = "HEALER", -- Mistweaver Monk
+
+	--DH
+	[577] = "DAMAGER", -- Havoc Demon Hunter
+	[581] = "TANK", -- Vengeance Demon Hunter
+
+	--EVOKER
+	[1467] = "DAMAGER", --Devastation Evoker
+	[1468] = "HEALER", --Preservation Evoker		
+}
+
 --oldschool talent tree
 if (DetailsFramework.IsWotLKWow()) then
 	local talentWatchClassic = CreateFrame("frame")
@@ -2540,59 +2605,6 @@ if (DetailsFramework.IsWotLKWow()) then
 			end
 		end
 	end
-
-	Details.specToRole = {
-		--DRUID
-		[102] = "DAMAGER", --BALANCE
-		[103] = "DAMAGER", --FERAL DRUID
-		[105] = "HEALER", --RESTORATION
-	
-		--HUNTER
-		[253] = "DAMAGER", --BM
-		[254] = "DAMAGER", --MM
-		[255] = "DAMAGER", --SURVIVOR
-	
-		--MAGE
-		[62] = "DAMAGER", --ARCANE
-		[64] = "DAMAGER", --FROST
-		[63] = "DAMAGER", ---FIRE
-	
-		--PALADIN
-		[70] = "DAMAGER", --RET
-		[65] = "HEALER", --HOLY
-		[66] = "TANK", --PROT
-	
-		--PRIEST
-		[257] = "HEALER", --HOLY
-		[256] = "HEALER", --DISC
-		[258] = "DAMAGER", --SHADOW
-	
-		--ROGUE
-		[259] = "DAMAGER", --ASSASSINATION
-		[260] = "DAMAGER", --COMBAT
-		[261] = "DAMAGER", --SUB
-	
-		--SHAMAN
-		[262] = "DAMAGER", --ELEMENTAL
-		[263] = "DAMAGER", --ENHAN
-		[264] = "HEALER", --RESTO
-	
-		--WARLOCK
-		[265] = "DAMAGER", --AFF
-		[266] = "DAMAGER", --DESTRO
-		[267] = "DAMAGER", --DEMO
-	
-		--WARRIOR
-		[71] = "DAMAGER", --ARMS
-		[72] = "DAMAGER", --FURY
-		[73] = "TANK", --PROT
-		
-		--Death Knight
-		[250] = "TANK", --Blood
-		[251] = "DAMAGER", --Frost
-		[252] = "DAMAGER", --Unholy
-		
-	}
 
 	function _detalhes:GetRoleFromSpec (specId, unitGUID)
 		if (specId == 103) then --feral druid

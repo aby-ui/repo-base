@@ -78,7 +78,7 @@ U1RegisterAddon("SwingBar", {
     {
         text = "重置位置",
         callback = function(cfg, v, loading)
-            WW(SwingBar):ClearAllPoints():BOTTOM("CastingBarFrame","TOP",0,"20"):un()
+            WW(SwingBar):ClearAllPoints():BOTTOM("PlayerCastingBarFrame","TOP",0,"20"):un()
         end,
     },
 });

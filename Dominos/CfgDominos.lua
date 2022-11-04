@@ -1,5 +1,4 @@
 ﻿U1RegisterAddon("Dominos", {
-    temporarilyForceDisable = 1,
     title = "多米诺动作条",
     optdeps = {"Masque"},
     defaultEnable = 0,
@@ -37,14 +36,11 @@
     end,
 
     {
-        text = '选择预设配置方案',
-        type = 'radio',
-        var = 'prestyle',
-        default = (GetScreenWidth() <= 1280) and "COMPACT" or "MINI",
-        options = {'三行紧凑型', 'MINI', '暴雪布局型', 'NORM', "小屏紧凑型", "COMPACT"},
+        text = '重置为预设方案',
+        type = 'button',
         secure = 1,
         confirm = "注意：当前的动作条设置将重置并无法恢复，您是否确定？",
-        tip = "说明`爱不易预设了几套动作条布局方案，可以选择后自行微调。",
+        tip = "说明`爱不易预设了动作条布局方案，可以重置后自行微调，注意：当前的动作条设置将重置并无法恢复",
         callback = function(cfg, v, loading)
             if(loading) then return end
             Dominos:Unload()
@@ -58,15 +54,15 @@
             --local masque = U1GetMasqueCore and U1GetMasqueCore()
             --if masque then masque:Group("Dominos"):ReSkinWithSub() end
             Dominos:GetModule("ButtonThemer"):Reskin() --LibStub("AceAddon-3.0"):GetAddon("Dominos")
+            Dominos:ToggleLockedFrames()
         end
     },
 
     {
         type = 'button',
-        text = '布局模式',
-        callback = function()
-            Dominos:ToggleLockedFrames()
-        end,
+        text = '进入布局模式',
+        tip = "说明`进入布局设置模式，点击小地图旁边的多米诺按钮也可以进入。",
+        callback = function() Dominos:ToggleLockedFrames() end,
     },
 
     {
@@ -157,13 +153,6 @@
 
     {
         type = 'button',
-        text = '进入布局模式',
-        tip = "说明`进入布局设置模式，点击小地图旁边的多米诺按钮也可以进入。",
-        callback = function() Dominos:ToggleLockedFrames() end,
-    },
-
-    {
-        type = 'button',
         text = '按键绑定模式',
         tip = "说明`进入按键绑定模式，可以快速的给动作条设置绑定热键。",
         callback = function() Dominos:ToggleBindingMode() end,
@@ -178,7 +167,7 @@ local function dominoModuleToggle(name, info, enable, justload)
             if module then
                 pcall(module.Unload, module) --没有统一的是否加载机制，所以只能强制Unload一下试试了
                 module:Load()
-                Dominos.Frame:ForAll('Reanchor')
+                Dominos.Frame:ForEach('Reanchor')
             end
         end
     end
@@ -193,19 +182,23 @@ U1RegisterAddon("Dominos_Cast", { title = "美化施法条模块", defaultEnable
         if justload then
             if IsLoggedIn() then
                 Dominos:GetModule("CastBar"):Load()
-                Dominos.Frame:ForAll('Reanchor')
+                Dominos.Frame:ForEach('Reanchor')
             end
         else
             if enable then
                 Dominos:GetModule("CastBar"):Load()
-                Dominos.Frame:ForAll('Reanchor')
-                _G.CastingBarFrame:UnregisterAllEvents()
+                Dominos.Frame:ForEach('Reanchor')
+                PlayerCastingBarFrame:UnregisterAllEvents()
+                PlayerCastingBarFrame.ignoreFramePositionManager = true
+                PlayerCastingBarFrame:SetParent(Dominos.ShadowUIParent)
             else
                 Dominos:GetModule("CastBar"):Unload()
-                Dominos.Frame:ForAll('Reanchor')
+                Dominos.Frame:ForEach('Reanchor')
                 if IsAddOnLoaded("Quartz") then return end
-                CastingBarFrame.unit = nil
-                CastingBarFrame_SetUnit(CastingBarFrame, "player", true, false)
+                PlayerCastingBarFrame.unit = nil
+                PlayerCastingBarFrame:SetUnit("player", true, false)
+                PlayerCastingBarFrame.ignoreFramePositionManager = nil
+                PlayerCastingBarFrame:SetParent(DominosFramecast)
             end
         end
     end,

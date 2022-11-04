@@ -33,7 +33,7 @@ function HelpDialog:OnLoad(owner)
         edgeSize = 32
     }
 
-    self:SetPoint('TOP', 0, -24)
+    self:SetPoint('TOP', -400, -24)
     self:SetScript('OnDragStart', self.OnDragStart)
     self:SetScript('OnDragStop', self.OnDragStop)
 

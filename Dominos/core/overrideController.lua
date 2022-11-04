@@ -1,5 +1,4 @@
 local _, Addon = ...
-
 if not Addon:IsBuild('retail', 'wrath') then
     return
 end
@@ -7,27 +6,30 @@ end
 local OverrideController = Addon:CreateHiddenFrame('Frame', nil, UIParent, 'SecureHandlerStateTemplate')
 
 local overrideBarStates = {
+	bonusbar = '[bonusbar:5]1;0',
+	form = '[form]1;0',
 	overridebar = '[overridebar]1;0',
 	possessbar = '[possessbar]1;0',
-	vehicleui = '[vehicleui]1;0',
-	vehicle = '[@vehicle,exists]1;0',
 	sstemp = '[shapeshift]1;0',
-	form = '[form]1;0'
+	vehicle = '[@vehicle,exists]1;0',
+	vehicleui = '[vehicleui]1;0'
 }
 
 function OverrideController:OnLoad()
 	-- Override UI Detection
-	local overrideUIWatcher = CreateFrame('Frame', nil, OverrideActionBar, 'SecureHandlerShowHideTemplate')
-	overrideUIWatcher:SetFrameRef('controller', self)
-	self.overrideUIWatcher = overrideUIWatcher
+	local watcher = CreateFrame('Frame', nil, OverrideActionBar, 'SecureHandlerShowHideTemplate')
 
-	overrideUIWatcher:SetAttribute('_onshow', [[
+	watcher:SetFrameRef('controller', self)
+
+	watcher:SetAttribute('_onshow', [[
 		self:GetFrameRef('controller'):SetAttribute('state-isoverrideuishown', true)
 	]])
 
-	overrideUIWatcher:SetAttribute('_onhide', [[
+	watcher:SetAttribute('_onhide', [[
 		self:GetFrameRef('controller'):SetAttribute('state-isoverrideuishown', false)
 	]])
+
+	self.overrideUIWatcher = watcher
 
 	self:SetAttribute('_onstate-isoverrideuishown', [[
 		self:RunAttribute('updateOverrideUI')
@@ -88,7 +90,7 @@ function OverrideController:OnLoad()
 			newPage = GetOverrideBarIndex() or 0
 		elseif HasTempShapeshiftActionBar and HasTempShapeshiftActionBar() then
 			newPage = GetTempShapeshiftBarIndex() or 0
-		else
+		elseif GetBonusBarOffset() > 4 then
 			newPage = GetBonusBarOffset() or 0
 		end
 

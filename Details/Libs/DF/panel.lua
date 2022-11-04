@@ -9390,7 +9390,7 @@ detailsFramework.TimeLineBlockFunctions = {
 
 		--dataIndex stores which line index from the data this line will use
 		--lineData store members: .text .icon .timeline
-		local lineData = data.lines [self.dataIndex]
+		local lineData = data.lines[self.dataIndex]
 
 		self.spellId = lineData.spellId
 
@@ -9398,7 +9398,11 @@ detailsFramework.TimeLineBlockFunctions = {
 		--this is the title and icon of the title
 		if (lineData.icon) then
 			self.icon:SetTexture(lineData.icon)
-			self.icon:SetTexCoord(.1, .9, .1, .9)
+			if (lineData.coords) then
+				self.icon:SetTexCoord(unpack(lineData.coords))
+			else
+				self.icon:SetTexCoord(.1, .9, .1, .9)
+			end
 			self.text:SetText(lineData.text or "")
 			self.text:SetPoint("left", self.icon.widget, "right", 2, 0)
 		else
@@ -9423,12 +9427,13 @@ detailsFramework.TimeLineBlockFunctions = {
 		local baseFrameLevel = parent:GetFrameLevel() + 10
 
 		for i = 1, #timelineData do
-			local blockInfo = timelineData [i]
+			local blockInfo = timelineData[i]
 
-			local timeInSeconds = blockInfo [1]
-			local length = blockInfo [2]
-			local isAura = blockInfo [3]
-			local auraDuration = blockInfo [4]
+			local timeInSeconds = blockInfo[1]
+			local length = blockInfo[2]
+			local isAura = blockInfo[3]
+			local auraDuration = blockInfo[4]
+			local blockSpellId = blockInfo[5]
 
 			local payload = blockInfo.payload
 
@@ -9445,13 +9450,18 @@ detailsFramework.TimeLineBlockFunctions = {
 
 			PixelUtil.SetPoint(block, "left", self, "left", xOffset + headerWidth, 0)
 
-			block.info.spellId = spellId
+			block.info.spellId = blockSpellId or spellId
 			block.info.time = timeInSeconds
 			block.info.duration = auraDuration
 			block.info.payload = payload
 
 			if (useIconOnBlock) then
-				block.icon:SetTexture(lineData.icon)
+				local iconTexture = lineData.icon
+				if (blockSpellId) then
+					iconTexture = GetSpellTexture(blockSpellId)
+				end
+
+				block.icon:SetTexture(iconTexture)
 				block.icon:SetTexCoord(.1, .9, .1, .9)
 				block.icon:SetAlpha(.834)
 				block.icon:SetSize(self:GetHeight(), self:GetHeight())
@@ -9581,7 +9591,7 @@ detailsFramework.TimeLineFunctions = {
 
 	ResetAllLines = function(self)
 		for i = 1, #self.lines do
-			self.lines [i]:Reset()
+			self.lines[i]:Reset()
 		end
 	end,
 
@@ -9638,7 +9648,7 @@ detailsFramework.TimeLineFunctions = {
 		--refresh lines
 		self:ResetAllLines()
 		for i = 1, #self.data.lines do
-			local line = self:GetLine (i)
+			local line = self:GetLine(i)
 			line.dataIndex = i --this index is used inside the line update function to know which data to get
 			line.lineHeader:SetWidth(self.options.header_width)
 			line:SetBlocksFromData() --the function to update runs within the line object
@@ -9651,7 +9661,7 @@ detailsFramework.TimeLineFunctions = {
 		self.elapsedTimeFrame:SetPoint("topright", self.body, "topright", 0, 0)
 		self.elapsedTimeFrame:Reset()
 
-		self.elapsedTimeFrame:Refresh (self.data.length, self.currentScale)
+		self.elapsedTimeFrame:Refresh(self.data.length, self.currentScale)
 	end,
 
 	SetData = function(self, data)

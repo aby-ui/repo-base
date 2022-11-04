@@ -4,6 +4,11 @@ local ProgressBarModule = Dominos:NewModule("ProgressBars", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("Dominos-Progress")
 
 function ProgressBarModule:OnInitialize()
+	if StatusTrackingBarManager then
+		StatusTrackingBarManager:UnregisterAllEvents()
+		StatusTrackingBarManager:Hide()
+	end
+
 	Addon.Config:Init()
 end
 

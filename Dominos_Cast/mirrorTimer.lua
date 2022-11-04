@@ -3,9 +3,14 @@ local Dominos = LibStub('AceAddon-3.0'):GetAddon('Dominos')
 local LSM = LibStub('LibSharedMedia-3.0')
 local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-CastBar')
 
-local GetMirrorTimerProgress = _G.GetMirrorTimerProgress
-
 local MirrorTimer = Dominos:CreateClass('Frame', Dominos.Frame)
+
+local MirrorTimerColors = {
+    EXHAUSTION = { r = 1.00, g = 0.90, b = 0.00 },
+    BREATH = { r = 0.00, g = 0.50, b = 1.00 },
+    DEATH = { r = 1.00, g = 0.70, b = 0.00 },
+    FEIGNDEATH = { r = 1.00, g = 0.70, b = 0.00 },
+}
 
 ---@param id number
 ---@return table mirrorTimer
@@ -265,8 +270,8 @@ function MirrorTimer:OnCreateMenu(menu)
     self:AddLayoutPanel(menu)
     self:AddTexturePanel(menu)
     self:AddFontPanel(menu)
-	menu:AddFadingPanel()
-	menu:AddAdvancedPanel(true)
+    menu:AddFadingPanel()
+    menu:AddAdvancedPanel(true)
 
     self.menu = menu
 
@@ -289,7 +294,7 @@ end
 function MirrorTimer:AddLayoutPanel(menu)
     local panel = menu:NewPanel(LibStub('AceLocale-3.0'):GetLocale('Dominos-Config').Layout)
 
-    for i, part in pairs({'label', 'time', 'border'}) do
+    for i, part in pairs({ 'label', 'time', 'border' }) do
         panel:NewCheckButton(
             {
                 name = L['Display_' .. part],
@@ -304,7 +309,7 @@ function MirrorTimer:AddLayoutPanel(menu)
     end
 
     panel.widthSlider =
-        panel:NewSlider(
+    panel:NewSlider(
         {
             name = L.Width,
             min = 1,
@@ -321,7 +326,7 @@ function MirrorTimer:AddLayoutPanel(menu)
     )
 
     panel.heightSlider =
-        panel:NewSlider(
+    panel:NewSlider(
         {
             name = L.Height,
             min = 1,
@@ -345,7 +350,7 @@ function MirrorTimer:AddFontPanel(menu)
     local panel = menu:NewPanel(L.Font)
 
     panel.fontSelector =
-        Dominos.Options.FontSelector:New(
+    Dominos.Options.FontSelector:New(
         {
             parent = panel,
             get = function()
@@ -363,7 +368,7 @@ function MirrorTimer:AddTexturePanel(menu)
     local panel = menu:NewPanel(L.Texture)
 
     panel.textureSelector =
-        Dominos.Options.TextureSelector:New(
+    Dominos.Options.TextureSelector:New(
         {
             parent = panel,
             get = function()

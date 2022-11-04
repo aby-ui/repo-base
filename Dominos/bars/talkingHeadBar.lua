@@ -1,10 +1,18 @@
-local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
-if not Dominos:IsBuild("retail") then
+--------------------------------------------------------------------------------
+-- Talking Head Bar
+-- Lets you move around the talking heads display
+--------------------------------------------------------------------------------
+
+local AddonName, Addon = ...
+
+if not (TalkingHeadFrame and Addon:IsBuild("retail")) then
     return
 end
 
+local L = LibStub("AceLocale-3.0"):GetLocale(AddonName)
+
 -- bar
-local TalkingHeadBar = Dominos:CreateClass('Frame', Dominos.Frame)
+local TalkingHeadBar = Addon:CreateClass('Frame', Addon.Frame)
 
 function TalkingHeadBar:New()
     return TalkingHeadBar.proto.New(self, 'talk')
@@ -28,31 +36,21 @@ function TalkingHeadBar:GetDefaults()
 end
 
 function TalkingHeadBar:GetDisplayName()
-    return GetLocale():sub(1,2)=='zh' and '剧情对话' or 'Talking Heads'
+    return L.TalkingHeadBarDisplayName
 end
 
 function TalkingHeadBar:Layout()
-    local width, height
-
-    if TalkingHeadFrame then
-        self:RepositionTalkingHeadFrame()
-        width, height = TalkingHeadFrame:GetSize()
-    else
-        width, height = 570, 155
-    end
+    self:RepositionTalkingHeadFrame()
+    local width, height = TalkingHeadFrame:GetSize()
 
     local pW, pH = self:GetPadding()
     self:SetSize(width + pW, height + pH)
 end
 
 function TalkingHeadBar:RepositionTalkingHeadFrame()
-    local frame = TalkingHeadFrame
-    if frame then
-        frame:ClearAllPoints()
-        frame:SetPoint('CENTER', self)
-        frame:SetParent(self)
-        return true
-    end
+    TalkingHeadFrame:ClearAllPoints()
+    TalkingHeadFrame:SetPoint('CENTER', self)
+    TalkingHeadFrame:SetParent(self)
 end
 
 function TalkingHeadBar:OnCreateMenu(menu)
@@ -93,15 +91,14 @@ function TalkingHeadBar:MuteSounds()
 end
 
 -- module
-local TalkingHeadBarModule = Dominos:NewModule('TalkingHeadBar', 'AceEvent-3.0')
+local TalkingHeadBarModule = Addon:NewModule('TalkingHeadBar')
 
 function TalkingHeadBarModule:Load()
     self.frame = TalkingHeadBar:New()
 
-    if IsAddOnLoaded("Blizzard_TalkingHeadUI") then
+    if not self.loaded then
         self:OnTalkingHeadUILoaded()
-    elseif not self.loaded then
-        self:RegisterEvent("ADDON_LOADED")
+        self.loaded = true
     end
 end
 
@@ -111,19 +108,7 @@ function TalkingHeadBarModule:Unload()
     end
 end
 
-function TalkingHeadBarModule:ADDON_LOADED(event, addon)
-    if addon == 'Blizzard_TalkingHeadUI' then
-        self:UnregisterEvent(event)
-
-        self:OnTalkingHeadUILoaded()
-    end
-end
-
 function TalkingHeadBarModule:OnTalkingHeadUILoaded()
-    if self.loaded then
-        return
-    end
-
     TalkingHeadFrame.ignoreFramePositionManager = true
 
     -- OnShow/OnHide call UpdateManagedFramePositions on the blizzard end so
@@ -131,7 +116,7 @@ function TalkingHeadBarModule:OnTalkingHeadUILoaded()
     TalkingHeadFrame:SetScript("OnShow", nil)
     TalkingHeadFrame:SetScript("OnHide", nil)
 
-    hooksecurefunc("TalkingHeadFrame_PlayCurrent", function()
+    hooksecurefunc(TalkingHeadFrame, 'PlayCurrent', function()
         if not self.frame:MuteSounds() then
             return
         end

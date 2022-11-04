@@ -13,7 +13,7 @@ if (detailsFramework.IsDragonflightAndBeyond()) then
 end
 
 function detailsFramework.Items.GetContainerItemInfo(containerIndex, slotIndex)
-	if (containerAPIVersion == 2) then
+	if (containerAPIVersion == 2 and C_Container and C_Container.GetContainerItemInfo) then
 		local itemInfo = C_Container.GetContainerItemInfo(containerIndex, slotIndex)
 		return itemInfo.iconFileID, itemInfo.stackCount, itemInfo.isLocked, itemInfo.quality, itemInfo.isReadable, itemInfo.hasLoot, itemInfo.hyperlink, itemInfo.isFiltered, itemInfo.hasNoValue, itemInfo.itemID, itemInfo.isBound
 	else

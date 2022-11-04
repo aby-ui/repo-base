@@ -8,23 +8,29 @@
     <Button name="BigDebuffsDebuffTemplate" inherits="CompactDebuffTemplate" virtual="true">
         <Scripts>
             <OnUpdate>
-                if BigDebuffs.test then return end
                 if ( GameTooltip:IsOwned(self) ) then
+                    if not self.auraInstanceID and self.spellId then
+                        GameTooltip:SetSpellByID(self.spellId);
+                    elseif self.auraInstanceID then
+                        if ( self.isBossBuff ) then
+                            GameTooltip:SetUnitBuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
+                        else
+                            GameTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
+                        end
+                    end
+                end
+            </OnUpdate>
+            <OnEnter>
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
+                if not self.auraInstanceID and self.spellId then
+                    GameTooltip:SetSpellByID(self.spellId);
+                elseif self.auraInstanceID then
                     if ( self.isBossBuff ) then
                         GameTooltip:SetUnitBuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
                     else
                         GameTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
                     end
                 end
-            </OnUpdate>
-            <OnEnter>
-                if BigDebuffs.test then return end
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0);
-                    if ( self.isBossBuff ) then
-                        GameTooltip:SetUnitBuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
-                    else
-                        GameTooltip:SetUnitDebuffByAuraInstanceID(self:GetParent().displayedUnit, self.auraInstanceID, self.filter);
-                    end
             </OnEnter>
             <OnLeave>
                 GameTooltip:Hide();

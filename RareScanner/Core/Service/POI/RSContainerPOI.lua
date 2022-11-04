@@ -138,17 +138,20 @@ local function IsContainerPOIFiltered(containerID, mapID, zoneQuestID, vignetteG
 	end
 
 	-- Skip if an ingame vignette is already showing this entity (on Vignette)
-	for _, vignetteGUID in ipairs(vignetteGUIDs) do
-		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
-		if (vignetteInfo and vignetteInfo.objectGUID) then
-			local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
-			if (tonumber(vignetteNPCID) == containerID and onWorldMap and vignetteInfo.onWorldMap) then
-				RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", containerID))
-				return true
-			end
-			if (tonumber(vignetteNPCID) == containerID and onMinimap and vignetteInfo.onMinimap) then
-				RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", containerID))
-				return true
+	-- We do it only in the world map
+	if (onWorldMap) then
+		for _, vignetteGUID in ipairs(vignetteGUIDs) do
+			local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
+			if (vignetteInfo and vignetteInfo.objectGUID) then
+				local _, _, _, _, _, vignetteNPCID, _ = strsplit("-", vignetteInfo.objectGUID);
+				if (tonumber(vignetteNPCID) == containerID and onWorldMap and vignetteInfo.onWorldMap) then
+					RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onWorldmap).", containerID))
+					return true
+				end
+				--if (tonumber(vignetteNPCID) == containerID and onMinimap and vignetteInfo.onMinimap) then
+				--	RSLogger:PrintDebugMessageEntityID(containerID, string.format("Saltado Contenedor [%s]: Hay un vignette del juego mostrándolo (Vignette onMinimap).", containerID))
+				--	return true
+				--end
 			end
 		end
 	end

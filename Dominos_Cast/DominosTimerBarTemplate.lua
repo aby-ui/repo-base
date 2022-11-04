@@ -3,7 +3,7 @@ local SharedMedia = LibStub('LibSharedMedia-3.0')
 
 local GetTime = _G.GetTime
 local Clamp = _G.Clamp
-local GetNetStats = _G.GetNetStats
+--local GetNetStats = _G.GetNetStats
 
 local TimerBar = {}
 

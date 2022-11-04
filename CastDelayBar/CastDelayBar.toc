@@ -6,7 +6,6 @@
 ## LoadOnDemand:
 ## SavedVariables: 
 
-## Dependencies: TODO:abyui10
 CastDelayBar.lua
 
 ## Title: |cff880303[爱不易]|r CastDelayBar 施法条延迟

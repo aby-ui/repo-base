@@ -1,3 +1,5 @@
+if not StanceBar then return end
+
 --------------------------------------------------------------------------------
 -- Stance bar
 -- Lets you move around the bar for displaying forms/stances/etc
@@ -20,7 +22,7 @@ if not ({
     ROGUE = true,
     SHAMAN = false,
     WARLOCK = Addon:IsBuild('wrath'),
-    WARRIOR = not Addon:IsBuild('retail')
+    WARRIOR = true,
 })[UnitClassBase('player')] then
     return
 end
@@ -29,15 +31,25 @@ end
 -- Button setup
 --------------------------------------------------------------------------------
 
-local function getStanceButton(id)
-    return _G[('StanceButton%d'):format(id)]
-end
+local function getOrCreateStanceButton(id)
+    local name = ('%sStanceButton%d'):format(AddonName, id)
 
-for id = 1, NUM_STANCE_SLOTS do
-    local button = getStanceButton(id)
+    local button = _G[name]
+    if button then
+        return button
+    end
 
-    -- add quick binding support
-    Addon.BindableButton:AddQuickBindingSupport(button, ('SHAPESHIFTBUTTON%s'):format(id))
+    button = CreateFrame('CheckButton', name, nil, 'StanceButtonTemplate')
+    button.commandName = ('SHAPESHIFTBUTTON%d'):format(id)
+    button:SetID(id)
+    button:Hide()
+    button:EnableMouseWheel(true)
+    button.cooldown:SetDrawEdge(false)
+    button:SetScript("OnUpdate", nil)
+
+    Mixin(button, Addon.BindableButton)
+
+    return button
 end
 
 --------------------------------------------------------------------------------
@@ -66,10 +78,11 @@ function StanceBar:NumButtons()
 end
 
 function StanceBar:AcquireButton(index)
-    return getStanceButton(index)
+    return getOrCreateStanceButton(index)
 end
 
 function StanceBar:OnAttachButton(button)
+    button:Show()
     button:UpdateHotkeys()
     Addon:GetModule('ButtonThemer'):Register(button, 'Class Bar')
     Addon:GetModule('Tooltips'):Register(button)
@@ -90,12 +103,24 @@ Addon.StanceBar = StanceBar
 local StanceBarModule = Addon:NewModule('StanceBar', 'AceEvent-3.0')
 
 function StanceBarModule:Load()
+    if not self.loaded then
+        self:OnFirstLoad()
+        self.loaded = true
+    end
+
     self.bar = StanceBar:New()
 
-    self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS', 'UpdateNumForms')
-    self:RegisterEvent('PLAYER_REGEN_ENABLED', 'UpdateNumForms')
-    self:RegisterEvent('PLAYER_ENTERING_WORLD', 'UpdateNumForms')
-    self:RegisterEvent('UPDATE_BINDINGS')
+    -- self:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", 'UpdateNumForms')
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", 'UpdateNumForms')
+    -- self:RegisterEvent("UPDATE_BONUS_ACTIONBAR", 'UpdateStanceButtons')
+    -- self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", 'UpdateStanceButtons')
+    -- self:RegisterEvent("UPDATE_POSSESS_BAR", 'UpdateStanceButtons')
+    self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", 'UpdateStanceButtons')
+    -- self:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", 'UpdateStanceButtons')
+    self:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", 'UpdateStanceButtons')
+    -- self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", 'UpdateStanceButtons')
+    self:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", 'UpdateStanceButtons')
 end
 
 function StanceBarModule:Unload()
@@ -107,13 +132,68 @@ function StanceBarModule:Unload()
 end
 
 function StanceBarModule:UpdateNumForms()
-    if InCombatLockdown() then
+    if not InCombatLockdown() then
+        self.bar:UpdateNumButtons()
+    end
+
+    self:UpdateStanceButtons()
+end
+
+function StanceBarModule:OnFirstLoad()
+    -- banish the current stance bar
+    local StanceBar = _G.StanceBar
+    if StanceBar then
+        StanceBar.ignoreFramePositionManager = true
+        StanceBar:UnregisterAllEvents()
+        StanceBar:SetParent(Addon.ShadowUIParent)
+        StanceBar:Hide()
+
+        -- and its buttons, too
+        for _, button in pairs(StanceBar.actionButtons) do
+            button:UnregisterAllEvents()
+            button:SetAttribute('statehidden', true)
+            button:Hide()
+        end
+    end
+
+    -- turn off stance bar related action bar events
+    local ActionBarController = _G.ActionBarController
+    if ActionBarController then
+        ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_FORM')
+        ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_FORMS')
+        ActionBarController:UnregisterEvent('UPDATE_SHAPESHIFT_USABLE')
+        ActionBarController:UnregisterEvent('UPDATE_INVENTORY_ALERTS') --Wha? indeed
+    end
+end
+
+StanceBarModule.UpdateStanceButtons = Addon:Defer(function(self)
+    local bar = self.bar
+    if not bar then
         return
     end
 
-    self.bar:UpdateNumButtons()
-end
+	for i, button in pairs(bar.buttons) do
+        local texture, isActive, isCastable = GetShapeshiftFormInfo(i)
 
-function StanceBarModule:UPDATE_BINDINGS()
-    self.bar:ForButtons('UpdateHotkeys')
-end
+        button:SetAlpha(texture and 1 or 0)
+
+        local icon = button.icon
+
+        icon:SetTexture(texture)
+
+        if isCastable then
+            icon:SetVertexColor(1.0, 1.0, 1.0)
+        else
+            icon:SetVertexColor(0.4, 0.4, 0.4)
+        end
+
+        local start, duration, enable = GetShapeshiftFormCooldown(i)
+        if enable and enable ~= 0 and start > 0 and duration > 0 then
+            button.cooldown:SetCooldown(start, duration)
+        else
+            button.cooldown:Clear()
+        end
+
+        button:SetChecked(isActive and true)
+    end
+end, 0.01, StanceBarModule)

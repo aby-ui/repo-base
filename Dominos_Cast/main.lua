@@ -5,10 +5,19 @@ local _, Addon = ...
 local Dominos = LibStub("AceAddon-3.0"):GetAddon("Dominos")
 local CastBarModule = Dominos:NewModule("CastBar")
 
+local function disableFrame(name)
+    local frame = _G[name]
+    if frame then
+        frame:UnregisterAllEvents()
+        frame.ignoreFramePositionManager = true
+        frame:SetParent(Dominos.ShadowUIParent)
+    end
+end
+
 function CastBarModule:OnInitialize()
-    CastingBarFrame:UnregisterAllEvents()
-    PetCastingBarFrame:UnregisterAllEvents()
-    CastingBarFrame.ignoreFramePositionManager = true
+    disableFrame("CastingBarFrame")
+    disableFrame("PlayerCastingBarFrame")
+    disableFrame("PetCastingBarFrame")
 end
 
 function CastBarModule:Load()

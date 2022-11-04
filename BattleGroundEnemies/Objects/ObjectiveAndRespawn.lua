@@ -124,41 +124,43 @@ function objectiveAndRespawn:AttachToPlayerButton(playerButton)
 		--BattleGroundEnemies:Debug("Läüft")
 		local battleGroundDebuffs = BattleGroundEnemies.BattleGroundDebuffs
 		local value
-		for i = 1, #battleGroundDebuffs do
-			if aura.spellId == battleGroundDebuffs[i] then
-				if BattleGroundEnemies.CurrentMapID == 417 then -- 417 is Kotmogu, we scan for orb debuffs
-
-					if aura.points and type(aura.points) == "table" then
-						if aura.points[2] then
-							if not self.Value then
-								--BattleGroundEnemies:Debug("hier")
-								--player just got the debuff
-								self.Icon:SetTexture(GetSpellTexture(aura.spellId))
-								self:Show()
-								--BattleGroundEnemies:Debug("Texture set")
+		if battleGroundDebuffs then
+			for i = 1, #battleGroundDebuffs do
+				if aura.spellId == battleGroundDebuffs[i] then
+					if BattleGroundEnemies.CurrentMapID == 417 then -- 417 is Kotmogu, we scan for orb debuffs
+	
+						if aura.points and type(aura.points) == "table" then
+							if aura.points[2] then
+								if not self.Value then
+									--BattleGroundEnemies:Debug("hier")
+									--player just got the debuff
+									self.Icon:SetTexture(GetSpellTexture(aura.spellId))
+									self:Show()
+									--BattleGroundEnemies:Debug("Texture set")
+								end
+								value = aura.points[2]
+									--values for orb debuff:
+									--BattleGroundEnemies:Debug(value1, value2, value3, value4)
+									-- value1 = Reduces healing received by value1
+									-- value2 = Increases damage taken by value2
+									-- value3 = Increases damage done by value3
 							end
-							value = aura.points[2]
-								--values for orb debuff:
-								--BattleGroundEnemies:Debug(value1, value2, value3, value4)
-								-- value1 = Reduces healing received by value1
-								-- value2 = Increases damage taken by value2
-								-- value3 = Increases damage done by value3
 						end
+						--kotmogu
+						
+						--end of kotmogu
+	
+					else
+						-- not kotmogu
+						value = aura.applications
 					end
-					--kotmogu
-					
-					--end of kotmogu
-
-				else
-					-- not kotmogu
-					value = aura.applications
+					if value ~= self.Value then
+						self.AuraText:SetText(value)
+						self.Value = value
+					end
+					self.continue = false
+					return
 				end
-				if value ~= self.Value then
-					self.AuraText:SetText(value)
-					self.Value = value
-				end
-				self.continue = false
-				return
 			end
 		end
 	end

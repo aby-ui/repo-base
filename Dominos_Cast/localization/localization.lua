@@ -1,7 +1,7 @@
 ﻿-- Translations for Dominos Cast (English - Default Version)
 local L = LibStub("AceLocale-3.0"):NewLocale("Dominos-CastBar", "enUS", true)
 
-L.CastBarDisplayName = 'Cast Bar'
+L.CastBarDisplayName = HUD_EDIT_MODE_CAST_BAR_LABEL or 'Cast Bar'
 L.Display = DISPLAY
 L.Display_border = "Show Border"
 L.Display_icon = "Show Icon"

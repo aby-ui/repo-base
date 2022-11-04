@@ -180,44 +180,44 @@ function DragFrame:OnLoad(parent)
     self.label:SetPoint("CENTER") --abyui
 
     -- contextual text
-    self.text = self.frame:CreateFontString(nil, 'OVERLAY', 2)
+    self.text = self.frame:CreateFontString(nil, 'OVERLAY', nil, 2)
     self.text:SetFontObject(DragFrameTextFont)
     self.text:SetPoint('CENTER')
     self.text:Hide()
 
     -- contextual text background (to make it easier to see)
-    self.textBg = self.frame:CreateTexture(nil, 'OVERLAY', 1)
+    self.textBg = self.frame:CreateTexture(nil, 'OVERLAY', nil, 1)
     self.textBg:SetPoint('TOPLEFT', self.text, 'TOPLEFT', -BORDER_THICKNESS * 2, BORDER_THICKNESS * 2)
     self.textBg:SetPoint('BOTTOMRIGHT', self.text, 'BOTTOMRIGHT', BORDER_THICKNESS * 2, -BORDER_THICKNESS * 2)
     self.textBg:SetColorTexture(0, 0, 0, 0.6)
     self.textBg:Hide()
 
     -- add a background
-    self.bg = self.frame:CreateTexture(nil, 'BACKGROUND', 1)
+    self.bg = self.frame:CreateTexture(nil, 'BACKGROUND', nil, 1)
     self.bg:SetPoint('TOPLEFT', BORDER_THICKNESS, -BORDER_THICKNESS)
     self.bg:SetPoint('BOTTOMRIGHT', -BORDER_THICKNESS, BORDER_THICKNESS)
     self.bg:SetColorTexture(BACKGROUND_COLORS[self.state]:GetRGBA())
 
     -- add a border
-    self.borderTop = self.frame:CreateTexture(nil, 'BACKGROUND', 2)
+    self.borderTop = self.frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
     self.borderTop:SetColorTexture(BORDER_COLORS[self.state]:GetRGBA())
     self.borderTop:SetPoint("TOPLEFT")
     self.borderTop:SetPoint("TOPRIGHT")
     self.borderTop:SetHeight(BORDER_THICKNESS)
 
-    self.borderLeft = self.frame:CreateTexture(nil, 'BACKGROUND', 2)
+    self.borderLeft = self.frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
     self.borderLeft:SetColorTexture(BORDER_COLORS[self.state]:GetRGBA())
     self.borderLeft:SetPoint("TOPLEFT", 0, -BORDER_THICKNESS)
     self.borderLeft:SetPoint("BOTTOMLEFT", 0, BORDER_THICKNESS)
     self.borderLeft:SetWidth(BORDER_THICKNESS)
 
-    self.borderBottom = self.frame:CreateTexture(nil, 'BACKGROUND', 2)
+    self.borderBottom = self.frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
     self.borderBottom:SetColorTexture(BORDER_COLORS[self.state]:GetRGBA())
     self.borderBottom:SetPoint("BOTTOMLEFT")
     self.borderBottom:SetPoint("BOTTOMRIGHT")
     self.borderBottom:SetHeight(BORDER_THICKNESS)
 
-    self.borderRight = self.frame:CreateTexture(nil, 'BACKGROUND', 2)
+    self.borderRight = self.frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
     self.borderRight:SetColorTexture(BORDER_COLORS[self.state]:GetRGBA())
     self.borderRight:SetPoint("TOPRIGHT", 0, -BORDER_THICKNESS)
     self.borderRight:SetPoint("BOTTOMRIGHT", 0, BORDER_THICKNESS)

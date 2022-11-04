@@ -18,9 +18,9 @@ local triggerScheduledTick = function(tickerObject)
     local payload = tickerObject.payload
     local callback = tickerObject.callback
 
-    local result, errortext = xpcall(callback, errorHandler, unpack(payload))
+    local result, errortext = xpcall(callback, geterrorhandler(), unpack(payload))
     if (not result) then
-        Details:Msg("Error:", errortext, tickerObject.name or "")
+        --Details:Msg("Error:", errortext, tickerObject.name or "")
     end
     return result
 end

@@ -189,6 +189,14 @@ do
 	function _detalhes:Pets()
 		return self.pets
 	end
+
+	function _detalhes:GetSpec(actor)
+		return self.spec or actor and actor.spec
+	end
+
+	function _detalhes:Spec(actor)
+		return self.spec or actor and actor.spec
+	end
 	
 	--inherits to all actors without placing it on _detalhes namespace.
 	_detalhes.container_combatentes.guid = _detalhes.GetGUID

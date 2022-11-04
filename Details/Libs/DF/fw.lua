@@ -1,6 +1,6 @@
 
 
-local dversion = 384
+local dversion = 387
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -1337,7 +1337,7 @@ end
 			alpha = 1
 		end
 
-		return red, green, blue, alpha
+		return Saturate(red), Saturate(green), Saturate(blue), Saturate(alpha)
 	end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

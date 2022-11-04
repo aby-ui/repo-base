@@ -1,3 +1,5 @@
+if not PetActionBar then return end
+
 --------------------------------------------------------------------------------
 -- Pet Bar
 -- A movable action bar for pets
@@ -7,17 +9,146 @@ local AddonName, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 --------------------------------------------------------------------------------
--- Pet Button Setup
+-- Pet Buttons
 --------------------------------------------------------------------------------
 
-local function getPetButton(id)
-    return _G[('PetActionButton%d'):format(id)]
+local PetActionButtonMixin = {}
+
+function PetActionButtonMixin:CancelSpellDataLoadedCallback()
+    local cancelFunc = self.spellDataLoadedCancelFunc
+
+    if cancelFunc then
+		cancelFunc()
+		self.spellDataLoadedCancelFunc = nil
+	end
 end
 
-for id = 1, NUM_PET_ACTION_SLOTS do
-    local button = getPetButton(id)
+-- this is mostly a straight port of PetActionBarMixin:Update()
+function PetActionButtonMixin:Update()
+    local petActionID = self:GetID()
+    local petActionIcon = self.icon
+    local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(petActionID)
 
-    Addon.BindableButton:AddQuickBindingSupport(button, ('BONUSACTIONBUTTON%d'):format(id))
+    self.isToken = isToken
+
+    self.tooltipName = isToken and name or _G[name]
+
+    if spellID and spellID ~= self.spellID then
+        self.spellID = spellID
+
+        local spell = Spell:CreateFromSpellID(spellID)
+
+        self.spellDataLoadedCancelFunc = spell:ContinueWithCancelOnSpellLoad(function()
+            self.tooltipSubtext = spell:GetSpellSubtext()
+        end)
+    end
+
+    if isActive then
+        if IsPetAttackAction(petActionID) then
+            self:StartFlash()
+            self:GetCheckedTexture():SetAlpha(0.5)
+        else
+            self:StopFlash()
+            self:GetCheckedTexture():SetAlpha(1)
+        end
+    else
+        self:StopFlash()
+    end
+
+    self:SetChecked(isActive and true)
+
+    self.AutoCastable:SetShown(autoCastAllowed and true)
+
+    if autoCastEnabled then
+        AutoCastShine_AutoCastStart(self.AutoCastShine)
+    else
+        AutoCastShine_AutoCastStop(self.AutoCastShine)
+    end
+
+    if texture then
+        if GetPetActionSlotUsable(petActionID) then
+            petActionIcon:SetVertexColor(1, 1, 1)
+        else
+            petActionIcon:SetVertexColor(0.4, 0.4, 0.4)
+        end
+
+        petActionIcon:SetTexture(isToken and _G[texture] or texture)
+        petActionIcon:Show()
+    else
+        petActionIcon:Hide()
+    end
+
+    SharedActionButton_RefreshSpellHighlight(self, PET_ACTION_HIGHLIGHT_MARKS[petActionID])
+end
+
+function PetActionButtonMixin:UpdateCooldown()
+    local cooldown = self.cooldown
+    local start, duration, enable = GetPetActionCooldown(self:GetID())
+
+    if enable and enable ~= 0 and start > 0 and duration > 0 then
+        cooldown:SetCooldown(start, duration)
+    else
+        cooldown:Clear()
+    end
+
+    if GameTooltip and GameTooltip:IsOwned(self) then
+        self:OnEnter()
+    end
+end
+
+function PetActionButtonMixin:UpdateShownInsecure()
+    if InCombatLockdown() then
+        return
+    end
+
+    self:SetShown(self.watcher:IsVisible() and not self:GetAttribute("statehidden"))
+end
+
+local function createPetActionButton(name, id)
+    local button = CreateFrame('CheckButton', name, nil, 'PetActionButtonTemplate')
+
+    Mixin(button, PetActionButtonMixin)
+
+    -- get the stock button
+    local petActionButton = _G['PetActionButton' .. id]
+
+    -- copy its ID
+    button:SetID(petActionButton:GetID())
+
+    -- copy its visibility state
+    local watcher = CreateFrame('Frame', nil, petActionButton, "SecureHandlerShowHideTemplate")
+    watcher:SetFrameRef("owner", button)
+    watcher:SetAttribute("_onshow", [[ self:GetFrameRef("owner"):Show(true) ]])
+    watcher:SetAttribute("_onhide", [[ self:GetFrameRef("owner"):Hide(true) ]])
+    button.watcher = watcher
+
+    -- copy its pushed state
+    hooksecurefunc(petActionButton, "SetButtonState", function(_, ...)
+        button:SetButtonState(...)
+    end)
+
+    -- setup bindings
+    button.commandName = ("BONUSACTIONBUTTON%d"):format(id)
+    Addon.BindableButton:AddQuickBindingSupport(button)
+
+    -- add support for mousewheel bindings
+    button:EnableMouseWheel(true)
+
+    -- unregister spell data loaded callback
+    button:HookScript("OnHide", PetActionButtonMixin.CancelSpellDataLoadedCallback)
+
+    return button
+end
+
+local function getOrCreatePetActionButton(id)
+    local name = ('%sPetActionButton%d'):format(AddonName, id)
+    local button = _G[name]
+
+    if not button then
+        button = createPetActionButton(name, id)
+    end
+
+    return button
 end
 
 --------------------------------------------------------------------------------
@@ -35,26 +166,10 @@ function PetBar:GetDisplayName()
 end
 
 function PetBar:IsOverrideBar()
-    -- TODO: make overrideBar a property of the bar itself instead of a global
-    -- setting
     return Addon.db.profile.possessBar == self.id
 end
 
 function PetBar:UpdateOverrideBar()
-    self:UpdateDisplayConditions()
-end
-
-if Addon:IsBuild('retail', 'wrath') then
-    function PetBar:GetDisplayConditions()
-        return '[@pet,exists,nopossessbar]show;hide'
-    end
-else
-    function PetBar:GetDisplayConditions()
-        if self:IsOverrideBar() then
-            return '[@pet,exists][bonusbar:5]show;hide'
-        end
-        return '[@pet,exists,nobonusbar:5]show;hide'
-    end
 end
 
 function PetBar:GetDefaults()
@@ -71,11 +186,13 @@ function PetBar:NumButtons()
 end
 
 function PetBar:AcquireButton(index)
-    return getPetButton(index)
+    return getOrCreatePetActionButton(index)
 end
 
 function PetBar:OnAttachButton(button)
     button:UpdateHotkeys()
+    button:UpdateShownInsecure()
+
     Addon:GetModule('ButtonThemer'):Register(button, 'Pet Bar')
     Addon:GetModule('Tooltips'):Register(button)
 end
@@ -87,19 +204,11 @@ end
 
 -- keybound events
 function PetBar:KEYBOUND_ENABLED()
-    self:ForButtons("Show")
+    self:ForButtons("UpdateShownInsecure")
 end
 
 function PetBar:KEYBOUND_DISABLED()
-    local petBarShown = PetHasActionBar()
-
-    for _, button in pairs(self.buttons) do
-        if petBarShown and GetPetActionInfo(button:GetID()) then
-            button:Show()
-        else
-            button:Hide()
-        end
-    end
+    self:ForButtons("UpdateShownInsecure")
 end
 
 --------------------------------------------------------------------------------
@@ -109,9 +218,14 @@ end
 local PetBarModule = Addon:NewModule('PetBar', 'AceEvent-3.0')
 
 function PetBarModule:Load()
-    self.bar = PetBar:New()
+    if not self.loaded then
+        self:OnFirstLoad()
+        self.loaded = true
+    end
 
-    self:RegisterEvent('UPDATE_BINDINGS')
+    self.bar = PetBar:New()
+    self:UpdateActions()
+    self:RegisterEvent("PET_BAR_UPDATE_COOLDOWN")
 end
 
 function PetBarModule:Unload()
@@ -123,6 +237,47 @@ function PetBarModule:Unload()
     end
 end
 
-function PetBarModule:UPDATE_BINDINGS()
-    self.bar:ForButtons('UpdateHotkeys')
+function PetBarModule:OnFirstLoad()
+    local PetActionBar = PetActionBar
+
+    if PetActionBar then
+        -- "hide" the pet bar (make invisible and non-interactive)
+        PetActionBar:SetAlpha(0)
+        PetActionBar:EnableMouse(false)
+        PetActionBar:SetScript("OnUpdate", nil)
+
+        -- unregister events that do not impact pet action bar visibility
+        PetActionBar:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
+
+        -- move to a probably hidden spot of the screen
+        -- PetActionBar:ClearAllPoints()
+        -- PetActionBar:SetPoint("BOTTOM", UIParent, "TOP")
+
+        -- and its buttons, too
+        for _, button in pairs(PetActionBar.actionButtons) do
+            button:EnableMouse(false)
+            button:SetScript("OnUpdate", nil)
+            button:UnregisterAllEvents()
+        end
+
+        -- an extremly lazy method of updating the Dominos pet bar when the
+        -- normal pet bar would be updated
+        hooksecurefunc(PetActionBar, "Update", Addon:Defer(function() self:UpdateActions() end, 0.01))
+    end
+end
+
+function PetBarModule:PET_BAR_UPDATE_COOLDOWN()
+    self:UpdateCooldowns()
+end
+
+function PetBarModule:UpdateActions()
+    if not (self.bar and PetHasActionBar() and UnitIsVisible("pet")) then return end
+
+    self.bar:ForButtons("Update")
+end
+
+function PetBarModule:UpdateCooldowns()
+    if not (self.bar and PetHasActionBar() and UnitIsVisible("pet")) then return end
+
+    self.bar:ForButtons("UpdateCooldown")
 end

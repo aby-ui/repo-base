@@ -12,7 +12,11 @@ local CONFIG_VERSION = 1
 Addon.callbacks = LibStub('CallbackHandler-1.0'):New(Addon)
 
 -- how many action buttons we support
-Addon.ACTION_BUTTON_COUNT = 120
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+    Addon.ACTION_BUTTON_COUNT = 14 * NUM_ACTIONBAR_BUTTONS
+else
+    Addon.ACTION_BUTTON_COUNT = 10 * NUM_ACTIONBAR_BUTTONS
+end
 
 --------------------------------------------------------------------------------
 -- Events
@@ -23,17 +27,13 @@ function Addon:OnInitialize()
     self:CreateDatabase()
     self:UpgradeDatabase()
 
-    -- create a stub loader for the options menu
-    self:CreateOptionsFrame()
-
     -- keybound support
-    local kb = KeyBound
-    kb.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
-    kb.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
+    KeyBound.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
+    KeyBound.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
 
-    --abyui8 force azerite
+    --abyui force option example
+    --[[
     if self.db.profile and self.db.profile.frames and self.db.profile.frames.artifact then
-        --[[
         if not self.db.profile.update801 then
             self.db.profile.frames.artifact.mode = 'azerite';
             self.db.profile.update801 = true
@@ -42,13 +42,18 @@ function Addon:OnInitialize()
             (self.db.profile.frames.artifact.display or {}).bonus = true;
             self.db.profile.update807 = true
         end
-        ]]
     end
+    ]]
 end
 
 function Addon:OnEnable()
     self:UpdateUseOverrideUI()
     self:Load()
+
+    -- watch for binding updates, updating all bars on the last one that happens
+    -- in rapid sequence
+    self.UpdateHotkeys = self:Defer(function() self.Frame:ForEach('ForButtons', 'UpdateHotkeys') end, 0.01)
+    self:RegisterEvent('UPDATE_BINDINGS')
 end
 
 -- configuration events
@@ -59,13 +64,17 @@ function Addon:OnUpgradeAddon(oldVersion, newVersion)
     self:Printf(L.Updated, ADDON_VERSION, self:GetWowBuild())
 end
 
--- keybound events
+-- binding events
+function Addon:UPDATE_BINDINGS()
+    self:UpdateHotkeys()
+end
+
 function Addon:LIBKEYBOUND_ENABLED()
-    self.Frame:ForAll('KEYBOUND_ENABLED')
+    self.Frame:ForEach('KEYBOUND_ENABLED')
 end
 
 function Addon:LIBKEYBOUND_DISABLED()
-    self.Frame:ForAll('KEYBOUND_DISABLED')
+    self.Frame:ForEach('KEYBOUND_DISABLED')
 end
 
 -- profile events
@@ -125,7 +134,7 @@ function Addon:Load()
         end
     end
 
-    self.Frame:ForAll('RestoreAnchor')
+    self.Frame:ForEach('RestoreAnchor')
     self:GetModule('ButtonThemer'):Reskin()
 
     self.callbacks:Fire('LAYOUT_LOADED')
@@ -213,11 +222,19 @@ function Addon:GetDatabaseDefaults()
 
             minimap = { minimapPos = 10, hide = false },
 
-            ab = { count = 10, showgrid = true, rightClickUnit = 'player' },
+            ab = {
+                count = self.ACTION_BUTTON_COUNT / NUM_ACTIONBAR_BUTTONS,
+                showEmptyButtons = true,
+                rightClickUnit = 'player'
+            },
 
-            frames = { bags = { point = 'BOTTOMRIGHT', oneBag = false, keyRing = true, spacing = 2 } },
+            frames = {
+            },
 
-            alignmentGrid = { enabled = true, size = 32 },
+            alignmentGrid = {
+                enabled = not self:IsBuild("retail"),
+                size = 32
+            },
 
             -- what modules are enabled
             -- module[id] = enabled
@@ -316,38 +333,13 @@ end
 -- Configuration UI
 --------------------------------------------------------------------------------
 
--- create a stub container on the Blizzard interface options panel
--- it will be filled with content once the config addon loads
-function Addon:CreateOptionsFrame()
-    if not self:IsConfigAddonEnabled() then
-        return
-    end
-
-    local frame = CreateFrame('Frame')
-    frame:Hide()
-
-    frame.name = AddonName
-
-    -- if a user shows this frame and we've not yet loaded  the config addon,
-    -- then load it
-    frame:SetScript('OnShow', function(f)
-        f:SetScript('OnShow', nil)
-        LoadAddOn(CONFIG_ADDON_NAME)
-    end)
-
-    InterfaceOptions_AddCategory(frame)
-
-    self.OptionsFrame = frame
-    return frame
-end
-
 function Addon:ShowOptionsFrame()
-    if self.OptionsFrame and not InCombatLockdown() then
-        if not InterfaceOptionsFrame:IsShown() then
-            InterfaceOptionsFrame_Show()
-        end
+    if self:IsConfigAddonEnabled() and LoadAddOn(CONFIG_ADDON_NAME) then
+        local dialog = LibStub('AceConfigDialog-3.0')
 
-        InterfaceOptionsFrame_OpenToCategory(self.OptionsFrame)
+        dialog:Open(AddonName)
+        dialog:SelectGroup(AddonName, "general")
+
         return true
     end
 
@@ -547,7 +539,7 @@ end
 
 function Addon:SetShowGrid(enable)
     self.db.profile.showgrid = enable or false
-    self.Frame:ForAll('UpdateGrid')
+    self.Frame:ForEach('UpdateGrid')
 end
 
 function Addon:ShowGrid()
@@ -557,7 +549,7 @@ end
 -- right click selfcast
 function Addon:SetRightClickUnit(unit)
     self.db.profile.ab.rightClickUnit = unit
-    self.Frame:ForAll('SetRightClickUnit', unit)
+    self.Frame:ForEach('SetRightClickUnit', unit)
 end
 
 function Addon:GetRightClickUnit()
@@ -567,7 +559,7 @@ end
 -- binding text
 function Addon:SetShowBindingText(enable)
     self.db.profile.showBindingText = enable or false
-    self.Frame:ForAll('ForButtons', 'UpdateHotkeys')
+    self.Frame:ForEach('ForButtons', 'UpdateHotkeys')
 end
 
 function Addon:ShowBindingText()
@@ -577,7 +569,7 @@ end
 -- macro text
 function Addon:SetShowMacroText(enable)
     self.db.profile.showMacroText = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowMacroText', enable)
+    self.Frame:ForEach('ForButtons', 'SetShowMacroText', enable)
 end
 
 function Addon:ShowMacroText()
@@ -587,7 +579,7 @@ end
 -- border
 function Addon:SetShowEquippedItemBorders(enable)
     self.db.profile.showEquippedItemBorders = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowEquippedItemBorders', enable)
+    self.Frame:ForEach('ForButtons', 'SetShowEquippedItemBorders', enable)
 end
 
 function Addon:ShowEquippedItemBorders()
@@ -690,8 +682,8 @@ function Addon:SetSticky(enable)
     self.db.profile.sticky = enable or false
 
     if not enable then
-        self.Frame:ForAll('Stick')
-        self.Frame:ForAll('Reposition')
+        self.Frame:ForEach('Stick')
+        self.Frame:ForEach('Reposition')
     end
 end
 
@@ -703,8 +695,8 @@ end
 function Addon:SetLinkedOpacity(enable)
     self.db.profile.linkedOpacity = enable or false
 
-    self.Frame:ForAll('UpdateWatched')
-    self.Frame:ForAll('UpdateAlpha')
+    self.Frame:ForEach('UpdateWatched')
+    self.Frame:ForEach('UpdateAlpha')
 end
 
 function Addon:IsLinkedOpacityEnabled()
@@ -728,7 +720,7 @@ end
 
 function Addon:SetShowCounts(enable)
     self.db.profile.showCounts = enable or false
-    self.Frame:ForAll('ForButtons', 'SetShowCountText', enable)
+    self.Frame:ForEach('ForButtons', 'SetShowCountText', enable)
 end
 
 -- alignment grid

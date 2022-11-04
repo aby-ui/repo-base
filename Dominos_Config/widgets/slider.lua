@@ -65,7 +65,12 @@ do
 	end
 
 	function Slider:New(options)
-		local f = self:Bind(CreateFrame('Slider', nextName(), options.parent, 'HorizontalSliderTemplate'))
+		local f
+		if InterfaceOptionsFrame then
+			f = self:Bind(CreateFrame('Slider', nextName(), options.parent, 'HorizontalSliderTemplate'))
+		else
+			f = self:Bind(CreateFrame('Slider', nextName(), options.parent, 'UISliderTemplate'))
+		end
 
 		f.min = options.min or 0
 		f.max = options.max or 100

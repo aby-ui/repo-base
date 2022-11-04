@@ -273,11 +273,12 @@ function Indicators:UpdateReadyCheck(frame, event)
 					hasTimer = true
 
 					f.fadeList[fadeFrame] = timeLeft - elapsed
-					fadeFrame:SetAlpha(f.fadeList[fadeFrame] / FADEOUT_TIME)
 
 					if( f.fadeList[fadeFrame] <= 0 ) then
 						f.fadeList[fadeFrame] = nil
 						fadeFrame:Hide()
+					else
+						fadeFrame:SetAlpha(f.fadeList[fadeFrame] / FADEOUT_TIME)
 					end
 				end
 

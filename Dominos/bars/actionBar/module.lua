@@ -19,7 +19,7 @@ end
 
 function ActionBarsModule:Unload()
     self:UnregisterAllEvents()
-    self:ForAll('Free')
+    self:ForActive('Free')
     self.active = nil
 end
 
@@ -45,7 +45,7 @@ function ActionBarsModule:PET_BAR_HIDEGRID()
         return
     end
 
-    self:ForAll('HideGrid', ACTION_BUTTON_SHOW_GRID_REASON_EVENT or 2)
+    self:ForActive('HideGrid', ACTION_BUTTON_SHOW_GRID_REASON_EVENT or 2)
 end
 
 function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
@@ -53,11 +53,11 @@ function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
         return
     end
 
-    self:ForAll('UpdateStateDriver')
+    self:ForActive('UpdateStateDriver')
 end
 
 function ActionBarsModule:SetBarCount(count)
-    self:ForAll('Free')
+    self:ForActive('Free')
 
     if count > 0 then
         self.active = {}
@@ -70,7 +70,7 @@ function ActionBarsModule:SetBarCount(count)
     end
 end
 
-function ActionBarsModule:ForAll(method, ...)
+function ActionBarsModule:ForActive(method, ...)
     if self.active then
         for _, bar in pairs(self.active) do
             bar:CallMethod(method, ...)

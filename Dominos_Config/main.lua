@@ -5,36 +5,13 @@ local ParentAddonName = (GetAddOnDependencies(AddonName))
 local ParentAddon = LibStub('AceAddon-3.0'):GetAddon(ParentAddonName)
 
 --------------------------------------------------------------------------------
--- Events
---------------------------------------------------------------------------------
-
-function Addon:OnEnable()
-    self:CreateOptionsMenu()
-
-    if self.optionsMenuFrame:IsShown() then
-        self:ShowPrimaryOptionsPanel()
-    end
-end
-
---------------------------------------------------------------------------------
 -- Interface Options Menu
 --------------------------------------------------------------------------------
 
-Addon.optionsMenuFrame = ParentAddon.OptionsFrame
 Addon.optionsMenuPanels = { }
 
-function Addon:CreateOptionsMenu()
+function Addon:OnEnable()
     ParentAddon.callbacks:Fire('OPTIONS_MENU_LOADING', self)
-
-    -- augment the options panel with new stuff
-    self.optionsMenuFrame:SetScript(
-        'OnShow',
-        function()
-            self:ShowPrimaryOptionsPanel()
-        end
-    )
-
-    self.optionsMenuFrame.children = { }
 
     -- register ace config options
     LibStub('AceConfig-3.0'):RegisterOptionsTable(
@@ -43,6 +20,7 @@ function Addon:CreateOptionsMenu()
             local options = {
                 type = 'group',
                 name = ParentAddonName,
+                childGroups = "tab",
                 args = {}
             }
 
@@ -56,21 +34,6 @@ function Addon:CreateOptionsMenu()
         end
     )
 
-    -- build options panels
-    for _, panel in self:GetOptionsPanels() do
-        local frame = panel.frame
-
-        if not frame then
-            frame = _G.LibStub('AceConfigDialog-3.0'):AddToBlizOptions(
-                self.optionsMenuFrame.name,
-                panel.options.name,
-                self.optionsMenuFrame.name,
-                panel.key
-            )
-        end
-
-        table.insert(self.optionsMenuFrame.children, frame)
-    end
 
     ParentAddon.callbacks:Fire('OPTIONS_MENU_LOADED', self)
 end
@@ -152,7 +115,6 @@ end
 function env.tablist(props)
     return function(children)
         return option {
-            name = name,
             type = 'group',
             childGroups = 'tab',
             args = make_args(children)
@@ -184,11 +146,10 @@ end
 
 -- shows the first options panel frame we have
 function Addon:ShowPrimaryOptionsPanel()
-    local _, child = next(self.optionsMenuFrame.children)
+    local dialog = LibStub('AceConfigDialog-3.0')
 
-    if child then
-        _G.InterfaceOptionsFrame_OpenToCategory(child)
-    end
+    dialog:Open(ParentAddonName)
+    dialog:SelectGroup(ParentAddonName, self.optionsMenuPanels[1].key)
 end
 
 function Addon:AddOptionsPanel(func, ...)
