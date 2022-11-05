@@ -4,11 +4,11 @@ local Dominos = _G['Dominos']
 
 --Dominos.oriOnInitialize = Dominos.OnInitialize
 --[[Dominos.OnInitialize = function()
-    -- XXX 163
+    -- XXX abyui
     self.db = LibStub('AceDB-3.0'):New('DominosDB', self:GetDefaults(),
     '有爱-'..(GetRealmName())..'-'..(UnitName'player'))
     self:U1_InitPreset()
-    -- XXX 163 end
+    -- XXX abyui end
 
     return self:oriOnInitialize()
 end]]
@@ -60,11 +60,13 @@ function Dominos:U1_GetPreset(style)
 
     --ProgressBar:GetDefaults()
     frames.exp = {
-        x=0, y=0, point='BOTTOM',
-        width=464, height=10, fontSize=12, texture='Minimalist',
+        x=0, y=0, point='BOTTOM', spacing=1,
+        width=480, height=11, fontSize=13, texture='Minimalist',
         showInPetBattleUI = false, lockMode = true, showLabels = true, numButtons = 20,
         alwaysShowText=true, display={label=true, value=true, max=true, bonus=true, percent=true}
     }
+    --这里不生效, 需要在azeriteBar里修改
+    --frames.artifact = Mixin({x=0, y=0, point='BOTTOMLEFT', anchor='expBL', width=480, height=21, fontSize=23, display={label=false, value=true, max=true}}, frames.exp)
 
     frames.pet = {
         x=0, y=0, point='BOTTOMRIGHT',
@@ -100,20 +102,22 @@ function Dominos:U1_GetPreset(style)
     frames.encounter = { x=0, point='BOTTOM', x=0, y=200+30, anchor='BOTTOM' }
     frames.extra = { point = 'CENTER', x = 0, y = -150, showInPetBattleUI = true, showInOverrideUI = true }
     frames.page = { x=0, y=0, point='BOTTOMLEFT', spacing=0, columns=1, anchor='1LB', scale=1, fadeAlpha=0.5, }
+    frames.possess = { point = 'BOTTOMRIGHT', anchor = 'pageLB', x = 0, y = 0, spacing=2, padW=2, padH=2, }
     frames.zone = { point = 'CENTER', x = 0, y = -244, showInPetBattleUI = true, showInOverrideUI = true }
-    frames.possess = { point = 'BOTTOMLEFT', anchor = 'classTL', x = 0, y = 0, spacing=2, padW=2, padH=2, }
     frames.queue = { point = "TOPRIGHT", anchor = "bagsLT", x = 0, y = 0, scale = 0.9, displayLayer = "HIGH", }
     frames.talk = { point = "BOTTOMLEFT", x = 60, y = 60, }
 
     return frames
 end
 
-local key_163 = '163init'
+local key_abyui = 'abyui_init'
 local key_db_ver = 1
 function Dominos:U1_InitPreset(force)
-    if(not self.db.profile[key_163]) then
-        self.db.profile[key_163] = key_db_ver
-        force = true
+    if not self.db.profile[key_abyui] then
+        self.db.profile[key_abyui] = key_db_ver
+        if not self.db.profile['163init'] then
+            force = true
+        end
     end
 
     if(not force) then
@@ -121,14 +125,14 @@ function Dominos:U1_InitPreset(force)
         return
     end
 
-    local style = "MINI" --U1GetCfgValue('Dominos', 'prestyle')
+    local style = "MINI" --U1GetCfgValue('Dominos', 'prestyle') --现在只有一个了
     local defauls = Dominos:U1_GetPreset(style)
     Mixin(self.db.profile.frames, defauls)
 end
 
 --修正一些版本变化导致的框体位置
 function Dominos:U1_FixDefaults()
-    if self.db.profile[key_163] ~= key_db_ver  then return end
+    if self.db.profile[key_abyui] ~= key_db_ver  then return end
 
     --[[ --修正LootFrame的位置
     local prof = self.db.profile.frames.roll

@@ -275,7 +275,8 @@ local function UpgradeItem_SetItem(self, id)
 		self.Icon:SetTexture(itemTexture)
 		self.Name:SetText(itemName)
 		self.Count:SetText(count > 1 and count or "")
-		self.Name:SetTextColor(GetItemQualityColor(itemQuality))
+		local qc = ITEM_QUALITY_COLORS[itemQuality] or HIGHLIGHT_FONT_COLOR
+		self.Name:SetTextColor(qc.r, qc.g, qc.b)
 		self.ItemLevel:SetFormattedText("")
 	end
 	self:SetAttribute("macrotext", SLASH_STOPSPELLTARGET1 .. "\n" .. SLASH_USE1 .. " item:" .. id)
@@ -579,6 +580,8 @@ local SpecAffinityFrame = CreateFrame("Frame") do
 		self:ClearAllPoints()
 		owner.XPText:SetPoint("TOPRIGHT", -74, -17)
 		if owner.Class then
+			owner.Class:ClearAllPoints()
+			owner.Class:SetPoint("TOPRIGHT", -10, -10)
 			owner.Class:SetAlpha(1)
 		end
 	end
@@ -599,6 +602,9 @@ local SpecAffinityFrame = CreateFrame("Frame") do
 		ClassSpecButton_Set(self.ClassSpec, fi)
 		owner.XPText:SetPoint("TOPRIGHT", self, "TOPLEFT", -4, -4)
 		if owner.Class then
+			-- GarrisonFollowerTabMixin:SetupXPBar, which runs after this, reanchors .XPText relative to .Class (9.0+)
+			owner.Class:ClearAllPoints()
+			owner.Class:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 4)
 			owner.Class:SetAlpha(0)
 		end
 		local best, job = fi.isCollected and fi.level == T.FOLLOWER_LEVEL_CAP and fi.quality >= 4
@@ -855,7 +861,6 @@ if GarrisonRecruiterFramePickThreatDropDown:IsVisible() then
 	hooksecurefunc(GarrisonRecruiterFramePickThreatDropDown, "initialize", Recruiter_DropDownInitHook)
 end
 
-local GarrisonFollowerList_SortFollowers = GarrisonFollowerList_SortFollowers
 local specialSearchQueries = {["duplicate counters"]="dup", [(L"Duplicate counters"):lower()]="dup", ["upgradable gear"]="up", [(L"Upgradable gear"):lower()]="up", ["redundant"]="red", [(L"Redundant"):lower()]="red"} do
 	local sc = C_Garrison.GetFollowerAbilityName(79)
 	if sc then
@@ -1045,18 +1050,6 @@ function GarrisonMissionFrameFollowers:DoesFollowerMatchFilters(...)
 		return fi.mpSearchMatched == true
 	end
 	return GarrisonFollowerList.DoesFollowerMatchFilters(self, ...)
-end
-function _G.GarrisonFollowerList_SortFollowers(followerList)
-	local searchString = followerList.SearchBox and followerList.SearchBox:GetText() or ""
-	
-	
-	if searchString:match("/") and searchString:match("[^%s/]") then
-		
-	elseif (searchString:match("[!;+]") and searchString:match("[^%s;+!]")) or specialSearchQueries[searchString:lower()] then
-
-	end
-	
-	return GarrisonFollowerList_SortFollowers(followerList)
 end
 GarrisonMissionFrameFollowers.SearchBox:SetMaxLetters(0)
 GarrisonLandingPage.FollowerList.SearchBox:SetMaxLetters(0)

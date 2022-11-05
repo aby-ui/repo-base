@@ -55,8 +55,9 @@ local matrix = CreateFrame("Frame", nil, summaryTab) do
 		end
 		self.elapsed = et
 		local ps = s + (g-s)*sin(257*et)
+		local a = (ps-14)/16
 		self.bg:SetSize(ps, ps)
-		self.text:SetAlpha((ps-14)/16)
+		self.text:SetAlpha(a < 0 and 0 or a > 1 and 1 or a)
 	end
 	local function MB_OnHide(self)
 		self:SetScript("OnUpdate", nil)

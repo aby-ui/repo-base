@@ -11,6 +11,20 @@ end
 if GarrisonLandingPageTab_OnLeave == nil then
 	GarrisonLandingPageTab_OnLeave = noop
 end
+local GetFollowerSourceTextByID = C_Garrison.GetFollowerSourceTextByID
+function C_Garrison.GetFollowerSourceTextByID(...)
+	local ids = ...
+	local id = type(ids) == "string" and tonumber(ids)
+	if id and (id >= 2^31 or id < -2^31) then
+		local x = C_Garrison.GetFollowers(1)
+		for k,v in pairs(x) do
+			if v.followerID == ids and v.garrFollowerID then
+				return GetFollowerSourceTextByID(v.garrFollowerID, select(2, ...))
+			end
+		end
+	end
+	return GetFollowerSourceTextByID(...)
+end
 
 hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(fr, data)
 	if fr and data and data.level == T.FOLLOWER_LEVEL_CAP and data.quality > 3 then

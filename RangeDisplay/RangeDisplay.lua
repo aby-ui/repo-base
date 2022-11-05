@@ -8,7 +8,7 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v5.0.1"
+local VERSION = AppName .. "-v5.0.2"
 
 local rc = LibStub("LibRangeCheck-2.0")
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0", true)
@@ -499,7 +499,7 @@ local function createFrame(ud)
   ud.mainFrame = CreateFrame("Frame", "RangeDisplayMainFrame_" .. unit, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
   ud.mainFrame:SetFrameStrata(ud.db.strata)
   ud.mainFrame:EnableMouse(false)
-  ud.mainFrame:SetClampedToScreen(true)
+  ud.mainFrame:SetClampedToScreen(false)
   ud.mainFrame:SetMovable(true)
   ud.mainFrame:SetWidth(ud.db.frameWidth)
   ud.mainFrame:SetHeight(ud.db.frameHeight)

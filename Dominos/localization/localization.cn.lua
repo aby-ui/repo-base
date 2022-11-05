@@ -85,6 +85,7 @@ L.VehicleDisplayName = "退出\n载具"
 L.PageBarDisplayName = "翻\n页"
 L.CastingBarDisplayName = "暴雪施法条"
 L.QueueStatusBarDisplayName = "排队\n状态"
+L.ProgressBarDisplayName = "进度条"
 L.KeyboardMovementTip = "按方向键(WASD)来微调位置."
 
 L.ShowAlignmentGrid = "布局网格"

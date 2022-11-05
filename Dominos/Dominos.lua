@@ -178,7 +178,7 @@ end
 -- db actions
 function Addon:CreateDatabase()
     -- XXX 163
-    self.db = LibStub('AceDB-3.0'):New('DominosDB', self:GetDatabaseDefaults(), '爱不易-'..(GetRealmName())..'-'..(UnitName'player'))
+    self.db = LibStub('AceDB-3.0'):New('DominosDB', self:GetDatabaseDefaults(), '爱不易-'..(UnitName'player')..'-'..(GetRealmName()))
     self:U1_InitPreset()
     -- XXX 163 end
 

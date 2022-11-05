@@ -1854,7 +1854,7 @@ local core do
 					if timeLeft < 0 then
 						fadeInFinish()
 					else
-						sc:SetAlpha(cos(timeLeft*360))
+						sc:SetAlpha(math.max(0, cos(timeLeft*360)))
 					end
 				end
 				function missionList.FadeIn.Play()

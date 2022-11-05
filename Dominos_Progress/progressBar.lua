@@ -78,6 +78,12 @@ function ProgressBar:OnRelease(...)
 end
 
 function ProgressBar:GetDefaults()
+	do
+		--abyui don't know why but no effect in AbyPreset.lua
+		return { point='BOTTOMLEFT', x=0, y=0, columns = 20, numButtons = 20, padW = 0, padH = 0, spacing=1,  texture='Minimalist', display={label=true, value=true, max=true, bonus=true, percent=true},
+				 height=11, fontSize=13, showLabels = true, width=480, displayLayer = 'BACKGROUND',  alwaysShowText = true, lockMode = true }
+	end
+
 	return {
 		point = 'BOTTOM',
 		x = 0,
@@ -875,6 +881,15 @@ do
 			end,
 		}
 	end
+end
+
+--abyui
+function ProgressBar:GetDisplayName()
+	if LOCALE_zhCN or LOCALE_zhTW then
+		if self.id == "exp" then return "经验条" end
+		if self.id == "artifact" then return "神器能量" end
+	end
+	return ProgressBar.proto.GetDisplayName(self)
 end
 
 Addon.ProgressBar = ProgressBar

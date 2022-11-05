@@ -8,8 +8,8 @@ local Bank = Addon.Frame:NewClass('BankFrame')
 Bank.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
 Bank.Bags = {BANK_CONTAINER}
 
-for slot = 1, NUM_BANKBAGSLOTS do
-	tinsert(Bank.Bags, slot + NUM_TOTAL_EQUIPPED_BAG_SLOTS)
+for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+	tinsert(Bank.Bags, i)
 end
 
 function Bank:OnHide()

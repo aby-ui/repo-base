@@ -113,7 +113,7 @@ function BaudErrorFrame_OnLoad(self)
             return function(frame)
                 if CheckProtectedFunctionsAllowed_Fail then
                     local name = frame and (frame:GetName() or "<unamed>") or "nil"
-                    BaudErrorFrameAdd(date("%H:%M:%S") .. " 插件导致界面行为失效-" .. showOrHide .. "(" .. name .. ")", 5);
+                    BaudErrorFrameAdd("插件导致界面行为失效-" .. showOrHide .. "(" .. name .. ")", 5);
                 end
             end
         end
@@ -226,10 +226,14 @@ end
 
 
 function BaudErrorFrameAdd(Error, Retrace)
-    if Error and Error:find("StaticPopup%.lua:[0-9]+: bad argument #2 to 'SetFormattedText' %(number expected, got nil%)") then return end
-    if Error and Error:find("SetPoint would result in anchor family connection") then return end
+    if not DEBUG_MODE then
+        if Error and Error:find("StaticPopup%.lua:[0-9]+: bad argument #2 to 'SetFormattedText' %(number expected, got nil%)") then return end
+        if Error and Error:find("SetPoint would result in anchor family connection") then return end
+    end
+    local currTime = date("%H:%M:%S")..format(".%03d", GetTime()*1000%1000)
     for Key, Value in pairs(ErrorList)do
         if(Value.Error==Error)then
+            Value.Time = currTime
             if(Value.Count < 99)then
                 Value.Count = Value.Count + 1;
                 BaudErrorFrameEditBoxUpdate();
@@ -242,7 +246,7 @@ function BaudErrorFrameAdd(Error, Retrace)
     else
         tinsert(QueueError, Error);
     end
-    local error = {Error=Error,Count=1,Stack="\n"..debugstack(Retrace, 100, 100), locals={} }
+    local error = {Error=Error,Count=1,Time=currTime,Stack="\n"..debugstack(Retrace, 100, 100), locals={} }
     tinsert(ErrorList,error);
     if(DEBUG_MODE) then
         for i=Retrace, 100 do local info = debuglocals(i) if info and #info>0 then error.locals[i-Retrace+1] = info end end
@@ -300,6 +304,23 @@ function BaudErrorFrameClearButton_OnClick(self)
     self:GetParent():Hide();
 end
 
+local function colorStack(ret)
+    ret = tostring(ret) or "" -- Yes, it gets called with nonstring from somewhere /mikk
+    ret = ret:gsub('%[string "@Interface/AddOns/', '["A/') --前缀都去掉 [string "@Interface/FrameXML/
+    ret = ret:gsub('%[string "@Interface/', '["') --前缀都去掉 [string "@Interface/FrameXML/
+    ret = ret:gsub('%[string "', '["') --前缀都去掉 [string "=[C]"]: ?
+    ret = ret:gsub('"%]:(%d+):', ':%1"]:') --abyui 方便复制代码位置 UIParent.lua:2552"]: in function
+    ret = ret:gsub('<[^>]+:(%d+)>', '<@%1>') --abyui 方便复制代码位置 <...ace/AddOns/Blizzard_MapCanvas/Blizzard_MapCanvas.lua:28>
+
+    ret = ret:gsub("[%.I][%.n][%.t][%.e][%.r]face\\", "")
+    ret = ret:gsub("|([^chHr])", "||%1"):gsub("|$", "||") -- Pipes
+    ret = ret:gsub("<(.-)>", "|cffffd200<%1>|r") -- Things wrapped in <>
+    --ret = ret:gsub("%[(.-)%]", "|cffffd200[%1]|r") -- Things wrapped in []
+    ret = ret:gsub("([`])(.-)(['])", "|cff82c5ff%1%2%3|r") -- Quotes
+    ret = ret:gsub("(\"[^\n]-):(%d+)([%S\n])", "|cff7fff7f%1:%2|r%3") -- Line numbers
+    --ret = ret:gsub("([^\\]+%.lua)", "|cffffffff%1|r") -- Lua files
+    return ret
+end
 
 function BaudErrorFrameScrollBar_Update()
     if not BaudErrorFrame:IsShown()then
@@ -320,7 +341,7 @@ function BaudErrorFrameScrollBar_Update()
         ButtonText = getglobal(FrameName.."Entry"..Line.."Text");
         if(Index <= Total)then
             Button:SetID(Index);
-            ButtonText:SetText(ErrorList[Index].Error);
+            ButtonText:SetText(colorStack(ErrorList[Index].Error));
             Button:Show();
             if(Index==SelectedError)then
                 Highlight:SetPoint("TOP",Button);
@@ -334,7 +355,7 @@ function BaudErrorFrameScrollBar_Update()
 end
 
 function BaudErrorFrameCreateLocalButton()
-    local btn = WW:Button(nil,BaudErrorFrameEditBox):Size(36, 12):SetButtonFont(ChatFontSmall):SetAlpha(0.5)
+    local btn = WW:Button(nil,BaudErrorFrame):Size(36, 12):SetButtonFont(ChatFontSmall):SetAlpha(0.5)
     btn:GetFontString():SetJustifyH("RIGHT")
     btn:GetFontString():SetWidth(36)
     return btn;
@@ -351,23 +372,27 @@ end
 function BaudErrorFrameEditBoxUpdate()
     local message = ErrorList[SelectedError]
     if message then
-        BaudErrorFrameEditBox.TextShown = message.Error.."\nCount: "..message.Count.."\n\nCall Stack:"..message.Stack;
+        BaudErrorFrameEditBox.TextShown = colorStack(message.Error).."\nCount: "..message.Count.."\n\nVersion: |cffffff00" .. (U1VERSION or "unknown") .. "|r, Last Time: |cffffff00" .. message.Time .. "|r, Call Stack:"..colorStack(message.Stack);
         if(DEBUG_MODE and WW) then
             local btns = BaudErrorFrameEditBox.btns
             if not btns then
                 btns = {}
                 BaudErrorFrameEditBox.btns = btns;
-                btns[1] = BaudErrorFrameCreateLocalButton():TL("$parent", "TR", 0, -(13*2)):SetText("|cff00ff00[00]|r"):SetScript("OnClick", BaudErrorFrameEditBoxUpdate):un()
-                btns[1].i = 0
+                btns[0] = BaudErrorFrameCreateLocalButton():TR(BaudErrorFrameEditBox, "TL", -7, -(13*4)):SetText("|cff00ff00[00]|r"):SetScript("OnClick", BaudErrorFrameEditBoxUpdate):un()
+                btns[0].i = 0
             end
-            local num = 1
             for i=1,#message.locals do
+                btns[i] = btns[i] or BaudErrorFrameCreateLocalButton():TOP(btns[0],"TOP",0,-12.3*(i-1)):SetScript("OnClick", BaudErrorFrameEditBoxUpdateLocal):un();
                 if(message.locals[i])then
-                    num=num+1
-                    btns[num] = btns[num] or BaudErrorFrameCreateLocalButton():TOP(btns[num-1],"B",0,-1):SetScript("OnClick", BaudErrorFrameEditBoxUpdateLocal):un();
-                    btns[num]:SetText(format("|cff00ff00[%d]|r", i))
-                    btns[num].i = i
+                    btns[i]:SetText(format("|cff00ff00[%d]|r", i))
+                    btns[i].i = i
+                else
+                    btns[i]:SetText("")
                 end
+                btns[i]:Show()
+            end
+            for i=#message.locals, #btns do
+                btns[i]:Hide()
             end
         end
     else
