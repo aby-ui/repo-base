@@ -3,6 +3,8 @@ local DataBroker = LibStub'LibDataBroker-1.1'
 local L = U1.L
 
 U1_FRAME_NAME = "U1Frame";
+BINDING_HEADER_ABYUI = ADDONS --L["爱不易"]
+_G["BINDING_NAME_CLICK GameMenuButtonEditMode:LeftButton"] = LOCALE_zhCN and "爱不易-编辑模式" or "Enter Edit Mode"
 
 UUI = UUI or {}
 UUI.Main, UUI.Right, UUI.Center, UUI.Left, UUI.Top = {}, {}, {}, {}, {}

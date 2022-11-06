@@ -24,5 +24,19 @@ U1RegisterAddon("CastDelayBar", {
                 CastDelayBar.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", -22, -11);
             end
         end,
+    },
+
+    {
+        var = "showIcon",
+        text = "显示技能图标",
+        default = false,
+        tip = "说明`系统自带图标，只是玩家施法条默认隐藏",
+        callback = function(cfg, v, loading)
+            local icon = PlayerCastingBarFrame.Icon
+            icon:SetSize(24, 24)
+            icon:ClearAllPoints()
+            icon:SetPoint("TOPRIGHT", PlayerCastingBarFrame, "TOPLEFT", -3, 1)
+            CoreUIShowOrHide(icon, v)
+        end,
     }
 });

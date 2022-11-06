@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2483, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221028002205")
+mod:SetRevision("20221105195239")
 mod:SetCreatureID(186737)
 mod:SetEncounterID(2583)
 --mod:SetUsedIcons(1, 2, 3)
@@ -84,7 +84,7 @@ function mod:SPELL_CAST_START(args)
 		timerIcyDevastatorCD:Start()
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "DevastatorTarget", 0.1, 6, true)
 		--If time remaining on frost bomb less than 6, time remaining increased to 6
-		if timerFrostBombCD:GetRemaining(self.vb.crystalCount+1) < 6 then
+		if timerFrostBombCD:GetRemaining() < 6 then
 			local elapsed, total = timerFrostBombCD:GetTime()
 			local extend = 6 - (total-elapsed)
 			DBM:Debug("timerFrostBombCD extended by: "..extend, 2)

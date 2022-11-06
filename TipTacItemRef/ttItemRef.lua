@@ -2480,7 +2480,7 @@ function LinkTypeFuncs:achievement(link, linkType, achievementID, guid, complete
 			self:AddLine(format(L["Achievement Criteria |cff00ff00%d|r / |cffffffff%d|r"], criteriaComplete, #criteriaList));
 			local r1, g1, b1, r2, g2, b2;
 			local myDone1, myDone2;
-            if GetAchievementNumCriteria(id)>0 then
+            if GetAchievementNumCriteria(achievementID)>0 then
 			for i = 1, #criteriaList, 2 do
 				r1, g1, b1 = unpack(criteriaList[i].done and COLOR_COMPLETE or COLOR_INCOMPLETE);
 				if (criteriaList[i + 1]) then

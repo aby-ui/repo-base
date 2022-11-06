@@ -538,7 +538,6 @@ local function OnEvent(self, event, arg1, arg2)
 
         --8.0
         BM_SetMoveHandlerWith("AuctionHouseFrame", "Blizzard_AuctionHouseUI");
-        --BM_SetMoveHandlerWith("CommunitiesFrame", "Blizzard_Communities"); --TODO:abyui10 无法移动
         BM_SetMoveHandlerWith("AzeriteEssenceUI", "Blizzard_AzeriteEssenceUI");
         --BM_SetMoveHandlerWith("AzeriteEmpoweredItemUI", "Blizzard_AzeriteUI");
         BM_SetMoveHandlerWith("OrderHallTalentFrame", "Blizzard_OrderHallUI");
@@ -554,6 +553,22 @@ local function OnEvent(self, event, arg1, arg2)
             local mover = BM_CreateMover(ClassTalentFrame, 60, 30, -30, 0)
             BM_SetMoveHandler(ClassTalentFrame, mover)
             mover:SetFrameStrata("HIGH")
+        end)
+        BM_SetMoveHandlerWith(nil, "Blizzard_Communities", function()
+            -- fix yet another anchor family connection issue, added in 10.0 (from curse BlizzMove)
+            local dialog = _G.CommunitiesFrame.NotificationSettingsDialog;
+            if dialog then
+                dialog:ClearAllPoints();
+                dialog:SetAllPoints();
+            end
+            BM_SetMoveHandler(CommunitiesFrame)
+        end)
+        BM_SetMoveHandler(ContainerFrameCombinedBags, BM_CreateMover(ContainerFrameCombinedBags, 50, 50, -50, 0))
+        -- fix anchor family connection issues with the combined bag (from curse BlizzMove)
+        hooksecurefunc(ContainerFrameSettingsManager, "GetBagsShown", function(self)
+            for _, frame in ipairs(self.bagsShown) do
+                if frame == ContainerFrameCombinedBags then frame:ClearAllPoints(); end
+            end
         end)
 
         frame:UnregisterEvent("PLAYER_ENTERING_WORLD")

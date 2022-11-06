@@ -10,6 +10,14 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
 --------------------------------------------------------------------------------
 -- Pet Buttons
+--
+-- In retail, we can't use the existing pet action slots, and there isn't really
+-- a sufficient amount of secure environment actions to perfectly reimplement
+-- the pet bar.
+--
+-- To work around this, we implement our own pet bar, but keep the other one
+-- still active (but invisible). This lets us use the old bar to track when our
+-- bar should be shown
 --------------------------------------------------------------------------------
 
 local PetActionButtonMixin = {}

@@ -87,7 +87,7 @@ if (GetLocale() == "zhCN") then
 	TrinketMenu.Message14 = "/trinket load top|bottom profilename : 为上/下饰品载入一个配置文件";
 
 	BINDING_NAME_TOGGLE_TRINKETMENU = "打开/关闭饰品管理";
-	BINDING_HEADER_TRINKETMENU = "饰品管理";
+	BINDING_HEADER_TRINKETMENU = BINDING_HEADER_ABYUI or ADDONS --"饰品增强";
 	_G['BINDING_NAME_CLICK TrinketMenu_Trinket0:LeftButton'] = "使用1号饰品";
 	_G['BINDING_NAME_CLICK TrinketMenu_Trinket1:LeftButton'] = "使用2号饰品";
 elseif (GetLocale() == "zhTW") then

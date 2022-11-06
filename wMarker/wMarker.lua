@@ -77,6 +77,7 @@ local wM = "|cffe1a500w|cff69ccf0Marker|r"
 -------------------------------------------------------
 -- Binding Frame Strings
 -------------------------------------------------------
+BINDING_HEADER_WMARKER = (U1GetAddonInfo and U1GetAddonInfo(...).title) or (...)
 BINDING_HEADER_WMARKER_RAID = string.format("|cffe1a500w|cff69ccf0Marker|r - %s",L["Raid marker"]);
 BINDING_HEADER_WMARKER_WORLD = string.format("|cffe1a500w|cff69ccf0Marker|r - %s",L["World markers"]);
 BINDING_NAME_WMARKER_SKULL = L["Skull"];
@@ -91,14 +92,14 @@ BINDING_NAME_WMARKER_CLEAR = L["Clear mark"];
 BINDING_NAME_WMARKER_READY = L["Ready check"];
 
 
-_G["BINDING_NAME_CLICK wMarkerSquareflare:LeftButton"] = L["Square"];
-_G["BINDING_NAME_CLICK wMarkerTriangleflare:LeftButton"] = L["Triangle"];
-_G["BINDING_NAME_CLICK wMarkerDiamondflare:LeftButton"] = L["Diamond"];
-_G["BINDING_NAME_CLICK wMarkerCrossflare:LeftButton"] = L["Cross"];
-_G["BINDING_NAME_CLICK wMarkerStarflare:LeftButton"] = L["Star"];
-_G["BINDING_NAME_CLICK wMarkerCircleflare:LeftButton"] = L["Circle"];
-_G["BINDING_NAME_CLICK wMarkerMoonflare:LeftButton"] = L["Moon"];
-_G["BINDING_NAME_CLICK wMarkerSkullflare:LeftButton"] = L["Skull"];
+_G["BINDING_NAME_CLICK wMarkerSquareflare:LeftButton"] = L["World markers"] .. L["Square"];
+_G["BINDING_NAME_CLICK wMarkerTriangleflare:LeftButton"] = L["World markers"] .. L["Triangle"];
+_G["BINDING_NAME_CLICK wMarkerDiamondflare:LeftButton"] = L["World markers"] .. L["Diamond"];
+_G["BINDING_NAME_CLICK wMarkerCrossflare:LeftButton"] = L["World markers"] .. L["Cross"];
+_G["BINDING_NAME_CLICK wMarkerStarflare:LeftButton"] = L["World markers"] .. L["Star"];
+_G["BINDING_NAME_CLICK wMarkerCircleflare:LeftButton"] = L["World markers"] .. L["Circle"];
+_G["BINDING_NAME_CLICK wMarkerMoonflare:LeftButton"] = L["World markers"] .. L["Moon"];
+_G["BINDING_NAME_CLICK wMarkerSkullflare:LeftButton"] = L["World markers"] .. L["Skull"];
 _G["BINDING_NAME_CLICK wMarkerClearflares:LeftButton"] = L["Clear all world markers"];
 
 

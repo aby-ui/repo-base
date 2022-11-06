@@ -1,3 +1,11 @@
+BINDING_HEADER_163UI_CHAT = BINDING_HEADER_ABYUI or ADDONS
+local binding_header = (U1GetAddonInfo and U1GetAddonInfo(...).title or "聊天增强") .. "："
+BINDING_NAME_SAYMESSAGE = binding_header .. "说"
+BINDING_NAME_YELLMESSAGE = binding_header .. "大喊"
+BINDING_NAME_PARTYMESSAGE = binding_header .. "小队"
+BINDING_NAME_GUILDMESSAGE = binding_header .. "公会"
+BINDING_NAME_RAIDMESSAGE = binding_header .. "团队"
+
 function ChatEdit_CustomTabPressed(...)
     return ChatEdit_CustomTabPressed_Inner(...);
 end

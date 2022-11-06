@@ -1,8 +1,8 @@
 <Bindings>
 	<!--
-	<Binding name="BIND_TEST" header="HEADER_NIHAO" category="BINDING_HEADER_MOVEMENT1">
-		U1Chat_SetChatType("SAY")
-	</Binding>
+	header本来是BINDING_HEADER_{XXX} 但是目前不会显示，仅会增加一个间隔
+	name需要有BINDING_NAME_{XXX}的字符串 _G["BINDING_NAME_CLICK GameMenuButtonEditMode:LeftButton"] = "爱不易-编辑模式"
+	category直接是字符串key没有前缀,中文客户端有问题,因为BINDING_HEADER_OTHER和BINDING_HEADER_MISC翻译一样导致table遍历失败
 	-->
 	<Binding name="CLICK GameMenuButtonEditMode:LeftButton" category="BINDING_HEADER_INTERFACE" /> -->
 </Bindings>

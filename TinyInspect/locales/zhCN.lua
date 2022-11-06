@@ -39,4 +39,4 @@ ns.L = {
     ShowCorruptedMark           = "装等后面显示腐蚀标记",
 }
 
-BINDING_NAME_InspectRaidFrame = "显示团队观察面板"
+BINDING_NAME_InspectRaidFrame = "TinyInspect: 显示团队观察面板"

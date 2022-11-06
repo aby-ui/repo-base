@@ -1,17 +1,17 @@
 <Bindings>
-	<Binding name="SAYMESSAGE" header="EASYCHATCHANGE">
+	<Binding name="SAYMESSAGE" header="163UI_Chat" category="BINDING_HEADER_163UI_CHAT">
 		U1Chat_SetChatType("SAY")
 	</Binding>
-	<Binding name="YELLMESSAGE">
+	<Binding name="YELLMESSAGE" category="BINDING_HEADER_163UI_CHAT">
 		U1Chat_SetChatType("YELL")
 	</Binding>
-	<Binding name="PARTYMESSAGE">
+	<Binding name="PARTYMESSAGE" category="BINDING_HEADER_163UI_CHAT">
 		U1Chat_SetChatType("PARTY")
 	</Binding>
-	<Binding name="GUILDMESSAGE">
+	<Binding name="GUILDMESSAGE" category="BINDING_HEADER_163UI_CHAT">
 		U1Chat_SetChatType("GUILD")
 	</Binding>
-	<Binding name="RAIDMESSAGE">
+	<Binding name="RAIDMESSAGE" category="BINDING_HEADER_163UI_CHAT">
 		U1Chat_SetChatType("RAID")
 	</Binding>
 </Bindings>

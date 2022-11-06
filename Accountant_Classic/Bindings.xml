@@ -2,7 +2,7 @@
 $Id: Bindings.xml 17 2009-06-06 14:07:52Z arith $
 -->
 <Bindings>
-	<Binding name="ACCOUNTANTTOG" header="ACCOUNTANT">
+	<Binding name="ACCOUNTANTTOG" header="ACCOUNTANT" category="BINDING_HEADER_ABYUI">
 		AccountantButton_OnClick();
 	</Binding>
 </Bindings>

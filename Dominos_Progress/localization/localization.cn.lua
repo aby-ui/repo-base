@@ -27,10 +27,10 @@ L.CompressValues = '显示简短的数值'
 
 L.Color_xp = '经验条颜色'
 L.Color_xp_bonus = '双倍经验颜色'
-L.Color_honor = '荣誉颜色'
+L.Color_honor = '荣誉条颜色'
 L.Color_honor_bonus = '奖励荣誉颜色'
-L.Color_artifact = '神器能量颜色'
-L.Color_azerite = '项链能量颜色'
+L.Color_artifact = '神器能量条颜色'
+L.Color_azerite = '艾泽里特条颜色'
 L.Color_gold = '金钱颜色'
 L.Color_gold_realm = '同服务器金钱颜色'
 

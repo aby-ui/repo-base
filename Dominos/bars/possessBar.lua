@@ -11,15 +11,15 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 --------------------------------------------------------------------------------
 
 local function possessButton_OnEnter(self)
-	if UnitOnTaxi("player") then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip_SetTitle(GameTooltip, TAXI_CANCEL)
-		GameTooltip:AddLine(TAXI_CANCEL_DESCRIPTION, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
-		GameTooltip:Show()
+    if UnitOnTaxi("player") then
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip_SetTitle(GameTooltip, TAXI_CANCEL)
+        GameTooltip:AddLine(TAXI_CANCEL_DESCRIPTION, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
+        GameTooltip:Show()
 	elseif UnitControllingVehicle("player") and CanExitVehicle() then
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip_SetTitle(GameTooltip, LEAVE_VEHICLE)
-		GameTooltip:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip_SetTitle(GameTooltip, LEAVE_VEHICLE)
+        GameTooltip:Show()
     else
         local id = self:GetID()
         if id == POSSESS_CANCEL_SLOT then
@@ -27,7 +27,7 @@ local function possessButton_OnEnter(self)
         else
             GameTooltip:SetPossession(id)
         end
-	end
+    end
 end
 
 local function getOrCreatePossessButton(id)
@@ -149,14 +149,14 @@ function PossessBarModule:Load()
 
     self.bar = PossessBar:New()
 
-	self:RegisterEvent("UNIT_ENTERED_VEHICLE", "Update")
-	self:RegisterEvent("UNIT_EXITED_VEHICLE", "Update")
-	self:RegisterEvent("UPDATE_BONUS_ACTIONBAR", "Update")
+    self:RegisterEvent("UNIT_ENTERED_VEHICLE", "Update")
+    self:RegisterEvent("UNIT_EXITED_VEHICLE", "Update")
+    self:RegisterEvent("UPDATE_BONUS_ACTIONBAR", "Update")
     self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update")
     self:RegisterEvent("VEHICLE_UPDATE", "Update")
 
     if not Addon:IsBuild("classic") then
-	    self:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR", "Update")
+        self:RegisterEvent("UPDATE_MULTI_CAST_ACTIONBAR", "Update")
         self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", "Update")
         self:RegisterEvent("UPDATE_POSSESS_BAR", "Update")
         self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", "Update")

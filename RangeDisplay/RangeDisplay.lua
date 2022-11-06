@@ -8,7 +8,7 @@ License: Public Domain
 
 local AppName, RangeDisplay = ...
 local OptionsAppName = AppName .. "_Options"
-local VERSION = AppName .. "-v5.0.2"
+local VERSION = AppName .. "-v5.0.3"
 
 local rc = LibStub("LibRangeCheck-2.0")
 local LSM = LibStub:GetLibrary("LibSharedMedia-3.0", true)
@@ -24,10 +24,10 @@ local mute = nil
 -- cached stuff
 
 local _G = _G
-local IsClassic = false
-  or (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
-  or (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
-  or (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC)
+local IsClassicVanilla = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC)
+local IsClassicBC = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC)
+local IsClassicWrath = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC)
+local IsMainline = (_G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE)
 local UnitExists = _G.UnitExists
 local UnitIsDeadOrGhost = _G.UnitIsDeadOrGhost
 local UnitCanAttack = _G.UnitCanAttack
@@ -671,7 +671,7 @@ local units = {
   },
 }
 
-if not IsClassic then
+if IsMainline or IsClassicWrath then
   local fu = {
     unit = "focus",
     name = L["focus"],
@@ -718,7 +718,7 @@ function RangeDisplay:OnInitialize()
     LibDualSpec:EnhanceDatabase(self.db, AppName)
   end
 
-  if not IsClassic and self.db.global.enableArena and not arenaUnits then
+  if (IsMainline or IsClassicWrath) and self.db.global.enableArena and not arenaUnits then
     arenaUnits = {}
     tinsert(arenaUnits, arenaMasterUnit)
     tinsert(units, arenaMasterUnit)

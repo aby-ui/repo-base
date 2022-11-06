@@ -14,7 +14,7 @@ local SaveBindings = SaveBindings or AttemptToSaveBindings
 
 -- Setup keybinds (these need to be global strings to show up properly in ESC -> Key Bindings)
 BINDING_HEADER_GatherMate2 = "GatherMate2"
-BINDING_NAME_TOGGLE_GATHERMATE2_MINIMAPICONS = L["Keybind to toggle Minimap Icons"]
+BINDING_NAME_TOGGLE_GATHERMATE2_MINIMAPICONS = BINDING_HEADER_GatherMate2 .. " " .. L["Keybind to toggle Minimap Icons"]
 BINDING_NAME_TOGGLE_GATHERMATE2_MAINMAPICONS = L["Keybind to toggle Worldmap Icons"]
 
 -- A helper function for keybindings

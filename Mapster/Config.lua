@@ -52,7 +52,7 @@ local function getOptions()
 							name = MAP_FADE_TEXT,
 							desc = L["The map will fade out to the configured Fade Alpha level when you start moving."],
 							get = function() return GetCVarBool("mapFade") end,
-							set = function(_, v) v = v and 1 or 0; SetCVar("mapFade", v); end,
+							set = function(_, v) v = v and 1 or 0; SetCVar("mapFade", v); Mapster:Refresh(); end,
 							width = "full",
 						},
 						alpha = {

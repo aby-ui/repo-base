@@ -161,12 +161,16 @@ if Addon:IsBuild("retail") then
 else
     -- ignore pickup action clicks except on key down
     -- and ignore clicks that do not match our down state
-    local filterClicks = [[
-        if IsModifiedClick("PICKUPACTION") and down then
+    local actionButton_OnClick = [[
+        if button == 'HOTKEY' then
+            if down == control:GetAttribute("CastOnKeyPress") then
+                return 'LeftButton'
+            end
+
             return false
         end
 
-        if down ~= control:GetAttribute("CastOnKeyPress") then
+        if down then
             return false
         end
     ]]
@@ -185,7 +189,7 @@ else
 
     local function addCastOnKeyPressSupport(button)
         button:RegisterForClicks('AnyUp', 'AnyDown')
-        keyPressHandler:WrapScript(button, 'OnClick', filterClicks)
+        keyPressHandler:WrapScript(button, 'OnClick', actionButton_OnClick)
     end
 
     local function getBlizzardActionButtonCommandName(button)

@@ -110,16 +110,10 @@ function StanceBarModule:Load()
 
     self.bar = StanceBar:New()
 
-    -- self:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
     self:RegisterEvent("PLAYER_ENTERING_WORLD", 'UpdateNumForms')
     self:RegisterEvent("PLAYER_REGEN_ENABLED", 'UpdateNumForms')
-    -- self:RegisterEvent("UPDATE_BONUS_ACTIONBAR", 'UpdateStanceButtons')
-    -- self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", 'UpdateStanceButtons')
-    -- self:RegisterEvent("UPDATE_POSSESS_BAR", 'UpdateStanceButtons')
     self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", 'UpdateStanceButtons')
-    -- self:RegisterEvent("UPDATE_SHAPESHIFT_FORMS", 'UpdateStanceButtons')
     self:RegisterEvent("UPDATE_SHAPESHIFT_USABLE", 'UpdateStanceButtons')
-    -- self:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", 'UpdateStanceButtons')
     self:RegisterEvent("UPDATE_SHAPESHIFT_COOLDOWN", 'UpdateStanceButtons')
 end
 

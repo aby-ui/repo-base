@@ -24,6 +24,8 @@
 <Include file="LibCompress\LibCompress.lua"/><!--WeakAuras,MDT,Details-->
 <Include file="LibDeflate\LibDeflate.lua"/><!--ExRT,WeakAuras,Details,MethodDungeonTools-->
 <Include file="LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/><!--Detail,ZenTracker-->
+<Include file="!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua"/><!--Dominos,RareScanner,AngryKeystones-->
+<Include file="LibSerialize\LibSerialize.lua"/><!--BGE,WA,DBM,CELL-->
 
 <Include file="UTF8\utf8data.lua"/>
 <Include file="UTF8\utf8.lua"/>

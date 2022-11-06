@@ -1,5 +1,7 @@
 local _, Addon = ...
 
+local LibDD = LibStub("LibUIDropDownMenu-4.0")
+
 local Dropdown = Addon:CreateClass('Frame')
 do
 	local nextName = Addon:CreateNameGenerator('Dropdown')
@@ -20,7 +22,7 @@ do
 		f.SetSavedValue = options.set
 		f.GetSavedValue = options.get
 
-		local dropdownMenu = CreateFrame('Button', '$parentDropdownMenu', f, 'UIDropDownMenuTemplate')
+		local dropdownMenu = LibDD:Create_UIDropDownMenu(f:GetName() .. 'Menu', f)
 		dropdownMenu:SetPoint('RIGHT', -110, 0)
 		f.dropdownMenu = dropdownMenu
 
@@ -36,7 +38,7 @@ do
 
 		f:SetScript('OnShow', self.OnShow)
 
-		UIDropDownMenu_Initialize(dropdownMenu, function(button, menuLevel, menuList)
+		LibDD:UIDropDownMenu_Initialize(dropdownMenu, function(button, menuLevel, menuList)
 			f:ShowMenu(button, menuLevel, menuList)
 		end)
 
@@ -68,17 +70,17 @@ do
 		local selected = self:GetSavedValue()
 
 		for _, item in ipairs(self:GetItems()) do
-			local info = UIDropDownMenu_CreateInfo()
+			local info = LibDD:UIDropDownMenu_CreateInfo()
 
 			info.text = item.text
 			info.value = item.value
 			item.selected = item.value == selected
 			info.func = function() self:OnSelectValue(item.value) end
 
-			UIDropDownMenu_AddButton(info, menuLevel)
+			LibDD:UIDropDownMenu_AddButton(info, menuLevel)
 		end
 
-		UIDropDownMenu_SetSelectedValue(button, selected)
+		LibDD:UIDropDownMenu_SetSelectedValue(button, selected)
 	end
 
 	function Dropdown:GetItems()
@@ -90,12 +92,12 @@ do
 
 		for _, item in pairs(self:GetItems()) do
 			if item == value then
-				UIDropDownMenu_SetText(self.dropdownMenu, item)
+				LibDD:UIDropDownMenu_SetText(self.dropdownMenu, item)
 				break
 			end
 
 			if type(item) == "table" and item.value == value then
-				UIDropDownMenu_SetText(self.dropdownMenu, item.text or item.value)
+				LibDD:UIDropDownMenu_SetText(self.dropdownMenu, item.text or item.value)
 				break
 			end
 		end

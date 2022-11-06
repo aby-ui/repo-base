@@ -26,7 +26,7 @@
 
 Libs\LibLatency\LibLatency.xml
 Libs\LibDurability\LibDurability.xml
-Libs\LibSerialize\lib.xml
+#Libs\LibSerialize\lib.xml
 Libs\LibSpecialization\LibSpecialization.xml
 
 localization.en.lua

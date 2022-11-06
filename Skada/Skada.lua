@@ -98,11 +98,11 @@ do
 end
 
 -- Keybindings
-BINDING_HEADER_Skada = "Skada"
-BINDING_NAME_SKADA_TOGGLE = L["Toggle window"]
-BINDING_NAME_SKADA_RESET = L["Reset"]
-BINDING_NAME_SKADA_NEWSEGMENT = L["Start new segment"]
-BINDING_NAME_SKADA_STOP = L["Stop"]
+BINDING_HEADER_Skada = "Skada: "
+BINDING_NAME_SKADA_TOGGLE = BINDING_HEADER_Skada .. L["Toggle window"]
+BINDING_NAME_SKADA_RESET = BINDING_HEADER_Skada .. L["Reset"]
+BINDING_NAME_SKADA_NEWSEGMENT = BINDING_HEADER_Skada .. L["Start new segment"]
+BINDING_NAME_SKADA_STOP = BINDING_HEADER_Skada .. L["Stop"]
 
 -- The current set
 Skada.current = nil

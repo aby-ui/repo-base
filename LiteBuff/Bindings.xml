@@ -1,10 +1,10 @@
 <Bindings>
-    <Binding name="LITEBUFF_MOUNT_NORMAL" header="LITEBUFF_MOUNT">LBIntelliMountSummon("normal")</Binding>
-    <Binding name="LITEBUFF_MOUNT_PASSENGER">LBIntelliMountSummon("passenger")</Binding>
-    <Binding name="LITEBUFF_MOUNT_SURFACE">LBIntelliMountSummon("surface")</Binding>
-    <Binding name="LITEBUFF_MOUNT_VENDOR">LBIntelliMountSummon("vendor")</Binding>
-    <Binding name="LITEBUFF_MOUNT_AUCTION">LBIntelliMountSummon("auction")</Binding>
-    <Binding name="LITEBUFF_MOUNT_TRANSMOG">LBIntelliMountSummon("transmot")</Binding>
-    <Binding name="LITEBUFF_MOUNT_UNDERWATER">LBIntelliMountSummon("underwater")</Binding>
-    <Binding name="LITEBUFF_MOUNT_NOFLY">LBIntelliMountSummon("nofly")</Binding>
+    <Binding name="LITEBUFF_MOUNT_NORMAL" header="LITEBUFF_MOUNT" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("normal")</Binding>
+    <Binding name="LITEBUFF_MOUNT_PASSENGER" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("passenger")</Binding>
+    <Binding name="LITEBUFF_MOUNT_SURFACE" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("surface")</Binding>
+    <Binding name="LITEBUFF_MOUNT_VENDOR" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("vendor")</Binding>
+    <Binding name="LITEBUFF_MOUNT_AUCTION" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("auction")</Binding>
+    <Binding name="LITEBUFF_MOUNT_TRANSMOG" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("transmot")</Binding>
+    <Binding name="LITEBUFF_MOUNT_UNDERWATER" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("underwater")</Binding>
+    <Binding name="LITEBUFF_MOUNT_NOFLY" category="BINDING_HEADER_ABYUI">LBIntelliMountSummon("nofly")</Binding>
 </Bindings>

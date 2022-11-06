@@ -1,62 +1,62 @@
 <Bindings>
 	<!-- Raid Marker Bindings -->
-	<Binding name="WMARKER_SKULL" header="WMARKER_RAID">
+	<Binding name="WMARKER_SKULL" header="WMARKER_RAID" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",8);
 	</Binding>
-	<Binding name="WMARKER_CROSS">
+	<Binding name="WMARKER_CROSS" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",7);
 	</Binding>
-	<Binding name="WMARKER_SQUARE">
+	<Binding name="WMARKER_SQUARE" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",6);
 	</Binding>
-	<Binding name="WMARKER_MOON">
+	<Binding name="WMARKER_MOON" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",5);
 	</Binding>
-	<Binding name="WMARKER_TRI">
+	<Binding name="WMARKER_TRI" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",4);
 	</Binding>
-	<Binding name="WMARKER_DIA">
+	<Binding name="WMARKER_DIA" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",3);
 	</Binding>
-	<Binding name="WMARKER_CIR">
+	<Binding name="WMARKER_CIR" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",2);
 	</Binding>
-	<Binding name="WMARKER_STAR">
+	<Binding name="WMARKER_STAR" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",1);
 	</Binding>
-	<Binding name="WMARKER_CLEAR">
+	<Binding name="WMARKER_CLEAR" category="BINDING_HEADER_WMARKER">
 		SetRaidTarget("target",0);
 	</Binding>
-	<Binding name="WMARKER_READY">
+	<Binding name="WMARKER_READY" category="BINDING_HEADER_WMARKER">
 		DoReadyCheck();
 	</Binding>
 	
 	<!-- World Marker Bindings -->
-	<Binding name="CLICK wMarkerSquareflare:LeftButton" header="WMARKER_WORLD">
-		-- Square
-	</Binding>
-	<Binding name="CLICK wMarkerTriangleflare:LeftButton">
-		-- Triangle
-	</Binding>
-	<Binding name="CLICK wMarkerDiamondflare:LeftButton">
-		-- Diamond
-	</Binding>
-	<Binding name="CLICK wMarkerCrossflare:LeftButton">
-		-- Cross
-	</Binding>
-	<Binding name="CLICK wMarkerStarflare:LeftButton">
-		-- Star
-	</Binding>
-	<Binding name="CLICK wMarkerCircleflare:LeftButton">
-		-- Circle
-	</Binding>
-	<Binding name="CLICK wMarkerMoonflare:LeftButton">
-		-- Moon
-	</Binding>
-	<Binding name="CLICK wMarkerSkullflare:LeftButton">
+	<Binding name="CLICK wMarkerSkullflare:LeftButton" header="WMARKER_WORLD" category="BINDING_HEADER_WMARKER">
 		-- Skull
 	</Binding>
-	<Binding name="CLICK wMarkerClearflares:LeftButton">
+	<Binding name="CLICK wMarkerCrossflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Cross
+	</Binding>
+	<Binding name="CLICK wMarkerSquareflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Square
+	</Binding>
+	<Binding name="CLICK wMarkerMoonflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Moon
+	</Binding>
+	<Binding name="CLICK wMarkerTriangleflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Triangle
+	</Binding>
+	<Binding name="CLICK wMarkerDiamondflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Diamond
+	</Binding>
+	<Binding name="CLICK wMarkerCircleflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Circle
+	</Binding>
+	<Binding name="CLICK wMarkerStarflare:LeftButton" category="BINDING_HEADER_WMARKER">
+		-- Star
+	</Binding>
+	<Binding name="CLICK wMarkerClearflares:LeftButton" category="BINDING_HEADER_WMARKER">
 		-- Clear All
 	</Binding>
 	

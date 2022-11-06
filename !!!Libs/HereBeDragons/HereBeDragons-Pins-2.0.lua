@@ -1,6 +1,6 @@
 -- HereBeDragons-Pins is a library to show pins/icons on the world map and minimap
 
-local MAJOR, MINOR = "HereBeDragons-Pins-2.0", 10
+local MAJOR, MINOR = "HereBeDragons-Pins-2.0", 11
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local pins, _oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -493,7 +493,7 @@ pins.updateFrame:SetScript("OnUpdate", OnUpdateHandler)
 local function OnEventHandler(frame, event, ...)
     if event == "CVAR_UPDATE" then
         local cvar, value = ...
-        if cvar == "ROTATE_MINIMAP" then
+        if cvar == "rotateMinimap" or cvar == "ROTATE_MINIMAP" then
             rotateMinimap = (value == "1")
             queueFullUpdate = true
         end

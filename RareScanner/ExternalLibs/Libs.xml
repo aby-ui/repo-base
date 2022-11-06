@@ -4,7 +4,7 @@
 	<!--<Script file="LibStub\LibStub.lua"/>-->
 	
 	<!-- External libraries -->
-	<Include file="LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
+	<!--<Include file="LibUIDropDownMenu\LibUIDropDownMenu.xml"/>-->
 	<!--
 	<Include file="CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
 	<Include file="AceAddon-3.0\AceAddon-3.0.xml"/>

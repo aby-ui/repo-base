@@ -6,7 +6,7 @@
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
 ## X-Packaged-Version: v0.26.0
 
-embeds.xml
+#embeds.xml
 
 Core.lua
 Locale.lua

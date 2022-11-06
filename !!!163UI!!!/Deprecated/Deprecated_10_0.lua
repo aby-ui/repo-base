@@ -115,3 +115,48 @@ do
         end
     end
 end
+
+do
+    CoreOnEvent("VARIABLES_LOADED", function()
+        if U1DBG.show_3rd_bindings then
+            U1DBG.show_3rd_bindings = nil
+            BINDING_HEADER_OTHER = "BINDING_HEADER_OTHER"
+            C_Timer.After(0.1, function()
+                SettingsPanel:OpenToCategory(SettingsPanel.keybindingsCategory.ID)
+            end)
+        end
+
+        local name = "AbySettingsBindingToggleButton"
+        local ok, def = pcall(function() return
+            SettingsPanel.Container.SettingsList.Header.DefaultsButton
+        end)
+        if not ok then return end
+
+        local working = BINDING_HEADER_OTHER ~= BINDING_HEADER_MISC
+
+        local btn = WW:Button(name, def:GetParent(), "UIPanelButtonTemplate")
+                      :Size(110, 22):TR(def, "TL", -10, 0)
+                      :SetText('\124TInterface\\AddOns\\!!!163UI!!!\\Textures\\UI2-logo:' .. (20) .. '\124t' .. (working and "  重载保证安全  " or "  显示插件热键  "))
+                      :SetScript("OnDoubleClick", function()
+                    if not working then U1DBG.show_3rd_bindings = true end
+                    ReloadUI()
+                end)  :un()
+
+        btn.tooltipText = "|cffffff00临时显示插件定义的热键|r\n\n因为暴雪的BUG,中文客户端无法显示插件自定义的热键（参见https://bbs.nga.cn/read.php?tid=34037994 oyg123大佬曾发现并解决过9.1打开地图卡顿的问题）。\n\n爱不易根据这个帖子，增加这个按钮，'|cffffff00双击|r'此按钮会重载界面并显示这些热键，但是这样可能导致界面失效的问题。所以设置完热键后，请再次重载界面。"
+        btn.Text:ClearAllPoints()
+        btn.Text:SetPoint("RIGHT")
+        btn.Text:SetJustifyH("RIGHT")
+        hooksecurefunc(SettingsPanel.CategoryList, "SetCurrentCategory", function(self)
+            if self.currentCategory == SettingsPanel.keybindingsCategory then
+                btn:Show()
+            else
+                btn:Hide()
+            end
+        end)
+        SettingsPanel:HookScript("OnHide", function()
+            if working then
+                U1Message("你之前开启了显示插件热键功能，当前环境可能不安全，建议/rl重载界面")
+            end
+        end)
+    end)
+end

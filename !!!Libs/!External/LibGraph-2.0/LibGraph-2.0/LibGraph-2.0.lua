@@ -1,6 +1,6 @@
 --[[
 Name: LibGraph-2.0
-Revision: $Rev: 60 $
+Revision: $Rev: 62 $
 Author(s): Cryect (cryect@gmail.com), Xinhuan
 Website: http://www.wowace.com/
 Documentation: http://www.wowace.com/wiki/GraphLib
@@ -11,7 +11,7 @@ Description: Allows for easy creation of graphs
 --Thanks to Nelson Minar for catching several errors where width was being used instead of height (damn copy and paste >_>)
 
 local major = "LibGraph-2.0"
-local minor = 90000 + tonumber(("$Revision: 60 $"):match("(%d+)"))
+local minor = 90000 + tonumber(("$Revision: 62 $"):match("(%d+)"))
 
 
 --Search for just Addon\\ at the front since the interface part often gets trimmed
@@ -21,18 +21,24 @@ local TextureDirectory
 do
 	--local path = string.match(debugstack(1, 1, 0), "AddOns[\\/](.+)LibGraph%-2%.0%.lua")
 	local path = "!!!Libs\\!External\\LibGraph-2.0\\LibGraph-2.0\\"
+
 	if path then
-		TextureDirectory = "Interface\\AddOns\\"..path
+		TextureDirectory = path
 	else
 		error(major.." cannot determine the folder it is located in because the path is too long and got truncated in the debugstack(1, 1, 0) function call")
 	end
 end
 
-
 if not LibStub then error(major .. " requires LibStub") end
 
 local lib, oldLibMinor = LibStub:NewLibrary(major, minor)
 if not lib then return end
+
+--manually set the path in case want to use custom textures
+function lib:SetTextureDirectory(path)
+	assert(type(path) == "string", "Usage: lib:SetTextureDirectory(string: path)")
+	TextureDirectory = path
+end
 
 local GraphFunctions = {}
 

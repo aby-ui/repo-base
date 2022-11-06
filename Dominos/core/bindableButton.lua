@@ -4,13 +4,19 @@ local KeyBound = LibStub('LibKeyBound-1.0')
 
 -- binding method definitions
 -- returns the binding action associated with the button
+
+-- retail, we can use normal LeftButton clicks
+-- in classic, we need to use a virtual button (arbitrarily named HOTKEY)
+-- to enable cast on key press support
+local BINDNG_BUTTON = Addon:IsBuild("retail") and "LeftButton" or "HOTKEY"
+
 local function getButtonBindingAction(button)
     local commandName = button.commandName
     if commandName then
         return commandName
     end
 
-    return ('CLICK %s:LeftButton'):format(button:GetName())
+    return ('CLICK %s:%s'):format(button:GetName(), BINDNG_BUTTON)
 end
 
 local function getButtonActionName(button)

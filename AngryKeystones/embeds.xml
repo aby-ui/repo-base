@@ -1,4 +1,0 @@
-<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-  <!--<Script file="libs\LibStub\LibStub.lua"/>-->
-  <Include file="libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
-</Ui>
