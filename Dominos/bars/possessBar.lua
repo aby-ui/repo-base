@@ -10,24 +10,51 @@ local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 -- Button setup
 --------------------------------------------------------------------------------
 
-local function possessButton_OnEnter(self)
+local function possessButton_OnClick(self)
+    self:SetChecked(false)
+
     if UnitOnTaxi("player") then
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        TaxiRequestEarlyLanding()
+
+        -- Show that the request for landing has been received.
+        self.icon:SetDesaturated(true)
+        self:SetChecked(true)
+        self:Disable()
+    elseif UnitControllingVehicle("player") and CanExitVehicle() then
+        VehicleExit()
+    else
+        CancelPetPossess()
+    end
+end
+
+local function possessButton_OnEnter(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+
+    if UnitOnTaxi("player") then
         GameTooltip_SetTitle(GameTooltip, TAXI_CANCEL)
         GameTooltip:AddLine(TAXI_CANCEL_DESCRIPTION, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
-        GameTooltip:Show()
-	elseif UnitControllingVehicle("player") and CanExitVehicle() then
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+
+    elseif UnitControllingVehicle("player") and CanExitVehicle() then
         GameTooltip_SetTitle(GameTooltip, LEAVE_VEHICLE)
-        GameTooltip:Show()
     else
-        local id = self:GetID()
-        if id == POSSESS_CANCEL_SLOT then
-            GameTooltip:SetText(CANCEL)
-        else
-            GameTooltip:SetPossession(id)
-        end
+        GameTooltip:SetText(CANCEL)
     end
+
+    GameTooltip:Show()
+end
+
+local function possessButton_OnLeave(self)
+    if GameTooltip:IsOwned(self) then
+        GameTooltip:Hide()
+    end
+end
+
+local function possessButton_OnCreate(self)
+    self:SetScript("OnClick", possessButton_OnClick)
+    self:SetScript("OnEnter", possessButton_OnEnter)
+    self:SetScript("OnLeave", possessButton_OnLeave)
+
+    Addon.BindableButton:AddQuickBindingSupport(self)
 end
 
 local function getOrCreatePossessButton(id)
@@ -35,23 +62,15 @@ local function getOrCreatePossessButton(id)
     local button = _G[name]
 
     if not button then
-        if PossessButtonMixin then
+        if SmallActionButtonMixin then
             button = CreateFrame("CheckButton", name, nil, "SmallActionButtonTemplate", id)
-            Mixin(button, PossessButtonMixin)
-
-            button:OnLoad()
-            button:SetScript("OnClick", button.OnClick)
-            button:SetScript("OnEnter", possessButton_OnEnter)
-            button:SetScript("OnLeave", button.OnLeave)
+            button.cooldown:SetSwipeColor(0, 0, 0)
         else
             button = CreateFrame("CheckButton", name, nil, "ActionButtonTemplate", id)
             button:SetSize(30, 30)
-            button:SetScript("OnClick", PossessButton_OnClick)
-            button:SetScript("OnEnter", possessButton_OnEnter)
-            button:SetScript("OnLeave", function() GameTooltip:Hide() end)
         end
 
-        Addon.BindableButton:AddQuickBindingSupport(button)
+        possessButton_OnCreate(button)
     end
 
     return button
@@ -73,7 +92,11 @@ end
 
 -- disable UpdateDisplayConditions as we're not using showstates for this
 function PossessBar:GetDisplayConditions()
-    return '[canexitvehicle][possessbar]show;hide'
+    if Addon:IsBuild("retail") then
+        return '[canexitvehicle][possessbar]show;hide'
+    end
+
+    return '[canexitvehicle][possessbar][bonusbar:5]show;hide'
 end
 
 function PossessBar:GetDefaults()
@@ -139,11 +162,7 @@ local PossessBarModule = Addon:NewModule('PossessBar', 'AceEvent-3.0')
 
 function PossessBarModule:Load()
     if not self.loaded then
-        self:BanishFrame(PossessBar)
-        self:BanishFrame(PossessActionBar)
-        self:BanishFrame(MainMenuBarVehicleLeaveButton)
-        self.Update = Addon:Defer(self.Update, 0.01, self)
-
+        self:OnFirstLoad()
         self.loaded = true
     end
 
@@ -171,12 +190,8 @@ function PossessBarModule:Unload()
     end
 end
 
-function PossessBarModule:BanishFrame(frame)
-    if frame then
-        frame:UnregisterAllEvents()
-        frame:SetParent(Addon.ShadowUIParent)
-        frame:Hide()
-    end
+function PossessBarModule:OnFirstLoad()
+    self.Update = Addon:Defer(self.Update, 0.01, self)
 end
 
 function PossessBarModule:Update()

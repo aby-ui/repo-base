@@ -12,14 +12,22 @@ U1RegisterAddon("CastDelayBar", {
     end,
 
     {
+        var = "showdelay",
+        text = "显示表示延迟的小红条",
+        default = 1,
+        callback = function(cfg, v, loading)
+            CastDelayBar.showdelay = v
+        end,
+    },
+
+    {
         var = "showtotal",
         text = "显示总施法时间",
         tip = "说明`选中此项则显示已施法时间和总施法时间，否则只显示剩余施法时间。",
         callback = function(cfg, v, loading)
             CastDelayBar.showremain = not v
-            CastDelayBar.delayText:ClearAllPoints()
             if v then
-                CastDelayBar.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", 8, 3);
+                CastDelayBar.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", -43, -11);
             else
                 CastDelayBar.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", -22, -11);
             end

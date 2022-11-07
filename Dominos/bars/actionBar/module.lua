@@ -1,12 +1,11 @@
 local _, Addon = ...
-
 local ActionBarsModule = Addon:NewModule('ActionBars', 'AceEvent-3.0')
 
 function ActionBarsModule:Load()
     self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS')
     self:RegisterEvent('UPDATE_BONUS_ACTIONBAR', 'OnOverrideBarUpdated')
 
-    if _G.OverrideActionBar then
+    if OverrideActionBar then
         self:RegisterEvent('UPDATE_VEHICLE_ACTIONBAR', 'OnOverrideBarUpdated')
         self:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR', 'OnOverrideBarUpdated')
     end

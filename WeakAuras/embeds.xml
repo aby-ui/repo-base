@@ -2,9 +2,9 @@
 ..\FrameXML\UI.xsd">
   <!--<Script file="Libs\LibCompress\LibCompress.lua"/>-->
   <Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
-  <Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
+  <!--<Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>-->
   <!--<Script file="Libs\LibDeflate\LibDeflate.lua"/>-->
-  <Include file="Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
+  <!--<Include file="Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>-->
   <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
   <Include file="Libs\Archivist\Archivist.xml"/>
   <!--<Include file="Libs\LibSerialize\lib.xml"/>-->

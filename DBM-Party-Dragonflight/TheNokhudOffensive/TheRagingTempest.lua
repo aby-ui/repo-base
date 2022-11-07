@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2497, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221030050248")
+mod:SetRevision("20221106015735")
 mod:SetCreatureID(186615)
 mod:SetEncounterID(2636)
 --mod:SetUsedIcons(1, 2, 3)
@@ -46,9 +46,9 @@ mod:AddInfoFrameOption(382628, false)
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
 function mod:OnCombatStart(delay)
-	timerEnergySurgeCD:Start(7.5-delay)
+	timerEnergySurgeCD:Start(7-delay)
 	timerLightingStrikeCD:Start(10.7-delay)
-	timerElectricStormCD:Start(30.6-delay)
+	timerElectricStormCD:Start(30.1-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(382628))
 		DBM.InfoFrame:Show(5, "playerdebuffremaining", 382628)

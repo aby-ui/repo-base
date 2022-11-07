@@ -8,7 +8,6 @@ local KeyBound = LibStub('LibKeyBound-1.0')
 -- retail, we can use normal LeftButton clicks
 -- in classic, we need to use a virtual button (arbitrarily named HOTKEY)
 -- to enable cast on key press support
-local BINDNG_BUTTON = Addon:IsBuild("retail") and "LeftButton" or "HOTKEY"
 
 local function getButtonBindingAction(button)
     local commandName = button.commandName
@@ -16,19 +15,17 @@ local function getButtonBindingAction(button)
         return commandName
     end
 
-    return ('CLICK %s:%s'):format(button:GetName(), BINDNG_BUTTON)
+    return ('CLICK %s:%s'):format(button:GetName(), Addon.ACTION_BUTTON_HOTKEY_BUTTON)
 end
 
-local function getButtonActionName(button)
-    local commandName = button.commandName
-    if commandName then
-        return GetBindingName(commandName)
+local function getButtonBindingActionName(button)
+    local displayName = button.displayName
+    if displayName then
+        return displayName
     end
 
-    local action = getButtonBindingAction(button)
-    local bindingName = GetBindingName(action)
-
-    if bindingName and bindingName ~= action then
+    local bindingName = _G["BINDING_NAME_" .. getButtonBindingAction(button)]
+    if bindingName then
         return bindingName
     end
 
@@ -98,7 +95,7 @@ function BindableButtonProxy:ClearBindings()
 end
 
 function BindableButtonProxy:GetActionName()
-    return whenExists(self:GetParent(), getButtonActionName) or UNKNOWN
+    return whenExists(self:GetParent(), getButtonBindingActionName) or UNKNOWN
 end
 
 BindableButtonProxy:SetScript('OnLeave', function(self)
@@ -108,7 +105,7 @@ end)
 
 -- methods to inject onto a bar to add in common binding functionality
 -- previously, this was a mixin
-local BindableButton = { }
+local BindableButton = {}
 
 -- adds quickbinding support to buttons
 function BindableButton:AddQuickBindingSupport(button, bindingAction)

@@ -5,26 +5,22 @@
 
 local _, Addon = ...
 
-local ActionButtonMap = {}
+local BlizzardActionButtons = {}
 
 if Addon:IsBuild("retail") then
-    local function getActionPageOffset(bar)
-        local page = bar:GetAttribute("actionpage")
-
-        return (page - 1) * NUM_ACTIONBAR_BUTTONS
-    end
-
-    local function addBar(bar, offset)
+    local function addBar(bar, page)
         if not (bar and bar.actionButtons) then return end
 
-        offset = offset or getActionPageOffset(bar)
+        page = page or bar:GetAttribute("actionpage")
+
+        local offset = (page - 1) * NUM_ACTIONBAR_BUTTONS
 
         for i, button in pairs(bar.actionButtons) do
-            ActionButtonMap[i + offset] = button
+            BlizzardActionButtons[i + offset] = button
         end
     end
 
-    addBar(MainMenuBar, 0)
+    addBar(MainMenuBar, 1)
     addBar(MultiBarBottomLeft)
     addBar(MultiBarBottomRight)
     addBar(MultiBarLeft)
@@ -38,16 +34,16 @@ else
 
         local index = button:GetID() + (page - 1) * NUM_ACTIONBAR_BUTTONS
 
-        ActionButtonMap[index] = button
+        BlizzardActionButtons[index] = button
     end
 
     for i = 1, NUM_ACTIONBAR_BUTTONS do
         addButton(_G['ActionButton' .. i], 1)
-        addButton(_G['MultiBarRightButton' .. i])
-        addButton(_G['MultiBarLeftButton' .. i])
-        addButton(_G['MultiBarBottomRightButton' .. i])
         addButton(_G['MultiBarBottomLeftButton' .. i])
+        addButton(_G['MultiBarBottomRightButton' .. i])
+        addButton(_G['MultiBarLeftButton' .. i])
+        addButton(_G['MultiBarRightButton' .. i])
     end
 end
 
-Addon.ActionButtonMap = ActionButtonMap
+Addon.BlizzardActionButtons = BlizzardActionButtons

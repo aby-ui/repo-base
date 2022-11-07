@@ -1,6 +1,6 @@
 U1RegisterAddon("SimpleRaidTargetIcons", {
     title = "快速标记助手",
-    defaultEnable = 1,
+    defaultEnable = 0,
     --optionsAfterVar = 1,
 
     tags = { TAG_RAID },

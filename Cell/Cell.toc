@@ -1,0 +1,50 @@
+## Interface: 100000
+## Title: Cell
+## Version: r137-release
+## Author: 篠崎
+## X-Flavor: Mainline
+## SavedVariables: CellDB
+
+## X-Curse-Project-ID: 409666
+## X-Wago-ID: qv63LLKb
+## X-WoWI-ID: 26244
+
+Locales\enUS.lua
+Locales\zhCN.lua
+Locales\zhTW.lua
+
+Libs\LoadLibs.xml
+
+Core.lua
+Utils.lua
+Revise.lua
+Comm.lua
+Widgets\LoadWidgets.xml
+Defaults\LoadDefaults.xml
+
+HideBlizzard.lua
+
+Indicators\Base.lua
+Indicators\Built-in.lua
+Indicators\AoEHealing.lua
+Indicators\TargetCounter.lua
+Indicators\TargetedSpells.lua
+Indicators\Consumables.lua
+Indicators\Custom.lua
+
+RaidFrame\MainFrame.lua
+RaidFrame\UnitButton.lua
+RaidFrame\UnitButton.xml
+RaidFrame\Groups\SoloFrame.lua
+RaidFrame\Groups\PartyFrame.lua
+RaidFrame\Groups\RaidFrame.lua
+RaidFrame\Groups\RaidPetFrame.lua
+RaidFrame\Groups\NPCFrame.lua
+RaidFrame\Groups\SpotlightFrame.lua
+
+Tools\LoadTools.xml
+Modules\LoadModules.xml
+RaidDebuffs\LoadRaidDebuffs.xml
+
+## Notes-zhCN: 新生代的团队框体，由国服玩家 篠崎-影之哀伤 开发，所有你能想到的功能，它可能都有。而且配置相对容易，预设方案完善，开包即用，希望大家能多多支持，爱发电地址(需登陆) https://afdian.net/a/enderneko
+## X-Vendor: AbyUI

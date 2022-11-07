@@ -6,5 +6,5 @@
 	<Script file="libs\LibDeflate\LibDeflate.lua"/>
 	-->
 	<Script file="libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
-	<Script file="libs\LibCustomGlow-1.0\LibCustomGlow-1.0.lua"/>
+	<!--<Script file="libs\LibCustomGlow-1.0\LibCustomGlow-1.0.lua"/>-->
 </Ui>

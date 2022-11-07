@@ -44,6 +44,11 @@ XLootFrame.addon = addon
 -- Grab locals
 local mouse_focus, opt
 
+local LOOT_SLOT_NONE = LOOT_SLOT_NONE or Enum.LootSlotType.None
+local LOOT_SLOT_ITEM = LOOT_SLOT_ITEM or Enum.LootSlotType.Item
+local LOOT_SLOT_MONEY = LOOT_SLOT_MONEY or Enum.LootSlotType.Money
+local LOOT_SLOT_CURRENCY = LOOT_SLOT_CURRENCY or Enum.LootSlotType.Currency
+
 -- Chat output
 local print, wprint = print, print
 local function xprint(text)
@@ -653,8 +658,10 @@ do
 			if opt.loot_texts_info then -- This is a bit gnarly
 				local equip = slotData.typeName == ENCHSLOT_WEAPON and ENCHSLOT_WEAPON or slotData.equipLoc ~= '' and _G[slotData.equipLoc] or ''
 				local itemtype = (slotData.subTypeName == 'Junk' and slotData.quality > 0) and MISCELLANEOUS or slotData.subTypeName
-				text_info = ((type(equip) == 'string' and equip ~= '') and equip..', ' or '') .. itemtype
-				layout = 'detailed'
+				if itemtype then
+					text_info = ((type(equip) == 'string' and equip ~= '') and equip..', ' or '') .. itemtype
+					layout = 'detailed'
+				end
 			end
 
 			if opt.loot_texts_bind and slotData.bindType then

@@ -343,15 +343,30 @@ end
 
 -- apply workaround for the following "bug": on first mouseover over toy or unit aura after starting the game the gtt will be cleared (OnTooltipCleared) and internally set again. There ist no immediately following SetToyByItemID(), SetAction(), SetUnitAura() or SetAzeriteEssence() (only approx. 0.2-1 second later), but on the next OnUpdate the GetItem() is set again.
 -- ttWorkaroundForFirstMouseoverStatus:
--- nil = no hooks set (initial status)
--- 1   = hooks GameTooltip:OnTooltipCleared and Button:OnLeave set
--- 2   = hooks GameTooltip:OnUpdate and Button:OnLeave set
--- 3   = no hooks set respectively not needed any more
+-- nil = no hooks applied (uninitialized)
+-- 0   = hooks applied (initialized)
+-- 1   = waiting for GameTooltip:OnTooltipCleared (armed, 1st stage)
+-- 2   = waiting for GameTooltip:OnUpdate (armed, 2nd stage)
+-- 3   = tooltip modification reapplied (triggered)
 function ttif:ApplyWorkaroundForFirstMouseover(self, isAura, source, link, linkType, id, rank)
 	local tooltip = self;
 	
 	-- functions
-	local reapplyTooltipModificationFn = function()
+	local resetVarsFn = function(tooltip)
+		tooltip.ttWorkaroundForFirstMouseoverStatus = 0; -- initialized
+		tooltip.ttWorkaroundForFirstMouseoverID = nil;
+		tooltip.ttWorkaroundForFirstMouseoverRank = nil;
+		tooltip.ttWorkaroundForFirstMouseoverOwner = nil;
+	end
+	
+	local initVarsFn = function(tooltip, id, rank, owner)
+		tooltip.ttWorkaroundForFirstMouseoverStatus = 1; -- armed, 1st stage
+		tooltip.ttWorkaroundForFirstMouseoverID = id;
+		tooltip.ttWorkaroundForFirstMouseoverRank = rank;
+		tooltip.ttWorkaroundForFirstMouseoverOwner = owner;
+	end
+	
+	local reapplyTooltipModificationFn = function(tooltip)
 		tipDataAdded[tooltip] = linkType;
 		if (linkType == "spell") then
 			LinkTypeFuncs.spell(tooltip, isAura, source, link, linkType, tooltip.ttWorkaroundForFirstMouseoverID);
@@ -360,60 +375,38 @@ function ttif:ApplyWorkaroundForFirstMouseover(self, isAura, source, link, linkT
 		else
 			LinkTypeFuncs.item(tooltip, link, linkType, tooltip.ttWorkaroundForFirstMouseoverID);
 		end
-		AceHook:Unhook(tooltip, "OnUpdate");
-		tooltip.ttWorkaroundForFirstMouseoverStatus = 3;
-	end
-	
-	local removeHooksFn = function(resetVars)
-		if (tooltip.ttWorkaroundForFirstMouseoverStatus == 1) then
-			AceHook:Unhook(tooltip, "OnTooltipCleared");
-			AceHook:Unhook(tooltip, "OnHide");
-		elseif (tooltip.ttWorkaroundForFirstMouseoverStatus == 2) then
-			AceHook:Unhook(tooltip, "OnUpdate");
-			AceHook:Unhook(tooltip, "OnHide");
-		elseif (tooltip.ttWorkaroundForFirstMouseoverStatus == 3) then
-			AceHook:Unhook(tooltip, "OnHide");
-		end
-		
-		if (resetVars) then
-			tooltip.ttWorkaroundForFirstMouseoverStatus = nil;
-			tooltip.ttWorkaroundForFirstMouseoverID = nil;
-			tooltip.ttWorkaroundForFirstMouseoverRank = nil;
-			tooltip.ttWorkaroundForFirstMouseoverOwner = nil;
-		end
-	end
-	
-	-- remove previous hooks if different id
-	local owner = tooltip:GetOwner();
-	
-	if (tooltip.ttWorkaroundForFirstMouseoverStatus) and ((tooltip.ttWorkaroundForFirstMouseoverID ~= id) or (owner ~= tooltip.ttWorkaroundForFirstMouseoverOwner)) then
-		removeHooksFn(true);
 	end
 	
 	-- apply hooks
-	if (not tooltip.ttWorkaroundForFirstMouseoverStatus) then
-		AceHook:SecureHookScript(tooltip, "OnTooltipCleared", function()
-			local owner = tooltip:GetOwner();
-			if (owner ~= tooltip.ttWorkaroundForFirstMouseoverOwner) then
-				removeHooksFn(true);
-				return;
+	if (not tooltip.ttWorkaroundForFirstMouseoverStatus) then -- nil = uninitialized
+		AceHook:SecureHookScript(tooltip, "OnTooltipCleared", function(tooltip)
+			if (tooltip.ttWorkaroundForFirstMouseoverStatus == 1) then -- armed, 1st stage
+				if (tooltip:GetOwner() ~= tooltip.ttWorkaroundForFirstMouseoverOwner) then
+					resetVarsFn(tooltip); -- 0 = initialized
+					return;
+				end
+				tooltip.ttWorkaroundForFirstMouseoverStatus = 2; -- armed, 2nd stage
 			end
-			AceHook:SecureHookScript(tooltip, "OnUpdate", function()
-				reapplyTooltipModificationFn();
-			end);
-			AceHook:Unhook(tooltip, "OnTooltipCleared");
-			tooltip.ttWorkaroundForFirstMouseoverStatus = 2;
 		end);
-		AceHook:SecureHookScript(tooltip, "OnHide", function()
-			removeHooksFn(true);
+		
+		AceHook:SecureHookScript(tooltip, "OnUpdate", function(tooltip)
+			if (tooltip.ttWorkaroundForFirstMouseoverStatus == 2) then -- armed, 2nd stage
+				reapplyTooltipModificationFn(tooltip);
+				tooltip.ttWorkaroundForFirstMouseoverStatus = 3; -- triggered
+			end
 		end);
-		tooltip.ttWorkaroundForFirstMouseoverStatus = 1;
-		tooltip.ttWorkaroundForFirstMouseoverID = id;
-		tooltip.ttWorkaroundForFirstMouseoverRank = rank;
-		tooltip.ttWorkaroundForFirstMouseoverOwner = owner;
+		
+		AceHook:SecureHookScript(tooltip, "OnHide", function(tooltip)
+			resetVarsFn(tooltip); -- 0 = initialized
+		end);
+		
+		resetVarsFn(tooltip); -- 0 = initialized
+	end
+	
+	if (tooltip.ttWorkaroundForFirstMouseoverStatus == 0) or (tooltip.ttWorkaroundForFirstMouseoverID ~= id) or (owner ~= tooltip.ttWorkaroundForFirstMouseoverOwner) then
+		initVarsFn(tooltip, id, rank, tooltip:GetOwner()); -- 1 = armed, 1st stage
 	else
-		removeHooksFn();
-		tooltip.ttWorkaroundForFirstMouseoverStatus = 3;
+		tooltip.ttWorkaroundForFirstMouseoverStatus = 3; -- triggered
 	end
 end
 
@@ -532,6 +525,27 @@ local function SetUnitAura_Hook(self, unit, index, filter)
 	end
 end
 
+-- HOOK: SetUnitBuffByAuraInstanceID/SetUnitDebuffByAuraInstanceID
+local function SetUnitXxxxByAuraInstanceID(self, unit, instanceID)
+	if (cfg.if_enable) and (not tipDataAdded[self]) then
+		local info = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, instanceID)
+		local spellID = info.spellId
+		if (spellID) then
+			local link = GetSpellLink(spellID);
+			if (link) then
+				local linkType, _spellID = link:match("H?(%a+):(%d+)");
+				if (_spellID) then
+					tipDataAdded[self] = linkType;
+					LinkTypeFuncs.spell(self, true, info.sourceUnit, link, linkType, _spellID);
+
+					-- apply workaround for first mouseover
+					ttif:ApplyWorkaroundForFirstMouseover(self, true, info.sourceUnit, link, linkType, _spellID);
+				end
+			end
+		end
+	end
+end
+
 -- HOOK: GameTooltip:SetCompanionPet
 local function SetCompanionPet_Hook(self, petID)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
@@ -539,7 +553,7 @@ local function SetCompanionPet_Hook(self, petID)
 		if (speciesID) then
 			local health, maxHealth, power, speed, breedQuality = C_PetJournal.GetPetStats(petID);
 			tipDataAdded[self] = "battlepet";
-			LinkTypeFuncs.battlepet(self, nil, "battlepet", speciesID, level, breedQuality, maxHealth, power, speed, nil, displayID);
+			LinkTypeFuncs.battlepet(self, nil, "battlepet", speciesID, level, breedQuality and breedQuality - 1 or 0, maxHealth, power, speed, nil, displayID);
 		end
 	end
 end
@@ -762,16 +776,20 @@ end
 local function SetQuestPartyProgress_Hook(self, questID, omitTitle, ignoreActivePlayer)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
 		local link = GetQuestLink(questID);
-		local level = link:match("H?%a+:%d+:(%d+)");
+		if (link) then
+			local level = link:match("H?%a+:%d+:(%d+)");
+			LinkTypeFuncs.quest(self, nil, "quest", questID, level);
+		else
+			LinkTypeFuncs.quest(self, nil, "quest", questID, nil);
+		end
 		tipDataAdded[self] = "quest";
-		LinkTypeFuncs.quest(self, nil, "quest", questID, level);
 	end
 end
 
 -- HOOK: GameTooltip:SetRecipeReagentItem
-local function SetRecipeReagentItem_Hook(self, recipeID, reagentIndex)
+local function SetRecipeReagentItem_Hook(self, recipeID, dataSlotIndex)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
-		local link = C_TradeSkillUI.GetRecipeReagentItemLink(recipeID, reagentIndex);
+		local link = C_TradeSkillUI.GetRecipeFixedReagentItemLink(recipeID, dataSlotIndex);
 		if (link) then
 			local linkType, itemID = link:match("H?(%a+):(%d+)");
 			if (itemID) then
@@ -1050,9 +1068,13 @@ local function QMLTB_OnEnter_Hook(self)
 		local info = C_QuestLog.GetInfo(self.questLogIndex);
 		local questID = info.questID;
 		local link = GetQuestLink(questID);
-		local level = link:match("H?%a+:%d+:(%d+)");
+		if (link) then
+			local level = link:match("H?%a+:%d+:(%d+)");
+			LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
+		else
+			LinkTypeFuncs.quest(gtt, nil, "quest", questID, nil);
+		end
 		tipDataAdded[gtt] = "quest";
-		LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
 	end
 end
 
@@ -1075,6 +1097,24 @@ end
 local function QPM_OnMouseEnter_Hook(self)
 	if (cfg.if_enable) and (not tipDataAdded[gtt]) and (gtt:IsShown()) then
 		local questID = self.questID;
+		local link = GetQuestLink(questID);
+		if (link) then
+			local level = link:match("H?%a+:%d+:(%d+)");
+			LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
+		else
+			LinkTypeFuncs.quest(gtt, nil, "quest", questID, nil);
+		end
+		tipDataAdded[gtt] = "quest";
+	end
+end
+
+-- HOOK: QuestBlobPinMixin:OnMouseEnter
+local function QBPM_OnMouseEnter_Hook(self)
+print("!!! drin");
+	if (cfg.if_enable) and (not tipDataAdded[gtt]) and (gtt:IsShown()) then
+		local mouseX, mouseY = self:GetMap():GetNormalizedCursorPosition();
+		local questID, numPOITooltips = self:UpdateMouseOverTooltip(mouseX, mouseY);
+		-- local questID = self.highlightedQuestPOI;
 		local link = GetQuestLink(questID);
 		if (link) then
 			local level = link:match("H?%a+:%d+:(%d+)");
@@ -1416,9 +1456,13 @@ local function WQTT_OnEnter_Hook(self)
 		local questID = self.questID;
 		if (questID) then
 			local link = GetQuestLink(questID);
-			local level = link:match("H?%a+:%d+:(%d+)");
+			if (link) then
+				local level = link:match("H?%a+:%d+:(%d+)");
+				LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
+			else
+				LinkTypeFuncs.quest(gtt, nil, "quest", questID, nil);
+			end
 			tipDataAdded[gtt] = "quest";
-			LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
 		end
 	end
 end
@@ -1524,6 +1568,8 @@ function ttif:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModif
 					hooksecurefunc(tip, "SetToyByItemID", SetToyByItemID_Hook);
 					hooksecurefunc(tip, "SetLFGDungeonReward", SetLFGDungeonReward_Hook);
 					hooksecurefunc(tip, "SetLFGDungeonShortageReward", SetLFGDungeonShortageReward_Hook);
+					hooksecurefunc(tip, "SetUnitDebuffByAuraInstanceID", SetUnitXxxxByAuraInstanceID);
+					hooksecurefunc(tip, "SetUnitBuffByAuraInstanceID", SetUnitXxxxByAuraInstanceID);
 				end
 				tip:HookScript("OnTooltipSetItem", OnTooltipSetItem);
 				tip:HookScript("OnTooltipSetSpell", OnTooltipSetSpell);
@@ -1541,6 +1587,7 @@ function ttif:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModif
 					if (isWoWSl) or (isWoWRetail) then
 						hooksecurefunc("QuestMapLogTitleButton_OnEnter", QMLTB_OnEnter_Hook);
 						hooksecurefunc("TaskPOI_OnEnter", TPOI_OnEnter_Hook);
+						hooksecurefunc(QuestBlobPinMixin, "OnMouseEnter", QBPM_OnMouseEnter_Hook);
 						hooksecurefunc("EmbeddedItemTooltip_SetSpellWithTextureByID", EITT_SetSpellWithTextureByID_Hook);
 						hooksecurefunc(RuneforgePowerBaseMixin, "OnEnter", RPBM_OnEnter_Hook);
 						hooksecurefunc(DressUpOutfitDetailsSlotMixin, "OnEnter", DUODSM_OnEnter_Hook);
@@ -2480,7 +2527,7 @@ function LinkTypeFuncs:achievement(link, linkType, achievementID, guid, complete
 			self:AddLine(format(L["Achievement Criteria |cff00ff00%d|r / |cffffffff%d|r"], criteriaComplete, #criteriaList));
 			local r1, g1, b1, r2, g2, b2;
 			local myDone1, myDone2;
-            if GetAchievementNumCriteria(achievementID)>0 then
+            if GetAchievementNumCriteria(id)>0 then
 			for i = 1, #criteriaList, 2 do
 				r1, g1, b1 = unpack(criteriaList[i].done and COLOR_COMPLETE or COLOR_INCOMPLETE);
 				if (criteriaList[i + 1]) then

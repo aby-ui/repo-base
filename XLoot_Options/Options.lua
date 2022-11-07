@@ -656,7 +656,7 @@ function addon:OnEnable() -- Construct addon option tables here
 				{ "use_altoholic", requires = "show_totals" },
 				{ "totals_delay", "range", 0.1, 1.0, 0.1 },
 				{ "name_width", "range", 25, 200, 5 },
-				{ "show_ilvl" },
+				{ "show_ilvl", name = L.Group.text_ilvl },
 			}},
 			{ "font", "group", {
 				{ "font", fonts },
@@ -733,6 +733,10 @@ function addon:OnEnable() -- Construct addon option tables here
 			hideOnEscape = true,
 		}
 	end--]=]
+
+	if Settings then
+		addon:Init()
+	end
 end
 
 function addon:OnInitialize()
@@ -759,16 +763,19 @@ function addon:ResetProfile()
 	LibStub("AceConfigRegistry-3.0"):NotifyChange("XLoot")
 end
 
-local init
+local init = false
 local AceConfigDialog, AceConfigRegistry = LibStub("AceConfigDialog-3.0"), LibStub("AceConfigRegistry-3.0")
-function addon:OpenPanel(module)
+
+function addon:Init()
 	-- One-time init
 	if not init then
 		init = true
-		-- Remove bootstrap
-		for i,frame in ipairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
-			if frame.name == "XLoot" then
-				table.remove(INTERFACEOPTIONS_ADDONCATEGORIES, i)
+		if not Settings then
+			-- Remove bootstrap
+			for i,frame in ipairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
+				if frame.name == "XLoot" then
+					table.remove(INTERFACEOPTIONS_ADDONCATEGORIES, i)
+				end
 			end
 		end
 		-- Generate new panel
@@ -799,9 +806,19 @@ function addon:OpenPanel(module)
 		XLoot.profile_panel = AceConfigDialog:AddToBlizOptions("XLootProfile", L.profile, "XLoot")
 		XLoot.profile_panel.default = PanelDefault
 		-- Force list to expand
-		InterfaceAddOnsList_Update()
+		if not Settings then
+			InterfaceAddOnsList_Update()
+		end
 	end
+end
+
+function addon:OpenPanel(module)
+	addon:Init()
 	-- Open panel
-	InterfaceOptionsFrame_OpenToCategory(XLoot.option_panel)
+	if Settings then
+		Settings.OpenToCategory("XLoot")
+	else
+		InterfaceOptionsFrame_OpenToCategory(XLoot.option_panel)
+	end
 end
 

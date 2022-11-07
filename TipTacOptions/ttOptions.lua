@@ -60,7 +60,7 @@ local ttOptionsGeneral = {
 	{ type = "Check", var = "showUnitTip", label = "Enable TipTac Unit Tip Appearance", tip = "Will change the appearance of how unit tips look. Many options in TipTac only work with this setting enabled.\nNOTE: Using this options with a non English client may cause issues!" },
 	{ type = "Check", var = "showStatus", label = "Show DC, AFK and DND Status", tip = "Will show the <DC>, <AFK> and <DND> status after the player name", y = 8 },
 	{ type = "Check", var = "showGuildRank", label = "Show Player Guild Rank Title", tip = "In addition to the guild name, with this option on, you will also see their guild rank by title" },
-	{ type = "Check", var = "showTargetedBy", label = "Show Who Targets the Unit", tip = "When in a raid or party, the tip will show who from your group is targeting the unit.\nWhen ungrouped, the visible nameplates (can be enabled under WoW options 'Interface->Names') are evaluated instead." },
+	{ type = "Check", var = "showTargetedBy", label = "Show Who Targets the Unit", tip = "When in a raid or party, the tip will show who from your group is targeting the unit.\nWhen ungrouped, the visible nameplates (can be enabled under WoW options '"..(isWoWRetail and "Game->Gameplay->Interface->Nameplates" or "Interface->Names").."') are evaluated instead." },
 	{ type = "Check", var = "showPlayerGender", label = "Show Player Gender", tip = "This will show the gender of the player. E.g. \"85 Female Blood Elf Paladin\"." },
 	{ type = "Check", var = "showCurrentUnitSpeed", label = "Show Current Unit Speed", tip = "This will show the current speed of the unit after race & class." }
 };
@@ -73,23 +73,6 @@ ttOptionsGeneral[#ttOptionsGeneral + 1] = { type = "DropDown", var = "nameType",
 ttOptionsGeneral[#ttOptionsGeneral + 1] = { type = "DropDown", var = "showRealm", label = "Show Unit Realm", list = { [L"Do not show realm"] = "none", [L"Show realm"] = "show", [L"Show (*) instead"] = "asterisk" } };
 ttOptionsGeneral[#ttOptionsGeneral + 1] = { type = "DropDown", var = "showTarget", label = "Show Unit Target", list = { [L"Do not show target"] = "none", [L"First line"] = "first", [L"Second line"] = "second", [L"Last line"] = "last" } };
 ttOptionsGeneral[#ttOptionsGeneral + 1] = { type = "Text", var = "targetYouText", label = "Targeting You Text", y = 16 };
-
--- Backdrop
-local ttOptionsBackdrop = {
-	{ type = "Check", var = "enableBackdrop", label = "Enable Backdrop Modifications", tip = "Turns on or off all modifications of the backdrop\nNOTE: A Reload of the UI (/reload) is required for the setting to take affect" },
-	{ type = "DropDown", var = "tipBackdropBG", label = "Background Texture", media = "background", y = 8 },
-	{ type = "DropDown", var = "tipBackdropEdge", label = "Border Texture", media = "border" },
-	{ type = "Check", var = "pixelPerfectBackdrop", label = "Pixel Perfect Backdrop Edge Size and Insets", tip = "Backdrop Edge Size and Insets corresponds to real pixels", y = 6 },
-	{ type = "Slider", var = "backdropEdgeSize", label = "Backdrop Edge Size", min = -20, max = 64, step = 0.5, y = 8 },
-	{ type = "Slider", var = "backdropInsets", label = "Backdrop Insets", min = -20, max = 20, step = 0.5 },
-	{ type = "Color", var = "tipColor", label = "Tip Background Color", y = 18 },
-	{ type = "Color", var = "tipBorderColor", label = "Tip Border Color", x = 160 }
-};
-
-if (not isWoWRetail) then
-	ttOptionsBackdrop[#ttOptionsBackdrop + 1] = { type = "Check", var = "gradientTip", label = "Show Gradient Tooltips", tip = "Display a small gradient area at the top of the tip to add a minor 3D effect to it. If you have an addon like Skinner, you may wish to disable this to avoid conflicts", y = 6 };
-	ttOptionsBackdrop[#ttOptionsBackdrop + 1] = { type = "Color", var = "gradientColor", label = "Gradient Color", tip = "Select the base color for the gradient", x = 160 };
-end
 
 local options = {
 	-- General
@@ -147,7 +130,17 @@ local options = {
 	-- Backdrop
 	{
 		[0] = "Backdrop",
-		unpack(ttOptionsBackdrop)
+		{ type = "Check", var = "enableBackdrop", label = "Enable Backdrop Modifications", tip = "Turns on or off all modifications of the backdrop\nNOTE: A Reload of the UI (/reload) is required for the setting to take affect" },
+		{ type = "DropDown", var = "tipBackdropBG", label = "Background Texture", media = "background", y = 8 },
+		{ type = "DropDown", var = "tipBackdropEdge", label = "Border Texture", media = "border" },
+		{ type = "Check", var = "pixelPerfectBackdrop", label = "Pixel Perfect Backdrop Edge Size and Insets", tip = "Backdrop Edge Size and Insets corresponds to real pixels", y = 6 },
+		{ type = "Slider", var = "backdropEdgeSize", label = "Backdrop Edge Size", min = -20, max = 64, step = 0.5, y = 8 },
+		{ type = "Slider", var = "backdropInsets", label = "Backdrop Insets", min = -20, max = 20, step = 0.5 },
+		{ type = "Color", var = "tipColor", label = "Tip Background Color", y = 16 },
+		{ type = "Color", var = "tipBorderColor", label = "Tip Border Color", x = 160 },
+		{ type = "Check", var = "gradientTip", label = "Show Gradient Tooltips", tip = "Display a small gradient area at the top of the tip to add a minor 3D effect to it. If you have an addon like Skinner, you may wish to disable this to avoid conflicts", y = 8 },
+		{ type = "Color", var = "gradientColor", label = "Gradient Color", tip = "Select the base color for the gradient", x = 160 },
+		{ type = "Slider", var = "gradientHeight", label = "Gradient Height", min = 0, max = 64, step = 0.5, y = 8 },
 	},
 	-- Font
 	{

@@ -112,6 +112,7 @@ function ActionBar:AcquireButton(index)
 
     button:SetAttribute('index', index)
     button:SetAttribute('statehidden', nil)
+    button.displayName = L.ActionBarButtonDisplayName:format(self.id, index)
 
     return button
 end

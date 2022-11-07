@@ -1,0 +1,12 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="RaidDebuffs_Classic.lua"/>
+	<Script file="RaidDebuffs_TBC.lua"/>
+	<Script file="RaidDebuffs_WotLK.lua"/>
+	<Script file="RaidDebuffs_Cata.lua"/>
+	<Script file="RaidDebuffs_MoP.lua"/>
+	<Script file="RaidDebuffs_WoD.lua"/>
+	<Script file="RaidDebuffs_Legion.lua"/>
+	<Script file="RaidDebuffs_BfA.lua"/>
+	<Script file="RaidDebuffs_SL.lua"/>
+</Ui>

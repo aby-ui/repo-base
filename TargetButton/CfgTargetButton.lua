@@ -1,6 +1,6 @@
 U1RegisterAddon("TargetButton", {
     title = "目标头像按钮",
-    defaultEnable = 1,
+    defaultEnable = 0,
     --optionsAfterVar = 1,
 
     tags = { TAG_INTERFACE },

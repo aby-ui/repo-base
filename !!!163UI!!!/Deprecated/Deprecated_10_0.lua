@@ -160,3 +160,21 @@ do
         end)
     end)
 end
+
+do
+    --- 屏蔽鼠标提示不停刷新的点
+    --UpdateTooltip本来就有0.2秒的间隔, 需要新的机制，就是延迟出提示
+    local lastModifierTime = 0
+    CoreOnEvent("MODIFIER_STATE_CHANGED", function() lastModifierTime = GetTime() end)
+    function AbyUpdateTooltipWrapperFunc(func, interval, caller)
+        return function(self, ...)
+            if self == nil then self = caller end
+            if self == nil then return end
+            local t = self._abyUTT or 0
+            local now = GetTime()
+            if now - t < interval and t > lastModifierTime then return end
+            self._abyUTT = now
+            return func(self, ...)
+        end
+    end
+end

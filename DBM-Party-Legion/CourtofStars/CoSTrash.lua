@@ -1,47 +1,65 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221023192026")
+mod:SetRevision("20221105210959")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 
 mod.isTrashMod = true
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 209027 212031 209485 209410 209413 211470 211464 209404 209495 225100 211299 209378",
-	"SPELL_AURA_APPLIED 209033 209512",
+	"SPELL_CAST_START 209027 212031 209485 209410 209413 211470 211464 209404 209495 225100 211299 209378 397892 397897 207979",
+	"SPELL_AURA_APPLIED 209033 209512 397907 373552",
+	"SPELL_AURA_REMOVED 397907",
 	"CHAT_MSG_MONSTER_SAY",
 	"GOSSIP_SHOW"
 )
 
 --TODO, at least 1-2 more GTFOs I forgot names of
+--TODO, verify if Disintegration beam is interruptable at 207980 or 207981
+--TODO, target scan https://www.wowhead.com/beta/spell=397897/crushing-leap ?
+local warnImpendingDoom				= mod:NewTargetAnnounce(397907, 2)
+local warnCrushingLeap				= mod:NewCastAnnounce(397897, 3)
+local warnHypnosisBat				= mod:NewTargetNoFilterAnnounce(373552, 3)
+
 local specWarnFortification			= mod:NewSpecialWarningDispel(209033, "MagicDispeller", nil, nil, 1, 2)
 local specWarnQuellingStrike		= mod:NewSpecialWarningDodge(209027, "Tank", nil, nil, 1, 2)
 local specWarnChargedBlast			= mod:NewSpecialWarningDodge(212031, "Tank", nil, nil, 1, 2)
 local specWarnChargedSmash			= mod:NewSpecialWarningDodge(209495, "Tank", nil, nil, 1, 2)
+local specWarnShockwave				= mod:NewSpecialWarningDodge(207979, nil, nil, nil, 2, 2)
 local specWarnDrainMagic			= mod:NewSpecialWarningInterrupt(209485, "HasInterrupt", nil, nil, 1, 2)
 local specWarnNightfallOrb			= mod:NewSpecialWarningInterrupt(209410, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSuppress				= mod:NewSpecialWarningInterrupt(209413, "HasInterrupt", nil, nil, 1, 2)
 local specWarnBewitch				= mod:NewSpecialWarningInterrupt(211470, "HasInterrupt", nil, nil, 1, 2)
 local specWarnChargingStation		= mod:NewSpecialWarningInterrupt(225100, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSearingGlare			= mod:NewSpecialWarningInterrupt(211299, "HasInterrupt", nil, nil, 1, 2)
+local specWarnDisintegrationBeam	= mod:NewSpecialWarningInterrupt(207980, "HasInterrupt", nil, nil, 1, 2)
 local specWarnFelDetonation			= mod:NewSpecialWarningSpell(211464, false, nil, 2, 2, 2)
 local specWarnSealMagic				= mod:NewSpecialWarningRun(209404, false, nil, 2, 4, 2)
-local specWarnDisruptingEnergy		= mod:NewSpecialWarningMove(209512, nil, nil, nil, 1, 2)
 local specWarnWhirlingBlades		= mod:NewSpecialWarningRun(209378, "Melee", nil, nil, 4, 2)
+local specWarnScreamofPain			= mod:NewSpecialWarningCast(397892, "SpellCaster", nil, nil, 1, 2)
+local specWarnImpendingDoom			= mod:NewSpecialWarningMoveAway(397907, nil, nil, nil, 1, 2)
+local yellImpendingDoom				= mod:NewYell(397907)
+local yellImpendingDoomFades		= mod:NewShortFadesYell(397907)
+local specWarnGTFO					= mod:NewSpecialWarningGTFO(209512, nil, nil, nil, 1, 8)
 
 mod:AddBoolOption("SpyHelper", true)
 mod:AddBoolOption("SendToChat", false)
 
+--Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 generalized, 7 GTFO
+
 function mod:SPELL_CAST_START(args)
 	if not self.Options.Enabled then return end
 	local spellId = args.spellId
-	if spellId == 209027 and self:AntiSpam(2, 1) then
+	if spellId == 209027 and self:AntiSpam(3, 2) then
 		specWarnQuellingStrike:Show()
 		specWarnQuellingStrike:Play("shockwave")
-	elseif spellId == 212031 and self:AntiSpam(2, 2) then
+	elseif spellId == 212031 and self:AntiSpam(3, 2) then
 		specWarnChargedBlast:Show()
 		specWarnChargedBlast:Play("shockwave")
+	elseif spellId == 207979 and self:AntiSpam(3, 2) then
+		specWarnShockwave:Show()
+		specWarnShockwave:Play("shockwave")
 	elseif spellId == 209485 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnDrainMagic:Show(args.sourceName)
 		specWarnDrainMagic:Play("kickcast")
@@ -60,31 +78,57 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 211299 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnSearingGlare:Show(args.sourceName)
 		specWarnSearingGlare:Play("kickcast")
-	elseif spellId == 211464 then
+	elseif spellId == 207980 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnDisintegrationBeam:Show(args.sourceName)
+		specWarnDisintegrationBeam:Play("kickcast")
+	elseif spellId == 211464 and self:AntiSpam(3, 4) then
 		specWarnFelDetonation:Show()
 		specWarnFelDetonation:Play("aesoon")
-	elseif spellId == 209404 then
+	elseif spellId == 209404 and self:AntiSpam(3, 5) then
 		specWarnSealMagic:Show()
 		specWarnSealMagic:Play("runout")
 	elseif spellId == 209495 then
 		--Don't want to move too early, just be moving already as cast is finishing
 		specWarnChargedSmash:Schedule(1.2)
 		specWarnChargedSmash:ScheduleVoice(1.2, "chargemove")
-	elseif spellId == 209378 then
+	elseif spellId == 209378 and self:AntiSpam(3, 1) then
 		specWarnWhirlingBlades:Show()
 		specWarnWhirlingBlades:Play("runout")
+	elseif spellId == 397892 then
+		specWarnScreamofPain:Show()
+		specWarnScreamofPain:Play("stopcast")
+	elseif spellId == 397897 and self:AntiSpam(3, 6) then
+		warnCrushingLeap:Show()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if not self.Options.Enabled then return end
 	local spellId = args.spellId
-	if spellId == 209033 and not args:IsDestTypePlayer() then
+	if spellId == 209033 and not args:IsDestTypePlayer() and self:CheckDispelFilter("magic") then
 		specWarnFortification:Show(args.destName)
 		specWarnFortification:Play("dispelnow")
-	elseif spellId == 209512 and args:IsPlayer() then
-		specWarnDisruptingEnergy:Show()
-		specWarnDisruptingEnergy:Play("runaway")
+	elseif spellId == 209512 and args:IsPlayer() and self:AntiSpam(3, 7) then
+		specWarnGTFO:Show(args.spellName)
+		specWarnGTFO:Play("watchfeet")
+	elseif spellId == 397907 then
+		warnImpendingDoom:CombinedShow(0.5, args.destname)
+		if args:IsPlayer() then
+			specWarnImpendingDoom:Show()
+			specWarnImpendingDoom:Play("scatter")
+			yellImpendingDoom:Yell()
+			yellImpendingDoomFades:Countdown(spellId)
+		end
+	elseif spellId == 373552 then
+		warnHypnosisBat:Show(args.destName)
+	end
+end
+
+function mod:SPELL_AURA_REMOVED(args)
+	if not self.Options.Enabled then return end
+	local spellId = args.spellId
+	if spellId == 397907 and args:IsPlayer() then
+		yellImpendingDoomFades:Cancel()
 	end
 end
 

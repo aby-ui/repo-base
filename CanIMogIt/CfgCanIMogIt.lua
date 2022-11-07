@@ -1,6 +1,6 @@
 U1RegisterAddon("CanIMogIt", {
     title = "幻化提示",
-    defaultEnable = 1,
+    defaultEnable = 0,
 
     tags = { TAG_ITEM, },
     icon = [[Interface\Icons\Achievement_Dungeon_TheVioletHold_Normal]],

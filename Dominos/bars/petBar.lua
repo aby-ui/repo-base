@@ -246,32 +246,24 @@ function PetBarModule:Unload()
 end
 
 function PetBarModule:OnFirstLoad()
-    local PetActionBar = PetActionBar
+    -- "hide" the pet bar (make invisible and non-interactive)
+    PetActionBar:SetAlpha(0)
+    PetActionBar:EnableMouse(false)
+    PetActionBar:SetScript("OnUpdate", nil)
 
-    if PetActionBar then
-        -- "hide" the pet bar (make invisible and non-interactive)
-        PetActionBar:SetAlpha(0)
-        PetActionBar:EnableMouse(false)
-        PetActionBar:SetScript("OnUpdate", nil)
-
-        -- unregister events that do not impact pet action bar visibility
-        PetActionBar:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
-
-        -- move to a probably hidden spot of the screen
-        -- PetActionBar:ClearAllPoints()
-        -- PetActionBar:SetPoint("BOTTOM", UIParent, "TOP")
-
-        -- and its buttons, too
-        for _, button in pairs(PetActionBar.actionButtons) do
-            button:EnableMouse(false)
-            button:SetScript("OnUpdate", nil)
-            button:UnregisterAllEvents()
-        end
-
-        -- an extremly lazy method of updating the Dominos pet bar when the
-        -- normal pet bar would be updated
-        hooksecurefunc(PetActionBar, "Update", Addon:Defer(function() self:UpdateActions() end, 0.01))
+    -- and its buttons, too
+    for _, button in pairs(PetActionBar.actionButtons) do
+        button:EnableMouse(false)
+        button:SetScript("OnUpdate", nil)
+        button:UnregisterAllEvents()
     end
+
+    -- unregister events that do not impact pet action bar visibility
+    PetActionBar:UnregisterEvent("PET_BAR_UPDATE_COOLDOWN")
+
+    -- an extremly lazy method of updating the Dominos pet bar when the
+    -- normal pet bar would be updated
+    hooksecurefunc(PetActionBar, "Update", Addon:Defer(function() self:UpdateActions() end, 0.01))
 end
 
 function PetBarModule:PET_BAR_UPDATE_COOLDOWN()

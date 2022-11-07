@@ -1,7 +1,28 @@
 local type, pairs = type, pairs
 
 function noop() end
-function pdebug(...) print("params", ...); print(debugstack(2)) end
+
+local function colorStack(ret)
+    ret = tostring(ret) or "" -- Yes, it gets called with nonstring from somewhere /mikk
+    ret = ret:gsub('%[string "@Interface/AddOns/', '["A/') --前缀都去掉 [string "@Interface/FrameXML/
+    ret = ret:gsub('%[string "@Interface/', '["') --前缀都去掉 [string "@Interface/FrameXML/
+    ret = ret:gsub('%[string "', '["') --前缀都去掉 [string "=[C]"]: ?
+    ret = ret:gsub('"%]:(%d+):', ':%1"]:') --abyui 方便复制代码位置 UIParent.lua:2552"]: in function
+    ret = ret:gsub('<[^>]+:(%d+)>', '<@%1>') --abyui 方便复制代码位置 <...ace/AddOns/Blizzard_MapCanvas/Blizzard_MapCanvas.lua:28>
+
+    ret = ret:gsub("[%.I][%.n][%.t][%.e][%.r]face\\", "")
+    ret = ret:gsub("|([^chHr])", "||%1"):gsub("|$", "||") -- Pipes
+    ret = ret:gsub("<(.-)>", "|cffffd200<%1>|r") -- Things wrapped in <>
+    ret = ret:gsub("([`])(.-)(['])", "|cff82c5ff%1%2%3|r") -- Quotes
+    ret = ret:gsub("(\"[^\n]-):(%d+)([%S\n])", "|cff7fff7f%1:%2|r%3") -- Line numbers
+    return ret
+end
+
+function pdebug(...) print("params", ...);
+    local str = colorStack(debugstack(2))
+    str:gsub("(.-)\n", function(line) print(line) end)
+    print('-------- pdebug', date("%H:%M:%S")..format(".%03d", GetTime()*1000%1000))
+end
 
 local start_old, last_reset = debugprofilestart, 0
 debugprofilestart = function() last_reset = last_reset + debugprofilestop() return start_old() end

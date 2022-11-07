@@ -26,13 +26,10 @@
 <Include file="LibGroupInSpecT-1.1\LibGroupInSpecT-1.1.lua"/><!--Detail,ZenTracker-->
 <Include file="!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua"/><!--Dominos,RareScanner,AngryKeystones-->
 <Include file="LibSerialize\LibSerialize.lua"/><!--BGE,WA,DBM,CELL-->
+<Include file="LibCustomGlow-1.0\LibCustomGlow-1.0.lua"/><!--Cell,MRT,Grid,WA,zmpHelper-->
+<Include file="LibRangeCheck-2.0\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/><!--RangeDisplay,Cell,RareScanner,WA-->
 
 <Include file="UTF8\utf8data.lua"/>
 <Include file="UTF8\utf8.lua"/>
-
-<!--<Include file="LibDropDown-1.0\lib.xml"/>--><!--GlowFoSho/Reount-->
-<!--<Include file="LibMapData-1.0\library.lua"/>--><!--GridStatusPriestAoe/TomTom-->
-<!--<Include file="Astrolabe\Load.xml"/>--><!--HandyNotes/Archy/TomTom-->
-<!--<Include file="LibGroupInSpecT-1.0\lib.xml"/>-->
 
 </Ui>

@@ -5,7 +5,7 @@
 ## Notes: Helper for Caches of Creations and World Quest puzzles on Zereth Mortis
 ## DefaultState: Enabled
 ## SavedVariables: ZMPHSaved
-embeds.xml
+#embeds.xml
 core.lua
 
 

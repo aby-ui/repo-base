@@ -1,0 +1,24 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="OptionsFrame.lua"/>
+	<Script file="General.lua"/>
+	<Script file="General_Nicknames.lua"/>
+	<Script file="Appearance.lua"/>
+	<Script file="Layouts.lua"/>
+	<Script file="Layouts_PowerFilters.lua"/>
+	<Script file="Layouts_ImportExport.lua"/>
+	<Script file="ClickCastings.lua"/>
+	<Script file="Indicators.lua"/>
+	<Script file="Indicators_Copy.lua"/>
+	<Script file="Indicators_Export.lua"/>
+	<Script file="Indicators_Import.lua"/>
+	<Script file="Indicators_TextureSelector.lua"/>
+	<Script file="RaidDebuffs.lua"/>
+	<Script file="RaidDebuffs_ImportExport.lua"/>
+	<Script file="Glows.lua"/>
+	<Script file="About.lua"/>
+	<Script file="About_ImportExport.lua"/>
+	<Script file="GlowOptions.lua"/>
+	<Script file="Changelogs.lua"/>
+	<Script file="CodeSnippets.lua"/>
+</Ui>

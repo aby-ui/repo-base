@@ -120,6 +120,7 @@
     <Include file="..\..\VenturePlan\CfgVenturePlan.lua"/>
     <Include file="..\..\OmniCD\CfgOmniCD.lua"/>
     <Include file="..\..\ZerethMortisPuzzleHelper\CfgZerethMortisPuzzleHelper.lua"/>
+    <Include file="..\..\Cell\CfgCell.lua"/>
 
     <!-- local
     <Include file="..\..\AtlasLoot\CfgAtlasLoot.lua"/>

@@ -6,7 +6,7 @@
 ## Author: Nevcairiel
 ## SavedVariables: MapsterDB
 ## X-Category: Map
-## Version: 1.10.0-2-g74d53d4
+## Version: 1.10.1
 ## X-License: All rights reserved.
 ## X-Curse-Project-ID: 14376
 ## X-WoWI-ID: 8306

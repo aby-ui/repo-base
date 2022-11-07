@@ -279,7 +279,7 @@ U1RegisterAddon("163UI_Plugins", {
 
 U1RegisterAddon("AbyAuctionFavoritesSavior", {
     title = "拍卖收藏保存",
-    defaultEnable = 1,
+    defaultEnable = 0,
     load = "DEMAND",
     nolodbutton = 1,
     tags = { TAG_TRADING, TAG_GOOD },

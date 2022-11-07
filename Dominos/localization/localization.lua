@@ -10,6 +10,7 @@ local L = LibStub('AceLocale-3.0'):NewLocale(AddonName, 'enUS', true)
 
 L.ActionBarDisplayName = "Action Bar %d"
 L.ActionButtonDisplayName = "Action Button %d"
+L.ActionBarButtonDisplayName = "Action Bar %d Button %d"
 L.AlertsBarDisplayName = "Alerts"
 L.AvailableProfiles = 'Available Profiles'
 L.BagBarDisplayName = "Bags"

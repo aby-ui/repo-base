@@ -120,7 +120,7 @@
 		<Scripts>
 			<OnLoad>
 				self:SetAlpha(0.8)
-				self:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+				self:RegisterForClicks("AnyUp");
 				self:RegisterForDrag("LeftButton");
 			</OnLoad>
 			<OnDragStart>
@@ -154,7 +154,7 @@
 		<Scripts>
 			<OnLoad>
 				self:SetAlpha(0.8)
-				self:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+				self:RegisterForClicks("AnyUp");
 				self:RegisterForDrag("LeftButton");
 			</OnLoad>
 			<OnDragStart>

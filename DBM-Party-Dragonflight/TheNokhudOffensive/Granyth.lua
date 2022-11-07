@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2498, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221030012954")
+mod:SetRevision("20221106015735")
 mod:SetCreatureID(186616)
 mod:SetEncounterID(2637)
 mod:SetUsedIcons(8)
@@ -142,7 +142,7 @@ end
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 361966 then
+	if spellId == 361966 then--Lanced!
 		--Resets these timers
 		timerShardsofStoneCD:Start(10)
 		timerTectonicStompCD:Start(16.2)

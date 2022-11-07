@@ -77,6 +77,7 @@ local wM = "|cffe1a500w|cff69ccf0Marker|r"
 -------------------------------------------------------
 -- Binding Frame Strings
 -------------------------------------------------------
+
 BINDING_HEADER_WMARKER = (U1GetAddonInfo and U1GetAddonInfo(...).title) or (...)
 BINDING_HEADER_WMARKER_RAID = string.format("|cffe1a500w|cff69ccf0Marker|r - %s",L["Raid marker"]);
 BINDING_HEADER_WMARKER_WORLD = string.format("|cffe1a500w|cff69ccf0Marker|r - %s",L["World markers"]);
@@ -101,6 +102,7 @@ _G["BINDING_NAME_CLICK wMarkerCircleflare:LeftButton"] = L["World markers"] .. L
 _G["BINDING_NAME_CLICK wMarkerMoonflare:LeftButton"] = L["World markers"] .. L["Moon"];
 _G["BINDING_NAME_CLICK wMarkerSkullflare:LeftButton"] = L["World markers"] .. L["Skull"];
 _G["BINDING_NAME_CLICK wMarkerClearflares:LeftButton"] = L["Clear all world markers"];
+
 
 
 -------------------------------------------------------
@@ -166,7 +168,7 @@ local function iconNew(name, num)
 	f:SetPoint("LEFT",lastFrame or wMarker.iconFrame,xOff,0)
 	f:SetNormalTexture(string.format("interface\\targetingframe\\ui-raidtargetingicon_%d",num))
 	f:EnableMouse(true)
-	f:RegisterForClicks("AnyUp", "AnyDown")
+	f:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 	f:SetScript("OnClick", function(self, button) if (button=="LeftButton") then SetRaidTarget("target", num) else InterfaceOptionsFrame_OpenToCategory(wMarker.options) end end)
 	f:SetScript("OnEnter", function(self) if (wMarkerDB.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(L[name]); GameTooltip:Show() end end)
 	f:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
@@ -248,11 +250,11 @@ local function flareNew(name, tex, num, xOff)
 	f:SetNormalTexture("interface\\targetingframe\\ui-raidtargeting6icons") -- "interface\\minimap\\partyraidblips"
 	f:GetNormalTexture():SetTexCoord(tex[1],tex[2],tex[3],tex[4])
 	f:SetPoint("LEFT",lastFlare or wFlares.main,"RIGHT",xOff or 0,0)
-	f:SetAttribute("type", "macro") --TODO:abyui10
+	f:SetAttribute("type1", "macro")
 	f:SetAttribute("macrotext1", string.format("/wm %d",num))
 	f:SetScript("OnEnter", function(self) if (wFlaresDB.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(string.format("%s %s",L[name],L["world marker"])); GameTooltip:Show() end end)
 	f:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	f:RegisterForClicks("AnyUp", "AnyDown")
+	f:RegisterForClicks("AnyUp","AnyDown")
 	lastFlare = f
 	wFlares.flare[name] = f
 	
@@ -271,9 +273,9 @@ flareClear:SetSize(15,15)
 flareClear:SetNormalTexture("interface\\glues\\loadingscreens\\dynamicelements")
 flareClear:GetNormalTexture():SetTexCoord(0,0.5,0,0.5)
 flareClear:SetPoint("LEFT", wFlares.flare["Skull"], "RIGHT",3,0)
-flareClear:SetAttribute("type", "macro")
-flareClear:RegisterForClicks("AnyUp", "AnyDown")
+flareClear:SetAttribute("type1", "macro")
 flareClear:SetAttribute("macrotext1", "/cwm 0")
 flareClear:SetScript("OnEnter", function(self) if (wFlaresDB.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(L["Clear all world markers"]); GameTooltip:Show() end end)
 flareClear:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+flareClear:RegisterForClicks("AnyUp","AnyDown")
 wFlares.flareClear = flareClear

@@ -3137,6 +3137,17 @@ function EAFun_HookTooltips()
 			self:Show()
 		end
 	end)
+
+	local hookSetAuraInstanceID = function(self, unit, instanceID)
+		if IsAddOnLoaded("TipTacItemRef") then return end
+		local info = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, instanceID)
+		if info and info.spellId then
+			self:AddDoubleLine(EX_XCLSALERT_SPELL,info.spellId)
+			self:Show()
+		end
+	end
+	hooksecurefunc(GameTooltip, "SetUnitDebuffByAuraInstanceID", hookSetAuraInstanceID)
+	hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", hookSetAuraInstanceID)
 end
 -----------------------------------------------------------------
 -- For OrderWtd, to sort the order of the buffs/debuffs.

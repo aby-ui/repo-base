@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("HoVTrash", "DBM-Party-Legion", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20221106015735")
 --mod:SetModelID(47785)
 
 mod.isTrashMod = true
@@ -16,6 +16,8 @@ local specWarnCrackle				= mod:NewSpecialWarningDodge(199805, nil, nil, nil, 1, 
 local yellCrackle					= mod:NewYell(199805)
 local specWarnCleansingFlame		= mod:NewSpecialWarningInterrupt(192563, "HasInterrupt", nil, nil, 1, 2)
 local specWarnUnrulyYell			= mod:NewSpecialWarningInterrupt(199726, "HasInterrupt", nil, nil, 1, 2)
+
+--Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 generalized, 7 GTFO
 
 function mod:CrackleTarget(targetname, uId)
 	if not targetname then

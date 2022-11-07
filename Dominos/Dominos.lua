@@ -6,7 +6,7 @@ local KeyBound = LibStub('LibKeyBound-1.0')
 
 local ADDON_VERSION = GetAddOnMetadata(AddonName, 'Version')
 local CONFIG_ADDON_NAME = AddonName .. '_Config'
-local CONFIG_VERSION = 1
+local DB_SCHEMA_VERSION = 1
 
 -- setup custom callbacks
 Addon.callbacks = LibStub('CallbackHandler-1.0'):New(Addon)
@@ -14,9 +14,12 @@ Addon.callbacks = LibStub('CallbackHandler-1.0'):New(Addon)
 -- how many action buttons we support
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     Addon.ACTION_BUTTON_COUNT = 14 * NUM_ACTIONBAR_BUTTONS
+    Addon.ACTION_BUTTON_HOTKEY_BUTTON = "LeftButton"
 else
     Addon.ACTION_BUTTON_COUNT = 10 * NUM_ACTIONBAR_BUTTONS
+    Addon.ACTION_BUTTON_HOTKEY_BUTTON = "HOTKEY"
 end
+
 
 --------------------------------------------------------------------------------
 -- Events
@@ -26,10 +29,6 @@ function Addon:OnInitialize()
     -- setup db
     self:CreateDatabase()
     self:UpgradeDatabase()
-
-    -- keybound support
-    KeyBound.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
-    KeyBound.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
 
     --abyui force option example
     --[[
@@ -44,6 +43,32 @@ function Addon:OnInitialize()
         end
     end
     ]]
+
+    -- keybound support
+    KeyBound.RegisterCallback(self, 'LIBKEYBOUND_ENABLED')
+    KeyBound.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
+
+    -- define binding names
+    -- _G['BINDING_HEADER_' .. AddonName] = AddonName
+    _G['BINDING_CATEGORY_' .. AddonName] = AddonName
+
+    local hotkeyButton = Addon.ACTION_BUTTON_HOTKEY_BUTTON
+    local numActionBars = math.ceil(Addon.ACTION_BUTTON_COUNT / NUM_ACTIONBAR_BUTTONS)
+
+    for barID = 1, numActionBars do
+        local offset = NUM_ACTIONBAR_BUTTONS * (barID - 1)
+        local headerKey = ('BINDING_HEADER_%sActionBar%d'):format(AddonName, barID)
+        local headerValue = L.ActionBarDisplayName:format(barID)
+
+        _G[headerKey] = headerValue
+
+        for index = 1, NUM_ACTIONBAR_BUTTONS do
+            local bindingKey = ('BINDING_NAME_CLICK %sActionButton%d:%s'):format(AddonName, index + offset, hotkeyButton)
+            local bindingValue = L.ActionBarButtonDisplayName:format(barID, index)
+
+            _G[bindingKey] = bindingValue
+        end
+    end
 end
 
 function Addon:OnEnable()
@@ -245,9 +270,9 @@ end
 
 function Addon:UpgradeDatabase()
     local configVerison = self.db.global.configVersion
-    if configVerison ~= CONFIG_VERSION then
-        self:OnUpgradeDatabase(configVerison, CONFIG_VERSION)
-        self.db.global.configVersion = CONFIG_VERSION
+    if configVerison ~= DB_SCHEMA_VERSION then
+        self:OnUpgradeDatabase(configVerison, DB_SCHEMA_VERSION)
+        self.db.global.configVersion = DB_SCHEMA_VERSION
     end
 
     local addonVersion = self.db.global.addonVersion

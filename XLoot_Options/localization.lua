@@ -144,7 +144,6 @@ local locales = {
 			totals_delay = "Totals delay",
 			totals_delay_desc = "Time to wait before asking the game how many items you have, as the item events do not reliably match up to inventory counts",
 			use_altoholic = "Include bank (Altoholic)",
-			show_ilvl = "Show item level",
 			font_size_ilvl = "Item level",
 			name_width = "Player name width",
 			gradients = "Gradients",

@@ -177,6 +177,7 @@ function Item:OnPostClick(button)
 end
 
 function Item:OnEnter()
+	self._abyUTT = 0
 	if self.info.cached then
 		self:AttachDummy()
 	else
@@ -349,6 +350,8 @@ function Item:UpdateTooltip()
 		 ContainerFrameItemButtonMixin and ContainerFrameItemButtonMixin.OnUpdate or ContainerFrameItemButton_OnEnter)(self)
 	end
 end
+
+if AbyUpdateTooltipWrapperFunc then Item.UpdateTooltip = AbyUpdateTooltipWrapperFunc(Item.UpdateTooltip, 0.5) end
 
 function Item:AttachDummy()
 	if not Item.Dummy then

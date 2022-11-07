@@ -3,7 +3,7 @@
 -- Additional methods we define on action buttons
 --------------------------------------------------------------------------------
 local AddonName, Addon = ...
-local ActionButtonMixin = { }
+local ActionButtonMixin = {}
 
 function ActionButtonMixin:SetActionOffsetInsecure(offset)
     if InCombatLockdown() then
@@ -103,7 +103,6 @@ if not Addon:IsBuild('retail') then
 end
 
 Addon.ActionButtonMixin = ActionButtonMixin
-
 --------------------------------------------------------------------------------
 -- ActionButtons - A pool of action buttons
 --------------------------------------------------------------------------------
@@ -150,7 +149,7 @@ if Addon:IsBuild("retail") then
 
         local button = CreateFrame('CheckButton', name, UIParent, 'ActionBarButtonTemplate')
 
-        local target = Addon.ActionButtonMap[id]
+        local target = Addon.BlizzardActionButtons[id]
 
         if target then
             proxyActionButton(button, target)
@@ -166,7 +165,6 @@ else
             if down == control:GetAttribute("CastOnKeyPress") then
                 return 'LeftButton'
             end
-
             return false
         end
 
@@ -201,7 +199,7 @@ else
     end
 
     createActionButton = function(id)
-        local button = Addon.ActionButtonMap[id]
+        local button = Addon.BlizzardActionButtons[id]
 
         if button then
             button.commandName = getBlizzardActionButtonCommandName(button)

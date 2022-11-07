@@ -112,8 +112,8 @@ local TT_DefaultConfig = {
 	tipColor = { 0.1, 0.1, 0.2 },			-- UI Default: For most: (0.1,0.1,0.2), World Objects?: (0,0.2,0.35)
 	tipBorderColor = { 0.3, 0.3, 0.4 },		-- UI Default: (1,1,1,1)
 	gradientTip = true,
-	gradientHeight = 36,
-	gradientColor = { 0.8, 0.8, 0.8, 0.2 },
+	gradientHeight = 32,
+	gradientColor = { 0.8, 0.8, 0.8, 0.15 },
 
 	modifyFonts = false,
 	fontFace = "",	-- Set during VARIABLES_LOADED
@@ -122,13 +122,13 @@ local TT_DefaultConfig = {
 	fontSizeDeltaHeader = 2,
 	fontSizeDeltaSmall = -2,
 
-	classification_minus = "-%s ",		-- New classification in MoP; Unsure what it's used for, but apparently the units have no mana. Example of use: The "Sha Haunts" early in the Horde's quests in Thunder Hold.
-	classification_trivial = "~%s ",
-	classification_normal = "%s ",
-	classification_elite = "+%s ",
-	classification_worldboss = "%s|r (Boss) ",
-	classification_rare = "%s|r (Rare) ",
-	classification_rareelite = "+%s|r (Rare) ",
+	classification_minus = "-%s",		-- New classification in MoP; Used for minion mobs that typically have less health than normal mobs of their level, but engage the player in larger numbers. Example of use: The "Sha Haunts" early in the Horde's quests in Thunder Hold.
+	classification_trivial = "~%s",
+	classification_normal = "%s",
+	classification_elite = "+%s",
+	classification_worldboss = "%s|r (Boss)",
+	classification_rare = "%s|r (Rare)",
+	classification_rareelite = "+%s|r (Rare)",
 
 	overrideFade = true,
 	preFadeTime = 0.1,
@@ -703,7 +703,6 @@ end
 
 -- Setup Gradient Tip
 local function SetupGradientTip(tip)
-	if (isWoWRetail) then return; end -- df todo: function SetGradientAlpha() doesn't exist in df any more
 	local g = tip.ttGradient;
 	if (not cfg.enableBackdrop) or (not cfg.gradientTip) then
 		if (g) then
@@ -712,10 +711,12 @@ local function SetupGradientTip(tip)
 		return;
 	elseif (not g) then
 		g = tip:CreateTexture();
-		g:SetColorTexture(1, 1, 1, 1);
+		-- g:SetColorTexture(1, 1, 1, 1);  -- SetGradientAlpha() removed since df
+		g:SetTexture([[Interface\AddOns\TipTac\media\gradient]]);
 		tip.ttGradient = g;
 	end
-	g:SetGradientAlpha("VERTICAL", 0, 0, 0, 0, unpack(cfg.gradientColor));
+	-- g:SetGradientAlpha("VERTICAL", 0, 0, 0, 0, unpack(cfg.gradientColor)); -- SetGradientAlpha() removed since df
+	g:SetVertexColor(unpack(cfg.gradientColor));
 	local insets = ((cfg.pixelPerfectBackdrop and tt:GetNearestPixelSize(cfg.backdropInsets, true)) or cfg.backdropInsets);
 	g:SetPoint("TOPLEFT", insets, insets * -1);
 	g:SetPoint("BOTTOMRIGHT", tip, "TOPRIGHT", insets * -1, -cfg.gradientHeight);
@@ -972,6 +973,11 @@ function tt:ApplyTipBackdrop(tip, calledFromEvent, resetBackdropColor)
 	tip.layoutTextureKit = nil;
 	tip.backdropInfo = nil;
 	
+	if (IsAddOnLoaded("ElvUI_MerathilisUI")) then -- workaround for addon MerathilisUI in ElvUI to prevent styling of frame
+		tip.__shadow = true;
+		tip.__MERSkin = true;
+	end
+	
 	local tipName = tip:GetName();
 	
 	if (tipName) and (tipName:match("DropDownList(%d+)")) then
@@ -988,6 +994,11 @@ function tt:ApplyTipBackdrop(tip, calledFromEvent, resetBackdropColor)
 			tip.template = "Default";
 			dropDownListBackdrop.template = "Default";
 			dropDownListMenuBackdrop.template = "Default";
+		end
+		
+		if (IsAddOnLoaded("ElvUI_MerathilisUI")) then -- workaround for addon MerathilisUI in ElvUI to prevent styling of frame
+			dropDownListBackdrop.__MERSkin = true;
+			dropDownListMenuBackdrop.__MERSkin = true;
 		end
 	end
 	
@@ -1066,7 +1077,7 @@ local function GetAnchorPosition(tooltip)
 		
 		-- workaround for bug in RaiderIO: https://github.com/RaiderIO/raiderio-addon/issues/203
 		if (var == "anchorFrameTip") and (ttAnchorType == "mouse") and (IsAddOnLoaded("RaiderIO")) and IsAddOnLoaded("Blizzard_Communities") and (IsInFrameChain(tooltip:GetOwner(), {
-					CommunitiesFrame.MemberList.ListScrollFrame
+					CommunitiesFrame.MemberList.ScrollBox
 				}, 3)) then
 			return "normal", "BOTTOMRIGHT";
 		end
@@ -1226,7 +1237,7 @@ function tt:AddTargetedBy(u)
 	end
 	
 	for i = 1, numUnits do
-		local unit = inGroup and (inRaid and "raid"..i or "party"..i) or (nameplates[i].namePlateUnitToken);
+		local unit = inGroup and (inRaid and "raid"..i or "party"..i) or (nameplates[i].namePlateUnitToken or "nameplate"..i);
 		if (UnitIsUnit(unit.."target", u.token)) and (not UnitIsUnit(unit, "player")) then
 			local _, classFile = UnitClass(unit);
 			targetedByList.next = TT_ClassColorMarkup[classFile];

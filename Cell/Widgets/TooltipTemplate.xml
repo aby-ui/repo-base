@@ -1,0 +1,204 @@
+<Ui 
+    xmlns="http://www.blizzard.com/wow/ui/" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+    <GameTooltip name="CellTooltipTemplate" frameStrata="TOOLTIP" clampedToScreen="true" hidden="true" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTextLeft1" justifyH="LEFT" inherits="CELL_FONT_WIDGET_TITLE" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="10" y="-10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight1" justifyH="RIGHT" inherits="CELL_FONT_WIDGET_TITLE" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft1" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft2" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft1" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight2" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft2" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft3" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft2" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight3" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft3" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft4" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft3" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight4" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft4" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft5" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft4" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight5" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft5" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft6" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft5" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight6" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft6" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft7" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft6" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight7" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft7" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextLeft8" justifyH="LEFT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTextLeft7" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentTextRight8" justifyH="RIGHT" inherits="CELL_FONT_WIDGET" hidden="true">
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentTextLeft8" relativePoint="LEFT">
+                            <Offset>
+                                <AbsDimension x="40" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <Texture name="$parentTexture1" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture2" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture3" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture4" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture5" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture6" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture7" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture8" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture9" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+                <Texture name="$parentTexture10" hidden="true">
+                    <Size>
+                        <AbsDimension x="12" y="12"/>
+                    </Size>
+                </Texture>
+            </Layer>
+        </Layers>
+    </GameTooltip>
+</Ui>

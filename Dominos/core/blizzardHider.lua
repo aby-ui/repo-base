@@ -5,42 +5,51 @@ if not Addon:IsBuild('retail') then
 end
 
 -- move a frame to the hidden shadow UI parent
-local function banishFrames(...)
+local function apply(func, ...)
     for i = 1, select('#', ...) do
-        local name = select(i, ...)
+        local name = (select(i, ...))
         local frame = _G[name]
 
         if frame then
-            frame:Hide()
-            frame:SetParent(Addon.ShadowUIParent)
+            func(frame)
         else
             Addon:Printf('Could not find frame %q', name)
         end
     end
+end
+
+local function banishFrames(...)
+    local function hide(frame)
+        frame:Hide()
+        frame:SetParent(Addon.ShadowUIParent)
+    end
+
+    return apply(hide, ...)
 end
 
 local function unregisterEventsForFrames(...)
-    for i = 1, select('#', ...) do
-        local name = select(i, ...)
-        local frame = _G[name]
-
-        if frame then
-            frame:UnregisterAllEvents()
-        else
-            Addon:Printf('Could not find frame %q', name)
-        end
+    local function unregisterEvents(frame)
+        frame:UnregisterAllEvents()
     end
+
+    apply(unregisterEvents, ...)
 end
 
-local function disableActionButton(name)
-    local button = _G[name]
-    if button then
-        button:UnregisterAllEvents()
-        button:SetAttribute('statehidden', true)
-        button:Hide()
-    else
-        Addon:Printf('Action Button %q could not be found', name)
+local function disableActionButtonsForFrames(...)
+    local function disableActionButtons(frame)
+        local buttons = frame.actionButtons
+        if type(buttons) ~= "table" then
+            return
+        end
+
+        for _, button in pairs(buttons) do
+            button:UnregisterAllEvents()
+            button:SetAttribute('statehidden', true)
+            button:Hide()
+        end
     end
+
+    apply(disableActionButtons, ...)
 end
 
 banishFrames(
@@ -49,24 +58,46 @@ banishFrames(
     "MultiBarBottomLeft",
     "MultiBarBottomRight",
     "MultiBarLeft",
-    "MultiBarRight"
+    "MultiBarRight",
+    "MultiBar5",
+    "MultiBar6",
+    "MultiBar7",
+    "PossessActionBar",
+    "StanceBar",
+    "MainMenuBarVehicleLeaveButton"
 )
 
 unregisterEventsForFrames(
+-- "MainMenuBar",
     "MultiBarBottomLeft",
     "MultiBarBottomRight",
     "MultiBarLeft",
-    "MultiBarRight"
+    "MultiBarRight",
+    "MultiBar5",
+    "MultiBar6",
+    "MultiBar7",
+    "PossessActionBar",
+    "StanceBar",
+    "MainMenuBarVehicleLeaveButton"
 )
 
--- disable the stock action buttons
-for i = 1, NUM_ACTIONBAR_BUTTONS do
-    disableActionButton(('ActionButton%d'):format(i))
-    disableActionButton(('MultiBarRightButton%d'):format(i))
-    disableActionButton(('MultiBarLeftButton%d'):format(i))
-    disableActionButton(('MultiBarBottomRightButton%d'):format(i))
-    disableActionButton(('MultiBarBottomLeftButton%d'):format(i))
-end
+disableActionButtonsForFrames(
+    "MainMenuBar",
+    "MicroButtonAndBagsBar",
+    "MultiBarBottomLeft",
+    "MultiBarBottomRight",
+    "MultiBarLeft",
+    "MultiBarRight",
+    "MultiBar5",
+    "MultiBar6",
+    "MultiBar7",
+    "PossessActionBar",
+    "StanceBar"
+-- "MainMenuBarVehicleLeaveButton"
+)
 
 -- disable some action bar controller updates that we probably don't need
--- ActionBarController:UnregisterEvent('UPDATE_POSSESS_BAR')
+ActionBarController:UnregisterEvent("UPDATE_SHAPESHIFT_FORM")
+ActionBarController:UnregisterEvent("UPDATE_SHAPESHIFT_FORMS")
+ActionBarController:UnregisterEvent("UPDATE_SHAPESHIFT_USABLE")
+ActionBarController:UnregisterEvent('UPDATE_POSSESS_BAR')

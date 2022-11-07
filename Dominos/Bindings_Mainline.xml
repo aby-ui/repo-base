@@ -1,0 +1,187 @@
+<Bindings>
+	<!-- modified clicks -->
+	<ModifiedClick action="DOMINOS_IGNORE_STICKY_FRAMES" default="ALT"/>
+
+	<!-- action button bindings -->
+	<!-- <Binding name="CLICK DominosActionButton1:LeftButton" category="Dominos" header="DominosActionBar1" />
+	<Binding name="CLICK DominosActionButton2:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton3:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton4:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton5:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton6:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton7:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton8:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton9:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton10:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton11:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton12:LeftButton" category="Dominos" /> -->
+
+	<Binding name="CLICK DominosActionButton13:LeftButton" category="Dominos" header="DominosActionBar2" />
+	<Binding name="CLICK DominosActionButton14:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton15:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton16:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton17:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton18:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton19:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton20:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton21:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton22:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton23:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton24:LeftButton" category="Dominos" />
+
+	<!-- <Binding name="CLICK DominosActionButton25:LeftButton" category="Dominos" header="DominosActionBar3" />
+	<Binding name="CLICK DominosActionButton26:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton27:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton28:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton29:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton30:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton31:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton32:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton33:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton34:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton35:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton36:LeftButton" category="Dominos" /> -->
+
+	<!-- <Binding name="CLICK DominosActionButton37:LeftButton" category="Dominos" header="DominosActionBar4" />
+	<Binding name="CLICK DominosActionButton38:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton39:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton40:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton41:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton42:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton43:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton44:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton45:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton46:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton47:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton48:LeftButton" category="Dominos" /> -->
+
+	<!-- <Binding name="CLICK DominosActionButton49:LeftButton" category="Dominos" header="DominosActionBar5" />
+	<Binding name="CLICK DominosActionButton50:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton51:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton52:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton53:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton54:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton55:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton56:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton57:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton58:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton59:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton60:LeftButton" category="Dominos" /> -->
+
+	<!-- <Binding name="CLICK DominosActionButton61:LeftButton" category="Dominos" header="DominosActionBar6" />
+	<Binding name="CLICK DominosActionButton62:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton63:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton64:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton65:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton66:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton67:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton68:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton69:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton70:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton71:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton72:LeftButton" category="Dominos" /> -->
+
+	<Binding name="CLICK DominosActionButton73:LeftButton" category="Dominos" header="DominosActionBar7" />
+	<Binding name="CLICK DominosActionButton74:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton75:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton76:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton77:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton78:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton79:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton80:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton81:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton82:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton83:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton84:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton85:LeftButton" category="Dominos" header="DominosActionBar8" />
+	<Binding name="CLICK DominosActionButton86:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton87:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton88:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton89:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton90:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton91:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton92:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton93:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton94:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton95:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton96:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton97:LeftButton" category="Dominos" header="DominosActionBar9" />
+	<Binding name="CLICK DominosActionButton98:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton99:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton100:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton101:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton102:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton103:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton104:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton105:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton106:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton107:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton108:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton109:LeftButton" category="Dominos" header="DominosActionBar10" />
+	<Binding name="CLICK DominosActionButton110:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton111:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton112:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton113:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton114:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton115:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton116:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton117:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton118:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton119:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton120:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton121:LeftButton" category="Dominos" header="DominosActionBar11" />
+	<Binding name="CLICK DominosActionButton122:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton123:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton124:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton125:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton126:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton127:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton128:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton129:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton130:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton131:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton132:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton133:LeftButton" category="Dominos" header="DominosActionBar12" />
+	<Binding name="CLICK DominosActionButton134:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton135:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton136:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton137:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton138:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton139:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton140:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton141:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton142:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton143:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton144:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton145:LeftButton" category="Dominos" header="DominosActionBar13" />
+	<Binding name="CLICK DominosActionButton146:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton147:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton148:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton149:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton150:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton151:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton152:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton153:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton154:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton155:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton156:LeftButton" category="Dominos" />
+
+	<Binding name="CLICK DominosActionButton157:LeftButton" category="Dominos" header="DominosActionBar14" />
+	<Binding name="CLICK DominosActionButton158:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton159:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton160:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton161:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton162:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton163:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton164:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton165:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton166:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton167:LeftButton" category="Dominos" />
+	<Binding name="CLICK DominosActionButton168:LeftButton" category="Dominos" />
+</Bindings>

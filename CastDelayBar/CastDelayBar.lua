@@ -15,12 +15,15 @@ local CHANNELDELAY = "|cffff2020%-.2f|r"
 local CASTDELAY = "|cffff2020%.1f|r"
 local CASTCURR = "|cffFFFFFF%.1f|r"
 local CASTMAX = "|cffFFFFFF%.1f|r"
+local CASTMAX_NO_DECIMAL = "|cffFFFFFF%d|r"
 
 function C:OnInitialize()	
 	self.playerName = UnitName("player");
 	self.delayText = PlayerCastingBarFrame:CreateFontString(nil, "ARTWORK");
-	self.delayText:SetPoint("RIGHT", PlayerCastingBarFrame, "RIGHT", -3, 2);
-	self.delayText:SetFont(GameFontHighlight:GetFont(), 13);
+	--self.delayText:SetPoint("LEFT", PlayerCastingBarFrame, "RIGHT", -22, -11);
+	self.delayText:SetFont(GameFontHighlight:GetFont(), 13, "");
+	self.delayText:SetShadowColor(0,0,0,1)
+	self.delayText:SetShadowOffset(1,-1)
 
 	self.delayBar = PlayerCastingBarFrame:CreateTexture("StatusBar");
 	self.delayBar:SetDrawLayer("ARTWORK", 2)
@@ -89,7 +92,7 @@ function C:GetLatency()
 end
 
 function C:ShowDelayBar(maxValue)
-    if (self.enable and self.timeDiff and self.timeDiff > 0) then
+    if (self.enable and self.showdelay and self.timeDiff and self.timeDiff > 0) then
         local modulus = self.timeDiff / maxValue;
         if modulus > 1 then
             modulus = 1;
@@ -254,10 +257,11 @@ function C:PlayerCastingBarFrame_OnUpdate(frame, elapsed, ...)
             self.delayText:Show()
 		else
 			-- 正计时
+			local max_format = duration >= 10 and CASTMAX_NO_DECIMAL or CASTMAX
 			if(castTime > 0)then
-				self.delayText:SetText(format(CASTCURR.."/"..CASTMAX, timeLeft, duration))
+				self.delayText:SetText(format(CASTCURR.."/"..max_format, timeLeft, duration))
 			else
-				self.delayText:SetText(format(CASTCURR.."/"..CASTMAX, timeLeft, duration));
+				self.delayText:SetText(format(CASTCURR.."/"..max_format, timeLeft, duration));
             end
             self.delayText:Show()
 		end

@@ -16,7 +16,12 @@ function CastByHook(auraFunc, ...)
     if IsAddOnLoaded("TipTacItemRef") then return end
 	local _, uid, id, f = ...
 
-	local _, _, _, _, _, _, c = auraFunc(uid, id, f)
+	local c
+	if auraFunc == C_UnitAuras.GetAuraDataByAuraInstanceID then
+		c = auraFunc(uid, id).sourceUnit
+	else
+		c = select(7, auraFunc(uid, id, f))
+	end
 
 	local cl, str
 	if(c) then
@@ -69,6 +74,12 @@ hooksecurefunc(GameTooltip, "SetUnitBuff", function(...)
 end)
 hooksecurefunc(GameTooltip, "SetUnitDebuff", function(...)
 	CastByHook( UnitDebuff, ...)
+end)
+hooksecurefunc(GameTooltip, "SetUnitDebuffByAuraInstanceID", function(...)
+	CastByHook( C_UnitAuras.GetAuraDataByAuraInstanceID, ...)
+end)
+hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", function(...)
+	CastByHook( C_UnitAuras.GetAuraDataByAuraInstanceID, ...)
 end)
 
 local mountsData = {}

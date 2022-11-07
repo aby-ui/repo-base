@@ -62,6 +62,14 @@ U1RegisterAddon("AbyBuff", {
                     return _G['AbyBuff']:UpdateConfigFontSize()
                 end,
             },
+            {
+                var = "outline",
+                default = false,
+                text = "BUFF时间文字描边",
+                callback = function(cfg, v, loading)
+                    return _G['AbyBuff']:UpdateConfigFontSize()
+                end,
+            },
         }),
         {
             var = "caster",

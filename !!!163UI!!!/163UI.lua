@@ -1679,13 +1679,14 @@ function U1:ADDON_LOADED(event, name)
             for j=1,#pageself do deepLoad(pageself[j]) end
         end
 
-        --新用户第一次用的时候关闭全部单体插件，经测试(2021.3)，暴雪角色A修改插件设置进角色B，仍然是默认值，但是如果在任务选择界面选中角色然后修改插件，则能生效
+        --新用户第一次用的时候关闭全部单体插件，经测试(2021.3)，暴雪角色A修改插件设置进角色B，仍然是默认值，但是如果在人物选择界面选中角色然后修改插件，则能生效
         if U1DB.first_run then
             U1DB.first_run = nil
             for k, info in pairs(addonInfo) do
                 if not info.registered then
                     DisableAddOn(k)
-                    info.originEnabled = true
+                    db.addons[k] = 0
+                    info.originEnabled = false
                 end
             end
         end

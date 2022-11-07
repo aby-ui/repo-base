@@ -547,6 +547,7 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandlerWith("WeeklyRewardsFrame", "Blizzard_WeeklyRewards");
 
         --10.0
+        BM_SetMoveHandler(AddonList)
         BM_SetMoveHandler(QuickKeybindFrame)
         BM_SetMoveHandler(SettingsPanel)
         BM_SetMoveHandlerWith(nil, "Blizzard_ClassTalentUI", function()

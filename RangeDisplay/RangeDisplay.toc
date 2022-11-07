@@ -16,7 +16,7 @@
 ## X-CompatibleLocales: enUS, enGB, deDE, frFR, esES, zhCN, zhTW, koKR, ruRU
 
 #@no-lib-strip@
-libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
+#libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
 #@end-no-lib-strip@
 
 localizations.lua

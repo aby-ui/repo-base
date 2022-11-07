@@ -736,7 +736,7 @@ event:RegisterEvent("RAID_ROSTER_UPDATE")
 event:RegisterEvent("PLAYER_TARGET_CHANGED")
 event:RegisterEvent("PLAYER_REGEN_ENABLED")
 event:RegisterEvent("PLAYER_REGEN_DISABLED")
-event:RegisterEvent("UPDATE_BINDINGS")
+--event:RegisterEvent("UPDATE_BINDINGS")
 
 -------------------------------------------------------
 -- OnUpdate

@@ -15,9 +15,11 @@
 	- minor adjustments of some elements
 	22.03.30 Rev 15 9.2.0/Shadowlands #frozn45
 	- added a header element
+	xx.xx.xx Rev 16 10.0.0/Dragonflight #frozn45
+	- replaced inheritsFrame "OptionsSliderTemplate" with "UISliderTemplateWithLabels" for slider
 --]]
 
-local REVISION = 15;
+local REVISION = 16;
 if (type(AzOptionsFactory) == "table") and (AzOptionsFactory.vers >= REVISION) then
 	return;
 end
@@ -33,6 +35,22 @@ azof.__index = azof;
 azof.objects = {};
 
 local ReturnZeroMeta = { __index = function() return 0; end };
+
+-- classic support
+local isWoWClassic, isWoWBcc, isWoWWotlkc, isWoWSl, isWoWRetail = false, false, false, false, false;
+if (_G["WOW_PROJECT_ID"] == _G["WOW_PROJECT_CLASSIC"]) then
+	isWoWClassic = true;
+elseif (_G["WOW_PROJECT_ID"] == _G["WOW_PROJECT_BURNING_CRUSADE_CLASSIC"]) then
+	isWoWBcc = true;
+elseif (_G["WOW_PROJECT_ID"] == _G["WOW_PROJECT_WRATH_CLASSIC"]) then
+	isWoWWotlkc = true;
+else -- retail
+	if (_G["LE_EXPANSION_LEVEL_CURRENT"] == _G["LE_EXPANSION_SHADOWLANDS"]) then
+		isWoWSl = true;
+	else
+		isWoWRetail = true;
+	end
+end
 
 --------------------------------------------------------------------------------------------------------
 --                                          Helper Functions                                          --
@@ -205,7 +223,13 @@ azof.objects.Slider = {
 		f.edit:SetFontObject("GameFontHighlight");
 
 		local sliderName = GenerateObjectName("Slider");
-		f.slider = CreateFrame("Slider",sliderName,f,"OptionsSliderTemplate");
+
+		f.slider = CreateFrame("Slider",sliderName,f,isWoWRetail and "UISliderTemplateWithLabels" or "OptionsSliderTemplate");
+		if (isWoWRetail and BackdropTemplateMixin and "BackdropTemplate") then
+			Mixin(f.slider, BackdropTemplateMixin);
+			f.slider.backdropInfo = BACKDROP_SLIDER_8_8;
+			f.slider:ApplyBackdrop();
+		end
 		f.slider:SetPoint("TOPLEFT",f.edit,"TOPRIGHT",5,-3);
 		f.slider:SetPoint("BOTTOMRIGHT",0,-2);
 		f.slider:SetScript("OnValueChanged",Slider_OnValueChanged);

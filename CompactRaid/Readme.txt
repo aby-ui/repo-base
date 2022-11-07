@@ -1,4 +1,0 @@
-Slash commands:
-
-/craid
-/compactraid

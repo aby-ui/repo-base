@@ -55,8 +55,11 @@ end
 --- 初始化和改变字体大小时调用
 local function updateFontAlpha(btn)
     local size = U1GetCfgValue(_ADDONNAME, 'cvar_buffDurations/buffSize')
-    local fontfile, _, flags = btn.aby_duration:GetFont()
-    btn.aby_duration:SetFont(fontfile, size, flags)
+    local outline = U1GetCfgValue(_ADDONNAME, 'cvar_buffDurations/outline')
+    local fontfile, _, _ = btn.aby_duration:GetFont()
+    btn.aby_duration:SetFont(fontfile, size, outline and "THINOUTLINE" or "")
+    btn.aby_duration:SetShadowColor(0,0,0,outline and 0 or 1)
+    btn.aby_duration:SetShadowOffset(1, -1)
     btn.duration:SetAlpha(private.cfg_showsec and 0.01 or 1) --btn.duration.SetFormattedText = noop --也可以noop, 因为secure调用, 所以不会污染
 end
 

@@ -653,7 +653,7 @@ function UUI.Top.Create(main)
         :SetScript("OnEnter", UIDropDownMenu_StopCounting):SetScript("OnLeave", UIDropDownMenu_StartCounting)
         :SetScript("OnShow", function(self) self:SetValue(100-GetCVar("Sound_MasterVolume")*100) end)
         :un()
-        soundSlider.func = function(self, v) BlizzardOptionsPanel_SetCVarSafe("Sound_MasterVolume", v/100) PlaySound(SOUNDKIT.IG_MAINMENU_OPEN) end
+        soundSlider.func = function(self, v) SetCVar("Sound_MasterVolume",v/100) PlaySound(SOUNDKIT.IG_MAINMENU_OPEN, "MASTER", true) end
         soundSlider.parent = DropDownList1; --StopCounting
         DropDownList1:HookScript("OnHide", function() main.setting.soundPanel:Hide() end)
         soundSlider.HandlesGlobalMouseEvent = function(self, button, event)
@@ -1923,6 +1923,8 @@ function UUI.CreateUI()
     :CreateTexture():TL(-20-4,20+7):BR(20-4, -20+7):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetAlpha(0.8):ToTexture("Highlight"):up()
     :un()
     CoreUIEnableTooltip(GameMenuFrame.btn163, L["爱不易"], L["点击爱不易标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"])
+
+    CoreUIEnableTooltip(AddonListDisableAllButton, "爱不易提示", "点全部禁用插件后，重新加载UI可彻底禁用所有插件，可用于确认是插件问题还是暴雪界面问题。\n\n然后|cffff0000只|r选中'!!![爱不易]控制台和基本库'|cffff0000这一个|r插件(一般排第一个)，再重新加载UI，可恢复全部禁用之前的状态。")
 
 end
 
