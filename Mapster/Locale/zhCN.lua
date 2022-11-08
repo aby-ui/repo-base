@@ -38,3 +38,4 @@ L["The transparency of the map while you are moving and the map is faded."] = "�
 L["You can change the transparency of the world map to allow you to continue seeing the world environment while your map is open for navigation."] = "改变世界地图的透明度，使你在打开大地图的情况下仍然继续操作你的人物。"
 L["You can control the accuracy of the coordinates, e.g. if you need very exact coordinates you can set this to 2."] = "选择此项使你的坐标信息更加精确。例如：如果你需要精确的位置坐标，请设置到2。"
 
+L["Enable Map Scaling (Can break the UI in WoW 10.0)"] = "启用地图缩放(可能会破坏10.0默认界面)"

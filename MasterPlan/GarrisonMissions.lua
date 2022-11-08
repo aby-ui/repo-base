@@ -904,7 +904,7 @@ do -- Ship re-fitting
 				eq[i] = b
 			end
 			for i=1,6 do
-				local b = CreateFrame("Button", nil, sContainer, "SecureActionButtonTemplate", i)
+				local b = CreateFrame("Button", nil, sContainer, "InsecureActionButtonTemplate", i)
 				b:SetSize(32, 32)
 				local ico, border = b:CreateTexture(), b:CreateTexture(nil, "OVERLAY")
 				b.icon, b.border = ico, border
@@ -921,6 +921,7 @@ do -- Ship re-fitting
 				b:SetScript("OnLeave", HideOwnedGameTooltip)
 				b:SetScript("PreClick", SetUpEquipmentRefit)
 				b:SetScript("PostClick", CompleteEquipmentRefit)
+				T.TenSABT(b)
 				b:Disable()
 				b:Hide()
 				slots[i] = b

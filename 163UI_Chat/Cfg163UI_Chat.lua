@@ -71,6 +71,7 @@ U1RegisterAddon("163UI_Chat", {
             end
         end,
     },
+--[[
     {
         var = "resize2",
         default = 1,
@@ -85,6 +86,7 @@ U1RegisterAddon("163UI_Chat", {
             togglehook(nil, "U1Chat_ChatFrameResizeOnShow", noop, not v);
         end,
     },
+]]
     {
         var = "wheel",
         default = 1,

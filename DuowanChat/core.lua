@@ -290,7 +290,9 @@ function DuowanChat:RegisterEvents()
     self:RegisterEvent("UPDATE_MOUSEOVER_UNIT",self.OnEvent) 
     self:RegisterEvent("WHO_LIST_UPDATE",self.WhoListUpdate) 
     self:RegisterEvent("UNIT_LEVEL", self.OnEvent)
-end 
+    self:RegisterEvent("PARTY_LEADER_CHANGED", self.LayoutReadyCheckAndCountDownButtons)
+    self:RegisterEvent("UPDATE_ACTIVE_BATTLEFIELD", self.LayoutReadyCheckAndCountDownButtons)
+end
 
 function DuowanChat:UnregisterEvents() 
     self:UnregisterEvent("CHAT_MSG_WHISPER")
@@ -305,7 +307,9 @@ function DuowanChat:UnregisterEvents()
     self:UnregisterEvent("UPDATE_MOUSEOVER_UNIT")
     self:UnregisterEvent("WHO_LIST_UPDATE") 
     self:UnregisterEvent("FRIENDLIST_UPDATE") 
-    self:UnregisterEvent("UNIT_LEVEL") 
+    self:UnregisterEvent("UNIT_LEVEL")
+    self:UnregisterEvent("PARTY_LEADER_CHANGED")
+    self:UnregisterEvent("UPDATE_ACTIVE_BATTLEFIELD")
 end 
 
 local function getNameInfo(name)
@@ -381,6 +385,7 @@ function DuowanChat.OnEvent(event, message, sender)
                 checkUnitIsStored("party"..i)
             end
         end
+        DuowanChat:LayoutReadyCheckAndCountDownButtons()
     elseif event=="GUILD_ROSTER_UPDATE" then
         local num= GetNumGuildMembers()
         if num>0 then
@@ -590,6 +595,7 @@ function DuowanChat:PLAYER_ENTERING_WORLD(...)
         end
         tryJoin();
     end
+    self:LayoutReadyCheckAndCountDownButtons()
 end
 
 function DuowanChat:CHANNEL_PASSWORD_REQUEST(...)
@@ -669,18 +675,33 @@ function DuowanChat:ChatEdit_UpdateHeader(editBox)
     end
 end
 
-function DuowanChat:OnEnable() 
+function DuowanChat:LayoutReadyCheckAndCountDownButtons()
+    if ( IsInGroup() and (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) ) then
+        dwReadyCheckButton:Show()
+        dwCountDownButton:Show()
+        local point, rel, relpoint, x, y = dwChannelMuteButton:GetPoint(1)
+        dwChannelMuteButton:SetPoint(point, dwCountDownButton, relpoint, x, y)
+    else
+        dwReadyCheckButton:Hide()
+        dwCountDownButton:Hide()
+        local point, rel, relpoint, x, y = dwChannelMuteButton:GetPoint(1)
+        dwChannelMuteButton:SetPoint(point, DWCRandomButton, relpoint, x, y)
+    end
+end
+
+function DuowanChat:OnEnable()
     self.enable = true;
     self:SecureHook("ChatEdit_UpdateHeader");
     self:SecureHook("ChatEdit_DeactivateChat"); --warbaby 如果注释则im方式下始终显示输入框
     self:RegisterEvents();
     --self:ChatScrollToggle(true);
-    self:ChatCopyToggle(true);	
+    self:ChatCopyToggle(true);
     self:SecureHook("UIParent_ManageFramePositions");
     self:SecureHook("FCF_ResetChatWindows");
     --self:RawHook("FCF_UpdateDockPosition", true);
     --SetCVar("chatStyle", "classic");
     dwChannel_RefreshMuteButton();
+    self:LayoutReadyCheckAndCountDownButtons()
     storeName(UnitName("player"), UnitLevel("player"));
 end
 
@@ -787,7 +808,7 @@ function dwChannel_RefreshMuteButton()
 end
 
 function dwChannelMuteButton_OnEnter(self)
-    GameTooltip_SetDefaultAnchor(GameTooltip, self);
+    GameTooltip:SetOwner(self)
     GameTooltip:SetText(L["Channel mute label"], 1, 1, 1);
     GameTooltip:AddLine(L["Channel mute desc"]);
     GameTooltip:Show();

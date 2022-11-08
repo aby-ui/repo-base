@@ -23,6 +23,7 @@ StaticPopupDialogs["163UI_CHAT_CLEAR"] = {preferredIndex = 3,
 --[[------------------------------------------------------------
 左上角的缩放按钮
 ---------------------------------------------------------------]]
+--[[ --TODO:abyui10
 function U1Chat_ChatFrameResizeOnShow(self)
     self:GetParent().resizeButton2:Show();
 end
@@ -66,15 +67,14 @@ local function CreateResizeButton(cf)
     btn:GetPushedTexture():SetTexCoord(1,1,1,0,0,1,0,0)
     btn:SetScript("OnMouseDown", chatFrameResizeOnMouseDown);
     btn:SetScript("OnMouseUp", chatFrameResizeOnMouseUp);
---[[ --TODO:abyui10
     hooksecurefunc(cf.ResizeButton, "Show", chatFrameResizeOnShow);
     hooksecurefunc(cf.ResizeButton, "Hide", chatFrameResizeOnHide);
     hooksecurefunc(cf.ResizeButton, "SetShown", function(self, show)
         if show then U1Chat_ChatFrameResizeOnShow(self) else chatFrameResizeOnHide(self) end
     end)
-]]
 end
---WithAllChatFrame(CreateResizeButton); --TODO:abyui10
+WithAllChatFrame(CreateResizeButton);
+]]
 
 --[[------------------------------------------------------------
 鼠标滚轮增强

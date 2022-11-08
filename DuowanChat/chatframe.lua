@@ -51,7 +51,6 @@ local function DWC_ChannelShortText(index)
 		end
 	end
 end
-local short = DWC_ChannelShortText;
 
 local function DWC_ShowChannel(index)
 	local channelNum, channelName = GetChannelNameWithCommunity(index);
@@ -72,25 +71,25 @@ local function DWC_ShowChannel_Gen(index)
 end
 
 local DWC_TABS={ 
-	{text=function() return short(1) end, chatType="CHANNEL1", show=DWC_ShowChannel_Gen(1), index=1}, 
-	{text=function() return short(2) end, chatType="CHANNEL2", show=DWC_ShowChannel_Gen(2), index=2}, 
-	{text=function() return short(3) end, chatType="CHANNEL3", show=DWC_ShowChannel_Gen(3), index=3}, 
-	{text=function() return short(4) end, chatType="CHANNEL4", show=DWC_ShowChannel_Gen(4), index=4}, 
-	{text=function() return short(5) end, chatType="CHANNEL5", show=DWC_ShowChannel_Gen(5), index=5}, 
-	{text=function() return short(6) end, chatType="CHANNEL6", show=DWC_ShowChannel_Gen(6), index=6}, 
-	{text=function() return short(7) end, chatType="CHANNEL7", show=DWC_ShowChannel_Gen(7), index=7}, 
-	{text=function() return short(8) end, chatType="CHANNEL8", show=DWC_ShowChannel_Gen(8), index=8}, 
-	{text=function() return short(9) end, chatType="CHANNEL9", show=DWC_ShowChannel_Gen(9), index=9}, 
-	{text=function() return short(10) end, chatType="CHANNEL10", show=DWC_ShowChannel_Gen(10), index=10}, 
-	{text=function() return L["Say"] end, chatType="SAY", show=function() return true end,  index=0}, 
-	{text=function() return L["PartyShort"] end, chatType="PARTY", show=function() return IsInGroup() end, index=0},
-	{text=function() return L["RaidShort"] end, chatType="RAID", show=function() return IsInRaid() end,  index=0},
-    {text=function() return L["InstanceShort"] end, chatType="INSTANCE_CHAT", chatTypeCmd='instance', show=function() return IsInInstance() end, index = 0},
-	{text=function() return L["BattleGroundShort"] end, chatType="INSTANCE_CHAT", chatTypeCmd='instance', show=function() return select(2, IsInInstance())=="pvp" end,  index=0},
-	{text=function() return L["GuildShort"] end, chatType="GUILD", show=function() return IsInGuild() end,  index=0},
-	{text=function() return L["YellShort"] end, chatType="YELL", show=function() return not IsInGroup() --[[GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0]] end,  index=0},
-	{text=function() return L["WhisperToShort"] end, chatType="WHISPER", show=function() return true end,  index=0},
-	{text=function() return L["OfficerShort"] end, chatType="OFFICER", show=function() return C_GuildInfo.CanEditOfficerNote() end,  index=0},
+	{text=function() return DWC_ChannelShortText(1) end, chatType="CHANNEL1", show=DWC_ShowChannel_Gen(1), index=1},
+	{text=function() return DWC_ChannelShortText(2) end, chatType="CHANNEL2", show=DWC_ShowChannel_Gen(2), index=2},
+	{text=function() return DWC_ChannelShortText(3) end, chatType="CHANNEL3", show=DWC_ShowChannel_Gen(3), index=3},
+	{text=function() return DWC_ChannelShortText(4) end, chatType="CHANNEL4", show=DWC_ShowChannel_Gen(4), index=4},
+	{text=function() return DWC_ChannelShortText(5) end, chatType="CHANNEL5", show=DWC_ShowChannel_Gen(5), index=5},
+	{text=function() return DWC_ChannelShortText(6) end, chatType="CHANNEL6", show=DWC_ShowChannel_Gen(6), index=6},
+	{text=function() return DWC_ChannelShortText(7) end, chatType="CHANNEL7", show=DWC_ShowChannel_Gen(7), index=7},
+	{text=function() return DWC_ChannelShortText(8) end, chatType="CHANNEL8", show=DWC_ShowChannel_Gen(8), index=8},
+	{text=function() return DWC_ChannelShortText(9) end, chatType="CHANNEL9", show=DWC_ShowChannel_Gen(9), index=9},
+	{text=function() return DWC_ChannelShortText(10) end, chatType="CHANNEL10", show=DWC_ShowChannel_Gen(10), index=10},
+	{text=function() return L["Say"], SAY end, chatType="SAY", show=function() return true end,  index=0},
+	{text=function() return L["PartyShort"], PARTY end, chatType="PARTY", show=function() return IsInGroup() end, index=0},
+	{text=function() return L["RaidShort"], RAID end, chatType="RAID", show=function() return IsInRaid() end,  index=0},
+    {text=function() return L["InstanceShort"], INSTANCE end, chatType="INSTANCE_CHAT", chatTypeCmd='instance', show=function() return IsInInstance() end, index = 0},
+	{text=function() return L["BattleGroundShort"], BATTLEGROUND end, chatType="INSTANCE_CHAT", chatTypeCmd='instance', show=function() return select(2, IsInInstance())=="pvp" end,  index=0},
+	{text=function() return L["GuildShort"], GUILD end, chatType="GUILD", show=function() return IsInGuild() end,  index=0},
+	{text=function() return L["YellShort"], YELL end, chatType="YELL", show=function() return not IsInGroup() --[[GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0]] end,  index=0},
+	{text=function() return L["WhisperToShort"], WHISPER end, chatType="WHISPER", show=function() return true end,  index=0},
+	{text=function() return L["OfficerShort"], OFFICER end, chatType="OFFICER", show=function() return C_GuildInfo.CanEditOfficerNote() end,  index=0},
 } 
 
 
@@ -252,8 +251,6 @@ function DWChatFrame:OnInitialize()
 	db = self.db.profile;
 	self:SetEnabledState(DWChat:GetModuleEnabled(MODNAME));
 	DWChat:RegisterModuleOptions(MODNAME, getOptions, L["ChatFrame"]);
-	CoreUIEnableTooltip(DWCReportStatButton, "发送属性报告", "点击生成实装和属性信息");
-	CoreUIEnableTooltip(DWCRandomButton, "掷骰子");
 end
 
 function DWChatFrame:Refresh() 

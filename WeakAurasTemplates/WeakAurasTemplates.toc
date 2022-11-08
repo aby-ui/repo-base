@@ -1,7 +1,7 @@
 ## Interface: 100000
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
-## Version: 5.0.5
+## Version: 5.1.0
 ## Notes: Templates for WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras

@@ -11,7 +11,7 @@ function AccountantOptions_Toggle()
 		AccountantOptionsFrame:Show();
 	end
 ]]
-	if(InterfaceOptionsFrame:IsVisible()) then
+	if(InterfaceOptionsFrame and InterfaceOptionsFrame:IsVisible()) then
 		InterfaceOptionsFrame:Hide();
 	else
 		InterfaceOptionsFrame_OpenToCategory(ACCLOC_TITLE);
@@ -19,7 +19,7 @@ function AccountantOptions_Toggle()
 end
 
 function AccountantOptions_OnLoad(panel)
-	UIPanelWindows['AccountantOptionsFrame'] = {area = 'center', pushable = 0};
+--	UIPanelWindows['AccountantOptionsFrame'] = {area = 'center', pushable = 0};
 	
 --	panel = _G["AccountantOptionsFrame"];
 	panel.name = ACCLOC_TITLE;
@@ -33,11 +33,9 @@ end
 
 function AccountantOptions_OnShow()
 	AccountantOptionsFrameToggleButtonText:SetText(ACCLOC_MINIBUT);
-	AccountantSliderButtonPosText:SetText(ACCLOC_BUTPOS);
 	AccountantOptionsFrameWeekLabel:SetText(ACCLOC_STARTWEEK);
 
 	AccountantOptionsFrameToggleButton:SetChecked(Accountant_SaveData[GetRealmName()][UnitName("player")]["options"].showbutton);
-	AccountantSliderButtonPos:SetValue(Accountant_SaveData[GetRealmName()][UnitName("player")]["options"].buttonpos);
 	UIDropDownMenu_Initialize(AccountantOptionsFrameWeek, AccountantOptionsFrameWeek_Init);
 	UIDropDownMenu_SetSelectedID(AccountantOptionsFrameWeek, Accountant_SaveData[Accountant_Server][Accountant_Player]["options"].weekstart);
 end

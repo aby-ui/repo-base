@@ -20,7 +20,7 @@ lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.notCreated = lib.notCreated or {}
 lib.radius = lib.radius or 11
 local next, Minimap, CreateFrame = next, Minimap, CreateFrame
-lib.tooltip = lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
+lib.tooltip = GameTooltip --abyui lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
 local isDraggingButton = false
 
 function lib:IconCallback(event, name, key, value)

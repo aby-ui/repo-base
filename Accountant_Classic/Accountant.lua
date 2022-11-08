@@ -23,6 +23,8 @@ $Id: Accountant.lua 69 2012-09-26 09:54:33Z arith $
      Updated by: Arith
 ]]
 
+local LibDBIcon = LibStub("LibDBIcon-1.0")
+
 Accountant_Version = GetAddOnMetadata("Accountant", "Version");
 Accountant_Data = nil;
 Accountant_SaveData = nil;
@@ -146,24 +148,24 @@ function Accountant_OnLoad(self)
 
 	-- Confirm box
 	StaticPopupDialogs["ACCOUNTANT_RESET"] = {preferredIndex = 3,
-		text = "meh",
-		button1 = OKAY,
-		button2 = CANCEL,
-		OnAccept = function()
-			Accountant_ResetConfirmed();
-		end,
-		showAlert = 1,
-		timeout = 0,
-		exclusive = 1,
-		whileDead = 1,
-		interruptCinematic = 1
+											  text = "meh",
+											  button1 = OKAY,
+											  button2 = CANCEL,
+											  OnAccept = function()
+												  Accountant_ResetConfirmed();
+											  end,
+											  showAlert = 1,
+											  timeout = 0,
+											  exclusive = 1,
+											  whileDead = 1,
+											  interruptCinematic = 1
 	};
 
 	-- hooks
 	Accountant_RepairAllItems_old = RepairAllItems;
 	RepairAllItems = Accountant_RepairAllItems;
---	Accountant_CursorHasItem_old = CursorHasItem;
---	CursorHasItem = Accountant_CursorHasItem;
+	--	Accountant_CursorHasItem_old = CursorHasItem;
+	--	CursorHasItem = Accountant_CursorHasItem;
 
 	-- tabs
 	AccountantFrameTab1:SetText(ACCLOC_SESS);
@@ -183,7 +185,7 @@ function Accountant_OnLoad(self)
 	ACC_Print(ACCLOC_TITLE.." "..ACCLOC_LOADED);
 
 	--Make an LDB object
-	LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("Accountant_Classic", {
+	local ldb = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("Accountant_Classic", {
 		type = "launcher",
 		text = ACCLOC_TITLE,
 		OnClick = function(_, msg)
@@ -194,6 +196,7 @@ function Accountant_OnLoad(self)
 			end
 		end,
 		icon = "Interface\\AddOns\\Accountant_Classic\\Images\\AccountantButton-Up",
+		iconCoords = {0.05, 0.75, 0.05, 0.75},
 		OnTooltipShow = function(tooltip)
 			if not tooltip or not tooltip.AddLine then return end
 			tooltip:AddLine("|cffffffff"..ACCLOC_TITLE)
@@ -201,9 +204,43 @@ function Accountant_OnLoad(self)
 		end,
 	});
 
+	local options = Accountant_SaveData[GetRealmName()][UnitName("player")]["options"]
+	LibDBIcon:Register("Accountant_Classic", ldb, options);
+
 	if ( TitanPanelButton_UpdateButton ) then
 		TitanPanelButton_UpdateButton("Accountant_Classic");
 	end
+end
+
+function AccountantButton_Init()
+	if(Accountant_SaveData[GetRealmName()][UnitName("player")]["options"].showbutton) then
+		LibDBIcon:Show("Accountant_Classic")
+	else
+		LibDBIcon:Hide("Accountant_Classic")
+	end
+end
+
+function AccountantButton_Toggle()
+	local options = Accountant_SaveData[GetRealmName()][UnitName("player")]["options"]
+	options.showbutton = not options.showbutton
+	if options.showbutton then
+		LibDBIcon:Show("Accountant_Classic")
+	else
+		LibDBIcon:Hide("Accountant_Classic")
+	end
+end
+
+function AccountantButton_OnClick(button)
+	if (button == "RightButton") then
+		AccountantOptions_Toggle();
+		return
+	end
+	if AccountantFrame:IsVisible() then
+		AccountantFrame:Hide();
+	else
+		AccountantFrame:Show();
+	end
+
 end
 
 function Accountant_LoadData()
@@ -354,7 +391,7 @@ function Accountant_OnEvent(self, event, ...)
 			Accountant_OnLoad();
 			--AccountantOptions_OnLoad();
 			AccountantButton_Init();
-			AccountantButton_UpdatePosition();
+			--AccountantButton_UpdatePosition();
 		end
 		return;
 	end

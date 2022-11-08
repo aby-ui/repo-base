@@ -1,11 +1,12 @@
 U1RegisterAddon("ExtraActionBar", {
+    temporarilyForceDisable = 1,
     title = "额外动作条",
     tags = { TAG_COMBATINFO, },
     load = "NORMAL",
     optionsAfterLogin = 1,
     defaultEnable = 0,
     icon = [[Interface\Icons\INV_Misc_PunchCards_Prismatic]],
-    desc = "显示额外的动作条，支持横向、纵向、趣味等排列方式。请不要在战斗中调整样式。`如果需要关闭最后一个动作条，请在控制台中隐藏。`注意：此动作条使用系统自带的按钮，按钮位置会被保存在服务器上，所以某些多姿态的职业可能会跟系统动作条冲突。",
+    --desc = "显示额外的动作条，支持横向、纵向、趣味等排列方式。请不要在战斗中调整样式。`如果需要关闭最后一个动作条，请在控制台中隐藏。`注意：此动作条使用系统自带的按钮，按钮位置会被保存在服务器上，所以某些多姿态的职业可能会跟系统动作条冲突。",
 
     author = "大脚", modifier = "蘑菇",
 

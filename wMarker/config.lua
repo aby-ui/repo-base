@@ -75,11 +75,11 @@ function wMarker:visibility()
 	if (wMarkerDB.shown==false) then wMarker.main:Hide() end
 	if (wMarkerDB.partyShow==true) then if (GetNumGroupMembers()==0) then wMarker.main:Hide() end end
 	if (wMarkerDB.targetShow==true) then if not (UnitExists("target")) then wMarker.main:Hide() end end
-	if (wMarkerDB.assistShow==true) then if (IsInRaid()) and (UnitIsGroupAssistant("player")==false) then wMarker.main:Hide() end end
+	if (wMarkerDB.assistShow==true) then if (IsInRaid()) and (UnitIsGroupAssistant("player")==false and UnitIsGroupLeader("player")==false) then wMarker.main:Hide() end end
 	worldMarks = true;
 	if (wFlaresDB.shown==false) then worldMarks = false end
 	if (wFlaresDB.partyShow==true) then if (GetNumGroupMembers()==0) then worldMarks = false end end
-	if (wFlaresDB.assistShow==true) then if (IsInRaid()==true) and (UnitIsGroupAssistant("player")==false) then worldMarks = false end end
+	if (wFlaresDB.assistShow==true) then if (IsInRaid()==true) and (UnitIsGroupAssistant("player")==false and UnitIsGroupLeader("player")==false) then worldMarks = false end end
 	if not (InCombatLockdown()) then
 		if (worldMarks==true) then
 			if not(wFlares.main:IsShown()) then 

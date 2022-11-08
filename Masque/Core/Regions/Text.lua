@@ -42,6 +42,6 @@ function Core.SkinText(Layer, Region, Button, Skin, xScale, yScale)
 
 	local Width = (Layer ~= "Count" and 36) or 0
 
-	Region:SetSize(GetSize(Skin.Width or Width, Skin.Height or 0, xScale, yScale, Button))
+	Region:SetSize(GetSize(Skin.Width or Width, Skin.Height == 0 and 10 or Skin.Height or 10, xScale, yScale, Button))
 	SetPoints(Region, Button, Skin, Default)
 end

@@ -314,7 +314,7 @@ local function UpgradeItem_OnEvent(self)
 	end
 end
 local upgradeItems = setmetatable({}, {__index=function(self, i)
-	local b = CreateFrame("Button", nil, UpgradesFrame, "GarrisonFollowerItemButtonTemplate,SecureActionButtonTemplate")
+	local b = T.TenSABT(CreateFrame("Button", nil, UpgradesFrame, "GarrisonFollowerItemButtonTemplate,InsecureActionButtonTemplate"))
 	b.Count = b:CreateFontString(nil, "ARTWORK", "GameFontHighlightOutline")
 	b.Count:SetPoint("BOTTOMRIGHT", b.Icon, "BOTTOMRIGHT", -1, 2)
 	b:SetAttribute("type", "macro")
@@ -1354,6 +1354,7 @@ do -- Equipment
 		pf:SetScript("OnHide", CP_Detach)
 		pf:SetScript("OnEnter", CP_OnEnter)
 		pf:SetScript("OnLeave", CP_OnLeave)
+		T.TenSABT(pf)
 		ef:HookScript("OnShow", CP_Attach)
 		ef:SetScript("OnReceiveDrag", nil)
 		pf:SetAttribute("type", "macro")

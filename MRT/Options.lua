@@ -315,8 +315,9 @@ local function IconMoveButton(self)
 		if y > 0 then q = q + 2 end
 		local minimapShape = GetMinimapShape and GetMinimapShape() or "ROUND"
 		local quadTable = minimapShapes[minimapShape]
-		local w = (Minimap:GetWidth() / 2) + 5
-		local h = (Minimap:GetHeight() / 2) + 5
+		local radius = LibStub and LibStub("LibDBIcon-1.0", true) and LibStub("LibDBIcon-1.0").radius or 5
+		local w = (Minimap:GetWidth() / 2) + radius
+		local h = (Minimap:GetHeight() / 2) + radius
 		if quadTable[q] then
 			x, y = x*w, y*h
 		else

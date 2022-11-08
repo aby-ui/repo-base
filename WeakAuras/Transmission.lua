@@ -133,7 +133,8 @@ function CompressDisplay(data, version)
   end
 
   local copiedData = CopyTable(data)
-  local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000 or Private.non_transmissable_fields
+  local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000
+                                                       or Private.non_transmissable_fields
   stripNonTransmissableFields(copiedData, non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;
@@ -210,7 +211,8 @@ local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
 local LibSerialize = LibStub("LibSerialize")
 local Comm = LibStub:GetLibrary("AceComm-3.0")
-local configForDeflate = {level = 9} -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
+-- the biggest bottleneck by far is in transmission and printing; so use maximal compression
+local configForDeflate = {level = 9}
 local configForLS = {
   errorOnUnserializableType =  false
 }
@@ -314,18 +316,23 @@ function StringToTable(inString, fromChat)
   end
 
   if not decoded then
-    return "Error decoding."
+    return L["Error decoding."]
   end
 
-  local decompressed, errorMsg = nil, "unknown compression method"
+  local decompressed
   if encodeVersion > 0 then
     decompressed = LibDeflate:DecompressDeflate(decoded)
+    if not(decompressed) then
+      return L["Error decompressing"]
+    end
   else
-    decompressed, errorMsg = Compresser:Decompress(decoded)
+    -- We ignore the error message, since it's more likely not a weakaura.
+    decompressed = Compresser:Decompress(decoded)
+    if not(decompressed) then
+      return L["Error decompressing. This doesn't look like a WeakAuras import."]
+    end
   end
-  if not(decompressed) then
-    return "Error decompressing: " .. errorMsg
-  end
+
 
   local success, deserialized
   if encodeVersion < 2 then
@@ -334,7 +341,7 @@ function StringToTable(inString, fromChat)
     success, deserialized = LibSerialize:Deserialize(decompressed)
   end
   if not(success) then
-    return "Error deserializing "..deserialized
+    return L["Error deserializing"]
   end
   return deserialized
 end

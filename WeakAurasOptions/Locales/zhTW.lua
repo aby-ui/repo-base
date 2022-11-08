@@ -121,7 +121,7 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Additional Events"] = "其他事件"
 	L["Advanced"] = "進階"
 	L["Affected Unit Filters and Info"] = "受影響的單位過濾器和訊息"
-	L["Align"] = "置中"
+	L["Align"] = "對齊"
 	L["Alignment"] = "對齊方式"
 	L["All of"] = "全部的"
 	L["Allow Full Rotation"] = "允許完整旋轉"

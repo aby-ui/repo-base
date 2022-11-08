@@ -18,7 +18,7 @@ L["BigFoot Channel has been blocked"] = "|cffd20000停止接收世界频道及�
 L["BigFoot Channel has been unblocked"] = "|cff00d200继续接收世界频道及转发消息。|r"
 
 L["Channel mute label"] = "屏蔽世界频道";
-L["Channel mute desc"] = "屏蔽世界频道，不再收到此频道的消息。";
+L["Channel mute desc"] = "不再接收世界频道的消息。";
 
 L["Channel setting"]="频道设置"
 L["Use short channel names"]="使用短频道名"

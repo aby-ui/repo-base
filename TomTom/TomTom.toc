@@ -1,7 +1,7 @@
 ## Interface: 100000
 ## Title: TomTom
 ## Author: Cladhaire, Ludovicus
-## Version: v3.3.2-release
+## Version: v3.3.4-release
 ## License: All Rights Reserved
 ## Notes: Acts as your portable navigation assistant
 ## Notes-frFR: Agit comme un assistant de navigation portable

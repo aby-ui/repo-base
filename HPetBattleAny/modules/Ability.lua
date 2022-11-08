@@ -402,8 +402,8 @@ function CreateAbilityList(targetname,rpoints)
 
 			end)
 
-			Button:SetHighlightTexture(nil)
-			Button:SetPushedTexture(nil)
+			Button:SetHighlightTexture("")
+			Button:SetPushedTexture("")
 			Button:UnregisterAllEvents()
 			Button:SetClampedToScreen(true)
 

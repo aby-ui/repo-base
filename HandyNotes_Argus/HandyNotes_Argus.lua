@@ -1409,17 +1409,17 @@ finderFrame:SetScript("OnEvent", function( self, event, ... )
 
 		for _, resultId in ipairs( resultIds ) do
 
-			local id, activityID, name, comment, voiceChat, iLvl, honorLevel, age, numBNetFriends, numCharFriends, numGuildMates, isDelisted, leaderName, numMembers, isAutoAccept = C_LFGListGetSearchResultInfo( resultId ); --abyui81
-			if ( age and age < maxAge and lastSearchTerm == "" ) then
+			local info = C_LFGList.GetSearchResultInfo(resultId);
+			if ( info.age and info.age < maxAge and lastSearchTerm == "" ) then
 				-- dont count groups older than 2.5 minutes
-				updateNPCGroupCount( name, leaderName );
+				updateNPCGroupCount( info.name, info.leaderName );
 			end
 
-			if ( finderFrame.searchNode and isAutoAccept and numMembers ~= 5 ) then
+			if ( finderFrame.searchNode and info.autoAccept and info.numMembers ~= 5 ) then
 				for sIdx, search in ipairs( finderFrame.searchNode["search"] ) do
-					if ( sIdx >= 2 and name:lower():match( search ) ) then
+					if ( sIdx >= 2 and info.name:lower():match( search ) ) then
 						-- print( "found " .. id .. "; " .. name .. " - " .. numMembers .. " (" .. age .. ")");
-						table.insert( matches, { id = id, name = name, age = age, numMembers = numMembers } );
+						table.insert( matches, { id = info.id, name = info.name, age = info.age, numMembers = info.numMembers } );
 						break;
 					end
 				end

@@ -8,19 +8,27 @@ if not NoTaint2_Proc_ResetActionButtonAction then
 
     local msg_short = "Action Bars are tainted\n/reload is RECOMMENDED"
     local msg_long = "!!NoTaint2：Your action bars are tainted by [|cffffff00%s|r], reload UI to prevent further damage."
+    local msg_disable = "Enter '%s' to stop showing the alert window."
     if LOCALE_zhCN then
         msg_short = "爱不易提醒：动作条被污染\n建议尽快/RELOAD"
         msg_long = "爱不易NoTaint2提醒您：动作条被[|cffffff00%s|r]|cffff0000污染|r，已紧急处理，建议|cffffff00尽快重载界面|r"
+        msg_disable = "运行'%s'停止弹出警告窗"
     end
 
     local last = 0
     function NoTaint2_ShowWarning(tainted_by)
-        if GetTime() - last > 10 then
-            if last == 0 then
+        if GetTime() - last > 30 then
+            local show_warn = true
+            if U1DBG then show_warn = not U1DBG.NT2S else show_warn = not notaint2stop end
+            if last == 0 or show_warn then
+                DEFAULT_CHAT_FRAME:AddMessage(format(msg_long, tainted_by))
+            end
+            if last == 0 and show_warn then
                 InvasionAlertSystem:AddAlert(nil, msg_short, false, 0, 0)
+                local cmd = U1DBG and "/run U1DBG.NT2S=1" or "/run notaint2stop=1"
+                DEFAULT_CHAT_FRAME:AddMessage(format(msg_disable, cmd))
             end
             last = GetTime()
-            DEFAULT_CHAT_FRAME:AddMessage(format(msg_long, tainted_by))
         end
     end
 
@@ -29,7 +37,7 @@ if not NoTaint2_Proc_ResetActionButtonAction then
         if not ok and not InCombatLockdown() then
             self.action=nil
             self:SetAttribute("_aby", "action")
-            NoTaint2_ShowWarning(tainted_by)
+            if self:IsVisible() then NoTaint2_ShowWarning(tainted_by) end
         end
     end
 

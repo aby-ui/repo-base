@@ -117,6 +117,7 @@ local CreateLazyItemButton do
 		f:SetScript("OnEnter", OnEnter)
 		f:SetScript("OnLeave", OnLeave)
 		f:SetScript("PreClick", OnClick)
+		T.TenSABT(f)
 		f:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square")
 		f:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
 		return f,f

@@ -7,6 +7,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("HandyNotes", false)
 local HBD = LibStub("HereBeDragons-2.0")
 local PIN_DRAG_SCALE = 1.2
 
+
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 ---------------------------------------------------------
 -- Our db upvalue and db defaults
 local db
@@ -467,7 +469,37 @@ function HN:OnInitialize()
 	HandyNotes:RegisterPluginDB("HandyNotes", HNHandler, options)
 
 	--WorldMapMagnifyingGlassButton:SetText(WorldMapMagnifyingGlassButton:GetText() .. L["\nAlt+Right Click To Add a HandyNote"])
-	WorldMapFrame:AddCanvasClickHandler(self.OnCanvasClicked)
+
+	if WoWRetail then
+		-- Work-around for taint from canvas click handlers
+		self.ClickHandlerFrame = CreateFrame("Frame", nil, WorldMapFrame.ScrollContainer)
+		self.ClickHandlerFrame:SetAllPoints()
+
+		self.ClickHandlerFrame.UpdateCapture = function(f)
+			-- only Alt and no other keys, then show our capture frame
+			if IsAltKeyDown() and not IsControlKeyDown() and not IsShiftKeyDown() then
+				f:Show()
+			else
+				f:Hide()
+			end
+		end
+
+		self.ClickHandlerFrame:RegisterEvent("MODIFIER_STATE_CHANGED")
+		self.ClickHandlerFrame:SetScript("OnEvent", self.ClickHandlerFrame.UpdateCapture)
+
+		-- fallback check OnUpdate. It'll only run while the capture frame is visible, and hide if the modifiers change
+		self.ClickHandlerFrame:SetScript("OnUpdate", self.ClickHandlerFrame.UpdateCapture)
+
+		-- always pass through buttons other then right click
+		self.ClickHandlerFrame:SetPassThroughButtons("LeftButton", "MiddleButton", "Button4", "Button5")
+		self.ClickHandlerFrame:UpdateCapture()
+
+		self.ClickHandlerFrame:SetScript("OnMouseUp", function(f, button)
+			HN.OnCanvasClicked(WorldMapFrame, button, WorldMapFrame.ScrollContainer:NormalizeUIPosition(WorldMapFrame.ScrollContainer:GetCursorPosition()))
+		end)
+	else
+		WorldMapFrame:AddCanvasClickHandler(self.OnCanvasClicked)
+	end
 
 	-- Slash command
 	self:RegisterChatCommand("hnnew", "CreateNoteHere")

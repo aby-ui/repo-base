@@ -1555,6 +1555,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local player, realm, zone = UnitName("player"), GetRealmName(), GetRealZoneText()
+  --- @type boolean|number, boolean|number, boolean|string, boolean|string
   local spec, specId, role, raidRole = false, false, false, false
   local inPetBattle, vehicle, vehicleUi = false, false, false
   local zoneId = C_Map.GetBestMapForUnit("player")
@@ -1984,6 +1985,9 @@ function WeakAuras.Delete(data)
   if Private.regions[id] then
     Private.regions[id].region:Collapse()
     Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
+
+    -- Groups have a empty Collapse method so, we need to hide them here
+    Private.regions[id].region:Hide();
 
     Private.regions[id].region = nil
     Private.regions[id] = nil
@@ -2448,7 +2452,7 @@ end
 function Private.AddMany(tbl, takeSnapshots)
   --- @type table<auraId, auraData>
   local idtable = {};
-  --- @type table<auraId, boolean> The anchoring targetes of other auras
+  --- @type table<auraId, auraId> The anchoring targets of other auras, key is the anchor, value is the aura that is anchoring
   local anchorTargets = {}
   for _, data in ipairs(tbl) do
     -- There was an unfortunate bug in update.lua in 2022 that resulted
@@ -2460,7 +2464,23 @@ function Private.AddMany(tbl, takeSnapshots)
     end
     idtable[data.id] = data;
     if data.anchorFrameType == "SELECTFRAME" and data.anchorFrameFrame and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:" then
-      anchorTargets[data.anchorFrameFrame:sub(11)] = true
+      anchorTargets[data.anchorFrameFrame:sub(11)] = data.id
+    end
+  end
+
+  -- Now fix up anchors, see #3971, where aura p was anchored to aura c and where c was a child of p, thus c was anchored to p
+  -- The game used to detect such anchoring circles. We can't detect all of them, but at least detect the one from the ticket.
+  for target, source in pairs(anchorTargets) do
+    -- We walk up the parent's of target, to check for source
+    local parent = target
+    if idtable[target] then
+      while(parent) do
+        if parent == source then
+          WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(target, source))
+          idtable[source].anchorFrameType = "SCREEN"
+        end
+        parent = idtable[parent].parent
+      end
     end
   end
 
@@ -2875,7 +2895,7 @@ local function pAdd(data, simpleChange)
   else
     Private.DebugLog.SetEnabled(data.uid, data.information.debugLog)
 
-    if (data.controlledChildren) then
+    if Private.IsGroupType(data) then
       Private.ClearAuraEnvironment(id);
       for parent in Private.TraverseParents(data) do
         Private.ClearAuraEnvironment(parent.id);
@@ -2888,6 +2908,8 @@ local function pAdd(data, simpleChange)
       loadEvents["GROUP"] = loadEvents["GROUP"] or {}
       loadEvents["GROUP"][id] = true
     else -- Non group aura
+      -- Make sure that we don't have a controlledChildren member.
+      data.controlledChildren = nil
       local visible
       if (WeakAuras.IsOptionsOpen()) then
         visible = Private.FakeStatesFor(id, false)
@@ -4330,6 +4352,15 @@ function Private.AddToWatchedTriggerDelay(id, triggernum)
   tinsert(delayed_watched_trigger[id], triggernum)
 end
 
+Private.callbacks:RegisterCallback("Delete", function(_, uid, id)
+  delayed_watched_trigger[id] = nil
+end)
+
+Private.callbacks:RegisterCallback("Rename", function(_, uid, oldId, newId)
+  delayed_watched_trigger[newId] = delayed_watched_trigger[oldId]
+  delayed_watched_trigger[oldId] = nil
+end)
+
 function Private.SendDelayedWatchedTriggers()
   for id in pairs(delayed_watched_trigger) do
     local watched = delayed_watched_trigger[id]
@@ -5342,6 +5373,17 @@ local function GetAnchorFrame(data, region, parent)
       if (frame_name == id) then
         return parent;
       end
+
+      local targetData = WeakAuras.GetData(frame_name)
+      if targetData then
+        for parentData in Private.TraverseParents(targetData) do
+          if parentData.id == data.id then
+            WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(frame_name, data.id))
+            return parent
+          end
+        end
+      end
+
       if(Private.regions[frame_name]) then
         return Private.regions[frame_name].region;
       end

@@ -178,3 +178,8 @@ do
         end
     end
 end
+
+do
+    TradeFramePlayerNameText:SetParent(TradeFrame.TitleContainer)
+    TradeFrameRecipientNameText:SetParent(TradeFrame.TitleContainer)
+end

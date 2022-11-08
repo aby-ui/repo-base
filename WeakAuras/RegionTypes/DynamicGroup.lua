@@ -45,7 +45,8 @@ local default = {
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
     self:ClearAllPoints();
-    self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = point, relativeFrame, relativePoint, offsetX, offsetY
+    self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY
+      = point, relativeFrame, relativePoint, offsetX, offsetY
     self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
     self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
     if self.relativeFrame and self.relativePoint then
@@ -696,9 +697,9 @@ local growers = {
     local gridWidth = data.gridWidth
     local rowSpace = data.rowSpace
     local colSpace = data.columnSpace
-    local rowFirst = (gridType:find("^[RL]")) ~= nil
+    local rowFirst = (gridType:find("^[RLH]")) ~= nil
     local limit = data.useLimit and data.limit or math.huge
-    local rowMul, colMul
+    local rowMul, colMul, primary_horizontal, secondary_horizontal, primary_vertical, secondary_vertical
     if gridType:find("D") then
       rowMul = -1
     else
@@ -708,6 +709,16 @@ local growers = {
       colMul = -1
     else
       colMul = 1
+    end
+    if gridType:sub(1, 1) == "H" then
+      primary_horizontal = true
+    elseif gridType:sub(2, 2) == "H" then
+      secondary_horizontal = true
+    end
+    if gridType:sub(1, 1) == "V" then
+      primary_vertical = true
+    elseif gridType:sub(2, 2) == "V" then
+      secondary_vertical = true
     end
     local primary = {
       -- x direction
@@ -742,16 +753,78 @@ local growers = {
         secondary.current = 0
         secondary.max = 0
         newPositions[frame] = {}
+        local minX, maxX, minY, maxY, totalMinX, totalMaxX, totalMinY, totalMaxY
+        local start
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
-            newPositions[frame][regionData] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, [3] = true }
+            newPositions[frame][regionData] = {
+              [primary.coord] = primary.current,
+              [secondary.coord] = secondary.current,
+              [3] = true
+            }
+            local x, y = newPositions[frame][regionData][1], newPositions[frame][regionData][2]
+            if minX == nil then
+              minX, maxX, minY, maxY = x, x, y, y
+              start = i
+            else
+              minX, maxX = math.min(minX, x), math.max(maxX, x)
+              minY, maxY = math.min(minY, y), math.max(maxY, y)
+            end
+            if totalMinX == nil then
+              totalMinX, totalMaxX, totalMinY, totalMaxY = x, x, y, y
+            else
+              totalMinX, totalMaxX = math.min(totalMinX, x), math.max(totalMaxX, x)
+              totalMinY, totalMaxY = math.min(totalMinY, y), math.max(totalMaxY, y)
+            end
             secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
             if i % gridWidth == 0 then
+              if primary_horizontal then
+                local offsetX = (maxX - minX) / 2
+                for j = start, i do
+                  newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
+                end
+              end
+              if primary_vertical then
+                local offsetY = (maxY - minY) / 2
+                for j = start, i do
+                  newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
+                end
+              end
               primary.current = 0
               secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
               secondary.max = 0
+              minX, maxX = nil, nil
+              minY, maxY = nil, nil
             else
               primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
+            end
+          end
+        end
+        if (primary_horizontal or primary_vertical) and minX then
+          local offsetX = (maxX - minX) / 2
+          local offsetY = (maxY - minY) / 2
+          for j = start, #regionDatas do
+            if j <= numVisible then
+              if primary_horizontal then
+                newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
+              end
+              if primary_vertical then
+                newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
+              end
+            end
+          end
+        end
+        if (secondary_horizontal or secondary_vertical) and totalMinX then
+          local offsetX = (totalMaxX - totalMinX) / 2
+          local offsetY = (totalMaxY - totalMinY) / 2
+          for j = 1, #regionDatas do
+            if j <= numVisible then
+              if secondary_horizontal then
+                newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
+              end
+              if secondary_vertical then
+                newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
+              end
             end
           end
         end
@@ -793,7 +866,7 @@ local function modify(parent, region, data)
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
-  if data.border and (data.grow ~= "CUSTOM" and not data.useAnchorPerUnit) then
+  if data.border and not data.useAnchorPerUnit then
     local background = region.background
     background:SetBackdrop({
       edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
@@ -806,8 +879,10 @@ local function modify(parent, region, data)
         bottom  = data.borderInset,
       },
     });
-    background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
-    background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+    background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2],
+                                      data.borderColor[3], data.borderColor[4]);
+    background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2],
+                                data.backdropColor[3], data.backdropColor[4]);
 
     background:ClearAllPoints();
     background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset)
@@ -1225,7 +1300,7 @@ local function modify(parent, region, data)
       -- if self.dynamicAnchor then self:UpdateBorder(); return end
       Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
-      local numVisible, minX, maxX, maxY, minY = 0
+      local numVisible, minX, maxX, maxY, minY = 0, nil, nil, nil, nil
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
           numVisible = numVisible + 1
@@ -1255,6 +1330,13 @@ local function modify(parent, region, data)
         self:SetHeight(height)
         self.currentWidth = width
         self.currentHeight = height
+
+        local regionLeft = region:GetLeft()
+        local regionBottom = region:GetBottom()
+        self.background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", minX + -1 * data.borderOffset - regionLeft,
+                                                                     minY + -1 * data.borderOffset - regionBottom)
+        self.background:SetPoint("TOPRIGHT", region, "BOTTOMLEFT", maxX + data.borderOffset - regionLeft,
+                                                                   maxY + data.borderOffset - regionBottom)
       else
         self:Hide()
       end

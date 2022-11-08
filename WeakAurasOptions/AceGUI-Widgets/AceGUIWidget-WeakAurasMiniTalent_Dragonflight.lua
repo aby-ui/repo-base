@@ -1,6 +1,10 @@
+local AddonName, OptionsPrivate = ...
+
 if not WeakAuras.IsLibsOK() then
   return
 end
+
+local keepOpenForReload = {}
 
 local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
@@ -215,6 +219,7 @@ end
 local methods = {
   OnAcquire = function(self)
     self:SetDisabled(false)
+    self.acquired = true
   end,
 
   OnRelease = function(self)
@@ -224,6 +229,7 @@ local methods = {
     self.linePool:ReleaseAll()
     self.value = nil
     self.list = nil
+    self.acquired = false
   end,
 
   SetList = function(self, list)
@@ -272,30 +278,30 @@ local methods = {
     local talentWidth = 1612
     local talentHeight = 856
     local talentIconSize = 36
-    local LeftPannelCenter = { x = talentWidth / 4, y = talentHeight / 2 }
-    local RightPannelCenter = { x = (talentWidth / 4) * 3, y = talentHeight / 2 }
-    local pannelScaleW = 1.5
-    local pannelScaleH = 1.5
+    local LeftPanelCenter = { x = talentWidth / 4, y = talentHeight / 2 }
+    local RightPanelCenter = { x = (talentWidth / 4) * 3, y = talentHeight / 2 }
+    local panelScaleW = 1.5
+    local panelScaleH = 1.5
     self.scale = self.saveSize.fullWidth / talentWidth
     for _, b in pairs(self.buttons) do
-      if b.posX < talentWidth / 2 then -- left pannel
-        b.posX = b.posX - LeftPannelCenter.x
-        b.posX = b.posX * pannelScaleW
-        b.posX = b.posX + LeftPannelCenter.x - talentIconSize / 2
-        b.posY = b.posY - LeftPannelCenter.y
-        b.posY = b.posY * pannelScaleH
-        b.posY = b.posY + LeftPannelCenter.y * pannelScaleH
-      else                     -- right pannel
-        b.posX = b.posX - RightPannelCenter.x
-        b.posX = b.posX * pannelScaleW
-        b.posX = b.posX + RightPannelCenter.x + talentIconSize / 2
-        b.posY = b.posY - RightPannelCenter.y
-        b.posY = b.posY * pannelScaleH
-        b.posY = b.posY + RightPannelCenter.y * pannelScaleH
+      if b.posX < talentWidth / 2 then -- left panel
+        b.posX = b.posX - LeftPanelCenter.x
+        b.posX = b.posX * panelScaleW
+        b.posX = b.posX + LeftPanelCenter.x - talentIconSize / 2
+        b.posY = b.posY - LeftPanelCenter.y
+        b.posY = b.posY * panelScaleH
+        b.posY = b.posY + LeftPanelCenter.y * panelScaleH
+      else                     -- right panel
+        b.posX = b.posX - RightPanelCenter.x
+        b.posX = b.posX * panelScaleW
+        b.posX = b.posX + RightPanelCenter.x + talentIconSize / 2
+        b.posY = b.posY - RightPanelCenter.y
+        b.posY = b.posY * panelScaleH
+        b.posY = b.posY + RightPanelCenter.y * panelScaleH
       end
     end
 
-    self.saveSize.fullHeight = talentHeight * self.scale * pannelScaleW
+    self.saveSize.fullHeight = talentHeight * self.scale * panelScaleW
     if self.list[999] then
       self.background:SetAtlas(self.list[999])
       self.background:SetBlendMode("ADD")
@@ -331,11 +337,15 @@ local methods = {
   SetLabel = function(self, text) end,
   SetMultiselect = function(self, multi) end,
 
-  ToggleView = function(self)
-    if not self.open then
-      self.open = true
+  ToggleView = function(self, force)
+    if force ~= nil then
+      self.open = force
     else
-      self.open = nil
+      if not self.open then
+        self.open = true
+      else
+        self.open = nil
+      end
     end
     TalentFrame_Update(self)
     self.parent:DoLayout()
@@ -397,6 +407,30 @@ local function Constructor()
     widget[method] = func
   end
   talentFrame.obj = widget
+
+  local function OnBeforeReload()
+    if widget.acquired then
+      local user = widget:GetUserDataTable()
+      if user and user.path then
+        keepOpenForReload[user.path[#user.path]] = widget.open
+      end
+    end
+  end
+
+  local function OnAfterReload()
+    if widget.acquired then
+      local user = widget:GetUserDataTable()
+      if user and user.path then
+        if keepOpenForReload[user.path[#user.path]] then
+          widget:ToggleView(true)
+          keepOpenForReload[user.path[#user.path]] = nil
+        end
+      end
+    end
+  end
+
+  OptionsPrivate.Private.callbacks:RegisterCallback("BeforeReload", OnBeforeReload)
+  OptionsPrivate.Private.callbacks:RegisterCallback("AfterReload", OnAfterReload)
 
   return AceGUI:RegisterAsWidget(widget)
 end

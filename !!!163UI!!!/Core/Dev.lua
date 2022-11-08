@@ -193,13 +193,13 @@ function CoreDebug(...)
         local _,_,addon = strfind(parts[1], "^Interface\\AddOns\\(.-)\\.*");
         local _,_,file = strfind(parts[1], ".*\\(.-%.[%a]-)$");
         local line = tonumber(parts[2]);
-        print(format("%s |cff3f3f3f%s/%s:%d|r", table.concat(params, ", "), addon or "macro", file or "string", line));
+        print(format("%s |cff7f7f7f%s/%s:%d|r", table.concat(params, ", "), addon or "macro", file or "string", line));
         --local _,_,func = strfind(parts[3], " in function `(.-)'");
         --if not func then func = "?" end
         --print(format("|cff3f3f3f[%s]|r %s |cff3f3f3f@%s:%s():%d|r", addon or "macro", table.concat(params, ", "), file or "string", func, line));
     else
         print(stack);
-        print(format("|cff3f3f3f[%s]|r %s", core:GetName(), table.concat(params, ", ")));
+        print(format("|cff7f7f7f[%s]|r %s", core:GetName(), table.concat(params, ", ")));
     end
 end
 

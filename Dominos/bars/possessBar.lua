@@ -6,6 +6,11 @@
 local AddonName, Addon = ...
 local L = LibStub('AceLocale-3.0'):GetLocale(AddonName)
 
+-- missing APis in classic
+local UnitControllingVehicle = _G.UnitControllingVehicle or function() return false end
+local CanExitVehicle = _G.CanExitVehicle or function() return false end
+local POSSESS_CANCEL_SLOT = _G.POSSESS_CANCEL_SLOT or 2
+
 --------------------------------------------------------------------------------
 -- Button setup
 --------------------------------------------------------------------------------
@@ -33,7 +38,6 @@ local function possessButton_OnEnter(self)
     if UnitOnTaxi("player") then
         GameTooltip_SetTitle(GameTooltip, TAXI_CANCEL)
         GameTooltip:AddLine(TAXI_CANCEL_DESCRIPTION, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
-
     elseif UnitControllingVehicle("player") and CanExitVehicle() then
         GameTooltip_SetTitle(GameTooltip, LEAVE_VEHICLE)
     else
@@ -136,7 +140,7 @@ function PossessBar:Update()
     local texture = (GetPossessInfo(button:GetID()))
     local icon = button.icon
 
-    if UnitControllingVehicle("player") and CanExitVehicle() or not texture then
+    if (UnitControllingVehicle("player") and CanExitVehicle()) or not texture then
         icon:SetTexture([[Interface\Vehicles\UI-Vehicles-Button-Exit-Up]])
         icon:SetTexCoord(0.140625, 0.859375, 0.140625, 0.859375)
     else

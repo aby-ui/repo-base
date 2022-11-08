@@ -112,8 +112,13 @@ local function create(parent)
     return frame;
 end
 
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 local function SetTextureViaAtlas(self, texture)
-  self:SetTexture(texture);
+  if type(texture) == "string" and GetAtlasInfo(texture) then
+    self:SetAtlas(texture);
+  else
+    self:SetTexture(texture);
+  end
 end
 
 local function setTile(texture, frame, rows, columns, frameScaleW, frameScaleH)
@@ -298,7 +303,8 @@ local function modify(parent, region, data)
     region.background:SetBaseTexture(backgroundTexture);
     region.background:SetFrame(backgroundTexture, region.backgroundFrame or 1);
     region.background:SetDesaturated(data.desaturateBackground)
-    region.background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+    region.background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2],
+                                     data.backgroundColor[3], data.backgroundColor[4])
     region.background:SetBlendMode(data.blendMode);
 
     if (data.hideBackground) then

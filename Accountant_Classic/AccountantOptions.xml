@@ -53,30 +53,6 @@ $Id: AccountantOptions.xml 69 2012-09-26 09:54:33Z arith $
 					</OnClick>
 				</Scripts>
 			</CheckButton>
-			<Slider name="AccountantSliderButtonPos" inherits="OptionsSliderTemplate">
-				<Size>
-					<AbsDimension x="220" y="16"/>
-				</Size>
-				<Anchors>
-					<Anchor point="TOP">
-						<Offset>
-							<AbsDimension x="0" y="-75" />
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnLoad inherit="prepend">
-						_G[self:GetName().."High"]:SetText();
-						_G[self:GetName().."Low"]:SetText();
-						AccountantSliderButtonPos:SetMinMaxValues(0,360);
-						AccountantSliderButtonPos:SetValueStep(1);
-					</OnLoad>
-					<OnValueChanged>
-						Accountant_SaveData[GetRealmName()][UnitName("player")]["options"].buttonpos = AccountantSliderButtonPos:GetValue();
-						AccountantButton_UpdatePosition();
-					</OnValueChanged>
-				</Scripts>
-			</Slider>
 			<Frame name="$parentWeek" inherits="UIDropDownMenuTemplate" enableMouse="true">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent" relativePoint="TOPLEFT">

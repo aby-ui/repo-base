@@ -9,6 +9,7 @@ local LibWindow = LibStub("LibWindow-1.1")
 local L = LibStub("AceLocale-3.0"):GetLocale("Mapster")
 
 local WoWClassic = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE)
+local WoWRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
 
 local defaults = {
 	profile = {
@@ -17,6 +18,7 @@ local defaults = {
 		modules = {
 			['*'] = true,
 		},
+		enableScaling = true,
 		scale = 1,
 		poiScale = 0.9,
 		ejScale = 0.8,
@@ -92,12 +94,15 @@ function Mapster:OnEnable()
 	self:SecureHookScript(WorldMapFrame, "OnShow", "WorldMapFrame_OnShow")
 
 	-- hooks for scale
-	if HelpPlate_Show then
-		self:SecureHook("HelpPlate_Show")
-		self:SecureHook("HelpPlate_Hide")
-		self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
+	-- XXX: disabled on retail due to taint
+	if not WoWRetail or db.enableScaling then
+		if HelpPlate_Show then
+			self:SecureHook("HelpPlate_Show")
+			self:SecureHook("HelpPlate_Hide")
+			self:SecureHook("HelpPlate_Button_AnimGroup_Show_OnFinished")
+		end
+		self:RawHook(WorldMapFrame.ScrollContainer, "GetCursorPosition", "WorldMapFrame_ScrollContainer_GetCursorPosition", true)
 	end
-	self:RawHook(WorldMapFrame.ScrollContainer, "GetCursorPosition", "WorldMapFrame_ScrollContainer_GetCursorPosition", true)
 
 	-- hook into EJ icons
 	self:SecureHook(EncounterJournalPinMixin, "OnAcquired", "EncounterJournalPin_OnAcquired")
@@ -217,6 +222,10 @@ end
 
 function Mapster:SetPosition()
 	if not WorldMapFrame:IsMaximized() then
+		-- override scale back to 1.0 for retail fix
+		if WoWRetail and not db.enableScaling then
+			db.scale = 1.0
+		end
 		LibWindow.RestorePosition(WorldMapFrame)
 	end
 end
@@ -226,6 +235,9 @@ function Mapster:WorldMapFrame_OnShow()
 end
 
 function Mapster:SetScale(force)
+	-- disabled on retail due to map taint
+	if WoWRetail and not db.enableScaling then return end
+
 	if WorldMapFrame:IsMaximized() and WorldMapFrame:GetScale() ~= 1 then
 		WorldMapFrame:SetScale(1)
 	elseif not WorldMapFrame:IsMaximized() and (WorldMapFrame:GetScale() ~= db.scale or force) then
