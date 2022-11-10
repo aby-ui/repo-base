@@ -80,14 +80,19 @@ local function getInitialAddonInfo()
         for _, known in ipairs(knownAddonPacks) do
             tremovedata(deps, known:lower())
         end
+        local temporarilyForceDisable
         -- GarrisonMissionManager depends on Blizzard, will got an uninstalled parent
         for j=#deps, 1, -1 do
+            if deps[j]:find("todo:abyui") then
+                temporarilyForceDisable = 1
+            end
             if (deps[j]:find("^blizzard_") and select(6, GetAddOnInfo(deps[j]))=="SECURE") then
                 tremove(deps, j);
             end
         end
 
         addonInfo[name:lower()] = {
+            temporarilyForceDisable = temporarilyForceDisable,
             name = name,
             title = title or name,
             author = GetAddOnMetadata(i, "Author"),
@@ -164,6 +169,7 @@ function U1LoadDBDefault(cfg)
     end
 end
 
+local default_cache = {}
 function U1LoadDBValue(cfg)
     local v = db.configs[cfg._path]
     if(v == nil) then
@@ -175,6 +181,7 @@ function U1LoadDBValue(cfg)
                 v = default
             end
         end
+        default_cache[cfg._path] = U1EncodeNIL(v)
     end
     return U1DecodeNIL(v)
 end
@@ -255,6 +262,7 @@ local function U1GetCfgValueDeep(cfg, first, ...)
         end
     end
 end
+
 --如果只提供一个参数，则表示完整path，适用于cfg._path
 function U1GetCfgValue(addon, path, safe)
     if not path then
@@ -268,6 +276,15 @@ function U1GetCfgValue(addon, path, safe)
     return U1LoadDBValue(cfg), cfg;
 end
 U1SetCfgValue = U1ChangeCfg
+
+function U1GetCfgValueFast(addon, path, safe)
+    local _path = addon:lower() .. "/" .. path
+    local v = db.configs[_path]
+    if v ~= nil then return U1DecodeNIL(v) end
+    v = default_cache[_path]
+    if v ~= nil then return U1DecodeNIL(v) end
+    return U1GetCfgValue(addon, path, safe)
+end
 
 ---显示一下配置项，调试用的
 function U1ShowCfg(addon, pattern)
@@ -1794,6 +1811,7 @@ function U1:ADDON_LOADED(event, name)
 
         local info = U1GetAddonInfo(name)
         if info then
+            if info.load_confirm then U1Message(format("插件|cffff7f7f%s(%s)|r%s", info.title, info.name, info.load_confirm)) end
             if info.runBeforeLoad then info.runBeforeLoad(info, name) info.runBeforeLoad = nil end --利用先注册先运行的机制来运行runBeforeLoad
             if not U1.variableLoaded and not U1.playerLogin and info.load == "NORMAL" then
                 tinsert(loadedNormalAddons, name);
@@ -2114,6 +2132,7 @@ function U1IsAddonCombatLockdown(name)
     end
 end
 
+CoreIOF_OTC = InterfaceOptionsFrame_OpenToCategory --TODO:abyui10
 
 --[=[ in 6.0 or early, this will cause RAID_FRAME can't open in combat
 local fixFrame = CreateFrame("Frame", UIParent, nil)

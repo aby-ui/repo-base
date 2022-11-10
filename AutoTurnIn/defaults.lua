@@ -1,59 +1,61 @@
 local addonName, privateTable = ...
-
+privateTable.interface10 = select(4, GetBuildInfo()) >= 100000
 privateTable.defaults = {
-	interface10 = select(4, GetBuildInfo()) >= 100000,
-	enabled = false, 
-	all = 1, 
-	trivial = false, 
-	completeonly = false,
-	lootreward = 1,
-	tournament = 2,
-	darkmoonteleport = true, 
-	todarkmoon = true, 
-	darkmoonautostart = true, 
-	showrewardtext = true,
-	version = GetAddOnMetadata(addonName, "Version"), 
-	autoequip = false, 
-	togglekey = 4, 
-	debug = false,
-	questlevel = true, 
-	watchlevel = true, 
-	questshare = false,
-	acceptshare=false,
-	armor = {}, 
-	weapon = {}, 
-	stat = {}, 
-	secondary = {},
-	relictoggle = true, 
-	artifactpowertoggle = true, 
-	reviveBattlePet = false,
-	covenantswapgossipcompletion = false,
-	IGNORED_NPC = {
-		["87391"] = "fate-twister-seress",
-		["88570"] = "Fate-Twister Tiklal",
-		["111243"] = "Archmage Lan'dalock",
-		["15077"] = "Riggle Bassbait",
-		["119388"] = "Chieftain Hatuun",
-		["127037"] = "Nabiru",
-		["142063"] = "Tezran",
-		["141584"] = "Zurvan", --seals of fate 
-		["111243"] = "Archmage Lan'dalock", --seals of fate
-        ["107486"] = "Chatty Rumormonger in Courtofstars",
-        ["147297"] = "Zekhan",
-        ["146012"] = "Zekhan",
-        ["143555"] = "²¿Âä±Ê¼Ç",
-        ["154002"] = "ĞÂÉú¼ÒÔ°", --×ÜÊÇÒªºÏ¼ÁÊ²Ã´µÄ
-        ["162804"] = "ÍşÄÈÀò",  --Ç¿ÖÆ½»800Ú¤éä
-	},
-	WANTED_NPC = {
-		["167881"] = "Ta'lan the Antiquary",
-		["167880"] = "Finder Ta'sul",
-		["158653"] = "Prince Renethal",
-	},
-	WANTED_QUESTS = {
-		["6942"] = "Frostwolf Soldier's Medal",
-		["6943"] = "Frostwolf Commander's Medal",
-		["6941"] = "Frostwolf Lieutenant's Medal",
+	profile = {
+		enabled = false,
+		all = 1,
+		trivial = false,
+		completeonly = false,
+		lootreward = 1,
+		tournament = 2,
+		darkmoonteleport = true,
+		todarkmoon = true,
+		darkmoonautostart = true,
+		showrewardtext = true,
+		version = GetAddOnMetadata(addonName, "Version"),
+		autoequip = false,
+		togglekey = 4,
+		debug = false,
+		questlevel = true,
+		watchlevel = false,
+		questshare = false,
+		acceptshare = false,
+		armor = {["type"] = 1},
+		weapon = {},
+		stat = {},
+		secondary = {},
+		relictoggle = true,
+		artifactpowertoggle = true,
+		reviveBattlePet = false,
+		covenantswapgossipcompletion = false,
+		unsafe_item_wipe = false,
+		sell_junk = 1,
+		map_coords = false,
+		IGNORED_NPC = {
+			["87391"] = "fate-twister-seress",
+			["88570"] = "Fate-Twister Tiklal",
+			["15077"] = "Riggle Bassbait",
+			["119388"] = "Chieftain Hatuun",
+			["127037"] = "Nabiru",
+			["142063"] = "Tezran",
+			["141584"] = "Zurvan", --seals of fate 
+			["111243"] = "Archmage Lan'dalock", --seals of fate
+			["107486"] = "Chatty Rumormonger in Courtofstars",
+			["147297"] = "Zekhan",
+			["146012"] = "Zekhan",
+			["143555"] = "éƒ¨è½ç¬”è®°",
+			["154002"] = "æ–°ç”Ÿå®¶å›­", --æ€»æ˜¯è¦åˆå‰‚ä»€ä¹ˆçš„
+			["162804"] = "å¨å¨œè‰",  --å¼ºåˆ¶äº¤800å†¥æ®‡
+		},
+		WANTED_NPC = {
+			["167881"] = "Ta'lan the Antiquary",
+			["167880"] = "Finder Ta'sul",
+			["158653"] = "Prince Renethal",
+		},
+		WANTED_QUESTS = {
+			["6942"] = "Frostwolf Soldier's Medal",
+			["6943"] = "Frostwolf Commander's Medal",
+			["6941"] = "Frostwolf Lieutenant's Medal",
+		}
 	}
 }
-

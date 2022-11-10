@@ -1,26 +1,26 @@
 <Bindings>
-	<Binding name="DWCSAY" header="DuowanChat" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCSAY" header="DuowanChat" category="ADDON_LIST">
 		DWC_SetChatType("SAY")
 	</Binding>
-	<Binding name="DWCPARTYCHANNEL" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCPARTYCHANNEL" category="ADDON_LIST">
 		DWC_SetChatType("PARTY")
 	</Binding>
-	<Binding name="DWCRAIDCHANNEL" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCRAIDCHANNEL" category="ADDON_LIST">
 		DWC_SetChatType("RAID")
 	</Binding>
-	<Binding name="DWCBGCHANNEL" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCBGCHANNEL" category="ADDON_LIST">
 		DWC_SetChatType("BATTLEGROUND")
 	</Binding>
-	<Binding name="DWCGUILDCHANNEL" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCGUILDCHANNEL" category="ADDON_LIST">
 		DWC_SetChatType("GUILD")
 	</Binding>
-	<Binding name="DWCYELL" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCYELL" category="ADDON_LIST">
 		DWC_SetChatType("YELL")
 	</Binding>
-	<Binding name="DWCWHISPER" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCWHISPER" category="ADDON_LIST">
 		DWC_SetChatType("WHISPER")
 	</Binding>
-	<Binding name="DWCOFFICER" category="BINDING_HEADER_DWCTITLE">
+	<Binding name="DWCOFFICER" category="ADDON_LIST">
 		DWC_SetChatType("OFFICER")
 	</Binding>
 </Bindings>

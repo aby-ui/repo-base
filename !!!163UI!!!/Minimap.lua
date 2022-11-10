@@ -28,6 +28,7 @@ end
 
 function U1MMB_HasConflictAddons()
     return MBB_Version or MBBFrame or MBFversion or (NxMapDock and NxMapDock:IsVisible()) or IsAddOnLoaded("Mappy")
+            or HidingBarDB or HidingBarAddonPanel or MinimapButtonButtonOptions
 end
 
 --skipList是永远不会被处理的图标名.

@@ -1172,7 +1172,7 @@ function WorldQuestTracker.RefreshTrackerWidgets()
 				widget.IconButton.questID = quest.questID
 
 				local conduitType = quest.conduitType
-				local conduitBorderColor = quest.conduitBorderColor
+				local conduitBorderColor = quest.conduitBorderColor or {1, 1, 1, 1}
 
 				if (conduitType) then
 					widget.overlayBorder:Show()

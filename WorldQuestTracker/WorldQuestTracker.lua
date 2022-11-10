@@ -658,6 +658,10 @@ end
 	
 	--pega a lista de quests que o jogador tem dispon�vel
 	function WorldQuestTracker.SavedQuestList_GetList()
+		if (type(WorldQuestTracker.dbChr) ~= "table") then
+			WorldQuestTracker:Msg("WorldQuestTracker.SavedQuestList_GetList failed: invalid dbChr, type: ", type(WorldQuestTracker.dbChr))
+			return
+		end
 		return WorldQuestTracker.dbChr.ActiveQuests
 	end
 	-- ~saved ~pool ~data ~allquests �ll

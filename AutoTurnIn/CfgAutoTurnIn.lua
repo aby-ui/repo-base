@@ -8,7 +8,7 @@ U1RegisterAddon("AutoTurnIn", {
     nopic = 1,
     toggle = function(name, info, enable, justload)
         if ( justload ) then
-            AutoTurnInTrackerQuickSwitch:SetChecked(AutoTurnInCharacterDB.enabled)
+            AutoTurnInTrackerQuickSwitch:SetChecked(AutoTurnIn.db.profile.enabled)
             hooksecurefunc(AutoTurnIn, "SetEnabled", function(self, enabled)
                 AutoTurnInTrackerQuickSwitch:SetChecked(enabled);
             end)
@@ -40,15 +40,10 @@ checkbox:SetScript("OnClick", function(self, button)
     if( not IsAddOnLoaded("AutoTurnIn") ) then U1LoadAddOn("AutoTurnIn") end
     if( not IsAddOnLoaded("AutoTurnIn") ) then U1Message("请安装AutoTurnIn插件") return end
     if(button == "RightButton") then
-        local func = CoreIOF_OTC or InterfaceOptionsFrame_OpenToCategory
-        func("AutoTurnIn")
+        LibStub("AceConfigDialog-3.0"):Open("AutoTurnIn")
         self:SetChecked(not self:GetChecked())
     else
-        if( self:GetChecked() ) then
-            AutoTurnIn:ConsoleComand("on")
-        else
-            AutoTurnIn:ConsoleComand("off")
-        end
+        AutoTurnIn:SetEnabled(self:GetChecked())
     end
 end);
 CoreUIEnableTooltip(checkbox, "自动交接任务", "左键：开启/关闭自动交接任务\n右键：设置选项\n\n按住热键(默认SHIFT)点击NPC，则暂时停用或启用自动交接。")

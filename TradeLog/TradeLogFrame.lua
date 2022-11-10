@@ -27,10 +27,10 @@ function TradeLogFrame_CreateMinimapButton()
                 TradeListFrame:Show();
             end
         end,
-        OnTooltipShow = function(self)
-            GameTooltip:AddLine(TRADE_LIST_TITLE);
-            GameTooltip:AddLine(TRADE_LIST_DESC, nil, nil, nil, true);
-            GameTooltip:Show()
+        OnTooltipShow = function(tooltip)
+            tooltip:AddLine(TRADE_LIST_TITLE);
+            tooltip:AddLine(TRADE_LIST_DESC, nil, nil, nil, true);
+            tooltip:Show()
         end,
     })
     TradeLog_TradesHistory.minimapPos = TradeLog_TradesHistory.minimapPos or 338

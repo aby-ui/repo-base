@@ -1,5 +1,6 @@
 local L = select(2,...).L
 U1_NEW_ICON = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t'
+U1_LOAD_CONFIRM_TAINT = "可能导致卡动作条，建议先别用"
 
 -- default 仅在插件first run的时候运行，如果是nil则不会设置默认值
 function U1CfgMakeCVarOption(title, cvar, default, options)

@@ -1,5 +1,4 @@
 U1RegisterAddon("SwitchSwitch", {
-    temporarilyForceDisable = 1,
     title = "天赋方案切换",
     defaultEnable = 1,
 

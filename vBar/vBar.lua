@@ -477,6 +477,8 @@ function VB_DoLoad(self)
    self:RegisterEvent('PLAYER_REGEN_DISABLED')
    self:RegisterEvent('PLAYER_REGEN_ENABLED')
    self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+   self:RegisterEvent('ACTIONBAR_SHOWGRID')
+   self:RegisterEvent('ACTIONBAR_HIDEGRID')
    SlashCmdList['VB'] = VB_DoSlash
    SLASH_VB1 = '/vb'
    SLASH_VB2 = '/vbar'
@@ -491,12 +493,13 @@ function VB_DoEvent(self, event, arg1)
    end
 
    if event == 'PLAYER_LOGOUT' then
-      VB_LogOut() end
+      VB_LogOut()
+   end
 
    if event == 'CHAT_MSG_CHANNEL_NOTICE' then
       VB_Notify()
       self:UnregisterEvent('CHAT_MSG_CHANNEL_NOTICE')
-      end
+   end
 
    if VB_login == '1' then
       if event == 'PLAYER_SPECIALIZATION_CHANGED' and arg1 == "player" then
@@ -510,10 +513,16 @@ function VB_DoEvent(self, event, arg1)
    if VBar.disabled then return end
 
    if event == 'PLAYER_REGEN_DISABLED' then
-      VB_LockBars() end
-
-   if event == 'PLAYER_REGEN_ENABLED' then
-      VB_UnlockBars() end
+      VB_LockBars()
+      VB_UpdateShowGrid()
+   elseif event == 'PLAYER_REGEN_ENABLED' then
+      VB_UnlockBars()
+      VB_UpdateShowGrid()
+   elseif event == 'ACTIONBAR_SHOWGRID' then
+      VB_UpdateShowGrid(true)
+   elseif event == 'ACTIONBAR_HIDEGRID' then
+      VB_UpdateShowGrid()
+   end
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -618,7 +627,7 @@ end
 
 function VB_ClickMe(self, motion)
    if VBar.leftclicked and VBar.rightclicked then return end
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    if VB_clickme then return end
    VB_clickme = true
    VB_Chat(VB_DESCRIPTION)
@@ -630,7 +639,7 @@ end
 function VB_CreateNumpad(shape, ddt, dft, dst)
 
    function VB_DoDragStart(self, button)
-      if UnitAffectingCombat('player') == 1 then return end
+      if InCombatLockDown() then return end
       VBar.leftclicked = true
       --VB_SetBackdrop(self)
       self:StartMoving()
@@ -644,7 +653,7 @@ function VB_CreateNumpad(shape, ddt, dft, dst)
    end
 
    function VB_DoMouseDown(self, button)
-      if UnitAffectingCombat('player') == 1 then return end
+      if InCombatLockDown() then return end
       if IsMouseButtonDown('leftbutton') then
           VB_DoDragStart(self, button)
       else
@@ -687,6 +696,7 @@ function VB_CreateNumpad(shape, ddt, dft, dst)
    end
 
    VB_numpads[shape .. ddt .. dft .. dst] = numpad
+   VB_UpdateShowGrid()
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -710,11 +720,10 @@ function VB_SetButtonActions(button, keynum)
    end
 end
 
-
 function VB_CreateButton(numpad, keyname, keynum, col, row)
 
    function VB_OnDragStart(self, button)
-      if UnitAffectingCombat('player') == 1 or (LOCK_ACTIONBAR == '1' and not IsModifiedClick("PICKUPACTION")) then return end
+      if InCombatLockdown() or (LOCK_ACTIONBAR == '1' and not IsModifiedClick("PICKUPACTION")) then return end
       PickupAction(self:GetPagedID())
    end
 
@@ -835,7 +844,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_ShapeNumpad(shape)
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    if not VBar.shape or not VB_KEYBOARDS[VBar.shape] then
       VBar.shape = 'hslot12' end
    if not shape then
@@ -849,7 +858,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_SizeNumpad(size)
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    if not VBar.size then
       VBar.size = 1 end
    if not size then size = 1 end
@@ -861,7 +870,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Toggleddt()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    VB_HideNumpad()
    VBar.ddt = (VBar.ddt == 'ddt') and '' or 'ddt'
    if VBar.ddt == 'ddt' then
@@ -871,7 +880,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Toggledft()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    VB_HideNumpad()
    VBar.dft = (VBar.dft == 'dft') and '' or 'dft'
    if VBar.dft == 'dft' then
@@ -881,7 +890,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Toggledst()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    VB_HideNumpad()
    VBar.dst = (VBar.dst == 'dst') and '' or 'dst'
    if VBar.dst == 'dst' and VB_class == 'moonkin' then
@@ -895,7 +904,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_ToggleLabels()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    VB_HideNumpad()
    VBar.labels = not VBar.labels
    VB_ShowNumpad()
@@ -903,7 +912,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_ToggleStancebars()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    local stances = VB_CLASS_STANCEBARS[VB_class]
    if not stances then VB_Chat(VB_STANCELESS_CLASS) return end
    VBar.stancebars = not VBar.stancebars
@@ -918,7 +927,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Disable()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    VB_HideNumpad()
    VB_Chat(VB_DISABLED)
 end
@@ -1008,7 +1017,7 @@ function VB_ToggleMenu()
 end
 
 function VB_DoneMenu()
-   if UnitAffectingCombat('player') == 1 then return end
+   if InCombatLockDown() then return end
    local numpad = VB_GetNumpad()
    VB_ClearBackdrop(numpad)
 end
@@ -1029,3 +1038,29 @@ function VBM_labels()     VB_ToggleLabels(); VB_DoneMenu(); end
 function VBM_stancebars() VB_ToggleStancebars(); VB_DoneMenu(); end
 function VBM_hide()       VB_Hide(); VB_DoneMenu(); end
 function VB_Help() VB_Chat("show, hide, slots, reset") end
+
+function VB_UpdateShowGrid(force)
+   if InCombatLockdown() then return end
+   local showEmpty = force or U1GetCfgValueFast("vBar", "showGrid")
+   local numpad = VB_GetNumpad()
+   local keyboard = VB_KEYBOARDS[VBar.shape]
+   local ddt = VBar.ddt
+   local dft = VBar.dft
+   local dst = VBar.dst
+   for keynum, key in ipairs(keyboard) do
+      local chosen = (key.type == ddt or key.type == dft or key.type == dst)
+      if key.type == 'Numeric' or chosen then
+         local name = VBar.shape .. ddt .. dft .. dst .. keynum
+         local button = _G[name]
+         local action = button:GetAttribute("action")
+         local empty = not action or not HasAction(action)
+         if showEmpty then
+            button:Show()
+         else
+            if empty then button:Hide() else button:Show() end
+         end
+      end
+   end
+end
+
+hooksecurefunc("PlaceAction", function() VB_UpdateShowGrid() end) --don't know why

@@ -1,12 +1,14 @@
 local addonName, privateTable = ...
-if (GetLocale() == "zhCN") then
+if (GetLocale() == "zhCN") then --没翻译的是代码里没有的
 privateTable.L = setmetatable({
+	["global settings"]="全局设置",
 	["reset"]="设置已重置",
 	["usage1"]="'on'/'off' 命令用来启用或禁用自动交接（启用后按住SHIFT可禁用）",
 	["usage2"]="'all'/'list' 是全部任务还是仅列表中的人物",
 	["usage3"]="'loot' do not complete quests with a list of rewards or complete it and choose most expensive one of rewards",
 	["enabled"]="启用",
 	["disabled"]="禁用",
+	["debug"]="调试：解释任务奖励的选择原因",
 	["all"]="ready to handle every quest",
 	["list"]="only daily quests will be handled",
 	["dontlootfalse"]="loot most expensive reward",
@@ -33,17 +35,18 @@ privateTable.L = setmetatable({
 	
 	["DarkmoonTeleLabel"]="暗月：传送到大炮",
 	["ToDarkmoonLabel"]="暗月：传送到岛",
-	["DarkmoonFaireTeleport"]="传送技师弗兹尔巴布",
 	["DarkmoonAutoLabel"]="暗月：开始游戏",
-	["Darkmoon Island"]="Darkmoon Island",
-	["Darkmoon Faire Mystic Mage"]="Darkmoon Faire Mystic Mage",
-
-    ["ReviveBattlePetLabel"]="宠物训练师自动治疗（暂不支持）", --todo abyui
-   	["ReviveBattlePetQ"]="I'd like to heal and revive my battle pets.",
-   	["ReviveBattlePetA"]="A small fee for supplies is required.",
+	["Darkmoon Island"]="暗月岛",
+	["Darkmoon Faire Mystic Mage"]="暗月马戏团秘法师",
 	
-	["The Jade Forest"]="The Jade Forest",
-    ["Scared Pandaren Cub"]="Scared Pandaren Cub",
+	["ReviveBattlePetLabel"]="对话NPC时自动选择治疗战斗宠物",
+	["ReviveBattlePetQ"]="我要治疗和复活我的战斗宠物。",
+	["ReviveBattlePetA"]="为物资支付一些费用是必需的。", --兽栏管理员
+	
+	["DismissKyrianStewardLabel"]="解散格里恩执事者.",
+	["CovenantSwapGossipCompletion"]="自动完成切换盟约对话",
+	["The Jade Forest"]="翡翠林",
+    ["Scared Pandaren Cub"]="受惊吓的熊猫人儿童",
 	
 	["rewardtext"]="显示任务完成的聊天文本",
 	["questlevel"]="显示任务等级",
@@ -58,11 +61,12 @@ privateTable.L = setmetatable({
 	["nosuitablefound"]="没有符合规则的奖励. "..ERR_QUEST_MUST_CHOOSE,
 	["gogreedy"]="没有符合规则的奖励, 自动选择了价值最高的一个.",
 	["rewardlag"]=BUTTON_LAG_LOOT_TOOLTIP.. '. '..ERR_QUEST_MUST_CHOOSE,
-	["stopitemfound"]="There is %s in rewards. Choose and equip an item yourself.",
+	["stopitemfound"]="奖励中有 %s, 请自己选择一个奖励并装备.",
 	["relictoggle"]="禁用神器奖励",
 	["artifactpowertoggle"]="禁用神器能量奖励的自动完成.",
 	["ivechosen"]="已经为你选择了第一个选项.",
-	["norewardsettings"]="没有设置，自动装备功能禁用.",
+	["ivechosenfive"]="已经为你选择了第5个选项.",
+	["norewardsettings"]="选择奖励规则未设置，自动装备功能禁用.",
 	["ignorenpc"]="忽略这个NPC",
 	["cantstopignore"]="无法停止忽略这个NPC",
 	},

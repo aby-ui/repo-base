@@ -1,6 +1,7 @@
 U1RegisterAddon("BigDebuffs", {
     title = "控制技能提示",
     defaultEnable = 0,
+    load_confirm = U1_LOAD_CONFIRM_TAINT,
 
     tags = { TAG_PVP, },
     icon = [[Interface\Icons\Spell_Nature_HeavyPolymorph2]],

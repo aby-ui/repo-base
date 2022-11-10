@@ -102,6 +102,10 @@ L:SetGeneralLocalization({
 	name =	"Nokhud Offensive Trash"
 })
 
+L:SetMiscLocalization({
+	Soul = "Soul"
+})
+
 -----------------------
 -- <<<Neltharus >>> --
 -----------------------

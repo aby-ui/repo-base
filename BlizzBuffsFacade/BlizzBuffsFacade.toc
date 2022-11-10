@@ -1,6 +1,6 @@
 ## Interface: 100000
 ## Title: Masque Skinner: Blizz Buffs
-## Version: 9.0.2
+## Version: 9.0.3
 ## Author: Cybeloras of Aerie Peak
 ## Notes: Skins the Blizzard buff and debuff frames with Masque
 ## RequiredDeps: Masque

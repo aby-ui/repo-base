@@ -139,7 +139,6 @@ function XLoot:OnEnable()
 
 	-- Create option stub
 	if Settings then
-		wprint("|c22ff0000This is a Beta version for 10.0 - If you are not ready to lose loot, please disable until a compatible version is released.")
 		EnableAddOn("XLoot_Options")
 		LoadAddOn("XLoot_Options")
 	else
@@ -147,7 +146,6 @@ function XLoot:OnEnable()
 		stub.name = "XLoot"
 		stub:Hide()
 		InterfaceOptions_AddCategory(stub)
-		stub:SetScript("OnShow", function() print('Options not working yet') end)
 		stub:SetScript("OnShow", function() self:ShowOptionPanel(self) end)
 	end
 	self:SetSlashCommand("xloot", function() self:ShowOptionPanel(self) end)

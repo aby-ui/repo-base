@@ -1,7 +1,8 @@
 U1RegisterAddon("$NAME$", {
     title = "$NAME$",
     defaultEnable = 0,
-    temporarilyForceDisable = 1,
+    load_confirm = U1_LOAD_CONFIRM_TAINT,
+    --temporarilyForceDisable = 1, --在toc里写 ## Dependencies: TODO:abyui10 就会自动设置
     parent = "", --parent = 0 / false / "" 可以强制设置为最上层插件, 一般这种情况下parent是隐藏的
     bundleSim = true, --参见HandyNotes问题，如果为true，则加载完子插件后一起模拟登录事件
     --loadWith = "Blizzard_UI", --对应tco里的##LoadWith, GetAddOnMetadata读取不到这个属性

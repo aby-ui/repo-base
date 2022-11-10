@@ -129,7 +129,7 @@ function S:OnInitialize()
 		self:ConstructCombo();
 		self:ConstructHitPoints();	-- 构建连击点
 	end
-	--TODO:abyui10 self:ConstructCastingBar();
+	self:ConstructCastingBar();
 	self:UpdateUnitFrame();
 end
 
@@ -723,62 +723,64 @@ local function OnEvent(self, event, ...)
 	end
 
 	S:CastingBarAdjustPosition();
-	CastingBarFrame_OnEvent(self, event, arg1, select(2, ...));
+	self:OnEvent(event, arg1, select(2, ...));
 end
 
 function S:CastingBarAdjustPosition()
 	if (self.Combo) then
 		self.castBar:ClearAllPoints();
-		if (self.Combo[1]:IsVisible()) then
-			self.castBar:SetPoint("TOPLEFT", self.Combo, "BOTTOMLEFT", 24, -5);
+		if (self.Combo[1]:IsVisible() and self.Combo:GetAlpha() > 0) then
+			self.castBar:SetPoint("TOPLEFT", self.Combo, "BOTTOMLEFT", 22, -4);
 		else
-			self.castBar:SetPoint("TOPLEFT", self.frame["target"].heal, "BOTTOMLEFT", 26, -5);
+			self.castBar:SetPoint("TOPLEFT", self.frame["target"].heal, "BOTTOMLEFT", 22, -6);
 		end
 	end
 end
 
 function S:ConstructCastingBar()	
-	self.castBar = CreateFrame("StatusBar", "SimpleInfoTargetCastingBar", UIParent, "CastingBarFrameTemplate");
+	self.castBar = CreateFrame("StatusBar", "SimpleInfoTargetCastingBar", UIParent, "SmallCastingBarFrameTemplate");
 	self.castBar:SetWidth(120);
 	self.castBar:SetHeight(15);
 	self.castBar:Hide();
-	self.castBar:SetPoint("TOPLEFT", self.frame["target"].heal, "BOTTOMLEFT", 26, -5);
+	self:CastingBarAdjustPosition()
 	
 	local name = self.castBar
 	self.castBar:SetStatusBarTexture("Interface\\AddOns\\BlinkHealthText\\textures\\flat");
+	name.TextBorder:SetAlpha(0)
 	name.Border:SetAlpha(0);
 	name.BorderShield:SetAlpha(0);
 	name.Flash:SetTexture("");
+
 	self.castBar.bg = CreateFrameAby("Frame", nil, self.castBar);
 	self.castBar.bg:SetFrameStrata("BACKGROUND");
-	self.castBar.bg:SetPoint("TOPLEFT", self.castBar, "TOPLEFT", -5, 5);
-	self.castBar.bg:SetPoint("BOTTOMRIGHT", self.castBar, "BOTTOMRIGHT", 5, -5);
+	self.castBar.bg:SetPoint("TOPLEFT", self.castBar, "TOPLEFT", -2, 3);
+	self.castBar.bg:SetPoint("BOTTOMRIGHT", self.castBar, "BOTTOMRIGHT", 2, -3);
 		
 	local backdrop = {
 		bgFile = "Interface\\AddOns\\BlinkHealthText\\textures\\flat",
 		edgeFile = "Interface\\AddOns\\BlinkHealthText\\textures\\2px_glow",
-		tileSize = 16, edgeSize = 16, tile = true,
+		tileSize = 10, edgeSize = 10, tile = true,
 		insets = {left = 4, right = 4, top = 4, bottom = 4}
 	};
 		
 	self.castBar.bg:SetBackdrop(backdrop);
 	self.castBar.bg:SetBackdropColor(0.22, 0.22, 0.19);
 	self.castBar.bg:SetBackdropBorderColor(0, 0, 0, 1);
-	self.castBar.bg:SetAlpha(0.6);
+	self.castBar.bg:SetAlpha(0.0);
 
 	self.castBar:RegisterEvent("PLAYER_TARGET_CHANGED");
-	CastingBarFrame_OnLoad(self.castBar, "target", false, true);
+	self.castBar:OnLoad("target", false, true)
 	self.castBar:SetScript("OnEvent", OnEvent);
 	
-	
-
 	local barIcon = name.Icon
 	barIcon:SetWidth(18);
 	barIcon:SetHeight(18);
 	barIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+	barIcon:ClearAllPoints();
+	barIcon:SetPoint("RIGHT", self.castBar, "LEFT", -3, 0);
 	barIcon:Show();
 
-	name.Text:SetFontObject(SystemFont_Shadow_Small);	
+	name.Text:SetFontObject(SystemFont_Shadow_Small);
 	name.Text:ClearAllPoints();
 	name.Text:SetPoint("LEFT", self.castBar, "LEFT", 4, 1);
 	name.Text:SetJustifyH("LEFT");

@@ -3,7 +3,6 @@ local DataBroker = LibStub'LibDataBroker-1.1'
 local L = U1.L
 
 U1_FRAME_NAME = "U1Frame";
-BINDING_HEADER_ABYUI = ADDONS --L["爱不易"]
 _G["BINDING_NAME_CLICK GameMenuButtonEditMode:LeftButton"] = LOCALE_zhCN and "爱不易-编辑模式" or "Enter Edit Mode"
 
 UUI = UUI or {}
@@ -213,6 +212,10 @@ function UUI.ClickAddonCheckBox(self, name, enable, subgroup)
     -- 冲突插件先提示
     local info = U1GetAddonInfo(name)
     if info and self:GetChecked() then
+        if info.load_confirm then
+            StaticPopup_Show("163UIUI_LOAD_CONFIRM", info.load_confirm, nil, {self, name})
+            return
+        end
         local other_loaded = {}
         for _, other in ipairs(info.conflicts or _empty_table) do
             if IsAddOnLoaded(other) then
@@ -846,6 +849,24 @@ function UUI.Center.Create(main)
         exclusive = 1,
         whileDead = 1,
     }
+    StaticPopupDialogs["163UIUI_LOAD_CONFIRM"] = {preferredIndex = 3,
+        text = "此插件%1$s\n你确定仍要加载吗？",
+        button1 = YES,
+        button2 = CANCEL,
+        OnAccept = function(self, data)
+          local info = U1GetAddonInfo(data[2])
+          if info then
+              U1LoadAddOn(data[2])
+          end
+        end,
+        OnCancel = function(self, data)
+          data[1]:SetChecked(false)
+        end,
+        hideOnEscape = 1,
+        timeout = 0,
+        exclusive = 1,
+        whileDead = 1,
+    }
     local btn = TplPanelButton(center,nil, UUI.PANEL_BUTTON_HEIGHT):Set3Fonts(UUI.FONT_PANEL_BUTTON)
     :SetScript("OnClick", function()
         local tag = U1GetSelectedTag()
@@ -936,14 +957,17 @@ end
 function UUI.Center.ButtonOnEnter(self)
     UUI.Center.ButtonUpdateTooltip(self)
     local info = U1GetAddonInfo(self.addonName)
-    if info and (info.installed or info.dummy) then
+    if info and (info.installed or info.dummy) and not info.temporarilyForceDisable then
         self.text1:SetTextColor(1, .96, .63)
     end
 end
 function UUI.Center.ButtonOnLeave(self)
     local f = UUI();
     local txt = self.text1
-    txt:SetTextColor(txt.r, txt.g, txt.b, txt.a)
+    local info = U1GetAddonInfo(self.addonName)
+    if not info.temporarilyForceDisable then
+        txt:SetTextColor(txt.r, txt.g, txt.b, txt.a)
+    end
     GameTooltip:Hide();
 end
 
@@ -1133,6 +1157,10 @@ function UUI.Center.ScrollUpdateOneButton(b, idx)
     local txt = b.text1
     txt.r, txt.g, txt.b, txt.a = txt:GetTextColor() --处理鼠标悬停文字高亮后的恢复
     if (addonId or info.dummy) and b:IsMouseOver() then b.text1:SetTextColor(1, .96, .63) end
+
+    if info.temporarilyForceDisable then
+        b.text1:SetTextColor(.7, .1, .1);
+    end
 end
 
 function UUI.Center.ScrollHybridUpdater(self, button, index)
@@ -1951,7 +1979,11 @@ function U1_CreateMinimapButton()
             tip:AddLine(L["爱不易是新一代整合插件。其设计理念是兼顾整合插件的易用性和单体插件的灵活性，同时适合普通和高级用户群体。|n|n    功能上，爱不易实现了任意插件的随需加载，并可先进入游戏再逐一加载插件，此为全球首创。此外还有标签分类、拼音检索、界面缩排等特色功能。"], nil, nil, nil, 1)
             tip:AddLine(" ")
             tip:AddLine(L["鼠标右键点击可打开快捷设置"], 0, 0.82, 0)
-            tip:AddLine(L["Ctrl点击任意小地图按钮可收集"], 0, 0.82, 0)
+            if U1MMB_HasConflictAddons and U1MMB_HasConflictAddons() then
+                tip:AddLine(L["检测到其他小地图按钮收集插件"], 1, 0, 0)
+            else
+                tip:AddLine(L["Ctrl点击任意小地图按钮可收集"], 0, 0.82, 0)
+            end
             if LibDBIcon10_U1MMB.__flash:IsVisible() then
                 tip:AddLine(" ");
                 tip:AddLine(L["图标闪光表示有新的小地图按钮被收集到控制台中， 请点击查看，下次就不再闪烁了"], 0, 0.82, 0, 1);

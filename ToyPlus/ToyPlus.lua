@@ -63,6 +63,14 @@ function ToyPlus:OnInitialize()
 	if self.db.profile.shown then ToyPlus:CreateFrame() end
 
 	ToyPlus:RefreshToys()
+
+	local function hideTooltip()
+		if LibDBIcon10_ToyPlus and LibDBIcon10_ToyPlus.tooltip and  LibDBIcon10_ToyPlus.tooltip:IsShown() then
+			C_Timer.After(0.02, function() LibDBIcon10_ToyPlus.tooltip:Hide() end)
+		end
+	end
+	GameTooltip:HookScript("OnShow", hideTooltip)
+	if LibDBIconTooltip then LibDBIconTooltip:HookScript("OnShow", hideTooltip) end
 end
 
 function ToyPlus:RegisterOptions()-- Blizzard Options
@@ -305,7 +313,7 @@ function ToyPlus:Broker(self)
 			end
 		end
 	end
-	tooltip:SetAutoHideDelay(0.5, self)
+	tooltip:SetAutoHideDelay(1.5, self)
 	tooltip.OnRelease = function()
 		LibQTip:Release(tooltip)
 		tooltip = nil

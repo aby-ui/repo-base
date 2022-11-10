@@ -1,14 +1,14 @@
 local mod	= DBM:NewMod("CoSTrash", "DBM-Party-Legion", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221105210959")
+mod:SetRevision("20221109022224")
 --mod:SetModelID(47785)
 mod:SetOOCBWComms()
 
 mod.isTrashMod = true
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 209027 212031 209485 209410 209413 211470 211464 209404 209495 225100 211299 209378 397892 397897 207979",
+	"SPELL_CAST_START 209027 212031 209485 209410 209413 211470 211464 209404 209495 225100 211299 209378 397892 397897 207979 212784",
 	"SPELL_AURA_APPLIED 209033 209512 397907 373552",
 	"SPELL_AURA_REMOVED 397907",
 	"CHAT_MSG_MONSTER_SAY",
@@ -20,6 +20,7 @@ mod:RegisterEvents(
 --TODO, target scan https://www.wowhead.com/beta/spell=397897/crushing-leap ?
 local warnImpendingDoom				= mod:NewTargetAnnounce(397907, 2)
 local warnCrushingLeap				= mod:NewCastAnnounce(397897, 3)
+local warnEyeStorm					= mod:NewCastAnnounce(212784, 3)
 local warnHypnosisBat				= mod:NewTargetNoFilterAnnounce(373552, 3)
 
 local specWarnFortification			= mod:NewSpecialWarningDispel(209033, "MagicDispeller", nil, nil, 1, 2)
@@ -34,7 +35,7 @@ local specWarnBewitch				= mod:NewSpecialWarningInterrupt(211470, "HasInterrupt"
 local specWarnChargingStation		= mod:NewSpecialWarningInterrupt(225100, "HasInterrupt", nil, nil, 1, 2)
 local specWarnSearingGlare			= mod:NewSpecialWarningInterrupt(211299, "HasInterrupt", nil, nil, 1, 2)
 local specWarnDisintegrationBeam	= mod:NewSpecialWarningInterrupt(207980, "HasInterrupt", nil, nil, 1, 2)
-local specWarnFelDetonation			= mod:NewSpecialWarningSpell(211464, false, nil, 2, 2, 2)
+local specWarnFelDetonation			= mod:NewSpecialWarningMoveTo(211464, nil, nil, nil, 2, 2)
 local specWarnSealMagic				= mod:NewSpecialWarningRun(209404, false, nil, 2, 4, 2)
 local specWarnWhirlingBlades		= mod:NewSpecialWarningRun(209378, "Melee", nil, nil, 4, 2)
 local specWarnScreamofPain			= mod:NewSpecialWarningCast(397892, "SpellCaster", nil, nil, 1, 2)
@@ -82,8 +83,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnDisintegrationBeam:Show(args.sourceName)
 		specWarnDisintegrationBeam:Play("kickcast")
 	elseif spellId == 211464 and self:AntiSpam(3, 4) then
-		specWarnFelDetonation:Show()
-		specWarnFelDetonation:Play("aesoon")
+		specWarnFelDetonation:Show(DBM_COMMON_L.BREAK_LOS)
+		specWarnFelDetonation:Play("findshelter")
 	elseif spellId == 209404 and self:AntiSpam(3, 5) then
 		specWarnSealMagic:Show()
 		specWarnSealMagic:Play("runout")
@@ -99,6 +100,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnScreamofPain:Play("stopcast")
 	elseif spellId == 397897 and self:AntiSpam(3, 6) then
 		warnCrushingLeap:Show()
+	elseif spellId == 212784 and self:AntiSpam(3, 6) then
+		warnEyeStorm:Show()
 	end
 end
 

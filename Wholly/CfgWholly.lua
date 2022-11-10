@@ -1,5 +1,4 @@
 U1RegisterAddon("Wholly", {
-    temporarilyForceDisable = 1,
     title = "可接任务查询",
     tags = {TAG_MAPQUEST, TAG_BIG},
     load = "NORMAL",

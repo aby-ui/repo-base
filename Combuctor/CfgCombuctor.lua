@@ -1,5 +1,4 @@
 U1RegisterAddon("Combuctor", {
-    temporarilyForceDisable = 1,
     title = "分类背包整合",
     load = "LOGIN",
     defaultEnable = 0,

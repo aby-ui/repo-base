@@ -4,7 +4,7 @@
 ## Interface-WoTLK: 30400
 ## Title: XLoot Master
 ## Notes: Configurable Master Looter interface
-## Version: 10.0.0.5-beta
+## Version: 10.0.0-7
 ## Author: Xuerian, Dridzt
 ## X-Category: Inventory
 

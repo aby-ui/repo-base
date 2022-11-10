@@ -50,6 +50,7 @@ L["Disable options dialog on right click"] = "禁用右键点击打开选项对�
 L["Disable Plugin"] = "禁用插件"
 L["Disable Tooltips"] = "禁用提示信息"
 L["Disabled"] = "禁用"
+L["Drop a Plugin onto any of the icons above."] = "拖到上面的大按钮上可设置当前组件"
 L["Eat a whole chocolate bar, oh my.."] = "吃掉整根巧克力条, 哦我的.."
 L["Eat all the chocolate at once, uff..."] = "一次吃掉所有巧克力, 啊呜..."
 L["Enable All"] = "启用全部"

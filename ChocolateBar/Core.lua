@@ -593,12 +593,12 @@ function onRightClick(self)
 end
 
 local function createPointer()
-	pointer = CreateFrame("Frame", "ChocolatePointer")
+	local pointer = CreateFrame("Frame", "ChocolatePointer")
 	pointer:SetFrameStrata("FULLSCREEN_DIALOG")
 	pointer:SetFrameLevel(20)
 	pointer:SetWidth(15)
 
-	local arrow = pointer:CreateTexture(nil, "DIALOG")
+	local arrow = pointer:CreateTexture(nil, "BACKGROUND")
 	arrow:SetPoint("CENTER",pointer,"LEFT", 0, 0)
 	arrow:SetTexture("Interface\\AddOns\\ChocolateBar\\pics\\pointer")
 	return pointer

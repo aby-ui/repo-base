@@ -20,7 +20,7 @@ local function CreateCheckbox(name, parent, marginx, marginy, text)
 end 
 
 local function CreatePanel(name, text, w, h)
-	local panel = CreateFrame("Frame", O..name,  RewardPanel, "OptionsBoxTemplate") --TODO:abyui10 	--local panel = CreateFrame("Frame", O..name,  RewardPanel --[[, "OptionsBoxTemplate"--]])
+	local panel = CreateFrame("Frame", O..name,  RewardPanel --[[, "OptionsBoxTemplate"--]])
 	panel:SetWidth(w)
 	panel:SetHeight(h)
 	panel.buttons = {}
@@ -38,7 +38,7 @@ local function CreatePanel(name, text, w, h)
 		elseif name == "WeaponPanel" then 
 			return ptable.TempConfig.weapon
 		elseif name == "SecStatPanel" then
-			return ptable.TempConfig.secondary		
+			return ptable.TempConfig.secondary
 		end
 	end	
 	-- _G[panel:GetName().."Title"]:SetText(text)
@@ -86,7 +86,7 @@ UIDropDownMenu_Initialize(ArmorDropDown, function (self, level)
 						if self:GetID() > 1 then
 							ArmorDropDown.value = self:GetID()
 							ptable.TempConfig.armor[self:GetText()] = true
-						end															
+						end
 					end
         UIDropDownMenu_AddButton(info, level)
     end
@@ -167,7 +167,7 @@ RewardPanel.refresh = function()
 	
 	for index, armorName in ipairs(ARMORCONST) do
 		if ptable.TempConfig.armor[armorName] then
-			ArmorDropDown.value=index			
+			ArmorDropDown.value=index
 		end
 	end
 	

@@ -104,7 +104,7 @@ local function OnShow(self, ...)
                 self:SetPoint(settings.point,settings.relativeTo, settings.relativePoint, settings.xOfs,settings.yOfs)
                 if self:GetHeight()~=h then self:SetHeight(h) end
                 if self:GetWidth()~=w then self:SetWidth(w) end
-                if self:GetRight() <= 0 or self:GetLeft() >= GetScreenWidth() or self:GetTop() <= 0 or self:GetBottom() >= GetScreenHeight() then
+                if self:GetRight() <= 0 or self:GetLeft() >= GetScreenWidth() / self:GetScale() or self:GetTop() <= 0 or self:GetBottom() >= GetScreenHeight() / self:GetScale() then
                     self:ClearAllPoints()
                     self:SetPoint("CENTER")
                     settings.point, settings.relativeTo, settings.relativePoint, settings.xOfs, settings.yOfs = nil, nil, nil, nil, nil
@@ -550,6 +550,14 @@ local function OnEvent(self, event, arg1, arg2)
         BM_SetMoveHandler(AddonList)
         BM_SetMoveHandler(QuickKeybindFrame)
         BM_SetMoveHandler(SettingsPanel)
+        if QueueStatusFrame and QueueStatusButton then
+            BM_SetMoveHandler(QueueStatusButton)
+            QueueStatusButton:SetClampedToScreen(true)
+            local txt = QueueStatusFrame:CreateFontString();
+            txt:SetFontObject(GameFontNormalSmall)
+            txt:SetPoint("BOTTOMRIGHT", QueueStatusFrame, "TOPRIGHT")
+            txt:SetText(QueueStatusButton:GetScale()~=1 and "面板移动: Ctrl+Shift+Alt点击重置位置" or QueueStatusButton._settings_.save and "面板移动: Ctrl滚轮缩放大小" or "面板移动: Ctrl点击保存位置")
+        end
         BM_SetMoveHandlerWith(nil, "Blizzard_ClassTalentUI", function()
             local mover = BM_CreateMover(ClassTalentFrame, 60, 30, -30, 0)
             BM_SetMoveHandler(ClassTalentFrame, mover)

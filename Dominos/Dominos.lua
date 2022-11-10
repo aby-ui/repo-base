@@ -11,7 +11,7 @@ local DB_SCHEMA_VERSION = 1
 -- setup custom callbacks
 Addon.callbacks = LibStub('CallbackHandler-1.0'):New(Addon)
 
--- how many action buttons we support
+-- how many action buttons we support, and what button to map keybinding presses
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     Addon.ACTION_BUTTON_COUNT = 14 * NUM_ACTIONBAR_BUTTONS
     Addon.ACTION_BUTTON_HOTKEY_BUTTON = "LeftButton"
@@ -19,7 +19,6 @@ else
     Addon.ACTION_BUTTON_COUNT = 10 * NUM_ACTIONBAR_BUTTONS
     Addon.ACTION_BUTTON_HOTKEY_BUTTON = "HOTKEY"
 end
-
 
 --------------------------------------------------------------------------------
 -- Events
@@ -49,8 +48,7 @@ function Addon:OnInitialize()
     KeyBound.RegisterCallback(self, 'LIBKEYBOUND_DISABLED')
 
     -- define binding names
-    -- _G['BINDING_HEADER_' .. AddonName] = AddonName
-    _G['BINDING_CATEGORY_' .. AddonName] = AddonName
+    _G['BINDING_HEADER_' .. AddonName] = AddonName
 
     local hotkeyButton = Addon.ACTION_BUTTON_HOTKEY_BUTTON
     local numActionBars = math.ceil(Addon.ACTION_BUTTON_COUNT / NUM_ACTIONBAR_BUTTONS)

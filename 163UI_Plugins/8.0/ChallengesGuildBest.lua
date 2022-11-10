@@ -242,8 +242,10 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
     end
 
     SetOrHookScript(WeeklyRewardsFrame, "OnShow", function()
-        if WeeklyRewardsFrame.Overlay then WeeklyRewardsFrame.Overlay:Hide() end
-        if WeeklyRewardsFrame.Blackout then WeeklyRewardsFrame.Blackout:Hide() end
+        C_Timer.After(1, function()
+            if WeeklyRewardsFrame.Overlay then WeeklyRewardsFrame.Overlay:Hide() end
+            if WeeklyRewardsFrame.Blackout then WeeklyRewardsFrame.Blackout:Hide() end
+        end)
     end)
     for i=1, 3 do
         local act = WeeklyRewardsFrame:GetActivityFrame(Enum.WeeklyRewardChestThresholdType.MythicPlus, i)

@@ -281,16 +281,13 @@ function dataobj:OnEnter()
 
 	local y, x = tooltip:AddLine()
 	tooltip:SetCell(y, 1, nil, myProvider)
-	tooltip:SetCell(y, 2, _G.GameMenuButtonOptions:GetText())
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() _G.VideoOptionsFrame:Show() end)
+	tooltip:SetCell(y, 2, _G.GameMenuButtonSettings:GetText())
+	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() _G.SettingsPanel:Show() end)
 
-	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 2, _G.GameMenuButtonUIOptions:GetText())
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() _G.InterfaceOptionsFrame:Show() end)
-
-	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 2, _G.GameMenuButtonKeybindings:GetText())
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() _G.KeyBindingFrame_LoadUI(); _G.KeyBindingFrame:Show() end)
+	--abyui taint
+	--local y, x = tooltip:AddLine()
+	--tooltip:SetCell(y, 2, SETTINGS_KEYBINDINGS_LABEL)
+	--tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() SettingsPanel:OpenToCategory(SettingsPanel.keybindingsCategory.ID) end)
 
 	local y, x = tooltip:AddLine()
 	tooltip:SetCell(y, 2, _G.GameMenuButtonMacros:GetText())
@@ -301,7 +298,7 @@ function dataobj:OnEnter()
 		tooltip:SetCell(y, 2, _G.GameMenuButtonAddons:GetText())
 		tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.GameMenuButtonAddons)
 	end
-
+--]]
 	tooltip:SetAutoHideDelay(0.01, self)
 	tooltip:SmartAnchorTo(self)
 	tooltip:Show()

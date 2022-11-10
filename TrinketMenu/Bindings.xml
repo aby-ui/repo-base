@@ -1,11 +1,11 @@
 <Bindings>
-	<Binding name="TOGGLE_TRINKETMENU" header = "TRINKETMENU" category="BINDING_HEADER_TRINKETMENU">
+	<Binding name="TOGGLE_TRINKETMENU" header = "TRINKETMENU" category="ADDON_LIST">
 		TrinketMenu.ToggleFrame(TrinketMenuOptions.DisableToggle == "ON" and TrinketMenu_OptFrame or TrinketMenu_MainFrame)
 	</Binding>
-	<Binding name="CLICK TrinketMenu_Trinket0:LeftButton" category="BINDING_HEADER_TRINKETMENU">
+	<Binding name="CLICK TrinketMenu_Trinket0:LeftButton" category="ADDON_LIST">
 		<!-- Top Trinket -->
 	</Binding>
-	<Binding name="CLICK TrinketMenu_Trinket1:LeftButton" category="BINDING_HEADER_TRINKETMENU">
+	<Binding name="CLICK TrinketMenu_Trinket1:LeftButton" category="ADDON_LIST">
 		<!-- Bottom Trinket -->
 	</Binding>
 </Bindings>

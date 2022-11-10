@@ -1,17 +1,17 @@
 <Bindings>
-	<Binding name="SAYMESSAGE" header="163UI_Chat" category="BINDING_HEADER_163UI_CHAT">
+	<Binding name="SAYMESSAGE" header="163UI_Chat" category="ADDON_LIST">
 		U1Chat_SetChatType("SAY")
 	</Binding>
-	<Binding name="YELLMESSAGE" category="BINDING_HEADER_163UI_CHAT">
+	<Binding name="YELLMESSAGE" category="ADDON_LIST">
 		U1Chat_SetChatType("YELL")
 	</Binding>
-	<Binding name="PARTYMESSAGE" category="BINDING_HEADER_163UI_CHAT">
+	<Binding name="PARTYMESSAGE" category="ADDON_LIST">
 		U1Chat_SetChatType("PARTY")
 	</Binding>
-	<Binding name="GUILDMESSAGE" category="BINDING_HEADER_163UI_CHAT">
+	<Binding name="GUILDMESSAGE" category="ADDON_LIST">
 		U1Chat_SetChatType("GUILD")
 	</Binding>
-	<Binding name="RAIDMESSAGE" category="BINDING_HEADER_163UI_CHAT">
+	<Binding name="RAIDMESSAGE" category="ADDON_LIST">
 		U1Chat_SetChatType("RAID")
 	</Binding>
 </Bindings>

@@ -22,16 +22,24 @@ U1RegisterAddon("AbyBuff", {
     },
     {
         text = "玩家增益时间设置", type = "text",
-        U1CfgMakeCVarOption("显示BUFF持续时间", "buffDurations", 1, {
-            tip = "说明`请通过默认的设置界面进行设置",
-            reload = 1,
+        --U1CfgMakeCVarOption("显示BUFF持续时间", "buffDurations", 1,
+        {
+            text = "显示BUFF持续时间",
+            var = "cvar_buffDurations",
+            defaultFirstRun = 1,
+            tip = "说明`设置CVar-buffDurations",
+            getvalue = function() return GetCVarBool("buffDurations") end,
+            callback = function(cfg, v, loading)
+                _G["AbyBuff"].cfg_show = v
+                if not loading then SetCVar("buffDurations", v and 1 or 0) _G['AbyBuff']:UpdateConfig() end
+            end,
             {
                 var = "na",
                 default = 1,
                 text = "无时间的显示为N/A",
                 callback = function(cfg, v, loading)
                     _G["AbyBuff"].cfg_showna = v
-                    if not loading then _G["AbyBuff"]:UpdateConfigNA() end
+                    if not loading then _G["AbyBuff"]:UpdateConfig() end
                 end,
             },
             {
@@ -40,7 +48,7 @@ U1RegisterAddon("AbyBuff", {
                 text = "BUFF时间精确到秒",
                 callback = function(cfg, v, loading)
                     _G["AbyBuff"].cfg_showsec = v
-                    if not loading then _G['AbyBuff']:UpdateConfigFontSize() end
+                    if not loading then _G['AbyBuff']:UpdateConfig() end
                 end,
                 {
                     var = 'time10',
@@ -48,6 +56,7 @@ U1RegisterAddon("AbyBuff", {
                     text = '十分钟以上不显示秒',
                     callback = function(cfg, v, loading)
                         _G['AbyBuff'].cfg_showsec_10 = v
+                        if not loading then _G['AbyBuff']:UpdateConfig() end
                     end,
                 },
             },
@@ -59,7 +68,7 @@ U1RegisterAddon("AbyBuff", {
                 range = {1, 32, 1},
                 text = "BUFF时间文字大小",
                 callback = function(cfg, v, loading)
-                    return _G['AbyBuff']:UpdateConfigFontSize()
+                    return _G['AbyBuff']:UpdateConfig()
                 end,
             },
             {
@@ -67,10 +76,10 @@ U1RegisterAddon("AbyBuff", {
                 default = false,
                 text = "BUFF时间文字描边",
                 callback = function(cfg, v, loading)
-                    return _G['AbyBuff']:UpdateConfigFontSize()
+                    return _G['AbyBuff']:UpdateConfig()
                 end,
             },
-        }),
+        },
         {
             var = "caster",
             default = 1,

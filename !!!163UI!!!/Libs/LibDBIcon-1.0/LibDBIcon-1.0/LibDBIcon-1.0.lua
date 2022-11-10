@@ -20,7 +20,8 @@ lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.notCreated = lib.notCreated or {}
 lib.radius = lib.radius or 11
 local next, Minimap, CreateFrame = next, Minimap, CreateFrame
-lib.tooltip = GameTooltip --abyui lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
+lib.tooltip = lib.tooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
+lib.dummy = LibDBIconTooltip or CreateFrame("GameTooltip", "LibDBIconTooltip", UIParent, "GameTooltipTemplate")
 local isDraggingButton = false
 
 function lib:IconCallback(event, name, key, value)
@@ -73,6 +74,7 @@ local function onEnter(self)
 		lib.tooltip:SetOwner(self, "ANCHOR_NONE")
 		lib.tooltip:SetPoint(getAnchors(self))
 		obj.OnTooltipShow(lib.tooltip)
+		if lib.tooltip ~= GameTooltip then GameTooltip:Hide() end
 		lib.tooltip:Show()
 	elseif obj.OnEnter then
 		obj.OnEnter(self)
@@ -81,6 +83,7 @@ end
 
 local function onLeave(self)
 	lib.tooltip:Hide()
+	if lib.tooltip ~= GameTooltip then GameTooltip:Hide() end
 
 	if not isDraggingButton then
 		for _, button in next, lib.objects do

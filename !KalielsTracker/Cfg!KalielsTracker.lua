@@ -1,5 +1,4 @@
 U1RegisterAddon("!KalielsTracker", {
-    temporarilyForceDisable = 1,
     title = "任务追踪增强",
     tags = { TAG_MAPQUEST, TAG_GOOD },
     defaultEnable = 0,

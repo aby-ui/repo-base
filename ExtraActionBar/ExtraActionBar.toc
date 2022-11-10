@@ -1,7 +1,7 @@
 ## Interface: 100000
 ## Notes: 顯示額外動作條
 ## SavedVariablesPerCharacter: MOGUBar_Info
-## Dependencies: TODO:abyui10
+# Dependencies: TODO:abyui10
 Library\MoguLibrary.lua
 Library\MoguEvent.lua
 Library\MoguScale.lua

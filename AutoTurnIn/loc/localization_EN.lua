@@ -11,12 +11,14 @@ local replaceTable = {
 		
 if (replaceTable[GetLocale()])  then
 privateTable.L = setmetatable({
+	["global settings"]="Global settings",
 	["reset"]="Settings were reset.",
 	["usage1"]="'on'/'off' to enable or disable addon",
 	["usage2"]="'all'/'list' to handle any quest or just specified in a list",
 	["usage3"]="'loot' do not complete quests with a list of rewards or complete it and choose most expensive one of rewards",
 	["enabled"]="Enabled",
-	["disabled"]="disabled",	
+	["disabled"]="disabled",
+	["debug"]="Explain the choice of reward",
 	["all"]="ready to handle every quest",
 	["list"]="only daily quests will be handled",
 	["dontlootfalse"]="loot most expensive reward",

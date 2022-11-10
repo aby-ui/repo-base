@@ -1,5 +1,4 @@
 U1RegisterAddon("AbyEncounterLootPlus", {
-    temporarilyForceDisable = 1,
     title = "爱不易装备搜索",
     defaultEnable = 1,
 

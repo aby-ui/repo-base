@@ -4,7 +4,7 @@
 ## Interface-WoTLK: 30400
 ## Title: XLoot Frame
 ## Notes: A customizable, skinnable loot frame.
-## Version: 10.0.0.5-beta
+## Version: 10.0.0-7
 ## Author: Xuerian
 ## X-Category: Inventory
 

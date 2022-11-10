@@ -196,7 +196,7 @@ L.Volunteer="雷锋"
 L.Wronged="委屈"
 
 if GetLocale()=="zhCN" then
-	BINDING_HEADER_DWCTITLE=BINDING_HEADER_ABYUI or ADDONS --"魔盒聊天条"
+	BINDING_HEADER_DWCTITLE=ADDON_LIST --"魔盒聊天条" --不要用这个直接用ADDON_LIST防止污染
 	BINDING_NAME_DWCSAY="聊天条：说话"
 	BINDING_NAME_DWCPARTYCHANNEL="聊天条：小队频道发言"
 	BINDING_NAME_DWCRAIDCHANNEL="聊天条：团队频道发言"

@@ -207,6 +207,7 @@ U1RegisterAddon("Dominos_Roll", { title = "拾取提示模块", defaultEnable = 
 U1RegisterAddon("Dominos_Encounter", { title = "特殊能量条模块", defaultEnable = 1, load="NORMAL", dominoModule = 'EncounterBar', toggle = dominoModuleToggle, desc = "移动某些BOSS战斗时玩家特殊能量槽的多米诺模块", });
 U1RegisterAddon("Dominos_Progress", { title = "经验和神器进度模块", defaultEnable = 1, load="NORMAL", dominoModule = 'ProgressBars', toggle = dominoModuleToggle, desc = "一个可移动的进度条，右键点击可以切换经验/声望/荣誉。7.0新增指示神器能量的进度条。", });
 U1RegisterAddon("Dominos_ActionSets", {title = "动作条保存模块", defaultEnable = 1, load="NORMAL", desc = "可以在配置方案中保存动作条上的技能" });
+U1RegisterAddon("Masque_Dominos", {title = "按钮美化皮肤-多米诺", defaultEnable = 1, load="NORMAL", desc = "按钮美化支持多米诺动作条" });
 
 --配置界面的鼠标提示
 --[[ --fix7
@@ -234,6 +235,3 @@ function debug_RollFrame()
     GetLootRollTimeLeft = function(rollID) return times[rollID] or (GetTime() + 10) - GetTime() end
     debug_RollFrame = nil
 end
-
-
-

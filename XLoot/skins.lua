@@ -167,6 +167,8 @@ do
 	local g_color = { .5, .5, .5, .6 }
 
 	-- Frame methods
+	-- https://www.wowace.com/projects/xloot/issues/205 is not reproducible, but user gets error reliably
+	local alphaworks = false
 	local function SetBorderColor(self, r, g, b, a)
 		for i, x in pairs(self._skin_borders) do
 			x:SetVertexColor(r, g, b, a or 1)

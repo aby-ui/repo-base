@@ -961,7 +961,8 @@ do
 
 		-- Color frame
 		if self.opt.quality_color_frame then
-			self.overlay:SetBorderColor(GetItemQualityColor(max_quality))
+			local r, g, b = GetItemQualityColor(max_quality)
+			self.overlay:SetBorderColor(r, g, b, 1)
 		end
 	end
 

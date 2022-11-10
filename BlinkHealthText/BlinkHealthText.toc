@@ -5,6 +5,7 @@
 ## DefaultState: Disabled
 
 locale\locale.xml
+#CastingBarFrame.xml
 SimpleInfo.lua
 
 ## Title: |cff880303[爱不易]|r BlinkHealthText 简易状态

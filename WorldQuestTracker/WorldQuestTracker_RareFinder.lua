@@ -556,7 +556,7 @@ function rf.IsTargetARare()
 					end
 					
 					--find group or create a group for this rare
-					if (not ff:IsShown() and not IsInGroup() and not QueueStatusMinimapButton:IsShown()) then --> is already searching?
+					if (not ff:IsShown() and not IsInGroup() and not QueueStatusButton:IsShown()) then --> is already searching?
 						--> is search for group enabled?
 						if (WorldQuestTracker.db.profile.rarescan.search_group) then
 							--> check if the rare isn't a world quest

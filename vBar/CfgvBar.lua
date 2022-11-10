@@ -50,22 +50,7 @@ U1RegisterAddon("vBar", {
         secure = 1,
         callback = function(cfg, v, loading)
             if loading or InCombatLockdown() then return end
-            local numpad = VB_GetNumpad()
-            local keyboard = VB_KEYBOARDS[VBar.shape]
-            local ddt = VBar.ddt
-            local dft = VBar.dft
-            local dst = VBar.dst
-            for keynum, key in ipairs(keyboard) do
-                local chosen = (key.type == ddt or key.type == dft or key.type == dst)
-                if key.type == 'Numeric' or chosen then
-                    local name = VBar.shape .. ddt .. dft .. dst .. keynum
-                    local button = _G[name]
-                    button:SetAttribute("showGrid", v and 1 or 0)
-                    if v and not button:IsShown() then
-                        button:Show()
-                    end
-                end
-            end
+            VB_UpdateShowGrid()
         end
     },
     {

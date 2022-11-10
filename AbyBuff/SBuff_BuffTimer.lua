@@ -60,7 +60,12 @@ local function updateFontAlpha(btn)
     btn.aby_duration:SetFont(fontfile, size, outline and "THINOUTLINE" or "")
     btn.aby_duration:SetShadowColor(0,0,0,outline and 0 or 1)
     btn.aby_duration:SetShadowOffset(1, -1)
-    btn.duration:SetAlpha(private.cfg_showsec and 0.01 or 1) --btn.duration.SetFormattedText = noop --也可以noop, 因为secure调用, 所以不会污染
+    if private.cfg_show then
+        btn.aby_duration:SetAlpha(private.cfg_showsec and 1 or 0)
+        btn.duration:SetAlpha(private.cfg_showsec and 0 or 1) --btn.duration.SetFormattedText = noop --也可以noop, 因为secure调用, 所以不会污染
+    else
+        btn.aby_duration:SetAlpha(0)
+    end
 end
 
 local NA_STRING = "|cff00ff00N/A|r"
@@ -69,7 +74,7 @@ local NA_buttonInfo = { duration = 0 }
 --- 精确到秒, 10分钟以上是否显示秒
 local function updateDurationWithSeconds(self, timeLeft)
     local duration = self.aby_duration;
-    if timeLeft and U1GetCfgValue(_ADDONNAME, 'cvar_buffDurations') and private.cfg_showsec then
+    if timeLeft and private.cfg_show and private.cfg_showsec then
         duration:SetText(SBuff_SecondsToTimeAbbrev(timeLeft));
     else
         duration:SetText("");
@@ -79,10 +84,19 @@ end
 --- 没有的时候显示N/A
 local function updateExpirationTimeToNA(self, buttonInfo)
     if buttonInfo and buttonInfo.duration == 0 then
-        if U1GetCfgValue(_ADDONNAME, 'cvar_buffDurations') and private.cfg_showna then
-            self.aby_duration:SetText(NA_STRING)
+        if private.cfg_show then
+            --非showsec的时候显示在默认数字上
+            local str = private.cfg_showna and NA_STRING or ""
+            if private.cfg_showsec then
+                self.aby_duration:SetText(str)
+            else
+                self.duration:SetText(str)
+                if str ~= "" then self.duration:Show() end
+            end
         else
-            self.aby_duration:SetText("")
+            if not private.cfg_showsec then
+                self.duration:Hide()
+            end
         end
     end
 end
@@ -145,12 +159,9 @@ hooksecurefunc(BuffFrame, "OnEditModeEnter", function()
     end
 end)
 
-function private:UpdateConfigFontSize()
+function private:UpdateConfig()
     updateAll(allAuras, updateFontAlpha)
     updateAll(allExamples, updateFontAlpha)
-end
-
-function private:UpdateConfigNA()
     updateAll(allAuras, updateExpirationTimeToNA)
     updateAll(allExamples, updateEditModeExample)
 end

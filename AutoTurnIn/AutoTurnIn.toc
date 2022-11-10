@@ -1,6 +1,6 @@
 ## Interface: 100000
 ## Title: AutoTurnIn
-## Version: 7.5.5
+## Version: 10.0.9
 ## Author: Alex Shubert
 ## Notes: Quest handling automation
 ## Notes-ruRU: Автоматическая обработка заданий
@@ -9,23 +9,29 @@
 ## Notes-deDE: Auto akzeptieren und komplett täglich oder alle Quests
 ## Notes-itIT: Italian translators wanted!!!
 ## OptionalDeps: Ace3
-## SavedVariablesPerCharacter: AutoTurnInCharacterDB
+## SavedVariables: AutoTurnInDB
 ## X-Date: 2016-07-21
 ## X-Category: Quest
 ## X-Embeds: Ace3
 
-#embeds.xml
+# Library files
+#@no-lib-strip@
+#@end-no-lib-strip@
+
 
 loc\localization_EN.lua
 loc\localization_CN.lua
 
-rewards_const.lua
-Defaults.lua
+RewardsConst.lua
+defaults.lua
 AutoTurnIn.lua
 QuestLevel.lua
+#SellJunk.lua
+Utils.lua
+#MapCoords.lua
 
-ui\main_options.lua
-ui\reward_options.lua
+# ui\main_options.lua
+# ui\reward_options.lua
 
 
 ## Title: |cff880303[爱不易]|r AutoTurnIn 自动交接任务

@@ -1,5 +1,4 @@
 U1RegisterAddon("XLoot", {
-    temporarilyForceDisable = 1,
     title = "拾取界面增强",
     defaultEnable = 0,
     load = "NORMAL",

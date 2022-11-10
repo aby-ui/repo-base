@@ -49,7 +49,7 @@ if AuraButtonMixin then
 						-- only debuffs have symbol
 						frame.symbol:SetParent(skinWrapper);
 					end
-					Buffs:AddButton(skinWrapper, {
+					group:AddButton(skinWrapper, {
 						Icon = frame.SkinnedIcon, 
 						Border = frame.Border,
 						Count = frame.count,

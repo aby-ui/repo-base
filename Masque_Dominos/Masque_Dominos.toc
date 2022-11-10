@@ -1,0 +1,31 @@
+## Interface: 100000
+
+## Title: Masque: Dominos
+## Notes: Dominos skin for Masque.
+## Notes-deDE: Dominos-Skin für Masque.
+## Notes-esMX: Skin Dominos para Masque.
+## Notes-esES: Skin Dominos para Masque.
+## Notes-frFR: Skin de Dominos pour Masque.
+## Notes-itIT: Skin Dominos per Masque.
+## Notes-ruRU: Скин Dominos для Masque.
+## Notes-zhTW: Masque的Dominos皮膚。
+
+## Version: db3774e
+## Author: StormFX, Tuller
+## Dependencies: Masque
+
+## X-Website: https://github.com/SFX-WoW/Masque_Dominos
+## X-Category: Interface Enhancements
+## X-Credits: Tuller
+## X-Curse-Project-ID: 699643
+## X-Wago-ID: WL6JYRNv
+## X-WoWI-ID: 26455
+
+# Locales
+Locales.lua
+
+# Skins
+Skins.lua
+
+## Title: |cff880303[爱不易]|r Masque 皮肤Dominos
+## X-Vendor: AbyUI

@@ -1,5 +1,4 @@
 ﻿U1RegisterAddon("ChatFilter", {
-    temporarilyForceDisable = 1,
     title = "聊天过滤",
     defaultEnable = 1,
     tags = { TAG_CHAT, },
