@@ -796,7 +796,7 @@ do
 			local data = module.db.inspectDB[name]
 
 			data.spec = floor( GetInspectSpecialization(inspectedName) + 0.5 )
-			if data.spec < 1000 then
+			if data.spec < 10000 then
 				VMRT.ExCD2.gnGUIDs[name] = data.spec
 			end
 			data.class = class
@@ -841,144 +841,146 @@ do
 			if ExRT.is10 then
 				local activeConfig = Constants.TraitConsts.INSPECT_TRAIT_CONFIG_ID--C_ClassTalents.GetActiveConfigID()
 				local config = C_Traits.GetConfigInfo(activeConfig)
-				local treeID = config.treeIDs[1]
-				local treeInfo = C_Traits.GetTreeInfo(activeConfig,treeID)
-				local nodes = C_Traits.GetTreeNodes(treeID)
-
-				if not module.db.inspectTrees[data.spec] then
-					local tree = {
-						minX = math.huge,
-						maxX = 0,
-						minY = math.huge,
-						maxY = 0,
-						spellIDtoNode = {},
-						nodeIDToNum = {},
-					}
-					module.db.inspectTrees[data.spec] = tree
-
+				if config and config.treeIDs then
+					local treeID = config.treeIDs[1]
+					local treeInfo = C_Traits.GetTreeInfo(activeConfig,treeID)
+					local nodes = C_Traits.GetTreeNodes(treeID)
+	
+					if not module.db.inspectTrees[data.spec] then
+						local tree = {
+							minX = math.huge,
+							maxX = 0,
+							minY = math.huge,
+							maxY = 0,
+							spellIDtoNode = {},
+							nodeIDToNum = {},
+						}
+						module.db.inspectTrees[data.spec] = tree
+	
+						for i=1,#nodes do
+							local nodeID = nodes[i]
+							local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
+							if node and node.ID ~= 0 and node.entryIDs then
+								for j=1,#node.entryIDs do
+									local entryID = node.entryIDs[j]
+									local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
+									if entry then
+										local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
+										if definitionInfo and definitionInfo.spellID then
+											local spellID = definitionInfo.spellID
+											if j==1 then
+												tree[#tree+1] = {
+													spellID = spellID,
+													x = node.posX,
+													y = node.posY,
+													max = node.maxRanks and node.maxRanks > 1 and node.maxRanks or nil,
+												}
+												if tree.minX > node.posX then tree.minX = node.posX end
+												if tree.maxX < node.posX then tree.maxX = node.posX end
+												if tree.minY > node.posY then tree.minY = node.posY end
+												if tree.maxY < node.posY then tree.maxY = node.posY end
+												if node.visibleEdges then
+													for k=1,#node.visibleEdges do
+														local edge = node.visibleEdges[k]
+														local targetNode = edge.targetNode
+	
+														tree[#tree].edges = tree[#tree].edges or {}
+														tinsert(tree[#tree].edges,targetNode)
+													end
+												end
+											else
+												if not tree[#tree].spellIDs then
+													tree[#tree].spellIDs = {tree[#tree].spellID}
+												end
+												tinsert(tree[#tree].spellIDs,spellID)
+											end
+											tree.spellIDtoNode[spellID] = #tree
+											tree.nodeIDToNum[nodeID] = #tree
+										end
+									end
+								end
+							end
+						end
+					end
+					
+	
+					local c = 0
 					for i=1,#nodes do
 						local nodeID = nodes[i]
 						local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
-						if node and node.ID ~= 0 and node.entryIDs then
-							for j=1,#node.entryIDs do
-								local entryID = node.entryIDs[j]
-								local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
-								if entry then
-									local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
-									if definitionInfo and definitionInfo.spellID then
-										local spellID = definitionInfo.spellID
-										if j==1 then
-											tree[#tree+1] = {
-												spellID = spellID,
-												x = node.posX,
-												y = node.posY,
-												max = node.maxRanks and node.maxRanks > 1 and node.maxRanks or nil,
-											}
-											if tree.minX > node.posX then tree.minX = node.posX end
-											if tree.maxX < node.posX then tree.maxX = node.posX end
-											if tree.minY > node.posY then tree.minY = node.posY end
-											if tree.maxY < node.posY then tree.maxY = node.posY end
-											if node.visibleEdges then
-												for k=1,#node.visibleEdges do
-													local edge = node.visibleEdges[k]
-													local targetNode = edge.targetNode
-
-													tree[#tree].edges = tree[#tree].edges or {}
-													tinsert(tree[#tree].edges,targetNode)
+						if node and node.ID ~= 0 and node.activeEntry then
+							local entryID = node.activeEntry.entryID
+							local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
+							if entry then
+								local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
+								if definitionInfo then
+									local spellID = definitionInfo.spellID
+									--------> ExCD2
+									if spellID then
+										local list = cooldownsModule.db.spell_talentsList[class]
+										if not list then
+											list = {}
+											cooldownsModule.db.spell_talentsList[class] = list
+										end
+					
+										list[specIndex] = list[specIndex] or {}
+					
+										if not ExRT.F.table_find(list[specIndex],spellID) then
+											list[specIndex][ #list[specIndex]+1 ] = spellID
+										end
+										if node.currentRank and node.currentRank > 0 then
+											c = c + 1
+											data[c] = spellID
+											if node.maxRanks and node.maxRanks > 1 then
+												data[-c] = node.activeRank
+	
+												cooldownsModule:SetTalentClassicRank(name,spellID,node.activeRank)
+											end
+	
+											cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
+					
+											if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
+												for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
+													cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
 												end
 											end
-										else
-											if not tree[#tree].spellIDs then
-												tree[#tree].spellIDs = {tree[#tree].spellID}
-											end
-											tinsert(tree[#tree].spellIDs,spellID)
 										end
-										tree.spellIDtoNode[spellID] = #tree
-										tree.nodeIDToNum[nodeID] = #tree
+					
+										cooldownsModule.db.spell_isTalent[spellID] = true
 									end
+									--------> /ExCD2
 								end
 							end
 						end
 					end
-				end
-				
-
-				local c = 0
-				for i=1,#nodes do
-					local nodeID = nodes[i]
-					local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
-					if node and node.ID ~= 0 and node.activeEntry then
-						local entryID = node.activeEntry.entryID
-						local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
-						if entry then
-							local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
-							if definitionInfo then
-								local spellID = definitionInfo.spellID
-								--------> ExCD2
-								if spellID then
-									local list = cooldownsModule.db.spell_talentsList[class]
-									if not list then
-										list = {}
-										cooldownsModule.db.spell_talentsList[class] = list
-									end
-				
-									list[specIndex] = list[specIndex] or {}
-				
-									if not ExRT.F.table_find(list[specIndex],spellID) then
-										list[specIndex][ #list[specIndex]+1 ] = spellID
-									end
-									if node.currentRank and node.currentRank > 0 then
-										c = c + 1
-										data[c] = spellID
-										if node.maxRanks and node.maxRanks > 1 then
-											data[-c] = node.activeRank
-
-											cooldownsModule:SetTalentClassicRank(name,spellID,node.activeRank)
-										end
-
-										cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
-				
-										if cooldownsModule.db.spell_talentProvideAnotherTalents[spellID] then
-											for k,v in pairs(cooldownsModule.db.spell_talentProvideAnotherTalents[spellID]) do
-												cooldownsModule.db.session_gGUIDs[name] = {v,"talent"}
-											end
-										end
-									end
-				
-									cooldownsModule.db.spell_isTalent[spellID] = true
-								end
-								--------> /ExCD2
-							end
+					for i=c+1,1000 do
+						if not data[i] then
+							break
 						end
+						data[i] = nil
+						data[-i] = nil
 					end
-				end
-				for i=c+1,1000 do
-					if not data[i] then
-						break
-					end
-					data[i] = nil
-					data[-i] = nil
-				end
-
-				for i=1,4 do
-					local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
-					if talentID then	
-						local _, _, _, _, available, spellID = GetPvpTalentInfoByID(talentID)
-						if spellID then
-							local list = cooldownsModule.db.spell_talentsList[class]
-							if not list then
-								list = {}
-								cooldownsModule.db.spell_talentsList[class] = list
+	
+					for i=1,4 do
+						local talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectedName, i)
+						if talentID then	
+							local _, _, _, _, available, spellID = GetPvpTalentInfoByID(talentID)
+							if spellID then
+								local list = cooldownsModule.db.spell_talentsList[class]
+								if not list then
+									list = {}
+									cooldownsModule.db.spell_talentsList[class] = list
+								end
+		
+								list[-1] = list[-1] or {}
+		
+								list[-1][spellID] = spellID
+		
+								cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
+		
+								--cooldownsModule.db.spell_isTalent[spellID] = true
+								cooldownsModule.db.spell_isPvpTalent[spellID] = true
 							end
-	
-							list[-1] = list[-1] or {}
-	
-							list[-1][spellID] = spellID
-	
-							cooldownsModule.db.session_gGUIDs[name] = {spellID,"pvptalent"}
-	
-							--cooldownsModule.db.spell_isTalent[spellID] = true
-							cooldownsModule.db.spell_isPvpTalent[spellID] = true
 						end
 					end
 				end
@@ -1523,25 +1525,29 @@ function module.main:ENCOUNTER_START()
 		]]
 
 		local activeConfig = C_ClassTalents.GetActiveConfigID()
-		local config = C_Traits.GetConfigInfo(activeConfig)
-		local treeID = config.treeIDs[1]
-		local treeInfo = C_Traits.GetTreeInfo(activeConfig,treeID)
-		local nodes = C_Traits.GetTreeNodes(treeID)
-
-		for i=1,#nodes do
-			local nodeID = nodes[i]
-			local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
-			if node and node.ID ~= 0 and node.activeEntry and node.currentRank and node.currentRank > 0 then
-				local entryID = node.activeEntry.entryID
-				local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
-				if entry then
-					local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
-					if definitionInfo then
-						local spellID = definitionInfo.spellID
-						if spellID then
-							tal = tal .. ":" .. (spellID or 0)
-							if node.maxRanks and node.maxRanks > 1 then
-								tal = tal .. "-" .. (node.activeRank)
+		if activeConfig then
+			local config = C_Traits.GetConfigInfo(activeConfig)
+			if config and config.treeIDs then
+				local treeID = config.treeIDs[1]
+				local treeInfo = C_Traits.GetTreeInfo(activeConfig,treeID)
+				local nodes = C_Traits.GetTreeNodes(treeID)
+		
+				for i=1,#nodes do
+					local nodeID = nodes[i]
+					local node = C_Traits.GetNodeInfo(activeConfig,nodeID)
+					if node and node.ID ~= 0 and node.activeEntry and node.currentRank and node.currentRank > 0 then
+						local entryID = node.activeEntry.entryID
+						local entry = C_Traits.GetEntryInfo(activeConfig,entryID)
+						if entry then
+							local definitionInfo = C_Traits.GetDefinitionInfo(entry.definitionID)
+							if definitionInfo then
+								local spellID = definitionInfo.spellID
+								if spellID then
+									tal = tal .. ":" .. (spellID or 0)
+									if node.maxRanks and node.maxRanks > 1 then
+										tal = tal .. "-" .. (node.activeRank)
+									end
+								end
 							end
 						end
 					end
@@ -1725,31 +1731,33 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						end
 					end
 				elseif key == "T" then
-					if cooldownsModule:IsEnabled() then
-						cooldownsModule:ClearSessionDataReason(sender,"talent")
-					end
-
-					local inspectData = module.db.inspectDB[sender]
-					local row = 0
-
-					local _,list = strsplit(":",main,2)
-					while list do
-						local spellID,on = strsplit(":",list,2)
-						list = on
-
-						spellID = tonumber(spellID or "?")
-						if spellID then
-							if spellID ~= 0 and cooldownsModule:IsEnabled() then
-								cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
-								cooldownsModule.db.spell_isTalent[spellID] = true
-								--print(sender,'added talent',spellID)
-							end
-							row = row + 1
-							if inspectData then
-								if spellID == 0 then
-									spellID = nil
+					if not ExRT.is10 then
+						if cooldownsModule:IsEnabled() then
+							cooldownsModule:ClearSessionDataReason(sender,"talent")
+						end
+	
+						local inspectData = module.db.inspectDB[sender]
+						local row = 0
+	
+						local _,list = strsplit(":",main,2)
+						while list do
+							local spellID,on = strsplit(":",list,2)
+							list = on
+	
+							spellID = tonumber(spellID or "?")
+							if spellID then
+								if spellID ~= 0 and cooldownsModule:IsEnabled() then
+									cooldownsModule.db.session_gGUIDs[sender] = {spellID,"talent"}
+									cooldownsModule.db.spell_isTalent[spellID] = true
+									--print(sender,'added talent',spellID)
 								end
-								inspectData[row] = spellID
+								row = row + 1
+								if inspectData then
+									if spellID == 0 then
+										spellID = nil
+									end
+									inspectData[row] = spellID
+								end
 							end
 						end
 					end

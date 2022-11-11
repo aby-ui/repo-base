@@ -63,7 +63,7 @@ function Ellipsis:GetDefaults()
 				timeFormat			= 'ABRV',		-- ABRV|TRUN|FULL
 				textFormat			= 'AURA',		-- AURA|UNIT|BOTH
 				flipIcon			= false,		-- flip icon to the right side of the bar
-				ghosting			= true,
+				ghosting			= false,
 				ghostDuration		= 10,
 				-- appearance (text)
 				textFont			= 'Friz Quadrata TT',

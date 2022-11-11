@@ -1,117 +1,204 @@
---## Interface: 80100
---## Title: ExaltedPlus
---## Notes: Enhancements for paragon reputations
---## Version: 7
---## Author: Kanegasi
+--[[
+## Interface: 100000
+## Title: ExaltedPlus
+## Notes: Enhancements for paragon reputations
+## Author: Kanegasi
+## Version: 10.0.0-2
+## SavedVariables: ExaltedPlusFactions
+## X-Curse-Project-ID: 264245
+## X-WoWI-ID: 24383
+## X-Wago-ID: kaNe3XK2
+--]]
 local addonName = ...
 U1PLUG["ExaltedPlus"] = function()
-local rpt,f=EmbeddedItemTooltip,CreateFrame('frame', "ExaltedPlusFrame") f.a=0
---f:RegisterEvent('QUEST_LOG_UPDATE') f:RegisterEvent('UPDATE_FACTION')
-local function updateParagonList()
-    for k in ReputationFrame.paragonFramesPool:EnumerateActive() do if k.factionID then
-   		local id,n=k.factionID,GetFactionInfoByID(k.factionID) f[n]=k
-   		if not f[id] or f[id].n~=n then f[id]={n=n,v=C_Reputation.GetFactionParagonInfo(id)} end
-   	end end
-end
---f:SetScript('OnEvent',updateParagonList)
-f:SetScript('OnUpdate',function(s,e)
-	if s.b then s.a=s.a-e else s.a=s.a+e end
-	if s.a>=1 then s.a=1 s.b=true elseif s.a<=0 then s.a=0 s.b=false end
-	if ReputationFrame:IsVisible() then for i=1,NUM_FACTIONS_DISPLAYED do
-		if s[i] then _G['ReputationBar'..i..'ReputationBar']:SetStatusBarColor(0,1,0,s.a) end
-	end end
-	--if s.w then ReputationWatchBar.StatusBar:SetStatusBarColor(0,1,0,s.a) end
-end)
-function EP_FindFaction(faction)
-    local isGuild = false
-    if faction==GUILD then isGuild = true faction = GetGuildInfo("player") end
-    for i=1, GetNumFactions() do
-        local name, description, standingID, barMin, barMax, barValue,_,_,_,_,_,_,_,factionID = GetFactionInfo(i)
-        if name == faction then
-            local oldName,_,_,_,_ = GetWatchedFactionInfo();
-            if UnitLevel("player") == MAX_PLAYER_LEVEL and not isGuild and oldName ~= name and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then SetWatchedFactionIndex(i) end
-            return standingID, barValue - barMin, factionID, i
+
+    local factions,buln,frame={},function(v) return v end,CreateFrame("frame") --buln = BreakUpLargeNumbers
+    ExaltedPlusFactions={}
+    function frame.enumfactions()
+        if not frame.loaded then
+            frame.loaded=true
+            for id in pairs(ExaltedPlusFactions) do
+                factions[id]={}
+            end
+        end
+        local value, _
+        for id,faction in pairs(factions) do
+            value,faction.max,_,faction.reward=C_Reputation.GetFactionParagonInfo(id)
+            if value then
+                faction.timesdone=faction.reward and math.modf(value/faction.max)-1 or math.modf(value/faction.max)
+                faction.value=mod(value,faction.max)
+            end
         end
     end
-end
-
-ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE',function(_,_,msg,...)
-	local n,id,v=strmatch(msg,gsub(FACTION_STANDING_INCREASED_GENERIC,"%%%d?$?s","(.+)")) --"在%s中的声望提升了。" --7.2.5的巅峰不是这种情况了
-    local template = "%s的声望提高了%d点（%s%d）"
-	if f[n] then
-        EP_FindFaction(n)
-		id,v=f[n].factionID,C_Reputation.GetFactionParagonInfo(f[n].factionID)
-		if f[id] then
-            if v-f[id].v~=0 then f[id].d=v-f[id].v f[id].v=v end
-		    msg=format(template, n, f[id].d, "巅峰", v) --暗夜精灵声望提高了75点（崇敬158）--msg=format(FACTION_STANDING_INCREASED,n.."+",f[id].d) end
-        end
-    else
-        --"你在(.+)中的声望值提高了(.+)点。" msg = "你在抗魔联军中的声望值提高了75点。"
-        local n, v = strmatch(msg, (gsub(FACTION_STANDING_INCREASED,"%%[ds]","(.+)")))
-        if n then
-            local standingID, curr, factionID = EP_FindFaction(n)
-            if standingID then
-                if C_Reputation.IsFactionParagon(factionID) then
-                    local currentValue, threshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID);
-                    msg=format(template, n, v, "巅峰", currentValue)
+    function frame.update()
+        for _,row in ReputationFrame.ScrollBox:EnumerateFrames() do
+            if row.factionID then
+                if C_Reputation.IsFactionParagon(row.factionID) then
+                    if not factions[row.factionID] then
+                        factions[row.factionID]={}
+                    end
+                    factions[row.factionID].row=row
                 else
-                    msg = format(template, n, v, _G['FACTION_STANDING_LABEL' .. standingID], curr)
+                    ExaltedPlusFactions[row.factionID]=nil
                 end
             end
-        else
-            n = strmatch(msg, "(.*)现在觉得你更有价值了") --威·娜莉现在觉得你更有价值了。 [获得了80点声望]
-            if n then
-                EP_FindFaction(n)
+        end
+        frame.enumfactions()
+        frame.repframevis=ReputationFrame:IsVisible()
+        for _,bar in pairs(StatusTrackingBarManager.bars) do
+            if bar.factionID then
+                frame.watchbar=bar
             end
         end
     end
+    frame:SetScript("OnUpdate",function(self,elapsed)
+        if not self.alpha then
+            self.alpha=0.3
+        end
+        if self.reverse then
+            self.alpha=self.alpha-elapsed
+        else
+            self.alpha=self.alpha+elapsed
+        end
+        if self.alpha>=1 then
+            self.alpha=1
+            self.reverse=true
+        elseif self.alpha<=0.3 then
+            self.alpha=0.3
+            self.reverse=false
+        end
+        if self.repframevis then
+            for _,faction in pairs(factions) do
+                if faction.reward and faction.row then
+                    local red,green,blue=faction.row.Container.ReputationBar:GetStatusBarColor()
+                    faction.row.Container.ReputationBar:SetStatusBarColor(red,green,blue,self.alpha)
+                end
+            end
+        end
+        if self.pulsewatchbar then
+            local red,green,blue=frame.watchbar.StatusBar:GetStatusBarColor()
+            frame.watchbar.StatusBar:SetStatusBarColor(red,green,blue,self.alpha)
+        end
+    end)
+    local function gttfind(q,...)
+        for i=1,select("#",...) do
+            local r=select(i,...)
+            if r and r.GetText and r:GetText()==q then
+                return r
+            end
+        end
+        return {SetText=function(_,t) GameTooltip:AddLine(t) GameTooltip:Show() end}
+    end
+    hooksecurefunc("EmbeddedItemTooltip_SetItemByQuestReward",function()
+        frame.update()
+        local mf=GetMouseFocus()
+        if mf and mf.factionID and factions[mf.factionID] and factions[mf.factionID].timesdone then
+            local text=format(ARCHAEOLOGY_COMPLETION,factions[mf.factionID].timesdone)
+            gttfind(REWARDS,GameTooltip:GetRegions()):SetText(text)
+        end
+    end)
+    --[[
+    hooksecurefunc(StatusTrackingBarManager,"UpdateBarsShown",function(_,n,r,id)
+        frame.update()
+        if frame.watchbar and frame.watchbar:IsShown() then
+            local factionName,reaction,_,_,_,factionID=GetWatchedFactionInfo()
+            if factions[factionID] and factions[factionID].reward then
+                frame.pulsewatchbar=true
+                local bartext=factionName.." "..factions[factionID].value.." / "..factions[factionID].max
+                frame.watchbar.name=bartext
+                frame.watchbar:SetBarText(bartext)
+                frame.watchbar:SetBarValues(factions[factionID].value,0,factions[factionID].max,reaction)
+            else
+                frame.pulsewatchbar=nil
+                local red,green,blue=frame.watchbar.StatusBar:GetStatusBarColor()
+                frame.watchbar.StatusBar:SetStatusBarColor(red,green,blue,1)
+            end
+        end
+    end)
+    --]]
+    hooksecurefunc("ReputationFrame_InitReputationRow",function(row)
+        frame.update()
+        local fact = row.factionID and factions[row.factionID]
+        if fact and fact.value and fact.max then
+            local factionLevel, _
+            ExaltedPlusFactions[row.factionID], _, factionLevel=GetFactionInfo(row.index)
+            row.rolloverText=" "..format(REPUTATION_PROGRESS_FORMAT,buln(fact.value),buln(fact.max))
+            row.Container.ReputationBar:SetMinMaxValues(0,fact.max)
+            row.Container.ReputationBar:SetValue(fact.value)
+            --row.Container.Paragon.Check:SetShown(false)
+            --row.Container.Paragon.Glow:SetShown(false)
+            --row.Container.Paragon.Highlight:SetShown(false)
+            row.Container.Paragon.Icon:SetAlpha(fact.reward and 1 or 0.5) --巅峰没奖励的半透明
+            --条上数字，待领取的："奖励7 +当前值"  未满的："巅峰*9"
+            local times = fact.timesdone or 0
+            if fact.reward then
+                row.standingText = CONTRIBUTION_REWARD_TOOLTIP_TITLE..""..(times+1).." +"..fact.value
+            else
+                row.standingText = GetText("FACTION_STANDING_LABEL"..factionLevel,(UnitSex('player'))) .. (times > 0 and "*"..times or "+")
+            end
+            row.Container.ReputationBar.FactionStanding:SetText(row.standingText)
+        end
+    end)
 
-	return false,msg,...
-end)
---[[ 163ui 7.2.5 wrong position hooksecurefunc('EmbeddedItemTooltip_SetItemByQuestReward',function(t)
-	if t==rpt.ItemTooltip and rpt.factionID and f[rpt.factionID] and f[rpt.factionID].c then
-		local c=format(ARCHAEOLOGY_COMPLETION,f[rpt.factionID].c)
-		rpt:AddLine(c) t.Tooltip:AddLine('\n') t.Tooltip:Show()
-		for i=1,rpt:NumLines() do if _G[rpt:GetName()..'TextLeft'..i]:GetText()==c then
-			_G[rpt:GetName()..'TextLeft'..i]:SetPoint('BOTTOMLEFT',0,-70)
-		end end
-	end
-end)--]]
-hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip',function(tip)
-    if tip == rpt then
-        local text = _G[tip:GetName() .. "TextLeft" .. tip:NumLines()]
-        if text:GetText() == TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT.headerText and f and f[rpt.factionID] then
-            local c = format(ARCHAEOLOGY_COMPLETION,f[rpt.factionID].c)
-            text:SetText(text:GetText() .. "  ( " .. c .. " )")
+    --ExaltedPlusLastFactions
+    ExaltedPlusLastFactions = {}
+    function EP_RefreshAllFactions()
+        for i=1, GetNumFactions() do
+            local name, description, standingID, barMin, barMax, barValue,_,_,_,_,_,_,_,factionID = GetFactionInfo(i)
+            ExaltedPlusLastFactions[name] = { value = barValue, id = factionID }
         end
     end
-end)
 
---[[--StatusTrackingBarManager.UpdateBarsShown
-hooksecurefunc('MainMenuBar_UpdateExperienceBars',function()
-	local n,r,_,m,v,id,c=GetWatchedFactionInfo()
-	if n and id and ReputationWatchBar:IsShown() then
-		if (GetFriendshipReputation(id)) then r=5 end c=FACTION_BAR_COLORS[r]
-		v,m,_,f.w=C_Reputation.GetFactionParagonInfo(id)
-		if v and m then ReputationWatchBar.StatusBar:SetAnimatedValues(f.w and mod(v,m)+m or mod(v,m),0,m,r)
-		ReputationWatchBar.OverlayFrame.Text:SetText(n.." "..(f.w and mod(v,m)+m or mod(v,m)).." / "..m) end
-		if not f.w then ReputationWatchBar.StatusBar:SetStatusBarColor(c.r,c.g,c.b,1) end
-	end
-end)
---]]
-hooksecurefunc('ReputationFrame_Update',function()
-    updateParagonList()
-	for i=1,NUM_FACTIONS_DISPLAYED do
-		local n,x,r,_,m,v,row,bar,_,_,_,_,_,id=GetFactionInfo(ReputationListScrollFrame.offset+i)
-		if id and f[n] and f[id] then
-			v,m,_,f[i]=C_Reputation.GetFactionParagonInfo(id)
-			f[id].c=f[i] and math.modf(v/m)-1 or math.modf(v/m) v=f[i] and mod(v,m)+m or mod(v,m)
-			x=f[i] and CONTRIBUTION_REWARD_TOOLTIP_TITLE.." +"..mod(v,m).."" or GetText("FACTION_STANDING_LABEL"..r,(UnitSex('player')))..(f[id].c > 0 and "*"..f[id].c or "+")
-            --f[n].Check:SetShown(false)f[n].Glow:SetShown(false)f[n].Highlight:SetShown(false)f[n].Icon:SetAlpha(f[i] and 1 or .6)
-			row=_G['ReputationBar'..i] row.rolloverText=' '..format(REPUTATION_PROGRESS_FORMAT,v,m) row.standingText=x
-			bar=_G['ReputationBar'..i..'ReputationBar'] bar:SetMinMaxValues(0,m) bar:SetValue(v)
-			_G['ReputationBar'..i..'ReputationBarFactionStanding']:SetText(x)
-		else f[i]=nil end
-	end
-end)
+    function EP_FindFaction(faction)
+        local isGuild = false
+        if faction==GUILD then isGuild = true faction = GetGuildInfo("player") end
+        if not ExaltedPlusLastFactions[faction] then
+            EP_RefreshAllFactions()
+        end
+        local info = ExaltedPlusLastFactions[faction]
+        if not info then return end --没有找到
+        local _, _, standingID, barMin, barMax, barValue = GetFactionInfoByID(info.id)
+
+        --设置经验条
+        local oldName,_,_,_,_ = GetWatchedFactionInfo();
+        if UnitLevel("player") == MAX_PLAYER_LEVEL and not isGuild and oldName ~= faction and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then
+            for i=1, GetNumFactions() do
+                if GetFactionInfo(i) == faction then SetWatchedFactionIndex(i) end --也许顺序会变
+            end
+        end
+
+        local diff = barValue - info.value
+        info.value = barValue
+        return info, diff
+    end
+
+    ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE',function(_,_,msg,...)
+        local kind, name, added = 1, strmatch(msg,gsub(FACTION_STANDING_INCREASED_GENERIC,"%%%d?$?s","(.+)")) --"在%s中的声望提升了。" --7.2.5的巅峰不是这种情况了
+        if not name then
+            kind, name, added = 2, strmatch(msg, (gsub(FACTION_STANDING_INCREASED,"%%[ds]","(.+)"))) --"你在(.+)中的声望值提高了(.+)点。" msg = "你在抗魔联军中的声望值提高了75点。"
+        end
+        if not name then
+            kind, name, added = 3, strmatch(msg, "(.*)现在觉得你更有价值了") --"威·娜莉现在觉得你更有价值了。 [获得了80点声望]"
+        end
+        if not name then return end
+
+        local info, diff = EP_FindFaction(name)
+        if not info then return end
+
+        if DEBUG_MODE then print(msg) end
+        local output = "%s的声望提高了%d点（%s%d）"
+        local _, _, level, levelMin, _, levelCurr = GetFactionInfoByID(info.id)
+        local levelLabel = GetText("FACTION_STANDING_LABEL"..level,(UnitSex('player')))
+        local paragonCurr, cap, unknown, reward = C_Reputation.GetFactionParagonInfo(info.id)
+        if paragonCurr then
+            local times = math.modf(paragonCurr/cap)
+            local remain = mod(paragonCurr, cap)
+            msg=format(output, name, added or diff, levelLabel .. (times > 0 and "*" .. times or "").." +", remain) --开悟者的声望提高了75点(崇拜*10 +1000)
+        else
+            msg=format(output, name, added or diff, levelLabel, levelCurr - levelMin) --暗夜精灵声望提高了75点（崇敬158)
+        end
+
+        return false,msg,...
+    end)
+
 end

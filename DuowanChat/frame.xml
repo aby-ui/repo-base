@@ -243,7 +243,7 @@
 				self:SetAlpha(0.8)
 				self:RegisterForClicks("AnyUp");
 				self:RegisterForDrag("LeftButton");
-				CoreUIEnableTooltip(self, "掷骰子");
+				CoreUIEnableTooltip(self, "掷骰子/拾取历史", "左键: 掷骰子(/roll)\n右键: 拾取历史(/loot)");
 			</OnLoad>
 			<OnDragStart>
 				if DWCChatFrame:IsMovable() then
@@ -251,7 +251,11 @@
 				end
 			</OnDragStart>
 			<OnClick>
-				RandomRoll("1", "100");
+				if button == "RightButton" then
+					ToggleLootHistoryFrame()
+				else
+					RandomRoll("1", "100");
+				end
 			</OnClick>
 			<OnDragStop>
 				if DWCChatFrame:IsMovable() then

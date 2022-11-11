@@ -102,7 +102,7 @@ if TalentMicroButton then
         if button == "RightButton" then
             if InCombatLockdown() or not ClassTalentFrame then return end
             if ClassTalentFrame:IsVisible() then
-                ClassTalentFrame:Hide()
+                HideUIPanel(ClassTalentFrame) --直接Hide会导致ESC无法呼叫菜单
             end
             showSwitchButtons()
         elseif (IsControlKeyDown()) then
@@ -110,7 +110,7 @@ if TalentMicroButton then
             U1Message("切换天赋按钮已 "..(U1DBG.global_configs[CONFIG_NAME] and "禁用" or "启用"))
             if InCombatLockdown() or not ClassTalentFrame then return end
             if ClassTalentFrame:IsVisible() then
-                ClassTalentFrame:Hide()
+                HideUIPanel(ClassTalentFrame)
             end
         else
             hideSwitchButtons()

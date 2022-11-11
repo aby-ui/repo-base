@@ -1,6 +1,11 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4700
+* Raid cooldowns: updated all classes for DF
+* Marks Bar: fixed world markers buttons
+* Fixes
+
 v.4690
 * Raid Check: added vers & movement buffs
 * Raid cooldowns: updated paladin and priest spells for DF

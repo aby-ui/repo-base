@@ -419,7 +419,11 @@ end
 function ExRT.F.classIconInText(class,size)
 	if CLASS_ICON_TCOORDS[class] then
 		size = size or 0
-		return "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:"..size..":"..size..":0:0:256:256:".. floor(CLASS_ICON_TCOORDS[class][1]*256) ..":"..floor(CLASS_ICON_TCOORDS[class][2]*256) ..":"..floor(CLASS_ICON_TCOORDS[class][3]*256) ..":"..floor(CLASS_ICON_TCOORDS[class][4]*256) .."|t"
+		if class == "EVOKER" then
+			return "|Tinterface\\icons\\classicon_evoker:"..size..":"..size.."|t"
+		else
+			return "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:"..size..":"..size..":0:0:256:256:".. floor(CLASS_ICON_TCOORDS[class][1]*256) ..":"..floor(CLASS_ICON_TCOORDS[class][2]*256) ..":"..floor(CLASS_ICON_TCOORDS[class][3]*256) ..":"..floor(CLASS_ICON_TCOORDS[class][4]*256) .."|t"
+		end
 	end
 end
 
@@ -1789,10 +1793,8 @@ ExRT.GDB.ClassList = {
 	"MONK",
 	"DRUID",
 	"DEMONHUNTER",
+	"EVOKER",
 }
-if ExRT.is10 then
-	tinsert(ExRT.GDB.ClassList,"EVOKER")
-end
 
 ExRT.GDB.ClassSpecializationList = {
 	["WARRIOR"] = {71, 72, 73},
@@ -1807,10 +1809,8 @@ ExRT.GDB.ClassSpecializationList = {
 	["MONK"] = {268, 269, 270},
 	["DRUID"] = {102, 103, 104, 105},
 	["DEMONHUNTER"] = {577, 581},
+	["EVOKER"] = {1467,1468},
 }
-if ExRT.is10 then
-	ExRT.GDB.ClassSpecializationList["EVOKER"] = {1467,1468}
-end
 
 ExRT.GDB.ClassArmorType = {
 	WARRIOR="PLATE",
@@ -1825,10 +1825,8 @@ ExRT.GDB.ClassArmorType = {
 	MONK="LEATHER",
 	DRUID="LEATHER",
 	DEMONHUNTER="LEATHER",
+	EVOKER="MAIL",
 }
-if ExRT.is10 then
-	ExRT.GDB.ClassArmorType.EVOKER = "MAIL"
-end
 
 ExRT.GDB.ClassSpecializationRole = {
 	[62] = 'RANGE',
@@ -1884,10 +1882,8 @@ ExRT.GDB.ClassID = {
 	MONK=10,
 	DRUID=11,
 	DEMONHUNTER=12,
+	EVOKER=13,
 }
-if ExRT.is10 then
-	ExRT.GDB.ClassArmorType.EVOKER = 13
-end
 
 
 if ExRT.isClassic then

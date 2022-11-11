@@ -212,7 +212,7 @@ local options = {
 				},
 				ui_opts = {
 					type = "group",
-					name = LOCALE_zhCN and "界面与分享" or "UI addons",
+					name = LOCALE_zhCN and "任务分享" or "UI addons",
 					desc = LOCALE_zhCN and "界面增强与任务分享选项" or "UI tweaks",
 					order = 120,
 					args = {
@@ -301,7 +301,7 @@ local options = {
 				},
 				rewards = {
 					type = "group",
-					name = "Rewards",
+					name = LOCALE_zhCN and "奖励规则" or "Rewards",
 					desc = L["rewardlootoptions"],
 					order = 2000,
 					hidden  = function() return db.lootreward~=3 end,

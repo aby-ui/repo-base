@@ -697,7 +697,7 @@ function module.main:CHAT_MSG_WHISPER(msg, user, special)
 	if user == ExRT.SDB.charKey then
 		return
 	end
-	msg = string.lower(msg)
+	msg = string.lower(msg):trim()
 	if ((msg and module.db.invWordsArray[msg]) or (module.db.invWordsArray["ANYKEYWORD"] and not UnitName(user))) and (not VMRT.InviteTool.OnlyGuild or UnitInGuild(user)) then
 		if not IsInRaid() and GetNumGroupMembers() == 5 then 
 			C_PartyInfo_ConvertToRaid()
@@ -715,7 +715,7 @@ module.main.CHAT_MSG_YELL = module.main.CHAT_MSG_WHISPER
 
 
 function module.main:CHAT_MSG_BN_WHISPER(msg,sender,_,_,_,_,_,_,_,_,_,_,senderBnetIDAccount)
-	msg = string.lower(msg)
+	msg = string.lower(msg):trim()
 	if not ((msg and module.db.invWordsArray[msg]) or module.db.invWordsArray["ANYKEYWORD"]) then
 		return
 	end

@@ -311,7 +311,7 @@ do
 		frame:SetScript("OnLeave",MainFrameWMOnLeave)
 		
 		if i < 9 then
-			frame:RegisterForClicks("AnyDown")
+			frame:RegisterForClicks("AnyDown", "AnyUp")
 			frame:SetAttribute("type", "macro")
 			frame:SetAttribute("macrotext1", format("/wm %d", i))
 			frame:SetAttribute("macrotext2", format("/cwm %d", i))
@@ -380,7 +380,7 @@ for i=1,9 do
 	frame:SetScript("OnLeave", MainFrameWMKind2OnLeave)
 
 	if i < 9 then
-		frame:RegisterForClicks("AnyDown")
+		frame:RegisterForClicks("AnyDown", "AnyUp")
 		frame:SetAttribute("type", "macro")
 		frame:SetAttribute("macrotext1", format("/wm %d", i))
 		frame:SetAttribute("macrotext2", format("/cwm %d", i))

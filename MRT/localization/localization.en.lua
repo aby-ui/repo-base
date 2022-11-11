@@ -584,7 +584,7 @@ L.cd2Autoselect = "Autoselect"
 L.cd2ProfileCopySuccess = "Profile copied from %s"
 PH.cd2OtherSetOnlyNotOnCD = "Show only without cd"
 L.cd2ColSetIconMasque = "Enable Masque support"
-PH.cd2ColSetBotToTop = "Anchor from right to left"
+PH.cd2ColSetRightToLeft = "Anchor from right to left"
 
 L.sallspellsEggClear = "Clear"
 L.sallspellsEgg = "Combat log"

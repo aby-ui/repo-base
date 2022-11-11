@@ -627,7 +627,7 @@ end
 
 function VB_ClickMe(self, motion)
    if VBar.leftclicked and VBar.rightclicked then return end
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    if VB_clickme then return end
    VB_clickme = true
    VB_Chat(VB_DESCRIPTION)
@@ -639,7 +639,7 @@ end
 function VB_CreateNumpad(shape, ddt, dft, dst)
 
    function VB_DoDragStart(self, button)
-      if InCombatLockDown() then return end
+      if InCombatLockdown() then return end
       VBar.leftclicked = true
       --VB_SetBackdrop(self)
       self:StartMoving()
@@ -653,7 +653,7 @@ function VB_CreateNumpad(shape, ddt, dft, dst)
    end
 
    function VB_DoMouseDown(self, button)
-      if InCombatLockDown() then return end
+      if InCombatLockdown() then return end
       if IsMouseButtonDown('leftbutton') then
           VB_DoDragStart(self, button)
       else
@@ -844,7 +844,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_ShapeNumpad(shape)
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    if not VBar.shape or not VB_KEYBOARDS[VBar.shape] then
       VBar.shape = 'hslot12' end
    if not shape then
@@ -858,7 +858,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_SizeNumpad(size)
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    if not VBar.size then
       VBar.size = 1 end
    if not size then size = 1 end
@@ -870,7 +870,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Toggleddt()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    VB_HideNumpad()
    VBar.ddt = (VBar.ddt == 'ddt') and '' or 'ddt'
    if VBar.ddt == 'ddt' then
@@ -880,7 +880,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Toggledft()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    VB_HideNumpad()
    VBar.dft = (VBar.dft == 'dft') and '' or 'dft'
    if VBar.dft == 'dft' then
@@ -890,7 +890,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Toggledst()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    VB_HideNumpad()
    VBar.dst = (VBar.dst == 'dst') and '' or 'dst'
    if VBar.dst == 'dst' and VB_class == 'moonkin' then
@@ -904,7 +904,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_ToggleLabels()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    VB_HideNumpad()
    VBar.labels = not VBar.labels
    VB_ShowNumpad()
@@ -912,7 +912,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_ToggleStancebars()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    local stances = VB_CLASS_STANCEBARS[VB_class]
    if not stances then VB_Chat(VB_STANCELESS_CLASS) return end
    VBar.stancebars = not VBar.stancebars
@@ -927,7 +927,7 @@ end
 
 ----------------------------------------------------------------------------------------------------
 function VB_Disable()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    VB_HideNumpad()
    VB_Chat(VB_DISABLED)
 end
@@ -1017,7 +1017,7 @@ function VB_ToggleMenu()
 end
 
 function VB_DoneMenu()
-   if InCombatLockDown() then return end
+   if InCombatLockdown() then return end
    local numpad = VB_GetNumpad()
    VB_ClearBackdrop(numpad)
 end

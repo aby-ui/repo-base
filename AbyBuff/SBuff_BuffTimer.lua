@@ -12,23 +12,23 @@ local function SBuff_SecondsToTimeAbbrev(seconds)
     local m,s,d,h;
     if(seconds > 60*60*24*3) then
         d = floor(seconds / 60 / 60 / 24)
-        return "|cffffd100"..n2s(d).."d|r" --3天以上显示3d
+        return "|cffffd100%dd|r", d --3天以上显示3d
     --elseif(seconds > 60*60*24) then
     --    d = floor(seconds / 60 / 60 / 24)
     --    h = floor(seconds % (60*60*24) / 60 / 60)
     --    return "|cffffd100"..n2s(d).."d"..n2s(h, 2).."h|r" --24小时以上显示1d1h
     elseif(seconds > 60*180) then
-        h = floor(seconds / 60 / 60)
-        return "|cffffd100"..n2s(h)..'h|r' --3h 180m 3小时以上显示 71h
+        h = seconds / 60 / 60
+        return "|cffffd100%dh|r", h --3h 180m 3小时以上显示 71h
     elseif (private.cfg_showsec_10 and seconds >= 600) or seconds > 6000 then
-        m = floor( seconds / 60 )
-        return "|cffffd100"..n2s(m)..'m|r' --10分钟以上或者100分钟以上不显示秒
+        m = seconds / 60
+        return "|cffffd100%dm|r", m --10分钟以上或者100分钟以上不显示秒
     elseif ( seconds >= 60) then
-        m = floor(seconds / 60);
-        s = floor(seconds - m*60);
-        return "|cff00ff00"..n2s(m)..":"..n2s(s, 2) .. '|r'
+        m = seconds / 60;
+        s = seconds % 60;
+        return "|cff00ff00%d:%02d|r", m, s
     elseif ( seconds > 0 ) then
-        return "|cffffffff0:"..n2s(floor(seconds), 2) .. '|r' --红色录像看不清，改白色
+        return "|cffffffff0:%02d|r", seconds --红色录像看不清，改白色
 	else
 	    return ""
     end
@@ -75,7 +75,7 @@ local NA_buttonInfo = { duration = 0 }
 local function updateDurationWithSeconds(self, timeLeft)
     local duration = self.aby_duration;
     if timeLeft and private.cfg_show and private.cfg_showsec then
-        duration:SetText(SBuff_SecondsToTimeAbbrev(timeLeft));
+        duration:SetFormattedText(SBuff_SecondsToTimeAbbrev(timeLeft));
     else
         duration:SetText("");
     end
@@ -121,7 +121,7 @@ local function updateEditModeExample(btn)
     else
         timeLeft = ((7+50*(n-8))*60) * 60 + random(3600) - 1 --7h, 57h, 107h
     end
-    d:SetText(SBuff_SecondsToTimeAbbrev(timeLeft))
+    d:SetFormattedText(SBuff_SecondsToTimeAbbrev(timeLeft))
 end
 
 local allAuras, allExamples = {}, {}

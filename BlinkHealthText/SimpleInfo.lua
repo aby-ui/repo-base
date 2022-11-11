@@ -32,7 +32,7 @@ local function GetPowerType()
     if (class == MONK and spec == 3) then
         return Enum.PowerType.Chi
     elseif (class == PALADIN) then
-        return spec == 3 and Enum.PowerType.HolyPower
+        return Enum.PowerType.HolyPower
     elseif (class == WARLOCK) then
         return Enum.PowerType.SoulShards
     elseif (class == MAGE) then
@@ -727,13 +727,11 @@ local function OnEvent(self, event, ...)
 end
 
 function S:CastingBarAdjustPosition()
-	if (self.Combo) then
+	if (self.Combo and self.Combo[1]:IsVisible() and self.Combo:GetAlpha() > 0) then
 		self.castBar:ClearAllPoints();
-		if (self.Combo[1]:IsVisible() and self.Combo:GetAlpha() > 0) then
-			self.castBar:SetPoint("TOPLEFT", self.Combo, "BOTTOMLEFT", 22, -4);
-		else
-			self.castBar:SetPoint("TOPLEFT", self.frame["target"].heal, "BOTTOMLEFT", 22, -6);
-		end
+		self.castBar:SetPoint("TOPLEFT", self.Combo, "BOTTOMLEFT", 22, -4);
+	else
+		self.castBar:SetPoint("TOPLEFT", self.frame["target"].heal, "BOTTOMLEFT", 22, -6);
 	end
 end
 

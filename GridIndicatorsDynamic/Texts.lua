@@ -6,7 +6,7 @@ local Media = LibStub("LibSharedMedia-3.0")
 
 local strsub = string.utf8sub or string.sub
 
-local n2s, GetTime, pairs, floor = n2s or tostring, GetTime, pairs, floor
+local GetTime, pairs, floor = GetTime, pairs, floor
 local activeFrames = {}  --all text indicator that starts duration
 local INTERVAL, WARNING_TIME = 0.3, 5
 local function update()
@@ -14,7 +14,7 @@ local function update()
         if(indicator._expire) then
             local timeLeft = indicator._expire - GetTime()
             if timeLeft >= 0 then
-                indicator.text:SetText(timeLeft > 99 and "#" or n2s(floor(timeLeft)))
+                indicator.text:SetFormattedText(timeLeft > 99 and "#" or "%d", timeLeft)
                 if indicator._durationColor and timeLeft < WARNING_TIME then
                     indicator.text:SetTextColor(1, 0.2, 0.2, 1)
                 end
@@ -75,11 +75,11 @@ local function SetStatus(self, color, text, value, maxValue, texture, texCoords,
     activeFrames[self] = nil
     local c = text and text:byte(1) or 0
     if profile.forceDuration and start and duration and duration > 0 and (c < 48 or c > 57) then
-        --if first character is not number, then start our timer. otherwise, use grid origin updater. -- and ( stack == nil or n2s(stack) ~= text ) then
+        --if first character is not number, then start our timer. otherwise, use grid origin updater.
         self._expire = start + duration
         activeFrames[self] = true
         local timeLeft = self._expire - GetTime()
-        self.text:SetText(timeLeft > 99 and "#" or n2s(floor(timeLeft)))
+        self.text:SetFormattedText(timeLeft > 99 and "#" or "%d", timeLeft)
         self._durationColor = profile.durationColor
     else
         if not text or text == "" then

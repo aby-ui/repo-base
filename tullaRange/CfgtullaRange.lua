@@ -11,7 +11,6 @@ U1RegisterAddon("tullaRange", {
     {
         text="配置选项",
         callback = function(cfg, v, loading)
-            InterfaceOptionsFrame_Show()
             InterfaceOptionsFrame_OpenToCategory("tullaRange")
         end,
     },

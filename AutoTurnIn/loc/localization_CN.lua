@@ -1,7 +1,7 @@
 local addonName, privateTable = ...
 if (GetLocale() == "zhCN") then --没翻译的是代码里没有的
 privateTable.L = setmetatable({
-	["global settings"]="全局设置",
+	["global settings"]="任务交接设置",
 	["reset"]="设置已重置",
 	["usage1"]="'on'/'off' 命令用来启用或禁用自动交接（启用后按住SHIFT可禁用）",
 	["usage2"]="'all'/'list' 是全部任务还是仅列表中的人物",

@@ -1,6 +1,6 @@
 local addon = ...
 --/run ObjectiveTrackerBonusBannerFrame_PlayBanner(ObjectiveTrackerBonusBannerFrame, 41318)
-local f2s, n2s, GetTime = f2s, n2s, GetTime
+local GetTime = GetTime
 
 local U1CT = WW:Frame("U1CT", UIParent):Size(90, 27):TOP(0, -50)
 :CreateTexture():Key("bg"):ALL():SetAtlas("search-select"):up()
@@ -17,9 +17,9 @@ U1CT.onUpdate = function(self, elapsed)
     local now = GetTime()
     local combat = now - self.start
     if combat < 60 then
-        self.text:SetText(f2s(combat, 2))
+        self.text:SetFormattedText("%.2f", combat)
     else
-        self.text:SetText(format("%d:%04.1f", combat / 60, combat % 60))
+        self.text:SetFormattedText("%d:%04.1f", combat / 60, combat % 60)
     end
 end
 

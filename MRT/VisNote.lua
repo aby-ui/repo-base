@@ -3358,9 +3358,14 @@ function module:UnpackString(str,sender)
 			if not module.db.await then
 				return
 			end
-			c = str:sub(3,3):byte()
+			local mapIDstr,restStr = str:match("^..([^"..string.char(254)..string.char(255).."]+)[^"..string.char(255).."]-("..string.char(255)..".-)$")
+			c = 0
+			for i=1,#mapIDstr do
+				c = c * 253 + mapIDstr:sub(i,i):byte() + (i > 1 and -1 or 0)
+				--function Convert(n)local res={} repeat table.insert(res,1,n%253) n=floor(n/253) until n==0 for i=2,#res do res[i]=res[i]+1 end return unpack(res) end
+			end
 			module.db.await[2] = c
-			str = str:sub(4)
+			str = restStr
 		end
 	end
 	if not module.db.await then
