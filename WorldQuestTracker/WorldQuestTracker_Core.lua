@@ -3,6 +3,8 @@
 
 -- ~review
 
+local thisAddonName, WQTAddon = ...
+
 --world quest tracker object
 local WorldQuestTracker = WorldQuestTrackerAddon
 if (not WorldQuestTracker) then
@@ -461,7 +463,7 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 	if (WorldMapFrame:IsShown()) then
 		--� a primeira vez que � mostrado?
 
-		if (not WorldMapFrame.firstRun and not InCombatLockdown()) then
+		if (not WorldMapFrame.firstRun) then
 		
 			local currentMapId = WorldMapFrame.mapID
 

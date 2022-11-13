@@ -51,7 +51,7 @@ addon.MAX_MESSAGES = 500 -- Maximum messages stored for each conversation
 -- Message are saved in format of: [1/0][hh:mm:ss][contents]
 -- The first char is 1 if this message is inform, 0 otherwise
 function addon:EncodeMessage(text, inform)
-	local timeStamp = strsub(date(), 10, 17)
+    local timeStamp = "["..date("%m-%d %H:%M:%S").."]"
 	return (inform and "1" or "0")..timeStamp..(text or ""), timeStamp
 end
 
@@ -65,8 +65,9 @@ function addon:DecodeMessage(line)
 		inform = 1
 	end
 
-	local timeStamp = strsub(line, 2, 9)
-	local text = strsub(line, 10)
+	local pos = strsub(line, 2, 2) == "[" and 17 or 8
+    local timeStamp = strsub(line, 2, pos)
+    local text = strsub(line, pos == 8 and 10 or pos + 1)
 	return text, inform, timeStamp
 end
 
@@ -106,7 +107,6 @@ function addon:GetBNInfoFromTag(tag)
 	end
 
 	local count = BNGetNumFriends()
-	local i
 	for i = 1, count do
 		local id, name, battleTag, _, _, _, _, online = BNGetFriendInfo(i)
 		if battleTag == tag then
@@ -193,7 +193,7 @@ function addon:HandleAction(name, action)
         else
             local editbox = ChatEdit_ChooseBoxForSend()
             ChatEdit_ActivateChat(editbox)
-            editbox:SetText("/w "..(bnName or name).." ")
+            editbox:SetText("/w "..(name).." ")
             ChatEdit_ParseText(editbox, 0)
         end
 	end

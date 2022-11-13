@@ -369,11 +369,17 @@ local function ApplyClickCastings(b)
 
         b:SetAttribute(bindKey, t[2])
         if t[2] == "spell" then
+            -- NOTE: spell 在无效/过远的目标上会处于“等待选中目标”的状态，即鼠标指针有一圈灰色材质。用 macrotext 可以解决这个问题
+            -- NOTE: 但对于尸体状态（未释放）的目标，需要额外判断
+            local condition = ""
+            if not F:IsSoulstone(t[3]) then
+                condition = F:IsResurrectionForDead(t[3]) and ",dead" or ",nodead"
+            end
+
             if (alwaysTargeting == "left" and bindKey == "type1") or alwaysTargeting == "any" then
-                --NOTE: as macro
                 b:SetAttribute(bindKey, "macro")
                 local attr = string.gsub(bindKey, "type", "macrotext")
-                b:SetAttribute(attr, "/tar [@cell]\n/cast [@cell,help] ".. t[3])
+                b:SetAttribute(attr, "/tar [@cell]\n/cast [@cell,help"..condition.."] "..t[3])
                 --! store attribute keys for update
                 if not b:GetAttribute("cell") then
                     b:SetAttribute("cell", attr)
@@ -381,12 +387,11 @@ local function ApplyClickCastings(b)
                     b:SetAttribute("cell", b:GetAttribute("cell").."|"..attr)
                 end
             else
-                -- NOTE: spell 在无效/过远的目标上会处于“等待选中目标”的状态，即鼠标指针有一圈灰色材质。用 macrotext 可以解决这个问题
                 -- local attr = string.gsub(bindKey, "type", "spell")
                 -- b:SetAttribute(attr, t[3])
                 b:SetAttribute(bindKey, "macro")
                 local attr = string.gsub(bindKey, "type", "macrotext")
-                b:SetAttribute(attr, "/cast [@cell,help] ".. t[3])
+                b:SetAttribute(attr, "/cast [@cell,help"..condition.."] "..t[3])
                 --! store attribute keys for update
                 if not b:GetAttribute("cell") then
                     b:SetAttribute("cell", attr)

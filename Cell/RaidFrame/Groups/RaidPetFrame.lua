@@ -300,22 +300,22 @@ local function RaidPetFrame_UpdateLayout(layout, which)
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint = "BOTTOMLEFT", "TOPLEFT"
                 headerPoint, headerColumnAnchorPoint = "BOTTOM", "LEFT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingY"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint = "BOTTOMRIGHT", "TOPRIGHT"
                 headerPoint, headerColumnAnchorPoint = "BOTTOM", "RIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingY"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint = "TOPLEFT", "BOTTOMLEFT"
                 headerPoint, headerColumnAnchorPoint = "TOP", "LEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingY"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint = "TOPRIGHT", "BOTTOMRIGHT"
                 headerPoint, headerColumnAnchorPoint = "TOP", "RIGHT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingY"]
             end
 
-            header:SetAttribute("columnSpacing", unitSpacing)
+            header:SetAttribute("columnSpacing", layout["spacingX"])
             header:SetAttribute("xOffset", 0)
             header:SetAttribute("yOffset", unitSpacing)
         else
@@ -323,22 +323,22 @@ local function RaidPetFrame_UpdateLayout(layout, which)
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT"
                 headerPoint, headerColumnAnchorPoint = "LEFT", "BOTTOM"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT"
                 headerPoint, headerColumnAnchorPoint = "RIGHT", "BOTTOM"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint = "TOPLEFT", "TOPRIGHT"
                 headerPoint, headerColumnAnchorPoint = "LEFT", "TOP"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint = "TOPRIGHT", "TOPLEFT"
                 headerPoint, headerColumnAnchorPoint = "RIGHT", "TOP"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
             end
 
-            header:SetAttribute("columnSpacing", unitSpacing)
+            header:SetAttribute("columnSpacing", layout["spacingY"])
             header:SetAttribute("xOffset", unitSpacing)
             header:SetAttribute("yOffset", 0)
         end

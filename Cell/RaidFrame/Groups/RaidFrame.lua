@@ -31,40 +31,31 @@ raidFrame:SetAttribute("_onattributechanged", [[
     local anchor = self:GetAttribute("anchor") or "TOPLEFT"
 
     npcFrameAnchor:ClearAllPoints()
+    local point, anchorPoint
     if orientation == "vertical" then
-        local point, anchorPoint, unitSpacing
         if anchor == "BOTTOMLEFT" then
             point, anchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT"
-            unitSpacing = spacing
         elseif anchor == "BOTTOMRIGHT" then
             point, anchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT"
-            unitSpacing = -spacing
         elseif anchor == "TOPLEFT" then
             point, anchorPoint = "TOPLEFT", "TOPRIGHT"
-            unitSpacing = spacing
         elseif anchor == "TOPRIGHT" then
             point, anchorPoint = "TOPRIGHT", "TOPLEFT"
-            unitSpacing = -spacing
         end
 
-        npcFrameAnchor:SetPoint(point, header, anchorPoint, unitSpacing, 0)
+        npcFrameAnchor:SetPoint(point, header, anchorPoint, spacing, 0)
     else
-        local point, anchorPoint, unitSpacing
         if anchor == "BOTTOMLEFT" then
             point, anchorPoint = "BOTTOMLEFT", "TOPLEFT"
-            unitSpacing = spacing
         elseif anchor == "BOTTOMRIGHT" then
             point, anchorPoint = "BOTTOMRIGHT", "TOPRIGHT"
-            unitSpacing = spacing
         elseif anchor == "TOPLEFT" then
             point, anchorPoint = "TOPLEFT", "BOTTOMLEFT"
-            unitSpacing = -spacing
         elseif anchor == "TOPRIGHT" then
             point, anchorPoint = "TOPRIGHT", "BOTTOMRIGHT"
-            unitSpacing = -spacing
         end
 
-        npcFrameAnchor:SetPoint(point, header, anchorPoint, 0, unitSpacing)
+        npcFrameAnchor:SetPoint(point, header, anchorPoint, 0, spacing)
     end
 ]])
 
@@ -158,7 +149,7 @@ end
 
 -- arena pet
 local arenaPetButtons = {}
-for i = 1, 3 do
+for i = 1, (Cell.isRetail and 3 or 5) do
     arenaPetButtons[i] = CreateFrame("Button", "CellArenaPet"..i, raidFrame, "CellUnitButtonTemplate")
     arenaPetButtons[i]:SetAttribute("unit", "raidpet"..i)
 
@@ -187,13 +178,13 @@ local function RaidFrame_UpdateLayout(layout, which)
 
     -- arena pets
     if Cell.vars.inBattleground == 5 and layout["pet"][1] then
-        for i = 1, 3 do
-            RegisterAttributeDriver(arenaPetButtons[i], "state-visibility", "[@raidpet"..i..", exists] show; hide")
+        for i, arenaPet in ipairs(arenaPetButtons) do
+            RegisterAttributeDriver(arenaPet, "state-visibility", "[@raidpet"..i..", exists] show; hide")
         end
     else
-        for i = 1, 3 do
-            UnregisterAttributeDriver(arenaPetButtons[i], "state-visibility")
-            arenaPetButtons[i]:Hide()
+        for i, arenaPet in ipairs(arenaPetButtons) do
+            UnregisterAttributeDriver(arenaPet, "state-visibility")
+            arenaPet:Hide()
         end
     end
 
@@ -207,15 +198,15 @@ local function RaidFrame_UpdateLayout(layout, which)
     end
 
     if not which or which == "size" or which == "petSize" or which == "power" or which == "barOrientation" then
-        for i = 1, 3 do
+        for i, arenaPet in ipairs(arenaPetButtons) do
             if layout["pet"][4] then
-                P:Size(arenaPetButtons[i], layout["pet"][5][1], layout["pet"][5][2])
+                P:Size(arenaPet, layout["pet"][5][1], layout["pet"][5][2])
             else
-                P:Size(arenaPetButtons[i], width, height)
+                P:Size(arenaPet, width, height)
             end
             -- NOTE: SetOrientation BEFORE SetPowerSize
-            arenaPetButtons[i].func.SetOrientation(unpack(layout["barOrientation"]))
-            arenaPetButtons[i].func.SetPowerSize(layout["powerSize"])
+            arenaPet.func.SetOrientation(unpack(layout["barOrientation"]))
+            arenaPet.func.SetPowerSize(layout["powerSize"])
         end
     end
 
@@ -252,33 +243,33 @@ local function RaidFrame_UpdateLayout(layout, which)
 
         if not which or which == "spacing" or which == "orientation" or which == "anchor" or which == "rows_columns" or which == "groupSpacing" or which == "groupFilter" then
             header:ClearAllPoints()
+            -- anchor
+            local point, anchorPoint, groupAnchorPoint, unitSpacing, groupSpacing, verticalSpacing, horizontalSpacing, headerPoint, headerColumnAnchorPoint
             if layout["orientation"] == "vertical" then
-                -- anchor
-                local point, anchorPoint, groupAnchorPoint, unitSpacing, groupSpacing, verticalSpacing, headerPoint, headerColumnAnchorPoint
                 if layout["anchor"] == "BOTTOMLEFT" then
                     point, anchorPoint, groupAnchorPoint = "BOTTOMLEFT", "TOPLEFT", "BOTTOMRIGHT"
                     headerPoint, headerColumnAnchorPoint = "BOTTOM", "LEFT"
-                    unitSpacing = layout["spacing"]
-                    groupSpacing = layout["spacing"]
-                    verticalSpacing = layout["spacing"]+layout["groupSpacing"]
+                    unitSpacing = layout["spacingY"]
+                    groupSpacing = layout["spacingX"]
+                    verticalSpacing = layout["spacingY"]+layout["groupSpacing"]
                 elseif layout["anchor"] == "BOTTOMRIGHT" then
                     point, anchorPoint, groupAnchorPoint = "BOTTOMRIGHT", "TOPRIGHT", "BOTTOMLEFT"
                     headerPoint, headerColumnAnchorPoint = "BOTTOM", "RIGHT"
-                    unitSpacing = layout["spacing"]
-                    groupSpacing = -layout["spacing"]
-                    verticalSpacing = layout["spacing"]+layout["groupSpacing"]
+                    unitSpacing = layout["spacingY"]
+                    groupSpacing = -layout["spacingX"]
+                    verticalSpacing = layout["spacingY"]+layout["groupSpacing"]
                 elseif layout["anchor"] == "TOPLEFT" then
                     point, anchorPoint, groupAnchorPoint = "TOPLEFT", "BOTTOMLEFT", "TOPRIGHT"
                     headerPoint, headerColumnAnchorPoint = "TOP", "LEFT"
-                    unitSpacing = -layout["spacing"]
-                    groupSpacing = layout["spacing"]
-                    verticalSpacing = -layout["spacing"]-layout["groupSpacing"]
+                    unitSpacing = -layout["spacingY"]
+                    groupSpacing = layout["spacingX"]
+                    verticalSpacing = -layout["spacingY"]-layout["groupSpacing"]
                 elseif layout["anchor"] == "TOPRIGHT" then
                     point, anchorPoint, groupAnchorPoint = "TOPRIGHT", "BOTTOMRIGHT", "TOPLEFT"
                     headerPoint, headerColumnAnchorPoint = "TOP", "RIGHT"
-                    unitSpacing = -layout["spacing"]
-                    groupSpacing = -layout["spacing"]
-                    verticalSpacing = -layout["spacing"]-layout["groupSpacing"]
+                    unitSpacing = -layout["spacingY"]
+                    groupSpacing = -layout["spacingX"]
+                    verticalSpacing = -layout["spacingY"]-layout["groupSpacing"]
                 end
 
                 header:SetAttribute("columnAnchorPoint", headerColumnAnchorPoint)
@@ -295,7 +286,7 @@ local function RaidFrame_UpdateLayout(layout, which)
                 if i == 1 then
                     header:SetPoint(point)
                     -- arena pets
-                    for k = 1, 3 do
+                    for k in ipairs(arenaPetButtons) do
                         arenaPetButtons[k]:ClearAllPoints()
                         if k == 1 then
                             arenaPetButtons[k]:SetPoint(point, npcFrameAnchor)
@@ -311,32 +302,30 @@ local function RaidFrame_UpdateLayout(layout, which)
                     end
                 end
             else
-                -- anchor
-                local point, anchorPoint, groupAnchorPoint, unitSpacing, groupSpacing, horizontalSpacing, headerPoint, headerColumnAnchorPoint
                 if layout["anchor"] == "BOTTOMLEFT" then
                     point, anchorPoint, groupAnchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT", "TOPLEFT"
                     headerPoint, headerColumnAnchorPoint = "LEFT", "BOTTOM"
-                    unitSpacing = layout["spacing"]
-                    groupSpacing = layout["spacing"]
-                    horizontalSpacing = layout["spacing"]+layout["groupSpacing"]
+                    unitSpacing = layout["spacingX"]
+                    groupSpacing = layout["spacingY"]
+                    horizontalSpacing = layout["spacingX"]+layout["groupSpacing"]
                 elseif layout["anchor"] == "BOTTOMRIGHT" then
                     point, anchorPoint, groupAnchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT", "TOPRIGHT"
                     headerPoint, headerColumnAnchorPoint = "RIGHT", "BOTTOM"
-                    unitSpacing = -layout["spacing"]
-                    groupSpacing = layout["spacing"]
-                    horizontalSpacing = -layout["spacing"]-layout["groupSpacing"]
+                    unitSpacing = -layout["spacingX"]
+                    groupSpacing = layout["spacingY"]
+                    horizontalSpacing = -layout["spacingX"]-layout["groupSpacing"]
                 elseif layout["anchor"] == "TOPLEFT" then
                     point, anchorPoint, groupAnchorPoint = "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT"
                     headerPoint, headerColumnAnchorPoint = "LEFT", "TOP"
-                    unitSpacing = layout["spacing"]
-                    groupSpacing = -layout["spacing"]
-                    horizontalSpacing = layout["spacing"]+layout["groupSpacing"]
+                    unitSpacing = layout["spacingX"]
+                    groupSpacing = -layout["spacingY"]
+                    horizontalSpacing = layout["spacingX"]+layout["groupSpacing"]
                 elseif layout["anchor"] == "TOPRIGHT" then
                     point, anchorPoint, groupAnchorPoint = "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT"
                     headerPoint, headerColumnAnchorPoint = "RIGHT", "TOP"
-                    unitSpacing = -layout["spacing"]
-                    groupSpacing = -layout["spacing"]
-                    horizontalSpacing = -layout["spacing"]-layout["groupSpacing"]
+                    unitSpacing = -layout["spacingX"]
+                    groupSpacing = -layout["spacingY"]
+                    horizontalSpacing = -layout["spacingX"]-layout["groupSpacing"]
                 end
 
                 header:SetAttribute("columnAnchorPoint", headerColumnAnchorPoint)
@@ -353,7 +342,7 @@ local function RaidFrame_UpdateLayout(layout, which)
                 if i == 1 then
                     header:SetPoint(point)
                     -- arena pets
-                    for k = 1, 3 do
+                    for k in ipairs(arenaPetButtons) do
                         arenaPetButtons[k]:ClearAllPoints()
                         if k == 1 then
                             arenaPetButtons[k]:SetPoint(point, npcFrameAnchor)
@@ -370,7 +359,7 @@ local function RaidFrame_UpdateLayout(layout, which)
                 end
             end
 
-            raidFrame:SetAttribute("spacing", layout["spacing"])
+            raidFrame:SetAttribute("spacing", groupSpacing)
             raidFrame:SetAttribute("orientation", layout["orientation"])
             raidFrame:SetAttribute("anchor", layout["anchor"])
             raidFrame:SetAttribute("visibility", 1) -- NOTE: trigger _onattributechanged to set npcFrameAnchor point!
@@ -381,8 +370,8 @@ local function RaidFrame_UpdateLayout(layout, which)
             for j, b in ipairs({header:GetChildren()}) do
                 b.widget.healthBar:GetScript("OnSizeChanged")(b.widget.healthBar)
             end
-            for k = 1, 3 do
-                arenaPetButtons[k].widget.healthBar:GetScript("OnSizeChanged")(arenaPetButtons[k].widget.healthBar)
+            for k, arenaPet in ipairs(arenaPetButtons) do
+                arenaPet.widget.healthBar:GetScript("OnSizeChanged")(arenaPet.widget.healthBar)
             end
         end
     end

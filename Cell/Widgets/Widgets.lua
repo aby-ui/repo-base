@@ -1056,7 +1056,7 @@ function addon:CreateSlider(name, parent, low, high, width, step, onValueChanged
     slider:SetValueStep(step)
     slider:SetObeyStepOnDrag(true)
     slider:SetOrientation("HORIZONTAL")
-    slider:SetSize(width, 10)
+    P:Size(slider, width, 10)
     local unit = isPercentage and "%" or ""
 
     addon:StylizeFrame(slider, {0.115, 0.115, 0.115, 1})

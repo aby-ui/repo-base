@@ -1,14 +1,16 @@
 ## Interface: 100000
 ## Title: |cffe1a500w|cff69ccf0Marker
-## Notes: I'm going to to get my engineers to invent a combustible lemon that burns your house down!
+## Notes: I'm going to to get my engineers to invent a combustible lemon that burns your house down! Now with profiles!
 ## Author: Waky
 ## Dependencies: 
-## Version: 2.7.2
-## SavedVariablesPerCharacter: wMarkerDB, wFlaresDB
+## Version: 3.0.2
+## SavedVariables: wMarkerAceDB
 
 Localization\enUS.lua
 Localization\zhCN.lua
 Localization\zhTW.lua
+
+#embeds.xml
 
 wMarker.lua
 config.lua

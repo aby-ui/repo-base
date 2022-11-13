@@ -3,12 +3,13 @@ ptable.CONST = {}
 local C = ptable.CONST
 
 -- Updated for 7.0.3
+-- Enum.ItemClass / Enum.ItemWeaponSubclass / Enum.ItemArmorSubclass / Enum.ItemGemSubclass
 C.armor, C.weapon = {}, {}
 for k = 0, 20 do
 	C.weapon[k+1] = GetItemSubClassInfo(Enum.ItemClass.Weapon,k)
 end
-for k = 0, 11 do
-	C.armor[k+1] = GetItemSubClassInfo(Enum.ItemClass.Armor,k)
+for k = 1, 6 do
+	C.armor[k] = GetItemSubClassInfo(Enum.ItemClass.Armor,k)
 end
 
 C.WEAPONLABEL = GetItemClassInfo(Enum.ItemClass.Weapon)
@@ -36,11 +37,11 @@ C.ITEMS = {
 	--['Fishing Pole'] = select(17, weapon)
 	-- armor
 	--['Miscellaneous'] = C.armor[1]
-	['Cloth'] = C.armor[2],
-	['Leather'] = C.armor[3],
-	['Mail'] = C.armor[4],
-	['Plate'] = C.armor[5],
-	['Shields'] = C.armor[7], -- from 5.4 '6' is a cosmetic
+	['Cloth'] = C.armor[1],
+	['Leather'] = C.armor[2],
+	['Mail'] = C.armor[3],
+	['Plate'] = C.armor[4],
+	['Shields'] = C.armor[6], -- from 5.4 '6' is a cosmetic
 	--[[3rd slot
 	['Librams'] = C.armor[7],
 	['Idols'] = C.armor[8],

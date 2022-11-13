@@ -73,7 +73,7 @@ local function CreateResizeButton(cf)
         if show then U1Chat_ChatFrameResizeOnShow(self) else chatFrameResizeOnHide(self) end
     end)
 end
-WithAllChatFrame(CreateResizeButton);
+WithAllAndFutureChatFrames(CreateResizeButton);
 ]]
 
 --[[------------------------------------------------------------
@@ -103,7 +103,7 @@ end
 SetCVar("chatMouseScroll", 1)
 
 CoreOnEvent("PLAYER_LOGIN", function()
-    WithAllChatFrame(function(cf)
+    WithAllAndFutureChatFrames(function(cf)
         CoreHookScript(cf, "OnMouseWheel", chatFrameOnMouseWheel, true)
         if UIParent.SetResizeBounds then --abyui10
             local minW, minH, maxW, maxH = cf:GetResizeBounds()
@@ -128,7 +128,7 @@ ChatTypeInfo["CHANNEL"].sticky = 1;
 ChatTypeInfo["OFFICER"].sticky = 1;
 
 local CHAT_FONT_HEIGHTS = { 9, 20, 22, 26 }
-WithAllChatFrame(function(f)
+WithAllAndFutureChatFrames(function(f)
     hooksecurefunc(_G[f:GetName().."TabDropDown"], "initialize", function(dropDown)
         if UIDROPDOWNMENU_MENU_LEVEL == 1 then
             local info = UIDropDownMenu_CreateInfo();
@@ -245,29 +245,11 @@ end
 --[[------------------------------------------------------------
 输入框位于窗口上部, 如果超过屏幕下方则自动
 ---------------------------------------------------------------]]
-local fixPosition = function(self)
-    local _, bottom, _, _ = self:GetRect()
-    if bottom < -10 then
-        U1_Chat_UpdateEditBoxPosition(true, 0)
-    end
-end
-
-WithAllChatFrame(function(f)
-    --移动到屏幕下方的时候显示到上面
-    CoreHookScript(f.editBox, "OnShow", fixPosition)
-    CoreHookScript(f.editBox, "OnHide", function(self)
-        U1_Chat_UpdateEditBoxPosition()
-    end)
-end)
-
-CoreOnEvent("PLAYER_ENTERING_WORLD", function()
-    WithAllChatFrame(function(f) if f.editBox:IsShown() then fixPosition(f.editBox) end end)
-    return true
-end)
-
-function U1_Chat_UpdateEditBoxPosition(forceTop)
+--- 因为可能是editbox:OnShow触发的, 而editbox和ChatFrame可能没有关联，所以无法写单独ChatFrame的，每次都要全更新
+function U1_Chat_UpdateAllEditBoxPosition(editBoxOrChatFrameOrNil, forceTop)
     local isOnTop = forceTop or U1GetCfgValue("163UI_Chat", "editontop")
-    WithAllChatFrame(function(f)
+    WithAllChatFrameOnce(function(f)
+        if not f.editBox:IsVisible() then return end
         local p1, rel1, rp1, x1, y1 = f.editBox:GetPoint(1)
         local p2, rel2, rp2, x2, y2 = f.editBox:GetPoint(2)
         -- p2是RIGHT，顺序会变
@@ -288,6 +270,18 @@ function U1_Chat_UpdateEditBoxPosition(forceTop)
     end)
 end
 
+local forceTopWhenBelowBottom = function(self)
+    local _, bottom, _, _ = self:GetRect()
+    U1_Chat_UpdateAllEditBoxPosition(self, bottom < -10)
+end
+
+WithAllAndFutureChatFrames(function(f)
+    --移动到屏幕下方的时候显示到上面
+    CoreHookScript(f.editBox, "OnShow", forceTopWhenBelowBottom)
+    CoreHookScript(f.editBox, "OnHide", U1_Chat_UpdateAllEditBoxPosition)
+    if f.editBox:IsShown() then forceTopWhenBelowBottom(f.editBox) end
+end)
+
 --[[- 7.1 按钮位置
 local p1, rel, p2, x, y = QuickJoinToastButton:GetPoint()
 if p1 == "BOTTOMLEFT" and p2 == "TOPLEFT" and rel == ChatFrame1ButtonFrame and rel and ChatFrameMenuButton then
@@ -305,19 +299,4 @@ if DEBUG_MODE then
             end
         end
     end)
-end
-
---[[------------------------------------------------------------
-设置历史记录行数
----------------------------------------------------------------]]
-local setMaxLines = function(frame, line) frame:SetMaxLines(line); end
-
-function U1Chat_SetMaxLines(announce)
-    local lines = U1GetCfgValue("163ui_chat", "maxLines")
-    if lines and lines ~= 0 then
-        WithAllChatFrame(setMaxLines, lines);
-        if announce then
-            U1Message("聊天框记录行数设置为|cffffd100"..lines.."|r");
-        end
-    end
 end

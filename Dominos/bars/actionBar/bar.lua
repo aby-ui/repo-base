@@ -42,6 +42,8 @@ ActionBar.mainbarOffsets = {
             pages.bear = 8
             pages.moonkin = 9
             pages.tree = 7
+        elseif i == 'EVOKER' then
+            pages.soar = 7
         elseif i == 'ROGUE' then
             pages.stealth = 6
             pages.shadowdance = 6
@@ -207,7 +209,7 @@ function ActionBar:LoadStateController()
             offset = (page - 1) * self:GetAttribute('barLength')
 
             -- skip action bar 12 (not really usable)
-            if offset >= 132 then
+            if offset > 132 then
                 offset = offset + 12
             end
         end
@@ -224,30 +226,14 @@ end
 function ActionBar:LoadShowGridController()
     if not Addon:IsBuild("retail") then return end
 
-    self:SetAttribute("showgrid", 0)
-
-    self:SetAttribute('_onstate-cursor', [[
-        local reason = 2
-        local old = self:GetAttribute("showgrid") or 0
-        local new = old
-
-        if newstate > 0 then
-            if new % (2 * reason) < reason then
-                new = new + reason
-            end
-        else
-            if new % (2 * reason) >= reason then
-                new = new - reason
-            end
-        end
-
-        if old ~= new then
-            self:SetAttribute("showgrid", new)
-            control:ChildUpdate('showgrid', new)
+    self:SetAttribute('_onstate-showgrid', [[
+        if self:GetAttribute("showgrid") ~= newstate then
+            self:SetAttribute("showgrid", newstate)
+            control:ChildUpdate('showgrid', newstate)
         end
     ]])
 
-    RegisterStateDriver(self, "cursor", "[cursor]2;0")
+    Addon:RegisterShowGridEvents(self)
 end
 
 function ActionBar:UpdateOverrideBar()

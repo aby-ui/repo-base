@@ -273,7 +273,7 @@ if CoreOnEvent then
         local addMessageReplace = function(self, msg, ...)
             origs[self](self, msg and ChatFrame_ReplaceIconAndGroupExpressions(msg) or msg, ...)
         end
-        WithAllChatFrame(function(cf)
+        WithAllAndFutureChatFrames(function(cf)
             if cf:GetID() == 2 then return end
             origs[cf] = cf.AddMessage
             cf.AddMessage = addMessageReplace

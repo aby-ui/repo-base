@@ -210,5 +210,5 @@ f:RegisterEvent("VARIABLES_LOADED")
 addon.f = f
 
 function U1ChatHistory_AltArrowKeyMode(v)
-    WithAllChatFrame(function(chatframe, v) chatframe.editBox:SetAltArrowKeyMode(v) end, v)
+    WithAllAndFutureChatFrames(function(chatframe, v) chatframe.editBox:SetAltArrowKeyMode(v) end, v)
 end

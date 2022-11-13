@@ -990,16 +990,6 @@ if CoreUIGetUIPanelWindowInfo then
     end
 end
 
-WithAllChatFrame(function(frame)
-    frame:SetClampRectInsets(5, -40, 0, 0)
-    for i=1, 2 do
-        local p1, rel, p2, x, y = frame.editBox:GetPoint(2)
-        if p1 == "RIGHT" then
-            frame.editBox:SetPoint(p1, rel, p2, x - 20, y) --把中英按钮切换空出来
-            break
-        end
-    end
-end)
 
 -- 避免误操作关闭taint的插件
 if(StaticPopupDialogs) then

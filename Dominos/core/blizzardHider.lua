@@ -19,12 +19,12 @@ local function apply(func, ...)
 end
 
 local function banishFrames(...)
-    local function hide(frame)
+    local function banish(frame)
         frame:Hide()
         frame:SetParent(Addon.ShadowUIParent)
     end
 
-    return apply(hide, ...)
+    return apply(banish, ...)
 end
 
 local function unregisterEventsForFrames(...)

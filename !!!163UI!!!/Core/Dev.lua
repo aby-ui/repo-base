@@ -1,5 +1,7 @@
 local type, pairs = type, pairs
 
+hsf = hooksecurefunc
+
 function noop() end
 
 local function colorStack(ret)
@@ -54,10 +56,52 @@ function find_global_key(patternOrObject)
     print("=========================")
 end
 
+local searched = {}
+local function getTableKey(k)
+    if type(k) == "string" then
+        if k:match("[A-Za-z_][A-Za-z_0-9]*") then
+            return "." .. k
+        else
+            return format("[%q]", k)
+        end
+    else
+        return format("[%s]", k)
+    end
+end
+local function travelParentObject(parent, target)
+    searched[parent] = true
+    for k, v in pairs(parent) do
+        if v == target then
+            return getTableKey(k)
+        end
+    end
+    for k, v in pairs(parent) do
+        if type(v) == "table" and not searched[v] then
+            local childKey = travelParentObject(v, target)
+            if childKey then
+                return getTableKey(k) .. childKey
+            end
+        end
+    end
+end
+function FindObjectPath(frame)
+    wipe(searched)
+    local name = travelParentObject(_G, frame) or tostring(frame)
+    if name:sub(1,1) == "." then name = name:sub(2) end
+    if CoreUIChatEdit_Insert then
+        RunOnNextFrame(CoreUIChatEdit_Insert, "/dumppn " .. name)
+    else
+        print(name)
+    end
+    wipe(searched)
+end
+
+--[[
 function FindParentKey(frame)
     if frame then
+        local name
         if frame.GetName and frame:GetName() then
-            print(frame:GetName())
+            name = frame:GetName()
         else
             local parent = frame:GetParent();
             local path, found
@@ -78,19 +122,29 @@ function FindParentKey(frame)
                     parent = frame:GetParent()
                 end
             end
-            print(path)
+            name = path
+        end
+        if CoreUIChatEdit_Insert then
+            RunOnNextFrame(CoreUIChatEdit_Insert, "/dumppn " .. name)
+        else
+            print(name)
         end
     end
 end
+--]]
 
-function GetMouseFocusParentKey()
-    return FindParentKey(GetMouseFocus())
+function GetMouseFocusGlobalName()
+    local mf = GetMouseFocus()
+    _G.mf = nil
+    local result = FindObjectPath(mf)
+    _G.mf = mf
+    return result
 end
 
 SLASH_MOUSEFOCUSNAME1 = "/getmn"
-SLASH_MOUSEFOCUSNAME2 = "/getmouseparentkey"
+SLASH_MOUSEFOCUSNAME2 = "/getmousefocusname"
 SLASH_MOUSEFOCUSNAME3 = "/gmn"
-SlashCmdList["MOUSEFOCUSNAME"] = GetMouseFocusParentKey
+SlashCmdList["MOUSEFOCUSNAME"] = GetMouseFocusGlobalName
 
 ---直接调用Blizzard的dump
 function dump(...)
@@ -204,3 +258,18 @@ function CoreDebug(...)
 end
 
 u1log = CoreDebug
+
+C_Timer.After(0, function()
+    CoreDependCall("Blizzard_DebugTools", function()
+        if TableAttributeDisplay then
+            local function hookButtonClick(self)
+                CoreUIChatEdit_Insert((self.Text:GetText() or ""):gsub("Frame Attributes %- ", "/dumppn "), true)
+            end
+            TableAttributeDisplay.TitleButton:SetScript("OnClick", hookButtonClick)
+            hooksecurefunc(TableInspectorMixin, "OnLoad", function(self)
+                self.TitleButton:SetScript("OnClick", hookButtonClick)
+            end)
+        end
+    end)
+end)
+

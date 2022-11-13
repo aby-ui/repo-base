@@ -196,9 +196,8 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             end
             SetItemLevel(self, link)
         --EncounterJournal
-        elseif (self.encounterID and self.link) then
-            local itemInfo = GetLootInfoByIndex(self.index)
-            SetItemLevel(self, itemInfo.link or self.link)
+        elseif (self.bossTexture and self.bosslessTexture and self.armorType) then --abyui 10.0先SetItemButtonQuality再设置encounterID
+            SetItemLevel(self, itemIDOrLink)
         --EmbeddedItemTooltip
         elseif (self.Tooltip) then
             link = select(2, self.Tooltip:GetItem())

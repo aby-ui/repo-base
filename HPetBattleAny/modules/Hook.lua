@@ -1002,8 +1002,10 @@ HookMiniMap.func = function(self)
 		end
 	end
 end
-hooksecurefunc(GameTooltip,"SetScript",function()
-	GameTooltip:HookScript('OnUpdate',HookMiniMap.func)
+hooksecurefunc(GameTooltip,"SetScript",function(self, script)
+	if script == "OnUpdate" then
+		GameTooltip:HookScript('OnUpdate',HookMiniMap.func)
+	end
 end)
 GameTooltip:HookScript('OnUpdate',HookMiniMap.func)
 

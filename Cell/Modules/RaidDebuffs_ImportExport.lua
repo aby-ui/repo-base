@@ -96,7 +96,7 @@ local function CreateDebuffsImportExportFrame()
                 wipe(imported)
                 local text = eb:GetText()
                 -- check
-                local version, instanceId, bossId, data = string.match(text, "^!"..CELL_IMPORT_EXPORT_PREFIX..":(%d+):(%d+):(.+)!(.+)$")
+                local version, instanceId, bossId, data = string.match(text, "^!CELL:(%d+):DEBUFF:(%d+):(.+)!(.+)$")
                 
                 local error
                 if version and instanceId and bossId and data then
@@ -224,7 +224,7 @@ ShowData = function(instanceId, bossId)
         local builtIn, custom = F:CalcRaidDebuffs(instanceId, bossId, data)
         title:SetText(L["Export"]..": ".."|cff90EE90"..builtIn.." "..L["built-in(s)"].."|r, |cffFFB5C5"..custom.." "..L["custom(s)"].."|r")
 
-        local prefix = "!"..CELL_IMPORT_EXPORT_PREFIX..":"..(tonumber(string.match(Cell.version, "%d+")) or 0)..":"..instanceId..":"..(bossId or "all").."!"
+        local prefix = "!CELL:"..Cell.versionNum..":DEBUFF:"..instanceId..":"..(bossId or "all").."!"
         exported = Serializer:Serialize(data) -- serialize
         exported = LibDeflate:CompressDeflate(exported, deflateConfig) -- compress
         exported = LibDeflate:EncodeForPrint(exported) -- encode

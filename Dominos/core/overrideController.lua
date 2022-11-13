@@ -82,7 +82,7 @@ function OverrideController:OnLoad()
 	end
 
 	self:SetAttribute('updateOverridePage', [[
-		local newPage = 0
+		local newPage
 
 		if HasVehicleActionBar and HasVehicleActionBar() then
 			newPage = GetVehicleBarIndex() or 0
@@ -92,6 +92,8 @@ function OverrideController:OnLoad()
 			newPage = GetTempShapeshiftBarIndex() or 0
 		elseif GetBonusBarOffset() > 4 then
 			newPage = GetBonusBarOffset() or 0
+		else
+			newPage = 0
 		end
 
 		self:SetAttribute('state-overridepage', newPage)

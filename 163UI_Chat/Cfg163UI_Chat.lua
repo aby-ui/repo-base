@@ -58,7 +58,7 @@ U1RegisterAddon("163UI_Chat", {
             ChatTypeInfo["WHISPER"].sticky = v and 1 or 0;
             ChatTypeInfo["BN_WHISPER"].sticky = v and 1 or 0;
             if not v then
-                WithAllChatFrame(function(cf)
+                WithAllChatFrameOnce(function(cf)
                     local ctype = cf.editBox:GetAttribute("chatType")
                     if ctype=="WHISPER" or ctype=="BN_WHISPER" then
                         cf.editBox:SetAttribute("chatType", "SAY")
@@ -104,7 +104,8 @@ U1RegisterAddon("163UI_Chat", {
         text = "输入框位于窗口顶部",
         callback = function(cfg, v, loading)
             if loading and not v then return end
-            U1_Chat_UpdateEditBoxPosition()
+            --WithAllAndFutureChatFrames在代码里直接运行了
+            U1_Chat_UpdateAllEditBoxPosition()
         end,
         {
             var = "offset",
@@ -178,7 +179,16 @@ U1RegisterAddon("163UI_Chat", {
         text = "设置聊天框的记录行数",
         cols = 4,
         callback = function(cfg, v, loading)
-            U1Chat_SetMaxLines(not loading)
+            local path = cfg._path
+            WithAllChatFrameCheckLoading(loading, function(frame)
+                local lines = U1GetCfgValue(path)
+                if lines and lines ~= 0 then
+                    frame:SetMaxLines(lines)
+                end
+            end)
+            if not loading and v and v ~= 0 then
+                U1Message("聊天框记录行数设置为|cffffd100"..v.."|r");
+            end
         end,
     },
     {
@@ -218,3 +228,16 @@ U1RegisterAddon("163UI_Chat", {
         end,
     },
 });
+
+if WithAllAndFutureChatFrames then
+    WithAllAndFutureChatFrames(function(frame)
+        --frame:SetClampRectInsets(5, -40, 0, 0) --10.0之后没用了
+        for i=1, 2 do
+            local p1, rel, p2, x, y = frame.editBox:GetPoint(2)
+            if p1 == "RIGHT" then
+                frame.editBox:SetPoint(p1, rel, p2, x - 20, y) --把中英按钮切换空出来
+                break
+            end
+        end
+    end)
+end

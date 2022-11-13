@@ -63,16 +63,16 @@ local function SoloFrame_UpdateLayout(layout, which)
             local point, anchorPoint, unitSpacing
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint = "BOTTOMLEFT", "TOPLEFT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingY"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint = "BOTTOMRIGHT", "TOPRIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingY"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint = "TOPLEFT", "BOTTOMLEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingY"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint = "TOPRIGHT", "BOTTOMRIGHT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingY"]
             end
 
             petButton:SetPoint(point, playerButton, anchorPoint, 0, unitSpacing)
@@ -81,16 +81,16 @@ local function SoloFrame_UpdateLayout(layout, which)
             local point, anchorPoint, unitSpacing
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint = "TOPLEFT", "TOPRIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint = "TOPRIGHT", "TOPLEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
             end
 
             petButton:SetPoint(point, playerButton, anchorPoint, unitSpacing, 0)

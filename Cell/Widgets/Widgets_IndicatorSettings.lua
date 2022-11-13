@@ -2664,14 +2664,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
             end)
         end
         
-        -- TODO: for old versions, remove these in the future
-        if type(spell) == "string" then
-            auraButtons[i].spellIdText:SetText("")
-            auraButtons[i].spellId = nil
-            auraButtons[i].spellNameText:SetText("|cffff0000"..spell)
-            auraButtons[i].spellIconBg:Hide()
-            auraButtons[i].spellIcon:Hide()
-        elseif spell == 0 then
+        if spell == 0 then
             auraButtons[i].spellIdText:SetText("0")
             auraButtons[i].spellId = nil
             auraButtons[i].spellNameText:SetText("|cff22ff22"..L["all"])
@@ -2681,7 +2674,7 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
             local name, _, icon = GetSpellInfo(spell)
             auraButtons[i].spellIdText:SetText(spell)
             auraButtons[i].spellId = spell
-            auraButtons[i].spellNameText:SetText(name or L["Invalid"])
+            auraButtons[i].spellNameText:SetText(name or "|cffff2222"..L["Invalid"])
             if icon then
                 auraButtons[i].spellIcon:SetTexture(icon)
                 auraButtons[i].spellIconBg:Show()

@@ -44,6 +44,8 @@ L["assist"] = "協助"
 L["Assist"] = "協助"
 L["Aura Icon Options"] = "光環圖示選項"
 L["Author"] = "作者"
+--[[Translation missing --]]
+--[[ L["Autorun will be disabled for all code snippets"] = "Autorun will be disabled for all code snippets"--]] 
 L["Available slash commands"] = "可用的聊天指令"
 L["Awesome!"] = "超棒der!"
 L["Background Alpha"] = "背景透明度"
@@ -300,6 +302,8 @@ L["Overwrite Layout"] = "取代版面配置"
 L["P"] = "PvP 天賦"
 L["Particles"] = "粒子數"
 L["Party"] = "隊伍"
+--[[Translation missing --]]
+--[[ L["Patrons"] = "Patrons"--]] 
 L["PENDING"] = "等候"
 L["Percentage"] = "百分比"
 L["PET"] = "寵物"

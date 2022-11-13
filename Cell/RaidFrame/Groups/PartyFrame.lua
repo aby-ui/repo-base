@@ -99,23 +99,23 @@ local function PartyFrame_UpdateLayout(layout, which)
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, playerAnchorPoint, petAnchorPoint = "BOTTOMLEFT", "TOPLEFT", "BOTTOMRIGHT"
                 headerPoint = "BOTTOM"
-                playerSpacing = layout["spacing"]
-                petSpacing = layout["spacing"]
+                playerSpacing = layout["spacingY"]
+                petSpacing = layout["spacingX"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, playerAnchorPoint, petAnchorPoint = "BOTTOMRIGHT", "TOPRIGHT", "BOTTOMLEFT"
                 headerPoint = "BOTTOM"
-                playerSpacing = layout["spacing"]
-                petSpacing = -layout["spacing"]
+                playerSpacing = layout["spacingY"]
+                petSpacing = -layout["spacingX"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, playerAnchorPoint, petAnchorPoint = "TOPLEFT", "BOTTOMLEFT", "TOPRIGHT"
                 headerPoint = "TOP"
-                playerSpacing = -layout["spacing"]
-                petSpacing = layout["spacing"]
+                playerSpacing = -layout["spacingY"]
+                petSpacing = layout["spacingX"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, playerAnchorPoint, petAnchorPoint = "TOPRIGHT", "BOTTOMRIGHT", "TOPLEFT"
                 headerPoint = "TOP"
-                playerSpacing = -layout["spacing"]
-                petSpacing = -layout["spacing"]
+                playerSpacing = -layout["spacingY"]
+                petSpacing = -layout["spacingX"]
             end
 
             header:SetAttribute("xOffset", 0)
@@ -125,23 +125,23 @@ local function PartyFrame_UpdateLayout(layout, which)
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, playerAnchorPoint, petAnchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT", "TOPLEFT"
                 headerPoint = "LEFT"
-                playerSpacing = layout["spacing"]
-                petSpacing = layout["spacing"]
+                playerSpacing = layout["spacingX"]
+                petSpacing = layout["spacingY"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, playerAnchorPoint, petAnchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT", "TOPRIGHT"
                 headerPoint = "RIGHT"
-                playerSpacing = -layout["spacing"]
-                petSpacing = layout["spacing"]
+                playerSpacing = -layout["spacingX"]
+                petSpacing = layout["spacingY"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, playerAnchorPoint, petAnchorPoint = "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT"
                 headerPoint = "LEFT"
-                playerSpacing = layout["spacing"]
-                petSpacing = -layout["spacing"]
+                playerSpacing = layout["spacingX"]
+                petSpacing = -layout["spacingY"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, playerAnchorPoint, petAnchorPoint = "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT"
                 headerPoint = "RIGHT"
-                playerSpacing = -layout["spacing"]
-                petSpacing = -layout["spacing"]
+                playerSpacing = -layout["spacingX"]
+                petSpacing = -layout["spacingY"]
             end
 
             header:SetAttribute("xOffset", playerSpacing)

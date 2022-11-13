@@ -125,7 +125,7 @@ hooksecurefunc("ChatFrame_OnHyperlinkShow", function(self, link, text, button)
 	QuickCompare_Achievement(link,ItemRefTooltip)
 end)
 
-WithAllChatFrame(function(frame)
+WithAllAndFutureChatFrames(function(frame)
     SetOrHookScript(frame, "OnHyperlinkEnter", ChatFrame_OnHyperlinkEnter);
     SetOrHookScript(frame, "OnHyperlinkLeave", ChatFrame_OnHyperlinkLeave);
 end)

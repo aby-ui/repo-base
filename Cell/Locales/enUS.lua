@@ -65,6 +65,12 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r138-release (Nov 12, 2022, 04:56 GMT+8)</h1>
+        <p>* Updated import &amp; export.</p>
+        <p>* Split "Unit Spacing" into "Unit Spacing X" and "Unit Spacing Y".</p>
+        <p>* Bug fixes.</p>
+        <br/>
+
         <h1>r137-release (Nov 4, 2022, 18:07 GMT+8)</h1>
         <p>* Added movers for NPCs and raid pets.</p>
         <p>* Updated zhTW.</p>
@@ -108,7 +114,7 @@ select(2, ...).L = setmetatable({
         <br/>
 
         <h1>r129-release (Oct 22, 2022, 19:37 GMT+8)</h1>
-        <p>* Add an option to disable LibHealComm.</p>
+        <p>* Added an option to disable LibHealComm.</p>
         <p>* Split "Hide Blizzard Raid / Party" into two options.</p>
         <p>* Updated zhTW.</p>
         <br/>

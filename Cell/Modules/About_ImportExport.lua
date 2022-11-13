@@ -11,8 +11,132 @@ local isImport, imported, exported = false, nil, ""
 
 local importExportFrame, importBtn, title, textArea, includeNicknamesCB
 
+local function DoImport()
+    -- raid debuffs
+    for instanceID in pairs(imported["raidDebuffs"]) do
+        if not Cell.snippetVars.loadedDebuffs[instanceID] then
+            imported["raidDebuffs"][instanceID] = nil
+        end
+    end
+
+    -- remove invalid
+    if Cell.isRetail then
+        imported["appearance"]["useLibHealComm"] = false
+    elseif Cell.isWrath then
+        imported["layoutAutoSwitch"] = nil
+        imported["cleuAuras"] = nil
+        imported["cleuGlow"] = nil
+        imported["appearance"]["healAbsorb"] = false
+    end
+
+    -- indicators
+    local builtInFound = {}
+    for _, layout in pairs(imported["layouts"]) do
+        for i =  #layout["indicators"], 1, -1 do
+            if layout["indicators"][i]["type"] == "built-in" then -- remove unsupported built-in
+                local indicatorName = layout["indicators"][i]["indicatorName"]
+                builtInFound[indicatorName] = true
+                if not Cell.defaults.indicatorIndices[indicatorName] then
+                    tremove(layout["indicators"], i)
+                end
+            else -- remove invalid spells from custom indicators
+                F:FilterInvalidSpells(layout["indicators"][i]["auras"])
+            end
+        end        
+    end
+
+    -- add missing indicators
+    if F:Getn(builtInFound) ~= Cell.defaults.builtIns then
+        for indicatorName, index in pairs(Cell.defaults.indicatorIndices) do
+            if not builtInFound[indicatorName] then
+                for _, layout in pairs(imported["layouts"]) do
+                    tinsert(layout["indicators"], index, Cell.defaults.layout.indicators[index])
+                end
+            end
+        end
+    end
+
+    -- click-castings
+    if Cell.isRetail then
+        for class, t in pairs(imported["clickCastings"]) do
+            -- remove
+            t[1] = nil
+            t[2] = nil
+            t["alwaysTargeting"][1] = nil
+            t["alwaysTargeting"][2] = nil
+            -- add
+            local classID = F:GetClassID(class)
+            for sepcIndex = 1, GetNumSpecializationsForClassID(classID) do
+                local specID = GetSpecializationInfoForClassID(classID, sepcIndex)
+                if not t["alwaysTargeting"][specID] then
+                    t["alwaysTargeting"][specID] = "disabled"
+                end
+                if not t[specID] then
+                    t[specID] = {
+                        {"type1", "target"},
+                        {"type2", "togglemenu"},
+                    } 
+                end
+            end
+        end
+    elseif Cell.isWrath then
+        for class, t in pairs(imported["clickCastings"]) do
+            -- remove
+            for k in pairs(t) do
+                if k ~= "useCommon" and k ~= "alwaysTargeting" and k ~= "common" and k ~= 1 and k ~= 2 then
+                    t[k] = nil
+                end
+            end
+            for k in pairs(t["alwaysTargeting"]) do
+                if k ~= "common" and k ~= 1 and k ~= 2 then
+                    t["alwaysTargeting"][k] = nil
+                end
+            end
+            -- add
+            if not t["alwaysTargeting"][1] then
+                t["alwaysTargeting"][1] = "disabled"
+            end
+            if not t["alwaysTargeting"][2] then
+                t["alwaysTargeting"][2] = "disabled"
+            end
+            if not t[1] then
+                t[1] = {
+                    {"type1", "target"},
+                    {"type2", "togglemenu"},
+                }
+            end
+            if not t[2] then
+                t[2] = {
+                    {"type1", "target"},
+                    {"type2", "togglemenu"},
+                }
+            end
+        end
+    end
+
+    -- remove invalid
+    F:FilterInvalidSpells(imported["debuffBlacklist"])
+    F:FilterInvalidSpells(imported["bigDebuffs"])
+    F:FilterInvalidSpells(imported["consumables"])
+    F:FilterInvalidSpells(imported["customDefensives"])
+    F:FilterInvalidSpells(imported["customExternals"])
+    F:FilterInvalidSpells(imported["targetedSpellsList"])
+    F:FilterInvalidSpells(imported["cleuAuras"])
+
+    -- disable autorun for all snippets
+    for _, t in pairs(imported["snippets"]) do
+        t["autorun"] = false
+    end
+
+    -- texplore(imported)
+
+    --! overwrite
+    CellDB = imported
+    ReloadUI()
+end
+
 local function GetExportString(includeNicknames)
-    local prefix = "!"..CELL_IMPORT_EXPORT_PREFIX..":"..(tonumber(string.match(Cell.version, "%d+")) or 0).."!"
+    local prefix = "!CELL:"..Cell.versionNum..":ALL!"
 
     local db = F:Copy(CellDB)
     
@@ -56,15 +180,14 @@ local function CreateImportExportFrame()
         importExportFrame:SetFrameStrata("HIGH")
     
         local text = "|cFFFF7070"..L["All Cell settings will be overwritten!"].."|r\n"..
+            "|cFFB7B7B7"..L["Autorun will be disabled for all code snippets"].."|r\n"..
             L["|cff1Aff1AYes|r - Overwrite"].."\n".."|cffff1A1A"..L["No"].."|r - "..L["Cancel"]
         local popup = Cell:CreateConfirmPopup(Cell.frames.aboutTab, 200, text, function(self)
-            -- !overwrite
-            CellDB = imported
-            ReloadUI()
+            DoImport()
         end, function()
             importExportFrame:Hide()
         end, true)
-        popup:SetPoint("TOPLEFT", importExportFrame, 117, -50)
+        popup:SetPoint("TOPLEFT", importExportFrame, 117, -20)
     end)
     
     -- title
@@ -86,7 +209,7 @@ local function CreateImportExportFrame()
                 imported = nil
                 local text = eb:GetText()
                 -- check
-                local version, data = string.match(text, "^!"..CELL_IMPORT_EXPORT_PREFIX..":(%d+)!(.+)$")
+                local version, data = string.match(text, "^!CELL:(%d+):ALL!(.+)$")
                 version = tonumber(version)
     
                 if version and data then

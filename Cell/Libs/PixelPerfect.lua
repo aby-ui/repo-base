@@ -40,6 +40,11 @@ end
 --------------------------------------------
 -- some are stolen from ElvUI
 --------------------------------------------
+-- local function GetUIParentScale()
+--     local scale = UIParent:GetScale()
+--     return scale - scale % 0.1 ^ 2
+-- end
+
 local mult = 1
 function P:SetRelativeScale(scale)
     mult = 1 / scale
@@ -53,10 +58,20 @@ function P:SetEffectiveScale(frame)
     frame:SetScale(P:GetEffectiveScale())
 end
 
+--[[
 local trunc = function(s) return s >= 0 and s-s%01 or s-s%-1 end
 local round = function(s) return s >= 0 and s-s%-1 or s-s%01 end
 function P:Scale(n)
     return (mult == 1 or n == 0) and n or ((mult < 1 and trunc(n/mult) or round(n/mult)) * mult)
+end
+]]
+function P:Scale(n)
+    if mult == 1 or n == 0 then
+        return n
+    else
+        local x = mult > 1 and mult or -mult
+        return n - n % (n < 0 and x or -x)
+    end
 end
 
 function P:Size(frame, width, height)
@@ -75,8 +90,21 @@ function P:Height(frame, height)
     frame:SetHeight(P:Scale(height))
 end
 
-function P:Point(frame, point, anchorTo, anchorPoint, x, y)
+function P:Point(frame, ...)
     if not frame.points then frame.points = {} end
+    local point, anchorTo, anchorPoint, x, y
+    
+    local n = select("#", ...)
+    if n == 1 then
+        point = ...
+    elseif n == 3 and type(select(2, ...)) == "number" then
+        point, x, y = ...
+    elseif n == 4 then
+        point, anchorTo, x, y = ...
+    else
+        point, anchorTo, anchorPoint, x, y = ...
+    end
+
     tinsert(frame.points, {point, anchorTo or frame:GetParent(), anchorPoint or point, x or 0, y or 0})
     local n = #frame.points
     frame:SetPoint(frame.points[n][1], frame.points[n][2], frame.points[n][3], P:Scale(frame.points[n][4]), P:Scale(frame.points[n][5]))
@@ -97,6 +125,14 @@ function P:Resize(frame)
     if frame.height then
         frame:SetHeight(P:Scale(frame.height))
     end
+end
+
+function P:Reborder(frame)
+    local _r, _g, _b, _a = frame:GetBackdropColor()
+    local r, g, b, a = frame:GetBackdropBorderColor()
+    frame:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(1)})
+    frame:SetBackdropColor(_r, _g, _b, _a)
+    frame:SetBackdropBorderColor(r, g, b, a)
 end
 
 function P:Repoint(frame)

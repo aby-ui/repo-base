@@ -1444,6 +1444,28 @@ function F:Revise()
             CellDB["snippets"][0]["code"] = "-- snippets can be found at https://github.com/enderneko/Cell/tree/master/.snippets\n"..CellDB["snippets"][0]["code"]
         end
     end
+   
+    -- r138-release
+    if CellDB["revise"] and dbRevision < 138 then
+        if Cell.isRetail then
+            -- 邪甲术
+            if not F:TContains(CellDB["debuffBlacklist"], 387847) then
+                tinsert(CellDB["debuffBlacklist"], 387847)
+                Cell.vars.debuffBlacklist = F:ConvertTable(CellDB["debuffBlacklist"])
+            end
+        end
+
+        for _, layout in pairs(CellDB["layouts"]) do
+            if layout["spacing"] then
+                layout["spacingX"] = layout["spacing"]
+                layout["spacingY"] = layout["spacing"]
+                layout["spacing"] = nil
+            end
+            if not layout["powerFilters"]["EVOKER"] then
+                layout["powerFilters"]["EVOKER"] = {["DAMAGER"] = true, ["HEALER"] = true}
+            end
+        end
+    end
 
     CellDB["revise"] = Cell.version
 end

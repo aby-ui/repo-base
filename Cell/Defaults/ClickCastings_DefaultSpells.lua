@@ -297,13 +297,52 @@ end
 -------------------------------------------------
 -- resurrections
 -------------------------------------------------
-local resurrections = {
+local resurrections_for_dead = {
+    -- DEATHKNIGHT
+    61999, -- 复活盟友
+
+    -- DRUID
+    20484, -- 复生
+    50769, -- 起死回生
+
+    -- MONK
+    115178, -- 轮回转世
+
+    -- PALADIN
+    391054, -- 代祷
+    7328, -- 救赎
+
+    -- PRIEST
+    2006, -- 复活术
+
+    -- SHAMAN
+    2008, -- 先祖之魂
+}
+
+do
+    local temp = {}
+    for _, id in pairs(resurrections_for_dead) do
+        temp[GetSpellInfo(id)] = true
+    end
+    resurrections_for_dead = temp
+end
+
+local spell_soulstone = GetSpellInfo(20707)
+function F:IsSoulstone(spell)
+    return spell == spell_soulstone
+end
+
+function F:IsResurrectionForDead(spell)
+    return resurrections_for_dead[spell]
+end
+
+local resurrection_click_castings = {
     ["DEATHKNIGHT"] = {
         {"type-R", "spell", 61999},
     },
     ["DRUID"] = {
-        {"type-R", "spell", 50769},
-        {"type-shiftR", "spell", 20484},
+        {"type-R", "spell", 20484},
+        {"type-shiftR", "spell", 50769},
     },
     ["MONK"] = {
         {"type-shiftR", "spell", 115178},
@@ -324,7 +363,7 @@ local resurrections = {
 }
 
 do
-    for class, t in pairs(resurrections) do
+    for class, t in pairs(resurrection_click_castings) do
         for _, clickCasting in pairs(t) do
             clickCasting[3] = GetSpellInfo(clickCasting[3])
         end
@@ -332,5 +371,5 @@ do
 end
 
 function F:GetResurrectionClickCastings(class)
-    return resurrections[class] or {}
+    return resurrection_click_castings[class] or {}
 end

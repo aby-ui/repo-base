@@ -11,6 +11,53 @@ local isImport, imported, exported = false, {}, ""
 
 local importExportFrame, importBtn, title, textArea
 
+local function DoImport(isOverwrite)
+    local name, layout = imported["name"], imported["data"]
+
+    -- indicators
+    local builtInFound = {}
+    for i =  #layout["indicators"], 1, -1 do
+        if layout["indicators"][i]["type"] == "built-in" then -- remove unsupported built-in
+            local indicatorName = layout["indicators"][i]["indicatorName"]
+            builtInFound[indicatorName] = true
+            if not Cell.defaults.indicatorIndices[indicatorName] then
+                tremove(layout["indicators"], i)
+            end
+        else -- remove invalid spells from custom indicators
+            F:FilterInvalidSpells(layout["indicators"][i]["auras"])
+        end
+    end        
+
+    -- add missing indicators
+    if F:Getn(builtInFound) ~= Cell.defaults.builtIns then
+        for indicatorName, index in pairs(Cell.defaults.indicatorIndices) do
+            if not builtInFound[indicatorName] then
+                tinsert(layout["indicators"], index, Cell.defaults.layout.indicators[index])
+            end
+        end
+    end
+
+    -- texplore(imported.data)
+
+    if isOverwrite then
+        --! overwrite if exists
+        CellDB["layouts"][name] = layout
+        Cell:Fire("LayoutImported", name)
+        importExportFrame:Hide()
+    else
+        --! create new
+        local i = 2
+        repeat
+            name = imported["name"].." "..i
+            i = i + 1
+        until not CellDB["layouts"][name]
+
+        CellDB["layouts"][name] = layout
+        Cell:Fire("LayoutImported", name)
+        importExportFrame:Hide()
+    end
+end
+
 local function CreateLayoutImportExportFrame()
     importExportFrame = CreateFrame("Frame", "CellOptionsFrame_LayoutsImportExport", Cell.frames.layoutsTab, "BackdropTemplate")
     importExportFrame:Hide()
@@ -43,31 +90,13 @@ local function CreateLayoutImportExportFrame()
             local text = L["Overwrite Layout"]..": "..(imported["name"] == "default" and _G.DEFAULT or imported["name"]).."?\n"..
                 L["|cff1Aff1AYes|r - Overwrite"].."\n"..L["|cffff1A1ANo|r - Create New"]
             local popup = Cell:CreateConfirmPopup(Cell.frames.layoutsTab, 200, text, function(self)
-                -- !overwrite
-                local name = imported["name"]
-                CellDB["layouts"][name] = imported["data"]
-                Cell:Fire("LayoutImported", name)
-                importExportFrame:Hide()
+                DoImport(true)
             end, function(self)
-                -- !create new
-                local name
-                local i = 2
-                repeat
-                    name = imported["name"].." "..i
-                    i = i + 1
-                until not CellDB["layouts"][name]
-    
-                CellDB["layouts"][name] = imported["data"]
-                Cell:Fire("LayoutImported", name)
-                importExportFrame:Hide()
+                DoImport(false)
             end, true)
             popup:SetPoint("TOPLEFT", importExportFrame, 117, -50)
         else
-            -- !new
-            local name = imported["name"]
-            CellDB["layouts"][name] = imported["data"]
-            Cell:Fire("LayoutImported", name)
-            importExportFrame:Hide()
+            DoImport(true)
         end
     end)
     
@@ -82,7 +111,7 @@ local function CreateLayoutImportExportFrame()
                 wipe(imported)
                 local text = eb:GetText()
                 -- check
-                local version, name, data = string.match(text, "^!"..CELL_IMPORT_EXPORT_PREFIX..":(%d+):([^:]+)!(.+)$")
+                local version, name, data = string.match(text, "^!CELL:(%d+):LAYOUT:([^:]+)!(.+)$")
                 version = tonumber(version)
     
                 if name and version and data then
@@ -174,7 +203,7 @@ function F:ShowLayoutExportFrame(layoutName, layoutTable)
 
     title:SetText(L["Export"]..": "..(layoutName == "default" and _G.DEFAULT or layoutName))
 
-    local prefix = "!"..CELL_IMPORT_EXPORT_PREFIX..":"..(tonumber(string.match(Cell.version, "%d+")) or 0)..":"..layoutName.."!"
+    local prefix = "!CELL:"..Cell.versionNum..":LAYOUT:"..layoutName.."!"
 
     exported = Serializer:Serialize(layoutTable) -- serialize
     exported = LibDeflate:CompressDeflate(exported, deflateConfig) -- compress

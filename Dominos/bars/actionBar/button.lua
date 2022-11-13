@@ -103,21 +103,13 @@ if not Addon:IsBuild('retail') then
 end
 
 Addon.ActionButtonMixin = ActionButtonMixin
+
 --------------------------------------------------------------------------------
 -- ActionButtons - A pool of action buttons
 --------------------------------------------------------------------------------
 
 local createActionButton
 if Addon:IsBuild("retail") then
-    local source_OnAttributeChanged = [[
-        if name ~= "action" then return end
-
-        local target = control:GetFrameRef("target")
-        if target and target:GetAttribute(name) ~= value then
-            target:SetAttribute(name, value)
-        end
-    ]]
-
     -- dragonflight hack: whenever a Dominos action button's action changes
     -- set the action of the corresponding blizzard action button
     -- this ensures that pressing a blizzard keybinding does the same thing as
@@ -126,34 +118,50 @@ if Addon:IsBuild("retail") then
     -- We want to not remap blizzard keybindings in dragonflight, so that we can
     -- use some behaviors only available to blizzard action buttons, mainly cast on
     -- key down and press and hold casting
-    local function proxyActionButton(button, target)
-        -- link to the binding
-        button.commandName = target.commandName
-
-        -- mirror action attribute chagnes from button to target
-        local proxy = CreateFrame('Frame', nil, nil, "SecureHandlerBaseTemplate")
-        proxy:SetFrameRef("target", target)
-        proxy:WrapScript(button, "OnAttributeChanged", source_OnAttributeChanged)
-        proxy:Hide()
-
-        hooksecurefunc(target, "SetButtonStateBase", function(_, state)
-            button:SetButtonStateBase(state)
-        end)
-
+    local function proxyActionButton(owner, target)
         -- disable paging on the target by giving the target an ID of zero
         target:SetID(0)
+
+        -- display the target's binding action
+        owner.commandName = target.commandName
+
+        -- ensure the target's action matches the parent's action
+        local proxy = CreateFrame('Frame', nil, nil, "SecureHandlerBaseTemplate")
+        proxy:Hide()
+        proxy:SetFrameRef("target", target)
+        proxy:WrapScript(owner, "OnAttributeChanged", [[
+            if name ~= "action" then return end
+
+            local target = control:GetFrameRef("target")
+            if target and target:GetAttribute(name) ~= value then
+                target:SetAttribute(name, value)
+            end
+        ]])
+
+        -- mirror the pushed state of the target button
+        hooksecurefunc(target, "SetButtonStateBase", function(_, state)
+            owner:SetButtonStateBase(state)
+        end)
     end
 
     createActionButton = function(id)
-        local name = ('%sActionButton%d'):format(AddonName, id)
-
-        local button = CreateFrame('CheckButton', name, UIParent, 'ActionBarButtonTemplate')
+        local buttonName = ('%sActionButton%d'):format(AddonName, id)
+        local button = CreateFrame('CheckButton', buttonName, UIParent, 'ActionBarButtonTemplate')
 
         local target = Addon.BlizzardActionButtons[id]
 
         if target then
             proxyActionButton(button, target)
         end
+
+        -- when force update action, also ensure that we update our shown state
+        -- the stock UI relies on a call to parent:UpdateShown() which wouldn't
+        -- work here
+        hooksecurefunc(button, "UpdateAction", function(button, force)
+            if force then
+                button:UpdateShownInsecure()
+            end
+        end)
 
         return button
     end

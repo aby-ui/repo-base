@@ -1,9 +1,10 @@
 ## Interface: 100000
-## Title: HandyNotes_DungeonLocations
-## Version: 1.54
+## Title: HandyNotes: DungeonLocations
+## Version: 1.55a
 ## Notes: Shows locations of old world dungeon and raid entrances
 ## Author: Caliaha of Cairne
 ## RequiredDeps: HandyNotes
+## X-Curse-Project-ID: 102768
 ## SavedVariables: HandyNotes_DungeonLocationsDB
 
 locales\Locales.xml

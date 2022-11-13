@@ -3,7 +3,7 @@
 ## Notes: A main actionbar replacement
 ## Notes-zhCN: 一种动作条替换方案
 ## Author: Tuller
-## Version: 10.0.4
+## Version: 10.0.7
 ## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper, LibDualSpec-1.0
 # stuff required for the addon to work
@@ -12,6 +12,7 @@ localization.xml
 Dominos.lua
 core\helpers.lua
 core\barStates.lua
+core\secureEnv.lua
 core\shadowUIParent.lua
 core\frame.lua
 core\buttonBar.lua
@@ -44,8 +45,8 @@ bars\totemBar.lua
 plugins\slashCommands.lua
 plugins\launcher.lua
 plugins\buttonThemer.lua
+#plugins\getActionReagentUses.lua
 #plugins\multiActionBarFixer.classic.lua
-plugins\showGridFixes.lua
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Dominos 多米诺动作条

@@ -30,7 +30,7 @@ wMarkerLocals = {
 ["Version"] = "Version",
 ["About"] = "About",
 ["Author"] = "Author",
-["Raid marker"] = "Raid marker",
+["Raid marker"] = "Raid markers",
 ["World markers"] = "World markers",
 ["Key bindings"] = "Key bindings",
 	-- Phrases

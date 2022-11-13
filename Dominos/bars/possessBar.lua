@@ -25,7 +25,7 @@ local function possessButton_OnClick(self)
         self.icon:SetDesaturated(true)
         self:SetChecked(true)
         self:Disable()
-    elseif UnitControllingVehicle("player") and CanExitVehicle() then
+    elseif CanExitVehicle() then
         VehicleExit()
     else
         CancelPetPossess()

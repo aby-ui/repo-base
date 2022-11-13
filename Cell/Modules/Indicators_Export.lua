@@ -83,7 +83,10 @@ local function CreateIndicatorsExportFrame()
         exportFrame:Show()
         
         local builtIn, custom = 0, 0
-        local data = {}
+        local data = {
+            ["indicators"] = {},
+            ["related"] = {},
+        }
     
         for index in pairs(selectedIndicators) do
             -- count
@@ -92,13 +95,40 @@ local function CreateIndicatorsExportFrame()
             else
                 custom = custom + 1
             end
-            -- data
-            data[index] = CellDB["layouts"][fromLayout]["indicators"][index]
+            
+            -- data.indicators
+            data["indicators"][index] = CellDB["layouts"][fromLayout]["indicators"][index]
+            
+            -- data.related
+            local name = CellDB["layouts"][fromLayout]["indicators"][index]["indicatorName"]
+            if name == "defensiveCooldowns" or name == "allCooldowns" then
+                data["related"]["customDefensives"] = CellDB["customDefensives"]
+            end
+            if name == "externalCooldowns" or name == "allCooldowns" then
+                data["related"]["customExternals"] = CellDB["customExternals"]
+            end
+            
+            if name == "debuffs" then
+                data["related"]["debuffBlacklist"] = CellDB["debuffBlacklist"]
+                data["related"]["bigDebuffs"] = CellDB["bigDebuffs"]
+            elseif name == "raidDebuffs" then
+                if Cell.isRetail then
+                    data["related"]["cleuAuras"] = CellDB["cleuAuras"]
+                    data["related"]["cleuGlow"] = CellDB["cleuGlow"]
+                end
+            elseif name == "targetedSpells" then
+                data["related"]["targetedSpellsList"] = CellDB["targetedSpellsList"]
+                data["related"]["targetedSpellsGlow"] = CellDB["targetedSpellsGlow"]
+            elseif name == "consumables" then
+                data["related"]["consumables"] = CellDB["consumables"]
+            end
         end
+        -- texplore(data)
+
         title:SetText(L["Export"]..": ".."|cff90EE90"..builtIn.." "..L["built-in(s)"].."|r, |cffFFB5C5"..custom.." "..L["custom(s)"].."|r")
     
         -- prepare string
-        local prefix = "!"..CELL_IMPORT_EXPORT_PREFIX..":"..(tonumber(string.match(Cell.version, "%d+")) or 0)..":debuffs:"..(builtIn+custom).."!"
+        local prefix = "!CELL:"..Cell.versionNum..":INDICATOR:"..(builtIn+custom).."!"
     
         local exported = Serializer:Serialize(data) -- serialize
         exported = LibDeflate:CompressDeflate(exported, deflateConfig) -- compress

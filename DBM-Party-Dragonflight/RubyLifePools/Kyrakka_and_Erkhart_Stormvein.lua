@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221018000429")
+mod:SetRevision("20221112174613")
 mod:SetCreatureID(193435, 190485)
 mod:SetEncounterID(2609)
 --mod:SetUsedIcons(1, 2, 3)
@@ -123,7 +123,7 @@ function mod:SPELL_CAST_START(args)
 		end
 		timerStormslamCD:Start()--self.vb.phase == 1 and 10 or 14
 	elseif spellId == 385558 or spellId == 381516 then
-		if spellId == 381516 and self.Option.SpecWarn381516cast then--Mythic
+		if spellId == 381516 and self.Options.SpecWarn381516cast then--Mythic
 			specWarnInterruptingCloudburst:Show()
 			specWarnInterruptingCloudburst:Play("stopcast")
 		else--Normal/Heroic

@@ -72,7 +72,7 @@ if IsAddOnLoaded("Auctionator") then
     function AuctionatorFrame_CIMIOnValueChanged()
         -- Some other addons *coughTSMcough* prevent this frame from loading.
         if _G["AuctionatorShoppingFrame"] == nil then return end
-        local buttons = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollFrame.buttons
+        local buttons = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollArea.buttons
         if buttons == nil then
             return
         end
@@ -94,7 +94,7 @@ if IsAddOnLoaded("Auctionator") then
         -- Some other addons *coughTSMcough* prevent this frame from loading.
         if _G["AuctionatorShoppingFrame"] == nil then return end
         -- Add hook for the Auction House frames.
-        local buttons = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollFrame.buttons
+        local buttons = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollArea.buttons
         if buttons == nil then
             return
         end
@@ -105,7 +105,7 @@ if IsAddOnLoaded("Auctionator") then
                 CIMI_AddToFrame(frame, AuctionatorFrame_CIMIUpdateIcon, "AuctionatorShoppingList"..i, "AUCTIONATOR")
             end
         end
-        local scrollBar = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollFrame.scrollBar
+        local scrollBar = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollArea.scrollBar
         scrollBar:HookScript("OnValueChanged", AuctionatorFrame_CIMIOnValueChanged)
 
         -- This GetChildren returns an _unpacked_ value for some reason, so we have to pack it in a table.

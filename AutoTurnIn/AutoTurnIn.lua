@@ -50,6 +50,7 @@ local options = {
 			name = L["enabled"]..(LOCALE_zhCN and " (版本: " or " (version ")..GetAddOnMetadata(addonName, "Version") .. ")",
 			desc = L["usage1"],
 			order = 1,
+			width  = "double",
 			get = function(_) return db.enabled end,
 			set = function(_, v)
 				db.enabled = v
@@ -332,6 +333,7 @@ local options = {
 						wp10 = makeWeaponToggle(13, 39),
 						wp11 = makeWeaponToggle(7, 40),
 						wp12 = makeWeaponToggle(14, 41),
+						-- TODO INVTYPE_RANGED
 						wp13 = createToggle(string.format("%s, %s, %s", C.weapon[3], C.weapon[4], C.weapon[15]), "weapon;Ranged", 42),
 						armor_title = {
 							type = "header",
@@ -342,13 +344,13 @@ local options = {
 							type = "select",
 							style  = "dropdown",
 							name = "",
-							values =  {[1] = NONE_KEY, [2]=C.armor[2], [3]=C.armor[3], [4]=C.armor[4], [5]=C.armor[5]},
-							get = function() return db["armor"]["type"] end,
-							set = function(info, v) db["armor"]["type"] = v end,
+							values =  {[-1] = NONE_KEY, [1]=C.armor[1], [2]=C.armor[2], [3]=C.armor[3], [4]=C.armor[4]},
+							get = function() return db["armorType"] end,
+							set = function(_, v) db["armorType"] = v end,
 							width  = "double",
 							order = 60,
 						},
-						armor7 = createToggle(C.armor[7], "armor;BACK", 61),
+						armor7 = createToggle(C.armor[6], "armor;SHIELD", 61),
 						armor8 = createToggle(L['Jewelry'], "armor;Jewelry", 62),
 						armor9 = createToggle(INVTYPE_HOLDABLE, "armor;HOLDABLE", 63),
 						armor10 = createToggle(INVTYPE_CLOAK, "armor;CLOAK", 64),
@@ -522,7 +524,7 @@ end
 
 -- Available check requires cache
 -- Active check query API function Returns true if quest matches options
-function AutoTurnIn:isAppropriate(questname, byCache)
+function AutoTurnIn:isAppropriateQuest(questname, byCache)
     local daily
     if byCache then
         daily = (not not self.questCache[questname])
@@ -585,14 +587,13 @@ end
 
 -- Old 'Quest NPC' interaction system. See http://wowprogramming.com/docs/events/QUEST_GREETING
 function AutoTurnIn:QUEST_GREETING()
-	if (db.debug) then self:Print("QUEST_GREETING") end
 	if (not self:AllowedToHandle(true)) then
 		return
 	end
 
 	for index=1, GetNumActiveQuests() do
 		local quest, isComplete = GetActiveTitle(index)
-		if isComplete and (self:isAppropriate(quest, true)) then
+		if isComplete and (self:isAppropriateQuest(quest, true)) then
 			SelectActiveQuest(index)
 		end
 	end
@@ -631,8 +632,7 @@ function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
 	for _, questInfo in ipairs(gossipInfos) do
 		if (questInfo.isComplete) then
 			local questname = questInfo.title
-			self:Print("gossipInfo.questID", questInfo.questID)
-			if self:isAppropriate(questname, true) then
+			if self:isAppropriateQuest(questname, true) then
 				local quest = L.quests[questname]
 				if quest and quest.amount then
 					if self:GetItemAmount(quest.currency, quest.item) >= quest.amount then
@@ -733,7 +733,7 @@ function AutoTurnIn:QUEST_DETAIL()
         AcceptQuest()
 
 	else
-		if self:AllowedToHandle() and self:isAppropriate() and (not db.completeonly) then
+		if self:AllowedToHandle() and self:isAppropriateQuest() and (not db.completeonly) then
 			--ignore trivial quests
 			if (not C_QuestLog.IsQuestTrivial(GetQuestID()) or db.trivial) then
 				QuestInfoDescriptionText:SetAlphaGradient(0, 5000)
@@ -777,7 +777,7 @@ function AutoTurnIn:QUEST_ACCEPTED(event, index)
 end
 
 function AutoTurnIn:QUEST_PROGRESS()
-    if  (self:AllowedToHandle() and IsQuestCompletable() and (self:isAppropriate() or self:IsWantedQuest(GetQuestID()))) then
+    if  (self:AllowedToHandle() and IsQuestCompletable() and (self:isAppropriateQuest() or self:IsWantedQuest(GetQuestID()))) then
 		CompleteQuest()
     end
 end
@@ -800,12 +800,6 @@ function AutoTurnIn:HandleGossip()
 	end
 end
 
--- return true if an item is of `ranged` type and is suitable with current options
-function AutoTurnIn:IsRangedAndRequired(subclass)
-	return (db.weapon['Ranged'] and
-		(C.ITEMS['Crossbows'] == subclass or C.ITEMS['Guns'] == subclass or C.ITEMS['Bows'] == subclass))
-end
-
 -- return true if an item is of `Jewelry` type and is suitable with current options
 function AutoTurnIn:IsJewelryAndRequired(equipSlot)
 	return db.armor['Jewelry'] and (C.JEWELRY[equipSlot])
@@ -816,6 +810,7 @@ AutoTurnIn.delayFrame = CreateFrame('Frame')
 AutoTurnIn.delayFrame:Hide()
 AutoTurnIn.delayFrame:SetScript('OnUpdate', function()
 	if not next(AutoTurnIn.autoEquipList) then
+		AutoTurnIn:DebugPrint("AutoEquip has no registered items to equip")
 		AutoTurnIn.delayFrame:Hide()
 		return
 	end
@@ -861,8 +856,8 @@ function AutoTurnIn:swapEquip(itemLink)
 	end
 end
 
--- turns quest in printing reward text if `showrewardtext` option is set.
--- prints appropriate message if item is taken by greed
+-- rewardIndex is calculated in AutoTurnIn:QUEST_COMPLETE, ot just '1' if there is just a single reward
+-- turns in the quest and prints reward text if `showrewardtext` option is set.
 -- equips received reward if such option selected
 function AutoTurnIn:TurnInQuest(rewardIndex)
 	if (db.showrewardtext) then
@@ -875,14 +870,14 @@ function AutoTurnIn:TurnInQuest(rewardIndex)
 		end
 	else
 		if db.autoequip then
+			-- this is a 'CHOICE'
 			local itemLink1 = GetQuestItemLink("choice", (GetNumQuestChoices() == 1) and 1 or rewardIndex)
-			-- Unconditional quest reward
-			local itemLink2
-			if GetNumQuestRewards() > 0 then
-				itemLink2 = GetQuestItemLink("reward", 1)
-			end
+
+			-- this is 'REWARD' - the unconditional item given for quest completition, it is different from the 'CHOICE'
+			local itemLink2 = GetNumQuestRewards() > 0 and GetQuestItemLink("reward", 1) or nil
+
 			-- if we have 2 items for same slot check which one is better
-			if (not not itemLink1 and not not itemLink2) then
+			if (not not itemLink1 and (not not itemLink2)) then
 				local lootLevel1, _, _, _, _, equipSlot1 = select(4, GetItemInfo(itemLink1))
 				local lootLevel2, _, _, _, _, equipSlot2 = select(4, GetItemInfo(itemLink2))
 				if (equipSlot1 == equipSlot2) then
@@ -893,15 +888,17 @@ function AutoTurnIn:TurnInQuest(rewardIndex)
 					end
 				end
 			end
-			
+			-- 'CHOICE' item is preferred
 			if (not not itemLink1) then
-				-- can be already checked
+				-- Could be already added to the equip frame by the AutoTurnIn:COMPLETE_QUEST funciton
 				local name = GetItemInfo(itemLink1)
-				if (not self.autoEquipList[name]) then
-					self:isSuitableItem(itemLink1)
+				if (self.autoEquipList[name] or (not not self:isSuitableItem(itemLink1))) then
+					self:DebugPrint("register item for Auto-Equip", itemLink1)
+					-- side effect, may register the item as non-equipable
+					self:swapEquip(itemLink1)
 				end
-				self:swapEquip(itemLink1)
 			end
+
 			if (not not itemLink2 and not not self:isSuitableItem(itemLink2)) then
 				self:swapEquip(itemLink2)
 			end
@@ -911,16 +908,16 @@ function AutoTurnIn:TurnInQuest(rewardIndex)
 	if (db.debug) then
 		local link = GetQuestItemLink("choice", rewardIndex)
 		if (link) then
-			self:Print("Debug: item to loot=", link)
+			self:DebugPrint("Looting item: ", link)
 		elseif (GetNumQuestChoices() == 0) then
-			self:Print("Debug: turning quest in, no choice required")
+			self:DebugPrint("turning quest in, no choice required")
 		end
     else
 		GetQuestReward(rewardIndex)
 	end
 end
 
-function AutoTurnIn:Greed()
+function AutoTurnIn:LootMostExpensive()
 	local index, money = 0, 0;
 
 	for i=1, GetNumQuestChoices() do
@@ -949,7 +946,7 @@ if more than one suitable item found then item list is shown in a chat window an
 -- tables are declared here to optimize memory model. Said that in current implementation it's cheaper to wipe than to create.
 
 AutoTurnIn.found, AutoTurnIn.stattable = {}, {}
-function AutoTurnIn:Need()
+function AutoTurnIn:CompleteQuestLootingNeeded()
 	wipe(self.found)
 	for i=1, GetNumQuestChoices() do
 		local checkResult = AutoTurnIn:isSuitableItem(GetQuestItemLink("choice", i))
@@ -1001,22 +998,21 @@ function AutoTurnIn:isSuitableItem(link)
 	if (invType == "") then
 		return nil
 	end
-	
+
 	--trinkets are out of autoloot--
 	if  ( 'INVTYPE_TRINKET' == invType )then
 		self:Print(L["stopitemfound"]:format(_G[invType]))
 		return false
 	end
-	
+
 	-- User may not choose any options hence any item became 'ok'. That situation is undoubtedly incorrect.
-	local SettingsExists = (class == C.WEAPONLABEL and next(db.weapon) or next(db.armor))
-							or next(db.stat)
+	local SettingsExists = (class == C.WEAPONLABEL and next(db.weapon) or next(db.armor)) or next(db.stat)
 	if (not SettingsExists) then
 		self:Print(L["norewardsettings"])
 		return nil
 	end
-	
-	local points = self:itemPoints(link)
+
+	local points, lvl = self:itemPoints(link)
 	-- points > 0 means that particular options section is empty or item meets requirements
 	if (points > 0) then
 		-- comparing with currently equipped item
@@ -1030,23 +1026,18 @@ function AutoTurnIn:isSuitableItem(link)
 					-- will not equip offhand if main hand has 2h-weapon
 					local mainHandLink = GetInventoryItemLink("player", GetInventorySlotInfo("MainHandSlot"))
 					local mainHandType = select(9, GetItemInfo(mainHandLink))
-					if mainHandType == "INVTYPE_2HWEAPON" then
-						if (db.debug) then
-							self:Print(link, "can not be equipped over", mainHandLink)
-						end
+					if mainHandType == "INVTYPE_2HWEAPON" then						
+						self:DebugPrint(link, "can not be equipped over", mainHandLink)
 						return nil
 					end
 				end
-				--
-				if (db.debug) then
-					self:Print(link, "can be equipped to empty slot")
-				end
+				self:DebugPrint(link, "can be equipped to empty slot")
 				if db.autoequip then
 					self.autoEquipList[name] = firstSlot
 				end
 				return points
 			end
-			
+
 			local eqLevel = self:ItemLevel(invLink)
 			local invPoints = self:itemPoints(invLink)
 			local equipInvType = select(9, GetItemInfo(invLink))
@@ -1055,9 +1046,7 @@ function AutoTurnIn:isSuitableItem(link)
 				local secondSlot = GetInventorySlotInfo(slot[2])
 				invLink = GetInventoryItemLink("player", secondSlot)
 				if invLink == nil then
-					if (db.debug) then
-						self:Print(link, "can be equipped to empty slot")
-					end
+					self:DebugPrint(link, "can be equipped to empty slot")
 					if db.autoequip then
 						self.autoEquipList[name] = secondSlot
 					end
@@ -1075,18 +1064,15 @@ function AutoTurnIn:isSuitableItem(link)
 			end
 
 			-- comparing lowest equipped item level with reward's item level and points
+			self:DebugPrint( link, "level points:", lootLevel, invLink, "level points:", eqLevel)
 			if (points >= invPoints and lootLevel >= eqLevel) then
-				if (db.debug) then
-					self:Print("New", link, "is more suitable than", invLink, "- can be equipped")
-				end
+				self:DebugPrint("New", link, "is better then ", invLink, ". Equipping!")
 				if db.autoequip then
 					self.autoEquipList[name] = firstSlot
 				end
 				return points
 			else
-				if (db.debug) then
-					self:Print("Old", invLink, "is more suitable than", link, "- skip")
-				end
+				self:DebugPrint("New", link, "is worse than ", invLink, ". Skipping!")
 				return nil
 			end
 		end
@@ -1096,41 +1082,44 @@ function AutoTurnIn:isSuitableItem(link)
 	return nil
 end
 
+-- Item levels are compared in AutoTurnIn:ItemLevel
 function AutoTurnIn:itemPoints(link)
 	local points = 0
 	if (link == nil) then
 		return points
 	end
-	
-	local name, _, _, lootLevel, _, class, subclass, _, invType = GetItemInfo(link)
+
+	local subclass, _, invType, _, _, classId, subclassId = select(7, GetItemInfo(link))
 	if (invType == "") then
 		return points
 	end
-	
+
 	local info = {}
-	tinsert(info, "Debug: " .. link)
+	tinsert(info, "Item: " .. link)
 	-- TYPE: item is suitable if there are no type specified at all or item type is chosen
 	local OkByType = false
-	if class == C.WEAPONLABEL then
-		OkByType = (not next(db.weapon)) or (db.weapon[subclass] or
-					self:IsRangedAndRequired(subclass))
+	if classId == Enum.ItemClass.Weapon then
+		OkByType = (not next(db.weapon)) or (db.weapon[subclass] or (invType == INVTYPE_RANGED or invType == INVTYPE_RANGEDRIGHT))
 	else
-		OkByType = ( not next(db.armor) ) or ( db.armor[subclass] or
-					db.armor[invType] or self:IsJewelryAndRequired(invType) )
+		OkByType = ( not next(db.armor) ) -- armor is not selected at all
+		    or ( db.armor[subclass] -- armor piece by the name (shield, Cloak, off-hand, Jewelry)
+			or ( classId == Enum.ItemClass.Armor and db.armorType == subclassId) -- particular armor class
+			or db.armor[invType] or self:IsJewelryAndRequired(invType) ) -- todo find the inv_type for jewelry
 	end
-	tinsert(info, "type: " .. subclass .. ((not not OkByType) and "=>OK" or "=>FAIL"))
+	tinsert(info, "Type: " .. subclass .. ((not not OkByType) and " => YES" or " => NO"))
 	if OkByType then
 		points = 1000
 		--STAT+SECONDARY: Same here: if no stat specified or item stat is chosen then item is wanted
-		local OkByStat = not next(db.stat) 			-- true if table is empty
+		-- true if table is empty. Sadlt, it is no longer needed. Loot is lways of appropriate main stat
+		local OkByStat = not next(db.stat)
 		local OkBySecondary = not next(db.secondary) -- true if table is empty
-		if (not (OkByStat and OkBySecondaryStat)) then
+		if (not (OkByStat and OkBySecondary)) then
 			wipe(self.stattable)
 			GetItemStats(link, self.stattable)
 			for stat, value in pairs(self.stattable) do
 				if (db.stat[stat]) then
 					points = points + (5 * value)
-					tinsert(info, "stat: " .. _G[stat] .. "=>OK")
+					tinsert(info, "Stat: " .. _G[stat] .. " => YES")
 				end
 				if (db.secondary[stat]) then
 					points = points + value
@@ -1139,36 +1128,33 @@ function AutoTurnIn:itemPoints(link)
 			end
 		end
 	end
-	
-	tinsert(info, "total " .. points)
-	if (db.debug) then
-		self:Print(table.concat(info, ", "))
-	end
-	
+
+	tinsert(info, "Points: " .. points)
+	self:DebugPrint(table.concat(info, ", "))
 	return points
 end
 
 -- I was forced to make decision on offhand, cloak and shields separate from armor but I can't pick up my mind about the reason...
 function AutoTurnIn:QUEST_COMPLETE()
-	-- blasted Lands citadel wonderful NPC. They do not trigger any events except quest_complete.
+	-- blasted Lands citadel wonderful NPCs. They do not trigger any events except quest_complete.
 	if not self:AllowedToHandle() then
 		return
 	end
 
 	--/script faction = (GameTooltip:NumLines() > 2 and not UnitIsPlayer(select(2,GameTooltip:GetUnit()))) and
     -- getglobal("GameTooltipTextLeft"..GameTooltip:NumLines()):GetText() DEFAULT_CHAT_FRAME:AddMessage(faction or "NIL")
-    if self:isAppropriate() then
-		local questname = GetTitleText()
-		local quest = L.quests[questname]
+    if self:isAppropriateQuest() then
 		local numOptions = GetNumQuestChoices()
 
 		if numOptions > 1 then
-			local function getItemId(typeStr)
-				local link = GetQuestItemLink(typeStr, 1) --first item is enough
+			--get itemId for the first item. It is enough to detect that we either can not proceeed
+			-- or this is one of known quests that require alternative handling 
+			local function getItemId(typeStr, index)
+				local link = GetQuestItemLink(typeStr, index)
 				return link and link:match("%b::"):gsub(":", "") or self.ERRORVALUE
 			end
 
-			local itemID = getItemId("choice")
+			local itemID = getItemId("choice", 1)
 			if (not itemID) then
 				self:Print("Can't read reward link from server. Close NPC dialogue and open it again.");
 				return
@@ -1179,62 +1165,31 @@ function AutoTurnIn:QUEST_COMPLETE()
 				return
 			end
 
--- Code for ignoring Relics if turned on.
-			if (db.relictoggle) then
-				local relicFound = false
-				local numQuestRewards = GetNumQuestRewards()
-				if (db.debug) then
-					self:Print("Debug: numQuestRewards:",numQuestRewards,".")
-					self:Print("Debug: numOptions:",numOptions,".")
-				end
-				for i=1, numOptions do
-					local itemLinks = GetQuestItemLink("choice", i)
-					if (db.debug) then
-						self:Print("Debug: Listing choice found:",itemLinks,".")
+			-- Code for ignoring Relics if turned on.
+			if (db.relictoggle or db.artifactpowertoggle) then
+				for i=1, numOptions do					
+					local link = GetQuestItemLink(typeStr, index)
+					local itemID = link and link:match("%b::"):gsub(":", "") or self.ERRORVALUE
+
+					if (link and db.artifactpowertoggle and IsArtifactPowerItem(itemID)) then
+						self:Print(L["You chose not to complete quests with Artifact Powers among rewards"], link)
+						return
 					end
-					local itemReward = GetQuestItemLink("reward", i)
-					if (itemReward) then
-						if (db.debug) then
-							self:Print("Debug: Listing reward found:",itemReward,".")
-						end
-					end
-					local _, _, Color, Ltype, itemID, Enchant, Gem1, Gem2, Gem3, Gem4, Suffix, Unique, LinkLvl, Name = string.find(itemLinks,   "|?c?f?f?(%x*)|?H?([^:]*):?(%d+):?(%d*):?(%d*):?(%d*):?(%d*):?(%d*):?(%-?%d*):?(%-?%d*):?(%d*):?(%d*):?(%-?%d*)|?h?%[?([^%[%]]*)%]?|?h?|?r?")
-					if itemID then
-						local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice = GetItemInfo(itemID)
-						if ((itemType == "Gem") and (itemSubType =="Artifact Relic")) then
-							relicFound = true
-							if (db.debug) then
-								self:Print("Debug: Gem: Artificat found:",itemLinks,".")
-							end
-							return
-						end
+					if (link and db.relictoggle and IsArtifactRelicItem(itemID)) then
+						self:Print(L["You chose not to complete quests with Artifact relics among rewards"], link)
+						return
 					end
 				end
-			end
-			if (relicFounnd) then
-				if (db.debug) then
-					self:Print("Debug: Atleaast 1 relic found.. aborting.")
-				end
-				return
 			end
 
-			if (db.artifactpowertoggle) then
-				local ArtifactPowerFound = false
---				code not ready
-				if (ArtifactPowerFound) then
-					if (db.debug) then
-						self:Print("Debug: Pre-emptive debug.. aborting.")
-					end
-					return
-				end
-			end
+			-- Decide whther quest is allowed to be completed and what reward should be looted
 			if (db.lootreward > 1) then -- Auto Loot enabled!
 				self.forceGreed = false
 				if (db.lootreward == 3) then -- 3 == Need
-					self.forceGreed = (not self:Need() ) and db.greedifnothingfound
+					self.forceGreed = ( not self:CompleteQuestLootingNeeded() ) and db.greedifnothingfound
 				end
 				if (db.lootreward == 2 or self.forceGreed) then -- 2 == Greed
-					self:Greed()
+					self:LootMostExpensive()
 				end
 			end
 		else
@@ -1315,8 +1270,10 @@ hooksecurefunc(QuestFrame, "Show", function() AutoTurnIn:ShowIgnoreButton("quest
 hooksecurefunc(GossipFrame, "Show", function() AutoTurnIn:ShowIgnoreButton("gossip") end)
 
 
-
--- HELPERS
+--[[
+----------------------------------------------------------------------------------------------------------------------------
+H E L P E R S 
+--]]
 function AutoTurnIn:dump(o)
 	DevTools_Dump(o, "value");
 	-- self:Print(self:_dump(o))
@@ -1334,6 +1291,17 @@ function AutoTurnIn:_dump(o)
       return tostring(o)
    end
 end
+
+function AutoTurnIn:DebugPrint(...)
+	if (db.debug) then
+		local msg = ""
+		for i = 1, select("#", ...) do
+			msg = (i > 1 and (msg .. " ") or msg) .. select(i, ...)
+		end
+		self:Print("|cfff23ff4", "DEBUG: ", msg, "|r")
+	end
+end
+
 -- /run local a=UnitGUID("npc"); for word in a:gmatch("Creature%-%d+%-%d+%-%d+%-%d+%-(%d+)%-") do print(word) end
 -- https://www.townlong-yak.com/
 

@@ -5,7 +5,6 @@
 ## SavedVariables: ELPDATA
 ## X-DataVersion: 20220922
 ## X-Vendor: AbyUI
-## Dependencies: TODO:abyui10
 
 Utils.lua
 Data.lua

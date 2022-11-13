@@ -180,10 +180,32 @@ end
 LoadList = function()
     -- built-in
     if not buttons[0] then
-        buttons[0] = Cell:CreateButton(topPane, "Cell", "accent-hover", {156, 20})
+        buttons[0] = Cell:CreateButton(topPane, "", "accent-hover", {156, 20})
         buttons[0].id = 0 -- for highlight
         buttons[0]:SetPoint("TOPLEFT")
+
+        -- checkbox
+        buttons[0].cb = Cell:CreateCheckButton(buttons[0], "", function(checked)
+            CellDB["snippets"][0]["autorun"] = checked
+        end)
+        buttons[0].cb:SetPoint("LEFT", 3, 0)
+        buttons[0].cb:HookScript("OnEnter", function()
+            buttons[0]:GetScript("OnEnter")(buttons[0])
+        end)
+        buttons[0].cb:HookScript("OnLeave", function()
+            buttons[0]:GetScript("OnLeave")(buttons[0])
+        end)
+
+        -- label
+        buttons[0].label = buttons[0]:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+        buttons[0].label:SetPoint("LEFT", buttons[0].cb, "RIGHT", 3, 0)
+        buttons[0].label:SetPoint("RIGHT", -3, 0)
+        buttons[0].label:SetJustifyH("LEFT")
+        buttons[0].label:SetWordWrap(false)
+        buttons[0].label:SetText("Cell")
     end
+
+    buttons[0].cb:SetChecked(CellDB["snippets"][0]["autorun"])
 
     -- user created
     for i, t in ipairs(CellDB["snippets"]) do

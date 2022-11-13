@@ -55,6 +55,14 @@ function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
     self:ForActive('UpdateStateDriver')
 end
 
+function ActionBarsModule:SPELLS_CHANGED()
+    C_Timer.After(1, function()
+        if not InCombatLockdown() then
+            self:ForActive('ForButtons', 'UpdateShownInsecure')
+        end
+    end)
+end
+
 function ActionBarsModule:SetBarCount(count)
     self:ForActive('Free')
 

@@ -56,16 +56,23 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
         self:SetScript("OnUpdate", ELP_RetrieveNext) --initial Hidden
 
         CoreDependCall("Blizzard_EncounterJournal", function()
-            local btn = WW:Button("ELPSeasonTab", EncounterJournalInstanceSelect, "EncounterTierTabTemplate")
-            :SetText("赛季大秘"):kv("id", 5):BOTTOMLEFT(EncounterJournalInstanceSelectLootJournalTab, "BOTTOMRIGHT", 35, 0)
+            local btn = WW:Button("ELPSeasonTab", EncounterJournal, "BottomEncounterTierTabTemplate")
+            :SetText("赛季大秘"):kv("id", 5) --set automatically :TOPLEFT(EncounterJournal.LootJournalTab, "TOPRIGHT", 3, 0)
             :SetScript("OnClick", EJ_ContentTab_OnClick_ELP):un()
+            PanelTemplates_SetNumTabs(EncounterJournal, 5);
+            --选中后仍需要点击，所以需要手工隐藏高亮
+            hooksecurefunc(btn, "Enable", function(self)
+                local shown = EncounterJournal.selectedTab ~= self.id
+                self.LeftHighlight:SetShown(shown)
+                self.RightHighlight:SetShown(shown)
+                self.MiddleHighlight:SetShown(shown)
+            end)
             btn.Disable = btn.Enable
             CoreUIEnableTooltip(btn, "爱不易提示", "此处为9.2.7方便查询史诗钥石掉落的入口。原来的爱不易装备搜索功能仍在'装备筛选'的下拉菜单中（可以按装备属性搜索全部副本装备），另外按住ALT点此标签也能直接跳转")
 
             EncounterJournalEncounterFrameInfoLootTab:Click() --初始为掉落面板
 
             ELP.setupHooks()
-            --TODO EncounterJournal_OnShow（）有自动选地图的功能
         end)
     end
 end)
@@ -78,13 +85,81 @@ EJ_ContentTab_OnClick_ELP = function(self)
     instanceSelect.bg:SetAtlas(tierData.backgroundAtlas, true);
 
     EJ_HideNonInstancePanels();
-    instanceSelect.scroll:Show();
+    instanceSelect.ScrollBox:Show();
     EncounterJournal_ListInstances_ELP() --abyui
     EncounterJournal_DisableTierDropDown(true);
 
     if IsModifierKeyDown() then
         if db.range == 0 then db.range = 1 end
         ELP_MenuOnClick(nil, "range", db.range)
+    end
+end
+
+-- GetSeasonInstanceByIndex
+function EJ_GetInstanceByIndex_ELP(index)
+    local data = ELP_SEASON_MYTHICS[index]
+    if data == nil then return end
+    local instanceID = data[1]
+    return instanceID, data[3], select(2, EJ_GetInstanceInfo(instanceID)) --EJ_GetInstanceByIndex(3, false) 和 EJ_GetInstanceInfo(1194) 暂时一致
+end
+
+-- ListSeasonInstances, copy from blizzard EncounterJournal_ListInstances
+function EncounterJournal_ListInstances_ELP()
+    local EJ_NUM_INSTANCE_PER_ROW = 4
+    local EJ_GetInstanceByIndex = EJ_GetInstanceByIndex_ELP
+
+    local instanceSelect = EncounterJournal.instanceSelect;
+
+    --local tierName = EJ_GetTierInfo(EJ_GetCurrentTier());
+    --UIDropDownMenu_SetText(instanceSelect.tierDropDown, tierName);
+    NavBar_Reset(EncounterJournal.navBar);
+    EncounterJournal.encounter:Hide();
+    instanceSelect:Show();
+
+    local dataIndex = 1;
+    local showRaid = not EncounterJournal.raidsTab:IsEnabled(); --nouse
+    local instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex_ELP(dataIndex, showRaid);
+
+    local dataProvider = CreateDataProvider();
+    while instanceID ~= nil do
+        dataProvider:Insert({
+            instanceID = instanceID,
+            name = name,
+            description = description,
+            buttonImage = buttonImage,
+            link = link,
+            mapID = mapID,
+            seasonIndex = dataIndex,
+        });
+
+        dataIndex = dataIndex + 1;
+        instanceID, name, description, _, buttonImage, _, _, _, link = EJ_GetInstanceByIndex_ELP(dataIndex, showRaid);
+    end
+    EncounterJournal.instanceSelect.ScrollBox:SetDataProvider(dataProvider);
+end
+
+function ELP_InstanceSelectScrollViewElementFactory(factory, elementData)
+    if not elementData.seasonIndex then return end --set in EncounterJournal_ListInstances_ELP
+    local instanceButton = EncounterJournalInstanceSelect.ScrollBox.view.factoryFrame --factory acquired scroll line frame
+    instanceButton.seasonIndex = elementData.seasonIndex --normal dungeon and raid also set, but not matter.
+    if instanceButton:GetScript("PreClick") == nil then
+        instanceButton:SetScript("PreClick", function(self)
+            if EncounterJournal.selectedTab == ELP_SEASON_TAB_ID and self.seasonIndex then
+                for i, v in ipairs(ELP_FILTERS) do
+                    if v.type == "dungeon" then
+                        db.range = i - 1 + self.seasonIndex
+                        break
+                    end
+                end
+                ELP.do_not_reset_state = true --没啥好办法, 从这里点DisplayInstance也不能Reset, 但是没有
+            else
+                --db.range = 0 --在这里修改会导致Reset不能运行, "DisplayInstance_ELP 会处理
+            end
+        end)
+        instanceButton:SetScript("PostClick", function()
+            ELP_StartSearch(false)
+            ELP.do_not_reset_state = nil
+        end)
     end
 end
 
@@ -97,7 +172,7 @@ function ELP_StartSearch(displayInstance)
         end
         ELP_SetDefaultSlotFilterWhenManualClick()
         EncounterJournalEncounterFrameInfoLootTab:Click()
-        EncounterJournalEncounterFrameInfoLootScrollFrameFilterToggle:Click()
+        EncounterJournalEncounterFrameInfoFilterToggle:Click()
         EncounterJournal_OnFilterChanged_ELP()
     end
 end
@@ -213,7 +288,8 @@ function ELP_Iterate_Loot(insID, bosses, lootTable)
                         insID = ELP_LOOT_TABLE_LOOTS_ALL[itemID]
                         info.encounterID = nil
                     end
-                    ELP_UpdateCurrItem(itemID, insID, info.encounterID, info.link)
+                    local mod = EJ_GetNumEncountersForLootByIndex(loot) > 1 and -1 or 1 --复数表示多boss掉落
+                    ELP_UpdateCurrItem(itemID, insID, info.encounterID and mod * info.encounterID or nil, info.link)
                 end
             end
         end
@@ -253,7 +329,7 @@ end
 local tempInstances = {}
 function ELP_UpdateItemList()
     if ELP_IsNormalState() then return end
-    if not EncounterJournalEncounterFrameInfoLootScrollFrame:IsVisible() then return end
+    if not EncounterJournalEncounterFrameInfo.LootContainer.ScrollBox.ScrollTarget:IsVisible() then return end
     local EncounterJournal = EncounterJournal or CreateFrame("Frame")
     EncounterJournal:UnregisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:UnregisterEvent("EJ_DIFFICULTY_UPDATE")
@@ -267,14 +343,18 @@ function ELP_UpdateItemList()
         u1copy(filter.otherInstances, tempInstances)
     end
     for insID, insData in pairs(tempInstances) do
+        local diff = ELP_INSTANCE_DIFFICULTY[insID]
+        if diff and diff ~= EJ_GetDifficulty() then
+            EJ_SetDifficulty(diff) --需要在SelectInstance之前设置，最好改成异步响应EJ_DIFFICULTY_UPDATE
+            --ELP_SetBestDifficulty(insID)
+        end
         EJ_SelectInstance(insID)
-        --ELP_SetBestDifficulty(insID) --这个是没有用的, 要响应 EJ_DIFFICULTY_UPDATE 才行, 过于复杂, 所以默认都紫装
         ELP_Iterate_Loot(insID, insData.bosses, insData.lootTable)
     end
 
     EncounterJournal:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
     EncounterJournal:RegisterEvent("EJ_DIFFICULTY_UPDATE")
-    --EncounterJournal.encounter.info.lootScroll.scrollBar:SetValue(0) --意义不明
+    --EncounterJournal.encounter.info.LootContainer.ScrollBox:SetScrollPercentage(0) --意义不明
 
     ELP_SetInstanceTitleToFilterName(filter)
 
@@ -438,104 +518,114 @@ local INSTANCE_LOOT_BUTTON_HEIGHT = 64;
 replace EncounterJournal_LootUpdate
 ---------------------------------------------------------------]]
 EncounterJournal_LootUpdate_ELP = function()
-    if ELP_IsNormalState() then
-        local buttons = EncounterJournal.encounter.info.lootScroll.buttons;
-        for _, button in ipairs(buttons) do if button.lootFrame.instance then button.lootFrame.instance:SetText("") end end
-        return ELP_RunOrigin("EncounterJournal_LootUpdate")
-    end
+    if ELP_IsNormalState() then return ELP_RunOrigin("EncounterJournal_LootUpdate") end
     if ELP_IsRetrieving() then return end
 
     EncounterJournal_UpdateFilterString();
-    local scrollFrame = EncounterJournal.encounter.info.lootScroll;
-    local offset = HybridScrollFrame_GetOffset(scrollFrame);
-    local button, index;
 
-    local numLoot = #curr_items --EJ_GetNumLoot();
-    local buttonSize = INSTANCE_LOOT_BUTTON_HEIGHT;
-    local buttons = scrollFrame.buttons;
-
-    for i = 1, #buttons do
-        button = buttons[i];
-        index = offset + i;
-
-        button.dividerFrame:Hide();
-        local currentFrame = button.lootFrame;
-
-        if index <= numLoot then
-            button:SetHeight(INSTANCE_LOOT_BUTTON_HEIGHT);
-            currentFrame.boss:Show();
-            currentFrame.bossTexture:Show();
-            currentFrame.bosslessTexture:Hide();
-            button.index = index;
-            EncounterJournal_SetLootButton_ELP(button);
-        else
-            button:Hide();
-        end
+    --不处理独立掉落的内容(导灵器、坐骑这种，没意义且可能太多)
+    local scrollBox = EncounterJournal.encounter.info.LootContainer.ScrollBox;
+    local dataProvider = CreateDataProvider();
+    local loot = {};
+    for i = 1, #curr_items do
+        dataProvider:Insert({index=i});
     end
-
-    local totalHeight = numLoot * buttonSize;
-    HybridScrollFrame_Update(scrollFrame, totalHeight, scrollFrame:GetHeight());
+    scrollBox:SetDataProvider(dataProvider);
 end
 
 --[[------------------------------------------------------------
 hook EncounterJournal_SetLootButton
 ---------------------------------------------------------------]]
-local OTHER_CLASS = GetItemSubClassInfo(LE_ITEM_CLASS_ARMOR, 0)
-EncounterJournal_SetLootButton_ELP = function(item)
-    --if not item.UpdateTooltip then item.UpdateTooltip = item:GetScript("OnEnter") end --for Azerite Tooltip Update
-    if ELP_IsNormalState() then return ELP_RunOrigin("EncounterJournal_SetLootButton", item) end
-    local itemID = curr_items[item.index]
-    local encounterID = curr_encts[itemID]
-    local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, icon, vendorPrice = GetItemInfo(itemID)
-    quality = max(4, quality or 0)
-    link = curr_links[itemID]
-    item.link = link;
-
-    do --9.1.5 dividerFrame
-        item.lootFrame:Show();
-        item.dividerFrame:Hide();
-        item:SetEnabled(true);
+local OTHER_CLASS = GetItemSubClassInfo(Enum.ItemClass.Armor, 0)
+local tmpItemInfo = {}
+EncounterJournalItemMixin_Init_ELP = function(self, elementData)
+    --if not self.UpdateTooltip then self.UpdateTooltip = self:GetScript("OnEnter") end --for Azerite Tooltip Update
+    if ELP_IsNormalState() then
+        if self.instance then self.instance:SetText("") end
+        return ELP_RunOrigin("EncounterJournalItemMixin.Init", self, elementData)
     end
 
-    local currentFrame = item.lootFrame;
-    if ( name ) then
-        currentFrame.name:SetText(ITEM_QUALITY_COLORS[quality].hex .. name .. "|r");
-        currentFrame.icon:SetTexture(icon);
-        currentFrame.slot:SetText(_G[equipSlot] or equipSlot);
-        currentFrame.armorType:SetText(subclass~=OTHER_CLASS and subclass or "");
-        if not currentFrame.instance then
-            currentFrame.instance = item:CreateFontString("$parentInst", "OVERLAY", "GameFontBlack")
-            currentFrame.instance:SetJustifyH("RIGHT")
-            currentFrame.instance:SetSize(0, 12)
-            currentFrame.instance:SetPoint("BOTTOMRIGHT", -6, 6)
-            currentFrame.instance:SetTextColor(0.25, 0.1484375, 0.02, 1)
+    local index = elementData.index;
+    if (false) then
+        self:SetHeight(BOSS_LOOT_BUTTON_HEIGHT);
+        self.boss:Hide();
+        self.bossTexture:Hide();
+        self.bosslessTexture:Show();
+    else
+        self:SetHeight(INSTANCE_LOOT_BUTTON_HEIGHT);
+        self.boss:Show();
+        self.bossTexture:Show();
+        self.bosslessTexture:Hide();
+    end
+    self.index = index;
+
+    local itemID = curr_items[self.index]
+    local itemInfo = tmpItemInfo
+    table.wipe(itemInfo)
+    itemInfo.encounterID = curr_encts[itemID]
+    itemInfo.itemID = itemID
+    if not itemID then return end
+    itemInfo.name, itemInfo.link, itemInfo.itemQuality, itemInfo.iLevel, itemInfo.reqLevel, itemInfo.class, itemInfo.subclass, itemInfo.maxStack, itemInfo.slot, itemInfo.icon, itemInfo.vendorPrice = GetItemInfo(itemID)
+    itemInfo.itemQuality = max(4, itemInfo.itemQuality or 0) --all epic in mythic+
+    itemInfo.link = curr_links[itemID]
+
+    if ( itemInfo.link ) then
+        self.name:SetText(WrapTextInColor(itemInfo.name, ITEM_QUALITY_COLORS[itemInfo.itemQuality].color));
+        self.icon:SetTexture(itemInfo.icon);
+        if itemInfo.handError then
+            self.slot:SetText(INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(itemInfo.slot));
+        else
+            self.slot:SetText(_G[itemInfo.slot] or itemInfo.slot);
+        end
+        if itemInfo.weaponTypeError then
+            self.armorType:SetText(INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(itemInfo.armorType));
+        else
+            self.armorType:SetText(itemInfo.subclass~=OTHER_CLASS and itemInfo.subclass or "");
+        end
+
+        if not self.instance then
+            self.instance = self:CreateFontString("$parentInst", "OVERLAY", "GameFontBlack")
+            self.instance:SetJustifyH("RIGHT")
+            self.instance:SetSize(0, 12)
+            self.instance:SetPoint("BOTTOMRIGHT", -6, 6)
+            self.instance:SetTextColor(0.25, 0.1484375, 0.02, 1)
         end
         local instance = curr_insts[itemID]
         instance = instance and EJ_GetInstanceInfo(instance)
-        currentFrame.instance:SetText(instance or "")
+        self.instance:SetText(instance or "")
 
-        currentFrame.boss:SetFormattedText(BOSS_INFO_STRING, encounterID and EJ_GetEncounterInfo(encounterID) or "未知");
-        if encounterID and ELP_ENCOUNTER_INSTANCE_NAME[encounterID] then
-            currentFrame.instance:SetText(ELP_ENCOUNTER_INSTANCE_NAME[encounterID]) --一个副本分两个大秘 --/dump EncounterJournal.encounterID
+        local numEncounters = itemInfo.encounterID and 1 or 0 --只支持0个,1个,或多个 EJ_GetNumEncountersForLootByIndex(self.index);
+        if (itemInfo.encounterID or 0) < 0 then
+            itemInfo.encounterID = -itemInfo.encounterID
+            numEncounters = 3
+        end
+        if ( numEncounters == 1 ) then
+            self.boss:SetFormattedText(BOSS_INFO_STRING, EJ_GetEncounterInfo(itemInfo.encounterID) or UNKNOWN);
+        elseif ( numEncounters == 2) then
+            local itemInfoSecond = C_EncounterJournal.GetLootInfoByIndex(self.index, 2);
+            local secondEncounterID = itemInfoSecond and itemInfoSecond.encounterID;
+            if ( itemInfo.encounterID and secondEncounterID ) then
+                self.boss:SetFormattedText(BOSS_INFO_STRING_TWO, EJ_GetEncounterInfo(itemInfo.encounterID), EJ_GetEncounterInfo(secondEncounterID));
+            end
+        elseif ( numEncounters > 2 ) then
+            self.boss:SetFormattedText(BOSS_INFO_STRING_MANY, EJ_GetEncounterInfo(itemInfo.encounterID) or UNKNOWN);
         end
 
-        SetItemButtonQuality(currentFrame, quality, itemID);
-
-        item.link = link;
+        --local itemName, _, quality = GetItemInfo(itemInfo.link);
+        SetItemButtonQuality(self, itemInfo.itemQuality, itemInfo.link); --for TinyInspect
     else
-        currentFrame.name:SetText(RETRIEVING_ITEM_INFO);
-        currentFrame.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
-        currentFrame.slot:SetText("");
-        currentFrame.armorType:SetText("");
-        currentFrame.boss:SetText("");
-        if currentFrame.instance then currentFrame.instance:SetText("") end
+        self.name:SetText(RETRIEVING_ITEM_INFO);
+        self.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
+        self.slot:SetText("");
+        self.armorType:SetText("");
+        self.boss:SetText("");
+        if self.instance then self.instance:SetText("") end
     end
-    item.encounterID = encounterID;
-    item.itemID = itemID;
-    --item.link = link;
-    item:Show();
-    if item.showingTooltip then
-        EncounterJournal_SetTooltip(link);
+    self.encounterID = itemInfo and itemInfo.encounterID;
+    self.itemID = itemInfo and itemInfo.itemID;
+    self.link = itemInfo and itemInfo.link;
+    if self.showingTooltip then
+        EncounterJournal_SetTooltip(self.link);
     end
 end
 
@@ -558,32 +648,17 @@ EncounterJournal_Loot_OnClick_ELP = function(self)
     if ELP_IsNormalState() then return ELP_RunOrigin("EncounterJournal_Loot_OnClick", self) end
     local insID = curr_insts[self.itemID]
     local encounterID = self.encounterID --remember before change
-    local old = EncounterJournal.encounter.info.lootScroll.scrollBar:GetValue()
+    local old = EncounterJournal.encounter.info.LootContainer.ScrollBox:GetScrollPercentage()
     --最后决定用户在爱不易查询状态下点击boss无效, 没有hook EncounterJournal_DisplayEncounter
     ELP_DisplayInstanceAndEncounterByUS(insID, encounterID)
-    EncounterJournal.encounter.info.lootScroll.scrollBar:SetValue(old)
+    EncounterJournal.encounter.info.LootContainer.ScrollBox:SetScrollPercentage(old)
 
     --scroll boss list to selected encounter
     if encounterID then
-        local bs = EncounterJournal.encounter.info.bossesScroll
-        for i=1, 20 do
-            local bb = _G["EncounterJournalBossButton"..i]
-            if not bb then break end
-            if bb.encounterID == encounterID then
-                local offset = bs:GetTop() - bs.child:GetHeight() - (bb:GetTop() - bb:GetHeight())
-                if offset <= 0 then offset = bb:GetTop() - bs:GetTop() end
-                if offset > 0 then RunOnNextFrame(function() EncounterJournal.encounter.info.bossesScroll.ScrollBar:SetValue(offset) end) end
-                break
-            end
-        end
+        EncounterJournal.encounter.info.BossesScrollBox:ScrollToElementDataByPredicate(function(data)
+            return select(3, EJ_GetEncounterInfoByIndex(data.index)) == encounterID
+        end)
     end
-end
-
-function EncounterJournal_LootCalcScroll_ELP(offset)
-    if ELP_IsNormalState() then return EncounterJournal_LootCalcScroll(offset) end
-    local buttonHeight = INSTANCE_LOOT_BUTTON_HEIGHT;
-    local index = floor(offset/buttonHeight)
-    return index, offset - (index*buttonHeight);
 end
 
 --[[------------------------------------------------------------
@@ -604,139 +679,16 @@ function EncounterJournal_UpdateFilterString_ELP_POST()
     end
     append = append .. format("：%d项", #curr_items)
 
-    local banner = EncounterJournal.encounter.info.lootScroll.classClearFilter
+    local banner = EncounterJournal.encounter.info.LootContainer.classClearFilter
     if banner:IsShown() then
         local text = banner.text:GetText()
         local old = text:gsub(EJ_CLASS_FILTER:gsub("%%s", "(.+)"), "职业：%1")
         banner.text:SetText(old .. (name == "" and "" or "，") .. append)
     else
         banner.text:SetText(append)
-        RunOnNextFrameKey("AbyEncounterLootPlusShowFilter", function() EncounterJournal.encounter.info.lootScroll.classClearFilter:Show() end) --处理self:GetParent():Hide();
-        EncounterJournal.encounter.info.lootScroll:SetHeight(360);
+        RunOnNextFrameKey("AbyEncounterLootPlusShowFilter", function() EncounterJournal.encounter.info.LootContainer.classClearFilter:Show() end) --处理self:GetParent():Hide();
+        EncounterJournal.encounter.info.LootContainer.ScrollBox:SetPoint("TOPLEFT", banner, "BOTTOMLEFT", 14, 7);
     end
-end
-
--- GetSeasonInstanceByIndex
-function EJ_GetInstanceByIndex_ELP(index)
-    local data = ELP_SEASON_MYTHICS[index]
-    if data == nil then return end
-    local instanceID = data[1]
-    return instanceID, data[3], select(2, EJ_GetInstanceInfo(instanceID)) --EJ_GetInstanceByIndex(3, false) 和 EJ_GetInstanceInfo(1194) 暂时一致
-end
-
--- ListSeasonInstances, copy from blizzard EncounterJournal_ListInstances
-function EncounterJournal_ListInstances_ELP()
-    local EJ_NUM_INSTANCE_PER_ROW = 4
-    local EJ_GetInstanceByIndex = EJ_GetInstanceByIndex_ELP
-
-	local instanceSelect = EncounterJournal.instanceSelect;
-
-	--local tierName = EJ_GetTierInfo(EJ_GetCurrentTier());
-	--UIDropDownMenu_SetText(instanceSelect.tierDropDown, tierName);
-	NavBar_Reset(EncounterJournal.navBar);
-	EncounterJournal.encounter:Hide();
-	instanceSelect:Show();
-	local showRaid = not instanceSelect.raidsTab:IsEnabled(); --nouse
-
-	local scrollFrame = instanceSelect.scroll.child;
-	local index = 1;
-	local instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(index, showRaid);
-
-	--[[
-	--No instances in this tab
-	if not instanceID and not infiniteLoopPolice then
-		--disable this tab and select the other one.
-		infiniteLoopPolice = true;
-		if ( showRaid ) then
-			instanceSelect.raidsTab.grayBox:Show();
-			EJ_ContentTab_Select(instanceSelect.dungeonsTab.id);
-		else
-			instanceSelect.dungeonsTab.grayBox:Show();
-			EJ_ContentTab_Select(instanceSelect.raidsTab.id);
-		end
-		return;
-	end
-	infiniteLoopPolice = false;
-	--]]
-
-	while instanceID do
-		local instanceButton = scrollFrame["instance"..index];
-		if not instanceButton then -- create button
-			instanceButton = CreateFrame("BUTTON", scrollFrame:GetParent():GetName().."instance"..index, scrollFrame, "EncounterInstanceButtonTemplate");
-			if ( EncounterJournal.localizeInstanceButton ) then
-				EncounterJournal.localizeInstanceButton(instanceButton);
-			end
-			scrollFrame["instance"..index] = instanceButton;
-			if mod(index-1, EJ_NUM_INSTANCE_PER_ROW) == 0 then
-				instanceButton:SetPoint("TOP", scrollFrame["instance"..(index-EJ_NUM_INSTANCE_PER_ROW)], "BOTTOM", 0, -15);
-			else
-				instanceButton:SetPoint("LEFT", scrollFrame["instance"..(index-1)], "RIGHT", 15, 0);
-			end
-        end
-
-        --abyui 设置当前状态
-        instanceButton.seasonIndex = index
-        if instanceButton:GetScript("PreClick") == nil then
-            instanceButton:SetScript("PreClick", function(self)
-                if EncounterJournal.selectedTab == ELP_SEASON_TAB_ID and self.seasonIndex then
-                    for i, v in ipairs(ELP_FILTERS) do
-                        if v.type == "dungeon" then
-                            db.range = i - 1 + self.seasonIndex
-                            break
-                        end
-                    end
-                    ELP.do_not_reset_state = true --没啥好办法, 从这里点DisplayInstance也不能Reset, 但是没有
-                else
-                    --db.range = 0 --在这里修改会导致Reset不能运行, "DisplayInstance_ELP 会处理
-                end
-            end)
-            instanceButton:SetScript("PostClick", function()
-                ELP_StartSearch(false)
-                ELP.do_not_reset_state = nil
-            end)
-        end
-
-		instanceButton.name:SetText(name);
-		instanceButton.bgImage:SetTexture(buttonImage);
-		instanceButton.instanceID = instanceID;
-		instanceButton.tooltipTitle = name;
-		instanceButton.tooltipText = description;
-		instanceButton.link = link;
-		instanceButton.mapID = mapID;
-		instanceButton:Show();
-		instanceButton.ModifiedInstanceIcon:Hide();
-
-        --[[
-		local modifiedInstanceInfo = C_ModifiedInstance.GetModifiedInstanceInfoFromMapID(mapID)
-		if (modifiedInstanceInfo) then
-			instanceButton.ModifiedInstanceIcon.info = modifiedInstanceInfo;
-			instanceButton.ModifiedInstanceIcon.name = name;
-			local atlas = instanceButton.ModifiedInstanceIcon:GetIconTextureAtlas();
-			instanceButton.ModifiedInstanceIcon.Icon:SetAtlas(atlas, true)
-			instanceButton.ModifiedInstanceIcon:SetSize(instanceButton.ModifiedInstanceIcon.Icon:GetSize());
-			instanceButton.ModifiedInstanceIcon:Show();
-		end
-		--]]
-
-		index = index + 1;
-		instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(index, showRaid);
-	end
-
-	EJ_HideInstances(index);
-
-    --[[
-	--check if the other tab is empty
-	local instanceText = EJ_GetInstanceByIndex(1, not showRaid);
-	--No instances in the other tab
-	if not instanceText then
-		--disable the other tab.
-		if ( showRaid ) then
-			instanceSelect.dungeonsTab.grayBox:Show();
-		else
-			instanceSelect.raidsTab.grayBox:Show();
-		end
-	end
-	--]]
 end
 
 function ELP_ResetToNormalState()
@@ -793,6 +745,8 @@ end
 
 function EncounterJournal_DisplayInstance_ELP(insID, noButton)
     if not ELP.do_not_reset_state and not ELP_IsNormalState() then
+        EncounterJournal.instanceID = insID
+        EncounterJournal.encounterID = nil
         return ELP_ResetToNormalState()
     end
     ELP_RunOrigin("EncounterJournal_DisplayInstance", insID, noButton)
@@ -835,17 +789,36 @@ function EncounterJournal_DisplayEncounter_ELP_POST(encounterID)
 end
 
 ELP.setupHooks = function()
+    --副本选择按钮点击处理
+    hooksecurefunc(EncounterJournalInstanceSelect.ScrollBox.view, "elementFactory", ELP_InstanceSelectScrollViewElementFactory)
+
     ELP_Replace("EncounterJournal_OnFilterChanged", EncounterJournal_OnFilterChanged_ELP)
-    UIDropDownMenu_Initialize(EncounterJournal.encounter.info.lootScroll.lootFilter, EncounterJournal_InitLootFilter_ELP, "MENU");
-    UIDropDownMenu_Initialize(EncounterJournal.encounter.info.lootScroll.lootSlotFilter, EncounterJournal_InitLootSlotFilter_ELP, "MENU");
+    UIDropDownMenu_Initialize(EncounterJournal.encounter.info.LootContainer.lootFilter, EncounterJournal_InitLootFilter_ELP, "MENU");
+    UIDropDownMenu_Initialize(EncounterJournal.encounter.info.LootContainer.lootSlotFilter, EncounterJournal_InitLootSlotFilter_ELP, "MENU");
 
     ELP_Replace("EncounterJournal_LootUpdate", EncounterJournal_LootUpdate_ELP)
-    ELP_Replace("EncounterJournal_SetLootButton", EncounterJournal_SetLootButton_ELP)
+    ELP_Replace("EncounterJournalItemMixin.Init", EncounterJournalItemMixin_Init_ELP)
     ELP_Replace("EncounterJournal_Loot_OnClick", EncounterJournal_Loot_OnClick_ELP)
 
-    EncounterJournal.encounter.info.lootScroll.update = EncounterJournal_LootUpdate_ELP;
-    EncounterJournal.encounter.info.lootScroll.scrollBar.doNotHide = true;
-    --EncounterJournal.encounter.info.lootScroll.dynamic = EncounterJournal_LootCalcScroll_ELP;
+    --for LootItemButton height when choose encounter.
+    local originExtentCalculator = EncounterJournal.encounter.info.LootContainer.ScrollBox.view:GetElementExtentCalculator()
+    local function newExtentCalculator(...)
+        if not ELP_IsNormalState() then
+            return INSTANCE_LOOT_BUTTON_HEIGHT
+        else
+            return originExtentCalculator(...)
+        end
+    end
+    EncounterJournal.encounter.info.LootContainer.ScrollBox.view:SetElementExtentCalculator(newExtentCalculator)
+
+    -- wired, only with this line the Init is hooked
+    CoreUIHookPoolCollection(EncounterJournalEncounterFrameInfo.LootContainer.ScrollBox.view.poolCollection, function(frame, frameType, template)
+        if frame.Init ~= EncounterJournalItemMixin.Init then
+            frame.Init = EncounterJournalItemMixin.Init
+        end
+    end)
+
+    EncounterJournal.encounter.info.LootContainer.ScrollBar.doNotHide = true;
 
     -- manually click boss will reset the option
     hooksecurefunc("EncounterJournal_DisplayEncounter", EncounterJournal_DisplayEncounter_ELP_POST)

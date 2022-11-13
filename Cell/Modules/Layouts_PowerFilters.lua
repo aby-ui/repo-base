@@ -11,7 +11,7 @@ powerFilters:SetFrameLevel(50)
 -------------------------------------------------
 -- filters
 -------------------------------------------------
-local dkF, dhF, druidF, hunterF, mageF, monkF, paladinF, priestF, rogueF, shamanF, warlockF, warriorF, petF, vehicleF, npcF
+local dkF, dhF, druidF, evokerF, hunterF, mageF, monkF, paladinF, priestF, rogueF, shamanF, warlockF, warriorF, petF, vehicleF, npcF
 
 local function CreateFilters()
     dkF =  Cell:CreatePowerFilter(powerFilters, "DEATHKNIGHT", {"TANK", "DAMAGER"}, 125, 20, 20)
@@ -33,12 +33,14 @@ local function CreateFilters()
 
         dhF = Cell:CreatePowerFilter(powerFilters, "DEMONHUNTER", {"TANK", "DAMAGER"}, 125, 20, 20)
         monkF = Cell:CreatePowerFilter(powerFilters, "MONK", {"TANK", "HEALER", "DAMAGER"}, 125, 20, 20)
+        evokerF = Cell:CreatePowerFilter(powerFilters, "EVOKER", {"HEALER", "DAMAGER"}, 125, 20, 20)
 
         dkF:SetPoint("TOPLEFT", 5, -5)
         dhF:SetPoint("TOPLEFT", 140, -5)
         druidF:SetPoint("TOPLEFT", dkF, "BOTTOMLEFT", 0, -5)
-        hunterF:SetPoint("TOPLEFT", dhF, "BOTTOMLEFT", 0, -5)
-        mageF:SetPoint("TOPLEFT", druidF, "BOTTOMLEFT", 0, -5)
+        evokerF:SetPoint("TOPLEFT", dhF, "BOTTOMLEFT", 0, -5)
+        hunterF:SetPoint("TOPLEFT", druidF, "BOTTOMLEFT", 0, -5)
+        mageF:SetPoint("TOPLEFT", evokerF, "BOTTOMLEFT", 0, -5)
         monkF:SetPoint("TOPLEFT", hunterF, "BOTTOMLEFT", 0, -5)
         paladinF:SetPoint("TOPLEFT", mageF, "BOTTOMLEFT", 0, -5)
         priestF:SetPoint("TOPLEFT", monkF, "BOTTOMLEFT", 0, -5)
@@ -112,6 +114,7 @@ function F:ShowPowerFilters(selectedLayout, selectedLayoutTable)
         if Cell.isRetail then
             dhF:LoadConfig(selectedLayout, selectedLayoutTable)
             monkF:LoadConfig(selectedLayout, selectedLayoutTable)
+            evokerF:LoadConfig(selectedLayout, selectedLayoutTable)
         end
     end
 end

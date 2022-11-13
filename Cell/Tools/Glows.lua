@@ -176,22 +176,39 @@ function SR:CHAT_MSG_WHISPER(text, playerName, languageName, channelName, player
 end
 
 --! hide glow when aura changes
-function SR:UNIT_AURA(unit, isFullUpdate, updatedAuras)
-    local srUnit = srUnits[unit] -- {spellId, buffId, button}
-    if not srUnit then return end
-    
-    if type(updatedAuras) == "table" then
-        for _, aura in pairs(updatedAuras) do
-            if srUnit[2] == aura.spellId then
-                F:Debug("SR_HIDE [UNIT_AURA]:", unit, srUnit[1])
-                HideGlow(srUnit[3])
-                -- notify
-                F:Notify("SPELL_REQ_APPLIED", unit, srUnit[1], srUnit[2])
-                -- clear
-                srUnits[unit] = nil
-                requestedSpells[srUnit[1]] = nil
-                break
+if Cell.isRetail then
+    function SR:UNIT_AURA(unit, updatedAuras)
+        local srUnit = srUnits[unit] -- {spellId, buffId, button}
+        if not srUnit then return end
+        
+        if updatedAuras and updatedAuras.addedAuras then
+            for _, aura in pairs(updatedAuras.addedAuras) do
+                if srUnit[2] == aura.spellId then
+                    F:Debug("SR_HIDE [UNIT_AURA]:", unit, srUnit[1])
+                    HideGlow(srUnit[3])
+                    -- notify
+                    F:Notify("SPELL_REQ_APPLIED", unit, srUnit[1], srUnit[2])
+                    -- clear
+                    srUnits[unit] = nil
+                    requestedSpells[srUnit[1]] = nil
+                    break
+                end
             end
+        end
+    end
+else
+    function SR:UNIT_AURA(unit)
+        local srUnit = srUnits[unit] -- {spellId, buffId, button}
+        if not srUnit then return end
+        
+        if F:FindAuraById(unit, "BUFF", srUnit[2]) then
+            F:Debug("SR_HIDE [UNIT_AURA]:", unit, srUnit[1])
+            HideGlow(srUnit[3])
+            -- notify
+            F:Notify("SPELL_REQ_APPLIED", unit, srUnit[1], srUnit[2])
+            -- clear
+            srUnits[unit] = nil
+            requestedSpells[srUnit[1]] = nil
         end
     end
 end
@@ -199,6 +216,8 @@ end
 --! hide glow when player spell cd
 function SR:UNIT_SPELLCAST_SUCCEEDED(unit, _, spellId)
     if unit == "player" and requestedSpells[spellId] then
+        if not F:FindAuraById(unit, "BUFF", spellId) then return end
+
         local requester = requestedSpells[spellId]
         F:Debug("SR_HIDE [UNIT_SPELLCAST_SUCCEEDED]:", requester, spellId)
         if srCastMsg then

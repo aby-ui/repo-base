@@ -77,27 +77,57 @@ function U1Message(text, r, g, b, chatFrame)
     (chatFrame or DEFAULT_CHAT_FRAME):AddMessage(L["|cffcd1a1c【爱不易】|r- "]..text, r, g, b);
 end
 
-local cfNames = {} for i=1, NUM_CHAT_WINDOWS do cfNames[i] = "ChatFrame"..i end
-function WithAllChatFrame(func, ...)
+local allChatFrameFuncs = {}
+local function runAllFuncs()
+    local frames = {}
+    local min_pos = 999999999999
+    for _, chatFrameName in pairs(CHAT_FRAMES) do
+        local frame = _G[chatFrameName];
+        if frame then
+            tinsert(frames, frame)
+            frame._aby_cf_func_pos = frame._aby_cf_func_pos or 1
+            min_pos = min(min_pos, frame._aby_cf_func_pos)
+        end
+    end
+    for i = min_pos, #allChatFrameFuncs do
+        local func = allChatFrameFuncs[i]
+        local a1,a2,a3,a4,a5,a6,a7,a8 = unpack(func[3], 1, func[2])
+        for _, frame in ipairs(frames) do
+            if frame._aby_cf_func_pos <= i then
+                (func[1])(frame, a1,a2,a3,a4,a5,a6,a7,a8)
+                frame._aby_cf_func_pos = i + 1
+            end
+        end
+    end
+end
+function WithAllAndFutureChatFrames(func, ...)
+    if not func then return end
     local args = {}
     local args_len = select("#", ...)
     for i = 1, args_len do
         args[i] = select(i, ...)
     end
-    local hook = function()
-        for _, chatFrameName in pairs(CHAT_FRAMES) do
-            local frame = _G[chatFrameName];
-            if frame then
-                frame._aby_u1funcs = frame._aby_u1funcs or {}
-                if not frame._aby_u1funcs[func] then
-                    frame._aby_u1funcs[func] = true
-                    func(frame, unpack(args, 1, args_len))
-                end
-            end
-        end
+    local num = #allChatFrameFuncs + 1
+    allChatFrameFuncs[#allChatFrameFuncs + 1] = { func, args_len, args}
+    runAllFuncs()
+end
+hooksecurefunc("FCF_OpenTemporaryWindow", function()
+    runAllFuncs()
+end)
+
+function WithAllChatFrameOnce(func, ...)
+    for _, chatFrameName in pairs(CHAT_FRAMES) do
+        local frame = _G[chatFrameName];
+        if frame then func(frame, ...) end
     end
-    hook()
-    hooksecurefunc("FCF_OpenTemporaryWindow", hook)
+end
+
+function WithAllChatFrameCheckLoading(loading, func, ...)
+    if loading then
+        return WithAllAndFutureChatFrames(func, ...)
+    else
+        return WithAllChatFrameOnce(func, ...)
+    end
 end
 
 -- old addons's sound config is changed to number, but still use PlaySoundFile API
@@ -116,7 +146,7 @@ end
 --UI163_USER_MODE = 1 --- alwaysRegister=1 and not checkVendor
 --UI163_USE_X_CATEGORIES = 1 --- use X-Categories tag
 
---WithAllChatFrame(function(frame) frame:SetMaxLines(5000) end)
+--WithAllAndFutureChatFrames(function(frame) frame:SetMaxLines(5000) end)
 
 if not oisv then return end
 

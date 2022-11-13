@@ -522,20 +522,20 @@ local function NPCFrame_UpdateLayout(layout, which)
         if layout["orientation"] == "vertical" then
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint, groupAnchorPoint = "BOTTOMLEFT", "TOPLEFT", "BOTTOMRIGHT"
-                unitSpacing = layout["spacing"]
-                groupSpacing = layout["spacing"]
+                unitSpacing = layout["spacingY"]
+                groupSpacing = layout["spacingX"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint, groupAnchorPoint = "BOTTOMRIGHT", "TOPRIGHT", "BOTTOMLEFT"
-                unitSpacing = layout["spacing"]
-                groupSpacing = -layout["spacing"]
+                unitSpacing = layout["spacingY"]
+                groupSpacing = -layout["spacingX"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint, groupAnchorPoint = "TOPLEFT", "BOTTOMLEFT", "TOPRIGHT"
-                unitSpacing = -layout["spacing"]
-                groupSpacing = layout["spacing"]
+                unitSpacing = -layout["spacingY"]
+                groupSpacing = layout["spacingX"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint, groupAnchorPoint = "TOPRIGHT", "BOTTOMRIGHT", "TOPLEFT"
-                unitSpacing = -layout["spacing"]
-                groupSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingY"]
+                groupSpacing = -layout["spacingX"]
             end
 
             if not layout["friendlyNPC"][2] then
@@ -557,20 +557,20 @@ local function NPCFrame_UpdateLayout(layout, which)
         else
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint, groupAnchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT", "TOPLEFT"
-                unitSpacing = layout["spacing"]
-                groupSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
+                groupSpacing = layout["spacingY"]
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint, groupAnchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT", "TOPRIGHT"
-                unitSpacing = -layout["spacing"]
-                groupSpacing = layout["spacing"]
+                unitSpacing = -layout["spacingX"]
+                groupSpacing = layout["spacingY"]
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint, groupAnchorPoint = "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT"
-                unitSpacing = layout["spacing"]
-                groupSpacing = -layout["spacing"]
+                unitSpacing = layout["spacingX"]
+                groupSpacing = -layout["spacingY"]
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint, groupAnchorPoint = "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT"
-                unitSpacing = -layout["spacing"]
-                groupSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
+                groupSpacing = -layout["spacingY"]
             end
 
             if not layout["friendlyNPC"][2] then

@@ -45,22 +45,41 @@ local function HideFrame(frame)
 end
 
 function F:HideBlizzardParty()
-    if Cell.isRetail then
+    _G.UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
+
+    if _G.CompactPartyFrame then
+        _G.CompactPartyFrame:UnregisterAllEvents()
+    end
+
+    if _G.PartyFrame then
         _G.PartyFrame:UnregisterAllEvents()
+        _G.PartyFrame:SetScript('OnShow', nil)
         for frame in _G.PartyFrame.PartyMemberFramePool:EnumerateActive() do
             HideFrame(frame)
         end
+        HideFrame(_G.PartyFrame)
     else
         for i = 1, 4 do
             HideFrame(_G["PartyMemberFrame"..i])
             HideFrame(_G["CompactPartyMemberFrame"..i])
         end
+        HideFrame(_G.PartyMemberBackground)
     end
 end
 
 function F:HideBlizzardRaid()
-    CompactRaidFrameManager_SetSetting("IsShown", "0")
     _G.UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
-    _G.CompactRaidFrameManager:UnregisterAllEvents()
-    _G.CompactRaidFrameManager:SetParent(hiddenParent)
+
+    if _G.CompactRaidFrameContainer then
+        _G.CompactRaidFrameContainer:UnregisterAllEvents()
+    end
+    
+    if CompactRaidFrameManager_SetSetting then
+        CompactRaidFrameManager_SetSetting("IsShown", "0")
+    end
+
+    if _G.CompactRaidFrameManager then
+        _G.CompactRaidFrameManager:UnregisterAllEvents()
+        _G.CompactRaidFrameManager:SetParent(hiddenParent)
+    end
 end

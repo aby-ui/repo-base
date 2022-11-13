@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local I = Cell.iFuncs
 local P = Cell.pixelPerfectFuncs
 
 local Serializer = LibStub:GetLibrary("LibSerialize")
@@ -62,19 +63,63 @@ local function CreateIndicatorsImportFrame()
                 lastIndex = tonumber(strmatch(toLayoutTable["indicators"][last]["indicatorName"], "%d+"))
             end
     
-            -- import!
-            for i, t in pairs(imported) do
-                if i > Cell.defaults.builtIns then
+            -- local toLayoutTable = { ["indicators"] = {} }
+
+            -- indicators
+            for i, t in pairs(imported.indicators) do
+                if t["type"] == "built-in" then
+                    -- filter invalid
+                    if Cell.defaults.indicatorIndices[t.indicatorName] then
+                        -- NOTE: overwrite built-in
+                        toLayoutTable.indicators[Cell.defaults.indicatorIndices[t.indicatorName]] = t
+                    end
+                else
                     -- NOTE: add customs
                     lastIndex = lastIndex + 1
                     t["indicatorName"] = "indicator"..lastIndex
+                    -- NOTE: remove invalid spells from custom indicators
+                    F:FilterInvalidSpells(t["auras"])
                     tinsert(toLayoutTable["indicators"], t)
-                else
-                    -- NOTE: overwrite built-ins
-                    toLayoutTable["indicators"][i] = t
                 end
             end
-    
+
+            -- texplore(toLayoutTable)
+
+            -- related
+            for k, v in pairs(imported.related) do
+                if k ~= "cleuGlow" and k ~= "targetedSpellsGlow" then
+                    F:FilterInvalidSpells(v)
+                end
+
+                CellDB[k] = v
+                
+                if k == "debuffBlacklist" then
+                    Cell.vars.debuffBlacklist = F:ConvertTable(CellDB[k])
+                elseif k == "bigDebuffs" then
+                    Cell.vars.bigDebuffs = F:ConvertTable(CellDB[k])
+                elseif k == "customDefensives" then
+                    I:UpdateCustomDefensives(CellDB[k])
+                elseif k == "customExternals" then
+                    I:UpdateCustomExternals(CellDB[k])
+                elseif k == "cleuAuras" then
+                    if Cell.isRetail then
+                        I:UpdateCleuAuras(CellDB[k])
+                    elseif Cell.isWrath then
+                        CellDB[k] = nil
+                    end
+                elseif k == "cleuGlow" then
+                    if Cell.isWrath then
+                        CellDB[k] = nil
+                    end
+                elseif k == "targetedSpellsList" then
+                    Cell.vars.targetedSpellsList = F:ConvertTable(CellDB[k])
+                elseif k == "targetedSpellsGlow" then
+                    Cell.vars.targetedSpellsGlow = CellDB[k]
+                elseif k == "consumables" then
+                    Cell.vars.consumables = I:ConvertConsumables(CellDB[k])
+                end
+            end
+
             -- fire events
             Cell:Fire("UpdateIndicators", toLayout)
             Cell:Fire("IndicatorsChanged", toLayout)
@@ -104,7 +149,7 @@ local function CreateIndicatorsImportFrame()
             listFrame.scrollFrame:Reset()
             local text = eb:GetText()
             -- check
-            local version, count, data = string.match(text, "^!"..CELL_IMPORT_EXPORT_PREFIX..":(%d+):debuffs:(%d+)!(.+)$")
+            local version, count, data = string.match(text, "^!CELL:(%d+):INDICATOR:(%d+)!(.+)$")
             version = tonumber(version)
             count = tonumber(count)
     
@@ -118,7 +163,7 @@ local function CreateIndicatorsImportFrame()
                     if success and data then
                         -- check data
                         local builtIn, custom = 0, 0
-                        for i, t in pairs(data) do
+                        for i, t in pairs(data["indicators"]) do
                             if t["type"] == "built-in" then
                                 builtIn = builtIn + 1
                             else
@@ -133,10 +178,11 @@ local function CreateIndicatorsImportFrame()
                             
                             -- create buttons, update list
                             local last
-                            for i, t in pairs(data) do
+                            for i, t in pairs(data["indicators"]) do
                                 local b
                                 if t["type"] == "built-in" then
-                                    b = Cell:CreateButton(listFrame.scrollFrame.content, L[t["name"]], "transparent-accent", {20, 20})
+                                    local color = Cell.defaults.indicatorIndices[t.indicatorName] and "" or "|cff777777" 
+                                    b = Cell:CreateButton(listFrame.scrollFrame.content, color..L[t["name"]], "transparent-accent", {20, 20})
                                 else
                                     b = Cell:CreateButton(listFrame.scrollFrame.content, t["name"], "transparent-accent", {20, 20})
                                     b.typeIcon = b:CreateTexture(nil, "ARTWORK")

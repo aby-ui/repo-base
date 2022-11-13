@@ -32,7 +32,7 @@ hooksecurefunc("ChatEdit_UpdateHeader", function(editBox)
     end
 end)
 
-WithAllChatFrame(function(cf)
+WithAllAndFutureChatFrames(function(cf)
     if (DEBUG and cf:GetID()~=1) or (not DEBUG and cf:GetID()==2) then return end
     origs[cf] = cf.AddMessage
     cf.AddMessage = addMessageReplace

@@ -537,7 +537,7 @@ do
         local b = _G[name];
         if not b then
             b = CreateFrame("Button", name, cf);
-            b:SetFrameStrata("LOW");
+            b:SetFrameStrata("MEDIUM");
             b:SetWidth(14);
             b:SetHeight(14);
             b:SetNormalTexture("Interface\\AddOns\\DuowanChat\\icon\\prat-chatcopy2");

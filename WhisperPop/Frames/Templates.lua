@@ -18,7 +18,7 @@ local templates = {}
 addon.templates = templates
 
 function templates.CreateFrame(name, parent, movable)
-	local frame = CreateFrameAby("Frame", name, parent)
+    local frame = CreateFrame("Frame", name, parent, BackdropTemplateMixin and "BackdropTemplate")
 	frame:EnableMouse(true)
 	frame:SetClampedToScreen(true)
 	frame:SetBackdrop({ bgFile = addon.BACKGROUND, tile = true, tileSize = 16, edgeFile = addon.BORDER, edgeSize = 16, insets = { left = 5, right = 5, top = 5, bottom = 5 } })

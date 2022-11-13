@@ -30,7 +30,7 @@ local addMessageReplace = function(self, msg, ...)
     return origs[self](self, msg, ...)
 end
 
-WithAllChatFrame(function(cf)
+WithAllAndFutureChatFrames(function(cf)
     if cf:GetID() == 2 then return end
     origs[cf] = cf.AddMessage
     cf.AddMessage = addMessageReplace
@@ -68,7 +68,7 @@ local function OnHyperlinkLeave()
     end
 end
 
-WithAllChatFrame(function(cf)
+WithAllAndFutureChatFrames(function(cf)
     if cf:GetID() == 2 then return end
     SetOrHookScript(cf, "OnHyperlinkEnter", OnHyperlinkEnter);
     SetOrHookScript(cf, "OnHyperlinkLeave", OnHyperlinkLeave);

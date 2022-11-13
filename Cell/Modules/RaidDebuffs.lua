@@ -11,7 +11,8 @@ debuffsTab:SetAllPoints(Cell.frames.optionsFrame)
 debuffsTab:Hide()
 
 -- vars
-local newestExpansion, loadedExpansion, loadedInstance, loadedBoss, isGeneral
+local loadedExpansion, loadedInstance, loadedBoss, isGeneral
+local tierNames = {}
 local currentBossTable, selectedButtonIndex, selectedSpellId, selectedSpellName, selectedSpellIcon
 -- functions
 local LoadExpansion, ShowInstances, ShowBosses, ShowDebuffs, ShowDetails, ShowInstanceImage, HideInstanceImage, ShowBossImage, HideBossImage, OpenEncounterJournal
@@ -94,7 +95,7 @@ local function LoadList()
         LoadInstanceList(tier, "raid", encounterJournalList[name])
         LoadInstanceList(tier, "party", encounterJournalList[name])
 
-        newestExpansion = name
+        tierNames[tier] = name
     end
 end
 
@@ -111,6 +112,7 @@ end)
 -------------------------------------------------
 -- dungeons for current mythic season
 -------------------------------------------------
+--[[
 local CURRENT_SEASON = {
     1194, -- 塔扎维什
     860, -- 重返卡拉赞
@@ -134,6 +136,7 @@ local function LoadDungeonsForCurrentSeason()
         LoadBossList(journalInstanceID, instanceTable["bosses"])
     end
 end
+]]
 -------------------------------------------------
 
 LoadExpansion = function(eName)
@@ -286,7 +289,7 @@ end
 
 local function UpdateRaidDebuffs()
     LoadList()
-    LoadDungeonsForCurrentSeason()
+    -- LoadDungeonsForCurrentSeason()
     LoadDebuffs()
     -- DevInstanceList = F:Copy(encounterJournalList["暗影国度"])
 end
@@ -371,12 +374,12 @@ local function CreateTopWidgets()
     end
 
     -- add Current Season to the top
-    tinsert(expansionItems, 1, {
-        ["text"] = L["Current Season"],
-        ["onClick"] = function()
-            LoadExpansion("Current Season")
-        end,
-    })
+    -- tinsert(expansionItems, 1, {
+    --     ["text"] = L["Current Season"],
+    --     ["onClick"] = function()
+    --         LoadExpansion("Current Season")
+    --     end,
+    -- })
     expansionDropdown:SetItems(expansionItems)
 
     -- current instance button
@@ -1980,7 +1983,7 @@ OpenEncounterJournal = function(instanceId)
     end
 
     ShowUIPanel(EncounterJournal)
-    EJ_ContentTab_Select(EncounterJournal.instanceSelect.dungeonsTab.id)
+    EJ_ContentTab_Select(EncounterJournal.dungeonsTab:GetID())
     EncounterJournal_DisplayInstance(instanceId)
     EncounterJournal.lastInstance = instanceId
     
@@ -2213,7 +2216,7 @@ local function ShowTab(tab)
         
         if not loadedExpansion then
             expansionDropdown:SetSelectedItem(2)
-            LoadExpansion(newestExpansion)
+            LoadExpansion(tierNames[#tierNames-1])
         end
     else
         debuffsTab:Hide()

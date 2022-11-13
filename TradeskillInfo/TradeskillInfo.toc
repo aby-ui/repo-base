@@ -14,6 +14,7 @@
 ## X-Credits: Dys, wmrojer, Evenue, Fieroivan, Viruscamp, CMTitan
 ## X-Icon: Interface\Icons\INV_Elemental_SpiritOfHarmony_2
 ## X-Category: Professions
+## Dependencies: TODO:abyui10
 
 #@no-lib-strip@
 Libs\LibBabble-Faction-3.0\lib.xml

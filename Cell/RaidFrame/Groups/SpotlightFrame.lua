@@ -479,44 +479,44 @@ local function UpdateLayout(layout, which)
         if layout["orientation"] == "vertical" then
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint = "BOTTOMLEFT", "TOPLEFT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
                 menuAnchorPoint = "BOTTOMRIGHT"
                 menuX, menuY = 4, 0
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint = "BOTTOMRIGHT", "TOPRIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
                 menuAnchorPoint = "BOTTOMLEFT"
                 menuX, menuY = -4, 0
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint = "TOPLEFT", "BOTTOMLEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
                 menuAnchorPoint = "TOPRIGHT"
                 menuX, menuY = 4, 0
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint = "TOPRIGHT", "BOTTOMRIGHT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
                 menuAnchorPoint = "TOPLEFT"
                 menuX, menuY = -4, 0
             end
         else
             if layout["anchor"] == "BOTTOMLEFT" then
                 point, anchorPoint = "BOTTOMLEFT", "BOTTOMRIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
                 menuAnchorPoint = "TOPLEFT"
                 menuX, menuY = 0, 4
             elseif layout["anchor"] == "BOTTOMRIGHT" then
                 point, anchorPoint = "BOTTOMRIGHT", "BOTTOMLEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
                 menuAnchorPoint = "TOPRIGHT"
                 menuX, menuY = 0, 4
             elseif layout["anchor"] == "TOPLEFT" then
                 point, anchorPoint = "TOPLEFT", "TOPRIGHT"
-                unitSpacing = layout["spacing"]
+                unitSpacing = layout["spacingX"]
                 menuAnchorPoint = "BOTTOMLEFT"
                 menuX, menuY = 0, -4
             elseif layout["anchor"] == "TOPRIGHT" then
                 point, anchorPoint = "TOPRIGHT", "TOPLEFT"
-                unitSpacing = -layout["spacing"]
+                unitSpacing = -layout["spacingX"]
                 menuAnchorPoint = "BOTTOMRIGHT"
                 menuX, menuY = 0, -4
             end

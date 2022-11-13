@@ -392,7 +392,7 @@ local function CreateSpellEditFrame()
     spellEditFrame:SetPoint("LEFT", 117, 0)
     spellEditFrame:SetPoint("BOTTOM", srAddBtn, 0, 0)
     spellEditFrame:SetScript("OnHide", function()
-        CellTooltip:Hide()
+        CellSpellTooltip:Hide()
         glowsTab.mask:Hide()
         spellEditFrame:Hide()
         spellIdEB:SetText("")
@@ -419,7 +419,7 @@ local function CreateSpellEditFrame()
     spellIdEB:SetScript("OnTextChanged", function()
         local id = tonumber(spellIdEB:GetText())
         if not id then
-            CellTooltip:Hide()
+            CellSpellTooltip:Hide()
             spellId = nil
             addBtn:SetEnabled(false)
             spellIdEB.tip:SetTextColor(1, 0, 0, 0.777)
@@ -428,7 +428,7 @@ local function CreateSpellEditFrame()
 
         local name, _, icon = GetSpellInfo(id)
         if not name then
-            CellTooltip:Hide()
+            CellSpellTooltip:Hide()
             spellId = nil
             addBtn:SetEnabled(false)
             spellIdEB.tip:SetTextColor(1, 0, 0, 0.777)
@@ -436,10 +436,10 @@ local function CreateSpellEditFrame()
         end
 
         C_Timer.After(0.1, function()
-            CellTooltip:SetOwner(spellEditFrame, "ANCHOR_NONE")
-            CellTooltip:SetPoint("TOPLEFT", spellEditFrame, "BOTTOMLEFT", 0, -1)
-            CellTooltip:SetHyperlink("spell:"..id)
-            CellTooltip:Show()
+            CellSpellTooltip:SetOwner(spellEditFrame, "ANCHOR_NONE")
+            CellSpellTooltip:SetPoint("TOPLEFT", spellEditFrame, "BOTTOMLEFT", 0, -1)
+            CellSpellTooltip:SetHyperlink("spell:"..id)
+            CellSpellTooltip:Show()
         end)
 
         spellId = id

@@ -1049,8 +1049,8 @@ wowluacopy(qq)
 --]]
 
 --- supported frameTypes (with RegisterEvent)
-local frameTypes = { "Frame", "GameTooltip", "ScrollFrame", "Cooldown", "StatusBar", "MessageFrame", "ScrollingMessageFrame", "Button", "Slider", "CheckButton", "EditBox", }
---"SimpleHTML", "QuestPOIFrame", "ColorSelect", "ArchaeologyDigSiteFrame", "MovieFrame", "Model", "DressUpModel", "TabardModel", "PlayerModel",
+local frameTypes = { "Frame", "GameTooltip", "ScrollFrame", "Cooldown", "StatusBar", "MessageFrame", "ScrollingMessageFrame", "Button", "Slider", "CheckButton", "EditBox", "ItemButton"}
+--"SimpleHTML", "QuestPOIFrame", "ColorSelect", "ArchaeologyDigSiteFrame", "MovieFrame", "Model", "DressUpModel", "TabardModel", "PlayerModel", "UnitPositionFrame", "OffScreenFrame"
 
 --只需要hook RegisterEvent. UnregisterEvent是在Simulate里用IsEventRegistered来等价实现
 local metaHooked = {}

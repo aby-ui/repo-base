@@ -80,9 +80,11 @@ U1RegisterAddon("163UI_ChatHistory", {
         callback = function(cfg, v, loading)
             local db = ChatHistoryDB or _G["163UI_ChatHistory"].defaultDB;
             db.lines = v;
-            if v ~= 0 then
-                WithAllChatFrame(function (cf) cf.editBox:SetHistoryLines(v) end);
-            end
+            WithAllChatFrameCheckLoading(loading, function(cf)
+                if db.lines ~= 0 then
+                    cf.editBox:SetHistoryLines(db.lines)
+                end
+            end)
         end,
     },
 })

@@ -21,9 +21,10 @@ local function RegisterDragForOptionsFrame(frame)
     end)
     frame:SetScript("OnDragStop", function()
         optionsFrame:StopMovingOrSizing()
-        -- P:PixelPerfectPoint(optionsFrame)
-        optionsFrame:ClearAllPoints()
-        optionsFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", optionsFrame:GetLeft(), optionsFrame:GetTop())
+        P:PixelPerfectPoint(optionsFrame)
+        -- optionsFrame:ClearAllPoints()
+        -- optionsFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", optionsFrame:GetLeft(), optionsFrame:GetTop())
+        -- print( optionsFrame:GetLeft(), optionsFrame:GetTop())
     end)
 end
 
@@ -81,12 +82,12 @@ local function CreateTabButtons()
     local tabHeight = {
         ["general"] = 450,
         ["appearance"] = 532,
-        ["layouts"] = 565,
+        ["layouts"] = 570,
         ["clickCastings"] = 526,
         ["indicators"] = 512,
         ["debuffs"] = 497,
         ["glows"] = 459,
-        ["about"] = 508,
+        ["about"] = 555,
     }
     
     local function ShowTab(tab)
@@ -113,7 +114,7 @@ function F:ShowOptionsFrame()
     if not init then
         init = true
         P:Resize(optionsFrame)
-        Cell:StylizeFrame(optionsFrame) -- pixel perfect border
+        P:Reborder(optionsFrame)
         CreateTabButtons()
     end
 
