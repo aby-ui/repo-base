@@ -1,7 +1,13 @@
 local _, Addon = ...
 local ActionBarsModule = Addon:NewModule('ActionBars', 'AceEvent-3.0')
 
+function ActionBarsModule:OnEnable()
+    self.UpdateActionSlots = Addon:Defer(self.UpdateActionSlots, 0.1, self)
+end
+
 function ActionBarsModule:Load()
+    self.slotsToUpdate = {}
+
     self:RegisterEvent('UPDATE_SHAPESHIFT_FORMS')
     self:RegisterEvent('UPDATE_BONUS_ACTIONBAR', 'OnOverrideBarUpdated')
 
@@ -10,10 +16,12 @@ function ActionBarsModule:Load()
         self:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR', 'OnOverrideBarUpdated')
     end
 
-    self:RegisterEvent('PET_BAR_HIDEGRID')
-
     self:SetBarCount(Addon:NumBars())
     Addon.RegisterCallback(self, "ACTIONBAR_COUNT_UPDATED")
+
+    self:RegisterEvent("SPELLS_CHANGED")
+    self:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 function ActionBarsModule:Unload()
@@ -34,17 +42,8 @@ function ActionBarsModule:OnOverrideBarUpdated()
     end
 end
 
-function ActionBarsModule:ACTIONBAR_COUNT_UPDATED(event, count)
+function ActionBarsModule:ACTIONBAR_COUNT_UPDATED(_, count)
     self:SetBarCount(count)
-end
-
--- workaround for empty buttons not hiding when dropping a pet action
-function ActionBarsModule:PET_BAR_HIDEGRID()
-    if InCombatLockdown() then
-        return
-    end
-
-    self:ForActive('HideGrid', ACTION_BUTTON_SHOW_GRID_REASON_EVENT or 2)
 end
 
 function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
@@ -55,12 +54,21 @@ function ActionBarsModule:UPDATE_SHAPESHIFT_FORMS()
     self:ForActive('UpdateStateDriver')
 end
 
+function ActionBarsModule:ACTIONBAR_SLOT_CHANGED(_event, slot)
+    if not self.slotsToUpdate[slot] then
+        self.slotsToUpdate[slot] = true
+        self:UpdateActionSlots()
+    end
+end
+
+function  ActionBarsModule:PLAYER_REGEN_ENABLED()
+    if next(self.slotsToUpdate) then
+        self:UpdateActionSlots()
+    end
+end
+
 function ActionBarsModule:SPELLS_CHANGED()
-    C_Timer.After(1, function()
-        if not InCombatLockdown() then
-            self:ForActive('ForButtons', 'UpdateShownInsecure')
-        end
-    end)
+    self:ForActive('ForButtons', 'UpdateShownInsecure')
 end
 
 function ActionBarsModule:SetBarCount(count)
@@ -83,4 +91,22 @@ function ActionBarsModule:ForActive(method, ...)
             bar:CallMethod(method, ...)
         end
     end
+end
+
+function ActionBarsModule:UpdateActionSlots()
+    if InCombatLockdown() then return end
+
+    if not next(self.slotsToUpdate) then
+        return
+    end
+
+    for _, bar in pairs(self.active) do
+        for _, button in pairs(bar.buttons) do
+            if self.slotsToUpdate[button:GetAttribute("action")] then
+                button:UpdateShownInsecure()
+            end
+        end
+    end
+
+    table.wipe(self.slotsToUpdate)
 end

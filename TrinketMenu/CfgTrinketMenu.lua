@@ -14,7 +14,7 @@ U1RegisterAddon("TrinketMenu", {
             if not InCombatLockdown() then
                 local frame = TrinketMenu_MainFrame
                 if not enable then
-                    TrinketMenuPerOptions.userHide = false;
+                    frame.HideWhenDisable = true;
                     frame:Hide()
                 else
                     frame:Show()

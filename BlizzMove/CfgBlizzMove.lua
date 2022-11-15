@@ -6,7 +6,7 @@ U1RegisterAddon("BlizzMove", {
     optdeps = {"Mapster"},
     defaultEnable = 1,
 
-    tags = { TAG_INTERFACE, TAG_CHAT, TAG_DEV },
+    tags = { TAG_INTERFACE, TAG_CHAT },
     icon = [[Interface\Icons\INV_Gizmo_GoblinBoomBox_01]],
     ------- Options --------
     {

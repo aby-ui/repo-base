@@ -1,6 +1,6 @@
 ## Interface: 100000
 ## Title: BattleGroundEnemies
-## Version: 10.0.0.3-6-g40787e9
+## Version: 10.0.0.3-22-gefd34a1
 ## Author: Bullsei
 ## SavedVariables: BattleGroundEnemiesDB
 ## OptionalDeps: Ace3, LibStub, LibRaces-1.0, UTF8, DRList-1.0, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets
@@ -25,7 +25,7 @@ Changelog.lua
 ImportExport.lua
 
 Objects\ContainerTemplate.lua
-Objects\Auracontainer2.lua
+Objects\Auras.lua
 Objects\CastBar.lua
 Objects\CombatIndicator.lua
 Objects\Covenant.lua

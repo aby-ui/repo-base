@@ -13,6 +13,7 @@ local debuffBlacklist = {
     57724, -- 心满意足
     80354, -- 时空错位
     264689, -- 疲倦
+    390435, -- 筋疲力尽
     206151, -- 挑战者的负担
     195776, -- 月羽疫病
     352562, -- 起伏机动
@@ -76,6 +77,15 @@ local aoeHealings = {
     740, -- 宁静
     145205, -- 百花齐放
 
+    -- evoker
+    355916, -- 翡翠之花
+    361361, -- 婆娑幼苗
+    363534, -- 回溯
+    367230, -- 精神之花
+    370984, -- 翡翠交融
+    371441, -- 赐命者之焰
+    371879, -- 生生不息
+
     -- monk
     115098, -- 真气波
     123986, -- 真气爆裂
@@ -117,6 +127,7 @@ local aoeHealings = {
 
 local aoeHealingIDs = {
     [343819] = true, -- 朱鹤下凡，朱鹤产生的“迷雾之风”的施法者是玩家
+    [377509] = true, -- 梦境投影（pvp）
 }
 
 do
@@ -133,6 +144,9 @@ function I:IsAoEHealing(nameOrID)
 end
 
 local summonDuration = {
+    -- evoker
+    [377509] = 6, -- 梦境投影（pvp）
+
     -- monk
     [322118] = 25, -- 青龙下凡
 
@@ -165,6 +179,11 @@ local externalCooldowns = {
 
     -- druid
     102342, -- 铁木树皮
+
+    -- evoker
+    374227, -- 微风
+    357170, -- 时间膨胀
+    378441, -- 时间停止
 
     -- monk
     116849, -- 作茧缚命
@@ -251,6 +270,11 @@ local defensiveCooldowns = {
     22812, -- 树皮术
     61336, -- 生存本能
     -- 22842, -- 狂暴回复
+
+    -- evoker
+    363916, -- 黑曜鳞片
+    374348, -- 新生光焰
+    370960, -- 翡翠交融
 
     -- hunter
     186265, -- 灵龟守护
@@ -401,6 +425,13 @@ local dispellable = {
         -- Restoration
         [105] = {["Curse"] = true, ["Magic"] = true, ["Poison"] = true},
     -------------------------
+    
+    -- EVOKER ---------------
+        -- 1467 - Devastation
+        [1467] = {["Poison"] = true},
+        -- 1468	- Preservation
+        [1468] = {["Magic"] = true, ["Poison"] = true},
+    -------------------------
         
     -- MAGE -----------------
         -- 62 - Arcane
@@ -502,6 +533,17 @@ local spells =  {
     102351, -- 塞纳里奥结界
     102352, -- 塞纳里奥结界
     391888, -- 激变蜂群
+
+    -- evoker
+    363502, -- 梦境飞行
+    370889, -- 双生护卫
+    364343, -- 回响
+    355941, -- 梦境吐息
+    376788, -- 梦境吐息（回响）
+    366155, -- 逆转
+    367364, -- 逆转（回响）
+    373862, -- 时空畸体
+    378001, -- 梦境投影（pvp）
     
     -- monk
     119611, -- 复苏之雾
@@ -577,6 +619,7 @@ function F:FirstRun()
         })
         Cell:Fire("UpdateIndicators", Cell.vars.currentLayout, indicatorName, "create", currentLayoutTable["indicators"][last+1])
         CellDB["firstRun"] = false
+        F:ReloadIndicatorList()
     end, function()
         CellDB["firstRun"] = false
     end)

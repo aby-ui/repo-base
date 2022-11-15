@@ -33,8 +33,9 @@ checkbox:SetHeight(22);
 checkbox.text:SetText("交接")
 checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -90, 2);
 CoreDependCall("!KalielsTracker", function()
+    checkbox:SetParent(KT_ObjectiveTrackerBlocksFrame.QuestHeader)
     checkbox.text:SetText("接")
-    checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -85, 2)
+    checkbox:SetPoint("BOTTOMRIGHT", KT_ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -85, 2)
 end)
 checkbox:SetScript("OnClick", function(self, button)
     if( not IsAddOnLoaded("AutoTurnIn") ) then U1LoadAddOn("AutoTurnIn") end

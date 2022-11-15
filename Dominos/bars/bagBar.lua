@@ -50,7 +50,7 @@ function BagBar:ShowBags()
 end
 
 function BagBar:SetShowKeyRing(enable)
-    self.sets.keyRing = enable or false
+    self.sets.keyRing = enable and true
     self:ReloadButtons()
 end
 

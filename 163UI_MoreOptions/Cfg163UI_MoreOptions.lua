@@ -248,7 +248,8 @@ do
         button2 = CANCEL,
         OnAccept = function(self, data)
             U1ChangeCfg("163UI_MoreOptions/profanityFilter", false)
-            ReloadUI()
+            HelpFrame:Hide() --10.0开着reload会崩溃
+            ReloadUI() --10.0有时不需要reload，但有时不行
         end,
         OnCancel = function(self, data)
         end,
@@ -342,8 +343,8 @@ do
         local btn = WW:Button("AbySetProfanityButton", HelpFrame, "UIPanelButtonTemplate")
         :SetTextFont(GameFontNormal, 13, "")
         :SetText("关闭语言过滤器"):Size(120, 26)
+        :SetFrameStrata("HIGH")
         :TOPRIGHT(-25, 2)
-        :AddFrameLevel(1)
         :SetScript("OnClick", function()
             U1ChangeCfg("163UI_MoreOptions/profanityFilter", true)
             U1Message("已强制关闭语言过滤器，聊天不会再乱码，即时生效，不需重载界面")

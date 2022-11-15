@@ -81,6 +81,16 @@ function Addon.ActionBar:OnCreateMenu(menu)
     local function addLayoutPanel()
         local panel = menu:NewPanel(L.Layout)
 
+        panel:NewCheckButton {
+            name = L.ShowEmptyButtons,
+            get = function()
+                return panel.owner:ShowingEmptyButtons()
+            end,
+            set = function(_, enable)
+                panel.owner:SetShowEmptyButtons(enable)
+            end
+        }
+
         panel.sizeSlizer = panel:NewSlider {
             name = L.Size,
             min = 1,

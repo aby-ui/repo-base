@@ -2,15 +2,6 @@
 C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 
     <Script file="MOGUBar.lua"/>
-    <CheckButton name="MOGUBarButtonTemplate" virtual="true" inherits="ActionBarButtonTemplate">
-        <Scripts>
-<!--
-            <OnLoad>
-                MOGUBarButton_OnLoad(self)
-            </OnLoad>
--->
-        </Scripts>
-    </CheckButton>
 
     <Button name="MOGUBarTabTemplate" frameStrata="HIGH" hidden="false" alpha="0.4" virtual="true">
         <Size>
@@ -25,7 +16,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                 </Texture>
             </Layer>
             <Layer level="ARTWORK">
-                <FontString name="$parentTitle" font="Fonts\FRIZQT__.TTF" outline="NORMAL" justifyH="CENTER" justifyV="CENTER">
+                <FontString name="$parentTitle" font="Fonts\FRIZQT__.TTF" outline="NORMAL" justifyH="CENTER" justifyV="MIDDLE">
                     <FontHeight>
                         <AbsValue val="10"/>
                     </FontHeight>
@@ -65,7 +56,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                 MOGUBarTab_OnLeave(self);
             </OnLeave>
             <OnLoad>
-                self:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonUp");
+                self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
                 self:RegisterForDrag("LeftButton");
                 self:EnableMouseWheel(true);
                 self:RegisterEvent("PLAYER_REGEN_DISABLED");
@@ -120,12 +111,12 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                 <Anchors>
                     <Anchor point="TOPRIGHT">
                         <Offset>
-                            <AbsDimension x="12" y="0"/>
+                            <AbsDimension x="8" y="0"/>
                         </Offset>
                     </Anchor>
                 </Anchors>
             </Button>
-            <CheckButton name="$parentAB1" inherits="MOGUBarButtonTemplate" id="-1">
+            <CheckButton name="$parentAB1" inherits="ActionBarButtonTemplate" id="-1">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT">
                         <Offset>
@@ -134,7 +125,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB2" inherits="MOGUBarButtonTemplate" id="-2">
+            <CheckButton name="$parentAB2" inherits="ActionBarButtonTemplate" id="-2">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB1" relativePoint="BOTTOM">
                         <Offset>
@@ -143,7 +134,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB3" inherits="MOGUBarButtonTemplate" id="-3">
+            <CheckButton name="$parentAB3" inherits="ActionBarButtonTemplate" id="-3">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB2" relativePoint="BOTTOM">
                         <Offset>
@@ -152,7 +143,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB4" inherits="MOGUBarButtonTemplate" id="-4">
+            <CheckButton name="$parentAB4" inherits="ActionBarButtonTemplate" id="-4">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB3" relativePoint="BOTTOM">
                         <Offset>
@@ -161,7 +152,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB5" inherits="MOGUBarButtonTemplate" id="-5">
+            <CheckButton name="$parentAB5" inherits="ActionBarButtonTemplate" id="-5">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB4" relativePoint="BOTTOM">
                         <Offset>
@@ -170,7 +161,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB6" inherits="MOGUBarButtonTemplate" id="-6">
+            <CheckButton name="$parentAB6" inherits="ActionBarButtonTemplate" id="-6">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB5" relativePoint="BOTTOM">
                         <Offset>
@@ -179,7 +170,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB7" inherits="MOGUBarButtonTemplate" id="-7">
+            <CheckButton name="$parentAB7" inherits="ActionBarButtonTemplate" id="-7">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB6" relativePoint="BOTTOM">
                         <Offset>
@@ -188,7 +179,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB8" inherits="MOGUBarButtonTemplate" id="-8">
+            <CheckButton name="$parentAB8" inherits="ActionBarButtonTemplate" id="-8">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB7" relativePoint="BOTTOM">
                         <Offset>
@@ -197,7 +188,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB9" inherits="MOGUBarButtonTemplate" id="-9">
+            <CheckButton name="$parentAB9" inherits="ActionBarButtonTemplate" id="-9">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB8" relativePoint="BOTTOM">
                         <Offset>
@@ -206,7 +197,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB10" inherits="MOGUBarButtonTemplate" id="-10">
+            <CheckButton name="$parentAB10" inherits="ActionBarButtonTemplate" id="-10">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB9" relativePoint="BOTTOM">
                         <Offset>
@@ -215,7 +206,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB11" inherits="MOGUBarButtonTemplate" id="-11">
+            <CheckButton name="$parentAB11" inherits="ActionBarButtonTemplate" id="-11">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB10" relativePoint="BOTTOM">
                         <Offset>
@@ -224,7 +215,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
                     </Anchor>
                 </Anchors>
             </CheckButton>
-            <CheckButton name="$parentAB12" inherits="MOGUBarButtonTemplate" id="-12">
+            <CheckButton name="$parentAB12" inherits="ActionBarButtonTemplate" id="-12">
                 <Anchors>
                     <Anchor point="TOP" relativeTo="$parentAB11" relativePoint="BOTTOM">
                         <Offset>

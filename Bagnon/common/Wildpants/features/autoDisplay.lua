@@ -28,6 +28,7 @@ end
 
 function AutoDisplay:HookBaseUI()
 	-- bag APIs
+	if Addon.Frames:IsEnabled('inventory') then
 	self:StopIf(_G, 'OpenAllBags', self:Show('inventory'))
 	self:StopIf(_G, 'CloseAllBags', self:Hide('inventory'))
 	self:StopIf(_G, 'ToggleAllBags', self:Toggle('inventory'))
@@ -38,7 +39,9 @@ function AutoDisplay:HookBaseUI()
 	self:StopIf(_G, 'OpenBag', function(bag) return Addon.Frames:ShowBag(self:Bag2Frame(bag)) end)
 	self:StopIf(_G, 'CloseBag', function(bag) return Addon.Frames:HideBag(self:Bag2Frame(bag)) end)
 
+	end
 	-- banking frames
+	if Addon.Frames:IsEnabled('bank') or Addon.Frames:IsEnabled('guild') or Addon.Frames:IsEnabled('vault') then
 	self:StopIf(_G, 'GuildBankFrame_LoadUI', self:Show('guild'))
 	self:StopIf(_G, 'VoidStorage_LoadUI', self:Show('vault'))
 	self:StopIf(_G, 'BankFrame_Open', self:Show('bank'))
@@ -60,11 +63,14 @@ function AutoDisplay:HookBaseUI()
 			BankFrame_OnEvent(frame, event, ...)
 		end
 	end)
+	end
 
+	if Addon.Frames:IsEnabled('inventory') then
 	-- user frames
 	CharacterFrame:HookScript('OnShow', self:If('playerFrame', self:Show('inventory')))
 	CharacterFrame:HookScript('OnHide', self:If('playerFrame', self:Hide('inventory')))
 	WorldMapFrame:HookScript('OnShow', self:If('mapFrame', self:Hide('inventory', true)))
+	end
 end
 
 function AutoDisplay:Bag2Frame(bag)

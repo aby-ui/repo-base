@@ -86,7 +86,7 @@ function Config:GetBarMode(barId)
 end
 
 function Config:SetOneBarMode(enable)
-	self.db.profile.one_bar = enable or false
+	self.db.profile.one_bar = enable and true
 end
 
 function Config:OneBarMode()
@@ -94,7 +94,7 @@ function Config:OneBarMode()
 end
 
 function Config:SetSkipInactiveModes(skip)
-	self.db.profile.skip_inactive_modes = skip or false
+	self.db.profile.skip_inactive_modes = skip and true
 end
 
 function Config:SkipInactiveModes()

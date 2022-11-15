@@ -247,7 +247,6 @@ function Addon:GetDatabaseDefaults()
 
             ab = {
                 count = self.ACTION_BUTTON_COUNT / NUM_ACTIONBAR_BUTTONS,
-                showEmptyButtons = true,
                 rightClickUnit = 'player'
             },
 
@@ -556,17 +555,13 @@ function Addon:SetClickThroughForFrames(...)
 end
 
 -- empty button display
-function Addon:ToggleGrid()
-    self:SetShowGrid(not self:ShowGrid())
-end
-
 function Addon:SetShowGrid(enable)
-    self.db.profile.showgrid = enable or false
+    self.db.profile.showgrid = enable and true
     self.Frame:ForEach('UpdateGrid')
 end
 
 function Addon:ShowGrid()
-    return self.db.profile.showgrid
+    return self.db.profile.showgrid and true
 end
 
 -- right click selfcast
@@ -581,7 +576,7 @@ end
 
 -- binding text
 function Addon:SetShowBindingText(enable)
-    self.db.profile.showBindingText = enable or false
+    self.db.profile.showBindingText = enable and true
     self.Frame:ForEach('ForButtons', 'UpdateHotkeys')
 end
 
@@ -591,7 +586,7 @@ end
 
 -- macro text
 function Addon:SetShowMacroText(enable)
-    self.db.profile.showMacroText = enable or false
+    self.db.profile.showMacroText = enable and true
     self.Frame:ForEach('ForButtons', 'SetShowMacroText', enable)
 end
 
@@ -601,7 +596,7 @@ end
 
 -- border
 function Addon:SetShowEquippedItemBorders(enable)
-    self.db.profile.showEquippedItemBorders = enable or false
+    self.db.profile.showEquippedItemBorders = enable and true
     self.Frame:ForEach('ForButtons', 'SetShowEquippedItemBorders', enable)
 end
 
@@ -611,7 +606,7 @@ end
 
 -- override ui
 function Addon:SetUseOverrideUI(enable)
-    self.db.profile.useOverrideUI = enable and true or false
+    self.db.profile.useOverrideUI = enable and true
     self:UpdateUseOverrideUI()
 end
 
@@ -677,12 +672,12 @@ function Addon:ShowTooltips()
 end
 
 function Addon:SetShowTooltips(enable)
-    self.db.profile.showTooltips = enable or false
+    self.db.profile.showTooltips = enable and true
     self:GetModule('Tooltips'):SetShowTooltips(enable)
 end
 
 function Addon:SetShowCombatTooltips(enable)
-    self.db.profile.showTooltipsCombat = enable or false
+    self.db.profile.showTooltipsCombat = enable and true
     self:GetModule('Tooltips'):SetShowTooltipsInCombat(enable)
 end
 
@@ -702,7 +697,7 @@ end
 
 -- sticky bars
 function Addon:SetSticky(enable)
-    self.db.profile.sticky = enable or false
+    self.db.profile.sticky = enable and true
 
     if not enable then
         self.Frame:ForEach('Stick')
@@ -716,7 +711,7 @@ end
 
 -- linked opacity
 function Addon:SetLinkedOpacity(enable)
-    self.db.profile.linkedOpacity = enable or false
+    self.db.profile.linkedOpacity = enable and true
 
     self.Frame:ForEach('UpdateWatched')
     self.Frame:ForEach('UpdateAlpha')
@@ -732,7 +727,7 @@ function Addon:ThemeButtons()
 end
 
 function Addon:SetThemeButtons(enable)
-    self.db.profile.applyButtonTheme = enable or false
+    self.db.profile.applyButtonTheme = enable and true
     self:GetModule('ButtonThemer'):Reskin()
 end
 
@@ -742,7 +737,7 @@ function Addon:ShowCounts()
 end
 
 function Addon:SetShowCounts(enable)
-    self.db.profile.showCounts = enable or false
+    self.db.profile.showCounts = enable and true
     self.Frame:ForEach('ForButtons', 'SetShowCountText', enable)
 end
 
@@ -753,7 +748,7 @@ function Addon:SetAlignmentGridEnabled(enable)
 end
 
 function Addon:GetAlignmentGridEnabled()
-    return self.db.profile.alignmentGrid.enabled and true or false
+    return self.db.profile.alignmentGrid.enabled and true
 end
 
 function Addon:SetAlignmentGridSize(size)

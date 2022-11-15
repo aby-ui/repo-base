@@ -459,12 +459,13 @@ local function Text_SetCooldown(frame, start, duration, debuffType, texture, cou
         frame:SetScript("OnUpdate", nil)
     else
         if frame.durationTbl[1] then
-            if count == 0 then
-                count = ""
+            local fmt
+            if count == 0 or (count == 1 and not frame.circledStackNums) then
+                fmt, count = "%s", ""
             elseif frame.circledStackNums then
-                count = circled[count] .. " "
+                fmt, count = "%s ", circled[count] .. " "
             else
-                count = count .. " "
+                fmt = "%d "
             end
             frame:SetScript("OnUpdate", function()
                 local remain = duration-(GetTime()-start)
@@ -476,29 +477,35 @@ local function Text_SetCooldown(frame, start, duration, debuffType, texture, cou
                 elseif remain <= duration * frame.colors[2][4] then
                     frame.text:SetTextColor(frame.colors[2][1], frame.colors[2][2], frame.colors[2][3])
                 else
-                    frame.text:SetTextColor(unpack(frame.colors[1]))
+                    frame.text:SetTextColor(frame.colors[1][1], frame.colors[1][2], frame.colors[1][3])
                 end
 
                 -- format
+                local fmt2
                 if remain > 60 then
-                    remain = string.format("%dm", remain/60)
+                    fmt2, remain = fmt .. "%dm", remain/60
                 else
                     if frame.durationTbl[2] then
-                        remain = math.ceil(remain)
+                        fmt2, remain = fmt .. "%d", remain + 0.9999
+                        remain = remain < 1 and 1 or remain
                     else
                         if remain < frame.durationTbl[3] then
-                            remain = string.format("%.1f", remain)
+                            fmt2 = fmt .. "%.1f"
                         else
-                            remain = string.format("%d", remain)
+                            fmt2 = fmt .. "%d"
                         end
                     end
                 end
-
-                frame.text:SetText(count..remain)
+                frame.text:SetFormattedText(fmt2, count, remain)
             end)
         else
             count = count == 0 and 1 or count
-            count = frame.circledStackNums and circled[count] or count
+            local fmt = frame.circledStackNums and circled[count]
+            if fmt then
+                count = nil
+            else
+                fmt = "%d"
+            end
             frame:SetScript("OnUpdate", function()
                 local remain = duration-(GetTime()-start)
                 -- update color
@@ -507,10 +514,10 @@ local function Text_SetCooldown(frame, start, duration, debuffType, texture, cou
                 elseif remain <= duration * frame.colors[2][4] then
                     frame.text:SetTextColor(frame.colors[2][1], frame.colors[2][2], frame.colors[2][3])
                 else
-                    frame.text:SetTextColor(unpack(frame.colors[1]))
+                    frame.text:SetTextColor(frame.colors[1][1], frame.colors[1][2], frame.colors[1][3])
                 end
                 -- update text
-                frame.text:SetText(count)
+                frame.text:SetFormattedText(fmt, count)
             end)
 
         end

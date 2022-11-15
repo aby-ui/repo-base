@@ -20,6 +20,7 @@ select(2, ...).L = setmetatable({
 
     ["showGroupNumber"] = "Show group number",
     ["dispellableByMe"] = "Only show debuffs dispellable by me",
+    ["showDuplicate"] = "Don't hide shown raid debuffs",
     ["showDispelTypeIcons"] = "Show dispel type icons",
     ["castByMe"] = "Only show buffs cast by me",
     ["trackByName"] = "Track by name",
@@ -65,6 +66,14 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r139-release (Nov 13, 2022, 23:10 GMT+8)</h1>
+        <p>* Updated evoker spells.</p>
+        <p>* Updated slash commands.</p>
+        <p>* Updated spotlight.</p>
+        <p>* Update zhTW and koKR.</p>
+        <p>* Fixed aura tooltips.</p>
+        <br/>
+
         <h1>r138-release (Nov 12, 2022, 04:56 GMT+8)</h1>
         <p>* Updated import &amp; export.</p>
         <p>* Split "Unit Spacing" into "Unit Spacing X" and "Unit Spacing Y".</p>

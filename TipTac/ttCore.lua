@@ -417,6 +417,19 @@ function tt:CreatePushArray(optTable)
 end
 
 --------------------------------------------------------------------------------------------------------
+--                                          Helper Functions                                          --
+--------------------------------------------------------------------------------------------------------
+
+-- Get displayed unit
+function tt:GetDisplayedUnit(tooltip)
+	if (tooltip.GetUnit) then
+		return tooltip:GetUnit();
+	else
+		return TooltipUtil.GetDisplayedUnit(tooltip);
+	end
+end
+
+--------------------------------------------------------------------------------------------------------
 --                                         Elements Framework                                         --
 --------------------------------------------------------------------------------------------------------
 
@@ -711,12 +724,18 @@ local function SetupGradientTip(tip)
 		return;
 	elseif (not g) then
 		g = tip:CreateTexture();
-		-- g:SetColorTexture(1, 1, 1, 1);  -- SetGradientAlpha() removed since df
-		g:SetTexture([[Interface\AddOns\TipTac\media\gradient]]);
+		if (g.SetGradientAlpha) then -- before df
+			g:SetColorTexture(1, 1, 1, 1);
+		else -- since df
+			g:SetTexture([[Interface\AddOns\TipTac\media\gradient]]);
+		end
 		tip.ttGradient = g;
 	end
-	-- g:SetGradientAlpha("VERTICAL", 0, 0, 0, 0, unpack(cfg.gradientColor)); -- SetGradientAlpha() removed since df
-	g:SetVertexColor(unpack(cfg.gradientColor));
+	if (g.SetGradientAlpha) then -- before df
+		g:SetGradientAlpha("VERTICAL", 0, 0, 0, 0, unpack(cfg.gradientColor));
+	else -- since df
+		g:SetVertexColor(unpack(cfg.gradientColor));
+	end
 	local insets = ((cfg.pixelPerfectBackdrop and tt:GetNearestPixelSize(cfg.backdropInsets, true)) or cfg.backdropInsets);
 	g:SetPoint("TOPLEFT", insets, insets * -1);
 	g:SetPoint("BOTTOMRIGHT", tip, "TOPRIGHT", insets * -1, -cfg.gradientHeight);
@@ -793,7 +812,7 @@ function tt:ApplySettings()
 			end
 			SetupGradientTip(tip);
 			SetScale(tip);
-			tt:ApplyTipBackdrop(tip);
+			tt:ApplyTipBackdrop(tip, "ApplySettings");
 		end
 	end
 
@@ -825,7 +844,7 @@ end
 local function STT_SetBackdropStyle(self, style, embedded)
 	for _, tip in ipairs(TT_TipsToModify) do
 		if (type(tip) == "table") and (type(tip.GetObjectType) == "function") and (tip == self) then
-			tt:ApplyTipBackdrop(self);
+			tt:ApplyTipBackdrop(self, "SharedTooltip_SetBackdropStyle");
 			break;
 		end
 	end
@@ -1069,9 +1088,9 @@ local function GetAnchorPosition(tooltip)
 	if (tooltip == gtt) then
 		 -- don't anchor GTT (frame tip type) in "Premade Groups->LFGList" to mouse if addon RaiderIO is loaded
 		if (var == "anchorFrameTip") and (ttAnchorType == "mouse") and (IsAddOnLoaded("RaiderIO")) and (IsInFrameChain(tooltip:GetOwner(), {
-					"LFGListSearchPanelScrollFrameButton(%d+)",
-					"LFGListApplicationViewerScrollFrameButton(%d+)"
-				}, 4)) then
+					LFGListFrame.SearchPanel.ScrollBox,
+					LFGListFrame.ApplicationViewer.ScrollBox
+				}, 6)) then
 			return "normal", "BOTTOMRIGHT";
 		end
 		
@@ -1317,8 +1336,8 @@ function tt:ApplyUnitAppearance(tip,first)
 	tt:SetPadding(tip);
 end
 
--- HOOK: CommunitiesFrame.MemberList.ListScrollFrame.buttons:OnEnter
-local function CFMLLSFB_OnEnter_Hook(self)
+-- HOOK: CommunitiesFrame.MemberList:OnEnter
+local function CFML_OnEnter_Hook(self)
 	if (cfg.classColoredBorder) and (gtt:IsShown()) then
 		local classColor = CLASS_COLORS["PRIEST"];
 		local memberInfo = self.memberInfo;
@@ -1353,8 +1372,8 @@ local function IRTT_DisplayDungeonScoreLink(link)
 	end
 end
 
--- HOOK: LFGListFrame.ApplicationViewer.ScrollFrame.buttons.Members:OnEnter respectively LFGListApplicantMember_OnEnter, see "LFGList.lua"
-local function LFGLFAVSFBM_OnEnter_Hook(self)
+-- HOOK: LFGListFrame.ApplicationViewer.ScrollBox:OnEnter respectively LFGListApplicantMember_OnEnter, see "LFGList.lua"
+local function LFGLFAVSB_OnEnter_Hook(self)
 	if (cfg.classColoredBorder) and (gtt:IsShown()) then
 		local applicantID = self:GetParent().applicantID;
 		local memberIdx = self.memberIdx;
@@ -1377,7 +1396,7 @@ end
 	This is apparently the order in which the GTT construsts unit tips
 	------------------------------------------------------------------
 	- GameTooltip_SetDefaultAnchor()    -- called e.g. for units and mailboxes. won't initially be called for buffs or vendor signs.
-	- GTT.OnTooltipSetUnit()			-- GetUnit() becomes valid here
+	- GTT.OnTooltipSetUnit()			-- GetUnit() aka TooltipUtil.GetDisplayedUnit() becomes valid here
 	- GTT:Show()						-- Will Resize the tip
 	- GTT.OnShow()						-- Event triggered in response to the Show() function. won't be called if tooltip of world unit isn't faded yet and moving mouse over it again or someone else.
 	- GTT.OnTooltipCleared()			-- Tooltip has been cleared and is ready to show new information, doesn't mean it's hidden
@@ -1392,6 +1411,9 @@ local FADE_BLOCK = 2;
 
 -- EventHook: OnShow
 function gttScriptHooks:OnShow()
+	-- reapply padding needed here since df
+	tt:SetPadding(self, "OnShow");
+
 	-- Anchor GTT to Mouse -- Az: Initial mouse anchoring is now being done in GTT_SetDefaultAnchor (remove if there are no issues)
 
     --abyui 注释掉会导致gtt_anchorType局部变量混乱，可能使用的不是实际的配置，注意最后的Hook也是用这个函数 (原版注释掉一段代码, abyui取消注释, Frozn45版本另写，暂时采用)
@@ -1406,7 +1428,7 @@ function gttScriptHooks:OnShow()
 
 	-- Ensures that default anchored world frame tips have the proper color, their internal function seems to set them to a dark blue color
 	-- Tooltips from world objects that change cursor seems to also require this. (Tested in 8.0/BfA)
-	-- if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
+	-- if (self:IsOwned(UIParent)) and (not tt:GetDisplayedUnit(self)) then
 		-- tt:SetBackdropColorLocked(self, false, unpack(cfg.tipColor));
 	-- end
 end
@@ -1424,7 +1446,7 @@ function gttScriptHooks:OnUpdate(elapsed)
 	tt:ReApplyAnchorTypeForMouse(self, true, true);
 	
 	-- WoD: This background color reset, from OnShow(), has been copied down here. It seems resetting the color in OnShow() wasn't enough, as the color changes after the tip is being shown
-	-- if (self:IsOwned(UIParent)) and (not self:GetUnit()) then
+	-- if (self:IsOwned(UIParent)) and (not tt:GetDisplayedUnit(self)) then
 		-- tt:SetBackdropColorLocked(self, false, unpack(cfg.tipColor));
 	-- end
 
@@ -1440,6 +1462,8 @@ function gttScriptHooks:OnUpdate(elapsed)
 			elseif (self.ttLastUpdate > cfg.preFadeTime) then
 				self:SetAlpha(1 - (self.ttLastUpdate - cfg.preFadeTime) / cfg.fadeTime);
 			end
+		-- Do nothing if mouse button is down, because the following check for UnitExists("mouseover") incorrectly returns false if hovering over a world unit.
+		elseif (IsMouseButtonDown()) then
 		-- This is only really needed for worldframe unit tips, as when self.ttUnit.token == "mouseover", the GTT:FadeOut() function is not called
 		elseif (not UnitExists(self.ttUnit.token)) then
 			self:FadeOut();
@@ -1465,9 +1489,9 @@ function gttScriptHooks:OnTooltipSetUnit()
 	
 	self.ttUnit = {};
 	
-	local _, unit = self:GetUnit();
+	local _, unit = tt:GetDisplayedUnit(self);
 
-	-- Concated unit tokens such as "targettarget" cannot be returned as the unit by GTT:GetUnit(),
+	-- Concated unit tokens such as "targettarget" cannot be returned as the unit by GTT:GetUnit() aka TooltipUtil.GetDisplayedUnit(GTT),
 	-- and it will return as "mouseover", but the "mouseover" unit is still invalid at this point for those unitframes!
 	-- To overcome this problem, we look if the mouse is over a unitframe, and if that unitframe has a unit attribute set?
 	if (not unit) then
@@ -1532,7 +1556,7 @@ end
 
 -- OnHide Script -- Used to default the background and border color -- Az: May cause issues with embedded tooltips, see GameTooltip.lua:396
 function gttScriptHooks:OnHide()
-	tt:ApplyTipBackdrop(self, nil, true);
+	tt:ApplyTipBackdrop(self, "OnHide", true);
 end
 
 --------------------------------------------------------------------------------------------------------
@@ -1616,7 +1640,12 @@ local function GTT_SetToyByItemID(self)
 end
 
 -- HOOK: QuestPinMixin:OnMouseEnter()
-local function QPM_OnMouseEnter(self)
+local function QPM_OnMouseEnter_Hook(self)
+	tt:ReApplyAnchorTypeForMouse(gtt);
+end
+
+-- HOOK: QuestBlobPinMixin:UpdateTooltip()
+local function QBPM_UpdateTooltip_Hook(self)
 	tt:ReApplyAnchorTypeForMouse(gtt);
 end
 
@@ -1840,7 +1869,25 @@ function tt:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModify)
 			
 			if (tip:GetObjectType() == "GameTooltip") then
 				for scriptName, hookFunc in next, gttScriptHooks do
-					tip:HookScript(scriptName, hookFunc);
+					if (TooltipDataProcessor) then -- since df 10.0.2
+						if (scriptName == "OnTooltipSetUnit") then
+							TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(self, ...)
+								if (self == tip) then
+									gttScriptHooks.OnTooltipSetUnit(self, ...);
+								end
+							end);
+						elseif (scriptName == "OnTooltipSetItem") then
+							TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self, ...)
+								if (self == tip) then
+									gttScriptHooks.OnTooltipSetItem(self, ...);
+								end
+							end);
+						else
+							tip:HookScript(scriptName, hookFunc);
+						end
+					else -- before df 10.0.2
+						tip:HookScript(scriptName, hookFunc);
+					end
 				end
 
 				-- Post-Hook GameTooltip:SetUnit() to flag the tooltip that it is currently showing a unit
@@ -1865,13 +1912,18 @@ function tt:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModify)
 					hooksecurefunc("SharedTooltip_SetBackdropStyle", STT_SetBackdropStyle);
 					
 					-- Post-Hook QuestPinMixin:OnMouseEnter() to re-anchor tooltip (e.g. quests on world map with numeric banner) if "Anchors->Frame Tip Type" = "Mouse Anchor"
-					hooksecurefunc(QuestPinMixin, "OnMouseEnter", QPM_OnMouseEnter);
+					hooksecurefunc(QuestPinMixin, "OnMouseEnter", QPM_OnMouseEnter_Hook);
 					
 					-- Post-Hook TaskPOI_OnEnter() to reapply padding if modified
 					-- commented out for embedded tooltips, see description in tt:SetPadding()
 					-- hooksecurefunc("TaskPOI_OnEnter", function(self)
 					  -- tt:SetPadding(gtt, "GameTooltip_AddQuestRewardsToTooltip");
 					-- end);
+					
+					-- Post-Hook QuestBlobPinMixin:UpdateTooltip() (OnMouseEnter() doesn't work) to re-anchor tooltip (blue area of quests) if "Anchors->Frame Tip Type" = "Mouse Anchor"
+					for pin in WorldMapFrame:EnumeratePinsByTemplate("QuestBlobPinTemplate") do
+						hooksecurefunc(pin, "UpdateTooltip", QBPM_UpdateTooltip_Hook);
+					end
 					
 					-- Post-Hook GameTooltip_AddQuestRewardsToTooltip() to reapply padding if modified
 					-- commented out for embedded tooltips, see description in tt:SetPadding()
@@ -1889,16 +1941,14 @@ function tt:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModify)
 						-- Post-Hook RuneforgePowerBaseMixin:OnEnter() to re-anchor tooltip in adventure journal if "Anchors->Frame Tip Type" = "Mouse Anchor" and scrolling up and down, see WardrobeItemsCollectionMixin:UpdateItems() in "Blizzard_Collections/Blizzard_Wardrobe.lua"
 						hooksecurefunc(RuneforgePowerBaseMixin, "OnEnter", RPBM_OnEnter_Hook);
 
-						-- Function to apply necessary hooks to LFGListFrame.ApplicationViewer.ScrollFrame.buttons to apply class colors
-						if (isWoWSl) then -- df todo: ScrollFrame doesn't exist in df. replaced with ScrollBox.
-							tt:ApplyHooksToLFGLFAVSFB();
-							
-							hooksecurefunc("LFGListApplicationViewer_UpdateApplicant", function(button, applicantID)
-								tt:ApplyHooksToLFGLFAVSFB(button, applicantID);
-							end);
-							
-							hooksecurefunc("LFGListApplicantMember_OnEnter", LFGLFAVSFBM_OnEnter_Hook);
-						end
+						-- Function to apply necessary hooks to LFGListFrame.ApplicationViewer to apply class colors
+						tt:ApplyHooksToLFGLFAVSB();
+						
+						hooksecurefunc("LFGListApplicationViewer_UpdateApplicant", function(button, applicantID)
+							tt:ApplyHooksToLFGLFAVSB(button, applicantID);
+						end);
+						
+						hooksecurefunc("LFGListApplicantMember_OnEnter", LFGLFAVSB_OnEnter_Hook);
 					end
 				elseif (tipName == "ItemRefTooltip") then
 					if (isWoWSl) or (isWoWRetail) then
@@ -1943,42 +1993,34 @@ function tt:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModify)
 	end
 end
 
--- Function to apply necessary hooks to CommunitiesFrame.MemberList.ListScrollFrame
-local CFMLLSFBhooked = {};
+-- Function to apply necessary hooks to LFGListFrame.ApplicationViewer.ScrollBox respectively LFGListApplicantMember_OnEnter()
+local LFGLFAVSBhooked = {};
 
-function tt:ApplyHooksToCFMLLSF()
-	for index, button in pairs(CommunitiesFrame.MemberList.ListScrollFrame.buttons) do -- see CommunitiesMemberListMixin:RefreshListDisplay() in "Blizzard_Communities/CommunitiesMemberList.lua"
-		if (not CFMLLSFBhooked[button]) then
-			button:HookScript("OnEnter", CFMLLSFB_OnEnter_Hook);
-			CFMLLSFBhooked[button] = true;
-		end
-	end
-end
-
--- Function to apply necessary hooks to LFGListFrame.ApplicationViewer.ScrollFrame.buttons respectively LFGListApplicantMember_OnEnter()
-local LFGLFAVSFBMhooked = {};
-
-local function ApplyHooksToLFGLFAVSFB(button, applicantID)
+local function ApplyHooksToLFGLFAVSB(button, applicantID)
 	local applicantInfo = C_LFGList.GetApplicantInfo(applicantID);
 	for i = 1, applicantInfo.numMembers do
 		local member = button.Members[i];
-		if (not LFGLFAVSFBMhooked[member]) then
-			member:HookScript("OnEnter", LFGLFAVSFBM_OnEnter_Hook);
-			LFGLFAVSFBMhooked[member] = true;
+		if (not LFGLFAVSBhooked[member]) then
+			member:HookScript("OnEnter", LFGLFAVSB_OnEnter_Hook);
+			LFGLFAVSBhooked[member] = true;
 		end
 	end
 end
 
-function tt:ApplyHooksToLFGLFAVSFB(button, applicantID)
+function tt:ApplyHooksToLFGLFAVSB(button, applicantID)
 	if (button) then
-		ApplyHooksToLFGLFAVSFB(button, applicantID); -- see LFGListApplicationViewer_UpdateApplicant() in "LFGList.lua"
+		ApplyHooksToLFGLFAVSB(button, applicantID); -- see LFGListApplicationViewer_UpdateApplicant() in "LFGList.lua"
 	else
-		local buttons = LFGListFrame.ApplicationViewer.ScrollFrame.buttons; -- see LFGListApplicationViewer_UpdateResults() in "LFGList.lua"
-		for i = 1, #buttons do
-			local button = buttons[i];
-			local _applicantID = button.applicantID;
-			if (_applicantID) then
-				ApplyHooksToLFGLFAVSFB(button, _applicantID);
+		local self = LFGListFrame.ApplicationViewer; -- see LFGListApplicationViewer_UpdateResults() + LFGListApplicationViewer_OnEvent() in "LFGList.lua"
+		if (self.applicants) then
+			for index = 1, #self.applicants do
+				local applicantID = self.applicants[index];
+				local frame = self.ScrollBox:FindFrameByPredicate(function(frame, elementData)
+					return elementData.id == applicantID;
+				end);
+				if frame then
+					ApplyHooksToLFGLFAVSB(button, applicantID);
+				end
 			end
 		end
 	end
@@ -2043,14 +2085,8 @@ function tt:ADDON_LOADED(event, addOnName)
 	end
 	-- now CommunitiesGuildNewsFrame exists
 	if (addOnName == "Blizzard_Communities") or ((addOnName == "TipTac") and (IsAddOnLoaded("Blizzard_Communities")) and (not TT_AddOnsLoaded['Blizzard_Communities'])) then
-		if (isWoWSl) then -- df todo: ListScrollFrame doesn't exist in df. replaced with ScrollBox.
-		-- Function to apply necessary hooks to CommunitiesFrame.MemberList.ListScrollFrame to apply class colors
-			tt:ApplyHooksToCFMLLSF();
-			
-			hooksecurefunc(CommunitiesFrame.MemberList, "RefreshLayout", function()
-				tt:ApplyHooksToCFMLLSF();
-			end);
-		end
+		-- Function to apply necessary hooks to CommunitiesFrame.MemberList to apply class colors
+		hooksecurefunc(CommunitiesMemberListEntryMixin, "OnEnter", CFML_OnEnter_Hook);
 		
 		if (addOnName == "TipTac") then
 			TT_AddOnsLoaded["Blizzard_Communities"] = true;
@@ -2145,7 +2181,7 @@ function tt:AddModifiedTip(tip,noHooks)
 		
 		if (not noHooks) then
 			tip:HookScript("OnShow", function()
-				tt:ApplyTipBackdrop(tip);
+				tt:ApplyTipBackdrop(tip, "AddModifiedTip");
 			end);
 		end
 

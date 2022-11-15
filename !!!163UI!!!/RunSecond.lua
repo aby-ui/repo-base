@@ -506,17 +506,6 @@ end)
 --]]
 
 --[[------------------------------------------------------------
-8.0 recursive
----------------------------------------------------------------]]
-hooksecurefunc(GameTooltip, "SetOwner", function(self, parent, anchor)
-    if parent == UIParent and anchor == "ANCHOR_NONE" then
-        local tip
-        tip = ShoppingTooltip1; if select(2, tip:GetPoint()) == self then tip:ClearAllPoints() end
-        tip = ShoppingTooltip2; if select(2, tip:GetPoint()) == self then tip:ClearAllPoints() end
-    end
-end)
-
---[[------------------------------------------------------------
 9.0.1 BossBanner_ConfigureLootFrame -> SetItemButtonQuality -> SetItemButtonOverlay
 hooksecurefunc("IsArtifactRelicItem", function()
     if BossBanner and BossBanner.LootFrames then
@@ -633,6 +622,22 @@ do
                 and not InCombatLockdown() and not PlayerFrame:IsVisible() then
             UpdateUIElementsForClientScene(nil)
             U1Message("9.2.42698 版本BUG，解谜游戏后无法显示头像，临时处理")
+        end
+    end)
+end
+
+--[[------------------------------------------------------------
+10.0 recursive GameTooltip_SetDefaultAnchor 没有 ClearPoints() 额外动作条切一下方向看宏就会有问题
+Interface/FrameXML/GameTooltip.lua:190: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: GameTooltip:SetPoint.
+---------------------------------------------------------------]]
+if true then
+    local lastTooltip
+    hooksecurefunc(getmetatable(GameTooltip).__index, "SetOwner", function(self, owner, point)
+        lastTooltip = self
+    end)
+    hooksecurefunc(GameTooltipDefaultContainer, "GetPoint", function(self, parent, anchor)
+        if lastTooltip then
+            lastTooltip:ClearAllPoints()
         end
     end)
 end

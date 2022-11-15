@@ -7,6 +7,9 @@ Cell.frames.aboutTab = aboutTab
 aboutTab:SetAllPoints(Cell.frames.optionsFrame)
 aboutTab:Hide()
 
+local authorText, translatorsText, specialThanksText, patronsText
+local UpdateFont
+
 -------------------------------------------------
 -- description
 -------------------------------------------------
@@ -44,10 +47,13 @@ local function CreateAuthorPane()
     local authorPane = Cell:CreateTitledPane(aboutTab, L["Author"], 205, 50)
     authorPane:SetPoint("TOPLEFT", aboutTab, "TOPLEFT", 5, -190)
     
-    local authorNameText = authorPane:CreateFontString(nil, "OVERLAY")
-    authorNameText:SetPoint("TOPLEFT", 5, -27)
-    authorNameText:SetFont("Interface\\AddOns\\Cell\\Media\\font.ttf", 12, "")
-    authorNameText:SetText("篠崎-影之哀伤 (CN)")
+    authorText = authorPane:CreateFontString(nil, "OVERLAY")
+    authorText:SetPoint("TOPLEFT", 5, -27)
+    authorText.font = "Interface\\AddOns\\Cell\\Media\\font.ttf"
+    authorText.size = 12
+    UpdateFont(authorText)
+
+    authorText:SetText("篠崎-影之哀伤 (CN)")
 end
 
 -------------------------------------------------
@@ -69,11 +75,16 @@ local function CreateTranslatorsPane()
     local translatorsPane = Cell:CreateTitledPane(aboutTab, L["Translators"], 205, 112)
     translatorsPane:SetPoint("TOPLEFT", aboutTab, "TOPLEFT", 5, -255)
 
-    local translatorsText = translatorsPane:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+    translatorsText = translatorsPane:CreateFontString(nil, "OVERLAY")
+    translatorsText.font = UNIT_NAME_FONT_KOREAN
+    translatorsText.size = 12
+    UpdateFont(translatorsText)
+
     translatorsText:SetPoint("TOPLEFT", 5, -27)
+    translatorsText:SetPoint("TOPRIGHT", -5, -27)
     translatorsText:SetSpacing(5)
     translatorsText:SetJustifyH("LEFT")
-    translatorsText:SetText("RainbowUI (zhTW)\nnaragok79 (koKR)\nBNS333 (zhTW)")
+    translatorsText:SetText("zhTW: RainbowUI, BNS333\nkoKR: naragok79, netaras, 부패질")
 end
 
 -------------------------------------------------
@@ -83,17 +94,14 @@ local function CreateSpecialThanksPane()
     local specialThanksPane = Cell:CreateTitledPane(aboutTab, L["Special Thanks"], 205, 112)
     specialThanksPane:SetPoint("TOPLEFT", aboutTab, "TOPLEFT", 222, -255)
 
-    local specialThanksText = specialThanksPane:CreateFontString(nil, "OVERLAY")
-    local font
+    specialThanksText = specialThanksPane:CreateFontString(nil, "OVERLAY")
     if LOCALE_zhCN then
-        font = GameFontNormal:GetFont()
+        specialThanksText.font = GameFontNormal:GetFont()
     else
-        font = UNIT_NAME_FONT_CHINESE
+        specialThanksText.font = UNIT_NAME_FONT_CHINESE
     end
-    specialThanksText:SetFont(font, 13, "")
-    specialThanksText:SetTextColor(1, 1, 1, 1)
-    specialThanksText:SetShadowColor(0, 0, 0)
-    specialThanksText:SetShadowOffset(1, -1)
+    specialThanksText.size = 13
+    UpdateFont(specialThanksText)
 
     specialThanksText:SetPoint("TOPLEFT", 5, -27)
     specialThanksText:SetSpacing(5)
@@ -123,22 +131,19 @@ local function CreatePatronsPane()
         bgTex:SetGradientAlpha("HORIZONTAL", 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.1, 0.25)
     end
 
-    local list = patronsPane:CreateFontString(nil, "OVERLAY")
-    local font
+    patronsText = patronsPane:CreateFontString(nil, "OVERLAY")
     if LOCALE_zhCN then
-        font = GameFontNormal:GetFont()
+        patronsText.font = GameFontNormal:GetFont()
     else
-        font = UNIT_NAME_FONT_CHINESE
+        patronsText.font = UNIT_NAME_FONT_CHINESE
     end
-    list:SetFont(font, 12, "")
-    list:SetTextColor(1, 1, 1, 1)
-    list:SetShadowColor(0, 0, 0)
-    list:SetShadowOffset(1, -1)
+    patronsText.size = 12
+    UpdateFont(patronsText)
 
-    list:SetPoint("TOPLEFT", 5, -27)
-    list:SetSpacing(5)
-    list:SetJustifyH("LEFT")
-    list:SetText(
+    patronsText:SetPoint("TOPLEFT", 5, -27)
+    patronsText:SetSpacing(5)
+    patronsText:SetJustifyH("LEFT")
+    patronsText:SetText(
         "CC (爱发电)\n"..
         "flappysmurf (爱发电)\n"..
         "Mike (爱发电)\n"..
@@ -154,6 +159,7 @@ local function CreatePatronsPane()
         "年复一年路西法 (爱发电)\n"..
         "七月核桃丶-白银之手 (CN)\n"..
         "青乙-影之哀伤 (CN)\n"..
+        "貼饼子-匕首岭 (CN)\n"..
         "席慕容 (NGA)\n"..
         "夏木沐-伊森利恩 (CN)\n"..
         "星空 (爱发电)"
@@ -164,8 +170,8 @@ local function CreatePatronsPane()
     local function updateFunc(self, elapsed)
         elapsedTime = elapsedTime + elapsed
         
-        patronsPane:SetHeight(list:GetHeight() + 35)
-        patronsPane:SetWidth(list:GetWidth() + 10)
+        patronsPane:SetHeight(patronsText:GetHeight() + 35)
+        patronsPane:SetWidth(patronsText:GetWidth() + 10)
         
         if elapsedTime >= 0.5 then
             patronsPane:SetScript("OnUpdate", nil)
@@ -278,3 +284,19 @@ local function ShowTab(tab)
     end
 end
 Cell:RegisterCallback("ShowOptionsTab", "AboutTab_ShowTab", ShowTab)
+
+UpdateFont = function(fs)
+    if not fs then return end
+    
+    fs:SetFont(fs.font, fs.size + CellDB["appearance"]["optionsFontSizeOffset"], "")
+    fs:SetTextColor(1, 1, 1, 1)
+    fs:SetShadowColor(0, 0, 0)
+    fs:SetShadowOffset(1, -1)
+end
+
+function Cell:UpdateAboutFont()
+    UpdateFont(authorText)
+    UpdateFont(translatorsText)
+    UpdateFont(specialThanksText)
+    UpdateFont(patronsText)
+end

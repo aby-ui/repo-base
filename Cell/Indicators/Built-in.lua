@@ -517,7 +517,7 @@ function I:CreateDebuffs(parent)
         for i = 1, 10 do
             if show then
                 debuffs[i]:SetScript("OnEnter", function()
-                    F:ShowTooltips(parent, "spell", parent.state.displayedUnit, debuffs[i].index)
+                    F:ShowTooltips(parent, "spell", parent.state.displayedUnit, debuffs[i].index, "HARMFUL")
                 end)
                 debuffs[i]:SetScript("OnLeave", function()
                     GameTooltip:Hide()
@@ -867,7 +867,7 @@ function I:CreateRaidDebuffs(parent)
         for i = 1, 3 do
             if show then
                 raidDebuffs[i]:SetScript("OnEnter", function()
-                    F:ShowTooltips(parent, "spell", parent.state.displayedUnit, raidDebuffs[i].index)
+                    F:ShowTooltips(parent, "spell", parent.state.displayedUnit, raidDebuffs[i].index, "HARMFUL")
                 end)
                 raidDebuffs[i]:SetScript("OnLeave", function()
                     GameTooltip:Hide()

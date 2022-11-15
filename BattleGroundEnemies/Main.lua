@@ -2,6 +2,7 @@ local AddonName, Data = ...
 local L = Data.L
 local LSM = LibStub("LibSharedMedia-3.0")
 local DRList = LibStub("DRList-1.0")
+
 local LibRaces = LibStub("LibRaces-1.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
@@ -71,18 +72,18 @@ if HasSpeccs then
 	LGIST=LibStub:GetLibrary("LibGroupInSpecT-1.1")
 end
 
+
+
 --LSM:Register("font", "PT Sans Narrow Bold", [[Interface\AddOns\BattleGroundEnemies\Fonts\PT Sans Narrow Bold.ttf]])
 LSM:Register("statusbar", "UI-StatusBar", "Interface\\TargetingFrame\\UI-StatusBar")
 
 local BattleGroundEnemies = CreateFrame("Frame", "BattleGroundEnemies", UIParent)
 BattleGroundEnemies.Counter = {}
 
---todo: add icon selector for combat indicator and add the module to testmode
--- add castbars to testmode
+--todo: add castbars and combat indicator to testmode
 
 -- for Clique Support
 ClickCastFrames = ClickCastFrames or {}
-
 
 
 
@@ -461,6 +462,16 @@ do
 				unitID = self.unitID
 				if self.UnitIDs.HasAllyUnitID then
 					updateStuffWithEvents = true
+
+					--throttle the aura updates in case we only have a ally unitID
+					local lastAuraUpdate = self.lastAuraUpdate
+					if lastAuraUpdate then
+						if GetTime() - lastAuraUpdate > 0.5 then
+							updateAuras = true
+						end
+					else
+						updateAuras = true
+					end
 				end
 			end
 		end
@@ -703,9 +714,21 @@ do
 		-- auras on spec
 
 		--MyTarget, indicating the current target of the player
+		self.MyTarget:SetBackdrop({
+			bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+			edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+			edgeSize = BattleGroundEnemies.db.profile.MyTarget_BorderSize
+		})
+		self.MyTarget:SetBackdropColor(0, 0, 0, 0)
 		self.MyTarget:SetBackdropBorderColor(unpack(BattleGroundEnemies.db.profile.MyTarget_Color))
 
 		--MyFocus, indicating the current focus of the player
+		self.MyFocus:SetBackdrop({
+			bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
+			edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
+			edgeSize = BattleGroundEnemies.db.profile.MyFocus_BorderSize
+		})
+		self.MyFocus:SetBackdropColor(0, 0, 0, 0)
 		self.MyFocus:SetBackdropBorderColor(unpack(BattleGroundEnemies.db.profile.MyFocus_Color))
 
 
@@ -830,7 +853,7 @@ do
 		if not maxHealths[self] then
 			local myMaxHealth = UnitHealthMax("player")
 			local playerMaxHealthDifference = math_random(-15, 15) -- the player has the same health as me +/- 15%
-			local playerMaxHealth = myMaxHealth * (1 + (playerMaxHealthDifference/100))
+			local playerMaxHealth = math.ceil(myMaxHealth * (1 + (playerMaxHealthDifference/100)))
 			maxHealths[self] = playerMaxHealth
 		end
 		return maxHealths[self]
@@ -1569,12 +1592,7 @@ local function PopulateMainframe(playerType)
 
 			--MyTarget, indicating the current target of the player
 			playerButton.MyTarget = CreateFrame('Frame', nil, playerButton.healthBar, BackdropTemplateMixin and "BackdropTemplate")
-			playerButton.MyTarget:SetBackdrop({
-				bgFile = "Interface/Buttons/WHITE8X8", --drawlayer "BACKGROUND"
-				edgeFile = 'Interface/Buttons/WHITE8X8', --drawlayer "BORDER"
-				edgeSize = 1
-			})
-			playerButton.MyTarget:SetBackdropColor(0, 0, 0, 0)
+
 			playerButton.MyTarget:Hide()
 
 			--MyFocus, indicating the current focus of the player
@@ -3226,8 +3244,6 @@ end
 do
 	local oldFocus
 	function BattleGroundEnemies:PLAYER_FOCUS_CHANGED()
-		if not PlayerButton then return end
-
 		local playerButton = self:GetPlayerbuttonByUnitID("focus")
 		if oldFocus then
 			if oldFocus.PlayerIsEnemy then
@@ -3415,7 +3431,7 @@ local function checkEffectiveEnableStateForArenaFrames()
 	end
 end
 
-function BattleGroundEnemies:EnableFallbacktoCombatlogScanning()
+function BattleGroundEnemies:EnableFallbackToCombatlogScanning()
 	if not self.combatlogScanningEnabled then
 		self:Information(L.CombatLogScanningForEnemiesEnabled)
 
@@ -3425,7 +3441,7 @@ function BattleGroundEnemies:EnableFallbacktoCombatlogScanning()
 	self.combatlogScanningEnabled = true
 end
 
-function BattleGroundEnemies:DisableFallbacktoCombatlogScanning()
+function BattleGroundEnemies:DisableFallbackToCombatlogScanning()
 	if self.combatlogScanningEnabled then
 		self:Information(L.CombatLogScanningForEnemiesDisabled)
 		self.SearchedGUIDs = nil
@@ -3498,23 +3514,16 @@ local function parseBattlefieldScore(index)
 end
 
 function BattleGroundEnemies:UpdateMapID()
-	local wmf = WorldMapFrame
-	if wmf and not wmf:IsShown() then
-		--	SetMapToCurrentZone() apparently removed in 8.0
-		local mapID = GetBestMapForUnit('player')
-		if mapID and mapID ~= -1 and mapID ~= 0 then-- when this values occur the map ID is not real
-			self.BattlegroundBuff = Data.BattlegroundspezificBuffs[mapID]
-			self.BattleGroundDebuffs = Data.BattlegroundspezificDebuffs[mapID]
-			self.CurrentMapID = mapID
-		else
-			self.BattleGroundDebuffs = false
-			self.BattlegroundBuff = false
-			self.CurrentMapID = false
-			C_Timer.After(2, function() --Delay this check, since its happening sometimes that this data is not ready yet
-				self:UpdateMapID()
-			end)
-		end
+	--	SetMapToCurrentZone() apparently removed in 8.0
+	local mapID = GetBestMapForUnit('player')
+	if mapID and mapID ~= -1 and mapID ~= 0 then-- when this values occur the map ID is not real
+		self.BattlegroundBuff = Data.BattlegroundspezificBuffs[mapID]
+		self.BattleGroundDebuffs = Data.BattlegroundspezificDebuffs[mapID]
+		self.CurrentMapID = mapID
 	else
+		self.BattleGroundDebuffs = false
+		self.BattlegroundBuff = false
+		self.CurrentMapID = false
 		C_Timer.After(2, function() --Delay this check, since its happening sometimes that this data is not ready yet
 			self:UpdateMapID()
 		end)
@@ -3535,31 +3544,6 @@ function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 	if IsInArena and not IsInBrawl() then
 	--	self:Hide() --stopp the OnUpdateScript
 		return -- we are in a arena, UPDATE_BATTLEFIELD_SCORE is not the event we need
-	end
-
-	if GetBattlefieldArenaFaction then
-		local MyBgFaction = GetBattlefieldArenaFaction()  -- returns the playered faction 0 for horde, 1 for alliance, doesnt exist in TBC
-		self:Debug("MyBgFaction:", MyBgFaction)
-		if MyBgFaction == 0 then -- i am Horde
-			self.EnemyFaction = 1 --Enemy is Alliance
-			self.AllyFaction = 0
-		else
-			self.EnemyFaction = 0 --Enemy is Horde
-			self.AllyFaction = 1
-		end
-	else
-		self.EnemyFaction = 0 -- set a dummy value, we get data later from GetBattlefieldScore()
-		self.AllyFaction = 1 -- set a dummy value, we get data later from GetBattlefieldScore()
-	end
-
-	
-
-
-	if HasRBG then
-		C_Timer.After(5, function() --Delay this check, since its happening sometimes that this data is not ready yet
-			self.IsRatedBG = IsRatedBattleground()
-			self:UPDATE_BATTLEFIELD_SCORE() --trigger the function again because since 10.0.0 UPDATE_BATTLEFIELD_SCORE doesnt fire reguralry anymore and RequestBattlefieldScore doesnt trigger the event
-		end)
 	end
 
 	--self:Debug("IsRatedBG", IsRatedBG)
@@ -3601,7 +3585,7 @@ function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 				self.EnemyFaction = self.AllyFaction
 				self.AllyFaction = faction
 
-				return
+				C_Timer.After(2, function() self:UPDATE_BATTLEFIELD_SCORE() end)
 			end
 			if faction == self.EnemyFaction then
 				self.Enemies:CreateOrUpdatePlayer(name, race, classTag, specName)
@@ -3615,10 +3599,10 @@ function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 
 	if foundEnemies == 0 then
 		if self.IsRatedBG and IsRetail then
-			self:EnableFallbacktoCombatlogScanning()
+			self:EnableFallbackToCombatlogScanning()
 		end
 	else
-		self:DisableFallbacktoCombatlogScanning()
+		self:DisableFallbackToCombatlogScanning()
 
 		self.Enemies:DeleteAndCreateNewPlayers()
 	end
@@ -3676,8 +3660,6 @@ function BattleGroundEnemies.Allies:UpdateAllUnitIDs()
 	end
 end
 
-local ticker
-local lastRun = GetTime()
 function BattleGroundEnemies:GROUP_ROSTER_UPDATE()
 
 
@@ -3741,26 +3723,43 @@ BattleGroundEnemies.PARTY_LEADER_CHANGED = BattleGroundEnemies.GROUP_ROSTER_UPDA
 
 --Fires when the player logs in, /reloads the UI or zones between map instances. Basically whenever the loading screen appears.
 function BattleGroundEnemies:PLAYER_ENTERING_WORLD()
-	self:DisableFallbacktoCombatlogScanning()
+	self:DisableFallbackToCombatlogScanning()
 	if self.Testmode.Active then --disable testmode
 		self:DisableTestMode()
 	end
 
-	self:UpdateMapID()
-
 	local _, zone = IsInInstance()
 
 	if zone == "pvp" or zone == "arena" then
+		self.Enemies:RemoveAllPlayers()
+		if GetBattlefieldArenaFaction then
+			local MyBgFaction = GetBattlefieldArenaFaction()  -- returns the playered faction 0 for horde, 1 for alliance, doesnt exist in TBC
+			self:Debug("MyBgFaction:", MyBgFaction)
+			if MyBgFaction == 0 then -- i am Horde
+				self.EnemyFaction = 1 --Enemy is Alliance
+				self.AllyFaction = 0
+			else
+				self.EnemyFaction = 0 --Enemy is Horde
+				self.AllyFaction = 1
+			end
+		else
+			self.EnemyFaction = 0 -- set a dummy value, we get data later from GetBattlefieldScore()
+			self.AllyFaction = 1 -- set a dummy value, we get data later from GetBattlefieldScore()
+		end
+
 		self:Enable()
 
 		self:CheckForArenaEnemies()
 		if zone == "arena" then
 			IsInArena = true
-			if not IsInBrawl() then
-				self.Enemies:RemoveAllPlayers()
-			end
 		else
 			IsInBattleground = true
+			if HasRBG then
+				C_Timer.After(5, function() --Delay this check, since its happening sometimes that this data is not ready yet
+					self.IsRatedBG = IsRatedBattleground()
+					self:UPDATE_BATTLEFIELD_SCORE() --trigger the function again because since 10.0.0 UPDATE_BATTLEFIELD_SCORE doesnt fire reguralry anymore and RequestBattlefieldScore doesnt trigger the event
+				end)
+			end
 		end
 
 
@@ -3775,5 +3774,7 @@ function BattleGroundEnemies:PLAYER_ENTERING_WORLD()
 		IsInBattleground = false
 		self:Disable()
 	end
+
+	self:UpdateMapID()
 	self:ToggleArenaFrames()
 end

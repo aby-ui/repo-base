@@ -1,7 +1,6 @@
 ## Interface: 100000
 ## Notes: 顯示額外動作條
 ## SavedVariablesPerCharacter: MOGUBar_Info
-# Dependencies: TODO:abyui10
 Library\MoguLibrary.lua
 Library\MoguEvent.lua
 Library\MoguScale.lua
@@ -11,5 +10,5 @@ Bindings.lua
 MOGUBar.xml
 
 ## Title:  |cff880303[爱不易]|r ExtraAct 额外动作条
-## Notes-zhCN: 经过测试，目前整合包中只有此插件会导致在战斗中污染动作条。目前系统已经自带了动作条678，这个插件准备删掉了。
+## Notes-zhCN: 显示额外动作条
 ## X-Vendor: AbyUI

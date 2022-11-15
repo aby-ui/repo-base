@@ -195,7 +195,7 @@ local function SetHooks()
 			if not KT.stopUpdate then
 				superTrackedQuestID = 0
 			end
-			ObjectiveTracker_Update()
+			KT_ObjectiveTracker_Update()
 			QuestMapFrame_UpdateAll()
 		end
 	end)
@@ -222,14 +222,14 @@ local function SetHooks()
 		RemoveWaypoint(questID)
 	end)
 
-	hooksecurefunc("BonusObjectiveTracker_OnTaskCompleted", function(questID, xp, money)
+	hooksecurefunc("KT_BonusObjectiveTracker_OnTaskCompleted", function(questID, xp, money)
 		RemoveWaypoint(questID)
 	end)
 
-	local bck_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock = WORLD_QUEST_TRACKER_MODULE.OnFreeBlock
-	function WORLD_QUEST_TRACKER_MODULE:OnFreeBlock(block)
+	local bck_KT_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock = KT_WORLD_QUEST_TRACKER_MODULE.OnFreeBlock
+	function KT_WORLD_QUEST_TRACKER_MODULE:OnFreeBlock(block)
 		SetWaypointTag(block.TrackedQuest)	-- hide tag for hard watched WQ
-		bck_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock(self, block)
+		bck_KT_WORLD_QUEST_TRACKER_MODULE_OnFreeBlock(self, block)
 	end
 
 	-- TODO: 9.x.x - need update (removed)
@@ -260,7 +260,7 @@ local function SetHooks()
 	end)
 
 	hooksecurefunc("KT_WorldQuestPOIButton_OnClick", function(self)
-		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_MODULE_WORLD_QUEST)
+		KT_ObjectiveTracker_Update(KT_OBJECTIVE_TRACKER_UPDATE_MODULE_WORLD_QUEST)
 	end)
 
 	hooksecurefunc("QuestMapQuestOptions_TrackQuest", function(questID)
@@ -295,7 +295,7 @@ end
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
-	self.isLoaded = (KT:CheckAddOn("TomTom", "v3.3.2-release") and db.addonTomTom)
+	self.isLoaded = (KT:CheckAddOn("TomTom", "v3.3.4-release") and db.addonTomTom)
 
 	if self.isLoaded then
 		KT:Alert_IncompatibleAddon("TomTom", "v3.3.0-release")

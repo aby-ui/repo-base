@@ -1,13 +1,18 @@
 ## Interface: 100000
-## Version: 22.11.04
+## Version: 22.11.15
 ## Title: TipTacOptions
 ## Author: Aezay (Earthen Ring EU), Frozn45
 ## Notes: Option Dialog for TipTac
 ## Dependencies: TipTac
 ## LoadOnDemand: 1
+## X-Category: Tooltip
+## X-Website: https://www.curseforge.com/wow/addons/tiptac-reborn
+## X-Curse-Project-ID: 695153
+#embeds.xml
 Libs\AzDropDown.lua
 Libs\AzOptionsFactory.lua
 abyLocales.lua
+
 ttLayouts.lua
 ttOptions.lua
 

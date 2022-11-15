@@ -18,7 +18,7 @@ local layout_presets = {
 		tipColor = { 0.1, 0.1, 0.2, 1.0 },
 		tipBorderColor = { 0.3, 0.3, 0.4, 1.0 },
 		gradientTip = true,
-		gradientColor = { 0.8, 0.8, 0.8, 0.2 },
+		gradientColor = { 0.8, 0.8, 0.8, 0.15 },
 
 		reactColoredBackdrop = false,
 

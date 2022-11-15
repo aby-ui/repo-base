@@ -15,7 +15,7 @@ local _DBG = function(...) if _DBG then _DBG("KT", ...) end end
 local _G = _G
 
 local db
-local OTF = ObjectiveTrackerFrame
+local OTF = KT_ObjectiveTrackerFrame
 local msqGroup1, msqGroup2
 
 local KTwarning = "  |cff00ffffAddon "..KT.title.." is active.  "
@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "12.98", true) then
+    if KT:CheckAddOn("ElvUI", "13.01", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameHeight = function() end    -- preventive
@@ -61,7 +61,7 @@ local function ElvUI_SetSupport()
         hooksecurefunc(E, "CheckIncompatible", function(self)
             self.private.skins.blizzard.objectiveTracker = false
         end)
-        hooksecurefunc(E, "ToggleOptionsUI", function(self)
+        hooksecurefunc(E, "ToggleOptions", function(self)
             if E.Libs.AceConfigDialog.OpenFrames[self.name] then
                 local options = self.Options.args.general.args.blizzUIImprovements
                 options.args[addonName.."Warning"] = {
@@ -76,7 +76,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.30", true) then
+    if KT:CheckAddOn("Tukui", "20.33", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -140,58 +140,6 @@ local function SpartanUI_SetSupport()
     end
 end
 
--- Aurora
-local function Aurora_SetCompatibility()
-    if IsAddOnLoaded("Aurora") then
-        if not IsAddOnLoaded("Aurora_Extension") then
-            StaticPopup_Show(addonName.."_Info", nil, "Please install / activate addon |cff00ffe3Aurora - Extension|r\nand disable Objective Tracker skin.")
-        end
-    end
-end
-
--- Chinchilla
-local function Chinchilla_SetCompatibility()
-    if IsAddOnLoaded("Chinchilla") then
-        Chinchilla:GetModule("QuestTracker"):Disable()
-        local bck_Chinchilla_CreateConfig = Chinchilla.CreateConfig
-        function Chinchilla:CreateConfig()
-            local options = bck_Chinchilla_CreateConfig(self)
-            options.args.QuestTracker.args.enabled.disabled = true
-            options.args.QuestTracker.args[addonName.."Warning"] = {
-                name = KTwarning,
-                type = "description",
-            }
-            options.args.Position.args.questWatch.disabled = true
-            options.args.Position.args.questWatch.args[addonName.."Warning"] = {
-                name = KTwarning,
-                type = "description",
-            }
-            return options
-        end
-    end
-end
-
--- Dugi Questing Essential
-local function DQE_SetCompatibility()
-    if IsAddOnLoaded("DugisGuideViewerZ") then
-        DugisGuideViewer:SetDB(false, DGV_MOVEWATCHFRAME)
-        DugisGuideViewer:SetDB(false, DGV_WATCHFRAMEBORDER)
-        function DugisGuideViewer:IncompatibleAddonLoaded()    -- R
-            return true
-        end
-    end
-end
-
--- MoveAnything
-local function MoveAnything_SetCompatibility()
-    if IsAddOnLoaded("MoveAnything") then
-        MovAny:ResetFrame("ObjectiveTrackerFrameMover")
-        MovAny:ResetFrame("ObjectiveTrackerFrameScaleMover")
-        MovAny.lVirtualMovers.ObjectiveTrackerFrameMover = nil
-        MovAny.lVirtualMovers.ObjectiveTrackerFrameScaleMover = nil
-    end
-end
-
 --------------
 -- External --
 --------------
@@ -199,10 +147,10 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoadedMasque = (KT:CheckAddOn("Masque", "9.2.7") and db.addonMasque)
+    self.isLoadedMasque = (KT:CheckAddOn("Masque", "10.0.1") and db.addonMasque)
 
     if self.isLoadedMasque then
-        KT:Alert_IncompatibleAddon("Masque", "9.2.0")
+        KT:Alert_IncompatibleAddon("Masque", "10.0.1")
     end
 end
 
@@ -214,10 +162,6 @@ function M:OnEnable()
     RealUI_SetSupport()
     SyncUI_SetSupport()
     SpartanUI_SetSupport()
-    Aurora_SetCompatibility()
-    Chinchilla_SetCompatibility()
-    DQE_SetCompatibility()
-    MoveAnything_SetCompatibility()
 end
 
 -- Masque

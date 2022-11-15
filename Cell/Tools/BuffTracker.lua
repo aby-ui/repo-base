@@ -23,6 +23,7 @@ local buffs = {
     ["MotW"] = {["id"]=1126, ["glowColor"]={F:GetClassColor("DRUID")}}, -- Mark of the Wild
     ["AB"] = {["id"]=1459, ["glowColor"]={F:GetClassColor("MAGE")}}, -- Arcane Brilliance
     ["BS"] = {["id"]=6673, ["glowColor"]={F:GetClassColor("WARRIOR")}}, -- Battle Shout
+    ["BotB"] = {["id"]=364342, ["glowColor"]={F:GetClassColor("EVOKER")}}, -- Blessing of the Bronze
 }
 
 do
@@ -33,7 +34,7 @@ do
     end
 end
 
-local order = {"PWF", "MotW", "AB", "BS"}
+local order = {"PWF", "MotW", "AB", "BS", "BotB"}
 
 -------------------------------------------------
 -- required buffs
@@ -100,6 +101,7 @@ local available = {
     ["MotW"] = false,
     ["AB"] = false,
     ["BS"] = false,
+    ["BotB"] = false,
 }
 
 local unaffected = {
@@ -107,6 +109,7 @@ local unaffected = {
     ["MotW"] = {},
     ["AB"] = {},
     ["BS"] = {},
+    ["BotB"] = {},
 }
 
 local function Reset(which)
@@ -253,7 +256,7 @@ local function CreateBuffButton(parent, size, spell, icon, index)
     b:SetAttribute("type1", "spell")
     b:SetAttribute("spell", spell)
     b:HookScript("OnClick", function(self, button, down)
-        if button == "RightButton" then
+        if button == "RightButton" and (down == GetCVarBool("ActionButtonUseKeyDown")) then
             local msg = F:GetUnaffectedString(index)
             if msg then
                 UpdateSendChannel()
@@ -430,12 +433,22 @@ local function CheckUnit(unit, updateBtn)
         local required = requiredBuffs[spec]
 
         for k, v in pairs(available) do
-            if v ~= false and (required == k or k == "PWF" or k == "MotW") then
-                if not F:FindAuraById(unit, "BUFF", buffs[k]["id"]) then
-                    unaffected[k][unit] = true
-                else
-                    unaffected[k][unit] = nil
+            if v then
+                if required == k or k == "PWF" or k == "MotW" then
+                    if not F:FindAuraById(unit, "BUFF", buffs[k]["id"]) then
+                        unaffected[k][unit] = true
+                    else
+                        unaffected[k][unit] = nil
+                    end
+                elseif k == "BotB" then
+                    if not AuraUtil.FindAuraByName(buffs[k]["name"], unit, "HELPFUL") then
+                        unaffected[k][unit] = true
+                    else
+                        unaffected[k][unit] = nil
+                    end
                 end
+            else
+                unaffected[k][unit] = nil
             end
         end
     else
@@ -456,17 +469,17 @@ local function IterateAllUnits()
             if UnitClassBase(unit) == "PRIEST" then
                 available["PWF"] = true
                 hasBuffProvider = true
-            end
-            if UnitClassBase(unit) == "DRUID" then
+            elseif UnitClassBase(unit) == "DRUID" then
                 available["MotW"] = true
                 hasBuffProvider = true
-            end
-            if UnitClassBase(unit) == "MAGE" then
+            elseif UnitClassBase(unit) == "MAGE" then
                 available["AB"] = true
                 hasBuffProvider = true
-            end
-            if UnitClassBase(unit) == "WARRIOR" then
+            elseif UnitClassBase(unit) == "WARRIOR" then
                 available["BS"] = true
+                hasBuffProvider = true
+            elseif UnitClassBase(unit) == "EVOKER" then
+                available["BotB"] = true
                 hasBuffProvider = true
             end
 

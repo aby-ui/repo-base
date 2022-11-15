@@ -474,6 +474,15 @@ function U1RegisterAddon(name, infoReg)
         for _, v in ipairs(infoReg.children) do if U1IsAddonInstalled(v) then hasOne = true break; end end
         if not hasOne then return end
     end
+    if infoRaw.registered then
+        --TAG_DEV重复注册，只加tags
+        for _, tag in ipairs(infoReg.tags) do
+            if not tContains(infoRaw.tags, tag) then
+                tinsert(infoRaw.tags, tag)
+            end
+        end
+        return
+    end
     --2015.2.7暂时不要求 vendor
     --if infoRaw and not infoRaw.vendor and (not UI163_USER_MODE and not infoReg.alwaysRegister and not infoReg.parent) then return end
 

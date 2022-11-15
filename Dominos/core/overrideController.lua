@@ -105,7 +105,7 @@ function OverrideController:OnLoad()
 
 	self:Execute([[ myFrames = table.new() ]])
 
-	self:SetAttribute('state-isoverrideuishown', self.overrideUIWatcher:IsVisible() and true or false)
+	self:SetAttribute('state-isoverrideuishown', self.overrideUIWatcher:IsVisible() and true)
 
 	RegisterStateDriver(self, 'petbattleui', '[petbattle]1;0')
 

@@ -19,7 +19,6 @@ local defaultSettings = {
 	HealthPrediction_Enabled = true,
 	HealthTextEnabled = false,
 	HealthTextType = "health",
-	AbbreviateLargeNumbers = true,
 	HealthText = {
 		FontSize = 17,
 		FontOutline = "",
@@ -187,18 +186,14 @@ function healthBar:AttachToPlayerButton(playerButton)
 		local config = self.config
 		if not config.HealthTextEnabled then return end
 		if config.HealthTextType == "health" then
-			if config.AbbreviateLargeNumbers then
-				health = AbbreviateLargeNumbers(health)
-			end
+			health = AbbreviateLargeNumbers(health)
 			self.HealthText:SetText(health);
 			self.HealthText:Show()
 		elseif config.HealthTextType == "losthealth" then
 			local healthLost = maxHealth - health
 			if ( healthLost > 0 ) then
-				if config.AbbreviateLargeNumbers then
-					healthLost = AbbreviateLargeNumbers(healthLost)
-				end
-				self.HealthText:SetFormattedText(LOST_HEALTH, healthLost)
+				healthLost = AbbreviateLargeNumbers(healthLost)
+				self.HealthText:SetText("-"..healthLost)
 				self.HealthText:Show()
 			else
 				self.HealthText:Hide()

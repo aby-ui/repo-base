@@ -40,7 +40,7 @@ local beta = L"|cffff7fff[Beta]|r"
 local warning = cWarning..L"Warning:|r UI will be re-loaded!"
 
 local KTF = KT.frame
-local OTF = ObjectiveTrackerFrame
+local OTF = KT_ObjectiveTrackerFrame
 
 local overlay
 local overlayShown = false
@@ -240,6 +240,8 @@ local options = {
 								db.yOffset = 0
 								KT:MoveTracker()
 								OverlayFrameUpdate()
+								KT_ObjectiveTracker_Collapse()
+								KT_ObjectiveTracker_Expand()
 							end,
 							order = 1.1,
 						},
@@ -484,7 +486,7 @@ local options = {
 							set = function(_, value)
 								db.progressBar = value
 								KT.forcedUpdate = true
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 								if PetTracker then
 									PetTracker.Objectives:Update()
 								end
@@ -509,7 +511,7 @@ local options = {
 								db.font = value
 								KT.forcedUpdate = true
 								KT:SetText()
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 								if PetTracker then
 									PetTracker.Objectives:Update()
 								end
@@ -527,7 +529,7 @@ local options = {
 								db.fontSize = value
 								KT.forcedUpdate = true
 								KT:SetText()
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 								if PetTracker then
 									PetTracker.Objectives:Update()
 								end
@@ -550,7 +552,7 @@ local options = {
 								db.fontFlag = value
 								KT.forcedUpdate = true
 								KT:SetText()
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 								if PetTracker then
 									PetTracker.Objectives:Update()
 								end
@@ -579,7 +581,7 @@ local options = {
 							type = "toggle",
 							set = function()
 								db.colorDifficulty = not db.colorDifficulty
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 								QuestMapFrame_UpdateAll()
 							end,
 							order = 3.5,
@@ -591,8 +593,8 @@ local options = {
 							set = function()
 								db.textWordWrap = not db.textWordWrap
 								KT.forcedUpdate = true
-								ObjectiveTracker_Update()
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 								KT.forcedUpdate = false
 							end,
 							order = 3.6,
@@ -609,7 +611,7 @@ local options = {
 							end,
 							set = function()
 								db.objNumSwitch = not db.objNumSwitch
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 3.7,
 						},
@@ -828,7 +830,7 @@ local options = {
 							end,
 							set = function()
 								db.hdrCollapsedTxt = 1
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 4.71,
 						},
@@ -841,7 +843,7 @@ local options = {
 							end,
 							set = function()
 								db.hdrCollapsedTxt = 2
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 4.72,
 						},
@@ -853,7 +855,7 @@ local options = {
 							end,
 							set = function()
 								db.hdrCollapsedTxt = 3
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 4.73,
 						},
@@ -865,7 +867,7 @@ local options = {
 								db.hdrOtherButtons = not db.hdrOtherButtons
 								KT:SetOtherButtons()
 								KT:SetBackground()
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 4.8,
 						},
@@ -1139,7 +1141,7 @@ local options = {
 							type = "toggle",
 							set = function()
 								db.questShowTags = not db.questShowTags
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 6.42,
 						},
@@ -1149,7 +1151,7 @@ local options = {
 							type = "toggle",
 							set = function()
 								db.questShowZones = not db.questShowZones
-								ObjectiveTracker_Update()
+								KT_ObjectiveTracker_Update()
 							end,
 							order = 6.43,
 						},
@@ -1412,7 +1414,7 @@ local options = {
 									"- Inside the dialog for create Premade Group is hidden item \"Goal\".\n"..
 									"- Tooltips of items in the list of Premade Groups have a hidden 2nd (green) row with \"Goal\".\n"..
 									"- Inside the dialog for create Premade Group, no automatically set the \"Title\",\n"..
-									"  e.g. keystone level for Mythic+.",
+									"  e.g. keystone level for Mythic+.\n",
 							descStyle = "inline",
 							type = "toggle",
 							width = "full",
@@ -1423,32 +1425,6 @@ local options = {
 								ReloadUI()
 							end,
 							order = 1.1,
-						},
-					},
-				},
-				sec2 = {
-					name = "Edit Mode",
-					type = "group",
-					inline = true,
-					order = 2,
-					args = {
-						hackEditMode = {
-							name = " Edit Mode Hack",
-							type = "description",
-							fontSize = "medium",
-							order = 2.1,
-						},
-						hackEditModeDesc = {
-							name = cBold.."          Affects Edit Mode|r and remove errors. But if you want to edit Target or Focus frames,\n"..
-									"          you have to display them manually by chat command.\n\n"..
-									"          - For Target frame use command ... /target player\n"..
-									"          - For Focus frame use command ... /focus player\n\n"..
-									"          Negative impacts:\n"..
-									"          - Item \"Target and Focus\" is always enabled, but Target and Focus frames are not displayed.\n"..
-									"          - Target or Focus frames you display by chat command (see above).\n"..
-									"          - Tracker perform Reload UI when exiting Edit Mode.",
-							type = "description",
-							order = 2.2,
 						},
 					},
 				},
@@ -1486,7 +1462,9 @@ function KT:CheckAddOn(addon, version, isUI)
 end
 
 function KT:OpenOptions()
-	Settings.OpenToCategory(self.optionsFrame.general.name, true)
+	if not EditModeManagerFrame:IsEditModeActive() then
+		Settings.OpenToCategory(self.optionsFrame.general.name, true)
+	end
 end
 
 function KT:InitProfile(event, database, profile)
@@ -1544,7 +1522,7 @@ function KT:SetupOptions()
 				end
 				self:SetBackground()
 				KT.QuestsCache_Init()
-				ObjectiveTracker_Update()
+				KT_ObjectiveTracker_Update()
 			end,
 			order = 0.2,
 		},
@@ -1613,7 +1591,7 @@ function GetModulesOptionsTable()
 			order = 0.1,
 		},
 		descDefOrder = {
-			name = "|T:1:42|t"..cTitle..L"Default Order",
+			name = "|T:1:40|t"..cTitle..L"Default Order",
 			type = "description",
 			width = "normal",
 			fontSize = "medium",
@@ -1629,17 +1607,17 @@ function GetModulesOptionsTable()
 	for i, module in ipairs(db.modulesOrder) do
 		if _G[module].Header then
 			text = _G[module].Header.Text:GetText()
-			if module == "SCENARIO_CONTENT_TRACKER_MODULE" then
+			if module == "KT_SCENARIO_CONTENT_TRACKER_MODULE" then
 				text = text.." *"
-			elseif module == "UI_WIDGET_TRACKER_MODULE" then
+			elseif module == "KT_UI_WIDGET_TRACKER_MODULE" then
 				text = "[ "..ZONE.." ]"
 			end
 
 			defaultModule = numSkipped == 0 and OTF.MODULES_UI_ORDER[i] or OTF.MODULES_UI_ORDER[i - numSkipped]
 			defaultText = defaultModule.Header.Text:GetText()
-			if defaultModule == SCENARIO_CONTENT_TRACKER_MODULE then
+			if defaultModule == KT_SCENARIO_CONTENT_TRACKER_MODULE then
 				defaultText = defaultText.." *"
-			elseif defaultModule == UI_WIDGET_TRACKER_MODULE then
+			elseif defaultModule == KT_UI_WIDGET_TRACKER_MODULE then
 				defaultText = "[ "..ZONE.." ]"
 			end
 
@@ -1671,9 +1649,10 @@ function GetModulesOptionsTable()
 				order = i + 0.2,
 			}
 			args["pos"..i.."default"] = {
-				name = "|T:1:55|t|cff808080"..defaultText,
+				name = "|T:1:44|t|cff808080"..defaultText,
 				type = "description",
 				width = "normal",
+				fontSize = "medium",
 				order = i + 0.3,
 			}
 		else
@@ -1699,7 +1678,7 @@ function MoveModule(idx, direction)
 
 	module = tremove(OTF.MODULES_UI_ORDER, idx)
 	tinsert(OTF.MODULES_UI_ORDER, tmpIdx, module)
-	ObjectiveTracker_Update()
+	KT_ObjectiveTracker_Update()
 end
 
 function SetSharedColor(color)

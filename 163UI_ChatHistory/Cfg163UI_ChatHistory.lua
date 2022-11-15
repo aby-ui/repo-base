@@ -3,7 +3,7 @@ U1RegisterAddon("163UI_ChatHistory", {
     defaultEnable = 1,
     load = 'NORMAL',
 
-    tags = {TAG_CHAT, TAG_DEV},
+    tags = {TAG_CHAT},
     desc = "重新登入时可以重新显示上次游戏时10分钟之内的聊天文本。``并且在聊天输入框中，可以通过按↑↓键获取上次游戏甚至是其他角色的输入记录（举例说明：换号进团时，我密团长甲说：|cffffffff'XX职业要吗，我换号'|r,甲说'好',然后我换号进游戏后，只要按回车再按一下上，聊天框里就能显示|cffffffff'告诉甲：XX职业要吗，我换号'|r，非常方便）",
     --parent = "163UI_Chat",
 

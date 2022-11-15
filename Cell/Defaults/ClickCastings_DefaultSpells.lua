@@ -64,11 +64,32 @@ local defaultSpells = {
         },
     },
 
-    -- TODO:
-    -- ["EVOKER"] = {
-    --     ["common"] = {
-    --     }
-    -- },
+    ["EVOKER"] = {
+        ["common"] = {
+            364342, -- Blessing of the Bronze - 青铜龙的祝福
+            361227, -- Return - 生还
+            361469, -- Living Flame - 活化烈焰
+            355913, -- Emerald Blossom - 翡翠之花
+            "360995C", -- Verdant Embrace - 青翠之拥
+            "374251C", -- Cauterizing Flame - 灼烧之焰
+            "369459C", -- Source of Magic - 魔力之源
+            "370665C", -- Rescue - 营救
+            "378441P", -- Time Stop - 时间停止
+        },
+        -- 1467 - Devastation
+        [1467] = {
+            "365585C", -- Expunge - 净除
+        },
+        -- 1468	- Preservation
+        [1468] = {
+            361178, -- Mass Return - 群体生还
+            360823, -- Naturalize - 自然平衡
+            "364343S", -- Echo - 回响
+            "366155S", -- Reversion - 逆转
+            "367226S", -- Spiritbloom - 精神之花
+            "357170S", -- Time Dilation - 时间膨胀
+        },
+    },
 
     ["HUNTER"] = {
         ["common"] = {
@@ -304,19 +325,28 @@ local resurrections_for_dead = {
     -- DRUID
     20484, -- 复生
     50769, -- 起死回生
+    212040, -- 新生
+
+    -- EVOKER
+    361227, -- 生还
+    361178, -- 群体生还
 
     -- MONK
     115178, -- 轮回转世
+    212051, -- 死而复生
 
     -- PALADIN
     391054, -- 代祷
     7328, -- 救赎
+    212056, -- 宽恕
 
     -- PRIEST
     2006, -- 复活术
+    212036, -- 群体复活
 
     -- SHAMAN
     2008, -- 先祖之魂
+    212048, -- 先祖视界
 }
 
 do
@@ -343,6 +373,9 @@ local resurrection_click_castings = {
     ["DRUID"] = {
         {"type-R", "spell", 20484},
         {"type-shiftR", "spell", 50769},
+    },
+    ["EVOKER"] = {
+        {"type-shiftR", "spell", 361227},
     },
     ["MONK"] = {
         {"type-shiftR", "spell", 115178},

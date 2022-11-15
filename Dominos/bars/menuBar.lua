@@ -200,7 +200,7 @@ end
 function MenuBar:DisableMenuButton(button, disabled)
     local disabledButtons = self.sets.disabled or {}
 
-    disabledButtons[button:GetName()] = disabled or false
+    disabledButtons[button:GetName()] = disabled and true
     self.sets.disabled = disabledButtons
 
     self:ReloadButtons()

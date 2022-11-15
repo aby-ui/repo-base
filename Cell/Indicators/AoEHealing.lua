@@ -14,8 +14,8 @@ eventFrame:SetScript("OnEvent", function()
     local timestamp, subevent, _, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, spellName = CombatLogGetCurrentEventInfo()
     -- if subevent == "SPELL_SUMMON" then print(subevent, sourceName, sourceGUID, destName, destGUID, spellName) end
     if subevent == "SPELL_SUMMON" then
-        -- print(sourceGUID == Cell.vars.playerGUID, destGUID, spellName)
-        if sourceGUID == Cell.vars.playerGUID and destGUID and I:IsAoEHealing(spellName) then
+        -- print(sourceGUID == Cell.vars.playerGUID, destGUID, spellName, spellId)
+        if sourceGUID == Cell.vars.playerGUID and destGUID and (I:IsAoEHealing(spellName) or I:IsAoEHealing(spellId)) then
             local duration = I:GetSummonDuration(spellName)
             if duration then
                 playerSummoned[destGUID] = GetTime() + duration -- expirationTime

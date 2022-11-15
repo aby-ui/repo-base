@@ -154,15 +154,6 @@ if Addon:IsBuild("retail") then
             proxyActionButton(button, target)
         end
 
-        -- when force update action, also ensure that we update our shown state
-        -- the stock UI relies on a call to parent:UpdateShown() which wouldn't
-        -- work here
-        hooksecurefunc(button, "UpdateAction", function(button, force)
-            if force then
-                button:UpdateShownInsecure()
-            end
-        end)
-
         return button
     end
 else

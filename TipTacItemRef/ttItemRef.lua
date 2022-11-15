@@ -186,6 +186,28 @@ local COLOR_INCOMPLETE = { 0.5, 0.5, 0.5 };
 local BoolCol = { [false] = "|cffff8080", [true] = "|cff80ff80" };
 
 --------------------------------------------------------------------------------------------------------
+--                                          Helper Functions                                          --
+--------------------------------------------------------------------------------------------------------
+
+-- Get displayed item
+function ttif:GetDisplayedItem(tooltip)
+	if (tooltip.GetItem) then
+		return tooltip:GetItem();
+	else
+		return TooltipUtil.GetDisplayedItem(tooltip);
+	end
+end
+
+-- Get displayed spell
+function ttif:GetDisplayedSpell(tooltip)
+	if (tooltip.GetSpell) then
+		return tooltip:GetSpell();
+	else
+		return TooltipUtil.GetDisplayedSpell(tooltip);
+	end
+end
+
+--------------------------------------------------------------------------------------------------------
 --                                         Create Tooltip Icon                                        --
 --------------------------------------------------------------------------------------------------------
 
@@ -341,7 +363,7 @@ end
 --                                       HOOK: Tooltip Functions                                      --
 --------------------------------------------------------------------------------------------------------
 
--- apply workaround for the following "bug": on first mouseover over toy or unit aura after starting the game the gtt will be cleared (OnTooltipCleared) and internally set again. There ist no immediately following SetToyByItemID(), SetAction(), SetUnitAura() or SetAzeriteEssence() (only approx. 0.2-1 second later), but on the next OnUpdate the GetItem() is set again.
+-- apply workaround for the following "bug": on first mouseover over toy or unit aura after starting the game the gtt will be cleared (OnTooltipCleared) and internally set again. There ist no immediately following SetToyByItemID(), SetAction(), SetUnitAura() or SetAzeriteEssence() (only approx. 0.2-1 second later), but on the next OnUpdate the GetItem() aka TooltipUtil.GetDisplayedItem() is set again.
 -- ttWorkaroundForFirstMouseoverStatus:
 -- nil = no hooks applied (uninitialized)
 -- 0   = hooks applied (initialized)
@@ -590,7 +612,7 @@ local function SetAction_Hook(self, slot)
 				CustomTypeFuncs.petAction(self, nil, "petAction", nil, icon);
 			end
 		elseif (actionType == "item") then
-			local _, link = self:GetItem();
+			local name, link = ttif:GetDisplayedItem(self);
 			if (link) then
 				local linkType, itemID = link:match("H?(%a+):(%d+)");
 				if (itemID) then
@@ -803,15 +825,15 @@ end
 -- HOOK: GameTooltip:SetToyByItemID
 local function SetToyByItemID_Hook(self, itemID)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
-		local _, link = self:GetItem();
+		local name, link = ttif:GetDisplayedItem(self);
 		if (link) then
-			local linkType, itemID = link:match("H?(%a+):(%d+)");
-			if (itemID) then
+			local linkType, _itemID = link:match("H?(%a+):(%d+)");
+			if (_itemID) then
 				tipDataAdded[self] = linkType;
-				LinkTypeFuncs.item(self, link, linkType, itemID);
+				LinkTypeFuncs.item(self, link, linkType, _itemID);
 				
 				-- apply workaround for first mouseover
-				ttif:ApplyWorkaroundForFirstMouseover(self, false, nil, link, linkType, itemID);
+				ttif:ApplyWorkaroundForFirstMouseover(self, false, nil, link, linkType, _itemID);
 			end
 		end
 	end
@@ -1029,16 +1051,16 @@ end
 -- OnTooltipSetItem
 local function OnTooltipSetItem(self,...)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
-		local _, link = self:GetItem();
+		local name, link = ttif:GetDisplayedItem(self);
 		if (link) then
-			local linkType, id = link:match("H?(%a+):(%d+)");
-			if (id) then
+			local linkType, itemID = link:match("H?(%a+):(%d+)");
+			if (itemID) then
 				tipDataAdded[self] = linkType;
 				if (linkType == "keystone") then
 					local refString = link:match("|H([^|]+)|h") or link;
 					LinkTypeFuncs.keystone(self, link, (":"):split(refString));
 				else
-					LinkTypeFuncs.item(self, link, linkType, id);
+					LinkTypeFuncs.item(self, link, linkType, itemID);
 				end
 			end
 		end
@@ -1048,7 +1070,7 @@ end
 -- OnTooltipSetSpell
 local function OnTooltipSetSpell(self,...)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
-		local _, id = self:GetSpell();	-- [18.07.19] 8.0/BfA: "dropped second parameter (nameSubtext)"
+		local name, id = ttif:GetDisplayedSpell(self);	-- [18.07.19] 8.0/BfA: "dropped second parameter (nameSubtext)"
 		if (id) then
 			local link = GetSpellLink(id);
 			if (link) then
@@ -1108,21 +1130,21 @@ local function QPM_OnMouseEnter_Hook(self)
 	end
 end
 
--- HOOK: QuestBlobPinMixin:OnMouseEnter
-local function QBPM_OnMouseEnter_Hook(self)
-print("!!! drin");
-	if (cfg.if_enable) and (not tipDataAdded[gtt]) and (gtt:IsShown()) then
+-- HOOK: QuestBlobPinMixin:UpdateTooltip
+local function QBPM_UpdateTooltip_Hook(self)
+	if (cfg.if_enable) and (not tipDataAdded[gtt]) then
 		local mouseX, mouseY = self:GetMap():GetNormalizedCursorPosition();
 		local questID, numPOITooltips = self:UpdateMouseOverTooltip(mouseX, mouseY);
-		-- local questID = self.highlightedQuestPOI;
-		local link = GetQuestLink(questID);
-		if (link) then
-			local level = link:match("H?%a+:%d+:(%d+)");
-			LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
-		else
-			LinkTypeFuncs.quest(gtt, nil, "quest", questID, nil);
+		if (questID) then
+			local link = GetQuestLink(questID);
+			if (link) then
+				local level = link:match("H?%a+:%d+:(%d+)");
+				LinkTypeFuncs.quest(gtt, nil, "quest", questID, level);
+			else
+				LinkTypeFuncs.quest(gtt, nil, "quest", questID, nil);
+			end
+			tipDataAdded[gtt] = "quest";
 		end
-		tipDataAdded[gtt] = "quest";
 	end
 end
 
@@ -1279,6 +1301,23 @@ local function DUODSM_OnEnter_Hook(self)
 	end
 end
 
+-- HOOK: TalentDisplayMixin:OnEnter
+local function TDM_OnEnter_Hook(self)
+	if (cfg.if_enable) and (not tipDataAdded[gtt]) then
+		local spellID = self:GetSpellID();
+		if (spellID) then
+			local link = GetSpellLink(spellID);
+			if (link) then
+				local linkType, _spellID = link:match("H?(%a+):(%d+)");
+				if (_spellID) then
+					tipDataAdded[gtt] = linkType;
+					LinkTypeFuncs.spell(gtt, false, nil, link, linkType, _spellID);
+				end
+			end
+		end
+	end
+end
+
 -- HOOK: PlayerChoicePowerChoiceTemplateMixin:OnEnter
 local function PCPCTM_OnEnter_Hook(self)
 	if (cfg.if_enable) and (not tipDataAdded[gtt]) and (gtt:IsShown()) then
@@ -1429,9 +1468,9 @@ local function WCFSTFM_RefreshTooltip_Hook(self)
 	end
 end
 
--- HOOK: AchievementFrameMiniAchievement:OnEnter, see AchievementShield_OnEnter() in "Blizzard_AchievementUI/Blizzard_AchievementUI.lua"
-local function ABMA_OnEnter_Hook(self)
-	if (cfg.if_enable) and (not tipDataAdded[gtt]) and (gtt:IsShown()) then
+-- HOOK: AchievementFrameAchievementsObjectives MiniAchievement:OnEnter, see MiniAchievementTemplate:OnEnter() in "Blizzard_AchievementUI/Blizzard_AchievementUI.xml"
+local function AFAOMA_OnEnter_Hook(self)
+	if (cfg.if_enable) and (not tipDataAdded[gtt]) then
 		local parent = self:GetParent(); -- see AchievementObjectives_DisplayProgressiveAchievement() in "Blizzard_AchievementUI/Blizzard_AchievementUI.lua"
 		if (parent) then
 			local achievementID = parent.id;
@@ -1561,7 +1600,9 @@ function ttif:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModif
 					hooksecurefunc(tip, "SetAzeriteEssenceSlot", SetAzeriteEssenceSlot_Hook);
 					hooksecurefunc(tip, "SetCurrencyByID", SetCurrencyByID_Hook);
 					hooksecurefunc(tip, "SetCurrencyToken", SetCurrencyToken_Hook);
-					hooksecurefunc(tip, "SetCurrencyTokenByID", SetCurrencyTokenByID_Hook);
+					if (tip.SetCurrencyTokenByID) then -- removed since df 10.0.2
+						hooksecurefunc(tip, "SetCurrencyTokenByID", SetCurrencyTokenByID_Hook);
+					end
 					hooksecurefunc(tip, "SetQuestPartyProgress", SetQuestPartyProgress_Hook);
 					hooksecurefunc(tip, "SetCompanionPet", SetCompanionPet_Hook);
 					hooksecurefunc(tip, "SetRecipeReagentItem", SetRecipeReagentItem_Hook);
@@ -1571,8 +1612,21 @@ function ttif:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModif
 					hooksecurefunc(tip, "SetUnitDebuffByAuraInstanceID", SetUnitXxxxByAuraInstanceID);
 					hooksecurefunc(tip, "SetUnitBuffByAuraInstanceID", SetUnitXxxxByAuraInstanceID);
 				end
-				tip:HookScript("OnTooltipSetItem", OnTooltipSetItem);
-				tip:HookScript("OnTooltipSetSpell", OnTooltipSetSpell);
+				if (TooltipDataProcessor) then -- since df 10.0.2
+					TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self, ...)
+						if (self == tip) then
+							OnTooltipSetItem(self, ...);
+						end
+					end);
+					TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(self, ...)
+						if (self == tip) then
+							OnTooltipSetSpell(self, ...);
+						end
+					end);
+				else -- before df 10.0.2
+					tip:HookScript("OnTooltipSetItem", OnTooltipSetItem);
+					tip:HookScript("OnTooltipSetSpell", OnTooltipSetSpell);
+				end
 				tip:HookScript("OnTooltipCleared", OnTooltipCleared);
 				if (tipName == "GameTooltip") then
 					hooksecurefunc(QuestPinMixin, "OnMouseEnter", QPM_OnMouseEnter_Hook);
@@ -1587,10 +1641,15 @@ function ttif:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModif
 					if (isWoWSl) or (isWoWRetail) then
 						hooksecurefunc("QuestMapLogTitleButton_OnEnter", QMLTB_OnEnter_Hook);
 						hooksecurefunc("TaskPOI_OnEnter", TPOI_OnEnter_Hook);
-						hooksecurefunc(QuestBlobPinMixin, "OnMouseEnter", QBPM_OnMouseEnter_Hook);
+						for pin in WorldMapFrame:EnumeratePinsByTemplate("QuestBlobPinTemplate") do
+							hooksecurefunc(pin, "UpdateTooltip", QBPM_UpdateTooltip_Hook);
+						end
 						hooksecurefunc("EmbeddedItemTooltip_SetSpellWithTextureByID", EITT_SetSpellWithTextureByID_Hook);
 						hooksecurefunc(RuneforgePowerBaseMixin, "OnEnter", RPBM_OnEnter_Hook);
 						hooksecurefunc(DressUpOutfitDetailsSlotMixin, "OnEnter", DUODSM_OnEnter_Hook);
+						if (isWoWRetail) then
+							hooksecurefunc(TalentDisplayMixin, "OnEnter", TDM_OnEnter_Hook);
+						end
 					end
 				end
 				tipHooked = true;
@@ -1693,16 +1752,16 @@ function ttif:ADDON_LOADED(event, addOnName)
 		return;
 	end
 	
-	-- now AchievementFrameMiniAchievement exists
+	-- now AchievementFrameAchievementsObjectives exists
 	if (addOnName == "Blizzard_AchievementUI") or ((addOnName == "TipTacItemRef") and (IsAddOnLoaded("Blizzard_AchievementUI")) and (not addOnsLoaded['Blizzard_AchievementUI'])) then
-		if (isWoWSl) then -- df todo: function AchievementButton_GetMiniAchievement() doesn't exist in df.
-			local ABMAhooked = {}; -- see AchievementButton_GetMiniAchievement() in "Blizzard_AchievementUI/Blizzard_AchievementUI.lua"
+		if (AchievementFrameAchievementsObjectives.GetMiniAchievement) then -- function GetMiniAchievement() doesn't exist in wotlkc
+			local AFAOMAhooked = {}; -- see AchievementsObjectivesMixin:GetMiniAchievement() in "Blizzard_AchievementUI/Blizzard_AchievementUI.lua"
 			
-			hooksecurefunc("AchievementButton_GetMiniAchievement", function(index)
-				local frame = _G["AchievementFrameMiniAchievement"..index];
-				if (frame) and (not ABMAhooked[frame]) then
-					frame:HookScript("OnEnter", ABMA_OnEnter_Hook);
-					ABMAhooked[frame] = true;
+			hooksecurefunc(AchievementFrameAchievementsObjectives, "GetMiniAchievement", function(self, index)
+				local miniAchievement = self:GetElementAtIndex("MiniAchievementTemplate", self.miniAchivements, index, AchievementButton_LocalizeMiniAchievement);
+				if (not AFAOMAhooked[miniAchievement]) then
+					miniAchievement:HookScript("OnEnter", AFAOMA_OnEnter_Hook);
+					AFAOMAhooked[miniAchievement] = true;
 				end
 			end);
 		end

@@ -26,12 +26,12 @@ function KT.IsHigherVersion(newVersion, oldVersion)
     if newVersion == "@project-version@" then
         result = true
     else
-        local _, _, nV1, nV2, nV3, nBuild = strfind(newVersion, "(%d+)%.(%d+)%.(%d+)(.*)")
-        local _, _, oV1, oV2, oV3, oBuild = strfind(oldVersion, "(%d+)%.(%d+)%.(%d+)(.*)")
+        local _, _, nV1, nV2, nV3, nBuild = strfind(newVersion, "(%d+)%.?(%d*)%.?(%d*)(.*)")
+        local _, _, oV1, oV2, oV3, oBuild = strfind(oldVersion, "(%d+)%.?(%d*)%.?(%d*)(.*)")
         local _, _, nBuildType, nBuildNumber = strfind(nBuild or "", "%-(%w+)%.(%d+)")
         local _, _, oBuildType, oBuildNumber = strfind(oBuild or "", "%-(%w+)%.(%d+)")
-        nV1, nV2, nV3, nBuildNumber = tonumber(nV1 or 0), tonumber(nV2 or 0), tonumber(nV3 or 0), tonumber(nBuildNumber)
-        oV1, oV2, oV3, oBuildNumber = tonumber(oV1 or 0), tonumber(oV2 or 0), tonumber(oV3 or 0), tonumber(oBuildNumber)
+        nV1, nV2, nV3, nBuildNumber = tonumber(nV1) or 0, tonumber(nV2) or 0, tonumber(nV3) or 0, tonumber(nBuildNumber)
+        oV1, oV2, oV3, oBuildNumber = tonumber(oV1) or 0, tonumber(oV2) or 0, tonumber(oV3) or 0, tonumber(oBuildNumber)
         if nV1 == oV1 then
             if nV2 == oV2 then
                 if nV3 == oV3 then

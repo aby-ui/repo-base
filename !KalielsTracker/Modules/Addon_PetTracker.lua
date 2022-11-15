@@ -12,7 +12,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local _DBG = function(...) if _DBG then _DBG("KT", ...) end end
 
 local db, dbChar
-local OTF = ObjectiveTrackerFrame
+local OTF = KT_ObjectiveTrackerFrame
 local PetTracker = PetTracker
 
 local eventFrame
@@ -21,7 +21,7 @@ local filterButton
 
 OBJECTIVE_TRACKER_UPDATE_MODULE_PETTRACKER = 0x100000
 OBJECTIVE_TRACKER_UPDATE_PETTRACKER = 0x200000
-PETTRACKER_TRACKER_MODULE = ObjectiveTracker_GetModuleInfoTable("PETTRACKER_TRACKER_MODULE")
+PETTRACKER_TRACKER_MODULE = KT_ObjectiveTracker_GetModuleInfoTable("PETTRACKER_TRACKER_MODULE")
 
 M.Texts = {
 	TrackPets = GetSpellInfo(122026),
@@ -43,7 +43,7 @@ local function SetHooks_Init()
 end
 
 local function SetHooks()
-	hooksecurefunc("ObjectiveTracker_Initialize", function(self)
+	hooksecurefunc("KT_ObjectiveTracker_Initialize", function(self)
 		tinsert(self.MODULES, PETTRACKER_TRACKER_MODULE)
 		tinsert(self.MODULES_UI_ORDER, PETTRACKER_TRACKER_MODULE)
 	end)
@@ -53,7 +53,7 @@ local function SetHooks()
 			self:GetClass().Update(self)
 		end
 		self:SetShown(PetTracker.sets.trackPets and self.Bar:IsShown())
-		ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_PETTRACKER)
+		KT_ObjectiveTracker_Update(OBJECTIVE_TRACKER_UPDATE_PETTRACKER)
 	end
 
 	function PetTracker.Tracker:Update()  -- R
@@ -196,7 +196,7 @@ function PETTRACKER_TRACKER_MODULE:GetBlock()
 	block.module = self
 	block.used = true
 	block.height = 0
-	block.lineWidth = OBJECTIVE_TRACKER_TEXT_WIDTH - self.blockOffset[self.blockTemplate][1]
+	block.lineWidth = KT_OBJECTIVE_TRACKER_TEXT_WIDTH - self.blockOffset[self.blockTemplate][1]
 	block.currentLine = nil
 	if block.lines then
 		for _, line in ipairs(block.lines) do
@@ -224,7 +224,7 @@ function PETTRACKER_TRACKER_MODULE:Update()
 		local block = self:GetBlock()
 		block.height = PetTracker.Objectives:GetHeight() - 41
 		block:SetHeight(block.height)
-		if ObjectiveTracker_AddBlock(block) then
+		if KT_ObjectiveTracker_AddBlock(block) then
 			block:Show()
 			self:FreeUnusedLines(block)
 		else
@@ -238,10 +238,10 @@ function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
 	db = KT.db.profile
 	dbChar = KT.db.char
-	self.isLoaded = (KT:CheckAddOn("PetTracker", "9.2.1") and db.addonPetTracker)
+	self.isLoaded = (KT:CheckAddOn("PetTracker", "10.0") and db.addonPetTracker)
 
 	if self.isLoaded then
-		KT:Alert_IncompatibleAddon("PetTracker", "9.2.0")
+		KT:Alert_IncompatibleAddon("PetTracker", "10.0")
 
 		tinsert(KT.db.defaults.profile.modulesOrder, "PETTRACKER_TRACKER_MODULE")
 		KT.db:RegisterDefaults(KT.db.defaults)

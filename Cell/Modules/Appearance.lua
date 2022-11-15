@@ -95,6 +95,7 @@ local function CreateCellPane()
     optionsFontSizeOffset.afterValueChangedFn = function(value)
         CellDB["appearance"]["optionsFontSizeOffset"] = value
         Cell:UpdateOptionsFont(value, CellDB["appearance"]["useGameFont"])
+        Cell:UpdateAboutFont(value)
     end
     
     -- use game font

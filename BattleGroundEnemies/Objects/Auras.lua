@@ -30,13 +30,13 @@ local defaults = {
 		ShadowColor = {0, 0, 0, 1},
 	},
 	Filtering = {
-		Enabled = false,
-		Mode = "Blizzlike",
+		Enabled = true,
+		Mode = "Custom",
 		CustomFiltering = {
-			ConditionsMode = "",
-			SourceFilter_Enabled = false,
+			ConditionsMode = "Any",
+			SourceFilter_Enabled = true,
 			ShowMine = true,
-			DispelFilter_Enabled = false,
+			DispelFilter_Enabled = true,
 			CanStealorPurge = true,
 			DebuffTypeFiltering_Enabled = false,
 			DebuffTypeFiltering_Filterlist = {},
@@ -527,7 +527,6 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 
 		local config = self.config
 		local blizzlikeFunc
-		local filterFunc
 
 		if filter == "HARMFUL" then
 			blizzlikeFunc = ShouldDisplayDebuffBlizzLike

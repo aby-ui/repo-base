@@ -218,7 +218,7 @@ Cell.defaults.layout = {
             ["indicatorName"] = "aoeHealing",
             ["type"] = "built-in",
             ["enabled"] = true,
-            ["height"] = 15,
+            ["height"] = 10,
             ["color"] = {1, 1, 0},
         }, -- 15
         {
@@ -295,6 +295,7 @@ Cell.defaults.layout = {
             ["font"] = {"Cell ".._G.DEFAULT, 11, "Outline", 2, 1},
             ["dispellableByMe"] = false,
             ["orientation"] = "left-to-right",
+            ["showDuplicate"] = false,
         }, -- 21
         {
             ["name"] = "Raid Debuffs",

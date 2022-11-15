@@ -8,7 +8,7 @@ local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
 local CurrencyTracker = Addon.Parented:NewClass('CurrencyTracker', 'Frame')
 
 if BackpackTokenFrame then
-	function BackpackTokenFrame:GetMaxTokensWatched() return 30 end
+	--TODO:abyui10 serious taint function BackpackTokenFrame:GetMaxTokensWatched() return 30 end
 end
 
 

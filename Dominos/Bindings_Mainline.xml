@@ -3,6 +3,7 @@
 	<ModifiedClick action="DOMINOS_IGNORE_STICKY_FRAMES" default="ALT"/>
 
 	<!-- action button bindings -->
+	<!-- 1 -->
 	<!-- <Binding name="CLICK DominosActionButton1:LeftButton" category="Dominos Action Bars" header="DominosActionBar1" />
 	<Binding name="CLICK DominosActionButton2:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton3:LeftButton" category="Dominos Action Bars" />
@@ -16,6 +17,7 @@
 	<Binding name="CLICK DominosActionButton11:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton12:LeftButton" category="Dominos Action Bars" /> -->
 
+	<!-- 2 -->
 	<Binding name="CLICK DominosActionButton13:LeftButton" category="Dominos Action Bars" header="DominosActionBar2" />
 	<Binding name="CLICK DominosActionButton14:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton15:LeftButton" category="Dominos Action Bars" />
@@ -29,6 +31,7 @@
 	<Binding name="CLICK DominosActionButton23:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton24:LeftButton" category="Dominos Action Bars" />
 
+	<!-- 3 -->
 	<!-- <Binding name="CLICK DominosActionButton25:LeftButton" category="Dominos Action Bars" header="DominosActionBar3" />
 	<Binding name="CLICK DominosActionButton26:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton27:LeftButton" category="Dominos Action Bars" />
@@ -42,6 +45,7 @@
 	<Binding name="CLICK DominosActionButton35:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton36:LeftButton" category="Dominos Action Bars" /> -->
 
+	<!-- 4 -->
 	<!-- <Binding name="CLICK DominosActionButton37:LeftButton" category="Dominos Action Bars" header="DominosActionBar4" />
 	<Binding name="CLICK DominosActionButton38:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton39:LeftButton" category="Dominos Action Bars" />
@@ -55,6 +59,7 @@
 	<Binding name="CLICK DominosActionButton47:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton48:LeftButton" category="Dominos Action Bars" /> -->
 
+	<!-- 5 -->
 	<!-- <Binding name="CLICK DominosActionButton49:LeftButton" category="Dominos Action Bars" header="DominosActionBar5" />
 	<Binding name="CLICK DominosActionButton50:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton51:LeftButton" category="Dominos Action Bars" />
@@ -68,6 +73,7 @@
 	<Binding name="CLICK DominosActionButton59:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton60:LeftButton" category="Dominos Action Bars" /> -->
 
+	<!-- 6 -->
 	<!-- <Binding name="CLICK DominosActionButton61:LeftButton" category="Dominos Action Bars" header="DominosActionBar6" />
 	<Binding name="CLICK DominosActionButton62:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton63:LeftButton" category="Dominos Action Bars" />
@@ -81,6 +87,7 @@
 	<Binding name="CLICK DominosActionButton71:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton72:LeftButton" category="Dominos Action Bars" /> -->
 
+	<!-- 7 -->
 	<Binding name="CLICK DominosActionButton73:LeftButton" category="Dominos Action Bars" header="DominosActionBar7" />
 	<Binding name="CLICK DominosActionButton74:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton75:LeftButton" category="Dominos Action Bars" />
@@ -94,6 +101,7 @@
 	<Binding name="CLICK DominosActionButton83:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton84:LeftButton" category="Dominos Action Bars" />
 
+	<!-- 8 -->
 	<Binding name="CLICK DominosActionButton85:LeftButton" category="Dominos Action Bars" header="DominosActionBar8" />
 	<Binding name="CLICK DominosActionButton86:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton87:LeftButton" category="Dominos Action Bars" />
@@ -107,6 +115,7 @@
 	<Binding name="CLICK DominosActionButton95:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton96:LeftButton" category="Dominos Action Bars" />
 
+	<!-- 9 -->
 	<Binding name="CLICK DominosActionButton97:LeftButton" category="Dominos Action Bars" header="DominosActionBar9" />
 	<Binding name="CLICK DominosActionButton98:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton99:LeftButton" category="Dominos Action Bars" />
@@ -120,6 +129,7 @@
 	<Binding name="CLICK DominosActionButton107:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton108:LeftButton" category="Dominos Action Bars" />
 
+	<!-- 10 -->
 	<Binding name="CLICK DominosActionButton109:LeftButton" category="Dominos Action Bars" header="DominosActionBar10" />
 	<Binding name="CLICK DominosActionButton110:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton111:LeftButton" category="Dominos Action Bars" />
@@ -133,6 +143,7 @@
 	<Binding name="CLICK DominosActionButton119:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton120:LeftButton" category="Dominos Action Bars" />
 
+	<!-- 11 -->
 	<Binding name="CLICK DominosActionButton121:LeftButton" category="Dominos Action Bars" header="DominosActionBar11" />
 	<Binding name="CLICK DominosActionButton122:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton123:LeftButton" category="Dominos Action Bars" />
@@ -146,7 +157,8 @@
 	<Binding name="CLICK DominosActionButton131:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton132:LeftButton" category="Dominos Action Bars" />
 
-	<Binding name="CLICK DominosActionButton133:LeftButton" category="Dominos Action Bars" header="DominosActionBar12" />
+	<!-- 12 -->
+	<!-- <Binding name="CLICK DominosActionButton133:LeftButton" category="Dominos Action Bars" header="DominosActionBar12" />
 	<Binding name="CLICK DominosActionButton134:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton135:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton136:LeftButton" category="Dominos Action Bars" />
@@ -157,9 +169,10 @@
 	<Binding name="CLICK DominosActionButton141:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton142:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton143:LeftButton" category="Dominos Action Bars" />
-	<Binding name="CLICK DominosActionButton144:LeftButton" category="Dominos Action Bars" />
+	<Binding name="CLICK DominosActionButton144:LeftButton" category="Dominos Action Bars" /> -->
 
-	<Binding name="CLICK DominosActionButton145:LeftButton" category="Dominos Action Bars" header="DominosActionBar13" />
+	<!-- 13 -->
+	<!-- <Binding name="CLICK DominosActionButton145:LeftButton" category="Dominos Action Bars" header="DominosActionBar13" />
 	<Binding name="CLICK DominosActionButton146:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton147:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton148:LeftButton" category="Dominos Action Bars" />
@@ -170,9 +183,10 @@
 	<Binding name="CLICK DominosActionButton153:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton154:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton155:LeftButton" category="Dominos Action Bars" />
-	<Binding name="CLICK DominosActionButton156:LeftButton" category="Dominos Action Bars" />
+	<Binding name="CLICK DominosActionButton156:LeftButton" category="Dominos Action Bars" /> -->
 
-	<Binding name="CLICK DominosActionButton157:LeftButton" category="Dominos Action Bars" header="DominosActionBar14" />
+	<!-- 14 -->
+	<!-- <Binding name="CLICK DominosActionButton157:LeftButton" category="Dominos Action Bars" header="DominosActionBar14" />
 	<Binding name="CLICK DominosActionButton158:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton159:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton160:LeftButton" category="Dominos Action Bars" />
@@ -183,5 +197,5 @@
 	<Binding name="CLICK DominosActionButton165:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton166:LeftButton" category="Dominos Action Bars" />
 	<Binding name="CLICK DominosActionButton167:LeftButton" category="Dominos Action Bars" />
-	<Binding name="CLICK DominosActionButton168:LeftButton" category="Dominos Action Bars" />
+	<Binding name="CLICK DominosActionButton168:LeftButton" category="Dominos Action Bars" /> -->
 </Bindings>

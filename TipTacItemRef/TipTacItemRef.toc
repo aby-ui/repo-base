@@ -1,12 +1,15 @@
 ## Interface: 100000
-## Version: 22.11.04
+## Version: 22.11.15
 ## Title: TipTacItemRef
 ## Author: Aezay (Earthen Ring EU), Frozn45
 ## Notes: Improved ItemRefTooltip
 ## OptionalDeps: TipTac
-abyLocales.lua
+## X-Category: Tooltip
+## X-Website: https://www.curseforge.com/wow/addons/tiptac-reborn
+## X-Curse-Project-ID: 695153
 embeds.xml
-LibItemString.lua
+abyLocales.lua
+
 ttItemRef.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 链接与增益模块

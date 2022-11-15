@@ -1,0 +1,10 @@
+## Interface: 100000
+## Interface-Retail: 100000
+## Interface-Classic: 11403
+## Interface-BCC: 20504
+## Interface-Wrath: 30400
+## Title: LibSpellIconSelector
+## Version: 1.0
+## Author: Bullsei
+
+LibSpellIconSelector.xml

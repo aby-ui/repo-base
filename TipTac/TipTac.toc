@@ -1,10 +1,15 @@
 ## Interface: 100000
-## Version: 22.11.04
+## Version: 22.11.15
 ## Title: TipTac
 ## Author: Aezay (Earthen Ring EU), Frozn45
 ## Notes: Highly Customizable Tooltip Enhancement Addon
 ## SavedVariables: TipTac_Config
+## X-Category: Tooltip
+## X-Website: https://www.curseforge.com/wow/addons/tiptac-reborn
+## X-Curse-Project-ID: 695153
+#embeds.xml
 abyLocales.lua
+
 ttCore.lua
 ttStyle.lua
 ttBars.lua

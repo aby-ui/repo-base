@@ -6,7 +6,7 @@ U1RegisterAddon("163UI_Chat", {
     load = "LOGIN",
     desc = "和聊天框相关的小插件，提供聊天框缩放、鼠标滚轮增强、TAB切换频道、点击时间标记复制文本等功能，详情参见设置页面。` `此外还整合了'自动查询密语详情'及'智能切换声望条'的功能。",
 
-    tags = { TAG_CHAT, TAG_DEV },
+    tags = { TAG_CHAT },
 
     --icon = [[Interface\Icons\Achievement_WorldEvent_ChildrensWeek]],
     author = "|cffcd1a1c[爱不易原创]|r",
@@ -35,19 +35,6 @@ U1RegisterAddon("163UI_Chat", {
         end,
     },
 
-    {
-        var="wwm",
-        default = false,
-        text="自动查询密我的人是谁",
-        callback = function(cfg, v, loading)
-            WhoWhisperedMeCmds(v and "ON" or "OFF");
-        end,
-        {
-            text="列出密我的所有人",
-            tip="说明`可以点击回复哦`命令行：/wwm",
-            callback = function() WhoWhisperedMeCmds("stats") end,
-        }
-    },
     {
         var = "whispersticky",
         default = false,

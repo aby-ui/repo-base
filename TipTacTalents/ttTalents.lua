@@ -55,6 +55,19 @@ lastInspectRequest = 0;
 local function IsInspectFrameOpen() return (InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown()); end
 
 --------------------------------------------------------------------------------------------------------
+--                                          Helper Functions                                          --
+--------------------------------------------------------------------------------------------------------
+
+-- Get displayed unit
+function ttt:GetDisplayedUnit(tooltip)
+	if (tooltip.GetUnit) then
+		return tooltip:GetUnit();
+	else
+		return TooltipUtil.GetDisplayedUnit(tooltip);
+	end
+end
+
+--------------------------------------------------------------------------------------------------------
 --                                           Main Functions                                           --
 --------------------------------------------------------------------------------------------------------
 
@@ -116,7 +129,7 @@ end
 
 -- Update tooltip with the record format, but only if tooltip is still showing the unit of our record
 function ttt:UpdateTooltip(record)
-	local _, unit = gtt:GetUnit();
+	local _, unit = ttt:GetDisplayedUnit(gtt);
 	if (not unit) or (UnitGUID(unit) ~= record.guid) then
 		return;
 	elseif (self.tipLineIndex) then
@@ -245,7 +258,7 @@ function ttt:HookTip()
 	end);
 
 	-- HOOK: OnTooltipSetUnit -- Will schedule a delayed inspect request
-	gtt:HookScript("OnTooltipSetUnit",function(self,...)
+	local function OnTooltipSetUnit(self,...)
         if IsAddOnLoaded("TinyInspect") then return end
 		if not (cfg.t_showTalents) then
 			return;
@@ -255,7 +268,7 @@ function ttt:HookTip()
 		ttt:Hide();
 
 		-- Get the unit -- Check the UnitFrame unit if this tip is from a concated unit, such as "targettarget".
-		local _, unit = self:GetUnit();
+		local _, unit = ttt:GetDisplayedUnit(self);
 		if (not unit) then
 			local mFocus = GetMouseFocus();
 			if (mFocus) and (mFocus.unit) then
@@ -278,7 +291,17 @@ function ttt:HookTip()
 		if (level >= 10 or level == -1) then
 			ttt:InitiateInspectRequest(unit,record);
 		end
-	end);
+	end
+	
+	if (TooltipDataProcessor) then -- since df 10.0.2
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(self, ...)
+			if (self == gtt) then
+				OnTooltipSetUnit(self, ...);
+			end
+		end);
+	else -- before df 10.0.2
+		gtt:HookScript("OnTooltipSetUnit", OnTooltipSetUnit);
+	end
 
 	-- Clear this function as it's not needed anymore
 	self.HookTips = nil;

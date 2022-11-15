@@ -1,0 +1,14 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI.xsd">
+	<Include file="Core\Blizzard_ObjectiveTrackerShared.xml"/>
+	<Include file="Core\Blizzard_ObjectiveTracker.xml"/>
+	<Script file="Core\Blizzard_QuestSuperTracking.lua"/>
+	<Include file="Core\Blizzard_QuestObjectiveTracker.xml"/>
+	<Include file="Core\Blizzard_CampaignQuestObjectiveTracker.xml"/>
+	<Script file="Core\Blizzard_AchievementObjectiveTracker.lua"/>
+	<Include file="Core\Blizzard_AutoQuestPopUpTracker.xml"/>
+	<Include file="Core\Blizzard_BonusObjectiveTracker.xml"/>
+	<Include file="Core\Blizzard_ScenarioObjectiveTracker.xml"/>
+	<Script file="Core\Blizzard_ProfessionsRecipeTracker.lua"/>
+	<Include file="Core\Blizzard_ObjectiveTrackerUIWidgetContainer.xml"/>
+</Ui>

@@ -37,7 +37,7 @@ CreateTooltip("CellTooltip")
 CreateTooltip("CellSpellTooltip")
 CreateTooltip("CellScanningTooltip")
 
-function F:ShowTooltips(anchor, tooltipType, unit, aura)
+function F:ShowTooltips(anchor, tooltipType, unit, aura, filter)
     if not CellDB["general"]["enableTooltips"] or (tooltipType == "unit" and CellDB["general"]["hideTooltipsInCombat"] and InCombatLockdown()) then return end
     
     if CellDB["general"]["tooltipsPosition"][2] == "Default" then
@@ -58,8 +58,8 @@ function F:ShowTooltips(anchor, tooltipType, unit, aura)
 
     if tooltipType == "unit" then
         GameTooltip:SetUnit(unit)
-    elseif tooltipType == "spell" then
+    elseif tooltipType == "spell" and unit and aura then
         -- GameTooltip:SetSpellByID(aura)
-        GameTooltip:SetUnitAura(unit, aura)
+        GameTooltip:SetUnitAura(unit, aura, filter)
     end
 end

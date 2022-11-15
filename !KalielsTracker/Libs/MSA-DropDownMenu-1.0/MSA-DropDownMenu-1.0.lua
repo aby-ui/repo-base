@@ -4,7 +4,7 @@
 ---
 --- https://www.curseforge.com/wow/addons/msa-dropdownmenu-10
 
-local name, version = "MSA-DropDownMenu-1.0", 14
+local name, version = "MSA-DropDownMenu-1.0", 15
 
 local lib, oldVersion = LibStub:NewLibrary(name, version)
 if not lib then return end

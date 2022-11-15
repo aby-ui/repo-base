@@ -28,13 +28,13 @@ local frame_UpdateShown = [[
         return
     end
 
-    local isPetBattleUIShown = self:GetAttribute('state-petbattleui') and true or false
+    local isPetBattleUIShown = self:GetAttribute('state-petbattleui') and true
     if isPetBattleUIShown and not self:GetAttribute('state-showinpetbattleui') then
         self:Hide()
         return
     end
 
-    local isOverrideUIShown = self:GetAttribute('state-overrideui') and true or false
+    local isOverrideUIShown = self:GetAttribute('state-overrideui') and true
     if isOverrideUIShown and not self:GetAttribute('state-showinoverrideui') then
         self:Hide()
         return
@@ -505,7 +505,7 @@ end
 --------------------------------------------------------------------------------
 
 function Frame:SetClickThrough(enable)
-    self.sets.clickThrough = enable and true or false
+    self.sets.clickThrough = enable and true
     self:UpdateClickThrough()
 end
 
@@ -521,7 +521,7 @@ end
 --------------------------------------------------------------------------------
 
 function Frame:ShowInOverrideUI(enable)
-    self.sets.showInOverrideUI = (enable or self.id == "extra") and true or false --TODO 暂时强制打开
+    self.sets.showInOverrideUI = (enable or self.id == "extra") and true --TODO 暂时强制打开
 
     self:SetAttribute('state-showinoverrideui', enable)
 end
@@ -535,7 +535,7 @@ end
 --------------------------------------------------------------------------------
 
 function Frame:ShowInPetBattleUI(enable)
-    self.sets.showInPetBattleUI = enable and true or false
+    self.sets.showInPetBattleUI = enable and true
     self:SetAttribute('state-showinpetbattleui', enable)
 end
 

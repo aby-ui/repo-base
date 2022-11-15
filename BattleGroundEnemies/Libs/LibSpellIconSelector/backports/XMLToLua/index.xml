@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="..\other.lua"/>	
+	<Script file="..\locales.lua"/>	
+	<Include file="Mixins\MixinIndex.xml"/>
+
+	<Script file="SelectorButtonTemplate.lua"/>	
+	<Script file="SelectorTemplate.lua"/>		
+	<Script file="ScrollBoxSelectorTemplate.lua"/>	
+	<Script file="SelectionFrameTemplate.lua"/>	
+	<Script file="IconSelectorPopupFrameTemplate.lua"/>	
+</Ui>
+ 

@@ -84,16 +84,19 @@ local function travelParentObject(parent, target)
         end
     end
 end
-function FindObjectPath(frame)
+function FindObjectPath(frame, justReturn)
     wipe(searched)
     local name = travelParentObject(_G, frame) or tostring(frame)
     if name:sub(1,1) == "." then name = name:sub(2) end
+    wipe(searched)
+    if justReturn then
+        return name
+    end
     if CoreUIChatEdit_Insert then
         RunOnNextFrame(CoreUIChatEdit_Insert, "/dumppn " .. name)
     else
         print(name)
     end
-    wipe(searched)
 end
 
 --[[
@@ -229,7 +232,20 @@ SlashCmdList["DUMPPN"] = function(cmd)
     dumppn(loadstring("return "..(var or cmd))(), tonumber(depth or 1))
 end
 SLASH_DUMPPN1 = "/dumppn"
-
+SlashCmdList["DUMPPOINT"] = function(cmd)
+    local frame = loadstring("return "..(cmd))()
+    if frame and frame.GetPoint then
+        for i = 1, 4 do
+            local point, rel, relpoint, x, y = frame:GetPoint(i)
+            if not point then break end
+            local relName = rel and FindObjectPath(rel, true) or tostring(rel)
+            print("anchor"..i, point, relName, relpoint, floor(x), floor(y))
+        end
+    else
+        print("No frame for", cmd)
+    end
+end
+SLASH_DUMPPOINT1 = "/dumppt"
 
 ---可以输出代码位置的调试方法
 function CoreDebug(...)

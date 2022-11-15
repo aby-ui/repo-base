@@ -1140,19 +1140,24 @@ function BattleGroundEnemies:SetupOptions()
 						end,
 						order = 4
 					},
-					MyTarget_Color = {
-						type = "color",
-						name = L.MyTarget_Color,
-						desc = L.MyTarget_Color_Desc,
-						hasAlpha = true,
+					ShowTooltips = {
+						type = "toggle",
+						name = L.ShowTooltips,
+						desc = L.ShowTooltips_Desc,
 						order = 5
 					},
-					MyFocus_Color = {
-						type = "color",
-						name = L.MyFocus_Color,
-						desc = L.MyFocus_Color_Desc,
-						hasAlpha = true,
+					ConvertCyrillic = {
+						type = "toggle",
+						name = L.ConvertCyrillic,
+						desc = L.ConvertCyrillic_Desc,
+						width = "normal",
 						order = 6
+					},
+					UseBigDebuffsPriority = {
+						type = "toggle",
+						name = L.UseBigDebuffsPriority,
+						desc = L.UseBigDebuffsPriority_Desc:format(L.Buffs, L.Debuffs, L.HighestPriorityAura),
+						order = 7
 					},
 					Font = {
 						type = "select",
@@ -1160,27 +1165,53 @@ function BattleGroundEnemies:SetupOptions()
 						desc = L.Font_Desc,
 						dialogControl = "LSM30_Font",
 						values = AceGUIWidgetLSMlists.font,
-						order = 7
+						order = 8
 					},
-					Fake1 = Data.AddVerticalSpacing(8),
-					ShowTooltips = {
-						type = "toggle",
-						name = L.ShowTooltips,
-						desc = L.ShowTooltips_Desc,
-						order = 9
+					MyTarget = {
+						type = "group",
+						name = L.MyTarget,
+						inline = true,
+						order = 9,
+						args = {
+							MyTarget_Color = {
+								type = "color",
+								name = L.Color,
+								desc = L.MyTarget_Color_Desc,
+								hasAlpha = true,
+								order = 1
+							},
+							MyTarget_BorderSize = {
+								type = "range",
+								name = L.BorderSize,
+								min = 1,
+								max = 5,
+								step = 1,
+								order = 2
+							}
+						}
 					},
-					ConvertCyrillic = {
-						type = "toggle",
-						name = L.ConvertCyrillic,
-						desc = L.ConvertCyrillic_Desc,
-						width = "normal",
-						order = 10
-					},
-					UseBigDebuffsPriority = {
-						type = "toggle",
-						name = L.UseBigDebuffsPriority,
-						desc = L.UseBigDebuffsPriority_Desc:format(L.Buffs, L.Debuffs, L.HighestPriorityAura),
-						order = 11
+					MyFocus = {
+						type = "group",
+						name = L.MyFocus,
+						inline = true,
+						order = 10,
+						args = {
+							MyFocus_Color = {
+								type = "color",
+								name = L.Color,
+								desc = L.MyFocus_Color_Desc,
+								hasAlpha = true,
+								order = 1
+							},
+							MyFocus_BorderSize = {
+								type = "range",
+								name = L.BorderSize,
+								min = 1,
+								max = 5,
+								step = 1,
+								order = 2
+							}
+						}
 					}
 				}
 			},

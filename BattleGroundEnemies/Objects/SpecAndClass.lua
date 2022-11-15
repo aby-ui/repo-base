@@ -126,11 +126,13 @@ local function attachToPlayerButton(playerButton, type)
 				self.Icon:SetTexCoord(unpack(CLASS_ICON_TCOORDS[playerButton.PlayerClass]))
 			else
 				self.Icon:SetTexture(nil)
-			end		
+			end	
 		else -- "Spec"
 			local specData = playerButton:GetSpecData()
 			if specData then
 				self.Icon:SetTexture(specData.specIcon)
+			else
+				self.Icon:SetTexture(nil)
 			end
 		end
 

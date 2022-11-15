@@ -45,7 +45,7 @@ local function CreatePreviewButton()
         previewButtonBG:SetPoint("TOPLEFT", indicatorsTab, "TOPRIGHT", 5, -1)
 
         local x = 10
-        local y = Round(-60 / CellDB["indicatorPreviewScale"])
+        local y = Round(-70 / CellDB["indicatorPreviewScale"])
 
         if (previewButton.width * CellDB["indicatorPreviewScale"]) <= 105 then
             x = Round((115-previewButton.width)/2)+5
@@ -74,7 +74,7 @@ local function CreatePreviewButton()
     previewAlphaSlider.highText:Hide()
 
     -- preview scale
-    previewScaleSlider = Cell:CreateSlider(L["Scale"], previewButtonBG, 1, 3, 50, 1, nil, function(value)
+    previewScaleSlider = Cell:CreateSlider(L["Scale"], previewButtonBG, 1, 5, 50, 1, nil, function(value)
         CellDB["indicatorPreviewScale"] = value
         previewButton:SetScale(value)
         previewButton:UpdatePoint()
@@ -1269,7 +1269,7 @@ if Cell.isRetail then
         ["allCooldowns"] = {L["Externals + Defensives, no need to enable all of them"], "enabled", "checkbutton2:showDuration:"..L["Show duration text instead of icon animation"], "num:5", "orientation", "position", "frameLevel", "size", "font"},
         ["tankActiveMitigation"] = {"|cffb7b7b7"..I:GetTankActiveMitigationString(), "enabled", "position", "frameLevel", "size"},
         ["dispels"] = {"enabled", "checkbutton:dispellableByMe", "highlightType", "checkbutton2:showDispelTypeIcons", "position", "frameLevel", "size-square"},
-        ["debuffs"] = {"enabled", "checkbutton:dispellableByMe", "blacklist", "bigDebuffs", "checkbutton2:showDuration:"..L["Show duration text instead of icon animation"], "checkbutton3:showTooltip:"..L["This will make these icons not click-through-able"].."|"..L["Tooltips need to be enabled in General tab"], "num:10", "orientation", "position", "frameLevel", "size-normal-big", "font"},
+        ["debuffs"] = {"enabled", "checkbutton:dispellableByMe", "blacklist", "bigDebuffs", "checkbutton2:showDuplicate", "checkbutton3:showDuration:"..L["Show duration text instead of icon animation"], "checkbutton4:showTooltip:"..L["This will make these icons not click-through-able"].."|"..L["Tooltips need to be enabled in General tab"], "num:10", "orientation", "position", "frameLevel", "size-normal-big", "font"},
         ["raidDebuffs"] = {"|cffb7b7b7"..L["You can config debuffs in %s"]:format(Cell:GetAccentColorString()..L["Raid Debuffs"].."|r"), "enabled", "checkbutton:onlyShowTopGlow", "cleuAuras", "checkbutton2:showTooltip:"..L["This will make these icons not click-through-able"].."|"..L["Tooltips need to be enabled in General tab"], "num:3", "orientation", "position", "frameLevel", "size-border", "font"},
         ["targetedSpells"] = {"enabled", "targetedSpellsList", "targetedSpellsGlow", "position", "frameLevel", "size-border", "font"},
         ["targetCounter"] = {"|cffff2727"..L["HIGH CPU USAGE"].."!|r |cffb7b7b7"..L["Check all visible enemy nameplates. Battleground/Arena only."], "enabled", "color", "position", "frameLevel", "font-noOffset"},
@@ -1660,6 +1660,22 @@ local function ShowTab(tab)
     end
 end
 Cell:RegisterCallback("ShowOptionsTab", "IndicatorsTab_ShowTab", ShowTab)
+
+function F:ReloadIndicatorList()
+    if not init then return end
+    if indicatorsTab:IsShown() then
+        LoadIndicatorList()
+        listFrame.scrollFrame:ScrollToBottom()
+        listButtons[#listButtons]:Click()
+    else
+        indicatorsTab:SetScript("OnShow", function()
+            indicatorsTab:SetScript("OnShow", nil)
+            UpdateIndicators()
+            LoadIndicatorList()
+            listButtons[1]:Click()
+        end)
+    end
+end
 
 local function UpdateLayout()
     if previewButton and currentLayout == Cell.vars.currentLayout then

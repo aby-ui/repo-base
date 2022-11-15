@@ -8,7 +8,7 @@
 
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\FrameXML\UI.xsd">
-    <Frame name="KT_ObjectiveTrackerBlockTemplate" hidden="true" virtual="true">
+    <Frame name="KT2_ObjectiveTrackerBlockTemplate" hidden="true" virtual="true">
         <Size x="232" y="10"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -36,7 +36,7 @@
         </Scripts>
     </Frame>
 
-    <Frame name="KT_ObjectiveTrackerLineTemplate" virtual="true">
+    <Frame name="KT2_ObjectiveTrackerLineTemplate" virtual="true">
         <Size x="232" y="16"/>
         <Layers>
             <Layer level="ARTWORK">
@@ -55,12 +55,12 @@
         </Layers>
         <Scripts>
             <OnLoad>
-                self.Text:SetWidth(OBJECTIVE_TRACKER_TEXT_WIDTH);
+                self.Text:SetWidth(KT_OBJECTIVE_TRACKER_TEXT_WIDTH);
             </OnLoad>
         </Scripts>
     </Frame>
 
-    <ScrollFrame name="KT_BonusObjectiveTrackerBlockTemplate" hidden="true" virtual="true" alpha="0">
+    <ScrollFrame name="KT2_BonusObjectiveTrackerBlockTemplate" hidden="true" virtual="true" alpha="0">
         <Size x="240" y="10"/>
         <Frames>
             <Button parentKey="TrackedQuest">
@@ -111,23 +111,23 @@
                 <Alpha fromAlpha="0" toAlpha="1" duration="0.1" order="2"/>
                 <Translation parentKey="TransIn" childKey="ScrollContents" offsetX="0" offsetY="0" duration="0" order="2"/>
                 <Scripts>
-                    <OnFinished function="BonusObjectiveTracker_OnBlockAnimInFinished"/>
+                    <OnFinished function="KT_BonusObjectiveTracker_OnBlockAnimInFinished"/>
                 </Scripts>
             </AnimationGroup>
             <AnimationGroup parentKey="AnimOut">
                 <Alpha fromAlpha="1" toAlpha="0" duration="0.5" startDelay="3.5" order="1"/>
                 <Scripts>
-                    <OnFinished function="BonusObjectiveTracker_OnBlockAnimOutFinished"/>
+                    <OnFinished function="KT_BonusObjectiveTracker_OnBlockAnimOutFinished"/>
                 </Scripts>
             </AnimationGroup>
         </Animations>
         <Scripts>
             <OnLoad>
-                self:SetWidth(OBJECTIVE_TRACKER_LINE_WIDTH);
+                self:SetWidth(KT_OBJECTIVE_TRACKER_LINE_WIDTH);
             </OnLoad>
-            <OnEnter function="BonusObjectiveTracker_OnBlockEnter"/>
-            <OnLeave function="BonusObjectiveTracker_OnBlockLeave"/>
-            <OnMouseUp function="BonusObjectiveTracker_OnBlockClick" />
+            <OnEnter function="KT_BonusObjectiveTracker_OnBlockEnter"/>
+            <OnLeave function="KT_BonusObjectiveTracker_OnBlockLeave"/>
+            <OnMouseUp function="KT_BonusObjectiveTracker_OnBlockClick" />
         </Scripts>
     </ScrollFrame>
 

@@ -1211,7 +1211,9 @@ function TrinketMenu.OnHide()
 	end
 	TrinketMenu_MenuFrame:Hide()
 	TrinketMenu_MenuFrame.WasShown = true
-	TrinketMenuPerOptions.Visible = "OFF"
+	if not TrinketMenu_MainFrame.HideWhenDisable then
+		TrinketMenuPerOptions.Visible = "OFF"
+	end
 end
 
 function TrinketMenu.ReflectAlpha()

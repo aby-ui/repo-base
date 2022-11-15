@@ -999,45 +999,41 @@ function F:UnitInGroup(unit, ignorePets)
 end
 
 function F:GetTargetUnitID()
-    if IsInGroup() then
-        if not F:UnitInGroup("target") then return end
+    if UnitIsUnit("target", "player") then
+        return "player"
+    elseif UnitIsUnit("target", "pet") then
+        return "pet"
+    end
 
-        if UnitIsPlayer("target") then
-            for unit in F:IterateGroupMembers() do
-                if UnitIsUnit("target", unit) then
-                    return unit
-                end
-            end
-        else
-            for unit in F:IterateGroupPets() do
-                if UnitIsUnit("target", unit) then
-                    return unit
-                end
+    if not F:UnitInGroup("target") then return end
+
+    if UnitIsPlayer("target") then
+        for unit in F:IterateGroupMembers() do
+            if UnitIsUnit("target", unit) then
+                return unit
             end
         end
     else
-        if UnitIsUnit("target", "player") then
-            return "player"
-        elseif UnitIsUnit("target", "pet") then
-            return "pet"
+        for unit in F:IterateGroupPets() do
+            if UnitIsUnit("target", unit) then
+                return unit
+            end
         end
     end
 end
 
 function F:GetTargetPetID()
-    if IsInGroup() then
-        if not F:UnitInGroup("target") then return end
+    if UnitIsUnit("target", "player") then
+        return "pet"
+    end
 
-        if UnitIsPlayer("target") then
-            for unit in F:IterateGroupMembers() do
-                if UnitIsUnit("target", unit) then
-                    return F:GetPetUnit(unit)
-                end
+    if not F:UnitInGroup("target") then return end
+
+    if UnitIsPlayer("target") then
+        for unit in F:IterateGroupMembers() do
+            if UnitIsUnit("target", unit) then
+                return F:GetPetUnit(unit)
             end
-        end
-    else
-        if UnitIsUnit("target", "player") then
-            return "pet"
         end
     end
 end

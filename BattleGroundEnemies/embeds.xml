@@ -2,6 +2,6 @@
 	<Script file="Libs\LibRaces-1.0\LibRaces-1.0.lua"/>
 	<Include file="Libs\DRList-1.0\DRList-1.0.xml"/>
 	<Include file="Libs\LibChangelog\LibChangelog.lua"/>
+	<Include file="Libs\LibSpellIconSelector\LibSpellIconSelector.xml"/>
 	<Script file="Libs\FlyPaper-2.0\LibFlyPaper-2.0.lua"/>
-	<!--<Include file="Libs\LibSerialize\LibSerialize.lua"/>-->
 </Ui>

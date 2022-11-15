@@ -87,7 +87,7 @@ function TalkingHeadBar:SetMuteSounds(enable)
 end
 
 function TalkingHeadBar:MuteSounds()
-    return self.sets.muteSounds or false
+    return self.sets.muteSounds and true
 end
 
 -- module

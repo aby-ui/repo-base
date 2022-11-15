@@ -208,8 +208,8 @@ function ActionBar:LoadStateController()
 
             offset = (page - 1) * self:GetAttribute('barLength')
 
-            -- skip action bar 12 (not really usable)
-            if offset > 132 then
+            -- skip action bar 12 slots (not really usable)
+            if offset >= 132 then
                 offset = offset + 12
             end
         end
@@ -226,12 +226,7 @@ end
 function ActionBar:LoadShowGridController()
     if not Addon:IsBuild("retail") then return end
 
-    self:SetAttribute('_onstate-showgrid', [[
-        if self:GetAttribute("showgrid") ~= newstate then
-            self:SetAttribute("showgrid", newstate)
-            control:ChildUpdate('showgrid', newstate)
-        end
-    ]])
+    self:SetAttribute("OnShowGridChanged", [[ control:ChildUpdate("showgrid", ...); ]])
 
     Addon:RegisterShowGridEvents(self)
 end
@@ -247,45 +242,59 @@ function ActionBar:IsOverrideBar()
 end
 
 -- Empty button display
-function ActionBar:ShowGrid(reason, force)
-    if InCombatLockdown() then return end
-
-    local old = self:GetAttribute("showgrid") or 0
-    local new = bit.bor(old, reason)
-
-    if (old ~= new) or force then
-        self:SetAttribute("showgrid", new)
-        self:ForButtons('SetShowGridInsecure', new, force)
-    end
+local function hasFlag(value, flag)
+    return value % (2 * flag) >= flag
 end
 
-function ActionBar:HideGrid(reason, force)
+function ActionBar:SetShowGrid(reason, show, force)
     if InCombatLockdown() then return end
 
-    local old = self:GetAttribute("showgrid") or 0
-    local new = bit.band(old, bit.bnot(reason))
+    local result = self:GetAttribute("showgrid") or 0
+    local updated = force and true
 
-    if (old ~= new) or force then
-        self:SetAttribute("showgrid", new)
-        self:ForButtons('SetShowGridInsecure', new, force)
+    if show then
+        if not hasFlag(result, reason) then
+            result = result + reason
+            updated = true
+        end
+    elseif hasFlag(result, reason) then
+        result = result - reason
+        updated = true
+    end
+
+    if updated then
+        self:SetAttribute("showgrid", result)
+        self:ForButtons('SetShowGridInsecure', result, force)
     end
 end
 
 function ActionBar:UpdateGrid(force)
-    if Addon:ShowGrid() then
-        self:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_ADDON, force)
-    else
-        self:HideGrid(ACTION_BUTTON_SHOW_GRID_REASON_ADDON, force)
-    end
+    local show = Addon:ShowGrid() or self:ShowingEmptyButtons()
+
+    self:SetShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_ADDON, show, force)
 end
 
 -- keybound support
 function ActionBar:KEYBOUND_ENABLED()
-    self:ShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND)
+    self:SetShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND, true)
 end
 
 function ActionBar:KEYBOUND_DISABLED()
-    self:HideGrid(ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND)
+    self:SetShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_KEYBOUND, false)
+end
+
+-- empty buttons
+function ActionBar:SetShowEmptyButtons(show)
+    self.sets.showEmptyButtons = show and true
+    self:UpdateGrid()
+end
+
+function ActionBar:ShowingEmptyButtons()
+    return self.sets.showEmptyButtons and true
+end
+
+function ActionBar:GetUnit()
+    return self.sets.unit or 'none'
 end
 
 -- right click targeting support

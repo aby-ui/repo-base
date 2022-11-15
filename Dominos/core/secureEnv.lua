@@ -9,6 +9,7 @@ if not Addon:IsBuild("retail") then return end
 
 local Env = CreateFrame('Frame', nil, nil, 'SecureHandlerAttributeTemplate')
 Env:Execute([[ WATCHERS = table.new() ]])
+Env:Execute(([[ ACTION_BUTTON_SHOW_GRID_REASON_EVENT = %d ]]):format(ACTION_BUTTON_SHOW_GRID_REASON_EVENT))
 Env:Hide()
 
 --------------------------------------------------------------------------------
@@ -19,59 +20,49 @@ Env:Hide()
 -- requirements: MainActionBar needs to have its events registered
 do
     -- initialize
-    Env:SetAttribute("showgrid", 0)
-
-    local target = MainMenuBar.actionButtons[1]
+    Env:SetAttribute("showgrid-event", false)
 
     -- initialize state
-    target:SetAttribute("showgrid", 0)
+    ActionButton1:SetAttribute("showgrid", 0)
 
     -- watch for changes
-    local target_OnAttributeChanged = ([[
+    Env:WrapScript(ActionButton1, "OnAttributeChanged", [[
         if name ~= "showgrid" then return end
 
-        local reason = %d
+        local reason = ACTION_BUTTON_SHOW_GRID_REASON_EVENT
+        local show = value % (2 * reason) >= reason
 
-        local result
-        if value %% (2 * reason) >= reason then
-            result = reason
-        else
-            result = 0
+        if control:GetAttribute("showgrid-event") ~= show then
+            control:SetAttribute("showgrid-event", show)
+            control:SetAttribute("showgrid-event-ready", 0)
         end
-
-        if control:GetAttribute(name) ~= result then
-            control:SetAttribute(name, result)
-            control:SetAttribute("saving-" .. name, 1)
-        end
-    ]]):format(ACTION_BUTTON_SHOW_GRID_REASON_EVENT)
-
-    Env:WrapScript(target, "OnAttributeChanged", target_OnAttributeChanged)
+    ]])
 
     -- delay updates until the next frame to avoid issues around saving the
     -- state of buttons we've just added actions to
-    RegisterAttributeDriver(Env, "saving-showgrid", 0)
+    RegisterAttributeDriver(Env, "showgrid-event-ready", 1)
 end
 
 --------------------------------------------------------------------------------
 -- event handling
 --------------------------------------------------------------------------------
 
-Env:SetAttribute("Notify", [[
-    local key = ...
-    local value = self:GetAttribute(key)
+Env:SetAttribute("SetShowGrid", [[
+    local reason, show, force = ...
 
-    local watchers = WATCHERS[key]
+    local watchers = WATCHERS["showgrid"]
+
     if watchers then
         for frame in pairs(watchers) do
-            frame:SetAttribute("state-" .. key, value)
+            frame:RunAttribute("SetShowGrid", reason, show, force)
         end
     end
 ]])
 
-Env:SetAttribute("saving-showgrid-changed", [[
-    local _, saving = ...
-    if saving == 0 then
-        self:RunAttribute("Notify", "showgrid")
+Env:SetAttribute("showgrid-event-ready-changed", [[
+    local _, ready = ...
+    if ready == 1 then
+        self:RunAttribute("SetShowGrid", ACTION_BUTTON_SHOW_GRID_REASON_EVENT, self:GetAttribute("showgrid-event") and true)
     end
 ]])
 
@@ -92,22 +83,44 @@ local function watch(frame, attribute)
     Env:SetFrameRef("watcher", frame)
 
     local method = ([[
-        local attribute = %q
+        local key = %q
         local frame = self:GetFrameRef("watcher")
 
-        local watchers = WATCHERS[attribute]
+        local watchers = WATCHERS[key]
         if not watchers then
             watchers = table.new()
-            WATCHERS[attribute] = watchers
+            WATCHERS[key] = watchers
         end
 
         watchers[frame] = true
-        frame:SetAttribute("state-" .. attribute, self:GetAttribute(attribute))
     ]]):format(attribute)
 
     Env:Execute(method)
 end
 
 function Addon:RegisterShowGridEvents(frame)
+    frame:SetAttribute("SetShowGrid", [[
+        local reason, show, force = ...
+        local value = self:GetAttribute("showgrid") or 0
+        local updated = force and true
+
+        if show then
+            if value % (2 * reason) < reason then
+                value = value + reason
+                updated = true
+            end
+        elseif value % (2 * reason) >= reason then
+            value = value - reason
+            updated = true
+        end
+
+        if updated then
+            self:SetAttribute("showgrid", value)
+            self:RunAttribute("OnShowGridChanged", value)
+        end
+    ]])
+
+    frame:SetShowGrid(ACTION_BUTTON_SHOW_GRID_REASON_EVENT, Env:GetAttribute("showgrid-event") and true)
+
     watch(frame, "showgrid")
 end

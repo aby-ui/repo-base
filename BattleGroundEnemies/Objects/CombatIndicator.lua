@@ -1,6 +1,7 @@
 
 local BattleGroundEnemies = BattleGroundEnemies
 local AddonName, Data = ...
+local LibSpellIconSelector = LibStub("LibSpellIconSelector")
 
 local L = Data.L
 
@@ -60,11 +61,28 @@ local options = function(location)
 					name = VIDEO_OPTIONS_ENABLED,
 					order = 1
 				},
-				-- TODO Add icon selection
+				Icon = {
+					type = "execute",
+					name = L.Icon,
+					image = function() return location[Icons[i]].Icon end,
+					func = function(option)
+						local locationn = location[Icons[i]]
+						local optiontable = {} --hold a copy of the option table for the OnOkayButtonPressed otherweise the table will be empty
+						Mixin(optiontable, option)
+						LibSpellIconSelector:Show(locationn, function(spelldata)
+							Data.SetOption(locationn, optiontable, spelldata.icon)
+							BattleGroundEnemies:NotifyChange()
+						end)
+					end,
+					disabled = function() return not location[Icons[i]].Enabled end,
+					width = "half",
+					order = 2,
+
+				}
 			}
 		}
 	end
-	t.UpdatePeroid = {
+	t.UpdatePeriod = {
 		type = "range",
 		name = L.UpdatePeriod,
 		desc = L.UpdatePeriod_Desc,

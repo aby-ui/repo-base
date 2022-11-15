@@ -2041,6 +2041,41 @@ local function CreateSetting_CheckButton3(parent)
     return widget
 end
 
+local function CreateSetting_CheckButton4(parent)
+    local widget
+
+    if not settingWidgets["checkbutton4"] then
+        widget = addon:CreateFrame("CellIndicatorSettings_CheckButton4", parent, 240, 30)
+        settingWidgets["checkbutton4"] = widget
+
+        widget.cb = addon:CreateCheckButton(widget, "checkbutton4")
+        widget.cb:SetPoint("TOPLEFT", 5, -8)
+
+        -- associate db
+        function widget:SetFunc(func)
+            widget.cb.onClick = function(checked)
+                func(checked)
+            end
+        end
+
+        -- show db value
+        function widget:SetDBValue(settingName, checked, tooltip)
+            widget.cb:SetChecked(checked)
+            widget.cb:SetText(L[settingName])
+            if tooltip then
+                addon:SetTooltips(widget.cb, "ANCHOR_TOPLEFT", 0, 2, L[settingName], string.split("|", tooltip))
+            else
+                addon:ClearTooltips(widget.cb)
+            end
+        end
+    else
+        widget = settingWidgets["checkbutton4"]
+    end
+
+    widget:Show()
+    return widget
+end
+
 local function CreateSetting_Duration(parent)
     local widget
 
@@ -4000,6 +4035,8 @@ function addon:CreateIndicatorSettings(parent, settingsTable)
             tinsert(widgetsTable, CreateSetting_NameColor(parent))
         elseif setting == "statusColors" then
             tinsert(widgetsTable, CreateSetting_StatusColors(parent))
+        elseif string.find(setting, "checkbutton4") then
+            tinsert(widgetsTable, CreateSetting_CheckButton4(parent))
         elseif string.find(setting, "checkbutton3") then
             tinsert(widgetsTable, CreateSetting_CheckButton3(parent))
         elseif string.find(setting, "checkbutton2") then

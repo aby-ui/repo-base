@@ -35,7 +35,8 @@ checkbox.text:SetText("通报")
 checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -155, 2);
 CoreDependCall("!KalielsTracker", function()
     checkbox.text:SetText("报")
-    checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -125, 2);
+    checkbox:SetParent(KT_ObjectiveTrackerBlocksFrame.QuestHeader)
+    checkbox:SetPoint("BOTTOMRIGHT", KT_ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -125, 2);
 end)
 checkbox:SetScript("OnClick", function(self, button)
     if( not IsAddOnLoaded("QuestAnnounce") ) then U1LoadAddOn("QuestAnnounce") end

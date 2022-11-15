@@ -1467,5 +1467,16 @@ function F:Revise()
         end
     end
 
+    -- r139-release
+    if CellDB["revise"] and dbRevision < 139 then
+        if Cell.isRetail then
+            -- 筋疲力尽
+            if not F:TContains(CellDB["debuffBlacklist"], 390435) then
+                tinsert(CellDB["debuffBlacklist"], 390435)
+                Cell.vars.debuffBlacklist = F:ConvertTable(CellDB["debuffBlacklist"])
+            end
+        end
+    end
+
     CellDB["revise"] = Cell.version
 end
