@@ -193,7 +193,7 @@ local function createIconFrame()
 	end) 
 	callOutButton:SetScript("OnEnter",function()end) 
 	callOutButton:SetScript("OnLeave",function()end) 
-    CoreUIEnableTooltip(callOutButton, "表情图标", "按住ctrl点击可以锁定/解锁按钮栏");
+    CoreUIEnableTooltip(callOutButton, "表情图标", "按住ctrl点击可以锁定/解锁按钮栏\n注意：锁定时聊天输入框会位于下方");
 	callOutButton:SetAlpha(0.8)
 	callOutButton:SetPoint("TOPLEFT",DWCChatFrame,"TOPLEFT",2,-3) 
 	local i=0

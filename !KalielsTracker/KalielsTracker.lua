@@ -480,8 +480,36 @@ local function SetFrames()
 	button:SetPoint("TOPRIGHT", -6, -4)
 	button:SetNormalTexture(mediaPath.."UI-KT-HeaderButtons")
 	button:GetNormalTexture():SetTexCoord(0, 0.5, 0.25, 0.5)
-	button:RegisterForClicks("AnyDown")
+	button:RegisterForClicks("AnyUp")
+	button:SetScript("OnMouseDown", function()
+		if IsShiftKeyDown() then
+			KT.frame.isMouseMoving = 1
+			KT.frame:SetMovable(true)
+			KT.frame:StartMoving()
+		end
+	end)
+	button:SetScript("OnMouseUp", function()
+		KT.frame:StopMovingOrSizing()
+		KT.frame:SetMovable(false)
+		if not KT.frame.isMouseMoving then return end
+		local point = KT.db.profile.anchorPoint or "TOPRIGHT"
+		if point:upper():find("LEFT") then
+			KT.db.profile.xOffset = KT.frame:GetLeft() - UIParent:GetLeft()
+		else
+			KT.db.profile.xOffset = KT.frame:GetRight() - UIParent:GetRight()
+		end
+		if point:upper():find("BOTTOM") then
+			KT.db.profile.yOffset = KT.frame:GetBottom() - UIParent:GetBottom()
+		else
+			KT.db.profile.yOffset = KT.frame:GetTop() - UIParent:GetTop()
+		end
+		KT:MoveTracker()
+	end)
 	button:SetScript("OnClick", function(self, btn)
+		if KT.frame.isMouseMoving then
+			KT.frame.isMouseMoving = nil
+			return
+		end
 		if IsAltKeyDown() then
 			KT:OpenOptions()
 		elseif not KT:IsTrackerEmpty() and not KT.locked then
@@ -493,7 +521,8 @@ local function SetFrames()
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		local title = (db.keyBindMinimize ~= "") and L[addonName].." "..NORMAL_FONT_COLOR_CODE.."("..db.keyBindMinimize..")|r" or L[addonName]
 		GameTooltip:AddLine(title, 1, 1, 1)
-		GameTooltip:AddLine(L"Alt+Click - addon Options", .8, .8, 0)
+		GameTooltip:AddLine(L"Alt+Click - addon Options", .8, .8, 0, true)
+		GameTooltip:AddLine(L"Shift+Click - Move Panel", .8, .8, 0)
 		GameTooltip:Show()
 	end)
 	button:SetScript("OnLeave", function(self)
@@ -2248,7 +2277,7 @@ function KT:MoveTracker()
 		options.yOffset.max = 0
 	end
 
-	options.maxHeight.max = self.screenHeight - abs(db.yOffset)
+	options.maxHeight.max = math.ceil(self.screenHeight - abs(db.yOffset))
 	db.maxHeight = (abs(db.yOffset)+db.maxHeight > self.screenHeight) and options.maxHeight.max or db.maxHeight
 
 	self:MoveButtons()

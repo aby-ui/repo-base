@@ -35,7 +35,8 @@ if GetLocale() == "zhCN" or GetLocale() == "zhTW" then
 
     ------------- KalielsTracker.lua ----------------
     KT.L[name] = "任务追踪增强"
-    KT.L["Alt+Click - addon Options"] = "ALT点击\n打开设置面板"
+    KT.L["Alt+Click - addon Options"] = "ALT+左键 打开设置面板"
+    KT.L["Shift+Click - Move Panel"] = "SHT+左键 移动追踪面板"
     KT.L["%d/%d Quests  -  %d Dailies"] = "%d/%d 任务 - %d 日常"
 
     ------------- Options.lua -----------------------

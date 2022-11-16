@@ -4,6 +4,7 @@
     tags = { TAG_MAPQUEST },
     icon = [[Interface\Icons\INV_Relics_Hourglass]],
     desc = "说明`显示大秘境的时间消耗情况。取代之前的GottaGoFast",
+    optdeps = { "!KalielsTracker" },
     nopic = 1,
 
     toggle = function(name, info, enable, justload)

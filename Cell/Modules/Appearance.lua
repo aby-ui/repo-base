@@ -226,7 +226,7 @@ end
 local previewButton, previewButton2
 
 local function CreatePreviewButtons()
-    previewButton = CreateFrame("Button", "CellAppearancePreviewButton", appearanceTab, "CellUnitButtonTemplate")
+    previewButton = CreateFrame("Button", "CellAppearancePreviewButton", appearanceTab, "CellUnitPreviewButtonTemplate")
     previewButton:SetPoint("TOPLEFT", previewIconsBG, "BOTTOMLEFT", 0, -50)
     previewButton:UnregisterAllEvents()
     previewButton:SetScript("OnEnter", nil)

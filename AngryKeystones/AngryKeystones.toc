@@ -1,4 +1,5 @@
 ## Interface: 100000
+## OptionalDeps: !KalielsTracker
 ## Title: Angry Keystones
 ## Notes: Displays additional information for Mythic Keystone dungeons
 ## Author: Ermad

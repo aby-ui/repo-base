@@ -53,7 +53,7 @@ L["DRINKING"] = "喝水"
 -------------------------------------------------
 -- options
 -------------------------------------------------
-L["Can't change options in combat."] = "无法在战斗中更改设置。"
+L["Some options is disabled in combat."] = "部分选项无法在战斗中设置。"
 L["Yes"] = "是"
 L["No"] = "否"
 L["ON"] = "开"

@@ -10,4 +10,12 @@
             </OnLoad>
         </Scripts>
     </Button>
+
+    <Button name="CellUnitPreviewButtonTemplate" inherits="BackdropTemplate" hidden="true" virtual="true">
+        <Scripts>
+            <OnLoad>
+                Cell.funcs:UnitButton_OnLoad(self)
+            </OnLoad>
+        </Scripts>
+    </Button>
 </Ui>

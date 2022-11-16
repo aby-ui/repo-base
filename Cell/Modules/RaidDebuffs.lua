@@ -1135,7 +1135,7 @@ end
 local previewButton
 
 local function CreatePreviewButton()
-    previewButton = CreateFrame("Button", "CellRaidDebuffsPreviewButton", debuffsTab, "CellUnitButtonTemplate")
+    previewButton = CreateFrame("Button", "CellRaidDebuffsPreviewButton", debuffsTab, "CellUnitPreviewButtonTemplate")
     previewButton:SetPoint("TOPLEFT", debuffsTab, "TOPRIGHT", 5, -137)
     previewButton:UnregisterAllEvents()
     previewButton:SetScript("OnEnter", nil)

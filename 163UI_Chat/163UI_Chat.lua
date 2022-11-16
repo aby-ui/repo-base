@@ -246,7 +246,7 @@ end
 输入框位于窗口上部, 如果超过屏幕下方则自动
 ---------------------------------------------------------------]]
 --- 因为可能是editbox:OnShow触发的, 而editbox和ChatFrame可能没有关联，所以无法写单独ChatFrame的，每次都要全更新
-function U1_Chat_UpdateAllEditBoxPosition(editBoxOrChatFrameOrNil, forceTop)
+function U1_Chat_UpdateAllEditBoxPosition(editBoxOrChatFrameOrNil)
     local isOnTop = forceTop or U1GetCfgValue("163UI_Chat", "editontop")
     WithAllChatFrameOnce(function(f)
         if not f.editBox:IsVisible() then return end
@@ -257,12 +257,28 @@ function U1_Chat_UpdateAllEditBoxPosition(editBoxOrChatFrameOrNil, forceTop)
             p2, rel2, rp2, x2, y2, p1, rel1, rp1, x1, y1 = p1, rel1, rp1, x1, y1, p2, rel2, rp2, x2, y2
         end
 
+        local forceOnTopOrBottom
         if isOnTop then
-            local offset = forceTop and 0 or U1GetCfgValue("163UI_Chat", "editontop/offset") or 0
+            local offset = U1GetCfgValue("163UI_Chat", "editontop/offset") or 0
             f.editBox:ClearAllPoints()
             f.editBox:SetPoint("BOTTOMLEFT", rel1, "TOPLEFT", x1, 20+offset)
             f.editBox:SetPoint(p2, rel2, rp2, x2, y2)
+            if f.editBox:GetTop() > GetScreenHeight() + 10 then
+                forceOnTopOrBottom = "bottom"
+            end
         else
+            f.editBox:ClearAllPoints()
+            f.editBox:SetPoint("TOPLEFT", rel1, "BOTTOMLEFT", x1, -2)
+            f.editBox:SetPoint(p2, rel2, rp2, x2, y2)
+            if f.editBox:GetBottom() < -10 then
+                forceOnTopOrBottom = "top"
+            end
+        end
+        if forceOnTopOrBottom == "top" then
+            f.editBox:ClearAllPoints()
+            f.editBox:SetPoint("BOTTOMLEFT", rel1, "TOPLEFT", x1, 20)
+            f.editBox:SetPoint(p2, rel2, rp2, x2, y2)
+        elseif forceOnTopOrBottom == "bottom" then
             f.editBox:ClearAllPoints()
             f.editBox:SetPoint("TOPLEFT", rel1, "BOTTOMLEFT", x1, -2)
             f.editBox:SetPoint(p2, rel2, rp2, x2, y2)
@@ -270,16 +286,11 @@ function U1_Chat_UpdateAllEditBoxPosition(editBoxOrChatFrameOrNil, forceTop)
     end)
 end
 
-local forceTopWhenBelowBottom = function(self)
-    local _, bottom, _, _ = self:GetRect()
-    U1_Chat_UpdateAllEditBoxPosition(self, bottom < -10)
-end
-
 WithAllAndFutureChatFrames(function(f)
     --移动到屏幕下方的时候显示到上面
-    CoreHookScript(f.editBox, "OnShow", forceTopWhenBelowBottom)
-    CoreHookScript(f.editBox, "OnHide", U1_Chat_UpdateAllEditBoxPosition)
-    if f.editBox:IsShown() then forceTopWhenBelowBottom(f.editBox) end
+    CoreHookScript(f.editBox, "OnShow", U1_Chat_UpdateAllEditBoxPosition, true)
+    --CoreHookScript(f.editBox, "OnHide", U1_Chat_UpdateAllEditBoxPosition, true)
+    if f.editBox:IsShown() then U1_Chat_UpdateAllEditBoxPosition() end
 end)
 
 --[[- 7.1 按钮位置

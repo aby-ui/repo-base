@@ -31,7 +31,16 @@ end
 -------------------------------------------------
 -- button group
 -------------------------------------------------
-local generalBtn, appearanceBtn, clickCastingsBtn, aboutBtn, layoutsBtn, indicatorsBtn, debuffsBtn, glowsBtn, closeBtn
+local generalBtn, appearanceBtn, clickCastingsBtn, aboutBtn, layoutsBtn, indicatorsBtn, debuffsBtn, glowsBtn, closeBtn, protectedTabs
+
+local function HandleCombatLockdown(combat)
+    for _, btn in ipairs(protectedTabs or {}) do
+        btn:SetEnabled(not combat)
+        if combat and (lastShownTab == nil or lastShownTab == btn.id) then
+            indicatorsBtn:Click()
+        end
+    end
+end
 
 local function CreateTabButtons()
     generalBtn = Cell:CreateButton(optionsFrame, L["General"], "accent-hover", {105, 20}, false, false, "CELL_FONT_WIDGET_TITLE", "CELL_FONT_WIDGET_TITLE_DISABLE")
@@ -46,7 +55,9 @@ local function CreateTabButtons()
     closeBtn:SetScript("OnClick", function()
         optionsFrame:Hide()
     end)
-    
+
+    protectedTabs = { generalBtn, layoutsBtn, clickCastingsBtn }
+
     -- line 1
     layoutsBtn:SetPoint("BOTTOMLEFT", optionsFrame, "TOPLEFT", 0, P:Scale(-1))
     indicatorsBtn:SetPoint("BOTTOMLEFT", layoutsBtn, "BOTTOMRIGHT", P:Scale(-1), 0)
@@ -107,8 +118,7 @@ end
 local init
 function F:ShowOptionsFrame()
     if InCombatLockdown() then
-        F:Print(L["Can't change options in combat."])
-        return
+        F:Print(L["Some options is disabled in combat."])
     end
     
     if not init then
@@ -122,6 +132,8 @@ function F:ShowOptionsFrame()
         optionsFrame:Hide()
         return
     end
+
+    HandleCombatLockdown(InCombatLockdown()) --must be called after CreateTabButtons()
 
     if not lastShownTab then
         generalBtn:Click()
@@ -145,8 +157,13 @@ optionsFrame:SetScript("OnShow", function()
 end)
 
 optionsFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
-optionsFrame:SetScript("OnEvent", function()
-    optionsFrame:Hide()
+optionsFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+optionsFrame:SetScript("OnEvent", function(self, event)
+    if event == "PLAYER_REGEN_DISABLED" then
+        HandleCombatLockdown(true)
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        HandleCombatLockdown(false)
+    end
 end)
 
 -- for Raid Debuffs import

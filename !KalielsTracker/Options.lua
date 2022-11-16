@@ -52,7 +52,7 @@ local defaults = {
 		anchorPoint = "TOPRIGHT",
 		xOffset = -115,
 		yOffset = -280,
-		maxHeight = max(400, min(800, GetScreenHeight()-280-150)),
+		maxHeight = max(400, min(800, floor(GetScreenHeight())-280-150)),
 		frameScrollbar = true,
 		frameStrata = "LOW",
 		
@@ -281,7 +281,7 @@ local options = {
 							max = 100,
 							step = 2,
 							set = function(_, value)
-								db.maxHeight = value
+								db.maxHeight = floor(value)
 								KT:SetSize()
 								OverlayFrameUpdate()
 							end,

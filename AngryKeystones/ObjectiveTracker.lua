@@ -1,3 +1,10 @@
+local SCENARIO_TRACKER_MODULE,ScenarioObjectiveBlock,ScenarioChallengeModeBlock,SCENARIO_CONTENT_TRACKER_MODULE = SCENARIO_TRACKER_MODULE,ScenarioObjectiveBlock,ScenarioChallengeModeBlock,SCENARIO_CONTENT_TRACKER_MODULE
+local FN_Scenario_ChallengeMode_UpdateTime, FN_Scenario_ChallengeMode_ShowBlock, FN_ScenarioTrackerProgressBar_SetValue = "Scenario_ChallengeMode_UpdateTime", "Scenario_ChallengeMode_ShowBlock", "ScenarioTrackerProgressBar_SetValue"
+if KT_ObjectiveTrackerFrame then
+	SCENARIO_TRACKER_MODULE,ScenarioObjectiveBlock,ScenarioChallengeModeBlock,SCENARIO_CONTENT_TRACKER_MODULE = KT_SCENARIO_TRACKER_MODULE,KT_ScenarioObjectiveBlock,KT_ScenarioChallengeModeBlock,KT_SCENARIO_CONTENT_TRACKER_MODULE
+	FN_Scenario_ChallengeMode_UpdateTime, FN_Scenario_ChallengeMode_ShowBlock, FN_ScenarioTrackerProgressBar_SetValue = "KT_Scenario_ChallengeMode_UpdateTime", "KT_Scenario_ChallengeMode_ShowBlock", "KT_ScenarioTrackerProgressBar_SetValue"
+end
+
 local ADDON, Addon = ...
 local Mod = Addon:NewModule('ObjectiveTracker')
 
@@ -127,8 +134,8 @@ local function ShowBlock(timerID, elapsedTime, timeLimit)
 	end
 end
 
-hooksecurefunc("Scenario_ChallengeMode_UpdateTime", UpdateTime)
-hooksecurefunc("Scenario_ChallengeMode_ShowBlock", ShowBlock)
+hooksecurefunc(FN_Scenario_ChallengeMode_UpdateTime, UpdateTime)
+hooksecurefunc(FN_Scenario_ChallengeMode_ShowBlock, ShowBlock)
 
 local keystoneWasCompleted = false
 function Mod:PLAYER_ENTERING_WORLD()
