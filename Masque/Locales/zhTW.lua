@@ -32,10 +32,22 @@ L["Supporters"] = "支援者"
 L["You must have an add-on that supports Masque installed to use it."] = "必須安裝支援 Masque 按鈕外觀的插件才能使用。"
 
 ----------------------------------------
--- Classic Skin
+-- Blizzard Classic Skin
 ---
 
-L["An improved version of the game's default button style."] = "遊戲預設按鈕樣式的改進版本。"
+L["The default Classic button style."] = "預設的經典按鈕樣式。"
+
+----------------------------------------
+-- Blizzard Modern Skin
+---
+
+L["The default Dragonflight button style."] = "預設按鈕樣式。"
+
+----------------------------------------
+-- Classic Redux Skin
+---
+
+L["A modified version of the Classic button style."] = "遊戲預設按鈕樣式的改進版本。"
 
 ----------------------------------------
 -- Core Settings
@@ -43,18 +55,6 @@ L["An improved version of the game's default button style."] = "遊戲預設按�
 
 L["About"] = "關於"
 L["This section will allow you to view information about Masque and any skins you have installed."] = "此部分允許您查看有關Masque和已安裝的任何外觀的訊息。"
-
-----------------------------------------
--- Default Classic Skin
----
-
-L["The default Classic button style."] = "預設的經典按鈕樣式。"
-
-----------------------------------------
--- Default Skin
----
-
-L["The default button style."] = "預設按鈕樣式。"
 
 ----------------------------------------
 -- Developer Settings
@@ -156,7 +156,6 @@ L["Colors"] = "顏色"
 L["Cooldown"] = "冷卻中"
 L["Disable"] = "停用"
 L["Disable the skinning of this group."] = "停用這個群組的按鈕外觀。"
-L["Disabled"] = "已停用"
 L["Enable"] = "啟用"
 L["Enable skin scaling."] = "啟用外觀縮放。"
 L["Enable the Backdrop texture."] = "啟用背景材質。"
@@ -176,7 +175,6 @@ L["Scale"] = "縮放"
 L["Set the color of the Backdrop texture."] = "設定背景材質顏色。"
 L["Set the color of the Checked texture."] = "設定已勾選材質顏色。"
 L["Set the color of the Cooldown animation."] = "設定冷卻倒數動畫顏色。"
-L["Set the color of the Disabled texture."] = "設定已停用材質顏色。"
 L["Set the color of the Flash texture."] = "設定閃光材質顏色。"
 L["Set the color of the Gloss texture."] = "設定光澤材質顏色。"
 L["Set the color of the Highlight texture."] = "設定高亮材質顏色。"

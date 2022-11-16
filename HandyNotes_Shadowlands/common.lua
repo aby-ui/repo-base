@@ -134,26 +134,20 @@ local VIGNETTES = {
     [4577] = SILVER_STRONGBOX
 }
 
-local vignetteHandled = false
-
-hooksecurefunc(GameTooltip, 'Show', function(self)
-    if vignetteHandled then return end
-    local owner = self:GetOwner()
-    if owner and owner.vignetteID then
-        local rewards = VIGNETTES[owner.vignetteID]
-        if rewards and #rewards > 0 then
-            self:AddLine(' ') -- add blank line before rewards
-            for i, reward in ipairs(rewards) do
-                if reward:IsEnabled() then reward:Render(self) end
+hooksecurefunc(VignettePinMixin, 'OnMouseEnter', function(self)
+    if self and self.vignetteInfo and self.vignetteInfo.vignetteID then
+        local vignetteID = self.vignetteInfo.vignetteID
+        if VIGNETTES[vignetteID] then
+            GameTooltip:AddLine(' ')
+            for i, reward in ipairs(VIGNETTES[vignetteID]) do
+                if reward:IsEnabled() then
+                    reward:Render(GameTooltip)
+                end
             end
-            vignetteHandled = true
-            self:Show()
+            GameTooltip:Show()
         end
     end
 end)
-
-hooksecurefunc(GameTooltip, 'ClearLines',
-    function(self) vignetteHandled = false end)
 
 -------------------------------------------------------------------------------
 ---------------------------------- COVENANTS ----------------------------------

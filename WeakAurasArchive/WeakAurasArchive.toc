@@ -1,7 +1,7 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: WeakAuras Archive
 ## Author: The WeakAuras Team
-## Version: 5.1.1
+## Version: 5.2.0
 ## LoadOnDemand: 1
 ## SavedVariables: WeakAurasArchive
 ## Dependencies: WeakAuras

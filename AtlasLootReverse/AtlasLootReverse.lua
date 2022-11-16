@@ -64,20 +64,11 @@ function AtlasLootReverse:OnInitialize()
 
     self.enabled = false
 
-    local OnTooltipSetItem = function(...)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(...)
         if(AtlasLootReverse.enabled) then
-            return AtlasLootReverse:OnTooltipSetItem(...)
+            return AtlasLootReverse:TooltipPostCall(...)
         end
-    end
-
-    for _, tip in next, { 'GameTooltip', 'ItemRefTooltip',
-        'ShoppingTooltip1', 'ShoppingTooltip2', 'ShoppingTooltip3',
-        'AtlasLootTooltipTEMP' } do
-        local f = _G[tip]
-        if(f) then
-            SetOrHookScript(f, 'OnTooltipSetItem', OnTooltipSetItem)
-        end
-    end
+    end)
 end
 
 ----------------------
@@ -92,20 +83,16 @@ function AtlasLootReverse:OnEnable()
     self.enabled = true
 end
 
-function AtlasLootReverse:OnTooltipSetItem(tooltip, item)
-    item = item or select(2, tooltip:GetItem());
-    if type(item)=="string" then
-        local _, itemId = strsplit(":", item)
-        --TT:AddLine(self, itemId, nil, nil, nil, db.embedded)
-        local from = db.whoTable[tonumber(itemId)]
-        if from then
-            for id in string.gmatch(from, "[^,]+") do
-                local v = db.sources[tonumber(id)]
-                if not string.find(v, 'Tier ') and not string.find(v, 'Tabards') and not string.find(v, 'PvP ') then
-                    v = string.format(L["Drops from %s"], v)
-                end
-                tooltip:AddLine(v, .7, .7, 1)
+function AtlasLootReverse:TooltipPostCall(tooltip, tdata)
+    if not tdata.id then return end
+    local from = db.whoTable[tonumber(tdata.id)]
+    if from then
+        for id in string.gmatch(from, "[^,]+") do
+            local v = db.sources[tonumber(id)]
+            if not string.find(v, 'Tier ') and not string.find(v, 'Tabards') and not string.find(v, 'PvP ') then
+                v = string.format(L["Drops from %s"], v)
             end
+            tooltip:AddLine(v, .7, .7, 1)
         end
     end
 end

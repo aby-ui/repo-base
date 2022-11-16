@@ -41,10 +41,10 @@ local function AppendToGameTooltip(guid, ilevel, spec, weaponLevel, isArtifact)
 end
 
 --觸發觀察
-GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(self, tdata)
     if (TinyInspectDB and (TinyInspectDB.EnableMouseItemLevel or TinyInspectDB.EnableMouseSpecialization)) then
-        local _, unit = self:GetUnit()
-        if (not unit) then return end
+        local _, unit, guid = self:GetUnit()
+        if (not unit or not guid) then return end
         local guid = UnitGUID(unit)
         if (not guid) then return end
         local hp = UnitHealthMax(unit)

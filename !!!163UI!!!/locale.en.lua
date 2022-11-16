@@ -48,6 +48,7 @@ U1WARRIOR="Warrior";
 U1DEATHKNIGHT="DeathKnight";
 U1MONK="Monk";
 U1DEMONHUNTER="DemonHunter";
+U1EVOKER="Evoker";
 
 U1REASON_INCOMPATIBLE = "Incompatible"
 U1REASON_DISABLED = "Disabled"

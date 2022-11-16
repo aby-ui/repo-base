@@ -57,7 +57,7 @@ local function CreateGroups(POIs)
 			for _, checkedPOI in ipairs (checkedPOIs) do
 				if (POI.entityID ~= checkedPOI.entityID and not checkedPOI.worldmap) then
 					local distance = RSUtils.Distance(POI, checkedPOI)
-					if (distance <= RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP) then
+					if (distance >= 0 and distance <= RSConstants.MINIMUM_DISTANCE_PINS_WORLD_MAP) then
 						RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("NPC [%s]: Cerca de [%s], distancia [%s].", POI.entityID, checkedPOI.entityID, distance))
 						RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("NPC [%s]: Coordenadas [%s,%s].", POI.entityID, POI.x, POI.y))
 						RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("NPC [%s]: Coordenadas [%s,%s].", checkedPOI.entityID, checkedPOI.x, checkedPOI.y))
@@ -250,12 +250,12 @@ function RSMap.GetMapPOIs(mapID, onWorldMap, onMiniMap)
 	return MapPOIs
 end
 
-function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
+function RSMap.GetWorldMapPOI(objectGUID, vignetteType, atlasName, mapID)
 	if (not objectGUID or not mapID) then
 		return nil
 	end
 	
-	if (vignetteType == Enum.VignetteType.Treasure) then
+	if (vignetteType == Enum.VignetteType.Treasure or RSConstants.IsContainerAtlas(atlasName)) then
 		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
 		local containerID = tonumber(vignetteObjectID)
 		local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
@@ -264,7 +264,7 @@ function RSMap.GetWorldMapPOI(objectGUID, vignetteType, mapID)
 		if (containerInfo or alreadyFoundInfo) then
 			return RSContainerPOI.GetContainerPOI(containerID, mapID, containerInfo, alreadyFoundInfo)
 		end
-	elseif (vignetteType == Enum.VignetteType.Normal or vignetteType == Enum.VignetteType.Torghast) then
+	elseif (vignetteType == Enum.VignetteType.Torghast or RSConstants.IsNpcAtlas(atlasName)) then
 		local _, _, _, _, _, vignetteObjectID = strsplit("-", objectGUID)
 		local npcID = tonumber(vignetteObjectID)
 		local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)

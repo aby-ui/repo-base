@@ -3093,61 +3093,16 @@ function EAFun_GetUnitIDByName(EA_UnitName)
 end
 -----------------------------------------------------------------
 function EAFun_HookTooltips()
-	hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
-        if IsAddOnLoaded("TipTacItemRef") then return end
-		local id = select(11,UnitBuff(...))
-		if id then
-			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
-			self:Show()
-		end
-	end)
-
-	hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self,...)
-        if IsAddOnLoaded("TipTacItemRef") then return end
-		local id = select(10,UnitDebuff(...)) --abyui8
-		if id then
-			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
-			self:Show()
-		end
-	end)
-
-	hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
-        if IsAddOnLoaded("TipTacItemRef") then return end
-		local id = select(10,UnitAura(...))
-		if id then
-			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
-			self:Show()
-		end
-	end)
-
-	hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
-        if IsAddOnLoaded("TipTacItemRef") then return end
-		if string.find(link,"^spell:") then
-			local id = string.sub(link,7)
-			ItemRefTooltip:AddDoubleLine(EX_XCLSALERT_SPELL,id)
-			ItemRefTooltip:Show()
-		end
-	end)
-
-	GameTooltip:HookScript("OnTooltipSetSpell", function(self)
-        if IsAddOnLoaded("TipTacItemRef") then return end
-		local id = select(2,self:GetSpell())
-		if id then
-			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
-			self:Show()
-		end
-	end)
-
-	local hookSetAuraInstanceID = function(self, unit, instanceID)
+	local function addSpellID(self, tData)
 		if IsAddOnLoaded("TipTacItemRef") then return end
-		local info = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, instanceID)
-		if info and info.spellId then
-			self:AddDoubleLine(EX_XCLSALERT_SPELL,info.spellId)
+		local id = tData.id
+		if id then
+			self:AddDoubleLine(EX_XCLSALERT_SPELL,id)
 			self:Show()
 		end
 	end
-	hooksecurefunc(GameTooltip, "SetUnitDebuffByAuraInstanceID", hookSetAuraInstanceID)
-	hooksecurefunc(GameTooltip, "SetUnitBuffByAuraInstanceID", hookSetAuraInstanceID)
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, addSpellID)
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, addSpellID)
 end
 -----------------------------------------------------------------
 -- For OrderWtd, to sort the order of the buffs/debuffs.

@@ -21,7 +21,7 @@ local MASQUE, Core = ...
 local pairs = pairs
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
 -- @ Options\Core

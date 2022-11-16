@@ -606,6 +606,14 @@ function RSConfigDB.SetContainerFilteredOnlyOnWorldMap(value)
 	private.db.containerFilters.filterOnlyMap = value
 end
 
+function RSConfigDB.IsContainerFilteredOnlyOnAlerts()
+	return private.db.containerFilters.filterOnlyAlerts
+end
+
+function RSConfigDB.SetContainerFilteredOnlyOnAlerts(value)
+	private.db.containerFilters.filterOnlyAlerts = value
+end
+
 function RSConfigDB.IsShowingGarrisonCache()
 	return private.db.general.scanGarrison
 end
@@ -893,14 +901,6 @@ function RSConfigDB.SetFilteringLootByCompletedQuest(value)
 	private.db.loot.filterItemsCompletedQuest = value
 end
 
-function RSConfigDB.IsFilteringLootByNotEquipableItems()
-	return private.db.loot.filterNotEquipableItems
-end
-
-function RSConfigDB.SetFilteringLootByNotEquipableItems(value)
-	private.db.loot.filterNotEquipableItems = value
-end
-
 function RSConfigDB.IsFilteringLootByNotMatchingClass()
 	return private.db.loot.filterNotMatchingClass
 end
@@ -915,22 +915,6 @@ end
 
 function RSConfigDB.SetFilteringLootByNotMatchingFaction(value)
 	private.db.loot.filterNotMatchingFaction = value
-end
-
-function RSConfigDB.IsFilteringLootByTransmog()
-	return private.db.loot.showOnlyTransmogItems
-end
-
-function RSConfigDB.SetFilteringLootByTransmog(value)
-	private.db.loot.showOnlyTransmogItems = value
-end
-
-function RSConfigDB.IsFilteringByCollected()
-	return private.db.loot.filterCollectedItems
-end
-
-function RSConfigDB.SetFilteringByCollected(value)
-	private.db.loot.filterCollectedItems = value
 end
 
 function RSConfigDB.IsFilteringAnimaItems()
@@ -955,6 +939,38 @@ end
 
 function RSConfigDB.SetFilteringByExplorerResults(value)
 	private.db.loot.filterByExplorerResults = value
+end
+
+function RSConfigDB.IsShowingMissingMounts()
+	return private.db.loot.showingMissingMounts
+end
+
+function RSConfigDB.SetShowingMissingMounts(value)
+	private.db.loot.showingMissingMounts = value
+end
+
+function RSConfigDB.IsShowingMissingPets()
+	return private.db.loot.showingMissingPets
+end
+
+function RSConfigDB.SetShowingMissingPets(value)
+	private.db.loot.showingMissingPets = value
+end
+
+function RSConfigDB.IsShowingMissingToys()
+	return private.db.loot.showingMissingToys
+end
+
+function RSConfigDB.SetShowingMissingToys(value)
+	private.db.loot.showingMissingToys = value
+end
+
+function RSConfigDB.IsShowingMissingAppearances()
+	return private.db.loot.showingMissingAppearances
+end
+
+function RSConfigDB.SetShowingMissingAppearances(value)
+	private.db.loot.showingMissingAppearances = value
 end
 
 ---============================================================================
@@ -1061,9 +1077,7 @@ function RSConfigDB.ResetLootFilters()
 	end
 	
 	-- Custom filters
-	RSConfigDB.SetFilteringLootByNotEquipableItems(false)
-	RSConfigDB.SetFilteringLootByTransmog(false)
-	RSConfigDB.SetFilteringByCollected(true)
+	RSConfigDB.SetFilteringByExplorerResults(false)
 	RSConfigDB.SetFilteringLootByNotMatchingClass(false)
 	RSConfigDB.SetFilteringLootByNotMatchingFaction(true)
 	RSConfigDB.SetFilteringByExplorerResults(false)
@@ -1130,19 +1144,19 @@ function RSConfigDB.SetAddingWaypointsAutomatically(value)
 end
 
 function RSConfigDB.IsTomtomSupportEnabled()
-	return private.db.general.enableTomtomSupport
+	return TomTom and private.db.general.enableTomtomSupport
 end
 
 function RSConfigDB.SetTomtomSupportEnabled(value)
-	private.db.general.enableTomtomSupport = value
+	private.db.general.enableTomtomSupport = TomTom and value
 end
 
 function RSConfigDB.IsAddingTomtomWaypointsAutomatically()
-	return private.db.general.autoTomtomWaypoints
+	return TomTom and private.db.general.autoTomtomWaypoints
 end
 
 function RSConfigDB.SetAddingTomtomWaypointsAutomatically(value)
-	private.db.general.autoTomtomWaypoints = value
+	private.db.general.autoTomtomWaypoints = TomTom and value
 end
 
 ---============================================================================
@@ -1170,11 +1184,11 @@ end
 ---============================================================================
 
 function RSConfigDB.IsAddingWorldMapTomtomWaypoints()
-	return private.db.map.waypointTomtom
+	return TomTom and private.db.map.waypointTomtom
 end
 
 function RSConfigDB.SetAddingWorldMapTomtomWaypoints(value)
-	private.db.map.waypointTomtom = value
+	private.db.map.waypointTomtom = TomTom and value
 end
 
 function RSConfigDB.IsAddingWorldMapIngameWaypoints()

@@ -79,3 +79,5 @@ CanIMogIt.frame:AddEventFunction(HookOverlayMail)
 ------------------------
 -- Event functions    --
 ------------------------
+
+CanIMogIt:RegisterMessage("OptionUpdate", MailFrame_CIMIOnClick)

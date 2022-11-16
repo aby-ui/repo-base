@@ -117,7 +117,7 @@ local updateBagNames = function(bank)
     for i = 1, 11 do
         local cfg = U1CfgFindChild("tdpack", "bag"..i)
         if i <= 4 or bank == "BANK" then
-            cfg.text = cfg.text:gsub(" - .+$", " - ") .. (GetBagName(i) or "未知")
+            cfg.text = cfg.text:gsub(" - .+$", " - ") .. (C_Container.GetBagName(i) or "未知")
         end
     end
 end

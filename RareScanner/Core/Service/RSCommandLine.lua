@@ -70,8 +70,11 @@ SlashCmdList["RARESCANNER_CMD"] = function(command, ...)
 		end
 	elseif (command == RSConstants.CMD_TOGGLE_DRAGON_GLYPHS) then
 		RSCommandLine.CmdToggleDragonGlyphs()
+	elseif (command == RSConstants.CMD_OPEN_EXPLORER) then
+		RSExplorerFrame:Show()
 	else
 		print("|cFFFBFF00"..AL["CMD_HELP1"])
+		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_OPEN_EXPLORER.." |cFF00FFFB"..AL["CMD_HELP12"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_MAP_ICONS.." |cFF00FFFB"..AL["CMD_HELP2"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_EVENTS.." |cFF00FFFB"..AL["CMD_HELP3"])
 		print("|cFFFBFF00   "..SLASH_RARESCANNER_CMD1.." "..RSConstants.CMD_TOGGLE_TREASURES.." |cFF00FFFB"..AL["CMD_HELP4"])

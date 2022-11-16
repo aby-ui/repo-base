@@ -85,6 +85,9 @@ function RSNotes.GetNote(entityID, mapID)
 	-- Requires entering the rift in the maw
 	elseif (RSUtils.Contains(RSConstants.RIFT_NPCS_MAW, entityID)) then
 		return AL["NOTE_RIFT_NPCS_MAW"]
+	-- Requires elemental storms in Dragon Isles
+	elseif (RSUtils.Contains(RSConstants.STORM_EVENTS_NPCS, entityID)) then
+		return AL["NOTE_STORM_EVENTS"]
 	end
 	
 	-- Rune of constructs Containers

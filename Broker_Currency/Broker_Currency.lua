@@ -74,9 +74,6 @@ local BROKER_ICONS = {}
 
 local CURRENCY_DESCRIPTIONS = {}
 
-local DatamineTooltip = _G.CreateFrame("GameTooltip", "Broker_CurrencyDatamineTooltip", _G.UIParent, "GameTooltipTemplate")
-DatamineTooltip:SetOwner(_G.WorldFrame, "ANCHOR_NONE")
-
 -- ----------------------------------------------------------------------------
 -- Variables
 -- ----------------------------------------------------------------------------
@@ -799,9 +796,11 @@ do
 
 	function Broker_Currency:InitializeSettings()
 		for _, ID in pairs(CURRENCY_IDS_BY_NAME) do
-			DatamineTooltip:SetCurrencyTokenByID(ID)
-
-			CURRENCY_DESCRIPTIONS[ID] = _G["Broker_CurrencyDatamineTooltipTextLeft2"]:GetText()
+			local tData = C_TooltipInfo.GetCurrencyByID(ID)
+			if tData and tData.lines[2] then
+				TooltipUtil.SurfaceArgs(tData.lines[2])
+				CURRENCY_DESCRIPTIONS[ID] = tData.leftText
+			end
 		end
 
 		-- No hearthstone and no money means trouble

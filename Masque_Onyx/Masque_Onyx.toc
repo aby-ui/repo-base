@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 
 ## Title: Masque: Onyx
 ## Notes: Onyx skins for Masque.
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Onyx для Masque.
 ## Notes-zhTW: Masque的Onyx皮膚。
 
-## Version: 10.0.1
+## Version: 10.0.2
 ## Author: StormFX
 ## Dependencies: Masque
 

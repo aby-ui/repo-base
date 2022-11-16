@@ -8,9 +8,9 @@ local ipairs, sort, strsplit, tonumber, wipe = ipairs, sort, strsplit, tonumber,
 -- WoW API / Variables
 local C_ChallengeMode_GetKeystoneLevelRarityColor = C_ChallengeMode.GetKeystoneLevelRarityColor
 local C_ChallengeMode_GetMapUIInfo = C_ChallengeMode.GetMapUIInfo
-local C_Container_GetContainerItemID = C_Container and C_Container.GetContainerItemID or GetContainerItemID
-local C_Container_GetContainerItemLink = C_Container and C_Container.GetContainerItemLink or GetContainerItemLink
-local C_Container_GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
+local C_Container_GetContainerItemID = C_Container.GetContainerItemID
+local C_Container_GetContainerItemLink = C_Container.GetContainerItemLink
+local C_Container_GetContainerNumSlots = C_Container.GetContainerNumSlots
 local C_MythicPlus_GetRunHistory = C_MythicPlus.GetRunHistory
 local C_MythicPlus_RequestMapInfo = C_MythicPlus.RequestMapInfo
 local C_MythicPlus_GetRewardLevelFromKeystoneLevel = C_MythicPlus.GetRewardLevelFromKeystoneLevel
@@ -25,9 +25,15 @@ local StaticPopup_Show = StaticPopup_Show
 local Enum_WeeklyRewardChestThresholdType_MythicPlus = Enum.WeeklyRewardChestThresholdType.MythicPlus
 
 local KeystoneAbbrev = {
+  -- Mists of Pandaria
+  [2]   = L["TJS"],  -- Temple of the Jade Serpent
+
+  -- Warlords of Draenor
+  [165] = L["SBG"],   -- Shadowmoon Burial Grounds
   [166] = L["GD"],    -- Grimrail Depot
   [169] = L["ID"],    -- Iron Docks
 
+  -- Legion
   [197] = L["EOA"],   -- Eye of Azshara
   [198] = L["DHT"],   -- Darkheart Thicket
   [199] = L["BRH"],   -- Black Rook Hold
@@ -42,6 +48,7 @@ local KeystoneAbbrev = {
   [234] = L["UPPR"],  -- Return to Karazhan: Upper
   [239] = L["SEAT"],  -- Seat of the Triumvirate
 
+  -- Battle for Azeroth
   [244] = L["AD"],    -- Atal'Dazar
   [245] = L["FH"],    -- Freehold
   [246] = L["TD"],    -- Tol Dagor
@@ -55,6 +62,7 @@ local KeystoneAbbrev = {
   [369] = L["YARD"],  -- Operation: Mechagon - Junkyard
   [370] = L["WORK"],  -- Operation: Mechagon - Workshop
 
+  -- Shadowlands
   [375] = L["MISTS"], -- Mists of Tirna Scithe
   [376] = L["NW"],    -- The Necrotic Wake
   [377] = L["DOS"],   -- De Other Side
@@ -65,6 +73,12 @@ local KeystoneAbbrev = {
   [382] = L["TOP"],   -- Theater of Pain
   [391] = L["STRT"],  -- Tazavesh: Streets of Wonder
   [392] = L["GMBT"],  -- Tazavesh: So'leah's Gambit
+
+  -- Dragonflight
+  [399] = L["RLP"],   -- Ruby Life Pools
+  [400] = L["TNO"],   -- The Nokhud Offensive
+  [401] = L["TAV"],   -- The Azure Vault
+  [402] = L["AA"],    -- Algeth'ar Academy
 }
 SI.KeystoneAbbrev = KeystoneAbbrev
 

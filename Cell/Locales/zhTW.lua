@@ -104,8 +104,7 @@ L["Contains"] = "包含"
 L["Copy"] = "複製"
 L["Copy indicators from one layout to another"] = "將指示器從一個版面配置複製到另一個版面配置"
 L["Create"] = "建立"
---[[Translation missing --]]
---[[ L["create a \"Healers\" indicator"] = "create a \"Healers\" indicator"--]] 
+L["create a \"Healers\" indicator"] = "建立 \"Healers\" 指示器"
 L["Create new debuff (id)"] = "建立新的減益 (法術 ID)"
 L["Create new indicator"] = "建立新的指示器"
 L["Create new layout"] = "建立新的版面配置"

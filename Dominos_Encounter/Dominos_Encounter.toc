@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Dominos Extras
 ## Title-zhCN: |cFF0099FFDominos|r Extras 模块
 ## Notes: This addon is deprecated and should be removed

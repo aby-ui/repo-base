@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## LoadOnDemand: 0
 ## Title: TradeLog
 ## Notes: 交易日志，最近交易情况

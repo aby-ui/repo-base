@@ -46,7 +46,7 @@ local RSEntityStateHandler = private.ImportLib("RareScannerEntityStateHandler")
 local RSTomtom = private.ImportLib("RareScannerTomtom")
 
 -- Main button
-local scanner_button = CreateFrame("Button", "scanner_button", UIParent, BackdropTemplateMixin and "BackdropTemplate,SecureActionButtonTemplate")
+local scanner_button = CreateFrame("Button", "scanner_button", UIParent, "SecureActionButtonTemplate, BackdropTemplate")
 scanner_button:Hide();
 scanner_button:SetIgnoreParentScale(true)
 scanner_button:SetFrameStrata("MEDIUM")
@@ -54,8 +54,8 @@ scanner_button:SetFrameLevel(200)
 scanner_button:SetSize(200, 50)
 scanner_button:SetScale(0.8)
 scanner_button:RegisterForClicks("AnyUp","AnyDown")
-scanner_button:SetAttribute("*type1", "macro")
-scanner_button:SetAttribute("*type2", "closebutton")
+scanner_button:SetAttribute("type1", "macro")
+scanner_button:SetAttribute("type2", "closebutton")
 scanner_button.closebutton = function(self)
 	if (not InCombatLockdown()) then
 		self.CloseButton:Click()
@@ -488,7 +488,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por haber deshabilitado alertas de contenedores", entityID))
 		return
 	-- disable alerts for filtered containers. Check if the container is filtered, in which case we don't show anything
-	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and RSConfigDB.IsContainerFiltered(entityID) and not RSConfigDB.IsContainerFilteredOnlyOnWorldMap()) then
+	elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName) and RSConfigDB.IsContainerFiltered(entityID) and not RSConfigDB.IsContainerFilteredOnlyOnWorldMap() and not RSConfigDB.IsContainerFilteredOnlyOnAlerts()) then
 		RSLogger:PrintDebugMessage(string.format("El contenedor [%s] se ignora por estar filtrado", entityID))
 		return
 	-- disable alerts for rare NPCs
@@ -528,6 +528,13 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 			RSContainerDB.SetContainerReseteable(entityID)
 			RSContainerDB.DeleteContainerOpened(entityID)
 			RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Detectado como reseteable (cuando no lo estaba)", entityID))
+		end
+		
+		-- disable visual/sound alerts for filtered containers
+		if (RSConfigDB.IsContainerFiltered(entityID) and RSConfigDB.IsContainerFilteredOnlyOnAlerts()) then
+			RSRecentlySeenTracker.AddRecentlySeen(entityID, vignetteInfo.atlasName, false)
+			RSMinimap.RefreshAllData(true)
+			return
 		end
 
 		-- disable garrison container alert
@@ -784,11 +791,10 @@ function scanner_button:ShowButton()
 
 		local macrotext = "/cleartarget\n/targetexact "..self.name
 		if (RSConfigDB.IsDisplayingMarkerOnTarget()) then
-			macrotext = string.format("%s\n/tm %s",macrotext, RSConfigDB.GetMarkerOnTarget())
+			macrotext = string.format("%s\n/tm %s", macrotext, RSConfigDB.GetMarkerOnTarget())
 		end
 
 		macrotext = string.format("%s\n/rarescanner %s;%s;%s",macrotext, RSConstants.CMD_TOMTOM_WAYPOINT, self.npcID, self.name)
-
 		self:SetAttribute("macrotext", macrotext)
 
 		-- show model
@@ -880,7 +886,6 @@ function RareScanner:OnInitialize()
 
 	-- Setup our map provider
 	WorldMapFrame:AddDataProvider(CreateFromMixins(RareScannerDataProviderMixin));
-	--WorldMapFrame:AddOverlayFrame("WorldMapRSSearchTemplate", "FRAME", "CENTER", WorldMapFrame:GetCanvasContainer(), "TOP", 0, 0);
 	local searchFrame = CreateFrame("FRAME", nil, WorldMapFrame, "WorldMapRSSearchTemplate");
 	searchFrame:SetPoint("CENTER", WorldMapFrame:GetCanvasContainer(), "TOP", 0, 0);
 	searchFrame.relativeFrame = WorldMapFrame:GetCanvasContainer()
@@ -909,7 +914,7 @@ function RareScanner:InitializeSpecialEvents()
 	RareScanner:ShadowlandsPrePatch_Initialize()
 end
 
-local function RefreshDatabaseData()
+local function RefreshDatabaseData(previousDbVersion)
 	RareScanner.db:RegisterDefaults(RSConstants.PROFILE_DEFAULTS)
 		
 	-- Creates a chain of routines to execute in order
@@ -1174,13 +1179,21 @@ local function RefreshDatabaseData()
 	chainRoutines:Run(function(context)
 		-- Initialize respawning tracker and scan the first time
 		RSRespawnTracker.Init()
+		
+		-- Set default filters
+		if (not previousDbVersion or previousDbVersion.version < RSConstants.DEFAULT_FILTERED_ENTITIES.version) then
+			for _, containerID in ipairs(RSConstants.DEFAULT_FILTERED_ENTITIES.containers) do
+				RSConfigDB.SetContainerFiltered(containerID, false)
+			end
+			RSLogger:PrintDebugMessage("Filtradas entidades predeterminadas")
+		end
 	end)
 	
 	-- Clear previous overlay if active when closed the game
 	RSGeneralDB.RemoveAllOverlayActive()
 end
 
-local function UpdateRareNamesDB()
+local function UpdateRareNamesDB(currentDbVersion)
 	RSGeneralDB.AddDbVersion(RSConstants.CURRENT_DB_VERSION)
 
 	local npcNameScannerRoutine = RSRoutines.LoopRoutineNew()
@@ -1217,7 +1230,7 @@ local function UpdateRareNamesDB()
 			end
 			
 			-- Continue refreshing the rest of the database
-			RefreshDatabaseData()
+			RefreshDatabaseData(currentDbVersion)
 		end
 	end);
 end
@@ -1286,9 +1299,9 @@ function RareScanner:InitializeDataBase()
 	local currentDbVersion = RSGeneralDB.GetDbVersion()
 	local databaseUpdated = currentDbVersion and currentDbVersion.version == RSConstants.CURRENT_DB_VERSION
 	if (not databaseUpdated) then
-		UpdateRareNamesDB(); -- Internally calls to RefreshDatabaseData once its done
+		UpdateRareNamesDB(currentDbVersion); -- Internally calls to RefreshDatabaseData once its done
 	else
-		RefreshDatabaseData()
+		RefreshDatabaseData(currentDbVersion)
 	end
 end
 

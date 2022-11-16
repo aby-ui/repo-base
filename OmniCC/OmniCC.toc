@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: OmniCC
 ## Notes: Cooldown count for everything
 ## Notes-koKR: 모든 것을 위한 쿨다운 카운트

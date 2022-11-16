@@ -242,8 +242,11 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function(...)
     local level = U1GetCfgValue("ChatFilter", "FilterByLevel/level") or 5
     local level_dk = U1GetCfgValue("ChatFilter", "FilterByLevel/level_dk") or 57
     local level_dh = U1GetCfgValue("ChatFilter", "FilterByLevel/level_dh") or 99
+    local level_evoker = U1GetCfgValue("ChatFilter", "FilterByLevel/level_dh") or 58
+
 	if englishClass == "DEATHKNIGHT" then level = level_dk end
     if englishClass == "DEMONHUNTER" then level = level_dh end
+    if englishClass == "EVOKER" then level = level_evoker end
 	--Don't try to add a player to friends several times for 1 whisper (registered to more than 1 chat frame)
 	if not filterTable[trimmedPlayer] or filterTable[trimmedPlayer] ~= level then
 		filterTable[trimmedPlayer] = level

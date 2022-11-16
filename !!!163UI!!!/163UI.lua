@@ -1797,11 +1797,11 @@ function U1:ADDON_LOADED(event, name)
             local function showUnitNameWithTitle(self)
                 local unit = self.unit;
                 if not unit then return end
-                local name, server = UnitName(unit)
-                local fullName = U1UnitFullName(unit)
-                if fullName and U1STAFF[fullName] then
-                    InspectFrameTitleText:SetText("|cffff00ff" .. U1STAFF[fullName] .. "|r " .. GetUnitName(unit, true));
+                local title = U1AddDonatorTitle(self, U1UnitFullName(unit), true)
+                if title then
+                    InspectFrameTitleText:SetText("|cffff00ff" .. title .. "|r " .. GetUnitName(unit, true));
                 else
+                    local name, server = UnitName(unit)
                     local pvpname = UnitPVPName(unit)
                     if not pvpname then return end
                     pvpname = pvpname:gsub(" ", "")

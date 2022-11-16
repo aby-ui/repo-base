@@ -72,6 +72,12 @@ SI.WorldBosses = {
   [2456] = { quest=64531, expansion=8, level=60 }, -- Mor'geth, Tormentor of the Damned
   [2468] = { quest=65143, expansion=8, level=60 }, -- Antros
 
+  -- Dragonflight
+  [2506] = { quest=69930, expansion=9, level=70 }, -- Basrikron, The Shale Wing
+  [2515] = { quest=69929, expansion=9, level=70 }, -- Strunraan, The Sky's Misery
+  [2517] = { quest=69927, expansion=9, level=70 }, -- Bazual, The Dreaded Flame
+  [2518] = { quest=69928, expansion=9, level=70 }, -- Liskanoth, The Futurebane
+
   -- bosses with no EJ entry (eid is a placeholder)
   [9001] = { quest=38276, name=GARRISON_LOCATION_TOOLTIP.." "..BOSS, expansion=5, level=40 },
   -- Old Vanilla Bosses during Anniversary Event

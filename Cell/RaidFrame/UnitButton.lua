@@ -2551,7 +2551,7 @@ function F:UnitButton_OnLoad(button)
     absorbsBar:SetTexture("Interface\\AddOns\\Cell\\Media\\shield.tga", "REPEAT", "REPEAT")
     absorbsBar:SetHorizTile(true)
     absorbsBar:SetVertTile(true)
-    absorbsBar:SetVertexColor(0.6, 0.1, 0.1, 0.9)
+    absorbsBar:SetVertexColor(1, 0.1, 0.1, 0.9)
     absorbsBar:SetBlendMode("ADD")
     absorbsBar:Hide()
     absorbsBar.SetValue = DumbFunc

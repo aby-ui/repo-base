@@ -1330,20 +1330,21 @@ end
 --     end
 -- end
 
+-- https://wowpedia.fandom.com/wiki/Patch_10.0.2/API_changes
 local lines = {}
 function F:GetSpellInfo(spellId)
     wipe(lines)
-
+    
     local name, _, icon = GetSpellInfo(spellId)
     if not name then return end
-    
-    CellScanningTooltip:ClearLines()
-    CellScanningTooltip:SetHyperlink("spell:"..spellId)
-    for i = 2, min(5, CellScanningTooltip:NumLines()) do
-        tinsert(lines, _G["CellScanningTooltipTextLeft"..i]:GetText())
+
+    local data = C_TooltipInfo.GetSpellByID(spellId)
+    for i, line in ipairs(data.lines) do
+        TooltipUtil.SurfaceArgs(line)
+        -- line.leftText
+        -- line.rightText
     end
-    -- CellScanningTooltip:SetOwner(CellOptionsFrame_RaidDebuffsTab, "ANCHOR_RIGHT")
-    -- CellScanningTooltip:Show()
+
     return name, icon, table.concat(lines, "\n")
 end
 

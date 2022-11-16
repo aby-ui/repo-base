@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: RangeDisplay Options
 ## Author: mitch0
 ## Version: v5.0.3

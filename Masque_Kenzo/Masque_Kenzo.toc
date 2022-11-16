@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Masque: |c0099ff00Kenzo|r
 ## Version: 2.0.0
 ## Author: icw82

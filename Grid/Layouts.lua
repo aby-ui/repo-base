@@ -43,7 +43,7 @@ local Layouts = {
 		name = L["By Class"],
 		defaults = {
 			groupBy = "CLASS",
-			groupingOrder = "WARRIOR,DEATHKNIGHT,DEMONHUNTER,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER",
+			groupingOrder = "WARRIOR,DEATHKNIGHT,DEMONHUNTER,ROGUE,MONK,PALADIN,DRUID,SHAMAN,PRIEST,MAGE,WARLOCK,HUNTER,EVOKER",
 			sortMethod = "NAME",
 			unitsPerColumn = 5,
 		},
@@ -103,7 +103,7 @@ local function AddPetGroup(t, groupFilter, numGroups)
 
 	t.isPetGroup = true
 	t.groupBy = "CLASS"
-	t.groupingOrder = "HUNTER,WARLOCK,MAGE,DEATHKNIGHT,DRUID,PRIEST,SHAMAN,MONK,PALADIN,DEMONHUNTER,ROGUE,WARRIOR"
+	t.groupingOrder = "HUNTER,WARLOCK,MAGE,DEATHKNIGHT,DRUID,PRIEST,SHAMAN,MONK,PALADIN,DEMONHUNTER,ROGUE,WARRIOR,EVOKER"
 	-- t.sortMethod = "NAME"
 
 	return t

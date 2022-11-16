@@ -3,7 +3,7 @@ local Module = SI:NewModule('TradeSkill', 'AceEvent-3.0', 'AceTimer-3.0', 'AceBu
 
 -- Lua functions
 local pairs, type, floor, abs, format = pairs, type, floor, abs, format
-local date, wipe, ipairs, tonumber, time = date, wipe, ipairs, tonumber, time
+local date, ipairs, tonumber, time = date, ipairs, tonumber, time
 local _G = _G
 
 -- WoW API / Variables
@@ -17,7 +17,7 @@ local GetItemInfo = GetItemInfo
 local GetSpellInfo = GetSpellInfo
 local GetSpellLink = GetSpellLink
 
-local trade_spells = {
+local tradeSpells = {
   -- Alchemy
   -- Vanilla
   [11479] = "xmute", -- Transmute: Iron to Gold
@@ -111,6 +111,18 @@ local trade_spells = {
   [307143] = true, -- Shadestone
   [307144] = true, -- Stones to Ore
 
+  -- Dragonflight
+  [370707] = "dragonflightxmute", -- Transmute: Awakened Fire
+  [370708] = "dragonflightxmute", -- Transmute: Awakened Frost
+  [370710] = "dragonflightxmute", -- Transmute: Awakened Earth
+  [370711] = "dragonflightxmute", -- Transmute: Awakened Air
+  [370714] = "dragonflightxmute", -- Transmute: Decay to Elements
+  [370715] = "dragonflightxmute", -- Transmute: Order to Elements
+  [370743] = "dragonflightexper", -- Basic Potion Experimentation
+  [370745] = "dragonflightexper", -- Advanced Potion Experimentation
+  [370746] = "dragonflightexper", -- Basic Phial Experimentation
+  [370747] = "dragonflightexper", -- Advanced Phial Experimentation
+
   -- Enchanting
   [28027]  = "sphere", -- Prismatic Sphere (2-day shared, 5.2.0 verified)
   [28028]  = "sphere", -- Void Sphere (2-day shared, 5.2.0 verified)
@@ -130,20 +142,26 @@ local trade_spells = {
   [140050] = true,    -- Serpent's Heart
   [176087] = true,    -- Secrets of Draenor
   [170700] = true,    -- Taladite Crystal
+  [374546] = true,    -- Queen's Gift
+  [374547] = true,    -- Dreamer's Vision
+  [374548] = true,    -- Keeper's Glory
+  [374549] = true,    -- Earthwarden's Prize
+  [374550] = true,    -- Timewatcher's Patience
+  [374551] = true,    -- Jeweled Dragon's Heart
 
   -- Tailoring
+  [75141] = 7,     -- Dream of Skywall
+  [75145] = 7,     -- Dream of Ragnaros
+  [75144] = 7,     -- Dream of Hyjal
+  [75142] = 7,     -- Dream of Deepholm
+  [75146] = 7,     -- Dream of Azshara
   [143011] = true, -- Celestial Cloth
   [125557] = true, -- Imperial Silk
   [56005]  = 7,    -- Glacial Bag (5.2.0 verified)
   [176058] = true, -- Secrets of Draenor
   [168835] = true, -- Hexweave Cloth
-
-  -- Dreamcloth
-  [75141] = 7, -- Dream of Skywall
-  [75145] = 7, -- Dream of Ragnaros
-  [75144] = 7, -- Dream of Hyjal
-  [75142] = 7, -- Dream of Deepholm
-  [75146] = 7, -- Dream of Azshara
+  [376556] = true, -- Azureweave Bolt
+  [376557] = true, -- Chronocloth Bolt
 
   -- Inscription
   [61288]  = true, -- Minor Inscription Research
@@ -173,6 +191,11 @@ local trade_spells = {
   [139176] = true, -- Stabilized Lightning Source
   [169080] = true, -- Gearspring Parts
   [177054] = true, -- Secrets of Draenor
+  [382358] = true, -- Suspiciously Silent Crate
+  [382354] = true, -- Suspiciously Ticking Crate
+
+  -- Cooking
+  [378302] = true, -- Ooey-Gooey Chocolate
 
   -- Item
   [54710]  = "item", -- MOLL-E
@@ -190,36 +213,40 @@ local trade_spells = {
   [299083] = "item", -- Wormhole Generator: Kul Tiras
   [299084] = "item", -- Wormhole Generator: Zandalar
   [324031] = "item", -- Wormhole Generator: Shadowlands
+  [386379] = "item", -- Wyrmhole Generator
   -- Transporter
   [23453]  = "item", -- Ultrasafe Transporter: Gadgetzhan
   [36941]  = "item", -- Ultrasafe Transporter: Toshley's Station
 }
 
-local itemcds = { -- [itemid] = spellid
-  [40768]  = 54710,  -- MOLL-E
-  [49040]  = 67826,  -- Jeeves
-  [87214]  = 126459, -- Blingtron 4000
-  [111821] = 161414, -- Blingtron 5000
-  [144341] = 200061, -- Rechargeable Reaves Battery
-  [156833] = 261602, -- Katy's Stampwhistle
-  [168667] = 298926, -- Blingtron 7000
+local itemCDs = { -- [spellID] = itemID
+  [54710]  = 40768,  -- MOLL-E
+  [67826]  = 49040,  -- Jeeves
+  [126459] = 87214,  -- Blingtron 4000
+  [161414] = 111821, -- Blingtron 5000
+  [200061] = 144341, -- Rechargeable Reaves Battery
+  [261602] = 156833, -- Katy's Stampwhistle
+  [298926] = 168667, -- Blingtron 7000
   -- Wormhole
-  [48933]  = 67833,  -- Wormhole Generator: Northrend
-  [87215]  = 126755, -- Wormhole Generator: Pandaria
-  [112059] = 163830, -- Wormhole Centrifuge (Draenor)
-  [151652] = 250796, -- Wormhole Generator: Argus
-  [168807] = 299083, -- Wormhole Generator: Kul Tiras
-  [168808] = 299084, -- Wormhole Generator: Zandalar
-  [172924] = 324031, -- Wormhole Generator: Shadowlands
+  [67833]  = 48933,  -- Wormhole Generator: Northrend
+  [126755] = 87215,  -- Wormhole Generator: Pandaria
+  [163830] = 112059, -- Wormhole Centrifuge (Draenor)
+  [250796] = 151652, -- Wormhole Generator: Argus
+  [299083] = 168807, -- Wormhole Generator: Kul Tiras
+  [299084] = 168808, -- Wormhole Generator: Zandalar
+  [324031] = 172924, -- Wormhole Generator: Shadowlands
+  [386379] = 198156, -- Wyrmhole Generator
   -- Transporter
-  [18986]  = 23453,  -- Ultrasafe Transporter: Gadgetzhan
-  [30544]  = 36941,  -- Ultrasafe Transporter: Toshley's Station
+  [23453]  = 18986,  -- Ultrasafe Transporter: Gadgetzhan
+  [36941]  = 30544,  -- Ultrasafe Transporter: Toshley's Station
 }
 
-local cdname = {
+local categoryNames = {
   ["xmute"] = GetSpellInfo(2259).. ": "..L["Transmute"],
   ["wildxmute"] = GetSpellInfo(2259).. ": "..L["Wild Transmute"],
   ["legionxmute"] = GetSpellInfo(2259).. ": "..L["Legion Transmute"],
+  ["dragonflightxmute"] = GetSpellInfo(2259).. ": "..L["Dragonflight Transmute"],
+  ["dragonflightexper"] = GetSpellInfo(2259).. ": "..L["Dragonflight Experimentation"],
   ["facet"] = GetSpellInfo(25229)..": "..L["Facets of Research"],
   ["sphere"] = GetSpellInfo(7411).. ": "..GetSpellInfo(28027),
   ["magni"] = GetSpellInfo(2108).. ": "..GetSpellInfo(140040)
@@ -231,79 +258,84 @@ function Module:OnEnable()
 end
 
 function Module:ScanItemCDs()
-  for itemid, spellid in pairs(itemcds) do
-    local start, duration = GetItemCooldown(itemid)
+  for spellID, itemID in pairs(itemCDs) do
+    local start, duration = GetItemCooldown(itemID)
     if start and duration and start > 0 then
-      self:RecordSkill(spellid, SI:GetTimeToTime(start + duration))
+      self:RecordSkill(spellID, SI:GetTimeToTime(start + duration))
     end
   end
 end
 
 function Module:RecordSkill(spellID, expires)
   if not spellID then return end
-  local cdinfo = trade_spells[spellID]
-  if not cdinfo then
-    SI.skillwarned = SI.skillwarned or {}
-    if expires and expires > 0 and not SI.skillwarned[spellID] then
-      SI.skillwarned[spellID] = true
+  local info = tradeSpells[spellID]
+  if not info then
+    self.missingWarned = self.missingWarned or {}
+    if expires and expires > 0 and not self.missingWarned[spellID] then
+      self.missingWarned[spellID] = true
       SI:BugReport("Unrecognized trade skill cd "..(GetSpellInfo(spellID) or "??").." ("..spellID..")")
     end
     return
   end
-  local t = SI and SI.db.Toons[SI.thisToon]
-  if not t then return end
-  local spellName = GetSpellInfo(spellID)
+
+  local t = SI.db.Toons[SI.thisToon]
   t.Skills = t.Skills or {}
-  local idx = spellID
+
+  local index = spellID
+  local spellName = GetSpellInfo(spellID)
   local title = spellName
   local link = nil
-  if cdinfo == "item" then
+  if info == "item" then
     if not expires then
       self:ScheduleTimer("ScanItemCDs", 2) -- theres a delay for the item to go on cd
       return
+    elseif expires - time() < 6 then
+      -- might be global cooldowns, #509
+      return
     end
-    for itemid, spellid in pairs(itemcds) do
-      if spellid == spellID then
-        title, link = GetItemInfo(itemid) -- use item name as some item spellnames are ambiguous or wrong
-        title = title or spellName
-      end
+    if itemCDs[spellID] then
+      -- use item name as some item spellnames are ambiguous or wrong
+      title, link = GetItemInfo(itemCDs[spellID])
+      title = title or spellName
     end
-  elseif type(cdinfo) == "string" then
-    idx = cdinfo
-    title = cdname[cdinfo] or title
+  elseif type(info) == "string" then
+    index = info
+    title = categoryNames[info] or title
   elseif expires ~= 0 then
     local slink = GetSpellLink(spellID)
     if slink and #slink > 0 then  -- tt scan for the full name with profession
-      link = "\124cffffd000\124Henchant:"..spellID.."\124h[X]\124h\124r"
-      SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
+      link = "\124cffffd000\124Henchant:" .. spellID .. "\124h[X]\124h\124r"
+      SI.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
       SI.ScanTooltip:SetHyperlink(link)
       SI.ScanTooltip:Show()
-      local l = _G[SI.ScanTooltip:GetName().."TextLeft1"]
-      l = l and l:GetText()
-      if l and #l > 0 then
-        title = l
-        link = link:gsub("X",l)
+      local line = _G[SI.ScanTooltip:GetName() .. "TextLeft1"]
+      line = line and line:GetText()
+      if line and #line > 0 then
+        title = line
+        link = link:gsub("X", line)
       else
         link = nil
       end
     end
   end
+
   if expires == 0 then
-    if t.Skills[idx] then -- a cd ended early
+    if t.Skills[index] then -- a cd ended early
       SI:Debug("Clearing Trade skill cd: %s (%s)",spellName,spellID)
     end
-    t.Skills[idx] = nil
+    t.Skills[index] = nil
     return
   elseif not expires then
     expires = SI:GetNextDailySkillResetTime()
     if not expires then return end -- ticket 127
-    if type(cdinfo) == "number" then -- over a day, make a rough guess
-      expires = expires + (cdinfo-1)*24*60*60
+    if type(info) == "number" then -- over a day, make a rough guess
+      expires = expires + (info - 1) * 24 * 60 * 60
     end
   end
   expires = floor(expires)
-  local sinfo = t.Skills[idx] or {}
-  t.Skills[idx] = sinfo
+
+  local sinfo = t.Skills[index] or {}
+  t.Skills[index] = sinfo
   local change = expires - (sinfo.Expires or 0)
   if abs(change) > 180 then -- updating expiration guess (more than 3 min update lag)
     SI:Debug("Trade skill cd: "..(link or title).." ("..spellID..") "..
@@ -336,7 +368,7 @@ function Module:ScanTradeSkill(isAll)
     local cooldown, isDayCooldown = C_TradeSkillUI_GetRecipeCooldown(spellID)
     if (
       cooldown and isDayCooldown -- GetRecipeCooldown often returns WRONG answers for daily cds
-      and not tonumber(trade_spells[spellID]) -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
+      and not tonumber(tradeSpells[spellID]) -- daily flag incorrectly set for some multi-day cds (Northrend Alchemy Research)
     ) then
       cooldown = SI:GetNextDailySkillResetTime()
     elseif cooldown then
@@ -361,7 +393,7 @@ function Module:TRADE_SKILL_LIST_UPDATE()
 end
 
 function Module:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, spellID)
-  if unit ~= "player" or not trade_spells[spellID] then return end
+  if unit ~= "player" or not tradeSpells[spellID] then return end
 
   SI:Debug("UNIT_SPELLCAST_SUCCEEDED: %s (%s)", GetSpellLink(spellID), spellID)
 

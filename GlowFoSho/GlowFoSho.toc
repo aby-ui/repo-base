@@ -5,7 +5,7 @@
 ## Notes-zhCN: 可以在试衣间预览武器附魔效果。
 ## Notes-zhTW: 可以在試衣間預覽武器附魔效果。
 ## Notes-koKR: 미리보기 창에서 무기 마법부여의 효과를 미리 확인해 볼 수 있습니다.
-## Interface: 100000
+## Interface: 100002
 ## Version: 5.0.1
 ## Author: bigzero (update Boneshaman)
 ## OptionalDeps: Ace3, LibDropdown-1.0

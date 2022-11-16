@@ -39,7 +39,8 @@ U1RegisterAddon("vBar", {
                warlock = VB_NORMAL_SLOTS,
                warrior = VB_NORMAL_SLOTS,
                monk =  VB_NORMAL_SLOTS,
-               demonhunter = VB_NORMAL_SLOTS
+               demonhunter = VB_NORMAL_SLOTS,
+               evoker = VB_NORMAL_SLOTS,
             }
         end,
     },

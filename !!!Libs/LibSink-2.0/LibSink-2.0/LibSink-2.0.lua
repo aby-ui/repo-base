@@ -1,7 +1,7 @@
 --@curseforge-project-slug: libsink-2-0@
 --[[
 Name: Sink-2.0
-Revision: $Rev: 147 $
+Revision: $Rev: 149 $
 Author(s): Funkydude
 Description: Library that handles chat output.
 Dependencies: LibStub, SharedMedia-3.0 (optional)
@@ -19,7 +19,7 @@ If you derive from the library or change it in any way, you are required to cont
 -- Sink-2.0
 
 local SINK20 = "LibSink-2.0"
-local SINK20_MINOR = 90106
+local SINK20_MINOR = 100000
 
 local sink = LibStub:NewLibrary(SINK20, SINK20_MINOR)
 if not sink then return end
@@ -42,6 +42,27 @@ sink.stickyAddons = sink.stickyAddons or {
 local _G = _G
 local format, gsub, wipe, next, select = string.format, string.gsub, table.wipe, next, select
 local IsInRaid, IsInGroup, SendChatMessage = IsInRaid, IsInGroup, SendChatMessage
+
+-- Make sure FCT is loaded
+EnableAddOn("Blizzard_CombatText")
+local loadFCT = nil
+if GetCVar("enableFloatingCombatText") == "0" then
+	loadFCT = function()
+		loadFCT = nil
+		if not IsAddOnLoaded("Blizzard_CombatText") then
+			if SHOW_COMBAT_TEXT and SHOW_COMBAT_TEXT == "0" then -- Classic
+				SHOW_COMBAT_TEXT = "1" -- Must be set to 1 for OnLoad to properly initialize
+				LoadAddOn("Blizzard_CombatText")
+				SHOW_COMBAT_TEXT = "0"
+			else
+				SetCVar("enableFloatingCombatText", "1") -- Must be set to 1 for OnLoad to properly initialize
+				LoadAddOn("Blizzard_CombatText")
+				SetCVar("enableFloatingCombatText", "0")
+			end
+			CombatText_UpdateDisplayedMessages()
+		end
+	end
+end
 
 local L = {}
 L.DEFAULT = "Default"
@@ -373,15 +394,9 @@ end
 
 local function blizzard(addon, text, r, g, b, font, size, outline, sticky, _, icon)
 	if icon then text = "\124T"..icon..":15:15:0:0:64:64:4:60:4:60\124t "..text end
-	if SHOW_COMBAT_TEXT == "1" then
-		local s = sink.storageForAddon[addon] and sink.storageForAddon[addon].sink20Sticky or sticky
-		if not CombatText_AddMessage then
-			UIParentLoadAddOn("Blizzard_CombatText")
-		end
-		CombatText_AddMessage(text, CombatText_StandardScroll, r, g, b, s and "crit" or nil, false)
-	else
-		UIErrorsFrame:AddMessage(text, r, g, b, 1.0)
-	end
+	local s = sink.storageForAddon[addon] and sink.storageForAddon[addon].sink20Sticky or sticky
+	if loadFCT then loadFCT() end
+	CombatText_AddMessage(text, CombatText_StandardScroll, r, g, b, s and "crit" or nil, false)
 end
 
 sink.channelMapping = sink.channelMapping or {
@@ -497,10 +512,7 @@ local function getPrioritizedSink()
 			return sink.handlers[v]
 		end
 	end
-	if SHOW_COMBAT_TEXT and tostring(SHOW_COMBAT_TEXT) ~= "0" then
-		return blizzard
-	end
-	return chat
+	return blizzard
 end
 
 local function pour(addon, text, r, g, b, ...)
@@ -542,9 +554,6 @@ do
 	local function shouldDisableMSBT()
 		return not _G.MikSBT
 	end
-	local function shouldDisableFCT()
-		return not SHOW_COMBAT_TEXT or tostring(SHOW_COMBAT_TEXT) == "0"
-	end
 
 	local sctFrames = {"Incoming", "Outgoing", "Messages"}
 	local msbtFrames = nil
@@ -577,7 +586,7 @@ do
 		Default = {L.DEFAULT, L.DEFAULT_DESC},
 		SCT = {"Scrolling Combat Text (SCT)", nil, shouldDisableSCT},
 		MikSBT = {"MikSBT", nil, shouldDisableMSBT},
-		Blizzard = {L.BLIZZARD, nil, shouldDisableFCT},
+		Blizzard = {L.BLIZZARD},
 		RaidWarning = {L.RW},
 		ChatFrame = {L.CHAT},
 		Channel = {L.CHANNEL},

@@ -13,7 +13,7 @@
 local MASQUE, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
 -- @ Options\Core

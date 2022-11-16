@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Grail |cff69ccf0Quests |r|cff0000ffRetail|r
 ## Author: Scott M Harrison
 ## Notes: Provides quests to Grail for Retail

@@ -10,20 +10,22 @@
 
 ]]
 
--- GLOBALS: GetAddOnMetadata, LibStub
-
 local MSQ = LibStub and LibStub("Masque", true)
 if not MSQ then return end
 
 local AddOn, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
--- Locale
 local L = Core.Locale
-local API_VERSION = 100000
+
+----------------------------------------
+-- Local
+---
+
+local API_VERSION = 100002
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -558,7 +560,9 @@ MSQ:AddSkin("Serenity", {
 		-- SetAllPoints = nil,
 	},
 	Cooldown = {
-      Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Mask]],
+		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Round\Mask]],
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 32,
 		Height = 32,
@@ -569,6 +573,8 @@ MSQ:AddSkin("Serenity", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 27,
 		Height = 27,
 		Point = "CENTER",
@@ -585,11 +591,17 @@ MSQ:AddSkin("Serenity", {
 
 MSQ:AddSkin("Serenity - Redux", {
 	Template = "Serenity",
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 
 	-- Info
+	-- Authors = Template.Authors,
 	Description = L["An alternate version of Serenity with modified Checked and Equipped textures."],
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
+	-- Group = Template.Group,
 	Title = "Redux",
 	Order = 2,
 
@@ -1196,6 +1208,8 @@ MSQ:AddSkin("Serenity - Square", {
 	},
 	Cooldown = {
 		Texture = [[Interface\AddOns\Masque_Serenity\Textures\Square\Mask]],
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 34,
 		Height = 34,
@@ -1206,6 +1220,8 @@ MSQ:AddSkin("Serenity - Square", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 29,
 		Height = 29,
 		Point = "CENTER",
@@ -1222,11 +1238,17 @@ MSQ:AddSkin("Serenity - Square", {
 
 MSQ:AddSkin("Serenity - Square Redux", {
 	Template = "Serenity - Square",
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.API_VERSION,
 
 	-- Info
+	-- Authors = Template.Authors,
 	Description = L["An alternate version of Serenity Square with modified Checked and Equipped textures."],
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
+	-- Group = Template.Group,
 	Title = "Square Redux",
 	Order = 4,
 

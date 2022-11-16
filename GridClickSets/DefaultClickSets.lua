@@ -217,7 +217,11 @@ GridClickSets_DefaultSets = {
             ["2"] = 207810,--虚空联结2
             ["3"] = assist,
         }
-    }
+    },
+
+    EVOKER = {
+
+    },
 }
 
 -- 复数表示除了这个天赋
@@ -342,7 +346,11 @@ GridClickSets_SpellList = {
     },
     DEMONHUNTER = {
         [207810] = 2,--虚空联结1浩劫2复仇
-    }
+    },
+
+    EVOKER = {
+
+    },
 }
 
 if GetLocale() == "zhCN" then

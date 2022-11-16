@@ -78,6 +78,9 @@ module.DEFAULT_SPELLS = {
 
 	DEMONHUNTER = {
 	},
+
+    EVOKER = {
+    },
 }
 
 local CLASS_DEFAULTS = {
@@ -136,6 +139,9 @@ local CLASS_DEFAULTS = {
 
 	DEMONHUNTER = {
 	},
+
+    EVOKER = {
+    },
 }
 
 local DEFAULTS_INDICATOR = {

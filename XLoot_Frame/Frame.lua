@@ -44,10 +44,13 @@ XLootFrame.addon = addon
 -- Grab locals
 local mouse_focus, opt
 
+-- Because forking the API is a great idea
 local LOOT_SLOT_NONE = LOOT_SLOT_NONE or Enum.LootSlotType.None
 local LOOT_SLOT_ITEM = LOOT_SLOT_ITEM or Enum.LootSlotType.Item
 local LOOT_SLOT_MONEY = LOOT_SLOT_MONEY or Enum.LootSlotType.Money
 local LOOT_SLOT_CURRENCY = LOOT_SLOT_CURRENCY or Enum.LootSlotType.Currency
+
+local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
 
 -- Chat output
 local print, wprint = print, print

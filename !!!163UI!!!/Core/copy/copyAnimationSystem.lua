@@ -15,16 +15,16 @@ local AnimUpdateFrame = CreateFrame("Frame");
 local function Animation_UpdateFrame(self, animElapsed, animTable)
     local totalTime = animTable.totalTime
     if ( animElapsed and (animElapsed < totalTime)) then	--Should be animating
-        local elapsedFraction = self.animReverse and (1-animElapsed/totalTime) or (animElapsed/totalTime);
+        local elapsedFraction = self._aby_animReverse and (1-animElapsed/totalTime) or (animElapsed/totalTime);
         animTable.updateFunc(self, animTable.getPosFunc(self, elapsedFraction));
     else	--Just finished animating
-        animTable.updateFunc(self, animTable.getPosFunc(self, self.animReverse and 0 or 1));
-        self.animating = false;
+        animTable.updateFunc(self, animTable.getPosFunc(self, self._aby_animReverse and 0 or 1));
+        self._aby_animating = false;
 
         AnimatingFrames[self][animTable.updateFunc] = 0;	--We use 0 instead of nil'ing out because we don't want to mess with 'next' (used in pairs)
 
-        if ( self.animPostFunc ) then
-            self.animPostFunc(self);
+        if ( self._aby_animPostFunc ) then
+            self._aby_animPostFunc(self);
         end
 
     end
@@ -37,7 +37,7 @@ local function Animation_OnUpdate(self, elapsed)
     for frame, frameTable in pairs(AnimatingFrames) do
         for frameTable, animTable in pairs(frameTable) do
             if ( animTable ~= 0 ) then
-                Animation_UpdateFrame(frame, totalElapsed - frame.animStartTime, animTable);
+                Animation_UpdateFrame(frame, totalElapsed - frame._aby_animStartTime, animTable);
                 isAnyFrameAnimating = true;
             end
         end
@@ -58,12 +58,12 @@ function SetUpAnimation2(frame, animTable, postFunc, reverse)
 
     AnimatingFrames[frame][animTable.updateFunc] = animTable;
 
-    frame.animStartTime = totalElapsed;
-    frame.animReverse = reverse;
-    frame.animPostFunc = postFunc;
-    frame.animating = true;
+    frame._aby_animStartTime = totalElapsed;
+    frame._aby_animReverse = reverse;
+    frame._aby_animPostFunc = postFunc;
+    frame._aby_animating = true;
 
-    animTable.updateFunc(frame, animTable.getPosFunc(frame, frame.animReverse and 1 or 0));
+    animTable.updateFunc(frame, animTable.getPosFunc(frame, frame._aby_animReverse and 1 or 0));
 
     AnimUpdateFrame:SetScript("OnUpdate", Animation_OnUpdate);
 end

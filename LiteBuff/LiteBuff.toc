@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: LiteBuff
 ## Version: 4.60
 ## Author: Abin

@@ -1,6 +1,6 @@
 -- HereBeDragons is a data API for the World of Warcraft mapping system
 
-local MAJOR, MINOR = "HereBeDragons-2.0", 21
+local MAJOR, MINOR = "HereBeDragons-2.0", 22
 assert(LibStub, MAJOR .. " requires LibStub")
 
 local HereBeDragons, oldversion = LibStub:NewLibrary(MAJOR, MINOR)
@@ -19,7 +19,6 @@ local WOW_INTERFACE_VER = select(4, GetBuildInfo())
 local WoWClassic = (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC)
 local WoWBC = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and WOW_INTERFACE_VER >= 20500 and WOW_INTERFACE_VER < 30000
 local WoWWrath = (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE) and WOW_INTERFACE_VER >= 30400 and WOW_INTERFACE_VER < 40000
-local WoW10 = WOW_INTERFACE_VER >= 100000
 
 -- Data Constants
 local COSMIC_MAP_ID = 946
@@ -226,7 +225,7 @@ if not oldversion or oldversion < 21 then
             worldMapData[0] = { 48033.24, 32020.8, 36867.97, 14848.84 }
             worldMapData[1] = { 47908.72, 31935.28, 8552.61, 18467.83 }
             worldMapData[571] = { 47662.7, 31772.19, 25198.53, 11072.07 }
-        elseif WoW10 then
+        else
             worldMapData[0] = { 76153.14, 50748.62, 65008.24, 23827.51 }
             worldMapData[1] = { 77621.13, 51854.98, 18576.47, 28030.61 }
             worldMapData[571] = { 71773.64, 50054.05, 36205.94, 12366.81 }
@@ -234,15 +233,7 @@ if not oldversion or oldversion < 21 then
             worldMapData[1220] = { 82758.64, 55151.28, 52943.46, 24484.72 }
             worldMapData[1642] = { 77933.3, 51988.91, 44262.36, 32835.1 }
             worldMapData[1643] = { 76060.47, 50696.96, 55384.8, 25774.35 }
-            worldMapData[2444] = { 163394.74, 77161.46, 123518.28, 14338.8 }
-        else
-            worldMapData[0] = { 76153.14, 50748.62, 65008.24, 23827.51 }
-            worldMapData[1] = { 77803.77, 51854.98, 13157.6, 28030.61 }
-            worldMapData[571] = { 71773.64, 50054.05, 36205.94, 12366.81 }
-            worldMapData[870] = { 67710.54, 45118.08, 33565.89, 38020.67 }
-            worldMapData[1220] = { 82758.64, 55151.28, 52943.46, 24484.72 }
-            worldMapData[1642] = { 77933.3, 51988.91, 44262.36, 32835.1 }
-            worldMapData[1643] = { 76060.47, 50696.96, 55384.8, 25774.35 }
+            worldMapData[2444] = { 111420.37, 74283, 86088.21, 15682.4 }
         end
     end
 

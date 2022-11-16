@@ -887,7 +887,7 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",
     ["夏木沐-伊森利恩"] = "Cell插件捐助者",
 }
 
-function U1AddDonatorTitle(self, partOrFullName)
+function U1AddDonatorTitle(self, partOrFullName, returnOnly)
     if self._ChangingByAbyUI then return end
     if partOrFullName then
         if not partOrFullName:find("%-") then
@@ -895,12 +895,15 @@ function U1AddDonatorTitle(self, partOrFullName)
         end
         local staff = U1STAFF[partOrFullName]
         if staff then
+            if returnOnly then return staff end
             self:AddLine(staff, 1, 0, 1)
             if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
         else
             local donate = U1Donators and U1Donators.players[partOrFullName]
             if donate then
-                self:AddLine("爱不易" .. (donate > 0 and "" or "") .. "捐助者", 1, 0, 1)
+                local title = "爱不易" .. (donate > 0 and "" or "") .. "捐助者"
+                if returnOnly then return title end
+                self:AddLine(title, 1, 0, 1)
                 if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
             end
         end
@@ -910,14 +913,15 @@ end
 RunOnNextFrame(function()
     CoreRegisterEvent("INIT_COMPLETED", { INIT_COMPLETED = function()
         CoreScheduleTimer(false, 1, function()
-            GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-                local _, unit = self:GetUnit();
+            TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tip, tData)
+                local _, unit = TooltipUtil.GetDisplayedUnit(tip)
                 if not unit or not UnitIsPlayer(unit) then return end --or not self:IsVisible()
-                U1AddDonatorTitle(self, U1UnitFullName(unit))
+                U1AddDonatorTitle(tip, U1UnitFullName(unit))
             end)
             hooksecurefunc(GameTooltip, "Show", function(self)
-                if CommunitiesFrameScrollChild and self:GetOwner() and self:GetOwner().GetMemberInfo and self:GetOwner():GetParent() == CommunitiesFrameScrollChild then
-                    local memberInfo = self:GetOwner():GetMemberInfo()
+                local owner = self:GetOwner()
+                if owner and owner.GetMemberInfo then
+                    local memberInfo = owner:GetMemberInfo()
                     if memberInfo then
                         U1AddDonatorTitle(self, memberInfo.name)
                     end

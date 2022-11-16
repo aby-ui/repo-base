@@ -523,15 +523,8 @@ function addon:CreateWorldMapClickHandler()
         addon:AddWaypointFromMapClick()
     end)
 
-    local throttle = 1.0
-    local lastUpdated = 0
     handler:SetScript("OnUpdate", function(self, elapsed)
-        lastUpdated = lastUpdated + elapsed
-        if lastUpdated >= throttle then
-            lastUpdated = 0
-
             handler:UpdatePassThrough()
-        end
     end)
 
     handler:UpdatePassThrough()

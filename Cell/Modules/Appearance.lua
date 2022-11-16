@@ -1224,10 +1224,10 @@ local function UpdateAppearance(which)
         if Cell.frames.codeSnippetsFrame then P:SetEffectiveScale(Cell.frames.codeSnippetsFrame) end
         P:SetEffectiveScale(CellTooltip)
         P:SetEffectiveScale(CellSpellTooltip)
-        P:SetEffectiveScale(CellScanningTooltip)
+        -- P:SetEffectiveScale(CellScanningTooltip)
         CellTooltip:UpdatePixelPerfect()
         CellSpellTooltip:UpdatePixelPerfect()
-        CellScanningTooltip:UpdatePixelPerfect()
+        -- CellScanningTooltip:UpdatePixelPerfect()
         Cell.menu:UpdatePixelPerfect()
     end
 

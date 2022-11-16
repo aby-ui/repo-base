@@ -6,23 +6,14 @@ local format, strmatch, strupper = format, strmatch, strupper
 
 -- WoW API / Variables
 local C_Map_GetBestMapForUnit = C_Map.GetBestMapForUnit
+local C_UnitAuras_GetPlayerAuraBySpellID = C_UnitAuras.GetPlayerAuraBySpellID
 local GetCurrentRegion = GetCurrentRegion
 local GetCVar = GetCVar
 local GetTime = GetTime
 
--- modify these on DF pre-patch
-local C_UnitAuras_GetPlayerAuraBySpellID = C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID
-local GetPlayerAuraBySpellID = GetPlayerAuraBySpellID
-local select = select
-
 function SI:GetPlayerAuraExpirationTime(spellID)
-  if C_UnitAuras_GetPlayerAuraBySpellID then
-    -- Dragonflight
-    local info = C_UnitAuras_GetPlayerAuraBySpellID(spellID)
-    return info and info.expirationTime
-  else
-    return (select(6, GetPlayerAuraBySpellID(spellID)))
-  end
+  local info = C_UnitAuras_GetPlayerAuraBySpellID(spellID)
+  return info and info.expirationTime
 end
 
 -- Chat Message and Bug Report Reminder

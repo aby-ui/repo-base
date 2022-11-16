@@ -118,9 +118,6 @@ GTFO.SpellID["377204"] = {
 };
 
 
-
-
-
 --- *******************
 --- * The Azure Vault *
 --- *******************
@@ -128,6 +125,57 @@ GTFO.SpellID["377204"] = {
 --- **************************
 --- * Uldaman: Legacy of Tyr *
 --- **************************
+
+GTFO.SpellID["369563"] = {
+  --desc = "Wild Cleave (Baelog)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["375286"] = {
+  --desc = "Searing Cannonfire (Longboat Raid)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["369811"] = {
+  --desc = "Brutal Slam (Hulking Berserker)";
+  sound = 3;
+};
+
+GTFO.SpellID["369854"] = {
+  --desc = "Throw Rock (Burly Rock-Thrower)";
+  sound = 3;
+};
+
+GTFO.SpellID["369703"] = {
+  --desc = "Thundering Slam (Bromach)";
+  sound = 3;
+};
+
+GTFO.SpellID["372652"] = {
+  --desc = "Resonating Orb (Sentinel Talondras)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["369052"] = {
+  --desc = "Seeking Flame (Vault Keeper)";
+  sound = 3;
+};
+
+GTFO.SpellID["369061"] = {
+  --desc = "Searing Clap (Emberon)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["375727"] = {
+  --desc = "Sand Breath (Chrono-Lord Deios)";
+  sound = 3;
+  tankSound = 0;
+};
+
 
 --- ***************************
 --- * Vault of the Incarnates *

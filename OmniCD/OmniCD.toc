@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: OmniCD
 ## Version: 3.4.0.2724
 ## Author: Treebonker

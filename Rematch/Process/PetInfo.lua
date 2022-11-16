@@ -171,7 +171,8 @@ local expansionRanges = {
    [5] = {1384,1693}, -- Warlords of Draenor
    [6] = {1699,2163}, -- Legion
    [7] = {2165,2872}, -- Battle for Azeroth
-   [8] = {2878,9999}, -- Shadowlands (next expansion, get max speciesID for Shadowlands and change 9999 to that)
+   [8] = {2878,3255}, -- Shadowlands
+   [9] = {3256,9999}, -- Dragonflight
 }
 
 -- the majority of pets fall into a range for each expansion above, except for some outliers. these are the

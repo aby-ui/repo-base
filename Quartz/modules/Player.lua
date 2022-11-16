@@ -73,12 +73,17 @@ do
 				desc = L["Show damage / mana ticks while channeling spells like Drain Life or Blizzard"],
 				order = 102,
 			}
+			options.args.nlttargetname = {
+				type = "description",
+				name = "",
+				order = 408.0,
+			}
 			options.args.targetname = {
 				type = "toggle",
 				name = L["Show Target Name"],
 				desc = L["Display target name of spellcasts after spell name"],
 				disabled = function() return db.hidenametext end,
-				order = 402,
+				order = 408.1,
 			}
 			options.args.targetnamestyle = {
 				type = "select",
@@ -86,11 +91,17 @@ do
 				desc = L["How to display target name of spellcasts after spell name"],
 				values = {["default"] = L["Spell -> Target"], ["on"] = L["Spell on Target"]},
 				disabled = function() return not db.targetname or db.hidenametext end,
-				order = 402,
+				order = 409,
 			}
 			options.args.noInterruptGroup = nil
 		end
 		return options
+	end
+end
+
+local function OnUpdate(self)
+	if self.casting and self.chargeSpell then
+		Player:UpdateStage(self)
 	end
 end
 
@@ -103,6 +114,8 @@ function Player:OnInitialize()
 
 	self.Bar = Quartz3.CastBarTemplate:new(self, "player", MODNAME, L["Player"], db)
 	castBar = self.Bar.Bar
+
+	self.Bar:HookScript("OnUpdate", OnUpdate)
 end
 
 
@@ -132,20 +145,20 @@ function Player:ApplySettings()
 			PlayerCastingBarFrame:UnregisterAllEvents()
 			PlayerCastingBarFrame:Hide()
 		else
-			self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
-			self:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
-			self:RegisterEvent("PLAYER_ENTERING_WORLD")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_DELAYED", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_UPDATE", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_UPDATE", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTIBLE", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_NOT_INTERRUPTIBLE", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+			PlayerCastingBarFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
+			PlayerCastingBarFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 		end
 	else
 		if db.hideblizz then
@@ -247,6 +260,10 @@ local channelingTicks = WoWWrath and {
 	[GetSpellInfo(5145)] = 5, -- arcane missiles
 	-- priest
 	[GetSpellInfo(15407)] = 3, -- mind flay
+	[GetSpellInfo(48045)] = 5, -- mind sear
+	[GetSpellInfo(47540)] = 2, -- penance
+	[GetSpellInfo(64843)] = 4, -- divine hymn
+	[GetSpellInfo(64901)] = 4, -- hymn of hope
 	-- warlock
 	[GetSpellInfo(1949)] = 15, -- hellfire
 	[GetSpellInfo(5740)] = 4, -- rain of fire
@@ -299,6 +316,8 @@ local channelingTicks = WoWWrath and {
 	[GetSpellInfo(117952)] = 4, -- crackling jade lightning
 	[GetSpellInfo(191837)] = 3, -- essence font
 	[GetSpellInfo(115175)] = 8, -- soothing mist
+	-- evoker
+	[GetSpellInfo(356995)] = 3, -- disintegrate
 } or {}
 
 
@@ -339,6 +358,12 @@ function Player:UNIT_SPELLCAST_START(bar, unit)
 		setBarTicks(0)
 		bar.channelingDuration = nil
 	end
+
+	if bar.casting and bar.chargeSpell and bar.numStages and bar.numStages > 1 then
+		self:AddStages(bar, bar.numStages)
+	else
+		self:ClearStages(bar)
+	end
 end
 
 function Player:UNIT_SPELLCAST_STOP(bar, unit)
@@ -373,4 +398,160 @@ function Player:UNIT_SPELLCAST_DELAYED(bar, unit)
 			setBarTicks(bar.channelingTicks, bar.channelingDuration, bar.ticks)
 		end
 	end
+end
+
+function Player:GetStageDuration(bar, stage)
+	if stage == bar.NumStages then
+		return GetUnitEmpowerHoldAtMaxTime(bar.unit)
+	else
+		return GetUnitEmpowerStageDuration(bar.unit, stage-1)
+	end
+end
+
+function Player:AddStages(bar, numStages)
+	bar.CurrSpellStage = -1
+	bar.NumStages = numStages + 1
+	bar.StagePoints = {}
+	bar.StagePips = {}
+	bar.StageTiers = {}
+
+	local sumDuration = 0
+	local stageMaxValue = (bar.endTime - bar.startTime) * 1000
+
+	local castBarLeft = bar.Bar:GetLeft()
+	local castBarRight = bar.Bar:GetRight()
+	local castBarWidth = castBarRight - castBarLeft
+
+	for i = 1, bar.NumStages-1, 1 do
+		local duration = self:GetStageDuration(bar, i)
+		if duration > -1 then
+			sumDuration = sumDuration + duration
+			local portion = sumDuration / stageMaxValue
+			local offset = castBarWidth * portion
+			bar.StagePoints[i] = sumDuration
+
+			local stagePipName = "StagePip" .. i
+			local stagePip = bar[stagePipName]
+			if not stagePip then
+				stagePip = CreateFrame("FRAME", nil, bar.Bar, false and "CastingBarFrameStagePipFXTemplate" or "CastingBarFrameStagePipTemplate")
+				bar[stagePipName] = stagePip
+			end
+
+			if stagePip then
+				table.insert(bar.StagePips, stagePip)
+				stagePip:ClearAllPoints()
+				stagePip:SetPoint("TOP", bar.Bar, "TOPLEFT", offset, -1)
+				stagePip:SetPoint("BOTTOM", bar.Bar, "BOTTOMLEFT", offset, 1)
+				stagePip:Show()
+				stagePip.BasePip:SetShown(i ~= bar.NumStages)
+			end
+		end
+	end
+
+	for i = 1, bar.NumStages-1, 1 do
+		local chargeTierName = "ChargeTier" .. i
+		local chargeTier = bar[chargeTierName]
+		if not chargeTier then
+			chargeTier = CreateFrame("FRAME", nil, bar.Bar, "CastingBarFrameStageTierTemplate")
+			bar[chargeTierName] = chargeTier
+		end
+
+		if chargeTier then
+			local leftStagePip = bar.StagePips[i]
+			local rightStagePip = bar.StagePips[i+1]
+
+			if leftStagePip then
+				chargeTier:SetPoint("TOPLEFT", leftStagePip, "TOP", 0, 0)
+			end
+			if rightStagePip then
+				chargeTier:SetPoint("BOTTOMRIGHT", rightStagePip, "BOTTOM", 0, 0)
+			else
+				chargeTier:SetPoint("BOTTOMRIGHT", bar.Bar, "BOTTOMRIGHT", 0, 1)
+			end
+
+			local chargeTierLeft = chargeTier:GetLeft()
+			local chargeTierRight = chargeTier:GetRight()
+
+			local left = (chargeTierLeft - castBarLeft) / castBarWidth
+			local right = 1.0 - ((castBarRight - chargeTierRight) / castBarWidth)
+
+			chargeTier.FlashAnim:Stop()
+			chargeTier.FinishAnim:Stop()
+
+			chargeTier.Normal:SetAtlas(("ui-castingbar-tier%d-empower"):format(i))
+			chargeTier.Disabled:SetAtlas(("ui-castingbar-disabled-tier%d-empower"):format(i))
+			chargeTier.Glow:SetAtlas(("ui-castingbar-glow-tier%d-empower"):format(i))
+
+			chargeTier.Normal:SetTexCoord(left, right, 0, 1)
+			chargeTier.Disabled:SetTexCoord(left, right, 0, 1)
+			chargeTier.Glow:SetTexCoord(left, right, 0, 1)
+
+			chargeTier.Normal:SetShown(false)
+			chargeTier.Disabled:SetShown(true)
+			chargeTier.Glow:SetAlpha(0)
+
+			chargeTier:Show()
+			table.insert(bar.StageTiers, chargeTier)
+		end
+	end
+end
+
+function Player:UpdateStage(bar)
+	local maxStage = 0;
+	local stageValue = bar.Bar:GetValue() * (bar.endTime - bar.startTime) * 1000
+	for i = 1, bar.NumStages do
+		if bar.StagePoints[i] then
+			if stageValue > bar.StagePoints[i] then
+				maxStage = i
+			else
+				break
+			end
+		end
+	end
+
+	if (maxStage ~= bar.CurrSpellStage and maxStage > -1 and maxStage <= bar.NumStages) then
+		bar.CurrSpellStage = maxStage
+		if maxStage < bar.NumStages then
+			local stagePip = bar.StagePips[maxStage]
+			if stagePip and stagePip.StageAnim then
+				stagePip.StageAnim:Play()
+			end
+		end
+
+		local chargeTierName = "ChargeTier" .. bar.CurrSpellStage
+		local chargeTier = bar[chargeTierName]
+		if chargeTier then
+			chargeTier.Normal:SetShown(true)
+			chargeTier.Disabled:SetShown(false)
+			chargeTier.FlashAnim:Play()
+		end
+	end
+end
+
+function Player:ClearStages(bar)
+	if bar.ChargeGlow then
+		bar.ChargeGlow:SetShown(false)
+	end
+
+	if bar.StagePips then
+		for _, stagePip in pairs(bar.StagePips) do
+			local maxStage = bar.NumStages
+			for i = 1, maxStage do
+				local stageAnimName = "Stage" .. i
+				local stageAnim = stagePip[stageAnimName]
+				if stageAnim then
+					stageAnim:Stop()
+				end
+			end
+			stagePip:Hide()
+		end
+	end
+
+	if bar.StageTiers then
+		for _, stageTier in pairs(bar.StageTiers) do
+			stageTier:Hide()
+		end
+	end
+
+	bar.NumStages = 0
 end

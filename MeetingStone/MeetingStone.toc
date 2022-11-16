@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Version: 90205.05
 ## Title: Meeting Stone
 ## Title-zhCN: |cffff565e[网易]|r 集合石

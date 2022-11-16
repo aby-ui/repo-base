@@ -46,6 +46,12 @@ local factionID = {
   2470, -- Death's Advance
   2472, -- The Archivists' Codex
   2478, -- The Enlightened
+
+  -- Dragonflight
+  2503, -- Maruuk Centaur
+  2507, -- Dragonscale Expedition
+  2510, -- Iskaara Tuskarr
+  2511, -- Valdrakken Accord
 }
 
 function Module:OnEnable()

@@ -43,6 +43,7 @@ L['trinket'] = '飾品'
 L['activation_unknown'] = '啟動條件未知'
 L['requirement_not_found'] = '所需位置未知'
 L['multiple_spawns'] = '可能出現在多個位置'
+L['shared_drops'] = nil
 
 L['Requires'] = '需要'
 L['ranked_research'] = '%s (等級 %d/%d)'
@@ -59,10 +60,11 @@ L['daily'] = '每日'
 L['weekly'] = '每週'
 L['normal'] = '普通'
 L['hard'] = '困難'
+L['heirloom'] = nil
 L['mount'] = '坐騎'
 L['pet'] = '戰寵'
 L['spell'] = '法術'
-L['title'] = nil
+L['title'] = '稱號'
 L['toy'] = '玩具'
 L['rep'] = '聲望'
 L['completed'] = '已完成'
@@ -74,9 +76,9 @@ L['unlearnable'] = '無法解鎖'
 L['defeated'] = '已擊敗'
 L['undefeated'] = '未擊敗'
 
-L['follower_type_follower'] = nil
-L['follower_type_champion'] = nil
-L['follower_type_companion'] = nil
+L['follower_type_follower'] = '追隨者'
+L['follower_type_champion'] = '勇士'
+L['follower_type_companion'] = '夥伴'
 
 -------------------------------------------------------------------------------
 --------------------------------- CONTEXT MENU --------------------------------

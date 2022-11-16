@@ -32,9 +32,22 @@ local Layers = Core.RegTypes.Legacy
 local Skins, SkinList = {}, {}
 local Hidden = {Hide = true}
 
+-- Legacy Skin IDs
+local LegacyIDs = {
+	["Blizzard"] = "Blizzard Classic",
+	["Classic"] = "Classic Redux",
+	["Default"] = "Blizzard Classic",
+	["Default (Classic)"] = "Blizzard Classic",
+}
+
 ----------------------------------------
 -- Functions
 ---
+
+-- Returns the ID of a renamed skin.
+local function GetSkinID(SkinID)
+	return LegacyIDs[SkinID]
+end
 
 -- Returns a valid shape.
 local function GetShape(Shape)
@@ -46,10 +59,17 @@ end
 
 -- Adds data to the skin tables.
 local function AddSkin(SkinID, SkinData)
+	local Skin_API = SkinData.API_VERSION or SkinData.Masque_Version
 	local Template = SkinData.Template
 	local Default = Core.DEFAULT_SKIN
 
 	if Template then
+		-- Only do this for skins using the Dragonflight skin as a template.
+		-- All other template IDs are handled by the `Skins` metatable.
+		if Skin_API == 100000 and Template == "Default" then
+			Template = "Blizzard Modern"		
+		end
+
 		setmetatable(SkinData, {__index = Skins[Template]})
 	end
 
@@ -72,7 +92,7 @@ local function AddSkin(SkinID, SkinData)
 	end
 
 	SkinData.SkinID = SkinID
-	SkinData.API_VERSION = SkinData.API_VERSION or SkinData.Masque_Version
+	SkinData.API_VERSION = Skin_API
 
 	local Shape = SkinData.Shape
 	SkinData.Shape = GetShape(Shape)
@@ -90,11 +110,14 @@ end
 
 Core.__Hidden = Hidden
 Core.AddSkin = AddSkin
+Core.GetSkinID = GetSkinID
 
 Core.Skins = setmetatable(Skins, {
-	__index = function(self, id)
-		if id == "Blizzard" then
-			return self.Classic
+	__index = function(self, SkinID)
+		local NewID = GetSkinID(SkinID)
+
+		if NewID then
+			return self[NewID]
 		end
 	end
 })
@@ -152,7 +175,7 @@ end
 
 -- Retrieves the default skin.
 function API:GetDefaultSkin()
-	return "Classic"
+	return Core.DEFAULT_SKIN_ID, Core.DEFAULT_SKIN
 end
 
 -- Retrieves the skin data for the specified skin.

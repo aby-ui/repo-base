@@ -1,6 +1,6 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: HandyNotes: Shadowlands
-## Version: 48
+## Version: 50
 ## Notes: Shadowlands Notes
 ## OptionalDeps: Ace3
 ## RequiredDeps: HandyNotes

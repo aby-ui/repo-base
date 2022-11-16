@@ -97,7 +97,7 @@ function SI:specialQuests()
         qinfo.name = l:gsub("%p$","")
       end
     elseif not qinfo.name and qinfo.aid then
-      SI.ScanTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
+      SI.ScanTooltip:SetOwner(_G.UIParent, 'ANCHOR_NONE')
       SI.ScanTooltip:SetAchievementByID(qinfo.aid)
       SI.ScanTooltip:Show()
       local l = _G[SI.ScanTooltip:GetName().."Text"..(qinfo.aline or "Left1")]

@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Author: Fedorenko R.D.
 ## Title: Masque|cff36e5ff:|r|cff1784d1 Shadow|r 
 ## Version: v6.2.2

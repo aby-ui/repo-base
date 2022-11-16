@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Tidy Plates Widgets
 ## Notes: Library of Widgets
 ## Dependencies: TidyPlates

@@ -42,8 +42,8 @@ local GetTypeSkin, SetPoints = Core.GetTypeSkin, Core.SetPoints
 ---
 
 local DEF_COLOR = Default.Color
-local DEF_PULSE = Default.PulseTexture
-local DEF_EDGE = Default.EdgeTexture
+local DEF_PULSE = [[Interface\Cooldown\star4]]
+local DEF_EDGE = [[Interface\Cooldown\edge]]
 local DEF_EDGE_LOC = [[Interface\Cooldown\edge-LoC]]
 
 local MSQ_EDGE = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]]

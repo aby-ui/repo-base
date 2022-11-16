@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Dominos Progress
 ## Title-zhCN: |cFF0099FFDominos|r 进度条模块
 ## Notes: Progress bars of all sorts

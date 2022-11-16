@@ -115,6 +115,7 @@ local function printDebug(tooltip, itemLink, bag, slot)
     addDoubleLine(tooltip, "CharacterCanEquipItem:", tostring(CanIMogIt:CharacterCanEquipItem(itemLink)))
     addDoubleLine(tooltip, "IsValidAppearanceForCharacter:", tostring(CanIMogIt:IsValidAppearanceForCharacter(itemLink)))
     addDoubleLine(tooltip, "CharacterIsHighEnoughLevelForTransmog:", tostring(CanIMogIt:CharacterIsHighEnoughLevelForTransmog(itemLink)))
+    addDoubleLine(tooltip, "Required Classes:", tostring(CIMIScanTooltip:GetClassesRequired(itemLink) or "nil"))
 
     addLine(tooltip, '--------')
 
@@ -237,6 +238,7 @@ GameTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipCleared", TooltipCleared)
 
 local function CanIMogIt_AttachItemTooltip(tooltip)
     -- Hook for normal tooltips.
+    if tooltip.GetItem == nil then return end
     local link = select(2, tooltip:GetItem())
     if link then
         addToTooltip(tooltip, link)
@@ -245,13 +247,7 @@ local function CanIMogIt_AttachItemTooltip(tooltip)
 end
 
 
-GameTooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ItemRefTooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ItemRefShoppingTooltip1:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ItemRefShoppingTooltip2:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ShoppingTooltip1:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-ShoppingTooltip2:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
-GameTooltip.ItemTooltip.Tooltip:HookScript("OnTooltipSetItem", CanIMogIt_AttachItemTooltip)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, CanIMogIt_AttachItemTooltip)
 
 
 hooksecurefunc(GameTooltip, "SetMerchantItem",
@@ -272,28 +268,10 @@ hooksecurefunc(GameTooltip, "SetBuybackItem",
 
 hooksecurefunc(GameTooltip, "SetBagItem",
     function(tooltip, bag, slot)
-        addToTooltip(tooltip, GetContainerItemLink(bag, slot), bag, slot)
+        addToTooltip(tooltip, C_Container.GetContainerItemLink(bag, slot), bag, slot)
         VVDebugPrint(tooltip, "SetBagItem")
     end
 )
-
-
--- hooksecurefunc(GameTooltip, "SetAuctionItem",
---     function(tooltip, type, index)
---         addToTooltip(tooltip, GetAuctionItemLink(type, index))
---         VVDebugPrint(tooltip, "SetAuctionItem")
---     end
--- )
-
-
--- hooksecurefunc(GameTooltip, "SetAuctionSellItem",
---     function(tooltip)
---         local name = GetAuctionSellItemInfo()
---         local _, link = GetItemInfo(name)
---         addToTooltip(tooltip, link)
---         VVDebugPrint(tooltip, "SetAuctionSellItem")
---     end
--- )
 
 
 hooksecurefunc(GameTooltip, "SetLootItem",

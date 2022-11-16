@@ -438,7 +438,7 @@ local function CreateSpellEditFrame()
         C_Timer.After(0.1, function()
             CellSpellTooltip:SetOwner(spellEditFrame, "ANCHOR_NONE")
             CellSpellTooltip:SetPoint("TOPLEFT", spellEditFrame, "BOTTOMLEFT", 0, -1)
-            CellSpellTooltip:SetHyperlink("spell:"..id)
+            CellSpellTooltip:SetSpellByID(id)
             CellSpellTooltip:Show()
         end)
 

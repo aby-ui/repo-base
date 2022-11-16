@@ -148,7 +148,8 @@ VB_CLASS_SLOTS = {
    warlock = VB_NORMAL_SLOTS,
    warrior = VB_WARRIOR_SLOTS,
    monk =  VB_MONK_SLOTS,
-   demonhunter = VB_NORMAL_SLOTS
+   demonhunter = VB_NORMAL_SLOTS,
+   evoker = VB_NORMAL_SLOTS
 }
 
 

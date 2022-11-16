@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Name: Masque_Goldpaw
 ## Title: Masque: |cffff7d0aGoldpaw|r
 ## Version: 1.0-Release

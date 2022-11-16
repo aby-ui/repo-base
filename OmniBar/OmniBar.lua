@@ -93,6 +93,7 @@ local CLASS_ORDER = {
 	["MAGE"] = 10,
 	["ROGUE"] = 11,
 	["MONK"] = 12,
+	["EVOKER"] = 13,
 }
 
 local MAX_ARENA_SIZE = addon.MAX_ARENA_SIZE or 0

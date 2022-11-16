@@ -79,3 +79,5 @@ local function MerchantOverlayEvents(event, ...)
 end
 
 CanIMogIt.frame:AddOverlayEventFunction(MerchantOverlayEvents)
+
+CanIMogIt:RegisterMessage("OptionUpdate", MerchantFrame_CIMIOnClick)

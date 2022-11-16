@@ -141,6 +141,7 @@ end
 --[[ Hooking ]]--
 
 local function OnItem(tip)
+	if not (tip == GameTooltip or tip == ItemRefTooltip) then return end
 	local name, link = tip:GetItem()
 	if name ~= '' then
 		AddOwners(tip, link)
@@ -185,8 +186,10 @@ function TooltipCounts:OnEnable()
 		if not ItemText then
 			ItemText, ItemCount = {}, {}
 
-			HookTip(GameTooltip)
-			HookTip(ItemRefTooltip)
+			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnItem)
+
+			--HookTip(GameTooltip)
+			--HookTip(ItemRefTooltip)
 		end
 	end
 end

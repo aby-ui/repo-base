@@ -55,6 +55,7 @@ local function InitializeDropdownMenu(level, mapID, coord)
                     local x, y = HandyNotes:getXY(coord)
                     TomTom:AddWaypoint(mapID, x, y, {
                         title = ns.RenderLinks(node.label, true),
+                        from = ns.plugin_name,
                         persistent = nil,
                         minimap = true,
                         world = true

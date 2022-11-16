@@ -22,7 +22,7 @@ local pairs, type = pairs, type
 -- WoW API
 ---
 
-local hooksecurefunc = hooksecurefunc
+local ContainerFrame_GetContainerNumSlots, hooksecurefunc = ContainerFrame_GetContainerNumSlots, hooksecurefunc
 
 ----------------------------------------
 -- Internal
@@ -31,7 +31,7 @@ local hooksecurefunc = hooksecurefunc
 -- @ Masque
 local WOW_RETAIL = Core.WOW_RETAIL
 
--- @ Skins\Default(_Classic)
+-- @ Skins\Blizzard(_Classic)
 local DEFAULT_SKIN = Core.DEFAULT_SKIN
 
 -- @ Skins\Skins
@@ -73,16 +73,15 @@ local IsBackground = {
 -- Function to toggle the icon backdrops.
 local function SetIconBackdrop(Button, Limit)
 	local Icon = Button:GetItemButtonIconTexture()
-	local IconID = Icon:GetTexture()
-	local IsEmpty
+	local Texture = Icon:GetTexture()
+	local Alpha, IsEmpty = 1, nil
 
-	if IsBackground[IconID] then
-		Icon:SetAlpha(0)
+	if IsBackground[Texture] then
+		Alpha = 0
 		IsEmpty = true
-	else
-		Icon:SetAlpha(1)
 	end
 
+	Icon:SetAlpha(Alpha)
 	SetEmpty(Button, IsEmpty, Limit)
 end
 
@@ -119,7 +118,7 @@ local function UpdateTextures(Button, Limit)
 
 		if BagID then
 			local Size = ContainerFrame_GetContainerNumSlots(BagID)
-			IsEmpty = (Size and Size == 0) or nil
+			IsEmpty = (Size == 0) or nil
 		end
 
 		SetEmpty(Button, IsEmpty, Limit)
@@ -210,7 +209,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 	local Skin, Disabled
 
 	if SkinID then
-		Skin = Skins[SkinID] or Skins.Classic
+		Skin = Skins[SkinID] or DEFAULT_SKIN
 		Button.__MSQ_Skin = Skin
 	else
 		local Addon = Button.__MSQ_Addon or false

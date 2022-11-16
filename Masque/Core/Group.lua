@@ -25,6 +25,9 @@ local error, pairs, type = error, pairs, type
 -- @ Skins\Skins
 local Skins = Core.Skins
 
+-- @ Skins\Blizzard(_Classic)
+local DEFAULT_SKIN = Core.DEFAULT_SKIN
+
 -- @ Skins\Regions
 local ActionTypes, BaseTypes, RegTypes = Core.ActionTypes, Core.BaseTypes, Core.RegTypes
 
@@ -72,7 +75,7 @@ local function FireCB(self)
 	local db = self.db
 
 	if self.Callback then
-		Callback(self.ID, self.Group, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Disabled)
+		Callback(self.Callback, self.Group, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Disabled)
 	elseif self.Addon then
 		Callback(self.Addon, self.Group, db.SkinID, db.Backdrop, db.Shadow, db.Gloss, db.Colors, db.Disabled)
 	end
@@ -191,7 +194,7 @@ end
 -- Returns a layer's current color.
 function GMT:GetColor(Layer)
 	if Layer then
-		local Skin = Skins[self.db.SkinID] or Skins.Classic
+		local Skin = Skins[self.db.SkinID] or DEFAULT_SKIN
 		return GetColor(self.db.Colors[Layer] or Skin[Layer].Color)
 	end
 end
@@ -253,7 +256,7 @@ function GMT:ReSkin(arg)
 end
 
 -- Registers a group-specific callback.
-function GMT:SetCallback(func, arg)
+function GMT:SetCallback(func, arg, selfCB)
 	if self.ID == MASQUE then return end
 
 	if type(func) ~= "function" then
@@ -269,7 +272,7 @@ function GMT:SetCallback(func, arg)
 	end
 
 	Callback:Register(self.ID, func, arg or false)
-	self.Callback = true
+	self.Callback = (selfCB and self) or self.ID
 end
 
 -- Renames the group.
@@ -386,7 +389,7 @@ function GMT:__Set(Option, Value)
 			local func = Core["Skin"..Option]
 
 			if func then
-				local Skin = Skins[db.SkinID] or Skins.Classic
+				local Skin = Skins[db.SkinID] or DEFAULT_SKIN
 
 				if Option == "Backdrop" then
 					for Button, Regions in pairs(self.Buttons) do
@@ -419,7 +422,7 @@ function GMT:__SetColor(Layer, r, g, b, a)
 	if not Layer then return end
 
 	local db = self.db
-	local Skin = Skins[db.SkinID] or Skins.Classic
+	local Skin = Skins[db.SkinID] or DEFAULT_SKIN
 	local sr, sg, sb, sa = GetColor(Skin[Layer].Color)
 
 	-- Prevent saving the skin's default color.

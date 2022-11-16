@@ -138,6 +138,7 @@ function BaudErrorFrame_OnLoad(self)
             if sec then sec, addon = issecurevariable(frame, "flashTimer") end
             if not sec then
                 BaudErrorFrameAdd("插件" .. addon .. "调用了UIFrameFlash(), 可能会导致卡动作条等问题", 3)
+                SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_MOUNT_EQUIPMENT_SLOT_FRAME, true)
             end
         end
     end)

@@ -362,12 +362,11 @@ SI.defaultDB = {
     TrackPlayed = true,
     AugmentBonus = true,
     CurrencyValueColor = true,
-    Currency1767 = true, -- Stygia
-    Currency1602 = true, -- Conquest
-    Currency1792 = true, -- Honor
-    Currency1822 = true, -- Renown
-    Currency1979 = true, -- Cyphers of the First Ones
-    Currency2009 = true, -- Cosmic Flux
+    Currency2003 = true, -- Dragon Isles Supplies
+    Currency2011 = true, -- Effigy Adornments
+    Currency2045 = true, -- Purified Arcane Energy
+    Currency2118 = true, -- Elemental Overflow
+    Currency2122 = true, -- Storm Sigil
     CurrencyMax = false,
     CurrencyEarned = true,
     CurrencySortName = false,
@@ -2515,7 +2514,7 @@ end
 function SI:OnInitialize()
   local versionString = GetAddOnMetadata("SavedInstances", "version")
   --[==[@debug@
-  if versionString == "10.0.0" then
+  if versionString == "10.0.1" then
     versionString = "Dev"
   end
   --@end-debug@]==]

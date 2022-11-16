@@ -2,7 +2,7 @@ local SI, L = unpack(select(2, ...))
 local Module = SI:NewModule('Currency', 'AceEvent-3.0', 'AceTimer-3.0', 'AceBucket-3.0')
 
 -- Lua functions
-local ipairs, pairs, wipe = ipairs, pairs, wipe
+local ipairs, pairs = ipairs, pairs
 
 -- WoW API / Variables
 local C_Covenants_GetActiveCovenantID = C_Covenants.GetActiveCovenantID
@@ -82,6 +82,13 @@ local currency = {
   1979, -- Cyphers of the First Ones
   2009, -- Cosmic Flux
   2000, -- Motes of Fate
+
+  -- Dragonflight
+  2003, -- Dragon Isles Supplies
+  2011, -- Effigy Adornments
+  2045, -- Purified Arcane Energy
+  2118, -- Elemental Overflow
+  2122, -- Storm Sigil
 }
 SI.currency = currency
 for i = #currency, 1 do if C_CurrencyInfo_GetCurrencyInfo(currency[i]) == nil then table.remove(currency, i) end end

@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 
 ## Title: Masque: Serenity
 ## Notes: Serenity skins for Masque.
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Serenity для Masque.
 ## Notes-zhTW: Masque的Serenity皮膚。
 
-## Version: 10.0.1
+## Version: 10.0.3
 ## Author: StormFX
 ## Dependencies: Masque
 

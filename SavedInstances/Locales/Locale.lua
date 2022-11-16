@@ -29,6 +29,7 @@ Ld["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r to open week
 Ld["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Left-click|r to detach tooltip"
 Ld["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Middle-click|r to show Blizzard's Raid Information"
 Ld["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Right-click|r to configure SavedInstances"
+Ld["AA"] = "AA"
 Ld["Abbreviate keystones"] = "Abbreviate keystones"
 Ld["Abbreviate Mythic keystone dungeon names"] = "Abbreviate Mythic keystone dungeon names"
 Ld["Account"] = "Account"
@@ -79,6 +80,8 @@ Ld["Display instances with space inserted between categories"] = "Display instan
 Ld["Doomwalker"] = "Doomwalker"
 Ld["DOS"] = "DOS"
 Ld["Dragon of Nightmare"] = "Dragon of Nightmare"
+Ld["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+Ld["Dragonflight Transmute"] = "Dragonflight Transmute"
 Ld["Dump quest debugging information"] = "Dump quest debugging information"
 Ld["Dump time debugging information"] = "Dump time debugging information"
 Ld["Emissary Missing"] = "Emissary Missing"
@@ -163,8 +166,10 @@ Ld["Recover Dailies"] = "Recover Dailies"
 Ld["Report instance resets to group"] = "Report instance resets to group"
 Ld["Reset Characters"] = "Reset Characters"
 Ld["Reverse ordering"] = "Reverse ordering"
+Ld["RLP"] = "RLP"
 Ld["Roll Bonus"] = "Roll Bonus"
 Ld["Row Highlight"] = "Row Highlight"
+Ld["SBG"] = "SBG"
 Ld["SD"] = "SD"
 Ld["SEAT"] = "SEAT"
 Ld["Set All"] = "Set All"
@@ -208,6 +213,7 @@ Ld["Sorting"] = "Sorting"
 Ld["SOTS"] = "SOTS"
 Ld["Space between categories"] = "Space between categories"
 Ld["STRT"] = "STRT"
+Ld["TAV"] = "TAV"
 Ld["TD"] = "TD"
 Ld["Text"] = "Text"
 Ld["The Four Celestials"] = "The Four Celestials"
@@ -217,6 +223,8 @@ Ld["This should only be used for characters who have been renamed or deleted, as
 Ld["Time /played"] = "Time /played"
 Ld["Time Left"] = "Time Left"
 Ld["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+Ld["TJS"] = "TJS"
+Ld["TNO"] = "TNO"
 Ld["Tooltip Scale"] = "Tooltip Scale"
 Ld["TOP"] = "TOP"
 Ld["Torghast"] = "Torghast"
@@ -254,6 +262,8 @@ if locale == "frFR" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Clic-gauche|r pour détacher l'infobulle."
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Clic-milieu|r pour afficher les Infos Raid de Blizzard."
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Clic-droit|r pour configurer SavedInstances."
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "Noms de donjons abrégés"
 La["Abbreviate Mythic keystone dungeon names"] = "Abréger les noms des donjons de clés mythiques"
 La["Account"] = "Compte"
@@ -311,6 +321,10 @@ La["Display instances with space inserted between categories"] = "Affiche les in
 La["Doomwalker"] = "Doomwalker"
 La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Les Dragons du Cauchemar"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "lister les informations de débogage des quêtes"
 La["Dump time debugging information"] = "lister les informations de débogage du temps"
 La["Emissary Missing"] = "Émissaire manquant"
@@ -408,8 +422,12 @@ La["Recover Dailies"] = "Récupérer les journalières"
 La["Report instance resets to group"] = "Indiquer les réinitialisations d'instances au groupe"
 La["Reset Characters"] = "Remise à zéro des personnages"
 La["Reverse ordering"] = "Ordre inversé"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Jets de dé bonus"
 La["Row Highlight"] = "Surbrillance des rangées"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "SD"
 --[[Translation missing --]]
 La["SEAT"] = "SEAT"
@@ -458,6 +476,8 @@ La["Space between categories"] = "Espacer les catégories"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "Texte"
 La["The Four Celestials"] = "Les Quatre Astres"
@@ -468,6 +488,10 @@ La["Time /played"] = "Temps /joué"
 La["Time Left"] = "Temps restant "
 --[[Translation missing --]]
 La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Taille de l'infobulle"
 La["TOP"] = "TOP"
 La["Torghast"] = "Tourment"
@@ -512,6 +536,8 @@ elseif locale == "deDE" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Linksklick|r, um den Tooltip zu lösen"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Mittelklick|r , um die Blizzard-Schlachtszugsinfo anzuzeigen"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Rechtsklick|r, um SavedInstances zu konfigurieren"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "Schlüsselsteine abkürzen"
 La["Abbreviate Mythic keystone dungeon names"] = "Namen mythischer Schlüsselsteindungeons abkürzen"
 La["Account"] = "Account"
@@ -568,6 +594,10 @@ La["Display instances with space inserted between categories"] = "Instanzen mit 
 La["Doomwalker"] = "Verdammniswandler"
 La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Drache des Albtraums"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Quest Debugging Information"
 La["Dump time debugging information"] = "Zeit Debugging Informationen"
 La["Emissary Missing"] = "Abgesandte Truhe fehlt"
@@ -663,8 +693,12 @@ La["Recover Dailies"] = "Dailies wiederherstellen"
 La["Report instance resets to group"] = "Instanzzurücksetzungen an die Gruppe berichten"
 La["Reset Characters"] = "Charaktere zurücksetzen"
 La["Reverse ordering"] = "Umgekehrte Anordung"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Bonuswürfe"
 La["Row Highlight"] = "Zeilenhervorhebung"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "SD"
 --[[Translation missing --]]
 La["SEAT"] = "SEAT"
@@ -713,6 +747,8 @@ La["Space between categories"] = "Freiraum zwischen Kategorien"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "Text"
 La["The Four Celestials"] = "Die Vier Erhabenen"
@@ -722,6 +758,10 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "Zeit /gespielt"
 La["Time Left"] = "Verbleibende Zeit"
 La["Timeworn Mythic Keystone"] = "Anachronistischer Mythischer Schlüsselstein"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Tooltip-Skalierung"
 La["TOP"] = "TOP"
 La["Torghast"] = "Torghast"
@@ -766,6 +806,8 @@ elseif locale == "koKR" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00좌-클릭|r으로 툴팁 떼어내기"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00가운데-클릭|r 블리자드 공격대 정보 보기"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00우-클릭|r으로 SavedInstances 설정"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "쐐기명 축약"
 La["Abbreviate Mythic keystone dungeon names"] = "신화 쐐기돌 던전 이름을 짧게 표시하기"
 La["Account"] = "계정"
@@ -816,6 +858,10 @@ La["Display instances with space inserted between categories"] = "카테고리 �
 La["Doomwalker"] = "파멸의 절단기"
 La["DOS"] = "저편"
 La["Dragon of Nightmare"] = "악몽의 용"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "퀘스트 디버그 정보 덤프하기"
 La["Dump time debugging information"] = "시간 디버깅 정보 덤프하기"
 La["Emissary Missing"] = "사절 없음"
@@ -900,8 +946,12 @@ La["Recover Dailies"] = "일일퀘스트 복구"
 La["Report instance resets to group"] = "던전 초기화를 파티에 알림"
 La["Reset Characters"] = "캐릭터 초기화"
 La["Reverse ordering"] = "순서를 거꾸로"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "추가 보상"
 La["Row Highlight"] = "열 강조"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "심연"
 La["SEAT"] = "삼두정"
 La["Set All"] = "모든 설정"
@@ -945,6 +995,8 @@ La["Sorting"] = "정렬"
 La["SOTS"] = "폭사"
 La["Space between categories"] = "카테고리 사이에 공백"
 La["STRT"] = "타자:경이"
+--[[Translation missing --]]
+La["TAV"] = "TAV"
 La["TD"] = "톨다고르"
 La["Text"] = "글자"
 La["The Four Celestials"] = "네 천신"
@@ -954,6 +1006,10 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "플레이 시간 표시"
 La["Time Left"] = "남은 시간"
 La["Timeworn Mythic Keystone"] = "시간에 바랜 쐐기돌"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "툴팁 크기"
 La["TOP"] = "투기장"
 La["Torghast"] = "토르가스트"
@@ -991,6 +1047,8 @@ La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r to open week
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Click-Izquierdo|r para separar la descripción"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Click-Medio|r para mostrar Información de banda de Blizzard"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Click-Derecho|r para configurar SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 --[[Translation missing --]]
 La["Abbreviate keystones"] = "Abbreviate keystones"
 --[[Translation missing --]]
@@ -1067,6 +1125,10 @@ La["Doomwalker"] = "Doomwalker"
 La["DOS"] = "DOS"
 --[[Translation missing --]]
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Deshacerse de la información de depuración de misiones"
 La["Dump time debugging information"] = "Deshacerse de la información de depuración de tiempo"
 --[[Translation missing --]]
@@ -1198,8 +1260,12 @@ La["Recover Dailies"] = "Recuperar diarias"
 La["Report instance resets to group"] = "Informar de reinicializaciones de instancias al grupo"
 La["Reset Characters"] = "Reinicializar personajes"
 La["Reverse ordering"] = "Invertir orden"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Bonos de tirada"
 La["Row Highlight"] = "Resalta de fila"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 --[[Translation missing --]]
 La["SD"] = "SD"
 --[[Translation missing --]]
@@ -1260,6 +1326,8 @@ La["Space between categories"] = "Espacio entre categorías"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "Texto"
 La["The Four Celestials"] = "Los Cuatro Celestiales"
@@ -1271,6 +1339,10 @@ La["Time /played"] = "Tiempo /jugado"
 La["Time Left"] = "Tiempo Restante"
 --[[Translation missing --]]
 La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Tamaño de Marco"
 --[[Translation missing --]]
 La["TOP"] = "TOP"
@@ -1325,6 +1397,8 @@ elseif locale == "ruRU" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00ЛКМ|r, чтобы показать информацию в отдельном окне"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "Нажмите на колёсико мышки, чтобы показать информацию о рейдах от Blizzard"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00ПКМ|r, чтобы настроить SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "Сокращения названия ключей"
 La["Abbreviate Mythic keystone dungeon names"] = "Сократить названия эпохальных подземелий"
 La["Account"] = "Аккаунт"
@@ -1375,6 +1449,10 @@ La["Display instances with space inserted between categories"] = "Показыв
 La["Doomwalker"] = "Судьболом"
 La["DOS"] = "ТС"
 La["Dragon of Nightmare"] = "Драконы Кошмара"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Сохранить отладочную информацию квеста в файле"
 La["Dump time debugging information"] = "Вывести информацию о времени для отладки"
 La["Emissary Missing"] = "Посланники отсутствуют"
@@ -1459,8 +1537,12 @@ La["Recover Dailies"] = "Восстановление Ежедневных за�
 La["Report instance resets to group"] = "Сообщать группе об обновлении подземелья"
 La["Reset Characters"] = "Сброс персонажей"
 La["Reverse ordering"] = "Обратный порядок"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Бонусный бросок"
 La["Row Highlight"] = "Подсветка строки"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "КК"
 La["SEAT"] = "ПТ"
 La["Set All"] = "Установить значение для всех"
@@ -1504,6 +1586,8 @@ La["Sorting"] = "Сортировка"
 La["SOTS"] = "СШ"
 La["Space between categories"] = "Промежуток между категориями"
 La["STRT"] = "УЛИЦЫ"
+--[[Translation missing --]]
+La["TAV"] = "TAV"
 La["TD"] = "ТД"
 La["Text"] = "Текст"
 La["The Four Celestials"] = "Четыре небожителя"
@@ -1513,6 +1597,10 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "Общее время игры"
 La["Time Left"] = "Обновится через"
 La["Timeworn Mythic Keystone"] = "Старый ключ"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Масштаб подсказки"
 La["TOP"] = "Театр"
 La["Torghast"] = "Торгаст"
@@ -1549,6 +1637,8 @@ elseif locale == "zhCN" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00左键点击|r 显示独立窗口"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00中键点击|r 显示游戏内建的团队信息"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00右键点击|r 设置SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "史诗钥石简称"
 La["Abbreviate Mythic keystone dungeon names"] = "显示史诗钥石的简称"
 La["Account"] = "账号"
@@ -1599,6 +1689,10 @@ La["Display instances with space inserted between categories"] = "在分类之�
 La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "梦魇之龙"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "打印任务调试信息"
 La["Dump time debugging information"] = "打印时间调试信息"
 La["Emissary Missing"] = "大使任务缺失"
@@ -1683,8 +1777,12 @@ La["Recover Dailies"] = "提取日常任务"
 La["Report instance resets to group"] = "报告副本重置"
 La["Reset Characters"] = "重置角色"
 La["Reverse ordering"] = "反转排序"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "额外拾取情况"
 La["Row Highlight"] = "透明度"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "赤红"
 La["SEAT"] = "执政团"
 La["Set All"] = "设置所有"
@@ -1728,6 +1826,8 @@ La["Sorting"] = "排序"
 La["SOTS"] = "风暴"
 La["Space between categories"] = "显示分类间距"
 La["STRT"] = "天街"
+--[[Translation missing --]]
+La["TAV"] = "TAV"
 La["TD"] = "托尔"
 La["Text"] = "文本"
 La["The Four Celestials"] = "四大天神"
@@ -1737,6 +1837,10 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "已游戏时间"
 La["Time Left"] = "剩余时间"
 La["Timeworn Mythic Keystone"] = "时空漫游史诗钥石"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "提示框缩放"
 La["TOP"] = "剧场"
 La["Torghast"] = "托加斯特"
@@ -1774,6 +1878,8 @@ elseif locale == "esES" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Clic|r para separar la ventana de información"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Clic medio|r para mostrar la Información de banda"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Click-Derecho|r para configurar SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "Abreviar piedras angulares"
 La["Abbreviate Mythic keystone dungeon names"] = "Abreviar nombres de mazmorras de piedra angular"
 La["Account"] = "Cuenta"
@@ -1837,6 +1943,10 @@ La["Doomwalker"] = "Doomwalker"
 La["DOS"] = "EOL (DOS)"
 --[[Translation missing --]]
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Volcar información de depuración de misión"
 La["Dump time debugging information"] = "Volcar información de depuración de tiempo"
 --[[Translation missing --]]
@@ -1945,8 +2055,12 @@ La["Recover Dailies"] = "Recuperar diarias"
 La["Report instance resets to group"] = "Informar de reinicios de estancia al grupo"
 La["Reset Characters"] = "Reiniciar personajes"
 La["Reverse ordering"] = "Invertir orden"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Bonos de tirada"
 La["Row Highlight"] = "Resalta de fila"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "CS (SD)"
 --[[Translation missing --]]
 La["SEAT"] = "SEAT"
@@ -1997,6 +2111,8 @@ La["Space between categories"] = "Espacio entre categorías"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "Texto"
 La["The Four Celestials"] = "Los Cuatro Celestiales"
@@ -2007,6 +2123,10 @@ La["Time /played"] = "Tiempo jugado (/played)"
 La["Time Left"] = "Tiempo restante"
 --[[Translation missing --]]
 La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Tamaño de la ventana de información"
 La["TOP"] = "TdD (TOP)"
 La["Torghast"] = "Torghast"
@@ -2052,6 +2172,8 @@ elseif locale == "zhTW" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00左鍵|r 分離滑鼠提示"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00中鍵|r 顯示暴雪的團隊資訊"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00右鍵|r 設定 SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "簡短鑰石名稱"
 La["Abbreviate Mythic keystone dungeon names"] = "傳奇鑰石的地城名稱使用簡稱"
 La["Account"] = "帳號"
@@ -2106,6 +2228,10 @@ La["Display instances with space inserted between categories"] = "顯示副本�
 La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "夢魘之龍"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
 La["Emissary Missing"] = "沒有特使"
@@ -2136,8 +2262,7 @@ La["Group"] = "群組"
 La["Guild"] = "公會"
 La["HOA"] = "贖罪"
 La["Hold Alt to show all data"] = "按住 Alt 顯示所有資料"
---[[Translation missing --]]
-La["HOV"] = "HOV"
+La["HOV"] = "英靈殿"
 La["Hover mouse on indicator for details"] = "滑鼠指向顯示詳細內容"
 La["Hunt: Death Elementals"] = "獵殺：死亡元素"
 La["Hunt: Shadehounds"] = "獵殺：暗影獵犬"
@@ -2197,8 +2322,12 @@ La["Recover Dailies"] = "恢復每日"
 La["Report instance resets to group"] = "重置副本時通報團隊"
 La["Reset Characters"] = "重置角色"
 La["Reverse ordering"] = "反向排序"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "使用額外骰子"
 La["Row Highlight"] = "顯著標示橫列"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 La["SD"] = "血紅"
 --[[Translation missing --]]
 La["SEAT"] = "SEAT"
@@ -2246,6 +2375,8 @@ La["SOTS"] = "SOTS"
 La["Space between categories"] = "分類間距"
 La["STRT"] = "街道"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "文字"
 La["The Four Celestials"] = "四大天尊"
@@ -2255,6 +2386,10 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "已遊玩時間"
 La["Time Left"] = "剩餘時間"
 La["Timeworn Mythic Keystone"] = "時光漫遊傳奇鑰石"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "滑鼠提示縮放大小"
 La["TOP"] = "劇場"
 La["Torghast"] = "托迦司"
@@ -2294,6 +2429,8 @@ elseif locale == "ptBR" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00Botão Esquerdo | Para destacar as Dicas"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Botão do Meio|r para mostrar informações da Raid dadas pela Blizzard"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Botão Direito|r Para configurar o SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 La["Abbreviate keystones"] = "Abreviar pedras-chave"
 La["Abbreviate Mythic keystone dungeon names"] = "Abreviar nomes de masmorras de pedra-chave Mítica"
 La["Account"] = "Conta"
@@ -2366,6 +2503,10 @@ La["Doomwalker"] = "Doomwalker"
 La["DOS"] = "DOS"
 --[[Translation missing --]]
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 --[[Translation missing --]]
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Gerar informações de tempo de depuração"
@@ -2487,8 +2628,12 @@ La["Recover Dailies"] = "Recuperar missões diárias"
 La["Report instance resets to group"] = "Redefinir relatório da Instância para o grupo"
 La["Reset Characters"] = "Reiniciar personagens"
 La["Reverse ordering"] = "Ordem inversa"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Rolar saque de bônus"
 La["Row Highlight"] = "Realçar fileira"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 --[[Translation missing --]]
 La["SD"] = "SD"
 --[[Translation missing --]]
@@ -2548,6 +2693,8 @@ La["Space between categories"] = "Espaço entre as categorias"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "Texto"
 La["The Four Celestials"] = "Os Quatro Celestiais"
@@ -2559,6 +2706,10 @@ La["Time /played"] = "Tempo /played"
 La["Time Left"] = "Tempo restante"
 --[[Translation missing --]]
 La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Escala da janela"
 --[[Translation missing --]]
 La["TOP"] = "TOP"
@@ -2614,6 +2765,8 @@ La["|cffffff00Click|r to open weekly rewards"] = "|cffffff00Click|r to open week
 La["|cffffff00Left-click|r to detach tooltip"] = " |cffffff00Click sinistro|r per sganciare la finestra"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00Click-centrale|r permostrare le informazioni Blizzard sul raid"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00Click destro|r per configurare SavedInstances"
+--[[Translation missing --]]
+La["AA"] = "AA"
 --[[Translation missing --]]
 La["Abbreviate keystones"] = "Abbreviate keystones"
 --[[Translation missing --]]
@@ -2687,6 +2840,10 @@ La["Doomwalker"] = "Doomwalker"
 --[[Translation missing --]]
 La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Drago dell'Incubo"
+--[[Translation missing --]]
+La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Transmute"] = "Dragonflight Transmute"
 --[[Translation missing --]]
 La["Dump quest debugging information"] = "Dump quest debugging information"
 La["Dump time debugging information"] = "Inserisci l'orario nelle informazioni di debug"
@@ -2818,8 +2975,12 @@ La["Recover Dailies"] = "Ripristina missioni giornaliere"
 La["Report instance resets to group"] = "Informa il gruppo del ripristino dell'istanza"
 La["Reset Characters"] = "Azzera personaggi"
 La["Reverse ordering"] = "Ordinamento inverso"
+--[[Translation missing --]]
+La["RLP"] = "RLP"
 La["Roll Bonus"] = "Tiro bonus"
 La["Row Highlight"] = "Evidenzia riga"
+--[[Translation missing --]]
+La["SBG"] = "SBG"
 --[[Translation missing --]]
 La["SD"] = "SD"
 --[[Translation missing --]]
@@ -2878,6 +3039,8 @@ La["Space between categories"] = "Spazio tra le categorie"
 --[[Translation missing --]]
 La["STRT"] = "STRT"
 --[[Translation missing --]]
+La["TAV"] = "TAV"
+--[[Translation missing --]]
 La["TD"] = "TD"
 La["Text"] = "Testo"
 La["The Four Celestials"] = "I quattro Celestiali"
@@ -2889,6 +3052,10 @@ La["Time /played"] = "Tempo /giocato"
 La["Time Left"] = "Tempo rimanente"
 --[[Translation missing --]]
 La["Timeworn Mythic Keystone"] = "Timeworn Mythic Keystone"
+--[[Translation missing --]]
+La["TJS"] = "TJS"
+--[[Translation missing --]]
+La["TNO"] = "TNO"
 La["Tooltip Scale"] = "Zoom del tooltip"
 --[[Translation missing --]]
 La["TOP"] = "TOP"

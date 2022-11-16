@@ -229,6 +229,7 @@ E.BOOKTYPE_CATEGORY = {
 	["MONK"] = true,
 	["DRUID"] = true,
 	["DEMONHUNTER"] = true,
+	["EVOKER"] = true,
 }
 
 E.CLASSID = {
@@ -243,7 +244,8 @@ E.CLASSID = {
 	"WARLOCK",
 	"MONK",
 	"DRUID",
-	"DEMONHUNTER"
+	"DEMONHUNTER",
+	"EVOKER",
 }
 
 E.COVENANT_HEX_C = {

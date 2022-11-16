@@ -315,6 +315,19 @@ function Item:GetStatus()
 end
 
 -------------------------------------------------------------------------------
+----------------------------------- HEIRLOOM ----------------------------------
+-------------------------------------------------------------------------------
+
+local Heirloom = Class('Heirloom', Item, {type = L['heirloom']})
+
+function Heirloom:IsObtained() return C_Heirloom.PlayerHasHeirloom(self.item) end
+
+function Heirloom:GetStatus()
+    local collected = C_Heirloom.PlayerHasHeirloom(self.item)
+    return collected and Green(L['known']) or Red(L['missing'])
+end
+
+-------------------------------------------------------------------------------
 ------------------------------------ MOUNT ------------------------------------
 -------------------------------------------------------------------------------
 
@@ -552,6 +565,7 @@ ns.reward = {
     Currency = Currency,
     Follower = Follower,
     Item = Item,
+    Heirloom = Heirloom,
     Mount = Mount,
     Pet = Pet,
     Quest = Quest,

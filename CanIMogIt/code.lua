@@ -104,6 +104,7 @@ local classArmorTypeMap = {
     ["DEATHKNIGHT"] = PLATE,
     ["DEMONHUNTER"] = LEATHER,
     ["DRUID"] = LEATHER,
+    ["EVOKER"] = MAIL,
     ["HUNTER"] = MAIL,
     ["MAGE"] = CLOTH,
     ["MONK"] = LEATHER,
@@ -130,6 +131,7 @@ local classMask = {
     [512] = "MONK",
     [1024] = "DRUID",
     [2048] = "DEMONHUNTER",
+    [4096] = "EVOKER",
 }
 
 
@@ -370,6 +372,16 @@ function CanIMogIt.Utils.tablelength(T)
 end
 
 
+function CanIMogIt.Utils.GetKeys(T)
+    --- Get an array of the keys from a table.
+    local result = {}
+    for key, _ in pairs(T) do
+        table.insert(result, key)
+    end
+    return result
+end
+
+
 -----------------------------
 -- CanIMogIt Core methods  --
 -----------------------------
@@ -558,9 +570,9 @@ function CanIMogIt:_GetRatio(setID)
     -- Gets the count of known and total sources for the given setID.
     local have = 0
     local total = 0
-    for _, knownSource in pairs(C_TransmogSets.GetSetSources(setID)) do
+    for _, appearance in pairs(C_TransmogSets.GetSetPrimaryAppearances(setID)) do
         total = total + 1
-        if knownSource then
+        if appearance.collected then
             have = have + 1
         end
     end
@@ -712,7 +724,7 @@ function CanIMogIt:CalculateSetsVariantText(setID)
     end
 
     -- uncomment for debug
-    -- variantsText = variantsText .. "setID: " .. setID
+    -- variantsText = variantsText .. "setID: " .. setID .. "  "
 
     return string.sub(variantsText, 1, -2)
 end
@@ -947,7 +959,7 @@ function CanIMogIt:CharacterCanEquipItem(itemLink)
     if CanIMogIt:IsItemArmor(itemLink) and CanIMogIt:IsArmorCosmetic(itemLink) then
         return true
     end
-    local redText = CanIMogItTooltipScanner:GetRedText(itemLink)
+    local redText = CIMIScanTooltip:GetRedText(itemLink)
     if redText == "" or redText == nil then
         return true
     end
@@ -988,18 +1000,18 @@ end
 
 
 function CanIMogIt:IsItemSoulbound(itemLink, bag, slot)
-    return CanIMogItTooltipScanner:IsItemSoulbound(itemLink, bag, slot)
+    return CIMIScanTooltip:IsItemSoulbound(itemLink, bag, slot)
 end
 
 
 function CanIMogIt:IsItemBindOnEquip(itemLink, bag, slot)
-    return CanIMogItTooltipScanner:IsItemBindOnEquip(itemLink, bag, slot)
+    return CIMIScanTooltip:IsItemBindOnEquip(itemLink, bag, slot)
 end
 
 
 function CanIMogIt:GetItemClassRestrictions(itemLink)
     if not itemLink then return end
-    return CanIMogItTooltipScanner:GetClassesRequired(itemLink)
+    return CIMIScanTooltip:GetClassesRequired(itemLink)
 end
 
 
@@ -1045,7 +1057,7 @@ function CanIMogIt:GetSourceID(itemLink)
     for i, slot in pairs(slots) do
         CanIMogIt.DressUpModel:TryOn(itemLink, slot)
         local transmogInfo = CanIMogIt.DressUpModel:GetItemTransmogInfo(slot)
-        if transmogInfo and 
+        if transmogInfo and
             transmogInfo.appearanceID ~= nil and
             transmogInfo.appearanceID ~= 0 then
             -- Yes, that's right, we are setting `appearanceID` to the `sourceID`. Blizzard messed
@@ -1181,7 +1193,7 @@ end
 
 
 function CanIMogIt:GetReason(itemLink)
-    local reason = CanIMogItTooltipScanner:GetRedText(itemLink)
+    local reason = CIMIScanTooltip:GetRedText(itemLink)
     if reason == "" then
         reason = CanIMogIt:GetItemSubClassName(itemLink)
     end
@@ -1443,7 +1455,7 @@ function CanIMogIt:GetTooltipText(itemLink, bag, slot)
             the unmodifiedText that can be used for lookup values.
     ]]
     if bag and slot then
-        itemLink = GetContainerItemLink(bag, slot)
+        itemLink = C_Container.GetContainerItemLink(bag, slot)
         if not itemLink then
             if foundAnItemFromBags then
                 return "", ""

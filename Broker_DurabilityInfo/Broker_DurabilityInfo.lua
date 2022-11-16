@@ -63,10 +63,6 @@ local merchantState = NOT_AT_MERCHANT
 
 local request = true
 
-local hiddenFrame = CreateFrame("GameTooltip", "Broker_DurabilityHiddenTooltip") --abyui 奇怪的问题，必须加frameName否则装备价格显示错误
-hiddenFrame:SetOwner(WorldFrame, "ANCHOR_NONE")
-hiddenFrame:Hide()
-
 local REPAIR_ICON_COORDS = {0.28125, 0.5625, 0, 0.5625}
 local GUILD_REPAIR_ICON_COORDS = {0.5625, 0.84375, 0, 0.5625}
 
@@ -504,11 +500,11 @@ function addon:GetRepairData()
 
 	local total = 0
 	local current = 0
-	local index,item
 
 	for index,item in pairs(slotNames) do
 		local val, max = GetInventoryItemDurability(slotNames[index][ID])
-		local hasItem, hasCooldown, repairCost = hiddenFrame:SetInventoryItem("player", slotNames[index][ID])
+		local tooltipData = C_TooltipInfo.GetInventoryItem("player", slotNames[index][ID])
+		local repairCost = TooltipUtil.GetRepairCostForTooltipData(tooltipData)
 		if max then
 			if merchantState == AT_MERCHANT then
 				repairCost = self:MerchantCorrection(repairCost)
@@ -530,10 +526,11 @@ function addon:GetRepairData()
 	if profileDB.showBags then
 		bagCost = 0;
 		for bag = 0, 4 do
-			local nrslots = GetContainerNumSlots(bag)
+			local nrslots = C_Container.GetContainerNumSlots(bag)
 			for slot = 1, nrslots do
-				local val, max = GetContainerItemDurability(bag, slot)
-				local hasCooldown, repairCost = hiddenFrame:SetBagItem(bag, slot)
+				local val, max = C_Container.GetContainerItemDurability(bag, slot)
+				local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
+				local repairCost = TooltipUtil.GetRepairCostForTooltipData(tooltipData)
 				if max then
 					if merchantState == AT_MERCHANT then
 						repairCost = self:MerchantCorrection(repairCost)

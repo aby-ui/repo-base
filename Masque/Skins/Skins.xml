@@ -2,9 +2,9 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Regions.lua"/>
 	<Script file="Skins.lua"/>
-	<Script file="Default_Classic.lua"/>
-	<Script file="Default.lua"/>
-	<Script file="Classic.lua"/>
+	<Script file="Blizzard_Classic.lua"/>
+	<Script file="Blizzard_Modern.lua"/>
+	<Script file="Classic_Redux.lua"/>
 	<Script file="Dream.lua"/>
 	<Script file="Zoomed.lua"/>
 </Ui>

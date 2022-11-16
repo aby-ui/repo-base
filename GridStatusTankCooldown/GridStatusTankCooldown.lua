@@ -141,7 +141,10 @@ local interest_buffs = {
         [212800]    = 1, -- 残影，198589疾影的buff 1min 10s
         [196555]    = 1, -- 天赋虚空行走 2分钟无敌
         --[207810]    = 2, -- 虚空链接 8.0没找到
-    }
+    },
+    ["EVOKER"] = {
+
+    },
 }
 local flags = {}
 local class_of_spell = {}

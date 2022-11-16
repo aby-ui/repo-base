@@ -16,6 +16,7 @@ local expansionCoords = {
     [6] = {0.3955078125,0.5908203125,0.53125,0.921875}, -- legion
     [7] = {0.3955078125,0.5908203125,0,0.390625}, -- battle for azeroth
     [8] = {0.5927734375,0.7880859375,0,0.390625}, -- shadowlands
+	[9] = {0.791015625,0.986328125,0,0.390625}, -- dragonflight
 }
 
 rematch:InitModule(function()

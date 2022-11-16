@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheNokhudOffensiveTrash", "DBM-Party-Dragonflight", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221110022742")
+mod:SetRevision("20221115231757")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -31,9 +31,11 @@ local specWarnTempest						= mod:NewSpecialWarningInterrupt(386024, "HasInterrup
 
 function mod:CLTarget(targetname)
 	if not targetname then return end
-	if targetname == UnitName("player") and self:AntiSpam(4, 5) then
-		specWarnChainLightning:Show()
-		specWarnChainLightning:Play("runout")
+	if targetname == UnitName("player") then
+		if self:AntiSpam(4, 5) then
+			specWarnChainLightning:Show()
+			specWarnChainLightning:Play("runout")
+		end
 		yellChainLightning:Yell()
 	end
 end

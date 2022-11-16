@@ -82,3 +82,5 @@ local function EncounterJournalOverlayEvents(event, ...)
 end
 
 CanIMogIt.frame:AddOverlayEventFunction(EncounterJournalOverlayEvents)
+
+CanIMogIt:RegisterMessage("OptionUpdate", EncounterJournalOverlayEvents)

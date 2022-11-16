@@ -14,7 +14,7 @@
 -------1.93:删掉一条多余的代码（会导致5.1报错）
 -------2.0:对暴雪已内置的内容进行删除
 -------删除:PetJournal_UpdatePetList
--------新增:GameTooltip.OnTooltipSetUnit,C_PetJournal.GetOwnedBattlePetString
+-------新增:C_PetJournal.GetOwnedBattlePetString
 -------2.01:BattlePetTooltipTemplate_SetBattlePet加入frame.Name:SetText(data.customName),当某些情况宠物名字无法获取时，用自定义名
 -------修复鼠标提示显示问题
 -------2.1:修复点击链接无法正确指向宠物
@@ -313,11 +313,11 @@ hookfunction.init = function()
 
 	---------------鼠标提示加入简单的收集信息
 		-----(目标/Unit)
-	GameTooltip:HookScript("OnTooltipSetUnit",function()
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tip, tData)
 		if not HPetSaves.Tooltip then return end
-		local unit = select(2,GameTooltip:GetUnit())
+		local unit = select(2,TooltipUtil.GetDisplayedUnit(tip))
 		if unit and UnitIsBattlePet and UnitIsBattlePet(unit) then
-			local speciesID = UnitBattlePetSpeciesID(select(2,GameTooltip:GetUnit()))
+			local speciesID = UnitBattlePetSpeciesID(unit)
 			local str = C_PetJournal.GetOwnedBattlePetString(speciesID)
 			if not UnitIsWildBattlePet(unit) then
 				GameTooltip:AddLine(str)
@@ -326,18 +326,15 @@ hookfunction.init = function()
 		end
 	end)
 		-----(物品/Item)
-	local function BattlePetItemTooltip(self)
-		local link = select(2,self:GetItem())
-		if not link then return end
-		local id = select(3,strfind(link, "^|%x+|Hitem:(%-?%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%-?%d+):(%-?%d+)"))
-		local petID = HPetBattleAny.GetPetIDByItemID(id)
+	local function BattlePetItemTooltip(self, tData)
+		if not tData.id then return end
+		local petID = HPetBattleAny.GetPetIDByItemID(tostring(tData.id))
 		if petID and type(petID)=="number" then
 			local str = C_PetJournal.GetOwnedBattlePetString(petID)
-			local linenum = nil
-			for i = self:NumLines(),3,-1  do
-				local text = _G[self:GetName().."TextLeft"..i]
-				if str:find(text:GetText()) then
-					text:SetText(GetOwnedInfo(str,petID))
+			for i = #tData.lines,1,-1  do
+				local text = tData.lines[i].leftText
+				if text:find(str) then
+					_G[self:GetName().."TextLeft"..i]:SetText(GetOwnedInfo(str,petID))
 					self:Show()
 					return
 				end
@@ -346,8 +343,7 @@ hookfunction.init = function()
 			self:Show()
 		end
 	end
-	GameTooltip:HookScript("OnTooltipSetItem", BattlePetItemTooltip)
-	ItemRefTooltip:HookScript("OnTooltipSetItem", BattlePetItemTooltip)
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, BattlePetItemTooltip) --print(GetItemInfo(69239)) 背包里的是hookfunction.BattlePetToolTip_Show
 	---------------为放弃按钮增加快捷键
 	PetBattleFrame.BottomFrame.ForfeitButton:SetID(6)
 	---------------hook宠物api

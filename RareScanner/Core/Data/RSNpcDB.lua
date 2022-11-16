@@ -274,6 +274,44 @@ function RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
 	return nil
 end
 
+function RSNpcDB.GetBestInternalNpcCoordinates(npcID, mapID)
+	-- It finds the closest known coordinate to the current player position
+	local playerMapPosition = C_Map.GetPlayerMapPosition(mapID, "player")
+	local x, y
+	if (playerMapPosition) then
+		x, y = playerMapPosition:GetXY()
+	end
+	
+	if (not x or not y) then
+		return RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
+	end
+	
+	local overlay = RSNpcDB.GetInternalNpcOverlay(npcID, mapID)
+	if (overlay) then
+		local distances = {}
+		local coords = {}
+		for _, coordinates in ipairs (overlay) do
+			local xo, yo = strsplit("-", coordinates)
+			local distance = RSUtils.DistanceBetweenCoords(x, xo, y, yo);
+			if (distance >= 0 and distance <= 0.02) then
+				tinsert(distances, distance)
+				coords[distance] = {}
+				coords[distance].x = xo
+				coords[distance].y = yo
+			end
+		end
+		
+		-- Get the smallest
+		if (RSUtils.GetTableLength(distances) > 0) then
+			local minDistance = min(unpack(distances))
+			RSLogger:PrintDebugMessage(string.format("Encontrado NPC [%s] sin vignette a una distancia %s.", npcID, minDistance))
+			x, y = coords[minDistance].x, coords[minDistance].y
+		end
+	end
+	
+	return x, y
+end
+
 function RSNpcDB.GetInternalNpcOverlay(npcID, mapID)
 	if (npcID and mapID) then
 		local npcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)

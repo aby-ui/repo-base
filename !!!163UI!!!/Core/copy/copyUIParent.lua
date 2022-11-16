@@ -38,7 +38,7 @@ function UICoreFrameFade(frame, fadeInfo)
 	end
 	frame:SetAlpha(fadeInfo.startAlpha);
 
-	frame.fadeInfo = fadeInfo;
+	frame._aby_fadeInfo = fadeInfo;
 	frame:Show();
 
 	local index = 1;
@@ -64,13 +64,12 @@ function UICoreFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
 end
 
 -- Convenience function to do a simple fade out
-function UICoreFrameFadeOut(frame, timeToFade, startAlpha, endAlpha, finishedFunc)
+function UICoreFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
 	local fadeInfo = {};
 	fadeInfo.mode = "OUT";
 	fadeInfo.timeToFade = timeToFade;
 	fadeInfo.startAlpha = startAlpha;
 	fadeInfo.endAlpha = endAlpha;
-    fadeInfo.finishedFunc = finishedFunc;
 	UICoreFrameFade(frame, fadeInfo);
 end
 
@@ -91,20 +90,20 @@ frame.finishedArg3 [ANYTHING]	Argument to the finishedFunc
 frame.finishedArg4 [ANYTHING]	Argument to the finishedFunc
 frame.fadeHoldTime [Num]	Time to hold the faded state
  ]]
- 
+
 function UICoreFrameFade_OnUpdate(self, elapsed)
 	local index = 1;
 	local frame, fadeInfo;
 	while FADEFRAMES[index] do
 		frame = FADEFRAMES[index];
-		fadeInfo = FADEFRAMES[index].fadeInfo;
+		fadeInfo = FADEFRAMES[index]._aby_fadeInfo;
 		-- Reset the timer if there isn't one, this is just an internal counter
 		if ( not fadeInfo.fadeTimer ) then
 			fadeInfo.fadeTimer = 0;
 		end
 		fadeInfo.fadeTimer = fadeInfo.fadeTimer + elapsed;
 
-		-- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade 
+		-- If the fadeTimer is less then the desired fade time then set the alpha otherwise hold the fade state, call the finished function, or just finish the fade
 		if ( fadeInfo.fadeTimer < fadeInfo.timeToFade ) then
 			if ( fadeInfo.mode == "IN" ) then
 				frame:SetAlpha((fadeInfo.fadeTimer / fadeInfo.timeToFade) * (fadeInfo.endAlpha - fadeInfo.startAlpha) + fadeInfo.startAlpha);

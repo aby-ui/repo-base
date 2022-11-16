@@ -4,9 +4,6 @@
 local LibStub = _G.LibStub
 local ADDON_NAME, private = ...
 
--- Range checker
-local rc = LibStub("LibRangeCheck-2.0")
-
 local RSEventHandler = private.NewLib("RareScannerEventHandler")
 
 -- RareScanner database libraries
@@ -32,6 +29,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 -- Handle entities without vignette
 ---============================================================================
 
+local disableScaningNameplatesEverywhere = true
 local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 	if (not unitID) then
 		return
@@ -52,9 +50,9 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 			return
 		end
 	
-		if (mapID and not RSMapDB.IsZoneWithoutVignette(mapID)) then
+		if (not RSMapDB.IsZoneWithoutVignette(mapID)) then
 			-- Continue if its an NPC that doesnt have vignette in a newer zone
-			if (not RSNpcDB.GetInternalNpcInfo(npcID) or not RSNpcDB.GetInternalNpcInfo(npcID).nameplate) then
+			if (disableScaningNameplatesEverywhere and (not RSNpcDB.GetInternalNpcInfo(npcID) or not RSNpcDB.GetInternalNpcInfo(npcID).nameplate)) then
 				return
 			end
 		end
@@ -62,33 +60,12 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 		-- If its a supported NPC and its not killed
 		if ((RSGeneralDB.GetAlreadyFoundEntity(npcID) or RSNpcDB.GetInternalNpcInfo(npcID)) and not RSNpcDB.IsNpcKilled(npcID)) then			
 			local nameplateUnitName, _ = UnitName(unitID)
-			local x, y
+			if (not nameplateUnitName) then
+				nameplateUnitName = RSNpcDB.GetNpcName(npcID)
+			end
 			
-			-- It uses the player position in first instance
-			local playerMapPosition = C_Map.GetPlayerMapPosition(mapID, "player")
-			if (playerMapPosition) then
-				x, y = playerMapPosition:GetXY()
-			end
-	
-			-- Otherwise uses the internal coordinates
-			-- In dungeons and such its not possible to get the player position
-			if (not x or not y) then
-				x, y = RSNpcDB.GetInternalNpcCoordinates(npcID, mapID)
-			end
-	
+			local x, y = RSNpcDB.GetBestInternalNpcCoordinates(npcID, mapID)
 			rareScannerButton:SimulateRareFound(npcID, unitGuid, nameplateUnitName, x, y, RSConstants.NPC_VIGNETTE)
-	
-			-- And then try to find better coordinates while the player approaches
-			local minRange, maxRange = rc:GetRange(unitID)
-			if (playerMapPosition and (minRange or maxRange)) then
-				C_Timer.NewTicker(RSConstants.FIND_BETTER_COORDINATES_WITH_RANGE_TIMER, function()
-					local minRange, maxRange = rc:GetRange(unitID)
-					if (minRange and minRange < 10) then
-						RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
-						RSMinimap.RefreshEntityState(npcID)
-					end
-				end, 15)
-			end
 		end
 	elseif (unitType == "Object") then
 		local containerID = entityID and tonumber(entityID) or nil
@@ -346,6 +323,10 @@ local function OnLootOpened()
 							RSNpcDB.AddItemToNpcLootFound(npcID, itemID)
 						end
 					end
+					
+					-- Also update the position and set dead
+					RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
+					RSEntityStateHandler.SetDeadNpc(npcID)
 				end
 			end
 		end
@@ -548,6 +529,7 @@ local function HandleEvent(rareScannerButton, event, ...)
 	elseif (event == "VIGNETTE_MINIMAP_UPDATED") then
 		OnVignetteMinimapUpdated(rareScannerButton, ...)
 	elseif (event == "VIGNETTES_UPDATED") then
+		RSLogger:PrintDebugMessage("VIGNETTES_UPDATED is back!!!! Borra el ticker que tienes definido en RSEventHandler")
 		OnVignettesUpdated(rareScannerButton)
 	elseif (event == "NAME_PLATE_UNIT_ADDED") then
 		OnNamePlateUnitAdded(rareScannerButton, ...)
@@ -610,4 +592,22 @@ function RSEventHandler.RegisterEvents(rareScannerButton, addon)
 	rareScannerButton:SetScript("OnEvent", function(self, event, ...)
 		HandleEvent(self, event, ...) 
 	end)
+	
+	-- In DL VIGNETTES_UPDATED seems buggy, so keep checking every 10 seconds
+	-- In DL VIGNETTE_MINIMAP_UPDATED doesn't fire if the container appears where the player stands
+	local ticker = C_Timer.NewTicker(10, function() 
+		local vignetteGUIDs = C_VignetteInfo.GetVignettes();
+		for _, vignetteGUID in ipairs(vignetteGUIDs) do
+			local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
+			if (vignetteInfo) then
+				if (vignetteInfo.onWorldMap and RSConfigDB.IsScanningWorldMapVignettes()) then
+					vignetteInfo.id = vignetteGUID
+					rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)	
+				elseif (vignetteInfo.onMinimap) then
+					vignetteInfo.id = vignetteGUID
+					rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)
+				end
+			end
+		end
+	end);
 end

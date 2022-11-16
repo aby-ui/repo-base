@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## OptionalDeps: !KalielsTracker
 ## Title: Angry Keystones
 ## Notes: Displays additional information for Mythic Keystone dungeons

@@ -101,3 +101,5 @@ local function ChatMessageLootEvent(event, message, _, _, _, target)
 end
 
 CanIMogIt.frame:AddEventFunction(ChatMessageLootEvent)
+
+CanIMogIt:RegisterMessage("OptionUpdate", ChatMessageLootEvent)

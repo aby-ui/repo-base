@@ -13,6 +13,12 @@
 local MASQUE, Core = ...
 
 ----------------------------------------
+-- Libraries
+---
+
+local ACD = LibStub("AceConfigDialog-3.0")
+
+----------------------------------------
 -- WoW API
 ---
 
@@ -20,37 +26,28 @@ local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategor
 local InterfaceOptionsFrame_Show = InterfaceOptionsFrame_Show
 
 ----------------------------------------
--- Libraries
+-- Internal
 ---
 
-local ACD = LibStub("AceConfigDialog-3.0")
+-- @ Masque
+local WOW_RETAIL = Core.WOW_RETAIL
 
 ----------------------------------------
 -- Locals
 ---
 
--- Necessary for UI consistency across game versions.
+-- Necessary for consistency across clients.
 local CRLF = "\n "
-Core.CRLF = CRLF
 
-local WOW_RETAIL = Core.WOW_RETAIL
+-- Loader Frame
 local OPT_FRAME
 
 ----------------------------------------
 -- Setup
 ---
 
--- Options Loader
+-- Options Setup Table
 local Setup = {}
-
-Core.Setup = setmetatable(Setup, {
-	__call = function(self, Name, ...)
-		local func = Name and self[Name]
-		if func then
-			func(Core, ...)
-		end
-	end,
-})
 
 -- Sets up the root options group/panel.
 function Setup.Core(self)
@@ -121,6 +118,16 @@ end
 ----------------------------------------
 -- Core
 ---
+
+Core.CRLF = CRLF
+Core.Setup = setmetatable(Setup, {
+	__call = function(self, Name, ...)
+		local func = Name and self[Name]
+		if func then
+			func(Core, ...)
+		end
+	end,
+})
 
 -- Adds options panel info.
 function Core:AddOptionsPanel(Path, Frame, Name)

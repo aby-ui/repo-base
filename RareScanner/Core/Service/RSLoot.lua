@@ -90,16 +90,16 @@ local function IsCollectionFiltered(type, entityID, itemID, classIndex)
 	local collectionsLoot = RSCollectionsDB.GetAllEntitiesCollectionsLoot()[type]
 	if (collectionsLoot and collectionsLoot[entityID]) then
 		-- If mount
-		if (collectionsLoot[entityID][RSConstants.ITEM_TYPE.MOUNT] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.MOUNT], itemID)) then
+		if (RSConfigDB.IsShowingMissingMounts() and collectionsLoot[entityID][RSConstants.ITEM_TYPE.MOUNT] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.MOUNT], itemID)) then
 			return false
 		-- If pet
-		elseif (collectionsLoot[entityID][RSConstants.ITEM_TYPE.PET] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.PET], itemID)) then
+		elseif (RSConfigDB.IsShowingMissingPets() and collectionsLoot[entityID][RSConstants.ITEM_TYPE.PET] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.PET], itemID)) then
 			return false
 		-- If toy
-		elseif (collectionsLoot[entityID][RSConstants.ITEM_TYPE.TOY] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.TOY], itemID)) then
+		elseif (RSConfigDB.IsShowingMissingToys() and collectionsLoot[entityID][RSConstants.ITEM_TYPE.TOY] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.TOY], itemID)) then
 			return false
 		-- If appearance
-		elseif (collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE] and collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex], itemID)) then
+		elseif (RSConfigDB.IsShowingMissingAppearances() and collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE] and collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex] and RSUtils.Contains(collectionsLoot[entityID][RSConstants.ITEM_TYPE.APPEARANCE][classIndex], itemID)) then
 			return false
 		end
 	end
@@ -113,16 +113,16 @@ function RSLoot.IsFiltered(entityID, itemID, itemLink, itemRarity, itemEquipLoc,
 		local _, _, classIndex = UnitClass("player");
 		return IsCollectionFiltered(RSConstants.ITEM_SOURCE.NPC, entityID, itemID, classIndex) and IsCollectionFiltered(RSConstants.ITEM_SOURCE.CONTAINER, entityID, itemID, classIndex)
 	end
+
+	-- Category filter
+	if (not RSConfigDB.IsFilteringByExplorerResults() and IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassID)) then
+		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su categoria.", itemID))
+		return true
+	end
 	
 	-- Quality filter
 	if (itemRarity < tonumber(RSConfigDB.GetLootFilterMinQuality())) then
 		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su calidad.", itemID))
-		return true
-	end
-
-	-- Category filter
-	if (IsFilteredByCategory(itemLink, itemID, itemClassID, itemSubClassID)) then
-		RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por su categoria.", itemID))
 		return true
 	end
 	
@@ -153,14 +153,6 @@ function RSLoot.IsFiltered(entityID, itemID, itemLink, itemRarity, itemEquipLoc,
 		end
 	end
 
-	-- Equipable filter
-	if (RSConfigDB.IsFilteringLootByNotEquipableItems() and (itemClassID == Enum.ItemClass.Weapon or itemClassID == Enum.ItemClass.Armor)) then --weapons or armor
-		if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser equipable.", itemID))
-			return true;
-		end
-	end
-
 	-- Character class filter
 	if (RSConfigDB.IsFilteringLootByNotMatchingClass() and RSTooltipScanners.ScanLoot(itemLink, string.gsub(ITEM_CLASSES_ALLOWED, ": %%s", ""))) then
 		local localizedClass, _, _ = UnitClass("player")
@@ -176,54 +168,6 @@ function RSLoot.IsFiltered(entityID, itemID, itemLink, itemRarity, itemEquipLoc,
 		if ((RSTooltipScanners.ScanLoot(itemLink, ITEM_REQ_ALLIANCE) and localizedFaction ~= FACTION_ALLIANCE) or (RSTooltipScanners.ScanLoot(itemLink, ITEM_REQ_HORDE) and localizedFaction ~= FACTION_HORDE)) then
 			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por facción.", itemID))
 			return true;
-		end
-	end
-
-	-- Transmog filter
-	if (RSConfigDB.IsFilteringLootByTransmog() and (itemClassID == Enum.ItemClass.Weapon or (itemClassID == Enum.ItemClass.Armor and itemSubClassID ~= Enum.ItemArmorSubclass.Generic))) then --weapons or armor (not rings, necks, etc.)
-		-- First check in the internal collections database
-		local isNotcollectedAppearance = RSCollectionsDB.IsNotcollectedAppearance(itemID)
-		if (isNotcollectedAppearance ~= nil and isNotcollectedAppearance == false) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser transfigurable (Collections check).", itemID))
-			return true
-		-- Otherwise use other methods
-		elseif (not isNotcollectedAppearance) then
-			if (not IsEquipable(itemClassID, itemSubClassID, itemEquipLoc)) then
-				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser equipable (Transmog check).", itemID))
-				return true
-			elseif (C_TransmogCollection.PlayerHasTransmog(itemID)) then
-				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por ya tenerlo (Transmog check).", itemID))
-				return true
-			elseif (not RSTooltipScanners.ScanLoot(itemLink, TRANSMOGRIFY_TOOLTIP_APPEARANCE_UNKNOWN)) then
-				RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por no ser transfigurable (Transmog check).", itemID))
-				return true
-			end
-		end
-	end
-
-	-- Collection mount filter
-	if (RSConfigDB.IsFilteringByCollected() and itemClassID == Enum.ItemClass.Miscellaneous and itemSubClassID == Enum.ItemMiscellaneousSubclass.Mount) then --mount
-		if (RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (montura).", itemID))
-			return true
-		end
-	end
-
-	-- Collection pet filter
-	-- Unique pets
-	if (RSConfigDB.IsFilteringByCollected() and itemClassID == Enum.ItemClass.Miscellaneous and itemSubClassID == Enum.ItemMiscellaneousSubclass.CompanionPet) then --pets
-		if (RSTooltipScanners.ScanLoot(itemLink, format(ITEM_PET_KNOWN, "1", "1")) or RSTooltipScanners.ScanLoot(itemLink, format(ITEM_PET_KNOWN, "3", "3"))) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (mascota).", itemID))
-			return true
-		end
-	end
-
-	-- Collection toy filter
-	-- Toys have different categories under miscelanious
-	if (RSConfigDB.IsFilteringByCollected()) then
-		if (IsToy(itemLink, itemID) and RSTooltipScanners.ScanLoot(itemLink, ITEM_SPELL_KNOWN)) then
-			RSLogger:PrintDebugMessageItemID(itemID, string.format("Item [%s]. Filtrado por haberlo conseguido ya (juguete).", itemID))
-			return true
 		end
 	end
 	

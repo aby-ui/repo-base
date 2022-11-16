@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: WorldFlightMap
 ## Notes: Replaces the regular flight map with the world map
 ## Author: Semlar

@@ -1,5 +1,5 @@
 ## Dependencies: TODO:abyui10
-## Interface: 100000
+## Interface: 100002
 
 ## Title: Garrison Mission Manager
 ## Version: v61

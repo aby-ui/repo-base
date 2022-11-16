@@ -277,7 +277,8 @@ function toolbar:ButtonOnLeave()
 end
 
 -- all toolbar buttons use this PreClick, but only heals and treats do anything for now
-function toolbar:ButtonPreClick()
+function toolbar:ButtonPreClick(button,down)
+	if GetCVarBool("ActionButtonUseKeyDown")~=down then return end
 	if InCombatLockdown() then return end
 	-- for heal/bandage button, check if all pets are fully healed and prevent use if so
 	if self==toolbar.Heal or self==toolbar.Bandage then
@@ -324,7 +325,8 @@ function toolbar:ButtonPreClick()
 end
 
 -- all toolbar buttons use this PostClick
-function toolbar:ButtonPostClick(button)
+function toolbar:ButtonPostClick(button,down)
+	if GetCVarBool("ActionButtonUseKeyDown")~=down then return end
 	-- for heal, bandage and treat buttons that are turned off in their pre-click
 	if self.backupAttribute then
 		self:SetAttribute("type",self.backupAttribute)
@@ -344,7 +346,8 @@ end
 -- for the latter three which have a redirect keyvalue, it passes its click to the
 -- BottomPanel[redirect] version of those buttons.
 -- for SummonRandom it just does the summon/dismiss business.
-function toolbar:ButtonOnClick(button)
+function toolbar:ButtonOnClick(button,down)
+	if GetCVarBool("ActionButtonUseKeyDown")~=down then return end	
 	if self.redirect then
 		rematch.BottomPanel[self.redirect]:Click()
 	elseif self==toolbar.SummonRandom then
@@ -444,4 +447,28 @@ function toolbar:PetCountOnEnter()
 		end
 	end
 	rematch.ShowTooltip(self.PetCount,BATTLE_PETS_TOTAL_PETS,format(L["%s\n\nPets At Max Level: %s%d\124r\nPets Not Collected: %s%d\124r\n\n%s Click to display more about your collection."],format(BATTLE_PETS_TOTAL_PETS_TOOLTIP,C_PetJournal.GetNumMaxPets and C_PetJournal.GetNumMaxPets() or ""),rematch.hexWhite,at25,rematch.hexWhite,missing,rematch.LMB))
+end
+
+function rematch:ToggleAchievementFrame()
+    ToggleAchievementFrame()
+    if AchievementFrame:IsVisible() then
+        -- some of this is lifted out of AchievementFrameCategories_SelectDefaultElementData() in Blizzard_AchievementUI.lua
+        if not AchievementFrameCategories.ScrollBox:HasDataProvider() then
+            AchievementFrameCategories_UpdateDataProvider()
+        end
+        -- find the Pet Battles index in the data provider
+        local categoryIndex
+        for index,info in AchievementFrameCategories.ScrollBox:GetDataProvider():Enumerate() do
+            if info.id==15117 then
+                categoryIndex = index
+            end
+        end
+        -- go to that category if it exists
+        if categoryIndex then
+            local elementData = AchievementFrameCategories.ScrollBox:ScrollToElementDataIndex(categoryIndex, ScrollBoxConstants.AlignCenter, ScrollBoxConstants.NoScrollInterpolation);
+            if elementData then
+                AchievementFrameCategories_SelectElementData(elementData)
+            end
+        end
+    end
 end

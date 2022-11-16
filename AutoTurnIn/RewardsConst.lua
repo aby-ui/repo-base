@@ -6,7 +6,7 @@ local C = ptable.CONST
 -- Enum.ItemClass / Enum.ItemWeaponSubclass / Enum.ItemArmorSubclass / Enum.ItemGemSubclass
 C.armor, C.weapon = {}, {}
 for k = 0, 20 do
-	C.weapon[k+1] = GetItemSubClassInfo(Enum.ItemClass.Weapon,k)
+	C.weapon[k] = GetItemSubClassInfo(Enum.ItemClass.Weapon,k)
 end
 for k = 1, 6 do
 	C.armor[k] = GetItemSubClassInfo(Enum.ItemClass.Armor,k)
@@ -18,25 +18,22 @@ C.JEWELRY = {['INVTYPE_FINGER']='', ['INVTYPE_NECK']=''}
 
 -- Most of the constants are never used but it's convinient to have them here as a reminder and shortcut
 C.ITEMS = {
-	['One-Handed Axes'] = C.weapon[1],
-	['Two-Handed Axes'] = C.weapon[2],
-	['Bows'] = C.weapon[3],
-	['Guns'] = C.weapon[4],
-	['One-Handed Maces'] = C.weapon[5],
-	['Two-Handed Maces'] = C.weapon[6],
-	['Polearms'] = C.weapon[7],
-	['One-Handed Swords'] = C.weapon[8],
-	['Two-Handed Swords'] = C.weapon[9],
-	['Staves'] = C.weapon[10],
-	['Fist Weapons'] = C.weapon[11],
-	--['Miscellaneous'] = select(12, weapon)
-	['Daggers'] = C.weapon[13],
-	['Thrown'] = C.weapon[14],
-	['Crossbows'] = C.weapon[15],
-	['Wands'] = C.weapon[16],
-	--['Fishing Pole'] = select(17, weapon)
-	-- armor
-	--['Miscellaneous'] = C.armor[1]
+	['One-Handed Axes']   = C.weapon[0],
+	['Two-Handed Axes']   = C.weapon[1],
+	['Bows'] 			  = C.weapon[2],
+	['Guns'] 			  = C.weapon[3],
+	['One-Handed Maces']  = C.weapon[4],
+	['Two-Handed Maces']  = C.weapon[5],
+	['Polearms'] 		  = C.weapon[6],
+	['One-Handed Swords'] = C.weapon[7],
+	['Two-Handed Swords'] = C.weapon[8],
+	['Warglaive'] 		  = C.weapon[9],
+	['Staff'] 			  = C.weapon[10],
+	['Daggers'] 		  = C.weapon[15],
+	['Crossbows'] 		  = C.weapon[18],
+	
+	--[[ armor  ]]
+
 	['Cloth'] = C.armor[1],
 	['Leather'] = C.armor[2],
 	['Mail'] = C.armor[3],

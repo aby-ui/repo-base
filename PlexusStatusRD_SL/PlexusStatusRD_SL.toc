@@ -1,5 +1,5 @@
-## Interface: 100000
-## Version: v1.3.0
+## Interface: 100002
+## Version: v1.3.2
 ## Title: PlexusStatusRD(Shadowlands)
 ## Notes: Debuff List for Shadowlands
 ## Author: Doadin

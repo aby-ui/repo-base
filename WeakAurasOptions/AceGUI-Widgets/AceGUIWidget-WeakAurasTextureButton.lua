@@ -3,7 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 local Type, Version = "WeakAurasTextureButton", 24
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
-local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+local GetAtlasInfo = C_Texture and  C_Texture.GetAtlasInfo or GetAtlasInfo
 
 local function Hide_Tooltip()
   GameTooltip:Hide();
@@ -28,46 +28,67 @@ local methods = {
   end,
   ["OnRelease"] = function(self)
     self:ClearPick();
+    self:SetOnUpdate(nil)
     self.texture:SetTexture();
   end,
-  ["SetTexture"] = function(self, texturePath, name)
-    if (GetAtlasInfo(texturePath)) then
-      self.texture:SetAtlas(texturePath);
+  ["SetTexture"] = function(self, texturePath, name, IsStopMotion)
+    self.texture:SetTexCoord(0, 1, 0, 1)
+    local atlasInfo = GetAtlasInfo(texturePath)
+    if atlasInfo then
+      self.texture:SetAtlas(texturePath, false);
+      self.texture.IsAtlas = true
+      if atlasInfo.width > atlasInfo.height then
+        self.texture:SetSize(120, 120 * (atlasInfo.height / atlasInfo.width))
+      elseif atlasInfo.height > atlasInfo.width then
+        self.texture:SetSize(120 * (atlasInfo.width / atlasInfo.height), 120)
+      else
+        self.texture:SetSize(120, 120)
+      end
     else
+      self.texture:SetSize(120, 120)
       self.texture:SetTexture(texturePath, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE");
+      self.texture.IsAtlas = nil
     end
     self.texture.path = texturePath;
     self.texture.name = name;
+    self.texture.IsStopMotion = IsStopMotion
   end,
   ["ChangeTexture"] = function(self, r, g, b, a, rotate, discrete_rotation, rotation, mirror, blendMode)
-    local ulx,uly , llx,lly , urx,ury , lrx,lry;
-    if(rotate) then
-      local angle = rad(135 - rotation);
-      local vx = math.cos(angle);
-      local vy = math.sin(angle);
-
-      ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
-    else
-      if(discrete_rotation == 0 or discrete_rotation == 360) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0 , 0,1 , 1,0 , 1,1;
-      elseif(discrete_rotation == 90) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 1,0 , 0,0 , 1,1 , 0,1;
-      elseif(discrete_rotation == 180) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 1,1 , 1,0 , 0,1 , 0,0;
-      elseif(discrete_rotation == 270) then
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 0,1 , 1,1 , 0,0 , 1,0;
+    if not self.texture.IsAtlas then
+      local ulx,uly , llx,lly , urx,ury , lrx,lry;
+      if(rotate) then
+        local angle = rad(135 - rotation);
+        local vx = math.cos(angle);
+        local vy = math.sin(angle);
+        ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
+      else
+        if(discrete_rotation == 0 or discrete_rotation == 360) then
+          ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0 , 0,1 , 1,0 , 1,1;
+        elseif(discrete_rotation == 90) then
+          ulx,uly , llx,lly , urx,ury , lrx,lry = 1,0 , 0,0 , 1,1 , 0,1;
+        elseif(discrete_rotation == 180) then
+          ulx,uly , llx,lly , urx,ury , lrx,lry = 1,1 , 1,0 , 0,1 , 0,0;
+        elseif(discrete_rotation == 270) then
+          ulx,uly , llx,lly , urx,ury , lrx,lry = 0,1 , 1,1 , 0,0 , 1,0;
+        end
       end
-    end
-    if(mirror) then
-      self.texture:SetTexCoord(urx,ury , lrx,lry , ulx,uly , llx,lly);
+      if(mirror) then
+        self.texture:SetTexCoord(urx,ury , lrx,lry , ulx,uly , llx,lly);
+      else
+        self.texture:SetTexCoord(ulx,uly , llx,lly , urx,ury , lrx,lry);
+      end
     else
-      self.texture:SetTexCoord(ulx,uly , llx,lly , urx,ury , lrx,lry);
+      self.texture:SetAtlas(self.texture.path)
     end
     self.texture:SetVertexColor(r, g, b, a);
     self.texture:SetBlendMode(blendMode);
   end,
   ["SetTexCoord"] = function(self, left, right, top, bottom)
-    self.texture:SetTexCoord(left, right, top, bottom);
+    if self.texture.IsAtlas and not self.texture.IsStopMotion then
+      self.texture:SetAtlas(self.texture.path)
+    else
+      self.texture:SetTexCoord(left, right, top, bottom);
+    end
   end,
   ["SetOnUpdate"] = function(self, func)
     self.frame:SetScript("OnUpdate", func);
@@ -115,8 +136,8 @@ local function Constructor()
   button:SetHighlightTexture(highlighttexture);
 
   local texture = button:CreateTexture(nil, "OVERLAY");
-  texture:SetPoint("BOTTOMLEFT", button, 4, 4);
-  texture:SetPoint("TOPRIGHT", button, -4, -4);
+  texture:SetPoint("CENTER")
+  texture:SetSize(120, 120)
 
   button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path:gsub("\\", "\n")) end);
   button:SetScript("OnLeave", Hide_Tooltip);

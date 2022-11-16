@@ -216,7 +216,6 @@ CanIMogIt.NUM_ENCOUNTER_JOURNAL_ENCOUNTER_LOOT_FRAMES = 10 -- Blizzard functions
 CanIMogIt.NUM_MAIL_INBOX_ITEMS = 7
 -- Mail Attachments = ATTACHMENTS_MAX_RECEIVE
 -- Merchant Items = MERCHANT_ITEMS_PER_PAGE
-CanIMogIt.NUM_WARDROBE_COLLECTION_BUTTONS = 12 -- Blizzard functions are locals
 -- Trade Skill = no constants
 
 -- Expansions before Shadowlands are all opened at level 10 as of 9.0. Shadowlands is opened at level 48.

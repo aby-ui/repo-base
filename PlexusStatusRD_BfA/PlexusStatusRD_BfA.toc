@@ -1,5 +1,5 @@
-## Interface: 100000
-## Version: v9.3.0
+## Interface: 100002
+## Version: v9.3.2
 ## Title: PlexusStatusRaidDebuff(BfA)
 ## Notes: Debuff List for Battle for Azeroth
 ## Author: Doadin

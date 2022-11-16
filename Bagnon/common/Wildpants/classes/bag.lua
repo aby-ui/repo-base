@@ -197,7 +197,7 @@ end
 
 function Bag:UpdateCursor()
 	if not self:IsCustomSlot() then
-		if CursorCanGoInSlot(self:GetInfo().slot) then
+		if self:GetInfo().slot and C_PaperDollInfo.CanCursorCanGoInSlot(self:GetInfo().slot) then
 			self:LockHighlight()
 		else
 			self:UnlockHighlight()

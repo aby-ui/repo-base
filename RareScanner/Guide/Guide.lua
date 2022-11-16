@@ -342,6 +342,43 @@ private.NPC_GUIDE = {
 	["1931322022"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.6261, y = 0.5461 };
 	}; --Amethyzar the Glittering
+	["1929832023"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4339, y = 0.4777 };
+	}; --Web-Queen Ashkaz
+	["1931962024"] = { 
+		[RSConstants.STEP1] = { x = 0.7035, y = 0.2409, comment = AL["NOTE_193196_1"] };
+		[RSConstants.STEP2] = { x = 0.7022, y = 0.2534, comment = AL["NOTE_193196_2"] };
+	}; --Trilvarus Loreweaver
+	["1936982024"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.6445, y = 0.3020 };
+	}; --Frigidpelt Den Mother
+	["1980042024"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4034, y = 0.4846 };
+	}; --Mange the Outcast
+	["1917292118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3359, y = 0.4348 };
+	}; --Deathrip
+	["1917132118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3366, y = 0.3358 };
+	}; --Scytherin
+	["1863552118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.5999, y = 0.5916 };
+	}; --Tripletath the Lost
+	["1818332118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.7327, y = 0.3899 };
+	}; --Shimmermaw
+	["1814272118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.5632, y = 0.4496 };
+	}; --Stormspine
+	["1913052025"] = { 
+		[RSConstants.FLAG] = { x = 0.3833, y = 0.6850, comment = AL["NOTE_191305_1"] };
+	}; --The Great Shellkhan (Patient Vargoo)
+	["1913052024"] = { 
+		[RSConstants.FLAG] = { x = 0.4563, y = 0.5480, comment = AL["NOTE_191305_2"] };
+	}; --The Great Shellkhan (gleamfish)
+	["1931282023"] = { 
+		[RSConstants.FLAG] = { x = 0.9008, y = 0.4045, comment = AL["NOTE_193128_1"] };
+	}; --Blightpaw the Depraved
 }
 
 ---============================================================================
@@ -802,6 +839,25 @@ private.CONTAINER_GUIDE = {
 	["1959392022"] = {
 		[RSConstants.FLAG] = { x = 0.4093, y = 0.4147, comment = AL["NOTE_195939_1"] }; 
 	}; --Bubble Drifter
+	["3811072025"] = {
+		[RSConstants.FLAG] = { x = 0.5491, y = 0.7545, comment = AL["NOTE_381107_1"] }; --, questID = 70538 
+	}; --Sandy Wooden Duck
+	["3773172118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.7327, y = 0.3899 };
+	}; --Treasure Hoard
+	["3761232118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.6355, y = 0.4575 };
+	}; --Suspicious Bottle
+	["3808422023"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.8186, y = 0.7221 };
+	}; --Gold Swog Coin
+	["3823252022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.2940, y = 0.5258 };
+	}; --Onyx Gem Cluster
+	["1953732024"] = { 
+		[RSConstants.PATH_START] = { x = 0.2573, y = 0.4653 };
+		[RSConstants.STEP1] = { x = 0.2629, y = 0.4633, comment = AL["NOTE_195373_1"] };
+	}; --Pepper Hammer
 }
 
 ---============================================================================

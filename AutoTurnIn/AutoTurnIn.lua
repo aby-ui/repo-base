@@ -50,13 +50,23 @@ local options = {
 			name = L["enabled"]..(LOCALE_zhCN and " (版本: " or " (version ")..GetAddOnMetadata(addonName, "Version") .. ")",
 			desc = L["usage1"],
 			order = 1,
-			width  = "double",
+			width  = 1.5,
 			get = function(_) return db.enabled end,
 			set = function(_, v)
 				db.enabled = v
 				AutoTurnIn:SetEnabled(v)
 			end,
 			disabled = false,
+		},
+		debug = {
+			type = "toggle",
+			name = L["debug"],
+			arg = "debug",
+			width  = "double",
+			order = 2,
+			hidden = function() return not db.admin end,
+			get = function(_) return db.debug end,
+			set = function(_, v) db.debug = v end,
 		},
 		overall_settings = {
 			type = "group",
@@ -138,13 +148,6 @@ local options = {
 					arg = "tournament",
 					width  = "double",
 					order = 80,
-				},
-				debug = {
-					type = "toggle",
-					name = L["debug"],
-					arg = "debug",
-					width  = "double",
-					order = 90,
 				},
 				gossip_opts = {
 					type = "group",
@@ -321,20 +324,20 @@ local options = {
 							name = C.WEAPONLABEL,
 							order = 20
 						},
-						wp1 = makeWeaponToggle(1, 30),
-						wp2 = makeWeaponToggle(2, 31),
-						wp3 = makeWeaponToggle(10, 32),
+						wp1 = makeWeaponToggle(0, 30),
+						wp2 = makeWeaponToggle(1, 31),
+						wp3 = makeWeaponToggle(4, 32),
 						wp4 = makeWeaponToggle(5, 33),
-						wp5 = makeWeaponToggle(6, 34),
-						wp6 = makeWeaponToggle(11, 35),
-						wp7 = makeWeaponToggle(8, 36),
+						
+						wp7 = makeWeaponToggle(7, 34),
+						wp6 = makeWeaponToggle(8, 35),
+						wp5 = makeWeaponToggle(6, 36),						
 						wp8 = makeWeaponToggle(9, 37),
-						wp9 = makeWeaponToggle(16, 38),
-						wp10 = makeWeaponToggle(13, 39),
-						wp11 = makeWeaponToggle(7, 40),
-						wp12 = makeWeaponToggle(14, 41),
+						
+						wp10 = makeWeaponToggle(10, 39),
+						wp11 = makeWeaponToggle(15, 40),
 						-- TODO INVTYPE_RANGED
-						wp13 = createToggle(string.format("%s, %s, %s", C.weapon[3], C.weapon[4], C.weapon[15]), "weapon;Ranged", 42),
+						wp13 = createToggle(string.format("%s, %s, %s", C.weapon[2], C.weapon[3], C.weapon[18]), "weapon;Ranged", 42),
 						armor_title = {
 							type = "header",
 							name = C.ARMORLABEL,
@@ -843,7 +846,7 @@ function AutoTurnIn:ItemLevel(itemLink)
 	if (not itemLink) then
 		return 0
 	end
-	-- 7 for heirloom http://wowprogramming.com/docs/api_types#itemQuality
+	-- 7 for heirloom https://wowpedia.fandom.com/wiki/Enum.ItemQuality
 	local invQuality, invLevel = select(3, GetItemInfo(itemLink))
 	return (invQuality == 7) and math.huge or invLevel
 end
@@ -920,6 +923,7 @@ end
 function AutoTurnIn:LootMostExpensive()
 	local index, money = 0, 0;
 
+	self:DebugPrint("looting most expensive")
 	for i=1, GetNumQuestChoices() do
 		local link = GetQuestItemLink("choice", i)
 		if ( link == nil ) then
@@ -1168,7 +1172,7 @@ function AutoTurnIn:QUEST_COMPLETE()
 			-- Code for ignoring Relics if turned on.
 			if (db.relictoggle or db.artifactpowertoggle) then
 				for i=1, numOptions do					
-					local link = GetQuestItemLink(typeStr, index)
+					local link = GetQuestItemLink("choice", i)
 					local itemID = link and link:match("%b::"):gsub(":", "") or self.ERRORVALUE
 
 					if (link and db.artifactpowertoggle and IsArtifactPowerItem(itemID)) then
@@ -1188,7 +1192,7 @@ function AutoTurnIn:QUEST_COMPLETE()
 				if (db.lootreward == 3) then -- 3 == Need
 					self.forceGreed = ( not self:CompleteQuestLootingNeeded() ) and db.greedifnothingfound
 				end
-				if (db.lootreward == 2 or self.forceGreed) then -- 2 == Greed
+				if (db.lootreward == 2 or self.forceGreed) then -- 2 == Greed					
 					self:LootMostExpensive()
 				end
 			end
@@ -1296,7 +1300,8 @@ function AutoTurnIn:DebugPrint(...)
 	if (db.debug) then
 		local msg = ""
 		for i = 1, select("#", ...) do
-			msg = (i > 1 and (msg .. " ") or msg) .. select(i, ...)
+			local mbvalue = select(i, ...)
+			msg = (i > 1 and (msg .. " ") or msg) .. (mbvalue and mbvalue or "nil")
 		end
 		self:Print("|cfff23ff4", "DEBUG: ", msg, "|r")
 	end

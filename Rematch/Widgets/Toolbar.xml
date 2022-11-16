@@ -35,10 +35,10 @@
 				RematchToolbar.ButtonOnLeave(self)
 			</OnLeave>
 			<PreClick>
-				RematchToolbar.ButtonPreClick(self,button)
+				RematchToolbar.ButtonPreClick(self,button,down)
 			</PreClick>
 			<PostClick>
-				RematchToolbar.ButtonPostClick(self,button)
+				RematchToolbar.ButtonPostClick(self,button,down)
 			</PostClick>
             <OnDragStart>
                 RematchToolbar.ButtonOnDragStart(self)
@@ -172,17 +172,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								ToggleAchievementFrame()
-								local i = 1
-								local button = _G["AchievementFrameCategoriesContainerButton"..i]
-								while button do
-									if button.element.id == 15117 then
-										button:Click()
-										return
-									end
-									i = i + 1
-									button = _G["AchievementFrameCategoriesContainerButton"..i]
-								end
+								Rematch:ToggleAchievementFrame()
 							</OnClick>
 							<OnEnter>
 								self:GetParent().Highlight:Show()
@@ -304,7 +294,7 @@
 				</Layers>
 				<Scripts>
 					<OnClick>
-						RematchToolbar.ButtonOnClick(self,button)
+						RematchToolbar.ButtonOnClick(self,button,down)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -314,7 +304,7 @@
 				</KeyValues>
 				<Scripts>
 					<OnClick>
-						RematchToolbar.ButtonOnClick(self,button)
+						RematchToolbar.ButtonOnClick(self,button,down)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -325,7 +315,7 @@
 				</KeyValues>
 				<Scripts>
 					<OnClick>
-						RematchToolbar.ButtonOnClick(self,button)
+						RematchToolbar.ButtonOnClick(self,button,down)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -336,7 +326,7 @@
 				</KeyValues>
 				<Scripts>
 					<OnClick>
-						RematchToolbar.ButtonOnClick(self,button)
+						RematchToolbar.ButtonOnClick(self,button,down)
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -357,7 +347,7 @@
 				</Layers>
 				<Scripts>
 					<OnClick>
-						RematchToolbar.ButtonOnClick(self,button)
+						RematchToolbar.ButtonOnClick(self,button,down)
 					</OnClick>
 				</Scripts>
 			</Button>

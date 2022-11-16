@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Notes: 显示副本boss的简易攻略。
 ## SavedVariables: AbyBossGuideDB
 

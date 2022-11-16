@@ -250,7 +250,7 @@ function RE:OnEvent(self, event, ...)
 			RE.Config.LastScan = time()
 		end
 
-		_G.GameTooltip:HookScript("OnTooltipSetItem", function(self) RE:TooltipAddPrice(self); RE.TooltipCustomCount = -1 end)
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(...) RE:TooltipAddPrice(...); RE.TooltipCustomCount = -1 end)
 		_G.GameTooltip:HookScript("OnTooltipCleared", function(_) RE.RecipeLock = false end)
 		hooksecurefunc("BattlePetToolTip_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(sFormat("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
 		hooksecurefunc("FloatingBattlePet_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(sFormat("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
@@ -281,10 +281,10 @@ function RE:OnEvent(self, event, ...)
 end
 
 local BUTTON_LAG_AUCTIONHOUSE = AUCTIONS
-function RE:TooltipAddPrice(self)
+function RE:TooltipAddPrice(self, tooltipData)
 	if self:IsForbidden() then return end
-	local _, link = self:GetItem()
-	if link and IsLinkType(link, "item") then
+	local link = tooltipData.guid and C_Item.GetItemLinkByGUID(tooltipData.guid) or tooltipData.hyperlink
+	if link and link ~= "" then --and IsLinkType(link, "item") then
 		local itemTypeId, itemSubTypeId = select(12, GetItemInfo(link))
 		if not RE.RecipeLock and itemTypeId == _G.LE_ITEM_CLASS_RECIPE and itemSubTypeId ~= _G.LE_ITEM_RECIPE_BOOK then
 			RE.RecipeLock = true

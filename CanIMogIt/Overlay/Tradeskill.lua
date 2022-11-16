@@ -6,7 +6,8 @@
 ----------------------------
 
 local function string_starts(String,Start)
-   return string.sub(String,1,string.len(Start))==Start
+    String = String or ""
+    return string.sub(String,1,string.len(Start))==Start
 end
 
 
@@ -14,19 +15,22 @@ function CIMI_UpdateTradeSkillIcons()
     if not CIMI_CheckOverlayIconEnabled() then
         return
     end
-    local tradeSkillFrame = _G["TradeSkillFrame"]
-    local buttons = tradeSkillFrame.RecipeList.buttons
+
+    local tradeSkillFrame = _G["ProfessionsFrame"].CraftingPage.RecipeList.ScrollBox
+    local buttons = tradeSkillFrame:GetFrames()
 
     for i, button in ipairs(buttons) do
-        if button ~= nil and button.tradeSkillInfo ~= nil and button.tradeSkillInfo.recipeID ~= nil then
-            local recipeID = button.tradeSkillInfo.recipeID
-            local text = button:GetText()
+        local recipeInfo = button:GetElementData().data.recipeInfo or nil
+        if recipeInfo then
+            local recipeID = recipeInfo.recipeID
+            local text = button.Label:GetText() or ""
             local itemLink = C_TradeSkillUI.GetRecipeItemLink(recipeID)
             if itemLink ~= nil then
                 local icon = CanIMogIt:GetIconText(itemLink)
                 if icon ~= nil and not string_starts(text, icon) then
                     text = icon .. text
-                    button:SetText(text)
+                    button.Label:SetText(text)
+                    button.Label:SetWidth(button.Label:GetWidth(text) + 20)
                 end
             end
         end
@@ -49,31 +53,13 @@ end
 ------------------------
 
 
-local function TradeSkillEvents(event, addon)
-    if event == "ADDON_LOADED" and addon == "Blizzard_TradeSkillUI" then
-
-        local tradeSkillFrame = _G["TradeSkillFrame"]
-        -- Update on most things (like clicking)
-        hooksecurefunc(tradeSkillFrame.RecipeList, "RefreshDisplay", CIMI_UpdateTradeSkillIcons)
-
-        -- Update on scroll
-        tradeSkillFrame.RecipeList.scrollBar:HookScript("OnValueChanged", CIMI_UpdateTradeSkillIcons)
-
-        -- Update on tab changes (with delay due to something updating after the change)
-        tradeSkillFrame.RecipeList.UnlearnedTab:HookScript("OnClick", function () C_Timer.After(.25, CIMI_UpdateTradeSkillIcons) end)
-        tradeSkillFrame.RecipeList.LearnedTab:HookScript("OnClick", function () C_Timer.After(.25, CIMI_UpdateTradeSkillIcons) end)
-
-        -- Update when the user switches profession windows (with a delay due to something updating after the change)
-        hooksecurefunc(tradeSkillFrame.RecipeList, "OnDataSourceChanged", function () C_Timer.After(.25, CIMI_UpdateTradeSkillIcons) end)
-
-        -- Update when an option changes (with delay)
-        local function UpdateTradskillWindow()
-            _G["TradeSkillFrame"].RecipeList:RefreshDisplay()
-        end
-
-        CanIMogIt:RegisterMessage("OptionUpdate", function () C_Timer.After(.25, UpdateTradskillWindow) end)
+local function TradeSkillEvents(event)
+    if event == "TRADE_SKILL_SHOW" then
+        local tradeSkillFrame = _G["ProfessionsFrame"].CraftingPage.RecipeList
+        tradeSkillFrame:HookScript("OnUpdate", CIMI_UpdateTradeSkillIcons)
     end
 end
 
--- TODO: Fix the TradeSkill window!
--- CanIMogIt.frame:AddEventFunction(TradeSkillEvents)
+CanIMogIt.frame:AddEventFunction(TradeSkillEvents)
+
+CanIMogIt:RegisterMessage("OptionUpdate", TradeSkillEvents)

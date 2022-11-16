@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## X-Min-Interface: 80000
 ## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Dungeons (WoD)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0던전 (드군)|r
@@ -32,7 +32,7 @@
 ## X-DBM-Mod-MinCoreRevision: 20200524142133
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
-## Version: r43-6-g2822d1a
+## Version: r44-1-gdc92dd8
 ## X-DBM-Mod-MinExpansion: 5
 localization.en.lua
 localization.tw.lua
@@ -64,6 +64,7 @@ SMBurialGrounds\SadanaBloodfury.lua
 SMBurialGrounds\Nhallish.lua
 SMBurialGrounds\Bonemaw.lua
 SMBurialGrounds\Nerzhul.lua
+SMBurialGrounds\SMBGTrash.lua
 Skyreach\SkyreachTrash.lua
 Skyreach\Ranjit.lua
 Skyreach\Araknath.lua

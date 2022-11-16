@@ -90,6 +90,22 @@ GTFO.SpellID["377542"] = {
 --- * Uldaman: Legacy of Tyr *
 --- **************************
 
+GTFO.SpellID["369337"] = {
+  --desc = "Difficult Terrain (Runic Protector)";
+  applicationOnly = true;
+  sound = 2;
+};
+
+GTFO.SpellID["382576"] = {
+  --desc = "Scorn of Tyr (Earthen Guardian)";
+  sound = 1;
+};
+
+GTFO.SpellID["376325"] = {
+  --desc = "Eternity Zone (Chrono-Lord Deios)";
+  sound = 1;
+};
+
 --- ***************************
 --- * Vault of the Incarnates *
 --- ***************************

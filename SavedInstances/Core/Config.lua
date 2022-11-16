@@ -5,7 +5,7 @@ SI.config = Config
 
 -- Lua functions
 local pairs, ipairs, tonumber, tostring, wipe = pairs, ipairs, tonumber, tostring, wipe
-local unpack, date, type, tinsert, sort = unpack, date, type, tinsert, sort
+local unpack, date, tinsert, sort = unpack, date, tinsert, sort
 local _G = _G
 
 -- WoW API / Variables
@@ -13,10 +13,13 @@ local C_CurrencyInfo_GetCurrencyInfo = C_CurrencyInfo.GetCurrencyInfo
 local GetBindingKey = GetBindingKey
 local GetCurrentBindingSet = GetCurrentBindingSet
 local GetRealmName = GetRealmName
-local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 local SaveBindings = SaveBindings
 local SetBinding = SetBinding
+
+local HideUIPanel = HideUIPanel
+local Settings_OpenToCategory = Settings.OpenToCategory
 local StaticPopup_Show = StaticPopup_Show
+
 local ALL = ALL
 local CALLINGS_QUESTS = CALLINGS_QUESTS
 local COLOR = COLOR
@@ -921,97 +924,39 @@ end
 
 -- global functions
 
-function Config:table_clone(t)
-  if not t then return nil end
-  local r = {}
-  for k,v in pairs(t) do
-    local nk,nv = k,v
-    if type(k) == "table" then
-      nk = Config:table_clone(k)
-    end
-    if type(v) == "table" then
-      nv = Config:table_clone(v)
-    end
-    r[nk] = nv
-  end
-  return r
-end
-
-local firstoptiongroup, lastoptiongroup
-function Config:ReopenConfigDisplay(f)
-  if _G.SettingsPanel then
-    -- Dragonflight
-    if _G.SettingsPanel:IsShown() then
-      HideUIPanel(SettingsPanel)
-      Settings.OpenToCategory(firstoptiongroup.name)
-    end
-  else
-    if _G.InterfaceOptionsFrame:IsShown() then
-      _G.InterfaceOptionsFrame:Hide();
-      InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
-      InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
-      InterfaceOptionsFrame_OpenToCategory(f)
-    end
-  end
-end
-
-function Config:SetupOptions()
-  local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-  local namespace = "SavedInstances"
-  Config:BuildOptions()
-  LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, SI.Options, { "si", "savedinstances" })
-  local fgen = AceConfigDialog:AddToBlizOptions(namespace, nil, nil, "General")
-  firstoptiongroup = fgen
-  fgen.default = function()
-    SI:Debug("RESET: General")
-    SI.db.Tooltip = Config:table_clone(SI.defaultDB.Tooltip)
-    SI.db.MinimapIcon = Config:table_clone(SI.defaultDB.MinimapIcon)
-    Config:ReopenConfigDisplay(fgen)
-  end
-  local fcur = AceConfigDialog:AddToBlizOptions(namespace, CURRENCY, namespace, "Currency")
-  fcur.default = fgen.default
-  local find = AceConfigDialog:AddToBlizOptions(namespace, L["Indicators"], namespace, "Indicators")
-  find.default = function()
-    SI:Debug("RESET: Indicators")
-    SI.db.Indicators = Config:table_clone(SI.defaultDB.Indicators)
-    Config:ReopenConfigDisplay(find)
-  end
-  local finst = AceConfigDialog:AddToBlizOptions(namespace, L["Instances"], namespace, "Instances")
-  finst.default = function()
-    SI:Debug("RESET: Instances")
-    for _,i in pairs(SI.db.Instances) do
-      i.Show = "saved"
-    end
-    Config:ReopenConfigDisplay(finst)
-  end
-  local ftoon = AceConfigDialog:AddToBlizOptions(namespace, L["Characters"], namespace, "Characters")
-  lastoptiongroup = ftoon
-  Config.ftoon = ftoon
-  ftoon.default = function()
-    SI:Debug("RESET: Toons")
-    for _,i in pairs(SI.db.Toons) do
-      i.Show = "saved"
-    end
-    Config:ReopenConfigDisplay(ftoon)
+local configFrameName, configCharactersFrameName
+function Config:ReopenConfigDisplay(frame)
+  if _G.SettingsPanel:IsShown() then
+    HideUIPanel(_G.SettingsPanel)
+    Settings_OpenToCategory(configFrameName)
+    -- Settings.OpenToCategory(frame)
+    -- Not possible due to lack of WoW feature
   end
 end
 
 function Config:ShowConfig()
-  if _G.SettingsPanel then
-    -- Dragonflight
-    if _G.SettingsPanel:IsShown() then
-      HideUIPanel(SettingsPanel)
-    else
-      Settings.OpenToCategory(firstoptiongroup.name)
-    end
+  if _G.SettingsPanel:IsShown() then
+    HideUIPanel(_G.SettingsPanel)
   else
-    if _G.InterfaceOptionsFrame:IsShown() then
-      _G.InterfaceOptionsFrame:Hide()
-    else
-      InterfaceOptionsFrame_OpenToCategory(lastoptiongroup)
-      InterfaceOptionsFrame_OpenToCategory(firstoptiongroup)
-    end
+    Settings_OpenToCategory(configFrameName)
   end
+end
+
+function Config:SetupOptions()
+  Config:BuildOptions()
+
+  local namespace = "SavedInstances"
+  LibStub("AceConfig-3.0"):RegisterOptionsTable(namespace, SI.Options, { "si", "savedinstances" })
+
+  local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+  local _, genernalFrameName = AceConfigDialog:AddToBlizOptions(namespace, nil, nil, "General")
+  AceConfigDialog:AddToBlizOptions(namespace, CURRENCY, namespace, "Currency")
+  AceConfigDialog:AddToBlizOptions(namespace, L["Indicators"], namespace, "Indicators")
+  AceConfigDialog:AddToBlizOptions(namespace, L["Instances"], namespace, "Instances")
+  local _, charactersFrameName = AceConfigDialog:AddToBlizOptions(namespace, L["Characters"], namespace, "Characters")
+
+  configFrameName = genernalFrameName
+  configCharactersFrameName = charactersFrameName
 end
 
 local function ResetConfirmed()
@@ -1030,7 +975,7 @@ local function ResetConfirmed()
   SI:toonInit() -- rebuild SI.thisToon
   SI:Refresh()
   SI.config:BuildOptions() -- refresh config table
-  SI.config:ReopenConfigDisplay(SI.config.ftoon)
+  SI.config:ReopenConfigDisplay(configCharactersFrameName)
 end
 
 local function DeleteCharacter(toon)
@@ -1048,7 +993,7 @@ local function DeleteCharacter(toon)
   end
   SI.db.Toons[toon] = nil
   SI.config:BuildOptions() -- refresh config table
-  SI.config:ReopenConfigDisplay(SI.config.ftoon)
+  SI.config:ReopenConfigDisplay(configCharactersFrameName)
 end
 
 StaticPopupDialogs["SAVEDINSTANCES_RESET"] = {

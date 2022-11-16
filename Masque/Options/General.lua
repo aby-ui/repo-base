@@ -19,7 +19,7 @@ local MASQUE, Core = ...
 local ReloadUI = ReloadUI
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
 -- @ Options\Core

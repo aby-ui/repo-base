@@ -128,3 +128,5 @@ end
 
 CanIMogIt.frame:AddOverlayEventFunction(QuestOverlayEvents)
 hooksecurefunc("QuestLogPopupDetailFrame_Update", QuestOverlayEvents)
+
+CanIMogIt:RegisterMessage("OptionUpdate", QuestOverlayEvents)

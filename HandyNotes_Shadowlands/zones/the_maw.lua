@@ -1581,6 +1581,8 @@ local Assault = Class('Assault', ns.node.Node, {
                 sublabel = L['assault_sublabel_EU']
             elseif region == 'CN' then
                 sublabel = L['assault_sublabel_CN']
+            elseif region == 'KR' then
+                sublabel = L['assault_sublabel_AS']
             else
                 sublabel = ''
             end

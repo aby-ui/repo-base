@@ -106,7 +106,7 @@ local function CreateSpecialThanksPane()
     specialThanksText:SetPoint("TOPLEFT", 5, -27)
     specialThanksText:SetSpacing(5)
     specialThanksText:SetJustifyH("LEFT")
-    specialThanksText:SetText("夕曦 (NGA)\nwarbaby (爱不易)\nguesswhoiam (NGA)")
+    specialThanksText:SetText("warbaby (爱不易)\n夕曦 (NGA)\nguesswhoiam (NGA)")
 end
 
 -------------------------------------------------

@@ -17,6 +17,8 @@ L['squirrels_note'] = 'You must use the emote /love on critters not battle pets'
 L['options_icons_squirrels'] = '{achievement:14731}'
 L['options_icons_squirrels_desc'] = 'Critter locations for {achievement:14731}'
 
+L['prepatch_vendor_note'] = 'Purchase rewards using the {item:199211} currency from the |cFFFF8C00Primal Storms|r pre-patch event.'
+
 -------------------------------------------------------------------------------
 --------------------------------- ARDENWEALD ----------------------------------
 -------------------------------------------------------------------------------
@@ -791,6 +793,7 @@ L['options_icons_covenant_assaults_desc'] = 'Rewards for covenant assaults'
 L['assault_sublabel_US'] = 'Assaults change on Tuesday at 8 AM PDT and Friday at 8 PM PDT'
 L['assault_sublabel_EU'] = 'Assaults change on Wednesday at 8 AM CET and Saturday at 8 PM CET'
 L['assault_sublabel_CN'] = 'Assaults change on Thursday at 7 AM CST and Sunday at 7 PM CST'
+L['assault_sublabel_AS'] = 'Assaults change on Thursday at 8 AM KST and Sunday at 8 PM KST'
 
 L['necrolord_assault'] = '{quest:63543}'
 L['necrolord_assault_note'] = 'The {item:185992} can be looted once per assault'

@@ -37,10 +37,22 @@ Core.Locale = setmetatable(L, {
 -- L["You must have an add-on that supports Masque installed to use it."] = "You must have an add-on that supports Masque installed to use it."
 
 ----------------------------------------
--- Classic Skin
+-- Blizzard Classic Skin
 ---
 
--- L["An improved version of the game's default button style."] = "An improved version of the game's default button style."
+-- L["The default Classic button style."] = "The default Classic button style."
+
+----------------------------------------
+-- Blizzard Modern Skin
+---
+
+-- L["The default Dragonflight button style."] = "The default Dragonflight button style."
+
+----------------------------------------
+-- Classic Redux Skin
+---
+
+-- L["A modified version of the Classic button style."] = "A modified version of the Classic button style."
 
 ----------------------------------------
 -- Core Settings
@@ -48,18 +60,6 @@ Core.Locale = setmetatable(L, {
 
 -- L["About"] = "About"
 -- L["This section will allow you to view information about Masque and any skins you have installed."] = "This section will allow you to view information about Masque and any skins you have installed."
-
-----------------------------------------
--- Default Classic Skin
----
-
--- L["The default Classic button style."] = "The default Classic button style."
-
-----------------------------------------
--- Default Skin
----
-
--- L["The default button style."] = "The default button style."
 
 ----------------------------------------
 -- Developer Settings
@@ -161,7 +161,6 @@ Core.Locale = setmetatable(L, {
 -- L["Cooldown"] = "Cooldown"
 -- L["Disable"] = "Disable"
 -- L["Disable the skinning of this group."] = "Disable the skinning of this group."
--- L["Disabled"] = "Disabled"
 -- L["Enable"] = "Enable"
 -- L["Enable skin scaling."] = "Enable skin scaling."
 -- L["Enable the Backdrop texture."] = "Enable the Backdrop texture."
@@ -181,7 +180,6 @@ Core.Locale = setmetatable(L, {
 -- L["Set the color of the Backdrop texture."] = "Set the color of the Backdrop texture."
 -- L["Set the color of the Checked texture."] = "Set the color of the Checked texture."
 -- L["Set the color of the Cooldown animation."] = "Set the color of the Cooldown animation."
--- L["Set the color of the Disabled texture."] = "Set the color of the Disabled texture."
 -- L["Set the color of the Flash texture."] = "Set the color of the Flash texture."
 -- L["Set the color of the Gloss texture."] = "Set the color of the Gloss texture."
 -- L["Set the color of the Highlight texture."] = "Set the color of the Highlight texture."

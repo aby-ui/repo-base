@@ -82,7 +82,7 @@ U1.TAGS = {
     DEV = DEBUG_MODE and {order=0} or hide,
     BETA = DEBUG_MODE and {order=0} or hide,
 
-    HUNTER = hide, WARLOCK = hide, PRIEST = hide, PALADIN = hide, MAGE = hide, ROGUE = hide, DRUID = hide, SHAMAN = hide, WARRIOR = hide, DEATHKNIGHT = hide, MONK = hide, DEMONHUNTER = hide,
+    HUNTER = hide, WARLOCK = hide, PRIEST = hide, PALADIN = hide, MAGE = hide, ROGUE = hide, DRUID = hide, SHAMAN = hide, WARRIOR = hide, DEATHKNIGHT = hide, MONK = hide, DEMONHUNTER = hide, EVOKER = hide,
     --如果有其他的别名比如TRADE, 则增加TRADE={text="交易"}即可
 }
 

@@ -1,10 +1,10 @@
-## Interface: 100000
+## Interface: 100002
 ## Interface-Classic: 11403
 ## Interface-BCC: 20502
 ## Interface-WoTLK: 30400
 ## Title: XLoot Master
 ## Notes: Configurable Master Looter interface
-## Version: 10.0.0-8
+## Version: 10.0.2-1
 ## Author: Xuerian, Dridzt
 ## X-Category: Inventory
 

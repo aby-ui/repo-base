@@ -112,3 +112,5 @@ local function AuctionHouseUpdateEvents(event, ...)
 end
 
 CanIMogIt.frame:AddEventFunction(AuctionHouseUpdateEvents)
+
+CanIMogIt:RegisterMessage("OptionUpdate", AuctionHouseUpdateEvents)

@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Method Dungeon Tools - DB STUB
 ## Author: Nnoggie
 ## Version: 3.0.9

@@ -1,23 +1,26 @@
 local mod	= DBM:NewMod("AlgetharAcademyTrash", "DBM-Party-Dragonflight", 5)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220904205606")
+mod:SetRevision("20221115231757")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
---mod:RegisterEvents(
---	"SPELL_CAST_START",
---	"SPELL_AURA_APPLIED",
+mod:RegisterEvents(
+	"SPELL_CAST_START 387910 377383 378003",
+	"SPELL_AURA_APPLIED 388984"
 --	"SPELL_AURA_APPLIED_DOSE 339528",
 --	"SPELL_AURA_REMOVED 339525"
---)
+)
 
---TODO, icon mark shared suffering? Maybe when they fix ENCOUNTER_START, for now I don't want to risk trash mod messing with a boss mods icon marking
---Lady's Trash, minus bottled anima, which will need a unit event to detect it looks like
---local warnConcentrateAnima					= mod:NewTargetNoFilterAnnounce(339525, 3)
 
---local specWarnConcentrateAnima				= mod:NewSpecialWarningMoveAway(310780, nil, nil, nil, 1, 2)
---local yellConcentrateAnima					= mod:NewYell(339525)
+local warnAstralWhirlwind						= mod:NewCastAnnounce(387910, 3)
+local warnViciousAmbush							= mod:NewTargetAnnounce(388984, 3)
+
+local specWarnGust								= mod:NewSpecialWarningDodge(377383, nil, nil, nil, 2, 2)
+local yellGust									= mod:NewYell(377383)
+local specWarnViciousAmbush						= mod:NewSpecialWarningYou(388984, nil, nil, nil, 1, 2)--You warning not move away, because some strategies involve actually baiting charge into melee instead of out
+local yellnViciousAmbush						= mod:NewYell(388984)
+local specWarnDeadlyWinds						= mod:NewSpecialWarningDodge(378003, nil, nil, nil, 2, 2)
 --local yellConcentrateAnimaFades				= mod:NewShortFadesYell(339525)
 --local specWarnSharedSuffering				= mod:NewSpecialWarningYou(339607, nil, nil, nil, 1, 2)
 --local specWarnDirgefromBelow				= mod:NewSpecialWarningInterrupt(310839, "HasInterrupt", nil, nil, 1, 2)
@@ -25,14 +28,30 @@ mod.isTrashMod = true
 --local playerName = UnitName("player")
 
 --Antispam IDs for this mod: 1 run away, 2 dodge, 3 dispel, 4 incoming damage, 5 you/role, 6 misc
---[[
+
+function mod:GustTarget(targetname)
+	if not targetname then return end
+	if targetname == UnitName("player") then
+		yellGust:Yell()
+	end
+end
+
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 310780 and self:AntiSpam(5, 2) then
-
-	elseif spellId == 310839 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
-		specWarnDirgefromBelow:Show(args.sourceName)
-		specWarnDirgefromBelow:Play("kickcast")
+	if spellId == 387910 and self:AntiSpam(4, 6) then
+		warnAstralWhirlwind:Show()
+	elseif spellId == 377383 then
+		if self:AntiSpam(3, 2) then
+			specWarnGust:Show()
+			specWarnGust:Play("shockwave")
+		end
+		self:ScheduleMethod(0.1, "BossTargetScanner", args.sourceGUID, "GustTarget", 0.1, 8)
+	elseif spellId == 378003 and self:AntiSpam(3, 2) then
+		specWarnDeadlyWinds:Show()
+		specWarnDeadlyWinds:Play("watchstep")
+--	elseif spellId == 310839 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+--		specWarnDirgefromBelow:Show(args.sourceName)
+--		specWarnDirgefromBelow:Play("kickcast")
 	end
 end
 
@@ -40,12 +59,18 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if not self.Options.Enabled then return end
 	local spellId = args.spellId
-	if spellId == 339525 then
-
+	if spellId == 388984 then
+		warnViciousAmbush:Show(args.destName)
+		if args:IsPlayer() then
+			specWarnViciousAmbush:Show()
+			specWarnViciousAmbush:Play("targetyou")
+			yellnViciousAmbush:Yell()
+		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
+--[[
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 339525 and args:IsPlayer() then

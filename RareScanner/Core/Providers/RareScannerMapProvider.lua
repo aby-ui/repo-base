@@ -100,11 +100,21 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 				if (not RSContainerDB.GetContainerName(containerID) and pin:GetVignetteName()) then
 					RSContainerDB.SetContainerName(containerID, pin:GetVignetteName())
 				end
-			elseif (pin:GetVignetteType() == Enum.VignetteType.Normal and mapID == RSConstants.THE_MAW_MAPID) then
-				local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
-				local npcID = tonumber(vignetteObjectID)
-				if (pin:GetVignetteName()) then
-					RSNpcDB.SetNpcName(npcID, pin:GetVignetteName())
+			elseif (pin:GetVignetteType() == Enum.VignetteType.Normal) then
+				-- If container
+				if (RSConstants.IsContainerAtlas(pin.vignetteInfo.atlasName)) then
+					local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
+					local containerID = tonumber(vignetteObjectID)
+					if (not RSContainerDB.GetContainerName(containerID) and pin:GetVignetteName()) then
+						RSContainerDB.SetContainerName(containerID, pin:GetVignetteName())
+					end
+				-- If NPC
+				elseif (RSConstants.IsNpcAtlas(pin.vignetteInfo.atlasName)) then
+					local _, _, _, _, _, vignetteObjectID = strsplit("-", pin:GetObjectGUID())
+					local npcID = tonumber(vignetteObjectID)
+					if (pin:GetVignetteName()) then
+						RSNpcDB.SetNpcName(npcID, pin:GetVignetteName())
+					end
 				end
 			end
 			
@@ -114,7 +124,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 					return
 				end
 				
-				local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), self:GetMap():GetMapID())
+				local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), pin.vignetteInfo.atlasName, self:GetMap():GetMapID())
 				if (POI) then
 					self.POI = POI
 					-- Just in case the user didnt have the questID when he found it
@@ -142,7 +152,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 			end)
 			pin:HookScript("OnMouseDown", function(self, button)					
 				if (button == "RightButton") then
-					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), self:GetMap():GetMapID())
+					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), pin.vignetteInfo.atlasName, self:GetMap():GetMapID())
 					if (POI) then
 						-- If already showing a guide toggle it first
 						if (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
@@ -177,6 +187,7 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 	end
 
 	-- Adds all the POIs to the WorldMap
+	local currentGuideActive = nil
 	for _, POI in ipairs (POIs) do
 		-- Skip if an ingame vignette is already showing this entity (on AreaPOIPinTemplate)
 		-- Only vignettes on WorldMap are actually shown in this layer
@@ -216,8 +227,10 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 				-- Adds children overlay/guide
 				for _, childPOI in ipairs (POI.POIs) do
 					-- Adds overlay if active
-					if (RSGeneralDB.HasOverlayActive(childPOI.entityID)) then
+					-- Avoids adding multiple spots if the entity spawns in multiple places at the same time
+					if (RSGeneralDB.HasOverlayActive(childPOI.entityID) and (not currentGuideActive or currentGuideActive ~= childPOI.entityID)) then
 						pin:ShowOverlay(childPOI)
+						currentGuideActive = childPOI.entityID
 					end
 				end
 			else
@@ -230,9 +243,11 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 				end
 
 				-- Adds overlay if active
-				if (RSGeneralDB.HasOverlayActive(POI.entityID)) then
+				-- Avoids adding multiple spots if the entity spawns in multiple places at the same time
+				if (RSGeneralDB.HasOverlayActive(POI.entityID) and (not currentGuideActive or currentGuideActive ~= POI.entityID)) then
 					RSLogger:PrintDebugMessageEntityID(POI.entityID, string.format("Mostrando Overlay [%s].", POI.entityID))
 					pin:ShowOverlay()
+					currentGuideActive = POI.entityID
 				end
 			end
 		end

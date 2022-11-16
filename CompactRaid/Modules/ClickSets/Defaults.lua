@@ -133,6 +133,9 @@ module.DEFAULT_SPELLS = {
 
 	DEMONHUNTER = {
 	},
+
+    EVOKER = {
+    },
 }
 
 -- Entirely copied from Warbaby's GridClickSets...
@@ -216,6 +219,9 @@ local CLASS_DEFAULTS = {
 
 	DEMONHUNTER = {
 	},
+
+    EVOKER = {
+    },
 }
 
 function module:GetSpecialMacro()

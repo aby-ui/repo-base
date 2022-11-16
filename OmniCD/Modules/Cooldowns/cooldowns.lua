@@ -1982,6 +1982,7 @@ do
 		MONK    = { 310454, 8   },
 		DRUID   = { 338142, 4   },
 		DEMONHUNTER = { 306830, 4   },
+		EVOKER = { 306830, 4   }, --TODO:abyui102
 	}
 
 	registeredEvents.SPELL_AURA_APPLIED[353248] = function(info)

@@ -65,11 +65,13 @@ function TooltipID:HookAll()
 		return
 	end
 
+--[[
 	self:SecureHook(GameTooltip, "SetUnitAura", AddAuraID)
 	self:SecureHook(GameTooltip, "SetUnitBuff", AddBuffID)
 	self:SecureHook(GameTooltip, "SetUnitDebuff", AddDebuffID)
 	self:HookScript(GameTooltip, "OnTooltipSetSpell", AddSpellID)
 	self:HookScript(GameTooltip, "OnTooltipSetItem", AddItemID)
+]]
 
 	self.hooked = true
 end

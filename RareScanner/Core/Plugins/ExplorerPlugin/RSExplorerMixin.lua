@@ -1109,7 +1109,10 @@ function RSExplorerControl:ApplyFilters(self, button)
 	local data = {
 		callback = function()
 			mainFrame:Refresh()
-			LibDialog:Spawn(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS)
+			local subdata = {
+				filters = filters
+			}
+			LibDialog:Spawn(RSConstants.APPLY_COLLECTIONS_LOOT_FILTERS, subdata)
 		end,
 		filters = filters
 	}

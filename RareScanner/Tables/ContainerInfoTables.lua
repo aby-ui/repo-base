@@ -676,4 +676,57 @@ private.CONTAINER_INFO = {
 	[375985] = { zoneID = 1970, artID = { 1650 }, x = 3894, y = 3115, overlay = { "3902-3109" }, reset = false, questID = { 65744 } }; --Firim in Exile, Part 5
 	[375986] = { zoneID = 1970, artID = { 1650 }, x = 6735, y = 2509, overlay = { "6742-2517" }, reset = false, questID = { 65745 } }; --Firim in Exile, Part 6
 	[375987] = { zoneID = 1970, artID = { 1650 }, x = 6486, y = 3369, overlay = { "6483-3364" }, reset = false, questID = { 65746 } }; --Firim in Exile, Part 7
+	[195939] = { zoneID = 2022, artID = { 1706 }, x = 4045, y = 4114, overlay = { "4048-4136" }, reset = false, questID = { 70599 } }; --Bubble Drifter
+	[376175] = { zoneID = 2022, artID = { 1706 }, x = 4315, y = 6738, overlay = { "4315-6738" } }; --Fullsails Supply Chest
+	[376386] = { zoneID = {
+				[2022] = { x = 5345, y = 4419, artID = { 1706 }, overlay = { "3474-9011","3738-9279","4550-9443","4333-8741","3761-9619","4922-7876","5345-4419" } };
+				[2023] = { x = 8230, y = 1491, artID = { 1705 }, overlay = { "8459-1328","7729-2301","8230-1491" } };
+			  }, reset = true }; --Disturbed Dirt
+	[376587] = { zoneID = {
+				[2022] = { x = 4566, y = 3987, artID = { 1706 }, overlay = { "3935-9048","4566-3987","2260-7720","2360-9650","2420-6960","2950-5550","2980-5840","3010-7320","3200-6770","3240-7380","3320-7500","3460-7220","3500-6630","3710-7150","3820-8560","4000-8350","4120-6590","4320-3750","4330-6450","4440-6110","4470-8540","4480-6460","4580-7990","4600-5890","4630-5390","4730-3150","5000-3160","5070-6590","5120-8020","5310-7970","5380-2210","5530-8320","5630-8130","5650-6040","5700-2080","5730-5920","5870-3070","5880-3200","6210-6700","6250-3310","6380-2820","6380-6900","6390-4940","6390-5480","6400-4140","6420-4300","6460-6330","6520-3630","6760-6710","6960-4430","7020-4300","7130-7060","7720-2190" } };
+				[2023] = { x = 4185, y = 5424, artID = { 1705 }, overlay = { "6895-3835","7091-2244","8002-3020","7817-2364","4185-5424","5740-2710","6020-2730","6080-1750","6100-2990","6170-2500","6280-2720","6520-2200","6750-3520","6850-2990","7920-3170","8000-3680","8120-3800","8130-3100","8170-2920","8250-3990","8260-3110","8260-3360","8360-3230","8360-3520","8640-3940" } };
+				[2024] = { x = 5813, y = 5372, artID = { 1707 }, overlay = { "4799-2983","6586-1070","5813-5372" } };
+				[2025] = { x = 3880, y = 6830, artID = { 1708 }, overlay = { "3390-6767","5275-8333","3339-7192","3880-6830" } };
+			  }, reset = true }; --Expedition Scout's Pack
+	[377899] = { zoneID = 2022, artID = { 1706 }, x = 6491, y = 6957, overlay = { "6492-6959" }, reset = false, questID = { 67048 } }; --Hidden Hornswog Hostage
+	[380653] = { zoneID = 2022, artID = { 1706 }, x = 4671, y = 3120, overlay = { "4674-3126" }, reset = false, questID = { 70345 } }; --Yennu's Kite
+	[380654] = { zoneID = 2022, artID = { 1706 }, x = 6927, y = 4652, overlay = { "6931-4658" }, reset = false, questID = { 70346 } }; --Dead Man's Chestplate
+	[380840] = { zoneID = 2022, artID = { 1706 }, x = 4848, y = 8518, overlay = { "4848-8518" }, questID = { 70378 } }; --Torn Riding Pack
+	[381045] = { zoneID = 2022, artID = { 1706 }, x = 4884, y = 5179, overlay = { "4890-5180" }, questID = { 70600 } }; --Golden Dragon Goblet
+	[381153] = { zoneID = 2022, artID = { 1706 }, x = 6134, y = 7078, overlay = { "6134-7078" }, reset = false, questID = { 70598 } }; --Ruby Gem Cluster
+	[382325] = { zoneID = 2022, artID = { 1706 }, x = 2944, y = 4700, overlay = { "2944-4700" }, reset = false, questID = { 72020 } }; --Onyx Gem Cluster
+	[376581] = { zoneID = 2023, artID = { 1705 }, x = 7346, y = 5614, overlay = { "5089-6650","3270-3711","3478-3706","3610-4173","7346-5614" } }; --Clan Chest
+	[377900] = { zoneID = 2023, artID = { 1705 }, x = 3243, y = 3815, overlay = { "3243-3815" } }; --Nokhud Warspear
+	[378010] = { zoneID = 2023, artID = { 1705 }, x = 5328, y = 6891, overlay = { "5328-6891" } }; --Forgotten Dragon Treasure
+	[380842] = { zoneID = 2023, artID = { 1705 }, x = 8230, y = 7338, overlay = { "8230-7338" }, reset = false, questID = { 70379 } }; --Gold Swog Coin
+	[380847] = { zoneID = 2023, artID = { 1705 }, x = 3321, y = 5534, overlay = { "3321-5534" }, reset = false, questID = { 70391 } }; --Emerald Gem Cluster
+	[380859] = { zoneID = 2023, artID = { 1705 }, x = 5198, y = 5838, overlay = { "5198-5839" }, questID = { 70400 } }; --Tuskarr Toy Boat
+	[380860] = { zoneID = 2023, artID = { 1705 }, x = 7349, y = 5614, overlay = { "7349-5614" }, questID = { 70402 } }; --Centaur Horn
+	[380991] = { zoneID = 2023, artID = { 1705 }, x = 7059, y = 3545, overlay = { "7064-3537" }, reset = false, questID = { 67950 } }; --Dirt Mound (Slightly Chewed Duck Egg)
+	[381712] = { zoneID = 2023, artID = { 1705 }, x = 5600, y = 7878, overlay = { "5600-7878" }, reset = false, questID = { 71033 } }; --Water-Bound Chest
+	[382029] = { zoneID = {
+				[2023] = { x = 8902, y = 2408, artID = { 1705 }, overlay = { "6668-2565","7493-5496","3869-6675","7194-2418","7481-8858","8989-3275","8612-1614","7913-2059","4906-3382","6788-5305","7636-5115","8902-2408" } };
+				[2024] = { x = 3515, y = 3955, artID = { 1707 }, overlay = { "2752-4630","3515-3955" } };
+			  }, reset = true }; --Disturbed Dirt
+	[195373] = { zoneID = 2024, artID = { 1707 }, x = 2654, y = 4629, overlay = { "2654-4629" }, reset = false, questID = { 70441 } }; --Pepper Hammer
+	[380843] = { zoneID = 2024, artID = { 1707 }, x = 5460, y = 2931, overlay = { "5461-2932" }, questID = { 70380 } }; --Rubber Fish
+	[381110] = { zoneID = 2024, artID = { 1707 }, x = 4512, y = 5938, overlay = { "4513-5939" }, questID = { 70603 } }; --Forgotten Jewel Box
+	[381157] = { zoneID = 2024, artID = { 1707 }, x = 4863, y = 2466, overlay = { "4863-2466" }, reset = false, questID = { 70605 } }; --Shappire Gem Cluster
+	[381158] = { zoneID = 2024, artID = { 1707 }, x = 5396, y = 4377, overlay = { "5396-4377" } }; --Gnoll Fiend Flail
+	[381160] = { zoneID = 2024, artID = { 1707 }, x = 7489, y = 5502, overlay = { "7490-5500" }, reset = false, questID = { 70606 } }; --Lost Compass
+	[383733] = { zoneID = 2024, artID = { 1707 }, x = 6456, y = 5882, overlay = { "1126-4352","1504-2211","1666-3792","1214-3509","6456-5882" }, reset = true }; --Disturbed Dirt
+	[383735] = { zoneID = 2024, artID = { 1707 }, x = 4591, y = 2866, overlay = { "6720-1176","4685-2239","4781-2742","4415-3091","4591-2866" }, reset = true }; --Disturbed Dirt
+	[196172] = { zoneID = 2025, artID = { 1708 }, x = 4945, y = 6291, overlay = { "4945-6291" }, questID = { 70611 } }; --Acorn Harvester
+	[198604] = { zoneID = 2025, artID = { 1708 }, x = 5247, y = 8360, overlay = { "5247-8360" }, questID = { 72355 } }; --Strange Bear Cub
+	[376426] = { zoneID = 2025, artID = { 1708 }, x = 5019, y = 5208, overlay = { "3509-7048","5019-5208" } }; --Magic-Bound Chest
+	[380867] = { zoneID = 2025, artID = { 1708 }, x = 5260, y = 7673, overlay = { "5260-7673" }, reset = false, questID = { 70408 } }; --Amber Gem Cluster
+	[381094] = { zoneID = 2025, artID = { 1708 }, x = 6025, y = 4164, overlay = { "6023-4160" }, reset = false, questID = { 70609 } }; --Elegant Canvas Brush
+	[381107] = { zoneID = 2025, artID = { 1708 }, x = 5815, y = 8007, overlay = { "5815-8005" }, reset = false, questID = { 70608 } }; --Sand Pile (Sandy Wooden Duck)
+	[381216] = { zoneID = 2025, artID = { 1708 }, x = 6485, y = 1654, overlay = { "6486-1655" }, reset = false, questID = { 70610 } }; --Surveyor's Magnifying Glass
+	[381223] = { zoneID = 2025, artID = { 1708 }, x = 3396, y = 7695, overlay = { "3396-7695" }, questID = { 70607 } }; --Cracked Hourglass
+	[383734] = { zoneID = 2025, artID = { 1708 }, x = 3653, y = 7317, overlay = { "3557-6763","3288-6887","5566-8219","3244-7309","3722-7063","5027-8320","5120-3726","4791-6169","3653-7317" }, reset = true }; --Disturbed Dirt
+	[376123] = { zoneID = 2118, artID = { 1709 }, x = 6226, y = 4324, overlay = { "6218-4311" }, reset = false, questID = { 65908 } }; --Suspicious Bottle
+	[376124] = { zoneID = 2118, artID = { 1709 }, x = 4206, y = 3448, overlay = { "4206-3448" }, reset = false, questID = { 65909 } }; --Bag of Enchanted Winds
+	[377317] = { zoneID = 2118, artID = { 1709 }, x = 7094, y = 3703, overlay = { "7095-3704" }, reset = false, questID = { 66932 } }; --Treasure Hoard
+	[381042] = { zoneID = 2025, artID = { 1708 }, x = 4888, y = 5849, overlay = { "4888-5849" } }; --Simmering Chest
 }

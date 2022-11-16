@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: SimpleRaidTargetIcons
 ## Author: Driizt
 ## X-Credits: ghostduke, Brodrick (aka Kirov), Qzot

@@ -6,36 +6,39 @@
 	* File...: Skins\Dream.lua
 	* Author.: StormFX, JJSheets
 
-	'Dream' Skin
+	"Dream" Skin
 
 ]]
 
 local _, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
-local L, Hidden = Core.Locale, Core.__Hidden
-local WOW_RETAIL = Core.WOW_RETAIL
+-- @ Locales\enUS
+local L = Core.Locale
+
+-- @ Skins\Skins
+local Hidden = Core.__Hidden
 
 ----------------------------------------
 -- Dream
 ---
 
 Core.AddSkin("Dream", {
-	Template = "Default (Classic)",
-	-- API_VERSION = Default.API_VERSION,
-	-- Shape = Default.Shape,
+	Template = "Blizzard Classic",
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 
 	-- Info
 	Description = L["A square skin with trimmed icons and a semi-transparent background."],
-	-- Version = Default.Version,
+	-- Version = Template.Version,
 	Authors = Core.Authors,
 	Websites = Core.Websites,
 
 	-- Skin
-	-- Mask = Default.Mask,
+	-- Mask = Template.Mask,
 	Backdrop = {
 		-- Texture = [[Interface\Buttons\UI-Quickslot]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -79,9 +82,9 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Shadow = Default.Shadow,
+	-- Shadow = Template.Shadow,
 	Normal = Hidden,
-	-- Disabled = Default.Disabled,
+	-- Disabled = Template.Disabled,
 	Pushed = {
 		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -138,18 +141,7 @@ Core.AddSkin("Dream", {
 		OffsetX = 0,
 		OffsetY = 0,
 	},
-	Duration = {
-		JustifyH = "CENTER",
-		JustifyV = "MIDDLE",
-		DrawLayer = "OVERLAY",
-		Width = 36,
-		Height = 0,
-		Anchor = "Icon",
-		Point = "TOP",
-		RelPoint = "BOTTOM",
-		OffsetX = 0,
-		OffsetY = -2,
-	},
+	-- Duration = Template.Duration,
 	Checked = {
 		Texture = [[Interface\Buttons\CheckButtonHilight]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -268,7 +260,7 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Gloss = Default.Gloss,
+	-- Gloss = Template.Gloss,
 	NewAction = {
 		Atlas = "bags-newitem",
 		UseAtlasSize = false,
@@ -462,7 +454,7 @@ Core.AddSkin("Dream", {
 	},
 	Cooldown = {
 		-- Texture = nil,
-		EdgeTexture = [[Interface\Cooldown\edge]],
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
 		PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.8},
 		Width = 30,
@@ -474,7 +466,7 @@ Core.AddSkin("Dream", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
-		EdgeTexture = [[Interface\Cooldown\edge]],
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
 		PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 30,
 		Height = 30,

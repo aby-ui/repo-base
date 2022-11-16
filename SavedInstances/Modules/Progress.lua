@@ -3,7 +3,7 @@ local Module = SI:NewModule('Progress', 'AceEvent-3.0')
 
 -- Lua functions
 local _G = _G
-local ipairs, strmatch, type, tostring, wipe = ipairs, strmatch, type, tostring, wipe
+local floor, ipairs, strmatch, type, tostring, wipe = floor, ipairs, strmatch, type, tostring, wipe
 
 -- WoW API / Variables
 local C_QuestLog_IsOnQuest = C_QuestLog.IsOnQuest

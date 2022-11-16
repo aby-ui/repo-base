@@ -28,136 +28,112 @@ local LIB_ACR = LibStub("AceConfigRegistry-3.0")
 -- Internal
 ---
 
--- @ Options\Core
-local Setup = Core.Setup
-
 -- @ Locales\enUS
 local L = Core.Locale
 
 -- @ Masque
+local OLD_VERSION = Core.OLD_VERSION
+
+-- @ Options\Core
 local CRLF = Core.CRLF
+local Setup = Core.Setup
 
 ----------------------------------------
--- Utility
+-- Locals
 ---
 
-local GetInfoGroup
+-- Formatted Text
+local UPDATED = "|cff00ff00"..L["Compatible"].."|r"
+local COMPATIBLE = "|cffffff00"..L["Compatible"].."|r"
+local UNKNOWN = "|cff777777"..L["Unknown"].."|r"
 
-do
-	-- Formatted Text
-	local UPDATED = "|cff00ff00"..L["Compatible"].."|r"
-	local COMPATIBLE = "|cffffff00"..L["Compatible"].."|r"
-	-- local INCOMPATIBLE = "|cffff0000"..L["Incompatible"].."|r"
-	local UNKNOWN = "|cff777777"..L["Unknown"].."|r"
+-- Reusable Header
+local HDR = {
+	type = "header",
+	name = L["Description"],
+	order = 1,
+	disabled = true,
+	dialogControl = "SFX-Header",
+}
 
-	-- Versions
-	-- local API = Core.API_VERSION
-	local OLD = Core.OLD_VERSION
-
-	-- Returns the Status text and tooltip for a skin based on its API_VERSION setting.
-	local function GetStatus(Version)
-		if not Version then
-			return UNKNOWN, L["The status of this skin is unknown."]
-		elseif Version >= OLD then
-			return UPDATED, L["This skin is compatible with Masque."]
-		else
-			return COMPATIBLE, L["This skin is outdated but is still compatible with Masque."]
-		end
+-- Returns the status and tooltip for a skin based on its API_VERSION setting.
+local function GetStatus(Version)
+	if not Version then
+		return UNKNOWN, L["The status of this skin is unknown."]
+	elseif Version >= OLD_VERSION then
+		return UPDATED, L["This skin is compatible with Masque."]
+	else
+		return COMPATIBLE, L["This skin is outdated but is still compatible with Masque."]
 	end
+end
 
-	----------------------------------------
-	-- Options Builder
-	---
+----------------------------------------
+-- Options Builder
+---
 
-	-- Reusable Header
-	local HDR = {
-		type = "header",
-		name = L["Description"],
-		order = 1,
-		disabled = true,
-		dialogControl = "SFX-Header",
-	}
+-- Creates a skin info options group.
+local function GetInfoGroup(Skin, Group)
+	local Title = (Group and Skin.Title) or Skin.SkinID
+	local Order = (Group and Skin.Order) or nil
+	local Description = Skin.Description or L["No description available."]
 
-	-- Creates a skin info options group.
-	function GetInfoGroup(Skin, Group)
-		local Title = (Group and Skin.Title) or Skin.SkinID
-		local Order = (Group and Skin.Order) or nil
-		local Description = Skin.Description or L["No description available."]
+	local Version = (Skin.Version and tostring(Skin.Version)) or UNKNOWN
+	local Authors = Skin.Authors or Skin.Author or UNKNOWN
+	local Websites = Skin.Websites or Skin.Website
+	local Status, Tooltip = GetStatus(Skin.API_VERSION)
 
-		local Version = (Skin.Version and tostring(Skin.Version)) or UNKNOWN
-		local Authors = Skin.Authors or Skin.Author or UNKNOWN
-		local Websites = Skin.Websites or Skin.Website
-		local Status, Tooltip = GetStatus(Skin.API_VERSION)
-
-		-- Options Group
-		local Info = {
-			type = "group",
-			name = Title,
-			order = Order,
-			args = {
-				Head = HDR,
-				Desc = {
-					type = "description",
-					name = Description..CRLF,
-					order = 2,
-					fontSize = "medium",
-				},
-				Info = {
-					type = "group",
-					name = "",
-					order = 3,
-					inline = true,
-					args = {
-						Version = {
-							type = "input",
-							name = L["Version"],
-							arg = Version..CRLF,
-							order = 1,
-							disabled = true,
-							dialogControl = "SFX-Info",
-						},
+	-- Options Group
+	local Info = {
+		type = "group",
+		name = Title,
+		order = Order,
+		args = {
+			Head = HDR,
+			Desc = {
+				type = "description",
+				name = Description..CRLF,
+				order = 2,
+				fontSize = "medium",
+			},
+			Info = {
+				type = "group",
+				name = "",
+				order = 3,
+				inline = true,
+				args = {
+					Version = {
+						type = "input",
+						name = L["Version"],
+						arg = Version..CRLF,
+						order = 1,
+						disabled = true,
+						dialogControl = "SFX-Info",
 					},
 				},
 			},
-		}
+		},
+	}
 
-		local args = Info.args.Info.args
-		Order = 2
+	local args = Info.args.Info.args
+	Order = 2
 
-		-- Populate the Author field(s).
-		if type(Authors) == "table" then
-			local Count = #Authors
-			if Count > 0 then
-				for i = 1, Count do
-					local Key = "Author"..i
-					local Name = (i == 1 and L["Authors"]) or ""
-					args[Key] = {
-						type = "input",
-						name = Name,
-						arg  = Authors[i],
-						order = Order,
-						disabled = true,
-						dialogControl = "SFX-Info",
-					}
-					Order = Order + 1
-				end
-				args["SPC"..Order] = {
-					type = "description",
-					name = " ",
+	-- Populate the Author field(s).
+	if type(Authors) == "table" then
+		local Count = #Authors
+		if Count > 0 then
+			for i = 1, Count do
+				local Key = "Author"..i
+				local Name = (i == 1 and L["Authors"]) or ""
+				args[Key] = {
+					type = "input",
+					name = Name,
+					arg  = Authors[i],
 					order = Order,
+					disabled = true,
+					dialogControl = "SFX-Info",
 				}
 				Order = Order + 1
 			end
-		elseif type(Authors) == "string" then
-			args.Author = {
-				type = "input",
-				name = L["Author"],
-				arg  = Authors,
-				order = Order,
-				disabled = true,
-				dialogControl = "SFX-Info",
-			}
-			Order = Order + 1
 			args["SPC"..Order] = {
 				type = "description",
 				name = " ",
@@ -165,59 +141,75 @@ do
 			}
 			Order = Order + 1
 		end
-
-		-- Populate the Website field(s).
-		if type(Websites) == "table" then
-			local Count = #Websites
-			if Count > 0 then
-				for i = 1, Count do
-					local Key = "Website"..i
-					local Name = (i == 1) and L["Websites"] or ""
-					args[Key] = {
-						type = "input",
-						name = Name,
-						arg  = Websites[i],
-						order = Order,
-						dialogControl = "SFX-Info-URL",
-					}
-					Order = Order + 1
-				end
-				args["SPC"..Order] = {
-					type = "description",
-					name = " ",
-					order = Order,
-				}
-				Order = Order + 1
-			end
-		elseif type(Websites) == "string" then
-			args.Website = {
-				type = "input",
-				name = L["Website"],
-				arg  = Websites,
-				order = Order,
-				dialogControl = "SFX-Info",
-			}
-			Order = Order + 1
-			args["SPC"..Order] = {
-				type = "description",
-				name = " ",
-				order = Order,
-			}
-			Order = Order + 1
-		end
-
-		-- Status
-		args.Status = {
+	elseif type(Authors) == "string" then
+		args.Author = {
 			type = "input",
-			name = L["Status"],
-			desc = Tooltip,
-			arg = Status,
+			name = L["Author"],
+			arg  = Authors,
+			order = Order,
+			disabled = true,
+			dialogControl = "SFX-Info",
+		}
+		Order = Order + 1
+		args["SPC"..Order] = {
+			type = "description",
+			name = " ",
+			order = Order,
+		}
+		Order = Order + 1
+	end
+
+	-- Populate the Website field(s).
+	if type(Websites) == "table" then
+		local Count = #Websites
+		if Count > 0 then
+			for i = 1, Count do
+				local Key = "Website"..i
+				local Name = (i == 1) and L["Websites"] or ""
+				args[Key] = {
+					type = "input",
+					name = Name,
+					arg  = Websites[i],
+					order = Order,
+					dialogControl = "SFX-Info-URL",
+				}
+				Order = Order + 1
+			end
+			args["SPC"..Order] = {
+				type = "description",
+				name = " ",
+				order = Order,
+			}
+			Order = Order + 1
+		end
+	elseif type(Websites) == "string" then
+		args.Website = {
+			type = "input",
+			name = L["Website"],
+			arg  = Websites,
 			order = Order,
 			dialogControl = "SFX-Info",
 		}
-
-		return Info
+		Order = Order + 1
+		args["SPC"..Order] = {
+			type = "description",
+			name = " ",
+			order = Order,
+		}
+		Order = Order + 1
 	end
+
+	-- Status
+	args.Status = {
+		type = "input",
+		name = L["Status"],
+		desc = Tooltip,
+		arg = Status,
+		order = Order,
+		dialogControl = "SFX-Info",
+	}
+
+	return Info
 end
 
 ----------------------------------------

@@ -60,6 +60,7 @@ E.spell_db = {
 		{ spellID = 196770, duration = 20,  type = "other",     spec = {251},   talent = 287250 },
 		{ spellID = 212552, duration = 60,  type = "other",     spec = true     },
 	},
+	["EVOKER"] = {},
 	["DEMONHUNTER"] = {
 		{ spellID = 306830, duration = 60,  type = "covenant",  spec = 321076   },
 		{ spellID = 329554, duration = 120, type = "covenant",  spec = 321078   },

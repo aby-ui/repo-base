@@ -45,7 +45,7 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
   if (data) then
       if (data.rows and data.columns) then
         -- Texture Atlas
-        textureWidget:SetTexture(texturePath, textureName);
+        textureWidget:SetTexture(texturePath, textureName, true);
 
         setTile(textureWidget, data.count, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
 
@@ -63,7 +63,7 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
       else
         -- Numbered Textures
         local texture = texturePath .. format("%03d", texture_data[texturePath].count)
-        textureWidget:SetTexture(texture, textureName)
+        textureWidget:SetTexture(texture, textureName, true)
         textureWidget:SetTexCoord(0, 1, 0, 1);
 
         textureWidget:SetOnUpdate(function(self, elapsed)
@@ -81,7 +81,7 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
       end
   else
     local texture = texturePath .. format("%03d", 1)
-    textureWidget:SetTexture(texture, textureName);
+    textureWidget:SetTexture(texture, textureName, true);
   end
 end
 
@@ -296,6 +296,7 @@ local function createOptions(id, data)
         },
         startPercent = {
             type = "range",
+            control = "WeakAurasSpinBox",
             width = WeakAuras.normalWidth,
             name = L["Animation Start"],
             min = 0,
@@ -306,6 +307,7 @@ local function createOptions(id, data)
         },
         endPercent = {
             type = "range",
+            control = "WeakAurasSpinBox",
             width = WeakAuras.normalWidth,
             name = L["Animation End"],
             min = 0,
@@ -316,6 +318,7 @@ local function createOptions(id, data)
         },
         frameRate = {
            type = "range",
+           control = "WeakAurasSpinBox",
            width = WeakAuras.normalWidth,
            name = L["Frame Rate"],
            min = 3,
@@ -553,6 +556,7 @@ local function createOptions(id, data)
       },
       backgroundPercent = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Selected Frame"],
         min = 0,

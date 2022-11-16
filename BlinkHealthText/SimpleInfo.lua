@@ -23,6 +23,7 @@ local WARLOCK       = 9
 local MONK          = 10
 local DRUID         = 11
 local DEMONHUNTER   = 12
+local EVOKER        = 13
 
 --local BlinkHealthTextPowerType;
 
@@ -43,6 +44,8 @@ local function GetPowerType()
         return UnitPowerType("player") == Enum.PowerType.Energy and Enum.PowerType.ComboPoints or nil
     elseif (class == DEATHKNIGHT) then
 
+    elseif (class == EVOKER) then
+		--TODO:abyui102
     end
 end
 -- Target name

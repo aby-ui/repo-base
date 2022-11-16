@@ -1,4 +1,4 @@
-﻿## Interface: 100000
+﻿## Interface: 100002
 ## Title: BlinkHealthText
 ## Notes: BlinkHealthText 2.1
 ## Author: Kill & dugu @ Duowan

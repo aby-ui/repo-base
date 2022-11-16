@@ -1,25 +1,25 @@
---- AceConfigDialogRSmod-3.0 generates AceGUI-3.0 based windows based on option tables.
+--- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
--- @name AceConfigDialogRSmod-3.0
--- @release $Id: AceConfigDialogRSmod-3.0.lua 1262 2022-04-07 23:00:32Z funkehdude $
+-- @name AceConfigDialog-3.0
+-- @release $Id: AceConfigDialog-3.0.lua 1262 2022-04-07 23:00:32Z funkehdude $
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialogRSmod-3.0", 82
-local AceConfigDialogRSmod, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
+local MAJOR, MINOR = "AceConfigDialog-3.0-RSmod", 82
+local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
-if not AceConfigDialogRSmod then return end
+if not AceConfigDialog then return end
 
-AceConfigDialogRSmod.OpenFrames = AceConfigDialogRSmod.OpenFrames or {}
-AceConfigDialogRSmod.Status = AceConfigDialogRSmod.Status or {}
-AceConfigDialogRSmod.frame = AceConfigDialogRSmod.frame or CreateFrame("Frame")
-AceConfigDialogRSmod.tooltip = AceConfigDialogRSmod.tooltip or CreateFrame("GameTooltip", "AceConfigDialogRSmodTooltip", UIParent, "GameTooltipTemplate")
+AceConfigDialog.OpenFrames = AceConfigDialog.OpenFrames or {}
+AceConfigDialog.Status = AceConfigDialog.Status or {}
+AceConfigDialog.frame = AceConfigDialog.frame or CreateFrame("Frame")
+AceConfigDialog.tooltip = AceConfigDialog.tooltip or CreateFrame("GameTooltip", "AceConfigDialogTooltip", UIParent, "GameTooltipTemplate")
 
-AceConfigDialogRSmod.frame.apps = AceConfigDialogRSmod.frame.apps or {}
-AceConfigDialogRSmod.frame.closing = AceConfigDialogRSmod.frame.closing or {}
-AceConfigDialogRSmod.frame.closeAllOverride = AceConfigDialogRSmod.frame.closeAllOverride or {}
+AceConfigDialog.frame.apps = AceConfigDialog.frame.apps or {}
+AceConfigDialog.frame.closing = AceConfigDialog.frame.closing or {}
+AceConfigDialog.frame.closeAllOverride = AceConfigDialog.frame.closeAllOverride or {}
 
 -- Lua APIs
 local tinsert, tsort, tremove, wipe = table.insert, table.sort, table.remove, table.wipe
@@ -404,7 +404,7 @@ end
 -- @param appName The application name as given to `:RegisterOptionsTable()`
 -- @param path The path to the options (a table with all group keys)
 -- @return
-function AceConfigDialogRSmod:GetStatusTable(appName, path)
+function AceConfigDialog:GetStatusTable(appName, path)
 	local status = self.Status
 
 	if not status[appName] then
@@ -434,7 +434,7 @@ end
 -- The path specified has to match the keys of the groups in the table.
 -- @param appName The application name as given to `:RegisterOptionsTable()`
 -- @param ... The path to the key that should be selected
-function AceConfigDialogRSmod:SelectGroup(appName, ...)
+function AceConfigDialog:SelectGroup(appName, ...)
 	local path = new()
 
 
@@ -505,7 +505,7 @@ local function OptionOnMouseOver(widget, event)
 	local options = user.options
 	local path = user.path
 	local appName = user.appName
-	local tooltip = AceConfigDialogRSmod.tooltip
+	local tooltip = AceConfigDialog.tooltip
 
 	tooltip:SetOwner(widget.frame, "ANCHOR_TOPRIGHT")
 	local name = GetOptionsMemberValue("name", opt, options, path, appName)
@@ -531,7 +531,7 @@ local function OptionOnMouseOver(widget, event)
 end
 
 local function OptionOnMouseLeave(widget, event)
-	AceConfigDialogRSmod.tooltip:Hide()
+	AceConfigDialog.tooltip:Hide()
 end
 
 local function GetFuncName(option)
@@ -543,10 +543,10 @@ local function GetFuncName(option)
 	end
 end
 do
-	local frame = AceConfigDialogRSmod.popup
+	local frame = AceConfigDialog.popup
 	if not frame or oldminor < 81 then
 		frame = CreateFrame("Frame", nil, UIParent)
-		AceConfigDialogRSmod.popup = frame
+		AceConfigDialog.popup = frame
 		frame:Hide()
 		frame:SetPoint("CENTER", UIParent, "CENTER")
 		frame:SetSize(320, 72)
@@ -601,7 +601,7 @@ do
 	end
 end
 local function confirmPopup(appName, rootframe, basepath, info, message, func, ...)
-	local frame = AceConfigDialogRSmod.popup
+	local frame = AceConfigDialog.popup
 	frame:Show()
 	frame.text:SetText(message)
 	-- From StaticPopup.lua
@@ -619,14 +619,14 @@ local function confirmPopup(appName, rootframe, basepath, info, message, func, .
 	local tCount = select("#", ...)
 	frame.accept:SetScript("OnClick", function(self)
 		safecall(func, unpack(t, 1, tCount)) -- Manually set count as unpack() stops on nil (bug with #table)
-		AceConfigDialogRSmod:Open(appName, rootframe, unpack(basepath or emptyTbl))
+		AceConfigDialog:Open(appName, rootframe, unpack(basepath or emptyTbl))
 		frame:Hide()
 		self:SetScript("OnClick", nil)
 		frame.cancel:SetScript("OnClick", nil)
 		del(info)
 	end)
 	frame.cancel:SetScript("OnClick", function(self)
-		AceConfigDialogRSmod:Open(appName, rootframe, unpack(basepath or emptyTbl))
+		AceConfigDialog:Open(appName, rootframe, unpack(basepath or emptyTbl))
 		frame:Hide()
 		self:SetScript("OnClick", nil)
 		frame.accept:SetScript("OnClick", nil)
@@ -635,7 +635,7 @@ local function confirmPopup(appName, rootframe, basepath, info, message, func, .
 end
 
 local function validationErrorPopup(message)
-	local frame = AceConfigDialogRSmod.popup
+	local frame = AceConfigDialog.popup
 	frame:Show()
 	frame.text:SetText(message)
 	-- From StaticPopup.lua
@@ -845,17 +845,17 @@ local function ActivateControl(widget, event, ...)
 			if event == "OnValueConfirmed" then
 
 				if iscustom then
-					AceConfigDialogRSmod:Open(user.appName, user.rootframe, unpack(basepath))
+					AceConfigDialog:Open(user.appName, user.rootframe, unpack(basepath))
 				else
-					AceConfigDialogRSmod:Open(user.appName, unpack(basepath))
+					AceConfigDialog:Open(user.appName, unpack(basepath))
 				end
 			end
 		elseif option.type == "range" then
 			if event == "OnMouseUp" then
 				if iscustom then
-					AceConfigDialogRSmod:Open(user.appName, user.rootframe, unpack(basepath))
+					AceConfigDialog:Open(user.appName, user.rootframe, unpack(basepath))
 				else
-					AceConfigDialogRSmod:Open(user.appName, unpack(basepath))
+					AceConfigDialog:Open(user.appName, unpack(basepath))
 				end
 			end
 		--multiselects don't cause a refresh on 'OnValueChanged' only 'OnClosed'
@@ -863,9 +863,9 @@ local function ActivateControl(widget, event, ...)
 			user.valuechanged = true
 		else
 			if iscustom then
-				AceConfigDialogRSmod:Open(user.appName, user.rootframe, unpack(basepath))
+				AceConfigDialog:Open(user.appName, user.rootframe, unpack(basepath))
 			else
-				AceConfigDialogRSmod:Open(user.appName, unpack(basepath))
+				AceConfigDialog:Open(user.appName, unpack(basepath))
 			end
 		end
 
@@ -896,9 +896,9 @@ local function ActivateMultiControl(widget, event, ...)
 	local iscustom = user.rootframe:GetUserData("iscustom")
 	local basepath = user.rootframe:GetUserData("basepath") or emptyTbl
 	if iscustom then
-		AceConfigDialogRSmod:Open(user.appName, user.rootframe, unpack(basepath))
+		AceConfigDialog:Open(user.appName, user.rootframe, unpack(basepath))
 	else
-		AceConfigDialogRSmod:Open(user.appName, unpack(basepath))
+		AceConfigDialog:Open(user.appName, unpack(basepath))
 	end
 end
 
@@ -908,16 +908,16 @@ local function MultiControlOnClosed(widget, event, ...)
 		local iscustom = user.rootframe:GetUserData("iscustom")
 		local basepath = user.rootframe:GetUserData("basepath") or emptyTbl
 		if iscustom then
-			AceConfigDialogRSmod:Open(user.appName, user.rootframe, unpack(basepath))
+			AceConfigDialog:Open(user.appName, user.rootframe, unpack(basepath))
 		else
-			AceConfigDialogRSmod:Open(user.appName, unpack(basepath))
+			AceConfigDialog:Open(user.appName, unpack(basepath))
 		end
 	end
 end
 
 local function FrameOnClose(widget, event)
 	local appName = widget:GetUserData("appName")
-	AceConfigDialogRSmod.OpenFrames[appName] = nil
+	AceConfigDialog.OpenFrames[appName] = nil
 	gui:Release(widget)
 end
 
@@ -1480,7 +1480,7 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 	local option = user.option
 	local path = user.path
 	local appName = user.appName
-	local tooltip = AceConfigDialogRSmod.tooltip
+	local tooltip = AceConfigDialog.tooltip
 
 	local feedpath = new()
 	for i = 1, #path do
@@ -1515,7 +1515,7 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 end
 
 local function TreeOnButtonLeave(widget, event, value, button)
-	AceConfigDialogRSmod.tooltip:Hide()
+	AceConfigDialog.tooltip:Hide()
 end
 
 
@@ -1563,7 +1563,7 @@ local function GroupSelected(widget, event, uniquevalue)
 
 	BuildPath(feedpath, ("\001"):split(uniquevalue))
 	widget:ReleaseChildren()
-	AceConfigDialogRSmod:FeedGroup(user.appName,options,widget,rootframe,feedpath)
+	AceConfigDialog:FeedGroup(user.appName,options,widget,rootframe,feedpath)
 
 	del(feedpath)
 end
@@ -1586,7 +1586,7 @@ Rules:
 		if its parent is a tree group, its already a node on a tree
 --]]
 
-function AceConfigDialogRSmod:FeedGroup(appName,options,container,rootframe,path, isRoot)
+function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isRoot)
 	local group = options
 	--follow the path to get to the curent group
 	local inline
@@ -1659,7 +1659,7 @@ function AceConfigDialogRSmod:FeedGroup(appName,options,container,rootframe,path
 			tab:SetCallback("OnTabEnter", TreeOnButtonEnter)
 			tab:SetCallback("OnTabLeave", TreeOnButtonLeave)
 
-			local status = AceConfigDialogRSmod:GetStatusTable(appName, path)
+			local status = AceConfigDialog:GetStatusTable(appName, path)
 			if not status.groups then
 				status.groups = {}
 			end
@@ -1687,7 +1687,7 @@ function AceConfigDialogRSmod:FeedGroup(appName,options,container,rootframe,path
 			select:SetTitle(name)
 			InjectInfo(select, options, group, path, rootframe, appName)
 			select:SetCallback("OnGroupSelected", GroupSelected)
-			local status = AceConfigDialogRSmod:GetStatusTable(appName, path)
+			local status = AceConfigDialog:GetStatusTable(appName, path)
 			if not status.groups then
 				status.groups = {}
 			end
@@ -1721,7 +1721,7 @@ function AceConfigDialogRSmod:FeedGroup(appName,options,container,rootframe,path
 			tree:SetCallback("OnButtonEnter", TreeOnButtonEnter)
 			tree:SetCallback("OnButtonLeave", TreeOnButtonLeave)
 
-			local status = AceConfigDialogRSmod:GetStatusTable(appName, path)
+			local status = AceConfigDialog:GetStatusTable(appName, path)
 			if not status.groups then
 				status.groups = {}
 			end
@@ -1749,11 +1749,11 @@ local old_CloseSpecialWindows
 
 local function RefreshOnUpdate(this)
 	for appName in pairs(this.closing) do
-		if AceConfigDialogRSmod.OpenFrames[appName] then
-			AceConfigDialogRSmod.OpenFrames[appName]:Hide()
+		if AceConfigDialog.OpenFrames[appName] then
+			AceConfigDialog.OpenFrames[appName]:Hide()
 		end
-		if AceConfigDialogRSmod.BlizOptions and AceConfigDialogRSmod.BlizOptions[appName] then
-			for key, widget in pairs(AceConfigDialogRSmod.BlizOptions[appName]) do
+		if AceConfigDialog.BlizOptions and AceConfigDialog.BlizOptions[appName] then
+			for key, widget in pairs(AceConfigDialog.BlizOptions[appName]) do
 				if not widget:IsVisible() then
 					widget:ReleaseChildren()
 				end
@@ -1763,7 +1763,7 @@ local function RefreshOnUpdate(this)
 	end
 
 	if this.closeAll then
-		for k, v in pairs(AceConfigDialogRSmod.OpenFrames) do
+		for k, v in pairs(AceConfigDialog.OpenFrames) do
 			if not this.closeAllOverride[k] then
 				v:Hide()
 			end
@@ -1773,15 +1773,15 @@ local function RefreshOnUpdate(this)
 	end
 
 	for appName in pairs(this.apps) do
-		if AceConfigDialogRSmod.OpenFrames[appName] then
-			local user = AceConfigDialogRSmod.OpenFrames[appName]:GetUserDataTable()
-			AceConfigDialogRSmod:Open(appName, unpack(user.basepath or emptyTbl))
+		if AceConfigDialog.OpenFrames[appName] then
+			local user = AceConfigDialog.OpenFrames[appName]:GetUserDataTable()
+			AceConfigDialog:Open(appName, unpack(user.basepath or emptyTbl))
 		end
-		if AceConfigDialogRSmod.BlizOptions and AceConfigDialogRSmod.BlizOptions[appName] then
-			for key, widget in pairs(AceConfigDialogRSmod.BlizOptions[appName]) do
+		if AceConfigDialog.BlizOptions and AceConfigDialog.BlizOptions[appName] then
+			for key, widget in pairs(AceConfigDialog.BlizOptions[appName]) do
 				local user = widget:GetUserDataTable()
 				if widget:IsVisible() then
-					AceConfigDialogRSmod:Open(widget:GetUserData("appName"), widget, unpack(user.basepath or emptyTbl))
+					AceConfigDialog:Open(widget:GetUserData("appName"), widget, unpack(user.basepath or emptyTbl))
 				end
 			end
 		end
@@ -1791,14 +1791,14 @@ local function RefreshOnUpdate(this)
 end
 
 -- Upgrade the OnUpdate script as well, if needed.
-if AceConfigDialogRSmod.frame:GetScript("OnUpdate") then
-	AceConfigDialogRSmod.frame:SetScript("OnUpdate", RefreshOnUpdate)
+if AceConfigDialog.frame:GetScript("OnUpdate") then
+	AceConfigDialog.frame:SetScript("OnUpdate", RefreshOnUpdate)
 end
 
 --- Close all open options windows
-function AceConfigDialogRSmod:CloseAll()
-	AceConfigDialogRSmod.frame.closeAll = true
-	AceConfigDialogRSmod.frame:SetScript("OnUpdate", RefreshOnUpdate)
+function AceConfigDialog:CloseAll()
+	AceConfigDialog.frame.closeAll = true
+	AceConfigDialog.frame:SetScript("OnUpdate", RefreshOnUpdate)
 	if next(self.OpenFrames) then
 		return true
 	end
@@ -1806,28 +1806,28 @@ end
 
 --- Close a specific options window.
 -- @param appName The application name as given to `:RegisterOptionsTable()`
-function AceConfigDialogRSmod:Close(appName)
+function AceConfigDialog:Close(appName)
 	if self.OpenFrames[appName] then
-		AceConfigDialogRSmod.frame.closing[appName] = true
-		AceConfigDialogRSmod.frame:SetScript("OnUpdate", RefreshOnUpdate)
+		AceConfigDialog.frame.closing[appName] = true
+		AceConfigDialog.frame:SetScript("OnUpdate", RefreshOnUpdate)
 		return true
 	end
 end
 
 -- Internal -- Called by AceConfigRegistry
-function AceConfigDialogRSmod:ConfigTableChanged(event, appName)
-	AceConfigDialogRSmod.frame.apps[appName] = true
-	AceConfigDialogRSmod.frame:SetScript("OnUpdate", RefreshOnUpdate)
+function AceConfigDialog:ConfigTableChanged(event, appName)
+	AceConfigDialog.frame.apps[appName] = true
+	AceConfigDialog.frame:SetScript("OnUpdate", RefreshOnUpdate)
 end
 
-reg.RegisterCallback(AceConfigDialogRSmod, "ConfigTableChange", "ConfigTableChanged")
+reg.RegisterCallback(AceConfigDialog, "ConfigTableChange", "ConfigTableChanged")
 
 --- Sets the default size of the options window for a specific application.
 -- @param appName The application name as given to `:RegisterOptionsTable()`
 -- @param width The default width
 -- @param height The default height
-function AceConfigDialogRSmod:SetDefaultSize(appName, width, height)
-	local status = AceConfigDialogRSmod:GetStatusTable(appName)
+function AceConfigDialog:SetDefaultSize(appName, width, height)
+	local status = AceConfigDialog:GetStatusTable(appName)
 	if type(width) == "number" and type(height) == "number" then
 		status.width = width
 		status.height = height
@@ -1841,7 +1841,7 @@ end
 -- @param appName The application name as given to `:RegisterOptionsTable()`
 -- @param container An optional container frame to feed the options into
 -- @param ... The path to open after creating the options window (see `:SelectGroup` for details)
-function AceConfigDialogRSmod:Open(appName, container, ...)
+function AceConfigDialog:Open(appName, container, ...)
 	if not old_CloseSpecialWindows then
 		old_CloseSpecialWindows = CloseSpecialWindows
 		CloseSpecialWindows = function()
@@ -1887,7 +1887,7 @@ function AceConfigDialogRSmod:Open(appName, container, ...)
 		if #path > 0 then
 			f:SetUserData("basepath", copy(path))
 		end
-		local status = AceConfigDialogRSmod:GetStatusTable(appName)
+		local status = AceConfigDialog:GetStatusTable(appName)
 		if not status.width then
 			status.width =  700
 		end
@@ -1914,7 +1914,7 @@ function AceConfigDialogRSmod:Open(appName, container, ...)
 			f:SetUserData("basepath", copy(path))
 		end
 		f:SetTitle(name or "")
-		local status = AceConfigDialogRSmod:GetStatusTable(appName)
+		local status = AceConfigDialog:GetStatusTable(appName)
 		f:SetStatusTable(status)
 	end
 
@@ -1924,35 +1924,35 @@ function AceConfigDialogRSmod:Open(appName, container, ...)
 	end
 	del(path)
 
-	if AceConfigDialogRSmod.frame.closeAll then
+	if AceConfigDialog.frame.closeAll then
 		-- close all is set, but thats not good, since we're just opening here, so force it
-		AceConfigDialogRSmod.frame.closeAllOverride[appName] = true
+		AceConfigDialog.frame.closeAllOverride[appName] = true
 	end
 end
 
 -- convert pre-39 BlizOptions structure to the new format
-if oldminor and oldminor < 39 and AceConfigDialogRSmod.BlizOptions then
-	local old = AceConfigDialogRSmod.BlizOptions
+if oldminor and oldminor < 39 and AceConfigDialog.BlizOptions then
+	local old = AceConfigDialog.BlizOptions
 	local new = {}
 	for key, widget in pairs(old) do
 		local appName = widget:GetUserData("appName")
 		if not new[appName] then new[appName] = {} end
 		new[appName][key] = widget
 	end
-	AceConfigDialogRSmod.BlizOptions = new
+	AceConfigDialog.BlizOptions = new
 else
-	AceConfigDialogRSmod.BlizOptions = AceConfigDialogRSmod.BlizOptions or {}
+	AceConfigDialog.BlizOptions = AceConfigDialog.BlizOptions or {}
 end
 
 local function FeedToBlizPanel(widget, event)
 	local path = widget:GetUserData("path")
-	AceConfigDialogRSmod:Open(widget:GetUserData("appName"), widget, unpack(path or emptyTbl))
+	AceConfigDialog:Open(widget:GetUserData("appName"), widget, unpack(path or emptyTbl))
 end
 
 local function ClearBlizPanel(widget, event)
 	local appName = widget:GetUserData("appName")
-	AceConfigDialogRSmod.frame.closing[appName] = true
-	AceConfigDialogRSmod.frame:SetScript("OnUpdate", RefreshOnUpdate)
+	AceConfigDialog.frame.closing[appName] = true
+	AceConfigDialog.frame:SetScript("OnUpdate", RefreshOnUpdate)
 end
 
 --- Add an option table into the Blizzard Interface Options panel.
@@ -1972,8 +1972,8 @@ end
 -- @param parent The parent to use in the interface options tree.
 -- @param ... The path in the options table to feed into the interface options panel.
 -- @return The reference to the frame registered into the Interface Options.
-function AceConfigDialogRSmod:AddToBlizOptions(appName, name, parent, ...)
-	local BlizOptions = AceConfigDialogRSmod.BlizOptions
+function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
+	local BlizOptions = AceConfigDialog.BlizOptions
 
 	local key = appName
 	for n = 1, select("#", ...) do

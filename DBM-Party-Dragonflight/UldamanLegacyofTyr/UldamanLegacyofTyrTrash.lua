@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("UldamanLegacyofTyrTrash", "DBM-Party-Dragonflight", 2)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220920232426")
+mod:SetRevision("20221115231757")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -12,8 +12,7 @@ mod:RegisterEvents(
 --	"SPELL_AURA_REMOVED 339525"
 )
 
---TODO, icon mark shared suffering? Maybe when they fix ENCOUNTER_START, for now I don't want to risk trash mod messing with a boss mods icon marking
---Lady's Trash, minus bottled anima, which will need a unit event to detect it looks like
+
 local warnBlessingofTyr						= mod:NewCastAnnounce(382578, 4)
 
 local specWarnBrutalSlam					= mod:NewSpecialWarningMoveAway(369811, nil, nil, nil, 2, 2)

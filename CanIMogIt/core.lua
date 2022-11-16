@@ -33,3 +33,24 @@ function CanIMogIt:RegisterLocale(locale, tbl)
         end
     end
 end
+
+
+-- Overwrite Ace3's messaging system, since it doesn't work
+-- (or at least I can't figure out how it works).
+CanIMogIt.messageFunctions = {}
+
+function CanIMogIt:RegisterMessage(message, func)
+    -- Adds the func to the list of functions that are called for the custom message.
+    if not CanIMogIt.messageFunctions[message] then
+        CanIMogIt.messageFunctions[message] = {}
+    end
+    table.insert(CanIMogIt.messageFunctions[message], func)
+end
+
+function CanIMogIt:SendMessage(message)
+    -- Call functions attached to the message
+    if CanIMogIt.messageFunctions[message] == nil then return end
+    for i, func in ipairs(CanIMogIt.messageFunctions[message]) do
+        func(message)
+    end
+end

@@ -1,7 +1,7 @@
 <Ui 
     xmlns="http://www.blizzard.com/wow/ui/" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-    <GameTooltip name="CellTooltipTemplate" frameStrata="TOOLTIP" clampedToScreen="true" hidden="true" virtual="true">
+    <GameTooltip name="CellTooltipTemplate" mixin="GameTooltipDataMixin" frameStrata="TOOLTIP" clampedToScreen="true" hidden="true" virtual="true">
         <Layers>
             <Layer level="ARTWORK">
                 <FontString name="$parentTextLeft1" justifyH="LEFT" inherits="CELL_FONT_WIDGET_TITLE" hidden="true">

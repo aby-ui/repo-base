@@ -360,15 +360,16 @@ rematch:InitModule(function()
 	},rematch.UpdateRoster)
 
 	rematch:RegisterMenu("PetExpansion", {
-		{ text=EXPANSION_NAME0, check=true, group="Expansion", size=9, var=0, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME1, check=true, group="Expansion", size=9, var=1, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME2, check=true, group="Expansion", size=9, var=2, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME3, check=true, group="Expansion", size=9, var=3, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME4, check=true, group="Expansion", size=9, var=4, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME5, check=true, group="Expansion", size=9, var=5, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME6, check=true, group="Expansion", size=9, var=6, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME7, check=true, group="Expansion", size=9, var=7, value=rmf.GetValue, func=rmf.ToggleValue },
-		{ text=EXPANSION_NAME8, check=true, group="Expansion", size=9, var=8, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME0, check=true, group="Expansion", size=10, var=0, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME1, check=true, group="Expansion", size=10, var=1, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME2, check=true, group="Expansion", size=10, var=2, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME3, check=true, group="Expansion", size=10, var=3, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME4, check=true, group="Expansion", size=10, var=4, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME5, check=true, group="Expansion", size=10, var=5, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME6, check=true, group="Expansion", size=10, var=6, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME7, check=true, group="Expansion", size=10, var=7, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME8, check=true, group="Expansion", size=10, var=8, value=rmf.GetValue, func=rmf.ToggleValue },
+		{ text=EXPANSION_NAME9, check=true, group="Expansion", size=10, var=9, value=rmf.GetValue, func=rmf.ToggleValue },
 		{ text=L["Help"], stay=true, hidden=rmf.HideMenuHelp, icon="Interface\\Common\\help-i", iconCoords={0.15,0.85,0.15,0.85}, tooltipTitle=L["Checkbox Groups"], tooltipBody=format(L["In filter menus, checkbox groups assume if nothing is checked you want to view all choices.\n\nYou can also:\n\n%s[Shift]+Click\124r to check all except the box clicked.\n\n%s[Alt]+Click\124r to uncheck all except the box clicked."],rematch.hexWhite,rematch.hexWhite) },
 		{ text=RESET, group="Expansion", stay=true, func=rmf.ResetGroup },
 	},rematch.UpdateRoster)

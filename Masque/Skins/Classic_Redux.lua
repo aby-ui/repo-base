@@ -3,39 +3,39 @@
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
 	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
-	* File...: Skins\Classic.lua
+	* File...: Skins\Maul_Classic.lua
 	* Author.: StormFX, Maul, Blizzard Entertainment
 
-	'Classic' Skin
+	"Classic Redux" Skin
 
 ]]
 
 local _, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
+-- @ Locales\enUS
 local L = Core.Locale
-local WOW_RETAIL = Core.WOW_RETAIL
 
 ----------------------------------------
--- Classic
+-- Classic Redux
 ---
 
-Core.AddSkin("Classic", {
-	Template = "Default (Classic)",
-	-- API_VERSION = Default.API_VERSION,
-	-- Shape = Default.Shape,
+Core.AddSkin("Classic Redux", {
+	Template = "Blizzard Classic",
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 
 	-- Info
-	Description = L["An improved version of the game's default button style."],
-	-- Version = Default.Version,
+	Description = L["A modified version of the Classic button style."],
+	-- Version = Template.Version,
 	Authors = {"StormFX", "|cff999999Maul|r", "|cff999999Blizzard Entertainment|r"},
 	Websites = Core.Websites,
 
 	-- Skin
-	-- Mask = Default.Mask,
+	-- Mask = Template.Mask,
 	Backdrop = {
 		Texture = [[Interface\Buttons\UI-Quickslot]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -96,22 +96,8 @@ Core.AddSkin("Classic", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	SlotIcon = {
-		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
-		-- TexCoords = {0, 1, 0, 1},
-		-- Color = {1, 1, 1, 1},
-		BlendMode = "BLEND",
-		DrawLayer = "BACKGROUND",
-		DrawLevel = 0,
-		Width = 36,
-		Height = 36,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
-	-- Shadow = Default.Shadow,
+	-- SlotIcon = Template.SlotIcon,
+	-- Shadow = Template.Shadow,
 	Normal = {
 		Texture = [[Interface\Buttons\UI-Quickslot2]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -146,7 +132,7 @@ Core.AddSkin("Classic", {
 			-- UseStates = nil,
 		},
 	},
-	-- Disabled = Default.Disabled,
+	-- Disabled = Template.Disabled,
 	Pushed = {
 		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -203,18 +189,7 @@ Core.AddSkin("Classic", {
 		OffsetX = 0,
 		OffsetY = 0,
 	},
-	Duration = {
-		JustifyH = "CENTER",
-		JustifyV = "MIDDLE",
-		DrawLayer = "OVERLAY",
-		Width = 36,
-		Height = 0,
-		Anchor = "Icon",
-		Point = "TOP",
-		RelPoint = "BOTTOM",
-		OffsetX = 0,
-		OffsetY = -2,
-	},
+	-- Duration = Template.Duration,
 	Checked = {
 		Texture = [[Interface\Buttons\CheckButtonHilight]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -260,7 +235,7 @@ Core.AddSkin("Classic", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Name = Default.Name,
+	-- Name = Template.Name,
 	Border = {
 		Texture = [[Interface\Buttons\UI-ActionButton-Border]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -306,10 +281,10 @@ Core.AddSkin("Classic", {
 			-- SetAllPoints = nil,
 		},
 	},
-	-- IconBorder = Default.IconBorder,
-	-- Gloss = Default.Gloss,
-	-- NewAction = Default.NewAction,
-	-- SpellHighlight = Default.SpellHighlight,
+	-- IconBorder = Template.IconBorder,
+	-- Gloss = Template.Gloss,
+	-- NewAction = Template.NewAction,
+	-- SpellHighlight = Template.SpellHighlight,
 	AutoCastable = {
 		Texture = [[Interface\Buttons\UI-AutoCastableOverlay]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -325,7 +300,7 @@ Core.AddSkin("Classic", {
 		OffsetY = -0.5,
 		-- SetAllPoints = nil,
 	},
-	-- IconOverlay = Default.IconOverlay,
+	-- IconOverlay = Template.IconOverlay,
 	UpgradeIcon = {
 		Atlas = "bags-greenarrow",
 		UseAtlasSize = false,
@@ -341,7 +316,7 @@ Core.AddSkin("Classic", {
 		OffsetY = -1,
 		-- SetAllPoints = nil,
 	},
-	-- IconOverlay2 = Default.IconOverlay2,
+	-- IconOverlay2 = Template.IconOverlay2,
 	QuestBorder = {
 		Border = [[Interface\ContainerFrame\UI-Icon-QuestBang]],
 		Texture = [[Interface\ContainerFrame\UI-Icon-QuestBorder]],
@@ -372,8 +347,8 @@ Core.AddSkin("Classic", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- SearchOverlay = Default.SearchOverlay,
-	-- ContextOverlay = Default.ContextOverlay,
+	-- SearchOverlay = Template.SearchOverlay,
+	-- ContextOverlay = Template.ContextOverlay,
 	JunkIcon = {
 		Atlas = "bags-junkcoin",
 		UseAtlasSize = false,
@@ -416,7 +391,7 @@ Core.AddSkin("Classic", {
 	},
 	Cooldown = {
 		-- Texture = nil,
-		EdgeTexture = [[Interface\Cooldown\edge]],
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
 		PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.8},
 		Width = 32,
@@ -428,7 +403,7 @@ Core.AddSkin("Classic", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
-		EdgeTexture = [[Interface\Cooldown\edge]],
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
 		PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 32,
 		Height = 32,

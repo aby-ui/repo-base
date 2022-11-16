@@ -134,9 +134,13 @@ end
 ---============================================================================
 
 function RSUtils.DistanceBetweenCoords(x1, x2, y1, y2)
-	local dx = RSUtils.FixCoord(x1) - RSUtils.FixCoord(x2)
-	local dy = RSUtils.FixCoord(y1) - RSUtils.FixCoord(y2)
-	return math.sqrt ( (dx * dx) + (dy * dy) )
+	if (x1 and x2 and y1 and y2) then
+		local dx = RSUtils.FixCoord(x1) - RSUtils.FixCoord(x2)
+		local dy = RSUtils.FixCoord(y1) - RSUtils.FixCoord(y2)
+		return math.sqrt ( (dx * dx) + (dy * dy) )
+	else
+		return -1;
+	end
 end
 
 function RSUtils.Distance(POIa, POIb)

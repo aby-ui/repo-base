@@ -3,30 +3,34 @@
 	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
 	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
 
-	* File...: Skins\Default_Classic.lua
+	* File...: Skins\Blizzard_Classic.lua
 	* Author.: Blizzard Entertainment
 
-	'Default' Skin (Classic)
+	"Blizzard Classic" Skin
 
-	* Note: Some attributes are modified for internal consistency.
+	Notes:
+	* Emulates the default Classic button style.
+	* Some attributes are modified for internal consistency.
 
 ]]
 
 local _, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
-local L, Hidden = Core.Locale, Core.__Hidden
-local WOW_RETAIL = Core.WOW_RETAIL
+-- @ Locales\enUS
+local L = Core.Locale
+
+-- @ Skins\Skins
+local Hidden = Core.__Hidden
 
 ----------------------------------------
--- Default (Classic)
+-- Blizzard Classic
 ---
 
-local SkinID = "Default (Classic)"
-Core.SkinList[SkinID] = SkinID
+local SkinID = "Blizzard Classic"
 
 local Skin = {
 	SkinID = SkinID,
@@ -587,5 +591,12 @@ local Skin = {
 	},
 }
 
+----------------------------------------
+-- Core
+---
+
 Core.Skins[SkinID] = Skin
+Core.SkinList[SkinID] = SkinID
+
 Core.DEFAULT_SKIN = Skin
+Core.DEFAULT_SKIN_ID = SkinID

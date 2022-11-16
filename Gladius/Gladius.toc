@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Gladius
 ## Version: 7.0.3
 ## Notes: Arena enemy unit frames.

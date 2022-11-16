@@ -1994,10 +1994,11 @@ function U1_CreateMinimapButton()
     LibStub("LibDBIcon-1.0"):Register("U1MMB", ldb, U1DB);
     CoreUICreateFlash(LibDBIcon10_U1MMB, "Interface\\UnitPowerBarAlt\\Generic1Party_Circular_Flash");
 
-    LibDBIcon10_U1MMB.icon:SetSize(20, 20)
-    LibDBIcon10_U1MMB.icon:SetPoint("TOPLEFT", 6, -5)
+    LibDBIcon10_U1MMB.icon:SetSize(18, 18)
+    LibDBIcon10_U1MMB.icon:SetPoint("TOPLEFT", 7, -6)
     WW(LibDBIcon10_U1MMB):SetFixedFrameLevel(false):AddFrameLevel(1):SetFixedFrameLevel(true):un()
     if LibDBIcon10_U1MMB.overlay then
+        LibDBIcon10_U1MMB.overlay:SetPoint("TOPLEFT", 1, -1)
         LibDBIcon10_U1MMB.overlay:SetTexture("Interface\\AddOns\\!!!163UI!!!\\Textures\\UI2-minimap-btn")
     end
     U1_CreateMinimapButton = nil

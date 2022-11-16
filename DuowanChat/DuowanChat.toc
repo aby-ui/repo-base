@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: DuowanChat
 # Title-zhCN: 聊天增强
 # Title-zhTW: 聊天增强

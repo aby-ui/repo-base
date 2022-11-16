@@ -27,6 +27,7 @@ local WARLOCK       = 9
 local MONK          = 10
 local DRUID         = 11
 local DEMONHUNTER   = 12
+local EVOKER        = 13
 
 local comboText
 local isFiveTabs = false
@@ -724,6 +725,12 @@ function ComergyOptOnLoad()
         ComergyOptTab3:SetText(COMERGY_ENERGY)
         ComergyOptTab3:Show()
         ComergyOptTab4:Hide()
+        ComergyOptTab5:Hide()
+    elseif (playerClass == EVOKER) then
+        ComergyOptTab3:SetText(COMERGY_MANA) --TODO:abyui102
+        ComergyOptTab3:Show()
+        ComergyOptTab4:SetText(COMERGY_INSANITY)
+        ComergyOptTab4:Show()
         ComergyOptTab5:Hide()
     end
 

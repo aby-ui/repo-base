@@ -62,6 +62,7 @@ local WARLOCK       = 9
 local MONK          = 10
 local DRUID         = 11
 local DEMONHUNTER   = 12
+local EVOKER        = 13
 
 
 local ENERGY_SUBBAR_NUM = 5

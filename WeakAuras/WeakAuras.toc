@@ -1,7 +1,7 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: 5.1.1
+## Version: 5.2.0
 ## X-Flavor: Mainline
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.

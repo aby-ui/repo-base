@@ -11,6 +11,15 @@ local function CreateTooltip(name)
     tooltip:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
     tooltip:SetBackdropBorderColor(Cell:GetAccentColorRGB())
     tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+
+    if Cell.isRetail then
+        tooltip:RegisterEvent("TOOLTIP_DATA_UPDATE")
+        tooltip:SetScript("OnEvent", function()
+            -- Interface\FrameXML\GameTooltip.lua line924
+            tooltip:RefreshData()
+        end)
+    end
+
     tooltip:SetScript("OnTooltipCleared", function()
         -- reset border color
         tooltip:SetBackdropBorderColor(Cell:GetAccentColorRGB())
@@ -35,7 +44,13 @@ end
 
 CreateTooltip("CellTooltip")
 CreateTooltip("CellSpellTooltip")
-CreateTooltip("CellScanningTooltip")
+-- CreateTooltip("CellScanningTooltip")
+
+function F:ShowSpellTooltips(tooltip, spellID)
+    local tooltipInfo = CreateBaseTooltipInfo("GetSpellByID", spellID)
+    tooltip:ProcessInfo(tooltipInfo)
+    tooltip:Show()
+end
 
 function F:ShowTooltips(anchor, tooltipType, unit, aura, filter)
     if not CellDB["general"]["enableTooltips"] or (tooltipType == "unit" and CellDB["general"]["hideTooltipsInCombat"] and InCombatLockdown()) then return end

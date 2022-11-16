@@ -113,7 +113,11 @@ local specChoices = {
     DEMONHUNTER = {
         577,
         581,
-    }
+    },
+	EVOKER = {
+		1467,
+		1468,
+	}
 }
 
 local dbDefaults = {
@@ -1291,6 +1295,7 @@ function Parrot_Triggers:OnOptionsCreate()
 		DEATHKNIGHT = LC["DEATHKNIGHT"],
 		MONK = LC["MONK"],
         DEMONHUNTER = LC["DEMONHUNTER"],
+		EVOKER = LC["EVOKER"],
 	}
 
 	local function getConditionValue(info)

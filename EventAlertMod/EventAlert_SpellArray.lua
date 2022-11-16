@@ -1820,6 +1820,26 @@ function EventAlert_LoadSpellArray()
 		},
 	}
 
+--------------------------------------------------------------------------------
+-- DemonHunter / 惡魔獵人
+--------------------------------------------------------------------------------
+    EADef_Items[EA_CLASS_EVOKER]	= {
+    -- Primary Alert / 本職業提醒區
+        ["ITEMS"] = {
+        },
+        -- Alternate Alert / 本職業額外提醒區
+        ["ALTITEMS"] = {
+        },
+        -- Target Alert / 目標提醒區
+        ["TARITEMS"] = {
+        },
+        -- Spell Cooldown Alert / 本職業技能CD區
+        ["SCDITEMS"] = {
+        },
+        -- GroupEvent Alert / 本職業條件技能區
+        ["GRPITEMS"] = {
+        },
+    }
 
 --------------------------------------------------------------------------------
 -- Other / 跨職業共通區 (包含自身BUFF/DEBUFF+目標BUFF/DEBUFF)

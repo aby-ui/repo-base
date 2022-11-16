@@ -6,36 +6,39 @@
 	* File...: Skins\Zoomed.lua
 	* Author.: StormFX, JJSheets
 
-	'Zoomed' Skin
+	"Zoomed" Skin
 
 ]]
 
 local _, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
-local L, Hidden = Core.Locale, Core.__Hidden
-local WOW_RETAIL = Core.WOW_RETAIL
+-- @ Locales\enUS
+local L = Core.Locale
+
+-- @ Skins\Skins
+local Hidden = Core.__Hidden
 
 ----------------------------------------
 -- Zoomed
 ---
 
 Core.AddSkin("Zoomed", {
-	Template = "Default (Classic)",
-	-- API_VERSION = Default.API_VERSION,
-	-- Shape = Default.Shape,
+	Template = "Blizzard Classic",
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 
 	-- Info
 	Description = L["A square skin with zoomed icons and a semi-transparent background."],
-	-- Version = Default.Version,
+	-- Version = Template.Version,
 	Authors = Core.Authors,
 	Websites = Core.Websites,
 
 	-- Skin
-	-- Mask = Default.Mask,
+	-- Mask = Template.Mask,
 	Backdrop = {
 		-- Texture = [[Interface\Buttons\UI-Quickslot]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -79,9 +82,9 @@ Core.AddSkin("Zoomed", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Shadow = Default.Shadow,
+	-- Shadow = Template.Shadow,
 	Normal = Hidden,
-	-- Disabled = Default.Disabled,
+	-- Disabled = Template.Disabled,
 	Pushed = {
 		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -98,7 +101,7 @@ Core.AddSkin("Zoomed", {
 		-- SetAllPoints = nil,
 		-- UseColor = nil,
 	},
-	-- Flash = Default.Flash,
+	-- Flash = Template.Flash,
 	HotKey = {
 		JustifyH = "RIGHT",
 		JustifyV = "MIDDLE",
@@ -123,18 +126,7 @@ Core.AddSkin("Zoomed", {
 		OffsetX = 0,
 		OffsetY = 0,
 	},
-	Duration = {
-		JustifyH = "CENTER",
-		JustifyV = "MIDDLE",
-		DrawLayer = "OVERLAY",
-		Width = 36,
-		Height = 0,
-		Anchor = "Icon",
-		Point = "TOP",
-		RelPoint = "BOTTOM",
-		OffsetX = 0,
-		OffsetY = -2,
-	},
+	-- Duration = Template.Duration,
 	Checked = {
 		Texture = [[Interface\Buttons\CheckButtonHilight]],
 		-- TexCoords = {0, 1, 0, 1},
@@ -253,7 +245,7 @@ Core.AddSkin("Zoomed", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Gloss = Default.Gloss,
+	-- Gloss = Template.Gloss,
 	NewAction = {
 		Atlas = "bags-newitem",
 		UseAtlasSize = false,
@@ -344,21 +336,7 @@ Core.AddSkin("Zoomed", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	QuestBorder = {
-		Border = [[Interface\ContainerFrame\UI-Icon-QuestBang]],
-		Texture = [[Interface\ContainerFrame\UI-Icon-QuestBorder]],
-		-- Color = {1, 1, 1, 1},
-		BlendMode = "BLEND",
-		DrawLayer = "OVERLAY",
-		DrawLevel = 2,
-		Width = 36,
-		Height = 36,
-		Point = "CENTER",
-		RelPoint = "CENTER",
-		OffsetX = 0,
-		OffsetY = 0,
-		-- SetAllPoints = nil,
-	},
+	-- QuestBorder = Template.QuestBorder,
 	NewItem = {
 		Atlas = "bags-glow-white",
 		UseAtlasSize = false,
@@ -421,7 +399,7 @@ Core.AddSkin("Zoomed", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-	-- Highlight = Default.Highlight,
+	-- Highlight = Template.Highlight,
 	AutoCastShine = {
 		Width = 36,
 		Height = 36,
@@ -431,6 +409,28 @@ Core.AddSkin("Zoomed", {
 		OffsetY = -0.5
 		-- SetAllPoints = nil,
 	},
-	-- Cooldown = Default.Cooldown,
-	-- ChargeCooldown = Default.ChargeCooldown,
+	Cooldown = {
+		-- Texture = nil,
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		PulseTexture = [[Interface\Cooldown\star4]],
+		Color = {0, 0, 0, 0.8},
+		Width = 36,
+		Height = 36,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = nil,
+	},
+	ChargeCooldown = {
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		PulseTexture = [[Interface\Cooldown\star4]],
+		Width = 36,
+		Height = 36,
+		Point = "CENTER",
+		RelPoint = "CENTER",
+		OffsetX = 0,
+		OffsetY = 0,
+		-- SetAllPoints = true,
+	},
 })

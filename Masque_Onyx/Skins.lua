@@ -10,20 +10,22 @@
 
 ]]
 
--- GLOBALS: GetAddOnMetadata, LibStub
-
 local MSQ = LibStub and LibStub("Masque", true)
 if not MSQ then return end
 
 local AddOn, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
--- Locale
 local L = Core.Locale
-local API_VERSION = 100000
+
+----------------------------------------
+-- Local
+---
+
+local API_VERSION = 100002
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -43,9 +45,9 @@ MSQ:AddSkin("Onyx", {
 	Shape = "Square",
 
 	-- Info
+	Author = "StormFX",
 	Description = L["A dark skin with slightly rounded corners."],
 	Version = Version,
-	Author = "StormFX",
 	Websites = Websites,
 
 	-- UI
@@ -534,6 +536,8 @@ MSQ:AddSkin("Onyx", {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 28,
 		Height = 28,
@@ -544,6 +548,8 @@ MSQ:AddSkin("Onyx", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 28,
 		Height = 28,
 		Point = "CENTER",
@@ -559,14 +565,20 @@ MSQ:AddSkin("Onyx", {
 ---
 
 MSQ:AddSkin("Onyx Classic", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Onyx",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = L["The classic Onyx with arrow indicators."],
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Classic",
+	-- Group = Template.Group,
 	Order = 2,
+	Title = "Classic",
 
 	-- Skin
 	Normal = {
