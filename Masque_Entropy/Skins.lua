@@ -16,12 +16,16 @@ if not MSQ then return end
 local AddOn, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
--- Locale
 local L = Core.Locale
-local API_VERSION = 100000
+
+----------------------------------------
+-- Local
+---
+
+local API_VERSION = 100002
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -44,15 +48,15 @@ MSQ:AddSkin("Entropy - Silver", {
 	Shape = "Square",
 
 	-- Info
+	Author = "StormFX",
 	Description = SKIN_DESC:format("Silver"),
 	Version = Version,
-	Author = "StormFX",
 	Websites = Websites,
 
 	-- UI
 	Group = "Entropy",
-	Title = "Silver",
 	Order = 11,
+	Title = "Silver",
 
 	-- Skin
 	-- Mask = nil,
@@ -553,6 +557,8 @@ MSQ:AddSkin("Entropy - Silver", {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 25,
 		Height = 25,
@@ -563,6 +569,8 @@ MSQ:AddSkin("Entropy - Silver", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 24,
 		Height = 24,
 		Point = "CENTER",
@@ -578,14 +586,20 @@ MSQ:AddSkin("Entropy - Silver", {
 ---
 
 MSQ:AddSkin("Entropy - Adamantite", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Adamantite"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Adamantite",
+	-- Group = Template.Group,
 	Order = 1,
+	Title = "Adamantite",
 
 	-- Skin
 	Normal = {
@@ -633,14 +647,20 @@ MSQ:AddSkin("Entropy - Adamantite", {
 ---
 
 MSQ:AddSkin("Entropy - Bronze", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Bronze"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Bronze",
+	-- Group = Template.Group,
 	Order = 2,
+	Title = "Bronze",
 
 	-- Skin
 	Normal = {
@@ -688,14 +708,20 @@ MSQ:AddSkin("Entropy - Bronze", {
 ---
 
 MSQ:AddSkin("Entropy - Cobalt", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Cobalt"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Cobalt",
+	-- Group = Template.Group,
 	Order = 3,
+	Title = "Cobalt",
 
 	-- Skin
 	Normal = {
@@ -743,14 +769,20 @@ MSQ:AddSkin("Entropy - Cobalt", {
 ---
 
 MSQ:AddSkin("Entropy - Copper", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Copper"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Copper",
+	-- Group = Template.Group,
 	Order = 4,
+	Title = "Copper",
 
 	-- Skin
 	Normal = {
@@ -798,14 +830,20 @@ MSQ:AddSkin("Entropy - Copper", {
 ---
 
 MSQ:AddSkin("Entropy - Fel Iron", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Fel Iron"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Fel Iron",
+	-- Group = Template.Group,
 	Order = 5,
+	Title = "Fel Iron",
 
 	-- Skin
 	Normal = {
@@ -853,14 +891,20 @@ MSQ:AddSkin("Entropy - Fel Iron", {
 ---
 
 MSQ:AddSkin("Entropy - Gold", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Gold"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Gold",
+	-- Group = Template.Group,
 	Order = 6,
+	Title = "Gold",
 
 	-- Skin
 	Normal = {
@@ -908,14 +952,20 @@ MSQ:AddSkin("Entropy - Gold", {
 ---
 
 MSQ:AddSkin("Entropy - Iron", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Iron"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Iron",
+	-- Group = Template.Group,
 	Order = 7,
+	Title = "Iron",
 
 	-- Skin
 	Normal = {
@@ -963,14 +1013,20 @@ MSQ:AddSkin("Entropy - Iron", {
 ---
 
 MSQ:AddSkin("Entropy - Khorium", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Khorium"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Khorium",
+	-- Group = Template.Group,
 	Order = 8,
+	Title = "Khorium",
 
 	-- Skin
 	Normal = {
@@ -1018,14 +1074,20 @@ MSQ:AddSkin("Entropy - Khorium", {
 ---
 
 MSQ:AddSkin("Entropy - Obsidium", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Obsidium"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Obsidium",
+	-- Group = Template.Group,
 	Order = 9,
+	Title = "Obsidium",
 
 	-- Skin
 	Normal = {
@@ -1073,14 +1135,20 @@ MSQ:AddSkin("Entropy - Obsidium", {
 ---
 
 MSQ:AddSkin("Entropy - Saronite", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Saronite"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Saronite",
+	-- Group = Template.Group,
 	Order = 10,
+	Title = "Saronite",
 
 	-- Skin
 	Normal = {
@@ -1128,14 +1196,20 @@ MSQ:AddSkin("Entropy - Saronite", {
 ---
 
 MSQ:AddSkin("Entropy - Titanium", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Entropy - Silver",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = SKIN_DESC:format("Titanium"),
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Titanium",
+	-- Group = Template.Group,
 	Order = 12,
+	Title = "Titanium",
 
 	-- Skin
 	Normal = {

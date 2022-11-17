@@ -49,7 +49,7 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(self
         if (not guid) then return end
         local hp = UnitHealthMax(unit)
         local data = GetInspectInfo(unit)
-        if (data and data.hp == hp and data.ilevel > 0) then
+        if (data and data.hp == hp and (data.ilevel or 0) > 0) then
             return AppendToGameTooltip(guid, floor(data.ilevel), data.spec, data.weaponLevel, data.isArtifact)
         end
         if (not CanInspect(unit) or not UnitIsVisible(unit)) then return end
@@ -71,6 +71,6 @@ end)
 LibEvent:attachTrigger("UNIT_INSPECT_READY", function(self, data)
     if (TinyInspectDB and not TinyInspectDB.EnableMouseItemLevel) then return end
     if (data.guid == UnitGUID("mouseover")) then
-        AppendToGameTooltip(data.guid, floor(data.ilevel), data.spec, data.weaponLevel, data.isArtifact)
+        AppendToGameTooltip(data.guid, floor(data.ilevel or 0), data.spec, data.weaponLevel, data.isArtifact)
     end
 end)

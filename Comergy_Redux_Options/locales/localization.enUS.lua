@@ -13,7 +13,8 @@ if (true) then
     COMERGY_INSANITY = INSANITY
     COMERGY_SOUL_SHARD = SOUL_SHARDS
     COMERGY_RUNE = RUNES
-    COMERGY_MAELSTROM = MAELSTROM
+    COMERGY_MAELSTROM = POWER_TYPE_MAELSTROM
+    COMERGY_ESSENCE = POWER_TYPE_ESSENCE
 
     COMERGY_ROGUE = GetClassInfo(4)
 
@@ -104,6 +105,12 @@ if (true) then
         ["RuneDiff"] = "Fancy rune bars",
     }
 
+    COMERGY_SLIDERINFO_HOLY_POWER = {
+        ["ChiHeight"] = "Essence bar thickness",
+        ["ChiBGAlpha"] = "Essence BG alpha",
+        ["ChiDiff"] = "Fancy Essence bars",
+    }
+
     COMERGY_CHECKOPTINFO = {
         ["Enabled"] = "Enable add-on",
         ["ShowOnlyInCombat"] = "Hide Comergy out of combat",
@@ -190,6 +197,12 @@ if (true) then
         ["RuneText"] = "Rune text",
         ["UnifiedRuneColor"] = "Unified rune color",
         ["RuneFlash"] = "Flash runes",
+    }
+
+    COMERGY_CHECKOPTINFO_HOLY_POWER = {
+        ["ChiText"] = "Essence text",
+        ["UnifiedChiColor"] = "Unified essence color",
+        ["ChiFlash"] = "Flash essence when full holy power",
     }
 
     COMERGY_COLORPICKERINFO = {

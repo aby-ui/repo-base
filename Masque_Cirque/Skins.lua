@@ -10,20 +10,22 @@
 
 ]]
 
--- GLOBALS: GetAddOnMetadata, LibStub
-
 local MSQ = LibStub and LibStub("Masque", true)
 if not MSQ then return end
 
 local AddOn, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
--- Locale
 local L = Core.Locale
-local API_VERSION = 100000
+
+----------------------------------------
+-- Local
+---
+
+local API_VERSION = 100002
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -514,6 +516,8 @@ MSQ:AddSkin("Cirque", {
 	},
 	Cooldown = {
         Texture = [[Interface\AddOns\Masque_Cirque\Textures\Mask]],
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 36,
 		Height = 36,
@@ -524,6 +528,8 @@ MSQ:AddSkin("Cirque", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 32,
 		Height = 32,
 		Point = "CENTER",
@@ -539,14 +545,20 @@ MSQ:AddSkin("Cirque", {
 ---
 
 MSQ:AddSkin("Cirque - Simple", {
+	-- API_VERSION = Template.API_VERSION,
+	-- Shape = Template.Shape,
 	Template = "Cirque",
 
 	-- Info
+	-- Author = Template.Author,
 	Description = L["An alternate version of Cirque without an outer ring."],
+	-- Version = Template.Version,
+	-- Websites = Template.Websites,
 
 	-- UI
-	Title = "Simple",
+	-- Group = Template.Group,
 	Order = 2,
+	Title = "Simple",
 
 	-- Skin
 	Shadow = {

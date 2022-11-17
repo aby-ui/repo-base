@@ -97,6 +97,8 @@ function CreateSlider(type, name, min, max, parent, x, y, width, valueStep, titl
             extension = "_ARCANE_CHARGES"
         elseif (playerClass == DEATHKNIGHT) then
             extension = "_RUNE"
+        elseif (playerClass == EVOKER) then
+            extension = "_ESSENCE"
         else
             extension = "_COMBO"
         end
@@ -161,6 +163,8 @@ function CreateCheckButton(name, parent, x, y, type)
             extension = "_ARCANE_CHARGES"
         elseif (playerClass == DEATHKNIGHT) then
             extension = "_RUNE"
+        elseif (playerClass == EVOKER) then
+            extension = "_ESSENCE"
         else
             extension = "_COMBO"
         end
@@ -241,6 +245,8 @@ function CreateColorButton(name, parent, x, y, type, editBox)
             extension = "_ARCANE_CHARGES"
         elseif (playerClass == DEATHKNIGHT) then
             extension = "_RUNE"
+        elseif (playerClass == EVOKER) then
+            extension = "_ESSENCE"
         else
             extension = "_COMBO"
         end
@@ -727,11 +733,12 @@ function ComergyOptOnLoad()
         ComergyOptTab4:Hide()
         ComergyOptTab5:Hide()
     elseif (playerClass == EVOKER) then
-        ComergyOptTab3:SetText(COMERGY_MANA) --TODO:abyui102
+        ComergyOptTab3:SetText(COMERGY_MANA)
         ComergyOptTab3:Show()
-        ComergyOptTab4:SetText(COMERGY_INSANITY)
+        ComergyOptTab4:SetText(COMERGY_ESSENCE)
         ComergyOptTab4:Show()
         ComergyOptTab5:Hide()
+        comboText = COMERGY_ESSENCE
     end
 
     if (isFiveTabs) then -- for classes with both mana and energy
@@ -876,7 +883,7 @@ function ComergyOptTabOnClick(id)
         end
     elseif (id == 4) then
         if (playerClass == DRUID or playerClass == MONK or playerClass == PALADIN or
-            playerClass == ROGUE or playerClass == WARLOCK or playerClass == MAGE) then
+            playerClass == ROGUE or playerClass == WARLOCK or playerClass == MAGE or playerClass == EVOKER) then
             ComergyOptComboFrame:Show()
         elseif (playerClass == PRIEST or playerClass == SHAMAN) then
             ComergyOptEnergyFrame:Show()

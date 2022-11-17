@@ -197,7 +197,7 @@ local function CreateToolButton(id)
 
         button.OnEnter = function(self)
             if self.name then
-                GameTooltip:SetEquipmentSet(self.name)
+                GameTooltip:SetEquipmentSet(self.setID)
                 GameTooltip:AddLine(L["tooltip prompt"], 0, 1, 0, 1)
                 GameTooltip:AddLine(L["tooltip replace"], 0, 1, 0, 1)
             end

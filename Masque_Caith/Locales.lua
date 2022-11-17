@@ -8,15 +8,23 @@
 
 ]]
 
--- GLOBALS: GetLocale, setmetatable
-
 local _, Core = ...
 
 ----------------------------------------
--- Locales
+-- WoW API
+---
+
+local Locale = GetLocale()
+
+----------------------------------------
+-- Local
 ---
 
 local L = {}
+
+----------------------------------------
+-- Core
+---
 
 Core.Locale = setmetatable(L, {
 	__index = function(self, k)
@@ -25,7 +33,9 @@ Core.Locale = setmetatable(L, {
 	end
 })
 
-local Locale = GetLocale()
+----------------------------------------
+-- Localization
+---
 
 if Locale == "enGB" or Locale == "enUS" then
 	-- enUS/enGB for Reference

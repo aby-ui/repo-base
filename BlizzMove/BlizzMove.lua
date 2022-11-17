@@ -19,6 +19,7 @@ local defaultDB = {
     TotemFrame = {save = true, modifyKey = "IsShiftKeyDown", },
     ComboPointPlayerFrame = {save = true, modifyKey = "IsShiftKeyDown", },
     ComboPointDruidPlayerFrame = {save = true, modifyKey = "IsShiftKeyDown", },
+    EssencePlayerFrame = {save = true, modifyKey = "IsShiftKeyDown", },
     MageArcaneChargesFrame = {save = true, modifyKey = "IsShiftKeyDown", },
     --InsanityBarFrame = {save = true, modifyKey = "IsShiftKeyDown", },
     MirrorTimer1 = {save = true, modifyKey = "IsShiftKeyDown", },
@@ -449,6 +450,7 @@ local function OnEvent(self, event, arg1, arg2)
 
             BM_SetMoveHandler(ComboPointPlayerFrame)
             BM_SetMoveHandler(ComboPointDruidPlayerFrame)
+            BM_SetMoveHandler(EssencePlayerFrame)
         end
 
         BM_SetMoveHandlerWith("InspectFrame", "Blizzard_InspectUI");

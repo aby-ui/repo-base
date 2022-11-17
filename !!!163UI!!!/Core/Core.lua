@@ -102,12 +102,6 @@ function SetOrHookScript(target,eventName,func)
 	end
 end
 
-function CoreGetTooltipForScan()
-    local tipname = "CoreScanTooltip"
-    local tip = _G[tipname] or CreateFrame("GameTooltip", tipname, nil, "GameTooltipTemplate")
-    return tip, tipname
-end
-
 --[[
 	 xpcall safecall implementation
 ]]

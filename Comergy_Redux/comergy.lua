@@ -1234,6 +1234,8 @@ function ChiStatus()
         chiType = Enum.PowerType.ComboPoints
     elseif (class == DRUID) then
         chiType = UnitPowerType(status.curUnit) == Enum.PowerType.Energy and Enum.PowerType.ComboPoints or nil
+    elseif (class == EVOKER) then
+        chiType = Enum.PowerType.Essence
     elseif (class == DEATHKNIGHT) then
         status.runeEnabled = true
     end
@@ -1626,16 +1628,30 @@ end
 
 --/run a={} for k,v in pairs(_G) do if type(k)=="string" and k:find("^ERR_OUT_OF") then print(k,v) a[k] = v end end wowluacopy(a)
 local ERROR_FAILEDS = {
-  [_G.ERR_OUT_OF_CHI] = "真气不足",
-  [_G.ERR_OUT_OF_DEMONIC_FURY] = "恶魔之怒不足",
-  [_G.ERR_OUT_OF_ENERGY] = "能量值不足",
-  [_G.ERR_OUT_OF_FOCUS] = "集中值不足",
-  [_G.ERR_OUT_OF_FURY] = "恶魔之怒不足",
-  [_G.ERR_OUT_OF_INSANITY] = "狂乱值不足",
-  [_G.ERR_OUT_OF_MAELSTROM] = "漩涡值不足",
-  [_G.ERR_OUT_OF_PAIN] = "痛苦值不足",
-  [_G.ERR_OUT_OF_RAGE] = "怒气值不足",
-  [_G.ERR_OUT_OF_RUNIC_POWER] = "符文能量不足",
+    [_G.ERR_OUT_OF_ARCANE_CHARGES] = "奥术充能不足",
+    [_G.ERR_OUT_OF_BALANCE_NEGATIVE] = "月亮能量不足",
+    [_G.ERR_OUT_OF_BALANCE_POSITIVE] = "太阳能量不足",
+    [_G.ERR_OUT_OF_BURNING_EMBERS] = "爆燃灰烬不足",
+    [_G.ERR_OUT_OF_CHI] = "真气不足",
+    [_G.ERR_OUT_OF_COMBO_POINTS] = "这个技能需要连击点数",
+    [_G.ERR_OUT_OF_DARK_FORCE] = "黑暗劲力不足",
+    [_G.ERR_OUT_OF_DEMONIC_FURY] = "恶魔之怒不足",
+    [_G.ERR_OUT_OF_ENERGY] = "能量值不足",
+    [_G.ERR_OUT_OF_ESSENCE] = "精华不足",
+    [_G.ERR_OUT_OF_FOCUS] = "集中值不足",
+    [_G.ERR_OUT_OF_FURY] = "恶魔之怒不足",
+    [_G.ERR_OUT_OF_HEALTH] = "生命值不足",
+    [_G.ERR_OUT_OF_HOLY_POWER] = "神圣能量不足",
+    [_G.ERR_OUT_OF_INSANITY] = "狂乱值不足",
+    [_G.ERR_OUT_OF_LIGHT_FORCE] = "光明劲力不足",
+    [_G.ERR_OUT_OF_MAELSTROM] = "漩涡值不足",
+    [_G.ERR_OUT_OF_MANA] = "法力值不足",
+    [_G.ERR_OUT_OF_PAIN] = "痛苦值不足",
+    [_G.ERR_OUT_OF_RAGE] = "怒气值不足",
+    [_G.ERR_OUT_OF_RUNES] = "符文不足",
+    [_G.ERR_OUT_OF_RUNIC_POWER] = "符文能量不足",
+    [_G.ERR_OUT_OF_SHADOW_ORBS] = "暗影宝珠不足",
+    [_G.ERR_OUT_OF_SOUL_SHARDS] = "灵魂碎片不足",
 }
 
 function EventHandlers.COMBAT_LOG_EVENT_UNFILTERED() return EventHandlers.Aby_COMBAT_LOG_EVENT_UNFILTERED(CombatLogGetCurrentEventInfo()) end

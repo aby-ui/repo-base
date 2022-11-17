@@ -16,12 +16,16 @@ if not MSQ then return end
 local AddOn, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
--- Locale
 local L = Core.Locale
-local API_VERSION = 100000
+
+----------------------------------------
+-- Local
+---
+
+local API_VERSION = 100002
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -41,9 +45,9 @@ MSQ:AddSkin("Caith", {
 	Shape = "Square",
 
 	-- Info
+	Author = "StormFX",
 	Description = L["A larger version of Apathy inspired by Caith UI."],
 	Version = Version,
-	Author = "StormFX",
 	Websites = Websites,
 
 	-- Skin
@@ -258,7 +262,7 @@ MSQ:AddSkin("Caith", {
 	},
 	Name = {
 		JustifyH = "CENTER",
-		JustifyV = "MIDDLE",
+		JustifyV = "BOTTOM",
 		DrawLayer = "OVERLAY",
 		Width = 36,
 		Height = 0,
@@ -526,6 +530,8 @@ MSQ:AddSkin("Caith", {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 32,
 		Height = 32,
@@ -536,6 +542,8 @@ MSQ:AddSkin("Caith", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 32,
 		Height = 32,
 		-- Point = "CENTER",

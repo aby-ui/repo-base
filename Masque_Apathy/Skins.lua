@@ -16,12 +16,16 @@ if not MSQ then return end
 local AddOn, Core = ...
 
 ----------------------------------------
--- Locals
+-- Internal
 ---
 
--- Locale
 local L = Core.Locale
-local API_VERSION = 100000
+
+----------------------------------------
+-- Local
+---
+
+local API_VERSION = 100002
 
 -- Skin Info
 local Version = GetAddOnMetadata(AddOn, "Version")
@@ -41,9 +45,9 @@ MSQ:AddSkin("Apathy", {
 	Shape = "Square",
 
 	-- Info
+	Author = "StormFX",
 	Description = L["A square, minimalistic skin with thin borders."],
 	Version = Version,
-	Author = "StormFX",
 	Websites = Websites,
 
 	-- Skin
@@ -526,6 +530,8 @@ MSQ:AddSkin("Apathy", {
 	},
 	Cooldown = {
 		-- Texture = nil,
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Color = {0, 0, 0, 0.7},
 		Width = 25,
 		Height = 25,
@@ -536,6 +542,8 @@ MSQ:AddSkin("Apathy", {
 		-- SetAllPoints = nil,
 	},
 	ChargeCooldown = {
+		-- EdgeTexture = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]],
+		-- PulseTexture = [[Interface\Cooldown\star4]],
 		Width = 24,
 		Height = 24,
 		Point = "CENTER",

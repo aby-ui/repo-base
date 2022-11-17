@@ -36,16 +36,6 @@ local item = GetInventoryItemLink("player", 1)
 --]]
 local ItemUpgradeInfo = LibStub("LibItemUpgradeInfo-1.0")
 
-local tip = CreateFrame("GameTooltip", "GameTooltipForItemLevel", nil, "ShoppingTooltipTemplate")
-for i = 1, 4 do
-    if _G[tip:GetName() .. "Textleft" .. i] == nil then
-        tip:AddFontStrings(
-            tip:CreateFontString( "$parentTextLeft"..i, nil, "GameTooltipText" ),
-            tip:CreateFontString( "$parentTextRight"..i, nil, "GameTooltipText" )
-        )
-    end
-end
-
 local pattern = ITEM_LEVEL:gsub("%%d", "(%%d+)") --ITEM_LEVEL=物品等级%d
 local extractLink = "\124c([0-9a-f]+)\124H(item:.-)\124h.-\124h"
 local cache = {}
@@ -76,25 +66,25 @@ function U1GetItemLevelByScanTooltip(itemLink, slot)
     end
     --]]
 
-    tip:SetOwner(WorldFrame, "ANCHOR_NONE")
-    for i = 1,4 do
-        local tex = _G[ tip:GetName() .."Texture"..i]
-        if tex then tex:SetTexture("") end
-    end
+    local tData
     if slot then
-        tip:SetInventoryItem(itemLink, slot)
+        tData = C_TooltipInfo.GetInventoryItem(itemLink, slot) --won't go here
     else
-        tip:SetHyperlink(itemLink)
+        tData = C_TooltipInfo.GetHyperlink(itemLink)
     end
-    tip:Show();
+
 	for i = 2, 4 do
-		local text = _G[ tip:GetName() .."TextLeft"..i]:GetText();
-        if text then
-            local _, _, v = text:find(pattern)
-            if v then
-                v = tonumber(v)
-                if quality ~= 6 and extract then cache[extract] = v end --目前发现神器不能缓存
-                return v
+        local line = tData.lines and tData.lines[i]
+        if line then
+            TooltipUtil.SurfaceArgs(line)
+            local text = line.leftText
+            if text then
+                local _, _, v = text:find(pattern)
+                if v then
+                    v = tonumber(v)
+                    if quality ~= 6 and extract then cache[extract] = v end --目前发现神器不能缓存
+                    return v
+                end
             end
         end
     end
@@ -515,20 +505,25 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         return tbl
     end
 
-    local tip, tipname = CoreGetTooltipForScan()
-    tip:SetOwner(WorldFrame, "ANCHOR_NONE")
+    local tData
     if slot == nil then
-        tip:SetHyperlink(link, classID, specID)
+        tData = C_TooltipInfo.GetHyperlink(link, classID, specID)
     else
-        tip:SetInventoryItem(link, slot)
+        tData = C_TooltipInfo.GetInventoryItem(link, slot)
     end
-    local line2 = _G[tipname .. "TextLeft2"]:GetText()
+    local line2 = tData.lines and tData.lines[2]
+    if line2 then
+        TooltipUtil.SurfaceArgs(line2)
+        line2 = line2.leftText
+    end
     if CONDUIT_TYPES[line2] then
         stats = stats or {}
         stats[ATTRS.CONDUIT_TYPE] = CONDUIT_TYPES[line2]
     end
-    for i = 5, tip:NumLines(), 1 do
-        local txt = _G[tipname .. "TextLeft"..i]:GetText()
+    for i = 5, #tData.lines, 1 do
+        local line = tData.lines[i]
+        TooltipUtil.SurfaceArgs(line)
+        local txt = line.leftText
         if txt then
             local _, _, value, attr = txt:find(pattern)
             if attr and ATTRS[attr] then
@@ -537,8 +532,8 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
                 stats[ATTRS[attr]] = math.abs(stats[ATTRS[attr]] or 0) + value
                 --通过文字颜色获取天赋主属性
                 if specID and specID > 0 and ATTRS[attr] > 4 then
-                    local r,g,b = _G[tipname .. "TextLeft"..i]:GetTextColor()
-                    if r > 0.99 then
+                    local lc = line.leftColor
+                    if lc.r > 0.99 then
                         primary_stats[specID] = ATTRS[attr] - 4
                     end
                 end

@@ -211,6 +211,8 @@ removed OnTooltipAddMoney OnTooltipSetAchievement OnTooltipSetEquipmentSet OnToo
     type = 0,
   }
 }
+
+SetEquipmentSet 改为ID
 ---------------------------------------------------------------]]
 if not LE_ITEM_CLASS_CONSUMABLE then
     LE_ITEM_CLASS_CONSUMABLE = Enum.ItemClass.Consumable;
@@ -319,6 +321,7 @@ end
 
 do
     --10.0.2
+    PickupContainerItem = PickupContainerItem or C_Container.PickupContainerItem
     GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
     GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
     GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID

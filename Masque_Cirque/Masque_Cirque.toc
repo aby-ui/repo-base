@@ -10,7 +10,7 @@
 ## Notes-ruRU: Скин Cirque для Masque.
 ## Notes-zhTW: Masque的Cirque皮膚。
 
-## Version: 10.0.1
+## Version: 10.0.2
 ## Author: StormFX
 ## Dependencies: Masque
 

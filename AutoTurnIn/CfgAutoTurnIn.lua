@@ -24,18 +24,18 @@ U1RegisterAddon("AutoTurnIn", {
 });
 
 if not CreateFrame then return end
-local checkbox = CreateFrame("CheckButton", "AutoTurnInTrackerQuickSwitch", ObjectiveTrackerFrame, "UICheckButtonTemplate");
+local checkbox = CreateFrame("CheckButton", "AutoTurnInTrackerQuickSwitch", ObjectiveTrackerBlocksFrame, "UICheckButtonTemplate");
 checkbox:SetChecked(false)
-checkbox:SetParent(ObjectiveTrackerBlocksFrame.QuestHeader)
 checkbox:RegisterForClicks("AnyUp")
 checkbox:SetWidth(22);
 checkbox:SetHeight(22);
 checkbox.text:SetText("交接")
-checkbox:SetPoint("BOTTOMRIGHT", ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -90, 2);
+checkbox:SetPoint("TOPRIGHT", ObjectiveTrackerFrame.HeaderMenu, "TOPRIGHT", -70, 11);
 CoreDependCall("!KalielsTracker", function()
-    checkbox:SetParent(KT_ObjectiveTrackerBlocksFrame.QuestHeader)
+    local parent = _G["!KalielsTrackerFrame"]
+    checkbox:SetParent(parent)
     checkbox.text:SetText("接")
-    checkbox:SetPoint("BOTTOMRIGHT", KT_ObjectiveTrackerBlocksFrame.QuestHeader, "BOTTOMRIGHT", -85, 2)
+    checkbox:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -85, -5)
 end)
 checkbox:SetScript("OnClick", function(self, button)
     if( not IsAddOnLoaded("AutoTurnIn") ) then U1LoadAddOn("AutoTurnIn") end

@@ -11,12 +11,12 @@ local RATINGS_BONUS = { 35, 33, 40, 35, nil, nil, nil, nil, nil, nil, 14, 21, 10
 function GearStatsSummary_UpdateRatingBonus()
     for i, v in ipairs({CR_CRIT_SPELL, CR_HASTE_SPELL, CR_VERSATILITY_DAMAGE_DONE, CR_MASTERY }) do
         if GetCombatRating(v) > 0 then
-            RATINGS_BONUS[i] = math.floor(GetCombatRating(v) / GetCombatRatingBonus(v) + 0.5)
+            RATINGS_BONUS[i] = GetCombatRating(v) / GetCombatRatingBonus(v)
         end
     end
     for i, v in ipairs({CR_AVOIDANCE, CR_LIFESTEAL, CR_SPEED}) do
         if GetCombatRating(v) > 0 then
-            RATINGS_BONUS[10+i] = math.floor(GetCombatRating(v) / GetCombatRatingBonus(v) + 0.5)
+            RATINGS_BONUS[10+i] = GetCombatRating(v) / GetCombatRatingBonus(v)
         end
     end
     return RATINGS_BONUS

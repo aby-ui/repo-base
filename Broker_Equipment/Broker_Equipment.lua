@@ -32,7 +32,7 @@ end
 
 function LDB:OnTooltipShow()
 	if(Broker_EquipmentDB.showTooltipDisplay) then
-		self:SetEquipmentSet(LDB.text)
+		self:SetEquipmentSet(LDB.setID or 0)
 		self:AddLine(' ')
 		self:AddLine(L['|cff33ff33Left-Click|r to open equipment menu.'])
 		self:AddLine(L['|cff33ff33Right-Click|r to open character window.'])
@@ -118,7 +118,7 @@ end
 local function OnItemEnter(self)
 	if(Broker_EquipmentDB.showTooltipMenu) then
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-		GameTooltip:SetEquipmentSet(self.name)
+		GameTooltip:SetEquipmentSet(self.id)
 
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddLine(L['|cff33ff33Click|r to equip set.'])
@@ -213,12 +213,14 @@ end
 function Broker_Equipment:UpdateDisplay()
 	if(InCombatLockdown() and pendingID) then
 		local name, texture = C_EquipmentSet.GetEquipmentSetInfo(pendingID)
+		LDB.setID = pendingID
 		LDB.text = '|cffffff00' .. name
 		LDB.icon = texture
 	else
 		for _, setID in next, C_EquipmentSet.GetEquipmentSetIDs() do
 			local name, texture, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(setID)
 			if(isEquipped) then
+				LDB.setID = setID
 				LDB.text = name
 				LDB.icon = texture
 				return
@@ -226,6 +228,7 @@ function Broker_Equipment:UpdateDisplay()
 		end
 
 		-- fallback name and texture
+		LDB.setID = 0
 		LDB.text = UNKNOWN
 		LDB.icon = QUESTION_MARK_ICON
 	end

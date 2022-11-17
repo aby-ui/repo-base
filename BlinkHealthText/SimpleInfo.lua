@@ -45,7 +45,7 @@ local function GetPowerType()
     elseif (class == DEATHKNIGHT) then
 
     elseif (class == EVOKER) then
-		--TODO:abyui102
+		return Enum.PowerType.Essence
     end
 end
 -- Target name
@@ -128,7 +128,7 @@ function S:OnInitialize()
 	if (self.class == "DEATHKNIGHT") then		
 		self:ConstructRunes();
 	end
-	if ("MONK,PALADIN,WARLOCK,MAGE,ROGUE,DRUID"):find(self.class) then
+	if ("MONK,PALADIN,WARLOCK,MAGE,ROGUE,DRUID,EVOKER"):find(self.class) then
 		self:ConstructCombo();
 		self:ConstructHitPoints();	-- 构建连击点
 	end

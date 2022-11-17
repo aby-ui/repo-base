@@ -1,5 +1,5 @@
 local _, engClass = UnitClass("player")
-local mayHaveCombo = ("MONK,PALADIN,WARLOCK,MAGE,ROGUE,DRUID"):find(engClass) and true or false
+local mayHaveCombo = ("MONK,PALADIN,WARLOCK,MAGE,ROGUE,DRUID,EVOKE"):find(engClass) and true or false
 
 U1RegisterAddon("BlinkHealthText", {
     title = "简易状态",
