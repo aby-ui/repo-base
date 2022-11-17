@@ -9,15 +9,6 @@ local RECIPE = GetItemClassInfo(LE_ITEM_CLASS_RECIPE)
 local MISCALLANEOUS = GetItemClassInfo(LE_ITEM_CLASS_MISCELLANEOUS)
 local KNOWABLES = { [CONSUMABLE] = true, [GLYPH] = true, [RECIPE] = true, [MISCALLANEOUS] = true }
 
-local f = CreateFrame("GameTooltip")
-f:SetOwner(WorldFrame, "ANCHOR_NONE")
-
-local lines = {}
-for i=1, 40 do
-	lines[i] = f:CreateFontString()
-	f:AddFontStrings(lines[i], f:CreateFontString())
-end
-
 local knowns = {}
 local function isKnown(link)
 	local id = strmatch(link, "item:(%d+):")
@@ -28,10 +19,10 @@ local function isKnown(link)
 		return true
 	end
 
-	f:ClearLines()
-	f:SetHyperlink(link)
-	for i=1, f:NumLines() do
-		if ( lines[i]:GetText() == ITEM_SPELL_KNOWN ) then
+	local tData = C_TooltipInfo.GetHyperlink(link)
+	for _, line in ipairs(tData.lines) do
+		TooltipUtil.SurfaceArgs(line)
+		if line.leftText == ITEM_SPELL_KNOWN then
 			knowns[id] = true
 			return true
 		end

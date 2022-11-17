@@ -335,6 +335,11 @@ do
     ContainerIDToInventoryID = ContainerIDToInventoryID or C_Container.ContainerIDToInventoryID
     GetContainerItemCooldown = GetContainerItemCooldown or C_Container.GetContainerItemCooldown
     IsBattlePayItem = IsBattlePayItem or C_Container.IsBattlePayItem
+    UseContainerItem = UseContainerItem or C_Container.UseContainerItem
+    GetSortBagsRightToLeft = GetSortBagsRightToLeft or C_Container.GetSortBagsRightToLeft
+    SetSortBagsRightToLeft = SetSortBagsRightToLeft or C_Container.SetSortBagsRightToLeft
+    GetInsertItemsLeftToRight = GetInsertItemsLeftToRight or C_Container.GetInsertItemsLeftToRight
+    SetInsertItemsLeftToRight = SetInsertItemsLeftToRight or C_Container.SetInsertItemsLeftToRight
 
     --TODO:abyui102
     TooltipUtil.GetRepairCostForTooltipData = function(tooltipData)

@@ -54,6 +54,7 @@ local function FormatCounts(color, ...)
 	return total, total > 0 and text
 end
 
+BBB = Addon
 local function AddOwners(tip, link)
 	if not Addon.sets.tipCount or tip.__tamedCounts then
 		return
@@ -163,19 +164,20 @@ end
 
 local function HookTip(tip)
 	tip:HookScript('OnTooltipCleared', OnClear)
-	tip:HookScript('OnTooltipSetItem', OnItem)
+	--tip:HookScript('OnTooltipSetItem', OnItem)
 
 	hooksecurefunc(tip, 'SetQuestItem', OnQuest)
 	hooksecurefunc(tip, 'SetQuestLogItem', OnQuest)
-
-	if C_TradeSkillUI then
-		if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
-			hooksecurefunc(tip, 'SetRecipeReagentItem', OnTradeSkill('GetRecipeFixedReagentItemLink'))
-		else
-			hooksecurefunc(tip, 'SetRecipeReagentItem', OnTradeSkill('GetRecipeReagentItemLink'))
-			hooksecurefunc(tip, 'SetRecipeResultItem', OnTradeSkill('GetRecipeItemLink'))
-		end
-	end
+	--[[
+        if C_TradeSkillUI then
+            if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
+                hooksecurefunc(tip, 'SetRecipeReagentItem', OnTradeSkill('GetRecipeFixedReagentItemLink'))
+            else
+                hooksecurefunc(tip, 'SetRecipeReagentItem', OnTradeSkill('GetRecipeReagentItemLink'))
+                hooksecurefunc(tip, 'SetRecipeResultItem', OnTradeSkill('GetRecipeItemLink'))
+            end
+        end
+    ]]
 end
 
 
@@ -188,8 +190,8 @@ function TooltipCounts:OnEnable()
 
 			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnItem)
 
-			--HookTip(GameTooltip)
-			--HookTip(ItemRefTooltip)
+			HookTip(GameTooltip)
+			HookTip(ItemRefTooltip)
 		end
 	end
 end
