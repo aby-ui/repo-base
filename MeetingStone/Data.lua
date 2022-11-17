@@ -304,6 +304,13 @@ CATEGORY = {
             [723] = true, -- 世界首领
         },
     },
+    [9] = {
+        groups = {
+            [309] = true,
+        },
+        activities = {
+        },
+    },
 }
 
 --/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivityGroups(a.selectedCategory, bit.bor(a.baseFilters, a.selectedFilters)))

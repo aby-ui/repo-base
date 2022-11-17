@@ -362,3 +362,43 @@ do
         end
     end)
 end
+
+U1PLUG["FriendsMenuXPSimple"] = function()
+    function UnitPopup_ShowMenu_Hook(dropdownMenu, which, unit, name, userData)
+        local info;
+        if ( UIDROPDOWNMENU_MENU_LEVEL ~= 1 ) then
+            do return end
+
+        else
+            local listFrame = _G["DropDownList"..UIDROPDOWNMENU_MENU_LEVEL];
+            if listFrame then listFrame.numButtons = listFrame.numButtons - 1; end
+
+            UIDropDownMenu_AddSeparator(UIDROPDOWNMENU_MENU_LEVEL)
+
+            name = name or unit and UnitFullName(unit)
+
+            if name ~= U1UnitFullName("player") and name ~= UnitName("player") and CanGuildInvite() then
+                UIDropDownMenu_AddButton({
+                    text = LOCALE_zhCN and "邀请入会" or "Guild Invite",
+                    func = function() GuildInvite(name) end,
+                    notCheckable = true,
+                }, UIDROPDOWNMENU_MENU_LEVEL)
+            end
+
+            if not name:find("-") or name:find("-"..GetRealmName()) then
+                UIDropDownMenu_AddButton({
+                    text = LOCALE_zhCN and "查询详情" or "Send Who",
+                    func = function() C_FriendList.SendWho(WHO_TAG_EXACT..name) end,
+                    notCheckable = true,
+                }, UIDROPDOWNMENU_MENU_LEVEL)
+            end
+
+            UIDropDownMenu_AddButton({ text = CANCEL, notCheckable = true, })
+            --listFrame:SetHeight(listFrame:GetHeight()+150)
+        end
+    end
+
+    hooksecurefunc("UnitPopup_ShowMenu", function(...)
+        UnitPopup_ShowMenu_Hook(...)
+    end)
+end

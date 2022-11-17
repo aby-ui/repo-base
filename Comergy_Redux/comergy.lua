@@ -995,7 +995,7 @@ function PopulateDefaultSettings()
         SoundChi2 = false,
         SoundChi3 = false,
         SoundChi4 = false,
-        SoundChi5 = true,
+        SoundChi5 = select(3, UnitClass("player")) ~= EVOKER,
         SoundChi6 = false,
         SoundChi7 = false,
         SoundChi8 = false,
@@ -1015,7 +1015,7 @@ function PopulateDefaultSettings()
         ChiText = false,
         ChiBGAlpha = 0.1,
         UnifiedChiColor = false,
-        ChiFlash = true,
+        ChiFlash = select(3, UnitClass("player")) ~= EVOKER,
         RuneFlash = true,
         ChiDiff = 0,
 

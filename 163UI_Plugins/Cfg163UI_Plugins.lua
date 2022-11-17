@@ -35,19 +35,25 @@ U1RegisterAddon("163UI_Plugins", {
         tip = "说明`盟约NPC对话时自动选择第一个选项，并且在天赋选择界面右侧显示当前选择的灵魂羁绊。",
     },
 
---[[
     {
-        var = "MawThreat", text = "噬渊典狱长之眼详细数值", default = true,
-        tip = "说明`在噬渊典狱长之眼框体中显示详细进度值",
-        callback = function(cfg, v, loading, ...)
-            if not loading then
-                if U1PluginMawThreatToggle then U1PluginMawThreatToggle(v) end
-            else
-                return load(cfg, v, loading, ...)
-            end
-        end
+        var = "FriendsMenuXPSimple", text = "玩家菜单增加邀请入会等按钮", default = true, callback = load,
+        tip = "说明`玩家菜单增强插件太老，重新写需要时间，先把最重要的几个按钮加上。",
     },
-]]
+
+
+    --[[
+        {
+            var = "MawThreat", text = "噬渊典狱长之眼详细数值", default = true,
+            tip = "说明`在噬渊典狱长之眼框体中显示详细进度值",
+            callback = function(cfg, v, loading, ...)
+                if not loading then
+                    if U1PluginMawThreatToggle then U1PluginMawThreatToggle(v) end
+                else
+                    return load(cfg, v, loading, ...)
+                end
+            end
+        },
+    ]]
 
     {
         var = "CastSound",
