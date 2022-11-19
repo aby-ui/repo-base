@@ -1,7 +1,8 @@
 do
 
 	local _detalhes = 		_G._detalhes
-	
+	local addonName, Details222 = ...
+
 	--import potion list from the framework
 	_detalhes.PotionList = {}
 	for spellID, _ in pairs(DetailsFramework.PotionIDs) do
@@ -164,7 +165,6 @@ do
 			--Feral Druid:
 			[5217] = 103, --Tiger's Fury
 			[285381] = 103, --Primal Wrath
-			[213764] = 103, --Swipe
 			[106951] = 103, --Berserk
 			[274837] = 103, --Feral Frenzy
 
@@ -183,7 +183,6 @@ do
 			[191034] = 102, --Starfall
 			[78675] = 102, --Solar Beam
 			[202770] = 102, --Fury of Elune
-			[323764] = 102, --Convoke the Spirits
 			[102560] = 102, --Incarnation: Chosen of Elune
 			[202347] = 102, --Stellar Flare
 			[194223] = 102, --Celestial Alignment
@@ -652,7 +651,7 @@ do
 			[53385]			=	70, -- Divine Storm
 
 			-- Discipline Priest:
-			[63944]			=	256, -- Renewed Hope
+			--[63944]			=	256, -- Renewed Hope
 			[10060]			=	256, -- Power Infusion
 			[33206]			=	256, -- Pain Suppression
 			[47540]			=	256, -- Penance (rank 1)

@@ -191,10 +191,19 @@ local BoolCol = { [false] = "|cffff8080", [true] = "|cff80ff80" };
 
 -- Get displayed item
 function ttif:GetDisplayedItem(tooltip)
-	if (tooltip.GetItem) then
-		return tooltip:GetItem();
+	if (TooltipUtil) then
+		if (tooltip:IsTooltipType(Enum.TooltipDataType.Toy)) then -- see TooltipUtil.GetDisplayedItem() in "TooltipUtil.lua"
+			local tooltipData = tooltip:GetTooltipData();
+			local hyperlink = C_ToyBox.GetToyLink(tooltipData.id);
+			if (hyperlink) then
+				local name = GetItemInfo(hyperlink);
+				return name, hyperlink, tooltipData.id;
+			end
+		else
+			return TooltipUtil.GetDisplayedItem(tooltip);
+		end
 	else
-		return TooltipUtil.GetDisplayedItem(tooltip);
+		return tooltip:GetItem();
 	end
 end
 
@@ -375,14 +384,14 @@ function ttif:ApplyWorkaroundForFirstMouseover(self, isAura, source, link, linkT
 	
 	-- functions
 	local resetVarsFn = function(tooltip)
-		tooltip.ttWorkaroundForFirstMouseoverStatus = 0; -- initialized
+		tooltip.ttWorkaroundForFirstMouseoverStatus = 0; -- 0 = initialized
 		tooltip.ttWorkaroundForFirstMouseoverID = nil;
 		tooltip.ttWorkaroundForFirstMouseoverRank = nil;
 		tooltip.ttWorkaroundForFirstMouseoverOwner = nil;
 	end
 	
 	local initVarsFn = function(tooltip, id, rank, owner)
-		tooltip.ttWorkaroundForFirstMouseoverStatus = 1; -- armed, 1st stage
+		tooltip.ttWorkaroundForFirstMouseoverStatus = 1; -- 1 = armed, 1st stage
 		tooltip.ttWorkaroundForFirstMouseoverID = id;
 		tooltip.ttWorkaroundForFirstMouseoverRank = rank;
 		tooltip.ttWorkaroundForFirstMouseoverOwner = owner;
@@ -402,19 +411,19 @@ function ttif:ApplyWorkaroundForFirstMouseover(self, isAura, source, link, linkT
 	-- apply hooks
 	if (not tooltip.ttWorkaroundForFirstMouseoverStatus) then -- nil = uninitialized
 		AceHook:SecureHookScript(tooltip, "OnTooltipCleared", function(tooltip)
-			if (tooltip.ttWorkaroundForFirstMouseoverStatus == 1) then -- armed, 1st stage
+			if (tooltip.ttWorkaroundForFirstMouseoverStatus == 1) then -- 1 = armed, 1st stage
 				if (tooltip:GetOwner() ~= tooltip.ttWorkaroundForFirstMouseoverOwner) then
 					resetVarsFn(tooltip); -- 0 = initialized
 					return;
 				end
-				tooltip.ttWorkaroundForFirstMouseoverStatus = 2; -- armed, 2nd stage
+				tooltip.ttWorkaroundForFirstMouseoverStatus = 2; -- 2 = armed, 2nd stage
 			end
 		end);
 		
 		AceHook:SecureHookScript(tooltip, "OnUpdate", function(tooltip)
-			if (tooltip.ttWorkaroundForFirstMouseoverStatus == 2) then -- armed, 2nd stage
+			if (tooltip.ttWorkaroundForFirstMouseoverStatus == 2) then -- 2 = armed, 2nd stage
 				reapplyTooltipModificationFn(tooltip);
-				tooltip.ttWorkaroundForFirstMouseoverStatus = 3; -- triggered
+				tooltip.ttWorkaroundForFirstMouseoverStatus = 3; -- 3 = triggered
 			end
 		end);
 		
@@ -425,10 +434,12 @@ function ttif:ApplyWorkaroundForFirstMouseover(self, isAura, source, link, linkT
 		resetVarsFn(tooltip); -- 0 = initialized
 	end
 	
+	local owner = tooltip:GetOwner();
+	
 	if (tooltip.ttWorkaroundForFirstMouseoverStatus == 0) or (tooltip.ttWorkaroundForFirstMouseoverID ~= id) or (owner ~= tooltip.ttWorkaroundForFirstMouseoverOwner) then
-		initVarsFn(tooltip, id, rank, tooltip:GetOwner()); -- 1 = armed, 1st stage
+		initVarsFn(tooltip, id, rank, owner); -- 1 = armed, 1st stage
 	else
-		tooltip.ttWorkaroundForFirstMouseoverStatus = 3; -- triggered
+		tooltip.ttWorkaroundForFirstMouseoverStatus = 3; -- 3 = triggered
 	end
 end
 
@@ -527,10 +538,32 @@ function ttif:SetHyperlink_Hook(self, hyperlink)
 	end
 end
 
--- HOOK: SetUnitAura
+-- HOOK: SetUnitAura + SetUnitBuff + SetUnitDebuff
 local function SetUnitAura_Hook(self, unit, index, filter)
 	if (cfg.if_enable) and (not tipDataAdded[self]) then
-		local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod =  UnitAura(unit, index, filter); -- [18.07.19] 8.0/BfA: "dropped second parameter"
+		local name, icon, count, dispelType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellID, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura(unit, index, filter); -- [18.07.19] 8.0/BfA: "dropped second parameter"
+		if (spellID) then
+			local link = GetSpellLink(spellID);
+			if (link) then
+				local linkType, _spellID = link:match("H?(%a+):(%d+)");
+				if (_spellID) then
+					tipDataAdded[self] = linkType;
+					LinkTypeFuncs.spell(self, true, source, link, linkType, _spellID);
+
+					-- apply workaround for first mouseover
+					ttif:ApplyWorkaroundForFirstMouseover(self, true, source, link, linkType, _spellID);
+				end
+			end
+		end
+	end
+end
+
+-- HOOK: SetUnitBuffByAuraInstanceID + SetUnitDebuffByAuraInstanceID
+local function SetUnitBuffByAuraInstanceID_Hook(self, unit, auraInstanceID, filter)
+	if (cfg.if_enable) and (not tipDataAdded[self]) then
+		local aura = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID);
+		local spellID = aura.spellId;
+		local source = aura.sourceUnit;
 		if (spellID) then
 			local link = GetSpellLink(spellID);
 			if (link) then
@@ -1611,6 +1644,10 @@ function ttif:ApplyHooksToTips(tips, resolveGlobalNamedObjects, addToTipsToModif
 					hooksecurefunc(tip, "SetLFGDungeonShortageReward", SetLFGDungeonShortageReward_Hook);
 					hooksecurefunc(tip, "SetUnitDebuffByAuraInstanceID", SetUnitXxxxByAuraInstanceID);
 					hooksecurefunc(tip, "SetUnitBuffByAuraInstanceID", SetUnitXxxxByAuraInstanceID);
+				end
+				if (isWoWRetail) then
+					hooksecurefunc(tip, "SetUnitBuffByAuraInstanceID", SetUnitBuffByAuraInstanceID_Hook);
+					hooksecurefunc(tip, "SetUnitDebuffByAuraInstanceID", SetUnitBuffByAuraInstanceID_Hook);
 				end
 				if (TooltipDataProcessor) then -- since df 10.0.2
 					TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(self, ...)

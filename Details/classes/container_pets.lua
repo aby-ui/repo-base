@@ -1,6 +1,8 @@
 local _detalhes = 		_G._detalhes
 local gump = 			_detalhes.gump
 local container_pets =		_detalhes.container_pets
+local _
+local addonName, Details222 = ...
 
 -- api locals
 local UnitGUID = _G.UnitGUID
@@ -14,7 +16,6 @@ local GetNumGroupMembers = _G.GetNumGroupMembers
 local setmetatable = setmetatable
 local _bit_band = bit.band --lua local
 local pairs = pairs
-local ipairs = ipairs
 local wipe = table.wipe
 
 --details locals

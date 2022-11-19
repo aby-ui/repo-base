@@ -257,7 +257,12 @@ function Postal_OpenAll:ProcessNext()
 		if attachIndex > 0 and not invFull and Postal.db.profile.OpenAll.KeepFreeSpace>0 then
 			local free=0
 			for bag=0,NUM_BAG_SLOTS do
-				local bagFree,bagFam = GetContainerNumFreeSlots(bag)
+				local bagFree, bagFam
+				if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+					bagFree, bagFam = GetContainerNumFreeSlots(bag)
+				else
+					bagFree, bagFam = C_Container.GetContainerNumFreeSlots(bag)
+				end
 				if bagFam==0 then
 					free = free + bagFree
 				end
@@ -280,8 +285,27 @@ function Postal_OpenAll:ProcessNext()
 			local stackSize = select(8, GetItemInfo(link))
 			if itemID and stackSize and GetItemCount(itemID) > 0 then
 				for bag = 0, NUM_BAG_SLOTS do
-					for slot = 1, GetContainerNumSlots(bag) do
-						local texture2, count2, locked2, quality2, readable2, lootable2, link2 = GetContainerItemInfo(bag, slot)
+					local ContainerNumSlots
+					if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+						ContainerNumSlots = GetContainerNumSlots(bag)
+					else
+						ContainerNumSlots = C_Container.GetContainerNumSlots(bag)
+					end
+					for slot = 1, ContainerNumSlots do
+						local count2, link2
+						if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+							count2 = select(2, GetContainerItemInfo(bag, slot))
+							link2 = select(7, GetContainerItemInfo(bag, slot))
+						else
+							if C_Container and C_Container.GetContainerItemInfo(bag, slot) then
+								local itemInfo = C_Container.GetContainerItemInfo(bag, slot)
+								count2 = itemInfo.stackCount
+								link2 = itemInfo.hyperlink
+							else
+								count2 = 0
+								link2 = nil
+							end
+						end
 						if link2 then
 							local itemID2 = strmatch(link2, "item:(%d+)")
 							if itemID == itemID2 and count + count2 <= stackSize then

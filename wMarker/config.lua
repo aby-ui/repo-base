@@ -7,17 +7,23 @@ local L = wMarkerLocals
 
 wMarkerAce = LibStub("AceAddon-3.0"):GetAddon("wMarker")
 local config = wMarkerAce:NewModule("wMarkerConfig", "AceEvent-3.0");
-local dbRaid, dbWorld = nil
+local dbRaid, dbWorld, dbFLoc = nil
+wMarkerDB = nil
+wFlaresDB = nil
 
 function config:OnInitialize()
 	dbRaid = wMarkerAce.db.profile.raid
 	dbWorld = wMarkerAce.db.profile.world
+	dbFLoc = wMarkerAce.db.profile.frameLoc
+
+	--Look for old configs, Pre-Ace
+	wMarkerDB = wMarkerDB or {}
+	wFlaresDB = wFlaresDB or {}
 
 	wMarkerAce.db.RegisterCallback(wMarkerAce, "OnProfileReset", "ConfigCheck")
 	wMarkerAce.db.RegisterCallback(wMarkerAce, "OnProfileChanged","ConfigCheck")
 	wMarkerAce.db.RegisterCallback(wMarkerAce, "OnProfileCopied","ConfigCheck")
 
-	local AceConfig = LibStub("AceConfig-3.0")
 	wMarkerAce:RegisterChatCommand("wmarker","SlashInput")
 	wMarkerAce:RegisterChatCommand("wma","SlashInput")
 	wMarkerAce:RegisterChatCommand("rc", "SlashReadyCheck")
@@ -27,6 +33,8 @@ function config:OnInitialize()
 	wMarkerAce:RegisterEvent("RAID_ROSTER_UPDATE","EventHandler")
 	wMarkerAce:RegisterEvent("PLAYER_TARGET_CHANGED","EventHandler")
 	wMarkerAce:RegisterEvent("PLAYER_REGEN_ENABLED","EventHandler")
+
+	wMarkerAce.db.global.lastVer = GetAddOnMetadata("wMarker","Version")
 end
 
 function config:OnEnable()
@@ -37,17 +45,32 @@ end
 
 function config:OnDisable()
 
+	wMarkerAce.db.UnregisterAllCallbacks(wMarkerAce)
+
+	wMarkerAce:UnregisterChatCommand("wmarker","SlashInput")
+	wMarkerAce:UnregisterChatCommand("wma","SlashInput")
+	wMarkerAce:UnregisterChatCommand("rc", "SlashReadyCheck")
+	wMarkerAce:UnregisterChatCommand("roc", "SlashRoleCheck")
+
+	wMarkerAce:UnregisterEvent("GROUP_ROSTER_UPDATE","EventHandler")
+	wMarkerAce:UnregisterEvent("RAID_ROSTER_UPDATE","EventHandler")
+	wMarkerAce:UnregisterEvent("PLAYER_TARGET_CHANGED","EventHandler")
+	wMarkerAce:UnregisterEvent("PLAYER_REGEN_ENABLED","EventHandler")
 end
 
 function wMarkerAce:ConfigCheck()
 	dbRaid = wMarkerAce.db.profile.raid
 	dbWorld = wMarkerAce.db.profile.world
+	dbFLoc = wMarkerAce.db.profile.frameLoc
 
-	wMarkerAce.raidMain:ClearAllPoints()
-	wMarkerAce.raidMain:SetPoint(dbRaid.point, UIParent, dbRaid.relPt, dbRaid.x, dbRaid.y)
+	-- Check if old configs exist, if not yet imported, complete the import
+	if (wMarkerDB.locked ~= nil) and (wMarkerAce.db.global.imported == false or wMarkerAce.db.global.imported == nil) then wMarkerAce:ConfigImport() end
 
-	wMarkerAce.worldMain:ClearAllPoints()
-	wMarkerAce.worldMain:SetPoint(dbWorld.point, UIParent, dbWorld.relPt, dbWorld.x, dbWorld.y)
+	-- Check for old loc exists in Ace, if yes, use these points and nil them
+	if (dbRaid.point) then wMarkerAce.raidMain:ClearAllPoints(); wMarkerAce.raidMain:SetPoint(dbRaid.point, "UIParent", dbRaid.relPt, dbRaid.x, dbRaid.y); wMarkerAce:getLoc(wMarkerAce.raidMain); dbRaid.point, dbRaid.relPt, dbRaid.x, dbRaid.y = nil end
+	wMarkerAce:setLoc(wMarkerAce.raidMain)
+	if (dbWorld.point) then wMarkerAce.worldMain:ClearAllPoints(); wMarkerAce.worldMain:SetPoint(dbWorld.point, "UIParent", dbWorld.relPt, dbWorld.x, dbWorld.y); wMarkerAce:getLoc(wMarkerAce.worldMain); dbWorld.point, dbWorld.relPt, dbWorld.x, dbWorld.y = nil end
+	wMarkerAce:setLoc(wMarkerAce.worldMain)
 
 	wMarkerAce.raidMain:SetScale(dbRaid.scale)
 	wMarkerAce.raidMain:SetAlpha(dbRaid.alpha)
@@ -65,6 +88,44 @@ function wMarkerAce:ConfigCheck()
 	wMarkerAce:worldOrient()
 
 	wMarkerAce:worldRetext(dbWorld.worldTex)
+end
+
+function wMarkerAce:ConfigImport()	
+	local oldwDB = wMarkerDB
+	local oldfDB = wFlaresDB
+	dbRaid.locked = oldwDB.locked
+	dbRaid.clamped = oldwDB.clamped
+	dbRaid.shown = oldwDB.shown
+	dbRaid.flipped = oldwDB.flipped
+	dbRaid.vertical = oldwDB.vertical
+	dbRaid.partyShow = oldwDB.partyShow
+	dbRaid.targetShow = oldwDB.targetShow
+	dbRaid.assistShow = oldwDB.assistShow
+	dbRaid.bgHide = oldwDB.bgHide
+	dbRaid.tooltips = oldwDB.tooltips
+	dbRaid.iconSpace = oldwDB.iconSpace
+	dbRaid.scale = oldwDB.scale
+	dbRaid.alpha = oldwDB.alpha
+	dbFLoc["wMarkerRaid"] = {"CENTER", "UIParent", oldwDB.relPt, oldwDB.x, oldwDB.y}
+
+	dbWorld.locked = oldfDB.locked
+	dbWorld.clamped = oldfDB.clamped
+	dbWorld.shown = oldfDB.shown
+	dbWorld.flipped = oldfDB.flipped
+	dbWorld.vertical = oldfDB.vertical
+	dbWorld.partyShow = oldfDB.partyShow
+	dbWorld.targetShow = oldfDB.targetShow
+	dbWorld.assistShow = oldfDB.assistShow
+	dbWorld.bgHide = oldfDB.bgHide
+	dbWorld.tooltips = oldfDB.tooltips
+	dbWorld.scale = oldfDB.scale
+	dbWorld.alpha = oldfDB.alpha
+	dbFLoc["wMarkerWorld"] = {"CENTER", "UIParent", oldfDB.relPt, oldfDB.x, oldfDB.y}
+
+	wMarkerAce.db.global.imported = true
+	wMarkerDB = nil
+	wFlaresDB = nil
+	wMarkerAce:Print("Configurations imported from legacy wMarker")
 end
 
 wMarkerAce.options = {
@@ -354,7 +415,7 @@ wMarkerAce.options = {
 				},
 				germanText = {
 					type = "description",
-					name = string.format("|cff69ccf0%s|r - %s","German-deDE","TheGeek/StormCalai, Zaephyr81, Fiveyoushi, Morwo, Waky"),
+					name = string.format("|cff69ccf0%s|r - %s","German-deDE","TheGeek/StormCalai, Zaephyr81, Fiveyoushi, Morwo"),
 					width = "full",
 					order = 25,
 				},
@@ -783,18 +844,18 @@ function wMarkerAce:worldRetext(tex)
 	end
 end
 
-function wMarkerAce:getLoc(frame)
+function wMarkerAce:getLoc(frame, savedVar)
 	local point, relativeTo, relPt, xOff, yOff = frame:GetPoint()
-	if (frame==wMarkerAce.raidMain) then
-		dbRaid.point = point
-		dbRaid.x = xOff
-		dbRaid.y = yOff
-		dbRaid.relPt = relPt
-	elseif (frame==wMarkerAce.worldMain) then
-		dbWorld.point = point
-		dbWorld.x = xOff
-		dbWorld.y = yOff
-		dbWorld.relPt = relPt
+	if (relativeTo == nil) then relativeTo = _G["UIParent"] end
+	dbFLoc[savedVar or frame:GetName()] = {point, relativeTo:GetName(), relPt, xOff, yOff};
+end
+
+function wMarkerAce:setLoc(frame, savedVar)
+	if dbFLoc[savedVar or frame:GetName()] then
+		frame:ClearAllPoints()
+		frame:SetPoint(unpack(dbFLoc[savedVar or frame:GetName()]))
+	else
+		self:getLoc(frame)
 	end
 end
 

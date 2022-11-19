@@ -769,7 +769,7 @@ do -- Garrison Resources in shipyard
 	ff:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_NONE")
 		GameTooltip:SetPoint("BOTTOMLEFT", mf, "TOPRIGHT")
-		GameTooltip:SetCurrencyTokenByID(GARRISON_CURRENCY)
+		GameTooltip:SetCurrencyByID(GARRISON_CURRENCY)
 		GameTooltip:Show()
 	end)
 	ff:SetScript("OnLeave", HideOwnedGameTooltip)

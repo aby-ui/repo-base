@@ -6,6 +6,7 @@ local Details = _G.Details
 local C_Timer = _G.C_Timer
 local C_Map = _G.C_Map
 local ceil = math.ceil
+local addonName, Details222 = ...
 
 -- immersion namespace
 Details.Immersion = {}

@@ -8,7 +8,6 @@ local L = BUYEMALL_LOCALS;
 
 BUYEMALL_MAX = L.MAX;
 BUYEMALL_STACK = L.STACK;
-
 function BuyEmAll:OnLoad()
     -- Set up confirmation dialog.
 
@@ -68,25 +67,20 @@ function BuyEmAll:SlashHandler(message, editbox)
 end
 
 function BuyEmAll:ItemIsUnique(itemIDOrLink)
-	if(string.sub(itemIDOrLink, 0, 5) ~= "item:") then
-		itemIDOrLink = "item:" .. itemIDOrLink .. ":0:0:0:0:0:0:0";
+	if(string.find(itemIDOrLink, "|Hitem:") ~= nil) then
+        itemIDOrLink = tonumber(string.match(itemIDOrLink, "|Hitem:(%d+):"));
 	end
-    BuyEmAllTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-    BuyEmAllTooltip:SetHyperlink(itemIDOrLink)
-    local isUnique = false;
-    for i = 1, select("#", BuyEmAllTooltip:GetRegions()) do
-        local region = select(i, BuyEmAllTooltip:GetRegions())
-        if region and region:GetObjectType() == "FontString" then
-            if(region:GetText() == "Unique") then
-                isUnique = true;
-                break;
+
+    local tooltip = C_TooltipInfo.GetItemByID(itemIDOrLink);
+    for _, line in ipairs(tooltip.lines) do
+        for _, arg in ipairs(line.args) do
+            if(arg.field == 'leftText' and arg.stringVal == 'Unique') then
+                return true;
             end
         end
     end
-    
-    BuyEmAllTooltip:Hide()
-
-    return isUnique;
+   
+    return false;
 end
 
 -- Variable setup/check.
@@ -116,18 +110,15 @@ function BuyEmAll:GetFreeBagSpace(itemID)
     local stackSize = select(8, GetItemInfo(itemID));
 
     for currentBag = 0, 4 do
-        local freeSpace, bagType = GetContainerNumFreeSlots(currentBag);
+        local freeSpace, bagType = C_Container.GetContainerNumFreeSlots(currentBag);
         if (bagType == 0 or bagType == itemType or bit.band(itemType, bagType) == bagType) then
             canFit = canFit + (freeSpace * stackSize);
 
-            local totalBagSlots = GetContainerNumSlots(currentBag);
-            local inventoryId = currentBag == 0 and 0 or ContainerIDToInventoryID(currentBag);
-
+            local totalBagSlots = C_Container.GetContainerNumSlots(currentBag);
             for currentSlot = 1, totalBagSlots do
-                local itemLink = GetContainerItemLink(inventoryId, currentSlot);
-                if (itemLink and strfind(itemLink, "item:" .. itemID .. ":")) then
-                    local itemCount = select(2, GetContainerItemInfo(inventoryId, currentSlot));
-                    print("Found " .. itemCount .. " existing items");
+                local itemInfo = C_Container.GetContainerItemInfo(currentBag, currentSlot);
+                if (itemInfo ~= nil and itemInfo.itemID == itemID) then
+                    local itemCount = itemInfo.stackCount or 0;
                     canFit = canFit + (stackSize - itemCount);
                 end
             end

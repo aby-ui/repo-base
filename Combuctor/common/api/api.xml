@@ -1,7 +1,0 @@
-<Ui>
-	<Script file="owners.lua"/>
-	<Script file="events.lua"/>
-	<Script file="frames.lua"/>
-	<Script file="rules.lua"/>
-	<Script file="sorting.lua"/>
-</Ui>

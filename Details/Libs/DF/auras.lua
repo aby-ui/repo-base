@@ -10,7 +10,7 @@ local GetSpellInfo = GetSpellInfo
 local lower = string.lower
 local GetSpellBookItemInfo = GetSpellBookItemInfo
 
-local CONST_MAX_SPELLS = 400000
+local CONST_MAX_SPELLS = 450000
 
 function DF:GetAuraByName (unit, spellName, isDebuff)
 	isDebuff = isDebuff and "HARMFUL|PLAYER"
@@ -862,6 +862,7 @@ function DF:CreateAuraConfigPanel (parent, name, db, change_callback, options, t
 		
 		local title = DF:CreateLabel(parent, title)
 		title.textcolor = "silver"
+		title.textsize = 10
 		title:SetPoint("bottomleft", scroll, "topleft", 0, 2)
 
 		for i = 1, lineAmount do

@@ -1160,6 +1160,8 @@ function addon:CreateSlider(name, parent, low, high, width, step, onValueChanged
     -- end)
 
     slider:SetScript("OnMouseUp", function(self, button, isMouseOver)
+        if not slider:IsEnabled() then return end
+
         -- oldValue here == newValue, OnMouseUp called after OnValueChanged
         if valueBeforeClick ~= oldValue and slider.afterValueChangedFn then
             valueBeforeClick = oldValue
@@ -1581,7 +1583,7 @@ function addon:CreateMask(parent, text, points) -- points = {topleftX, topleftY,
         parent.mask = CreateFrame("Frame", nil, parent, "BackdropTemplate")
         addon:StylizeFrame(parent.mask, {0.15, 0.15, 0.15, 0.7}, {0, 0, 0, 0})
         parent.mask:SetFrameStrata("HIGH")
-        parent.mask:SetFrameLevel(parent:GetFrameLevel()+50)
+        parent.mask:SetFrameLevel(parent:GetFrameLevel()+20)
         parent.mask:EnableMouse(true) -- can't click-through
         parent.mask:EnableMouseWheel(true) -- can't scroll-through
 
@@ -1609,6 +1611,28 @@ function addon:CreateMask(parent, text, points) -- points = {topleftX, topleftY,
         parent.mask:SetAllPoints(parent) -- anchor points are set to those of its "parent"
     end
     parent.mask:Show()
+end
+
+function addon:CreateCombatMask(parent)
+    local mask = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+    parent.combatMask = mask
+
+    mask:SetPoint("TOPLEFT", P:Scale(1), P:Scale(-1))
+    mask:SetPoint("BOTTOMRIGHT", P:Scale(-1), P:Scale(1))
+
+    addon:StylizeFrame(mask, {0.17, 0.15, 0.15, 0.8}, {0, 0, 0, 0})
+    mask:SetFrameStrata("DIALOG")
+    mask:SetFrameLevel(parent:GetFrameLevel()+70)
+    mask:EnableMouse(true) -- can't click-through
+    mask:EnableMouseWheel(true) -- can't scroll-through
+
+    mask.text = mask:CreateFontString(nil, "OVERLAY", font_title_name)
+    mask.text:SetTextColor(1, 0.2, 0.2)
+    mask.text:SetPoint("LEFT", 5, 0)
+    mask.text:SetPoint("RIGHT", -5, 0)
+    mask.text:SetText(L["Can't change options in combat"])
+
+    mask:Hide()
 end
 
 -----------------------------------------

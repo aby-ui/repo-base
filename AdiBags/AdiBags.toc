@@ -1,0 +1,73 @@
+# AdiBags - Adirelle's bag addon.
+# Copyright 2010-2021 Adirelle (adirelle@gmail.com)
+# All rights reserved.
+#
+# This file is part of AdiBags.
+#
+# AdiBags is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# AdiBags is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with AdiBags.  If not, see <http://www.gnu.org/licenses/>.
+
+## Interface: 100000
+
+## Title: AdiBags
+## Notes: Adirelle's bag addon.
+## Author: Adirelle
+## Version: v1.9.46
+## SavedVariables: AdiBagsDB
+## X-Date: 2022-10-29T17:40:30Z
+## X-License: GPL v3
+## OptionalDeps: LibStub, CallbackHandler-1.0, Ace3, LibSharedMedia-3.0, Scrap, BrainDead, SyLevel
+#@alpha@
+# ## OptionalDeps: AdiDebug, BugSack, Swatter
+#@end-alpha@
+
+Localization.lua
+core\EventHandlers.lua
+core\Constants.lua
+core\Utility.lua
+core\Fonts.lua
+core\Core.lua
+core\Hooks.lua
+core\Bags.lua
+core\Filters.lua
+core\Layout.lua
+core\OO.lua
+
+widgets\LayeredRegion.lua
+widgets\grid\Dropzone.lua
+widgets\grid\Cell.lua
+widgets\grid\Column.lua
+widgets\grid\Grid.lua
+widgets\ContainerFrame.lua
+widgets\BagSlots.lua
+widgets\ItemButton.lua
+widgets\Section.lua
+widgets\AnchorWidget.lua
+
+modules\DataSource.lua
+modules\NewItemTracking.lua
+modules\MoneyFrame.lua
+modules\FilterOverride.lua
+modules\ItemLevel.lua
+modules\Junk.lua
+modules\CurrencyFrame.lua
+modules\TooltipInfo.lua
+modules\SectionVisibilityDropdown.lua
+modules\BankSwitcher.lua
+modules\ChangeHighlight.lua
+
+core\DefaultFilters.lua
+
+#@debug@
+# ## Version: DEV
+#@end-debug@

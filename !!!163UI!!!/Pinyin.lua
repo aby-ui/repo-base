@@ -270,5 +270,5 @@ U1.PINYIN={
     ['队友技能监控']={'duiyoujinengjiankong','dyjnjk'},
     ['统御碎片助手']={'tongyusuipianzhushou','tyspzs'},
     ['源锁解谜助手']={'yuansuojiemizhushou','ysjmzs'},
-
+	['阿迪背包整合']={'adibeibaozhenghe','adbbzh'},
 }

@@ -6,7 +6,6 @@ local type= type  --lua local
 local ipairs = ipairs --lua local
 local pairs = pairs --lua local
 local _math_floor = math.floor --lua local
-local abs = math.abs --lua local
 local _table_remove = table.remove --lua local
 local _getmetatable = getmetatable --lua local
 local setmetatable = setmetatable --lua local
@@ -14,27 +13,23 @@ local _string_len = string.len --lua local
 local _unpack = unpack --lua local
 local _cstr = string.format --lua local
 local _SendChatMessage = SendChatMessage --wow api locals
-local _GetChannelName = GetChannelName --wow api locals
 local _UnitExists = UnitExists --wow api locals
 local _UnitName = UnitName --wow api locals
 local _UnitIsPlayer = UnitIsPlayer --wow api locals
 local _UnitGroupRolesAssigned = DetailsFramework.UnitGroupRolesAssigned --wow api locals
 
 local _detalhes = 		_G._detalhes
+local _
+local addonName, Details222 = ...
 local gump = 			_detalhes.gump
-
-local historico = 			_detalhes.historico
 
 local modo_raid = _detalhes._detalhes_props["MODO_RAID"]
 local modo_alone = _detalhes._detalhes_props["MODO_ALONE"]
 local modo_grupo = _detalhes._detalhes_props["MODO_GROUP"]
 local modo_all = _detalhes._detalhes_props["MODO_ALL"]
 
-local _
-
 local atributos = _detalhes.atributos
 local sub_atributos = _detalhes.sub_atributos
-local segmentos = _detalhes.segmentos
 
 --STARTUP reativa as instancias e regenera as tabelas das mesmas
 	function _detalhes:RestartInstances()
@@ -2301,6 +2296,29 @@ function _detalhes:TrocaTabela(instancia, segmento, atributo, sub_atributo, inic
 		_detalhes:Msg("invalid attribute, switching to damage done.")
 	end
 
+	if (Details.auto_swap_to_dynamic_overall and Details.in_combat and UnitAffectingCombat("player")) then
+		if (segmento >= 0) then
+			if (atributo == 5) then
+				local dynamicOverallDataCustomID = Details222.GetCustomDisplayIDByName(Loc["STRING_CUSTOM_DYNAMICOVERAL"])
+				if (dynamicOverallDataCustomID == sub_atributo) then
+					atributo = 1
+					sub_atributo = 1
+				end
+			end
+
+		elseif (segmento == -1) then
+			if (atributo == 1) then
+				if (sub_atributo == 1) then
+					local dynamicOverallDataCustomID = Details222.GetCustomDisplayIDByName(Loc["STRING_CUSTOM_DYNAMICOVERAL"])
+					if (dynamicOverallDataCustomID) then
+						atributo = 5
+						sub_atributo = dynamicOverallDataCustomID
+					end
+				end
+			end
+		end
+	end
+
 	--Muda o segmento caso necess�rio
 	if (segmento ~= current_segmento or _detalhes.initializing or iniciando_instancia) then
 		--na troca de segmento, conferir se a instancia esta frozen
@@ -2419,6 +2437,7 @@ function _detalhes:TrocaTabela(instancia, segmento, atributo, sub_atributo, inic
 			_detalhes.popup:Select(2, instancia.sub_atributo, atributo)
 		end
 
+		--DEPRECATED
 		if (_detalhes.cloud_process) then
 			if (_detalhes.debug) then
 				_detalhes:Msg("(debug) instancia #"..instancia.meu_id.." found cloud process.")
@@ -2426,7 +2445,7 @@ function _detalhes:TrocaTabela(instancia, segmento, atributo, sub_atributo, inic
 
 			local atributo = instancia.atributo
 			local time_left = (_detalhes.last_data_requested+7) - _detalhes._tempo
-
+		
 			if (atributo == 1 and _detalhes.in_combat and not _detalhes:CaptureGet("damage") and _detalhes.host_by) then
 				if (_detalhes.debug) then
 					_detalhes:Msg("(debug) instancia need damage cloud.")
@@ -2446,7 +2465,7 @@ function _detalhes:TrocaTabela(instancia, segmento, atributo, sub_atributo, inic
 			else
 				time_left = nil
 			end
-
+			
 			if (time_left) then
 				if (_detalhes.debug) then
 					_detalhes:Msg("(debug) showing instance alert.")
@@ -2454,6 +2473,7 @@ function _detalhes:TrocaTabela(instancia, segmento, atributo, sub_atributo, inic
 				instancia:InstanceAlert (Loc ["STRING_PLEASE_WAIT"], {[[Interface\COMMON\StreamCircle]], 22, 22, true}, time_left)
 			end
 		end
+		--END OF DEPRECATED
 
 		_detalhes:InstanceCall(_detalhes.CheckPsUpdate)
 		_detalhes:SendEvent("DETAILS_INSTANCE_CHANGEATTRIBUTE", nil, instancia, atributo, sub_atributo)

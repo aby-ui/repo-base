@@ -116,7 +116,7 @@ do
     end
 end
 
-do
+if false then --46702 暴雪修复了
     CoreOnEvent("VARIABLES_LOADED", function()
         if U1DBG.show_3rd_bindings then
             U1DBG.show_3rd_bindings = nil

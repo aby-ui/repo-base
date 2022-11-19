@@ -1121,6 +1121,7 @@ local function ShowTab(tab)
             CreateProfilePane()
             CreateTargetingPane()
             CreateListPane()
+            F:ApplyCombatFunctionToTab(clickCastingsTab)
         end
         clickCastingsTab:Show()
     else

@@ -2,7 +2,8 @@
 	local _
 	local _detalhes = _G._detalhes
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
-	
+	local addonName, Details222 = ...
+
 	--mantain the enabled time captures
 	_detalhes.timeContainer = {}
 	_detalhes.timeContainer.Exec = {}

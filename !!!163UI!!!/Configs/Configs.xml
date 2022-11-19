@@ -14,6 +14,7 @@
     <Include file="..\..\163UI_TeamStats\Cfg163UI_TeamStats.lua"/>
     <Include file="..\..\Accountant_Classic\CfgAccountant_Classic.lua"/>
     <Include file="..\..\AchievementsReminder\CfgAchievementsReminder.lua"/>
+    <Include file="..\..\AdiBags\CfgAdiBags.lua"/>
     <Include file="..\..\AngryKeystones\CfgAngryKeystones.lua"/>
     <Include file="..\..\AtlasLootReverse\CfgAtlasLootReverse.lua"/>
     <Include file="..\..\AutoTurnIn\CfgAutoTurnIn.lua"/>
@@ -28,7 +29,6 @@
     <Include file="..\..\CastDelayBar\CfgCastDelayBar.lua"/>
     <Include file="..\..\ChatFilter\CfgChatFilter.lua"/>
     <Include file="..\..\ChocolateBar\CfgChocolateBar.lua"/>
-    <Include file="..\..\Combuctor\CfgCombuctor.lua"/>
     <Include file="..\..\Comergy_Redux\CfgComergy_Redux.lua"/>
     <Include file="..\..\CompactRaid\CfgCompactRaid.lua"/>
     <Include file="..\..\DBM-Core\CfgDBM-Core.lua"/>

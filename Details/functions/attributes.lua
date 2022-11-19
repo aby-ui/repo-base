@@ -1,7 +1,8 @@
 --[[ Attributes: Damage, Heal, Energy, Miscellaneous ]]
 
-do 
+do
 	local _detalhes = _G._detalhes
+	local addonName, Details222 = ...
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 
 	--Globals

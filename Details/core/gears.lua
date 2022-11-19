@@ -9,6 +9,7 @@ local floor = floor
 local GetNumGroupMembers = GetNumGroupMembers
 
 local CONST_INSPECT_ACHIEVEMENT_DISTANCE = 1 --Compare Achievements, 28 yards
+local CONST_SPELLBOOK_GENERAL_TABID = 1
 local CONST_SPELLBOOK_CLASSSPELLS_TABID = 2
 
 local storageDebug = false --remember to turn this to false!
@@ -2966,6 +2967,35 @@ function Details.GenerateSpecSpellList()
 			Details:Dump({result})
 		end
 	end)
+end
+
+function Details.GenerateRacialSpellList()
+	local racialsSpells = "|n"
+	local locClassName, unitClass = UnitClass("player")
+	local locPlayerRace, playerRace, playerRaceId = UnitRace("player")
+    --get general spells from the spell book
+    local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(CONST_SPELLBOOK_GENERAL_TABID)
+    offset = offset + 1
+    local tabEnd = offset + numSpells
+    for entryOffset = offset, tabEnd - 1 do
+        local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+        if (spellId) then
+			local spell = Spell:CreateFromSpellID(spellId)
+			local subSpellName = spell:GetSpellSubtext()
+            if (subSpellName == "Racial") then
+                spellId = C_SpellBook.GetOverrideSpell(spellId)
+                local spellName = GetSpellInfo(spellId)
+                local isPassive = IsPassiveSpell(entryOffset, "player")
+                if (spellName and not isPassive) then
+					local cooldownTime = floor(GetSpellBaseCooldown(spellId) / 1000)
+                    racialsSpells = racialsSpells .. "[" .. spellId .. "] = {cooldown = " .. cooldownTime .. ",	duration = 0,	specs = {},			talent = false,	charges = 1, raceid = " .. playerRaceId .. ", race = \"".. playerRace .."\",	class = \"\",	type = 9}, --" .. spellName .. " (" .. playerRace .. ")|n"
+                end
+            end
+        end
+    end
+
+	racialsSpells = racialsSpells .. "|n"
+	dumpt(racialsSpells)
 end
 
 --fill the passed table with spells from talents and spellbook, affect only the active spec

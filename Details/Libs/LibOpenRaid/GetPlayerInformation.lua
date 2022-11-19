@@ -18,6 +18,7 @@ local CONST_TALENT_VERSION_DRAGONFLIGHT = 5
 local CONST_BTALENT_VERSION_COVENANTS = 9
 
 local CONST_SPELLBOOK_CLASSSPELLS_TABID = 2
+local CONST_SPELLBOOK_GENERAL_TABID = 1
 
 local isTimewalkWoW = function()
     local _, _, _, buildInfo = GetBuildInfo()
@@ -418,6 +419,23 @@ local getSpellListAsHashTableFromSpellBook = function()
     --this line might not be compatible with classic
     local specId, specName, _, specIconTexture = GetSpecializationInfo(GetSpecialization())
     local classNameLoc, className, classId = UnitClass("player")
+    local locPlayerRace, playerRace, playerRaceId = UnitRace("player")
+
+    --get racials from the general tab
+    local tabName, tabTexture, offset, numSpells, isGuild, offspecId = GetSpellTabInfo(CONST_SPELLBOOK_GENERAL_TABID)
+    offset = offset + 1
+    local tabEnd = offset + numSpells
+    for entryOffset = offset, tabEnd - 1 do
+        local spellType, spellId = GetSpellBookItemInfo(entryOffset, "player")
+        if (spellId and LIB_OPEN_RAID_COOLDOWNS_INFO[spellId] and LIB_OPEN_RAID_COOLDOWNS_INFO[spellId].raceid == playerRaceId) then
+            spellId = C_SpellBook.GetOverrideSpell(spellId)
+            local spellName = GetSpellInfo(spellId)
+            local isPassive = IsPassiveSpell(entryOffset, "player")
+            if (spellName and not isPassive) then
+                completeListOfSpells[spellId] = true
+            end
+        end
+    end
 
 	--get spells from the Spec spellbook
     for i = 1, GetNumSpellTabs() do
@@ -464,13 +482,13 @@ end
 
 local updateCooldownAvailableList = function()
     table.wipe(LIB_OPEN_RAID_PLAYERCOOLDOWNS)
-
     local _, playerClass = UnitClass("player")
+    local locPlayerRace, playerRace, playerRaceId = UnitRace("player")
     local spellBookSpellList = getSpellListAsHashTableFromSpellBook()
 
     --build a list of all spells assigned as cooldowns for the player class
     for spellID, spellData in pairs(LIB_OPEN_RAID_COOLDOWNS_INFO) do
-        if (spellData.class == playerClass) then
+        if (spellData.class == playerClass or spellData.raceid == playerRaceId) then --need to implement here to get the racial as racial cooldowns does not carry a class
             if (spellBookSpellList[spellID]) then
                 LIB_OPEN_RAID_PLAYERCOOLDOWNS[spellID] = spellData
             end
@@ -538,32 +556,78 @@ function openRaidLib.CooldownManager.GetPlayerCooldownList()
     return {}
 end
 
+--aura frame handles only UNIT_AURA events to grab the duration of the buff placed by the aura
+local IS_NEW_UNIT_AURA_AVAILABLE = C_UnitAuras and C_UnitAuras.GetAuraDataBySlot and true
+
+local auraSpellID
+local foundAuraDuration
+
+local handleBuffAura = function(aura)
+    local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID("player", aura.auraInstanceID)
+    if (auraInfo) then
+        local spellId = auraInfo.spellId
+        if (auraSpellID == spellId) then
+            auraSpellID = nil
+            foundAuraDuration = auraInfo.duration
+            return true
+        end
+    end
+end
+
+local getAuraDuration = function(spellId)
+    --some auras does not have the same spellId of the cast as the spell for its aura duration
+    --in these cases, it's necessary to declare the buff spellId which tells the duration of the effect by adding 'durationSpellId = spellId' within the cooldown data
+    local customBuffDuration = LIB_OPEN_RAID_PLAYERCOOLDOWNS[spellId].durationSpellId
+    --spellId = customBuffDuration or spellId --can't replace the spellId by customBuffDurationSpellId has it wount be found in LIB_OPEN_RAID_PLAYERCOOLDOWNS
+
+    if (IS_NEW_UNIT_AURA_AVAILABLE) then
+        local batchCount = nil
+        local usePackedAura = true
+        auraSpellID = customBuffDuration or spellId
+        foundAuraDuration = 0 --reset duration
+
+        AuraUtil.ForEachAura("player", "HELPFUL", batchCount, handleBuffAura, usePackedAura) --check auras to find a buff for the spellId
+
+        if (foundAuraDuration == 0) then --if the buff wasn't found, attempt to get the duration from the file
+            local spellName = GetSpellInfo(spellId)
+            return LIB_OPEN_RAID_PLAYERCOOLDOWNS[spellId].duration or 0
+        end
+        return foundAuraDuration
+    else
+
+    end
+end
+
+function openRaidLib.CooldownManager.GetSpellBuffDuration(spellId)
+    return getAuraDuration(spellId)
+end
+
 --check if a player cooldown is ready or if is in cooldown
 --@spellId: the spellId to check for cooldown
+--return timeLeft, charges, startTimeOffset, duration, buffDuration
 function openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId)
     --check if is a charge spell
     local cooldownInfo = LIB_OPEN_RAID_COOLDOWNS_INFO[spellId]
     if (cooldownInfo) then
-        if (cooldownInfo.charges and cooldownInfo.charges > 1) then
-            local chargesAvailable, chargesTotal, start, duration = GetSpellCharges(spellId)
-
+        local buffDuration = getAuraDuration(spellId)
+        local chargesAvailable, chargesTotal, start, duration = GetSpellCharges(spellId)
+        if chargesAvailable then
             if (chargesAvailable == chargesTotal) then
-                return 0, chargesTotal, 0, 0 --all charges are ready to use
+                return 0, chargesTotal, 0, 0, 0 --all charges are ready to use
             else
                 --return the time to the next charge
                 local timeLeft = start + duration - GetTime()
                 local startTimeOffset = start - GetTime()
-                return ceil(timeLeft), chargesAvailable, startTimeOffset, duration --time left, charges, startTime
+                return ceil(timeLeft), chargesAvailable, startTimeOffset, duration, buffDuration --time left, charges, startTime, duration, buffDuration
             end
-
         else
             local start, duration = GetSpellCooldown(spellId)
             if (start == 0) then --cooldown is ready
-                return 0, 1, 0, 0 --time left, charges, startTime
+                return 0, 1, 0, 0, 0 --time left, charges, startTime
             else
                 local timeLeft = start + duration - GetTime()
                 local startTimeOffset = start - GetTime()
-                return ceil(timeLeft), 0, ceil(startTimeOffset), duration --time left, charges, startTime, duration
+                return ceil(timeLeft), 0, ceil(startTimeOffset), duration, buffDuration --time left, charges, startTime, duration, buffDuration
             end
         end
     else

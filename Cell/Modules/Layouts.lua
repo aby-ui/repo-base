@@ -15,7 +15,7 @@ local selectedRole, selectedLayout, selectedLayoutTable
 local previewButton
 
 local function CreatePreviewButton()
-    previewButton = CreateFrame("Button", "CellLayoutsPreviewButton", layoutsTab, "CellUnitPreviewButtonTemplate")
+    previewButton = CreateFrame("Button", "CellLayoutsPreviewButton", layoutsTab, "CellPreviewButtonTemplate")
     previewButton:SetPoint("TOPRIGHT", layoutsTab, "TOPLEFT", -5, -20)
     previewButton:UnregisterAllEvents()
     previewButton:SetScript("OnEnter", nil)
@@ -2605,10 +2605,6 @@ local function ShowTab(tab)
         if not init then
             init = true
 
-            -- mask
-            Cell:CreateMask(layoutsTab, nil, {1, -1, -1, 1})
-            layoutsTab.mask:Hide()
-
             CreateLayoutPane()
             CreateAutoSwitchPane()
             UpdateLayoutAutoSwitchText()
@@ -2621,6 +2617,11 @@ local function ShowTab(tab)
 
             LoadLayoutDropdown()
             LoadAutoSwitchDropdowns()
+
+            -- mask
+            F:ApplyCombatFunctionToTab(layoutsTab)
+            Cell:CreateMask(layoutsTab, nil, {1, -1, -1, 1})
+            layoutsTab.mask:Hide()
         end
         
         UpdateEnabledLayoutText()

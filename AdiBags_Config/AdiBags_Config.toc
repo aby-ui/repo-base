@@ -1,0 +1,25 @@
+## Interface: 100000
+
+## Title: AdiBags Configuration
+## Notes: Adirelle's bag addon.
+## Author: Adirelle
+## Version: v1.9.46
+## X-Date: 2022-10-29T17:40:30Z
+## X-Part-Of: AdiBags
+## LoadOnDemand: 1
+## Dependencies: AdiBags
+## OptionalDeps: AceGUI-3.0-SharedMediaWidgets
+
+#@no-lib-strip@
+#..\AdiBags\libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+#..\AdiBags\libs\AceGUI-3.0\AceGUI-3.0.xml
+#..\AdiBags\libs\AceConfig-3.0\AceConfig-3.0.xml
+#..\AdiBags\libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
+#@end-no-lib-strip@
+
+..\AdiBags\config\Config-ItemList.lua
+..\AdiBags\config\Options.lua
+
+#@debug@
+# ## Version: DEV
+#@end-debug@

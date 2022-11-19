@@ -1898,7 +1898,7 @@ local function cleuHandler(timestamp, eventtype, hideCaster, srcGUID, srcName, s
 	-- Pet scheme: save the GUID in a table along with the GUID of the owner.
 	-- Note to self: this needs 1) to be made self-cleaning so it can't grow too much, and 2) saved persistently.
 	-- Now also done on raid roster/party changes.
-	if eventtype == 'SPELL_SUMMON' and ( (band(srcFlags, RAID_FLAGS) ~= 0) or ( (band(srcFlags, PET_FLAGS)) ~= 0 ) or ((band(dstFlags, PET_FLAGS) ~= 0) and pets[dstGUID])) then
+	if eventtype == 'SPELL_SUMMON' and srcName and srcName ~= "" and (band(srcFlags, RAID_FLAGS) ~= 0 or band(srcFlags, PET_FLAGS) ~= 0 or (band(dstFlags, PET_FLAGS) ~= 0 and pets[dstGUID])) then
 		-- assign pet normally
 		pets[dstGUID] = {id = srcGUID, name = srcName}
 		if pets[srcGUID] then
@@ -2331,41 +2331,13 @@ function Skada:PlayerActiveTime(set, player)
 end
 
 do
-	local tooltip = CreateFrame("GameTooltip", "SkadaTooltip", nil, "GameTooltipTemplate")
-	tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-
-	local function GetRussianOwnerID(owner)
-		if not _G.LOCALE_ruRU or not Skada.current then return end
-		for _, p in Skada.current.players do
-			local sex = UnitSex(p.name)
-			for set = 1, GetNumDeclensionSets(p.name, sex) do
-				local name = DeclineName(p.name, sex, set) -- first return is genitive
-				if owner == name then
-					return p.id
-				end
-			end
-		end
-	end
-
-	local ownerPatterns = {}
-	for i = 1, 44 do
-		local title = _G["UNITNAME_SUMMON_TITLE"..i]
-		if title and title ~= "%s" and title:find("%s", nil, true) then
-			local pattern = title:gsub("%%s", "(.-)")
-			tinsert(ownerPatterns, pattern)
-		end
-	end
 	local function GetPetOwner(guid)
-		tooltip:SetHyperlink("unit:" .. guid)
-		for i = 2, tooltip:NumLines() do
-			local text = _G["SkadaTooltipTextLeft"..i]:GetText()
-			if text then
-				for _, pattern in next, ownerPatterns do
-					local owner = text:match(pattern)
-					if owner then
-						return owner
-					end
-				end
+		local data = C_TooltipInfo.GetHyperlink("unit:" .. guid)
+		if not data then return end
+		for _, line in next, data.lines do
+			TooltipUtil.SurfaceArgs(line)
+			if line.type == 16 and line.guid then -- Enum.TooltipDataLineType.UnitOwner
+				return line.guid
 			end
 		end
 	end
@@ -2385,11 +2357,12 @@ do
 				owner = { id = UnitGUID("player"), name = UnitName("player") }
 				pets[action.playerid] = owner
 			else
-				local ownerName = GetPetOwner(action.playerid)
-				if ownerName then
-					local id = UnitGUID(ownerName) or GetRussianOwnerID(ownerName)
-					if players[id] then
-						owner = { id = id, name = ownerName }
+				local id = GetPetOwner(action.playerid)
+				if players[id] then
+					local name, server = select(6, GetPlayerInfoByGUID(id))
+					if name then
+						if server and server ~= "" then name = name.."-"..server end
+						owner = { id = id, name = name }
 						pets[action.playerid] = owner
 					end
 				end
@@ -2417,6 +2390,16 @@ do
 	end
 end
 
+-- Takes a source GUID and name and returns the owner GUID and name if found.
+function Skada:FixMyPets(guid, name)
+	local owner = pets[guid]
+	if owner then
+		return owner.id, owner.name
+	end
+	-- No pet match, return the original source.
+	return guid, name
+end
+
 function Skada:SetTooltipPosition(tooltip, frame)
 	local p = self.db.profile.tooltippos
 	if p == "default" then
@@ -2438,16 +2421,6 @@ function Skada:SetTooltipPosition(tooltip, frame)
 			tooltip:SetPoint("TOPRIGHT", frame, "TOPLEFT", -10, 0)
 		end
 	end
-end
-
--- Same thing, only takes two arguments and returns two arguments.
-function Skada:FixMyPets(playerGUID, playerName)
-	local pet = pets[playerGUID]
-	if pet then
-		return pet.id, pet.name
-	end
-	-- No pet match - return the player.
-	return playerGUID, playerName
 end
 
 -- Format value text in a standardized way. Up to 3 value and boolean (show/don't show) combinations are accepted.

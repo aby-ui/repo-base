@@ -4,7 +4,8 @@
 	local _detalhes = _G._detalhes
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
-	
+	local addonName, Details222 = ...
+
 	--Event types:
 	_detalhes.RegistredEvents = {
 		--instances

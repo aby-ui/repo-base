@@ -1,6 +1,6 @@
 ﻿
 
-if GetLocale() == "enUS" then
+if GetLocale() == "enUS" or GetLocale == 'enGB' then
 	BUYEMALL_LOCALS = {
 	MAX 			= "Max",
 	STACK 			= "Stack",

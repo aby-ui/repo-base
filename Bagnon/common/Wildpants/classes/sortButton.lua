@@ -34,6 +34,10 @@ function SortButton:OnClick(button)
 		return DepositReagentBank()
 	end
 
+	if button == "MiddleButton" and self:GetParent().frameID == "bank" then
+		return C_Container.SortReagentBankBags()
+	end
+
 	local frame = self:GetParent()
 	if not frame:IsCached() then
 		frame:SortItems()
@@ -47,6 +51,7 @@ function SortButton:OnEnter()
 		GameTooltip:SetText(BAG_FILTER_CLEANUP)
 		GameTooltip:AddLine(L.TipCleanItems:format(L.LeftClick), 1,1,1)
 		GameTooltip:AddLine(L.TipDepositReagents:format(L.RightClick), 1,1,1)
+		GameTooltip:AddLine("<中键>整理材料银行。", 1,1,1)
 	else
 		GameTooltip:SetText(L.TipCleanItems:format(L.Click))
 	end

@@ -3,7 +3,7 @@ U1RegisterAddon("Bagnon", {
     defaultEnable = 1,
     load = "LOGIN", --注意要和BagBrother统一
     nopic = true,
-    conflicts = { "Combuctor" },
+    conflicts = { "AdiBags", "Combuctor" },
 
     tags = {TAG_ITEM},
     desc = "整合背包/银行/公会银行/虚空储存，并支持离线查看。与分类背包整合（Combuctor）功能重复，建议只开启一个背包整合插件。",

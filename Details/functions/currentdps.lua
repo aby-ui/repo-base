@@ -1,6 +1,7 @@
 
 
 local Details = _G.Details
+local addonName, Details222 = ...
 
 --namespace
 Details.CurrentDps = {

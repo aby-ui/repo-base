@@ -18,7 +18,7 @@ along with the library. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of LibItemCache.
 --]]
 
-local Lib = LibStub:NewLibrary('LibItemCache-2.0', 34)
+local Lib = LibStub:NewLibrary('LibItemCache-2.0', 35)
 if not Lib then return end
 
 local PLAYER, FACTION, REALM, REALMS
@@ -30,6 +30,14 @@ local KEYSTONE_LINK  = '|c.+|Hkeystone:.+|h.+|h|r'
 local KEYSTONE_STRING = '^' .. strrep('%d+:', 6) .. '%d+$'
 local EMPTY_FUNC = function() end
 local KEYRING = -2
+
+-- Patch 10.0.2 moved to C_Container
+local GetContainerNumFreeSlots = C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
+local PickupContainerItem = C_Container.PickupContainerItem or PickupContainerItem
+local GetContainerItemID = C_Container.GetContainerItemID or GetContainerItemID
+local GetContainerItemInfo = C_Container.GetContainerItemInfo or GetContainerItemInfo
+local GetContainerNumSlots = C_Container.GetContainerNumSlots or GetContainerNumSlots
+local ContainerIDToInventoryID = C_Container.ContainerIDToInventoryID or ContainerIDToInventoryID
 
 local FindRealms = function()
 	if not REALM then
@@ -58,18 +66,19 @@ end
 setmetatable(Caches, { __index = AccessInterfaces })
 Events:Embed(Lib)
 
+Lib.NumBags = NUM_TOTAL_EQUIPPED_BAG_SLOTS
 Lib:RegisterEvent('BANKFRAME_OPENED', function() Lib.AtBank = true; Lib:SendMessage('CACHE_BANK_OPENED') end)
 Lib:RegisterEvent('BANKFRAME_CLOSED', function() Lib.AtBank = false; Lib:SendMessage('CACHE_BANK_CLOSED') end)
 
 if C_PlayerInteractionManager then
 	Lib:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW', function(_,frame)
 		if frame == Enum.PlayerInteractionType.VoidStorageBanker then
-		 Lib.AtVault = true; Lib:SendMessage('CACHE_VAULT_OPENED')
+			Lib.AtVault = true; Lib:SendMessage('CACHE_VAULT_OPENED')
 		end
 	end)
 	Lib:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE', function(_,frame)
 		if frame == Enum.PlayerInteractionType.VoidStorageBanker then
-		 Lib.AtVault = false; Lib:SendMessage('CACHE_VAULT_CLOSED')
+			Lib.AtVault = false; Lib:SendMessage('CACHE_VAULT_CLOSED')
 		end
 	end)
 elseif CanUseVoidStorage then
@@ -188,8 +197,8 @@ function Lib:GetBagInfo(owner, bag)
 			item.icon = GetInventoryItemTexture('player', item.slot)
 			item.count = GetContainerNumSlots(bag)
 
-			if bag > NUM_BAG_SLOTS then
-				item.owned = (bag - NUM_BAG_SLOTS) <= GetNumBankSlots()
+			if bag > Lib.NumBags then
+				item.owned = (bag - Lib.NumBags) <= GetNumBankSlots()
 				item.cost = GetBankSlotCost()
 			end
 		end
@@ -204,7 +213,7 @@ function Lib:GetBagInfo(owner, bag)
 		item.count = INVSLOT_LAST_EQUIPPED
 		item.owned = true
 	else
-		item.owned = item.owned or (bag >= KEYRING and bag <= NUM_BAG_SLOTS) or item.id or item.link
+		item.owned = item.owned or (bag >= KEYRING and bag <= Lib.NumBags) or item.id or item.link
 
 		if bag == KEYRING then
 			item.family = 9
@@ -218,7 +227,6 @@ function Lib:GetBagInfo(owner, bag)
 end
 
 function Lib:GetItemInfo(owner, bag, slot)
-	if bag == nil then return end
 	local realm, name, isguild = Lib:GetOwnerAddress(owner)
 	local cached = Lib:IsBagCached(realm, name, isguild, bag)
 
@@ -235,7 +243,18 @@ function Lib:GetItemInfo(owner, bag, slot)
 	elseif bag == 'vault' then
 		item.id, item.icon, item.locked, item.recent, item.filtered, item.quality = GetVoidItemInfo(1, slot)
 	else
-		item.icon, item.count, item.locked, item.quality, item.readable, item.lootable, item.link, item.filtered, item.worthless, item.id = GetContainerItemInfo(bag, slot)
+		local containerInfo = GetContainerItemInfo(bag, slot)
+		if containerInfo then
+			item.icon = containerInfo.iconFileID
+			item.count = containerInfo.stackCount
+			item.locked = containerInfo.isLocked
+			item.quality = containerInfo.quality
+			item.readable = containerInfo.isReadable
+			item.lootable = containerInfo.hasLoot
+			item.link = containerInfo.hyperlink
+			item.filtered = containerInfo.isFiltered
+			item.worthless = containerInfo.hasNoValue
+		end
 	end
 
 	return Lib:RestoreItemData(item)
@@ -312,7 +331,7 @@ function Lib:IsBagCached(realm, name, isguild, bag)
 		return not Lib.AtGuild
 	end
 
-	local isBankBag = bag == BANK_CONTAINER or bag == REAGENTBANK_CONTAINER or type(bag) == 'number' and bag > NUM_BAG_SLOTS
+	local isBankBag = Lib:IsBank(bag) or Lib:IsReagents(bag) or type(bag) == 'number' and Lib:IsBankBag(bag)
 	return isBankBag and not Lib.AtBank or bag == 'vault' and not Lib.AtVault
 end
 
@@ -367,13 +386,6 @@ function Lib:RestoreItemData(item)
 	item.stack = item.stack or stack
 	item.set = item.set or set
 	item.subclass = item.subclass or subclass
-    --abyui https://wow.gamepedia.com/ItemType
-    if item.link and (item.class == LE_ITEM_CLASS_WEAPON or item.class == LE_ITEM_CLASS_ARMOR) then
-        self._tmp = self._tmp or {}
-        table.wipe(self._tmp)
-        GetItemStats(item.link, self._tmp)
-        item.corruption = self._tmp.ITEM_MOD_CORRUPTION
-    end
 	return item
 end
 
@@ -406,7 +418,7 @@ function Lib:IsBackpack(bag)
 end
 
 function Lib:IsBackpackBag(bag)
-  return bag > BACKPACK_CONTAINER and bag <= NUM_BAG_SLOTS
+	return bag > BACKPACK_CONTAINER and bag <= NUM_TOTAL_EQUIPPED_BAG_SLOTS
 end
 
 function Lib:IsKeyring(bag)
@@ -414,11 +426,11 @@ function Lib:IsKeyring(bag)
 end
 
 function Lib:IsBank(bag)
-  return bag == BANK_CONTAINER
+	return bag == BANK_CONTAINER
 end
 
 function Lib:IsBankBag(bag)
-  return bag > NUM_BAG_SLOTS and bag <= (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS)
+	return bag > Lib.NumBags and bag <= (Lib.NumBags + NUM_BANKBAGSLOTS)
 end
 
 function Lib:IsReagents(bag)

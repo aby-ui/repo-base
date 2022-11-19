@@ -127,8 +127,8 @@ function E:SHOW_LOOT_TOAST(rt, rl, _q, _4, _5, _6, source)
 		GarrisonLandingPageReport_GetShipments(GarrisonLandingPageReport)
 	end
 end
-local function addCacheResources(self, id)
-	if id == 824 then
+local function addCacheResources(self, tooltipData)
+	if tooltipData.id == 824 and tooltipData.type == Enum.TooltipDataType.Currency then
 		local cv, mv = G.GetResourceCacheInfo()
 		if cv and cv > 0 then
 			self:AddLine(GARRISON_CACHE .. ": |cffff" .. (cv < mv and "ffff" or "1010") .. BreakUpLargeNumbers(cv) .. "/" .. BreakUpLargeNumbers(mv))
@@ -136,15 +136,7 @@ local function addCacheResources(self, id)
 		end
 	end
 end
-local function addCacheResourcesByLink(self, idx)
-	addCacheResources(self, tonumber((C_CurrencyInfo.GetCurrencyListLink(idx) or ""):match("currency:(%d+)") or 0))
-end
-for i=1,GameTooltip ~= _G.GameTooltip and 2 or 1 do
-	local tip = i == 1 and GameTooltip or _G.GameTooltip
-	hooksecurefunc(tip, "SetCurrencyByID", addCacheResources)
-	hooksecurefunc(tip, "SetCurrencyTokenByID", addCacheResources)
-	hooksecurefunc(tip, "SetCurrencyToken", addCacheResourcesByLink)
-end
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, addCacheResources)
 hooksecurefunc(GarrisonLandingPage.Report.shipmentsPool, "ReleaseAll", function(self)
 	local o = self.inactiveObjects
 	for i=1,o and #o or 0 do

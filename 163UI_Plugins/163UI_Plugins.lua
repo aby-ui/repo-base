@@ -5,7 +5,7 @@ local addonName = ...
 U1PLUG["OpenBags"] = function()
     CoreOnEvent("BANKFRAME_OPENED", function()
         if BankFrame:IsVisible() then
-            for i = NUM_BAG_SLOTS+1, (NUM_BAG_SLOTS + NUM_BANKBAGSLOTS) do
+            for i = NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do
                 OpenBag(i)
             end
         end

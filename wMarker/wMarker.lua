@@ -18,14 +18,9 @@ local defaults = {
 			assistShow = false,
 			bgHide = false,
 			tooltips = true,
-			detach = false,
 			scale = 1,
 			alpha = 1,
 			iconSpace = 0,
-			x = 0,
-			y = 130,
-			point = "LEFT",
-			relPt = "LEFT",
 		},
 		world = {
 			locked = false,
@@ -33,7 +28,6 @@ local defaults = {
 			shown = true,
 			flipped = false,
 			vertical = true,
-			icons = false,
 			partyShow = true,
 			assistShow = false,
 			bgHide = false,
@@ -41,12 +35,15 @@ local defaults = {
 			worldTex = 1,
 			scale = 1,
 			alpha = 1,
-			x= 3,
-			y = -130,
-			point = "LEFT",
-			relPt = "LEFT",
-		}
-	}
+		},
+		frameLoc = {
+			["wMarkerRaid"] = {"LEFT", "UIParent", "LEFT", 0, 130},
+			["wMarkerWorld"] = {"LEFT", "UIParent", "LEFT", 3, -130},
+		},
+	},
+	global ={
+		imported = false
+	},
 }
 
 local defaultBackdrop = {
@@ -261,7 +258,7 @@ function wMarkerAce:OnEnable()
 		table.insert(wMarkerAce.worldMain.marker,f)
 		f:SetSize(20,20)
 		f:SetNormalTexture("interface\\targetingframe\\ui-raidtargeting6icons") -- "interface\\minimap\\partyraidblips"
-		f:GetNormalTexture():SetTexCoord(tex[1],tex[2],tex[3],tex[4])
+		f:GetNormalTexture():SetTexCoord(unpack(tex))
 		f:SetPoint("LEFT",lastFlare or wMarkerAce.worldMain,"RIGHT",xOff or 0,0)
 		f:SetAttribute("type1", "macro")
 		f:SetAttribute("macrotext1", string.format("/wm %d",num))

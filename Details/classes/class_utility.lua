@@ -2,14 +2,9 @@
 local _cstr = string.format
 local _math_floor = math.floor
 local tinsert = table.insert
-local _table_size = table.getn
 local ipairs = ipairs
 local pairs = pairs
-local rawget= rawget
 local min = math.min
-local _math_max = math.max
-local abs = math.abs
-local _bit_band = bit.band
 local unpack = unpack
 local type = type
 --api locals
@@ -18,7 +13,6 @@ local GameTooltip = GameTooltip
 local IsInRaid = IsInRaid
 local IsInGroup = IsInGroup
 local GetNumGroupMembers = GetNumGroupMembers
-local _GetNumSubgroupMembers = GetNumSubgroupMembers
 local _UnitAura = UnitAura
 local UnitGUID = UnitGUID
 local _UnitName = UnitName
@@ -32,39 +26,24 @@ local _detalhes = 		_G._detalhes
 local Details = 		_detalhes
 local AceLocale = LibStub("AceLocale-3.0")
 local Loc = AceLocale:GetLocale ( "Details" )
+local addonName, Details222 = ...
 
 local gump = 			_detalhes.gump
 local _
-local alvo_da_habilidade = 	_detalhes.alvo_da_habilidade
 local container_habilidades = 	_detalhes.container_habilidades
-local container_combatentes = _detalhes.container_combatentes
-local container_pets =		_detalhes.container_pets
 local atributo_misc =		_detalhes.atributo_misc
-local habilidade_misc = 	_detalhes.habilidade_misc
 
-local container_damage_target = _detalhes.container_type.CONTAINER_DAMAGETARGET_CLASS
-local container_playernpc = _detalhes.container_type.CONTAINER_PLAYERNPC
 local container_misc = _detalhes.container_type.CONTAINER_MISC_CLASS
-local container_misc_target = _detalhes.container_type.CONTAINER_ENERGYTARGET_CLASS
 
 local modo_GROUP = _detalhes.modos.group
 local modo_ALL = _detalhes.modos.all
 
 local class_type = _detalhes.atributos.misc
 
-local DATA_TYPE_START = _detalhes._detalhes_props.DATA_TYPE_START
-local DATA_TYPE_END = _detalhes._detalhes_props.DATA_TYPE_END
-
-local div_abre = _detalhes.divisores.abre
-local div_fecha = _detalhes.divisores.fecha
-local div_lugar = _detalhes.divisores.colocacao
-
 local ToKFunctions = _detalhes.ToKFunctions
-local SelectedToKFunction = ToKFunctions[1]
 local UsingCustomLeftText = false
 local UsingCustomRightText = false
 
-local FormatTooltipNumber = ToKFunctions[8]
 local TooltipMaximizedMethod = 1
 
 local info = _detalhes.playerDetailWindow

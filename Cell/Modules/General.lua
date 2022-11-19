@@ -452,6 +452,7 @@ local function ShowTab(tab)
             CreateToolsPane()
 
             -- mask
+            F:ApplyCombatFunctionToTab(generalTab)
             Cell:CreateMask(generalTab, nil, {1, -1, -1, 1})
             generalTab.mask:Hide()
         end 

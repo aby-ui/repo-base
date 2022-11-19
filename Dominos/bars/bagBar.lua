@@ -42,6 +42,7 @@ end
 
 function BagBar:SetShowBags(enable)
     self.sets.oneBag = not enable
+    self:UpdateBagSlots()
     self:ReloadButtons()
 end
 
@@ -51,37 +52,60 @@ end
 
 function BagBar:SetShowKeyRing(enable)
     self.sets.keyRing = enable and true
+    self:UpdateBagSlots()
     self:ReloadButtons()
 end
 
 function BagBar:ShowKeyRing()
-    if not Addon:IsBuild('retail') then
-        return self.sets.keyRing
-    end
+    return self.sets.keyRing and not Addon:IsBuild('retail')
 end
 
 -- Frame Overrides
+BagBar:Extend(
+    'OnCreate',
+    function(self)
+        self.bagSlots = {}
+    end
+)
+
+BagBar:Extend(
+    'OnLoadSettings',
+    function(self)
+        self:UpdateBagSlots()
+    end
+)
+
+do
+    local function maybeAddBagSlot(bagSlots, buttonName)
+        local button = _G[buttonName]
+        if button then
+            bagSlots[#bagSlots+1] = button
+        end
+    end
+
+    function BagBar:UpdateBagSlots()
+        local slots = self.bagSlots
+
+        table.wipe(slots)
+
+        if self:ShowKeyRing() then
+            maybeAddBagSlot(slots, AddonName .. 'KeyRingButton')
+        end
+
+        if self:ShowBags() then
+            maybeAddBagSlot(slots, 'CharacterReagentBag0Slot')
+
+            for slot = (NUM_BAG_SLOTS - 1), 0, -1 do
+                maybeAddBagSlot(slots, ('CharacterBag%dSlot'):format(slot))
+            end
+        end
+
+        maybeAddBagSlot(slots, 'MainMenuBarBackpackButton')
+    end
+end
+
 function BagBar:AcquireButton(index)
-    if index < 1 then
-        return
-    end
-
-    local keyRingIndex = self:ShowKeyRing() and 1 or 0
-
-    local backpackIndex
-    if self:ShowBags() then
-        backpackIndex = keyRingIndex + NUM_BAG_SLOTS + 1
-    else
-        backpackIndex = keyRingIndex + 1
-    end
-
-    if index == keyRingIndex then
-        return _G[AddonName .. 'KeyRingButton']
-    elseif index == backpackIndex then
-        return MainMenuBarBackpackButton
-    elseif index > keyRingIndex and index < backpackIndex then
-        return _G[('CharacterBag%dSlot'):format(NUM_BAG_SLOTS - (index - keyRingIndex))]
-    end
+    return self.bagSlots[index]
 end
 
 function BagBar:OnAttachButton(button)
@@ -89,17 +113,7 @@ function BagBar:OnAttachButton(button)
 end
 
 function BagBar:NumButtons()
-    local count = 1
-
-    if self:ShowKeyRing() then
-        count = count + 1
-    end
-
-    if self:ShowBags() then
-        count = count + NUM_BAG_SLOTS
-    end
-
-    return count
+    return #self.bagSlots
 end
 
 if Addon:IsBuild("retail") then
@@ -155,6 +169,8 @@ end
 local BagBarModule = Addon:NewModule('BagBar', 'AceEvent-3.0')
 
 function BagBarModule:OnInitialize()
+    self:RegisterButton('CharacterReagentBag0Slot')
+
     for slot = (NUM_BAG_SLOTS - 1), 0, -1 do
         self:RegisterButton(('CharacterBag%dSlot'):format(slot))
     end
@@ -164,6 +180,11 @@ function BagBarModule:OnInitialize()
 
     self.RegisterKeyRingButton = nil
     self.RegisterButton = nil
+
+    if MainMenuBarManager then
+        EventRegistry:UnregisterCallback("MainMenuBarManager.OnExpandChanged", MainMenuBarManager)
+        EventRegistry:UnegisterFrameEventAndCallback("VARIABLES_LOADED", MainMenuBarManager)
+    end
 end
 
 function BagBarModule:OnEnable()
@@ -200,6 +221,10 @@ if Addon:IsBuild("retail") then
 
         button:SetSize(MainMenuBarBackpackButton:GetSize())
         button:Hide()
+
+        if button.SetBarExpanded then
+            button.SetBarExpanded = function() end
+        end
 
         BagButtons[#BagButtons + 1] = button
     end

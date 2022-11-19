@@ -28,6 +28,8 @@ function DF:CreateCoolTip()
 		return
 	end
 
+	local maxStatusBarValue = 100000000
+
 	local defaultBackdrop = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]], edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1,
 	tile = true, tileSize = 16, insets = {left = 0, right = 0, top = 0, bottom = 0}}
 	local defaultBackdropColor = {0.1215, 0.1176, 0.1294, 0.8000}
@@ -1159,7 +1161,7 @@ function DF:CreateCoolTip()
 
 	function gameCooltip:StatusBar(menuButton, statusBarSettings)
 		if (statusBarSettings) then
-			menuButton.statusbar:SetValue(statusBarSettings[1])
+			menuButton.statusbar:SetValue(Clamp(statusBarSettings[1], 0, maxStatusBarValue))
 			menuButton.statusbar:SetStatusBarColor(statusBarSettings[2], statusBarSettings[3], statusBarSettings[4], statusBarSettings[5])
 			menuButton.statusbar:SetHeight(20 + (gameCooltip.OptionsTable.StatusBarHeightMod or 0))
 
@@ -1171,7 +1173,7 @@ function DF:CreateCoolTip()
 			end
 
 			if (statusBarSettings[7]) then
-				menuButton.statusbar2:SetValue(statusBarSettings[7].value)
+				menuButton.statusbar2:SetValue(Clamp(statusBarSettings[7].value, 0, maxStatusBarValue))
 				menuButton.statusbar2.texture:SetTexture(statusBarSettings[7].texture or [[Interface\RaidFrame\Raid-Bar-Hp-Fill]])
 				if (statusBarSettings[7].specialSpark) then
 					menuButton.spark2:Show()

@@ -779,6 +779,7 @@ end
 --[[------------------------------------------------------------
 protection area
 ---------------------------------------------------------------]]
+core.funcs = {} --for Cell Donators
 U1STAFF={["心耀-冰风岗"]="爱不易开发者",
     ["大狸花猫-冰风岗"]="爱不易开发者",
     ["篠崎-影之哀伤"]="Cell插件开发者", ["秋静葉-影之哀伤"]="Cell插件开发者", ["蜜柑-影之哀伤"]="Cell插件开发者", ["凛香-影之哀伤"]="Cell插件开发者",
@@ -872,13 +873,13 @@ U1STAFF={["心耀-冰风岗"]="爱不易开发者",
     ["卡姆九十六-布兰卡德"]="爱不易零零后天才技师",
 
     ["篠崎-影之哀伤"]="Cell插件开发者", ["秋静葉-影之哀伤"]="Cell插件开发者", ["蜜柑-影之哀伤"]="Cell插件开发者", ["凛香-影之哀伤"]="Cell插件开发者",
-    ["Sjerry-死亡之翼"] = "Cell插件捐助者",
-    ["大领主王大发-莫格莱尼"] = "Cell插件捐助者",
-    ["黑丨诺-影之哀伤"] = "Cell插件捐助者",
-    ["七月核桃丶-白银之手"] = "Cell插件捐助者",
-    ["青乙-影之哀伤"] = "Cell插件捐助者",
-    ["貼饼子-匕首岭"] = "Cell插件捐助者",
-    ["夏木沐-伊森利恩"] = "Cell插件捐助者",
+    --["Sjerry-死亡之翼"] = "Cell插件捐助者",
+    --["大领主王大发-莫格莱尼"] = "Cell插件捐助者",
+    --["黑丨诺-影之哀伤"] = "Cell插件捐助者",
+    --["七月核桃丶-白银之手"] = "Cell插件捐助者",
+    --["青乙-影之哀伤"] = "Cell插件捐助者",
+    --["貼饼子-匕首岭"] = "Cell插件捐助者",
+    --["夏木沐-伊森利恩"] = "Cell插件捐助者",
 }
 
 function U1AddDonatorTitle(self, partOrFullName, returnOnly)
@@ -898,8 +899,14 @@ function U1AddDonatorTitle(self, partOrFullName, returnOnly)
                 local title = "爱不易" .. (donate > 0 and "" or "") .. "捐助者"
                 if returnOnly then return title end
                 self:AddLine(title, 1, 0, 1)
-                if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
             end
+            local cell = U1Donators and U1Donators.cell[partOrFullName]
+            if cell then
+                local title = "Cell插件捐助者"
+                if returnOnly then return title end
+                self:AddLine(title, 1, 0, 1)
+            end
+            if (donator or cell) and not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
         end
     end
 end

@@ -226,7 +226,7 @@ end
 local previewButton, previewButton2
 
 local function CreatePreviewButtons()
-    previewButton = CreateFrame("Button", "CellAppearancePreviewButton", appearanceTab, "CellUnitPreviewButtonTemplate")
+    previewButton = CreateFrame("Button", "CellAppearancePreviewButton", appearanceTab, "CellPreviewButtonTemplate")
     previewButton:SetPoint("TOPLEFT", previewIconsBG, "BOTTOMLEFT", 0, -50)
     previewButton:UnregisterAllEvents()
     previewButton:SetScript("OnEnter", nil)
@@ -248,7 +248,7 @@ local function CreatePreviewButtons()
     previewText:SetPoint("TOP", 0, -3)
     previewText:SetText(Cell:GetAccentColorString()..L["Preview"].." 2")
     
-    previewButton2 = CreateFrame("Button", "CellAppearancePreviewButton2", appearanceTab, "CellUnitButtonTemplate")
+    previewButton2 = CreateFrame("Button", "CellAppearancePreviewButton2", appearanceTab, "CellPreviewButtonTemplate")
     previewButton2:SetPoint("TOPLEFT", previewButton, "BOTTOMLEFT", 0, -50)
     previewButton2:UnregisterAllEvents()
     previewButton2:SetScript("OnEnter", nil)
@@ -1038,7 +1038,7 @@ local function CreateUnitButtonStylePane()
             textureDropdown:SetSelected("Cell ".._G.DEFAULT, "Interface\\AddOns\\Cell\\Media\\statusbar.tga")
             LoadData()
     
-            Cell:Fire("UpdateAppearance")
+            Cell:Fire("UpdateAppearance", "reset")
         end
     end)
     Cell:RegisterForCloseDropdown(resetBtn) -- close dropdown
@@ -1111,6 +1111,7 @@ local function ShowTab(tab)
             CreateCellPane()
             CreateUnitButtonStylePane()
             CreateIconOptionsFrame()
+            F:ApplyCombatFunctionToWidget(scaleSlider)
         end
 
         appearanceTab:Show()
@@ -1149,7 +1150,7 @@ Cell:RegisterCallback("UpdateIndicators", "AppearanceTab_UpdateIndicators", Upda
 local function UpdateAppearance(which)
     F:Debug("|cff7f7fffUpdateAppearance:|r "..(which or "all"))
     
-    if not which or which == "texture" or which == "color" or which == "deathColor" or which == "alpha" or which == "outOfRangeAlpha" or which == "shields" or which == "animation" or which == "highlightColor" or which == "highlightSize" then
+    if not which or which == "texture" or which == "color" or which == "deathColor" or which == "alpha" or which == "outOfRangeAlpha" or which == "shields" or which == "animation" or which == "highlightColor" or which == "highlightSize" or which == "reset" then
         local tex
         if not which or which == "texture" then tex = F:GetBarTexture() end
 
@@ -1198,7 +1199,7 @@ local function UpdateAppearance(which)
     end
 
     -- icon options
-    if not which or which == "icon" then
+    if not which or which == "icon" or which == "reset" then
         -- animation
         Cell.vars.iconAnimation = CellDB["appearance"]["auraIconOptions"]["animation"]
 

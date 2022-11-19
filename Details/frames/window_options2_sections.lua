@@ -33,9 +33,9 @@ local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 local SharedMedia = _G.LibStub:GetLibrary("LibSharedMedia-3.0")
 local LDB = _G.LibStub("LibDataBroker-1.1", true)
 local LDBIcon = LDB and _G.LibStub("LibDBIcon-1.0", true)
-local _
+local addonName, Details222 = ...
+local _ = nil
 local unpack = _G.unpack
-
 local tinsert = _G.tinsert
 
 local startX = 200
@@ -516,6 +516,17 @@ do
                 end,
                 name = Loc ["STRING_OPTIONS_OVERALL_LOGOFF"],
                 desc = Loc ["STRING_OPTIONS_OVERALL_LOGOFF_DESC"],
+                boxfirst = true,
+            },
+            {--auto switch to dynamic overall data when selecting overall data
+                type = "toggle",
+                get = function() return _detalhes.auto_swap_to_dynamic_overall end,
+                set = function(self, fixedparam, value)
+                    Details.auto_swap_to_dynamic_overall = value
+                    afterUpdate()
+                end,
+                name = "Use Dynamic Overall Damage",
+                desc = "When showing Damage Done Overall, swap to Dynamic Overall Damage on entering combat.",
                 boxfirst = true,
             },
 

@@ -8,8 +8,8 @@ local Owners = Addon:NewModule('Owners')
 
 local DEFAULT_COORDS = {0, 1, 0, 1}
 local CLASS_COLOR = '|cff%02x%02x%02x'
-local ALLIANCE_BANNER = 'Interface/Icons/inv_bannerpvp_02'
-local HORDE_BANNER = 'Interface/Icons/inv_bannerpvp_01'
+local ALLIANCE_BANNER = 'Interface/Icons/Inv_BannerPvP_02'
+local HORDE_BANNER = 'Interface/Icons/Inv_BannerPvP_01'
 local RACE_TEXTURE, RACE_TABLE
 
 if Addon.IsClassic then
@@ -46,16 +46,6 @@ function Owners:MultipleFound()
 	return iter() and iter() -- more than one
 end
 
-function Owners:GetIconString(owner, size, x, y)
-	local icon, coords = self:GetIcon(owner)
-	if coords then
-		local u,v,w,z = unpack(coords)
-		return CreateTextureMarkup(icon, 128,128, size,size, u,v,w,z, x,y)
-	else
-		return CreateAtlasMarkup(icon, size,size, x,y)
-	end
-end
-
 function Owners:GetIcon(owner)
 	if owner.race then
 		if RACE_TEXTURE then
@@ -67,6 +57,16 @@ function Owners:GetIcon(owner)
 	end
 
 	return owner.faction == 'Alliance' and ALLIANCE_BANNER or HORDE_BANNER, DEFAULT_COORDS
+end
+
+function Owners:GetIconString(owner, size, x, y)
+	local icon, coords = self:GetIcon(owner)
+	if coords then
+		local u,v,w,z = unpack(coords)
+		return CreateTextureMarkup(icon, 128,128, size,size, u,v,w,z, x,y)
+	else
+		return CreateAtlasMarkup(icon, size,size, x,y)
+	end
 end
 
 function Owners:GetColorString(owner)

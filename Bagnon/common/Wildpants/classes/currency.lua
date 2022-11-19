@@ -36,5 +36,5 @@ end
 
 function Currency:OnEnter()
 	GameTooltip:SetOwner(self:GetTipAnchor())
-	GameTooltip:SetCurrencyTokenByID(self.data.currencyTypesID)
+	GameTooltip:SetCurrencyByID(self.data.currencyTypesID)
 end

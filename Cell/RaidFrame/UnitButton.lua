@@ -853,7 +853,6 @@ local function UnitButton_UpdateDebuffs(self)
                 -- start, duration, debuffType, texture, count
                 self.indicators.debuffs[startIndex]:SetCooldown((auraInfo.expirationTime or 0) - auraInfo.duration, auraInfo.duration, auraInfo.dispelName or "", auraInfo.icon, auraInfo.applications, refreshing, true)
                 self.indicators.debuffs[startIndex].index = debuffs_indices[unit][auraInstanceID] -- NOTE: for tooltip
-                self.indicators.debuffs[startIndex].isBigDebuff = true
                 startIndex = startIndex + 1
             end
         end
@@ -864,7 +863,6 @@ local function UnitButton_UpdateDebuffs(self)
                 -- start, duration, debuffType, texture, count
                 self.indicators.debuffs[startIndex]:SetCooldown((auraInfo.expirationTime or 0) - auraInfo.duration, auraInfo.duration, auraInfo.dispelName or "", auraInfo.icon, auraInfo.applications, refreshing)
                 self.indicators.debuffs[startIndex].index = debuffs_indices[unit][auraInstanceID] -- NOTE: for tooltip
-                self.indicators.debuffs[startIndex].isBigDebuff = false
                 startIndex = startIndex + 1
             end
         end
@@ -877,7 +875,6 @@ local function UnitButton_UpdateDebuffs(self)
     for i = startIndex, 10 do
         self.indicators.debuffs[i]:Hide()
         self.indicators.debuffs[i].index = nil
-        self.indicators.debuffs[i].isBigDebuff = nil
     end
 
     -- update dispels

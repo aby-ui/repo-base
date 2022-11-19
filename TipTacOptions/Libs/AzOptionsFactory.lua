@@ -15,7 +15,7 @@
 	- minor adjustments of some elements
 	22.03.30 Rev 15 9.2.0/Shadowlands #frozn45
 	- added a header element
-	xx.xx.xx Rev 16 10.0.0/Dragonflight #frozn45
+	22.10.30 Rev 16 10.0.0/Dragonflight #frozn45
 	- replaced inheritsFrame "OptionsSliderTemplate" with "UISliderTemplateWithLabels" for slider
 --]]
 

@@ -1,6 +1,6 @@
 ## Interface: 100002
 ## Title: Cell
-## Version: r141-release
+## Version: r142-release
 ## Author: 篠崎
 ## X-Flavor: Mainline
 ## SavedVariables: CellDB
@@ -43,6 +43,7 @@ RaidFrame\Groups\NPCFrame.lua
 RaidFrame\Groups\SpotlightFrame.lua
 
 Tools\LoadTools.xml
+Patrons.lua
 Modules\LoadModules.xml
 RaidDebuffs\LoadRaidDebuffs.xml
 

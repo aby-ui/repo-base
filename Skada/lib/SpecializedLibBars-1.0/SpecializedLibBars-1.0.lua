@@ -1,6 +1,6 @@
 -- LibBars-1.0 by Antiarc, all glory to him, ripped into pieces for Skada.
 local MAJOR = "SpecializedLibBars-1.0"
-local MINOR = 900000 + tonumber(("$Revision: 1 $"):match("%d+"))
+local MINOR = 900002
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end -- No Upgrade needed.
@@ -496,7 +496,7 @@ do
 		list:SetHeight(height)
 		list:SetWidth(length)
 		list:SetResizable(true)
-		list:SetResizeBounds(60,40,800,800)
+		list:SetResizeBounds(60, 40, 800, 800)
 
 		list.showIcon = true
 		list.showLabel = true

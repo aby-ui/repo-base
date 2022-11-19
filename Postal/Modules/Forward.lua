@@ -63,7 +63,12 @@ local function FreeBagSpace()
 	local bagID
 	local FreeSpace = 0
 	for bagID = 0, 4, 1 do
-		local numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
+		local numberOfFreeSlots, bagType
+		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+			numberOfFreeSlots, bagType = GetContainerNumFreeSlots(bagID)
+		else
+			numberOfFreeSlots, bagType = C_Container.GetContainerNumFreeSlots(bagID)
+		end
 		FreeSpace = FreeSpace + numberOfFreeSlots
 	end
 	return FreeSpace
@@ -76,14 +81,22 @@ local function Postal_Inventory_Change(action)
 	if action == 1 then	-- take snap shot of current container free space tables and store
 		wipe(PostalForwardTable)
 		for bagID = 0, 4, 1 do
-			table.insert(PostalForwardTable, GetContainerFreeSlots(bagID))
+			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+				table.insert(PostalForwardTable, GetContainerFreeSlots(bagID))
+			else
+				table.insert(PostalForwardTable, C_Container.GetContainerFreeSlots(bagID))
+			end
 		end
 		return 0, 0
 	end
 	if action == 2 then	-- take new snap shot of current container free space tables and compared with stored one
 		wipe(TempTable)
 		for bagID = 0, 4, 1 do
-			TempTable = GetContainerFreeSlots(bagID)
+			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+				TempTable = GetContainerFreeSlots(bagID)
+			else
+				TempTable = C_Container.GetContainerFreeSlots(bagID)
+			end
 			for Key = 1, #PostalForwardTable[bagID + 1], 1 do
 				if not contains(TempTable, PostalForwardTable[bagID + 1][Key]) then
 					return bagID, PostalForwardTable[bagID + 1][Key]
@@ -142,7 +155,11 @@ function Postal_Forward_ForwardMailItems(action)
 	if action == 2 then
 		Postal_Forward:UnregisterEvent("BAG_UPDATE_DELAYED","Postal_Forward_ForwardMailItemsEvent")
 		bagID, itemIndex = Postal_Inventory_Change(2)
-		PickupContainerItem(bagID, itemIndex)
+		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+			PickupContainerItem(bagID, itemIndex)
+		else
+			C_Container.PickupContainerItem(bagID, itemIndex)
+		end
 		ClickSendMailItemButton()
 		Postal_Forward_ForwardMailItems(1)
 		return

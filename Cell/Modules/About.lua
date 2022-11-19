@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local P = Cell.pixelPerfectFuncs
 
 local aboutTab = Cell:CreateFrame("CellOptionsFrame_AboutTab", Cell.frames.optionsFrame, nil, nil, true)
 Cell.frames.aboutTab = aboutTab
@@ -112,9 +113,64 @@ end
 -------------------------------------------------
 -- patrons
 -------------------------------------------------
+local function CreateAnimation(frame)
+    local fadeOut = frame:CreateAnimationGroup()
+    frame.fadeOut = fadeOut
+    fadeOut.alpha = fadeOut:CreateAnimation("Alpha")
+    fadeOut.alpha:SetFromAlpha(1)
+    fadeOut.alpha:SetToAlpha(0)
+    fadeOut.alpha:SetDuration(0.3)
+    fadeOut:SetScript("OnFinished", function()
+        frame:Hide()
+    end)
+
+    local fadeIn = frame:CreateAnimationGroup()
+    frame.fadeIn = fadeIn
+    fadeIn.alpha = fadeIn:CreateAnimation("Alpha")
+    fadeIn.alpha:SetFromAlpha(0)
+    fadeIn.alpha:SetToAlpha(1)
+    fadeIn.alpha:SetDuration(0.3)
+    fadeIn:SetScript("OnPlay", function()
+        frame:Show()
+    end)
+end
+
+local function CreateButton(w, h, tex)
+    local patronsBtn = Cell:CreateButton(aboutTab, L["Patrons"], "accent", {w, h})
+    patronsBtn:SetPushedTextOffset(0, 0)
+
+    Cell:StartRainbowText(patronsBtn:GetFontString())
+
+    local iconSize = min(w, h) - 2
+
+    local icon1 = patronsBtn:CreateTexture(nil, "ARTWORK")
+    patronsBtn.icon1 = icon1
+    P:Point(patronsBtn.icon1, "TOPLEFT", 1, -1)
+    P:Size(icon1, iconSize, iconSize)
+    icon1:SetTexture(tex)
+    icon1:SetVertexColor(0.5, 0.5, 0.5)
+    
+    local icon2 = patronsBtn:CreateTexture(nil, "ARTWORK")
+    patronsBtn.icon2 = icon2
+    P:Point(patronsBtn.icon2, "BOTTOMRIGHT", -1, 1)
+    P:Size(icon2, iconSize, iconSize)
+    icon2:SetTexture(tex)
+    icon2:SetVertexColor(0.5, 0.5, 0.5)
+
+    CreateAnimation(patronsBtn)
+
+    return patronsBtn
+end
+
+-- TODO: scroll
 local function CreatePatronsPane()
-    local patronsPane = Cell:CreateTitledPane(aboutTab, L["Patrons"], 100, 100)
+    -- pane
+    local patronsPane = Cell:CreateTitledPane(aboutTab, "", 100, 100)
+    patronsPane:SetFrameStrata("LOW")
     patronsPane:SetPoint("TOPLEFT", aboutTab, "TOPRIGHT", 6, -5)
+    patronsPane:Hide()
+
+    CreateAnimation(patronsPane)
 
     local sortIcon = patronsPane:CreateTexture(nil, "OVERLAY")
     sortIcon:SetPoint("TOPRIGHT")
@@ -143,27 +199,7 @@ local function CreatePatronsPane()
     patronsText:SetPoint("TOPLEFT", 5, -27)
     patronsText:SetSpacing(5)
     patronsText:SetJustifyH("LEFT")
-    patronsText:SetText(
-        "CC (爱发电)\n"..
-        "flappysmurf (爱发电)\n"..
-        "Mike (爱发电)\n"..
-        "Sjerry-死亡之翼 (CN)\n"..
-        "Smile (爱发电)\n"..
-        "阿哲 (爱发电)\n"..
-        "北方 (爱发电)\n"..
-        "大领主王大发-莫格莱尼 (CN)\n"..
-        "古月文武 (爱发电)\n"..
-        "黑丨诺-影之哀伤 (CN)\n"..
-        "黑色之城 (NGA)\n"..
-        "蓝色-理想 (NGA)\n"..
-        "年复一年路西法 (爱发电)\n"..
-        "七月核桃丶-白银之手 (CN)\n"..
-        "青乙-影之哀伤 (CN)\n"..
-        "貼饼子-匕首岭 (CN)\n"..
-        "席慕容 (NGA)\n"..
-        "夏木沐-伊森利恩 (CN)\n"..
-        "星空 (爱发电)"
-    )
+    patronsText:SetText(F:GetPatrons())
 
     local elapsedTime = 0
 
@@ -181,6 +217,33 @@ local function CreatePatronsPane()
     patronsPane:SetScript("OnShow", function()
         elapsedTime = 0
         patronsPane:SetScript("OnUpdate", updateFunc)
+    end)
+
+    -- button
+    local patronsBtn1 = CreateButton(17, 100, [[Interface\AddOns\Cell\Media\Icons\right]])
+    patronsBtn1:SetPoint("TOPLEFT", aboutTab, "TOPRIGHT", 1, -5)
+    
+    local label = patronsBtn1:GetFontString()
+    label:ClearAllPoints()
+    label:SetPoint("CENTER", 6, -5)
+    label:SetRotation(-math.pi/2)
+    
+    local patronsBtn2 = CreateButton(100, 17, [[Interface\AddOns\Cell\Media\Icons\left]])
+    patronsBtn2:SetPoint("TOPLEFT", aboutTab, "TOPRIGHT", 6, -5)
+    patronsBtn2:Hide()
+
+    patronsBtn1:SetScript("OnClick", function()
+        if patronsBtn1.fadeOut:IsPlaying() or patronsBtn1.fadeIn:IsPlaying() then return end
+        patronsBtn1.fadeOut:Play()
+        patronsBtn2.fadeIn:Play()
+        patronsPane.fadeIn:Play()
+    end)
+    
+    patronsBtn2:SetScript("OnClick", function()
+        if patronsBtn2.fadeOut:IsPlaying() or patronsBtn2.fadeIn:IsPlaying() then return end
+        patronsBtn1.fadeIn:Play()
+        patronsBtn2.fadeOut:Play()
+        patronsPane.fadeOut:Play()
     end)
 end
 

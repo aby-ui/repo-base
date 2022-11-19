@@ -1,6 +1,13 @@
 
+local _detalhes = 		_G._detalhes
+local _
+local addonName, Details222 = ...
+
+local AceLocale = LibStub("AceLocale-3.0")
+local Loc = AceLocale:GetLocale ( "Details" )
+local Translit = LibStub("LibTranslit-1.0")
+
 --lua locals
-local _cstr = string.format
 local _math_floor = math.floor
 local setmetatable = setmetatable
 local pairs = pairs
@@ -10,7 +17,6 @@ local type = type
 local _table_sort = table.sort
 local _cstr = string.format
 local tinsert = table.insert
-local _bit_band = bit.band
 local _math_min = math.min
 local _math_ceil = math.ceil
 --api locals
@@ -18,18 +24,8 @@ local GetSpellInfo = GetSpellInfo
 local _GetSpellInfo = _detalhes.getspellinfo
 local IsInRaid = IsInRaid
 local IsInGroup = IsInGroup
-local _UnitName = UnitName
-local GetNumGroupMembers = GetNumGroupMembers
 
 local _string_replace = _detalhes.string.replace --details api
-
-local _detalhes = 		_G._detalhes
-local _
-
-local AceLocale = LibStub("AceLocale-3.0")
-local Loc = AceLocale:GetLocale ( "Details" )
-local Translit = LibStub("LibTranslit-1.0")
-
 local gump = 			_detalhes.gump
 
 local alvo_da_habilidade = 	_detalhes.alvo_da_habilidade

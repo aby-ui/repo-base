@@ -157,11 +157,22 @@ function ttStyle:GeneratePlayerLines(u,first,unit)
 		end
 	end
 	-- guild
-	local guild, guildRank = GetGuildInfo(unit);
-	if (guild) then
-		local pGuild = GetGuildInfo("player");
-		local guildColor = (guild == pGuild and cfg.colSameGuild or cfg.colorGuildByReaction and u.reactionColor or cfg.colGuild);
-		GameTooltipTextLeft2:SetFormattedText(cfg.showGuildRank and guildRank and "%s<%s> %s%s" or "%s<%s>",guildColor,guild,COL_LIGHTGRAY,guildRank);
+	-- local guild, guildRank = GetGuildInfo(unit);
+	local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo(unit);
+	if (guildName) then
+		local playerGuildName = GetGuildInfo("player");
+		local guildColor = (guildName == playerGuildName and cfg.colSameGuild or cfg.colorGuildByReaction and u.reactionColor or cfg.colGuild);
+		local text = format("%s<%s>", guildColor, guildName);
+		if (cfg.showGuildRank and guildRankName) then
+			if (cfg.guildRankFormat == "title") then
+				text = text .. format(" %s%s", COL_LIGHTGRAY, guildRankName);
+			elseif (cfg.guildRankFormat == "both") then
+				text = text .. format(" %s%s (%s)", COL_LIGHTGRAY, guildRankName, guildRankIndex);
+			elseif (cfg.guildRankFormat == "level") then
+				text = text .. format(" %s%s", COL_LIGHTGRAY, guildRankIndex);
+			end
+		end
+		GameTooltipTextLeft2:SetText(text);
 		lineInfo.Index = (lineInfo.Index + 1);
 	end
 end

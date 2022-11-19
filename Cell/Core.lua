@@ -135,6 +135,8 @@ function eventFrame:ADDON_LOADED(arg1)
         
         if type(CellDB) ~= "table" then CellDB = {} end
 
+        if type(CellDB["optionsFramePosition"]) ~= "table" then CellDB["optionsFramePosition"] = {} end
+
         if type(CellDB["indicatorPreviewAlpha"]) ~= "number" then CellDB["indicatorPreviewAlpha"] = 0.5 end
         if type(CellDB["indicatorPreviewScale"]) ~= "number" then CellDB["indicatorPreviewScale"] = 1 end
 

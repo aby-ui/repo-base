@@ -4,6 +4,7 @@
 	local Details = _G.Details
 	local DF = _G.DetailsFramework
 	local _
+	local addonName, Details222 = ...
 
 	local CONST_CLIENT_LANGUAGE = DF.ClientLanguage
 

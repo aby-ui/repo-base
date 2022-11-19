@@ -67,7 +67,7 @@ end
 --[[ API ]]--
 
 function Events:UpdateBags()
-	for bag = 1, NUM_BAG_SLOTS do
+	for bag = 1, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
 		if not self:UpdateSize(bag) then
 			self:UpdateType(bag)
 		end
@@ -88,10 +88,10 @@ end
 
 function Events:UpdateSize(bag)
 	local old = self.sizes[bag]
-	local new = GetContainerNumSlots(bag) or 0
+	local new = C_Container.GetContainerNumSlots(bag) or 0
 
 	if old ~= new then
-		local _, kind = GetContainerNumFreeSlots(bag)
+		local _, kind = C_Container.GetContainerNumFreeSlots(bag)
 		self.types[bag] = kind
 		self.sizes[bag] = new
 		self.queue[bag] = nil
@@ -102,7 +102,7 @@ end
 
 function Events:UpdateType(bag)
 	local old = self.types[bag]
-	local _, new = GetContainerNumFreeSlots(bag)
+	local _, new = C_Container.GetContainerNumFreeSlots(bag)
 
 	if old ~= new then
 		self.types[bag] = new

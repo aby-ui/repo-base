@@ -1,6 +1,6 @@
 
 local Details = _G.Details
-
+local addonName, Details222 = ...
 
 --get the total of damage and healing of a phase of an encounter
 function Details:OnCombatPhaseChanged()

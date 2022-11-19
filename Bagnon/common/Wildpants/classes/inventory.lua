@@ -9,10 +9,10 @@ Inventory.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBags
 Inventory.Bags = {}
 Inventory.MainMenuButtons = {
 	MainMenuBarBackpackButton,
-	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot
+	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot, CharacterReagentBag0Slot,
 }
 
-for slot = BACKPACK_CONTAINER, NUM_BAG_SLOTS do --(NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS) do
+for slot = BACKPACK_CONTAINER, (NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS) do
 	tinsert(Inventory.Bags, slot)
 end
 
@@ -46,8 +46,8 @@ function Inventory:HighlightMainMenu(checked)
 end
 
 function Inventory:SortItems()
-	if SortBags and Addon.sets.serverSort then
-		SortBags()
+	if C_Container.SortBags then --and Addon.sets.serverSort then
+		C_Container.SortBags()
 	else
 		self:Super(Inventory):SortItems(self)
 	end

@@ -76,8 +76,8 @@ local CreateLazyItemButton do
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		local iid, generic = itemIDs[self], true
 		for i=0,4 do
-			for j=1,GetContainerNumSlots(i) do
-				if GetContainerItemID(i, j) == iid then
+			for j=1, C_Container.GetContainerNumSlots(i) do
+				if C_Container.GetContainerItemID(i, j) == iid then
 					generic = false
 					GameTooltip:SetBagItem(i, j)
 					break
