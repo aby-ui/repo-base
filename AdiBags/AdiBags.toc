@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with AdiBags.  If not, see <http://www.gnu.org/licenses/>.
 
-## Interface: 100000
+## Interface: 100002
 
 ## Title: AdiBags
 ## Notes: Adirelle's bag addon.
@@ -71,3 +71,7 @@ core\DefaultFilters.lua
 #@debug@
 # ## Version: DEV
 #@end-debug@
+
+
+## Title-zhCN: |cff880303[爱不易]|r AdiBags 阿迪背包整合
+## X-Vendor: AbyUI

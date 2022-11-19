@@ -1,8 +1,11 @@
-local _, Cell = ...
-local F = Cell.funcs
+local addonName, ns = ...
 
--- order by date
-Cell.patrons = {
+-------------------------------------------------
+-- patrons (order by date)
+-------------------------------------------------
+local patrons = {
+    -- {"nameInPatronList", "sortKey", "wowIDs"...}
+    {"小兔姬-影之哀伤 (CN)", "xiaotuji", "渺渺-影之哀伤"},
     {"夕曦 (NGA)", "xixi"},
     {"黑色之城 (NGA)", "heise"},
     {"夏木沐-伊森利恩 (CN)", "xiamumu"},
@@ -23,23 +26,47 @@ Cell.patrons = {
     {"北方 (爱发电)", "beifang"},
     {"Sjerry-死亡之翼 (CN)", "sjerry"},
     {"貼饼子-匕首岭 (CN)", "tiebingzi"},
-    {"warbaby (爱不易)", "warbaby"},
+    {"warbaby (爱不易)", "warbaby", "心耀-冰风岗"},
     {"6ND8 (爱发电)", "6nd8"},
+    {"伊莉丝翠的眷顾 (爱发电)", "yilisicuidejuangu"},
 }
 
 -- sort
-table.sort(Cell.patrons, function(a, b)
+table.sort(patrons, function(a, b)
     return a[2] < b[2]
 end)
 
-function F:GetPatrons()
-    local str = ""
-    local n = #Cell.patrons
-    for i = 1, n do
-        str = str .. Cell.patrons[i][1]
-        if i ~= n then
-            str = str .. "\n"
+-------------------------------------------------
+-- patrons (wow IDs)
+-------------------------------------------------
+local wowPatrons = {
+    ["Devevoker-Lycanthoth"] = true,
+    ["Celldev-Lycanthoth"] = true,
+    ["Programming-Lycanthoth"] = true,
+    ["篠崎-影之哀伤"] = true,
+}
+
+do
+    for _, t in pairs(patrons) do
+        for i, name in pairs(t) do
+            if i == 1 then
+                local fullName = strmatch(t[i], "^(.+%-.+) %(%u%u%)$")
+                if fullName then
+                    wowPatrons[fullName] = true
+                end
+            elseif i ~= 2 then
+                wowPatrons[name] = true
+            end
         end
     end
-    return str
+end
+
+-------------------------------------------------
+-- make them accessible
+-------------------------------------------------
+if addonName == "Cell" then -- Cell
+    ns.patrons = patrons
+    ns.wowPatrons = wowPatrons
+else -- other addons
+    ns.cellPatrons = wowPatrons
 end

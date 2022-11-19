@@ -7,8 +7,6 @@ This is a high level API for Details! Damage Meter
 
 --]=]
 
-local addonName, Details222 = ...
-
 --local helpers
 local getCombatObject = function(segmentNumber)
 	local combatObject

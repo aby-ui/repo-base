@@ -82,6 +82,16 @@ U1RegisterAddon("!!!163UI!!!", {
         end
     },
     {
+        var = "showTrackerButton",
+        default = true,
+        text = U1_NEW_ICON .. "显示任务通报和自动交接",
+        tip = "说明`任务追踪标题栏这两个按钮因为有加载对应插件的功能，所以是比较特殊的存在，无法通过关闭插件来隐藏。只能在爱不易设置里加一个选项。",
+        callback = function(cfg, v, loading)
+            if QuestAnnounceTrackerQuickSwitch then CoreUIShowOrHide(QuestAnnounceTrackerQuickSwitch, v) end
+            if AutoTurnInTrackerQuickSwitch then CoreUIShowOrHide(AutoTurnInTrackerQuickSwitch, v) end
+        end
+    },
+    {
         var = "alwaysCompareItems",
         default = '1',
         text = "鼠标对比装备",
@@ -282,12 +292,9 @@ U1RegisterAddon("!!!163UI!!!", {
                     end)
                 end
             end
-            CoreDependCall("Blizzard_AuctionHouseUI", function()
-                handleFrame("AuctionHouseFrame", v)
-            end)
-            CoreDependCall("Blizzard_Soulbinds", function()
-                handleFrame("SoulbindViewer", v)
-            end)
+            CoreDependCall("Blizzard_AuctionHouseUI", function() handleFrame("AuctionHouseFrame", v) end)
+            CoreDependCall("Blizzard_Soulbinds", function() handleFrame("SoulbindViewer", v) end)
+            --not works CoreDependCall("Blizzard_ClassTalentUI", function() handleFrame("ClassTalentFrame", v) end)
         end,
     },
     {
@@ -296,7 +303,7 @@ U1RegisterAddon("!!!163UI!!!", {
         tip = "说明`暴雪给动作条热键设置的默认字体不支持中文，所以遇到'鼠标滚轮'之类的就会显示????，这个选项是用来临时修复的，如果自己修改了字体，请关闭。",
         default = nil,
         callback = function(cfg, v, loading)
-            U1NumberFontNormalSmallGray = U1NumberFontNormalSmallGray or WW:Font("U1NumberFontNormalSmallGray", ChatFontNormal, 11, .6, .6, .6, 1):SetFontFlags("OUTLINE, MONOCHROME"):un()
+            U1NumberFontNormalSmallGray = U1NumberFontNormalSmallGray or WW:Font("U1NumberFontNormalSmallGray", ChatFontNormal, 12, .6, .6, .6, 1):SetFontFlags("OUTLINE"):un()
             if loading then
                 CoreDependCall("ExtraActionBar", function()
                     hooksecurefunc("U1BAR_CreateBar", function(name)

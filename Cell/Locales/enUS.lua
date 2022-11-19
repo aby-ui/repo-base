@@ -66,6 +66,11 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r143-release (Nov 19, 2022, 15:02 GMT+8)</h1>
+        <p>* Updated range check for evoker (30y).</p>
+        <p>* Fixed appearance reset.</p>
+        <br/>
+
         <h1>r142-release (Nov 18, 2022, 03:16 GMT+8)</h1>
         <p>* Options frame is now accessible while in combat.</p>
         <p>* Updated koKR.</p>

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2443, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220809233017")
+mod:SetRevision("20221119034145")
 mod:SetCreatureID(176523)
 mod:SetEncounterID(2430)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7)
@@ -190,7 +190,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if args:IsPlayer() then
 			specWarnShadowsteelChains:Show(self:IconNumToTexture(icon))
-			specWarnShadowsteelChains:Play("mm"..icon)
+			local audio = self:IsMythic() and "mm"..icon or "runout"
+			specWarnShadowsteelChains:Play(audio)
 			yellShadowsteelChains:Yell(icon, icon)
 			yellShadowsteelChainsFades:Countdown(spellId, nil, icon)
 		end

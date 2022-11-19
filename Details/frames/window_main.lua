@@ -28,9 +28,6 @@ local IsInInstance = _G.IsInInstance
 
 local tokFunctions = Details.ToKFunctions
 
-local _, Details222 = ...
-_ = nil
-
 --constants
 local baseframe_strata = "LOW"
 local defaultBackdropSt = {
@@ -7936,10 +7933,7 @@ function Details:RefreshTitleBarText()
 		if (instanceMode == DETAILS_MODE_GROUP or instanceMode == DETAILS_MODE_ALL) then
 			local segment = self:GetSegment()
 			if (segment == DETAILS_SEGMENTID_OVERALL) then
-				local dynamicOverallDataCustomID = Details222.GetCustomDisplayIDByName(Loc["STRING_CUSTOM_DYNAMICOVERAL"])
-				if ((dynamicOverallDataCustomID ~= self.sub_atributo) and self.atributo ~= 5) then
-					sName = sName .. " " .. Loc["STRING_OVERALL"]
-				end
+				sName = sName .. " " .. Loc["STRING_OVERALL"]
 
 			elseif (segment >= 2) then
 				sName = sName .. " [" .. segment .. "]"

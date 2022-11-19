@@ -162,12 +162,12 @@ local function CreateButton(w, h, tex)
     return patronsBtn
 end
 
--- TODO: scroll
 local function CreatePatronsPane()
     -- pane
     local patronsPane = Cell:CreateTitledPane(aboutTab, "", 100, 100)
     patronsPane:SetFrameStrata("LOW")
     patronsPane:SetPoint("TOPLEFT", aboutTab, "TOPRIGHT", 6, -5)
+    patronsPane:SetPoint("BOTTOMLEFT", aboutTab, "BOTTOMRIGHT", 6, 5)
     patronsPane:Hide()
 
     CreateAnimation(patronsPane)
@@ -187,7 +187,10 @@ local function CreatePatronsPane()
         bgTex:SetGradientAlpha("HORIZONTAL", 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.1, 0.25)
     end
 
-    patronsText = patronsPane:CreateFontString(nil, "OVERLAY")
+    local patronsScroll = Cell:CreateScrollFrame(patronsPane, -27, 0)
+    patronsScroll:SetScrollStep(27)
+
+    patronsText = patronsScroll.content:CreateFontString(nil, "OVERLAY")
     if LOCALE_zhCN then
         patronsText.font = GameFontNormal:GetFont()
     else
@@ -196,24 +199,23 @@ local function CreatePatronsPane()
     patronsText.size = 12
     UpdateFont(patronsText)
 
-    patronsText:SetPoint("TOPLEFT", 5, -27)
+    patronsText:SetPoint("TOPLEFT")
     patronsText:SetSpacing(5)
     patronsText:SetJustifyH("LEFT")
     patronsText:SetText(F:GetPatrons())
 
+    -- update width
     local elapsedTime = 0
-
     local function updateFunc(self, elapsed)
         elapsedTime = elapsedTime + elapsed
         
-        patronsPane:SetHeight(patronsText:GetHeight() + 35)
         patronsPane:SetWidth(patronsText:GetWidth() + 10)
+        patronsScroll:SetContentHeight(patronsText:GetHeight() + 5)
         
         if elapsedTime >= 0.5 then
             patronsPane:SetScript("OnUpdate", nil)
         end
     end
-
     patronsPane:SetScript("OnShow", function()
         elapsedTime = 0
         patronsPane:SetScript("OnUpdate", updateFunc)

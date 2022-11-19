@@ -19,7 +19,6 @@ local GetNumGroupMembers = _G.GetNumGroupMembers
 local GetRaidRosterInfo = _G.GetRaidRosterInfo
 local unpack = _G.unpack
 local IsInGroup = _G.IsInGroup
-local addonName, Details222 = ...
 
 Details.packFunctions = {}
 

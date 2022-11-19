@@ -4,8 +4,7 @@
 	local _detalhes = 		_G._detalhes
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
-	local addonName, Details222 = ...
-
+	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --On Details! Load:
 	--load default keys into the main object

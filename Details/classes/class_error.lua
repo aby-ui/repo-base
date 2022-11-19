@@ -1,6 +1,5 @@
 do
 	local _detalhes = 		_G._detalhes
-	local addonName, Details222 = ...
 
 	local _error = {
 		["error"] = true,

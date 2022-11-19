@@ -6,7 +6,7 @@
 yTimeStamp.lua
 easyChannel.lua
 BNCharacterName.lua
-Tiny_ChatAtFriends.lua
+#Tiny_ChatAtFriends.lua --TODO:abyui10
 #Tiny_ChatLinkLevel.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r AbyUI 聊天框增强

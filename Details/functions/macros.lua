@@ -1,5 +1,4 @@
 
-local addonName, Details222 = ...
 
 -- @windowN: number a a window to open the player details breakdown
 -- /run Details:OpenPlayerDetails(windowN)

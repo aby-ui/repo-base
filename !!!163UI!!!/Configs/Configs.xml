@@ -79,7 +79,6 @@
     <Include file="..\..\Quartz\CfgQuartz.lua"/>
     <Include file="..\..\QuestAnnounce\CfgQuestAnnounce.lua"/>
     <Include file="..\..\RangeDisplay\CfgRangeDisplay.lua"/>
-    <Include file="..\..\Recount\CfgRecount.lua"/>
     <Include file="..\..\Rematch\CfgRematch.lua"/>
     <Include file="..\..\SavedInstances\CfgSavedInstances.lua"/>
     <Include file="..\..\SimpleRaidTargetIcons\CfgSimpleRaidTargetIcons.lua"/>

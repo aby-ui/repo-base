@@ -1,8 +1,8 @@
 U1RegisterAddon("AdiBags", {
     title = "阿迪背包整合",
-    load = "LOGIN",
+    load = "NORMAL",
     defaultEnable = 0,
-    conflicts = { "Bagnon", "Combuctor" },
+    weakConflicts = { "Bagnon", "Combuctor" },
 
     tags = {TAG_ITEM},
     desc = "一体式分类整合背包插件，自动将玩家的装备分类显示出来，并且能够自动列出新物品，功能强大但是需要稍微习惯一下",

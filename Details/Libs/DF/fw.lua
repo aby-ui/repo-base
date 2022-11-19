@@ -1,6 +1,6 @@
 
 
-local dversion = 393
+local dversion = 386
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -694,7 +694,7 @@ function DF:GroupIterator(callback, ...)
 	end
 end
 
-function DF:IntegerToTimer(value) --~formattime
+function DF:IntegerToTimer(value)
 	return "" .. floor(value/60) .. ":" .. format("%02.f", value%60)
 end
 
@@ -1337,7 +1337,7 @@ end
 			alpha = 1
 		end
 
-		return Saturate(red), Saturate(green), Saturate(blue), Saturate(alpha)
+		return red, green, blue, alpha
 	end
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3372,12 +3372,7 @@ end
 
 --this is most copied from the wow client code, few changes applied to customize it
 function DF:CreateGlowOverlay (parent, antsColor, glowColor)
-	local pName = parent:GetName()
-	local fName = pName and (pName.."Glow2") or "OverlayActionGlow" .. math.random(1, 10000000)
-	if fName and string.len(fName) > 50 then -- shorten to work around too long names
-		fName = strsub(fName, string.len(fName)-49)
-	end
-	local glowFrame = CreateFrame("frame", fName, parent, "ActionBarButtonSpellActivationAlert")
+	local glowFrame = CreateFrame("frame", parent:GetName() and "$parentGlow2" or "OverlayActionGlow" .. math.random(1, 10000000), parent, "ActionBarButtonSpellActivationAlert")
 	glowFrame:HookScript ("OnShow", glow_overlay_onshow)
 	glowFrame:HookScript ("OnHide", glow_overlay_onhide)
 
@@ -4832,7 +4827,6 @@ end
 		["getglobal"] = true,
 		["setmetatable"] = true,
 		["DevTools_DumpCommand"] = true,
-		["ChatEdit_SendText"] = true,
 
 		--avoid creating macros
 		["SetBindingMacro"] = true,

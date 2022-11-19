@@ -1305,9 +1305,6 @@ end
 
 		if (EndFunction and type(EndFunction) == "string") then
 			EndFunction = loadstring (EndFunction) or false
-			if (EndFunction) then
-				DetailsFramework:SetEnvironment(EndFunction)
-			end
 		end
 
 		GradientFrameControl.gradientes [#GradientFrameControl.gradientes+1] = {

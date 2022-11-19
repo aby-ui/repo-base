@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 
 ## Title: AdiBags Configuration
 ## Notes: Adirelle's bag addon.
@@ -23,3 +23,7 @@
 #@debug@
 # ## Version: DEV
 #@end-debug@
+
+
+## Title-zhCN: |cff880303[爱不易]|r AdiBags 阿迪背包选项
+## X-Vendor: AbyUI

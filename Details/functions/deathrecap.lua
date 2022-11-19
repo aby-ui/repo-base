@@ -4,7 +4,6 @@ local Details = _G.Details
 local textAlpha = 0.9
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale ( "Details" )
-local addonName, Details222 = ...
 
 local on_deathrecap_line_enter = function(self)
 	if (self.spellid) then

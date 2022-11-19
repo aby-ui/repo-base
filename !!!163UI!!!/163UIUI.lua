@@ -212,12 +212,12 @@ function UUI.ClickAddonCheckBox(self, name, enable, subgroup)
     -- 冲突插件先提示
     local info = U1GetAddonInfo(name)
     if info and self:GetChecked() then
-        if info.load_confirm then
-            StaticPopup_Show("163UIUI_LOAD_CONFIRM", info.load_confirm, nil, {self, name})
+        if info.loadConfirm then
+            StaticPopup_Show("163UIUI_LOAD_CONFIRM", info.loadConfirm, nil, {self, name})
             return
         end
         local other_loaded = {}
-        for _, other in ipairs(info.conflicts or _empty_table) do
+        for _, other in ipairs(info.conflicts or info.weakConflicts or _empty_table) do
             if IsAddOnLoaded(other) then
                 --DisableAddOn(other)
                 tinsert(other_loaded, other)
@@ -230,7 +230,7 @@ function UUI.ClickAddonCheckBox(self, name, enable, subgroup)
                 local icon = ii.icon and "|T"..ii.icon..":20:20|t" or ""
                 other_loaded[i] = icon .. " |cff33ff33" .. (ii.title or ii.name) .. "|r"
             end
-            StaticPopup_Show("163UIUI_CONFLICT_CONFIRM", table.concat(other_loaded, "\n"), nil, {self, name})
+            StaticPopup_Show(info.weakConflicts and "163UIUI_WEAK_CONFLICT_CONFIRM" or "163UIUI_CONFLICT_CONFIRM", table.concat(other_loaded, "\n"), nil, {self, name})
             return
         end
         --if #other_loaded > 0 then EnableAddOn(name) return ReloadUI() end
@@ -602,7 +602,7 @@ end
 function UUI.Top.Create(main)
     --左上角LOGO及文字
     main:CreateTexture():Key("logo"):SetTexture(UUI.Tex"UI2-logo"):TL(-18, 38):Size(87):un()
-    main:CreateTexture():Key("logof"):TL(-18-5, 38+1):Size(87):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetBlendMode("ADD"):SetAlpha(0.5):up()
+    main:CreateTexture():Key("logof"):TL(-18-20, 38+14):Size(117):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetBlendMode("ADD"):SetAlpha(0.3):up()
     main:Button():TL(-8, 48):Size(67):SetScript("OnClick", function() local f = U1DonatorsFrame or U1Donators:CreateFrame() CoreUIShowOrHide(f, not f:IsShown()) end):un()
     UICoreFrameFlash(main.logof, 1 , 1, -1, nil, 0, 0)
 
@@ -844,10 +844,20 @@ function UUI.Center.Create(main)
             data[1]:SetChecked(false)
         end,
         --OnHide = ConfirmOnCancel, --OnCancel完了会执行OnHide
-        hideOnEscape = 1,
-        timeout = 0,
-        exclusive = 1,
-        whileDead = 1,
+        hideOnEscape = 1, timeout = 0, exclusive = 1, whileDead = 1,
+    }
+    StaticPopupDialogs["163UIUI_WEAK_CONFLICT_CONFIRM"] = {preferredIndex = 3,
+        text = "此插件与以下在功能上有重叠：\n\n%1$s\n\n同时开启它们可能导致问题，建议只开一个。你确定要同时加载本插件吗？",
+        button1 = YES,
+        button2 = CANCEL,
+        OnAccept = function(self, data)
+          local info = U1GetAddonInfo(data[2])
+          if info then U1LoadAddOn(data[2]) end
+        end,
+        OnCancel = function(self, data)
+          data[1]:SetChecked(false)
+        end,
+        hideOnEscape = 1, timeout = 0, exclusive = 1, whileDead = 1,
     }
     StaticPopupDialogs["163UIUI_LOAD_CONFIRM"] = {preferredIndex = 3,
         text = "此插件%1$s\n你确定仍要加载吗？",
@@ -862,10 +872,7 @@ function UUI.Center.Create(main)
         OnCancel = function(self, data)
           data[1]:SetChecked(false)
         end,
-        hideOnEscape = 1,
-        timeout = 0,
-        exclusive = 1,
-        whileDead = 1,
+        hideOnEscape = 1, timeout = 0, exclusive = 1, whileDead = 1,
     }
     local btn = TplPanelButton(center,nil, UUI.PANEL_BUTTON_HEIGHT):Set3Fonts(UUI.FONT_PANEL_BUTTON)
     :SetScript("OnClick", function()
@@ -1939,7 +1946,7 @@ function UUI.CreateUI()
     end
 
     --游戏菜单图标
-    WW:Button(nil, GameMenuFrame):Key("btn163"):TL("$parent", "TR", -14-22, 24):Size(60, 60)
+    WW:Button(nil, GameMenuFrame):Key("btn163"):TL("$parent", "TR", -33, 22):Size(60, 60)
     :AddFrameLevel(2, GameMenuFrame)
     :SetScript("OnClick", UUI.ToggleUI)
     :RegisterForDrag("LeftButton")
@@ -1947,8 +1954,8 @@ function UUI.CreateUI()
     :SetScript("OnDragStop", function() GameMenuFrame:StopMovingOrSizing() end)
     :SetScript("OnEnter", function(self) UICoreFrameFlash(self:GetHighlightTexture(), 0.5 , 0.5, -1,nil, 0, 0) end)
     :SetScript("OnLeave", function(self) UICoreFrameFlashStop(self:GetHighlightTexture()) end)
-    :CreateTexture():SetTexture(UUI.Tex"UI2-logo"):Size(79):TL(-10, 14):up()
-    :CreateTexture():TL(-20-4,20+7):BR(20-4, -20+7):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetAlpha(0.8):ToTexture("Highlight"):up()
+    :CreateTexture():SetTexture(UUI.Tex"UI2-logo"):Size(79):TL(-10, 17):up()
+    :CreateTexture():TL(-25-4,25+7):BR(25-4, -25+7):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetAlpha(0.5):ToTexture("Highlight"):up()
     :un()
     CoreUIEnableTooltip(GameMenuFrame.btn163, L["爱不易"], L["点击爱不易标志开启插件控制中心\n \nCtrl点击小地图图标可以收集/还原"])
 

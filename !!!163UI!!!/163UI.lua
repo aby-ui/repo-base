@@ -1797,7 +1797,7 @@ function U1:ADDON_LOADED(event, name)
             local function showUnitNameWithTitle(self)
                 local unit = self.unit;
                 if not unit then return end
-                local title = U1AddDonatorTitle(self, U1UnitFullName(unit), true)
+                local title = U1GetDonatorTitles(U1UnitFullName(unit), true)
                 if title then
                     InspectFrameTitleText:SetText("|cffff00ff" .. title .. "|r " .. GetUnitName(unit, true));
                 else
@@ -1820,7 +1820,7 @@ function U1:ADDON_LOADED(event, name)
 
         local info = U1GetAddonInfo(name)
         if info then
-            if info.load_confirm then U1Message(format("插件|cffff7f7f%s(%s)|r%s", info.title, info.name, info.load_confirm)) end
+            if info.loadConfirm then U1Message(format("插件|cffff7f7f%s(%s)|r%s", info.title, info.name, info.loadConfirm)) end
             if info.runBeforeLoad then info.runBeforeLoad(info, name) info.runBeforeLoad = nil end --利用先注册先运行的机制来运行runBeforeLoad
             if not U1.variableLoaded and not U1.playerLogin and info.load == "NORMAL" then
                 tinsert(loadedNormalAddons, name);

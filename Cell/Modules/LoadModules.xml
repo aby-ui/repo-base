@@ -18,6 +18,7 @@
 	<Script file="Glows.lua"/>
 	<Script file="About.lua"/>
 	<Script file="About_ImportExport.lua"/>
+	<Script file="About_Patrons.lua"/>
 	<Script file="GlowOptions.lua"/>
 	<Script file="Changelogs.lua"/>
 	<Script file="CodeSnippets.lua"/>

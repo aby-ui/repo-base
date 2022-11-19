@@ -49,4 +49,4 @@ checkbox:SetScript("OnClick", function(self, button)
         LibStub("AceAddon-3.0"):GetAddon("QuestAnnounce").db.profile.settings.enable = self:GetChecked()
     end
 end);
-CoreUIEnableTooltip(checkbox, "进度通报", "左键：开启/关闭任务进度通报\n右键：设置选项")
+CoreUIEnableTooltip(checkbox, "进度通报", "左键：开启/关闭任务进度通报\n右键：设置选项\n（这俩按钮在爱不易设置里可关闭）")

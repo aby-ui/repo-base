@@ -13,3 +13,5 @@ U1RegisterAddon("AbyEncounterLootPlus", {
             .."`初次搜索可能会卡几秒钟，多次使用后会正常。"
             .."`点击手册里的副本BOSS，会自动切回正常模式。"
 });
+
+U1RegisterAddon("163UI_EncounterLootPlus", { hide = 1})

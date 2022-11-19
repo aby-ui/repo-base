@@ -1,6 +1,6 @@
 U1RegisterAddon("!KalielsTracker", {
     title = "任务追踪增强",
-    load_confirm = "完全替换了默认的任务追踪，也许会导致无法交接任务",
+    --loadConfirm = "完全替换了默认的任务追踪，也许会导致无法交接任务",
     tags = { TAG_MAPQUEST, TAG_GOOD },
     defaultEnable = 0,
 

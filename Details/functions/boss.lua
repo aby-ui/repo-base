@@ -1,8 +1,7 @@
 
-do
+do 
 
 	local _detalhes = _G._detalhes
-	local addonName, Details222 = ...
 	_detalhes.EncounterInformation = {}
 	local ipairs = ipairs --lua local
 	

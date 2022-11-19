@@ -1657,12 +1657,26 @@ local function UnitButton_UpdateThreatBar(self)
 end
 
 local LRC = LibStub:GetLibrary("LibRangeCheck-2.0")
+local checker
+LRC.RegisterCallback(Cell, LRC.CHECKERS_CHANGED, function()
+    if UnitClassBase("player") == "EVOKER" then
+        checker = LRC:GetSmartMaxChecker(30)
+    else
+        checker = LRC:GetSmartMaxChecker(40)
+    end
+end)
+
 local function UnitButton_UpdateInRange(self)
     local unit = self.state.displayedUnit
     if not unit then return end
 
-    local inRange
+    local inRange = false
 
+    if checker then
+        inRange = (UnitIsVisible(unit) and checker(unit)) or false
+    end
+
+    --[[
     if F:UnitInGroup(unit) then
          -- NOTE: UnitInRange only works with group members
         local checked
@@ -1674,6 +1688,7 @@ local function UnitButton_UpdateInRange(self)
         local minRangeIfVisible, maxRangeIfVisible = LRC:GetRange(unit, true)
         inRange = maxRangeIfVisible and maxRangeIfVisible <= 40
     end
+    ]]
 
     self.state.inRange = inRange
     if Cell.loaded then

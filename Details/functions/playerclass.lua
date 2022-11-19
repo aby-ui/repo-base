@@ -4,7 +4,6 @@ do
 
 	local _detalhes	= 	_G._detalhes
 	local _
-	local addonName, Details222 = ...
 	local pairs = pairs
 	local ipairs = ipairs
 	local unpack = table.unpack or _G.unpack

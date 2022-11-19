@@ -1152,9 +1152,9 @@ local function UpdateAppearance(which)
     
     if not which or which == "texture" or which == "color" or which == "deathColor" or which == "alpha" or which == "outOfRangeAlpha" or which == "shields" or which == "animation" or which == "highlightColor" or which == "highlightSize" or which == "reset" then
         local tex
-        if not which or which == "texture" then tex = F:GetBarTexture() end
+        if not which or which == "texture" or which == "reset" then tex = F:GetBarTexture() end
 
-        if not which or which == "color" then
+        if not which or which == "color" or which == "reset" then
             if strfind(CellDB["appearance"]["barColor"][1], "gradient") or strfind(CellDB["appearance"]["lossColor"][1], "gradient") then
                 Cell.vars.useGradientColor = true
             else
@@ -1162,37 +1162,37 @@ local function UpdateAppearance(which)
             end
         end
 
-        if not which or which == "deathColor" then
+        if not which or which == "deathColor" or which == "reset" then
             Cell.vars.useDeathColor = CellDB["appearance"]["deathColor"][1] and true or nil
         end
 
         F:IterateAllUnitButtons(function(b)
             -- texture
-            if not which or which == "texture" then
+            if not which or which == "texture" or which == "reset" then
                 b.func.SetTexture(tex)
             end
             -- color
-            if not which or which == "color" or which == "deathColor" or which == "alpha" then
+            if not which or which == "color" or which == "deathColor" or which == "alpha" or which == "reset" then
                 b.func.UpdateColor()
             end
             -- outOfRangeAlpha
-            if which == "outOfRangeAlpha" then
+            if which == "outOfRangeAlpha" or which == "reset" then
                 b.state.wasInRange = nil
             end
             -- shields
-            if not which or which == "shields" then
+            if not which or which == "shields" or which == "reset" then
                 b.func.UpdateShields()
             end
             -- animation
-            if not which or which == "animation" then
+            if not which or which == "animation" or which == "reset" then
                 b.func.UpdateAnimation()
             end
             -- highlightColor
-            if not which or which == "highlightColor" then
+            if not which or which == "highlightColor" or which == "reset" then
                 b.func.UpdateHighlightColor()
             end
             -- highlightColor
-            if not which or which == "highlightSize" then
+            if not which or which == "highlightSize" or which == "reset" then
                 b.func.UpdateHighlightSize()
             end
         end)

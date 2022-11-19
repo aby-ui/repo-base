@@ -18,41 +18,29 @@ local function apply(func, ...)
     end
 end
 
-local function banishFrames(...)
-    local function banish(frame)
-        frame:Hide()
-        frame:SetParent(Addon.ShadowUIParent)
-    end
-
-    return apply(banish, ...)
+local function banish(frame)
+    (frame.HideBase or frame.Hide)(frame)
+    frame:SetParent(Addon.ShadowUIParent)
 end
 
-local function unregisterEventsForFrames(...)
-    local function unregisterEvents(frame)
-        frame:UnregisterAllEvents()
-    end
-
-    apply(unregisterEvents, ...)
+local function unregisterEvents(frame)
+    frame:UnregisterAllEvents()
 end
 
-local function disableActionButtonsForFrames(...)
-    local function disableActionButtons(frame)
-        local buttons = frame.actionButtons
-        if type(buttons) ~= "table" then
-            return
-        end
-
-        for _, button in pairs(buttons) do
-            button:UnregisterAllEvents()
-            button:SetAttribute('statehidden', true)
-            button:Hide()
-        end
+local function disableActionButtons(frame)
+    local buttons = frame.actionButtons
+    if type(buttons) ~= "table" then
+        return
     end
 
-    apply(disableActionButtons, ...)
+    for _, button in pairs(buttons) do
+        button:UnregisterAllEvents()
+        button:SetAttribute('statehidden', true)
+        button:Hide()
+    end
 end
 
-banishFrames(
+apply(banish,
     "MainMenuBar",
     "MicroButtonAndBagsBar",
     "MultiBarBottomLeft",
@@ -67,8 +55,7 @@ banishFrames(
     "MainMenuBarVehicleLeaveButton"
 )
 
-unregisterEventsForFrames(
--- "MainMenuBar",
+apply(unregisterEvents,
     "MultiBarBottomLeft",
     "MultiBarBottomRight",
     "MultiBarLeft",
@@ -81,9 +68,8 @@ unregisterEventsForFrames(
     "MainMenuBarVehicleLeaveButton"
 )
 
-disableActionButtonsForFrames(
+apply(disableActionButtons,
     "MainMenuBar",
-    "MicroButtonAndBagsBar",
     "MultiBarBottomLeft",
     "MultiBarBottomRight",
     "MultiBarLeft",
@@ -93,7 +79,6 @@ disableActionButtonsForFrames(
     "MultiBar7",
     "PossessActionBar",
     "StanceBar"
--- "MainMenuBarVehicleLeaveButton"
 )
 
 -- disable some action bar controller updates that we probably don't need

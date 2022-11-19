@@ -39,6 +39,8 @@ L["Ahri'ok Dugru"] = "阿里奥克·杜古"
 L["Aka'ali the Conqueror"] = "征服者阿卡阿里"
 L["Alarm-o-Bot"] = "报警机器人"
 L["Alcruux"] = "阿尔克鲁克斯"
+--[[Translation missing --]]
+--[[ L["Algeth'ar Echoknight"] = ""--]] 
 L["Algeth'ar Educator"] = "艾杰斯亚教育者"
 L["Algeth'ar Enforcer"] = "艾杰斯亚执行者"
 L["Algeth'ar Nurse"] = "艾杰斯亚护士"
@@ -436,6 +438,8 @@ L["Eredar Chaosbringer"] = "艾瑞达混沌使者"
 L["Erkhart Stormvein"] = "厄克哈特·风脉"
 L["Erudite Slayer"] = "艾瑞迪特屠杀者"
 L["Etherdiver"] = "以太俯冲者"
+--[[Translation missing --]]
+--[[ L["Ethereal Restorer"] = ""--]] 
 L["Executioner Varruth"] = "刽子手瓦卢斯"
 L["Executor Tarvold"] = "执行者塔沃德"
 L["Exhumed Spirit"] = "愤怒之魂"
@@ -1317,6 +1321,8 @@ L["Spectral Brute"] = "幽魂蛮兵"
 L["Spectral Charger"] = "鬼灵战马"
 L["Spectral Headhunter"] = "幽魂猎头者"
 L["Spectral Hex Priest"] = "鬼灵妖术祭司"
+--[[Translation missing --]]
+--[[ L["Spectral Invoker"] = ""--]] 
 L["Spectral Journeyman"] = "鬼灵短工"
 L["Spectral Patron"] = "鬼灵顾客"
 L["Spectral Retainer"] = "鬼灵家仆"

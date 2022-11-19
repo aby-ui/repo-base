@@ -888,26 +888,10 @@ function U1AddDonatorTitle(self, partOrFullName, returnOnly)
         if not partOrFullName:find("%-") then
             partOrFullName = partOrFullName .. "-" .. GetRealmName()
         end
-        local staff = U1STAFF[partOrFullName]
-        if staff then
-            if returnOnly then return staff end
-            self:AddLine(staff, 1, 0, 1)
-            if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
-        else
-            local donate = U1Donators and U1Donators.players[partOrFullName]
-            if donate then
-                local title = "爱不易" .. (donate > 0 and "" or "") .. "捐助者"
-                if returnOnly then return title end
-                self:AddLine(title, 1, 0, 1)
-            end
-            local cell = U1Donators and U1Donators.cell[partOrFullName]
-            if cell then
-                local title = "Cell插件捐助者"
-                if returnOnly then return title end
-                self:AddLine(title, 1, 0, 1)
-            end
-            if (donator or cell) and not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
-        end
+        local aby, cell = U1GetDonatorTitles(partOrFullName)
+        if aby then self:AddLine(aby, 1, 0, 1) end
+        if cell then self:AddLine(cell, 1, 0, 1) end
+        if not self.fadeOut then self._ChangingByAbyUI = 1 self:Show() self._ChangingByAbyUI = nil end
     end
 end
 

@@ -3,9 +3,8 @@
 	local Details = _G.Details
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local Translit = LibStub("LibTranslit-1.0")
-	local gump = Details.gump
-	local _ = nil
-	local addonName, Details222 = ...
+	local gump = 			Details.gump
+	local _
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
@@ -14,10 +13,12 @@
 	local _math_floor = math.floor --lua local
 	local _table_sort = table.sort --lua local
 	local tinsert = table.insert --lua local
+	local _table_size = table.getn --lua local
 	local setmetatable = setmetatable --lua local
 	local _getmetatable = getmetatable --lua local
 	local ipairs = ipairs --lua local
 	local pairs = pairs --lua local
+	local rawget= rawget --lua local
 	local _math_min = math.min --lua local
 	local _math_max = math.max --lua local
 	local abs = math.abs --lua local
@@ -38,10 +39,15 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --constants
 
+	local alvo_da_habilidade	= 	Details.alvo_da_habilidade
 	local container_habilidades	= 	Details.container_habilidades
+	local container_combatentes =	Details.container_combatentes
 	local atributo_damage	=	Details.atributo_damage
 	local atributo_misc		=	Details.atributo_misc
+	local habilidade_dano		=	Details.habilidade_dano
+	local container_damage_target =	Details.container_type.CONTAINER_DAMAGETARGET_CLASS
 	local container_damage	=	Details.container_type.CONTAINER_DAMAGE_CLASS
+	local container_friendlyfire	=	Details.container_type.CONTAINER_FRIENDLYFIRE
 
 	local modo_GROUP = Details.modos.group
 	local modo_ALL = Details.modos.all
@@ -1624,7 +1630,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --main refresh function
 
-function atributo_damage:RefreshWindow(instancia, combatObject, forcar, exportar, refreshRequired)
+function atributo_damage:RefreshWindow (instancia, combatObject, forcar, exportar, refreshRequired)
 	local showing = combatObject[class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
 
 	--not have something to show
@@ -3068,7 +3074,6 @@ function Details:SetClassIcon(texture, instance, class) --[[ exported]]
 	elseif (class == "PET") then
 		texture:SetTexture(instance and instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
 		texture:SetTexCoord(0.25, 0.49609375, 0.75, 1)
-		actor_class_color_r, actor_class_color_g, actor_class_color_b = DetailsFramework:ParseColors(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 		texture:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 
 	else

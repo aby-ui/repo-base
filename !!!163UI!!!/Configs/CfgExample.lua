@@ -1,7 +1,9 @@
 U1RegisterAddon("$NAME$", {
     title = "$NAME$",
     defaultEnable = 0,
-    load_confirm = U1_LOAD_CONFIRM_TAINT,
+    loadConfirm = U1_LOAD_CONFIRM_TAINT,
+    conflicts = {"",""}, --加载一个插件会提示并关闭另一个插件, 无法同时使用
+    weakConflicts = {"",""}, --加载一个插件会提示，仍可同时使用
     --temporarilyForceDisable = 1, --在toc里写 ## Dependencies: TODO:abyui10 就会自动设置
     parent = "", --parent = 0 / false / "" 可以强制设置为最上层插件, 一般这种情况下parent是隐藏的
     bundleSim = true, --参见HandyNotes问题，如果为true，则加载完子插件后一起模拟登录事件
