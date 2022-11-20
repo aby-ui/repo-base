@@ -262,6 +262,13 @@ local options = {
 							arg = "sell_junk",
 							order = 40,
 						},
+						auto_repair = {
+							type = "toggle",
+							name = "Auto repair",
+							width  = "full",
+							arg = "auto_repair",
+							order = 50,
+						},
 						map_coords = {
 							type = "toggle",
 							name = "Display player coordinates on world map",
@@ -269,7 +276,7 @@ local options = {
 							width  = "full",
 							get = function(info) return db[info.arg] end,
 							set = function(info, v) AutoTurnIn:SwitchMapCoords(v); db[info.arg] = v end,
-							order = 40,
+							order = 60,
 						},
 						--]]
 						-- unsafe_item_wipe = {
@@ -437,7 +444,8 @@ function AutoTurnIn:OnEnable()
 end
 
 function AutoTurnIn:OnDisable()
-  self:Print("ADDON DISABLED !!!! ")
+	-- actually never called
+  self:Print("ADDON DISABLED!")
 end
 
 --[[
@@ -456,7 +464,10 @@ function AutoTurnIn:RegisterForEvents()
 	end
 
 	local function __getGossipId(index) local o = C_GossipInfo.GetOptions()[index] return o and o.gossipOptionID or 0 end
-	local gossipFunc1 = function() AutoTurnIn:Print(L["ivechosen"]); C_GossipInfo.SelectOption( __getGossipId(1) ) end
+	local gossipFunc1 = function()
+		AutoTurnIn:Print(L["ivechosen"]);
+		C_GossipInfo.SelectOption( __getGossipId(1) )
+	end
 	local gossipFunc2 = function()
 		if (C_GossipInfo.GetNumOptions and C_GossipInfo.GetNumOptions() == 2) then C_GossipInfo.SelectOption(__getGossipId(1)) end
 	end
@@ -503,6 +514,7 @@ function AutoTurnIn:RegisterForEvents()
 		["55382"]=gossipFunc3, -- travel to Darkmoon
 		["57850"]=gossipFunc4, -- DarkmoonFaireTeleportologist
 		["166663"]=gossipFunc5, -- Kyrian Steward
+		["20142"]=gossipFunc1, -- Caverns of Time:Steward of Time
 	}
 end
 
@@ -639,6 +651,7 @@ function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
 				local quest = L.quests[questname]
 				if quest and quest.amount then
 					if self:GetItemAmount(quest.currency, quest.item) >= quest.amount then
+						local a = UnitGUID("npc")
 						C_GossipInfo.SelectActiveQuest(questInfo.questID)
 						self.DarkmoonAllowToProceed = false
 					end
@@ -651,8 +664,9 @@ function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
 	end
 end
 
-function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)	
-	for _,questInfo in ipairs(gossipInfos) do
+function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)
+	for i,questInfo in ipairs(gossipInfos) do
+		self:Print("quest..", i)
 		local triviaAndAllowedOrNotTrivial = (not questInfo.isTrivial) or db.trivial
 		local quest = L.quests[questInfo.title] -- this quest exists in addons quest DB. There are mostly daily quests
 		local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(questInfo.title)))
@@ -675,8 +689,7 @@ function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)
 end
 
 -- Extracts GUID from the NPC which dialog window is currenty displayed
-function AutoTurnIn:GetNPCGUID()
-	local a = UnitGUID("npc")
+function AutoTurnIn:GetNPCGUID()	
 	return a and select(3, a:find("Creature%-%d+%-%d+%-%d+%-%d+%-(%d+)%-")) or nil
 end
 
@@ -696,6 +709,7 @@ function AutoTurnIn:GOSSIP_CONFIRM(event, _, message, cost)
 end
 
 function AutoTurnIn:GOSSIP_SHOW()
+	self:DebugPrint("GOSSIP_SHOW")
 	if (not self:AllowedToHandle(true)) then
 		return
 	end
@@ -827,8 +841,8 @@ AutoTurnIn.delayFrame:SetScript('OnUpdate', function()
 	end
 
 	for bag=0, NUM_BAG_SLOTS do
-		for slot=1, GetContainerNumSlots(bag), 1 do
-			local link = GetContainerItemLink (bag, slot)
+		for slot=1, ContainerFrame_GetContainerNumSlots(bag), 1 do
+			local link = C_Container.GetContainerItemLink (bag, slot)
 			if ( link ) then
 				local name = GetItemInfo(link)
 				if ( name and AutoTurnIn.autoEquipList[name] ) then

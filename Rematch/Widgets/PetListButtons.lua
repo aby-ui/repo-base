@@ -243,7 +243,9 @@ end
 function rematch:HandlePetRightClick(petID,button)
 	if button=="RightButton" and petID then
 		rematch:SetMenuSubject(petID)
-		if rematch:GetIDType(petID)=="pet" and C_PetJournal.PetNeedsFanfare(petID) then
+		if self.forQueue and not rematch.petInfo:Fetch(petID).valid then
+			rematch:ShowMenu("InvalidQueueMenu","cursor")
+		elseif rematch:GetIDType(petID)=="pet" and C_PetJournal.PetNeedsFanfare(petID) then
 			rematch:ShowMenu("UnwrapMenu","cursor")
 		elseif self.isLoadoutSlot and petID then
          rematch:SetMenuSubject(self:GetID())
@@ -308,9 +310,12 @@ function rematch:FillNewPetListButton(petID)
 	local settings = RematchSettings
 	self.petID = petID
 	local petInfo = rematch.petInfo:Fetch(petID)
-	if not petInfo.valid then
-		return
-	end
+
+	-- if not petInfo.valid then
+	-- 	self.Name:SetText(L["Missing or Invalid Pet"])
+	-- 	print(petID,"not valid")
+	-- 	return
+	-- end
 
 	-- flag buttons that are being shown in the queue (different menu, doesn't show leveling icon)
 	self.forQueue = self:GetParent():GetParent()==rematch.QueuePanel.List.ScrollFrame
@@ -381,7 +386,7 @@ function rematch:FillNewPetListButton(petID)
 			self.SubName:Show()
 		else
 			self.Name:SetHeight(36)
-			self.Name:SetText(petInfo.speciesName)
+			self.Name:SetText(petInfo.speciesName or L["Missing or Invalid Pet"])
 			self.SubName:Hide()
 		end
 		-- coloring name
@@ -440,7 +445,7 @@ function rematch:FillCompactListButton(petID)
 
 	if not self.forMiniQueue then
 		self.Name:SetFontObject(RematchSettings.SlimListSmallText and GameFontNormalSmall or GameFontNormal)
-		self.Name:SetText(petInfo.name)
+		self.Name:SetText(petInfo.name or L["Missing or Invalid Pet"])
 		self.Name:Show()
 
 		if petInfo.owned and not petInfo.isRevoked and petInfo.isSummonable then
@@ -478,7 +483,7 @@ function rematch:FillCommonPetListButton(petID)
 
 	local petInfo = rematch.petInfo:Fetch(petID)
 
-	self.Pet:SetTexture(petInfo.icon)
+	self.Pet:SetTexture(petInfo.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
 	self.Pet:SetDesaturated(not petInfo.owned)
 
 	-- breed

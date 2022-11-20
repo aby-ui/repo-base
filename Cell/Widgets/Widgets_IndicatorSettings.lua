@@ -2773,6 +2773,14 @@ local function CreateAuraButtons(parent, auraButtons, auraTable, noUpDownButtons
                 auraButtons[i].up:Show()
             end
         end
+
+        -- update spellNameText width
+        if noUpDownButtons then
+            auraButtons[i].spellNameText:SetPoint("RIGHT", -35, 0)
+        else
+            auraButtons[i].spellNameText:SetPoint("RIGHT", -70, 0)
+        end
+        
         auraButtons[i]:SetPoint("RIGHT")
         auraButtons[i]:Show()
 

@@ -302,6 +302,7 @@ L["Show Party/Arena Pets"] = "显示小队/竞技场宠物"
 L["Show Raid Pets"] = "显示团队宠物"
 L["Raid Pets"] = "团队宠物"
 L["Spotlight Frame"] = "特别关注框体"
+L["spotlightTips"] = "左键：|cffffffff菜单|r\n右键：|cffffffff清除|r\n左键拖动：|cffffffff设置为目标单位（非战斗中）|r\n右键拖动：|cffffffff设置为目标单位的宠物（非战斗中）|r"
 L["Show units you care about more in a separate frame"] = "将你特别关注的单位显示在一个单独的框体中"
 L["Target of Target"] = "目标的目标"
 L["Unit"] = "目标单位"
@@ -600,6 +601,11 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r144-release (Nov 20, 2022, 05:02 GMT+8)</h1>
+    <p>+ 为特别关注框体添加了几个快捷操作。</p>
+    <p>* 修复bug。</p>
+    <br/>
+
     <h1>r143-release (Nov 19, 2022, 15:02 GMT+8)</h1>
     <p>* 为唤魔师更新了距离检查（30码）。</p>
     <p>* 修复外观下的重置功能。</p>

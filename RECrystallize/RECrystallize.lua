@@ -255,6 +255,7 @@ function RE:OnEvent(self, event, ...)
 		hooksecurefunc("BattlePetToolTip_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(sFormat("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
 		hooksecurefunc("FloatingBattlePet_Show", function(speciesID, level, breedQuality, maxHealth, power, speed) RE:TooltipPetAddPrice(sFormat("|cffffffff|Hbattlepet:%s:%s:%s:%s:%s:%s:0000000000000000:0|h[XYZ]|h|r", speciesID, level, breedQuality, maxHealth, power, speed)) end)
 
+--[[
 		local SetRecipeReagentItem = _G.GameTooltip.SetRecipeReagentItem
 		function _G.GameTooltip:SetRecipeReagentItem(...)
 			local link = GetRecipeReagentItemLink(...)
@@ -269,6 +270,7 @@ function RE:OnEvent(self, event, ...)
 			if link then return self:SetHyperlink(link) end
 			return SetRecipeResultItem(self, ...)
 		end
+]]
 
 		if ElvUI then
 			RE.IsSkinned = ElvUI[1].private.skins.blizzard.auctionhouse

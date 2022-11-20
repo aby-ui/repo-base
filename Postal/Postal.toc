@@ -1,9 +1,9 @@
 ## Interface: 100002
 ## Title: Postal
-## Version: v3.8.9
-## X-Build: 552
-## X-ReleaseDate: 2022-11-18T17:20:53Z
-## X-Revision: 552
+## Version: v3.9.0
+## X-Build: 555
+## X-ReleaseDate: 2022-11-19T16:36:54Z
+## X-Revision: 555
 ## Author: Xinhuan
 ## X-Credits: Ammo, Rabbit, Grennon, Mikk, oscarucb, Jonny aka The_Original_Manbot
 ## X-Category: Mail
@@ -25,7 +25,7 @@ Localization.lua
 Postal.lua
 
 # Users can comment out any module (or delete the .lua) of any module they do not wish to load
-#Modules\Express.lua
+Modules\Express.lua
 Modules\OpenAll.lua
 Modules\Wire.lua
 Modules\Select.lua

@@ -23,11 +23,11 @@
 ## X-DBM-Mod-Sort: 215
 ## X-DBM-Mod-MapID: 2520, 2451, 2516, 2519, 2526, 2515, 2521, 2527
 ## X-DBM-Mod-MinCoreRevision: 17286
-## X-DBM-Mod-MinExpansion: 9
+## X-DBM-Mod-MinExpansion: 8
 ## X-Curse-Project-ID: 314994
 ## X-WoWI-ID: 24904
 ## X-Wago-ID: xZKxZENk
-## Version: r44-1-gdc92dd8
+## Version: r45-1-g464e229
 
 localization.en.lua
 localization.cn.lua

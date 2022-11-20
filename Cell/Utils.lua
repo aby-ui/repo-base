@@ -998,40 +998,40 @@ function F:UnitInGroup(unit, ignorePets)
     end
 end
 
-function F:GetTargetUnitID()
-    if UnitIsUnit("target", "player") then
+function F:GetTargetUnitID(target)
+    if UnitIsUnit(target, "player") then
         return "player"
-    elseif UnitIsUnit("target", "pet") then
+    elseif UnitIsUnit(target, "pet") then
         return "pet"
     end
 
-    if not F:UnitInGroup("target") then return end
+    if not F:UnitInGroup(target) then return end
 
-    if UnitIsPlayer("target") then
+    if UnitIsPlayer(target) then
         for unit in F:IterateGroupMembers() do
-            if UnitIsUnit("target", unit) then
+            if UnitIsUnit(target, unit) then
                 return unit
             end
         end
     else
         for unit in F:IterateGroupPets() do
-            if UnitIsUnit("target", unit) then
+            if UnitIsUnit(target, unit) then
                 return unit
             end
         end
     end
 end
 
-function F:GetTargetPetID()
-    if UnitIsUnit("target", "player") then
+function F:GetTargetPetID(target)
+    if UnitIsUnit(target, "player") then
         return "pet"
     end
 
-    if not F:UnitInGroup("target") then return end
+    if not F:UnitInGroup(target) then return end
 
-    if UnitIsPlayer("target") then
+    if UnitIsPlayer(target) then
         for unit in F:IterateGroupMembers() do
-            if UnitIsUnit("target", unit) then
+            if UnitIsUnit(target, unit) then
                 return F:GetPetUnit(unit)
             end
         end

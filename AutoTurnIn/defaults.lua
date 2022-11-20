@@ -3,6 +3,7 @@ privateTable.interface10 = select(4, GetBuildInfo()) >= 100000
 privateTable.defaults = {
 	profile = {
 		enabled = false,
+		admin = false,
 		all = 1,
 		trivial = false,
 		completeonly = false,
@@ -20,7 +21,8 @@ privateTable.defaults = {
 		watchlevel = false,
 		questshare = false,
 		acceptshare = false,
-		armor = {["type"] = 1},
+		armor = {},
+		armorType = -1,
 		weapon = {},
 		stat = {},
 		secondary = {},
@@ -30,6 +32,7 @@ privateTable.defaults = {
 		covenantswapgossipcompletion = false,
 		unsafe_item_wipe = false,
 		sell_junk = 1,
+		auto_repair = true,
 		map_coords = false,
 		IGNORED_NPC = {
 			["87391"] = "fate-twister-seress",

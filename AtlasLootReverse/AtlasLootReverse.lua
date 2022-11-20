@@ -98,14 +98,14 @@ function AtlasLootReverse:TooltipPostCall(tooltip, tdata)
 end
 
 --- 在atlasloot基础上遍历地下城手册
-function AtlasLootReverse:RebuildDatabaseFromEJ(db)
+function AtlasLootReverse:RebuildDatabaseFromEJ(db, tier)
     local db = db or AtlasLootReverseDBx
     U1DBG.AtlasLootReverseDBx = db
     print("正在添加手册物品...")
     local sourceMap = {}
     for i, name in ipairs(db.sources) do sourceMap[name] = i end
 
-    local ELP_CURRENT_TIER, ELP_ALL_SLOT = 9, 15
+    local ELP_CURRENT_TIER, ELP_ALL_SLOT = tier, 15
     EJ_SelectTier(ELP_CURRENT_TIER)
     C_EncounterJournal.SetSlotFilter(ELP_ALL_SLOT)
     EJ_SetLootFilter(0,0)
@@ -117,6 +117,8 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
             index = index + 1
             EJ_SelectInstance(insID)
             local instance_name,_,_,_,_,_,_,_,shouldDisplayDifficulty = EJ_GetInstanceInfo(insID)
+            instance_name = instance_name:gsub("奥达曼：提尔的遗产", "奥达曼遗产")
+            instance_name = instance_name:gsub("化身巨龙牢窟", "巨龙牢窟")
             local bossNames = {}
             if shouldDisplayDifficulty then
                 EJ_SetDifficulty(i==1 and 16 or 23)
@@ -140,7 +142,7 @@ function AtlasLootReverse:RebuildDatabaseFromEJ(db)
                 end
                 --有可能有多个来源, 不考虑了
                 db.whoTable[info.itemID] = source_id
-                if index == 4 and i==1 then print(select(2, GetItemInfo(info.itemID)), source, source_id) end
+                --if index == 4 and i==1 then print(select(2, GetItemInfo(info.itemID)), source, source_id) end
             end
             print(instance_name, count)
         end
@@ -245,6 +247,8 @@ function AtlasLootReverse:RebuildDatabase()
     sourceMap = nil
     print(AtlasLootReverse.title .. " 数据库已重建. 总数", count)
 
-    AtlasLootReverse:RebuildDatabaseFromEJ(db)
+    AtlasLootReverse:RebuildDatabaseFromEJ(db, 9)
+    AtlasLootReverse:RebuildDatabaseFromEJ(db, 10)
+
     collectgarbage("collect")
 end

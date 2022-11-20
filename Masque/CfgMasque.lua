@@ -144,6 +144,8 @@ U1RegisterAddon("Masque", {
             U1DBG.reset_masque = "201910"
             getGlobal():__Reset()
         end
+
+        MainMenuBar.Selection:SetFrameStrata("HIGH")
     end,
 
     {

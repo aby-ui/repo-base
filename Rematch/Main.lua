@@ -329,10 +329,10 @@ function rematch:ValidateQueue()
 					found[speciesID] = found[speciesID] or {}
 					tinsert(found[speciesID],newPetID)
 				else -- no replacement found, remove pet from queue
-					tremove(queue,i)
+					--tremove(queue,i)
 				end
 			else -- pet wasn't in sanctuary, remove pet from queue
-					tremove(queue,i)
+					--tremove(queue,i)
 			end
 		end
 	end

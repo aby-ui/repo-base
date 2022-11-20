@@ -565,7 +565,7 @@ local function AttachToPlayerButton(playerButton, filterr, isPriorityContainer)
 			end
 			if aura.duration ~= nil then
 				if customFilterConfig.DurationFilter_Enabled then
-					table_insert(conditions, aura.duration <= customFilterConfig.DurationFilter_CustomMaxDuration)
+					table_insert(conditions, aura.duration > 0 and aura.duration <= customFilterConfig.DurationFilter_CustomMaxDuration)
 				end
 			end
 

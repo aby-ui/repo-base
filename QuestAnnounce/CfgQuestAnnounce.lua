@@ -25,18 +25,22 @@ U1RegisterAddon("QuestAnnounce", {
 });
 
 if not CreateFrame then return end
-local checkbox = CreateFrame("CheckButton", "QuestAnnounceTrackerQuickSwitch", ObjectiveTrackerBlocksFrame, "UICheckButtonTemplate");
+local checkbox = CreateFrame("CheckButton", "QuestAnnounceTrackerQuickSwitch", ObjectiveTrackerFrame.HeaderMenu, "UICheckButtonTemplate");
 checkbox:SetChecked(false)
 checkbox:RegisterForClicks("AnyUp")
 checkbox:SetWidth(22);
 checkbox:SetHeight(22);
 checkbox.text:SetText("通报")
 checkbox:SetPoint("TOPRIGHT", ObjectiveTrackerFrame.HeaderMenu, "TOPRIGHT", -125, 11);
+local function updateVisible() checkbox:SetShown(checkbox.noHide or not ObjectiveTrackerFrame.collapsed) end
+hooksecurefunc("ObjectiveTracker_Collapse", updateVisible)
+hooksecurefunc("ObjectiveTracker_Expand", updateVisible)
 CoreDependCall("!KalielsTracker", function()
     local parent = _G["!KalielsTrackerFrame"]
     checkbox.text:SetText("报")
     checkbox:SetParent(parent)
     checkbox:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -125, -5);
+    checkbox:Show() checkbox.noHide = 1
 end)
 checkbox:SetScript("OnClick", function(self, button)
     if( not IsAddOnLoaded("QuestAnnounce") ) then U1LoadAddOn("QuestAnnounce") end

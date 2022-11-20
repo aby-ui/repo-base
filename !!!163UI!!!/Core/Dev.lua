@@ -175,7 +175,8 @@ SLASH_DUMPB1 = "/dump2"
 
 local function dumpt_tostring(v)
     if type(v) == "table" and v.GetObjectType then
-        return "|cffffcc00[" .. tostring(v:GetObjectType() or nil) .. "]|r " .. tostring(v)
+        local ok, objectType = pcall(v.GetObjectType, v)
+        return "|cffffcc00[" .. (ok and objectType or "ERROR") .. "]|r " .. tostring(v)
     elseif type(v) == "function" then
         return "|cff88ff88<function>|r"
     else

@@ -3,7 +3,10 @@ local L = Cell.L
 local F = Cell.funcs
 local P = Cell.pixelPerfectFuncs
 
+local LCG = LibStub("LibCustomGlow-1.0")
+
 local placeholders, assignmentButtons = {}, {}
+local menu, target, targettarget, focus, unit, pet, clear
 local tooltipPoint, tooltipRelativePoint, tooltipX, tooltipY
 local NONE = strlower(_G.NONE)
 -------------------------------------------------
@@ -54,6 +57,7 @@ config:HookScript("OnEnter", function()
     CellTooltip:SetOwner(config, "ANCHOR_NONE")
     CellTooltip:SetPoint(tooltipPoint, config, tooltipRelativePoint, tooltipX, tooltipY)
     CellTooltip:AddLine(L["Spotlight Frame"])
+    CellTooltip:AddLine(L["spotlightTips"])
     CellTooltip:Show()
 end)
 config:HookScript("OnLeave", function()
@@ -124,6 +128,30 @@ hoverFrame:SetScript("OnLeave", function()
 end)
 
 -------------------------------------------------
+-- target frame: drag and set
+-------------------------------------------------
+local targetFrame = Cell:CreateFrame(nil, spotlightFrame, 50, 20)
+targetFrame:SetFrameStrata("TOOLTIP")
+targetFrame.label = targetFrame:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET")
+targetFrame.label:SetPoint("CENTER")
+targetFrame:EnableMouse(false)
+
+function targetFrame:StartMoving()
+    targetFrame:Show()
+    local scale = P:GetEffectiveScale()
+    targetFrame:SetScript("OnUpdate", function()
+        local x, y = GetCursorPosition()
+        targetFrame:SetPoint("CENTER", hueSaturation, "BOTTOMLEFT", x/scale, y/scale + 10)
+        targetFrame:SetWidth(targetFrame.label:GetWidth() + 10)
+    end)
+end
+
+function targetFrame:StopMoving()
+    targetFrame:Hide()
+    targetFrame:ClearAllPoints()
+end
+
+-------------------------------------------------
 -- assignment buttons
 -------------------------------------------------
 local function CreateAssignmentButton(index)
@@ -131,22 +159,76 @@ local function CreateAssignmentButton(index)
     b:GetFontString():SetNonSpaceWrap(true)
     b:GetFontString():SetWordWrap(true)
     b:SetFrameStrata("MEDIUM")
+    b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     b:SetAttribute("index", index)
     b:Hide()
 
     b:SetAttribute("_onclick", [[
         local menu = self:GetFrameRef("menu")
-        menu:ClearAllPoints()
-        menu:SetPoint(menu:GetAttribute("point"), self, menu:GetAttribute("anchorPoint"), menu:GetAttribute("xOffset"), menu:GetAttribute("yOffset"))
-        menu:Show()
+        
+        if button == "LeftButton" then --! show menu
+            if menu:IsShown() and menu:GetAttribute("index") == self:GetAttribute("index") then
+                menu:Hide()
+            else
+                menu:ClearAllPoints()
+                menu:SetPoint(menu:GetAttribute("point"), self, menu:GetAttribute("anchorPoint"), menu:GetAttribute("xOffset"), menu:GetAttribute("yOffset"))
+                menu:Show()
+            end
+        end
 
-        -- print(self:GetAttribute("index"))
-        menu:SetAttribute("index", self:GetAttribute("index"))
+        local index = self:GetAttribute("index")
+        -- print(index)
+        menu:SetAttribute("index", index)
+
+        if button == "RightButton" then --! clear
+            local spotlight = menu:GetFrameRef("spotlight"..index)
+            spotlight:SetAttribute("unit", nil)
+            spotlight:SetAttribute("refreshOnUpdate", nil)
+            menu:GetFrameRef("assignment"..index):SetAttribute("text", "none")
+            menu:Hide()
+
+            menu:CallMethod("Save", index, nil)
+        end
     ]])
 
     b:SetScript("OnAttributeChanged", function(self, name, value)
         if name ~= "text" then return end
         b:SetText(value == "none" and NONE or value)
+    end)
+
+    --! drag and set
+    b:RegisterForDrag("LeftButton", "RightButton")
+    b:SetScript("OnDragStart", function(self, button)
+        if InCombatLockdown() then return end
+
+        menu:Hide()
+        targetFrame:StartMoving()
+        -- color, N, frequency, length, thickness
+        LCG.PixelGlow_Start(b, Cell:GetAccentColorTable(), 9, 0.25, 8, 2)
+
+        if button == "LeftButton" then
+            targetFrame.label:SetText(L["Unit"])
+            targetFrame.type = "unit"
+        else
+            targetFrame.label:SetText(L["Unit's Pet"])
+            targetFrame.type = "pet"
+        end
+    end)
+    
+    b:SetScript("OnDragStop", function()
+        targetFrame:StopMoving()
+        LCG.PixelGlow_Stop(b)
+
+        if InCombatLockdown() then return end
+
+        local f = GetMouseFocus()
+        if f and f.state and f.state.displayedUnit then
+            if targetFrame.type == "unit" then
+                unit:SetUnit(b:GetAttribute("index"), f.state.displayedUnit)
+            elseif targetFrame.type == "pet" then
+                pet:SetUnit(b:GetAttribute("index"), f.state.displayedUnit)
+            end
+        end
     end)
 
     return b
@@ -223,7 +305,7 @@ end
 -------------------------------------------------
 -- menu
 -------------------------------------------------
-local menu = CreateFrame("Frame", "CellSpotlightAssignmentMenu", spotlightFrame, "BackdropTemplate,SecureHandlerAttributeTemplate,SecureHandlerShowHideTemplate")
+menu = CreateFrame("Frame", "CellSpotlightAssignmentMenu", spotlightFrame, "BackdropTemplate,SecureHandlerAttributeTemplate,SecureHandlerShowHideTemplate")
 menu:SetFrameStrata("TOOLTIP")
 menu:SetClampedToScreen(true)
 menu:Hide()
@@ -248,7 +330,7 @@ SecureHandlerSetFrameRef(config, "menu", menu)
 -- ]])
 
 -- menu items
-local target = Cell:CreateButton(menu, L["Target"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
+target = Cell:CreateButton(menu, L["Target"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
 P:Point(target, "TOPLEFT", menu, "TOPLEFT", 1, -1)
 P:Point(target, "RIGHT", menu, "RIGHT", -1, 0)
 target:SetAttribute("_onclick", [[
@@ -264,7 +346,7 @@ target:SetAttribute("_onclick", [[
 ]])
 
 -- NOTE: no EVENT for this kind of targets， use OnUpdate
-local targettarget = Cell:CreateButton(menu, L["Target of Target"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
+targettarget = Cell:CreateButton(menu, L["Target of Target"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
 P:Point(targettarget, "TOPLEFT", target, "BOTTOMLEFT")
 P:Point(targettarget, "TOPRIGHT", target, "BOTTOMRIGHT")
 targettarget:SetAttribute("_onclick", [[
@@ -279,7 +361,7 @@ targettarget:SetAttribute("_onclick", [[
     menu:CallMethod("Save", index, "targettarget")
 ]])
 
-local focus = Cell:CreateButton(menu, L["Focus"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
+focus = Cell:CreateButton(menu, L["Focus"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
 P:Point(focus, "TOPLEFT", targettarget, "BOTTOMLEFT")
 P:Point(focus, "TOPRIGHT", targettarget, "BOTTOMRIGHT")
 focus:SetAttribute("_onclick", [[
@@ -294,18 +376,18 @@ focus:SetAttribute("_onclick", [[
     menu:CallMethod("Save", index, "focus")
 ]])
 
-local unit = Cell:CreateButton(menu, L["Unit"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
+unit = Cell:CreateButton(menu, L["Unit"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
 P:Point(unit, "TOPLEFT", focus, "BOTTOMLEFT")
 P:Point(unit, "TOPRIGHT", focus, "BOTTOMRIGHT")
 unit:SetAttribute("_onclick", [[
     local menu = self:GetParent()
     local index = menu:GetAttribute("index")
     menu:GetFrameRef("spotlight"..index):SetAttribute("refreshOnUpdate", nil)
-    self:CallMethod("SetUnit", index)
+    self:CallMethod("SetUnit", index, "target")
     menu:Hide()
 ]])
-function unit:SetUnit(index)
-    local unit = F:GetTargetUnitID()
+function unit:SetUnit(index, target)
+    local unit = F:GetTargetUnitID(target)
     if unit then
         Cell.unitButtons.spotlight[index]:SetAttribute("unit", unit)
         assignmentButtons[index]:SetText(unit)
@@ -315,18 +397,18 @@ function unit:SetUnit(index)
     end
 end
 
-local pet = Cell:CreateButton(menu, L["Unit's Pet"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
+pet = Cell:CreateButton(menu, L["Unit's Pet"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
 P:Point(pet, "TOPLEFT", unit, "BOTTOMLEFT")
 P:Point(pet, "TOPRIGHT", unit, "BOTTOMRIGHT")
 pet:SetAttribute("_onclick", [[
     local menu = self:GetParent()
     local index = menu:GetAttribute("index")
     menu:GetFrameRef("spotlight"..index):SetAttribute("refreshOnUpdate", nil)
-    self:CallMethod("SetUnit", index)
+    self:CallMethod("SetUnit", index, "target")
     menu:Hide()
 ]])
-function pet:SetUnit(index)
-    local unit = F:GetTargetPetID()
+function pet:SetUnit(index, target)
+    local unit = F:GetTargetPetID(target)
     if unit then
         Cell.unitButtons.spotlight[index]:SetAttribute("unit", unit)
         assignmentButtons[index]:SetText(unit)
@@ -336,7 +418,7 @@ function pet:SetUnit(index)
     end
 end
 
-local clear = Cell:CreateButton(menu, L["Clear"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
+clear = Cell:CreateButton(menu, L["Clear"], "transparent-accent", {20, 20}, true, false, nil, nil, "SecureHandlerAttributeTemplate,SecureHandlerClickTemplate")
 P:Point(clear, "TOPLEFT", pet, "BOTTOMLEFT")
 P:Point(clear, "TOPRIGHT", pet, "BOTTOMRIGHT")
 clear:SetAttribute("_onclick", [[
@@ -598,6 +680,7 @@ Cell:RegisterCallback("UpdateLayout", "SpotlightFrame_UpdateLayout", UpdateLayou
 local function UpdatePixelPerfect()
     P:Resize(spotlightFrame)
     P:Resize(anchorFrame)
+    targetFrame:UpdatePixelPerfect()
     config:UpdatePixelPerfect()
     menu:UpdatePixelPerfect()
 

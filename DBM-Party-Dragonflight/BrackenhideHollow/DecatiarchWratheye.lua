@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2474, "DBM-Party-Dragonflight", 1, 1196)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220904205606")
+mod:SetRevision("20221120050352")
 mod:SetCreatureID(186121)
 mod:SetEncounterID(2569)
 mod:SetUsedIcons(8)
@@ -12,33 +12,28 @@ mod:SetUsedIcons(8)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 373960 375989 376170",
+	"SPELL_CAST_START 373960 376170",
 	"SPELL_CAST_SUCCESS 373917",
 	"SPELL_SUMMON 373944",
 	"SPELL_AURA_APPLIED 373896",
 	"SPELL_AURA_APPLIED_DOSE 373896",
 	"SPELL_AURA_REMOVED 373896",
-	"SPELL_AURA_REMOVED_DOSE 373896",
+	"SPELL_AURA_REMOVED_DOSE 373896"
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
-	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
 --TODO, correct Lifewater trigger (and remove it if it's hella spammy)
 --TODO, proper decay strike trigger/CD
-local warnLifewater								= mod:NewCountAnnounce(374117, 1)
 local warnDecayigStrength						= mod:NewSpellAnnounce(373960, 3)
 
-local specWarnRottingUpsurge					= mod:NewSpecialWarningDodge(375989, nil, nil, nil, 2, 2)
 local specWarnRotburstTotem						= mod:NewSpecialWarningSwitch(373944, nil, nil, nil, 1, 2)
 local specWarnChokingRotcloud					= mod:NewSpecialWarningDodge(376170, nil, nil, nil, 2, 2, 4)
 local specWarnDecaystrike						= mod:NewSpecialWarningDefensive(373917, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerLifewaterCD							= mod:NewAITimer(35, 374117, nil, nil, nil, 5)
 local timerDecayingStrengthCD					= mod:NewAITimer(35, 373960, nil, nil, nil, 2)
 local timerRotburstTotemCD						= mod:NewAITimer(35, 373944, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerRottingUpsurgeCD						= mod:NewAITimer(35, 375989, nil, nil, nil, 3)
 local timerChokingRotcloutCD					= mod:NewAITimer(35, 376170, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
 local timerDecayStrikeCD						= mod:NewAITimer(35, 373917, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
@@ -54,9 +49,7 @@ mod.vb.waterCount = 0
 function mod:OnCombatStart(delay)
 	table.wipe(WitheringRotStacks)
 	self.vb.waterCount = 0
-	timerLifewaterCD:Start(1-delay)
 	timerDecayingStrengthCD:Start(1-delay)
-	timerRottingUpsurgeCD:Start(1-delay)
 	timerDecayStrikeCD:Start(1-delay)
 	if self:IsMythic() then
 		timerChokingRotcloutCD:Start(1-delay)
@@ -85,10 +78,6 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 373960 then
 		warnDecayigStrength:Show()
 		timerDecayingStrengthCD:Start()
-	elseif spellId == 375989 then
-		specWarnRottingUpsurge:Show()
-		specWarnRottingUpsurge:Play("watchstep")
-		timerRottingUpsurgeCD:Start()
 	elseif spellId == 376170 then
 		specWarnChokingRotcloud:Show()
 		specWarnChokingRotcloud:Play("shockwave")
@@ -159,11 +148,3 @@ function mod:SPELL_PERIODIC_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId, spell
 end
 mod.SPELL_PERIODIC_MISSED = mod.SPELL_PERIODIC_DAMAGE
 --]]
-
-function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
-	if spellId == 375911 or spellId == 374109 then--Lifewater
-		self.vb.waterCount = self.vb.waterCount + 1
-		warnLifewater:Show(self.vb.waterCount)
-		timerLifewaterCD:Start()
-	end
-end

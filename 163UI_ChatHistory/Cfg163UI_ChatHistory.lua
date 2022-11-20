@@ -25,6 +25,14 @@ U1RegisterAddon("163UI_ChatHistory", {
                 ChatHistoryDB.backlog = not not v
             end
         end,
+
+        {
+            text = "清除本账号所有历史信息",
+            reload = 1,
+            callback = function(cfg, v, loading)
+                _G["_163UI_ChatHistoryBacklogDB"] = nil
+            end,
+        }
     },
 --[[
     {

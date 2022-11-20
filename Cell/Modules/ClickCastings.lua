@@ -588,6 +588,7 @@ local function ShowTypesMenu(index, b)
             ["text"] = L["General"],
             ["onClick"] = function()
                 b.typeGrid:SetText(L["General"])
+                if clickCastingsTab.popupEditBox then clickCastingsTab.popupEditBox:Hide() end
 
                 changed[index] = changed[index] or {b}
                 -- check type
@@ -609,6 +610,7 @@ local function ShowTypesMenu(index, b)
             ["text"] = L["Macro"],
             ["onClick"] = function()
                 b.typeGrid:SetText(L["Macro"])
+                if clickCastingsTab.popupEditBox then clickCastingsTab.popupEditBox:Hide() end
 
                 changed[index] = changed[index] or {b}
                 -- check type
@@ -630,6 +632,7 @@ local function ShowTypesMenu(index, b)
             ["text"] = L["Spell"],
             ["onClick"] = function()
                 b.typeGrid:SetText(L["Spell"])
+                if clickCastingsTab.popupEditBox then clickCastingsTab.popupEditBox:Hide() end
 
                 changed[index] = changed[index] or {b}
                 -- check type
@@ -759,9 +762,25 @@ local function ShowActionsMenu(index, b)
                         CheckChanges()
                     end, true)
                     peb:SetPoint("TOPLEFT", b.actionGrid)
-                    peb:SetPoint("BOTTOMRIGHT", b.actionGrid)
+                    peb:SetPoint("TOPRIGHT", b.actionGrid)
+                    P:Height(peb, 20)
+                    -- peb:SetPoint("BOTTOMRIGHT", b.actionGrid)
                     peb:SetTips("|cff777777"..L["Shift+Enter: add a new line"].."\n"..L["Enter: apply\nESC: discard"])
-                    peb:ShowEditBox(b.bindType == "macro" and b.bindAction or "")
+                    if b.bindType == "macro" then
+                        if changed[index] and changed[index]["bindAction"] then
+                            peb:ShowEditBox(changed[index]["bindAction"])
+                        else
+                            peb:ShowEditBox(b.bindAction)
+                        end
+                    elseif changed[index] and changed[index]["bindType"] == "macro" then
+                        if changed[index]["bindAction"] then
+                            peb:ShowEditBox(changed[index]["bindAction"])
+                        else
+                            peb:ShowEditBox("")
+                        end
+                    else
+                        peb:ShowEditBox("")
+                    end
                 end,
             },
             {

@@ -39,12 +39,14 @@ end)
 -------------------------------------------------
 -- patrons (wow IDs)
 -------------------------------------------------
-local wowPatrons = {
+local tests = {
     ["Devevoker-Lycanthoth"] = true,
     ["Celldev-Lycanthoth"] = true,
     ["Programming-Lycanthoth"] = true,
     ["篠崎-影之哀伤"] = true,
 }
+
+local wowPatrons = {}
 
 do
     for _, t in pairs(patrons) do
@@ -66,7 +68,7 @@ end
 -------------------------------------------------
 if addonName == "Cell" then -- Cell
     ns.patrons = patrons
-    ns.wowPatrons = wowPatrons
+    ns.wowPatrons = Cell.funcs:TMergeOverwrite(wowPatrons, tests)
 else -- other addons
     ns.cellPatrons = wowPatrons
 end

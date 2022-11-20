@@ -99,6 +99,10 @@ rematch:InitModule(function()
       { text = BATTLE_PET_NAME_10, type="random", var=10, icon=rmf.GetIcon, petID="random:10", func=rmf.SetSpecialSlot },
    })
 
+   	rematch:RegisterMenu("InvalidQueueMenu", {
+		{ text=L["Remove Missing or Invalid Pets"], tooltipTitle=L["Remove Missing or Invalid Pets"], tooltipBody=L["This pet is unknown. It's likely a pet you've caged or released. Select this option to remove all missing or invalid pets from the queue."], func=rematch.RemoveInvalidPetsFromQueue }
+	})
+
 	-- this is the universal right-click menu for a pet: petpanel, queuepanel and loadoutpanel
 	rematch:RegisterMenu("PetMenu", {
 		{ title=true, maxWidth=200, text=function(entry,petID) return rematch:GetPetName(petID) end },
