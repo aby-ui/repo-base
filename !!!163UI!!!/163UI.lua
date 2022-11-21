@@ -67,7 +67,7 @@ local knownAddonPacks = { "elvui", "duowan", "bigfoot", "mogu", "ace2", "ace3", 
 local function getInitialAddonInfo()
     for i = 1, GetNumAddOns() do
         local name, title, notes, _, reason = GetAddOnInfo(i)
-        title = title:gsub("%|cff880303%[爱不易%]%|r ", ""):gsub("%|cff880303%[爱不易%]%|r ", "")
+        title = title:gsub("%|cff880303%[爱不易%]%|r ", "")
 
         local realDeps = { GetAddOnDependencies(i) }
         local realOptDeps = { GetAddOnOptionalDependencies(i) }

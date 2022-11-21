@@ -20,8 +20,8 @@ end
 
 TalkingHeadBar:Extend(
     'OnAcquire', function(self)
-        self:Layout()
-    end
+    self:Layout()
+end
 )
 
 function TalkingHeadBar:GetDefaults()
@@ -48,8 +48,8 @@ function TalkingHeadBar:Layout()
 end
 
 function TalkingHeadBar:RepositionTalkingHeadFrame()
-    TalkingHeadFrame:ClearAllPoints()
-    TalkingHeadFrame:SetPoint('CENTER', self)
+    TalkingHeadFrame:ClearAllPointsBase()
+    TalkingHeadFrame:SetPointBase('CENTER', self)
     TalkingHeadFrame:SetParent(self)
 end
 
@@ -127,7 +127,12 @@ function TalkingHeadBarModule:OnTalkingHeadUILoaded()
         end
     end)
 
+    -- position workarounds
     hooksecurefunc(AlertFrame, 'UpdateAnchors', function()
+        self:OnAlertFrameAnchorsUpdated()
+    end)
+
+    hooksecurefunc(TalkingHeadFrame, 'ApplySystemAnchor', function()
         self:OnAlertFrameAnchorsUpdated()
     end)
 end

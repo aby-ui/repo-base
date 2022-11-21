@@ -269,6 +269,22 @@ local options = {
 							arg = "auto_repair",
 							order = 50,
 						},
+						skip_cinematics = {
+							type = "select",
+							name = "Skip cinematics",
+							values = {[1]=L["Do not skip"], [2]=L["Skip in instances only"], [3]=L["Skip everywhere"]},
+							width  = "full",
+							arg = "skip_cinematics",
+							order = 60,
+						},
+						skip_movies = {
+							type = "select",
+							name = "Skip movies",
+							values = {[1]=L["Do not skip"], [2]=L["Skip in instances only"], [3]=L["Skip everywhere"]},
+							width  = "full",
+							arg = "skip_movies",
+							order = 60,
+						},
 						map_coords = {
 							type = "toggle",
 							name = "Display player coordinates on world map",
@@ -276,7 +292,7 @@ local options = {
 							width  = "full",
 							get = function(info) return db[info.arg] end,
 							set = function(info, v) AutoTurnIn:SwitchMapCoords(v); db[info.arg] = v end,
-							order = 60,
+							order = 70,
 						},
 						--]]
 						-- unsafe_item_wipe = {
@@ -410,6 +426,7 @@ function AutoTurnIn:OnInitialize()
 	self:RegisterChatCommand("au", self.ShowOptions)
 	self:LibDataStructure()
 
+	--self:CinematickHooks()
 	-- See no way tp fix taint issues with quest special items.
 	hooksecurefunc("ObjectiveTracker_Update", AutoTurnIn.ShowQuestLevelInWatchFrame)
 	hooksecurefunc("QuestLogQuests_Update", AutoTurnIn.ShowQuestLevelInLog)
@@ -443,9 +460,10 @@ function AutoTurnIn:OnEnable()
 	self:SetEnabled(db.enabled)
 end
 
+-- actually never called, but still
 function AutoTurnIn:OnDisable()
-	-- actually never called
-  self:Print("ADDON DISABLED!")
+	db.enabled = false	
+	self:SetEnabled(db.enabled)
 end
 
 --[[
@@ -665,8 +683,7 @@ function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
 end
 
 function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)
-	for i,questInfo in ipairs(gossipInfos) do
-		self:Print("quest..", i)
+	for i,questInfo in ipairs(gossipInfos) do		
 		local triviaAndAllowedOrNotTrivial = (not questInfo.isTrivial) or db.trivial
 		local quest = L.quests[questInfo.title] -- this quest exists in addons quest DB. There are mostly daily quests
 		local notBlackListed = not (quest and (quest.donotaccept or AutoTurnIn:IsIgnoredQuest(questInfo.title)))
@@ -689,7 +706,8 @@ function AutoTurnIn:VarArgForAvailableQuests(gossipInfos)
 end
 
 -- Extracts GUID from the NPC which dialog window is currenty displayed
-function AutoTurnIn:GetNPCGUID()	
+function AutoTurnIn:GetNPCGUID()
+	local a = UnitGUID("npc")
 	return a and select(3, a:find("Creature%-%d+%-%d+%-%d+%-%d+%-(%d+)%-")) or nil
 end
 

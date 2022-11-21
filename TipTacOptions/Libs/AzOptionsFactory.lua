@@ -17,6 +17,8 @@
 	- added a header element
 	22.10.30 Rev 16 10.0.0/Dragonflight #frozn45
 	- replaced inheritsFrame "OptionsSliderTemplate" with "UISliderTemplateWithLabels" for slider
+	22.11.20 Rev 17 10.0.2/Dragonflight #frozn45
+	- left align text of check button and dropdown
 --]]
 
 local REVISION = 16;
@@ -349,6 +351,7 @@ azof.objects.Check = {
 
 		f.text = f:CreateFontString("ARTWORK",nil,"GameFontNormalSmall");
 		f.text:SetPoint("LEFT",f,"RIGHT",0,0);
+		f.text:SetJustifyH("LEFT");
 
 		return f;
 	end,
@@ -623,6 +626,8 @@ azof.objects.DropDown = {
 		local f = AzDropDown:CreateDropDown(self.owner,180,nil,nil,true);
 		f.text = f:CreateFontString(nil,"ARTWORK","GameFontNormalSmall");
 		f.text:SetPoint("LEFT",-302 + f:GetWidth(),-1);
+		f.text:SetJustifyH("LEFT");
+
 		return f;
 	end,
 };

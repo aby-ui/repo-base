@@ -188,7 +188,11 @@ function Postal_Express:ContainerFrameItemButtonOnModifiedClick(bag, slot, butto
 			itemsc = itemc.."."..(itemsc or "")
 			local added = (itemlocked and 0) or -1
 			for pass = 0,4 do
-				for b = 0,4 do
+				local bmax = NUM_BAG_FRAMES
+				if Postal.WOWRetail then
+					bmax = bmax + NUM_REAGENTBAG_FRAMES
+				end
+				for b = 0,bmax do
 					local numberOfSlots
 					if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
 						numberOfSlots = GetContainerNumSlots(b)

@@ -111,6 +111,8 @@ L["Friendly Player Color"] = "友好玩家颜色";
 L["Dead Color"] = "死亡颜色";
 -- Backdrop		
 L["Backdrop"] = "背景";
+L["Enable Backdrop Modifications"] = "启用背景修改(可能造成污染)"
+L["Turns on or off all modifications of the backdrop\nNOTE: A Reload of the UI (/reload) is required for the setting to take affect"] = "启用或禁用所有背景修改选项\n注意：需要重载界面(/reload)生效\n注意：可能造成卡动作条等问题"
 L["Background Texture"] = "背景材质";
 L["Border Texture"] = "边框材质";
 L["Backdrop Edge Size"] = "背景边缘尺寸";

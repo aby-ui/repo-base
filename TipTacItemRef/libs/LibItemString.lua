@@ -28,10 +28,12 @@
 	## REV-02 (18.08.04) - 8.0/BfA ##
 	- Added LIS:GetFieldName() to get the field name from index
 	- Accessing the IS table using a negative index now works
+	## REV-03 (22.11.20) - 10.0.2/DF ## #frozn45
+	- Replaced hidden scanning tooltip with new C_TooltipInfo function for df
 --]]----------------------------------------------------
 
 -- Abort if library has already loaded with the same or newer revision
-local REVISION = 2;
+local REVISION = 3;
 if (type(LibItemString) == "table") and (REVISION <= LibItemString.REVISION) then
 	return;
 end
@@ -310,15 +312,38 @@ end
 -- Scans the tooltip for the proper itemLevel as we cannot get it consistently any other way
 -- No ItemString instance is needed to call this function, that is calling LibItemString:New()
 function LIS:GetTooltipItemLevel(itemLink)
-	LIS.ScanTip:ClearLines();
-	LIS.ScanTip:SetHyperlink(itemLink);
+	if (C_TooltipInfo) then -- since df
+		local tooltipData = C_TooltipInfo.GetHyperlink(itemLink);
+		
+		if (tooltipData) then
+			TooltipUtil.SurfaceArgs(tooltipData);
+			
+			-- Line 1 is item name; Line 2 could simply be the itemLevel, or it could be the upgrade type such as "Mythic Warforged"
+			for i = 2, min(#tooltipData.lines, LIS.TOOLTIP_MAXLINE_LEVEL) do
+				local line = tooltipData.lines[i];
+				
+				TooltipUtil.SurfaceArgs(line);
+				
+				if line.leftText then
+					local itemLevel = tonumber(line.leftText:match(LIS.ITEM_LEVEL_PATTERN));
+					
+					if (itemLevel) then
+						return itemLevel;
+					end
+				end
+			end
+		end
+	else -- before df
+		LIS.ScanTip:ClearLines();
+		LIS.ScanTip:SetHyperlink(itemLink);
 
-	-- Line 1 is item name; Line 2 could simply be the itemLevel, or it could be the upgrade type such as "Mythic Warforged"
-	for i = 2, min(LIS.ScanTip:NumLines(),LIS.TOOLTIP_MAXLINE_LEVEL) do
-		local line = _G["LibItemStringScanTipTextLeft"..i]:GetText();
-		local itemLevel = tonumber(line:match(LIS.ITEM_LEVEL_PATTERN));
-		if (itemLevel) then
-			return itemLevel;
+		-- Line 1 is item name; Line 2 could simply be the itemLevel, or it could be the upgrade type such as "Mythic Warforged"
+		for i = 2, min(LIS.ScanTip:NumLines(),LIS.TOOLTIP_MAXLINE_LEVEL) do
+			local line = _G["LibItemStringScanTipTextLeft"..i]:GetText();
+			local itemLevel = tonumber(line:match(LIS.ITEM_LEVEL_PATTERN));
+			if (itemLevel) then
+				return itemLevel;
+			end
 		end
 	end
 end

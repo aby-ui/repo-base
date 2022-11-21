@@ -232,7 +232,21 @@ local options = {
 		{ type = "DropDown", var = "anchorFrameTipPoint", label = "Frame Tip Point", list = DROPDOWN_ANCHORPOS },
 
 		{ type = "Header", label = "Anchor Overrides", tip = "Enable/Disable special anchor overrides", y = 12 },
-		{ type = "Check", var = "enableAnchorOverrideCF", label = "(Guild & Community) ChatFrame", tip = "This option will override the anchor for (Guild & Community) ChatFrame" },
+
+		{ type = "Check", var = "enableAnchorOverrideWorldUnitInCombat", label = "World Unit in combat", tip = "This option will override the anchor for World Unit in combat" },
+		{ type = "DropDown", var = "anchorWorldUnitTypeInCombat", label = "World Unit Type", list = DROPDOWN_ANCHORTYPE },
+		{ type = "DropDown", var = "anchorWorldUnitPointInCombat", label = "World Unit Point", list = DROPDOWN_ANCHORPOS },
+		{ type = "Check", var = "enableAnchorOverrideWorldTipInCombat", label = "World Tip in combat", tip = "This option will override the anchor for World Tip in combat", y = 8 },
+		{ type = "DropDown", var = "anchorWorldTipTypeInCombat", label = "World Tip Type", list = DROPDOWN_ANCHORTYPE },
+		{ type = "DropDown", var = "anchorWorldTipPointInCombat", label = "World Tip Point", list = DROPDOWN_ANCHORPOS },
+		{ type = "Check", var = "enableAnchorOverrideFrameUnitInCombat", label = "Frame Unit in combat", tip = "This option will override the anchor for Frame Unit in combat", y = 8 },
+		{ type = "DropDown", var = "anchorFrameUnitTypeInCombat", label = "Frame Unit Type", list = DROPDOWN_ANCHORTYPE },
+		{ type = "DropDown", var = "anchorFrameUnitPointInCombat", label = "Frame Unit Point", list = DROPDOWN_ANCHORPOS },
+		{ type = "Check", var = "enableAnchorOverrideFrameTipInCombat", label = "Frame Tip in combat", tip = "This option will override the anchor for Frame Tip in combat", y = 8 },
+		{ type = "DropDown", var = "anchorFrameTipTypeInCombat", label = "Frame Tip Type", list = DROPDOWN_ANCHORTYPE },
+		{ type = "DropDown", var = "anchorFrameTipPointInCombat", label = "Frame Tip Point", list = DROPDOWN_ANCHORPOS },
+
+		{ type = "Check", var = "enableAnchorOverrideCF", label = "(Guild & Community) ChatFrame", tip = "This option will override the anchor for (Guild & Community) ChatFrame", y = 8 },
 		{ type = "DropDown", var = "anchorOverrideCFType", label = "Tip Type", list = DROPDOWN_ANCHORTYPE },
 		{ type = "DropDown", var = "anchorOverrideCFPoint", label = "Tip Point", list = DROPDOWN_ANCHORPOS },
 	},
@@ -346,7 +360,8 @@ if (TipTacItemRef) then
 		{ type = "Header", label = "Icon", tip = "Settings about tooltip icon", y = 12 },
 		{ type = "Check", var = "if_showIcon", label = "Show Icon Texture and Stack Count (when available)", tip = "Shows an icon next to the tooltip. For items, the stack count will also be shown" },
 		{ type = "Check", var = "if_smartIcons", label = "Smart Icon Appearance", tip = "When enabled, TipTacItemRef will determine if an icon is needed, based on where the tip is shown. It will not be shown on actionbars or bag slots for example, as they already show an icon" },
-		{ type = "Check", var = "if_borderlessIcons", label = "Borderless Icons", tip = "Turn off the border on icons" },
+		{ type = "DropDown", var = "if_stackCountToTooltip", label = "Show Stack Count in\nTooltip", list = { ["Do not show"] = "none", ["Always"] = "always", ["Only if icon is not shown"] = "noicon" }, y = 8 },
+		{ type = "Check", var = "if_borderlessIcons", label = "Borderless Icons", tip = "Turn off the border on icons", y = 8 },
 		{ type = "Slider", var = "if_iconSize", label = "Icon Size", min = 16, max = 128, step = 1 },
 		{ type = "DropDown", var = "if_iconAnchor", label = "Icon Anchor", tip = "The anchor of the icon", list = DROPDOWN_ANCHORPOS },
 		{ type = "DropDown", var = "if_iconTooltipAnchor", label = "Icon Tooltip Anchor", tip = "The anchor of the tooltip that the icon should anchor to.", list = DROPDOWN_ANCHORPOS },
@@ -405,9 +420,10 @@ f.header:SetFont(GameFontNormal:GetFont(),22,"THICKOUTLINE");
 f.header:SetPoint("TOPLEFT",f.outline,"TOPRIGHT",10,-4);
 f.header:SetText(modName..L" Options");
 
-f.vers = f:CreateFontString(nil,"ARTWORK","GameFontNormal");
-f.vers:SetPoint("TOPRIGHT",-20,-20);
-f.vers:SetText(GetAddOnMetadata(modName,"Version"));
+f.vers = f:CreateFontString(nil,"ARTWORK","GameFontNormalSmall");
+f.vers:SetPoint("TOPRIGHT",-20,-15);
+local version, build = GetBuildInfo();
+f.vers:SetText("TipTac: " .. GetAddOnMetadata(modName, "Version") .. "\nWoW: " .. version .. " Build " .. build);
 f.vers:SetTextColor(1,1,0.5);
 
 f.btnAnchor = CreateFrame("Button",nil,f,"UIPanelButtonTemplate");

@@ -121,6 +121,7 @@ local TTIF_DefaultConfig = {
 
 	if_showIcon = true,
 	if_smartIcons = true,
+	if_stackCountToTooltip = "none",
 	if_borderlessIcons = false,
 	if_iconSize = 42,
 	if_iconAnchor = "BOTTOMLEFT",
@@ -220,12 +221,32 @@ end
 --                                         Create Tooltip Icon                                        --
 --------------------------------------------------------------------------------------------------------
 
+-- Get output stack count
+local function ttifGetOutputStackCount(stackCount)
+	if (stackCount) and (stackCount ~= "") and (tonumber(stackCount) > 0) then
+		return stackCount;
+	end
+	
+	return;
+end
+
+-- Add stack count to tooltip
+local function ttifAddStackCount(tooltip, stackCount)
+	if (cfg.if_stackCountToTooltip == "always") or (cfg.if_stackCountToTooltip == "noicon") and ((not tooltip.ttIcon) or (not tooltip.ttIcon:IsShown())) then
+		local outputStackCount = ttifGetOutputStackCount(stackCount);
+		if (outputStackCount) then
+			tooltip:AddLine(format("Stacks to %d", outputStackCount), unpack(cfg.if_infoColor));
+		end
+	end
+end
+
 -- Set Texture and Text
-local function ttSetIconTextureAndText(self, texture, count)
+local function ttSetIconTextureAndText(self, texture, stackCount)
 	if (texture) then
 		self.ttIcon:SetTexture(texture ~= "" and texture or "Interface\\Icons\\INV_Misc_QuestionMark");
-		if (count) and (count ~= "") and (tonumber(count) > 0) then
-			self.ttCount:SetText(count);
+		local outputStackCount = ttifGetOutputStackCount(stackCount);
+		if (outputStackCount) then
+			self.ttCount:SetText(outputStackCount);
 		else
 			self.ttCount:SetText("");
 		end
@@ -2129,11 +2150,21 @@ function LinkTypeFuncs:item(link, linkType, id)
     end
 
 	-- Icon
-	if (not self.IsEmbedded) and (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
-		local count = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
-		self:ttSetIconTextureAndText(itemTexture, count);
+	local showIcon = (not self.IsEmbedded) and (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	local stackCount = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
+	
+	if (showIcon) then
+		self:ttSetIconTextureAndText(itemTexture, stackCount);
 	end
-
+	
+	-- Stack Count
+	local targetTooltip = self;
+	if (self == ejtt) then
+		targetTooltip = self.Item1.tooltip;
+	end
+	
+	ttifAddStackCount(targetTooltip, stackCount);
+	
 	-- Quality Border
 	if (not self.IsEmbedded) and (cfg.if_itemQualityBorder) then
 		local itemQualityColor = CreateColorFromHexString(select(4, GetItemQualityColor(itemRarity or 0)));
@@ -2146,10 +2177,8 @@ function LinkTypeFuncs:item(link, linkType, id)
 	local linePadding = 2;
 
 	if (showLevel or showId) then
-		local targetTooltip = self;
 		if (showLevel) then
 			if (self == ejtt) then
-				targetTooltip = self.Item1.tooltip;
 				if (targetTooltip:IsShown()) then
 					-- remove level from embedded tip
 					for i = 2, min(targetTooltip:NumLines(), LibItemString.TOOLTIP_MAXLINE_LEVEL) do
@@ -2227,8 +2256,9 @@ function LinkTypeFuncs:item(link, linkType, id)
 		else
 			targetTooltip:AddLine(format(L"ItemLevel: %d",itemLevel),unpack(cfg.if_infoColor));
 		end
-		targetTooltip:Show();	-- call Show() to resize tip after adding lines. only necessary for items in toy box.
 	end
+	
+	targetTooltip:Show();	-- call Show() to resize tip after adding lines. only necessary for items in toy box.
 end
 
 -- keystone
@@ -2242,11 +2272,16 @@ function LinkTypeFuncs:keystone(link, linkType, itemID, mapID, keystoneLevel, ..
 	end
 
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
-		local count = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
-		self:ttSetIconTextureAndText(itemTexture, count);
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	local stackCount = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
+	
+	if (showIcon) then
+		self:ttSetIconTextureAndText(itemTexture, stackCount);
 	end
-
+	
+	-- Stack Count
+	ttifAddStackCount(self, stackCount);
+	
 	-- Quality Border
 	if (cfg.if_itemQualityBorder) then
 		local itemQualityColor = CreateColorFromHexString(select(4, GetItemQualityColor(itemRarity or 0)));
@@ -2322,9 +2357,9 @@ function LinkTypeFuncs:keystone(link, linkType, itemID, mapID, keystoneLevel, ..
 				end
 			end
 		end
-		
-		self:Show();	-- call Show() to resize tip after adding lines
 	end
+	
+	self:Show();	-- call Show() to resize tip after adding lines
 end
 
 --abyui 施法者的职业颜色，修复Debuff的问题，AddDoubleLine方式
@@ -2377,7 +2412,9 @@ function LinkTypeFuncs:spell(isAura, source, link, linkType, spellID)
 	local isSpell = (not isAura);
 
 	-- Icon
-	if (not self.IsEmbedded) and (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
+	local showIcon = (not self.IsEmbedded) and (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(icon);
 	end
 	
@@ -2449,7 +2486,9 @@ function LinkTypeFuncs:mawpower(link, linkType, mawPowerID)
 	rank = (rank and rank ~= "" and ", "..rank or "");
 
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(icon);
 	end
 	
@@ -2546,7 +2585,9 @@ function LinkTypeFuncs:currency(link, linkType, currencyID, quantity)
 	end
 	
 	-- Icon
-	if (not self.IsEmbedded) and (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
+	local showIcon = (not self.IsEmbedded) and (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	
+	if (showIcon) then
 		if (currencyInfo) then
 			local displayQuantity = nil;
 			self:ttSetIconTextureAndText(icon, _quantity);	-- As of 5.2 GetCurrencyInfo() now returns full texture path. Previously you had to prefix it with "Interface\\Icons\\"
@@ -2660,7 +2701,9 @@ function LinkTypeFuncs:achievement(link, linkType, achievementID, guid, complete
 		end
 	end
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(icon,points);
 	end
   	--  Colored Border
@@ -2676,7 +2719,9 @@ function LinkTypeFuncs:battlepet(link, linkType, speciesID, level, breedQuality,
 	local speciesName, speciesIcon, petType, creatureID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, _displayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID);
 
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(speciesIcon);
 	end
 
@@ -2791,7 +2836,9 @@ function LinkTypeFuncs:battlePetAbil(link, linkType, abilityID, speciesID, petID
 	local abilityName, abilityIcon, abilityType = C_PetJournal.GetPetAbilityInfo(abilityID)
 
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(abilityIcon);
 	end
 
@@ -2811,7 +2858,9 @@ end
 -- conduit -- Thanks to hobulian for code example
 function LinkTypeFuncs:conduit(link, linkType, conduitID, conduitRank)
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		local spellID = C_Soulbinds.GetConduitSpellID(conduitID, conduitRank);
 		local name, _, icon, castTime, minRange, maxRange, _spellID = GetSpellInfo(spellID);
 		self:ttSetIconTextureAndText(icon);
@@ -2871,17 +2920,23 @@ function LinkTypeFuncs:transmogappearance(link, linkType, sourceID)
 	end
 
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType)) then
-		local count = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
-		self:ttSetIconTextureAndText(itemTexture, count);
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self,linkType));
+	local stackCount = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
+	
+	if (showIcon) then
+		self:ttSetIconTextureAndText(itemTexture, stackCount);
 	end
-
+	
+	-- Stack Count
+	ttifAddStackCount(self, stackCount);
+	
 	-- ItemID
 	if (cfg.if_showTransmogAppearanceItemId) then
 		self:AddLine(format("ItemID: %d", itemID), unpack(cfg.if_infoColor));
-		self:Show();	-- call Show() to resize tip after adding lines
 	end
-
+	
+	self:Show();	-- call Show() to resize tip after adding lines
+	
 	-- Quality Border
 	if (cfg.if_transmogAppearanceItemQualityBorder) then
 		local itemQualityColor = CreateColorFromHexString(select(4, GetItemQualityColor(itemRarity or 0)));
@@ -2894,7 +2949,9 @@ function LinkTypeFuncs:transmogillusion(link, linkType, illusionID)
 	local illusionInfo = C_TransmogCollection.GetIllusionInfo(illusionID);
 	
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(illusionInfo.icon);
 	end
 
@@ -2943,7 +3000,9 @@ function LinkTypeFuncs:transmogset(link, linkType, setID)
 	end
 	
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		local SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin);
 		local icon = SetsDataProvider:GetIconForSet(setID);
 		self:ttSetIconTextureAndText(icon);
@@ -2968,7 +3027,9 @@ function LinkTypeFuncs:azessence(link, linkType, essenceID, essenceRank)
 	local essenceInfo = C_AzeriteEssence.GetEssenceInfo(essenceID);
 	
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(essenceInfo.icon);
 	end
 
@@ -2994,7 +3055,9 @@ function CustomTypeFuncs:runeforgePower(link, linkType, runeforgePowerID)
 	local powerInfo = C_LegendaryCrafting.GetRuneforgePowerInfo(runeforgePowerID);
 	
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(powerInfo.iconFileID);
 	end
 
@@ -3032,7 +3095,9 @@ end
 -- flyout
 function CustomTypeFuncs:flyout(link, linkType, flyoutID, icon)
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(icon);
 	end
 
@@ -3052,7 +3117,9 @@ end
 -- pet action
 function CustomTypeFuncs:petAction(link, linkType, petActionID, icon)
 	-- Icon
-	if (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType)) then
+	local showIcon = (self.ttSetIconTextureAndText) and (not cfg.if_smartIcons or SmartIconEvaluation(self, linkType));
+	
+	if (showIcon) then
 		self:ttSetIconTextureAndText(icon);
 	end
 

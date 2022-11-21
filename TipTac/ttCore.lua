@@ -103,7 +103,7 @@ local TT_DefaultConfig = {
 	colReactBack6 = { 0, 0, 0.5 },
 	colReactBack7 = { 0.05, 0.05, 0.05 },
 
-	enableBackdrop = true,
+	enableBackdrop = false,
 	tipBackdropBG = "Interface\\Buttons\\WHITE8X8",
 	tipBackdropEdge = "Interface\\Tooltips\\UI-Tooltip-Border",
 	pixelPerfectBackdrop = false,
@@ -178,7 +178,20 @@ local TT_DefaultConfig = {
 	anchorFrameUnitPoint = "BOTTOMRIGHT",
 	anchorFrameTipType = "normal",
 	anchorFrameTipPoint = "BOTTOMRIGHT",
-	
+
+	enableAnchorOverrideWorldUnitInCombat = false,
+	anchorWorldUnitTypeInCombat = "normal",
+	anchorWorldUnitPointInCombat = "BOTTOMRIGHT",
+	enableAnchorOverrideWorldTipInCombat = false,
+	anchorWorldTipTypeInCombat = "normal",
+	anchorWorldTipPointInCombat = "BOTTOMRIGHT",
+	enableAnchorOverrideFrameUnitInCombat = false,
+	anchorFrameUnitTypeInCombat = "normal",
+	anchorFrameUnitPointInCombat = "BOTTOMRIGHT",
+	enableAnchorOverrideFrameTipInCombat = false,
+	anchorFrameTipTypeInCombat = "normal",
+	anchorFrameTipPointInCombat = "BOTTOMRIGHT",
+
 	enableAnchorOverrideCF = false,
 	anchorOverrideCFType = "normal",
 	anchorOverrideCFPoint = "BOTTOMRIGHT",
@@ -1076,19 +1089,27 @@ end
 -- valid anchor types: normal/mouse/parent
 -- anchor points: standard UI anchor point
 local function GetAnchorPosition(tooltip)
+	if not cfg then return "normal", "BOTTOMRIGHT" end --abyui
 	local mouseFocus = GetMouseFocus();
 	local isUnit = (tooltip.ttDisplayingUnit) or (not tooltip.ttDisplayingAura) and (UnitExists("mouseover") or (mouseFocus and mouseFocus.GetAttribute and mouseFocus:GetAttribute("unit")));	-- Az: GetAttribute("unit") here is bad, as that will find things like buff frames too
-	local var = "anchor"..(mouseFocus == WorldFrame and "World" or "Frame")..(isUnit and "Unit" or "Tip");
+	local frameName = (mouseFocus == WorldFrame and "World" or "Frame")..(isUnit and "Unit" or "Tip");
+	local var = "anchor"..frameName;
+	if fixInCombat() and cfg[var.."Type"] == "mouse" then return "normal", "BOTTOMRIGHT" end --abyui --TODO:abyui10
+	local anchorOverrideInCombat = (cfg["enableAnchorOverride" .. frameName .. "InCombat"] and UnitAffectingCombat("player") and "InCombat" or "");
+	local ttAnchorType, ttAnchorPoint = cfg[var.."Type"..anchorOverrideInCombat], cfg[var.."Point"..anchorOverrideInCombat];
 	
-	if not cfg then return "normal", "BOTTOMRIGHT" end --abyui
-	if fixInCombat() and cfg[var.."Type"] == "mouse" then return "normal", "BOTTOMRIGHT" end --abyui
-
-	local ttAnchorType, ttAnchorPoint = cfg[var.."Type"], cfg[var.."Point"];
-	
-	-- check for anchor overrides
+	-- check for GTT anchor overrides
 	if (tooltip == gtt) then
-		 -- don't anchor GTT (frame tip type) in "Premade Groups->LFGList" to mouse if addon RaiderIO is loaded
-		if (var == "anchorFrameTip") and (ttAnchorType == "mouse") and (IsAddOnLoaded("RaiderIO")) and (IsInFrameChain(tooltip:GetOwner(), {
+		-- override GTT anchor for (Guild & Community) ChatFrame
+		if (cfg.enableAnchorOverrideCF) and (IsInFrameChain(tooltip:GetOwner(), {
+					"ChatFrame(%d+)",
+					(IsAddOnLoaded("Blizzard_Communities") and CommunitiesFrame.Chat.MessageFrame)
+				}, 1)) then
+			return cfg.anchorOverrideCFType, cfg.anchorOverrideCFPoint;
+		end
+		
+		-- don't anchor GTT (frame tip type) in "Premade Groups->LFGList" to mouse if addon RaiderIO is loaded
+		if (frameName == "FrameTip") and (ttAnchorType == "mouse") and (IsAddOnLoaded("RaiderIO")) and (IsInFrameChain(tooltip:GetOwner(), {
 					LFGListFrame.SearchPanel.ScrollBox,
 					LFGListFrame.ApplicationViewer.ScrollBox
 				}, 6)) then
@@ -1096,18 +1117,10 @@ local function GetAnchorPosition(tooltip)
 		end
 		
 		-- workaround for bug in RaiderIO: https://github.com/RaiderIO/raiderio-addon/issues/203
-		if (var == "anchorFrameTip") and (ttAnchorType == "mouse") and (IsAddOnLoaded("RaiderIO")) and IsAddOnLoaded("Blizzard_Communities") and (IsInFrameChain(tooltip:GetOwner(), {
+		if (frameName == "FrameTip") and (ttAnchorType == "mouse") and (IsAddOnLoaded("RaiderIO")) and IsAddOnLoaded("Blizzard_Communities") and (IsInFrameChain(tooltip:GetOwner(), {
 					CommunitiesFrame.MemberList.ScrollBox
 				}, 3)) then
 			return "normal", "BOTTOMRIGHT";
-		end
-		
-		-- override GTT anchor for (Guild & Community) ChatFrame
-		if (cfg.enableAnchorOverrideCF) and (IsInFrameChain(tooltip:GetOwner(), {
-					"ChatFrame(%d+)",
-					(IsAddOnLoaded("Blizzard_Communities") and CommunitiesFrame.Chat.MessageFrame)
-				}, 1)) then
-			return cfg.anchorOverrideCFType, cfg.anchorOverrideCFPoint;
 		end
 	end
 	
@@ -1789,6 +1802,7 @@ end
 
 -- Function to add a locking feature for SetBackdrop, SetBackdropColor and SetBackdropBorderColor
 function tt:AddLockingFeature(tip)
+	--do return end --cause serious taint abyui
 	if (not cfg.enableBackdrop) then
 		return;
 	end

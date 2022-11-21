@@ -602,9 +602,9 @@ end
 function UUI.Top.Create(main)
     --左上角LOGO及文字
     main:CreateTexture():Key("logo"):SetTexture(UUI.Tex"UI2-logo"):TL(-18, 38):Size(87):un()
-    main:CreateTexture():Key("logof"):TL(-18-20, 38+14):Size(117):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetBlendMode("ADD"):SetAlpha(0.3):up()
+    main:Frame("Frame"):Key("logofc"):TL(-18-18, 38+15):Size(120):SetAlpha(0.25):CreateTexture():ALL():Key("logof"):SetTexture("Interface\\UnitPowerBarAlt\\Atramedes_Circular_Flash"):SetBlendMode("ADD"):up():un()
     main:Button():TL(-8, 48):Size(67):SetScript("OnClick", function() local f = U1DonatorsFrame or U1Donators:CreateFrame() CoreUIShowOrHide(f, not f:IsShown()) end):un()
-    UICoreFrameFlash(main.logof, 1 , 1, -1, nil, 0, 0)
+    UICoreFrameFlash(main.logofc.logof, 1 , .8, -1, nil, 0, 0)
 
     main:Texture(nil, nil, UUI.Tex'UI2-text', 0,1,0,0.5):TL(74, -7):Size(256,32):un()
     local url = main:Button():Size(180, 32):TL(180, -11):Texture(nil, nil, UUI.Tex'UI2-text', 0,180/256,0.5,1):ALL():ToTexture("Normal"):up():un()

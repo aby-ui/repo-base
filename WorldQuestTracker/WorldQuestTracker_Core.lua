@@ -4407,9 +4407,12 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 			WorldQuestTracker.OptionsInterfaceMenu.options_button = CreateFrame ("button", nil, WorldQuestTracker.OptionsInterfaceMenu)
 			DetailsFramework:ApplyStandardBackdrop(WorldQuestTracker.OptionsInterfaceMenu.options_button)
 			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetText ("Hover Over Me: Options Menu")
-			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetPoint("topleft", WorldQuestTracker.OptionsInterfaceMenu, "topleft", 100, -300)
+			setup_button (WorldQuestTracker.OptionsInterfaceMenu.options_button, L["Hover Over Me: Options Menu"])
+			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetPoint("topleft", WorldQuestTracker.OptionsInterfaceMenu, "topleft", 20, -20)
 			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetWidth (270)
-			
+			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetHeight (24)
+			WorldQuestTracker:SetFontSize(WorldQuestTracker.OptionsInterfaceMenu.options_button.Text, 16)
+
 			WorldQuestTracker.OptionsInterfaceMenu.options_button.CoolTip = {
 				Type = "menu",
 				BuildFunc = BuildOptionsMenu, --> called when user mouse over the frame

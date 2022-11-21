@@ -141,10 +141,11 @@ function Fizzle:OnInitialize()
 	db = self.db.profile
 	-- Register our options
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("Fizzle", getOptions)
-	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Fizzle", GetAddOnMetadata("Fizzle", "Title"))
+	local addonTitle = GetAddOnMetadata("Fizzle", "Title"):gsub("%|cff880303%[爱不易%]%|r ", "")
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Fizzle", addonTitle)
 	-- Register chat command to open options dialog
-	self:RegisterChatCommand("fizzle", function() InterfaceOptionsFrame_OpenToCategory(GetAddOnMetadata("Fizzle", "Title")) end)
-	self:RegisterChatCommand("fizz", function() InterfaceOptionsFrame_OpenToCategory(GetAddOnMetadata("Fizzle", "Title")) end)
+	self:RegisterChatCommand("fizzle", function() InterfaceOptionsFrame_OpenToCategory(addonTitle) end)
+	self:RegisterChatCommand("fizz", function() InterfaceOptionsFrame_OpenToCategory(addonTitle) end)
 end
 
 function Fizzle:OnEnable()

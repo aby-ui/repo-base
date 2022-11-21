@@ -57,6 +57,7 @@ local defaults = {
 			EnableBag2 = true,
 			EnableBag3 = true,
 			EnableBag4 = true,
+			EnableBag5 = true,
 		},
 	},
 	global = {

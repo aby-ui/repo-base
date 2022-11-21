@@ -48,9 +48,9 @@ local Mod = Addon:NewModule('Keystone')
 
 local function SlotKeystone()
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		local slots = GetContainerNumSlots(container)
+		local slots = C_Container.GetContainerNumSlots(container)
 		for slot=1, slots do
-			local _, _, _, _, _, _, slotLink, _, _, slotItemID = GetContainerItemInfo(container, slot)
+			local _, _, _, _, _, _, slotLink, _, _, slotItemID = C_Container.GetContainerItemInfo(container, slot)
 			if slotLink and slotLink:match("|Hkeystone:") then
 				PickupContainerItem(container, slot)
 				if (CursorHasItem()) then

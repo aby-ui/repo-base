@@ -17,4 +17,15 @@ U1RegisterAddon("WorldQuestTracker", {
         end
         return true
     end,
+
+    {
+        text = "配置选项",
+        callback = function()
+            if not WorldMapFrame.firstRun then
+                ToggleWorldMap()
+            end
+            local L = LibStub ("AceLocale-3.0"):GetLocale ("WorldQuestTrackerAddon", true)
+            InterfaceOptionsFrame_OpenToCategory(L["World Quest Tracker"])
+        end
+    }
 });

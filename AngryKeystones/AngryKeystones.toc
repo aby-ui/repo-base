@@ -5,7 +5,7 @@
 ## Author: Ermad
 ## SavedVariables: AngryKeystones_Config, AngryKeystones_Data
 ## SavedVariablesPerCharacter: AngryKeystones_CharacterConfig
-## X-Packaged-Version: v0.26.2
+## X-Packaged-Version: v0.26.3
 
 #embeds.xml
 

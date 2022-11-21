@@ -157,12 +157,17 @@ function Postal_QuickAttachLeftButtonClick(classID, subclassID)
 		SendMailNameEditBox:SetText(name)
 		SendMailNameEditBox:HighlightText()
 	end
-	for bagID = 0, 4, 1 do
+	local bagIDmax = NUM_BAG_FRAMES
+	if Postal.WOWRetail then
+		bagIDmax = bagIDmax + NUM_REAGENTBAG_FRAMES
+	end
+	for bagID = 0, bagIDmax, 1 do
 		if (bagID == 0) and Postal.db.profile.QuickAttach.EnableBag0 or
 			(bagID == 1) and Postal.db.profile.QuickAttach.EnableBag1 or
 			(bagID == 2) and Postal.db.profile.QuickAttach.EnableBag2 or
 			(bagID == 3) and Postal.db.profile.QuickAttach.EnableBag3 or
-			(bagID == 4) and Postal.db.profile.QuickAttach.EnableBag4
+			(bagID == 4) and Postal.db.profile.QuickAttach.EnableBag4 or
+			(bagID == 5) and Postal.db.profile.QuickAttach.EnableBag5
 		then
 			if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
 				numberOfSlots = GetContainerNumSlots(bagID)
@@ -341,5 +346,14 @@ function Postal_QuickAttach.ModuleMenu(self, level)
 		info.arg2 = "EnableBag4"
 		info.checked = Postal.db.profile.QuickAttach.EnableBag4
 		UIDropDownMenu_AddButton(info, level)
+
+		if Postal.WOWRetail then
+			info.text = L["Enable for reagent bag"]
+			info.func = Postal.SaveOption
+			info.arg1 = "QuickAttach"
+			info.arg2 = "EnableBag5"
+			info.checked = Postal.db.profile.QuickAttach.EnableBag5
+			UIDropDownMenu_AddButton(info, level)
+		end
 	end
 end

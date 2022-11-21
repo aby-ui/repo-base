@@ -16,16 +16,9 @@ function ExtraAbilityBar:GetDisplayName()
 end
 
 ExtraAbilityBar:Extend('OnAcquire',  function(self)
-    local container = ExtraAbilityContainer
-
-    container:ClearAllPoints()
-    container:SetPoint('CENTER', self)
-    container:SetParent(self)
-
-    self.container = container
-
-    self:Layout()
+    self:RepositionExtraAbilityContainer()
     self:UpdateShowBlizzardTexture()
+    self:Layout()
 end)
 
 function ExtraAbilityBar:ThemeBar(enable)
@@ -75,6 +68,14 @@ function ExtraAbilityBar:Layout()
     local pW, pH = self:GetPadding()
 
     self:SetSize(w + pW, h + pH)
+end
+
+function ExtraAbilityBar:RepositionExtraAbilityContainer()
+    local container = ExtraAbilityContainer
+
+    container:SetParent(self)
+    container:ClearAllPointsBase()
+    container:SetPointBase('CENTER', self)
 end
 
 function ExtraAbilityBar:OnCreateMenu(menu)
@@ -152,9 +153,6 @@ function ExtraAbilityBarModule:OnFirstLoad()
         ExtraActionBarFrame:EnableMouse(false)
     end
 
-    -- prevent the stock UI from messing with the extra ability bar position
-    ExtraAbilityContainer.ignoreFramePositionManager = true
-
     -- onshow/hide call UpdateManagedFramePositions on the blizzard end so
     -- turn that bit off
     ExtraAbilityContainer:SetScript("OnShow", nil)
@@ -169,7 +167,23 @@ function ExtraAbilityBarModule:OnFirstLoad()
             end
         end
     )
+
+    -- also reposition whenever edit mode tries to do so
+    hooksecurefunc(ExtraAbilityContainer, 'ApplySystemAnchor', function()
+        self:RepositionExtraAbilityContainer()
+    end)
 end
+
+function ExtraAbilityBarModule:RepositionExtraAbilityContainer()
+    if (not self.frame) then return end
+
+    local _, relFrame = ExtraAbilityContainer:GetPoint()
+
+    if self.frame ~= relFrame then
+        self.frame:RepositionExtraAbilityContainer()
+    end
+end
+
 
 -- Titan panel will attempt to take control of the ExtraActionBarFrame and break
 -- its position and ability to be usable. This is because Titan Panel doesn't
