@@ -1668,12 +1668,20 @@ function U1:ADDON_LOADED(event, name)
         if U1DBG.lastReloadTime and math.abs(GetTime() - U1DBG.lastReloadTime) > 5 then U1DBG.lastReloadTime = nil end
         db.selectedTag = db.selectedTag or defaultDB.selectedTag;
 
-        if U1.returnFromDisableAll then
+        if U1.restoreFromDisableAll then
             --恢复之前的状态
-            for k, v in pairs(U1DB and U1DB.addons or {}) do
-                if v==1 and k~=string.lower(_) then
-                    EnableAddOn(k)
-                    if addonInfo[k] then addonInfo[k].originEnabled = true end
+            U1Message("检测到只开启了控制台，还原全关之前的状态...")
+            for k, state in pairs(U1DB and U1DB.addons or {}) do
+                if state == 1 and k~=string.lower(_) then
+                    local v = addonInfo[k]
+                    if v then
+                        if (v.registered and v.load~="NORMAL" and not v.realLOD) and k~=strlower(_) then
+                            --DisableAddOn() --same as ConfigLoaded() but already disabled
+                        else
+                            EnableAddOn(k)
+                        end
+                        v.originEnabled = true
+                    end
                 end
             end
         end

@@ -430,6 +430,8 @@
 --			Adds support for quests that only become available after the next daily reset.
 --			Adds an option to hide the quest ID on the Quest Frame.
 --			Adds support for quests that only become available when currency requirements are met.
+--		087 *** Requires Grail 119 or later ***
+--			Changes retail interface to 100000, Wrath to 30400 and Vanilla to 11403.
 --
 --	Known Issues
 --
@@ -486,7 +488,7 @@ local directoryName, _ = ...
 local versionFromToc = GetAddOnMetadata(directoryName, "Version")
 local _, _, versionValueFromToc = strfind(versionFromToc, "(%d+)")
 local Wholly_File_Version = tonumber(versionValueFromToc)
-local requiredGrailVersion = 116
+local requiredGrailVersion = 119
 
 --	Set up the bindings to use the localized name Blizzard supplies.  Note that the Bindings.xml file cannot
 --	just contain the TOGGLEQUESTLOG because then the entry for Wholly does not show up.  So, we use a version
@@ -785,7 +787,12 @@ self.tooltip:SetParent(UIParent);
 self.tooltip:SetFrameStrata("TOOLTIP");
 end)
 
-GameTooltip:HookScript("OnTooltipSetUnit", Wholly._CheckNPCTooltip)
+-- Dragonflight introduces new tool tip processing
+if TooltipDataProcessor then
+	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, Wholly._CheckNPCTooltip)
+else
+	GameTooltip:HookScript("OnTooltipSetUnit", Wholly._CheckNPCTooltip)
+end
 
 					self:_SetupBlizzardQuestLogSupport()
 					self:_SetupQuestInfoFrame()
@@ -1321,8 +1328,9 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 
 		--	This adds a line to the "current" tooltip, creating a new one as needed.
 		_AddLine = function(self, value, value2, texture, shouldWrap)
+			local tt
 			if not self.onlyAddingTooltipToGameTooltip then
-				local tt = self.tt[self.currentTt]
+				tt = self.tt[self.currentTt]
 				if tt:NumLines() >= self.currentMaximumTooltipLines then
 					local previousTt = tt
 					self.currentTt = self.currentTt + 1
@@ -1334,31 +1342,20 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 					tt:SetOwner(previousTt, "ANCHOR_RIGHT")
 					tt:ClearLines()
 				end
-				if nil ~= value2 then
-					tt:AddDoubleLine(value, value2)
-				else
-					if shouldWrap then
-						tt:AddLine(value, 1, 1, 1, shouldWrap)
-					else
-						tt:AddLine(value)
-					end
-				end
-				if nil ~= texture then
-					tt:AddTexture(texture)
-				end
 			else
-				if nil ~= value2 then
-					GameTooltip:AddDoubleLine(value, value2)
+				tt = GameTooltip
+			end
+			if nil ~= value2 then
+				tt:AddDoubleLine(value, value2)
+			else
+				if shouldWrap then
+					tt:AddLine(value, 1, 1, 1, shouldWrap)
 				else
-					if shouldWrap then
-						GameTooltip:AddLine(value, 1, 1, 1, shouldWrap)
-					else
-						GameTooltip:AddLine(value)
-					end
+					tt:AddLine(value)
 				end
-				if nil ~= texture then
-					GameTooltip:AddTexture(texture)
-				end
+			end
+			if nil ~= texture then
+				tt:AddTexture(texture)
 			end
 		end,
 
@@ -2526,7 +2523,7 @@ WorldMapFrame:AddDataProvider(self.mapPinsProvider)
 			db.showsPetBattleQuests = true
 			db.showsPVPQuests = true
 			db.showsWorldQuests = true
-			db.loadDataData = true
+			db.loadDateData = true
 			db.displaysMapPinsTurnin = true
 			db.displaysMapPinsTurninIncomplete = false
 			db.version = Wholly.versionNumber
@@ -3546,7 +3543,7 @@ end
 						button:SetNormalTexture("Interface\\Buttons\\UI-MinusButton-Up")
 					end
 				else
-					button:SetNormalTexture("")
+					button:SetNormalTexture("Interface\\Addons\\Wholly\\blank")
 				end
 				button.item = item
 				local f
@@ -3999,7 +3996,7 @@ end
 				editBox:SetScript("OnEscapePressed", function(self) com_mithrandir_whollySearchFrame:Hide() end)
 				editBox:SetFontObject("ChatFontNormal")
 
-				local searchButton = CreateFrame("Button", nil, frame, "OptionsButtonTemplate")
+				local searchButton = CreateFrame("Button", nil, frame)
 				searchButton:SetText(SEARCH)
 				searchButton:SetPoint("BOTTOM", 0, 8)
 				searchButton:SetScript("OnClick", function(self) Wholly:SearchEntered() end)
@@ -4016,6 +4013,36 @@ end
 				_G[format("com_mithrandir_WhollyTooltipText%s%d", txt, self:NumLines())]:SetFont(fontObj:GetFont())
 			end
 			self.tt = { [1] = GameTooltip }
+		end,
+
+		_SetupScrollFrame = function(self, scrollFrameName, frame, sizeX, sizeY, offsetX, offsetY)
+			local scrollFrame = CreateFrame("ScrollFrame", scrollFrameName, frame, "HybridScrollFrameTemplate")
+			scrollFrame:SetSize(sizeX, sizeY)
+			scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", offsetX, offsetY)
+			
+			local slider = CreateFrame("Slider", scrollFrameName.."ScrollBar", scrollFrame, "HybridScrollBarTemplate")
+			slider:SetPoint("TOPLEFT", scrollFrame, "TOPRIGHT", 0, -13)
+			slider:SetPoint("BOTTOMLEFT", scrollFrame, "BOTTOMRIGHT", 0, 14)
+			slider:SetScript("OnLoad", function(self)
+				local name = self:GetName()
+				_G[name.."BG"]:Hide()
+				_G[name.."Top"]:Hide()
+				_G[name.."Bottom"]:Hide()
+				_G[name.."Middle"]:Hide()
+				self.doNotHide = true
+			end)
+			scrollFrame.scrollBar = slider	-- hopefully this is parentKey="scrollBar"
+
+			local highlightName = scrollFrameName.."LogHighlightFrame"
+			local subSubFrame = CreateFrame("Frame", highlightName)
+			subSubFrame:Hide()
+--			subSubFrame:SetPoint("TOPLEFT")
+--			subSubFrame:SetPoint("BOTTOMRIGHT")
+			local highlightTexture = subSubFrame:CreateTexture(highlightName.."LogSkillHighlight", "ARTWORK")
+			highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
+--			highlightTexture:SetAlphaMode("ADD")
+			subSubFrame:SetScript("OnLoad", function(self) self:SetParent(nil) end)
+			return scrollFrame
 		end,
 
 		_SetupWhollyQuestPanel = function(self)
@@ -4089,12 +4116,13 @@ end
 				closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30 + offsetX, -8)
 
 				local sortButton = CreateFrame("Button", frameName.."SortButton", frame, "UIPanelButtonTemplate")
+				Wholly.sortButtonTooltip = CreateFrame("GameTooltip", "com_mithrandir_WhollySortButtonTooltip", UIParent, "GameTooltipTemplate");
 				sortButton:SetText(TRACKER_SORT_LABEL)
 				sortButton:SetSize(110, 21)
 				sortButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -43 + offsetX, 80 + offsetY)
 				sortButton:SetScript("OnClick", function(self) Wholly:Sort(self) end)
 				sortButton:SetScript("OnEnter", function(self) Wholly:SortButtonEnter(self) end)
-				sortButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+				sortButton:SetScript("OnLeave", function(self) Wholly:SortButtonLeave(self) end)
 
 				local preferencesButton = CreateFrame("Button", frameName.."PreferencesButton", frame, "UIPanelButtonTemplate")
 				preferencesButton:SetText(PREFERENCES)
@@ -4110,33 +4138,7 @@ end
 				mapButton:SetScript("OnEnter", function(self) Wholly:ZoneButtonEnter(self) end)
 				mapButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
-				local scrollFrameName = frameName.."ScrollFrame"
-				local scrollFrame = CreateFrame("ScrollFrame", scrollFrameName, frame, "HybridScrollFrameTemplate")
-				scrollFrame:SetSize(305, 335)
-				scrollFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", 19, -75)
-
-				local slider = CreateFrame("Slider", scrollFrameName.."ScrollBar", scrollFrame, "HybridScrollBarTemplate")
-				slider:SetPoint("TOPLEFT", scrollFrame, "TOPRIGHT", 0, -13)
-				slider:SetPoint("BOTTOMLEFT", scrollFrame, "BOTTOMRIGHT", 0, 14)
-				slider:SetScript("OnLoad", function(self)
-					local name = self:GetName()
-					_G[name.."BG"]:Hide()
-					_G[name.."Top"]:Hide()
-					_G[name.."Bottom"]:Hide()
-					_G[name.."Middle"]:Hide()
-					self.doNotHide = true
-				end)
-				scrollFrame.scrollBar = slider	-- hopefully this is parentKey="scrollBar"
-
-				local highlightName = scrollFrameName.."LogHighlightFrame"
-				local subSubFrame = CreateFrame("Frame", highlightName)
-				subSubFrame:Hide()
-				subSubFrame:SetPoint("TOPLEFT")
-				subSubFrame:SetPoint("BOTTOMRIGHT")
-				local highlightTexture = subSubFrame:CreateTexture(highlightName.."LogSkillHighlight", "ARTWORK")
-				highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
-			--				highlightTexture:SetAlphaMode("ADD")
-				subSubFrame:SetScript("OnLoad", function(self) self:SetParent(nil) end)
+				local scrollFrame = self:_SetupScrollFrame(frameName.."ScrollFrame", frame, 305, 335, 19, -75)
 				scrollFrame:SetScript("OnLoad", function(self) Wholly:ScrollFrame_OnLoad(self) end)
 
 				frame:SetScript("OnShow", function(self)
@@ -4167,6 +4169,137 @@ end
 				Wholly:OnLoad(frame)	-- no need to do this, as it does nothing
 				tinsert(UISpecialFrames, frame:GetName())
 				Wholly:ScrollFrame_OnLoad(scrollFrame)
+			end
+			if nil == com_mithrandir_whollyFrameWide then
+				local frameName = "com_mithrandir_whollyFrameWide"
+				local frame = CreateFrame("Frame", frameName, UIParent)
+				frame:SetToplevel(true)
+				frame:EnableMouse(true)
+				frame:SetMovable(true)
+				frame:Hide()
+				frame:SetSize(682, 447)
+				frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -104)
+
+				local bookTexture = frame:CreateTexture(nil, "BACKGROUND")
+				bookTexture:SetSize(64, 64)
+				bookTexture:SetPoint("TOPLEFT", 3, -4)
+				bookTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLog-BookIcon")
+
+				local topLeftTexture = frame:CreateTexture(nil, "BACKGROUND")
+				topLeftTexture:SetPoint("TOPLEFT")
+				local originalTextureX, originalTextureY = 512, 512
+				local desiredX, desiredY = 512, 445
+				topLeftTexture:SetSize(desiredX, desiredY)
+				topLeftTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Left")
+				topLeftTexture:SetTexCoord(0, desiredX / originalTextureX, 0, desiredY / originalTextureY)
+
+				local topRightTexture = frame:CreateTexture(nil, "BACKGROUND")
+				topRightTexture:SetPoint("TOPRIGHT")
+				originalTextureX, originalTextureY = 256, 512
+				desiredX, desiredY = 170, 445
+				topRightTexture:SetSize(desiredX, desiredY)
+				topRightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Right")
+				topRightTexture:SetTexCoord(0, desiredX / originalTextureX, 0, desiredY / originalTextureY)
+
+				local fontString = frame:CreateFontString(frameName.."TitleText", "ARTWORK", "GameFontNormal")
+				fontString:SetSize(300, 14)
+				fontString:SetPoint("TOP", 0, -15)
+				fontString:SetText(QUEST_LOG)
+				
+				local bottomRightInnerTexture = frame:CreateTexture(nil, "BORDER")
+				bottomRightInnerTexture:SetPoint("BOTTOMRIGHT", -80, 2)
+				bottomRightInnerTexture:SetSize(80, 34)
+				bottomRightInnerTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Right")
+				bottomRightInnerTexture:SetTexCoord(0.3046875, 0.6171875, 0.80273, 0.86914)
+
+				local topLeftInnerTexture = frame:CreateTexture(nil, "BORDER")
+				topLeftInnerTexture:SetPoint("TOPLEFT", -1, -218)
+				topLeftInnerTexture:SetSize(350, 4)
+				topLeftInnerTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Left")
+				topLeftInnerTexture:SetTexCoord(0.0, 0.625, 0.7988275, 0.80664)
+
+				local bottomLeftInnerTexture = frame:CreateTexture(nil, "BORDER")
+				bottomLeftInnerTexture:SetPoint("BOTTOMLEFT", 270, 2)
+				bottomLeftInnerTexture:SetSize(80, 34)
+				bottomLeftInnerTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Left")
+				bottomLeftInnerTexture:SetTexCoord(0.4765625, 0.6328125, 0.80273, 0.86914)
+
+				local secondBottomLeftInnerTexture = frame:CreateTexture(nil, "BORDER")
+				secondBottomLeftInnerTexture:SetPoint("BOTTOMLEFT", 350, 36)
+				secondBottomLeftInnerTexture:SetSize(300, 338)
+				secondBottomLeftInnerTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogDualPane-Left")
+				secondBottomLeftInnerTexture:SetTexCoord(0.0390625, 0.566640625, 0.140625, 0.80078063)
+				
+				local offsetX, offsetY = 0, 0
+				
+				local closeButton = CreateFrame("Button", frameName.."CloseButton", frame, "UIPanelCloseButton")
+				closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 2 + offsetX, -8)
+				
+				local switchZoneButton = CreateFrame("Button", frameName.."SwitchZoneButton", frame, "UIPanelButtonTemplate")
+				switchZoneButton:SetText(MAP)
+				switchZoneButton:SetSize(110, 21)
+				switchZoneButton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18 + offsetX, 15 + offsetY)
+				switchZoneButton:SetScript("OnClick", function(self) Wholly:SetCurrentMapToPanel(self) end)
+				switchZoneButton:SetScript("OnEnter", function(self) Wholly:ZoneButtonEnter(self) end)
+				switchZoneButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+				
+				local reallySwitchZoneButton = CreateFrame("Button", frameName.."ReallySwitchZoneButton", frame, "UIPanelButtonTemplate")
+				reallySwitchZoneButton:SetText(ZONE)
+				reallySwitchZoneButton:SetSize(96, 21)
+				reallySwitchZoneButton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 129 + offsetX, 15 + offsetY)
+				reallySwitchZoneButton:SetScript("OnClick", function(self) Wholly:SetCurrentZoneToPanel(self) end)
+				reallySwitchZoneButton:SetScript("OnEnter", function(self) Wholly:ZoneButtonEnter(self) end)
+				reallySwitchZoneButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+
+				local preferencesButton = CreateFrame("Button", frameName.."PreferencesButton", frame, "UIPanelButtonTemplate")
+				preferencesButton:SetText(PREFERENCES)
+				preferencesButton:SetSize(124, 21)
+				preferencesButton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 224 + offsetX, 15 + offsetY)
+				preferencesButton:SetScript("OnClick", function(self) Wholly:_OpenInterfaceOptions() end)
+
+				local sortButton = CreateFrame("Button", frameName.."SortButton", frame, "UIPanelButtonTemplate")
+				Wholly.sortButtonTooltip = CreateFrame("GameTooltip", "com_mithrandir_WhollySortButtonTooltip", UIParent, "GameTooltipTemplate");
+				sortButton:SetText(TRACKER_SORT_LABEL)
+				sortButton:SetSize(150, 21)
+				sortButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8 + offsetX, 15 + offsetY)
+				sortButton:SetScript("OnClick", function(self) Wholly:Sort(self) end)
+				sortButton:SetScript("OnEnter", function(self) Wholly:SortButtonEnter(self) end)
+				sortButton:SetScript("OnLeave", function(self) Wholly:SortButtonLeave(self) end)
+
+				local scrollOneFrame = self:_SetupScrollFrame(frameName.."ScrollOneFrame", frame, 305, 140, 19, -75)
+				scrollOneFrame:SetScript("OnLoad", function(self) Wholly:ScrollFrameOne_OnLoad(self) end)
+
+				local scrollTwoFrame = self:_SetupScrollFrame(frameName.."ScrollTwoFrame", frame, 305, 180, 19, -224)
+				scrollTwoFrame:SetScript("OnLoad", function(self) Wholly:ScrollFrameTwo_OnLoad(self) end)
+
+				frame:SetScript("OnShow", function(self)
+					Wholly:OnShow(self)
+					PlaySound(PlaySoundKitID and "igCharacterInfoOpen" or 839)
+				end)
+				frame:SetScript("OnHide", function(self)
+					Wholly:OnHide(self)
+					PlaySound(PlaySoundKitID and "igCharacterInfoClose" or 840)
+					if self.isMoving then
+						self:StopMovingOrSizing()
+						self.isMoving = false
+					end
+				end)
+				frame:SetScript("OnMouseUp", function(self)
+					if self.isMoving then
+						self:StopMovingOrSizing()
+						self.isMoving = false
+					end
+				end)
+				frame:SetScript("OnMouseDown", function(self, button)
+					if (not self.isLocked or self.isLocked == 0) and button == "LeftButton" then
+						self:StartMoving()
+						self.isMoving = true
+					end
+				end)
+
+				tinsert(UISpecialFrames, frame:GetName())
+				Wholly:ScrollFrameOne_OnLoad(scrollOneFrame)
+				Wholly:ScrollFrameTwo_OnLoad(scrollTwoFrame)
 			end
 		end,
 
@@ -4342,6 +4475,7 @@ end
 			WhollyDatabase.currentSortingMode = WhollyDatabase.currentSortingMode + 1
 			if (WhollyDatabase.currentSortingMode > 5) then WhollyDatabase.currentSortingMode = 1 end
 			self:ScrollFrame_Update_WithCombatCheck()
+			self:SortButtonLeave(frame)
 			self:SortButtonEnter(frame)	-- to update the tooltip with the new sorting info
 		end,
 
@@ -4353,11 +4487,19 @@ end
 				[4] = self.s.TYPE..", "..self.s.ALPHABETICAL,
 				[5] = self.s.TYPE..", "..self.s.LEVEL..", "..self.s.ALPHABETICAL,
 				}
-			GameTooltip:ClearLines()
-			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(sortModes[WhollyDatabase.currentSortingMode])
-			GameTooltip:Show()
-			GameTooltip:ClearAllPoints()
+--			if C_TooltipInfo then
+			
+--			else
+				Wholly.sortButtonTooltip:ClearLines()
+				Wholly.sortButtonTooltip:SetOwner(frame, "ANCHOR_RIGHT")
+				Wholly.sortButtonTooltip:AddLine(sortModes[WhollyDatabase.currentSortingMode])
+				Wholly.sortButtonTooltip:Show()
+				Wholly.sortButtonTooltip:ClearAllPoints()
+--			end
+		end,
+
+		SortButtonLeave = function(self, frame)
+			self.sortButtonTooltip:Hide()
 		end,
 
 		SortingFunction = function(a, b)

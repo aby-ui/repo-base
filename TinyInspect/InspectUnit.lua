@@ -60,7 +60,7 @@ local function GetInspectItemListFrame(parent)
         frame.level = frame:CreateFontString(nil, "ARTWORK", itemfont)
         frame.level:SetPoint("TOPLEFT", frame, "TOPLEFT", 66, -42)
         frame.level:SetFont(frame.level:GetFont(), 14, "THINOUTLINE")
-        
+
         local itemframe
         local fontsize = GetLocale():sub(1,2) == "zh" and 12 or 9
         local backdrop = {
@@ -73,7 +73,7 @@ local function GetInspectItemListFrame(parent)
         }
         for i, v in ipairs(slots) do
             itemframe = CreateFrame("Button", nil, frame, "BackdropTemplate")
-            itemframe:SetSize(120, (height-82)/#slots)
+            itemframe:SetSize(120, min((height-82)/#slots,28))
             itemframe.index = v.index
             itemframe.backdrop = backdrop
             if (i == 1) then
@@ -251,7 +251,14 @@ end)
 
 --設置邊框
 LibEvent:attachTrigger("INSPECT_FRAME_SHOWN", function(self, frame, parent, ilevel)
-    local backdrop = frame:GetBackdrop()
+    local backdrop = frame:GetBackdrop() or {
+            bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile     = true,
+            tileSize = 8,
+            edgeSize = 16,
+            insets   = {left = 4, right = 4, top = 4, bottom = 4}
+          }
     if (TinyInspectDB and TinyInspectDB.ShowInspectAngularBorder) then
         backdrop.edgeSize = 1
         backdrop.edgeFile = "Interface\\Buttons\\WHITE8X8"

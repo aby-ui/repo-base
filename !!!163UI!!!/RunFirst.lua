@@ -45,7 +45,7 @@ SetCVar("predictedHealth", "1") --9.2 影响团队框架更新速度
 
 --- 全关插件然后再单独启用控制台时, 恢复之前的状态, 方便全关测试是否插件问题然后恢复
 local sum = 0 for i = 1, GetNumAddOns() do sum = sum + GetAddOnEnableState(U1PlayerName,i) end
-U1.returnFromDisableAll = sum == 2
+U1.restoreFromDisableAll = sum == 2
 
 ---创建一个locale表, 对于["text"]=true的值会返回"text", 同时L["zhCN"]会有值
 local localeMetaTable = {__newindex = function(t, k, v) rawset(t, k, v==true and k or v) end}

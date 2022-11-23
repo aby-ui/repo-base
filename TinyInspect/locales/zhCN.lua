@@ -36,7 +36,7 @@ ns.L = {
     PaperDoll                   = "人物面板",
     Chat                        = "聊天",
     Loot                        = "拾取",
-    ShowCorruptedMark           = "装等后面显示腐蚀标记",
+    ShowGemAndEnchant           = "显示宝石和附魔信息",
 }
 
 BINDING_NAME_InspectRaidFrame = "TinyInspect: 显示团队观察面板"

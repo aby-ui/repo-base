@@ -31,6 +31,7 @@ if not tip then
 		tip[i] = _G["GearStatsSummaryTooltipTextLeft"..i]
 		if not tip[i] then
 			tip[i] = tip:CreateFontString()
+			tip[i]:SetFont(ChatFontNormal:GetFont())
 			tip:AddFontStrings(tip[i], tip:CreateFontString())
 			_G["GearStatsSummaryTooltipTextLeft"..i] = tip[i]
 		end

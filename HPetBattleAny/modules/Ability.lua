@@ -77,7 +77,7 @@ local function PetBattleAbilityButton_UpdateBetterIconhook(self)
 	self.BetterIcon:Hide();
 
 	local petOwner, petIndex= self:GetParent():GetPetXY()
-	local enemypet = petOwner == LE_BATTLE_PET_ALLY and LE_BATTLE_PET_ENEMY or LE_BATTLE_PET_ALLY
+	local enemypet = petOwner == Enum.BattlePetOwner.Ally and Enum.BattlePetOwner.Enemy or Enum.BattlePetOwner.Ally --顺序没错的样子
 
 	if (not petIndex) or (not petOwner) or (not enemypet) then
 		return;
@@ -151,7 +151,7 @@ local function PetBattleActionButton_UpdateStatehook(self)
 	end
 
 	--获取usable/cooldown/locked的状态
-	if ( actionType == LE_BATTLE_PET_ACTION_ABILITY ) then
+	if ( actionType == Enum.BattlePetAction.Ability ) then
 		local _, name, icon = SelfGetAbilityInfo(petOwner, petIndex, actionIndex);
 		if ( name ) then
 			local isUsable, currentCooldown, _, lock, isAh= SelfGetAbilityState(petOwner, petIndex, actionIndex);
@@ -646,7 +646,7 @@ f:SetScript("OnEvent",function(self,event,msg,...)
 	end
 	if event == "PET_BATTLE_ACTION_SELECTED" then
 		local selectedActionType, selectedActionIndex = C_PetBattles.GetSelectedAction()
-		if selectedActionType == LE_BATTLE_PET_ACTION_ABILITY then
+		if selectedActionType == Enum.BattlePetAction.Ability then
 			useA = selectedActionIndex
 		end
 	end

@@ -1559,6 +1559,7 @@ G[1375021]='Perished Automa'
 G[1375283]='Percolation Array'
 G[1375517]='Suspicious Rubble Pile'
 G[1375972]='Wanted: Custos'
+G[1376757]='WANTED: Frigellus'
 end
 
 if release >= 42852 then
@@ -1664,6 +1665,16 @@ G[1370514]='Orb Fragments'
 G[1370515]='Orb Fragments'
 G[1375179]='Orb Fragments'
 G[1375333]='Elusive Rich Elethium Deposit'
+end
+
+if release >= 46479 then
+G[1377499]='On the Origin of Draconic Species'
+G[1380902]='Fields of Ferocity'
+G[1381701]="WANTED: Mara'nar the Thunderous"
+end
+
+if release >= 46619 then
+G[1379321]='Mysterious Paw Print'
 end
 
 --	End of localized NPC names

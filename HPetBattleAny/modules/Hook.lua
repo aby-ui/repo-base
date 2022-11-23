@@ -553,7 +553,7 @@ hookfunction.PetBattleUnitTooltip_UpdateForUnit = function(self, petOwner, petIn
 	local strbreedID=""
 ------- 成长值
 	GameTooltip:SetOwner(self,"ANCHOR_BOTTOM");
-	if petOwner == LE_BATTLE_PET_ENEMY and HPetBattleAny.EnemyPetInfo[petIndex] then
+	if petOwner == Enum.BattlePetOwner.Enemy and HPetBattleAny.EnemyPetInfo[petIndex] then
 		local EnemyPet=HPetBattleAny.EnemyPetInfo[petIndex]
 		local ghealth, gpower, gspeed, breedID = HPetBattleAny.ShowMaxValue("EnemyPet",petIndex)
 		if ghealth~="" and ghealth~=nil then
@@ -723,12 +723,12 @@ end
 
 ----- 宠物对战的时候，鼠标放置技能上面。tooltip固定到了右下角。但是放在被动上面却依附在鼠标附近。这应该算是个bug，所以我hook这一段，进行了一点点修改
 hookfunction.PetBattleAbilityButton_OnEnter= function(self)
-	local petIndex = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY);
-	if ( self:GetEffectiveAlpha() > 0 and C_PetBattles.GetAbilityInfo(LE_BATTLE_PET_ALLY, petIndex, self:GetID()) ) then
-		PetBattleAbilityTooltip_SetAbility(LE_BATTLE_PET_ALLY, petIndex, self:GetID());
+	local petIndex = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
+	if ( self:GetEffectiveAlpha() > 0 and C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, petIndex, self:GetID()) ) then
+		PetBattleAbilityTooltip_SetAbility(Enum.BattlePetOwner.Ally, petIndex, self:GetID());
 		PetBattleAbilityTooltip_Show("BOTTOMLEFT", self, "TOPRIGHT", 0, 0, self.additionalText);
 	elseif ( self.abilityID ) then
-		PetBattleAbilityTooltip_SetAbilityByID(LE_BATTLE_PET_ALLY, petIndex, self.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self.requiredLevel));
+		PetBattleAbilityTooltip_SetAbilityByID(Enum.BattlePetOwner.Ally, petIndex, self.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self.requiredLevel));
 		PetBattleAbilityTooltip_Show("BOTTOMLEFT", self, "TOPRIGHT", 0, 0);
 	else
 		PetBattlePrimaryAbilityTooltip:Hide();

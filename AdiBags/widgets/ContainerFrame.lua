@@ -25,19 +25,18 @@ local L = addon.L
 --<GLOBALS
 local _G = _G
 local assert = _G.assert
-local BACKPACK_CONTAINER = BACKPACK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Backpack ) or 0
+local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER
 local REAGENTBAG = ( Enum.BagIndex and Enum.BagIndex.Reagentbag ) or 5
 local band = _G.bit.band
-local BANK_CONTAINER = BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
+local BANK_CONTAINER = _G.BANK_CONTAINER
 local ceil = _G.ceil
 local CreateFrame = _G.CreateFrame
 local format = _G.format
-local GetContainerFreeSlots = C_Container and _G.C_Container.GetContainerFreeSlots or _G.GetContainerFreeSlots
-local GetContainerItemID = C_Container and _G.C_Container.GetContainerItemID or _G.GetContainerItemID
-local GetContainerItemInfo = C_Container and _G.C_Container.GetContainerItemInfo or _G.GetContainerItemInfo
-local GetContainerItemLink = C_Container and _G.C_Container.GetContainerItemLink or _G.GetContainerItemLink
-local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumFreeSlots or _G.GetContainerNumFreeSlots
-local GetContainerNumSlots = C_Container and _G.C_Container.GetContainerNumSlots or _G.GetContainerNumSlots
+local GetContainerFreeSlots = C_Container and C_Container.GetContainerFreeSlots or GetContainerFreeSlots
+local GetContainerItemID = C_Container and C_Container.GetContainerItemID or GetContainerItemID
+local GetContainerItemLink = C_Container and C_Container.GetContainerItemLink or GetContainerItemLink
+local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
+local GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
 local GetCursorInfo = _G.GetCursorInfo
 local GetItemInfo = _G.GetItemInfo
 local GetItemGUID = _G.C_Item.GetItemGUID
@@ -47,8 +46,6 @@ local max = _G.max
 local min = _G.min
 local next = _G.next
 local NUM_BAG_SLOTS = _G.NUM_BAG_SLOTS
-local NUM_REAGENTBAG_SLOTS = _G.NUM_REAGENTBAG_SLOTS
-local NUM_TOTAL_EQUIPPED_BAG_SLOTS = _G.NUM_TOTAL_EQUIPPED_BAG_SLOTS
 local pairs = _G.pairs
 local PlaySound = _G.PlaySound
 local select = _G.select
@@ -695,12 +692,7 @@ function containerProto:UpdateContent(bag)
 					local _, speciesID = strsplit(":", link)
 					name = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
 				end
-				local itemInfo = GetContainerItemInfo(bag, slot)
-				if itemInfo ~= nil then
-					count = itemInfo.stackCount
-				else
-					count = 0
-				end
+				count = addon:GetContainerItemStackCount(bag, slot) or 0
 			else
 				link, count = false, 0
 			end
@@ -807,7 +799,7 @@ local function FilterByBag(slotData)
 	end
 end
 
-local MISCELLANEOUS = GetItemClassInfo(_G.Enum.ItemClass.Miscellaneous)
+local MISCELLANEOUS = GetItemClassInfo(Enum.ItemClass.Miscellaneous)
 local FREE_SPACE = L["Free space"]
 local FREE_SPACE_REAGENT = L["Reagent Free space"]
 function containerProto:FilterSlot(slotData)

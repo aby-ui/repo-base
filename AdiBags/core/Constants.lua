@@ -30,10 +30,10 @@ addon.isWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 
 --<GLOBALS
 local _G = _G
-local BACKPACK_CONTAINER = BACKPACK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Backpack ) or 0
-local REAGENTBAG = ( Enum.BagIndex and Enum.BagIndex.Reagentbag ) or 5
-local BANK_CONTAINER = BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
-local REAGENTBANK_CONTAINER = REAGENTBANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Reagentbank ) or -3
+local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Backpack ) or 0
+local REAGENTBAG_CONTAINER = ( Enum.BagIndex and Enum.BagIndex.REAGENTBAG_CONTAINER ) or 5
+local BANK_CONTAINER = _G.BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
+local REAGENTBANK_CONTAINER = _G.REAGENTBANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Reagentbank ) or -3
 local NUM_BAG_SLOTS = _G.NUM_BAG_SLOTS
 local NUM_REAGENTBAG_SLOTS = _G.NUM_REAGENTBAG_SLOTS
 local NUM_TOTAL_EQUIPPED_BAG_SLOTS = _G.NUM_TOTAL_EQUIPPED_BAG_SLOTS
@@ -44,18 +44,18 @@ local pairs = _G.pairs
 -- Backpack and bags
 local BAGS = { [BACKPACK_CONTAINER] = BACKPACK_CONTAINER }
 
-
 local BANK = {}
 local BANK_ONLY = {}
 local REAGENTBANK_ONLY = {}
 
 if addon.isRetail then
-	-- Personal Bags
+
+	-- Bags
 	for i = 1, NUM_TOTAL_EQUIPPED_BAG_SLOTS do BAGS[i] = i end
-	
-	-- Base nank bags
+
+	-- Base bank bags
 	BANK_ONLY = { [BANK_CONTAINER] = BANK_CONTAINER }
-	for i = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do BANK_ONLY[i] = i end
+	for i = NUM_TOTAL_EQUIPPED_BAG_SLOTS + 1, NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS do BANK_ONLY[i] = i end
 
 	--- Reagent bank bags
 	REAGENTBANK_ONLY = { [REAGENTBANK_CONTAINER] = REAGENTBANK_CONTAINER }
@@ -97,6 +97,7 @@ addon.FAMILY_TAGS = {
 	[0x00100] = L["KEYRING_TAG"], -- Keyring
 	[0x00200] = L["GEM_BAG_TAG"], -- Gem Bag
 	[0x00400] = L["MINING_BAG_TAG"], -- Mining Bag
+	[0x00800] = L["REAGENT_BAG_TAG"], -- Player Reagent Bag		
 	[0x08000] = L["TACKLE_BOX_TAG"], -- Tackle Box
 	[0x10000] = L["COOKING_BAR_TAG"], -- Refrigerator
 --@noloc]]
@@ -114,6 +115,7 @@ addon.FAMILY_ICONS = {
 	[0x00100] = [[Interface\Icons\INV_Misc_Key_14]], -- Keyring
 	[0x00200] = [[Interface\Icons\INV_Misc_Gem_BloodGem_01]], -- Gem Bag
 	[0x00400] = [[Interface\Icons\Trade_Mining]], -- Mining Bag
+	[0x00800] = 4549254, -- Player Reagent Bag
 	[0x08000] = [[Interface\Icons\Trade_Fishing]], -- Tackle Box
 	[0x10000] = [[Interface\Icons\INV_Misc_Bag_Cooking]], -- Refrigerator
 }

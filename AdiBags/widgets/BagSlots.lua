@@ -24,15 +24,14 @@ local L = addon.L
 
 --<GLOBALS
 local _G = _G
-local BACKPACK_CONTAINER = BACKPACK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Backpack ) or 0
-local REAGENTBAG = ( Enum.BagIndex and Enum.BagIndex.Reagentbag ) or 5
+local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER
 local band = _G.bit.band
 local BankFrame = _G.BankFrame
 local BANK_BAG = _G.BANK_BAG
 local BANK_BAG_PURCHASE = _G.BANK_BAG_PURCHASE
-local BANK_CONTAINER = BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
+local BANK_CONTAINER = _G.BANK_CONTAINER
 local ClearCursor = _G.ClearCursor
-local ContainerIDToInventoryID = C_Container and _G.C_Container.ContainerIDToInventoryID or _G.ContainerIDToInventoryID
+local ContainerIDToInventoryID = C_Container and C_Container.ContainerIDToInventoryID or ContainerIDToInventoryID
 local COSTS_LABEL = _G.COSTS_LABEL
 local CreateFrame = _G.CreateFrame
 local CursorHasItem = _G.CursorHasItem
@@ -40,10 +39,10 @@ local CursorUpdate = _G.CursorUpdate
 local GameTooltip = _G.GameTooltip
 local GetBankSlotCost = _G.GetBankSlotCost
 local GetCoinTextureString = _G.GetCoinTextureString
-local GetContainerItemID = C_Container and _G.C_Container.GetContainerItemID or _G.GetContainerItemID
-local GetContainerItemInfo = C_Container and _G.C_Container.GetContainerItemInfo or _G.GetContainerItemInfo
-local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumFreeSlots or _G.GetContainerNumFreeSlots
-local GetContainerNumSlots = C_Container and _G.C_Container.GetContainerNumSlots or _G.GetContainerNumSlots
+local GetContainerItemID = C_Container and C_Container.GetContainerItemID or GetContainerItemID
+local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or GetContainerItemInfo
+local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
+local GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
 local geterrorhandler = _G.geterrorhandler
 local GetInventoryItemTexture = _G.GetInventoryItemTexture
 local GetItemInfo = _G.GetItemInfo
@@ -52,13 +51,11 @@ local ipairs = _G.ipairs
 local IsInventoryItemLocked = _G.IsInventoryItemLocked
 local next = _G.next
 local NUM_BAG_SLOTS = _G.NUM_BAG_SLOTS
-local NUM_REAGENTBAG_SLOTS = _G.NUM_REAGENTBAG_SLOTS
-local NUM_TOTAL_EQUIPPED_BAG_SLOTS = _G.NUM_TOTAL_EQUIPPED_BAG_SLOTS
 local NUM_BANKGENERIC_SLOTS = _G.NUM_BANKGENERIC_SLOTS
 local pairs = _G.pairs
 local pcall = _G.pcall
 local PickupBagFromSlot = _G.PickupBagFromSlot
-local PickupContainerItem = C_Container and _G.C_Container.PickupContainerItem or _G.PickupContainerItem
+local PickupContainerItem = C_Container and C_Container.PickupContainerItem or PickupContainerItem
 local PlaySound = _G.PlaySound
 local PutItemInBag = _G.PutItemInBag
 local select = _G.select
@@ -108,14 +105,8 @@ do
 		for i, bag in pairs(bags) do
 			local scoreBonus = band(select(2, GetContainerNumFreeSlots(bag)) or 0, itemFamily) ~= 0 and maxStack or 0
 			for slot = 1, GetContainerNumSlots(bag) do
-				local texture, slotCount, locked = nil, nil, nil
-				local itemInfo GetContainerItemInfo(bag, slot)
-				if itemInfo ~= nil then
-					texture = itemInfo.iconFileID
-					slotCount = itemInfo.stackCount
-					locked = itemInfo.IsLocked
-				end
-				if not locked and (not texture or GetContainerItemID(bag, slot) == itemId) then
+				local texture, slotCount, locked = addon:GetContainerItemTextureCountLocked(bag, slot)
+				if not locked and (not texture or GetContainerItemID(bag, slot) == GetContainerItemID(bag, slot)) then
 					slotCount = slotCount or 0
 					if slotCount + itemCount <= maxStack then
 						local slotScore = slotCount + scoreBonus
@@ -145,7 +136,7 @@ do
 				currentSlot = currentSlot + 1
 				local itemId = GetContainerItemID(currentBag, currentSlot)
 				if itemId then
-					local _, count = select(2, GetContainerItemInfo(currentBag, currentSlot))
+					local count = addon:GetContainerItemStackCount(currentBag, currentSlot)
 					PickupContainerItem(currentBag, currentSlot)
 					if CursorHasItem() then
 						locked[currentBag] = true
@@ -282,7 +273,7 @@ function bagButtonProto:Update()
 			self.Count:Hide()
 		end
 	else
-		icon = 136511
+		icon = [[Interface\PaperDoll\UI-PaperDoll-Slot-Bag]]
 		self.Count:Hide()
 	end
 	SetItemButtonTexture(self, icon)

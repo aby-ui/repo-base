@@ -11,17 +11,6 @@ local LibItemGem = LibStub:GetLibrary("LibItemGem.7000")
 local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
 local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
 
---0:optional
-local EnchantParts = {
-    [5]  = {1, CHESTSLOT},
-    [8]  = {1, FEETSLOT},
-    --[9]  = {0, WRISTSLOT},
-    [11] = {1, FINGER0SLOT},
-    [12] = {1, FINGER1SLOT},
-    [15] = {1, BACKSLOT},
-    [16] = {1, MAINHANDSLOT},
-    [17] = {1, SECONDARYHANDSLOT},
-}
 
 --創建圖標框架
 local function CreateIconFrame(frame, index)
@@ -154,6 +143,7 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
     end
     local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(ItemLink)
     local enchantSpellID = LibItemEnchant:GetEnchantSpellID(ItemLink)
+    local EnchantParts = TinyInspectDB.EnchantParts or {}
     if (enchantItemID) then
         num = num + 1
         icon = GetIconFrame(frame)
@@ -189,13 +179,13 @@ local function ShowGemAndEnchant(frame, ItemLink, anchorFrame, itemframe)
         icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
         icon:Show()
         anchorFrame = icon
-    elseif (not enchantID and EnchantParts[itemframe.index]) then
+    elseif (not enchantID and EnchantParts[itemframe.index] and EnchantParts[itemframe.index][1]) then
         if (qty == 6 and (itemframe.index==2 or itemframe.index==16 or itemframe.index==17)) then else
             num = num + 1
             icon = GetIconFrame(frame)
-            icon.title = ENCHANTS .. ": " .. EnchantParts[itemframe.index][2]
+            icon.title = ENCHANTS .. ": " .. (_G[EnchantParts[itemframe.index][2]] or EnchantParts[itemframe.index][2])
             icon.bg:SetVertexColor(1, 0.2, 0.2, 0.6)
-            icon.texture:SetTexture("Interface\\Cursor\\" .. (EnchantParts[itemframe.index][1]==1 and "Quest" or "QuestRepeatable"))
+            icon.texture:SetTexture("Interface\\Cursor\\Quest") --QuestRepeatable
             icon:ClearAllPoints()
             icon:SetPoint("LEFT", anchorFrame, "RIGHT", num == 1 and 6 or 1, 0)
             icon:Show()
@@ -209,19 +199,23 @@ end
 hooksecurefunc("ShowInspectItemListFrame", function(unit, parent, itemLevel, maxLevel)
     local frame = parent.inspectFrame
     if (not frame) then return end
-    local i = 1
-    local itemframe
-    local width, iconWidth = frame:GetWidth(), 0
-    HideAllIconFrame(frame)
-    while (frame["item"..i]) do
-        itemframe = frame["item"..i]
-        iconWidth = ShowGemAndEnchant(frame, itemframe.link, itemframe.itemString, itemframe)
-        if (width < itemframe.width + iconWidth + 36) then
-            width = itemframe.width + iconWidth + 36
+    if (TinyInspectDB and TinyInspectDB.ShowGemAndEnchant) then
+        local i = 1
+        local itemframe
+        local width, iconWidth = frame:GetWidth(), 0
+        HideAllIconFrame(frame)
+        while (frame["item"..i]) do
+            itemframe = frame["item"..i]
+            iconWidth = ShowGemAndEnchant(frame, itemframe.link, itemframe.itemString, itemframe)
+            if (width < itemframe.width + iconWidth + 36) then
+                width = itemframe.width + iconWidth + 36
+            end
+            i = i + 1
         end
-        i = i + 1
-    end
-    if (width > frame:GetWidth()) then
-        frame:SetWidth(width)
+        if (width > frame:GetWidth()) then
+            frame:SetWidth(width)
+        end
+    else
+        HideAllIconFrame(frame)
     end
 end)

@@ -2130,6 +2130,9 @@ function LinkTypeFuncs:instancelock(link,linkType,guid,mapId,difficulty,encounte
 --	end
 end
 
+local EXPANSION_COLORS = { "F8E960", "ADE057", "C5C5F5", "E85D61", "70C0B6", "CCAA22", "57EE32", "8985FF", "F5F5D2", "FF6636" }
+local EXPANSION_SHORT = { "", "TBC", "WLK", "4.0", "5.0", "6.0", "7.0", "8.0", "9.0", "10.0" } --EXPANSION_NAME0
+
 -- item
 function LinkTypeFuncs:item(link, linkType, id)
 	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, classID, subClassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(link);
@@ -2242,17 +2245,25 @@ function LinkTypeFuncs:item(link, linkType, id)
 			end
 		end
 
+		local expLong, expShort = "", ""
+		if expacID and expacID > 0 then
+			expLong = format("%s(%s)", _G["EXPANSION_NAME"..expacID] or UNKNOWN, EXPANSION_SHORT[expacID + 1] or format("%d.0", expacID + 1))
+			expShort = EXPANSION_SHORT[expacID + 1]
+			local color = EXPANSION_COLORS[expacID + 1] or "FFFFFF"
+			expLong = "  |cff"..color..expLong.."|r"
+			expShort = " |cff"..color.."["..expShort.."]|r"
+		end
 		if (not showLevel) then
             -- StackSize
             local count = (itemStackCount and itemStackCount > 1 and (itemStackCount == 0x7FFFFFFF and "#" or itemStackCount) or "");
             if count ~= "" then
                 local r,g,b = unpack(cfg.if_infoColor)
-                targetTooltip:AddDoubleLine(format(L"ItemID: %d",id),format(L"Stack: %d",count),r,g,b,r,g,b);
+                targetTooltip:AddDoubleLine(format(L"ItemID: %d",id)..expShort,format(L"Stack: %d",count),r,g,b,r,g,b);
             else
-			targetTooltip:AddLine(format(L"ItemID: %d",id),unpack(cfg.if_infoColor));
+			targetTooltip:AddLine(format(L"ItemID: %d",id)..expLong,unpack(cfg.if_infoColor));
             end
 		elseif (showId) then
-			targetTooltip:AddLine(format(L"ItemLevel: %d, ItemID: %d",itemLevel,id),unpack(cfg.if_infoColor));
+			targetTooltip:AddLine(format(L"ItemLevel: %d, ItemID: %d",itemLevel,id)..expShort,unpack(cfg.if_infoColor));
 		else
 			targetTooltip:AddLine(format(L"ItemLevel: %d",itemLevel),unpack(cfg.if_infoColor));
 		end

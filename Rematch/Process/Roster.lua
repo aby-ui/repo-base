@@ -31,7 +31,7 @@ roster.ownedNeedsUpdated = true -- becomes true when we need to expand filters t
 
 rematch:InitModule(function()
 	settings = RematchSettings
-	roster:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
+	roster:RegisterEvent("UPDATE_SUMMONPETS_ACTION")
 	roster:SetScript("OnEvent",function(self,event,...) roster[event](self,...) end)
    roster.isStrongCache = rematch:CreateODTable() -- used by IsStrong() function
 end)
@@ -45,6 +45,17 @@ end
 function rematch:UpdateRoster()
 	roster.petListNeedsUpdated = true
 	rematch:StartTimer("RosterUpdate",0,rematch.UpdateUI)
+end
+
+--[[ As of 10.0.2, using UPDATE_SUMMONPETS_ACTION to test whether pets are loaded on login ]]
+
+-- using this to know when pets are loaded
+function roster:UPDATE_SUMMONPETS_ACTION()
+	roster:UnregisterEvent("UPDATE_SUMMONPETS_ACTION")
+	roster:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
+	roster:RegisterEvent("NEW_PET_ADDED")
+	roster:RegisterEvent("PET_JOURNAL_PET_DELETED")
+	roster:PET_JOURNAL_LIST_UPDATE() -- start first check
 end
 
 --[[ PET_JOURNAL_LIST_UPDATE
@@ -98,6 +109,9 @@ function roster:PET_JOURNAL_LIST_UPDATE()
 	roster.petListNeedsUpdated = true
 	rematch:UpdateUI()
 end
+
+roster.NEW_PET_ADDED = roster.PET_JOURNAL_LIST_UPDATE
+roster.PET_JOURNAL_PET_DELETED = roster.PET_JOURNAL_LIST_UPDATE
 
 -- this is only registered while "Other","CurrentZone" filter enabled
 function roster:ZONE_CHANGED_NEW_AREA()

@@ -24,14 +24,12 @@ local L = addon.L
 
 --<GLOBALS
 local _G = _G
-local BACKPACK_CONTAINER = BACKPACK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Backpack ) or 0
-local REAGENTBAG = ( Enum.BagIndex and Enum.BagIndex.Reagentbag ) or 5
+local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER
 local CreateFrame = _G.CreateFrame
-local GetContainerItemInfo = C_Container and _G.C_Container.GetContainerItemInfo or _G.GetContainerItemInfo
-local GetContainerNumSlots = C_Container and _G.C_Container.GetContainerNumSlots or _G.GetContainerNumSlots
-local IsBattlePayItem = C_Container and _G.C_Container.IsBattlePayItem or _G.IsBattlePayItem
+local GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
 local GetInventoryItemID = _G.GetInventoryItemID
 local GetInventoryItemLink = _G.GetInventoryItemLink
+local IsBattlePayItem = C_Container and C_Container.IsBattlePayItem or IsBattlePayItem
 
 local ITEM_QUALITY_POOR
 
@@ -163,7 +161,7 @@ function mod:IsNew(bag, slot, link)
 	elseif not addon.BAG_IDS.BANK[bag]
 		and C_NewItems.IsNewItem(bag, slot)
 		and not IsBattlePayItem(bag, slot)
-		and (not self.db.profile.ignoreJunk or select(4, GetContainerItemInfo(bag, slot)) ~= ITEM_QUALITY_POOR)
+		and (not self.db.profile.ignoreJunk or addon:GetContainerItemQuality(bag, slot) ~= ITEM_QUALITY_POOR)
 	then
 		newItems[link] = true
 		return true
@@ -245,12 +243,7 @@ end
 function mod:ShowBlizzardGlow(button, enable)
 	if not button.NewItemTexture then return end
 	if enable then
-		--local _, _, _, quality = GetContainerItemInfo(button.bag, button.slot)
-		local itemInfo = GetContainerItemInfo(bag, slot)
-		local quality
-	if itemInfp ~= nil then
-		local quality = itemInfo.quality
-	end
+		local quality = addon:GetContainerItemQuality(button.bag, button.slot)
 		if quality and NEW_ITEM_ATLAS_BY_QUALITY[quality] then
 			button.NewItemTexture:SetAtlas(NEW_ITEM_ATLAS_BY_QUALITY[quality])
 		else

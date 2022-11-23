@@ -125,10 +125,10 @@ do
 		self.itemId = itemId
 		if itemId then
 			local _, _, _, _, _, _, _, _, _, texture = GetItemInfo(itemId)
-			self.frame:SetNormalTexture(texture or 134400)
+			self.frame:SetNormalTexture(texture or [[Interface\\Icons\\INV_Misc_QuestionMark]])
 			self.frame:GetNormalTexture():SetTexCoord(0, 1, 0, 1)
 		else
-			self.frame:SetNormalTexture(130862)
+			self.frame:SetNormalTexture([[Interface\Buttons\UI-Slot-Background]])
 			self.frame:GetNormalTexture():SetTexCoord(0, 41/64, 0, 41/64)
 		end
 	end
@@ -146,7 +146,7 @@ do
 		frame:SetScript("OnEnter", Button_OnEnter)
 		frame:SetScript("OnLeave", Button_OnLeave)
 
-		frame:SetHighlightTexture(130718, "ADD")
+		frame:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], "ADD")
 
 		local widget = {
 			frame = frame,

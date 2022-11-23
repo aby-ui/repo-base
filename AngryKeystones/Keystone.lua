@@ -50,9 +50,9 @@ local function SlotKeystone()
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
 		local slots = C_Container.GetContainerNumSlots(container)
 		for slot=1, slots do
-			local _, _, _, _, _, _, slotLink, _, _, slotItemID = C_Container.GetContainerItemInfo(container, slot)
-			if slotLink and slotLink:match("|Hkeystone:") then
-				PickupContainerItem(container, slot)
+			local itemInfo = C_Container.GetContainerItemInfo(container, slot)
+			if itemInfo and itemInfo.hyperlink and itemInfo.hyperlink:match("|Hkeystone:") then
+				C_Container.PickupContainerItem(container, slot)
 				if (CursorHasItem()) then
 					C_ChallengeMode.SlotKeystone()
 				end

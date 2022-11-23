@@ -104,6 +104,11 @@ function BuyEmAll:MerchantFrame_OnHide(...)
     return self.OrigMerchantFrame_OnHide(...);
 end
 
+function BuyEmAll:HasBagEquippedInSlot(slotID)
+    local inventorySlotId = GetInventorySlotInfo("Bag" .. (slotID - 1) .. "Slot");
+    return GetInventoryItemID("player", inventorySlotId) ~= nil;
+end
+
 function BuyEmAll:GetFreeBagSpace(itemID)
     local canFit = 0;
     local itemType = GetItemFamily(itemID);
@@ -111,7 +116,7 @@ function BuyEmAll:GetFreeBagSpace(itemID)
 
     for currentBag = 0, 4 do
         local freeSpace, bagType = C_Container.GetContainerNumFreeSlots(currentBag);
-        if (bagType == 0 or bagType == itemType or bit.band(itemType, bagType) == bagType) then
+        if (bagType == 0 or (BuyEmAll:HasBagEquippedInSlot(currentBag) and (bagType == itemType or bit.band(itemType, bagType) == bagType))) then
             canFit = canFit + (freeSpace * stackSize);
 
             local totalBagSlots = C_Container.GetContainerNumSlots(currentBag);

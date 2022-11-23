@@ -21,6 +21,17 @@ if (C_EncounterJournal and C_EncounterJournal.GetLootInfoByIndex) then
     GetLootInfoByIndex = C_EncounterJournal.GetLootInfoByIndex
 end
 
+
+--fixed for 10.x
+local GetContainerItemLink = GetContainerItemLink or function() end
+if (C_Container and C_Container.GetContainerItemInfo) then
+    GetContainerItemLink = function(bag, id)
+        local info = C_Container.GetContainerItemInfo(bag, id)
+        return info and info.hyperlink
+    end
+end
+
+
 --框架 #category Bag|Bank|Merchant|Trade|GuildBank|Auction|AltEquipment|PaperDoll|Loot
 local function GetItemLevelFrame(self, category)
     if (not self.ItemLevelFrame) then
@@ -173,7 +184,7 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
 end
 
 --[[ All ]]
-hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, suppressOverlays)
+hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, suppressOverlays, isBound)
     if (self.ItemLevelCategory or self.isBag) then return end
     local frame = GetItemLevelFrame(self)
     if (TinyInspectDB and not TinyInspectDB.EnableItemLevelOther) then
@@ -203,8 +214,7 @@ hooksecurefunc("SetItemButtonQuality", function(self, quality, itemIDOrLink, sup
             link = select(2, self.Tooltip:GetItem())
             SetItemLevel(self, link)
         else
-            SetItemLevelString(frame.levelString, "")
-            SetItemSlotString(frame.slotString)
+            SetItemLevel(self, itemIDOrLink)
         end
     else
         SetItemLevelString(frame.levelString, "")

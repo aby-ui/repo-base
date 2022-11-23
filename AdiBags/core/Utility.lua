@@ -29,7 +29,9 @@ local _G = _G
 local band = _G.bit.band
 local floor = _G.floor
 local GameTooltip = _G.GameTooltip
-local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumFreeSlots or _G.GetContainerNumFreeSlots
+local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or GetContainerItemInfo
+local GetContainerItemQuestInfo = C_Container and C_Container.GetContainerItemQuestInfo or GetContainerItemQuestInfo
+local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
 local geterrorhandler = _G.geterrorhandler
 local GetItemFamily = _G.GetItemFamily
 local GetItemInfo = _G.GetItemInfo
@@ -331,7 +333,7 @@ end
 -- Basic junk test
 --------------------------------------------------------------------------------
 
-local JUNK = GetItemSubClassInfo(_G.Enum.ItemClass.Miscellaneous, 0)
+local JUNK = GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, 0)
 function addon:IsJunk(itemId)
 	local _, _, quality, _, _, class, subclass = GetItemInfo(itemId)
 	return quality == ITEM_QUALITY_POOR or (quality and quality < ITEM_QUALITY_UNCOMMON and (class == JUNK or subclass == JUNK))
@@ -396,5 +398,69 @@ function addon:GetFamilyTag(family)
 				return tag, FAMILY_ICONS[mask]
 			end
 		end
+	end
+end
+
+--------------------------------------------------------------------------------
+-- Wrappers for GetContainerItemInfo
+--------------------------------------------------------------------------------
+local fieldMappings = {
+	texture = {field = "iconFileID", returnSlot = 1},
+	stackCount = {field = "stackCount", returnSlot = 2},
+	locked = {field = "isLocked", returnSlot = 3},
+	quality = {field = "quality", returnSlot = 4},
+	filtered = {field = "isFiltered", returnSlot = 8},
+}
+
+local function unwrapItemInfo(field, ...)
+	if not select(1, ...) then
+		return
+	elseif type(select(1, ...)) == "table" then
+		local result = ...
+		return result and result[fieldMappings[field].field]
+	else
+		return select(fieldMappings[field].returnSlot, ...)
+	end
+end
+
+function addon:GetContainerItemLocked(containerIndex, slotIndex)
+	return unwrapItemInfo("locked", GetContainerItemInfo(containerIndex, slotIndex))
+end
+
+function addon:GetContainerItemQuality(containerIndex, slotIndex)
+	return unwrapItemInfo("quality", GetContainerItemInfo(containerIndex, slotIndex))
+end
+
+function addon:GetContainerItemStackCount(containerIndex, slotIndex)
+	return unwrapItemInfo("stackCount", GetContainerItemInfo(containerIndex, slotIndex))
+end
+
+function addon:GetContainerItemTexture(containerIndex, slotIndex)
+	return unwrapItemInfo("texture", GetContainerItemInfo(containerIndex, slotIndex))
+end
+
+function addon:GetContainerItemTextureCountLocked(containerIndex, slotIndex)
+	local texture, slotCount, locked = GetContainerItemInfo(containerIndex, slotIndex)
+
+	if texture and type(texture) == "table" then
+		local result = texture
+		return result.iconFileID, result.stackCount, result.isLocked
+	else
+		return texture, slotCount, locked
+	end
+end
+
+function addon:GetContainerItemFiltered(containerIndex, slotIndex)
+	return unwrapItemInfo("filtered", GetContainerItemInfo(containerIndex, slotIndex))
+end
+
+function addon:GetContainerItemQuestInfo(containerIndex, slotIndex)
+	-- This function isn't present on classic-era in any form
+
+	if C_Container then
+		local result = C_Container.GetContainerItemQuestInfo(containerIndex, slotIndex)
+		return result.isQuestItem, result.questID, result.isActive
+	elseif GetContainerItemQuestInfo then
+		return GetContainerItemQuestInfo(containerIndex, slotIndex)
 	end
 end

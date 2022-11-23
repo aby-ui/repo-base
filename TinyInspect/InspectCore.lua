@@ -117,9 +117,10 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
     if (not guids[guid]) then return end
     LibSchedule:AddTask({
         identity  = guid,
-        timer     = 0.5,
-        elasped   = 0.8,
-        expired   = GetTime() + 4,
+        timer     = 0.2,
+        elasped   = 0.5,
+        expired   = GetTime() + 5,
+        repeats   = 2,  --重复次数 10.x里GetInventoryItemLink居然有概率返回nil,所以这里扫两次
         data      = guids[guid],
         onTimeout = function(self) inspecting = false end,
         onExecute = function(self)
@@ -127,18 +128,21 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
             if (ilevel <= 0) then return true end
             if (count == 0 and ilevel > 0) then
                 --if (UnitIsVisible(self.data.unit) or self.data.ilevel == ilevel) then
-                    self.data.timer = time()
-                    self.data.name = UnitName(self.data.unit)
-                    self.data.class = select(2, UnitClass(self.data.unit))
-                    self.data.ilevel = U1GetInventoryLevel(self.data.unit) --ilevel
-                    self.data.maxLevel = maxLevel
-                    self.data.spec = GetInspectSpec(self.data.unit)
-                    self.data.hp = UnitHealthMax(self.data.unit)
-                    self.data.weaponLevel = weaponLevel
-                    self.data.isArtifact = isArtifact
-                    LibEvent:trigger("UNIT_INSPECT_READY", self.data)
-                    inspecting = false
-                    return true
+                    self.repeats = self.repeats - 1
+                    if (self.repeats <= 0) then
+                        self.data.timer = time()
+                        self.data.name = UnitName(self.data.unit)
+                        self.data.class = select(2, UnitClass(self.data.unit))
+                        self.data.ilevel = U1GetInventoryLevel(self.data.unit) --ilevel
+                        self.data.maxLevel = maxLevel
+                        self.data.spec = GetInspectSpec(self.data.unit)
+                        self.data.hp = UnitHealthMax(self.data.unit)
+                        self.data.weaponLevel = weaponLevel
+                        self.data.isArtifact = isArtifact
+                        LibEvent:trigger("UNIT_INSPECT_READY", self.data)
+                        inspecting = false
+                        return true
+                    end
                 --else
                 --    self.data.ilevel = ilevel
                 --    self.data.maxLevel = maxLevel

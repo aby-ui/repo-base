@@ -122,7 +122,9 @@ function rematch:ProcessQueue()
 		else
 			local petInfo = rematch.petInfo:Fetch(petID)
 			if petInfo.valid then -- only remove valid pets that can't level
+				rematch.Level25PetLeavingQueue = true
 				tremove(queue,i) -- remove pets that can't level (or that are already in queue)
+				rematch.Level25PetLeavingQueue = nil
 			end
 		end
 	end
@@ -266,6 +268,7 @@ end
 -- to add/move a pet to the top of the queue: index=1
 -- to add/move a pet to the end of the queue: index=#queue+1
 function rematch:InsertPetToQueue(index,petID)
+	rematch.Level25PetLeavingQueue = true
 	local isNew = true -- assume pet is new
 	local oldQueueSize = #queue -- before we add something, note size of queue
 	-- check if pet already exists in queue; if so replace it with a placeholder 0
@@ -289,9 +292,11 @@ function rematch:InsertPetToQueue(index,petID)
 		rematch:MaybeSlotNewLevelingPet(petID)
 	end
 	rematch:UpdateQueue()
+	rematch.Level25PetLeavingQueue = nil
 end
 
 function rematch:RemovePetFromQueue(petID)
+	rematch.Level25PetLeavingQueue = true
 	for i=#queue,1,-1 do
 		if queue[i]==petID then
 			tremove(queue,i)
@@ -299,6 +304,7 @@ function rematch:RemovePetFromQueue(petID)
 	end
 	rematch.outgoingQueuedPetID = petID -- note this pet for ProcessQueue within the UpdateUI
 	rematch:UpdateQueue()
+	rematch.Level25PetLeavingQueue = nil
 end
 
 -- this should be the only place to add many pets to the end of the queue
@@ -507,6 +513,7 @@ end
 -- a time (initial login?), so for a workaround invalid pets are allowed to remain in the queue and the user can remove them; 99% of
 -- time this is when a pet in the queue is caged or released)
 function rematch:RemoveInvalidPetsFromQueue()
+	rematch.Level25PetLeavingQueue = true
 	for i=#queue,1,-1 do
 		local petInfo = rematch.petInfo:Fetch(queue[i])
 		if not petInfo.valid then
@@ -514,4 +521,5 @@ function rematch:RemoveInvalidPetsFromQueue()
 		end
 	end
 	rematch:UpdateQueue()
+	rematch.Level25PetLeavingQueue = nil
 end

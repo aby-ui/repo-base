@@ -30,6 +30,7 @@ local IsAltKeyDown = _G.IsAltKeyDown
 local IsControlKeyDown = _G.IsControlKeyDown
 local IsModifierKeyDown = _G.IsModifierKeyDown
 local IsShiftKeyDown = _G.IsShiftKeyDown
+local TooltipDataProcessor = _G.TooltipDataProcessor
 local pairs = _G.pairs
 local setmetatable = _G.setmetatable
 local tconcat = _G.table.concat
@@ -53,9 +54,9 @@ end
 function mod:OnEnable()
 	if not self.hooked then
 		if TooltipDataProcessor then
-			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(...)
-				if self:IsEnabled() then
-					return self:OnTooltipSetItem(...)
+			TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(frame, ...)
+				if frame == GameTooltip and self:IsEnabled() then
+					return self:OnTooltipSetItem(frame, ...)
 				end
 			end)
 		else
@@ -65,6 +66,7 @@ function mod:OnEnable()
 				end
 			end)
 		end
+
 		self.hooked = true
 	end
 end

@@ -247,6 +247,7 @@ function rematch:InitSavedVars()
 			end
 		end
 	end
+
 	settings.SelectedTab = settings.SelectedTab or 1
 	settings.MiniMinimized = nil -- disabling this setting
 	rematch:ValidateTeams() -- make sure teams are okay
@@ -755,6 +756,36 @@ function rematch.SlashHandler(msg)
 	msg = SecureCmdOptionParse(msg)
 	if msg:lower()=="debug" then
 		rematch:ShowDebugDialog()
+	elseif msg:lower()=="queuedebug" then -- watch for pets being removed from the queue
+		setmetatable(RematchSettings,{
+			__newIndex = function(self,key,value)
+				if key=="LevelingQueue" and not rematch.Level25PetLeavingQueue then
+					local text = GetAddOnMetadata("Rematch","Version").." LevelingQueue reassigned from "..Rematch:CallerID()
+					Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
+				end
+			end
+		})
+		setmetatable(RematchSettings.LevelingQueue,{
+			__newIndex = function(self,key,value)
+				if not value and not rematch.Level25PetLeavingQueue then
+					local text = GetAddOnMetadata("Rematch","Version").." Setting "..(key or "nil").." to "..(value or "nil").." from "..Rematch:CallerID()
+					Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
+				end
+			end
+		})
+		hooksecurefunc("tremove",function(self,index)
+			if self==RematchSettings.LevelingQueue and not rematch.Level25PetLeavingQueue then
+				local text = GetAddOnMetadata("Rematch","Version").." Removing index "..(index or "nil").." from "..Rematch:CallerID()
+				Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
+			end
+		end)
+		hooksecurefunc(table,"remove",function(self,index)
+			if self==RematchSettings.LevelingQueue and not rematch.Level25PetLeavingQueue then
+				local text = GetAddOnMetadata("Rematch","Version").." Removing index "..(index or "nil").." from "..Rematch:CallerID()
+				Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
+			end
+		end)				
+		rematch:print("Now watching for anything trying to remove pets from the leveling queue. If you get a popup that says Leveling Queue Pet Deleted! at the top, please copy and paste the contents in a comment on Rematch or PM Gello at wowinterface or curse, thanks! (This monitoring only lasts until you logout/reload.)")
 	elseif msg:trim():len()>0 then
 		-- going to desensitize the passed name so "aki the chosen" works for "Aki the Chosen"
 		local name = format("^%s$",rematch:DesensitizeText(msg))
@@ -801,6 +832,24 @@ function rematch:ShutdownAddon()
 	RematchFrame.Toggle = function() end
 	Rematch.ToggleFrameTab = function() end
 	Rematch.ToggleNotes = function() end
+end
+
+function rematch:ShowMultiLineDialog(title,text)
+	-- data collected, now show dialog
+	local dialog = rematch:ShowDialog("MultiLineDialog",300,300,title,nil,nil,nil,OKAY)
+	dialog.MultiLine:SetPoint("TOP",0,-38)
+	dialog.MultiLine:SetSize(262,224)
+	dialog.MultiLine:Show()
+	dialog:SetContext("settings",text)
+	dialog.MultiLine.EditBox:SetScript("OnTextChanged",function(self)
+		if self:GetText()~=dialog:GetContext("settings") then
+			self:SetText(dialog:GetContext("settings"))
+			self:SetCursorPosition(0)
+			self:HighlightText(0)
+			self:SetFocus(true)
+		end
+	end)
+	dialog.MultiLine.EditBox:SetText("")
 end
 
 -- /rematch debug displays a dialog containing enabled options and various settings the user can copy to a post/comment to help debug
@@ -993,3 +1042,4 @@ function rematch:SetFootnoteIcon(button,icon)
       end
 	end
 end
+

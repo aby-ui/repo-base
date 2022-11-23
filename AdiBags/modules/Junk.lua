@@ -43,11 +43,11 @@ local select = _G.select
 local setmetatable = _G.setmetatable
 local tonumber = _G.tonumber
 local type = _G.type
-local UseContainerItem = C_Container and _G.C_Container.UseContainerItem or _G.UseContainerItem
+local UseContainerItem = C_Container and C_Container.UseContainerItem or UseContainerItem
 local wipe = _G.wipe
 --GLOBALS>
 
-local JUNK = GetItemSubClassInfo(_G.Enum.ItemClass.Miscellaneous, 0)
+local JUNK = GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, 0)
 local JUNK_KEY = addon.BuildSectionKey(JUNK, JUNK)
 
 local mod = addon:RegisterFilter("Junk", 85, "ABEvent-1.0", "AceHook-3.0")

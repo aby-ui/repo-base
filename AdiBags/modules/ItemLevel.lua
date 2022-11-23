@@ -165,6 +165,7 @@ function mod:UpdateButton_Retail(event, button)
 				and (quality ~= ITEM_QUALITY_POOR or not settings.ignoreJunk)
 				and (loc ~= "" or not settings.equippableOnly)
 				and (quality ~= ITEM_QUALITY_HEIRLOOM or not settings.ignoreHeirloom)
+				and colorSchemes[settings.colorScheme] ~= nil
 			then
 				color = {colorSchemes[settings.colorScheme](level, quality, reqLevel, (loc ~= ""))}
 				shouldShow = true
@@ -213,6 +214,7 @@ function mod:UpdateButton_Classic(event, button)
 		if level >= settings.minLevel
 			and (quality ~= LE_ITEM_QUALITY_POOR or not settings.ignoreJunk)
 			and (loc ~= "" or not settings.equippableOnly)
+			and colorSchemes[settings.colorScheme] ~= nil
 		then
 			if SyLevel then
 				if settings.useSyLevel then

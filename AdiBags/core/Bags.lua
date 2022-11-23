@@ -25,15 +25,18 @@ local L = addon.L
 --<GLOBALS
 local _G = _G
 local BankFrame = _G.BankFrame
+local OpenAllBags = _G.OpenAllBags
+local CloseAllBags = _G.CloseAllBags
+local IsBagOpen = _G.IsBagOpen
 local CloseBankFrame = _G.CloseBankFrame
+local SortBags = C_Container and _G.C_Container.SortBags or _G.SortBags
+local SortBankBags = C_Container and _G.C_Container.SortBankBags or _G.SortBankBags
+local SortReagentBankBags = C_Container and _G.C_Container.SortReagentBankBags or _G.SortReagentBankBags
 local ipairs = _G.ipairs
 local pairs = _G.pairs
 local setmetatable = _G.setmetatable
 local tinsert = _G.tinsert
 local tsort = _G.table.sort
-local SortBags = C_Container and _G.C_Container.SortBags or _G.SortBags
-local SortBankBags = C_Container and _G.C_Container.SortBankBags or _G.SortBankBags
-local SortReagentBankBags = C_Container and _G.C_Container.SortReagentBankBags or _G.SortReagentBankBags
 --GLOBALS>
 
 local hookedBags = addon.hookedBags
@@ -51,12 +54,12 @@ function bagProto:OnEnable()
 	local open = false
 	for id in pairs(self.bagIds) do
 		local frame = addon:GetContainerFrame(id)
-		if frame then
+		if IsBagOpen(id) then
 			open = true
-			frame:Hide()
 		end
 		hookedBags[id] = self
 	end
+	CloseAllBags()
 	if self.PostEnable then
 		self:PostEnable()
 	end
@@ -69,11 +72,12 @@ end
 function bagProto:OnDisable()
 	local open = self:IsOpen()
 	self:Close()
+
 	for id in pairs(self.bagIds) do
 		hookedBags[id] = nil
-		if open then
-			addon:GetContainerFrame(id, true)
-		end
+	end
+	if open then
+		OpenAllBags()
 	end
 	if self.PostDisable then
 		self:PostDisable()
@@ -201,6 +205,7 @@ do
 	local backpack = addon:NewBag("Backpack", 10, false, 'AceHook-3.0')
 
 	function backpack:PostEnable()
+		addon:EnableHooks()
 		self:RegisterMessage('AdiBags_InteractingWindowChanged')
 	end
 
@@ -221,6 +226,10 @@ do
 		PlaySound(SOUNDKIT.UI_BAG_SORTING_01)
 		SortBags()
 		C_Timer.After(1, function() addon:OpenBackpack() end)
+	end
+
+	function backpack:PostDisable()
+		addon:DisableHooks()
 	end
 end
 

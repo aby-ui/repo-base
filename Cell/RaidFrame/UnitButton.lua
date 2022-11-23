@@ -702,7 +702,7 @@ local function UnitButton_UpdateDebuffs(self)
 
             if enabledIndicators["debuffs"] and duration <= 600 and not Cell.vars.debuffBlacklist[spellId] then
                 -- all debuffs / only dispellableByMe
-                if not indicatorCustoms["debuffs"] or I:CanDispel(debuffType) then 
+                if not indicatorCustoms["debuffs"] or (auraInfo.isRaid and indicatorShowDuplicates["debuffs"]) or I:CanDispel(debuffType) then --abyui，选中不滤重则显示所有可驱散的而不是仅我可驱散的
                     -- debuffs, may contain topDebuff
                     if startIndex <= indicatorNums["debuffs"]+indicatorNums["raidDebuffs"] then
                         startIndex = startIndex + 1

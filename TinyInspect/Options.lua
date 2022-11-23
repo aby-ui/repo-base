@@ -5,7 +5,7 @@
 
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
 
-local VERSION = 2.5
+local VERSION = 2.6
 
 local addon, ns = ...
 
@@ -52,30 +52,52 @@ local DefaultDB = {
     PaperDollItemLevelOutsideString = false, --PaperDoll文字外邊顯示(沒有在配置面板)
     ItemLevelAnchorPoint = "TOPLEFT",         --裝等位置
     ShowPluginGreenState = false,         --裝備綠字屬性前綴顯示
-    ShowCorruptedMark = true,             --装等显示腐蚀值
+    ShowGemAndEnchant = true,             --显示宝石和附魔
+        EnchantParts = {                  --附魔部位
+            {false, "HEADSLOT", },
+            {false, "NECKSLOT", },
+            {false, "SHOULDERSLOT", },
+            false,
+            {true, "CHESTSLOT", },
+            {false, "WAISTSLOT", },
+            {false, "LEGSSLOT", },
+            {true, "FEETSLOT", },
+            {false, "WRISTSLOT", },
+            {false, "HANDSSLOT", },
+            {true, "FINGER0SLOT", },
+            {true, "FINGER1SLOT", },
+            {false, "TRINKET0SLOT", },
+            {false, "TRINKET1SLOT", },
+            {true, "BACKSLOT", },
+            {true, "MAINHANDSLOT", },
+            {false, "SECONDARYHANDSLOT", },
+        },
 }
 
 local options = {
     { key = "ShowItemBorder" },
+    { key = "ShowGemAndEnchant",
+        subcheck = DefaultDB.EnchantParts,
+    },
     { key = "EnableItemLevel",
       child = {
         { key = "ShowColoredItemLevelString" },
         { key = "ShowCorruptedMark" },
         { key = "ShowItemSlotString" },
-        { key = "ShowCorruptedMark" },
       },
       subtype = {
-        { key = "Bag" },
-        { key = "Bank" },
-        { key = "Merchant" },
-        { key = "Trade" },
-        { key = "AltEquipment" },
-        { key = "GuildBank" },
-        { key = "GuildNews" },
-        { key = "PaperDoll" },
-        { key = "Chat" },
-        { key = "Loot" },
+        xpos = 490, ypos = -50,
         { key = "Other" },
+        { key = "AltEquipment" },
+        { key = "GuildNews" },
+        -- { key = "Bag" },
+        -- { key = "Bank" },
+        -- { key = "GuildBank" },
+        -- { key = "Merchant" },
+        -- { key = "Trade" },
+        -- { key = "PaperDoll" },
+        -- { key = "Chat" },
+        -- { key = "Loot" },
       },
       anchorkey = "ItemLevelAnchorPoint",
     },
@@ -141,17 +163,25 @@ end
 
 local function OnClickCheckbox(self)
     local status = self:GetChecked()
-    TinyInspectDB[self.key] = status
+    if (strfind(self.key, "EnchantParts|")) then
+        local _, key = strsplit("|", self.key)
+        key = tonumber(key)
+        if (TinyInspectDB.EnchantParts[key]) then
+            TinyInspectDB.EnchantParts[key][1] = status
+        end
+    else
+        TinyInspectDB[self.key] = status
+    end
     StatusSubCheckbox(self, status)
     CallCustomFunc(self)
 end
 
-local function CreateSubtypeFrame(list, parent)
+local function CreateSubtypeFrame(list, parent, xpos, ypos)
     if (not list) then return end
     if (not parent.SubtypeFrame) then
         parent.SubtypeFrame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate" or nil)
         parent.SubtypeFrame:SetScale(0.92)
-        parent.SubtypeFrame:SetPoint("TOPLEFT", 333, 0)
+        parent.SubtypeFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", xpos or 300, ypos or 20)
         parent.SubtypeFrame:SetBackdrop({
             bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
             edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -174,9 +204,45 @@ local function CreateSubtypeFrame(list, parent)
         checkbox.uncheckedFunc = v.uncheckedFunc
         checkbox.Text:SetText(L[v.key])
         checkbox:SetScript("OnClick", OnClickCheckbox)
-        checkbox:SetPoint("TOPLEFT", parent.SubtypeFrame, "TOPLEFT", 16, -46-(i-1)*32)
+        checkbox:SetPoint("TOPLEFT", parent.SubtypeFrame, "TOPLEFT", 16, -46-(i-1)*30)
     end
-    parent.SubtypeFrame:SetSize(168, #list*32+58)
+    parent.SubtypeFrame:SetSize(168, #list*30+58)
+end
+
+local function CreateSubcheckFrame(list, parent, xpos, ypos)
+    if (not list) then return end
+    if (not parent.SubtypeFrame) then
+        parent.SubtypeFrame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+        parent.SubtypeFrame:SetScale(0.92)
+        parent.SubtypeFrame:SetPoint("TOPLEFT", parent, "TOPLEFT", xpos or 300, ypos or 22)
+        parent.SubtypeFrame:SetBackdrop({
+            bgFile   = "Interface\\Tooltips\\UI-Tooltip-Background",
+            edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+            tile     = true,
+            tileSize = 8,
+            edgeSize = 16,
+            insets   = {left = 4, right = 4, top = 4, bottom = 4}
+        })
+        parent.SubtypeFrame:SetBackdropColor(0, 0, 0, 0.6)
+        parent.SubtypeFrame:SetBackdropBorderColor(0.6, 0.6, 0.6)
+        parent.SubtypeFrame.title = parent.SubtypeFrame:CreateFontString(nil, "BORDER", "GameFontNormalOutline")
+        parent.SubtypeFrame.title:SetPoint("TOPLEFT", 16, -18)
+        parent.SubtypeFrame.title:SetText(L[parent.key])
+    end
+    local checkbox, j
+    for i, v in ipairs(list) do
+      if (i <= 3) then j = i else j = i-1 end
+      if (v) then
+        checkbox = CreateFrame("CheckButton", nil, parent.SubtypeFrame, "InterfaceOptionsCheckButtonTemplate")
+        checkbox.key = "EnchantParts|" .. i 
+        checkbox.checkedFunc = v.checkedFunc
+        checkbox.uncheckedFunc = v.uncheckedFunc
+        checkbox.Text:SetText(_G[v[2]] or v[2])
+        checkbox:SetScript("OnClick", OnClickCheckbox)
+        checkbox:SetPoint("TOPLEFT", parent.SubtypeFrame, "TOPLEFT", 16, -46-(j-1)*30)
+      end
+    end
+    parent.SubtypeFrame:SetSize(168, #list*30+58)
 end
 
 local function CreateAnchorFrame(anchorkey, parent)
@@ -213,7 +279,7 @@ local function CreateAnchorFrame(anchorkey, parent)
     frame:SetBackdropColor(0, 0, 0, 0.7)
     frame:SetBackdropBorderColor(1, 1, 1, 0)
     frame:SetSize(80, 80)
-    frame:SetPoint("TOPRIGHT", 100, -5)
+    frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 530, 44)
     CreateAnchorButton(frame, "TOPLEFT")
     CreateAnchorButton(frame, "LEFT")
     CreateAnchorButton(frame, "BOTTOMLEFT")
@@ -239,8 +305,9 @@ local function CreateCheckbox(list, parent, anchor, offsetx, offsety)
         checkbox:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", offsetx, -6-offsety)
         offsety = offsety + stepy
         offsety = CreateCheckbox(v.child, checkbox, anchor, offsetx+stepx, offsety)
-        CreateSubtypeFrame(v.subtype, checkbox)
+        CreateSubtypeFrame(v.subtype, checkbox, v.subtype and v.subtype.xpos, v.subtype and v.subtype.ypos)
         CreateAnchorFrame(v.anchorkey, checkbox)
+        CreateSubcheckFrame(v.subcheck, checkbox, v.subcheck and v.subcheck.xpos, v.subcheck and v.subcheck.ypos)
     end
     return offsety
 end
@@ -250,7 +317,16 @@ local function InitCheckbox(parent)
     for i = 1, parent:GetNumChildren() do
         checkbox = select(i, parent:GetChildren())
         if (checkbox.key) then
-            checkbox:SetChecked(TinyInspectDB[checkbox.key])
+            local key
+            if (strfind(checkbox.key, "EnchantParts|")) then
+                key = select(2, strsplit("|", checkbox.key))
+                key = tonumber(key)
+                if (TinyInspectDB.EnchantParts[key]) then
+                    checkbox:SetChecked(TinyInspectDB.EnchantParts[key][1])
+                end
+            else
+                checkbox:SetChecked(TinyInspectDB[checkbox.key])
+            end
             StatusSubCheckbox(checkbox, checkbox:GetChecked())
             CallCustomFunc(checkbox)
             InitCheckbox(checkbox)

@@ -25,7 +25,7 @@ local L = addon.L
 --<GLOBALS
 local _G = _G
 local ADDON_LOAD_FAILED = _G.ADDON_LOAD_FAILED
-local BANK_CONTAINER = BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
+local BANK_CONTAINER = _G.BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
 local REAGENTBAG = ( Enum.BagIndex and Enum.BagIndex.Reagentbag ) or 5
 local CloseWindows = _G.CloseWindows
 local CreateFrame = _G.CreateFrame
@@ -135,18 +135,7 @@ function addon:OnEnable()
 
 	self:RegisterMessage('AdiBags_BagOpened', 'LayoutBags')
 	self:RegisterMessage('AdiBags_BagClosed', 'LayoutBags')
-
-	self:RawHook("OpenAllBags", true)
-	self:RawHook("CloseAllBags", true)
-	self:RawHook("ToggleAllBags", true)
-	self:RawHook("ToggleBackpack", true)
-	self:RawHook("ToggleBag", true)
-	self:RawHook("OpenBag", true)
-	self:RawHook("CloseBag", true)
-	self:RawHook("OpenBackpack", true)
-	self:RawHook("CloseBackpack", true)
-	self:RawHook('CloseSpecialWindows', true)
-
+	
 	-- Track most windows involving items
 	self:RegisterEvent('BANKFRAME_OPENED', 'UpdateInteractingWindow')
 	self:RegisterEvent('BANKFRAME_CLOSED', 'UpdateInteractingWindow')
@@ -186,6 +175,32 @@ function addon:OnDisable()
 	self.anchor:Hide()
 	self:CloseAllBags()
 	self:Debug('Disabled')
+end
+
+function addon:EnableHooks()
+	self:RawHook("OpenAllBags", true)
+	self:RawHook("CloseAllBags", true)
+	self:RawHook("ToggleAllBags", true)
+	self:RawHook("ToggleBackpack", true)
+	self:RawHook("ToggleBag", true)
+	self:RawHook("OpenBag", true)
+	self:RawHook("CloseBag", true)
+	self:RawHook("OpenBackpack", true)
+	self:RawHook("CloseBackpack", true)
+	self:RawHook('CloseSpecialWindows', true)
+end
+
+function addon:DisableHooks()
+	self:Unhook("OpenAllBags")
+	self:Unhook("CloseAllBags")
+	self:Unhook("ToggleAllBags")
+	self:Unhook("ToggleBackpack")
+	self:Unhook("ToggleBag")
+	self:Unhook("OpenBag")
+	self:Unhook("CloseBag")
+	self:Unhook("OpenBackpack")
+	self:Unhook("CloseBackpack")
+	self:Unhook('CloseSpecialWindows')
 end
 
 function addon:Reconfigure()

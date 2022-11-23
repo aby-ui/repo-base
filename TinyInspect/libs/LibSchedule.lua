@@ -49,6 +49,7 @@ local metatable = {
     onStart   = function(self) end, --添加后执行
     onTimeout = function(self) end, --超时后执行
     onExecute = function(self) return true end, --定時執行,直到返回true才停止
+    onRemove  = function(self) end, --删除时执行
 }
 
 --添加Task
@@ -79,9 +80,11 @@ function lib:RemoveTask(identity, useLike)
         if (useLike) then
             if (string.find(v.identity,identity)) then
                 v.stopped = true
+                v:onRemove()
             end
         elseif (v.identity == identity) then
             v.stopped = true
+            v:onRemove()
         end
     end
     return self

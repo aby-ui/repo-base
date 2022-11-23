@@ -25,11 +25,10 @@ function addon:SetupDefaultFilters()
 	-- Globals: GetEquipmentSetLocations
 	--<GLOBALS
 	local _G = _G
-	local BANK_CONTAINER = BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
+	local BANK_CONTAINER = _G.BANK_CONTAINER
 	local BANK_CONTAINER_INVENTORY_OFFSET = _G.BANK_CONTAINER_INVENTORY_OFFSET
 	local EquipmentManager_UnpackLocation = _G.EquipmentManager_UnpackLocation
 	local format = _G.format
-	local GetContainerItemQuestInfo = _G.C_Container.GetContainerItemQuestInfo
 	local GetEquipmentSetInfo = _G.C_EquipmentSet.GetEquipmentSetInfo
 	local GetItemIDs = _G.C_EquipmentSet.GetItemIDs
 	local GetEquipmentSetIDs = _G.C_EquipmentSet.GetEquipmentSetIDs
@@ -41,16 +40,16 @@ function addon:SetupDefaultFilters()
 	local L = addon.L
 
 	-- Make some strings local to speed things
-	local CONSUMMABLE = GetItemClassInfo(_G.Enum.ItemClass.Consumable)
-	local GEM = GetItemClassInfo(_G.Enum.ItemClass.Gem)
-	local GLYPH = GetItemClassInfo(_G.Enum.ItemClass.Glyph)
-	local JUNK = GetItemSubClassInfo(_G.Enum.ItemClass.Miscellaneous, 0)
-	local MISCELLANEOUS = GetItemClassInfo(_G.Enum.ItemClass.Miscellaneous)
-	local QUEST = GetItemClassInfo(_G.Enum.ItemClass.Questitem)
-	local RECIPE = GetItemClassInfo(_G.Enum.ItemClass.Recipe)
-	local TRADE_GOODS = GetItemClassInfo(_G.Enum.ItemClass.Tradegoods)
-	local WEAPON = GetItemClassInfo(_G.Enum.ItemClass.Weapon)
-	local ARMOR = GetItemClassInfo(_G.Enum.ItemClass.Armor)
+	local CONSUMMABLE = GetItemClassInfo(Enum.ItemClass.Consumable)
+	local GEM = GetItemClassInfo(Enum.ItemClass.Gem)
+	local GLYPH = GetItemClassInfo(Enum.ItemClass.Glyph)
+	local JUNK = GetItemSubClassInfo(Enum.ItemClass.Miscellaneous, 0)
+	local MISCELLANEOUS = GetItemClassInfo(Enum.ItemClass.Miscellaneous)
+	local QUEST = GetItemClassInfo(Enum.ItemClass.Questitem)
+	local RECIPE = GetItemClassInfo(Enum.ItemClass.Recipe)
+	local TRADE_GOODS = GetItemClassInfo(Enum.ItemClass.Tradegoods)
+	local WEAPON = GetItemClassInfo(Enum.ItemClass.Weapon)
+	local ARMOR = GetItemClassInfo(Enum.ItemClass.Armor)
 	local JEWELRY = L['Jewelry']
 	local EQUIPMENT = L['Equipment']
 	local AMMUNITION = L['Ammunition']
@@ -201,8 +200,8 @@ function addon:SetupDefaultFilters()
 				return QUEST
 			else
 				if addon.isRetail or addon.isWrath then
-					local questInfo = GetContainerItemQuestInfo(slotData.bag, slotData.slot)
-					return (questInfo.questId or questInfo.isQuestItem) and QUEST
+					local isQuestItem, questId = addon:GetContainerItemQuestInfo(slotData.bag, slotData.slot)
+					return (questId or isQuestItem) and QUEST
 				else
 					return false
 				end

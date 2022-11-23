@@ -25,8 +25,8 @@ local L = addon.L
 --<GLOBALS
 local _G = _G
 local format = _G.format
-local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumFreeSlots or _G.GetContainerNumFreeSlots
-local GetContainerNumSlots = C_Container and _G.C_Container.GetContainerNumSlots or _G.GetContainerNumSlots
+local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
+local GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
 local ipairs = _G.ipairs
 local pairs = _G.pairs
 local strjoin = _G.strjoin
