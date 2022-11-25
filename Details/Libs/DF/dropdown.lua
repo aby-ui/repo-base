@@ -191,10 +191,10 @@ DF:Mixin(DropDownMetaFunctions, DF.ScriptHookMixin)
 --menu width and height
 	function DropDownMetaFunctions:SetMenuSize(width, height)
 		if (width) then
-			return rawset(self, "realsizeW", width)
+			rawset(self, "realsizeW", width)
 		end
 		if (height) then
-			return rawset(self, "realsizeH", height)
+			rawset(self, "realsizeH", height)
 		end
 	end
 
@@ -515,6 +515,18 @@ function DropDownMetaFunctions:Selected(thisOption)
 		self.label:SetPoint("left", self.label:GetParent(), "left", 4, 0)
 	end
 
+	if (thisOption.centerTexture) then
+		self.dropdown.centerTexture:SetTexture(thisOption.centerTexture)
+	else
+		self.dropdown.centerTexture:SetTexture("")
+	end
+
+	if (thisOption.rightTexture) then
+		self.dropdown.rightTexture:SetTexture(thisOption.rightTexture)
+	else
+		self.dropdown.rightTexture:SetTexture("")
+	end
+
 	if (thisOption.statusbar) then
 		self.statusbar:SetTexture(thisOption.statusbar)
 		if (thisOption.statusbarcolor) then
@@ -540,6 +552,7 @@ function DropDownMetaFunctions:Selected(thisOption)
 	self:SetValue(thisOption.value)
 end
 
+--on click on any option in the dropdown
 function DetailsFrameworkDropDownOptionClick(button)
 	--update name and icon on main frame
 	button.object:Selected(button.table)
@@ -555,9 +568,11 @@ function DetailsFrameworkDropDownOptionClick(button)
 	button.object.myvaluelabel = button.table.label
 end
 
+--on click on the dropdown show the menu frame with the options to select
 function DropDownMetaFunctions:Open()
 	self.dropdown.dropdownframe:Show()
 	self.dropdown.dropdownborder:Show()
+
 	self.opened = true
 	if (lastOpened) then
 		lastOpened:Close()
@@ -565,6 +580,7 @@ function DropDownMetaFunctions:Open()
 	lastOpened = self
 end
 
+--close the menu showing the options
 function DropDownMetaFunctions:Close()
 	--when menu is being close, just hide the border and the script will call back this again
 	if (self.dropdown.dropdownborder:IsShown()) then
@@ -585,6 +601,7 @@ function DetailsFrameworkDropDownOptionsFrameOnHide(self)
 	self:GetParent().MyObject:Close()
 end
 
+--on enter an option in the menu dropdown
 function DetailsFrameworkDropDownOptionOnEnter(self)
 	if (self.table.desc) then
 		GameCooltip2:Preset(2)
@@ -603,10 +620,22 @@ function DetailsFrameworkDropDownOptionOnEnter(self)
 		self.tooltip = true
 	end
 
+	if (self.table.audiocue) then
+		if (DF.CurrentSoundHandle) then
+			StopSound(DF.CurrentSoundHandle, 0.1)
+		end
+
+		local willPlay, soundHandle = PlaySoundFile(self.table.audiocue, "Master")
+		if (willPlay) then
+			DF.CurrentSoundHandle = soundHandle
+		end
+	end
+
 	self:GetParent().mouseover:SetPoint("left", self)
 	self:GetParent().mouseover:Show()
 end
 
+--on leave an option on the menu dropdown
 function DetailsFrameworkDropDownOptionOnLeave(frame)
 	if (frame.table.desc) then
 		GameCooltip2:ShowMe(false)
@@ -615,6 +644,7 @@ function DetailsFrameworkDropDownOptionOnLeave(frame)
 end
 
 --@button is the raw button frame, object is the button capsule
+--click on the main dropdown frame (not the menu options popup)
 function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 	local object = button.MyObject
 
@@ -645,9 +675,9 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 			end
 
 			for tindex, thisOption in ipairs(optionsTable) do
-				local show = isOptionVisible(button, thisOption)
+				local bIsOptionVisible = isOptionVisible(button, thisOption)
 
-				if (show) then
+				if (bIsOptionVisible) then
 					local thisOptionFrame = object.menus[i]
 					showing = showing + 1
 
@@ -657,14 +687,26 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 
 						thisOptionFrame = DF:CreateDropdownButton(parent, name)
 						local optionIndex = i - 1
-						thisOptionFrame:SetPoint("topleft", parent, "topleft", 1, (-optionIndex*20)-0)
-						thisOptionFrame:SetPoint("topright", parent, "topright", 0, (-optionIndex*20)-0)
+						thisOptionFrame:SetPoint("topleft", parent, "topleft", 1, (-optionIndex * 20))
+						thisOptionFrame:SetPoint("topright", parent, "topright", 0, (-optionIndex * 20))
 						thisOptionFrame.object = object
 						object.menus[i] = thisOptionFrame
 					end
 
 					thisOptionFrame:SetFrameStrata(thisOptionFrame:GetParent():GetFrameStrata())
-					thisOptionFrame:SetFrameLevel(thisOptionFrame:GetParent():GetFrameLevel()+10)
+					thisOptionFrame:SetFrameLevel(thisOptionFrame:GetParent():GetFrameLevel() + 10)
+
+					if (thisOption.rightTexture) then
+						thisOptionFrame.rightTexture:SetTexture(thisOption.rightTexture)
+					else
+						thisOptionFrame.rightTexture:SetTexture("")
+					end
+
+					if (thisOption.centerTexture) then
+						thisOptionFrame.centerTexture:SetTexture(thisOption.centerTexture)
+					else
+						thisOptionFrame.centerTexture:SetTexture("")
+					end
 
 					thisOptionFrame.icon:SetTexture(thisOption.icon)
 					if (thisOption.icon) then
@@ -742,8 +784,8 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 					thisOptionFrame.table = thisOption
 
 					local labelwitdh = thisOptionFrame.label:GetStringWidth()
-					if (labelwitdh+40 > frameWitdh) then
-						frameWitdh = labelwitdh+40
+					if (labelwitdh + 40 > frameWitdh) then
+						frameWitdh = labelwitdh + 40
 					end
 					thisOptionFrame:Show()
 
@@ -763,7 +805,7 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 
 			local size = object.realsizeH
 
-			if (showing*20 > size) then
+			if (showing * 20 > size) then
 				--show scrollbar and setup scroll
 				object:ShowScroll()
 				scrollFrame:EnableMouseWheel(true)
@@ -817,6 +859,10 @@ function DetailsFrameworkDropDownOnMouseDown(button, buttontype)
 			end
 
 			object:Open()
+
+			--scrollFrame:SetHeight(300)
+			--scrollChild:SetHeight(300)
+			--scrollBorder:SetHeight(300)
 		else
 			--clear menu
 		end
@@ -1050,8 +1096,8 @@ function DF:NewDropDown(parent, container, name, member, width, height, func, de
 	end
 
 	dropDownObject.func = func
-	dropDownObject.realsizeW = 150
-	dropDownObject.realsizeH = 150
+	dropDownObject.realsizeW = 165
+	dropDownObject.realsizeH = 300
 	dropDownObject.FixedValue = nil
 	dropDownObject.opened = false
 	dropDownObject.menus = {}
@@ -1138,6 +1184,16 @@ function DF:CreateNewDropdownFrame(parent, name)
 	icon:SetVertexColor(1, 1, 1, 0.4)
 	newDropdownFrame.icon = icon
 
+	local rightTexture = newDropdownFrame:CreateTexture("$parent_RightTexture", "OVERLAY")
+	rightTexture:SetPoint("right", newDropdownFrame, "right", -2, 0)
+	rightTexture:SetSize(20, 20)
+	newDropdownFrame.rightTexture = rightTexture
+
+	local centerTexture = newDropdownFrame:CreateTexture("$parent_CenterTexture", "OVERLAY")
+	centerTexture:SetPoint("center", newDropdownFrame, "center", 0, 0)
+	centerTexture:SetSize(20, 20)
+	newDropdownFrame.centerTexture = centerTexture
+
 	local text = newDropdownFrame:CreateFontString("$parent_Text", "ARTWORK", "GameFontHighlightSmall")
 	text:SetPoint("left", icon, "right", 5, 0)
 	text:SetJustifyH("left")
@@ -1168,32 +1224,30 @@ function DF:CreateNewDropdownFrame(parent, name)
 	local border = CreateFrame("frame", "$Parent_Border", newDropdownFrame, "BackdropTemplate")
 	border:Hide()
 	border:SetFrameStrata("FULLSCREEN")
-	border:SetSize(150, 150)
+	border:SetSize(150, 300)
 	border:SetPoint("topleft", newDropdownFrame, "bottomleft", 0, 0)
 	border:SetBackdrop(borderBackdrop)
 	border:SetScript("OnHide", DetailsFrameworkDropDownOptionsFrameOnHide)
 	border:SetBackdropColor(0, 0, 0, 0.92)
-	border:SetBackdropBorderColor(0, 0, 0, 1)
+	border:SetBackdropBorderColor(.2, .2, .2, 0.8)
 	newDropdownFrame.dropdownborder = border
 
 	local scroll = CreateFrame("ScrollFrame", "$Parent_ScrollFrame", newDropdownFrame, "BackdropTemplate")
 	scroll:SetFrameStrata("FULLSCREEN")
-	scroll:SetSize(150, 150)
+	scroll:SetSize(150, 300)
 	scroll:SetPoint("topleft", newDropdownFrame, "bottomleft", 0, 0)
 	scroll:Hide()
 	newDropdownFrame.dropdownframe = scroll
 
 	local child = CreateFrame("frame", "$Parent_ScrollChild", scroll, "BackdropTemplate")
-	child:SetSize(150, 150)
+	--child:SetAllPoints()
+	child:SetSize(150, 300)
 	child:SetPoint("topleft", scroll, "topleft", 0, 0)
-	child:SetBackdrop(childBackdrop)
-	child:SetBackdropColor(0, 0, 0, 1)
+	DF:ApplyStandardBackdrop(child)
 
 	local backgroundTexture = child:CreateTexture(nil, "background")
 	backgroundTexture:SetAllPoints()
 	backgroundTexture:SetColorTexture(0, 0, 0, 1)
-
-	DF:ApplyStandardBackdrop(child)
 
 	local selected = child:CreateTexture("$parent_SelectedTexture", "BACKGROUND")
 	selected:SetSize(150, 16)
@@ -1242,6 +1296,16 @@ function DF:CreateDropdownButton(parent, name)
 	local rightButton = DF:CreateButton(newButton, function()end, 16, 16, "", 0, 0, "", "rightButton", "$parentRightButton", nil, DF:GetTemplate("dropdown", "OPTIONS_DROPDOWN_TEMPLATE"))
 	rightButton:SetPoint("right", newButton, "right", -2, 0)
 	rightButton:Hide()
+
+	local rightTexture = newButton:CreateTexture("$parent_RightTexture", "OVERLAY")
+	rightTexture:SetPoint("right", newButton, "right", -2, 0)
+	rightTexture:SetSize(20, 20)
+	newButton.rightTexture = rightTexture
+
+	local centerTexture = newButton:CreateTexture("$parent_CenterTexture", "OVERLAY")
+	centerTexture:SetPoint("center", newButton, "center", 0, 0)
+	centerTexture:SetSize(20, 20)
+	newButton.centerTexture = centerTexture
 
 	newButton:SetScript("OnMouseDown", DetailsFrameworkDropDownOptionClick)
 	newButton:SetScript("OnEnter", DetailsFrameworkDropDownOptionOnEnter)

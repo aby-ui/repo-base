@@ -87,8 +87,10 @@ U1RegisterAddon("!!!163UI!!!", {
         text = U1_NEW_ICON .. "显示任务通报和自动交接",
         tip = "说明`任务追踪标题栏这两个按钮因为有加载对应插件的功能，所以是比较特殊的存在，无法通过关闭插件来隐藏。只能在爱不易设置里加一个选项。",
         callback = function(cfg, v, loading)
-            if QuestAnnounceTrackerQuickSwitch then CoreUIShowOrHide(QuestAnnounceTrackerQuickSwitch, v) end
-            if AutoTurnInTrackerQuickSwitch then CoreUIShowOrHide(AutoTurnInTrackerQuickSwitch, v) end
+            RunOnNextFrame(function()
+                if QuestAnnounceTrackerQuickSwitch then CoreUIShowOrHide(QuestAnnounceTrackerQuickSwitch, v) end
+                if AutoTurnInTrackerQuickSwitch then CoreUIShowOrHide(AutoTurnInTrackerQuickSwitch, v) end
+            end)
         end
     },
     {

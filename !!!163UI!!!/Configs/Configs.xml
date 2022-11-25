@@ -38,7 +38,7 @@
     <Include file="..\..\Decursive\CfgDecursive.lua"/>
     <Include file="..\..\DejaCharacterStats\CfgDejaCharacterStats.lua"/>
     <Include file="..\..\Dominos\CfgDominos.lua"/>
-    <Include file="..\..\Dresser\CfgDresser.lua"/>
+    <Include file="..\..\DressingSlots\CfgDressingSlots.lua"/>
     <Include file="..\..\DuowanChat\CfgDuowanChat.lua"/>
     <Include file="..\..\EN_UnitFrames\CfgEN_UnitFrames.lua"/>
     <Include file="..\..\Ellipsis\CfgEllipsis.lua"/>

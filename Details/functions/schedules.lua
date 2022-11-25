@@ -5,6 +5,7 @@ local Details = _G.Details
 local DF = _G.DetailsFramework
 local C_Timer = _G.C_Timer
 local unpack = _G.unpack
+local addonName, Details222 = ...
 
 --make a namespace for schedules
 Details.Schedules = {}

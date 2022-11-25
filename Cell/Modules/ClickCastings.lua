@@ -134,7 +134,7 @@ end
 -------------------------------------------------
 local wrapFrame = CreateFrame("Frame", "CellWrapFrame", nil, "SecureHandlerStateTemplate")
 wrapFrame:SetAttribute("_onstate-mouseoverstate", [[
-    -- print(newstate)
+    -- print("mouseoverstate", newstate)
     if newstate == "false" and mouseoverbutton then
         if not mouseoverbutton:IsUnderMouse() then
             mouseoverbutton:ClearBindings()
@@ -144,6 +144,22 @@ wrapFrame:SetAttribute("_onstate-mouseoverstate", [[
 ]])
 --! NOTE: not available for unit far away (different map)
 RegisterStateDriver(wrapFrame, "mouseoverstate", "[@mouseover, exists] true; false")
+
+--! update togglemenu_nocombat
+wrapFrame:SetAttribute("_onstate-combatstate", [[
+    -- print("combatstate", newstate)
+    if mouseoverbutton then
+        local menuKey = mouseoverbutton:GetAttribute("menu")
+        if menuKey then
+            if newstate == "true" then
+                mouseoverbutton:SetAttribute(menuKey, nil)
+            else                    
+                mouseoverbutton:SetAttribute(menuKey, "togglemenu")
+            end
+        end
+    end
+]])
+RegisterStateDriver(wrapFrame, "combatstate", "[combat] true; false")
 
 local SetBindingClicks
 if Cell.isRetail then
@@ -167,6 +183,16 @@ if Cell.isRetail then
             if attrs then
                 for _, k in pairs(table.new(strsplit("|", attrs))) do
                     self:SetAttribute(k, string.gsub(self:GetAttribute(k), "@%w+", "@"..self:GetAttribute("unit")))
+                end
+            end
+
+            --! update togglemenu
+            local menuKey = self:GetAttribute("menu")
+            if menuKey then
+                if PlayerInCombat() then
+                    self:SetAttribute(menuKey, nil)
+                else                    
+                    self:SetAttribute(menuKey, "togglemenu")
                 end
             end
         ]])
@@ -235,6 +261,16 @@ else
                     -- print(self:GetAttribute(k))
                 end
             end
+
+            --! update togglemenu
+            local menuKey = self:GetAttribute("menu")
+            if menuKey then
+                if PlayerInCombat() then
+                    self:SetAttribute(menuKey, nil)
+                else                    
+                    self:SetAttribute(menuKey, "togglemenu")
+                end
+            end
         ]])
 
         wrapFrame:WrapScript(b, "OnEnter", [[
@@ -243,7 +279,7 @@ else
                 --! NOTE: 鼠标放在过远单位上->被挡住->移走->移至可用单位再移出，会发现之前的不可用单位的按键绑定仍未取消
                 mouseoverbutton:ClearBindings()
                 
-                --! vehicle
+                --! vehicle (previous button)
                 local oldUnit = mouseoverbutton:GetAttribute("oldUnit")
                 if oldUnit then
                     -- print("wrap restore unit")
@@ -259,7 +295,7 @@ else
             -- print("_onleave")
             self:ClearBindings()
             
-            --! vehicle
+            --! vehicle (current button)
             local oldUnit = self:GetAttribute("oldUnit")
             if oldUnit then
                 -- print("restore unit")
@@ -339,6 +375,7 @@ local previousClickCastings
 local function ClearClickCastings(b)
     if not previousClickCastings then return end
     b:SetAttribute("cell", nil)
+    b:SetAttribute("menu", nil)
     for _, t in pairs(previousClickCastings) do
         local bindKey = t[1]
         if strfind(bindKey, "SCROLL") then
@@ -367,7 +404,12 @@ local function ApplyClickCastings(b)
             bindKey = GetMouseWheelBindKey(t[1])
         end
 
-        b:SetAttribute(bindKey, t[2])
+        if t[2] == "togglemenu_nocombat" then
+            b:SetAttribute("menu", bindKey)
+        else
+            b:SetAttribute(bindKey, t[2])
+        end
+
         if t[2] == "spell" then
             -- NOTE: spell 在无效/过远的目标上会处于“等待选中目标”的状态，即鼠标指针有一圈灰色材质。用 macrotext 可以解决这个问题
             -- NOTE: 但对于尸体状态（未释放）的目标，需要额外判断
@@ -734,6 +776,21 @@ local function ShowActionsMenu(index, b)
                     if b.bindAction ~= "togglemenu" then
                         changed[index]["bindAction"] = "togglemenu"
                         b.actionGrid:SetText(L["Menu"])
+                    else
+                        changed[index]["bindAction"] = nil
+                        b.actionGrid:SetText(L[b.bindAction])
+                    end
+                    CheckChanged(index, b)
+                    CheckChanges()
+                end,
+            },
+            {
+                ["text"] = L["togglemenu_nocombat"],
+                ["onClick"] = function()
+                    changed[index] = changed[index] or {b}
+                    if b.bindAction ~= "togglemenu_nocombat" then
+                        changed[index]["bindAction"] = "togglemenu_nocombat"
+                        b.actionGrid:SetText(L["togglemenu_nocombat"])
                     else
                         changed[index]["bindAction"] = nil
                         b.actionGrid:SetText(L[b.bindAction])

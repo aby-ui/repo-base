@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2461, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220907170835")
+mod:SetRevision("20221124062011")
 mod:SetCreatureID(182169)
 mod:SetEncounterID(2539)
 mod:SetUsedIcons(1, 2)
@@ -48,7 +48,7 @@ local warnFormSentry							= mod:NewSpellAnnounce(365257, 2)
 local specWarnHarmonicAlignment					= mod:NewSpecialWarningYou(368738, nil, nil, nil, 1, 12, 4)
 local specWarnMelodicAlignment					= mod:NewSpecialWarningYou(368740, nil, nil, nil, 1, 12, 4)
 
-local specWarnCosmicShift						= mod:NewSpecialWarningCount(363088, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.spell:format(363088), nil, 2, 12)
+local specWarnCosmicShift						= mod:NewSpecialWarningCount(363088, nil, DBM_CORE_L.AUTO_SPEC_WARN_OPTIONS.spell:format(363088), nil, 2, 13)
 local specWarnUnstableMote						= mod:NewSpecialWarningYou(362622, nil, nil, nil, 1, 2)
 local specWarnProtoformCascade					= mod:NewSpecialWarningDodge(364652, nil, 260885, nil, 1, 2)
 local specWarnResonance							= mod:NewSpecialWarningDefensive(368027, false, nil, nil, 1, 2)
@@ -261,7 +261,7 @@ function mod:SPELL_CAST_START(args)
 			specWarnCosmicShift:Play("pullin")
 		else
 			specWarnCosmicShift:Show(push)
-			specWarnCosmicShift:Play("carefly")
+			specWarnCosmicShift:Play("pushbackincoming")
 		end
 		local timer = allTimers[difficultyName][self.vb.timerMode][spellId][self.vb.cosmicCount+1]
 		if timer then

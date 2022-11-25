@@ -419,6 +419,7 @@ L["SpellId and BuffId are the same in most cases"] = "大部分情況下法術ID
 L["Spells"] = "法術"
 L["Spotlight Button Size"] = "特別關注按鈕大小"
 L["Spotlight Frame"] = "特別關注框架"
+L["spotlightTips"] = "左鍵: |cffffffff選單|r\n右鍵: |cffffffff清除|r\n左鍵拖曳: |cffffffff設為目標單位 (非戰鬥中)|r\n右鍵拖曳: |cffffffff設為目標單位的寵物 (非戰鬥中)|r"
 L["Status Icon"] = "狀態圖示"
 L["Status Text"] = "狀態文字"
 L["Status Text Position"] = "狀態文字位置"

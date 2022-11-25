@@ -1,0 +1,15 @@
+## Interface: 100002
+## Title: DressingSlots
+## Notes: Extends the dressing room with extra functionality.
+## Version: 1.4.0
+## Author: Crinseth
+## OptionalDeps: LibStub, Masque
+## SavedVariablesPerCharacter: ShowSlots, DressHeight, DressWidth
+
+Core.lua
+Slots.lua
+AbyDressUpButtons.lua
+
+## Title: |cff880303[爱不易]|r DressingSlots 试穿助手
+## Notes-zhCN: 可缩放试穿界面，并增加多个实用按钮，可以试穿目标装备，或将以目标为模特试穿自身装备，并且可以脱掉单件装备。
+## X-Vendor: AbyUI

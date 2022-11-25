@@ -1,7 +1,7 @@
 
 
 local Details = _G.Details
-
+local addonName, Details222 = ...
 
 
 local plater_integration_frame = CreateFrame("frame", "DetailsPlaterFrame", UIParent, "BackdropTemplate")

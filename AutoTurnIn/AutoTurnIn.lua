@@ -481,9 +481,17 @@ function AutoTurnIn:RegisterForEvents()
 		self:RegisterEvent("GOSSIP_CONFIRM")
 	end
 
-	local function __getGossipId(index) local o = C_GossipInfo.GetOptions()[index] return o and o.gossipOptionID or 0 end
+	self:RegisterGossipOptionClicker()
+end
+
+function AutoTurnIn:RegisterGossipOptionClicker()
+	local function __getGossipId(index)
+		-- SOmetimes quest comletition removes the options. SelectOption does not throws exception on unavailable index
+		--return #C_GossipInfo.GetOptions() > 0 and C_GossipInfo.GetOptions()[index].gossipOptionID or -1
+		local o = C_GossipInfo.GetOptions()
+		return o and o[index] and o[index].gossipOptionID or -1
+	end
 	local gossipFunc1 = function()
-		AutoTurnIn:Print(L["ivechosen"]);
 		C_GossipInfo.SelectOption( __getGossipId(1) )
 	end
 	local gossipFunc2 = function()
@@ -533,6 +541,9 @@ function AutoTurnIn:RegisterForEvents()
 		["57850"]=gossipFunc4, -- DarkmoonFaireTeleportologist
 		["166663"]=gossipFunc5, -- Kyrian Steward
 		["20142"]=gossipFunc1, -- Caverns of Time:Steward of Time
+		["42391"]=gossipFunc1, -- West Plains Drifter [Lieutenant Horatio Laine]
+		["42384"]=gossipFunc1, -- Homeless Stormwind [Lieutenant Horatio Laine]
+		["42383"]=gossipFunc1, -- Transient [Lieutenant Horatio Laine]
 	}
 end
 
@@ -669,7 +680,6 @@ function AutoTurnIn:VarArgForActiveQuests(gossipInfos)
 				local quest = L.quests[questname]
 				if quest and quest.amount then
 					if self:GetItemAmount(quest.currency, quest.item) >= quest.amount then
-						local a = UnitGUID("npc")
 						C_GossipInfo.SelectActiveQuest(questInfo.questID)
 						self.DarkmoonAllowToProceed = false
 					end

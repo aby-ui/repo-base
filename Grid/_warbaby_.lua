@@ -303,7 +303,6 @@ Mixin(GridFrame.defaultDB, {
             alert_offline = true,
             alert_ghost = true,
             alert_RaidDebuff = true,
-            alert_res = true,
             --alert_bigdebuffs = true,
             alert_summon = true,
         },
@@ -311,6 +310,7 @@ Mixin(GridFrame.defaultDB, {
             alert_tankcd = true,
             alert_vehicleui = true,
             alert_phase = true,
+            alert_resurrect = true,
         },
         icontop = {
             raid_icon = true,

@@ -5,6 +5,7 @@ local unpack = _G.unpack
 local GetTime = _G.GetTime
 local tremove = _G.tremove
 local GetInstanceInfo = _G.GetInstanceInfo
+local addonName, Details222 = ...
 
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 
@@ -774,7 +775,7 @@ function DetailsMythicPlusFrame.EventListener.OnDetailsEvent(contextObject, even
         --nothing
 
     elseif (event == "COMBAT_MYTHICDUNGEON_START") then
-        print("COMBAT_MYTHICDUNGEON_START", ...)
+        --print("COMBAT_MYTHICDUNGEON_START", ...)
         local lower_instance = _detalhes:GetLowerInstanceNumber()
         if (lower_instance) then
             lower_instance = _detalhes:GetInstance(lower_instance)

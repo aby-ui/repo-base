@@ -1,8 +1,8 @@
 ## Interface: 100002
-## Version: 22.11.20
+## Version: 22.11.25
 ## Title: TipTacTalents
 ## Author: Aezay (Earthen Ring EU), Frozn45
-## Notes: Adds Talent Spec to Player Tooltips
+## Notes: Adds Talent Spec and Average Item Level to Player Tooltips
 ## OptionalDeps: TipTac
 ## X-Category: Tooltip
 ## X-Website: https://www.curseforge.com/wow/addons/tiptac-reborn

@@ -1,5 +1,6 @@
 
 local Details = _G.Details
+local addonName, Details222 = ...
 
 --stop yellow warning on my editor
 local IsInRaid = _G.IsInRaid

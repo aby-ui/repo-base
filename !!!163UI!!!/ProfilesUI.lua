@@ -58,6 +58,7 @@ function U1Profiles:CreateFrame()
 
 local f = WW:Frame('U1ProfileFrame', _G[U1_FRAME_NAME], "BasicFrameTemplateWithInset"):Size(500, 250):TOP(0, -50):SetToplevel(1):SetFrameStrata("DIALOG")
 U1Profiles.f = f
+f:SetScript("OnShow", function() RunOnNextFrame(f.Raise, f) end)
 
 local function tabOnClick(self)
     PanelTemplates_Tab_OnClick(self, f)

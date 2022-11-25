@@ -6,9 +6,10 @@
 
 --values added into 'instance_skin_ignored_values' won't be passed when the user exports the profile or exports the skin individually.
 
-
 local _detalhes = 		_G._detalhes
 local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
+local addonName, Details222 = ...
+local _ = nil
 
 function _detalhes:ResetInstanceConfig (maintainsnap)
 	for key, value in pairs(_detalhes.instance_defaults) do 
@@ -157,6 +158,8 @@ _detalhes.instance_defaults = {
 		menu_icons_alpha = 1,
 		--blackwhiite icons
 		desaturated_menu = false, --mode segment attribute report
+		--menu icons color
+		menu_icons_color = {1, 1, 1},
 		--icons on menu
 		menu_icons = {true, true, true, true, true, false, space = -2, shadow = false}, --mode segment attribute report reset close
 		--menu icons size multiplicator factor

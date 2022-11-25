@@ -144,7 +144,7 @@ local function SetOnUpdate_Refresh(indicator, type, icon, stack)
     end)
 end
 
--- update font
+--[=[ update font
 local function UpdatePreviewIcons(layout, indicatorName, setting, value, value2)
     if not indicatorName or indicatorName == "raidDebuffs" then
         borderIcon1:SetFont(unpack(Cell.vars.currentLayoutTable.indicators[Cell.defaults.indicatorIndices["raidDebuffs"]].font))
@@ -154,7 +154,7 @@ local function UpdatePreviewIcons(layout, indicatorName, setting, value, value2)
         barIcon1:SetFont(unpack(Cell.vars.currentLayoutTable.indicators[Cell.defaults.indicatorIndices["debuffs"]].font))
         barIcon2:SetFont(unpack(Cell.vars.currentLayoutTable.indicators[Cell.defaults.indicatorIndices["debuffs"]].font))
     end
-end
+end]=]
 
 local function CreatePreviewIcons()
     previewIconsBG = Cell:CreateFrame("CellAppearancePreviewIconsBG", appearanceTab)
@@ -169,12 +169,14 @@ local function CreatePreviewIcons()
     previewText:SetText(Cell:GetAccentColorString()..L["Preview"].." 1")
 
     borderIcon1 = I:CreateAura_BorderIcon("CellAppearancePreviewIcon1", previewIconsBG, 2)
+    borderIcon1:SetFont("Cell ".._G.DEFAULT, 11, "Outline", 2, 1)
     P:Size(borderIcon1, 22, 22)
     borderIcon1:SetPoint("BOTTOMLEFT")
     SetOnUpdate(borderIcon1, "Magic", 135819, 0)
     borderIcon1:Show()
 
     borderIcon2 = I:CreateAura_BorderIcon("CellAppearancePreviewIcon2", previewIconsBG, 2)
+    borderIcon2:SetFont("Cell ".._G.DEFAULT, 11, "Outline", 2, 1)
     P:Size(borderIcon2, 22, 22)
     borderIcon2:SetPoint("BOTTOMLEFT", borderIcon1, "BOTTOMRIGHT", P:Scale(1), 0)
     borderIcon2.preview = CreateFrame("Frame", nil, borderIcon2)
@@ -194,6 +196,7 @@ local function CreatePreviewIcons()
     borderIcon2:Show()
 
     barIcon2 = I:CreateAura_BarIcon("CellAppearancePreviewIcon4", previewIconsBG)
+    barIcon2:SetFont("Cell ".._G.DEFAULT, 11, "Outline", 2, 1)
     P:Size(barIcon2, 22, 22)
     barIcon2:SetPoint("BOTTOMRIGHT")
     barIcon2.preview = CreateFrame("Frame", nil, barIcon2)
@@ -211,13 +214,14 @@ local function CreatePreviewIcons()
     barIcon2:Show()
 
     barIcon1 = I:CreateAura_BarIcon("CellAppearancePreviewIcon3", previewIconsBG)
+    barIcon1:SetFont("Cell ".._G.DEFAULT, 11, "Outline", 2, 1)
     P:Size(barIcon1, 22, 22)
     barIcon1:SetPoint("BOTTOMRIGHT", barIcon2, "BOTTOMLEFT", P:Scale(-1), 0)
     barIcon1:ShowDuration(true)
     SetOnUpdate(barIcon1, "", 132155, 5)
     barIcon1:Show()
 
-    UpdatePreviewIcons()
+    -- UpdatePreviewIcons()
 end
 
 -------------------------------------------------
@@ -1137,12 +1141,14 @@ local function UpdateLayout()
 end
 Cell:RegisterCallback("UpdateLayout", "AppearanceTab_UpdateLayout", UpdateLayout)
 
+--[[
 local function UpdateIndicators(...)
     if init then
         UpdatePreviewIcons(...)
     end
 end
 Cell:RegisterCallback("UpdateIndicators", "AppearanceTab_UpdateIndicators", UpdateIndicators)
+]]
 
 -------------------------------------------------
 -- update appearance

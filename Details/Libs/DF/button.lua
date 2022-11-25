@@ -1029,3 +1029,52 @@ end
 
 		return colorPickButton
 	end
+
+    function DF:SetRegularButtonTexture(button, texture, left, right, top, bottom)
+        if (type(left) == "table") then
+            left, right, top, bottom = unpack(left)
+        end
+
+        if (not left) then
+            left, right, top, bottom = 0, 1, 0, 1
+        end
+
+        local atlas
+        if (type(texture) == "string") then
+            atlas = C_Texture.GetAtlasInfo(texture)
+        end
+
+        local normalTexture = button:GetNormalTexture()
+        local pushedTexture = button:GetPushedTexture()
+        local highlightTexture = button:GetHightlightTexture()
+        local disabledTexture = button:GetDisabledTexture()
+
+        if (atlas) then
+            normalTexture:SetAtlas(texture)
+            pushedTexture:SetAtlas(texture)
+            highlightTexture:SetAtlas(texture)
+            disabledTexture:SetAtlas(texture)
+        else
+            normalTexture:SetTexture(texture)
+            pushedTexture:SetTexture(texture)
+            highlightTexture:SetTexture(texture)
+            disabledTexture:SetTexture(texture)
+            normalTexture:SetTexCoord(left, right, top, bottom)
+            pushedTexture:SetTexCoord(left, right, top, bottom)
+            highlightTexture:SetTexCoord(left, right, top, bottom)
+            disabledTexture:SetTexCoord(left, right, top, bottom)
+        end
+    end
+
+	function DF:SetRegularButtonVertexColor(button, ...)
+        local r, g, b, a = DF:ParseColor(...)
+        local normalTexture = button:GetNormalTexture()
+        local pushedTexture = button:GetPushedTexture()
+        local highlightTexture = button:GetHightlightTexture()
+        local disabledTexture = button:GetDisabledTexture()
+
+        normalTexture:SetVertexColor(r, g, b, a)
+        pushedTexture:SetVertexColor(r, g, b, a)
+        highlightTexture:SetVertexColor(r, g, b, a)
+        disabledTexture:SetVertexColor(r, g, b, a)
+    end

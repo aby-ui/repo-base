@@ -7,10 +7,6 @@ local tinsert = table.insert
 local setmetatable = setmetatable
 local ipairs = ipairs
 local pairs = pairs
-local rawget= rawget
-local _math_min = math.min
-local _math_max = math.max
-local _bit_band = bit.band
 local _unpack = unpack
 local type = type
 --api locals
@@ -25,6 +21,7 @@ local _detalhes = 		_G._detalhes
 local AceLocale = LibStub("AceLocale-3.0")
 local Loc = AceLocale:GetLocale ( "Details" )
 local _
+local addonName, Details222 = ...
 
 local gump = 			_detalhes.gump
 

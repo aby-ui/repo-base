@@ -1,6 +1,13 @@
 
+local _detalhes = 		_G._detalhes
+local _
+local addonName, Details222 = ...
+
+local AceLocale = LibStub("AceLocale-3.0")
+local Loc = AceLocale:GetLocale ( "Details" )
+local Translit = LibStub("LibTranslit-1.0")
+
 --lua locals
-local _cstr = string.format
 local _math_floor = math.floor
 local setmetatable = setmetatable
 local pairs = pairs
@@ -10,7 +17,6 @@ local type = type
 local _table_sort = table.sort
 local _cstr = string.format
 local tinsert = table.insert
-local _bit_band = bit.band
 local _math_min = math.min
 local _math_ceil = math.ceil
 --api locals
@@ -18,18 +24,8 @@ local GetSpellInfo = GetSpellInfo
 local _GetSpellInfo = _detalhes.getspellinfo
 local IsInRaid = IsInRaid
 local IsInGroup = IsInGroup
-local _UnitName = UnitName
-local GetNumGroupMembers = GetNumGroupMembers
 
 local _string_replace = _detalhes.string.replace --details api
-
-local _detalhes = 		_G._detalhes
-local _
-
-local AceLocale = LibStub("AceLocale-3.0")
-local Loc = AceLocale:GetLocale ( "Details" )
-local Translit = LibStub("LibTranslit-1.0")
-
 local gump = 			_detalhes.gump
 
 local alvo_da_habilidade = 	_detalhes.alvo_da_habilidade
@@ -2379,6 +2375,66 @@ function atributo_heal:MontaDetalhesHealingDone (spellid, barra)
 			t3[6] = ""
 			t3[7] = ""
 			t3[8] = _detalhes:comma_value (esta_magia.anti_heal) .. " / " .. _cstr ("%.1f", porcentagem_anti_heal) .. "%"
+
+		--empowered
+		elseif (esta_magia.e_total) then
+			local empowerLevelSum = esta_magia.e_total --total sum of empower levels
+			local empowerAmount = esta_magia.e_amt --amount of casts with empower
+			local empowerAmountPerLevel = esta_magia.e_lvl --{[1] = 4; [2] = 9; [3] = 15}
+			local empowerDamagePerLevel = esta_magia.e_heal --{[1] = 54548745, [2] = 74548745}
+
+			data[3] = t3
+
+			local level1AverageDamage = "0"
+			local level2AverageDamage = "0"
+			local level3AverageDamage = "0"
+			local level4AverageDamage = "0"
+			local level5AverageDamage = "0"
+
+			if (empowerDamagePerLevel[1]) then
+				level1AverageDamage = Details:ToK(empowerDamagePerLevel[1] / empowerAmountPerLevel[1])
+			end
+			if (empowerDamagePerLevel[2]) then
+				level2AverageDamage = Details:ToK(empowerDamagePerLevel[2] / empowerAmountPerLevel[2])
+			end
+			if (empowerDamagePerLevel[3]) then
+				level3AverageDamage = Details:ToK(empowerDamagePerLevel[3] / empowerAmountPerLevel[3])
+			end
+			if (empowerDamagePerLevel[4]) then
+				level4AverageDamage = Details:ToK(empowerDamagePerLevel[4] / empowerAmountPerLevel[4])
+			end
+			if (empowerDamagePerLevel[5]) then
+				level5AverageDamage = Details:ToK(empowerDamagePerLevel[5] / empowerAmountPerLevel[5])
+			end
+
+			t3[1] = 0
+			t3[2] = {p = 100, c = {0.282353, 0.239216, 0.545098, 0.6}}
+			t3[3] = "Spell Empower Average Level: " .. format("%.2f", empowerLevelSum / empowerAmount)
+			t3[4] = ""
+			t3[5] = ""
+			t3[6] = ""
+			t3[10] = ""
+			t3[11] = ""
+
+			if (level1AverageDamage ~= "0") then
+				t3[4] = "Level 1 Average: " .. level1AverageDamage .. " (" .. (empowerAmountPerLevel[1] or 0) .. ")"
+			end
+
+			if (level2AverageDamage ~= "0") then
+				t3[6] = "Level 2 Average: " .. level2AverageDamage .. " (" .. (empowerAmountPerLevel[2] or 0) .. ")"
+			end
+
+			if (level3AverageDamage ~= "0") then
+				t3[11] = "Level 3 Average: " .. level3AverageDamage .. " (" .. (empowerAmountPerLevel[3] or 0) .. ")"
+			end
+
+			if (level4AverageDamage ~= "0") then
+				t3[10] = "Level 4 Average: " .. level4AverageDamage .. " (" .. (empowerAmountPerLevel[4] or 0) .. ")"
+			end
+
+			if (level5AverageDamage ~= "0") then
+				t3[5] = "Level 5 Average: " .. level5AverageDamage .. " (" .. (empowerAmountPerLevel[5] or 0) .. ")"
+			end
 		end
 
 --	for i = #data+1, 3 do --para o overheal aparecer na ultima barra

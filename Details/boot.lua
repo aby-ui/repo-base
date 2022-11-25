@@ -3,11 +3,11 @@
 
 		_ = nil
 		_G._detalhes = LibStub("AceAddon-3.0"):NewAddon("_detalhes", "AceTimer-3.0", "AceComm-3.0", "AceSerializer-3.0", "NickTag-1.0")
-
+		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10259
-		_detalhes.alpha_build_counter = 10259 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10287
+		_detalhes.alpha_build_counter = 10287 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -64,15 +64,46 @@ do
 
 	local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 
-	--[=[
-	- 
-	- 
-	- this is an empty comment section
-	- 
-	- 
-	--]=]
-
 	local news = {
+		{"v10.0.2.10277.146", "Nov 18th, 2022"},
+		"REMINDER: '/details coach' to get damage/healing/deaths in real time as the 21st person (coach) for the next raid tier in dragonflight.",
+		"",
+		"New <Plugin: Cast Log>  show a time line of spells used by players in the group, Raid Leader: show all attack and defense cooldowns used by the raid.",
+		"Wago: Details! Standalone version is now hosted on addons.wago.io and WowUp.com.",
+		"",
+
+		"Added a little damage chart for your spells in the Player Breakdown Window.",
+		"Details! will count class play time, everyone using Details! from day 1 in Dragonflight should have an accurate play time in the class.",
+		"Visual updates on default skin.",
+		"All panels from options to plugins received visual updates.",
+		"Profiles won't export Auto Hide automations to stop issues with players not knowing why the window is hidding.",
+		"Details! should decrease the amount of chat spam errors and instead show them in the bug report window like al the other addons.",
+		"Player Details! Breakdown window: player selection now uses the same font as the regular window.",
+		"Death log tooltip revamp for more clarity to see the ability name and the damage done.",
+		"Dragonflight Trinkets damage will show the trinket name after the spell name.",
+		"'/details scroll' feature: spell name and spell id can now be copied, the frame got a scale bar.",
+		"Added option: 'Use Dynamic Overall Damage', if enabled swap to Dynamic Overall Damage when combat start while showing Overall Damage.",
+		"Fixed for most of the user having the problem of the encounter time not showing.",
+		"Fixed most of the issues with the melee spell name being called 'Word of Recall'.",
+		"Details! Damage Meter, Deatails! Framework, LibOpenRaid has been successfully updated to Dragonflight.",
+		"New class Evoker are now fully supported by Details!.",
+		"",
+		"Fixed an issue where warlocks was entering in combat from a debug doing damage (Flamanis).",
+		"Fixed 'Auto of Range' problem in Wrath of the Lich King (Flamanis).",
+		"Fixed a bug with custom displays when showing players outside the player group (Flamanis).",
+		"Fixed an issue where specs wheren't sent on Wrath (Flamanis).",
+		"Fixed Buff Uptime Tooltip where the buff had zero uptime (Flamanis)",
+		"Fixed shield damage preventing rare error when the absorption was zero (Flamanis).",
+		"Fixed chat embed system built in Details! from the Skins section (Flamanis).",
+		"Fixed an issue where damage in battlegrounds was not being sync with battleground score board in Wrath (Flamanis).",
+		"",
+		"New Slash Commands:",
+		"/playedclass: show how much time you have played this class on this expansion.",
+		"/dumpt <anything>: show the value of any table, global, spellId, etc.",
+		"/details auras: show a panel with your current auras, spell ids and spell payload.",
+		"/details perf: show performance issues when you get a warning about freezes due to UpdateAddOnMemoryUsage().",
+		"/details npcid: get the npc id of your target (a box is shown with the number ready to be copied).",
+
 		{"v9.2.0.10001.146", "Aug 10th, 2022"},
 		"New feature: Arena DPS Bar, can be enabled at the Broadcaster Tools section, shows a bar in 'kamehameha' style showing which team is doing more damage in the latest 3 seconds.",
 		"/keystone now has more space for the dungeon name.",
@@ -95,225 +126,6 @@ do
 		"Major cleanup and code improvements on dropdowns for library Details! Framework.",
 		"Cleanup on NickTag library.",
 		"Removed LibGroupInSpecT, LibItemUpgradeInfo and LibCompress. These libraries got replaced by OpenRaidLib and LibDeflate.",
-
-		{"v9.2.0.9814.146", "May 15th, 2022"},
-		"Added slash command /keystone, this command show keystones of other users with addons using Open Raid library.",
-		"Added a second Title Bar (disabled by default), is recomended to make the Skin Color (under Window Body) full transparent while using it.",
-		"Added Overlay Texture and Color options under Bars: General.",
-		"Added Wallpaper Alignment 'Full Body', this alignment make the wallpaper fill over the title bar.",
-		"Added Auto Alignment for 'Aligned Text Columns', this option is enabled by default.",
-		"Added 'Window Area Border' and 'Row Area Border' under 'Window Body' section in the options panel.",
-		"Added an option to color the Row Border by player class.",
-		"Added new automation auto hide option: Arena.",
-		"Blizzard Death Recap kill ability only shows on Dungeons and Raids now.",
-		"Fixed an issue where player names was overlapping damage numbers with enbaled 'Aligned Text Columns'.",
-		"Fixed a bug on 'DeathLog Min Healing' option where it was reseting to 1 on each logon.",
-		"Fixed several bugs with 'Bar Orientation: Right to Left' (fix by Flamanis).",
-		"Fixed an error on Vanguard plugin.",
-		"Fixed Spec Icons 'Specialization Alpha' offseted by 2 pixels to the right.",
-
-		{"v9.2.0.9778.146", "April 26th, 2022"},
-		--"A cooldown tracker experiment has been added, its options is visible at the Options Panel.",
-		"Added a search box in the '/details scroll' feature.",
-		"When using Details! Death Recap, a message is now printed to chat showing what killed you accordingly to Blizzard Death Recap.",
-		"Fixed some errors while using Mind Control on an arena match.",
-		"Fixed encounter phase detection while using voice packs for boss mods addons.",
-		"Fixed an error after killing a boss encounter on heroic dificulty for the first time.",
-		"Fixed the issue of skins installed after the window has been loaded and the skin was not found at that time.",
-		"API: added 'UNIT_SPEC' and 'UNIT_TALENTS' event to details! event listener.",
-		"API: added Details:GetUnitId(unitName) which return the unitId for a given player name.",
-
-		{"v9.2.0.9735.146", "April 8th, 2022"},
-		"Arena Enemy Player deaths has been greatly improved on this version.",
-		"Added M+ Score into the player info tooltip (hover over the spec icon).",
-		"Fixed windows ungrouping after a /reload (fix by Flamanis).",
-		"Opening a tooltip from a bar or a menu in the title bar will close the All Displays Panel (from right clicking the title bar).",
-		"[TBC] fixed an error given by users using old versions of Details! in the raid.",
-
-		{"v9.2.0.9715.146", "March 6th, 2022"},
-		"More Tiny Threat fixes and implementations (by Treeston)",
-		"Fixed Chinese and Taiwan 'Thousand' abbreviation letter (fix by github user Maioro).",
-
-		{"v9.2.0.9699.146", "March 4th, 2022"},
-		"Align Text Columns now have a warning at the bracket and separators option",
-		"Silence from interrupts shall be counted as a crowd control.",
-		"More phrases in the options panel has been added to translation.",
-		"A revamp has beed started on the erase data prompt.",
-
-		{"v9.2.0.9696.146", "February 24th, 2022"},
-		"Fixed DPS display when using Aligned Text Columns.",
-		"Fixed percent showing even it's disabled when using Aligned Text Columns.",
-
-		{"v9.2.0.9255.146", "February 22th, 2022"},
-		"Added Cosmic Healing Potion to script 'Health Potion & Stone'.",
-
-		{"v9.1.5.9213.146", "February 15th, 2022"},
-		"Added an option to change your own bar color.",
-		"Added 'Ignore this Npc' into the Npc list under the spell list section.",
-		"Bookmark window now uses the same scale than the options panel.",
-		"Class Color window now uses the same scale than the options panel.",
-		"If not casted on the player itself Power Infusion now shows in the buff list of the target.",
-		"Allowed nicknames on custom displays (by Flamanis).",
-		"Aligned Text Columns enabled is now default for new installs.",
-		"Fodder to the flames DH ability won't count damage done by the player on the add summoned.",
-		"Fixed the load time for the Npc Ids panel on the spell list section.",
-		"Fixed all issues with the options panel scale.",
-		"Fixed tooltips overlap when the window is positioned at the top of the screen (fix by Flamanis).",
-		"Fixed auto hide windows which wasn't saving its group when unhiding (fix by Flamanis).",
-		"Fixed some XML Headers which was giving errors on loading (fix by github user h0tw1r3).",
-		"Fixed '/details me' on TBC, which wasn't working correctly (fix by github user Baugstein).",
-		"Fixed a typo on Vanguard plugin (fix by github user cruzerthebruzer).",
-		"Fixed font 'NuevaStd' where something the font didn't work at all.",
-		"Fixed an issue where for some characters the options panel won't open showing an error in the chat instead.",
-		"New API: combat:GetPlayerDeaths(deadPlayerName).",
-		"New API: Details:ShowDeathTooltip(combatObject, deathTable) for Cooltip tooltips.",
-
-		{"v9.1.5.9213.145", "December 9th, 2021"},
-		"Fixed an issue where after reloading, overall data won't show the players nickname.",
-		"Fixed overkill damage on death log tooltip.",
-		"Fixed the percent bars for the healing done target on the player breakdown window.",
-		"Fixed an issue with resource tooltips.",
-
-		{"v9.1.5.9108.145", "November 02th, 2021"},
-		"Necrotic Wake: weapons damage does not count anymore for the player which uses it.",
-		"Necrotic Wake: a new 'fake player' is shown showing the damage done of all weapons during combat.",
-		"Necrotic Wake: these npcs now does not award damage done to players anymore: Brittlebone Mage, Brittlebone Warrior, Brittlebone Crossbowman",
-		"The Other Side: the npc Volatile Memory does not award anymore damage to players.",
-		"Plaguefall: the npcs Fungret Shroomtender and Plaguebound Fallen does not award anymore damage to players.",
-		"Sanguine Affix: the amount of healing done by sanguine pools now shows on all segments (was shown only in the overall).",
-		"Tiny Threat (plugin): fixed an issue when hidding the pull aggro bar makes the first line be invisible.",
-		"Statistics: fixed several small bugs with guild statistics (/details stats).",
-		"Scale slider (top left slider shown on panels) are now more responsible.",
-
-		{"v9.1.0.8888.145", "October 7th, 2021"},
-		"Search has been added into the options panel",
-		"Improvements on overkill amount of damage",
-		"Fonts 'Oswald' and 'NuevaStd' enabled again.",
-		"Added critical hits to Death Log (by C. Raethke)",
-		"Added settings to change the color on death log, they are within the class colors panel.",
-		"Don't show TaintWarning frame if MiniMapBattlefieldFrame is hidden (by Flamanis).",
-
-		{"v9.1.0.8812.145", "September 5th, 2021"},
-		"Fonts 'Oswald' and 'NuevaStd' disabled due to some erros on the client side.",
-		"Death Knight adds now include the icon of the spell whose summoned them.",
-		"Fixes and improvements on the backend of the addon.",
-
-		{"v9.1.0.8782.145", "August 11th, 2021"},
-		"Clicking on the minimap while the options panel is open will close it.",
-		"Fixed Raid Check plugin position when the window is anchored at the top of the monitor.",
-		"Shadow priest Void Erruption spells got merged into only one.",
-		"Added settings to adjust the scale or font size of the title bar menu (right click): /run Details.all_switch_config.font_size = 12; /run Details.all_switch_config.scale = 1.0;",
-		"Added transliteration to healing done.",
-		"Tiny Threat (plugin): added options to Hide the Pull Bar and Use Focus Target.",
-
-		{"v9.0.5.8637.144", "June 22nd, 2021"},
-		"Major update on Vanguard plugin.",
-		"Added utility module to Coach, this module will send interrupt, dispel, cc breaks, cooldown usege and battle resses to the Coach.",
-		"Added plugins into the title bar display menu.",
-
-		{"v9.0.5.8502.144", "May 21th, 2021"},
-		"Added options to change the color of each team during an arena match.",
-		"Fixed One Segment Battleground.",
-		"Fixed an error with Howl of Terror on Demo Warlocks.",
-
-		{"v9.0.5.8501.144", "May 17th, 2021"},
-		"Complete overhaul and rerritten on Fade In and Out animations, this should fix all bugs related to animations not being consistent.",
-		"Complete overhaul on the broadcaster tool for arenas 'Current DPS'. It shows now a bar indicating the dps of both teams.",
-		"Yellow arena team now has purple color.",
-		"Several updates on the combat log engine and bug fixes.",
-
-		{"v9.0.5.8357.144", "March 15th, 2021"},
-		"Max amount of segments raised to 40, was 30.",
-		"Added a 'Sanguine Heal' actor to show how much the void zone healed enemies, shown on Everything mode.",
-		"Death events are now ignore after the necrolord triggers Forgeborne Reveries.",
-		"Mythic dungeon settings are reset after importing a profile.",
-		"Scripts now support Inline text feature.",
-		"Fixed a rare bug when exporting a profile would result into a bug.",
-		"Fixed an issue with Spirit Shell overhealing.",
-		"Fixed a rare bug on dispel toooltips giving errors.",
-		"Fixed a bug on exporting scripts.",
-		"Fixed an error given when an a battleground opponent die.",
-		"Fixed an issue where sometimes entering an arena cause errors.",
-		"Fixed some issues with pet detection.",
-
-		{"v9.0.2.8246.144", "February 17th, 2021"},
-		"Added healing done to Coach feature (in testing).",
-		"Ignore Forgeborne Reveries healing done (Necrolords ability).",
-		"Arena enemy deaths now are shown in the Deaths display.",
-		"Guild statistics data has been wiped, this system had a major improvement overall.",
-		"Fixed 'Clear Overall Data' on Logout which wasn't clearing.",
-
-		{"v9.0.2.8192.144", "January 27th, 2021"},
-		"If you get issues with nicknames, disable any weakaura which modifies this feature.",
-		"Advanced Death Logs plugin got some fixes and should work properly.",
-		"Added the word 'Overall' at the end of the title bar text when the segment is overall.",
-		"Added covenant and durability into the Raid Check plugin.",
-		"Added API Window:SetTitleBarText(text) and Window:GetTitleBarText().",
-		"Fixed some issues where Details! printed 'combat start time not found.'",
-		"Fixed damage per Phase.",
-		"Fixed resizing window with no background error.",
-		"Fixed 'Always Show player' on ascending sort direction.",
-		"Added more foods into the Ready Check plugin.",
-		"Fixed some issues with the coach fearure.",
-
-		{"v9.0.2.8154.144", "January 14th, 2021"},
-		"Added total damage bars into the player list in the Breakdown window.",
-		"Added 'Square' or 'Roll' mode to Details! Streamer plugin, to change the statusbar mode to Squares, visit the options panel for the plugin.",
-		"Added Binding Shot to crowd control (Hunter)",
-		"Merged all whirlwind damage (Warrior).",
-		"Fixed errors on the 1-10 tutorial levels while playing Demon Hunters.",
-		"Fixed some cases of DeathLog not showing healing",
-		"Fixed windows making a group after '/details toggle', while the option to not make groups enabled.",
-		"Fixed some issues with the custom display 'Potion Used' and 'Health Potion & Stone'.",
-		"Fixed the breakdown window where using the comparisson tab sometimes made the frame to overlap with the aura tab.",
-
-		{"v9.0.2.8001.144", "December 19th, 2020"},
-		"Added Details! Coach as a new experimental feature, you may want to test using /details coach",
-		"Coach feature allows the raid leader to stay outside the raid while seeing in real time player deaths and damage information.",
-		"Fixed issues with some raid encounters in Castle Nathria.",
-		"Druid Kyrian Spirits ability now has some rules to credit the druid for damage and heal.",
-		"Several small bug fixes has been done.",
-
-		{"v9.0.1.8001.144", "November 30rd, 2020"},
-		"Added back the report to bnet friend.",
-		"@Flamanis: fixed issues on custom displays.",
-
-		{"v9.0.1.7950.144", "November 3rd, 2020"},
-		"Added the baseline for the Coach feature, for testing use '/details coach', all users in the raid must have details! up to date.",
-		"Added container_spells:GetOrCreateSpell(id, shouldCreate, token).",
-		"Added Details:GetRaidLeader(), return the RL name.",
-		"Fixed Tiny Threat not showing threat.",
-		"Fixed annoucement interrupt enable toggle checkbox was reseting on logon.",
-
-		{"v9.0.1.7938.142", "October 29th, 2020"},
-		"Added option to select the icon buttons in the title bar.",
-
-		{"v9.0.1.7739.142", "August 18th, 2020"},
-		"More development on the new plugin Cast Timeline.",
-		"More development on Details! Scroll Damage.",
-		"Added options to opt-out show pets on solo play.",
-		"Added back Profiles and Plugins into the options panel.",
-		"Many framework fixes from retail ported to shadowlands.",
-		{"v9.0.1.7721.142", "August 14th, 2020"},
-		"Encounter time in the title bar got new code and might work now for some people that had issues with it.",
-		"Fixed an error with the Welcome Window showing errors.",
-		"Statusbar got fixed, it should now show it's widgets normally.",
-		"Alignment for the title bar text also got fixed.",
-		{"v9.0.1.7707.142", "August 11th, 2020"},
-		"While in The Concil of Blood, Details! now deletes the damage done to alive bosses when one of them dies. This condition can be turned off with /run Details.exp90temp.delete_damage_TCOB = false",
-		"Many Important Npcs like Jaina and Thrall shows as group members of your group.",
-		"More progress on the options panel overhaul.",
-		"General bug fixes.",
-		{"v9.0.1.7590.142", "July 31th, 2020"},
-		"New options panel in progress",
-		"Added options for the 'Inline' right texts in the window",
-		"General round of fixes",
-		{"v9.0.1.7544.142", "July 25th, 2020"},
-		"Changed texts alignment to be parallel.",
-		"Changed icons to white color.",
-		"Added player list on the Player Breakdown Window.",
-		"Added a new plugin: 'Cast Timeline' available at the Player Breakdown Window.",
-		"Added macro '/Details me' to open your Breakdown Window.",
 	}
 
 	local newsString = "|cFFF1F1F1"
@@ -325,7 +137,11 @@ do
 			local date = line[2]
 			newsString = newsString .. "|cFFFFFF00" .. version .. " (|cFFFF8800" .. date .. "|r):|r\n\n"
 		else
-			newsString = newsString .. "|cFFFFFF00-|r " .. line .. "\n\n"
+			if (line ~= "") then
+				newsString = newsString .. "|cFFFFFF00-|r " .. line .. "\n\n"
+			else
+				newsString = newsString .. " \n"
+			end
 		end
 	end
 
@@ -980,15 +796,16 @@ do
 		SharedMedia:Register("font", "Harry P", [[Interface\Addons\Details\fonts\HARRYP__.TTF]])
 		SharedMedia:Register("font", "FORCED SQUARE", [[Interface\Addons\Details\fonts\FORCED SQUARE.ttf]])
 
-		SharedMedia:Register("sound", "d_gun1", [[Interface\Addons\Details\sounds\sound_gun2.ogg]])
-		SharedMedia:Register("sound", "d_gun2", [[Interface\Addons\Details\sounds\sound_gun3.ogg]])
-		SharedMedia:Register("sound", "d_jedi1", [[Interface\Addons\Details\sounds\sound_jedi1.ogg]])
-		SharedMedia:Register("sound", "d_whip1", [[Interface\Addons\Details\sounds\sound_whip1.ogg]])
+		SharedMedia:Register("sound", "Details Gun1", [[Interface\Addons\Details\sounds\sound_gun2.ogg]])
+		SharedMedia:Register("sound", "Details Gun2", [[Interface\Addons\Details\sounds\sound_gun3.ogg]])
+		SharedMedia:Register("sound", "Details Jedi1", [[Interface\Addons\Details\sounds\sound_jedi1.ogg]])
+		SharedMedia:Register("sound", "Details Whip1", [[Interface\Addons\Details\sounds\sound_whip1.ogg]])
+		SharedMedia:Register("sound", "Details Horn", [[Interface\Addons\Details\sounds\Details Horn.ogg]])
 
-		SharedMedia:Register("sound", "Details Threat Warning Volume 1", [[Interface\Addons\Details\sounds\threat_warning_1.ogg]])
-		SharedMedia:Register("sound", "Details Threat Warning Volume 2", [[Interface\Addons\Details\sounds\threat_warning_2.ogg]])
-		SharedMedia:Register("sound", "Details Threat Warning Volume 3", [[Interface\Addons\Details\sounds\threat_warning_3.ogg]])
-		SharedMedia:Register("sound", "Details Threat Warning Volume 4", [[Interface\Addons\Details\sounds\threat_warning_4.ogg]])
+		SharedMedia:Register("sound", "Details Warning", [[Interface\Addons\Details\sounds\Details Warning 100.ogg]])
+		--SharedMedia:Register("sound", "Details Warning (Volume 75%)", [[Interface\Addons\Details\sounds\Details Warning 75.ogg]])
+		--SharedMedia:Register("sound", "Details Warning Volume 50%", [[Interface\Addons\Details\sounds\Details Warning 50.ogg]])
+		--SharedMedia:Register("sound", "Details Warning Volume 25%", [[Interface\Addons\Details\sounds\Details Warning 25.ogg]])
 
 
 
@@ -1004,7 +821,38 @@ do
 		end
 
 		function dumpt(value) --[[GLOBAL]]
+			--check if this is a spellId
+			local spellId = tonumber(value)
+			if (spellId) then
+				local spellInfo = {GetSpellInfo(spellId)}
+				if (type(spellInfo[1]) == "string") then
+					return Details:Dump(spellInfo)
+				end
+			end
 			return Details:Dump(value)
+		end
+
+		function FindSpellByName(spellName) --[[GLOBAL]]
+			if (spellName and type(spellName) == "string") then
+				local GSI = GetSpellInfo
+				local foundSpells = {}
+				spellName = spellName:lower()
+				for i = 1, 450000 do
+					local thisSpellName = GSI(i)
+					if (thisSpellName) then
+						thisSpellName = thisSpellName:lower()
+						if (spellName == thisSpellName) then
+							foundSpells[#foundSpells+1] = {GSI(i)}
+						end
+					end
+				end
+
+				if (#foundSpells > 0) then
+					dumpt(foundSpells)
+				else
+					Details:Msg("spell", spellName, "not found.")
+				end
+			end
 		end
 
 	--copies a full table

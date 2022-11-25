@@ -5,6 +5,7 @@
 local C_Timer = _G.C_Timer
 local DetailsFramework = _G.DetailsFramework
 local tinsert = _G.tinsert
+local addonName, Details222 = ...
 
 function Details.InstallRaidInfo()
 

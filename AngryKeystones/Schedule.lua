@@ -300,9 +300,10 @@ end
 
 function Mod:GetInventoryKeystone()
 	for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		local slots = GetContainerNumSlots(container)
+		local slots = C_Container.GetContainerNumSlots(container)
 		for slot=1, slots do
-			local _, _, _, _, _, _, slotLink = GetContainerItemInfo(container, slot)
+			local itemInfo = C_Container.GetContainerItemInfo(container, slot)
+			local slotLink = itemInfo and itemInfo.hyperlink
 			local itemString = slotLink and slotLink:match("|Hkeystone:([0-9:]+)|h(%b[])|h")
 			if itemString then
 				return slotLink, itemString

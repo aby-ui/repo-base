@@ -275,15 +275,17 @@ local options = {
 -- TipTacTalents Support
 if (TipTacTalents) then
 	local tttOptions = {
-		{ type = "Check", var = "t_showTalents", label = "Enable TipTacTalents", tip = "This option makes the tip show the talent specialization of other players" },
-		{ type = "Check", var = "t_talentOnlyInParty", label = "Only Show Talents for Party and Raid Members", tip = "When you enable this, only talents of players in your party or raid will be requested and shown" }
+		{ type = "Check", var = "t_enable", label = "Enable TipTacTalents", tip = "Turns on or off all features of the TipTacTalents addon" },
+		{ type = "Check", var = "t_showTalents", label = "Show Talents", tip = "This option makes the tip show the talent specialization of other players", y = 12 },
+		{ type = "Check", var = "t_showAverageItemLevel", label = "Show Average Item Level (AIL)", tip = "This option makes the tip show the average item level (AIL) of other players" },
+		{ type = "Check", var = "t_talentOnlyInParty", label = "Only Show Talents and Average Item Level\nfor Party and Raid Members", tip = "When you enable this, only talents and average item level of players in your party or raid will be requested and shown" }
 	};
 	
 	if (not isWoWSl) and (not isWoWRetail) then
 		tttOptions[#tttOptions + 1] = { type = "DropDown", var = "t_talentFormat", label = "Talent Format", list = { ["Elemental (57/14/00)"] = 1, ["Elemental"] = 2, ["57/14/00"] = 3,}, y = 8 }; -- not supported with MoP changes
 	end
 
-	tttOptions[#tttOptions + 1] = { type = "Slider", var = "t_talentCacheSize", label = "Talent Cache Size", min = 0, max = 50, step = 1, y = 12 };
+	tttOptions[#tttOptions + 1] = { type = "Slider", var = "t_talentCacheSize", label = "Talent/AIL Cache Size", min = 0, max = 50, step = 1, y = 12 };
 	
 	options[#options + 1] = {
 		[0] = "Talents",
@@ -421,9 +423,9 @@ f.header:SetPoint("TOPLEFT",f.outline,"TOPRIGHT",10,-4);
 f.header:SetText(modName..L" Options");
 
 f.vers = f:CreateFontString(nil,"ARTWORK","GameFontNormalSmall");
-f.vers:SetPoint("TOPRIGHT",-20,-15);
+f.vers:SetPoint("TOPRIGHT",-15,-15);
 local version, build = GetBuildInfo();
-f.vers:SetText("TipTac: " .. GetAddOnMetadata(modName, "Version") .. "\nWoW: " .. version .. " Build " .. build);
+f.vers:SetText("TipTac: " .. GetAddOnMetadata(modName, "Version") .. "\nWoW: " .. version);
 f.vers:SetTextColor(1,1,0.5);
 
 f.btnAnchor = CreateFrame("Button",nil,f,"UIPanelButtonTemplate");

@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221115053734"),
+	Revision = parseCurseDate("20221123045914"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -2672,7 +2672,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 	local savedVarsName = modId:gsub("-", "").."_AllSavedVars"
 	local savedStatsName = modId:gsub("-", "").."_SavedStats"
 	local fullname = playerName.."-"..playerRealm
-	if not currentSpecID or not currentSpecGroup then
+	if not currentSpecID or not currentSpecGroup or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	local profileNum = playerLevel > 9 and DBM_UseDualProfile and currentSpecGroup or 0
@@ -2825,7 +2825,7 @@ function DBM:LoadAllModDefaultOption(modId)
 	-- modId is string like "DBM-Highmaul"
 	if not modId or not self.ModLists[modId] then return end
 	-- prevent error
-	if not currentSpecID or not currentSpecGroup then
+	if not currentSpecID or not currentSpecGroup or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	-- variable init
@@ -2865,7 +2865,7 @@ function DBM:LoadModDefaultOption(mod)
 	-- mod must be table
 	if not mod then return end
 	-- prevent error
-	if not currentSpecID or not currentSpecGroup then
+	if not currentSpecID or not currentSpecGroup or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	-- variable init
@@ -2902,7 +2902,7 @@ function DBM:CopyAllModOption(modId, sourceName, sourceProfile)
 	-- modId is string like "DBM-Highmaul"
 	if not modId or not sourceName or not sourceProfile or not DBM.ModLists[modId] then return end
 	-- prevent error
-	if not currentSpecID or not currentSpecGroup then
+	if not currentSpecID or not currentSpecGroup or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	-- variable init
@@ -2962,7 +2962,7 @@ function DBM:CopyAllModTypeOption(modId, sourceName, sourceProfile, Type)
 	-- modId is string like "DBM-Highmaul"
 	if not modId or not sourceName or not sourceProfile or not self.ModLists[modId] or not Type then return end
 	-- prevent error
-	if not currentSpecID or not currentSpecGroup then
+	if not currentSpecID or not currentSpecGroup or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	-- variable init
@@ -3019,7 +3019,7 @@ function DBM:DeleteAllModOption(modId, name, profile)
 	-- modId is string like "DBM-Highmaul"
 	if not modId or not name or not profile or not self.ModLists[modId] then return end
 	-- prevent error
-	if not currentSpecID or not currentSpecGroup then
+	if not currentSpecID or not currentSpecGroup or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	-- variable init
@@ -3535,7 +3535,7 @@ function DBM:LoadMod(mod, force)
 		self:AddMsg(L.LOAD_MOD_TOC_MISMATCH:format(mod.name, mod.minToc))
 		return
 	end
-	if not currentSpecID then
+	if not currentSpecID or (currentSpecName or "") == playerClass then
 		self:SetCurrentSpecInfo()
 	end
 	if not difficultyIndex then -- prevent error in EJ_SetDifficulty if not yet set
@@ -7553,7 +7553,7 @@ do
 			[360823] = true,--Evoker: Naturalize (Magic and Poison)
 		},
 		["curse"] = {
-			[88423] = DBM:IsHealer() and true,--Druid: Nature's Cure (Dps: Magic only. Healer: Magic, Curse, Poison)
+			[88423] = true,--Druid: Nature's Cure (Dps: Magic only. Healer: Magic, Curse, Poison)
 			[2782] = true,--Druid: Remove Corruption (Curse and Poison)
 			[51886] = true,--Shaman: Cleanse Spirit (Curse)
 			[77130] = true,--Shaman: Purify Spirit (Magic and Curse)
@@ -7561,11 +7561,11 @@ do
 			[374251] = true,--Evoker: Cauterizing Flame (Bleed, Poison, Curse, and Disease)
 		},
 		["poison"] = {
-			[88423] = DBM:IsHealer() and true,--Druid: Nature's Cure (Dps: Magic only. Healer: Magic, Curse, Poison)
+			[88423] = true,--Druid: Nature's Cure (Dps: Magic only. Healer: Magic, Curse, Poison)
 			[2782] = true,--Druid: Remove Corruption (Curse and Poison)
 			[115450] = true,--Monk: Detox (Healer) (Magic, Poison, and Disease)
 			[218164] = true,--Monk: Detox (non Healer) (Poison and Disease)
-			[4987] = DBM:IsHealer() and true,--Paladin: Cleanse ( Dps/Healer: Magic. Healer Only: Poison, Disease)
+			[4987] = true,--Paladin: Cleanse ( Dps/Healer: Magic. Healer Only: Poison, Disease)
 			[360823] = true,--Evoker: Naturalize (Magic and Poison)
 			[374251] = true,--Evoker: Cauterizing Flame (Bleed, Poison, Curse, and Disease)
 			[365585] = true,--Evoker: Expunge (Poison)
@@ -7575,7 +7575,7 @@ do
 			[218164] = true,--Monk: Detox (non Healer) (Poison and Disease)
 			[527] = true,--Priest: Purify (Magic and Disease)
 			[213634] = true,--Priest: Purify Disease (Disease)
-			[4987] = DBM:IsHealer() and true,--Paladin: Cleanse ( Dps/Healer: Magic. Healer Only: Poison, Disease)
+			[4987] = true,--Paladin: Cleanse ( Dps/Healer: Magic. Healer Only: Poison, Disease)
 			[374251] = true,--Evoker: Cauterizing Flame (Bleed, Poison, Curse, and Disease)
 		},
 		["bleed"] = {
@@ -7606,8 +7606,12 @@ do
 			for spellID, _ in pairs(typeCheck[dispelType]) do
 				if typeCheck[dispelType][spellID] and IsSpellKnown(spellID) and (GetSpellCooldown(spellID)) == 0 then--Spell is known and not on cooldown
 					lastCheck = GetTime()
-					lastReturn = true
-					return true
+					if (spellID == 4987 or spellID == 88423) and not DBM:IsHealer() then--These spellIds can only dispel if healer specced
+						lastReturn = false
+					else--We trust the table return
+						lastReturn = true
+					end
+					return lastReturn
 				end
 			end
 		else--use lazy check until all mods are migrated to define type

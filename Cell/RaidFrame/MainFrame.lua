@@ -31,7 +31,7 @@ local cellMainFrame = CreateFrame("Frame", "CellMainFrame", UIParent, "SecureFra
 Cell.frames.mainFrame = cellMainFrame
 cellMainFrame:SetIgnoreParentScale(true)
 cellMainFrame:SetFrameStrata("LOW")
-RegisterStateDriver(cellMainFrame, 'visibility', '[petbattle] hide; show')
+-- RegisterStateDriver(cellMainFrame, 'visibility', '[petbattle] hide; show')
 -- cellMainFrame:SetClampedToScreen(true)
 -- cellMainFrame:SetClampRectInsets(0, 0, 15, 0)
 
@@ -460,6 +460,9 @@ Cell:RegisterCallback("UpdateMenu", "MainFrame_UpdateMenu", UpdateMenu)
 
 local function MainFrame_UpdateLayout(layout, which)
     F:Debug("|cffff0066UpdateLayout:|r layout:" .. (layout or "nil") .. " which:" .. (which or "nil"))
+
+    --! NOTE: a reload during pet battle prevents HEADER from CREATING CHILDs (unit buttons), this hide delay is a MUST  
+    RegisterStateDriver(cellMainFrame, 'visibility', '[petbattle] hide; show')
     
     layout = Cell.vars.currentLayoutTable
     

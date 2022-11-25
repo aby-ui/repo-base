@@ -76,7 +76,7 @@ local function Check()
     end
 end
 
-local timer
+local timer, members
 eventFrame:SetScript("OnEvent", function(self, event)
     if event == "FIRST_FRAME_RENDERED" then
         eventFrame:UnregisterEvent("FIRST_FRAME_RENDERED")
@@ -85,11 +85,16 @@ eventFrame:SetScript("OnEvent", function(self, event)
 
     if timer then
         timer:Cancel()
+        timer = nil
     end
 
     if InCombatLockdown() then return end
-    
-    timer = C_Timer.NewTimer(5, function()
-        Check()
-    end)
+
+    local newMembers = GetNumGroupMembers()
+    if members ~= newMembers then
+        members = newMembers
+        timer = C_Timer.NewTimer(5, function()
+            Check()
+        end)
+    end
 end)

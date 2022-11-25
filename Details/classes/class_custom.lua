@@ -1,7 +1,7 @@
-
 	local _detalhes = 		_G._detalhes
-	local _
+	local _ = nil
 	_detalhes.custom_function_cache = {}
+	local addonName, Details222 = ...
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
@@ -1160,6 +1160,14 @@
 		end
 	end
 
+	function Details222.GetCustomDisplayIDByName(customDisplayName)
+		for customDisplayID, customObject in ipairs(_detalhes.custom) do
+			if (customObject.name == customDisplayName) then
+				return customDisplayID
+			end
+		end
+	end
+
 	function _detalhes:AddDefaultCustomDisplays()
 
 		local PotionUsed = {
@@ -2258,6 +2266,7 @@
 
 		local DynamicOverallDamage = {
 			name = Loc ["STRING_CUSTOM_DYNAMICOVERAL"], --"Dynamic Overall Damage",
+			displayName = Loc ["STRING_ATTRIBUTE_DAMAGE_DONE"],
 			icon = [[Interface\Buttons\Spell-Reset]],
 			attribute = false,
 			spellid = false,

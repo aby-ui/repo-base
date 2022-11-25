@@ -497,3 +497,15 @@ CoreDependCall("Blizzard_ChallengesUI", function()
 
     --ChallengesFrame_Update(ChallengesFrame)
 end)
+
+--第一次打开PVE界面跳到大米窗口
+local first = true
+hooksecurefunc("PVEFrame_ToggleFrame", function()
+    if first and not InCombatLockdown() and PVEFrameTab3 and PVEFrameTab3:IsEnabled() then
+        local info = C_PlayerInfo.GetPlayerMythicPlusRatingSummary("player")
+        if info and (info.currentSeasonScore or 0) > 0 then
+            PVEFrameTab3:Click()
+        end
+    end
+    first = false
+end)

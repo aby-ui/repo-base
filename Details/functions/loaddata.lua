@@ -1,10 +1,11 @@
-	
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	local _detalhes = 		_G._detalhes
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local _
-	
+	local addonName, Details222 = ...
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --On Details! Load:
 	--load default keys into the main object
@@ -13,14 +14,14 @@ function _detalhes:ApplyBasicKeys()
 
 	--we are not in debug mode
 		self.debug = false
-		
+
 	--connected to realm channel
 		self.is_connected = false
 
 	--who is
 		self.playername = UnitName ("player")
 		self.playerserial = UnitGUID("player")
-		
+
 	--player faction and enemy faction
 		self.faction = UnitFactionGroup ("player")
 		if (self.faction == PLAYER_FACTION_GROUP[0]) then --player is horde
@@ -30,26 +31,26 @@ function _detalhes:ApplyBasicKeys()
 			self.faction_against = PLAYER_FACTION_GROUP[0] --horde
 			self.faction_id = 1
 		end
-		
+
 		self.zone_type = nil
 		_detalhes.temp_table1 = {}
-		
+
 	--combat
 		self.encounter = {}
 		self.in_combat = false
 		self.combat_id = 0
 
 	--instances (windows)
-		self.solo = self.solo or nil 
-		self.raid = self.raid or nil 
+		self.solo = self.solo or nil
+		self.raid = self.raid or nil
 		self.opened_windows = 0
-		
+
 		self.default_texture = [[Interface\AddOns\Details\images\bar4]]
 		self.default_texture_name = "Details D'ictum"
 
 		self.class_coords_version = 1
 		self.class_colors_version = 1
-		
+
 		self.school_colors = {
 			[1] = {1.00, 1.00, 0.00},
 			[2] = {1.00, 0.90, 0.50},
@@ -60,9 +61,9 @@ function _detalhes:ApplyBasicKeys()
 			[64] = {1.00, 0.50, 1.00},
 			["unknown"] = {0.5, 0.75, 0.75, 1}
 		}
-		
+
 	--load default profile keys
-		for key, value in pairs(_detalhes.default_profile) do 
+		for key, value in pairs(_detalhes.default_profile) do
 			if (type(value) == "table") then
 				local ctable = Details.CopyTable(value)
 				self [key] = ctable
@@ -70,7 +71,7 @@ function _detalhes:ApplyBasicKeys()
 				self [key] = value
 			end
 		end
-	
+
 	--end
 		return true
 
@@ -83,7 +84,7 @@ end
 function _detalhes:LoadGlobalAndCharacterData()
 
 	--check and build the default container for character database
-	
+
 		--it exists?
 		if (not _detalhes_database) then
 			_detalhes_database = Details.CopyTable(_detalhes.default_player_data)
@@ -91,7 +92,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 
 		--load saved values
 		for key, value in pairs(_detalhes.default_player_data) do
-		
+
 			--check if key exists, e.g. a new key was added
 			if (_detalhes_database [key] == nil) then
 				if (type(value) == "table") then
@@ -99,7 +100,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 				else
 					_detalhes_database [key] = value
 				end
-				
+
 			elseif (type(_detalhes_database [key]) == "table") then
 				if (type(_detalhes.default_player_data [key]) == "string") then
 					print("|cFFFFAA00Details!|r error 0x8538, report on discord", key, _detalhes_database [key], _detalhes.default_player_data [key])
@@ -114,23 +115,23 @@ function _detalhes:LoadGlobalAndCharacterData()
 					end
 				end
 			end
-			
+
 			--copy the key from saved table to details object
 			if (type(value) == "table") then
 				_detalhes [key] = Details.CopyTable(_detalhes_database [key])
 			else
 				_detalhes [key] = _detalhes_database [key]
 			end
-			
+
 		end
-	
+
 	--check and build the default container for account database
 		if (not _detalhes_global) then
 			_detalhes_global = Details.CopyTable(_detalhes.default_global_data)
 		end
-		
-		for key, value in pairs(_detalhes.default_global_data) do 
-		
+
+		for key, value in pairs(_detalhes.default_global_data) do
+
 			--check if key exists
 			if (_detalhes_global [key] == nil) then
 				if (type(value) == "table") then
@@ -138,7 +139,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 				else
 					_detalhes_global [key] = value
 				end
-				
+
 			elseif (type(_detalhes_global [key]) == "table") then
 
 				if (type(_detalhes.default_global_data [key]) == "string") then
@@ -163,7 +164,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 					end
 				end
 			end
-			
+
 			--copy the key from saved table to details object
 			if (type(value) == "table") then
 				_detalhes [key] = Details.CopyTable(_detalhes_global [key])
@@ -172,7 +173,7 @@ function _detalhes:LoadGlobalAndCharacterData()
 			end
 
 		end
-		
+
 	--end
 		return true
 end
@@ -197,14 +198,14 @@ function _detalhes:LoadCombatTables()
 				_detalhes.tabela_historico = _detalhes_database.tabela_historico or _detalhes.historico:NovoHistorico()
 				-- overall
 				_detalhes.tabela_overall = _detalhes.combate:NovaTabela()
-				
+
 				-- pets
 				_detalhes.tabela_pets = _detalhes.container_pets:NovoContainer()
 				if (_detalhes_database.tabela_pets) then
 					_detalhes.tabela_pets.pets = Details.CopyTable(_detalhes_database.tabela_pets)
 				end
 				_detalhes:UpdateContainerCombatentes()
-				
+
 			--if the core revision was incremented, reset all combat data
 				if (_detalhes_database.last_realversion and _detalhes_database.last_realversion < _detalhes.realversion) then
 					--details was been hard upgraded
@@ -213,7 +214,7 @@ function _detalhes:LoadCombatTables()
 					_detalhes.tabela_vigente = _detalhes.combate:NovaTabela (_, _detalhes.tabela_overall)
 					_detalhes.tabela_pets = _detalhes.container_pets:NovoContainer()
 					_detalhes:UpdateContainerCombatentes()
-					
+
 					_detalhes_database.tabela_historico = nil
 					_detalhes_database.tabela_overall = nil
 				else
@@ -238,38 +239,38 @@ function _detalhes:LoadCombatTables()
 				else
 					_detalhes.tabela_overall = _detalhes.combate:NovaTabela()
 				end
-				
+
 			--re-build all indexes and metatables
 				_detalhes:RestauraMetaTables()
 
 			--get last combat table
 				local historico_UM = _detalhes.tabela_historico.tabelas[1]
-				
+
 				if (historico_UM) then
 					_detalhes.tabela_vigente = historico_UM --significa que elas eram a mesma tabela, ent�o aqui elas se tornam a mesma tabela
 				else
 					_detalhes.tabela_vigente = _detalhes.combate:NovaTabela (_, _detalhes.tabela_overall)
 				end
-				
+
 			--need refresh for all containers
-				for _, container in ipairs(_detalhes.tabela_overall) do 
+				for _, container in ipairs(_detalhes.tabela_overall) do
 					container.need_refresh = true
 				end
-				for _, container in ipairs(_detalhes.tabela_vigente) do 
+				for _, container in ipairs(_detalhes.tabela_vigente) do
 					container.need_refresh = true
 				end
-			
+
 			--erase combat data from the database
 				_detalhes_database.tabela_vigente = nil
 				_detalhes_database.tabela_historico = nil
 				_detalhes_database.tabela_pets = nil
-				
+
 				-- double check for pet container
 				if (not _detalhes.tabela_pets or not _detalhes.tabela_pets.pets) then
 					_detalhes.tabela_pets = _detalhes.container_pets:NovoContainer()
 				end
 				_detalhes:UpdateContainerCombatentes()
-		
+
 		end
 end
 
@@ -283,13 +284,13 @@ function _detalhes:LoadConfig()
 		_detalhes.plugin_database = _detalhes_database.plugin_database or {}
 
 	--startup
-	
+
 		--set the nicktag cache host
 			_detalhes:NickTagSetCache (_detalhes_database.nick_tag_cache)
-			
+
 		--count data
 			_detalhes:CountDataOnLoad()
-			
+
 		--solo e raid plugin
 			if (_detalhes_database.SoloTablesSaved) then
 				if (_detalhes_database.SoloTablesSaved.Mode) then
@@ -299,11 +300,11 @@ function _detalhes:LoadConfig()
 					_detalhes.SoloTables.Mode = 1
 				end
 			end
-			
+
 		--switch tables
 			_detalhes.switch.slots = _detalhes_global.switchSaved.slots
 			_detalhes.switch.table = _detalhes_global.switchSaved.table
-		
+
 			if (_detalhes.switch.table) then
 				for i = 1, #_detalhes.switch.table do
 					if (not _detalhes.switch.table [i]) then
@@ -311,31 +312,31 @@ function _detalhes:LoadConfig()
 					end
 				end
 			end
-		
+
 		--last boss
 			_detalhes.last_encounter = _detalhes_database.last_encounter
-		
+
 		--buffs
 			_detalhes.savedbuffs = _detalhes_database.savedbuffs
 			_detalhes.Buffs:BuildTables()
-			
+
 		--initialize parser
 			_detalhes.capture_current = {}
-			for captureType, captureValue in pairs(_detalhes.capture_real) do 
+			for captureType, captureValue in pairs(_detalhes.capture_real) do
 				_detalhes.capture_current [captureType] = captureValue
 			end
-			
+
 		--row animations
 			_detalhes:SetUseAnimations()
-			
+
 		--initialize spell cache
-			_detalhes:ClearSpellCache() 
-			
+			_detalhes:ClearSpellCache()
+
 		--version first run
 			if (not _detalhes_database.last_version or _detalhes_database.last_version ~= _detalhes.userversion) then
 				_detalhes.is_version_first_run = true
 			end
-			
+
 	--profile
 
 		local unitname = UnitName ("player")
@@ -437,25 +438,25 @@ end
 	--count logons, tutorials, etc
 
 function _detalhes:CountDataOnLoad()
-	
+
 	--basic
 		if (not _detalhes_global.got_first_run) then
 			_detalhes.is_first_run = true
 		end
-		
+
 	--tutorial
 		self.tutorial = self.tutorial or {}
-		
+
 		self.tutorial.logons = self.tutorial.logons or 0
 		self.tutorial.logons = self.tutorial.logons + 1
-		
+
 		self.tutorial.unlock_button = self.tutorial.unlock_button or 0
 		self.tutorial.version_announce = self.tutorial.version_announce or 0
 		self.tutorial.main_help_button = self.tutorial.main_help_button or 0
 		self.tutorial.alert_frames = self.tutorial.alert_frames or {false, false, false, false, false, false}
-		
+
 		self.tutorial.main_help_button = self.tutorial.main_help_button + 1
-		
+
 		self.character_data = self.character_data or {logons = 0}
 		self.character_data.logons = self.character_data.logons + 1
 

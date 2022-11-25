@@ -26,17 +26,22 @@ local TALENTS_PREFIX = (((isWoWSl or isWoWRetail) and SPECIALIZATION) or TALENTS
 local TALENTS_NA = NOT_APPLICABLE:lower();
 local TALENTS_NONE = NONE_KEY; -- NO.." "..TALENTS
 local TALENTS_LOADING = SEARCH_LOADING_TEXT;
+local AIL_PREFIX = "Average Item Level:|cffffffff ";
+local AIL_NA = NOT_APPLICABLE:lower();
+local AIL_LOADING = SEARCH_LOADING_TEXT;
 
 -- Default Config
 local cfg;
 local TTT_DefaultConfig = {
-	t_showTalents = true,         -- "Main Switch", addon does nothing if false
-	t_talentOnlyInParty = false,  -- Only show talents for party/raid members
-	t_talentFormat = 1,           -- Talent Format
-	t_talentCacheSize = 25,       -- Change cache size here (Default 25)
+	t_enable = true,               -- "Main Switch", addon does nothing if false
+	t_showTalents = true,          -- Show talents
+	t_showAverageItemLevel = true, -- Show average item level (AIL)
+	t_talentOnlyInParty = false,   -- Only show talents/AIL for party/raid members
+	t_talentFormat = 1,            -- Talent Format
+	t_talentCacheSize = 25,        -- Change cache size here (Default 25)
 
-	t_inspectDelay = 0.2,         -- The time delay for the scheduled inspection (default = 0.2)
-	t_inspectFreq = 2,            -- How soon after an inspection are we allowed to inspect again? (default = 2)
+	t_inspectDelay = 0.2,          -- The time delay for the scheduled inspection (default = 0.2)
+	t_inspectFreq = 2,             -- How soon after an inspection are we allowed to inspect again? (default = 2)
 }
 
 -- Variables
@@ -73,13 +78,17 @@ end
 
 -- Perform the tasks needed, after we have valid inspect data available
 function ttt:InspectDataAvailable(record)
-	self:QuerySpecialization(record)
+	self:QuerySpecialization(record);
+	self:QueryAverageItemLevel(record);
 	self:UpdateTooltip(record);
 	self:CacheUnit(record);
 end
 
 -- Queries the talent spec of the inspected unit, or player unit (MoP Code)
 function ttt:QuerySpecialization(record)
+	if (record.level < 10 and record.level ~= -1) then -- No need to display talents for players who has not yet gotten a specialization
+		return;
+	end
 	if (isWoWSl) or (isWoWRetail) then -- retail
 		local spec = (not record.isSelf) and GetInspectSpecialization(record.unit) or GetSpecialization();
 		if (not spec or spec == 0) then
@@ -87,16 +96,19 @@ function ttt:QuerySpecialization(record)
 		elseif (not record.isSelf) then
 			local _, specName = GetSpecializationInfoByID(spec);
 			--local _, specName = GetSpecializationInfoForClassID(spec,record.classID);
-			record.format = specName or TALENTS_NA;
+			record.format = specName ~= "" and specName or TALENTS_NA;
 		else
 			-- MoP Note: Is it no longer possible to query the different talent spec groups anymore?
 --			local group = GetActiveSpecGroup(isInspect) or 1;	-- Az: replaced with GetActiveSpecGroup(), but that does not support inspect?
 			local _, specName = GetSpecializationInfo(spec);
-			record.format = specName or TALENTS_NA;
+			record.format = specName ~= "" and specName or TALENTS_NA;
 		end
 	else -- classic
 		-- Inspect functions will always use the active spec when not inspecting
 		local isInspect = (not record.isSelf);
+		if (isInspect) and (isWoWClassic) then
+			return;
+		end
 		local activeTalentGroup = ((type(GetActiveTalentGroup) == "function") and GetActiveTalentGroup(isInspect));
 		-- Get points per tree, and set "maxTree" to the tree with most points
 		local numTalentTabs = GetNumTalentTabs(isInspect);
@@ -127,16 +139,99 @@ function ttt:QuerySpecialization(record)
 	end
 end
 
+-- Queries the items of the inspected unit
+function ttt:QueryAverageItemLevel(record)
+	-- Get items
+	local items = {};
+	local count = 0;
+	
+	for i = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
+		local itemLink = GetInventoryItemLink(record.unit, i);
+		items[i] = itemLink;
+		
+		if (itemLink) then
+			count = count + 1;
+		end
+	end
+	
+	-- Calculate average item level
+	local totalScore = 0;
+	local totalItems = 0;
+	local totalItemRarity = 0;
+	local totalItemsForRarity = 0;
+	
+	if (count > 0) then
+		for i, itemLink in pairs(items) do
+			if (itemLink) then
+				local effectiveILvl = GetDetailedItemLevelInfo(itemLink);
+				local itemName, _itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, classID, subClassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink);
+				
+				 -- map Heirloom and WoWToken to Rare
+				if (itemRarity == 7) or (itemRarity == 8) then
+					itemRarity = 3;
+				end
+				
+				if (effectiveILvl) and (not ((i == INVSLOT_BODY) or (i == INVSLOT_RANGED) or (i == INVSLOT_TABARD))) then
+					totalItems = totalItems + 1;
+					
+					if (i == INVSLOT_MAINHAND) and (not items[INVSLOT_OFFHAND]) then
+						if (itemEquipLoc == "INVTYPE_2HWEAPON") or (itemEquipLoc == "INVTYPE_RANGED") then
+							totalScore = totalScore + effectiveILvl;
+						end
+					else
+						totalScore = totalScore + effectiveILvl;
+					end
+					
+					-- ignore tabard for total item rarity
+					if (i ~= INVSLOT_TABARD) then
+						totalItemsForRarity = totalItemsForRarity + 1;
+						totalItemRarity = totalItemRarity + (itemRarity or 0);
+					end
+				end
+			end
+		end
+	end
+	
+	-- Rescan if there aren't many items
+	local isInspect = (not record.isSelf);
+	
+	if (isInspect) and (totalItems < 7) and (not record.rescan) then
+		-- Make sure the mouseover unit is still our unit
+		-- Check IsInspectFrameOpen() again: Since if the user right-clicks a unit frame, and clicks inspect,
+		-- it could cause TTT to schedule an inspect, while the inspection window is open
+		if (UnitGUID("mouseover") == record.guid) and (not IsInspectFrameOpen()) then
+			record.rescan = true;
+			
+			lastInspectRequest = GetTime();
+			self:RegisterEvent("INSPECT_READY");
+			NotifyInspect(record.unit);
+		end
+		
+		return;
+	end
+	
+	if (totalItems > 0) then
+		local totalItemQualityColor = CreateColorFromHexString(select(4, GetItemQualityColor(floor(totalItemRarity / totalItemsForRarity + 0.5))));
+		record.ail = totalItemQualityColor:WrapTextInColorCode(floor(totalScore / totalItems));
+	else
+		record.ail = AIL_NA;
+	end
+end
+
 -- Update tooltip with the record format, but only if tooltip is still showing the unit of our record
 function ttt:UpdateTooltip(record)
-	local _, unit = ttt:GetDisplayedUnit(gtt);
-	if (not unit) or (UnitGUID(unit) ~= record.guid) then
-		return;
-	elseif (self.tipLineIndex) then
-		_G["GameTooltipTextLeft"..self.tipLineIndex]:SetFormattedText("%s%s",TALENTS_PREFIX,record.format);
-	else
-		gtt:AddLine(TALENTS_PREFIX..record.format);
-		self.tipLineIndex = gtt:NumLines();
+	if (self.tipLineIndexTalents) then
+		_G["GameTooltipTextLeft"..self.tipLineIndexTalents]:SetFormattedText("%s%s", TALENTS_PREFIX, record.format);
+	elseif (cfg.t_showTalents) and (record.format) then
+		gtt:AddLine(format("%s%s", TALENTS_PREFIX, record.format));
+		self.tipLineIndexTalents = gtt:NumLines();
+	end
+	
+	if (self.tipLineIndexAverageItemLevel) then
+		_G["GameTooltipTextLeft"..self.tipLineIndexAverageItemLevel]:SetFormattedText("%s%s", AIL_PREFIX, record.ail);
+	elseif (cfg.t_showAverageItemLevel) and (record.ail) then
+		gtt:AddLine(format("%s%s", AIL_PREFIX, record.ail));
+		self.tipLineIndexAverageItemLevel = gtt:NumLines();
 	end
 
 	-- If GTT is visible and not fading out, call Show() to force the tooltip to resize.
@@ -188,10 +283,12 @@ function ttt:InitiateInspectRequest(unit,record)
 	wipe(record);
 	record.unit = unit;
 	record.name = UnitName(unit);
+	record.level = UnitLevel(unit);
 	record.guid = UnitGUID(unit);
 
-	-- invalidate lineindex
-	self.tipLineIndex = nil;
+	-- invalidate lineindexes
+	self.tipLineIndexTalents = nil;
+	self.tipLineIndexAverageItemLevel = nil;
 
 	-- No need for inspection on the player
 	if (UnitIsUnit(unit,"player")) then
@@ -204,6 +301,7 @@ function ttt:InitiateInspectRequest(unit,record)
 	for _, entry in ipairs(cache) do
 		if (record.guid == entry.guid) then
 			record.format = entry.format;
+			record.ail = entry.ail;
 			break;
 		end
 	end
@@ -222,12 +320,17 @@ function ttt:InitiateInspectRequest(unit,record)
 		self:Show();
 
 		if (not record.format) then
-			record.format = TALENTS_LOADING;
+			if (not isWoWClassic) and (record.level >= 10 or record.level == -1) then -- Only need to display talents for players who has gotten a specialization
+				record.format = TALENTS_LOADING;
+			end
+		end
+		if (not record.ail) then
+			record.ail = AIL_LOADING;
 		end
 	end
 
-	-- if we have something to show already, cached format or loading text, update the tip
-	if (record.format) then
+	-- if we have something to show already, cached format/ail or loading text, update the tip
+	if (record.format) or (record.ail) then
 		self:UpdateTooltip(record);
 	end
 end
@@ -259,8 +362,8 @@ function ttt:HookTip()
 
 	-- HOOK: OnTooltipSetUnit -- Will schedule a delayed inspect request
 	local function OnTooltipSetUnit(self,...)
-        if IsAddOnLoaded("TinyInspect") then return end
-		if not (cfg.t_showTalents) then
+		if IsAddOnLoaded("TinyInspect") then return end
+		if not (cfg.t_enable) then
 			return;
 		end
 
@@ -286,11 +389,8 @@ function ttt:HookTip()
 			return;
 		end
 
-		-- No need to inspect players who has not yet gotten a specialization
-		local level = UnitLevel(unit);
-		if (level >= 10 or level == -1) then
-			ttt:InitiateInspectRequest(unit,record);
-		end
+		-- Inspect player
+		ttt:InitiateInspectRequest(unit,record);
 	end
 	
 	if (TooltipDataProcessor) then -- since df 10.0.2
@@ -357,12 +457,15 @@ end
 
 -- Inspect Ready -- Inspect data ready
 function ttt:INSPECT_READY(event, guid)
-	if (guid == record.guid) then
-		ttt:InspectDataAvailable(record);
-	end
-	
 	-- Cleanup
 	self:UnregisterEvent(event);
+	
+	if (guid == record.guid) then
+		local _, unit = ttt:GetDisplayedUnit(gtt); -- Perform the tasks needed, but only if tooltip is still showing the unit of our record.
+		if (unit) and (UnitGUID(unit) == record.guid) then
+			ttt:InspectDataAvailable(record);
+		end
+	end
 end
 
 ttt:SetScript("OnEvent",function(self,event,...) self[event](self,event,...); end);

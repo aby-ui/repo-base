@@ -1,10 +1,11 @@
 
-
 local UnitGroupRolesAssigned = _G.DetailsFramework.UnitGroupRolesAssigned
 local wipe = _G.wipe
 local C_Timer = _G.C_Timer
 local CreateFrame = _G.CreateFrame
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
+local _
+local tocName, Details222 = ...
 
 --start funtion
 function Details:StartMeUp() --I'll never stop!
@@ -341,12 +342,10 @@ function Details:StartMeUp() --I'll never stop!
 		local lowerInstanceId = Details:GetLowerInstanceNumber()
 		if (lowerInstanceId) then
 			lowerInstanceId = Details:GetInstance(lowerInstanceId)
-
 			if (lowerInstanceId) then
 				--check if there's changes in the size of the news string
-				if (Details.last_changelog_size < #Loc["STRING_VERSION_LOG"]) then
+				if (Details.last_changelog_size ~= #Loc["STRING_VERSION_LOG"]) then
 					Details.last_changelog_size = #Loc["STRING_VERSION_LOG"]
-
 					if (false and Details.auto_open_news_window) then
 						C_Timer.After(5, function()
 							Details.OpenNewsWindow()
@@ -441,6 +440,33 @@ function Details:StartMeUp() --I'll never stop!
 	Details:LoadFramesForBroadcastTools()
 	Details:BrokerTick()
 
+	--build trinket data
+	function Details:GetTrinketData()
+		return Details.trinket_data
+	end
+
+	local customSpellList = Details:GetDefaultCustomSpellsList()
+	local trinketData = Details:GetTrinketData()
+	for spellId, trinketTable in pairs(customSpellList) do
+		if (trinketTable.isPassive) then
+			if (not trinketData[spellId]) then
+				local thisTrinketData = {
+					itemName = C_Item.GetItemNameByID(trinketTable.itemId),
+					spellName = GetSpellInfo(spellId) or "spell not found",
+					lastActivation = 0,
+					lastPlayerName = "",
+					totalCooldownTime = 0,
+					activations = 0,
+					lastCombatId = 0,
+					minTime = 9999999,
+					maxTime = 0,
+					averageTime = 0,
+				}
+				trinketData[spellId] = thisTrinketData
+			end
+		end
+	end
+
 	--register boss mobs callbacks (DBM and BigWigs) -> functions/bossmods.lua
 	Details.Schedules.NewTimer(5, Details.BossModsLink, Details)
 
@@ -507,11 +533,10 @@ function Details:StartMeUp() --I'll never stop!
 
 	Details:InstallHook("HOOK_DEATH", Details.Coach.Client.SendMyDeath)
 
-	local sentMessageOnStartup = false
-
-	if (math.random(20) == 1) then
-		--Details:Msg("use '/details me' macro to open the player breakdown for you!")
-		sentMessageOnStartup = true
+	if (false and not Details.slash_me_used) then
+		if (math.random(25) == 1) then
+			Details:Msg("use '/details me' macro to open the player breakdown for you!")
+		end
 	end
 
 	if (not DetailsFramework.IsTimewalkWoW()) then
@@ -557,21 +582,6 @@ function Details:StartMeUp() --I'll never stop!
 		end
 	end)
 
-	--[=[ --survey for cooldown types are done
-	if (DetailsFramework.IsDragonflight()) then
-		DetailsFramework.Schedules.NewTimer(5, Details.RegisterDragonFlightEditMode)
-		--run only on beta, remove on 10.0 launch
-		if (Details.Survey.GetTargetCharacterForRealm()) then
-			Details.Survey.InitializeSpellCategoryFeedback()
-			if (not sentMessageOnStartup) then
-				if (math.random(5) == 1) then
-					Details:Msg("use '/details survey' to help on identifying cooldown spells (Dragonflight Beta).")
-				end
-			end
-		end
-	end
-	--]=]
-
 	function Details:InstallOkey()
 		return true
 	end
@@ -583,13 +593,6 @@ function Details:StartMeUp() --I'll never stop!
 	--shutdown the old OnDeathMenu
 	--cleanup: this line can be removed after the first month of dragonflight
 	Details.on_death_menu = false
-
-	--reset to default the evoker color
-	local defaultEvokerColor = _detalhes.default_profile.class_colors.EVOKER
-	local currentEvokerColorTable = _detalhes.class_colors.EVOKER
-	currentEvokerColorTable[1] = defaultEvokerColor[1]
-	currentEvokerColorTable[2] = defaultEvokerColor[2]
-	currentEvokerColorTable[3] = defaultEvokerColor[3]
 end
 
 Details.AddOnLoadFilesTime = _G.GetTime()

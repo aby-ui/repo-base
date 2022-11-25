@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2439, "DBM-SanctumOfDomination", nil, 1193)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220216010021")
+mod:SetRevision("20221124062011")
 mod:SetCreatureID(175726)--Skyja (TODO, add other 2 and set health to highest?)
 mod:SetEncounterID(2429)
 mod:SetUsedIcons(8, 7, 6, 4, 3, 2, 1)
@@ -222,16 +222,8 @@ function mod:SPELL_CAST_START(args)
 		local count = castsPerGUID[args.sourceGUID]
 		if self:CheckInterruptFilter(args.sourceGUID, false, false) then
 			specWarnSiphonVitality:Show(args.sourceName, count)
-			if count == 1 then
-				specWarnSiphonVitality:Play("kick1r")
-			elseif count == 2 then
-				specWarnSiphonVitality:Play("kick2r")
-			elseif count == 3 then
-				specWarnSiphonVitality:Play("kick3r")
-			elseif count == 4 then
-				specWarnSiphonVitality:Play("kick4r")
-			elseif count == 5 then
-				specWarnSiphonVitality:Play("kick5r")
+			if count < 6 then
+				specWarnSiphonVitality:Play("kick"..count.."r")
 			else
 				specWarnSiphonVitality:Play("kickcast")
 			end

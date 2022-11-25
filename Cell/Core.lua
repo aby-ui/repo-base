@@ -309,6 +309,13 @@ function eventFrame:ADDON_LOADED(arg1)
                     {"type2", "togglemenu"},
                 } 
             end
+            -- add "Initials" (no spec)
+            local specID = GetSpecializationInfoForClassID(Cell.vars.playerClassID, 5)
+            CellDB["clickCastings"][Cell.vars.playerClass]["alwaysTargeting"][specID] = "disabled"
+            CellDB["clickCastings"][Cell.vars.playerClass][specID] = {
+                {"type1", "target"},
+                {"type2", "togglemenu"},
+            }
             -- add resurrections
             for _, t in pairs(F:GetResurrectionClickCastings(Cell.vars.playerClass)) do
                 tinsert(CellDB["clickCastings"][Cell.vars.playerClass]["common"], t)

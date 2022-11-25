@@ -9,6 +9,7 @@ select(2, ...).L = setmetatable({
     ["focus"] = "Focus",
     ["assist"] = "Assist",
     ["togglemenu"] = "Menu",
+    ["togglemenu_nocombat"] = "Menu (not in combat)",
     ["T"] = "Talent",
     ["C"] = "Class Talent",
     ["S"] = "Spec Talent",
@@ -67,6 +68,16 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r146-release (Nov 25, 2022, 05:15 GMT+8)</h1>
+        <p>* Updated click-castings.</p>
+        <p>* Bug fixes.</p>
+        <br/>
+
+        <h1>r145-release (Nov 24, 2022, 00:15 GMT+8)</h1>
+        <p>* Bug fixes.</p>
+        <p>* Updated zhTW.</p>
+        <br/>
+
         <h1>r144-release (Nov 20, 2022, 05:02 GMT+8)</h1>
         <p>+ Added several shortcuts to spotlight frame.</p>
         <p>* Bug fixes.</p>

@@ -20,7 +20,7 @@ if not lib then return end
 ------------------------------------------------------------------------
 
 local DEBUG_LEVEL = GetAddOnMetadata("LibResInfo-1.0", "Version") and 1 or 0
-local DEBUG_FRAME = ChatFrame3
+local DEBUG_FRAME = ChatFrame1
 
 ------------------------------------------------------------------------
 
@@ -74,6 +74,9 @@ local singleSpells = {
 	[115178] = GetSpellInfo(115178), -- Resuscitate (Monk)
 	[50769]  = GetSpellInfo(50769),  -- Revive (Druid)
 	[982]    = GetSpellInfo(982),    -- Revive Pet (Hunter)
+	[391054] = GetSpellInfo(391054), -- 代祷 (Paladin)
+	[361227] = GetSpellInfo(361227), -- 生还 (Evoker)
+	[61999] = GetSpellInfo(61999),   -- 复活盟友 (DeathKnight)
 	-- Items
 	[8342]   = GetSpellInfo(8342),   -- Defibrillate (Goblin Jumper Cables)
 	[22999]  = GetSpellInfo(22999),  -- Defibrillate (Goblin Jumper Cables XL)
@@ -81,6 +84,7 @@ local singleSpells = {
 	[164729] = GetSpellInfo(164729), -- Defibrillate (Ultimate Gnomish Army Knife)
 	[199119] = GetSpellInfo(199119), -- Failure Detection Aura (Failure Detection Pylon) -- NEEDS CHECK
 	[187777] = GetSpellInfo(187777), -- Reawaken (Brazier of Awakening)
+	[345130] = GetSpellInfo(345130), -- 9.0 Engineering, 但是没有INCOMING_RESURRECT_CHANGED事件无法得到目标
 }
 
 local massSpells = {
@@ -89,6 +93,7 @@ local massSpells = {
 	[212036] = GetSpellInfo(212036), -- Mass Resurrection (Discipline/Holy Priest)
 	[212051] = GetSpellInfo(212051), -- Reawaken (Mistweaver Monk)
 	[212040] = GetSpellInfo(212040), -- Revitalize (Restoration Druid)
+	[361178] = GetSpellInfo(361178), -- 群体生还 (Evoker)
 }
 
 ------------------------------------------------------------------------

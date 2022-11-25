@@ -12,6 +12,8 @@ local _unpack = unpack --lua local
 local type = type --lua local
 local _math_floor = math.floor --lua local
 
+local maxStatusBarValue = 100000000
+
 local cleanfunction = function() end
 local APISplitBarFunctions
 
@@ -477,10 +479,12 @@ DF:Mixin(SplitBarMetaFunctions, DF.ScriptHookMixin)
 		self.currentValue = self.currentValue - valueChange
 
 		local barWidth = self:GetWidth()
+		self.currentValue = Clamp(self.currentValue, 0, maxStatusBarValue)
 		self.statusbar:SetValue(self.currentValue)
 		self.rightTexture:SetWidth(barWidth - barWidth*self.currentValue)
 
 		if (self.currentValue - 0.001 <= self.targetValue) then
+			self.targetValue = Clamp(self.targetValue, 0, maxStatusBarValue)
 			self:SetValue(self.targetValue)
 			self.currentValue = self.targetValue
 			if (not self.SparkAlwaysShow) then
@@ -506,11 +510,13 @@ DF:Mixin(SplitBarMetaFunctions, DF.ScriptHookMixin)
 		self.currentValue = self.currentValue + valueChange
 
 		local barWidth = self:GetWidth()
+		self.currentValue = Clamp(self.currentValue, 0, maxStatusBarValue)
 		self.statusbar:SetValue(self.currentValue)
 		local rightTextureSize = barWidth - barWidth*self.currentValue
 		self.rightTexture:SetWidth(rightTextureSize)
 
 		if (self.currentValue + 0.001 >= self.targetValue) then
+			self.targetValue = Clamp(self.targetValue, 0, maxStatusBarValue)
 			self:SetValue(self.targetValue)
 			self.currentValue = self.targetValue
 			if (not self.SparkAlwaysShow) then

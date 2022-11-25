@@ -4,6 +4,7 @@ local Details = _G._detalhes
 local debugmode = false --print debug lines
 local verbosemode = false --auto open the chart panel
 local _
+local addonName, Details222 = ...
 
 local Loc = _G.LibStub("AceLocale-3.0"):GetLocale( "Details" )
 

@@ -15,7 +15,8 @@
 	
 	local _detalhes = _G._detalhes
 	local _
-	
+	local addonName, Details222 = ...
+
 	_detalhes.hooks ["HOOK_COOLDOWN"] = {}
 	_detalhes.hooks ["HOOK_DEATH"] = {}
 	_detalhes.hooks ["HOOK_BATTLERESS"] = {}

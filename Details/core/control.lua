@@ -5,6 +5,7 @@
 	local SharedMedia = LibStub:GetLibrary("LibSharedMedia-3.0")
 	local _tempo = time()
 	local _
+	local addonName, Details222 = ...
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
@@ -364,6 +365,8 @@
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_IN")
 			Details:UptadeRaidMembersCache()
 
+			Details222.TimeCapture.StartCombatTimer(Details.tabela_vigente)
+
 			--we already have boss information? build .is_boss table
 			if (Details.encounter_table.id and Details.encounter_table ["start"] >= GetTime() - 3 and not Details.encounter_table ["end"]) then
 				local encounter_table = Details.encounter_table
@@ -478,6 +481,8 @@
 			Details:CatchRaidBuffUptime ("BUFF_UPTIME_OUT")
 			Details:CatchRaidDebuffUptime ("DEBUFF_UPTIME_OUT")
 			Details:CloseEnemyDebuffsUptime()
+
+			Details222.TimeCapture.StopCombat()
 
 			--check if this isn't a boss and try to find a boss in the segment
 			if (not Details.tabela_vigente.is_boss) then

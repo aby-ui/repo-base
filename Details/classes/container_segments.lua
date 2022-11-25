@@ -6,6 +6,9 @@ local tinsert = table.insert
 local wipe = table.wipe
 
 local Details = _G._detalhes
+local _
+local addonName, Details222 = ...
+
 local combatClass = Details.combate
 local segmentClass = Details.historico
 local timeMachine = Details.timeMachine

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2470, "DBM-Sepulcher", nil, 1195)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220820203945")
+mod:SetRevision("20221124062011")
 mod:SetCreatureID(183501)
 mod:SetEncounterID(2553)
 mod:SetUsedIcons(1, 2, 3, 5, 6, 7, 8)
@@ -422,16 +422,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		local count = castsPerGUID[args.sourceGUID]
 		if self:CheckInterruptFilter(args.sourceGUID, false, false) then
 			specWarnDebilitatingRay:Show(args.sourceName, count)
-			if count == 1 then
-				specWarnDebilitatingRay:Play("kick1r")
-			elseif count == 2 then
-				specWarnDebilitatingRay:Play("kick2r")
-			elseif count == 3 then
-				specWarnDebilitatingRay:Play("kick3r")
-			elseif count == 4 then
-				specWarnDebilitatingRay:Play("kick4r")
-			elseif count == 5 then
-				specWarnDebilitatingRay:Play("kick5r")
+			if count < 6 then
+				specWarnDebilitatingRay:Play("kick"..count.."r")
 			else
 				specWarnDebilitatingRay:Play("kickcast")
 			end

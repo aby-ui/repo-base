@@ -57,7 +57,7 @@ local cfg;
 local TT_DefaultConfig = {
 	showUnitTip = true,
 	showStatus = true,
-	showGuildRank = false,
+	showGuildRank = true,
 	guildRankFormat = "both",
 	showTargetedBy = true,
 	showPlayerGender = false,
@@ -1127,6 +1127,29 @@ local function GetAnchorPosition(tooltip)
 	return ttAnchorType, ttAnchorPoint;
 end
 
+-- Get offsets for anchor point
+local function GetOffsetsForAnchorPoint(ttAnchorPoint)
+	if (ttAnchorPoint == "TOPLEFT") then
+		return (tt:GetLeft() - UIParent:GetLeft()) / cfg.gttScale, (tt:GetTop() - UIParent:GetTop()) / cfg.gttScale;
+	elseif (ttAnchorPoint == "TOPRIGHT") then
+		return (tt:GetRight() - UIParent:GetRight()) / cfg.gttScale, (tt:GetTop() - UIParent:GetTop()) / cfg.gttScale;
+	elseif (ttAnchorPoint == "BOTTOMLEFT") then
+		return (tt:GetLeft() - UIParent:GetLeft()) / cfg.gttScale, (tt:GetBottom() - UIParent:GetBottom()) / cfg.gttScale;
+	elseif (ttAnchorPoint == "BOTTOMRIGHT") then
+		return (tt:GetRight() - UIParent:GetRight()) / cfg.gttScale, (tt:GetBottom() - UIParent:GetBottom()) / cfg.gttScale;
+	elseif (ttAnchorPoint == "TOP") then
+		return (tt:GetLeft() + tt:GetRight() - UIParent:GetLeft() - UIParent:GetRight()) / 2 / cfg.gttScale, (tt:GetTop() - UIParent:GetTop()) / cfg.gttScale;
+	elseif (ttAnchorPoint == "BOTTOM") then
+		return (tt:GetLeft() + tt:GetRight() - UIParent:GetLeft() - UIParent:GetRight()) / 2 / cfg.gttScale, (tt:GetBottom() - UIParent:GetBottom()) / cfg.gttScale;
+	elseif (ttAnchorPoint == "LEFT") then
+		return (tt:GetLeft() - UIParent:GetLeft()) / cfg.gttScale, (tt:GetTop() + tt:GetBottom() - UIParent:GetTop() - UIParent:GetBottom()) / 2 / cfg.gttScale;
+	elseif (ttAnchorPoint == "RIGHT") then
+		return (tt:GetRight() - UIParent:GetRight()) / cfg.gttScale, (tt:GetTop() + tt:GetBottom() - UIParent:GetTop() - UIParent:GetBottom()) / 2 / cfg.gttScale;
+	elseif (ttAnchorPoint == "CENTER") then
+		return (tt:GetLeft() + tt:GetRight() - UIParent:GetLeft() - UIParent:GetRight()) / 2 / cfg.gttScale, (tt:GetTop() + tt:GetBottom() - UIParent:GetTop() - UIParent:GetBottom()) / 2 / cfg.gttScale;
+	end
+end
+
 -- Set default anchor
 local function SetDefaultAnchor(tooltip, parent, noSetOwner)
 	-- Return if no tooltip or parent
@@ -1163,7 +1186,9 @@ local function SetDefaultAnchor(tooltip, parent, noSetOwner)
 			tooltip:SetPoint(TT_MirrorAnchorsSmart[tooltip.ttAnchorPoint] or TT_MirrorAnchors[tooltip.ttAnchorPoint],parent,tooltip.ttAnchorPoint);
 		else
 			-- "normal" anchor or fallback for "parent" in case its UIParent
-			tooltip:SetPoint(tooltip.ttAnchorPoint,tt);
+			-- tooltip:SetPoint(tooltip.ttAnchorPoint,tt); -- caused some "Action[SetPoint] failed because[SetPoint would result in anchor family connection]" errors
+			local offsetX, offsetY = GetOffsetsForAnchorPoint(tooltip.ttAnchorPoint);
+			tooltip:SetPoint(tooltip.ttAnchorPoint, UIParent, offsetX, offsetY);
 		end
 	end
 end

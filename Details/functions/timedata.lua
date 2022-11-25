@@ -2,7 +2,11 @@
 	local _
 	local _detalhes = _G._detalhes
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
-	
+	local addonName, Details222 = ...
+
+	--create a namespace
+	Details222.TimeCapture = {}
+
 	--mantain the enabled time captures
 	_detalhes.timeContainer = {}
 	_detalhes.timeContainer.Exec = {}
@@ -531,3 +535,88 @@
 		end
 	end
 	
+
+
+------------------------------------------------------------------------------------------------------
+--regular spell timers
+Details222.TimeCapture.Timers = {}
+local damageContainer
+local healingContainer
+local timeElapsed = 0
+
+local combatTimeTicker = function()
+	timeElapsed = timeElapsed + 1
+end
+
+local damageCapture = function(tickerObject)
+	local actorObject = tickerObject.ActorObject
+	if (not actorObject) then
+		tickerObject.ActorObject = damageContainer:GetActor(tickerObject.unitName)
+		if (not actorObject) then
+			return
+		end
+	end
+
+	for spellId, spellTable in pairs(actorObject.spells._ActorTable) do
+		local totalDamage = spellTable.total
+		if (totalDamage) then
+			if (not spellTable.ChartData) then
+				spellTable.ChartData = {}
+			end
+			spellTable.ChartData[timeElapsed] = totalDamage
+		end
+	end
+end
+
+function Details222.TimeCapture.StartCombatTimer(combatObject)
+	timeElapsed = 0
+	damageContainer = combatObject[1]
+	healingContainer = combatObject[2]
+
+	Details222.TimeCapture.CombatObject = combatObject
+	Details222.TimeCapture.CombatTimeTicker = C_Timer.NewTicker(1, combatTimeTicker)
+
+	--debug: starting only for the player
+	Details222.TimeCapture.Start(UnitName("player"), DETAILS_ATTRIBUTE_DAMAGE)
+end
+
+--combat ended on Details! end
+function Details222.TimeCapture.StopCombat()
+	local combatTimeTickerObject = Details222.TimeCapture.CombatTimeTicker
+	if (combatTimeTickerObject and not combatTimeTickerObject:IsCancelled()) then
+		combatTimeTickerObject:Cancel()
+		Details222.TimeCapture.CombatTimeTicker = nil
+	end
+
+	Details222.TimeCapture.StopAllUnitTimers()
+end
+
+--start a capture for a specific unit
+function Details222.TimeCapture.Start(unitName, attribute)
+	local tickerObject = C_Timer.NewTicker(3, damageCapture)
+	tickerObject.unitName = unitName
+	Details222.TimeCapture.Timers[unitName] = tickerObject
+end
+
+function Details222.TimeCapture.StopAllUnitTimers()
+	for unitName, tickerObject in pairs(Details222.TimeCapture.Timers) do
+		if (not tickerObject:IsCancelled()) then --why do I need to stop here, it's stopping in the unit itself right below
+			tickerObject:Cancel()
+		end
+		Details222.TimeCapture.Stop(unitName)
+	end
+	wipe(Details222.TimeCapture.Timers)
+end
+
+--can be a manual stop or from the stop all unit frames (function above)
+function Details222.TimeCapture.Stop(unitName)
+	local tickerObject = Details222.TimeCapture.Timers[unitName]
+	if (tickerObject and not tickerObject:IsCancelled()) then
+		tickerObject:Cancel()
+		Details222.TimeCapture.Timers[unitName] = nil
+	end
+end
+
+function Details222.TimeCapture.GetChartDataFromSpell(spellTable)
+	return spellTable.ChartData
+end

@@ -268,10 +268,10 @@ local function CreateBugReportPane()
     
     local cnBugReportEB = Cell:CreateEditBox(bugReportPane, 412, 20)
     cnBugReportEB:SetPoint("TOPLEFT", bugReportEB, "BOTTOMLEFT", 0, -5)
-    cnBugReportEB:SetText("https://kook.top/w6uvTN")
+    cnBugReportEB:SetText("https://kook.top/q4T7yp")
     cnBugReportEB:SetScript("OnTextChanged", function(self, userChanged)
         if userChanged then
-            cnBugReportEB:SetText("https://kook.top/w6uvTN")
+            cnBugReportEB:SetText("https://kook.top/q4T7yp")
             cnBugReportEB:HighlightText()
         end
     end)

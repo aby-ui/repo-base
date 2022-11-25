@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2480, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221021185029")
+mod:SetRevision("20221124062011")
 mod:SetCreatureID(184972)
 mod:SetEncounterID(2587)
 mod:SetUsedIcons(1, 2, 3, 4, 5)
@@ -158,16 +158,8 @@ function mod:SPELL_CAST_START(args)
 		local count = castsPerGUID[args.sourceGUID]
 		if self:CheckInterruptFilter(args.sourceGUID, false, false) then--Count interrupt, so cooldown is not checked
 			specWarnPyroBlast:Show(args.sourceName, count)
-			if count == 1 then
-				specWarnPyroBlast:Play("kick1r")
-			elseif count == 2 then
-				specWarnPyroBlast:Play("kick2r")
-			elseif count == 3 then
-				specWarnPyroBlast:Play("kick3r")
-			elseif count == 4 then
-				specWarnPyroBlast:Play("kick4r")
-			elseif count == 5 then
-				specWarnPyroBlast:Play("kick5r")
+			if count < 6 then
+				specWarnPyroBlast:Play("kick"..count.."r")
 			else
 				specWarnPyroBlast:Play("kickcast")
 			end

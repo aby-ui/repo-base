@@ -3,8 +3,9 @@
 	local Details = _G.Details
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 	local Translit = LibStub("LibTranslit-1.0")
-	local gump = 			Details.gump
-	local _
+	local gump = Details.gump
+	local _ = nil
+	local addonName, Details222 = ...
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --local pointers
@@ -13,12 +14,10 @@
 	local _math_floor = math.floor --lua local
 	local _table_sort = table.sort --lua local
 	local tinsert = table.insert --lua local
-	local _table_size = table.getn --lua local
 	local setmetatable = setmetatable --lua local
 	local _getmetatable = getmetatable --lua local
 	local ipairs = ipairs --lua local
 	local pairs = pairs --lua local
-	local rawget= rawget --lua local
 	local _math_min = math.min --lua local
 	local _math_max = math.max --lua local
 	local abs = math.abs --lua local
@@ -39,15 +38,10 @@
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --constants
 
-	local alvo_da_habilidade	= 	Details.alvo_da_habilidade
 	local container_habilidades	= 	Details.container_habilidades
-	local container_combatentes =	Details.container_combatentes
 	local atributo_damage	=	Details.atributo_damage
 	local atributo_misc		=	Details.atributo_misc
-	local habilidade_dano		=	Details.habilidade_dano
-	local container_damage_target =	Details.container_type.CONTAINER_DAMAGETARGET_CLASS
 	local container_damage	=	Details.container_type.CONTAINER_DAMAGE_CLASS
-	local container_friendlyfire	=	Details.container_type.CONTAINER_FRIENDLYFIRE
 
 	local modo_GROUP = Details.modos.group
 	local modo_ALL = Details.modos.all
@@ -1630,7 +1624,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --main refresh function
 
-function atributo_damage:RefreshWindow (instancia, combatObject, forcar, exportar, refreshRequired)
+function atributo_damage:RefreshWindow(instancia, combatObject, forcar, exportar, refreshRequired)
 	local showing = combatObject[class_type] --o que esta sendo mostrado -> [1] - dano [2] - cura --pega o container com ._NameIndexTable ._ActorTable
 
 	--not have something to show
@@ -3074,6 +3068,7 @@ function Details:SetClassIcon(texture, instance, class) --[[ exported]]
 	elseif (class == "PET") then
 		texture:SetTexture(instance and instance.row_info.icon_file or [[Interface\AddOns\Details\images\classes_small]])
 		texture:SetTexCoord(0.25, 0.49609375, 0.75, 1)
+		actor_class_color_r, actor_class_color_g, actor_class_color_b = DetailsFramework:ParseColors(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 		texture:SetVertexColor(actor_class_color_r, actor_class_color_g, actor_class_color_b)
 
 	else
@@ -4957,6 +4952,10 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 			cast_string = cast_string .. spell_cast
 		end
 
+		if (esta_magia.e_total) then
+			cast_string = Loc ["STRING_CAST"] .. ": " .. "|cFFFFFF00" .. esta_magia.e_total .. "|r"
+		end
+
 		gump:SetaDetalheInfoTexto( index, 100,
 			cast_string,
 			Loc ["STRING_DAMAGE"]..": "..Details:ToK(esta_magia.total),
@@ -5041,16 +5040,220 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 			t3[9] = "MISS" .. ": " .. misses
 		end
 
+	--empowered
+	if (esta_magia.e_total) then
+		local empowerLevelSum = esta_magia.e_total --total sum of empower levels
+		local empowerAmount = esta_magia.e_amt --amount of casts with empower
+		local empowerAmountPerLevel = esta_magia.e_lvl --{[1] = 4; [2] = 9; [3] = 15}
+		local empowerDamagePerLevel = esta_magia.e_dmg --{[1] = 54548745, [2] = 74548745}
+
+		data[#data+1] = t4
+
+		local level1AverageDamage = "0"
+		local level2AverageDamage = "0"
+		local level3AverageDamage = "0"
+		local level4AverageDamage = "0"
+		local level5AverageDamage = "0"
+
+		if (empowerDamagePerLevel[1]) then
+			level1AverageDamage = Details:ToK(empowerDamagePerLevel[1] / empowerAmountPerLevel[1])
+		end
+		if (empowerDamagePerLevel[2]) then
+			level2AverageDamage = Details:ToK(empowerDamagePerLevel[2] / empowerAmountPerLevel[2])
+		end
+		if (empowerDamagePerLevel[3]) then
+			level3AverageDamage = Details:ToK(empowerDamagePerLevel[3] / empowerAmountPerLevel[3])
+		end
+		if (empowerDamagePerLevel[4]) then
+			level4AverageDamage = Details:ToK(empowerDamagePerLevel[4] / empowerAmountPerLevel[4])
+		end
+		if (empowerDamagePerLevel[5]) then
+			level5AverageDamage = Details:ToK(empowerDamagePerLevel[5] / empowerAmountPerLevel[5])
+		end
+
+		t4[1] = 0
+		t4[2] = {p = 100, c = {0.282353, 0.239216, 0.545098, 0.6}}
+		t4[3] = "Spell Empower Average Level: " .. format("%.2f", empowerLevelSum / empowerAmount)
+		t4[4] = ""
+		t4[5] = ""
+		t4[6] = ""
+		t4[10] = ""
+		t4[11] = ""
+
+		if (level1AverageDamage ~= "0") then
+			t4[4] = "Level 1 Average: " .. level1AverageDamage .. " (" .. (empowerAmountPerLevel[1] or 0) .. ")"
+		end
+
+		if (level2AverageDamage ~= "0") then
+			t4[6] = "Level 2 Average: " .. level2AverageDamage .. " (" .. (empowerAmountPerLevel[2] or 0) .. ")"
+		end
+
+		if (level3AverageDamage ~= "0") then
+			t4[11] = "Level 3 Average: " .. level3AverageDamage .. " (" .. (empowerAmountPerLevel[3] or 0) .. ")"
+		end
+
+		if (level4AverageDamage ~= "0") then
+			t4[10] = "Level 4 Average: " .. level4AverageDamage .. " (" .. (empowerAmountPerLevel[4] or 0) .. ")"
+		end
+
+		if (level5AverageDamage ~= "0") then
+			t4[5] = "Level 5 Average: " .. level5AverageDamage .. " (" .. (empowerAmountPerLevel[5] or 0) .. ")"
+		end
+	end
+
 	--Details:BuildPlayerDetailsSpellChart()
 	--DetailsPlayerDetailSmallChart.ShowChart (Details.playerDetailWindow.grupos_detalhes [5].bg, info.instancia.showing, info.instancia.showing.cleu_events, self.nome, false, spellid, 1, 2, 3, 4, 5, 6, 7, 8, 15)
 
 	--spell damage chart
 	--events: 1 2 3 4 5 6 7 8 15
+	local spellTable = esta_magia
+
+	local blockId = 6
+	local thatRectangle66 = Details222.BreakdownWindow.GetBlockIndex(blockId)
+	thatRectangle66 = thatRectangle66:GetFrame()
+
+	--hide all textures created
+	if (thatRectangle66.ChartTextures) then
+		for i = 1, #thatRectangle66.ChartTextures do
+			thatRectangle66.ChartTextures[i]:Hide()
+		end
+	end
+
+	local chartData = Details222.TimeCapture.GetChartDataFromSpell(spellTable)
+	if (chartData and instance) then
+		local width, height = thatRectangle66:GetSize()
+		--reset which texture is the next to be used
+		thatRectangle66.nextChartTextureId = 1
+
+		local amountOfTimeStamps = 12
+
+		if (not thatRectangle66.timeStamps) then
+			thatRectangle66.timeStamps = {}
+			for i = 1, amountOfTimeStamps do
+				thatRectangle66.timeStamps[i] = thatRectangle66:CreateFontString(nil, "overlay", "GameFontNormal")
+				thatRectangle66.timeStamps[i]:SetPoint("topleft", thatRectangle66, "topleft", 2 + (i - 1) * (width / amountOfTimeStamps), -2)
+				DetailsFramework:SetFontSize(thatRectangle66.timeStamps[i], 9)
+			end
+		end
+
+		if (not thatRectangle66.bloodLustIndicators) then
+			thatRectangle66.bloodLustIndicators = {}
+			for i = 1, 2 do
+				local thisIndicator = thatRectangle66:CreateTexture(nil, "artwork", nil, 4)
+				thisIndicator:SetColorTexture(0.0980392,		0.0980392,						0.439216)
+				thatRectangle66.bloodLustIndicators[#thatRectangle66.bloodLustIndicators+1] = thisIndicator
+			end
+		end
+
+		for i = 1, #thatRectangle66.bloodLustIndicators do
+			thatRectangle66.bloodLustIndicators[i]:Hide()
+		end
+
+		if (not thatRectangle66.ChartTextures) then
+			thatRectangle66.ChartTextures = {}
+			function thatRectangle66:GetChartTexture()
+				local thisTexture = thatRectangle66.ChartTextures[thatRectangle66.nextChartTextureId]
+				if (not thisTexture) then
+					thisTexture = thatRectangle66:CreateTexture(nil, "artwork", nil, 5)
+					thisTexture:SetColorTexture(1, 1, 1, 0.65)
+					thatRectangle66.ChartTextures[thatRectangle66.nextChartTextureId] = thisTexture
+				end
+				thatRectangle66.nextChartTextureId = thatRectangle66.nextChartTextureId + 1
+
+				return thisTexture
+			end
+		end
+
+		--elapsed combat time
+		local combatObject = instance:GetShowingCombat()
+		local combatTime = math.floor(combatObject:GetCombatTime())
+		thatRectangle66.timeStamps[1]:SetText(DetailsFramework:IntegerToTimer(0))
+		for i = 2, #thatRectangle66.timeStamps do
+			local timePerSegment = combatTime / #thatRectangle66.timeStamps
+			thatRectangle66.timeStamps[i]:SetText(DetailsFramework:IntegerToTimer(i * timePerSegment))
+		end
+		--compute the width oif each texture
+		local textureWidth = width / combatTime
+		--compute the max height of a texture can have
+		local maxValue = 0
+		local numData = 0
+
+		--need to put the data in order FIRST
+		--each damage then need to be parsed
+
+		local dataInOrder = {}
+
+		local CONST_INDEX_TIMESTAMP = 1
+		local CONST_INDEX_DAMAGEDONE = 2
+		local CONST_INDEX_EVENTDAMAGE = 3
+
+		for timeStamp, value in pairs(chartData) do
+			dataInOrder[#dataInOrder+1] = {timeStamp, value}
+			dataInOrder[#dataInOrder+1] = {timeStamp, value}
+			dataInOrder[#dataInOrder+1] = {timeStamp, value}
+			numData = numData + 1
+		end
+
+		table.sort(dataInOrder, function(t1, t2)  return t1[CONST_INDEX_TIMESTAMP] < t2[CONST_INDEX_TIMESTAMP] end)
+		local damageDoneByTime = dataInOrder
+
+		--parser the damage done
+		local currentTotalDamage = 0
+
+		for i = 1, #damageDoneByTime do
+			local damageEvent = damageDoneByTime[i]
+
+			local atTime = damageEvent[CONST_INDEX_TIMESTAMP]
+			local totalDamageUntilHere = damageEvent[CONST_INDEX_DAMAGEDONE] --raw damage
+
+			local spellDamage = totalDamageUntilHere - currentTotalDamage
+			currentTotalDamage = currentTotalDamage + spellDamage
+
+			damageEvent[CONST_INDEX_EVENTDAMAGE] = spellDamage
+
+			maxValue = math.max(spellDamage, maxValue)
+		end
+
+		--build the chart
+		for i = 1, #damageDoneByTime do
+		--for timeStamp, value in pairs(chartData) do --as it is pairs the data is scattered
+			local damageEvent = damageDoneByTime[i]
+			local timeStamp = damageEvent[CONST_INDEX_TIMESTAMP]
+			local damageDone = damageEvent[CONST_INDEX_EVENTDAMAGE]
+
+			local thisTexture = thatRectangle66:GetChartTexture()
+			thisTexture:SetWidth(textureWidth)
+
+			local texturePosition = textureWidth * timeStamp
+
+			thisTexture:SetPoint("bottomleft", thatRectangle66, "bottomleft", 1 + texturePosition, 1)
+
+			local percentFromPeak = damageDone / maxValue --normalized
+			thisTexture:SetHeight(math.min(percentFromPeak * height, height - 15))
+			thisTexture:Show()
+
+			--print("DEBUG", 7 , "Peak:", percentFromPeak, "position:", texturePosition, "damage done:", damageDone) --debug
+		end
+
+		--show bloodlust indicators, member .bloodlust is not guarantted
+		if (combatObject.bloodlust) then
+			--bloodlust not being added into the combat object, probably a bug on Parser
+			local bloodlustDuration = 40
+			for i = 1, #combatObject.bloodlust do
+				thatRectangle66.bloodLustIndicators[i]:Show()
+				thatRectangle66.bloodLustIndicators[i]:SetSize(bloodlustDuration / combatTime * width, height - 2)
+				thatRectangle66.bloodLustIndicators[i]:SetPoint("bottomleft", thatRectangle66, "bottomleft", 0, 0)
+			end
+		end
+
+		DetailsPlayerDetailsWindow_DetalheInfoBG_bg_end6:Hide()
+		thatRectangle66:SetShown(true)
+	end
 
 	_table_sort(data, Details.Sort1)
 
 	for index, tabela in ipairs(data) do
-		gump:SetaDetalheInfoTexto(index+1, tabela[2], tabela[3], tabela[4], tabela[5], tabela[6], tabela[7], tabela[8], tabela[9])
+		gump:SetaDetalheInfoTexto(index+1, tabela[2], tabela[3], tabela[4], tabela[5], tabela[6], tabela[7], tabela[8], tabela[9], tabela[10], tabela[11], tabela[12])
 	end
 
 	for i = #data+2, 5 do

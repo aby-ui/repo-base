@@ -1,6 +1,7 @@
 --[[this file save the data when player leave the game]]
 
 local _detalhes = 		_G._detalhes
+local addonName, Details222 = ...
 
 function _detalhes:WipeConfig()
 	local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )

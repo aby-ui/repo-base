@@ -2,6 +2,7 @@
 local _detalhes = _G._detalhes
 local Loc = LibStub("AceLocale-3.0"):GetLocale ( "Details" )
 local _
+local addonName, Details222 = ...
 
 	--install skin function:
 	function _detalhes:InstallSkin (skin_name, skin_table)

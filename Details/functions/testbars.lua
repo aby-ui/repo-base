@@ -1,6 +1,6 @@
 
 local Details = _G.Details
-
+local addonName, Details222 = ...
 
 function Details:TestBarsUpdate()
     local current_combat = Details:GetCombat("current")

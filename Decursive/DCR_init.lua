@@ -441,7 +441,23 @@ local function SetRuntimeConstants_Once () -- {{{
                 UnitFiltering = {
                     [DC.CHARMED] = 1, -- player only
                 },
-            }
+            },
+            -- evoker 10.0
+            [DSI["SPELL_EVOKER_GREEN_HEALER"]] = {
+                Types = {DC.MAGIC, DC.POISON},
+                Better = 3,
+                Pet = false,
+            },
+            [DSI["SPELL_EVOKER_GREEN_DPS"]] = {
+                Types = {DC.POISON},
+                Better = 1,
+                Pet = false,
+            },
+            [DSI["SPELL_EVOKER_ALL"]] = {
+                Types = {{DC.DISEASE, DC.POISON, DC.CURSE}},
+                Better = 0,
+                Pet = false,
+            },
         };
 
         -- }}}
@@ -1606,6 +1622,9 @@ function D:SetSpellsTranslations(FromDIAG) -- {{{
             ['SPELL_MENDINGBANDAGE']        =  212640,
             ['SPELL_REVERSEMAGIC']          =  205604,
             ['SPELL_WILL_OF_THE_FORSAKEN']  =  7744,
+            ['SPELL_EVOKER_GREEN_HEALER']   =  360823,
+            ['SPELL_EVOKER_GREEN_DPS']      =  365585,
+            ['SPELL_EVOKER_ALL']            =  374251, --1 min CD
         }; --- }}}
 
         T._C.EXPECTED_DUPLICATES = {

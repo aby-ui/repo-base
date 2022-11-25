@@ -330,6 +330,7 @@ function addon:CreateMovableFrame(title, name, width, height, frameStrata, frame
     f:SetFrameStrata(frameStrata or "HIGH")
     f:SetFrameLevel(frameLevel or 1)
     f:SetClampedToScreen(true)
+    f:SetClampRectInsets(0, 0, P:Scale(20), 0)
     P:Size(f, width, height)
     f:SetPoint("CENTER")
     f:Hide()
@@ -359,6 +360,16 @@ function addon:CreateMovableFrame(title, name, width, height, frameStrata, frame
     header.closeBtn = addon:CreateButton(header, "×", "red", {20, 20}, false, false, "CELL_FONT_SPECIAL", "CELL_FONT_SPECIAL")
     header.closeBtn:SetPoint("TOPRIGHT")
     header.closeBtn:SetScript("OnClick", function() f:Hide() end)
+
+    function f:UpdatePixelPerfect()
+        f:SetClampRectInsets(0, 0, P:Scale(20), 0)
+        P:Resize(f)
+        addon:StylizeFrame(f)
+        P:Resize(header, 20)
+        P:Repoint(header)
+        addon:StylizeFrame(header, {0.115, 0.115, 0.115, 1})
+        P:Resize(header.closeBtn)
+    end
 
     return f
 end
