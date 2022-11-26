@@ -18,6 +18,13 @@ U1RegisterAddon("Cell", {
     },
 
     {
+        text = "损失血量条始终作为背景",
+        tip = "说明`Cell默认损失血量条是拼接在血条后面，打开这个选项可以按照之前Grid等方式，损失血量条始终覆盖整个单位背景，这样超出距离会有一些颜色的变化，但是会和非100%的血条透明度冲突，请按自己习惯选择。",
+        var = "LossBarBG",
+        reload = 1,
+    },
+
+    {
         text = "打开设置窗口",
         callback = function(cfg, v, loading)
             Cell.funcs:ShowOptionsFrame()

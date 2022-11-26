@@ -3,6 +3,28 @@ local F = Cell.funcs
 local I = Cell.iFuncs
 local P = Cell.pixelPerfectFuncs
 
+local updateFuncs = {}
+local previewButtonNameStr = "CellAppearancePreviewButton,CellAppearancePreviewButton2,CellIndicatorsPreviewButton,CellRaidDebuffsPreviewButton,CellGlowsPreviewButton"
+local previewButtonNames = {} for _, v in ipairs({strsplit(",", previewButtonNameStr)}) do previewButtonNames[v] = true end
+hooksecurefunc("CreateFrame", function(_, name)
+    if name and previewButtonNames[name] then
+        for _, f in ipairs(updateFuncs) do
+            f(_G[name])
+        end
+    end
+end)
+
+F.IterateAllUnitButtonsOrigin = F.IterateAllUnitButtons
+function F:IterateAllUnitButtons(func, updateCurrentGroupOnly, includePreview)
+    F:IterateAllUnitButtonsOrigin(func, updateCurrentGroupOnly)
+    if includePreview then
+        for k in pairs(previewButtonNames) do
+            if _G[k] then func(_G[k]) end
+        end
+        table.insert(updateFuncs, func)
+    end
+end
+
 local function rawhook(object, funcKey, postFunc)
     local origin = object[funcKey]
     object[funcKey] = function(...)
@@ -244,20 +266,22 @@ end
 -- Cell默认损失血量条是拼接在血条后面而不是层叠的，这样会导致超出距离设置Alpha时只有透明度变化没有颜色变化，不够明显
 -- 预览效果 /run CellSoloFramePlayer:SetAlpha(0.5) CellPartyFrameMember1:SetAlpha(0.5)
 local function LossBarSetAllPoints()
-    F:IterateAllUnitButtons(function(b)
+    local function updateButton(b)
         local OriginSetOrientation = b.func.SetOrientation
         b.func.SetOrientation = function(orientation, rotateTexture)
             OriginSetOrientation(orientation, rotateTexture)
             P:Point(b.widget.healthBarLoss, "BOTTOMLEFT", b.widget.healthBar)
             P:Point(b.widget.powerBarLoss, "BOTTOMLEFT", b.widget.powerBar)
         end
-    end)
+    end
+    F:IterateAllUnitButtons(updateButton, nil, true)
 end
 
 hooksecurefunc(F, "RunSnippets", function()
-    local cdBlizStyle = U1GetCfgValue and U1GetCfgValue("Cell", "cdBlizStyle")
-    if cdBlizStyle then CooldownIcons_BlizzardStyle() end
-    LossBarSetAllPoints()
+    if U1GetCfgValue then
+        if U1GetCfgValue("Cell", "cdBlizStyle") then CooldownIcons_BlizzardStyle() end
+        if U1GetCfgValue("Cell", "LossBarBG") then LossBarSetAllPoints() end
+    end
 
     I:UpdateCustomDefensives({
         6940, -- PALADIN 牺牲祝福

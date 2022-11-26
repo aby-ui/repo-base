@@ -165,7 +165,7 @@ end
 function MainFrameToggle()
     local show = false
     if (Comergy_Settings.Enabled) then
-        if ((status.curChi ~= 0) and (status.chiEnabled)) or (status.playerInCombat) then
+        if ((status.curChi ~= 0) and (status.chiEnabled) and Comergy_Settings.ShowWhenEnergyNotFull) or (status.playerInCombat) then
             show = true
         else
             if (not Comergy_Settings.ShowOnlyInCombat) then
