@@ -15,6 +15,7 @@ _G["TeamStats"] = TeamStats
 local InspectLess = LibStub("LibInspectLess-1.0")
 
 TeamStats.names = {} --保存当前团队名单, true为当前在队伍里的, false为离队的, nil为没关系的
+TeamStats.temp_data = {} --保存临时数据, RL就丢失, player为key
 
 local TABS = TeamStats.TABS
 local VBOSSES = TeamStats.VERSION_BOSSES
@@ -172,6 +173,18 @@ local function SaveAchievements(name, unit, isPlayer)
     TeamStats:SetStatusText("已获得["..(player.name or name or UNKNOWNOBJECT).."]的成就资料") --TODO: 纳闷，只有一个人然后不停点清除缓存就出这个错
 end
 
+function TeamStats:TransformMythicSummary(summary)
+    --C_PlayerInfo.GetPlayerMythicPlusRatingSummary("player")
+    if not summary or not summary.runs then return end
+    local tbl = {}
+    for _, v in ipairs(summary.runs) do
+        local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(v.mapScore) or HIGHLIGHT_FONT_COLOR
+        local levelText = format(v.finishedSuccess and "|cff00ff00%d|r" or "|cff7f7f7f%d|r", v.bestRunLevel or 0)
+        tbl[v.challengeModeID] = format("%s(%s)", color:WrapTextInColorCode(v.mapScore), levelText)
+    end
+    return tbl
+end
+
 
 function TeamStats:OnInitialize()
     local f = CreateFrame("Frame")
@@ -234,6 +247,7 @@ function TeamStats:GROUP_ROSTER_UPDATE()
             TeamStats.solo = nil
             for name, _ in pairs(TeamStats.names) do
                 TeamStats.names[name] = nil
+                TeamStats.temp_data[name] = nil
             end
         end
     end
@@ -308,6 +322,8 @@ function TeamStats:OnUpdateNameTimer()
             player.heath = UnitHealthMax(unit)
             player.class = select(2, UnitClass(unit))
             local summary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
+            TeamStats.temp_data[fullname] = TeamStats.temp_data[fullname] or {}
+            TeamStats.temp_data[fullname]["mythic"] = TeamStats:TransformMythicSummary(summary)
             player.mscore = summary and summary.currentSeasonScore or player.mscore
             current_names[fullname] = true
         end
@@ -372,7 +388,7 @@ function TeamStats:ReMapData()
     local oldMap = TeamStats.db.map
     local mapping = {} --保存成就ID和序号的对应关系
     for _, tab in ipairs(TABS) do
-        for _, id in pairs(tab.ids) do
+        for _, id in ipairs(tab.ids or {}) do
             if type(id) == "table" then
                 for _, iid in ipairs(id) do
                     if type(iid) == "table" then

@@ -83,7 +83,7 @@ rematch.hintsOffense = {{2,8},{6,4},{9,2},{1,9},{4,1},{3,10},{10,5},{5,3},{7,6},
 rematch:SetScript("OnEvent",function(self,event,...)
 	if rematch[event] then
 		rematch[event](self,...)
-	end
+	end	
 end)
 rematch:RegisterEvent("PLAYER_LOGIN")
 
@@ -190,6 +190,8 @@ function rematch:Start()
 	for _,func in ipairs(initFuncs) do func() end
 	initFuncs = nil -- don't need them anymore
 	rematch.OptionPanel:RunOptionInits() -- after modules are all initialized, run option-specific inits
+	rematch:RegisterEvent("PLAYER_ENTERING_WORLD")
+	rematch:RegisterEvent("PLAYER_LEAVING_WORLD")
 	rematch:RegisterEvent("PLAYER_TARGET_CHANGED")
 	rematch:RegisterEvent("PLAYER_REGEN_DISABLED")
 	rematch:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -444,11 +446,6 @@ function rematch:CURSOR_CHANGED()
 	if rematch.QueuePanel.List:IsVisible() then
 		rematch.QueuePanel.List:Update()
 	end
-end
-
--- capture pets gaining xp
-function rematch:UPDATE_SUMMONPETS_ACTION()
-	rematch:UpdateQueue()
 end
 
 -- when pet is summoned or dismissed (UNIT_PET doesn't fire when dismissed). always fires in pairs grr
@@ -756,36 +753,6 @@ function rematch.SlashHandler(msg)
 	msg = SecureCmdOptionParse(msg)
 	if msg:lower()=="debug" then
 		rematch:ShowDebugDialog()
-	elseif msg:lower()=="queuedebug" then -- watch for pets being removed from the queue
-		setmetatable(RematchSettings,{
-			__newIndex = function(self,key,value)
-				if key=="LevelingQueue" and not rematch.Level25PetLeavingQueue then
-					local text = GetAddOnMetadata("Rematch","Version").." LevelingQueue reassigned from "..Rematch:CallerID()
-					Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
-				end
-			end
-		})
-		setmetatable(RematchSettings.LevelingQueue,{
-			__newIndex = function(self,key,value)
-				if not value and not rematch.Level25PetLeavingQueue then
-					local text = GetAddOnMetadata("Rematch","Version").." Setting "..(key or "nil").." to "..(value or "nil").." from "..Rematch:CallerID()
-					Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
-				end
-			end
-		})
-		hooksecurefunc("tremove",function(self,index)
-			if self==RematchSettings.LevelingQueue and not rematch.Level25PetLeavingQueue then
-				local text = GetAddOnMetadata("Rematch","Version").." Removing index "..(index or "nil").." from "..Rematch:CallerID()
-				Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
-			end
-		end)
-		hooksecurefunc(table,"remove",function(self,index)
-			if self==RematchSettings.LevelingQueue and not rematch.Level25PetLeavingQueue then
-				local text = GetAddOnMetadata("Rematch","Version").." Removing index "..(index or "nil").." from "..Rematch:CallerID()
-				Rematch:ShowMultiLineDialog("Leveling Queue Pet Deleted!",text)
-			end
-		end)				
-		rematch:print("Now watching for anything trying to remove pets from the leveling queue. If you get a popup that says Leveling Queue Pet Deleted! at the top, please copy and paste the contents in a comment on Rematch or PM Gello at wowinterface or curse, thanks! (This monitoring only lasts until you logout/reload.)")
 	elseif msg:trim():len()>0 then
 		-- going to desensitize the passed name so "aki the chosen" works for "Aki the Chosen"
 		local name = format("^%s$",rematch:DesensitizeText(msg))

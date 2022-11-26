@@ -200,6 +200,7 @@ local expansionOutliers = {
    [2143] = 7, -- Tottle
    [2157] = 7, -- Dart
    [2798] = 8, -- Plagueborn Slime
+   [666] = 6, -- Micronax
 }
 
 -- short reason that the pet can't be summoned

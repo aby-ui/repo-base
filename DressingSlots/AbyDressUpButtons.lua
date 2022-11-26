@@ -4,6 +4,7 @@ local function SetModel(unit, playerActor)
     if unit == "player" then
         playerActor:SetModelByUnit("player")
     elseif unit == "target" then
+        if not UnitIsPlayer("target") then return U1Message("无法设置非玩家目标,否则可能导致游戏崩溃") end
         local nativeForm = nil
         if select(2, UnitClass("target")) == "EVOKER" then nativeForm = false end
         playerActor:SetModelByUnit("target", true, true, false, nativeForm) --unit, heldWeapon, autoDress, hideWeapon, nativeForm

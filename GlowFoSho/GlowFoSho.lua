@@ -21,6 +21,7 @@ GlowFoSho.classList = {}
 local classTbl = GlowFoSho.classList
 GlowFoSho.illList = {}
 local illTbl = GlowFoSho.illList
+GlowFoSho.others = {}
 
 -- the button
 local gfsbutton
@@ -77,13 +78,21 @@ local function LoadEnchantList()
 	local name
 
 	for formulaID, enchant in pairs(enchants) do
-        if enchant.is2H then
-            name = enchant.name .. " (2H)"
-        else
-            name = enchant.name
-        end
+		if not enchant.name then
+			if enchant.fromBlizz then
+				name, enchant.illusionLink = C_TransmogCollection.GetIllusionStrings(enchant.enchantID)
+			else
+				name = GetSpellInfo(formulaID) or UNKNOWN
+			end
+		else
+			if enchant.is2H then
+				name = enchant.name .. " (2H)"
+			else
+				name = enchant.name
+			end
 
-        name = L[name]
+			name = L[name]
+		end
 
         if enchant.lvl then
             name = name .. " (" .. enchant.lvl .. ")"
@@ -105,6 +114,8 @@ local function LoadEnchantList()
 			classTbl[formulaID] = name
 		elseif enchant.illusion then
 			illTbl[formulaID] = name
+		else
+			GlowFoSho.others[formulaID] = name
 		end
 	end
 end
@@ -244,6 +255,15 @@ function GlowFoSho:OpenDropdown(buttonframe)
 				disabled = function() return not currPrintLink end,
 				order = 38
 			},
+			recentList = {
+				name = OTHER..(LOCALE_zhCN and " by 爱不易" or "by warbaby"),
+				type = "select",
+				get = function(info) return currWeaponEnchant end,
+				set = function(info,v) self:EnchantWeaponByFormulaID(v) end,
+				values = self.others,
+				disabled = function() return not currPrintLink end,
+				order = 39
+			},
 			clear = {
 				name = L["Clear"],
 				type = "execute",
@@ -315,7 +335,6 @@ end
 function GlowFoSho:DressUpItemLink(link, formulaID)
     --print(link ,formulaID)
 	if link then
-		local iType
 		local _, link, _, _, _, iType = GetItemInfo(link)
 
 		-- if previewing weapon, set the currWeaponLink link to passed link
@@ -392,6 +411,7 @@ function GlowFoSho:EnchantWeapon(enchantID, formulaID)
             local temp = SetEnchant(currPrintLink,enchantID)
             DressUpItemLink_origin(newLink, formulaID)
             currPrintLink = temp
+			currWeaponEnchant = formulaID
 		end
 	end
 end
@@ -406,8 +426,10 @@ end
 -- prints out link to a formula for the current enchant on the weapon
 function GlowFoSho:GetEnchantLink()
 	local formulaID = self:GetCurrEnchant()
-	if formulaID then
+	if formulaID and GetSpellInfo(formulaID) then
 		self:Print(GetRecipeLink(formulaID))
+	elseif enchants[formulaID].illusionLink then
+		self:Print(enchants[formulaID].illusionLink)
 	else
 		self:Print(L["There is no enchant on the weapon or enchant unknown."])
 	end
@@ -488,3 +510,27 @@ function GlowFoSho:SetMessageFilter(enable)
 		ChatFrame_RemoveMessageEventFilter("CHAT_MSG_WHISPER_INFORM",GlowFoShoOutgoingFilter)
 	end
 end
+
+--abyui
+hooksecurefunc(DressUpFrame.ModelScene, "InitializeActor", function()
+	local playerActor = DressUpFrame.ModelScene:GetPlayerActor()
+	if playerActor and not playerActor._aby_glowfosho_hooked then
+		playerActor._aby_glowfosho_hooked = 1
+		hooksecurefunc(playerActor, "SetModelByUnit", function(self, unit)
+			--/dump DressUpFrame.ModelScene:GetPlayerActor():GetItemTransmogInfoList()[16]
+			C_Timer.After(0.1, function()
+				local list = self:GetItemTransmogInfoList()
+				local appID = list and list[16] and list[16].appearanceID
+				if not appID or appID == 0 then
+					appID = list and list[17] and list[17].appearanceID
+				end
+				if appID and appID ~= 0 then
+					local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(appID))
+					if link then
+						return GlowFoSho:DressUpItemLink(link)
+					end
+				end
+			end)
+		end)
+	end
+end)

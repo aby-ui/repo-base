@@ -45,19 +45,26 @@ function oribos:addCovenantForPlayer(covenantID, playerName, playerClass)
     end
 end
 
+local function AbySendAddonMessage(prefix, message)
+    local channel = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or (IsInRaid() and "RAID") or (IsInGroup() and "PARTY") or nil
+    if channel then
+        return C_ChatInfo.SendAddonMessage(prefix, message, channel);
+    end
+end
+
 function oribos:askCovenantInfo(playerName)
     local message = dc.askMessage..":"..playerName
-    C_ChatInfo.SendAddonMessage(dc.addonPrefix, message, "RAID")
+    AbySendAddonMessage(dc.addonPrefix, message, "RAID")
 end
 
 function oribos:sendCovenantInfo(playerName)
     if playerName then
         if playerName == UnitName("player") then
             local message = playerName..":"..C_Covenants.GetActiveCovenantID()..":"..ownClass
-            C_ChatInfo.SendAddonMessage(dc.addonPrefix, message, "RAID")
+            AbySendAddonMessage(dc.addonPrefix, message, "RAID")
         elseif oribos.covenants[playerName] then
             local message = playerName..":"..oribos.covenants[playerName].covenantID..":"..oribos.covenants[playerName].class
-            C_ChatInfo.SendAddonMessage(dc.addonPrefix, message, "RAID")
+            AbySendAddonMessage(dc.addonPrefix, message, "RAID")
         end
     end
 end

@@ -760,4 +760,67 @@ GlowFoSho_enchants = {
         ["illusion"] = true,
         ["name"] = "Illusion: Winter's Grasp",
     },
+
+    --GlowFoSho:EnchantWeapon(6112) from KibsItemLevel ItemEnchantInfo.lua
+    ["298433"] = {
+        ["enchantID"] = "6112",
+    },
+    ["298440"] = {
+        ["enchantID"] = "6148",
+    },
+    ["298438"] = {
+        ["enchantID"] = "6149",
+    },
+    ["298442"] = {
+        ["enchantID"] = "6150",
+    },
+    ["005390"] = { enchantID = "5390", fromBlizz = true, },
+    ["005861"] = { enchantID = "5861", fromBlizz = true, },
+    ["005862"] = { enchantID = "5862", fromBlizz = true, },
+    ["005863"] = { enchantID = "5863", fromBlizz = true, },
+    ["005864"] = { enchantID = "5864", fromBlizz = true, },
+    ["005865"] = { enchantID = "5865", fromBlizz = true, },
+    ["005866"] = { enchantID = "5866", fromBlizz = true, },
+    ["005867"] = { enchantID = "5867", fromBlizz = true, },
+    ["005868"] = { enchantID = "5868", fromBlizz = true, },
+    ["005876"] = { enchantID = "5876", fromBlizz = true, },
+    ["005877"] = { enchantID = "5877", fromBlizz = true, },
+    ["006096"] = { enchantID = "6096", fromBlizz = true, },
+    ["006162"] = { enchantID = "6162", fromBlizz = true, },
+    ["006174"] = { enchantID = "6174", fromBlizz = true, },
+    ["006256"] = { enchantID = "6256", fromBlizz = true, },
+    ["006257"] = { enchantID = "6257", fromBlizz = true, },
+    ["006258"] = { enchantID = "6258", fromBlizz = true, },
+    ["006259"] = { enchantID = "6259", fromBlizz = true, },
+    ["006261"] = { enchantID = "6261", fromBlizz = true, },
+    ["006262"] = { enchantID = "6262", fromBlizz = true, },
+    ["006263"] = { enchantID = "6263", fromBlizz = true, },
+    ["006264"] = { enchantID = "6264", fromBlizz = true, },
+    ["006266"] = { enchantID = "6266", fromBlizz = true, },
+    ["006672"] = { enchantID = "6672", fromBlizz = true, },
+    ["006675"] = { enchantID = "6675", fromBlizz = true, },
+    ["006676"] = { enchantID = "6676", fromBlizz = true, },
+    ["006677"] = { enchantID = "6677", fromBlizz = true, },
+    ["006678"] = { enchantID = "6678", fromBlizz = true, },
+    --/dump WardrobeCollectionFrame.ItemsCollectionFrame:GetFilteredVisualsList()
+    --/dumppn WardrobeCollectionFrame.ContentFrames[1].ModelR1C1.visualInfo
+    --/print C_TransmogCollection.GetIllusionStrings(6266)
+    --[[
+        local a = {}
+        for _, v in pairs(GlowFoSho_enchants) do
+          a[tonumber(v.enchantID)] = true
+        end
+
+        local others = {}
+        local all = WardrobeCollectionFrame.ItemsCollectionFrame:GetFilteredVisualsList()
+        for _, v in ipairs(all) do
+          if not a[v.sourceID] then
+            others["00" .. v.sourceID] = {
+              ["enchantID"] = tostring(v.sourceID),
+              ["fromBlizz"] = true,
+            }
+          end
+        end
+        wowluacopy(others)
+    --]]
 }

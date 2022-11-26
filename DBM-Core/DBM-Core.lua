@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221123045914"),
+	Revision = parseCurseDate("20221125232453"),
 }
 
 local fakeBWVersion, fakeBWHash
@@ -699,7 +699,7 @@ local function sendSync(prefix, msg)
 	if IsInGroup(2) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting something outside like a world boss, it'll sync in "RAID" instead)
 		SendAddonMessage(DBMPrefix, prefix .. "\t" .. msg, "INSTANCE_CHAT")
 	else
-		if IsInRaid() then
+		if IsInRaid() and not IsInGroup(2) then --abyui LFG outside will cause ERR_NOT_IN_RAID
 			SendAddonMessage(DBMPrefix, prefix .. "\t" .. msg, "RAID")
 		elseif IsInGroup(1) then
 			SendAddonMessage(DBMPrefix, prefix .. "\t" .. msg, "PARTY")

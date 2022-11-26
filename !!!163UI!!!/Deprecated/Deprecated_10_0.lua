@@ -351,3 +351,8 @@ do
         return 0
     end
 end
+
+do
+    --LootHistory名字太小
+
+end

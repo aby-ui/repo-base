@@ -52,12 +52,13 @@ local function AlignButtons()
     for i = 1, #allButtons do
         local button = allButtons[i]
         button:ClearAllPoints()
+        local spacing = db.spacing - 4
         if i == 1 then
             button:SetPoint("TOPLEFT")
         elseif (i - 1) % (db.columns + 1) == 0 then
-            button:SetPoint("TOP", allButtons[i - db.columns], "BOTTOM", 0, -db.spacing)
+            button:SetPoint("TOP", allButtons[i - db.columns], "BOTTOM", 0, -spacing)
         else
-            button:SetPoint("LEFT", allButtons[i - 1], "RIGHT", db.spacing, 0)
+            button:SetPoint("LEFT", allButtons[i - 1], "RIGHT", spacing, 0)
         end
     end
 end

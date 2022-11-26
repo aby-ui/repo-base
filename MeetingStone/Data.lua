@@ -298,7 +298,8 @@ CATEGORY = {
             [279] = true,
             [280] = true,
             [281] = true,
-            [282] = true,
+            [282] = true,   --初诞者圣墓
+            [283] = true,   --典狱长的挑战
         },
         activities = {
             [723] = true, -- 世界首领
@@ -306,13 +307,23 @@ CATEGORY = {
     },
     [9] = {
         groups = {
-            [309] = true,
+            [302] = true, -- 艾杰斯亚学院
+            [303] = true, -- 蕨皮山谷
+            [304] = true, -- 注能大厅
+            [305] = true, -- 奈萨鲁斯
+            [306] = true, -- 红玉新生法池
+            [307] = true, -- 碧蓝魔馆
+            [308] = true, -- 诺库德阻击战
+            [309] = true, -- 奥达曼：提尔的遗产
+            [310] = true, -- 化身巨龙牢窟
         },
         activities = {
+            [1146] = true, -- 世界首领
         },
     },
 }
 
+--abyuiPW
 --/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivityGroups(a.selectedCategory, bit.bor(a.baseFilters, a.selectedFilters)))
 --/dump C_LFGList.GetActivityGroupInfo(251)
 --/run a=LFGListFrame.EntryCreation dump(C_LFGList.GetAvailableActivities(a.selectedCategory, 0, bit.bor(a.baseFilters, a.selectedFilters)))

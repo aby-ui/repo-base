@@ -301,6 +301,25 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", function(self, event, msg, ...)
     end
 end)
 
+if LootHistoryFrame_UpdatePlayerFrames then
+    --10.0 /loot窗口字体不对，增加鼠标提示和点击密语
+    hooksecurefunc("LootHistoryFrame_UpdatePlayerFrames", function()
+        for _,v in ipairs(LootHistoryFrame.usedPlayerFrames) do
+            if not v._aby_done then
+                v._aby_done = true
+                v.PlayerName:SetWidth(300)
+                v.PlayerName:SetFont(ChatFontSmall:GetFont())
+                CoreUIEnableTooltip(v, "", function(self, tip)
+                    tip:AddLine(self.PlayerName:GetText())
+                end)
+                v:SetScript("OnMouseUp", function(self)
+                    ChatFrame_OpenChat("/w " .. self.PlayerName:GetText())
+                end)
+            end
+        end
+    end)
+end
+
 function U1FakeAchi(id,d,m,y)
     if not d then d,m,y = 4,1,17 end
 	local link = format("\124cffffff00\124Hachievement:%d:%s:1:%d:%d:%d:4294967295:4294967295:4294967295:4294967295\124h[%s]\124h\124r", id, UnitGUID("player"), d, m, y, select(2, GetAchievementInfo(id)))

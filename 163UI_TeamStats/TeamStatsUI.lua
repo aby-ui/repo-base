@@ -1,7 +1,8 @@
 local _, TS = ...
 local L = TS.L
 TS.FRAME_NAME = "TeamStatsFrame"
-local names = {} --当前列表里的玩家名称
+TS.Frame = function() return _G[TS.FRAME_NAME] end
+TS.ui_names = {} --当前列表里的玩家名称,排序数组
 
 local MIN_WIDTH = 400
 
@@ -49,30 +50,6 @@ function TS.SetTab(index)
 
     local tab = TS.TABS[index]
 
---[[    for i=1, #f.headers do
-        local header = f.headers[i]
-        if i > TS.NUM_FIX_HEADERS then
-            if i > #tab.ids + TS.NUM_FIX_HEADERS then
-                header:Hide()
-            else
-                header.ids = tab.ids[i-TS.NUM_FIX_HEADERS]
-                -- 设置变长的字段宽度
-                local colid = TS.NUM_FIX_COLUMNS - TS.NUM_FIX_HEADERS + i
-                TS.cols[colid].width = tab.widths and tab.widths[colid] and tab.widths[colid] or TS.DEFAULT_COL_WIDTH + 2 -- TAB_OFFSET=-1 defaultOffset = 1
-                header:SetWidth(TS.cols[colid].width)
-                WW(btn):BL("$parentInset","TL", left, 1-22):un()
-                left = left+TS.cols[colid].offset[1]+TS.cols[colid].width
-                header:Show()
-                header:SetText(tab.names[i-TS.NUM_FIX_HEADERS])
-                header.tooltipText = tab.tips[i-TS.NUM_FIX_HEADERS] or
-                        type(header.ids)=="table" and type(header.ids[1])=="table" and "史诗副本击杀进度格式为 当前角色进度(战网账号进度)。\n例如: 5(8)/10 表示此角色击杀过5个M首领，但他的战网有8个M首领的成就。"
-                        or "显示成就达成的天数,或者副本的进度和总击杀次数"
-            end
-        else
-            header:Show()
-        end
-    end]]
-
     -- copy from create header
     local TAB_OFFSET = -1
     local left = 2
@@ -82,20 +59,20 @@ function TS.SetTab(index)
         if col.header then
             header_id = header_id + 1
             local btn = f.headers[header_id]
-            if hide or header_id > #tab.ids + TS.NUM_FIX_HEADERS then
+            if hide or header_id > tab.numCols + TS.NUM_FIX_HEADERS then
                 btn:Hide()
             else
                 if header_id > TS.NUM_FIX_HEADERS then
-                    local bossId = header_id - TS.NUM_FIX_HEADERS
-                    btn.ids = tab.ids[bossId]
+                    local colIdx = header_id - TS.NUM_FIX_HEADERS
+                    btn.ids = (tab.specialIDs or tab.ids)[colIdx]
                     btn:Show()
-                    btn:SetText(tab.names[bossId])
-                    btn.tooltipTitle = tab.names[bossId]
-                    btn.tooltipText = tab.tips[bossId] or
+                    btn:SetText(tab.names[colIdx])
+                    btn.tooltipTitle = tab.names[colIdx]
+                    btn.tooltipText = tab.tips[colIdx] or
                             type(btn.ids)=="table" and type(btn.ids[1])=="table" and "史诗副本击杀进度格式为 当前角色进度(战网账号进度)。\n例如: 5(8)/10 表示此角色击杀过5个M首领，但他的战网有8个M首领的成就。"
                             or "显示成就达成的天数,或者副本的进度和总击杀次数"
 
-                    col.width = tab.widths and tab.widths[bossId] or TS.DEFAULT_COL_WIDTH
+                    col.width = tab.widths and tab.widths[colIdx] or TS.DEFAULT_COL_WIDTH
                 else
                     btn:Show()
                     if type(col.header)=="string" then
@@ -131,7 +108,7 @@ function TS.SetTab(index)
             if index ~= 1 and col.onlyTab1 then
                 btn.widgets[j]:Hide()
                 onlyTab1 = onlyTab1 + 1
-            elseif j > TS.NUM_FIX_COLUMNS + #tab.ids then
+            elseif j > TS.NUM_FIX_COLUMNS + tab.numCols then
                 btn.widgets[j]:Hide()
                 btn.widgets[j].ids = nil
             elseif j > TS.NUM_FIX_COLUMNS then
@@ -144,7 +121,7 @@ function TS.SetTab(index)
 
                 btn.widgets[j]:Show()
                 minWidth = btn.widgets[j].right
-                btn.widgets[j].ids = TS.TABS[f.tabIdx].ids[j-TS.NUM_FIX_COLUMNS]
+                btn.widgets[j].ids = (tab.specialIDs or tab.ids)[j-TS.NUM_FIX_COLUMNS]
             else -- fix columns
                 btn.widgets[j]:Show()
                 left = left + col.offset[1] + col.width
@@ -155,11 +132,12 @@ function TS.SetTab(index)
     local _, minH, _, maxH = f:GetResizeBounds()
     f:SetResizeBounds(max(minWidth, MIN_WIDTH), minH, max(minWidth, MIN_WIDTH), maxH)
     f:SetWidth(max(minWidth, MIN_WIDTH))
-    RunOnNextFrame(function() f.scroll.scrollChild:SetWidth(f.scroll:GetWidth()) end) --Point似乎是下一帧才更新的
+    f:GetScript("OnSizeChanged")(f)
     f.scroll.update()
+    RunOnNextFrame(function() f.scroll.scrollChild:SetWidth(f.scroll:GetWidth()) end) --Point似乎是下一帧才更新的
 end
 
-local function GetAchievementOrStaticText(player, ids)
+function TeamStatsUI_GetAchievementOrStaticText(player, ids)
     local stats = player.stats
     if not ids then return "" end
     if type(ids) == "table" then
@@ -218,8 +196,8 @@ function TS.CreateButtons(f)
     local btnScan = f:Button("$parentBtn1", "MagicButtonTemplate"):SetSize(80,22):SetText(L["BtnRescanText"])
     btnScan:SetScript("OnClick", function()
         local count = 0
-        for i=1, #names do
-            local player = TS.db.players[names[i]]
+        for i=1, #TS.ui_names do
+            local player = TS.db.players[TS.ui_names[i]]
             if player.selected then
                 player.inspected = false
                 player.gsGot = false
@@ -237,155 +215,8 @@ function TS.CreateButtons(f)
     end)
     CoreUIEnableTooltip(btnScan(), L["BtnRescanTipTitle"], L["BtnRescanTip"])
 
-    local btnLink = f:Button("$parentBtn2", "MagicButtonTemplate"):SetSize(80,22):SetText(L["BtnLinkText"])
-    btnLink:SetScript("OnClick", function()
-        local t = {}
-        local realmName = GetRealmName()
-        for i=1,#names do
-            table.insert(t, EncodeURL(names[i]:gsub("%-"..realmName, "")))
-        end
-        f.linkCopyDialog:Show()
-        f.linkCopyDialog.eb:SetText("http://product.game.163.com/wowteamstats/stat.jsp?r=".. EncodeURL(realmName).."&gs=1&i=icc25&n="..table.concat(t,","));
-        f.linkCopyDialog.eb:HighlightText()
-    end)
-    CoreUIEnableTooltip(btnLink(),L["BtnLinkTipTitle"],L["BtnLinkTip"]);
-
-    --信息广播
-    --【爱不易：团员信息统计】 - 总览：
-    --★桂花猫猫 圣骑 装等:896.3 橙装:肩,手 引领:萨,海 秘境:174 15层:10天 M翡翠:2/7 H勇气:3/3 暗夜:10/10 H暗夜:9/10
-    local annLine = {}
-    local function GetPlayerAnnText(name)
-        local tab = TS.TABS[f.tabIdx]
-        table.wipe(annLine);
-        local player = TS.db.players[name]
-        if player and player.selected and (player.gsGot or player.compared) then
-            tinsert(annLine, "★");
-            tinsert(annLine, player.name);
-            if f.tabIdx == 1 then
-            tinsert(annLine, " ");
-            tinsert(annLine, player.talent1);
-            tinsert(annLine, " ");
-            tinsert(annLine, "装等")
-            tinsert(annLine, player.gsGot and player.bad and "*" or "")
-            tinsert(annLine, player.gsGot and player.gs or "未知")
-            tinsert(annLine, " 大秘评分")
-            tinsert(annLine, player.mscore or "未知")
-            end
-            --tinsert(annLine, " 腐蚀")
-            --local corrupt = tostring(math.max(0, (player.c_total or 0) - (player.c_resist or 0) - 10))
-            --tinsert(annLine, player.c_total and corrupt or "未知")
-            --tinsert(annLine, " ");
-            --tinsert(annLine, "橙装:")
-            --local slot1, link1, slot2, link2 = strsplit("^", player.legends or "")
-            --tinsert(annLine, slot1 and slot1~="" and slot1 or "无")
-            --tinsert(annLine, slot2 and "," .. slot2 or "")
-
-            if(player.compared) then
-                --[[
-                local VBOSSES = TS.VERSION_BOSSES
-                local first = true
-                for i=1,#VBOSSES,2 do
-                    local text = GetAchievementOrStaticText(player, VBOSSES[i])
-                    if text ~= "?" and text ~= "-" then
-                        if first then
-                            tinsert(annLine, " 引领:"..VBOSSES[i+1])
-                            first = false
-                        else
-                            tinsert(annLine, ","..VBOSSES[i+1])
-                        end
-                    end
-                end
-                --]]
-                for i, ids in ipairs(tab.ids) do
-                    if tab.reports == nil or tab.reports[i] then
-                        if type(ids) == "table" then
-                            local progress, max, total = GetAchievementOrStaticText(player, ids)
-                            if progress and progress ~= 0 then
-                                tinsert(annLine, " ");
-                                tinsert(annLine, tab.names[i])
-                                tinsert(annLine, tab.any_done and "★" or "" .. progress .. "/" .. max)
-                            end
-                        else
-                            local text = GetAchievementOrStaticText(player, ids)
-                            if text ~= "?" and text ~= "-" then
-                                tinsert(annLine, " ");
-                                tinsert(annLine, tab.names[i])
-                                tinsert(annLine, "")
-                                tinsert(annLine, text)
-                            end
-                        end
-                    end
-                end
-            else
-                tinsert(annLine, "");
-            end
-            return table.concat(annLine, "")
-        end
-    end
-
-    StaticPopupDialogs["TEAMSTATS_ANN"] = {preferredIndex = 3,
-        text = L["BtnAnnPopupText"],
-        button1 = YES,
-        button2 = CANCEL,
-        OnAccept = function(self)
-            local tab = TS.TABS[f.tabIdx]
-            SendChatMessage("【爱不易：团员信息统计】 - "..tab.tab.."：", self.data[1], nil, self.data[2]);
-            for i=1,#names do
-                local line = GetPlayerAnnText(names[i])
-                if line then
-                    SendChatMessage(line, self.data[1], nil, self.data[2]);
-                end
-            end
-        end,
-        timeout = 0,
-        hideOnEscape = 1,
-        whileDead = 1,
-        exclusive = 1,
-    }
     local btnAnn = f:Button("$parentBtn3", "MagicButtonTemplate"):SetSize(80,22):SetText(L["BtnAnnText"])
-    btnAnn:SetScript("OnClick", function(self)
-        local count = 0
-        for i=1,#names do
-            local player = TS.db.players[names[i]]
-            if player and player.selected then count=count+1 end
-        end
-        if(count==0) then message(L["BtnAnnNoSelect"]); return; end
-        -- local channel = GetNumRaidMembers()>0 and "RAID" or GetNumPartyMembers()>0 and "PARTY" or "SAY";
-        local channel, target = 'SAY', nil
-        if(IsInGroup()) then
-            if(IsInRaid()) then
-                channel = 'RAID'
-            else
-                channel = 'PARTY'
-            end
-        end
-
-        --只选中一个的时候复制到输入框，打开聊天输入框时，使用相关的方式
-        if count == 1 then
-            for i=1,#names do
-                local line = GetPlayerAnnText(names[i])
-                if line then
-                    CoreUIChatEdit_Insert(line)
-                    return
-                end
-            end
-        else
-            local chatFrame = GetCVar("chatStyle")=="im" and SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
-            local eb = chatFrame and chatFrame.editBox
-            local chatType = eb:GetAttribute("chatType")
-            if (chatType == "RAID" or chatType == "PARTY" or chatType == "SAY" or chatType == "INSTANCE") then
-                channel = chatType
-            elseif chatType == "WHISPER" then
-                target = eb:GetAttribute("tellTarget")
-                if target and target ~= "" then channel = chatType end
-            elseif chatType == "CHANNEL" then
-                target = eb:GetAttribute("channelTarget")
-                if target and target ~= "" then channel = chatType end
-            end
-        end
-        local channelName = channel=="RAID" and "团队" or channel=="PARTY" and "小队" or channel=="INSTANCE" and "副本" or channel=="WHISPER" and "密语:%s" or channel=="CHANNEL" and "频道:%s" or "说";
-        StaticPopup_Show("TEAMSTATS_ANN", count, format(channelName, target), {channel, target});
-    end)
+    btnAnn:SetScript("OnClick", TeamStatsUI_BtnAnnOnClick)
     CoreUIEnableTooltip(btnAnn(), L["BtnAnnTipTitle"], L["BtnAnnTip"]);
 
     local btnClean = f:Button("$parentBtn4", "MagicButtonTemplate"):SetSize(80,22):SetText("清理离队")
@@ -400,7 +231,6 @@ function TS.CreateButtons(f)
 
     CoreUIAnchor(f, "BOTTOMRIGHT", "BOTTOMRIGHT", 0, 0, "RIGHT", "LEFT", 0, 0, btnClean, btnScan, btnAnn);
     btnScan:On("Load"):un()
-    --btnLink:On("Load"):un()
     btnClean:On("Load"):un()
     btnAnn:On("Load"):un()
 
@@ -466,503 +296,6 @@ function TS.CreateButtons(f)
 
     btnNext:SetScript('OnClick', on_click)
     btnPrev:SetScript('OnClick', on_click)
-
-    --- 创建顶部按钮
-    --for i=1, #TS.TABS do
-    --    local btn = TplPanelButton(f, "$parentTAB"..i, 22):SetText(TS.TABS[i].tab):AutoWidth()
-    --    btn.tabIdx = i
-    --    if i==1 then
-    --        btn:TOPLEFT(5,-25)
-    --    else
-    --        btn:LEFT("$parentTAB"..(i-1), "RIGHT", 5)
-    --    end
-    --    btn:SetScript("OnClick", function(self)
-    --        CoreUIKeepCorner(f, "TOPLEFT")
-    --        TS.SetTab(self.tabIdx)
-    --    end)
-    --    btn = btn:un()
-    --end
-end
-
---[[------------------------------------------------------------
-创建列及标题按钮
----------------------------------------------------------------]]
-local BossCountTextCreator = function(col,btn,idx)
-    local text = btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetWordWrap(false):Size(col.width + 1, 28)
-    text:SetFontHeight(14)
-    --btn:CreateTexture():SetTexture(1,1,1,0.5):TL(text):BR(text)
-    return text
-end
-
-local BossCountTextUpdater = function(line, widget, idx, colIdx)
-    local text, r, g, b = "", 1, 1, 1
-    local ids = widget.ids
-    if type(ids) == "table" then
-        local progress, max, total = GetAchievementOrStaticText(line.player, ids)
-        local tab = TS.TABS[f.tabIdx]
-        if progress == 0 then
-            text,r,g,b = "-",1,0.2,0.2
-        elseif tab.any_done then
-            text = "|cff7fff7f★|r"
-        elseif type(progress)=="string" and progress:find("^0%([0-9]+%)") then
-            text = "|cffff7f7f".. progress .. "|r/" .. max
-        else
-            text = "|cff7fff7f".. progress .. "|r/" .. max -- .. " " .. total
-        end
-    else
-        text = GetAchievementOrStaticText(line.player, ids)
-        if text == "?" then
-            r,g,b = 0.5,0.5,0.5
-        elseif text == "-" then
-            r,g,b = 1,0.2,0.2
-        elseif text == "1" then
-            r,g,b = 1,0.5,0
-        else
-            r,g,b = 0.5,1,0.5
-        end
-    end
-    widget:SetText(text)
-    widget:SetTextColor(r,g,b)
-end
-
---current sort id, currSort < 0 stands for reverse
-local currSort,currSortFunc
-local function compare(n1, n2, prop)
-    if TS.names[n1] and not TS.names[n2] then return true, nil, true end
-    if TS.names[n2] and not TS.names[n1] then return false, nil, true end
-    local p1=TS.db.players[n1]
-    local p2=TS.db.players[n2]
-    if p1 == nil and p2 == nil then return n1 < n2 end
-    if p1 == nil and p2 ~= nil then return false, nil, true end
-    if p1 ~= nil and p2 == nil then return true, nil, true end
-    local v1, v2
-    if prop == "realm" then
-        v1 = select(3, n1:find("%-(.+)$"))
-        v2 = select(3, n2:find("%-(.+)$"))
-    --elseif prop == "corrupt" then
-    --    v1 = (p1["c_total"] or 0) - (p1["c_resist"] or 0)
-    --    v2 = (p2["c_total"] or 0) - (p2["c_resist"] or 0)
-    else
-        v1, v2 = p1[prop], p2[prop]
-    end
-    if v1 == v2 then return n1 < n2, true end
-    if v1 == nil and v2 ~= nil then return false, nil, true end
-    if v1 ~= nil and v2 == nil then return true, nil, true end
-    return v1 < v2
-end
-
-local function sortNames(self)
-    local id = self.id
-    if self.sortFunc then
-        if (currSort==id) then currSort=-id else currSort=id end
-        currSortFunc = self.sortFunc
-        table.sort(names, self.sortFunc)
-        f.scroll.update()
-    end
-end
-
-function TS.SetupColumns(f)
-    local targetBtnOnEnter = function(self)
-        for n, v in pairs(TS.db.players) do
-            if v == self.line.player then
-                self.tooltipLines = self.tooltipLines or {}
-                self.tooltipLines[1] = n
-                self.tooltipLines[2] = "Ctrl点击观察"
-                --self.tooltipLines[2] = "披风抗性    (-" .. (v.c_resist or 0) .. ")"
-                --self.tooltipLines[3] = v.c_text and "|cff946cd0" .. v.c_text .. "|r" or ""
-                --local corrupt = tostring(math.max(0, (v.c_total or 0) - (v.c_resist or 0) - 10))
-                --self.tooltipLines[4] = "腐蚀合计：" .. corrupt
-                CoreUIShowTooltip(self, "ANCHOR_LEFT")
-                break
-            end
-        end
-        self.line:LockHighlight()
-    end
-    local targetBtnOnLeave = function(self)
-        if GameTooltip:GetOwner() == self then GameTooltip:Hide() end
-        self.line:UnlockHighlight()
-    end
-    local legendBtnOnEnter = function(self)
-        self.line:LockHighlight()
-        if not self._link then return end
-        ShoppingTooltip1:SetOwner(self, "ANCHOR_LEFT");
-        ShoppingTooltip1:SetHyperlink(self._link);
-        ShoppingTooltip1:Show();
-    end
-    local legendBtnOnLeave = function(self)
-        if ShoppingTooltip1:GetOwner() == self then ShoppingTooltip1:Hide() end
-        self.line:UnlockHighlight()
-    end
-    local DomiSetColor, DomiSetNameLong, _, DomiShardName = U1GetDominationSetData()
-    TS.cols = {
-        {
-            --复选框
-            header = function(btn, col)
-                local cb = WW(btn):CheckButton(nil, "UICheckButtonTemplate"):Size(24,24):BL(0,-3):un()
-                CoreUIEnableTooltip(cb, "全选/取消全选", "选择玩家用于发布通告")
-                cb:SetScript("OnClick", function(self)
-                    local state = self:GetChecked();
-                    for i=1,#names do
-                        if TS.db.players[names[i]] then
-                            TS.db.players[names[i]].selected = state;
-                        end
-                    end
-                    f.scroll.update();
-                end)
-            end,
-            headerSpan = 1,
-            width = 20,
-            offset = {1,-2}, --相对左侧的距离, 默认是{1,0}
-            --初次创建时调用
-            create = function(col,b,idx)
-                TS.UIPlayerSelected = TS.UIPlayerSelected or function(self) self:GetParent().player.selected = self:GetChecked() end
-                return b:CheckButton(nil, "UICheckButtonTemplate"):Size(col.width,20):SetScript("OnClick", TS.UIPlayerSelected);
-            end,
-            --布局发生变化时调用，比如SetTab，ReSize等
-            layout = function(parent) end,
-            --滚动更新时调用
-            update = function(line, widget, idx, colIdx)
-                widget:SetChecked(not not line.player.selected);
-            end,
-        },
-        {
-            header = L["HeaderPlayerName"],
-            headerSpan = 2,
-            width = 100,
-            sort = function(a,b)
-                local r, equal, force = compare(a, b, "realm")
-                if equal then r, equal, force = compare(a, b, "name") end
-                if currSort > 0 or force then return r else return not r end
-            end,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                if(not InCombatLockdown())then
-                    local target = line.target
-                    if not target then
-                        target = CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate")
-                        target.line = line
-                        target:RegisterForClicks("AnyUp", "AnyDown")
-                        target:SetAttribute("type", "macro")
-                        target:SetAttribute("ctrl-type1", "macro")
-                        target:SetFrameStrata("HIGH")
-                        line.target = target
-                        target:SetScript("OnEnter", targetBtnOnEnter)
-                        target:SetScript("OnLeave", targetBtnOnLeave)
-                    end
-                    local target = line.target
-                    target:ClearAllPoints()
-                    target:SetParent(line)
-                    target:SetPoint("TOPLEFT", line, "TOPLEFT", TS.cols[1].width+2, 0)
-                    target:SetPoint("BOTTOMRIGHT", line, 0, 0)
-                    if line.player.name then
-                        target:SetAttribute("macrotext", "/target "..line.player.name)
-                        target:SetAttribute("ctrl-macrotext1", "/cleartarget\n/target "..line.player.name .. "\n/inspect")
-                    end
-                    target:Show();
-                end
-                if TS.names[names[idx]] then
-                    CoreUISetTextWithClassColor(widget, line.player.name, line.player.class)
-                else
-                    if not line.player.name then
-                        widget:SetText(names[idx]:gsub("%-.+$", ""))
-                    else
-                        widget:SetText(line.player.name)
-                    end
-                    widget:SetTextColor(0.5, 0.5, 0.5)
-                end
-            end,
-        },
-        {
-            -- 服务器
-            width = 40,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(12):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                widget:SetText(names[idx]:gsub("^.+%-", ""))
-                widget:SetText("-"..string.utf8sub(names[idx]:gsub("^.+%-", ""), 1, 2))
-                if TS.names[names[idx]] then
-                    widget:SetTextColor(1, 0.82, 0)
-                else
-                    widget:SetTextColor(0.5, 0.5, 0.5)
-                end
-            end,
-        },
-        {
-            --职业
-            width = 16,
-            header = L["HeaderClass"],
-            headerSpan = 2,
-            offset = {3,-2},
-            sort = function(a,b)
-                local r, equal, force = compare(a, b, "class")
-                if equal then r, equal, force = compare(a, b, "talent1") end
-                if currSort > 0 or force then return r else return not r end
-            end,
-            create = function(col,btn,idx) return btn:Texture(nil, "ARTWORK", "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"):Size(16, 16) end,
-            update = function(line, widget, idx, colIdx)
-                local icon = line.player.class and CLASS_ICON_TCOORDS[line.player.class]
-                if icon then widget:SetAlpha(1) widget:SetTexCoord(unpack(icon)) else widget:SetAlpha(0) end
-            end,
-        },
-        {
-            --天赋文字
-            width = 40,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                local talent = player.talent1
-                --widget:SetText(talent and talent:sub(1,6) or "无")
-                CoreUISetTextWithClassColor(widget, talent and talent:sub(1,6) or (player.inspected and "无" or "?"), line.player.class)
-                if not player.inspected then widget:SetTextColor(0.5,0.5,0.5,1) end
-            end,
-        },
-        {
-            header = L["HeaderGS"],
-            headerSpan = 1,
-            width = 75,
-            tip = "身上当前装备的平均物品等级，括号内为插槽数量，不统计统御插槽",
-            sort = function(a,b)
-                local r, equal, force = compare(a, b, "gs")
-                if currSort > 0 or force then return r else return not r end
-            end,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                local gems = "|cff7f7f7f(?)|r"
-                if player.gem_info then
-                    local _, _, count = player.gem_info:find("%d/(%d)")
-                    count = count or 0
-                    gems = "|cffffffff("..count..")|r"
-                end
-                widget:SetText(player.gs and format("%s%.1f %s", (player.bad and "|cffffd200*|r" or ""), player.gs, gems) or "?")
-                if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5) else widget:SetTextColor(1,1,1) end
-
-                local r, b, g = U1GetInventoryLevelColor(player.gs)
-                if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5,1) else widget:SetTextColor(r,b,g) end
-            end
-        },
-        --[[
-        {
-            header = "统御碎片",
-            headerSpan = 1,
-            width = 70,
-            tip = format("|cff%s紫色|r为%s碎片，%s\n|cff%s蓝色|r为%s碎片，%s\n|cff%s红色|r为%s碎片，%s|r\n未出套装效果会显示各个碎片等级",
-                DomiSetColor[1], DomiShardName[1], DomiSetNameLong[1],
-                DomiSetColor[2], DomiShardName[2], DomiSetNameLong[2],
-                DomiSetColor[3], DomiShardName[3], DomiSetNameLong[3]),
-            sort = function(a,b)
-                local r, equal, force = compare(a, b, "domi_info")
-                if currSort > 0 or force then return r else return not r end
-            end,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                widget:SetText(player.domi_info or "|cff7f7f7f?|r")
-            end
-        },
-        --]]
-        --[[
-        {
-            header = L["HeaderHealth"],
-            headerSpan = 1,
-            width = 40,
-            tip = "当前最大血量(万)",
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local health = line.player_name and UnitHealthMax(line.player_name) --固定显示5万
-                if line.player and line.player.name then
-                    health = health > 0 and health or UnitHealthMax(line.player.name)
-                    if health > 0 then
-                        line.player.health = health
-                    else
-                        health = line.player.health or 0
-                    end
-                end
-                widget:SetText(health and health > 0 and floor(health /10000) or "?")
-            end
-        },
-        --]]
-        --[[
-        {
-            header = ITEM_MOD_PVP_POWER_SHORT,
-            headerSpan = 1,
-            width = 54,
-            tip = "身上装备的" .. ITEM_MOD_PVP_POWER_SHORT .. "属性总和\n可用来区分PVP和PVE装备",
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                widget:SetText(player.re or "?")
-                if not player.gsGot or not player.re then widget:SetTextColor(0.5,0.5,0.5) else widget:SetTextColor(1,1,1) end
-            end
-        },
-        ]]
-        --[[
-        {
-            header = "腐蚀",
-            headerSpan = 1,
-            width = 36,
-            tip = "当前腐蚀值，计算了披风抗性并假设有10腐蚀抗性的特质",
-            sort = function(a,b)
-                local r, equal, force = compare(a, b, "corrupt")
-                if currSort > 0 or force then return r else return not r end
-            end,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                local corrupt = 0
-                if (player.c_total) then
-                    corrupt = math.max(0, player.c_total - player.c_resist - 10)
-                    widget:SetText(tostring(corrupt))
-                else
-                    widget:SetText("?")
-                end
-                if not player.gsGot then
-                    widget:SetTextColor(0.3,0.3,0.3)
-                else
-                    if corrupt >= 40 then
-                        widget:SetTextColor(1, 0, 0)
-                    else
-                        widget:SetTextColor(0.5804, 0.4235, 0.8157)  --hex2rgba(ff946cd0)
-                    end
-                end
-            end
-        },
-        {
-            header = "珠宝",
-            headerSpan = 1,
-            onlyTab1 = 1,
-            width = 55,
-            tip = "已插宝石数/总宝石孔数 顶级宝石数+高级宝石数+其他宝石数\n \n已附魔装备数/总附魔装备数 缺失部位\n\n腰带打孔算一个附魔",
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                if (player.gem_info) then -- and player.total_enchant and player.has_enchant) then
-                    widget:SetText(player.gem_info) --.."\n"..format((player.has_enchant == player.total_enchant and "%d" or "|cffff5555%d|r").."/%d |cffff5555%s|r", player.has_enchant, player.total_enchant, player.missing_enchant))
-                else
-                    widget:SetText("?")
-                end
-                if not player.gsGot then widget:SetTextColor(0.5,0.5,0.5) else widget:SetTextColor(1,1,1) end
-            end
-        },
-        {
-            header = "橙装",
-            headerSpan = 1,
-            width = 49,
-            create = function(col,btn,idx)
-                local ct = WW:Frame(nil, btn):Size(1, 1)
-                for i=1, 2 do
-                    local legBtn = WW:Button(nil, ct):Size(22, 21):LEFT((i-1)*24, 0):AddFrameLevel(5):CreateTexture():ALL():SetColorTexture(1,1,1,0.1):up()
-                    :CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):Key("txt"):SetFontHeight(14):SetJustifyH("CENTER"):ALL():SetText("肩"):SetTextColor(1, 0.5, 0):up():un()
-                    ct["legend"..i] = legBtn
-                    legBtn:SetScript("OnEnter", legendBtnOnEnter)
-                    legBtn:SetScript("OnLeave", legendBtnOnLeave)
-                end
-                return ct
-            end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                local slot1, link1, slot2, link2 = strsplit("^", player.legends or "")
-                widget.legend1.line = line
-                widget.legend2.line = line
-                if slot1 and slot1 ~= "" then
-                    widget.legend1.txt:SetText(slot1)
-                    widget.legend1._link = link1
-                else
-                    widget.legend1.txt:SetText("")
-                    widget.legend1._link = nil
-                end
-                if slot2 and slot2 ~= "" then
-                    widget.legend2.txt:SetText(slot2)
-                    widget.legend2._link = link2
-                else
-                    widget.legend2.txt:SetText("")
-                    widget.legend2._link = nil
-                end
-            end
-        },
-        --]]
-
-        {
-            header = "引领",
-            headerSpan = 1,
-            onlyTab1 = 1,
-            width = 48,
-            tip = "当前版本相关的英雄难度通关副本成就（引领潮流），同战网共享，跨角色。绿色为有，红色为没有",
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetFontHeight(14):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                if not player.compared then
-                    widget:SetText("?")
-                    widget:SetTextColor(0.5,0.5,0.5)
-                else
-                    local VBOSSES = TS.VERSION_BOSSES
-                    local stats = player.stats
-                    local s = ""
-                    for i=1, #VBOSSES, 2 do
-                        local id, bossname = VBOSSES[i], VBOSSES[i+1]
-                        local statId = TS.mirror[id]
-                        local text = stats and stats[statId] or 0
-                        s = s .. (text > 0 and "|cff7fff7f" or "|cffff7f7f") .. bossname .. "|r"
-                    end
-                    widget:SetText(s)
-                end
-            end
-        },
-        {
-            header = "钥石评分",
-            headerSpan = 1,
-            onlyTab1 = 1,
-            width = 64,
-            tip = "角色当前赛季的史诗钥石评分",
-            sort = function(a,b)
-                local r, equal, force = compare(a, b, "mscore")
-                if currSort > 0 or force then return r else return not r end
-            end,
-            create = function(col,btn,idx) return btn:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall"):SetJustifyH("CENTER"):Size(col.width, 24) end,
-            update = function(line, widget, idx, colIdx)
-                local player = line.player
-                widget:SetText(player.mscore or "?")
-                local color = C_ChallengeMode.GetDungeonScoreRarityColor(player.mscore or 0)
-                widget:SetTextColor(color.r, color.g, color.b)
-            end
-        },
-    }
-
-    TS.NUM_FIX_COLUMNS = #TS.cols
-    TS.NUM_TAB1_COLUMNS = 0 for _, col in ipairs(TS.cols) do if col.onlyTab1 then TS.NUM_TAB1_COLUMNS = TS.NUM_TAB1_COLUMNS + 1 end end --部分非成就信息只在第一页显示,TS.SetTab
-
-    --根据最大boss数量创建按钮
-    local MAX_INFOS = 0 for _, v in next, TS.TABS do MAX_INFOS = max(MAX_INFOS, #v.ids) end
-    for i=1, MAX_INFOS do table.insert(TS.cols, { width = TS.DEFAULT_COL_WIDTH, header = true, create = BossCountTextCreator, update = BossCountTextUpdater, }) end
-    local defaultOffset = {1,0} for i, col in ipairs(TS.cols) do if not col.offset then col.offset=defaultOffset end end
-
-    --创建表头
-    f.headers={}
-    --local tooltipFunc = function(self)
-    --    local _,name = GetAchievementInfo(self.ids)
-    --    WW(GameTooltip):SetOwner(self):AddLine(self:GetText()):AddLine(name):Show():un()
-    --end
-    local TAB_OFFSET = -1 --标签左侧距离上一个标签右侧的值
-    local left = 2
-    for i, col in ipairs(TS.cols) do
-        --计算出固定的表头数
-        if i>TS.NUM_FIX_COLUMNS and not TS.NUM_FIX_HEADERS then TS.NUM_FIX_HEADERS=#f.headers end
-
-        if col.header then
-            local id = #f.headers+1
-            local btn = TplColumnButton(f, nil, TS.COLUMN_BUTTON_HEIGHT):SetScript("OnClick", sortNames):un()
-            WW(btn:GetFontString()):SetFontHeight(14):un()
-            btn.id = id
-            btn.sortFunc = col.sort
-            table.insert(f.headers, btn)
-
-            if i > TS.NUM_FIX_COLUMNS then
-                CoreUIEnableTooltip(btn)
-            elseif col.tip then
-                CoreUIEnableTooltip(btn, type(col.header)=="string" and col.header or "说明", col.tip)
-            end
-        end
-        left = left+col.offset[1]+col.width
-    end
 end
 
 --[[------------------------------------------------------------
@@ -999,12 +332,13 @@ function TS.CreateScroll(f)
         return button:un()
     end
 
-    scroll.getNumFunc = function() return #names end
+    scroll.getNumFunc = function() return #TS.ui_names
+    end
 
     scroll.updateFunc = function(self, btn, id)
         --print("updateFunc")
-        btn.player = TS.db.players[names[id]]
-        btn.player_name = names[id]
+        btn.player = TS.db.players[TS.ui_names[id]]
+        btn.player_name = TS.ui_names[id]
         for j=1, #TS.cols do
             local col = TS.cols[j]
             if col.update then
@@ -1023,12 +357,12 @@ function TS.CreateScroll(f)
 end
 
 function TS:UIUpdateNames()
-    table.wipe(names)
+    table.wipe(TS.ui_names)
     for name, _ in pairs(TS.names) do
-        table.insert(names, name)
+        table.insert(TS.ui_names, name)
     end
-    if currSort and currSortFunc then
-        table.sort(names, currSortFunc)
+    if TS.currSort and TS.currSortFunc then
+        table.sort(TS.ui_names, TS.currSortFunc)
     end
     if f():IsVisible() then
         f.scroll.update()
@@ -1056,53 +390,16 @@ function TeamStatsUI_CreateMinimapButton()
     TeamStatsUI_CreateMinimapButton = nil
 end
 
-function TeamStatsUI_CreateLinkCopyDialog(main)
-    local dialog = main:Frame("$parentLinkCopyDialog", "BasicFrameTemplate", "linkCopyDialog"):CENTER():SetSize(300,80):SetFrameStrata("DIALOG"):Hide()
-    dialog:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall"):SetText(L["CopyDialogTitleText"]):TL(10,-30);
-    local dialogBox = dialog:EditBox(nil, "InputBoxTemplate", "eb"):BOTTOMLEFT(10,5):RIGHT(-10,0):SetHeight(20)
-    dialogBox:SetScript("OnEscapePressed", function(self) self:GetParent():Hide() end)
-    dialog.TitleText:SetText(L["BtnLinkText"])
-end
-
-function TeamStatsUI_CreateInfoDialog(main)
-    local name;
-    local d = CoreUICreateDialog(name,main,300,200):CENTER():Hide();
-    d.title:SetText("友情提示");
-    d.content = d:CreateFontString(nil,"ARTWORK","GameFontNormalSmall"):TL(20,-30):BR(-20,0):SetJustifyV("TOP"):SetJustifyH("LEFT"):un()
-    d.content:SetText("　为了不影响正常游戏，插件每5秒最多获取一个玩家的成就数据，而且该玩家必须在视野范围内。不过我们提供了网页查询的方式，直接读取英雄榜。立即显示，无需等待！敬请点击下方的'网页查询'按钮。");
-    local cb = TplCheckButton(d):Size(26):BL(20,15):un();
-    cb.text:SetText("不再提示");
-    cb.func = function(self)
-        TS.db.noRemind = self:GetChecked();
-    end
-    cb.tooltipText="勾选此项将不再出现本提示"
-    local close = d:Button(nil, "UIPanelButtonTemplate"):SetText("我知道了"):Size(80,26):BR(-20,15):un()
-    close:SetScript("OnClick", function(self) self:GetParent():Hide() end);
-
-    --屏蔽
-    local mask = d:Frame("MASK"):EnableMouse(true):TL(f,0,0):BR(f,0,0):SetFrameLevel(0)
-    mask:CreateTexture():SetTexture(0,0,0,0.5):TL():BR():up():un();
-
-    main.infoDialog = d;
-    return d;
-end
-
 function TeamStatsUI_INIT()
-    --TeamStatsUI_CreateInfoDialog(f);
     TS.CreateButtons(f)
     TS.SetupColumns(f)
     TS.CreateScroll(f)
-    TeamStatsUI_CreateLinkCopyDialog(f);
-    --TeamStatsUI_CreateMinimapButton(); --must after var
     CoreUICreateResizeButton(f(),"BOTTOMRIGHT","BOTTOMRIGHT", 0, 0)
     CoreUIRegisterSlash("TeamStats", "/ts", "/teamstats", function() TeamStatsFrame:Show() end);
 
     TS.CreateButtons = nil
     TS.SetupColumns = nil
     TS.CreateScroll = nil
-    TeamStatsUI_CreateInfoDialog = nil
-    TeamStatsUI_CreateLinkCopyDialog = nil
-    --TeamStatsUI_CreateMinimapButton = nil
 
     f:SetScript("OnShow", function(self)
         if(self.infoDialog and not TS.db.noRemind) then
