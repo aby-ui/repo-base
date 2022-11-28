@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20200912133955")
+mod:SetRevision("20221127051031")
 mod:SetCreatureID(75829)
 mod:SetEncounterID(1688)
 
@@ -17,41 +17,47 @@ mod:RegisterEventsInCombat(
 	"SPELL_ABSORBED 153070"
 )
 
+--[[
+(ability.id = 152801 or ability.id = 153067) and type = "begincast"
+ or ability.id = 152979 and type = "applydebuff"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 local specWarnVoidVortex		= mod:NewSpecialWarningRun(152801, nil, nil, 2, 4, 2)
 local specWarnSoulShred			= mod:NewSpecialWarningSpell(152979, nil, nil, nil, 1, 2)
 local specWarnVoidDevastation	= mod:NewSpecialWarningSpell(153067, nil, nil, nil, 2, 2)
 local specWarnVoidDevastationM	= mod:NewSpecialWarningMove(153070, nil, nil, nil, 1, 8)
 
-local timerVoidVortexCD			= mod:NewCDTimer(72, 152801, nil, nil, nil, 2)
-local timerSoulShredCD			= mod:NewNextTimer(71, 152979, nil, nil, nil, 6)
+local timerVoidVortexCD			= mod:NewCDTimer(77, 152801, nil, nil, nil, 2)
+local timerSoulShredCD			= mod:NewNextTimer(77, 152979, nil, nil, nil, 6)
 local timerSoulShred			= mod:NewBuffFadesTimer(20, 152979)
-local timerVoidDevastationCD	= mod:NewNextTimer(71, 153067, nil, nil, nil, 3)
+local timerVoidDevastationCD	= mod:NewNextTimer(77, 153067, nil, nil, nil, 3)
 
 function mod:OnCombatStart(delay)
-	timerVoidVortexCD:Start(23-delay)
+	timerVoidVortexCD:Start(22.7-delay)
 	timerSoulShredCD:Start(37-delay)
-	timerVoidDevastationCD:Start(67.5-delay)
+	timerVoidDevastationCD:Start(65.3-delay)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args.spellId == 152801 then
+	local spellId = args.spellId
+	if spellId == 152801 then
 		timerVoidVortexCD:Start()
 		specWarnVoidVortex:Show()
 		specWarnVoidVortex:Play("runaway")
+	elseif spellId == 153067 then
+		specWarnVoidDevastation:Show()
+		specWarnVoidDevastation:Play("aesoon")
+		timerVoidDevastationCD:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 152979 and self:AntiSpam() then--SPELL_CAST_SUCCESS is usually missing so have to scan for debuffs
+	if spellId == 152979 and self:AntiSpam() then--SPELL_CAST_SUCCESS is missing so have to scan for debuffs
 		specWarnSoulShred:Show()
 		timerSoulShredCD:Start()
 		timerSoulShred:Start()
 		specWarnSoulShred:Play("killspirit")
-	elseif spellId == 153067 then--SPELL_CAST_SUCCESS is usually missing so have to scan for debuffs
-		specWarnVoidDevastation:Show()
-		specWarnVoidDevastation:Play("aesoon")
-		timerVoidDevastationCD:Start()
 	end
 end
 

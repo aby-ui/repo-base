@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2503, "DBM-Party-Dragonflight", 7, 1202)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221112174613")
+mod:SetRevision("20221127034215")
 mod:SetCreatureID(193435, 190485)
 mod:SetEncounterID(2609)
 --mod:SetUsedIcons(1, 2, 3)
 mod:SetBossHPInfoToHighest()
-mod:SetHotfixNoticeRev(20221017000000)
+mod:SetHotfixNoticeRev(20221126000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 381605 381602 381525 381517 381512 385558 381516",
---	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_SUCCESS 381517",
 	"SPELL_AURA_APPLIED 381515 181089",
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED"
@@ -52,9 +52,9 @@ local specWarnStormslam							= mod:NewSpecialWarningDefensive(381512, nil, nil,
 local specWarnStormslamDispel					= mod:NewSpecialWarningDispel(381512, "RemoveMagic", nil, nil, 1, 2)
 local specWarnInterruptingCloudburst			= mod:NewSpecialWarningCast(381516, "SpellCaster", nil, nil, 2, 2, 4)
 
-local timerWindsofChangeCD						= mod:NewCDTimer(17, 381517, nil, nil, nil, 3)
+local timerWindsofChangeCD						= mod:NewCDTimer(19.3, 381517, nil, nil, nil, 3)
 local timerStormslamCD							= mod:NewCDTimer(9.7, 381512, nil, "Tank|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)
-local timerCloudburstCD							= mod:NewCDTimer(17, 385558, nil, nil, nil, 2)--Used for both mythic and non mythic versions of spell
+local timerCloudburstCD							= mod:NewCDTimer(19.3, 385558, nil, nil, nil, 2)--Used for both mythic and non mythic versions of spell
 
 --mod:AddRangeFrameOption("8")
 mod:AddInfoFrameOption(381862, true)--Infernocore
@@ -87,7 +87,7 @@ function mod:OnCombatStart(delay)
 	--Erkhart Stormvein
 --	timerWindsofChangeCD:Start(1-delay)--Cast on engage
 	timerStormslamCD:Start(5.8-delay)
-	timerCloudburstCD:Start(10.7-delay)
+	timerCloudburstCD:Start(9.4-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(381862))
 		DBM.InfoFrame:Show(5, "playerdebuffremaining", 381862)
@@ -115,7 +115,6 @@ function mod:SPELL_CAST_START(args)
 		timerRoaringFirebreathCD:Start(18)--18-27
 	elseif spellId == 381517 then
 		warnWindsofChange:Show()
-		timerWindsofChangeCD:Start()
 	elseif spellId == 381512 then
 		if self:IsTanking("player", nil, nil, true, args.sourceGUID) then--Using GUID check because might be boss1 or boss2
 			specWarnStormslam:Show()
@@ -133,15 +132,12 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
---[[
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 362805 then
-
+	if spellId == 381517 then--Here because boss can stutter cast and start cast over
+		timerWindsofChangeCD:Start(17.8)
 	end
 end
-
---]]
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
@@ -151,8 +147,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 181089 then
 		self:SetStage(2)
 		--Timers reset by staging
-		timerFlamespitCD:Restart(2.2)
-		timerRoaringFirebreathCD:Restart(7.3)
+		timerFlamespitCD:Restart(2.2)--3.6 now?
+		timerRoaringFirebreathCD:Restart(7.3)--9.7 now?
 		--Rest not reset
 	end
 end

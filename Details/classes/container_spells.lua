@@ -60,6 +60,10 @@ local addonName, Details222 = ...
 		return pairs(self._ActorTable)
 	end
 
+	function container_habilidades:ListActors()
+		return pairs(self._ActorTable)
+	end
+
 	function container_habilidades:GetOrCreateSpell(id, shouldCreate, token)
 		return self:PegaHabilidade (id, shouldCreate, token)
 	end

@@ -576,6 +576,29 @@ end
 -------------------------------------------------
 -- CreateAura_Rect
 -------------------------------------------------
+local function Rect_SetFont(frame, font, size, flags, xOffset, yOffset)
+    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+
+    if flags == "Shadow" then
+        frame.stack:SetFont(font, size, "")
+        frame.stack:SetShadowOffset(1, -1)
+        frame.stack:SetShadowColor(0, 0, 0, 1)
+    else
+        if flags == "None" then
+            flags = ""
+        elseif flags == "Outline" then
+            flags = "OUTLINE"
+        else
+            flags = "OUTLINE, MONOCHROME"
+        end
+        frame.stack:SetFont(font, size, flags)
+        frame.stack:SetShadowOffset(0, 0)
+        frame.stack:SetShadowColor(0, 0, 0, 0)
+    end
+    P:ClearPoints(frame.stack)
+    P:Point(frame.stack, "CENTER", frame, "CENTER", xOffset, yOffset)
+end
+
 local function Rect_SetCooldown(frame, start, duration, debuffType, texture, count)
     if duration == 0 then
         frame.tex:SetColorTexture(unpack(frame.colors[1]))
@@ -594,6 +617,7 @@ local function Rect_SetCooldown(frame, start, duration, debuffType, texture, cou
         end)
     end
 
+    frame.stack:SetText((count == 0 or count == 1) and "" or count)
     frame:Show()
 end
 
@@ -610,10 +634,21 @@ function I:CreateAura_Rect(name, parent)
     P:Point(tex, "TOPLEFT", frame, "TOPLEFT", 1, -1)
     P:Point(tex, "BOTTOMRIGHT", frame, "BOTTOMRIGHT", -1, 1)
 
+    frame.stack = frame:CreateFontString(nil, "OVERLAY")
+
+    frame.SetFont = Rect_SetFont
     frame.SetCooldown = Rect_SetCooldown
 
     function frame:SetColors(colors)
         frame.colors = colors
+    end
+
+    function frame:ShowStack(show)
+        if show then
+            frame.stack:Show()
+        else
+            frame.stack:Hide()
+        end
     end
 
     function frame:UpdatePixelPerfect()
@@ -628,6 +663,29 @@ end
 -------------------------------------------------
 -- CreateAura_Bar
 -------------------------------------------------
+local function Bar_SetFont(bar, font, size, flags, xOffset, yOffset)
+    if not strfind(strlower(font), ".ttf") then font = F:GetFont(font) end
+
+    if flags == "Shadow" then
+        bar.stack:SetFont(font, size, "")
+        bar.stack:SetShadowOffset(1, -1)
+        bar.stack:SetShadowColor(0, 0, 0, 1)
+    else
+        if flags == "None" then
+            flags = ""
+        elseif flags == "Outline" then
+            flags = "OUTLINE"
+        else
+            flags = "OUTLINE, MONOCHROME"
+        end
+        bar.stack:SetFont(font, size, flags)
+        bar.stack:SetShadowOffset(0, 0)
+        bar.stack:SetShadowColor(0, 0, 0, 0)
+    end
+    P:ClearPoints(bar.stack)
+    P:Point(bar.stack, "CENTER", bar, "CENTER", xOffset, yOffset)
+end
+
 local function Bar_SetCooldown(bar, start, duration, debuffType, texture, count)
     if duration == 0 then
         bar:SetScript("OnUpdate", nil)
@@ -651,6 +709,7 @@ local function Bar_SetCooldown(bar, start, duration, debuffType, texture, count)
         end)
     end
 
+    bar.stack:SetText((count == 0 or count == 1) and "" or count)
     bar:Show()
 end
 
@@ -659,10 +718,21 @@ function I:CreateAura_Bar(name, parent)
     bar:Hide()
     bar.indicatorType = "bar"
 
+    bar.stack = bar.border:CreateFontString(nil, "OVERLAY")
+
+    bar.SetFont = Bar_SetFont
     bar.SetCooldown = Bar_SetCooldown
 
     function bar:SetColors(colors)
         bar.colors = colors
+    end
+
+    function bar:ShowStack(show)
+        if show then
+            bar.stack:Show()
+        else
+            bar.stack:Hide()
+        end
     end
         
     return bar

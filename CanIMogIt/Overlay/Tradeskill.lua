@@ -11,7 +11,8 @@ local function string_starts(String,Start)
 end
 
 
-function CIMI_UpdateTradeSkillIcons()
+function CIMI_UpdateTradeSkillIcons(_, elapsed)
+    if not CanIMogIt.FrameShouldUpdate("TradeskillOverlay", elapsed or 1) then return end
     if not CIMI_CheckOverlayIconEnabled() then
         return
     end

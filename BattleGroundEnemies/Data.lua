@@ -897,7 +897,13 @@ Data.RacialSpellIDtoCooldown = {
    [107079] = {cd = 120 				},					--Quaking Palm, Pandaren Racial
 	[69041] = {cd = 90  				},					--Rocket Barrage, Goblin Racial
 	[69070] = {cd = 90  				},					--Rocket Jump, Goblin Racial
-	[20549] = {cd = 90  				}					--War Stomp, Tauren Racial
+	[20549] = {cd = 90  				},					--War Stomp, Tauren Racial
+   [312411] = {cd = 90					},					--Bag of Tricks, Vulpera Racial
+   [265221] = {cd = 120					},					--Fireblood, Dark Iron Dwarf Racial
+   [255647] = {cd = 150					},					--Light's Judgment, Lightforged Draenei Racial
+   [255654] = {cd = 120					},					--Bull Rush, Highmountain Tauren Racial
+   [287712] = {cd = 150					}, 					--Haymaker, Kul Tiran Racial
+   [260364] = {cd = 180					}					--Arcane Pulse, Nightborne Racial
 }
 
 if IsWrath then

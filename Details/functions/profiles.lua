@@ -1355,6 +1355,7 @@ local default_global_data = {
 		installed_skins_cache = {},
 
 		show_warning_id1 = true,
+		show_warning_id1_amount = 0,
 
 		combat_id_global = 0,
 

@@ -31,10 +31,12 @@ end
 
 function RSUtils.JoinTables(table1, table2)
 	local joinedTable = {}
+	local joined = false
 	if (table1 and type(table1) == "table") then
 		for _, value in ipairs (table1) do
 			if (not RSUtils.Contains(joinedTable, value)) then
 				tinsert(joinedTable, value)
+				joined = true
 			end
 		end
 	end
@@ -43,14 +45,15 @@ function RSUtils.JoinTables(table1, table2)
 		for _, value in ipairs (table2) do
 			if (not RSUtils.Contains(joinedTable, value)) then
 				tinsert(joinedTable, value)
+				joined = true
 			end
 		end
 	end
 
-	if (next(joinedTable) ~= nil) then
+	if (joined) then
 		return joinedTable
 	end
-
+	
 	return nil
 end
 

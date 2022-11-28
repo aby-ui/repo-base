@@ -509,7 +509,7 @@ function RSExplorerRareList:UpdateRareList()
 	
 	-- Load list
 	for npcID, npcName in pairs(RSNpcDB.GetAllNpcNames()) do
-		if (RSNpcDB.IsInternalNpcInMap(npcID, self.mapID, true)) then
+		if (RSNpcDB.IsInternalNpcInMap(npcID, self.mapID, false)) then
 			local npcInfo = RSNpcDB.GetInternalNpcInfoByMapID(npcID, self.mapID)
 			
 			if (npcInfo and npcInfo.displayID) then

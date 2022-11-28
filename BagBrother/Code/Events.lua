@@ -16,19 +16,20 @@ This file is part of BagBrother.
 --]]
 
 local NUM_VAULT_SLOTS = 80 * 2
-local FIRST_BANK_SLOT = 1 + NUM_TOTAL_EQUIPPED_BAG_SLOTS
-local LAST_BANK_SLOT = NUM_BANKBAGSLOTS + NUM_TOTAL_EQUIPPED_BAG_SLOTS
+local NUM_BAGS = NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS
+local FIRST_BANK_SLOT = 1 + NUM_BAGS
+local LAST_BANK_SLOT = NUM_BANKBAGSLOTS + NUM_BAGS
 
 
 --[[ Continuous Events ]]--
 
-function BagBrother:BAG_UPDATE(bag)
-	if bag <= NUM_BAG_SLOTS then
-  	self:SaveBag(bag, bag <= BACKPACK_CONTAINER, bag == BACKPACK_CONTAINER or bag == KEYRING_CONTAINER and HasKey and HasKey())
+function BagBrother:BAG_UPDATE(_,bag)
+	if bag <= NUM_BAGS then
+  		self:SaveBag(bag, bag <= BACKPACK_CONTAINER, bag == BACKPACK_CONTAINER or bag == KEYRING_CONTAINER and HasKey and HasKey())
 	end
 end
 
-function BagBrother:PLAYER_EQUIPMENT_CHANGED(slot)
+function BagBrother:PLAYER_EQUIPMENT_CHANGED(_,slot)
 	self:SaveEquip(slot)
 end
 
@@ -36,13 +37,13 @@ function BagBrother:PLAYER_MONEY()
 	self.Player.money = GetMoney()
 end
 
-function BagBrother:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(frame)
+function BagBrother:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(_,frame)
 	if frame == Enum.PlayerInteractionType.VoidStorageBanker then
 		self:VOID_STORAGE_OPEN()
 	end
 end
 
-function BagBrother:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(frame)
+function BagBrother:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(_,frame)
 	if frame == Enum.PlayerInteractionType.VoidStorageBanker then
 		self:VOID_STORAGE_CLOSE()
 	end

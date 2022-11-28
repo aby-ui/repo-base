@@ -32,7 +32,7 @@
         </Texture>
       </Layer>
       <Layer level="ARTWORK">
-        <Texture parentKey="Icon" file="Interface\Addons\HandyNotes_Shadowlands\core\artwork\icons\chest_gray.blp">
+        <Texture parentKey="Icon" file="Interface\Addons\HandyNotes_Dragonflight\core\artwork\icons\chest_gray.blp">
           <Size x="20" y="20"/>
           <Anchors>
             <Anchor point="TOPLEFT" x="6" y="-6"/>

@@ -241,6 +241,11 @@
 
 			--Seal of Command
 			[20424] = 69403, --53739 and 53733
+
+			--odyn's fury warrior
+			[385062] = 385059,
+			[385061] = 385059,
+			[385060] = 385059,
 		}
 
 	else --retail
@@ -2649,6 +2654,7 @@
 			------------------------------------------------------------------------------------------------
 			--buff uptime
 
+				--print(spellid, spellname, LIB_OPEN_RAID_BLOODLUST and LIB_OPEN_RAID_BLOODLUST[spellid], _detalhes.playername, alvo_name, _detalhes.playername == alvo_name)
 				if (LIB_OPEN_RAID_BLOODLUST and LIB_OPEN_RAID_BLOODLUST[spellid]) then --~bloodlust
 					if (_detalhes.playername == alvo_name) then
 						_current_combat.bloodlust = _current_combat.bloodlust or {}
@@ -5029,11 +5035,6 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		if (zoneType == "party" or zoneType == "raid") then
 			_is_in_instance = true
-
-			--if (DetailsFramework.IsDragonflight()) then
-			--	Details:Msg("friendly reminder to enabled combat logs (/combatlog) if you're recording them (Dragonflight Beta).")
-			--	Details:Msg("and if you wanna help, you may post them on Details! discord as well.")
-			--end
 		end
 
 		if (_detalhes.last_zone_type ~= zoneType) then
@@ -5164,9 +5165,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		if (not isWOTLK) then
 			C_Timer.After(1, function()
-				if (C_CVar.GetCVar("AdvancedCombatLogging") == "1") then
-					if (Details.show_warning_id1) then
-						Details:Msg("you have Advanced Combat Logging enabled, your numbers might be different of other players (bug in the game).")
+				if (Details.show_warning_id1) then
+					if (Details.show_warning_id1_amount < 2) then
+						Details.show_warning_id1_amount = Details.show_warning_id1_amount + 1
+						Details:Msg("|cFFFFFF00you might find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself (" .. Details.show_warning_id1_amount .. " / 10).")
 					end
 				end
 			end)
@@ -5276,6 +5278,17 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_detalhes:Msg("(debug) |cFFFFFF00ENCOUNTER_END|r event triggered.")
 		end
 
+		if (not isWOTLK) then
+			C_Timer.After(1, function()
+				if (Details.show_warning_id1) then
+					if (Details.show_warning_id1_amount < 2) then
+						Details.show_warning_id1_amount = Details.show_warning_id1_amount + 1
+						Details:Msg("|cFFFFFF00you may find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself (" .. Details.show_warning_id1_amount .. " / 10).")
+					end
+				end
+			end)
+		end
+
 		_current_encounter_id = nil
 
 		local _, instanceType = GetInstanceInfo() --let's make sure it isn't a dungeon
@@ -5316,6 +5329,23 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				_detalhes.tabela_vigente:SetEndTime (_detalhes.encounter_table ["end"])
 				_detalhes:RefreshMainWindow(-1, true)
 			end
+		end
+
+		--tag item level of all players
+		local openRaidLib = LibStub:GetLibrary("LibOpenRaid-1.0", true)
+		local allPlayersGear = openRaidLib and openRaidLib.GetAllUnitsGear()
+
+		local status = xpcall(function()
+			for actorIndex, actorObject in Details:GetCurrentCombat():GetContainer(DETAILS_ATTRIBUTE_DAMAGE):ListActors() do
+				local gearInfo = allPlayersGear and allPlayersGear[actorObject:Name()]
+				if (gearInfo) then
+					actorObject.ilvl = gearInfo.ilevel
+				end
+			end
+		end, geterrorhandler())
+
+		if (not status) then
+			Details:Msg("ilvl error:", status)
 		end
 
 		_detalhes:SendEvent("COMBAT_ENCOUNTER_END", nil, ...)
@@ -5995,18 +6025,34 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 	local saver = CreateFrame("frame", nil, UIParent)
 	saver:RegisterEvent("PLAYER_LOGOUT")
 	saver:SetScript("OnEvent", function(...)
+		__details_backup = __details_backup or {
+			_exit_error = {},
+			_instance_backup = {},
+		}
+		local exitErrors = __details_backup._exit_error
+		
+		local addToExitErrors = function(text)
+			table.insert(exitErrors, 1, text)
+			table.remove(exitErrors, 10)
+		end
+
+		local currentStep = ""
+
 		--save the time played on this class, run protected
-		pcall(function()
+		local savePlayTimeClass, savePlayTimeError = pcall(function()
 			Details.SavePlayTimeOnClass()
 		end)
 
-		local currentStep = 0
+		if (not savePlayTimeClass) then
+			addToExitErrors("Saving Play Time:" .. savePlayTimeError)
+		end
 
 		--SAVINGDATA = true
 		_detalhes_global.exit_log = {}
 		_detalhes_global.exit_errors = _detalhes_global.exit_errors or {}
 
 		currentStep = "Checking the framework integrity"
+
 		if (not _detalhes.gump) then
 			--failed to load the framework
 			tinsert(_detalhes_global.exit_log, "The framework wasn't in Details member 'gump'.")
@@ -6015,9 +6061,14 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end
 
 		local saver_error = function(errortext)
-			_detalhes_global = _detalhes_global or {}
-			tinsert(_detalhes_global.exit_errors, 1, currentStep .. "|" .. date() .. "|" .. _detalhes.userversion .. "|" .. errortext .. "|" .. debugstack())
-			tremove(_detalhes_global.exit_errors, 6)
+			--if the error log cause an error?
+			local writeLog = function()
+				_detalhes_global = _detalhes_global or {}
+				tinsert(_detalhes_global.exit_errors, 1, currentStep .. "|" .. date() .. "|" .. _detalhes.userversion .. "|" .. errortext .. "|" .. debugstack())
+				tremove(_detalhes_global.exit_errors, 6)
+				addToExitErrors(currentStep .. "|" .. date() .. "|" .. _detalhes.userversion .. "|" .. errortext .. "|" .. debugstack())
+			end
+			xpcall(writeLog, addToExitErrors)
 		end
 
 		_detalhes.saver_error_func = saver_error
@@ -6032,17 +6083,24 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		--do not save window pos
 		if (_detalhes.tabela_instancias) then
-			currentStep = "Dealing With Instances"
-			tinsert(_detalhes_global.exit_log, "2 - Clearing user place from instances.")
-			for id, instance in _detalhes:ListInstances() do
-				if (id) then
-					tinsert(_detalhes_global.exit_log, "  - " .. id .. " has baseFrame: " .. (instance.baseframe and "yes" or "no") .. ".")
-					if (instance.baseframe) then
-						instance.baseframe:SetUserPlaced (false)
-						instance.baseframe:SetDontSavePosition (true)
+			local clearInstances = function()
+				currentStep = "Dealing With Instances"
+				tinsert(_detalhes_global.exit_log, "2 - Clearing user place from instances.")
+				for id, instance in _detalhes:ListInstances() do
+					if (id) then
+						tinsert(_detalhes_global.exit_log, "  - " .. id .. " has baseFrame: " .. (instance.baseframe and "yes" or "no") .. ".")
+						if (instance.baseframe) then
+							instance.baseframe:SetUserPlaced (false)
+							instance.baseframe:SetDontSavePosition (true)
+						end
 					end
 				end
 			end
+			xpcall(clearInstances, saver_error)
+		else
+			tinsert(_detalhes_global.exit_errors, 1, "not _detalhes.tabela_instancias")
+			tremove(_detalhes_global.exit_errors, 6)
+			addToExitErrors("not _detalhes.tabela_instancias")
 		end
 
 		--leave combat start save tables
@@ -6061,6 +6119,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 
 		if (_detalhes.wipe_full_config) then
 			tinsert(_detalhes_global.exit_log, "5 - Is a full config wipe.")
+			addToExitErrors("true: _detalhes.wipe_full_config")
 			_detalhes_global = nil
 			_detalhes_database = nil
 			return

@@ -6,7 +6,7 @@
 
 
 local ADDON, Addon = ...
-local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+local C = LibStub('C_Everywhere').CurrencyInfo
 local Currency = Addon.Tipped:NewClass('Currency', 'Button')
 
 function Currency:New(parent)
@@ -23,12 +23,12 @@ function Currency:Set(data)
 	self:SetText(format('%s|T%s:14:14:2:0%s|t  ', data.quantity, data.iconFileID, data.iconArgs or ''))
 	self.data = data
 	self:Show()
-  self:SetWidth(self:GetTextWidth() + 2)
+	self:SetWidth(self:GetTextWidth() + 2)
 end
 
 function Currency:OnClick()
 	if IsModifiedClick('CHATLINK') then
-		HandleModifiedItemClick((GetCurrencyLink or C_CurrencyInfo.GetCurrencyLink)(self.data.currencyTypesID, self.data.quantity))
+		HandleModifiedItemClick(C.GetCurrencyLink(self.data.currencyTypesID, self.data.quantity))
 	elseif not self:IsCached() then
 		ToggleCharacter('TokenFrame')
 	end
@@ -36,5 +36,5 @@ end
 
 function Currency:OnEnter()
 	GameTooltip:SetOwner(self:GetTipAnchor())
-	GameTooltip:SetCurrencyByID(self.data.currencyTypesID)
+	GameTooltip:SetBackpackToken(self.data.index)
 end

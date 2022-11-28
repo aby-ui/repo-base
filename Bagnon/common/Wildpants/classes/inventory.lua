@@ -4,6 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
+local C = LibStub('C_Everywhere').Container
 local Inventory = Addon.Frame:NewClass('InventoryFrame')
 Inventory.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBags
 Inventory.Bags = {}
@@ -46,8 +47,8 @@ function Inventory:HighlightMainMenu(checked)
 end
 
 function Inventory:SortItems()
-	if C_Container.SortBags then --and Addon.sets.serverSort then
-		C_Container.SortBags()
+	if C.SortBags and Addon.sets.serverSort then
+		C.SortBags()
 	else
 		self:Super(Inventory):SortItems(self)
 	end

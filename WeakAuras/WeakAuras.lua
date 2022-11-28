@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 59
+local internalVersion = 60
 
 -- Lua APIs
 local insert = table.insert
@@ -1692,6 +1692,7 @@ function Private.ScanForLoadsGroup(toCheck)
     local data = WeakAuras.GetData(id)
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
+        ---@type boolean?
         local any_loaded = false;
         for child in Private.TraverseLeafs(data) do
           if(loaded[child.id] ~= nil) then
@@ -3196,9 +3197,6 @@ local function EnsureRegion(id)
 end
 
 --- Ensures that a region/clone exists and returns it
----@param id auraId
----@param cloneId string|nil
----@return table?
 function Private.EnsureRegion(id, cloneId)
   -- Even if we are asked to only create a clone, we create the default region
   -- too.
@@ -3842,12 +3840,26 @@ do
 end
 
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
-  local tooltip = WeakAuras.GetHiddenTooltip();
-  tooltip:ClearLines();
-  tooltip:SetUnitAura(unit, index, filter);
-  local tooltipTextLine = select(5, tooltip:GetRegions())
+  local tooltipText = ""
+  if WeakAuras.IsRetail() then
+    local tooltipData = C_TooltipInfo.GetUnitAura(unit, index, filter)
+    local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
+    if secondLine then
+      for _, arg in ipairs(secondLine.args) do
+        if arg.field == "leftText" then
+          tooltipText = arg.stringVal or ""
+        end
+      end
+    end
+  else
+    local tooltip = WeakAuras.GetHiddenTooltip();
+    tooltip:ClearLines();
+    tooltip:SetUnitAura(unit, index, filter);
+    local tooltipTextLine = select(5, tooltip:GetRegions())
+    tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
+  end
 
-  local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
+
   local debuffType = "none";
   local found = false;
   local tooltipSize = {};
@@ -5296,10 +5308,16 @@ local function tryAnchorAgain()
     local region = WeakAuras.GetRegion(id);
     if (data and region) then
       local parent = WeakAurasFrame;
-      if (data.parent and WeakAuras.GetData(data.parent) and Private.EnsureRegion(data.parent)) then
-        parent = Private.regions[data.parent].region;
+      local parentData
+      if data.parent then
+        parentData = WeakAuras.GetData(data.parent)
+        if parentData and Private.EnsureRegion(data.parent) then
+          parent = Private.regions[data.parent].region
+        end
       end
-      Private.AnchorFrame(data, region, parent);
+      if not parentData or parentData.regionType ~= "dynamicgroup" then
+        Private.AnchorFrame(data, region, parent)
+      end
     end
   end
 end
@@ -5581,6 +5599,7 @@ end
 
 -- WORKAROUND
 -- UnitPlayerControlled doesn't work if the target is "too" far away
+--- @return boolean?
 function Private.UnitPlayerControlledFixed(unit)
   local guid = UnitGUID(unit)
   return guid and guid:sub(1, 6) == "Player"

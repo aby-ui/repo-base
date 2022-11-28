@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2512, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221029034008")
+mod:SetRevision("20221128054351")
 mod:SetCreatureID(186951)
 mod:SetEncounterID(2563)
 --mod:SetUsedIcons(1, 2, 3)
@@ -25,8 +25,6 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, Branch Out target scan? it says "at a location" not "at a player"
---TODO, longer pull with two bursts to fine tune burst timer
---TODO, longer pull to confirm if bark and germ are alternating timers, or timer reset by burst that may not always alternate
 --TODO, do stuff with Splinterbark/Abunance mythic mechanic? Seems self explanatory. You get a bleedd on spawn, and clear it on death with target goal to be "don't ignore adds"
 --[[
 (ability.id = 388923 or ability.id = 388623 or ability.id = 396640 or ability.id = 388544) and type = "begincast"
@@ -63,10 +61,10 @@ function mod:OnCombatStart(delay)
 	table.wipe(toxinStacks)
 	self.vb.germinateCount = 0
 	self.vb.barkCount = 0
-	timerBarkbreakerCD:Start(4.6-delay)
+	timerBarkbreakerCD:Start(4.6-delay)--4.6-9.3
 	timerGerminateCD:Start(13.1-delay, 1)
-	timerBranchOutCD:Start(30.1-delay)
-	timerBurstForthCD:Start(47.1-delay)
+	timerBranchOutCD:Start(30-delay)
+	timerBurstForthCD:Start(47-delay)
 	if self.Options.InfoFrame and self:IsMythic() then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(389033))
 		DBM.InfoFrame:Show(5, "table", toxinStacks, 1)
@@ -134,9 +132,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		self.vb.germinateCount = self.vb.germinateCount + 1
 		specWarnGerminate:Show()
 		specWarnGerminate:Play("watchstep")
-		--13.1, 29.1, 20.6, 29.1 (needs larger sample to confirm)
+		--13.1, 29.1, 20.6, 29.1, 20.5
 		if self.vb.germinateCount % 2 == 0 then
-			timerGerminateCD:Start(20.6, self.vb.germinateCount+1)
+			timerGerminateCD:Start(20.5, self.vb.germinateCount+1)
 		else
 			timerGerminateCD:Start(29.1, self.vb.germinateCount+1)
 		end

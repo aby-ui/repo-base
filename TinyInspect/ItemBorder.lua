@@ -4,36 +4,60 @@
 -------------------------------------
 
 local LibEvent = LibStub:GetLibrary("LibEvent.7000")
+local LibSchedule = LibStub:GetLibrary("LibSchedule.7000")
+
+
+local function SetItemAngularBorderScheduled(button, quality, itemIDOrLink)
+    if (button.angularFrame) then return end
+    LibSchedule:AddTask({
+        identity  = tostring(button),
+        begined   = math.random() / 2,
+        elasped   = 0.5,
+        expired   = GetTime() + 2,
+        button    = button,
+        onExecute = function(self)
+            if (not self.button.angularFrame) then
+                local anchor, w, h = self.button.IconBorder or self.button, self.button:GetSize()
+                local ww, hh = anchor:GetSize()
+                if (ww == 0 or hh == 0) then
+                    anchor = self.button.Icon or self.button.icon or self.button
+                    w, h = anchor:GetSize()
+                else
+                    w, h = min(w, ww), min(h, hh)
+                end
+                if (w > h * 1.28) then
+                    w = h
+                end
+                self.button.angularFrame = CreateFrame("Frame", nil, self.button)
+                self.button.angularFrame:SetFrameLevel(5)
+                self.button.angularFrame:SetSize(w, h)
+                self.button.angularFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+                self.button.angularFrame:Hide()
+                self.button.angularFrame.mask = CreateFrame("Frame", nil, self.button.angularFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+                self.button.angularFrame.mask:SetSize(w-2, h-2)
+                self.button.angularFrame.mask:SetPoint("CENTER")
+                self.button.angularFrame.mask:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeSize = 2})
+                self.button.angularFrame.mask:SetBackdropBorderColor(0, 0, 0)
+                self.button.angularFrame.border = CreateFrame("Frame", nil, self.button.angularFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
+                self.button.angularFrame.border:SetSize(w, h)
+                self.button.angularFrame.border:SetPoint("CENTER")
+                self.button.angularFrame.border:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1})
+            end
+            if (TinyInspectDB and TinyInspectDB.ShowItemBorder) then
+                LibEvent:trigger("SET_ITEM_ANGULARBORDER", self.button.angularFrame, quality, itemIDOrLink)
+            else
+                self.button.angularFrame:Hide()
+            end
+            return true
+        end,
+    })
+end
 
 --直角邊框 @trigger SET_ITEM_ANGULARBORDER
 local function SetItemAngularBorder(self, quality, itemIDOrLink)
     if (not self) then return end
     if (not self.angularFrame) then
-        local anchor, w, h = self.IconBorder or self, self:GetSize()
-        local ww, hh = anchor:GetSize()
-        if (ww == 0 or hh == 0) then
-            anchor = self.Icon or self.icon or self
-            w, h = anchor:GetSize()
-        else
-            w, h = min(w, ww), min(h, hh)
-        end
-        if (w > h * 1.28) then
-            w = h
-        end
-        self.angularFrame = CreateFrame("Frame", nil, self)
-        self.angularFrame:SetFrameLevel(5)
-        self.angularFrame:SetSize(w, h)
-        self.angularFrame:SetPoint("CENTER", anchor, "CENTER", 0, 0)
-        self.angularFrame:Hide()
-        self.angularFrame.mask = CreateFrame("Frame", nil, self.angularFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
-        self.angularFrame.mask:SetSize(w-2, h-2)
-        self.angularFrame.mask:SetPoint("CENTER")
-        self.angularFrame.mask:SetBackdrop({edgeFile = "Interface\\Tooltips\\UI-Tooltip-Background", edgeSize = 2})
-        self.angularFrame.mask:SetBackdropBorderColor(0, 0, 0)
-        self.angularFrame.border = CreateFrame("Frame", nil, self.angularFrame, BackdropTemplateMixin and "BackdropTemplate" or nil)
-        self.angularFrame.border:SetSize(w, h)
-        self.angularFrame.border:SetPoint("CENTER")
-        self.angularFrame.border:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1})
+        return SetItemAngularBorderScheduled(self, quality, itemIDOrLink)
     end
     if (TinyInspectDB and TinyInspectDB.ShowItemBorder) then
         LibEvent:trigger("SET_ITEM_ANGULARBORDER", self.angularFrame, quality, itemIDOrLink)

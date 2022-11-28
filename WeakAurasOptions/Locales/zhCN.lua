@@ -132,7 +132,6 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "对齐"
 	L["Alignment"] = "对齐"
 	L["All of"] = "全部"
-	L["Allow Full Rotation"] = "允许完全旋转"
 	L["Alpha"] = "透明度"
 	L["Anchor"] = "锚点"
 	L["Anchor Point"] = "锚点指向"
@@ -169,6 +168,8 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 Off Screen]=] ] = "光环在屏幕外"
 	L["Aura Name"] = "光环名称"
 	L["Aura Name Pattern"] = "光环名称规则匹配"
+	--[[Translation missing --]]
+	L["Aura Order"] = "Aura Order"
 	L["Aura received from: %s"] = "从%s处接收光环"
 	L["Aura Type"] = "光环类型"
 	L["Aura: '%s'"] = "光环：'%s'"
@@ -253,6 +254,8 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Control-click to select multiple displays"] = "按住 Control 并点击来选择多个光环"
 	L["Controls the positioning and configuration of multiple displays at the same time"] = "同时控制多个图示的位置和设定"
 	L["Convert to..."] = "转换为..."
+	--[[Translation missing --]]
+	L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."] = "Cooldown Numbers might be added by WoW. You can configure these in the game settings."
 	L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."] = "冷却速度提高将改变每秒的持续时间，而并非显示真实的冷却时间。"
 	L["Copy"] = "拷贝"
 	L["Copy settings..."] = "拷贝设置"
@@ -310,7 +313,6 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Differences"] = "差异"
 	L["Disabled"] = "禁用"
 	L["Disallow Entry Reordering"] = "不允许重新排列条目"
-	L["Discrete Rotation"] = "离散旋转"
 	L["Display"] = "图示"
 	L["Display Name"] = "显示的名字"
 	L["Display Text"] = "图示文字"
@@ -550,6 +552,8 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Left"] = "左"
 	L["Left 2 HUD position"] = "左侧第二 HUD 位置"
 	L["Left HUD position"] = "左侧 HUD 位置"
+	--[[Translation missing --]]
+	L["Legacy Zoom Out"] = "Legacy Zoom Out"
 	L["Length"] = "长度"
 	L["Length of |cFFFF0000%s|r"] = "长度|cFFFF0000%s|r"
 	L["Limit"] = "限制"
@@ -699,6 +703,8 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Rotate In"] = "旋转进入"
 	L["Rotate Out"] = "旋转退出"
 	L["Rotate Text"] = "旋转文字"
+	--[[Translation missing --]]
+	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "旋转"
 	L["Rotation Mode"] = "旋转模式"
 	L["Row Space"] = "列空间"
@@ -803,8 +809,14 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Text Settings"] = "文本设置"
 	L["Texture"] = "材质"
 	L["Texture Info"] = "材质信息"
+	--[[Translation missing --]]
+	L["Texture Rotation"] = "Texture Rotation"
 	L["Texture Settings"] = "材质设置"
 	L["Texture Wrap"] = "材质折叠"
+	--[[Translation missing --]]
+	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
+	--[[Translation missing --]]
+	L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"] = "The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"
 	L["The duration of the animation in seconds."] = "动画持续秒数"
 	L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."] = "动画时长秒时。直到显示内容可以被正常隐藏之后，结束动画才会播放。"
 	L["The type of trigger"] = "触发器类型"
@@ -877,6 +889,8 @@ It might not work correctly with your version!]=] ] = "此光环由更新版本�
 	L["Use Texture"] = "使用材质"
 	L["Used in Auras:"] = "在下列光环中被使用："
 	L["Used in auras:"] = "在下列光环中被使用："
+	--[[Translation missing --]]
+	L["Uses Texture Coordinates to rotate the texture."] = "Uses Texture Coordinates to rotate the texture."
 	L["Uses UnitIsVisible() to check if in range. This is polled every second."] = "使用UnitIsVisible()检查是否在范围内，每秒检查一次。"
 	L["Value %i"] = "值 %i"
 	L["Values are in normalized rgba format."] = "数值为标准化的 RGBA 格式"

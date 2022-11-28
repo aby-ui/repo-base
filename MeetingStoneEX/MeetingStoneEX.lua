@@ -9,14 +9,14 @@ GUI = LibStub('NetEaseGUI-2.0')
 
 --当前版本的地下城副本
 ACTIVITY_NAMES = {
-    '麦卡贡垃圾场'
-    ,'麦卡贡车间'
-    ,'卡拉赞下层'
-    ,'卡拉赞上层'
-    ,'钢铁码头'
-    ,'恐轨车站'
-    ,'塔扎维什：琳彩天街'
-    ,'塔扎维什：索·莉亚的宏图'
+    '艾杰斯亚学院'
+    ,'红玉新生法池'
+    ,'碧蓝魔馆'
+    ,'诺库德阻击战'
+    ,'影月墓地'
+    ,'群星庭院'
+    ,'英灵殿'
+    ,'青龙寺'
 }
 
 local BrowsePanel = Addon:GetModule('BrowsePanel')
@@ -327,7 +327,7 @@ function BrowsePanel:CreateExSearchPanel()
 
 end
 
-local function CreateMemberFilter(self,parent, orgin,x,y,text,DB_Name)
+local function CreateMemberFilter(self,parent, orgin,x,y,text,DB_Name,tooltip)
     if MEETINGSTONE_UI_DB[DB_Name] == nil then
         MEETINGSTONE_UI_DB[DB_Name] = false
     end
@@ -342,9 +342,6 @@ local function CreateMemberFilter(self,parent, orgin,x,y,text,DB_Name)
             self.ActivityList:Refresh()
         end)
     end
-    local tooltip = (DB_Name == 'FILTER_DAMAGE' or DB_Name == 'FILTER_HEALTH' or DB_Name == 'FILTER_TANK') and "隐藏已有" .. text .. "职业的队伍"
-                    or (DB_Name == 'FILTER_JOB') and "五人副本时，隐藏已有" .. UnitClass("player") .. "DPS的队伍"
-                    or (DB_Name == 'IGNORE_TIPS_LOG') and "屏蔽了队长或同标题玩家时，聊天框里显示一次提示信息" or nil
     if tooltip then
         GUI:Embed(memberFilterCheckBox, 'Tooltip')
         memberFilterCheckBox:SetTooltip("说明", tooltip)
@@ -425,14 +422,15 @@ function BrowsePanel:CreateExSearchButton( )
     end)
 
     local checkbox = self.SignUpButton
-    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-160,-1,'多专精("或"条件)','FILTER_MULTY')
-    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'输出','FILTER_DAMAGE')
-    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'治疗','FILTER_HEALTH')
-    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'坦克','FILTER_TANK')
+    local t = '左侧几项多选时，将过滤出同时满足所有条件的队伍\n而多选的同时再勾选本项后，将过滤出满足勾选的任意一项条件的队伍\n一般而言，用于玩家想同时以多个职责加入队伍的时候\n例如战士想查找缺T或DPS的队伍'
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-160,-1,'多选-"或"条件','FILTER_MULTY',t)
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'输出','FILTER_DAMAGE',"隐藏输出职业满的队伍，允许多选")
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'治疗','FILTER_HEALTH',"隐藏已有治疗职业的队伍，允许多选")
+    checkbox = CreateMemberFilter(self,checkbox,'LEFT',-65,0,'坦克','FILTER_TANK',"隐藏已有坦克职业的队伍，允许多选")
 
-    checkbox = CreateMemberFilter(self,self.SignUpButton,'RIGHT',30,-1,'同职过滤','FILTER_JOB')
+    checkbox = CreateMemberFilter(self,self.SignUpButton,'RIGHT',30,-1,'同职过滤','FILTER_JOB',"五人副本时，隐藏已有同职责" .. UnitClass("player") .. "的队伍")
 
-    CreateMemberFilter(self,MainPanel,'TOPRIGHT',-200,0,'显示屏蔽提示','IGNORE_TIPS_LOG')
+    CreateMemberFilter(self,MainPanel,'TOPRIGHT',-200,0,'显示屏蔽提示','IGNORE_TIPS_LOG',"屏蔽了队长或同标题玩家时，聊天框里显示一次提示信息")
 
     CreateScoreFilter(self,'过滤队长0分队伍',1)
 

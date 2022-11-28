@@ -233,6 +233,14 @@ L["Caster's Target"] = "施法者目标"
 L["Cataclysm"] = "大地的裂变"
 L["Ceil"] = "向上取整"
 L["Center"] = "中间"
+--[[Translation missing --]]
+L["Center, then alternating bottom and top"] = "Center, then alternating bottom and top"
+--[[Translation missing --]]
+L["Center, then alternating left and right"] = "Center, then alternating left and right"
+--[[Translation missing --]]
+L["Center, then alternating right and left"] = "Center, then alternating right and left"
+--[[Translation missing --]]
+L["Center, then alternating top and bottom"] = "Center, then alternating top and bottom"
 L["Centered Horizontal"] = "水平居中"
 L["Centered Horizontal, then Centered Vertical"] = "水平居中，然后垂直居中"
 L["Centered Horizontal, then Down"] = "水平居中，然后向下"

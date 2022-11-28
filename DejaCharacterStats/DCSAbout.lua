@@ -121,8 +121,9 @@ local L = namespace.L 				--localization
 			"        konraddo, y123ao6" .. "|n" ..														--(Traditional Chinese) Continued Traditional Chinese list
 			-- "|n" ..																					--(Spacer)
 			"|cff0094c4Special Thanks:|r" .. "|n" ..
-			"|cff0094c4    Communities:|r Blizzard, Curse, Sloot(Twitch)," .. "|n" .. 
-			"        WoWInterface, ElvUI, and Reddit's /r/wow" .. "|n" ..
+			"|cff0094c4    Communities:|r WoWInterface, Curse, Wago," .. "|n" .. 
+			"        Sloot, Eiya, BabaShareShow, kevinjordan," .. "|n" ..
+			"        ElvUI, Blizzard, and Reddit's /r/wow" .. "|n" ..
 			"|cff0094c4    Individuals:|r Baudzila, 10leej, wizardanim," .. "|n" ..
 			"        Phanx, Ro, Choonster, Zork, Lombra," .. "|n" ..
 			"        myrroddin, Darth_Predator, sirann," .. "|n" ..

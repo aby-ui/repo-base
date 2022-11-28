@@ -42,11 +42,11 @@ private.DRAGON_GLYPHS = {
 	[16071] = { zoneID = 2024, artID = { 1707 }, x = 5300, y = 4900 }; --Dragon Glyphs: Zelthrak Outpost
 	[16070] = { zoneID = 2024, artID = { 1707 }, x = 6060, y = 7000 }; --Dragon Glyphs: Imbu
 	[16068] = { zoneID = 2024, artID = { 1707 }, x = 1040, y = 3600 }; --Dragon Glyphs: Brackenhide Hollow
-	[16069] = { zoneID = 2024, artID = { 1707 }, x = 2210, y = 3660 }; --Dragon Glyphs: Drake Eye's Pond
+	[16069] = { zoneID = 2024, artID = { 1707 }, x = 2673, y = 3167 }; --Dragon Glyphs: Creektooth Den
 	[16064] = { zoneID = 2024, artID = { 1707 }, x = 4580, y = 2560 }; --Dragon Glyphs: Cobalt Assembly
 	[16067] = { zoneID = 2024, artID = { 1707 }, x = 7060, y = 4630 }; --Dragon Glyphs: Lost Ruins
 	[16066] = { zoneID = 2024, artID = { 1707 }, x = 6860, y = 6040 }; --Dragon Glyphs: Ruins of Karnthar
-	[16073] = { zoneID = 2024, artID = { 1707 }, x = 7760, y = 3080 }; --Dragon Glyphs: Vakthros Summit
+	[16073] = { zoneID = 2024, artID = { 1707 }, x = 7259, y = 3970 }; --Dragon Glyphs: Vakthros Range
 	[16672] = { zoneID = 2024, artID = { 1707 }, x = 3633, y = 2878 }; --Dragon Glyphs: Forkriver Crossing
 	[16673] = { zoneID = 2024, artID = { 1707 }, x = 5681, y = 1612 }; --Dragon Glyphs: The Fallen Course
 	

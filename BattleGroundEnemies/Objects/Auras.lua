@@ -43,7 +43,7 @@ local defaults = {
 			SpellIDFiltering_Enabled = false,
 			SpellIDFiltering_Filterlist = {},
 			DurationFilter_Enabled = false,
-			DurationFilter_CustomMaxDuration = 10
+			DurationFilter_CustomMaxDuration = 20
 		}
 	}
 }

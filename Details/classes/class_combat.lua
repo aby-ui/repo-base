@@ -86,6 +86,10 @@
 		return self.is_boss and self.is_boss.diff
 	end
 
+	function combate:GetEncounterCleuID()
+		return self.is_boss and self.is_boss.id
+	end
+
 	function combate:GetBossInfo()
 		return self.is_boss
 	end

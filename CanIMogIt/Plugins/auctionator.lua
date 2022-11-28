@@ -69,9 +69,10 @@ if IsAddOnLoaded("Auctionator") then
     -- Function hooks     --
     ------------------------
 
-    function AuctionatorFrame_CIMIOnValueChanged()
+    function AuctionatorFrame_CIMIOnValueChanged(_, elapsed)
         -- Some other addons *coughTSMcough* prevent this frame from loading.
         if _G["AuctionatorShoppingFrame"] == nil then return end
+        if not CanIMogIt.FrameShouldUpdate("AuctionatorShopping", elapsed or 1) then return end
         local buttons = _G["AuctionatorShoppingFrame"].ResultsListing.ScrollArea.ScrollBox:GetFrames()
         if buttons == nil then
             return

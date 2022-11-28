@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.11) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.12) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2021-07-04T09:29:34Z
+    This file was last updated on 2022-11-28T00:39:32Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -341,7 +341,6 @@ function D:GetDefaultsSettings()
                 [DS["GDREAMLESSSLEEP"]]         = true,
                 [(not DC.WOWC) and DS["MDREAMLESSSLEEP"] or "NONE"]         = (not DC.WOWC) and true or nil,
                 [DS["DCR_LOC_MINDVISION"]]      = true,
-                [DS["MUTATINGINJECTION"]]       = true,
                 [(not DC.WOWC) and DS["Arcane Blast"] or "NONE"]            = (not DC.WOWC) and true or nil,
             },
 
@@ -427,6 +426,8 @@ function D:GetDefaultsSettings()
                 ["MONK"] = {
                 },
                 ["DEMONHUNTER"] = {
+                },
+                ["EVOKER"] = {
                 }
             },
             -- }}}
@@ -563,7 +564,7 @@ local function GetStaticOptions ()
         end
 
         if not isItem and v > 0xffffff then
-            v = bit.band(0xffffff, v);
+            v = bit.band(0xffffff, v); -- XXX does not seem to yield the expected results in wotlk for pet spells...
         end
 
         -- avoid spellID/itemID collisions
@@ -1762,7 +1763,7 @@ local function GetStaticOptions ()
                                     "\n\n|cFFDDDD00 %s|r:\n   %s"..
                                     "\n\n|cFFDDDD00 %s|r:\n   %s\n\n   %s"
                                 ):format(
-                                    "2.7.8.11", "John Wellesz", ("2022-10-27T09:53:34Z"):sub(1,10),
+                                    "2.7.8.12", "John Wellesz", ("2022-11-28T00:39:32Z"):sub(1,10),
                                     L["ABOUT_NOTES"],
                                     L["ABOUT_LICENSE"],         GetAddOnMetadata("Decursive", "X-License") or 'All Rights Reserved',
                                     L["ABOUT_SHAREDLIBS"],      GetAddOnMetadata("Decursive", "X-Embeds")  or 'GetAddOnMetadata() failure',
@@ -3270,6 +3271,6 @@ function D:QuickAccess (CallingObject, button) -- {{{
 end -- }}}
 
 
-T._LoadedFiles["Dcr_opt.lua"] = "2.7.8.11";
+T._LoadedFiles["Dcr_opt.lua"] = "2.7.8.12";
 
 -- Closer

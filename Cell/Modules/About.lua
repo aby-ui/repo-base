@@ -226,9 +226,19 @@ local function CreatePatronsPane()
     patronsBtn1:SetPoint("TOPLEFT", aboutTab, "TOPRIGHT", 1, -5)
     
     local label = patronsBtn1:GetFontString()
-    label:ClearAllPoints()
-    label:SetPoint("CENTER", 6, -5)
-    label:SetRotation(-math.pi/2)
+    if Cell.isRetail then
+        label:ClearAllPoints()
+        label:SetPoint("CENTER", 6, -5)
+        label:SetRotation(-math.pi/2)
+    else
+        Cell:StopRainbowText(label)
+        label:SetWordWrap(true)
+        label:SetSpacing(0)
+        label:ClearAllPoints()
+        label:SetPoint("CENTER")
+        label:SetText("P\na\nt\nr\no\nn\ns")
+        Cell:StartRainbowText(label)
+    end
     
     local patronsBtn2 = CreateButton(100, 17, [[Interface\AddOns\Cell\Media\Icons\left]])
     patronsBtn2:SetPoint("TOPLEFT", aboutTab, "TOPRIGHT", 6, -5)

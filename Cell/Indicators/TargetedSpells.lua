@@ -42,12 +42,26 @@ local function UpdateCastsOnUnit(guid)
 
     local allCasts = 0
     local startTime, endTime, spellId, icon
+    local noneZeroFound
+
     for _, castInfo in pairs(GetCastsOnUnit(guid)) do
         allCasts = allCasts + 1
-        if not endTime then
+
+        if not endTime then --! init
             startTime, endTime, spellId, icon = castInfo["startTime"], castInfo["endTime"], castInfo["spellId"], castInfo["icon"]
-        elseif endTime > castInfo["endTime"] then -- always show spell with min endTime
-            startTime, endTime, spellId, icon = castInfo["startTime"], castInfo["endTime"], castInfo["spellId"], castInfo["icon"]
+        else
+            spellId = castInfo["spellId"]
+            if Cell.vars.targetedSpellsList[spellId] then --! [NONE ZERO]
+                if not noneZeroFound or endTime > castInfo["endTime"] then --! NOT FOUND BEFORE or SHORTER DURATION
+                    startTime, endTime, icon = castInfo["startTime"], castInfo["endTime"], castInfo["icon"]
+                end
+            elseif not noneZeroFound and endTime > castInfo["endTime"] then --! [ZERO] NOT FOUND BEFORE and SHORTER DURATION
+                startTime, endTime, icon = castInfo["startTime"], castInfo["endTime"], castInfo["icon"]
+            end
+        end
+
+        if Cell.vars.targetedSpellsList[spellId] then
+            noneZeroFound = true
         end
     end
 
@@ -57,11 +71,21 @@ local function UpdateCastsOnUnit(guid)
     else
         if b1 then
             b1.indicators.targetedSpells:SetCooldown(startTime, endTime-startTime, icon, allCasts)
-            b1.indicators.targetedSpells:ShowGlow(unpack(Cell.vars.targetedSpellsGlow))
+            -- glow if not 0
+            if noneZeroFound then
+                b1.indicators.targetedSpells:ShowGlow(unpack(Cell.vars.targetedSpellsGlow))
+            else
+                b1.indicators.targetedSpells:ShowGlow()
+            end
         end
         if b2 then
             b2.indicators.targetedSpells:SetCooldown(startTime, endTime-startTime, icon, allCasts)
-            b2.indicators.targetedSpells:ShowGlow(unpack(Cell.vars.targetedSpellsGlow))
+            -- glow if not 0
+            if noneZeroFound then
+                b2.indicators.targetedSpells:ShowGlow(unpack(Cell.vars.targetedSpellsGlow))
+            else
+                b2.indicators.targetedSpells:ShowGlow()
+            end
         end
     end
 end
@@ -97,9 +121,11 @@ eventFrame:SetScript("OnEvent", function(_, event, sourceUnit)
                 name, _, texture, startTimeMS, endTimeMS, _, notInterruptible, spellId = UnitChannelInfo(sourceUnit)
             end
 
+            -- print(name, spellId)
+
             if cast then previousTarget = cast["targetGUID"] end
 
-            if spellId and Cell.vars.targetedSpellsList[spellId] then
+            if spellId and (Cell.vars.targetedSpellsList[spellId] or Cell.vars.targetedSpellsList[0]) then
                 local targetUnit = sourceUnit.."target"
                 if UnitIsVisible(targetUnit) then
                     for member in F:IterateGroupMembers() do
@@ -228,6 +254,13 @@ function I:CreateTargetedSpells(parent)
     end
 end
 
+-- NOTE: in case there's a casting spell, hide!
+local function EnterLeaveInstance()
+    F:IterateAllUnitButtons(function(b)
+        b.indicators.targetedSpells:Hide()
+    end, true)
+end
+
 function I:EnableTargetedSpells(enabled)
     if enabled then
         -- UNIT_SPELLCAST_DELAYED UNIT_SPELLCAST_FAILED UNIT_SPELLCAST_FAILED_QUIET UNIT_SPELLCAST_INTERRUPTED UNIT_SPELLCAST_START UNIT_SPELLCAST_STOP
@@ -249,8 +282,15 @@ function I:EnableTargetedSpells(enabled)
         eventFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
         
         eventFrame:RegisterEvent("ENCOUNTER_END")
+
+        Cell:RegisterCallback("EnterInstance", "TargetedSpells_EnterInstance", EnterLeaveInstance)
+        Cell:RegisterCallback("LeaveInstance", "TargetedSpells_LeaveInstance", EnterLeaveInstance)
     else
         eventFrame:UnregisterAllEvents()
+        
+        Cell:UnregisterCallback("EnterInstance", "TargetedSpells_EnterInstance")
+        Cell:UnregisterCallback("LeaveInstance", "TargetedSpells_LeaveInstance")
+
         F:IterateAllUnitButtons(function(b)
             b.indicators.targetedSpells:Hide()
         end)

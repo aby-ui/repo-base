@@ -268,6 +268,7 @@ L["Default layout"] = "默认布局"
 L["Inherit: "] = "继承："
 L["Layout Auto Switch"] = "布局自动切换"
 L["Solo/Party"] = "单人/小队"
+L["Outdoor"] = "野外"
 L["Arena"] = "竞技场"
 L["BG 1-15"] = "战场 1-15"
 L["BG 16-40"] = "战场 16-40"
@@ -277,9 +278,9 @@ L["Orientation"] = "方向"
 L["Vertical"] = "纵向"
 L["Horizontal"] = "横向"
 L["Party"] = "小队"
-L["Unit Button Size"] = "单位按钮尺寸"
-L["Pet Button Size"] = "宠物按钮尺寸"
-L["Spotlight Button Size"] = "特别关注按钮尺寸"
+L["Button Size"] = "按钮尺寸"
+L["Pet Button"] = "宠物按钮"
+L["Spotlight Button"] = "特别关注按钮"
 L["Width"] = "宽"
 L["Height"] = "高"
 L["Power Size"] = "能量条尺寸"
@@ -468,6 +469,7 @@ L["showDispelTypeIcons"] = "显示驱散类型图标"
 L["castByMe"] = "只显示我施放的增益"
 L["trackByName"] = "匹配法术名称"
 L["showDuration"] = "显示持续时间文本"
+L["showStack"] = "显示层数文本"
 L["Show duration text instead of icon animation"] = "用持续时间文本取代图标动画"
 L["enableHighlight"] = "高亮单位按钮"
 L["onlyShowTopGlow"] = "仅为优先级最高的减益显示发光效果"
@@ -602,6 +604,21 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r148-release (Nov 27, 2022, 22:07 GMT+8)</h1>
+    <p>* 修复怀旧服的布局自动切换。</p>
+    <p>* 更新繁中。</p>
+    <br/>
+
+    <h1>r147-release (Nov 27, 2022, 18:02 GMT+8)</h1>
+    <p>* 更新布局自动切换，添加了“副本 野外”类型。</p>
+    <p>* 添加颜色选项：治疗预估、治疗吸收、护盾材质。</p>
+    <p>* 更新状态图标指示器（复活相关）。</p>
+    <p>* 更新被法术选中指示器。</p>
+    <p>* 更新自定义指示器（进度条/矩形），添加了层数文本。</p>
+    <p>* 修复距离检查。</p>
+    <p>* 其他异常修复。</p>
+    <br/>
+
     <h1>r146-release (Nov 25, 2022, 05:15 GMT+8)</h1>
     <p>* 更新点击施法。</p>
     <p>* 修复异常。</p>

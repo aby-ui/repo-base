@@ -943,6 +943,7 @@ function MDT:MakeSidePanel(frame)
     MDT:SetUniqueID(preset)
     preset.mdiEnabled = db.MDI.enabled
     preset.difficulty = db.currentDifficulty
+    preset.addonVersion = db.version
     local export = MDT:TableToString(preset, true, 5)
     MDT:HideAllDialogs()
     MDT.main_frame.ExportFrame:Show()
@@ -1407,11 +1408,13 @@ function MDT:DisplayMDISelector()
     local widget = MDT.MDISelector.frame
     function frame:Hide(...)
       widget:Hide()
+      ---@diagnostic disable-next-line: redundant-parameter
       return originalHide(self, ...)
     end
 
     function frame:Show(...)
       if db.MDI.enabled then widget:Show() end
+      ---@diagnostic disable-next-line: redundant-parameter
       return originalShow(self, ...)
     end
 
@@ -2444,7 +2447,7 @@ function MDT:EnsureDBTables()
     db.selectedDungeonList = defaultSavedVars.global.selectedDungeonList
   end
   local preset = MDT:GetCurrentPreset()
-  if preset.week and (preset.week < 1 or preset.week > 12) then preset.week = nil end
+  if preset.week and (preset.week < 1 or preset.week > 10) then preset.week = nil end
   preset.week = preset.week or MDT:GetCurrentAffixWeek()
   db.currentPreset[db.currentDungeonIdx] = db.currentPreset[db.currentDungeonIdx] or 1
   db.presets[db.currentDungeonIdx][db.currentPreset[db.currentDungeonIdx]].value.currentDungeonIdx = db.currentDungeonIdx

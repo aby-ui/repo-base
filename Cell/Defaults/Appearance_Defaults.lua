@@ -26,10 +26,10 @@ Cell.defaults.appearance = {
     ["mouseoverColor"] = {1, 1, 1, 0.6},
     ["highlightSize"] = 1,
     ["outOfRangeAlpha"] = 0.45,
-    ["healPrediction"] = true,
+    ["healPrediction"] = {true, false, {1, 1, 1, 0.4}},
     ["useLibHealComm"] = Cell.isWrath,
-    ["healAbsorb"] = Cell.isRetail,
-    ["shield"] = true,
+    ["healAbsorb"] = {Cell.isRetail, {1, 0.1, 0.1, 0.9}},
+    ["shield"] = {true, {1, 1, 1, 0.4}},
     ["overshield"] = true,
 }
 

@@ -1,20 +1,20 @@
 local mod	= DBM:NewMod(2495, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221016024958")
+mod:SetRevision("20221128054542")
 mod:SetCreatureID(191736)
 mod:SetEncounterID(2564)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221015000000)
+mod:SetHotfixNoticeRev(20221127000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 376467 377034 377004 376997",
-	"SPELL_CAST_SUCCESS 377182 377004 376781",
-	"SPELL_AURA_APPLIED 376781",
+	"SPELL_CAST_START 377034 377004 376997",
+	"SPELL_CAST_SUCCESS 377004 376781",
+	"SPELL_AURA_APPLIED 376781 181089",
 --	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED 376781"
 --	"SPELL_PERIODIC_DAMAGE",
@@ -22,16 +22,15 @@ mod:RegisterEventsInCombat(
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
---TODO, fix playball. 90% certain that's not the trigger, but until I have logs I cannot do better.
 --Gale force not in combat log
---Play Ball not in combat log
 --TODO, verify target scan
 --[[
 (ability.id = 377034 or ability.id = 377004 or ability.id = 376997) and type = "begincast"
  or ability.id = 376781
+ or ability.id = 181089
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
---local warnPlayBall							= mod:NewSpellAnnounce(377182, 2, nil, nil, nil, nil, nil, 2)
+local warnPlayBall								= mod:NewSpellAnnounce(377182, 2, nil, nil, nil, nil, nil, 2)
 
 local specWarnFirestorm							= mod:NewSpecialWarningDodge(376448, nil, nil, nil, 2, 2)
 --local specWarnGaleForce						= mod:NewSpecialWarningSpell(376467, nil, nil, nil, 2, 2)
@@ -41,11 +40,10 @@ local specWarnDeafeningScreech					= mod:NewSpecialWarningDodge(377004, nil, nil
 local specWarnSavagePeck						= mod:NewSpecialWarningDefensive(376997, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
---local timerPlayBallCD							= mod:NewAITimer(35, 377182, nil, nil, nil, 6)
 local timerFirestorm							= mod:NewBuffActiveTimer(12, 376448, nil, nil, nil, 1)
 local timerOverpoweringGustCD					= mod:NewCDTimer(28.2, 377034, nil, nil, nil, 3)
 local timerDeafeningScreechCD					= mod:NewCDTimer(22.7, 377004, nil, nil, nil, 3)
-local timerSavagePeckCD							= mod:NewCDTimer(13.6, 376997, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerSavagePeckCD							= mod:NewCDTimer(13.6, 376997, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Spell queued intoo oblivion often
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -63,7 +61,7 @@ end
 function mod:OnCombatStart(delay)
 --	timerPlayBallCD:Start(1-delay)
 	timerSavagePeckCD:Start(3.6-delay)
-	timerDeafeningScreechCD:Start(11.3-delay)
+	timerDeafeningScreechCD:Start(10.1-delay)
 	timerOverpoweringGustCD:Start(15.7-delay)
 end
 
@@ -78,10 +76,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 376467 then
---		specWarnGaleForce:Show()
---		specWarnGaleForce:Play("carefly")--Temp, it's not a knockback it's a pushback
-	elseif spellId == 377034 then
+	if spellId == 377034 then
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "GustTarget", 0.1, 8, true)
 		specWarnOverpoweringGust:Show()
 		specWarnOverpoweringGust:Play("shockwave")
@@ -104,11 +99,7 @@ end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 377182 then
---		warnPlayBall:Show()
---		warnPlayBall:Play("phasechange")
---		timerPlayBallCD:Start()
-	elseif spellId == 377004 then
+	if spellId == 377004 then
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
 		end
@@ -122,6 +113,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 376781 then
 		timerFirestorm:Start()
+		--Regardless of time remaining, crawth will cast these coming out of stun
+		timerOverpoweringGustCD:Restart(12)
+		timerDeafeningScreechCD:Restart(16.7)
+		timerSavagePeckCD:Stop()--24.6, This one probably restarts too but also gets wierd spell queue and MIGHT not happen
+	elseif spellId == 181089 and args:GetDestCreatureID() == 191736 then--Crawth getting buff is play ball starting
+		warnPlayBall:Show()
+		warnPlayBall:Play("phasechange")
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

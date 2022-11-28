@@ -30,12 +30,16 @@ end)
 
 -- returns true (and the precise level) of a petID if it can level
 function rematch:PetCanLevel(petID)
-	if rematch:GetIDType(petID)=="pet" then
-		local speciesID,_,level,xp,maxXp,_,_,_,_,_,_,_,_,_,canBattle = C_PetJournal.GetPetInfoByPetID(petID)
-		if level and level<25 and canBattle then
-			return true,level+(xp/maxXp)
-		end
+	local petInfo = rematch.petInfo:Fetch(petID)
+	if petInfo.canLevel then
+		return true,petInfo.level+(petInfo.xp/petInfo.maxXp)
 	end
+	-- if rematch:GetIDType(petID)=="pet" then
+	-- 	local _,_,level,xp,maxXp,_,_,_,_,_,_,_,_,_,canBattle = C_PetJournal.GetPetInfoByPetID(petID)
+	-- 	if level and level<25 and canBattle then
+	-- 		return true,level+(xp/maxXp)
+	-- 	end
+	-- end
 end
 
 function rematch:IsPetLeveling(petID)
@@ -79,6 +83,10 @@ end
 local firstProcessQueueTimeout = 5 -- when this has a value, then the queue is still waiting for first run
 function rematch:ProcessQueue()
 
+	if not rematch.inWorld then
+		return -- not logged in or in a loading screen, don't do anything
+	end
+
 	-- if pets not loaded, come back in half a second to try again
 	local numPets,owned = C_PetJournal.GetNumPets()
 	local petLoaded = C_PetJournal.GetPetLoadOutInfo(1)
@@ -120,12 +128,7 @@ function rematch:ProcessQueue()
 		if canLevel and not levelingPets[petID] then
 			levelingPets[petID] = level
 		else
-			local petInfo = rematch.petInfo:Fetch(petID)
-			if petInfo.valid then -- only remove valid pets that can't level
-				rematch.Level25PetLeavingQueue = true
-				tremove(queue,i) -- remove pets that can't level (or that are already in queue)
-				rematch.Level25PetLeavingQueue = nil
-			end
+			tremove(queue,i) -- remove pets that can't level (or that are already in queue)
 		end
 	end
 
@@ -268,7 +271,6 @@ end
 -- to add/move a pet to the top of the queue: index=1
 -- to add/move a pet to the end of the queue: index=#queue+1
 function rematch:InsertPetToQueue(index,petID)
-	rematch.Level25PetLeavingQueue = true
 	local isNew = true -- assume pet is new
 	local oldQueueSize = #queue -- before we add something, note size of queue
 	-- check if pet already exists in queue; if so replace it with a placeholder 0
@@ -292,11 +294,9 @@ function rematch:InsertPetToQueue(index,petID)
 		rematch:MaybeSlotNewLevelingPet(petID)
 	end
 	rematch:UpdateQueue()
-	rematch.Level25PetLeavingQueue = nil
 end
 
 function rematch:RemovePetFromQueue(petID)
-	rematch.Level25PetLeavingQueue = true
 	for i=#queue,1,-1 do
 		if queue[i]==petID then
 			tremove(queue,i)
@@ -304,7 +304,6 @@ function rematch:RemovePetFromQueue(petID)
 	end
 	rematch.outgoingQueuedPetID = petID -- note this pet for ProcessQueue within the UpdateUI
 	rematch:UpdateQueue()
-	rematch.Level25PetLeavingQueue = nil
 end
 
 -- this should be the only place to add many pets to the end of the queue
@@ -359,21 +358,6 @@ end
 -- Type sorts by type, then ascending level, then name, then petID.
 function rematch.SortQueueTable(e1,e2)
 	local order = settings.QueueSortOrder
-
-	-- invalid pets, when sorted, should go to the end
-	local petInfo1 = rematch.petInfo:Fetch(e1)
-	local petInfo2 = rematch.altInfo:Fetch(e2)
-	if petInfo1.valid and not petInfo2.valid then
-		return true
-	elseif not petInfo1.valid and petInfo2.valid then
-		return false
-	elseif not petInfo1.valid and not petInfo2.valid then
-		if e1~=e2 then
-			return tostring(e1)<tostring(e2)
-		else
-			return tostring(e1).."etc"<tostring(e2)
-		end
-	end
 
 	local name1, name2, type1, type2
 
@@ -506,20 +490,4 @@ function rematch:ToastNextLevelingPet(petID)
 		rematch.LevelingToastSystem = AlertFrame:AddQueuedAlertFrameSubSystem("RematchLevelingToastTemplate", toastSetup, 2, 0)
 	end
 	rematch.LevelingToastSystem:AddAlert(petID)
-end
-
--- invalid/missing pets are no longer automatically removed from the queue and instead removed from right-click InvalidQueueMenu option
--- this is not and should not be called automatically (users are reporting the queue emptying; likely due to pets not being valid for
--- a time (initial login?), so for a workaround invalid pets are allowed to remain in the queue and the user can remove them; 99% of
--- time this is when a pet in the queue is caged or released)
-function rematch:RemoveInvalidPetsFromQueue()
-	rematch.Level25PetLeavingQueue = true
-	for i=#queue,1,-1 do
-		local petInfo = rematch.petInfo:Fetch(queue[i])
-		if not petInfo.valid then
-			tremove(queue,i)
-		end
-	end
-	rematch:UpdateQueue()
-	rematch.Level25PetLeavingQueue = nil
 end

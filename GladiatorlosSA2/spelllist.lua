@@ -23,7 +23,8 @@
 			[345231] = "battlemaster",
 			--[363121] = "echo",
 			--[363117] = "resolve",
-			[362699] = "resolve",
+			--[362699] = "resolve",
+			[377360] = "precognition",
 
 			-- Crowd Controls
 			--Polymorph (Mage)
@@ -41,6 +42,8 @@
 			[126819] = "success", -- Porcupine
 			[277787] = "success", -- Direhorn
 			[277792] = "success", -- Bumblebee
+			[391631] = "success", -- Duck
+			[383121] = "success", -- Mass
 
 			--Hex (Shaman)
 			[51514] = "success", -- Frog
@@ -65,16 +68,7 @@
 			[339] = "success", -- Entangling Roots
 			[235963] = "success", -- Entangling Roots Feral Talent
 			[360806] = "success", -- Sleepwalk (Evoker)
-
-			-- Covenant Abilities
-			[310143] = "soulshape", -- Nightfae Signature
-			[319217] = "podtender", -- Nightfae Cheat Death
-			[320224] = "podtender", -- Nightfae Cheat Death
-			[327676] = "forgeborne", -- Forgeborne (Necrolord Soulbind)
-			[323095] = "UltimateForm", -- Necro
-			[323524] = "UltimateForm", -- Necro
-			[330752] = "AscendantPhial", -- Kyrian Kleia Soulbind debuff immunity for SOME REASON THIS IS A THING
-			[331937] = "euphoria",
+			[389794] = "success", -- Snowdrift Cast
 
 			-- Backlash (Aura Applied)
 			[87204] = "backlashFear", -- Vampiric Touch Dispel (Priest)
@@ -112,6 +106,9 @@
 			[188501] = "spectralSight",
 			[196555] = "netherwalk",
 			--[207810] = "netherBond",
+			[206803] = "rainFromAbove",
+			[391430] = "fodderToTheFlame",
+			[354610] = "glimpse",
 
 			-- Druid (Aura Applied)
 			[102560] = "incarnationElune",
@@ -126,11 +123,12 @@
 			[69369] = "PredatorSwiftness",
 			[112071] = "celestialAlignment",
 			[194223] = "celestialAlignment",
+			[383410] = "celestialAlignment",
 			[102342] = "ironBark",
 			[102351] = "cenarionWard",
 			[155835] = "BristlingFur",
 			[29166] = "innervate",
-			--[200851] = "rageOfSleeper",
+			[200851] = "rageOfSleeper",
 			--[203727] = "thorns", -- (Resto)
 			--[236696] = "thorns", -- (Feral/Balance)
 			[305497] = "thorns", -- Resto/Feral/Balance 8.2
@@ -140,9 +138,12 @@
 			[108292] = "heartOfTheWild", -- Heart of the Wild
 			[108293] = "heartOfTheWild", -- Heart of the Wild
 			[108294] = "heartOfTheWild", -- Heart of the Wild
+			[319454] = "heartOfTheWild", -- Dragonflight
 			[323546] = "ravenousfrenzy", -- Venthyr
 			[22842] = "FrenziedRegen",
 			[132158] = "naturesSwiftness",
+			[124974] = "naturesVigil",
+			[382912] = "wellHonedInstincts", -- frenzied regen proc
 
 			-- Evoker (Aura Applied)
 			[363916] = "obsidianScales",
@@ -163,7 +164,7 @@
 			[212640] = "mendingBandage",
 			--[193526] = "trueShot",
 			[288613] = "trueShot",
-			[193530] = "trueShot",	-- Aspect of the Wild
+			[193530] = "aspectOfTheWild",	-- Aspect of the Wild
 			[266779] = "trueShot",	-- Coordinated Assault
 			--[186289] = "eagle",
 			[3355] = "trapped", -- Freezing Trap Success
@@ -172,10 +173,13 @@
 			[260402] = "doubletap",
 			[356727] = "spiderSting",
 			[357021] = "concussion", -- Consecutive Concussion
+			[264735] = "survivalOfTheFittest",
+			[360966] = "spearhead",
+			[360952] = "coordinatedAssault",
 
 			-- Mage (Aura Applied)
 			[45438] = "iceBlock",
-			[12042] = "arcanePower",
+			--[12042] = "arcanePower",
 			[12472] = "icyVeins",
 			[198111] = "temporalShield",
 			[198144] = "iceForm",
@@ -189,6 +193,7 @@
 			[353128] = "arcanosphere",
 			[82691] = "frozen", -- Ring of Froze Debuff
 			[353084] = "burns", -- Ring of Fire Debuff
+			[389831] = "snowdriftWinter", -- Snowdrift Stun
 
 			-- Monk (Aura Applied)
 			[122278] = "dampenHarm",
@@ -206,8 +211,9 @@
 			[197908] = "manaTea",
 			[209584] = "zenFocusTea",
 			[202335] = "doubleBarrel", -- Double Barrel (Brewmaster Honor Talent that stuns)
-			[310454] = "weaponoforder", -- Kyrian
+			[387184] = "weaponoforder", -- talent
 			[353361] = "dematerialize",
+			--[353319] = "peaceweaver",
 						
 			-- Paladin (Aura Applied)
 			[1022] = "handOfProtection", 
@@ -232,6 +238,8 @@
 			[498] = "divineProtection", -- Divine Protection
 			[204018] = "Spellwarding", -- Blessing of Spellwarding
 			[215652] = "ShieldOfVirtue", -- Shield of Virtue
+			[327193] = "momentOfGlory",
+			[378974] = "bastionOfLight",
 			
 			-- Priest (Aura Applied)
 			[33206] = "painSuppression",
@@ -243,15 +251,21 @@
 			[200183] = "apotheosis",
 			[213610] = "holyWard",
 			[197268] = "rayOfHope",
-			[193223] = "surrenderToMadness",
+			--[193223] = "surrenderToMadness",
 			[319952] = "surrenderToMadness",
 			[47536] = "rapture",
 			[109964] = "rapture",
-			[194249] = "voidForm",
-			[218413] = "voidForm",
+			[228260] = "voidForm",
 			[15286] = "vampiricEmbrace",
-			[213602] = "greaterFade",
+			--[213602] = "greaterFade",
 			--[196762] = "innerFocus",
+			[328530] = "divineAscension",
+			[372616] = "empyrealBlaze",
+			[372760] = "divineWord",
+			[372791] = "divineWordSerenity",
+			[372761] = "divineWordChastise",
+			[372783] = "divineWordSanctuary",
+			[211319] = "restitution",
 
 			-- Rogue (Aura Applied)
 			[185313] = "shadowDance",
@@ -271,6 +285,7 @@
 			[207736] = "shadowyDuel",
 			[1966] = "Feint", -- Feint
 			[199027] = "veilOfMidnight",
+			[13877] = "bladeFlurry",
 			
 			-- Shaman (Aura Applied)
 			--[204288] = "earthShield",
@@ -282,7 +297,8 @@
 			[210918] = "etherealForm",
 			[108271] = "astralShift",
 			--[204293] = "spiritLink",
-			[335903] = "doomWinds",
+			[384352] = "doomWinds",
+			[378081] = "naturesSwiftness",
 
 			
 			-- Warlock (Aura Applied)
@@ -305,17 +321,20 @@
 			[107574] = "avatar",
 			--[12292] = "bloodbath",
 			[198817] = "sharpenBlade",
-			[197690] = "defensestance",
+			[386208] = "defenseStance",
+			[386196] = "damageStance",
 			--[218826] = "trialByCombat",
 			[23920] = "spellReflection",
 			[330279] = "spellReflection", -- Overwatch PvP talent
 			[236273] = "duel",
 			[260708] = "sweepingStrikes", -- Sweeping Strikes
-			[202147] = "secondWind", -- Second Wind
+			[351077] = "secondWind", -- Second Wind
 			[12975] = "lastStand", -- Last Stand
 			[223658] = "safeguard", -- Safeguard
 			[199086] = "warpath", -- Warpath
 			[147833] = "Intervene",
+			[392966] = "spellBlock",
+			[213871] = "bodyguard",
 			
 			-- Tank Taunts (Aura Applied)
 			--[206891] = "tankTauntsON", -- Tank Taunts On
@@ -343,14 +362,17 @@
 			[108292] = "heartOfTheWildDown", -- Heart of the Wild
 			[108293] = "heartOfTheWildDown", -- Heart of the Wild
 			[108294] = "heartOfTheWildDown", -- Heart of the Wild
+			[319454] = "heartOfTheWildDown", -- Dragonflight Talent
 			[102560] = "incarnationDown",		--Incarnation (Boomkin)
 			[102543] = "incarnationDown",		--Incarnation (Cat)
 			[102558] = "incarnationDown",		--Incarnation (Bear)
 			[33891] = "incarnationDown",		--Incarnation (Tree)
-			--[200851] = "rageOfSleeperDown",		--Rage of the Sleeper
+			[200851] = "rageOfSleeperDown",		--Rage of the Sleeper
 			--[203727] = "thornsDown",			--Thorns (Resto)
 			--[236696] = "thornsDown",			--Thorns (Feral)
 			[305497] = "thornsDown",			--Thorns 8.2
+			[124974] = "naturesVigilDown",
+			[382912] = "wellHonedInstinctsDown", -- frenzied regen proc
 
 			-- Evoker (Aura Removed)
 			[363916] = "obsidianScalesDown",
@@ -365,8 +387,11 @@
 			[186265] = "deterrenceDown",		--Aspect of the Turtle
 			--[193526] = "trueShotDown",			--Trueshot
 			[288613] = "trueShotDown",
-			[193530] = "trueShotDown",			--Aspect of the Wild
+			[193530] = "aspectOfTheWildDown",			--Aspect of the Wild
 			[266779] = "trueShotDown",			--Coordinated Assault
+			[264735] = "survivalOfTheFittestDown", 
+			[360966] = "spearheadDown",
+			[360952] = "coordinatedAssaultDown",
 			
 			-- Mage (Aura Removed)
 			[45438] = "iceBlockDown", 			--Ice Block
@@ -386,6 +411,7 @@
 			--[216113] = "fistingDown",			--Way of the Crane
 			[116849] = "lifeCocoonDown",		--Life Coccoon
 			[209584] = "zenFocusTeaDown",		--Zen Focus Tea
+			--[353319] = "peaceweaverDown",
 
 			-- Paladin (Aura Removed)
 			[642] = "bubbleDown",				--Divine Shield
@@ -395,6 +421,8 @@
 			[184662] = "vengeanceShieldDown",	--Vengeance Shield
 			[86659] = "kingsDown",				--Guardian of Ancient Kings
 			[228049] = "queensDown",			--Guardian of Forgotten Queens
+			[327193] = "momentOfGloryDown",
+			[378974] = "bastionOfLightDown",
 
 			-- Priest (Aura Removed)
 			[47585] = "dispersionDown",			--Dispersion
@@ -403,8 +431,7 @@
 			[197268] = "hopeDown",				--Ray of Hope
 			--[193223] = "madnessDown",			--Surrender to Madness
 			--[319952] = "madnessDown",			-- It's baaaack
-			[194249] = "voidFormDown",			--Voidform
-			[218413] = "voidFormDown",			--Voidform
+			[228260] = "voidFormDown",			--Voidform
 			[15286] = "vampiricEmbraceDown",	--Vampiric Embrace
 
 			-- Rogue (Aura Removed)
@@ -413,11 +440,13 @@
 			[51690] = "killingSpreeDown",		--Killing Spree
 			[199754] = "riposteDown",			--Riposte
 			[343142] = "dreadbladesDown",		--Curse of the Dreadblades
+			[13877] = "bladeFlurryDown",
 
 			-- Shaman (Aura Removed)
 			[108271] = "astralShiftDown",		--Astral Shift
 			[210918] = "etherealDown",			--Ethereal Form
 			--[204293] = "spiritLinkDown",		--Spirit Link
+			[378081] = "naturesSwiftnessDown",
 
 			-- Warlock (Aura Removed)
 			[212295] = "netherWardDown",		--Nether Ward
@@ -425,7 +454,8 @@
 			-- Warrior (Aura Removed)
 			[871] = "shieldWallDown", 			--Shield Wall
 			[118038] = "dieByTheSwordDown",		--Die by the Sword
-			[197690] = "damageStance",			--Defensive Stance (Falling off)
+			[392966] = "spellBlockDown",
+			[213871] = "bodyguardDown",
 
 			
 			--[216890] = "SpellreflectionDown", 		-- Arms/Fury
@@ -447,7 +477,7 @@
 			[210294] = "DivineFavorDown", -- Divine Favor
 			[104773] = "UnendingResolve2Down", -- Unending Resolve
 			[190319] = "combustionDown", -- Combustion
-			[12042] = "APDown", -- Arcane Power
+			--[12042] = "APDown", -- Arcane Power
 			[12472] = "icyVeinsDown", -- Icy Veins
 			[29166] = "innervateDown", -- Innervate
 			[6940] = "sacrificeDown", -- Blessing of Sacrifice
@@ -459,6 +489,7 @@
 			[49039] = "lichborneDown", -- Lichborne
 			[288977] = "transfusionDown", -- Transfusion
 			[315443] = "abominationLimbDown", -- Abomination's Limb
+			[383269] = "abominationLimbDown", -- talent
 
 
 			[147833] = "interveneDown",
@@ -468,16 +499,12 @@
 			[330752] = "AscendantPhialDown", -- Kleia's nonsense
 			[132158] = "swiftnessDown",
 			[10060] = "infusionDown", -- Power Infusion
-			[335903] = "doomwindsDown",
+			[384352] = "doomwindsDown",
 			[199027] = "veilOfMidnightDown",
 			--[363121] = "echoDown",
 			--[363117] = "resolveDown",
-			[362699] = "resolveDown",
-
-			-- COVENANTS
-			[310143] = "soulshapeDown", -- Nightfae Signature
-			[331937] = "euphoriaDown",
-			--[324867] = "fleshcraftDown", -- Necrolord Signature
+			--[362699] = "resolveDown",
+			[377360] = "precognitionDown",
 	
 			},
 		castStart = {					-- cast start [spellid] = ".ogg file name",
@@ -496,6 +523,7 @@
 			--[186263] = "bigHeal", -- Shadow Mend (Discipline/Shadow Priest)
 			--[116694] = "bigHeal", -- Effuse (Mistweaver)
 			--[124682] = "bigHeal", -- Enveloping Mists (Mistweaver)
+			[50464] = "bigHeal", -- Nourish (resto Druid)
 			
 			-- Non-Combat Resurrections
 			[2006] = "resurrection", -- Resurrection (Priest)
@@ -510,15 +538,13 @@
 			[212036] = "resurrection", -- Mass Resurrection (Priest Mass Rez)
 			[212056] = "resurrection", -- Absolution (Paladin Mass Rez)
 			[212048] = "resurrection", -- Ancestral Vision (Shaman Mass Rez)
-
-			-- Covenants
-			[300728] = "doorOfShadows", -- Venthyr signature
 			
 			-- Death Knight (Spell Casting)
 				--None! :D
 				
 			-- Demon Hunter (Spell Casting)
 			[323639] = "theHunt",		-- Nightfae
+			[370965] = "theHunt",		-- Talent
 
 			-- Druid (Spell Casting)
 			[33786] = "cyclone",
@@ -548,8 +574,10 @@
 			[19434] = "aimedShot",
 			--[19386] = "wyvernSting",
 			[1513] = "scareBeast",
+			[203155] = "sniperShot",
 			
 			-- Mage (Spell Casting)
+			[365350] = "arcaneSurge",
 			[118] = "polymorph", -- Sheep
 			[28271] = "polymorph", -- Turtle
 			[28272] = "polymorph", -- Pig
@@ -564,6 +592,8 @@
 			[126819] = "polymorph", -- Porcupine
 			[277787] = "polymorph", -- Direhorn
 			[277792] = "polymorph", -- Bumblebee
+			[391631] = "polymorph", -- Duck
+			[383121] = "polymorph", -- Mass Poly
 			[31687] = "waterElemental",
 			[203286] = "greaterPyro",
 			[199786] = "glacialSpike",
@@ -571,9 +601,11 @@
 			[257537] = "ebonbolt",
 			[314793] = "mirrorsOfTorment",
 			[307443] = "radiantspark", -- Kyrian
+			[376103] = "radiantspark", -- talent
 			[353082] = "ringOfFire", -- and it burns burns burns
 			--[353128] = "arcanosphere",
 			[352278] = "iceWall",
+			[389794] = "snowdrift",
 			
 			-- Monk (Spell Casting)
 			[198898] = "craneSong",
@@ -581,6 +613,7 @@
 			-- Paladin (Spell Casting)
 			[20066] = "repentance",
 			[10326] = "turnEvil",
+			[200652] = "tyrsDeliverance",
 			
 			-- Priest (Spell Casting)
 			[9484] = "shackleUndead", 
@@ -589,7 +622,9 @@
 			[265202] = "holyWordSalvation", -- Holy Word Salvation
 			[289666] = "greaterHeal", -- >:(
 			[325013] = "boonOfTheAscended",
-			[323673] = "mindgames",
+			[375901] = "mindgames", -- Talent version
+			[214621] = "schism",
+			[373178] = "lightsWrath",
 
 			-- Rogue (Spell Casting)
 				--None! :D
@@ -606,6 +641,7 @@
 			[309328] = "hex", -- Living Honey
 			[191634] = "stormkeeper",
 			[320137] = "stormkeeper",
+			[383009] = "stormkeeper",
 			[210714] = "Icefury", -- Icefury
 			[320674] = "chainharvest", -- Venthyr
 			[328923] = "faetransfusion", -- Nightfae
@@ -638,13 +674,15 @@
 			[6201] = "CreateHealthstone",
 			[325289] = "decimatingbolt", -- Necrolord
 			[321792] = "impendingcatastrophe", -- Venthyr
-			[325640] = "soulrot", -- Nightfae
+			[386997] = "soulrot", -- talent 
 			[264106] = "deathbolt",
 			[6353] = "soulFire",
 			[353753] = "bondsOfFel",
+			[267217] = "netherPortal",
 
 			-- Warrior (Spell Casting)
 			[64382] = "shatteringthrow",
+			[384110] = "wreckingThrow",
 		},
 		castSuccess = {					--cast success [spellid] = ".ogg file name",
 			-- Cure (DPS Dispel)
@@ -678,11 +716,16 @@
 			[203286] = "connected", -- Greater Pyro
 			[116858] = "connected", -- Chaos Bolt
 			[323673] = "connected", -- Mind Games
+			[375901] = "connected", -- Mind Games, Talent version
 			[323639] = "connected", -- The Hunt
+			[370965] = "connected", -- The Hunt, Talent version
+			[203155] = "connected", -- Sniper Shot
+			[373178] = "connected", -- Light's Wrath
 			
 			-- Purges
 			[528] = "purge",		-- Dispel Magic (Priest)
 			[370] = "purge", 		-- Purge (Shaman)
+			[378773] = "purge",		-- Greater Purge (Shaman)
 			[19505] = "purge",		-- Devour Magic (Warlock :|)
 			[278326] = "purge",		-- Consume Magic (Demon Hunter apparently????)
 			[19801] = "purge",		-- Tranquilizing Shot (Hunter)
@@ -732,18 +775,6 @@
 			[363481] = "resonator",
 			[368970] = "tailSwipe", -- Dracthyr Racial
 			[357214] = "wingBuffet", -- Dracthyr Racial
-
-			-- Covenant (Cast Success)
-			[324631] = "fleshcraft", -- Necrolord signature
-			[323436] = "phialofserenity", -- Kyrian signature
-			--[332423] = "driftglobe", -- Mikanikos Stun
-			--[331612] = "driftglobe", -- ^
-			--[323916] = "sulfuricEmission", -- Emeni Fear
-			--[324263] = "sulfuricEmission", -- ^
-			--[347684] = "sulfuricEmission", -- ^
-			--[352366] = "nimbleSteps", -- Nadjia Root
-			--[354051] = "nimbleSteps", -- ^
-			--[354052] = "nimbleSteps", -- ^
 			
 			-- Death Knight (Cast Success)
 			[47528] = "mindFreeze",
@@ -803,7 +834,9 @@
 			[235903] = "manaRift",
 			[317009] = "sinfulBrand",	-- Venthyr
 			[306830] = "elysianDecree", -- Kyrian
-			[329554] = "fodderoftheflame", -- Necrolord
+			[390163] = "elysianDecree", -- Talent
+			--[329554] = "fodderoftheflame", -- Necrolord
+			[258920] = "immolationAura",
 
 			-- Druid (Cast Success)
 			[740] = "tranquility",
@@ -835,13 +868,17 @@
 			[102793] = "UrsolsVortex", -- Ursol's Vortex
 			[197721] = "Flourish", -- Flourish
 			[325727] = "adaptiveSwarm", -- Necrolord
+			[391888] = "adaptiveSwarm", -- talent
 			[323764] = "convokeTheSpirits", -- Nightfae
+			[393414] = "convokeTheSpirits", -- Talent (Resto)
+			[391528] = "convokeTheSpirits", -- Talent (Feral/Moonkin)
 			[327071] = "kindredfocus", -- Kyrian 1
 			[327022] = "kindredempowerment", -- Kyrian 2
 			[327037] = "kindredprotection", -- Kyrian 3
 			[18562] = "swiftmend",
 			[354654] = "groveProtection",
 			[274837] = "FeralFrenzy",
+			[392160] = "invigorate",
 
 			-- Evoker (Cast Success)
 			[351338] = "quell",
@@ -875,12 +912,13 @@
 			--[201078] = "snakeHunter",
 			[186387] = "burstingShot",
 			--[120360] = "barrage", 
-			--[203415] = "furyOfTheEagle",
+			[203415] = "furyOfTheEagle",
 			[1543] = "flare",
 			[199483] = "camouflage",
 			[236776] = "boomTrap", -- Hi-Explosive Trap
 			[248518] = "Interlope", -- Interlope
 			[325028] = "deathChakram", -- Necrolord
+			[375891] = "deathChakram", -- talent
 			[308491] = "resonatingArrow", -- Kyrian
 			[257284] = "huntersMark",
 			[19577] = "intimidation", -- Intimidation
@@ -891,6 +929,9 @@
 			[356719] = "chimaeralSting",
 			[356707] = "wildKingdom",
 			[136] = "mendPet",
+			[388045] = "sentinelOwl",
+			[162488] = "steelTrap",
+			[359844] = "callOfTheWild",
 			
 			-- Mage (Cast Success)
 			[2139] = "counterspell", 
@@ -912,6 +953,9 @@
 			[55342] = "mirrorImage",
 			[122] = "frostNova",
 			[314791] = "shiftingpower", -- Nightfae
+			[382440] = "shiftingPower", -- talent
+			[389713] = "displacement",
+			[321507] = "touchOfTheMagi",
 			
 			-- Monk (Cast Success)
 			[116841] = "tigersLust",
@@ -923,23 +967,27 @@
 			[119996] = "transfer",
 			[137639] = "stormEarthFire",
 			[115310] = "revival",
+			[388615] = "restoral",
 			[132578] = "invokeOx",
 			--[198664] = "invokeCrane",
 			[325197] = "fistweaving",
 			[322118] = "invokeSerpent",
 			--[214326] = "explodingKeg",
+			[325153] = "explodingKeg",
 			[115080] = "touchOfDeath",
 			[322109] = "touchOfDeath",
 			[233759] = "grappleWeapon",
 			[122470] = "touchOfKarma",
 			--[209525] = "soothingMist",
 			--[205320] = "strikeOfTheWindlord",
+			[392983] = "strikeOfTheWindlord",
 			[116844] = "ringOfPeace",
 			[202370] = "MightyOxKick",
-			[325216] = "bonedustbrew", -- Necrolord
-			[327104] = "faelinestomp", -- Night Fae
+			[386276] = "bonedustbrew", -- talent
+			[388193] = "faelineStomp", -- talent
 			[326860] = "fallenorder", -- Venthyr
 			[113656] = "FistsOfFury",
+			[324312] = "clash",
 			
 			-- Paladin (Cast Success)
 			[96231] = "rebuke",
@@ -958,12 +1006,18 @@
 			[152262] = "Seraphim",
 			[343721] = "finalReckoning",
 			[316958] = "ashenhallow",
-			[328282] = "blessingofspring",
-			[328620] = "blessingofsummer",
-			[328622] = "blessingofautumn",
-			[328281] = "blessingofwinter",
+			[328282] = "blessingofspring", -- night fae 
+			[328620] = "blessingofsummer", -- night fae
+			[328622] = "blessingofautumn",-- night fae
+			[328281] = "blessingofwinter",-- night fae
+			[388013] = "blessingofspring", -- talent 
+			[388007] = "blessingofsummer", -- talent 
+			[388010] = "blessingofautumn", -- talent 
+			[388011] = "blessingofwinter", -- talent 
 			[304971] = "divinetoll", -- Kyrian
+			[375576] = "divinetoll", -- talent, holy 
 			[328204] = "vanquisherhammer", -- Necrolord
+			[383185] = "exorcism",
 			
 			-- Priest (Cast Success)
 			[8122] = "fear4", 		-- Psychic Scream
@@ -994,6 +1048,10 @@
 			[324724] = "unholynova", -- Necrolord
 			[109964] = "spiritShell",
 			[64901] = "SymbolOfHope",
+			[373481] = "powerWordLife",
+			[108920] = "voidTendrils",
+			[314867] = "shadowCovenant",
+			[341374] = "damnation",
 
 			-- Rogue (Cast Success)
 			[2094] = "blind",
@@ -1003,6 +1061,7 @@
 			[212182] = "smokeBomb",
 			[359053] = "smokeBomb",
 			[79140] = "vendetta",
+			[360194] = "vendetta", -- Deathmark
 			[207777] = "dismantle",
 			[200806] = "exsanguinate",
 			[408] = "kidney",
@@ -1010,17 +1069,24 @@
 			--[185767] = "cannonballBarrage",
 			[193316] = "diceRoll",
 			--[192759] = "kingsbane",
+			[385627] = "kingsbane",
 			[1776] = "gouge",
 			[13750] = "adrenalineRush",
 			[1784] = "stealth",
 			[115191] = "stealth",
 			[206328] = "Neurotoxin", -- Neurotoxin Honor Talent
-			[328305] = "Sepsis",
+			[328305] = "Sepsis",	-- Night Fae
+			[385408] = "Sepsis",	-- Talent
 			[185311] = "crimsonVial",
 			[323547] = "echoingreprimand", -- Kyrian
+			[385616] = "echoingreprimand", -- Talent
 			[323654] = "flagellation", -- Venthyr
+			[384631] = "flagellation", -- talent 
 			[328547] = "serratedbonespikes", -- Necrolord
+			[385424] = "serratedbonespikes", -- Talent
 			[5938] = "shiv",
+			[381623] = "thistleTea",
+			[36554] = "shadowStep",
 
 			-- Shaman (Cast Success)
 			[108281] = "ancestralGuidance",
@@ -1034,8 +1100,11 @@
 			[51490] = "thunderstorm",
 			[320125] = "echoingshock",
 			[326059] = "primordialwave", -- Necrolord
+			[375982] = "primordialWave", -- talent
 			[356824] = "unleashWater", -- Unleash Shield (Water)
 			[356738] = "unleashEarth", -- Unleash Shield (Earth)
+			[108285] = "totemicRecall",
+			[51533] = "feralSpirits", 
 			
 			-- Shaman (Totems)
 			[98008] = "spiritLinkTotem",
@@ -1057,6 +1126,7 @@
 			[16191] = "manaTideTotem",
 			[324386] = "vesperTotem",
 			[355580] = "staticFieldTotem",
+			[383013] = "poisonCleansingTotem",
 			
 			-- Warlock (Cast Success)
 			[6789] = "mortalCoil",
@@ -1097,6 +1167,8 @@
 			[353294] = "shadowRift",
 			[353601] = "felObelisk",
 			[89766] = "AxeToss",
+			[386951] = "soulSwap",
+			[221703] = "castingCircle",
 
 			-- Warrior (Cast Success)
 			[97462] = "commandingShout",
@@ -1104,7 +1176,7 @@
 			[6552] = "pummel",
 			--[107566] = "staggeringShout",	
 			[46968] = "shockwave",
-			--[118000] = "dragonRoar",
+			[384318] = "dragonRoar",
 			[107570] = "stormBolt",
 			[152277] = "Ravager", -- Arms
 			[228920] = "Ravager", -- Protection
@@ -1118,9 +1190,14 @@
 			[325886] = "ancientAftershock",
 			[324143] = "conquerorbanner", -- Necrolord
 			[307865] = "spearofbastion", -- Kyrian
+			[376079] = "spearofbastion", -- Talent
 			[64382] = "ShatteringThrowSuccess",
 			[167105] = "colossusSmash",
 			[262161] = "colossusSmash", -- Warbreaker Talent
+			[384100] = "berserkerShout",
+			[383762] = "bitterImmunity",
+			[385059] = "odynsFury",
+			[385952] = "shieldCharge",
 		},
 		friendlyInterrupt = {
 			[19647] = "lockout", -- Spell Locks begin

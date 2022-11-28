@@ -162,6 +162,16 @@ function DF:CreateCoolTip()
 		["SelectedBottomAnchorMod"] = true,
 		["SelectedLeftAnchorMod"] = true,
 		["SelectedRightAnchorMod"] = true,
+
+		["SparkTexture"] = true,
+		["SparkHeightOffset"] = true,
+		["SparkWidthOffset"] = true,
+		["SparkHeight"] = true,
+		["SparkWidth"] = true,
+		["SparkAlpha"] = true,
+		["SparkColor"] = true,
+		["SparkPositionXOffset"] = true,
+		["SparkPositionYOffset"] = true,
 	}
 
 	gameCooltip.AliasList = {
@@ -548,6 +558,9 @@ function DF:CreateCoolTip()
 		statusbar.spark:SetBlendMode("ADD")
 		statusbar.spark:SetSize(12, 24)
 		statusbar.spark:SetPoint("LEFT", statusbar, "RIGHT", -20, -1)
+		statusbar.spark.originalWidth = 12
+		statusbar.spark.originalHeight = 24
+		statusbar.spark.originalTexture = "Interface\\CastingBar\\UI-CastingBar-Spark"
 
 		statusbar.background = statusbar:CreateTexture("$parent_Background", "ARTWORK")
 		statusbar.background:Hide()
@@ -1153,10 +1166,26 @@ function DF:CreateCoolTip()
 	end
 
 	function gameCooltip:RefreshSpark(menuButton)
+		local sparkTexture = gameCooltip.OptionsTable.SparkTexture or menuButton.spark.originalTexture
+		local sparkAlpha = gameCooltip.OptionsTable.SparkAlpha or 1
+		local sparkColor = gameCooltip.OptionsTable.SparkColor or "white"
+
+		local sparkWidth = gameCooltip.OptionsTable.SparkWidth or menuButton.spark.originalWidth
+		local sparkHeight = gameCooltip.OptionsTable.SparkHeight or menuButton.spark.originalHeight
+		local sparkWidthOffset = gameCooltip.OptionsTable.SparkWidthOffset or 0
+		local sparkHeightOffset = gameCooltip.OptionsTable.SparkHeightOffset or  0
+		local positionXOffset = gameCooltip.OptionsTable.SparkPositionXOffset or 0
+		local positionYOffset = gameCooltip.OptionsTable.SparkPositionYOffset or 0
+
+		menuButton.spark:SetSize(sparkWidth + sparkWidthOffset, sparkHeight + sparkHeightOffset)
+		menuButton.spark:SetTexture(sparkTexture)
+		menuButton.spark:SetVertexColor(DF:ParseColors(sparkColor))
+		menuButton.spark:SetAlpha(sparkAlpha)
+
 		menuButton.spark:ClearAllPoints()
-		menuButton.spark:SetPoint("left", menuButton.statusbar, "left", (menuButton.statusbar:GetValue() * (menuButton.statusbar:GetWidth() / 100)) - 5, 0)
+		menuButton.spark:SetPoint("left", menuButton.statusbar, "left", (menuButton.statusbar:GetValue() * (menuButton.statusbar:GetWidth() / 100)) - 5 + positionXOffset, 0 + positionYOffset)
 		menuButton.spark2:ClearAllPoints()
-		menuButton.spark2:SetPoint("left", menuButton.statusbar, "left", menuButton.statusbar:GetValue() * (menuButton.statusbar:GetWidth()/100) - 16, 0)
+		menuButton.spark2:SetPoint("left", menuButton.statusbar, "left", menuButton.statusbar:GetValue() * (menuButton.statusbar:GetWidth()/100) - 16 + positionXOffset, 0 + positionYOffset)
 	end
 
 	function gameCooltip:StatusBar(menuButton, statusBarSettings)

@@ -100,6 +100,13 @@
     }
 });
 
+U1RegisterAddon("HandyNotes_Dragonflight", {
+    title = "巨龙时代地图宝箱(10.0)",
+    defaultEnable = 1,
+    load = "LATER",
+    desc = "在10.0新地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
+})
+
 U1RegisterAddon("HandyNotes_Shadowlands", {
     title = "暗影国度地图宝箱(9.0)",
     defaultEnable = 1,
@@ -109,7 +116,7 @@ U1RegisterAddon("HandyNotes_Shadowlands", {
 
 U1RegisterAddon("HandyNotes_BattleForAzeroth", {
     title = "争霸艾泽拉斯宝箱(8.0)",
-    defaultEnable = 1,
+    defaultEnable = 0,
     load = "LATER",
     desc = "在8.0新地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
 })

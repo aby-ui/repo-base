@@ -5,6 +5,7 @@
 
 local ADDON, Addon = ...
 local Addon = LibStub('WildAddon-1.0'):NewAddon(ADDON, Addon, 'LibItemCache-2.0')
+Addon.NumBags = NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS
 Addon.IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 Addon.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 Addon.Version = GetAddOnMetadata(ADDON, 'Version')

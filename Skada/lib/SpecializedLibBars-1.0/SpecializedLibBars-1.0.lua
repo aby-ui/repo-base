@@ -335,7 +335,7 @@ function barListPrototype:AddButton(title, description, normaltex, highlighttex,
 end
 
 function barListPrototype:SetSmoothing(smoothing)
-	self.smoothing = smoothing
+	self.smoothing = false --smoothing --abyui CPU占用高且不明显
 
 	if smoothing then
 		self:SetScript("OnUpdate", function()

@@ -63,11 +63,12 @@ end
 -- Function hooks     --
 ------------------------
 
-function AuctionHouseFrame_CIMIOnValueChanged()
+function AuctionHouseFrame_CIMIOnValueChanged(_, elapsed)
     -- Add hook for the Auction House frames.
     -- We should only ever create/recreate the same
     -- frames over and over, so we shouldn't have
     -- a memory leak (I think).
+    if not CanIMogIt.FrameShouldUpdate("AuctionHouseOverlay", elapsed or 1) then return end
     local scrollBox = _G["AuctionHouseFrame"].BrowseResultsFrame.ItemList.ScrollBox
     local buttons = scrollBox:GetFrames()
     if buttons == nil then

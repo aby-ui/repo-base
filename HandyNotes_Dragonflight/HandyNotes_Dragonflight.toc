@@ -1,0 +1,16 @@
+## Interface: 100002
+## Title: HandyNotes: Dragonflight
+## Version: 3
+## Notes: Dragonflight Notes
+## OptionalDeps: Ace3
+## RequiredDeps: HandyNotes
+## X-Embeds: Ace3
+## SavedVariables: HandyNotes_DragonflightDB
+
+embeds.xml
+core\core.xml
+plugin.xml
+
+
+## Title-zhCN: |cff880303[爱不易]|r HandyNotes 巨龙时代
+## X-Vendor: AbyUI

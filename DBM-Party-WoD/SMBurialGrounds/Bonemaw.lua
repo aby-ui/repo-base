@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220127091750")
+mod:SetRevision("20221127051031")
 mod:SetCreatureID(75452)
 mod:SetEncounterID(1679)
 
@@ -23,6 +23,11 @@ mod:RegisterEventsInCombat(
 --Inhale and submerge timers iffy. Based on data, it's possible they share a CD and which one he uses is random of two.
 --With that working theory, it's possible to add a 28-30 second timer for it maybe.
 --However, being a 5 man boss. Plus not knowing for certain, not worth the time right now.
+--[[
+(ability.id = 154175 or ability.id = 165578) and type = "begincast"
+ or ability.id = 153804
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 local warnBodySlam				= mod:NewTargetAnnounce(154175, 4)
 local warnCorpseBreath			= mod:NewSpellAnnounce(165578, 2)
 local warnSubmerge				= mod:NewSpellAnnounce(177694, 1)
@@ -32,8 +37,8 @@ local specWarnBodySlam			= mod:NewSpecialWarningDodge(154175, nil, nil, nil, 2, 
 local specWarnInhale			= mod:NewSpecialWarningRun(153804, nil, nil, 2, 4, 12)
 local specWarnNecroticPitch		= mod:NewSpecialWarningMove(153692, nil, nil, nil, 1, 8)
 
-local timerBodySlamCD			= mod:NewCDSourceTimer(28, 154175, nil, nil, nil, 3)
-local timerInhaleCD				= mod:NewCDTimer(34, 153804, nil, nil, nil, 6, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerBodySlamCD			= mod:NewCDSourceTimer(28, 154175, nil, nil, nil, 3)--34
+local timerInhaleCD				= mod:NewCDTimer(34, 153804, nil, nil, nil, 6, nil, DBM_COMMON_L.DEADLY_ICON)--41
 local timerInhale				= mod:NewBuffActiveTimer(9, 153804, nil, nil, nil, 6, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerCorpseBreathCD		= mod:NewCDTimer(28, 165578, nil, false, nil, 5)--32-37 Variation, also not that important so off by default since there will already be up to 3 smash timers
 --local timerSubmergeCD			= mod:NewCDTimer(80, 177694, nil, nil, nil, 6)
@@ -42,8 +47,8 @@ mod.vb.inhaleActive = false
 
 function mod:OnCombatStart(delay)
 	self.vb.inhaleActive = false
-	timerBodySlamCD:Start(15-delay, UnitName("boss1") or BOSS, UnitGUID("boss1"))
-	timerInhaleCD:Start(27.1-delay)
+	timerBodySlamCD:Start(15-delay, UnitName("boss1") or BOSS, UnitGUID("boss1"))--17?
+	timerInhaleCD:Start(27.1-delay)--36.4?
 --	timerSubmergeCD:Start(-delay)
 end
 
@@ -89,7 +94,7 @@ function mod:UNIT_DIED(args)
 end
 
 function mod:RAID_BOSS_EMOTE(msg)
-	if msg:find("spell:153804") then--Slightly faster than combat log
+	if msg:find("spell:153804") then--Slightly faster than combat log (~2)
 		self.vb.inhaleActive = true
 		specWarnInhale:Show()
 		specWarnInhale:Play("inhalegetinpuddle")

@@ -38,7 +38,8 @@ end
 ------------------------
 
 
-function EncounterJournalFrame_CIMIOnValueChanged()
+function EncounterJournalFrame_CIMIOnValueChanged(_, elapsed)
+    if not CanIMogIt.FrameShouldUpdate("EncounterJournal", elapsed or 1) then return end
     local encounterJournalScrollFrame = _G["EncounterJournalEncounterFrameInfo"].LootContainer.ScrollBox
     local lootItemFrames = encounterJournalScrollFrame:GetFrames()
     for i = 1, #lootItemFrames do

@@ -11,7 +11,7 @@ private.CONTINENT_ZONE_IDS = {
 	[12] = { zonefilter = true, npcfilter = true, id = 1, zones = {1,7,10,57,62,63,64,65,66,69,70,71,76,77,78,80,81,83,97,103,106,198,199,249,327,338,1332,1469,1527,1571} }; --Kalimdor
 	[113] = { zonefilter = true, npcfilter = true, id = 4, zones = {114,115,116,117,118,119,120,121,126} }; --Northrend
 	[424] = { zonefilter = true, npcfilter = true, id = 6, zones = {371,376,379,388,390,418,422,433,507,504,554,1530,1570} }; --Pandaria
-	[101] = { zonefilter = true, npcfilter = true, id = 3, zones = {100,102,104,105,106,107,108,109} }; --Outland
+	[101] = { zonefilter = true, npcfilter = true, id = 3, zones = {100,102,104,105,107,108,109} }; --Outland
 	[948] = { zonefilter = true, npcfilter = true, id = 5, zones = {207} }; --The Maelstrom
 	[876] = { zonefilter = true, npcfilter = true, id = 10, zones = {895,896,942,1161,1462} }; --Kul Tiras
 	[875] = { zonefilter = true, npcfilter = true, id = 11, zones = {862,863,864,1165} }; --Zandalar
@@ -20,7 +20,7 @@ private.CONTINENT_ZONE_IDS = {
 	[1978] = { zonefilter = true, npcfilter = true, id = 14, zones = {2118,2022,2023,2024,2025,2107}, current = { "all" } }; --Dragon Isles
 	[9999] = { zonefilter = true, npcfilter = true, zones = {276,378,628,629,672,734,702,695,747,739} }; --Class Halls
 	[9998] = { zonefilter = true, npcfilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
-	[9997] = { zonefilter = true, npcfilter = true, zones = {11,35,219,229,237,243,251,274,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041,1663,1666,1675,1669,1674,1677,1683,1692} }; --Dungeons or scenarios
+	[9997] = { zonefilter = true, npcfilter = true, zones = {35,219,229,237,243,251,274,279,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041,1663,1666,1675,1669,1674,1677,1683,1692} }; --Dungeons or scenarios
 	[9996] = { zonefilter = true, npcfilter = true, zones = {366,508,764,850,909,2047} }; --Raids
 	[9995] = { zonefilter = false, npcfilter = true, zones = {0} }; --Unknown
 	[9994] = { zonefilter = true, npcfilter = false, zones = {981,1022,1032,1033,1034,1035,1036,1037,1336,1337,1501,1502} }; --Expedition islands
@@ -44,14 +44,13 @@ private.SUBZONES_IDS = {
 	[378] = {709}; --The Wandering Isle (monk class hall)
 	[71] = {72,73}; --Tanaris minimaps
 	[27] = {29,31}; --Dun Morogh minimaps
-	[14] = {5}; --Arathi highlands minimaps
+	[1] = {5}; --Durotar minimaps
 	[78] = {79}; --Un'goro crater minimaps
 	[37] = {40}; --Elwynn forest minimaps
 	[66] = {67}; --Desolace minimaps
 	[52] = {55}; --Westfall minimaps
 	[237] = {238}; --Diremaul
 	[251] = {252, 253, 254, 255}; --Blackrock spire
-	[10] = {279}; --Northern barrens minimaps
 	[366] = {350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365}; --Karazhan (Outland raid)
 	[650] = {658}; --Highmountain minimaps
 	[7] = {462}; --Mulgore minimaps
@@ -71,13 +70,14 @@ private.SUBZONES_IDS = {
 	[1618] = {1619,1620,1621,1623,1624,1627,1628,1629,1630,1631,1632,1635,1636,1641,1645,1656,1705,1712,1716,1720,1721,1736,1749,1751,1752,1753,1754,1757,1758,1759,1760,1761,1762,1763,1764,1765,1766,1767,1768,1769,1770,1771,1772,1773,1774,1775,1776,1777,1778,1779,1780,1781,1782,1783,1784,1785,1786,1787,1788,1789,1791,1792,1793,1794,1795,1796,1797,1798,1799,1800,1801,1802,1803,1804,1805,1806,1807,1808,1809,1810,1811,1812}; --Torghast
 	[1663] = {1664,1665}; --Halls of atonement
 	[1675] = {1676}; --Sanguine depths
-	[1677] = {1678,1679,1680}; --De other side
+	[1677] = {1678,1679,1680}; --The other side
 	[1692] = {1693,1694,1695}; --Spires of Ascension
 	[1666] = {1667,1668}; --The necrotic wake
 	[1683] = {1684,1685,1686,1687}; --Theater of pain
 	[1674] = {1697}; --Plaguefall
 	[1970] = {2027,2028,2029,2030,2066}; --Zereth Mortis
 	[2047] = {2048,2049,2050,2051,2052,2055,2061}; --Sepulcher of the First Ones
+	[2024] = {2132}; -- The Azure Span minimaps
 }
 
 private.ZONES_WITHOUT_VIGNETTE = {
@@ -173,7 +173,7 @@ private.ZONES_WITHOUT_VIGNETTE = {
 	[252] = { 263 }; --Blackrock spire3
 	[253] = { 264 }; --Blackrock spire4
 	[255] = { 266 }; --Blackrock spire6
-	[279] = { 290 }; --Wailing caverns out1
+	[279] = { 290 }; --Wailing caverns
 	[11] = { 12 }; --Wailing caverns
 	[318] = { 330 }; --Stratholme undead
 	[317] = { 329 }; --Stratholme human
@@ -183,6 +183,14 @@ private.ZONES_WITHOUT_VIGNETTE = {
 	[301] = { 313 }; --Razorfen kraul
 	[351] = { 363 }; --Karazhan
 	[274] = { 285 }; --Old hillsbrad foothills
+	[462] = { 474 }; --Camp Narache
+	[425] = { 437 }; --Northshire
+	
+	-- Remove if in retail all the vignettes work
+	[2022] = { 1706 }; --The Walking Shores
+	[2023] = { 1705 }; --Ohn'ahran Plains
+	[2024] = { 1707 }; --The Azure Span
+	[2025] = { 1708 }; --Thaldraszus
 }
 
 private.RESETABLE_KILLS_ZONE_IDS = {

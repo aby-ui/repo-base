@@ -58,7 +58,7 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(self
                 if (inspecting.guid ~= guid) then
                     return AppendToGameTooltip(guid, "n/a")
                 else
-                    return AppendToGameTooltip(guid, "....")
+                    return AppendToGameTooltip(guid, "......")
                 end
             end
             ClearInspectPlayer()

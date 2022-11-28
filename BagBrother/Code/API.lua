@@ -15,18 +15,19 @@ along with the addon. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of BagBrother.
 --]]
 
+local C = LibStub('C_Everywhere').Container
 
 function BagBrother:SaveBag(bag, onlyItems, saveSize)
-	local size = GetContainerNumSlots(bag)
+	local size = C.GetContainerNumSlots(bag)
 	if size > 0 then
 		local items = {}
 		for slot = 1, size do
-			local _, count, _,_,_,_, link = GetContainerItemInfo(bag, slot)
+			local _, count, _,_,_,_, link = C.GetContainerItemInfo(bag, slot)
 			items[slot] = self:ParseItem(link, count)
 		end
 
 		if not onlyItems then
-			self:SaveEquip(ContainerIDToInventoryID(bag), size)
+			self:SaveEquip(C.ContainerIDToInventoryID(bag), size)
 		elseif saveSize then
 			items.size = size
 		end
@@ -49,7 +50,6 @@ function BagBrother:ParseItem(link, count)
 		local id = tonumber(link:match('item:(%d+):')) -- check for profession window bug
 		if id == 0 and TradeSkillFrame then
 			local focus = GetMouseFocus():GetName()
-
 			if focus == 'TradeSkillSkillIcon' then
 				link = GetTradeSkillItemLink(TradeSkillFrame.selectedSkill)
 			else

@@ -6,7 +6,6 @@ local P = Cell.pixelPerfectFuncs
 local A = Cell.animations
 local LGI = LibStub:GetLibrary("LibGroupInfo")
 
-CELL_SUMMON_ICONS_ENABLED = false
 CELL_FADE_OUT_HEALTH_PERCENT = nil
 
 -- local LibCLHealth = LibStub("LibCombatLogHealth-1.0")
@@ -59,7 +58,7 @@ local barAnimationType, highlightEnabled, predictionEnabled, absorbEnabled, shie
 -- unit button func declarations
 -------------------------------------------------
 local UnitButton_UpdateAll
-local UnitButton_UpdateAuras, UnitButton_UpdateRole, UnitButton_UpdateLeader, UnitButton_UpdateStatusIcon, UnitButton_UpdateStatusText
+local UnitButton_UpdateAuras, UnitButton_UpdateRole, UnitButton_UpdateLeader, UnitButton_UpdateStatusText
 local UnitButton_UpdateHealthColor, UnitButton_UpdateNameColor
 local UnitButton_UpdatePowerMax, UnitButton_UpdatePower, UnitButton_UpdatePowerType
 
@@ -97,6 +96,10 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             -- update num
             if t["num"] then
                 indicatorNums[t["indicatorName"]] = t["num"]
+            end
+            -- update statusIcon
+            if t["indicatorName"] == "statusIcon" then
+                I:EnableStatusIcon(t["enabled"])
             end
             -- update aoehealing
             if t["indicatorName"] == "aoeHealing" then
@@ -221,6 +224,10 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 -- update duration
                 if type(t["showDuration"]) == "boolean" then
                     indicator:ShowDuration(t["showDuration"])
+                end
+                -- update stack
+                if type(t["showStack"]) == "boolean" then
+                    indicator:ShowStack(t["showStack"])
                 end
                 -- update duration
                 if t["duration"] then
@@ -491,6 +498,11 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                     b.indicators[indicatorName]:ShowDuration(value2)
                     UnitButton_UpdateAuras(b)
                 end, true)
+            elseif value == "showStack" then
+                F:IterateAllUnitButtons(function(b)
+                    b.indicators[indicatorName]:ShowStack(value2)
+                    UnitButton_UpdateAuras(b)
+                end, true)
             elseif value == "showTooltip" then
                 F:IterateAllUnitButtons(function(b)
                     b.indicators[indicatorName]:ShowTooltip(value2)
@@ -556,6 +568,10 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 -- update showDuration
                 if value["showDuration"] then
                     indicator:ShowDuration(value["showDuration"])
+                end
+                -- update showStack
+                if value["showStack"] then
+                    indicator:ShowStack(value["showStack"])
                 end
                 -- update duration
                 if value["duration"] then
@@ -742,10 +758,11 @@ local function UnitButton_UpdateDebuffs(self)
                 end
             end
 
-            -- resurrectionIcon
-            if spellId == 160029 then
+            -- resurrections: 图腾复生/复生
+            if spellId == 255234 or spellId == 225080 then
+                -- NOTE: this rez lasts longer than the debuff
                 resurrectionFound = true
-                self.indicators.resurrectionIcon:SetTimer(start, duration)
+                self.state.hasRezDebuff = true
             end
 
             -- BG orbs
@@ -761,11 +778,8 @@ local function UnitButton_UpdateDebuffs(self)
         end
     end, true)
     
-    -- update statusIcon
-    UnitButton_UpdateStatusIcon(self)
-
     if not resurrectionFound then
-        self.indicators.resurrectionIcon:Hide()
+        self.state.hasRezDebuff = nil
     end
 
     -- update raid debuffs
@@ -996,9 +1010,6 @@ local function UnitButton_UpdateBuffs(self)
         end
     end, true)
 
-    -- update statusIcon
-    UnitButton_UpdateStatusIcon(self)
-
     -- check Mirror Image
     if buffs_mirror_image[unit] then
         if defensiveFound < indicatorNums["defensiveCooldowns"] then
@@ -1145,6 +1156,8 @@ UnitButton_UpdateAuras = function(self, updatedAuras)
 
     UnitButton_UpdateDebuffs(self)
     UnitButton_UpdateBuffs(self)
+    I:UpdateStatusIcon(self)
+
     --[[
     if not updatedAuras or updatedAuras.isFullUpdate then
         UnitButton_UpdateDebuffs(self)
@@ -1185,6 +1198,11 @@ local function UpdateUnitHealthState(self, diff)
     self.state.isDead = health == 0
     if self.state.wasDead ~= self.state.isDead then
         UnitButton_UpdateStatusText(self)
+        I:UpdateStatusIcon_Resurrection(self)
+        if not self.state.isDead then
+            self.state.hasSoulstone = nil
+            I:UpdateStatusIcon(self)
+        end
     end
     
     self.state.wasDeadOrGhost = self.state.isDeadOrGhost
@@ -1657,24 +1675,43 @@ local function UnitButton_UpdateThreatBar(self)
 end
 
 local LRC = LibStub:GetLibrary("LibRangeCheck-2.0")
+-- BUG: seems not right on a dead unit
+-- local checker
+-- LRC.RegisterCallback(Cell, LRC.CHECKERS_CHANGED, function()
+--     if UnitClassBase("player") == "EVOKER" then
+--         checker = LRC:GetSmartMaxChecker(30)
+--     else
+--         checker = LRC:GetSmartMaxChecker(40)
+--     end
+--     Cell.checker = checker
+-- end)
 local checker
-LRC.RegisterCallback(Cell, LRC.CHECKERS_CHANGED, function()
-    if UnitClassBase("player") == "EVOKER" then
-        checker = LRC:GetSmartMaxChecker(30)
-    else
-        checker = LRC:GetSmartMaxChecker(40)
+if UnitClassBase("player") == "EVOKER" then
+    checker = function(unit)
+        local minRangeIfVisible, maxRangeIfVisible = LRC:GetRange(unit, true)
+        if F:UnitInGroup(unit) and UnitIsDeadOrGhost(unit) then
+            return (maxRangeIfVisible and maxRangeIfVisible <= 40) or false
+        else
+            return (maxRangeIfVisible and maxRangeIfVisible <= 30) or false
+        end
     end
-end)
+else
+    checker = function(unit)
+        local minRangeIfVisible, maxRangeIfVisible = LRC:GetRange(unit, true)
+        return (maxRangeIfVisible and maxRangeIfVisible <= 40) or false
+    end
+end
+
 
 local function UnitButton_UpdateInRange(self)
     local unit = self.state.displayedUnit
     if not unit then return end
 
-    local inRange = false
+    local inRange = checker(unit)
 
-    if checker then
-        inRange = (UnitIsVisible(unit) and checker(unit)) or false
-    end
+    -- if checker then
+    --     inRange = (UnitIsVisible(unit) and checker(unit)) or false
+    -- end
 
     --[[
     if F:UnitInGroup(unit) then
@@ -1738,83 +1775,6 @@ local function UnitButton_UpdateVehicleStatus(self)
         else
             HidePowerBar(self)
         end
-    end
-end
-
-UnitButton_UpdateStatusIcon = function(self)
-    local unit = self.state.unit
-    if not unit then return end
-    
-    -- https://wow.gamepedia.com/API_UnitPhaseReason
-    local phaseReason = UnitPhaseReason(unit)
-    
-    local icon = self.indicators.statusIcon
-    icon:SetIgnoreParentAlpha(false)
-    
-    -- Interface\FrameXML\CompactUnitFrame.lua, CompactUnitFrame_UpdateCenterStatusIcon
-    if UnitInOtherParty(unit) then
-        icon:SetVertexColor(1, 1, 1, 1)
-        icon:SetTexture("Interface\\LFGFrame\\LFG-Eye")
-        -- icon:SetTexCoord(0.125, 0.25, 0.25, 0.5)
-        -- icon:SetTexCoord(0.145, 0.23, 0.29, 0.46)
-        icon:SetTexCoord(0.14, 0.235, 0.28, 0.47)
-        -- icon:ShowBorder("Interface\\Common\\RingBorder")
-        icon:Show()
-    elseif UnitHasIncomingResurrection(unit) then
-        icon:SetVertexColor(1, 1, 1, 1)
-        icon:SetTexture("Interface\\RaidFrame\\Raid-Icon-Rez")
-        icon:SetTexCoord(0, 1, 0, 1)
-        -- icon:HideBorder()
-        icon:Show()
-    elseif CELL_SUMMON_ICONS_ENABLED and C_IncomingSummon.HasIncomingSummon(unit) then
-        local status = C_IncomingSummon.IncomingSummonStatus(unit)
-        if status == Enum.SummonStatus.Pending then
-            icon:SetAtlas("Raid-Icon-SummonPending")
-            icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-        elseif status == Enum.SummonStatus.Accepted then
-            icon:SetAtlas("Raid-Icon-SummonAccepted")
-            icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-            C_Timer.After(6, function() UnitButton_UpdateStatusIcon(self) end)
-        elseif status == Enum.SummonStatus.Declined then
-            icon:SetAtlas("Raid-Icon-SummonDeclined")
-            icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-            C_Timer.After(6, function() UnitButton_UpdateStatusIcon(self) end)
-        end
-        icon:Show()
-    elseif UnitIsPlayer(unit) and phaseReason and not self.state.inVehicle then
-        if phaseReason == 3 then -- chromie, yellow
-            icon:SetVertexColor(1, 1, 0)
-        elseif phaseReason == 2 then -- warmode, red
-            icon:SetVertexColor(1, 0.6, 0.6)
-        elseif phaseReason == 1 then -- sharding, green
-            icon:SetVertexColor(0.5, 1, 0.5)
-        else -- 0, phasing
-            icon:SetVertexColor(1, 1, 1)
-        end
-        icon:SetTexture("Interface\\TargetingFrame\\UI-PhasingIcon")
-        icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-        -- icon:HideBorder()
-        icon:Show()
-    -- elseif UnitIsDeadOrGhost(unit) then
-    --     icon:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-Skull")
-    --     icon:SetTexCoord(0, 1, 0, 1)
-    --     icon:Show()
-    elseif self.state.BGFlag then
-        icon:SetIgnoreParentAlpha(true)
-        icon:SetVertexColor(1, 1, 1, 1)
-        icon:SetAtlas("nameplates-icon-flag-"..self.state.BGFlag)
-        icon:SetTexCoord(0, 1, 0, 1)
-        -- icon:HideBorder()
-        icon:Show()
-    elseif self.state.BGOrb then
-        icon:SetIgnoreParentAlpha(true)
-        icon:SetVertexColor(1, 1, 1, 1)
-        icon:SetAtlas("nameplates-icon-orb-"..self.state.BGOrb)
-        icon:SetTexCoord(0, 1, 0, 1)
-        -- icon:HideBorder()
-        icon:Show()
-    else
-        icon:Hide()
     end
 end
 
@@ -1965,7 +1925,12 @@ UnitButton_UpdateHealthColor = function(self)
     -- local r, g, b = RAID_CLASS_COLORS["DEATHKNIGHT"]:GetRGB()
     self.widget.healthBar:SetStatusBarColor(barR, barG, barB, barA)
     self.widget.healthBarLoss:SetVertexColor(lossR, lossG, lossB, lossA)
-    self.widget.incomingHeal:SetVertexColor(barR, barG, barB)
+
+    if Cell.loaded and CellDB["appearance"]["healPrediction"][2] then
+        self.widget.incomingHeal:SetVertexColor(CellDB["appearance"]["healPrediction"][3][1], CellDB["appearance"]["healPrediction"][3][2], CellDB["appearance"]["healPrediction"][3][3], CellDB["appearance"]["healPrediction"][3][4])
+    else
+        self.widget.incomingHeal:SetVertexColor(barR, barG, barB, 0.4)
+    end
 end
 
 -------------------------------------------------
@@ -2036,8 +2001,9 @@ UnitButton_UpdateAll = function(self)
     UnitButton_UpdateReadyCheck(self)
     UnitButton_UpdateThreat(self)
     UnitButton_UpdateThreatBar(self)
-    UnitButton_UpdateStatusIcon(self)
+    -- UnitButton_UpdateStatusIcon(self)
     UnitButton_UpdateAuras(self)
+    I:UpdateStatusIcon_Resurrection(self)
 
     if Cell.loaded then
         if Cell.vars.currentLayoutTable["powerSize"] ~= 0 then
@@ -2115,10 +2081,10 @@ local function UnitButton_RegisterEvents(self)
     self:RegisterEvent("READY_CHECK_FINISHED")
     self:RegisterEvent("READY_CHECK_CONFIRM")
     
-    self:RegisterEvent("UNIT_PHASE") -- warmode, traditional sources of phasing such as progress through quest chains
-    self:RegisterEvent("PARTY_MEMBER_DISABLE")
-    self:RegisterEvent("PARTY_MEMBER_ENABLE")
-    self:RegisterEvent("INCOMING_RESURRECT_CHANGED")
+    -- self:RegisterEvent("UNIT_PHASE") -- warmode, traditional sources of phasing such as progress through quest chains
+    -- self:RegisterEvent("PARTY_MEMBER_DISABLE")
+    -- self:RegisterEvent("PARTY_MEMBER_ENABLE")
+    -- self:RegisterEvent("INCOMING_RESURRECT_CHANGED")
     
     -- self:RegisterEvent("VOICE_CHAT_CHANNEL_ACTIVATED")
     -- self:RegisterEvent("VOICE_CHAT_CHANNEL_DEACTIVATED")
@@ -2191,7 +2157,7 @@ local function UnitButton_OnEvent(self, event, unit, arg)
             UnitButton_UpdateTargetRaidIcon(self)
             
         elseif event == "PLAYER_FLAGS_CHANGED" or event == "UNIT_FLAGS" or event == "INCOMING_SUMMON_CHANGED" then
-            if CELL_SUMMON_ICONS_ENABLED then UnitButton_UpdateStatusIcon(self) end
+            -- if CELL_SUMMON_ICONS_ENABLED then UnitButton_UpdateStatusIcon(self) end
             UnitButton_UpdateStatusText(self)
             
         elseif event == "UNIT_FACTION" then -- mind control
@@ -2201,8 +2167,8 @@ local function UnitButton_OnEvent(self, event, unit, arg)
         elseif event == "UNIT_THREAT_SITUATION_UPDATE" then
             UnitButton_UpdateThreat(self)
 
-        elseif event == "INCOMING_RESURRECT_CHANGED" or event == "UNIT_PHASE" or event == "PARTY_MEMBER_DISABLE" or event == "PARTY_MEMBER_ENABLE" then
-            UnitButton_UpdateStatusIcon(self)
+        -- elseif event == "INCOMING_RESURRECT_CHANGED" or event == "UNIT_PHASE" or event == "PARTY_MEMBER_DISABLE" or event == "PARTY_MEMBER_ENABLE" then
+            -- UnitButton_UpdateStatusIcon(self)
     
         elseif event == "READY_CHECK_CONFIRM" then
             UnitButton_UpdateReadyCheck(self)
@@ -2529,7 +2495,7 @@ function F:UnitButton_OnLoad(button)
     -- P:Point(incomingHeal, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
     -- P:Point(incomingHeal, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
     incomingHeal:SetTexture(Cell.vars.texture)
-    incomingHeal:SetAlpha(0.4)
+    -- incomingHeal:SetAlpha(0.4)
     incomingHeal:Hide()
     incomingHeal.SetValue = DumbFunc
 
@@ -2569,10 +2535,13 @@ function F:UnitButton_OnLoad(button)
     absorbsBar.SetValue = DumbFunc
 
     button.func.UpdateShields = function()
-        predictionEnabled = CellDB["appearance"]["healPrediction"]
-        absorbEnabled = CellDB["appearance"]["healAbsorb"]
-        shieldEnabled = CellDB["appearance"]["shield"]
+        predictionEnabled = CellDB["appearance"]["healPrediction"][1]
+        absorbEnabled = CellDB["appearance"]["healAbsorb"][1]
+        shieldEnabled = CellDB["appearance"]["shield"][1]
         overshieldEnabled = CellDB["appearance"]["overshield"]
+
+        button.widget.absorbsBar:SetVertexColor(CellDB["appearance"]["healAbsorb"][2][1], CellDB["appearance"]["healAbsorb"][2][2], CellDB["appearance"]["healAbsorb"][2][3], CellDB["appearance"]["healAbsorb"][2][4])
+        button.widget.shieldBar:SetVertexColor(CellDB["appearance"]["shield"][2][1], CellDB["appearance"]["shield"][2][2], CellDB["appearance"]["shield"][2][3], CellDB["appearance"]["shield"][2][4])
 
         UnitButton_UpdateHealPrediction(button)
         UnitButton_UpdateHealAbsorbs(button)

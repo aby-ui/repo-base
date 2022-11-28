@@ -29,26 +29,16 @@ roster.updatingSelf = nil -- becomes true when roster is updating itself (to pre
 
 roster.ownedNeedsUpdated = true -- becomes true when we need to expand filters to grab all pets
 
-roster.inWorld = false
-
 rematch:InitModule(function()
 	settings = RematchSettings
 	roster:RegisterEvent("UPDATE_SUMMONPETS_ACTION")
 	roster:SetScript("OnEvent",function(self,event,...)
-		-- if not roster.inWorld then
-		-- 	print("roster not in world:",event)
-		-- end
-		if event=="PLAYER_LEAVING_WORLD" then
-			roster.inWorld = false
-		elseif event=="PLAYER_ENTERING_WORLD" then
-			roster.inWorld = true
-		elseif roster[event] and (event=="UPDATE_SUMMONPETS_ACTION" or roster.inWorld) then
+		if roster[event] then
 			roster[event](self,...)
 		end
 	end)
    roster.isStrongCache = rematch:CreateODTable() -- used by IsStrong() function
 end)
-
 
 function roster:GetNumUniquePets()
 	roster:UpdateOwned()
@@ -69,30 +59,13 @@ function roster:UPDATE_SUMMONPETS_ACTION()
 	roster:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
 	roster:RegisterEvent("NEW_PET_ADDED")
 	roster:RegisterEvent("PET_JOURNAL_PET_DELETED")
-	roster:RegisterEvent("PLAYER_LEAVING_WORLD")
-	roster:RegisterEvent("PLAYER_ENTERING_WORLD")
-	roster.inWorld = true -- if we got a UPDATE_SUMMONPETS_ACTION, we are in the world (in theory)
 	roster:PET_JOURNAL_LIST_UPDATE() -- start first check
-end
-
--- in 10.0.2, the leveling queue is emptying during loading screens into instances; use this flag to stop processing
--- the roster during loading screens (PET_JOURNAL_LIST_UPDATE and many, many other events can fire while zoning)
-function roster:PLAYER_LEAVING_WORLD()
-	roster.inWorld = false
-end
-
-function roster:PLAYER_ENTERING_WORLD()
-	roster.inWorld = true
 end
 
 --[[ PET_JOURNAL_LIST_UPDATE
 
 	Just about everything that changes pets (added/removed, renamed, stoned for level/rarity, etc)
 	triggers this event.
-
-	As of 10.0.2:
-
-	The first UPDATE_SUMMONPETS_ACTION event is when pets are loaded.
 
 	As of 7.0.3:
 
@@ -121,6 +94,10 @@ end
 
 function roster:PET_JOURNAL_LIST_UPDATE()
 
+	if not rematch.inWorld then
+		return
+	end
+
 	local numPets,owned = C_PetJournal.GetNumPets()
 
 	-- if number of owned pets changed, pets were added/removed; flag for an update to happen
@@ -134,10 +111,10 @@ function roster:PET_JOURNAL_LIST_UPDATE()
 	end
 	rematch.queueNeedsProcessed = true
 	if owned>0 and settings.ShowOnLogin and not InCombatLockdown() then
-		settings.ShowOnLogin = nil
 		rematch.Frame:Show()
 	end
-   rematch.speciesAt25:Invalidate()
+	settings.ShowOnLogin = nil
+    rematch.speciesAt25:Invalidate()
 	roster.petListNeedsUpdated = true
 	rematch:UpdateUI()
 end

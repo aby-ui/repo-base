@@ -3,26 +3,14 @@ local F = Cell.funcs
 local I = Cell.iFuncs
 local P = Cell.pixelPerfectFuncs
 
-local updateFuncs = {}
-local previewButtonNameStr = "CellAppearancePreviewButton,CellAppearancePreviewButton2,CellIndicatorsPreviewButton,CellRaidDebuffsPreviewButton,CellGlowsPreviewButton"
-local previewButtonNames = {} for _, v in ipairs({strsplit(",", previewButtonNameStr)}) do previewButtonNames[v] = true end
-hooksecurefunc("CreateFrame", function(_, name)
-    if name and previewButtonNames[name] then
-        for _, f in ipairs(updateFuncs) do
-            f(_G[name])
+function F:IterateAllUnitButtonsAndPreviews(func, updateCurrentGroupOnly)
+    F:IterateAllUnitButtons(func, updateCurrentGroupOnly)
+    Cell:RegisterCallback("CreatePreview", "RunSnippetsForPreview"..tostring(func), function(...)
+        for i = 1, select("#", ...) do
+            local b = select(i, ...);
+            func(b)
         end
-    end
-end)
-
-F.IterateAllUnitButtonsOrigin = F.IterateAllUnitButtons
-function F:IterateAllUnitButtons(func, updateCurrentGroupOnly, includePreview)
-    F:IterateAllUnitButtonsOrigin(func, updateCurrentGroupOnly)
-    if includePreview then
-        for k in pairs(previewButtonNames) do
-            if _G[k] then func(_G[k]) end
-        end
-        table.insert(updateFuncs, func)
-    end
+    end)
 end
 
 local function rawhook(object, funcKey, postFunc)
@@ -266,15 +254,14 @@ end
 -- Cell默认损失血量条是拼接在血条后面而不是层叠的，这样会导致超出距离设置Alpha时只有透明度变化没有颜色变化，不够明显
 -- 预览效果 /run CellSoloFramePlayer:SetAlpha(0.5) CellPartyFrameMember1:SetAlpha(0.5)
 local function LossBarSetAllPoints()
-    local function updateButton(b)
+    F:IterateAllUnitButtonsAndPreviews(function(b)
         local OriginSetOrientation = b.func.SetOrientation
         b.func.SetOrientation = function(orientation, rotateTexture)
             OriginSetOrientation(orientation, rotateTexture)
             P:Point(b.widget.healthBarLoss, "BOTTOMLEFT", b.widget.healthBar)
             P:Point(b.widget.powerBarLoss, "BOTTOMLEFT", b.widget.powerBar)
         end
-    end
-    F:IterateAllUnitButtons(updateButton, nil, true)
+    end)
 end
 
 hooksecurefunc(F, "RunSnippets", function()
@@ -284,11 +271,10 @@ hooksecurefunc(F, "RunSnippets", function()
     end
 
     I:UpdateCustomDefensives({
-        6940, -- PALADIN 牺牲祝福
+        6940, -- PALADIN 牺牲祝福,自身也有
         199754, -- ROGUE, 还击 2min 招架提高100% 狂徒贼替代闪避
         45182, -- ROGUE, 装死 buff 6min 3s
         327140, -- 炉脉幻想
-        27827, -- 牧师天使
         --320227, -- 灵种
     })
     I:UpdateCustomExternals({
@@ -296,4 +282,9 @@ hooksecurefunc(F, "RunSnippets", function()
         29166, -- DRUID 激活
         --77764, -- DRUID 狂奔怒吼
     })
+    --[[ 以下为减益，需要单独创建减益监视
+        87023 炙灼
+        25771 自律
+        116888 炼狱蔽体
+    --]]
 end)

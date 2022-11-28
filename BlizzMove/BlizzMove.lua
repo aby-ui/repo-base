@@ -576,7 +576,7 @@ local function OnEvent(self, event, arg1, arg2)
             end
             BM_SetMoveHandler(CommunitiesFrame)
         end)
-        BM_SetMoveHandler(ContainerFrameCombinedBags, BM_CreateMover(ContainerFrameCombinedBags, 50, 50, -50, 0))
+        BM_SetMoveHandler(ContainerFrameCombinedBags, BM_CreateMover(ContainerFrameCombinedBags, 30, 50, -50, 0))
         -- fix anchor family connection issues with the combined bag (from curse BlizzMove)
         hooksecurefunc(ContainerFrameSettingsManager, "GetBagsShown", function(self)
             for _, frame in ipairs(self.bagsShown) do

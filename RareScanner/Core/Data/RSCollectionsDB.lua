@@ -781,6 +781,54 @@ end
 -- Collections database
 ---============================================================================
 
+function RSCollectionsDB.UpdateEntityCollectibles(entityID, items, source)
+	if (not RSCollectionsDB.GetAllEntitiesCollectionsLoot()) then
+		return
+	end
+
+	-- Clean previous version
+	RSCollectionsDB.GetAllEntitiesCollectionsLoot()[RSConstants.ITEM_SOURCE.NPC][entityID] = nil
+	
+	-- If no loot stop
+	if (not items) then
+		return
+	end
+	
+	local checkedItems = {}
+	checkedItems[RSConstants.ITEM_TYPE.APPEARANCE] = {}
+	checkedItems[RSConstants.ITEM_TYPE.TOY] = {}
+	checkedItems[RSConstants.ITEM_TYPE.PET] = {}
+	checkedItems[RSConstants.ITEM_TYPE.MOUNT] = {}
+	
+	for _, itemID in ipairs (items) do
+		if (not checkedItems[itemID]) then			
+			-- Check if appearance
+			if (not checkedItems[RSConstants.ITEM_TYPE.TOY][itemID] and not checkedItems[RSConstants.ITEM_TYPE.PET][itemID] and not checkedItems[RSConstants.ITEM_TYPE.MOUNT][itemID]) then
+				CheckUpdateAppearance(itemID, entityID, source, checkedItems)
+			end
+			
+			-- Check if toy
+			if (not checkedItems[RSConstants.ITEM_TYPE.APPEARANCE][itemID] and not checkedItems[RSConstants.ITEM_TYPE.PET][itemID] and not checkedItems[RSConstants.ITEM_TYPE.MOUNT][itemID]) then
+				CheckUpdateToy(itemID, entityID, source, checkedItems)
+			end
+					
+			-- Check if pet
+			if (not checkedItems[RSConstants.ITEM_TYPE.APPEARANCE][itemID] and not checkedItems[RSConstants.ITEM_TYPE.TOY][itemID] and not checkedItems[RSConstants.ITEM_TYPE.MOUNT][itemID]) then
+				CheckUpdatePet(itemID, entityID, source, checkedItems)
+			end
+			
+			-- Check if mount
+			if (not checkedItems[RSConstants.ITEM_TYPE.APPEARANCE][itemID] and not checkedItems[RSConstants.ITEM_TYPE.TOY][itemID] and not checkedItems[RSConstants.ITEM_TYPE.PET][itemID]) then
+				CheckUpdateMount(itemID, entityID, source, checkedItems)
+			end
+			
+			if (not checkedItems[RSConstants.ITEM_TYPE.APPEARANCE][itemID] and not checkedItems[RSConstants.ITEM_TYPE.PET][itemID] and not checkedItems[RSConstants.ITEM_TYPE.TOY][itemID] and not checkedItems[RSConstants.ITEM_TYPE.MOUNT][itemID]) then
+				checkedItems[itemID] = true
+			end
+		end
+	end
+end
+
 local function CheckUpdateCollectibles(checkedItems, getter, source, routines, routineTextOutput)
 	local checkUpdateCollectiblesRoutine = RSRoutines.LoopRoutineNew()
 	checkUpdateCollectiblesRoutine:Init(getter, 30, 

@@ -860,7 +860,7 @@ local function ShowActionsMenu(index, b)
 
         if Cell.isWrath and Cell.vars.playerClass == "WARLOCK" then
             tinsert(items, {
-                ["text"] = L["Soulstone"],
+                ["text"] = GetSpellInfo(20707),
                 ["onClick"] = function()
                     changed[index] = changed[index] or {b}
                     local macrotext = "/stopcasting\n/target mouseover\n/use item:36895\n/targetlasttarget"

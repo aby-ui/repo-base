@@ -247,18 +247,32 @@ end
 ---============================================================================
 
 function RSGeneralDB.InitCompletedQuestDB()
-	if (not private.dbchar.quests_completed) then
+	if (RSConstants.DEBUG_MODE and not private.dbchar.quests_completed) then
 		private.dbchar.quests_completed = {}
 	end
 end
 
 function RSGeneralDB.IsCompletedQuestInCache(questID)
-	return questID and private.dbchar.quests_completed[questID]
+	if (questID and private.dbchar.quests_completed) then
+		return private.dbchar.quests_completed[questID]
+	end
+	
+	return false
 end
 
 function RSGeneralDB.SetCompletedQuest(questID)
-	if (questID) then
+	if (questID and private.dbchar.quests_completed) then
 		private.dbchar.quests_completed[questID] = true
+	end
+end
+
+function RSGeneralDB.ResetCompletedQuestDB()
+	if (private.dbchar.quests_completed) then
+		if (RSConstants.DEBUG_MODE) then
+			private.dbchar.quests_completed = {}
+		else
+			private.dbchar.quests_completed = nil
+		end
 	end
 end
 

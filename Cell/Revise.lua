@@ -7,6 +7,12 @@ function F:Revise()
     local dbRevision = CellDB["revise"] and tonumber(string.match(CellDB["revise"], "%d+")) or 0
     F:Debug("DBRevision:", dbRevision)
 
+    local charaDbRevision
+    if Cell.isWrath then
+        charaDbRevision = CellCharacterDB["revise"] and tonumber(string.match(CellCharacterDB["revise"], "%d+")) or 0
+        F:Debug("CharaDBRevision:", dbRevision)
+    end
+
     if CellDB["revise"] and dbRevision < 100 then -- update from an unsupported version
         local f = CreateFrame("Frame")
         f:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -1498,5 +1504,63 @@ function F:Revise()
         end
     end
 
+    -- r147-release
+    if CellDB["revise"] and dbRevision < 147 then
+        if Cell.isRetail then
+            for role, t in pairs(CellDB["layoutAutoSwitch"]) do
+                if t["raid"] then
+                    t["raid_outdoor"] = t["raid"]
+                    t["raid_instance"] = t["raid"]
+                    t["raid"] = nil
+                end
+                if t["mythic"] then
+                    t["raid_mythic"] = t["mythic"]
+                    t["mythic"] = nil
+                end
+            end
+        end
+
+        -- appearance
+        if type(CellDB["appearance"]["healPrediction"]) == "boolean" then
+            CellDB["appearance"]["healPrediction"] = {CellDB["appearance"]["healPrediction"], false, {1, 1, 1, 0.4}}
+        end
+        if type(CellDB["appearance"]["shield"]) == "boolean" then
+            CellDB["appearance"]["shield"] = {CellDB["appearance"]["shield"], {1, 1, 1, 0.4}}
+        end
+        if type(CellDB["appearance"]["healAbsorb"]) == "boolean" then
+            CellDB["appearance"]["healAbsorb"] = {CellDB["appearance"]["healAbsorb"], {1, 0.1, 0.1, 0.9}}
+        end
+
+        -- custom indicator
+        for _, layout in pairs(CellDB["layouts"]) do
+            for _, indicator in pairs(layout["indicators"]) do
+                if indicator["type"] == "bar" then
+                    if not indicator["orientation"] then indicator["orientation"] = "horizontal" end
+                    if type(indicator["showStack"]) ~= "boolean" then
+                        indicator["showStack"] = false
+                        indicator["font"] = {"Cell ".._G.DEFAULT, 11, "Outline", 0, 0}
+                    end
+                elseif indicator["type"] == "rect" then
+                    if type(indicator["showStack"]) ~= "boolean" then
+                        indicator["showStack"] = false
+                        indicator["font"] = {"Cell ".._G.DEFAULT, 11, "Outline", 0, 0}
+                    end
+                end
+            end
+        end
+    end
+
+    -- r148-release
+    if CellDB["revise"] and charaDbRevision and charaDbRevision < 148 then
+        for role, t in pairs(CellCharacterDB["layoutAutoSwitch"]) do
+            if not t["raid_outdoor"] then
+                t["raid_outdoor"] = t["raid25"]
+            end
+        end
+    end
+
     CellDB["revise"] = Cell.version
+    if Cell.isWrath then
+        CellCharacterDB["revise"] = Cell.version
+    end
 end

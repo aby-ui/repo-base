@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.11) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.12) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2022-10-27T09:53:34Z
+    This file was last updated on 2022-11-27T23:18:58Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -529,7 +529,8 @@ do
     local NON_CLASSIC_CLASSES = {
         ["DEMONHUNTER"]    = true,
         ["DEATHKNIGHT"]    = true,
-        ["MONK"]           = true
+        ["MONK"]           = true,
+        ["EVOKER"]         = true,
 
     };
 
@@ -999,4 +1000,4 @@ do
 end
 
 
-T._LoadedFiles["Dcr_utils.lua"] = "2.7.8.11";
+T._LoadedFiles["Dcr_utils.lua"] = "2.7.8.12";

@@ -19,8 +19,8 @@ local KTF = KT.frame
 
 local eventFrame
 local activeFrame, abutton
+local isBlizzardButton = false
 
-local extraAbilityFrame = ExtraAbilityContainer
 local isBartender, isElvui, isTukui = false, false, false
 
 --------------
@@ -60,8 +60,8 @@ end
 
 local function ActiveFrame_SetPosition()
 	local point, relativeTo, relativePoint, xOfs, yOfs = "BOTTOM", UIParent, "BOTTOM", 0, 285
-	if dbChar.activeButtonPosition then
-		point, relativeTo, relativePoint, xOfs, yOfs = unpack(dbChar.activeButtonPosition)
+	if db.qiActiveButtonPosition then
+		point, relativeTo, relativePoint, xOfs, yOfs = unpack(db.qiActiveButtonPosition)
 	else
 		if isBartender then
 			yOfs = yOfs - 40
@@ -73,6 +73,20 @@ local function ActiveFrame_SetPosition()
 	end
 	KT:protStop("ClearAllPoints", activeFrame)
 	KT:protStop("SetPoint", activeFrame, point, relativeTo, relativePoint, xOfs, yOfs)
+end
+
+local function TestBlizzardButton()
+	isBlizzardButton = false
+	if HasExtraActionBar() then
+		local button = ExtraActionBarFrame.button
+		local actionType, id = GetActionInfo(button.action)
+		if actionType == "spell" then
+			local _, _, icon = GetSpellInfo(id)
+			if icon == abutton.item then
+				isBlizzardButton = true
+			end
+		end
+	end
 end
 
 local function restore()
@@ -105,6 +119,9 @@ local function SetFrames()
 					event == "QUEST_POI_UPDATE" or
 					event == "BAG_UPDATE_COOLDOWN" then
 				M:Update()
+			elseif event == "UPDATE_EXTRA_ACTIONBAR" then
+				TestBlizzardButton()
+				M:Update()
 			elseif event == "UPDATE_BINDINGS" then
 				if activeFrame:IsShown() then
 					UpdateHotkey()
@@ -117,6 +134,7 @@ local function SetFrames()
 		end)
 	end
 	eventFrame:RegisterEvent("QUEST_WATCH_LIST_CHANGED")
+	eventFrame:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
 	eventFrame:RegisterEvent("ZONE_CHANGED")
 	eventFrame:RegisterEvent("QUEST_POI_UPDATE")
 	eventFrame:RegisterEvent("BAG_UPDATE_COOLDOWN")
@@ -147,14 +165,14 @@ local function SetFrames()
 		end)
 		overlay:SetScript("OnDragStop", function(self)
 			self:StopMovingOrSizing()
-			dbChar.activeButtonPosition = { self:GetPoint() }
+			db.qiActiveButtonPosition = { self:GetPoint() }
 			ActiveFrame_SetPosition()
 			activeFrame:ClearAllPoints()
 			activeFrame:SetPoint("CENTER", self, "CENTER")
 		end)
 		overlay:SetScript("OnMouseUp", function(self, button)
 			if button == "RightButton" then
-				dbChar.activeButtonPosition = nil
+				db.qiActiveButtonPosition = nil
 				ActiveFrame_SetPosition()
 				self:ClearAllPoints()
 				self:SetAllPoints(activeFrame)
@@ -179,8 +197,7 @@ local function SetFrames()
 		local button = CreateFrame("Button", name, activeFrame, "SecureActionButtonTemplate")
 		button:SetSize(52, 52)
 		button:SetPoint("CENTER", 0, -4)
-		button:SetFrameLevel(extraAbilityFrame:GetFrameLevel() + 2)
-		
+
 		button.icon = button:CreateTexture(name.."Icon", "BACKGROUND")
 		button.icon:SetPoint("TOPLEFT", 0, -1)
 		button.icon:SetPoint("BOTTOMRIGHT", 0, -1)
@@ -249,6 +266,9 @@ function M:OnInitialize()
 	
 	db = KT.db.profile
 	dbChar = KT.db.char
+
+	-- Cleanup (temporarily)
+	dbChar.activeButtonPosition = nil
 end
 
 function M:OnEnable()
@@ -274,7 +294,7 @@ function M:Update(id)
 	else
 		if InCombatLockdown() then return end
 
-		if not dbChar.collapsed then
+		if not dbChar.collapsed and not isBlizzardButton then
 			for questID, _ in pairs(KT.fixedButtons) do
 				if questID == C_SuperTrack.GetSuperTrackedQuestID() then
 					closestQuestID = questID

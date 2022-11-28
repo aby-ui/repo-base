@@ -141,22 +141,13 @@ local function SetItemLevel(self, link, category, BagID, SlotID)
         local level = ""
         local _, count, quality, class, subclass, equipSlot, linklevel
         if (link and string.match(link, "item:(%d+):")) then
-            if (BagID and SlotID and (category == "Bag" or category == "AltEquipment")) then
-                count, level = LibItemInfo:GetContainerItemLevel(BagID, SlotID)
-                _, _, quality, linklevel, _, class, subclass, _, equipSlot = GetItemInfo(link)
-                if (count == 0 and level == 0) then
-                    level = linklevel
-                end
-            else
-                count, level, _, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
-            end
-            --背包不显示装等
-            if (equipSlot == "INVTYPE_BAG") then
-                level = ""
-            end
+            _, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
             --除了装备和圣物外,其它不显示装等
             if ((equipSlot and string.find(equipSlot, "INVTYPE_"))
-                or (subclass and string.find(subclass, RELICSLOT))) then else
+                or (subclass and string.find(subclass, RELICSLOT))) then
+                count, level = LibItemInfo:GetItemInfo(link, nil, true)
+            else
+                count = 0
                 level = ""
             end
             --坐骑还是要显示的

@@ -18,6 +18,10 @@ local RSLogger = private.ImportLib("RareScannerLogger")
 ---============================================================================
 
 function RSQuestTracker.CacheAllCompletedQuestIDs()
+	if (not RSConstants.DEBUG_MODE) then
+		return
+	end
+	
 	for _, questID in ipairs (C_QuestLog.GetAllCompletedQuestIDs()) do
 		RSGeneralDB.SetCompletedQuest(questID)
 	end
@@ -31,6 +35,10 @@ end
 ---============================================================================
 
 function RSQuestTracker.FindCompletedHiddenQuestID(entityID, callbackOnFound)
+	if (not RSConstants.DEBUG_MODE) then
+		return
+	end
+	
 	C_Timer.After(RSConstants.FIND_HIDDEN_QUESTS_TIMER, function()
 		local newQuestID
 		for i, questID in ipairs (C_QuestLog.GetAllCompletedQuestIDs()) do

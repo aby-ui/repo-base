@@ -24,10 +24,6 @@ local RSLootTooltip = private.ImportLib("RareScannerLootTooltip")
 
 RSLootMixin = { };
 
-function RSLootMixin:OnLoad()
-	self:EnableKeyboard(true)
-end
-
 function RSLootMixin:OnEnter()
 	if (self:GetParent() and self:GetParent():GetParent()) then
 		local itemLink, _, _, _, itemClassID, itemSubClassID = RSGeneralDB.GetItemInfo(self.itemID)
@@ -41,6 +37,7 @@ function RSLootMixin:OnEnter()
 		RSLootTooltip.AddRareScannerInformation(toolTip, itemLink, self.itemID, itemClassID, itemSubClassID)
 		
 		toolTip:Show()
+		self:EnableKeyboard(true);
 
 		self.Icon.Anim:Play();
 	end
@@ -49,6 +46,7 @@ end
 function RSLootMixin:OnLeave()
 	self:GetParent().LootBarToolTip:Hide()
 	self.Icon.Anim:Stop();
+	self:EnableKeyboard(false);
 end
 
 function RSLootMixin:OnKeyUp()
@@ -58,11 +56,12 @@ function RSLootMixin:OnKeyUp()
 end
 
 function RSLootMixin:OnKeyDown()
-	self:SetPropagateKeyboardInput(true)
 	local toolTip = self:GetParent().LootBarToolTip
 	if (IsShiftKeyDown() and toolTip:IsShown()) then
-		GameTooltip_OnTooltipSetShoppingItem(toolTip)
 		GameTooltip_ShowCompareItem(toolTip)
+		self:SetPropagateKeyboardInput(false)
+	else
+		self:SetPropagateKeyboardInput(true)
 	end
 end
 

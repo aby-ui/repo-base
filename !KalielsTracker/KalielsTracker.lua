@@ -407,6 +407,11 @@ local function SetFrames()
 			end
 		elseif event == "ACHIEVEMENT_EARNED" then
 			KT:SetAchievsHeaderText()
+		elseif event == "TRACKED_RECIPE_UPDATE" then
+			local _, tracked = ...
+			KT:ToggleEmptyTracker(tracked)
+		elseif event == "BAG_UPDATE_DELAYED" then
+			KT_ObjectiveTracker_Update(KT_OBJECTIVE_TRACKER_UPDATE_MODULE_PROFESSION_RECIPE)
 		elseif event == "PLAYER_REGEN_ENABLED" and combatLockdown then
 			combatLockdown = false
 			KT:RemoveFixedButton()
@@ -452,6 +457,8 @@ local function SetFrames()
 	KTF:RegisterEvent("QUEST_LOG_UPDATE")
 	KTF:RegisterEvent("QUEST_POI_UPDATE")
 	KTF:RegisterEvent("ACHIEVEMENT_EARNED")
+	KTF:RegisterEvent("TRACKED_RECIPE_UPDATE")
+	KTF:RegisterEvent("BAG_UPDATE_DELAYED")
 	KTF:RegisterEvent("PLAYER_REGEN_ENABLED")
 	KTF:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	KTF:RegisterEvent("ZONE_CHANGED")
@@ -992,7 +999,40 @@ local function SetHooks()
 			block.fixedTag.text:SetTextColor(colorStyle.r, colorStyle.g, colorStyle.b)
 		end
 	end)
-	Default_SetFunctionChanged("OnBlockHeaderEnter")
+	Default_SetFunctionChanged("OnBlockHeaderEnter", "KT_PROFESSION_RECIPE_TRACKER_MODULE")
+
+	function KT_PROFESSION_RECIPE_TRACKER_MODULE:OnBlockHeaderEnter(block)
+		KT_DEFAULT_OBJECTIVE_TRACKER_MODULE:OnBlockHeaderEnter(block)
+
+		if db.tooltipShow then
+			GameTooltip:SetOwner(block, "ANCHOR_NONE")
+			GameTooltip:ClearAllPoints()
+			if KTF.anchorLeft then
+				GameTooltip:SetPoint("TOPLEFT", block, "TOPRIGHT", 12, 1)
+			else
+				GameTooltip:SetPoint("TOPRIGHT", block, "TOPLEFT", -32, 1)
+			end
+			GameTooltip:SetRecipeResultItem(block.id)
+			if db.tooltipShowID and not ArkInventory then
+				GameTooltip:AddLine(" ")
+				GameTooltip:AddDoubleLine(" ", "ID: |cffffffff"..block.id)
+			end
+			GameTooltip:Show()
+		end
+	end
+
+	if ArkInventory then
+		hooksecurefunc(ArkInventory.API, "ReloadedTooltipReady", function(tooltip, fn, ...)
+			if fn == "SetRecipeResultItem" then
+				if db.tooltipShowID then
+					local id = ...
+					GameTooltip:AddLine(" ")
+					GameTooltip:AddDoubleLine(" ", "ID: |cffffffff"..id)
+					GameTooltip:Show()
+				end
+			end
+		end)
+	end
 
 	hooksecurefunc(KT_DEFAULT_OBJECTIVE_TRACKER_MODULE, "OnBlockHeaderLeave", function(self, block)
 		local colorStyle
@@ -1683,22 +1723,17 @@ local function SetHooks()
 	end
 
 	-- GossipFrame.lua
-	-- TODO: Test it
-	hooksecurefunc(GossipFrameMixin, "Update", function(self)
-		local gossipQuests = C_GossipInfo.GetActiveQuests()
+	hooksecurefunc(GossipFrame, "HandleShow", function(self, textureKit)
+		local gossipQuests = C_GossipInfo.GetAvailableQuests()
 		for _, questInfo in ipairs(gossipQuests) do
-			if dbChar.quests.cache[questInfo.questID] and not C_QuestLog.IsComplete(questInfo.questID) then
-				QuestsCache_UpdateProperty(questInfo.questID, "startMapID", KT.GetCurrentMapAreaID())
-			end
+			QuestsCache_UpdateProperty(questInfo.questID, "startMapID", KT.GetCurrentMapAreaID())
 		end
 	end)
 
 	-- QuestFrame.lua
 	QuestFrame:HookScript("OnShow", function(self)
 		local questID = GetQuestID()
-		if dbChar.quests.cache[questID] and not C_QuestLog.IsComplete(questID) then
-			QuestsCache_UpdateProperty(questID, "startMapID", KT.GetCurrentMapAreaID())
-		end
+		QuestsCache_UpdateProperty(questID, "startMapID", KT.GetCurrentMapAreaID())
 	end)
 
 	-- QuestMapFrame.lua
@@ -2076,6 +2111,69 @@ local function SetHooks()
 			info.func = KT.Alert_WowheadURL;
 			info.arg1 = "quest";
 			info.arg2 = questID;
+			info.checked = false;
+			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+		end
+	end
+
+	function KT_PROFESSION_RECIPE_TRACKER_MODULE:OnBlockHeaderClick(block, mouseButton)  -- R
+		if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
+			local link = C_TradeSkillUI.GetRecipeLink(block.id);
+			if ( link ) then
+				ChatEdit_InsertLink(link);
+			end
+		elseif ( mouseButton ~= "RightButton" ) then
+			MSA_CloseDropDownMenus();
+			if ( not ProfessionsFrame ) then
+				ProfessionsFrame_LoadUI();
+			end
+			if ( IsModifiedClick("RECIPEWATCHTOGGLE") ) then
+				C_TradeSkillUI.SetRecipeTracked(block.id, false);
+			elseif IsModifiedClick(db.menuWowheadURLModifier) then
+				KT:Alert_WowheadURL("spell", block.id)
+			else
+				C_TradeSkillUI.OpenRecipe(block.id);
+				C_Timer.After(0, function()
+					C_TradeSkillUI.OpenRecipe(block.id);  -- fix Blizz bug
+				end)
+			end
+		else
+			KT_ObjectiveTracker_ToggleDropDown(block, KT_RecipeObjectiveTracker_OnOpenDropDown);
+		end
+	end
+
+	function KT_RecipeObjectiveTracker_OnOpenDropDown(self)  -- R
+		local block = self.activeFrame;
+
+		local info = MSA_DropDownMenu_CreateInfo();
+		info.text = GetSpellInfo(block.id);
+		info.isTitle = 1;
+		info.notCheckable = 1;
+		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+
+		info = MSA_DropDownMenu_CreateInfo();
+		info.notCheckable = 1;
+
+        info.text = PROFESSIONS_TRACKING_VIEW_RECIPE;
+        info.func = function()
+            C_TradeSkillUI.OpenRecipe(block.id);
+			C_Timer.After(0, function()
+				C_TradeSkillUI.OpenRecipe(block.id);  -- fix Blizz bug
+			end)
+        end;
+        MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+
+        info.text = PROFESSIONS_UNTRACK_RECIPE;
+        info.func = function()
+            C_TradeSkillUI.SetRecipeTracked(block.id, false);
+        end;
+		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
+
+		if db.menuWowheadURL then
+			info.text = "|cff33ff99Wowhead|r URL";
+			info.func = KT.Alert_WowheadURL;
+			info.arg1 = "spell";
+			info.arg2 = block.id;
 			info.checked = false;
 			MSA_DropDownMenu_AddButton(info, MSA_DROPDOWN_MENU_LEVEL);
 		end
@@ -2602,11 +2700,12 @@ end
 
 function KT:IsTrackerEmpty(noaddon)
 	local result = (KT.GetNumQuestWatches() == 0 and
-		GetNumAutoQuestPopUps() == 0 and
-		GetNumTrackedAchievements() == 0 and
-		self.IsTableEmpty(self.activeTasks) and
-		C_QuestLog.GetNumWorldQuestWatches() == 0 and
-		not self.inScenario)
+			GetNumAutoQuestPopUps() == 0 and
+			GetNumTrackedAchievements() == 0 and
+			self.IsTableEmpty(self.activeTasks) and
+			C_QuestLog.GetNumWorldQuestWatches() == 0 and
+			not self.inScenario and
+			#C_TradeSkillUI.GetRecipesTracked() == 0)
 	if not noaddon then
 		result = (result and not self.AddonPetTracker:IsShown())
 	end

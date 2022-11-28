@@ -76,7 +76,7 @@ function level:AttachToPlayerButton(playerButton)
 
 	-- Level
 
-	function fs:OnNewPlayer()
+	function fs:PlayerDetailsChanged()
 
 		if playerButton.PlayerLevel then self:SetLevel(playerButton.PlayerLevel) end --for testmode
 	end

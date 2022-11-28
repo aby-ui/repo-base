@@ -543,14 +543,16 @@ function Details:StartMeUp() --I'll never stop!
 		Details.cached_specs[UnitGUID("player")] = GetSpecializationInfo(GetSpecialization() or 0)
 	end
 
-	if (not Details.data_wipes_exp["9"]) then
-		wipe(Details.encounter_spell_pool or {})
-		wipe(Details.boss_mods_timers or {})
-		wipe(Details.spell_school_cache or {})
-		wipe(Details.spell_pool or {})
-		wipe(Details.npcid_pool or {})
-		wipe(Details.current_exp_raid_encounters or {})
-		Details.data_wipes_exp["9"] = true
+	if (GetExpansionLevel() == 9) then
+		if (not Details.data_wipes_exp["10"]) then
+			wipe(Details.encounter_spell_pool or {})
+			wipe(Details.boss_mods_timers or {})
+			wipe(Details.spell_school_cache or {})
+			wipe(Details.spell_pool or {})
+			wipe(Details.npcid_pool or {})
+			wipe(Details.current_exp_raid_encounters or {})
+			Details.data_wipes_exp["10"] = true
+		end
 	end
 
 	Details.boss_mods_timers.encounter_timers_dbm = Details.boss_mods_timers.encounter_timers_dbm or {}

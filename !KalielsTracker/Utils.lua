@@ -400,6 +400,8 @@ StaticPopupDialogs[addonName.."_WowheadURL"] = {
             name = QuestUtils_GetQuestName(self.text.text_arg2)
         elseif self.text.text_arg1 == "achievement" then
             name = select(2, GetAchievementInfo(self.text.text_arg2))
+        elseif self.text.text_arg1 == "spell" then
+            name = GetSpellInfo(self.text.text_arg2)
         end
         local www = KT.locale:sub(1, 2)
         if www == "zh" then www = "cn" end

@@ -15,6 +15,16 @@ local RSConstants = private.ImportLib("RareScannerConstants")
 ---============================================================================
 
 private.NPC_GUIDE = {
+	["658278"] = { [RSConstants.ENTRANCE] = { x = 0.4997, y = 0.8143 } }; --Clutchmother Zavas
+	["820471"] = { [RSConstants.ENTRANCE] = { x = 0.3423, y = 0.4748 } }; --Soriid the Devourer
+	["820571"] = { [RSConstants.ENTRANCE] = { x = 0.5553, y = 0.6822 } }; --Haarka the Ravenous
+	["1168866"] = { [RSConstants.ENTRANCE] = { x = 0.2936, y = 0.6250 } }; --Cursed Centaur
+	["365210"] = { [RSConstants.ENTRANCE] = { x = 0.4038, y = 0.6935 } }; --Trigore the Lasher
+	["367210"] = { [RSConstants.ENTRANCE] = { x = 0.4038, y = 0.6935 } }; --Boahn <Druid of the F>
+	["47137"] = { [RSConstants.ENTRANCE] = { x = 0.6177, y = 0.5395 } }; --Mother Fang
+	["59652"] = { [RSConstants.ENTRANCE] = { x = 0.4374, y = 0.7335 } }; --Brainwashed Noble
+	["59952"] = { [RSConstants.ENTRANCE] = { x = 0.4374, y = 0.7335 } }; --Marisa du'Paige
+	["58221"] = { [RSConstants.ENTRANCE] = { x = 0.5497, y = 0.097 } }; --Felweaver Scornn
 	["1713271533"] = { [RSConstants.TRANSPORT] = { x = 0.391, y = 0.562 } }; --Reekmonger
 	["1716881565"] = {
 		[RSConstants.PATH_START] = { x = 0.6579, y = 0.2778 };
@@ -298,17 +308,18 @@ private.NPC_GUIDE = {
 	["1892892022"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.2727, y = 0.6100 };
 	}; --Penumbrus
-	["1942702024"] = {
-		[RSConstants.DOT..1] = { x = 0.5293, y = 0.3710, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..2] = { x = 0.5339, y = 0.3655, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..3] = { x = 0.522, y = 0.3733, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..4] = { x = 0.5167, y = 0.3681, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..5] = { x = 0.5194, y = 0.3564, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..6] = { x = 0.5407, y = 0.3718, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..7] = { x = 0.5401, y = 0.3629, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..8] = { x = 0.5416, y = 0.3466, comment = AL["NOTE_194270_1"] }; 
-		[RSConstants.DOT..9] = { x = 0.5348, y = 0.3474, comment = AL["NOTE_194270_1"] }; 
-	}; --Arcane Devourer
+	["1932382024"] = {
+		[RSConstants.DOT..1] = { x = 0.5293, y = 0.3710, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..2] = { x = 0.5339, y = 0.3655, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..3] = { x = 0.522, y = 0.3733, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..4] = { x = 0.5167, y = 0.3681, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..5] = { x = 0.5194, y = 0.3564, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..6] = { x = 0.5407, y = 0.3718, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..7] = { x = 0.5401, y = 0.3629, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..8] = { x = 0.5416, y = 0.3466, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.DOT..9] = { x = 0.5348, y = 0.3474, comment = AL["NOTE_193238_1"] }; 
+		[RSConstants.FLAG] = { x = 0.5388, y = 0.3560, comment = AL["NOTE_193238_2"] }; 
+	}; --Spellwrought Snowman
 	["1848532022"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.8174, y = 0.3713 };
 	}; --Primal Scythid Queen
@@ -379,6 +390,33 @@ private.NPC_GUIDE = {
 	["1931282023"] = { 
 		[RSConstants.FLAG] = { x = 0.9008, y = 0.4045, comment = AL["NOTE_193128_1"] };
 	}; --Blightpaw the Depraved
+	["1936912024"] = { 
+		[RSConstants.STEP1] = { x = 0.5052, y = 0.3672, comment = AL["NOTE_193691_1"] };
+		[RSConstants.STEP2] = { x = 0.4997, y = 0.3821, comment = AL["NOTE_193691_2"] };
+		[RSConstants.STEP3] = { x = 0.4922, y = 0.3842, comment = AL["NOTE_193691_3"] };
+	}; --Fisherman Tinnak <Angered Ghost>
+	["1909852022"] = { 
+		[RSConstants.FLAG] = { x = 0.276, y = 0.564, comment = AL["NOTE_190985_1"] };
+	}; --Death's Shadow
+	["1898222022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.2711, y = 0.6073 };
+		[RSConstants.FLAG] = { x = 0.268, y = 0.624, comment = AL["NOTE_189822_1"] };
+	}; --Shas'ith
+	["1873062022"] = { 
+		[RSConstants.FLAG] = { x = 0.322, y = 0.524, comment = AL["NOTE_187306_1"] };
+	}; --Morchok <Harbinger of Twilight>
+	["1932712022"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4845, y = 0.7426 };
+	}; --Shadeslash Trakken
+	["1881242023"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.792, y = 0.3655 };
+	}; --Irontree
+	["1932252024"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3403, y = 0.3077 };
+	}; --Notfar the Unbearable
+	["1931422023"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.5636, y = 0.8168 };
+	}; --Enraged Sapphire
 }
 
 ---============================================================================
@@ -858,6 +896,9 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.PATH_START] = { x = 0.2573, y = 0.4653 };
 		[RSConstants.STEP1] = { x = 0.2629, y = 0.4633, comment = AL["NOTE_195373_1"] };
 	}; --Pepper Hammer
+	["1919922118"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.3945, y = 0.2355 };
+	}; --Eviscerated Argali
 }
 
 ---============================================================================

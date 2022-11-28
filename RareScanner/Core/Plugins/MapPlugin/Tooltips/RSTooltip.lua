@@ -125,7 +125,6 @@ local function showItemComparationTooltip(cell)
 		ItemToolTipComp2:SetScale(RSConfigDB.GetWorldMapLootAchievTooltipsScale())
 		ItemToolTipComp1:SetFrameLevel(2100)
 		ItemToolTipComp2:SetFrameLevel(2100)
-		GameTooltip_OnTooltipSetShoppingItem(ItemToolTip)
 		GameTooltip_ShowCompareItem(ItemToolTip)
 		cell:SetPropagateKeyboardInput(false)
 	else
@@ -482,8 +481,8 @@ local function AddFilterTooltip(tooltip, pin, addSeparator)
 		return false
 	end
 	
-	-- Skip if worldmap icon
-	if (pin.POI.worldmap) then
+	-- Skip if dragon glyph
+	if (pin.POI.isDragonGlyph) then
 		return false
 	end
 	

@@ -6,6 +6,11 @@ MDT.mapInfo[dungeonIndex] = {
   viewportPositionOverrides = {
   }
 };
+local zones = { 429, 430 }
+-- add zones to MDT.zoneIdToDungeonIdx
+for _, zone in ipairs(zones) do
+  MDT.zoneIdToDungeonIdx[zone] = dungeonIndex
+end
 
 MDT.dungeonMaps[dungeonIndex] = {
   [0] = "EastTemple",
@@ -15,7 +20,7 @@ MDT.dungeonSubLevels[dungeonIndex] = {
   [1] = L["TempleOfTheJadeSerpent"],
 }
 
-MDT.dungeonTotalCount[dungeonIndex] = { normal = 297, teeming = 1000, teemingEnabled = true }
+MDT.dungeonTotalCount[dungeonIndex] = { normal = 410, teeming = 1000, teemingEnabled = true }
 
 MDT.mapPOIs[dungeonIndex] = {};
 

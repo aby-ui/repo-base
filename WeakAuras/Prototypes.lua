@@ -122,8 +122,15 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+    cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
-      if event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
+      if event == "PLAYER_TARGET_CHANGED" then
+        unit = "target"
+      end
+      if event == "UNIT_SPELLCAST_EMPOWER_START"
+      or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
+      or (event == "PLAYER_TARGET_CHANGED" and (select(10, UnitChannelInfo(unit)) or 0 > 0))
+      then
         cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
       else
         cacheEmpowered[unit] = nil
@@ -891,6 +898,19 @@ local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
   end
 end
 
+function WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
+  if IsPlayerSpell(spell) then
+    return true
+  end
+  local baseSpell = FindBaseSpellByID(spell)
+  if baseSpell and baseSpell ~= spell then
+    if FindSpellOverrideByID(baseSpell) == spell then
+      return IsPlayerSpell(baseSpell)
+    end
+  end
+  return false
+end
+
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
   local result = IsPlayerSpell(spell)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
@@ -1179,7 +1199,7 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1236,7 +1256,7 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1295,7 +1315,7 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -4560,7 +4580,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "spellname == spellName"
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
       }
     },
     nameFunc = function(trigger)
@@ -4621,7 +4641,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "spell == spellName"
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
       },
       {
         name = "direction",
@@ -5993,7 +6013,7 @@ Private.event_prototypes = {
           "PLAYER_TALENT_UPDATE"
         }
       elseif WeakAuras.IsRetail() then
-        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE" }
+        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE", "PLAYER_SPECIALIZATION_CHANGED" }
       end
       return {
         ["events"] = events
@@ -6238,7 +6258,7 @@ Private.event_prototypes = {
             and trigger.use_talent == false
             and trigger.talent and type(trigger.talent.multi) == "table"
             then
-              local count, value = 0
+              local count, value = 0, nil
               for _, v in pairs(trigger.talent.multi) do
                 value = v
                 count = count + 1

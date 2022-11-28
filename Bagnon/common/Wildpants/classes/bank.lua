@@ -4,12 +4,13 @@
 --]]
 
 local ADDON, Addon = ...
+local C = LibStub('C_Everywhere').Container
 local Bank = Addon.Frame:NewClass('BankFrame')
 Bank.Title = LibStub('AceLocale-3.0'):GetLocale(ADDON).TitleBank
 Bank.Bags = {BANK_CONTAINER}
 
 for slot = 1, NUM_BANKBAGSLOTS do
-	tinsert(Bank.Bags, slot + (NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS))
+	tinsert(Bank.Bags, slot + Addon.NumBags)
 end
 
 function Bank:OnHide()
@@ -18,8 +19,8 @@ function Bank:OnHide()
 end
 
 function Bank:SortItems()
-	if C_Container.SortBankBags then
-		C_Container.SortBankBags()
+	if C.SortBankBags then
+		C.SortBankBags()
 
 		if self.SortReagents then
 			self:Delay(.3, 'SortReagents')
@@ -33,7 +34,7 @@ if REAGENTBANK_CONTAINER then
 	tinsert(Bank.Bags, REAGENTBANK_CONTAINER)
 
 	function Bank:SortReagents()
-		C_Container.SortReagentBankBags()
+		C.SortReagentBankBags()
 	end
 
 	function Bank:IsShowingBag(bag)

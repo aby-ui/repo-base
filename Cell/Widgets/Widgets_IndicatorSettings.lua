@@ -866,6 +866,53 @@ local function CreateSetting_Orientation(parent)
     return widget
 end
 
+local function CreateSetting_BarOrientation(parent)
+    local widget
+
+    if not settingWidgets["barOrientation"] then
+        widget = addon:CreateFrame("CellIndicatorSettings_BarOrientation", parent, 240, 50)
+        settingWidgets["barOrientation"] = widget
+
+        widget.orientation = addon:CreateDropdown(widget, 153)
+        widget.orientation:SetPoint("TOPLEFT", 5, -20)
+        widget.orientation:SetItems({
+            {
+                ["text"] = L["Horizontal"],
+                ["value"] = "horizontal",
+                ["onClick"] = function()
+                    widget.func("horizontal")
+                end,
+            },
+            {
+                ["text"] = L["Vertical"],
+                ["value"] = "vertical",
+                ["onClick"] = function()
+                    widget.func("vertical")
+                end,
+            },
+        })
+
+        widget.orientationText = widget:CreateFontString(nil, "OVERLAY", font_name)
+        widget.orientationText:SetText(L["Orientation"])
+        widget.orientationText:SetPoint("BOTTOMLEFT", widget.orientation, "TOPLEFT", 0, 1)
+
+        -- associate db
+        function widget:SetFunc(func)
+            widget.func = func
+        end
+        
+        -- show db value
+        function widget:SetDBValue(orientation)
+            widget.orientation:SetSelectedValue(orientation)
+        end
+    else
+        widget = settingWidgets["barOrientation"]
+    end
+
+    widget:Show()
+    return widget
+end
+
 local function CreateSetting_VehicleNamePosition(parent)
     local widget
 
@@ -1045,13 +1092,13 @@ local function CreateSetting_Font(parent)
             widget.func({widget.font:GetSelected(), value, widget.outline:GetSelected(), widget.xOffset:GetValue(), widget.yOffset:GetValue()})
         end
 
-        widget.xOffset = addon:CreateSlider(L["X Offset"], widget, -10, 10, 110, 1)
+        widget.xOffset = addon:CreateSlider(L["X Offset"], widget, -20, 20, 110, 1)
         widget.xOffset:SetPoint("TOPLEFT", widget.fontSize, "BOTTOMLEFT", 0, -40)
         widget.xOffset.afterValueChangedFn = function(value)
             widget.func({widget.font:GetSelected(), widget.fontSize:GetValue(), widget.outline:GetSelected(), value, widget.yOffset:GetValue()})
         end
         
-        widget.yOffset = addon:CreateSlider(L["Y Offset"], widget, -10, 10, 110, 1)
+        widget.yOffset = addon:CreateSlider(L["Y Offset"], widget, -20, 20, 110, 1)
         widget.yOffset:SetPoint("TOPLEFT", widget.xOffset, "TOPRIGHT", 25, 0)
         widget.yOffset.afterValueChangedFn = function(value)
             widget.func({widget.font:GetSelected(), widget.fontSize:GetValue(), widget.outline:GetSelected(), widget.xOffset:GetValue(), value})
@@ -4023,6 +4070,8 @@ function addon:CreateIndicatorSettings(parent, settingsTable)
             tinsert(widgetsTable, CreateSetting_Format(parent))
         elseif setting == "orientation" then
             tinsert(widgetsTable, CreateSetting_Orientation(parent))
+        elseif setting == "barOrientation" then
+            tinsert(widgetsTable, CreateSetting_BarOrientation(parent))
         elseif setting == "font" then
             tinsert(widgetsTable, CreateSetting_Font(parent))
         elseif setting == "font-noOffset" then

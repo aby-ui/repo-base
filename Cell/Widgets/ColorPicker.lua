@@ -271,6 +271,9 @@ local function CreateColorPicker()
         if not userChanged then return end
         B = 1 - value
 
+        if brightness.prev == B then return end
+        brightness.prev = B
+
         -- update
         UpdateAll("hsb", H, S, B, A)
     end)
@@ -313,6 +316,9 @@ local function CreateColorPicker()
     alpha:SetScript("OnValueChanged", function(self, value, userChanged)
         if not userChanged then return end
         A = 1 - value
+
+        if alpha.prev == A then return end
+        alpha.prev = A
 
         -- update
         UpdateAll("hsb", H, S, B, A)
@@ -465,6 +471,10 @@ function addon:ShowColorPicker(callback, onConfirm, hasAlpha, r, g, b, a)
     if not colorPicker then
         CreateColorPicker()
     end
+
+    -- clear previous
+    brightness.prev = nil
+    alpha.prev = nil
 
     -- already shown, restore previous
     if colorPicker:IsShown() then

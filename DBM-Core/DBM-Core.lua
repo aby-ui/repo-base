@@ -70,7 +70,7 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221125232453"),
+	Revision = parseCurseDate("20221128061608"),
 }
 
 local fakeBWVersion, fakeBWHash

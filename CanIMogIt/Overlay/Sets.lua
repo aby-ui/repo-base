@@ -34,9 +34,10 @@ end
 ------------------------
 
 
-function WardrobeCollectionFrame_CIMIOnValueChanged()
+function WardrobeCollectionFrame_CIMIOnValueChanged(_, elapsed)
     -- For each button, update the text value
     if _G["WardrobeCollectionFrame"] == nil then return end
+    if not CanIMogIt.FrameShouldUpdate("WardrobeSets", elapsed or 1) then return end
     local wardrobeSetsScrollFrame = _G["WardrobeCollectionFrame"].SetsCollectionFrame.ListContainer.ScrollBox
     local setFrames = wardrobeSetsScrollFrame:GetFrames()
     for i = 1, #setFrames do

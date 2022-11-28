@@ -4,7 +4,7 @@
 ## Title-zhTW:GladiatorlosSA_夏一可語音包
 ## Notes: GSA plugin for Chinese voice set
 ## Author: Yike Xia, Mini_Dragon
-## Version: 20220909
+## Version: 20221117
 
 GladiatorlosSA_zhCN.lua
 

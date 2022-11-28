@@ -133,8 +133,4 @@ function IconSelectorPopupFrameTemplateMixin:GetSelectedIndex()
 	return self.IconSelector:GetSelectedIndex();
 end
 
-function IsAnyIconSelectorPopupFrameShown()
-	return IconSelectorPopupFramesShown and IconSelectorPopupFramesShown > 0;
-end
-
 Data.Mixins.BackportedIconSelectorPopupFrameTemplateMixin = IconSelectorPopupFrameTemplateMixin

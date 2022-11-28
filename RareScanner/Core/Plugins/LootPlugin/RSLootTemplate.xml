@@ -27,12 +27,11 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad method="OnLoad"/>
 			<OnEnter method="OnEnter"/>
 			<OnLeave method="OnLeave"/>
-			<OnMouseDown method="OnMouseDown"/>
 			<OnKeyUp method="OnKeyUp"/>
 			<OnKeyDown method="OnKeyDown"/>
+			<OnMouseDown method="OnMouseDown"/>
 		</Scripts>
 	</Frame>
   

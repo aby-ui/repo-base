@@ -64,7 +64,14 @@ if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not isExpansion_Dragonflight()) t
 end
 
 local major = "LibOpenRaid-1.0"
-local CONST_LIB_VERSION = 79
+local CONST_LIB_VERSION = 82
+
+if (not LIB_OPEN_RAID_MAX_VERSION) then
+    LIB_OPEN_RAID_MAX_VERSION = CONST_LIB_VERSION
+else
+    LIB_OPEN_RAID_MAX_VERSION = math.max(LIB_OPEN_RAID_MAX_VERSION, CONST_LIB_VERSION)
+end
+
 LIB_OPEN_RAID_CAN_LOAD = false
 
 local unpack = table.unpack or _G.unpack
@@ -72,9 +79,12 @@ local unpack = table.unpack or _G.unpack
 --declae the library within the LibStub
     local libStub = _G.LibStub
     local openRaidLib = libStub:NewLibrary(major, CONST_LIB_VERSION)
+
     if (not openRaidLib) then
         return
     end
+
+    openRaidLib.__version = CONST_LIB_VERSION
 
     LIB_OPEN_RAID_CAN_LOAD = true
 
@@ -716,6 +726,7 @@ end
         ["mythicDungeonStart"] = {},
         ["playerPetChange"] = {},
         ["mythicDungeonEnd"] = {},
+        ["unitAuraRemoved"] = {},
     }
 
     openRaidLib.internalCallback.RegisterCallback = function(event, func)
@@ -794,9 +805,11 @@ end
 
         ["PLAYER_ENTERING_WORLD"] = function(...)
             --has the selected character just loaded?
-            if (not openRaidLib.isFirstEnteringWorld) then
+            if (not openRaidLib.bHasEnteredWorld) then
                 --register events
                 openRaidLib.OnEnterWorldRegisterEvents()
+
+                --openRaidLib.AuraTracker.StartScanUnitAuras("player")
 
                 if (IsInGroup()) then
                     openRaidLib.RequestAllData()
@@ -835,7 +848,7 @@ end
                         detailsEventListener:RegisterEvent("UNIT_TALENTS", "UnitTalentsFound")
                     end
 
-                openRaidLib.isFirstEnteringWorld = true
+                openRaidLib.bHasEnteredWorld = true
             end
 
             openRaidLib.internalCallback.TriggerEvent("onEnterWorld")
@@ -1974,6 +1987,35 @@ end
         openRaidLib.CooldownManager.CheckCooldownChanges()
     end
 
+    function openRaidLib.CooldownManager.OnAuraRemoved(event, unitId, spellId)
+        --under development ~aura
+        local timeLeft, charges, startTimeOffset, duration, auraDuration = openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId)
+
+        --do need to update?
+        if (not timeLeft or timeLeft < 1 or not auraDuration or auraDuration < 1) then
+            return
+        end
+
+        local latencyCompensation = 1
+
+        if (spellId) then
+            if (auraDuration > latencyCompensation) then
+                --cooldown aura got removed before expiration
+                local newAuraDuration = 0
+                local unitName = GetUnitName(unitId, true) or unitId
+                openRaidLib.CooldownManager.CooldownSpellUpdate(unitName, spellId, timeLeft, charges, startTimeOffset, duration, newAuraDuration)
+
+                --trigger a public callback
+                local playerCooldownTable = openRaidLib.GetUnitCooldowns(unitName)
+                local cooldownInfo = cooldownGetSpellInfo(unitName, spellId)
+                openRaidLib.publicCallback.TriggerCallback("CooldownUpdate", "player", spellId, cooldownInfo, playerCooldownTable, openRaidLib.CooldownManager.UnitData)
+
+                --send to comm
+                openRaidLib.CooldownManager.SendPlayerCooldownUpdate(spellId, timeLeft, charges, startTimeOffset, duration, newAuraDuration)
+            end
+        end
+    end
+
     openRaidLib.internalCallback.RegisterCallback("onLeaveGroup", openRaidLib.CooldownManager.OnPlayerLeaveGroup)
     openRaidLib.internalCallback.RegisterCallback("playerCast", openRaidLib.CooldownManager.OnPlayerCast)
     openRaidLib.internalCallback.RegisterCallback("onPlayerRess", openRaidLib.CooldownManager.OnPlayerRess)
@@ -1982,6 +2024,7 @@ end
     openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.CooldownManager.OnEncounterEnd)
     openRaidLib.internalCallback.RegisterCallback("mythicDungeonStart", openRaidLib.CooldownManager.OnMythicPlusStart)
     openRaidLib.internalCallback.RegisterCallback("playerPetChange", openRaidLib.CooldownManager.OnPlayerPetChanged)
+    openRaidLib.internalCallback.RegisterCallback("unitAuraRemoved", openRaidLib.CooldownManager.OnAuraRemoved)
 
 --send a list through comm with cooldowns added or removed
 function openRaidLib.CooldownManager.CheckCooldownChanges()

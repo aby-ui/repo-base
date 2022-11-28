@@ -48,7 +48,7 @@ end
 
 -- ElvUI
 local function ElvUI_SetSupport()
-    if KT:CheckAddOn("ElvUI", "13.01", true) then
+    if KT:CheckAddOn("ElvUI", "13.06", true) then
         local E = unpack(_G.ElvUI)
         local B = E:GetModule("Blizzard")
         B.SetObjectiveFrameHeight = function() end    -- preventive
@@ -76,7 +76,7 @@ end
 
 -- Tukui
 local function Tukui_SetSupport()
-    if KT:CheckAddOn("Tukui", "20.33", true) then
+    if KT:CheckAddOn("Tukui", "20.341", true) then
         local T = unpack(_G.Tukui)
         T.Miscellaneous.ObjectiveTracker.Enable = function() end
     end
@@ -147,7 +147,7 @@ end
 function M:OnInitialize()
     _DBG("|cffffff00Init|r - "..self:GetName(), true)
     db = KT.db.profile
-    self.isLoadedMasque = (KT:CheckAddOn("Masque", "10.0.1") and db.addonMasque)
+    self.isLoadedMasque = (KT:CheckAddOn("Masque", "10.0.2") and db.addonMasque)
 
     if self.isLoadedMasque then
         KT:Alert_IncompatibleAddon("Masque", "10.0.1")

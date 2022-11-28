@@ -64,7 +64,7 @@ local power = BattleGroundEnemies:NewButtonModule({
 	flags = flags,
 	defaultSettings = defaultSettings,
 	options = options,
-	events = {"UnitIdUpdate", "UpdatePower", "SetSpecAndRole"},
+	events = {"UnitIdUpdate", "UpdatePower", "PlayerDetailsChanged"},
 	expansions = "All"
 })
 
@@ -104,10 +104,11 @@ function power:AttachToPlayerButton(playerButton)
 			local powerType, powerToken, altR, altG, altB = UnitPowerType(unitID)
 		
 			self:CheckForNewPowerColor(powerToken)
+			self:UpdatePower(unitID)
 		end
 	end
 
-	function playerButton.Power:SetSpecAndRole()
+	function playerButton.Power:PlayerDetailsChanged()
 		if not playerButton.PlayerClass then return end
 		
 		local powerToken
@@ -142,6 +143,6 @@ function power:AttachToPlayerButton(playerButton)
 		self:SetHeight(self.config.Height or 0.01)
 		self:SetStatusBarTexture(LSM:Fetch("statusbar", self.config.Texture))--self.healthBar:SetStatusBarTexture(137012)
 		self.Background:SetVertexColor(unpack(self.config.Background))
-		self:SetSpecAndRole()
+		self:PlayerDetailsChanged()
 	end
 end

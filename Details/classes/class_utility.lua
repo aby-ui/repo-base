@@ -295,7 +295,7 @@ function Details.ShowDeathTooltip(instance, lineFrame, combatObject, deathTable)
 
 				elseif (evType == 4) then
 					--debuff
-					gameCooltip:AddLine("" .. format("%.1f", eventTime - timeOfDeath) .. "s " .. spellName .. " (" .. source .. ")", "x" .. amount .. AURA_TYPE_DEBUFF .. " (" .. healthPercent .. "%)", 1, "white", "white")
+					gameCooltip:AddLine("" .. format("%.1f", eventTime - timeOfDeath) .. "s " .. spellName .. " (" .. source .. ")", "x" .. amount .. " " .. AURA_TYPE_DEBUFF .. " (" .. healthPercent .. "%)", 1, "white", "white")
 					gameCooltip:AddIcon(spellIcon)
 					gameCooltip:AddStatusBar(100, 1, barTypeColors.debuff, showSpark)
 				end

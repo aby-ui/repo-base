@@ -30,7 +30,8 @@ end
 ----------------------------
 
 
-local function UpdateBlackMarketButtons(self)
+local function UpdateBlackMarketButtons(self, elapsed)
+    if not CanIMogIt.FrameShouldUpdate("BMAHOverlay", elapsed or 1) then return end
     for i=1, CanIMogIt.NUM_BLACKMARKET_BUTTONS do
         local frame = _G["CIMIOverlayFrame_BlackMarket"..i]
         if frame then

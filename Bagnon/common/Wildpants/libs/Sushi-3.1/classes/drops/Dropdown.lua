@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Sushi. If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 7, 'Frame')
+local Drop = LibStub('Sushi-3.1').Group:NewSushi('Dropdown', 8, 'Frame')
 if not Drop then return end
 
 
@@ -137,8 +137,8 @@ function Drop:SetBackdrop(backdrop)
   local padding = data.padding or 0
 
   self.Bg:SetBackdrop(data)
-  self.Bg:SetBackdropColor(data.backdropColor:GetRGB())
-  self.Bg:SetBackdropBorderColor(data.backdropBorderColor:GetRGB())
+  self.Bg:SetBackdropColor((data.backdropColor or WHITE_FONT_COLOR):GetRGB())
+  self.Bg:SetBackdropBorderColor((data.backdropBorderColor or WHITE_FONT_COLOR):GetRGB())
   self.Bg:SetPoint('BOTTOMLEFT', -padding, -11 - padding)
   self.Bg:SetPoint('TOPRIGHT', padding, 11 + padding)
 end
@@ -183,8 +183,7 @@ Drop.Backdrops = {
     edgeFile = 'Interface/DialogFrame/UI-DialogBox-Border',
     insets = {left = 11, right = 11, top = 11, bottom = 9},
     edgeSize = 32, tileSize = 32, tile = true,
-    backdropBorderColor = HIGHLIGHT_FONT_COLOR,
-    backdropColor = HIGHLIGHT_FONT_COLOR,
     padding = 4
-  }
+  },
+  NONE = {}
 }

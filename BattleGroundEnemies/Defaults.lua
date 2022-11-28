@@ -278,7 +278,7 @@ Data.defaultSettings = {
 						}
 					},
 					NonPriorityBuffs = {
-						Enabled = false,
+						Enabled = true,
 						Points = {
 							{
 								Point = "BOTTOMRIGHT",
@@ -294,7 +294,7 @@ Data.defaultSettings = {
 						}
 					},
 					NonPriorityDebuffs = {
-						Enabled = false,
+						Enabled = true,
 						Points = {
 							{
 								Point = "BOTTOMRIGHT",
@@ -785,7 +785,7 @@ Data.defaultSettings = {
 						},
 					},
 					NonPriorityBuffs = {
-						Enabled = false,
+						Enabled = true,
 						Points = {
 							{
 								Point = "BOTTOMLEFT",
@@ -801,7 +801,7 @@ Data.defaultSettings = {
 						},
 					},
 					NonPriorityDebuffs = {
-						Enabled = false,
+						Enabled = true,
 						Points = {
 							{
 								Point = "BOTTOMLEFT",

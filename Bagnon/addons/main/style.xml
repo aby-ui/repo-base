@@ -28,8 +28,7 @@
 	<CheckButton name="BagnonSortButtonTemplate" inherits="BagnonMenuCheckButtonTemplate" virtual="true">
 		<Scripts>
 			<OnLoad>
-				self.Icon:SetAtlas('bags-button-autosort-up')
-				self.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+				self.Icon:SetTexture('Interface/Addons/BagBrother/Art/Broom')
 			</OnLoad>
 		</Scripts>
 	</CheckButton>

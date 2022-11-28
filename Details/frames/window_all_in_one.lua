@@ -44,8 +44,11 @@
     --namespace
     DetailsPrivite.AllInOneWindow = {}
     local attributeCodes = {
-        
+
     }
+
+    DetailsPrivite.WindowTooltip = {}
+
 
     local textureCoords = {
         show_mainmenu = {0/256, 32/256, 0, 1},
@@ -650,7 +653,22 @@
     end
 
 
+------------------------------------------------------------------------------------------------------------------------
 
+function DetailsPrivite.WindowTooltip.CreateTooltipFrame()
+    local damageDoneTooltipFrame = CreateFrame("frame", "DetailsWindowTooltipFrame", UIParent, "BackdropTemplate")
+    DetailsFramework:ApplyStandardBackdrop(damageDoneTooltipFrame)
+
+    --create header
+
+    --create 4 scroll frames
+
+    --create 4 separators
+
+    --import data from the regular tooltip functions on each attribute file
+
+
+end
 
 
 

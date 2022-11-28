@@ -65,7 +65,7 @@ local name = BattleGroundEnemies:NewButtonModule({
 	localizedModuleName = L.Name,
 	defaultSettings = defaultSettings,
 	options = options,
-	events = {"OnNewPlayer"},
+	events = {"PlayerDetailsChanged"},
 	expansions = "All"
 })
 
@@ -108,7 +108,7 @@ function name:AttachToPlayerButton(playerButton)
 		self.DisplayedName = name
 	end
 
-	function playerButton.Name:OnNewPlayer()
+	function playerButton.Name:PlayerDetailsChanged()
 		self:SetName()
 	end
 

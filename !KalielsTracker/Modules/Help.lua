@@ -249,40 +249,24 @@ local function SetupTutorials()
 			textY = -20,
 		},
 		{	-- 12
-			text = cTitle.."         What's NEW|r\n\n"..
-					cTitle.."Version 6.0.1|r\n"..
-					"- FIXED - Error when displaying Notification messages\n"..
-					"- UPDATED - Quests - Active Button - Removed anchoring from Extra Action"..
-					offs.."Button in Default UI, Bartender, ElvUI and Tukui. Positioning is static now and"..
-					offs.."moving Active Button is only through addon Options.\n"..
-					"- UPDATED - Help - Active Button (page 6)\n"..
-					"- UPDATED - Help - Supporters (Patreon)\n"..
-					"- UPDATED - Addon support - ElvUI 13.01\n"..
-					"- UPDATED - Libs\n\n"..
-					cTitle.."Version 6.0.0|r\n"..
-					"Many changes have been made in this version as error prevention. "..cWarning2.."These changes may result in the cancellation of cooperation with other addons.|r\n\n"..
-					"All profiles have been reset, because the new version is not compatible with stored settings.\n\n"..
-					"- IMPROVED - Edit Mode Hack - Hack has been reduced and all negative"..
-					offs.."impacts have been removed. Removed hack info from Options and Help.\n"..
-					"- IMPROVED - Quest Log - Quest DropDown menu\n"..
-					"- IMPROVED - Addons version comparison\n"..
-					"- FIXED - Torghast - Error and Maw Buffs positioning\n"..
-					"- FIXED - Error when activating Party Sync, wrong Group quest data (Blizz bug)\n"..
-					"- FIXED - Error when show tooltip during Party Sync switching\n"..
-					"- UPDATED - Prevents opening Options in Edit Mode\n"..
-					"- UPDATED - Quests - Active Button - compatibility for Default, Bartender,"..
-					offs.."ElvUI, Tukui\n"..
-					"- UPDATED - Help - Supporters (Patreon)\n"..
-					"- UPDATED - Addon support - Masque 10.0.1\n"..
-					"- UPDATED - Addon support - PetTracker 10.0\n"..
-					"- UPDATED - Addon support - TomTom 3.3.4-release\n"..
-					"- UPDATED - Addon support - ElvUI 12.99, Tukui 20.33\n"..
-					"- REMOVED - Compatibility - addon Chinchilla Minimap\n"..
-					"- REMOVED - Compatibility - addon Dugi Questing Essential\n"..
-					"- REMOVED - Compatibility - addon Aurora\n"..
-					"- REMOVED - Compatibility - addon MoveAnything\n\n"..
+			text = cTitle.."         What's New|r\n\n"..
+					cTitle.."Version 6.0.2|r\n"..
+					"- FIXED - Quests - Active Button - green mover is not over the button\n"..
+					"- FIXED - Profession - Tracked Recipes are not displayed, when they are the only"..
+					offs.."active module\n"..
+					"- ADDED - Support for WoW 10.0.2\n"..
+					"- IMPROVED - Quests - Active Button - Hides the button when Blizzard displays"..
+					offs.."its own\n"..
+					"- IMPROVED - Quests - Active Button - Stored position was moved from"..
+					offs.."character settings to profile settings\n"..
+					"- IMPROVED - Profession - Recipe dropdown menu and tooltip with result item\n"..
+					"- IMPROVED - Addon support - TomTom\n"..
+					"- UPDATED - Addon support - Masque 10.0.2\n"..
+					"- UPDATED - Addon support - TomTom 3.3.5-release\n"..
+					"- UPDATED - Addon support - ElvUI 13.06, Tukui 20.341\n"..
+					"- UPDATED - Help - Supporters (Patreon)\n\n"..
 
-					cTitle.."WoW 10.0.0 - Known issues w/o solution|r\n"..
+					cTitle.."WoW 10.0.2 - Known issues w/o solution|r\n"..
 					"- Clicking on tracked quests or achievements has no response during combat.\n"..
 					"- Header buttons Q and A don't work during combat.\n\n"..
 
@@ -356,6 +340,7 @@ local function SetupTutorials()
 					cTitle.."Patrons|r\n"..
 					SetFormatedPatronName("Legendary", "Zayah", "Vek'nilash")..
 					SetFormatedPatronName("Epic", "Squishses", "Area 52")..
+					SetFormatedPatronName("Uncommon", "Charles Howarth")..
 					SetFormatedPatronName("Uncommon", "Flex (drantor)")..
 					SetFormatedPatronName("Uncommon", "Kyle Fuller")..
 					SetFormatedPatronName("Uncommon", "Pablo Sebastián Molina Silva")..

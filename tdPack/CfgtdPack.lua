@@ -48,8 +48,8 @@ U1RegisterAddon('tdPack', {
 
         {
             text = "从上向下放置物品",
-            tip = "说明`暴雪有两个决定物品拾取和整理的设置，整合背包有排列顺序的设置，配置错误会导致背包整理后不连续。` `爱不易归纳了两种方案，统一修改这些设置，方便大家使用。` `从上向下的设置为：` - SetSortBagsRightToLeft(true)` - SetInsertItemsLeftToRight(false)` - 插件正向排列背包` - 插件正向排列物品` - tdPack正序整理` `（如果tdPack逆序整理，则从下向上放置，且新物品从前面单放）",
-            confirm = "是否确定？（不修改整合银行的排列方式，请自行在整合背包插件里调整）",
+            tip = "说明`暴雪有两个决定物品拾取和整理的设置，Bagnon有排列顺序的设置，配置错误会导致背包整理后不连续。` `爱不易归纳了两种方案，统一修改这些设置，方便大家使用。` `从上向下的设置为：` - SetSortBagsRightToLeft(true)` - SetInsertItemsLeftToRight(false)` - Bagnon插件正向排列背包` - Bagnon插件正向排列物品` - tdPack正序整理` `（如果tdPack逆序整理，则从下向上放置，且新物品从前面单放）",
+            confirm = "是否确定？（不修改整合银行的排列方式，请自行在Bagnon插件里调整）",
             callback = function(cfg, v, loading)
                 SetSortBagsRightToLeft(true)
                 SetInsertItemsLeftToRight(false)
@@ -68,8 +68,8 @@ U1RegisterAddon('tdPack', {
         },
         {
             text = "从下向上放置物品",
-            tip = "说明`从下向上的设置为：` - SetSortBagsRightToLeft(true)` - SetInsertItemsLeftToRight(false)` - 插件反向排列背包` - 插件反向排列物品` - tdPack正序整理` `（如果tdPack逆序整理，则从上向下放置，且新物品从后面单放）",
-            confirm = "是否确定？（不修改整合银行的排列方式，请自行在整合背包插件里调整）",
+            tip = "说明`|cffff0000注意：暴雪自带整合背包无法调整物品排列方式，所以此项只适用于Bagnon简约整合背包插件。|r` `从下向上的设置为：` - SetSortBagsRightToLeft(true)` - SetInsertItemsLeftToRight(false)` - Bagnon插件反向排列背包` - Bagnon插件反向排列物品` - tdPack正序整理` `（如果tdPack逆序整理，则从上向下放置，且新物品从后面单放）",
+            confirm = "是否确定？（不修改Bagnon整合银行的排列方式，请自行在Bagnon插件里调整）",
             callback = function(cfg, v, loading)
                 SetSortBagsRightToLeft(true)
                 SetInsertItemsLeftToRight(false)

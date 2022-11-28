@@ -26,6 +26,7 @@ select(2, ...).L = setmetatable({
     ["castByMe"] = "Only show buffs cast by me",
     ["trackByName"] = "Track by name",
     ["showDuration"] = "Show duration text",
+    ["showStack"] = "Show stack text",
     ["showTooltip"] = "Show aura tooltip",
     ["enableHighlight"] = "Highlight unit button",
     ["hideFull"] = "Hide while HP is full",
@@ -68,6 +69,21 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r148-release (Nov 27, 2022, 22:07 GMT+8)</h1>
+        <p>* Fixed layout auto switch on Wrath.</p>
+        <p>* Updated zhTW.</p>
+        <br/>
+
+        <h1>r147-release (Nov 27, 2022, 18:02 GMT+8)</h1>
+        <p>* Updated layout auto switch, added a "Raid Outdoor" type.</p>
+        <p>* Added color options: Heal Prediction, Heal Absorb and Shield Texture.</p>
+        <p>* Updated Status Icon indicator (resurrections related).</p>
+        <p>* Updated Targeted Spells indicator.</p>
+        <p>* Updated custom indicators (Bar/Rect), added stack text.</p>
+        <p>* Fixed range checker.</p>
+        <p>* Other bug fixes.</p>
+        <br/>
+
         <h1>r146-release (Nov 25, 2022, 05:15 GMT+8)</h1>
         <p>* Updated click-castings.</p>
         <p>* Bug fixes.</p>

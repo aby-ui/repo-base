@@ -292,6 +292,7 @@ function GlowFoSho:OpenDropdown(buttonframe)
 		side = "TOPRIGHT"
 		oside = "TOPLEFT"
 	end
+	dropdownframe:ClearAllPoints()
 	dropdownframe:SetPoint(oside, buttonframe, side)
 
 end

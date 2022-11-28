@@ -252,13 +252,19 @@ end
 ---============================================================================
 
 function RSContainerDB.InitContainerQuestIdFoundDB()
-	if (not private.dbglobal.container_quest_ids) then
+	if (RSConstants.DEBUG_MODE and not private.dbglobal.container_quest_ids) then
 		private.dbglobal.container_quest_ids = {}
 	end
 end
 
-function RSContainerDB.GetAllContainerQuestIdsFound()
-	return private.dbglobal.container_quest_ids
+function RSContainerDB.ResetContainerQuestIdFoundDB()
+	if (private.dbglobal.container_quest_ids) then
+		if (RSConstants.DEBUG_MODE) then
+			private.dbglobal.container_quest_ids = {}
+		else
+			private.dbglobal.container_quest_ids = nil
+		end
+	end
 end
 
 function RSContainerDB.SetContainerQuestIdFound(containerID, questID)

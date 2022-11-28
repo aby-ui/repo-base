@@ -15,6 +15,7 @@ along with the addon. If not, see <http://www.gnu.org/licenses/gpl-3.0.txt>.
 This file is part of BagBrother.
 --]]
 
+local C = LibStub('C_Everywhere').Container
 local Interface = LibStub:NewLibrary('BagBrotherInterface', 1)
 Interface.IsItemCache = true
 
@@ -87,7 +88,7 @@ end
 
 function Interface:GetBag(realm, player, bag)
   if tonumber(bag) then
-    local slot = bag > 0 and ContainerIDToInventoryID(bag)
+    local slot = bag > 0 and C.ContainerIDToInventoryID(bag)
     if slot then
       return Interface:GetItem(realm, player, 'equip', slot)
     else

@@ -6,12 +6,12 @@
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10287
-		_detalhes.alpha_build_counter = 10287 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10301
+		_detalhes.alpha_build_counter = 10301 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
-		_detalhes.realversion = 146 --core version, this is used to check API version for scripts and plugins (see alias below)
+		_detalhes.realversion = 147 --core version, this is used to check API version for scripts and plugins (see alias below)
 		_detalhes.APIVersion = _detalhes.realversion --core version
 		_detalhes.version = _detalhes.userversion .. " (core " .. _detalhes.realversion .. ")" --simple stirng to show to players
 
@@ -24,6 +24,7 @@
 
 		_detalhes.BFACORE = 131 --core version on BFA launch
 		_detalhes.SHADOWLANDSCORE = 143 --core version on Shadowlands launch
+		_detalhes.DRAGONFLIGHT = 147 --core version on Dragonflight launch
 
 		Details = _detalhes
 
@@ -35,23 +36,33 @@
 
 		Details.gameVersionPrefix = gameVersionPrefix
 
+		--WD 10288 RELEASE 10.0.2
+		--WD 10288 ALPHA 21 10.0.2
 		function Details.GetVersionString()
 			local curseforgeVersion = _detalhes.curseforgeVersion or ""
 			local alphaId = curseforgeVersion:match("%-(%d+)%-")
 
 			if (not alphaId) then
 				--this is a release version
-				alphaId = "R1"
+				alphaId = "RELEASE"
 			else
-				alphaId = "A" .. alphaId
+				alphaId = "ALPHA " .. alphaId
 			end
-			
-			return Details.gameVersionPrefix .. Details.build_counter .. "." .. Details.acounter .. "." .. alphaId .. "(" .. Details.game_version .. ")"
+
+			return Details.gameVersionPrefix .. " " .. Details.build_counter .. " " .. alphaId .. " " .. Details.game_version .. ""
 		end
 
 		--namespace for the player breakdown window
 		Details.PlayerBreakdown = {}
 
+		--color namespace
+		Details222.ColorScheme = {
+			["gradient-background"] = {0.1215, 0.1176, 0.1294, 0.8},
+		}
+
+		function Details222.ColorScheme.GetColorFor(colorScheme)
+			return Details222.ColorScheme[colorScheme]
+		end
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --initialization stuff
@@ -67,8 +78,8 @@ do
 	local news = {
 		{"v10.0.2.10277.146", "Nov 18th, 2022"},
 		"REMINDER: '/details coach' to get damage/healing/deaths in real time as the 21st person (coach) for the next raid tier in dragonflight.",
-		"",
-		"New <Plugin: Cast Log>  show a time line of spells used by players in the group, Raid Leader: show all attack and defense cooldowns used by the raid.",
+		"New Compare tab: recreated from scratch, this new Compare has no player limitation, pets merged, bigger lines.",
+		"New <Plugin: Cast Log> show a time line of spells used by players in the group, Raid Leader: show all attack and defense cooldowns used by the raid (download it now on wago or curseforge).",
 		"Wago: Details! Standalone version is now hosted on addons.wago.io and WowUp.com.",
 		"",
 

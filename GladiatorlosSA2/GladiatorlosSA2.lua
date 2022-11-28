@@ -6,7 +6,7 @@
  local LSM = LibStub("LibSharedMedia-3.0")
  local self, GSA, PlaySoundFile = GladiatorlosSA, GladiatorlosSA, PlaySoundFile
  local GSA_VERSION = GetAddOnMetadata("GladiatorlosSA2", "Version")
- local GSA_GAME_VERSION = "10.0.0"
+ local GSA_GAME_VERSION = "10.0.2"
  local GSA_EXPANSION = ""
  local gsadb
  local soundz,sourcetype,sourceuid,desttype,destuid = {},{},{},{},{}
@@ -94,6 +94,7 @@
 	 357021,	-- Consecutive Concussion (Hunter)
 	 356727,	-- Spider Sting (Hunter)
 	 353084, 	-- Ring of Fire (Burning)
+	 389831,	-- Snowdrift (Frost Mage)
 
 	 -- Polymorph
 	 118, -- Sheep
@@ -240,7 +241,7 @@
 		},
 	}
 	local bliz_options = CopyTable(options)
-	bliz_options.args.load = {
+	--[[bliz_options.args.load = {
 		name = L["Load Configuration"],
 		desc = L["Load Configuration Options"],
 		type = 'execute',
@@ -257,14 +258,15 @@
 				bliz_options.args.load.disabled = true
 				GameTooltip:Hide()
 				--fix for in 5.3 BLZOptionsFrame can't refresh on load
-				InterfaceOptionsFrame:Hide()
-				InterfaceOptionsFrame:Show()
+				--InterfaceOptionsFrame:Hide()
+				--InterfaceOptionsFrame:Show()
 		end,
 		handler = GladiatorlosSA,
-	}
+	}]]
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("GladiatorlosSA_bliz", bliz_options)
 	AceConfigDialog:AddToBlizOptions("GladiatorlosSA_bliz", "GladiatorlosSA")
 	LSM.RegisterCallback(LSM_GSA_SOUNDFILES, "LibSharedMedia_Registered", LSMRegistered)
+	self:OnOptionCreate()
  end
 
  function GladiatorlosSA:OnEnable()

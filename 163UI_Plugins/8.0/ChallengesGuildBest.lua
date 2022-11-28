@@ -503,7 +503,7 @@ local first = true
 hooksecurefunc("PVEFrame_ToggleFrame", function()
     if first and not InCombatLockdown() and PVEFrameTab3 and PVEFrameTab3:IsEnabled() then
         local info = C_PlayerInfo.GetPlayerMythicPlusRatingSummary("player")
-        if info and (info.currentSeasonScore or 0) > 0 then
+        if info and (info.currentSeasonScore or 0) >= 1500 then
             PVEFrameTab3:Click()
         end
     end

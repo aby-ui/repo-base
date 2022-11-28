@@ -6,6 +6,7 @@
 local MODULE =  ...
 local ADDON, Addon = MODULE:match('[^_]+'), _G[MODULE:match('[^_]+')]
 local Item = Addon.Item:NewClass('VaultItem')
+local C = LibStub('C_Everywhere').Container
 
 
 --[[ Construct ]]--
@@ -32,10 +33,10 @@ function Item:OnClick(button)
 		local type, _, link = GetCursorInfo()
 
 		if not isRight and type == 'item' and link then
-			for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-				for slot = 1, GetContainerNumSlots(bag) do
-					if GetContainerItemLink(bag, slot) == link then
-						UseContainerItem(bag, slot)
+			for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+				for slot = 1, C.GetContainerNumSlots(bag) do
+					if C.GetContainerItemLink(bag, slot) == link then
+						C.UseContainerItem(bag, slot)
 					end
 				end
 			end

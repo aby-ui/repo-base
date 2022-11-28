@@ -234,6 +234,24 @@ function Details:GetSpellList() --[[ exported]]
 	return self.spells._ActorTable
 end
 
+
+function Details:GetTimeInCombat(petOwner) --[[exported]]
+	if (petOwner) then
+		if (Details.time_type == 1 or not petOwner.grupo) then
+			return self:Tempo()
+		elseif (Details.time_type == 2) then
+			return self:GetCombatTime()
+		end
+	else
+		if (Details.time_type == 1) then
+			return self:Tempo()
+		elseif (Details.time_type == 2) then
+			return self:GetCombatTime()
+		end
+	end
+end
+
+
 --enemies(sort function)
 local sortEnemies = function(t1, t2)
 	local a = bitBand(t1.flag_original, 0x00000060)
@@ -470,7 +488,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --damage taken by spell
 
-	local byspell_tooltip_background = {value = 100, color = {0.1960, 0.1960, 0.1960, 0.9097}, texture = [[Interface\AddOns\Details\images\bar_background2]]}
+	local byspell_tooltip_background = {value = 100, color = {0.1960, 0.1960, 0.1960, 0.9097}, texture = [[Interface\AddOns\Details\images\bar_background_dark]]}
 
 	function Details:ToolTipBySpell (instance, tabela, thisLine, keydown)
 
@@ -3332,103 +3350,99 @@ function atributo_damage:ToolTip_DamageDone (instancia, numero, barra, keydown)
 	end
 
 	--PETS
-	local meus_pets = self.pets
-	if (#meus_pets > 0) then --teve ajudantes
+	local instance = instancia
+	local combatObject = instance:GetShowingCombat()
 
-		local quantidade = {} --armazena a quantidade de pets iguais
-		local danos = {} --armazena as habilidades
-		local alvos = {} --armazena os alvos
-		local totais = {} --armazena o dano total de cada objeto
+	local myPets = self.pets
+	if (#myPets > 0) then --teve ajudantes
+		local petAmountWithSameName = {} --armazena a quantidade de pets iguais
+		local petDamageTable = {} --armazena o dano total de cada objeto
 
 		--small blank space
-		Details:AddTooltipSpellHeaderText ("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true)
+		Details:AddTooltipSpellHeaderText("", headerColor, 1, false, 0.1, 0.9, 0.1, 0.9, true)
 
-		for index, nome in ipairs(meus_pets) do
-			if (not quantidade [nome]) then
-				quantidade [nome] = 1
+		for index, petName in ipairs(myPets) do
+			if (not petAmountWithSameName[petName]) then
+				petAmountWithSameName[petName] = 1
+				local damageContainer = combatObject:GetContainer(DETAILS_ATTRIBUTE_DAMAGE)
+				local petActorObject = damageContainer:GetActor(petName)
 
-				local my_self = instancia.showing[class_type]:PegarCombatente (nil, nome)
-				if (my_self) then
-					local meu_total = my_self.total_without_pet
-					local tabela = my_self.spells._ActorTable
-					local meus_danos = {}
+				if (petActorObject) then
+					local petDamageDone = petActorObject.total_without_pet
+					local petSpells = petActorObject:GetSpellList()
+					local petSpellsSorted = {}
 
-					--totais [nome] = my_self.total_without_pet
-					local meu_tempo
+					--local timeInCombat = petActorObject:GetTimeInCombat(self)
+					local timeInCombat = 0
 					if (Details.time_type == 1 or not self.grupo) then
-						meu_tempo = my_self:Tempo()
+						timeInCombat = petActorObject:Tempo()
 					elseif (Details.time_type == 2) then
-						meu_tempo = my_self:GetCombatTime()
+						timeInCombat = petActorObject:GetCombatTime()
 					end
-					totais [#totais+1] = {nome, my_self.total_without_pet, my_self.total_without_pet/meu_tempo}
 
-					for spellid, tabela in pairs(tabela) do
-						local nome, rank, icone = _GetSpellInfo(spellid)
-						tinsert(meus_danos, {spellid, tabela.total, tabela.total/meu_total*100, {nome, rank, icone}})
-					end
-					_table_sort(meus_danos, Details.Sort2)
-					danos [nome] = meus_danos
+					petDamageTable[#petDamageTable+1] = {petName, petActorObject.total_without_pet, petActorObject.total_without_pet / timeInCombat}
 
-					local meus_inimigos = {}
-					tabela = my_self.targets
-					for target_name, amount in pairs(tabela) do
-						tinsert(meus_inimigos, {target_name, amount, amount/meu_total*100})
+					for spellId, spellTable in pairs(petSpells) do
+						local spellName, rank, spellIcon = _GetSpellInfo(spellId)
+						tinsert(petSpellsSorted, {spellId, spellTable.total, spellTable.total / petDamageDone * 100, {spellName, rank, spellIcon}})
 					end
-					_table_sort(meus_inimigos,Details.Sort2)
-					alvos [nome] = meus_inimigos
+
+					table.sort(petSpellsSorted, Details.Sort2)
+
+					local petTargets = {}
+					petSpells = petActorObject.targets
+					for targetName, spellDamageDone in pairs(petSpells) do
+						tinsert(petTargets, {targetName, spellDamageDone, spellDamageDone / petDamageDone * 100})
+					end
+					table.sort(petTargets,Details.Sort2)
 				end
-
 			else
-				quantidade [nome] = quantidade [nome]+1
+				petAmountWithSameName[petName] = petAmountWithSameName[petName] + 1
 			end
 		end
 
-		--GameTooltip:AddLine(" ")
-		--GameCooltip:AddLine(" ")
+		local petHeaderAdded = false
 
-		local _quantidade = 0
-		local added_logo = false
-
-		_table_sort(totais, Details.Sort2)
+		table.sort(petDamageTable, Details.Sort2)
 
 		local ismaximized = false
 		if (keydown == "alt" or TooltipMaximizedMethod == 2 or TooltipMaximizedMethod == 5) then
 			ismaximized = true
 		end
 
-		local topPet = totais [1] and totais [1][2] or 0
-		for index, _table in ipairs(totais) do
+		local topPetDamageDone = petDamageTable[1] and petDamageTable[1][2] or 0
 
-			if (_table [2] > 0 and (index <= Details.tooltip.tooltip_max_pets or ismaximized)) then
-
-				if (not added_logo) then
-					added_logo = true
-
-					Details:AddTooltipSpellHeaderText (Loc ["STRING_PETS"], headerColor, #totais, [[Interface\COMMON\friendship-heart]], 0.21875, 0.78125, 0.09375, 0.6875)
+		for index, damageTable in ipairs(petDamageTable) do
+			if (damageTable [2] > 0 and (index <= Details.tooltip.tooltip_max_pets or ismaximized)) then
+				if (not petHeaderAdded) then
+					petHeaderAdded = true
+					Details:AddTooltipSpellHeaderText(Loc ["STRING_PETS"], headerColor, #petDamageTable, [[Interface\COMMON\friendship-heart]], 0.21875, 0.78125, 0.09375, 0.6875)
 
 					if (ismaximized) then
 						GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_alt]], 1, 2, Details.tooltip_key_size_width, Details.tooltip_key_size_height, 0, 1, 0, 0.640625, Details.tooltip_key_overlay2)
-						Details:AddTooltipHeaderStatusbar (r, g, b, 1)
+						Details:AddTooltipHeaderStatusbar(r, g, b, 1)
 					else
 						GameCooltip:AddIcon ([[Interface\AddOns\Details\images\key_alt]], 1, 2, Details.tooltip_key_size_width, Details.tooltip_key_size_height, 0, 1, 0, 0.640625, Details.tooltip_key_overlay1)
-						Details:AddTooltipHeaderStatusbar (r, g, b, barAlha)
+						Details:AddTooltipHeaderStatusbar(r, g, b, barAlha)
 					end
-
 				end
 
-				local n = _table [1]:gsub(("%s%<.*"), "")
+				local petName = damageTable[1]
+				local petDamageDone = damageTable[2]
+				local petDPS = damageTable[3]
+
+				petName = damageTable[1]:gsub(("%s%<.*"), "")
 				if (instancia.sub_atributo == 1) then
-					GameCooltip:AddLine(n, FormatTooltipNumber (_, _table [2]) .. " (" .. _math_floor(_table [2]/self.total*100) .. "%)")
+					GameCooltip:AddLine(petName, FormatTooltipNumber(_, petDamageDone) .. " (" .. math.floor(petDamageDone/self.total*100) .. "%)")
 				else
-					GameCooltip:AddLine(n, FormatTooltipNumber (_,  _math_floor(_table [3])) .. " (" .. _math_floor(_table [2]/self.total*100) .. "%)")
+					GameCooltip:AddLine(petName, FormatTooltipNumber(_, math.floor(petDPS)) .. " (" .. math.floor(petDamageDone/self.total*100) .. "%)")
 				end
 
-				Details:AddTooltipBackgroundStatusbar (false, _table [2] / topPet * 100)
+				Details:AddTooltipBackgroundStatusbar(false, petDamageDone / topPetDamageDone * 100)
 
-				GameCooltip:AddIcon ([[Interface\AddOns\Details\images\classes_small]], 1, 1, icon_size.W, icon_size.H, 0.25, 0.49609375, 0.75, 1)
+				GameCooltip:AddIcon([[Interface\AddOns\Details\images\classes_small_alpha]], 1, 1, icon_size.W, icon_size.H, 0.25/2, 0.49609375/2, 0.75/2, 1/2)
 			end
 		end
-
 	end
 
 	--~Phases
@@ -4287,27 +4301,29 @@ end
 
 ------ Damage Done & Dps
 function atributo_damage:MontaInfoDamageDone()
+	local actorObject = self
+
 	local allLines = info.barras1
 	local instance = info.instancia
-	local totalDamageWithoutPet = self.total_without_pet --total de dano aplicado por este jogador
 
-	local actorTotalDamage = self.total
-	local actorSkillsSortTable = {}
-	local actorSkillsContainer = self.spells._ActorTable
+	local totalDamageWithoutPet = actorObject.total_without_pet
+	local actorTotalDamage = actorObject.total
+
+	local actorSpellsSorted = {}
+	local actorSpells = actorObject:GetSpellList()
 
 	--get time type
 	local actorCombatTime
 	if (Details.time_type == 1 or not self.grupo) then
 		actorCombatTime = self:Tempo()
-
 	elseif (Details.time_type == 2) then
 		actorCombatTime = info.instancia.showing:GetCombatTime()
 	end
 
-	for spellId, spellTable in pairs(actorSkillsContainer) do --da foreach em cada spellid do container
-		local nome, _, icone = _GetSpellInfo(spellId)
-		if (nome) then
-			tinsert(actorSkillsSortTable, {spellId, spellTable.total, spellTable.total/actorTotalDamage*100, nome, icone, nil, spellTable.spellschool})
+	for spellId, spellTable in pairs(actorSpells) do
+		local spellName, _, spellIcon = _GetSpellInfo(spellId)
+		if (spellName) then
+			tinsert(actorSpellsSorted, {spellId, spellTable.total, spellTable.total / actorTotalDamage * 100, spellName, spellIcon, nil, spellTable.spellschool})
 		end
 	end
 
@@ -4336,6 +4352,9 @@ function atributo_damage:MontaInfoDamageDone()
 		info:SetStatusbarText()
 	end
 
+	--show damage percentille within item level bracket
+
+
 	--add pets
 	local ActorPets = self.pets
 	--local class_color = RAID_CLASS_COLORS [self.classe] and RAID_CLASS_COLORS [self.classe].colorStr
@@ -4349,17 +4368,17 @@ function atributo_damage:MontaInfoDamageDone()
 				local nome, _, icone = _GetSpellInfo(_spellid)
 				--tinsert(ActorSkillsSortTable, {_spellid, _skill.total, _skill.total/ActorTotalDamage*100, nome .. " |TInterface\\AddOns\\Details\\images\\classes_small_alpha:12:12:0:0:128:128:33:64:96:128|t|c" .. class_color .. PetName:gsub((" <.*"), "") .. "|r", icone, PetActor, _skill.spellschool})
 				if (nome) then
-					tinsert(actorSkillsSortTable, {_spellid, _skill.total, _skill.total/actorTotalDamage*100, nome .. " (|c" .. class_color .. PetName:gsub((" <.*"), "") .. "|r)", icone, PetActor, _skill.spellschool})
+					tinsert(actorSpellsSorted, {_spellid, _skill.total, _skill.total/actorTotalDamage*100, nome .. " (|c" .. class_color .. PetName:gsub((" <.*"), "") .. "|r)", icone, PetActor, _skill.spellschool})
 				end
 			end
 		end
 	end
 
-	_table_sort(actorSkillsSortTable, Details.Sort2)
+	_table_sort(actorSpellsSorted, Details.Sort2)
 
-	gump:JI_AtualizaContainerBarras (#actorSkillsSortTable + 1)
+	gump:JI_AtualizaContainerBarras (#actorSpellsSorted + 1)
 
-	local max_ = actorSkillsSortTable[1] and actorSkillsSortTable[1][2] or 0 --dano que a primeiro magia vez
+	local max_ = actorSpellsSorted[1] and actorSpellsSorted[1][2] or 0 --dano que a primeiro magia vez
 
 	local barra
 
@@ -4374,7 +4393,7 @@ function atributo_damage:MontaInfoDamageDone()
 	end
 
 	--spell bars
-	for index, tabela in ipairs(actorSkillsSortTable) do
+	for index, tabela in ipairs(actorSpellsSorted) do
 
 		--index = index + 1 --with the aura bar
 		index = index
@@ -5040,7 +5059,7 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 			t3[9] = "MISS" .. ": " .. misses
 		end
 
-	--empowered
+	--~empowered
 	if (esta_magia.e_total) then
 		local empowerLevelSum = esta_magia.e_total --total sum of empower levels
 		local empowerAmount = esta_magia.e_amt --amount of casts with empower
@@ -5072,7 +5091,7 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 		end
 
 		t4[1] = 0
-		t4[2] = {p = 100, c = {0.282353, 0.239216, 0.545098, 0.6}}
+		t4[2] = {p = 100, c = {0.200, 0.576, 0.498, 0.6}}
 		t4[3] = "Spell Empower Average Level: " .. format("%.2f", empowerLevelSum / empowerAmount)
 		t4[4] = ""
 		t4[5] = ""
@@ -5081,23 +5100,23 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 		t4[11] = ""
 
 		if (level1AverageDamage ~= "0") then
-			t4[4] = "Level 1 Average: " .. level1AverageDamage .. " (" .. (empowerAmountPerLevel[1] or 0) .. ")"
+			t4[4] = "Level 1 Avg: " .. level1AverageDamage .. " (" .. (empowerAmountPerLevel[1] or 0) .. ")"
 		end
 
 		if (level2AverageDamage ~= "0") then
-			t4[6] = "Level 2 Average: " .. level2AverageDamage .. " (" .. (empowerAmountPerLevel[2] or 0) .. ")"
+			t4[6] = "Level 2 Avg: " .. level2AverageDamage .. " (" .. (empowerAmountPerLevel[2] or 0) .. ")"
 		end
 
 		if (level3AverageDamage ~= "0") then
-			t4[11] = "Level 3 Average: " .. level3AverageDamage .. " (" .. (empowerAmountPerLevel[3] or 0) .. ")"
+			t4[11] = "Level 3 Avg: " .. level3AverageDamage .. " (" .. (empowerAmountPerLevel[3] or 0) .. ")"
 		end
 
 		if (level4AverageDamage ~= "0") then
-			t4[10] = "Level 4 Average: " .. level4AverageDamage .. " (" .. (empowerAmountPerLevel[4] or 0) .. ")"
+			t4[10] = "Level 4 Avg: " .. level4AverageDamage .. " (" .. (empowerAmountPerLevel[4] or 0) .. ")"
 		end
 
 		if (level5AverageDamage ~= "0") then
-			t4[5] = "Level 5 Average: " .. level5AverageDamage .. " (" .. (empowerAmountPerLevel[5] or 0) .. ")"
+			t4[5] = "Level 5 Avg: " .. level5AverageDamage .. " (" .. (empowerAmountPerLevel[5] or 0) .. ")"
 		end
 	end
 
@@ -5138,9 +5157,9 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 
 		if (not thatRectangle66.bloodLustIndicators) then
 			thatRectangle66.bloodLustIndicators = {}
-			for i = 1, 2 do
+			for i = 1, 5 do
 				local thisIndicator = thatRectangle66:CreateTexture(nil, "artwork", nil, 4)
-				thisIndicator:SetColorTexture(0.0980392,		0.0980392,						0.439216)
+				thisIndicator:SetColorTexture(0.0980392, 0.0980392, 0.439216)
 				thatRectangle66.bloodLustIndicators[#thatRectangle66.bloodLustIndicators+1] = thisIndicator
 			end
 		end
@@ -5241,6 +5260,7 @@ function atributo_damage:MontaDetalhesDamageDone (spellId, spellLine, instance)
 			local bloodlustDuration = 40
 			for i = 1, #combatObject.bloodlust do
 				thatRectangle66.bloodLustIndicators[i]:Show()
+				thatRectangle66.bloodLustIndicators[i]:SetAlpha(0.46)
 				thatRectangle66.bloodLustIndicators[i]:SetSize(bloodlustDuration / combatTime * width, height - 2)
 				thatRectangle66.bloodLustIndicators[i]:SetPoint("bottomleft", thatRectangle66, "bottomleft", 0, 0)
 			end

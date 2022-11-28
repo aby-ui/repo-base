@@ -80,10 +80,12 @@ rematch.hintsDefense = {{4,5},{1,3},{6,8},{5,2},{8,7},{2,9},{9,10},{10,1},{3,4},
 -- ie dragonkin attacks {6,4) deal increased damage to magic pets (6) and less damage to undead pets (4)
 rematch.hintsOffense = {{2,8},{6,4},{9,2},{1,9},{4,1},{3,10},{10,5},{5,3},{7,6},{8,7}}
 
+rematch.inWorld = false -- true while player is in the world (not loading or zoning)
+
 rematch:SetScript("OnEvent",function(self,event,...)
 	if rematch[event] then
 		rematch[event](self,...)
-	end	
+	end
 end)
 rematch:RegisterEvent("PLAYER_LOGIN")
 
@@ -154,7 +156,6 @@ end
 -- unlocking
 function rematch:PLAYER_LOGIN()
    rematch:Start() -- set up the addon (the old PLAYER_LOGIN)
-   rematch:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
 end
 
 -- when the journal is unlocked, this fires a PET_JOURNAL_LIST_UPDATE for the roster
@@ -190,8 +191,6 @@ function rematch:Start()
 	for _,func in ipairs(initFuncs) do func() end
 	initFuncs = nil -- don't need them anymore
 	rematch.OptionPanel:RunOptionInits() -- after modules are all initialized, run option-specific inits
-	rematch:RegisterEvent("PLAYER_ENTERING_WORLD")
-	rematch:RegisterEvent("PLAYER_LEAVING_WORLD")
 	rematch:RegisterEvent("PLAYER_TARGET_CHANGED")
 	rematch:RegisterEvent("PLAYER_REGEN_DISABLED")
 	rematch:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -204,6 +203,9 @@ function rematch:Start()
 	rematch:RegisterEvent("COMPANION_UPDATE")
 	rematch:RegisterEvent("PET_BATTLE_FINAL_ROUND")
 	rematch:RegisterEvent("ADDON_LOADED")
+	rematch:RegisterEvent("PET_JOURNAL_LIST_UPDATE")
+	rematch:RegisterEvent("PLAYER_LEAVING_WORLD")
+	rematch:RegisterEvent("PLAYER_ENTERING_WORLD")
 	SlashCmdList["REMATCH"] = rematch.SlashHandler
 	SLASH_REMATCH1 = "/rematch"
 	-- add launcher button for LDB if it exists
@@ -213,6 +215,7 @@ function rematch:Start()
 	end
 	-- watch for player forfeiting a match (playerForfeit is nil'ed during PET_BATTLE_OPENING_START)
 	hooksecurefunc(C_PetBattles,"ForfeitGame",function() rematch.playerForfeit=true end)
+	rematch.inWorld = true
 end
 
 function rematch:InitSavedVars()
@@ -249,7 +252,6 @@ function rematch:InitSavedVars()
 			end
 		end
 	end
-
 	settings.SelectedTab = settings.SelectedTab or 1
 	settings.MiniMinimized = nil -- disabling this setting
 	rematch:ValidateTeams() -- make sure teams are okay
@@ -332,10 +334,10 @@ function rematch:ValidateQueue()
 					found[speciesID] = found[speciesID] or {}
 					tinsert(found[speciesID],newPetID)
 				else -- no replacement found, remove pet from queue
-					--tremove(queue,i)
+					tremove(queue,i)
 				end
 			else -- pet wasn't in sanctuary, remove pet from queue
-					--tremove(queue,i)
+					tremove(queue,i)
 			end
 		end
 	end
@@ -684,6 +686,14 @@ function rematch:ADDON_LOADED(addon)
 	end
 end
 
+function rematch:PLAYER_LEAVING_WORLD()
+	rematch.inWorld = false
+end
+
+function rematch:PLAYER_ENTERING_WORLD()
+	rematch.inWorld = true
+end
+
 --[[ Timer Management ]]
 
 rematch.timerFuncs = {} -- indexed by arbitrary name, the func to run when timer runs out
@@ -799,24 +809,6 @@ function rematch:ShutdownAddon()
 	RematchFrame.Toggle = function() end
 	Rematch.ToggleFrameTab = function() end
 	Rematch.ToggleNotes = function() end
-end
-
-function rematch:ShowMultiLineDialog(title,text)
-	-- data collected, now show dialog
-	local dialog = rematch:ShowDialog("MultiLineDialog",300,300,title,nil,nil,nil,OKAY)
-	dialog.MultiLine:SetPoint("TOP",0,-38)
-	dialog.MultiLine:SetSize(262,224)
-	dialog.MultiLine:Show()
-	dialog:SetContext("settings",text)
-	dialog.MultiLine.EditBox:SetScript("OnTextChanged",function(self)
-		if self:GetText()~=dialog:GetContext("settings") then
-			self:SetText(dialog:GetContext("settings"))
-			self:SetCursorPosition(0)
-			self:HighlightText(0)
-			self:SetFocus(true)
-		end
-	end)
-	dialog.MultiLine.EditBox:SetText("")
 end
 
 -- /rematch debug displays a dialog containing enabled options and various settings the user can copy to a post/comment to help debug
@@ -1009,4 +1001,3 @@ function rematch:SetFootnoteIcon(button,icon)
       end
 	end
 end
-

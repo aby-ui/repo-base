@@ -1,5 +1,5 @@
 <Ui>
-	<Script file="WildAddon-1.0\WildAddon-1.0.lua"/>
+	<!--<Script file="AceLocale-3.0\AceLocale-3.0.lua"/>-->
 	<Script file="MutexDelay-1.0\MutexDelay-1.0.lua"/>
 	<Include file="Poncho-2.0\Poncho-2.0.xml"/>
 	<Include file="Sushi-3.1\Sushi-3.1.xml"/>

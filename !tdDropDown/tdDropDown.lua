@@ -1,4 +1,4 @@
-local UIDropDownMenuTemplate = "UIDropDownMenuTemplate"
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 tdDropDownDB = {}
 
@@ -85,18 +85,14 @@ local function tdDropDown_Initialize(self, dropdown, level)
 		info.text = format(str, text)
 		info.value = text;
 		info.func = tdDropDown_HeaderClick
-		UIDropDownMenu_AddButton(info, 1)
+		LibDD:UIDropDownMenu_AddButton(info, 1)
 
 		if #(list) > 0 then
-			info.isTitle = 1
-			info.text = ""
-			info.value = ""
-			info.func = nil
-			UIDropDownMenu_AddButton(info, 1)
+			LibDD:UIDropDownMenu_AddSeparator(level)
 		end
 	end
 
-	info = { owner = dropdown, func = tdDropDown_ButtonClick,}
+	info = { owner = dropdown, func = tdDropDown_ButtonClick, fontObject = ChatFontNormal, }
 
 	local start  = (level - 1) * O.MAX + 1
 	for i = start, start + O.MAX - 1 do
@@ -105,33 +101,30 @@ local function tdDropDown_Initialize(self, dropdown, level)
 		end
 		info.text = list[i]
 		info.value = list[i];
-		UIDropDownMenu_AddButton(info, level)
+		LibDD:UIDropDownMenu_AddButton(info, level)
 	end
 
 	if #(list) > start + O.MAX - 1 then
+		LibDD:UIDropDownMenu_AddSeparator(level)
 		info.notCheckable = 1
 		info.text = L.Next
 		info.value = nil
 		info.func = nil
 		info.hasArrow = true
-		UIDropDownMenu_AddButton(info, level)
+		info.fontObject = nil
+		LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     --增加删除全部的功能
     if #list > 0 and level == 1 then
-        info = { owner = dropdown, notCheckable = 1, }
-        info.isTitle = 1
-        info.text = ""
-        info.value = ""
-        info.func = nil
-        UIDropDownMenu_AddButton(info, 1)
+		LibDD:UIDropDownMenu_AddSeparator(level)
 
         info = { owner = dropdown, notCheckable = 1, }
         info.text = L.DelAll;
         info.value = L.DelAll;
         info.func = tdDropdown_DeleteAll;
         info.arg1 = dropdown.profile;
-        UIDropDownMenu_AddButton(info, 1)
+		LibDD:UIDropDownMenu_AddButton(info, 1)
     end
 end
 
@@ -145,7 +138,19 @@ local function GetObjectByPath(path)
     return curr
 end
 
-local function CreateDropDown(profile, short, move, click, over)
+local setting_by_us
+local function hookSetWidth(self, width)
+	if setting_by_us then return end
+	setting_by_us = 1
+	--local point, rel, relPoint, x, y = self:GetPoint(1)
+	--if point and point:find("RIGHT") then
+	--	self:SetPoint(point, rel, relPoint, x - 19, y)
+	--end
+	self:SetWidth(width - 19)
+	setting_by_us = nil
+end
+
+local function CreateDropDown(profile, short, move, click, over, short_hook)
 	if not profile then return end
 
 	local editbox = GetObjectByPath(profile == "BrowseName" and "AuctionHouseFrame.SearchBar.SearchBox" or profile)
@@ -154,11 +159,14 @@ local function CreateDropDown(profile, short, move, click, over)
 	tdDropDownDB[profile] = tdDropDownDB[profile] or {}
 
 	local name = editbox:GetName() or profile
-	local dropdown = CreateFrame("Frame", name.."Dropdown", editbox, UIDropDownMenuTemplate)
+	local dropdown = LibDD:Create_UIDropDownMenu(name.."Dropdown", editbox) --CreateFrame("Frame", name.."Dropdown", editbox, UIDropDownMenuTemplate)
 
 	local width = editbox:GetWidth()
-	if short then
-		editbox:SetWidth(width - 19)
+	if short or short_hook then
+		editbox:SetWidth(width - 19) --hookSetWidth(editbox, width)
+	end
+	if short_hook then
+		hooksecurefunc(editbox, "SetWidth", hookSetWidth)
 	end
 	if move then
         for i=1, editbox:GetNumPoints() do
@@ -171,7 +179,7 @@ local function CreateDropDown(profile, short, move, click, over)
 	end
 
 	local button = CreateFrame("Button", name.."Button", editbox)
-	button:SetWidth(24);button:SetHeight(24)
+	button:SetWidth(24);button:SetHeight(25)
 	button:SetNormalTexture("Interface/ChatFrame/UI-ChatIcon-ScrollDown-Up")
 	button:SetPushedTexture("Interface/ChatFrame/UI-ChatIcon-ScrollDown-Down")
 	button:SetHighlightTexture("Interface/Buttons/UI-Common-MouseHilight")
@@ -189,7 +197,7 @@ local function CreateDropDown(profile, short, move, click, over)
 
 	button:SetScript("OnClick", function(self, arg1)
 		if arg1 == "LeftButton" then
-			ToggleDropDownMenu(1, nil, self.dropdown, self, - width , 0)
+			LibDD:ToggleDropDownMenu(1, nil, self.dropdown, self, - width , 0)
 		else
 			self.dropdown.editbox:SetText("")
 		end
@@ -205,16 +213,24 @@ local function CreateDropDown(profile, short, move, click, over)
 		GameTooltip:Hide()
 	end)
 
-	UIDropDownMenu_Initialize(dropdown, function(self, level) tdDropDown_Initialize(self, dropdown, level) end, O.Menu and "MENU" or nil);
+	LibDD:UIDropDownMenu_Initialize(dropdown, function(self, level) tdDropDown_Initialize(self, dropdown, level) end, O.Menu and "MENU" or nil);
 end
 
 local f = CreateFrame("Frame")
 f:SetScript("OnEvent", function(self, event, ...)
+	if event == "VARIABLES_LOADED" then
+		local old
+		old = "TradeSkillFrame.SearchBox" if tdDropDownDB[old] then tdDropDownDB["ProfessionsFrame.CraftingPage.RecipeList.SearchBox"] = tdDropDownDB[old] tdDropDownDB[old] = nil end
+		old = "AchievementFrame.searchBox" if tdDropDownDB[old] then tdDropDownDB["AchievementFrame.SearchBox"] = tdDropDownDB[old] tdDropDownDB[old] = nil end
+		old = "FriendsFrameBroadcastInput" if tdDropDownDB[old] then tdDropDownDB["FriendsFrameBattlenetFrame.BroadcastFrame.EditBox"] = tdDropDownDB[old] tdDropDownDB[old] = nil end
+		old = "BuyName"; tdDropDownDB[old] = nil
+		old = "TradeSkillFrameSearchBox"; tdDropDownDB[old] = nil
+	end
 	if profiles[event] then
 		for key = #profiles[event],1,-1 do
 			local value = profiles[event][key];
 			if value.func(...) then
-				CreateDropDown(value.profile, value.short, value.move, value.click, value.over)
+				CreateDropDown(value.profile, value.short, value.move, value.click, value.over, value.short_hook)
 				if value.hook then value.hook() end
 				tremove(profiles[event], key)
 			end
@@ -249,6 +265,7 @@ function tdCreateDropDown(table)
 		click = table.click,
 		over = table.over,
 		hook = table.hook,
+		short_hook = table.short_hook,
 	})
 	if not events[event] then
 		f:RegisterEvent(event)

@@ -231,8 +231,23 @@ end
 function RSNpcDB.GetInternalNpcInfoByMapID(npcID, mapID)
 	if (npcID and mapID) then
 		if (RSNpcDB.IsInternalNpcMultiZone(npcID)) then
+			-- First check if there is a matching mapID in the database
 			for internalMapID, zoneInfo in pairs (RSNpcDB.GetInternalNpcInfo(npcID).zoneID) do
-				if (internalMapID == mapID or RSMapDB.IsMapInParentMap(mapID, internalMapID)) then
+				if (internalMapID == mapID) then
+					local npcInfo = {}
+					RSUtils.CloneTable(RSNpcDB.GetInternalNpcInfo(npcID), npcInfo)
+					npcInfo.zoneID = internalMapID
+					npcInfo.x = zoneInfo.x
+					npcInfo.y = zoneInfo.y
+					npcInfo.artID = zoneInfo.artID
+					npcInfo.overlay = zoneInfo.overlay
+					return npcInfo
+				end
+			end
+			
+			-- Then check if there is a matching subMapID in the database
+			for internalMapID, zoneInfo in pairs (RSNpcDB.GetInternalNpcInfo(npcID).zoneID) do
+				if (RSMapDB.IsMapInParentMap(mapID, internalMapID)) then
 					local npcInfo = {}
 					RSUtils.CloneTable(RSNpcDB.GetInternalNpcInfo(npcID), npcInfo)
 					npcInfo.zoneID = internalMapID
@@ -391,12 +406,20 @@ end
 ---============================================================================
 
 function RSNpcDB.GetAllInteralNpcLoot()
-	return private.NPC_LOOT
+	local internalNpcLoot = private.NPC_LOOT
+	local customNpcLoot = RSNpcDB.GetAllCustomNpcLoot()
+	if (customNpcLoot) then
+		for npcID, items in pairs(customNpcLoot) do
+			internalNpcLoot[npcID] = items
+		end
+	end
+	
+	return internalNpcLoot
 end
 
 function RSNpcDB.GetInteralNpcLoot(npcID)
 	if (npcID) then
-		return RSNpcDB.GetAllInteralNpcLoot()[npcID]
+		return private.NPC_LOOT[npcID]
 	end
 
 	return nil
@@ -405,7 +428,7 @@ end
 function RSNpcDB.GetNpcLoot(npcID)
 	if (npcID) then
 		RSLogger:PrintDebugMessageEntityID(npcID, string.format("NPC [%s]: Obeniendo su loot.", npcID))
-		return RSUtils.JoinTables(RSUtils.JoinTables(RSNpcDB.GetInteralNpcLoot(npcID), RSNpcDB.GetNpcLootFound(npcID)), RSNpcDB.GetCustomNpcLoot(npcID))
+		return RSUtils.JoinTables(RSUtils.JoinTables(private.NPC_LOOT[npcID], RSNpcDB.GetNpcLootFound(npcID)), RSNpcDB.GetCustomNpcLoot(npcID))
 	end
 
 	return nil
@@ -415,6 +438,10 @@ end
 -- Custom NPC loot database
 ----- Stores custom NPC loot
 ---============================================================================
+
+function RSNpcDB.GetAllCustomNpcLoot()
+	return private.dbglobal.custom_loot
+end
 
 function RSNpcDB.GetCustomNpcLoot(npcID)
 	if (npcID and private.dbglobal.custom_loot) then
@@ -501,13 +528,19 @@ end
 ---============================================================================
 
 function RSNpcDB.InitNpcQuestIdFoundDB()
-	if (not private.dbglobal.npc_quest_ids) then
+	if (RSConstants.DEBUG_MODE and not private.dbglobal.npc_quest_ids) then
 		private.dbglobal.npc_quest_ids = {}
 	end
 end
 
-function RSNpcDB.GetAllNpcQuestIdsFound()
-	return private.dbglobal.npc_quest_ids
+function RSNpcDB.ResetNpcQuestIdFoundDB()
+	if (private.dbglobal.npc_quest_ids) then
+		if (RSConstants.DEBUG_MODE) then
+			private.dbglobal.npc_quest_ids = {}
+		else
+			private.dbglobal.npc_quest_ids = nil
+		end
+	end
 end
 
 function RSNpcDB.SetNpcQuestIdFound(npcID, questID)

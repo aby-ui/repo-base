@@ -40,6 +40,9 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 ---============================================================================
 
 local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
+local ENTITY_FRAME_LEVEL = 3
+local OVERLAY_FRAME_LEVEL = 2
+local GUIDE_FRAME_LEVEL = 2
 
 function RSMinimap.LoadMinimapButton()
 	local RareScannerMinimapLDB = LibStub("LibDataBroker-1.1"):NewDataObject("RareScannerLDB", {
@@ -151,6 +154,7 @@ function RSMinimap.RefreshAllData(forzed)
 		if (not POI.worldmap) then
 			pin.Texture:SetTexture(POI.Texture)
 			pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+			pin:SetFrameLevel(ENTITY_FRAME_LEVEL)
 			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
 		end
 	end
@@ -212,6 +216,7 @@ function RSMinimap.RefreshEntityState(entityID)
 					RSLogger:PrintDebugMessage(string.format("RSMinimap.RefreshEntityState[ADDED][%s,x=%s,y=%s]", entityID, POI.x, POI.y))
 					pin.Texture:SetTexture(POI.Texture)
 					pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+					pin:SetFrameLevel(ENTITY_FRAME_LEVEL)
 					HBD_Pins:AddMinimapIconMap(RSMinimap, pin, POI.mapID, RSUtils.FixCoord(POI.x), RSUtils.FixCoord(POI.y), false, false)
 				end
 				
@@ -294,6 +299,7 @@ function RSMinimap.AddOverlay(entityID)
 			
 			pin.Texture:SetTexture(RSConstants.OVERLAY_SPOT_TEXTURE)
 			pin.Texture:SetVertexColor(r, g, b, 0.7)
+			pin:SetFrameLevel(OVERLAY_FRAME_LEVEL)
 			HBD_Pins:AddMinimapIconMap(RSMinimap, pin, mapID, RSUtils.FixCoord(x), RSUtils.FixCoord(y), false, false)
 		end
 	end
@@ -348,6 +354,7 @@ function RSMinimap.AddGuide(entityID)
 				pin.POI = POI
 				pin.Texture:SetTexture(POI.texture)
 				pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
+				pin:SetFrameLevel(GUIDE_FRAME_LEVEL)
 				HBD_Pins:AddMinimapIconMap(RSMinimap, pin, mapID, POI.x, POI.y, false, false)
 			end
 		end

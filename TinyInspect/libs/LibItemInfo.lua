@@ -3,7 +3,7 @@
 -- 物品信息庫 Author: M
 ---------------------------------
 
-local MAJOR, MINOR = "LibItemInfo.7000", 5
+local MAJOR, MINOR = "LibItemInfo.7000", 6
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not lib then return end
@@ -97,7 +97,12 @@ end
 
 
 --獲取物品實際等級信息
-function lib:GetItemInfo(link, stats, tooltipFunc)
+function lib:GetItemInfo(link, stats, withoutExtra, tooltipFunc)
+    return self:GetItemInfoViaTooltip(link, stats, withoutExtra, tooltipFunc)
+end
+
+--獲取物品實際等級信息通過Tooltip
+function lib:GetItemInfoViaTooltip(link, stats, withoutExtra, tooltipFunc)
     if (not link or link == "") then
         return 0, 0
     end
@@ -124,10 +129,13 @@ function lib:GetItemInfo(link, stats, tooltipFunc)
         end
     end
     if stats then self:GetStatsViaTooltip(tooltip, stats) end
-    if (level and string.find(level, "+")) then
-        return 0, level, GetItemInfo(link)
+    if (level and string.find(level, "+")) then else
+        level = tonumber(level) or 0
+    end
+    if (withoutExtra) then
+        return 0, level
     else
-        return 0, tonumber(level) or 0, GetItemInfo(link)
+        return 0, level, GetItemInfo(link)
     end
 end
 
@@ -153,7 +161,7 @@ function lib:GetContainerItemLevel(pid, id)
             if (_G[tooltip:GetName().."TextLeft" .. i]) then
                 text = _G[tooltip:GetName().."TextLeft" .. i]:GetText() or ""
                 level = select(2, string.match(text, ItemLevelAltPat))
-                if (level) then break end				
+                if (level) then break end
                 level = string.match(text, ItemLevelPattern)
                 if (level) then break end
             end
@@ -164,7 +172,7 @@ end
 
 --獲取UNIT物品實際等級信息
 function lib:GetUnitItemInfo(unit, index, stats)
-    if (not UnitExists(unit)) then return 1, -1 end
+    if (not UnitExists(unit)) then return 1, -1 end  --C_PaperDollInfo.GetInspectItemLevel
     unittip:SetOwner(UIParent, "ANCHOR_NONE")
     unittip:SetInventoryItem(unit, index)
     local link = GetInventoryItemLink(unit, index) or select(2, unittip:GetItem())

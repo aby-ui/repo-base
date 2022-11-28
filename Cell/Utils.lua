@@ -920,6 +920,20 @@ end
 -------------------------------------------------
 -- units
 -------------------------------------------------
+local GetNumGroupMembers = GetNumGroupMembers
+local GetRaidRosterInfo = GetRaidRosterInfo
+local IsInRaid = IsInRaid
+local IsInGroup = IsInGroup
+local UnitIsUnit = UnitIsUnit
+local UnitInParty = UnitInParty
+local UnitInRaid = UnitInRaid
+local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
+local UnitPlayerOrPetInRaid = UnitPlayerOrPetInRaid
+local UnitClassBase = UnitClassBase
+local UnitName = UnitName
+local UnitIsGroupLeader = UnitIsGroupLeader
+local UnitIsGroupAssistant = UnitIsGroupAssistant
+
 function F:GetUnitsInSubGroup(group)
     local units = {}
     for i = 1, GetNumGroupMembers() do
@@ -1050,7 +1064,7 @@ end
 
 function F:GetTargetUnitInfo()
     if UnitIsUnit("target", "player") then
-        return "player", UnitName("player"), select(2, UnitClass("player"))
+        return "player", UnitName("player"), UnitClassBase("player")
     elseif UnitIsUnit("target", "pet") then
         return "pet", UnitName("pet")
     end
@@ -1059,7 +1073,7 @@ function F:GetTargetUnitInfo()
     if IsInRaid() then
         for i = 1, GetNumGroupMembers() do
             if UnitIsUnit("target", "raid"..i) then
-                return "raid"..i, UnitName("raid"..i), select(2, UnitClass("raid"..i))
+                return "raid"..i, UnitName("raid"..i), UnitClassBase("raid"..i)
             end
             if UnitIsUnit("target", "raidpet"..i) then
                 return "raidpet"..i, UnitName("raidpet"..i)
@@ -1068,7 +1082,7 @@ function F:GetTargetUnitInfo()
     elseif IsInGroup() then
         for i = 1, GetNumGroupMembers()-1 do
             if UnitIsUnit("target", "party"..i) then
-                return "party"..i, UnitName("party"..i), select(2, UnitClass("party"..i))
+                return "party"..i, UnitName("party"..i), UnitClassBase("party"..i)
             end
             if UnitIsUnit("target", "partypet"..i) then
                 return "partypet"..i, UnitName("partypet"..i)

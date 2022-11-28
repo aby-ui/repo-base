@@ -117,8 +117,8 @@ LibEvent:attachEvent("INSPECT_READY", function(this, guid)
     if (not guids[guid]) then return end
     LibSchedule:AddTask({
         identity  = guid,
-        timer     = 0.2,
-        elasped   = 0.5,
+        timer     = 0.1,
+        elasped   = 0.4,
         expired   = GetTime() + 5,
         repeats   = 2,  --重复次数 10.x里GetInventoryItemLink居然有概率返回nil,所以这里扫两次
         data      = guids[guid],

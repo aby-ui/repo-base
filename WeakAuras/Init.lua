@@ -21,6 +21,8 @@ Private.frames = {}
 --- @field party table<string, boolean>
 --- @field raid table<string, boolean>
 
+--- @alias traverseFunction fun(): auraData
+
 --- @class Private
 --- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)
 --- @field ActivateAuraEnvironmentForRegion fun(region: table, onlyConfig: boolean?)
@@ -37,7 +39,7 @@ Private.frames = {}
 --- @field clones table<auraId, table<string, table>>
 --- @field customActionsFunctions table<auraId, table<string, function?>>
 --- @field DebugLog debugLog
---- @field EnsureRegion fun(id: auraId, cloneId: string?)
+--- @field EnsureRegion fun(id: auraId, cloneId: string?): Frame
 --- @field ExecEnv table
 --- @field FixGroupChildrenOrderForGroup fun(data: auraData)
 --- @field frames table<string, table>
@@ -52,7 +54,7 @@ Private.frames = {}
 --- @field LibSpecWrapper LibSpecWrapper
 --- @field linked table<auraId, number>
 --- @field LoadFunction fun(input: string): function
---- @field LoadOptions fun(msg: string?)
+--- @field LoadOptions fun(msg: string?): boolean
 --- @field multiUnitUnits multiUnitUnits
 --- @field non_transmissable_fields table<string, non_transmissable_field>
 --- @field non_transmissable_fields_v2000 table<string, non_transmissable_field>
@@ -65,7 +67,7 @@ Private.frames = {}
 --- @field reset_ranged_swing_spells table<number, boolean>
 --- @field reset_swing_spells table<number, boolean>
 --- @field noreset_swing_spells table<number, boolean>
---- @field RunCustomTextFunc fun(region: table, f: function)
+--- @field RunCustomTextFunc fun(region: table, f: function): string?
 --- @field spark_rotation_types table<string, string>
 --- @field spec_types string[]
 --- @field spec_types_3 string[]
@@ -75,13 +77,13 @@ Private.frames = {}
 --- @field StopProfileAura fun(id: auraId)
 --- @field StopProfileSystem fun(system: string)
 --- @field tick_placement_modes table<string, string>
---- @field TraverseAll fun(data: auraData): fun(): auraData, auraData
---- @field TraverseAllChildren fun(data: auraData): fun(): auraData, auraData
---- @field TraverseGroups fun(data: auraData): fun(): auraData, auraData
---- @field TraverseLeafs fun(data: auraData): fun(): auraData, auraData
---- @field TraverseLeafsOrAura fun(data: auraData): fun(): auraData, auraData
---- @field TraverseParents fun(data: auraData): fun(): auraData, auraData
---- @field TraverseSubGroups fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseAll fun(data: auraData): traverseFunction, auraData
+--- @field TraverseAllChildren fun(data: auraData): traverseFunction, auraData
+--- @field TraverseGroups fun(data: auraData): traverseFunction, auraData
+--- @field TraverseLeafs fun(data: auraData): traverseFunction, auraData
+--- @field TraverseLeafsOrAura fun(data: auraData): traverseFunction, auraData
+--- @field TraverseParents fun(data: auraData): traverseFunction, auraData
+--- @field TraverseSubGroups fun(data: auraData): traverseFunction, auraData
 --- @field UIDtoID fun(uid: uid): auraId
 --- @field UnitEventList table<string, boolean>
 --- @field UnitPlayerControlledFixed fun(unit: string): boolean
@@ -163,25 +165,80 @@ Private.frames = {}
 --- @field ignoreOptionsEventErrors boolean|nil
 --- @field groupOffset boolean|nil
 
+--- @alias dynamicGroupCenterType
+--- | "LR"
+--- | "RL"
+--- | "CLR"
+--- | "CRL"
+
+--- @alias dynamicGroupGridType
+--- | "RU"
+--- | "UR"
+--- | "LU"
+--- | "UL"
+--- | "RD"
+--- | "DR"
+--- | "LD"
+--- | "DL"
+--- | "HD"
+--- | "HU"
+--- | "VR"
+--- | "VL"
+--- | "DH"
+--- | "UH"
+--- | "LV"
+--- | "RV"
+--- | "HV"
+--- | "VH"
+
+--- @alias dynamicGroupCircularTypes
+--- | "RADIUS"
+--- | "SPACING"
+
+--- @alias ColorArray {[1]: number, [2]: number, [3]: number, [4]: number }
 
 --- @class auraData
 --- @field anchorFrameType anchorFrameTypes?
---- @field arcLength number
---- @field actions actions
---- @field conditions conditionData[]|nil
---- @field controlledChildren auraId[]|nil
---- @field displayText string|nil
---- @field grow string|nil
+--- @field animate boolean?
+--- @field arcLength number?
+--- @field actions actions?
+--- @field border boolean?
+--- @field borderBackdrop string?
+--- @field borderColor ColorArray?
+--- @field borderEdge string?
+--- @field borderOffset number?
+--- @field borderInset number?
+--- @field borderSize number?
+--- @field centerType dynamicGroupCenterType?
+--- @field conditions conditionData[]?
+--- @field constantFactor dynamicGroupCircularTypes
+--- @field controlledChildren auraId[]?
+--- @field displayText string?
+--- @field frameStrata number?
+--- @field fullCircle boolean?
+--- @field gridType dynamicGroupGridType?
+--- @field gridWidth number?
+--- @field rowSpace number?
+--- @field columnSpace number?
+--- @field grow string?
 --- @field id auraId
 --- @field internalVersion number
 --- @field information information
 --- @field load load
---- @field orientation string|nil
---- @field parent auraId|nil
+--- @field limit number?
+--- @field orientation string?
+--- @field parent auraId?
+--- @field radius number?
+--- @field rotation number?
 --- @field regionType regionTypes
---- @field subRegions subRegionData|nil
+--- @field scale number?
+--- @field selfPoint AnchorPoint
+--- @field subRegions subRegionData?
 --- @field triggers triggerUntriggerData[]
---- @field url string|nil
+--- @field url string?
+--- @field useLimit boolean?
+--- @field xOffset number?
+--- @field yOffset number?
 
 --- @class LibCustomGlow-1.0
 --- @field ButtonGlow_Start fun(frame: Frame)
@@ -239,8 +296,8 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.2.0"
-local buildTime = "20221115183018"
+local versionString = "5.2.1"
+local buildTime = "20221127174915"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -252,7 +309,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "5.2.0" then
+if versionStringFromToc == "5.2.1" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end
@@ -332,6 +389,7 @@ do
     "LibDBIcon-1.0",
     "LibGetFrame-1.0",
     "LibSerialize",
+    "LibUIDropDownMenu-4.0"
   }
   if WeakAuras.IsClassic() then
     tinsert(LibStubLibs, "LibClassicSpellActionCount-1.0")
@@ -371,23 +429,23 @@ end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 --- @type fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
-function WeakAuras.RegisterRegionType()
+function WeakAuras.RegisterRegionType(_, _, _ ,_)
 end
 
 --- @type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
-function WeakAuras.RegisterRegionOptions()
+function WeakAuras.RegisterRegionOptions(_, _ , _ ,_ )
 end
 
-function Private.StartProfileSystem()
+function Private.StartProfileSystem(_)
 end
 
-function Private.StartProfileAura()
+function Private.StartProfileAura(_)
 end
 
-function Private.StopProfileSystem()
+function Private.StopProfileSystem(_)
 end
 
-function Private.StopProfileAura()
+function Private.StopProfileAura(_)
 end
 
 function Private.StartProfileUID()
@@ -400,7 +458,7 @@ Private.ExecEnv = {}
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
 --- @type fun(type: string)
-function WeakAuras.StartProfile()
+function WeakAuras.StartProfile(_)
 end
 
 function WeakAuras.StopProfile()

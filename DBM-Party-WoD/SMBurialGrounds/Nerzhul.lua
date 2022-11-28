@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 
 mod.statTypes = "normal,heroic,mythic,challenge,timewalker"
 
-mod:SetRevision("20220116042005")
+mod:SetRevision("20221127051031")
 mod:SetCreatureID(76407)
 mod:SetEncounterID(1682)
 
@@ -11,10 +11,17 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 154442",
-	"SPELL_SUMMON 154350",
+--	"SPELL_SUMMON 154350",
 	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
+--[[
+ability.id = 154442 and type = "begincast"
+ or ability.id = 154350
+ or ability.id = 154671
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
+--TODO, 154350 is not firing spell summmon anymore in 10.0.2 M+ version, Omen of Death moved to USCS but target scan needs to be rechecked as well
 local warnOmenOfDeath			= mod:NewTargetAnnounce(154350, 3)
 
 local specWarnRitualOfBones		= mod:NewSpecialWarningSpell(154671, nil, nil, nil, 2, 2)
@@ -53,17 +60,22 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
+--[[
 function mod:SPELL_SUMMON(args)
 	if args.spellId == 154350 then
 		self:BossTargetScanner(76407, "OmenOfDeathTarget", 0.04, 15)
 		timerOmenOfDeathCD:Start()
 	end
 end
+--]]
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, spellId)
 	if spellId == 154671 then
 		specWarnRitualOfBones:Show()
 		specWarnRitualOfBones:ScheduleVoice(48.5, "specialsoon")
 		timerRitualOfBonesCD:Start()
+	elseif spellId == 177691 then
+		self:BossTargetScanner(76407, "OmenOfDeathTarget", 0.04, 15)
+		timerOmenOfDeathCD:Start()
 	end
 end

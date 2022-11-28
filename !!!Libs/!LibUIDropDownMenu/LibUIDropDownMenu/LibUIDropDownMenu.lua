@@ -1,4 +1,4 @@
--- $Id: LibUIDropDownMenu.lua 109 2022-11-04 08:25:19Z arithmandar $
+-- $Id: LibUIDropDownMenu.lua 111 2022-11-17 17:06:37Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ local GameTooltip_SetTitle, GameTooltip_AddInstructionLine, GameTooltip_AddNorma
 
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenu-4.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 109 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 111 $"):match("%d+"))
 
 
 local LibStub = _G.LibStub
@@ -1967,18 +1967,18 @@ function lib:UIDropDownMenu_ClearAll(frame)
 	end
 end
 
-function lib:UIDropDownMenu_JustifyText(frame, justification, customXOffset)
+function lib:UIDropDownMenu_JustifyText(frame, justification, customXOffset, customYOffset)
 	local frameName = frame:GetName();
 	local text = GetChild(frame, frameName, "Text");
 	text:ClearAllPoints();
 	if ( justification == "LEFT" ) then
-		text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, 2);
+		text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
 		text:SetJustifyH("LEFT");
 	elseif ( justification == "RIGHT" ) then
-		text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, 2);
+		text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
 		text:SetJustifyH("RIGHT");
 	elseif ( justification == "CENTER" ) then
-		text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, 2);
+		text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
 		text:SetJustifyH("CENTER");
 	end
 end

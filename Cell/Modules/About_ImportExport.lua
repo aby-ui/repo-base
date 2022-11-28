@@ -26,7 +26,7 @@ local function DoImport()
         imported["layoutAutoSwitch"] = nil
         imported["cleuAuras"] = nil
         imported["cleuGlow"] = nil
-        imported["appearance"]["healAbsorb"] = false
+        imported["appearance"]["healAbsorb"][1] = false
     end
 
     -- indicators

@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.11) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.12) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
     Decursive is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY.
 
-    This file was last updated on 2019-11-18T13:42:00Z
+    This file was last updated on 2022-11-27T23:18:58Z
 --]]
 -------------------------------------------------------------------------------
 
@@ -113,6 +113,7 @@ DC.ClassNumToLName = {
     [20]        = LC[DC.CLASS_DEATHKNIGHT],
     [21]        = LC[DC.CLASS_MONK],
     [22]        = LC[DC.CLASS_DEMONHUNTER],
+    [23]        = LC[DC.CLASS_EVOKER],
 }
 
 DC.ClassLNameToNum = D:tReverse(DC.ClassNumToLName);
@@ -130,6 +131,7 @@ DC.ClassNumToUName = {
     [20]        = DC.CLASS_DEATHKNIGHT,
     [21]        = DC.CLASS_MONK,
     [22]        = DC.CLASS_DEMONHUNTER,
+    [23]        = DC.CLASS_EVOKER,
 }
 
 DC.ClassUNameToNum = D:tReverse(DC.ClassNumToUName);
@@ -169,7 +171,7 @@ do
                 return UnitClass(unit);
             end
 
-            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
+            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,23)];
             FakeClasses[unit] = randomClass;
             return randomClass, randomClass;
         end
@@ -205,7 +207,7 @@ do
 
             local unit = "raid"..i;
 
-            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,22)];
+            local randomClass = FakeClasses[unit] or DC.ClassNumToUName[random(11,23)];
             FakeClasses[unit] = randomClass;
             local randomGroup;
 
@@ -671,7 +673,7 @@ end
 
 
 -------------------------------------------------------------------------------
-T._LoadedFiles["Dcr_Raid.lua"] = "2.7.8.11";
+T._LoadedFiles["Dcr_Raid.lua"] = "2.7.8.12";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"

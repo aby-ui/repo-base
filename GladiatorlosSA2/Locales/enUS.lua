@@ -124,7 +124,7 @@ L["Evoker"] = Colors.Evoker .. "Evoker" .. "|r"
 L["Buff Down"] = true
 L["Spell Casting"] = true
 L["BigHeal"] = "Big Heals"
-L["BigHeal_Desc"] = "Heal (Priest)|nPower Word: Radiance (Priest)|nHoly Light (Paladin)|nHealing Wave (Shaman)|nSurging Mist |cFF00FF96(Monk)|r"
+L["BigHeal_Desc"] = "Nourish (Druid)|nHeal (Priest)|nPower Word: Radiance (Priest)|nHoly Light (Paladin)|nHealing Wave (Shaman)|nSurging Mist |cFF00FF96(Monk)|r"
 L["Resurrection"] = true
 L["Resurrection_Desc"] = "All out-of-combat resurrection abilities."
 L["Special Abilities"] = "Cast Success/Instants"
@@ -169,12 +169,12 @@ L["DPSDispel_Desc"] = "Generic alert for hybrid class dispels that do not remove
 L["HealerDispel"] = "Magic Dispels"
 L["HealerDispel_Desc"] = "Generic alert for healing class (and warlocks) dispels that remove Magic effects.|n|nNature's Cure (Druid)|nDetox (Monk)|nCleanse (Paladin)|nPurify (Priest)|nPurify Spirit (Shaman)|nSinge Magic (Warlock)"
 L["CastingSuccess"] = "CC Cast Success"
-L["CastingSuccess_Desc"] = "Enables generic 'success' alert when a major enemy cast-time Crowd Control ability is applied to an ally.|n|n|cffC41F3BWARNING: ALL of the abilities below will announce their success if this is enabled, even if you have some of them disabled in Spell Casting.|r|n|nCyclone (Druid)|nEntangling Roots (Druid)|nHibernate (Druid)|nSleepwalk (Evoker)|nScare Beast (Hunter)|nPolymorph (Mage)|nRing of Frost (Mage)|nRepentance (Paladin)|nMind Control (Priest)|nHex (Shaman)|nFear (Warlock)"
+L["CastingSuccess_Desc"] = "Enables generic 'success' alert when a major enemy cast-time Crowd Control ability is applied to an ally.|n|n|cffC41F3BWARNING: ALL of the abilities below will announce their success if this is enabled, even if you have some of them disabled in Spell Casting.|r|n|nCyclone (Druid)|nEntangling Roots (Druid)|nHibernate (Druid)|nMass Polymorph (Mage)|nSleepwalk (Evoker)|nScare Beast (Hunter)|nPolymorph (Mage)|nRing of Frost (Mage)|nRepentance (Paladin)|nMind Control (Priest)|nHex (Shaman)|nFear (Warlock)"
 
 L["DispelKickback"] = "Dispel Penalties"
 
 L["Purge"] = "Purges"
-L["PurgeDesc"] = "Generic alert for purges that remove magic effects from your team, excluding Arcane Torrent.|n|nConsume Magic (DemonHunter)|nTranquilizing Shot (Hunter)|nDispel Magic (Priest)|nPurge (Shaman)|nDevour Magic (Warlock)"
+L["PurgeDesc"] = "Generic alert for purges that remove magic effects from your team, excluding Arcane Torrent.|n|nConsume Magic (DemonHunter)|nTranquilizing Shot (Hunter)|nDispel Magic (Priest)|nGreater Purge (Shaman)|nPurge (Shaman)|nDevour Magic (Warlock)"
 
 L["FriendlyInterrupted"] = "Ally Lockout Alert"
 L["FriendlyInterruptedDesc"] = "Disable the alert that occurs when an enemy successfully interrupts you or an ally which locks them out of casting.|n|n(Plays the Blizzard 'Quest Failed' sound effect.)"
@@ -191,7 +191,7 @@ L["TankTauntsON"] = "Intimidation"
 L["TankTauntsON_Desc"] = "Alerts the application of Intimidation: a damage amplifcation effect originating from tank specializations."
 
 L["Connected"] = "Connected Alerts"
-L["Connected_Desc"] = "Plays a simple 'Connected' alert when certain very powerful cast-time abilities successfully complete their cast.|n|nThe Hunt (DemonHunter)|nGreater Pyroblast (Mage)|nMind Games (Priest)|nChaos Bolt (Warlock)"
+L["Connected_Desc"] = "Plays a simple 'Connected' alert when certain very powerful cast-time abilities successfully complete their cast.|n|nThe Hunt (DemonHunter)|nSniper Shot (Hunter)|nGreater Pyroblast (Mage)|nLight's Wrath (Priest)|nMind Games (Priest)|nChaos Bolt (Warlock)"
 
 L["CovenantAbilities"] = "Covenant Abilities"
 

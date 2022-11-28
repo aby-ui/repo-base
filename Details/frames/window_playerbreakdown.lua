@@ -66,6 +66,14 @@ info.currentTabsInUse =  {}
 --self = instancia
 --jogador = classe_damage ou classe_heal
 
+do
+	local gradientStartColor = Details222.ColorScheme.GetColorFor("gradient-background")
+	local gradientUp = DetailsFramework:CreateTexture(info, {gradient = "vertical", fromColor = "transparent", toColor = gradientStartColor}, 1, 300, "artwork", {0, 1, 0, 1})
+	gradientUp:SetPoint("tops", 1, 1)
+	local gradientDown = DetailsFramework:CreateTexture(info, {gradient = "vertical", fromColor = gradientStartColor, toColor = "transparent"}, 1, 50, "artwork", {0, 1, 0, 1})
+	gradientDown:SetPoint("bottoms")
+end
+
 function Details:GetBreakdownTabsInUse()
 	return info.currentTabsInUse
 end
@@ -619,7 +627,9 @@ function gump:CriaDetalheInfo(index)
 	spellInfoBlock.GetFrame = getFrameFromDetailInfoBlock
 
 	spellInfoBlock.bg = CreateFrame("StatusBar", "DetailsPlayerDetailsWindow_DetalheInfoBG" .. index, _detalhes.playerDetailWindow.container_detalhes, "BackdropTemplate")
-	spellInfoBlock.bg:SetStatusBarTexture("Interface\\AddOns\\Details\\images\\bar_detalhes2")
+	--spellInfoBlock.bg:SetStatusBarTexture("")  --Interface\\AddOns\\Details\\images\\bar_detalhes2
+	--bar_detalhes2 bar_background
+	spellInfoBlock.bg:SetStatusBarTexture("Interface\\AddOns\\Details\\images\\bar_background")  --Interface\\AddOns\\Details\\images\\bar_detalhes2
 	spellInfoBlock.bg:SetStatusBarColor(1, 1, 1, .84)
 	spellInfoBlock.bg:SetMinMaxValues(0, 100)
 	spellInfoBlock.bg:SetValue(100)
@@ -655,7 +665,7 @@ function gump:CriaDetalheInfo(index)
 	spellInfoBlock.bg.reportar:SetScript("OnLeave", detalhes_inforeport_onleave)
 
 	spellInfoBlock.bg_end = spellInfoBlock.bg:CreateTexture("DetailsPlayerDetailsWindow_DetalheInfoBG_bg_end" .. index, "BACKGROUND")
-	spellInfoBlock.bg_end:SetHeight(47)
+	spellInfoBlock.bg_end:SetHeight(40)
 	spellInfoBlock.bg_end:SetTexture("Interface\\AddOns\\Details\\images\\bar_detalhes2_end")
 
 	_detalhes.playerDetailWindow.grupos_detalhes[index] = spellInfoBlock
@@ -749,7 +759,7 @@ function gump:SetaDetalheInfoAltura(index, xmod, ymod)
 	spellInfoBlock.bg:SetWidth(background:GetWidth())
 
 	spellInfoBlock.bg_end:SetPoint("LEFT", spellInfoBlock.bg, "LEFT", spellInfoBlock.bg:GetValue()*2.19, 0)
-	spellInfoBlock.bg_end:SetHeight(background:GetHeight()+2)
+	spellInfoBlock.bg_end:SetHeight(background:GetHeight()-2)
 	spellInfoBlock.bg_end:SetWidth(6)
 	spellInfoBlock.bg_end:SetAlpha(.75)
 
@@ -1211,7 +1221,7 @@ local default_skin = function()
 	end
 
 	--info container
-	info:SetDetailInfoConfigs("Interface\\AddOns\\Details\\images\\bar_detalhes2", {1, 1, 1, 0.5}, 0, 0)
+	info:SetDetailInfoConfigs("Interface\\AddOns\\Details\\images\\bar_background_dark_dark", {1, 1, 1, 0.5}, 0, 0)
 
 	window.bg1_sec_texture:SetPoint("topleft", window.bg1, "topleft", 348, -86)
 	window.bg1_sec_texture:SetHeight(262)
@@ -1441,7 +1451,7 @@ local elvui_skin = function()
 	end
 
 	--seta configs dos 5 blocos da direita
-	info:SetDetailInfoConfigs("Interface\\AddOns\\Details\\images\\bar_serenity", {1, 1, 1, 0.35}, -6 + 100, 0)
+	info:SetDetailInfoConfigs("Interface\\AddOns\\Details\\images\\bar_background_dark", {1, 1, 1, 0.35}, -6 + 100, 0)
 
 	window.bg1_sec_texture:SetPoint("topleft", window.bg1, "topleft", 446, -86)
 	window.bg1_sec_texture:SetWidth(337)
@@ -1818,6 +1828,9 @@ function gump:CriaJanelaInfo()
 			right_background1:SetSize(220, 43)
 			Details.gump:ApplyStandardBackdrop(right_background1)
 			este_gump ["right_background" .. i] = right_background1
+
+			local gradientDown = DetailsFramework:CreateTexture(right_background1, {gradient = "vertical", fromColor = {0, 0, 0, 0.1}, toColor = "transparent"}, 1, 43, "artwork", {0, 1, 0, 1})
+			gradientDown:SetPoint("bottoms")
 		end
 
 	-- fundos especiais de friendly fire e outros
@@ -2927,6 +2940,11 @@ function gump:CriaJanelaInfo()
 		DF:ReskinSlider(debuffScroll)
 
 		tab.DebuffScroll = debuffScroll
+
+		if (not frame.__background) then
+			DetailsFramework:ApplyStandardBackdrop(frame)
+			frame.__background:SetAlpha(0.6)
+		end
 	end
 
 	local auras_tab_fill = function(tab, player, combat)

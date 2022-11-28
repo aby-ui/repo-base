@@ -439,6 +439,7 @@ function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
     arg1 = ok and type(arg1) == "number" and arg1 or 0;
     arg2 = ok and type(arg2) == "number" and arg2 or 0;
 
+
     if (state.inverse ~= inverse) then
       state.inverse = inverse;
       changed = true;
@@ -479,6 +480,11 @@ function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
       end
       if (state.duration ~= arg1) then
         state.duration = arg1;
+      end
+      -- The Icon's SetCooldown requires that the **startTime** is positive, so ensure that
+      -- the expirationTime is bigger than the duration
+      if arg2 <= arg1 then
+        arg2 = arg1
       end
       if (state.expirationTime ~= arg2) then
         state.expirationTime = arg2;
@@ -894,7 +900,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   if (event == "PLAYER_ENTERING_WORLD") then
     timer:ScheduleTimer(function()
       Private.StartProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
-      HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
+      HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD", arg1, arg2)
       Private.CheckCooldownReady();
       Private.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       Private.PreShowModels()
@@ -1994,6 +2000,7 @@ do
 
   function Private.InitCooldownReady()
     cdReadyFrame = CreateFrame("Frame");
+    cdReadyFrame.inWorld = 0
     Private.frames["Cooldown Trigger Handler"] = cdReadyFrame
     if WeakAuras.IsRetail() then
       cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
@@ -2011,11 +2018,28 @@ do
     cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
     cdReadyFrame:RegisterEvent("SPELLS_CHANGED");
     cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+    cdReadyFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
     if WeakAuras.IsWrathClassic() then
       cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
       cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
     end
-    cdReadyFrame:SetScript("OnEvent", function(self, event, ...)
+    cdReadyFrame.HandleEvent = function(self, event, ...)
+      if (event == "PLAYER_ENTERING_WORLD") then
+        cdReadyFrame.inWorld = GetTime()
+      end
+      if (event == "PLAYER_LEAVING_WORLD") then
+        cdReadyFrame.inWorld = nil
+      end
+      if not cdReadyFrame.inWorld then
+        return
+      end
+
+      if GetTime() - cdReadyFrame.inWorld < 2 then
+        cdReadyFrame:SetScript("OnUpdate", cdReadyFrame.HandleEvent)
+        return
+      end
+      cdReadyFrame:SetScript("OnUpdate", nil)
+
       Private.StartProfileSystem("generictrigger cd tracking");
       if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
         or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
@@ -2042,7 +2066,8 @@ do
         Private.CheckItemSlotCooldowns();
       end
       Private.StopProfileSystem("generictrigger cd tracking");
-    end);
+    end
+    cdReadyFrame:SetScript("OnEvent", cdReadyFrame.HandleEvent)
   end
 
   function WeakAuras.GetRuneCooldown(id)
@@ -3376,28 +3401,55 @@ do
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
 
-      tenchTip = WeakAuras.GetHiddenTooltip();
-
-      local function getTenchName(id)
-        tenchTip:SetInventoryItem("player", id);
-        local lines = { tenchTip:GetRegions() };
-        for i,v in ipairs(lines) do
-          if(v:GetObjectType() == "FontString") then
-            local text = v:GetText();
-            if(text) then
-              local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
-              if(name and name ~= "") then
-                return name, shortenedName;
-              end
-              _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
-              if(name and name ~= "") then
-                return name, shortenedName;
+      local getTenchName
+      if WeakAuras.IsRetail() then
+        getTenchName = function(id)
+          local tooltipData = C_TooltipInfo.GetInventoryItem("player", id)
+          if tooltipData and tooltipData.lines then
+            for _, line in ipairs(tooltipData.lines) do
+              if line.args then
+                for _, arg in ipairs(line.args) do
+                  if arg.field == "leftText" then
+                    local text = arg.stringVal;
+                    if(text) then
+                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                      if(name and name ~= "") then
+                        return name, shortenedName;
+                      end
+                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                      if(name and name ~= "") then
+                        return name, shortenedName;
+                      end
+                    end
+                  end
+                end
               end
             end
           end
         end
+      else
+        getTenchName = function(id)
+          tenchTip = WeakAuras.GetHiddenTooltip();
+          tenchTip:SetInventoryItem("player", id);
+          local lines = { tenchTip:GetRegions() };
+          for i,v in ipairs(lines) do
+            if(v:GetObjectType() == "FontString") then
+              local text = v:GetText();
+              if(text) then
+                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                if(name and name ~= "") then
+                  return name, shortenedName;
+                end
+                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                if(name and name ~= "") then
+                  return name, shortenedName;
+                end
+              end
+            end
+          end
 
-        return "Unknown", "Unknown";
+          return "Unknown", "Unknown";
+        end
       end
 
       local function tenchUpdate()
@@ -4188,6 +4240,7 @@ do
     or class == "HUNTER" or class == "SHAMAN"
     or class == "MAGE" or class == "PRIEST" or class == "WARLOCK"
     or class == "DEATHKNIGHT" or class == "PALADIN" or class == "WARRIOR"
+    or class == "EVOKER"
   then
     function WeakAuras.CalculatedGcdDuration()
       local haste = GetHaste()

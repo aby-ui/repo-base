@@ -140,7 +140,7 @@ function KT_QuestSuperTracking_ChooseClosestQuest()
 
 	-- Supertrack if we have a valid quest
 	if ( closestQuestID ) then
-		C_SuperTrack.SetSuperTrackedQuestID(closestQuestID);
+		C_SuperTrack.SetSuperTrackedQuestID(closestQuestID, true);  -- MSA
 	else
 		C_SuperTrack.SetSuperTrackedQuestID(0);
 	end

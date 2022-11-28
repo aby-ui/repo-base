@@ -111,6 +111,11 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 		return
 	end
 	
+	-- Ignore if already dead
+	if (RSNpcDB.IsNpcKilled(npcID)) then
+		return
+	end
+	
 	-- Mark as killed
 	local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 	if (npcInfo) then
@@ -139,10 +144,12 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 
 		-- Extracts quest id if we don't have it
 		-- Avoids shift-left-click events
-		if (not loadingAddon) then
+		if (not loadingAddon and RSConstants.DEBUG_MODE) then
 			if (not npcInfo.questID and not RSNpcDB.GetNpcQuestIdFound(npcID)) then
 				RSLogger:PrintDebugMessage(string.format("NPC [%s]. Buscando questID...", npcID))
-				RSQuestTracker.FindCompletedHiddenQuestID(npcID, function(npcID, newQuestID) RSNpcDB.SetNpcQuestIdFound(npcID, newQuestID) end)
+				RSQuestTracker.FindCompletedHiddenQuestID(npcID, function(npcID, newQuestID) 
+					RSNpcDB.SetNpcQuestIdFound(npcID, newQuestID) 
+				end)
 			elseif (npcInfo.questID) then
 				RSLogger:PrintDebugMessage(string.format("El NPC [%s] ya dispone de questID [%s]", npcID, unpack(npcInfo.questID)))
 			end
@@ -151,6 +158,13 @@ function RSEntityStateHandler.SetDeadNpc(npcID, loadingAddon)
 		-- Disable guideance icons if enabled
 		if (RSGeneralDB.HasGuideActive(npcID) and RSNpcDB.IsNpcKilled(npcID)) then
 			RSGeneralDB.RemoveGuideActive()
+			RSMinimap.RemoveGuide(npcID)
+		end
+	
+		-- Disable overlay icons if enabled
+		if (RSGeneralDB.HasOverlayActive(npcID) and RSNpcDB.IsNpcKilled(npcID)) then
+			RSGeneralDB.RemoveOverlayActive()
+			RSMinimap.RemoveOverlay(npcID)
 		end
 		
 		-- Refresh minimap
@@ -279,6 +293,11 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 		return
 	end
 	
+	-- Ignore if already opened
+	if (RSContainerDB.IsContainerOpened(containerID)) then
+		return
+	end
+	
 	-- Mark as opened
 	local containerInfo = RSContainerDB.GetInternalContainerInfo(containerID)
 	if (containerInfo) then
@@ -309,10 +328,12 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 
 		-- Extracts quest id if we don't have it
 		-- Avoids shift-left-click events
-		if (not loadingAddon) then
+		if (not loadingAddon and RSConstants.DEBUG_MODE) then
 			if (not containerInfo.questID and not RSContainerDB.GetContainerQuestIdFound(containerID)) then
 				RSLogger:PrintDebugMessage(string.format("Contenedor [%s]. Buscando questID...", containerID))
-				RSQuestTracker.FindCompletedHiddenQuestID(containerID, function(containerID, newQuestID) RSContainerDB.SetContainerQuestIdFound(containerID, newQuestID) end)
+				RSQuestTracker.FindCompletedHiddenQuestID(containerID, function(containerID, newQuestID) 
+					RSContainerDB.SetContainerQuestIdFound(containerID, newQuestID) 
+				end)
 			elseif (containerInfo.questID) then
 				RSLogger:PrintDebugMessage(string.format("El Contenedor [%s] ya dispone de questID [%s]", containerID, unpack(containerInfo.questID)))
 			else
@@ -323,6 +344,13 @@ function RSEntityStateHandler.SetContainerOpen(containerID, loadingAddon)
 		-- Disable guideance icons if enabled
 		if (RSGeneralDB.HasGuideActive(containerID) and RSContainerDB.IsContainerOpened(containerID)) then
 			RSGeneralDB.RemoveGuideActive()
+			RSMinimap.RemoveGuide(containerID)
+		end
+	
+		-- Disable overlay icons if enabled
+		if (RSGeneralDB.HasOverlayActive(containerID) and RSContainerDB.IsContainerOpened(containerID)) then
+			RSGeneralDB.RemoveOverlayActive()
+			RSMinimap.RemoveOverlay(containerID)
 		end
 		
 		-- Refresh minimap
@@ -344,6 +372,11 @@ end
 -- This flag can be also used to skip all those checking when needed
 function RSEntityStateHandler.SetEventCompleted(eventID, loadingAddon)
 	if (not eventID) then
+		return
+	end
+	
+	-- Ignore if already completed
+	if (RSEventDB.IsEventCompleted(eventID)) then
 		return
 	end
 
@@ -396,10 +429,12 @@ function RSEntityStateHandler.SetEventCompleted(eventID, loadingAddon)
 
 	-- Extracts quest id if we don't have it
 	-- Avoids shift-left-click events
-	if (not loadingAddon) then
+	if (not loadingAddon and RSConstants.DEBUG_MODE) then
 		if ((not eventInternalInfo or not eventInternalInfo.questID) and not RSEventDB.GetEventQuestIdFound(eventID)) then
 			RSLogger:PrintDebugMessage(string.format("Evento [%s]. Buscando questID...", eventID))
-			RSQuestTracker.FindCompletedHiddenQuestID(eventID, function(eventID, newQuestID) RSEventDB.SetEventQuestIdFound(eventID, newQuestID) end)
+			RSQuestTracker.FindCompletedHiddenQuestID(eventID, function(eventID, newQuestID) 
+				RSEventDB.SetEventQuestIdFound(eventID, newQuestID) 
+			end)
 		else
 			RSLogger:PrintDebugMessage(string.format("El Evento [%s] ya dispone de questID [%s]", eventID, unpack(eventInternalInfo.questID)))
 		end
@@ -408,6 +443,13 @@ function RSEntityStateHandler.SetEventCompleted(eventID, loadingAddon)
 	-- Disable guideance icons if enabled
 	if (RSGeneralDB.HasGuideActive(eventID) and RSEventDB.IsEventCompleted(eventID)) then
 		RSGeneralDB.RemoveGuideActive()
+		RSMinimap.RemoveGuide(eventID)
+	end
+
+	-- Disable overlay icons if enabled
+	if (RSGeneralDB.HasOverlayActive(eventID) and RSEventDB.IsEventCompleted(eventID)) then
+		RSGeneralDB.RemoveOverlayActive()
+		RSMinimap.RemoveOverlay(eventID)
 	end
 		
 	-- Refresh minimap

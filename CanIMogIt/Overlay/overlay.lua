@@ -158,3 +158,22 @@ function CanIMogIt.frame:AddOverlayEventFunction(func)
     -- Adds the func to the list of functions that are called for overlay events.
     table.insert(CanIMogIt.frame.itemOverlayEventFunctions, func)
 end
+
+
+local timers = {}
+local refreshDelay = 0.1
+
+function CanIMogIt.FrameShouldUpdate(timerName, elapsed)
+    -- Returns true if a sufficient amount of time has passed to
+    -- not cause FPS drops when updating frames.
+    -- To use:
+    -- if not FrameShouldUpdate("MyTimer", elapsed) then return end
+    if timers[timerName] == nil then
+        timers[timerName] = 0
+    end
+
+    timers[timerName] = timers[timerName] + elapsed
+    if timers[timerName] < refreshDelay then return end
+    timers[timerName] = 0
+    return true
+end

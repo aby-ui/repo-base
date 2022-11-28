@@ -4,7 +4,7 @@
 --]]
 
 local ADDON, Addon = ...
-local L = LibStub('AceLocale-3.0'):GetLocale(ADDON)
+local C = LibStub('C_Everywhere').CurrencyInfo
 local CurrencyTracker = Addon.Parented:NewClass('CurrencyTracker', 'Frame')
 
 if BackpackTokenFrame then
@@ -20,13 +20,13 @@ function CurrencyTracker:New(parent)
 	f:SetScript('OnShow', f.RegisterEvents)
 	f:SetScript('OnHide', f.UnregisterAll)
 	f:RegisterEvents()
-  f:SetHeight(24)
+	f:SetHeight(24)
 
-  hooksecurefunc(SetCurrencyBackpack and _G or C_CurrencyInfo, 'SetCurrencyBackpack', function()
-    if f:IsVisible() then
-        f:Update()
-    end
-  end)
+	C.hooksecurefunc('SetCurrencyBackpack', function()
+		if f:IsVisible() then
+			f:Update()
+		end
+	end)
 	return f
 end
 
@@ -45,14 +45,12 @@ function CurrencyTracker:Update()
 end
 
 local function getCurrency(i) -- temporary till bagbrother expansion
-	if GetBackpackCurrencyInfo then
-		local name, quantity, icon, id = GetBackpackCurrencyInfo(i)
-		return name and {
-			name = name, quantity = quantity, iconFileID = icon, currencyTypesID = id,
-			iconArgs = tContains(HONOR_POINT_TEXTURES, icon) and ':64:64:0:40:0:40'}
-	else
-		return C_CurrencyInfo.GetBackpackCurrencyInfo(i)
+	local data = C.GetBackpackCurrencyInfo(i)
+	if data then
+		data.iconArgs = HONOR_POINT_TEXTURES and tContains(HONOR_POINT_TEXTURES, data.iconFileID) and ':64:64:0:40:0:40'
+		data.index = i
 	end
+	return data
 end
 
 function CurrencyTracker:Layout()
@@ -63,7 +61,7 @@ function CurrencyTracker:Layout()
 	local w = 0
 	for i = 1, BackpackTokenFrame:GetMaxTokensWatched() do -- safety limit
 		local data = getCurrency(i)
-    if data then
+    	if data then
 			self.buttons[i] = self.buttons[i] or Addon.Currency(self)
 			self.buttons[i]:SetPoint('LEFT', self.buttons[i-1] or self, i > 1 and 'RIGHT' or 'LEFT')
 			self.buttons[i]:Set(data)
@@ -71,7 +69,7 @@ function CurrencyTracker:Layout()
 			w = w + self.buttons[i]:GetWidth()
 		else
 			break
-    end
+    	end
   end
 
 	self:SetWidth(max(w, 2))

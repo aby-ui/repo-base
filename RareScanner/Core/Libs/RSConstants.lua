@@ -24,7 +24,7 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 64
+RSConstants.CURRENT_DB_VERSION = 67
 RSConstants.CURRENT_LOOT_DB_VERSION = 77
 
 ---============================================================================
@@ -39,7 +39,7 @@ RSConstants.CURRENT_SUBMAP_ID = 2022 --The Waking Shores
 ---============================================================================
 
 RSConstants.DEFAULT_FILTERED_ENTITIES = {
-	version = 62,
+	version = 67,
 	containers = {382029, 383733, 383734, 383735, 376386, 376587}
 }
 

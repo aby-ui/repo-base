@@ -54,6 +54,8 @@ end
 -- ***** UPDATE FUNCTIONS
 -- *****************************************************************************************************
 
+local LINE_TYPE_ANIM = { template = "QuestObjectiveAnimLineTemplate", freeLines = { } };
+
 function KT_PROFESSION_RECIPE_TRACKER_MODULE:Update()
 	self:BeginLayout();
 
@@ -87,7 +89,12 @@ function KT_PROFESSION_RECIPE_TRACKER_MODULE:Update()
 						local quantity = Professions.AccumulateReagentsInPossession(reagentSlotSchematic.reagents);
 						local quantityRequired = reagentSlotSchematic.quantityRequired;
 						local text = PROFESSIONS_TRACKER_REAGENT_FORMAT:format(PROFESSIONS_TRACKER_REAGENT_COUNT_FORMAT:format(quantity, quantityRequired), itemName)
-						self:AddObjective(block, slotIndex, text, nil, nil, KT_OBJECTIVE_DASH_STYLE_SHOW, colorStyle);
+
+						local metQuantity = quantity >= quantityRequired;
+						local dashStyle = metQuantity and KT_OBJECTIVE_DASH_STYLE_HIDE or KT_OBJECTIVE_DASH_STYLE_SHOW;
+						local colorStyle = KT_OBJECTIVE_TRACKER_COLOR[metQuantity and "Complete" or "Normal"];
+						local line = self:AddObjective(block, slotIndex, text, LINE_TYPE_ANIM, nil, dashStyle, colorStyle);
+						line.Check:SetShown(metQuantity);
 					end
 				end
 			end

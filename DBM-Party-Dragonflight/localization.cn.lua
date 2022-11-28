@@ -1,4 +1,4 @@
---Mini Dragon <流浪者酒馆-Brilla@金色平原> 20220718
+--Mini Dragon <流浪者酒馆-Brilla@金色平原> 20221128
 --夏一可，暴雪娱乐
 
 if GetLocale() ~= "zhCN" then return end
@@ -106,6 +106,10 @@ L:SetGeneralLocalization({
 	name =	"诺库德阻击战小怪"
 })
 
+L:SetMiscLocalization({
+	Soul = "灵魂"
+})
+
 -----------------------
 -- <<<Neltharus >>> --
 -----------------------
@@ -167,7 +171,7 @@ L:SetGeneralLocalization({
 L = DBM:GetModLocalization("AlgetharAcademyTrash")
 
 L:SetGeneralLocalization({
-	name =	"塔兹艾杰斯学院"
+	name =	"艾杰斯亚学院小怪"
 })
 
 -----------------------

@@ -346,7 +346,7 @@ local function Filter_Quests(spec, idx)
 
 	C_QuestLog.SortQuestWatches()
 	KT_ObjectiveTracker_Update(KT_OBJECTIVE_TRACKER_UPDATE_MODULE_QUEST)
-	if C_SuperTrack.GetSuperTrackedQuestID() == 0 then
+	if C_SuperTrack.GetSuperTrackedQuestID() == 0 or spec == "" then
 		KT_QuestSuperTracking_ChooseClosestQuest()
 	end
 end
@@ -483,7 +483,7 @@ local function Filter_Achievements(spec)
 				local aNumItems, _ = GetCategoryNumAchievements(category)
 				for i=1, aNumItems do
 					local aId, aName, _, aCompleted, _, _, _, aDescription = GetAchievementInfo(category, i)
-					if aId and not aCompleted then					
+					if aId and not aCompleted then
 						AddTrackedAchievement(aId)
 					end
 					if GetNumTrackedAchievements() == MAX_TRACKED_ACHIEVEMENTS then

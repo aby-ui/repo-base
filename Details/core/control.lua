@@ -1589,6 +1589,30 @@
 			Details.tooltip.icon_size.W = Details.tooltip.line_height
 			Details.tooltip.icon_size.H = Details.tooltip.line_height
 
+			--[[spark options
+			["SparkTexture"] = true,
+			["SparkHeightOffset"] = true,
+			["SparkWidthOffset"] = true,
+			["SparkHeight"] = true,
+			["SparkWidth"] = true,
+			["SparkAlpha"] = true,
+			["SparkColor"] = true,
+			["SparkPositionXOffset"] = true,
+			["SparkPositionYOffset"] = true,
+			--]]
+
+			useSpark = true
+			--GameCooltip:SetOption("SparkHeightOffset", 6)
+			GameCooltip:SetOption("SparkTexture", [[Interface\Buttons\WHITE8X8]])
+			GameCooltip:SetOption("SparkWidth", 1)
+			GameCooltip:SetOption("SparkHeight", 20)
+			GameCooltip:SetOption("SparkColor", "gray")
+			GameCooltip:SetOption("SparkAlpha", 0.15)
+			GameCooltip:SetOption("SparkPositionXOffset", 5)
+			--GameCooltip:SetOption("SparkAlpha", 0.3)
+			--GameCooltip:SetOption("SparkPositionXOffset", -2)
+			
+
 			value = value or 100
 
 			if (not side) then
@@ -1634,7 +1658,7 @@
 			GameCooltip:Reset()
 			GameCooltip:SetType ("tooltip")
 
-			GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background]])
+			GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background_dark]])
 
 			GameCooltip:SetOption("TextSize", Details.tooltip.fontsize)
 			GameCooltip:SetOption("TextFont",  Details.tooltip.fontface)

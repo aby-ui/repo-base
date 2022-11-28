@@ -453,7 +453,11 @@ local getSpellListAsHashTableFromSpellBook = function()
                         spellId = C_SpellBook.GetOverrideSpell(spellId)
                         local spellName = GetSpellInfo(spellId)
                         local bIsPassive = IsPassiveSpell(spellId, "player")
-                        if (spellName and not bIsPassive) then
+                        if LIB_OPEN_RAID_MULTI_OVERRIDE_SPELLS[spellId] then
+                            for _, overrideSpellId in pairs(LIB_OPEN_RAID_MULTI_OVERRIDE_SPELLS[spellId]) do
+                                completeListOfSpells[overrideSpellId] = true
+                            end
+                        elseif (spellName and not bIsPassive) then
                             completeListOfSpells[spellId] = true
                         end
                     end
@@ -473,7 +477,11 @@ local getSpellListAsHashTableFromSpellBook = function()
                 spellId = C_SpellBook.GetOverrideSpell(spellId)
                 local spellName = GetSpellInfo(spellId)
                 local bIsPassive = IsPassiveSpell(spellId, "player")
-                if (spellName and not bIsPassive) then
+                if LIB_OPEN_RAID_MULTI_OVERRIDE_SPELLS[spellId] then
+                    for _, overrideSpellId in pairs(LIB_OPEN_RAID_MULTI_OVERRIDE_SPELLS[spellId]) do
+                        completeListOfSpells[overrideSpellId] = true
+                    end
+                elseif (spellName and not bIsPassive) then
                     completeListOfSpells[spellId] = true
                 end
             end
@@ -661,6 +669,67 @@ function openRaidLib.CooldownManager.GetPlayerCooldownStatus(spellId)
         return openRaidLib.DiagnosticError("CooldownManager|GetPlayerCooldownStatus()|cooldownInfo not found|", spellId)
     end
 end
+
+do
+    --make new namespace
+    openRaidLib.AuraTracker = {}
+
+    function openRaidLib.AuraTracker.ScanCallback(aura)
+        local unitId = openRaidLib.AuraTracker.CurrentUnitId
+        local thisUnitAuras = openRaidLib.AuraTracker.CurrentAuras[unitId]
+
+        local auraInfo = C_UnitAuras.GetAuraDataByAuraInstanceID(unitId, aura.auraInstanceID)
+        if (auraInfo) then
+            local spellId = auraInfo.spellId
+            if (spellId) then
+                thisUnitAuras[spellId] = true
+                openRaidLib.AuraTracker.AurasFoundOnScan[spellId] = true
+            end
+        end
+    end
+
+	function openRaidLib.AuraTracker.ScanPlayerAuras(unitId)
+		local batchCount = nil
+		local usePackedAura = true
+        openRaidLib.AuraTracker.CurrentUnitId = unitId
+
+        openRaidLib.AuraTracker.AurasFoundOnScan = {}
+		AuraUtil.ForEachAura(unitId, "HELPFUL", batchCount, openRaidLib.AuraTracker.ScanCallback, usePackedAura)
+
+        local thisUnitAuras = openRaidLib.AuraTracker.CurrentAuras[unitId]
+        for spellId in pairs(thisUnitAuras) do
+            if (not openRaidLib.AuraTracker.AurasFoundOnScan[spellId]) then
+                --aura removed
+                openRaidLib.internalCallback.TriggerEvent("unitAuraRemoved", unitId, spellId)
+            end
+        end
+	end
+
+    --run when the open raid lib loads
+    function openRaidLib.AuraTracker.StartScanUnitAuras(unitId)
+        openRaidLib.AuraTracker.CurrentAuras = {
+            [unitId] = {}
+        }
+
+        local auraFrameEvent = CreateFrame("frame")
+        auraFrameEvent:RegisterUnitEvent("UNIT_AURA", unitId)
+
+        auraFrameEvent:SetScript("OnEvent", function()
+            openRaidLib.AuraTracker.ScanPlayerAuras(unitId)
+        end)
+    end
+
+    --test case:
+    local debugModule = {}
+    function debugModule.AuraRemoved(event, unitId, spellId)
+        local spellName = GetSpellInfo(spellId)
+        --print("aura removed:", unitId, spellId, spellName)
+    end
+    openRaidLib.internalCallback.RegisterCallback("unitAuraRemoved", debugModule.AuraRemoved)
+
+end
+
+
 
 --which is the main attribute of each spec
 --1 Intellect

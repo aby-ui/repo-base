@@ -16,21 +16,9 @@ This file is part of BagBrother.
 --]]
 
 
-local Brother = CreateFrame('Frame', 'BagBrother')
-Brother:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end)
-Brother:RegisterEvent('PLAYER_LOGIN')
+local Brother = LibStub('WildAddon-1.0'):NewAddon(...)
 
-
---[[ Server Ready ]]--
-
-function Brother:PLAYER_LOGIN()
-	self:RemoveEvent('PLAYER_LOGIN')
-	self:StartupCache()
-	self:SetupEvents()
-	self:UpdateData()
-end
-
-function Brother:StartupCache()
+function Brother:OnEnable()
 	local player, realm = UnitFullName('player')
 	BrotherBags = BrotherBags or {}
 	BrotherBags[realm] = BrotherBags[realm] or {}
@@ -44,9 +32,7 @@ function Brother:StartupCache()
 	player.class = select(2, UnitClass('player'))
 	player.race = select(2, UnitRace('player'))
 	player.sex = UnitSex('player')
-end
-
-function Brother:SetupEvents()
+	
 	self:RegisterEvent('BAG_UPDATE')
 	self:RegisterEvent('PLAYER_MONEY')
 	self:RegisterEvent('GUILD_ROSTER_UPDATE')
@@ -67,29 +53,19 @@ function Brother:SetupEvents()
 		self:RegisterEvent('GUILDBANKFRAME_CLOSED')
 		self:RegisterEvent('GUILDBANKBAGSLOTS_CHANGED')
 	end
-end
 
-function Brother:UpdateData()
-	for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-		self:BAG_UPDATE(i)
-	end
-
-	for i = 1, INVSLOT_LAST_EQUIPPED do
-		self:PLAYER_EQUIPMENT_CHANGED(i)
+	for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS or NUM_BAG_SLOTS do
+		self:BAG_UPDATE(nil, i)
 	end
 
 	if HasKey and HasKey() then
-		self:BAG_UPDATE(KEYRING_CONTAINER)
+		self:BAG_UPDATE(nil, KEYRING_CONTAINER)
+	end
+
+	for i = 1, INVSLOT_LAST_EQUIPPED do
+		self:SaveEquip(i)
 	end
 
 	self:GUILD_ROSTER_UPDATE()
 	self:PLAYER_MONEY()
-end
-
-
---[[ API ]]--
-
-function Brother:RemoveEvent(event)
-	self:UnregisterEvent(event)
-	self[event] = nil
 end

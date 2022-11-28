@@ -166,12 +166,14 @@ local function RaidFrame_UpdateLayout(layout, which)
         layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["arena"]
     elseif Cell.vars.inBattleground == 15 or Cell.vars.inBattleground == 40 then
         layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["battleground"..Cell.vars.inBattleground]
-    elseif Cell.vars.inMythic then -- NOTE: retail
-        layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["mythic"]
-    elseif Cell.isWrath then -- NOTE: wrath
+    elseif Cell.vars.inMythic then -- retail
+        layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["raid_mythic"]
+    elseif Cell.vars.inInstance then -- retail
+        layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["raid_instance"]
+    elseif Cell.vars.raidType then -- wrath
         layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole][Cell.vars.raidType]
     else
-        layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["raid"]
+        layout = CellLayoutAutoSwitchTable[Cell.vars.playerSpecRole]["raid_outdoor"]
     end
 
     layout = CellDB["layouts"][layout]

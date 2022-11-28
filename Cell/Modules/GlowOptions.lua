@@ -32,6 +32,8 @@ local function CreatePreviewButton()
     local previewText = previewButtonBG:CreateFontString(nil, "OVERLAY", "CELL_FONT_WIDGET_TITLE")
     previewText:SetPoint("TOP", 0, -3)
     previewText:SetText(Cell:GetAccentColorString()..L["Preview"])
+
+    Cell:Fire("CreatePreview", previewButton)
 end
 
 local function UpdatePreviewButton()
@@ -72,6 +74,8 @@ local function UpdatePreviewButton()
     previewButton:SetBackdropColor(0, 0, 0, CellDB["appearance"]["bgAlpha"])
 
     previewButton:Show()
+
+    Cell:Fire("UpdatePreview", previewButton)
 end
 
 -------------------------------------------------

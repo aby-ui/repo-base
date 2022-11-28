@@ -3,7 +3,7 @@
 ## Notes: PvP Sound Alerter
 ## Author: xGrit
 ## SavedVariables: GladiatorlosSADB
-## Version: DFB1
+## Version: 4.0
 
 #embeds.xml
 Locales\locales.xml
@@ -16,8 +16,6 @@ options.lua
 #ClassicEra\spelllist_TBC.lua
 #ClassicEra\options_WLK.lua
 #ClassicEra\spelllist_WLK.lua
-#ClassicEra\options_SL.lua
-#ClassicEra\spelllist_SL.lua
 
 
 ## Title: |cff880303[爱不易]|r Gladiator PVP语音提示

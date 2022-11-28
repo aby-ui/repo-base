@@ -67,6 +67,45 @@ local StatScrollFrame = CreateFrame("ScrollFrame", nil, CharacterFrameInsetRight
 
 local DefaultTankData = DCS_TableData:MergeTable({
 	{ statKey = "ItemLevelFrame" },
+--[[
+	{ statKey = "GeneralCategory" },
+        { statKey = "HEALTH" },
+        { statKey = "DCS_POWER" },
+        { statKey = "DCS_ALTERNATEMANA" },
+        { statKey = "ITEMLEVEL", hidden = true },
+        { statKey = "MOVESPEED" },
+		{ statKey = "DURABILITY_STAT" },
+        { statKey = "REPAIR_COST" },
+	{ statKey = "AttributesCategory" },
+        { statKey = "STRENGTH" },
+        { statKey = "AGILITY" },
+        { statKey = "INTELLECT" },
+        { statKey = "STAMINA" },
+	{ statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
+        { statKey = "ATTACK_DAMAGE" },
+        { statKey = "ATTACK_AP" },
+        { statKey = "DCS_ATTACK_ATTACKSPEED" },
+		{ statKey = "WEAPON_DPS" },
+        { statKey = "SPELLPOWER" },
+        { statKey = "MANAREGEN" },
+        { statKey = "ENERGY_REGEN" },
+        { statKey = "DCS_RUNEREGEN" },
+        { statKey = "FOCUS_REGEN" },		
+        { statKey = "GCD" },
+	{ statKey = "EnhancementsCategory" }, --Re-order after Offense to appear more logical.
+        { statKey = "CRITCHANCE", hideAt = 0 },
+		{ statKey = "HASTE", hideAt = 0 },
+        { statKey = "VERSATILITY", hideAt = 0 },
+        { statKey = "MASTERY", hideAt = 0 },
+        { statKey = "LIFESTEAL", hideAt = 0 },
+        { statKey = "AVOIDANCE", hideAt = 0 },
+		{ statKey = "DefenseCategory" },
+        { statKey = "ARMOR" },
+        { statKey = "DODGE", hideAt = 0 },
+        { statKey = "PARRY", hideAt = 0 },
+		{ statKey = "BLOCK", hideAt = 0, showFunc = C_PaperDollInfo.OffhandHasShield },
+		{ statKey = "STAGGER", hideAt = 0, roles = {"TANK"} },
+--]]
 	{ statKey = "AttributesCategory" },
         { statKey = "STRENGTH" },
         { statKey = "AGILITY" },
@@ -104,12 +143,44 @@ local DefaultTankData = DCS_TableData:MergeTable({
         { statKey = "MOVESPEED" },
 		{ statKey = "DURABILITY_STAT" },
         { statKey = "REPAIR_COST" },
+	{ statKey = "RatingCategory" },
+		{ statKey = "CRITCHANCE_RATING", hideAt = 0 },
+		{ statKey = "HASTE_RATING", hideAt = 0 },
+		{ statKey = "VERSATILITY_RATING", hideAt = 0 },
+		{ statKey = "MASTERY_RATING", hideAt = 0 },
+		{ statKey = "LIFESTEAL_RATING", hideAt = 0 },
+		{ statKey = "AVOIDANCE_RATING", hideAt = 0 },
+		{ statKey = "DODGE_RATING", hideAt = 0 },
+		{ statKey = "PARRY_RATING", hideAt = 0 },
+		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
+		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
+	{ statKey = "HonorCategory", hidden = true },
+		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
+		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
+	{ statKey = "UserCat1", hidden = true },
+	{ statKey = "UserCat2", hidden = true },
+	{ statKey = "UserCat3", hidden = true },
+	{ statKey = "UserCat4", hidden = true },
+	{ statKey = "UserCat5", hidden = true },
+})
+
+local DefaultNonTankData = DCS_TableData:MergeTable({
+	{ statKey = "ItemLevelFrame" },
 --[[
+	{ statKey = "GeneralCategory" },
+        { statKey = "HEALTH" },
+        { statKey = "DCS_POWER" },
+        { statKey = "DCS_ALTERNATEMANA" },
+        { statKey = "ITEMLEVEL", hidden = true },
+        { statKey = "MOVESPEED" },
+		{ statKey = "DURABILITY_STAT" },
+        { statKey = "REPAIR_COST" },
 	{ statKey = "AttributesCategory" },
         { statKey = "STRENGTH" },
         { statKey = "AGILITY" },
         { statKey = "INTELLECT" },
         { statKey = "STAMINA" },
+		{ statKey = "ARMOR" }, --Armor has always been an main attribute stat, except for tanks where it is a defense stat.
 	{ statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
         { statKey = "ATTACK_DAMAGE" },
         { statKey = "ATTACK_AP" },
@@ -128,43 +199,7 @@ local DefaultTankData = DCS_TableData:MergeTable({
         { statKey = "MASTERY", hideAt = 0 },
         { statKey = "LIFESTEAL", hideAt = 0 },
         { statKey = "AVOIDANCE", hideAt = 0 },
-		{ statKey = "DefenseCategory" },
-        { statKey = "ARMOR" },
-        { statKey = "DODGE", hideAt = 0 },
-        { statKey = "PARRY", hideAt = 0 },
-		{ statKey = "BLOCK", hideAt = 0, showFunc = C_PaperDollInfo.OffhandHasShield },
-		{ statKey = "STAGGER", hideAt = 0, roles = {"TANK"} },
-	{ statKey = "Diversity" },
-		{ statKey = "BLACK_GIRLS_CODE" },
-		{ statKey = "FUTURES" },
-		{ statKey = "GIRLS_WHO_CODE" },
-		{ statKey = "RAINN" },
-		{ statKey = "WOMEN_IN__ANIMATION" },
-		{ statKey = "WOMEN_IN_GAMES_INTL" },
 --]]
-	{ statKey = "RatingCategory" },
-		{ statKey = "CRITCHANCE_RATING", hideAt = 0 },
-		{ statKey = "HASTE_RATING", hideAt = 0 },
-		{ statKey = "VERSATILITY_RATING", hideAt = 0 },
-		{ statKey = "MASTERY_RATING", hideAt = 0 },
-		{ statKey = "LIFESTEAL_RATING", hideAt = 0 },
-		{ statKey = "AVOIDANCE_RATING", hideAt = 0 },
-		{ statKey = "DODGE_RATING", hideAt = 0 },
-		{ statKey = "PARRY_RATING", hideAt = 0 },
-		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
-		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
-	{ statKey = "HonorCategory", hidden = true},
-		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
-		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
-	{ statKey = "ConquestCategory" },
-		{ statKey = "RATING_2V2", hideAt = 0 },
-		{ statKey = "RATING_3V3", hideAt = 0 },
-		{ statKey = "RATING_RBG", hideAt = 0 },
-		{ statKey = "CONQUEST_PROGRESS", hideAt = -1 },
-})
-
-local DefaultNonTankData = DCS_TableData:MergeTable({
-	{ statKey = "ItemLevelFrame" },
 	{ statKey = "AttributesCategory" },
         { statKey = "STRENGTH" },
         { statKey = "AGILITY" },
@@ -186,7 +221,6 @@ local DefaultNonTankData = DCS_TableData:MergeTable({
         { statKey = "MOVESPEED" },
 		{ statKey = "DURABILITY_STAT" },
         { statKey = "REPAIR_COST" },
-
 	{ statKey = "OffenseCategory" }, --Re-order before Enhancements to appear more logical.
         { statKey = "ATTACK_DAMAGE" },
         { statKey = "ATTACK_AP" },
@@ -198,7 +232,6 @@ local DefaultNonTankData = DCS_TableData:MergeTable({
         { statKey = "DCS_RUNEREGEN" },
         { statKey = "FOCUS_REGEN" },		
         { statKey = "GCD" },
-
 	{ statKey = "DefenseCategory" },
         { statKey = "DODGE", hideAt = 0 },
         { statKey = "PARRY", hideAt = 0 },
@@ -215,15 +248,16 @@ local DefaultNonTankData = DCS_TableData:MergeTable({
 		{ statKey = "SPEED_RATING", hideAt = 0, hidden = true },
 		{ statKey = "SPEED", hideAt = 0, hidden = true }, --seems like Blizzard's implemented speed rating
 		{ statKey = "STAGGER", hideAt = 0, roles = {"TANK"} },
-    { statKey = "HonorCategory", hidden = true},
-   		{ statKey = "HONOR_PROGRESS", hideAt = 0, hidden = true },
-   		{ statKey = "HONOR_LEVEL", hideAt = 0, hidden = true },
-	{ statKey = "ConquestCategory" },
-		{ statKey = "RATING_2V2", hideAt = 0 },
-		{ statKey = "RATING_3V3", hideAt = 0 },
-		{ statKey = "RATING_RBG", hideAt = 0 },
-		{ statKey = "CONQUEST_PROGRESS",  hideAt = -1 },
+	{ statKey = "HonorCategory" },
+		{ statKey = "HONOR_PROGRESS", hideAt = 0 },
+		{ statKey = "HONOR_LEVEL", hideAt = 0 },
+	{ statKey = "UserCat1" },
+	{ statKey = "UserCat2" },
+	{ statKey = "UserCat3" },
+	{ statKey = "UserCat4" },
+	{ statKey = "UserCat5" },
 })
+
 --for _, v in ipairs(DefaultTankTBL) do if v.statKey:find("_RATING$") then v.hidden = true end end
 --for _, v in ipairs(DefaultNonTankTBL) do if v.statKey:find("_RATING$") then v.hidden = true end end
 --local DefaultTankData = DCS_TableData:MergeTable(DefaultTankTBL)
@@ -275,8 +309,20 @@ for k, v in pairs(DCS_TableData.StatData) do
 			if k == "HonorCategory" then
 				v.frame.Title:SetText(L["Honor Category"])
 			end
-			if k == "ConquestCategory" then
-				v.frame.Title:SetText(L["Conquest Category"])
+			if k == "UserCat1" then
+				v.frame.Title:SetText()
+			end
+			if k == "UserCat2" then
+				v.frame.Title:SetText()
+			end
+			if k == "UserCat3" then
+				v.frame.Title:SetText()
+			end
+			if k == "UserCat4" then
+				v.frame.Title:SetText()
+			end
+			if k == "UserCat5" then
+				v.frame.Title:SetText()
 			end
 		else
 			v.frame = CreateFrame("FRAME", nil, StatFrame, "CharacterStatFrameTemplate")
@@ -491,13 +537,7 @@ local function DCS_Table_Relevant()
 	local role = GetSpecializationRole(spec)
 	--print(role)
 	local hashonorlevel = UnitHonorLevel("player")
-	local hasconquestlevel,_,hasconquestquest = PVPGetConquestLevelInfo()
-
-
-
-
-
-
+    --local hasconquestlevel,_,hasconquestquest = PVPGetConquestLevelInfo()  --todo:abyui10
 
 	for _, v in ipairs(ShownData) do
 		if v.hidden then v.hidden = false end
@@ -572,6 +612,12 @@ local function DCS_Table_Relevant()
 
 		if v.statKey == "ITEMLEVEL" then v.hidden = true end
 
+		if v.statKey == "UserCat1" then v.hidden = true end
+		if v.statKey == "UserCat2" then v.hidden = true end
+		if v.statKey == "UserCat3" then v.hidden = true end
+		if v.statKey == "UserCat4" then v.hidden = true end
+		if v.statKey == "UserCat5" then v.hidden = true end
+
 		--if v.statKey == "GeneralCategory" then v.hidden = true end
 		--if v.statKey == "OffenseCategory" then v.hidden = true end
 		--if v.statKey == "DefenseCategory" then v.hidden = true end
@@ -582,14 +628,6 @@ local function DCS_Table_Relevant()
 			if v.statKey == "HonorCategory" then v.hidden = true end
 			if v.statKey == "HONOR_PROGRESS" then v.hidden = true end
 			if v.statKey == "HONOR_LEVEL" then v.hidden = true end
-		end
-		if (hasconquestquest == nil ) then --abyui
-			--print(hasconquestlevel)	
-			if v.statKey == "ConquestCategory" then v.hidden = true end
-			if v.statKey == "RATING_2V2" then v.hidden = true end
-			if v.statKey == "RATING_3V3" then v.hidden = true end
-			if v.statKey == "RATING_RBG" then v.hidden = true end
-			if v.statKey == "CONQUEST_PROGRESS" then v.hidden = true end
 		end
 	end
 	--gdbprivate.gdb.gdbdefaults.DCS_TableRelevantStatsChecked.RelevantStatsSetChecked = false
@@ -638,7 +676,7 @@ local function DCS_Table_Reset()
 	--print(uniqueKey)
 	--print("reseting just order of stata")
 	--ShownData = DCS_TableData:CopyTable(DefaultData)
-	--local temp = DCS_TableData:CopyTable(DefaultDataForSpec())
+    --local temp = DCS_TableData:CopyTable(DefaultDataForSpec())
 	for _, v1 in ipairs(temp) do
 		for _, v2 in ipairs(ShownData) do
 			if v1.statKey == v2.statKey then
@@ -862,7 +900,7 @@ local function dcsRStatConfigButtonsHide()
 end
 
 local function configButtonOnClose()
-	if CharacterFrameInsetRightScrollBar.SetVerticalScroll then StatScrollFrame:SetVerticalScroll(0) end
+    if CharacterFrameInsetRightScrollBar.SetVerticalScroll then StatScrollFrame:SetVerticalScroll(0) end
 	set_config_mode(false)
 	dcsRStatConfigButtonsHide()
 
@@ -1123,7 +1161,7 @@ local DCS_TableRelevantStats = CreateFrame("Button", "DCS_TableRelevantStats", C
 		--May be an alpha issue. Try other events like "PLAYER_LOGIN" if found to be needed.
 		if event == "PLAYER_SPECIALIZATION_CHANGED" then 
 			-- print("changed")
-			set_config_mode(true) -- This allows the ratings and diversity stats and category headrs to be shown when changin specs. No clue why, but it works.
+			set_config_mode(true) -- This allows the ratings stats and category headrs to be shown when changin specs. No clue why, but it works.
 			local function DCS_ReShowSelectedStats()
 				set_config_mode(false) -- This hides the above shown config mode 0.01 secs after showing it becasue we dont want it shown, but showing it shows the selected stats, so we need to exit config after entering it.
 			end

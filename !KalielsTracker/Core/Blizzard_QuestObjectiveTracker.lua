@@ -6,20 +6,20 @@ KT_QUEST_TRACKER_MODULE.updateReasonEvents = 	KT_OBJECTIVE_TRACKER_UPDATE_QUEST 
 											KT_OBJECTIVE_TRACKER_UPDATE_QUEST_ADDED +
 											KT_OBJECTIVE_TRACKER_UPDATE_SUPER_TRACK_CHANGED;
 
-local KT_QUEST_TRACKER_MODULE_BLOCK_TEMPLATE = "KT_ObjectiveTrackerBlockTemplate";
+local QUEST_TRACKER_MODULE_BLOCK_TEMPLATE = "KT_ObjectiveTrackerBlockTemplate";
 
-KT_QUEST_TRACKER_MODULE:AddButtonOffsets(KT_QUEST_TRACKER_MODULE_BLOCK_TEMPLATE, {
+KT_QUEST_TRACKER_MODULE:AddButtonOffsets(QUEST_TRACKER_MODULE_BLOCK_TEMPLATE, {
 	groupFinder = { 7, 4 },
 	useItem = { 3, 1 },
 });
 
-KT_QUEST_TRACKER_MODULE:AddPaddingBetweenButtons(KT_QUEST_TRACKER_MODULE_BLOCK_TEMPLATE, 2);
+KT_QUEST_TRACKER_MODULE:AddPaddingBetweenButtons(QUEST_TRACKER_MODULE_BLOCK_TEMPLATE, 2);
 
 -- because this header is shared, on finishing its anim it has to update all the modules that use it
 KT_QUEST_TRACKER_MODULE:SetHeader(KT_ObjectiveTrackerFrame.BlocksFrame.QuestHeader, TRACKER_HEADER_QUESTS, KT_OBJECTIVE_TRACKER_UPDATE_QUEST_ADDED);
 
 function KT_QUEST_TRACKER_MODULE:OnFreeBlock(block)
-	if block.blockTemplate == KT_QUEST_TRACKER_MODULE_BLOCK_TEMPLATE then
+	if block.blockTemplate == QUEST_TRACKER_MODULE_BLOCK_TEMPLATE then
 		KT_QuestObjectiveReleaseBlockButton_Item(block);
 		KT_QuestObjectiveReleaseBlockButton_FindGroup(block);
 

@@ -29,7 +29,6 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 -- Handle entities without vignette
 ---============================================================================
 
-local disableScaningNameplatesEverywhere = true
 local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 	if (not unitID) then
 		return
@@ -52,15 +51,15 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 	
 		if (not RSMapDB.IsZoneWithoutVignette(mapID)) then
 			-- Continue if its an NPC that doesnt have vignette in a newer zone
-			if (disableScaningNameplatesEverywhere and (not RSNpcDB.GetInternalNpcInfo(npcID) or not RSNpcDB.GetInternalNpcInfo(npcID).nameplate)) then
+			if (not RSNpcDB.GetInternalNpcInfo(npcID) or not RSNpcDB.GetInternalNpcInfo(npcID).nameplate) then
 				return
 			end
 		end
-	
+		
 		-- If its a supported NPC and its not killed
-		if ((RSGeneralDB.GetAlreadyFoundEntity(npcID) or RSNpcDB.GetInternalNpcInfo(npcID)) and not RSNpcDB.IsNpcKilled(npcID)) then			
+		if ((RSGeneralDB.GetAlreadyFoundEntity(npcID) or RSNpcDB.GetInternalNpcInfo(npcID)) and not UnitIsDead(unitID)) then			
 			local nameplateUnitName, _ = UnitName(unitID)
-			if (not nameplateUnitName) then
+			if (not nameplateUnitName or nameplateUnitName == UNKNOWNOBJECT) then
 				nameplateUnitName = RSNpcDB.GetNpcName(npcID)
 			end
 			
@@ -76,19 +75,6 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 				RSContainerDB.SetContainerName(containerName)
 			end
 		end
-	end
-end
-
----============================================================================
--- Event: PLAYER_LOGIN
--- Fired when the player logs in the game
----============================================================================
-
-local function OnPlayerLogin(rareScannerButton)
-	local x, y = RSGeneralDB.GetButtonPositionCoordinates()
-	if (x and y) then
-		rareScannerButton:ClearAllPoints()
-		rareScannerButton:SetPoint("BOTTOMLEFT", x, y)
 	end
 end
 
@@ -148,7 +134,7 @@ end
 ---============================================================================
 
 local function OnUpdateMouseoverUnit(rareScannerButton)
-	if (not UnitIsUnit("player", "mouseover")) then
+	if (not UnitIsUnit("player", "mouseover") and not UnitIsDead("mouseover")) then
 		HandleEntityWithoutVignette(rareScannerButton, "mouseover")
 	end
 end
@@ -229,8 +215,7 @@ local function OnPlayerTargetChanged()
 			end
 
 			if (unitClassification ~= "rare" and unitClassification ~= "rareelite") then
-				-- In WOD some of the NPCs don't have the silver dragon but they are still rare NPCs
-				-- Check the questID asociated to see if its dead
+				-- Check the questID asociated to see if its completed
 				local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
 				if (npcInfo and npcInfo.questID) then
 					local completed = false
@@ -520,17 +505,56 @@ local function OnAchievementEarned(achievementID)
 end
 
 ---============================================================================
+-- Event: PLAYER_LOGIN
+-- Fired when the player logs in the game
+---============================================================================
+
+local function OnPlayerLogin(rareScannerButton)
+	local x, y = RSGeneralDB.GetButtonPositionCoordinates()
+	if (x and y) then
+		rareScannerButton:ClearAllPoints()
+		rareScannerButton:SetPoint("BOTTOMLEFT", x, y)
+	end
+	
+	rareScannerButton:UnregisterEvent("PLAYER_LOGIN")
+end
+
+---============================================================================
+-- Event: PLAYER_ENTERING_WORLD
+-- Fired when the player logs in the game and the UI is ready
+---============================================================================
+
+local function OnPlayerEnteringWorld(rareScannerButton)
+	-- Fires the first scan
+	local vignetteGUIDs = C_VignetteInfo.GetVignettes();
+	for _, vignetteGUID in ipairs(vignetteGUIDs) do
+		local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
+		if (vignetteInfo) then
+			vignetteInfo.id = vignetteGUID
+			rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)
+		end
+	end
+	
+	rareScannerButton:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end
+
+---============================================================================
 -- Event handler
 ---============================================================================
 
+local vignetteUpdatedDelay
 local function HandleEvent(rareScannerButton, event, ...) 
 	if (event == "PLAYER_LOGIN") then
 		OnPlayerLogin(rareScannerButton)
+	elseif (event == "PLAYER_ENTERING_WORLD") then
+		OnPlayerEnteringWorld(rareScannerButton)
 	elseif (event == "VIGNETTE_MINIMAP_UPDATED") then
 		OnVignetteMinimapUpdated(rareScannerButton, ...)
 	elseif (event == "VIGNETTES_UPDATED") then
-		RSLogger:PrintDebugMessage("VIGNETTES_UPDATED is back!!!! Borra el ticker que tienes definido en RSEventHandler")
-		OnVignettesUpdated(rareScannerButton)
+		if (not vignetteUpdatedDelay or (vignetteUpdatedDelay - time()) <= 0) then
+			vignetteUpdatedDelay = time() + 10
+			OnVignettesUpdated(rareScannerButton)
+		end
 	elseif (event == "NAME_PLATE_UNIT_ADDED") then
 		OnNamePlateUnitAdded(rareScannerButton, ...)
 	elseif (event == "UPDATE_MOUSEOVER_UNIT") then
@@ -569,6 +593,7 @@ end
 function RSEventHandler.RegisterEvents(rareScannerButton, addon)
 	RareScanner = addon
 	rareScannerButton:RegisterEvent("PLAYER_LOGIN")
+	rareScannerButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 	rareScannerButton:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
 	rareScannerButton:RegisterEvent("VIGNETTES_UPDATED")
 	rareScannerButton:RegisterEvent("NAME_PLATE_UNIT_ADDED")
@@ -595,19 +620,19 @@ function RSEventHandler.RegisterEvents(rareScannerButton, addon)
 	
 	-- In DL VIGNETTES_UPDATED seems buggy, so keep checking every 10 seconds
 	-- In DL VIGNETTE_MINIMAP_UPDATED doesn't fire if the container appears where the player stands
-	local ticker = C_Timer.NewTicker(10, function() 
-		local vignetteGUIDs = C_VignetteInfo.GetVignettes();
-		for _, vignetteGUID in ipairs(vignetteGUIDs) do
-			local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
-			if (vignetteInfo) then
-				if (vignetteInfo.onWorldMap and RSConfigDB.IsScanningWorldMapVignettes()) then
-					vignetteInfo.id = vignetteGUID
-					rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)	
-				elseif (vignetteInfo.onMinimap) then
-					vignetteInfo.id = vignetteGUID
-					rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)
-				end
-			end
-		end
-	end);
+--	local ticker = C_Timer.NewTicker(10, function() 
+--		local vignetteGUIDs = C_VignetteInfo.GetVignettes();
+--		for _, vignetteGUID in ipairs(vignetteGUIDs) do
+--			local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID);
+--			if (vignetteInfo) then
+--				if (vignetteInfo.onWorldMap and RSConfigDB.IsScanningWorldMapVignettes()) then
+--					vignetteInfo.id = vignetteGUID
+--					rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)	
+--				elseif (vignetteInfo.onMinimap) then
+--					vignetteInfo.id = vignetteGUID
+--					rareScannerButton:DetectedNewVignette(rareScannerButton, vignetteInfo)
+--				end
+--			end
+--		end
+--	end);
 end

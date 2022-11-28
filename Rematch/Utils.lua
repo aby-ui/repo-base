@@ -672,15 +672,6 @@ function rematch:DebugStack()
 	return "\124cffc0c0c0"..table.concat(callers,", ")
 end
 
--- returns where the calling function was called from
-function rematch:CallerID()
-    local where = (debugstack():match(".-\n.-\n.-\n.-\\AddOns\\.-\\(.-:%d+.-)\n") or ""):gsub("\"]","")
-    if where:len()==0 then
-        where = (debugstack():match(".-\n.-\n.-\\AddOns\\.-\\(.-:%d+.-)\n") or ""):gsub("\"]","")
-    end
-    return where:len()>0 and where or debugstack()
-end
-
 -- Summoning/dismissing all pets are on GCD, but not all petIDs think so!
 -- For the toolbar cooldown display and Keep Companion option, we need to be aware
 -- of the GCD. If a GCD petID isn't already discovered, it will go through the

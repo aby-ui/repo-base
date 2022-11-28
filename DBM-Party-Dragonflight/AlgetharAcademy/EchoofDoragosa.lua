@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2514, "DBM-Party-Dragonflight", 5, 1201)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221106015735")
+mod:SetRevision("20221128054351")
 mod:SetCreatureID(190609)
 mod:SetEncounterID(2565)
 --mod:SetUsedIcons(1, 2, 3)
@@ -26,6 +26,8 @@ mod:RegisterEventsInCombat(
 --TOOD, how frequent is https://www.wowhead.com/beta/spell=388951/uncontrolled-energy , announce them if not frequent? Seems like it'll ramp up fast though
 --TODO, GTFO for arcane rift, could not find damage spellId for it
 --TODO, add arcane missiles? i feel like this is something she probably casts very frequently
+--Notes, Power Vaccume triggers 4 second ICD, Energy Bomb Triggers 8.5 ICD on Vaccuum but only 7 second ICD on Breath, Astraol breath triggers 7.5 ICD
+--Notes, All of ICD adjustments can be done but for a 5 man boss with 3 abilities it seems overkill. Only perform correction on one case for now
 --[[
 (ability.id = 374361 or ability.id = 388822) and type = "begincast"
  or ability.id = 374343 and type = "cast"
@@ -43,7 +45,7 @@ local yellEnergyBombFades						= mod:NewShortFadesYell(374352)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(389007, nil, nil, nil, 1, 8)
 
 local timerAstralBreathCD						= mod:NewCDTimer(29, 374361, nil, nil, nil, 3)--29-32
-local timerPowerVacuumCD						= mod:NewCDTimer(23.4, 388822, nil, nil, nil, 2)--23-28
+local timerPowerVacuumCD						= mod:NewCDTimer(23.4, 388822, nil, nil, nil, 2)--23-29
 local timerEnergyBombCD							= mod:NewCDTimer(14.1, 374352, nil, nil, nil, 3)--14.1-20
 --local timerDecaySprayCD						= mod:NewAITimer(35, 376811, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
@@ -89,6 +91,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 374343 then
 		timerEnergyBombCD:Start()
+		local remaining = timerPowerVacuumCD:GetRemaining()
+		if remaining < 8.5 then
+			local adjust = 8.5 - remaining
+			timerPowerVacuumCD:AddTime(adjust)
+			DBM:Debug("timerPowerVacuumCD extended by: "..adjust)
+		end
 	end
 end
 

@@ -96,13 +96,19 @@ end
 ---============================================================================
 
 function RSEventDB.InitEventQuestIdFoundDB()
-	if (not private.dbglobal.event_quest_ids) then
+	if (RSConstants.DEBUG_MODE and not private.dbglobal.event_quest_ids) then
 		private.dbglobal.event_quest_ids = {}
 	end
 end
 
-function RSEventDB.GetAllEventQuestIdsFound()
-	return private.dbglobal.event_quest_ids
+function RSEventDB.ResetEventQuestIdFoundDB()
+	if (private.dbglobal.event_quest_ids) then
+		if (RSConstants.DEBUG_MODE) then
+			private.dbglobal.event_quest_ids = {}
+		else
+			private.dbglobal.event_quest_ids = nil
+		end
+	end
 end
 
 function RSEventDB.SetEventQuestIdFound(eventID, questID)
