@@ -84,7 +84,7 @@ Grail.loremasterAchievements = {
 		[mapZandalar] = {  },
 		[mapKulTiras] = { 512473, 512496, 512497, },
 		[mapShadowlands] = { 514281, 514206, 514164, 514334, 513878, },
-		[mapDragonIsles] = { 515394, 516334, 515325, },
+		[mapDragonIsles] = { 515394, 516334, 516336, 516363, 515325, },
 		},
 	[factionHorde] = {
 		[mapKalimdor] = { 504976, 504927, 504930, 504978, 504931, 504979, 504933, 504934, 504981, 504980, 504935, 504938, 504939, 504940, 504870, 504872, },
@@ -99,7 +99,7 @@ Grail.loremasterAchievements = {
 		[mapZandalar] = { 511861, 511868, 512478, },
 		[mapKulTiras] = { },
 		[mapShadowlands] = { 514281, 514206, 514164, 514334, 513878, },
-		[mapDragonIsles] = { 515394, 516334, 515638, },
+		[mapDragonIsles] = { 515394, 516334, 516336, 516363, 515638, },
 		},
 	}
 
@@ -7317,10 +7317,17 @@ G[65448]={515515}	-- A Return to Grace (Path to Enlightenment) (Shadowlands 9.2)
 G[65613]={515638}	-- The Dark Talons (Dracthyr, Awaken) (Dragonflight)
 G[65794]={516334}	-- A Purpose Restored (Waking Hope) (Dragonflight)
 G[65806]={515394}	-- Into the Plains (Ohn'a'Roll) (Dragonflight)
+G[65855]={516336}	-- Into the Archives (Azure Spanner) (Dragonflight)
+G[65911]={516336}	-- Decayed Roots (Azure Spanner) (Dragonflight)
+G[65962]={516363}	-- Time Management (Just Don't Ask Me to Spell It) (Dragonflight)
 G[66001]={516334}	-- Dragons in Distress (Waking Hope) (Dragonflight)
+G[66015]={516336}	-- Vakthros (Azure Spanner) (Dragonflight)
 G[66025]={515394}	-- Maruukai (Ohn'a'Roll) (Dragonflight)
+G[66026]={516336}	-- Tuskarr Troubles (Azure Spanner) (Dragonflight)
 G[66057]={516334}	-- Wrathion's Gambit (Waking Hope) (Dragonflight)
 G[66124]={516334}	-- In Defense of Life (Waking Hope) (Dragonflight)
+G[66221]={516363}	-- Big Time Adventurer (Just Don't Ask Me to Spell It) (Dragonflight)
+G[66252]={516363}	-- Valdrakken, City of Dragons (Just Don't Ask Me to Spell It) (Dragonflight)
 G[66259]={515394}	-- Ohn'ahra's Blessing (Ohn'a'Roll) (Dragonflight)
 G[66783]={515394}	-- Bonds Renewed (Ohn'a'Roll) (Dragonflight)
 G[69914]={516334}	-- The Dragonscale Expedition (Waking Hope) (Dragonflight)

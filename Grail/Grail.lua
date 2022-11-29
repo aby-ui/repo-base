@@ -551,7 +551,7 @@
 --			Adds support for quests that only become available after the next daily reset.
 --			Adds support for quests that only become available when currency requirements are met.
 --		119 Adds support for Classic Wrath of the Lich King.
---			Changes retail interface to 100000, Wrath to 30400 and Vanilla to 11403.
+--			Changes retail interface to 100002, Wrath to 30400 and Vanilla to 11403.
 --			Switched to using C_GossipInfo.GetFriendshipReputation instead of GetFriendshipReputation.
 --			Adds support for Evoker class.
 --			Adds support for Dracthyr race.
@@ -1161,11 +1161,11 @@ experimental = false,	-- currently this implementation does not reduce memory si
 							[625] = true,
 							[630] = true,
 							[634] = true,
-							[641] = true,
+							[641] = true, -- Legion: Val'shara
 							[646] = true,
 							[649] = true,
 							[650] = true,
-							[672] = true,
+							[672] = true, -- Mardum , DH Startzone
 							[677] = true,
 							[680] = true,
 							[750] = true,
@@ -3850,7 +3850,7 @@ end,
 			self.invalidateControl[self.invalidateGroupCurrentWorldQuests] = {}
 --			self.availableWorldQuests = {}
 
-			local mapIdsForWorldQuests = { 14, 62, 625, 627, 630, 634, 641, 646, 650, 680, 790, 830, 882, 885, 862, 863, 864, 895, 896, 942, 1161, 1355, 1462, 1525, 1527, 1530, 1533, 1536, 1543, 1565, 1970 }
+			local mapIdsForWorldQuests = { 14, 62, 625, 627, 630, 634, 641, 646, 650, 680, 790, 830, 882, 885, 862, 863, 864, 895, 896, 942, 1161, 1355, 1462, 1525, 1527, 1530, 1533, 1536, 1543, 1565, 1970, 2022, 2023, 2024, 2025, 2112, }
 
 			for _, mapId in pairs(mapIdsForWorldQuests) do
 				self:_PrepareWorldQuestSelfNPCs(mapId)
@@ -7272,15 +7272,15 @@ end
 		end,
 
 		GetContainerItemID = function(self, container, slot)
-			return (C_Container.GetContainerItemID or GetContainerItemID)(container, slot)
+			return (C_Container and C_Container.GetContainerItemID or GetContainerItemID)(container, slot)
 		end,
 
 		GetContainerItemInfo = function(self, container, slot)
-			return (C_Container.GetContainerItemInfo or GetContainerItemInfo)(container, slot)
+			return (C_Container and C_Container.GetContainerItemInfo or GetContainerItemInfo)(container, slot)
 		end,
 
 		GetContainerNumSlots = function(self, bagSlot)
-			return (C_Container.GetContainerNumSlots or GetContainerNumSlots)(bagSlot)
+			return (C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots)(bagSlot)
 		end,
 
 		-- Blizzard changed from using GetFriendshipReputation to C_GossipInfo.GetFriendshipReputation and we will

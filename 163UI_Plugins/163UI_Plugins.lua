@@ -58,7 +58,8 @@ do
                 if C_GossipInfo.GetNumAvailableQuests() > 0 or C_GossipInfo.GetNumActiveQuests() > 0 then return end
                 local options = C_GossipInfo.GetOptions()
                 if #options == 1 then
-                    U1Message("你通过双击空格选择了唯一对话选项,这个小功能暂时没有开关")
+                    self._count = (self._count or 0) + 1
+                    if self._count <= 2 then U1Message("你通过双击空格选择了唯一对话选项,这个小功能暂时没有开关") end
                     C_GossipInfo.SelectOption(options[1].gossipOptionID)
                 end
             end

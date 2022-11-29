@@ -91,7 +91,7 @@ function OverrideController:OnLoad()
 		elseif HasTempShapeshiftActionBar and HasTempShapeshiftActionBar() then
 			newPage = GetTempShapeshiftBarIndex() or 0
 		elseif GetBonusBarOffset() > 4 then
-			newPage = GetBonusBarOffset() or 0
+			newPage = GetBonusBarOffset() + 6
 		else
 			newPage = 0
 		end

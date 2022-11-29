@@ -431,7 +431,7 @@
 --			Adds an option to hide the quest ID on the Quest Frame.
 --			Adds support for quests that only become available when currency requirements are met.
 --		087 *** Requires Grail 119 or later ***
---			Changes retail interface to 100000, Wrath to 30400 and Vanilla to 11403.
+--			Changes retail interface to 100002, Wrath to 30400 and Vanilla to 11403.
 --
 --	Known Issues
 --
@@ -3526,6 +3526,8 @@ end
 		end,
 
 		SetupScrollFrameButton = function(self, buttonIndex, numButtons, buttons, shownEntries, scrollOffset, item, isHeader, indent, scrollFrame)
+			local highlight = (scrollFrame == com_mithrandir_whollyFrameWideScrollOneFrame) and com_mithrandir_whollyFrameWideScrollOneFrameLogHighlightFrame or com_mithrandir_whollyFrameWideScrollTwoFrameLogHighlightFrame
+			highlight:Hide()
 			if shownEntries > scrollOffset and buttonIndex <= numButtons then
 				local button = buttons[buttonIndex]
 				local indentation = indent and "    " or ""
@@ -3546,21 +3548,12 @@ end
 					button:SetNormalTexture("Interface\\Addons\\Wholly\\blank")
 				end
 				button.item = item
-				local f
-				if scrollFrame == com_mithrandir_whollyFrameWideScrollOneFrame then
-					f = com_mithrandir_whollyFrameWideScrollOneFrameLogHighlightFrame
-				else
-					f = com_mithrandir_whollyFrameWideScrollTwoFrameLogHighlightFrame
-				end
 				if item.selected then
-					f:SetParent(button)
-					f:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
-					f:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
-					f:Show()
-				else
-					if f:GetParent() == button then
-						f:Hide()
-					end
+					highlight:ClearAllPoints()
+					highlight:SetParent(button)
+					highlight:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+					highlight:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+					highlight:Show()
 				end
 				button:Show()
 				buttonIndex = buttonIndex + 1
@@ -4034,14 +4027,14 @@ end
 			scrollFrame.scrollBar = slider	-- hopefully this is parentKey="scrollBar"
 
 			local highlightName = scrollFrameName.."LogHighlightFrame"
-			local subSubFrame = CreateFrame("Frame", highlightName)
-			subSubFrame:Hide()
---			subSubFrame:SetPoint("TOPLEFT")
---			subSubFrame:SetPoint("BOTTOMRIGHT")
-			local highlightTexture = subSubFrame:CreateTexture(highlightName.."LogSkillHighlight", "ARTWORK")
+			local highlightFrame = CreateFrame("Frame", highlightName, frame)
+			highlightFrame:Hide()
+--			highlightFrame:SetPoint("TOPLEFT")
+--			highlightFrame:SetPoint("BOTTOMRIGHT")
+			local highlightTexture = highlightFrame:CreateTexture(highlightName.."LogSkillHighlight", "ARTWORK")
 			highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
---			highlightTexture:SetAlphaMode("ADD")
-			subSubFrame:SetScript("OnLoad", function(self) self:SetParent(nil) end)
+			highlightTexture:SetBlendMode("ADD")
+--			highlightFrame:SetScript("OnLoad", function(self) self:SetParent(nil) end)
 			return scrollFrame
 		end,
 
@@ -4113,10 +4106,13 @@ end
 				end
 
 				local closeButton = CreateFrame("Button", frameName.."CloseButton", frame, "UIPanelCloseButton")
-				closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30 + offsetX, -8)
+				if Grail.existsClassic then
+					closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30 + offsetX, -8)
+				else
+					closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -34 + offsetX, -12)
+				end
 
 				local sortButton = CreateFrame("Button", frameName.."SortButton", frame, "UIPanelButtonTemplate")
-				Wholly.sortButtonTooltip = CreateFrame("GameTooltip", "com_mithrandir_WhollySortButtonTooltip", UIParent, "GameTooltipTemplate");
 				sortButton:SetText(TRACKER_SORT_LABEL)
 				sortButton:SetSize(110, 21)
 				sortButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -43 + offsetX, 80 + offsetY)
@@ -4233,8 +4229,12 @@ end
 				local offsetX, offsetY = 0, 0
 				
 				local closeButton = CreateFrame("Button", frameName.."CloseButton", frame, "UIPanelCloseButton")
-				closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 2 + offsetX, -8)
-				
+				if Grail.existsClassic then
+					closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 2 + offsetX, -8)
+				else
+					closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2 + offsetX, -12)
+				end
+
 				local switchZoneButton = CreateFrame("Button", frameName.."SwitchZoneButton", frame, "UIPanelButtonTemplate")
 				switchZoneButton:SetText(MAP)
 				switchZoneButton:SetSize(110, 21)
@@ -4258,7 +4258,6 @@ end
 				preferencesButton:SetScript("OnClick", function(self) Wholly:_OpenInterfaceOptions() end)
 
 				local sortButton = CreateFrame("Button", frameName.."SortButton", frame, "UIPanelButtonTemplate")
-				Wholly.sortButtonTooltip = CreateFrame("GameTooltip", "com_mithrandir_WhollySortButtonTooltip", UIParent, "GameTooltipTemplate");
 				sortButton:SetText(TRACKER_SORT_LABEL)
 				sortButton:SetSize(150, 21)
 				sortButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -8 + offsetX, 15 + offsetY)
@@ -4475,7 +4474,7 @@ end
 			WhollyDatabase.currentSortingMode = WhollyDatabase.currentSortingMode + 1
 			if (WhollyDatabase.currentSortingMode > 5) then WhollyDatabase.currentSortingMode = 1 end
 			self:ScrollFrame_Update_WithCombatCheck()
-			self:SortButtonLeave(frame)
+			self:SortButtonLeave(frame)	-- to update the tooltip with the new sorting info
 			self:SortButtonEnter(frame)	-- to update the tooltip with the new sorting info
 		end,
 
@@ -4487,19 +4486,15 @@ end
 				[4] = self.s.TYPE..", "..self.s.ALPHABETICAL,
 				[5] = self.s.TYPE..", "..self.s.LEVEL..", "..self.s.ALPHABETICAL,
 				}
---			if C_TooltipInfo then
-			
---			else
-				Wholly.sortButtonTooltip:ClearLines()
-				Wholly.sortButtonTooltip:SetOwner(frame, "ANCHOR_RIGHT")
-				Wholly.sortButtonTooltip:AddLine(sortModes[WhollyDatabase.currentSortingMode])
-				Wholly.sortButtonTooltip:Show()
-				Wholly.sortButtonTooltip:ClearAllPoints()
---			end
+			GameTooltip:ClearAllPoints()
+			GameTooltip:ClearLines()
+			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
+			GameTooltip:AddLine(sortModes[WhollyDatabase.currentSortingMode])
+			GameTooltip:Show()
 		end,
 
 		SortButtonLeave = function(self, frame)
-			self.sortButtonTooltip:Hide()
+			GameTooltip:Hide()
 		end,
 
 		SortingFunction = function(a, b)
@@ -4705,11 +4700,11 @@ end
 		end,
 
 		ZoneButtonEnter = function(self, frame)
+			GameTooltip:ClearAllPoints()
 			GameTooltip:ClearLines()
 			GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
 			GameTooltip:AddLine(Wholly.panelCountLine)
 			GameTooltip:Show()
-			GameTooltip:ClearAllPoints()
 		end,
 
 		}
