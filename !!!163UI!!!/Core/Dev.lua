@@ -233,15 +233,18 @@ SlashCmdList["DUMPPN"] = function(cmd)
     dumppn(loadstring("return "..(var or cmd))(), tonumber(depth or 1))
 end
 SLASH_DUMPPN1 = "/dumppn"
+function dumppt(frame)
+    for i = 1, 4 do
+        local point, rel, relpoint, x, y = frame:GetPoint(i)
+        if not point then break end
+        local relName = rel and FindObjectPath(rel, true) or tostring(rel)
+        print("anchor"..i, point, relName, relpoint, floor(x), floor(y))
+    end
+end
 SlashCmdList["DUMPPOINT"] = function(cmd)
     local frame = loadstring("return "..(cmd))()
     if frame and frame.GetPoint then
-        for i = 1, 4 do
-            local point, rel, relpoint, x, y = frame:GetPoint(i)
-            if not point then break end
-            local relName = rel and FindObjectPath(rel, true) or tostring(rel)
-            print("anchor"..i, point, relName, relpoint, floor(x), floor(y))
-        end
+        dumppt(frame)
     else
         print("No frame for", cmd)
     end

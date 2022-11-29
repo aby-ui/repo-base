@@ -47,6 +47,7 @@ U1RegisterAddon("Details_RaidCheck", { title = "团队检查模块", });
 U1RegisterAddon("Details_Streamer", { title = "主播模块", });
 U1RegisterAddon("Details_TinyThreat", { title = "威胁值模块", });
 U1RegisterAddon("Details_Vanguard", { title = "坦克模块", });
+U1RegisterAddon("Details_Compare2", { title = "对比模块", });
 U1RegisterAddon("Details_ExplosiveOrbs", { title = "爆炸物模块", load = "NORMAL", });
 
 U1RegisterAddon("Details_Covenants", {

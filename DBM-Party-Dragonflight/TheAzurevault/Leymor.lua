@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2492, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221028002025")
+mod:SetRevision("20221128214658")
 mod:SetCreatureID(186644)
 mod:SetEncounterID(2582)
 mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221027000000)
+mod:SetHotfixNoticeRev(20221127000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -41,11 +41,11 @@ local yellEruptingFissure						= mod:NewYell(386660)
 local specWarnInfusedStrike						= mod:NewSpecialWarningDefensive(374789, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerLeylineSproutsCD						= mod:NewCDTimer(43.7, 374364, nil, nil, nil, 3)
-local timerExplosiveEruptionCD					= mod:NewCDTimer(43.7, 374567, nil, nil, nil, 3)
-local timerConsumingStompCD						= mod:NewCDTimer(43.7, 374720, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
-local timerEruptingFissureCD					= mod:NewCDTimer(43.7, 386660, nil, nil, nil, 3)
-local timerInfusedStrikeCD						= mod:NewCDTimer(43.7, 374789, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerLeylineSproutsCD						= mod:NewCDTimer(49.7, 374364, nil, nil, nil, 3)
+local timerExplosiveEruptionCD					= mod:NewCDTimer(49.7, 374567, nil, nil, nil, 3)
+local timerConsumingStompCD						= mod:NewCDTimer(49.7, 374720, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerEruptingFissureCD					= mod:NewCDTimer(49.7, 386660, nil, nil, nil, 3)
+local timerInfusedStrikeCD						= mod:NewCDTimer(49.7, 374789, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -67,7 +67,7 @@ function mod:OnCombatStart(delay)
 	timerInfusedStrikeCD:Start(10.5-delay)
 	timerEruptingFissureCD:Start(20.2-delay)
 	timerExplosiveEruptionCD:Start(31.1-delay)
-	timerConsumingStompCD:Start(40.8-delay)
+	timerConsumingStompCD:Start(45.7-delay)
 end
 
 --function mod:OnCombatEnd()

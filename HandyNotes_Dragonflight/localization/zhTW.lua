@@ -6,6 +6,11 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
+L['gem_cluster_note'] = nil
+
+L['options_icons_bonus_boss'] = '獎勵精英'
+L['options_icons_bonus_boss_desc'] = '顯示獎勵精英位置.'
+
 L['dragon_glyph'] = '龍之雕紋'
 L['options_icons_dragon_glyph'] = '龍之雕紋'
 L['options_icons_dragon_glyph_desc'] = '顯示全部48個龍之雕紋的位置'
@@ -35,7 +40,10 @@ L['fisherman_tinnak_note'] = '收集 破損的釣魚竿, 撕裂的釣魚網 和 
 L['gnarls_note'] = '和 {npc:197344}, {npc:197353}, {npc:197356} 同時出現'
 L['high_shaman_rotknuckle_note'] = '和 {npc:197344}, {npc:197353}, {npc:197354} 同時出現'
 L['snarglebone_note'] = '和 {npc:197353}, {npc:197356}, {npc:197354} 同時出現'
+L['spellwrought_snowman_note'] = nil
 L['trilvarus_loreweaver_note'] = '收集一個歌唱碎片來取得 {spell:382076} 後使用 Uncharded Focus 來召喚稀有.'
+
+L['breezebiter_note'] = nil
 
 L['forgotten_jewel_box_note'] = '從雍亞拉平原的嶺水靜地 (49.4 67.3) 上的 氏族寶箱 拾取{item:199065} 並使用它.'
 L['gnoll_fiend_flail_note'] = '{item:199066} 可以在遠征隊斥侯包和挖過的土中找到.'
@@ -49,25 +57,18 @@ L['options_icons_layline_desc'] = nil
 ------------------------------- FORBIDDEN REACH -------------------------------
 -------------------------------------------------------------------------------
 
-L['bag_of_enchanted_wind'] = nil
-L['bag_of_enchanted_wind_note'] = nil
-L['hessethiash_treasure'] = nil
-L['lost_draconic_hourglass'] = nil
-L['mysterious_wand'] = nil
-L['mysterious_wand_note'] = nil
+L['bag_of_enchanted_wind'] = '一袋祕法之風'
+L['bag_of_enchanted_wind_note'] = '位於塔頂內.'
+L['hessethiash_treasure'] = '赫瑟西亞許的不隱密寶箱'
+L['lost_draconic_hourglass'] = '失落的龍沙漏'
+L['suspicious_bottle_treasure'] = nil
+L['mysterious_wand'] = '神秘魔杖'
+L['mysterious_wand_note'] = '撿起 |cFFFFFD00水晶鑰匙|r 並把它放進 |cFFFFFD00水晶法器|r內.'
 
 -------------------------------------------------------------------------------
 ------------------------------ OHN'AHRAN PLAINS -------------------------------
 -------------------------------------------------------------------------------
 
--- {quest:65901} = Sneaking Out
--- {currency:2003} = Dragon Isle Supplies
--- {item:192615} = Flourescent Fluid
--- {item:192658} = High-Fiber Leaf
--- {item:194966} = Thousandbite Piranha
--- {item:192636} = Woolly Mountain Pelt
--- {item:200598} = Meluun's Green Curry
--- {npc:190015} = Ohn Meluun
 L['shade_of_grief_note'] = '點選 {npc:193166} 來召喚稀有.'
 
 L['gold_swong_coin_note'] = nil
@@ -95,9 +96,16 @@ L['bakar_hugo_note'] = nil
 L['options_icons_bakar'] = '{achievement:16424}'
 L['options_icons_bakar_desc'] = nil
 
+L['dreamguard_note'] = nil
+L['options_icons_dreamguards'] = '{achievement:16574}'
+L['options_icons_dreamguards_desc'] = nil
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
+
+L['blightpaw_note'] = nil
+L['woofang_note'] = nil
 
 L['acorn_harvester_note'] = '在附近的地上收集一個橡實來取得 {spell:388485} 之後再和 {npc:196172} 互動.'
 L['cracked_hourglass_note'] = '{item:199068} 可以在遠征隊斥侯包和挖過的土中找到.'
@@ -109,10 +117,13 @@ L['sandy_wooden_duck_note'] = '收集 {item:199069} 並使用它.'
 
 L['brundin_the_dragonbane_note'] = '喀拉希戰爭隊伍坐在 {npc:192737} 旅行到這座塔.'
 L['shasith_note'] = '在黑曜王座內. \n\n需要更多的調查'
+L['worldcarver_atir_note'] = nil
 
 L['bubble_drifter_note'] = '{item:199061} 可以在遠征隊斥侯包和挖過的土中找到.'
-L['onyx_gem_cluster_note'] = '當龍鱗遠征隊的名望到達21時, 從 {npc:189065} 用3個 {item:192863} 和 500{currency:2003} 購買 {item:200738} 並使用它.'
-L['replica_dragon_goblet_note'] = '和翼息大使館裡的 {npc:193915} 購買 {item:198854} 並使用它.'
+L['dead_mans_chestplate_note'] = nil
+L['golden_dragon_goblet_note'] = nil
+L['misty_treasure_chest_note'] = nil
+L['onyx_gem_cluster_note'] = '當龍鱗遠征隊的名望到達21時, 從 {npc:189065} 用3個 {item:192863} 和 500{currency:2003} 購買 {item:200738} 並使用它.' -- review
 
 L['fullsails_supply_chest'] = '滿帆補給箱'
 L['hidden_hornswog_hoard'] = '隱藏的角蛙寶箱'

@@ -69,6 +69,11 @@ select(2, ...).L = setmetatable({
     ["SNIPPETS_TIPS"] = "[Double-Click] to rename. [Shift-Click] to delete. All checked snippets will be automatically invoked at the end of Cell initialization process (in ADDON_LOADED event).",
 
     ["CHANGELOGS"] = [[
+        <h1>r149-release (Nov 29, 2022, 06:35 GMT+8)</h1>
+        <p>* Added NPC button size options.</p>
+        <p>* Added a bar orientation option "Vertical B".</p>
+        <br/>
+
         <h1>r148-release (Nov 27, 2022, 22:07 GMT+8)</h1>
         <p>* Fixed layout auto switch on Wrath.</p>
         <p>* Updated zhTW.</p>

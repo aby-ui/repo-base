@@ -246,7 +246,7 @@ end
 
 function Follower:IsObtained()
     local followers = C_Garrison.GetFollowers(self:GetType('enum'))
-    for i = 1, #followers do
+    for i = 1, followers and #followers or 0 do
         local followerID = followers[i].followerID
         if (self.id == followerID) then return false end
     end

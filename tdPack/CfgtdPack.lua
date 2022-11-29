@@ -1,12 +1,45 @@
-
 U1RegisterAddon("tdCore", {
     title = "背包整理依赖库",
-    -- defaultEnable  = 1,
     hide = 1,
     load = 'DEMAND',
     -- load = "LOGIN", --LATER会导致屏幕大闪
 })
 
+--[[
+    {
+        text = "整理时忽略背包（左起顺序）", type = "text",
+        { text = "材料包 - 未知", var = "bag5", default = false}, --材料包不要
+        { text = "背包1 - 未知", var = "bag4", default = false},
+        { text = "背包2 - 未知", var = "bag3", default = false },
+        { text = "背包3 - 未知", var = "bag2", default = false },
+        { text = "背包4 - 未知", var = "bag1", default = false },
+        { text = "行囊", var = "bag0", default = false },
+    },
+--]]
+local ignoreBagsCfg = { text = "整理时忽略背包（左起顺序）", type = "text", }
+--for i=NUM_REAGENTBAG_SLOTS,1,-1 do tinsert(ignoreBagsCfg, { text = format("材料包%s - 未知", NUM_REAGENTBAG_SLOTS==1 and "" or NUM_REAGENTBAG_SLOTS+1-i), var = "bag"..(BACKPACK_CONTAINER+NUM_BAG_SLOTS+i), default = false }) end
+for i=NUM_BAG_SLOTS,1,-1 do
+    tinsert(ignoreBagsCfg, { text = format("背包%s - 未知", NUM_BAG_SLOTS+1-i), var = "bag"..(BACKPACK_CONTAINER+i), default = false })
+end
+tinsert(ignoreBagsCfg, { text = "行囊", var = "bag"..(BACKPACK_CONTAINER), default = false })
+
+--[[
+{
+    text = "忽略银行背包（左起顺序）", type = "text",
+    { text = "银行自带背包", var = "bag-1", default = false },
+    { text = "背包1 - 未知", var = "bag6",  default = false },
+    { text = "背包2 - 未知", var = "bag7",  default = false },
+    { text = "背包3 - 未知", var = "bag8",  default = false },
+    { text = "背包4 - 未知", var = "bag9",  default = false },
+    { text = "背包5 - 未知", var = "bag10",  default = false },
+    { text = "背包6 - 未知", var = "bag11", default = false },
+    { text = "背包7 - 未知", var = "bag12", default = false },
+}
+--]]
+local ignoreBanksCfg = { text = "忽略银行背包（左起顺序）", type = "text", { text = "银行自带背包", var = "bag-1", default = false } }
+for i=1,NUM_BANKBAGSLOTS do
+    tinsert(ignoreBanksCfg, { text = format("背包%s - 未知", i), var = "bag"..(NUM_TOTAL_EQUIPPED_BAG_SLOTS+i), default = false })
+end
 
 U1RegisterAddon('tdPack', {
     title = '背包整理',
@@ -88,36 +121,20 @@ U1RegisterAddon('tdPack', {
         }
     },
 
-    {
-        text = "整理时忽略背包（左起顺序）", type = "text",
-        { text = "背包1 - 未知", var = "bag4", default = false},
-        { text = "背包2 - 未知", var = "bag3", default = false },
-        { text = "背包3 - 未知", var = "bag2", default = false },
-        { text = "背包4 - 未知", var = "bag1", default = false },
-        { text = "行囊", var = "bag0", default = false },
-    },
+    ignoreBagsCfg,
 
-    {
-        text = "忽略银行背包（左起顺序）", type = "text",
-        { text = "银行自带背包", var = "bag-1", default = false },
-        { text = "背包1 - 未知", var = "bag5",  default = false },
-        { text = "背包2 - 未知", var = "bag6",  default = false },
-        { text = "背包3 - 未知", var = "bag7",  default = false },
-        { text = "背包4 - 未知", var = "bag8",  default = false },
-        { text = "背包5 - 未知", var = "bag9",  default = false },
-        { text = "背包6 - 未知", var = "bag10", default = false },
-        { text = "背包7 - 未知", var = "bag11", default = false },
-    }
+    ignoreBanksCfg,
 })
 
 --[[------------------------------------------------------------
 更新背包名称
 ---------------------------------------------------------------]]
 local updateBagNames = function(bank)
-    for i = 1, 11 do
-        local cfg = U1CfgFindChild("tdpack", "bag"..i)
-        if i <= 4 or bank == "BANK" then
-            cfg.text = cfg.text:gsub(" - .+$", " - ") .. (C_Container.GetBagName(i) or "未知")
+    local cfgs = bank == "BANK" and ignoreBanksCfg or ignoreBagsCfg
+    for _, cfg in ipairs(cfgs) do
+        local bagId = tonumber(cfg.var:sub(4))
+        if bagId ~= BACKPACK_CONTAINER and bagId ~= BANK_CONTAINER then
+            cfg.text = cfg.text:gsub(" - .+$", " - ") .. (C_Container.GetBagName(bagId) or "未知")
         end
     end
 end
@@ -128,24 +145,21 @@ CoreOnEvent("BAG_UPDATE_DELAYED", updateBagNames)
 --[[------------------------------------------------------------
 更新tdPack的背包表
 ---------------------------------------------------------------]]
---[[tdPack_BAGS = {
-    bag = {0, 1, 2, 3, 4},
-    bank = {-1, 5, 6, 7, 8, 9, 10, 11},
-}]]
 local function updateIgnoreBags(cfg, v, loading)
     if loading and cfg.var ~= "bag0" then return end
     table.wipe(tdPack_BAGS.bag)  --不能赋值新表，必须wipe
     table.wipe(tdPack_BAGS.bank)
-    for i = -1, 11 do
-        local tbl = (i>=0 and i<=4) and tdPack_BAGS.bag or tdPack_BAGS.bank
-        if (not U1GetCfgValue("tdpack/bag"..tostring(i))) then
-            table.insert(tbl, i)
+    for i = #ignoreBagsCfg, 1, -1 do  --背包是倒序
+        local sub = ignoreBagsCfg[i]
+        if not U1LoadDBValue(sub) then
+            table.insert(tdPack_BAGS.bag, tonumber(sub.var:sub(4)))
+        end
+    end
+    for _, sub in ipairs(ignoreBanksCfg) do
+        if not U1LoadDBValue(sub) then
+            table.insert(tdPack_BAGS.bank, tonumber(sub.var:sub(4)))
         end
     end
 end
-
---设置callback函数
-for i = -1, 11 do
-    local cfg = U1CfgFindChild("tdpack", "bag"..tostring(i))
-    cfg.callback = updateIgnoreBags
-end
+for _, v in ipairs(ignoreBagsCfg) do v.callback = updateIgnoreBags end
+for _, v in ipairs(ignoreBanksCfg) do v.callback = updateIgnoreBags end

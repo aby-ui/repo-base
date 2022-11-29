@@ -170,6 +170,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             notCheckable = true,
             disabled = not map.settings,
             func = function(button, option)
+                HideUIPanel(WorldMapFrame)
                 Settings.OpenToCategory('HandyNotes')
                 LibStub('AceConfigDialog-3.0'):SelectGroup('HandyNotes',
                     'plugins', ADDON_NAME, 'ZonesTab', 'Zone_' .. map.id)

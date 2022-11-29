@@ -79,15 +79,22 @@ function Pack:ShowMessage(text, r, g, b)
 end
 
 ------ stack
-
-local bags = {
-    bag = {0, 1, 2, 3, 4},
-    bank = {0, 1, 2, 3, 4, -1, 5, 6, 7, 8, 9, 10, 11},
-}
+local ALL_CONTAINERS, REAGENT_ONLY_BAGS = {}, {}
+for _, v in ipairs(tdPack_DEFAULT_BAGS.bag) do tinsert(ALL_CONTAINERS, v) end
+for _, v in ipairs(tdPack_DEFAULT_BAGS.bank) do tinsert(ALL_CONTAINERS, v) end
+for _, v in ipairs(tdPack_DEFAULT_BAGS.reagent) do tinsert(ALL_CONTAINERS, v) end
+for _, v in ipairs(tdPack_DEFAULT_BAGS.reagent) do if v ~= REAGENTBANK_CONTAINER then tinsert(REAGENT_ONLY_BAGS, v) end end
 
 function Pack:StackReady()
-	local ignored_bank = JPACK_IGNORE_BAGS_NO_BANK
-    for _, bag in ipairs(self.isBankOpened and not ignored_bank and bags.bank or bags.bag) do
+	local ignored_bank = TDPACK_IGNORE_BAGS_NO_BANK
+    local bagsToStack = self.isBankOpened and not ignored_bank and ALL_CONTAINERS or tdPack_DEFAULT_BAGS.bag
+    if TDPACK_ONLY_REAGENT then
+        bagsToStack = tdPack_DEFAULT_BAGS.reagent
+        if not self.isBankOpened or ignored_bank then
+            bagsToStack = REAGENT_ONLY_BAGS
+        end
+    end
+    for _, bag in ipairs(bagsToStack) do
         for slot = 1, tdPack:GetBagNumSlots(bag) do
             if not tdPack:IsBagSlotEmpty(bag, slot) and not tdPack:IsBagSlotFull(bag, slot) then
                 tinsert(self.slots, Slot:New(nil, bag, slot))
@@ -130,6 +137,15 @@ function Pack:PackReady()
     wipe(self.bags)
 
     if TDPACK_ONLY_REAGENT then
+        local bags, default = tdPack_BAGS.reagent, tdPack_DEFAULT_BAGS.reagent
+        wipe(bags)
+        if TDPACK_IGNORE_BAGS then
+            tinsert(bags, REAGENTBANK_CONTAINER)
+        elseif TDPACK_IGNORE_BAGS_NO_BANK then
+            for _, v in ipairs(default) do if v ~= REAGENTBANK_CONTAINER then tinsert(bags, v) end end
+        else
+            for _, v in ipairs(default) do tinsert(bags, v) end
+        end
         local reagent = Bag:New('reagent')
         tinsert(self.bags, reagent)
         return reagent:Sort()

@@ -2,6 +2,18 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.2.2",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Removed leftover message from development, thanks to Doyansu233 and Clarkis2001 aat Curseforge for the report.",
+					"Fixed an error that prevented targeting of enemy players in arena after they changed name, in arena the addon will now always target by unitID instad of playername, this is helpful for stealth players expecially since the addon can't update in combat due to Blizzards restrictions."
+				}
+			}
+		}
+	},
+	{
 		Version = "10.0.2.1",
 		General = "This version fixes some problems i found during solo shuffle arenas and adds some features. It adds some allied races and improved auras.",
 		Sections = {

@@ -24,14 +24,15 @@ local L = addon.L
 
 --<GLOBALS
 local _G = _G
-local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER
+local BACKPACK_CONTAINER = _G.BACKPACK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Backpack ) or 0
+local REAGENTBAG_CONTAINER = ( Enum.BagIndex and Enum.BagIndex.REAGENTBAG_CONTAINER ) or 5
 local band = _G.bit.band
 local BankFrame = _G.BankFrame
 local BANK_BAG = _G.BANK_BAG
 local BANK_BAG_PURCHASE = _G.BANK_BAG_PURCHASE
-local BANK_CONTAINER = _G.BANK_CONTAINER
+local BANK_CONTAINER = _G.BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
 local ClearCursor = _G.ClearCursor
-local ContainerIDToInventoryID = C_Container and C_Container.ContainerIDToInventoryID or ContainerIDToInventoryID
+local ContainerIDToInventoryID = C_Container and _G.C_Container.ContainerIDToInventoryID or _G.ContainerIDToInventoryID
 local COSTS_LABEL = _G.COSTS_LABEL
 local CreateFrame = _G.CreateFrame
 local CursorHasItem = _G.CursorHasItem
@@ -39,10 +40,10 @@ local CursorUpdate = _G.CursorUpdate
 local GameTooltip = _G.GameTooltip
 local GetBankSlotCost = _G.GetBankSlotCost
 local GetCoinTextureString = _G.GetCoinTextureString
-local GetContainerItemID = C_Container and C_Container.GetContainerItemID or GetContainerItemID
-local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or GetContainerItemInfo
-local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
-local GetContainerNumSlots = C_Container and C_Container.GetContainerNumSlots or GetContainerNumSlots
+local GetContainerItemID = C_Container and _G.C_Container.GetContainerItemID or _G.GetContainerItemID
+local GetContainerItemInfo = C_Container and _G.C_Container.GetContainerItemInfo or _G.GetContainerItemInfo
+local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumFreeSlots or _G.GetContainerNumFreeSlots
+local GetContainerNumSlots = C_Container and _G.C_Container.GetContainerNumSlots or _G.GetContainerNumSlots
 local geterrorhandler = _G.geterrorhandler
 local GetInventoryItemTexture = _G.GetInventoryItemTexture
 local GetItemInfo = _G.GetItemInfo
@@ -50,7 +51,8 @@ local GetNumBankSlots = _G.GetNumBankSlots
 local ipairs = _G.ipairs
 local IsInventoryItemLocked = _G.IsInventoryItemLocked
 local next = _G.next
-local NUM_BAG_SLOTS = _G.NUM_BAG_SLOTS
+local NUM_REAGENTBAG_SLOTS = _G.NUM_REAGENTBAG_SLOTS
+local NUM_TOTAL_EQUIPPED_BAG_SLOTS = _G.NUM_TOTAL_EQUIPPED_BAG_SLOTS
 local NUM_BANKGENERIC_SLOTS = _G.NUM_BANKGENERIC_SLOTS
 local pairs = _G.pairs
 local pcall = _G.pcall
@@ -362,7 +364,12 @@ end
 
 function bankButtonProto:UpdateStatus()
 	local numSlots = GetNumBankSlots()
-	local bankSlot = self.bag - NUM_BAG_SLOTS
+	local bankSlot
+	if addon.isRetail then
+		bankSlot = self.bag - NUM_TOTAL_EQUIPPED_BAG_SLOTS
+	else 
+		bankSlot = self.bag - NUM_BAG_SLOTS
+	end
 	self.toPurchase = nil
 	if bankSlot <= numSlots then
 		SetItemButtonTextureVertexColor(self, 1, 1, 1)
@@ -460,12 +467,26 @@ function addon:CreateBagSlotPanel(container, name, bags, isBank)
 	local x = BAG_INSET
 	local height = 0
 	for i, bag in ipairs(bags) do
-		if bag ~= BACKPACK_CONTAINER and bag ~= BANK_CONTAINER and bag ~= REAGENTBANK_CONTAINER then
+		if bag ~= BACKPACK_CONTAINER and bag ~= BANK_CONTAINER and bag ~= REAGENTBANK_CONTAINER and bag ~= bag ~= REAGENTBAG_CONTAINER then
 			local button = buttonClass:Create(bag)
 			button:SetParent(self)
 			button:SetPoint("TOPLEFT", x, -TOP_PADDING)
 			button:Show()
 			x = x + ITEM_SIZE + ITEM_SPACING
+			tinsert(self.buttons, button)
+		elseif bag == REAGENTBAG_CONTAINER then
+			local titleReagent = self:CreateFontString(nil, "OVERLAY")
+			self.TitleReagent = titleReagent
+			titleReagent:SetFontObject(addon.bagFont)
+			titleReagent:SetText(L["Reagent"])
+			titleReagent:SetJustifyH("RIGHT")
+			titleReagent:SetPoint("TOPRIGHT", -BAG_INSET, -BAG_INSET)
+
+			local button = buttonClass:Create(bag)
+			button:SetParent(self)
+			button:SetPoint("TOPLEFT", x + ITEM_SIZE, -TOP_PADDING)
+			button:Show()
+			x = x + ITEM_SIZE + ITEM_SPACING + ITEM_SIZE
 			tinsert(self.buttons, button)
 		end
 	end

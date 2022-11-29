@@ -25,7 +25,7 @@ local L = addon.L
 --<GLOBALS
 local _G = _G
 local GameTooltip = _G.GameTooltip
-local UseContainerItem = C_Container and C_Container.UseContainerItem or UseContainerItem
+local UseContainerItem = C_Container and _G.C_Container.UseContainerItem or _G.UseContainerItem
 --GLOBALS>
 
 local mod = addon:NewModule('BankSwitcher', 'ABEvent-1.0')

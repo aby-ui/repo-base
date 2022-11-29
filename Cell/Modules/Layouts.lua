@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 local layoutsTab = Cell:CreateFrame("CellOptionsFrame_LayoutsTab", Cell.frames.optionsFrame, nil, nil, true)
@@ -99,11 +100,11 @@ local function UpdatePreviewButton(which, value)
     end
 
     if not which or which == "barOrientation" then
-        previewButton.func.SetOrientation(unpack(selectedLayoutTable["barOrientation"]))
+        B:SetOrientation(previewButton, selectedLayoutTable["barOrientation"][1], selectedLayoutTable["barOrientation"][2])
     end
 
     if not which or which == "power" or which == "barOrientation" then
-        previewButton.func.SetPowerSize(selectedLayoutTable["powerSize"])
+        B:SetPowerSize(previewButton, selectedLayoutTable["powerSize"])
     end
 
     Cell:Fire("UpdatePreview", previewButton)
@@ -439,7 +440,7 @@ local function CreateNPCPreview()
     end)
     npcPreviewAnchor:SetScript("OnDragStop", function()
         npcPreviewAnchor:StopMovingOrSizing()
-        P:SavePosition(npcPreviewAnchor, selectedLayoutTable["friendlyNPC"][3])
+        P:SavePosition(npcPreviewAnchor, selectedLayoutTable["npc"][3])
     end)
 
     npcPreviewName = npcPreviewAnchor:CreateFontString(nil, "OVERLAY", "CELL_FONT_CLASS_TITLE")
@@ -494,7 +495,7 @@ local function UpdateNPCPreview()
         CreateNPCPreview()
     end
 
-    if not selectedLayoutTable["friendlyNPC"][1] or not selectedLayoutTable["friendlyNPC"][2] then
+    if not selectedLayoutTable["npc"][1] or not selectedLayoutTable["npc"][2] then
         if npcPreview.timer then
             npcPreview.timer:Cancel()
             npcPreview.timer = nil
@@ -508,8 +509,15 @@ local function UpdateNPCPreview()
         return
     end
 
+    local width, height
+    if selectedLayoutTable["npc"][4] then
+        width, height = unpack(selectedLayoutTable["npc"][5])
+    else
+        width, height = unpack(selectedLayoutTable["size"])
+    end
+    P:Size(npcPreview, width, height)
+
     -- update npcPreview point
-    P:Size(npcPreview, selectedLayoutTable["size"][1], selectedLayoutTable["size"][2])
     npcPreview:ClearAllPoints()
     npcPreviewName:ClearAllPoints()
     
@@ -550,11 +558,11 @@ local function UpdateNPCPreview()
         -- NOTE: move separate npc anchor with preview
         Cell.frames.separateNpcFrameAnchor:SetAllPoints(npcPreviewAnchor)
     else
-        P:LoadPosition(Cell.frames.separateNpcFrameAnchor, Cell.vars.currentLayoutTable["friendlyNPC"][3])
+        P:LoadPosition(Cell.frames.separateNpcFrameAnchor, Cell.vars.currentLayoutTable["npc"][3])
     end
 
-    if #selectedLayoutTable["friendlyNPC"][3] == 2 then
-        P:LoadPosition(npcPreviewAnchor, selectedLayoutTable["friendlyNPC"][3])
+    if #selectedLayoutTable["npc"][3] == 2 then
+        P:LoadPosition(npcPreviewAnchor, selectedLayoutTable["npc"][3])
     else
         npcPreviewAnchor:ClearAllPoints()
         npcPreviewAnchor:SetPoint("TOPLEFT", UIParent, "CENTER")
@@ -587,11 +595,11 @@ local function UpdateNPCPreview()
             unitSpacing = -spacingY
         end
 
-        P:Size(header, selectedLayoutTable["size"][1], selectedLayoutTable["size"][2]*5+abs(unitSpacing)*4)
+        P:Size(header, width, height*5+abs(unitSpacing)*4)
         header:SetPoint(point)
         
         for i = 1, 5 do
-            P:Size(header[i], selectedLayoutTable["size"][1], selectedLayoutTable["size"][2])
+            P:Size(header[i], width, height)
             header[i]:ClearAllPoints()
 
             if i == 1 then
@@ -617,11 +625,11 @@ local function UpdateNPCPreview()
             unitSpacing = -spacingX
         end
 
-        P:Size(header, selectedLayoutTable["size"][1]*5+abs(unitSpacing)*4, selectedLayoutTable["size"][2])
+        P:Size(header, width*5+abs(unitSpacing)*4, height)
         header:SetPoint(point)
 
         for i = 1, 5 do
-            P:Size(header[i], selectedLayoutTable["size"][1], selectedLayoutTable["size"][2])
+            P:Size(header[i], width, height)
             header[i]:ClearAllPoints()
 
             if i == 1 then
@@ -1203,6 +1211,7 @@ end)
 -------------------------------------------------
 -- layout
 -------------------------------------------------
+local autoSwitchFrame
 local layoutDropdown, roleDropdown, partyDropdown, raidOutdoorDropdown, raidInstanceDropdown, raidMythicDropdown, arenaDropdown, bg15Dropdown, bg40Dropdown
 local raid10Dropdown, raid25Dropdown -- wrath
 local LoadLayoutDropdown, LoadAutoSwitchDropdowns
@@ -1514,7 +1523,7 @@ local raidInstance = L["Raid"].." ".._G.INSTANCE
 local raidMythic = L["Raid"].." ".._G.PLAYER_DIFFICULTY6
 
 local function CreateAutoSwitchPane()
-    local autoSwitchFrame = Cell:CreateFrame("CellLayoutAutoSwitchFrame", layoutsTab, 160, 410)
+    autoSwitchFrame = Cell:CreateFrame("CellLayoutAutoSwitchFrame", layoutsTab, 160, 410)
     autoSwitchFrame:SetPoint("TOPLEFT", layoutsTab, "TOPRIGHT", 5, 0)
     autoSwitchFrame:Show()
 
@@ -1934,7 +1943,10 @@ end
 -------------------------------------------------
 -- button size
 -------------------------------------------------
-local widthSlider, heightSlider, powerSizeSlider, petSizeCB, petWidthSlider, petHeightSlider, spotlightSizeCB, spotlightWidthSlider, spotlightHeightSlider, switch
+local widthSlider, heightSlider, powerSizeSlider
+local petSizeCB, petWidthSlider, petHeightSlider
+local npcSizeCB, npcWidthSlider, npcHeightSlider
+local spotlightSizeCB, spotlightWidthSlider, spotlightHeightSlider
 
 local function CreateButtonSizePane()
     local buttonSizePane = Cell:CreateTitledPane(layoutsTab, L["Button Size"], 139, 170)
@@ -2039,7 +2051,50 @@ local function CreateButtonSizePane()
     page3:Hide()
 
     -- spotlightSize
-    spotlightSizeCB = Cell:CreateCheckButton(page3, L["Spotlight Button"], function(checked, self)
+    npcSizeCB = Cell:CreateCheckButton(page3, L["NPC Button"], function(checked, self)
+        if checked then
+            npcWidthSlider:SetEnabled(true)
+            npcHeightSlider:SetEnabled(true)
+        else
+            npcWidthSlider:SetEnabled(false)
+            npcHeightSlider:SetEnabled(false)
+        end
+
+        selectedLayoutTable["npc"][4] = checked
+        if selectedLayout == Cell.vars.currentLayout then
+            Cell:Fire("UpdateLayout", selectedLayout, "npcSize")
+        end
+        UpdateNPCPreview()
+    end)
+    npcSizeCB:SetPoint("TOPLEFT", 5, -40)
+
+    -- spotlightWidth
+    npcWidthSlider = Cell:CreateSlider(L["Width"], page3, 40, 300, 117, 2, function(value)
+        selectedLayoutTable["npc"][5][1] = value
+        if selectedLayout == Cell.vars.currentLayout then
+            Cell:Fire("UpdateLayout", selectedLayout, "npcSize")
+        end
+        UpdateNPCPreview()
+    end)
+    npcWidthSlider:SetPoint("TOPLEFT", 5, -90)
+    
+    -- spotlightHeight
+    npcHeightSlider = Cell:CreateSlider(L["Height"], page3, 20, 300, 117, 2, function(value)
+        selectedLayoutTable["npc"][5][2] = value
+        if selectedLayout == Cell.vars.currentLayout then
+            Cell:Fire("UpdateLayout", selectedLayout, "npcSize")
+        end
+        UpdateNPCPreview()
+    end)
+    npcHeightSlider:SetPoint("TOPLEFT", npcWidthSlider, 0, -50)
+
+    --* page4 -----------------------------------
+    local page4 = CreateFrame("Frame", nil, layoutsTab)
+    page4:SetAllPoints(buttonSizePane)
+    page4:Hide()
+
+    -- spotlightSize
+    spotlightSizeCB = Cell:CreateCheckButton(page4, L["Spotlight Button"], function(checked, self)
         if checked then
             spotlightWidthSlider:SetEnabled(true)
             spotlightHeightSlider:SetEnabled(true)
@@ -2057,7 +2112,7 @@ local function CreateButtonSizePane()
     spotlightSizeCB:SetPoint("TOPLEFT", 5, -40)
 
     -- spotlightWidth
-    spotlightWidthSlider = Cell:CreateSlider(L["Width"], page3, 40, 300, 117, 2, function(value)
+    spotlightWidthSlider = Cell:CreateSlider(L["Width"], page4, 40, 300, 117, 2, function(value)
         selectedLayoutTable["spotlight"][5][1] = value
         if selectedLayout == Cell.vars.currentLayout then
             Cell:Fire("UpdateLayout", selectedLayout, "spotlightSize")
@@ -2067,7 +2122,7 @@ local function CreateButtonSizePane()
     spotlightWidthSlider:SetPoint("TOPLEFT", 5, -90)
     
     -- spotlightHeight
-    spotlightHeightSlider = Cell:CreateSlider(L["Height"], page3, 20, 300, 117, 2, function(value)
+    spotlightHeightSlider = Cell:CreateSlider(L["Height"], page4, 20, 300, 117, 2, function(value)
         selectedLayoutTable["spotlight"][5][2] = value
         if selectedLayout == Cell.vars.currentLayout then
             Cell:Fire("UpdateLayout", selectedLayout, "spotlightSize")
@@ -2077,23 +2132,14 @@ local function CreateButtonSizePane()
     spotlightHeightSlider:SetPoint("TOPLEFT", spotlightWidthSlider, 0, -50)
 
     -- switch
-    switch = Cell:CreateTripleSwitch(buttonSizePane, {32, 10}, function(which)
-        if which == "LEFT" then
-            page1:Show()
-            page2:Hide()
-            page3:Hide()
-        elseif which == "CENTER" then
-            page1:Hide()
-            page2:Show()
-            page3:Hide()
-        else
-            page1:Hide()
-            page2:Hide()
-            page3:Show()
-        end
+    local switch = Cell:CreateFourfoldSwitch(buttonSizePane, {38, 10}, function(which)
+        if which == 1 then page1:Show() else page1:Hide() end
+        if which == 2 then page2:Show() else page2:Hide() end
+        if which == 3 then page3:Show() else page3:Hide() end
+        if which == 4 then page4:Show() else page4:Hide() end
     end)
     switch:SetPoint("BOTTOMRIGHT", buttonSizePane.line, "TOPRIGHT", 0, P:Scale(2))
-    switch:SetSelected("LEFT", true)
+    switch:SetSelected(1, true)
 end
 
 -------------------------------------------------
@@ -2285,20 +2331,54 @@ end
 -------------------------------------------------
 -- bar orientation
 -------------------------------------------------
-local orientationSwitch, rotateTexCB
+local barOrientationDropdown, rotateTexCB
 
 local function CreateBarOrientationPane()
     local barOrientationPane = Cell:CreateTitledPane(layoutsTab, L["Bar Orientation"], 205, 80)
     barOrientationPane:SetPoint("TOPLEFT", 5, -295)
 
-    orientationSwitch = Cell:CreateSwitch(barOrientationPane, {163, 20}, L["Horizontal"], "horizontal", L["Vertical"], "vertical", function(which)
-        selectedLayoutTable["barOrientation"][1] = which
+    local function SetOrientation(orientation)
+        selectedLayoutTable["barOrientation"][1] = orientation
         if selectedLayout == Cell.vars.currentLayout then
             Cell:Fire("UpdateLayout", selectedLayout, "barOrientation")
         end
         UpdatePreviewButton("barOrientation")
-    end)
-    orientationSwitch:SetPoint("TOPLEFT", 5, -27)
+    end
+
+    barOrientationDropdown = Cell:CreateDropdown(barOrientationPane, 163)
+    barOrientationDropdown:SetPoint("TOPLEFT", 5, -27)
+    barOrientationDropdown:SetItems({
+        {
+            ["text"] = L["Horizontal"],
+            ["value"] = "horizontal",
+            ["onClick"] = function()
+                SetOrientation("horizontal")
+            end,
+        },
+        {
+            ["text"] = L["Vertical"].." A",
+            ["value"] = "vertical",
+            ["onClick"] = function()
+                SetOrientation("vertical")
+            end,
+        },
+        {
+            ["text"] = L["Vertical"].." B",
+            ["value"] = "vertical_health",
+            ["onClick"] = function()
+                SetOrientation("vertical_health")
+            end,
+        },
+    })
+
+    -- orientationSwitch = Cell:CreateSwitch(barOrientationPane, {163, 20}, L["Horizontal"], "horizontal", L["Vertical"], "vertical", function(which)
+    --     selectedLayoutTable["barOrientation"][1] = which
+    --     if selectedLayout == Cell.vars.currentLayout then
+    --         Cell:Fire("UpdateLayout", selectedLayout, "barOrientation")
+    --     end
+    --     UpdatePreviewButton("barOrientation")
+    -- end)
+    -- orientationSwitch:SetPoint("TOPLEFT", 5, -27)
     
     rotateTexCB = Cell:CreateCheckButton(barOrientationPane, L["Rotate Texture"], function(checked)
         selectedLayoutTable["barOrientation"][2] = checked
@@ -2307,7 +2387,7 @@ local function CreateBarOrientationPane()
         end
         UpdatePreviewButton("barOrientation")
     end)
-    rotateTexCB:SetPoint("TOPLEFT", orientationSwitch, "BOTTOMLEFT", 0, -10)
+    rotateTexCB:SetPoint("TOPLEFT", barOrientationDropdown, "BOTTOMLEFT", 0, -10)
 end
 
 -------------------------------------------------
@@ -2320,16 +2400,15 @@ local function CreateOthersPane()
     othersPane:SetPoint("TOPLEFT", 222, -295)
 
     showNPCCB = Cell:CreateCheckButton(othersPane, L["Show NPC Frame"], function(checked)
-        selectedLayoutTable["friendlyNPC"][1] = checked
+        selectedLayoutTable["npc"][1] = checked
         if checked then
-            if previewMode ~= 0 then
-                UpdateNPCPreview()
-            end
+            UpdateNPCPreview()
         else
             if npcPreview:IsShown() then
                 UpdateNPCPreview()
             end
         end
+        separateNPCCB:SetEnabled(checked)
         if selectedLayout == Cell.vars.currentLayout then
             Cell:Fire("UpdateLayout", selectedLayout, "npc")
         end
@@ -2337,7 +2416,7 @@ local function CreateOthersPane()
     showNPCCB:SetPoint("TOPLEFT", 5, -27)
 
     separateNPCCB = Cell:CreateCheckButton(othersPane, L["Separate NPC Frame"], function(checked)
-        selectedLayoutTable["friendlyNPC"][2] = checked
+        selectedLayoutTable["npc"][2] = checked
         if checked then
             UpdateNPCPreview()
         else
@@ -2438,6 +2517,12 @@ LoadLayoutDB = function(layout)
     petHeightSlider:SetValue(selectedLayoutTable["pet"][5][2])
     petWidthSlider:SetEnabled(selectedLayoutTable["pet"][4])
     petHeightSlider:SetEnabled(selectedLayoutTable["pet"][4])
+    
+    npcSizeCB:SetChecked(selectedLayoutTable["npc"][4])
+    npcWidthSlider:SetValue(selectedLayoutTable["npc"][5][1])
+    npcHeightSlider:SetValue(selectedLayoutTable["npc"][5][2])
+    npcWidthSlider:SetEnabled(selectedLayoutTable["npc"][4])
+    npcHeightSlider:SetEnabled(selectedLayoutTable["npc"][4])
 
     spotlightSizeCB:SetChecked(selectedLayoutTable["spotlight"][4])
     spotlightWidthSlider:SetValue(selectedLayoutTable["spotlight"][5][1])
@@ -2472,12 +2557,13 @@ LoadLayoutDB = function(layout)
     anchorDropdown:SetSelectedValue(selectedLayoutTable["anchor"])
 
     -- bar orientation
-    orientationSwitch:SetSelected(selectedLayoutTable["barOrientation"][1])
+    barOrientationDropdown:SetSelectedValue(selectedLayoutTable["barOrientation"][1])
     rotateTexCB:SetChecked(selectedLayoutTable["barOrientation"][2])
 
     -- other frames
-    showNPCCB:SetChecked(selectedLayoutTable["friendlyNPC"][1])
-    separateNPCCB:SetChecked(selectedLayoutTable["friendlyNPC"][2])
+    showNPCCB:SetChecked(selectedLayoutTable["npc"][1])
+    separateNPCCB:SetChecked(selectedLayoutTable["npc"][2])
+    separateNPCCB:SetEnabled(selectedLayoutTable["npc"][1])
     partyPetsCB:SetChecked(selectedLayoutTable["pet"][1])
     raidPetsCB:SetChecked(selectedLayoutTable["pet"][2])
     spotlightCB:SetChecked(selectedLayoutTable["spotlight"][1])
@@ -2667,8 +2753,17 @@ local function ShowTab(tab)
 
             -- mask
             F:ApplyCombatFunctionToTab(layoutsTab)
+            F:ApplyCombatFunctionToTab(autoSwitchFrame)
             Cell:CreateMask(layoutsTab, nil, {1, -1, -1, 1})
             layoutsTab.mask:Hide()
+            Cell:CreateMask(autoSwitchFrame, nil, {1, -1, -1, 1})
+            autoSwitchFrame.mask:Hide()
+            layoutsTab.mask:SetScript("OnShow", function()
+                autoSwitchFrame.mask:Show()
+            end)
+            layoutsTab.mask:SetScript("OnHide", function()
+                autoSwitchFrame.mask:Hide()
+            end)
         end
         
         -- UpdateEnabledLayoutText()

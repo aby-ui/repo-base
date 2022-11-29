@@ -22,6 +22,17 @@ local Postal_BlackBook_Autocomplete_Flags = {
 	exclude = AUTOCOMPLETE_FLAG_BNET,
 }
 
+-- WoW 10.0 Release Show/Hide Frame Handlers
+function Postal_BlackBook:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(eventName, ...)
+	local paneType = ...
+	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_BlackBook:MAIL_SHOW() end
+end
+
+function Postal_BlackBook:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(eventName, ...)
+	local paneType = ...
+	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_BlackBook:MAIL_CLOSED() end
+end
+
 function Postal_BlackBook:OnEnable()
 	if not Postal_BlackBookButton then
 		-- Create the Menu Button
@@ -55,7 +66,11 @@ function Postal_BlackBook:OnEnable()
 	end
 	self:HookScript(SendMailNameEditBox, "OnEditFocusGained")
 	--self:SecureHook("AutoComplete_Update") --abyui
-	self:RegisterEvent("MAIL_SHOW")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:RegisterEvent("MAIL_SHOW")
+	else
+		Postal_BlackBook:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
+	end
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "AddAlt")
 
 	local exclude = bit.bor(db.AutoCompleteFriends and AUTOCOMPLETE_FLAG_NONE or AUTOCOMPLETE_FLAG_FRIEND,
@@ -90,13 +105,24 @@ function Postal_BlackBook:OnDisable()
 end
 
 function Postal_BlackBook:MAIL_SHOW()
-	self:RegisterEvent("MAIL_CLOSED", "Reset")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:RegisterEvent("MAIL_CLOSED", "Reset")
+	else
+		Postal_BlackBook:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", "Reset")
+	end
 	self:RegisterEvent("PLAYER_LEAVING_WORLD", "Reset")
 	if self.AddAlt then self:AddAlt() end
 end
 
+function Postal_BlackBook:MAIL_CLOSED()
+end
+
 function Postal_BlackBook:Reset(event)
-	self:UnregisterEvent("MAIL_CLOSED")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:UnregisterEvent("MAIL_CLOSED")
+	else
+		self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
+	end
 	self:UnregisterEvent("PLAYER_LEAVING_WORLD")
 end
 

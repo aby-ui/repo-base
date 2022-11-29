@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2499, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221125035412")
+mod:SetRevision("20221129005435")
 --mod:SetCreatureID(181224)--way too many CIDs to guess right now
 mod:SetEncounterID(2607)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -67,7 +67,7 @@ local timerLightningStrikesCD					= mod:NewAITimer(35, 376126, nil, nil, nil, 3)
 local timerElectricScalesCD						= mod:NewAITimer(35, 381249, nil, nil, nil, 2, nil, DBM_COMMON_L.HEALER_ICON)
 
 mod:AddSetIconOption("SetIconOnStaticCharge", 381615, true, 0, {1, 2, 3})
-mod:AddSetIconOption("SetIconVolatileSpark", 388635, true, 5, {8, 7, 6, 5, 4})
+mod:AddSetIconOption("SetIconVolatileSpark", 388635, false, 5, {8, 7, 6, 5, 4})
 --Intermission: The Primalist Strike
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25683))
 --Raszageth

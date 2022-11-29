@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local I = Cell.iFuncs
 local P = Cell.pixelPerfectFuncs
 local A = Cell.animations
@@ -199,7 +200,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 -- update format
                 if t["format"] then
                     indicator:SetFormat(t["format"])
-                    b.func.UpdateHealthText()
+                    B:UpdateHealthText(b)
                 end
                 -- update color
                 if t["color"] then
@@ -269,9 +270,9 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                         indicator:Hide()
                     end
                 elseif t["indicatorName"] == "playerRaidIcon" then
-                    b.func.UpdatePlayerRaidIcon(t["enabled"])
+                    B:UpdatePlayerRaidIcon(b, t["enabled"])
                 elseif t["indicatorName"] == "targetRaidIcon" then
-                    b.func.UpdateTargetRaidIcon(t["enabled"])
+                    B:UpdateTargetRaidIcon(b, t["enabled"])
                 else
                     UpdateIndicatorParentVisibility(b, t["indicatorName"], t["enabled"])
                 end
@@ -285,7 +286,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             end
             
             --! update pixel perfect for widgets
-            b.func.UpdatePixelPerfect()
+            B:UpdatePixelPerfect(b)
         end, indicatorsInitialized) -- -- NOTE: indicatorsInitialized = false, update ALL GROUP TYPE; indicatorsInitialized = true, just update CURRENT GROUP TYPE
         indicatorsInitialized = true
     else
@@ -311,11 +312,11 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 end, true)
             elseif indicatorName == "playerRaidIcon" then
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdatePlayerRaidIcon(value)
+                    B:UpdatePlayerRaidIcon(b, value)
                 end, true)
             elseif indicatorName == "targetRaidIcon" then
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdateTargetRaidIcon(value)
+                    B:UpdateTargetRaidIcon(b, value)
                 end, true)
             elseif indicatorName == "nameText" then
                 F:IterateAllUnitButtons(function(b)
@@ -327,22 +328,22 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 end, true)
             elseif indicatorName == "statusText" then
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdateStatusText()
+                    B:UpdateStatusText(b)
                 end, true)
             elseif indicatorName == "healthText" then
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdateHealthText()
+                    B:UpdateHealthText(b)
                 end, true)
             elseif indicatorName == "shieldBar" then
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdateShield()
+                    B:UpdateShield(b)
                 end, true)
             elseif indicatorName == "healthThresholds" then
                 if value then
                     I:UpdateHealthThresholds()
                 end
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdateHealth(b)
+                    B.UpdateHealth(b)
                 end, true)
             else
                 -- refresh
@@ -421,7 +422,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
             F:IterateAllUnitButtons(function(b)
                 local indicator = b.indicators[indicatorName]
                 indicator:SetFormat(value)
-                b.func.UpdateHealthText()
+                B:UpdateHealthText(b)
             end, true)
         elseif setting == "color" then
             F:IterateAllUnitButtons(function(b)
@@ -475,7 +476,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
         elseif setting == "thresholds" then
             I:UpdateHealthThresholds()
             F:IterateAllUnitButtons(function(b)
-                b.func.UpdateHealth(b)
+                B.UpdateHealth(b)
             end, true)
         elseif setting == "checkbutton" then
             if value == "showGroupNumber" then
@@ -486,7 +487,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 --! 血量文字指示器需要立即被刷新
                 indicatorCustoms[indicatorName] = value2
                 F:IterateAllUnitButtons(function(b)
-                    b.func.UpdateHealthText()
+                    B:UpdateHealthText(b)
                 end, true)
             elseif value == "showDispelTypeIcons" then
                 F:IterateAllUnitButtons(function(b)
@@ -1287,7 +1288,7 @@ local function ShowPowerBar(b, s)
 
     P:ClearPoints(b.widget.healthBar)
     P:ClearPoints(b.widget.powerBar)
-    if b.orientation == "horizontal" then
+    if b.orientation == "horizontal" or b.orientation == "vertical_health" then
         P:Point(b.widget.healthBar, "TOPLEFT", b, "TOPLEFT", 1, -1)
         P:Point(b.widget.healthBar, "BOTTOMRIGHT", b, "BOTTOMRIGHT", -1, s + 2)
         P:Point(b.widget.powerBar, "TOPLEFT", b.widget.healthBar, "BOTTOMLEFT", 0, -1)
@@ -2377,6 +2378,431 @@ local function UnitButton_OnUpdate(self, elapsed)
 end
 
 -------------------------------------------------
+-- button functions
+-------------------------------------------------
+function B:SetPowerSize(button, size)
+    if size == 0 then
+        HidePowerBar(button)
+    else
+        if ShouldShowPowerBar(button) then
+            ShowPowerBar(button, size)
+        else
+            HidePowerBar(button)
+        end
+    end
+end
+
+function B:UpdateShields(button)
+    predictionEnabled = CellDB["appearance"]["healPrediction"][1]
+    absorbEnabled = CellDB["appearance"]["healAbsorb"][1]
+    shieldEnabled = CellDB["appearance"]["shield"][1]
+    overshieldEnabled = CellDB["appearance"]["overshield"]
+
+    button.widget.absorbsBar:SetVertexColor(CellDB["appearance"]["healAbsorb"][2][1], CellDB["appearance"]["healAbsorb"][2][2], CellDB["appearance"]["healAbsorb"][2][3], CellDB["appearance"]["healAbsorb"][2][4])
+    button.widget.shieldBar:SetVertexColor(CellDB["appearance"]["shield"][2][1], CellDB["appearance"]["shield"][2][2], CellDB["appearance"]["shield"][2][3], CellDB["appearance"]["shield"][2][4])
+
+    UnitButton_UpdateHealPrediction(button)
+    UnitButton_UpdateHealAbsorbs(button)
+    UnitButton_UpdateShieldAbsorbs(button)
+end
+
+function B:SetTexture(button, tex)
+    button.widget.healthBar:SetStatusBarTexture(tex)
+    button.widget.healthBarLoss:SetTexture(tex)
+    button.widget.powerBar:SetStatusBarTexture(tex)
+    button.widget.powerBarLoss:SetTexture(tex)
+    button.widget.incomingHeal:SetTexture(tex)
+    button.widget.damageFlashTex:SetTexture(tex)
+end
+
+function B:UpdateColor(button)
+    UnitButton_UpdateHealthColor(button)
+    UnitButton_UpdatePowerType(button)
+    button:SetBackdropColor(0, 0, 0, CellDB["appearance"]["bgAlpha"])
+end
+
+function B:SetOrientation(button, orientation, rotateTexture)
+    local healthBar = button.widget.healthBar
+    local healthBarLoss = button.widget.healthBarLoss
+    local powerBar = button.widget.powerBar
+    local powerBarLoss = button.widget.powerBarLoss
+    local incomingHeal = button.widget.incomingHeal
+    local damageFlashTex = button.widget.damageFlashTex
+    local gapTexture = button.widget.gapTexture
+    local shieldBar = button.widget.shieldBar
+    local overShieldGlow = button.widget.overShieldGlow
+    local absorbsBar = button.widget.absorbsBar
+
+    button.orientation = orientation
+    if orientation == "vertical_health" then
+        healthBar:SetOrientation("vertical")
+        powerBar:SetOrientation("horizontal")
+    else
+        healthBar:SetOrientation(orientation)
+        powerBar:SetOrientation(orientation)
+    end
+    healthBar:SetRotatesTexture(rotateTexture)
+    powerBar:SetRotatesTexture(rotateTexture)
+    
+    button.indicators.healthThresholds:SetOrientation(orientation)
+
+    if rotateTexture then
+        F:RotateTexture(healthBarLoss, 90)
+        F:RotateTexture(powerBarLoss, 90)
+        F:RotateTexture(incomingHeal, 90)
+        F:RotateTexture(damageFlashTex, 90)
+        -- F:RotateTexture(shieldBar, 90)
+        -- F:RotateTexture(absorbsBar, 90)
+    else
+        F:RotateTexture(healthBarLoss, 0)
+        F:RotateTexture(powerBarLoss, 0)
+        F:RotateTexture(incomingHeal, 0)
+        F:RotateTexture(overShieldGlow, 0)
+        F:RotateTexture(damageFlashTex, 0)
+        -- F:RotateTexture(shieldBar, 0)
+        -- F:RotateTexture(absorbsBar, 0)
+    end
+    
+    if orientation == "horizontal" then
+        -- update healthBarLoss
+        P:ClearPoints(healthBarLoss)
+        P:Point(healthBarLoss, "TOPRIGHT", healthBar)
+        P:Point(healthBarLoss, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        
+        -- update powerBarLoss
+        P:ClearPoints(powerBarLoss)
+        P:Point(powerBarLoss, "TOPRIGHT", powerBar)
+        P:Point(powerBarLoss, "BOTTOMLEFT", powerBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        
+        -- update gapTexture
+        P:ClearPoints(gapTexture)
+        P:Point(gapTexture, "BOTTOMLEFT", powerBar, "TOPLEFT")
+        P:Point(gapTexture, "BOTTOMRIGHT", powerBar, "TOPRIGHT")
+        P:Height(gapTexture, 1)
+        
+        -- update incomingHeal
+        P:ClearPoints(incomingHeal)
+        P:Point(incomingHeal, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        P:Point(incomingHeal, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        function incomingHeal:SetValue(incomingPercent)
+            local barWidth = healthBar:GetWidth()
+            local incomingHealWidth = incomingPercent * barWidth
+            local lostHealthWidth = barWidth * (1 - button.state.healthPercent)
+        
+            -- print(incomingPercent, barWidth, incomingHealWidth, lostHealthWidth)
+            -- FIXME: if incomingPercent is a very tiny number, like 0.005
+            -- P:Scale(incomingHealWidth) ==> 0
+            --! if width is set to 0, then the ACTUAL width may be 256!!!
+
+            if lostHealthWidth == 0 then
+                incomingHeal:Hide()
+            else
+                if lostHealthWidth > incomingHealWidth then
+                    incomingHeal:SetWidth(incomingHealWidth)
+                else
+                    incomingHeal:SetWidth(lostHealthWidth)
+                end
+                incomingHeal:Show()
+            end
+        end
+        
+        -- update shieldBar
+        P:ClearPoints(shieldBar)
+        P:Point(shieldBar, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        P:Point(shieldBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        function shieldBar:SetValue(shieldPercent)
+            local barWidth = healthBar:GetWidth()
+            if shieldPercent + button.state.healthPercent > 1 then -- overshield
+                local p = 1 - button.state.healthPercent
+                if p ~= 0 then
+                    if shieldEnabled then
+                        shieldBar:SetWidth(p * barWidth)
+                        shieldBar:Show()
+                    else
+                        shieldBar:Hide()
+                    end
+                else
+                    shieldBar:Hide()
+                end
+                if overshieldEnabled then
+                    overShieldGlow:Show()
+                else
+                    overShieldGlow:Hide()
+                end
+            else
+                if shieldEnabled then
+                    shieldBar:SetWidth(shieldPercent * barWidth)
+                    shieldBar:Show()
+                else
+                    shieldBar:Hide()
+                end
+                overShieldGlow:Hide()
+            end
+        end
+        
+        -- update overShieldGlow
+        P:ClearPoints(overShieldGlow)
+        P:Point(overShieldGlow, "BOTTOMLEFT", healthBar, "BOTTOMRIGHT", -4, 0)
+        P:Point(overShieldGlow, "TOPLEFT", healthBar, "TOPRIGHT", -4, 0)
+        P:Width(overShieldGlow, 8)
+        F:RotateTexture(overShieldGlow, 0)
+        
+        -- update absorbsBar
+        P:ClearPoints(absorbsBar)
+        P:Point(absorbsBar, "TOPRIGHT", healthBar:GetStatusBarTexture())
+        P:Point(absorbsBar, "BOTTOMRIGHT", healthBar:GetStatusBarTexture())
+        function absorbsBar:SetValue(absorbsPercent)
+            local barWidth = healthBar:GetWidth()
+            absorbsBar:SetWidth(absorbsPercent * barWidth)
+            absorbsBar:Show()
+        end
+        
+        -- update damageFlashTex
+        P:ClearPoints(damageFlashTex)
+        P:Point(damageFlashTex, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        P:Point(damageFlashTex, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+        function damageFlashTex:SetValue(lostPercent)
+            local barWidth = healthBar:GetWidth()
+            damageFlashTex:SetWidth(barWidth * lostPercent)
+        end
+    else -- vertical
+        P:ClearPoints(healthBarLoss)
+        P:Point(healthBarLoss, "TOPRIGHT", healthBar)
+        P:Point(healthBarLoss, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
+        
+        if orientation == "vertical" then
+            -- update powerBarLoss
+            P:ClearPoints(powerBarLoss)
+            P:Point(powerBarLoss, "TOPRIGHT", powerBar)
+            P:Point(powerBarLoss, "BOTTOMLEFT", powerBar:GetStatusBarTexture(), "TOPLEFT")
+            
+            -- update gapTexture
+            P:ClearPoints(gapTexture)
+            P:Point(gapTexture, "TOPRIGHT", powerBar, "TOPLEFT")
+            P:Point(gapTexture, "BOTTOMRIGHT", powerBar, "BOTTOMLEFT")
+            P:Width(gapTexture, 1)
+        else -- vertical_health
+            -- update powerBarLoss
+            P:ClearPoints(powerBarLoss)
+            P:Point(powerBarLoss, "TOPRIGHT", powerBar)
+            P:Point(powerBarLoss, "BOTTOMLEFT", powerBar:GetStatusBarTexture(), "BOTTOMRIGHT")
+            
+            -- update gapTexture
+            P:ClearPoints(gapTexture)
+            P:Point(gapTexture, "BOTTOMLEFT", powerBar, "TOPLEFT")
+            P:Point(gapTexture, "BOTTOMRIGHT", powerBar, "TOPRIGHT")
+            P:Height(gapTexture, 1)
+        end
+        
+        -- update incomingHeal
+        P:ClearPoints(incomingHeal)
+        P:Point(incomingHeal, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
+        P:Point(incomingHeal, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        function incomingHeal:SetValue(incomingPercent)
+            local barHeight = healthBar:GetHeight()
+            local incomingHealHeight = incomingPercent * barHeight
+            local lostHealthHeight = barHeight * (1 - button.state.healthPercent)
+        
+            if lostHealthHeight == 0 then
+                incomingHeal:Hide()
+            else
+                if lostHealthHeight > incomingHealHeight then
+                    incomingHeal:SetHeight(incomingHealHeight)
+                else
+                    incomingHeal:SetHeight(lostHealthHeight)
+                end
+                incomingHeal:Show()
+            end
+        end
+        
+        -- update shieldBar
+        P:ClearPoints(shieldBar)
+        P:Point(shieldBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
+        P:Point(shieldBar, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        function shieldBar:SetValue(shieldPercent)
+            local barHeight = healthBar:GetHeight()
+            if shieldPercent + button.state.healthPercent > 1 then -- overshield
+                local p = 1 - button.state.healthPercent
+                if p ~= 0 then
+                    if shieldEnabled then
+                        shieldBar:SetHeight(p * barHeight)
+                        shieldBar:Show()
+                    else
+                        shieldBar:Hide()
+                    end
+                else
+                    shieldBar:Hide()
+                end
+                if overshieldEnabled then
+                    overShieldGlow:Show()
+                else
+                    overShieldGlow:Hide()
+                end
+            else
+                if shieldEnabled then
+                    shieldBar:SetHeight(shieldPercent * barHeight)
+                    shieldBar:Show()
+                else
+                    shieldBar:Hide()
+                end
+                overShieldGlow:Hide()
+            end
+        end
+        
+        -- update overShieldGlow
+        P:ClearPoints(overShieldGlow)
+        P:Point(overShieldGlow, "BOTTOMLEFT", healthBar, "TOPLEFT", 0, -4)
+        P:Point(overShieldGlow, "BOTTOMRIGHT", healthBar, "TOPRIGHT", 0, -4)
+        P:Height(overShieldGlow, 8)
+        F:RotateTexture(overShieldGlow, 90)
+        
+        -- update absorbsBar
+        P:ClearPoints(absorbsBar)
+        P:Point(absorbsBar, "TOPLEFT", healthBar:GetStatusBarTexture())
+        P:Point(absorbsBar, "TOPRIGHT", healthBar:GetStatusBarTexture())
+        function absorbsBar:SetValue(absorbsPercent)
+            local barHeight = healthBar:GetHeight()
+            absorbsBar:SetHeight(absorbsPercent * barHeight)
+            absorbsBar:Show()
+        end
+        
+        -- update damageFlashTex
+        P:ClearPoints(damageFlashTex)
+        P:Point(damageFlashTex, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
+        P:Point(damageFlashTex, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
+        function damageFlashTex:SetValue(lostPercent)
+            local barHeight = healthBar:GetHeight()
+            damageFlashTex:SetHeight(barHeight * lostPercent)
+        end
+    end
+
+    -- update consumables
+    I:UpdateConsumablesOrientation(button, orientation)
+end
+
+function B:UpdateHighlightColor(button)
+    button.widget.targetHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["targetColor"]))
+    button.widget.mouseoverHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["mouseoverColor"]))
+end
+
+function B:UpdateHighlightSize(button)
+    local targetHighlight = button.widget.targetHighlight
+    local mouseoverHighlight = button.widget.mouseoverHighlight
+    
+    local size = CellDB["appearance"]["highlightSize"]
+    
+    if size ~= 0 then
+        highlightEnabled = true
+        
+        P:ClearPoints(targetHighlight)
+        P:ClearPoints(mouseoverHighlight)
+
+        -- update point
+        if size < 0 then
+            size = abs(size)
+            P:Point(targetHighlight, "TOPLEFT", button, "TOPLEFT")
+            P:Point(targetHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT")
+            P:Point(mouseoverHighlight, "TOPLEFT", button, "TOPLEFT")
+            P:Point(mouseoverHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT")
+        else
+            P:Point(targetHighlight, "TOPLEFT", button, "TOPLEFT", -size, size)
+            P:Point(targetHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT", size, -size)
+            P:Point(mouseoverHighlight, "TOPLEFT", button, "TOPLEFT", -size, size)
+            P:Point(mouseoverHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT", size, -size)
+        end
+
+        -- update thickness
+        targetHighlight:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(size)})
+        mouseoverHighlight:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(size)})
+
+        -- update color
+        targetHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["targetColor"]))
+        mouseoverHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["mouseoverColor"]))
+
+        UnitButton_UpdateTarget(button) -- 0->!0 show highlight again
+    else
+        highlightEnabled = false
+        targetHighlight:Hide()
+        mouseoverHighlight:Hide()
+    end
+end
+
+-- raidIcons
+function B:UpdatePlayerRaidIcon(button, enabled)
+    if not button:IsShown() then return end
+    UnitButton_UpdatePlayerRaidIcon(button)
+    if enabled then
+        button:RegisterEvent("RAID_TARGET_UPDATE")
+    else
+        button:UnregisterEvent("RAID_TARGET_UPDATE")
+    end
+end
+
+function B:UpdateTargetRaidIcon(button, enabled)
+    if not button:IsShown() then return end
+    UnitButton_UpdateTargetRaidIcon(button)
+    if enabled then
+        button:RegisterEvent("UNIT_TARGET")
+    else
+        button:UnregisterEvent("UNIT_TARGET")
+    end
+end
+
+-- healthText
+function B:UpdateHealthText(button)
+    if button.state.displayedUnit then
+        UpdateUnitHealthState(button)
+    end
+end
+
+-- statusText
+function B:UpdateStatusText(button)
+    UnitButton_UpdateStatusText(button)
+end
+
+-- shields
+function B:UpdateShield(button)
+    UnitButton_UpdateShieldAbsorbs(button)
+end
+
+-- pixel perfect
+function B:UpdatePixelPerfect(button, updateIndicators)
+    button:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(1)})
+    button:SetBackdropColor(0, 0, 0, CellDB["appearance"]["bgAlpha"])
+    button:SetBackdropBorderColor(0, 0, 0, 1)
+    P:Resize(button)
+
+    P:Repoint(button.widget.healthBar)
+    P:Repoint(button.widget.healthBarLoss)
+    P:Repoint(button.widget.powerBar)
+    P:Repoint(button.widget.powerBarLoss)
+    P:Repoint(button.widget.gapTexture)
+    P:Resize(button.widget.gapTexture)
+
+    P:Repoint(button.widget.incomingHeal)
+    P:Repoint(button.widget.shieldBar)
+    P:Repoint(button.widget.overShieldGlow)
+    P:Repoint(button.widget.absorbsBar)
+    P:Repoint(button.widget.damageFlashTex)
+    
+    B:UpdateHighlightSize(button)
+
+    if updateIndicators then
+        -- indicators
+        for _, i in pairs(button.indicators) do
+            if i.UpdatePixelPerfect then
+                i:UpdatePixelPerfect() 
+            end
+        end
+    end
+end
+
+B.UpdateAll = UnitButton_UpdateAll
+B.UpdateHealth = UnitButton_UpdateHealth
+B.UpdateHealthMax = UnitButton_UpdateHealthMax
+B.UpdateAuras = UnitButton_UpdateAuras
+
+-------------------------------------------------
 -- unit button init
 -------------------------------------------------
 -- local startTimeCache, statusCache = {}, {}
@@ -2477,18 +2903,6 @@ function F:UnitButton_OnLoad(button)
     -- P:Point(powerBarLoss, "BOTTOMLEFT", powerBar:GetStatusBarTexture(), "BOTTOMRIGHT")
     powerBarLoss:SetTexture(Cell.vars.texture)
 
-    button.func.SetPowerSize = function(size)
-        if size == 0 then
-            HidePowerBar(button)
-        else
-            if ShouldShowPowerBar(button) then
-                ShowPowerBar(button, size)
-            else
-                HidePowerBar(button)
-            end
-        end
-    end
-    
     -- incoming heal
     local incomingHeal = healthBar:CreateTexture(name.."IncomingHealBar", "ARTWORK", nil, -6)
     button.widget.incomingHeal = incomingHeal
@@ -2533,20 +2947,6 @@ function F:UnitButton_OnLoad(button)
     absorbsBar:SetBlendMode("ADD")
     absorbsBar:Hide()
     absorbsBar.SetValue = DumbFunc
-
-    button.func.UpdateShields = function()
-        predictionEnabled = CellDB["appearance"]["healPrediction"][1]
-        absorbEnabled = CellDB["appearance"]["healAbsorb"][1]
-        shieldEnabled = CellDB["appearance"]["shield"][1]
-        overshieldEnabled = CellDB["appearance"]["overshield"]
-
-        button.widget.absorbsBar:SetVertexColor(CellDB["appearance"]["healAbsorb"][2][1], CellDB["appearance"]["healAbsorb"][2][2], CellDB["appearance"]["healAbsorb"][2][3], CellDB["appearance"]["healAbsorb"][2][4])
-        button.widget.shieldBar:SetVertexColor(CellDB["appearance"]["shield"][2][1], CellDB["appearance"]["shield"][2][2], CellDB["appearance"]["shield"][2][3], CellDB["appearance"]["shield"][2][4])
-
-        UnitButton_UpdateHealPrediction(button)
-        UnitButton_UpdateHealAbsorbs(button)
-        UnitButton_UpdateShieldAbsorbs(button)
-    end
 
     -- bar animation
     -- flash
@@ -2593,249 +2993,6 @@ function F:UnitButton_OnLoad(button)
         end
     end
 
-    button.func.SetTexture = function(tex)
-        healthBar:SetStatusBarTexture(tex)
-        healthBarLoss:SetTexture(tex)
-        powerBar:SetStatusBarTexture(tex)
-        powerBarLoss:SetTexture(tex)
-        incomingHeal:SetTexture(tex)
-        damageFlashTex:SetTexture(tex)
-    end
-
-    button.func.UpdateColor = function()
-        UnitButton_UpdateHealthColor(button)
-        UnitButton_UpdatePowerType(button)
-        button:SetBackdropColor(0, 0, 0, CellDB["appearance"]["bgAlpha"])
-    end
-
-    -- bar orientation
-    button.func.SetOrientation = function(orientation, rotateTexture)
-        button.orientation = orientation
-        healthBar:SetOrientation(orientation)
-        healthBar:SetRotatesTexture(rotateTexture)
-        powerBar:SetOrientation(orientation)
-        powerBar:SetRotatesTexture(rotateTexture)
-        
-        button.indicators.healthThresholds:SetOrientation(orientation)
-
-        if rotateTexture then
-            F:RotateTexture(healthBarLoss, 90)
-            F:RotateTexture(powerBarLoss, 90)
-            F:RotateTexture(incomingHeal, 90)
-            F:RotateTexture(damageFlashTex, 90)
-            -- F:RotateTexture(shieldBar, 90)
-            -- F:RotateTexture(absorbsBar, 90)
-        else
-            F:RotateTexture(healthBarLoss, 0)
-            F:RotateTexture(powerBarLoss, 0)
-            F:RotateTexture(incomingHeal, 0)
-            F:RotateTexture(overShieldGlow, 0)
-            F:RotateTexture(damageFlashTex, 0)
-            -- F:RotateTexture(shieldBar, 0)
-            -- F:RotateTexture(absorbsBar, 0)
-        end
-        
-        if orientation == "horizontal" then
-            -- update healthBarLoss
-            P:ClearPoints(healthBarLoss)
-            P:Point(healthBarLoss, "TOPRIGHT", healthBar)
-            P:Point(healthBarLoss, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-            
-            -- update powerBarLoss
-            P:ClearPoints(powerBarLoss)
-            P:Point(powerBarLoss, "TOPRIGHT", powerBar)
-            P:Point(powerBarLoss, "BOTTOMLEFT", powerBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-            
-            -- update gapTexture
-            P:ClearPoints(gapTexture)
-            P:Point(gapTexture, "BOTTOMLEFT", powerBar, "TOPLEFT")
-            P:Point(gapTexture, "BOTTOMRIGHT", powerBar, "TOPRIGHT")
-            P:Height(gapTexture, 1)
-            
-            -- update incomingHeal
-            P:ClearPoints(incomingHeal)
-            P:Point(incomingHeal, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-            P:Point(incomingHeal, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-            function incomingHeal:SetValue(incomingPercent)
-                local barWidth = healthBar:GetWidth()
-                local incomingHealWidth = incomingPercent * barWidth
-                local lostHealthWidth = barWidth * (1 - button.state.healthPercent)
-            
-                -- print(incomingPercent, barWidth, incomingHealWidth, lostHealthWidth)
-                -- FIXME: if incomingPercent is a very tiny number, like 0.005
-                -- P:Scale(incomingHealWidth) ==> 0
-                --! if width is set to 0, then the ACTUAL width may be 256!!!
-
-                if lostHealthWidth == 0 then
-                    incomingHeal:Hide()
-                else
-                    if lostHealthWidth > incomingHealWidth then
-                        incomingHeal:SetWidth(incomingHealWidth)
-                    else
-                        incomingHeal:SetWidth(lostHealthWidth)
-                    end
-                    incomingHeal:Show()
-                end
-            end
-            
-            -- update shieldBar
-            P:ClearPoints(shieldBar)
-            P:Point(shieldBar, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-            P:Point(shieldBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-            function shieldBar:SetValue(shieldPercent)
-                local barWidth = healthBar:GetWidth()
-                if shieldPercent + button.state.healthPercent > 1 then -- overshield
-                    local p = 1 - button.state.healthPercent
-                    if p ~= 0 then
-                        if shieldEnabled then
-                            shieldBar:SetWidth(p * barWidth)
-                            shieldBar:Show()
-                        else
-                            shieldBar:Hide()
-                        end
-                    else
-                        shieldBar:Hide()
-                    end
-                    if overshieldEnabled then
-                        overShieldGlow:Show()
-                    else
-                        overShieldGlow:Hide()
-                    end
-                else
-                    if shieldEnabled then
-                        shieldBar:SetWidth(shieldPercent * barWidth)
-                        shieldBar:Show()
-                    else
-                        shieldBar:Hide()
-                    end
-                    overShieldGlow:Hide()
-                end
-            end
-            
-            -- update overShieldGlow
-            P:ClearPoints(overShieldGlow)
-            P:Point(overShieldGlow, "BOTTOMLEFT", healthBar, "BOTTOMRIGHT", -4, 0)
-            P:Point(overShieldGlow, "TOPLEFT", healthBar, "TOPRIGHT", -4, 0)
-            P:Width(overShieldGlow, 8)
-            F:RotateTexture(overShieldGlow, 0)
-            
-            -- update absorbsBar
-            P:ClearPoints(absorbsBar)
-            P:Point(absorbsBar, "TOPRIGHT", healthBar:GetStatusBarTexture())
-            P:Point(absorbsBar, "BOTTOMRIGHT", healthBar:GetStatusBarTexture())
-            function absorbsBar:SetValue(absorbsPercent)
-                local barWidth = healthBar:GetWidth()
-                absorbsBar:SetWidth(absorbsPercent * barWidth)
-                absorbsBar:Show()
-            end
-            
-            -- update damageFlashTex
-            P:ClearPoints(damageFlashTex)
-            P:Point(damageFlashTex, "TOPLEFT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-            P:Point(damageFlashTex, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "BOTTOMRIGHT")
-            function damageFlashTex:SetValue(lostPercent)
-                local barWidth = healthBar:GetWidth()
-                damageFlashTex:SetWidth(barWidth * lostPercent)
-            end
-        else -- vertical
-            P:ClearPoints(healthBarLoss)
-            P:Point(healthBarLoss, "TOPRIGHT", healthBar)
-            P:Point(healthBarLoss, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
-            
-            -- update powerBarLoss
-            P:ClearPoints(powerBarLoss)
-            P:Point(powerBarLoss, "TOPRIGHT", powerBar)
-            P:Point(powerBarLoss, "BOTTOMLEFT", powerBar:GetStatusBarTexture(), "TOPLEFT")
-            
-            -- update gapTexture
-            P:ClearPoints(gapTexture)
-            P:Point(gapTexture, "TOPRIGHT", powerBar, "TOPLEFT")
-            P:Point(gapTexture, "BOTTOMRIGHT", powerBar, "BOTTOMLEFT")
-            P:Width(gapTexture, 1)
-            
-            -- update incomingHeal
-            P:ClearPoints(incomingHeal)
-            P:Point(incomingHeal, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
-            P:Point(incomingHeal, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-            function incomingHeal:SetValue(incomingPercent)
-                local barHeight = healthBar:GetHeight()
-                local incomingHealHeight = incomingPercent * barHeight
-                local lostHealthHeight = barHeight * (1 - button.state.healthPercent)
-            
-                if lostHealthHeight == 0 then
-                    incomingHeal:Hide()
-                else
-                    if lostHealthHeight > incomingHealHeight then
-                        incomingHeal:SetHeight(incomingHealHeight)
-                    else
-                        incomingHeal:SetHeight(lostHealthHeight)
-                    end
-                    incomingHeal:Show()
-                end
-            end
-            
-            -- update shieldBar
-            P:ClearPoints(shieldBar)
-            P:Point(shieldBar, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
-            P:Point(shieldBar, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-            function shieldBar:SetValue(shieldPercent)
-                local barHeight = healthBar:GetHeight()
-                if shieldPercent + button.state.healthPercent > 1 then -- overshield
-                    local p = 1 - button.state.healthPercent
-                    if p ~= 0 then
-                        if shieldEnabled then
-                            shieldBar:SetHeight(p * barHeight)
-                            shieldBar:Show()
-                        else
-                            shieldBar:Hide()
-                        end
-                    else
-                        shieldBar:Hide()
-                    end
-                    if overshieldEnabled then
-                        overShieldGlow:Show()
-                    else
-                        overShieldGlow:Hide()
-                    end
-                else
-                    if shieldEnabled then
-                        shieldBar:SetHeight(shieldPercent * barHeight)
-                        shieldBar:Show()
-                    else
-                        shieldBar:Hide()
-                    end
-                    overShieldGlow:Hide()
-                end
-            end
-            
-            -- update overShieldGlow
-            P:ClearPoints(overShieldGlow)
-            P:Point(overShieldGlow, "BOTTOMLEFT", healthBar, "TOPLEFT", 0, -4)
-            P:Point(overShieldGlow, "BOTTOMRIGHT", healthBar, "TOPRIGHT", 0, -4)
-            P:Height(overShieldGlow, 8)
-            F:RotateTexture(overShieldGlow, 90)
-            
-            -- update absorbsBar
-            P:ClearPoints(absorbsBar)
-            P:Point(absorbsBar, "TOPLEFT", healthBar:GetStatusBarTexture())
-            P:Point(absorbsBar, "TOPRIGHT", healthBar:GetStatusBarTexture())
-            function absorbsBar:SetValue(absorbsPercent)
-                local barHeight = healthBar:GetHeight()
-                absorbsBar:SetHeight(absorbsPercent * barHeight)
-                absorbsBar:Show()
-            end
-            
-            -- update damageFlashTex
-            P:ClearPoints(damageFlashTex)
-            P:Point(damageFlashTex, "BOTTOMLEFT", healthBar:GetStatusBarTexture(), "TOPLEFT")
-            P:Point(damageFlashTex, "BOTTOMRIGHT", healthBar:GetStatusBarTexture(), "TOPRIGHT")
-            function damageFlashTex:SetValue(lostPercent)
-                local barHeight = healthBar:GetHeight()
-                damageFlashTex:SetHeight(barHeight * lostPercent)
-            end
-        end
-    end
-
     -- target highlight
     local targetHighlight = CreateFrame("Frame", name.."TargetHighlight", button, "BackdropTemplate")
     button.widget.targetHighlight = targetHighlight
@@ -2855,50 +3012,6 @@ function F:UnitButton_OnLoad(button)
     -- P:Point(mouseoverHighlight, "TOPLEFT", button, "TOPLEFT", -1, 1)
     -- P:Point(mouseoverHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
     mouseoverHighlight:Hide()
-
-    button.func.UpdateHighlightColor = function()
-        targetHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["targetColor"]))
-        mouseoverHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["mouseoverColor"]))
-    end
-    
-    button.func.UpdateHighlightSize = function()
-        local size = CellDB["appearance"]["highlightSize"]
-        
-        if size ~= 0 then
-            highlightEnabled = true
-            
-            P:ClearPoints(targetHighlight)
-            P:ClearPoints(mouseoverHighlight)
-
-            -- update point
-            if size < 0 then
-                size = abs(size)
-                P:Point(targetHighlight, "TOPLEFT", button, "TOPLEFT")
-                P:Point(targetHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT")
-                P:Point(mouseoverHighlight, "TOPLEFT", button, "TOPLEFT")
-                P:Point(mouseoverHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT")
-            else
-                P:Point(targetHighlight, "TOPLEFT", button, "TOPLEFT", -size, size)
-                P:Point(targetHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT", size, -size)
-                P:Point(mouseoverHighlight, "TOPLEFT", button, "TOPLEFT", -size, size)
-                P:Point(mouseoverHighlight, "BOTTOMRIGHT", button, "BOTTOMRIGHT", size, -size)
-            end
-
-            -- update thickness
-            targetHighlight:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(size)})
-            mouseoverHighlight:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(size)})
-
-            -- update color
-            targetHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["targetColor"]))
-            mouseoverHighlight:SetBackdropBorderColor(unpack(CellDB["appearance"]["mouseoverColor"]))
-
-            UnitButton_UpdateTarget(button) -- 0->!0 show highlight again
-        else
-            highlightEnabled = false
-            targetHighlight:Hide()
-            mouseoverHighlight:Hide()
-        end
-    end
 
     -- readyCheck highlight
     -- local readyCheckHighlight = button:CreateTexture(name.."ReadyCheckHighlight", "BACKGROUND")
@@ -2935,81 +3048,6 @@ function F:UnitButton_OnLoad(button)
     button.indicators.aggroBar = aggroBar
     -- aggroBar:SetPoint("BOTTOMLEFT", overlayFrame, "TOPLEFT", 1, 0)
     aggroBar:Hide()
-
-    -- raidIcons
-    button.func.UpdatePlayerRaidIcon = function(enabled)
-        if not button:IsShown() then return end
-        UnitButton_UpdatePlayerRaidIcon(button)
-        if enabled then
-            button:RegisterEvent("RAID_TARGET_UPDATE")
-        else
-            button:UnregisterEvent("RAID_TARGET_UPDATE")
-        end
-    end
-    button.func.UpdateTargetRaidIcon = function(enabled)
-        if not button:IsShown() then return end
-        UnitButton_UpdateTargetRaidIcon(button)
-        if enabled then
-            button:RegisterEvent("UNIT_TARGET")
-        else
-            button:UnregisterEvent("UNIT_TARGET")
-        end
-    end
-
-    -- healthText
-    button.func.UpdateHealthText = function()
-        if button.state.displayedUnit then
-            UpdateUnitHealthState(button)
-        end
-    end
-
-    -- statusText
-    button.func.UpdateStatusText = function()
-        UnitButton_UpdateStatusText(button)
-    end
-
-    -- shields
-    button.func.UpdateShield = function()
-        UnitButton_UpdateShieldAbsorbs(button)
-    end
-
-    -- pixel perfect
-    button.func.UpdatePixelPerfect = function(updateIndicators)
-        button:SetBackdrop({bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = P:Scale(1)})
-        button:SetBackdropColor(0, 0, 0, CellDB["appearance"]["bgAlpha"])
-        button:SetBackdropBorderColor(0, 0, 0, 1)
-        P:Resize(button)
-
-        P:Repoint(healthBar)
-        P:Repoint(healthBarLoss)
-        P:Repoint(powerBar)
-        P:Repoint(powerBarLoss)
-        P:Repoint(gapTexture)
-        P:Resize(gapTexture)
-
-        P:Repoint(incomingHeal)
-        P:Repoint(shieldBar)
-        P:Repoint(overShieldGlow)
-        P:Repoint(absorbsBar)
-        P:Repoint(damageFlashTex)
-        
-        button.func.UpdateHighlightSize()
-
-        if updateIndicators then
-            -- indicators
-            for _, i in pairs(button.indicators) do
-                if i.UpdatePixelPerfect then
-                    i:UpdatePixelPerfect() 
-                end
-            end
-        end
-    end
-
-    -- FIXME: fix boss 678
-    button.func.UpdateAll = UnitButton_UpdateAll
-    button.func.UpdateHealth = UnitButton_UpdateHealth
-    button.func.UpdateHealthMax = UnitButton_UpdateHealthMax
-    button.func.UpdateAuras = UnitButton_UpdateAuras
 
     -- indicators
     I:CreateNameText(button)

@@ -1,12 +1,12 @@
 local mod	= DBM:NewMod(2478, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221106015735")
+mod:SetRevision("20221128090806")
 mod:SetCreatureID(186339, 186338)
 mod:SetEncounterID(2581)
 --mod:SetUsedIcons(1, 2, 3)
 mod:SetBossHPInfoToHighest()
-mod:SetHotfixNoticeRev(20221105000000)
+mod:SetHotfixNoticeRev(20221127000000)
 mod:SetMinSyncRevision(20221105000000)
 --mod.respawnTime = 29
 
@@ -27,8 +27,8 @@ mod:RegisterEventsInCombat(
 --[[
 (ability.id = 382670 or ability.id = 386063 or ability.id = 385339 or ability.id = 386547 or ability.id = 385434 or ability.id = 382836) and type = "begincast"
  or (target.id = 186339 or target.id = 186338) and type = "death"
- or type = "dungeonencounterend" or type = "interrupt"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
+ or type = "interrupt"
 --]]
 --Teera
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25552))
@@ -38,8 +38,8 @@ local warnSpiritLeap							= mod:NewSpellAnnounce(385434, 3)
 local specWarnGaleArrow							= mod:NewSpecialWarningDodgeCount(382670, nil, nil, nil, 2, 2)
 local specWarnGuardianWind						= mod:NewSpecialWarningInterrupt(384808, "HasInterrupt", nil, nil, 1, 2)
 
-local timerGaleArrowCD							= mod:NewCDCountTimer(55, 382670, nil, nil, nil, 3)
-local timerRepelCD								= mod:NewCDCountTimer(55, 386547, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
+local timerGaleArrowCD							= mod:NewCDCountTimer(57.4, 382670, nil, nil, nil, 3)
+local timerRepelCD								= mod:NewCDCountTimer(57.4, 386547, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 local timerSpiritLeapCD							= mod:NewCDCountTimer(20.4, 385434, nil, nil, nil, 3)--20-38.4 (if guardian wind isn't interrupted this can get delayed by repel recast)
 
 --Maruuk
@@ -50,7 +50,7 @@ local specWarnEarthsplitter						= mod:NewSpecialWarningDodgeCount(385339, nil, 
 local specWarnFrightfulRoar						= mod:NewSpecialWarningRun(386063, nil, nil, nil, 4, 2)
 local specWarnBrutalize							= mod:NewSpecialWarningDefensive(382836, nil, nil, nil, 1, 2)
 
-local timerEarthSplitterCD						= mod:NewCDCountTimer(55, 385339, nil, false, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--Off by default since it should always be cast immediately after Repel)
+local timerEarthSplitterCD						= mod:NewCDCountTimer(57.4, 385339, nil, false, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)--Off by default since it should always be cast immediately after Repel)
 local timerFrightfulRoarCD						= mod:NewCDCountTimer(30.4, 386063, nil, nil, nil, 2, nil, DBM_COMMON_L.MAGIC_ICON)--New timer unknown
 local timerBrutalizeCD							= mod:NewCDCountTimer(18.2, 382836, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Delayed a lot. Doesn't alternate or sequence leanly, it just spell queues in randomness
 
@@ -61,12 +61,12 @@ local timerBrutalizeCD							= mod:NewCDCountTimer(18.2, 382836, nil, "Tank|Heal
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 mod:AddNamePlateOption("NPAuraOnAncestralBond", 392198)
 
---Gale Arrow: 21.5, 55
---Repel: 50, 55
---Spirit Leap: 6.0, 24.0, 13.5, 17.5, 22.8, 13.4, 17.5
---Earth Splitter: 51, 55
---Frightful Roar: 5.5, 38.5, 16.5, 38.4, 16.5
---Brutalize: 13.5, 7.5, 15.9, 31.5, 7.5, 15.9, 31.5
+--Gale Arrow: 21.5, 57.4, 57.5
+--Repel: 50, 57.4, 57.5
+--Spirit Leap: 6.0, 24.0, 13.5, 19.9, 24.0, 13.5, 20.0, 23.9, 13.5
+--Earth Splitter: 51, 57.4, 57.5
+--Frightful Roar: 5.5, 38.4, 18.9, 38.4, 19, 38.5
+--Brutalize: 13.5, 7.4, 15.9, 34.0, 7.4, 15.9, 34.0, 7.5, 15.9
 --Static Counts
 mod.vb.galeCount = 0
 mod.vb.repelCount = 0
@@ -142,9 +142,9 @@ function mod:SPELL_CAST_START(args)
 			warnFrightfulRoar:Play("fearsoon")
 		end
 		local timer
-		--Frightful Roar: 5.5, 38.5, 16.5, 38.4, 16.5
-		if self.vb.leapCount % 2 == 0 then--2, 4, 6, etc
-			timer = 16.5
+		--Frightful Roar: 5.5, 38.4, 18.9, 38.4, 19, 38.5
+		if self.vb.roarCount % 2 == 0 then--2, 4, 6, etc
+			timer = 18.9
 		else
 			timer = 38.4
 		end
@@ -164,11 +164,11 @@ function mod:SPELL_CAST_START(args)
 --		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "ArrowTarget", 0.1, 8, true)
 		warnSpiritLeap:Show()
 		local timer
-		--Spirit Leap: 6.0, 24.0, 13.5, 17.5, 22.8, 13.4, 17.5
+		--Spirit Leap: 6.0, 24.0, 13.5, 19.9, 24.0, 13.5, 20.0, 23.9, 13.5
 		if self.vb.leapCount % 3 == 0 then--3, 6, 9, etc
-			timer = 17.5
+			timer = 19.9
 		elseif self.vb.leapCount % 3 == 1 then--1, 4, 7, etc
-			timer = 22.8
+			timer = 23.9
 		else--2, 5, 8, etc
 			timer = 13.4
 		end
@@ -180,11 +180,11 @@ function mod:SPELL_CAST_START(args)
 			specWarnBrutalize:Play("defensive")
 		end
 		local timer
-		--Brutalize: 13.5, 7.5, 15.9, 31.5, 7.5, 15.9, 31.5
+		--Brutalize: 13.5, 7.4, 15.9, 34.0, 7.4, 15.9, 34.0, 7.5, 15.9
 		if self.vb.brutalizeCount % 3 == 0 then--3, 6, 9, etc
-			timer = 31.5
+			timer = 34
 		elseif self.vb.brutalizeCount % 3 == 1 then--1, 4, 7, etc
-			timer = 7.5
+			timer = 7.4
 		else--2, 5, 8, etc
 			timer = 15.9
 		end

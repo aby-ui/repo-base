@@ -64,6 +64,7 @@ f:RegisterEvent("VARIABLES_LOADED")
 f:RegisterEvent("PLAYER_LOGIN")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("PLAYER_LOGOUT")
+--f:RegisterEvent("FIRST_FRAME_RENDERED")
 U1.eventframe = f
 --f:SetScript("OnEvent", function(...) print(...) end) -- will be placed in 163UI.lua
 

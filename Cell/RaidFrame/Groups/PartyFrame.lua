@@ -1,5 +1,6 @@
 local _, Cell = ...
 local F = Cell.funcs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 local partyFrame = CreateFrame("Frame", "CellPartyFrame", Cell.frames.mainFrame, "SecureFrameTemplate")
@@ -193,13 +194,13 @@ local function PartyFrame_UpdateLayout(layout, which)
 
             -- NOTE: SetOrientation BEFORE SetPowerSize
             if not which or which == "barOrientation" then
-                playerButton.func.SetOrientation(unpack(layout["barOrientation"]))
-                petButton.func.SetOrientation(unpack(layout["barOrientation"]))
+                B:SetOrientation(playerButton, layout["barOrientation"][1], layout["barOrientation"][2])
+                B:SetOrientation(petButton, layout["barOrientation"][1], layout["barOrientation"][2])
             end
            
             if not which or which == "power" or which == "barOrientation" then
-                playerButton.func.SetPowerSize(layout["powerSize"])
-                petButton.func.SetPowerSize(layout["powerSize"])
+                B:SetPowerSize(playerButton, layout["powerSize"])
+                B:SetPowerSize(petButton, layout["powerSize"])
             end
         end
     end

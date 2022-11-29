@@ -281,6 +281,7 @@ L["Party"] = "小队"
 L["Button Size"] = "按钮尺寸"
 L["Pet Button"] = "宠物按钮"
 L["Spotlight Button"] = "特别关注按钮"
+L["NPC Button"] = "NPC 按钮"
 L["Width"] = "宽"
 L["Height"] = "高"
 L["Power Size"] = "能量条尺寸"
@@ -604,6 +605,11 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r149-release (Nov 29, 2022, 06:35 GMT+8)</h1>
+    <p>* 添加 NPC 按钮尺寸选项。</p>
+    <p>* 添加条方向选项“纵向 B”。</p>
+    <br/>
+
     <h1>r148-release (Nov 27, 2022, 22:07 GMT+8)</h1>
     <p>* 修复怀旧服的布局自动切换。</p>
     <p>* 更新繁中。</p>

@@ -66,22 +66,27 @@ Lib:RegisterEvent('BANKFRAME_CLOSED', function() Lib.AtBank = false; Lib:SendMes
 if C_PlayerInteractionManager then
 	Lib:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_SHOW', function(_,frame)
 		if frame == Enum.PlayerInteractionType.VoidStorageBanker then
-		 Lib.AtVault = true; Lib:SendMessage('CACHE_VAULT_OPENED')
+			Lib.AtVault = true; Lib:SendMessage('CACHE_VAULT_OPENED')
+		elseif frame == Enum.PlayerInteractionType.GuildBanker then
+			Lib.AtGuild = true; Lib:SendMessage('CACHE_GUILD_OPENED')
 		end
 	end)
 	Lib:RegisterEvent('PLAYER_INTERACTION_MANAGER_FRAME_HIDE', function(_,frame)
 		if frame == Enum.PlayerInteractionType.VoidStorageBanker then
-		 Lib.AtVault = false; Lib:SendMessage('CACHE_VAULT_CLOSED')
+			Lib.AtVault = false; Lib:SendMessage('CACHE_VAULT_CLOSED')
+		elseif frame == Enum.PlayerInteractionType.GuildBanker then
+			Lib.AtGuild = false; Lib:SendMessage('CACHE_GUILD_CLOSED')
 		end
 	end)
-elseif CanUseVoidStorage then
-	Lib:RegisterEvent('VOID_STORAGE_OPEN', function() Lib.AtVault = true; Lib:SendMessage('CACHE_VAULT_OPENED') end)
-	Lib:RegisterEvent('VOID_STORAGE_CLOSE', function() Lib.AtVault = false; Lib:SendMessage('CACHE_VAULT_CLOSED') end)
-end
-
-if CanGuildBankRepair then
-	Lib:RegisterEvent('GUILDBANKFRAME_OPENED', function() Lib.AtGuild = true; Lib:SendMessage('CACHE_GUILD_OPENED') end)
-	Lib:RegisterEvent('GUILDBANKFRAME_CLOSED', function() Lib.AtGuild = false; Lib:SendMessage('CACHE_GUILD_CLOSED') end)
+else
+	if CanUseVoidStorage then
+		Lib:RegisterEvent('VOID_STORAGE_OPEN', function() Lib.AtVault = true; Lib:SendMessage('CACHE_VAULT_OPENED') end)
+		Lib:RegisterEvent('VOID_STORAGE_CLOSE', function() Lib.AtVault = false; Lib:SendMessage('CACHE_VAULT_CLOSED') end)
+	end
+	if CanGuildBankRepair then
+		Lib:RegisterEvent('GUILDBANKFRAME_OPENED', function() Lib.AtGuild = true; Lib:SendMessage('CACHE_GUILD_OPENED') end)
+		Lib:RegisterEvent('GUILDBANKFRAME_CLOSED', function() Lib.AtGuild = false; Lib:SendMessage('CACHE_GUILD_CLOSED') end)
+	end
 end
 
 
@@ -224,6 +229,7 @@ end
 function Lib:GetItemInfo(owner, bag, slot)
 	local realm, name, isguild = Lib:GetOwnerAddress(owner)
 	local cached = Lib:IsBagCached(realm, name, isguild, bag)
+
 	local item
 
 	if cached then
@@ -319,10 +325,10 @@ function Lib:IsBagCached(realm, name, isguild, bag)
 
 	if isguild then
 		return not Lib.AtGuild
+	else
+		local isBankBag = Lib:IsBank(bag) or Lib:IsReagents(bag) or type(bag) == 'number' and Lib:IsBankBag(bag)
+		return isBankBag and not Lib.AtBank or bag == 'vault' and not Lib.AtVault
 	end
-
-	local isBankBag = Lib:IsBank(bag) or Lib:IsReagents(bag) or type(bag) == 'number' and Lib:IsBankBag(bag)
-	return isBankBag and not Lib.AtBank or bag == 'vault' and not Lib.AtVault
 end
 
 function Lib:RestoreItemData(item)

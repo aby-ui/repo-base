@@ -110,11 +110,11 @@ end
 
 if PlayerFrame_SequenceFinished and not Jostle.hooks.PlayerFrame_SequenceFinished then
 	Jostle.hooks.PlayerFrame_SequenceFinished = true
-	hooksecurefunc("PlayerFrame_SequenceFinished", function()
-		if Jostle.PlayerFrame_SequenceFinished then
-			Jostle:PlayerFrame_SequenceFinished()
-		end
-	end)
+--	hooksecurefunc("PlayerFrame_SequenceFinished", function()
+--		if Jostle.PlayerFrame_SequenceFinished then
+--			Jostle:PlayerFrame_SequenceFinished()
+--		end
+--	end)
 end
 
 --7.0 by warbaby
@@ -379,58 +379,60 @@ function Jostle:Refresh(...)
 						anchor = "BOTTOM" .. anchor
 						offset = bottomOffset / framescale
 					end
-					if frame == MinimapCluster and not MinimapBorderTop:IsShown() then
-						offset = offset + MinimapBorderTop:GetHeight() * 3/5
-                    elseif GMChatStatusFrame and frame == GMChatStatusFrame then
-                        if ( TicketStatusFrame:IsShown() ) then
-						offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
-                        end
-                    elseif frame == BuffFrame then
-                        if ( TicketStatusFrame:IsShown() ) then
-                            offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
-                        end
-                        if ( GMChatStatusFrame and GMChatStatusFrame:IsShown() ) then
-                            offset = offset - GMChatStatusFrame:GetHeight() * GMChatStatusFrame:GetScale() - 5
-                        end
-					elseif frame == DEFAULT_CHAT_FRAME then
-						y = MainMenuBar:GetHeight() * MainMenuBar:GetScale() + 32
-						if StanceBarFrame and (PetActionBarFrame:IsShown() or StanceBarFrame:IsShown()) then
-							offset = offset + StanceBarFrame:GetHeight() * StanceBarFrame:GetScale()
-						end
-						if MultiBarBottomLeft:IsShown() then
-							offset = offset + MultiBarBottomLeft:GetHeight() * MultiBarBottomLeft:GetScale() - 21
-						end
-					elseif frame == ChatFrame2 then
-						y = MainMenuBar:GetHeight() * MainMenuBar:GetScale() + 32
-						if MultiBarBottomRight:IsShown() then
-							offset = offset + MultiBarBottomRight:GetHeight() * MultiBarBottomRight:GetScale() - 21
-						end
-					elseif frame == GroupLootFrame1 or frame == TutorialFrameParent or frame == FramerateLabel then
-						if MultiBarBottomLeft:IsShown() or MultiBarBottomRight:IsShown() then
-							offset = offset + MultiBarBottomLeft:GetHeight() * MultiBarBottomLeft:GetScale()
-						end
-					elseif frame == DurabilityFrame or frame == WatchFrame then
-						anchorFrame = MinimapCluster
-						x = 0
-						y = 0
-						offset = 0
-						if frame == WatchFrame and DurabilityFrame:IsShown() then
-							y = y - DurabilityFrame:GetHeight() * DurabilityFrame:GetScale()
-						end
-						if frame == DurabilityFrame then
-							x = -20
-						end
-						anchor = "TOPRIGHT"
-						anchorAlt = "BOTTOMRIGHT"
-						if MultiBarRight:IsShown() then
-							x = x - MultiBarRight:GetWidth() * MultiBarRight:GetScale()
-							if MultiBarLeft:IsShown() then
-								x = x - MultiBarLeft:GetWidth() * MultiBarLeft:GetScale()
+					if MinimapBorderTop ~= nil then
+    					if frame == MinimapCluster and not MinimapBorderTop:IsShown() then
+    						offset = offset + MinimapBorderTop:GetHeight() * 3/5
+                        elseif GMChatStatusFrame and frame == GMChatStatusFrame then
+                            if ( TicketStatusFrame:IsShown() ) then
+    						offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
+                            end
+                        elseif frame == BuffFrame then
+                            if ( TicketStatusFrame:IsShown() ) then
+                                offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
+                            end
+                            if ( GMChatStatusFrame and GMChatStatusFrame:IsShown() ) then
+                                offset = offset - GMChatStatusFrame:GetHeight() * GMChatStatusFrame:GetScale() - 5
+                            end
+						elseif frame == DEFAULT_CHAT_FRAME then
+							y = MainMenuBar:GetHeight() * MainMenuBar:GetScale() + 32
+							if StanceBarFrame and (PetActionBarFrame:IsShown() or StanceBarFrame:IsShown()) then
+								offset = offset + StanceBarFrame:GetHeight() * StanceBarFrame:GetScale()
 							end
+							if MultiBarBottomLeft:IsShown() then
+								offset = offset + MultiBarBottomLeft:GetHeight() * MultiBarBottomLeft:GetScale() - 21
+							end
+						elseif frame == ChatFrame2 then
+							y = MainMenuBar:GetHeight() * MainMenuBar:GetScale() + 32
+							if MultiBarBottomRight:IsShown() then
+								offset = offset + MultiBarBottomRight:GetHeight() * MultiBarBottomRight:GetScale() - 21
+							end
+						elseif frame == GroupLootFrame1 or frame == TutorialFrameParent or frame == FramerateLabel then
+							if MultiBarBottomLeft:IsShown() or MultiBarBottomRight:IsShown() then
+								offset = offset + MultiBarBottomLeft:GetHeight() * MultiBarBottomLeft:GetScale()
+							end
+						elseif frame == DurabilityFrame or frame == WatchFrame then
+							anchorFrame = MinimapCluster
+							x = 0
+							y = 0
+							offset = 0
+							if frame == WatchFrame and DurabilityFrame:IsShown() then
+								y = y - DurabilityFrame:GetHeight() * DurabilityFrame:GetScale()
+							end
+							if frame == DurabilityFrame then
+								x = -20
+							end
+							anchor = "TOPRIGHT"
+							anchorAlt = "BOTTOMRIGHT"
+							if MultiBarRight:IsShown() then
+								x = x - MultiBarRight:GetWidth() * MultiBarRight:GetScale()
+								if MultiBarLeft:IsShown() then
+									x = x - MultiBarLeft:GetWidth() * MultiBarLeft:GetScale()
+								end
+							end
+						elseif frame == OrderHallCommandBar and OrderHallCommandBar:IsShown() then
+								anchorAlt = "TOPLEFT"
+								anchor = "TOPLEFT"
 						end
-					elseif frame == OrderHallCommandBar and OrderHallCommandBar:IsShown() then
-							anchorAlt = "TOPLEFT"
-							anchor = "TOPLEFT"
 					end
 					if frame == FramerateLabel then
 						anchorFrame = WorldFrame

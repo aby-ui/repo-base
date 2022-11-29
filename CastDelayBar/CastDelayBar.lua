@@ -29,7 +29,7 @@ function C:OnInitialize()
 	self.delayBar:SetDrawLayer("ARTWORK", 2)
 	self.delayBar:SetHeight(PlayerCastingBarFrame:GetHeight()-2);
 	self.delayBar:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	self.delayBar:SetVertexColor(1, 0, 0, 0.8)
+	self.delayBar:SetVertexColor(1, 0, 0, 0.5)
 	self.delayBar:Hide()
     SetOrHookScript(PlayerCastingBarFrame, "OnUpdate", function(...)
         self:PlayerCastingBarFrame_OnUpdate(...)
@@ -48,6 +48,7 @@ function C:Toggle(switch)
         self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
 		self:RegisterEvent("UNIT_SPELLCAST_STOP", "SpellOther");
 		self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", "SpellOther");
+		self:RegisterEvent("UI_ERROR_MESSAGE");
 
 		self.enable = true;
 	else
@@ -73,15 +74,21 @@ function C:UNIT_SPELLCAST_SENT(event, unit, spell, rank, target)
 end
 
 --7.0 from Quartz
-function C:CURRENT_SPELL_CAST_CHANGED(event)
-	self.sendTime = GetTime()
+function C:CURRENT_SPELL_CAST_CHANGED(event, cancelledCast)
+	if not cancelledCast then
+		self.sendTime = GetTime()
+	end
+end
+
+local function delayCleanSendTime()
+	CastDelayBar.sendTime = nil
 end
 
 function C:UNIT_SPELLCAST_SUCCEEDED(event, unit)
 	if unit ~= "player" and unit ~= "vehicle" then
 		return
 	end
-    self.sendTime = nil
+	C_Timer.After(0, delayCleanSendTime) --UNIT_SPELLCAST_SUCCEEDED后面会紧跟一个CAST_CHANGED, 所以要延迟清理
 end
 
 --7.0 for Dominos castBar
@@ -123,6 +130,10 @@ function C:UNIT_SPELLCAST_START(event, unit)
 	self.fadeOut = nil;
     local maxValue = (endTime - startTime) / 1000
 
+	--print(self.sendTime, format("%.3f", self.sendTime and (GetTime() - self.sendTime) or 0), self:GetLatency())
+	if self.sendTime and self.sendTime < GetTime() - 0.6 then
+		self.sendTime = nil --上次sendTime没清零的情况
+	end
 	self.timeDiff = self.sendTime and (GetTime() - self.sendTime) or self:GetLatency();
     self.sendTime = nil
 	local castlength = endTime - startTime;
@@ -194,12 +205,14 @@ function C:SpellOther(event, unit)
 			self.casting = nil;
 			self.fadeOut = true;
 			self.stopTime = GetTime();
+			self.sendTime = nil
 		end
 	elseif (event == "UNIT_SPELLCAST_CHANNEL_STOP") then
 		if self.channeling then
 			self.channeling = nil;
 			self.fadeOut = true;
 			self.stopTime = GetTime();
+			self.sendTime = nil
 		end
 	end
 end
@@ -210,6 +223,7 @@ function C:UNIT_SPELLCAST_FAILED(event, unit)
 	self.casting = nil;
 	self.channeling = nil;
 	self.fadeOut = true;
+	self.sendTime = nil;
 	if (not self.stopTime) then
 		self.stopTime = GetTime();
 	end
@@ -221,8 +235,15 @@ function C:UNIT_SPELLCAST_INTERRUPTED(event, unit)
 	self.casting = nil;
 	self.channeling = nil;
 	self.fadeOut = true;
+	self.sendTime = nil;
 	if (not self.stopTime) then
 		self.stopTime = GetTime();
+	end
+end
+
+function C:UI_ERROR_MESSAGE(event, messageType, message)
+	if messageType and GetGameMessageInfo(messageType) == "ERR_SPELL_FAILED_S" then
+		C:UNIT_SPELLCAST_INTERRUPTED(event, "player")
 	end
 end
 ----- END  ----
@@ -271,13 +292,15 @@ function C:PlayerCastingBarFrame_OnUpdate(frame, elapsed, ...)
 			self.casting = nil;
 			self.fadeOut = true;
 			self.stopTime = currentTime;
+			self.sendTime = nil;
 			return;
 		end
 	else --if(self.channeling) then
 		if (currentTime > endTime) then
 			self.channeling = nil
 			self.fadeOut = true
-			self.stopTime = currentTime
+			self.stopTime = currentTime;
+			self.sendTime = nil;
 			return;
 		end		
 	end

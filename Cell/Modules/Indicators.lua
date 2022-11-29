@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local I = Cell.iFuncs
 local P = Cell.pixelPerfectFuncs
 local LCG = LibStub("LibCustomGlow-1.0")
@@ -94,8 +95,8 @@ end
 
 local function UpdatePreviewButton()
     P:Size(previewButton, currentLayoutTable["size"][1], currentLayoutTable["size"][2])
-    previewButton.func.SetOrientation(unpack(currentLayoutTable["barOrientation"]))
-    previewButton.func.SetPowerSize(currentLayoutTable["powerSize"])
+    B:SetOrientation(previewButton, currentLayoutTable["barOrientation"][1], currentLayoutTable["barOrientation"][2])
+    B:SetPowerSize(previewButton, currentLayoutTable["powerSize"])
 
     previewButton:UpdatePoint()
     
@@ -507,7 +508,7 @@ local function UpdateIndicators(layout, indicatorName, setting, value, value2)
                 end
             end
             -- pixel perfect
-            previewButton.func.UpdatePixelPerfect(true)
+            B:UpdatePixelPerfect(previewButton, true)
         end
     else
         local indicator = previewButton.indicators[indicatorName]

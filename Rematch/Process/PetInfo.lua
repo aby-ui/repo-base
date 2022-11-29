@@ -266,7 +266,7 @@ end
 local function fillInfoBySpeciesID(self,speciesID)
    local speciesName, canBattle -- prevent a __index lookup if speciesID is invalid
    speciesName,self.icon,self.petType,self.creatureID,self.sourceText,
-   self.loreText,self.isWild,self.canBattle,self.isTradable,self.isUnique,
+   self.loreText,self.isWild,canBattle,self.isTradable,self.isUnique,
    self.isObtainable,self.displayID = GetPetInfoBySpeciesID(speciesID)
    self.speciesName = speciesName
    self.name = speciesName

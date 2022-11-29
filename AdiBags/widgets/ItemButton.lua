@@ -24,21 +24,24 @@ local addonName, addon = ...
 --<GLOBALS
 local _G = _G
 local BankButtonIDToInvSlotID = _G.BankButtonIDToInvSlotID
-local BANK_CONTAINER = _G.BANK_CONTAINER
+local BANK_CONTAINER = BANK_CONTAINER or ( Enum.BagIndex and Enum.BagIndex.Bank ) or -1
 local ContainerFrame_UpdateCooldown = _G.ContainerFrame_UpdateCooldown
 local format = _G.format
-local GetContainerItemID = C_Container and C_Container.GetContainerItemID or GetContainerItemID
-local GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo or GetContainerItemInfo
-local GetContainerItemLink = C_Container and C_Container.GetContainerItemLink or GetContainerItemLink
-local GetContainerNumFreeSlots = C_Container and C_Container.GetContainerNumFreeSlots or GetContainerNumFreeSlots
+local GetContainerItemID = C_Container and _G.C_Container.GetContainerItemID or _G.GetContainerItemID
+local GetContainerItemInfo = C_Container and _G.C_Container.GetContainerItemInfo or _G.GetContainerItemInfo
+local GetContainerItemLink = C_Container and _G.C_Container.GetContainerItemLink or _G.GetContainerItemLink
+local GetContainerItemQuestInfo = C_Container and _G.C_Container.GetContainerItemQuestInfo or _G.GetContainerItemQuestInfo
+local GetContainerNumFreeSlots = C_Container and _G.C_Container.GetContainerNumFreeSlots or _G.GetContainerNumFreeSlots
 local GetItemInfo = _G.GetItemInfo
 local GetItemQualityColor = _G.GetItemQualityColor
 local hooksecurefunc = _G.hooksecurefunc
-local IsBattlePayItem = C_Container and C_Container.IsBattlePayItem or IsBattlePayItem
+local IsBattlePayItem = C_Container and _G.C_Container.IsBattlePayItem or _G.IsBattlePayItem
+local IsContainerItemAnUpgrade = _G.IsContainerItemAnUpgrade
 local IsInventoryItemLocked = _G.IsInventoryItemLocked
-local SplitContainerItem = C_Container and C_Container.SplitContainerItem or SplitContainerItem
+local SplitContainerItem = C_Container and _G.C_Container.SplitContainerItem or _G.SplitContainerItem
 local ITEM_QUALITY_COMMON
 local ITEM_QUALITY_POOR
+local REAGENTBAG_CONTAINER = ( Enum.BagIndex and Enum.BagIndex.REAGENTBAG_CONTAINER ) or 5
 
 if addon.isRetail then
 	ITEM_QUALITY_COMMON = _G.Enum.ItemQuality.Common
@@ -301,7 +304,14 @@ function buttonProto:FullUpdate()
 	self.itemLink = GetContainerItemLink(bag, slot)
 	self.hasItem = not not self.itemId
 	self.texture = addon:GetContainerItemTexture(bag, slot)
-	self.bagFamily = select(2, GetContainerNumFreeSlots(bag))
+
+	-- TODO(lobato): Test if this is still needed
+	if self.bag == REAGENTBAG_CONTAINER then
+		self.bagFamily = 2048
+	else
+		self.bagFamily = select(2, GetContainerNumFreeSlots(bag))
+	end
+
 	self:Update()
 end
 
@@ -402,6 +412,7 @@ if addon.isRetail then
 		local PawnIsContainerItemAnUpgrade = _G.PawnIsContainerItemAnUpgrade
 		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(self.bag, self.slot)
 		self.UpgradeIcon:SetShown(itemIsUpgrade or false)
+		self.UpgradeIcon:SetPoint("TOPLEFT", 0, -16)
 	end
 end
 

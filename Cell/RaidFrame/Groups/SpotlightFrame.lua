@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 local LCG = LibStub("LibCustomGlow-1.0")
@@ -633,13 +634,13 @@ local function UpdateLayout(layout, which)
     -- NOTE: SetOrientation BEFORE SetPowerSize
     if not which or which == "barOrientation" then
         for _, b in pairs(Cell.unitButtons.spotlight) do
-            b.func.SetOrientation(unpack(layout["barOrientation"]))
+            B:SetOrientation(b, layout["barOrientation"][1], layout["barOrientation"][2])
         end
     end
     
     if not which or which == "power" or which == "barOrientation" then
         for _, b in pairs(Cell.unitButtons.spotlight) do
-            b.func.SetPowerSize(layout["powerSize"])
+            B:SetPowerSize(b, layout["powerSize"])
         end
     end
 

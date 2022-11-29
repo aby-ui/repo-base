@@ -186,17 +186,26 @@ U1PLUG["ExaltedPlus"] = function()
         if not info then return end
 
         if DEBUG_MODE then print(msg) end
-        local output = "%s的声望提高了%d点（%s%d）"
-        local _, _, level, levelMin, _, levelCurr = GetFactionInfoByID(info.id)
-        local levelLabel = GetText("FACTION_STANDING_LABEL"..level,(UnitSex('player')))
-        local paragonCurr, cap, unknown, reward = C_Reputation.GetFactionParagonInfo(info.id)
-        if paragonCurr then
-            local times = math.modf(paragonCurr/cap)
-            local remain = mod(paragonCurr, cap)
-            msg=format(output, name, added or diff, levelLabel .. (times > 0 and "*" .. times or "").." +", remain) --开悟者的声望提高了75点(崇拜*10 +1000)
+        if info.id and C_Reputation.IsMajorFaction(info.id) then
+            local output = "%s的声望提高了%d点（%s/%d）"
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(info.id); --2507
+            local levelLabel = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel;
+            msg=format(output, name, added or diff, levelLabel, majorFactionData.renownReputationEarned or 0) --暗夜精灵声望提高了75点（名望1/2570)
         else
-            msg=format(output, name, added or diff, levelLabel, levelCurr - levelMin) --暗夜精灵声望提高了75点（崇敬158)
+            local output = "%s的声望提高了%d点（%s%d）"
+            local _, _, level, levelMin, _, levelCurr = GetFactionInfoByID(info.id)
+            local levelLabel = GetText("FACTION_STANDING_LABEL"..level,(UnitSex('player')))
+            local paragonCurr, cap, unknown, reward = C_Reputation.GetFactionParagonInfo(info.id)
+            if paragonCurr then
+                local times = math.modf(paragonCurr/cap)
+                local remain = mod(paragonCurr, cap)
+                msg=format(output, name, added or diff, levelLabel .. (times > 0 and "*" .. times or "").." +", remain) --开悟者的声望提高了75点(崇拜*10 +1000)
+            else
+                msg=format(output, name, added or diff, levelLabel, levelCurr - levelMin) --暗夜精灵声望提高了75点（崇敬158)
+            end
         end
+
+
 
         return false,msg,...
     end)

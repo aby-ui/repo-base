@@ -8,6 +8,17 @@ Postal_Express.description2 = L[ [[|cFFFFCC00*|r Shift-Click to take item/money 
 
 local _G = getfenv(0)
 
+-- WoW 10.0 Release Show/Hide Frame Handlers
+function Postal_Express:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(eventName, ...)
+	local paneType = ...
+	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_Express:MAIL_SHOW() end
+end
+
+function Postal_Express:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(eventName, ...)
+	local paneType = ...
+	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_Express:MAIL_CLOSED() end
+end
+
 function Postal_Express:MAIL_SHOW()
 	if (Postal.db.profile.Express.EnableAltClick or Postal.db.profile.Express.BulkSend) and not self:IsHooked(GameTooltip, "OnTooltipSetItem") then
 		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
@@ -28,8 +39,15 @@ function Postal_Express:MAIL_SHOW()
 			hooksecurefunc("HandleModifiedItemClick", Postal_Express.HandleModifiedItemClick)
 		end
 	end
-	self:RegisterEvent("MAIL_CLOSED", "Reset")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:RegisterEvent("MAIL_CLOSED", "Reset")
+	else
+		Postal_Express:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", "Reset")
+	end
 	self:RegisterEvent("PLAYER_LEAVING_WORLD", "Reset")
+end
+
+function Postal_Express:MAIL_CLOSED()
 end
 
 function Postal_Express:Reset(event)
@@ -39,7 +57,11 @@ function Postal_Express:Reset(event)
 			self:Unhook("ContainerFrameItemButton_OnModifiedClick")
 		end
 	end
-	self:UnregisterEvent("MAIL_CLOSED")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:UnregisterEvent("MAIL_CLOSED")
+	else
+		self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
+	end
 	self:UnregisterEvent("PLAYER_LEAVING_WORLD")
 end
 
@@ -48,7 +70,11 @@ function Postal_Express:OnEnable()
 	self:RawHook("InboxFrame_OnModifiedClick", "InboxFrame_OnClick", true) -- Eat all modified clicks too
 	self:RawHook("InboxFrameItem_OnEnter", true)
 
-	self:RegisterEvent("MAIL_SHOW")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:RegisterEvent("MAIL_SHOW")
+	else
+		Postal_Express:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
+	end
 end
 
 -- Disabling modules unregisters all events/hook automatically

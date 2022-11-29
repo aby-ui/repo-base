@@ -73,7 +73,7 @@ function Item:UpdateTooltip()
 		GameTooltip:SetOwner(self:GetTipAnchor())
 
 		local pet = {GameTooltip:SetGuildBankItem(self:GetSlot())}
-		if pet[1] and pet[1] > 0 then
+		if not C_TooltipInfo and type(pet[1]) == 'number' and pet[1] > 0 then
 			BattlePetToolTip_Show(unpack(pet))
 		end
 

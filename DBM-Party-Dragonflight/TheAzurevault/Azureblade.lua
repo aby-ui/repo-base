@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2505, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221028002025")
+mod:SetRevision("20221128214658")
 mod:SetCreatureID(186739)
 mod:SetEncounterID(2585)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221027000000)
+mod:SetHotfixNoticeRev(20221127000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -55,10 +55,10 @@ function mod:OrbTarget(targetname)
 end
 
 function mod:OnCombatStart(delay)
-	timerSummonDraconicImageCD:Start(4-delay)
-	timerArcaneCleaveCD:Start(5.2-delay)
-	timerAncientOrbCD:Start(10.1-delay)
-	timerOverwhelmingenergyCD:Start(25.5-delay)
+	timerSummonDraconicImageCD:Start(3.7-delay)
+	timerArcaneCleaveCD:Start(5.2-delay)--6.1
+	timerAncientOrbCD:Start(10.1-delay)--11.021
+	timerOverwhelmingenergyCD:Start(24.3-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -89,7 +89,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 373932 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
 		specWarnIllusionaryBolt:Show(args.sourceName)
 		specWarnIllusionaryBolt:Play("kickcast")
-	elseif spellId == 384132 then
+	elseif spellId == 384132 then--Overwhelming Energy
 		timerArcaneCleaveCD:Stop()
 		timerAncientOrbCD:Stop()
 		timerSummonDraconicImageCD:Stop()
@@ -98,20 +98,22 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
+--[[
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
 	if spellId == 361966 then
 
 	end
 end
+--]]
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 384132 then
+	if spellId == 384132 then--Overwhelming Energy
 		timerSummonDraconicImageCD:Start(4.7)--4.7-5.4
 		timerArcaneCleaveCD:Start(7.1)--7.1-7.8
 		timerAncientOrbCD:Start(12)--12-12.7
-		timerOverwhelmingenergyCD:Start(45.5)
+		timerOverwhelmingenergyCD:Start(43.3)
 	end
 end
 

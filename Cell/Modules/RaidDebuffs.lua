@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 local LCG = LibStub("LibCustomGlow-1.0")
@@ -1201,8 +1202,8 @@ local function UpdatePreviewButton()
     end
 
     P:Size(previewButton, Cell.vars.currentLayoutTable["size"][1], Cell.vars.currentLayoutTable["size"][2])
-    previewButton.func.SetOrientation(unpack(Cell.vars.currentLayoutTable["barOrientation"]))
-    previewButton.func.SetPowerSize(Cell.vars.currentLayoutTable["powerSize"])
+    B:SetOrientation(previewButton, Cell.vars.currentLayoutTable["barOrientation"][1], Cell.vars.currentLayoutTable["barOrientation"][2])
+    B:SetPowerSize(previewButton, Cell.vars.currentLayoutTable["powerSize"])
 
     previewButton.widget.healthBar:SetStatusBarTexture(Cell.vars.texture)
     previewButton.widget.powerBar:SetStatusBarTexture(Cell.vars.texture)

@@ -47,7 +47,7 @@ function Inventory:HighlightMainMenu(checked)
 end
 
 function Inventory:SortItems()
-	if C.SortBags and Addon.sets.serverSort then
+	if C.SortBags and true then --Addon.sets.serverSort then
 		C.SortBags()
 	else
 		self:Super(Inventory):SortItems(self)

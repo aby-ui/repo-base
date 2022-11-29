@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local I = Cell.iFuncs
 local P = Cell.pixelPerfectFuncs
 
@@ -392,14 +393,14 @@ local function UpdatePreviewButton()
     previewButton2:SetBackdropColor(0, 0, 0, CellDB["appearance"]["bgAlpha"])
     
     -- barOrientation
-    previewButton.func.SetOrientation(unpack(Cell.vars.currentLayoutTable["barOrientation"]))
-    previewButton2.func.SetOrientation(unpack(Cell.vars.currentLayoutTable["barOrientation"]))
+    B:SetOrientation(previewButton, Cell.vars.currentLayoutTable["barOrientation"][1], Cell.vars.currentLayoutTable["barOrientation"][2])
+    B:SetOrientation(previewButton2, Cell.vars.currentLayoutTable["barOrientation"][1], Cell.vars.currentLayoutTable["barOrientation"][2])
 
     -- size
     P:Size(previewButton, Cell.vars.currentLayoutTable["size"][1], Cell.vars.currentLayoutTable["size"][2])
-    previewButton.func.SetPowerSize(Cell.vars.currentLayoutTable["powerSize"])
+    B:SetPowerSize(previewButton, Cell.vars.currentLayoutTable["powerSize"])
     P:Size(previewButton2, Cell.vars.currentLayoutTable["size"][1], Cell.vars.currentLayoutTable["size"][2])
-    previewButton2.func.SetPowerSize(Cell.vars.currentLayoutTable["powerSize"])
+    B:SetPowerSize(previewButton2, Cell.vars.currentLayoutTable["powerSize"])
 
     -- value
     if CellDB["appearance"]["barAnimation"] == "Smooth" then
@@ -727,7 +728,7 @@ local function CreateUnitButtonStylePane()
             end,
         },
         {
-            ["text"] = L["Gradient"],
+            ["text"] = L["Gradient"].." A",
             ["value"] = "gradient",
             ["onClick"] = function()
                 CellDB["appearance"]["barColor"][1] = "gradient"
@@ -736,7 +737,7 @@ local function CreateUnitButtonStylePane()
             end,
         },
         {
-            ["text"] = L["Gradient"].." 2",
+            ["text"] = L["Gradient"].." B",
             ["value"] = "gradient2",
             ["onClick"] = function()
                 CellDB["appearance"]["barColor"][1] = "gradient2"
@@ -792,7 +793,7 @@ local function CreateUnitButtonStylePane()
             end,
         },
         {
-            ["text"] = L["Gradient"],
+            ["text"] = L["Gradient"].." A",
             ["value"] = "gradient",
             ["onClick"] = function()
                 CellDB["appearance"]["lossColor"][1] = "gradient"
@@ -801,7 +802,7 @@ local function CreateUnitButtonStylePane()
             end,
         },
         {
-            ["text"] = L["Gradient"].." 2",
+            ["text"] = L["Gradient"].." B",
             ["value"] = "gradient2",
             ["onClick"] = function()
                 CellDB["appearance"]["lossColor"][1] = "gradient2"
@@ -1239,11 +1240,11 @@ local function UpdateAppearance(which)
         F:IterateAllUnitButtons(function(b)
             -- texture
             if not which or which == "texture" or which == "reset" then
-                b.func.SetTexture(tex)
+                B:SetTexture(b, tex)
             end
             -- color
             if not which or which == "color" or which == "deathColor" or which == "alpha" or which == "shields" or which == "reset" then
-                b.func.UpdateColor()
+                B:UpdateColor(b)
             end
             -- outOfRangeAlpha
             if which == "outOfRangeAlpha" or which == "reset" then
@@ -1251,7 +1252,7 @@ local function UpdateAppearance(which)
             end
             -- shields
             if not which or which == "shields" or which == "reset" then
-                b.func.UpdateShields()
+                B:UpdateShields(b)
             end
             -- animation
             if not which or which == "animation" or which == "reset" then
@@ -1259,11 +1260,11 @@ local function UpdateAppearance(which)
             end
             -- highlightColor
             if not which or which == "highlightColor" or which == "reset" then
-                b.func.UpdateHighlightColor()
+                B:UpdateHighlightColor(b)
             end
             -- highlightColor
             if not which or which == "highlightSize" or which == "reset" then
-                b.func.UpdateHighlightSize()
+                B:UpdateHighlightSize(b)
             end
         end)
     end

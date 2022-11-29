@@ -6,7 +6,7 @@ local PackButton = tdPack:NewModule('PackButton', CreateFrame('Button'))
 tdCore('GUI'):Embed(PackButton, 'UIObject')
 
 local staticPopupData = {}
-StaticPopupDialogs["TDPACK_CONFIRM_BANK"] = {preferredIndex = 3,
+StaticPopupDialogs["TDPACK_CONFIRM_BANK"] = { preferredIndex = 3, timeout = 0, exclusive = 1, hideOnEscape = 1, noCancelOnEscape = 1,
     text = "是否同时整理背包和银行？",
     button1 = "全部整理",
     button2 = "仅整理背包",
@@ -18,10 +18,22 @@ StaticPopupDialogs["TDPACK_CONFIRM_BANK"] = {preferredIndex = 3,
         TDPACK_IGNORE_BAGS_NO_BANK = true
         tdPack:Pack()
     end,
-    timeout = 0,
-    exclusive = 1,
-    hideOnEscape = 1,
-    noCancelOnEscape = 1,
+}
+
+StaticPopupDialogs["TDPACK_CONFIRM_REAGENT"] = { preferredIndex = 3, timeout = 0, exclusive = 1, hideOnEscape = 1, noCancelOnEscape = 1,
+    text = "是否同时整理材料包和材料银行？",
+    button1 = "同时整理(按住Shift优先银行，按住Ctrl优先材料包)",
+    button2 = "仅整理材料包",
+    OnAccept = function (self)
+        TDPACK_IGNORE_BAGS_NO_BANK = nil
+        TDPACK_ONLY_REAGENT = true
+        tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
+    end,
+    OnCancel = function(self)
+        TDPACK_IGNORE_BAGS_NO_BANK = true
+        TDPACK_ONLY_REAGENT = true
+        tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
+    end,
 }
 
 function PackButton:New(parent)
@@ -44,12 +56,20 @@ function PackButton:New(parent)
 
         if button == "RightButton" and not IsModifierKeyDown() then
             self:OnClick(button)
+
+        elseif button == "MiddleButton" then
+            --中键, 材料整理, 区分点击银行还是背包的按钮
+            local fromBank = frameID == 'bank'
+            if tdPack:GetModule("Pack").isBankOpened and not fromBank then
+                return StaticPopup_Show("TDPACK_CONFIRM_REAGENT", nil, nil, staticPopupData)
+            else
+                TDPACK_IGNORE_BAGS = fromBank
+                TDPACK_ONLY_REAGENT = true
+                return tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
+            end
         elseif(tdPack:GetModule("Pack").isBankOpened) then
+            --银行打开了, 区分点击银行或点击背包上的按钮
             if(frameID == 'bank') then
-                if button == "MiddleButton" then
-                    TDPACK_ONLY_REAGENT = true
-                    return tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
-                end
                 TDPACK_IGNORE_BAGS = true
                 return tdPack:Pack(button == "RightButton" and IsShiftKeyDown() and 'asc' or button == "RightButton" and IsControlKeyDown() and 'desc' or nil)
             else
@@ -75,6 +95,8 @@ function PackButton:New(parent)
 		tooltip:AddDoubleLine(L['Shift + Right-Click'], L['Pack asc'], 0, 1, 0, 0, 1, 0)
 		tooltip:AddDoubleLine(L['Ctrl + Right-Click'], L['Pack desc'], 0, 1, 0, 0, 1, 0)
         if self:GetParent().frameID == 'bank' then
+            tooltip:AddDoubleLine(L['<Middle Click> '], L['Pack reagent bank'], 0, 1, 1, 0, 1, 1)
+        else
             tooltip:AddDoubleLine(L['<Middle Click> '], L['Pack reagent bag'], 0, 1, 1, 0, 1, 1)
         end
 		tooltip:AddDoubleLine(L['<Right Click> '], L['Open tdPack config frame'], 0, 1, 1, 0, 1, 1)

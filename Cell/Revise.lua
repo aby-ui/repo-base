@@ -1028,8 +1028,8 @@ function F:Revise()
                 layout["powerHeight"] = nil
             end
             -- rname npcAnchor to friendlyNPC
-            if type(layout["friendlyNPC"]) ~= "table" then
-                layout["friendlyNPC"] = {true, layout["npcAnchor"][1], layout["npcAnchor"][2]}
+            if type(layout["npc"]) ~= "table" then
+                layout["npc"] = {true, layout["npcAnchor"][1], layout["npcAnchor"][2]}
                 layout["npcAnchor"] = nil
             end
             -- add showDuration to external
@@ -1555,6 +1555,21 @@ function F:Revise()
         for role, t in pairs(CellCharacterDB["layoutAutoSwitch"]) do
             if not t["raid_outdoor"] then
                 t["raid_outdoor"] = t["raid25"]
+            end
+        end
+    end
+
+    -- r149-release
+    if CellDB["revise"] and dbRevision < 149 then
+        -- friendlyNPC -> npc
+        for _, layout in pairs(CellDB["layouts"]) do
+            if not layout["npc"] then
+                -- rename
+                layout["npc"] = layout["friendlyNPC"]
+                layout["friendlyNPC"] = nil
+                -- add sizeEnabled and size
+                layout["npc"][4] = false
+                layout["npc"][5] = {66, 46}
             end
         end
     end

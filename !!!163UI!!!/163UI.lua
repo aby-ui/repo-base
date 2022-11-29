@@ -1992,7 +1992,9 @@ local function loadAddon()
     else
         -- 全部插件加载完毕了
         if #addonToLoad==0 and not initComplete then
-             U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or "") .. U1.get_timestamp())
+            RunNextFrame(function()
+                U1Message(L["全部插件加载完毕。"] .. (U1DBG.lastReloadTime and format("本次重载用时%.1f秒。", GetTime() - U1DBG.lastReloadTime) or "") .. U1.get_timestamp())
+            end)
             --simEventsAndLoadCfgs(); --因为先加载插件再注册事件的话，可能导致一些插件加载后先响应了其他事件，而DB却未创建
             initComplete = true;
             db.enteredWorld = true; --如果没加载完全部插件, 则下次还原db的设置, 而不是使用Enable/Disable状态

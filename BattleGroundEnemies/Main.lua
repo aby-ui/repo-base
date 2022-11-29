@@ -602,6 +602,7 @@ do
 			self.PlayerRoleNumber = specData.roleNumber
 			self.PlayerRoleID = specData.roleID
 		end
+		self:SetBindings()
 		self:DispatchEvent("PlayerDetailsChanged")
 	end
 
@@ -719,7 +720,7 @@ do
 									else
 										-- the module we are depending on hasn't been set yet
 										allModulesSet = false
-										--BattleGroundEnemies:LogToSavedVariables("moduleName", moduleName, "isnt set yet") --TODO:abyui10
+										--BattleGroundEnemies:LogToSavedVariables("moduleName", moduleName, "isnt set yet")
 									end
 								else
 									if not relativeFrame then return print("error", relativeFrame, "for module", moduleName, "doesnt exist") end
@@ -854,40 +855,76 @@ do
 		}
 
 		function buttonFunctions:SetBindings()
+			local setupUsualAttributes = true
+			--use a table to track changes and compare them to GetAttribute
+			--set baseline
+			local newState = {
+				unit = false,
+				type1 = false,
+				type2 = false,
+				type3 = false,
+				macrotext1 = false,
+				macrotext2 = false,
+				macrotext3 = false
+			}
 
-			if not self.PlayerIsEnemy and BattleGroundEnemies.db.profile[self.PlayerType].UseClique then
-				BattleGroundEnemies:Debug("Clique used")
-				ClickCastFrames[self] = true
-			else
-				if ClickCastFrames[self] then
-					ClickCastFrames[self] = nil
+			if ClickCastFrames[self] then
+				ClickCastFrames[self] = nil
+			end
+
+			if self.PlayerIsEnemy then
+				if self.PlayerArenaUnitID then --its a arena enemy
+					newState.unit = self.PlayerArenaUnitID
+					newState.type1 = "target"		-- type1 = LEFT-Click to target
+					newState.type2 = "focus"		 -- type2 = Right-Click to focus
+					setupUsualAttributes = false
 				end
+			else
+				if BattleGroundEnemies.db.profile[self.PlayerType].UseClique then
+					BattleGroundEnemies:Debug("Clique used")
+					ClickCastFrames[self] = true
+					setupUsualAttributes = false
+				end
+			end
 
-				self:RegisterForClicks('AnyUp')
-				self:SetAttribute('type1','macro')-- type1 = LEFT-Click
-				self:SetAttribute('type2','macro')-- type2 = Right-Click
-				self:SetAttribute('type3','macro')-- type3 = Middle-Click
+			if setupUsualAttributes then
+				newState.type1 = "macro"		-- type1 = LEFT-Click
+				newState.type2 = "macro"		-- type2 = Right-Click
+				newState.type3 = "macro"		-- type3 = Middle-Click
 
 				for i = 1, 3 do
-
 					local bindingType = self.config[mouseButtons[i].."Type"]
 
 					if bindingType == "Target" then
-						self:SetAttribute('macrotext'..i,
-							'/cleartarget\n'..
-							'/targetexact '..self.PlayerName
-						)
+						newState['macrotext'..i] = '/cleartarget\n'..
+						'/targetexact '..
+						self.PlayerName
 					elseif bindingType == "Focus" then
-						self:SetAttribute('macrotext'..i,
-							'/targetexact '..self.PlayerName..'\n'..
-							'/focus\n'..
-							'/targetlasttarget'
-						)
-
+						newState['macrotext'..i] = '/targetexact '..self.PlayerName..'\n'..
+						'/focus\n'..
+						'/targetlasttarget'
 					else -- Custom
 						local macrotext = (BattleGroundEnemies.db.profile[self.PlayerType][mouseButtons[i].."Value"]):gsub("%%n", self.PlayerName)
-						self:SetAttribute('macrotext'..i, macrotext)
+						newState['macrotext'..i] = macrotext
 					end
+				end
+			end
+
+			--check what have actually changed
+			local updateNeeded = false
+			for attribute, value in pairs(newState) do
+				local currentValue = self:GetAttribute(attribute)
+				if currentValue ~= value then
+					updateNeeded = true
+					break
+				end
+			end
+			if updateNeeded then
+				if InCombatLockdown() then
+					return BattleGroundEnemies:QueueForUpdateAfterCombat(self, "SetBindings")
+				end
+				for attribute, value in pairs(newState) do
+					self:SetAttribute(attribute, value)
 				end
 			end
 		end
@@ -1514,7 +1551,6 @@ local function PopulateMainframe(playerType)
 
 		for name, playerButton in pairs(self.Players) do
 			playerButton:ApplyButtonSettings()
-
 			playerButton:SetBindings()
 		end
 
@@ -1618,6 +1654,7 @@ local function PopulateMainframe(playerType)
 			playerButton.unit = nil
 		else --no recycleable buttons remaining => create a new one
 			playerButton = CreateFrame('Button', nil, self, 'SecureUnitButtonTemplate')
+			playerButton:RegisterForClicks('AnyUp')
 			playerButton:Hide()
 			-- setmetatable(playerButton, self)
 			-- self.__index = self
@@ -1643,8 +1680,6 @@ local function PopulateMainframe(playerType)
 
 			if playerButton.PlayerIsEnemy then
 				Mixin(playerButton, enemyButtonFunctions)
-			else
-				RegisterUnitWatch(playerButton, true)
 			end
 
 			playerButton.Counter = {}
@@ -1716,8 +1751,6 @@ local function PopulateMainframe(playerType)
 		else
 			playerButton:UpdateRange(true)
 		end
-
-		playerButton:SetBindings()
 
 		playerButton:Show()
 
@@ -1840,6 +1873,13 @@ local function PopulateMainframe(playerType)
 				if playerButton.PlayerSpecName ~= specName then--its possible to change specName in battleground
 					playerButton.PlayerSpecName = specName
 					playerButton:PlayerDetailsChanged()
+				end
+			end
+			local newPlayerArenaUnitID = additionalData and additionalData.PlayerArenaUnitID
+			if newPlayerArenaUnitID then
+				if not playerButton.PlayerArenaUnitID or playerButton.PlayerArenaUnitID ~= newPlayerArenaUnitID then--its possible to change unitID in arena
+					playerButton.PlayerArenaUnitID = newPlayerArenaUnitID
+					playerButton:PlayerDetailsChanged() --relevant for Secure button attributes
 				end
 			end
 
@@ -2880,6 +2920,12 @@ do
 		self.db.RegisterCallback(self, "OnProfileCopied", "ProfileChanged")
 		self.db.RegisterCallback(self, "OnProfileReset", "ProfileChanged")
 
+		if self.db.profile then
+			if not self.db.profile.Debug then
+				self.db.profile.log = nil
+			end
+		end
+
 
 		LibChangelog:Register(AddonName, Data.changelog, self.db.profile, "lastReadVersion", "onlyShowWhenNewVersion")
 
@@ -2981,7 +3027,9 @@ function BattleGroundEnemies.Enemies:CreateArenaEnemies()
 		else
 			classTag = select(2, UnitClass(unitID))
 		end
-		-- BattleGroundEnemies:LogToSavedVariables("classTag", classTag)
+		BattleGroundEnemies:LogToSavedVariables("classTag", classTag)
+		BattleGroundEnemies:LogToSavedVariables("specName", specName)
+
 
 		if classTag then
 			local playerName
@@ -2996,11 +3044,10 @@ function BattleGroundEnemies.Enemies:CreateArenaEnemies()
 				--useful in solo shuffle in first round, then we can show a plaername via data from scoreboard
 				local match = matchBattleFieldScoreToArenaEnemyPlayer(battleFieldScores, {classTag = classTag, specName = specName})
 				if match then
-					--BattleGroundEnemies:LogToSavedVariables("found a match")
+					BattleGroundEnemies:LogToSavedVariables("found a match")
 					playerName = match.name
 				else
-					--BattleGroundEnemies:LogToSavedVariables("didnt find a match", unitID)
-
+					BattleGroundEnemies:LogToSavedVariables("didnt find a match", unitID)
 					-- use the unitID
 					playerName = unitID
 				end
@@ -3073,19 +3120,23 @@ local function addTimestamp()
 end
 
 function BattleGroundEnemies:Debug(...)
-	if self.db and self.db.profile.Debug then
+	if not self.db then return end
+	if not self.db.profile then return end
+	if not self.db.profile.Debug then return end
 
-		if not self.debugFrame then
-			self.debugFrame = CreatedebugFrame()
-		end
-
-		local text = stringifyMultitArgs(addTimestamp(), ...)
-
-		self.debugFrame:AddMessage(text)
+	if not self.debugFrame then
+		self.debugFrame = CreatedebugFrame()
 	end
+
+	local text = stringifyMultitArgs(addTimestamp(), ...)
+
+	self.debugFrame:AddMessage(text)
 end
 
 function BattleGroundEnemies:LogToSavedVariables(...)
+	if not self.db then return end
+	if not self.db.profile then return end
+	if not self.db.profile.Debug then return end
 	self.db.profile.log = self.db.profile.log or {}
 
 	local text = stringifyMultitArgs(...)
@@ -3111,8 +3162,7 @@ BattleGroundEnemies.Enemies.ARENA_PREP_OPPONENT_SPECIALIZATIONS = BattleGroundEn
 
 function BattleGroundEnemies.Enemies:UNIT_NAME_UPDATE(unitID)
 	--BattleGroundEnemies:LogToSavedVariables("UNIT_NAME_UPDATE", unitID)
-	local name = GetUnitName(unitID, true)
-	self:ChangeName(unitID, name)
+	BattleGroundEnemies:ThrottleUpdateArenaPlayers()
 end
 
 
@@ -3339,7 +3389,7 @@ do
 	local oldTarget
 	function BattleGroundEnemies:PLAYER_TARGET_CHANGED()
 		local playerButton = self:GetPlayerbuttonByUnitID("target")
-
+		--BattleGroundEnemies:LogToSavedVariables("playerButton target", playerButton, GetUnitName("target", true))
 		if oldTarget then
 			if oldTarget.PlayerIsEnemy then
 				oldTarget:UpdateEnemyUnitID("Target", false)
@@ -3374,6 +3424,7 @@ do
 	local oldFocus
 	function BattleGroundEnemies:PLAYER_FOCUS_CHANGED()
 		local playerButton = self:GetPlayerbuttonByUnitID("focus")
+		--BattleGroundEnemies:LogToSavedVariables("playerButton focus", playerButton, GetUnitName("focus", true))
 		if oldFocus then
 			if oldFocus.PlayerIsEnemy then
 				oldFocus:UpdateEnemyUnitID("Focus", false)
@@ -3679,21 +3730,26 @@ function BattleGroundEnemies:UpdateBattleFieldFaction(battleFieldScores)
 end
 
 function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
+
+	--we never create allies in arena via scoreboard and we only upates enemies when there are no opponent specs
+	--so we skip everything in case there are opponent specs in arena
 	if IsInArena then
 		local foundArenaEnemies = false
 		if GetArenaOpponentSpec then
 			for i = 1, 5 do
 				if GetArenaOpponentSpec then --HasSpeccs
 					local specID, gender = GetArenaOpponentSpec(i)
-
 					if (specID and specID > 0) then
 						foundArenaEnemies = true
+						break
 					end
 				end
 			end
 		end
 		--self:LogToSavedVariables("foundArenaEnemies", foundArenaEnemies)
-		if foundArenaEnemies then return end
+		if foundArenaEnemies then
+			return BattleGroundEnemies:ThrottleUpdateArenaPlayers()
+		end
 	end
 
 	--BattleGroundEnemies:LogToSavedVariables("UPDATE_BATTLEFIELD_SCORE")
@@ -3751,7 +3807,6 @@ function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 	end
 
 
-	 -- dont create alies via battlefield scrore when in arena, this prevents error in solo shuffle when the scoreboard is shown at the end (all players are one team)
 
 
 	if foundEnemies == 0 then
@@ -3762,6 +3817,7 @@ function BattleGroundEnemies:UPDATE_BATTLEFIELD_SCORE()
 		self:DisableFallbackToCombatlogScanning()
 		self.Enemies:UpdatePlayers(UpdateBattleFieldScoreAftercombat)
 	end
+	 -- dont create alies via scoreboard when in arena, this prevents error in solo shuffle when the scoreboard is shown at the end (all players are one team)
 
 	if IsInArena then return end
 

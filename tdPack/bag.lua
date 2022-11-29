@@ -9,10 +9,20 @@ local Rule = tdPack('Rule')
 local Bag = tdPack:NewModule('Bag')
 
 local bagClasses = {
-    bag = {0, 1, 2, 3, 4},
-    bank = {-1, 5, 6, 7, 8, 9, 10, 11},
+    bag = {0}, --{0, 1, 2, 3, 4},
+    bank = {-1}, --{-1, 5, 6, 7, 8, 9, 10, 11},
     reagent = {-3},
 }
+for i=1, NUM_BAG_SLOTS do
+    tinsert(bagClasses.bag, BACKPACK_CONTAINER+i)
+end
+for i=1, NUM_BANKBAGSLOTS do
+    tinsert(bagClasses.bank, BACKPACK_CONTAINER+NUM_TOTAL_EQUIPPED_BAG_SLOTS+i)
+end
+for i=1, NUM_REAGENTBAG_SLOTS do
+    tinsert(bagClasses.reagent, BACKPACK_CONTAINER+NUM_BAG_SLOTS+i)
+end
+tdPack_DEFAULT_BAGS = CopyTable(bagClasses)
 
 tdPack_BAGS = bagClasses
 

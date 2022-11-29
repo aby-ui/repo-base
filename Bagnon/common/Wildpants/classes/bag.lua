@@ -10,8 +10,7 @@ local Bag = Addon.Tipped:NewClass('Bag', 'CheckButton')
 Bag.SIZE = 32
 Bag.TEXTURE_SIZE = 64 * (Bag.SIZE/36)
 Bag.FILTER_ICONS = {'bags-icon-equipment', 'bags-icon-consumables', 'bags-icon-tradegoods', 'bags-icon-junk', 'bags-icon-questitem'}
-Bag.GetBagID = Bag.GetID
-Bag.GetSlot = Bag.GetID
+Bag.GetBagID, Bag.GetSlot = Bag.GetID, Bag.GetID
 
 
 --[[ Construct ]]--
@@ -323,6 +322,8 @@ end
 function Bag:IsCustomSlot()
 	return self:IsBackpackBag() or self:IsBankBag()
 end
+
+function Bag:IsCombinedBagContainer() end -- trick blizzard
 
 function Bag:CanToggle()
 	return self:IsBackpack() or self:IsBank() or self.info.owned

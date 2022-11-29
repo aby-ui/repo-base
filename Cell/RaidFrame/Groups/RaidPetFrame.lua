@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 local raidPetFrame = CreateFrame("Frame", "CellRaidPetFrame", Cell.frames.mainFrame, "SecureHandlerAttributeTemplate")
@@ -287,11 +288,11 @@ local function RaidPetFrame_UpdateLayout(layout, which)
 
             -- NOTE: SetOrientation BEFORE SetPowerSize
             if not which or which == "barOrientation" then
-                b.func.SetOrientation(unpack(layout["barOrientation"]))
+                B:SetOrientation(b, layout["barOrientation"][1], layout["barOrientation"][2])
             end
            
             if not which or which == "power" or which == "barOrientation" then
-                b.func.SetPowerSize(layout["powerSize"])
+                B:SetPowerSize(b, layout["powerSize"])
             end
         end
     end

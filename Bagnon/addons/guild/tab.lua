@@ -71,7 +71,7 @@ function Tab:UpdateStatus()
 	local remaining = info.remaining
 
 	self:SetChecked(self:GetID() == GetCurrentGuildBankTab())
-	self.Count:SetText((not info.viewable or not remaining) and '' or remaining >= 0 and remaining or '∞')
+	self.Count:SetText(info.viewable and remaining and (remaining >= 0 and remaining or '∞') or '')
 end
 
 function Tab:UpdateTooltip()

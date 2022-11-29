@@ -1,19 +1,19 @@
 local mod	= DBM:NewMod(2508, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221028013542")
+mod:SetRevision("20221128214658")
 mod:SetCreatureID(186738)
 mod:SetEncounterID(2584)
 --mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221127000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 384978 384699 385399 385075 388804",
---	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START 384978 385399 385075 388804",
+	"SPELL_CAST_SUCCESS 384696",
 	"SPELL_AURA_APPLIED 384978"
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED",
@@ -25,10 +25,10 @@ mod:RegisterEventsInCombat(
 --TODO, Current under-tuning makes the crystals and fracture completely inconsiquential. Until that changes, not much to do with those.
 --TODO, target scan arcane eruption?
 --TODO, Even on really long M+, Unleashed was never cast more than once, with upwards of 107 seconds between first cast and kill
---TODO, Crystaline roar not in CLEU so can't be implemented yet.
 --TODO, Brittle not in CLEU so can't be implemented yet
 --[[
 (ability.id = 384978 or ability.id = 384699 or ability.id = 385399 or ability.id = 385075 or ability.id = 388804)  and type = "begincast"
+ or ability.id = 384696 and type = "cast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 local warnArcaneEruption						= mod:NewSpellAnnounce(385075, 3)
@@ -41,9 +41,9 @@ local specWarnUnleashedDestruction				= mod:NewSpecialWarningSpell(385399, nil, 
 --local yellInfusedStrikes						= mod:NewYell(361966)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerDragonStrikeCD						= mod:NewCDTimer(8.5, 384978, nil, "Tank|Healer|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)--8.5-24, probably delayed by CLEU events I couldn't see
-local timerCrystallineRoarCD					= mod:NewAITimer(35, 384699, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
-local timerUnleashedDestructionCD				= mod:NewCDTimer(35, 385399, nil, nil, nil, 2)--Not seen cast more than once even in a long pull
+local timerDragonStrikeCD						= mod:NewCDTimer(7.3, 384978, nil, "Tank|Healer|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)--7.3-24, probably delayed by CLEU events I couldn't see
+local timerCrystallineRoarCD					= mod:NewCDTimer(117.8, 384699, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
+local timerUnleashedDestructionCD				= mod:NewCDTimer(117.8, 385399, nil, nil, nil, 2)--Not seen cast more than once even in a long pull
 local timerArcaneEruptionCD						= mod:NewCDTimer(54.6, 385075, nil, nil, nil, 3)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
@@ -57,7 +57,7 @@ mod.vb.unleashedCast = 0
 function mod:OnCombatStart(delay)
 	self.vb.unleashedCast = 0
 	timerDragonStrikeCD:Start(7.1-delay)
-	timerCrystallineRoarCD:Start(1-delay)--Unknown, no CLEU event
+	timerCrystallineRoarCD:Start(13-delay)
 	timerArcaneEruptionCD:Start(28.9-delay)--28.9-37, Highly variable if it gets spell queued behind more tank casts
 	timerUnleashedDestructionCD:Start(48.2-delay)
 	if self.Options.InfoFrame then
@@ -83,10 +83,6 @@ function mod:SPELL_CAST_START(args)
 			specWarnDragonStrike:Play("defensive")
 		end
 		timerDragonStrikeCD:Start()
-	elseif spellId == 384699 then
-		specWarnCrystallineRoar:Show()
-		specWarnCrystallineRoar:Play("shockwave")
-		timerCrystallineRoarCD:Start()
 	elseif spellId == 385399 or spellId == 388804 then--Easy, Hard
 		self.vb.unleashedCast = self.vb.unleashedCast + 1
 		specWarnUnleashedDestruction:Show(self.vb.unleashedCast)
@@ -101,14 +97,14 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
---[[
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
-	if spellId == 362805 then
-
+	if spellId == 384696 then
+		specWarnCrystallineRoar:Show()
+		specWarnCrystallineRoar:Play("shockwave")
+		timerCrystallineRoarCD:Start()
 	end
 end
---]]
 
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId

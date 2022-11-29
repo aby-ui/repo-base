@@ -271,6 +271,15 @@ do
 				uids = {},
 				persistent = true,
 			},
+
+			path = {
+				enabled = true,
+				ColorSRGB = {1, 1, 1, 1},
+				DotSize = 5,
+				DotAmount = 20,
+				DotTexture = [[Interface\CHARACTERFRAME\TempPortraitAlphaMaskSmall]],
+				LineSize = 500,
+			},
 		},
 	}
 

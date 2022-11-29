@@ -18,6 +18,18 @@ U1RegisterAddon("CastDelayBar", {
         callback = function(cfg, v, loading)
             CastDelayBar.showdelay = v
         end,
+
+        {
+            var = "alpha",
+            text = "延迟条透明度",
+            default = 0.7,
+            type = "spin",
+            range = { 0.2, 1, 0.1 },
+            callback = function(cfg, v, loading)
+                CastDelayBar.delayBarAlpha = v
+                CastDelayBar.delayBar:SetAlpha(v)
+            end,
+        }
     },
 
     {

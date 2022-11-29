@@ -18,6 +18,7 @@ end
 --function Postal_Rake:OnDisable()
 --end
 
+-- WoW 10.0 Release Show/Hide Frame Handlers
 function Postal_Rake:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(eventName, ...)
 	local paneType = ...
 	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_Rake:MAIL_SHOW() end

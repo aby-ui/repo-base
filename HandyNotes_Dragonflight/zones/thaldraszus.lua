@@ -6,6 +6,7 @@ local ADDON_NAME, ns = ...
 local L = ns.locale
 local Map = ns.Map
 
+local BonusBoss = ns.node.BonusBoss
 -- local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
@@ -16,6 +17,7 @@ local Treasure = ns.node.Treasure
 local PetBattle = ns.node.PetBattle
 
 local Achievement = ns.reward.Achievement
+local Item = ns.reward.Item
 -- local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Transmog = ns.reward.Transmog
@@ -31,19 +33,18 @@ local map = Map({id = 2025, settings = true})
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[59545917] = Rare({ -- review
+map.nodes[59075874] = Rare({
     id = 193664,
     quest = 69963,
     rewards = {Achievement({id = 16679, criteria = 56158})}
 }) -- Ancient Protector
 
--- map.nodes[] = Rare({
---     id = 193128,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16679, criteria = 56136}),
---     }
--- }) -- Blightpaw the Depraved
+map.nodes[31097121] = Rare({ -- requirement ?
+    id = 193128,
+    quest = nil,
+    note = L['blightpaw_note'],
+    rewards = {Achievement({id = 16679, criteria = 56136})}
+}) -- Blightpaw the Depraved
 
 map.nodes[59847057] = Rare({ -- required 67030
     id = 193220,
@@ -82,13 +83,14 @@ map.nodes[47675115] = Rare({ -- required 67030
     rewards = {Achievement({id = 16679, criteria = 56147})}
 }) -- Eldoren the Reborn
 
--- map.nodes[] = Rare({
---     id = 193125,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16679, criteria = 56138}),
---     }
--- }) -- Goremaul the Gluttonous
+map.nodes[53374092] = Rare({
+    id = 193125,
+    quest = nil,
+    rewards = {
+        Achievement({id = 16679, criteria = 56138}),
+        Transmog({item = 200436, slot = L['mail']}) -- Gorestained Hauberk
+    }
+}) -- Goremaul the Gluttonous
 
 map.nodes[57828380] = Rare({ -- review
     id = 193126,
@@ -191,22 +193,36 @@ map.nodes[38466826] = Rare({
 map.nodes[35027001] = Rare({ -- reqiured 67030 review
     id = 193146,
     quest = 70947,
-    rewards = {Achievement({id = 16679, criteria = 56146})}
+    note = L['in_small_cave'],
+    rewards = {Achievement({id = 16679, criteria = 56146})},
+    pois = {POI({34896938})} -- Entrance
 }) -- Treasure-Mad Trambladd
 
--- map.nodes[] = Rare({
---     id = 193161,
---     quest = 69850,
---     rewards = {
---         Achievement({id = 16679, criteria = 56152}),
---     }
--- }) -- Woolfang
+map.nodes[47884976] = Rare({
+    id = 193161,
+    quest = 69850,
+    note = L['woofang_note'],
+    rewards = {
+        Achievement({id = 16679, criteria = 56152}),
+        Transmog({item = 200174, slot = L['leather']}) -- Bonesigil Shoulderguards
+    }
+}) -- Woolfang
+
+-------------------------------------------------------------------------------
+---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[36757287] = BonusBoss({
+    id = 193273,
+    quest = 72842,
+    rewards = {
+        Transmog({item = 200131, slot = L['dagger']}) -- Reclaimed Survivalist's Dagger
+    }
+}) -- Liskron the Dazzling
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
 -------------------------------------------------------------------------------
-
--- https://www.wowhead.com/beta/achievement=16301/treasures-of-thaldraszus#comments
 
 map.nodes[49436289] = Treasure({
     quest = 70611,
@@ -217,25 +233,36 @@ map.nodes[49436289] = Treasure({
     }
 }) -- Acorn Harvester
 
-map.nodes[78001400] = Treasure({ -- required 70407, 70408
-    quest = nil,
-    requires = ns.requirement.Item(198852), -- Bear Termination Orders
-    rewards = {Achievement({id = 16301, criteria = 54812})}
+map.nodes[52607673] = Treasure({
+    quest = 70408,
+    note = L['gem_cluster_note'],
+    requires = {
+        ns.requirement.Reputation(2507, 21, true), -- Dragonscale Expedition
+        ns.requirement.Quest(70833), -- Rumors of the Jeweled Whelplings
+        ns.requirement.Item(198852) -- Bear Termination Orders
+    },
+    rewards = {
+        Achievement({id = 16301, criteria = 54812}), --
+        Item({item = 200863}) -- Glimmering Nozdorite Cluster
+    }
 }) -- Amber Gem Cluster
 
-map.nodes[33967695] = Treasure({
+map.nodes[33967695] = Treasure({ -- add loot
     quest = 70607,
     note = L['cracked_hourglass_note'],
-    requires = ns.requirement.Item(199068), -- Time-Lost Memo
+    requires = {
+        ns.requirement.Quest(72709), -- Funding a Treasure Hunt
+        ns.requirement.Item(199068) -- Time-Lost Memo
+    },
     rewards = {Achievement({id = 16301, criteria = 54810})}
 }) -- Cracked Hourglass
 
-map.nodes[60244164] = Treasure({
+map.nodes[60244164] = Treasure({ -- add loot
     quest = 70609,
     rewards = {Achievement({id = 16301, criteria = 54813})}
 }) -- Elegant Canvas Brush
 
-map.nodes[58168007] = Treasure({ -- required 70538, 70608
+map.nodes[58168007] = Treasure({ -- add loot
     quest = 70608,
     note = L['sandy_wooden_duck_note'],
     requires = ns.requirement.Item(199069), -- Yennu's Map
@@ -243,7 +270,7 @@ map.nodes[58168007] = Treasure({ -- required 70538, 70608
     pois = {POI({54937543})} -- Yennu's Map
 }) -- Sandy Wooden Duck (Sand Pile)
 
-map.nodes[64851655] = Treasure({
+map.nodes[64851655] = Treasure({ -- add loot
     quest = 70610,
     note = L['in_cave'],
     rewards = {Achievement({id = 16301, criteria = 54814})}
@@ -316,6 +343,7 @@ map.nodes[50844623] = Scoutpack()
 map.nodes[52758333] = Scoutpack()
 map.nodes[55456797] = Scoutpack()
 map.nodes[55873598] = Scoutpack()
+map.nodes[59198794] = Scoutpack()
 
 -------------------------------------------------------------------------------
 --------------------------------- BATTLE PETS ---------------------------------
@@ -323,10 +351,36 @@ map.nodes[55873598] = Scoutpack()
 
 map.nodes[39467359] = PetBattle({
     id = 197336,
-    rewards = {Achievement({id = 16464, criteria = 55490})}
+    rewards = {
+        Achievement({id = 16464, criteria = 55490}), -- Battle on the Dragon Isles
+        ns.reward.Spacer(),
+        Achievement({id = 16501, criteria = 3, oneline = true}), -- Aquatic
+        Achievement({id = 16503, criteria = 3, oneline = true}), -- Beast
+        Achievement({id = 16504, criteria = 3, oneline = true}), -- Critter
+        Achievement({id = 16505, criteria = 3, oneline = true}), -- Dragon
+        Achievement({id = 16506, criteria = 3, oneline = true}), -- Elemental
+        Achievement({id = 16507, criteria = 3, oneline = true}), -- Flying
+        Achievement({id = 16508, criteria = 3, oneline = true}), -- Humanoid
+        Achievement({id = 16509, criteria = 3, oneline = true}), -- Magic
+        Achievement({id = 16510, criteria = 3, oneline = true}), -- Mechanical
+        Achievement({id = 16511, criteria = 3, oneline = true}) -- Undead
+    }
 }) -- Enyobon
 
 map.nodes[56274924] = PetBattle({
     id = 197350,
-    rewards = {Achievement({id = 16464, criteria = 55493})}
+    rewards = {
+        Achievement({id = 16464, criteria = 55493}), -- Battle on the Dragon Isles
+        ns.reward.Spacer(),
+        Achievement({id = 16501, criteria = 6, oneline = true}), -- Aquatic
+        Achievement({id = 16503, criteria = 6, oneline = true}), -- Beast
+        Achievement({id = 16504, criteria = 6, oneline = true}), -- Critter
+        Achievement({id = 16505, criteria = 6, oneline = true}), -- Dragon
+        Achievement({id = 16506, criteria = 6, oneline = true}), -- Elemental
+        Achievement({id = 16507, criteria = 6, oneline = true}), -- Flying
+        Achievement({id = 16508, criteria = 6, oneline = true}), -- Humanoid
+        Achievement({id = 16509, criteria = 6, oneline = true}), -- Magic
+        Achievement({id = 16510, criteria = 6, oneline = true}), -- Mechanical
+        Achievement({id = 16511, criteria = 6, oneline = true}) -- Undead
+    }
 }) -- Setimothes

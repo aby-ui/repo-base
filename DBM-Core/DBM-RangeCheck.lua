@@ -9,6 +9,9 @@ DBM.RangeCheck = {}
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
 local isClassic = WOW_PROJECT_ID == (WOW_PROJECT_CLASSIC or 2)
 
+local DDM = _G["LibStub"]:GetLibrary("LibDropDownMenu")
+local UIDropDownMenu_AddButton, UIDropDownMenu_Initialize, ToggleDropDownMenu = DDM.UIDropDownMenu_AddButton, DDM.UIDropDownMenu_Initialize, DDM.ToggleDropDownMenu
+
 local function UnitPhaseReasonHack(uId)
 	if isRetail then
 		return not UnitPhaseReason(uId)
@@ -165,7 +168,7 @@ do
 		local info
 
 		if level == 1 then
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_SETRANGE
 			info.notCheckable = true
 			info.hasArrow = true
@@ -173,7 +176,7 @@ do
 			info.menuList = "range"
 			UIDropDownMenu_AddButton(info, 1)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_SETTHRESHOLD
 			info.notCheckable = true
 			info.hasArrow = true
@@ -181,7 +184,7 @@ do
 			info.menuList = "threshold"
 			UIDropDownMenu_AddButton(info, 1)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_SOUNDS
 			info.notCheckable = true
 			info.hasArrow = true
@@ -189,7 +192,7 @@ do
 			info.menuList = "sounds"
 			UIDropDownMenu_AddButton(info, 1)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_OPTION_FRAMES
 			info.notCheckable = true
 			info.hasArrow = true
@@ -197,7 +200,7 @@ do
 			info.menuList = "frames"
 			UIDropDownMenu_AddButton(info, 1)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = LOCK_FRAME
 			if DBM.Options.RangeFrameLocked then
 				info.checked = true
@@ -205,7 +208,7 @@ do
 			info.func = toggleLocked
 			UIDropDownMenu_AddButton(info, 1)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = HIDE
 			info.notCheckable = true
 			info.func = function() rangeCheck:Hide(true) end
@@ -214,7 +217,7 @@ do
 		elseif level == 2 then
 			if menu == "range" then
 				if isRetail then
-					info = UIDropDownMenu_CreateInfo()
+					info = {}
 					info.text = L.RANGECHECK_SETRANGE_TO:format(4)
 					info.func = setRange
 					info.arg1 = 4
@@ -223,7 +226,7 @@ do
 				end
 
 				if not isClassic then
-					info = UIDropDownMenu_CreateInfo()
+					info = {}
 					info.text = L.RANGECHECK_SETRANGE_TO:format(6)
 					info.func = setRange
 					info.arg1 = 6
@@ -231,35 +234,35 @@ do
 					UIDropDownMenu_AddButton(info, 2)
 				end
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(8)
 				info.func = setRange
 				info.arg1 = 8
 				info.checked = (mainFrame.range == 8)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(10)
 				info.func = setRange
 				info.arg1 = 10
 				info.checked = (mainFrame.range == 10)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(13)
 				info.func = setRange
 				info.arg1 = 13
 				info.checked = (mainFrame.range == 13)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(18)
 				info.func = setRange
 				info.arg1 = 18
 				info.checked = (mainFrame.range == 18)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(23)
 				info.func = setRange
 				info.arg1 = 23
@@ -267,7 +270,7 @@ do
 				UIDropDownMenu_AddButton(info, 2)
 
 				if isRetail then
-					info = UIDropDownMenu_CreateInfo()
+					info = {}
 					info.text = L.RANGECHECK_SETRANGE_TO:format(30)
 					info.func = setRange
 					info.arg1 = 30
@@ -275,7 +278,7 @@ do
 					UIDropDownMenu_AddButton(info, 2)
 				end
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SETRANGE_TO:format(33)
 				info.func = setRange
 				info.arg1 = 33
@@ -283,7 +286,7 @@ do
 				UIDropDownMenu_AddButton(info, 2)
 
 				if not isClassic then
-					info = UIDropDownMenu_CreateInfo()
+					info = {}
 					info.text = L.RANGECHECK_SETRANGE_TO:format(43)
 					info.func = setRange
 					info.arg1 = 43
@@ -291,84 +294,84 @@ do
 					UIDropDownMenu_AddButton(info, 2)
 				end
 			elseif menu == "threshold" then
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 1
 				info.func = setThreshold
 				info.arg1 = 1
 				info.checked = (mainFrame.redCircleNumPlayers == 1)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 2
 				info.func = setThreshold
 				info.arg1 = 2
 				info.checked = (mainFrame.redCircleNumPlayers == 2)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 3
 				info.func = setThreshold
 				info.arg1 = 3
 				info.checked = (mainFrame.redCircleNumPlayers == 3)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 4
 				info.func = setThreshold
 				info.arg1 = 4
 				info.checked = (mainFrame.redCircleNumPlayers == 4)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 5
 				info.func = setThreshold
 				info.arg1 = 5
 				info.checked = (mainFrame.redCircleNumPlayers == 5)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 6
 				info.func = setThreshold
 				info.arg1 = 6
 				info.checked = (mainFrame.redCircleNumPlayers == 6)
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = 8
 				info.func = setThreshold
 				info.arg1 = 8
 				info.checked = (mainFrame.redCircleNumPlayers == 8)
 				UIDropDownMenu_AddButton(info, 2)
 			elseif menu == "sounds" then
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SOUND_OPTION_1
 				info.notCheckable = true
 				info.hasArrow = true
 				info.menuList = "RangeFrameSound1"
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_SOUND_OPTION_2
 				info.notCheckable = true
 				info.hasArrow = true
 				info.menuList = "RangeFrameSound2"
 				UIDropDownMenu_AddButton(info, 2)
 			elseif menu == "frames" then
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_OPTION_TEXT
 				info.func = setFrames
 				info.arg1 = "text"
 				info.checked = (DBM.Options.RangeFrameFrames == "text")
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_OPTION_RADAR
 				info.func = setFrames
 				info.arg1 = "radar"
 				info.checked = (DBM.Options.RangeFrameFrames == "radar")
 				UIDropDownMenu_AddButton(info, 2)
 
-				info = UIDropDownMenu_CreateInfo()
+				info = {}
 				info.text = L.RANGECHECK_OPTION_BOTH
 				info.func = setFrames
 				info.arg1 = "both"
@@ -377,7 +380,7 @@ do
 			end
 		elseif level == 3 then
 			local option = menu
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_SOUND_0
 			info.func = setSound
 			info.arg1 = option
@@ -385,7 +388,7 @@ do
 			info.checked = (DBM.Options[option] == sound0)
 			UIDropDownMenu_AddButton(info, 3)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_SOUND_1
 			info.func = setSound
 			info.arg1 = option
@@ -393,7 +396,7 @@ do
 			info.checked = (DBM.Options[option] == sound1)
 			UIDropDownMenu_AddButton(info, 3)
 
-			info = UIDropDownMenu_CreateInfo()
+			info = {}
 			info.text = L.RANGECHECK_SOUND_2
 			info.func = setSound
 			info.arg1 = option

@@ -1,11 +1,11 @@
 ## Interface: 100002
 ## Title: |TInterface/Addons/BagBrother/Art/Bagnon-Small:16:16|t Bagnon
 ## Author: Tuller & Jaliborc (João Cardoso)
-## Notes: The famous bag interface, designed to help the player find items|nas quickly and easily as possible. Possessions can be viewed at|nany time, from anywhere and from any character.|n|cffbbbbbbBy João Cardoso and Jason Greer|r|n|n|TInterface/Addons/BagBrother/Art/Patreon:12:12|t |cff82c5ffpatreon.com/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Discord:12:12:0:-2|t |cff82c5ffbit.ly/discord-jaliborc|r|n|n
+## Notes: The famous bag interface. See your items at any|ntime, from anywhere and from any character.|n|cffbbbbbbBy João Cardoso and Jason Greer|r|n|n|TInterface/Addons/BagBrother/Art/Patreon:12:12|t |cff82c5ffpatreon.com/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Discord:12:12:0:-2|t |cff82c5ffbit.ly/discord-jaliborc|r|n|n
 ## SavedVariables: Bagnon_Sets
 ## Dependencies: BagBrother
 ## OptionalDeps: WoWUnit
-## Version: 10.0.5
+## Version: 10.0.6
 
 addons\main\main.xml
 Bagnon_ReagentBankButton\style.xml

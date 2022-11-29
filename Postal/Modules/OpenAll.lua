@@ -22,6 +22,17 @@ local invFull, invAlmostFull
 local openAllOverride
 local firstMailDaysLeft
 
+-- WoW 10.0 Release Show/Hide Frame Handlers
+function Postal_OpenAll:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(eventName, ...)
+	local paneType = ...
+	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_OpenAll:MAIL_SHOW() end
+end
+
+function Postal_OpenAll:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(eventName, ...)
+	local paneType = ...
+	if paneType ==  Enum.PlayerInteractionType.MailInfo then Postal_OpenAll:MAIL_CLOSED() end
+end
+
 -- Frame to process opening mail
 local updateFrame = CreateFrame("Frame")
 updateFrame:Hide()
@@ -113,7 +124,11 @@ function Postal_OpenAll:OnEnable()
 		Postal_OpenAllMenuButton:SetFrameLevel(Postal_OpenAllMenuButton:GetFrameLevel() + 1)
 	end
 
-	self:RegisterEvent("MAIL_SHOW")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:RegisterEvent("MAIL_SHOW")
+	else
+		Postal_OpenAll:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
+	end
 	-- For enabling after a disable
 	OpenAllMail:Hide() -- hide Blizzard's Open All button
 	button:Show()
@@ -130,8 +145,15 @@ function Postal_OpenAll:OnDisable()
 end
 
 function Postal_OpenAll:MAIL_SHOW()
-	self:RegisterEvent("MAIL_CLOSED", "Reset")
+	if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+		self:RegisterEvent("MAIL_CLOSED", "Reset")
+	else
+		Postal_OpenAll:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", "Reset")
+	end
 	self:RegisterEvent("PLAYER_LEAVING_WORLD", "Reset")
+end
+
+function Postal_OpenAll:MAIL_CLOSED()
 end
 
 function Postal_OpenAll:OpenAll(isRecursive)
@@ -377,8 +399,12 @@ function Postal_OpenAll:Reset(event)
 	button:SetText(L["Open All"])
 	Postal:DisableInbox()
 	InboxFrame_Update()
-	if event == "MAIL_CLOSED" or event == "PLAYER_LEAVING_WORLD" then
-		self:UnregisterEvent("MAIL_CLOSED")
+	if event == "MAIL_CLOSED" or event == "PLAYER_LEAVING_WORLD" or (event == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" and paneType == Enum.PlayerInteractionType.MailInfo) then
+		if Postal.WOWClassic or Postal.WOWBCClassic or Postal.WOWWotLKClassic then
+			self:UnregisterEvent("MAIL_CLOSED")
+		else
+			self:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
+		end
 		self:UnregisterEvent("PLAYER_LEAVING_WORLD")
 	end
 end

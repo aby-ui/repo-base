@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: v9.4.2
+## Version: v9.4.3
 ## Title: PlexusStatusDungeonDebuff
 ## Notes: Complete Debuff List Up To BfA
 ## Author: Doadin
@@ -83,6 +83,16 @@ ShadowLands/Tazavesh.lua
 ShadowLands/TheaterofPain.lua
 ShadowLands/TheNecroticWake.lua
 ShadowLands/TheOtherSide.lua
+
+DF/Algeth'arAcademy.lua
+DF/BrackenhideHollow.lua
+DF/HallsofInfusion.lua
+DF/Neltharus.lua
+DF/RubyLifePools.lua
+DF/TheAzureVault.lua
+DF/TheNokhudOffensive.lua
+DF/UldamanLegacyofTyr.lua
+
 
 
 ## Title: |cff880303[爱不易]|r Grid 团队减益五人副本

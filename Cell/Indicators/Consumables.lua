@@ -1,6 +1,7 @@
 local _, Cell = ...
 local L = Cell.L
 local F = Cell.funcs
+local B = Cell.bFuncs
 local I = Cell.iFuncs
 
 local orientation
@@ -91,19 +92,19 @@ local function CreateAnimationGroup_TypeA(parent)
     end)
 
     function ag:ShowUp(r, g, b)
-        if orientation == "vertical" then
-            t1:SetOffset(0, parent:GetHeight())
-            if Cell.isRetail then
-                tex:SetGradient("VERTICAL", CreateColor(r, g, b, 0), CreateColor(r, g, b, 1))
-            else
-                tex:SetGradientAlpha("VERTICAL", r, g, b, 0, r, g, b, 1)
-            end
-        else
+        if orientation == "horizontal" then
             t1:SetOffset(parent:GetWidth(), 0)
             if Cell.isRetail then
                 tex:SetGradient("HORIZONTAL", CreateColor(r, g, b, 0), CreateColor(r, g, b, 1))
             else
                 tex:SetGradientAlpha("HORIZONTAL", r, g, b, 0, r, g, b, 1)
+            end
+        else
+            t1:SetOffset(0, parent:GetHeight())
+            if Cell.isRetail then
+                tex:SetGradient("VERTICAL", CreateColor(r, g, b, 0), CreateColor(r, g, b, 1))
+            else
+                tex:SetGradientAlpha("VERTICAL", r, g, b, 0, r, g, b, 1)
             end
         end
 
@@ -115,16 +116,16 @@ local function CreateAnimationGroup_TypeA(parent)
     end
 
     function ag:UpdateOrientation()
-        if orientation == "vertical" then
-            f:ClearAllPoints()
-            f:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
-            f:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT")
-            f:SetHeight(15)
-        else
+        if orientation == "horizontal" then
             f:ClearAllPoints()
             f:SetPoint("TOPRIGHT", parent, "TOPLEFT")
             f:SetPoint("BOTTOMRIGHT", parent, "BOTTOMLEFT")
             f:SetWidth(15)
+        else
+            f:ClearAllPoints()
+            f:SetPoint("TOPLEFT", parent, "BOTTOMLEFT")
+            f:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT")
+            f:SetHeight(15)
         end
     end
 
@@ -455,6 +456,9 @@ end
 -------------------------------------------------
 -- indicator
 -------------------------------------------------
+local previews = {}
+local previewOrientation
+
 function I:CreateConsumables(parent, isPreview)
     local consumables = CreateFrame("Frame", parent:GetName().."ConsumablesParent", parent)
     
@@ -478,9 +482,9 @@ function I:CreateConsumables(parent, isPreview)
 
     if isPreview then
         parent.consumables = consumables
+        tinsert(previews, parent)
         consumables:SetPoint("TOPLEFT", 1, -1)
         consumables:SetPoint("BOTTOMRIGHT", -1, 1)
-        orientation = "horizontal"
         for _, a in pairs(animations) do
             a:UpdateOrientation()
         end
@@ -488,14 +492,6 @@ function I:CreateConsumables(parent, isPreview)
         parent.indicators.consumables = consumables
         consumables:SetFrameLevel(parent.widget.healthBar:GetFrameLevel()+1)
         consumables:SetAllPoints(parent.widget.healthBar)
-
-        -- orientation
-        hooksecurefunc(parent.func, "SetOrientation", function(o)
-            orientation = o
-            for _, a in pairs(animations) do
-                a:UpdateOrientation()
-            end
-        end)
     end
 
     -- speed
@@ -508,6 +504,22 @@ function I:CreateConsumables(parent, isPreview)
     -- show
     function consumables:ShowUp(animationType, color)
         animations[animationType]:ShowUp(unpack(color))
+    end
+end
+
+function I:UpdateConsumablesOrientation(parent, barOrientation)
+    orientation = barOrientation
+    for _, a in pairs(parent.indicators.consumables.animations) do
+        a:UpdateOrientation()
+    end
+
+    if previewOrientation ~= barOrientation then
+        previewOrientation = barOrientation
+        for _, p in pairs(previews) do
+            for _, a in pairs(p.consumables.animations) do
+                a:UpdateOrientation()
+            end
+        end
     end
 end
 

@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2477, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221030050248")
+mod:SetRevision("20221128090806")
 mod:SetCreatureID(186151)
 mod:SetEncounterID(2580)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221029000000)
+mod:SetHotfixNoticeRev(20221127000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -44,7 +44,7 @@ local specWarnRendingStrike						= mod:NewSpecialWarningDefensive(375937, nil, n
 
 local timerIronSpearCD							= mod:NewCDTimer(37, 376634, nil, nil, nil, 3)--Need more data
 local timerUpheavalCD							= mod:NewCDTimer(37, 375943, nil, nil, nil, 3)--Need data at all
-local timerRendingStrikeCD						= mod:NewCDCountTimer(35, 375937, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both rending and savage
+local timerRendingStrikeCD						= mod:NewCDCountTimer(16.5, 375937, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both rending and savage
 
 --Intermission: Stormwinds
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25192))
@@ -66,9 +66,9 @@ local specWarnConductiveStrike					= mod:NewSpecialWarningDefensive(376827, nil,
 local specWarnConductiveStrikeDispel			= mod:NewSpecialWarningDispel(376827, "RemoveMagic", nil, nil, 1, 2)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(376899, nil, nil, nil, 1, 8)
 
-local timerStaticSpearCD						= mod:NewNextTimer(39, 376864, nil, nil, nil, 3)
-local timerCracklingUpheavalCD					= mod:NewNextTimer(39, 376892, nil, nil, nil, 3)
-local timerConductiveStrikeCD					= mod:NewCDCountTimer(35, 376827, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both Condutive and Thunder
+local timerStaticSpearCD						= mod:NewCDTimer(38.3, 376864, nil, nil, nil, 3)
+local timerCracklingUpheavalCD					= mod:NewCDTimer(38.3, 376892, nil, nil, nil, 3)
+local timerConductiveStrikeCD					= mod:NewCDCountTimer(17, 376827, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both Condutive and Thunder
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -84,7 +84,7 @@ function mod:OnCombatStart(delay)
 	self.vb.comboCount = 0
 	self:SetStage(1)
 	timerRendingStrikeCD:Start(8-delay, 1)
-	timerIronSpearCD:Start(21.5-delay)
+	timerIronSpearCD:Start(18-delay)
 	timerUpheavalCD:Start(37-delay)
 end
 
@@ -102,7 +102,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 375943 then
 		specWarnUpheaval:Show()
 		specWarnUpheaval:Play("watchstep")
-		timerUpheavalCD:Start()
+--		timerUpheavalCD:Start()
 	elseif spellId == 376892 then
 		specWarnCracklingUpheaval:Show()
 		specWarnCracklingUpheaval:Play("watchstep")
@@ -113,8 +113,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnRendingStrike:Show()
 			specWarnRendingStrike:Play("defensive")
 		end
-		local timer = (self.vb.comboCount % 2 == 0) and 15 or 22
-		timerRendingStrikeCD:Start(timer, self.vb.comboCount+1)
+		--No longer alternates in P1, and is now also used in p2, wtf?
+--		local timer = (self.vb.comboCount % 2 == 0) and 15 or 22
+		timerRendingStrikeCD:Start(nil, self.vb.comboCount+1)
 	elseif spellId == 376827 then
 		self.vb.comboCount = self.vb.comboCount + 1
 		if self:IsTanking("player", "boss1", nil, true) then
@@ -143,7 +144,7 @@ end
 function mod:SPELL_CAST_SUCCESS(args)
 	local spellId = args.spellId
 	if spellId == 376634 then
-		timerIronSpearCD:Start()
+--		timerIronSpearCD:Start()
 	elseif spellId == 376730 and self:AntiSpam(3, 1) then
 		warnStormwinds:Show()
 	elseif spellId == 376864 then

@@ -6,6 +6,7 @@ local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
+local BonusBoss = ns.node.BonusBoss
 local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
@@ -17,7 +18,7 @@ local PetBattle = ns.node.PetBattle
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
--- local Mount = ns.reward.Mount
+local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
@@ -134,12 +135,20 @@ map.nodes[16622798] = Rare({
 --     }
 -- }) -- Brackle
 
-map.nodes[27804580] = Rare({ -- review
+map.nodes[27214490] = Rare({
     id = 193157,
     quest = nil,
     rewards = {
-        Achievement({id = 16678, criteria = 56098})
+        Achievement({id = 16678, criteria = 56098}),
+        Item({item = 197005, quest = 69205}) -- Cliffside Wylderdrake: Horned Nose
         -- Transmog({item = , slot = L['']}) -- Name
+    },
+    pois = {
+        Path({
+            26834541, 26554557, 26314548, 25854568, 25844609, 26214609,
+            26644613, 26834619, 26834640, 27044644, 27144627, 27374654,
+            27604656, 27724633, 27614620, 27654565, 27414532, 27214490, 26834541
+        })
     }
 }) -- Dragonhunter Gorund
 
@@ -196,14 +205,14 @@ map.nodes[32682911] = Rare({ -- review -- required 67030
     }
 }) -- Gruffy
 
--- map.nodes[] = Rare({ -- required 67030
---     id = 193269,
---     quest = 69892,
---     rewards = {
---         Achievement({id = 16678, criteria = 56112}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Grumbletrunk
+map.nodes[19234362] = Rare({ -- required 67030
+    id = 193269,
+    quest = 69892,
+    rewards = {
+        Achievement({id = 16678, criteria = 56112}),
+        Transmog({item = 200206, slot = L['bow']}) -- Behemoth Slayer Greatbow
+    }
+}) -- Grumbletrunk
 
 map.nodes[16213364] = Rare({
     id = 197356,
@@ -244,14 +253,14 @@ map.nodes[40514797] = Rare({
 --     }
 -- }) -- Moth'go Deeploom
 
--- map.nodes[] = Rare({
---     id = 193201,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16678, criteria = 56102}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Mucka the Raker
+map.nodes[58095471] = Rare({ -- review
+    id = 193201,
+    quest = nil,
+    rewards = {
+        Achievement({id = 16678, criteria = 56102}),
+        Item({item = 200445, note = L['neck']}) -- Lucky Hunting Charm
+    }
+}) -- Mucka the Raker
 
 map.nodes[34362779] = Rare({ -- review location in cave map 2132 Kargpaw's Den
     id = 193225,
@@ -329,11 +338,20 @@ map.nodes[10863229] = Rare({
 --     }
 -- }) -- Snufflegust
 
-map.nodes[54993414] = Rare({
+map.nodes[55033405] = Rare({
     id = 193238,
     quest = nil, -- 69879 ?
     note = L['spellwrought_snowman_note'],
-    rewards = {Achievement({id = 16678, criteria = 56124})}
+    rewards = {
+        Achievement({id = 16678, criteria = 56124}),
+        Transmog({item = 200211, slot = L['cloth']}) -- Snowman's Icy Gaze
+    },
+    pois = {
+        POI({
+            53873559, 54003628, 54073717, 53393655, 52923709, 52203733,
+            51673681, 51953564, 54163466, 53483474
+        })
+    }
 }) -- Spellwrought Snowman
 
 -- map.nodes[] = Rare({
@@ -375,28 +393,82 @@ map.nodes[70222532] = Rare({
 -- }) -- Wilrive
 
 -------------------------------------------------------------------------------
+---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[28564743] = BonusBoss({
+    id = 195353,
+    quest = nil,
+    note = L['breezebiter_note'],
+    rewards = {
+        Mount({item = 201440, id = 1553}) -- Liberated Slyvern
+    },
+    pois = {
+        Path({
+            28564743, 28304800, 27944822, 26974854, 26364841, 26074796,
+            25824706, 25764642, 26134540, 26374491, 27124437, 27554428,
+            28164470, 28614643, 28564743
+        })
+    }
+}) -- Breezebiter
+
+map.nodes[23503317] = BonusBoss({
+    id = 186962,
+    quest = 72836,
+    rewards = {
+        Transmog({item = 200135, slot = L['2h_sword']}), -- Corroded Greatsword
+        Transmog({item = 200187, slot = L['staff']}), -- Rod of Glacial Force
+        Item({item = 197098, quest = 69299}) -- Highland Drake: Finned Back
+    }
+}) -- Cascade
+
+map.nodes[70143327] = BonusBoss({
+    id = 193288,
+    quest = 72848,
+    rewards = {
+        Item({item = 198048}), -- Titan Training Matrix I
+        Item({item = 200868, note = L['trinket']}) -- Intefrated Primal Fire
+    }
+}) -- Summoned Destroyer
+
+-- map.nodes[17254144] = BonusBoss({id = 193223, quest = nil}) -- Vakril
+
+-------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
 -------------------------------------------------------------------------------
 
--- https://www.wowhead.com/beta/achievement=16300/treasures-of-the-azure-span#comments
-
-map.nodes[45125940] = Treasure({ -- required 70534, 70603
+map.nodes[45125940] = Treasure({
     quest = 70603,
     note = L['forgotten_jewel_box_note'],
-    requires = ns.requirement.Item(199065), -- Sorrowful Letter
-    rewards = {Achievement({id = 16300, criteria = 54804})}
+    requires = {
+        ns.requirement.Quest(72709), -- Funding a Treasure Hunt
+        ns.requirement.Item(199065) -- Sorrowful Letter
+    },
+    rewards = {
+        Achievement({id = 16300, criteria = 54804}), --
+        Toy({item = 201927}) -- Gleaming Arcanocrystal
+    }
 }) -- Forgotten Jewel Box
 
-map.nodes[53934372] = Treasure({ -- required 70535, 70604
+map.nodes[53934372] = Treasure({
     quest = 70604,
     note = L['in_small_cave'] .. ' ' .. L['gnoll_fiend_flail_note'],
-    requires = ns.requirement.Item(199066), -- Letter of Caution
-    rewards = {Achievement({id = 16300, criteria = 54805})}
+    requires = {
+        ns.requirement.Quest(72709), -- Funding a Treasure Hunt
+        ns.requirement.Item(199066) -- Letter of Caution
+    },
+    rewards = {
+        Achievement({id = 16300, criteria = 54805}),
+        Transmog({item = 202692, slot = L['1h_mace']}) -- Gnoll Fiend Flail
+    }
 }) -- Gnoll Fiend Flail
 
 map.nodes[74895501] = Treasure({
     quest = 70606,
-    rewards = {Achievement({id = 16300, criteria = 54807})}
+    rewards = {
+        Achievement({id = 16300, criteria = 54807}), --
+        Toy({item = 202711}) -- Lost Compass
+    }
 }) -- Lost Compass
 
 map.nodes[26544626] = Treasure({
@@ -410,13 +482,24 @@ map.nodes[26544626] = Treasure({
 
 map.nodes[54612932] = Treasure({
     quest = 70380,
-    rewards = {Achievement({id = 16300, criteria = 54808})}
+    rewards = {
+        Achievement({id = 16300, criteria = 54808}), --
+        Item({item = 202712}) -- Rubber Fish
+    }
 }) -- Rubber Fish
 
-map.nodes[14007200] = Treasure({ -- required 70536, 70605
-    quest = nil,
-    requires = ns.requirement.Item(199067), -- Precious Plans
-    rewards = {Achievement({id = 16300, criteria = 54806})}
+map.nodes[48632466] = Treasure({
+    quest = 70605,
+    note = L['gem_cluster_note'],
+    requires = {
+        ns.requirement.Reputation(2507, 21, true), -- Dragonscale Expedition
+        ns.requirement.Quest(70833), -- Rumors of the Jeweled Whelplings
+        ns.requirement.Item(199067) -- Precious Plans
+    },
+    rewards = {
+        Achievement({id = 16300, criteria = 54806}), --
+        Item({item = 200866}) -- Glimmering Malygite Cluster
+    }
 }) -- Sapphire Gem Cluster
 
 -------------------------------------------------------------------------------
@@ -523,10 +606,36 @@ map.nodes[79823175] = Scoutpack()
 
 map.nodes[40985940] = PetBattle({
     id = 197417,
-    rewards = {Achievement({id = 16464, criteria = 55487})}
+    rewards = {
+        Achievement({id = 16464, criteria = 55487}), -- Battle on the Dragon Isles
+        ns.reward.Spacer(),
+        Achievement({id = 16501, criteria = 1, oneline = true}), -- Aquatic
+        Achievement({id = 16503, criteria = 1, oneline = true}), -- Beast
+        Achievement({id = 16504, criteria = 1, oneline = true}), -- Critter
+        Achievement({id = 16505, criteria = 1, oneline = true}), -- Dragon
+        Achievement({id = 16506, criteria = 1, oneline = true}), -- Elemental
+        Achievement({id = 16507, criteria = 1, oneline = true}), -- Flying
+        Achievement({id = 16508, criteria = 1, oneline = true}), -- Humanoid
+        Achievement({id = 16509, criteria = 1, oneline = true}), -- Magic
+        Achievement({id = 16510, criteria = 1, oneline = true}), -- Mechanical
+        Achievement({id = 16511, criteria = 1, oneline = true}) -- Undead
+    }
 }) -- Arcantus
 
 map.nodes[13884986] = PetBattle({
     id = 196069,
-    rewards = {Achievement({id = 16464, criteria = 55489})}
+    rewards = {
+        Achievement({id = 16464, criteria = 55489}), -- Battle on the Dragon Isles
+        ns.reward.Spacer(),
+        Achievement({id = 16501, criteria = 5, oneline = true}), -- Aquatic
+        Achievement({id = 16503, criteria = 5, oneline = true}), -- Beast
+        Achievement({id = 16504, criteria = 5, oneline = true}), -- Critter
+        Achievement({id = 16505, criteria = 5, oneline = true}), -- Dragon
+        Achievement({id = 16506, criteria = 5, oneline = true}), -- Elemental
+        Achievement({id = 16507, criteria = 5, oneline = true}), -- Flying
+        Achievement({id = 16508, criteria = 5, oneline = true}), -- Humanoid
+        Achievement({id = 16509, criteria = 5, oneline = true}), -- Magic
+        Achievement({id = 16510, criteria = 5, oneline = true}), -- Mechanical
+        Achievement({id = 16511, criteria = 5, oneline = true}) -- Undead
+    }
 }) -- Patchu
