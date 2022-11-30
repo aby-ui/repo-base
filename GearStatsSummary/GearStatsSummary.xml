@@ -13,7 +13,7 @@
 		</Scripts>
 	</Frame>
 
-    <Frame name="GearStatsSummarySelfFrame" frameStrata="MEDIUM" enableMouse="true" movable="true" hidden="true"  parent="UIParent" inherits="BackdropTemplate">
+    <Frame name="GearStatsSummarySelfFrame" frameStrata="MEDIUM" enableMouse="true" movable="true" hidden="true"  parent="PaperDollFrame" inherits="BackdropTemplate">
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
         </KeyValues>
@@ -52,7 +52,7 @@
         </Frames>
     </Frame>
 
-    <Frame name="GearStatsSummaryTargetFrame" frameStrata="MEDIUM" enableMouse="true" movable="true" hidden="true"  parent="UIParent" inherits="BackdropTemplate">
+    <Frame name="GearStatsSummaryTargetFrame" frameStrata="MEDIUM" enableMouse="true" movable="true" hidden="true"  parent="PaperDollFrame" inherits="BackdropTemplate">
         <KeyValues>
             <KeyValue key="backdropInfo" value="BACKDROP_SLIDER_8_8" type="global"/>
         </KeyValues>

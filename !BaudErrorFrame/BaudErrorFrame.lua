@@ -77,7 +77,7 @@ EventFuncs = {
     --
 
     ADDON_ACTION_FORBIDDEN = function(AddOn,FuncName)
-        if true or Config.Taint then --TODO:abyui10
+        if Config.Taint then
             BaudErrorFrameAdd(format("插件[%s]试图调用接口'%s'，该功能只对暴雪的UI开放。", AddOn, FuncName), 4);
         end
     end,

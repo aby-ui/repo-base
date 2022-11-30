@@ -834,29 +834,19 @@ do
 			summaryColorLight = { r = 1, g = 1, b = 1, a = .3 },
         }
 
-        if not Broker_CurrencyCharDB.update910 then
-            Mixin(Broker_CurrencyCharDB, {
-                update910 = true,
-                show1828 = true, summary1828 = true, --灰烬
-                show1191 = true, summary1191 = true, --勇气
-                show1977 = true, summary1977 = true, --冥河灰烬
-                show1906 = true, summary1906 = true, --灵魂薪尘
-                --[[show1931 = true,]] summary1931 = true, --编集研究
-                show1792 = true, summary1792 = true, --PVP荣誉
-                show1602 = true, summary1602 = true, --PVP征服
-                --[[show1767 = false,]] summary1767 = true, --冥殇
-                show1813 = false, summary1813 = false, --心能
-                ["show1560"] = false,  --8.0物资
-                ["show1580"] = false,  --8.0印记
-                ["show1716"] = false,  --8.1PVP
-                ["show1717"] = false,  --8.1PVP
-                ["show1755"] = false,  --8.3凝结幻象
-                ["summary1560"] = false,
-                ["summary1580"] = false,
-                ["summary1716"] = false,
-                ["summary1717"] = false,
-                ["summary1755"] = false,
-            })
+        if not Broker_CurrencyCharDB.update1000 then
+            local upgrade = {
+                update1000 = true,
+            }
+            for _, id in ipairs(private.EXPANSION8_CURRENCY_IDS) do
+                if Broker_CurrencyCharDB["show"..id] then upgrade["show"..id] = false end
+                if Broker_CurrencyCharDB["summary"..id] then upgrade["summary"..id] = false end
+            end
+            for _, id in ipairs({2118, 2003}) do
+                upgrade["show"..id] = true
+                upgrade["summary"..id] = true
+            end
+            Mixin(Broker_CurrencyCharDB, upgrade)
         end
 
 		-- ----------------------------------------------------------------------------

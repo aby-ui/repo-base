@@ -22,8 +22,10 @@ function BagBrother:SaveBag(bag, onlyItems, saveSize)
 	if size > 0 then
 		local items = {}
 		for slot = 1, size do
-			local _, count, _,_,_,_, link = C.GetContainerItemInfo(bag, slot)
-			items[slot] = self:ParseItem(link, count)
+			local data = C.GetContainerItemInfo(bag, slot)
+			if data then
+				items[slot] = self:ParseItem(data.hyperlink, data.stackCount)
+			end
 		end
 
 		if not onlyItems then

@@ -52,6 +52,9 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
 
         db.ITEMS = db.ITEMS or {}
         --db.range = 0 --通过正常点击重置而不是强制重置
+        if not ELP_FILTERS[db.range] then
+            db.range = 0
+        end
 
         self:SetScript("OnUpdate", ELP_RetrieveNext) --initial Hidden
 
@@ -446,7 +449,7 @@ function EncounterJournal_InitLootFilter_ELP(self, level)
     if (UIDROPDOWNMENU_MENU_VALUE == "range") then
         makeSubInfo(info, "正常(暴雪原始功能)", 0, "range", level)
         for i, v in ipairs(ELP_FILTERS) do
-            local prefix = v.type == "dungeon" and "地下城：" or v.type == "raid" and "团本：" or ""
+            local prefix = v.type == "dungeon" and "史诗钥石：" or v.type == "raid" and "团本：" or ""
             makeSubInfo(info, prefix .. v.text, i, "range", level)
         end
     elseif (UIDROPDOWNMENU_MENU_VALUE == "attr1") then
@@ -764,7 +767,7 @@ function EncounterJournal_DisplayInstance_ELP(insID, noButton)
             listFunc = function(self) --EJNAV_GetInstanceList
                 local list = { };
                 for i, v in ipairs(ELP_FILTERS) do
-                    local prefix = v.type == "dungeon" and "地下城：" or v.type == "raid" and "团本：" or ""
+                    local prefix = v.type == "dungeon" and "史诗钥石：" or v.type == "raid" and "团本：" or ""
                     local entry = {
                         text = prefix .. v.text,
                         id = i,
@@ -813,8 +816,8 @@ ELP.setupHooks = function()
 
     -- wired, only with this line the Init is hooked
     CoreUIHookPoolCollection(EncounterJournalEncounterFrameInfo.LootContainer.ScrollBox.view.poolCollection, function(frame, frameType, template)
-        if frame.Init ~= EncounterJournalItemMixin.Init then
-            frame.Init = EncounterJournalItemMixin.Init
+        if template == "EncounterItemTemplate" then
+            frame.Init = EncounterJournalItemMixin_Init_ELP
         end
     end)
 

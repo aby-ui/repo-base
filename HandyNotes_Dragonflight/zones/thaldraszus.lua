@@ -212,6 +212,14 @@ map.nodes[47884976] = Rare({
 ---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
 -------------------------------------------------------------------------------
 
+map.nodes[55647727] = BonusBoss({
+    id = 193229,
+    quest = 72814, -- 69873
+    rewards = {
+        Item({item = 200880, note = L['trinket']}) -- Wind-Sealed Mana Capsule
+    }
+}) -- Henlare
+
 map.nodes[36757287] = BonusBoss({
     id = 193273,
     quest = 72842,

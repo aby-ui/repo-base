@@ -422,6 +422,16 @@ map.nodes[23503317] = BonusBoss({
     }
 }) -- Cascade
 
+map.nodes[38155901] = BonusBoss({
+    id = 193214,
+    quest = 72840, -- 69864
+    note = L['in_cave'],
+    rewards = {
+        Item({item = 200210, note = L['neck']}) -- Amnesia
+    },
+    pois = {POI({38625988})}
+}) -- Forgotten Creation
+
 map.nodes[70143327] = BonusBoss({
     id = 193288,
     quest = 72848,
@@ -554,6 +564,7 @@ local LayLine = Class('LayLine', Collectible, {
     id = 198260,
     icon = 1033908,
     note = L['in_small_cave'] .. '\n' .. L['leyline_note'],
+    rlabel = ns.status.LightBlue('+20 ' .. select(1, GetFactionInfoByID(2510))), -- Valdrakken Accord
     group = ns.groups.LAYLINE
 })
 

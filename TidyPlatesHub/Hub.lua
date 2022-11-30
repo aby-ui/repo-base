@@ -503,6 +503,9 @@ local function BuildHubPanel(panel)
 		-- Convert Unit Filter Strings
 		ConvertStringToTable(LocalVars.OpacityFilterList, LocalVars.OpacityFilterLookup)
         ConvertStringToTable(LocalVars.UnitSpotlightList, LocalVars.UnitSpotlightLookup)
+        if not LocalVars.SpellCastAtPlayerLookup then
+            LocalVars.SpellCastAtPlayerLookup = {}
+        end
 		ConvertStringToTable(LocalVars.SpellCastAtPlayerList, LocalVars.SpellCastAtPlayerLookup)
 	end
 

@@ -37,7 +37,7 @@ private.DRAGON_GLYPHS = {
 	[16670] = { zoneID = 2022, artID = { 1706 }, x = 4884, y = 8680 }; --Dragon Glyphs: Rubyscale Outpost
 	
 	-- The Azure Span
-	[16065] = { zoneID = 2024, artID = { 1707 }, x = 4040, y = 6640 }; --Dragon Glyphs: Azure Archive
+	[16065] = { zoneID = 2024, artID = { 1707 }, x = 3930, y = 6312 }; --Dragon Glyphs: Azure Archive
 	[16072] = { zoneID = 2024, artID = { 1707 }, x = 6760, y = 2910 }; --Dragon Glyphs: Kalthraz Fortress
 	[16071] = { zoneID = 2024, artID = { 1707 }, x = 5300, y = 4900 }; --Dragon Glyphs: Zelthrak Outpost
 	[16070] = { zoneID = 2024, artID = { 1707 }, x = 6060, y = 7000 }; --Dragon Glyphs: Imbu

@@ -77,22 +77,22 @@ L['slightly_chewed_duck_egg_note'] = '找到并拍打 {npc:192997} 获得 {item:
 L['yennus_boat'] = '海象人玩具船'
 L['yennus_boat_note'] = '拾取 |cFFFFFD00海象人玩具船|r 后获得 {item:200876}，可以在 {npc:195252} 开始上缴的任务 {quest:72063}。'
 
-L['lizi_note'] = '完成从 {quest:65901} 开始的 Initiate\'s Day Out 任务线。每天完成任务以修复莉姬并获得坐骑。\n\n除了需要的物品外，所有任务都需要150个 {currency:2003}，总共需要750个 {currency:2003}。'
-L['lizi_note_day1'] = '从 |cFFFFFD00巨龙群岛s|r 的昆虫怪物收集20个 {item:192615}。'
-L['lizi_note_day2'] = '从 |cFFFFFD00巨龙群岛s|r 的植物怪物收集10个 {item:192658}。'
-L['lizi_note_day3'] = '从 |cFFFFFD00巨龙群岛s|r 的任意水域钓鱼收集10个 {item:194966}。常见于 |cFFFFFD00欧恩哈拉平原|r 内陆。'
+L['lizi_note'] = '完成从 {quest:65901} 开始的新兵一日游任务线。每天完成任务以治愈莉姬并获得坐骑。\n\n除了需要的物品外，所有任务都需要150个 {currency:2003}，总共需要750个 {currency:2003}。'
+L['lizi_note_day1'] = '从 |cFFFFFD00巨龙群岛|r 的昆虫怪物收集20个 {item:192615}。'
+L['lizi_note_day2'] = '从 |cFFFFFD00巨龙群岛|r 的植物怪物收集10个 {item:192658}。'
+L['lizi_note_day3'] = '从 |cFFFFFD00巨龙群岛|r 的任意水域钓鱼收集10个 {item:194966}。常见于 |cFFFFFD00欧恩哈拉平原|r 内陆。'
 L['lizi_note_day4'] = '从 |cFFFFFD00欧恩哈拉平原|r 的猛犸象收集20个 {item:192636}。'
 L['lizi_note_day5'] = '从 |cFFFFFD00欧恩伊尔清泉|r 南边的帐篷的 {npc:190015} 购买1个 {item:200598}。'
 
-L['ohnahra_note_start'] = '完成 Initiate\'s Day Out 故事线开始于 {quest:65901} 之后，{npc:190022} 将出现在 |cFFFFFD00欧恩伊尔清泉|r 轻风贤者小屋后面。\n\n收集以下材料：'
+L['ohnahra_note_start'] = '完成开始于 {quest:65901} 的新兵一日游故事线之后，{npc:190022} 将出现在 |cFFFFFD00欧恩伊尔清泉|r 轻风贤者小屋后面。\n\n收集以下材料：'
 L['ohnahra_note_item1'] = '从 {npc:186151} 收集3个 {item:201929}，|cFFFFFD00诺库德阻击战|r 地下城的最终首领（英雄难度）。不是 100% 掉落。'
 L['ohnahra_note_item2'] = '50个 {currency:2003} 和1个 {item:194562} 从 {npc:196707} 购买1个 {item:201323}。\n{item:194562} 可以从 |cFFFFFD00索德拉苏斯|r 中从迷时怪物身上拾取。'
 L['ohnahra_note_item3'] = '从拍卖行购买1个 {item:191507}。（炼金师可以从 {npc:196707} 购买 {item:191588}，需要声望22）'
 L['ohnahra_note_end'] = '获得所有材料后，返回 {npc:190022} 并接受 {quest:72512}。前往 {npc:194796} 交任务并领取你的坐骑。'
 
-L['bakar_note'] = '抚摸狗！'
-L['bakar_ellam_note'] = '如果有足够多的玩家抚摸这只狗，她会带你去寻找她的宝藏。'
-L['bakar_hugo_note'] = '旅行到艾拉格营地。'
+L['bakar_note'] = '抚摸獒犬！'
+L['bakar_ellam_note'] = '如果有足够多的玩家抚摸这只獒犬，她会带你去寻找她的宝藏。'
+L['bakar_hugo_note'] = '跟随艾拉格营地旅行。'
 L['options_icons_bakar'] = '{achievement:16424}'
 L['options_icons_bakar_desc'] = '显示 {achievement:16424} 成就中全部獒犬的位置。'
 
@@ -127,4 +127,4 @@ L['onyx_gem_cluster_note'] = '龙鳞探险队声望到达21级，从 {npc:189065
 
 L['fullsails_supply_chest'] = '满帆补给箱'
 L['hidden_hornswog_hoard'] = '隐藏的龙蛙存货'
-L['hidden_hornswog_hoard_note'] = '收集 {item:200064}、{item:200065}、{item:200066}，在宝藏附近的“细心的谜语：现场指南”将它们组合起来，然后喂青蛙。'
+L['hidden_hornswog_hoard_note'] = '收集 {item:200064}、{item:200065}、{item:200066}，在宝藏附近的“观察谜题：实地指南”将它们组合起来，然后喂青蛙。'

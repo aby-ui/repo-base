@@ -80,7 +80,13 @@ map.nodes[52916529] = Rare({
 map.nodes[26847642] = Rare({
     id = 193198,
     quest = 72127,
-    rewards = {Achievement({id = 16676, criteria = 56050})}
+    rewards = {
+        Achievement({id = 16676, criteria = 56050}),
+        Transmog({item = 200757, slot = L['plate']}), -- Qalashi War-Helm
+        Transmog({item = 200286, slot = L['polearm']}), -- Dragonbane Lance
+        Transmog({item = 200169, slot = L['1h_mace']}), -- Protector's Molten Cudgel
+        Item({item = 197019, quest = 69219}) -- Cliffside Wylderdrake: Blunt Spiked Tail
+    }
 }) -- Captain Lancer
 
 map.nodes[26285788] = Rare({
@@ -141,7 +147,9 @@ map.nodes[33127632] = Rare({
     quest = 72130,
     rewards = {
         Achievement({id = 16676, criteria = 56048}),
-        Item({item = 200858, note = L['trinket']}) -- Plume of the Forgotten
+        Item({item = 200858, note = L['trinket']}), -- Plume of the Forgotten
+        Item({item = 200563, note = L['trinket']}), -- Primal Ritual Shell
+        Transmog({item = 200174, slot = L['leather']}) -- Bonesigil Shoulderguards
     }
 }) -- Forgotten Gryphon
 
@@ -206,9 +214,9 @@ map.nodes[81485082] = Rare({ -- required 67030
     }
 }) -- O'nank Shorescour
 
-map.nodes[64926956] = Rare({ -- review
+map.nodes[64926956] = Rare({
     id = 192362,
-    quest = nil,
+    quest = 70864,
     rewards = {Achievement({id = 16676, criteria = 56051})}
 }) -- Possessive Hornswog
 
@@ -310,12 +318,21 @@ map.nodes[30025534] = Rare({
 ---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
 -------------------------------------------------------------------------------
 
+map.nodes[64173289] = BonusBoss({
+    id = 191611,
+    quest = 72838, -- 66956
+    rewards = {
+        Transmog({item = 200169, slot = L['mace']}) -- Protector's Molten Cudgel
+    }
+}) -- Dragonhunter Igordan
+
 map.nodes[54728225] = BonusBoss({
     id = 187209,
-    quest = 72841,
+    quest = 72841, -- 66960
     rewards = {
         Transmog({item = 200246, slot = L['staff']}), -- Lost Delving Lamp
         Item({item = 196991, quest = 69191}), -- Cliffside Wylderdrake: Black Horns
+        Item({item = 197023, quest = 69223}), -- Cliffside Wylderdrake: Maned Neck
         Toy({item = 200198}) -- Primalist Prison
     }
 }) -- Klozicc the Ascended
@@ -441,7 +458,7 @@ map.nodes[64926959] = Treasure({
 }) -- Hidden Hornswog Hoard
 
 map.nodes[43156737] = Treasure({
-    quest = nil,
+    quest = 65965,
     requires = ns.requirement.Item(191122), -- Fullsails Supply Chest Key
     label = L['fullsails_supply_chest']
 }) -- Fullsails Supply Chest
@@ -490,7 +507,7 @@ map.nodes[73193776] = Kite({
 })
 map.nodes[73035292] = Kite({
     quest = 72097,
-    rewards = {Achievement({id = 16584, criteria = 55845})}
+    rewards = {Achievement({id = 16584, criteria = 55842})}
 })
 map.nodes[56735799] = Kite({
     quest = 72098,

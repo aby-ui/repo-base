@@ -168,6 +168,9 @@ function CanIMogIt.FrameShouldUpdate(timerName, elapsed)
     -- not cause FPS drops when updating frames.
     -- To use:
     -- if not FrameShouldUpdate("MyTimer", elapsed) then return end
+    if type(elapsed) ~= "number" then
+        elapsed = refreshDelay
+    end
     if timers[timerName] == nil then
         timers[timerName] = 0
     end

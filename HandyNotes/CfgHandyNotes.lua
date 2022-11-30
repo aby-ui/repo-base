@@ -104,8 +104,10 @@ U1RegisterAddon("HandyNotes_Dragonflight", {
     title = "巨龙时代地图宝箱(10.0)",
     defaultEnable = 1,
     load = "LATER",
+    modifier = "Vincero@NGA汉化",
     desc = "在10.0新地图上显示宝藏和稀有精英的位置, 数据量很大, 可能会造成卡顿, 请在需要时开启.",
 })
+U1RegisterAddon("HandyNotes_Valdrakken", { title = "巨龙时代-瓦德拉肯", defaultEnable = 1, modifier = "男爵凯恩@NGA汉化", load = "LATER",})
 
 U1RegisterAddon("HandyNotes_Shadowlands", {
     title = "暗影国度地图宝箱(9.0)",
@@ -156,8 +158,8 @@ U1RegisterAddon("HandyNotes_HallowsEnd", { title = "万圣节糖罐位置", defa
 U1RegisterAddon("HandyNotes_SummerFestival", { title = "仲夏节篝火位置", defaultEnable = 1, load = "LATER", })
 U1RegisterAddon("HandyNotes_LunarFestival", { title = "春节长者位置", defaultEnable = 1, load = "LATER", })
 U1RegisterAddon("HandyNotes_DungeonLocations", { title = "大地图副本入口", defaultEnable = 1, load = "LATER",})
-U1RegisterAddon("HandyNotes_CovenantSanctum", { title = "暗影国度-盟约圣所", defaultEnable = 1, load = "LATER",})
-U1RegisterAddon("HandyNotes_Oribos", { title = "暗影国度-奥利波斯", defaultEnable = 1, load = "LATER",})
+U1RegisterAddon("HandyNotes_CovenantSanctum", { title = "暗影国度-盟约圣所", defaultEnable = 1, modifier = "Vincero@NGA汉化", load = "LATER",})
+U1RegisterAddon("HandyNotes_Oribos", { title = "暗影国度-奥利波斯", defaultEnable = 1, modifier = "Vincero@NGA汉化", load = "LATER",})
 
 --[[
 U1RegisterAddon("HandyNotes_VisionsOfNZoth", { title = "恩佐斯幻象(8.3)", defaultEnable = 1, load = "LATER", });

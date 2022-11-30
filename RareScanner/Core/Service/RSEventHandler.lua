@@ -56,8 +56,17 @@ local function HandleEntityWithoutVignette(rareScannerButton, unitID)
 			end
 		end
 		
+		-- If it has a questID and its completed ignore it
+		if (RSNpcDB.GetInternalNpcInfo(npcID) and RSNpcDB.GetInternalNpcInfo(npcID).questID) then
+			for _, questID in ipairs(RSNpcDB.GetInternalNpcInfo(npcID).questID) do
+				if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+					return
+				end
+			end
+		end
+		
 		-- If its a supported NPC and its not killed
-		if ((RSGeneralDB.GetAlreadyFoundEntity(npcID) or RSNpcDB.GetInternalNpcInfo(npcID)) and not UnitIsDead(unitID)) then			
+		if ((RSGeneralDB.GetAlreadyFoundEntity(npcID) or RSNpcDB.GetInternalNpcInfo(npcID)) and not UnitIsDead(unitID)) then
 			local nameplateUnitName, _ = UnitName(unitID)
 			if (not nameplateUnitName or nameplateUnitName == UNKNOWNOBJECT) then
 				nameplateUnitName = RSNpcDB.GetNpcName(npcID)

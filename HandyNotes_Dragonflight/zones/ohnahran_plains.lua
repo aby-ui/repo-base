@@ -374,6 +374,15 @@ map.nodes[26366533] = BonusBoss({
     }
 }) -- Ripsaw the Stalker
 
+map.nodes[44894924] = BonusBoss({
+    id = 192949,
+    quest = 72847, -- 70783
+    note = L['in_small_cave'],
+    rewards = {
+        Transmog({item = 200186, slot = L['mail']}) -- Amberquill Shroud
+    }
+}) -- Skaara
+
 map.nodes[63034854] = BonusBoss({
     id = 193133,
     quest = 72849,
@@ -390,6 +399,16 @@ map.nodes[22956670] = BonusBoss({
         Transmog({item = 200212, slot = L['mail']}) -- Sand-Encrusted Greaves
     }
 }) -- Territorial Coastling
+
+map.nodes[26073412] = BonusBoss({
+    id = 191354,
+    quest = 72852, -- 66970
+    note = L['in_cave'],
+    rewards = {
+        Transmog({item = 198429, slot = L['staff']}) -- Typhoon Bringer
+    },
+    pois = {POI({})}
+}) -- Ty'foon the Ascended
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -542,7 +561,7 @@ map.nodes[83882587] = Bakar({
 map.nodes[70616361] = Bakar({
     note = L['bakar_note'] .. '\n\n' .. L['bakar_hugo_note'],
     rewards = {Achievement({id = 16424, criteria = 55327})},
-    pois = {POI({71103149})}
+    pois = {POI({71103149, 55635248})}
 }) -- Hugo
 
 map.nodes[64024123] = Bakar({

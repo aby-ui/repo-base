@@ -1,22 +1,16 @@
-ELP_VERSION_TIER = 9 --GetServerExpansionLevel() + 1 + 1 --8.0时接口返回7, 前夕再加1 --abyuiPW
+ELP_VERSION_TIER = 10 --GetServerExpansionLevel() + 1 + 1 --8.0时接口返回7, 前夕再加1 --abyuiPW
 ELP_SEASON_TAB_ID = 5
 
 --最新团本和宿命团本
-ELP_NEWEST_RAID, ELP_WEEK_RAID = ELP_GetNewestRaidAndEmpoweredRaid(ELP_VERSION_TIER)
+--ELP_NEWEST_RAID, ELP_WEEK_RAID = ELP_GetNewestRaidAndEmpoweredRaid(ELP_VERSION_TIER)
 
 --abyuiPW
 ELP_SEASON_RAIDS = {
-    { 1195 }, --初诞者圣墓
-    { 1193 }, --统御圣所
-    { 1190 }, --纳斯利亚堡
-}
-
-ELP_NEXT_RAIDS = {
     { 1200 }, --巨龙牢窟
     --{ 1205 }, --巨龙群岛, 只有280的
 }
 
-ELP_NEXT_VERSION_DUNGEONS = {
+ELP_SEASON_DUNGEONS = {
     { 1201 }, --艾杰斯亚学院
     { 1196 }, --蕨皮山谷
     { 1204 }, --注能大厅
@@ -27,47 +21,29 @@ ELP_NEXT_VERSION_DUNGEONS = {
     { 1197 }, --奥达曼：提尔的遗产
 }
 
-ELP_NEXT_SEASON_DUNGEONS = {
-    { 1201 }, --艾杰斯亚学院
-    { 1202 }, --红玉新生法池
-    { 1203 }, --碧蓝魔馆
-    { 1198 }, --诺库德阻击战
-    { 800 }, --群星庭院
-    { 721 }, --英灵殿
-    { 313 }, --青龙寺
-    { 537 }, --影月墓地
-}
-
--- loot table from https://www.wowhead.com/news/list-of-currently-confirmed-loot-drops-from-season-4-mythic-grimrail-depot-iron-328237
-ELP_LOOT_LIST = {
-    Grimrail = {
-        [109866] = true, [109846] = true, [109972] = true, [109932] = true, [109901] = true, --Cloth
-        [109869] = true, [109978] = true, [109937] = true, [109897] = true, [109934] = true, --Leather
-        [109983] = true, [109890] = true, [109942] = true, --Mail
-        [109895] = true, [109988] = true, [109840] = true, [109821] = true, [109946] = true, --Plate
-        [110052] = true, [110053] = true, [110054] = true, [110051] = true, [109996] = true, [110001] = true,
-    },
-    IronDocks = {
-        [109881] = true, [109903] = true, [109948] = true,
-        [109979] = true, [109885] = true,
-        [109875] = true, [109887] = true, [109980] = true, [109939] = true,
-        [109879] = true, [109859] = true, [109802] = true, [109822] = true,
-        [110058] = true, [110056] = true, [110055] = true, [110057] = true, [110059] = true, [110060] = true, [110017] = true, [110002] = true, [109997] = true,
-    },
-}
+ELP_NEXT_SEASON_MYTHICS = {}
 
 ELP_SEASON_MYTHICS = {
     --instanceID, challengeMapId, name(or empty), bosses or empty
     --after init: instanceID, challengeMapId, name, bossMap/"all", bossList/nil
     --/dump EncounterJournal.instanceID, EncounterJournal.encounterID
-    { 860,  234, "重返卡拉赞-上层", {1836,1817,1818,1838,} },
-    { 860,  227, "重返卡拉赞-下层", {1820,1826,1827,1825,1835,1837,} },
-    { 1194, 391, "塔扎维什-天街", {2437,2454,2436,2452,2451,} },
-    { 1194, 392, "塔扎维什-宏图", {2448,2449,2455,} },
-    { 1178, 370, "麦卡贡-车间", {2336,2339,2348,2331,} },
-    { 1178, 369, "麦卡贡-垃圾场", {2357,2358,2360,2355,} },
-    { 536,  166, }, --恐轨车站
-    { 558,  169, }, --钢铁码头
+    --/run for _, v in ipairs(C_ChallengeMode.GetMapTable()) do print(v, C_ChallengeMode.GetMapUIInfo(v)) end
+    { 1201, 402 }, --艾杰斯亚学院
+    { 1202, 399 }, --红玉新生法池
+    { 1203, 401 }, --碧蓝魔馆
+    { 1198, 400 }, --诺库德阻击战
+    { 800, 210 }, --群星庭院
+    { 721, 200 }, --英灵殿
+    { 313, 002 }, --青龙寺
+    { 537, 165 }, --影月墓地
+}
+
+-- loot table from https://www.wowhead.com/news/list-of-currently-confirmed-loot-drops-from-season-4-mythic-grimrail-depot-iron-328237
+ELP_LOOT_LIST = {
+    Grimrail = { --[itemId] = true,
+    },
+    IronDocks = {
+    },
 }
 
 --为了能够利用系统筛选, 只能选择多个副本然后再筛掉
@@ -108,8 +84,8 @@ ELP_LINK_REPLACE = {
 local dungeonDifficulty = 23
 ELP_INSTANCE_DIFFICULTY = {}
 for _, v in ipairs(ELP_SEASON_MYTHICS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
-for _, v in ipairs(ELP_NEXT_SEASON_DUNGEONS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
-for _, v in ipairs(ELP_NEXT_VERSION_DUNGEONS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
+for _, v in ipairs(ELP_NEXT_SEASON_MYTHICS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
+for _, v in ipairs(ELP_SEASON_DUNGEONS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
 for insID, lt in pairs(ELP_LOOT_TABLE_OTHER or {}) do
     for _, v in ipairs(ELP_INSTANCE_DIFFICULTY[insID] and lt or {}) do ELP_INSTANCE_DIFFICULTY[v] = dungeonDifficulty end
 end
@@ -153,30 +129,31 @@ function ELP_InitFilters()
         bosslist = { bossID1, bossID2 }, --单副本模式boss列表要用到原始的顺序
         otherInstances = { 结构同上但不能有lootTable也不需要bosslist, 且bosses必然为"all" }, --仅当单副本且lootTable的时候用, 表示额外获取其他副本的数据，以便职业过滤
     --]]
+
+    local dungeons = {}; for _, v in ipairs(ELP_SEASON_DUNGEONS) do dungeons[v[1]] = { bosses = "all" } end
+    tinsert(FILTERS, { type = "multi", text = "巨龙时代5人本", instances = dungeons })
+    for i, v in ipairs(ELP_SEASON_RAIDS) do
+        tinsert(FILTERS, { type = "raid", text = v[3], instances = { [v[1]] = { bosses = v[4] } }})
+    end
+
     local mythics = {}; for _, v in ipairs(ELP_SEASON_MYTHICS) do mythics[v[1]] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] and ELP_LOOT_TABLE_LOOTS_ALL or nil } end
     --选出others里不是本赛季副本的,加到赛季大秘里
     local others = {}; for _, v in pairs(ELP_LOOT_TABLE_OTHER) do for otherID, v2 in pairs(v) do if not mythics[otherID] then others[otherID] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS_ALL } end end end
-    tinsert(FILTERS, { type = "multi", text = "全部赛季地下城", short = "赛季大秘", instances = mythics, otherInstances = others})
+    tinsert(FILTERS, { type = "multi", text = "赛季史诗钥石地下城", short = "赛季大秘", instances = mythics, otherInstances = others})
     --local mythics_and_week = u1copy(mythics, { [ELP_WEEK_RAID] = { bosses = "all" } })
     --FILTERS[2] = { type = "multi", text = "全部赛季地下城和宿命团本", short = "本周副本", instances = mythics_and_week, otherInstances = others }
-    local raids = {}; for _, v in ipairs(ELP_SEASON_RAIDS) do raids[v[1]] = { bosses = "all" } end
-    tinsert(FILTERS, { type = "multi", text = "全部团本", instances = raids })
-    local all = u1copy(mythics); u1copy(raids, all)
-    tinsert(FILTERS, { type = "multi", text = "全部赛季地下城和全部团本", short = "全部副本", instances = all, otherInstances = others })
+    --local raids = {}; for _, v in ipairs(ELP_SEASON_RAIDS) do raids[v[1]] = { bosses = "all" } end
+    --tinsert(FILTERS, { type = "multi", text = "全部团本", instances = raids })
+    --local all = u1copy(mythics); u1copy(raids, all)
+    --tinsert(FILTERS, { type = "multi", text = "全部赛季地下城和全部团本", short = "全部副本", instances = all, otherInstances = others })
 
     for i, v in ipairs(ELP_SEASON_MYTHICS) do
         tinsert(FILTERS, { type = "dungeon", text = v[3], instances = { [v[1]] = { bosses = v[4], lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] } }, bosslist = v[5], otherInstances = ELP_LOOT_TABLE_OTHER[v[1]] })
         ELP_CHALLENGE_MAPID_FILTER_INDEX[v[2]] = #FILTERS
     end
-    for i, v in ipairs(ELP_SEASON_RAIDS) do
-        tinsert(FILTERS, { type = "raid", text = v[3], instances = { [v[1]] = { bosses = v[4] } }})
-    end
-    local n_raids = {}; for _, v in ipairs(ELP_NEXT_RAIDS) do n_raids[v[1]] = { bosses = "all" } end
-    tinsert(FILTERS, { type = "multi", text = "巨龙时代团本", instances = n_raids })
-    local n_dungeons = {}; for _, v in ipairs(ELP_NEXT_VERSION_DUNGEONS) do n_dungeons[v[1]] = { bosses = "all" } end
-    tinsert(FILTERS, { type = "multi", text = "巨龙时代5人本", instances = n_dungeons })
-    local n_mythics = {}; for _, v in ipairs(ELP_NEXT_SEASON_DUNGEONS) do n_mythics[v[1]] = { bosses = "all" } end
-    tinsert(FILTERS, { type = "multi", text = "巨龙1赛季(拾取未定)", instances = n_mythics })
+
+    --local n_mythics = {}; for _, v in ipairs(ELP_NEXT_SEASON_MYTHICS) do n_mythics[v[1]] = { bosses = "all" } end
+    --tinsert(FILTERS, { type = "multi", text = "巨龙1赛季(拾取未定)", instances = n_mythics })
 
     ELP_LOOT_TABLE_OTHER = nil
     ELP_LOOT_TABLE_LOOTS = nil

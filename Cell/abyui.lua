@@ -1,6 +1,7 @@
 local _, Cell = ...
 local F = Cell.funcs
 local I = Cell.iFuncs
+local B = Cell.bFuncs
 local P = Cell.pixelPerfectFuncs
 
 function F:IterateAllUnitButtonsAndPreviews(func, updateCurrentGroupOnly)
@@ -254,14 +255,12 @@ end
 -- Cell默认损失血量条是拼接在血条后面而不是层叠的，这样会导致超出距离设置Alpha时只有透明度变化没有颜色变化，不够明显
 -- 预览效果 /run CellSoloFramePlayer:SetAlpha(0.5) CellPartyFrameMember1:SetAlpha(0.5)
 local function LossBarSetAllPoints()
-    F:IterateAllUnitButtonsAndPreviews(function(b)
-        local OriginSetOrientation = b.func.SetOrientation
-        b.func.SetOrientation = function(orientation, rotateTexture)
-            OriginSetOrientation(orientation, rotateTexture)
-            P:Point(b.widget.healthBarLoss, "BOTTOMLEFT", b.widget.healthBar)
-            P:Point(b.widget.powerBarLoss, "BOTTOMLEFT", b.widget.powerBar)
-        end
-    end)
+    local OriginSetOrientation = B.SetOrientation
+    function B:SetOrientation(button, ...)
+        OriginSetOrientation(self, button, ...)
+        P:Point(button.widget.healthBarLoss, "BOTTOMLEFT", button.widget.healthBar)
+        P:Point(button.widget.powerBarLoss, "BOTTOMLEFT", button.widget.powerBar)
+    end
 end
 
 hooksecurefunc(F, "RunSnippets", function()

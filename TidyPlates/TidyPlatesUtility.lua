@@ -830,37 +830,6 @@ end
 -- Quick and dirty fix
 --------------------------------------------------------------------------------------------------
 
-do
-	local fixed = false
-
-	local function OpenInterfacePanel(panel)
-		if not fixed then
-
-			local panelName = panel.name
-			if not panelName then return end
-
-			local t = {}
-
-			--for i, p in pairs(INTERFACEOPTIONS_ADDONCATEGORIES) do
-			--	if p.name == panelName then
-			--		t.element = p
-			--		InterfaceOptionsListButton_ToggleSubCategories(t)
-			--	end
-			--end
-			fixed = true
-		end
-
-		InterfaceOptionsFrame_OpenToCategory(panel)
-	end
-
-	TidyPlatesUtility.OpenInterfacePanel = OpenInterfacePanel
+function TidyPlatesUtility.OpenInterfacePanel(panel)
+    Settings.OpenToCategory(panel.name)
 end
-
--- /run for i,v in pairs(INTERFACEOPTIONS_ADDONCATEGORIES) do print(i, v, v.name) end
-
-
-
-
-
-
-

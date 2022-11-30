@@ -48,6 +48,9 @@ function TipCounts:Hook(tip)
 			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeReagentItemLink'))
 			hooksecurefunc(tip, 'SetRecipeResultItem', self.OnTradeSkill('GetRecipeItemLink'))
 		end
+	else
+		hooksecurefunc(tip, 'SetTradeSkillItem', self.OnSetTradeSkillItem)
+		hooksecurefunc(tip, 'SetCraftItem', self.OnSetCraftItem)
 	end
 end
 
@@ -70,6 +73,18 @@ function TipCounts.OnTradeSkill(api)
 	return function(tip, recipeID, ...)
 		TipCounts:AddOwners(tip, tonumber(recipeID) and C_TradeSkillUI[api](recipeID, ...))
 	end
+end
+
+function TipCounts.OnSetTradeSkillItem(tip, skill, index)
+	if index then
+		TipCounts:AddOwners(tip, GetTradeSkillReagentItemLink(skill, index))
+	else
+		TipCounts:AddOwners(tip, GetTradeSkillItemLink(skill))
+	end
+end
+
+function TipCounts.OnSetCraftItem(tip, ...)
+	TipCounts:AddOwners(tip, GetCraftReagentItemLink(...))
 end
 
 function TipCounts.OnClear(tip)

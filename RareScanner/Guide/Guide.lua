@@ -872,7 +872,7 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.DOT..8] = { x = 0.6104, y = 0.4236, comment = AL["NOTE_380991_1"] }; 
 	}; --Dirt Mound
 	["3810452022"] = {
-		[RSConstants.FLAG] = { x = 0.7542, y = 0.3398, comment = AL["NOTE_381045_1"] }; 
+		[RSConstants.FLAG] = { x = 0.7655, y = 0.3424, comment = AL["NOTE_381045_1"] }; 
 	}; --Replica Dragon Goblet
 	["1959392022"] = {
 		[RSConstants.FLAG] = { x = 0.4093, y = 0.4147, comment = AL["NOTE_195939_1"] }; 
@@ -899,6 +899,9 @@ private.CONTAINER_GUIDE = {
 	["1919922118"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.3945, y = 0.2355 };
 	}; --Eviscerated Argali
+	["3806202023"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.7934, y = 0.3650 };
+	}; --Ancient Spear Shards
 }
 
 ---============================================================================

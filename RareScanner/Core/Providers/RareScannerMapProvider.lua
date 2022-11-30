@@ -150,33 +150,50 @@ function RareScannerDataProviderMixin:RefreshAllData(fromOnShow)
 					pin.tooltip = nil
 				end
 			end)
-			pin:HookScript("OnMouseDown", function(self, button)					
-				if (button == "RightButton") then
-					local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), pin.vignetteInfo.atlasName, self:GetMap():GetMapID())
-					if (POI) then
-						-- If already showing a guide toggle it first
-						if (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
-							self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
-												
-							local guideEntityID = RSGeneralDB.GetGuideActive()
-							if (guideEntityID) then
-								-- If same guide showing then disable it
-								if (guideEntityID ~= POI.entityID) then
-									RSGeneralDB.SetGuideActive(POI.entityID)
-									parentFrame:ShowGuideLayer(POI.entityID, self:GetMap():GetMapID())
-								else
-									RSGeneralDB.RemoveGuideActive()
-								end
-							end
-						-- Otherwise show it
-						else
-							RSGeneralDB.SetGuideActive(POI.entityID)
-							parentFrame:ShowGuideLayer(POI.entityID, self:GetMap():GetMapID())
+			pin:HookScript("OnMouseDown", function(self, button)		
+				local POI = RSMap.GetWorldMapPOI(self:GetObjectGUID(), self:GetVignetteType(), pin.vignetteInfo.atlasName, self:GetMap():GetMapID())
+				if (not POI) then	
+					return
+				end
+						
+				if (button == "LeftButton") then
+					--Toggle state
+					if (IsShiftKeyDown() and IsAltKeyDown()) then
+						if (POI.isNpc) then
+							RSConfigDB.SetNpcFiltered(POI.entityID, false)
+							self:Hide();
+						elseif (POI.isContainer) then
+							RSConfigDB.SetContainerFiltered(POI.entityID, false)
+							self:Hide();
+						elseif (POI.isEvent) then
+							RSConfigDB.SetEventFiltered(POI.entityID, false)
+							self:Hide();
 						end
-	
-						-- Refresh minimap
-						RSMinimap.RefreshAllData(true)
+						RSMinimap.RefreshEntityState(POI.entityID)
 					end
+				elseif (button == "RightButton") then
+					-- If already showing a guide toggle it first
+					if (self:GetMap():GetNumActivePinsByTemplate("RSGuideTemplate") > 0) then	
+						self:GetMap():RemoveAllPinsByTemplate("RSGuideTemplate");
+											
+						local guideEntityID = RSGeneralDB.GetGuideActive()
+						if (guideEntityID) then
+							-- If same guide showing then disable it
+							if (guideEntityID ~= POI.entityID) then
+								RSGeneralDB.SetGuideActive(POI.entityID)
+								parentFrame:ShowGuideLayer(POI.entityID, self:GetMap():GetMapID())
+							else
+								RSGeneralDB.RemoveGuideActive()
+							end
+						end
+					-- Otherwise show it
+					else
+						RSGeneralDB.SetGuideActive(POI.entityID)
+						parentFrame:ShowGuideLayer(POI.entityID, self:GetMap():GetMapID())
+					end
+
+					-- Refresh minimap
+					RSMinimap.RefreshAllData(true)
 				end
 			end)
 		

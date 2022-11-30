@@ -376,7 +376,9 @@ hooksecurefunc ("ClickWorldMapActionButton", function()
 end)
 
 WorldMapFrame:HookScript ("OnHide", function()
-	C_Timer.After (0.2, WorldQuestTracker.RefreshTrackerWidgets)
+	if (WorldQuestTracker.RefreshTrackerWidgets) then
+		C_Timer.After (0.2, WorldQuestTracker.RefreshTrackerWidgets)
+	end
 end)
 
 WorldQuestTracker.UpdateWorldMapFrameAnchor = function(resetLeft)
@@ -1521,7 +1523,7 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 
 			WQTPathFrame:SetScript("OnUpdate", function()
 				--check if the map is opened and if the player is flying
-				if (WorldMapFrame:IsShown() and IsFlying() and WorldQuestTracker.db.profile.path.enabled) then
+				if (WorldMapFrame:IsShown() and IsFlying() and not IsInInstance() and WorldQuestTracker.db.profile.path.enabled) then
 					--get the direction the player is facing
 					local Direction = GetPlayerFacing()
 					--build a forward vector based on the the direction the player is facing

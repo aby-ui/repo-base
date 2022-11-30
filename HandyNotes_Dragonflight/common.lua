@@ -58,7 +58,8 @@ ns.node.BonusBoss = BonusBoss
 local Dragonglyph = Class('Dragonglyph', Collectible, {
     icon = 4728198,
     label = L['dragon_glyph'],
-    group = ns.groups.DRAGON_GLYPH
+    group = ns.groups.DRAGON_GLYPH,
+    requires = ns.requirement.Quest(68795) -- Dragonriding
 })
 
 ns.node.Dragonglyph = Dragonglyph

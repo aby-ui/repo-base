@@ -137,7 +137,8 @@ local Quest = Class('Quest', Requirement)
 
 function Quest:Initialize(id) self.id = id end
 
-function Quest:GetText() return C_QuestLog.GetTitleForQuestID(self.id) end
+function Quest:GetText() return
+    C_QuestLog.GetTitleForQuestID(self.id) or UNKNOWN end
 
 function Quest:IsMet() return C_QuestLog.IsQuestFlaggedCompleted(self.id) end
 

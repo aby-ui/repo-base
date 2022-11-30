@@ -22,5 +22,6 @@ core\config.lua
 # DATABASE
 data\DB.lua
 
+
 ## Title-zhCN: |cff880303[爱不易]|r HandyNotes 奥利波斯
 ## X-Vendor: AbyUI

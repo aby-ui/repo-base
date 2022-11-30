@@ -24,6 +24,7 @@ end
 
 function ELP_GetNewestRaidAndEmpoweredRaid(tier)
     local newest, empowered
+    local currTier = EJ_GetCurrentTier()
     EJ_SelectTier(tier)
     for i = 1, 8 do
         local instanceID, name, _, _, _, _, _, _, _, _, mapID = EJ_GetInstanceByIndex(i, true)
@@ -34,6 +35,7 @@ function ELP_GetNewestRaidAndEmpoweredRaid(tier)
             empowered = instanceID
         end
     end
+    EJ_SelectTier(currTier)
     return newest, empowered or newest or 1193
 end
 
