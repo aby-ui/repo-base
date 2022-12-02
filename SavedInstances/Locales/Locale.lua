@@ -1637,8 +1637,7 @@ elseif locale == "zhCN" then
 La["|cffffff00Left-click|r to detach tooltip"] = "|cffffff00左键点击|r 显示独立窗口"
 La["|cffffff00Middle-click|r to show Blizzard's Raid Information"] = "|cffffff00中键点击|r 显示游戏内建的团队信息"
 La["|cffffff00Right-click|r to configure SavedInstances"] = "|cffffff00右键点击|r 设置SavedInstances"
---[[Translation missing --]]
-La["AA"] = "AA"
+La["AA"] = "学院"
 La["Abbreviate keystones"] = "史诗钥石简称"
 La["Abbreviate Mythic keystone dungeon names"] = "显示史诗钥石的简称"
 La["Account"] = "账号"
@@ -1689,10 +1688,8 @@ La["Display instances with space inserted between categories"] = "在分类之�
 La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "梦魇之龙"
---[[Translation missing --]]
-La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
---[[Translation missing --]]
-La["Dragonflight Transmute"] = "Dragonflight Transmute"
+La["Dragonflight Experimentation"] = "巨龙实验"
+La["Dragonflight Transmute"] = "巨龙转化"
 La["Dump quest debugging information"] = "打印任务调试信息"
 La["Dump time debugging information"] = "打印时间调试信息"
 La["Emissary Missing"] = "大使任务缺失"
@@ -1777,12 +1774,10 @@ La["Recover Dailies"] = "提取日常任务"
 La["Report instance resets to group"] = "报告副本重置"
 La["Reset Characters"] = "重置角色"
 La["Reverse ordering"] = "反转排序"
---[[Translation missing --]]
-La["RLP"] = "RLP"
+La["RLP"] = "红玉"
 La["Roll Bonus"] = "额外拾取情况"
 La["Row Highlight"] = "透明度"
---[[Translation missing --]]
-La["SBG"] = "SBG"
+La["SBG"] = "墓地"
 La["SD"] = "赤红"
 La["SEAT"] = "执政团"
 La["Set All"] = "设置所有"
@@ -1826,8 +1821,7 @@ La["Sorting"] = "排序"
 La["SOTS"] = "风暴"
 La["Space between categories"] = "显示分类间距"
 La["STRT"] = "天街"
---[[Translation missing --]]
-La["TAV"] = "TAV"
+La["TAV"] = "魔馆"
 La["TD"] = "托尔"
 La["Text"] = "文本"
 La["The Four Celestials"] = "四大天神"
@@ -1837,10 +1831,8 @@ La["This should only be used for characters who have been renamed or deleted, as
 La["Time /played"] = "已游戏时间"
 La["Time Left"] = "剩余时间"
 La["Timeworn Mythic Keystone"] = "时空漫游史诗钥石"
---[[Translation missing --]]
-La["TJS"] = "TJS"
---[[Translation missing --]]
-La["TNO"] = "TNO"
+La["TJS"] = "青龙寺"
+La["TNO"] = "阻击战"
 La["Tooltip Scale"] = "提示框缩放"
 La["TOP"] = "剧场"
 La["Torghast"] = "托加斯特"
@@ -2228,10 +2220,8 @@ La["Display instances with space inserted between categories"] = "顯示副本�
 La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "夢魘之龍"
---[[Translation missing --]]
-La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
---[[Translation missing --]]
-La["Dragonflight Transmute"] = "Dragonflight Transmute"
+La["Dragonflight Experimentation"] = "巨龍崛起實驗性"
+La["Dragonflight Transmute"] = "巨龍崛起變化"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
 La["Emissary Missing"] = "沒有特使"

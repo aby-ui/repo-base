@@ -81,6 +81,7 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
 end)
 
 EJ_ContentTab_OnClick_ELP = function(self)
+    EncounterJournal.tab5Clicked = true --为了提前EJ_ContentTab_Select能生效
     --EJ_ContentTab_OnClick
     EJ_ContentTab_Select(self.id);
     local instanceSelect = EncounterJournal.instanceSelect;
@@ -845,6 +846,9 @@ ELP.setupHooks = function()
     ELP_Replace("EJ_GetEncounterInfoByIndex", EJ_GetEncounterInfoByIndex_ELP) --副本拆成2个大秘时控制boss显示
 
     EncounterJournal:HookScript("OnShow", function()
+        if EncounterJournal.selectedTab == 5 and not EncounterJournal.tab5Clicked then
+            EJ_ContentTab_OnClick_ELP(ELPSeasonTab)
+        end
         local mapID = C_ChallengeMode.GetActiveChallengeMapID()
         local filterIndex = mapID and ELP_CHALLENGE_MAPID_FILTER_INDEX[mapID]
         if filterIndex then

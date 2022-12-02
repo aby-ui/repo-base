@@ -13,7 +13,6 @@ local FIRST_BANK_SLOT = Addon.NumBags + 1
 local TOTAL = SILVER:format(L.Total)
 
 
-
 --[[ Startup ]]--
 
 function TipCounts:OnEnable()
@@ -40,18 +39,8 @@ function TipCounts:Hook(tip)
 
 	hooksecurefunc(tip, 'SetQuestItem', self.OnQuest)
 	hooksecurefunc(tip, 'SetQuestLogItem', self.OnQuest)
-
-	if C_TradeSkillUI then
-		if C_TradeSkillUI.GetRecipeFixedReagentItemLink then
-			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeFixedReagentItemLink'))
-		else
-			hooksecurefunc(tip, 'SetRecipeReagentItem', self.OnTradeSkill('GetRecipeReagentItemLink'))
-			hooksecurefunc(tip, 'SetRecipeResultItem', self.OnTradeSkill('GetRecipeItemLink'))
-		end
-	else
-		hooksecurefunc(tip, 'SetTradeSkillItem', self.OnSetTradeSkillItem)
-		hooksecurefunc(tip, 'SetCraftItem', self.OnSetCraftItem)
-	end
+	hooksecurefunc(tip, 'SetTradeSkillItem', self.OnSetTradeSkillItem)
+	hooksecurefunc(tip, 'SetCraftItem', self.OnSetCraftItem)
 end
 
 

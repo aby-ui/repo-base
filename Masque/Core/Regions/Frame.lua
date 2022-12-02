@@ -49,7 +49,7 @@ local DEF_EDGE_LOC = [[Interface\Cooldown\edge-LoC]]
 local MSQ_EDGE = [[Interface\AddOns\Masque\Textures\Cooldown\Edge]]
 local MSQ_EDGE_LOC = [[Interface\AddOns\Masque\Textures\Cooldown\Edge-LoC]]
 
-local MSQ_SWIPE = [[Interface\AddOns\Masque\Textures\Cooldown\Swipe]]
+-- local MSQ_SWIPE = [[Interface\AddOns\Masque\Textures\Cooldown\Swipe]]
 local MSQ_SWIPE_CIRCLE = [[Interface\AddOns\Masque\Textures\Cooldown\Swipe-Circle]]
 
 ----------------------------------------
@@ -119,7 +119,7 @@ local function SkinCooldown(Region, Button, Skin, Color, xScale, yScale, Pulse)
 			Region.__MSQ_Color = Color or Skin.Color or DEF_COLOR
 			Region.__MSQ_Edge = Skin.EdgeTexture or MSQ_EDGE
 
-			Region:SetSwipeTexture(Skin.Texture or (IsRound and MSQ_SWIPE_CIRCLE) or MSQ_SWIPE)
+			Region:SetSwipeTexture(Skin.Texture or (IsRound and MSQ_SWIPE_CIRCLE) or "")
 			Hook_SetSwipeColor(Region)
 			Hook_SetEdgeTexture(Region)
 

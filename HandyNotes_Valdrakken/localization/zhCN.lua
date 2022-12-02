@@ -31,11 +31,11 @@ L["config_banker_desc"] = "显示拍卖行的位置"
 L["config_barber"] = "美容师"
 L["config_barber_desc"] = "显示美容师的位置"
 
--- L["config_craftingorders"] = "Crafting Orders"
--- L["config_craftingorders_desc"] = "Show the crafting orders locations."
+L["config_craftingorders"] = "制造订单"
+L["config_craftingorders_desc"] = "显示制作订单的位置"
 
--- L["config_flightmaster"] = "Flightmaster"
--- L["config_flightmaster_desc"] = "Show the flightmaster location."
+L["config_flightmaster"] = "飞行管理员"
+L["config_flightmaster_desc"] = "显示飞行管理员的位置"
 
 L["config_guildvault"] = "公会银行"
 L["config_guildvault_desc"] = "显示公会银行图标"
@@ -60,8 +60,8 @@ L["config_travelguide_note"] = "|cFFFF0000* 由于 TravelGuide 的存在, 本模
 L["config_reforge"] = "物品升级"
 L["config_reforge_desc"] = "显示物品升级NPC的位置"
 
--- L["config_rostrum"] = "Rostrum of Transformation"
--- L["config_rostrum_desc"] = "Show the Rostrum of Transformation location."
+L["config_rostrum"] = "幻形讲坛"
+L["config_rostrum_desc"] = "显示幻形讲坛的位置"
 
 L["config_stablemaster"] = "兽栏管理员"
 L["config_stablemaster_desc"] = "显示兽栏管理员的位置"
@@ -152,7 +152,7 @@ L["Portal to Orgrimmar"] = "通往奥格瑞玛"
 L["Portal to Shadowmoon Valley"] = "通往影月谷"
 L["Portal to Stormwind"] = "通往暴风城"
 L["Rostrum of Transformation"] = "幻形讲坛"
--- L["Teleport to Seat of the Aspects"] = ""
+L["Teleport to Seat of the Aspects"] = "传送到守护巨龙之座"
 L["Visage of True Self"] = "幻容形态"
 
 end

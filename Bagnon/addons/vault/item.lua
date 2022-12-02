@@ -56,7 +56,7 @@ function Item:OnDragStart()
 	self:OnClick('LeftButton')
 end
 
-function Item:UpdateTooltip()
+function Item:ShowTooltip()
 	if not self.info.cached then
 		GameTooltip:SetOwner(self:GetTipAnchor())
 

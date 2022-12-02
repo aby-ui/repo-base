@@ -433,4 +433,4 @@ Core.AddSkin("Zoomed", {
 		OffsetY = 0,
 		-- SetAllPoints = true,
 	},
-})
+}, true)

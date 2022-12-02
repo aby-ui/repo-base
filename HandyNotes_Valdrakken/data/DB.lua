@@ -34,7 +34,7 @@ DB.points = {
     [2112] = { -- Valdrakken
 
         [42365930] = { icon = "auctioneer", npc = 185714, sublabel = '' }, -- Imporigo
-        [42405995] = { icon = "auctioneer", npc = 197911, sublabel = '' }, -- Antiqdormi
+        --abyui [42405995] = { icon = "auctioneer", npc = 197911, sublabel = '' }, -- Antiqdormi
         [42626047] = { icon = "auctioneer", npc = 188661, sublabel = '' }, -- Expordira
 
         [45565906] = { icon = "mail", label = L["Mailbox"] },
@@ -55,7 +55,7 @@ DB.points = {
         [48298294] = { icon = "vendor", npc = 193029 }, -- Lysindra PET SUPPLIES
 
         [27264736] = { icon = "trainer", npc = 193364 }, -- Lithragosa DRAGONRIDING
-        [25835076] = { icon = "trainer", npc = 190839 }, -- Glensera TRANSFORMATION
+        --abyui [25835076] = { icon = "trainer", npc = 190839 }, -- Glensera TRANSFORMATION
         [25045064] = { icon = "rostrum", label = L["Rostrum of Transformation"] },
 
         [25563355] = { icon = "anvil", npc = 196637 }, -- Tethalash
@@ -130,7 +130,7 @@ DB.points = {
         [58225436] = { icon = "guildvault", label = L["config_guildvault"] },
         [58205788] = { icon = "vendor", npc = 199605 }, -- Evantkis
         [60015392] = { icon = "banker", npc = 185572 }, -- Vekkalis
-        [60575701] = { icon = "banker", npc = 189168 }, -- Aeoreon
+        --abyui [60575701] = { icon = "banker", npc = 189168 }, -- Aeoreon
         [61085510] = { icon = "banker", npc = 186794 }, -- Numernormi
 
 

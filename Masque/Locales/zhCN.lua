@@ -111,6 +111,8 @@ L["Websites"] = "网站"
 -- Interface Settings
 ---
 
+-- L["Alternate Sorting"] = "Alternate Sorting"
+-- L["Causes the skins included with Masque to be listed above third-party skins."] = "Causes the skins included with Masque to be listed above third-party skins."
 L["Enable the Minimap icon."] = "启用小地图图标。"
 L["Interface"] = "界面"
 L["Interface Settings"] = "界面设置"

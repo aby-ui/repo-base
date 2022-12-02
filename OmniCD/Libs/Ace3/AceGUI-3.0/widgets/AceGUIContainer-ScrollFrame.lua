@@ -8,7 +8,11 @@
 ScrollFrame Container
 Plain container that scrolls its content and doesn't grow in height.
 -------------------------------------------------------------------------------]]
+--[[ s r
+local Type, Version = "ScrollFrame", 26
+]]
 local Type, Version = "ScrollFrame-OmniCD", 26
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -209,11 +213,12 @@ local function Constructor()
 	scrollframe:SetScript("OnMouseWheel", ScrollFrame_OnMouseWheel)
 	scrollframe:SetScript("OnSizeChanged", ScrollFrame_OnSizeChanged)
 
-	local scrollbar = CreateFrame("Slider", ("AceConfigDialogScrollFrame%dScrollBar-OmniCD"):format(num), scrollframe, "UIPanelScrollBarTemplate")
 	--[[ s r (No one uses arrows, just hide them)
+	local scrollbar = CreateFrame("Slider", ("AceConfigDialogScrollFrame%dScrollBar"):format(num), scrollframe, "UIPanelScrollBarTemplate")
 	scrollbar:SetPoint("TOPLEFT", scrollframe, "TOPRIGHT", 4, -16)
 	scrollbar:SetPoint("BOTTOMLEFT", scrollframe, "BOTTOMRIGHT", 4, 16)
 	]]
+	local scrollbar = CreateFrame("Slider", ("AceConfigDialogScrollFrame%dScrollBar-OmniCD"):format(num), scrollframe, "UIPanelScrollBarTemplate")
 	scrollbar:SetPoint("TOPLEFT", scrollframe, "TOPRIGHT", 4, 0)
 	scrollbar:SetPoint("BOTTOMLEFT", scrollframe, "BOTTOMRIGHT", 4, 0)
 	scrollbar.ScrollUpButton:Hide()
@@ -249,9 +254,9 @@ local function Constructor()
 		localstatus = { scrollvalue = 0 },
 		scrollframe = scrollframe,
 		scrollbar   = scrollbar,
-		content     = content,
-		frame       = frame,
-		type        = Type
+		content	    = content,
+		frame	    = frame,
+		type	    = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

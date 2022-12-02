@@ -16,7 +16,8 @@ local _, Core = ...
 -- Lua API
 ---
 
-local error, setmetatable, type = error, setmetatable, type
+local error, setmetatable, t_insert = error, setmetatable, table.insert
+local t_sort, type = table.sort, type
 
 ----------------------------------------
 -- Internal
@@ -29,7 +30,9 @@ local Layers = Core.RegTypes.Legacy
 -- Locals
 ---
 
-local Skins, SkinList = {}, {}
+local AddedSkins, BaseSkins = {}, {}
+local Skins, SkinList, SkinOrder = {}, {}, {}
+
 local Hidden = {Hide = true}
 
 -- Legacy Skin IDs
@@ -57,8 +60,19 @@ local function GetShape(Shape)
 	return Shape
 end
 
+-- Sorts the `SkinOrder` table, for display in drop-downs.
+local function SortSkins()
+	t_sort(AddedSkins)
+
+	local c = #BaseSkins
+
+	for k, v in ipairs(AddedSkins) do
+		SkinOrder[k + c] = v
+	end
+end
+
 -- Adds data to the skin tables.
-local function AddSkin(SkinID, SkinData)
+local function AddSkin(SkinID, SkinData, Base)
 	local Skin_API = SkinData.API_VERSION or SkinData.Masque_Version
 	local Template = SkinData.Template
 	local Default = Core.DEFAULT_SKIN
@@ -100,6 +114,14 @@ local function AddSkin(SkinID, SkinData)
 	Skins[SkinID] = SkinData
 
 	if not SkinData.Disable then
+		if Base then
+			t_insert(BaseSkins, SkinID)
+			t_insert(SkinOrder, SkinID)
+		else
+			t_insert(AddedSkins, SkinID)
+			SortSkins()
+		end
+
 		SkinList[SkinID] = SkinID
 	end
 end
@@ -123,6 +145,7 @@ Core.Skins = setmetatable(Skins, {
 })
 
 Core.SkinList = SkinList
+Core.SkinOrder = SkinOrder
 
 ----------------------------------------
 -- API

@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Frame name="OmniCDTemplate" virtual="true" parent="UIParent" frameStrata="MEDIUM" frameLevel="8" movable="true" clampedToScreen="true" dontSavePosition="true" hidden="true">
+	<Frame name="OmniCDTemplate" virtual="true" parent="UIParent" frameStrata="MEDIUM" framelevel="8" movable="true" clampedToScreen="true" dontSavePosition="true" hidden="true">
 		<Size>
 			<AbsDimension x="1" y="1"/>
 		</Size>
@@ -30,14 +30,6 @@
 						</FontString>
 					</Layer>
 				</Layers>
-				<Scripts>
-					<OnMouseDown>
-						OmniCD_AnchorOnMouseDown(self, button);
-					</OnMouseDown>
-					<OnMouseUp>
-						OmniCD_AnchorOnMouseUp(self, button);
-					</OnMouseUp>
-				</Scripts>
 			</Frame>
 			<Frame name="$parentIcons" parentKey="container" clampedToScreen="true">
 				<Size>
@@ -49,13 +41,9 @@
 				</Anchors>
 			</Frame>
 		</Frames>
-		<Scripts>
-			<OnHide>
-				OmniCD_BarOnHide(self);
-			</OnHide>
-		</Scripts>
 	</Frame>
-	<CheckButton name="OmniCDButtonTemplate" inherits="ActionButtonTemplate" hidden="true" virtual="true">
+
+	<Button name="OmniCDButtonTemplate" hidden="true" virtual="true">
 		<Size>
 			<AbsDimension x="36" y="36"/>
 		</Size>
@@ -63,6 +51,31 @@
 			<Anchor point="CENTER"/>
 		</Anchors>
 		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentIcon" parentKey="icon"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="2">
+				<FontString name="$parentHotKey" inherits="NumberFontNormalSmallGray" parentKey="hotKey" justifyH="RIGHT">
+					<Size x="32" y="10"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="3" y="-3"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentCount" inherits="NumberFontNormal" parentKey="count" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentName" parentKey="name" inherits="GameFontHighlightSmallOutline">
+					<Size x="36" y="10"/>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="2"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+
 			<Layer level="BACKGROUND" textureSubLevel="1">
 				<Texture parentKey="borderTop">
 					<Color r="0" g="0" b="0"/>
@@ -77,43 +90,16 @@
 					<Color r="0" g="0" b="0"/>
 				</Texture>
 			</Layer>
-			<!-- old glow
-			<Layer level="OVERLAY">
-				<Texture parentKey="flash" alpha="0" alphaMode="ADD" atlas="bags-glow-flash" useAtlasSize="true">
-					<Anchors>
-						<Anchor point="CENTER"/>
-					</Anchors>
-				</Texture>
-				<Texture parentKey="NewItemTexture" alpha="0" alphaMode="ADD" atlas="bags-glow-white" useAtlasSize="true">
-					<Anchors>
-						<Anchor point="CENTER"/>
-					</Anchors>
-				</Texture>
-			</Layer>
-			-->
 		</Layers>
-		<!-- old glow
-		<Animations>
-			<AnimationGroup parentKey="newitemglowAnim" setToFinalAlpha="true" looping="NONE">
-				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="1" fromAlpha="1" toAlpha="0.2"/>
-				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="2" fromAlpha="0.2" toAlpha="1"/>
-				<Alpha childKey="NewItemTexture" smoothing="NONE" duration="1" order="3" fromAlpha="1" toAlpha="0"/>
-			</AnimationGroup>
-			<AnimationGroup parentKey="flashAnim" setToFinalAlpha="true">
-				<Alpha childKey="flash" smoothing="OUT" duration="1" order="1.1" fromAlpha="1" toAlpha="0"/>
-			</AnimationGroup>
-		</Animations>
-		-->
 		<Frames>
 			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" parentKey="cooldown" reverse="false" drawBling="false" drawEdge="false" hidden="true">
+				<Size x="36" y="36"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="-1"/>
+				</Anchors>
 				<SwipeTexture>
 					<Color r="1" g="1" b="1" a="0.8"/>
 				</SwipeTexture>
-				<Scripts>
-					<OnHide>
-						OmniCD_CooldownOnHide(self);
-					</OnHide>
-				</Scripts>
 			</Cooldown>
 			<Frame parentKey="PendingFrame" setAllPoints="true" hidden="true">
 				<Layers>
@@ -187,25 +173,7 @@
 				</Animations>
 			</Frame>
 		</Frames>
-		<NormalTexture name="$parentNormalTexture" parentKey="NormalTexture">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="-15" y="15"/>
-				<Anchor point="BOTTOMRIGHT" x="15" y="-15"/>
-			</Anchors>
-		</NormalTexture>
-		<PushedTexture/>
-		<HighlightTexture/>
-		<CheckedTexture/>
-		<Scripts>
-			<OnEnter>
-				_G["AceConfigDialogTooltip-OmniCD"]:SetOwner(self, "ANCHOR_RIGHT");
-				_G["AceConfigDialogTooltip-OmniCD"]:SetSpellByID(self.tooltipID or self.spellID);
-			</OnEnter>
-			<OnLeave>
-				_G["AceConfigDialogTooltip-OmniCD"]:Hide();
-			</OnLeave>
-		</Scripts>
-	</CheckButton>
+	</Button>
 	<Frame name="OmniCDButtonSpellActivationAlert" virtual="true">
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -301,21 +269,12 @@
 				<Alpha target="$parentAnts" duration="0.2" fromAlpha="1" toAlpha="0" order="1"/>
 				<Alpha target="$parentOuterGlowOver" duration="0.2" fromAlpha="1" toAlpha="0" order="2"/>
 				<Alpha target="$parentOuterGlow" duration="0.2" fromAlpha="1" toAlpha="0" order="2"/>
-				<Scripts>
-					<OnFinished>
-						OmniCD_OverlayGlowAnimOutFinished(self);
-					</OnFinished>
-				</Scripts>
 			</AnimationGroup>
 		</Animations>
 		<Scripts>
-			<OnUpdate function="OmniCD_OverlayGlowOnUpdate"/>
-			<OnHide>
-				if ( self.animOut:IsPlaying() ) then
-					self.animOut:Stop();
-					OmniCD_OverlayGlowAnimOutFinished(self.animOut);
-				end
-			</OnHide>
+			<OnUpdate>
+				AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01);
+			</OnUpdate>
 		</Scripts>
 	</Frame>
 </Ui>

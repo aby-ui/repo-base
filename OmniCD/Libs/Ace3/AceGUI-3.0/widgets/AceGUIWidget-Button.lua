@@ -8,7 +8,11 @@
 Button Widget
 Graphical Button.
 -------------------------------------------------------------------------------]]
+--[[ s r
+local Type, Version = "Button", 24
+]]
 local Type, Version = "Button-OmniCD", 24
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -126,7 +130,7 @@ local function Constructor()
 	frame.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
 	frame.Right:Hide()
 	frame.Middle:Hide()
-	frame:SetHighlightTexture("")
+	frame:SetHighlightTexture(0) -- DF: nil throws error (Classic too), "" doesn't work (shows highlight texture)
 	OmniCD[1].BackdropTemplate(frame)
 	frame:SetBackdropColor(0.725, 0.008, 0.008)
 	frame:SetBackdropBorderColor(0, 0, 0)

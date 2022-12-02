@@ -35,7 +35,7 @@ local L = Core.Locale
 local CRLF = Core.CRLF
 
 -- @ Skins\Skins
-local Skins, SkinList = Core.Skins, Core.SkinList
+local Skins, SkinList, SkinOrder = Core.Skins, Core.SkinList, Core.SkinOrder
 
 -- @ Skins\Blizzard(_Classic)
 local DEFAULT_SKIN_ID = Core.DEFAULT_SKIN_ID
@@ -52,7 +52,13 @@ local function GetOption(Info)
 	local Option = Info[#Info]
 
 	if Option == "SkinID" then
-		return SkinList[Info.arg.db.SkinID] or DEFAULT_SKIN_ID
+		local SkinID = Info.arg.db.SkinID
+
+		if not SkinList[SkinID] then
+			SkinID = DEFAULT_SKIN_ID
+		end
+
+		return SkinID
 	else
 		return Info.arg.db[Option]
 	end
@@ -132,8 +138,19 @@ local function GetHidden(Info)
 		Layer = Info[#Info - 1]
 	end
 
-	local Skin = Skins[Info.arg.db.SkinID] or Skins["Classic"]
+	local Skin = Skins[Info.arg.db.SkinID] or Core.DEFAULT_SKIN
 	return Skin[Layer].Hide
+end
+
+-- Updates the sorting order.
+local function GetSorting(Info)
+	local Order
+
+	if Core.db.profile.AltSort then
+		Order = SkinOrder
+	end
+
+	return Order
 end
 
 ----------------------------------------
@@ -201,6 +218,7 @@ local function GetOptions(obj, Order)
 				width = "full",
 				style = "dropdown",
 				values = SkinList,
+				sorting = GetSorting,
 				disabled = GetDisabled,
 				order = 3,
 			},

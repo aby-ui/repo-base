@@ -1,6 +1,6 @@
 ## Interface: 100002
 ## Title: Master Plan
-## Version: 0.128
+## Version: 0.129
 ## Author: foxlit
 ## Notes: Garrison missions UI tweaks.
 ## X-Website: https://www.townlong-yak.com/addons/master-plan/
@@ -8,7 +8,6 @@
 ## LoadOnDemand: 1
 ## RequiredDeps: Blizzard_GarrisonUI, MasterPlanA
 ## SavedVariablesPerCharacter: MasterPlanPC
-## X-Version-Key: skybreak
 Libs/Evie.lua
 Libs/Ten.lua
 Libs/Reframe.lua

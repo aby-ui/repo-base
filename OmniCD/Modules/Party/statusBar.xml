@@ -28,10 +28,6 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<Scripts>
-			<OnUpdate function="OmniCDCastingBarFrame_OnUpdate" />
-			<OnShow function="OmniCDCastingBarFrame_OnShow" />
-		</Scripts>
 		<BarTexture file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
 		<BarColor r="1.0" g="1.0" b="1.0" a="1"/>
 	</StatusBar>

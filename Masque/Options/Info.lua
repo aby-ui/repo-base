@@ -72,11 +72,9 @@ end
 ---
 
 -- Creates a skin info options group.
-local function GetInfoGroup(Skin, Group)
-	local Title = (Group and Skin.Title) or Skin.SkinID
+local function GetInfoGroup(Skin, Title, Group)
 	local Order = (Group and Skin.Order) or nil
 	local Description = Skin.Description or L["No description available."]
-
 	local Version = (Skin.Version and tostring(Skin.Version)) or UNKNOWN
 	local Authors = Skin.Authors or Skin.Author or UNKNOWN
 	local Websites = Skin.Websites or Skin.Website
@@ -260,6 +258,8 @@ function Setup.Info(self)
 			local Group = Skin.Group
 
 			if Group then
+				local Title = Skin.Title or SkinID
+
 				if not args[Group] then
 					args[Group] = {
 						type = "group",
@@ -269,9 +269,9 @@ function Setup.Info(self)
 						childGroups = "select",
 					}
 				end
-				args[Group].args[SkinID] = GetInfoGroup(Skin, Group)
+				args[Group].args[SkinID] = GetInfoGroup(Skin, Title, Group)
 			else
-				args[SkinID] = GetInfoGroup(Skin)
+				args[SkinID] = GetInfoGroup(Skin, SkinID)
 				args[SkinID].desc = Tooltip
 			end
 		end

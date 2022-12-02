@@ -68,15 +68,10 @@ end
 
 --[[ Update ]]--
 
-function Item:UpdateTooltip()
+function Item:ShowTooltip()
 	if not self.info.cached then
 		GameTooltip:SetOwner(self:GetTipAnchor())
-
-		local pet = {GameTooltip:SetGuildBankItem(self:GetSlot())}
-		if not C_TooltipInfo and type(pet[1]) == 'number' and pet[1] > 0 then
-			BattlePetToolTip_Show(unpack(pet))
-		end
-
+		GameTooltip:SetGuildBankItem(self:GetSlot())
 		GameTooltip:Show()
 		CursorUpdate(self)
 	end

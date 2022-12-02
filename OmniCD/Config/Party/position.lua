@@ -1,42 +1,30 @@
-local E, L, C = select(2, ...):unpack()
+local E, L = select(2, ...):unpack()
+local P = E.Party
 
-local P = E["Party"]
+local L_POINTS = {
+	["LEFT"] = L["LEFT"],
+	["RIGHT"] = L["RIGHT"],
+	["TOPLEFT"] = L["TOPLEFT"],
+	["TOPRIGHT"] = L["TOPRIGHT"],
+	["BOTTOMLEFT"] = L["BOTTOMLEFT"],
+	["BOTTOMRIGHT"] = L["BOTTOMRIGHT"],
+}
 
-local isPreset = function(info) local key = info[2] return E.DB.profile.Party[key].position.preset ~= "manual" end
+local isPreset = function(info)
+	local key = info[2]
+	return E.profile.Party[key].position.preset ~= "manual"
+end
+
 local isMultiline = function(info)
-	local layout = E.DB.profile.Party[info[2]].position.layout
+	local layout = E.profile.Party[ info[2] ].position.layout
 	return layout ~= "vertical" and layout ~= "horizontal", layout == "tripleRow" or layout == "tripleColumn"
 end
 
-local extraBarInfo = {
-	enabled = {
-		disabled = false,
-		name = ENABLE,
-		desc = P.extraBarDesc,
-		order = 1,
-		type = "toggle",
-		set = P.setExBar,
-	},
-	locked = {
-		name = LOCK_FRAME,
-		desc = L["Lock frame position"],
-		order = 2,
-		type = "toggle",
-		set = P.setExBar,
-	},
-	settings = {
-		name = SETTINGS,
-		desc = L["Jump to Extra Bars settings"],
-		order = 3,
-		type = "execute",
-		func = function(info) E.Libs.ACD:SelectGroup("OmniCD", "Party", info[2], "extraBars", info[#info-1]) end,
-	},
-}
-
 local disabledItems = {}
+
 local function GetDisabledItems(info)
 	wipe(disabledItems)
-	local db = E.DB.profile.Party[info[2]]
+	local db = E.profile.Party[ info[2] ]
 	local bp = db.priority[db.position.breakPoint]
 	for k in pairs(E.L_PRIORITY) do
 		local prio = db.priority[k]
@@ -46,37 +34,32 @@ local function GetDisabledItems(info)
 	end
 	return disabledItems
 end
-local setDisabledItem = function(info) return GetDisabledItems(info) end
 
 local position = {
-
 	name = L["Position"],
 	type = "group",
 	order = 20,
-	get = function(info) return E.DB.profile.Party[info[2]].position[info[#info]] end,
+	get = function(info) return E.profile.Party[ info[2] ].position[ info[#info] ] end,
 	set = function(info, value)
 		local key = info[2]
 		local option = info[#info]
-
-		E.DB.profile.Party[key].position[option] = value
+		local db = E.profile.Party[key].position
+		db[option] = value
 
 		if option == "preset" then
-			if value == "CENTER" then
-				E.DB.profile.Party[key].position.anchor = value
-				E.DB.profile.Party[key].position.attach = value
-			elseif value == "TOPLEFT" then
-				E.DB.profile.Party[key].position.anchor = "TOPRIGHT"
-				E.DB.profile.Party[key].position.attach = value
+			if value == "TOPLEFT" then
+				db.anchor = "TOPRIGHT"
+				db.attach = value
 			elseif value == "TOPRIGHT" then
-				E.DB.profile.Party[key].position.anchor = "TOPLEFT"
-				E.DB.profile.Party[key].position.attach = value
+				db.anchor = "TOPLEFT"
+				db.attach = value
 			else
-				E.DB.profile.Party[key].position.anchor = E.DB.profile.Party[key].position.anchorMore or "LEFT"
-				E.DB.profile.Party[key].position.attach = E.DB.profile.Party[key].position.attachMore or "LEFT"
+				db.anchor = db.anchorMore or "LEFT"
+				db.attach = db.attachMore or "LEFT"
 			end
 		elseif option == "anchor" or option == "attach" then
-			if E.DB.profile.Party[key].position.preset == "manual" then
-				E.DB.profile.Party[key].position[option .. "More"] = value
+			if db.preset == "manual" then
+				db[option .. "More"] = value
 			end
 		end
 
@@ -84,7 +67,6 @@ local position = {
 	end,
 	args = {
 		uf = {
-
 			name = ADDONS,
 			desc = L["Select addon to override auto anchoring"],
 			order = 1,
@@ -92,38 +74,46 @@ local position = {
 			values = function() return E.customUF.optionTable end,
 			set = function(info, value)
 				local key = info[2]
-				if E.db == E.DB.profile.Party[key] then
-					if value == "blizz" and not E.DB.profile.Party[key].position.detached and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
+				local db = E.profile.Party[key].position
+				if P:IsCurrentZone(key) then
+					if value == "blizz" and not db.detached
+						and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
 						E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
 					else
-						if P.test then
+						if P.isInTestMode then
 							P:Test()
-							E.DB.profile.Party[key].position.uf = value
+							db.uf = value
 							P:Test(key)
 						else
-							E.DB.profile.Party[key].position.uf = value
+							db.uf = value
 							P:Refresh(true)
 						end
 					end
 				else
-					E.DB.profile.Party[key].position.uf = value
+					db.uf = value
 				end
 			end,
 		},
 		preset = {
 			name = L["Position"],
-			desc = format("%s\n\n%s", L["Set the spell bar position"], L["CENTER will keep the rows centered and grow icons bidirectionally."]),
+			desc = format("%s\n\n%s", L["Set the spell bar position"],
+			L["CENTER will keep the rows centered and grow icons bidirectionally."]),
 			order = 2,
 			type = "select",
-			values = E.L_PRESETS,
+			values = {
+				["TOPLEFT"] = L["LEFT"],
+				["TOPRIGHT"] = L["RIGHT"],
+				["manual"] = L["More..."],
+			},
 		},
 		anchor = {
 			disabled = isPreset,
 			name = L["Anchor Point"],
-			desc = format("%s\n\n%s", L["Set the anchor point on the spell bar"], L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"]),
+			desc = format("%s\n\n%s", L["Set the anchor point on the spell bar"],
+			L["Having \"RIGHT\" in the anchor point, icons grow left, otherwise right"]),
 			order = 3,
 			type = "select",
-			values = E.L_POINTS,
+			values = L_POINTS,
 		},
 		attach = {
 			disabled = isPreset,
@@ -131,7 +121,7 @@ local position = {
 			desc = L["Set the anchor attachment point on the party/raid frame"],
 			order = 4,
 			type = "select",
-			values = E.L_POINTS,
+			values = L_POINTS,
 		},
 		offsetX = {
 			name = L["Offset X"],
@@ -151,40 +141,62 @@ local position = {
 			name = "\n", order = 7, type = "description",
 		},
 		layout = {
-
 			name = L["Layout"],
 			desc = L["Select the icon layout"],
 			order = 10,
 			type = "select",
-			values = E.L_LAYOUT,
+			values = {
+				["horizontal"] = L["Horizontal"],
+				["vertical"] = L["Vertical"],
+				["doubleRow"] = L["Use Double Row"],
+				["doubleColumn"] = L["Use Double Column"],
+				["tripleRow"] = L["Use Triple Row"],
+				["tripleColumn"] = L["Use Triple Column"],
+			},
 			sorting = {"horizontal", "doubleRow", "tripleRow", "vertical", "doubleColumn", "tripleColumn"},
 		},
 		columns = {
 			disabled = isMultiline,
-			name = function(info) return E.DB.profile.Party[info[2]].position.layout == "vertical" and L["Row"] or L["Column"] end,
-			desc = function(info) return E.DB.profile.Party[info[2]].position.layout == "vertical" and L["Set the number of icons per column"] or L["Set the number of icons per row"] end,
+			name = function(info)
+				return E.profile.Party[ info[2] ].position.layout == "vertical" and L["Row"] or L["Column"]
+			end,
+			desc = function(info)
+				return E.profile.Party[ info[2] ].position.layout == "vertical" and L["Set the number of icons per column"]
+				or L["Set the number of icons per row"]
+			end,
 			order = 11,
 			type = "range",
 			min = 1, max = 100, softMax = 20, step = 1,
 		},
 		breakPoint = {
-			disabled = function(info) return not isMultiline(info) end,
+			disabled = function(info)
+				return not isMultiline(info)
+			end,
 			name = L["Breakpoint"],
 			desc = L["Select the highest priority spell type to use as the start of the 2nd row"],
 			order = 12,
 			type = "select",
 			values = E.L_PRIORITY,
-			sorting = function(info) return E.SortHashToArray(E.L_PRIORITY, E.DB.profile.Party[info[2]].priority) end,
+			sorting = function(info)
+				return E.SortHashToArray(E.L_PRIORITY, E.profile.Party[ info[2] ].priority)
+			end,
 		},
 		breakPoint2 = {
-			disabled = function(info) local multiline, tripleline = isMultiline(info) return not multiline or not tripleline end,
+			disabled = function(info)
+				local multiline, tripleline = isMultiline(info)
+				return not multiline or not tripleline
+			end,
 			name = L["Breakpoint"] .. " 2",
 			desc = L["Select the highest priority spell type to use as the start of the 3rd row"],
 			order = 13,
 			type = "select",
 			values = E.L_PRIORITY,
-			sorting = function(info) return E.SortHashToArray(E.L_PRIORITY, E.DB.profile.Party[info[2]].priority) end,
-			disabledItem = setDisabledItem,
+			sorting = function(info)
+				return E.SortHashToArray(E.L_PRIORITY, E.profile.Party[ info[2] ].priority)
+			end,
+			disabledItem = function(info)
+				return GetDisabledItems(info)
+			end,
 		},
 		paddingX = {
 			name = L["Padding X"],
@@ -216,7 +228,9 @@ local position = {
 			name = "\n\n", order = 19, type = "description"
 		},
 		manualMode = {
-			disabled = function(info) return info[5] and not E.DB.profile.Party[info[2]].position.detached end,
+			disabled = function(info)
+				return info[5] and not E.profile.Party[ info[2] ].position.detached
+			end,
 			name = L["Manual Mode"],
 			order = 20,
 			type = "group",
@@ -229,14 +243,20 @@ local position = {
 					type = "toggle",
 					set = function(info, state)
 						local key = info[2]
-						E.DB.profile.Party[key].position.detached = state
+						E.profile.Party[key].position.detached = state
 
-						if E.db == E.DB.profile.Party[key] then
-							if not state and E.customUF.active == "blizz" and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
+						if P:IsCurrentZone(key) then
+							if not state and not E.customUF.active
+								and not ( IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") ) then
 								E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
 							end
 							P:ConfigBars(key, "detached")
 							P:UpdatePosition()
+						end
+
+						if E.isDF and P.isInTestMode then
+							P:Test()
+							P:Test()
 						end
 					end,
 				},
@@ -253,9 +273,9 @@ local position = {
 					type = "execute",
 					func = function(info)
 						local key = info[2]
-						for k, v in pairs(E.DB.profile.Party[key].manualPos) do
+						for k in pairs(E.profile.Party[key].manualPos) do
 							if type(k) == "number" then
-								E.DB.profile.Party[key].manualPos[k] = nil
+								E.profile.Party[key].manualPos[k] = nil
 							end
 						end
 
@@ -265,39 +285,7 @@ local position = {
 				},
 			}
 		},
-		interruptBar = {
-			disabled = P.isExBarDisabled,
-			name = L["Interrupt Bar"],
-			order = 30,
-			type = "group",
-			get = P.getExBar,
-			args = extraBarInfo
-		},
-		raidCDBar = {
-			disabled = P.isExBarDisabled,
-			name = L["Raid Bar"],
-			order = 40,
-			type = "group",
-			get = P.getExBar,
-			args = extraBarInfo
-		},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 }
 
-function P:AddPositionOption(key)
-	self.options.args[key].args.position = position
-end
+P:RegisterSubcategory("position", position)

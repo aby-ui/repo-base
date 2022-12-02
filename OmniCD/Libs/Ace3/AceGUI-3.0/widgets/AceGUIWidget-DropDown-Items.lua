@@ -4,7 +4,7 @@
 
 ---------------------------------------------------------------------------------
 
---[[ $Id: AceGUIWidget-DropDown-Items.lua 1202 2019-05-15 23:11:22Z nevcairiel $ ]]--
+--[[ $Id: AceGUIWidget-DropDown-Items.lua 1272 2022-08-29 15:56:35Z nevcairiel $ ]]--
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -45,9 +45,9 @@ end
 
 local ItemBase = {
 	-- NOTE: The ItemBase version is added to each item's version number
-	--       to ensure proper updates on ItemBase changes.
-	--       Use at least 1000er steps.
-	version = 1000,
+	--	 to ensure proper updates on ItemBase changes.
+	--	 Use at least 1000er steps.
+	version = 2000,
 	counter = 0,
 }
 
@@ -92,7 +92,7 @@ end
 
 -- exported
 -- NOTE: this is called by a Dropdown-Pullout.
---       Do not call this method directly
+--	 Do not call this method directly
 function ItemBase.SetPullout(self, pullout)
 	self.pullout = pullout
 
@@ -141,14 +141,14 @@ end
 
 -- exported
 -- NOTE: this is called by a Dropdown-Pullout.
---       Do not call this method directly
+--	 Do not call this method directly
 function ItemBase.SetOnLeave(self, func)
 	self.specialOnLeave = func
 end
 
 -- exported
 -- NOTE: this is called by a Dropdown-Pullout.
---       Do not call this method directly
+--	 Do not call this method directly
 function ItemBase.SetOnEnter(self, func)
 	self.specialOnEnter = func
 end
@@ -188,7 +188,7 @@ function ItemBase.Create(type)
 	highlight:Hide()
 	self.highlight = highlight
 
-	local check = frame:CreateTexture("OVERLAY")
+	local check = frame:CreateTexture(nil, "OVERLAY")
 	check:SetWidth(16)
 	check:SetHeight(16)
 	check:SetPoint("LEFT",frame,"LEFT",3,-1)
@@ -196,7 +196,7 @@ function ItemBase.Create(type)
 	check:Hide()
 	self.check = check
 
-	local sub = frame:CreateTexture("OVERLAY")
+	local sub = frame:CreateTexture(nil, "OVERLAY")
 	sub:SetWidth(16)
 	sub:SetHeight(16)
 	sub:SetPoint("RIGHT",frame,"RIGHT",-3,-1)
@@ -211,13 +211,13 @@ function ItemBase.Create(type)
 	self.OnRelease = ItemBase.OnRelease
 
 	self.SetPullout = ItemBase.SetPullout
-	self.GetText    = ItemBase.GetText
-	self.SetText    = ItemBase.SetText
+	self.GetText	= ItemBase.GetText
+	self.SetText	= ItemBase.SetText
 	self.SetDisabled = ItemBase.SetDisabled
 
-	self.SetPoint   = ItemBase.SetPoint
-	self.Show       = ItemBase.Show
-	self.Hide       = ItemBase.Hide
+	self.SetPoint	= ItemBase.SetPoint
+	self.Show	= ItemBase.Show
+	self.Hide	= ItemBase.Hide
 
 	self.SetOnLeave = ItemBase.SetOnLeave
 	self.SetOnEnter = ItemBase.SetOnEnter
@@ -304,7 +304,11 @@ end
 -- Item: Execute
 -- A simple button
 do
+	--[[ s r
+	local widgetType = "Dropdown-Item-Execute"
+	]]
 	local widgetType = "Dropdown-Item-Execute-OmniCD"
+	-- e
 	local widgetVersion = 1
 
 	local function Frame_OnClick(this, button)
@@ -335,7 +339,11 @@ end
 -- Does not close the pullout on click.
 
 do
+	--[[ s r
+	local widgetType = "Dropdown-Item-Toggle"
+	]]
 	local widgetType = "Dropdown-Item-Toggle-OmniCD"
+	-- e
 	local widgetVersion = 4
 
 	local function UpdateToggle(self)

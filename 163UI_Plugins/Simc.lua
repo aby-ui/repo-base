@@ -356,11 +356,6 @@ local ITEM_MOD_TYPE_CRAFT_STATS_2 = 30
 
 local WeeklyRewards         = _G.C_WeeklyRewards
 
--- Shadowlands
-local Covenants             = _G.C_Covenants
-local Soulbinds             = _G.C_Soulbinds
-local CovenantSanctumUI     = _G.C_CovenantSanctumUI
-
 -- New talents for Dragonflight
 local ClassTalents          = _G.C_ClassTalents
 local Traits                = _G.C_Traits
@@ -942,63 +937,6 @@ function Simulationcraft:GetZandalariLoa()
   return zandalariLoa
 end
 
-
--- Shadowlands helpers: covenants, soulbinds, conduits
-function Simulationcraft:CovenantsAvailable()
-  if Covenants then
-    return true
-  else
-    return false
-  end
-end
-
-function Simulationcraft:GetActiveCovenantID()
-  return Covenants.GetActiveCovenantID()
-end
-function Simulationcraft:GetActiveCovenantData()
-  local activeCovenantID = Simulationcraft.GetActiveCovenantID()
-  if activeCovenantID > 0 then
-    return Covenants.GetCovenantData(Simulationcraft.GetActiveCovenantID())
-  end
-  return nil
-end
-function Simulationcraft:GetCovenantString()
-  local covenantData = Simulationcraft.GetActiveCovenantData()
-  if covenantData then
-    return 'covenant=' .. Simulationcraft.covenants[covenantData.ID]
-  end
-  return nil
-end
-
-local function SortByRow(a, b)
-  return a.row < b.row
-end
-
-function Simulationcraft:GetSoulbindString(id)
-  local soulbindStrings = {}
-  local soulbindData = Soulbinds.GetSoulbindData(id)
-  -- sort nodes by row order
-  local nodes = soulbindData.tree.nodes
-  table.sort(nodes, SortByRow)
-  for _, node in pairs(nodes) do
-    if node.state == Enum.SoulbindNodeState.Selected then
-      if node.spellID ~= 0 then
-        soulbindStrings[#soulbindStrings + 1] = node.spellID
-      elseif node.conduitID ~= 0 then
-        local enhancedStr
-        if node.socketEnhanced then
-          enhancedStr = "1"
-        else
-          enhancedStr = "0"
-        end
-        soulbindStrings[#soulbindStrings + 1] = node.conduitID .. ":" .. node.conduitRank .. ":" .. enhancedStr
-      end
-    end
-  end
-  return "soulbind="
-    .. Tokenize(soulbindData.name) .. ':' .. soulbindData.ID .. ',' .. table.concat(soulbindStrings, '/')
-end
-
 function Simulationcraft:GetMainFrame(text)
   -- Frame code largely adapted from https://www.wowinterface.com/forums/showpost.php?p=323901&postcount=2
   if not SimcFrame then
@@ -1260,56 +1198,6 @@ function Simulationcraft:PrintSimcProfile(debugOutput, noBags, showMerchant, lin
   end
 
   simulationcraftProfile = simulationcraftProfile .. '\n'
-
-  -- SHADOWLANDS SYSTEMS
-  -- gate covenant/soulbind code behind this check so addon will work in 8.3
-  if Simulationcraft:CovenantsAvailable() then
-    local covenantString = Simulationcraft:GetCovenantString()
-    if covenantString then
-      simulationcraftProfile = simulationcraftProfile .. covenantString .. '\n'
-
-      -- iterate over soulbinds, inactive soulbinds are commented out
-      local activeSoulbindID = Soulbinds:GetActiveSoulbindID()
-      if activeSoulbindID > 0 then
-        local covenantsData = Simulationcraft:GetActiveCovenantData().soulbindIDs
-        for _, soulbindID in pairs(covenantsData) do
-          local soulbindData = Soulbinds.GetSoulbindData(soulbindID)
-          if soulbindData.unlocked then
-            local soulbindString = Simulationcraft:GetSoulbindString(soulbindID)
-            if soulbindID == activeSoulbindID then
-              simulationcraftProfile = simulationcraftProfile .. soulbindString .. '\n'
-            else
-              simulationcraftProfile = simulationcraftProfile .. '# ' .. soulbindString .. '\n'
-            end
-          end
-        end
-      end
-
-      -- Export conduit collection
-      -- TODO: Figure out if addon needs to care about spec fields or if
-      -- there's any other deduping to do
-      local conduitsAvailable = {}
-      for _, conduitType in pairs(Enum.SoulbindConduitType) do
-        local conduits = Soulbinds.GetConduitCollection(conduitType)
-        for _, conduit in pairs(conduits) do
-          conduitsAvailable[#conduitsAvailable + 1] = conduit.conduitID .. ':' .. conduit.conduitRank
-        end
-      end
-
-      local conduitsAvailableStr = table.concat(conduitsAvailable, '/')
-      simulationcraftProfile = simulationcraftProfile .. '# conduits_available=' .. conduitsAvailableStr .. '\n'
-
-      -- Export renown level as a comment, useful to determine how much of a soulbind tree is currently usable
-      if CovenantSanctumUI then
-        local renown = CovenantSanctumUI.GetRenownLevel()
-        if renown > 0 then
-          simulationcraftProfile = simulationcraftProfile .. 'renown=' .. renown .. '\n'
-        end
-      end
-
-      simulationcraftProfile = simulationcraftProfile .. '\n'
-    end
-  end
 
   -- Method that gets gear information
   local items = Simulationcraft:GetItemStrings(debugOutput)

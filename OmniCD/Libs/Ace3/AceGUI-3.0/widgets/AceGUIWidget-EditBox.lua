@@ -7,7 +7,11 @@
 --[[-----------------------------------------------------------------------------
 EditBox Widget
 -------------------------------------------------------------------------------]]
+--[[ s r
+local Type, Version = "EditBox", 28
+]]
 local Type, Version = "EditBox-OmniCD", 28
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -34,7 +38,11 @@ end
 
 function _G.AceGUIEditBoxInsertLink(text)
 	for i = 1, AceGUI:GetWidgetCount(Type) do
+		--[[ d r
+		local editbox = _G["AceGUI-3.0EditBox"..i]
+		]]
 		local editbox = _G["AceGUI-3.0EditBox-OmniCD"..i]
+		-- e
 		if editbox and editbox:IsVisible() and editbox:HasFocus() then
 			editbox:Insert(text)
 			return true
@@ -71,7 +79,7 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
-	frame.obj.editbox:SetBackdropBorderColor(0.5, 0.5, 0.5)  -- s a (match range slider editbox)
+	frame.obj.editbox:SetBackdropBorderColor(0.5, 0.5, 0.5)	 -- s a (match range slider editbox)
 end
 
 local function Control_OnLeave(frame)
@@ -304,7 +312,11 @@ local function Constructor()
 	editbox:SetBackdropBorderColor(0.2, 0.2, 0.25)
 	-- e
 
+	--[[ s r
+	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+	]]
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall-OmniCD")
+	-- e
 	label:SetPoint("TOPLEFT", 0, -2)
 	label:SetPoint("TOPRIGHT", 0, -2)
 	label:SetJustifyH("LEFT")
@@ -335,7 +347,7 @@ local function Constructor()
 	button.Left:Hide() -- SetTexture is called repeatedly on disable etc, only Hide will work
 	button.Right:Hide()
 	button.Middle:Hide()
-	button:SetHighlightTexture("")
+	button:SetHighlightTexture(0) -- DF: nil throws error (Classic too), "" doesn't work (shows highlight texture)
 	OmniCD[1].BackdropTemplate(button)
 	button:SetBackdropColor(0.725, 0.008, 0.008)
 	button:SetBackdropBorderColor(0.2, 0.2, 0.25)
@@ -347,11 +359,11 @@ local function Constructor()
 
 	local widget = {
 		alignoffset = 30,
-		editbox     = editbox,
-		label       = label,
-		button      = button,
-		frame       = frame,
-		type        = Type
+		editbox		= editbox,
+		label		= label,
+		button		= button,
+		frame		= frame,
+		type		= Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

@@ -5,7 +5,7 @@
 ## SavedVariables: Bagnon_Sets
 ## Dependencies: BagBrother
 ## OptionalDeps: WoWUnit
-## Version: 10.0.7
+## Version: 10.0.8
 
 addons\main\main.xml
 Bagnon_ReagentBankButton\style.xml

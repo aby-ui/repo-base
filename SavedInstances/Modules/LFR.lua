@@ -120,6 +120,10 @@ local LFRInstances = {
   [2291] = { total=3, base=5,  parent=2290, minLvl=60, remap={ 1, 2, 3 } }, -- Sepulcher of the First Ones: Cornerstone of Creation
   [2293] = { total=3, base=8,  parent=2290, minLvl=60, remap={ 1, 2, 3 } }, -- Sepulcher of the First Ones: Domination's Grasp
   [2294] = { total=1, base=11, parent=2290, minLvl=60, remap={ 1 } }, -- Sepulcher of the First Ones: The Grand Design
+
+  [2370] = { total=3, base=1,  parent=2390, minLvl=70, remap={ 1, 2, 3 } }, -- Vault of the Incarnates: The Primal Bulwark
+  [2371] = { total=3, base=4,  parent=2390, minLvl=70, remap={ 1, 2, 3 } }, -- Vault of the Incarnates: Caverns of Infusion
+  [2372] = { total=2, base=7,  parent=2390, minLvl=70, remap={ 1, 2 } }, -- Vault of the Incarnates: Fury of the Storm
 }
 
 local tbl = {}

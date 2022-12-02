@@ -168,10 +168,14 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             text = L['options_open_settings_panel'],
             isNotRadio = true,
             notCheckable = true,
-            disabled = not map.settings,
+            disabled = not map.settings and not map.id == 2112, --abyui HandyNotes_Valdrakken
             func = function(button, option)
-                HideUIPanel(WorldMapFrame)
-                Settings.OpenToCategory('HandyNotes')
+                --HideUIPanel(WorldMapFrame)
+                LibStub('AceConfigDialog-3.0'):Open('HandyNotes') --Settings.OpenToCategory('HandyNotes')
+                if map.id == 2112 then
+                    --HandyNotes:RegisterPluginDB(addon.pluginName, PluginHandler, private.config.options)
+                    return LibStub('AceConfigDialog-3.0'):SelectGroup('HandyNotes', 'plugins', LibStub:GetLibrary("AceLocale-3.0"):GetLocale("HandyNotes_Valdrakken").config_plugin_name)
+                end
                 LibStub('AceConfigDialog-3.0'):SelectGroup('HandyNotes',
                     'plugins', ADDON_NAME, 'ZonesTab', 'Zone_' .. map.id)
             end

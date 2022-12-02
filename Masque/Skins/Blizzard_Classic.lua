@@ -33,7 +33,6 @@ local Hidden = Core.__Hidden
 local SkinID = "Blizzard Classic"
 
 local Skin = {
-	SkinID = SkinID,
 	API_VERSION = Core.API_VERSION,
 	Shape = "Square",
 
@@ -595,8 +594,7 @@ local Skin = {
 -- Core
 ---
 
-Core.Skins[SkinID] = Skin
-Core.SkinList[SkinID] = SkinID
+Core.AddSkin(SkinID, Skin, true)
 
 Core.DEFAULT_SKIN = Skin
 Core.DEFAULT_SKIN_ID = SkinID

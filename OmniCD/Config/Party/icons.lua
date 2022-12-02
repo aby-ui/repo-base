@@ -1,14 +1,5 @@
-local E, L, C = select(2, ...):unpack()
-
-local P = E["Party"]
-
-local setScale = function(info, value)
-	local key = info[2]
-	local option = info[#info]
-	E.DB.profile.Party[key].icons[option] = value
-
-	P:ConfigSize(key, true)
-end
+local E, L = select(2, ...):unpack()
+local P = E.Party
 
 local icons = {
 	name = L["Icons"],
@@ -19,7 +10,9 @@ local icons = {
 	args = {
 		showCounter = {
 			name = COUNTDOWN_FOR_COOLDOWNS_TEXT,
-			desc = L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers at 0 charge"] .. "\n\n\|cffff2020'Show Numbers for Cooldowns\' must be enabled in Blizzard's Interface/ActionBars option.",
+			desc = format("%s\n\n|cffff2020%s",
+			L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers at 0 charge"],
+			L["Show Numbers for Cooldowns must be enabled in Blizzard's Interface/ActionBars menu."]),
 			order = 1,
 			type = "toggle",
 		},
@@ -35,8 +28,21 @@ local icons = {
 			order = 3,
 			type = "toggle",
 		},
+
+		displayInactive = {
+			name = L["Display Inactive Icons"],
+			desc = L["Display icons not on cooldown"],
+			order = 4,
+			type = "toggle",
+			get = function(info) return E.profile.Party[ info[2] ].position.displayInactive end,
+			set = function(info, state)
+				local key = info[2]
+				E.profile.Party[key].position.displayInactive = state
+				P:ConfigBars(key, "displayInactive")
+			end,
+		},
 		lb1 = {
-			name = "\n", order = 4, type = "description",
+			name = "\n", order = 5, type = "description",
 		},
 		scale = {
 			name = L["Icon Size"],
@@ -44,7 +50,13 @@ local icons = {
 			order = 10,
 			type = "range",
 			min = 0.2, max = 2.0, step = 0.01, isPercent = true,
-			set = setScale,
+			set = function(info, value)
+				local key = info[2]
+				local option = info[#info]
+				E.profile.Party[key].icons[option] = value
+
+				P:ConfigSize(key, true)
+			end,
 		},
 		chargeScale = {
 			name = L["Charge Size"],
@@ -85,7 +97,9 @@ local icons = {
 			name = "\n", order = 16, type = "description",
 		},
 		border = {
-			disabled = function(info) return not E.DB.profile.Party[info[2]].icons.displayBorder end,
+			disabled = function(info)
+				return not E.profile.Party[ info[2] ].icons.displayBorder
+			end,
 			name = L["Border"],
 			order = 20,
 			type = "group",
@@ -94,8 +108,9 @@ local icons = {
 				displayBorder = {
 					disabled = false,
 					name = ENABLE,
-					desc = L["Display custom border around icons"] ..
-						"\n\n|cffffd200" .. L["Pixel Perfect"] .. "|r\n" .. L["Borders retain 1px width regardless of the UI scale"],
+					desc = format("%s\n\n%s: %s", L["Display custom border around icons"],
+					L["Pixel Perfect"],
+					L["Borders retain 1px width regardless of the UI scale"]),
 					order = 0,
 					type = "toggle",
 				},
@@ -106,13 +121,15 @@ local icons = {
 					dialogControl = "ColorPicker-OmniCD",
 					get = function(info)
 						local key = info[2]
-						return E.DB.profile.Party[key].icons.borderColor.r, E.DB.profile.Party[key].icons.borderColor.g, E.DB.profile.Party[key].icons.borderColor.b
+						local db = E.profile.Party[key].icons
+						return db.borderColor.r, db.borderColor.g, db.borderColor.b
 					end,
 					set = function(info, r, g, b)
 						local key = info[2]
-						E.DB.profile.Party[key].icons.borderColor.r = r
-						E.DB.profile.Party[key].icons.borderColor.g = g
-						E.DB.profile.Party[key].icons.borderColor.b = b
+						local db = E.profile.Party[key].icons
+						db.borderColor.r = r
+						db.borderColor.g = g
+						db.borderColor.b = b
 
 						P:ConfigIcons(key, "borderColor")
 					end,
@@ -128,6 +145,4 @@ local icons = {
 	}
 }
 
-function P:AddIconsOption(key)
-	self.options.args[key].args.icons = icons
-end
+P:RegisterSubcategory("icons", icons)

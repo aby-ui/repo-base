@@ -7,13 +7,17 @@
 --- AceConfigDialog-3.0 generates AceGUI-3.0 based windows based on option tables.
 -- @class file
 -- @name AceConfigDialog-3.0
--- @release $Id: AceConfigDialog-3.0.lua 1255 2021-11-14 09:14:15Z nevcairiel $
+-- @release $Id: AceConfigDialog-3.0.lua 1277 2022-09-08 16:35:10Z nevcairiel $
 
 local LibStub = LibStub
 local gui = LibStub("AceGUI-3.0")
 local reg = LibStub("AceConfigRegistry-3.0")
 
-local MAJOR, MINOR = "AceConfigDialog-3.0-OmniCD", 82
+--[[ s r
+local MAJOR, MINOR = "AceConfigDialog-3.0", 83
+]]
+local MAJOR, MINOR = "AceConfigDialog-3.0-OmniCD", 83 -- 82 DF
+-- e
 local AceConfigDialog, oldminor = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not AceConfigDialog then return end
@@ -105,19 +109,19 @@ local width_multiplier = 170
 
 --[[
 Group Types
-  Tree  - All Descendant Groups will all become nodes on the tree, direct child options will appear above the tree
-		- Descendant Groups with inline=true and thier children will not become nodes
+  Tree	- All Descendant Groups will all become nodes on the tree, direct child options will appear above the tree
+	- Descendant Groups with inline=true and thier children will not become nodes
 
-  Tab   - Direct Child Groups will become tabs, direct child options will appear above the tab control
-		- Grandchild groups will default to inline unless specified otherwise
+  Tab	- Direct Child Groups will become tabs, direct child options will appear above the tab control
+	- Grandchild groups will default to inline unless specified otherwise
 
   Select- Same as Tab but with entries in a dropdown rather than tabs
 
 
   Inline Groups
-	- Will not become nodes of a select group, they will be effectivly part of thier parent group seperated by a border
-	- If declared on a direct child of a root node of a select group, they will appear above the group container control
-	- When a group is displayed inline, all descendants will also be inline members of the group
+    - Will not become nodes of a select group, they will be effectivly part of thier parent group seperated by a border
+    - If declared on a direct child of a root node of a select group, they will appear above the group container control
+    - When a group is displayed inline, all descendants will also be inline members of the group
 
 ]]
 
@@ -149,21 +153,21 @@ do
 		wipe(t)
 		pool[t] = true
 	end
---  function cached()
---      local n = 0
---      for k in pairs(pool) do
---          n = n + 1
---      end
---      return n
---  end
+--	function cached()
+--		local n = 0
+--		for k in pairs(pool) do
+--			n = n + 1
+--		end
+--		return n
+--	end
 end
 
 -- picks the first non-nil value and returns it
 local function pickfirstset(...)
   for i=1,select("#",...) do
-	if select(i,...)~=nil then
-	  return select(i,...)
-	end
+    if select(i,...)~=nil then
+      return select(i,...)
+    end
   end
 end
 
@@ -303,7 +307,7 @@ local function CallOptionsFunction(funcname ,option, options, path, appName, ...
 		group = GetSubOption(group, v)
 		info[i] = v
 		if group[funcname] ~= nil then
-			func =  group[funcname]
+			func =	group[funcname]
 		end
 		handler = group.handler or handler
 	end
@@ -419,7 +423,11 @@ local function CleanUserData(widget, event)
 		del(user.path)
 	end
 
+	--[[ s r
+	if widget.type == "TreeGroup" then
+	]]
 	if widget.type == "TreeGroup-OmniCD" then
+	-- e
 		local tree = user.tree
 		widget:SetTree(nil)
 		if tree then
@@ -431,7 +439,11 @@ local function CleanUserData(widget, event)
 		end
 	end
 
+	--[[ s r
+	if widget.type == "TabGroup" then
+	]]
 	if widget.type == "TabGroup-OmniCD" then
+	-- e
 		widget:SetTabs(nil)
 		if user.tablist then
 			del(user.tablist)
@@ -633,21 +645,10 @@ do
 			end
 		end)
 
-		if not frame.SetFixedFrameStrata then -- API capability check (classic check)
-			frame:SetBackdrop({
-				bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
-				edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],
-				tile = true,
-				tileSize = 32,
-				edgeSize = 32,
-				insets = { left = 11, right = 11, top = 11, bottom = 11 },
-			})
-		else
-			local border = CreateFrame("Frame", nil, frame, "DialogBorderOpaqueTemplate")
-			border:SetAllPoints(frame)
-			frame:SetFixedFrameStrata(true)
-			frame:SetFixedFrameLevel(true)
-		end
+		local border = CreateFrame("Frame", nil, frame, "DialogBorderOpaqueTemplate")
+		border:SetAllPoints(frame)
+		frame:SetFixedFrameStrata(true)
+		frame:SetFixedFrameLevel(true)
 
 		local text = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 		text:SetSize(290, 0)
@@ -757,7 +758,7 @@ local function ActivateControl(widget, event, ...)
 	--build the info table containing the path
 	-- pick up functions while traversing the tree
 	if group[funcname] ~= nil then
-		func =  group[funcname]
+		func =	group[funcname]
 	end
 	handler = group.handler or handler
 	confirm = group.confirm
@@ -767,7 +768,7 @@ local function ActivateControl(widget, event, ...)
 		group = GetSubOption(group, v)
 		info[i] = v
 		if group[funcname] ~= nil then
-			func =  group[funcname]
+			func =	group[funcname]
 		end
 		handler = group.handler or handler
 		if group.confirm ~= nil then
@@ -986,6 +987,11 @@ local function ActivateMultiControl(widget, event, ...)
 		AceConfigDialog:Open(user.appName, unpack(basepath))
 	end
 end
+-- s b <spell list>
+local function ActivateMultiControl_NoRefresh(widget, event, ...)
+	ActivateControl(widget, event, widget:GetUserData("value"), ...)
+end
+-- e
 
 local function MultiControlOnClosed(widget, event, ...)
 	local user = widget:GetUserDataTable()
@@ -1209,12 +1215,21 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 				if inline or pickfirstset(v.dialogInline,v.guiInline,v.inline, false) then
 					--Inline group
 					local GroupContainer
+					--[[ s r
+					if name and name ~= "" then
+						GroupContainer = gui:Create("InlineGroup")
+						GroupContainer:SetTitle(name or "")
+					else
+						GroupContainer = gui:Create("SimpleGroup")
+					end
+					]]
 					if name and name ~= "" then
 						GroupContainer = gui:Create("InlineGroup-OmniCD")
 						GroupContainer:SetTitle(name or "")
 					else
 						GroupContainer = gui:Create("SimpleGroup-OmniCD")
 					end
+					-- e
 
 					GroupContainer.width = "fill"
 					GroupContainer:SetLayout("flow")
@@ -1233,7 +1248,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					local image, width, height = GetOptionsMemberValue("image",v, options, path, appName)
 
 					local iconControl = type(image) == "string" or type(image) == "number"
+					--[[ s r
+					control = CreateControl(v.dialogControl or v.control, iconControl and "Icon" or "Button")
+					]]
 					control = CreateControl(v.dialogControl or v.control, iconControl and "Icon-OmniCD" or "Button-OmniCD") -- for 'Profiles'
+					-- e
 					if iconControl then
 						if not width then
 							width = GetOptionsMemberValue("imageWidth",v, options, path, appName)
@@ -1260,7 +1279,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					control:SetCallback("OnClick",ActivateControl)
 
 				elseif v.type == "input" then
+					--[[ s r
+					control = CreateControl(v.dialogControl or v.control, v.multiline and "MultiLineEditBox" or "EditBox")
+					]]
 					control = CreateControl(v.dialogControl or v.control, v.multiline and "MultiLineEditBox" or "EditBox-OmniCD") -- for 'Profiles'
+					-- e
 
 					if v.multiline and control.SetNumLines then
 						control:SetNumLines(tonumber(v.multiline) or 4)
@@ -1274,7 +1297,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					control:SetText(text)
 
 				elseif v.type == "toggle" then
+					--[[ s r
+					control = CreateControl(v.dialogControl or v.control, "CheckBox")
+					]]
 					control = CreateControl(v.dialogControl or v.control, "CheckBox-OmniCD") -- for 'Profiles'
+					-- e
 					control:SetLabel(name)
 					control:SetTriState(v.tristate)
 					local value = GetOptionsMemberValue("get",v, options, path, appName)
@@ -1297,16 +1324,18 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						end
 					end
 
-					-- s b (dnd)
-					---[[ not using now. find a better way to get function for alt things.
+					-- s b (edit/dnd) not using dnd. find a better way to get function for alt things.
 					local arg = GetOptionsMemberValue("arg", v, options, path, appName)
 					if type(arg) == "number" or type(arg) == "function" then
 						control:SetArg(arg)
 					end
-					--]]
 					-- e
 				elseif v.type == "range" then
+					--[[ s r
+					control = CreateControl(v.dialogControl or v.control, "Slider")
+					]]
 					control = CreateControl(v.dialogControl or v.control, "Slider-OmniCD")
+					-- e
 					control:SetLabel(name)
 					control:SetSliderValues(v.softMin or v.min or 0, v.softMax or v.max or 100, v.bigStep or v.step or 0)
 					control:SetIsPercent(v.isPercent)
@@ -1324,7 +1353,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					if v.style == "radio" then
 						local disabled = CheckOptionDisabled(v, options, path, appName)
 						local width = GetOptionsMemberValue("width",v,options,path,appName)
+						--[[ s r
+						control = gui:Create("InlineGroup")
+						]]
 						control = gui:Create("InlineGroup-OmniCD")
+						-- e
 						control:SetLayout("Flow")
 						control:SetTitle(name)
 						control.width = "fill"
@@ -1340,7 +1373,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						end
 						for k, value in ipairs(sorting) do
 							local text = values[value]
+							--[[ s r
+							local radio = gui:Create("CheckBox")
+							]]
 							local radio = gui:Create("CheckBox-OmniCD")
+							-- e
 							radio:SetLabel(text)
 							radio:SetUserData("value", value)
 							radio:SetUserData("text", text)
@@ -1365,7 +1402,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						control:ResumeLayout()
 						control:DoLayout()
 					else
+						--[[ s r
+						control = CreateControl(v.dialogControl or v.control, "Dropdown")
+						]]
 						control = CreateControl(v.dialogControl or v.control, "Dropdown-OmniCD") -- for 'Profiles'
+						-- e
 						local itemType = v.itemControl
 						if itemType and not gui:GetWidgetVersion(itemType) then
 							geterrorhandler()(("Invalid Custom Item Type - %s"):format(tostring(itemType)))
@@ -1408,17 +1449,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						end
 					end
 					if control then
+						--[[ s r
 						control:SetMultiselect(true)
 						control:SetLabel(name)
 						control:SetList(values)
 						control:SetDisabled(disabled)
-						-- s b (Multiselect dropdown with disable support)
-						-- disabledItem member type must be a function
-						local item = GetOptionsMemberValue("disabledItem", v, options, path, appName)
-						if item then
-							control:SetItemDisabled(item, true)
-						end
-						-- e
 						control:SetCallback("OnValueChanged",ActivateControl)
 						control:SetCallback("OnClosed", MultiControlOnClosed)
 						local width = GetOptionsMemberValue("width",v,options,path,appName)
@@ -1439,8 +1474,96 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							local value = GetOptionsMemberValue("get",v, options, path, appName, key)
 							control:SetItemValue(key,value)
 						end
+						]]
+						-- <spell list>
+						if controlType == "InlineGroupList-OmniCD" then
+							control:SetLayout("Flow-Nowrap-OmniCD") -- fixed width
+							-- set title, tooltip, class
+							local desc = GetOptionsMemberValue("desc", v, options, path, appName)
+							local class = v.arg -- get it directly, since re're just returning
+							control:SetTitle(name, desc, class)
+							control.width = "fill"
+
+							-- set image on title frame
+							local image = GetOptionsMemberValue("image", v, options, path, appName)
+							local imageCoords = GetOptionsMemberValue("imageCoords", v, options, path, appName)
+							if type(image) == "string" or type(image) == "number" then
+								if type(imageCoords) == "table" then
+									control:SetImage(image, unpack(imageCoords))
+								else
+									control:SetImage(image)
+								end
+							end
+
+							control:PauseLayout()
+							local width = GetOptionsMemberValue("width",v,options,path,appName)
+							for i = 1, #valuesort do
+								local value = valuesort[i]
+								local text = values[value]
+								local check = gui:Create("CheckBox-OmniCD")
+								check:SetLabel(name == ALL and text or "") -- name "" is header row
+								check:SetUserData("value", value)
+								check:SetUserData("text", text)
+								check:SetDisabled(disabled)
+								check:SetTriState(v.tristate)
+								check:SetValue(GetOptionsMemberValue("get",v, options, path, appName, value))
+								check:SetCallback("OnValueChanged", ActivateMultiControl_NoRefresh) -- don't refresh layout (laggy)
+								InjectInfo(check, options, v, path, rootframe, appName)
+								control:AddChild(check)
+								if width == "double" then
+									check:SetWidth(width_multiplier * 2)
+								elseif width == "half" then
+									check:SetWidth(width_multiplier / 2)
+								elseif (type(width) == "number") then
+									check:SetWidth(width_multiplier * width)
+								elseif width == "full" then
+									check.width = "fill"
+								else
+									check:SetWidth(width_multiplier)
+								end
+							end
+							control:ResumeLayout()
+							control:DoLayout()
+						else
+							control:SetMultiselect(true)
+							control:SetLabel(name)
+							control:SetList(values)
+							control:SetDisabled(disabled)
+							-- s b (Multiselect dropdown with disable support)
+							-- disabledItem member type must be a function
+							local item = GetOptionsMemberValue("disabledItem", v, options, path, appName)
+							if item then
+								control:SetItemDisabled(item, true)
+							end
+							-- e
+							control:SetCallback("OnValueChanged",ActivateControl)
+							control:SetCallback("OnClosed", MultiControlOnClosed)
+							local width = GetOptionsMemberValue("width",v,options,path,appName)
+							if width == "double" then
+								control:SetWidth(width_multiplier * 2)
+							elseif width == "half" then
+								control:SetWidth(width_multiplier / 2)
+							elseif (type(width) == "number") then
+								control:SetWidth(width_multiplier * width)
+							elseif width == "full" then
+								control.width = "fill"
+							else
+								control:SetWidth(width_multiplier)
+							end
+							--check:SetTriState(v.tristate)
+							for i = 1, #valuesort do
+								local key = valuesort[i]
+								local value = GetOptionsMemberValue("get",v, options, path, appName, key)
+								control:SetItemValue(key,value)
+							end
+						end
+						-- e
 					else
+						--[[ s r
+						control = gui:Create("InlineGroup")
+						]]
 						control = gui:Create("InlineGroup-OmniCD")
+						-- e
 						control:SetLayout("Flow")
 						control:SetTitle(name)
 						control.width = "fill"
@@ -1450,7 +1573,11 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						for i = 1, #valuesort do
 							local value = valuesort[i]
 							local text = values[value]
+							--[[ s r
+							local check = gui:Create("CheckBox")
+							]]
 							local check = gui:Create("CheckBox-OmniCD")
+							-- e
 							check:SetLabel(text)
 							check:SetUserData("value", value)
 							check:SetUserData("text", text)
@@ -1504,6 +1631,15 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					control:SetText(name)
 
 					local fontSize = GetOptionsMemberValue("fontSize",v, options, path, appName)
+					--[[ s r
+					if fontSize == "medium" then
+						control:SetFontObject(GameFontHighlight)
+					elseif fontSize == "large" then
+						control:SetFontObject(GameFontHighlightLarge)
+					else -- small or invalid
+						control:SetFontObject(GameFontHighlightSmall)
+					end
+					]]
 					if fontSize == "medium" then
 						control:SetFontObject(_G["GameFontHighlight-OmniCD"])
 					elseif fontSize == "large" then
@@ -1511,6 +1647,7 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					else -- small or invalid
 						control:SetFontObject(_G["GameFontHighlightSmall-OmniCD"])
 					end
+					-- e
 
 					local imageCoords = GetOptionsMemberValue("imageCoords",v, options, path, appName)
 					local image, width, height = GetOptionsMemberValue("image",v, options, path, appName)
@@ -1607,7 +1744,11 @@ local function TreeOnButtonEnter(widget, event, uniquevalue, button)
 
 	tooltip:SetOwner(button, "ANCHOR_NONE")
 	tooltip:ClearAllPoints()
+	--[[ s r
+	if widget.type == "TabGroup" then
+	]]
 	if widget.type == "TabGroup-OmniCD" then
+	-- e
 		tooltip:SetPoint("BOTTOM",button,"TOP")
 	else
 		tooltip:SetPoint("LEFT",button,"RIGHT")
@@ -1751,9 +1892,18 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 
 	--Add a scrollframe if we are not going to add a group control, this is the inverse of the conditions for that later on
 	if (not (hasChildGroups and not inline)) or (grouptype ~= "tab" and grouptype ~= "select" and (parenttype == "tree" and not isRoot)) then
+		--[[ s r
+		if container.type ~= "InlineGroup" and container.type ~= "SimpleGroup" then
+			scroll = gui:Create("ScrollFrame")
+		]]
 		if container.type ~= "InlineGroup-OmniCD" and container.type ~= "SimpleGroup-OmniCD" then
 			scroll = gui:Create("ScrollFrame-OmniCD")
+		-- e
+			--[[ s r <spell list>
 			scroll:SetLayout("flow")
+			]]
+			scroll:SetLayout(path[3] and path[2]:match("list_") and "Flow-Nopadding-OmniCD" or "flow" )
+			-- e
 			scroll.width = "fill"
 			scroll.height = "fill"
 			container:SetLayout("fill")
@@ -1777,7 +1927,11 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 		local name = GetOptionsMemberValue("name", group, options, path, appName)
 		if grouptype == "tab" then
 
+			--[[ s r
+			local tab = gui:Create("TabGroup")
+			]]
 			local tab = gui:Create("TabGroup-OmniCD")
+			-- e
 			InjectInfo(tab, options, group, path, rootframe, appName)
 			tab:SetCallback("OnGroupSelected", GroupSelected)
 			tab:SetCallback("OnTabEnter", TreeOnButtonEnter)
@@ -1834,7 +1988,11 @@ function AceConfigDialog:FeedGroup(appName,options,container,rootframe,path, isR
 		--assume tree group by default
 		--if parenttype is tree then this group is already a node on that tree
 		elseif (parenttype ~= "tree") or isRoot then
+			--[[ s r
+			local tree = gui:Create("TreeGroup")
+			]]
 			local tree = gui:Create("TreeGroup-OmniCD")
+			-- e
 			InjectInfo(tree, options, group, path, rootframe, appName)
 			tree:EnableButtonTooltips(false)
 
@@ -2013,7 +2171,7 @@ function AceConfigDialog:Open(appName, container, ...)
 		end
 		local status = AceConfigDialog:GetStatusTable(appName)
 		if not status.width then
-			status.width =  700
+			status.width =	700
 		end
 		if not status.height then
 			status.height = 500
@@ -2026,7 +2184,11 @@ function AceConfigDialog:Open(appName, container, ...)
 		end
 	else
 		if not self.OpenFrames[appName] then
+			--[[ s r
+			f = gui:Create("Frame")
+			]]
 			f = gui:Create("Frame-OmniCD")
+			-- e
 			self.OpenFrames[appName] = f
 		else
 			f = self.OpenFrames[appName]
@@ -2124,7 +2286,18 @@ function AceConfigDialog:AddToBlizOptions(appName, name, parent, ...)
 		end
 		group:SetCallback("OnShow", FeedToBlizPanel)
 		group:SetCallback("OnHide", ClearBlizPanel)
-		InterfaceOptions_AddCategory(group.frame)
+		if Settings and Settings.RegisterCanvasLayoutCategory then
+			local categoryName = name or appName
+			if parent then
+				local category = Settings.GetCategory(parent)
+				Settings.RegisterCanvasLayoutSubcategory(category, group.frame, categoryName)
+			else
+				local category = Settings.RegisterCanvasLayoutCategory(group.frame, categoryName)
+				Settings.RegisterAddOnCategory(category)
+			end
+		else
+			InterfaceOptions_AddCategory(group.frame)
+		end
 		return group.frame
 	else
 		error(("%s has already been added to the Blizzard Options Window with the given path"):format(appName), 2)

@@ -706,8 +706,11 @@ do -- Follower headcounts
 	ff:SetPoint("BOTTOMRIGHT", mf, "BOTTOMLEFT", 190, 0)
 	fs:SetPoint("LEFT", 16, 0)
 	ff:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+		GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
 		GameTooltip:AddLine(GARRISON_FOLLOWERS_TITLE, 1,1,1)
+		if C_Garrison.IsAboveFollowerSoftCap(1) then
+			GameTooltip:AddLine(GARRISON_MAX_FOLLOWERS_MISSION_TOOLTIP, 1, 0, 0, 1)
+		end
 		if ni > 0 then
 			GameTooltip:AddLine("|cff40ff40" .. ni .. " " .. L"Idle")
 		end
@@ -748,6 +751,9 @@ do -- Follower headcounts
 		if nx > 0 then t = (t and t .. spacer or "") .. nx .. ico .. "200:100:255|t" end
 		if nw > 0 then t = (t and t .. spacer or "") .. nw .. ico .. "255:208:0|t" end
 		if nm > 0 then t = (t and t .. spacer or "") .. nm .. ico .. "125:230:255|t" end
+		if C_Garrison.IsAboveFollowerSoftCap(1) then
+			t = "|TInterface/EncounterJournal/UI-EJ-WarningTextIcon:12:12:0:1|t " .. t
+		end
 		fs:SetText(t or "")
 		local nr = C_CurrencyInfo.GetCurrencyInfo(824).quantity
 		local low = nr and nr < 150 and 0 or 1

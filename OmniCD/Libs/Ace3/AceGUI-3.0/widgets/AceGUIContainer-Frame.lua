@@ -7,7 +7,11 @@
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "Frame-OmniCD", 28
+--[[ s r
+local Type, Version = "Frame", 30
+]]
+local Type, Version = "Frame-OmniCD", 30 -- 28 DF
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -107,7 +111,7 @@ local methods = {
 		self:SetStatusText()
 		self:ApplyStatus()
 		self:Show()
-		self:EnableResize(true)
+	self:EnableResize(true)
 	end,
 
 	["OnRelease"] = function(self)
@@ -222,7 +226,11 @@ local function Constructor()
 	frame:SetBackdropBorderColor(0, 0, 0, 1)
 	--frame:SetClampedToScreen(true) -- s a let's not
 	-- e
-	frame:SetResizeBounds(400, 200)
+	if frame.SetResizeBounds then -- WoW 10.0
+		frame:SetResizeBounds(400, 200)
+	else
+		frame:SetMinResize(400, 200)
+	end
 	frame:SetToplevel(true)
 	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
@@ -260,7 +268,11 @@ local function Constructor()
 	statusbg:SetScript("OnEnter", StatusBar_OnEnter)
 	statusbg:SetScript("OnLeave", StatusBar_OnLeave)
 
+	--[[ s r
+	local statustext = statusbg:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	]]
 	local statustext = statusbg:CreateFontString(nil, "OVERLAY", "GameFontNormal-OmniCD")
+	-- e
 	statustext:SetPoint("TOPLEFT", 7, -2)
 	statustext:SetPoint("BOTTOMRIGHT", -7, 2)
 	statustext:SetHeight(20)
@@ -367,17 +379,17 @@ local function Constructor()
 		localstatus = {},
 		titletext   = titletext,
 		statustext  = statustext,
-		titlebg     = titlebg,
+		titlebg	    = titlebg,
 		--[[ s r
 		sizer_se    = sizer_se,
-		sizer_s     = sizer_s,
-		sizer_e     = sizer_e,
+		sizer_s	    = sizer_s,
+		sizer_e	    = sizer_e,
 		]]
 		sizer_seX   = sizer_se, -- name change to block skins
 		-- e
-		content     = content,
-		frame       = frame,
-		type        = Type
+		content	    = content,
+		frame	    = frame,
+		type	    = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

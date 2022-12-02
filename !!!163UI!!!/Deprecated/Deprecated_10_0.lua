@@ -84,6 +84,7 @@ if not U1_WOW10 then return end
 
 --[[------------------------------------------------------------
 10.0的按钮各个材质大小不是联动的，需要单独设置 @see BaseActionButtonMixin:UpdateButtonArt(hideDivider)
+IconMask这个在正常Button里是0, 在SmallButton里是45, 需要单独设置
 ---------------------------------------------------------------]]
 local scales = {}
 do
@@ -353,6 +354,5 @@ do
 end
 
 do
-    --LootHistory名字太小
-
+    --LootHistory名字太小, 在RunSecond的LootHistoryFrame_UpdatePlayerFrames里
 end

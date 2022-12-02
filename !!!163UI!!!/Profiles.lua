@@ -164,7 +164,11 @@ end
 function P:LoadProfile(prof, opts, revert)
     assert(prof and opts, "[U1Profiles:LoadProfile] usage: prof, opts")
 
-    self:BackupSession(L["Before Load Profile"]) --如果加载的是"加载之前"的咋办？
+    local backupName = L["Before Load Profile"]
+    if prof.name == backupName then
+        backupName = backupName .. "-2"
+    end
+    self:BackupSession(backupName) --如果加载的是"加载之前"的咋办？
 
     if(opts.u1dbconfigs and prof.u1dbconfigs) then
         U1DB.configs = copyTable(prof.u1dbconfigs, U1DB.configs)

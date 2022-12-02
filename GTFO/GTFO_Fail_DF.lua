@@ -11,6 +11,23 @@ if (not (GTFO.ClassicMode or GTFO.BurningCrusadeMode or GTFO.WrathMode)) then
 --- * Dragon Isles (World) *
 --- ************************
 
+GTFO.SpellID["372139"] = {
+  --desc = "Lightning Strike (Lightning Storm)";
+  sound = 3;
+};
+
+GTFO.SpellID["397110"] = {
+  --desc = "Crashing Thunder (Air Revenant)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["390361"] = {
+  --desc = "Lightning Crash (Primalist Stormslinger)";
+  sound = 3;
+  applicationOnly = true;
+};
+
 GTFO.SpellID["369928"] = {
 	--desc = "Collapsing Boulder";
 	sound = 3;
@@ -36,6 +53,114 @@ GTFO.SpellID["370072"] = {
 GTFO.SpellID["381362"] = {
 	--desc = "Earthspike (Tazenrath)";
 	sound = 3;
+};
+
+GTFO.SpellID["390327"] = {
+  --desc = "Frigid Geysers (Glacial Ice Lord)";
+  sound = 3;
+};
+
+GTFO.SpellID["390431"] = {
+  --desc = "Hail Decimation (Glacial Ice Lord)";
+  sound = 3;
+};
+
+GTFO.SpellID["374401"] = {
+  --desc = "Frozen Solid (Glacial Ice Lord)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["378397"] = {
+  --desc = "Slam (Primal Earth Elemental)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["307315"] = {
+  --desc = "Recovering";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["393836"] = {
+  --desc = "Smothering Seashell (Sogglmoggl)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["393819"] = {
+  --desc = "Gusting Vortex (Whirglgurgl)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["393998"] = {
+  --desc = "Circuit Crash (Discordant Watcher)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["393910"] = {
+  --desc = "Titanic Fragmentation (Discordant Watcher)";
+  sound = 3;
+};
+
+GTFO.SpellID["387683"] = {
+  --desc = "Snow Crash (Frozen Revenant)";
+  sound = 3;
+};
+
+GTFO.SpellID["396423"] = {
+  --desc = "Crashing Thunder (Galestrike Proto-Dragon)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["386700"] = {
+  --desc = "Crashing Ice (Winter Conqueror)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["370056"] = {
+  --desc = "Magma Gout (Olphis the Molten)";
+  sound = 3;
+};
+
+GTFO.SpellID["394464"] = {
+  --desc = "Burning Roar (Piercer Gigra)";
+  sound = 3;
+};
+
+GTFO.SpellID["393747"] = {
+  --desc = "Searing Hammer (Champion Choruk)";
+  sound = 3;
+};
+
+GTFO.SpellID["395854"] = {
+  --desc = "Stonefall (Qalashi Stonebinder)";
+  sound = 3;
+};
+
+GTFO.SpellID["393478"] = {
+  --desc = "Bulldoze (Penumbrus)";
+  sound = 3;
+};
+
+GTFO.SpellID["394616"] = {
+  --desc = "Erupting Lava (Captain Lancer)";
+  sound = 3;
+};
+
+GTFO.SpellID["395201"] = {
+  --desc = "Supernova (Blazing Proto-Dragon)";
+  sound = 3;
+};
+
+GTFO.SpellID["374029"] = {
+  --desc = "Pounce (Skaara)";
+  sound = 3;
 };
 
 --- *******************

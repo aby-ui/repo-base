@@ -476,4 +476,4 @@ Core.AddSkin("Dream", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-})
+}, true)

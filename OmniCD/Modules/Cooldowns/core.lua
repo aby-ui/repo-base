@@ -1,13 +1,12 @@
-local E, L, C = select(2, ...):unpack()
-
-local CD = CreateFrame("Frame")
+local E = select(2, ...):unpack()
+local CD = E.Cooldowns
 
 function CD:Enable()
 	if self.enabled then
 		return
 	end
 
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 	self:SetScript("OnEvent", function(self, event, ...)
 		self[event](self, ...)
 	end)
@@ -20,14 +19,12 @@ function CD:Disable()
 		return
 	end
 
-	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	self:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 
 	wipe(self.totemGUIDS)
 	wipe(self.petGUIDS)
-	wipe(self.diedDestGUIDS)
-	wipe(self.dispelledDestGUIDS)
+	wipe(self.diedHostileGUIDS)
+	wipe(self.dispelledHostileGUIDS)
 
 	self.enabled = false
 end
-
-E["Cooldowns"] = CD

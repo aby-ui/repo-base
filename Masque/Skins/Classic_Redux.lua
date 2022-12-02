@@ -413,4 +413,4 @@ Core.AddSkin("Classic Redux", {
 		OffsetY = 0,
 		-- SetAllPoints = nil,
 	},
-})
+}, true)

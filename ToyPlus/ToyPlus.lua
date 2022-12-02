@@ -15,11 +15,7 @@ local ToyPlusLDB = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("ToyPlu
 		if button == "LeftButton" then
 			ToyPlus:Launch()
 		elseif button == "RightButton" then
-            if InterfaceOptionsFrame:IsVisible() then
-                InterfaceOptionsFrame:Hide()
-			else
-                InterfaceOptionsFrame_OpenToCategory("ToyPlus")
-            end
+			InterfaceOptionsFrame_OpenToCategory("ToyPlus")
 		end
 	end,
 	OnEnter = function(self) ToyPlus:Broker(self) end,
@@ -33,7 +29,7 @@ function ToyPlus:OnInitialize()
 			},
 			rows = 2,
 			columns = 5,
-			scale = 26,
+			scale = 35,
 			hidemenu = false
 		},
 	}
@@ -243,8 +239,11 @@ function ToyPlus:Broker(self)
 						toyBtn:SetAttribute("type", "item")
 						toyBtn:SetAttribute("item", toyName)
 						toyBtn:SetFrameStrata(tt:GetFrameStrata())
-						toyBtn:SetFrameLevel(tt:GetFrameLevel()+1)
+						toyBtn:SetFrameLevel(tt:GetFrameLevel()+2)
 						toyBtn:SetAllPoints(tt)
+						toyBtn:EnableMouse()
+						toyBtn:SetMouseClickEnabled(true)
+						toyBtn:RegisterForClicks("LeftButtonDown","LeftButtonUp")
 						toyBtn:Show()
 						toyBtn:SetScript("OnEnter", function()
 							local tooltip = LibQTip:Acquire("ToyPlus_Tooltip", 1, "LEFT")
@@ -253,10 +252,10 @@ function ToyPlus:Broker(self)
 								local timeRem = ToyPlus:GetCooldown(start, duration)
 								if start == 0 or timeRem == "" then 
 									tooltip:SetCell(tRow, 1, "|T"..toyIcon..":20:20:0:0:64:64:5:59:5:59|t "..toyName)
-									tooltip:SetLineTextColor(tRow,1,1,0); toyBtn:RegisterForClicks("AnyUp", "AnyDown")
+									tooltip:SetLineTextColor(tRow,1,1,0); toyBtn:RegisterForClicks("LeftButtonDown","LeftButtonUp")
 								else 
 									tooltip:SetCell(tRow, 1, "|T"..toyIcon..":20:20:0:0:64:64:5:59:5:59|t "..toyName.." ("..timeRem..")")
-									tooltip:SetLineTextColor(tRow,1,0,0); toyBtn:RegisterForClicks()
+									tooltip:SetLineTextColor(tRow,1,0,0); toyBtn:RegisterForClicks("LeftButtonDown","LeftButtonUp")
 								end
 							end
 						end)
@@ -326,7 +325,7 @@ function ToyPlus:Broker(self)
 	tooltip:Show()
 end
 
-function ToyPlus:ToysUpdated()
+function ToyPlus:ToysUpdated(itemID)
 	if ToyPlusToyDB.lastTime == time() then return end
 	ToyPlusToyDB.lastTime = time()
 	if InCombatLockdown() then return end
@@ -343,7 +342,7 @@ function ToyPlus:ToysUpdated()
 		if toyBtn then toyBtn:Hide() end
 	end
 end
-ToyPlus:RegisterEvent("TOYS_UPDATED", "ToysUpdated")
+ToyPlus:RegisterEvent("TOYS_UPDATED", "ToysUpdated", itemID)
 ToyPlus:RegisterEvent("PLAYER_LOGIN", "ToysUpdated")
 
 function ToyPlus:StorePosition()
@@ -367,12 +366,18 @@ function ToyPlus:ToggleRows()
 					prevToy = toyIcon
 				elseif i == (toyCols+1) or i == ((toyCols*2)+1) or i == ((toyCols*3)+1) or i == ((toyCols*4)+1) or i == ((toyCols*5)+1)	 
 				or i == ((toyCols*6)+1) or i == ((toyCols*7)+1) or i == ((toyCols*8)+1) or i == ((toyCols*9)+1) then 
-					toyIcon:SetPoint("TOPLEFT",prevToy,"BOTTOMLEFT",0,-7)
+					toyIcon:SetPoint("TOPLEFT",prevToy,"BOTTOMLEFT",0,-2)
 					prevToy = toyIcon
 				else
-					toyIcon:SetPoint("TOPLEFT",_G["ToyPlus_Icon"..(i-1)],"TOPRIGHT",7,0) 
+					toyIcon:SetPoint("TOPLEFT",_G["ToyPlus_Icon"..(i-1)],"TOPRIGHT",2,0) 
 				end
 				toyIcon:SetSize(toyScale,toyScale)
+				toyIcon.HighlightTexture:SetSize(toyScale,toyScale)
+				toyIcon.IconMask:SetSize(toyScale, toyScale)
+				toyIcon.PushedTexture:SetSize(toyScale,toyScale)
+				local border = _G["ToyPlus_Icon"..i.."NormalTexture"]
+				border:SetSize(toyScale,toyScale)
+				if CoreUISetActionButtonSize10 then CoreUISetActionButtonSize10(toyIcon, toyScale) toyIcon.IconMask:SetSize(toyScale/0.8,toyScale/0.8) end
 			end
 		end
 		for i = 1, 100 do --Show/Hide Icons
@@ -386,11 +391,11 @@ function ToyPlus:ToggleRows()
 			end
 		end
 
-		local fraH = 27+(toyRows*(toyScale+7))--Adjust for scale
+		local fraH = 28+(toyRows*(toyScale+2))--Adjust for scale
 		fraH=floor(fraH)
 		if fraH%2 ~= 0 then fraH=fraH-1 end
 		fra:SetHeight(fraH)
-		local fraW = 8+(toyCols*(toyScale+7))
+		local fraW = 8+(toyCols*(toyScale+2))
 		fraW=floor(fraW)
 		if fraW%2 ~= 0 then fraW=fraW+1 end
 		fra:SetWidth(fraW)
@@ -477,11 +482,11 @@ function ToyPlus:Launch()
 			ToyPlus.db.profile.shown = true
 		else
 			if toyFrame:IsVisible() then
-				local btnPopout = _G["ToyPlusFrame_Popout"]
+				local btnPopout = _G["ToyPlus_Popout"]
 				toyFrame:Hide()
 				ToyPlus.db.profile.shown = false
-				btnPopout.texture:SetTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up")
-				if toyPopout then toyPopout:Hide() end
+				
+				if toyPopout then btnPopout.texture:SetTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up"); toyPopout:Hide() end
 			else
 				toyFrame:Show() 
 				ToyPlus.db.profile.shown = true
@@ -518,14 +523,14 @@ function ToyPlus:ShowList()
 		toyPopout:SetScript("OnEvent", function(self, event)
 			if toyPopout:IsVisible() then
 				toyPopout:Hide()
-				btnPopout = _G["ToyPlusFrame_Popout"]
+				local btnPopout = _G["ToyPlus_Popout"]
 				btnPopout.texture:SetTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up")
 			end
 		end)
-		local label = toyPopout:CreateFontString("$parent_SearchLabel", "DIALOG","GameFontNormal")
-		label:SetPoint("TOPLEFT",toyPopout,"TOPLEFT",8,-8)
-		label:SetText(L"Search:")
-		local searchBox = CreateFrame("EditBox", "$parent_SearchBox", toyPopout, "SearchBoxTemplate")
+		--local label = toyPopout:CreateFontString("$parent_SearchLabel","DIALOG","GameFontNormal")
+		--label:SetPoint("TOPLEFT",toyPopout,"TOPLEFT",8,-8)
+		--label:SetText(L"Search:")
+		local searchBox = CreateFrame("EditBox", "ToyPlus_Popout_SearchBox", toyPopout, "SearchBoxTemplate")
 		searchBox:EnableMouse(true)
 		searchBox:SetAutoFocus(false)
 		searchBox:SetFontObject("ChatFontSmall")
@@ -536,7 +541,9 @@ function ToyPlus:ShowList()
 		searchBox:SetScript("OnTextChanged", function(self, event)
 			if not InCombatLockdown() then
 				SearchBoxTemplate_OnTextChanged(self);
-				ToyPlus:RefreshList(0, _, searchBox:GetText())
+				if not self:IsInIMECompositionMode() then
+					ToyPlus:RefreshList(0, _, searchBox:GetText())
+				end
 			end
 		end)
 		local scrFra = CreateFrame("ScrollFrame", "ToyPlus_ScrollFrame", toyPopout)
@@ -695,6 +702,8 @@ function ToyPlus:RefreshIcons()
 				toyIcon:SetAttribute("type", "item")
 				toyIcon:SetAttribute("item", toyName)
 				toyIcon:RegisterForDrag("LeftButton")
+				toyIcon:SetMouseClickEnabled(true)
+				toyIcon:RegisterForClicks("LeftButtonDown","LeftButtonUp")
 				toyIcon:SetSize(30,30)
 				toyIcon:SetPoint("TOPLEFT","ToyPlusFrame","TOPLEFT",6,-27)
 				toyIcon.icon:SetTexture(toyIconStr)
@@ -800,7 +809,7 @@ function ToyPlus:CreateFrame()
 	else toyFrame.texture:SetColorTexture(0,0,0,0.5); toyFrame:SetBackdropBorderColor(0.5,0.5,0.5,1) end
 	
 	toyFrame:SetScript("OnMouseUp", function(self, button)
-		if button == "RightButton" then InterfaceOptionsFrame_OpenToCategory("ToyPlus") end
+		if button == "RightButton" then LibStub("AceConfigDialog-3.0"):Open("ToyPlus") end
 	end)
 	toyFrame:Show()
 	local label = toyFrame:CreateFontString("$parent_Label","OVERLAY","GameFontNormal")
@@ -808,8 +817,8 @@ function ToyPlus:CreateFrame()
 	label:SetText(L"Toy List")
 	label:Hide()
 	local btn = CreateFrame("BUTTON", "$parent_Close", toyFrame, "UIPanelCloseButton")
-	btn:SetPoint("TOPLEFT", toyFrame, "TOPLEFT", -1, 2)
-	btn:SetSize(30,30)
+	btn:SetPoint("TOPLEFT", toyFrame, "TOPLEFT", 7, -4)
+	btn:SetSize(20,20)
 	btn:Show(); btn:Enable()
 	btn:SetScript("OnClick", function (self, button, down) 
 		if button == "LeftButton" then
@@ -819,7 +828,7 @@ function ToyPlus:CreateFrame()
 			ToyPlus.db.profile.shown = false
 			local fra2 = _G["ToyPlus_Popout"]
 			if fra2 then
-				fra2:Hide(); _G["ToyPlusFrame_Popout"].texture:SetTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up")
+				fra2:Hide(); _G["ToyPlus_Popout"].texture:SetTexture("Interface\\BUTTONS\\UI-SpellbookIcon-NextPage-Up")
 			end
 		end 
 	end)
@@ -875,7 +884,8 @@ function ToyPlus:CreateFrame()
 				ToyPlus:ShowList()
 			end
         elseif button == "RightButton" then
-			InterfaceOptionsFrame_OpenToCategory("ToyPlus")
+			--InterfaceOptionsFrame_OpenToCategory("ToyPlus")
+			LibStub("AceConfigDialog-3.0"):Open("ToyPlus")
         end
 	end)
 	local iconH, iconV = 6, -27
@@ -884,19 +894,28 @@ function ToyPlus:CreateFrame()
 			local toyName = ToyPlusToyDB.toyName[i]
 			local toyIconStr = ToyPlusToyDB.toyIcon[i]
 			local itemID = ToyPlusToyDB.itemID[i]
-			toyIcon = CreateFrame("BUTTON","ToyPlus_Icon"..i,toyFrame, "SecureActionButtonTemplate,ActionButtonTemplate")--Icons
+			local toyIcon = CreateFrame("BUTTON","ToyPlus_Icon"..i,toyFrame, "SecureActionButtonTemplate,ActionButtonTemplate")--Icons
 			toyIcon:RegisterUnitEvent("ACTIONBAR_UPDATE_COOLDOWN"); toyIcon:RegisterUnitEvent("LOSS_OF_CONTROL_UPDATE")
 			toyIcon:SetAttribute("type", "item")
 			toyIcon:SetAttribute("item", toyName)
 			toyIcon:RegisterForDrag("LeftButton")
+			toyIcon:EnableMouse()
+			toyIcon:SetMouseClickEnabled(true)
+			toyIcon:RegisterForClicks("LeftButtonDown","LeftButtonUp")
 			toyIcon:SetSize(30,30)
+			toyIcon.HighlightTexture:SetSize(30,30)
+			toyIcon.IconMask:SetSize(30, 30)
+			toyIcon.PushedTexture:SetSize(30,30)
 			toyIcon:SetPoint("TOPLEFT",toyFrame,"TOPLEFT",6,-27)
 			toyIcon.icon:SetTexture(toyIconStr)
 			toyIcon.icon:SetTexCoord(0.1,0.9,0.1,0.9)
 			toyIcon.icon:Show()
+			toyIcon.icon:SetAllPoints(toyIcon)
 			local border = _G["ToyPlus_Icon"..i.."NormalTexture"]
 			if ToyPlus.db.profile.theme then border:SetVertexColor(0,0.6,1,1)
 			else border:SetVertexColor(0.6,0.6,0.6,1) end
+			border:SetSize(30,30)
+			if CoreUISetActionButtonSize10 then CoreUISetActionButtonSize10(toyIcon, 30) toyIcon.IconMask:SetSize(30/0.8,30/0.8) end
 			local toyCD = CreateFrame("Cooldown","$parent_CD",toyIcon, "CooldownFrameTemplate")
 			toyCD:SetAllPoints(toyIcon)
 			local start, duration = GetItemCooldown(itemID)

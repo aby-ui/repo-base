@@ -26,6 +26,34 @@ GTFO.SpellID["376069"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["390326"] = {
+  --desc = "Frigid Glaze (Glacial Ice Lord)";
+  sound = 1;
+};
+
+GTFO.SpellID["372339"] = {
+  --desc = "Lava";
+  sound = 1;
+};
+
+GTFO.SpellID["393577"] = {
+  --desc = "Path of Fire (Champion Choruk)";
+  sound = 1;
+};
+
+GTFO.SpellID["382753"] = {
+  --desc = "In Their Sights";
+  applicationOnly = true;
+  soundFunction = function() 
+	local stacks = GTFO_DebuffStackCount("player", 382753);
+	if (stacks > 6) then
+		return 1;
+	else
+		return 2;
+	end
+  end;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************

@@ -102,6 +102,14 @@ function Setup.General(self)
 						order = 4,
 						disabled = function() return not Core.LDBI end,
 					},
+					Sort = {
+						type = "toggle",
+						name = L["Alternate Sorting"],
+						desc = L["Causes the skins included with Masque to be listed above third-party skins."],
+						get = function() return Core.db.profile.AltSort end,
+						set = function(i, v) Core.db.profile.AltSort = v end,
+						order = 5,
+					},
 				},
 			},
 			Performance = {

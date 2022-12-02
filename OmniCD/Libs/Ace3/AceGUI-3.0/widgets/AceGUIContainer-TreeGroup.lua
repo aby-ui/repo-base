@@ -12,7 +12,11 @@
 TreeGroup Container
 Container that uses a tree control to switch between groups.
 -------------------------------------------------------------------------------]]
-local Type, Version = "TreeGroup-OmniCD", 45
+--[[ s r
+local Type, Version = "TreeGroup", 47
+]]
+local Type, Version = "TreeGroup-OmniCD", 47 -- 45 by OA -- 46 by DF
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -194,10 +198,10 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		]]
 		if not isExpanded then
 			button.toggle:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-plus]])
-			button.toggle:SetPushedTexture("")
+			button.toggle:SetPushedTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-plus]]) -- DF: nil throws error, "" will hide the NormalTexture on pushed (shows blank)
 		else
 			button.toggle:SetNormalTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-minus]])
-			button.toggle:SetPushedTexture("")
+			button.toggle:SetPushedTexture([[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-minus]])
 		end
 		-- e
 		toggle:Show()
@@ -445,15 +449,20 @@ local methods = {
 	end,
 
 	["CreateButton"] = function(self)
+		--[[ s r
+		local num = AceGUI:GetNextWidgetNum("TreeGroupButton")
+		local button = CreateFrame("Button", ("AceGUI30TreeButton%d"):format(num), self.treeframe, "OptionsListButtonTemplate")
+		]]
 		local num = AceGUI:GetNextWidgetNum("TreeGroupButton-OmniCD")
 		local button = CreateFrame("Button", ("AceGUI30TreeButton%d-OmniCD"):format(num), self.treeframe, "OptionsListButtonTemplate")
+		-- e
 		button.obj = self
 
 		-- s b
 		-- OptionsListButtonTemplate <AbsDimension x="175" y="18"/>
 		button:SetWidth(150)
 		button:SetHeight(DEFAULT_TAB_HEIGHT)
-		button:SetHighlightTexture("")
+		button:SetHighlightTexture(0) -- DF: nil throws error (Classic too), "" doesn't work (shows highlight texture)
 
 		button.borderBottom = button:CreateTexture(nil, "BACKGROUND") -- line break texture instead of backdrop -- BDR (tree nav button)
 		OmniCD[1].DisablePixelSnap(button.borderBottom) -- works w/o ?
@@ -492,11 +501,28 @@ local methods = {
 		]]
 		local icon
 		if USE_ICON_BACKDROP then
+			--[[ s r v46
 			icon = CreateFrame("Frame", nil, button, BackdropTemplateMixin and "BackdropTemplate" or nil)
 			icon:SetHeight(DEFAULT_ICON_SIZE) -- 24 is frames full height
 			icon:SetWidth(DEFAULT_ICON_SIZE)
 			OmniCD[1].BackdropTemplate(icon)
 			icon:SetBackdropBorderColor(0.5, 0.5, 0.5)
+			]]
+			icon = CreateFrame("Frame", nil, button)
+			icon:SetHeight(DEFAULT_ICON_SIZE) -- 24 is frames full height
+			icon:SetWidth(DEFAULT_ICON_SIZE)
+			icon.border = icon:CreateTexture(nil, "BACKGROUND")
+			OmniCD[1].DisablePixelSnap(icon.border)
+			icon.border:SetAllPoints()
+			icon.border:SetColorTexture(0.5, 0.5, 0.5)
+
+			icon.Center = icon:CreateTexture(nil, "ARTWORK")
+			OmniCD[1].DisablePixelSnap(icon.Center)
+			local edgeSize = OmniCD[1].PixelMult
+			icon.Center:SetPoint("TOPLEFT", icon, "TOPLEFT", edgeSize, -edgeSize)
+			icon.Center:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", -edgeSize, edgeSize)
+			-- e
+
 		else
 			icon = button:CreateTexture(nil, "ARTWORK")
 			icon:SetHeight(DEFAULT_ICON_SIZE)
@@ -612,7 +638,7 @@ local methods = {
 			end
 		end
 		local height = self.treeframe:GetHeight() or 0
-		local maxlines = floor(  (height - 9 + (numDisabled*(DEFAULT_TAB_HEIGHT-OmniCD[1].PixelMult))) / DEFAULT_TAB_HEIGHT  )
+		local maxlines = floor(	 (height - 9 + (numDisabled*(DEFAULT_TAB_HEIGHT-OmniCD[1].PixelMult))) / DEFAULT_TAB_HEIGHT  )
 		-- e
 
 		if maxlines <= 0 then return end
@@ -654,7 +680,7 @@ local methods = {
 			--show selection?
 			if scrollToSelection and status.selected then
 				local show
-				for i,line in ipairs(lines) do  -- find the line number
+				for i,line in ipairs(lines) do	-- find the line number
 					if line.uniquevalue==status.selected then
 						show=i
 					end
@@ -785,8 +811,11 @@ local methods = {
 		if maxtreewidth > 100 and status.treewidth > maxtreewidth then
 			self:SetTreeWidth(maxtreewidth, status.treesizable)
 		end
-		local mw, mh = treeframe:GetResizeBounds()
-		treeframe:SetResizeBounds(mw or 1, mh or 1, maxtreewidth, 1600)
+		if treeframe.SetResizeBounds then
+			treeframe:SetResizeBounds(100, 1, maxtreewidth, 1600)
+		else
+			treeframe:SetMaxResize(maxtreewidth, 1600)
+		end
 	end,
 
 	["OnHeightSet"] = function(self, height)
@@ -880,9 +909,14 @@ local function Constructor()
 	OmniCD[1].BackdropTemplate(treeframe)
 	treeframe:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR (tree nav bg)
 	treeframe:SetBackdropBorderColor(0, 0, 0)
-	treeframe:SetResizable(false) -- resizing disabled
+	treeframe:SetResizable(false) -- s c resizing disabled
 	-- e
-	treeframe:SetResizeBounds(100, 1, 400, 1600)
+	if treeframe.SetResizeBounds then -- WoW 10.0
+		treeframe:SetResizeBounds(100, 1, 400, 1600)
+	else
+		treeframe:SetMinResize(100, 1)
+		treeframe:SetMaxResize(400, 1600)
+	end
 	treeframe:SetScript("OnUpdate", FirstFrameUpdate)
 	treeframe:SetScript("OnSizeChanged", Tree_OnSizeChanged)
 	treeframe:SetScript("OnMouseWheel", Tree_OnMouseWheel)
@@ -898,7 +932,11 @@ local function Constructor()
 	dragger:SetScript("OnMouseDown", Dragger_OnMouseDown)
 	dragger:SetScript("OnMouseUp", Dragger_OnMouseUp)
 
+	--[[ s r
+	local scrollbar = CreateFrame("Slider", ("AceConfigDialogTreeGroup%dScrollBar"):format(num), treeframe, "UIPanelScrollBarTemplate")
+	]]
 	local scrollbar = CreateFrame("Slider", ("AceConfigDialogTreeGroup%dScrollBar-OmniCD"):format(num), treeframe, "UIPanelScrollBarTemplate")
+	-- e
 	scrollbar:SetScript("OnValueChanged", nil)
 	--[[ s r removing button(18x16) space
 	scrollbar:SetPoint("TOPRIGHT", -10, -26)
@@ -948,19 +986,19 @@ local function Constructor()
 	content:SetPoint("BOTTOMRIGHT", -10, 10)
 
 	local widget = {
-		frame        = frame,
-		lines        = {},
-		levels       = {},
-		buttons      = {},
+		frame	     = frame,
+		lines	     = {},
+		levels	     = {},
+		buttons	     = {},
 		hasChildren  = {},
 		localstatus  = { groups = {}, scrollvalue = 0 },
-		filter       = false,
+		filter	     = false,
 		treeframe    = treeframe,
-		dragger      = dragger,
+		dragger	     = dragger,
 		scrollbar    = scrollbar,
-		border       = border,
-		content      = content,
-		type         = Type
+		border	     = border,
+		content	     = content,
+		type	     = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

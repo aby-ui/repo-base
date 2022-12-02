@@ -1,9 +1,8 @@
-local E, L, C = select(2, ...):unpack()
+local E = select(2, ...):unpack()
+local P, CM, CD = E.Party, E.Comm, E.Cooldowns
 
-local P = CreateFrame("Frame")
 local UnitBuff = UnitBuff
 local UnitDebuff = UnitDebuff
-local runeforge_specID = E.runeforge_specID
 
 P.spell_enabled = {}
 
@@ -12,22 +11,25 @@ function P:Enable()
 		return
 	end
 
-	self:RegisterEvent("UI_SCALE_CHANGED")
-	self:RegisterEvent("CVAR_UPDATE")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("GROUP_ROSTER_UPDATE")
-	self:RegisterEvent("GROUP_JOINED")
+	if not E.isDF then
+		self:RegisterEvent('CVAR_UPDATE')
+	end
+	self:RegisterEvent('UI_SCALE_CHANGED')
+	self:RegisterEvent('PLAYER_ENTERING_WORLD')
+	self:RegisterEvent('GROUP_ROSTER_UPDATE')
+	self:RegisterEvent('GROUP_JOINED')
 	self:SetScript("OnEvent", function(self, event, ...)
 		self[event](self, ...)
 	end)
 
 	self.enabled = true
 
+
 	self.zone = select(2, IsInInstance())
-	E.Comms:InspectPlayer()
+	CM:InspectUser()
 
 	self:SetHooks()
-	self:CreateExBars()
+	self:CreateExtraBarFrames()
 	self:Refresh(true)
 end
 
@@ -36,10 +38,10 @@ function P:Disable()
 		return
 	end
 
-	if self.test then
+	if self.isInTestMode then
 		self:Test()
 	end
-	self.disabledzone = true
+	self.disabledZone = true
 	self:UnregisterAllEvents()
 	self:ResetModule(true)
 
@@ -53,10 +55,16 @@ end
 
 function P:ResetModule(isModuleDisabled)
 	if not isModuleDisabled then
-		E.UnregisterEvents(self)
+		self:UnregisterZoneEvents()
 	end
-	E.Comms:Disable()
-	E.Cooldowns:Disable()
+
+	for _, timer in pairs(self.callbackTimers) do
+		timer:Cancel()
+	end
+	self.callbackTimers = {}
+
+	CM:Disable()
+	CD:Disable()
 
 	wipe(self.groupInfo)
 
@@ -71,25 +79,26 @@ function P:Refresh(full)
 		return
 	end
 
-	local key = self.test and self.testZone or self.zone
+	local key = self.isInTestMode and self.testZone or self.zone
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
-	P.profile = E.profile.Party
-	P.db = E.db
+	self.db = E.db
+
+	for key, frame in pairs(self.extraBars) do
+		frame.db = E.db.extraBars[key]
+	end
 
 	if full then
 		self:UpdateTextures()
 		self:UpateTimerFormat()
 		self:PLAYER_ENTERING_WORLD(nil, nil, true)
 	else
-
 		E:SetActiveUnitFrameData()
 		self:UpdatePositionValues()
-		self:UpdateExPositionValues()
-		self:UpdateRaidPriority()
+		self:UpdateExBarPositionValues()
 		self:UpdateBars()
 		self:UpdatePosition()
-		self:UpdateExPosition()
+		self:UpdateExBars()
 	end
 end
 
@@ -113,6 +122,24 @@ function P:UpateTimerFormat()
 	self.ssColor = db.ssColor
 end
 
+function P:IsEnabledSpell(id, spellType, key)
+	local db = key and E.profile.Party[key] or E.db
+	id = tostring(id)
+
+	if not db.spells[id] then
+		return nil
+	end
+	if db.raidCDS[id] then
+		for _, frame in pairs(self.extraBars) do
+			local db = frame.db
+			if db.spellType[spellType] then
+				return frame.index
+			end
+		end
+	end
+	return true
+end
+
 function P:UpdateEnabledSpells()
 	wipe(self.spell_enabled)
 
@@ -121,54 +148,81 @@ function P:UpdateEnabledSpells()
 		for i = 1, n do
 			local t = v[i]
 			local id = t.spellID
-			if self.IsEnabledSpell(id) then
-				self.spell_enabled[id] = true
-			end
+			local spellType = t.type
+			self.spell_enabled[id] = self:IsEnabledSpell(id, spellType)
 		end
 	end
 end
 
 function P:UpdatePositionValues()
 	local db = E.db.position
+	local pixel = (E.db.general.showRange and not db.detached and self.effectivePixelMult or E.PixelMult) / E.db.icons.scale
+	local growLeft = strfind(db.anchor, "RIGHT")
+	local growX = growLeft and -1 or 1
+
 
 	self.point = db.anchor
 	self.relativePoint = db.attach
 
-	local growLeft = string.find(self.point, "RIGHT")
-	local growX = growLeft and -1 or 1
-	local px = (E.db.general.showRange and not E.db.position.detached and P.effectivePixelMult or E.PixelMult)
-	self.anchorPoint = self.point == "CENTER" and "CENTER" or (growLeft and "BOTTOMLEFT" or "BOTTOMRIGHT")
-	self.containerOfsX = db.offsetX * growX * px
-	self.containerOfsY = -db.offsetY * px
+	self.anchorPoint = growLeft and "BOTTOMLEFT" or "BOTTOMRIGHT"
+
+	self.containerOfsX = db.offsetX * growX * pixel
+	self.containerOfsY = -(db.offsetY * pixel)
+
 	self.columns = db.columns
 	self.multiline = db.layout ~= "vertical" and db.layout ~= "horizontal"
 	self.tripleline = db.layout == "tripleRow" or db.layout == "tripleColumn"
 	self.breakPoint = E.db.priority[db.breakPoint]
 	self.breakPoint2 = E.db.priority[db.breakPoint2]
 	self.displayInactive = db.displayInactive
-	self.isVertical = db.layout == "vertical" or db.layout == "doubleColumn" or db.layout == "tripleColumn"
 
-	local growUpward = db.growUpward
-	local growY = growUpward and 1 or -1
-	px = px / E.db.icons.scale
-	if self.isVertical then
-		self.point2 = growUpward and "BOTTOMRIGHT" or "TOPRIGHT"
-		self.relativePoint2 = growUpward and "TOPRIGHT" or "BOTTOMRIGHT"
-		self.ofsX = growX * (E.BASE_ICON_SIZE + db.paddingX  * px)
-		self.ofsY = 0
-		self.ofsX2 = 0
-		self.ofsY2 = growY * db.paddingY * px
-	else
-		self.point2 = growLeft and "TOPRIGHT" or "TOPLEFT"
-		self.relativePoint2 = growLeft and "TOPLEFT" or "TOPRIGHT"
+	local growRowsUpward = db.growUpward
+	local growY = growRowsUpward and 1 or -1
+	if db.layout == "horizontal" or db.layout == "doubleRow" or db.layout == "tripleRow" then
 		self.ofsX = 0
-		self.ofsY = growY * (E.BASE_ICON_SIZE + db.paddingY * px)
-		self.ofsX2 = growX * db.paddingX * px
-		self.ofsY2 = 0
+		self.ofsY = growY * (E.BASE_ICON_SIZE + db.paddingY * pixel)
+		if growLeft then
+			self.point2 = "TOPRIGHT"
+			self.relativePoint2 = "TOPLEFT"
+			self.ofsX2 = -(db.paddingX * pixel)
+			self.ofsY2 = 0
+		else
+			self.point2 = "TOPLEFT"
+			self.relativePoint2 = "TOPRIGHT"
+			self.ofsX2 = db.paddingX * pixel
+			self.ofsY2 = 0
+		end
+	else
+		self.ofsX = growX * (E.BASE_ICON_SIZE + db.paddingX  * pixel)
+		self.ofsY = 0
+		if growRowsUpward then
+			self.point2 = "BOTTOMRIGHT"
+			self.relativePoint2 = "TOPRIGHT"
+			self.ofsX2 = 0
+			self.ofsY2 = db.paddingY * pixel
+		else
+			self.point2 = "TOPRIGHT"
+			self.relativePoint2 = "BOTTOMRIGHT"
+			self.ofsX2 = 0
+			self.ofsY2 = -(db.paddingY * pixel)
+		end
 	end
 end
 
-function P:GetBuffDuration(unit, spellID)
+
+
+
+P.GetBuffDuration = E.isClassicEra and function(P, unit, spellID)
+	for i = 1, 40 do
+		local _,_,_,_,_,_,_,_,_, id = UnitBuff(unit, i)
+		if not id then return end
+		id = E.spell_merged[id] or id
+		if id == spellID then
+			return true
+		end
+	end
+
+end or function(P, unit, spellID)
 	for i = 1, 40 do
 		local _,_,_,_, duration, expTime,_,_,_, id = UnitBuff(unit, i)
 		if not id then return end
@@ -178,15 +232,12 @@ function P:GetBuffDuration(unit, spellID)
 	end
 end
 
-if E.isClassic then
-	function P:GetBuffDuration(unit, spellID)
-		for i = 1, 40 do
-			local _,_,_,_,_,_,_,_,_, id = UnitBuff(unit, i)
-			if not id then return end
-			id = E.spell_merged[id] or id
-			if id == spellID then
-				return true
-			end
+function P:IsDebuffActive(unit, spellID)
+	for i = 1, 40 do
+		local _,_,_,_,_,_,_,_,_, id = UnitDebuff(unit, i)
+		if not id then return end
+		if id == spellID then
+			return true
 		end
 	end
 end
@@ -203,35 +254,79 @@ end
 
 function P:GetEffectiveNumGroupMembers()
 	local size = GetNumGroupMembers()
-	return size == 0 and self.test and 1 or size
+	return size == 0 and self.isInTestMode and 1 or size
 end
 
 function P:GetValueByType(v, guid, item2)
 	if v then
 		if type(v) == "table" then
 			if item2 then
-				return self.groupInfo[guid].invSlotData[item2] and v[item2] or v.default
+				return self.groupInfo[guid].itemData[item2] and v[item2] or v.default
 			end
-			return v[self.groupInfo[guid].spec] or v.default
+			local info = self.groupInfo[guid]
+			return v[info.spec] or v.default
 		else
 			return v
 		end
 	end
 end
 
-function P:IsTalent(talentID, guid)
+function P:IsTalentForPvpStatus(talentID, info)
 	if not talentID then
 		return true
 	end
-
-	local talent = self.groupInfo[guid].talentData[talentID]
-	if not talent then
-		return false
-	end
-
+	local talent = info.talentData[talentID]
 	if talent == "PVP" then
-		return self.isPvP
+		return self.isPvP and 1
+	end
+	return talent
+end
+
+
+local specIDs = { [71]=true,[72]=true,[73]=true,[65]=true,[66]=true,[70]=true,[253]=true,[254]=true,[255]=true,[259]=true,[260]=true,[261]=true,[256]=true,[257]=true,[258]=true,[250]=true,[251]=true,[252]=true,[262]=true,[263]=true,[264]=true,[62]=true,[63]=true,[64]=true,[265]=true,[266]=true,[267]=true,[268]=true,[269]=true,[270]=true,[102]=true,[103]=true,[104]=true,[105]=true,[577]=true,[581]=true,[1467]=true,[1468]=true, }
+
+
+function P:IsSpecAndTalentForPvpStatus(talentID, info)
+	if not talentID then
+		return true
+	end
+	if type(talentID) == "table" then
+		local talentRank
+		for _, id in ipairs(talentID) do
+			local talent = P:IsSpecAndTalentForPvpStatus(id, info)
+			if not talent then return end
+			talentRank = talent
+		end
+		return talentRank
 	else
+		if specIDs[talentID] then
+			return info.spec == talentID
+		end
+		local talent = info.talentData[talentID]
+		if talent == "PVP" then
+			return self.isPvP and 1
+		end
+		return talent
+	end
+end
+
+function P:IsSpecOrTalentForPvpStatus(talentID, info)
+	if not talentID then
+		return true
+	end
+	if type(talentID) == "table" then
+		for _, id in ipairs(talentID) do
+			local talent = P:IsSpecOrTalentForPvpStatus(id, info)
+			if talent then return true end
+		end
+	else
+		if specIDs[talentID] then
+			return info.spec == talentID
+		end
+		local talent = info.talentData[talentID]
+		if talent == "PVP" then
+			return self.isPvP and 1
+		end
 		return talent
 	end
 end
@@ -240,28 +335,11 @@ function P:IsEquipped(item, guid, item2)
 	if not item then
 		return true
 	end
-
-	local invSlotData = self.groupInfo[guid].invSlotData
-	if invSlotData[item] then
+	local itemData = self.groupInfo[guid].itemData
+	if itemData[item] then
 		return true
 	end
-	return invSlotData[item2]
-end
-
-function P.IsEnabledSpell(id, key)
-	local db = key and E.profile.Party[key] or E.db
-	id = tostring(id)
-	return db.spells[id]
-end
-
-function P:IsDeBuffActive(unit, spellID)
-	for i = 1, 40 do
-		local _,_,_,_, duration, expTime,_,_,_, id = UnitDebuff(unit, i)
-		if not id then return end
-		if id == spellID then
-			return true
-		end
-	end
+	return itemData[item2]
 end
 
 function P:UI_SCALE_CHANGED()
@@ -271,5 +349,3 @@ function P:UI_SCALE_CHANGED()
 		self:ConfigExSize(key, true)
 	end
 end
-
-E["Party"] = P

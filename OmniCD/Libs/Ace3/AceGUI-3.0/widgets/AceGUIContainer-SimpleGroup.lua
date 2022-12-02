@@ -8,7 +8,11 @@
 SimpleGroup Container
 Simple container widget that just groups widgets.
 -------------------------------------------------------------------------------]]
-local Type, Version = "SimpleGroup-OmniCD", 20 -- s Block skins
+--[[ s r
+local Type, Version = "SimpleGroup", 20
+]]
+local Type, Version = "SimpleGroup-OmniCD", 20 -- Block skins
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -61,9 +65,9 @@ local function Constructor()
 	content:SetPoint("BOTTOMRIGHT")
 
 	local widget = {
-		frame     = frame,
-		content   = content,
-		type      = Type
+		frame	  = frame,
+		content	  = content,
+		type	  = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

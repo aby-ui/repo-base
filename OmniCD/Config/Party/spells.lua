@@ -1,19 +1,33 @@
 local E, L, C = select(2, ...):unpack()
+local P = E.Party
 
-local P = E["Party"]
-local SPELLS = type(SPELLS) == "string" and SPELLS or L["Spells"]
+E.OTHER_SORT_ORDER = {
+	[1] = "PVPTRINKET",
+	[2] = "RACIAL",
+	[3] = "TRINKET",
+	[4] = "ESSENCES",
+	[5] = "COVENANT",
+	[6] = "CONSUMABLE",
+	["PVPTRINKET"] = L["PvP Trinket"],
+	["RACIAL"] = L["Racial Traits"],
+	["TRINKET"] = L["Trinket, Main Hand"],
+	["ESSENCES"] = L["Essence"],
+	["COVENANT"] = L["Signature Ability"],
+	["CONSUMABLE"] = L["Consumables"],
+}
+local MAX_OTHERS = #E.OTHER_SORT_ORDER
 
 
 
 P.getSpell = function(info)
 	local tab = info[3] == "spells" and "spells" or "raidCDS"
-	return E.DB.profile.Party[info[2]][tab][info[#info]]
+	return E.profile.Party[ info[2] ][tab][ info[#info] ]
 end
 
 P.setSpell = function(info, state)
 	local tab = info[3] == "spells" and "spells" or "raidCDS"
 	local sId = info[#info]
-	local db = E.DB.profile.Party[info[2]]
+	local db = E.profile.Party[ info[2] ]
 	db[tab][sId] = state
 
 	if db == E.db then
@@ -23,18 +37,16 @@ P.setSpell = function(info, state)
 	end
 end
 
-P.ClearAllDefault = function(info)
+P.clearAllDefault = function(info)
 	local key = info[2]
-	local isSpellsOption = info[3] == "spells"
-	local tab = isSpellsOption and info[3] or info[4]
-	local db = E.DB.profile.Party[key]
-	local db_defaults = isSpellsOption and E.spellDefaults or E.raidDefaults
-
+	local isSpellsSubcategory = info[3] == "spells"
+	local tab = isSpellsSubcategory and info[3] or info[4]
+	local db = E.profile.Party[key]
+	local db_defaults = isSpellsSubcategory and E.spellDefaults or E.raidDefaults
 	if info[#info] == "default" then
-		P:ResetOptions(key, tab)
+		P:ResetOption(key, tab)
 	else
 		wipe(db[tab])
-
 		for i = 1, #db_defaults do
 			local id = db_defaults[i]
 			id = tostring(id)
@@ -48,13 +60,6 @@ P.ClearAllDefault = function(info)
 	end
 end
 
-local runClearAllDefault = function(info) E[info[1]].ClearAllDefault(info) end
-
-local isSpellsOption = function(info) return info[3] == "spells" end
-local isRaidCDOption = function(info) return info[4] == "raidCDS" end
-local isntSpellsOption = function(info) return info[3] ~= "spells" end
-local isntRaidCDOption = function(info) return info[4] ~= "raidCDS" end
-
 P.setQuickSelect = function(info, value)
 	local key = info[2]
 	for _, v in pairs(E.spell_db) do
@@ -64,35 +69,51 @@ P.setQuickSelect = function(info, value)
 			local sId = tostring(spellID)
 			local stype = spell.type
 			if not spell.hide and value == stype then
-				E.DB.profile.Party[key].raidCDS[sId] = true
+				E.profile.Party[key].raidCDS[sId] = true
 			end
 		end
 	end
 
-	if E.db == E.DB.profile.Party[key] then
+	if P:IsCurrentZone(key) then
 		P:Refresh()
 	end
 end
 
-P.getHideDisabledSpells = function(info) return E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells end
-P.setHideDisabledSpells = function(info, state) E.DB.profile.Party[info[2]].extraBars.raidCDBar.hideDisabledSpells = state end
+P.getHideDisabledSpells = function(info) return E.profile.Party[ info[2] ].extraBars.hideDisabledSpells end
+P.setHideDisabledSpells = function(info, state) E.profile.Party[ info[2] ].extraBars.hideDisabledSpells = state end
 
-local isRaidOptDisabledID = function(info)
-	local module = E[info[1]]
-	return info[3] ~= "spells" and module.getHideDisabledSpells(info) and not module.IsEnabledSpell(info[#info], info[2])
+
+
+local function clearAllDefault(info)
+	E[ info[1] ].clearAllDefault(info)
+end
+
+local function isSpellsSubcategory(info)
+	return info[3] == "spells"
+end
+
+local function isRaidCdSubcategory(info)
+	return info[4] == "raidCDS"
+end
+
+local function shouldHideDisabledSpell(info)
+	local module = E[ info[1] ]
+	return info[3] ~= "spells" and module.getHideDisabledSpells(info) and not module:IsEnabledSpell(info[#info], nil, info[2])
 end
 
 local spells = {
-	name = function(info) return isRaidCDOption(info) and L["Raid CD"] or SPELLS end,
+	name = function(info)
+		return isSpellsSubcategory(info) and L["Spells"] or L["Raid CD"]
+	end,
 	order = 60,
 	type = "group",
-	get = function(info) return E[info[1]].getSpell(info) end,
-	set = function(info, state) E[info[1]].setSpell(info, state) end,
+	get = function(info) return E[ info[1] ].getSpell(info) end,
+	set = function(info, state) E[ info[1] ].setSpell(info, state) end,
 	args = {
-		raidDesc = {
-
-
-			name = function(info) return isntRaidCDOption(info) and "|cffff2020Ctrl click to edit spell.\n\n" or L["Assign Raid Cooldowns."] end,
+		desc = {
+			name = function(info)
+				return isSpellsSubcategory(info) and L["CTRL+click to edit spell."] or L["Assign Raid Cooldowns."]
+			end,
 			order = 0,
 			type = "description",
 		},
@@ -100,15 +121,14 @@ local spells = {
 			name = CLEAR_ALL,
 			order = 1,
 			type = "execute",
-			func = runClearAllDefault,
+			func = clearAllDefault,
 			confirm = E.ConfirmAction,
 		},
 		default = {
-			hidden = function(info) return isntSpellsOption(info) and isntRaidCDOption(info) end,
 			name = RESET_TO_DEFAULT,
 			order = 2,
 			type = "execute",
-			func = runClearAllDefault,
+			func = clearAllDefault,
 			confirm = E.ConfirmAction,
 		},
 
@@ -126,99 +146,99 @@ local spells = {
 
 
 		showForbearanceCounter = {
-			hidden = E.isClassic or isntSpellsOption,
+			hidden = E.isClassicEra or isRaidCdSubcategory,
 			name = L["Show Forbearance CD"],
 			desc = L["Show timer on spells while under the effect of Forbearance or Hypothermia. Spells castable to others will darken instead"],
 			order = 4,
 			type = "toggle",
-			get = function(info) return E[info[1]].db.icons.showForbearanceCounter end,
-			set = function(info, state) E[info[1]].db.icons.showForbearanceCounter = state end,
+			get = function(info) return E[ info[1] ].db.icons.showForbearanceCounter end,
+			set = function(info, state) E[ info[1] ].db.icons.showForbearanceCounter = state end,
 		},
 		quickSelect = {
-			hidden = isSpellsOption,
+			hidden = isSpellsSubcategory,
 			name = L["Quick Select"],
 			desc = L["Select a spell type to enable all spells in that category for all classes"],
 			order = 5,
 			type = "select",
 			values = E.L_PRIORITY,
 			get = E.Noop,
-			set = function(info, state) E[info[1]].setQuickSelect(info, state) end,
+			set = function(info, state) E[ info[1] ].setQuickSelect(info, state) end,
 		},
 		hideDisabledSpells = {
-			hidden = isSpellsOption,
+			hidden = isSpellsSubcategory,
 			name = L["Hide Disabled Spells"],
 			desc = L["Hide spells that are not enabled in the \'Spells\' menu."],
 			order = 6,
 			type = "toggle",
-			get = function(info) return E[info[1]].getHideDisabledSpells(info) end,
-			set = function(info, state) E[info[1]].setHideDisabledSpells(info, state) end,
+			get = function(info) return E[ info[1] ].getHideDisabledSpells(info) end,
+			set = function(info, state) E[ info[1] ].setHideDisabledSpells(info, state) end,
 		},
 	}
 }
 
-
-local numOthers = #E.OTHER_SORT_ORDER
-for i = 1, numOthers do
+for i = 1, MAX_OTHERS do
 	local class = E.OTHER_SORT_ORDER[i]
-	local icon = E.ICO[class]
-	local name = E.L_CATAGORY_OTHER[class]
-	spells.args[class] = {
-		icon = icon,
-		iconCoords = E.borderlessCoords,
-		name = name,
-		order = i,
-		type = "group",
-		args = {}
-	}
+	if E.spell_db[class] then
+		local icon = E.TEXTURES[class]
+		local name = E.OTHER_SORT_ORDER[class]
+		spells.args[class] = {
+			icon = icon,
+			iconCoords = E.BORDERLESS_TCOORDS,
+			name = name,
+			order = i,
+			type = "group",
+			args = {}
+		}
+	end
 end
 
 spells.args.othersHeader = {
 	disabled = true,
 	name = "```",
-	order = 10,
+	order = MAX_OTHERS + 1,
 	type = "group",
 	args = {}
 }
 
 for i = 1, MAX_CLASSES do
 	local class = CLASS_SORT_ORDER[i]
-	local name = LOCALIZED_CLASS_NAMES_MALE[class]
+	if E.spell_db[class] then
+		local name = LOCALIZED_CLASS_NAMES_MALE[class]
 
 
-	local icon = E.isWOTLKC and class == "DEATHKNIGHT" and "Interface\\Icons\\spell_deathknight_classicon" or (E.ICO.CLASS .. class)
-	local iconCoords = E.borderlessCoords
-	spells.args[class] = {
-		icon = icon,
-		iconCoords = iconCoords,
-		name = name,
-		type = "group",
-		args = {}
-	}
+
+		local icon = E.isWOTLKC and class == "DEATHKNIGHT" and "Interface\\Icons\\spell_deathknight_classicon" or (E.TEXTURES.CLASS .. class)
+		local iconCoords = E.BORDERLESS_TCOORDS
+		spells.args[class] = {
+			icon = icon,
+			iconCoords = iconCoords,
+			name = name,
+			type = "group",
+			args = {}
+		}
+	end
 end
 
-local function SortClassSpells(t)
-	sort(t, function(a, b)
-		aPrio = C.Party.arena.priority[a.type]
-		bPrio = C.Party.arena.priority[b.type]
-		if aPrio == bPrio then
-			return a.name < b.name
-		end
-		return aPrio > bPrio
-	end)
+local sorter = function(a, b)
+	local aPrio = C.Party.arena.priority[a.type]
+	local bPrio = C.Party.arena.priority[b.type]
+	if aPrio == bPrio then
+		return a.name < b.name
+	end
+	return aPrio > bPrio
 end
 
-local function SortSpellList()
-	for class, t in pairs(E.spell_db) do
-		SortClassSpells(t)
+function P:SortSpellList()
+	for _, t in pairs(E.spell_db) do
+		sort(t, sorter)
 	end
 end
 
 function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
-	local sId = tostring(id)
-
 	if oldClass or force then
 		if oldClass then
-			spells.args[oldClass].args[oldType].args[sId] = nil
+			id = tostring(id)
+			spells.args[oldClass].args[oldType].args[id] = nil
 			if next(spells.args[oldClass].args[oldType].args) == nil then
 				spells.args[oldClass].args[oldType] = nil
 			end
@@ -233,7 +253,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 		local numClassSpells = #classSpells
 		local order = 1
 
-		SortClassSpells(classSpells)
+		sort(classSpells, sorter)
 
 		local t = spells.args[class].args
 		t[stype] = t[stype] or {
@@ -256,12 +276,13 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					t[sId].order = order
 				else
 					local icon, name = v.icon, v.name
-					local link = E.isClassic and GetSpellDescription(spellID) or GetSpellLink(spellID)
+
+					local link = E.isClassicEra and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
 					t[sId] = {
-						hidden = isRaidOptDisabledID,
-						image =  icon,
-						imageCoords = E.borderlessCoords,
+						hidden = shouldHideDisabledSpell,
+						image =	 icon,
+						imageCoords = E.BORDERLESS_TCOORDS,
 						name = name,
 						desc = link,
 						order = order,
@@ -270,10 +291,10 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					}
 				end
 
-				if E.isClassic then
+				if E.isClassicEra or E.isDF then
 					local spell = Spell:CreateFromSpellID(spellID)
 					spell:ContinueOnSpellLoad(function()
-						local desc = spell:GetSpellDescription()
+						local desc = E.isClassicEra and spell:GetSpellDescription() or GetSpellLink(spellID)
 						t[sId].desc = desc
 					end)
 				end
@@ -283,8 +304,8 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 		end
 	end
 
-	for k in pairs(E.moduleOptions) do
-		local module = E[k]
+	for moduleName in pairs(E.moduleOptions) do
+		local module = E[moduleName]
 		if module.AddSpellPicker then
 			module:Refresh()
 		end
@@ -292,80 +313,74 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 end
 
 function P:AddSpellPickerSpells()
-	for j = 1, MAX_CLASSES + numOthers do
+	for j = 1, MAX_CLASSES + MAX_OTHERS do
 		local class = j > MAX_CLASSES and E.OTHER_SORT_ORDER[j - MAX_CLASSES] or CLASS_SORT_ORDER[j]
-		local classSpells = E.spell_db[class] or {}
-		local numClassSpells = #classSpells
-		local order = 1
+		local classSpells = E.spell_db[class]
+		if classSpells then
+			local numClassSpells = #classSpells
+			local order = 1
 
-		local t = spells.args[class].args
-		for k = 1, numClassSpells do
-			local v = classSpells[k]
-			if not v.hide then
-				local vtype = v.type
-				t[vtype] = t[vtype] or {
-					name = "|cffffd200" .. E.L_PRIORITY[vtype],
-					order = 30 - C.Party.arena.priority[vtype],
-					type = "group",
-					inline = true,
-					args = {}
-				}
+			local t = spells.args[class].args
+			for k = 1, numClassSpells do
+				local v = classSpells[k]
+				if not v.hide then
+					local vtype = v.type
+					t[vtype] = t[vtype] or {
+						name = "|cffffd200" .. E.L_PRIORITY[vtype],
+						order = 30 - C.Party.arena.priority[vtype],
+						type = "group",
+						inline = true,
+						args = {}
+					}
 
-				local spellID, icon, name = v.spellID, v.icon, v.name
-				local sId = tostring(spellID)
-				local link = E.isClassic and GetSpellDescription(spellID) or GetSpellLink(spellID)
+					local spellID, icon, name = v.spellID, v.icon, v.name
+					local sId = tostring(spellID)
 
-				t[vtype].args[sId] = {
-					hidden = isRaidOptDisabledID,
-					image = icon,
-					imageCoords = E.borderlessCoords,
-					name = name,
-					desc = link,
-					order = order,
-					type = "toggle",
-					arg = spellID,
-				}
+					local link = E.isClassicEra and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
-
-
-
+					t[vtype].args[sId] = {
+						hidden = shouldHideDisabledSpell,
+						image = icon,
+						imageCoords = E.BORDERLESS_TCOORDS,
+						name = name,
+						desc = link,
+						order = order,
+						type = "toggle",
+						arg = spellID,
+					}
 
 
+					if class == "TRINKET" and v.item then
+						local item = Item:CreateFromItemID(v.item)
+						if item then
+							item:ContinueOnItemLoad(function()
+								local itemName = item:GetItemName()
+								if itemName then
+									t[vtype].args[sId].name = itemName
+								end
+							end)
+						end
+					end
 
+					if E.isClassicEra or E.isDF then
+						local spell = Spell:CreateFromSpellID(spellID)
+						spell:ContinueOnSpellLoad(function()
+							local desc = E.isClassicEra and spell:GetSpellDescription() or GetSpellLink(spellID)
+							t[vtype].args[sId].desc = desc
+						end)
+					end
 
-
-
-				if E.isClassic then
-					local spell = Spell:CreateFromSpellID(spellID)
-					spell:ContinueOnSpellLoad(function()
-						local desc = spell:GetSpellDescription()
-						t[vtype].args[sId].desc = desc
-					end)
+					order = order + 1
 				end
-
-				order = order + 1
 			end
 		end
 	end
 end
 
 function P:AddSpellPicker()
-	SortSpellList()
+	self:SortSpellList()
 	self:AddSpellPickerSpells()
-
-	for key in pairs(E.CFG_ZONE) do
-		P.options.args[key].args.spells = spells
-		P.options.args[key].args.extraBars.args.raidCDS = spells
-	end
-end
-
-for key in pairs(E.CFG_ZONE) do
-	P:AddGeneralOption(key)
-	P:AddExBarOption(key)
-	P:AddPositionOption(key)
-	P:AddIconsOption(key)
-	P:AddHighlightOption(key)
-	P:AddPriorityOption(key)
+	self:RegisterSubcategory("spells", spells)
 end
 
 E:RegisterModuleOptions("Party", P.options, "Party")

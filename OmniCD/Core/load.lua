@@ -1,7 +1,7 @@
-local E, L, C = select(2, ...):unpack()
+local E, L = select(2, ...):unpack()
 
 local ACD_Tooltip = E.Libs.ACD.tooltip
-local DB_VERSION = 2.51
+local DB_VERSION = 3
 
 function E:CreateFontObjects()
 	self.GameFontNormal = CreateFont("GameFontNormal-OmniCD")
@@ -14,7 +14,6 @@ function E:CreateFontObjects()
 	self.GameFontNormalSmall:CopyFontObject("GameFontNormalSmall")
 	self.GameFontHighlightSmall = CreateFont("GameFontHighlightSmall-OmniCD")
 	self.GameFontHighlightSmall:CopyFontObject("GameFontHighlightSmall")
-
 	self.IconFont = CreateFont("IconFont-OmniCD")
 	self.IconFont:CopyFontObject("GameFontHighlightSmallOutline")
 	self.AnchorFont = CreateFont("AnchorFont-OmniCD")
@@ -25,49 +24,75 @@ end
 
 function E:UpdateFontObjects()
 	local optionFont = self.profile.General.fonts.option
-
+	local optionFontSmall = self.profile.General.fonts.optionSmall
 
 	for i = 1, select("#", ACD_Tooltip:GetRegions()) do
 		local region = select(i, ACD_Tooltip:GetRegions())
 		if region and region:GetObjectType() == "FontString" then
-			self.SetFont(region, optionFont)
+			self:SetFontProperties(region, optionFont)
 		end
 	end
-
-
-	self.SetFont(self.GameFontNormal, optionFont)
-	self.SetFont(self.GameFontHighlight, optionFont)
-	self.SetFont(self.GameFontDisabled, optionFont)
-	local optionFontSmall = self.profile.General.fonts.optionSmall
-	self.SetFont(self.GameFontNormalSmall, optionFontSmall)
-	self.SetFont(self.GameFontHighlightSmall, optionFontSmall)
-
-	self.SetFont(self.AnchorFont, self.profile.General.fonts.anchor)
-	self.SetFont(self.IconFont, self.profile.General.fonts.icon)
-	self.SetFont(self.StatusBarFont, self.profile.General.fonts.statusBar)
+	self:SetFontProperties(self.GameFontNormal, optionFont)
+	self:SetFontProperties(self.GameFontHighlight, optionFont)
+	self:SetFontProperties(self.GameFontDisabled, optionFont)
+	self:SetFontProperties(self.GameFontNormalSmall, optionFontSmall)
+	self:SetFontProperties(self.GameFontHighlightSmall, optionFontSmall)
+	self:SetFontProperties(self.AnchorFont, self.profile.General.fonts.anchor)
+	self:SetFontProperties(self.IconFont, self.profile.General.fonts.icon)
+	self:SetFontProperties(self.StatusBarFont, self.profile.General.fonts.statusBar)
 end
 
 function E:OnInitialize()
 
 
-	if not OmniCDDB or not OmniCDDB.version or OmniCDDB.version < 2.5 then
+	if not OmniCDDB or not OmniCDDB.version or  OmniCDDB.version < 2.51 then
 		OmniCDDB = { version = DB_VERSION }
 	elseif OmniCDDB.version < DB_VERSION then
-		if OmniCDDB.version < 2.51 then
-			for profileKey, v in pairs(OmniCDDB.profiles) do
-				local moduleOption = v.Party
-				if moduleOption then
-					for zone, t in pairs(moduleOption) do
-						if zone == "none" or zone == "scenario" then
-							OmniCDDB.profiles[profileKey].Party[zone] = nil
-						elseif type(t) == "table" and t.highlight and t.highlight.markedSpells then
-							wipe(t.highlight.markedSpells)
-						end
-					end
-				end
+		if OmniCDDB.profiles then for profileKey, v in pairs(OmniCDDB.profiles) do if v.Party then for zone in pairs(self.L_CFG_ZONE) do local z = v.Party[zone]; if z then
+			if z.position and z.position.preset == "CENTER" then
+				z.position.preset = "TOPRIGHT"
+				z.position.anchor = "TOPLEFT"
+				z.position.attach = "TOPRIGHT"
 			end
-		end
+			if z.extraBars and z.extraBars.raidCDBar then
+				z.extraBars.raidCDBar.layout = nil
+				z.extraBars.raidCDBar.groupGrowLeft = nil
+				z.extraBars.raidCDBar.groupGrowUpward = nil
+				z.extraBars.raidCDBar.groupDetached = nil
+				z.extraBars.raidCDBar.groupPadding = nil
+				z.extraBars.raidCDBar.hideBar = nil
+				z.extraBars.raidCDBar.hideBorder = nil
+				z.extraBars.raidCDBar.useIconAlpha = nil
+				z.extraBars.raidCDBar.hideDisabledSpells = nil
+				for i = 1, 8 do
+					local group = "group" .. i
+					z.extraBars.raidCDBar[group] = nil
+				end
+				z.extraBars.raidBar1 = E:DeepCopy(z.extraBars.raidCDBar) or {}
+				z.extraBars.raidCDBar = nil
 
+			end
+			if z.extraBars and z.extraBars.interruptBar then
+				z.extraBars.raidBar0 = E:DeepCopy(z.extraBars.interruptBar) or {}
+				z.extraBars.interruptBar = nil
+			end
+			if z.manualPos and z.manualPos.interruptBar and z.extraBars then
+				z.extraBars.raidBar0 = z.extraBars.raidBar0 or {}
+				z.extraBars.raidBar0.manualPos = {}
+				z.extraBars.raidBar0.manualPos.raidBar0 = E:DeepCopy(z.manualPos.interruptBar)
+				z.manualPos.interruptBar = nil
+			end
+			if z.manualPos and z.manualPos.raidCDBar and z.extraBars then
+				z.extraBars.raidBar1 = z.extraBars.raidBar1 or {}
+				z.extraBars.raidBar1.manualPos = {}
+				z.extraBars.raidBar1.manualPos.raidBar1 = E:DeepCopy(z.manualPos.raidCDBar)
+				z.manualPos.raidCDBar = nil
+			end
+			if E.isDF then
+				z.spells = {}
+				z.raidCDS = {}
+			end
+		end end end end end
 		OmniCDDB.version = DB_VERSION
 	end
 
@@ -80,36 +105,41 @@ function E:OnInitialize()
 
 	self.global = self.DB.global
 	self.profile = self.DB.profile
-	self.db = self.DB.profile.Party.arena
+	self.db = self.profile.Party.arena
+
+	if not self.preCata then
+		self.DummyFrame:RegisterEvent('PET_BATTLE_OPENING_START')
+	end
+	self.DummyFrame:SetScript("OnEvent", function(self, event, ...)
+		self[event](self, ...)
+	end)
 
 	self:CreateFontObjects()
 	self:UpdateSpellList(true)
 	self:SetupOptions()
-	self:EnableVersionCheck()
+
 end
 
 function E:OnEnable()
 
-	E.AddonMsgPrefix = E.isPreWOTLKC and "OmniCD" or "OmniCD2"
-	self.Comms:RegisterComm(E.AddonMsgPrefix, "CHAT_MSG_ADDON")
-
 	for i = 1, 13 do
 		if i > 3 then
-			ACD_Tooltip:AddLine(".")
+			ACD_Tooltip:AddLine(" ")
 		else
-			ACD_Tooltip:AddDoubleLine(".", ".")
+			ACD_Tooltip:AddDoubleLine(" ", " ")
 		end
 	end
 
 	self:LoadAddOns()
 
-	E.BackdropTemplate(ACD_Tooltip)
+
+	self.BackdropTemplate(ACD_Tooltip)
 	ACD_Tooltip:SetBackdropColor(0, 0, 0)
 	ACD_Tooltip:SetBackdropBorderColor(0.3, 0.3, 0.3)
 
 	self:Refresh()
 
-	if self.DB.profile.loginMsg then
+	if self.global.loginMessage then
 		print(self.LoginMessage)
 	end
 
@@ -121,8 +151,8 @@ function E:Refresh(arg)
 
 	self:UpdateFontObjects()
 
-	for k in pairs(self.moduleOptions) do
-		local module = self[k]
+	for moduleName in pairs(self.moduleOptions) do
+		local module = self[moduleName]
 
 		local init = module.Initialize
 		if init and type(init) == "function" then
@@ -130,7 +160,7 @@ function E:Refresh(arg)
 			module.Initialize = nil
 		end
 
-		local enabled = self.GetModuleEnabled(k)
+		local enabled = self:GetModuleEnabled(moduleName)
 		if enabled then
 			if module.enabled then
 				module:Refresh(true)
@@ -149,133 +179,128 @@ function E:Refresh(arg)
 	end
 end
 
+function E:GetModuleEnabled(moduleName)
+	return self.profile.modules[moduleName]
+end
+
+function E:SetModuleEnabled(moduleName, isEnabled)
+	self.profile.modules[moduleName] = isEnabled
+
+	local module = self[moduleName]
+	if isEnabled then
+		module:Enable()
+	else
+		module:Disable()
+	end
+end
+
+function E.DummyFrame:PET_BATTLE_CLOSE()
+	for moduleName in pairs(E.moduleOptions) do
+		local module = E[moduleName]
+		local func = module.Refresh
+		if type(func) == "function" then
+			func(module, true)
+		end
+	end
+	E.DummyFrame:UnregisterEvent('PET_BATTLE_CLOSE')
+end
+
+function E.DummyFrame:PET_BATTLE_OPENING_START()
+	for moduleName in pairs(E.moduleOptions) do
+		local module = E[moduleName]
+		local func = module.Test
+		if type(func) == "function" and module.isInTestMode then
+			func(module)
+		end
+
+		local func = module.HideAllBars
+		if type(func) == "function" then
+			func(module)
+		end
+	end
+	E.DummyFrame:RegisterEvent('PET_BATTLE_CLOSE')
+end
+
 do
+	local currentVersion = tonumber(E.Version:gsub("[^%d]", ""))
 	local today = tonumber(date("%y%m%d"))
 	local groupSize = 0
-	local version = E.Version:gsub("[^%d]", "")
-	version = tonumber(version)
-	E.versionNum = version
-	local enabled
-	local timer
+	local checkEnabled
+	local checkTimer
 
-	local function DisableVersionCheck(f)
-		f:UnregisterAllEvents()
-		f:SetScript("OnEvent", nil)
-		enabled = nil
-	end
-
-	local function sendVersion()
-		if enabled then
+	local function SendVersion()
+		if checkEnabled then
 			if IsInRaid() then
-				C_ChatInfo.SendAddonMessage("OMNICD_VERSION", version, (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID")
+				C_ChatInfo.SendAddonMessage("OMNICD_VERSION", currentVersion, (not IsInRaid(LE_PARTY_CATEGORY_HOME) and IsInRaid(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "RAID")
 			elseif IsInGroup() then
-				C_ChatInfo.SendAddonMessage("OMNICD_VERSION", version, (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY")
+				C_ChatInfo.SendAddonMessage("OMNICD_VERSION", currentVersion, (not IsInGroup(LE_PARTY_CATEGORY_HOME) and IsInGroup(LE_PARTY_CATEGORY_INSTANCE)) and "INSTANCE_CHAT" or "PARTY")
 			elseif IsInGuild() then
-				C_ChatInfo.SendAddonMessage("OMNICD_VERSION", version, "GUILD")
+				C_ChatInfo.SendAddonMessage("OMNICD_VERSION", currentVersion, "GUILD")
 			end
 		end
-		timer = nil
+		checkTimer = nil
 	end
 
-	local function VersionCheck_OnEvent(f, event, prefix, message, _, sender)
-		if event == "CHAT_MSG_ADDON" then
+	local function VersionCheck_OnEvent(self, event, prefix, version, _, sender)
+		if event == 'CHAT_MSG_ADDON' then
 			if prefix ~= "OMNICD_VERSION" or sender == E.userNameWithRealm then
 				return
 			end
 
-			local ver = tonumber(message)
-			if ver and ver > version then
-				local diff = ver - version
+			version = tonumber(version)
+			if version and version > currentVersion then
+				local diff = version - currentVersion
 				local text = diff > 10 and L["Major update"] or (diff > 1 and L["Minor update"]) or L["Hotfix"]
-				text = format("|cfff16436 " .. L["A new update is available. |cff99cdff(%s)"], text)
-				if E.DB.profile.notifyNew then
-					--E.Write(text)
+				text = format(L["A new update is available. |cff99cdff(%s)"], text)
+				if E.global.notifyNew then
+					--E.write(text)
 				end
-				E.DB.global.oodMsg = text
-				E.DB.global.oodVer = ver
-				E.DB.global.oodChk = today
+				E.global.updateVersion = version
+				E.global.updateType = text
+				E.global.updateCheckDate = today
 
-				DisableVersionCheck(f)
+				self:UnregisterAllEvents()
+				self:SetScript("OnEvent", nil)
+				checkEnabled = nil
 			end
-		elseif event == "GROUP_ROSTER_UPDATE" then
+		elseif event == 'GROUP_ROSTER_UPDATE' then
 			local num = GetNumGroupMembers()
 			if num and num > groupSize then
-				if not timer then
-					timer = E.TimerAfter(10, sendVersion)
+				if not checkTimer then
+					checkTimer = C_Timer.NewTimer(10, SendVersion)
 				end
 			end
 			groupSize = num
-		elseif event == "PLAYER_ENTERING_WORLD" then
-			if not timer then
-				timer = E.TimerAfter(10, sendVersion)
+		elseif event == 'PLAYER_ENTERING_WORLD' then
+			if not checkTimer then
+				checkTimer = C_Timer.NewTimer(10, SendVersion)
 			end
 		end
 	end
 
 	function E:EnableVersionCheck()
-		local ver = self.DB.global.oodVer
-
-		if today <= (self.DB.global.oodChk or 0) then
-			if ver and ver <= version then
-				self.DB.global.oodMsg = nil
+		local updateVersion = self.global.updateVersion
+		if updateVersion then
+			if currentVersion >= updateVersion then
+				self.global.updateType = nil
 			end
-			return
-		end
-
-		if ver then
-			if ver > version then
-				if self.DB.profile.notifyNew then
-					self.Write(self.DB.global.oodMsg)
+			if today == self.global.updateCheckDate then
+				return
+			end
+			if currentVersion < updateVersion then
+				if self.global.notifyNew then
+					self.write(self.global.updateType)
 				end
 				return
 			end
-			self.DB.global.oodMsg = nil
 		end
 
-		enabled = C_ChatInfo.RegisterAddonMessagePrefix("OMNICD_VERSION")
+		checkEnabled = C_ChatInfo.RegisterAddonMessagePrefix("OMNICD_VERSION")
 		local f = CreateFrame("Frame")
-		f:RegisterEvent("CHAT_MSG_ADDON")
-		f:RegisterEvent("GROUP_ROSTER_UPDATE")
-		f:RegisterEvent("PLAYER_ENTERING_WORLD")
+		f:RegisterEvent('CHAT_MSG_ADDON')
+		f:RegisterEvent('GROUP_ROSTER_UPDATE')
+		f:RegisterEvent('PLAYER_ENTERING_WORLD')
 		f:SetScript("OnEvent", VersionCheck_OnEvent)
+		self.useVersionCheck = true
 	end
-end
-
-do
-	local f = CreateFrame("Frame")
-	E.dummyFrame = f
-
-	if E.isPreWOTLKC then return end
-
-	local function ShowHideAllBars_OnEvent(f, event)
-		if event == "PET_BATTLE_OPENING_START" then
-			for k in pairs(E.moduleOptions) do
-				local module = E[k]
-				local test = module.Test
-				if test and module.test then
-					test()
-				end
-
-				local func = module.HideAllBars
-				if func then
-					func(module)
-				end
-			end
-
-			f:RegisterEvent("PET_BATTLE_CLOSE")
-		elseif event == "PET_BATTLE_CLOSE" then
-			for k in pairs(E.moduleOptions) do
-				local module = E[k]
-				local func = module.Refresh
-				if func then
-					func(module, true)
-				end
-			end
-
-			f:UnregisterEvent("PET_BATTLE_CLOSE")
-		end
-	end
-
-	f:RegisterEvent("PET_BATTLE_OPENING_START")
-	f:SetScript("OnEvent", ShowHideAllBars_OnEvent)
 end

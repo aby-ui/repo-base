@@ -3,15 +3,15 @@
 	<!-- Spells -->
 	<Script file="Spells\core.lua"/>
 	<Script file="Spells\spells.lua"/>
+	<!--<Script file="Spells\spells-wotlkc.lua"/>-->
+	<!--<Script file="Spells\spells-bcc.lua"/>-->
+	<!--<Script file="Spells\spells-classic.lua"/>-->
+	<Script file="Spells\azerite.lua"/>
+	<Script file="Spells\covenant.lua"/>
 	<Script file="Spells\modifiers.lua"/>
-	<!--
-	<Script file="Spells\spells-wotlkc.lua"/>
-	<Script file="Spells\modifiers-wotlkc.lua"/>
-	<Script file="Spells\spells-bcc.lua"/>
-	<Script file="Spells\modifiers-bcc.lua"/>
-	<Script file="Spells\spells-classic.lua"/>
-	<Script file="Spells\modifiers-classic.lua"/>
-	-->
+	<!--<Script file="Spells\modifiers-wotlkc.lua"/>-->
+	<!--<Script file="Spells\modifiers-bcc.lua"/>-->
+	<!--<Script file="Spells\modifiers-classic.lua"/>-->
 
 	<!-- Party -->
 	<Include file="Party\templates.xml"/>

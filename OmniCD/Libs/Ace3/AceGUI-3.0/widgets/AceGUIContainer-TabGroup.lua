@@ -8,7 +8,11 @@
 TabGroup Container
 Container that uses tabs on top to switch between groups.
 -------------------------------------------------------------------------------]]
-local Type, Version = "TabGroup-OmniCD", 37
+--[[ s r
+local Type, Version = "TabGroup", 38
+]]
+local Type, Version = "TabGroup-OmniCD", 38
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -32,6 +36,173 @@ local rowends = {}
 --[[-----------------------------------------------------------------------------
 Support functions
 -------------------------------------------------------------------------------]]
+
+-- START DF
+local function PanelTemplates_TabResize(tab, padding, absoluteSize, minWidth, maxWidth, absoluteTextSize)
+	local tabName = tab:GetName();
+
+	--[[ s r
+	local buttonMiddle = tab.Middle or tab.middleTexture or _G[tabName.."Middle"];
+	local buttonMiddleDisabled = tab.MiddleDisabled or (tabName and _G[tabName.."MiddleDisabled"]);
+	local left = tab.Left or tab.leftTexture or _G[tabName.."Left"];
+	local sideWidths = 2 * left:GetWidth();
+	local tabText = tab.Text or _G[tab:GetName().."Text"];
+	local highlightTexture = tab.HighlightTexture or (tabName and _G[tabName.."HighlightTexture"]);
+	]]
+	local sideWidths = 40
+	local tabText = tab.Text or _G[tab:GetName().."Text"];
+	-- e
+
+	local width, tabWidth;
+	local textWidth;
+	if ( absoluteTextSize ) then
+		textWidth = absoluteTextSize;
+	else
+		tabText:SetWidth(0);
+		textWidth = tabText:GetWidth();
+	end
+	-- If there's an absolute size specified then use it
+	if ( absoluteSize ) then
+		if ( absoluteSize < sideWidths) then
+			width = 1;
+			tabWidth = sideWidths
+		else
+			width = absoluteSize - sideWidths;
+			tabWidth = absoluteSize
+		end
+		tabText:SetWidth(width);
+	else
+		-- Otherwise try to use padding
+		if ( padding ) then
+			width = textWidth + padding;
+		else
+			width = textWidth + 24;
+		end
+		-- If greater than the maxWidth then cap it
+		if ( maxWidth and width > maxWidth ) then
+			if ( padding ) then
+				width = maxWidth + padding;
+			else
+				width = maxWidth + 24;
+			end
+			tabText:SetWidth(width);
+		else
+			tabText:SetWidth(0);
+		end
+		if (minWidth and width < minWidth) then
+			width = minWidth;
+		end
+		tabWidth = width + sideWidths;
+	end
+
+	--[[ s r
+	if ( buttonMiddle ) then
+		buttonMiddle:SetWidth(width);
+	end
+	if ( buttonMiddleDisabled ) then
+		buttonMiddleDisabled:SetWidth(width);
+	end
+
+	tab:SetWidth(tabWidth);
+
+	if ( highlightTexture ) then
+		highlightTexture:SetWidth(tabWidth);
+	end
+	]]
+	tab:SetWidth(tabWidth);
+	-- e
+end
+
+local function PanelTemplates_DeselectTab(tab)
+	local name = tab:GetName();
+
+	--[[ s -r
+	local left = tab.Left or _G[name.."Left"];
+	local middle = tab.Middle or _G[name.."Middle"];
+	local right = tab.Right or _G[name.."Right"];
+	left:Show();
+	middle:Show();
+	right:Show();
+	--tab:UnlockHighlight();
+	]]
+	tab:Enable();
+	local text = tab.Text or _G[name.."Text"];
+	text:SetPoint("CENTER", tab, "CENTER", (tab.deselectedTextX or 0), (tab.deselectedTextY or 2));
+
+	--[[ s -r
+	local leftDisabled = tab.LeftDisabled or _G[name.."LeftDisabled"];
+	local middleDisabled = tab.MiddleDisabled or _G[name.."MiddleDisabled"];
+	local rightDisabled = tab.RightDisabled or _G[name.."RightDisabled"];
+	leftDisabled:Hide();
+	middleDisabled:Hide();
+	rightDisabled:Hide();
+	]]
+end
+
+local function PanelTemplates_SelectTab(tab)
+	local name = tab:GetName();
+
+	--[[ s -r
+	local left = tab.Left or _G[name.."Left"];
+	local middle = tab.Middle or _G[name.."Middle"];
+	local right = tab.Right or _G[name.."Right"];
+	left:Hide();
+	middle:Hide();
+	right:Hide();
+	--tab:LockHighlight();
+	tab:Disable();
+	tab:SetDisabledFontObject(GameFontHighlightSmall);
+	]]
+	tab:Disable();
+	tab:SetDisabledFontObject("GameFontHighlight-OmniCD");
+	local text = tab.Text or _G[name.."Text"];
+	text:SetPoint("CENTER", tab, "CENTER", (tab.selectedTextX or 0), (tab.selectedTextY or -3));
+
+	--[[ s -r
+	local leftDisabled = tab.LeftDisabled or _G[name.."LeftDisabled"];
+	local middleDisabled = tab.MiddleDisabled or _G[name.."MiddleDisabled"];
+	local rightDisabled = tab.RightDisabled or _G[name.."RightDisabled"];
+	leftDisabled:Show();
+	middleDisabled:Show();
+	rightDisabled:Show();
+	]]
+
+	if GameTooltip:IsOwned(tab) then
+		GameTooltip:Hide();
+	end
+end
+
+local function PanelTemplates_SetDisabledTabState(tab)
+	local name = tab:GetName();
+	--[[ s -r
+	local left = tab.Left or _G[name.."Left"];
+	local middle = tab.Middle or _G[name.."Middle"];
+	local right = tab.Right or _G[name.."Right"];
+	left:Show();
+	middle:Show();
+	right:Show();
+	--tab:UnlockHighlight();
+	]]
+	tab:Disable();
+	tab.text = tab:GetText();
+	-- Gray out text
+	--[[ s r
+	tab:SetDisabledFontObject(GameFontDisableSmall);
+	]]
+	tab:SetDisabledFontObject("GameFontDisable-OmniCD");
+	-- e
+	--[[ s -r
+	local leftDisabled = tab.LeftDisabled or _G[name.."LeftDisabled"];
+	local middleDisabled = tab.MiddleDisabled or _G[name.."MiddleDisabled"];
+	local rightDisabled = tab.RightDisabled or _G[name.."RightDisabled"];
+	leftDisabled:Hide();
+	middleDisabled:Hide();
+	rightDisabled:Hide();
+	]]
+end
+-- END DF
+
+--[[ s r -- DF
 local function UpdateTabLook(frame)
 	if frame.disabled then
 		PanelTemplates_SetDisabledTabState(frame)
@@ -50,6 +221,24 @@ local function UpdateTabLook(frame)
 		frame.bg:Hide() -- s a
 	end
 end
+]]
+local function UpdateTabLook(frame)
+	if frame.disabled then
+		PanelTemplates_SetDisabledTabState(frame)
+		-- s b
+		frame.bg:Hide()
+		-- e
+	elseif frame.selected then
+		PanelTemplates_SelectTab(frame)
+		-- s b
+		frame.bg:Show()
+		-- e
+	else
+		PanelTemplates_DeselectTab(frame)
+		frame.bg:Hide() -- s a
+	end
+end
+--e -- DF
 
 local function Tab_SetText(frame, text)
 	frame:_SetText(text)
@@ -141,21 +330,19 @@ local methods = {
 	["CreateTab"] = function(self, id)
 		--[[ s r
 		local tabname = ("AceGUITabGroup%dTab%d"):format(self.num, id)
-		local tab = CreateFrame("Button", tabname, self.border, "OptionsFrameTabButtonTemplate")
+		local tab = CreateFrame("Button", tabname, self.border)
 		]]
 		local tabname = ("AceGUITabGroup%dTab%d-OmniCD"):format(self.num, id)
-		local tab = CreateFrame("Button", tabname, self.border, BackdropTemplateMixin and "PanelTopTabButtonTemplate, BackdropTemplate" or "PanelTopTabButtonTemplate")
+		local tab = CreateFrame("Button", tabname, self.border, "BackdropTemplate")
 		-- e
-		tab.obj = self
-		tab.id = id
+		tab:SetSize(115, 24)
+		tab.deselectedTextY = -3
+		tab.selectedTextY = -2
 
 		-- s b
-		-- OptionsFrameTabButtonTemplate <AbsDimension x="115" y="24"/>
-		--Mixin(tab, BackdropTemplateMixin)
 		OmniCD[1].BackdropTemplate(tab)
 		tab:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab btn) - match tree nav btn
 		tab:SetBackdropBorderColor(0, 0, 0)
-		tab:SetHighlightTexture("") -- can't nil on Classic
 
 		tab.bg = tab:CreateTexture(nil, "BORDER")
 		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
@@ -183,17 +370,71 @@ local methods = {
 		fadeOut:SetToAlpha(0)
 		fadeOut:SetDuration(0.3)
 		fadeOut:SetSmoothing("OUT")
-
-		--tab:DisableDrawLayer("BORDER") -- can't do this. backdrop is in this layer.
-		tab.Left:SetTexture(nil)
-		tab.Middle:SetTexture(nil)
-		tab.Right:SetTexture(nil)
-		tab.LeftActive:SetTexture(nil)
-		tab.MiddleActive:SetTexture(nil)
-		tab.RightActive:SetTexture(nil)
 		-- e
 
-		tab.text = tab.Text
+		--[[ s -r
+		tab.LeftDisabled = tab:CreateTexture(tabname .. "LeftDisabled", "BORDER")
+		tab.LeftDisabled:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-ActiveTab")
+		tab.LeftDisabled:SetSize(20, 24)
+		tab.LeftDisabled:SetPoint("BOTTOMLEFT", 0, -3)
+		tab.LeftDisabled:SetTexCoord(0, 0.15625, 0, 1.0)
+
+		tab.MiddleDisabled = tab:CreateTexture(tabname .. "MiddleDisabled", "BORDER")
+		tab.MiddleDisabled:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-ActiveTab")
+		tab.MiddleDisabled:SetSize(88, 24)
+		tab.MiddleDisabled:SetPoint("LEFT", tab.LeftDisabled, "RIGHT")
+		tab.MiddleDisabled:SetTexCoord(0.15625, 0.84375, 0, 1.0)
+
+		tab.RightDisabled = tab:CreateTexture(tabname .. "RightDisabled", "BORDER")
+		tab.RightDisabled:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-ActiveTab")
+		tab.RightDisabled:SetSize(20, 24)
+		tab.RightDisabled:SetPoint("LEFT", tab.MiddleDisabled, "RIGHT")
+		tab.RightDisabled:SetTexCoord(0.84375, 1.0, 0, 1.0)
+
+		tab.Left = tab:CreateTexture(tabname .. "Left", "BORDER")
+		tab.Left:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-InActiveTab")
+		tab.Left:SetSize(20, 24)
+		tab.Left:SetPoint("TOPLEFT")
+		tab.Left:SetTexCoord(0, 0.15625, 0, 1.0)
+
+		tab.Middle = tab:CreateTexture(tabname .. "Middle", "BORDER")
+		tab.Middle:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-InActiveTab")
+		tab.Middle:SetSize(88, 24)
+		tab.Middle:SetPoint("LEFT", tab.Left, "RIGHT")
+		tab.Middle:SetTexCoord(0.15625, 0.84375, 0, 1.0)
+
+		tab.Right = tab:CreateTexture(tabname .. "Right", "BORDER")
+		tab.Right:SetTexture("Interface\\OptionsFrame\\UI-OptionsFrame-InActiveTab")
+		tab.Right:SetSize(20, 24)
+		tab.Right:SetPoint("LEFT", tab.Middle, "RIGHT")
+		tab.Right:SetTexCoord(0.84375, 1.0, 0, 1.0)
+		--]]
+
+		tab.Text = tab:CreateFontString(tabname .. "Text")
+		tab:SetFontString(tab.Text)
+
+		--[[ s r
+		tab:SetNormalFontObject(GameFontNormalSmall)
+		tab:SetHighlightFontObject(GameFontHighlightSmall)
+		tab:SetDisabledFontObject(GameFontHighlightSmall)
+		]]
+		tab:SetNormalFontObject("GameFontNormal-OmniCD")
+		tab:SetHighlightFontObject("GameFontHighlight-OmniCD")
+		tab:SetDisabledFontObject("GameFontHighlight-OmniCD")
+		-- e
+		--[[ s -r
+		tab:SetHighlightTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight", "ADD")
+		tab.HighlightTexture = tab:GetHighlightTexture()
+		tab.HighlightTexture:ClearAllPoints()
+		tab.HighlightTexture:SetPoint("LEFT", tab, "LEFT", 10, -4)
+		tab.HighlightTexture:SetPoint("RIGHT", tab, "RIGHT", -10, -4)
+		_G[tabname .. "HighlightTexture"] = tab.HighlightTexture
+		]]
+
+		tab.obj = self
+		tab.id = id
+
+		tab.text = tab.Text -- compat
 		tab.text:ClearAllPoints()
 		--[[ s r
 		tab.text:SetPoint("LEFT", 14, -3)
@@ -202,11 +443,6 @@ local methods = {
 		tab.text:SetPoint("LEFT", 14, 0)
 		tab.text:SetPoint("RIGHT", -12, 0)
 		-- e
-
-		-- s b (watch out for font objs overrides by blizzard)
-		tab:SetNormalFontObject("GameFontNormal-OmniCD")
-		tab:SetHighlightFontObject("GameFontHighlight-OmniCD")
-		tab:SetDisabledFontObject("GameFontHighlight-OmniCD")
 
 		tab:SetScript("OnClick", Tab_OnClick)
 		tab:SetScript("OnEnter", Tab_OnEnter)
@@ -410,6 +646,97 @@ local methods = {
 	end
 }
 
+--[==[
+-- s a
+-- OptionsFrameTabButtonTemplate is deprecated in 10.0 DF
+if select(4, GetBuildInfo()) < 100000 then
+	methods["CreateTab"] = function(self, id)
+		--[[ s r
+		local tabname = ("AceGUITabGroup%dTab%d"):format(self.num, id)
+		local tab = CreateFrame("Button", tabname, self.border, "OptionsFrameTabButtonTemplate")
+		]]
+		local tabname = ("AceGUITabGroup%dTab%d-OmniCD"):format(self.num, id)
+		local tab = CreateFrame("Button", tabname, self.border, BackdropTemplateMixin and "OptionsFrameTabButtonTemplate, BackdropTemplate" or "OptionsFrameTabButtonTemplate")
+		-- e
+		tab.obj = self
+		tab.id = id
+
+		-- s b
+		-- OptionsFrameTabButtonTemplate <AbsDimension x="115" y="24"/>
+		--Mixin(tab, BackdropTemplateMixin)
+		OmniCD[1].BackdropTemplate(tab)
+		tab:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab btn) - match tree nav btn
+		tab:SetBackdropBorderColor(0, 0, 0)
+		tab:SetHighlightTexture(0) -- DF: nil throws error (Classic too), "" doesn't work (shows highlight texture)
+
+		tab.bg = tab:CreateTexture(nil, "BORDER")
+		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+			tab.bg:SetAllPoints()
+		else
+			OmniCD[1].DisablePixelSnap(tab.bg)
+			tab.bg:SetPoint("TOPLEFT", tab.TopEdge, "BOTTOMLEFT")
+			tab.bg:SetPoint("BOTTOMRIGHT", tab.BottomEdge, "TOPRIGHT")
+		end
+		tab.bg:SetColorTexture(0.412, 0.0, 0.043)
+		tab.bg:Hide()
+
+		tab.fadeIn = tab.bg:CreateAnimationGroup()
+		tab.fadeIn:SetScript("OnPlay", function() tab.bg:Show() end)
+		local fadeIn = tab.fadeIn:CreateAnimation("Alpha")
+		fadeIn:SetFromAlpha(0)
+		fadeIn:SetToAlpha(1)
+		fadeIn:SetDuration(0.4)
+		fadeIn:SetSmoothing("OUT")
+
+		tab.fadeOut = tab.bg:CreateAnimationGroup()
+		tab.fadeOut:SetScript("OnFinished", function() tab.bg:Hide() end)
+		local fadeOut = tab.fadeOut:CreateAnimation("Alpha")
+		fadeOut:SetFromAlpha(1)
+		fadeOut:SetToAlpha(0)
+		fadeOut:SetDuration(0.3)
+		fadeOut:SetSmoothing("OUT")
+
+		--tab:DisableDrawLayer("BORDER") -- can't do this. backdrop is in this layer.
+		_G[tabname .. "LeftDisabled"]:SetTexture(nil)
+		_G[tabname .. "MiddleDisabled"]:SetTexture(nil)
+		_G[tabname .. "RightDisabled"]:SetTexture(nil)
+		_G[tabname .. "Left"]:SetTexture(nil)
+		_G[tabname .. "Middle"]:SetTexture(nil)
+		_G[tabname .. "Right"]:SetTexture(nil)
+		-- e
+
+		tab.text = _G[tabname .. "Text"]
+		tab.text:ClearAllPoints()
+		--[[ s r
+		tab.text:SetPoint("LEFT", 14, -3)
+		tab.text:SetPoint("RIGHT", -12, -3)
+		]]
+		tab.text:SetPoint("LEFT", 14, 0)
+		tab.text:SetPoint("RIGHT", -12, 0)
+		-- e
+
+		-- s b (watch out for font objs overrides by blizzard)
+		tab:SetNormalFontObject("GameFontNormal-OmniCD")
+		tab:SetHighlightFontObject("GameFontHighlight-OmniCD")
+		tab:SetDisabledFontObject("GameFontHighlight-OmniCD")
+
+		tab:SetScript("OnClick", Tab_OnClick)
+		tab:SetScript("OnEnter", Tab_OnEnter)
+		tab:SetScript("OnLeave", Tab_OnLeave)
+		--[[ s -r
+		tab:SetScript("OnShow", Tab_OnShow)
+		]]
+
+		tab._SetText = tab.SetText
+		tab.SetText = Tab_SetText
+		tab.SetSelected = Tab_SetSelected
+		tab.SetDisabled = Tab_SetDisabled
+
+		return tab
+	end
+end
+-- e
+]==]
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
@@ -456,16 +783,16 @@ local function Constructor()
 	content:SetPoint("BOTTOMRIGHT", -10, 7)
 
 	local widget = {
-		num          = num,
-		frame        = frame,
+		num	     = num,
+		frame	     = frame,
 		localstatus  = {},
 		alignoffset  = 18,
 		titletext    = titletext,
-		border       = border,
+		border	     = border,
 		borderoffset = 27,
-		tabs         = {},
-		content      = content,
-		type         = Type
+		tabs	     = {},
+		content	     = content,
+		type	     = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

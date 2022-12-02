@@ -25,17 +25,6 @@ U1RegisterAddon("163UI_Plugins", {
     },
 
     {
-        var = "CovenantHelper", text = U1_NEW_ICON.."盟约选择助手", default = true,
-        callback = function(cfg, v, loading, ...)
-            load(cfg, v, loading, true)
-            if AbySoulbindFrame then
-                AbySoulbindFrame:refresh()
-            end
-        end,
-        tip = "说明`盟约NPC对话时自动选择第一个选项，并且在天赋选择界面右侧显示当前选择的灵魂羁绊。",
-    },
-
-    {
         var = "FriendsMenuXPSimple", text = "玩家菜单增加邀请入会等按钮", default = true, callback = load,
         tip = "说明`玩家菜单增强插件太老，重新写需要时间，先把最重要的几个按钮加上。",
     },

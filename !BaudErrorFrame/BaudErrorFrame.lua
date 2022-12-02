@@ -214,7 +214,7 @@ end
 
 function BaudErrorFrameShowError(Error)
     if(U1GetAddonInfo and not DEBUG_MODE) then
-        return
+        return --强制不在聊天中显示
     end
     if Config.Messages then
         DEFAULT_CHAT_FRAME:AddMessage(Error,0.8,0.1,0.1);
@@ -451,7 +451,7 @@ function BaudErrorFrameOptions_OnLoad(self)
         ClearFocus:SetFocus();
     end
     for Key, Value in ipairs(CheckButtons)do
-        Button = CreateFrame("CheckButton", "BaudErrorFrameCheck"..Key, self, "OptionsCheckButtonTemplate");
+        Button = CreateFrame("CheckButton", "BaudErrorFrameCheck"..Key, self, "UICheckButtonTemplate");
         Value.Button = Button;
         Button.SavedVar = Value.SavedVar;
         getglobal(Button:GetName().."Text"):SetText(Value.Text);

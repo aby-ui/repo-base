@@ -1,13 +1,13 @@
-local E, L, C = select(2, ...):unpack()
+local E, L = select(2, ...):unpack()
 
 E.StaticPopupDialogs = {}
 
-E.StaticPopupDialogs["OMNICD_Elv_MSG"] = {
-	text = E.userClassHexColor .. "OmniCD:|r " .. L["Changing party display options in your UF addon while OmniCD is active will break the anchors. Type (/oc rl) to fix the anchors"],
+E.StaticPopupDialogs["OMNICD_CUSTOM_UF_MSG"] = {
+	text = format("%s%s:|r %s", E.userClassHexColor, E.AddOn, L["Changing party display options in your UF addon while OmniCD is active will break the anchors. Type (/oc rl) to fix the anchors"]),
 	button1 = OKAY,
 	button2 = L["Don't show again"],
 	OnCancel = function()
-		E.DB.global.disableElvMsg = true
+		E.global.disableElvMsg = true
 	end,
 	timeout = 0,
 	whileDead = true,
@@ -25,7 +25,7 @@ E.StaticPopupDialogs["OMNICD_RELOADUI"] = {
 		C_UI.Reload()
 	end,
 	OnCancel = function()
-		if E.Party.test then
+		if E.Party.isInTestMode then
 			E.Party:Test()
 		end
 	end,
@@ -40,7 +40,7 @@ E.StaticPopupDialogs["OMNICD_IMPORT_EDITOR"] = {
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function(_, data)
-		E.ProfileSharing.CopyCustomSpells(data)
+		E.ProfileSharing:CopyCustomSpells(data)
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile imported successfully!"])
 		C_UI.Reload()
 	end,
@@ -58,13 +58,23 @@ E.StaticPopupDialogs["OMNICD_IMPORT_PROFILE"] = {
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function(_, data)
-		E.ProfileSharing.CopyProfile(data.profileType, data.profileKey, data.profileData)
+		E.ProfileSharing:CopyProfile(data.profileType, data.profileKey, data.profileData)
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile imported successfully!"])
 		E:ACR_NotifyChange()
 	end,
 	OnCancel = function()
 		OmniCD_ProfileDialogEditBox:SetText(L["Profile import cancelled!"])
 	end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+	preferredIndex = STATICPOPUP_NUMDIALOGS
+}
+
+E.StaticPopupDialogs["OMNICD_DF_TEST_MSG"] = {
+	text = "|cffff2020%s",
+	button1 = OKAY,
+	button2 = CLOSE,
 	timeout = 0,
 	whileDead = true,
 	hideOnEscape = true,

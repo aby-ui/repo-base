@@ -664,11 +664,30 @@ end
 --[[------------------------------------------------------------
 Cell等插件EJ_SelectTier之后造成选项无法被保存
 ---------------------------------------------------------------]]
-local currTier = EJ_GetCurrentTier()
-CoreOnEvent("VARIABLES_LOADED", function()
-    C_Timer.After(0, function()
-        EJ_SelectTier(currTier) --防止其他插件遍历后不恢复,必须在冒险指南实际加载之前设置
+do
+    CoreOnEvent("FIRST_FRAME_RENDERED", function()
+        C_Timer.After(0, function()
+            if U1DBG.EJTier then
+                EJ_SelectTier(U1DBG.EJTier)
+            end
+            hooksecurefunc("EJ_SelectTier", function(selectedTier)
+                if debugstack(2):find('Blizzard_EncounterJournal%.lua"%]:%d+: in function `func\'') then
+                    U1DBG.EJTier = selectedTier
+                end
+            end)
+        end)
     end)
-end)
+    CoreOnEvent("ADDON_LOADED", function(event, addon)
+        if addon == "Blizzard_EncounterJournal" then
+            if U1DBG.EJTab then
+                EJ_ContentTab_Select(U1DBG.EJTab)
+            end
+            hooksecurefunc("EJ_ContentTab_Select", function(id)
+                U1DBG.EJTab = id
+            end)
+            return "remove"
+        end
+    end)
+end
 
 CoreUIRegisterSlash("DEVELOPER_CONSOLE", "/dev", "/develop", function() DeveloperConsole:Toggle() end)

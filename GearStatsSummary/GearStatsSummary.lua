@@ -121,6 +121,16 @@ function GearStatsSummary_SetupHook()
 	hooksecurefunc("InspectFrame_UnitChanged", GearStatsSummary_InspectFrame_UnitChanged);
 end
 
+local function SetTargetFrameParent()
+	if PaperDollFrame:IsVisible() then
+		GearStatsSummaryTargetFrame:SetParent(PaperDollFrame)
+	elseif InspectFrame and InspectFrame:IsVisible() then
+		GearStatsSummaryTargetFrame:SetParent(InspectFrame)
+	else
+		GearStatsSummaryTargetFrame:SetParent(UIParent)
+	end
+end
+
 function GearStatsSummary_UpdateAnchor(doll, insp)
 	if not doll then doll = PaperDollFrame:IsVisible() elseif doll<0 then doll = nil end
 	if not insp then insp = InspectFrame and InspectFrame:IsVisible() elseif insp<0 then insp = nil end
@@ -142,6 +152,7 @@ function GearStatsSummary_UpdateAnchor(doll, insp)
 		E = 2
 	end
 	if GearStatsSummaryTargetFrame:IsVisible() then
+		SetTargetFrameParent()
 		GearStatsSummarySelfFrame:ClearAllPoints()
 		GearStatsSummarySelfFrame:SetPoint("TOPLEFT", GearStatsSummaryTargetFrame, "TOPRIGHT", E and 2 or 0, 0)
 		if E~= nil then
@@ -337,6 +348,7 @@ function GearStatsSummary_ShowFrame(frame,target,tiptitle,anchorx,anchory,ready)
 		else
 			return;
 		end
+		SetTargetFrameParent()
     end
 	local inspecting = unit~="player"
     if not inspecting then

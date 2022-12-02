@@ -1,14 +1,11 @@
 local E, L, C = select(2, ...):unpack()
 
-local LSM = LibStub("LibSharedMedia-3.0")
-E.Libs.LSM = LSM
-LSM:Register("statusbar", "OmniCD Flat", "Interface\\Addons\\OmniCD\\Media\\omnicd-texture_flat.blp")
+local LSM = E.Libs.LSM
 --LSM:Register("font", "PT Sans Narrow Bold", "Interface\\Addons\\OmniCD\\Media\\Fonts\\PTSansNarrow-Bold.ttf", bit.bor(LSM.LOCALE_BIT_western, LSM.LOCALE_BIT_ruRU))
+LSM:Register("statusbar", "OmniCD Flat", "Interface\\Addons\\OmniCD\\Media\\omnicd-texture_flat.blp")
+
 local LSM_Font = {}
 local LSM_Statusbar = {}
-
-local title = GENERAL
-
 
 
 
@@ -19,25 +16,25 @@ local title = GENERAL
 
 local defaultFonts = {}
 
-if (LOCALE_koKR) then
+if LOCALE_koKR then
 	defaultFonts.statusBar = {"기본 글꼴", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"기본 글꼴", 11, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"기본 글꼴", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"기본 글꼴", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"기본 글꼴", 11, "NONE", 0, 0, 0, 1, -1}
-elseif (LOCALE_zhCN) then
+elseif LOCALE_zhCN then
 	defaultFonts.statusBar = {"默认", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"默认", 15, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
-elseif (LOCALE_zhTW) then
+elseif LOCALE_zhTW then
 	defaultFonts.statusBar = {"預設", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"預設", 15, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.optionSmall = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
-elseif (LOCALE_ruRU) then
+elseif LOCALE_ruRU then
 	defaultFonts.statusBar = {"PT Sans Narrow Bold", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"PT Sans Narrow Bold", 10, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"PT Sans Narrow Bold", 12, "NONE", 0, 0, 0, 1, -1}
@@ -80,10 +77,17 @@ for k, v in pairs(defaultFonts) do
 	C.General.fonts[k].ofsY = v[8]
 end
 
-function E.SetFont(fontString, db, size)
-	local flag = db.flag
-	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, db.font == "Homespun" and "MONOCHROMEOUTLINE" or (flag == "NONE" and "" or flag))
+local flagFix = {
+	["NONE"] = "",
 
+	["OUTLINE"] = "OUTLINE",
+
+	["THICKOUTLINE"] = "OUTLINE, THICK",
+	["MONOCHROMEOUTLINE"] = "OUTLINE, MONOCHROME",
+}
+
+function E:SetFontProperties(fontString, db, size)
+	local flag = db.flag
 	if flag == "NONE" then
 		fontString:SetShadowOffset(1, -1)
 		fontString:SetShadowColor(0, 0, 0, 1)
@@ -91,16 +95,32 @@ function E.SetFont(fontString, db, size)
 		fontString:SetShadowOffset(0, 0)
 		fontString:SetShadowColor(0, 0, 0, 0)
 	end
+	flag = db.font == "Homespun" and "MONOCHROMEOUTLINE" or flag
+	flag = (E.isDF or E.TocVersion == 30401) and flagFix[flag] or flag
+	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, flag)
 end
 
 function E:ConfigTextures()
-	for k in pairs(self.moduleOptions) do
-		local module = self[k]
+	for moduleName in pairs(self.moduleOptions) do
+		local module = self[moduleName]
 		local func = module.ConfigTextures
 		if func then
 			func(module)
 		end
 	end
+end
+
+local getTextColor = function(info)
+	local db = E.profile.General.cooldownText[ info[3] ][ info[#info] ]
+	return db.r, db.g, db.b
+end
+
+local setTextColor = function(info, r, g, b)
+	local db = E.profile.General.cooldownText[ info[3] ][ info[#info] ]
+	db.r = r
+	db.g = g
+	db.b = b
+	E:Refresh()
 end
 
 local fontInfo = {
@@ -119,7 +139,9 @@ local fontInfo = {
 		min = 8, max = 32, step = 1,
 	},
 	flag = {
-		disabled = function(info) return E.options.args.General.args.fonts.args[info[3]].disabled or E.DB.profile.General.fonts[info[3]].font == "Homespun" end,
+		disabled = function(info)
+			return E.options.args.General.args.fonts.args[ info[3] ].disabled or E.profile.General.fonts[ info[3] ].font == "Homespun"
+		end,
 		name = L["Font Outline"],
 		order = 3,
 		type = "select",
@@ -133,23 +155,17 @@ local fontInfo = {
 }
 
 local General = {
-	name = title,
+	name = GENERAL,
 	order = 10,
 	type = "group",
 	childGroups = "tab",
 	args = {
-		title = {
-			name = "|cffffd200" .. title,
-			order = 0,
-			type = "description",
-			fontSize = "large",
-		},
 		fonts = {
 			name = L["Fonts"],
 			order = 10,
 			type = "group",
-			get = function(info) return E.DB.profile.General.fonts[info[3]][info[#info]] end,
-			set = function(info, value) E.DB.profile.General.fonts[info[3]][info[#info]] = value E:UpdateFontObjects() end,
+			get = function(info) return E.profile.General.fonts[ info[3] ][ info[#info] ] end,
+			set = function(info, value) E.profile.General.fonts[ info[3] ][ info[#info] ] = value E:UpdateFontObjects() end,
 			args ={
 				anchor = {
 					name = L["Anchor"],
@@ -193,8 +209,8 @@ local General = {
 			name = TEXTURES_SUBHEADER,
 			order = 20,
 			type = "group",
-			get = function(info) return E.DB.profile.General.textures[info[3]][info[#info]] end,
-			set = function(info, value) E.DB.profile.General.textures[info[3]][info[#info]] = value E:ConfigTextures() end,
+			get = function(info) return E.profile.General.textures[ info[3] ][ info[#info] ] end,
+			set = function(info, value) E.profile.General.textures[ info[3] ][ info[#info] ] = value E:ConfigTextures() end,
 			args = {
 				statusBar = {
 					name = L["Status Bar"],
@@ -226,8 +242,8 @@ local General = {
 			name = L["Timers"],
 			order = 30,
 			type = "group",
-			get = function(info) return E.DB.profile.General.cooldownText[info[3]][info[#info]] end,
-			set = function(info, value) E.DB.profile.General.cooldownText[info[3]][info[#info]] = value E:Refresh() end,
+			get = function(info) return E.profile.General.cooldownText[ info[3] ][ info[#info] ] end,
+			set = function(info, value) E.profile.General.cooldownText[ info[3] ][ info[#info] ] = value E:Refresh() end,
 			args = {
 				statusBar = {
 					name = L["Status Bar"],
@@ -254,18 +270,8 @@ local General = {
 									order = 2,
 									type = "color",
 									dialogControl = "ColorPicker-OmniCD",
-									get = function(info)
-										local db = E.DB.profile.General.cooldownText[info[3]].mmColor
-										return db.r, db.g, db.b
-									end,
-									set = function(info, r, g, b)
-										local db = E.DB.profile.General.cooldownText[info[3]].mmColor
-										db.r = r
-										db.g = g
-										db.b = b
-
-										E:Refresh()
-									end,
+									get = getTextColor,
+									set = setTextColor,
 								},
 								mmssColor = {
 									disabled = true,
@@ -273,18 +279,8 @@ local General = {
 									order = 3,
 									type = "color",
 									dialogControl = "ColorPicker-OmniCD",
-									get = function(info)
-										local db = E.DB.profile.General.cooldownText[info[3]].mmssColor
-										return db.r, db.g, db.b
-									end,
-									set = function(info, r, g, b)
-										local db = E.DB.profile.General.cooldownText[info[3]].mmssColor
-										db.r = r
-										db.g = g
-										db.b = b
-
-										E:Refresh()
-									end,
+									get = getTextColor,
+									set = setTextColor,
 								},
 							}
 						},
@@ -297,13 +293,10 @@ local General = {
 
 function E:AddGeneral()
 
-	E.dummyFrame.text = E.dummyFrame.text or E.dummyFrame:CreateFontString()
+	self.DummyFrame.text = self.DummyFrame.text or self.DummyFrame:CreateFontString()
 	for fontName, fontPath in pairs(LSM:HashTable("font")) do
-		E.dummyFrame.text:SetFont(fontPath, 22)
-	end
+		self.DummyFrame.text:SetFont(fontPath, 22)
 
-
-	for _, fontName in pairs(LSM:List("font")) do
 		LSM_Font[fontName] = fontName
 	end
 	for _, fontName in ipairs(LSM:List("statusbar")) do

@@ -8,7 +8,11 @@
 Slider Widget
 Graphical Slider, like, for Range values.
 -------------------------------------------------------------------------------]]
+--[[ s r
+local Type, Version = "Slider", 23
+]]
 local Type, Version = "Slider-OmniCD", 23
+-- e
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -245,7 +249,11 @@ local function Constructor()
 	frame:EnableMouse(true)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
+	--[[ s r
+	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	]]
 	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal-OmniCD")
+	-- e
 	label:SetPoint("TOPLEFT")
 	label:SetPoint("TOPRIGHT")
 	label:SetJustifyH("CENTER")
@@ -261,7 +269,7 @@ local function Constructor()
 	local slider = CreateFrame("Slider", nil, frame)
 	slider:SetOrientation("HORIZONTAL")
 	slider:SetHeight(10)
-	slider:SetHitRectInsets(0, 0, -10, 0)
+	slider:SetHitRectInsets(0, 0, 0, 0) -- DF: bug? doesn't work except for checkbox
 	slider.bg = slider:CreateTexture(nil, "BACKGROUND")
 	OmniCD[1].DisablePixelSnap(slider.bg)
 	slider.bg:SetColorTexture(0.2, 0.2, 0.25)
@@ -313,14 +321,17 @@ local function Constructor()
 	]]
 	local lowtext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall-OmniCD")
 	lowtext:SetPoint("TOPLEFT", slider, "BOTTOMLEFT", 2, -1)
-
 	local hightext = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall-OmniCD")
 	hightext:SetPoint("TOPRIGHT", slider, "BOTTOMRIGHT", -2, -1)
 	-- e
 
 	local editbox = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	editbox:SetAutoFocus(false)
+	--[[ s r
+	editbox:SetFontObject(GameFontHighlightSmall)
+	]]
 	editbox:SetFontObject("GameFontHighlightSmall-OmniCD")
+	-- e
 	editbox:SetPoint("TOP", slider, "BOTTOM")
 	editbox:SetHeight(14)
 	editbox:SetWidth(70)
@@ -343,14 +354,14 @@ local function Constructor()
 	editbox:SetScript("OnEscapePressed", EditBox_OnEscapePressed)
 
 	local widget = {
-		label       = label,
-		slider      = slider,
-		lowtext     = lowtext,
+		label	    = label,
+		slider	    = slider,
+		lowtext	    = lowtext,
 		hightext    = hightext,
-		editbox     = editbox,
+		editbox	    = editbox,
 		alignoffset = 25,
-		frame       = frame,
-		type        = Type
+		frame	    = frame,
+		type	    = Type
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

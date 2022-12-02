@@ -1,17 +1,15 @@
-local E, L, C = select(2, ...):unpack()
-
-local P = E["Party"]
+local E, L = select(2, ...):unpack()
+local P = E.Party
 
 local general = {
 	name = GENERAL,
 	order = 10,
 	type = "group",
-	get = function(info) return E.DB.profile.Party[info[2]].general[info[#info]] end,
+	get = function(info) return E.profile.Party[ info[2] ].general[ info[#info] ] end,
 	set = function(info, value)
 		local key = info[2]
-		E.DB.profile.Party[key].general[info[#info]] = value
-
-		if E.db == E.DB.profile.Party[key] then
+		E.profile.Party[key].general[ info[#info] ] = value
+		if P:IsCurrentZone(key) then
 			P:Refresh(true)
 		end
 	end,
@@ -21,16 +19,17 @@ local general = {
 			desc = L["Select the zone you want to copy settings from."],
 			order = 1,
 			type = "select",
-			values = E.CFG_ZONE,
+			values = E.L_CFG_ZONE,
 			set = function(info, value)
-				E.DB.profile.Party[info[2]].general.zoneSelected = value
+				E.profile.Party[ info[2] ].general.zoneSelected = value
 			end,
 			disabledItem = function(info) return info[2] end,
 		},
 		copySelected = {
 			disabled = function(info)
 				local key = info[2]
-				return not E.DB.profile.Party[key].general.zoneSelected or E.DB.profile.Party[key].general.zoneSelected == key
+				local zoneSelected = E.profile.Party[key].general.zoneSelected
+				return not zoneSelected or zoneSelected == key
 			end,
 			name = L["Copy"],
 			desc = L["Copy selected zone settings to the current zone"],
@@ -38,12 +37,11 @@ local general = {
 			type = "execute",
 			func = function(info)
 				local key = info[2]
-				local src = E.DB.profile.Party[key].general.zoneSelected
+				local src = E.profile.Party[key].general.zoneSelected
 				if src then
-					E.DB.profile.Party[key] = E.DeepCopy(E.DB.profile.Party[src])
-					E.DB.profile.Party[key].general.zoneSelected = src
+					E.profile.Party[key] = E:DeepCopy(E.profile.Party[src])
+					E.profile.Party[key].general.zoneSelected = src
 				end
-
 				P:Refresh(true)
 			end,
 			confirm = E.ConfirmAction,
@@ -53,7 +51,10 @@ local general = {
 			desc = L["Reset current zone settings to default"],
 			order = 3,
 			type = "execute",
-			func = function(info) P:ResetOptions(info[2]) P:Refresh(true) end,
+			func = function(info)
+				P:ResetOption(info[2])
+				E:RefreshProfile()
+			end,
 			confirm = E.ConfirmAction,
 		},
 		lb1 = {
@@ -64,7 +65,11 @@ local general = {
 			desc = L["Show anchor with party/raid numbers"],
 			order = 10,
 			type = "toggle",
-			set = function(info, value) local key = info[2] E.DB.profile.Party[key].general.showAnchor = value P:ConfigBars(key, "showAnchor") end,
+			set = function(info, value)
+				local key = info[2]
+				E.profile.Party[key].general.showAnchor = value
+				P:ConfigBars(key, "showAnchor")
+			end,
 		},
 		showPlayer = {
 			name = L["Show Player"],
@@ -72,15 +77,10 @@ local general = {
 			order = 11,
 			type = "toggle",
 		},
-
-
-
-
-
-
 		showTooltip = {
 			name = L["Show Tooltip"],
-			desc = L["Show spell information when you mouseover an icon"] .. ". " .. L["Disable to make the icons click through"],
+			desc = format("%s. %s", L["Show spell information when you mouseover an icon"],
+			L["Disable to make the icons click through"]),
 			order = 13,
 			type = "toggle",
 			get = P.getIcons,
@@ -89,15 +89,13 @@ local general = {
 		showRange = {
 			name = L["Show Range"],
 			desc = format("%s\n\n|cffff2020%s\n\n%sVuhdo, HealBot, GW2_UI, AltzUI.|r",
-				L["Fade out icons when the raid frame fades out for out of range units."],
-				L["Addons with raid frame scaling will also cause the icons to scale."],
-				L["Not Supported:"]),
+			L["Fade out icons when the raid frame fades out for out of range units."],
+			L["Addons with raid frame scaling will also cause the icons to scale."],
+			L["Not Supported:"]),
 			order = 14,
 			type = "toggle",
 		},
 	}
 }
 
-function P:AddGeneralOption(key)
-	self.options.args[key].args.general = general
-end
+P:RegisterSubcategory("general", general)

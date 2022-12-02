@@ -1,45 +1,28 @@
-local E, L, C = select(2, ...):unpack()
+local E, L = select(2, ...):unpack()
+local P = E.Party
 
-local P = E["Party"]
 
-local timer
 
-local forceRefresh = function(info, value)
-	P:Refresh(true)
-	timer = nil
-end
-
-local function ConfigGroupSize(info, value)
-	E.DB.profile.Party.visibility[info[#info]] = value
-	if not timer then
-		timer = E.TimerAfter(2, forceRefresh)
-	end
-end
+local sliderTimer
 
 local visibility = {
 	name = L["Visibility"],
 	order = 0,
 	type = "group",
-	get = function(info) return E.DB.profile.Party.visibility[info[#info]] end,
-	set = function(info, value) E.DB.profile.Party.visibility[info[#info]] = value P:Refresh(true) end,
+	get = function(info) return E.profile.Party.visibility[ info[#info] ] end,
+	set = function(info, value) E.profile.Party.visibility[ info[#info] ] = value P:Refresh(true) end,
 	args = {
-		title = {
-			name = L["Visibility"],
-			order = 0,
-			type = "description",
-			fontSize = "large",
-		},
 		zone = {
 			name = ZONE,
 			order = 10,
 			type = "multiselect",
 			width = "full",
-			values = E.L_ZONE,
+			values = E.L_ALL_ZONE,
 
-			get = function(_, k) return E.DB.profile.Party.visibility[k] end,
+			get = function(_, k) return E.profile.Party.visibility[k] end,
 			set = function(_, k, value)
-				E.DB.profile.Party.visibility[k] = value
-				if P.test and P.testZone == k then
+				E.profile.Party.visibility[k] = value
+				if P.isInTestMode and P.testZone == k then
 					P:Test()
 				end
 				P:Refresh(true)
@@ -53,7 +36,7 @@ local visibility = {
 			args = {
 				finder = {
 					name = ENABLE,
-					desc = L["Enable in automated instance groups"] .. " (" .. LOOKING_FOR_DUNGEON_PVEFRAME .. ", " .. SKIRMISH .. "...) ",
+					desc = format("%s (%s, %s, ...)", L["Enable in automated instance groups"] ,LOOKING_FOR_DUNGEON_PVEFRAME, SKIRMISH),
 					type = "toggle",
 				},
 			}
@@ -69,7 +52,16 @@ local visibility = {
 					width = "double",
 					type = "range",
 					min = 2, max = 40, step = 1,
-					set = ConfigGroupSize,
+					set = function(info, value)
+						E.profile.Party.visibility[ info[#info] ] = value
+						if not sliderTimer then
+							local func = function()
+								P:Refresh(true)
+								sliderTimer = nil
+							end
+							sliderTimer = C_Timer.NewTimer(2, func)
+						end
+					end,
 				},
 			}
 		},

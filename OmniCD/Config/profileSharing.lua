@@ -1,7 +1,7 @@
 local E, L, C = select(2, ...):unpack()
-
 local PS = E.ProfileSharing
-local title = L["Profile Sharing"]
+
+-- ERRORS: 69:33: invalid escape sequence '\`'
 
 local selectedProfileType, selectedProfileSrc, selectedProfileDest
 local selectedProfileZone, selectedProfileOption
@@ -15,16 +15,10 @@ PS.profileTypeValues = {
 local ProfileValues = function() return E.DB:GetProfiles(tbl) end
 
 local ProfileSharing = {
-	name = title,
+	name = L["Profile Sharing"],
 	order = -1,
 	type = "group",
 	args = {
-		title = {
-			name = "|cffffd200" .. title,
-			order = 0,
-			type = "description",
-			fontSize = "large",
-		},
 		desc = {
 			name = "",
 			order = 1,
@@ -48,13 +42,15 @@ local ProfileSharing = {
 					set = function(_, value) selectedProfileType = value end,
 				},
 				openExportDialog = {
-					disabled = function() return not selectedProfileType end,
+					disabled = function()
+						return not selectedProfileType
+					end,
 					name = L["Export"],
 					order = 2,
 					type = "execute",
 					func = function()
-						local profileKey, encodedData = PS.ExportProfile(selectedProfileType)
-						PS.ShowProfileDialog(encodedData or PS.errorMsg)
+						local profileKey, encodedData = PS:ExportProfile(selectedProfileType)
+						PS:ShowProfileDialog(encodedData or PS.errorMsg)
 					end,
 				},
 			}
@@ -66,16 +62,19 @@ local ProfileSharing = {
 			inline = true,
 			args = {
 				lb1 = {
-					name = format(L["Importing \`%s\` will create a new profile."], PS.profileTypeValues.all), order = 0, type = "description",
+					name = format(L["Importing \`%s\` will create a new profile."], PS.profileTypeValues.all),
+					order = 0, type = "description",
 				},
 				lb2 = {
-					name = format(L["Importing \`%s\` will merge new spells to your list and overwrite same spells."], PS.profileTypeValues.cds), order = 1, type = "description",
+					name = format(L["Importing \`%s\` will merge new spells to your list and overwrite same spells."], PS.profileTypeValues.cds),
+					order = 1, type = "description",
 				},
 				openImportDialog = {
 					name = L["Import"],
 					order = 3,
 					type = "execute",
-					func = function() PS.ShowProfileDialog(nil) end,
+
+					func = function() PS:ShowProfileDialog(nil) end,
 				},
 			}
 		},
@@ -89,7 +88,8 @@ local ProfileSharing = {
 			inline = true,
 			args = {
 				lb1 = {
-					name = L["Tool to copy portions of a profile to another existing profile."], order = 0, type = "description",
+					name = L["Tool to copy portions of a profile to another existing profile."],
+					order = 0, type = "description",
 				},
 				src = {
 					name = L["Source Profile"],
@@ -103,17 +103,10 @@ local ProfileSharing = {
 					name = ZONE,
 					order = 2,
 					type = "select",
-					values = {
-						["arena"] = ARENA,
-						["pvp"] = BATTLEGROUNDS,
-						["party"] = DUNGEONS,
-						["raid"] = RAIDS,
-					},
+					values = E.L_CFG_ZONE,
 					sorting = { "arena", "pvp", "party", "raid" },
 					get = function() return selectedProfileZone end,
-					set = function(_, value)
-						selectedProfileZone = value
-					end,
+					set = function(_, value) selectedProfileZone = value end,
 				},
 				option = {
 					name = OPTIONS,
@@ -126,14 +119,13 @@ local ProfileSharing = {
 						["position"] = L["Position"],
 						["manualPos"] = L["Manual Position"],
 						["icons"] = L["Icons"],
-						["highlight"] = HIGHLIGHTING:gsub(":", ""),
+						["highlight"] = L["Highlighting"],
 						["priority"] = L["Priority"],
 						["spells"] = L["Spells"],
-						["interruptBar"] = L["Interrupt Bar"],
-						["raidCDBar"] = L["Raid Bar"],
+						["extraBars"] = L["Extra Bars"],
 						["raidCDS"] = L["Raid CD"],
 					},
-					sorting = { "all", "general", "position", "manualPos", "icons", "highlight", "priority", "spells", "interruptBar", "raidCDBar", "raidCDS" },
+					sorting = { "all", "general", "position", "manualPos", "icons", "highlight", "priority", "spells", "extraBars", "raidCDS" },
 					get = function() return selectedProfileOption end,
 					set = function(_, value) selectedProfileOption = value end,
 				},
@@ -147,7 +139,9 @@ local ProfileSharing = {
 					disabledItem = function() return selectedProfileSrc end,
 				},
 				copy = {
-					disabled = function() return not selectedProfileSrc or not selectedProfileZone or not selectedProfileOption or not selectedProfileDest end,
+					disabled = function()
+						return not selectedProfileSrc or not selectedProfileZone or not selectedProfileOption or not selectedProfileDest
+					end,
 					name = L["Copy"],
 					order = 5,
 					type = "execute",
@@ -159,26 +153,18 @@ local ProfileSharing = {
 						if selectedProfileOption == "all" then
 							local t = OmniCDDB.profiles[src].Party[selectedProfileZone]
 							if t then
-								OmniCDDB.profiles[dest].Party[selectedProfileZone] = E.DeepCopy(t)
-							end
-						elseif selectedProfileOption == "interruptBar" or selectedProfileOption == "raidCDBar" then
-							local t = OmniCDDB.profiles[src].Party[selectedProfileZone] and OmniCDDB.profiles[src].Party[selectedProfileZone].extraBars and OmniCDDB.profiles[src].Party[selectedProfileZone].extraBars[selectedProfileOption]
-							if t then
-								OmniCDDB.profiles[dest].Party[selectedProfileZone] = OmniCDDB.profiles[dest].Party[selectedProfileZone] or {}
-								OmniCDDB.profiles[dest].Party[selectedProfileZone].extraBars = OmniCDDB.profiles[dest].Party[selectedProfileZone].extraBars or {}
-								OmniCDDB.profiles[dest].Party[selectedProfileZone].extraBars[selectedProfileOption] = E.DeepCopy(t)
+								OmniCDDB.profiles[dest].Party[selectedProfileZone] = E:DeepCopy(t)
 							end
 						else
 							local t = OmniCDDB.profiles[src].Party[selectedProfileZone] and OmniCDDB.profiles[src].Party[selectedProfileZone][selectedProfileOption]
 							if t then
 								OmniCDDB.profiles[dest].Party[selectedProfileZone] = OmniCDDB.profiles[dest].Party[selectedProfileZone] or {}
-								OmniCDDB.profiles[dest].Party[selectedProfileZone][selectedProfileOption] = E.DeepCopy(t)
+								OmniCDDB.profiles[dest].Party[selectedProfileZone][selectedProfileOption] = E:DeepCopy(t)
 							end
 						end
 
 						if dest == current then
-							E.DB.keys.profile = current .. "_"
-							E.DB:SetProfile(current)
+							E:RefreshProfile(current)
 						end
 					end,
 				},

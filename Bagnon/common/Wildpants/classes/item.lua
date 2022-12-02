@@ -182,12 +182,13 @@ function Item:OnEnter()
 	if self.info.cached then
 		self:AttachDummy()
 	else
+		self:RegisterEvent(C_TooltipInfo and 'TOOLTIP_DATA_UPDATE' or 'GET_ITEM_INFO_RECEIVED', 'ShowTooltip')
 		self:ShowTooltip()
 	end
 end
 
 function Item:OnLeave()
-	self:SetScript('OnUpdate', nil)
+	self:UnregisterEvent(C_TooltipInfo and 'TOOLTIP_DATA_UPDATE' or 'GET_ITEM_INFO_RECEIVED')
 	self:Super(Item):OnLeave()
 	ResetCursor()
 end
@@ -213,10 +214,6 @@ function Item:UpdateSecondary()
 		self:UpdateSearch()
 		self:UpdateCooldown()
 		self:UpdateUpgradeIcon()
-
-		if GameTooltip:IsOwned(self) then
-			self:ShowTooltip() -- not sure if needed, but just in case
-		end
 	end
 end
 

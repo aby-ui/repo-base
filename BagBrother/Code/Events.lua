@@ -40,12 +40,16 @@ end
 function BagBrother:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(_,frame)
 	if frame == Enum.PlayerInteractionType.VoidStorageBanker then
 		self:VOID_STORAGE_OPEN()
+	elseif frame == Enum.PlayerInteractionType.GuildBanker then
+		self:GUILDBANKFRAME_OPENED()
 	end
 end
 
 function BagBrother:PLAYER_INTERACTION_MANAGER_FRAME_HIDE(_,frame)
 	if frame == Enum.PlayerInteractionType.VoidStorageBanker then
 		self:VOID_STORAGE_CLOSE()
+	elseif frame == Enum.PlayerInteractionType.GuildBanker then
+		self:GUILDBANKFRAME_CLOSED()
 	end
 end
 
