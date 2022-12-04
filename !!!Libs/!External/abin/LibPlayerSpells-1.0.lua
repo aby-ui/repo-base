@@ -204,7 +204,6 @@ local spellList = {}
 local spellTable = {}
 
 function lib:PlayerHasSpell(spell)
-	error("PlayerHasSpell is deprecated, use IsSpellKnown(spellid, isPetSpell)")
 	local id = spellList[spell]
 	if id then
 		if id > FLYOUT_FACTOR then
@@ -382,7 +381,6 @@ local function UpdateTalentData()
 end
 
 function lib:PlayerHasTalent(talent)
-	error("PlayerHasTalent is no longer functional in 10.0")
 	if type(talent) == "number" then
 		return talentMap[talent] -- tie selection, return nil or 1-3
 	end
