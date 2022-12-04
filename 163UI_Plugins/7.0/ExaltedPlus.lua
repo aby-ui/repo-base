@@ -158,7 +158,10 @@ U1PLUG["ExaltedPlus"] = function()
         local info = ExaltedPlusLastFactions[faction]
         if not info then return end --没有找到
         local _, _, standingID, barMin, barMax, barValue = GetFactionInfoByID(info.id)
-
+        local reputationInfo = info.id and C_GossipInfo.GetFriendshipReputation(info.id);
+        if reputationInfo and reputationInfo.friendshipFactionID > 0 then
+            barValue = reputationInfo.standing
+        end
         --设置经验条
         local oldName,_,_,_,_ = GetWatchedFactionInfo();
         if UnitLevel("player") == MAX_PLAYER_LEVEL and not isGuild and oldName ~= faction and U1GetCfgValue(addonName, 'ExaltedPlus/autotrace') then
@@ -180,13 +183,29 @@ U1PLUG["ExaltedPlus"] = function()
         if not name then
             kind, name, added = 3, strmatch(msg, "(.*)现在觉得你更有价值了") --"威·娜莉现在觉得你更有价值了。 [获得了80点声望]"
         end
+        if not name then
+            kind, name, added = 4, strmatch(msg, "(.*)的奥术能量提升了。") --"钴蓝集所"
+        end
         if not name then return end
 
         local info, diff = EP_FindFaction(name)
         if not info then return end
 
-        if DEBUG_MODE then print(msg) end
-        if info.id and C_Reputation.IsMajorFaction(info.id) then
+        if DEBUG_MODE then print(msg, info.id, added, diff) end
+        local reputationInfo = info.id and C_GossipInfo.GetFriendshipReputation(info.id);
+        if reputationInfo and reputationInfo.friendshipFactionID > 0 then
+            local output = "%s%s的声望提高了%s（%s%d/%d）"
+            local curr = reputationInfo.standing - (reputationInfo.reactionThreshold or 0)
+            local cap = reputationInfo.nextThreshold - (reputationInfo.reactionThreshold or 0)
+            local change = tonumber(added) or diff or 0
+            change = change > 0 and change .. "点" or ""
+            local rankText = ""
+            local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(info.id)
+            if rankInfo and rankInfo.maxLevel > 0 then
+                rankText = "("..rankInfo.currentLevel.."/"..rankInfo.maxLevel..")"
+            end
+            msg=format(output, name, rankText, change, reputationInfo.reaction, curr, cap) --钴蓝集所(3/5)的声望提高了19点(低684/900)
+        elseif info.id and C_Reputation.IsMajorFaction(info.id) then
             local output = "%s的声望提高了%d点（%s/%d）"
             local majorFactionData = C_MajorFactions.GetMajorFactionData(info.id); --2507
             local levelLabel = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel;

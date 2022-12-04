@@ -85,7 +85,8 @@ L['follower_type_companion'] = '伙伴'
 -------------------------------------------------------------------------------
 
 L['context_menu_set_waypoint'] = '设置地图路径点'
-L['context_menu_add_tomtom'] = '加入到 TomTom'
+L['context_menu_add_tomtom'] = '添加到 TomTom'
+L['context_menu_add_group_tomtom'] = '添加组到 TomTom'
 L['context_menu_hide_node'] = '隐藏此项'
 L['context_menu_restore_hidden_nodes'] = '恢复所有隐藏项'
 
@@ -179,6 +180,8 @@ L['options_toggle_show_notes_desc'] = '在提示中添加注释'
 --------------------------------- DEVELOPMENT ---------------------------------
 
 L['options_dev_settings'] = '开发'
+L['options_toggle_show_debug_currency'] = '除错货币 ID'
+L['options_toggle_show_debug_currency_desc'] = '显示货币除错更改信息（需要重载）'
 L['options_toggle_show_debug_map'] = '除错地图 ID'
 L['options_toggle_show_debug_map_desc'] = '显示地图除错信息'
 L['options_toggle_show_debug_quest'] = '除错任务 ID'

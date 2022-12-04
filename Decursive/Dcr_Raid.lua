@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.12) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.12-1-g2f5d2c9) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -673,7 +673,7 @@ end
 
 
 -------------------------------------------------------------------------------
-T._LoadedFiles["Dcr_Raid.lua"] = "2.7.8.12";
+T._LoadedFiles["Dcr_Raid.lua"] = "2.7.8.12-1-g2f5d2c9";
 
 -- "Your God is dead and no one cares"
 -- "If there is a Hell I'll see you there"

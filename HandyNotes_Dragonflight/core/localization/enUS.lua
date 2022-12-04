@@ -86,6 +86,7 @@ L['follower_type_companion'] = 'Companion'
 
 L['context_menu_set_waypoint'] = 'Set map waypoint'
 L['context_menu_add_tomtom'] = 'Add to TomTom'
+L['context_menu_add_group_tomtom'] = 'Add group to TomTom'
 L['context_menu_hide_node'] = 'Hide this node'
 L['context_menu_restore_hidden_nodes'] = 'Restore all hidden nodes'
 
@@ -179,6 +180,8 @@ L['options_toggle_show_notes_desc'] = 'Add helpful notes to the tooltip where av
 --------------------------------- DEVELOPMENT ---------------------------------
 
 L['options_dev_settings'] = 'Development'
+L['options_toggle_show_debug_currency'] = 'Debug Currency IDs'
+L['options_toggle_show_debug_currency_desc'] = 'Show debug info for currency changes (reload required)'
 L['options_toggle_show_debug_map'] = 'Debug Map IDs'
 L['options_toggle_show_debug_map_desc'] = 'Show debug information for maps'
 L['options_toggle_show_debug_quest'] = 'Debug Quest IDs'

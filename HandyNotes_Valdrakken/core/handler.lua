@@ -1,3 +1,4 @@
+local profile, global
 ----------------------------------------------------------------------------------------------------
 ------------------------------------------AddOn NAMESPACE-------------------------------------------
 ----------------------------------------------------------------------------------------------------
@@ -9,7 +10,6 @@ local AceDB = LibStub("AceDB-3.0")
 local HandyNotes = LibStub("AceAddon-3.0"):GetAddon("HandyNotes")
 local HBD = LibStub('HereBeDragons-2.0')
 local L = LibStub("AceLocale-3.0"):GetLocale(FOLDER_NAME)
-
 private.locale = L
 
 addon.constants = private.constants
@@ -356,7 +356,9 @@ do
         end
         return nil, nil, nil, nil, nil, nil
     end
+    local function nothing()  end
     function PluginHandler:GetNodes2(uMapID, minimap)
+        if minimap and profile.dont_show_minimap then return nothing end
         currentMapID = uMapID
         return iter, private.DB.points[uMapID], nil
     end

@@ -1,5 +1,5 @@
 -- Localization
-local L = wMarkerLocals
+local L = wMarkerLocales
 
 -------------------------------------------------------
 -- Databases and backdrops

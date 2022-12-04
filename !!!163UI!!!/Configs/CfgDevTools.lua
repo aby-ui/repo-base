@@ -1,0 +1,12 @@
+U1RegisterAddon("!!!!WARBABY_DEV", { load = "NORMAL", defaultEnable=1, tags = {TAG_DEV}})
+U1RegisterAddon("!warbaby", { defaultEnable=1, tags = {TAG_DEV}})
+U1RegisterAddon("LuaBrowser", { defaultEnable=1, tags = {TAG_DEV}})
+U1RegisterAddon("ViragDevTool", { defaultEnable=1, tags = {TAG_DEV}})
+U1RegisterAddon("WowLua", { defaultEnable=1, tags = {TAG_DEV}})
+
+U1RegisterAddon("!BaudErrorFrame", { tags = {TAG_DEV}})
+U1RegisterAddon("163UI_ChatHistory", { tags = {TAG_DEV}})
+U1RegisterAddon("163UI_Chat", { tags = {TAG_DEV}})
+U1RegisterAddon("DuowanChat", { tags = {TAG_DEV}})
+U1RegisterAddon("BlizzMove", { tags = {TAG_DEV}})
+U1RegisterAddon("163UI_Plugins", { tags = {TAG_DEV}})

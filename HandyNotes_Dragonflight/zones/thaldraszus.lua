@@ -11,10 +11,11 @@ local BonusBoss = ns.node.BonusBoss
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
+local PetBattle = ns.node.PetBattle
+local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
 local Scoutpack = ns.node.Scoutpack
 local Treasure = ns.node.Treasure
-local PetBattle = ns.node.PetBattle
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
@@ -204,29 +205,10 @@ map.nodes[47884976] = Rare({
     note = L['woofang_note'],
     rewards = {
         Achievement({id = 16679, criteria = 56152}),
+        Item({item = 200445, note = L['neck']}), -- Lucky Hunting Charm
         Transmog({item = 200174, slot = L['leather']}) -- Bonesigil Shoulderguards
     }
 }) -- Woolfang
-
--------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[55647727] = BonusBoss({
-    id = 193229,
-    quest = 72814, -- 69873
-    rewards = {
-        Item({item = 200880, note = L['trinket']}) -- Wind-Sealed Mana Capsule
-    }
-}) -- Henlare
-
-map.nodes[36757287] = BonusBoss({
-    id = 193273,
-    quest = 72842,
-    rewards = {
-        Transmog({item = 200131, slot = L['dagger']}) -- Reclaimed Survivalist's Dagger
-    }
-}) -- Liskron the Dazzling
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -294,64 +276,7 @@ map.nodes[52458361] = Treasure({
     rewards = {
         Pet({item = 201463, id = 3415}) -- Cubbly
     }
-
 }) -- Strange Bear Cub
-
--------------------------------------------------------------------------------
--------------------------------- DRAGON GLYPHS --------------------------------
--------------------------------------------------------------------------------
-
-map.nodes[62414050] = Dragonglyph({rewards = {Achievement({id = 16104})}}) -- Dragon Glyphs: Algeth'ar Academy
-map.nodes[49944032] = Dragonglyph({rewards = {Achievement({id = 16102})}}) -- Dragon Glyphs: Algeth'era
-map.nodes[37639338] = Dragonglyph({rewards = {Achievement({id = 16673})}}) -- Dragon Glyphs: Fallen Course (Azure Span)
-map.nodes[52676742] = Dragonglyph({rewards = {Achievement({id = 16666})}}) -- Dragon Glyphs: Gelikyr Overlook
-map.nodes[55737225] = Dragonglyph({rewards = {Achievement({id = 16667})}}) -- Dragon Glyphs: Passage of Time
-map.nodes[35608551] = Dragonglyph({rewards = {Achievement({id = 16100})}}) -- Dragon Glyphs: South Hold Gate
-map.nodes[46107410] = Dragonglyph({rewards = {Achievement({id = 16099})}}) -- Dragon Glyphs: Stormshroud Peak
-map.nodes[66108230] = Dragonglyph({rewards = {Achievement({id = 16098})}}) -- Dragon Glyphs: Temporal Conflux
-map.nodes[72906921] = Dragonglyph({rewards = {Achievement({id = 16107})}}) -- Dragon Glyphs: Thaldrazsus Apex
-map.nodes[61615661] = Dragonglyph({rewards = {Achievement({id = 16103})}}) -- Dragon Glyphs: Tyrhold
-map.nodes[41285813] = Dragonglyph({
-    parent = 2112,
-    rewards = {Achievement({id = 16101})}
-}) -- Dragon Glyphs: Valdrakken
-map.nodes[72125131] = Dragonglyph({rewards = {Achievement({id = 16106})}}) -- Dragon Glyphs: Vault of the Incarnates
-map.nodes[67121181] = Dragonglyph({rewards = {Achievement({id = 16105})}}) -- Dragon Glyphs: Veiled Ossuary
-
--------------------------------------------------------------------------------
------------------- DRAGONSCALE EXPEDITION: THE HIGHEST PEAKS ------------------
--------------------------------------------------------------------------------
-
-map.nodes[34048484] = Flag({quest = 71222})
-map.nodes[46107397] = Flag({quest = 70024})
-map.nodes[50168163] = Flag({quest = 70039})
-map.nodes[65727498] = Flag({quest = 71223})
-map.nodes[66195378] = Flag({quest = 71224})
-
--------------------------------------------------------------------------------
-------------------------------- DISTURBED DIRT --------------------------------
--------------------------------------------------------------------------------
-
-map.nodes[38188192] = Disturbeddirt()
-map.nodes[49894474] = Disturbeddirt()
-map.nodes[55588459] = Disturbeddirt()
-map.nodes[55756743] = Disturbeddirt()
-map.nodes[55918384] = Disturbeddirt()
-map.nodes[59532835] = Disturbeddirt()
-map.nodes[62226638] = Disturbeddirt()
-
--------------------------------------------------------------------------------
--------------------------- EXPEDITION SCOUT'S PACKS ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[37637740] = Scoutpack()
-map.nodes[38796831] = Scoutpack()
-map.nodes[38806831] = Scoutpack()
-map.nodes[50844623] = Scoutpack()
-map.nodes[52758333] = Scoutpack()
-map.nodes[55456797] = Scoutpack()
-map.nodes[55873598] = Scoutpack()
-map.nodes[59198794] = Scoutpack()
 
 -------------------------------------------------------------------------------
 --------------------------------- BATTLE PETS ---------------------------------
@@ -392,3 +317,245 @@ map.nodes[56274924] = PetBattle({
         Achievement({id = 16511, criteria = 6, oneline = true}) -- Undead
     }
 }) -- Setimothes
+
+-------------------------------------------------------------------------------
+---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[55647727] = BonusBoss({
+    id = 193229,
+    quest = 72814, -- 69873
+    rewards = {
+        Item({item = 200880, note = L['trinket']}) -- Wind-Sealed Mana Capsule
+    }
+}) -- Henlare
+
+map.nodes[36757287] = BonusBoss({
+    id = 193273,
+    quest = 72842,
+    rewards = {
+        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
+        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
+    }
+}) -- Liskron the Dazzling
+
+-------------------------------------------------------------------------------
+----------------------------- PROFESSION TREASURES ----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[52208050] = PT.Blacksmithing({
+    id = 201006,
+    quest = nil,
+    note = L['pt_smith_draconic_flux_note']
+}) -- Draconic Flux
+
+map.nodes[55203050] = PT.Alchemy({
+    id = 201003,
+    quest = nil,
+    note = L['pt_alch_furry_gloop_note']
+}) -- Furry Gloop
+
+map.nodes[56104090] = PT.Inscription({
+    id = 201015,
+    quest = nil,
+    note = L['pt_script_counterfeit_darkmoon_deck_note']
+}) -- Counterfeit Darkmoon Deck
+
+map.nodes[56304120] = PT.Inscription({
+    id = 198659,
+    quest = nil,
+    note = L['pt_script_forgetful_apprentices_tome_note']
+}) -- Forgetful Apprentice's Tome
+
+map.nodes[56803050] = PT.Leatherworking({
+    id = 198690,
+    quest = nil,
+    note = L['pt_leath_decayed_scales_note']
+}) -- Decayed Scales
+
+map.nodes[56914372] = PT.Jewelcrafting({
+    id = 198656,
+    quest = 70261,
+    note = L['pt_jewel_painters_pretty_jewel_note']
+}) -- Painter's Pretty Jewel
+
+map.nodes[58604580] = PT.Tailoring({
+    id = 201019,
+    quest = 70372,
+    note = L['pt_tailor_ancient_dragonweave_bolt_note']
+}) -- Ancient Dragonweave Bolt
+
+map.nodes[59503840] = PT.Alchemy({
+    id = 198697,
+    quest = nil,
+    note = L['pt_alch_contraband_concoction_note']
+}) -- Contraband Concoction
+
+map.nodes[59806520] = PT.Jewelcrafting({
+    id = 198682,
+    quest = 70285,
+    note = L['pt_jewel_alexstraszite_cluster_note']
+}) -- Alexstraszite Cluster
+
+map.nodes[59907040] = PT.Enchanting({
+    id = 198800,
+    quest = 70342,
+    note = L['pt_ench_fractured_titanic_sphere_note']
+}) -- Fractured Titanic Sphere
+
+map.nodes[60407970] = PT.Tailoring({
+    id = 198684,
+    quest = nil,
+    note = L['pt_tailor_miniature_bronze_dragonflight_banner_note']
+}) -- Miniature Bronze Dragonflight Banner
+
+local valdrakken = Map({id = 2112, settings = false})
+valdrakken.nodes[13206368] = PT.Inscription({
+    id = 198669,
+    quest = nil,
+    note = L['pt_script_how_to_train_your_whelpling_note']
+}) -- How to Train Your Whelpling
+
+-------------------------------------------------------------------------------
+-------------------------------- DRAGON GLYPHS --------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[62414050] = Dragonglyph({rewards = {Achievement({id = 16104})}}) -- Dragon Glyphs: Algeth'ar Academy
+map.nodes[49944032] = Dragonglyph({rewards = {Achievement({id = 16102})}}) -- Dragon Glyphs: Algeth'era
+map.nodes[37639338] = Dragonglyph({rewards = {Achievement({id = 16673})}}) -- Dragon Glyphs: Fallen Course (Azure Span)
+map.nodes[52676742] = Dragonglyph({rewards = {Achievement({id = 16666})}}) -- Dragon Glyphs: Gelikyr Overlook
+map.nodes[55737225] = Dragonglyph({rewards = {Achievement({id = 16667})}}) -- Dragon Glyphs: Passage of Time
+map.nodes[35608551] = Dragonglyph({rewards = {Achievement({id = 16100})}}) -- Dragon Glyphs: South Hold Gate
+map.nodes[46107410] = Dragonglyph({rewards = {Achievement({id = 16099})}}) -- Dragon Glyphs: Stormshroud Peak
+map.nodes[66108230] = Dragonglyph({rewards = {Achievement({id = 16098})}}) -- Dragon Glyphs: Temporal Conflux
+map.nodes[72906921] = Dragonglyph({rewards = {Achievement({id = 16107})}}) -- Dragon Glyphs: Thaldrazsus Apex
+map.nodes[61615661] = Dragonglyph({rewards = {Achievement({id = 16103})}}) -- Dragon Glyphs: Tyrhold
+map.nodes[41285813] = Dragonglyph({
+    parent = 2112,
+    rewards = {Achievement({id = 16101})}
+}) -- Dragon Glyphs: Valdrakken
+map.nodes[72125131] = Dragonglyph({rewards = {Achievement({id = 16106})}}) -- Dragon Glyphs: Vault of the Incarnates
+map.nodes[67121181] = Dragonglyph({rewards = {Achievement({id = 16105})}}) -- Dragon Glyphs: Veiled Ossuary
+
+-------------------------------------------------------------------------------
+------------------ DRAGONSCALE EXPEDITION: THE HIGHEST PEAKS ------------------
+-------------------------------------------------------------------------------
+
+map.nodes[34048484] = Flag({quest = 71222})
+map.nodes[46107397] = Flag({quest = 70024})
+map.nodes[50168163] = Flag({quest = 70039})
+map.nodes[65727498] = Flag({quest = 71223})
+map.nodes[64635672] = Flag({quest = 71224})
+
+-------------------------------------------------------------------------------
+------------------------------- DISTURBED DIRT --------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[38188192] = Disturbeddirt()
+map.nodes[49894474] = Disturbeddirt()
+map.nodes[55588459] = Disturbeddirt()
+map.nodes[55756743] = Disturbeddirt()
+map.nodes[55918384] = Disturbeddirt()
+map.nodes[59532835] = Disturbeddirt()
+map.nodes[62226638] = Disturbeddirt()
+
+-------------------------------------------------------------------------------
+-------------------------- EXPEDITION SCOUT'S PACKS ---------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[37637740] = Scoutpack()
+map.nodes[38796831] = Scoutpack()
+map.nodes[38806831] = Scoutpack()
+map.nodes[50844623] = Scoutpack()
+map.nodes[52758333] = Scoutpack()
+map.nodes[55456797] = Scoutpack()
+map.nodes[55873598] = Scoutpack()
+map.nodes[59198794] = Scoutpack()
+
+-------------------------------------------------------------------------------
+--------------------------------- DRAGONRACES ---------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[57767501] = ns.node.Dragonrace({
+    label = '{quest:67095}',
+    normal = {2080, 52, 49},
+    advanced = {2081, 45, 40},
+    rewards = {
+        Achievement({id = 15924, criteria = 1, oneline = true}), -- normal bronze
+        Achievement({id = 15925, criteria = 1, oneline = true}), -- normal silver
+        Achievement({id = 15926, criteria = 1, oneline = true}), -- normal gold
+        Achievement({id = 15936, criteria = 1, oneline = true}), -- advanced bronze
+        Achievement({id = 15937, criteria = 1, oneline = true}), -- advanced silver
+        Achievement({id = 15938, criteria = 1, oneline = true}) -- advanced gold
+    }
+}) -- Flowing Forest Flight
+
+map.nodes[57256690] = ns.node.Dragonrace({
+    label = '{quest:69957}',
+    normal = {2092, 84, 81},
+    advanced = {2093, 80, 75},
+    rewards = {
+        Achievement({id = 15924, criteria = 2, oneline = true}), -- normal bronze
+        Achievement({id = 15925, criteria = 2, oneline = true}), -- normal silver
+        Achievement({id = 15926, criteria = 2, oneline = true}), -- normal gold
+        Achievement({id = 15936, criteria = 2, oneline = true}), -- advanced bronze
+        Achievement({id = 15937, criteria = 2, oneline = true}), -- advanced silver
+        Achievement({id = 15938, criteria = 2, oneline = true}) -- advanced gold
+    }
+}) -- Tyrhold Trial
+
+map.nodes[37654894] = ns.node.Dragonrace({
+    label = '{quest:70051}',
+    normal = {2096, 72, 69},
+    advanced = {2097, 71, 66},
+    rewards = {
+        Achievement({id = 15924, criteria = 3, oneline = true}), -- normal bronze
+        Achievement({id = 15925, criteria = 3, oneline = true}), -- normal silver
+        Achievement({id = 15926, criteria = 3, oneline = true}), -- normal gold
+        Achievement({id = 15936, criteria = 3, oneline = true}), -- advanced bronze
+        Achievement({id = 15937, criteria = 3, oneline = true}), -- advanced silver
+        Achievement({id = 15938, criteria = 3, oneline = true}) -- advanced gold
+    }
+}) -- Cliffside Circuit
+
+map.nodes[60264179] = ns.node.Dragonrace({
+    label = '{quest:70059}',
+    normal = {2098, 57, 54},
+    advanced = {2099, 57, 52},
+    rewards = {
+        Achievement({id = 15924, criteria = 4, oneline = true}), -- normal bronze
+        Achievement({id = 15925, criteria = 4, oneline = true}), -- normal silver
+        Achievement({id = 15926, criteria = 4, oneline = true}), -- normal gold
+        Achievement({id = 15936, criteria = 4, oneline = true}), -- advanced bronze
+        Achievement({id = 15937, criteria = 4, oneline = true}), -- advanced silver
+        Achievement({id = 15938, criteria = 4, oneline = true}) -- advanced gold
+    }
+}) -- Academy Ascent
+
+map.nodes[39487621] = ns.node.Dragonrace({
+    label = '{quest:70157}',
+    normal = {2101, 64, 61},
+    advanced = {2102, 59, 54},
+    rewards = {
+        Achievement({id = 15924, criteria = 5, oneline = true}), -- normal bronze
+        Achievement({id = 15925, criteria = 5, oneline = true}), -- normal silver
+        Achievement({id = 15926, criteria = 5, oneline = true}), -- normal gold
+        Achievement({id = 15936, criteria = 5, oneline = true}), -- advanced bronze
+        Achievement({id = 15937, criteria = 5, oneline = true}), -- advanced silver
+        Achievement({id = 15938, criteria = 5, oneline = true}) -- advanced gold
+    }
+}) -- Garden Gallivant
+
+map.nodes[58043367] = ns.node.Dragonrace({
+    label = '{quest:70161}',
+    normal = {2103, 53, 50},
+    advanced = {2104, 50, 45},
+    rewards = {
+        Achievement({id = 15924, criteria = 6, oneline = true}), -- normal bronze
+        Achievement({id = 15925, criteria = 6, oneline = true}), -- normal silver
+        Achievement({id = 15926, criteria = 6, oneline = true}), -- normal gold
+        Achievement({id = 15936, criteria = 6, oneline = true}), -- advanced bronze
+        Achievement({id = 15937, criteria = 6, oneline = true}), -- advanced silver
+        Achievement({id = 15938, criteria = 6, oneline = true}) -- advanced gold
+    }
+}) -- Caverns Criss-Cross

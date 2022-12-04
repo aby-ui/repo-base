@@ -145,11 +145,19 @@ local function RenderLinks(str, nameOnly)
 end
 
 -------------------------------------------------------------------------------
--------------------------------- BAG FUNCTIONS --------------------------------
+-------------------------------- PLAYER FUNCTIONS --------------------------------
 -------------------------------------------------------------------------------
 
 local function PlayerHasItem(item, count)
     return GetItemCount(item, true) >= (count and count > 1 and count or 1)
+end
+
+local function PlayerHasProfession(skillID)
+    for _, prof in pairs({GetProfessions()}) do
+        local id = select(7, GetProfessionInfo(prof))
+        if skillID == id then return true end
+    end
+    return false
 end
 
 -------------------------------------------------------------------------------
@@ -228,6 +236,7 @@ ns.GetDatabaseTable = GetDatabaseTable
 ns.NameResolver = NameResolver
 ns.NewLocale = NewLocale
 ns.PlayerHasItem = PlayerHasItem
+ns.PlayerHasProfession = PlayerHasProfession
 ns.PrepareLinks = PrepareLinks
 ns.RenderLinks = RenderLinks
 _G.U1NameResolver = NameResolver

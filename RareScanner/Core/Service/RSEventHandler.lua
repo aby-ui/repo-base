@@ -263,7 +263,7 @@ local function OnLootOpened()
 		return
 	end
 
-	local containerLooted = false
+	local looted = false
 	for i = 1, numItems do
 		if (LootSlotHasItem(i)) then
 			local destGUID = GetLootSourceInfo(i)
@@ -277,7 +277,7 @@ local function OnLootOpened()
 				if (RSGeneralDB.GetAlreadyFoundEntity(containerID) or RSContainerDB.GetInternalContainerInfo(containerID)) then
 					-- Sets the container as opened
 					-- We are looping through all the items looted, we dont want to call this method with every item
-					if (not containerLooted) then
+					if (not looted) then
 						RSLogger:PrintDebugMessage(string.format("Abierto [%s].", containerID or ""))
 				
 						-- Check if we have the Container in our database but the addon didnt detect it
@@ -289,7 +289,7 @@ local function OnLootOpened()
 						end
 					
 						RSEntityStateHandler.SetContainerOpen(containerID)
-						containerLooted = true
+						looted = true
 					end
 
 					-- Records the loot obtained
@@ -319,8 +319,11 @@ local function OnLootOpened()
 					end
 					
 					-- Also update the position and set dead
-					RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
-					RSEntityStateHandler.SetDeadNpc(npcID)
+					if (not looted) then
+						RSGeneralDB.UpdateAlreadyFoundEntityPlayerPosition(npcID)
+						RSEntityStateHandler.SetDeadNpc(npcID)
+						looted = true
+					end
 				end
 			end
 		end

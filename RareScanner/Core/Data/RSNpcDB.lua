@@ -51,6 +51,15 @@ function RSNpcDB.SetNpcKilled(npcID, respawnTime)
 		else
 			private.dbchar.rares_killed[npcID] = respawnTime
 		end
+		
+		if (RSConstants.DEBUG_MODE) then
+			local npcInfo = RSNpcDB.GetInternalNpcInfo(npcID)
+			if (npcInfo and npcInfo.questID) then
+				for _, id in ipairs(npcInfo.questID) do
+					RSLogger:PrintDebugMessage(string.format("SetNpcKilled[%s]: Con questID [%s]", npcID, id))
+				end
+			end
+		end
 	end
 end
 
@@ -319,7 +328,6 @@ function RSNpcDB.GetBestInternalNpcCoordinates(npcID, mapID)
 		-- Get the smallest
 		if (RSUtils.GetTableLength(distances) > 0) then
 			local minDistance = min(unpack(distances))
-			RSLogger:PrintDebugMessage(string.format("Encontrado NPC [%s] sin vignette a una distancia %s.", npcID, minDistance))
 			x, y = coords[minDistance].x, coords[minDistance].y
 		end
 	end

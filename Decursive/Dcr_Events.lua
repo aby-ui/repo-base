@@ -1,7 +1,7 @@
 --[[
     This file is part of Decursive.
 
-    Decursive (v 2.7.8.12) add-on for World of Warcraft UI
+    Decursive (v 2.7.8.12-1-g2f5d2c9) add-on for World of Warcraft UI
     Copyright (C) 2006-2019 John Wellesz (Decursive AT 2072productions.com) ( http://www.2072productions.com/to/decursive.php )
 
     Decursive is free software: you can redistribute it and/or modify
@@ -64,9 +64,9 @@ local DC = T._C;
 
 D.DebuffUpdateRequest = 0;
 
---[=[@alpha@
+--@alpha@
 D.DetectHistory = {};
---@end-alpha@]=]
+--@end-alpha@
 
 local pairs     = _G.pairs;
 local next      = _G.next;
@@ -798,9 +798,9 @@ do -- Combat log event handling {{{1
                 self:Println(L["FAILEDCAST"], spellNAME, (select(2, GetSpellInfo(spellID))) or "", self:MakePlayerName(destName), auraTYPE_failTYPE);
                 self:SafePlaySoundFile(DC.FailedSound);
                 self.Status.ClickedMF = false;
-                --[=[@alpha@
+                --@alpha@
                 -- self:AddDebugText("sanitycheck ", event, spellNAME); -- It works!
-                --@end-alpha@]=]
+                --@end-alpha@
             end
             --  }}}
             --[==[@debug@
@@ -822,9 +822,9 @@ end --}}}
 
 do -- Communication event handling and broadcasting {{{1
     local alpha = false;
-    --[=[@alpha@
+    --@alpha@
     alpha = true;
-    --@end-alpha@]=]
+    --@end-alpha@
 
 
     local function GetDistributionChanel()
@@ -881,9 +881,9 @@ do -- Communication event handling and broadcasting {{{1
     function D:OnCommReceived(message, distribution, from)
 
 
-        --[=[@alpha@
+        --@alpha@
         D:Debug("OnCommReceived:", message, distribution, from);
-        --@end-alpha@]=]
+        --@end-alpha@
 
         local gettime = GetTime();
 
@@ -900,9 +900,9 @@ do -- Communication event handling and broadcasting {{{1
             versionIsAlpha      = tonumber(versionIsAlpha);
             versionEnabled      = tonumber(versionEnabled);
 
-            --[=[@alpha@
+            --@alpha@
             if self.debug then D:Debug("Version info received from, ", from, "by", distribution, "version:", versionName, "date:", versionTimeStamp, "islpha:", versionIsAlpha, "enabled:", versionEnabled); end
-            --@end-alpha@]=]
+            --@end-alpha@
 
             if versionName then
                 if not D.versions then
@@ -974,9 +974,9 @@ do -- Communication event handling and broadcasting {{{1
             end
             LastVersionAnnouceByDist[distribution]  = gettime;
 
-            --[=[@alpha@
+            --@alpha@
             if self.debug then D:Debug("Version info sent to, ", from, "by", distribution, ("Version: %s,%u,%d,%d"):format(D.version, D.VersionTimeStamp, alpha and 1 or 0, D:IsEnabled() and 1 or 0 )); end
-            --@end-alpha@]=]
+            --@end-alpha@
 
         end
     end
@@ -1143,9 +1143,9 @@ do
 
     end -- }}}
 
-    --[=[@alpha@
+    --@alpha@
     local player_is_almost_alive = false; -- I'm trying to figure out why sometimes talents are not detected while PLAYER_ALIVE event fired
-    --@end-alpha@]=]
+    --@end-alpha@
 
     local function PollTalentsAvaibility() -- {{{
 
@@ -1159,7 +1159,7 @@ do
             -- dispatch event
             D:SendMessage("DECURSIVE_TALENTS_AVAILABLE");
 
-            --[=[@alpha@
+            --@alpha@
             if player_is_almost_alive then
                 D:AddDebugText("StartTalentAvaibilityPolling(): Talents were not available after PLAYER_ALIVE was fired, test was made", player_is_almost_alive, "seconds after PLAYER_ALIVE fired. Sucess happened", GetTime() - T.PLAYER_IS_ALIVE, "secondes after PLAYER_ALIVE fired");
             end
@@ -1167,7 +1167,7 @@ do
             if T.PLAYER_IS_ALIVE and not player_is_almost_alive then
                 player_is_almost_alive = GetTime() - T.PLAYER_IS_ALIVE;
             end
-            --@end-alpha@]=]
+            --@end-alpha@
         end
     end -- }}}
 
@@ -1182,6 +1182,6 @@ do
     end
 end
 
-T._LoadedFiles["Dcr_Events.lua"] = "2.7.8.12";
+T._LoadedFiles["Dcr_Events.lua"] = "2.7.8.12-1-g2f5d2c9";
 
 -- The Great Below

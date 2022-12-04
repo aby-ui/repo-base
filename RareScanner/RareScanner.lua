@@ -1116,13 +1116,28 @@ local function RefreshDatabaseData(previousDbVersion)
 		RSRespawnTracker.Init()
 		
 		-- Set default filters
-		if (not previousDbVersion or previousDbVersion.version < RSConstants.DEFAULT_FILTERED_ENTITIES.version) then
+		if (not previousDbVersion or previousDbVersion < RSConstants.DEFAULT_FILTERED_ENTITIES.version) then
 			RSConfigDB.SetContainerFilteredOnlyOnWorldMap(false)
 			RSConfigDB.SetContainerFilteredOnlyOnAlerts(true)
 			for _, containerID in ipairs(RSConstants.DEFAULT_FILTERED_ENTITIES.containers) do
 				RSConfigDB.SetContainerFiltered(containerID, false)
 			end
 			RSLogger:PrintDebugMessage("Filtradas entidades predeterminadas")
+		end
+		
+		-- Fix current filters
+		if (not private.db.general.filtersFixed and previousDbVersion and previousDbVersion < 69) then
+			for npcID, _ in pairs(private.db.general.filteredRares) do
+				private.db.general.filteredRares[npcID] = true
+			end
+			for containerID, _ in pairs(private.db.general.filteredContainers) do
+				private.db.general.filteredContainers[containerID] = true
+			end
+			for eventID, _ in pairs(private.db.general.filteredEvents) do
+				private.db.general.filteredEvents[eventID] = true
+			end
+			RSLogger:PrintDebugMessage("Corregidos filtros existentes")
+			private.db.general.filtersFixed = true
 		end
 		
 		-- Refresh minimap
@@ -1243,11 +1258,16 @@ function RareScanner:InitializeDataBase()
 
 	-- Check if rare NPC names database is updated
 	local currentDbVersion = RSGeneralDB.GetDbVersion()
-	local databaseUpdated = currentDbVersion and currentDbVersion.version == RSConstants.CURRENT_DB_VERSION
+	local version = nil
+	local databaseUpdated = false
+	if (currentDbVersion) then
+		version = currentDbVersion.version
+		databaseUpdated = currentDbVersion.version == RSConstants.CURRENT_DB_VERSION
+	end
 	if (not databaseUpdated) then
-		UpdateRareNamesDB(currentDbVersion); -- Internally calls to RefreshDatabaseData once its done
+		UpdateRareNamesDB(version); -- Internally calls to RefreshDatabaseData once its done
 	else
-		RefreshDatabaseData(currentDbVersion)
+		RefreshDatabaseData(version)
 	end
 end
 

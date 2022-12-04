@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: 22.11.25
+## Version: 22.12.03
 ## Title: TipTacTalents
 ## Author: Aezay (Earthen Ring EU), Frozn45
 ## Notes: Adds Talent Spec and Average Item Level to Player Tooltips
@@ -7,6 +7,8 @@
 ## X-Category: Tooltip
 ## X-Website: https://www.curseforge.com/wow/addons/tiptac-reborn
 ## X-Curse-Project-ID: 695153
+embeds.xml
+
 ttTalents.lua
 
 ## Title-zhCN: |cff880303[爱不易]|r TipTac 天赋模块

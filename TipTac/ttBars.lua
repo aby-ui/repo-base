@@ -246,6 +246,12 @@ function ttBars:OnApplyConfig(cfg)
 		bar:GetStatusBarTexture():SetVertTile(false);	-- Az: 3.3.3 fix
 		bar:SetHeight(cfg.barHeight);
 		bar.text:SetFont(cfg.barFontFace,cfg.barFontSize,cfg.barFontFlags);
+		
+		-- Set default font if font in config is not valid
+		if (not bar.text:GetFont()) then
+			bar.text:SetFont(NumberFontNormal:GetFont());
+			--AzMsg("TipTac: |3Please set a valid font in option tab |1Bars|r. Using default font instead.|r");
+		end
 	end
 end
 

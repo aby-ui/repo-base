@@ -124,9 +124,9 @@ function rematch:ProcessQueue()
 	wipe(levelingPets)
 	for i=#queue,1,-1 do
 		local petID = queue[i]
-		local canLevel,level = rematch:PetCanLevel(petID)
-		if canLevel and not levelingPets[petID] then
-			levelingPets[petID] = level
+		local petInfo = rematch.petInfo:Fetch(petID)
+		if petInfo.level and petInfo.level>0 and petInfo.level<25 and not levelingPets[petID] then
+			levelingPets[petID] = petInfo.level+(petInfo.xp/petInfo.maxXp)
 		else
 			tremove(queue,i) -- remove pets that can't level (or that are already in queue)
 		end

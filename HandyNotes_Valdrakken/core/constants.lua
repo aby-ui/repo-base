@@ -81,6 +81,8 @@ constants.defaults = {
 
         force_nodes = false,
         show_prints = false,
+
+        dont_show_minimap = true,
     },
     global = {
         dev = false,

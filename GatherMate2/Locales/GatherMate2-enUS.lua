@@ -53,6 +53,7 @@ L["DELETE_ENTIRE_DESC"] = "This will ignore Database Locking and remove all node
 L["DELETE_SPECIFIC_DESC"] = "Remove all of the selected node from the selected zone. You must disable Database Locking for this to work."
 L["Disabled"] = true
 L["Display Settings"] = true
+L["Dragonflight"] = true
 L["Enabled"] = true
 L["Engineering"] = true
 L["Expansion"] = true

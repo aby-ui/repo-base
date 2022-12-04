@@ -325,9 +325,15 @@ function ttStyle:ModifyUnitTooltip(u,first)
 		local ratingSummary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit);
 		if (ratingSummary) then
 			local mythicPlusDungeonScore = ratingSummary.currentSeasonScore;
+			local mythicPlusBestRunLevel;
+			for _, ratingMapSummary in ipairs(ratingSummary.runs or {}) do
+				if (ratingMapSummary.finishedSuccess) and ((not mythicPlusBestRunLevel) or (mythicPlusBestRunLevel < ratingMapSummary.bestRunLevel)) then
+					mythicPlusBestRunLevel = ratingMapSummary.bestRunLevel;
+				end
+			end
 			if (mythicPlusDungeonScore > 0) then
 				lineInfo.next = "\n|cffffd100";
-				lineInfo.next = TT_MythicPlusDungeonScore:format(C_ChallengeMode.GetDungeonScoreRarityColor(mythicPlusDungeonScore):WrapTextInColorCode(mythicPlusDungeonScore));
+				lineInfo.next = TT_MythicPlusDungeonScore:format(C_ChallengeMode.GetDungeonScoreRarityColor(mythicPlusDungeonScore):WrapTextInColorCode(mythicPlusDungeonScore) .. (mythicPlusBestRunLevel and " |cffffff99(+" .. mythicPlusBestRunLevel .. ")|r"));
 			end
 		end
 	end

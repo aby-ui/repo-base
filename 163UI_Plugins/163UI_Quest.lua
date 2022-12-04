@@ -77,7 +77,17 @@ local function QuestPriceFrame_OnUpdate(self)
     local button = self:GetParent()
     button.subTypeText:SetText("")
     self = _G[button:GetName().."QuestPriceFrame"]
-    if not button.rewardType or button.rewardType == "item" then
+    self:Hide()
+
+    local i = button:GetID()
+    local lootType = 0; -- LOOT_LIST_ITEM
+    if ( QuestInfoFrame.questLog ) then
+        lootType = GetQuestLogChoiceInfoLootType(i);
+    else
+        lootType = GetQuestItemInfoLootType(button.type, i);
+    end
+
+    if lootType == 0 then
         local func = QuestInfoFrame.questLog and GetQuestLogItemLink or GetQuestItemLink
         local link = func(button.type, button:GetID())
         SetTypeText(link, button)

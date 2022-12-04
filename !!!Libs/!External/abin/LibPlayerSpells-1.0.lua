@@ -204,6 +204,7 @@ local spellList = {}
 local spellTable = {}
 
 function lib:PlayerHasSpell(spell)
+	error("PlayerHasSpell is deprecated, use IsSpellKnown(spellid, isPetSpell)")
 	local id = spellList[spell]
 	if id then
 		if id > FLYOUT_FACTOR then
@@ -364,6 +365,7 @@ local talentList = {}
 local talentMap = {}
 
 local function UpdateTalentData()
+	--[[
 	wipe(talentList)
 	wipe(talentMap)
 	for row = 1, MAX_TALENT_TIERS do
@@ -375,10 +377,12 @@ local function UpdateTalentData()
 			end
 		end
 	end
+	--]]
 	CallHooks("OnTalentsChanged")
 end
 
 function lib:PlayerHasTalent(talent)
+	error("PlayerHasTalent is no longer functional in 10.0")
 	if type(talent) == "number" then
 		return talentMap[talent] -- tie selection, return nil or 1-3
 	end
@@ -517,9 +521,9 @@ if not frame then
 end
 
 frame:RegisterEvent("PLAYER_LOGIN")
-frame:RegisterEvent("SPELLS_CHANGED")
-frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-frame:RegisterEvent("PLAYER_TALENT_UPDATE")
+--frame:RegisterEvent("SPELLS_CHANGED")
+frame:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED") --frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+frame:RegisterEvent("TRAIT_CONFIG_UPDATED") --frame:RegisterEvent("PLAYER_TALENT_UPDATE")
 
 frame:RegisterEvent("UNIT_SPELLCAST_SENT")
 frame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -536,7 +540,7 @@ frame:SetScript("OnEvent", function(self, event, unit, spell)
 		UpdateSpellData()
 		UpdateTalentData()
 
-	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" then
+	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" then
 		UpdateSpec()
 
 	elseif event == "SPELLS_CHANGED" then
@@ -544,8 +548,9 @@ frame:SetScript("OnEvent", function(self, event, unit, spell)
 			UpdateSpellData()
 		end
 
-	elseif event == "PLAYER_TALENT_UPDATE" then
+	elseif event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
 		UpdateTalentData()
+		UpdateSpellData()
 
 	elseif strfind(event, "UNIT_SPELLCAST_") == 1 and unit == "player" and spell and not IsAutoRepeatSpell(spell) then
 

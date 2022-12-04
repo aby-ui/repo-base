@@ -7,18 +7,21 @@ local _G, floor, string, GetNetStats, GetFramerate  = _G, floor, string, GetNetS
 local delay, counter = 1,0
 local dataobj, tooltip, db
 local color = true
-local path = "Interface\\AddOns\\Broker_MicroMenu\\media\\"
 local _
+local addonName = Broker_MicroMenuEmbeddedName or "Broker_MicroMenu"
+local path = Broker_MicroMenuEmbeddedPath or "Interface\\AddOns\\Broker_MicroMenu\\media\\"
+
+local ChocolateBar = LibStub("AceAddon-3.0"):GetAddon("ChocolateBar", true)
 
 local function Debug(...)
-	--[===[@debug@
-	local s = "Broker_MicroMenu Debug:"
+	--[==[@debug@
+	local s = addonName.." Debug:"
 	for i=1,_G.select("#", ...) do
 		local x = _G.select(i, ...)
 		s = _G.strjoin(" ",s,_G.tostring(x))
 	end
 	_G.DEFAULT_CHAT_FRAME:AddMessage(s)
-	--@end-debug@]===]
+	--@end-debug@]==]
 end
 
 local function RGBToHex(r, g, b)
@@ -28,7 +31,7 @@ end
 local mb = _G.MainMenuMicroButton:GetScript("OnMouseUp")
 local function mainmenu(self, ...) self.down = 1; mb(self, ...) end
 
-dataobj = ldb:NewDataObject("Broker_MicroMenu", {
+dataobj = ldb:NewDataObject(addonName, {
 	type = "data source",
 	icon = path.."green.tga",
 	label = "MicroMenu",
@@ -124,10 +127,10 @@ function dataobj:UpdateText()
 	else
 		local text = ""
 		if db.showWorldLatency then
-			text = string.format("%s%i|r %s ", colorWorld, latencyWorld, L["ms"])
+			text = string.format("%s%i|r %s ", colorWorld, latencyWorld, _G.MILLISECONDS_ABBR)
 		end
 		if db.showHomeLatency then
-			text = string.format("%s%s%i|r %s ", text, colorHome, latencyHome, L["ms"])
+			text = string.format("%s%s%i|r %s ", text, colorHome, latencyHome, _G.MILLISECONDS_ABBR)
 		end
 		if db.showFPS then
 			if db.fpsFirst then
@@ -159,11 +162,11 @@ function dataobj:OnLeave()
 end
 
 function dataobj:OnEnter()
-  if tooltip then
+	if tooltip then
 		LibQTip:Release(tooltip)
 	end
 
-	tooltip = LibQTip:Acquire("Broker_MicroMenuTooltip", 2, "LEFT", "LEFT")
+	tooltip = LibQTip:Acquire(addonName.."Tooltip", 2, "LEFT", "LEFT")
 	tooltip:Clear()
 	self.tooltip = tooltip
 
@@ -221,14 +224,18 @@ function dataobj:OnEnter()
 	end)
 
 	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 1, path.."achivements.tga", myProvider)
-	tooltip:SetCell(y, 2, _G.AchievementMicroButton.tooltipText)
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.AchievementMicroButton)
+	if AchievementMicroButton then
+		tooltip:SetCell(y, 1, path.."achivements.tga", myProvider)
+		tooltip:SetCell(y, 2, _G.AchievementMicroButton.tooltipText)
+		tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.AchievementMicroButton)
+	end
 
-	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 1, path.."quest.tga", myProvider)
-	tooltip:SetCell(y, 2, _G.QuestLogMicroButton.tooltipText)
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.QuestLogMicroButton)
+	if QuestLogMicroButton then
+		local y, x = tooltip:AddLine()
+		tooltip:SetCell(y, 1, path.."quest.tga", myProvider)
+		tooltip:SetCell(y, 2, _G.QuestLogMicroButton.tooltipText)
+		tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.QuestLogMicroButton)
+	end
 
 	local y, x = tooltip:AddLine()
 	tooltip:SetCell(y, 1, "", myProvider, nil,"player",true)
@@ -279,26 +286,22 @@ function dataobj:OnEnter()
 
 	tooltip:AddSeparator(10,0,0,0,0)
 
-	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 1, nil, myProvider)
-	tooltip:SetCell(y, 2, _G.GameMenuButtonSettings:GetText())
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() _G.SettingsPanel:Show() end)
+	-- Adding Buttons of Main Game Menu
+	local GameMenuButtons = {
+		_G.GameMenuButtonSettings,
+		_G.GameMenuButtonEditMode,
+		_G.GameMenuButtonMacros,
+		_G.GameMenuButtonAddons,
+	}
 
-	--abyui taint
-	--local y, x = tooltip:AddLine()
-	--tooltip:SetCell(y, 2, SETTINGS_KEYBINDINGS_LABEL)
-	--tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() SettingsPanel:OpenToCategory(SettingsPanel.keybindingsCategory.ID) end)
-
-	local y, x = tooltip:AddLine()
-	tooltip:SetCell(y, 2, _G.GameMenuButtonMacros:GetText())
-	tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.ShowMacroFrame)
-
-	if _G.GameMenuButtonAddons then
-		local y, x = tooltip:AddLine()
-		tooltip:SetCell(y, 2, _G.GameMenuButtonAddons:GetText())
-		tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, _G.GameMenuButtonAddons)
+	for _, MenuButton in pairs(GameMenuButtons) do
+		if MenuButton then
+			local y, x = tooltip:AddLine()
+			tooltip:SetCell(y, 2, MenuButton:GetText())
+			tooltip:SetLineScript(y, "OnMouseUp", MouseHandler, function() MenuButton:Click() end)
+		end
 	end
---]]
+
 	tooltip:SetAutoHideDelay(0.01, self)
 	tooltip:SmartAnchorTo(self)
 	tooltip:Show()

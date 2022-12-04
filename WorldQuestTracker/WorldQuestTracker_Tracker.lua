@@ -376,6 +376,10 @@ end)
 --da refresh na ancora do screen panel
 --enUS - refresh the track positioning on the player screen
 function WorldQuestTracker.RefreshTrackerAnchor()
+	if (not WorldQuestTracker.db.profile.use_tracker) then
+		WorldQuestTrackerScreenPanel:Hide()
+		return
+	end
 
 	--automatic calculate the tracker position
 	if (not WorldQuestTracker.db.profile.tracker_is_movable) then
@@ -412,6 +416,7 @@ function WorldQuestTracker.RefreshTrackerAnchor()
 		WorldQuestTrackerFrame_QuestHolder.LockButton:Hide()
 		WorldQuestTrackerFrame_QuestHolder.MoveMeLabel:Hide()
 		WorldQuestTrackerFrame_QuestHolder:SetBackdrop(nil)
+		WorldQuestTrackerScreenPanel:Show()
 	
 	--the track position is placed by the player
 	else
@@ -436,6 +441,7 @@ function WorldQuestTracker.RefreshTrackerAnchor()
 		
 		WorldQuestTrackerHeader:ClearAllPoints()
 		WorldQuestTrackerHeader:SetPoint("bottom", WorldQuestTrackerFrame, "top", 0, -20)
+		WorldQuestTrackerScreenPanel:Show()
 	end
 end
 

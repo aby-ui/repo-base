@@ -15,7 +15,7 @@ GNU General Public License for more details.
 This file is part of C_Everywhere.
 --]]
 
-local C = LibStub:NewLibrary('C_Everywhere', 2)
+local C = LibStub:NewLibrary('C_Everywhere', 3)
 if C then
   wipe(C)
 else
@@ -27,7 +27,7 @@ setmetatable(C, {__index = function(C, space)
   local container = {}
 
   setmetatable(container, {__index = function(container, k)
-    local f = container.rawfind(k)
+    local f = container.rawfind(k) or false
     container[k] = f
     return f
   end})

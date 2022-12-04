@@ -57,6 +57,13 @@ local function BootstrapDevelopmentEnvironment()
         desc = L['options_toggle_force_nodes_desc'],
         order = 103
     }
+    ns.options.args.GeneralTab.args.show_debug_currency = {
+        type = 'toggle',
+        arg = 'show_debug_currency',
+        name = L['options_toggle_show_debug_currency'],
+        desc = L['options_toggle_show_debug_currency_desc'],
+        order = 104
+    }
 
     -- Print debug messages for each quest ID that is flipped
     local QTFrame = CreateFrame('Frame', ADDON_NAME .. 'QT')
@@ -65,6 +72,12 @@ local function BootstrapDevelopmentEnvironment()
     local quests = {}
     local changed = {}
     local max_quest_id = 100000
+
+    local CurrencyFrame = CreateFrame('Frame', ADDON_NAME .. 'C')
+    local c_lastCheck = GetTime()
+    local c_history = ns.GetDatabaseTable('currency_id_history')
+    local currency = {}
+    local c_changed = {}
 
     if ns:GetOpt('show_debug_quest') then
         C_Timer.After(2, function()
@@ -100,6 +113,48 @@ local function BootstrapDevelopmentEnvironment()
                 end
             end)
             print('Quest IDs are now being tracked')
+        end)
+    end
+
+    if ns:GetOpt('show_debug_currency') then
+        C_Timer.After(2, function()
+            -- Give some time for currency info to load in before we start
+            for id = 1, 2400 do
+                local c = C_CurrencyInfo.GetCurrencyInfo(id) or false
+                if c then currency[id] = c.quantity end
+            end
+            CurrencyFrame:SetScript('OnUpdate', function()
+                if GetTime() - c_lastCheck > 5 and
+                    ns:GetOpt('show_debug_currency') then
+                    for id = 2002, 2400 do
+                        local c = C_CurrencyInfo.GetCurrencyInfo(id) or false
+                        if c then
+                            local s = c.quantity
+                            if s ~= currency[id] then
+                                c_changed[#c_changed + 1] = {
+                                    time(), id, currency[id], s
+                                }
+                                currency[id] = s
+                            end
+                        end
+                    end
+
+                    for i, args in ipairs(c_changed) do
+                        table.insert(c_history, 1, args)
+                        print('Currency', args[2], 'changed:', args[3], '=>',
+                            args[4])
+                    end
+
+                    if #c_history > 100 then
+                        for i = #c_history, 101, -1 do
+                            c_history[i] = nil
+                        end
+                    end
+                    c_lastCheck = GetTime()
+                    wipe(c_changed)
+                end
+            end)
+            print('Currency changes are now being tracked')
         end)
     end
 
@@ -175,6 +230,23 @@ _G[ADDON_NAME .. 'QuestHistory'] = function(count)
             time = 'MISSING'
         else
             time, id, old, new = unpack(history[i])
+            time = date('%H:%M:%S', time)
+        end
+        print(time, '::', id, '::', old, '=>', new)
+    end
+end
+
+_G[ADDON_NAME .. 'CurrencyHistory'] = function(count)
+    local c_history = ns.GetDatabaseTable('currency_id_history')
+    if #c_history == 0 then return print('Currency history is empty') end
+    for i = 1, (count or 10) do
+        if i > #c_history then break end
+        local time, id, old, new, _
+        if c_history[i][1] == 'Currency' then
+            _, id, _, old, _, new = unpack(c_history[i])
+            time = 'MISSING'
+        else
+            time, id, old, new = unpack(c_history[i])
             time = date('%H:%M:%S', time)
         end
         print(time, '::', id, '::', old, '=>', new)

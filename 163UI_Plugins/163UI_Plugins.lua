@@ -364,46 +364,6 @@ do
     end)
 end
 
-U1PLUG["FriendsMenuXPSimple"] = function()
-    function UnitPopup_ShowMenu_Hook(dropdownMenu, which, unit, name, userData)
-        local info;
-        if ( UIDROPDOWNMENU_MENU_LEVEL ~= 1 ) then
-            do return end
-
-        else
-            local listFrame = _G["DropDownList"..UIDROPDOWNMENU_MENU_LEVEL];
-            if listFrame then listFrame.numButtons = listFrame.numButtons - 1; end
-
-            UIDropDownMenu_AddSeparator(UIDROPDOWNMENU_MENU_LEVEL)
-
-            name = name or unit and UnitFullName(unit)
-
-            if name ~= U1UnitFullName("player") and name ~= UnitName("player") and CanGuildInvite() then
-                UIDropDownMenu_AddButton({
-                    text = LOCALE_zhCN and "邀请入会" or "Guild Invite",
-                    func = function() GuildInvite(name) end,
-                    notCheckable = true,
-                }, UIDROPDOWNMENU_MENU_LEVEL)
-            end
-
-            if not name:find("-") or name:find("-"..GetRealmName()) then
-                UIDropDownMenu_AddButton({
-                    text = LOCALE_zhCN and "查询详情" or "Send Who",
-                    func = function() C_FriendList.SendWho(WHO_TAG_EXACT..name) end,
-                    notCheckable = true,
-                }, UIDROPDOWNMENU_MENU_LEVEL)
-            end
-
-            UIDropDownMenu_AddButton({ text = CANCEL, notCheckable = true, })
-            --listFrame:SetHeight(listFrame:GetHeight()+150)
-        end
-    end
-
-    hooksecurefunc("UnitPopup_ShowMenu", function(...)
-        UnitPopup_ShowMenu_Hook(...)
-    end)
-end
-
 
 --[[------------------------------------------------------------
 10.0忠诚之钥
@@ -423,7 +383,7 @@ do
                     for slot=1, slots do
                         local info = C_Container.GetContainerItemInfo(container, slot)
                         if info and items[info.itemID] then
-                            found[info.itemID] = found[info.itemID] or 0 + (info.stackCount or 1)
+                            found[info.itemID] = (found[info.itemID] or 0) + (info.stackCount or 1)
                         end
                     end
                 end
@@ -433,6 +393,33 @@ do
                     if link then s = s .. format(" %s:|cff%s%d|r/%d", link, found[k] and found[k] >= v and "00ff00" or "ff0000", found[k] or 0, v) end
                 end
                 U1Message(s)
+            end)
+        end
+    end)
+end
+
+--[[------------------------------------------------------------
+在声望里显示一些特殊的名称，没找到API获取只能写死
+---------------------------------------------------------------]]
+do
+    local reactionNames = {"熟人","同好","盟友","龙牙","朋友","挚友"}
+    CoreUIHookPoolCollection(ReputationFrame.ScrollBox.view.poolCollection, function(frame, frameType, template)
+        if template == "ReputationBarTemplate" then
+            frame:HookScript("OnEnter", function(self)
+                if GameTooltip:IsVisible() then
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                    if self.factionID == 2517 or self.factionID == 2518 then
+                        local r = C_GossipInfo.GetFriendshipReputationRanks(self.factionID)
+                        if r and r.currentLevel and reactionNames[r.currentLevel] then
+                            local old = reactionNames[r.currentLevel]
+                            reactionNames[r.currentLevel] = GREEN_FONT_COLOR:WrapTextInColorCode(old)
+                            GameTooltip:AddLine(table.concat(reactionNames, "/"), .5, .5, .5, 1)
+                            reactionNames[r.currentLevel] = old
+                        end
+                    end
+                    GameTooltip:AddLine("声望ID：" .. self.factionID)
+                    GameTooltip:Show()
+                end
             end)
         end
     end)

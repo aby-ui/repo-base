@@ -86,6 +86,7 @@ L['follower_type_companion'] = '夥伴'
 
 L['context_menu_set_waypoint'] = '設定地圖路徑點'
 L['context_menu_add_tomtom'] = '加入到TomTom'
+L['context_menu_add_group_tomtom'] = nil
 L['context_menu_hide_node'] = '隱藏此節點'
 L['context_menu_restore_hidden_nodes'] = '恢復所有隱藏節點'
 
@@ -179,6 +180,8 @@ L['options_toggle_show_notes_desc'] = '在可用的工具提示中加入有用�
 --------------------------------- DEVELOPMENT ---------------------------------
 
 L['options_dev_settings'] = '開發'
+L['options_toggle_show_debug_currency'] = nil
+L['options_toggle_show_debug_currency_desc'] = nil
 L['options_toggle_show_debug_map'] = '偵錯地圖ID'
 L['options_toggle_show_debug_map_desc'] = '顯示地圖的偵錯資訊'
 L['options_toggle_show_debug_quest'] = '偵錯任務ID'

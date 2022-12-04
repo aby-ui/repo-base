@@ -426,7 +426,7 @@ end
 
 function RSConfigDB.IsNpcFiltered(npcID)
 	if (npcID) then
-		return private.db.general.filteredRares[npcID] == false
+		return private.db.general.filteredRares[npcID]
 	end
 
 	return false
@@ -435,10 +435,10 @@ end
 function RSConfigDB.GetNpcFiltered(npcID)
 	if (npcID) then
 		local value = private.db.general.filteredRares[npcID]
-		if (value == nil) then
+		if (not value) then
 			return true
 		else
-			return value
+			return false
 		end
 	end
 end
@@ -446,7 +446,7 @@ end
 function RSConfigDB.SetNpcFiltered(npcID, value)
 	if (npcID) then
 		if (value == false) then
-			private.db.general.filteredRares[npcID] = false
+			private.db.general.filteredRares[npcID] = true
 		else
 			private.db.general.filteredRares[npcID] = nil
 		end
@@ -554,7 +554,7 @@ end
 
 function RSConfigDB.IsContainerFiltered(containerID)
 	if (containerID) then
-		return private.db.general.filteredContainers[containerID] == false
+		return private.db.general.filteredContainers[containerID]
 	end
 
 	return false
@@ -563,10 +563,10 @@ end
 function RSConfigDB.GetContainerFiltered(containerID)
 	if (containerID) then
 		local value = private.db.general.filteredContainers[containerID]
-		if (value == nil) then
+		if (not value) then
 			return true
 		else
-			return value
+			return false
 		end
 	end
 end
@@ -574,7 +574,7 @@ end
 function RSConfigDB.SetContainerFiltered(containerID, value)
 	if (containerID) then
 		if (value == false) then
-			private.db.general.filteredContainers[containerID] = value
+			private.db.general.filteredContainers[containerID] = true
 		else
 			private.db.general.filteredContainers[containerID] = nil
 		end
@@ -736,7 +736,7 @@ end
 
 function RSConfigDB.IsEventFiltered(eventID)
 	if (eventID) then
-		return private.db.general.filteredEvents[eventID] == false
+		return private.db.general.filteredEvents[eventID]
 	end
 
 	return false
@@ -745,10 +745,10 @@ end
 function RSConfigDB.GetEventFiltered(eventID)
 	if (eventID) then
 		local value = private.db.general.filteredEvents[eventID]
-		if (value == nil) then
+		if (not value) then
 			return true
 		else
-			return value
+			return false
 		end
 	end
 end
@@ -756,7 +756,7 @@ end
 function RSConfigDB.SetEventFiltered(eventID, value)
 	if (eventID) then
 		if (value == false) then
-			private.db.general.filteredEvents[eventID] = false
+			private.db.general.filteredEvents[eventID] = true
 		else
 			private.db.general.filteredEvents[eventID] = nil
 		end

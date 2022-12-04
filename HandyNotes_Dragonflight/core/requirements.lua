@@ -113,21 +113,16 @@ function Item:IsMet() return ns.PlayerHasItem(self.id, self.count) end
 
 local Profession = Class('Profession', Requirement)
 
-function Profession:Initialize(profession, skillID)
-    self.profession = profession
-    self.text = C_TradeSkillUI.GetTradeSkillDisplayName(skillID)
+function Profession:Initialize(skillID, variantID, level)
+    self.skillID = skillID
+    self.variantID = variantID
+    self.level = level
+    self.text = C_TradeSkillUI.GetTradeSkillDisplayName(variantID or skillID)
+
+    if level then self.text = self.text .. ' (' .. level .. ')' end
 end
 
-function Profession:IsMet()
-    local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
-    local professions = {prof1, prof2, archaeology, fishing, cooking}
-    for i = 1, #professions do
-        if professions[i] ~= nil then
-            if self.profession == professions[i] then return true end
-        end
-    end
-    return false
-end
+function Profession:IsMet() return ns.PlayerHasProfession(self.skillID) end
 
 -------------------------------------------------------------------------------
 ------------------------------------ QUEST ------------------------------------

@@ -129,6 +129,14 @@ local slZones = {
 	[1670] = true,
 }
 
+local dfZones = {
+	[2022] = true,
+	[2023] = true,
+	[2024] = true,
+	[2025] = true,
+	[2112] = true,
+}
+
 function GatherMateData:PerformMerge(dbs,style, zoneFilter)
 	local filter = nil
 	if zoneFilter and type(zoneFilter) == "string" then
@@ -148,6 +156,8 @@ function GatherMateData:PerformMerge(dbs,style, zoneFilter)
 			filter = bfaZones
 		elseif zoneFilter == "SL" then
 			filter = slZones
+		elseif zoneFilter == "DF" then
+			filter = dfZones
 		end
 	end
 	if dbs["Mines"]    then self:MergeMines(style ~= "Merge",filter) end

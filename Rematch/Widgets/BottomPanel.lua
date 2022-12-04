@@ -46,7 +46,8 @@ end
 
 function panel:ButtonOnClick()
 	if self==panel.SummonButton then
-		rematch.PetListButtonOnDoubleClick(rematch.PetCard)
+		C_PetJournal.SummonPetByGUID(rematch.PetCard.petID)
+		rematch:HidePetCard()
 	elseif self==panel.SaveButton and settings.loadedTeam then
 		rematch:SetSideline(settings.loadedTeam,RematchSaved[settings.loadedTeam],true)
 		if rematch:SidelinePetsDifferentThan(settings.loadedTeam) then

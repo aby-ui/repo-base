@@ -11,10 +11,11 @@ local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
+local PetBattle = ns.node.PetBattle
+local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
 local Scoutpack = ns.node.Scoutpack
 local Treasure = ns.node.Treasure
-local PetBattle = ns.node.PetBattle
 
 local Achievement = ns.reward.Achievement
 local Item = ns.reward.Item
@@ -268,8 +269,8 @@ map.nodes[53627281] = Rare({ -- reqiured 67030 review
     id = 193123,
     quest = 69667,
     rewards = {
-        Achievement({id = 16677, criteria = 56072})
-        -- Transmog({item = , slot = L['']}) -- Name
+        Achievement({id = 16677, criteria = 56072}),
+        Transmog({item = 200216, slot = L['cloth']}) -- Water Heating Cord
     }
 }) -- Steamgill
 
@@ -354,63 +355,6 @@ map.nodes[72232306] = Rare({
 }) -- Zerimek
 
 -------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[59926696] = BonusBoss({
-    id = 193669,
-    quest = 72815,
-    rewards = {
-        Item({item = 200161, note = L['trinket']}) -- Razorwind Talisman
-    }
-}) -- Prozela Galeshot
-
-map.nodes[26366533] = BonusBoss({
-    id = 193153,
-    quest = 72845,
-    note = L['in_small_cave'],
-    rewards = {
-        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
-    }
-}) -- Ripsaw the Stalker
-
-map.nodes[44894924] = BonusBoss({
-    id = 192949,
-    quest = 72847, -- 70783
-    note = L['in_small_cave'],
-    rewards = {
-        Transmog({item = 200186, slot = L['mail']}) -- Amberquill Shroud
-    }
-}) -- Skaara
-
-map.nodes[63034854] = BonusBoss({
-    id = 193133,
-    quest = 72849,
-    note = L['in_waterfall_cave'],
-    rewards = {
-        Toy({item = 198409}) -- Personal Shell
-    }
-}) -- Sunscale Behemoth
-
-map.nodes[22956670] = BonusBoss({
-    id = 193163,
-    quest = 72851,
-    rewards = {
-        Transmog({item = 200212, slot = L['mail']}) -- Sand-Encrusted Greaves
-    }
-}) -- Territorial Coastling
-
-map.nodes[26073412] = BonusBoss({
-    id = 191354,
-    quest = 72852, -- 66970
-    note = L['in_cave'],
-    rewards = {
-        Transmog({item = 198429, slot = L['staff']}) -- Typhoon Bringer
-    },
-    pois = {POI({})}
-}) -- Ty'foon the Ascended
-
--------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
 -------------------------------------------------------------------------------
 
@@ -476,6 +420,170 @@ map.nodes[51985839] = Treasure({
         Toy({item = 200878}) -- Wheeled Floaty Boaty Controller
     }
 }) -- Yennu's Boat
+
+-------------------------------------------------------------------------------
+--------------------------------- BATTLE PETS ---------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[24384234] = PetBattle({
+    id = 197447,
+    rewards = {
+        Achievement({id = 16464, criteria = 55486}), -- Battle on the Dragon Isles
+        ns.reward.Spacer(),
+        Achievement({id = 16501, criteria = 7, oneline = true}), -- Aquatic
+        Achievement({id = 16503, criteria = 7, oneline = true}), -- Beast
+        Achievement({id = 16504, criteria = 7, oneline = true}), -- Critter
+        Achievement({id = 16505, criteria = 7, oneline = true}), -- Dragon
+        Achievement({id = 16506, criteria = 7, oneline = true}), -- Elemental
+        Achievement({id = 16507, criteria = 7, oneline = true}), -- Flying
+        Achievement({id = 16508, criteria = 7, oneline = true}), -- Humanoid
+        Achievement({id = 16509, criteria = 7, oneline = true}), -- Magic
+        Achievement({id = 16510, criteria = 7, oneline = true}), -- Mechanical
+        Achievement({id = 16511, criteria = 7, oneline = true}) -- Undead
+    }
+}) -- Stormamu
+
+map.nodes[61964159] = PetBattle({
+    id = 197102,
+    rewards = {
+        Achievement({id = 16464, criteria = 55492}), -- Battle on the Dragon Isles
+        ns.reward.Spacer(),
+        Achievement({id = 16501, criteria = 2, oneline = true}), -- Aquatic
+        Achievement({id = 16503, criteria = 2, oneline = true}), -- Beast
+        Achievement({id = 16504, criteria = 2, oneline = true}), -- Critter
+        Achievement({id = 16505, criteria = 2, oneline = true}), -- Dragon
+        Achievement({id = 16506, criteria = 2, oneline = true}), -- Elemental
+        Achievement({id = 16507, criteria = 2, oneline = true}), -- Flying
+        Achievement({id = 16508, criteria = 2, oneline = true}), -- Humanoid
+        Achievement({id = 16509, criteria = 2, oneline = true}), -- Magic
+        Achievement({id = 16510, criteria = 2, oneline = true}), -- Mechanical
+        Achievement({id = 16511, criteria = 2, oneline = true}) -- Undead
+    }
+}) -- Bakhushek
+
+-------------------------------------------------------------------------------
+---------------------------- BONUS OBJECTIVE BOSSES ---------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[59926696] = BonusBoss({
+    id = 193669,
+    quest = 72815,
+    rewards = {
+        Item({item = 200161, note = L['trinket']}) -- Razorwind Talisman
+    }
+}) -- Prozela Galeshot
+
+map.nodes[26366533] = BonusBoss({
+    id = 193153,
+    quest = 72845,
+    note = L['in_small_cave'],
+    rewards = {
+        Transmog({item = 200137, slot = L['dagger']}), -- Chitin Dreadbringer
+        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
+    }
+}) -- Ripsaw the Stalker
+
+map.nodes[44894924] = BonusBoss({
+    id = 192949,
+    quest = 72847, -- 70783
+    note = L['in_small_cave'],
+    rewards = {
+        Transmog({item = 200186, slot = L['mail']}) -- Amberquill Shroud
+    }
+}) -- Skaara
+
+map.nodes[63034854] = BonusBoss({
+    id = 193133,
+    quest = 72849, -- 69837
+    note = L['in_waterfall_cave'],
+    rewards = {
+        Toy({item = 198409}) -- Personal Shell
+    }
+}) -- Sunscale Behemoth
+
+map.nodes[22956670] = BonusBoss({
+    id = 193163,
+    quest = 72851, -- 66378
+    rewards = {
+        Transmog({item = 200212, slot = L['mail']}), -- Sand-Encrusted Greaves
+        Item({item = 197111, quest = 69312}) -- Highland Drake: Maned Head
+    }
+}) -- Territorial Coastling
+
+map.nodes[26073412] = BonusBoss({
+    id = 191354,
+    quest = 72852, -- 66970
+    note = L['in_cave'],
+    rewards = {
+        Transmog({item = 198429, slot = L['staff']}) -- Typhoon Bringer
+    },
+    pois = {POI({23573442})}
+}) -- Ty'foon the Ascended
+
+-------------------------------------------------------------------------------
+----------------------------- PROFESSION TREASURES ----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[25203540] = PT.Jewelcrafting({
+    id = 198670,
+    quest = 70282,
+    note = L['pt_jewel_lofty_malygite_note']
+}) -- Lofty Malygite
+
+map.nodes[35344012] = PT.Tailoring({
+    id = 198692,
+    quest = 70295,
+    note = L['pt_tailor_noteworthy_scrap_of_carpet_note']
+}) -- Noteworthy Scrap of Carpet
+
+map.nodes[50906650] = PT.Blacksmithing({
+    id = 201009,
+    quest = nil,
+    note = L['pt_smith_falconer_gauntlet_drawings_note']
+}) -- Falconer Gauntlet Drawings
+
+map.nodes[61406760] = PT.Enchanting({
+    id = 198689,
+    quest = 70291,
+    note = L['pt_ench_stormbound_horn_note']
+}) -- Stormbound Horn
+
+map.nodes[61801300] = PT.Jewelcrafting({
+    id = 198660,
+    quest = 70263,
+    note = L['pt_jewel_fragmented_key_note']
+}) -- Fragmented Key
+
+map.nodes[66105290] = PT.Tailoring({
+    id = 201020,
+    quest = 70303,
+    note = L['pt_tailor_silky_surprise_note']
+}) -- Silky Surprise
+
+map.nodes[79208380] = PT.Alchemy({
+    id = 198710,
+    quest = nil,
+    note = L['pt_alch_canteen_of_suspicious_water_note']
+}) -- Canteen Of Suspicious Water
+
+map.nodes[81103790] = PT.Blacksmithing({
+    id = 201004,
+    quest = nil,
+    note = L['pt_smith_ancient_spear_shards_note'],
+    pois = {POI({79403650})}
+}) -- Ancient Spear Shards
+
+map.nodes[85702520] = PT.Inscription({
+    id = 198703,
+    quest = nil,
+    note = L['pt_script_sign_language_reference_sheet_note']
+}) -- Sign Language Reference Sheet
+
+map.nodes[86405370] = PT.Leatherworking({
+    id = 198696,
+    quest = nil,
+    note = L['pt_leath_wind_blessed_hide_note']
+}) -- Wind-Blessed Hide
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -649,46 +757,109 @@ map.nodes[64028081] = Scoutpack()
 map.nodes[65021064] = Scoutpack()
 map.nodes[66798258] = Scoutpack()
 map.nodes[91393390] = Scoutpack()
+map.nodes[43335647] = Scoutpack()
+map.nodes[23944019] = Scoutpack()
 
 -------------------------------------------------------------------------------
---------------------------------- BATTLE PETS ---------------------------------
+----------------------------- HONOR OUR ANCESTORS -----------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[24384234] = PetBattle({
-    id = 197447,
-    rewards = {
-        Achievement({id = 16464, criteria = 55486}), -- Battle on the Dragon Isles
-        ns.reward.Spacer(),
-        Achievement({id = 16501, criteria = 7, oneline = true}), -- Aquatic
-        Achievement({id = 16503, criteria = 7, oneline = true}), -- Beast
-        Achievement({id = 16504, criteria = 7, oneline = true}), -- Critter
-        Achievement({id = 16505, criteria = 7, oneline = true}), -- Dragon
-        Achievement({id = 16506, criteria = 7, oneline = true}), -- Elemental
-        Achievement({id = 16507, criteria = 7, oneline = true}), -- Flying
-        Achievement({id = 16508, criteria = 7, oneline = true}), -- Humanoid
-        Achievement({id = 16509, criteria = 7, oneline = true}), -- Magic
-        Achievement({id = 16510, criteria = 7, oneline = true}), -- Mechanical
-        Achievement({id = 16511, criteria = 7, oneline = true}) -- Undead
-    }
-}) -- Stormamu
+local Ancestor = Class('Ancestor', Collectible, {
+    icon = 135946,
+    note = L['ancestor_note'],
+    group = ns.groups.ANCESTOR,
+    pois = {POI({85702073})} -- Essence of Awakening
+})
 
-map.nodes[61964159] = PetBattle({
-    id = 197102,
-    rewards = {
-        Achievement({id = 16464, criteria = 55492}), -- Battle on the Dragon Isles
-        ns.reward.Spacer(),
-        Achievement({id = 16501, criteria = 2, oneline = true}), -- Aquatic
-        Achievement({id = 16503, criteria = 2, oneline = true}), -- Beast
-        Achievement({id = 16504, criteria = 2, oneline = true}), -- Critter
-        Achievement({id = 16505, criteria = 2, oneline = true}), -- Dragon
-        Achievement({id = 16506, criteria = 2, oneline = true}), -- Elemental
-        Achievement({id = 16507, criteria = 2, oneline = true}), -- Flying
-        Achievement({id = 16508, criteria = 2, oneline = true}), -- Humanoid
-        Achievement({id = 16509, criteria = 2, oneline = true}), -- Magic
-        Achievement({id = 16510, criteria = 2, oneline = true}), -- Mechanical
-        Achievement({id = 16511, criteria = 2, oneline = true}) -- Undead
+map.nodes[75934205] = Ancestor({
+    id = 197051,
+    requires = ns.requirement.Item(194690), -- Horn o' Mead
+    rewards = {Achievement({id = 16423, criteria = 55304})}
+}) -- Horn of Drusahl
+
+map.nodes[60323806] = Ancestor({
+    id = 197048,
+    requires = ns.requirement.Item(197776), -- Thrice-Spiced Mammoth Kabob
+    rewards = {Achievement({id = 16423, criteria = 55302})}
+}) -- Maruukai
+
+map.nodes[54377841] = Ancestor({
+    id = 197056,
+    requires = ns.requirement.Item(202071), -- Elemental Mote
+    rewards = {Achievement({id = 16423, criteria = 55309})}
+}) -- Ohn'iri Springs
+
+map.nodes[85174935] = Ancestor({
+    id = 197053,
+    requires = ns.requirement.Item(193470), -- Feral Hide Drums
+    rewards = {Achievement({id = 16423, criteria = 55306})},
+    pois = {
+        POI({85702073}), -- Essence of Awakening
+        Path({84504840, 84874867, 85174935, 85905011})
     }
-}) -- Bakhushek
+}) -- Shikaar Highlands
+
+map.nodes[63275731] = Ancestor({
+    id = 197055,
+    requires = ns.requirement.Item(197788, 2), --  Braised Bruffalon Brisket
+    rewards = {Achievement({id = 16423, criteria = 55308})}
+}) -- Sylvan Glade
+
+map.nodes[41655690] = Ancestor({
+    id = 197057,
+    requires = ns.requirement.Item(190501), -- Primal Molten Greatbelt
+    rewards = {Achievement({id = 16423, criteria = 55310})}
+}) -- Teerakai
+
+map.nodes[74057046] = Ancestor({
+    id = 197054,
+    requires = ns.requirement.Item(190327), -- Awakened Air
+    rewards = {Achievement({id = 16423, criteria = 55307})},
+    pois = {
+        POI({85702073}), -- Essence of Awakening
+        Path({
+            74427207, 74267178, 74307116, 74697041, 74747013, 74686969,
+            74386964, 74266983, 74247031, 74057046, 73787063, 73667084,
+            73617122, 73927161, 74147214, 74427207
+        })
+    }
+}) -- The Carving Winds
+
+map.nodes[32356934] = Ancestor({
+    id = 197058,
+    requires = ns.requirement.Item(191470, 5), -- Writhebark
+    rewards = {Achievement({id = 16423, criteria = 55311})},
+    pois = {
+        POI({85702073}), -- Essence of Awakening
+        Path({32967236, 32977116, 32606972, 32356934, 31476857, 31126843})
+    }
+}) -- The Eternal Kurgans
+
+map.nodes[84692429] = Ancestor({
+    id = 197050,
+    requires = ns.requirement.Item(200018), -- Enchant Boots - Plainsrunner's Breeze
+    rewards = {Achievement({id = 16423, criteria = 55303})},
+    pois = {
+        POI({85702073}), -- Essence of Awakening
+        Path({
+            84692279, 84662303, 84932349, 84902372, 84692429, 84812453,
+            84952466, 85192541, 85182565, 84892587, 84572629, 84172642, 84022698
+        })
+    }
+}) -- Timberstep Outpost
+
+map.nodes[73305513] = Ancestor({
+    id = 197052,
+    requires = ns.requirement.Item(202070), -- Exceptional Pelt
+    rewards = {Achievement({id = 16423, criteria = 55305})},
+    pois = {
+        POI({85702073}), -- Essence of Awakening
+        Path({
+            72675702, 72725683, 72575648, 72375653, 72225633, 72285582,
+            72495567, 72775575, 73175517, 73305513, 73875547, 74325605
+        })
+    }
+}) -- Toghusuq Village
 
 -------------------------------------------------------------------------------
 ----------------------------- SLEEPING ON THE JOB -----------------------------
@@ -697,14 +868,12 @@ map.nodes[61964159] = PetBattle({
 local Dreamguard = Class('Dreamguard', Collectible, {
     icon = 341763,
     note = L['dreamguard_note'],
-    group = ns.groups.DREAMGUARDS
+    group = ns.groups.DREAMGUARD
 })
 
 map.nodes[29796222] = Dreamguard({
     id = 198068,
-    rewards = {
-        Achievement({id = 16574, criteria = 55777}) -- Sleeping on the Job
-    },
+    rewards = {Achievement({id = 16574, criteria = 55777})},
     pois = {
         POI({29696022}) -- Entrance
     }
@@ -712,44 +881,129 @@ map.nodes[29796222] = Dreamguard({
 
 map.nodes[25256527] = Dreamguard({
     id = 198069,
-    rewards = {
-        Achievement({id = 16574, criteria = 55778}) -- Sleeping on the Job
-    }
+    rewards = {Achievement({id = 16574, criteria = 55778})}
 }) -- Dreamguard Sayliasra
 
 map.nodes[19128296] = Dreamguard({
     id = 198073,
-    rewards = {
-        Achievement({id = 16574, criteria = 55780}) -- Sleeping on the Job
-    }
+    rewards = {Achievement({id = 16574, criteria = 55780})}
 }) -- Dreamguard Lucidra
 
 map.nodes[18125388] = Dreamguard({
     id = 198074,
-    rewards = {
-        Achievement({id = 16574, criteria = 55779}) -- Sleeping on the Job
-    }
+    rewards = {Achievement({id = 16574, criteria = 55779})}
 }) -- Dreamguard Aiyelasra
 
 map.nodes[29434138] = Dreamguard({
     id = 198075,
-    rewards = {
-        Achievement({id = 16574, criteria = 55781}) -- Sleeping on the Job
-    }
+    rewards = {Achievement({id = 16574, criteria = 55781})}
 }) -- Dreamguard Taelyasra
 
 map.nodes[33555322] = Dreamguard({
     id = 198064,
-    rewards = {
-        Achievement({id = 16574, criteria = 55776}) -- Sleeping on the Job
-    }
+    rewards = {Achievement({id = 16574, criteria = 55776})}
 }) -- Dreamguard Felyasra
+
+-------------------------------------------------------------------------------
+--------------------------------- DRAGONRACES ---------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[63743051] = ns.node.Dragonrace({
+    label = '{quest:66835}',
+    normal = {2060, 52, 44},
+    advanced = {2061, 46, 41},
+    rewards = {
+        Achievement({id = 15918, criteria = 1, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 1, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 1, oneline = true}), -- normal gold
+        Achievement({id = 15930, criteria = 1, oneline = true}), -- advanced bronze
+        Achievement({id = 15931, criteria = 1, oneline = true}), -- advanced silver
+        Achievement({id = 15932, criteria = 1, oneline = true}) -- advanced gold
+    }
+}) -- Sundapple Copse Circuit
+
+map.nodes[86263583] = ns.node.Dragonrace({
+    label = '{quest:66877}',
+    normal = {2062, 51, 44},
+    advanced = {2063, 46, 41},
+    rewards = {
+        Achievement({id = 15918, criteria = 2, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 2, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 2, oneline = true}), -- normal gold
+        Achievement({id = 15930, criteria = 2, oneline = true}), -- advanced bronze
+        Achievement({id = 15931, criteria = 2, oneline = true}), -- advanced silver
+        Achievement({id = 15932, criteria = 2, oneline = true}) -- advanced gold
+    }
+}) -- Fen Flythrough
+
+map.nodes[80887221] = ns.node.Dragonrace({
+    label = '{quest:66880}',
+    normal = {2064, 52, 50},
+    advanced = {2065, 52, 47},
+    rewards = {
+        Achievement({id = 15918, criteria = 3, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 3, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 3, oneline = true}), -- normal gold
+        Achievement({id = 15930, criteria = 3, oneline = true}), -- advanced bronze
+        Achievement({id = 15931, criteria = 3, oneline = true}), -- advanced silver
+        Achievement({id = 15932, criteria = 3, oneline = true}) -- advanced gold
+    }
+}) -- Ravine River Run
+
+map.nodes[25715508] = ns.node.Dragonrace({
+    label = '{quest:66885}',
+    normal = {2066, 66, 59},
+    advanced = {2067, 60, 55},
+    rewards = {
+        Achievement({id = 15918, criteria = 4, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 4, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 4, oneline = true}), -- normal gold
+        Achievement({id = 15930, criteria = 4, oneline = true}), -- advanced bronze
+        Achievement({id = 15931, criteria = 4, oneline = true}), -- advanced silver
+        Achievement({id = 15932, criteria = 4, oneline = true}) -- advanced gold
+    }
+}) -- Emerald Garden Ascent
+
+map.nodes[59933555] = ns.node.Dragonrace({
+    label = '{quest:66921}',
+    normal = {2069, 28, 25},
+    rewards = {
+        Achievement({id = 15918, criteria = 5, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 5, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 5, oneline = true}) -- normal gold
+    }
+}) -- Maruukai Dash
+
+map.nodes[47487064] = ns.node.Dragonrace({
+    label = '{quest:66933}',
+    normal = {2070, 29, 26},
+    rewards = {
+        Achievement({id = 15918, criteria = 6, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 6, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 6, oneline = true}) -- normal gold
+    }
+}) -- Mirror of Sky Dash
+
+map.nodes[43746678] = ns.node.Dragonrace({
+    label = '{quest:70710}',
+    normal = {2119, 51, 46},
+    advanced = {2120, 48, 43},
+    rewards = {
+        Achievement({id = 15918, criteria = 7, oneline = true}), -- normal bronze
+        Achievement({id = 15919, criteria = 7, oneline = true}), -- normal silver
+        Achievement({id = 15920, criteria = 7, oneline = true}), -- normal gold
+        Achievement({id = 15930, criteria = 5, oneline = true}), -- advanced bronze
+        Achievement({id = 15931, criteria = 5, oneline = true}), -- advanced silver
+        Achievement({id = 15932, criteria = 5, oneline = true}) -- advanced gold
+    }
+}) -- River Rapids Route
 
 -------------------------------------------------------------------------------
 ------------------------- LIZI, THUNDERSPINE TRAMPLER -------------------------
 -------------------------------------------------------------------------------
 
 -- https://www.wowhead.com/news/lizi-thunderspine-trampler-nurse-a-thunderspine-to-health-for-a-mount-in-328734
+-- Daily completion: 71203
 
 local Lizi = Class('Lizi', Collectible, {
     id = 190014, -- Initiate Radiya

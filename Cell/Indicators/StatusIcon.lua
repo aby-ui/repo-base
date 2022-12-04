@@ -61,6 +61,7 @@ end)
 function I:CreateStatusIcon(parent)
     local statusIcon = CreateFrame("Frame", parent:GetName().."StatusIcon", parent.widget.overlayFrame)
     parent.indicators.statusIcon = statusIcon
+    statusIcon:SetIgnoreParentAlpha(true)
     statusIcon:Hide()
 
     statusIcon.tex = statusIcon:CreateTexture(nil, "OVERLAY")

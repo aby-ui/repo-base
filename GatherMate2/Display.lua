@@ -483,10 +483,13 @@ function Display:addMiniPin(pin, refresh)
 		pin.texture:SetTexture(trackingCircle)
 		local t = db.trackColors[pin.nodeType]
 		pin.texture:SetVertexColor(t.Red, t.Green, t.Blue, t.Alpha)
-		pin:SetHeight(10 / minimapScale)
-		pin:SetWidth(10 / minimapScale)
+		pin:SetHeight(12 / minimapScale)
+		pin:SetWidth(12 / minimapScale)
 		pin.isCircle = true
 		pin.texture:SetTexCoord(0, 1, 0, 1)
+		pin.texture:ClearAllPoints()
+		pin.texture:SetPoint("TOPLEFT", -1, 1)
+		pin.texture:SetPoint("BOTTOMRIGHT", -1, 1)
 	-- if distance > 100, set back to the node texture
 	elseif (pin.isCircle or refresh) and dist_2 > db.trackDistance^2 then
 		pin:SetHeight(12 * db.miniscale / minimapScale)
@@ -494,6 +497,8 @@ function Display:addMiniPin(pin, refresh)
 		pin.texture:SetTexture(nodeTextures[pin.nodeType][pin.nodeID])
 		pin.texture:SetVertexColor(1, 1, 1, 1)
 		pin.texture:SetTexCoord(0, 1, 0, 1)
+		pin.texture:ClearAllPoints()
+		pin.texture:SetAllPoints()
 		pin.isCircle = false
 	end
 

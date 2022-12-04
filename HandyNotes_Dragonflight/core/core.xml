@@ -14,6 +14,7 @@
   <Script file="nodes.lua"/>
   <Script file="rewards.lua"/>
   <Script file="templates.lua"/>
+  <Script file="tomtom.lua"/>
   <Script file="pois.lua"/>
 
   <!-- Must be outside of core/ for dev purposes -->

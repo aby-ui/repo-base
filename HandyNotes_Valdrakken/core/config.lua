@@ -98,6 +98,12 @@ config.options = {
                             name = "",
                             order = 35,
                         },
+                        dont_show_minimap = {
+                            type = "toggle",
+                            width = "full",
+                            name = LOCALE_zhCN and "不显示小地图按钮" or "Hide minimap icons",
+                            order = 35.9,
+                        },
                         easy_waypoint = {
                             type = "toggle",
                             width = 1.57,

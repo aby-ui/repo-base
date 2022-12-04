@@ -49,60 +49,43 @@ local function CheckBadDB()
         Check if the database has been corrupted by a bad update or going
         back too many versions.
     ]]
+    local showPopup = false
+    -- If the database is older than 1.2
+    if CanIMogIt.db.global.databaseVersion and CanIMogIt.db.global.databaseVersion < 1.2 then
+        showPopup = true
+    end
+    -- if there are broken keys in the database
     if CanIMogIt.db.global.appearances and CanIMogIt.db.global.databaseVersion then
         for key, _ in pairs(CanIMogIt.db.global.appearances) do
             if IsBadKey(key) then
-                StaticPopupDialogs["CANIMOGIT_BAD_DATABASE"] = {
-                    text = "Can I Mog It?" .. "\n\n" .. L["Sorry! Your database has corrupted entries. This will cause errors and give incorrect results. Please click below to reset the database."],
-                    button1 = L["Okay"],
-                    button2 = L["Ask me later"],
-                    OnAccept = function () CanIMogIt:DBReset() end,
-                    timeout = 0,
-                    whileDead = true,
-                    hideOnEscape = true,
-                    preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
-                }
-                --StaticPopup_Show("CANIMOGIT_BAD_DATABASE")
-                CanIMogIt:DBReset()
-                return
+                showPopup = true
             end
         end
+    end
+    if showPopup then
+        StaticPopupDialogs["CANIMOGIT_BAD_DATABASE"] = {
+            text = "Can I Mog It?" .. "\n\n" .. L["Sorry! Your database has corrupted entries. This will cause errors and give incorrect results. Please click below to reset the database."],
+            button1 = L["Okay"],
+            button2 = L["Ask me later"],
+            OnAccept = function () CanIMogIt:DBReset() end,
+            timeout = 0,
+            whileDead = true,
+            hideOnEscape = true,
+            preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+        }
+        --StaticPopup_Show("CANIMOGIT_BAD_DATABASE")
+        CanIMogIt:DBReset()
     end
 end
 
 
 local function UpdateTo1_1()
-    local appearancesTable = CanIMogIt.Utils.copyTable(CanIMogIt.db.global.appearances)
-    for appearanceID, appearance in pairs(appearancesTable) do
-        local sources = appearance.sources
-        for sourceID, source in pairs(sources) do
-            -- Get the appearance hash for the source
-            local itemLink = CanIMogIt:GetItemLinkFromSourceID(sourceID)
-            local hash = CanIMogIt:GetAppearanceHash(appearanceID, itemLink)
-            -- Add the source to the appearances with the new hash key
-            if not CanIMogIt.db.global.appearances[hash] then
-                CanIMogIt.db.global.appearances[hash] = {
-                    ["sources"] = {},
-                }
-            end
-            CanIMogIt.db.global.appearances[hash].sources[sourceID] = source
-        end
-        -- Remove the old one
-        CanIMogIt.db.global.appearances[appearanceID] = nil
-    end
+    return
 end
 
 
 local function UpdateTo1_2()
-    for hash, sources in pairs(CanIMogIt.db.global.appearances) do
-        for sourceID, source in pairs(sources["sources"]) do
-            local itemLink = CanIMogIt:GetItemLinkFromSourceID(sourceID)
-            local appearanceID = CanIMogIt:GetAppearanceIDFromSourceID(sourceID)
-            if sourceID and appearanceID and itemLink then
-                CanIMogIt:_DBSetItem(itemLink, appearanceID, sourceID)
-            end
-        end
-    end
+    return
 end
 
 
@@ -121,25 +104,22 @@ end
 
 
 local function UpdateDatabase()
-    if not CanIMogIt.db.global.databaseVersion then
-        CanIMogIt.db.global.databaseVersion = 1.0
-    end
-    if  CanIMogIt.db.global.databaseVersion < 1.1 then
-        UpdateToVersion(1.1)
-    end
-    if CanIMogIt.db.global.databaseVersion < 1.2 then
-        CanIMogIt.CreateMigrationPopup("CANIMOGIT_DB_MIGRATION_1_2", function () UpdateToVersion(1.2) end)
-    end
+    -- Disabled due to a bug. Anything below 1.2 is also many years old, so not worried about it.
+    -- if CanIMogIt.db.global.databaseVersion < 1.2 then
+    --     CanIMogIt.CreateMigrationPopup("CANIMOGIT_DB_MIGRATION_1_2", function () UpdateToVersion(1.2) end)
+    -- end
+    CanIMogIt.db.global.databaseVersion = CanIMogIt_DatabaseVersion
 end
 
 
 local function UpdateDatabaseIfNeeded()
     CheckBadDB()
     if next(CanIMogIt.db.global.appearances) and
-            (not CanIMogIt.db.global.databaseVersion
+            (CanIMogIt.db.global.databaseVersion == nil
             or CanIMogIt.db.global.databaseVersion < CanIMogIt_DatabaseVersion) then
         UpdateDatabase()
-    else
+    end
+    if CanIMogIt.db.global.databaseVersion == nil then
         -- There is no database, add the default.
         CanIMogIt.db.global.databaseVersion = CanIMogIt_DatabaseVersion
     end
@@ -148,7 +128,7 @@ end
 
 function CanIMogIt:OnInitialize()
     if (not CanIMogItDatabase) then
-        --163ui StaticPopup_Show("CANIMOGIT_NEW_DATABASE")
+        --abyui StaticPopup_Show("CANIMOGIT_NEW_DATABASE")
     end
     self.db = LibStub("AceDB-3.0"):New("CanIMogItDatabase", default)
 end

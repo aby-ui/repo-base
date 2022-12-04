@@ -1046,6 +1046,9 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 
 			-- �ptionsfunc ~optionsfunc
 			local options_on_click = function(_, _, option, value, value2, mouseButton)
+				if (option == "use_tracker") then
+					C_Timer.After(0, WorldQuestTracker.RefreshTrackerAnchor)
+				end
 
 				if (option == "accessibility") then
 					if (value == "extra_tracking_indicator") then

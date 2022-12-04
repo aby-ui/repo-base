@@ -271,9 +271,8 @@ hooksecurefunc(F, "RunSnippets", function()
 
     I:UpdateCustomDefensives({
         6940, -- PALADIN 牺牲祝福,自身也有
-        199754, -- ROGUE, 还击 2min 招架提高100% 狂徒贼替代闪避
         45182, -- ROGUE, 装死 buff 6min 3s
-        327140, -- 炉脉幻想
+        --327140, -- 炉脉幻想
         --320227, -- 灵种
     })
     I:UpdateCustomExternals({

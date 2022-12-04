@@ -54,7 +54,10 @@ function PackButton:New(parent)
 		local frameID = self:GetParent().frameID
         _G.TDPACK_IGNORE_BAGS_NO_BANK = nil
 
-        if button == "RightButton" and not IsModifierKeyDown() then
+        if (button == "RightButton" and not IsModifierKeyDown()) --设置
+                or (button == "LeftButton" and IsShiftKeyDown()) --保存到银行（不整理）
+                or (button == "LeftButton" and IsControlKeyDown()) --从银行取出（不整理）
+        then
             self:OnClick(button)
 
         elseif button == "MiddleButton" then

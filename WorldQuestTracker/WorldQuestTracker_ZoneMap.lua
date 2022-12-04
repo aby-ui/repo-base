@@ -1657,7 +1657,7 @@ if (bountyBoard) then
 
 		local tabs = self.bountyTabPool
 
-		for bountyIndex, bounty in ipairs(self.bounties) do
+		for bountyIndex, bounty in ipairs(self.bounties or {}) do
 			local bountyButton
 			for button, _ in pairs (tabs.activeObjects) do
 				if (button.bountyIndex == bountyIndex) then

@@ -12,6 +12,7 @@ CopyFriendList.lua
 ExtraActionButton.lua
 FiveCombo.lua
 FriendsGuildTab.lua
+FriendsMenuXPSimple.lua
 GuildRosterButtons.lua
 PingPing.lua
 ProfessionTabs.lua

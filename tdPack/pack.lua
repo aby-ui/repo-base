@@ -205,6 +205,7 @@ function Pack:PackFinish()
 	TDPACK_IGNORE_BAGS = nil
 	TDPACK_IGNORE_BAGS_NO_BANK = nil
     TDPACK_ONLY_REAGENT = nil
+    TDPACK_ONLY_STACK = nil
 end
 
 ------ status
@@ -226,9 +227,15 @@ function Pack:StatusStacking()
     if not self:Stack() then
         return
     end
-    
-    self:SetStatus(STATUS_STACKED)
-    self:StackFinish()
+
+    if TDPACK_ONLY_STACK then
+        self:StackFinish()
+        self:SetStatus(STATUS_PACKED)
+        self:PackFinish()
+    else
+        self:SetStatus(STATUS_STACKED)
+        self:StackFinish()
+    end
 end
 
 function Pack:StatusStacked()

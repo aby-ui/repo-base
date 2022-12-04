@@ -3103,6 +3103,14 @@ function EAFun_HookTooltips()
 	end
 	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, addSpellID)
 	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, addSpellID)
+	hooksecurefunc(GameTooltip, "SetPetAction", function(self, slot)
+		if IsAddOnLoaded("TipTacItemRef") then return end
+		local name, texture, isToken, isActive, autoCastAllowed, autoCastEnabled, spellID = GetPetActionInfo(slot); -- see PetActionBar_Update() in "PetActionBarFrame.lua"
+		if (spellID) then
+			self:AddDoubleLine(EX_XCLSALERT_SPELL,spellID)
+			self:Show()
+		end
+	end)
 end
 -----------------------------------------------------------------
 -- For OrderWtd, to sort the order of the buffs/debuffs.

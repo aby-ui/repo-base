@@ -1007,6 +1007,7 @@ ImportHelper.expac_data = {
 	["LEGION"] = L["Legion"],
 	["BFA"] = L["Battle for Azeroth"],
 	["SL"] = L["Shadowlands"],
+	["DF"] = L["Dragonflight"],
 }
 imported["GatherMate2_Data"] = false
 importOptions.args.GatherMateData = {

@@ -231,8 +231,10 @@ function tdPack:Pack(...)
             elseif arg == 'desc' then
                 self:SetReversePack(true)
             elseif arg == 'load' then
+                TDPACK_ONLY_STACK = true
                 self:SetLoadToBag(true)
             elseif arg == 'save' then
+                TDPACK_ONLY_STACK = true
                 self:SetSaveToBank(true)
             end
         end

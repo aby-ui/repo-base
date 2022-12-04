@@ -6,7 +6,7 @@
 	<Script file="DeathKnight\HornOfWinter.lua"/>
 
 	<Script file="Druid\ShapeShift.lua"/>	
-	<!--<Script file="Druid\MarkOfTheWild.lua"/>-->
+	<Script file="Druid\MarkOfTheWild.lua"/>
 
 	<Script file="Hunter\Pets.lua"/>
 	<Script file="Hunter\Traps.lua"/>

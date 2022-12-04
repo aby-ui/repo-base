@@ -1,5 +1,5 @@
 -- Localization
-local L = wMarkerLocals
+local L = wMarkerLocales
 
 -------------------------------------------------------
 -- Ace Options Table
@@ -451,9 +451,15 @@ wMarkerAce.options = {
 				},
 				simplifiedChineseText = {
 					type = "description",
-					name = string.format("|cff69ccf0%s|r - %s","Simplified Chinese-zhCN","zhTW, dll32"),
+					name = string.format("|cff69ccf0%s|r - %s","Simplified Chinese-zhCN","dll32"),
 					width = "full",
 					order = 55,
+				},
+				koreanText = {
+					type = "description",
+					name = string.format("|cff69ccf0%s|r - %s","Koreak-koKR","cyberyahoo2"),
+					width = "full",
+					order = 60,
 				},
 			},
 		},

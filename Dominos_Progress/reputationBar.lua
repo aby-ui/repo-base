@@ -6,7 +6,7 @@ local PARAGON_FACTION_COLOR_INDEX = #FACTION_BAR_COLORS
 local MAX_REPUTATION_REACTION = _G.MAX_REPUTATION_REACTION
 local L = LibStub('AceLocale-3.0'):GetLocale('Dominos-Progress')
 
-local GetFriendshipReputation = GetFriendshipReputation
+local GetFriendshipReputation = C_GossipInfo.GetFriendshipReputation
 if not GetFriendshipReputation then
     GetFriendshipReputation = function()
         return
@@ -34,7 +34,7 @@ function ReputationBar:Update()
         return
     end
 
-    local description, colorIndex, capped
+    local description, colorIndex, capped, colorDirect
 
     if IsFactionParagon(factionID) then
         local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
@@ -44,9 +44,10 @@ function ReputationBar:Update()
         description = L.Paragon
         capped = false
     else
-        local friendID, friendRep, _, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+        local info = GetFriendshipReputation(factionID)
+        local friendID, friendRep, _, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = info.friendshipFactionID, info.standing, nil, nil, nil, nil, info.reaction, info.reactionThreshold, info.nextThreshold
 
-        if friendID then
+        if friendID > 0 then
             if nextFriendThreshold then
                 min, max, value = friendThreshold, nextFriendThreshold, friendRep
             else
@@ -56,6 +57,13 @@ function ReputationBar:Update()
 
             colorIndex = FRIEND_FACTION_COLOR_INDEX
             description = friendTextLevel
+        elseif C_Reputation.IsMajorFaction(factionID) then
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID); --2510
+            min, max, value = 0, majorFactionData.renownLevelThreshold, majorFactionData.renownReputationEarned
+            capped = C_MajorFactions.HasMaximumRenown(factionID);
+            value = capped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0;
+            colorDirect = BLUE_FONT_COLOR
+            description = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel;
         else
             if reaction == MAX_REPUTATION_REACTION then
                 min, max, value = 0, 1, 1
@@ -70,7 +78,7 @@ function ReputationBar:Update()
     max = max - min
     value = value - min
 
-    local color = FACTION_BAR_COLORS[colorIndex]
+    local color = colorDirect or FACTION_BAR_COLORS[colorIndex]
     self:SetColor(color.r, color.g, color.b)
     self:SetValues(value, max)
     self:UpdateText(name, value, max, description, capped)

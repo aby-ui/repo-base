@@ -5,9 +5,9 @@ local Language = GetLocale()
 
 if (Language=="enGB") or (Language=="enUS") then
 
-wMarkerLocals = {}
+wMarkerLocales = {}
 
-wMarkerLocals = {
+wMarkerLocales = {
 
 -- Icons
 ["Skull"] = "Skull",
