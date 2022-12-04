@@ -540,6 +540,7 @@ frame:SetScript("OnEvent", function(self, event, unit, spell)
 
 	elseif event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "ACTIVE_PLAYER_SPECIALIZATION_CHANGED" then
 		UpdateSpec()
+		UpdateSpellData()
 
 	elseif event == "SPELLS_CHANGED" then
 		if not unit then
