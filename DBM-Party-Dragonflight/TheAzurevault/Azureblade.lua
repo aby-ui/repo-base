@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2505, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128214658")
+mod:SetRevision("20221206015003")
 mod:SetCreatureID(186739)
 mod:SetEncounterID(2585)
 --mod:SetUsedIcons(1, 2, 3)
@@ -56,8 +56,8 @@ end
 
 function mod:OnCombatStart(delay)
 	timerSummonDraconicImageCD:Start(3.7-delay)
-	timerArcaneCleaveCD:Start(5.2-delay)--6.1
-	timerAncientOrbCD:Start(10.1-delay)--11.021
+	timerArcaneCleaveCD:Start(5-delay)
+	timerAncientOrbCD:Start(10.1-delay)
 	timerOverwhelmingenergyCD:Start(24.3-delay)
 end
 
@@ -110,9 +110,9 @@ end
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 384132 then--Overwhelming Energy
-		timerSummonDraconicImageCD:Start(4.7)--4.7-5.4
-		timerArcaneCleaveCD:Start(7.1)--7.1-7.8
-		timerAncientOrbCD:Start(12)--12-12.7
+		timerSummonDraconicImageCD:Start(4.7)--4.7-5.7
+		timerArcaneCleaveCD:Start(7.1)--7.1-8.1
+		timerAncientOrbCD:Start(12)--12-13
 		timerOverwhelmingenergyCD:Start(43.3)
 	end
 end

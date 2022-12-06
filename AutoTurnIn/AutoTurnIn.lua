@@ -620,6 +620,9 @@ end
 -- Cases when it may not : (addon is enabled and toggle key was pressed) or (addon is disabled and toggle key is not pressed)
 -- 'forcecheck' does what it name says: forces check
 function AutoTurnIn:AllowedToHandle(forcecheck)
+	-- workaround for https://zygorguides.com/forum/forum/technical-support/zygor-guide-viewer/190851-new-lua-error-addon_action-blocked
+	-- Currently, blizzard UI fails to properly check in-combat. This is to enforce the checks (hopefully)
+	self.allowed = not InCombatLockdown()
 	if ( self.allowed == nil or forcecheck ) then
 		-- Double 'not' converts possible 'nil' to boolean representation
 		local IsModifiedClick = not not self.funcList[db.togglekey]()

@@ -1,19 +1,18 @@
 local mod	= DBM:NewMod(2474, "DBM-Party-Dragonflight", 1, 1196)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221120050352")
+mod:SetRevision("20221206015003")
 mod:SetCreatureID(186121)
 mod:SetEncounterID(2569)
 mod:SetUsedIcons(8)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221505000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 373960 376170",
-	"SPELL_CAST_SUCCESS 373917",
+	"SPELL_CAST_START 373960 376170 373912",
 	"SPELL_SUMMON 373944",
 	"SPELL_AURA_APPLIED 373896",
 	"SPELL_AURA_APPLIED_DOSE 373896",
@@ -23,8 +22,12 @@ mod:RegisterEventsInCombat(
 --	"SPELL_PERIODIC_MISSED",
 )
 
---TODO, correct Lifewater trigger (and remove it if it's hella spammy)
---TODO, proper decay strike trigger/CD
+--[[
+(ability.id = 373960 or ability.id = 376170 or ability.id = 373912) and type = "begincast"
+ or ability.id = 373944 and type = "summon"
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
+--TODO, longer pulls for decaying strength timer
 local warnDecayigStrength						= mod:NewSpellAnnounce(373960, 3)
 
 local specWarnRotburstTotem						= mod:NewSpecialWarningSwitch(373944, nil, nil, nil, 1, 2)
@@ -32,10 +35,10 @@ local specWarnChokingRotcloud					= mod:NewSpecialWarningDodge(376170, nil, nil,
 local specWarnDecaystrike						= mod:NewSpecialWarningDefensive(373917, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerDecayingStrengthCD					= mod:NewAITimer(35, 373960, nil, nil, nil, 2)
-local timerRotburstTotemCD						= mod:NewAITimer(35, 373944, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerChokingRotcloutCD					= mod:NewAITimer(35, 376170, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
-local timerDecayStrikeCD						= mod:NewAITimer(35, 373917, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerDecayingStrengthCD					= mod:NewCDTimer(35, 373960, nil, nil, nil, 2)
+local timerRotburstTotemCD						= mod:NewCDTimer(18.2, 373944, nil, nil, nil, 1, nil, DBM_COMMON_L.DAMAGE_ICON)--18-21
+local timerChokingRotcloutCD					= mod:NewCDTimer(42.5, 376170, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerDecayStrikeCD						= mod:NewCDTimer(19.4, 373917, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -49,11 +52,12 @@ mod.vb.waterCount = 0
 function mod:OnCombatStart(delay)
 	table.wipe(WitheringRotStacks)
 	self.vb.waterCount = 0
-	timerDecayingStrengthCD:Start(1-delay)
-	timerDecayStrikeCD:Start(1-delay)
 	if self:IsMythic() then
-		timerChokingRotcloutCD:Start(1-delay)
+		timerChokingRotcloutCD:Start(5.1-delay)
 	end
+	timerDecayStrikeCD:Start(10.8-delay)
+	timerRotburstTotemCD:Start(19.1-delay)
+	timerDecayingStrengthCD:Start(41.1-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(373896))
 		DBM.InfoFrame:Show(5, "table", WitheringRotStacks, 1)
@@ -77,17 +81,12 @@ function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 373960 then
 		warnDecayigStrength:Show()
-		timerDecayingStrengthCD:Start()
+--		timerDecayingStrengthCD:Start()
 	elseif spellId == 376170 then
 		specWarnChokingRotcloud:Show()
 		specWarnChokingRotcloud:Play("shockwave")
 		timerChokingRotcloutCD:Start()
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 373917 then
+	elseif spellId == 373912 then
 		timerDecayStrikeCD:Start()
 		if args:IsPlayer() then
 			specWarnDecaystrike:Show()
@@ -98,9 +97,10 @@ end
 
 function mod:SPELL_SUMMON(args)
 	local spellId = args.spellId
-	if spellId == 376797 then
+	if spellId == 373944 then
 		specWarnRotburstTotem:Show()
 		specWarnRotburstTotem:Play("attacktotem")
+		timerRotburstTotemCD:Start()
 		if self.Options.SetIconOnRotburstTotem then
 			self:ScanForMobs(args.destGUID, 2, 8, 1, nil, 12, "SetIconOnRotburstTotem")
 		end

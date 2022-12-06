@@ -6,11 +6,11 @@ local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
-local BonusBoss = ns.node.BonusBoss
 local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
+local Fragment = ns.node.Fragment
 local PetBattle = ns.node.PetBattle
 local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
@@ -37,7 +37,7 @@ local map = Map({id = 2024, settings = true})
 
 map.nodes[53013563] = Rare({
     id = 194270,
-    quest = nil,
+    quest = 73866,
     rewards = {
         Achievement({id = 16678, criteria = 56099})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -90,7 +90,7 @@ map.nodes[73032680] = Rare({
 map.nodes[13584855] = Rare({
     id = 197557,
     quest = 70893,
-    note = L['Bisquis_Note'],
+    -- note = L['Bisquis_Note'],
     rewards = {
         Achievement({id = 16678, criteria = 55381}),
         Achievement({id = 16444, criteria = 1})
@@ -110,7 +110,7 @@ map.nodes[14053096] = Rare({
     id = 197353,
     quest = 73985,
     fgroup = 'brackenhide',
-    note = L['brackenhide_note'],
+    note = L['brackenhide_rare_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56126}),
         Transmog({item = 200442, slot = L['leather']}) -- Basilisk Hide Jerkin
@@ -122,6 +122,7 @@ map.nodes[16622798] = Rare({
     quest = nil,
     rewards = {
         Achievement({id = 16678, criteria = 56108}),
+        Achievement({id = 16446, criteria = 3}),
         Item({item = 197595, quest = 69799}) -- Windborne Velocidrake: Finned Ears
         -- Transmog({item = , slot = L['']}) -- Name
     }
@@ -160,7 +161,7 @@ map.nodes[50043631] = Rare({ -- review
     rewards = {
         Achievement({id = 16678, criteria = 56115}),
         Transmog({item = 199026, slot = L['1h_sword']}), -- Fire-Blessed Blade
-        Transmog({item = 200310, slot = L['back']}), -- Stole of the Iron Phantom
+        Transmog({item = 200310, slot = L['cloak']}), -- Stole of the Iron Phantom
         Item({item = 197382, quest = 69583}), -- Renewed Proto-Drake: White Horns
         Item({item = 196985, quest = 69185}), -- Cliffside Wylderdrake: Horned Jaw
         Item({item = 198070}) -- Tattered Seavine
@@ -189,9 +190,9 @@ map.nodes[64992995] = Rare({
 
 map.nodes[14083747] = Rare({
     id = 197354,
-    quest = nil,
+    quest = 73996,
     fgroup = 'brackenhide',
-    note = L['brackenhide_note'],
+    note = L['brackenhide_rare_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56127})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -218,9 +219,9 @@ map.nodes[19234362] = Rare({ -- required 67030
 
 map.nodes[16213364] = Rare({
     id = 197356,
-    quest = nil,
+    quest = 74004,
     fgroup = 'brackenhide',
-    note = L['brackenhide_note'],
+    note = L['brackenhide_rare_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56128})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -239,7 +240,7 @@ map.nodes[36243573] = Rare({
 
 map.nodes[40514797] = Rare({
     id = 198004,
-    quest = nil,
+    quest = 73884,
     rewards = {
         Achievement({id = 16678, criteria = 56100}),
         Item({item = 197150, quest = 69351}) -- Highland Drake: Spiked Club Tail
@@ -324,7 +325,7 @@ map.nodes[10863229] = Rare({
     id = 197344,
     quest = 74032,
     fgroup = 'brackenhide',
-    note = L['brackenhide_note'],
+    note = L['brackenhide_rare_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56125})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -346,6 +347,7 @@ map.nodes[55033405] = Rare({
     note = L['spellwrought_snowman_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56124}),
+        Transmog({item = 200187, slot = L['staff']}), -- Rod of Glacial Force
         Transmog({item = 200211, slot = L['cloth']}) -- Snowman's Icy Gaze
     },
     pois = {
@@ -393,6 +395,78 @@ map.nodes[59405520] = Rare({
         Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
     }
 }) -- Wilrive
+
+-------------------------------------------------------------------------------
+
+-- These rares/elites are not part of the adventurer achievement for the zone
+
+map.nodes[28564743] = Rare({
+    id = 195353,
+    quest = nil,
+    note = L['breezebiter_note'],
+    rewards = {
+        Mount({item = 201440, id = 1553}) -- Liberated Slyvern
+    },
+    pois = {
+        Path({
+            28564743, 28304800, 27944822, 26974854, 26364841, 26074796,
+            25824706, 25764642, 26134540, 26374491, 27124437, 27554428,
+            28164470, 28614643, 28564743
+        })
+    }
+}) -- Breezebiter
+
+map.nodes[23503317] = Rare({
+    id = 186962,
+    quest = 72836,
+    rewards = {
+        Transmog({item = 200135, slot = L['2h_sword']}), -- Corroded Greatsword
+        Transmog({item = 200245, slot = L['2h_mace']}), -- Leviathan Lure
+        Transmog({item = 200187, slot = L['staff']}), -- Rod of Glacial Force
+        Item({item = 197098, quest = 69299}), -- Highland Drake: Finned Back
+        Item({item = 197001, quest = 69201}) -- Cliffside Wylderdrake: Finned Cheek
+    }
+}) -- Cascade
+
+map.nodes[38155901] = Rare({
+    id = 193214,
+    quest = 72840, -- 69864
+    note = L['in_cave'],
+    rewards = {
+        Item({item = 200210, note = L['neck']}) -- Amnesia
+    },
+    pois = {POI({38625988})}
+}) -- Forgotten Creation
+
+map.nodes[70143327] = Rare({
+    id = 193288,
+    quest = 72848, -- 69895
+    rewards = {
+        Item({item = 198048}), -- Titan Training Matrix I
+        Item({item = 200868, note = L['trinket']}) -- Intefrated Primal Fire
+    }
+}) -- Summoned Destroyer
+
+map.nodes[17254144] = Rare({
+    id = 193223,
+    quest = 72853, -- 69872
+    rewards = {
+        Item({item = 201728}), -- Vakril's Strongbox
+        Item({item = 197001, quest = 69201}) -- Cliffside Wylderdrake: Finned Cheek
+    }
+}) -- Vakril
+
+map.nodes[36723247] = Rare({
+    id = 192749,
+    quest = 72846, -- 67173
+    rewards = {
+        Transmog({item = 200283, slot = L['leather']}), -- Gnoll-Gnawed Breeches
+        Transmog({item = 200266, slot = L['crossbow']}), -- Gnollish Chewtoy Launcher
+        Item({item = 197150, quest = 69351}), -- Highland Drake: Spiked Club Tail
+        Item({item = 196982, quest = 69182}), -- Cliffside Wylderdrake: Ears
+        Item({item = 198048}) -- Titan Training Matrix I
+    }
+}) -- Sharpfang
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -464,6 +538,16 @@ map.nodes[48632466] = Treasure({
 }) -- Sapphire Gem Cluster
 
 -------------------------------------------------------------------------------
+
+map.nodes[58024201] = Treasure({
+    quest = 70237,
+    label = L['snow_covered_scroll'],
+    rewards = {
+        Item({item = 198103}) -- Recipe: Snow in a Cone
+    }
+}) -- Snow Covered Scroll
+
+-------------------------------------------------------------------------------
 --------------------------------- BATTLE PETS ---------------------------------
 -------------------------------------------------------------------------------
 
@@ -504,70 +588,12 @@ map.nodes[13884986] = PetBattle({
 }) -- Patchu
 
 -------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[28564743] = BonusBoss({
-    id = 195353,
-    quest = nil,
-    note = L['breezebiter_note'],
-    rewards = {
-        Mount({item = 201440, id = 1553}) -- Liberated Slyvern
-    },
-    pois = {
-        Path({
-            28564743, 28304800, 27944822, 26974854, 26364841, 26074796,
-            25824706, 25764642, 26134540, 26374491, 27124437, 27554428,
-            28164470, 28614643, 28564743
-        })
-    }
-}) -- Breezebiter
-
-map.nodes[23503317] = BonusBoss({
-    id = 186962,
-    quest = 72836,
-    rewards = {
-        Transmog({item = 200135, slot = L['2h_sword']}), -- Corroded Greatsword
-        Transmog({item = 200187, slot = L['staff']}), -- Rod of Glacial Force
-        Item({item = 197098, quest = 69299}) -- Highland Drake: Finned Back
-    }
-}) -- Cascade
-
-map.nodes[38155901] = BonusBoss({
-    id = 193214,
-    quest = 72840, -- 69864
-    note = L['in_cave'],
-    rewards = {
-        Item({item = 200210, note = L['neck']}) -- Amnesia
-    },
-    pois = {POI({38625988})}
-}) -- Forgotten Creation
-
-map.nodes[70143327] = BonusBoss({
-    id = 193288,
-    quest = 72848,
-    rewards = {
-        Item({item = 198048}), -- Titan Training Matrix I
-        Item({item = 200868, note = L['trinket']}) -- Intefrated Primal Fire
-    }
-}) -- Summoned Destroyer
-
-map.nodes[17254144] = BonusBoss({
-    id = 193223,
-    quest = 72853, -- 69872
-    rewards = {
-        Item({item = 201728}), -- Vakril's Strongbox
-        Item({item = 197001, quest = 69201}) -- Cliffside Wylderdrake: Finned Cheek
-    }
-}) -- Vakril
-
--------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
 -------------------------------------------------------------------------------
 
 map.nodes[12504940] = PT.Leatherworking({
     id = 201018,
-    quest = nil,
+    quest = 70269,
     note = L['pt_leath_well_danced_drum_note']
 }) -- Well-Danced Drum
 
@@ -577,9 +603,9 @@ map.nodes[16203880] = PT.Tailoring({
     note = L['pt_tailor_decaying_brackenhide_blanket_note']
 }) -- Decaying Brackenhide Blanket
 
-map.nodes[16403850] = PT.Alchemy({
+map.nodes[16303849] = PT.Alchemy({
     id = 198599,
-    quest = nil,
+    quest = 70208,
     note = L['pt_alch_experimental_decay_sample_note']
 }) -- Experimental Decay Sample
 
@@ -597,19 +623,19 @@ map.nodes[21564555] = PT.Enchanting({
 
 map.nodes[38505920] = PT.Enchanting({
     id = 198799,
-    quest = nil,
+    quest = 70336,
     note = L['pt_ench_forgotten_arcane_tome_note']
 }) -- Forgotten Arcane Tome
 
 map.nodes[40705450] = PT.Tailoring({
     id = 198662,
-    quest = nil,
+    quest = 70267,
     note = L['pt_tailor_intriguing_bolt_of_blue_cloth_note']
 }) -- Intriguing Bolt of Blue Cloth
 
 map.nodes[43703090] = PT.Inscription({
     id = 198686,
-    quest = nil,
+    quest = 70293,
     note = L['pt_script_frosted_parchment_note']
 }) -- Frosted Parchment
 
@@ -633,15 +659,18 @@ map.nodes[45106120] = PT.Enchanting({
 
 map.nodes[46202390] = PT.Inscription({
     id = 198693,
-    quest = nil,
+    quest = 70297,
     note = L['pt_script_dusty_darkmoon_card_note']
 }) -- Dusty Darkmoon Card
 
-map.nodes[53106530] = PT.Blacksmithing({
+map.nodes[53146614] = PT.Blacksmithing({
     id = 201011,
     quest = nil,
     note = L['pt_smith_spelltouched_tongs_note'],
-    requires = ns.requirement.Profession(186)
+    requires = {
+        ns.requirement.Profession(186), ns.requirement.Profession(164, 2822, 25)
+    },
+    pois = {POI({53106530})}
 }) -- Spelltouched Tongs
 
 map.nodes[57504130] = PT.Leatherworking({
@@ -650,9 +679,9 @@ map.nodes[57504130] = PT.Leatherworking({
     note = L['pt_leath_treated_hides_note']
 }) -- Treated Hides
 
-map.nodes[67001320] = PT.Alchemy({
+map.nodes[67061316] = PT.Alchemy({
     id = 198712,
-    quest = nil,
+    quest = 70309,
     note = L['pt_alch_firewater_powder_sample_note']
 }) -- Firewater Powder Sample
 
@@ -683,6 +712,42 @@ map.nodes[46142498] = Flag({quest = 71218})
 map.nodes[63084867] = Flag({quest = 71220})
 map.nodes[74844324] = Flag({quest = 71221})
 map.nodes[77431837] = Flag({quest = 71217})
+
+-------------------------------------------------------------------------------
+---------------------------- FRAGMENTS OF HISTORY -----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[66066012] = Fragment({
+    sublabel = L['chunk_of_sculpture_note'],
+    rewards = {
+        Achievement({id = 16323, criteria = 55028}),
+        Item({item = 199895, quest = 70806})
+    }
+}) -- Chunk of Sculpture
+
+map.nodes[47833893] = Fragment({
+    sublabel = L['in_water'],
+    rewards = {
+        Achievement({id = 16323, criteria = 55029}),
+        Item({item = 199843, quest = 70791})
+    }
+}) -- Coldwashed Dragonclaw
+
+map.nodes[69174757] = Fragment({
+    sublabel = L['stone_dragontooth_note'],
+    rewards = {
+        Achievement({id = 16323, criteria = 55033}),
+        Item({item = 199842, quest = 70790})
+    }
+}) -- Stone Dragontooth
+
+map.nodes[47342459] = Fragment({
+    sublabel = L['wrapped_gold_band_note'],
+    rewards = {
+        Achievement({id = 16323, criteria = 55034}),
+        Item({item = 199840, quest = 70788})
+    }
+}) -- Wrapped Gold Band
 
 -------------------------------------------------------------------------------
 ------------------------------- DISTURBED DIRT --------------------------------
@@ -754,6 +819,7 @@ map.nodes[72154242] = Scoutpack({note = L['in_cave']})
 map.nodes[72604263] = Scoutpack({note = L['in_cave']})
 map.nodes[78953094] = Scoutpack()
 map.nodes[79823175] = Scoutpack()
+map.nodes[58145373] = Scoutpack()
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
@@ -842,3 +908,98 @@ map.nodes[42265676] = ns.node.Dragonrace({
         Achievement({id = 15935, criteria = 6, oneline = true}) -- advanced gold
     }
 }) -- Archive Ambit
+
+-------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+map.nodes[58695326] = ns.node.Squirrel({
+    id = 193594,
+    rewards = {Achievement({id = 16729, criteria = 7})}
+}) -- Timbertooth Kit
+
+map.nodes[49975755] = ns.node.Squirrel({
+    id = 186481,
+    rewards = {Achievement({id = 16729, criteria = 8})}
+}) -- Frosty Spiderling
+
+map.nodes[29244368] = ns.node.Squirrel({
+    id = 197718,
+    rewards = {Achievement({id = 16729, criteria = 9})}
+}) -- Crimson Knocker
+
+-------------------------------------------------------------------------------
+--------------------------- THE DISGRUNTLED HUNTER ----------------------------
+-------------------------------------------------------------------------------
+
+local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
+    id = 194590,
+    icon = 236444,
+    sublabel = L['hnj_sublabel'],
+    group = ns.groups.HEMET_NESINGWARY_JR
+}) -- Hemet Nesingwary Jr.
+
+map.nodes[36533481] = HemetNesingwaryJr({
+    note = L['hnj_western_azure_span_hunt'],
+    rewards = {Achievement({id = 16542, criteria = 55698})}
+}) -- Western Azure Span Hunt
+
+map.nodes[68112353] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55699})}
+}) -- Eastern Azure Span Hunt
+
+map.nodes[69204987] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55700})}
+}) -- Southern Azure Span Hunt
+
+-------------------------------------------------------------------------------
+----------------------------- THAT'S PRETTY NEAT! -----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[36673652] = ns.node.Selfie({
+    id = 190218,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 11})}
+}) -- Horned Filcher
+
+map.nodes[38193815] = ns.node.Selfie({
+    id = 190218,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 17})}
+}) -- Pine Flicker
+
+-------------------------------------------------------------------------------
+-------------------------------- MISCELLANEOUS --------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[40116156] = Collectible({
+    label = '{achievement:16581}',
+    note = L['seeing_blue_note'],
+    icon = 2103880,
+    rewards = {Achievement({id = 16581})},
+    pois = {ns.poi.Arrow({40116156, 46112646}), POI({46112646})}
+}) -- Seeing Blue
+
+map.nodes[50935561] = Collectible({
+    label = '{achievement:16474}',
+    note = L['snowman_note'],
+    icon = 655957,
+    rewards = {Achievement({id = 16474})},
+    pois = {POI({50955481, 50985611})}
+}) -- Do You Wanna Build a Snowman?
+
+-------------------------------------------------------------------------------
+---------------------------- TEMPERAMENTAL SKYCLAW ----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[19042397] = Collectible({
+    label = '{npc:190892}',
+    note = L['temperamental_skyclaw_note'],
+    icon = 4218760,
+    rewards = {
+        Mount({item = 201454, id = 1674}) -- Temperamental Skyclaw
+    },
+    pois = {POI({58234353, 23074372, 32004400})}
+})
+
+-- STOP: DO NOT ADD NEW NODES HERE UNLESS THEY BELONG IN MISCELLANEOUS

@@ -25,12 +25,12 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.69.3"; -- Version number (text format)
+	Version = "4.70"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 46903; -- Numeric version number for checking out-of-date clients (retail)
-	ClassicVersionNumber = 46800; -- Numeric version number for checking out-of-date clients (Vanilla classic)
-	BurningCrusadeVersionNumber = 46800; -- Numeric version number for checking out-of-date clients (TBC classic)
-	WrathVersionNumber = 46902; -- Numeric version number for checking out-of-date clients (Wrath classic)
+	RetailVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (retail)
+	ClassicVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
+	BurningCrusadeVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (TBC classic)
+	WrathVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (Wrath classic)
 	DataLogging = nil; -- Indicate whether or not the addon needs to run the datalogging function (for hooking)
 	DataCode = "4"; -- Saved Variable versioning, change this value to force a reset to default
 	CanTank = nil; -- The active character is capable of tanking
@@ -303,6 +303,12 @@ function GTFO_OnEvent(self, event, ...)
 			GTFO_ErrorPrint(" To turn this off, type: |cFFEEEE00/gtfo debug|r");
 		end
 		
+		return;
+	end
+	if (event == "PLAYER_ENTERING_WORLD") then
+		-- Refresh mode status just in case
+		GTFO.TankMode = GTFO_CheckTankMode();
+		GTFO.CasterMode = GTFO_CheckCasterMode();
 		return;
 	end
 	if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -945,6 +951,7 @@ function GTFO_OnLoad()
 	GTFOFrame:RegisterEvent("CHAT_MSG_ADDON");
 	GTFOFrame:RegisterEvent("MIRROR_TIMER_START");
 	GTFOFrame:RegisterEvent("CHAT_MSG_MONSTER_YELL");
+	GTFOFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	SlashCmdList["GTFO"] = GTFO_Command;
 	SLASH_GTFO1 = "/GTFO";
 end

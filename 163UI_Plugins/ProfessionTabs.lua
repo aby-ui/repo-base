@@ -37,7 +37,7 @@ local defaults = {
 	[794] = { false, true }, -- Archaeology
 	[185] = { true, true }, -- Cooking
 	[129] = { true, false }, -- First Aid
-	[356] = { false, false }, -- Fishing
+	[356] = { true, false }, -- Fishing
 }
 
 if class == "DEATHKNIGHT" then spells[ #spells + 1 ] = 53428 end -- Runeforging

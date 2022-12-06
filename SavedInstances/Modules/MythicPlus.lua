@@ -131,9 +131,7 @@ function Module:RefreshMythicKeyInfo()
   for bagID = 0, 4 do
     for invID = 1, C_Container_GetContainerNumSlots(bagID) do
       local itemID = C_Container_GetContainerItemID(bagID, invID)
-      if itemID and itemID == 180653 then -- Shadowlands, drop on DF Season 1
-        self:ProcessKey(C_Container_GetContainerItemLink(bagID, invID), t.MythicKey)
-      elseif itemID and itemID == 186159 then -- Dragonflight
+      if itemID and itemID == 186159 then -- Dragonflight
         self:ProcessKey(C_Container_GetContainerItemLink(bagID, invID), t.MythicKey)
       elseif itemID and itemID == 187786 then
         self:ProcessKey(C_Container_GetContainerItemLink(bagID, invID), t.TimewornMythicKey)

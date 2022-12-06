@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2490, "DBM-Party-Dragonflight", 4, 1199)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220825011606")
+mod:SetRevision("20221205064214")
 mod:SetCreatureID(189340)
 mod:SetEncounterID(2613)
 --mod:SetUsedIcons(1, 2, 3)
@@ -14,7 +14,7 @@ mod:RegisterCombat("combat")
 mod:RegisterEventsInCombat(
 	"SPELL_CAST_START 373733 373742 373424 375056",
 --	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED 374655",
+	"SPELL_AURA_APPLIED 374655 375057",
 --	"SPELL_AURA_APPLIED_DOSE 374655",
 	"SPELL_AURA_REFRESH 374655",
 --	"SPELL_AURA_APPLIED_DOSE",
@@ -47,7 +47,7 @@ local specWarnBladeLock							= mod:NewSpecialWarningInterrupt(375056, nil, nil,
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(374854, nil, nil, nil, 1, 8)
 
 local timerDragonStrikeCD						= mod:NewCDTimer(12.1, 373733, nil, nil, nil, 3, nil, DBM_COMMON_L.BLEED_ICON)--12 but lowest spell queue priority, it's often delayed by several more seconds
-local timerMagmaWaveCD							= mod:NewCDTimer(17.8, 373742, nil, nil, nil, 3)--Actual CD still not known, since you'd never fully see it unhindered by blade lock or reset by fetter
+local timerMagmaWaveCD							= mod:NewCDTimer(12.1, 373742, nil, nil, nil, 3)--Actual CD still not known, since you'd never fully see it unhindered by blade lock or reset by fetter
 local timerGroundingSpearCD						= mod:NewCDTimer(8.9, 373424, nil, nil, nil, 3)
 local timerFetter								= mod:NewTargetTimer(8, 374655, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
 local timerBladeLockCD							= mod:NewCDTimer(35, 375056, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.DEADLY_ICON)
@@ -65,17 +65,6 @@ function mod:DragonStrikeTarget(targetname)
 	warnDragonStrike:Show(targetname)
 end
 
-function mod:SpearTarget(targetname)
-	if not targetname then return end
-	if targetname == UnitName("player") then
-		specWarnGroundingSpear:Show()
-		specWarnGroundingSpear:Play("targetyou")
-		yellGroundingSpear:Yell()
-	else
-		warnGroundingSpear:Show(targetname)
-	end
-end
-
 --Notes:
 --Boss has spell queung problems on top of varying timers, which can cause abilities to come in different orders and timings
 --First magmawave is usually 15 sec into boss, but also soemtimes 26 and sometimes not cast at all before first blade lock
@@ -90,7 +79,7 @@ function mod:OnCombatStart(delay)
 	self.vb.magmawaveCount = 0
 	timerDragonStrikeCD:Start(3.3-delay)
 	timerGroundingSpearCD:Start(10.5-delay)
-	timerMagmaWaveCD:Start(15-delay)--usually 15 but in rare cases boss flips ability order and this gets queued as far out as 32 which can cause it not to be ast at all before bladelock/fetter (which resets cd on magma)
+	timerMagmaWaveCD:Start(6.2-delay)
 	timerBladeLockCD:Start(29.2-delay)--29.2-44 variance even without fetter stuns done before first lock cast
 end
 
@@ -114,13 +103,6 @@ function mod:SPELL_CAST_START(args)
 		specWarnMagmaWave:Play("watchwave")
 		timerMagmaWaveCD:Start()
 	elseif spellId == 373424 then
-		if not  self:IsMythic() then
-			self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "SpearTarget", 0.1, 8, true)
-		else--On mythic, everyone gets it
-			specWarnGroundingSpear:Show()
-			specWarnGroundingSpear:Play("targetyou")
-			yellGroundingSpear:Yell()
-		end
 		timerGroundingSpearCD:Start()
 	elseif spellId == 375056 then
 		specWarnBladeLock:Show()
@@ -150,6 +132,14 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerMagmaWaveCD:Stop()
 		timerDragonStrikeCD:Stop()
 		timerBladeLockCD:Stop()
+	elseif spellId == 375057 then
+		if args:IsPlayer() then
+			specWarnGroundingSpear:Show()
+			specWarnGroundingSpear:Play("targetyou")
+			yellGroundingSpear:Yell()
+		elseif not self:IsMythic() then--On non mythic only one target, else everyone gets it so no need to target announce
+			warnGroundingSpear:Show(args.destName)
+		end
 	end
 end
 mod.SPELL_AURA_REFRESHED = mod.SPELL_AURA_APPLIED

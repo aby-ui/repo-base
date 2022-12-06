@@ -50,6 +50,7 @@ Private.frames = {}
 --- @field glow_types table<string, string>
 --- @field inverse_point_types table<string, string>
 --- @field IsCLEUSubevent fun(subevent: string): boolean
+--- @field IsDragonriding fun(): boolean
 --- @field item_slot_types string[]
 --- @field LibSpecWrapper LibSpecWrapper
 --- @field linked table<auraId, number>
@@ -296,8 +297,8 @@ WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
-local versionString = "5.2.2"
-local buildTime = "20221128150042"
+local versionString = "5.3.1"
+local buildTime = "20221204232307"
 
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
@@ -309,7 +310,7 @@ local flavorFromTocToNumber = {
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --[==[@debug@
-if versionStringFromToc == "5.2.2" then
+if versionStringFromToc == "5.3.1" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
 end

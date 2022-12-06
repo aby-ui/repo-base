@@ -132,7 +132,7 @@ function KT_QuestSuperTracking_ChooseClosestQuest()
 				local distSqr, onContinent = C_QuestLog.GetDistanceSqToQuest(info.questID);
 				if onContinent and distSqr <= minDistSqr then
 					minDistSqr = distSqr;
-					closestQuestID = questID;
+					closestQuestID = info.questID;
 				end
 			end
 		end

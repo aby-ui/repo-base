@@ -8,10 +8,10 @@ local _, gdbprivate = ...
 
 local ipairs = ipairs
 local DCS_CharacterShirtSlot = CharacterShirtSlot
+
 -- ---------------------------
 -- -- DCS Durability Frames --
 -- ---------------------------
-
 local DCSITEM_SLOT_FRAMES = {
 	CharacterHeadSlot,CharacterNeckSlot,CharacterShoulderSlot,CharacterBackSlot,CharacterChestSlot,CharacterWristSlot,
 	CharacterHandsSlot,CharacterWaistSlot,CharacterLegsSlot,CharacterFeetSlot,
@@ -26,10 +26,6 @@ local DCSITEM_SLOT_FRAMES_RIGHT = {
 local DCSITEM_SLOT_NECK_BACK_SHIRT = {
 	[CharacterNeckSlot]={},[CharacterBackSlot]={},[DCS_CharacterShirtSlot]={}
 }
-
---local DCSITEM_SLOT_FRAMES_LEFT = { --no need for this
---	CharacterHandsSlot,CharacterWaistSlot,CharacterLegsSlot,CharacterFeetSlot,CharacterMainHandSlot,
---}
 
 local DCSITEM_TWO_HANDED_WEAPONS = {
 	"Bows","Crossbows","Guns","Fishing Poles","Polearms","Staves","Two-Handed Axes","Two-Handed Maces","Two-Handed Swords",
@@ -56,28 +52,20 @@ local duraDurabilityFrameFS = DurabilityFrame:CreateFontString("FontString","OVE
 	duraDurabilityFrameFS:SetFormattedText("")
 	
 for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-	--v.duratexture = duraColorTexture
 	v.duratexture = v:CreateTexture(nil,"ARTWORK")
 
-	--v.durability = duraFS
     v.durability = v:CreateFontString("FontString","OVERLAY","GameTooltipText")
     v.durability:SetFormattedText("")
 
-    --v.itemrepair = itemrepairFS
     v.itemrepair = v:CreateFontString("FontString","OVERLAY","GameTooltipText")
     v.itemrepair:SetFormattedText("")
 	
-    --v.ilevel = itemrepairFS
     v.ilevel = v:CreateFontString("FontString","OVERLAY","GameTooltipText")
     v.ilevel:SetFormattedText("")
 
 	v.itemcolor = v:CreateTexture(nil,"ARTWORK")
 	v.itemcolor:SetAllPoints(v)
-	--v.itemcolor:SetColorTexture(0, 0, 0, 0.6)
-	--v.itemcolor:SetColorTexture(0, 0, 0, 1)
 end
-
---TODO - setting of their values and checkbox states in frame meant for this purpose
 
 local showavgdur --display of average durability on shirt
 local showtextures --display of durability textures
@@ -117,10 +105,8 @@ end
 local function putcenter(fontstring,slot,size)
 	if otherinfoplacement then
 		if DCSITEM_SLOT_FRAMES_RIGHT[slot] or DCSITEM_SLOT_NECK_BACK_SHIRT[slot] then
-			--fontstring:SetPoint("CENTER",slot,"CENTER",40,-2)
 			fontstring:SetPoint("LEFT",slot,"RIGHT",10,-2)
 		else
-			--fontstring:SetPoint("CENTER",slot,"CENTER",-40,-2)
 			fontstring:SetPoint("RIGHT",slot,"LEFT",-10,-2)
 		end
 	else
@@ -134,31 +120,17 @@ local function putcenter(fontstring,slot,size)
 end
 
 local function DCS_Set_Dura_Item_Positions()
-	--It encompasses item repair, durability and, indirectly, durability bars.
-	--making it work with local to DCSDuraRepair.lua variable
-	--showdura = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraChecked.ShowDuraSetChecked
-	--local showdura = DCS_ShowDuraCheck:GetChecked()
-	--local showrepair = DCS_ShowItemRepairCheck:GetChecked()
-	--local showrepair = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowItemRepairChecked.ShowItemRepairSetChecked
-	--print("called DCS_Set_Dura_Item_Positions") --debug for later
 	putcenter(duraMeanFS,DCS_CharacterShirtSlot,15)
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
 		v.durability:ClearAllPoints()
 		v.itemrepair:ClearAllPoints()
 		v.ilevel:ClearAllPoints()
 		if showitemlevel then
-			--v.ilevel:SetPoint("CENTER",v,"CENTER",1,-2)
-			--v.ilevel:SetFont("Fonts\\FRIZQT__.TTF", 14, "THINOUTLINE")
-			--putcenter(v.ilevel,v,14) --if ilvl of item is the only displayable info make size bigger
 			if showdura then 
 				puttop(v.durability,v,11)
-				--v.durability:SetPoint("TOP",v,"TOP",3,-2)
-				--v.durability:SetFont("Fonts\\FRIZQT__.TTF", 11, "THINOUTLINE")
 			end
 			if showrepair then
 				putbottom(v.itemrepair,v,11)
-				--v.itemrepair:SetPoint("BOTTOM",v,"BOTTOM",1,0)
-				--v.itemrepair:SetFont("Fonts\\FRIZQT__.TTF", 11, "THINOUTLINE")
 			end
 			if not (showdura or showrepair) then
 				putcenter(v.ilevel,v,16)
@@ -169,21 +141,13 @@ local function DCS_Set_Dura_Item_Positions()
 			if showdura then 
 				if showrepair then
 					puttop(v.durability,v,11)
-					--v.durability:SetPoint("TOP",v,"TOP",3,-2)
-					--v.durability:SetFont("Fonts\\FRIZQT__.TTF", 11, "THINOUTLINE")
 					putbottom(v.itemrepair,v,11)
-					--v.itemrepair:SetPoint("BOTTOM",v,"BOTTOM",1,0)
-					--v.itemrepair:SetFont("Fonts\\FRIZQT__.TTF", 11, "THINOUTLINE")
-				else --not showrepair
+				else
 					putcenter(v.durability,v,15)
-					--v.durability:SetPoint("CENTER",v,"CENTER",1,-2)
-					--v.durability:SetFont("Fonts\\FRIZQT__.TTF", 15, "THINOUTLINE")
 				end
-			else --not showdura
+			else
 				if showrepair then
 					putcenter(v.itemrepair,v,12)
-					--v.itemrepair:SetPoint("CENTER",v,"CENTER",0,-2)
-					--v.itemrepair:SetFont("Fonts\\FRIZQT__.TTF", 12, "THINOUTLINE")
 				end
 			end
 		end		
@@ -205,18 +169,14 @@ function DCS_Mean_DurabilityCalc()
 		-- --------------------------
 		if durCur == nil then durCur = 0 end
 		if durMax == nil then durMax = 0 end
-		--if duraTotal == nil then duraTotal = 0 end -- does it ever happen? Yes, when all you wear are heirlooms
-		--if duraMaxTotal == nil then duraMaxTotal = 0 end -- does it ever happen? Yes, when all you wear are heirlooms
-		--if addon.duraMean == nil then addon.duraMean = 0 end -- does it ever happen? Yes, when all you wear are heirlooms
 		
 		duraTotal = duraTotal + durCur
-		--if duraTotal == 0 then duraTotal = 1 	end
 		duraMaxTotal = duraMaxTotal + durMax
 	end
 	if duraMaxTotal == 0 then 
 		duraMaxTotal = 1
 		duraTotal = 1 --if nothing to break then durability should be 100%
-	end --puting outside of for loop
+	end
 	addon.duraMean = ((duraTotal/duraMaxTotal)*100)
 end		
 
@@ -224,10 +184,8 @@ end
 -- Durability Frame Mean Display --
 -----------------------------------
 local function DCS_Durability_Frame_Mean_Display()
-	--DCS_Mean_DurabilityCalc() -- DCS_Mean_DurabilityCalc called already before
 	duraDurabilityFrameFS:SetFormattedText("%.0f%%", addon.duraMean)
 	duraDurabilityFrameFS:Show()
---	print(addon.duraMean)
 	if addon.duraMean == 100 then --If mean is 100 hide text % display
 		duraDurabilityFrameFS:Hide()
 	elseif addon.duraMean >= 80 then --If mean is 80% or greater color the text off-white.
@@ -262,44 +220,6 @@ local function DCS_Mean_Durability()
 	end
 end
 
---[[ previous version of DCS_Mean_Durability()
-local function DCS_Mean_Durability()
-	DCS_Mean_DurabilityCalc()
-	--for k, v in ipairs(DCSITEM_SLOT_FRAMES) do -- seems like the loop isn't needed
-		duraMeanTexture:SetSize(4, (31*(addon.duraMean/100)))
-		if addon.duraMean == 100 then 
-			duraMeanTexture:SetColorTexture(0, 0, 0, 0)
-		elseif addon.duraMean < 10 then
-			duraMeanTexture:SetColorTexture(1, 0, 0)
-			duraMeanFS:SetTextColor(1, 0, 0)
-		elseif addon.duraMean < 33 then
-			duraMeanTexture:SetColorTexture(1, 0, 0)
-			duraMeanFS:SetTextColor(1, 0, 0)
-		elseif addon.duraMean < 66 then
-			duraMeanTexture:SetColorTexture(1, 1, 0)
-			duraMeanFS:SetTextColor(1, 1, 0)
-		elseif addon.duraMean < 80 then
-			duraMeanTexture:SetColorTexture(0, 1, 0)
-			duraMeanFS:SetTextColor(0, 1, 0)
-		else --if addon.duraMean < 100 then -- no need to check, can remain as comment for easier understanding
-			duraMeanTexture:SetColorTexture(0.753, 0.753, 0.753)
-			duraMeanFS:SetTextColor(0.753, 0.753, 0.753)
-		end
-		if addon.duraMean > 10 then 
-			duraMeanTexture:ClearAllPoints()
-			duraMeanTexture:SetPoint("BOTTOMLEFT",DCS_CharacterShirtSlot,"BOTTOMRIGHT",1,3)
-		else --if addon.duraMean <= 10 then -- no need to check, can remain as comment for easier understanding
-			duraMeanTexture:ClearAllPoints()
-			duraMeanTexture:SetAllPoints(DCS_CharacterShirtSlot)
-			duraMeanTexture:SetColorTexture(1, 0, 0, 0.15)
-		end
-		--DCS_Durability_Frame_Mean_Display() -- moving outside for loop
-	--end
-	DCS_Durability_Frame_Mean_Display()
-end
-
---]]
-
 ----------------------------
 -- Item Durability Colors --
 ----------------------------
@@ -307,40 +227,23 @@ local function DCS_Item_DurabilityTop()
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
 		local slotId = v:GetID()
 		local durCur, durMax = GetInventoryItemDurability(slotId)
-		--if durCur == nil or durMax == nil then
-		--	v.duratexture:SetColorTexture(0, 0, 0, 0)
-		--	v.durability:SetFormattedText("")
-		--elseif ( durCur == durMax ) then
+
 		if ( durCur == durMax ) then
-			--v.duratexture:SetColorTexture(0, 0, 0, 0) --moving texture stuff to textures
 			v.durability:SetFormattedText("")
-		else --if ( durCur ~= durMax ) then -- no need to check, can remain as comment for easier understanding
+		else
 			duraFinite = ((durCur/durMax)*100)
-			--print(duraFinite)
 		    v.durability:SetFormattedText("%.0f%%", duraFinite)
-			--if duraFinite == 100 then --this should be covered by durCur == durMax
-			--	v.duratexture:SetColorTexture(0,  0, 0, 0)
-			--	v.durability:SetTextColor(0, 0, 0, 0)
-			--	print ("what is this")
-			--elseif duraFinite > 66 then
 			if duraFinite > 66 then
-				--v.duratexture:SetColorTexture(0, 1, 0)
 				v.durability:SetTextColor(0, 1, 0)
 			elseif duraFinite > 33 then
-				--v.duratexture:SetColorTexture(1, 1, 0)
 				v.durability:SetTextColor(1, 1, 0)
 			elseif duraFinite > 10 then
-				--v.duratexture:SetColorTexture(1, 0, 0)
 				v.durability:SetTextColor(1, 0, 0)
-			else --if duraFinite <= 10 then -- no need to check, can remain as comment for easier understanding
-				--v.duratexture:SetAllPoints(v) -Removed so green boxes do not appear when durability is at zero.
-				--v.duratexture:SetColorTexture(1, 0, 0, 0.10)
+			else
 				v.durability:SetTextColor(1, 0, 0)
 			end
 		end
-		--DCS_Mean_DurabilityCalc() -- moving outside for loop
 	end
-	--DCS_Mean_DurabilityCalc() -- seems like it gets called even before this
 end
 
 gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowDuraChecked = {
@@ -352,13 +255,12 @@ local DCS_ShowDuraCheck = CreateFrame("CheckButton", "DCS_ShowDuraCheck", DejaCh
     DCS_ShowDuraCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 	DCS_ShowDuraCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowDuraCheck:ClearAllPoints()
-	--DCS_ShowDuraCheck:SetPoint("TOPLEFT", 30, -315)
 	DCS_ShowDuraCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -75)
 	DCS_ShowDuraCheck:SetScale(1)
 	DCS_ShowDuraCheck.tooltipText = L["Displays each equipped item's durability."] --Creates a tooltip on mouseover.
 	_G[DCS_ShowDuraCheck:GetName() .. "Text"]:SetText(L["Item Durability"])
 
-local event	--TODO: delete second variable event that might appear after merging
+local event
 DCS_ShowDuraCheck:SetScript("OnEvent", function(self, ...)
 	event = ...
 	if event == "PLAYER_LOGIN" then
@@ -375,18 +277,6 @@ DCS_ShowDuraCheck:SetScript("OnEvent", function(self, ...)
 			end
 		end
 	end
-	--[[
-	local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraChecked.ShowDuraSetChecked
-	self:SetChecked(checked)
-	DCS_Set_Dura_Item_Positions()
-	if checked then
-		DCS_Item_DurabilityTop()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.durability:SetFormattedText("")
-		end
-	end
-	--]]
 end)
 
 DCS_ShowDuraCheck:SetScript("OnClick", function(self)
@@ -400,72 +290,12 @@ DCS_ShowDuraCheck:SetScript("OnClick", function(self)
 			v.durability:SetFormattedText("")
 		end
 	end
-	--[[
-	local checked = self:GetChecked()
-	gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraChecked.ShowDuraSetChecked = checked
-	DCS_Set_Dura_Item_Positions() --same line irrespectfully of the condtition
-	if checked then
-		DCS_Item_DurabilityTop()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.durability:SetFormattedText("")
-		end
-	end
-	--]]
 end)
 
 --------------------------------------
 -- Durability Bar Textures Creation --
 --------------------------------------
-
-
---[[ previous version of DCS_Durability_Bar_Textures() for prosperity
 local function DCS_Durability_Bar_Textures()
-	-- I see really similar loop in DCS_Item_DurabilityTop(), can't they be merged (of course, need to check whether they get called within the same condition)
-	for _, v in ipairs(DCSITEM_SLOT_FRAMES_RIGHT) do
-		local slotId = v:GetID()
-		local durCur, durMax = GetInventoryItemDurability(slotId)
-
-		--if durCur == nil or durMax == nil then
-		--	v.duratexture:SetColorTexture(0, 0, 0, 0)
-		--elseif ( durCur == durMax ) then
-		if ( durCur == durMax ) then
-			v.duratexture:SetColorTexture(0, 0, 0, 0)
-			print("texture DCS_Durability_Bar_Textures")
-		else --if ( durCur ~= durMax ) then -- no need to check, can remain as comment for easier understanding
-			--duraFinite = ((durCur/durMax)*100)
-			duraFinite = durCur/durMax
-		end
-		v.duratexture:SetPoint("BOTTOMLEFT",v,"BOTTOMRIGHT",1,3) -- might be interesting to put between else and end
-		--v.duratexture:SetSize(4, (31*(duraFinite/100)))
-		v.duratexture:SetSize(4, (31*duraFinite))
-		v.duratexture:Show()
-		--duraMeanTexture:Show() --no need to show the texture for shirt within loop; will be done by later code in DCS_ShowDuraTextureCheck
-	end
-	for _, v in ipairs(DCSITEM_SLOT_FRAMES_LEFT) do
-		local slotId = v:GetID()
-		local durCur, durMax = GetInventoryItemDurability(slotId)
-
-		--if durCur == nil or durMax == nil then
-		--	v.duratexture:SetColorTexture(0, 0, 0, 0)
-		--elseif ( durCur == durMax ) then
-		if ( durCur == durMax ) then
-			v.duratexture:SetColorTexture(0, 0, 0, 0)
-		else --if ( durCur ~= durMax ) then -- no need to check, can remain as comment for easier understanding
-			--duraFinite = ((durCur/durMax)*100)
-			duraFinite = durCur/durMax
-		end
-		v.duratexture:SetPoint("BOTTOMRIGHT",v,"BOTTOMLEFT",-2,3) -- might be interesting to put between else and end
-		--v.duratexture:SetSize(3, (31*(duraFinite/100)))
-		v.duratexture:SetSize(3, (31*duraFinite))
-		v.duratexture:Show()
-		--duraMeanTexture:Show() --no need to show the texture for shirt within loop; will be done by later code in DCS_ShowDuraTextureCheck
-	end
-end
---]]
-
-local function DCS_Durability_Bar_Textures()
-	-- I see really similar loop in DCS_Item_DurabilityTop(), can't they be merged (of course, need to check whether they get called within the same condition)
 	duraTotal = 0 --calculation of average for shirt bar is also here
 	duraMaxTotal = 0
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
@@ -477,7 +307,7 @@ local function DCS_Durability_Bar_Textures()
 		duraMaxTotal = duraMaxTotal + durMax
 		if ( durCur == durMax ) then
 			v.duratexture:SetColorTexture(0, 0, 0, 0)
-		else --if ( durCur ~= durMax ) then -- no need to check, can remain as comment for easier understanding
+		else
 			duraFinite = durCur/durMax
             if duraFinite > 0.66 then
 	            v.duratexture:SetColorTexture(0, 1, 0)
@@ -485,7 +315,7 @@ local function DCS_Durability_Bar_Textures()
 				v.duratexture:SetColorTexture(1, 1, 0)
 			elseif duraFinite > 0.10 then
 				v.duratexture:SetColorTexture(1, 0, 0)
-			else --if duraFinite <= 0.10 then -- no need to check, can remain as comment for easier understanding
+			else
 				v.duratexture:SetColorTexture(1, 0, 0, 0.10)
 			end
 		    if DCSITEM_SLOT_FRAMES_RIGHT[v] then
@@ -507,7 +337,6 @@ local function DCS_Durability_Bar_Textures()
 	if duraMean == 1 then 
 		duraMeanTexture:SetColorTexture(0, 0, 0, 0)
 	elseif duraMean < 0.10 then
-		--duraMeanTexture:SetColorTexture(1, 0, 0)
 		duraMeanTexture:SetColorTexture(1, 0, 0, 0.15)
 	elseif duraMean < 0.33 then
 		duraMeanTexture:SetColorTexture(1, 0, 0)
@@ -515,13 +344,13 @@ local function DCS_Durability_Bar_Textures()
 		duraMeanTexture:SetColorTexture(1, 1, 0)
 	elseif duraMean < 0.80 then
 		duraMeanTexture:SetColorTexture(0, 1, 0)
-	else --if duraMean < 1 then -- no need to check, can remain as comment for easier understanding
+	else
 		duraMeanTexture:SetColorTexture(0.753, 0.753, 0.753)
 	end
 	duraMeanTexture:ClearAllPoints()
 	if duraMean > 0.10 then 
 		duraMeanTexture:SetPoint("BOTTOMLEFT",DCS_CharacterShirtSlot,"BOTTOMRIGHT",1,3)
-	else --if duraMean <= 0.10 then -- no need to check, can remain as comment for easier understanding
+	else
 		duraMeanTexture:SetAllPoints(DCS_CharacterShirtSlot)
 	end
 end
@@ -535,7 +364,6 @@ local DCS_ShowDuraTextureCheck = CreateFrame("CheckButton", "DCS_ShowDuraTexture
     DCS_ShowDuraTextureCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 	DCS_ShowDuraTextureCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowDuraTextureCheck:ClearAllPoints()
-	--DCS_ShowDuraTextureCheck:SetPoint("TOPLEFT", 30, -275)
 	DCS_ShowDuraTextureCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -35)
 	DCS_ShowDuraTextureCheck:SetScale(1) 
 	DCS_ShowDuraTextureCheck.tooltipText = L["Displays a durability bar next to each item."] --Creates a tooltip on mouseover.
@@ -547,14 +375,9 @@ DCS_ShowDuraTextureCheck:SetScript("OnEvent", function(self, ...)
 		showtextures = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked
 		self:SetChecked(showtextures)
 	end
-	--print("DCS_ShowDuraTextureCheck:SetScript(OnEvent)")
 	if PaperDollFrame:IsVisible() then
-		--print("PaperDollFrame:IsVisible()")
 		if showtextures then
-			--print("showtextures")
 			DCS_Durability_Bar_Textures()
-			--DCS_Mean_Durability() --average durability for bar near shirt should be in DCS_Durability_Bar_Textures()
-			--DCS_Item_DurabilityTop() --all single item durability stuff should be in DCS_Durability_Bar_Textures()
 			duraMeanTexture:Show()
 		else
 			for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
@@ -563,21 +386,6 @@ DCS_ShowDuraTextureCheck:SetScript("OnEvent", function(self, ...)
 			duraMeanTexture:Hide()
 		end
 	end
-	--[[
-	local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked
-	self:SetChecked(checked)
-	if checked then
-		DCS_Durability_Bar_Textures()
-		DCS_Mean_Durability()
-		DCS_Item_DurabilityTop()
-		duraMeanTexture:Show()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.duratexture:Hide()
-		end
-		duraMeanTexture:Hide()
-	end
-	--]]
 end)
 
 DCS_ShowDuraTextureCheck:SetScript("OnClick", function(self)
@@ -585,8 +393,6 @@ DCS_ShowDuraTextureCheck:SetScript("OnClick", function(self)
 	gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = showtextures
 	if showtextures then
 		DCS_Durability_Bar_Textures()
-		--DCS_Mean_Durability() --average durability for bar near shirt should be in DCS_Durability_Bar_Textures()
-		--DCS_Item_DurabilityTop() --all single item durability stuff should be in DCS_Durability_Bar_Textures()
 		duraMeanTexture:Show()
 	else
 		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
@@ -594,27 +400,11 @@ DCS_ShowDuraTextureCheck:SetScript("OnClick", function(self)
 		end
 		duraMeanTexture:Hide()
 	end
-	--[[
-	local checked = self:GetChecked()
-	gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowDuraTextureChecked.ShowDuraTextureSetChecked = checked
-	if checked then
-		DCS_Durability_Bar_Textures()
-		DCS_Mean_Durability()
-		DCS_Item_DurabilityTop()
-		duraMeanTexture:Show()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.duratexture:Hide()
-		end
-		duraMeanTexture:Hide()
-	end
-	--]]
 end)
 
 ------------------------
 -- Average Durability --
 ------------------------
-
 gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowAverageRepairChecked = {
 	ShowAverageRepairSetChecked = false,
 }	
@@ -624,7 +414,6 @@ local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDura
     DCS_ShowAverageDuraCheck:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 	DCS_ShowAverageDuraCheck:RegisterEvent("PLAYER_EQUIPMENT_CHANGED") --seems like UPDATE_INVENTORY_DURABILITY doesn't get triggered by equipping an item with the same name
 	DCS_ShowAverageDuraCheck:ClearAllPoints()
-	--DCS_ShowAverageDuraCheck:SetPoint("TOPLEFT", 30, -295)
 	DCS_ShowAverageDuraCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -55)
 	DCS_ShowAverageDuraCheck:SetScale(1)
 	DCS_ShowAverageDuraCheck.tooltipText = L["Displays average item durability on the character shirt slot and durability frames."] --Creates a tooltip on mouseover.
@@ -636,8 +425,6 @@ local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDura
 			showavgdur = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked
 			self:SetChecked(showavgdur)
 		end
-		--print(..., DurabilityFrame:IsVisible(),DurabilityFrame:IsShown())
-		--if PaperDollFrame:IsVisible() then --introduces bug that DurabilityFrame fontstring(created by us) doesn't get updated unless PaperDollFrame is open
 		if showavgdur and (DurabilityFrame:IsVisible() or PaperDollFrame:IsVisible()) then
 			DCS_Mean_Durability()
 			if addon.duraMean == 100 then --check after calculation
@@ -649,23 +436,6 @@ local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDura
 			duraMeanFS:SetFormattedText("")
 			duraDurabilityFrameFS:Hide()
 		end
-		--end
-		--[[
-		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked
-		self:SetChecked(checked.ShowAverageRepairSetChecked)
-		if self:GetChecked(true) then
-			DCS_Mean_Durability()
-			if addon.duraMean == 100 then --check after calculation
-				duraMeanFS:SetFormattedText("")
-			else
-				duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
-			end
-		else
-			duraMeanFS:SetFormattedText("")
-			duraDurabilityFrameFS:Hide()
-		end
-		gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = self:GetChecked(true) -- moved out of if
-		--]]
 	end)
 
 	DCS_ShowAverageDuraCheck:SetScript("OnClick", function(self)
@@ -682,112 +452,36 @@ local DCS_ShowAverageDuraCheck = CreateFrame("CheckButton", "DCS_ShowAverageDura
 			duraMeanFS:SetFormattedText("")
 			duraDurabilityFrameFS:Hide()
 		end
-		--[[
-		local checked = self:GetChecked()
-		gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = checked
-		if checked then
-			DCS_Mean_Durability()
-			if addon.duraMean == 100 then --check after calculation
-				duraMeanFS:SetFormattedText("")
-			else
-				duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
-			end
-		else
-			duraMeanFS:SetFormattedText("")
-			duraDurabilityFrameFS:Hide()
-		end
-		--]]
-		--[[
-		local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked
-		if self:GetChecked(true) then
-			DCS_Mean_Durability()
-			if addon.duraMean == 100 then --check after calculation
-				duraMeanFS:SetFormattedText("")
-			else
-				duraMeanFS:SetFormattedText("%.0f%%", addon.duraMean)
-			end
-		else
-			duraMeanFS:SetFormattedText("")
-			duraDurabilityFrameFS:Hide()
-		end
-		gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowAverageRepairChecked.ShowAverageRepairSetChecked = self:GetChecked(true) -- moved out of if
-		--]]
 	end)
 
-	
 ----------------------
 -- Item Repair Cost --
 ----------------------
 local function DCS_Item_RepairCostBottom()
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
 		local slotId = v:GetID()
-		local scanTool = CreateFrame("GameTooltip")
-			scanTool:ClearLines()
-		local repairitemCost = select(3, scanTool:SetInventoryItem("player", slotId))
-		if (repairitemCost<=0) then
-			v.itemrepair:SetFormattedText("")
-		elseif (repairitemCost>999999) then -- 99G 99s 99c
-			v.itemrepair:SetTextColor(1, 0.843, 0)
-			v.itemrepair:SetFormattedText("%.0fg", (repairitemCost/10000))
-		elseif (repairitemCost>9999) then -- 99s 99c
-			v.itemrepair:SetTextColor(1, 0.843, 0)
-			v.itemrepair:SetFormattedText("%.2fg", (repairitemCost/10000))
-		elseif (repairitemCost>99) then -- 99c
-			v.itemrepair:SetTextColor(0.753, 0.753, 0.753)
-			v.itemrepair:SetFormattedText("%.2fs", (repairitemCost/100))
-		else
-			v.itemrepair:SetTextColor(0.722, 0.451, 0.200)
-			v.itemrepair:SetFormattedText("%.0fc", repairitemCost)
+		local repairitemCost = C_TooltipInfo.GetInventoryItem("player", slotId)
+		if (repairitemCost) then
+			TooltipUtil.SurfaceArgs(repairitemCost)
+			repairitemCost = repairitemCost.repairCost
+			if (repairitemCost == nil or repairitemCost<=0) then
+				v.itemrepair:SetFormattedText("")
+			elseif (repairitemCost>999999) then -- 99G 99s 99c
+				v.itemrepair:SetTextColor(1, 0.843, 0)
+				v.itemrepair:SetFormattedText("%.0fg", (repairitemCost/10000))
+			elseif (repairitemCost>9999) then -- 99s 99c
+				v.itemrepair:SetTextColor(1, 0.843, 0)
+				v.itemrepair:SetFormattedText("%.2fg", (repairitemCost/10000))
+			elseif (repairitemCost>99) then -- 99c
+				v.itemrepair:SetTextColor(0.753, 0.753, 0.753)
+				v.itemrepair:SetFormattedText("%.2fs", (repairitemCost/100))
+			else
+				v.itemrepair:SetTextColor(0.722, 0.451, 0.200)
+				v.itemrepair:SetFormattedText("%.0fc", repairitemCost)
+			end
 		end
 	end
 end
-
-
----Total repair cost as stat is in DCSTables.lua
------------------------
--- Total Repair Cost --
------------------------
---local repairitemCostTotal -- making it to look like a normal function
---local function DCS_Item_RepairTotal()
---	local repairitemCostTotal = 0
---	for k, v in ipairs(DCSITEM_SLOT_FRAMES) do
---		local slotId = v:GetID()
---		local scanTool = CreateFrame("GameTooltip")
---			scanTool:ClearLines()
---		local repairnewitemCost = select(3, scanTool:SetInventoryItem("player", slotId))
---		repairitemCostTotal = repairitemCostTotal + repairnewitemCost
-		--print(repairitemCostTotal)
---	end
---	return repairitemCostTotal
---end
-
--------------------------
--- Repair Total "Stat" --
--------------------------
---function PaperDollFrame_SetRepairTotal(statFrame, unit)
---	if ( unit ~= "player" ) then
---		statFrame:Hide();
---		return;
---	end
---	local repairitemCostTotal = DCS_Item_RepairTotal()
---	local gold = floor(abs(repairitemCostTotal / 10000))
---	local silver = floor(abs(mod(repairitemCostTotal / 100, 100)))
---	local copper = floor(abs(mod(repairitemCostTotal, 100)))
-	--print(format("I have %d gold %d silver %d copper.", gold, silver, copper))
-
---	local displayRepairTotal = format("%d|TInterface\\MoneyFrame\\UI-GoldIcon.blp:0:0:0:0|t %d|TInterface\\MoneyFrame\\UI-SilverIcon.blp:0:0:0:0|t", gold, silver);
-
-	--STAT_FORMAT
-	-- PaperDollFrame_SetLabelAndText(statFrame, label, text, isPercentage, numericValue) -- Formatting
-
---	PaperDollFrame_SetLabelAndText(statFrame, (L["Repair Total"]), displayRepairTotal, false, repairitemCostTotal);
---	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, format(L["Repair Total %s"], displayRepairTotal));
---	statFrame.tooltip2 = (L["Total equipped item repair cost before discounts."]);
-
---	statFrame:Show();
-	--repairitemCostTotal = 0 -- now that there's a fucntion there's no need to reset it
---end
-
 
 gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowItemRepairChecked = {
 	ShowItemRepairSetChecked = false,
@@ -800,7 +494,6 @@ local DCS_ShowItemRepairCheck = CreateFrame("CheckButton", "DCS_ShowItemRepairCh
 	DCS_ShowItemRepairCheck:RegisterEvent("MERCHANT_SHOW")
 	DCS_ShowItemRepairCheck:RegisterEvent("MERCHANT_CLOSED") --without this event repair cost should remain unchanged from the last vendor
 	DCS_ShowItemRepairCheck:ClearAllPoints()
-	--DCS_ShowItemRepairCheck:SetPoint("TOPLEFT", 30, -335)
 	DCS_ShowItemRepairCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -95)
 	DCS_ShowItemRepairCheck:SetScale(1)
 	DCS_ShowItemRepairCheck.tooltipText = L["Displays each equipped item's repair cost."] --Creates a tooltip on mouseover.
@@ -813,9 +506,7 @@ DCS_ShowItemRepairCheck:SetScript("OnEvent", function(self, ...)
 		self:SetChecked(showrepair)
 		DCS_Set_Dura_Item_Positions()
 	end
-	--print("want to recalculate repairs")
 	if PaperDollFrame:IsVisible() then
-		--print("recalculating repairs")
 		if showrepair then
 			DCS_Item_RepairCostBottom()
 		else
@@ -824,18 +515,6 @@ DCS_ShowItemRepairCheck:SetScript("OnEvent", function(self, ...)
 			end
 		end
 	end
-	--[[
-	local checked = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowItemRepairChecked.ShowItemRepairSetChecked
-	self:SetChecked(checked)
-	DCS_Set_Dura_Item_Positions()
-	if checked then
-		DCS_Item_RepairCostBottom()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.itemrepair:SetFormattedText("")
-		end
-	end
-	--]]
 end)
 
 DCS_ShowItemRepairCheck:SetScript("OnClick", function(self)
@@ -849,73 +528,7 @@ DCS_ShowItemRepairCheck:SetScript("OnClick", function(self)
 			v.itemrepair:SetFormattedText("")
 		end
 	end
-	--[[
-	local checked = self:GetChecked()
-	gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowItemRepairChecked.ShowItemRepairSetChecked = checked
-	DCS_Set_Dura_Item_Positions()
-	if checked then
-		DCS_Item_RepairCostBottom()
-	else
-		for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-			v.itemrepair:SetFormattedText("")
-		end
-	end
-	--]]
 end)
-
-------------------------------
--- Item Level Display Check --
-------------------------------
---[[ previous version of DCS_Item_Level_Center() for prosperity
-local function DCS_Item_Level_Center()
-	do return end
-	local summar_ilvl = 0
-	local NeckValue = 0
-	local _, equipped = GetAverageItemLevel()
-	--print("Dura", DCSRelicTotal)
-	--equipped = round(equipped * 16)
-	equipped = equipped * 16 --in tested cases worked without rounding	
-	local ITEM_LEVEL_PATTERN = ITEM_LEVEL:gsub("%%d", "(%%d+)") --moving outside of the function might not be warranted but moving outside of for loop is
-	local tooltip = CreateFrame("GameTooltip", "DCSScanTooltip", nil, "GameTooltipTemplate") --TODO: use the same frame for both repairs and itemlevel
-	tooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
-		local itemLink = GetInventoryItemLink("player", v:GetID())
-		if not itemLink then
-			v.ilevel:SetFormattedText("")
-		else
-			tooltip:ClearLines()
-			tooltip:SetHyperlink(itemLink)
-			for i = 2, tooltip:NumLines() do
-				local text = _G["DCSScanTooltipTextLeft"..i]:GetText()
-				if(text and text ~= "") then
-					local value = tonumber(text:match(ITEM_LEVEL_PATTERN))
-					if value then
-						local _, _, itemRarity = GetItemInfo(itemLink) --least scope for itemRarity
-						v.ilevel:SetTextColor(GetItemQualityColor(itemRarity))
-						if (itemRarity == 6) and (v ~= CharacterNeckSlot) then 	--supposedly only artifacts after crucible return wrong ilvl							
-							value = (equipped - summar_ilvl)/2
-							v.ilevel:SetText(value)
-						else
-							v.ilevel:SetText(value)
-							if (v == CharacterMainHandSlot) then							
-								for _, twohands in ipairs(DCSITEM_TWO_HANDED_WEAPONS) do
-									if IsEquippedItemType(twohands) then
-										value = (value*2)
-									end
-								end
-							end
-							summar_ilvl = summar_ilvl + value
-						end							
-						-- if IsEquippedItem("Heart of Azeroth") then
-						-- 	CharacterNeckSlot.ilevel:SetText((equipped-(summar_ilvl)) + 280)
-						-- end
-					end
-				end
-			end
-		end
-	end
-end
-]]--
 
 local function attempt_ilvl(v,attempts)
 	if attempts > 0 then
@@ -936,51 +549,19 @@ local function attempt_ilvl(v,attempts)
 end
 
 local function DCS_Item_Level_Center()
-    do return end
-	--local summar_ilvl = 0 --assuming artefact weapons are handled correctly
-	--local _, equipped = GetAverageItemLevel()
-	--equipped = round(equipped * 16)
-	--equipped = equipped * 16 --in tested cases worked without rounding
+    do return end --abyui never use his item level on each slot.
 	for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
 		attempt_ilvl(v,20)
-		--local item = Item:CreateFromEquipmentSlot(v:GetID())
-		--local value = item:GetCurrentItemLevel()
-		--if value then
-			--v.ilevel:SetTextColor(getItemQualityColor(item:GetItemQuality())) --upvalue call
-			--local color = item:GetItemQualityColor()
-			--v.ilevel:SetTextColor(color.r,color.g,color.b) --v.ilevel:SetTextColor(item:GetItemQualityColor()) doesn't work because it's a table; seems to use less function calls than itemlink
-			--v.ilevel:SetTextColor(item:GetItemQualityColor())
-			--[[
-			if (item:GetItemQuality() == 6) and (v ~= CharacterNeckSlot) then 	--supposedly only artifacts after crucible return wrong ilvl							
-				value = (equipped - summar_ilvl)/2
-				v.ilevel:SetText(value)
-			else
-				v.ilevel:SetText(value)
-				if (v == CharacterMainHandSlot) then --somehow don't understand why these 7 lines(before summar_ilvl = summar_ilvl + value) are needed. So summar_ilvl would be equal to equipped in the end of the loop? Seems unnecessary
-					for _, twohands in ipairs(DCSITEM_TWO_HANDED_WEAPONS) do
-						if IsEquippedItemType(twohands) then
-							value = (value*2)
-						end
-					end
-				end
-				summar_ilvl = summar_ilvl + value
-			end
-			--]]
-			--v.ilevel:SetText(value)
-		--else
-			--v.ilevel:SetText("")
-		--end
 	end
 end
 
 gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsShowItemLevelChecked = {
-	ShowItemLevelSetChecked = true,
+	ShowItemLevelSetChecked = false,
 }
 
 local DCS_ShowItemLevelCheck = CreateFrame("CheckButton", "DCS_ShowItemLevelCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_ShowItemLevelCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_ShowItemLevelCheck:ClearAllPoints()
-	--DCS_ShowItemLevelCheck:SetPoint("TOPLEFT", 30, -255)
 	DCS_ShowItemLevelCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -15)
 	DCS_ShowItemLevelCheck:SetScale(1)
 	DCS_ShowItemLevelCheck.tooltipText = L["Displays the item level of each equipped item."] --Creates a tooltip on mouseover.
@@ -990,7 +571,6 @@ DCS_ShowItemLevelCheck:SetScript("OnEvent", function(self, ...)
 	showitemlevel = gdbprivate.gdb.gdbdefaults.dejacharacterstatsShowItemLevelChecked.ShowItemLevelSetChecked
 	self:SetChecked(showitemlevel)
 	DCS_Set_Dura_Item_Positions()
-	--DCS_Item_Level_Center() --why it is called
 end)
 
 DCS_ShowItemLevelCheck:SetScript("OnClick", function(self)
@@ -1012,9 +592,7 @@ local DCS_ShowItemLevelChange = CreateFrame("Frame", "DCS_ShowItemLevelChange", 
 	
 DCS_ShowItemLevelChange:SetScript("OnEvent", function(self, ...)
 	if PaperDollFrame:IsVisible() then
-		--print("PaperDollFrame:IsVisible")
 		if showitemlevel then
-		--print("showitemlevel")
 			C_Timer.After(0.25, DCS_Item_Level_Center) --Event fires before Artifact changes so we have to wait a fraction of a second.
 		else
 			for _, v in ipairs(DCSITEM_SLOT_FRAMES) do
@@ -1046,16 +624,13 @@ end
 local DCS_SimpleItemColorCheck = CreateFrame("CheckButton", "DCS_SimpleItemColorCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_SimpleItemColorCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_SimpleItemColorCheck:ClearAllPoints()
-	--DCS_SimpleItemColorCheck:SetPoint("TOPLEFT", 30, -255)
 	DCS_SimpleItemColorCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -115)
 	DCS_SimpleItemColorCheck:SetScale(1)
 	DCS_SimpleItemColorCheck.tooltipText = L["Blacks out item color in PaperDollFrame."] --Creates a tooltip on mouseover.
 	_G[DCS_SimpleItemColorCheck:GetName() .. "Text"]:SetText(L["Black Item Color"])
 
 local DCS_DarkerItemColorCheck = CreateFrame("CheckButton", "DCS_DarkerItemColorCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
-	--DCS_DarkerItemColorCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_DarkerItemColorCheck:ClearAllPoints()
-	--DCS_DarkerItemColorCheck:SetPoint("TOPLEFT", 30, -255)
 	DCS_DarkerItemColorCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -135)
 	DCS_DarkerItemColorCheck:SetScale(1)
 	DCS_DarkerItemColorCheck.tooltipText = L["Darkens item color in PaperDollFrame."] --Creates a tooltip on mouseover.
@@ -1108,7 +683,6 @@ gdbprivate.gdbdefaults.gdbdefaults.dejacharacterstatsAlternateInfoPlacement = {
 local DCS_AlternateInfoPlacementCheck = CreateFrame("CheckButton", "DCS_AlternateInfoPlacementCheck", DejaCharacterStatsPanel, "InterfaceOptionsCheckButtonTemplate")
 	DCS_AlternateInfoPlacementCheck:RegisterEvent("PLAYER_LOGIN")
 	DCS_AlternateInfoPlacementCheck:ClearAllPoints()
-	--DCS_AlternateInfoPlacementCheck:SetPoint("TOPLEFT", 30, -255)
 	DCS_AlternateInfoPlacementCheck:SetPoint("TOPLEFT", "dcsItemsPanelCategoryFS", 7, -155)
 	DCS_AlternateInfoPlacementCheck:SetScale(1)
 	DCS_AlternateInfoPlacementCheck.tooltipText = L["Checked puts item info next to the item. Unchecked puts item info on the item."] --Creates a tooltip on mouseover.

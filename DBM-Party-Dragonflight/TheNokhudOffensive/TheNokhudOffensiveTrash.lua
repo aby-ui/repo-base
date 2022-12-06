@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("TheNokhudOffensiveTrash", "DBM-Party-Dragonflight", 3)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221203231852")
+mod:SetRevision("20221205064214")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
@@ -69,7 +69,7 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 384336 and self:AntiSpam(3, 2) then
 		specWarnWarStomp:Show()
 		specWarnWarStomp:Play("watchstep")
-	elseif spellId == 387629 and self:AntiSpam(3, 2) then
+	elseif spellId == 387629 and self:IsValidWarning(args.sourceGUID) and self:AntiSpam(3, 2) then
 		specWarnRottingWind:Show()
 		specWarnRottingWind:Play("shockwave")
 	elseif spellId == 382233 and self:AntiSpam(3, 2) then

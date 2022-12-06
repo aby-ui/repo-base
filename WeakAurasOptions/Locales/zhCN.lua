@@ -58,6 +58,10 @@ local L = WeakAuras.L
 	L["%s total auras"] = "共%s个光环"
 	L["%s Trigger Function"] = "%s 触发器函数"
 	L["%s Untrigger Function"] = "%s 取消触发函数"
+	--[[Translation missing --]]
+	L["%s X offset by %d"] = "%s X offset by %d"
+	--[[Translation missing --]]
+	L["%s Y offset by %d"] = "%s Y offset by %d"
 	L["%s Zoom: %d%%"] = "%s 缩放：%d%%"
 	L["%s, Border"] = "%s，边框"
 	L["%s, Offset: %0.2f;%0.2f"] = "%s，偏移：%0.2f; %0.2f"
@@ -132,6 +136,8 @@ Enable this setting if you want this timer to be hidden, or when using a WeakAur
 	L["Align"] = "对齐"
 	L["Alignment"] = "对齐"
 	L["All of"] = "全部"
+	--[[Translation missing --]]
+	L["Allow Full Rotation"] = "Allow Full Rotation"
 	L["Alpha"] = "透明度"
 	L["Anchor"] = "锚点"
 	L["Anchor Point"] = "锚点指向"
@@ -188,8 +194,9 @@ Off Screen]=] ] = "光环在屏幕外"
 	L["Background Offset"] = "背景偏移"
 	L["Background Texture"] = "背景材质"
 	L["Bar Alpha"] = "进度条透明度"
-	L["Bar Color"] = "进度条颜色"
 	L["Bar Color Settings"] = "进度条颜色设置"
+	--[[Translation missing --]]
+	L["Bar Color/Gradient Start"] = "Bar Color/Gradient Start"
 	L["Bar Texture"] = "进度条材质"
 	L["Big Icon"] = "大图标"
 	L["Blend Mode"] = "混合模式"
@@ -313,6 +320,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Differences"] = "差异"
 	L["Disabled"] = "禁用"
 	L["Disallow Entry Reordering"] = "不允许重新排列条目"
+	--[[Translation missing --]]
+	L["Discrete Rotation"] = "Discrete Rotation"
 	L["Display"] = "图示"
 	L["Display Name"] = "显示的名字"
 	L["Display Text"] = "图示文字"
@@ -352,6 +361,8 @@ UNIT_POWER, UNIT_AURA PLAYER_TARGET_CHANGED]=]
 	L["Enable \"swipe\" part of the overlay"] = "启用覆盖层的\"刷\""
 	L["Enable Debug Log"] = "启用调试日志"
 	L["Enable Debug Logging"] = "启用调试日志"
+	--[[Translation missing --]]
+	L["Enable Gradient"] = "Enable Gradient"
 	L["Enable Swipe"] = "启用冷却刷"
 	L["Enable the \"Swipe\" radial overlay"] = "启用冷却刷覆盖层"
 	L["Enabled"] = "启用"
@@ -441,6 +452,10 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Glow External Element"] = "发光外部元素"
 	L["Glow Frame Type"] = "发光框体类型"
 	L["Glow Type"] = "发光类型"
+	--[[Translation missing --]]
+	L["Gradient End"] = "Gradient End"
+	--[[Translation missing --]]
+	L["Gradient Orientation"] = "Gradient Orientation"
 	L["Green Rune"] = "绿色符文"
 	L["Grid direction"] = "盒方向"
 	L["Group"] = "组"
@@ -552,8 +567,6 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Left"] = "左"
 	L["Left 2 HUD position"] = "左侧第二 HUD 位置"
 	L["Left HUD position"] = "左侧 HUD 位置"
-	--[[Translation missing --]]
-	L["Legacy Zoom Out"] = "Legacy Zoom Out"
 	L["Length"] = "长度"
 	L["Length of |cFFFF0000%s|r"] = "长度|cFFFF0000%s|r"
 	L["Limit"] = "限制"
@@ -703,8 +716,6 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Rotate In"] = "旋转进入"
 	L["Rotate Out"] = "旋转退出"
 	L["Rotate Text"] = "旋转文字"
-	--[[Translation missing --]]
-	L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."] = "Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."
 	L["Rotation"] = "旋转"
 	L["Rotation Mode"] = "旋转模式"
 	L["Row Space"] = "列空间"
@@ -813,6 +824,10 @@ Can use \ to escape -.]=] ] = [=[过滤格式：'名称'，'名称-服务器'，
 	L["Texture Rotation"] = "Texture Rotation"
 	L["Texture Settings"] = "材质设置"
 	L["Texture Wrap"] = "材质折叠"
+	--[[Translation missing --]]
+	L["Texture X Offset"] = "Texture X Offset"
+	--[[Translation missing --]]
+	L["Texture Y Offset"] = "Texture Y Offset"
 	--[[Translation missing --]]
 	L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"] = "The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"
 	--[[Translation missing --]]

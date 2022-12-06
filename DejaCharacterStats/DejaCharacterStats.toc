@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: R100002r1
+## Version: R100002r2
 ## Title: |TInterface\Addons\DejaCharacterStats\DCSArt\DejoLogo:26:26|t|cff00c0ffDejaCharacterStats|r
 ## Author: Dejablue, Kakjens, loudsoul
 ## Notes: Dejablue's improved character stats panel view.

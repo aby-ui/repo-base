@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2492, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128214658")
+mod:SetRevision("20221206015003")
 mod:SetCreatureID(186644)
 mod:SetEncounterID(2582)
 mod:SetUsedIcons(1, 2, 3)
@@ -41,7 +41,7 @@ local yellEruptingFissure						= mod:NewYell(386660)
 local specWarnInfusedStrike						= mod:NewSpecialWarningDefensive(374789, nil, nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerLeylineSproutsCD						= mod:NewCDTimer(49.7, 374364, nil, nil, nil, 3)
+local timerLeylineSproutsCD						= mod:NewCDTimer(48.1, 374364, nil, nil, nil, 3)
 local timerExplosiveEruptionCD					= mod:NewCDTimer(49.7, 374567, nil, nil, nil, 3)
 local timerConsumingStompCD						= mod:NewCDTimer(49.7, 374720, nil, nil, nil, 2, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerEruptingFissureCD					= mod:NewCDTimer(49.7, 386660, nil, nil, nil, 3)
@@ -64,10 +64,10 @@ end
 
 function mod:OnCombatStart(delay)
 	timerLeylineSproutsCD:Start(3.2-delay)
-	timerInfusedStrikeCD:Start(10.5-delay)
+	timerInfusedStrikeCD:Start(10.1-delay)
 	timerEruptingFissureCD:Start(20.2-delay)
-	timerExplosiveEruptionCD:Start(31.1-delay)
-	timerConsumingStompCD:Start(45.7-delay)
+	timerExplosiveEruptionCD:Start(30.7-delay)
+	timerConsumingStompCD:Start(45.3-delay)
 end
 
 --function mod:OnCombatEnd()

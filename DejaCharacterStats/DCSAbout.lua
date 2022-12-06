@@ -100,23 +100,23 @@ local L = namespace.L 				--localization
 			"|cff0094c4Author:|r Dejoblue" .. "|n" .. 
 			"|cff0094c4Admins:|r Dejoblue, Kakjens" .. "|n" .. 
 			"|cff0094c4Contributers:|r Dejoblue, Kakjens," .. "|n" ..
-			"         loudsoul, Mudohir" .. "|n" ..															--(Contributors) Continued Contributors list
+			"         loudsoul, Mudohir, plazma0" .. "|n" ..										--(Contributors) Continued Contributors list
 			"|cff0094c4Localization Translators:|r" .. "|n" ..
 			"|cff0094c4    French:|r Lightuky, Medaleux, sv002," .. "|n" .. 						--(French)
 			"         Darkcraft92, Ymvej, Druidzor," .. "|n" ..										--(French) Continued French list
 			"        napnapnapnapnap" .. "|n" ..													---(French) Continued French list
 			"|cff0094c4    German:|r pas06, flow0284, Markurion," .. "|n" .. 						--(German)
-			"        Branduril, NekoNyaaaa" .. "|n" ..													--(German) Continued German list
+			"        Branduril, NekoNyaaaa" .. "|n" ..												--(German) Continued German list
 			"|cff0094c4    Portuguese:|r Othra, Rhyrol" .. "|n" ..									--(Portuguese)
 			"|cff0094c4    Spanish:|r Tholagar, Mikel391, MrUrkaz," .. "|n" ..						--(Spanish)
-			"         Krounted, Valhallanem" .. "|n" ..													--(Spanish) Continued Spanish list
+			"         Krounted, Valhallanem" .. "|n" ..												--(Spanish) Continued Spanish list
 			"|cff0094c4    Italian:|r infinitybofh, INoobInside" .. "|n" ..							--(Portuguese)
 			"|cff0094c4    Korean:|r PositiveMind, yuk6196, netaras," .. "|n" ..					--(Korean)
-			"        meloppy, next96" .. "|n" ..														--(Korean) Continued Traditional Chinese list
+			"        meloppy, next96" .. "|n" ..													--(Korean) Continued Traditional Chinese list
 			"|cff0094c4    Russian:|r Nappsel, Wishko, berufegoru," .. "|n" ..						--(Russian)
-			"        Hubbotu, n1mrorox" .. "|n" ..																--(Russian) Continued Russian list
+			"        Hubbotu, n1mrorox" .. "|n" ..													--(Russian) Continued Russian list
 			"|cff0094c4    Simplified Chinese:|r C_Reus, alvisjiang," .. "|n" ..					--(Simplified Chinese)
-			"        aenerv7, xlfd2008, y123ao6" .. "|n" ..																--(Simplified Chinese) Continued Simplified Chinese list
+			"        aenerv7, xlfd2008, y123ao6" .. "|n" ..											--(Simplified Chinese) Continued Simplified Chinese list
 			"|cff0094c4    Traditional Chinese:|r BNSSNB, killsophia," .. "|n" ..					--(Traditional Chinese)
 			"        konraddo, y123ao6" .. "|n" ..														--(Traditional Chinese) Continued Traditional Chinese list
 			-- "|n" ..																					--(Spacer)

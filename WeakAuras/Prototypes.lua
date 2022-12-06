@@ -1139,6 +1139,17 @@ Private.load_prototype = {
       events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UPDATE_VEHICLE_ACTIONBAR"}
     },
     {
+      name = "dragonriding",
+      display = L["Dragonriding"],
+      type = "tristate",
+      init = WeakAuras.IsRetail() and "arg" or nil,
+      width = WeakAuras.doubleWidth,
+      optional = true,
+      enable = WeakAuras.IsRetail(),
+      hidden = not WeakAuras.IsRetail(),
+      events = {"WA_DRAGONRIDING_UPDATE"}
+    },
+    {
       name = "ingroup",
       display = L["Group Type"],
       type = "multiselect",
@@ -9665,3 +9676,10 @@ Private.UnitEventList = {
   PLAYER_XP_UPDATE = true,
   PVP_TIMER_UPDATE = true
 }
+
+-- TODO: GetItemCooldown is missing on WOTLK PTR as now (04/12/2022)
+-- remove this once it's fixed
+if WeakAuras.IsWrathClassic() and GetItemCooldown == nil then
+  Private.event_prototypes["Cooldown Progress (Item)"] = nil
+  Private.event_prototypes["Cooldown Ready (Item)"] = nil
+end

@@ -341,16 +341,6 @@ do
     SetSortBagsRightToLeft = SetSortBagsRightToLeft or C_Container.SetSortBagsRightToLeft
     GetInsertItemsLeftToRight = GetInsertItemsLeftToRight or C_Container.GetInsertItemsLeftToRight
     SetInsertItemsLeftToRight = SetInsertItemsLeftToRight or C_Container.SetInsertItemsLeftToRight
-
-    --TODO:abyui102
-    TooltipUtil.GetRepairCostForTooltipData = function(tooltipData)
-        if tooltipData then
-            for i, arg in ipairs(tooltipData.args) do
-                if arg.field == "repairCost" then return arg.intVal end
-            end
-        end
-        return 0
-    end
 end
 
 do

@@ -149,6 +149,7 @@ EventFrame:RegisterEvent("QUEST_DETAIL")
 EventFrame:RegisterEvent("QUEST_PROGRESS")
 EventFrame:RegisterEvent("QUEST_COMPLETE")
 EventFrame:RegisterEvent("QUEST_GREETING")
+EventFrame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
 
 --交还任务：GOSSIP_SHOW -> GOSSIP_CLOSED -> QUEST_PROCESS -> QUEST_COMPLETE -> QUEST_TURNED_IN -> QUEST_FINISHED -> QUEST_REMOVED
 --任务列表接: GOSSIP_SHOW -> GOSSIP_CLOSED -> QUEST_DETAIL -> QUEST_FINISHED -> ... -> QUEST_ACCEPTED
@@ -170,7 +171,11 @@ local function clearAutoName()
 end
 
 function EventFrame:QUEST_FINISHED()
-    clearAutoName()
+    --C_Timer.After(0, clearAutoName()) --在QUEST_PROGRESS之前就会清掉
+end
+
+function EventFrame:PLAYER_INTERACTION_MANAGER_FRAME_HIDE()
+    --C_Timer.After(0, clearAutoName())
 end
 
 hooksecurefunc(C_QuestLog, 'AbandonQuest', clearAutoName)
@@ -211,10 +216,12 @@ local function titleButtonOnClick(self)
     end
     if isAvailable then
         local quests = C_GossipInfo.GetAvailableQuests()
+        if not quests[index] then return end
         autoName = quests[index].title
         C_GossipInfo.SelectAvailableQuest(self:GetID()) --10.0改为选择任务ID
     else
         local quests = C_GossipInfo.GetActiveQuests()
+        if not quests[index] then return end
         autoName = quests[index].title
         C_GossipInfo.SelectActiveQuest(self:GetID())
     end
@@ -222,7 +229,7 @@ end
 
 local function titleButtonOnClickQuest(self)
     local id = self:GetParent():GetID();
-    if self:GetParent().isActive == 1 then --QuestTitleButton_OnClick --TODO:abyui10 没测试
+    if self:GetParent().isActive == 1 then --QuestTitleButton_OnClick, 10.0平原右上卡萨尔 传奇酋长前的任务
         autoName = GetActiveTitle(id)
         SelectActiveQuest(id)
     else

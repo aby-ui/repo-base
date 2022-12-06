@@ -88,6 +88,12 @@ function RSNotes.GetNote(entityID, mapID)
 	-- Requires elemental storms in Dragon Isles
 	elseif (RSUtils.Contains(RSConstants.STORM_EVENTS_NPCS, entityID)) then
 		return AL["NOTE_STORM_EVENTS"]
+	-- Grand hunting party bosses
+	elseif (RSUtils.Contains(RSConstants.HUNTING_PARTY_NPCS, entityID)) then
+		return AL["NOTE_HUNTING_PARTY_NPCS"]
+	-- Grand hunting party bosses
+	elseif (RSUtils.Contains(RSConstants.OMINOUS_CONCHS_NPCS, entityID)) then
+		return AL["NOTE_OMINOUS_CONCHS_NPCS"]
 	end
 	
 	-- Rune of constructs Containers

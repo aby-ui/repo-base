@@ -106,7 +106,7 @@ function BaudErrorFrame_OnLoad(self)
     end);
     seterrorhandler(BaudErrorFrameHandler);
 
-    if DisplayInterfaceActionBlockedMessage then
+    if false and DisplayInterfaceActionBlockedMessage then
         --UIParent CheckProtectedFunctionsAllowed() 和 OnEvent都会调用, 这里只处理前者
         local CheckProtectedFunctionsAllowed_Fail
         local function panelCheck(showOrHide)

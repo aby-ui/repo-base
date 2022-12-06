@@ -4,7 +4,7 @@ local pairs, next, type, ipairs, setmetatable, mfloor, mmax = pairs, next, type,
 local CreateFrame, GameFontNormalSmall = CreateFrame, GameFontNormalSmall
 local DBM = DBM
 
-local isDragonflight = DBM:GetTOC() >= 100000
+local isDragonflight = DBM:GetTOC() > 30400
 
 local defaultFont, defaultFontSize = GameFontHighlightSmall:GetFont()
 

@@ -6,7 +6,6 @@ local Class = ns.Class
 local L = ns.locale
 local Map = ns.Map
 
-local BonusBoss = ns.node.BonusBoss
 local Collectible = ns.node.Collectible
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
@@ -35,14 +34,11 @@ local map = Map({id = 2023, settings = true})
 ------------------------------------ RARES ------------------------------------
 -------------------------------------------------------------------------------
 
--- map.nodes[] = Rare({
---     id = 195186,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56092}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Cinta the Forgotten
+map.nodes[31607660] = Rare({
+    id = 195186,
+    quest = nil,
+    rewards = {Achievement({id = 16677, criteria = 56092})}
+}) -- Cinta the Forgotten
 
 map.nodes[30546628] = Rare({
     id = 189652,
@@ -105,14 +101,12 @@ map.nodes[85221544] = Rare({ -- review
     }
 }) -- Hamett
 
--- map.nodes[] = Rare({
---     id = 188095,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56083}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Hunter of Deep
+map.nodes[80544222] = Rare({
+    id = 188095,
+    quest = nil,
+    note = L['hunter_of_the_deep_note'],
+    rewards = {Achievement({id = 16677, criteria = 56083})}
+}) -- Hunter of the Deep
 
 map.nodes[80413867] = Rare({ -- review
     id = 188124,
@@ -153,14 +147,11 @@ map.nodes[63017996] = Rare({ -- reqiured 67030
     }
 }) -- Mikrin of the Raging Winds
 
--- map.nodes[] = Rare({
---     id = 187219,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56081}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Nokhud Warmaster
+map.nodes[58604940] = Rare({
+    id = 187219,
+    quest = nil,
+    rewards = {Achievement({id = 16677, criteria = 56081})}
+}) -- Nokhud Warmaster
 
 -- map.nodes[] = Rare({
 --     id = 196350,
@@ -191,27 +182,22 @@ map.nodes[61212950] = Rare({ -- reqiured 67030
 --     quest = nil,
 --     rewards = {
 --         Achievement({id = 16677, criteria = 56091}),
+--         Achievement({id = 16446, criteria = 18}),
 --         Transmog({item = , slot = L['']}) -- Name
 --     }
 -- }) -- Quackers the Terrible
 
--- map.nodes[] = Rare({ -- reqiured 67030
---     id = 196010,
---     quest = 70698,
---     rewards = {
---         Achievement({id = 16677, criteria = 56069}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Researcher Sneakwing
+map.nodes[37005380] = Rare({ -- reqiured 67030
+    id = 196010,
+    quest = nil, -- 70698
+    rewards = {Achievement({id = 16677, criteria = 56069})}
+}) -- Researcher Sneakwing
 
--- map.nodes[] = Rare({ -- reqiured 67030
---     id = 193227,
---     quest = 69878,
---     rewards = {
---         Achievement({id = 16677, criteria = 56071}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Ronsak the Decimator
+map.nodes[43405560] = Rare({ -- reqiured 67030
+    id = 193227,
+    quest = nil, -- 69878
+    rewards = {Achievement({id = 16677, criteria = 56071})}
+}) -- Ronsak the Decimator
 
 map.nodes[42804428] = Rare({ -- review
     id = 195223,
@@ -222,14 +208,12 @@ map.nodes[42804428] = Rare({ -- review
     }
 }) -- Rustlily
 
--- map.nodes[] = Rare({
---     id = 193215,
---     quest = 69865,
---     rewards = {
---         Achievement({id = 16677, criteria = 56079}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Scaleseeker Mezeri
+map.nodes[16605120] = Rare({
+    id = 193215,
+    quest = nil, -- 69865
+    note = L['scaleseeker_mezeri_note'],
+    rewards = {Achievement({id = 16677, criteria = 56079})}
+}) -- Scaleseeker Mezeri
 
 map.nodes[50117517] = Rare({
     id = 193136,
@@ -239,10 +223,10 @@ map.nodes[50117517] = Rare({
 
 map.nodes[61801283] = Rare({
     id = 193188,
-    quest = nil,
+    quest = 73894,
     rewards = {
-        Achievement({id = 16677, criteria = 56065})
-        -- Transmog({item = , slot = L['']}) -- Name
+        Achievement({id = 16677, criteria = 56065}),
+        Transmog({item = 200875, slot = L['plate']}) -- Seeker's Bands
     }
 }) -- Seeker Teryx
 
@@ -256,14 +240,14 @@ map.nodes[29964103] = Rare({
     }
 }) -- Shade of Grief
 
--- map.nodes[] = Rare({
---     id = 193165,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56062}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Sparkspitter Vrak
+map.nodes[21603960] = Rare({
+    id = 193165,
+    quest = 73896,
+    rewards = {
+        Achievement({id = 16677, criteria = 56062}),
+        Transmog({item = 200234, slot = L['shield']}) -- Vrak's Embossed Aegis
+    }
+}) -- Sparkspitter Vrak
 
 map.nodes[53627281] = Rare({ -- reqiured 67030 review
     id = 193123,
@@ -289,27 +273,22 @@ map.nodes[78298276] = Rare({
 --     }
 -- }) -- The Great Enla
 
--- map.nodes[] = Rare({
---     id = 195204,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56088}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- The Jolly Giant
+map.nodes[27605560] = Rare({
+    id = 195204,
+    quest = nil,
+    rewards = {Achievement({id = 16677, criteria = 56088})}
+}) -- The Jolly Giant
 
--- map.nodes[] = Rare({
---     id = 192453,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56090}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Vaniik the Stormtouched
+map.nodes[83786215] = Rare({
+    id = 192453,
+    quest = nil,
+    rewards = {Achievement({id = 16677, criteria = 56090})}
+}) -- Vaniik the Stormtouched
 
 map.nodes[84214784] = Rare({
     id = 192364,
-    quest = nil,
+    quest = 73979,
+    note = L['windscale_the_stormborn_note'],
     rewards = {
         Achievement({id = 16677, criteria = 56089})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -325,34 +304,92 @@ map.nodes[58596822] = Rare({ -- review
     }
 }) -- Windseeker Avash
 
--- map.nodes[] = Rare({
---     id = 193140,
---     quest = nil,
---     rewards = {
---         Achievement({id = 16677, criteria = 56078}),
---         Transmog({item = , slot = L['']}) -- Name
---     }
--- }) -- Zarizz
+map.nodes[30206260] = Rare({
+    id = 193140,
+    quest = 72364, -- 74091
+    note = L['zarizz_note'],
+    rewards = {Achievement({id = 16677, criteria = 56078})}
+}) -- Zarizz
 
 map.nodes[31456387] = Rare({
     id = 193209,
-    quest = nil,
+    quest = 73901,
     rewards = {
         Achievement({id = 16677, criteria = 56066}),
+        Achievement({id = 16446, criteria = 20}),
+        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200314, slot = L['cloth']}), -- Skyspeaker's Envelope
+        Transmog({item = 200306, slot = L['cloak']}), -- Tempest Shawl
         Item({item = 197372, quest = 69573}), -- Renewed Proto-Drake: Purple Hair
+        Item({item = 197606, quest = 69810}), -- Windborne Velocidrake: Swept Horns
         Mount({item = 198825, id = 1672}) -- Zenet Hatchling
     }
 }) -- Zenet Avis
 
 map.nodes[72232306] = Rare({
     id = 188451,
-    quest = nil,
-    rewards = {
-        Achievement({id = 16677, criteria = 56085})
-        -- Transmog({item = , slot = L['']}) -- Name
-    }
+    quest = 73980,
+    rewards = {Achievement({id = 16677, criteria = 56085})}
 }) -- Zerimek
+
+-------------------------------------------------------------------------------
+
+-- These rares/elites are not part of the adventurer achievement for the zone
+
+map.nodes[59926696] = Rare({
+    id = 193669,
+    quest = 72815,
+    rewards = {
+        Item({item = 200161, note = L['trinket']}) -- Razorwind Talisman
+    }
+}) -- Prozela Galeshot
+
+map.nodes[26366533] = Rare({
+    id = 193153,
+    quest = 72845,
+    note = L['in_small_cave'],
+    rewards = {
+        Transmog({item = 200137, slot = L['dagger']}), -- Chitin Dreadbringer
+        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
+    }
+}) -- Ripsaw the Stalker
+
+map.nodes[44894924] = Rare({
+    id = 192949,
+    quest = 72847, -- 70783
+    note = L['in_small_cave'],
+    rewards = {
+        Transmog({item = 200186, slot = L['mail']}) -- Amberquill Shroud
+    }
+}) -- Skaara
+
+map.nodes[63034854] = Rare({
+    id = 193133,
+    quest = 72849, -- 69837
+    note = L['in_waterfall_cave'],
+    rewards = {
+        Toy({item = 198409}) -- Personal Shell
+    }
+}) -- Sunscale Behemoth
+
+map.nodes[22956670] = Rare({
+    id = 193163,
+    quest = 72851, -- 66378
+    rewards = {
+        Transmog({item = 200212, slot = L['mail']}), -- Sand-Encrusted Greaves
+        Item({item = 197111, quest = 69312}) -- Highland Drake: Maned Head
+    }
+}) -- Territorial Coastling
+
+map.nodes[26073412] = Rare({
+    id = 191354,
+    quest = 72852, -- 66970
+    note = L['in_cave'],
+    rewards = {
+        Transmog({item = 198429, slot = L['staff']}) -- Typhoon Bringer
+    },
+    pois = {POI({23573442})}
+}) -- Ty'foon the Ascended
 
 -------------------------------------------------------------------------------
 ---------------------------------- TREASURES ----------------------------------
@@ -462,65 +499,6 @@ map.nodes[61964159] = PetBattle({
 }) -- Bakhushek
 
 -------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-map.nodes[59926696] = BonusBoss({
-    id = 193669,
-    quest = 72815,
-    rewards = {
-        Item({item = 200161, note = L['trinket']}) -- Razorwind Talisman
-    }
-}) -- Prozela Galeshot
-
-map.nodes[26366533] = BonusBoss({
-    id = 193153,
-    quest = 72845,
-    note = L['in_small_cave'],
-    rewards = {
-        Transmog({item = 200137, slot = L['dagger']}), -- Chitin Dreadbringer
-        Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
-    }
-}) -- Ripsaw the Stalker
-
-map.nodes[44894924] = BonusBoss({
-    id = 192949,
-    quest = 72847, -- 70783
-    note = L['in_small_cave'],
-    rewards = {
-        Transmog({item = 200186, slot = L['mail']}) -- Amberquill Shroud
-    }
-}) -- Skaara
-
-map.nodes[63034854] = BonusBoss({
-    id = 193133,
-    quest = 72849, -- 69837
-    note = L['in_waterfall_cave'],
-    rewards = {
-        Toy({item = 198409}) -- Personal Shell
-    }
-}) -- Sunscale Behemoth
-
-map.nodes[22956670] = BonusBoss({
-    id = 193163,
-    quest = 72851, -- 66378
-    rewards = {
-        Transmog({item = 200212, slot = L['mail']}), -- Sand-Encrusted Greaves
-        Item({item = 197111, quest = 69312}) -- Highland Drake: Maned Head
-    }
-}) -- Territorial Coastling
-
-map.nodes[26073412] = BonusBoss({
-    id = 191354,
-    quest = 72852, -- 66970
-    note = L['in_cave'],
-    rewards = {
-        Transmog({item = 198429, slot = L['staff']}) -- Typhoon Bringer
-    },
-    pois = {POI({23573442})}
-}) -- Ty'foon the Ascended
-
--------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
 -------------------------------------------------------------------------------
 
@@ -560,9 +538,9 @@ map.nodes[66105290] = PT.Tailoring({
     note = L['pt_tailor_silky_surprise_note']
 }) -- Silky Surprise
 
-map.nodes[79208380] = PT.Alchemy({
+map.nodes[79238374] = PT.Alchemy({
     id = 198710,
-    quest = nil,
+    quest = 70305,
     note = L['pt_alch_canteen_of_suspicious_water_note']
 }) -- Canteen Of Suspicious Water
 
@@ -575,7 +553,7 @@ map.nodes[81103790] = PT.Blacksmithing({
 
 map.nodes[85702520] = PT.Inscription({
     id = 198703,
-    quest = nil,
+    quest = 70307,
     note = L['pt_script_sign_language_reference_sheet_note']
 }) -- Sign Language Reference Sheet
 
@@ -999,6 +977,87 @@ map.nodes[43746678] = ns.node.Dragonrace({
 }) -- River Rapids Route
 
 -------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+map.nodes[23486179] = ns.node.Squirrel({
+    id = 186306,
+    rewards = {Achievement({id = 16729, criteria = 4})}
+}) -- Frilled Hatchling
+
+map.nodes[51075165] = ns.node.Squirrel({
+    id = 192948,
+    rewards = {Achievement({id = 16729, criteria = 5})}
+}) -- Thicket Glider
+
+map.nodes[50195179] = ns.node.Squirrel({
+    id = 192942,
+    rewards = {Achievement({id = 16729, criteria = 6})}
+}) -- Thunderspine Calf
+
+-------------------------------------------------------------------------------
+--------------------------- THE DISGRUNTLED HUNTER ----------------------------
+-------------------------------------------------------------------------------
+
+local HemetNesingwaryJr = Class('HemetNesingwaryJr', Collectible, {
+    id = 194590,
+    icon = 236444,
+    sublabel = L['hnj_sublabel'],
+    group = ns.groups.HEMET_NESINGWARY_JR
+}) -- Hemet Nesingwary Jr.
+
+map.nodes[82461392] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55692})}
+}) -- Northern Ohn'ahran Plains Hunt
+
+map.nodes[62005400] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55693})}
+}) -- Western Ohna'ahran Plains Hunt
+
+map.nodes[82874782] = HemetNesingwaryJr({
+    rewards = {Achievement({id = 16542, criteria = 55694})}
+}) -- Eastern Ohna'ahran Plains Hunt
+
+-------------------------------------------------------------------------------
+----------------------------- THAT'S PRETTY NEAT! -----------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[58323192] = ns.node.Selfie({
+    id = 193356,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 2})}
+}) -- Avis Gryphonheart
+
+map.nodes[59575538] = ns.node.Selfie({
+    id = 187496,
+    rewards = {Achievement({id = 16446, criteria = 9})}
+}) -- Glade Ohuna
+
+map.nodes[58363173] = ns.node.Selfie({
+    id = 193354,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 10})}
+}) -- Halia Cloudfeather
+
+map.nodes[58003184] = ns.node.Selfie({
+    id = 195895,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 14})}
+}) -- Nergazurai
+
+map.nodes[57493192] = ns.node.Selfie({
+    id = 193357,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 15})}
+}) -- Ohn'ara
+
+map.nodes[58003184] = ns.node.Selfie({
+    id = 193357,
+    note = L['bugged_selfie'],
+    rewards = {Achievement({id = 16446, criteria = 16})}
+}) -- Palla of the Wing
+
+-------------------------------------------------------------------------------
 ------------------------- LIZI, THUNDERSPINE TRAMPLER -------------------------
 -------------------------------------------------------------------------------
 
@@ -1014,7 +1073,14 @@ local Lizi = Class('Lizi', Collectible, {
         ns.requirement.Quest(66676), -- Sneaking In
         ns.requirement.Reputation(2503, 9, true) -- Maruuk Centaur
     },
-    rewards = {Mount({item = 192799, id = 1639})} -- Lizi's Reins
+    rewards = {Mount({item = 192799, id = 1639})}, -- Lizi's Reins
+    pois = {
+        POI({
+            57087764, -- day 3
+            56727631, -- day 4
+            57667231 -- day 5
+        })
+    }
 })
 
 function Lizi.getters:note()
@@ -1035,7 +1101,7 @@ function Lizi.getters:note()
     return note
 end
 
-map.nodes[56207710] = Lizi()
+map.nodes[56207710] = Lizi() -- day 1 and 2
 
 -------------------------------------------------------------------------------
 ---------------------- OHN'AHRA, DIVINE KISS OF OHN'AHRA ----------------------
@@ -1075,3 +1141,5 @@ function Ohnahra.getters:note()
 end
 
 map.nodes[57473193] = Ohnahra()
+
+-- STOP: DO NOT ADD NEW NODES HERE UNLESS THEY BELONG IN MISCELLANEOUS

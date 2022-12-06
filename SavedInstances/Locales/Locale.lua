@@ -107,6 +107,9 @@ Ld["Full Clear No Masks"] = "Full Clear No Masks"
 Ld["GD"] = "GD"
 Ld["General settings"] = "General settings"
 Ld["GMBT"] = "GMBT"
+Ld["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+Ld["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+Ld["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 Ld["Group"] = "Group"
 Ld["Guild"] = "Guild"
 Ld["HOA"] = "HOA"
@@ -202,6 +205,7 @@ Ld["Show when completed"] = "Show when completed"
 Ld["Show when saved"] = "Show when saved"
 Ld["Show/Hide the SavedInstances tooltip"] = "Show/Hide the SavedInstances tooltip"
 Ld["SIEGE"] = "SIEGE"
+Ld["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 Ld["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."
 Ld["Single category name"] = "Single category name"
 Ld["SOA"] = "SOA"
@@ -355,6 +359,12 @@ La["GD"] = "GD"
 La["General settings"] = "Options générales"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Grouper "
 La["Guild"] = "Guilde"
 La["HOA"] = "HOA"
@@ -462,6 +472,8 @@ La["Show when saved"] = "Quand inscrit"
 La["Show/Hide the SavedInstances tooltip"] = "Afficher/cacher l'infobulle de SavedInstances"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "De la même manière, les mots KILLED et TOTAL seront remplacés par le nombre de boss tués et le nombre total de boss du raid pour ce verrouillage."
 La["Single category name"] = "Nom de catégorie unique"
 La["SOA"] = "SOA"
@@ -627,6 +639,12 @@ La["GD"] = "GD"
 La["General settings"] = "Allgemeine Einstellungen"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Gruppieren"
 La["Guild"] = "Gilde"
 La["HOA"] = "HOA"
@@ -733,6 +751,8 @@ La["Show when saved"] = "Anzeigen, wenn gespeichert"
 La["Show/Hide the SavedInstances tooltip"] = "Zeige/Verstecke den SavedInstances-Tooltip"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Ebenso werden die Wörter GETÖTET und GESAMT durch die Anzahl der getöteten und gesamten Bosse der ID ersetzt."
 La["Single category name"] = "Einzelner Kategoriename"
 La["SOA"] = "SOA"
@@ -887,6 +907,12 @@ La["Full Clear No Masks"] = "0가면 5상"
 La["GD"] = "정비소"
 La["General settings"] = "일반 설정"
 La["GMBT"] = "타자:소레아"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "그룹"
 La["Guild"] = "길드"
 La["HOA"] = "속죄"
@@ -984,6 +1010,8 @@ La["Show when completed"] = "완료되면 표시"
 La["Show when saved"] = "저장할 때 표시"
 La["Show/Hide the SavedInstances tooltip"] = "SavedInstances 툴팁 보기/숨김"
 La["SIEGE"] = "보랄러스"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "마찬가지로, KILLED와 TOTAL의 단어가 귀속된 공격대의 '처치한 보스 숫자'와 '전체 보스'로 대체됩니다."
 La["Single category name"] = "단일 카테고리 이름"
 La["SOA"] = "승천"
@@ -1169,6 +1197,12 @@ La["GD"] = "GD"
 La["General settings"] = "Opciones generales"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Grupo"
 --[[Translation missing --]]
 La["Guild"] = "Guild"
@@ -1309,6 +1343,8 @@ La["Show when saved"] = "Mostrar cuando guardado"
 La["Show/Hide the SavedInstances tooltip"] = "Mostrar/ocultar la descripción"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Las palabras \"KILLED\" y \"TOTAL\" se reemplazará por el número de jefes derrotados, y el número total de jefes de la instancia, respectivamente."
 La["Single category name"] = "Nombre de la categoría individual"
 --[[Translation missing --]]
@@ -1478,6 +1514,12 @@ La["Full Clear No Masks"] = "Полный проход без масок"
 La["GD"] = "ДЕПО"
 La["General settings"] = "Общие настройки"
 La["GMBT"] = "ГАМБИТ"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Группировать"
 La["Guild"] = "Гильдия"
 La["HOA"] = "ЧП"
@@ -1575,6 +1617,8 @@ La["Show when completed"] = "Показать, когда завершено"
 La["Show when saved"] = "Отображать при сохранении"
 La["Show/Hide the SavedInstances tooltip"] = "Показать/спрятать подсказку SavedInstances"
 La["SIEGE"] = "ОСАДА"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Аналогично, слова KILLED и TOTAL будут заменены числом убитых и всего боссов в сохранении."
 La["Single category name"] = "Одиночное название категории"
 La["SOA"] = "ШП"
@@ -1715,6 +1759,12 @@ La["Full Clear No Masks"] = "五箱"
 La["GD"] = "车站"
 La["General settings"] = "综合"
 La["GMBT"] = "宏图"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "组合"
 La["Guild"] = "公会"
 La["HOA"] = "赎罪"
@@ -1810,6 +1860,8 @@ La["Show when completed"] = "完成后仍显示"
 La["Show when saved"] = "保存后显示"
 La["Show/Hide the SavedInstances tooltip"] = "显示/隐藏 SavedInstances 界面"
 La["SIEGE"] = "围攻"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "类似的，“KILLED”和“TOTAL”将被替换为首领的击杀数量和总数。"
 La["Single category name"] = "显示唯一分类名字"
 La["SOA"] = "高塔"
@@ -1972,6 +2024,12 @@ La["GD"] = "GD"
 La["General settings"] = "Opciones generales"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Grupo"
 La["Guild"] = "Hermandad"
 La["HOA"] = "SdE (HOA)"
@@ -2089,6 +2147,8 @@ La["Show when saved"] = "Mostrar si hay registro guardado"
 La["Show/Hide the SavedInstances tooltip"] = "Mostrar/ocultar la ventana de información de SavedInstances"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Las palabras \"KILLED\" y \"TOTAL\" se reemplazarán por el número de jefes derrotados y el total del registro."
 La["Single category name"] = "Nombre de la categoría individual"
 La["SOA"] = "AdA (SOA)"
@@ -2248,6 +2308,12 @@ La["Full Clear No Masks"] = "全清 無面具"
 La["GD"] = "車站"
 La["General settings"] = "一般設定"
 La["GMBT"] = "險招"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "群組"
 La["Guild"] = "公會"
 La["HOA"] = "贖罪"
@@ -2352,6 +2418,8 @@ La["Show when saved"] = "已保存時顯示"
 La["Show/Hide the SavedInstances tooltip"] = "顯示/隱藏 SavedInstances 滑鼠提示"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "同樣的，「KILLED」和「TOTAL」字樣也會被替換為首領已擊殺與總數的數字。"
 La["Single category name"] = "單一分類名稱"
 La["SOA"] = "晉升"
@@ -2527,6 +2595,12 @@ La["GD"] = "GD"
 La["General settings"] = "Configurações Gerais"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Grupo"
 La["Guild"] = "Guilda"
 --[[Translation missing --]]
@@ -2666,6 +2740,8 @@ La["Show when saved"] = "Mostrar Quando salvo"
 La["Show/Hide the SavedInstances tooltip"] = "Mostrar/Ocultar as dicas do SavedInstances"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Da mesma forma, as palavras mortas e TOTAL será substituído com o número de chefes mortos e total do bloqueio."
 La["Single category name"] = "Nome da categoria única"
 --[[Translation missing --]]
@@ -2875,6 +2951,12 @@ La["GD"] = "GD"
 La["General settings"] = "Opzioni generali"
 --[[Translation missing --]]
 La["GMBT"] = "GMBT"
+--[[Translation missing --]]
+La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
+--[[Translation missing --]]
+La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
 La["Group"] = "Gruppo"
 --[[Translation missing --]]
 La["Guild"] = "Guild"
@@ -3012,6 +3094,8 @@ La["Show when saved"] = "Mostra quando e' salvato"
 La["Show/Hide the SavedInstances tooltip"] = "Mostra/nascondi la finestra di SavedInstances"
 --[[Translation missing --]]
 La["SIEGE"] = "SIEGE"
+--[[Translation missing --]]
+La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "Analogamente, le parole UCCISI e TOTALE saranno sostituite dal numero di boss uccisi e totali nel salvataggio"
 La["Single category name"] = "Nome categoria singolo"
 --[[Translation missing --]]

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2494, "DBM-Party-Dragonflight", 4, 1199)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221205064214")
 mod:SetCreatureID(181861)
 mod:SetEncounterID(2610)
 --mod:SetUsedIcons(1, 2, 3)
@@ -28,10 +28,12 @@ mod:RegisterEventsInCombat(
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
 --TODO, verify target scan for lava spray, or maybe use RAID_BOSS_WHISPER?
+--NOTE: Magma Lob is cast by EACH tentacle, it's downgraded to normal warning by defaulta and timer disabled because it gets spammy later fight
+local warnMagmaLob								= mod:NewSpellAnnounce(375068, 3)
 local warnVolatileMutation						= mod:NewCountAnnounce(374365, 3)
 local warnLavaSpray								= mod:NewTargetNoFilterAnnounce(375251, 3)
 
-local specWarnMagmaLob							= mod:NewSpecialWarningDodge(375068, nil, nil, nil, 2, 2)
+local specWarnMagmaLob							= mod:NewSpecialWarningDodge(375068, false, nil, 2, 2, 2)
 local specWarnLavaSpray							= mod:NewSpecialWarningYou(375251, nil, nil, nil, 1, 2)
 local yellLavaSpray								= mod:NewYell(375251)
 local specWarnBlazingCharge						= mod:NewSpecialWarningDodge(375436, nil, nil, nil, 2, 2)
@@ -39,8 +41,8 @@ local yellBlazingCharge							= mod:NewYell(375436)
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(375204, nil, nil, nil, 1, 8)
 
 local timerVolatileMutationCD					= mod:NewCDTimer(31.5, 374365, nil, nil, nil, 5, nil, DBM_COMMON_L.DAMAGE_ICON)
-local timerMagmaLobCD							= mod:NewCDTimer(8, 375068, nil, nil, nil, 3)--8 unless delayed by other casts
-local timerLavaSrayCD							= mod:NewCDTimer(23.4, 375251, nil, nil, nil, 3)
+--local timerMagmaLobCD							= mod:NewCDTimer(8, 375068, nil, nil, nil, 3)--8 unless delayed by other casts
+local timerLavaSrayCD							= mod:NewCDTimer(19.9, 375251, nil, nil, nil, 3)
 local timerBlazingChargeCD						= mod:NewCDTimer(23, 375436, nil, nil, nil, 3)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
@@ -65,9 +67,9 @@ end
 function mod:OnCombatStart(delay)
 	self.vb.mutationCount = 0
 	timerLavaSrayCD:Start(7.2-delay)
-	timerMagmaLobCD:Start(8-delay)
+--	timerMagmaLobCD:Start(8-delay)
 	timerBlazingChargeCD:Start(19.7-delay)
-	timerVolatileMutationCD:Start(25.8-delay)
+	timerVolatileMutationCD:Start(25-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -86,9 +88,13 @@ function mod:SPELL_CAST_START(args)
 		warnVolatileMutation:Show(self.vb.mutationCount)
 		timerVolatileMutationCD:Start()
 	elseif spellId == 375068 then
-		specWarnMagmaLob:Show()
-		specWarnMagmaLob:Play("watchstep")
-		timerMagmaLobCD:Start()
+		if self.Options.SpecWarn375068dodge then
+			specWarnMagmaLob:Show()
+			specWarnMagmaLob:Play("watchstep")
+		else
+			warnMagmaLob:Show()
+		end
+--		timerMagmaLobCD:Start()
 	elseif spellId == 375251 then
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "LavaSprayTarget", 0.1, 8, true)
 		timerLavaSrayCD:Start()

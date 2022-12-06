@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 70
-RSConstants.CURRENT_LOOT_DB_VERSION = 80
+RSConstants.CURRENT_DB_VERSION = 72
+RSConstants.CURRENT_LOOT_DB_VERSION = 82
 
 ---============================================================================
 -- Current maps (newer)
@@ -362,6 +362,8 @@ RSConstants.CACHES_SWAGSNOUT_GROMIT = { 369292, 369294, 369310, 369297, 369295, 
 RSConstants.STOLEN_ANIMA_VESSEL = { 368946, 368947, 368948, 368949, 368950, 368951, 368952, 368953 }
 RSConstants.STOLEN_ANIMA_VESSEL_RIFT = { 369227, 369235, 369236 }
 RSConstants.DISTURBED_DIRT = { 382029, 376386, 383733, 383734, 383735 }
+RSConstants.HUNTING_PARTY_NPCS = { 195093, 194760, 194251, 191103, 194409, 194601 }
+RSConstants.OMINOUS_CONCHS_NPCS = { 193735, 193634, 193710, 197371, 193708, 193706 } --197411
 
 -- NPCs that spawn after completing an event
 RSConstants.NPCS_WITH_PRE_EVENT = {
@@ -431,6 +433,7 @@ RSConstants.NPCS_WITH_PRE_EVENT = {
 	[193166] = 187559;
 	-- The Azure Span
 	[192747] = 192749;
+	[190971] = 189822;
 }
 
 -- Contains that spawn after completing an event

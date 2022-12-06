@@ -386,7 +386,7 @@ hookPetJournal.PetJournal_SelectPet = function(self, targetPetID,...)
 		end
 	end
 	if ( petIndex ) then
-		PetJournalPetList_UpdateScrollPos(self.listScroll, petIndex);
+		--PetJournalPetList_UpdateScrollPos(self.listScroll, petIndex); --TODO:abyui10
 	end
 	PetJournal_ShowPetCardByID(targetPetID);
 end

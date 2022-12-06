@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("HallsofInfusionTrash", "DBM-Party-Dragonflight", 8)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221204033441")
+mod:SetRevision("20221205015333")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
 mod:RegisterEvents(
 	"SPELL_CAST_START 390290 374080 375351 375348 375327 375384 374563",
--	"SPELL_AURA_APPLIED 374724",
+	"SPELL_AURA_APPLIED 374724",
 	"SPELL_AURA_APPLIED_DOSE 374389"
 --	"SPELL_AURA_REMOVED"
 )

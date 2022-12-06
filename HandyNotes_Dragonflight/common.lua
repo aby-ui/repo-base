@@ -8,7 +8,6 @@ local Class = ns.Class
 local Group = ns.Group
 
 local Collectible = ns.node.Collectible
-local NPC = ns.node.NPC
 local Node = ns.node.Node
 
 local Achievement = ns.reward.Achievement
@@ -27,7 +26,7 @@ ns.expansion = 10
 
 ns.groups.ANCESTOR = Group('ancestor', 135946, {defaults = ns.GROUP_HIDDEN})
 ns.groups.BAKAR = Group('bakar', 930453, {defaults = ns.GROUP_HIDDEN})
-ns.groups.BONUS_BOSS = Group('bonus_boss', 'peg_rd',
+ns.groups.CHISELED_RECORD = Group('chiseled_record', 134455,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570,
     {defaults = ns.GROUP_HIDDEN})
@@ -35,29 +34,53 @@ ns.groups.DRAGONRACE =
     Group('dragonrace', 1100022, {defaults = ns.GROUP_HIDDEN})
 ns.groups.DRAGON_GLYPH = Group('dragon_glyph', 4728198)
 ns.groups.DREAMGUARD = Group('dreamguard', 341763, {defaults = ns.GROUP_HIDDEN})
+ns.groups.DUCKLINGS = Group('ducklings', 4048818, {defaults = ns.GROUP_HIDDEN})
 ns.groups.FLAG = Group('flag', 1723999, {defaults = ns.GROUP_HIDDEN})
+ns.groups.FRAGMENT = Group('fragment', 134908, {defaults = ns.GROUP_HIDDEN})
+ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.KITE = Group('kite', 133837, {defaults = ns.GROUP_HIDDEN})
 ns.groups.LAYLINE = Group('layline', 1033908, {defaults = ns.GROUP_HIDDEN})
 ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SCOUT_PACK =
     Group('scout_pack', 4562583, {defaults = ns.GROUP_HIDDEN})
-
--------------------------------------------------------------------------------
----------------------------- BONUS OBJECTIVE BOSSES ---------------------------
--------------------------------------------------------------------------------
-
-local BonusBoss = Class('BonusBoss', NPC, {
-    icon = 'peg_rd',
-    scale = 1.8,
-    group = ns.groups.BONUS_BOSS
-})
-
-ns.node.BonusBoss = BonusBoss
+ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
+ns.groups.PRETTY_NEAT_SELFIE = Group('pretty_neat_selfie', 133707,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.GRAND_THEFT_MAMMOTH = Group('grand_theft_mammoth', 4034836,
+    {defaults = ns.GROUP_HIDDEN})
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
 -------------------------------------------------------------------------------
+
+-- LuaFormatter off
+local PROFESSIONS = {
+    -- name, icon, skillID, variantID
+    {'Alchemy', 4620669, 171, 2823},
+    {'Blacksmithing', 4620670, 164, 2822},
+    {'Enchanting', 4620672, 333, 2825},
+    {'Engineering', 4620673, 202, 2827},
+    {'Herbalism', 4620675, 182, 2832},
+    {'Inscription', 4620676, 773, 2828},
+    {'Jewelcrafting', 4620677, 755, 2829},
+    {'Leatherworking', 4620678, 165, 2830},
+    {'Mining', 4620679, 186, 2833},
+    {'Skinning', 4620680, 393, 2834},
+    {'Tailoring', 4620681, 197, 2831}
+}
+-- LuaFormatter on
+
+local ProfessionMaster = Class('ProfessionMaster', ns.node.NPC, {
+    scale = 0.9,
+    group = ns.groups.PROFESSION_TREASURES
+})
+
+function ProfessionMaster:IsEnabled()
+    if not ns.PlayerHasProfession(self.skillID) then return false end
+    return ns.node.NPC.IsEnabled(self)
+end
 
 local ProfessionTreasure = Class('ProfessionTreasure', ns.node.Item, {
     scale = 0.9,
@@ -69,48 +92,27 @@ function ProfessionTreasure:IsEnabled()
     return ns.node.Item.IsEnabled(self)
 end
 
-ns.node.ProfessionTreasures = {
-    Alchemy = Class('AlchemyTreasure', ProfessionTreasure, {
-        icon = 4620669,
-        skillID = 171,
-        requires = ns.requirement.Profession(171, 2823, 25)
-    }),
-    Blacksmithing = Class('BlacksmithingTreasure', ProfessionTreasure, {
-        icon = 4620670,
-        skillID = 164,
-        requires = ns.requirement.Profession(164, 2822, 25)
-    }),
-    Enchanting = Class('EnchantingTreasure', ProfessionTreasure, {
-        icon = 4620672,
-        skillID = 333,
-        requires = ns.requirement.Profession(333, 2825, 25)
-    }),
-    Engineering = Class('EngineeringTreasure', ProfessionTreasure, {
-        icon = 4620673,
-        skillID = 202,
-        requires = ns.requirement.Profession(202, 2827, 25)
-    }),
-    Inscription = Class('InscriptionTreasure', ProfessionTreasure, {
-        icon = 4620676,
-        skillID = 773,
-        requires = ns.requirement.Profession(773, 2828, 25)
-    }),
-    Jewelcrafting = Class('JewelcraftingTreasure', ProfessionTreasure, {
-        icon = 4620677,
-        skillID = 755,
-        requires = ns.requirement.Profession(755, 2829, 25)
-    }),
-    Leatherworking = Class('LeatherworkingTreasure', ProfessionTreasure, {
-        icon = 4620678,
-        skillID = 165,
-        requires = ns.requirement.Profession(165, 2830, 25)
-    }),
-    Tailoring = Class('TailoringTreasure', ProfessionTreasure, {
-        icon = 4620681,
-        skillID = 197,
-        requires = ns.requirement.Profession(197, 2831, 25)
+ns.node.ProfessionMasters = {}
+ns.node.ProfessionTreasures = {}
+
+local PM = ns.node.ProfessionMasters
+local PT = ns.node.ProfessionTreasures
+
+for i, ids in ipairs(PROFESSIONS) do
+    local name, icon, skillID, variantID = unpack(ids)
+
+    PM[name] = Class(name .. 'Master', ProfessionMaster, {
+        icon = icon,
+        skillID = skillID,
+        requires = ns.requirement.Profession(skillID, variantID, 25)
     })
-}
+
+    PT[name] = Class(name .. 'Treasure', ProfessionTreasure, {
+        icon = icon,
+        skillID = skillID,
+        requires = ns.requirement.Profession(skillID, variantID, 25)
+    })
+end
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -150,6 +152,27 @@ local Flag = Class('Flag', Collectible, {
 })
 
 ns.node.Flag = Flag
+
+-------------------------------------------------------------------------------
+---------------------------- FRAGMENTS OF HISTORY -----------------------------
+-------------------------------------------------------------------------------
+
+local Fragment = Class('Fragment', Collectible, {
+    icon = 134908,
+    group = ns.groups.FRAGMENT,
+    IsCollected = function(self)
+        if ns.PlayerHasItem(self.rewards[2].item) then return true end
+        return Collectible.IsCollected(self)
+    end
+})
+
+function Fragment.getters:note()
+    -- Ask Emilia Bellocq first
+    return not C_QuestLog.IsQuestFlaggedCompleted(70231) and
+               L['fragment_requirement_note']
+end
+
+ns.node.Fragment = Fragment
 
 -------------------------------------------------------------------------------
 ------------------------------- DISTURBED DIRT --------------------------------
@@ -225,7 +248,6 @@ ns.node.Scoutpack = Scoutpack
 local Dragonrace = Class('DragonRace', Collectible,
     {icon = 1100022, group = ns.groups.DRAGONRACE})
 
--- Time Records are stored in a Hidden Currency (https://www.wowhead.com/currencies/dragon-racing-ui-hidden)
 function Dragonrace.getters:sublabel()
     if self.normal then
         local ntime = C_CurrencyInfo.GetCurrencyInfo(self.normal[1]).quantity
@@ -262,3 +284,49 @@ function Dragonrace.getters:note()
 end
 
 ns.node.Dragonrace = Dragonrace
+
+-------------------------------------------------------------------------------
+--------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
+-------------------------------------------------------------------------------
+
+local Squirrel = Class('Squirrel', Collectible, {
+    group = ns.groups.SQUIRRELS,
+    icon = 237182,
+    note = L['squirrels_note']
+})
+
+ns.node.Squirrel = Squirrel
+
+-------------------------------------------------------------------------------
+----------------------------- THAT'S PRETTY NEAT! -----------------------------
+-------------------------------------------------------------------------------
+
+local Selfie = Class('Selfie', Collectible, {
+    icon = 133707,
+    sublabel = L['pretty_neat_selfie_note'],
+    group = ns.groups.PRETTY_NEAT_SELFIE
+}) -- That's Pretty Neat!
+
+ns.node.Selfie = Selfie
+
+-- TODO / Checklist
+-- Apex Blazewing
+-- Blue Terror              Added to Rare - Unknown
+-- Drakewing                Added to Rare - Unknown
+-- Feasting Buzzard
+-- Glade Ohuna              Added - Working
+-- Horned Filcher           Added - Bugged
+-- Liskron the Dazzling
+-- Ohn'ahra                 Added as Separate Node - Unknown (probably bugged?)
+-- Pine Flicker             Added - Bugged
+-- Territorial Axebeak      Added - Working
+-- Avis Gryphonheart        Added - Bugged
+-- Chef Fry-Aerie
+-- Eldoren the Reborn
+-- Forgotten Gryphon        Added to Rare - Unknown
+-- Halia Cloudfeather       Added - Bugged (counted as Drakewing)
+-- Iridescent Peafowl
+-- Nergazurai               Added to Rare - Unknown
+-- Palla of the Wing        Added - Bugged (counted as Ohn'ahra)
+-- Quackers the Terrible
+-- Zenet Avis               Added to Rare - Unknown

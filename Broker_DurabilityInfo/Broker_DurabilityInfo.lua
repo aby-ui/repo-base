@@ -6,7 +6,7 @@ local _G = getfenv(0)
 --------------------------------------------------------------------------------------------------------
 --                                             AceAddon init                                          --
 --------------------------------------------------------------------------------------------------------
-local MODNAME	= "Broker_DurabilityInfo"
+local MODNAME = "Broker_DurabilityInfo"
 local addon = LibStub("AceAddon-3.0"):NewAddon(MODNAME, "AceEvent-3.0", "AceTimer-3.0")
 _G.Broker_DurabilityInfo = addon
 
@@ -272,7 +272,7 @@ addon.options = {
 					set = function(key, value)
 						profileDB.warnThreshold = value
 					end,
-               },
+				},
 			},
 		},
 	},
@@ -330,7 +330,7 @@ function addon:OnInitialize()
 end
 
 function addon:OnEnable()
-	self:ScheduleRepeatingTimer("MainUpdate", 5)
+	self:ScheduleRepeatingTimer("MainUpdate", 3)
 end
 
 -- LDB object
@@ -500,12 +500,17 @@ function addon:GetRepairData()
 
 	local total = 0
 	local current = 0
+	local index,item
 
 	for index,item in pairs(slotNames) do
 		local val, max = GetInventoryItemDurability(slotNames[index][ID])
-		local tooltipData = C_TooltipInfo.GetInventoryItem("player", slotNames[index][ID])
-		local repairCost = TooltipUtil.GetRepairCostForTooltipData(tooltipData)
-		if max then
+		local repairCost = 0
+		local data = C_TooltipInfo.GetInventoryItem("player", slotNames[index][ID])
+		if data then
+			TooltipUtil.SurfaceArgs(data)
+			repairCost = data.repairCost
+		end
+		if max and repairCost then
 			if merchantState == AT_MERCHANT then
 				repairCost = self:MerchantCorrection(repairCost)
 			end
@@ -529,9 +534,13 @@ function addon:GetRepairData()
 			local nrslots = C_Container.GetContainerNumSlots(bag)
 			for slot = 1, nrslots do
 				local val, max = C_Container.GetContainerItemDurability(bag, slot)
-				local tooltipData = C_TooltipInfo.GetBagItem(bag, slot)
-				local repairCost = TooltipUtil.GetRepairCostForTooltipData(tooltipData)
-				if max then
+				local repairCost = 0
+				local data = C_TooltipInfo.GetBagItem(bag, slot)
+				if data then
+					TooltipUtil.SurfaceArgs(data)
+					repairCost = data.repairCost
+				end
+				if max and repairCost then
 					if merchantState == AT_MERCHANT then
 						repairCost = self:MerchantCorrection(repairCost)
 					end

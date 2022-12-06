@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2508, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128214658")
+mod:SetRevision("20221206015003")
 mod:SetCreatureID(186738)
 mod:SetEncounterID(2584)
 --mod:SetUsedIcons(1, 2, 3)
@@ -44,7 +44,7 @@ local specWarnUnleashedDestruction				= mod:NewSpecialWarningSpell(385399, nil, 
 local timerDragonStrikeCD						= mod:NewCDTimer(7.3, 384978, nil, "Tank|Healer|RemoveMagic", nil, 5, nil, DBM_COMMON_L.TANK_ICON..DBM_COMMON_L.MAGIC_ICON)--7.3-24, probably delayed by CLEU events I couldn't see
 local timerCrystallineRoarCD					= mod:NewCDTimer(117.8, 384699, nil, nil, nil, 3, nil, DBM_COMMON_L.DEADLY_ICON)
 local timerUnleashedDestructionCD				= mod:NewCDTimer(117.8, 385399, nil, nil, nil, 2)--Not seen cast more than once even in a long pull
-local timerArcaneEruptionCD						= mod:NewCDTimer(54.6, 385075, nil, nil, nil, 3)
+local timerArcaneEruptionCD						= mod:NewCDTimer(64.3, 385075, nil, nil, nil, 3)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -57,7 +57,7 @@ mod.vb.unleashedCast = 0
 function mod:OnCombatStart(delay)
 	self.vb.unleashedCast = 0
 	timerDragonStrikeCD:Start(7.1-delay)
-	timerCrystallineRoarCD:Start(13-delay)
+	timerCrystallineRoarCD:Start(12.3-delay)
 	timerArcaneEruptionCD:Start(28.9-delay)--28.9-37, Highly variable if it gets spell queued behind more tank casts
 	timerUnleashedDestructionCD:Start(48.2-delay)
 	if self.Options.InfoFrame then

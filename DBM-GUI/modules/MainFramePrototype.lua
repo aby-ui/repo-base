@@ -1,7 +1,7 @@
 local L = DBM_GUI_L
 
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
-local isDragonflight = DBM:GetTOC() >= 100000
+local isDragonflight = DBM:GetTOC() > 100000--Purposely left this way, wrath 3.4.1 doesn't like changes in THIS file
 
 local DDM = _G["LibStub"]:GetLibrary("LibDropDownMenu")
 

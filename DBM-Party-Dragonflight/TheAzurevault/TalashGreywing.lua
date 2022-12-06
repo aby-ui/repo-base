@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2483, "DBM-Party-Dragonflight", 6, 1203)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128214658")
+mod:SetRevision("20221206015003")
 mod:SetCreatureID(186737)
 mod:SetEncounterID(2583)
 --mod:SetUsedIcons(1, 2, 3)
@@ -20,6 +20,7 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, detect icy devastator target working? Show range frame entire fight, or just when icy is out?
+--TODO, are timers different on M+ or same as before? right now it's assumed timers are just different on M0
 --[[
 (ability.id = 388008 or ability.id = 386781 or ability.id = 387151) and type = "begincast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
@@ -59,8 +60,8 @@ end
 
 function mod:OnCombatStart(delay)
 	timerFrostBombCD:Start(3.6-delay)
-	timerIcyDevastatorCD:Start(10-delay)
-	timerAbsoluteZeroCD:Start(22.9-delay)
+	timerIcyDevastatorCD:Start(10-delay)--14.7 now?
+	timerAbsoluteZeroCD:Start(21.8-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(8)
 	end
@@ -80,7 +81,7 @@ function mod:SPELL_CAST_START(args)
 	if spellId == 386781 then
 		timerFrostBombCD:Start()
 	elseif spellId == 387151 then
-		timerIcyDevastatorCD:Start()
+		timerIcyDevastatorCD:Start(self:IsMythicPlus() and 22.6 or 32.8)
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "DevastatorTarget", 0.1, 6, true)
 		--If time remaining on frost bomb less than 6, time remaining increased to 6
 		if timerFrostBombCD:GetRemaining() < 6 then
@@ -94,7 +95,7 @@ function mod:SPELL_CAST_START(args)
 		specWarAbsoluteZero:Play("findshelter")
 		timerAbsoluteZeroCD:Start()
 		timerFrostBombCD:Restart(12.2)
-		timerIcyDevastatorCD:Restart(19.6)
+		timerIcyDevastatorCD:Restart(self:IsMythicPlus() and 19.6 or 23.2)
 	end
 end
 
