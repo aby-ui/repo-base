@@ -57,7 +57,10 @@ end
 local function TradeSkillEvents(event)
     if event == "TRADE_SKILL_SHOW" then
         local tradeSkillFrame = _G["ProfessionsFrame"].CraftingPage.RecipeList
-        tradeSkillFrame:HookScript("OnUpdate", CIMI_UpdateTradeSkillIcons)
+        if not tradeSkillFrame._aby_hooked then
+            tradeSkillFrame._aby_hooked = true
+            tradeSkillFrame:HookScript("OnUpdate", CIMI_UpdateTradeSkillIcons)
+        end
     end
 end
 
