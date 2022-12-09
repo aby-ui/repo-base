@@ -6,6 +6,8 @@
 	local _
 	local addonName, Details222 = ...
 
+	local bIsDragonflight = DetailsFramework.IsDragonflight()
+
 	local CONST_CLIENT_LANGUAGE = DF.ClientLanguage
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,6 +68,8 @@
 	local OBJECT_TYPE_NPC =		0x00000800
 	local OBJECT_TYPE_PLAYER =	0x00000400
 	local OBJECT_TYPE_PETS = 	OBJECT_TYPE_PET + OBJECT_TYPE_GUARDIAN
+
+	local debugPetname = false
 
 	local KirinTor = GetFactionInfoByID (1090) or "1"
 	local Valarjar = GetFactionInfoByID (1948) or "1"
@@ -197,7 +201,7 @@
 		if (engClass) then
 			novo_objeto.classe = engClass
 			return
-		else	
+		else
 			if (flag) then
 				--conferir se o jogador � um player
 				if (_bit_band (flag, OBJECT_TYPE_PLAYER) ~= 0) then
@@ -432,27 +436,28 @@
 
 	end
 
-	local pet_blacklist = {}
+	local petBlackList = {}
 	local pet_tooltip_frame = _G.DetailsPetOwnerFinder
 	local pet_text_object = _G ["DetailsPetOwnerFinderTextLeft2"] --not in use
 	local follower_text_object = _G ["DetailsPetOwnerFinderTextLeft3"] --not in use
 
-	local find_pet_found_owner = function(ownerName, serial, nome, flag, self)
-		local ownerGuid = UnitGUID(ownerName)
+	local petOwnerFound = function(ownerName, petGUID, petName, petFlags, self, ownerGUID)
+		local ownerGuid = ownerGUID or UnitGUID(ownerName)
 		if (ownerGuid) then
-			_detalhes.tabela_pets:Adicionar (serial, nome, flag, ownerGuid, ownerName, 0x00000417)
-			local nome_dele, dono_nome, dono_serial, dono_flag = _detalhes.tabela_pets:PegaDono (serial, nome, flag)
-			
-			local dono_do_pet
-			if (nome_dele and dono_nome) then
-				nome = nome_dele
-				dono_do_pet = self:PegarCombatente (dono_serial, dono_nome, dono_flag, true, nome)
+			_detalhes.tabela_pets:Adicionar(petGUID, petName, petFlags, ownerGuid, ownerName, 0x00000417)
+			local petNameWithOwner, ownerName, ownerGUID, ownerFlags = _detalhes.tabela_pets:PegaDono(petGUID, petName, petFlags)
+
+			local petOwnerActorObject
+
+			if (petNameWithOwner and ownerName) then
+				petName = petNameWithOwner
+				petOwnerActorObject = self:PegarCombatente(ownerGUID, ownerName, ownerFlags, true)
 			end
-			
-			return nome, dono_do_pet
+
+			return petName, petOwnerActorObject
 		end
 	end
-	
+
 	--check pet owner name with correct declension for ruRU locale (from user 'denis-kam' on github)
 	local find_name_declension = function(petTooltip, playerName)
 		--2 - male, 3 - female
@@ -466,17 +471,37 @@
 				end
 			end
 		end
-		
 		return false
 	end
 
-	local find_pet_owner = function(serial, nome, flag, self)
+	local find_pet_owner = function(petGUID, petName, petFlags, self)
 		if (not _detalhes.tabela_vigente) then
 			return
 		end
 
-		pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
-		pet_tooltip_frame:SetHyperlink ("unit:" .. (serial or ""))
+		if (bIsDragonflight) then
+			pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
+			pet_tooltip_frame:SetHyperlink("unit:" .. (petGUID or ""))
+			local tooltipData = pet_tooltip_frame:GetTooltipData()
+
+			if (tooltipData and tooltipData.lines[1]) then
+				if (tooltipData.lines[1].leftText == petName) then
+					for i = 2, #tooltipData.lines do
+						local tooltipLine = tooltipData.lines[i]
+						local args = tooltipLine.args
+						if (args) then
+							if (args[4] and args[4].field == "guid") then
+								local guidVal = args[4].guidVal
+								local guidCache = Details:GetParserPlayerCache()
+								if (guidCache[guidVal]) then
+									return petOwnerFound(guidCache[guidVal], petGUID, petName, petFlags, self, guidVal)
+								end
+							end
+						end
+					end
+				end
+			end
+		end
 
 		Details.tabela_vigente.raid_roster_indexed = Details.tabela_vigente.raid_roster_indexed or {}
 
@@ -493,21 +518,21 @@
 				--this is equivalent to remove 's from the owner on enUS
 				if (CONST_CLIENT_LANGUAGE == "ruRU") then
 					if (find_name_declension (text1, playerName)) then
-						return find_pet_found_owner (pName, serial, nome, flag, self)
+						return petOwnerFound (pName, petGUID, petName, petFlags, self)
 					else
 						--print("not found declension (1):", pName, nome)
 						if (text1:find(playerName)) then
-							return find_pet_found_owner (pName, serial, nome, flag, self)
+							return petOwnerFound (pName, petGUID, petName, petFlags, self)
 						end
 					end
 				else
 					if (text1:find(playerName)) then
-						return find_pet_found_owner (pName, serial, nome, flag, self)
+						return petOwnerFound (pName, petGUID, petName, petFlags, self)
 					else
 						local ownerName = (string.match(text1, string.gsub(UNITNAME_TITLE_PET, "%%s", "(%.*)")) or string.match(text1, string.gsub(UNITNAME_TITLE_MINION, "%%s", "(%.*)")) or string.match(text1, string.gsub(UNITNAME_TITLE_GUARDIAN, "%%s", "(%.*)")))
 						if (ownerName) then
 							if (_detalhes.tabela_vigente.raid_roster[ownerName]) then
-								return find_pet_found_owner (ownerName, serial, nome, flag, self)
+								return petOwnerFound (ownerName, petGUID, petName, petFlags, self)
 							end
 						end
 					end
@@ -525,21 +550,21 @@
 
 				if (CONST_CLIENT_LANGUAGE == "ruRU") then
 					if (find_name_declension (text2, playerName)) then
-						return find_pet_found_owner (pName, serial, nome, flag, self)
+						return petOwnerFound (pName, petGUID, petName, petFlags, self)
 					else
 						--print("not found declension (2):", pName, nome)
 						if (text2:find(playerName)) then
-							return find_pet_found_owner (pName, serial, nome, flag, self)
+							return petOwnerFound (pName, petGUID, petName, petFlags, self)
 						end
 					end
 				else
 					if (text2:find(playerName)) then
-						return find_pet_found_owner (pName, serial, nome, flag, self)
+						return petOwnerFound (pName, petGUID, petName, petFlags, self)
 					else
 						local ownerName = (string.match(text2, string.gsub(UNITNAME_TITLE_PET, "%%s", "(%.*)")) or string.match(text2, string.gsub(UNITNAME_TITLE_MINION, "%%s", "(%.*)")) or string.match(text2, string.gsub(UNITNAME_TITLE_GUARDIAN, "%%s", "(%.*)")))
 						if (ownerName) then
 							if (_detalhes.tabela_vigente.raid_roster[ownerName]) then
-								return find_pet_found_owner (ownerName, serial, nome, flag, self)
+								return petOwnerFound (ownerName, petGUID, petName, petFlags, self)
 							end
 						end
 					end
@@ -597,40 +622,37 @@
 		--verifica se � um pet, se for confere se tem o nome do dono, se n�o tiver, precisa por
 		local dono_do_pet
 		serial = serial or "ns"
-		
-		if (container_pets [serial]) then --� um pet reconhecido
-			--[[statistics]]-- _detalhes.statistics.container_pet_calls = _detalhes.statistics.container_pet_calls + 1
 
-			local nome_dele, dono_nome, dono_serial, dono_flag = _detalhes.tabela_pets:PegaDono (serial, nome, flag)
-			if (nome_dele and dono_nome) then
-				nome = nome_dele
-				dono_do_pet = self:PegarCombatente (dono_serial, dono_nome, dono_flag, true)
+		if (container_pets[serial]) then --� um pet reconhecido
+			--[[statistics]]-- _detalhes.statistics.container_pet_calls = _detalhes.statistics.container_pet_calls + 1
+			local petName, ownerName, ownerGUID, ownerFlag = _detalhes.tabela_pets:PegaDono (serial, nome, flag)
+			if (petName and ownerName) then
+				nome = petName
+				dono_do_pet = self:PegarCombatente(ownerGUID, ownerName, ownerFlag, true)
 			end
-			
-		elseif (not pet_blacklist [serial]) then --verifica se � um pet
-		
-			pet_blacklist [serial] = true
-		
+
+		elseif (not petBlackList[serial]) then --verifica se � um pet
+			petBlackList[serial] = true
+
 			--try to find the owner
-			if (flag and _bit_band (flag, OBJECT_TYPE_PETGUARDIAN) ~= 0) then
+			if (flag and _bit_band(flag, OBJECT_TYPE_PETGUARDIAN) ~= 0) then
 				--[[statistics]]-- _detalhes.statistics.container_unknow_pet = _detalhes.statistics.container_unknow_pet + 1
-				local find_nome, find_owner = find_pet_owner (serial, nome, flag, self)
+				local find_nome, find_owner = find_pet_owner(serial, nome, flag, self)
 				if (find_nome and find_owner) then
 					nome, dono_do_pet = find_nome, find_owner
 				end
 			end
 		end
-		
+
 		--pega o index no mapa
-		local index = self._NameIndexTable [nome]
+		local index = self._NameIndexTable[nome]
 		--retorna o actor
 		if (index) then
-			return self._ActorTable [index], dono_do_pet, nome
-		
+			return self._ActorTable[index], dono_do_pet, nome
+
 		--n�o achou, criar
 		elseif (criar) then
-	
-			local novo_objeto = self.funcao_de_criacao (_, serial, nome)
+			local novo_objeto = self.funcao_de_criacao(_, serial, nome)
 			novo_objeto.nome = nome
 			novo_objeto.flag_original = flag
 			novo_objeto.serial = serial
@@ -642,7 +664,7 @@
 			--get the aID (actor id)
 			if (serial:match("^C")) then
 				novo_objeto.aID = tostring(Details:GetNpcIdFromGuid(serial))
-				
+
 				if (Details.immersion_special_units) then
 					local shouldBeInGroup, class = Details.Immersion.IsNpcInteresting(novo_objeto.aID)
 					novo_objeto.grupo = shouldBeInGroup
@@ -855,7 +877,7 @@
 		_detalhes:UpdatePetsOnParser()
 	end
 	function _detalhes:ClearCCPetsBlackList()
-		table.wipe(pet_blacklist)
+		table.wipe(petBlackList)
 	end
 
 	function container_combatentes:FuncaoDeCriacao (tipo)

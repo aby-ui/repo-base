@@ -172,8 +172,6 @@ function E:Refresh(arg)
 		end
 	end
 
-	self.TooltipID:SetHooks()
-
 	if arg == "OnProfileReset" then
 		self.global.disableElvMsg = nil
 	end
@@ -246,7 +244,6 @@ do
 			if prefix ~= "OMNICD_VERSION" or sender == E.userNameWithRealm then
 				return
 			end
-
 			version = tonumber(version)
 			if version and version > currentVersion then
 				local diff = version - currentVersion

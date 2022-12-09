@@ -154,9 +154,9 @@ function P:ConfigBars(key, arg)
 	if not self:IsCurrentZone(key) then return end
 
 	if arg == "priority" then
-		for key, frame in pairs(self.extraBars) do
+		for barKey, frame in pairs(self.extraBars) do
 			if frame.db.enabled then
-				self:SetExIconLayout(key, true, true)
+				self:SetExIconLayout(barKey, true, true)
 			end
 		end
 	elseif arg ~= "showAnchor" and arg ~= "locked" then
@@ -202,9 +202,9 @@ function P:ConfigIconSettings(frame, arg, key)
 		elseif arg == "chargeScale" then
 			self:SetChargeScale(icon, db)
 		elseif arg == "showCounter" or arg == "counterScale" then
-			self:SetCounter(icon)
+			self:SetSwipeCounter(icon)
 		elseif arg == "reverse" or arg == "swipeAlpha" then
-			self:SetSwipe(icon)
+			self:SetSwipeCounter(icon)
 		elseif arg == "activeAlpha" or arg == "inactiveAlpha" or arg == "desaturateActive" then
 			self:SetOpacity(icon)
 		elseif arg == "displayBorder" or arg == "borderPixels" then
@@ -239,8 +239,8 @@ function P:ConfigIcons(key, arg)
 			local frame = info.bar
 			self:ConfigIconSettings(frame, arg)
 		end
-		for key, frame in pairs(self.extraBars) do
-			self:ConfigIconSettings(frame, arg, key)
+		for barKey, frame in pairs(self.extraBars) do
+			self:ConfigIconSettings(frame, arg, barKey)
 		end
 	end
 end

@@ -592,6 +592,17 @@ function DropDown_Initialize(self, level)
 	info.isNotRadio = true
 
 	if level == 1 then
+
+		info.text = LOCALE_zhCN and "按任务距离排序" or "Sort by Distance"
+		info.notCheckable = false
+		info.disabled = false
+		info.checked = (db.sortByDistance)
+		info.func = function()
+			db.sortByDistance = not db.sortByDistance
+			KT_ObjectiveTracker_UpdatePOIs()
+		end
+		MSA_DropDownMenu_AddButton(info)
+
 		info.notCheckable = true
 
 		-- Quests
@@ -904,6 +915,7 @@ function M:OnInitialize()
 
     local defaults = KT:MergeTables({
         profile = {
+			sortByDistance = false,
             filterAuto = {
 				nil,	-- [1] Quests
 				nil,	-- [2] Achievements

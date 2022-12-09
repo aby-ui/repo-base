@@ -13,4 +13,5 @@ enUS.lua
 Details_TinyThreat.lua
 
 
+## Title: |cff880303[爱不易]|r Details 威胁值模块
 ## X-Vendor: AbyUI

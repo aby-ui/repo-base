@@ -574,6 +574,9 @@ do
                 name = Loc ["STRING_OPTIONS_WC_CREATE"],
                 desc = Loc ["STRING_OPTIONS_WC_CREATE_DESC"],
             },
+
+            {type = "blank"},
+
             {--class colors
                 type = "execute",
                 func = function(self)
@@ -4259,6 +4262,32 @@ do
                 desc = Loc ["STRING_OPTIONS_TOOLTIPS_FONTSHADOW_DESC"],
             },
 
+            {--text size
+                type = "range",
+                get = function() return _detalhes.tooltip.fontsize end,
+                set = function(self, fixedparam, value)
+                    _detalhes.tooltip.fontsize = value
+                    afterUpdate()
+                end,
+                min = 5,
+                max = 32,
+                step = 1,
+                name = Loc ["STRING_OPTIONS_TEXT_SIZE"],
+                desc = Loc ["STRING_OPTIONS_TEXT_SIZE_DESC"],
+            },
+
+            {--text font
+                type = "select",
+                get = function() return _detalhes.tooltip.fontface end,
+                values = function()
+                    return buildTooltipFontOptions()
+                end,
+                name = Loc ["STRING_OPTIONS_TEXT_FONT"],
+                desc = Loc ["STRING_OPTIONS_TEXT_FONT_DESC"],
+            },
+
+            {type = "blank"},
+
             {type = "label", get = function() return Loc["STRING_OPTIONS_TOOLTIPS_FONTCOLOR"] end},
 
 			{--text color left
@@ -4315,32 +4344,26 @@ do
                 desc = Loc ["STRING_OPTIONS_TOOLTIPS_ANCHORCOLOR"],
             },
 
-            {--text size
-                type = "range",
-                get = function() return _detalhes.tooltip.fontsize end,
-                set = function(self, fixedparam, value)
-                    _detalhes.tooltip.fontsize = value
-                    afterUpdate()
-                end,
-                min = 5,
-                max = 32,
-                step = 1,
-                name = Loc ["STRING_OPTIONS_TEXT_SIZE"],
-                desc = Loc ["STRING_OPTIONS_TEXT_SIZE_DESC"],
-            },
-
-            {--text font
-                type = "select",
-                get = function() return _detalhes.tooltip.fontface end,
-                values = function()
-                    return buildTooltipFontOptions()
-                end,
-                name = Loc ["STRING_OPTIONS_TEXT_FONT"],
-                desc = Loc ["STRING_OPTIONS_TEXT_FONT_DESC"],
-            },
-
             {type = "blank"},
             {type = "label", get = function() return Loc ["STRING_OPTIONS_MENU_ATTRIBUTESETTINGS_ANCHOR"] end, text_template = subSectionTitleTextTemplate},
+
+			{--bar color
+                type = "color",
+                get = function()
+                    local r, g, b, a = unpack(_detalhes.tooltip.bar_color)
+                    return {r, g, b, a}
+                end,
+                set = function(self, r, g, b, a)
+                    local color = _detalhes.tooltip.bar_color
+                    color[1] = r
+                    color[2] = g
+                    color[3] = b
+                    color[4] = a
+                    afterUpdate()
+                end,
+                name = "Bar Color",
+                desc = "Bar Color",
+            },
 
 			{--background color
                 type = "color",
@@ -4359,6 +4382,26 @@ do
                 name = Loc ["STRING_OPTIONS_TOOLTIPS_BACKGROUNDCOLOR"],
                 desc = Loc ["STRING_OPTIONS_TOOLTIPS_BACKGROUNDCOLOR"],
             },
+
+			{--divisor color
+                type = "color",
+                get = function()
+                    local r, g, b, a = unpack(_detalhes.tooltip.divisor_color)
+                    return {r, g, b, a}
+                end,
+                set = function(self, r, g, b, a)
+                    local color = _detalhes.tooltip.divisor_color
+                    color[1] = r
+                    color[2] = g
+                    color[3] = b
+                    color[4] = a
+                    afterUpdate()
+                end,
+                name = "Divisor Color",
+                desc = "Divisor Color",
+            },
+
+            {type = "blank"},
 
             {--show amount
                 type = "toggle",

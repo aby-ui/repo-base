@@ -129,10 +129,10 @@ resetbutton2:SetScript("OnClick", function()
 end)
 
 local minWidth, minHeight, maxWidth, maxHeight
-if DBM:GetTOC() < 30401 then -- Is live/Wrath phase 2
+if DBM:GetTOC() < 30401 then -- Is Legacy API
 	minWidth, minHeight = optionsFrame:GetMinResize()
 	maxWidth, maxHeight = optionsFrame:GetMaxResize()
-else -- Is DragonFlight
+else -- Is Modern API
 	minWidth, minHeight, maxWidth, maxHeight = optionsFrame:GetResizeBounds()
 end
 

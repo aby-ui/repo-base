@@ -46,7 +46,7 @@ local trinket = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"ShouldQueryAuras", "CareAboutThisAura", "NewAura", "SPELL_CAST_SUCCESS"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 function trinket:AttachToPlayerButton(playerButton)
@@ -141,7 +141,7 @@ function trinket:AttachToPlayerButton(playerButton)
 		if not continue then return end
 
 		local Racefaktor = 1
-	--[[ 	if drCat == "stun" and playerButton.PlayerRace == "Orc" then
+	--[[ 	if drCat == "stun" and playerButton.PlayerDetails.PlayerRace == "Orc" then
 			--Racefaktor = 0.8	--Hardiness, but since september 5th hotfix hardiness no longer stacks with relentless so we have no way of determing if the player is running relentless or not
 			return
 		end ]]

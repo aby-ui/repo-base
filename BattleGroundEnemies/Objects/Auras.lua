@@ -343,7 +343,7 @@ local nonPriorityBuffs = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaults,
 	options = nonPriorityBuffOptions,
 	events = events,
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 local nonPriorityDebuffs = BattleGroundEnemies:NewButtonModule({
 	moduleName = "NonPriorityDebuffs",
@@ -352,7 +352,7 @@ local nonPriorityDebuffs = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaults,
 	options = nonPriorityDebuffOptions,
 	events = events,
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 local priorityBuffs = BattleGroundEnemies:NewButtonModule({
@@ -362,7 +362,7 @@ local priorityBuffs = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaults,
 	options = priorityBuffOptions,
 	events = events,
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 local priorityDebuffs = BattleGroundEnemies:NewButtonModule({
 	moduleName = "PriorityDebuffs",
@@ -371,7 +371,7 @@ local priorityDebuffs = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaults,
 	options = priorityDebuffOptions,
 	events = events,
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 local function createNewAuraFrame(playerButton, container)

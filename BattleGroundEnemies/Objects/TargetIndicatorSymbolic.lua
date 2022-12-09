@@ -66,7 +66,7 @@ local symbolicTargetIndicator = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"UpdateTargetIndicators"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 function symbolicTargetIndicator:AttachToPlayerButton(playerButton)
@@ -99,7 +99,7 @@ function symbolicTargetIndicator:AttachToPlayerButton(playerButton)
 
 				self:SetSizeAndPosition(i)
 			end
-			local classColor = enemyButton.PlayerClassColor
+			local classColor = enemyButton.PlayerDetails.PlayerClassColor
 			indicator:SetBackdropColor(classColor.r,classColor.g,classColor.b)
 			indicator:Show()
 

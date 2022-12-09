@@ -1,0 +1,10 @@
+## Interface: 100002
+## Title: Details!: Compare 2.0
+## Notes: Replace the Compare tab in the player breakdown window.
+## RequiredDeps: Details
+
+Details_Compare2.lua
+
+
+## Title: |cff880303[爱不易]|r Details 对比模块
+## X-Vendor: AbyUI

@@ -7,7 +7,7 @@ local Loc = _G.LibStub("AceLocale-3.0"):GetLocale("Details")
 --config class colors
 function Details:OpenClassColorsConfig()
     if (not _G.DetailsClassColorManager) then
-        DF:CreateSimplePanel(UIParent, 300, 425, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
+        DF:CreateSimplePanel(UIParent, 300, 455, Loc ["STRING_OPTIONS_CLASSCOLOR_MODIFY"], "DetailsClassColorManager")
         local panel = _G.DetailsClassColorManager
 
         DF:ApplyStandardBackdrop(panel)
@@ -191,10 +191,10 @@ function Details:OpenClassColorsConfig()
         local options_slider_template = DF:GetTemplate("slider", "OPTIONS_SLIDER_TEMPLATE")
         local options_button_template = DF:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE")
 
-        DetailsFramework:BuildMenu(panel, deathLogOptions, 5, -285, 700, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
+        DetailsFramework:BuildMenu(panel, deathLogOptions, 5, -315, 700, true, options_text_template, options_dropdown_template, options_switch_template, true, options_slider_template, options_button_template)
 
         local deathLogColorsLabel = DF:CreateLabel(panel, "Colors on Death Log:", 12, "yellow")
-        deathLogColorsLabel:SetPoint("topleft", panel, "topleft", 5, -265)
+        deathLogColorsLabel:SetPoint("topleft", panel, "topleft", 5, -295)
     end
 
     for class, button in pairs(_G.DetailsClassColorManager.buttons) do

@@ -45,6 +45,8 @@ ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SCOUT_PACK =
     Group('scout_pack', 4562583, {defaults = ns.GROUP_HIDDEN})
+ns.groups.SPECIALTIES = Group('specialties', 651585,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
 ns.groups.PRETTY_NEAT_SELFIE = Group('pretty_neat_selfie', 133707,
     {defaults = ns.GROUP_HIDDEN})
@@ -126,6 +128,84 @@ local Dragonglyph = Class('Dragonglyph', Collectible, {
 })
 
 ns.node.Dragonglyph = Dragonglyph
+
+-------------------------------------------------------------------------------
+---------------------------- DRAGON CUSTOMIZATIONS ----------------------------
+-------------------------------------------------------------------------------
+
+-- This is a collection of all the open-world dragon customizations that are
+-- obtainable. Many of these are available from multiple sources, so this
+-- gives us a single easy spot to keep their data and reference it elsewhere.
+
+-- TODO: Add other 3 drakes
+
+ns.DRAGON_CUSTOMIZATIONS = {
+    RenewedProtoDrake = {
+        Armor = Item({item = 197357, quest = 69558}),
+        BeakedSnout = Item({item = 197401, quest = 69602}),
+        BlackAndRedArmor = Item({item = 197348, quest = 69549}),
+        BlackScales = Item({item = 197392, quest = 69593}),
+        BlueHair = Item({item = 197368, quest = 69569}),
+        BlueScales = Item({item = 197390, quest = 69591}),
+        BovineHorns = Item({item = 197377, quest = 69578}),
+        BronzeAndPinkArmor = Item({item = 197353, quest = 69554}),
+        BronzeScales = Item({item = 197391, quest = 69592}),
+        BrownHair = Item({item = 197369, quest = 69570}),
+        ClubTail = Item({item = 197403, quest = 69604}),
+        CurledHorns = Item({item = 197375, quest = 69576}),
+        CurvedHorns = Item({item = 197380, quest = 69581}),
+        CurvedSpikedBrow = Item({item = 197358, quest = 69559}),
+        DualHornedCrest = Item({item = 197366, quest = 69567}),
+        Ears = Item({item = 197376, quest = 69577}),
+        FinnedCrest = Item({item = 197365, quest = 69566}),
+        FinnedJaw = Item({item = 197388, quest = 69589}),
+        FinnedTail = Item({item = 197404, quest = 69605}),
+        FinnedThroat = Item({item = 197408, quest = 69609}),
+        GoldAndBlackArmor = Item({item = 197346, quest = 69547}),
+        GoldAndRedArmor = Item({item = 197351, quest = 69552}),
+        GoldAndWhiteArmor = Item({item = 197349, quest = 69550}),
+        GradientHorns = Item({item = 197381, quest = 69582}),
+        GrayHair = Item({item = 197367, quest = 69568}),
+        GreenHair = Item({item = 197371, quest = 69572}),
+        GreenScales = Item({item = 192523, quest = nil}), -- current not in game
+        HairyBack = Item({item = 197356, quest = 69557}),
+        HairyBrow = Item({item = 197359, quest = 69560}),
+        HarrierPattern = Item({item = 197395, quest = 69596}),
+        HeavyHorns = Item({item = 197383, quest = 69584}),
+        HeavyScales = Item({item = 197397, quest = 69598}),
+        Helm = Item({item = 197373, quest = 69574}),
+        HornedBack = Item({item = 197354, quest = 69555}),
+        HornedJaw = Item({item = 197385, quest = 69586}),
+        ImpalerHorns = Item({item = 197379, quest = 69580}),
+        ManedCrest = Item({item = 197363, quest = 69564}),
+        ManedTail = Item({item = 197405, quest = 69606}),
+        PredatorPattern = Item({item = 197394, quest = 69595}),
+        PurpleHair = Item({item = 197372, quest = 69573}),
+        RazorSnout = Item({item = 197399, quest = 69600}),
+        RedHair = Item({item = 197370, quest = 69571}),
+        RedScales = Item({item = 192111, quest = nil}), -- current not in game
+        SharkSnout = Item({item = 197400, quest = 69601}),
+        ShortSpikedCrest = Item({item = 197364, quest = 69565}),
+        SilverAndBlueArmor = Item({item = 197347, quest = 69548}),
+        SilverAndPurpleArmor = Item({item = 197350, quest = nil}),
+        SkyterrorPattern = Item({item = 197396, quest = 69597}),
+        SnubSnout = Item({item = 197398, quest = 69599}),
+        SpikedClubTail = Item({item = 197402, quest = 69603}),
+        SpikedCrest = Item({item = 197361, quest = 69562}),
+        SpikedJaw = Item({item = 197386, quest = 69587}),
+        SpikedThroat = Item({item = 197407, quest = 69608}),
+        SpinedBrow = Item({item = 197360, quest = 69561}),
+        SpinedCrest = Item({item = 197362, quest = 69563}),
+        SpinedTail = Item({item = 197406, quest = 69607}),
+        SteelAndYellowArmor = Item({item = 197352, quest = 69553}),
+        SubtleHorns = Item({item = 197378, quest = 69579}),
+        SweptHorns = Item({item = 197374, quest = 69575}),
+        ThickSpinedJaw = Item({item = 197355, quest = 69556}),
+        ThinSpinedJaw = Item({item = 197387, quest = 69588}),
+        WhiteHorns = Item({item = 197382, quest = 69583}),
+        WhiteScales = Item({item = 197393, quest = 69594})
+    }
+}
 
 -------------------------------------------------------------------------------
 ------------------ DRAGONSCALE EXPEDITION: THE HIGHEST PEAKS ------------------
@@ -310,23 +390,23 @@ local Selfie = Class('Selfie', Collectible, {
 ns.node.Selfie = Selfie
 
 -- TODO / Checklist
--- Apex Blazewing
+-- Apex Blazewing           Inside Neltharus
 -- Blue Terror              Added to Rare - Unknown
 -- Drakewing                Added to Rare - Unknown
--- Feasting Buzzard
+-- Feasting Buzzard         Added - Working
 -- Glade Ohuna              Added - Working
 -- Horned Filcher           Added - Bugged
--- Liskron the Dazzling
+-- Liskron the Dazzling     Added to Rare - Unknown
 -- Ohn'ahra                 Added as Separate Node - Unknown (probably bugged?)
 -- Pine Flicker             Added - Bugged
 -- Territorial Axebeak      Added - Working
 -- Avis Gryphonheart        Added - Bugged
--- Chef Fry-Aerie
--- Eldoren the Reborn
+-- Chef Fry-Aerie           Added - Working
+-- Eldoren the Reborn       Added to Rare - Unknown
 -- Forgotten Gryphon        Added to Rare - Unknown
 -- Halia Cloudfeather       Added - Bugged (counted as Drakewing)
--- Iridescent Peafowl
+-- Iridescent Peafowl       Added - Working
 -- Nergazurai               Added to Rare - Unknown
 -- Palla of the Wing        Added - Bugged (counted as Ohn'ahra)
--- Quackers the Terrible
+-- Quackers the Terrible    Unknown Location
 -- Zenet Avis               Added to Rare - Unknown

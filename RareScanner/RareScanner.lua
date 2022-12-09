@@ -599,7 +599,14 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		-- Show the button
 		if (not self:IsShown() or isNavigating or not RSConfigDB.IsDisplayingNavigationArrows() or not RSConfigDB.IsNavigationLockEnabled()) then
 			self.npcID = entityID
-			self.name = vignetteInfo.name
+			-- Sometimes the vignette name doesn't match the servers name
+			-- Let's try to use always the servers
+			if (RSConstants.IsNpcAtlas(vignetteInfo.atlasName)) then
+				local npcName = RSNpcDB.GetNpcName(entityID)
+				self.name = npcName and npcName or vignetteInfo.name
+			else
+				self.name = vignetteInfo.name
+			end
 			self.preEvent = vignetteInfo.preEvent
 			self.atlasName = vignetteInfo.atlasName
 

@@ -1,6 +1,8 @@
 local E = select(2, ...):unpack()
 local P, CM, CD = E.Party, E.Comm, E.Cooldowns
 
+local pairs, type = pairs, type
+local UnitExists, UnitGUID, UnitClass, UnitIsDeadOrGhost, UnitIsConnected, GetRaidRosterInfo, UnitRace, GetUnitName, UnitLevel = UnitExists, UnitGUID, UnitClass, UnitIsDeadOrGhost, UnitIsConnected, GetRaidRosterInfo, UnitRace, GetUnitName, UnitLevel
 local UPDATE_ROSTER_DELAY = 2
 local MSG_INFO_REQUEST_DELAY = UPDATE_ROSTER_DELAY + 1
 
@@ -15,13 +17,13 @@ P.userInfo.class = E.userClass
 P.userInfo.raceID = E.userRaceID
 P.userInfo.name = E.userName
 P.userInfo.level = E.userLevel
-P.userInfo.spellIcons = {}
 P.userInfo.preactiveIcons = {}
+P.userInfo.spellIcons = {}
 P.userInfo.glowIcons = {}
 P.userInfo.active = {}
 P.userInfo.auras = {}
-P.userInfo.talentData = {}
 P.userInfo.itemData = {}
+P.userInfo.talentData = {}
 P.userInfo.shadowlandsData = {}
 P.userInfo.callbackTimers = {}
 P.userInfo.spellModRates = {}
@@ -90,6 +92,18 @@ function P:RegisterZoneEvents(currentZoneEvents)
 	self.currentZoneEvents = currentZoneEvents
 end
 
+local function IsInShadowlands()
+	local mapID = C_Map and C_Map.GetBestMapForUnit("player")
+	if mapID then
+		local mapInfo = C_Map.GetMapInfo(mapID)
+		while mapInfo.mapType > 2 do
+			mapID = mapInfo.parentMapID
+			mapInfo =  C_Map.GetMapInfo(mapID)
+		end
+		return mapID == 1550
+	end
+end
+
 local function AnchorFix()
 	P:UpdatePosition()
 	P.callbackTimers.anchorDelay = nil
@@ -136,13 +150,17 @@ local function UpdateRosterInfo(force)
 		force = true
 	end
 
+	if force then
+		P.isInShadowlands = E.isSL or (not P.isInPvPInstance and IsInShadowlands())
+	end
+
 	E.Libs.CBH:Fire("OnStartup")
 
 
 	for guid, info in pairs(P.groupInfo) do
 		if not UnitExists(info.name) or (guid == E.userGUID and P.isUserDisabled) then
 			for _, timer in pairs(info.callbackTimers) do
-				if type(timer) == "function" then
+				if type(timer) == "table" then
 					timer:Cancel()
 				end
 			end
@@ -165,7 +183,6 @@ local function UpdateRosterInfo(force)
 	end
 
 	local isInRaid = IsInRaid()
-	local hasWarlockInGroup
 	for i = 1, size do
 		local index = not isInRaid and i == size and 5 or i
 		local unit = isInRaid and RAID_UNIT[index] or PARTY_UNIT[index]
@@ -192,7 +209,6 @@ local function UpdateRosterInfo(force)
 				CD.petGUIDS[petGUID] = guid
 			end
 		end
-		hasWarlockInGroup = isWarlock
 
 		if info then
 			local frame = info.bar
@@ -250,28 +266,20 @@ local function UpdateRosterInfo(force)
 			local level = UnitLevel(unit)
 			level = level > 0 and level or 200
 			info = {
-				guid = guid,
-				class = class,
-				raceID = race,
-				name = name,
-				level = level,
-				index = index,
-				unit = unit,
-				petGUID = pet,
-				spellIcons = {},
+				guid = guid, class = class, raceID = race, name = name, level = level,
+				index = index, unit = unit, petGUID = pet,
+				isDead = isDead, isDeadOrOffline = isDeadOrOffline, isAdminObsForMDI = isAdminObsForMDI,
 				preactiveIcons = {},
+				spellIcons = {},
 				glowIcons = {},
 				active = {},
 				auras = {},
-				talentData = {},
 				itemData = {},
+				talentData = {},
 				shadowlandsData = {},
 				callbackTimers = {},
 				spellModRates = {},
 				queuedCdrOnStart = {},
-				isDead = isDead,
-				isDeadOrOffline = isDeadOrOffline,
-				isAdminObsForMDI = isAdminObsForMDI,
 			}
 			P.groupInfo[guid] = info
 
@@ -294,13 +302,6 @@ local function UpdateRosterInfo(force)
 	P:UpdateExBars()
 	CM:EnqueueInspect()
 
-
-
-
-
-
-
-
 	if P.joinedNewGroup or force then
 		if P.callbackTimers.syncTimer then
 			P.callbackTimers.syncTimer:Cancel()
@@ -315,7 +316,6 @@ local function UpdateRosterInfo(force)
 
 	CM:ToggleCooldownSync()
 end
-
 
 
 
@@ -443,7 +443,6 @@ end
 
 function P:PLAYER_FLAGS_CHANGED(unitTarget)
 	if unitTarget ~= "player" or InCombatLockdown() then return end
-
 	local oldpvp = self.isPvP
 	self.isPvP = C_PvP.IsWarModeDesired()
 	if oldpvp ~= self.isPvP then

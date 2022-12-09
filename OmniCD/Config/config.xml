@@ -1,21 +1,21 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Include file="Libs\lib.xml"/>
-	<Script file="defaults.lua"/>
-	<Script file="changelog.lua"/>
-	<Script file="core.lua"/>
-	<Script file="general.lua"/>
-	<Script file="spellEditor.lua"/>
-	<Script file="profileSharing.lua"/>
+	<Include file="Libs\Lib.xml"/>
+	<Script file="Defaults.lua"/>
+	<Script file="Changelog.lua"/>
+	<Script file="Core.lua"/>
+	<Script file="General.lua"/>
+	<Script file="SpellEditor.lua"/>
+	<Script file="ProfileSharing.lua"/>
 
 	<!-- Party -->
-	<Script file="Party\core.lua"/>
-	<Script file="Party\visibility.lua"/>
-	<Script file="Party\general.lua"/>
-	<Script file="Party\extraBars.lua"/>
-	<Script file="Party\position.lua"/>
-	<Script file="Party\icons.lua"/>
-	<Script file="Party\highlight.lua"/>
-	<Script file="Party\priority.lua"/>
-	<Script file="Party\spells.lua"/>
+	<Script file="Party\Core.lua"/>
+	<Script file="Party\Visibility.lua"/>
+	<Script file="Party\General.lua"/>
+	<Script file="Party\ExtraBars.lua"/>
+	<Script file="Party\Position.lua"/>
+	<Script file="Party\Icons.lua"/>
+	<Script file="Party\Highlight.lua"/>
+	<Script file="Party\Priority.lua"/>
+	<Script file="Party\Spells.lua"/>
 </Ui>

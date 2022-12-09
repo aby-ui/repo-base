@@ -466,6 +466,7 @@ local function GetItemIDFromLink(link)
 end
 
 local pattern = "^%+([0-9,]+) ([^ ]+)$"
+local patternDual = "^%+([0-9,]+) ([^ ]+) 和 %+([0-9,]+) ([^ ]+)$" --"\124cffffffff+60 急速 和 +28 精通 \124A:Professions-Icon-Quality-Tier2-Small:20:20\124a\124r",
 local patternMore = "%+([0-9,]+) ([^ ]-)\124?r?$" --"附魔：+200 急速" "|cffffffff+150 急速|r"
 local ATTRS = {
     [STAT_CRITICAL_STRIKE]  = 1, --CR_CRIT_MELEE,
@@ -525,26 +526,42 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         TooltipUtil.SurfaceArgs(line)
         local txt = line.leftText
         if txt then
-            local _, _, value, attr = txt:find(pattern)
-            if attr and ATTRS[attr] then
-                local value = tonumber((value:gsub(",", "")))
+            txt = txt:gsub(" \124A.-\124a", "") --10.0 "附魔：+100 加速 |A:Professions-Icon-Quality-Tier2-Small:20:20|a"
+            txt = txt:gsub("\124c%x%x%x%x%x%x%x%x", ""):gsub("\124r", "")
+            local _, _, value1, attr1, value2, attr2 = txt:find(patternDual)
+            if attr1 and attr2 then
                 stats = stats or {}
-                stats[ATTRS[attr]] = math.abs(stats[ATTRS[attr]] or 0) + value
-                --通过文字颜色获取天赋主属性
-                if specID and specID > 0 and ATTRS[attr] > 4 then
-                    local lc = line.leftColor
-                    if lc.r > 0.99 then
-                        primary_stats[specID] = ATTRS[attr] - 4
-                    end
+                if ATTRS[attr1] then
+                    value1 = tonumber((value1:gsub(",", "")))
+                    stats[ATTRS[attr1]] = math.abs(stats[ATTRS[attr1]] or 0) + value1
                 end
-            elseif not attr and includeGemEnchant then
-                txt = txt:gsub("，%+2%% (.*)$", "") --", +2%速度"
-                _, _, value, attr = txt:find(patternMore)
+                if ATTRS[attr2] then
+                    value2 = tonumber((value2:gsub(",", "")))
+                    stats[ATTRS[attr2]] = math.abs(stats[ATTRS[attr2]] or 0) + value2
+                end
+            else
+                local _, _, value, attr = txt:find(pattern)
                 if attr and ATTRS[attr] then
-                    local value = tonumber((value:gsub(",", "")))
+                    value = tonumber((value:gsub(",", "")))
                     stats = stats or {}
-                    local old = stats[ATTRS[attr]] or 0
-                    if old > 0 then stats[ATTRS[attr]] = old + value else stats[ATTRS[attr]] = old - value end
+                    stats[ATTRS[attr]] = math.abs(stats[ATTRS[attr]] or 0) + value
+                    --通过文字颜色获取天赋主属性
+                    if specID and specID > 0 and ATTRS[attr] > 4 then
+                        local lc = line.leftColor
+                        if lc.r > 0.99 then
+                            primary_stats[specID] = ATTRS[attr] - 4
+                        end
+                    end
+                elseif not attr and includeGemEnchant then
+                    txt = txt:gsub("，%+2%% (.*)$", "") --", +2%速度"
+                    txt = txt:gsub(" \124A.-\124a", "")
+                    _, _, value, attr = txt:find(patternMore)
+                    if attr and ATTRS[attr] then
+                        value = tonumber((value:gsub(",", "")))
+                        stats = stats or {}
+                        local old = stats[ATTRS[attr]] or 0
+                        if old > 0 then stats[ATTRS[attr]] = old + value else stats[ATTRS[attr]] = old - value end
+                    end
                 end
             end
         end
@@ -556,98 +573,4 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         end
     end
     return stats or 1
-end
-
---[[------------------------------------------------------------
-9.1 统御碎片相关
----------------------------------------------------------------]]
-do
-    local DominationShards = {
-        { 187079, 187292, 187301, 187310, 187320, }, --邪恶泽德碎片
-        { 187076, 187291, 187300, 187309, 187319, }, --邪恶欧兹碎片
-        { 187073, 187290, 187299, 187308, 187318, }, --邪恶迪兹碎片
-        { 187071, 187289, 187298, 187307, 187317, }, --冰霜泰尔碎片
-        { 187065, 187288, 187297, 187306, 187316, }, --冰霜基尔碎片
-        { 187063, 187287, 187296, 187305, 187315, }, --冰霜克尔碎片
-        { 187061, 187286, 187295, 187304, 187314, }, --鲜血雷弗碎片
-        { 187059, 187285, 187294, 187303, 187313, }, --鲜血亚斯碎片
-        { 187057, 187284, 187293, 187302, 187312, }, --鲜血贝克碎片
-    }
-
-    local DomiSetColor = { "a335ee", "0070ff", "ff0000" } --紫蓝红
-    local DomiSetNameLong = { "森罗万象(头)", "寒冬之风(肩)", "鲜血连接(胸)" }
-    local DomiSetNameShort = { "森罗", "寒冬", "鲜血" }
-    local DomiShardName = { "邪恶", "冰霜", "鲜血" }
-
-    local ShardIdToSetName = {}
-    local ShardIdToName = {}
-    local ShardIdToLevel = {}
-    local ShardIdToIndex = {}
-
-    for i, ids in ipairs(DominationShards) do
-        for level, id in ipairs(ids) do
-            local setIdx = math.floor((i+2)/3)
-            ShardIdToSetName[id] = DomiSetNameLong[setIdx]
-            ShardIdToName[id] = DomiShardName[setIdx]
-            ShardIdToLevel[id] = level
-            ShardIdToIndex[id] = i
-        end
-    end
-
-    function U1GetDominationShardsData()
-        return DominationShards, ShardIdToSetName, ShardIdToName, ShardIdToLevel, ShardIdToIndex
-    end
-    function U1GetDominationSetData()
-        return DomiSetColor, DomiSetNameLong, DomiSetNameShort, DomiShardName
-    end
-
-    local DSSLOTS = { [1]="Head", [3]="Shoulder", [5]="Chest", [6]="Waist", [8]="Feet", [9]="Wrist", [10]="Hands" }
-
-    local shardLevels, setSlot = { {}, {}, {} }, {} -- reuse table
-    function U1GetUnitDominationInfo(unit)
-        table.wipe(setSlot)
-        for i = 1, #shardLevels do
-            table.wipe(shardLevels[i])
-        end
-        for id, slot in next, DSSLOTS do
-            local link = GetInventoryItemLink(unit, id)
-            if link then
-                local _, _, gemID = link:find("item:[0-9]+:[0-9]*:([0-9]+):") --TODO: 如果普通宝石和统御碎片一起
-                if gemID then
-                    gemID = tonumber(gemID)
-                    local idx = ShardIdToIndex[gemID]
-                    if idx then
-                        local setIdx = math.floor((idx+2)/3)
-                        local level = ShardIdToLevel[gemID]
-                        table.insert(shardLevels[setIdx], level)
-                        -- 如果对应部位没插碎片则结果会错误, 太特殊不予处理
-                        if slot == "Head" then
-                            setSlot[1] = true
-                        elseif slot == "Shoulder" then
-                            setSlot[2] = true
-                        elseif slot == "Chest" then
-                            setSlot[3] = true
-                        end
-                    end
-                end
-            end
-        end
-        local set_index, set_level, details
-        for i = 1, 3 do
-            local levels = shardLevels[i]
-            if setSlot[i] and #levels == 3 then
-                local min = 9 for _, lvl in ipairs(levels) do if lvl < min then min = lvl end end
-                set_index, set_level = i, min
-            end
-            if #levels > 0 then
-                local str = "|cff" .. DomiSetColor[i] .. table.concat(levels) .. "|r"
-                if #levels == 3 then
-                    details = str .. (details or "")
-                else
-                    details = (details or "") .. str
-                end
-            end
-        end
-        return set_index, set_level, details -- details is like "33321"
-    end
 end

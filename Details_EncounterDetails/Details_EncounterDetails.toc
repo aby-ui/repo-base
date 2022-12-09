@@ -11,4 +11,5 @@ frames.lua
 Details_EncounterDetails.lua
 
 
+## Title: |cff880303[爱不易]|r Details 首领模块
 ## X-Vendor: AbyUI

@@ -162,6 +162,7 @@ for i = 0, 8 do
 		},
 		["reverseFill"] = true,
 		["hideSpark"] = false,
+		["hideBorder"] = false,
 		["showInterruptedSpell"] = true,
 		["showRaidTargetMark"] = false,
 		["statusBarWidth"] = 205,

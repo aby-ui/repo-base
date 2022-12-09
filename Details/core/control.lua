@@ -1606,21 +1606,21 @@
 			GameCooltip:SetOption("SparkTexture", [[Interface\Buttons\WHITE8X8]])
 			GameCooltip:SetOption("SparkWidth", 1)
 			GameCooltip:SetOption("SparkHeight", 20)
-			GameCooltip:SetOption("SparkColor", "gray")
+			GameCooltip:SetOption("SparkColor", Details.tooltip.divisor_color)
 			GameCooltip:SetOption("SparkAlpha", 0.15)
 			GameCooltip:SetOption("SparkPositionXOffset", 5)
 			--GameCooltip:SetOption("SparkAlpha", 0.3)
 			--GameCooltip:SetOption("SparkPositionXOffset", -2)
-			
 
 			value = value or 100
 
 			if (not side) then
-				local r, g, b, a = unpack(Details.tooltip.background)
-				GameCooltip:AddStatusBar (value, 1, r, g, b, a, useSpark, {value = 100, color = {.21, .21, .21, 0.8}, texture = [[Interface\AddOns\Details\images\bar_serenity]]})
+				local r, g, b, a = unpack(Details.tooltip.bar_color)
+				local rBG, gBG, bBG, aBG = unpack(Details.tooltip.background)
+				GameCooltip:AddStatusBar (value, 1, r, g, b, a, useSpark, {value = 100, color = {rBG, gBG, bBG, aBG}, texture = [[Interface\AddOns\Details\images\bar_serenity]]})
 
 			else
-				GameCooltip:AddStatusBar (value, 2, unpack(Details.tooltip.background))
+				GameCooltip:AddStatusBar (value, 2, unpack(Details.tooltip.bar_color))
 			end
 		end
 
@@ -1658,7 +1658,7 @@
 			GameCooltip:Reset()
 			GameCooltip:SetType ("tooltip")
 
-			GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background_dark]])
+			GameCooltip:SetOption("StatusBarTexture", [[Interface\AddOns\Details\images\bar_background_dark_withline]])
 
 			GameCooltip:SetOption("TextSize", Details.tooltip.fontsize)
 			GameCooltip:SetOption("TextFont",  Details.tooltip.fontface)

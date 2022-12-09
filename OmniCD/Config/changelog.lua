@@ -14,7 +14,7 @@ v2.5.4.2722
 Previous changes can be found in the CHANGELOG file.
 ]=]
 elseif E.isWOTLKC then E.changelog = [=[
-v3.4.1.2730
+v3.4.1.2732
 	Compatibility updates for 3.4.1
 
 v3.4.0.2724
@@ -27,9 +27,10 @@ v3.4.0.2722
 	Wrath of the Lich King Classic release. (Build 45435)
 ]=]
 else E.changelog = [=[
-v10.0.2.2730
+v10.0.2.2732
 
-	Dragonflight
+	Dragonflight: Many bug fixes
+	.
 	.
 	.
 	.
@@ -38,5 +39,6 @@ v10.0.2.2730
 	.
 
 	<')+++<
+
 ]=]
 end

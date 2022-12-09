@@ -1,22 +1,5 @@
 local E = select(2, ...):unpack()
 
-
-
-if E.preCata then
-	local BLANK = {}
-	E.spell_db["ESSENCES"] = nil
-	E.spell_cxmod_azerite = BLANK
-	E.spellcast_cdr_azerite = BLANK
-	E.spell_damage_cdr_azerite = BLANK
-	E.spell_cdmod_essrank23 = BLANK
-	E.spell_chargemod_essrank3 = BLANK
-	E.essMajorConflict = BLANK
-	E.pvpTalentsByEssMajorConflict = BLANK
-	E.essMinorStrive = BLANK
-	E.spell_cdmod_ess_strive_mult = BLANK
-	return
-end
-
 E.spell_db["ESSENCES"] = {
 	{ spellID = 295373, duration = 30, type = "essence", spec = 295373 },
 	{ spellID = 295186, duration = 60, type = "essence", spec = 295186 },

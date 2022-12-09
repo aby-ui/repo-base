@@ -18,5 +18,5 @@ Locale.lua
 Core.lua
 
 
-## Title: |cff880303[爱不易]|r Details易爆打球统计
+## Title: |cff880303[爱不易]|r Details 易爆打球统计
 ## X-Vendor: AbyUI

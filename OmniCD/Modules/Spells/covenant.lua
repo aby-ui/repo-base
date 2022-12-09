@@ -1,9 +1,5 @@
 local E = select(2, ...):unpack()
 
-
-
-if E.preCata then return end
-
 local covenant_db = {
 	["DEATHKNIGHT"] = {
 
@@ -20,18 +16,19 @@ local covenant_db = {
 	["DRUID"] = {
 
 
-
 		{ spellID = 338142, duration = 60, type = "covenant", spec = 321076 },
+		--[[ Merged
+		{ spellID = 338035, duration = 60, type = "covenant", spec = 321076 },
+		{ spellID = 338018, duration = 60, type = "covenant", spec = 321076 },
+		{ spellID = 326462, duration = 60, type = "covenant", spec = 321076 },
+		{ spellID = 326446, duration = 60, type = "covenant", spec = 321076 },
+		{ spellID = 326647, duration = 60, type = "covenant", spec = 321076 },
 
-
-
-
-
-
-
-
-
-
+		{ spellID = 326434, duration = 0, type = "covenant", spec = 321076 },
+		{ spellID = 327022, duration = 60, type = "covenant", spec = 321076 },
+		{ spellID = 327037, duration = 60, type = "covenant", spec = 321076 },
+		{ spellID = 327071, duration = 60, type = "covenant", spec = 321076 },
+		]]
 		{ spellID = 323546, duration = 180, type = "covenant", spec = 321079 },
 	},
 	["HUNTER"] = {
@@ -55,11 +52,12 @@ local covenant_db = {
 	["PALADIN"] = {
 		{ spellID = 316958, duration = 240, type = "covenant", spec = 321079 },
 
-
-
-
-
-
+		--[[ Merged
+		{ spellID = 328622, duration = 45, type = "covenant", spec = 321077 },
+		{ spellID = 328282, duration = 45, type = "covenant", spec = 321077 },
+		{ spellID = 328620, duration = 45, type = "covenant", spec = 321077 },
+		{ spellID = 328281, duration = 45, type = "covenant", spec = 321077 },
+		]]
 
 		{ spellID = 328204, duration = 30, type = "covenant", spec = 321078 },
 	},

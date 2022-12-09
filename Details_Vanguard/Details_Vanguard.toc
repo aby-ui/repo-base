@@ -10,4 +10,5 @@ enUS.lua
 Details_Vanguard.lua
 
 
+## Title: |cff880303[爱不易]|r Details 坦克模块
 ## X-Vendor: AbyUI

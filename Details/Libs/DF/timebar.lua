@@ -305,7 +305,8 @@ function TimeBarMetaFunctions:SetTimer(currentTime, startTime, endTime)
         self.statusBar.startTime = startTime
         self.statusBar.endTime = endTime
     else
-        if (self.statusBar.hasTimer and currentTime == self.statusBar.timeLeft2) then
+        local bForceNewTimer = type(startTime) == "boolean" and startTime
+        if (self.statusBar.hasTimer and currentTime == self.statusBar.timeLeft2 and not bForceNewTimer) then
             --it is the same timer called again
             return
         end

@@ -26,6 +26,7 @@ local highlight = {
 		E.profile.Party[key].highlight[ info[#info] ] = value
 		if P:IsCurrentZone(key) then
 			P:Refresh()
+			E.Cooldowns:UpdateCombatLogVar()
 		end
 	end,
 	args = {

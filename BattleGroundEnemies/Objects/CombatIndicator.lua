@@ -99,7 +99,7 @@ local combatIndicator = BattleGroundEnemies:NewButtonModule({
 	localizedModuleName = L.CombatIndicator,
 	defaultSettings = defaultSettings,
 	options = options,
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 

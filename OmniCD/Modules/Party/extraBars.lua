@@ -262,13 +262,15 @@ function P:ApplyExSettings(key)
 	local textOfsY = db_f.textOfsY
 	local textColors = db_f.textColors
 	local barColors = db_f.barColors
+	local hideBorder = db_f.hideBorder
+	local invertNameBar = db_f.invertNameBar
 
 	local db_icons = E.db.icons
 	local r, g, b = db_icons.borderColor.r, db_icons.borderColor.g, db_icons.borderColor.b
 	local displayBorder = db_icons.displayBorder
 	local edgeSize = db_icons.borderPixels * E.PixelMult / scale
 	local desaturateActive = db_icons.desaturateActive
-	local reverse = db_icons.reverse
+	local reverseSwipe = db_icons.reverse
 	local swipeAlpha = db_icons.swipeAlpha
 	local showCounter = db_icons.showCounter
 	local counterScale = db_icons.counterScale
@@ -352,26 +354,34 @@ function P:ApplyExSettings(key)
 			iconicon:SetTexCoord(0, 1, 0, 1)
 		end
 
-		if shouldShowProgressBar and not nameBar then
-			statusBar:EnableDrawLayer("BORDER")
-			local statusBar_borderTop, statusBar_borderBottom, statusBar_borderRight = statusBar.borderTop, statusBar.borderBottom, statusBar.borderRight
-			statusBar_borderTop:ClearAllPoints()
-			statusBar_borderBottom:ClearAllPoints()
-			statusBar_borderRight:ClearAllPoints()
-			statusBar_borderTop:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
-			statusBar_borderTop:SetPoint("BOTTOMRIGHT", statusBar, "TOPRIGHT", 0, -edgeSize)
-			statusBar_borderBottom:SetPoint("BOTTOMLEFT", statusBar, "BOTTOMLEFT")
-			statusBar_borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
-			statusBar_borderRight:SetPoint("TOPRIGHT", statusBar_borderTop, "BOTTOMRIGHT")
-			statusBar_borderRight:SetPoint("BOTTOMLEFT", statusBar_borderBottom, "TOPRIGHT", -edgeSize, 0)
-			statusBar_borderTop:SetColorTexture(r, g, b)
-			statusBar_borderBottom:SetColorTexture(r, g, b)
-			statusBar_borderRight:SetColorTexture(r, g, b)
-			statusBar_borderTop:Show()
-			statusBar_borderBottom:Show()
-			statusBar_borderRight:Show()
-		elseif shouldShowProgressBar then
-			statusBar:DisableDrawLayer("BORDER")
+		if shouldShowProgressBar then
+			if nameBar then
+				statusBar:DisableDrawLayer("BORDER")
+			else
+				statusBar:EnableDrawLayer("BORDER")
+				local statusBar_borderTop, statusBar_borderBottom, statusBar_borderRight = statusBar.borderTop, statusBar.borderBottom, statusBar.borderRight
+				statusBar_borderTop:ClearAllPoints()
+				statusBar_borderBottom:ClearAllPoints()
+				statusBar_borderRight:ClearAllPoints()
+				statusBar_borderTop:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
+				statusBar_borderTop:SetPoint("BOTTOMRIGHT", statusBar, "TOPRIGHT", 0, -edgeSize)
+				statusBar_borderBottom:SetPoint("BOTTOMLEFT", statusBar, "BOTTOMLEFT")
+				statusBar_borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
+				statusBar_borderRight:SetPoint("TOPRIGHT", statusBar_borderTop, "BOTTOMRIGHT")
+				statusBar_borderRight:SetPoint("BOTTOMLEFT", statusBar_borderBottom, "TOPRIGHT", -edgeSize, 0)
+				if hideBorder then
+					statusBar_borderTop:Hide()
+					statusBar_borderBottom:Hide()
+					statusBar_borderRight:Hide()
+				else
+					statusBar_borderTop:SetColorTexture(r, g, b)
+					statusBar_borderBottom:SetColorTexture(r, g, b)
+					statusBar_borderRight:SetColorTexture(r, g, b)
+					statusBar_borderTop:Show()
+					statusBar_borderBottom:Show()
+					statusBar_borderRight:Show()
+				end
+			end
 		end
 
 
@@ -389,7 +399,13 @@ function P:ApplyExSettings(key)
 		if statusBar then
 
 			statusBar:SetWidth(statusBarWidth)
-			statusBar.Text:SetPoint("LEFT", statusBar, textOfsX, textOfsY)
+
+			statusBar.Text:ClearAllPoints()
+			if nameBar and invertNameBar then
+				statusBar.Text:SetPoint("RIGHT", icon, "LEFT", -textOfsX, textOfsY)
+			else
+				statusBar.Text:SetPoint("LEFT", statusBar, textOfsX, textOfsY)
+			end
 			statusBar.CastingBar.Text:SetPoint("LEFT", statusBar.CastingBar, textOfsX, textOfsY)
 			statusBar.CastingBar.Timer:SetPoint("RIGHT", statusBar.CastingBar, -3, textOfsY)
 
@@ -447,19 +463,10 @@ function P:ApplyExSettings(key)
 		end
 
 
-		if statusBar and not nameBar then
-			cooldown:SetDrawSwipe(false)
-
-			cooldown:SetHideCountdownNumbers(true)
-		else
-			cooldown:SetReverse(reverse)
-			cooldown:SetDrawSwipe( not isHighlighted and (not charges or charges < 1) )
-
-			local noCount = charges and charges > 0 or (isHighlighted and true) or not showCounter
-			cooldown:SetHideCountdownNumbers(noCount)
-			counter:SetScale(counterScale)
-		end
+		self:SetCooldownElements(icon, icon.maxcharges and tonumber(icon.count:GetText()))
+		cooldown:SetReverse(reverseSwipe)
 		cooldown:SetSwipeColor(0, 0, 0, swipeAlpha)
+		counter:SetScale(counterScale)
 
 
 		count:SetScale(chargeScale)

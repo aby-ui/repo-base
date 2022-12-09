@@ -31,7 +31,7 @@ local covenant = BattleGroundEnemies:NewButtonModule({
 	},
 	options = nil,
 	events = {},
-	expansions = {WOW_PROJECT_MAINLINE}
+	enabledInThisExpansion = LE_EXPANSION_LEVEL_CURRENT == LE_EXPANSION_SHADOWLANDS
 })
 
 function covenant:AttachToPlayerButton(playerButton)

@@ -11,7 +11,6 @@
 	local UnitHealth = UnitHealth
 	local UnitHealthMax = UnitHealthMax
 	local UnitGUID = UnitGUID
-	local IsInRaid = IsInRaid
 	local IsInGroup = IsInGroup
 	--local GetNumGroupMembers = GetNumGroupMembers
 	local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
@@ -93,6 +92,8 @@
 		local bitfield_swap_cache = {}
 	--damage and heal last events
 		local last_events_cache = {} --initialize table (placeholder)
+	--hunter pet frenzy cache
+		local pet_frenzy_cache = {}
 	--npcId cache
 		local npcid_cache = {}
 	--pets
@@ -159,6 +160,33 @@
 
 		local empower_cache = {}
 
+--[[		
+12/4 10:47:00.989  SPELL_AURA_APPLIED,Creature-0-3886-2526-5652-196202-00048CC779,"Spectral Invoker",0xa48,0x0,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,387843,"Astral Bomb",0x40,DEBUFF
+12/4 10:47:01.006  SPELL_ABSORBED,Player-1427-0DABD1EE,"Lelomonk-Ragnaros",0x512,0x20,Player-1427-0DABD1EE,"Lelomonk-Ragnaros",0x512,0x20,124255,"Stagger",0x1,Player-1427-0DABD1EE,"Lelomonk-Ragnaros",0x512,0x20,322507,"Celestial Brew",0x1,1191,1588,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Creature-0-3886-2526-5652-196200-00040CC779,"Algeth'ar Echoknight",0xa48,0x0,387848,"Astral Nova",0x40,Creature-0-3886-2526-5652-196200-00040CC779,0000000000000000,169349,894431,0,0,5043,0,1,0,0,0,1603.44,-3099.31,2097,3.7225,70,52614,52613,-1,64,0,0,0,nil,nil,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Creature-0-3886-2526-5652-196202-00048CC779,"Spectral Invoker",0xa48,0x0,387848,"Astral Nova",0x40,Creature-0-3886-2526-5652-196202-00048CC779,0000000000000000,209329,787100,0,0,5043,0,0,2705,3155,0,1605.05,-3097.38,2097,3.1653,70,52613,52613,-1,64,0,0,0,nil,nil,nil
+12/4 10:47:04.006  SPELL_ABSORBED,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Player-1427-0DABD1EE,"Lelomonk-Ragnaros",0x512,0x20,387848,"Astral Nova",0x40,Player-1427-0DABD1EE,"Lelomonk-Ragnaros",0x512,0x20,115069,"Stagger",0x1,7494,52613,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Player-1427-0DABD1EE,"Lelomonk-Ragnaros",0x512,0x20,387848,"Astral Nova",0x40,Player-1427-0DABD1EE,0000000000000000,219800,251260,7508,2089,2940,0,3,47,100,0,1602.66,-3099.89,2097,0.6025,358,18901,52613,-1,64,0,0,15594,nil,nil,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Creature-0-3886-2526-5652-196200-00020CC779,"Algeth'ar Echoknight",0xa48,0x0,387848,"Astral Nova",0x40,Creature-0-3886-2526-5652-196200-00020CC779,0000000000000000,376786,894431,0,0,5043,0,1,0,0,0,1603.34,-3100.07,2097,3.5999,70,52614,52613,-1,64,0,0,0,nil,nil,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,387848,"Astral Nova",0x40,Player-76-0B708257,0000000000000000,119598,173060,6447,6199,8170,0,0,236194,250000,0,1600.90,-3099.16,2097,0.1218,349,48130,52613,-1,64,0,0,0,nil,nil,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Creature-0-3886-2526-5652-196200-00018CC779,"Algeth'ar Echoknight",0x10a48,0x0,387848,"Astral Nova",0x40,Creature-0-3886-2526-5652-196200-00018CC779,0000000000000000,323098,894431,0,0,5043,0,1,0,0,0,1603.81,-3091.19,2097,4.5580,70,52614,52613,-1,64,0,0,0,nil,nil,nil
+12/4 10:47:04.006  SPELL_DAMAGE,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,Creature-0-3886-2526-5652-196200-00038CC779,"Algeth'ar Echoknight",0xa48,0x0,387848,"Astral Nova",0x40,Creature-0-3886-2526-5652-196200-00038CC779,0000000000000000,416176,894431,0,0,5043,0,1,0,0,0,1604.87,-3097.03,2097,4.0294,70,52614,52613,-1,64,0,0,0,nil,nil,nil
+12/4 10:47:04.006  SPELL_AURA_REMOVED,Creature-0-3886-2526-5652-196202-00048CC779,"Spectral Invoker",0xa48,0x0,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,387843,"Astral Bomb",0x40,DEBUFF
+
+12/4 10:47:57.680  SPELL_CAST_START,Creature-0-3886-2526-5652-196202-00068CC779,"Spectral Invoker",0x10a48,0x0,0000000000000000,nil,0x80000000,0x80000000,387843,"Astral Bomb",0x40
+12/4 10:47:59.008  SPELL_CAST_SUCCESS,Creature-0-3886-2526-5652-196202-00068CC779,"Spectral Invoker",0x10a48,0x0,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,387843,"Astral Bomb",0x40,Creature-0-3886-2526-5652-196202-00068CC779,0000000000000000,412702,787100,0,0,5043,0,0,3005,3155,0,1536.18,-3090.44,2097,4.2586,70
+12/4 10:47:59.008  SPELL_AURA_APPLIED,Creature-0-3886-2526-5652-196202-00068CC779,"Spectral Invoker",0x10a48,0x0,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,387843,"Astral Bomb",0x40,DEBUFF
+
+12/4 10:48:02.026  SPELL_ABSORBED,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,387848,"Astral Nova",0x40,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,386124,"Fel Armor",0x20,4909,53686,nil
+12/4 10:48:02.026  SPELL_ABSORBED,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,387848,"Astral Nova",0x40,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,108366,"Soul Leech",0x20,29764,53686,nil
+12/4 10:48:02.026  SPELL_DAMAGE,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,387848,"Astral Nova",0x40,Player-3209-0B826167,0000000000000000,184012,198429,493,5950,1348,0,0,250000,250000,0,1532.53,-3098.32,2097,1.0368,346,14417,53686,-1,64,0,0,34673,nil,nil,nil
+12/4 10:48:02.026  SPELL_DAMAGE,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,Creature-0-3886-2526-5652-196200-00028CC779,"Algeth'ar Echoknight",0xa48,0x0,387848,"Astral Nova",0x40,Creature-0-3886-2526-5652-196200-00028CC779,0000000000000000,465014,894431,0,0,5043,0,1,0,0,0,1536.72,-3091.76,2097,0.6027,70,53687,53686,-1,64,0,0,0,nil,nil,nil
+12/4 10:48:02.026  SPELL_DAMAGE,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,Player-76-0B708257,"Serrandra-Sargeras",0x511,0x0,387848,"Astral Nova",0x40,Player-76-0B708257,0000000000000000,123949,173060,6447,6199,8170,0,0,222440,250000,0,1535.88,-3094.22,2097,2.1937,349,49111,53686,-1,64,0,0,0,nil,nil,nil
+
+12/4 10:48:02.026  SPELL_AURA_REMOVED,Creature-0-3886-2526-5652-196202-00068CC779,"Spectral Invoker",0x10a48,0x0,Player-3209-0B826167,"Falavock-Azralon",0x512,0x0,387843,"Astral Bomb",0x40,DEBUFF
+
+
+--]]
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --constants
 	local container_misc = _detalhes.container_type.CONTAINER_MISC_CLASS
@@ -243,9 +271,15 @@
 			[20424] = 69403, --53739 and 53733
 
 			--odyn's fury warrior
-			[385062] = 385059,
-			[385061] = 385059,
-			[385060] = 385059,
+			[385062] = 385060,
+			[385061] = 385060,
+
+			--crushing blow
+			[335098] = 335097,
+			[335100] = 335097,
+
+			--charge warrior
+			[105771] = 126664,
 		}
 
 	else --retail
@@ -1270,18 +1304,10 @@
 			else
 				if (bitfield_swap_cache [alvo_serial] or alvo_dono and bitfield_swap_cache [alvo_dono.serial]) then
 				else
+					--Astral Nova explosion from Astral Bomb (Spectral Invoker - Algeth'ar Academy) should get friend zone here
 					if ((jogador_alvo.grupo or alvo_dono and alvo_dono.grupo) and (este_jogador.grupo or meu_dono and meu_dono.grupo)) then
 						is_friendly_fire = true
 					end
-				end
-			end
-
-			if (_current_encounter_id == 2543) then --malganis REMOVE ON 10.0
-				if (bitfield_swap_cache [who_serial] or (meu_dono and bitfield_swap_cache [meu_dono.serial])) then
-					is_friendly_fire = false
-
-				elseif (bitfield_swap_cache [alvo_serial] or (alvo_dono and bitfield_swap_cache [alvo_dono.serial])) then
-					is_friendly_fire = false
 				end
 			end
 		else
@@ -1293,7 +1319,14 @@
 			end
 		end
 
-		if (is_friendly_fire and spellid ~= SPELLID_KYRIAN_DRUID_TANK) then --kyrian spell remove on 10.0
+		--double check for Astral Nova explosion
+		if (spellid == 387848 and not is_friendly_fire) then --/dumpt 387848
+			if ((jogador_alvo.grupo or alvo_dono and alvo_dono.grupo) and (este_jogador.grupo or meu_dono and meu_dono.grupo)) then
+				is_friendly_fire = true
+			end
+		end
+
+		if (is_friendly_fire and spellid ~= SPELLID_KYRIAN_DRUID_TANK) then --kyrian spell remove on 10.0 | need to check if this is in 10.0
 			if (este_jogador.grupo) then --se tiver ele n�o adiciona o evento l� em cima
 				local t = last_events_cache[alvo_name]
 
@@ -1403,7 +1436,7 @@
 		if (empower_cache[who_serial]) then
 			local empowerSpellInfo = empower_cache[who_serial][spellname]
 			if (empowerSpellInfo) then
-				if (not empowerSpellInfo.counted) then
+				if (not empowerSpellInfo.counted_healing) then
 					--total of empowerment
 					spell.e_total = (spell.e_total or 0) + empowerSpellInfo.empowerLevel --usado para calcular o average empowerment
 					--total amount of empowerment
@@ -1413,7 +1446,7 @@
 					spell.e_lvl = spell.e_lvl or {}
 					spell.e_lvl[empowerSpellInfo.empowerLevel] = (spell.e_lvl[empowerSpellInfo.empowerLevel] or 0) + 1
 
-					empowerSpellInfo.counted = true
+					empowerSpellInfo.counted_healing = true
 				end
 
 				--damage bracket
@@ -2012,7 +2045,8 @@
 			spellName = spellName,
 			empowerLevel = empowerLevel,
 			time = time,
-			counted = false,
+			counted_healing = false,
+			counted_damage  = false,
 		}
 		empower_cache[sourceGUID][spellName] = empowerTable
 	end
@@ -2529,7 +2563,7 @@
 		if (empower_cache[who_serial]) then
 			local empowerSpellInfo = empower_cache[who_serial][spellname]
 			if (empowerSpellInfo) then
-				if (not empowerSpellInfo.counted) then
+				if (not empowerSpellInfo.counted_damage) then
 					--total of empowerment
 					spell.e_total = (spell.e_total or 0) + empowerSpellInfo.empowerLevel --usado para calcular o average empowerment
 					--total amount of empowerment
@@ -2539,7 +2573,7 @@
 					spell.e_lvl = spell.e_lvl or {}
 					spell.e_lvl[empowerSpellInfo.empowerLevel] = (spell.e_lvl[empowerSpellInfo.empowerLevel] or 0) + 1
 
-					empowerSpellInfo.counted = true
+					empowerSpellInfo.counted_damage = true
 				end
 
 				--healing bracket
@@ -2618,6 +2652,19 @@
 	--BUFFS & DEBUFFS 	search key: ~buff ~aura ~shield								|
 -----------------------------------------------------------------------------------------------------------------------------------------
 
+	local isAuraActived = function(who_name, spellid)
+		local miscActorObject = misc_cache[who_name]
+		if (miscActorObject) then
+			--fastest way to query data
+			local spellTable = miscActorObject.buff_uptime_spells and miscActorObject.buff_uptime_spells._ActorTable[spellid]
+			if (spellTable) then
+				if (spellTable.actived) then
+					return true
+				end
+			end
+		end
+	end
+
 	function parser:buff (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, spellschool, tipo, amount, arg1, arg2, arg3)
 
 	--not yet well know about unnamed buff casters
@@ -2690,6 +2737,32 @@
 				end
 
 				if (_recording_buffs_and_debuffs) then
+					if (spellid == 272790) then --hunter pet Frenzy quick fix for show the Frenzy uptime
+						if (pet_frenzy_cache[who_name]) then
+							if (DetailsFramework:IsNearlyEqual(pet_frenzy_cache[who_name], time, 0.2)) then
+								return
+							end
+						end
+
+						if (not _detalhes.in_combat) then
+							C_Timer.After(1, function()
+								if (_detalhes.in_combat) then
+									if (pet_frenzy_cache[who_name]) then
+										if (DetailsFramework:IsNearlyEqual(pet_frenzy_cache[who_name], time, 0.2)) then
+											return
+										end
+									end
+									parser:add_buff_uptime(token, time, who_serial, who_name, who_flags, who_serial, who_name, who_flags, 0x0, spellid, spellname, "BUFF_UPTIME_IN")
+								end
+							end)
+							return
+						end
+
+						pet_frenzy_cache[who_name] = time --when the buffIN happened
+						parser:add_buff_uptime(token, time, who_serial, who_name, who_flags, who_serial, who_name, who_flags, 0x0, spellid, spellname, "BUFF_UPTIME_IN")
+						return
+					end
+
 					if (who_name == alvo_name and raid_members_cache [who_serial] and _in_combat) then
 						--call record buffs uptime
 						parser:add_buff_uptime (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_IN")
@@ -2939,6 +3012,25 @@
 			------------------------------------------------------------------------------------------------
 			--buff uptime
 				if (_recording_buffs_and_debuffs) then
+					if (spellid == 272790) then --hunter pet Frenzy spellid
+						local miscActorObject = misc_cache[who_name]
+						if (miscActorObject) then
+							--fastest way to query utility spell data
+							local spellTable = miscActorObject.buff_uptime_spells and miscActorObject.buff_uptime_spells._ActorTable[spellid]
+							if (spellTable) then
+								if (spellTable.actived and pet_frenzy_cache[who_name]) then
+									if (DetailsFramework:IsNearlyEqual(pet_frenzy_cache[who_name], time, 0.2)) then
+										return
+									end
+								end
+							end
+						end
+
+						parser:add_buff_uptime(token, time, who_serial, who_name, who_flags, who_serial, who_name, who_flags, 0x0, spellid, spellname, "BUFF_UPTIME_REFRESH")
+						pet_frenzy_cache[who_name] = time
+						return
+					end
+
 					if (who_name == alvo_name and raid_members_cache [who_serial] and _in_combat) then
 						--call record buffs uptime
 						parser:add_buff_uptime (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_REFRESH")
@@ -2948,6 +3040,7 @@
 
 					elseif (buffs_to_other_players[spellid]) then
 						parser:add_buff_uptime(token, time, alvo_serial, alvo_name, alvo_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_REFRESH")
+
 					end
 				end
 
@@ -3082,6 +3175,15 @@
 			------------------------------------------------------------------------------------------------
 			--buff uptime
 				if (_recording_buffs_and_debuffs) then
+					if (spellid == 272790) then --hunter pet Frenzy spellid
+						if (not pet_frenzy_cache[who_name]) then
+							return
+						end
+						parser:add_buff_uptime(token, time, who_serial, who_name, who_flags, who_serial, who_name, who_flags, 0x0, spellid, spellname, "BUFF_UPTIME_OUT")
+						pet_frenzy_cache[who_name] = nil
+						return
+					end
+
 					if (who_name == alvo_name and raid_members_cache [who_serial] and _in_combat) then
 						--call record buffs uptime
 						parser:add_buff_uptime (token, time, who_serial, who_name, who_flags, alvo_serial, alvo_name, alvo_flags, alvo_flags2, spellid, spellname, "BUFF_UPTIME_OUT")
@@ -5168,7 +5270,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				if (Details.show_warning_id1) then
 					if (Details.show_warning_id1_amount < 2) then
 						Details.show_warning_id1_amount = Details.show_warning_id1_amount + 1
-						Details:Msg("|cFFFFFF00you might find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself (" .. Details.show_warning_id1_amount .. " / 10).")
+						--Details:Msg("|cFFFFFF00you might find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself (" .. Details.show_warning_id1_amount .. " / 10).")
 					end
 				end
 			end)
@@ -5283,7 +5385,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 				if (Details.show_warning_id1) then
 					if (Details.show_warning_id1_amount < 2) then
 						Details.show_warning_id1_amount = Details.show_warning_id1_amount + 1
-						Details:Msg("|cFFFFFF00you may find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself (" .. Details.show_warning_id1_amount .. " / 10).")
+						--Details:Msg("|cFFFFFF00you may find differences on damage done, this is due to a bug in the game client, nothing related to Details! itself (" .. Details.show_warning_id1_amount .. " / 10).")
 					end
 				end
 			end)
@@ -6010,6 +6112,10 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		_detalhes:SchedulePetUpdate(5)
 	end
 
+	function Details.parser_functions:PLAYER_TARGET_CHANGED(...)
+		Details:SendEvent("PLAYER_TARGET")
+	end
+
 	local parser_functions = _detalhes.parser_functions
 
 	function _detalhes:OnEvent(event, ...)
@@ -6030,9 +6136,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			_instance_backup = {},
 		}
 		local exitErrors = __details_backup._exit_error
-		
+
 		local addToExitErrors = function(text)
-			table.insert(exitErrors, 1, text)
+			table.insert(exitErrors, 1, date() .. "|" .. text)
 			table.remove(exitErrors, 10)
 		end
 
@@ -6044,7 +6150,7 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		end)
 
 		if (not savePlayTimeClass) then
-			addToExitErrors("Saving Play Time:" .. savePlayTimeError)
+			addToExitErrors("Saving Play Time: " .. savePlayTimeError)
 		end
 
 		--SAVINGDATA = true
@@ -6284,8 +6390,9 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			for i = 1, GetNumGroupMembers() do
 				local name = GetUnitName("raid"..i, true)
 
-				raid_members_cache[UnitGUID("raid"..i)] = true
-				roster[name] = true
+				local guid = UnitGUID("raid"..i)
+				raid_members_cache[guid] = name
+				roster[name] = guid
 
 				local role = _UnitGroupRolesAssigned(name)
 				if (role == "TANK") then
@@ -6302,24 +6409,25 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 			for i = 1, GetNumGroupMembers()-1 do
 				local name = GetUnitName("party"..i, true)
 
-				raid_members_cache[UnitGUID("party"..i)] = true
-				roster[name] = true
+				local guid = UnitGUID("party"..i)
+				raid_members_cache[guid] = name
+				roster[name] = guid
 
 				local role = _UnitGroupRolesAssigned(name)
 				if (role == "TANK") then
-					tanks_members_cache[UnitGUID("party"..i)] = true
+					tanks_members_cache[guid] = true
 				end
 
-				if (auto_regen_power_specs[_detalhes.cached_specs[UnitGUID("party" .. i)]]) then
-					auto_regen_cache[name] = auto_regen_power_specs[_detalhes.cached_specs[UnitGUID("party" .. i)]]
+				if (auto_regen_power_specs[_detalhes.cached_specs[guid]]) then
+					auto_regen_cache[name] = auto_regen_power_specs[_detalhes.cached_specs[guid]]
 				end
 			end
 
 			--player
 			local name = GetUnitName("player", true)
 
-			raid_members_cache[UnitGUID("player")] = true
-			roster[name] = true
+			raid_members_cache[UnitGUID("player")] = name
+			roster[name] = UnitGUID("player")
 
 			local role = _UnitGroupRolesAssigned(name)
 			if (role == "TANK") then
@@ -6332,8 +6440,8 @@ local SPELL_POWER_PAIN = SPELL_POWER_PAIN or (PowerEnum and PowerEnum.Pain) or 1
 		else
 			local name = GetUnitName("player", true)
 
-			raid_members_cache[UnitGUID("player")] = true
-			roster[name] = true
+			raid_members_cache[UnitGUID("player")] = name
+			roster[name] = UnitGUID("player")
 
 			local role = _UnitGroupRolesAssigned(name)
 			if (role == "TANK") then

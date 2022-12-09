@@ -3603,7 +3603,7 @@ function gump:CriaJanelaPrincipal (ID, instancia, criando)
 		baseframe:EnableMouseWheel(false)
 		baseframe:EnableMouse(true)
 
-		if (not DetailsFramework.IsDragonflight()) then
+		if (not DetailsFramework.IsDragonflight() and not DetailsFramework.IsWotLKWowWithRetailAPI()) then
 			baseframe:SetMinResize (150, 7)
 			baseframe:SetMaxResize (Details.max_window_size.width, Details.max_window_size.height)
 		else

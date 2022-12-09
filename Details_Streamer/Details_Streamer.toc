@@ -11,4 +11,5 @@
 Details_Streamer.lua
 
 
+## Title: |cff880303[爱不易]|r Details 主播模块
 ## X-Vendor: AbyUI

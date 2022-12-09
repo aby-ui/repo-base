@@ -1,7 +1,9 @@
 local E = select(2, ...):unpack()
 local P = E.Party
 
-local format, ceil, floor, min = format, ceil, floor, math.min
+local format, ceil, floor, min, GetTime = string.format, math.ceil, math.floor, math.min, GetTime
+local tremove, tinsert, tonumber, gsub, utf8sub = tremove, tinsert, tonumber, string.gsub, string.utf8sub
+local RESET = NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON or "Reset"
 
 local unusedStatusBars = {}
 local numStatusBars = 0
@@ -153,7 +155,7 @@ function P:GetStatusBar(icon, key)
 	local name = gsub(self.groupInfo[icon.guid].name, "%-(.*)", "")
 	local numChar = db.truncateStatusBarName
 	if numChar > 0 then
-		name = string.utf8sub(name, 1, numChar)
+		name = utf8sub(name, 1, numChar)
 	end
 	statusBar.name = name
 	statusBar.Text:SetText(name)
@@ -186,11 +188,13 @@ local function CastingBarFrame_FinishSpell(self)
 	if ( self.isSparkEnabled ) then
 		self.Spark:Hide();
 	end
-
-
-
-
-
+	--[[
+	if ( self.Flash ) then
+		self.Flash:SetAlpha(0.0);
+		self.Flash:Show();
+	end
+	self.flash = true;
+	]]
 	if self.statusBar.key ~= "raidBar0" or not P.rearrangeInterrupts then
 		self.fadeOut = true;
 	end
@@ -216,17 +220,19 @@ end
 
 OmniCDCastingBarFrame_OnShow = function(self)
 	if ( self.unit ) then
-
-
-
-
-
-
-
-
-
-
-
+		--[[
+		if ( self.casting ) then
+			local startTime = FindStartEndTime(self)
+			if ( startTime ) then
+				self.value = (GetTime() - startTime);
+			end
+		else
+			local _, endTime = FindStartEndTime(self)
+			if ( endTime ) then
+				self.value = (endTime - GetTime())
+			end
+		end
+		]]
 		if ( self.casting or self.channeling ) then
 			local statusBar = self.statusBar
 			statusBar.Text:Hide()
@@ -237,11 +243,13 @@ end
 
 local function CastingBarFrame_ApplyAlpha(self, alpha)
 	self:SetAlpha(alpha);
-
-
-
-
-
+	--[[
+	if self.additionalFadeWidgets then
+		for widget in pairs(self.additionalFadeWidgets) do
+			widget:SetAlpha(alpha);
+		end
+	end
+	]]
 end
 
 local function TimeFormat(value)
@@ -292,9 +300,11 @@ OmniCDCastingBarFrame_OnUpdate = function(self, elapsed)
 			return;
 		end
 		self:SetValue(self.value);
-
-
-
+		--[[
+		if ( self.Flash ) then
+			self.Flash:Hide();
+		end
+		]]
 		if ( self.isSparkEnabled ) then
 			local sparkPosition = (self.value / self.maxValue) * self:GetWidth();
 			self.Spark:SetPoint("CENTER", self, "LEFT", sparkPosition, self.Spark.offsetY or 2);
@@ -318,10 +328,11 @@ OmniCDCastingBarFrame_OnUpdate = function(self, elapsed)
 			return;
 		end
 		self:SetValue(self.value);
-
-
-
-
+		--[[
+		if ( self.Flash ) then
+			self.Flash:Hide();
+		end
+		]]
 		if ( self.isSparkEnabled ) then
 			local sparkPosition = (self.value / self.maxValue) * self:GetWidth();
 			self.Spark:SetPoint("CENTER", self, "LEFT", sparkPosition, self.Spark.offsetY or 2);
@@ -336,21 +347,23 @@ OmniCDCastingBarFrame_OnUpdate = function(self, elapsed)
 		self.Timer:SetText(counter)
 	elseif ( GetTime() < self.holdTime ) then
 		return;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	--[[
+	elseif ( self.flash ) then
+		local alpha = 0;
+		if ( self.Flash ) then
+			alpha = self.Flash:GetAlpha() + CASTING_BAR_FLASH_STEP;
+		end
+		if ( alpha < 1 ) then
+			if ( self.Flash ) then
+				self.Flash:SetAlpha(alpha);
+			end
+		else
+			if ( self.Flash ) then
+				self.Flash:SetAlpha(1.0);
+			end
+			self.flash = nil;
+		end
+	]]
 	elseif ( self.fadeOut ) then
 		local alpha = self:GetAlpha() - CASTING_BAR_ALPHA_STEP;
 		if ( alpha > 0 ) then
@@ -388,28 +401,29 @@ local function CastingBarFrame_UpdateInterruptibleState(self, notInterruptible)
 	if ( self.casting or self.channeling ) then
 		local startColor = CastingBarFrame_GetEffectiveStartColor(self, self.channeling, notInterruptible);
 		self:SetStatusBarColor(startColor:GetRGB());
+		--[[
+		if self.flashColorSameAsStart then
+			self.Flash:SetVertexColor(startColor:GetRGB());
+		end
 
+		if ( self.BorderShield ) then
+			if ( self.showShield and notInterruptible ) then
+				self.BorderShield:Show();
+				if ( self.BarBorder ) then
+					self.BarBorder:Hide();
+				end
+			else
+				self.BorderShield:Hide();
+				if ( self.BarBorder ) then
+					self.BarBorder:Show();
+				end
+			end
+		end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		if ( self.Icon and self.iconWhenNoninterruptible ) then
+			self.Icon:SetShown(not notInterruptible);
+		end
+		]]
 	end
 end
 
@@ -455,12 +469,13 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 			self.BG:SetVertexColor(startBGColor:GetRGBA())
 			self.Text:SetTextColor(startTextColor:GetRGB())
 		end
-
-
-
-
-
-
+		--[[
+		if self.flashColorSameAsStart then
+			self.Flash:SetVertexColor(startColor:GetRGB());
+		else
+			self.Flash:SetVertexColor(1, 1, 1);
+		end
+		]]
 		if ( self.isSparkEnabled ) then
 			self.Spark:Show();
 		end
@@ -472,31 +487,35 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 		if ( self.Text ) then
 			self.Text:SetText(text);
 		end
-
-
-
-
-
-
+		--[[
+		if ( self.Icon and texture) then
+			self.Icon:SetTexture(texture);
+			if ( self.iconWhenNoninterruptible ) then
+				self.Icon:SetShown(not notInterruptible);
+			end
+		end
+		]]
 		CastingBarFrame_ApplyAlpha(self, 1.0);
 		self.holdTime = 0;
 		self.casting = true;
 
 		self.channeling = nil;
 		self.fadeOut = nil;
-
-
-
-
-
-
-
-
-
-
-
-
-
+		--[[
+		if ( self.BorderShield ) then
+			if ( self.showShield and notInterruptible ) then
+				self.BorderShield:Show();
+				if ( self.BarBorder ) then
+					self.BarBorder:Hide();
+				end
+			else
+				self.BorderShield:Hide();
+				if ( self.BarBorder ) then
+					self.BarBorder:Show();
+				end
+			end
+		end
+		]]
 		if ( self.showCastbar ) then
 			self:Show();
 		end
@@ -512,10 +531,12 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 			if ( self.isSparkEnabled ) then
 				self.Spark:Hide();
 			end
-
-
-
-
+			--[[
+			if ( self.Flash ) then
+				self.Flash:SetAlpha(0.0);
+				self.Flash:Show();
+			end
+			]]
 			self:SetValue(self.maxValue);
 			if ( event == 'UNIT_SPELLCAST_STOP' ) then
 				self.casting = nil;
@@ -538,11 +559,13 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 				self.Spark:Hide();
 			end
 			if ( self.Text ) then
-
-
-
-
-
+				--[[
+				if ( event == 'UNIT_SPELLCAST_FAILED' ) then
+					self.Text:SetText(FAILED);
+				else
+					self.Text:SetText(INTERRUPTED);
+				end
+				]]
 				self.Text:SetText(RESET)
 			end
 			self.casting = nil;
@@ -569,10 +592,12 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 				if ( self.isSparkEnabled ) then
 					self.Spark:Show();
 				end
-
-
-
-
+				--[[
+				if ( self.Flash ) then
+					self.Flash:SetAlpha(0.0);
+					self.Flash:Hide();
+				end
+				]]
 				self.casting = true;
 				self.channeling = nil;
 
@@ -608,11 +633,13 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 			self.Text:SetTextColor(0.3, 0.3, 0.3)
 		else
 			local startColor, startBGColor, startTextColor = CastingBarFrame_GetEffectiveStartColor(self, true, notInterruptible);
-
-
-
-
-
+			--[[
+			if self.flashColorSameAsStart then
+				self.Flash:SetVertexColor(startColor:GetRGB());
+			else
+				self.Flash:SetVertexColor(1, 1, 1);
+			end
+			]]
 			self:SetStatusBarColor(startColor:GetRGBA());
 			self.BG:SetVertexColor(startBGColor:GetRGBA())
 			self.Text:SetTextColor(startTextColor:GetRGB())
@@ -626,9 +653,11 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 		if ( self.Text ) then
 			self.Text:SetText(text);
 		end
-
-
-
+		--[[
+		if ( self.Icon ) then
+			self.Icon:SetTexture(texture);
+		end
+		]]
 		if ( self.isSparkEnabled ) then
 			self.Spark:Show();
 		end
@@ -637,19 +666,21 @@ function P.OmniCDCastingBarFrame_OnEvent(self, event)
 		self.casting = nil;
 		self.channeling = true;
 		self.fadeOut = nil;
-
-
-
-
-
-
-
-
-
-
-
-
-
+		--[[
+		if ( self.BorderShield ) then
+			if ( self.showShield and notInterruptible ) then
+				self.BorderShield:Show();
+				if ( self.BarBorder ) then
+					self.BarBorder:Hide();
+				end
+			else
+				self.BorderShield:Hide();
+				if ( self.BarBorder ) then
+					self.BarBorder:Show();
+				end
+			end
+		end
+		]]
 		if ( self.showCastbar ) then
 			self:Show();
 		end

@@ -1,5 +1,13 @@
 local E = select(2, ...):unpack()
-local P, CM, PS = E.Party, E.Comm, E.ProfileSharing
+local P, CM = E.Party, E.Comm
+
+local pairs, ipairs, type, wipe, concat, format, gsub = pairs, ipairs, type, table.wipe, table.concat, string.format, string.gsub
+local UnitIsConnected, CanInspect, CheckInteractDistance = UnitIsConnected, CanInspect, CheckInteractDistance
+local GetPvpTalentInfoByID, GetTalentInfo, GetGlyphSocketInfo = GetPvpTalentInfoByID, GetTalentInfo, GetGlyphSocketInfo
+local C_SpecializationInfo_GetInspectSelectedPvpTalent = C_SpecializationInfo and C_SpecializationInfo.GetInspectSelectedPvpTalent
+local C_SpecializationInfo_GetPvpTalentSlotInfo = C_SpecializationInfo and C_SpecializationInfo.GetPvpTalentSlotInfo
+local C_Traits_GetNodeInfo = C_Traits and C_Traits.GetNodeInfo
+local C_Soulbinds_GetConduitSpellID = C_Soulbinds and C_Soulbinds.GetConduitSpellID
 
 local InspectQueueFrame = CreateFrame("Frame")
 local InspectTooltip = CreateFrame("GameTooltip", "OmniCDInspectToolTip", nil, "GameTooltipTemplate")
@@ -11,13 +19,62 @@ local INSPECT_INTERVAL = 1
 local INSPECT_PAUSE_TIME = 2
 local INSPECT_TIMEOUT = 180
 local nextInquiryTime = 0
+local elapsedTime = 0
 local isPaused
 local queriedGUID
 
 local queueEntries = {}
 local staleEntries = {}
 
-local elapsedTime = 0
+CM.SERIALIZATION_VERSION = 1
+
+function CM:Enable()
+	if self.enabled then
+		return
+	end
+
+	self.AddonPrefix = E.AddOn
+	C_ChatInfo.RegisterAddonMessagePrefix(self.AddonPrefix)
+	self:RegisterEvent('CHAT_MSG_ADDON')
+	self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+	self:RegisterEvent('PLAYER_LEAVING_WORLD')
+	if E.isWOTLKC then
+		self:RegisterEvent('PLAYER_TALENT_UPDATE')
+	elseif E.preCata then
+		self:RegisterEvent('CHARACTER_POINTS_CHANGED')
+	else
+		self:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', "player")
+
+		self:RegisterEvent('COVENANT_CHOSEN')
+		self:RegisterEvent('SOULBIND_ACTIVATED')
+		self:RegisterEvent('SOULBIND_NODE_LEARNED')
+		self:RegisterEvent('SOULBIND_NODE_UNLEARNED')
+		self:RegisterEvent('SOULBIND_NODE_UPDATED')
+		self:RegisterEvent('SOULBIND_CONDUIT_INSTALLED')
+		self:RegisterEvent('SOULBIND_PATH_CHANGED')
+		self:RegisterEvent('COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED')
+
+		self:RegisterEvent('TRAIT_CONFIG_UPDATED')
+	end
+	self:SetScript("OnEvent", function(self, event, ...)
+		self[event](self, ...)
+	end)
+
+	self:InitInspect()
+	self:InitCooldownSync()
+	self.enabled = true
+end
+
+function CM:Disable()
+	if not self.enabled then
+		return
+	end
+	self:UnregisterAllEvents()
+
+	self:DisableInspect()
+	self:DesyncFromGroup()
+	self.enabled = false
+end
 
 local function InspectQueueFrame_OnUpdate(_, elapsed)
 	elapsedTime = elapsedTime + elapsed
@@ -293,8 +350,8 @@ local function FindAzeriteEssencePower(info, specID, list)
 
 						local minorID = essencePowers[rank + 4]
 						if E.essMinorStrive[minorID] then
-							local mult = (90.1 - ((heartOfAzerothLevel - 399) * 0.15)) / 100
 
+							local mult = (90.1 - ((heartOfAzerothLevel - 87) * 0.3)) / 100
 							if P.isInPvPInstance then
 								mult = 0.2 + mult * 0.8
 							end
@@ -446,7 +503,6 @@ local function GetEquippedItemData(info, unit, specID, list)
 							if list then list[#list + 1] = unityRuneforgeLegendary .. ":R" end
 						end
 						numRuneforge = numRuneforge + 1
-
 					elseif itemID == 158075 then
 						FindAzeriteEssencePower(info, specID, list)
 					elseif C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemLink) then
@@ -503,7 +559,7 @@ local treeNodeEntryIDs = {
 local talentIDFix = { [103211]=377779,[103216]=343240,[103224]=377623, }
 local talentChargeFix = { [36554]=true,[191634]=true,[47568]=true, }
 
-local MAX_NUM_TALENTS = MAX_NUM_TALENTS or (E.isPreBCC and 25 or 31)
+local MAX_NUM_TALENTS = MAX_NUM_TALENTS or (E.isWOTLKC and 31 or 25)
 
 local GetSelectedTalentData = (E.isDF and function(info, inspectUnit, isInspect)
 	local list, c
@@ -514,9 +570,9 @@ local GetSelectedTalentData = (E.isDF and function(info, inspectUnit, isInspect)
 	for i = 1, 3 do
 		local talentID
 		if isInspect then
-			talentID = C_SpecializationInfo.GetInspectSelectedPvpTalent(inspectUnit, i)
+			talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectUnit, i)
 		else
-			local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i)
+			local slotInfo = C_SpecializationInfo_GetPvpTalentSlotInfo(i)
 			talentID = slotInfo and slotInfo.selectedTalentID
 		end
 		if talentID then
@@ -544,13 +600,13 @@ local GetSelectedTalentData = (E.isDF and function(info, inspectUnit, isInspect)
 	local nodeSpellIDs = treeNodeSpellIDs[treeID]
 	local treeNodes = C_Traits.GetTreeNodes(treeID)
 	for i, treeNodeID in ipairs(treeNodes) do
-		local treeNode = C_Traits.GetNodeInfo(configID, treeNodeID)
+		local treeNode = C_Traits_GetNodeInfo(configID, treeNodeID)
 		local activeEntry = treeNode.activeEntry
 		if activeEntry then
 			local activeRank = treeNode.activeRank
 			if activeRank > 0 then
 				local activeEntryID = activeEntry.entryID
-				local spellID = talentIDFix[activeEntryID] or nodeEntryIDs[activeEntryID]
+				local spellID = talentIDFix[activeEntryID] or (nodeEntryIDs and nodeEntryIDs[activeEntryID])
 				if spellID then
 					activeRank = talentChargeFix[spellID] and info.talentData[spellID] and 2 or activeRank
 					info.talentData[spellID] = activeRank
@@ -574,9 +630,9 @@ end) or (E.isSL and function(info, inspectUnit, isInspect)
 	for i = 1, 3 do
 		local talentID
 		if isInspect then
-			talentID = C_SpecializationInfo.GetInspectSelectedPvpTalent(inspectUnit, i)
+			talentID = C_SpecializationInfo_GetInspectSelectedPvpTalent(inspectUnit, i)
 		else
-			local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i)
+			local slotInfo = C_SpecializationInfo_GetPvpTalentSlotInfo(i)
 			talentID = slotInfo and slotInfo.selectedTalentID
 		end
 		if talentID then
@@ -760,7 +816,6 @@ local function GetCovenantSoulbindData(info, list)
 	info.talentData[covenantSpellID] = "C"
 	list[#list + 1] = "^C," .. covenantID
 
-
 	local soulbindID = C_Soulbinds.GetActiveSoulbindID()
 	if soulbindID == 0 then
 		return
@@ -780,7 +835,7 @@ local function GetCovenantSoulbindData(info, list)
 		if node.state == Enum.SoulbindNodeState.Selected then
 			local conduitID, conduitRank, row, spellID = node.conduitID, node.conduitRank, node.row, node.spellID
 			if conduitID ~= 0 then
-				spellID = C_Soulbinds.GetConduitSpellID(conduitID, conduitRank)
+				spellID = C_Soulbinds_GetConduitSpellID(conduitID, conduitRank)
 				if IsSoulbindRowEnhanced(soulbindID, row, renownLevel) then
 					conduitRank = conduitRank + 2
 				end
@@ -823,7 +878,7 @@ function CM:UpdateCooldownSyncIDs(info)
 	wipe(self.cooldownSyncIDs)
 	for id, t in E.pairs(E.sync_cooldowns.ALL, E.sync_cooldowns[E.userClass]) do
 		local spellID
-		for i, v in ipairs(t) do
+		for _, v in ipairs(t) do
 			spellID = not v or FindValidSpellID(info, v)
 			if not spellID then break end
 		end
@@ -868,7 +923,7 @@ function CM:InspectUser()
 	end
 
 	dataList[2] = specID
-	local serializedData = table.concat(dataList, ","):gsub(",%^", "^")
+	local serializedData = concat(dataList, ","):gsub(",%^", "^")
 	local compressedData = LibDeflate:CompressDeflate(serializedData)
 	local encodedData = LibDeflate:EncodeForWoWAddonChannel(compressedData)
 	self.serializedSyncData = encodedData

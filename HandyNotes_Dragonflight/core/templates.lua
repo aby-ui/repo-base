@@ -4,11 +4,13 @@
 local ADDON_NAME, ns = ...
 local L = ns.locale
 
+local LibDD = LibStub:GetLibrary('LibUIDropDownMenu-4.0')
+
 -------------------------------------------------------------------------------
 --------------------------- UIDROPDOWNMENU_ADDSLIDER --------------------------
 -------------------------------------------------------------------------------
 
-local function UIDropDownMenu_AddSlider(info, level)
+local function Custom_UIDropDownMenu_AddSlider(info, level)
     local function format(v)
         if info.percentage then return FormatPercentage(v, true) end
         return string.format('%.2f', v)
@@ -26,7 +28,7 @@ local function UIDropDownMenu_AddSlider(info, level)
     end)
     info.frame.Slider:UpdateVisibleState()
 
-    UIDropDownMenu_AddButton({customFrame = info.frame}, level)
+    LibDD:UIDropDownMenu_AddButton({customFrame = info.frame}, level)
 end
 
 -------------------------------------------------------------------------------
@@ -37,11 +39,12 @@ local WorldMapOptionsButtonMixin = {}
 _G[ADDON_NAME .. 'WorldMapOptionsButtonMixin'] = WorldMapOptionsButtonMixin
 
 function WorldMapOptionsButtonMixin:OnLoad()
-    UIDropDownMenu_SetInitializeFunction(self.DropDown,
-        function(dropdown, level)
-            dropdown:GetParent():InitializeDropDown(level)
-        end)
-    UIDropDownMenu_SetDisplayMode(self.DropDown, 'MENU')
+    local drop_down_name = ADDON_NAME .. 'WorldMapDropDownMenu'
+    self.DropDown = LibDD:Create_UIDropDownMenu(drop_down_name, self)
+
+    LibDD:UIDropDownMenu_SetInitializeFunction(self.DropDown, function(dropdown,
+        level) dropdown:GetParent():InitializeDropDown(level) end)
+    LibDD:UIDropDownMenu_SetDisplayMode(self.DropDown, 'MENU')
 
     self.GroupDesc = CreateFrame('Frame', ADDON_NAME .. 'GroupMenuSliderOption',
         nil, ADDON_NAME .. 'TextMenuOptionTemplate')
@@ -57,7 +60,7 @@ function WorldMapOptionsButtonMixin:OnMouseDown(button)
     self.Icon:SetPoint('TOPLEFT', 8, -8)
     local xOffset = WorldMapFrame.isMaximized and 30 or 0
     self.DropDown.point = WorldMapFrame.isMaximized and 'TOPRIGHT' or 'TOPLEFT'
-    ToggleDropDownMenu(1, nil, self.DropDown, self, xOffset, -5)
+    LibDD:ToggleDropDownMenu(1, nil, self.DropDown, self, xOffset, -5)
     PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 end
 
@@ -86,7 +89,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
     local map, icon, iconLink = ns.maps[self:GetParent():GetMapID()]
 
     if level == 1 then
-        UIDropDownMenu_AddButton({
+        LibDD:UIDropDownMenu_AddButton({
             isTitle = true,
             notCheckable = true,
             text = WORLD_MAP_FILTER_TITLE
@@ -111,7 +114,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
                     iconLink = ns.GetIconLink(icon, 16)
                 end
 
-                UIDropDownMenu_AddButton({
+                LibDD:UIDropDownMenu_AddButton({
                     text = iconLink .. ' ' .. ns.RenderLinks(group.label, true),
                     isNotRadio = true,
                     keepShownOnClick = true,
@@ -126,8 +129,8 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             end
         end
 
-        UIDropDownMenu_AddSeparator()
-        UIDropDownMenu_AddButton({
+        LibDD:UIDropDownMenu_AddSeparator()
+        LibDD:UIDropDownMenu_AddButton({
             text = L['options_reward_types'],
             isNotRadio = true,
             notCheckable = true,
@@ -135,7 +138,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             hasArrow = true,
             value = 'rewards'
         })
-        UIDropDownMenu_AddButton({
+        LibDD:UIDropDownMenu_AddButton({
             text = L['options_show_completed_nodes'],
             isNotRadio = true,
             keepShownOnClick = true,
@@ -144,7 +147,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
                 ns:SetOpt('show_completed_nodes', button.checked)
             end
         })
-        UIDropDownMenu_AddButton({
+        LibDD:UIDropDownMenu_AddButton({
             text = L['options_toggle_hide_done_rare'],
             isNotRadio = true,
             keepShownOnClick = true,
@@ -153,7 +156,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
                 ns:SetOpt('hide_done_rares', button.checked)
             end
         })
-        UIDropDownMenu_AddButton({
+        LibDD:UIDropDownMenu_AddButton({
             text = L['options_toggle_use_char_achieves'],
             isNotRadio = true,
             keepShownOnClick = true,
@@ -163,8 +166,8 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             end
         })
 
-        UIDropDownMenu_AddSeparator()
-        UIDropDownMenu_AddButton({
+        LibDD:UIDropDownMenu_AddSeparator()
+        LibDD:UIDropDownMenu_AddButton({
             text = L['options_open_settings_panel'],
             isNotRadio = true,
             notCheckable = true,
@@ -181,11 +184,11 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             end
         })
     elseif level == 2 then
-        if UIDROPDOWNMENU_MENU_VALUE == 'rewards' then
+        if L_UIDROPDOWNMENU_MENU_VALUE == 'rewards' then
             for i, type in ipairs({
                 'mount', 'pet', 'toy', 'transmog', 'all_transmog'
             }) do
-                UIDropDownMenu_AddButton({
+                LibDD:UIDropDownMenu_AddButton({
                     text = L['options_' .. type .. '_rewards'],
                     isNotRadio = true,
                     keepShownOnClick = true,
@@ -197,14 +200,16 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
             end
         else
             -- Get correct map ID to query/set options for
-            local group = UIDROPDOWNMENU_MENU_VALUE
+            local group = L_UIDROPDOWNMENU_MENU_VALUE
 
             self.GroupDesc.Text:SetText(ns.RenderLinks(group.desc))
-            UIDropDownMenu_AddButton({customFrame = self.GroupDesc}, 2)
-            UIDropDownMenu_AddButton({notClickable = true, notCheckable = true},
-                2)
+            LibDD:UIDropDownMenu_AddButton({customFrame = self.GroupDesc}, 2)
+            LibDD:UIDropDownMenu_AddButton({
+                notClickable = true,
+                notCheckable = true
+            }, 2)
 
-            UIDropDownMenu_AddSlider({
+            Custom_UIDropDownMenu_AddSlider({
                 text = L['options_opacity'],
                 min = 0,
                 max = 1,
@@ -215,7 +220,7 @@ function WorldMapOptionsButtonMixin:InitializeDropDown(level)
                 func = function(v) group:SetAlpha(v, map.id) end
             }, 2)
 
-            UIDropDownMenu_AddSlider({
+            Custom_UIDropDownMenu_AddSlider({
                 text = L['options_scale'],
                 min = 0.3,
                 max = 3,

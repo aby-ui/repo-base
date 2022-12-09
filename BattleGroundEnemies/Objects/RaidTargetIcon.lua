@@ -35,7 +35,7 @@ local raidTargetIcon = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = nil,
 	events = {"UpdateRaidTargetIcon", "PlayerButtonSizeChanged"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 function raidTargetIcon:AttachToPlayerButton(playerButton)

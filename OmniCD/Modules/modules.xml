@@ -1,42 +1,23 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<!-- Spells -->
-	<Script file="Spells\core.lua"/>
-	<Script file="Spells\spells.lua"/>
-	<!--<Script file="Spells\spells-wotlkc.lua"/>-->
-	<!--<Script file="Spells\spells-bcc.lua"/>-->
-	<!--<Script file="Spells\spells-classic.lua"/>-->
-	<Script file="Spells\azerite.lua"/>
-	<Script file="Spells\covenant.lua"/>
-	<Script file="Spells\modifiers.lua"/>
-	<!--<Script file="Spells\modifiers-wotlkc.lua"/>-->
-	<!--<Script file="Spells\modifiers-bcc.lua"/>-->
-	<!--<Script file="Spells\modifiers-classic.lua"/>-->
-
 	<!-- Party -->
-	<Include file="Party\templates.xml"/>
-	<Script file="Party\core.lua"/>
-	<Script file="Party\bars.lua"/>
-	<Script file="Party\icons.lua"/>
-	<Script file="Party\position.lua"/>
-	<Script file="Party\visibility.lua"/>
-	<Script file="Party\cooldowns.lua"/>
-	<Script file="Party\highlights.lua"/>
-	<Script file="Party\test.lua"/>
-	<Script file="Party\extraBars.lua"/>
-	<Include file="Party\statusBar.xml"/>
-	<Script file="Party\statusBar.lua"/>
+	<Include file="Party\Templates.xml"/>
+	<Include file="Party\StatusBar.xml"/>
+	<Script file="Party\Core.lua"/>
+	<Script file="Party\Bars.lua"/>
+	<Script file="Party\Icons.lua"/>
+	<Script file="Party\Position.lua"/>
+	<Script file="Party\Visibility.lua"/>
+	<Script file="Party\Cooldowns.lua"/>
+	<Script file="Party\Highlights.lua"/>
+	<Script file="Party\Test.lua"/>
+	<Script file="Party\ExtraBars.lua"/>
+	<Script file="Party\StatusBar.lua"/>
+	<Script file="Party\Inspect.lua"/>
+	<Script file="Party\Sync.lua"/>
+	<Script file="Party\CD.lua"/>
 
-	<!-- Comms -->
-	<Script file="Comms\core.lua"/>
-	<Script file="Comms\inspect.lua"/>
-	<Script file="Comms\sync.lua"/>
-
-	<!-- Cooldowns -->
-	<Script file="Cooldowns\core.lua"/>
-	<Script file="Cooldowns\cooldowns.lua"/>
-
-	<!-- Misc -->
-	<Script file="Tooltips\tooltipID.lua"/>
-	<Script file="Blizzard\blizzard.lua"/>
+	<!-- Blizzard -->
+	<Script file="Blizzard\Blizzard.lua"/>
+	<Script file="Blizzard\TooltipID.lua"/>
 </Ui>

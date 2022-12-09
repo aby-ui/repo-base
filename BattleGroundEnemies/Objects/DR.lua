@@ -134,7 +134,7 @@ local dRTracking = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"AuraRemoved"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 local function createNewDrFrame(playerButton, container)

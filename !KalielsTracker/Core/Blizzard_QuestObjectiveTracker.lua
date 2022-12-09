@@ -213,6 +213,29 @@ end
 -- ***** UPDATE FUNCTIONS
 -- *****************************************************************************************************
 
+local dists = _G["abyuiKTQuestDis"]
+local KT = select(2, ...)
+local function CompareQuestWatchInfosWithDistance(info1, info2)
+	local quest1, quest2 = info1.quest, info2.quest;
+
+	if quest1:IsCalling() ~= quest2:IsCalling() then
+		return quest1:IsCalling();
+	end
+
+	local d1, d2 = dists[quest1.questID], dists[quest2.questID]
+	if d1 and d2 then
+		if d1 < 0 and d2 >= 0 then return false end
+		if d2 < 0 and d1 >= 0 then return true end
+		return d1 < d2
+	end
+
+	if quest1.overridesSortOrder ~= quest2.overridesSortOrder then
+		return quest1.overridesSortOrder;
+	end
+
+	return info1.index < info2.index;
+end
+
 local function CompareQuestWatchInfos(info1, info2)
 	local quest1, quest2 = info1.quest, info2.quest;
 
@@ -241,10 +264,44 @@ function KT_QUEST_TRACKER_MODULE:BuildQuestWatchInfos()
 	end
 
 	table.sort(infos, CompareQuestWatchInfos);
+
+	self.poiNumericMap = self.poiNumericMap or {}
+	table.wipe(self.poiNumericMap)
+	if KT and KT.db and KT.db.profile.sortByDistance then
+		local numPOINumeric = self.numPOINumeric
+		for index, questWatchInfo in ipairs(infos) do
+			--模拟UpdatePOISingle算出numeric
+			local quest = questWatchInfo.quest
+			local questID = quest:GetID();
+			local isComplete = quest:IsComplete();
+			local isOnMap, hasLocalPOI = quest:IsOnMap();
+
+			local block = self:GetExistingBlock(questID);
+			if block then
+				local shouldShowWaypoint = (questID == C_SuperTrack.GetSuperTrackedQuestID()) or (questID == QuestMapFrame_GetFocusedQuestID());
+				--local poiButton;
+
+				if isComplete then
+					--poiButton = QuestPOI_GetButton(KT_ObjectiveTrackerFrame.BlocksFrame, questID, "normal", nil);
+				elseif  hasLocalPOI or (shouldShowWaypoint and C_QuestLog.GetNextWaypoint(questID) ~= nil) then
+					numPOINumeric = numPOINumeric + 1;
+					self.poiNumericMap[questID] = numPOINumeric
+					--poiButton = QuestPOI_GetButton(KT_ObjectiveTrackerFrame.BlocksFrame, questID, "numeric", self.numPOINumeric);
+				end
+
+				--if poiButton then
+				--	poiButton:SetPoint("TOPRIGHT", block.HeaderText, "TOPLEFT", -6, 2);
+				--end
+			end
+		end
+		table.sort(infos, CompareQuestWatchInfosWithDistance);
+	end
+
 	return infos;
 end
 
 function KT_QUEST_TRACKER_MODULE:EnumQuestWatchData(func)
+	--called from KT_ObjectiveTracker_UpdatePOIs -> KT_QUEST_TRACKER_MODULE:UpdatePOIs
 	local infos = self:BuildQuestWatchInfos();
 	for index, questWatchInfo in ipairs(infos) do
 		if func(self, questWatchInfo.quest) then
@@ -267,7 +324,7 @@ function KT_QUEST_TRACKER_MODULE:UpdatePOISingle(quest)
 			poiButton = QuestPOI_GetButton(KT_ObjectiveTrackerFrame.BlocksFrame, questID, "normal", nil);
 		elseif  hasLocalPOI or (shouldShowWaypoint and C_QuestLog.GetNextWaypoint(questID) ~= nil) then
 			self.numPOINumeric = self.numPOINumeric + 1;
-			poiButton = QuestPOI_GetButton(KT_ObjectiveTrackerFrame.BlocksFrame, questID, "numeric", self.numPOINumeric);
+			poiButton = QuestPOI_GetButton(KT_ObjectiveTrackerFrame.BlocksFrame, questID, "numeric", self.poiNumericMap[questID] or self.numPOINumeric);
 		end
 
 		if poiButton then

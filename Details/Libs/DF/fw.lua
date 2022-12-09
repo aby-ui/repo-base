@@ -1,6 +1,6 @@
 
 
-local dversion = 398
+local dversion = 402
 local major, minor = "DetailsFramework-1.0", dversion
 local DF, oldminor = LibStub:NewLibrary(major, minor)
 
@@ -96,6 +96,13 @@ end
 function DF.IsWotLKWow()
     local _, _, _, buildInfo = GetBuildInfo()
     if (buildInfo < 40000 and buildInfo >= 30000) then
+        return true
+    end
+end
+
+function DF.IsWotLKWowWithRetailAPI()
+    local _, _, _, buildInfo = GetBuildInfo()
+    if (buildInfo < 40000 and buildInfo >= 30401) then
         return true
     end
 end
@@ -2995,7 +3002,7 @@ function DF:CreateAnimation(animation, animationType, order, duration, arg1, arg
 		anim:SetToAlpha(arg2)
 
 	elseif (animationType == "SCALE") then
-		if (DF.IsDragonflight()) then
+		if (DF.IsDragonflight() or DF.IsWotLKWowWithRetailAPI()) then
 			anim:SetScaleFrom(arg1, arg2)
 			anim:SetScaleTo(arg3, arg4)
 		else

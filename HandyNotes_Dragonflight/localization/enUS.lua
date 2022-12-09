@@ -28,11 +28,11 @@ L['chunk_of_sculpture_note'] = 'On the ground, from the dragon statue on the lef
 L['dislodged_dragoneye_note'] = 'On a rock under the dragon statue\'s chest.'
 L['finely_carved_wing_note'] = 'Under the dragon statue\'s right knee.'
 L['fragment_requirement_note'] = ns.color.Red('Before you can collect loose pieces, you need to ask {npc:193915} in |cFFFFFD00Wingrest Embassy|r at the dragon statue what she is doing here.')
-L['golden_claw_note'] = 'At the dragon statue\'s rear left claw.'
+L['golden_claw_note'] = 'At the dragon statue\'s rear right claw.'
 L['precious_stone_fragment_note'] = 'Under the statue\'s right foot.'
 L['stone_dragontooth_note'] = 'On the ground next to the pedestal of the dragon statue.'
 L['tail_fragment_note'] = 'On the tail of the dragon statue.'
-L['wrapped_gold_band_note'] = 'Under the dragon statue\'s rear right claw.'
+L['wrapped_gold_band_note'] = 'Under the dragon statue\'s rear left claw.'
 L['options_icons_fragment'] = '{achievement:16323}'
 L['options_icons_fragment_desc'] = 'Display the location of loose pieces for the achievement {achievement:16323}.'
 
@@ -69,6 +69,9 @@ L['bugged_selfie'] = '|cFFFF0000(BUG: The wrong NPC or none at all will be detec
 L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
 L['options_icons_pretty_neat_selfie_desc'] = 'Display the location of NPCs for the achievement {achievement:16446}.'
 
+L['large_lunker_sighting'] = 'Large Lunker Sighting'
+L['large_lunker_sighting_note'] = 'Use 5x {item:194701} to summon either a {npc:192919} or a rare.'
+
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
@@ -85,6 +88,9 @@ L['gnoll_fiend_flail_note'] = '{item:199066} can be found in Expedition Scout\'s
 L['pepper_hammer_note'] = 'Collect |cFFFFFD00Tree Sap|r and then use the |cFFFFFD00Stick|r to lure the {npc:195373}.\n\n|cFFFF0000(BUG: To click on the stick a reload might be necessary)|r'
 L['snow_covered_scroll'] = 'Snow Covered Scroll'
 
+L['pm_engi_frizz_buzzcrank'] = 'Stands next to a shrine.'
+L['pm_jewel_pluutar'] = 'Inside the building.'
+L['pm_script_lydiara_whisperfeather'] = 'Sits on a bench.'
 L['pt_alch_experimental_decay_sample_note'] = 'Inside a large green cauldron.'
 L['pt_alch_firewater_powder_sample_note'] = 'Outside log house next to vase.'
 L['pt_ench_enriched_earthen_shard_note'] = 'On a pile of rocks.'
@@ -145,6 +151,9 @@ L['slightly_chewed_duck_egg_note'] = 'Find and pet {npc:192997} to get {item:195
 L['yennus_boat'] = 'Tuskarr Toy Boat'
 L['yennus_boat_note'] = 'Loot the |cFFFFFD00Tuskarr Toy Boat|r to get {item:200876}, which starts the quest {quest:72063} that can be turned in at {npc:195252}.'
 
+L['pm_ench_shalasar_glimmerdusk'] = 'On the second floor of the broken tower.'
+L['pm_herb_hua_greenpaw'] = 'Kneels next to a tree.'
+L['pm_leath_erden'] = 'Standing next to a dead {npc:193092} by the river.'
 L['pt_alch_canteen_of_suspicious_water_note'] = 'Deep inside cave near a dead {npc:194887}.'
 L['pt_ench_stormbound_horn_note'] = 'In |cFFFFFD00Windsong Rise|r.'
 L['pt_jewel_fragmented_key_note'] = 'Under the tree roots in a crumbled building.'
@@ -197,6 +206,8 @@ L['sandy_wooden_duck_note'] = 'Collect {item:199069} and use it.'
 
 L['tasty_hatchling_treat_note'] = 'In a barrel behind the bookshelf.'
 
+L['pm_mining_bridgette_holdug'] = 'On top of a grassy rock pillar.'
+L['pm_tailor_elysa_raywinder'] = 'On a ledge halfway up the tower.'
 L['pt_alch_contraband_concoction_note'] = 'Hidden in bushes. ' .. ns.color.Orange('Difficult to see.')
 L['pt_alch_furry_gloop_note'] = 'Drop a nearby {npc:194855} into each cauldron then kill the monster that spawns.'
 L['pt_ench_fractured_titanic_sphere_note'] = 'South of |cFFFFFD00Tyrhold|r.'
@@ -209,7 +220,16 @@ L['pt_script_how_to_train_your_whelpling_note'] = 'Little brown book lying in th
 L['pt_smith_draconic_flux_note'] = 'Inside a building.'
 L['pt_tailor_ancient_dragonweave_bolt_note'] = 'Click on the |cFFFFFD00Ancient Dragonweave Loom|r to complete a minigame where you connect the spools of thread to the center gem.'
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = 'Small banner inside a pile of sand.'
-L['pt_mining_bridgette_holdug'] = 'On top of a grassy rock pillar.'
+
+L['picante_pomfruit_cake_note'] = '{item:200904} is not available every days so check back at |cFF00CCFFThe Ruby Enclave|r daily. While you are there, be sure to sample the 3 available dishes to complete {achievement:16556} as well.'
+L['icecrown_bleu_note'] = 'Purchase from {npc:196729} ' .. ns.color.NPC('<Cheesemonger>') .. ' in |cFF00CCFFThe Artisan\'s Market|r.'
+L['dreamwarding_dripbrew_note'] = 'Purchase from {npc:197872} ' .. ns.color.NPC('<Caffeinomancer>') .. ' at |cFFFFFD00The Late Night Lab|r.'
+L['arcanostabilized_provisions_note'] = 'Purchase from {npc:198831} ' .. ns.color.NPC('<Head Chef>') .. ' at the |cFF00CCFFTemporal Conflux|r in the |cFF00CCFFPrimalist Future|r.'
+L['steamed_scarab_steak_note'] = 'Purchase from {npc:197586} ' .. ns.color.NPC('<Spa Bartender>') .. ' at |cFFFFFD00Serene Dreams Spa|r.'
+L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} ' .. ns.color.NPC('<Traveling Dragonbrew Vendor>') .. ' at random map place per day: |cFFFFFD00Ruby Lifeshrine|r, |cFFFFFD00Greenscale Inn|r, |cFFFFFD00Camp Nowhere|r, |cFFFFFD00Temporal Conflux|r.'
+L['bivigosas_blood_sausages_note'] = 'Purchase from {npc:188895} ' .. ns.color.NPC('<Food & Drink>') .. ' at |cFFFFFD00Gelikyr Post|r.'
+L['options_icons_specialties'] = '{achievement:16621}'
+L['options_icons_specialties_desc'] = 'Display food and drink locations for {achievement:16621} achievement.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -220,6 +240,7 @@ L['lepidoralia_note'] = 'Located in the |cFFFFFD00Fluttering Cavern|r. Help {npc
 L['obsidian_citadel_rare_note'] = 'You and other Players have to return a total of %dx {item:191264} to %s. To craft a key you need to combine 30x {item:191251} and 3x {item:193201}, you can get these items from |cFFFFFD00Obsidian Citadel|r mobs.'
 L['shadeslash_note'] = 'Click the |cFFFFFD00Pilfered Focus|r to summon the rare.'
 L['obsidian_throne_rare_note'] = 'Inside the |cFFFFFD00Obsidian Throne|r.'
+L['skald_impaler_note'] = 'Use 5x {item:194701} to summon the rare.'
 L['slurpo_snail_note'] = 'Loot a {item:201033} from a cave in |cFFFFFD00The Azure Span|r (11, 41) and use it in this cave to summon him.'
 L['worldcarver_atir_note'] = 'Collect 3x {item:191211} from {npc:187366} nearby and place them at {npc:197395} to spawn the rare.'
 
@@ -241,6 +262,9 @@ Collect three different items and combine them at the |cFFFFFD00"Observant Riddl
 {item:200066}
 ]]
 
+L['pm_alch_grigori_vialtry'] = 'On a ledge overlooking |cFFFFFD00Flashfrost Assault|r.'
+L['pm_skin_zenzi'] = 'Sits next to the river.'
+L['pm_smith_grekka_anvilsmash'] = 'Sits in the grass next to the ruined tower.\n\n|cFFFF0000(Currently bugged.)|r'
 L['pt_alch_frostforged_potion_note'] = 'In the middle of the icy crater.'
 L['pt_alch_well_insulated_mug_note'] = 'In |cFFFFFD00Dragonbane Keep|r between a number of elite mobs.'
 L['pt_ench_enchanted_debris_note'] = 'Use and follow the {npc:194872} to loot the debris at the end.'
@@ -260,7 +284,6 @@ L['pt_smith_molten_ingot_note'] = 'Kick 3 ingots into the lava to spawn a mob. L
 L['pt_smith_qalashi_weapon_diagram_note'] = 'On top of an anvil.'
 L['pt_tailor_itinerant_singed_fabric_note'] = 'A piece of fabric hanging on a trees just outside the cave where the end boss spawns. ' .. ns.color.Orange('Requires precision Dragonriding or a warlock portal.')
 L['pt_tailor_mysterious_banner_note'] = 'Fluttering on top of the buildings.'
-L['pt_smith_grekka_anvilsmash'] = 'Sits in the grass next to the ruined tower.\n\n|cFFFF0000(Currently bugged.)|r'
 
 L['quack_week_1'] = 'Week 1'
 L['quack_week_2'] = 'Week 2'

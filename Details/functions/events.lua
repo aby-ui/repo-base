@@ -25,6 +25,7 @@
 			["DETAILS_OPTIONS_MODIFIED"] = {},
 			["UNIT_SPEC"] = {},
 			["UNIT_TALENTS"] = {},
+			["PLAYER_TARGET"] = {},
 		
 		--data
 			["DETAILS_DATA_RESET"] = {},
@@ -121,6 +122,7 @@ local common_events = {
 	["COMM_EVENT_SENT"] = true,
 	["UNIT_SPEC"] = true,
 	["UNIT_TALENTS"] = true,
+	["PLAYER_TARGET"] = true,
 
 }
 

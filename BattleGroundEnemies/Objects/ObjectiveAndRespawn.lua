@@ -77,7 +77,7 @@ local objectiveAndRespawn = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"ShouldQueryAuras", "CareAboutThisAura", "BeforeFullAuraUpdate", "NewAura", "UnitDied", "ArenaOpponentShown", "ArenaOpponentHidden"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 function objectiveAndRespawn:AttachToPlayerButton(playerButton)
@@ -217,7 +217,7 @@ function objectiveAndRespawn:AttachToPlayerButton(playerButton)
 
 	function frame:ArenaOpponentShown()
 		if BattleGroundEnemies.BattlegroundBuff then
-			--BattleGroundEnemies:Debug(self:Getframe().PlayerName, "has buff")
+			--BattleGroundEnemies:Debug(self:Getframe().PlayerDetails.PlayerName, "has buff")
 			self.Icon:SetTexture(GetSpellTexture(BattleGroundEnemies.BattlegroundBuff[playerButton.PlayerIsEnemy and BattleGroundEnemies.EnemyFaction or BattleGroundEnemies.AllyFaction]))
 			self:Show()
 		end

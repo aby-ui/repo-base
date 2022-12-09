@@ -5038,6 +5038,10 @@ detailsFramework.HeaderFunctions = {
 		tinsert(self.FramesToAlign, frame)
 	end,
 
+	GetFramesFromHeaderAlignment = function(self, frame)
+		return self.FramesToAlign or {}
+	end,
+
 	--@self: an object like a line
 	--@headerFrame: the main header frame
 	--@anchor: which side the columnHeaders are attach
@@ -6014,13 +6018,15 @@ function detailsFramework:OpenLoadConditionsPanel(optionsTable, callback, frameO
 			if IS_WOW_PROJECT_MAINLINE then
 				local talentList = {}
 				for _, talentTable in ipairs(detailsFramework:GetCharacterTalents()) do
-					tinsert(talentList, {
-						name = talentTable.Name,
-						set = loadConditionsFrame.OnRadioCheckboxClick,
-						param = talentTable.ID,
-						get = function() return loadConditionsFrame.OptionsTable.talent [talentTable.ID] or loadConditionsFrame.OptionsTable.talent [talentTable.ID .. ""] end,
-						texture = talentTable.Texture,
-					})
+					if talentTable.ID then
+						tinsert(talentList, {
+							name = talentTable.Name,
+							set = loadConditionsFrame.OnRadioCheckboxClick,
+							param = talentTable.ID,
+							get = function() return loadConditionsFrame.OptionsTable.talent [talentTable.ID] or loadConditionsFrame.OptionsTable.talent [talentTable.ID .. ""] end,
+							texture = talentTable.Texture,
+						})
+					end
 				end
 				local talentGroup = detailsFramework:CreateCheckboxGroup (loadConditionsFrame, talentList, name, {width = 200, height = 200, title = "Characer Talents"}, {offset_x = 150, amount_per_line = 3})
 				talentGroup:SetPoint("topleft", loadConditionsFrame, "topleft", anchorPositions.talent [1], anchorPositions.talent [2])
@@ -6317,13 +6323,15 @@ function detailsFramework:OpenLoadConditionsPanel(optionsTable, callback, frameO
 				--update the talents (might have changed if the player changed its specialization)
 				local talentList = {}
 				for _, talentTable in ipairs(detailsFramework:GetCharacterTalents()) do
-					tinsert(talentList, {
-						name = talentTable.Name,
-						set = DetailsFrameworkLoadConditionsPanel.OnRadioCheckboxClick,
-						param = talentTable.ID,
-						get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID] or DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID .. ""] end,
-						texture = talentTable.Texture,
-					})
+					if talentTable.ID then
+						tinsert(talentList, {
+							name = talentTable.Name,
+							set = DetailsFrameworkLoadConditionsPanel.OnRadioCheckboxClick,
+							param = talentTable.ID,
+							get = function() return DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID] or DetailsFrameworkLoadConditionsPanel.OptionsTable.talent [talentTable.ID .. ""] end,
+							texture = talentTable.Texture,
+						})
+					end
 				end
 				DetailsFrameworkLoadConditionsPanel.TalentGroup:SetOptions (talentList)
 			end

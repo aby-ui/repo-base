@@ -241,6 +241,13 @@ do
 				[387036] = {name = GetSpellInfo(387036) .. formatTextForItem(193748)}, --trinket: Kyrakka's Searing Embers (heal)
 				[397376] = {name = GetSpellInfo(397376) .. formatTextForItem(193748), isPassive = true, itemId = 193748}, --trinket: Kyrakka's Searing Embers (damage)
 				--[] = {name = GetSpellInfo() .. formatTextForItem(193757), isPassive = true}, --trinket: Ruby Whelp Shell
+
+				[214985] = {name = GetSpellInfo(214985) .. formatTextForItem(137486)}, --trinket: Windscar Whetstone
+				[384004] = {name = GetSpellInfo(384004) .. formatTextForItem(193815)}, --trinket: Homeland Raid Horn
+				--[] = {name = GetSpellInfo() .. formatTextForItem()}, --trinket: Mutated Magmammoth Scale - did no proc
+
+				--/dump C_Item.GetItemNameByID(137486) --to check an item
+				--default tooltip script gets the item id
 			}
 
 			for spellId, spellCustomization in pairs(dragonflightTrinkets) do

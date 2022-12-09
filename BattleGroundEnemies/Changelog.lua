@@ -2,6 +2,40 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.2.4",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fixed the flickering health bar.",
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"The addon will now check for up to 15 arena unitIDs, this is helpful in the Arena Brawl Packed House.",
+				}
+			},
+		}
+	},
+	{
+		Version = "10.0.2.3",
+		Sections = {
+			{
+				Header = "Bugfixes:",
+				Entries = {
+					"Fix for the brawl Packed House.",
+				}
+			},
+			{
+				Header = "Changes:",
+				Entries = {
+					"Reworked the way the addon handles player updates from diferent player sources. The addon now stores data from all that sources and combines them to create player bars. This also fixes the addon in the brawl Packed House."
+				}
+			},
+		}
+	},
+	{
 		Version = "10.0.2.2",
 		Sections = {
 			{
@@ -22,7 +56,7 @@ Data.changelog = {
 				Entries = {
 					"Added racials Bag of Tricks, Fireblood, Light's Judgment, Bull Rush, Haymaker and Arcane Pulse",
 					"The addon will now also show auras without a duration in the highest priority module.",
-					"The addon will now use the scoreboard info the show the player names in the prep room before the first round starts when in a solo shuffle"
+					"The addon will now use the scoreboard info to show the player names in the prep room before the first round starts when in a solo shuffle"
 				}
 			},
 			{

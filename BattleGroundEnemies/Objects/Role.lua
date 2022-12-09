@@ -26,7 +26,7 @@ local role = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = nil,
 	events = {"PlayerDetailsChanged"},
-	expansions = {WOW_PROJECT_MAINLINE}
+	enabledInThisExpansion = not not GetSpecializationRole
 })
 
 function role:AttachToPlayerButton(playerButton)
@@ -38,10 +38,14 @@ function role:AttachToPlayerButton(playerButton)
 		self:PlayerDetailsChanged()
 	end
 
-	playerButton.Role.PlayerDetailsChanged = function(self)
-		if playerButton.PlayerSpecName then
-			self.Icon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
-			self.Icon:SetTexCoord(GetTexCoordsForRoleSmallCircle(playerButton.PlayerRoleID))
+	playerButton.Role.PlayerDetailsChanged = function(self, playerDetails)
+		if not playerDetails then return end
+		local specData = playerButton:GetSpecData()
+		if specData then
+			if specData.roleID then
+				self.Icon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
+				self.Icon:SetTexCoord(GetTexCoordsForRoleSmallCircle(specData.roleID))
+			end
 		end
 	end
 end

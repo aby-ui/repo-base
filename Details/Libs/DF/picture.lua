@@ -300,7 +300,7 @@ detailsFramework:Mixin(ImageMetaFunctions, detailsFramework.ScriptHookMixin)
 		if (texture) then
 			if (type(texture) == "table") then
 				if (texture.gradient) then
-					if (detailsFramework.IsDragonflight() or ImageObject.image.SetGradient) then
+					if (detailsFramework.IsDragonflight() or detailsFramework.IsWotLKWowWithRetailAPI()) then
 						ImageObject.image:SetColorTexture(1, 1, 1, 1)
 						local fromColor = detailsFramework:FormatColor("tablemembers", texture.fromColor)
 						local toColor = detailsFramework:FormatColor("tablemembers", texture.toColor)

@@ -7,7 +7,6 @@ local unitFrameData = {
 	--	[3] = UnitId key
 	--	[4] = Delay
 	--	[5] = Number of frames
-
 	{
 		[1] = "VuhDo",
 		[2] = "Vd%dH", -- panel#
@@ -120,35 +119,36 @@ local unitFrameData = {
 		[4] = 1,
 		[5] = 5,
 	},
-	-- pre v12.85
---	{
---		[1] = "ElvUI-Raid",
---		[2] = "ElvUF_RaidGroup%dUnitButton",
---		[3] = "unit",
---		[4] = 1,
---		[5] = 5,
---	},
---	{
---		[1] = "ElvUI-Raid-RWS", -- 'Raid Wide Sorting'
---		[2] = "ElvUF_RaidGroup1UnitButton",
---		[3] = "unit",
---		[4] = 1,
---		[5] = 40,
---	},
---	{
---		[1] = "ElvUI-Raid40",
---		[2] = "ElvUF_Raid40Group%dUnitButton",
---		[3] = "unit",
---		[4] = 1,
---		[5] = 5,
---	},
---	{
---		[1] = "ElvUI-Raid40-RWS",
---		[2] = "ElvUF_Raid40Group1UnitButton",
---		[3] = "unit",
---		[4] = 1,
---		[5] = 40,
---	},
+	--[[ pre v12.85
+	{
+		[1] = "ElvUI-Raid",
+		[2] = "ElvUF_RaidGroup%dUnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 5,
+	},
+	{
+		[1] = "ElvUI-Raid-RWS", -- 'Raid Wide Sorting'
+		[2] = "ElvUF_RaidGroup1UnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40,
+	},
+	{
+		[1] = "ElvUI-Raid40",
+		[2] = "ElvUF_Raid40Group%dUnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 5,
+	},
+	{
+		[1] = "ElvUI-Raid40-RWS",
+		[2] = "ElvUF_Raid40Group1UnitButton",
+		[3] = "unit",
+		[4] = 1,
+		[5] = 40,
+	},
+	]]
 	{
 		[1] = "Tukui",
 		[2] = "TukuiPartyUnitButton",
@@ -276,7 +276,7 @@ local unitFrameData = {
 		[4] = 1,
 		[5] = 40
 	},
-	{ -- doesn't have any party/raid frames ?
+	{ -- doesn't have any party/raid frames?
 		[1] = "oUF_Ruri",
 		[2] = "oUF_Raid%dUnitButton",
 		[3] = "unit",
@@ -294,7 +294,7 @@ function E:SetActiveUnitFrameData()
 			customUF.delay = data.delay
 			customUF.frames = data.frames
 		end
-		customUF.active = data and data.addonName -- nil for Blizzard
+		customUF.active = data and data.addonName -- Niled for Blizzard
 	end
 end
 
@@ -357,13 +357,13 @@ function E:UnitFrames()
 		end
 
 		self:SetActiveUnitFrameData()
+		self:SetPixelMult() -- do after loading addons
 
-		-- Full UI's scale UIParent
-		self:SetPixelMult()
-
+		--[[ informative, but still a nag
 		if not self.global.disableElvMsg then
 			--self.StaticPopup_Show("OMNICD_CUSTOM_UF_MSG")
 		end
+		]]
 	end
 end
 
@@ -371,6 +371,9 @@ function E:Counters()
 	if IsAddOnLoaded("OmniCC") or IsAddOnLoaded("tullaCC") then
 		self.OmniCC = true
 	end
+	self.RegisterCooldown = not E.OmniCC and ElvUI and ElvUI[1]
+		and type(ElvUI[1].CooldownEnabled) == "function" and ElvUI[1]:CooldownEnabled()
+		and type(ElvUI[1].RegisterCooldown) == "function" and ElvUI[1].RegisterCooldown
 end
 
 function E:LoadAddOns()

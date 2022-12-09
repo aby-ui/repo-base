@@ -1,21 +1,25 @@
 ## Interface: 100002
 ## Title: OmniCD
-## Version: 10.0.2.2731
+## Version: 10.0.2.2732
 ## Author: Treebonker
 ## Notes: Tracks party cooldowns. Use /oc or /omnicd to open options
 ## X-Credits:
 ## X-License: All Rights Reserved
-## X-Localizations: enUS, esES, frFR, koKR, ruRU, zhCN, zhTW
+## X-Localizations: enUS, deDE, esES, frFR, koKR, ruRU, zhCN, zhTW
 ## X-Website: https://www.curseforge.com/wow/addons/omnicd
 ## DefaultState: Enabled
 ## SavedVariables: OmniCDDB
 
-Libs\embeds.xml
+Libs\Embeds.xml
 Locales\locales.xml
-Core\init.lua
-Core\core.xml
-Modules\modules.xml
-Config\config.xml
+Core\Core.xml
+Modules\Spells\Core.lua
+Modules\Spells\Spells_Mainline.lua
+Modules\Spells\Azerite.lua
+Modules\Spells\Covenant.lua
+Modules\Spells\Modifiers_Mainline.lua
+Modules\Modules.xml
+Config\Config.xml
 
 
 ## Title: |cff880303[爱不易]|r OmniCD队友冷却监控

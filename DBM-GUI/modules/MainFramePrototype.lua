@@ -1,7 +1,7 @@
 local L = DBM_GUI_L
 
 local isRetail = WOW_PROJECT_ID == (WOW_PROJECT_MAINLINE or 1)
-local isDragonflight = DBM:GetTOC() > 100000--Purposely left this way, wrath 3.4.1 doesn't like changes in THIS file
+local isModernAPI = DBM:GetTOC() > 100000--Purposely left this way, wrath 3.4.1 doesn't like changes in THIS file
 
 local DDM = _G["LibStub"]:GetLibrary("LibDropDownMenu")
 
@@ -269,9 +269,9 @@ function frame:CreateTab(tab)
 	if i == 1 then
 		button:SetPoint("TOPLEFT", self:GetName(), 20, -18)
 	else
-		button:SetPoint("TOPLEFT", "DBM_GUI_OptionsFrameTab" .. (i - 1), "TOPRIGHT", isDragonflight and 5 or -15, 0)
+		button:SetPoint("TOPLEFT", "DBM_GUI_OptionsFrameTab" .. (i - 1), "TOPRIGHT", isModernAPI and 5 or -15, 0)
 	end
-	if isDragonflight then
+	if isModernAPI then
 		button:HookScript("OnShow", function()
 			_G[button:GetName() .. "Middle"]:SetWidth(buttonText:GetWidth())
 			_G[button:GetName() .. "MiddleDisabled"]:SetWidth(buttonText:GetWidth())

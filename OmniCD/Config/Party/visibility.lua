@@ -18,7 +18,6 @@ local visibility = {
 			type = "multiselect",
 			width = "full",
 			values = E.L_ALL_ZONE,
-
 			get = function(_, k) return E.profile.Party.visibility[k] end,
 			set = function(_, k, value)
 				E.profile.Party.visibility[k] = value

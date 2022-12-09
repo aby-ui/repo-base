@@ -44,7 +44,7 @@ local spec_HighestActivePriority = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"ShouldQueryAuras", "CareAboutThisAura", "BeforeFullAuraUpdate", "NewAura", "AfterFullAuraUpdate", "GotInterrupted", "UnitDied"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 

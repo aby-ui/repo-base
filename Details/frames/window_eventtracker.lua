@@ -239,7 +239,7 @@ function Details:CreateEventTrackerFrame(parent, name)
 		local f = CreateFrame("frame", name, parent or UIParent,"BackdropTemplate")
 		f:SetPoint("center", UIParent, "center")
 
-		if (not DetailsFramework.IsDragonflight()) then
+		if (not DetailsFramework.IsDragonflight() and not DetailsFramework.IsWotLKWowWithRetailAPI()) then
 			f:SetMinResize (150, 40)
 			f:SetMaxResize (800, 1024)
 		else

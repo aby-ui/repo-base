@@ -1,6 +1,8 @@
 local E = select(2, ...):unpack()
 local P = E.Party
 
+local MIN_RESET_DURATION = E.TocVersion > 90100 and 120 or 180
+
 function P:ResetCooldown(icon)
 	local info = self.groupInfo[icon.guid]
 	if not info then
@@ -29,11 +31,10 @@ function P:ResetCooldown(icon)
 	if maxcharges and currCharges and currCharges + 1 < maxcharges then
 		currCharges = currCharges + 1
 		icon.count:SetText(currCharges)
-		icon.cooldown:SetDrawSwipe(false)
-		icon.cooldown:SetHideCountdownNumbers(true)
 		active.charges = currCharges
+		P:SetCooldownElements(icon, currCharges)
 
-		local castingBar = statusBar and not E.db.extraBars[statusBar.key].nameBar and currCharges == 1 and stautsBar.castingBar
+		local castingBar = statusBar and not E.db.extraBars[statusBar.key].nameBar and currCharges == 1 and statusBar.castingBar
 		if castingBar then
 			local rechargeColor, rechargeBGColor, rechargeTextColor = self.CastingBarFrame_GetEffectiveStartColor(castingBar, true)
 			castingBar:SetStatusBarColor(rechargeColor:GetRGBA())
@@ -42,14 +43,13 @@ function P:ResetCooldown(icon)
 		end
 	else
 		icon.cooldown:Clear()
-
 		if statusBar then
 			self.OmniCDCastingBarFrame_OnEvent(statusBar.CastingBar, 'UNIT_SPELLCAST_FAILED')
 		end
 	end
 end
 
-function P:UpdateCooldown(icon, reducedTime, auraMult, isSpaghetti)
+function P:UpdateCooldown(icon, reducedTime, auraMult, isDFSpaghetti)
 	local info = self.groupInfo[icon.guid]
 	if not info then
 		return
@@ -69,12 +69,9 @@ function P:UpdateCooldown(icon, reducedTime, auraMult, isSpaghetti)
 
 
 
-
-
-	if not isSpaghetti then
+	if not E.isBFA and not isDFSpaghetti then
 		reducedTime = reducedTime * modRate
 	end
-
 
 	local now = GetTime()
 	if auraMult then
@@ -84,9 +81,7 @@ function P:UpdateCooldown(icon, reducedTime, auraMult, isSpaghetti)
 		reducedTime = reducedTime * auraMult
 	end
 
-
 	startTime = startTime - reducedTime
-
 
 	if active.charges then
 		local queuedCdrOnRecharge = now - startTime - duration
@@ -94,7 +89,6 @@ function P:UpdateCooldown(icon, reducedTime, auraMult, isSpaghetti)
 			active.queuedCdrOnRecharge = queuedCdrOnRecharge
 		end
 	end
-
 
 	icon.cooldown:SetCooldown(startTime, duration, modRate)
 	active.startTime = startTime
@@ -113,6 +107,9 @@ function P:SetCooldownElements(icon, charges)
 	icon.cooldown:SetHideCountdownNumbers(noCount)
 	if E.OmniCC then
 		icon.cooldown.noCooldownCount = noCount
+	elseif icon.cooldown.timer then
+		icon.cooldown.timer:SetShown(not noCount)
+		icon.cooldown.timer.forceDisabled = noCount
 	end
 end
 
@@ -133,18 +130,24 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 
 	local spellID = icon.spellID
 	info.active[spellID] = info.active[spellID] or {}
+
 	local active = info.active[spellID]
 	local currCharges = active.charges or icon.maxcharges
-
 	local now = GetTime()
 
-
-	local modRate = E.BOOKTYPE_CATEGORY[icon.category] and info.modRate or 1
-
-	if spellID == 329042 and info.callbackTimers[spellID] then
-		modRate = modRate * 5
+	if info.auras.isGlimpseOfClarity then
+		cd = cd - 3
 	end
 
+	local modRate = (E.BOOKTYPE_CATEGORY[icon.category] or E.spaghettiFix[spellID]) and info.modRate or 1
+
+	if info.callbackTimers[spellID] then
+		if spellID == 378441 then
+			modRate = modRate * .01
+		elseif spellID == 329042 then
+			modRate = modRate * 5
+		end
+	end
 
 	local spellModRate = info.spellModRates[spellID]
 	if spellModRate then
@@ -154,16 +157,18 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 
 	cd = cd * modRate
 
-
 	local auraMult = E.spell_cdmod_by_aura_mult[spellID]
 	if auraMult then
-		local auraKeyOrID = auraMult[2]
-		if info.auras[auraKeyOrID] then
-			local mult = not auraMult[1] and info.auras[auraKeyOrID] or auraMult[1]
-			if type(mult) ~= "number" or mult == 0 then
-				return
+		for i = 1, #auraMult, 2 do
+			local auraKeyOrID = auraMult[i + 1]
+			if info.auras[auraKeyOrID] then
+				local mult = auraMult[i]
+				if mult == 0 then
+					return
+				end
+				mult = mult or info.auras[auraKeyOrID]
+				cd = cd * mult
 			end
-			cd = cd * mult
 		end
 	end
 
@@ -247,17 +252,15 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 	end
 
 	if E.isBFA and icon.guid == E.userGUID and self.isInPvPInstance and spellID == info.talentData["essStrivedPvpID"] then
-		E.TimerAfter(2, CM.SendStrivePvpTalentCD, spellID)
+		E.TimerAfter(2, E.Comm.SendStrivePvpTalentCD, spellID)
 	end
 end
 
 
-local minResetDuration = E.TocVersion > 90100 and 120 or 180
-
 function P:ResetAllIcons(reason)
 	for guid, info in pairs(self.groupInfo) do
 		for spellID, icon in pairs(info.spellIcons) do
-			if reason ~= "encounterEnd" or (not E.spell_noreset_onencounterend[spellID] and icon.duration >= minResetDuration) then
+			if reason ~= "encounterEnd" or (not E.spell_noreset_onencounterend[spellID] and icon.duration >= MIN_RESET_DURATION) then
 				local statusBar = icon.statusBar
 				if icon.active then
 
@@ -298,7 +301,7 @@ function P:ResetAllIcons(reason)
 		end
 
 		for _, timer in pairs(info.callbackTimers) do
-			if type(timer) == "function" then
+			if type(timer) == "table" then
 				timer:Cancel()
 			end
 		end

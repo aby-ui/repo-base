@@ -66,7 +66,7 @@ local name = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"PlayerDetailsChanged"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 
@@ -74,7 +74,8 @@ function name:AttachToPlayerButton(playerButton)
 	playerButton.Name = BattleGroundEnemies.MyCreateFontString(playerButton)
 
 	function playerButton.Name:SetName()
-		local playerName = playerButton.PlayerName
+		if not playerButton.PlayerDetails then return end
+		local playerName = playerButton.PlayerDetails.PlayerName
 		if not playerName then return end
 
 		local name, realm = strsplit( "-", playerName, 2)
@@ -108,7 +109,7 @@ function name:AttachToPlayerButton(playerButton)
 		self.DisplayedName = name
 	end
 
-	function playerButton.Name:PlayerDetailsChanged()
+	function playerButton.Name:PlayerDetailsChanged(playerDetails)
 		self:SetName()
 	end
 

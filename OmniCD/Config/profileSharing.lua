@@ -1,7 +1,7 @@
 local E, L, C = select(2, ...):unpack()
 local PS = E.ProfileSharing
 
--- ERRORS: 69:33: invalid escape sequence '\`'
+
 
 local selectedProfileType, selectedProfileSrc, selectedProfileDest
 local selectedProfileZone, selectedProfileOption
@@ -73,7 +73,6 @@ local ProfileSharing = {
 					name = L["Import"],
 					order = 3,
 					type = "execute",
-
 					func = function() PS:ShowProfileDialog(nil) end,
 				},
 			}
@@ -158,6 +157,7 @@ local ProfileSharing = {
 						else
 							local t = OmniCDDB.profiles[src].Party[selectedProfileZone] and OmniCDDB.profiles[src].Party[selectedProfileZone][selectedProfileOption]
 							if t then
+								OmniCDDB.profiles[dest].Party = OmniCDDB.profiles[dest].Party or {}
 								OmniCDDB.profiles[dest].Party[selectedProfileZone] = OmniCDDB.profiles[dest].Party[selectedProfileZone] or {}
 								OmniCDDB.profiles[dest].Party[selectedProfileZone][selectedProfileOption] = E:DeepCopy(t)
 							end

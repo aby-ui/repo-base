@@ -349,11 +349,21 @@ local extraBarsInfo = {
 					order = 21,
 					type = "toggle",
 				},
+				invertNameBar = {
+					disabled = function(info)
+						local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
+						return not db.enabled or not db.progressBar or db.layout == "horizontal" or not db.nameBar
+					end,
+					name = L["Invert Name Bar"],
+					desc = L["Attach Name Bar to the left of icon"],
+					order = 22,
+					type = "toggle",
+				},
 				reverseFill = {
 					disabled = isDisabledOrNameBar,
 					name = L["Reverse Fill"],
 					desc = L["Timer will progress from right to left"],
-					order = 22,
+					order = 23,
 					type = "toggle",
 				},
 				hideSpark = {
@@ -361,6 +371,13 @@ local extraBarsInfo = {
 					name = L["Hide Spark"],
 					desc = L["Hide the leading spark texture."],
 					order = 24,
+					type = "toggle",
+				},
+				hideBorder = {
+					disabled = isDisabledOrNameBar,
+					name = L["Hide Border"],
+					desc = L["Hide status bar border"],
+					order = 25,
 					type = "toggle",
 				},
 				showInterruptedSpell = {
@@ -400,13 +417,13 @@ local extraBarsInfo = {
 					name = L["Name Offset X"],
 					order = 32,
 					type = "range",
-					min = 1, max = 20, step = 1,
+					min = 1, max = 30, step = 1,
 				},
 				textOfsY = {
 					name = L["Name Offset Y"],
 					order = 33,
 					type = "range",
-					min = -6, max = 6, step = 1,
+					min = -10, max = 10, step = 1,
 				},
 				truncateStatusBarName = {
 					name = L["Truncate Name"],
@@ -524,20 +541,22 @@ function P:ConfigExBar(key, arg)
 		elseif arg == "barColors" or arg == "bgColors" or arg == "textColors" or arg == "reverseFill" or arg == "hideSpark" then
 			self.CastingBarFrame_OnLoad(statusBar.CastingBar, db, icon)
 			self:SetExStatusBarColor(icon, key)
-		elseif arg == "statusBarWidth" or arg == "textOfsX" or arg == "textOfsY" then
+		elseif arg == "statusBarWidth" or arg == "textOfsX" or arg == "textOfsY" or arg == "invertNameBar" then
 			self:SetExStatusBarWidth(statusBar, key)
+		elseif arg == "hideBorder" then
+			P:SetExBorder(icon, key)
 		elseif arg == "nameBar" then
 			self:SetExBorder(icon, key)
 			self.CastingBarFrame_OnLoad(statusBar.CastingBar, db, icon)
 			self:SetExStatusBarColor(icon, key)
-			self:SetSwipe(icon)
-			self:SetCounter(icon)
+			self:SetSwipeCounter(icon)
+			self:SetExStatusBarWidth(statusBar, key)
 		end
 	end
 
 	local sortOrder = arg == "sortBy" or arg == "growUpward" or arg == "sortDirection" or arg == "layout" or arg == "growLeft"
 	if sortOrder or arg == "progressBar" or arg == "columns" or arg == "paddingX" or arg == "paddingY"
-		or arg == "statusBarWidth" or arg == "groupPadding" or arg == "groupDetached" then
+		or arg == "statusBarWidth" or arg == "groupPadding" then
 		self:UpdateExBarPositionValues()
 		self:SetExIconLayout(key, true, sortOrder, true)
 	end
@@ -572,6 +591,7 @@ function P:ConfigExSize(key, slider)
 		end
 	end
 end
+
 
 
 function P:SetExAnchor(key)
@@ -648,25 +668,36 @@ function P:SetExBorder(icon, key)
 	end
 
 	local statusBar = icon.statusBar
-	if shouldShowProgressBar and not db.nameBar then
-		statusBar:EnableDrawLayer("BORDER")
-		statusBar.borderTop:ClearAllPoints()
-		statusBar.borderBottom:ClearAllPoints()
-		statusBar.borderRight:ClearAllPoints()
-		statusBar.borderTop:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
-		statusBar.borderTop:SetPoint("BOTTOMRIGHT", statusBar, "TOPRIGHT", 0, -edgeSize)
-		statusBar.borderBottom:SetPoint("BOTTOMLEFT", statusBar, "BOTTOMLEFT")
-		statusBar.borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
-		statusBar.borderRight:SetPoint("TOPRIGHT", statusBar.borderTop, "BOTTOMRIGHT")
-		statusBar.borderRight:SetPoint("BOTTOMLEFT", statusBar.borderBottom, "TOPRIGHT", -edgeSize, 0)
-		statusBar.borderTop:SetColorTexture(r, g, b)
-		statusBar.borderBottom:SetColorTexture(r, g, b)
-		statusBar.borderRight:SetColorTexture(r, g, b)
-		statusBar.borderTop:Show()
-		statusBar.borderBottom:Show()
-		statusBar.borderRight:Show()
-	elseif shouldShowProgressBar then
-		statusBar:DisableDrawLayer("BORDER")
+	if shouldShowProgressBar then
+		if db.nameBar then
+			statusBar:DisableDrawLayer("BORDER")
+		else
+			statusBar:EnableDrawLayer("BORDER")
+			statusBar.borderTop:ClearAllPoints()
+			statusBar.borderBottom:ClearAllPoints()
+			statusBar.borderRight:ClearAllPoints()
+			statusBar.borderTop:SetPoint("TOPLEFT", statusBar, "TOPLEFT")
+			statusBar.borderTop:SetPoint("BOTTOMRIGHT", statusBar, "TOPRIGHT", 0, -edgeSize)
+			statusBar.borderBottom:SetPoint("BOTTOMLEFT", statusBar, "BOTTOMLEFT")
+			statusBar.borderBottom:SetPoint("TOPRIGHT", statusBar, "BOTTOMRIGHT", 0, edgeSize)
+			statusBar.borderRight:SetPoint("TOPRIGHT", statusBar.borderTop, "BOTTOMRIGHT")
+			statusBar.borderRight:SetPoint("BOTTOMLEFT", statusBar.borderBottom, "TOPRIGHT", -edgeSize, 0)
+			statusBar.borderTop:SetColorTexture(r, g, b)
+			statusBar.borderBottom:SetColorTexture(r, g, b)
+			statusBar.borderRight:SetColorTexture(r, g, b)
+			if db.hideBorder then
+				statusBar.borderTop:Hide()
+				statusBar.borderBottom:Hide()
+				statusBar.borderRight:Hide()
+			else
+				statusBar.borderTop:SetColorTexture(r, g, b)
+				statusBar.borderBottom:SetColorTexture(r, g, b)
+				statusBar.borderRight:SetColorTexture(r, g, b)
+				statusBar.borderTop:Show()
+				statusBar.borderBottom:Show()
+				statusBar.borderRight:Show()
+			end
+		end
 	end
 end
 
@@ -688,7 +719,13 @@ end
 function P:SetExStatusBarWidth(statusBar, key)
 	local db = E.db.extraBars[key]
 	statusBar:SetWidth(db.statusBarWidth)
-	statusBar.Text:SetPoint("LEFT", statusBar, db.textOfsX, db.textOfsY)
+
+	statusBar.Text:ClearAllPoints()
+	if db.nameBar and db.invertNameBar then
+		statusBar.Text:SetPoint("RIGHT", statusBar.icon, "LEFT", -db.textOfsX, db.textOfsY)
+	else
+		statusBar.Text:SetPoint("LEFT", statusBar, db.textOfsX, db.textOfsY)
+	end
 	statusBar.CastingBar.Text:SetPoint("LEFT", statusBar.CastingBar, db.textOfsX, db.textOfsY)
 	statusBar.CastingBar.Timer:SetPoint("RIGHT", statusBar.CastingBar, -3, db.textOfsY)
 end

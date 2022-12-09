@@ -94,6 +94,11 @@ GTFO.SpellID["370042"] = {
   sound = 1;
 };
 
+GTFO.SpellID["388759"] = {
+  --desc = "Blazing Trail (Cobalt Assembly)";
+  sound = 1;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************
@@ -250,6 +255,16 @@ GTFO.SpellID["376149"] = {
   sound = 1;
 };
 
+GTFO.SpellID["372141"] = {
+  --desc = "Withering Away! (Wilted Oak)";
+  sound = 1;
+};
+
+GTFO.SpellID["378054"] = {
+  --desc = "Withering Away! (Treemouth)";
+  sound = 1;
+};
+
 
 --- *********************
 --- * Halls of Infusion *
@@ -264,6 +279,11 @@ GTFO.SpellID["393444"] = {
 
 GTFO.SpellID["389181"] = {
   --desc = "Power Field (Watcher Irideus)";
+  sound = 1;
+};
+
+GTFO.SpellID["375080"] = {
+  --desc = "Whirling Fury (Squallbringer Cyraz)";
   sound = 1;
 };
 
@@ -314,7 +334,12 @@ GTFO.SpellID["387932"] = {
   --desc = "Astral Whirlwind (Algeth'ar Echoknight)";
   applicationOnly = true;
   sound = 1;
-  test = true;
+};
+
+GTFO.SpellID["389007"] = {
+  --desc = "Wild Energy (Echo of Doragosa)";
+  applicationOnly = true;
+  sound = 1;
 };
 
 --- *************
@@ -346,9 +371,29 @@ GTFO.SpellID["375204"] = {
 	sound = 1;
 };
 
+GTFO.SpellID["375535"] = {
+  --desc = "Lava Wave (Magmatusk)";
+  sound = 1;
+};
+
 GTFO.SpellID["377542"] = {
 	--desc = "Burning Ground (Warlord Sargha)";
 	sound = 1;
+};
+
+GTFO.SpellID["373756"] = {
+  --desc = "Magma Wave (Chargath, Bane of Scales)";
+  sound = 1;
+};
+
+GTFO.SpellID["374854"] = {
+  --desc = "Erupted Ground (Chargath, Bane of Scales)";
+  sound = 1;
+};
+
+GTFO.SpellID["381482"] = {
+  --desc = "Forgefire (Forgemaster Gorek)";
+  sound = 1;
 };
 
 
@@ -368,6 +413,11 @@ GTFO.SpellID["371021"] = {
   test = true; -- Does this work?
 };
 
+GTFO.SpellID["374523"] = {
+  --desc = "Stinging Sap (Ley-Line Sprout)";
+  sound = 1;
+};
+
 GTFO.SpellID["391120"] = {
   --desc = "Spellfrost Breath (Scalebane Lieutenant)";
   sound = 1;
@@ -384,9 +434,26 @@ GTFO.SpellID["385267"] = {
   sound = 1;
 };
 
+GTFO.SpellID["387152"] = {
+  --desc = "Icy Devastator (Telash Greywing)";
+  sound = 4;
+  negatingDebuffSpellID = 387151; -- Icy Devastator
+  negatingIgnoreTime = 4;
+};
+
 --- **************************
 --- * Uldaman: Legacy of Tyr *
 --- **************************
+
+GTFO.SpellID["377825"] = {
+  --desc = "Burning Pitch";
+  sound = 1;
+};
+
+GTFO.SpellID["369610"] = {
+  --desc = "Shocking Quake (Quaking Totem)";
+  sound = 2;
+};
 
 GTFO.SpellID["369337"] = {
   --desc = "Difficult Terrain (Runic Protector)";
@@ -396,6 +463,11 @@ GTFO.SpellID["369337"] = {
 
 GTFO.SpellID["382576"] = {
   --desc = "Scorn of Tyr (Earthen Guardian)";
+  sound = 1;
+};
+
+GTFO.SpellID["368996"] = {
+  --desc = "Purging Flames (Emberon)";
   sound = 1;
 };
 

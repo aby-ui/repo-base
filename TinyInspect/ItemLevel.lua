@@ -539,6 +539,7 @@ local function ChatItemLevel(Hyperlink)
     end
     local Origin = Hyperlink; local yes = true --level added to link
     local link = string.match(Hyperlink, "|H(.-)|h")
+    local professQuality = string.match(Hyperlink, "|h%[.-( |A.-|a)%]|h") or ""
     local count, level, name, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
     --local name, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
     --local level = GetDetailedItemLevelInfo(link)
@@ -564,6 +565,7 @@ local function ChatItemLevel(Hyperlink)
 	        end
 	        local gem = string.rep("|TInterface\\ItemSocketingFrame\\UI-EmptySocket-Prismatic:0|t", n)
             local corrupt = ""
+            --[[
             if IsCorruptedItem(link) then
                 corrupt = "|T3004126:0|t"
                 if U1GetCorruptionInfo then
@@ -573,8 +575,9 @@ local function ChatItemLevel(Hyperlink)
             else
                 corrupt = IsCorruptedItem(link) and "|T3004126:0|t" or ""
             end
+            --]]
 	        if (quality == 6 and class == WEAPON) then gem = "" end
-            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name.."]|h")..gem..corrupt.." "
+            Hyperlink = Hyperlink:gsub("|h%[(.-)%]|h", "|h["..level..":"..name..professQuality.."]|h")..gem..corrupt.." "
         end
         Caches[Origin] = Hyperlink
     elseif (subclass and subclass == MOUNTS) then

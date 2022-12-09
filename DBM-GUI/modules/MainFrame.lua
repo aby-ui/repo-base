@@ -24,10 +24,10 @@ frame:SetClampedToScreen(true)
 frame:SetUserPlaced(true)
 frame:RegisterForDrag("LeftButton")
 frame:SetFrameLevel(frame:GetFrameLevel() + 4)
-if DBM:GetTOC() < 30401 then -- Is live or Wrath Phase 2 patch
+if DBM:GetTOC() < 30401 then -- Legacy API
 	frame:SetMinResize(800, 400)
 	frame:SetMaxResize(UIParent:GetWidth(), UIParent:GetHeight())
-else -- Is DragonFlight
+else -- Is Modern API
 	frame:SetResizeBounds(800, 400, UIParent:GetWidth(), UIParent:GetHeight())
 end
 frame:Hide()

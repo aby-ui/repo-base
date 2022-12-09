@@ -286,13 +286,11 @@ function E:SetupOptions()
 	self.optionsFrames.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.DB)
 	self.optionsFrames.profiles.order = 1000
 
-
-
-
-
-
-
-
+	if not self.preCata then
+		local LDS = LibStub("LibDualSpec-1.0")
+		LDS:EnhanceDatabase(self.DB, "OmniCDDB")
+		LDS:EnhanceOptions(self.optionsFrames.profiles, self.DB)
+	end
 
 	self.SetupOptions = nil
 end

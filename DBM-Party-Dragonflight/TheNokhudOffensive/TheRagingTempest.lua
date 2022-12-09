@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2497, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221203231852")
+mod:SetRevision("20221207232203")
 mod:SetCreatureID(186615)
 mod:SetEncounterID(2636)
 --mod:SetUsedIcons(1, 2, 3)
@@ -12,9 +12,9 @@ mod:SetHotfixNoticeRev(20221029000000)
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 384316 384620 384686",
+	"SPELL_CAST_START 384316 384620 384686"
 --	"SPELL_CAST_SUCCESS",
-	"SPELL_AURA_APPLIED 384686"
+--	"SPELL_AURA_APPLIED 384686"
 --	"SPELL_AURA_APPLIED_DOSE",
 --	"SPELL_AURA_REMOVED",
 --	"SPELL_PERIODIC_DAMAGE",
@@ -23,6 +23,7 @@ mod:RegisterEventsInCombat(
 )
 
 --TODO, do anything with Electrical Overload? I don't see much to do with it at mod level
+--TODO, log with transcriptoir and figure out how to alert new balls incoming to be soaked
 --[[
 (ability.id = 384316 or ability.id = 384620 or ability.id = 384686) and type = "begincast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"

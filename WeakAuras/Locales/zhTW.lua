@@ -1180,7 +1180,6 @@ L["This aura has caused a Lua error."] = "這個提醒效果造成了 Lua 錯誤
 L["This aura is saving %s KB of data"] = "這個提醒效果儲存了 %s KB 的資料"
 L["This aura plays a sound via a condition."] = "這個提醒效果會透過判斷條件播放聲音。"
 L["This aura plays a sound via an action."] = "這個提醒效果會透過動作播放聲音。"
-L["This aura tried to show a tooltip on a anchoring restricted region"] = "此提醒效果試圖在不允許定位的限制區域上顯示滑鼠提示。"
 L["Thorim"] = "索林姆"
 L["Threat Percent"] = "仇恨百分比"
 L["Threat Situation"] = "仇恨狀況"

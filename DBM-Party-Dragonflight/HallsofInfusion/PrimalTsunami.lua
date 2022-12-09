@@ -1,30 +1,32 @@
 local mod	= DBM:NewMod(2511, "DBM-Party-Dragonflight", 8, 1204)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220830020512")
+mod:SetRevision("20221208071706")
 mod:SetCreatureID(189729)
 mod:SetEncounterID(2618)
 --mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221207000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
 
 mod:RegisterEventsInCombat(
-	"SPELL_CAST_START 387504 387571 388760 388424 387357",
-	"SPELL_CAST_SUCCESS 388486",
-	"SPELL_SUMMON 387474",
---	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_START 387504 387571 388760 388424 387559",
+	"SPELL_AURA_APPLIED 387585",
 --	"SPELL_AURA_APPLIED_DOSE",
-	"SPELL_AURA_REMOVED 387618"
+	"SPELL_AURA_REMOVED 387585"
 --	"SPELL_PERIODIC_DAMAGE",
 --	"SPELL_PERIODIC_MISSED",
 --	"UNIT_SPELLCAST_SUCCEEDED boss1"
 )
 
 --TODO: Warn Undertow? It's only used if tank is messing up
---TODO: Literally ANY phase 2 data. Again, fight is so undertuned on heroic that no one has even seen this bosses stage 2 because it dies in 20-30 seconds
+--[[
+(ability.id = 387504 or ability.id = 387571 or ability.id = 388760 or ability.id = 388424 or ability.id = 387559) and type = "begincast"
+ or ability.id = 387585
+ or type = "dungeonencounterstart" or type = "dungeonencounterend"
+--]]
 --Stage One: Violent Swells
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25529))
 local warnFocusedDeluge							= mod:NewCastAnnounce(387571, 3)--On for everyone, since there will likely be many slow tanks in pugs
@@ -36,32 +38,33 @@ local specWarnRogueWaves						= mod:NewSpecialWarningDodge(388760, nil, nil, nil
 --local yellInfusedStrikes						= mod:NewYell(361966)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerSquallBuffetCD						= mod:NewAITimer(35, 387504, DBM_COMMON_L.TANKCOMBO, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Squall Buffet/Focused Deluge tank combo
-local timerRogueWavesCD							= mod:NewAITimer(35, 388760, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
-local timerInfusedGlobuleCD						= mod:NewAITimer(17.5, 387474, nil, nil, nil, 3)
-local timerTempestsFuryCD						= mod:NewAITimer(29.9, 388424, nil, nil, nil, 2)
+local timerSquallBuffetCD						= mod:NewCDTimer(35, 387504, DBM_COMMON_L.TANKCOMBO, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)--Squall Buffet/Focused Deluge tank combo
+local timerRogueWavesCD							= mod:NewCDTimer(13, 388760, nil, nil, nil, 3, nil, DBM_COMMON_L.MYTHIC_ICON)
+local timerInfusedGlobuleCD						= mod:NewCDTimer(19.1, 387474, nil, nil, nil, 3)
+local timerTempestsFuryCD						= mod:NewCDTimer(29.9, 388424, nil, nil, nil, 2)
 
 --Stage Two: Infused Waters
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25531))
-local warnCastAway								= mod:NewSpellAnnounce(388486, 2)
-local warnCrashingTsunami						= mod:NewCastAnnounce(387357, 3)
-local warnInfuse								= mod:NewFadesAnnounce(387618, 2)
+local warnSubmerged								= mod:NewSpellAnnounce(387585, 2)
+local warnSubmergedEnded						= mod:NewEndAnnounce(387585, 2)
 
-local timerCastAwayCD							= mod:NewAITimer(29.9, 388486, nil, nil, nil, 6)
-local timerCrashingTsunamiCD					= mod:NewAITimer(29.9, 387357, nil, nil, nil, 3)
+local timerSubmergedCD							= mod:NewCDTimer(29.9, 387585, nil, nil, nil, 6)
 
 --mod:AddRangeFrameOption("8")
 --mod:AddInfoFrameOption(361651, true)
 --mod:AddSetIconOption("SetIconOnStaggeringBarrage", 361018, true, false, {1, 2, 3})
 
+mod.vb.rogueCount = 0
+
 function mod:OnCombatStart(delay)
 	self:SetStage(1)
-	timerSquallBuffetCD:Start(1-delay)--16
-	timerInfusedGlobuleCD:Start(1-delay)--12
-	timerTempestsFuryCD:Start(1-delay)--4
-	timerCastAwayCD:Start(1-delay)
+	self.vb.rogueCount = 0
+	timerTempestsFuryCD:Start(4-delay)
+	timerInfusedGlobuleCD:Start(8-delay)--12
+	timerSquallBuffetCD:Start(18-delay)
+	timerSubmergedCD:Start(52.1-delay)--Phasing timer
 	if self:IsMythic() then
-		timerRogueWavesCD:Start(1-delay)
+		timerRogueWavesCD:Start(15-delay)
 	end
 end
 
@@ -77,7 +80,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 387504 then
-		timerSquallBuffetCD:Start()
+--		timerSquallBuffetCD:Start()--NEED MORE DATA
 		if self:IsTanking("player", "boss1", nil, true) then
 			specWarnSquallBuffet:Show()
 			specWarnSquallBuffet:Play("carefly")
@@ -85,61 +88,47 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 387571 then
 		warnFocusedDeluge:Show()
 	elseif spellId == 388760 then
+		self.vb.rogueCount = self.vb.rogueCount + 1
 		specWarnRogueWaves:Show()
 		specWarnRogueWaves:Play("watchwave")
-		timerRogueWavesCD:Start()
+		timerRogueWavesCD:Start(self.vb.rogueCount == 1 and 15 or 13)
 	elseif spellId == 388424 then
 		warnTempestsFury:Show()
 		timerTempestsFuryCD:Start()
-	elseif spellId == 387357 then
-		warnCrashingTsunami:Show()
-		timerCrashingTsunamiCD:Start()
-	end
-end
-
-function mod:SPELL_CAST_SUCCESS(args)
-	local spellId = args.spellId
-	if spellId == 388486 then
-		self:SetStage(2)
-		timerSquallBuffetCD:Stop()
-		timerInfusedGlobuleCD:Stop()
-		timerTempestsFuryCD:Stop()
-		timerRogueWavesCD:Stop()
-
-		timerCrashingTsunamiCD:Start(2)
-		timerInfusedGlobuleCD:Start(2)
-	end
-end
-
-function mod:SPELL_SUMMON(args)
-	local spellId = args.spellId
-	if spellId == 387474 and self:AntiSpam(3, 1) then
+	elseif spellId == 387559 then
 		warnInfusedGlobule:Show()
 		timerInfusedGlobuleCD:Start()
 	end
 end
 
---[[
 function mod:SPELL_AURA_APPLIED(args)
 	local spellId = args.spellId
-	if spellId == 387618 then
+	if spellId == 387585 then--Submerged
+		self:SetStage(2)
+		warnSubmerged:Show()
+		timerSquallBuffetCD:Stop()
+		timerInfusedGlobuleCD:Stop()
+		timerTempestsFuryCD:Stop()
+		timerRogueWavesCD:Stop()
 
+--		timerInfusedGlobuleCD:Start(2)--Boss didn't use this during submerged on M0 despite what jouranl says
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
---]]
 
 function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
-	if spellId == 387618 and self.vb.phase == 2 then--Assumed
+	if spellId == 387585 and self.vb.phase == 2 then--Submerged
 		self:SetStage(1)
-		warnInfuse:Show()
-		timerSquallBuffetCD:Start(3)
-		timerInfusedGlobuleCD:Start(3)
-		timerTempestsFuryCD:Start(3)
-		timerCastAwayCD:Start(3)
+		self.vb.rogueCount = 0
+		warnSubmerged:Show()
+		timerTempestsFuryCD:Start(7)
+		timerInfusedGlobuleCD:Start(11)
+		--NEED MORE DATA, drycoded
+		timerSquallBuffetCD:Start(21)
+		timerSubmergedCD:Start(55)
 		if self:IsMythic() then
-			timerRogueWavesCD:Start(3)
+			timerRogueWavesCD:Start(18)
 		end
 	end
 end

@@ -7,7 +7,7 @@ local CTimerNewTicker = C_Timer.NewTicker
 local SendAddonMessage = C_ChatInfo.SendAddonMessage
 local max = math.max
 
-local BGE_VERSION = "10.0.2.2"
+local BGE_VERSION = "10.0.2.4"
 local AddonPrefix = "BGE"
 local versionQueryString, versionResponseString = "Q^%s", "V^%s"
 local targetCallVolunteerQueryString = "TVQ^%s" -- wil be send to all the viewers to show if you are volunteering vor target calling
@@ -93,15 +93,16 @@ SlashCmdList.BattleGroundEnemiesVersion = function()
 
 	--loop through all of the BattleGroundEnemies.Allies.Players to find out which one of them send us their addon version
 	for allyName, allyButton in pairs(BattleGroundEnemies.Allies.Players) do
+		local playerDetails = allyButton.PlayerDetails
 
 		if versions[allyName] then
 			if IsFirstNewerThanSecond(highestVersion, versions[allyName]) then
-				results.old[#results.old+1] = coloredNameVersion(allyButton, versions[allyName])
+				results.old[#results.old+1] = coloredNameVersion(playerDetails, versions[allyName])
 			else
-				results.current[#results.current+1] = coloredNameVersion(allyButton, versions[allyName])
+				results.current[#results.current+1] = coloredNameVersion(playerDetails, versions[allyName])
 			end
 		else
-			results.none[#results.none+1] = coloredNameVersion(allyButton, "")
+			results.none[#results.none+1] = coloredNameVersion(playerDetails, "")
 		end
 	end
 

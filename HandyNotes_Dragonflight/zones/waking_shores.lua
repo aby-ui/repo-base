@@ -19,6 +19,7 @@ local Scoutpack = ns.node.Scoutpack
 local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
+local Currency = ns.reward.Currency
 local Item = ns.reward.Item
 local Pet = ns.reward.Pet
 local Toy = ns.reward.Toy
@@ -26,6 +27,8 @@ local Transmog = ns.reward.Transmog
 
 local Path = ns.poi.Path
 local POI = ns.poi.POI
+
+local DC = ns.DRAGON_CUSTOMIZATIONS
 
 -------------------------------------------------------------------------------
 
@@ -100,7 +103,8 @@ map.nodes[30575625] = Rare({
     quest = 74042,
     rewards = {
         Achievement({id = 16676, criteria = 56056}),
-        Transmog({item = 200757, slot = L['plate']})
+        Transmog({item = 200757, slot = L['plate']}), -- Qalashi War-Helm
+        Item({item = 197019, quest = 69219}) -- Cliffside Wylderdrake: Blunt Spiked Tail
     }
     -- pois = {
     --     Path({
@@ -136,7 +140,8 @@ map.nodes[60204535] = Rare({
     quest = 73874,
     rewards = {
         Achievement({id = 16676, criteria = 56039}),
-        Achievement({id = 16446, criteria = 5}),
+        Achievement(
+            {id = 16446, criteria = 5, note = L['pretty_neat_selfie_note']}),
         Transmog({item = 200219, slot = L['cloak']}) -- Dangerous Drapery
     },
     pois = {
@@ -157,7 +162,7 @@ map.nodes[60204535] = Rare({
 
 map.nodes[21626478] = Rare({ -- review
     id = 193134,
-    quest = 72128,
+    quest = nil, -- 72128 wrong?
     rewards = {Achievement({id = 16676, criteria = 56049})}
 }) -- Enkine the Voracious
 
@@ -166,7 +171,8 @@ map.nodes[33127632] = Rare({
     quest = 72130, -- 73073
     rewards = {
         Achievement({id = 16676, criteria = 56048}),
-        Achievement({id = 16446, criteria = 8}),
+        Achievement(
+            {id = 16446, criteria = 8, note = L['pretty_neat_selfie_note']}),
         Item({item = 200858, note = L['trinket']}), -- Plume of the Forgotten
         Item({item = 200563, note = L['trinket']}), -- Primal Ritual Shell
         Transmog({item = 200174, slot = L['leather']}) -- Bonesigil Shoulderguards
@@ -231,8 +237,8 @@ map.nodes[56004592] = Rare({
         Achievement({id = 16676, criteria = 56034}),
         Item({item = 200236, note = L['trinket']}), -- Memory of Nulltheria
         Transmog({item = 200310, note = L['cloak']}), -- Stole of the Iron Phantom
-        Item({item = 197403, quest = 69604}), -- Renewed Proto-Drake: Club Tail
-        Item({item = 197382, quest = 69583}), -- Renewed Proto-Drake: White Horns
+        DC.RenewedProtoDrake.ClubTail, --
+        DC.RenewedProtoDrake.WhiteHorns, --
         Item({item = 196992, quest = 69192}), -- Cliffside Wylderdrake: Heavy Horns
         Item({item = 196985, quest = 69185}) -- Cliffside Wylderdrake: Horned Jaw
     }
@@ -272,7 +278,8 @@ map.nodes[24005896] = Rare({
     rewards = {
         Achievement({id = 16676, criteria = 56061}),
         Item({item = 197005, quest = 69205}) -- Cliffside Wylderdrake: Horned Nose
-    }
+    },
+    pois = {POI({27226096})} -- Entrance
 }) -- Rasnar the War Ender
 
 map.nodes[30736110] = Rare({
@@ -291,7 +298,7 @@ map.nodes[46997332] = Rare({
     }
 }) -- Shadeslash Trakken
 
-map.nodes[23755734] = Rare({ -- review -- required 67030
+map.nodes[23755724] = Rare({ -- required 67030
     id = 189822,
     quest = 74077,
     note = L['obsidian_throne_rare_note'] .. ' ' ..
@@ -380,7 +387,7 @@ map.nodes[33525576] = Rare({
 
 map.nodes[30025534] = Rare({
     id = 186859,
-    quest = 70763, -- 74090
+    quest = 74090,
     note = L['worldcarver_atir_note'],
     rewards = {
         Achievement({id = 16676, criteria = 56052}),
@@ -388,6 +395,36 @@ map.nodes[30025534] = Rare({
         Item({item = 200563, note = L['trinket']}) -- Primal Ritual Shell
     }
 }) -- Worldcarver A'tir
+
+-------------------------------------------------------------------------------
+
+-- Fishing rares that are part of the Azure Span adventurer achievement
+
+map.nodes[33886446] = Rare({
+    id = 193708,
+    note = L['skald_impaler_note'],
+    quest = 74078,
+    rewards = {Achievement({id = 16678, criteria = 56117})}
+}) -- Skald the Impaler
+
+map.nodes[65617410] = Rare({
+    id = 193735,
+    label = L['large_lunker_sighting'],
+    note = L['large_lunker_sighting_note'],
+    quest = {74068, 74074, 74084},
+    questCount = true,
+    rewards = {
+        Achievement({
+            id = 16678,
+            criteria = {
+                {id = 56119, quest = 74068}, -- Moth'go Deeploom
+                {id = 56118, quest = 74074}, -- Seereel, the Spring
+                {id = 56120, quest = 74084} -- Swog'ranka
+            }
+        }), --
+        Item({item = 197589, quest = 69793, note = '{npc:193634}'}) -- Windborn Velocidrake: Large Head Fin
+    }
+}) -- Lunker Rares
 
 -------------------------------------------------------------------------------
 
@@ -413,6 +450,15 @@ map.nodes[64173289] = Rare({
     }
 }) -- Dragonhunter Igordan
 
+map.nodes[54582137] = Rare({
+    id = 195915,
+    quest = nil,
+    rewards = {
+        DC.RenewedProtoDrake.ImpalerHorns, --
+        Item({item = 197135, quest = nil}) -- Highland Drake: Toothy Mouth
+    }
+}) -- Firava the Rekindler
+
 map.nodes[54728225] = Rare({
     id = 187209,
     quest = 72841, -- 66960
@@ -423,6 +469,13 @@ map.nodes[54728225] = Rare({
         Toy({item = 200198}) -- Primalist Prison
     }
 }) -- Klozicc the Ascended
+
+map.nodes[24135392] = Rare({
+    id = 189289,
+    quest = nil,
+    note = L['obsidian_throne_rare_note'],
+    pois = {POI({27226096})} -- Entrance
+}) -- Penumbrus
 
 map.nodes[81133794] = Rare({
     id = 184853,
@@ -469,6 +522,9 @@ map.nodes[69314658] = Treasure({
     note = L['dead_mans_chestplate_note'],
     rewards = {
         Achievement({id = 16297, criteria = 54702}),
+        Transmog({item = 202190, slot = L['cosmetic']}), -- Dead Man's Chains
+        Transmog({item = 202191, slot = L['cosmetic']}), -- Dead Man's Breastplate
+        Transmog({item = 202192, slot = L['cosmetic']}), -- Dead Man's Leathers
         Transmog({item = 202193, slot = L['cosmetic']}) -- Dead Man's Tunic
     }
 }) -- Dead Man's Chestplate
@@ -708,11 +764,37 @@ map.nodes[74703790] = PT.Tailoring({
     note = L['pt_tailor_mysterious_banner_note']
 }) -- Mysterious Banner
 
+-------------------------------------------------------------------------------
+
 map.nodes[43276663] = PM.Blacksmithing({
     id = 194836,
     quest = nil,
-    note = L['pt_smith_grekka_anvilsmash']
+    note = L['pm_smith_grekka_anvilsmash'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2023, note = '5'}) -- Dragon Isles Blacksmithing Knowledge
+    }
 }) -- Grekka Anvilsmash -- currently bugged
+
+map.nodes[60827590] = PM.Alchemy({
+    id = 194829,
+    quest = 70247,
+    note = L['pm_alch_grigori_vialtry'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2024, note = '5'}) -- Dragon Isles Alchemy Knowledge
+    }
+}) -- Grigori Vialtry
+
+map.nodes[73286972] = PM.Skinning({
+    id = 194844,
+    quest = nil,
+    note = L['pm_skin_zenzi'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2033, note = '10'}) -- Dragon Isles Skinning Knowledge
+    }
+}) -- Zenzi
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -1019,6 +1101,8 @@ map.nodes[58387252] = ns.node.Squirrel({
 ------------------------------ LET'S GET QUACKING -----------------------------
 -------------------------------------------------------------------------------
 
+-- weekly completion: 70872
+
 local Quack = Class('Quack', Collectible, {
     label = '{npc:196744}',
     note = L['lets_get_quacking'],
@@ -1099,7 +1183,7 @@ map.nodes[70746646] = HemetNesingwaryJr({
 
 map.nodes[24538913] = HemetNesingwaryJr({
     rewards = {Achievement({id = 16542, criteria = 55695})}
-}) -- Southern Waking SHores Hunt
+}) -- Southern Waking Shores Hunt
 
 -------------------------------------------------------------------------------
 ----------------------------- GRAND THEFT MAMMOTH -----------------------------
@@ -1168,3 +1252,15 @@ map.nodes[42276935] = ns.node.Selfie({
     id = 192186,
     rewards = {Achievement({id = 16446, criteria = 19})}
 }) -- Territorial Axebeak
+
+-------------------------------------------------------------------------------
+-------------------------- ONE OF EVERYTHING, PLEASE --------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[58406760] = Collectible({
+    label = '{item:201089}',
+    icon = 644375,
+    note = L['craft_creche_crowler_note'],
+    group = ns.groups.SPECIALTIES,
+    rewards = {Achievement({id = 16621, criteria = 55940})}
+}) -- Craft Creche Crowler

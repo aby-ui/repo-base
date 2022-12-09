@@ -342,7 +342,7 @@ function Addon:PLAYER_LOGIN()
  local options = {
  type = "group",
  name = "副本入口",
- desc = "Locations of dungeon and raid entrances.",
+ desc = LOCALE_zhCN and "此功能主要用来显示世界地图上的副本入口，区域地图的副本入口是暴雪自带的，可以用地图上的放大镜来隐藏/显示" or "Locations of dungeon and raid entrances.",
  get = function(info) return db[info[#info]] end,
  set = function(info, v) db[info[#info]] = v HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
  args = {
@@ -357,6 +357,7 @@ function Addon:PLAYER_LOGIN()
    desc = L["The scale of the icons shown on the zone map"],
    min = 0.2, max = 12, step = 0.1,
    order = 10,
+   disabled = true,
   },
   zoneAlpha = {
    type = "range",
@@ -364,6 +365,7 @@ function Addon:PLAYER_LOGIN()
    desc = L["The alpha of the icons shown on the zone map"],
    min = 0, max = 1, step = 0.01,
    order = 20,
+   disabled = true,
   },
   continentScale = {
    type = "range",
@@ -517,17 +519,29 @@ function Addon:PLAYER_LOGIN()
   },
   hideBrokenIsles = {
    type = "toggle",
-   name = L["Hide Broken Isles"],
+   name = L["Hide Broken Isles"].."(7.0)",
    desc = L["Hide all Broken Isle nodes from the map"],
    order = 26.7,
    set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
   },
   hideBfA = {
    type = "toggle",
-   name = L["Hide Battle for Azeroth"],
+   name = L["Hide Battle for Azeroth"].."(8.0)",
    desc = L["Hide all BfA nodes from the map"],
-   order = 26.7,
+   order = 26.8,
    set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
+  },
+  hideSL = {
+      type = "toggle",
+      name = HIDE..(LOCALE_zhCN and "" or " ")..EXPANSION_NAME8.."(9.0)",
+      order = 26.81,
+      set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
+  },
+  hideDF = {
+      type = "toggle",
+      name = HIDE..(LOCALE_zhCN and "" or " ")..EXPANSION_NAME9.."(10.0)",
+      order = 26.82,
+      set = function(info, v) db[info[#info]] = v self:FullUpdate() HandyNotes:SendMessage("HandyNotes_NotifyUpdate", "DungeonLocations") end,
   },
  },
 }
@@ -596,6 +610,7 @@ nodes[63] = { -- Ashenvale
  }, -- Blackfathom Deeps, not at portal but look
 }
 nodes[15] = { -- Badlands
+ [41121030] = { id = 1197, name = "奥达曼：提尔的遗产", type = "Dungeon", },
  [41801130] = { 
   id = 239,
   type = "Dungeon",
@@ -1953,13 +1968,13 @@ nodes[1161][71961540] = {
 end
 
 --[[ abyui
-local maps = {1525, 1533, 1536, 1543, 1565, }
+local maps = {2022, 2023, 2024, 2025, 15} --shadowlands {1525, 1533, 1536, 1543, 1565, 1970}
 local nodes = {}
 for _, id in ipairs(maps) do
     WorldMapFrame:SetMapID(id)
     for pin in WorldMapFrame:EnumeratePinsByTemplate("DungeonEntrancePinTemplate") do
         nodes[id] = nodes[id] or {}
-        local pos = format("%d%d", pin.normalizedX * 10000, pin.normalizedY * 10000))
+        local pos = format("%d%d", pin.normalizedX * 10000, pin.normalizedY * 10000)
         local instanceId = pin.journalInstanceID
         local type = pin.description == "地下城" and "Dungeon" or "Raid"
         nodes[id][pos] = { id = instanceId, type = type, name = pin.name }
@@ -1970,23 +1985,52 @@ wowluacopy(nodes)
 if (not self.db.profile.hideSL) then --dump WorldMapFrame.mapID
     local sl = {
         [1525] = {
-            [51073012] = { id = 1189, name = "赤红深渊", type = "Dungeon", },
-            [78474907] = { id = 1185, name = "赎罪大厅", type = "Dungeon", },
+            ["46424149"] = { id = 1190, name = "纳斯利亚堡", type = "Raid", },
+            ["51073012"] = { id = 1189, name = "赤红深渊", type = "Dungeon", },
+            ["78474907"] = { id = 1185, name = "赎罪大厅", type = "Dungeon", },
         },
         [1533] = {
-            [40145521] = { id = 1182, name = "通灵战潮", type = "Dungeon", },
-            [58552857] = { id = 1186, name = "晋升高塔", type = "Dungeon", },
+            ["40145521"] = { id = 1182, name = "通灵战潮", type = "Dungeon", },
+            ["58552857"] = { id = 1186, name = "晋升高塔", type = "Dungeon", },
         },
         [1536] = {
-            [53115291] = { id = 1187, name = "伤逝剧场", type = "Dungeon", },
-            [59396501] = { id = 1183, name = "凋魂之殇", type = "Dungeon", },
+            ["53115291"] = { id = 1187, name = "伤逝剧场", type = "Dungeon", },
+            ["59396501"] = { id = 1183, name = "凋魂之殇", type = "Dungeon", },
+        },
+        [1543] = {
+            ["69743201"] = { id = 1193, name = "统御圣所", type = "Raid", },
         },
         [1565] = {
-            [35485413] = { id = 1184, name = "塞兹仙林的迷雾", type = "Dungeon", },
-            [68666660] = { id = 1188, name = "彼界", type = "Dungeon", },
+            ["35485413"] = { id = 1184, name = "塞兹仙林的迷雾", type = "Dungeon", },
+            ["68666660"] = { id = 1188, name = "彼界", type = "Dungeon", },
+        },
+        [1970] = {
+            ["80495340"] = { id = 1195, name = "初诞者圣墓", type = "Raid", },
         },
     }
     for k, v in pairs(sl) do nodes[k] = v end
+end
+
+if (not self.db.profile.hideDF) then
+    local insts = {
+        [2022] = {
+            ["25715631"] = { id = 1199, name = "奈萨鲁斯", type = "Dungeon", },
+            ["60087571"] = { id = 1202, name = "红玉新生法池", type = "Dungeon", },
+        },
+        [2023] = {
+            ["60843898"] = { id = 1198, name = "诺库德阻击战", type = "Dungeon", },
+        },
+        [2024] = {
+            ["11514885"] = { id = 1196, name = "蕨皮山谷", type = "Dungeon", },
+            ["38896459"] = { id = 1203, name = "碧蓝魔馆", type = "Dungeon", },
+        },
+        [2025] = {
+            ["58274235"] = { id = 1201, name = "艾杰斯亚学院", type = "Dungeon", },
+            ["59216057"] = { id = 1204, name = "注能大厅", type = "Dungeon", },
+            ["74855511"] = { id = 1200, name = "化身巨龙牢窟", type = "Raid", },
+        },
+    }
+    for k, v in pairs(insts) do nodes[k] = v end
 end
 end
 

@@ -11,12 +11,14 @@ local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
 local Flag = ns.node.Flag
 local PetBattle = ns.node.PetBattle
+local PM = ns.node.ProfessionMasters
 local PT = ns.node.ProfessionTreasures
 local Rare = ns.node.Rare
 local Scoutpack = ns.node.Scoutpack
 local Treasure = ns.node.Treasure
 
 local Achievement = ns.reward.Achievement
+local Currency = ns.reward.Currency
 local Item = ns.reward.Item
 local Mount = ns.reward.Mount
 local Pet = ns.reward.Pet
@@ -25,6 +27,8 @@ local Transmog = ns.reward.Transmog
 
 local Path = ns.poi.Path
 local POI = ns.poi.POI
+
+local DC = ns.DRAGON_CUSTOMIZATIONS
 
 -------------------------------------------------------------------------------
 
@@ -57,19 +61,11 @@ map.nodes[30546628] = Rare({
 
 map.nodes[49866673] = Rare({
     id = 192020,
-    quest = nil,
+    quest = 69568,
     rewards = {
-        Achievement({id = 16677, criteria = 56077})
-        -- Transmog({item = , slot = L['']}) -- Name
-    }
-}) -- Eaglemaster Niraak
-
-map.nodes[49866673] = Rare({
-    id = 192020,
-    quest = nil,
-    rewards = {
-        Achievement({id = 16677, criteria = 56077})
-        -- Transmog({item = , slot = L['']}) -- Name
+        Achievement({id = 16677, criteria = 56077}),
+        Transmog({item = 200308, slot = L['bow']}), -- Rellen's Legacy
+        Transmog({item = 200441, slot = L['leather']}) -- Jhakan's Horned Cowl
     }
 }) -- Eaglemaster Niraak
 
@@ -182,7 +178,7 @@ map.nodes[61212950] = Rare({ -- reqiured 67030
 --     quest = nil,
 --     rewards = {
 --         Achievement({id = 16677, criteria = 56091}),
---         Achievement({id = 16446, criteria = 18}),
+--         Achievement({id = 16446, criteria = 18, note = L['pretty_neat_selfie_note']}),
 --         Transmog({item = , slot = L['']}) -- Name
 --     }
 -- }) -- Quackers the Terrible
@@ -295,12 +291,13 @@ map.nodes[84214784] = Rare({
     }
 }) -- Windscale the Stormborn
 
-map.nodes[58596822] = Rare({ -- review
+map.nodes[58596822] = Rare({
     id = 192045,
-    quest = nil,
+    quest = 74088,
     rewards = {
-        Achievement({id = 16677, criteria = 56076})
-        -- Transmog({item = , slot = L['']}) -- Name
+        Achievement({id = 16677, criteria = 56076}),
+        Transmog({item = 200308, slot = L['bow']}), -- Rellen's Legacy
+        Transmog({item = 200441, slot = L['leather']}) -- Jhakan's Horned Cowl
     }
 }) -- Windseeker Avash
 
@@ -316,11 +313,12 @@ map.nodes[31456387] = Rare({
     quest = 73901,
     rewards = {
         Achievement({id = 16677, criteria = 56066}),
-        Achievement({id = 16446, criteria = 20}),
+        Achievement(
+            {id = 16446, criteria = 20, note = L['pretty_neat_selfie_note']}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200314, slot = L['cloth']}), -- Skyspeaker's Envelope
         Transmog({item = 200306, slot = L['cloak']}), -- Tempest Shawl
-        Item({item = 197372, quest = 69573}), -- Renewed Proto-Drake: Purple Hair
+        DC.RenewedProtoDrake.PurpleHair, --
         Item({item = 197606, quest = 69810}), -- Windborne Velocidrake: Swept Horns
         Mount({item = 198825, id = 1672}) -- Zenet Hatchling
     }
@@ -562,6 +560,38 @@ map.nodes[86405370] = PT.Leatherworking({
     quest = nil,
     note = L['pt_leath_wind_blessed_hide_note']
 }) -- Wind-Blessed Hide
+
+-------------------------------------------------------------------------------
+
+map.nodes[82455067] = PM.Leatherworking({
+    id = 194842,
+    quest = nil,
+    note = L['pm_leath_erden'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2025, note = '5'}) -- Dragon Isles Leatherworking Knowledge
+    }
+}) -- Erden
+
+map.nodes[58375000] = PM.Herbalism({
+    id = 194839,
+    quest = nil,
+    note = L['pm_herb_hua_greenpaw'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2034, note = '10'}) -- Dragon Isles Herbalism Knowledge
+    }
+}) -- Hua Greenpaw
+
+map.nodes[62441868] = PM.Enchanting({
+    id = 194837,
+    quest = 70251,
+    note = L['pm_ench_shalasar_glimmerdusk'],
+    rewards = {
+        Item({item = 190456, note = '25'}), -- Artisan's Mettle
+        Currency({id = 2030, note = '5'}) -- Dragon Isles Enchanting Knowledge
+    }
+}) -- Shalasar Glimmerdusk
 
 -------------------------------------------------------------------------------
 -------------------------------- DRAGON GLYPHS --------------------------------
@@ -1028,6 +1058,11 @@ map.nodes[58323192] = ns.node.Selfie({
     rewards = {Achievement({id = 16446, criteria = 2})}
 }) -- Avis Gryphonheart
 
+map.nodes[74724069] = ns.node.Selfie({
+    id = 190960,
+    rewards = {Achievement({id = 16446, criteria = 7})}
+}) -- Feasting Buzzard
+
 map.nodes[59575538] = ns.node.Selfie({
     id = 187496,
     rewards = {Achievement({id = 16446, criteria = 9})}
@@ -1102,6 +1137,18 @@ function Lizi.getters:note()
 end
 
 map.nodes[56207710] = Lizi() -- day 1 and 2
+
+-------------------------------------------------------------------------------
+-------------------------- ONE OF EVERYTHING, PLEASE --------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[28006060] = Collectible({
+    label = '{item:201089}',
+    icon = 644375,
+    note = L['craft_creche_crowler_note'],
+    group = ns.groups.SPECIALTIES,
+    rewards = {Achievement({id = 16621, criteria = 55940})}
+}) -- Craft Creche Crowler
 
 -------------------------------------------------------------------------------
 ---------------------- OHN'AHRA, DIVINE KISS OF OHN'AHRA ----------------------

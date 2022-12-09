@@ -19,7 +19,6 @@ addOnTestMode.Grid2 = function(isTestEnabled)
 	else
 		Grid2Options.editedTheme.layout.layouts["solo"] = config.Grid2
 	end
-
 	Grid2Layout:ReloadLayout()
 end
 
@@ -30,7 +29,6 @@ addOnTestMode.VuhDo = function(isTestEnabled)
 	else
 		VUHDO_CONFIG["HIDE_PANELS_SOLO"] = config.VuhDo
 	end
-
 	VUHDO_getAutoProfile()
 end
 
@@ -45,7 +43,6 @@ addOnTestMode.Aptechka = function(isTestEnabled)
 	else
 		Aptechka.db.profile.showSolo = config.Aptechka
 	end
-
 	Aptechka:ReconfigureProtected()
 end
 
@@ -60,7 +57,6 @@ addOnTestMode.Cell = function(isTestEnabled)
 			return
 		end
 	end
-
 	Cell:Fire("UpdateVisibility", "solo")
 end
 
@@ -142,16 +138,12 @@ function TM:Test(key)
 			local icon = frame.icons[i]
 			if not icon.AnimFrame:IsVisible() then
 				icon.AnimFrame:Show()
-				icon.AnimFrame.Anim:Play()
+				icon.AnimFrame.animIn:Play()
 			end
 		end
 	else
 		if not activeCustomUF then
-			if E.isDF then
-
-
-
-			else
+			if not E.isDF then
 				if UnitAffectingCombat("player") then
 					self:EndTestOOC()
 				elseif IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") and (groupSize == 0 or not P:CompactFrameIsActive()) then

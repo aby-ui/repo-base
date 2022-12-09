@@ -4,7 +4,7 @@ local pairs, next, type, ipairs, setmetatable, mfloor, mmax = pairs, next, type,
 local CreateFrame, GameFontNormalSmall = CreateFrame, GameFontNormalSmall
 local DBM = DBM
 
-local isDragonflight = DBM:GetTOC() > 30400
+local isModernAPI = DBM:GetTOC() > 30400
 
 local defaultFont, defaultFontSize = GameFontHighlightSmall:GetFont()
 
@@ -17,7 +17,7 @@ tabFrame1.backdropInfo = {
 	edgeSize	= 16,
 	insets		= { left = 3, right = 3, top = 5, bottom = 3 }
 }
-if not isDragonflight then
+if not isModernAPI then
 	tabFrame1.backdropInfo.bgFile = nil
 end
 tabFrame1:Hide()

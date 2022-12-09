@@ -134,7 +134,6 @@ E.HEX_C = {
 	[321077]		= "|cff80b5fd",
 	[321078]		= "|cff17c864",
 
-
 	["PERFORMANCE_BLUE"]	= "|cff99cdff",
 	["BR31_MINT"]		= "|cff99ffcd",
 	["CURSE_ORANGE"]	= "|cfff16436",
@@ -245,7 +244,6 @@ E.LIGHT_THEME = {
 
 }
 
-
 E.BOOKTYPE_CATEGORY = {
 	["WARRIOR"] = true,
 	["PALADIN"] = true,
@@ -272,8 +270,6 @@ E.RAID_TARGET_MARKERS = {
 	[0x00000040] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:0|t",
 	[0x00000080] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t",
 }
-
-
 
 
 
@@ -309,4 +305,5 @@ E.HEALER_SPEC = {
 	[256] = true,
 	[257] = true,
 	[264] = true,
+	[1468] = true,
 }

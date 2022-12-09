@@ -7,13 +7,6 @@ LSM:Register("statusbar", "OmniCD Flat", "Interface\\Addons\\OmniCD\\Media\\omni
 local LSM_Font = {}
 local LSM_Statusbar = {}
 
-
-
-
-
-
-
-
 local defaultFonts = {}
 
 if LOCALE_koKR then
@@ -80,10 +73,7 @@ end
 local flagFix = {
 	["NONE"] = "",
 
-	["OUTLINE"] = "OUTLINE",
 
-	["THICKOUTLINE"] = "OUTLINE, THICK",
-	["MONOCHROMEOUTLINE"] = "OUTLINE, MONOCHROME",
 }
 
 function E:SetFontProperties(fontString, db, size)
@@ -188,7 +178,6 @@ local General = {
 					inline = true,
 					args = fontInfo
 				},
-
 				option = {
 					name = OPTIONS,
 					order = 4,

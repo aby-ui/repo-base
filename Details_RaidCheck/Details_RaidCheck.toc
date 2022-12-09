@@ -10,4 +10,5 @@
 Details_RaidCheck.lua
 
 
+## Title: |cff880303[爱不易]|r Details 团队检查模块
 ## X-Vendor: AbyUI

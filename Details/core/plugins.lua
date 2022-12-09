@@ -429,6 +429,8 @@ local _
 		f:SetBackdrop(_detalhes.PluginDefaults and _detalhes.PluginDefaults.Backdrop or {bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16, edgeFile = [[Interface\Buttons\WHITE8X8]], edgeSize = 1})
 		f:SetBackdropColor(0, 0, 0, 0.3)
 		f:SetBackdropBorderColor(0, 0, 0, 1)
+		tinsert(UISpecialFrames, "DetailsPluginContainerWindow")
+
 
 		local scaleBar = DetailsFramework:CreateScaleBar(f, Details.options_window)
 		scaleBar:SetFrameStrata("fullscreen")

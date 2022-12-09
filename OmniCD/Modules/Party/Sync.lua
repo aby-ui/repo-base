@@ -1,6 +1,8 @@
 local E = select(2, ...):unpack()
 local P, CM = E.Party, E.Comm
 
+local pairs, next, concat, tonumber, strmatch, strsplit, format, gsub, floor, abs = pairs, next, table.concat, tonumber, string.match, string.split, string.format, string.gsub, math.floor, math.abs
+local GetTime, GetSpellCooldown, GetSpellCharges = GetTime, GetSpellCooldown, GetSpellCharges
 local LibDeflate = LibStub("LibDeflate")
 local CooldownSyncFrame = CreateFrame("Frame")
 local COOLDOWN_SYNC_INTERVAL = 2
@@ -117,7 +119,6 @@ function CM:CHAT_MSG_ADDON(prefix, message, _, sender)
 			self:SyncStrivePvpTalentCD(guid, body)
 		end
 		return
-
 	elseif header ~= E.userGUID then
 		return
 	end
@@ -220,7 +221,6 @@ function CM:CHAT_MSG_ADDON(prefix, message, _, sender)
 		else
 			k = tonumber(k)
 			if ( not self:IsVersionCompatible(k) ) then
-
 				print("Aborting sync with " .. info.name .. ": Incompatible version")
 			end
 			info.spec = tonumber(v)
@@ -281,7 +281,6 @@ CM.SOULBIND_CONDUIT_INSTALLED = SendUpdatedUserSyncData
 CM.SOULBIND_PATH_CHANGED = SendUpdatedUserSyncData
 CM.COVENANT_SANCTUM_RENOWN_LEVEL_CHANGED = SendUpdatedUserSyncData
 CM.TRAIT_CONFIG_UPDATED = SendUpdatedUserSyncData
-
 
 
 
@@ -369,8 +368,8 @@ function CM.SyncCooldowns(guid, serializedCooldownData)
 
 
 				elseif ( active and abs(active.startTime - startTime) > 1 ) or ( not active and duration > 0 and E.sync_periodic[spellID] ) then
-					P:SetCooldownElements(icon, charges)
 					icon.cooldown:SetCooldown(startTime, duration, modRate)
+					P:SetCooldownElements(icon, charges)
 
 					if ( not active ) then
 						info.active[spellID] = {}
@@ -481,12 +480,11 @@ local function CooldownSyncFrame_OnUpdate(_, elapsed)
 		return
 	end
 
-
 	for i = c + 1, #cooldownData do
 		cooldownData[i] = nil
 	end
 
-	local serializedCooldownData = table.concat(cooldownData, ",")
+	local serializedCooldownData = concat(cooldownData, ",")
 	if not P.isUserDisabled then
 		CM.SyncCooldowns(E.userGUID, serializedCooldownData)
 	end

@@ -3126,10 +3126,18 @@ function Details.GetPlayTimeOnClassString()
     return "|cffffff00Time played this class (" .. expansionName .. "): " .. days .. " " .. hours .. " " .. minutes
 end
 
-local timePlayerFrame = CreateFrame("frame")
-timePlayerFrame:RegisterEvent("TIME_PLAYED_MSG")
-timePlayerFrame:SetScript("OnEvent", function()
-	--C_Timer.After(0, function() print(Details.GetPlayTimeOnClassString()) end)
+hooksecurefunc("ChatFrame_DisplayTimePlayed", function()
+	if (Details.played_class_time) then
+		C_Timer.After(0, function()
+			local levelText = TIME_PLAYED_LEVEL and TIME_PLAYED_LEVEL:gsub("%%s", "") or ""
+			for fontString in ChatFrame1.fontStringPool:EnumerateActive() do 
+				if (fontString:GetText() and fontString:GetText():find(levelText)) then 
+					print(Details.GetPlayTimeOnClassString() .. " (/details playedclass)")
+					break
+				end 
+			end
+		end)
+	end
 end)
 
 --game freeze prevention, there are people calling UpdateAddOnMemoryUsage() making the game client on the end user to freeze, this is bad, really bad.
@@ -3139,8 +3147,7 @@ local bigStutterCounter = 0
 local UpdateAddOnMemoryUsage_Original = _G.UpdateAddOnMemoryUsage
 Details.UpdateAddOnMemoryUsage_Original = _G.UpdateAddOnMemoryUsage
 
---to ignore this, use /run _G["UpdateAddOnMemoryUsage"] = Details.UpdateAddOnMemoryUsage_Original or add to any script that run on login
-_G["UpdateAddOnMemoryUsage"] = function()
+Details.UpdateAddOnMemoryUsage_Custom = function()
 	local currentTime = debugprofilestop()
 	UpdateAddOnMemoryUsage_Original()
 	local deltaTime = debugprofilestop() - currentTime

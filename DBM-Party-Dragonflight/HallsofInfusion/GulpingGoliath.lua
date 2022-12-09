@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2507, "DBM-Party-Dragonflight", 8, 1204)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220904205606")
+mod:SetRevision("20221207232203")
 mod:SetCreatureID(189722)
 mod:SetEncounterID(2616)
 --mod:SetUsedIcons(1, 2, 3)
---mod:SetHotfixNoticeRev(20220322000000)
+mod:SetHotfixNoticeRev(20221207000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -43,10 +43,10 @@ local yellBodySlam								= mod:NewYell(385531)
 --local specWarnDominationBolt					= mod:NewSpecialWarningInterrupt(363607, "HasInterrupt", nil, nil, 1, 2)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerGulpCD								= mod:NewAITimer(35, 385551, nil, nil, nil, 3)
-local timerOverpoweringCroakCD					= mod:NewAITimer(35, 385187, nil, nil, nil, 2)--Tough to classify, it's aoe, it's targeted dodge, and it's adds
-local timerBellySlamCD							= mod:NewAITimer(35, 385531, nil, nil, nil, 3)
-local timerToxicEffluviaaCD						= mod:NewAITimer(35, 385442, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
+local timerGulpCD								= mod:NewCDTimer(47.3, 385551, nil, nil, nil, 3)
+local timerOverpoweringCroakCD					= mod:NewCDTimer(38.8, 385187, nil, nil, nil, 2)--Tough to classify, it's aoe, it's targeted dodge, and it's adds
+local timerBellySlamCD							= mod:NewCDTimer(38.8, 385531, nil, nil, nil, 3)
+local timerToxicEffluviaaCD						= mod:NewCDTimer(26.7, 385442, nil, nil, nil, 5, nil, DBM_COMMON_L.HEALER_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -69,9 +69,10 @@ end
 
 function mod:OnCombatStart(delay)
 	table.wipe(toxinStacks)
-	timerGulpCD:Start(1-delay)
-	timerOverpoweringCroakCD:Start(1-delay)
-	timerBellySlamCD:Start(1-delay)
+	timerOverpoweringCroakCD:Start(8-delay)
+	timerGulpCD:Start(17.8-delay)
+	timerToxicEffluviaaCD:Start(29.9-delay)
+	timerBellySlamCD:Start(38.4-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(DBM:GetSpellInfo(374389))
 		DBM.InfoFrame:Show(5, "table", toxinStacks, 1)

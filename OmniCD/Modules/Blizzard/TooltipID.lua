@@ -105,7 +105,7 @@ function TT:UnHookAll()
 end
 
 function TT:SetHooks()
-	if E.profile.tooltipID then
+	if self.enabled then
 		self:HookAll()
 	else
 		self:UnHookAll()

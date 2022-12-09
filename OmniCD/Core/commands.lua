@@ -148,7 +148,6 @@ function E:OpenOptionPanel()
 	self.Libs.ACD:SetDefaultSize(self.AddOn, 965, 650)
 	self.Libs.ACD:Open(self.AddOn)
 
-
 	self.Libs.ACD:SelectGroup(self.AddOn, "Party")
 	self.Libs.ACD:SelectGroup(self.AddOn, "Home")
 end
@@ -159,7 +158,7 @@ interfaceOptionPanel:Hide()
 
 interfaceOptionPanel:SetScript("OnShow", function(self)
 	local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-	title:SetPoint("TOPLEFT", 16, -16)
+	title:SetPoint("TOPLEFT")
 	title:SetText(E.AddOn)
 
 	local context = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
@@ -182,12 +181,11 @@ end)
 if Settings and Settings.RegisterCanvasLayoutCategory then
 	local category, layout = Settings.RegisterCanvasLayoutCategory(interfaceOptionPanel, E.AddOn)
 	Settings.RegisterAddOnCategory(category)
-
-
+	layout:AddAnchorPoint("TOPLEFT", 16, -16)
+	layout:AddAnchorPoint("BOTTOMRIGHT", -16, 16)
 else
 	InterfaceOptions_AddCategory(interfaceOptionPanel)
 end
-
 
 SLASH_OmniCD1 = "/oc"
 SLASH_OmniCD2 = "/omnicd"

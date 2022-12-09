@@ -1,6 +1,9 @@
 local E = select(2, ...):unpack()
 local P = E.Party
 
+local tinsert = table.insert
+local tremove = table.remove
+
 local unusedOverlayGlows = {}
 local numOverlays = 0
 
@@ -10,7 +13,6 @@ local function OmniCDOverlayGlow_AnimOutFinished(animGroup)
 	overlay:Hide()
 	tinsert(unusedOverlayGlows, overlay)
 	icon.overlay = nil
-	icon.isHighlighted = nil
 end
 
 local function OmniCDOverlay_OnHide(self)
@@ -62,11 +64,9 @@ end
 local function ShowOverlayGlow(icon, duration, isRefresh)
 	if E.db.highlight.glowType == "wardrobe" then
 		if not icon.isHighlighted then
-			icon.isHilightRemoved = nil
 			icon.PendingFrame:Show()
 			if not isRefresh then
-				icon.AnimFrame:Show()
-				icon.AnimFrame.Anim:Play()
+				icon.AnimFrame.animIn:Play()
 			end
 		end
 	elseif icon.overlay then
@@ -95,7 +95,7 @@ local function ShowOverlayGlow(icon, duration, isRefresh)
 	if type(icon.isHighlighted) == "table" then
 		icon.isHighlighted:Cancel()
 	end
-	icon.isHighlighted = E.isClassicEra and true or E.TimerAfter(duration + 0.1, RemoveHighlight_OnTimerEnd, icon)
+	icon.isHighlighted = (E.isClassicEra or icon.guid == E.userGUID) and true or E.TimerAfter(duration + 0.1, RemoveHighlight_OnTimerEnd, icon)
 end
 
 function P:HideOverlayGlow(icon)
@@ -112,13 +112,12 @@ function P:HideOverlayGlow(icon)
 	elseif icon.isHighlighted then
 		icon.PendingFrame:Hide()
 		if icon:IsVisible() then
-			icon.isHilightRemoved = true
-			icon.AnimFrame:Show()
-			icon.AnimFrame.Anim:Play()
+			icon.AnimFrame.animOut:Play()
 		else
 			icon.AnimFrame:Hide()
 		end
 	end
+
 	if type(icon.isHighlighted) == "table" then
 		icon.isHighlighted:Cancel()
 	end
@@ -137,7 +136,6 @@ function P:RemoveHighlight(icon)
 	info.glowIcons[buff] = nil
 
 	self:HideOverlayGlow(icon)
-
 
 
 	local active = icon.active and info.active[icon.spellID]
@@ -184,8 +182,7 @@ function P:HighlightIcon(icon, isRefresh)
 end
 
 function P:SetGlow(icon)
-	icon.AnimFrame:Show()
-	icon.AnimFrame.Anim:Play()
+	icon.AnimFrame.animIn:Play()
 end
 
 E.GetOverlayGlow = GetOverlayGlow

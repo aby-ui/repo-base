@@ -114,15 +114,14 @@ do
 		--when the value is a number, the slot only receives enchants for a specific attribute
 		LIB_OPEN_RAID_ENCHANT_SLOTS = {
 			--[INVSLOT_NECK] = true,
-			[INVSLOT_BACK] = true, --for all
-			[INVSLOT_CHEST] = true, --for all
-			[INVSLOT_FINGER1] = true, --for all
-			[INVSLOT_FINGER2] = true, --for all
-			[INVSLOT_MAINHAND] = true, --for all
-
-			[INVSLOT_FEET] = 2, --agility only
-			[INVSLOT_WRIST] = 1, --intellect only
-			[INVSLOT_HAND] = 3, --strenth only
+			[INVSLOT_BACK] = true,
+			[INVSLOT_CHEST] = true,
+			[INVSLOT_FINGER1] = true,
+			[INVSLOT_FINGER2] = true,
+			[INVSLOT_MAINHAND] = true,
+			[INVSLOT_FEET] = true,
+			[INVSLOT_WRIST] = true,
+			[INVSLOT_HAND] = true,
 		}
 
 		-- how to get the enchantId:
@@ -130,55 +129,18 @@ do
 		-- local enchandId = select(3, strsplit(":", itemLink))
 		-- print("enchantId:", enchandId)
 		LIB_OPEN_RAID_ENCHANT_IDS = {
-			--need to get this data to dragonflight
-			--FEET
-				--[6207] = INVSLOT_FEET, --[Enchant Boots - Speed of Soul]
-				--[6211] = INVSLOT_FEET, --[Enchant Boots - Eternal Agility] + 15 agi
-				--[6212] = INVSLOT_FEET, --[Enchant Boots - Agile Soulwalker] + 10 agi
+			--empty as the lib now get the enchant id and compare with expansion enchantId number space
+		}
 
-			--WRIST
-				--[6222] = INVSLOT_WRIST, [Enchant Bracers - Shaded Hearthing]
-				--[6219] = INVSLOT_WRIST, --[Enchant Bracers - Illuminated Soul] + 10 int
-				--[6220] = INVSLOT_WRIST, --[Enchant Bracers - Eternal Intellect] + 15 int
-
-			--HAND
-				--[6205] = INVSLOT_HAND, --[Enchant Gloves - Shadowlands Gathering]
-				--[6209] = INVSLOT_HAND, --[Enchant Gloves - Strength of Soul] +10 str
-				--[6210] = INVSLOT_HAND, --[Enchant Gloves - Eternal Strength] +15 str
-
-			--FINGER
-				--[6164] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Critical Strike] +16
-				--[6166] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Haste] +16
-				--[6168] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Mastery] +16
-				--[6170] = INVSLOT_FINGER1, --[Enchant Ring - Tenet of Versatility] +16
-
-			--BACK
-				--[6202] = INVSLOT_BACK, --[Enchant Cloak - Fortified Speed] +20 stam +30 speed
-				--[6203] = INVSLOT_BACK, --[Enchant Cloak - Fortified Avoidance] +20 stam +30 avoidance
-				--[6204] = INVSLOT_BACK, --[Enchant Cloak - Fortified Leech]
-				--[6208] = INVSLOT_BACK, --[Enchant Cloak - Soul Vitality]
-
-			--CHEST
-				--[6213] = INVSLOT_CHEST, --[Enchant Chest - Eternal Bulwark] +25 armor +20 agi or str
-				--[6214] = INVSLOT_CHEST, --[Enchant Chest - Eternal Skirmish] +20 agi or str +more white damage
-				--[6217] = INVSLOT_CHEST, --[Enchant Chest - Eternal Bounds] +20 int + 6% mana
-				--[6216] = INVSLOT_CHEST, --[Enchant Chest - Sacred Stats] +20 all stats
-				--[6230] = INVSLOT_CHEST, --[Enchant Chest - Eternal Stats] +30 all stats
-
-			--MAINHAND
-				--[6223] = INVSLOT_MAINHAND, --[Enchant Weapon - Lightless Force] + shadow wave damage
-				--[6226] = INVSLOT_MAINHAND, --[Enchant Weapon - Eternal Grace] + burst of healing done
-				--[6227] = INVSLOT_MAINHAND, --[Enchant Weapon - Ascended Vigor] + healing received increased
-				--[6228] = INVSLOT_MAINHAND, --[Enchant Weapon - Sinful Revelation] + 6% bleed damage
-				--[6229] = INVSLOT_MAINHAND, --[Enchant Weapon - Celestial Guidance] + 5% agility
-				--[6243] = INVSLOT_MAINHAND, --[Runeforging: Rune of Hysteria]
-				--[3370] = INVSLOT_MAINHAND, --[Runeforging: Rune of Razorice]
-				--[6241] = INVSLOT_MAINHAND, --[Runeforging: Rune of Sanguination]
-				--[6242] = INVSLOT_MAINHAND, --[Runeforging: Rune of Spellwarding]
-				--[6245] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Apocalypse]
-				--[3368] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Fallen Crusader]
-				--[3847] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Stoneskin Gargoyle]
-				--[6244] = INVSLOT_MAINHAND, --[Runeforging: Rune of Unending Thirst]
+		LIB_OPEN_RAID_DEATHKNIGHT_RUNEFORGING_ENCHANT_IDS = {
+			[6243] = INVSLOT_MAINHAND, --[Runeforging: Rune of Hysteria]
+			[3370] = INVSLOT_MAINHAND, --[Runeforging: Rune of Razorice]
+			[6241] = INVSLOT_MAINHAND, --[Runeforging: Rune of Sanguination]
+			[6242] = INVSLOT_MAINHAND, --[Runeforging: Rune of Spellwarding]
+			[6245] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Apocalypse]
+			[3368] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Fallen Crusader]
+			[3847] = INVSLOT_MAINHAND, --[Runeforging: Rune of the Stoneskin Gargoyle]
+			[6244] = INVSLOT_MAINHAND, --[Runeforging: Rune of Unending Thirst]
 		}
 
 		--how to get the gemId:
@@ -401,9 +363,9 @@ do
 			[392966] = {cooldown = 90, 	duration = 20,	specs = {73},				talent = false,	charges = 1,	class = "WARRIOR",	type = 2}, --Spell Block
 			[384318] = {cooldown = 90,	duration = 0,	specs = {71, 72, 73},		talent = false,	charges = 1,	class = "WARRIOR",	type = 1}, --Thunderous Roar
 			[46968] = {cooldown = 40,	duration = 0,	specs = {},					talent = false,	charges = 1,	class = "WARRIOR",	type = 8}, --Shockwave
-			[23920] = {cooldown = 25,	duration = 5,	specs = {},					talent = false,	charges = 1,	class = "WARRIOR",	type = 5}, --Shockwave
 			[107570] = {cooldown = 30,	duration = 4,	specs = {},					talent = false,	charges = 1,	class = "WARRIOR",	type = 8}, --Storm Bolt
 			[23920] = {cooldown = 25, duration = 0, 	specs = {}, 				talent = false,	charges = 1,	class = "WARRIOR",	type = 5}, --Spell Refleciton
+			[385060] = {cooldown = 45, duration = 0, 	specs = {}, 				talent = false,	charges = 1,	class = "WARRIOR",	type = 5}, --Odyn's Fury (can remove root with Avatar)
 
 			--warlock
 			-- 265 - Affliction
@@ -422,6 +384,7 @@ do
 			[265187] = {cooldown = 90,	duration = 15,	specs = {266},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Summon Demonic Tyrant
 			[1122] = {cooldown = 180,	duration = 30,	specs = {267},				talent = false,	charges = 1,	class = "WARLOCK",	type = 1}, --Summon Infernal
 			[104773] = {cooldown = 180,	duration = 8,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 2}, --Unending Resolve
+			[48020] = {cooldown = 30,	duration = 0,	specs = {265, 266, 267},	talent = false,	charges = 1,	class = "WARLOCK",	type = 5}, --Demonic Circle: Teleport
 
 			--shaman
 			-- 262 - Elemental
@@ -496,6 +459,7 @@ do
 			[264735] = {cooldown = 180,	duration = 0,	specs = {253, 254, 255},	talent = false,	charges = 1,	class = "HUNTER",	type = 2}, --Survival of the Fittest
 			[187698] = {cooldown = 30,	duration = 0,	specs = {},					talent = false,	charges = 1,	class = "HUNTER",	type = 8}, --Tar Trap
 			[392060] = {cooldown = 60,	duration = 3,	specs = {},					talent = false,	charges = 1,	class = "HUNTER",	type = 8}, --Wailing Arrow
+			[781] =	{cooldown = 20,	duration = 0,		specs = {},					talent = false,	charges = 1,	class = "HUNTER",	type = 5}, --Disengage
 
 			--druid
 			-- 102 - Balance
@@ -596,6 +560,7 @@ do
 			[205021] = {cooldown = 78,	duration = 5,	specs = {64},				talent = false,	charges = 1,	class = "MAGE",	type = 1}, --Ray of Frost
 			[113724] = {cooldown = 45,	duration = 10,	specs = {62, 63, 64},		talent = false,	charges = 1,	class = "MAGE",	type = 8}, --Ring of Frost
 			[31661] = {cooldown = 45,	duration = 0,	specs = {},					talent = false,	charges = 1,	class = "MAGE",	type = 8}, --Dragon's Breath
+			[1953] = {cooldown = 15,	duration = 0,	specs = {},					talent = false,	charges = 1,	class = "MAGE",	type = 5}, --Blink
 
 			-- This needs more work to actually function
 			--[342245] = {cooldown = 60,	duration = 0,	specs = {},					talent = false,	charges = 1,	class = "MAGE",	type = 2}, --Alter Time

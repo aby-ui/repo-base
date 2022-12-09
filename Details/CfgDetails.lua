@@ -40,14 +40,24 @@ U1RegisterAddon("Details", {
     },
 })
 
-U1RegisterAddon("Details_3DModelsPaths", { title = "3D模型列表模块", protected = 1, hide = 1 });
-U1RegisterAddon("Details_DataStorage", { title = "信息存储模块", protected = 1, hide = 1 });
-U1RegisterAddon("Details_EncounterDetails", { title = "首领模块", });
-U1RegisterAddon("Details_RaidCheck", { title = "团队检查模块", });
-U1RegisterAddon("Details_Streamer", { title = "主播模块", });
-U1RegisterAddon("Details_TinyThreat", { title = "威胁值模块", });
-U1RegisterAddon("Details_Vanguard", { title = "坦克模块", });
-U1RegisterAddon("Details_Compare2", { title = "对比模块", });
+U1RegisterAddon("Details_3DModelsPaths", { title = "3D模型列表模块", load = "NORMAL", protected = 1, hide = 1 });
+U1RegisterAddon("Details_DataStorage", { title = "信息存储模块", load = "NORMAL", protected = 1, hide = 1 });
+U1RegisterAddon("Details_EncounterDetails", { title = "首领模块", load = "NORMAL", });
+U1RegisterAddon("Details_RaidCheck", { title = "团队检查模块", load = "NORMAL", });
+U1RegisterAddon("Details_Streamer", {
+    title = "主播模块",
+    load = "NORMAL",
+    optionsAfterVar = 1,
+    {
+        text = "显示选项窗口",
+        callback = function(cfg, v, loading)
+            SlashCmdList.STREAMER("")
+        end,
+    },
+});
+U1RegisterAddon("Details_TinyThreat", { title = "威胁值模块", load = "NORMAL", });
+U1RegisterAddon("Details_Vanguard", { title = "坦克模块", load = "NORMAL", });
+U1RegisterAddon("Details_Compare2", { title = "对比模块", load = "NORMAL", }); --如果没有load就会报错SetPoint
 U1RegisterAddon("Details_ExplosiveOrbs", { title = "爆炸物模块", load = "NORMAL", });
 
 U1RegisterAddon("Details_Covenants", {

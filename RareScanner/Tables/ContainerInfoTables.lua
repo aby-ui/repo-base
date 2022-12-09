@@ -694,18 +694,18 @@ private.CONTAINER_INFO = {
 			  }, reset = true }; --Expedition Scout's Pack
 	[377899] = { zoneID = 2022, artID = { 1706 }, x = 6488, y = 6952, overlay = { "6492-6959" }, reset = false, questID = { 67048 } }; --Hidden Hornswog Hostage
 	[380558] = { zoneID = 2022, artID = { 1706 }, x = 5990, y = 5700, overlay = { "5990-5700" }, reset = false, questID = { 70272 }, prof = 333 }; --Enchanted Debris
-	[380559] = { zoneID = 2022, artID = { 1706 }, x = 5500, y = 8100, overlay = { "5500-8100" }, reset = false, prof = 171 }; --Frostforged Potion
-	[380571] = { zoneID = 2022, artID = { 1706 }, x = 5600, y = 4490, overlay = { "5600-4490" }, reset = false, prof = 202 }; --Boomthyr Rocket
+	[380559] = { zoneID = 2022, artID = { 1706 }, x = 5500, y = 8100, overlay = { "5500-8100" }, reset = false, questID = { 70274 }, prof = 171 }; --Frostforged Potion
+	[380571] = { zoneID = 2022, artID = { 1706 }, x = 5600, y = 4490, overlay = { "5600-4490" }, reset = false, questID = { 70270 }, prof = 202 }; --Boomthyr Rocket
 	[380579] = { zoneID = 2022, artID = { 1706 }, x = 6430, y = 2540, overlay = { "6430-2540" }, reset = false, prof = 165 }; --Spare Djaradin Tools
 	[380580] = { zoneID = 2022, artID = { 1706 }, x = 6800, y = 2680, overlay = { "6800-2680" }, reset = false, questID = { 70283 }, prof = 333 }; --Lava-Infused Seed
-	[380590] = { zoneID = 2022, artID = { 1706 }, x = 2510, y = 7330, overlay = { "2510-7330" }, reset = false, prof = 171 }; --Well Insulated Mug
+	[380590] = { zoneID = 2022, artID = { 1706 }, x = 2510, y = 7330, overlay = { "2510-7330" }, reset = false, questID = { 70289 }, prof = 171 }; --Well Insulated Mug
 	[380591] = { zoneID = 2022, artID = { 1706 }, x = 5040, y = 4510, overlay = { "5040-4510" }, reset = false, questID = { 70292 }, prof = 755 }; --Closely Guarded Shiny
-	[194874] = { zoneID = 2022, artID = { 1706 }, x = 3550, y = 6430, overlay = { "3550-6430" }, reset = false, prof = 164 }; --Singed Chest
-	[380604] = { zoneID = 2022, artID = { 1706 }, x = 7480, y = 3790, overlay = { "7480-3790" }, reset = false, prof = 164 }; --Mysterious Banner
+	[194874] = { zoneID = 2022, artID = { 1706 }, x = 3550, y = 6430, overlay = { "3550-6430" }, reset = false, questID = { 70296 }, prof = 164 }; --Singed Chest
+	[380604] = { zoneID = 2022, artID = { 1706 }, x = 7480, y = 3790, overlay = { "7480-3790" }, reset = false, questID = { 70302 }, prof = 164 }; --Mysterious Banner
 	[380607] = { zoneID = 2022, artID = { 1706 }, x = 2490, y = 6970, overlay = { "2490-6970" }, reset = false, questID = { 70304 }, prof = 197 }; --Itinerant Singed Fabric
 	[380610] = { zoneID = 2022, artID = { 1706 }, x = 6790, y = 5790, overlay = { "6790-5790" }, reset = false, questID = { 70306 }, prof = 773 }; --Pulsing Earth Rune
 	[380615] = { zoneID = 2022, artID = { 1706 }, x = 3900, y = 8600, overlay = { "3900-8600" }, reset = false, prof = 165 }; --Poacher's Pack
-	[380617] = { zoneID = 2022, artID = { 1706 }, x = 3455, y = 6713, overlay = { "3450-6710" }, reset = false, prof = 164 }; --Qalashi Weapon Diagram
+	[380617] = { zoneID = 2022, artID = { 1706 }, x = 3455, y = 6713, overlay = { "3450-6710" }, reset = false, questID = { 70310 }, prof = 164 }; --Qalashi Weapon Diagram
 	[380619] = { zoneID = 2022, artID = { 1706 }, x = 6553, y = 2569, overlay = { "6550-2570" }, reset = false, questID = { 70312 }, prof = 164 }; --Curious Ingots
 	[380643] = { zoneID = 2022, artID = { 1706 }, x = 5750, y = 8360, overlay = { "5750-8360" }, reset = false, questID = { 70320 }, prof = 333 }; --Flashfrozen Scroll
 	[380653] = { zoneID = 2022, artID = { 1706 }, x = 4674, y = 3117, overlay = { "4674-3126" }, reset = false, questID = { 70345 } }; --Yennu's Kite
@@ -721,14 +721,14 @@ private.CONTAINER_INFO = {
 	[381153] = { zoneID = 2022, artID = { 1706 }, x = 6134, y = 7078, overlay = { "6134-7078" }, reset = false, questID = { 70598 } }; --Ruby Gem Cluster
 	[382325] = { zoneID = 2022, artID = { 1706 }, x = 2944, y = 4700, overlay = { "2944-4700" }, reset = false, questID = { 72020 } }; --Onyx Gem Cluster
 	[198660] = { zoneID = 2023, artID = { 1705 }, x = 6180, y = 1300, overlay = { "6180-1300" }, reset = false, questID = { 70263 }, prof = 755 }; --Objects
-	[198692] = { zoneID = 2023, artID = { 1705 }, x = 6110, y = 5290, overlay = { "6110-5290" }, reset = false, prof = 197 }; --Objects
+	[198692] = { zoneID = 2023, artID = { 1705 }, x = 6110, y = 5290, overlay = { "6110-5290" }, reset = false, questID = { 70295 }, prof = 197 }; --Objects
 	[376581] = { zoneID = 2023, artID = { 1705 }, x = 8651, y = 5071, overlay = { "5089-6650","3270-3711","3478-3706","3610-4173","7346-5614","2530-3740","3540-6580","4940-6770","7520-4150","3130-7060","3220-6810","7180-5670","7460-3920","7470-4040","8651-5071","3240-3900","8370-5340","8540-5470","8640-5330" } }; --Clan Chest
 	[377900] = { zoneID = 2023, artID = { 1705 }, x = 3243, y = 3815, overlay = { "3243-3815" }, reset = false, questID = { 67049 } }; --Nokhud Warspear
 	[378010] = { zoneID = 2023, artID = { 1705 }, x = 5328, y = 6891, overlay = { "5328-6891" } }; --Forgotten Dragon Treasure
 	[380577] = { zoneID = 2023, artID = { 1705 }, x = 2520, y = 3540, overlay = { "2520-3540" }, reset = false, questID = { 70282 }, prof = 755 }; --Lofty Malygite
 	[380592] = { zoneID = 2023, artID = { 1705 }, x = 6140, y = 6760, overlay = { "6140-6760" }, reset = false, questID = { 70291 }, prof = 333 }; --Stormbound Horn
 	[380602] = { zoneID = 2023, artID = { 1705 }, x = 8640, y = 5370, overlay = { "8640-5370" }, reset = false, prof = 165 }; --Wind-Blessed Hide
-	[380611] = { zoneID = 2023, artID = { 1705 }, x = 7920, y = 8380, overlay = { "7920-8380" }, reset = false, prof = 171 }; --Canteen of Suspicious Water
+	[380611] = { zoneID = 2023, artID = { 1705 }, x = 7920, y = 8380, overlay = { "7920-8380" }, reset = false, questID = { 70305 }, prof = 171 }; --Canteen of Suspicious Water
 	[380612] = { zoneID = 2023, artID = { 1705 }, x = 8570, y = 2520, overlay = { "8570-2520" }, reset = false, questID = { 70307 }, prof = 773 }; --Sign Language Reference Sheet
 	[380620] = { zoneID = 2023, artID = { 1705 }, x = 8111, y = 3785, overlay = { "8111-3787" }, reset = false, questID = { 70313 }, prof = 164 }; --Ancient Spear Shards
 	[380709] = { zoneID = 2023, artID = { 1705 }, x = 5091, y = 6652, overlay = { "5090-6650" }, reset = false, questID = { 70353 }, prof = 164 }; --Falconer Gauntlet Drawings
@@ -744,16 +744,16 @@ private.CONTAINER_INFO = {
 				[2024] = { x = 3515, y = 3955, artID = { 1707 }, overlay = { "2752-4630","3515-3955" } };
 			  }, reset = true }; --Disturbed Dirt
 	[195373] = { zoneID = 2024, artID = { 1707 }, x = 2654, y = 4629, overlay = { "2654-4629" }, reset = false, questID = { 70441 } }; --Objects
-	[198599] = { zoneID = 2024, artID = { 1707 }, x = 1640, y = 3850, overlay = { "1640-3850" }, reset = false, prof = 171 }; --Objects
+	[198599] = { zoneID = 2024, artID = { 1707 }, x = 1640, y = 3850, overlay = { "1640-3850" }, reset = false, questID = { 70208 }, prof = 171 }; --Objects
 	[198664] = { zoneID = 2024, artID = { 1707 }, x = 4500, y = 6130, overlay = { "4500-6130" }, reset = false, questID = { 70277 }, prof = 755 }; --Objects
-	[198712] = { zoneID = 2024, artID = { 1707 }, x = 6700, y = 1320, overlay = { "6700-1320" }, reset = false, prof = 171 }; --Objects
+	[198712] = { zoneID = 2024, artID = { 1707 }, x = 6700, y = 1320, overlay = { "6700-1320" }, reset = false, questID = { 70309 }, prof = 171 }; --Objects
 	[198799] = { zoneID = 2024, artID = { 1707 }, x = 3850, y = 5920, overlay = { "3850-5920" }, reset = false, questID = { 70336 }, prof = 333 }; --Objects
 	[201016] = { zoneID = 2024, artID = { 1707 }, x = 4460, y = 6120, overlay = { "4460-6120" }, reset = false, questID = { 70271 }, prof = 755 }; --Objects
 	[380547] = { zoneID = 2024, artID = { 1707 }, x = 1670, y = 3880, overlay = { "1670-3880" }, reset = false, prof = 165 }; --Decay-Infused Tanning Oil
 	[380549] = { zoneID = 2024, artID = { 1707 }, x = 4070, y = 5450, overlay = { "4070-5450" }, reset = false, questID = { 70267 }, prof = 197 }; --Intriguing Bolt of Blue Cloth
-	[380554] = { zoneID = 2024, artID = { 1707 }, x = 1250, y = 4940, overlay = { "1250-4940" }, reset = false, prof = 165 }; --Well-Danced Drum
-	[380569] = { zoneID = 2024, artID = { 1707 }, x = 4500, y = 6130, overlay = { "4500-6130" }, reset = false, prof = 755 }; --Crystalline Overgrowth
-	[380583] = { zoneID = 2024, artID = { 1707 }, x = 1620, y = 3880, overlay = { "1620-3880" }, reset = false, prof = 197 }; --Decaying Brackenhide Blanket
+	[380554] = { zoneID = 2024, artID = { 1707 }, x = 1250, y = 4940, overlay = { "1250-4940" }, reset = false, questID = { 70269 }, prof = 165 }; --Well-Danced Drum
+	[380569] = { zoneID = 2024, artID = { 1707 }, x = 4500, y = 6130, overlay = { "4500-6130" }, reset = false, questID = { 70277 }, prof = 755 }; --Crystalline Overgrowth
+	[380583] = { zoneID = 2024, artID = { 1707 }, x = 1620, y = 3880, overlay = { "1620-3880" }, reset = false, questID = { 70284 }, prof = 197 }; --Decaying Brackenhide Blanket
 	[380587] = { zoneID = 2024, artID = { 1707 }, x = 5750, y = 4130, overlay = { "5750-4130" }, reset = false, prof = 165 }; --Crate of Treated Hides
 	[380589] = { zoneID = 2024, artID = { 1707 }, x = 4510, y = 6120, overlay = { "4510-6120" }, reset = false, questID = { 70290 }, prof = 333 }; --Faintly Enchanted Remains
 	[380595] = { zoneID = 2024, artID = { 1707 }, x = 4367, y = 3088, overlay = { "4367-3088" }, reset = false, questID = { 70293 }, prof = 773 }; --Frosted Parchment
@@ -770,7 +770,7 @@ private.CONTAINER_INFO = {
 	[194856] = { zoneID = 2025, artID = { 1708 }, x = 5608, y = 4097, overlay = { "5608-4097" }, reset = false, questID = { 70287 }, prof = 773 }; --Objects
 	[196172] = { zoneID = 2025, artID = { 1708 }, x = 4945, y = 6291, overlay = { "4945-6291" }, questID = { 70611 } }; --Objects
 	[198604] = { zoneID = 2025, artID = { 1708 }, x = 5247, y = 8360, overlay = { "5247-8360" }, questID = { 72355 } }; --Objects
-	[201003] = { zoneID = 2025, artID = { 1708 }, x = 5520, y = 3050, overlay = { "5520-3050" }, reset = false, prof = 171 }; --Objects
+	[201003] = { zoneID = 2025, artID = { 1708 }, x = 5520, y = 3050, overlay = { "5520-3050" }, reset = false, questID = { 70278 }, prof = 171 }; --Objects
 	[201019] = { zoneID = 2025, artID = { 1708 }, x = 5860, y = 4580, overlay = { "5860-4580" }, reset = false, questID = { 70372 }, prof = 197 }; --Objects
 	[376426] = { zoneID = {
 				[2022] = { x = 5540, y = 4500, artID = { 1706 }, overlay = { "3620-8570","5540-4500" } };
@@ -784,7 +784,7 @@ private.CONTAINER_INFO = {
 	[380585] = { zoneID = 2025, artID = { 1708 }, x = 5980, y = 6520, overlay = { "5980-6520" }, reset = false, questID = { 70285 }, prof = 755 }; --Erupted Alexstraszite Cluster
 	[380588] = { zoneID = 2025, artID = { 1708 }, x = 6040, y = 7970, overlay = { "6040-7970" }, reset = false, questID = { 70288 }, prof = 197 }; --Miniature Bronze Dragonflight Banner
 	[380593] = { zoneID = 2025, artID = { 1708 }, x = 5680, y = 3050, overlay = { "5680-3050" }, reset = false, prof = 165 }; --Bag of Decayed Scales
-	[380605] = { zoneID = 2025, artID = { 1708 }, x = 5950, y = 3840, overlay = { "5950-3840" }, reset = false, prof = 171 }; --Contraband Concoction
+	[380605] = { zoneID = 2025, artID = { 1708 }, x = 5950, y = 3840, overlay = { "5950-3840" }, reset = false, questID = { 70301 }, prof = 171 }; --Contraband Concoction
 	[380618] = { zoneID = 2025, artID = { 1708 }, x = 5223, y = 8054, overlay = { "5223-8054" }, reset = false, questID = { 70311 }, prof = 164 }; --Draconic Flux
 	[380652] = { zoneID = 2025, artID = { 1708 }, x = 5990, y = 7040, overlay = { "5990-7040" }, reset = false, questID = { 70342 }, prof = 333 }; --Fractured Titanic Sphere
 	[380867] = { zoneID = 2025, artID = { 1708 }, x = 5260, y = 7673, overlay = { "5260-7673" }, reset = false, questID = { 70408 } }; --Objects

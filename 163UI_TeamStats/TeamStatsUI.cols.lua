@@ -122,7 +122,7 @@ function TS.SetupColumns(f)
         if ShoppingTooltip1:GetOwner() == self then ShoppingTooltip1:Hide() end
         self.line:UnlockHighlight()
     end
-    local DomiSetColor, DomiSetNameLong, _, DomiShardName = U1GetDominationSetData()
+    --local DomiSetColor, DomiSetNameLong, _, DomiShardName = U1GetDominationSetData()
     TS.cols = {
         {
             --复选框

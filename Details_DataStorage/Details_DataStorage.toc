@@ -9,4 +9,5 @@
 Details_DataStorage.lua
 
 
+## Title: |cff880303[爱不易]|r Details 信息存储模块
 ## X-Vendor: AbyUI

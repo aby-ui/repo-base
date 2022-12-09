@@ -64,7 +64,7 @@ if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not isExpansion_Dragonflight()) t
 end
 
 local major = "LibOpenRaid-1.0"
-local CONST_LIB_VERSION = 82
+local CONST_LIB_VERSION = 84
 
 if (not LIB_OPEN_RAID_MAX_VERSION) then
     LIB_OPEN_RAID_MAX_VERSION = CONST_LIB_VERSION
@@ -1586,11 +1586,11 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
 
         --build the table with the gear information
         local playerGearInfo = {}
-        playerGearInfo[#playerGearInfo+1] = itemLevel           --[1]
-        playerGearInfo[#playerGearInfo+1] = gearDurability      --[2]
-        playerGearInfo[#playerGearInfo+1] = weaponEnchant       --[3]
-        playerGearInfo[#playerGearInfo+1] = slotsWithoutEnchant --[4]
-        playerGearInfo[#playerGearInfo+1] = slotsWithoutGems    --[5]
+        playerGearInfo[#playerGearInfo+1] = itemLevel           --[1] - one index
+        playerGearInfo[#playerGearInfo+1] = gearDurability      --[2] - one index
+        playerGearInfo[#playerGearInfo+1] = weaponEnchant       --[3] - one index
+        playerGearInfo[#playerGearInfo+1] = slotsWithoutEnchant --[4] - undefined
+        playerGearInfo[#playerGearInfo+1] = slotsWithoutGems    --[5] - undefined
 
         return playerGearInfo
     end

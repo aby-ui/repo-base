@@ -2374,7 +2374,7 @@ function StreamOverlay:OnEvent (_, event, ...)
 				local MINIMAL_DETAILS_VERSION_REQUIRED = 80
 				
 				local default_options_table = {
-
+					enabled = false, --abyui /run table.wipe(_detalhes.plugin_database.DETAILS_PLUGIN_STREAM_OVERLAY)  Details_StreamerDB = nil ReloadUI()
 					use_square_mode = false,
 					square_size = 32,
 					square_amount = 5,

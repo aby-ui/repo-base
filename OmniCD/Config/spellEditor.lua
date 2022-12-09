@@ -13,7 +13,6 @@ local defaultBackup = {}
 local classValues = {}
 local specIDs = {}
 
-
 for i = 1, MAX_CLASSES do
 	local class = CLASS_SORT_ORDER[i]
 	classValues[class] = format("|T%s:18|t %s", "Interface\\Icons\\ClassIcon_" .. class, LOCALIZED_CLASS_NAMES_MALE[class])
@@ -41,13 +40,17 @@ function E:UpdateSpell(id, isInit, oldClass, oldType)
 	local vclass, vtype, force
 	if v then
 		vclass, vtype = v.class, v.type
+
 		if class ~= vclass then
+
 			if class then
 				tremove(self.spell_db[class], i)
+
 			else
 				force = true
 			end
 			self.spell_db[vclass][#self.spell_db[vclass] + 1] = v
+
 		elseif not v.custom and not defaultBackup[id] then
 			defaultBackup[id] = self:DeepCopy(self.spell_db[class][i])
 			self.spell_db[class][i] = v
@@ -55,6 +58,7 @@ function E:UpdateSpell(id, isInit, oldClass, oldType)
 				self.Cooldowns:RegisterRemoveHighlightByCLEU(v.buff or id)
 			end
 			return
+
 		else
 			self.spell_db[class][i] = v
 		end
@@ -64,9 +68,11 @@ function E:UpdateSpell(id, isInit, oldClass, oldType)
 		end
 	else
 		v = defaultBackup[id]
+
 		if v then
 			vclass, vtype = v.class, v.type
 			self.spell_db[class][i] = self:DeepCopy(v)
+
 		else
 			tremove(self.spell_db[class], i)
 		end
@@ -99,7 +105,6 @@ local isOthersCategory = function(info)
 	local id = GetSpellID(info)
 	return E.OTHER_SORT_ORDER[OmniCDDB.cooldowns[id].class]
 end
-
 
 local isClassCategory = function(info)
 	local id = GetSpellID(info)
@@ -300,12 +305,14 @@ local customSpellInfo = {
 		get = getItem,
 		set = setItem,
 	},
-
-
-
-
-
-
+	--[[
+	tt = {
+		hidden = isClassCategory,
+		name = "\n" .. L["Toggle \"Show Spell ID in Tooltips\" to retrieve item IDs"],
+		order = 13,
+		type = "description",
+	},
+	]]
 	lb3 = {
 		name = "", order = 14, type = "description",
 	},
@@ -555,10 +562,13 @@ local SpellEditor = {
 				tooltipID = {
 					order = 1,
 					name = L["Show Spell ID in Tooltips"],
+					desc = L["Tooltips will be enabled for this login session only."],
+					descStyle = "inline",
+					width = "full",
 					type = "toggle",
-					get = function() return E.profile.tooltipID end,
+					get = function() return E.TooltipID.enabled end,
 					set = function(_, state)
-						E.profile.tooltipID = state
+						E.TooltipID.enabled = state
 						E.TooltipID:SetHooks()
 					end,
 				},

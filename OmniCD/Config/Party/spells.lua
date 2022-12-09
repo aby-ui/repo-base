@@ -32,7 +32,6 @@ P.setSpell = function(info, state)
 
 	if db == E.db then
 		P:UpdateEnabledSpells()
-
 		P:Refresh()
 	end
 end
@@ -131,20 +130,6 @@ local spells = {
 			func = clearAllDefault,
 			confirm = E.ConfirmAction,
 		},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		showForbearanceCounter = {
 			hidden = E.isClassicEra or isRaidCdSubcategory,
 			name = L["Show Forbearance CD"],
@@ -276,7 +261,6 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					t[sId].order = order
 				else
 					local icon, name = v.icon, v.name
-
 					local link = E.isClassicEra and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
 					t[sId] = {
@@ -335,7 +319,6 @@ function P:AddSpellPickerSpells()
 
 					local spellID, icon, name = v.spellID, v.icon, v.name
 					local sId = tostring(spellID)
-
 					local link = E.isClassicEra and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
 					t[vtype].args[sId] = {

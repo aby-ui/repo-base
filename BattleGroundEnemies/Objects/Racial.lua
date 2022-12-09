@@ -84,7 +84,7 @@ local racial = BattleGroundEnemies:NewButtonModule({
 	defaultSettings = defaultSettings,
 	options = options,
 	events = {"SPELL_CAST_SUCCESS"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 function racial:AttachToPlayerButton(playerButton)

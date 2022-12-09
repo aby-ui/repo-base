@@ -49,7 +49,7 @@ local castBar = BattleGroundEnemies:NewButtonModule({
 		Width = "Fixed"
 	},
 	events = {"UnitIdUpdate"},
-	expansions = "All"
+	enabledInThisExpansion = true
 })
 
 local settingToTemplate = {
