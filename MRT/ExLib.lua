@@ -725,7 +725,7 @@ function Templates:ExRTButtonModernTemplate(parent,isSecure)
 
 	self.Texture = self:CreateTexture(nil,"BACKGROUND")
 	self.Texture:SetColorTexture(1,1,1,1)
-	if ExRT.is10 then
+	if ExRT.is10 or ExRT.isLK1 then
 		self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
 	else
 		self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)
@@ -1530,7 +1530,7 @@ do
 		return self
 	end
 	local function Widget_Gradient(self,...)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			self:SetGradient(...,CreateColor(select(2,...)), CreateColor(select(6,...)))
 		else
 			self:SetGradientAlpha(...)
@@ -2156,7 +2156,7 @@ do
 
 		tip.gradientTexture = tip:CreateTexture()
 		tip.gradientTexture:SetColorTexture(1,1,1,1)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			tip.gradientTexture:SetGradient("VERTICAL",CreateColor(0,0,0,0), CreateColor(.8,.8,.8,.2))
 		else
 			tip.gradientTexture:SetGradientAlpha("VERTICAL",0,0,0,0,.8,.8,.8,.2)
@@ -2801,7 +2801,7 @@ do
 		local self = ELib:Template(template,parent) or CreateFrame("EditBox",nil,parent,template or (BackdropTemplateMixin and "BackdropTemplate"))
 		if not template then
 			local GameFontNormal_Font = GameFontNormal:GetFont()
-			if ExRT.is10 then
+			if ExRT.is10 or ExRT.isLK1 then
 				self:SetFont(GameFontNormal_Font,12,"")
 			else
 				self:SetFont(GameFontNormal_Font,12)
@@ -3102,7 +3102,7 @@ do
 		return self
 	end
 	local function Widget_SetVertical(self)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			self.Texture:SetGradient("HORIZONTAL",CreateColor(0.20,0.21,0.25,1), CreateColor(0.05,0.06,0.09,1))
 		else
 			self.Texture:SetGradientAlpha("HORIZONTAL",0.20,0.21,0.25,1, 0.05,0.06,0.09,1)
@@ -6218,7 +6218,7 @@ function ELib:DecorationLine(parent,isGradient,layer,layerCounter)
 
 	if isGradient then
 		self:SetColorTexture(1,1,1,1)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			self:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
 		else
 			self:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)

@@ -1,6 +1,10 @@
 local GlobalAddonName, ExRT = ...
 
 ExRT.Options.Changelog = [=[
+v.4710
+* 10.0.2 Update
+* Fixes
+
 v.4700
 * Raid cooldowns: updated all classes for DF
 * Marks Bar: fixed world markers buttons

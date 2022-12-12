@@ -2041,14 +2041,18 @@ do
       cdReadyFrame:SetScript("OnUpdate", nil)
 
       Private.StartProfileSystem("generictrigger cd tracking");
-      if(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
+      if type(event) == "number" then-- Called from OnUpdate!
+        Private.CheckSpellKnown()
+        Private.CheckCooldownReady()
+        Private.CheckItemSlotCooldowns()
+      elseif(event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES"
         or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE"
         or event == "CHARACTER_POINTS_CHANGED" or event == "RUNE_TYPE_UPDATE") then
         Private.CheckCooldownReady();
       elseif(event == "SPELLS_CHANGED") then
-        Private.CheckSpellKnown();
-        Private.CheckCooldownReady();
+        Private.CheckSpellKnown()
+        Private.CheckCooldownReady()
       elseif(event == "UNIT_SPELLCAST_SENT") then
         local unit, guid, castGUID, name = ...;
         if(unit == "player") then
@@ -3530,6 +3534,7 @@ end
 -- Cast Latency
 do
   local castLatencyFrame
+
   function WeakAuras.WatchForCastLatency()
     if not castLatencyFrame then
       castLatencyFrame = CreateFrame("Frame")
@@ -3537,35 +3542,37 @@ do
       castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
-
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 
       -- on dragonflight UNIT_SPELLCAST_EMPOWER_START and UNIT_SPELLCAST_EMPOWER_STOP OnEvent are
       -- triggered from cacheEmpoweredFrame after updating cache use by WeakAuras.UnitChannelInfo
 
       castLatencyFrame:SetScript("OnEvent", function(self, event)
-        if event == "UNIT_SPELLCAST_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitCastingInfo("player")) / 1000
-        elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitChannelInfo("player")) / 1000
-        elseif event == "UNIT_SPELLCAST_EMPOWER_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitChannelInfo("player")) / 1000
-        elseif event == "CURRENT_SPELL_CAST_CHANGED" then
-          -- We want to store the CURRENT_SPELL_CAST_CHANGED time
-          -- that was the last before the actual START event
-          -- This prevents updating the CURRENT_SPELL_CAST_CHANGED time after
-          -- we got the start time
-          if not Private.LAST_CURRENT_SPELL_CAST_START then
-            Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
-          end
-        else -- STOP EVENTS
-          Private.LAST_CURRENT_SPELL_CAST_START = nil
+        if event == "CURRENT_SPELL_CAST_CHANGED" then
+          castLatencyFrame.sendTime = GetTime()
+          return
+        end
+        if event == "UNIT_SPELLCAST_SUCCEEDED" then
+          castLatencyFrame.sendTime = nil
+          return
+        end
+
+        if castLatencyFrame.sendTime then
+          castLatencyFrame.timeDiff = (GetTime() - castLatencyFrame.sendTime)
+        else
+          castLatencyFrame.timeDiff = nil
         end
       end)
     end
   end
+
+  function WeakAuras.GetCastLatency()
+    return castLatencyFrame.timeDiff
+  end
+
 end
 
 do
@@ -3757,6 +3764,13 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
   return false
 end
 
+function GenericTrigger.GetTsuConditionVariables(id, triggernum)
+  local ok, variables = xpcall(events[id][triggernum].tsuConditionVariables, Private.GetErrorHandlerId(id, L["Custom Variables"]));
+  if ok then
+    return variables
+  end
+end
+
 --- Returns a table containing the names of all overlays
 --- @param data table
 --- @param triggernum number
@@ -3779,7 +3793,7 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
   if (trigger.type == "custom") then
     if (trigger.custom_type == "stateupdate") then
       local count = 0;
-      local variables = events[data.id][triggernum].tsuConditionVariables();
+      local variables = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
       if (type(variables) == "table") then
         if (type(variables.additionalProgress) == "table") then
           count = #variables.additionalProgress;
@@ -3934,7 +3948,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
     end
   else
     if (trigger.custom_type == "stateupdate") then
-      local variables = events[data.id][triggernum].tsuConditionVariables();
+      local variables = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
       if (type(variables) == "table") then
         for var, varData in pairs(variables) do
           if (type(varData) == "table") then
@@ -4123,7 +4137,7 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
     elseif (trigger.custom_type == "stateupdate") then
       if (events[data.id][triggernum] and events[data.id][triggernum].tsuConditionVariables) then
         Private.ActivateAuraEnvironment(data.id, nil, nil, nil, true)
-        local result = events[data.id][triggernum].tsuConditionVariables()
+        local result = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
         Private.ActivateAuraEnvironment(nil)
         if (type(result)) ~= "table" then
           return nil;

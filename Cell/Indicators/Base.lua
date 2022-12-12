@@ -718,7 +718,7 @@ function I:CreateAura_Bar(name, parent)
     bar:Hide()
     bar.indicatorType = "bar"
 
-    bar.stack = bar.border:CreateFontString(nil, "OVERLAY")
+    bar.stack = bar:CreateFontString(nil, "OVERLAY")
 
     bar.SetFont = Bar_SetFont
     bar.SetCooldown = Bar_SetCooldown

@@ -65,7 +65,7 @@ local function CreateSetting_Enabled(parent)
     return widget
 end
 
-local points = {"BOTTOM", "BOTTOMLEFT", "BOTTOMRIGHT", "CENTER", "LEFT", "RIGHT", "TOP", "TOPLEFT", "TOPRIGHT"}
+local anchorPoints = {"BOTTOM", "BOTTOMLEFT", "BOTTOMRIGHT", "CENTER", "LEFT", "RIGHT", "TOP", "TOPLEFT", "TOPRIGHT"}
 local function CreateSetting_Position(parent, relativeToText)
     local widget
 
@@ -76,7 +76,7 @@ local function CreateSetting_Position(parent, relativeToText)
         widget.anchor = addon:CreateDropdown(widget, 110)
         widget.anchor:SetPoint("TOPLEFT", 5, -20)
         local items = {}
-        for _, point in pairs(points) do
+        for _, point in pairs(anchorPoints) do
             tinsert(items, {
                 ["text"] = L[point],
                 ["value"] = point,
@@ -94,7 +94,7 @@ local function CreateSetting_Position(parent, relativeToText)
         widget.relativeTo = addon:CreateDropdown(widget, 110)
         widget.relativeTo:SetPoint("LEFT", widget.anchor, "RIGHT", 25, 0)
         items = {}
-        for _, point in pairs(points) do
+        for _, point in pairs(anchorPoints) do
             tinsert(items, {
                 ["text"] = L[point],
                 ["value"] = point,
@@ -135,6 +135,83 @@ local function CreateSetting_Position(parent, relativeToText)
         end
     else
         widget = settingWidgets["position"]
+    end
+    
+    widget.relativeToText:SetText(relativeToText)
+    widget:Show()
+    return widget
+end
+
+local anchorPoints_noHCenter = {"BOTTOMLEFT", "BOTTOMRIGHT", "LEFT", "RIGHT", "TOPLEFT", "TOPRIGHT"}
+local function CreateSetting_PositionNoHCenter(parent, relativeToText)
+    local widget
+
+    if not settingWidgets["position_noHCenter"] then
+        widget = addon:CreateFrame("CellIndicatorSettings_PositionNoHCenter", parent, 240, 95)
+        settingWidgets["position_noHCenter"] = widget
+
+        widget.anchor = addon:CreateDropdown(widget, 110)
+        widget.anchor:SetPoint("TOPLEFT", 5, -20)
+        local items = {}
+        for _, point in pairs(anchorPoints_noHCenter) do
+            tinsert(items, {
+                ["text"] = L[point],
+                ["value"] = point,
+                ["onClick"] = function()
+                    widget.func({point, widget.relativeTo:GetSelected(), widget.x:GetValue(), widget.y:GetValue()})
+                end,
+            })
+        end
+        widget.anchor:SetItems(items)
+
+        widget.anchorText = widget:CreateFontString(nil, "OVERLAY", font_name)
+        widget.anchorText:SetText(L["Anchor Point"])
+        widget.anchorText:SetPoint("BOTTOMLEFT", widget.anchor, "TOPLEFT", 0, 1)
+
+        widget.relativeTo = addon:CreateDropdown(widget, 110)
+        widget.relativeTo:SetPoint("LEFT", widget.anchor, "RIGHT", 25, 0)
+        items = {}
+        for _, point in pairs(anchorPoints_noHCenter) do
+            tinsert(items, {
+                ["text"] = L[point],
+                ["value"] = point,
+                ["onClick"] = function()
+                    widget.func({widget.anchor:GetSelected(), point, widget.x:GetValue(), widget.y:GetValue()})
+                end,
+            })
+        end
+        widget.relativeTo:SetItems(items)
+
+        widget.relativeToText = widget:CreateFontString(nil, "OVERLAY", font_name)
+        widget.relativeToText:SetText(L["To UnitButton's"])
+        widget.relativeToText:SetPoint("BOTTOMLEFT", widget.relativeTo, "TOPLEFT", 0, 1)
+        
+        widget.x = addon:CreateSlider(L["X Offset"], widget, -100, 100, 110, 1)
+        widget.x:SetPoint("TOPLEFT", widget.anchor, "BOTTOMLEFT", 0, -25)
+        widget.x.afterValueChangedFn = function(value)
+            widget.func({widget.anchor:GetSelected(), widget.relativeTo:GetSelected(), value, widget.y:GetValue()})
+        end
+        
+        widget.y = addon:CreateSlider(L["Y Offset"], widget, -100, 100, 110, 1)
+        widget.y:SetPoint("TOPLEFT", widget.relativeTo, "BOTTOMLEFT", 0, -25)
+        widget.y.afterValueChangedFn = function(value)
+            widget.func({widget.anchor:GetSelected(), widget.relativeTo:GetSelected(), widget.x:GetValue(), value})
+        end
+        
+        -- associate db
+        function widget:SetFunc(func)
+            widget.func = func
+        end
+        
+        -- show db value
+        function widget:SetDBValue(positionTable)
+            widget.anchor:SetSelected(L[positionTable[1]])
+            widget.relativeTo:SetSelected(L[positionTable[2]])
+            widget.x:SetValue(positionTable[3])
+            widget.y:SetValue(positionTable[4])
+        end
+    else
+        widget = settingWidgets["position_noHCenter"]
     end
     
     widget.relativeToText:SetText(relativeToText)
@@ -277,7 +354,7 @@ local function CreateSetting_SizeBar(parent)
             widget.func({value, widget.height:GetValue()})
         end
         
-        widget.height = addon:CreateSlider(L["Height"], widget, 1, 50, 110, 1)
+        widget.height = addon:CreateSlider(L["Height"], widget, 3, 50, 110, 1)
         widget.height:SetPoint("LEFT", widget.width, "RIGHT", 25, 0)
         widget.height.afterValueChangedFn = function(value)
             widget.func({widget.width:GetValue(), value})
@@ -4036,6 +4113,8 @@ function addon:CreateIndicatorSettings(parent, settingsTable)
             tinsert(widgetsTable, CreateSetting_Enabled(parent))
         elseif setting == "position" then
             tinsert(widgetsTable, CreateSetting_Position(parent, L["To UnitButton's"]))
+        elseif setting == "position-noHCenter" then
+            tinsert(widgetsTable, CreateSetting_PositionNoHCenter(parent, L["To UnitButton's"]))
         elseif setting == "namePosition" then
             tinsert(widgetsTable, CreateSetting_Position(parent, L["To HealthBar's"]))
         elseif setting == "anchor" then

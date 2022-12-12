@@ -19,7 +19,7 @@
         <Texture parentKey="Icon" file="Interface\Addons\RareScanner\Media\Icons\OriginalSkull.blp">
           <Size x="20" y="20"/>
           <Anchors>
-            <Anchor point="TOPLEFT" x="6" y="-6"/>
+            <Anchor point="TOPLEFT" x="7.2" y="-6"/>
           </Anchors>
         </Texture>
       </Layer>

@@ -3,7 +3,7 @@
 ## Notes: A main actionbar replacement
 ## Notes-zhCN: 一种动作条替换方案
 ## Author: Tuller
-## Version: 10.0.12
+## Version: 10.0.13-beta2
 ## SavedVariables: DominosDB
 ## OptionalDeps: Ace3, LibKeyBound-1.0, LibSharedMedia-3.0, Masque, FlyPaper, LibDualSpec-1.0
 # stuff required for the addon to work
@@ -24,14 +24,15 @@ core\tooltipController.lua
 core\blizzardHider.lua
 #core\blizzardHider.classic.lua
 # builtin bars
+bars\actionBar\flyout.lua
 bars\actionBar\actionButtonMap.lua
 bars\actionBar\button.lua
 bars\actionBar\bar.lua
 bars\actionBar\menu.lua
 bars\actionBar\module.lua
 bars\bagBar.lua
-bars\extraAbilityBar.lua
-bars\encounterBar.lua
+# bars\extraAbilityBar.lua
+# bars\encounterBar.lua
 bars\menuBar.lua
 bars\petBar.lua
 #bars\petBar.classic.lua
@@ -39,7 +40,7 @@ bars\possessBar.lua
 bars\queueStatusBar.lua
 bars\stanceBar.lua
 #bars\stanceBar.classic.lua
-bars\talkingHeadBar.lua
+# bars\talkingHeadBar.lua
 bars\totemBar.lua
 # stuff you should be able to comment out and still have Dominos work
 plugins\slashCommands.lua

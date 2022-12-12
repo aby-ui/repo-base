@@ -83,6 +83,7 @@ module.db.socketsBonusIDs = {
 local IS_LOW = UnitLevel'player' < 50
 local IS_BFA = UnitLevel'player' < 60
 local IS_SL = UnitLevel'player' >= 60
+local IS_DF = UnitLevel'player' >= 70 and not ExRT.isClassic
 
 module.db.topEnchGems = IS_SL and {
 	[6202]="cloak:stamina:speed",
@@ -138,6 +139,36 @@ module.db.topEnchGems = IS_SL and {
 	[187061]="Gem:SoD:Blood",
 	[187059]="Gem:SoD:Blood",
 	[187057]="Gem:SoD:Blood",
+
+	[192991]=true,
+	[192985]=true,
+	[192982]=true,
+	[192988]=true,
+
+	[192945]=true,
+	[192952]=true,
+	[192948]=true,
+	[192955]=true,
+
+	[192961]=true,
+	[192958]=true,
+	[192964]=true,
+	[192967]=true,
+
+	[192919]=true,
+	[192925]=true,
+	[192922]=true,
+	[192928]=true,
+
+	[192935]=true,
+	[192932]=true,
+	[192938]=true,
+	[192942]=true,
+
+	[192973]=true,
+	[192970]=true,
+	[192976]=true,
+	[192979]=true,
 } or {
 	--[5938]="Ring:Crit:27",
 	--[5939]="Ring:Haste:27",
@@ -205,7 +236,10 @@ module.db.topEnchGems = IS_SL and {
 
 
 module.db.achievementsList = {
-	{	--SotFO
+	{	--VotI
+		L.S_ZoneT29VotI,
+		17110,17111,17112,16343,16346,16347,16348,16349,16350,16351,16352,16353,17107,17108,
+	},{	--SotFO
 		L.S_ZoneT28SFO,
 		15493,15492,15416,15418,15478,15479,15480,15481,15482,15483,15484,15485,15486,15487,15488,15489,15470,15471,
 	},{	--SoD
@@ -283,7 +317,9 @@ module.db.achievementsList = {
 	},
 }
 module.db.achievementsList_statistic = {
-	{	--SotFO
+	{	--VotI
+
+	},{	--SotFO
 
 	},{	--SoD
 		
@@ -595,6 +631,10 @@ function module.options:Load()
 	if IS_BFA then
 		colorizeLowIlvl630 = 100
 		colorizeLowIlvl685 = 120
+	end
+	if IS_DF then
+		colorizeLowIlvl630 = 376
+		colorizeLowIlvl685 = 398
 	end
 
 	self.chkItemsTrackDropDown = ELib:DropDown(self,300,6):Point(50,0):Size(50)
@@ -1039,11 +1079,11 @@ function module.options:Load()
 									icon.text:SetText("|c"..(itemColor or "ffffffff")..(itemLevel or ""))
 
 									if not ExRT.isClassic and (
-										(enchantID == 0 and ((slotID == 2 and IS_LOW) or (slotID == 15 and IS_LOW) or slotID == 11 or slotID == 12 or (slotID == 16) or (slotID == 17 and module.db.specHasOffhand[spec or 0]) or (slotID == 15 and IS_SL) or (slotID == 8 and module:GetSpecMainStat(spec)=="agi" and IS_SL) or (slotID == 9 and module:GetSpecMainStat(spec)=="int" and IS_SL) or (slotID == 10 and module:GetSpecMainStat(spec)=="str" and IS_SL) or (slotID == 5 and IS_SL)) and module.db.colorizeNoEnch) or
+										(enchantID == 0 and ((slotID == 2 and IS_LOW) or (slotID == 15 and IS_LOW) or slotID == 11 or slotID == 12 or (slotID == 16) or (slotID == 17 and module.db.specHasOffhand[spec or 0]) or (slotID == 15 and IS_SL) or (slotID == 8 and ((module:GetSpecMainStat(spec)=="agi" and IS_SL) or IS_DF)) or (slotID == 9 and ((module:GetSpecMainStat(spec)=="int" and IS_SL) or IS_DF)) or (slotID == 10 and ((module:GetSpecMainStat(spec)=="str" and IS_SL) or IS_DF)) or (slotID == 5 and IS_SL)) and module.db.colorizeNoEnch) or
 										(items_ilvl[slotID] and items_ilvl[slotID] > 0 and items_ilvl[slotID] < colorizeLowIlvl630 and module.db.colorizeLowIlvl) or
 										(module.db.colorizeNoGems and ExRT.F.IsBonusOnItem(item,module.db.socketsBonusIDs) and IsItemHasNotGem(item)) or 
 										(module.db.colorizeNoGems and (slotID == 16 or slotID == 17) and itemQuality == 6 and IsArtifactItemHasNot3rdGem(item)) or 
-										(module.db.colorizeNoTopEnchGems and not IsTopEnchAndGems(item) and ((slotID == 2 and IS_LOW) or (slotID == 15 and IS_LOW) or slotID == 11 or slotID == 12 or (slotID == 16) or (slotID == 17 and module.db.specHasOffhand[spec or 0]) or (slotID == 15 and IS_SL) or (slotID == 8 and module:GetSpecMainStat(spec)=="agi" and IS_SL) or (slotID == 9 and module:GetSpecMainStat(spec)=="int" and IS_SL) or (slotID == 10 and module:GetSpecMainStat(spec)=="str" and IS_SL) or (slotID == 5 and IS_SL))) or
+										(module.db.colorizeNoTopEnchGems and not IsTopEnchAndGems(item) and ((slotID == 2 and IS_LOW) or (slotID == 15 and IS_LOW) or slotID == 11 or slotID == 12 or (slotID == 16) or (slotID == 17 and module.db.specHasOffhand[spec or 0]) or (slotID == 15 and IS_SL) or (slotID == 8 and ((module:GetSpecMainStat(spec)=="agi" and IS_SL) or IS_DF)) or (slotID == 9 and ((module:GetSpecMainStat(spec)=="int" and IS_SL) or IS_DF)) or (slotID == 10 and ((module:GetSpecMainStat(spec)=="str" and IS_SL) or IS_DF)) or (slotID == 5 and IS_SL))) or
 										(items_ilvl[slotID] and items_ilvl[slotID] > 0 and items_ilvl[slotID] < colorizeLowIlvl685 and module.db.colorizeLowIlvl685)
 									) then
 										icon.border:Show()
@@ -1435,13 +1475,13 @@ function module.options:Load()
 
 					local cR,cG,cB = ExRT.F.classColorNum(class)
 					if name and UnitName(name) then
-						if ExRT.is10 then
+						if ExRT.is10 or ExRT.isLK1 then
 							line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0.5), CreateColor(cR,cG,cB, 0))
 						else
 							line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0.5, cR,cG,cB, 0)
 						end
 					else
-						if ExRT.is10 then
+						if ExRT.is10 or ExRT.isLK1 then
 							line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0), CreateColor(cR,cG,cB, 0.5))
 						else
 							line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0, cR,cG,cB, 0.5)
@@ -1475,7 +1515,7 @@ function module.options:Load()
 
 					line.apinfo:SetText("")
 
-					if ExRT.is10 then
+					if ExRT.is10 or ExRT.isLK1 then
 						line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 0.5), CreateColor(0, 0, 0, 0))
 					else
 						line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 0.5, 0, 0, 0, 0)
@@ -1562,13 +1602,13 @@ function module.options:Load()
 						local class = data.class
 						local cR,cG,cB = ExRT.F.classColorNum(class)
 						if name and UnitName(name) then
-							if ExRT.is10 then
+							if ExRT.is10 or ExRT.isLK1 then
 								line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0.5), CreateColor(cR,cG,cB, 0))
 							else
 								line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0.5, cR,cG,cB, 0)
 							end
 						else
-							if ExRT.is10 then
+							if ExRT.is10 or ExRT.isLK1 then
 								line.back:SetGradient("HORIZONTAL",CreateColor(cR,cG,cB, 0), CreateColor(cR,cG,cB, 0.5))
 							else
 								line.back:SetGradientAlpha("HORIZONTAL", cR,cG,cB, 0, cR,cG,cB, 0.5)
@@ -1672,7 +1712,7 @@ function module.options:Load()
 							end
 						end
 					else
-						if ExRT.is10 then
+						if ExRT.is10 or ExRT.isLK1 then
 							line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 0.5), CreateColor(0, 0, 0, 0))
 						else
 							line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 0.5, 0, 0, 0, 0)
@@ -2016,7 +2056,7 @@ function module.options:Load()
 		line.back:SetPoint("TOPLEFT",0,0)
 		line.back:SetPoint("BOTTOMRIGHT",0,0)
 		line.back:SetColorTexture(1, 1, 1, 1)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 1), CreateColor(0, 0, 0, 0))
 		else
 			line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 1, 0, 0, 0, 0)
@@ -2133,7 +2173,7 @@ function module.options:Load()
 		line.back:SetPoint("TOPLEFT",0,0)
 		line.back:SetPoint("BOTTOMRIGHT",0,0)
 		line.back:SetColorTexture(1, 1, 1, 1)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			line.back:SetGradient("HORIZONTAL",CreateColor(0, 0, 0, 1), CreateColor(0, 0, 0, 0))
 		else
 			line.back:SetGradientAlpha("HORIZONTAL", 0, 0, 0, 1, 0, 0, 0, 0)

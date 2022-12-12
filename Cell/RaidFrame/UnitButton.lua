@@ -27,8 +27,8 @@ local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsGhost = UnitIsGhost
 local UnitPowerType = UnitPowerType
 local UnitPowerMax = UnitPowerMax
-local UnitInRange = UnitInRange
-local UnitIsVisible = UnitIsVisible
+-- local UnitInRange = UnitInRange
+-- local UnitIsVisible = UnitIsVisible
 local SetRaidTargetIconTexture = SetRaidTargetIconTexture
 local GetTime = GetTime
 local GetRaidTargetIndex = GetRaidTargetIndex
@@ -946,7 +946,7 @@ local function UnitButton_UpdateBuffs(self)
         local duration = auraInfo.duration
         local source = auraInfo.sourceUnit
         local spellId = auraInfo.spellId
-        local attribute = auraInfo.points[1] -- UnitAura:arg16
+        -- local attribute = auraInfo.points[1] -- UnitAura:arg16
 
         if duration then
             if Cell.vars.iconAnimation == "duration" then
@@ -1675,6 +1675,7 @@ local function UnitButton_UpdateThreatBar(self)
     end
 end
 
+--[[
 local LRC = LibStub:GetLibrary("LibRangeCheck-2.0")
 -- BUG: seems not right on a dead unit
 -- local checker
@@ -1702,31 +1703,13 @@ else
         return (maxRangeIfVisible and maxRangeIfVisible <= 40) or false
     end
 end
-
+]]
 
 local function UnitButton_UpdateInRange(self)
     local unit = self.state.displayedUnit
     if not unit then return end
 
-    local inRange = checker(unit)
-
-    -- if checker then
-    --     inRange = (UnitIsVisible(unit) and checker(unit)) or false
-    -- end
-
-    --[[
-    if F:UnitInGroup(unit) then
-         -- NOTE: UnitInRange only works with group members
-        local checked
-        inRange, checked = UnitInRange(unit)
-        if not checked then
-            inRange = UnitIsVisible(unit)
-        end
-    else
-        local minRangeIfVisible, maxRangeIfVisible = LRC:GetRange(unit, true)
-        inRange = maxRangeIfVisible and maxRangeIfVisible <= 40
-    end
-    ]]
+    local inRange = F:IsInRange(unit)
 
     self.state.inRange = inRange
     if Cell.loaded then
@@ -2887,7 +2870,7 @@ function F:UnitButton_OnLoad(button)
     -- P:Point(powerBar, "BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
     powerBar:SetStatusBarTexture(Cell.vars.texture)
     powerBar:GetStatusBarTexture():SetDrawLayer("ARTWORK", -6)
-    powerBar:SetFrameLevel(6)
+    powerBar:SetFrameLevel(5)
 
     local gapTexture = button:CreateTexture(nil, "BORDER")
     button.widget.gapTexture = gapTexture
@@ -3044,7 +3027,7 @@ function F:UnitButton_OnLoad(button)
     overlayFrame:SetAllPoints(button)
 
     -- aggro bar
-    local aggroBar = Cell:CreateStatusBar(name.."AggroBar", overlayFrame, 18, 2, 100, true)
+    local aggroBar = Cell:CreateStatusBar(name.."AggroBar", overlayFrame, 20, 4, 100, true)
     button.indicators.aggroBar = aggroBar
     -- aggroBar:SetPoint("BOTTOMLEFT", overlayFrame, "TOPLEFT", 1, 0)
     aggroBar:Hide()

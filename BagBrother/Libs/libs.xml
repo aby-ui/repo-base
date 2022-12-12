@@ -1,0 +1,21 @@
+<Ui>
+	<!--<Include file="TaintLess\TaintLess.xml"/>-->
+
+	<!--<Script file="LibStub\LibStub.lua"/>-->
+	<!--<Script file="CallbackHandler-1.0\CallbackHandler-1.0.lua"/>-->
+	<!--<Script file="AceEvent-3.0\AceEvent-3.0.lua"/>-->
+	<!--<Script file="AceLocale-3.0\AceLocale-3.0.lua"/>-->
+	<Script file="WildAddon-1.0\WildAddon-1.0.lua"/>
+
+	<Script file="MutexDelay-1.0\MutexDelay-1.0.lua"/>
+	<Include file="Poncho-2.0\Poncho-2.0.xml"/>
+	<Include file="Sushi-3.1\Sushi-3.1.xml"/>
+	
+	<Include file="C_Everywhere\C_Everywhere.xml"/>
+	<Include file="Unfit-1.0\Unfit-1.0.xml"/>
+	<Script file="CustomSearch-1.0\CustomSearch-1.0.lua"/>
+	<Include file="ItemSearch-1.3\ItemSearch-1.3.xml"/>
+
+	<Script file="LibItemCache-2.0\LibItemCache-2.0.lua"/>
+	<!--<Script file="LibDataBroker-1.1\LibDataBroker-1.1.lua"/>-->
+</Ui>

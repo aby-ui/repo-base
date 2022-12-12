@@ -15,7 +15,7 @@ GNU General Public License for more details.
 This file is part of C_Everywhere.
 --]]
 
-local C = LibStub:NewLibrary('C_Everywhere', 3)
+local C = LibStub:NewLibrary('C_Everywhere', 4)
 if C then
   wipe(C)
 else
@@ -79,3 +79,24 @@ pack(C.Container, 'GetContainerItemQuestInfo', 'isQuestItem, questID, isActive')
 pack(C.CurrencyInfo, 'GetBackpackCurrencyInfo', 'name, quantity, iconFileID, currencyTypesID')
 pack(C.CurrencyInfo, 'GetCurrencyInfo', 'name, quantity, iconFileID, quantityEarnedThisWeek, maxWeeklyQuantity, maxQuantity, discovered, quality')
 pack(C.CurrencyInfo, 'GetCurrencyListInfo', 'name, isHeader, isHeaderExpanded, isTypeUnused, isShowInBackpack, quantity, iconFileID, maxQuantity, canEarnPerWeek, quantityEarnedThisWeek, discovered')
+
+if not C_TooltipInfo then
+  local tip = C_EverywhereTip or CreateFrame('GameTooltip', 'C_EverywhereTip', UIParent, 'GameTooltipTemplate')
+  local meta = getmetatable(tip).__index
+  tip:SetOwner(UIParent, 'ANCHOR_NONE')
+
+  C.TooltipInfo.hooksecurefunc = function(k, f) hooksecurefunc(meta, 'S' .. k:sub(2), f) end
+  C.TooltipInfo.locate = function() return meta end
+  C.TooltipInfo.rawfind = function(k)
+    local method = tip['S' .. k:sub(2)]
+    return function(...)
+      method(tip, ...)
+
+      local data = {lines={}}
+      for i = 1, tip:NumLines() do
+        data.lines[i] = {args = {nil, {stringVal = _G['C_EverywhereTipTextLeft' .. i]:GetText()}}}
+      end
+      return data
+    end
+  end
+end

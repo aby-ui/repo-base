@@ -1013,10 +1013,21 @@ function module.options:Load()
 		{"Naxxramas 4",{164,nil,nil,0.8}},
 		{"Naxxramas 5",{165,nil,nil,0.8}},
 		{"Naxxramas 6",{167,nil,nil,0.8}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2587],{2119,0.57,0.21,4}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2590],{2120,0.43,0.69,4}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2635],{2121,0.55,0.51,0.9}},
+
+		--181-190
+		{L.S_ZoneT29VotI..": "..L.bossName[2592],{2122,0.27,0.33,3}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2639],{2122,0.21,0.75,3}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2614],{2126,0.51,0.51,1.5}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2605],{2124,0.50,0.50,1.5}},
+		{L.S_ZoneT29VotI..": "..L.bossName[2607],{2125,0.54,0.5,1}},
 	}
 	local mapsSorted = {
 		1,
 		{L.NoteColor,10,94,95,96,97,98,99},
+		{L.S_ZoneT29VotI,185,184,183,182,181,180,179,178},
 		{L.S_ZoneT28SFO,151,150,149,148,147,146,145,144,143,142,141},
 		{L.S_ZoneT27SoD,114,115,116,124,125,123,122,121,120,119,118,117},
 		{L.S_ZoneT26CastleNathria.." Ingame",100,93,91,92,90,89,88},
@@ -3064,13 +3075,13 @@ function module.options:Load()
 	self.liveButton = ELib:Button(self,L.VisualNoteLiveSession):Size(90,20):Point("TOPLEFT",710,-55):OnClick(function(self)
 		if not isLiveSession then
 			module.options:GenerateString()
-			if ExRT.is10 then
+			if ExRT.is10 or ExRT.isLK1 then
 				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.26,0.09,1), CreateColor(0.20,0.41,0.25,1))
 			else
 				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.26,0.09,1, 0.20,0.41,0.25,1)
 			end
 		else
-			if ExRT.is10 then
+			if ExRT.is10 or ExRT.isLK1 then
 				self.Texture:SetGradient("VERTICAL",CreateColor(0.05,0.06,0.09,1), CreateColor(0.20,0.21,0.25,1))
 			else
 				self.Texture:SetGradientAlpha("VERTICAL",0.05,0.06,0.09,1, 0.20,0.21,0.25,1)

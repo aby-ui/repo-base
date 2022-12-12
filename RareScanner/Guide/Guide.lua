@@ -560,6 +560,12 @@ private.NPC_GUIDE = {
 		[RSConstants.DOT..4] = { x = 0.5760, y = 0.6060, comment = AL["NOTE_193664_1"] };
 		[RSConstants.FLAG..1] = { x = 0.5944, y = 0.6070, comment = AL["NOTE_193664_2"] };
 	}; --Ancient Protector
+	["1932152023"] = { 
+		[RSConstants.FLAG] = { x = 0.1660, y = 0.5120, comment = AL["NOTE_193215_1"] };
+	}; --Scaleseeker Mezeri
+	["1932152025"] = { 
+		[RSConstants.FLAG] = { x = 0.3900, y = 0.4620, comment = AL["NOTE_193215_2"] };
+	}; --Scaleseeker Mezeri
 }
 
 ---============================================================================

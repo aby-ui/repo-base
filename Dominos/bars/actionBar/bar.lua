@@ -55,6 +55,10 @@ ActionBar.mainbarOffsets = {
             pages.shadowform = 6
         end
 
+        if Addon:IsBuild("retail") then
+            pages.dragonriding = 10
+        end
+
         t[i] = pages
         return pages
     end

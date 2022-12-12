@@ -5,7 +5,8 @@
 ## Dependencies: Bagnon
 ## LoadOnDemand: 1
 
-..\Bagnon\addons\config\config.xml
+..\Bagnon\src\config.lua
+..\BagBrother\addons\config\config.xml
 
 
 ## Title-zhCN: |cff880303[爱不易]|r Bagnon 整合背包配置

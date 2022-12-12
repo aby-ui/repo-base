@@ -181,7 +181,9 @@ function TBTFrame_OnLoad(self)
         if IsShiftKeyDown() then
             if AuctionHouseFrame and AuctionHouseFrame:IsVisible() then
                 AuctionHouseFrameBuyTab:Click()
-                AuctionHouseFrame.SearchBar.SearchButton:Click()
+                if AuctionHouseFrame.SearchBar.SearchBox:GetText() ~= "" then
+                    AuctionHouseFrame.SearchBar.SearchButton:Click()
+                end
             end
         end
     end)

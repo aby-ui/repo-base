@@ -1365,7 +1365,7 @@ function F:Revise()
         end
 
         if type(CellDB["appearance"]["useLibHealComm"]) ~= "boolean" then
-            CellDB["appearance"]["useLibHealComm"] = Cell.isWrath
+            CellDB["appearance"]["useLibHealComm"] = false
         end
     end
 
@@ -1570,6 +1570,79 @@ function F:Revise()
                 -- add sizeEnabled and size
                 layout["npc"][4] = false
                 layout["npc"][5] = {66, 46}
+            end
+        end
+    end
+
+    -- r150-release
+    if CellDB["revise"] and dbRevision < 150 then
+        local dispels = Cell.defaults.indicatorIndices["dispels"]
+        local mitigation = Cell.defaults.indicatorIndices["tankActiveMitigation"]
+        local aggroBar = Cell.defaults.indicatorIndices["aggroBar"]
+
+        for _, layout in pairs(CellDB["layouts"]) do
+            -- add orientation to Dispels
+            if layout["indicators"][dispels] and not layout["indicators"][dispels]["orientation"] then
+                layout["indicators"][dispels]["orientation"] = "right-to-left"
+            end
+            -- update bars
+            if Cell.isRetail and mitigation and layout["indicators"][mitigation] then
+                layout["indicators"][mitigation]["size"][1] = layout["indicators"][mitigation]["size"][1] + 2
+                layout["indicators"][mitigation]["size"][2] = layout["indicators"][mitigation]["size"][2] + 2
+                if layout["indicators"][mitigation]["position"][3] == 10 and layout["indicators"][mitigation]["position"][4] == -1 then
+                    layout["indicators"][mitigation]["position"][3] = 9
+                    layout["indicators"][mitigation]["position"][4] = 0
+                end
+            end
+            if layout["indicators"][aggroBar] then
+                layout["indicators"][aggroBar]["size"][1] = layout["indicators"][aggroBar]["size"][1] + 2
+                layout["indicators"][aggroBar]["size"][2] = layout["indicators"][aggroBar]["size"][2] + 2
+                if layout["indicators"][aggroBar]["position"][3] == 1 and layout["indicators"][aggroBar]["position"][4] == 0 then
+                    layout["indicators"][aggroBar]["position"][3] = 0
+                    layout["indicators"][aggroBar]["position"][4] = -1
+                end
+            end
+        end
+
+        if Cell.isRetail then
+            -- targetedSpells
+            -- 红玉新生法池
+            if not F:TContains(CellDB["targetedSpellsList"], 372858) then -- 灼热打击
+                tinsert(CellDB["targetedSpellsList"], 372858)
+            end
+            -- 奈萨鲁斯
+            if not F:TContains(CellDB["targetedSpellsList"], 374533) then -- 炽热挥舞
+                tinsert(CellDB["targetedSpellsList"], 374533)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 377018) then -- 熔火真金
+                tinsert(CellDB["targetedSpellsList"], 377018)
+            end
+            -- 蕨皮山谷
+            if not F:TContains(CellDB["targetedSpellsList"], 381444) then -- 野蛮冲撞
+                tinsert(CellDB["targetedSpellsList"], 381444)
+            end
+            if not F:TContains(CellDB["targetedSpellsList"], 373912) then -- 腐朽打击
+                tinsert(CellDB["targetedSpellsList"], 373912)
+            end
+            -- 英灵殿
+            if not F:TContains(CellDB["targetedSpellsList"], 193092) then -- 放血扫击
+                tinsert(CellDB["targetedSpellsList"], 193092)
+            end
+
+            -- debuffBlacklist
+            if not F:TContains(CellDB["debuffBlacklist"], 213213) then -- 伪装
+                tinsert(CellDB["debuffBlacklist"], 213213)
+            end
+
+            -- bigDebuffs
+            if not F:TContains(CellDB["bigDebuffs"], 240559) then -- 重伤
+                tinsert(CellDB["bigDebuffs"], 240559)
+            end
+            if not F:TContains(CellDB["bigDebuffs"], 396369) then -- 闪电标记
+                tinsert(CellDB["bigDebuffs"], 396369)
+            end
+            if not F:TContains(CellDB["bigDebuffs"], 396364) then -- 狂风标记
+                tinsert(CellDB["bigDebuffs"], 396364)
             end
         end
     end

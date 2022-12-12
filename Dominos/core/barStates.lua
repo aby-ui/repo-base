@@ -79,7 +79,7 @@ local function getEquippedConditional(classId, subclassId)
     return ('[equipped:%s]'):format(name)
 end
 
--- keybindings
+-- modifiers
 addState('modifier', 'selfcast', '[mod:SELFCAST]', AUTO_SELF_CAST_KEY_TEXT)
 addState('modifier', 'ctrlAltShift', '[mod:alt,mod:ctrl,mod:shift]')
 addState('modifier', 'ctrlAlt', '[mod:alt,mod:ctrl]')
@@ -185,6 +185,10 @@ elseif class == 'WARRIOR' then
         addState('class', 'defensive', '[bonusbar:2]', GetSpellInfo(71))
         addState('class', 'berserker', '[bonusbar:3]', GetSpellInfo(2458))
     end
+end
+
+if Addon:IsBuild("retail") then
+    addState('class', 'dragonriding', '[bonusbar:5]', GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
 end
 
 -- race

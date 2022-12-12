@@ -539,7 +539,7 @@ local function ChatItemLevel(Hyperlink)
     end
     local Origin = Hyperlink; local yes = true --level added to link
     local link = string.match(Hyperlink, "|H(.-)|h")
-    local professQuality = string.match(Hyperlink, "|h%[.-( |A.-|a)%]|h") or ""
+    local professQuality = string.match(Hyperlink, "|h%[.-( |A.-|a)%]|h") or "" --originName = string.match(Hyperlink, "|h%[(.-)%]|h") or "" --用这个可能会和其他插件重复
     local count, level, name, _, quality, _, _, class, subclass, _, equipSlot = LibItemInfo:GetItemInfo(link)
     --local name, _, quality, _, _, class, subclass, _, equipSlot = GetItemInfo(link)
     --local level = GetDetailedItemLevelInfo(link)

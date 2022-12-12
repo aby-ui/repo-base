@@ -363,6 +363,40 @@ GTFO.SpellID["384261"] = {
   sound = 3;
 };
 
+GTFO.SpellID["378843"] = {
+  --desc = "Stomp (Scytherin)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["366224"] = {
+  --desc = "Strafe (Windscourge Drake)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["365194"] = {
+  --desc = "Blade of the Storm-Eater";
+  sound = 3;
+};
+
+GTFO.SpellID["395810"] = {
+  --desc = "Boneshattering Blow (Dragonbane Soldier)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["396178"] = {
+  --desc = "Lava Eruption (Lava Crawler)";
+  sound = 3;
+};
+
+GTFO.SpellID["390619"] = {
+  --desc = "Boulder (Inferna the Bound)";
+  sound = 3;
+};
+
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************
@@ -798,7 +832,10 @@ GTFO.SpellID["388799"] = {
 
 GTFO.SpellID["374352"] = {
   --desc = "Energy Bomb (Echo of Doragosa)";
+  negatingDebuffSpellID = 374352; -- Energy Bomb
+  negatingIgnoreTime = 7;
   sound = 3;
+  
 };
 
 GTFO.SpellID["388822"] = {
@@ -1085,10 +1122,21 @@ GTFO.SpellID["375727"] = {
   tankSound = 0;
 };
 
+GTFO.SpellID["369409"] = {
+  --desc = "Cleave (Earthen Custodian)";
+  sound = 3;
+  tankSound = 0;
+};
 
 --- ***************************
 --- * Vault of the Incarnates *
 --- ***************************
+
+GTFO.SpellID["375424"] = {
+  --desc = "Raging Tempest (Dathea)";
+  sound = 1;
+  test = true;
+};
 
 end
 

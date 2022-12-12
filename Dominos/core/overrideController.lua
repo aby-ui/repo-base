@@ -6,7 +6,6 @@ end
 local OverrideController = Addon:CreateHiddenFrame('Frame', nil, UIParent, 'SecureHandlerStateTemplate')
 
 local overrideBarStates = {
-	bonusbar = '[bonusbar:5]1;0',
 	form = '[form]1;0',
 	overridebar = '[overridebar]1;0',
 	possessbar = '[possessbar]1;0',
@@ -90,8 +89,6 @@ function OverrideController:OnLoad()
 			newPage = GetOverrideBarIndex() or 0
 		elseif HasTempShapeshiftActionBar and HasTempShapeshiftActionBar() then
 			newPage = GetTempShapeshiftBarIndex() or 0
-		elseif GetBonusBarOffset() > 4 then
-			newPage = GetBonusBarOffset() + 6
 		else
 			newPage = 0
 		end

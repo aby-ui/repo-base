@@ -1,0 +1,67 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<StatusBar name="OmniCDArenaCastingBarFrameTemplate" drawLayer="BORDER" virtual="true" hidden="true">
+		<Size x="205" y="36"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="BG" setAllPoints="true" file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Timer" name="$parentTimer" inherits="GameFontHighlightHuge" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="RIGHT" x="-3" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="3" y="0"/>
+						<Anchor point="RIGHT" relativeTo="$parentTimer" relativePoint="LEFT" x="-3" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="Spark" file="Interface\CastingBar\UI-CastingBar-Spark" alphaMode="ADD">
+					<Size x="36" y="72"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<BarTexture file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
+		<BarColor r="1.0" g="1.0" b="1.0" a="1"/>
+	</StatusBar>
+	<Button name="OmniCDStatusBar" frameStrata="LOW" hidden="true" virtual="true">
+		<Size x="205" y="36"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture setAllPoints="true" parentKey="BG" file="Interface\AddOns\OmniCD\Media\omnicd-texture_flat"/>
+				<FontString parentKey="Text" inherits="GameFontHighlightHuge" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="3" y="0"/>
+						<Anchor point="RIGHT" x="-3" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="BORDER">
+				<Texture parentKey="borderTop" name="$parentBorderTop">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				<Texture parentKey="borderBottom" name="$parentBorderBottom">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+				<Texture parentKey="borderRight" name="$parentBorderRight">
+					<Color r="0" g="0" b="0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<StatusBar parentKey="CastingBar" name="$parentCastingBar" inherits="OmniCDArenaCastingBarFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBorderTop" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentBorderRight" relativePoint="BOTTOMLEFT" x="0" y="0"/>
+				</Anchors>
+			</StatusBar>
+		</Frames>
+	</Button>
+</Ui>

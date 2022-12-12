@@ -25,6 +25,15 @@ MASQUE:AddSkin("CleanUI", {
             Width = 36,
             Height = 36,
         },
+        SlotIcon = {
+            Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+            Width = 36,
+            Height = 36,
+        },
+        SlotHighlight = {
+            SetAllPoints = true,
+            Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+        },
         Flash = {
             Width = 42,
             Height = 42,
@@ -248,6 +257,15 @@ MASQUE:AddSkin("CleanUI Thin", {
             Height = 36,
             TexCoords = { 0.05, 0.95, 0.05, 0.95 },
         },
+        SlotIcon = {
+            Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+            Width = 36,
+            Height = 36,
+        },
+        SlotHighlight = {
+            SetAllPoints = true,
+            Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+        },
         Flash = {
             Width = 42,
             Height = 42,
@@ -360,6 +378,15 @@ MASQUE:AddSkin("CleanUI Gray", {
             Height = 36,
             TexCoords = { 0.05, 0.95, 0.05, 0.95 },
         },
+        SlotIcon = {
+            Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+            Width = 36,
+            Height = 36,
+        },
+        SlotHighlight = {
+            SetAllPoints = true,
+            Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+        },
         Flash = {
             Width = 42,
             Height = 42,
@@ -471,6 +498,15 @@ MASQUE:AddSkin("CleanUI Black", {
             Width = 36,
             Height = 36,
         },
+        SlotIcon = {
+            Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+            Width = 36,
+            Height = 36,
+        },
+        SlotHighlight = {
+            SetAllPoints = true,
+            Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+        },
         Flash = {
             Width = 42,
             Height = 42,
@@ -581,6 +617,15 @@ MASQUE:AddSkin("CleanUI White", {
         Icon = {
             Width = 36,
             Height = 36,
+        },
+        SlotIcon = {
+            Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+            Width = 36,
+            Height = 36,
+        },
+        SlotHighlight = {
+            SetAllPoints = true,
+            Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
         },
         Flash = {
             Width = 42,

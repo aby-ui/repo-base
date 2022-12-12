@@ -126,6 +126,15 @@ module.db.tablePotion = {
 	[342890]=true,	--Potion of Unhindered Passing
 	[307196]=true,	--Potion of Shadow Sight
 	[307195]=true,	--Invis
+
+	[370607]=true,
+	[371028]=true,
+	[371024]=true,
+	[371033]=true,
+	[371134]=true,
+	[371152]=true,
+	[371039]=true,
+	[371167]=true,
 }
 module.db.hsSpells = {
 	[6262] = true,
@@ -137,6 +146,8 @@ module.db.hsSpells = {
 	[301308] = true,
 
 	[307192] = true,
+
+	[370511] = true,
 }
 module.db.raidBuffs = {
 	{ATTACK_POWER_TOOLTIP or "AP","WARRIOR",6673,264761},
@@ -208,6 +219,17 @@ module.db.tableVantus = {
 	[354391] = 8,
 	[354392] = 9,
 	[354393] = 10,
+
+	--VotI
+	[384233] = 1,	[384234] = 2,	[384235] = 3,
+	[384229] = 1,	[384228] = 2,	[384227] = 3,
+	[384192] = 1,	[384203] = 2,	[384201] = 3,
+	[384239] = 1,	[384240] = 2,	[384241] = 3,
+	[384245] = 1,	[384246] = 2,	[384247] = 3,
+	[384220] = 1,	[384221] = 2,	[384222] = 3,
+	[384210] = 1,	[384209] = 2,	[384208] = 3,
+	[384214] = 1,	[384215] = 2,	[384216] = 3,
+	[384154] = 1,	[384248] = 2,	[384306] = 3,
 }
 
 module.db.minFoodLevelToActual = {
@@ -243,17 +265,28 @@ if not ExRT.isClassic and UnitLevel'player' > 50 then
 	[308488]=30,	[308506]=30,	[308434]=30,	[308514]=30,	[327708]=20,	[327706]=20,	[327709]=20,	[308525]=30,	[327707]=30,	[308637]=30,
 	[308474]=18,	[308504]=18,	[308430]=18,	[308509]=18,	[327704]=18,	[327701]=18,	[327705]=18,	[327702]=18,	[308525]=18,
 									--[341449]=20,
+
+	--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
+	[382145]=70,	[382150]=70,	[382146]=70,	[382149]=70,	[396092]=90,					[382246]=70,
+															[382247]=90,
+	--HasteCrit	HasteVers	VersMastery	StamStr		StamAgi		StamInt		HasteMastery	CritVers	CritMastery
+	[382152]=90,	[382153]=90,	[382157]=90,	[382230]=70,	[382231]=70,	[382232]=70,	[382154]=90,	[382155]=90,	[382156]=90,
+							[382234]=90,	[382235]=90,	[382236]=90,
 	}
 	module.db.tableFoodIsBest = {
 	--Haste		Mastery		Crit		Versa		Int		Str 		Agi		Stam		Stam		Special
-	[308488]=30,	[308506]=30,	[308434]=30,	[308514]=30,	[327708]=30,	[327706]=30,	[327709]=30,	[308525]=30,	[327707]=30,	[308637]=30,
-									--[341449]=30,
+	[382145]=70,	[382150]=70,	[382146]=70,	[382149]=70,	[396092]=90,					[382246]=70,
+															[382247]=90,
+	--HasteCrit	HasteVers	VersMastery	StamStr		StamAgi		StamInt		HasteMastery	CritVers	CritMastery
+	[382152]=90,	[382153]=90,	[382157]=90,	[382230]=70,	[382231]=70,	[382232]=70,	[382154]=90,	[382155]=90,	[382156]=90,
+							[382234]=90,	[382235]=90,	[382236]=90,
 	}
-	module.db.tableFood_headers = {0,18,30}
+	module.db.tableFood_headers = {0,70,90}
 
 	module.db.tableFlask = {
 	--Stamina,	Main stat,
 	[307187]=70,	[307185]=70,	[307166]=70,
+	[371339]=70,	[374000]=70,	[371354]=70,	[371204]=70,	[370662]=70,	[373257]=70,	[371386]=70,	[370652]=70,	[371172]=70,	[371186]=70,
 	}
 	module.db.tableFlask_headers = {0,70}
 
@@ -262,8 +295,8 @@ if not ExRT.isClassic and UnitLevel'player' > 50 then
 	end
 
 	module.db.minFoodLevelToActual = {
-		[100] = 18,
-		[125] = 30,
+		[100] = 70,
+		[125] = 90,
 	}
 	module.db.tableInt = {[1459]=true,}
 	module.db.tableStamina = {[21562]=true,}
@@ -336,7 +369,7 @@ module.db.RaidCheckReadyCheckTable = {}
 module.db.RaidCheckReadyPPLNum = 0
 module.db.RaidCheckReadyCheckHideSchedule = nil
 
-module.db.tableRunes = {[224001]=5,[270058]=6,[317065]=6,[347901]=18,[367405]=18,}
+module.db.tableRunes = {[224001]=5,[270058]=6,[317065]=6,[347901]=18,[367405]=18,[393438]=87}
 
 module.db.durability = {}
 module.db.oil = {}
@@ -1443,9 +1476,6 @@ do
 	end
 end
 
-local inspectScantip = CreateFrame("GameTooltip", "ExRTRaidCheckScanningTooltip", nil, "GameTooltipTemplate")
-inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
-
 do
 	local KitSlots = {
 		5,	--INVSLOT_CHEST
@@ -1453,6 +1483,9 @@ do
 		--10,	--INVSLOT_HAND
 		--8,	--INVSLOT_FEET
 	}
+	if ExRT.is10 then
+		wipe(KitSlots)
+	end
 	local L_EncName = "^"..L.RaidCheckReinforced
 	local TimeLeftPatt = "%(([^%)]+)%)[^%)]*$"
 	if ExRT.locale == "koKR" then
@@ -1506,7 +1539,8 @@ do
 	local oilTypes = nil
 	function module:OilCheck()
 		if not oilTypes then
-			oilTypes = {
+			oilTypes = ExRT.is10 and {
+			} or {
 				{GetSpellInfo(320798),320798},
 				{GetSpellInfo(321389),321389},
 				{GetSpellInfo(322762),322762},
@@ -1526,31 +1560,35 @@ do
 		local oilMH, oilOH = 0, 0
 
 		for _,itemSlotID in pairs(OilSlots) do
-			inspectScantip:SetInventoryItem("player", itemSlotID)
+			local tooltipData = C_TooltipInfo.GetInventoryItem("player", itemSlotID)
+			if tooltipData then
+				TooltipUtil.SurfaceArgs(tooltipData)
+				for _, line in ipairs(tooltipData.lines) do
+				    TooltipUtil.SurfaceArgs(line)
+				end
 
-			for j=2, inspectScantip:NumLines() do
-				local tooltipLine = _G["ExRTRaidCheckScanningTooltipTextLeft"..j]
-				local text = tooltipLine:GetText()
-				local isBreak
-				if text and text ~= "" then
-					for i=1,#oilTypes do
-						if text:find("^"..oilTypes[i][1]) then
-							if itemSlotID == 16 then
-								oilMH = oilTypes[i][2]
-							elseif itemSlotID == 17 then
-								oilOH = oilTypes[i][2]
+				for j=2, #tooltipData.lines do
+					local tooltipLine = tooltipData.lines[j]
+					local text = tooltipLine.leftText
+					local isBreak
+					if text and text ~= "" then
+						for i=1,#oilTypes do
+							if text:find("^"..oilTypes[i][1]) then
+								if itemSlotID == 16 then
+									oilMH = oilTypes[i][2]
+								elseif itemSlotID == 17 then
+									oilOH = oilTypes[i][2]
+								end
+								isBreak = true
+								break
 							end
-							isBreak = true
-							break
 						end
 					end
-				end
-				if isBreak then
-					break
+					if isBreak then
+						break
+					end
 				end
 			end
-
-			inspectScantip:ClearLines()
 		end
 
 		return oilMH, oilOH
@@ -1987,7 +2025,7 @@ function module.frame:Create()
 		line.classLeft:SetPoint("RIGHT",5,0)
 		line.classLeft:SetColorTexture(1,1,1,1)
 
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			line.classLeft:SetGradient("VERTICAL",CreateColor(.24,.25,.30,1), CreateColor(.27,.28,.33,1))
 		else
 			line.classLeft:SetGradientAlpha("VERTICAL",.24,.25,.30,1,.27,.28,.33,1)
@@ -2066,7 +2104,7 @@ do
 	line.back2:SetSize(WIDTH2,18)
 	line.back2:SetPoint("LEFT",line.back,"RIGHT")
 	line.back2:SetColorTexture(1,1,1)
-	if ExRT.is10 then
+	if ExRT.is10 or ExRT.isLK1 then
 		line.back2:SetGradient("HORIZONTAL",CreateColor(cR1,cG1,cB1,1), CreateColor(cR1,cG1,cB1,0))
 	else
 		line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
@@ -2109,7 +2147,7 @@ do
 
 		line.time:SetText("")
 		line.back:SetColorTexture(cR1,cG1,cB1)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			line.back2:SetGradient("HORIZONTAL",CreateColor(cR1,cG1,cB1,1), CreateColor(cR1,cG1,cB1,0))
 		else
 			line.back2:SetGradientAlpha("HORIZONTAL",cR1,cG1,cB1,1,cR1,cG1,cB1,0)
@@ -2150,7 +2188,7 @@ do
 		local r,g,b = cfR - (cfR - ctR) * self:GetProgress(),cfG - (cfG - ctG) * self:GetProgress(),cfB - (cfB - ctB) * self:GetProgress()
 
 		line.back:SetColorTexture(r,g,b)
-		if ExRT.is10 then
+		if ExRT.is10 or ExRT.isLK1 then
 			line.back2:SetGradient("HORIZONTAL",CreateColor(r,g,b,1), CreateColor(r,g,b,0))
 		else
 			line.back2:SetGradientAlpha("HORIZONTAL",r,g,b,1,r,g,b,0)
@@ -2351,7 +2389,7 @@ function module.frame:UpdateRoster()
 			local classColor = classColorsTable[data.class]
 			local r,g,b = classColor and classColor.r or .7,classColor and classColor.g or .7,classColor and classColor.b or .7
 
-			if ExRT.is10 then
+			if ExRT.is10 or ExRT.isLK1 then
 				line.classLeft:SetGradient("HORIZONTAL",CreateColor(r,g,b,.4), CreateColor(r,g,b,0))
 			else
 				line.classLeft:SetGradientAlpha("HORIZONTAL",r,g,b,.4,r,g,b,0)
@@ -3189,8 +3227,59 @@ end)
 addonMsgFrame:RegisterEvent("CHAT_MSG_ADDON")
 
 
-if (not ExRT.isClassic) and UnitLevel'player' == 60 then
+if (not ExRT.isClassic) and UnitLevel'player' >= 60 then
 	local consumables_size = 44
+
+	local rune_item_id = ExRT.is10 and 201325 or 181468
+	local rune_texture = ExRT.is10 and 4644002 or 134078
+
+	local wenchants = {
+		[6190] = {ench=6190,item=171286,icon=463544},
+		[6188] = {ench=6188,item=171285,icon=463543},
+		[6200] = {ench=6200,item=171437,icon=3528422},
+		[6198] = {ench=6198,item=171436,icon=3528424},
+		[6201] = {ench=6201,item=171439,icon=3528423},
+		[6199] = {ench=6199,item=171438,icon=3528425},
+		[5401] = {ench=5401,item=-33757,icon=462329,iconoh=135814},
+		[5400] = {ench=5400,item=-318038,icon=135814},
+		[6381] = {ench=6381,item=191940,icon=4622275,q=3},
+		[6380] = {ench=6380,item=191939,icon=4622275,q=2},
+		[6379] = {ench=6379,item=191933,icon=4622275,q=1},
+		[6698] = {ench=6698,item=191945,icon=4622279,q=3},
+		[6697] = {ench=6697,item=191944,icon=4622279,q=2},
+		[6696] = {ench=6696,item=191943,icon=4622279,q=1},
+		[6384] = {ench=6384,item=191950,icon=4622274,q=3},
+		[6383] = {ench=6383,item=191949,icon=4622274,q=2},
+		[6382] = {ench=6382,item=191948,icon=4622274,q=1},
+		[6514] = {ench=6514,item=194823,icon=134421,q=3},
+		[6513] = {ench=6513,item=194822,icon=134421,q=2},
+		[6512] = {ench=6512,item=194821,icon=134421,q=1},
+		[6695] = {ench=6695,item=194826,icon=134422,q=3},
+		[6694] = {ench=6694,item=194825,icon=134422,q=2},
+		[6515] = {ench=6515,item=194824,icon=134422,q=1},
+		[6518] = {ench=6518,item=194820,icon=134418,q=3},
+		[6517] = {ench=6517,item=194819,icon=134418,q=2},
+		[6516] = {ench=6516,item=194817,icon=134418,q=1},
+		[6534] = {ench=6534,item=198165,icon=135644,q=3},
+		[6533] = {ench=6533,item=198164,icon=135644,q=2},
+		[6532] = {ench=6532,item=198163,icon=135644,q=1},
+		[6531] = {ench=6531,item=198162,icon=249174,q=3},
+		[6530] = {ench=6530,item=198161,icon=249174,q=2},
+		[6529] = {ench=6529,item=198160,icon=249174,q=1},
+		[6522] = {ench=6522,item=198312,icon=4548897,q=3},
+		[6521] = {ench=6521,item=198311,icon=4548897,q=2},
+		[6520] = {ench=6520,item=198310,icon=4548897,q=1},
+		[6528] = {ench=6528,item=198318,icon=4548899,q=3},
+		[6527] = {ench=6527,item=198317,icon=4548899,q=2},
+		[6526] = {ench=6526,item=198316,icon=4548899,q=1},
+		[6525] = {ench=6525,item=198315,icon=4548898,q=3},
+		[6524] = {ench=6524,item=198314,icon=4548898,q=2},
+		[6523] = {ench=6523,item=198313,icon=4548898,q=1},
+	}
+	local wenchants_items = {}
+	for k,v in pairs(wenchants) do
+		wenchants_items[v.item] = v
+	end
 
 	local lastWeaponEnchantItem
 
@@ -3289,10 +3378,10 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 			button.texture:SetTexture(3528447)
 			module.consumables.buttons.kit = button
 		elseif i == 4 then
-			button.texture:SetTexture(463543)
+			button.texture:SetTexture(ExRT.is10 and 4622275 or 463543)
 			module.consumables.buttons.oil = button
 		elseif i == 5 then
-			button.texture:SetTexture(134078)
+			button.texture:SetTexture(rune_texture)
 			module.consumables.buttons.rune = button
 		elseif i == 6 then
 			button.texture:SetTexture(538745)
@@ -3342,6 +3431,13 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 			else
 				self.buttons.hs:Hide()
 				totalButtons = totalButtons - 1
+			end
+			if ExRT.is10 then
+				self.buttons.kit:Hide()
+				totalButtons = totalButtons - 1
+
+				self.buttons.oil:ClearAllPoints()
+				self.buttons.oil:SetPoint("LEFT",self.buttons.flask,"RIGHT",0,0)
 			end
 		end
 
@@ -3406,6 +3502,10 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 
 		local flaskCount = GetItemCount(171276,false,false)
 		local flaskCanCount = GetItemCount(171280,false,false)
+		if ExRT.is10 then
+			flaskCount = 0
+			flaskCanCount = 0
+		end
 		if not isFlask and ((flaskCount and flaskCount > 0 and not VMRT.RaidCheck.DisableNotCauldronFlask) or (flaskCanCount and flaskCanCount > 0)) then
 			if not InCombatLockdown() then
 				local itemID = (flaskCanCount and flaskCanCount > 0) and 171280 or 171276
@@ -3425,7 +3525,7 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 				self.buttons.flask.click.IsON = false
 			end
 		end
-		self.buttons.flask.count:SetFormattedText("%d%s",flaskCount,flaskCanCount > 0 and "+|cff00ff00"..flaskCanCount or "")
+		self.buttons.flask.count:SetFormattedText("%s%s",flaskCount > 0 and flaskCount or "",flaskCanCount > 0 and "+|cff00ff00"..flaskCanCount or "")
 		if LCG then
 			if not isFlask and ((flaskCount and flaskCount > 0 and not VMRT.RaidCheck.DisableNotCauldronFlask) or (flaskCanCount and flaskCanCount > 0)) then
 				LCG.PixelGlow_Start(self.buttons.flask)
@@ -3435,39 +3535,41 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 		end
 
 
-		local kitCount = GetItemCount(172347,false,true)
-		local kitNow, kitMax, kitTimeLeft = module:KitCheck()
-		if kitNow > 0 then
-			self.buttons.kit.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
-			self.buttons.kit.texture:SetDesaturated(false)
-			if kitTimeLeft then
-				self.buttons.kit.timeleft:SetText(kitTimeLeft)
+		if not ExRT.is10 then
+			local kitCount = GetItemCount(172347,false,true)
+			local kitNow, kitMax, kitTimeLeft = module:KitCheck()
+			if kitNow > 0 then
+				self.buttons.kit.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
+				self.buttons.kit.texture:SetDesaturated(false)
+				if kitTimeLeft then
+					self.buttons.kit.timeleft:SetText(kitTimeLeft)
+				end
 			end
-		end
-		if kitCount and kitCount > 0 then
-			if not InCombatLockdown() then
-				local itemName = GetItemInfo(172347)
-				if itemName then
-					self.buttons.kit.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s\n/use 5", itemName))
-					self.buttons.kit.click:Show()
-					self.buttons.kit.click.IsON = true
-				else
+			if kitCount and kitCount > 0 then
+				if not InCombatLockdown() then
+					local itemName = GetItemInfo(172347)
+					if itemName then
+						self.buttons.kit.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s\n/use 5", itemName))
+						self.buttons.kit.click:Show()
+						self.buttons.kit.click.IsON = true
+					else
+						self.buttons.kit.click:Hide()
+						self.buttons.kit.click.IsON = false
+					end
+				end
+			else
+				if not InCombatLockdown() then
 					self.buttons.kit.click:Hide()
 					self.buttons.kit.click.IsON = false
 				end
 			end
-		else
-			if not InCombatLockdown() then
-				self.buttons.kit.click:Hide()
-				self.buttons.kit.click.IsON = false
-			end
-		end
-		self.buttons.kit.count:SetFormattedText("%d",kitCount)
-		if LCG then
-			if kitCount and kitCount > 0 and kitNow == 0 then
-				LCG.PixelGlow_Start(self.buttons.kit)
-			else
-				LCG.PixelGlow_Stop(self.buttons.kit)
+			self.buttons.kit.count:SetFormattedText("%d",kitCount)
+			if LCG then
+				if kitCount and kitCount > 0 and kitNow == 0 then
+					LCG.PixelGlow_Start(self.buttons.kit)
+				else
+					LCG.PixelGlow_Stop(self.buttons.kit)
+				end
 			end
 		end
 
@@ -3496,28 +3598,15 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 			end
 		end
 
+
 		local hasMainHandEnchant, mainHandExpiration, mainHandCharges, mainHandEnchantID, hasOffHandEnchant, offHandExpiration, offHandCharges, offHandEnchantID = GetWeaponEnchantInfo()
 		if hasMainHandEnchant then
 			self.buttons.oil.statustexture:SetTexture("Interface\\RaidFrame\\ReadyCheck-Ready")
 			self.buttons.oil.texture:SetDesaturated(false)
 			self.buttons.oil.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((mainHandExpiration or 0)/1000/60))
 
-			if mainHandEnchantID == 6190 then
-				lastWeaponEnchantItem = 171286
-			elseif mainHandEnchantID == 6188 then
-				lastWeaponEnchantItem = 171285
-			elseif mainHandEnchantID == 6200 then
-				lastWeaponEnchantItem = 171437
-			elseif mainHandEnchantID == 6198 then
-				lastWeaponEnchantItem = 171436
-			elseif mainHandEnchantID == 6201 then
-				lastWeaponEnchantItem = 171439
-			elseif mainHandEnchantID == 6199 then
-				lastWeaponEnchantItem = 171438
-			elseif mainHandEnchantID == 5401 then
-				lastWeaponEnchantItem = -33757
-			elseif mainHandEnchantID == 5400 then
-				lastWeaponEnchantItem = -318038
+			if wenchants[mainHandEnchantID or 0] then
+				lastWeaponEnchantItem = wenchants[mainHandEnchantID].item
 			end
 		end
 		if offhandCanBeEnchanted and hasOffHandEnchant then
@@ -3525,30 +3614,12 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 			self.buttons.oiloh.texture:SetDesaturated(false)
 			self.buttons.oiloh.timeleft:SetFormattedText(GARRISON_DURATION_MINUTES,ceil((offHandExpiration or 0)/1000/60))
 		end
-		if lastWeaponEnchantItem == 171286 then
-			self.buttons.oil.texture:SetTexture(463544)
-			self.buttons.oiloh.texture:SetTexture(463544)
-		elseif lastWeaponEnchantItem == 171285 then
-			self.buttons.oil.texture:SetTexture(463543)
-			self.buttons.oiloh.texture:SetTexture(463543)
-		elseif lastWeaponEnchantItem == 171437 then
-			self.buttons.oil.texture:SetTexture(3528422)
-			self.buttons.oiloh.texture:SetTexture(3528422)
-		elseif lastWeaponEnchantItem == 171436 then
-			self.buttons.oil.texture:SetTexture(3528424)
-			self.buttons.oiloh.texture:SetTexture(3528424)
-		elseif lastWeaponEnchantItem == 171439 then
-			self.buttons.oil.texture:SetTexture(3528423)
-			self.buttons.oiloh.texture:SetTexture(3528423)
-		elseif lastWeaponEnchantItem == 171438 then
-			self.buttons.oil.texture:SetTexture(3528425)
-			self.buttons.oiloh.texture:SetTexture(3528425)
-		elseif lastWeaponEnchantItem == -33757 then
-			self.buttons.oil.texture:SetTexture(462329)
-			self.buttons.oiloh.texture:SetTexture(135814)
-		elseif lastWeaponEnchantItem == -318038 then
-			self.buttons.oil.texture:SetTexture(135814)
-			self.buttons.oiloh.texture:SetTexture(135814)
+
+		local wenchData
+		if lastWeaponEnchantItem and wenchants_items[lastWeaponEnchantItem] then
+			wenchData = wenchants_items[lastWeaponEnchantItem]
+			self.buttons.oil.texture:SetTexture(wenchData.icon)
+			self.buttons.oiloh.texture:SetTexture(wenchData.iconoh or wenchData.icon)
 		end
 
 		VMRT.RaidCheck.WeaponEnch[ExRT.SDB.charKey] = lastWeaponEnchantItem
@@ -3621,8 +3692,8 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 			end
 		end
 
-		local runeCount = GetItemCount(181468,false,true)
-		local runeUnlim = GetItemCount(190384,false,true)
+		local runeCount = GetItemCount(rune_item_id,false,true)
+		local runeUnlim = ExRT.is10 and 0 or GetItemCount(190384,false,true)
 		if runeUnlim and runeUnlim > 0 then
 			self.buttons.rune.count:SetText("")
 			if not InCombatLockdown() then
@@ -3640,8 +3711,8 @@ if (not ExRT.isClassic) and UnitLevel'player' == 60 then
 		elseif runeCount and runeCount > 0 then
 			self.buttons.rune.count:SetFormattedText("%d",runeCount)
 			if not InCombatLockdown() then
-				self.buttons.rune.texture:SetTexture(134078)
-				local itemName = GetItemInfo(181468)
+				self.buttons.rune.texture:SetTexture(rune_texture)
+				local itemName = GetItemInfo(rune_item_id)
 				if itemName then
 					self.buttons.rune.click:SetAttribute("macrotext1", format("/stopmacro [combat]\n/use %s", itemName))
 					self.buttons.rune.click:Show()

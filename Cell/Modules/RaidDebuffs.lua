@@ -89,7 +89,8 @@ local function LoadInstanceList(tier, instanceType, list)
 end
 
 local function LoadList()
-    local currTier = EJ_GetCurrentTier()
+    local currentTier = EJ_GetCurrentTier()
+
     for tier = 1, EJ_GetNumTiers() do
         local name = EJ_GetTierInfo(tier)
         encounterJournalList[name] = {}
@@ -99,7 +100,8 @@ local function LoadList()
 
         tierNames[tier] = name
     end
-    EJ_SelectTier(currTier)
+
+    EJ_SelectTier(currentTier)
 end
 
 -------------------------------------------------

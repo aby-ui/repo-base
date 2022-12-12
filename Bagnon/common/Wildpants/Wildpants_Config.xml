@@ -1,4 +1,0 @@
-<Ui>
-	<Include file="localization\config\localization.xml"/>
-	<Include file="config\config.xml"/>
-</Ui>

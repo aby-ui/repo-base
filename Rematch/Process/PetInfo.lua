@@ -449,7 +449,7 @@ local queryAPIs = {
                breedID = PetTracker.Journal:GetBreed(self.petID)
             elseif idType=="link" then
                breedID = PetTracker.Predict:Breed(self.speciesID,self.level,self.rarity,self.maxHealth,self.power,self.speed)
-            elseif idType=="battle" then
+            elseif idType=="battle" and PetTracker.Battle then
                breedID = PetTracker.Battle:Get(self.battleOwner,self.battleIndex):GetBreed()
             end
             if breedID then
@@ -460,7 +460,7 @@ local queryAPIs = {
                breedID = PetTracker.Pet(self.petID):GetBreed()
             elseif idType=="link" then
                breedID = PetTracker.Predict:Breed(self.speciesID,self.level,self.rarity,self.maxHealth,self.power,self.speed)
-            elseif idType=="battle" then
+            elseif idType=="battle" and PetTracker.Battle then
                 breedID = PetTracker.Battle(self.battleOwner,self.battleIndex):GetBreed()
             end
             if breedID and not RematchSettings.PetTrackerLetterBreeds then

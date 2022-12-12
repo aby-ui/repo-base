@@ -25,9 +25,9 @@ GTFO = {
 		TrivialDamagePercent = 2; -- Minimum % of HP lost required for an alert to be trivial
 		SoundOverrides = { }; -- Override table for GTFO sounds
 	};
-	Version = "4.70.1"; -- Version number (text format)
+	Version = "4.70.2"; -- Version number (text format)
 	VersionNumber = 0; -- Numeric version number for checking out-of-date clients (placeholder until client is detected)
-	RetailVersionNumber = 47001; -- Numeric version number for checking out-of-date clients (retail)
+	RetailVersionNumber = 47002; -- Numeric version number for checking out-of-date clients (retail)
 	ClassicVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (Vanilla classic)
 	BurningCrusadeVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (TBC classic)
 	WrathVersionNumber = 47000; -- Numeric version number for checking out-of-date clients (Wrath classic)

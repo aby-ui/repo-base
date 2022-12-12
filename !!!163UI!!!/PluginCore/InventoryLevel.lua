@@ -125,7 +125,7 @@ end
 function U1GetInventoryLevelColor(avgLevel, quality)
     --STEP3 蓝色：随机团本/史诗5人取低的 STEP4 紫色：英雄团本或大秘掉落 STEP5 红色：低保或史诗前面 STEP6 橙色：史诗后面或橙装
     --STEP4 - STEP5 是紫色过渡到红色，需要区分度
-    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 170, 319, 346, 359, 372, 424
+    local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 170, 319, 369, 382, 418, 424
     --9.27 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 145, 236, 262, 285, 304, 311
     --9.2 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 132, 200, 236, 262, 278, 285
     --9.1 local STEP1, STEP2, STEP3, STEP4, STEP5, STEP6 = 132, 168, 200, 226, 252, 259

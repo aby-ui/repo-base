@@ -5,6 +5,7 @@ local Bar = ChocolateBar.Bar
 local chocolate = ChocolateBar.ChocolatePiece
 local debug = ChocolateBar and ChocolateBar.Debug or function() end
 local jostle = ChocolateBar.Jostle
+local jostle2 = ChocolateBar.Jostle2
 local _G, pairs, ipairs, table, math, mod = _G, pairs, ipairs, table, math, mod
 local CreateFrame, UIParent = CreateFrame, UIParent
 local db
@@ -85,6 +86,7 @@ function Bar:UpdateAutoHide(db)
 		self.autohide = true
 		self:HideAll()
 		if jostle then jostle:Unregister(self) end
+		if jostle2 then jostle2:Unregister(self) end
 	else
 		self.autohide = false
 		self:ShowAll()
@@ -93,13 +95,26 @@ function Bar:UpdateAutoHide(db)
 end
 
 function Bar:UpdateJostle(db)
-	if jostle then
-		jostle:Unregister(self)
-		if db.moveFrames then
-			if self.settings.align == "bottom" then
-				jostle:RegisterBottom(self)
-			elseif  self.settings.align == "top" then
-				jostle:RegisterTop(self)
+	if ChocolateBar:IsRetail() then
+		if jostle2 then
+			jostle2:Unregister(self)
+			if db.moveFrames then
+				if self.settings.align == "bottom" then
+					jostle2:RegisterBottom(self)
+				elseif  self.settings.align == "top" then
+					--jostle2:RegisterTop(self)
+				end
+			end
+		end
+	else
+		if jostle then
+			jostle:Unregister(self)
+			if db.moveFrames then
+				if self.settings.align == "bottom" then
+					jostle:RegisterBottom(self)
+				elseif  self.settings.align == "top" then
+					jostle:RegisterTop(self)
+				end
 			end
 		end
 	end
@@ -224,6 +239,7 @@ end
 function Bar:Disable()
 	self:Hide()
 	if jostle then jostle:Unregister(self) end
+	if jostle2 then jostle2:Unregister(self) end
 end
 
 local function SortTab(tab)

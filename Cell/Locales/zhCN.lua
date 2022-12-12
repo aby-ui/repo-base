@@ -190,6 +190,7 @@ L["Round Up Duration Text"] = "将持续时间文本向上取整"
 L["Display One Decimal Place When"] = "持续时间文本显示一位小数于"
 L["Color Duration Text"] = "对持续时间文本着色"
 L["Heal Prediction"] = "治疗预估"
+L["LibHealComm needs to be installed"] = "需要自行安装 LibHealComm"
 L["Heal Absorb"] = "治疗吸收"
 L["Shield Texture"] = "护盾材质"
 L["Overshield Texture"] = "超过血量上限的护盾材质"
@@ -605,6 +606,15 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r150-release (Dec 12, 2022, 07:55 GMT+8)</h1>
+    <p>* 更新巨龙时代减益。</p>
+    <p>* 更新进度条类型的指示器（你可能需要重新设置它们的尺寸与位置）。</p>
+    <p>* 更新驱散指示器。</p>
+    <p>* 更新距离检查，移除LibRangeCheck。</p>
+    <p>* 移除LibHealComm（如果要用，就自行安装独立版本的）。</p>
+    <p>* 修复几处bug。</p>
+    <br/>
+
     <h1>r149-release (Nov 29, 2022, 06:35 GMT+8)</h1>
     <p>* 添加 NPC 按钮尺寸选项。</p>
     <p>* 添加条方向选项“纵向 B”。</p>

@@ -269,34 +269,39 @@ U1RegisterAddon("!!!163UI!!!", {
     },
     {
         var = "ahkeep",
-        text = "保持拍卖行界面开启",
+        text = "保持拍卖行等界面开启",
         tip = "说明`打开交易技能等界面时保持拍卖行界面开启，适用于屏幕分辨率不高的玩家。如果遇到拍卖行无法打开的情况，请尝试关闭此选项。",
         default = false,
         callback = function(cfg, v, loading)
             if loading and not v then return end
-            --- 拍卖行不会自动关闭
+            --- 拍卖行不会自动关闭, RegisterUIPanel(ProfessionsCustomerOrdersFrame, attributes);
             local function handleFrame(frameName, v)
                 local frame = _G[frameName]
                 if not frame then return end
                 if v then
+                    frame:SetAttribute("UIPanelLayout-defined", false);
                     frame:SetAttribute("UIPanelLayout-area", false);
                     tinsertdata(UISpecialFrames, frameName)
                 else
-                    frame:SetAttribute("UIPanelLayout-area", "doublewide");
+                    frame:SetAttribute("UIPanelLayout-defined", true);
+                    frame:SetAttribute("UIPanelLayout-area", UIPanelWindows[frameName].area or "doublewide");
                     tremovedata(UISpecialFrames, frameName)
                 end
                 if not frame._hooked163 then
                     frame._hooked163 = true
-                    hooksecurefunc(frame, "SetAttribute", function(self, arg1, value)
-                        if (arg1 == "UIPanelLayout-area" and value and U1GetCfgValue(cfg._path)) then
-                            self:SetAttribute(arg1, false);
+                    hooksecurefunc(frame, "SetAttributeNoHandler", function(self, arg1, value)
+                        if (arg1 == "UIPanelLayout-area" and value and U1GetCfgValueFast2(cfg)) then
+                            self:SetAttribute(arg1, false); --为了代码简单我们用SetAttribute防止循环
+                            self:SetAttribute("UIPanelLayout-defined", false);
                         end
                     end)
                 end
             end
             CoreDependCall("Blizzard_AuctionHouseUI", function() handleFrame("AuctionHouseFrame", v) end)
             CoreDependCall("Blizzard_Soulbinds", function() handleFrame("SoulbindViewer", v) end)
-            --not works CoreDependCall("Blizzard_ClassTalentUI", function() handleFrame("ClassTalentFrame", v) end)
+            --CoreDependCall("Blizzard_Professions", function() handleFrame("ProfessionsFrame", v) end) --和BlizzMove结合可能导致打不开
+            --CoreDependCall("Blizzard_ClassTalentUI", function() handleFrame("ClassTalentFrame", v) end)
+            --CoreDependCall("Blizzard_ProfessionsCustomerOrders", function() handleFrame("ProfessionsCustomerOrdersFrame", v) end)
         end,
     },
     {

@@ -191,9 +191,9 @@ Cell.defaults.layout = {
             ["indicatorName"] = "aggroBar",
             ["type"] = "built-in",
             ["enabled"] = true,
-            ["position"] = {"BOTTOMLEFT", "TOPLEFT", 1, 0},
+            ["position"] = {"BOTTOMLEFT", "TOPLEFT", 0, -1},
             ["frameLevel"] = 1,
-            ["size"] = {18, 2},
+            ["size"] = {20, 4},
         }, -- 12
         {
             ["name"] = "Aggro (border)",
@@ -265,9 +265,9 @@ Cell.defaults.layout = {
             ["indicatorName"] = "tankActiveMitigation",
             ["type"] = "built-in",
             ["enabled"] = true,
-            ["position"] = {"TOPLEFT", "TOPLEFT", 10, -1},
+            ["position"] = {"TOPLEFT", "TOPLEFT", 9, 0},
             ["frameLevel"] = 2,
-            ["size"] = {18, 4},
+            ["size"] = {20, 6},
         }, -- 19
         {
             ["name"] = "Dispels",
@@ -280,6 +280,7 @@ Cell.defaults.layout = {
             ["dispellableByMe"] = true,
             ["highlightType"] = "gradient",
             ["showDispelTypeIcons"] = true,
+            ["orientation"] = "right-to-left",
         }, -- 20
         {
             ["name"] = "Debuffs",

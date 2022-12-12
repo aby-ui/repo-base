@@ -343,7 +343,7 @@ function LNR_Private.RawGetPlateType (frame)
 
     local unitToken = LNR_Private:GetUnitTokenFromPlate(frame);
 
-    local reaction = UnitReaction('player', unitToken);
+    local reaction = UnitReaction('player', unitToken) or 2;
 
     if reaction > 4 then
         reaction = 'FRIENDLY';

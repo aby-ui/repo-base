@@ -16,6 +16,15 @@ MSQ:AddSkin("Parabole", {
     Width = 34,
     Height = 34,
   },
+  SlotIcon = {
+    Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+    Width = 34,
+    Height = 34,
+  },
+  SlotHighlight = {
+    SetAllPoints = true,
+    Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+  },
   Flash = {
     Width = 36,
     Height = 36,

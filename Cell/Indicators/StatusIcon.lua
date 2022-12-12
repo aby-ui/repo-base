@@ -64,6 +64,8 @@ function I:CreateStatusIcon(parent)
     statusIcon:SetIgnoreParentAlpha(true)
     statusIcon:Hide()
 
+    statusIcon:SetIgnoreParentAlpha(true)
+
     statusIcon.tex = statusIcon:CreateTexture(nil, "OVERLAY")
     statusIcon.tex:SetAllPoints(statusIcon)
 
@@ -197,7 +199,6 @@ if Cell.isRetail then
         local phaseReason = UnitPhaseReason(unit)
         
         local icon = button.indicators.statusIcon
-        icon:SetIgnoreParentAlpha(false)
         
         -- Interface\FrameXML\CompactUnitFrame.lua, CompactUnitFrame_UpdateCenterStatusIcon
         if UnitInOtherParty(unit) then
@@ -225,11 +226,11 @@ if Cell.isRetail then
             elseif status == Enum.SummonStatus.Accepted then
                 icon:SetAtlas("Raid-Icon-SummonAccepted")
                 icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-                C_Timer.After(6, function() UnitButton_UpdateStatusIcon(button) end)
+                C_Timer.After(6, function() I:UpdateStatusIcon(button) end)
             elseif status == Enum.SummonStatus.Declined then
                 icon:SetAtlas("Raid-Icon-SummonDeclined")
                 icon:SetTexCoord(0.15, 0.85, 0.15, 0.85)
-                C_Timer.After(6, function() UnitButton_UpdateStatusIcon(button) end)
+                C_Timer.After(6, function() I:UpdateStatusIcon(button) end)
             end
             icon:Show()
         elseif UnitIsPlayer(unit) and phaseReason and not button.state.inVehicle then
@@ -250,13 +251,11 @@ if Cell.isRetail then
         --     icon:SetTexCoord(0, 1, 0, 1)
         --     icon:Show()
         elseif button.state.BGFlag then
-            icon:SetIgnoreParentAlpha(true)
             icon:SetVertexColor(1, 1, 1, 1)
             icon:SetAtlas("nameplates-icon-flag-"..button.state.BGFlag)
             icon:SetTexCoord(0, 1, 0, 1)
             icon:Show()
         elseif button.state.BGOrb then
-            icon:SetIgnoreParentAlpha(true)
             icon:SetVertexColor(1, 1, 1, 1)
             icon:SetAtlas("nameplates-icon-orb-"..button.state.BGOrb)
             icon:SetTexCoord(0, 1, 0, 1)
@@ -271,7 +270,6 @@ else
         if not unit then return end
         
         local icon = button.indicators.statusIcon
-        icon:SetIgnoreParentAlpha(false)
     
         -- Interface\FrameXML\CompactUnitFrame.lua, CompactUnitFrame_UpdateCenterStatusIcon
         if UnitInOtherParty(unit) then
@@ -298,7 +296,6 @@ else
         --     icon:SetTexCoord(0, 1, 0, 1)
         --     icon:Show()
         elseif button.state.BGFlag then
-            icon:SetIgnoreParentAlpha(true)
             icon:SetVertexColor(1, 1, 1, 1)
             icon:SetAtlas(button.state.BGFlag.."_icon_and_flag-dynamicIcon")
             icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)

@@ -1,12 +1,14 @@
 ﻿--SkinNames = {} for skinName in next, LibStub('Masque'):GetSkins() do SkinNames[skinName] = skinName end wowluacopy(SkinNames)
 local names = {
     Apathy = "缩小",
-    Classic = "暴雪经典",
+    ["Blizzard Modern"] = "暴雪现代",
+    ["Blizzard Classic"] = "默认(经典)",
     Cainyx = "圆角灰边框",
     ["Cainyx Raven Highlights"] = false,
     Caith = "灰边框",
     Cirque = "圆圈",
     ["Cirque - Simple"] = false,
+    ["Classic Redux"] = "暴雪经典",
     CleanUI = "清爽",
     ["CleanUI Black"] = "清爽: 黑",
     ["CleanUI Black and White"] = false,
@@ -15,8 +17,6 @@ local names = {
     ["CleanUI Thin"] = "清爽: 放大",
     ["CleanUI White"] = false, --"清爽: 白",
     ["CleanUI White and Black"] = false,
-    Default = "默认",
-    ["Default (Classic)"] = "默认(经典)",
     Dominos = "多米诺默认",
     Dream = false, --"无边框",
     ["Entropy - Adamantite"] = false, --"质感: 精金",
@@ -58,7 +58,7 @@ local names = {
     kenzo = "圆角细黑边",
 }
 
-local orders = { ["Default"] = 1, ["Classic"] = 2, ["Dream"] = 3, ["Zoomed"] = 4, ["Dominos"] = -1, }
+local orders = { ["Blizzard Classic"] = 1, ["Classic Redux"] = 2, ["Blizzard Modern"] = 3, ["Dominos"] = -1, }
 local SkinOptions = {}
 local SkinNames = {}
 local CoreGroup

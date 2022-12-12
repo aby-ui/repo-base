@@ -17,6 +17,16 @@ Masque:AddSkin("kenzo", {
 		Height = 32,
 		TexCoords = {0.06,0.94,0.06,0.94},
 	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		Width = 32,
+		Height = 32,
+		TexCoords = {0.06,0.94,0.06,0.94},
+	},
+	SlotHighlight = {
+		SetAllPoints = true,
+		Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+	},
 	Backdrop = {
 		Width = 64,
 		Height = 64,
@@ -32,7 +42,6 @@ Masque:AddSkin("kenzo", {
 		--Color = {0.5, 0.5, 0.5, 1},
 		Texture = [[Interface\AddOns\Masque_kenzo\Textures\Normal]],
 	},
-	-- Αλερκ
 	Gloss = {
 		Width = 64,
 		Height = 64,

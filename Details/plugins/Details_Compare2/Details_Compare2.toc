@@ -1,6 +1,0 @@
-## Interface: 100002
-## Title: Details!: Compare 2.0
-## Notes: Replace the Compare tab in the player breakdown window.
-## RequiredDeps: Details
-
-Details_Compare2.lua

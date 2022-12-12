@@ -2,6 +2,17 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.2.5",
+		Sections = {
+			{
+				Header = "Changes:",
+				Entries = {
+					"Non Priority buffs and debuffs are now disabled for bg size 15 players since it leads to too much clutter.",
+				}
+			},
+		}
+	},
+	{
 		Version = "10.0.2.4",
 		Sections = {
 			{

@@ -1,4 +1,4 @@
--- $Id: LibUIDropDownMenu.lua 111 2022-11-17 17:06:37Z arithmandar $
+-- $Id: LibUIDropDownMenu.lua 117 2022-11-29 15:36:42Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ local GameTooltip_SetTitle, GameTooltip_AddInstructionLine, GameTooltip_AddNorma
 
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenu-4.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 111 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 117 $"):match("%d+"))
 
 
 local LibStub = _G.LibStub
@@ -460,12 +460,13 @@ end
 local function creatre_DropDownList(name, parent)
 	-- This has been removed from Backdrop.lua, so we added the definition here.
 	local BACKDROP_DIALOG_DARK = {
-			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-			tile = true,
-			tileSize = 32,
-			edgeSize = 32,
-			insets = { left = 11, right = 12, top = 12, bottom = 9, },
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+		tile = true,
+		tileEdge = true,
+		tileSize = 32,
+		edgeSize = 32,
+		insets = { left = 11, right = 12, top = 12, bottom = 11, },
 	}
 	local BACKDROP_TOOLTIP_16_16_5555 = {
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -483,14 +484,14 @@ local function creatre_DropDownList(name, parent)
 	f:SetFrameStrata("DIALOG")
 	f:EnableMouse(true)
 	
-	local fbd = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", f, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	local fbd = _G[name.."Backdrop"] or CreateFrame("Frame", name.."Backdrop", f, BackdropTemplateMixin and "DialogBorderDarkTemplate" or nil)
 	fbd:SetAllPoints()
-	fbd:SetBackdrop(BACKDROP_DIALOG_DARK)
+	fbd.backdropInfo = BACKDROP_DIALOG_DARK
 	f.Backdrop = fbd
 	
-	local fmb = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f, BackdropTemplateMixin and "BackdropTemplate" or nil)
+	local fmb = _G[name.."MenuBackdrop"] or CreateFrame("Frame", name.."MenuBackdrop", f, TooltipBackdropTemplateMixin and "TooltipBackdropTemplate" or nil)
 	fmb:SetAllPoints()
-	fmb:SetBackdrop(BACKDROP_TOOLTIP_16_16_5555)
+	fmb.backdropInfo = BACKDROP_TOOLTIP_16_16_5555
 	fmb:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
 	fmb:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
 	f.MenuBackdrop = fmb

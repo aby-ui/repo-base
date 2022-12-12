@@ -1041,7 +1041,7 @@ local function CreateUnitButtonStylePane()
     useLibCB = Cell:CreateCheckButton(unitButtonPane, _G.USE.." LibHealComm", function(checked, self)
         CellDB["appearance"]["useLibHealComm"] = checked
         F:EnableLibHealComm(checked)
-    end)
+    end, L["LibHealComm needs to be installed"])
     useLibCB:SetPoint("TOPLEFT", predCustomCB, "BOTTOMLEFT", 0, -7)
     useLibCB:SetEnabled(Cell.isWrath)
     

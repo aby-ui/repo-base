@@ -42,6 +42,18 @@ MSQ:AddSkin("Goldpaw's UI: Normal", {
 		Height = scale(34, button_scale),
 		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
 	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		Width = scale(34, button_scale),
+		Height = scale(34, button_scale),
+		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotHighlight = {
+		Width = scale(34, button_scale),
+		Height = scale(34, button_scale),
+		SetAllPoints = false,
+		Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+	},
 	Flash = {
 		Width = scale(34, button_scale),
 		Height = scale(34, button_scale),
@@ -148,6 +160,18 @@ MSQ:AddSkin("Goldpaw's UI: Small", {
 		Width = scale(26, button_scale),
 		Height = scale(26, button_scale),
 		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		Width = scale(26, button_scale),
+		Height = scale(26, button_scale),
+		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotHighlight = {
+		Width = scale(26, button_scale),
+		Height = scale(26, button_scale),
+		SetAllPoints = false,
+		Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
 	},
 	Flash = {
 		Width = scale(26, button_scale),
@@ -256,6 +280,18 @@ MSQ:AddSkin("Goldpaw's UI: PetBar", {
 		Height = scale(26, pet_scale),
 		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
 	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		Width = scale(26, button_scale),
+		Height = scale(26, button_scale),
+		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotHighlight = {
+		Width = scale(26, button_scale),
+		Height = scale(26, button_scale),
+		SetAllPoints = false,
+		Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+	},
 	Flash = {
 		Width = scale(26, pet_scale),
 		Height = scale(26, pet_scale),
@@ -363,6 +399,18 @@ MSQ:AddSkin("Goldpaw's UI: Normal Bright", {
 		Height = scale(34, button_scale),
 		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
 	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		Width = scale(34, button_scale),
+		Height = scale(34, button_scale),
+		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotHighlight = {
+		Width = scale(34, button_scale),
+		Height = scale(34, button_scale),
+		SetAllPoints = false,
+		Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
+	},
 	Flash = {
 		Width = scale(34, button_scale),
 		Height = scale(34, button_scale),
@@ -469,6 +517,18 @@ MSQ:AddSkin("Goldpaw's UI: Small Bright", {
 		Width = scale(26, button_scale),
 		Height = scale(26, button_scale),
 		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotIcon = {
+		Texture = [[Interface\Icons\INV_Misc_Bag_08]],
+		Width = scale(26, button_scale),
+		Height = scale(26, button_scale),
+		TexCoords = { 5/64, 59/64, 5/64, 59/64 }
+	},
+	SlotHighlight = {
+		Width = scale(26, button_scale),
+		Height = scale(26, button_scale),
+		SetAllPoints = false,
+		Texture = [[Interface\Buttons\CheckButtonHilight]], BlendMode = "ADD", DrawLayer = "OVERLAY", DrawLevel = 0, Point = "CENTER", RelPoint = "CENTER", OffsetX = 0, OffsetY = 0,
 	},
 	Flash = {
 		Width = scale(26, button_scale),

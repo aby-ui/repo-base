@@ -99,6 +99,11 @@ GTFO.SpellID["388759"] = {
   sound = 1;
 };
 
+GTFO.SpellID["393467"] = {
+  --desc = "Stormwall";
+  sound = 1;
+};
+
 --- *******************
 --- * Ruby Life Pools *
 --- *******************
@@ -441,6 +446,12 @@ GTFO.SpellID["387152"] = {
   negatingIgnoreTime = 4;
 };
 
+GTFO.SpellID["387848"] = {
+  --desc = "Astral Nova (Spectral Invoker)";
+  sound = 4;
+  ignoreSelfInflicted = true;
+};
+
 --- **************************
 --- * Uldaman: Legacy of Tyr *
 --- **************************
@@ -448,11 +459,6 @@ GTFO.SpellID["387152"] = {
 GTFO.SpellID["377825"] = {
   --desc = "Burning Pitch";
   sound = 1;
-};
-
-GTFO.SpellID["369610"] = {
-  --desc = "Shocking Quake (Quaking Totem)";
-  sound = 2;
 };
 
 GTFO.SpellID["369337"] = {
@@ -480,6 +486,65 @@ GTFO.SpellID["376325"] = {
 --- * Vault of the Incarnates *
 --- ***************************
 
+GTFO.SpellID["370648"] = {
+  --desc = "Lava Flow (Eranog)";
+  sound = 1;
+  test = true;
+};
 
+GTFO.SpellID["382458"] = {
+  --desc = "Resonant Aftermath (Terros)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["371514"] = {
+  --desc = "Scorched Ground (Embar)";
+  soundFunction = function() 
+	if (GTFO_HasDebuff("player", 391599) or GTFO_HasDebuff("player", 371836)) then -- Primal Blizzard, two types
+		return 0;
+	end
+	return 1;
+  end;
+  test = true;
+};
+
+GTFO.SpellID["372055"] = {
+  --desc = "Icy Ground (Sennarth)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["391686"] = {
+  --desc = "Conductive Mark (Dathea)";
+  applicationOnly = true;
+  spellType = "SPELL_AURA_REFRESH"; -- Only alert when passing debuff to another player, refreshing your own
+  sound = 4;
+  test = true;
+};
+
+GTFO.SpellID["374554"] = {
+  --desc = "Magma Pool (Kurog Grimtotem)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["390747"] = {
+  --desc = "Static Field (Broodkeeper Diurna)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["388115"] = {
+  --desc = "Lightning Devastation (Raszageth)";
+  sound = 1;
+  test = true;
+};
+
+GTFO.SpellID["395929"] = {
+  --desc = "Storm's Spite (Raging Storm)";
+  sound = 1;
+  test = true;
+};
 
 end

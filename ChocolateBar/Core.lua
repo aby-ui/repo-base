@@ -9,6 +9,7 @@ local _, _, _, tocversion = GetBuildInfo()
 local addonVersion = GetAddOnMetadata("ChocolateBar", "Version")
 
 ChocolateBar.Jostle = {}
+ChocolateBar.Jostle2 = {}
 ChocolateBar.Bar = {}
 ChocolateBar.ChocolatePiece = {}
 ChocolateBar.Drag = {}

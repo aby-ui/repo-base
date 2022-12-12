@@ -1097,6 +1097,128 @@ function F:HasPermission(isPartyMarkPermission)
 end
 
 -------------------------------------------------
+-- range checker
+-------------------------------------------------
+local UnitIsVisible = UnitIsVisible
+local UnitInRange = UnitInRange
+local UnitCanAssist = UnitCanAssist
+local UnitCanAttack = UnitCanAttack
+local IsSpellInRange = IsSpellInRange
+local IsItemInRange = IsItemInRange
+local CheckInteractDistance = CheckInteractDistance
+
+local playerClass = UnitClassBase("player")
+local friendSpells = {
+    ["DEATHKNIGHT"] = 61999,
+    -- ["DEMONHUNTER"] = ,
+    ["DRUID"] = Cell.isRetail and 8936 or 5185,
+    ["EVOKER"] = 361469,
+    ["HUNTER"] = 136,
+    ["MAGE"] = 1459,
+    ["MONK"] = 116670,
+    ["PALADIN"] = Cell.isRetail and 19750 or 635,
+    ["PRIEST"] = Cell.isRetail and 2061 or 2050,
+    ["ROGUE"] = 2764,
+    ["SHAMAN"] = Cell.isRetail and 8004 or 331,
+    ["WARLOCK"] = 20707,
+    -- ["WARRIOR"] = ,
+}
+
+local harmSpells = {
+    ["DEATHKNIGHT"] = 47541,
+    ["DEMONHUNTER"] = 185123,
+    ["DRUID"] = 5176,
+    ["EVOKER"] = 361469,
+    ["HUNTER"] = 75,
+    ["MAGE"] = 116,
+    ["MONK"] = 117952,
+    ["PALADIN"] = 20271,
+    ["PRIEST"] = 589,
+    -- ["ROGUE"] = ,
+    ["SHAMAN"] = Cell.isRetail and 188196 or 403,
+    ["WARLOCK"] = 686,
+    ["WARRIOR"] = 355,
+}
+
+do
+    for k, id in pairs(friendSpells) do
+        friendSpells[k] = GetSpellInfo(id)
+    end
+    for k, id in pairs(harmSpells) do
+        harmSpells[k] = GetSpellInfo(id)
+    end
+end
+
+local friendItems = {
+    ["DEATHKNIGHT"] = 34471,
+    ["DEMONHUNTER"] = 34471,
+    ["DRUID"] = 34471,
+    ["EVOKER"] = 1180,
+    ["HUNTER"] = 34471,
+    ["MAGE"] = 34471,
+    ["MONK"] = 34471,
+    ["PALADIN"] = 34471,
+    ["PRIEST"] = 34471,
+    ["ROGUE"] = 34471,
+    ["SHAMAN"] = 34471,
+    ["WARLOCK"] = 34471,
+    ["WARRIOR"] = 34471,
+}
+
+local harmItems = {
+    ["DEATHKNIGHT"] = 28767,
+    ["DEMONHUNTER"] = 28767,
+    ["DRUID"] = 28767,
+    ["EVOKER"] = 24268,
+    ["HUNTER"] = 28767,
+    ["MAGE"] = 28767,
+    ["MONK"] = 28767,
+    ["PALADIN"] = 28767,
+    ["PRIEST"] = 28767,
+    ["ROGUE"] = 28767,
+    ["SHAMAN"] = 28767,
+    ["WARLOCK"] = 28767,
+    ["WARRIOR"] = 28767,
+}
+
+function F:IsInRange(unit, check)
+    if not UnitIsVisible(unit) then
+        return false
+    end
+
+    if UnitIsUnit("player", unit) then
+        return true
+    elseif not check and F:UnitInGroup(unit) then
+        -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
+        local checked
+        inRange, checked = UnitInRange(unit)
+        if not checked then
+            return F:IsInRange(unit, true)
+        end
+        return inRange
+    else
+        if UnitCanAssist("player", unit) then
+            -- print("CanAssist", unit)
+            if friendSpells[playerClass] then
+                return IsSpellInRange(friendSpells[playerClass], unit) == 1
+            else
+                return IsItemInRange(friendItems[playerClass], unit)
+            end
+        elseif UnitCanAttack("player", unit) then
+            -- print("CanAttack", unit)
+            if harmSpells[playerClass] then
+                return IsSpellInRange(harmSpells[playerClass], unit) == 1
+            else
+                return IsItemInRange(harmItems[playerClass], unit)
+            end
+        else
+            -- print("CheckInteractDistance", unit)
+            return CheckInteractDistance("target", 4) -- 28 yards
+        end
+    end
+end
+
+-------------------------------------------------
 -- LibSharedMedia
 -------------------------------------------------
 Cell.vars.texture = "Interface\\AddOns\\Cell\\Media\\statusbar.tga"

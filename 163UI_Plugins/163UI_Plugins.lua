@@ -402,24 +402,31 @@ end
 在声望里显示一些特殊的名称，没找到API获取只能写死
 ---------------------------------------------------------------]]
 do
-    local reactionNames = {"熟人","同好","盟友","龙牙","朋友","挚友"}
+    --https://www.wowhead.com/cn/faction=2544
+    local reactionNames = {
+        [2517] = {"熟人","同好","盟友","龙牙","朋友","挚友"},
+        [2518] = {"熟人","同好","盟友","龙牙","朋友","挚友"},
+        [2544] = {"中立","偏爱","尊重","重视","崇尚"},
+        [2550] = {"空","低","中","高","最大"},
+    }
     CoreUIHookPoolCollection(ReputationFrame.ScrollBox.view.poolCollection, function(frame, frameType, template)
         if template == "ReputationBarTemplate" then
             frame:HookScript("OnEnter", function(self)
                 if GameTooltip:IsVisible() then
                     GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                    if self.factionID == 2517 or self.factionID == 2518 then
+                    local names = reactionNames[self.factionID]
+                    if names then
                         local r = C_GossipInfo.GetFriendshipReputationRanks(self.factionID)
-                        if r and r.currentLevel and reactionNames[r.currentLevel] then
-                            local old = reactionNames[r.currentLevel]
-                            reactionNames[r.currentLevel] = GREEN_FONT_COLOR:WrapTextInColorCode(old)
-                            GameTooltip:AddLine(table.concat(reactionNames, "/"), .5, .5, .5, 1)
-                            reactionNames[r.currentLevel] = old
+                        if r and r.currentLevel and names[r.currentLevel] then
+                            local old = names[r.currentLevel]
+                            names[r.currentLevel] = GREEN_FONT_COLOR:WrapTextInColorCode(old)
+                            GameTooltip:AddLine(table.concat(names, "/"), .5, .5, .5, 1)
+                            names[r.currentLevel] = old
                         end
                     end
-                    GameTooltip:AddLine("声望ID：" .. self.factionID)
-                    GameTooltip:Show()
                 end
+                GameTooltip:AddLine("声望ID：" .. self.factionID)
+                GameTooltip:Show()
             end)
         end
     end)

@@ -3,7 +3,7 @@
 ## Notes: I'm going to to get my engineers to invent a combustible lemon that burns your house down! Now with profiles!
 ## Author: Waky
 ## Dependencies: 
-## Version: 3.0.4
+## Version: 3.0.5
 ## SavedVariables: wMarkerAceDB
 ## SavedVariablesPerCharacter: wMarkerDB, wFlaresDB
 

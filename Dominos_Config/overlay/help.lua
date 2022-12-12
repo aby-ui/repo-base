@@ -72,7 +72,9 @@ function HelpDialog:OnLoad(owner)
 
     local showGridButton = _G.CreateFrame('CheckButton', nil, self, "UICheckButtonTemplate")
 
-    showGridButton.text:SetText(L.ShowAlignmentGrid)
+    local showGridButtonText = showGridButton.Text or showGridButton.text
+    showGridButtonText:SetText(L.ShowAlignmentGrid)
+
     showGridButton:SetChecked(Addon:GetParent():GetAlignmentGridEnabled())
     showGridButton:SetScript('OnClick', function(button) self:OnShowGridButtonClicked(button) end)
     showGridButton:SetPoint('BOTTOMLEFT', 14, 10)

@@ -9,6 +9,7 @@ local Group = ns.Group
 
 local Collectible = ns.node.Collectible
 local Node = ns.node.Node
+local Rare = ns.node.Rare
 
 local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
@@ -41,6 +42,10 @@ ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.KITE = Group('kite', 133837, {defaults = ns.GROUP_HIDDEN})
 ns.groups.LAYLINE = Group('layline', 1033908, {defaults = ns.GROUP_HIDDEN})
+ns.groups.LEGENDARY_ALBUM = Group('legendary_album', 1109168,
+    {defaults = ns.GROUP_HIDDEN})
+ns.groups.NEW_PERSPECTIVE = Group('new_perspective', 1109100,
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.PROFESSION_TREASURES = Group('profession_treasures', 4620676,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SCOUT_PACK =
@@ -48,10 +53,23 @@ ns.groups.SCOUT_PACK =
 ns.groups.SPECIALTIES = Group('specialties', 651585,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
-ns.groups.PRETTY_NEAT_SELFIE = Group('pretty_neat_selfie', 133707,
+ns.groups.STORIES = Group('stories', 4549126, {defaults = ns.GROUP_HIDDEN})
+ns.groups.PRETTY_NEAT = Group('pretty_neat', 133707,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.GRAND_THEFT_MAMMOTH = Group('grand_theft_mammoth', 4034836,
     {defaults = ns.GROUP_HIDDEN})
+ns.groups.SAFARI = Group('safari', 4048818, {defaults = ns.GROUP_HIDDEN})
+
+-------------------------------------------------------------------------------
+--------------------------------- ELITE RARES ---------------------------------
+-------------------------------------------------------------------------------
+
+local RareElite = Class('RareElite', Rare, {
+    rlabel = '(' .. ns.color.Gray(L['elite']) .. ')',
+    sublabel = L['elite_loot_385']
+})
+
+ns.node.RareElite = RareElite
 
 -------------------------------------------------------------------------------
 ----------------------------- PROFESSION TREASURES ----------------------------
@@ -187,7 +205,7 @@ ns.DRAGON_CUSTOMIZATIONS = {
         SharkSnout = Item({item = 197400, quest = 69601}),
         ShortSpikedCrest = Item({item = 197364, quest = 69565}),
         SilverAndBlueArmor = Item({item = 197347, quest = 69548}),
-        SilverAndPurpleArmor = Item({item = 197350, quest = nil}),
+        SilverAndPurpleArmor = Item({item = 197350, quest = 69551}),
         SkyterrorPattern = Item({item = 197396, quest = 69597}),
         SnubSnout = Item({item = 197398, quest = 69599}),
         SpikedClubTail = Item({item = 197402, quest = 69603}),
@@ -204,6 +222,37 @@ ns.DRAGON_CUSTOMIZATIONS = {
         ThinSpinedJaw = Item({item = 197387, quest = 69588}),
         WhiteHorns = Item({item = 197382, quest = 69583}),
         WhiteScales = Item({item = 197393, quest = 69594})
+    },
+    WindborneVelocidrake = {
+        ClubTail = Item({item = 197624, quest = 69828}),
+        FinnedEars = Item({item = 197595, quest = 69799}),
+        LargeHeadFin = Item({item = 197589, quest = 69793}),
+        SweptHorns = Item({item = 197606, quest = 69810}),
+        SpikedBack = Item({item = 197586, quest = 69790}),
+        ClusterHorns = Item({item = 197602, quest = 69806})
+    },
+    HighlandDrake = {
+        CrestedBrow = Item({item = 197100, quest = 69301}),
+        FinnedBack = Item({item = 197098, quest = 69299}),
+        ManedHead = Item({item = 197111, quest = 69312}),
+        SpikedClubTail = Item({item = 197150, quest = 69351}),
+        StripedPattern = Item({item = 197138, quest = 69339}),
+        TanHorns = Item({item = 197121, quest = 69322}),
+        ToothyMouth = Item({item = 197135, quest = 69336})
+    },
+    CliffsideWylderdrake = {
+        BlackHorns = Item({item = 196991, quest = 69191}),
+        BluntSpikedTail = Item({item = 197019, quest = 69219}),
+        BranchedHorns = Item({item = 196996, quest = 69196}),
+        Ears = Item({item = 196982, quest = 69182}),
+        DualHornedChin = Item({item = 196973, quest = 69173}),
+        FinnedCheek = Item({item = 197001, quest = 69201}),
+        FinnedNeck = Item({item = 197022, quest = 69222}),
+        HeadMane = Item({item = 196976, quest = 69176}),
+        HeavyHorns = Item({item = 196992, quest = 69192}),
+        HornedJaw = Item({item = 196985, quest = 69185}),
+        HornedNose = Item({item = 197005, quest = 69205}),
+        ManedNeck = Item({item = 197023, quest = 69223})
     }
 }
 
@@ -381,32 +430,34 @@ ns.node.Squirrel = Squirrel
 ----------------------------- THAT'S PRETTY NEAT! -----------------------------
 -------------------------------------------------------------------------------
 
-local Selfie = Class('Selfie', Collectible, {
+local PrettyNeat = Class('PrettyNeat', Collectible, {
     icon = 133707,
-    sublabel = L['pretty_neat_selfie_note'],
-    group = ns.groups.PRETTY_NEAT_SELFIE
+    sublabel = L['pretty_neat_note'],
+    group = ns.groups.PRETTY_NEAT
 }) -- That's Pretty Neat!
 
-ns.node.Selfie = Selfie
+ns.node.PrettyNeat = PrettyNeat
 
--- TODO / Checklist
--- Apex Blazewing           Inside Neltharus
--- Blue Terror              Added to Rare - Unknown
--- Drakewing                Added to Rare - Unknown
--- Feasting Buzzard         Added - Working
--- Glade Ohuna              Added - Working
--- Horned Filcher           Added - Bugged
--- Liskron the Dazzling     Added to Rare - Unknown
--- Ohn'ahra                 Added as Separate Node - Unknown (probably bugged?)
--- Pine Flicker             Added - Bugged
--- Territorial Axebeak      Added - Working
--- Avis Gryphonheart        Added - Bugged
--- Chef Fry-Aerie           Added - Working
--- Eldoren the Reborn       Added to Rare - Unknown
--- Forgotten Gryphon        Added to Rare - Unknown
--- Halia Cloudfeather       Added - Bugged (counted as Drakewing)
--- Iridescent Peafowl       Added - Working
--- Nergazurai               Added to Rare - Unknown
--- Palla of the Wing        Added - Bugged (counted as Ohn'ahra)
--- Quackers the Terrible    Unknown Location
--- Zenet Avis               Added to Rare - Unknown
+-------------------------------------------------------------------------------
+------------------------------ A LEGENDARY ALBUM ------------------------------
+-------------------------------------------------------------------------------
+
+local LegendaryCharacter = Class('LegendaryCharacter', Collectible, {
+    icon = 1109168,
+    group = ns.groups.LEGENDARY_ALBUM,
+    requires = {
+        ns.requirement.Reputation(2507, 8, true), -- Dragonscale Expedition
+        ns.requirement.GarrisonTalent(2169) -- Lucky Rock
+    }
+}) -- A Legendary Album
+
+ns.node.LegendaryCharacter = LegendaryCharacter
+
+-------------------------------------------------------------------------------
+----------------------------- DRAGON ISLES SAFARI -----------------------------
+-------------------------------------------------------------------------------
+
+local Safari = Class('Safari', Collectible,
+    {icon = 'paw_g', group = ns.groups.SAFARI}) -- Dragon Isles Safari
+
+ns.node.Safari = Safari

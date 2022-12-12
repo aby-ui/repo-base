@@ -1,8 +1,8 @@
---	02.11.2022
+--	10.12.2022
 
 local GlobalAddonName, MRT = ...
 
-MRT.V = 4700
+MRT.V = 4710
 MRT.T = "R"
 
 MRT.Slash = {}			--> функции вызова из коммандной строки
@@ -45,6 +45,9 @@ elseif MRT.clientVersion < 40000 then
 	MRT.isBC = true
 	MRT.isLK = true
 	MRT.T = "WotLK"
+	if MRT.clientVersion >= 30401 then
+		MRT.isLK1 = true
+	end
 elseif MRT.clientVersion < 50000 then
 	MRT.isClassic = true
 	MRT.isBC = true

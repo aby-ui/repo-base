@@ -449,7 +449,7 @@ function AutoTurnIn:SetEnabled(enabled)
 		--self:SwitchSellJunk(db.enabled and db.sell_junk)
 		self:RegisterForEvents()
 	else
-		--self:UnregisterAllEvents() --abyui
+		self:UnregisterAllEvents() --abyui
 	end
 end
 

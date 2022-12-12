@@ -6,7 +6,7 @@ local KeyBound = LibStub('LibKeyBound-1.0')
 
 local ADDON_VERSION = GetAddOnMetadata(AddonName, 'Version')
 local CONFIG_ADDON_NAME = AddonName .. '_Config'
-local DB_SCHEMA_VERSION = 1
+local DB_SCHEMA_VERSION = 2
 
 -- setup custom callbacks
 Addon.callbacks = LibStub('CallbackHandler-1.0'):New(Addon)
@@ -81,6 +81,20 @@ end
 
 -- configuration events
 function Addon:OnUpgradeDatabase(oldVersion, newVersion)
+    if oldVersion < 2 then
+        for _, profile in pairs(self.db.profiles) do
+            local mainBar = profile.frames and profile.frames[1]
+
+            if mainBar then
+                for _, pages in pairs(mainBar.pages) do
+
+                    if pages.dragonriding == nil then
+                        pages.dragonriding = 10
+                    end
+                end
+            end
+        end
+    end
 end
 
 function Addon:OnUpgradeAddon(oldVersion, newVersion)

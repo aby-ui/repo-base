@@ -1,11 +1,9 @@
 ## Interface: 100002
 ## Title: |TInterface/Addons/BagBrother/Art/Bagnon-Small:16:16|t|TInterface/Addons/BagBrother/Art/Bagnonium-Small:16:16|t BagBrother
-## Notes: Bagnon and Bagnonium's shared engine,|nstorage and everything.|n|cffbbbbbbBy João Cardoso|r|n|n|TInterface/Addons/BagBrother/Art/Patreon:12:12|t |cff82c5ffpatreon.com/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Discord:12:12:0:-2|t |cff82c5ffbit.ly/discord-jaliborc|r
+## Notes: Bagnon and Bagnonium's shared engine,|nstorage and everything.|n|cffbbbbbbBy João Cardoso and Jason Greer|r|n|n|TInterface/Addons/BagBrother/Art/Patreon:12:12|t |cff82c5ffpatreon.com/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Paypal:12:12|t |cff82c5ffpaypal.me/jaliborc|r|n|TInterface/Addons/BagBrother/Art/Discord:12:12:0:-2|t |cff82c5ffbit.ly/discord-jaliborc|r
 ## Author: Jaliborc (João Cardoso)
 ## SavedVariables: BrotherBags
 ## OptionalDeps: WoWUnit
-
-BagBrother.xml
 
 
 ## Title-zhCN: |cff880303[爱不易]|r BagBrother 离线背包

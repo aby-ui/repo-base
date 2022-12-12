@@ -313,6 +313,7 @@ function panel:IconOnClick()
 		dialog:SetContext("icon",iconID)
 		dialog.Slot.Icon:SetTexture(iconID)
 		panel:UpdateTabIconPickerList()
+		--iconPicker.SearchBox.Instructions:SetText(iconID) -- uncomment to see fileID of the icon just clicked
 	end
 end
 

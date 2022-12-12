@@ -292,6 +292,7 @@ function Addon:SetButtonState(button, state, force)
 
     local r, g, b, a = self:GetColor(state)
 
+    button.icon:SetDesaturated(state == 'oom' or state == 'oor')
     button.icon:SetVertexColor(r, g, b, a)
 end
 

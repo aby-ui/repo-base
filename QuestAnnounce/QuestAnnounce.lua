@@ -201,14 +201,16 @@ function QuestAnnounce:RefreshCompletedQuests(announce)
     self.completed = self.completed or {}
     for i=1, C_QuestLog.GetNumQuestLogEntries(), 1 do
         local info = C_QuestLog.GetInfo(i)
-        local title = info.title
-        local isComplete = C_QuestLog.IsComplete(info.questID)
-        if title and isComplete then
-            if not self.completed[title] and announce then
-                QuestAnnounce:SendMsg(L["Quest Done: "] .. title, true)
-            end
-            self.completed[title] = true
-        end
+		if info then --abyui logging error sometimes
+			local title = info.title
+			local isComplete = C_QuestLog.IsComplete(info.questID)
+			if title and isComplete then
+				if not self.completed[title] and announce then
+					QuestAnnounce:SendMsg(L["Quest Done: "] .. title, true)
+				end
+				self.completed[title] = true
+			end
+		end
     end
 end
 

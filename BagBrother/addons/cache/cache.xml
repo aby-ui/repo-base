@@ -1,0 +1,6 @@
+<Ui>
+    <Script file="startup.lua"/>
+    <Script file="events.lua"/>
+    <Script file="api.lua"/>
+    <Script file="interface.lua"/>
+</Ui>

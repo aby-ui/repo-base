@@ -6,6 +6,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
+L['elite_loot_385'] = ns.color.Orange('此稀有可以掉落最高385物品等级战利品！')
 L['gem_cluster_note'] = '所需物品需要龙鳞探险队声望到达21级可以从探险队斥候的背包和翻动过的泥土中找到。'
 
 L['options_icons_bonus_boss'] = '奖励精英'
@@ -61,23 +62,27 @@ L['options_icons_squirrels_desc'] = '显示 {achievement:16729} 成就中小动�
 
 L['hnj_sublabel'] = '需要本地席卡尔洪荒狩猎'
 L['hnj_western_azure_span_hunt'] = '死树顶上。'
+L['hnj_northern_thaldraszus_hunt'] = ns.color.Orange('注意: 当狩猎事件开始时需要快速过去，去晚了他会被野怪击杀。')
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = '显示 {achievement:16542} 成就中 {npc:194590} 的位置。'
 
-L['pretty_neat_selfie_note'] = '用自拍神器照相。'
-L['bugged_selfie'] = '|cFFFF0000（错误：将检测到错误的 NPC 或根本检测不到。）|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = '显示 {achievement:16446} 成就中 NPC 的位置。'
+L['pretty_neat_note'] = '用自拍神器照相。'
+L['pretty_neat_note_blazewing'] = '可以在 ' .. ns.color.Yellow('奈萨鲁斯') .. ' 地下城中的 {npc:189901} 首领战斗中找到。'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = '显示 {achievement:16446} 成就中 NPC 的位置。'
 
-L['large_lunker_sighting'] = nil
-L['large_lunker_sighting_note'] = nil
+L['large_lunker_sighting'] = '大家伙目击点'
+L['large_lunker_sighting_note'] = '使用5个 {item:194701} 召唤 {npc:192919} 或稀有。'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = '显示 {achievement:16570} 成就中传奇角色的位置。'
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_rare_note'] = '如果位于 |cFFFFFD00蕨皮山谷|r 区域，将在聊天中通报此稀有出现。'
-L['fisherman_tinnak_note'] = '收集 |cFFFFFD00破损的鱼竿|r，|cFFFFFD00撕裂的渔网|r 和 |cFFFFFD00老鱼叉|r 后稀有出现。'
+L['brackenhide_rare_note'] = '这些稀有以10分钟计时按固定轮次 {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} 出现。'
+L['fisherman_tinnak_note'] = '收集 |cFFFFFD00破损的鱼竿|r，|cFFFFFD00扯烂的渔网|r 和 |cFFFFFD00旧鱼叉|r 后稀有出现。'
 L['spellwrought_snowman_note'] = '收集10个 {npc:193424} 并将它们带到 {npc:193242}。'
 L['trilvarus_loreweaver_note'] = '收集 |cFFFFFD00歌声碎片|r 即可获得 {spell:382076} 并使用 |cFFFFFD00未知焦点|r 后稀有出现。'
 
@@ -111,8 +116,15 @@ L['leyline_note'] = '重新排列魔网。'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = '显示 {achievement:16638} 成就中全部重新排列魔网的位置。'
 
+L['river_rapids_wrangler_note'] = '与 {npc:186157} 交谈并选择“想再次乘坐你的急流之旅”。有60秒的时间收集40层 {spell:373490}。'
 L['seeing_blue_note'] = '从碧蓝档案馆的顶端飞到钴蓝集所，当中不落地。'
 L['snowman_note'] = '该区域有三个 {npc:197599}（可能已被其他玩家移动），将它们滚给两个孩子 {npc:197838} 和 {npc:197839}。\n当雪球有合适的尺寸时获得成就。'
+
+L['snowclaw_cub_note_start'] = '必须在 |cFFFFFD00瓦德拉肯|r 中完成 {npc:192522} 提供的 {quest:67094} 任务线才能获得 |cFFFFFD00荣誉树妖|r 头衔。\n\n收集以下物品：'
+L['snowclaw_cub_note_item1'] = '从 |cFFFFFD00觉醒海岸|r 周围的各种 {npc:182559} 拾取3个 {item:197744}。'
+L['snowclaw_cub_note_item2'] = '从 |cFFFFFD00觉醒海岸|r 的 {npc:193310} 购买1个 {item:198356}。'
+L['snowclaw_cub_note_end'] = ns.color.Orange('所有物品都可以从拍卖行购买。如果获得从 {npc:193310} 购买物品所需的 {item:199215} 有难度，这将特别有用。') .. '\n\n带好头衔后，将所有4件物品提供给 {npc:196768} 以获得的宠物。' .. ns.color.Red('\n\n错误：头衔可能会消失，等待修复。')
+
 L['temperamental_skyclaw_note'] = [[
 收集（或在拍卖行购买）：
 
@@ -140,7 +152,7 @@ L['mysterious_wand_note'] = '拾取 |cFFFFFD00水晶钥匙|r 并将其放入 |cF
 -------------------------------------------------------------------------------
 
 L['hunter_of_the_deep_note'] = '单击武器架并射击鱼直到稀有出现。'
-L['scaleseeker_mezeri_note'] = '向 {npc:193224} 提供一个 {item:194681}，她会揭示稀有。'
+L['scaleseeker_mezeri_note'] = '向 {npc:193224} 提供一个 {item:194681}，并跟着她，直到她揭示稀有。'
 L['shade_of_grief_note'] = '点击 {npc:193166} 刷新稀有。'
 L['windscale_the_stormborn_note'] = '杀死通向 {npc:192357} 的 {npc:192367}。'
 L['zarizz_note'] = '点击并 ' .. ns.color.Orange('/鄙视、/hiss') .. ' 在四个 {npc:193169} 处召唤稀有。'
@@ -192,11 +204,17 @@ L['dreamguard_note'] = '目标为梦境防御者并 ' .. ns.color.Orange('/睡�
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = '显示 {achievement:16574} 成就中梦境防御者的位置。'
 
+L['khadin_note'] = nil
+L['the_great_swog_note'] = nil
+L['tome_of_polymoph_duck'] = '使用 {spell:1953} 进入洞穴并与 |cFFFFFD00法力风暴初学指南|r 书互动以完成任务。'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
 
+L['ancient_protector_note'] = '击杀附近的 {npc:193244} 以获得 {item:197708}。将5个 {item:197708} 组合成一个 {item:197733} 并用它来激活附近的泰坦反应堆。'
 L['blightpaw_note'] = '与附近的 {npc:193222} 交谈并同意帮助他。'
+L['corrupted_proto_dragon_note'] = nil
 L['weeping_vilomah_note'] = '和 {npc:193206} 对话召唤稀有。'
 L['woofang_note'] = '抚摸 {npc:193156} 稀有出现。'
 
@@ -222,25 +240,31 @@ L['pt_tailor_ancient_dragonweave_bolt_note'] = '点击 |cFFFFFD00上古龙纹织
 L['pt_tailor_miniature_bronze_dragonflight_banner_note'] = '一堆沙子里的小旗帜。'
 
 L['picante_pomfruit_cake_note'] = '{item:200904} 并非每天都可用，因此请每天查看 |cFF00CCFF红玉飞地|r。当在那里时，一定要品尝3种可用的菜肴来完成 {achievement:16556}。'
-L['icecrown_bleu_note'] = '从 |cFF00CCFF匠人集市|r 的 {npc:196729} ' .. ns.color.NPC('<Cheesemonger>') .. ' 购买。'
-L['dreamwarding_dripbrew_note'] = '从 |cFFFFFD00熬夜实验室|r 的 {npc:197872} ' .. ns.color.NPC('<Caffeinomancer>') .. ' 购买。'
+L['icecrown_bleu_note'] = '从 |cFF00CCFF匠人集市|r 的 {npc:196729} ' .. ns.color.NPC('<奶酪商贩>') .. ' 购买。'
+L['dreamwarding_dripbrew_note'] = '从 |cFFFFFD00熬夜实验室|r 的 {npc:197872} ' .. ns.color.NPC('<咖啡因操控师>') .. ' 购买。'
 L['arcanostabilized_provisions_note'] = '从 |cFF00CCFF拜荒者的未来|r 内的 |cFF00CCFF时光流汇|r 的 {npc:198831} ' .. ns.color.NPC('<厨师长>') .. ' 购买。'
-L['steamed_scarab_steak_note'] = '从 |cFFFFFD00宁梦温泉|r 的 {npc:197586} ' .. ns.color.NPC('<Spa Bartender>') .. ' 购买。'
+L['steamed_scarab_steak_note'] = '从 |cFFFFFD00宁梦温泉|r 的 {npc:197586} ' .. ns.color.NPC('<温泉调酒师>') .. ' 购买。'
 L['craft_creche_crowler_note'] = '从每日随机地图位置的 {npc:187444} ' .. ns.color.NPC('<旅行的巨龙陈酿商人>') .. ' 位于：|cFFFFFD00红玉新生圣地|r、|cFFFFFD00绿鳞旅店|r、|cFFFFFD00僻壤营地|r、|cFFFFFD00时光流汇|r 购买。'
-L['bivigosas_blood_sausages_note'] = '从 |cFFFFFD00格利基尔岗哨|r 的 {npc:188895} ' .. ns.color.NPC('<Food & Drink>') .. ' 购买。'
+L['bivigosas_blood_sausages_note'] = '从 |cFFFFFD00格利基尔岗哨|r 的 {npc:188895} ' .. ns.color.NPC('<食物和饮料>') .. ' 购买。'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = '显示 {achievement:16621} 成就中食物和饮料的位置。'
+L['options_icons_new_perspective'] = '{achievement:16634}'
+L['options_icons_new_perspective_desc'] = '显示 {achievement:16634} 成就中景点的位置。'
+L['new_perspective_note'] = '用自拍神器与景点合影。一旦进入相机模式，该位置就会用紫色光圈标记。\n\n如果没有获得成就，请改变视角。'
+L['ruby_feast_gourmand'] = '每天，一位随机的客座厨师都会提供不同的食品和饮料。'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = '卡拉希战队从 {npc:192737} 前往这座塔。'
+L['captain_lancer_note'] = '完成 {spell:388945} 事件之后立刻刷新。'
+L['enkine_note'] = '沿着熔岩河击杀 {npc:193137}、{npc:193138} 或 {npc:193139} 以获得 {item:201092}，使用它并在熔岩中的 {npc:191866} 附近钓鱼。'
 L['lepidoralia_note'] = '位于 |cFFFFFD00翩翼洞窟|r。帮助 {npc:193342} 抓住 {npc:193274} 直到稀有出现。'
 L['obsidian_citadel_rare_note'] = '和其他玩家必须总共上缴%d个 {item:191264} %s。要制作钥匙，需要组合30个 {item:191251} 和3个 {item:193201}，可以从 |cFFFFFD00黑曜堡垒|r 怪物获得这些物品。'
 L['shadeslash_note'] = '点击 |cFFFFFD00失窃的法器|r 召唤稀有。'
 L['obsidian_throne_rare_note'] = '|cFFFFFD00黑曜王座|r 内。'
-L['skald_impaler_note'] = nil
+L['skald_impaler_note'] = '使用5个 {item:194701} 召唤稀有。'
 L['slurpo_snail_note'] = '从 |cFFFFFD00碧蓝林海|r (11, 41) 的一个洞穴中拾取1个 {item:201033} 并在这个洞穴中使用来召唤他。'
 L['worldcarver_atir_note'] = '从附近的 {npc:187366} 收集3个 {item:191211} 并将它们放置在 {npc:197395} 后稀有出现。'
 
@@ -264,7 +288,7 @@ L['hidden_hornswog_hoard_note'] = [[
 
 L['pm_alch_grigori_vialtry'] = '在俯瞰 |cFFFFFD00闪霜战地|r 的平台上。'
 L['pm_skin_zenzi'] = '站在河边。'
-L['pm_smith_grekka_anvilsmash'] = '在废墟塔旁的草丛中。\n\n|cFFFF0000（目前有问题。）|r'
+L['pm_smith_grekka_anvilsmash'] = '在废墟塔旁的草丛中。'
 L['pt_alch_frostforged_potion_note'] = '在冰坑中间。'
 L['pt_alch_well_insulated_mug_note'] = '在 |cFFFFFD00灭龙要塞|r 一些精英怪物之间。'
 L['pt_ench_enchanted_debris_note'] = '使用并跟随 {npc:194872} 在最后拾取残骸。'
@@ -304,3 +328,27 @@ L['options_icons_chiseled_record_desc'] = '显示 {achievement:16412} 成就中�
 L['grand_theft_mammoth_note'] = '骑乘 {npc:194625} 到 {npc:198163}。\n\n|cFFFF0000（错误：如果你不能与 {npc:194625} 互动，请使用 /reload。）|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = '显示 {achievement:16493} 成就中 {npc:194625} 的位置。'
+
+L['options_icons_stories'] = '{achievement:16406}'
+L['options_icons_stories_desc'] = '显示 {achievement:16406} 成就中任务的位置。'
+L['all_sides_of_the_story_garrick_and_shuja_note'] = '开启任务线，聆听 {npc:184449} 和 {npc:184451} 的故事。'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = '在平台下方的一个小房间里。\n\n启动任务线并聆听 {npc:194800} 和 {npc:194801} 的故事。更多任务将在接下来的两周内解锁。'
+L['all_sides_of_the_story_tarjin_note'] = '从 {quest:70779} 开始任务线。\n{npc:196214} 每周都会告诉你另一个故事。'
+L['all_sides_of_the_story_veritistrasz_note'] = '开始任务 {quest:70132} 以了解 {npc:194076} 的所有故事。\n之后将解锁 {quest:70134}，然后解锁 {quest:70268}。\n\n对于最后一个任务，需要 {item:198661} 在' .. ns.color.Yellow('灭龙要塞') .. '中找到。'
+
+L['slumbering_worldsnail_note1'] = [[
+1. 从 |cFFFFFD00黑曜堡垒|r 周围的怪物中拾取3个 {item:193201} 和30个 {item:191251} 以组合成 {item:191264}。
+
+2. 从 {npc:187275} 那用 {item:191264} 换成 {item:200069}。
+
+3. 箱子有30%的几率会包含 {item:199215}。
+
+4. 使用会员资格会给你 {spell:386848} 负面效果，可以在 |cFFFFFD00黑曜堡垒|r 周围刷 {item:202173}。
+
+5. 收集1000个 {item:202173} 以购买 {item:192786}。]]
+
+L['slumbering_worldsnail_note2'] = ns.color.Orange('注意：如果你死了，将失去你的会员负面效果。要么在你死之前以20个 {item:202173} 的价格从 {npc:193310} 购买新会员资格，要么交出更多钥匙，就有机会从宝箱中获得新会员资格。')
+
+L['options_icons_safari'] = '{achievement:16519}'
+L['options_icons_safari_desc'] = '显示 {achievement:16519} 成就中战斗宠物的位置。'
+L['shyfly_note'] = '必须在任务 {quest:70853} 中才能看到 {npc:189102}。'

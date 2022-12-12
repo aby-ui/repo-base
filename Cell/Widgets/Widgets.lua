@@ -1528,31 +1528,16 @@ function addon:CreateStatusBar(name, parent, width, height, maxValue, smooth, fu
     local bar = CreateFrame("StatusBar", name, parent, "BackdropTemplate")
 
     if not color then color = {accentColor.t[1], accentColor.t[2], accentColor.t[3], 1} end
-    if not texture then
-        local tex = bar:CreateTexture(nil, "ARTWORK")
-        tex:SetColorTexture(1, 1, 1, 1)
-
-        bar:SetStatusBarTexture(tex)
-        bar:SetStatusBarColor(unpack(color))
-    else
-        bar:SetStatusBarTexture(texture)
-        bar:SetStatusBarColor(unpack(color))
-    end
-    
-    -- bar:GetStatusBarTexture():SetHorizTile(false)
-    -- REVIEW: in 9.0, edgeSize = -1 will case a thicker outline
-    local border = CreateFrame("Frame", nil, bar, "BackdropTemplate")
-    bar.border = border
-    border:SetBackdrop({edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=P:Scale(1)})
-    border:SetBackdropBorderColor(0, 0, 0, 1)
-    P:Point(border, "TOPLEFT", bar, "TOPLEFT", -1, 1)
-    P:Point(border, "BOTTOMRIGHT", bar, "BOTTOMRIGHT", 1, -1)
+    if not texture then texture = "Interface\\Buttons\\WHITE8x8" end
+    bar:SetStatusBarTexture(texture)
+    bar:SetStatusBarColor(unpack(color))
+    bar:GetStatusBarTexture():SetDrawLayer("BORDER", -1)
 
     P:Width(bar, width)
     P:Height(bar, height)
-    bar:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8"})
+    bar:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=P:Scale(1)})
     bar:SetBackdropColor(0.07, 0.07, 0.07, 0.9)
-    -- bar:SetBackdropBorderColor(0, 0, 0, 1)
+    bar:SetBackdropBorderColor(0, 0, 0, 1)
 
     if showText then
         bar.text = bar:CreateFontString(nil, "OVERLAY", font_name)
@@ -1598,9 +1583,9 @@ function addon:CreateStatusBar(name, parent, width, height, maxValue, smooth, fu
     function bar:UpdatePixelPerfect()
         P:Resize(bar)
         P:Repoint(bar)
-        border:SetBackdrop({edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=P:Scale(1)})
-        border:SetBackdropBorderColor(0, 0, 0, 1)
-        P:Repoint(border)
+        bar:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8", edgeFile="Interface\\Buttons\\WHITE8x8", edgeSize=P:Scale(1)})
+        bar:SetBackdropColor(0.07, 0.07, 0.07, 0.9)
+        bar:SetBackdropBorderColor(0, 0, 0, 1)
     end
 
     return bar

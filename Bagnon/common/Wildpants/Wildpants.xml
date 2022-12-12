@@ -1,9 +1,0 @@
-<Ui>
-	<Include file="libs\libs.xml"/>
-	<Include file="localization\main\localization.xml"/>
-
-	<Script file="Wildpants.lua"/>
-	<Include file="api\api.xml"/>
-	<Include file="classes\classes.xml"/>
-	<Include file="features\features.xml"/>
-</Ui>

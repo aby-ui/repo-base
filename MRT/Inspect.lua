@@ -3,7 +3,7 @@ local GlobalAddonName, ExRT = ...
 local UnitName, GetTime = UnitName, GetTime
 local pairs, type, tonumber, abs = pairs, type, tonumber, abs
 local UnitCombatlogname, RaidInCombat, ScheduleTimer, DelUnitNameServer = ExRT.F.UnitCombatlogname, ExRT.F.RaidInCombat, ExRT.F.ScheduleTimer, ExRT.F.delUnitNameServer
-local CheckInteractDistance, CanInspect = CheckInteractDistance, CanInspect
+local CheckInteractDistance, CanInspect, TooltipUtil, C_TooltipInfo = CheckInteractDistance, CanInspect, TooltipUtil, C_TooltipInfo
 
 local GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo = GetInspectSpecialization, GetNumSpecializationsForClassID, GetTalentInfo
 local GetInventoryItemQuality, GetInventoryItemID = GetInventoryItemQuality, GetInventoryItemID
@@ -94,8 +94,11 @@ if ExRT.isClassic then
 	module.db.itemsSlotTable[#module.db.itemsSlotTable+1] = 18 	--INVSLOT_RANGED
 end
 
-local inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", nil, "GameTooltipTemplate")
-inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
+local inspectScantip 
+if not ExRT.is10 then
+	inspectScantip = CreateFrame("GameTooltip", "ExRTInspectScanningTooltip", nil, "GameTooltipTemplate")
+	inspectScantip:SetOwner(UIParent, "ANCHOR_NONE")
+end
 
 do
 	local essenceData,essenceDataByKey = nil
@@ -281,17 +284,26 @@ do
 		local mainHandSlot, offHandSlot = 0,0
 		for i=1,#module.db.itemsSlotTable do
 			local itemSlotID = module.db.itemsSlotTable[i]
-			--local itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
-			inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
-
-			local _,itemLink = inspectScantip:GetItem()
-			if itemLink and (itemSlotID == 16 or itemSlotID == 17) and itemLink:find("item::") then
+			local itemLink, tooltipData
+			if ExRT.is10 then
+				tooltipData = C_TooltipInfo.GetInventoryItem(inspectedName, itemSlotID)
+				if tooltipData then
+					TooltipUtil.SurfaceArgs(tooltipData)
+					for _, line in ipairs(tooltipData.lines) do
+					    TooltipUtil.SurfaceArgs(line)
+					end
+				end
 				itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
+			else
+				inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
+				itemLink = select(2,inspectScantip:GetItem())
+				if itemLink and (itemSlotID == 16 or itemSlotID == 17) and itemLink:find("item::") then
+					itemLink = GetInventoryItemLink(inspectedName, itemSlotID)
+				end
 			end
 
 			if itemLink then
 				inspectData['items'][itemSlotID] = itemLink
-				--inspectScantip:SetInventoryItem(inspectedName, itemSlotID)
 				local itemID = itemLink:match("item:(%d+):")
 
 				if itemSlotID == 16 or itemSlotID == 17 then
@@ -345,9 +357,21 @@ do
 					inspectData.azerite["i"..itemSlotID] = AzeritePowers
 				end
 
-				for j=2, inspectScantip:NumLines() do
-					local tooltipLine = _G["ExRTInspectScanningTooltipTextLeft"..j]
-					local text = tooltipLine:GetText()
+				local linesNum
+				if ExRT.is10 then
+					linesNum = tooltipData and tooltipData.lines and #tooltipData.lines or 0
+				else
+					linesNum = inspectScantip:NumLines()
+				end
+				for j=2, linesNum do
+					local tooltipLine, text
+					if ExRT.is10 then
+						tooltipLine = tooltipData.lines[j]
+						text = tooltipLine.leftText
+					else
+						tooltipLine = _G["ExRTInspectScanningTooltipTextLeft"..j]
+						text = tooltipLine:GetText()
+					end
 					if text and text ~= "" then
 						for stateName,stateData in pairs(module.db.statsNames) do
 							inspectData[stateName] = inspectData[stateName] or 0
@@ -355,7 +379,12 @@ do
 							for k=1,#stateData do
 								local findData = findText:match(stateData[k])
 								if findData then
-									local cR,cG,cB = tooltipLine:GetTextColor()
+									local cR,cG,cB
+									if ExRT.is10 then
+										cR,cG,cB = tooltipLine.leftColor:GetRGB()
+									else
+										cR,cG,cB = tooltipLine:GetTextColor()
+									end
 									cR = abs(cR - 0.5)
 									cG = abs(cG - 0.5)
 									cB = abs(cB - 0.5)
@@ -402,9 +431,19 @@ do
 						if EssencePowers then
 							for k=1,#EssencePowers do
 								if text:find(EssencePowers[k].name.."$") == 1 then
-									local isMajor = _G["ExRTInspectScanningTooltipTextLeft"..(j-1)]:GetText() == " "
+									local isMajor
+									if ExRT.is10 then
+										isMajor = tooltipData.lines[j-1].leftText == " "
+									else
+										isMajor = _G["ExRTInspectScanningTooltipTextLeft"..(j-1)]:GetText() == " "	
+									end
 									local tier = 4
-									local r,g,b = tooltipLine:GetTextColor()
+									local r,g,b
+									if ExRT.is10 then
+										r,g,b = tooltipLine.leftColor.r, tooltipLine.leftColor.g, tooltipLine.leftColor.b
+									else
+										r,g,b = tooltipLine:GetTextColor()
+									end
 									if abs(r-0.639)<0.01 and abs(g-0.217)<0.01 and abs(b-0.933)<0.01 then	--a335ee
 										tier = 3
 									elseif abs(r-0.117)<0.01 and abs(g-1)<0.01 and abs(b-0)<0.01 then	--1eff00
@@ -542,7 +581,9 @@ do
 				end
 			end
 
-			inspectScantip:ClearLines()
+			if not ExRT.is10 then
+				inspectScantip:ClearLines()
+			end
 		end
 		if isArtifactEqipped > 0 then
 			inspectData['ilvl'] = inspectData['ilvl'] - ArtifactIlvlSlot1 - ArtifactIlvlSlot2 + max(ArtifactIlvlSlot1,ArtifactIlvlSlot2) * 2
@@ -935,6 +976,8 @@ do
 												data[-c] = node.activeRank
 	
 												cooldownsModule:SetTalentClassicRank(name,spellID,node.activeRank)
+											else
+												data[-c] = nil
 											end
 	
 											cooldownsModule.db.session_gGUIDs[name] = {spellID,"talent"}
@@ -1762,16 +1805,19 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 						end
 					end
 				elseif key == "Y" then
-					if cooldownsModule:IsEnabled() then
-						cooldownsModule:ClearSessionDataReason(sender,"talent")
+					if not ExRT.is10 then
+						return
 					end
-
 					local str2 = main:sub(2):gsub("##","^")
 						
 					local decoded = LibDeflate:DecodeForWoWAddonChannel(str2)
 					if not decoded then return end
 					local decompressed = LibDeflate:DecompressDeflate(decoded)
 					if not decompressed then return end
+
+					if cooldownsModule:IsEnabled() then
+						cooldownsModule:ClearSessionDataReason(sender,"talent")
+					end
 
 					local inspectData = module.db.inspectDB[sender]
 
@@ -1801,6 +1847,8 @@ function module:addonMessage(sender, prefix, subPrefix, ...)
 									inspectData[c] = spellID
 									if rank then
 										inspectData[-c] = rank
+									else
+										inspectData[-c] = nil
 									end
 								end
 							end

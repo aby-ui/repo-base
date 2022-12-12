@@ -9,6 +9,10 @@ local _G, pairs = _G, pairs
 local UnitInVehicle = UnitInVehicle and UnitInVehicle or function() end
 local UnitHasVehicleUI = UnitHasVehicleUI and UnitHasVehicleUI or function() end
 
+function ChocolateBar:IsRetail()
+ return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+end
+
 local blizzardFrames = {
 	'PlayerFrame',
 	'TargetFrame',
@@ -23,7 +27,7 @@ local blizzardFrames = {
 	'Gypsy_PlayerFrameCapsule',
 	'Gypsy_TargetFrameCapsule',
 	'GMChatStatusFrame',
-	--'ConsolidatedBuffs',
+	'ConsolidatedBuffs',
 	'BuffFrame',
 	'DEFAULT_CHAT_FRAME',
 	'ChatFrame2',
@@ -35,7 +39,20 @@ local blizzardFrames = {
 	'OrderHallCommandBar',
 	'MicroButtonAndBagsBar',
 	'OverrideActionBar',
+	'StatusTrackingBarManager',
 }
+
+if ChocolateBar:IsRetail() then
+	blizzardFrames = {
+		'MicroButtonAndBagsBar',
+		'TutorialFrameParent',
+		'FramerateLabel',
+		'DurabilityFrame',
+		
+	}
+end
+
+
 
 local blizzardFramesData = {}
 
@@ -108,13 +125,13 @@ if not Jostle.hooks.UIParent_ManageFramePositions then
 	end)
 end
 
-if PlayerFrame_SequenceFinished and not Jostle.hooks.PlayerFrame_SequenceFinished then
+if not Jostle.hooks.PlayerFrame_SequenceFinished and PlayerFrame_SequenceFinished then
 	Jostle.hooks.PlayerFrame_SequenceFinished = true
---	hooksecurefunc("PlayerFrame_SequenceFinished", function()
---		if Jostle.PlayerFrame_SequenceFinished then
---			Jostle:PlayerFrame_SequenceFinished()
---		end
---	end)
+	hooksecurefunc("PlayerFrame_SequenceFinished", function()
+		if Jostle.PlayerFrame_SequenceFinished then
+			Jostle:PlayerFrame_SequenceFinished()
+		end
+	end)
 end
 
 --7.0 by warbaby
@@ -142,7 +159,7 @@ function Jostle:TicketStatusFrame_OnEvent()
 end
 
 function Jostle:UIParent_ManageFramePositions()
-	self:Refresh(MainMenuBar, GroupLootFrame1, TutorialFrameParent, FramerateLabel, DurabilityFrame)
+	self:Refresh(MainMenuBar, GroupLootFrame1, TutorialFrameParent, FramerateLabel, DurabilityFrame, BuffFrame)
 end
 
 function Jostle:PlayerFrame_SequenceFinished()
@@ -266,7 +283,6 @@ local function isClose(alpha, bravo)
 end
 
 function Jostle:Refresh(...)
-	do return end --TODO:abyui10
 	if not fullyInitted then
 		return
 	end
@@ -352,7 +368,7 @@ function Jostle:Refresh(...)
 				DurabilityFrame:Hide()
 			elseif frame == FramerateLabel and ((frameData.lastX and not isClose(frameData.lastX, frame:GetLeft())) or not isClose(WorldFrame:GetHeight() * WorldFrame:GetScale(), UIParent:GetHeight() * UIParent:GetScale()))  then
 				-- do nothing
-			elseif frame == PlayerFrame or frame == MainMenuBar or frame == TargetFrame or frame == BuffFrame or frame == CastingBarFrame or frame == TutorialFrameParent or frame == FramerateLabel or frame == DurabilityFrame or frame == WatchFrame or not (frameData.lastScale and frame.GetScale and frameData.lastScale == frame:GetScale()) or not (frameData.lastX and frameData.lastY and (not isClose(frameData.lastX, frame:GetLeft()) or not isClose(frameData.lastY, frame:GetTop()))) then
+			elseif frame == PlayerFrame or frame == MainMenuBar or frame == TargetFrame or frame == ConsolidatedBuffs or frame == BuffFrame or frame == CastingBarFrame or frame == TutorialFrameParent or frame == FramerateLabel or frame == DurabilityFrame or frame == WatchFrame or not (frameData.lastScale and frame.GetScale and frameData.lastScale == frame:GetScale()) or not (frameData.lastX and frameData.lastY and (not isClose(frameData.lastX, frame:GetLeft()) or not isClose(frameData.lastY, frame:GetTop()))) then
 				local anchor
 				local anchorAlt
 				local width, height = GetScreenWidth(), GetScreenHeight()
@@ -380,8 +396,10 @@ function Jostle:Refresh(...)
 						offset = bottomOffset / framescale
 					end
 					if MinimapBorderTop ~= nil then
-    					if frame == MinimapCluster and not MinimapBorderTop:IsShown() then
-    						offset = offset + MinimapBorderTop:GetHeight() * 3/5
+						if frame == MinimapCluster and not MinimapBorderTop:IsShown() then
+							offset = offset + MinimapBorderTop:GetHeight() * 3/5
+						elseif frame == ConsolidatedBuffs and TicketStatusFrame:IsShown() then
+							offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()
                         elseif GMChatStatusFrame and frame == GMChatStatusFrame then
                             if ( TicketStatusFrame:IsShown() ) then
     						offset = offset - TicketStatusFrame:GetHeight() * TicketStatusFrame:GetScale()

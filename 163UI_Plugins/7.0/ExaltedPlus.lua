@@ -191,7 +191,7 @@ U1PLUG["ExaltedPlus"] = function()
         local info, diff = EP_FindFaction(name)
         if not info then return end
 
-        if DEBUG_MODE then print(msg, info.id, added, diff) end
+        --if DEBUG_MODE then print(msg, info.id, added, diff) end
         local reputationInfo = info.id and C_GossipInfo.GetFriendshipReputation(info.id);
         if reputationInfo and reputationInfo.friendshipFactionID > 0 then
             local output = "%s%s的声望提高了%s（%s%d/%d）"

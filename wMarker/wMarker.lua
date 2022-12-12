@@ -254,14 +254,27 @@ function wMarkerAce:OnEnable()
 	-- New White (Skull 8), Red(Cross), Blue(Square), Silver (Moon 7), Green(Triangle), Purple (Diamond), Orange (Circle 6), Yellow (Star)
 	wMarkerAce.worldMain.marker = {}
 	local function flareNew(name, tex, num, xOff)
+
 		local f = CreateFrame("Button", string.format("wMarker%sflare",name), wMarkerAce.worldMain, "SecureActionButtonTemplate")
 		table.insert(wMarkerAce.worldMain.marker,f)
 		f:SetSize(20,20)
 		f:SetNormalTexture("interface\\targetingframe\\ui-raidtargeting6icons") -- "interface\\minimap\\partyraidblips"
 		f:GetNormalTexture():SetTexCoord(unpack(tex))
 		f:SetPoint("LEFT",lastFlare or wMarkerAce.worldMain,"RIGHT",xOff or 0,0)
-		f:SetAttribute("type1", "macro")
-		f:SetAttribute("macrotext1", string.format("/wm %d",num))
+
+		--Old Macro version
+		--f:SetAttribute("type", "macro")
+		--f:SetAttribute("macrotext",string.format("/wm %d",num))
+
+		--Set Left-Click to Set Marker
+		f:SetAttribute("type1","worldmarker")
+		f:SetAttribute("marker1",num)
+		f:SetAttribute("action1","set")
+		--Set Right-Click to Clear Marker
+		f:SetAttribute("type2","worldmarker")
+		f:SetAttribute("marker2",num)
+		f:SetAttribute("action2","clear")
+
 		f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.world.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(string.format("%s %s",L[name],L["world marker"])); GameTooltip:Show() end end)
 		f:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 		f:RegisterForClicks("AnyUp","AnyDown")

@@ -286,6 +286,11 @@ function U1GetCfgValueFast(addon, path, safe)
     return U1GetCfgValue(addon, path, safe)
 end
 
+---如果有cfg，则直接使用U1LoadDBValue(cfg)即可
+function U1GetCfgValueFast2(cfg)
+    return U1LoadDBValue(cfg)
+end
+
 ---显示一下配置项，调试用的
 function U1ShowCfg(addon, pattern)
     print(strrep("=",30))

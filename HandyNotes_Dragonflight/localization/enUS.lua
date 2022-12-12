@@ -6,6 +6,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
+L['elite_loot_385'] = ns.color.Orange('This rare can drop up to ilvl 385 loot!')
 L['gem_cluster_note'] = 'The required item can be found at Renown 21 with the Dragonscale Expedition in Expedition Scout\'s Packs and Disturbed Dirts.'
 
 L['options_icons_bonus_boss'] = 'Bonus Elites'
@@ -61,22 +62,26 @@ L['options_icons_squirrels_desc'] = 'Display the locations of critters for {achi
 
 L['hnj_sublabel'] = 'Requires local Shikaar Grand Hunt'
 L['hnj_western_azure_span_hunt'] = 'On top of the dead tree.'
+L['hnj_northern_thaldraszus_hunt'] = ns.color.Orange('Note: When the hunting event starts, you need to go to him quickly. If you go late, he will be killed by wild mobs.')
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = 'Display the locations of {npc:194590} for the achievement {achievement:16542}.'
 
-L['pretty_neat_selfie_note'] = 'Take a picture with the S.E.L.F.I.E. camera.'
-L['bugged_selfie'] = '|cFFFF0000(BUG: The wrong NPC or none at all will be detected.)|r'
-L['options_icons_pretty_neat_selfie'] = '{achievement:16446}'
-L['options_icons_pretty_neat_selfie_desc'] = 'Display the location of NPCs for the achievement {achievement:16446}.'
+L['pretty_neat_note'] = 'Take a picture with the S.E.L.F.I.E. camera.'
+L['pretty_neat_note_blazewing'] = 'Can be found during the {npc:189901} boss encounter in the ' .. ns.color.Yellow('Neltharus') .. ' dungeon.'
+L['options_icons_pretty_neat'] = '{achievement:16446}'
+L['options_icons_pretty_neat_desc'] = 'Display the location of NPCs for the achievement {achievement:16446}.'
 
 L['large_lunker_sighting'] = 'Large Lunker Sighting'
 L['large_lunker_sighting_note'] = 'Use 5x {item:194701} to summon either a {npc:192919} or a rare.'
+
+L['options_icons_legendary_album'] = '{achievement:16570}'
+L['options_icons_legendary_album_desc'] = 'Display legendary character locations for {achievement:16570}.'
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
 -------------------------------------------------------------------------------
 
-L['brackenhide_rare_note'] = 'The spawn of this rare will be announced in the chat if you are in the |cFFFFFD00Brackenhide Hollow|r area.'
+L['brackenhide_rare_note'] = 'These rares spawn in a set rotation of {npc:197344} > {npc:197353} > {npc:197354} > {npc:197356} on a 10 minute timer.'
 L['fisherman_tinnak_note'] = 'Collect |cFFFFFD00Broken Fishing Pole|r, |cFFFFFD00Torn Fishing Net|r and |cFFFFFD00Old Harpoon|r to spawn the rare.'
 L['spellwrought_snowman_note'] = 'Collect 10x {npc:193424} and bring them to {npc:193242}.'
 L['trilvarus_loreweaver_note'] = 'Collect a |cFFFFFD00Singing Fragment|r to get {spell:382076} and use the |cFFFFFD00Uncharded Focus|r to spawn the rare.'
@@ -111,8 +116,15 @@ L['leyline_note'] = 'Realign the ley line.'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = 'Display the location of all ley line for the achievement {achievement:16638}.'
 
+L['river_rapids_wrangler_note'] = 'Talk to {npc:186157} and select "I\'d like to take your River Rapids Ride again". You have 60 seconds to collect get 40x stacks of {spell:373490}.'
 L['seeing_blue_note'] = 'Fly from the top of the Azure Archives to the Cobalt Assembly without landing.'
 L['snowman_note'] = 'There are three {npc:197599s} laying in the area (might have been moved by other players), roll them to the two kids {npc:197838} and {npc:197839}.\nYou get the achievement when the snowballs have the right sizes.'
+
+L['snowclaw_cub_note_start'] = 'You must complete the {quest:67094} quest chain offered by {npc:192522} in |cFFFFFD00Valdrakken|r to obtain the |cFFFFFD00Honorary Dryad|r title.\n\nGather the following items:'
+L['snowclaw_cub_note_item1'] = 'Loot 3x {item:197744} from various {npc:182559s} around |cFFFFFD00The Waking Shores|r.'
+L['snowclaw_cub_note_item2'] = 'Purchase 1x {item:198356} from {npc:193310} in |cFFFFFD00The Waking Shores|r.'
+L['snowclaw_cub_note_end'] = ns.color.Orange('All items can be purchased from the auction house. This is especially helpful if you do not easily have access to a {item:199215} which is required to purchase items from {npc:193310}.') .. '\n\nOnce you have the title equiped offer all 4 items to {npc:196768} to receive your pet.' .. ns.color.Red('\n\nBUG: Title may disappear pending fix.')
+
 L['temperamental_skyclaw_note'] = [[
 Collect (or buy in the auction house):
 
@@ -140,7 +152,7 @@ L['mysterious_wand_note'] = 'Pick up the |cFFFFFD00Crystal Key|r and place it in
 -------------------------------------------------------------------------------
 
 L['hunter_of_the_deep_note'] = 'Click on the weapon rack and shoot fish until the rare spawns.'
-L['scaleseeker_mezeri_note'] = 'Offer {item:194681} to {npc:193224} and she will reveal the rare.'
+L['scaleseeker_mezeri_note'] = 'Offer {item:194681} to {npc:193224} and follow her until she reveals the rare.'
 L['shade_of_grief_note'] = 'Click the {npc:193166} to spawn the rare.'
 L['windscale_the_stormborn_note'] = 'Kill the {npc:192367s} channeling into the {npc:192357}.'
 L['zarizz_note'] = 'Click and ' .. ns.color.Orange('/hiss') .. ' at the four {npc:193169s} to summon the rare.'
@@ -192,11 +204,17 @@ L['dreamguard_note'] = 'Target the Dreamguard and ' .. ns.color.Orange('/sleep')
 L['options_icons_dreamguard'] = '{achievement:16574}'
 L['options_icons_dreamguard_desc'] = 'Display  the location of Dreamguards for {achievement:16574}.'
 
+L['khadin_note'] = 'Exchange {item:191784} for profession knowledge.'
+L['the_great_swog_note'] = 'Exchange {item:199338}, {item:199339} and {item:199340} for {item:202102}.'
+L['tome_of_polymoph_duck'] = 'Use {spell:1953} to enter the cave and interact with the |cFFFFFD00Manastorming For Beginners|r book to complete the quest.'
+
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
 
+L['ancient_protector_note'] = 'Kill nearby {npc:193244} to get {item:197708}. Combine 5 {item:197708} to create a {item:197733} and use it to activate nearby Titanic Reactors.'
 L['blightpaw_note'] = 'Talk to {npc:193222} nearby and agree to help him.'
+L['corrupted_proto_dragon_note'] = 'Inspect the |cFFFFFD00Corrupted Dragon Egg|r to spawn the rare.'
 L['weeping_vilomah_note'] = 'Talk to {npc:193206} to summon the rare.'
 L['woofang_note'] = 'Pet {npc:193156} to spawn the rare.'
 
@@ -230,12 +248,18 @@ L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} ' .. ns.color.NPC('
 L['bivigosas_blood_sausages_note'] = 'Purchase from {npc:188895} ' .. ns.color.NPC('<Food & Drink>') .. ' at |cFFFFFD00Gelikyr Post|r.'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Display food and drink locations for {achievement:16621} achievement.'
+L['options_icons_new_perspective'] = '{achievement:16634}'
+L['options_icons_new_perspective_desc'] = 'Vista locations for the {achievement:16634} achievement.'
+L['new_perspective_note'] = 'Take a picture with the S.E.L.F.I.E. camera at the vista. The location will be marked by a purple light circle as soon as you in camera mode.\n\nIf you dont get credit towards the achievement, change your perspective.'
+L['ruby_feast_gourmand'] = 'Every day, a random guest chef serves up different dishes and drinks.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = 'The Qalashi War Party travels on there {npc:192737} to this tower.'
+L['captain_lancer_note'] = 'Spawn immediately after completing the {spell:388945} event.'
+L['enkine_note'] = 'Kill {npc:193137}, {npc:193138} or {npc:193139} along the lava river to get {item:201092}, use it and fish near {npc:191866} in the lava.'
 L['lepidoralia_note'] = 'Located in the |cFFFFFD00Fluttering Cavern|r. Help {npc:193342} catch {npc:193274s} until the rare spawns.'
 L['obsidian_citadel_rare_note'] = 'You and other Players have to return a total of %dx {item:191264} to %s. To craft a key you need to combine 30x {item:191251} and 3x {item:193201}, you can get these items from |cFFFFFD00Obsidian Citadel|r mobs.'
 L['shadeslash_note'] = 'Click the |cFFFFFD00Pilfered Focus|r to summon the rare.'
@@ -264,7 +288,7 @@ Collect three different items and combine them at the |cFFFFFD00"Observant Riddl
 
 L['pm_alch_grigori_vialtry'] = 'On a ledge overlooking |cFFFFFD00Flashfrost Assault|r.'
 L['pm_skin_zenzi'] = 'Sits next to the river.'
-L['pm_smith_grekka_anvilsmash'] = 'Sits in the grass next to the ruined tower.\n\n|cFFFF0000(Currently bugged.)|r'
+L['pm_smith_grekka_anvilsmash'] = 'Sits in the grass next to the ruined tower.'
 L['pt_alch_frostforged_potion_note'] = 'In the middle of the icy crater.'
 L['pt_alch_well_insulated_mug_note'] = 'In |cFFFFFD00Dragonbane Keep|r between a number of elite mobs.'
 L['pt_ench_enchanted_debris_note'] = 'Use and follow the {npc:194872} to loot the debris at the end.'
@@ -304,3 +328,27 @@ L['options_icons_chiseled_record_desc'] = 'Display tablet locations for the {ach
 L['grand_theft_mammoth_note'] = 'Ride the {npc:194625} to {npc:198163}.\n\n|cFFFF0000(BUG: If you cant interact with {npc:194625} use /reload.)|r'
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = 'Display the location of {npc:194625s} for the achievement {achievement:16493}.'
+
+L['options_icons_stories'] = '{achievement:16406}'
+L['options_icons_stories_desc'] = 'Quest locations for the {achievement:16406} achievement.'
+L['all_sides_of_the_story_garrick_and_shuja_note'] = 'Start the Questline and listen to the story of {npc:184449} and {npc:184451}.'
+L['all_sides_of_the_story_duroz_and_kolgar_note'] = 'In a small room underneath the Platform.\n\nStart the Questline and listen to the story of {npc:194800} and {npc:194801}. More quests will be unlocked in the next two weeks.'
+L['all_sides_of_the_story_tarjin_note'] = 'Start the Questline with {quest:70779}.\n{npc:196214} will tell you another story every week.'
+L['all_sides_of_the_story_veritistrasz_note'] = 'Start the quest {quest:70132} to all the stories of {npc:194076}.\nAfter that you will unlock {quest:70134} followed by {quest:70268}.\n\nFor the last quest you will need {item:198661} which is found inside ' .. ns.color.Yellow('Dragonbane Keep') .. '.'
+
+L['slumbering_worldsnail_note1'] = [[
+1. Loot 3x {item:193201} and 30x {item:191251} from mobs around |cFFFFFD00Obsidian Citadel|r to form a {item:191264}.
+
+2. Exchange the {item:191264} for a {item:200069} from {npc:187275}.
+
+3. There is a 30% chance the chest will contain a {item:199215}.
+
+4. Using the membership will give you the {spell:386848} debuff which allows you to farm {item:202173} around the |cFFFFFD00Obsidian Citadel|r.
+
+5. Collect 1000x {item:202173} to purchase {item:192786}.]]
+
+L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: If you die you will lose your membership debuff. Either purchase a new membership from {npc:193310} for 20x {item:202173} before you die or you need to turn in more keys for a chance at a new membership from the chest.')
+
+L['options_icons_safari'] = '{achievement:16519}'
+L['options_icons_safari_desc'] = 'Display the location of battle pets for {achievement:16519}.'
+L['shyfly_note'] = 'You have to be on the quest {quest:70853} to see the {npc:189102}.'

@@ -41,10 +41,22 @@ L[ [=[• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00f
 • |cffffff00智能队伍|r会根据你目前的组队情况调整，未组队时自动匹配"玩家"，在小队中时匹配"小队"（包括"玩家"），在团队中时匹配"团队"。
 
 |cffffff00*|r黄色的单位设置会为每个匹配的单位创建克隆，同时为光环提供动态信息。]=]
+--[[Translation missing --]]
+L["1. Profession 1. Accessory"] = "1. Profession 1. Accessory"
+--[[Translation missing --]]
+L["1. Profession 2. Accessory"] = "1. Profession 2. Accessory"
+--[[Translation missing --]]
+L["1. Professsion Tool"] = "1. Professsion Tool"
 L["10 Man Raid"] = "10人团队"
 L["10 Player Raid"] = "10人团队副本"
 L["10 Player Raid (Heroic)"] = "10人团队副本（英雄）"
 L["10 Player Raid (Normal)"] = "10人团队副本（普通）"
+--[[Translation missing --]]
+L["2. Profession 1. Accessory"] = "2. Profession 1. Accessory"
+--[[Translation missing --]]
+L["2. Profession 2. Accessory"] = "2. Profession 2. Accessory"
+--[[Translation missing --]]
+L["2. Professsion Tool"] = "2. Professsion Tool"
 L["20 Man Raid"] = "20人团队"
 L["20 Player Raid"] = "20人团队副本"
 L["25 Man Raid"] = "25人团队"
@@ -328,6 +340,8 @@ L["Custom Grow"] = "自定义生长"
 L["Custom Sort"] = "自定义排序"
 L["Custom Text Function"] = "自定义文本函数"
 L["Custom Trigger Combination"] = "自定义触发器组合"
+--[[Translation missing --]]
+L["Custom Variables"] = "Custom Variables"
 L["Daakara"] = "达卡拉"
 L["Damage"] = "伤害"
 L["Damage Shield"] = "护盾(如:荆棘术)伤害"

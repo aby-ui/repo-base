@@ -1,0 +1,41 @@
+<Ui>
+  <!-- Core -->
+  <Script file="core\Callable.lua"/>
+  <Script file="core\Tipped.lua"/>
+  <Script file="core\Labeled.lua"/>
+
+  <!-- Buttons -->
+  <Script file="buttons\Clickable.lua"/>
+  <Script file="buttons\Texted.lua"/>
+  <Script file="buttons\Help.lua"/>
+  <Script file="buttons\Red.lua"/>
+  <Script file="buttons\Gray.lua"/>
+  <Script file="buttons\Header.lua"/>
+
+  <!-- CheckButtons -->
+  <Script file="checks\Check.lua"/>
+  <Script file="checks\Expand.lua"/>
+  <Script file="checks\Icon.lua"/>
+  <Script file="checks\Color.lua"/>
+
+  <!-- EditBoxes -->
+  <Script file="edits\Editable.lua"/>
+  <Script file="edits\Box.lua"/>
+  <Script file="edits\Dark.lua"/>
+
+  <!-- Misc -->
+  <Script file="misc\Glowbox.lua"/>
+  <Script file="misc\Slider.lua"/>
+  <Script file="misc\Popup.lua"/>
+
+  <!-- Groups -->
+  <Script file="groups\Group.lua"/>
+  <Script file="groups\Options.lua"/>
+  <Script file="groups\Credits.lua"/>
+  <Script file="groups\FauxScroll.lua"/>
+
+  <!-- Dropdowns -->
+  <Script file="drops\Button.lua"/>
+  <Script file="drops\Dropdown.lua"/>
+  <Script file="drops\Choice.lua"/>
+</Ui>
