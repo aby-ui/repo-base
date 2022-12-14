@@ -86,12 +86,14 @@ local function ResetEncounterJournalScrollInstancesInfo()
         difficultyText:SetPoint("BOTTOMLEFT", 9, 7);
         difficultyText:SetJustifyH("LEFT");
         difficultyText:SetFont(font, 12);
+        difficultyText:SetText("")
         difficultyText:Hide();
 
         encounterProgressText:SetPoint("BOTTOMRIGHT", -7, 7);
         encounterProgressText:SetJustifyH("RIGHT");
         encounterProgressText:SetFont(font, 12);
         encounterProgressText:Hide();
+        encounterProgressText:SetText("")
     end);
 end
 
@@ -122,6 +124,7 @@ end
 local function RenderEncounterJournalInstances()
     local savedDB = GetSavedInstances();
     local dungeonsTab, raidsTab = GetEncounterJournalInstanceTabs();
+    if EncounterJournal and EncounterJournal.selectedTab == 5 then return end
     local savedInstances = savedDB[(raidsTab ~= nil and not raidsTab:IsEnabled()) and "raids" or "dungeons"];
 
     --RenderSavedInstancesOverview(savedDB);

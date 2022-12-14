@@ -70,15 +70,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221206230717"),
+	Revision = parseCurseDate("20221214112236"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.6 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 12, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.8 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 12, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 243, "d58ab26"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.29 alpha"
@@ -89,8 +89,8 @@ elseif isBCC then
 	DBM.ReleaseRevision = releaseDate(2022, 8, 1) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 elseif isWrath then
-	DBM.DisplayVersion = "3.4.22 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 12, 6) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "3.4.23 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 12, 13) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 41, "287b8dd"
 end
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
@@ -6779,6 +6779,8 @@ function bossModPrototype:SetStage(stage)
 	if stage == 0 then--Increment request instead of hard value
 		if not self.vb.phase then return end--Person DCed mid fight and somehow managed to perfectly time running SetStage with a value of 0 before getting variable recovery
 		self.vb.phase = self.vb.phase + 1
+	elseif stage == 0.5 then--Half Increment request instead of hard value
+		self.vb.phase = self.vb.phase + 0.5
 	else
 		self.vb.phase = stage
 	end
@@ -7381,7 +7383,7 @@ function DBM:IsHealer(uId)
 end
 bossModPrototype.IsHealer = DBM.IsHealer
 
-function bossModPrototype:IsTanking(playerUnitID, enemyUnitID, isName, onlyRequested, enemyGUID, includeTarget, onlyS3)
+function DBM:IsTanking(playerUnitID, enemyUnitID, isName, onlyRequested, enemyGUID, includeTarget, onlyS3)
 	--Didn't have playerUnitID so combat log name was passed
 	if isName then
 		playerUnitID = DBM:GetRaidUnitId(playerUnitID)
@@ -7443,6 +7445,7 @@ function bossModPrototype:IsTanking(playerUnitID, enemyUnitID, isName, onlyReque
 	end
 	return false
 end
+bossModPrototype.IsTanking = DBM.IsTanking
 
 function bossModPrototype:GetNumAliveTanks()
 	if not IsInGroup() then return 1 end--Solo raid, you're the "tank"

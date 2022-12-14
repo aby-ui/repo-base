@@ -72,6 +72,7 @@ function Search:OnHide()
 end
 
 function Search:OnTextChanged()
+	if self:IsInIMECompositionMode() then return end
 	local text = self:GetText():lower()
 	if text ~= Addon.search then
 		Addon.search = text

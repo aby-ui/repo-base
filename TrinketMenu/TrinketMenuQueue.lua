@@ -257,8 +257,12 @@ function TrinketMenu.SortMove(self)
 		TrinketMenu.SortSelected = 0
 		TrinketMenu.ShowProfiles(TrinketMenu_SortListFrame:IsVisible())
 	elseif self == TrinketMenu_Delete then
-		table.remove(list, idx1)
-		TrinketMenu.SortSelected = 0
+		if IsControlKeyDown() and IsAltKeyDown() and IsShiftKeyDown() then
+			table.wipe(list)
+		else
+			table.remove(list, idx1)
+		end
+		TrinketMenu.SortSelected = min(#list, idx1)
 	end
 	TrinketMenu.SortValidate()
 	TrinketMenu.SortScrollFrameUpdate()

@@ -366,7 +366,6 @@ function CM.SyncCooldowns(guid, serializedCooldownData)
 					P:ResetCooldown(icon)
 
 
-
 				elseif ( active and abs(active.startTime - startTime) > 1 ) or ( not active and duration > 0 and E.sync_periodic[spellID] ) then
 					icon.cooldown:SetCooldown(startTime, duration, modRate)
 					P:SetCooldownElements(icon, charges)

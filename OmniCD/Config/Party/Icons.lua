@@ -134,12 +134,14 @@ local icons = {
 						P:ConfigIcons(key, "borderColor")
 					end,
 				},
+				--[[
 				borderPixels = {
 					name = L["Border Thickness"],
 					order = 2,
 					type = "select",
 					values = {1,2,3,4,5},
 				},
+				]]
 			}
 		},
 	}

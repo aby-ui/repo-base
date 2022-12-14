@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):NewLocale("OmniCD", "zhTW")
 L = L or {}
 L[ [=[%d: spellID.
 %d-%d: spellID-talentID (Mark spell if talent is selected).]=] ] = "%d: 法術 ID。%d-%d: 法術 ID-天賦 ID (選擇天賦後標記法術)。"
+--[[Translation missing --]]
+L["[Show Numbers for Cooldowns] must be enabled in Blizzard's 'Options/Action Bars' menu when using Blizzard's cooldown numbers."] = "[Show Numbers for Cooldowns] must be enabled in Blizzard's 'Options/Action Bars' menu when using Blizzard's cooldown numbers."
 L["|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."] = "|cff9d9d9d * 事件和戶外區域會使用競技場的設定。"
 L["|cffff2020Friendly CD module must be enabled for the corresponding instance zone."] = "|cffff2020需要啟用對應副本區域的友方冷卻監控模組。"
 L["|cffff2020Glow and Highlights are never applied on cropped icons. \"Border\" must be enabled."] = "|cffff2020剪裁過的圖示不會發光和顯著標示，必須啟用 \"邊框\"。"
@@ -18,6 +20,10 @@ L["Add spell to Spell Alerts"] = "將法術加入到法術通知"
 L["Add Spells"] = "新增法術"
 L["Add to Alerts"] = "加入通知"
 L["Addons with raid frame scaling will also cause the icons to scale."] = "具有縮放團隊框架功能的插件會導致圖示跟著縮放。"
+--[[Translation missing --]]
+L[ [=[Adjust value until the truncate symbol [...] disappears.
+|cffff20200: Disable option]=] ] = [=[Adjust value until the truncate symbol [...] disappears.
+|cffff20200: Disable option]=]
 L["Alerts"] = "通知"
 L["All user set values will be lost. Do you want to proceed?"] = "所有由使用者所設定的值都會消失，是否確定要繼續?"
 L["Always attach to Blizzard frames. By default, bars attach to whichever frame is visible, and if both are visible UF addon take precedence over Blizzard"] = "總是附加到遊戲內建的隊伍框架。圖示列會附加到任何能看見的隊伍框架，如果同時也能看見插件的隊伍框架時，預設會附加到插件的框架而不會遊戲內建的。"
@@ -31,6 +37,8 @@ L["Animate"] = "動畫"
 L["Apply 'Icons' alpha settings to the status bar"] = "將 '圖示' 的透明度設定套用到狀態列"
 L["Ascending"] = "升冪"
 L["Assign Raid Cooldowns."] = "指定團隊冷卻。"
+--[[Translation missing --]]
+L["Attach Name Bar to the left of icon"] = "Attach Name Bar to the left of icon"
 L["Attach to Blizzard Frames"] = "附加到遊戲內建的隊伍框架"
 L["Attachment Point"] = "附加點"
 L["Author"] = "作者"
@@ -86,6 +94,8 @@ L["Credits"] = "製作群"
 L["Crop"] = "剪裁"
 L["Crop Icons 1.5:1."] = "剪裁圖示 1.5:1。"
 L["Crowd Control"] = "控場"
+--[[Translation missing --]]
+L["CTRL+click to edit spell."] = "CTRL+click to edit spell."
 L["Current Profile"] = "目前設定檔"
 L["Current Unit Frame Addon"] = "目前使用的單位框架插件"
 L["Custom Priority"] = "自訂排序"
@@ -184,6 +194,8 @@ L["Interrupted Target Marker"] = "已斷法目標標記"
 L["Interrupts"] = "斷法"
 L["Invalid ID"] = "無效的 ID"
 L["Invalid Profile"] = "無效的設定檔"
+--[[Translation missing --]]
+L["Invert Name Bar"] = "Invert Name Bar"
 L["Item ID (Optional)"] = "物品 ID (選擇性)"
 L["Jump to Extra Bars settings"] = "跳至額外技能列設定"
 L["Layout"] = "版面配置"
@@ -253,6 +265,8 @@ L["Reload addon."] = "重新載入插件。"
 L["Reload UI?"] = "是否要重新載入介面?"
 L["Replace default timers with a status bar timer."] = "使用狀態列計時器取代預設計時器。"
 L["Reset all cooldown timers."] = "重置所有冷卻計時器。"
+--[[Translation missing --]]
+L["Reset current bar settings to default"] = "Reset current bar settings to default"
 L["Reset current zone settings to default"] = "重置當前區域的設定，恢復成預設值。"
 L["Reset frame position"] = "重置框架位置"
 L["Reset Status Bar Timer settings to default"] = "重置狀態列計時器的設定，恢復成預設值。"
@@ -304,6 +318,8 @@ L["Settings"] = "設定"
 L["Show Anchor"] = "顯示對齊位置"
 L["Show anchor with party/raid numbers"] = "顯示對齊點和隊伍編號"
 L["Show Forbearance CD"] = "顯示自律冷卻"
+--[[Translation missing --]]
+L["Show Name"] = "Show Name"
 L["Show name on icons"] = "在圖示上面顯示名稱"
 L["Show Player"] = "顯示自己"
 L["Show Player in Extra Bars"] = "在額外技能列中顯示自己"
@@ -350,11 +366,15 @@ L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers a
 L["Toggle the grow direction of icon columns"] = "切換圖示直行的延伸方向"
 L["Toggle the grow direction of icon rows"] = "切換圖示橫排的延伸方向"
 L["Tool to copy portions of a profile to another existing profile."] = "將設定檔的部分內容複製到另一個現有設定檔的工具。"
+--[[Translation missing --]]
+L["Tooltips will be enabled for this login session only."] = "Tooltips will be enabled for this login session only."
 L["TOP"] = "上"
 L["TOPLEFT"] = "左上"
 L["TOPRIGHT"] = "右上"
 L["Trinket and Racial abilities are excluded from sorting"] = "飾品和種族特長不包含在排序之內"
 L["Trinket Items"] = "飾品"
+--[[Translation missing --]]
+L["Truncate Name"] = "Truncate Name"
 L["UI Scale Changed."] = "使用者介面縮放大小已變更。"
 L["Unit CD bars are limited to 5 man groups unless Blizzard Raid Frames are used."] = "單位冷卻條只能用於 5 人隊伍，除非是使用遊戲內建的團隊框架。"
 L["Usage:"] = "用法:"
@@ -376,3 +396,5 @@ L["Vertical + CD Groups"] = "垂直 + 冷卻群組"
 L["Vertical Groups"] = "垂直隊伍"
 L["Visibility"] = "顯示"
 L["Weak Purple Glow"] = "淡紫色發光"
+--[[Translation missing --]]
+L["You must manually enable either the 'Party Frames' or 'Raid Frames' in Blizzard's 'HUD Edit Mode'."] = "You must manually enable either the 'Party Frames' or 'Raid Frames' in Blizzard's 'HUD Edit Mode'."

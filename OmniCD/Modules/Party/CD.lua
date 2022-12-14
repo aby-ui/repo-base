@@ -93,7 +93,7 @@ local function UpdateCdByReducer(info, t, isHolyPriest)
 		return
 	end
 
-	local talentRank = P:IsSpecOrTalentForPvpStatus(talent, info)
+	local talentRank = P:IsSpecOrTalentForPvpStatus(talent, info, true)
 	if type(target) == "table" then
 		if talentRank then
 			for targetID, reducedTime in pairs(target) do
@@ -283,7 +283,9 @@ local function ProcessSpell(spellID, guid)
 		if updateSpell then
 			local cd = updateSpell[1]
 
-			cd = mergedID == 272651 and P.isPvP and info.talentData[356962] and cd/2 or cd
+			if mergedID == 272651 and P.isPvP and info.talentData[356962] then
+				cd = cd / 2
+			end
 			icon.icon:SetTexture(updateSpell[2])
 			P:StartCooldown(icon, cd)
 			return
@@ -2338,16 +2340,15 @@ registeredEvents['SPELL_HEAL'][633] = function(info, _,_, destGUID, _,_, amount,
 	if info.talentData[326734] then
 		local icon = info.spellIcons[633]
 		if icon then
+			P:StartCooldown(icon, icon.duration)
 			local unit = UnitTokenFromGUID(destGUID)
 			local maxHP = UnitHealthMax(unit)
 			if maxHP > 0 then
 				local actualhealing = amount - overhealing
-				local reducedMult = min(actualhealing / maxHP, 0.6)
+				local reducedMult = min(actualhealing / maxHP * 6/7, 0.6)
 				if reducedMult > 0 then
 					if icon.active then
 						P:UpdateCooldown(icon, icon.duration * reducedMult)
-					else
-						info.queuedCdrOnStart[633] = tostring(reducedMult)
 					end
 				end
 			end
@@ -2817,12 +2818,14 @@ end
 registeredEvents['SPELL_HEAL'][373481] = function(info, _,_,_,_,_, amount, overhealing, destName)
 	local icon = info.spellIcons[373481]
 	if icon then
-		local currHP = UnitHealth(destName) - (amount - overhealing)
-		if currHP / UnitHealthMax(destName) < .35 then
-			if icon.active then
-				P:UpdateCooldown(icon, 20)
-			else
-				info.queuedCdrOnStart[373481] = 20
+		P:StartCooldown(icon, icon.duration)
+		local maxHP = UnitHealthMax(destName)
+		if maxHP > 0 then
+			local currHP = UnitHealth(destName) - (amount - overhealing)
+			if currHP / maxHP < .35 then
+				if icon.active then
+					P:UpdateCooldown(icon, 20)
+				end
 			end
 		end
 	end
@@ -3443,7 +3446,6 @@ registeredEvents['SPELL_CAST_SUCCESS'][FERAL_SPIRIT] = function(info)
 end
 
 
-
 local FLAME_SHOCK = 188389
 local SKYBREAKERS_FIERY_DEMISE = 378310
 local FIRE_ELEMENTAL, STORM_ELEMENTAL = 198067, 192249
@@ -3775,7 +3777,7 @@ local function ReduceSoulFireCD(info, _,_, destGUID)
 			local unit = UnitTokenFromGUID(destGUID)
 			if unit then
 				local currHP = UnitHealth(unit)
-				if currHP /  UnitHealthMax(unit) <= .5 then
+				if currHP > 0 and currHP /  UnitHealthMax(unit) <= .5 then
 					P:UpdateCooldown(icon, 5)
 				end
 			end
@@ -4114,6 +4116,12 @@ end
 
 registeredEvents['SPELL_AURA_APPLIED'][329042] = function(info, srcGUID, spellID, destGUID)
 	if srcGUID == destGUID then
+
+
+		local icon = info.spellIcons[spellID]
+		if icon then
+			P:StartCooldown(icon, icon.duration)
+		end
 		info.callbackTimers[spellID] = true
 		UpdateCDRR(info, 0.2, spellID)
 	end
@@ -4184,7 +4192,13 @@ end
 registeredEvents['SPELL_AURA_APPLIED'][378441] = function(_, srcGUID, spellID, destGUID)
 	local destInfo = groupInfo[destGUID]
 	if destInfo then
-		destInfo.callbackTimers[spellID] = destGUID == userGUID or E.TimerAfter(4.1, registeredEvents['SPELL_AURA_REMOVED'][378441], nil, srcGUID, spellID, destGUID)
+		if srcGUID == destGUID then
+			local icon = destInfo.spellIcons[spellID]
+			if icon then
+				P:StartCooldown(icon, icon.duration)
+			end
+		end
+		destInfo.callbackTimers[spellID] = destGUID == userGUID or E.TimerAfter(4.1, registeredEvents['SPELL_AURA_REMOVED'][spellID], nil, srcGUID, spellID, destGUID)
 		UpdateCDRR(destInfo, 100, spellID, spaghettiFix)
 	end
 end
@@ -4868,18 +4882,10 @@ registeredEvents['SPELL_AURA_REFRESH'][313643] = ReduceEssMajorCdByUnifiedStreng
 
 local function GetHealthPercentageByInfoUnit(unit, srcGUID, destGUID)
 	if not destGUID then return end
-	--[[ old method
-	local isPlayer = srcGUID == userGUID
-	local targetID = isPlayer and "target" or unit .. "target"
-	local focusID = isPlayer and "focus"
-	local targetGUID = UnitGUID(targetID)
-	local focusGUID = focusID and UnitGUID(focusID)
-	local unitID = destGUID == targetGUID and targetID or (destGUID == focusGUID and focusID)
-	]]
 	local unitID = UnitTokenFromGUID(destGUID)
 	if unitID then
 		local currHP = UnitHealth(unitID)
-		if currHP then
+		if currHP > 0 then
 			return currHP / UnitHealthMax(unitID) * 100
 		end
 	end
@@ -5029,7 +5035,7 @@ local function UpdateDeadStatus(destInfo)
 	destInfo.bar:RegisterUnitEvent('UNIT_HEALTH', destInfo.unit)
 end
 
-if E.isClassicEra then
+if E.isClassic then
 	local spellNameToID = E.spellNameToID
 	local spell_enabled = P.spell_enabled
 	local spell_modifiers = E.spell_modifiers

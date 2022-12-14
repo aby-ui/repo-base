@@ -2,6 +2,9 @@
 
 -- Customized for OmniCD by permission of the copyright owner.
 
+-- Parameters to Edit on CTRL + mouse click
+-- arg = spellID (number), func DND
+
 ---------------------------------------------------------------------------------
 
 --[[-----------------------------------------------------------------------------
@@ -379,7 +382,7 @@ local methods = {
 						image:SetTexCoord(0.05, 0.95, 0.1, CROP_BOTTOM_TEXCOORD)
 					else
 						self.imagebg:SetHeight(DEFAULT_ICON_SIZE)
-						image:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+						image:SetTexCoord(...)
 					end
 				else
 					if USE_ICON_CROP then

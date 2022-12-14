@@ -28,9 +28,14 @@ local isRaidCDBar = function(info)
 	return info[4] ~= "raidBar0"
 end
 
-local isDisabledOrNameBar = function(info)
+local isDisabledProgressBarOrNameBar = function(info)
 	local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
 	return not db.enabled or not db.progressBar or db.layout == "horizontal" or db.nameBar
+end
+
+local isEnabledProgressBar = function(info)
+	local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
+	return not db.enabled or (db.layout == "vertical" and db.progressBar)
 end
 
 local sortByValues = {
@@ -255,18 +260,16 @@ local extraBarsInfo = {
 			type = "toggle",
 		},
 		showName = {
-			disabled = function(info)
-				local db = E.profile.Party[ info[2] ].extraBars[ info[4] ]
-				return not db.enabled or db.progressBar
-			end,
+			disabled = isEnabledProgressBar,
 			name = L["Show Name"],
 			desc = L["Show name on icons"],
 			order = 33,
 			type = "toggle",
 		},
 		truncateIconName = {
+			disabled = isEnabledProgressBar,
 			name = L["Truncate Name"],
-			desc = L["Adjust value until the truncate symbol [...] disappears.\n\n|cffff20200: Disable option"],
+			desc = L["Adjust value until the truncate symbol [...] disappears.\n|cffff20200: Disable option"],
 			order = 34,
 			type = "range",
 			min = 0, max = 20, step = 1,
@@ -321,7 +324,7 @@ local extraBarsInfo = {
 					args = progressBarColorInfo,
 				},
 				barColors = {
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = "",
 					order = 13,
 					type = "group",
@@ -331,7 +334,7 @@ local extraBarsInfo = {
 					args = progressBarColorInfo,
 				},
 				bgColors = {
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = "",
 					order = 14,
 					type = "group",
@@ -360,21 +363,21 @@ local extraBarsInfo = {
 					type = "toggle",
 				},
 				reverseFill = {
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = L["Reverse Fill"],
 					desc = L["Timer will progress from right to left"],
 					order = 23,
 					type = "toggle",
 				},
 				hideSpark = {
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = L["Hide Spark"],
 					desc = L["Hide the leading spark texture."],
 					order = 24,
 					type = "toggle",
 				},
 				hideBorder = {
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = L["Hide Border"],
 					desc = L["Hide status bar border"],
 					order = 25,
@@ -384,7 +387,7 @@ local extraBarsInfo = {
 					hidden = function(info)
 						return E.preCata or isRaidCDBar(info)
 					end,
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = L["Interrupted Spell Icon"],
 					desc = format("%s\n\n|cffff2020%s",
 					L["Show the interrupted spell icon."],
@@ -396,7 +399,7 @@ local extraBarsInfo = {
 					hidden = function(info)
 						return E.preCata or isRaidCDBar(info)
 					end,
-					disabled = isDisabledOrNameBar,
+					disabled = isDisabledProgressBarOrNameBar,
 					name = L["Interrupted Target Marker"] .. E.RAID_TARGET_MARKERS[1],
 					desc = L["Show the interrupted unit's target marker if it exists."],
 					order = 27,
@@ -427,7 +430,7 @@ local extraBarsInfo = {
 				},
 				truncateStatusBarName = {
 					name = L["Truncate Name"],
-					desc = L["Adjust value until the truncate symbol [...] disappears.\n\n|cffff20200: Disable option"],
+					desc = L["Adjust value until the truncate symbol [...] disappears.\n|cffff20200: Disable option"],
 					order = 34,
 					type = "range",
 					min = 0, max = 20, step = 1,
@@ -633,7 +636,7 @@ end
 function P:SetExBorder(icon, key)
 	local db = E.db.extraBars[key]
 	local db_icon = E.db.icons
-	local edgeSize = db_icon.borderPixels * E.PixelMult / db.scale
+	local edgeSize = E.PixelMult / db.scale
 	local r, g, b = db_icon.borderColor.r, db_icon.borderColor.g, db_icon.borderColor.b
 	local shouldShowProgressBar = db.layout == "vertical" and db.progressBar
 

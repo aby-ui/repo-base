@@ -17,8 +17,6 @@ L['squirrels_note'] = '你必須對小動物而不是戰寵使用表情 /love'
 L['options_icons_squirrels'] = '{achievement:14731}'
 L['options_icons_squirrels_desc'] = '顯示 {achievement:14731} 成就中小動物的位置'
 
-L['prepatch_vendor_note'] = nil
-
 -------------------------------------------------------------------------------
 --------------------------------- ARDENWEALD ----------------------------------
 -------------------------------------------------------------------------------
@@ -693,6 +691,7 @@ L['nexus_cave_forlorn'] = '在荒棄休息處的山洞內.'
 L['nexus_cave_howl_outside'] = nil
 L['nexus_cave_howl'] = nil
 L['nexus_cave_roar'] = nil
+L['nexus_cave_roar_outside'] = nil
 L['nexus_cave_ledge'] = nil
 L['nexus_cave_prodigum'] = nil
 L['nexus_cave_soulstained'] = nil
@@ -702,6 +701,7 @@ L['nexus_npc_akros'] = nil
 L['nexus_npc_dekaris'] = nil
 L['nexus_npc_dolos'] = nil
 L['nexus_npc_ekphoras'] = nil
+L['nexus_npc_eternas'] = nil
 L['nexus_npc_incinerator'] = nil
 L['nexus_npc_orophea'] = nil
 L['nexus_npc_orrholyn'] = nil

@@ -81,6 +81,7 @@ Ld["Doomwalker"] = "Doomwalker"
 Ld["DOS"] = "DOS"
 Ld["Dragon of Nightmare"] = "Dragon of Nightmare"
 Ld["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+Ld["Dragonflight Renown"] = "Dragonflight Renown"
 Ld["Dragonflight Transmute"] = "Dragonflight Transmute"
 Ld["Dump quest debugging information"] = "Dump quest debugging information"
 Ld["Dump time debugging information"] = "Dump time debugging information"
@@ -240,6 +241,8 @@ Ld["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 Ld["Trade Skill Cooldowns"] = "Trade Skill Cooldowns"
 Ld["Trade skills"] = "Trade skills"
 Ld["Transmute"] = "Transmute"
+Ld["Trial of Elements"] = "Trial of Elements"
+Ld["Trial of Flood"] = "Trial of Flood"
 Ld["Type"] = "Type"
 Ld["UNDR"] = "UNDR"
 Ld["UPPR"] = "UPPR"
@@ -327,6 +330,8 @@ La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Les Dragons du Cauchemar"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "lister les informations de débogage des quêtes"
@@ -517,6 +522,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Échéances des métiers"
 La["Trade skills"] = "Échéances des métiers"
 La["Transmute"] = "Transmutation"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Type"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -608,6 +617,8 @@ La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Drache des Albtraums"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Quest Debugging Information"
@@ -795,6 +806,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Abklingzeiten der Berufsfertigkeiten"
 La["Trade skills"] = "Berufsfertigkeiten"
 La["Transmute"] = "Transmutieren"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Wert"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -880,6 +895,8 @@ La["DOS"] = "저편"
 La["Dragon of Nightmare"] = "악몽의 용"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "퀘스트 디버그 정보 덤프하기"
@@ -1049,6 +1066,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "시간에 바랜 쐐기돌 �
 La["Trade Skill Cooldowns"] = "전문 기술 재사용 대기시간"
 La["Trade skills"] = "전문 기술"
 La["Transmute"] = "변환"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "유형"
 La["UNDR"] = "썩굴"
 La["UPPR"] = "카라잔:상층"
@@ -1155,6 +1176,8 @@ La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Deshacerse de la información de depuración de misiones"
@@ -1397,6 +1420,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Cooldowns de profesiones"
 La["Trade skills"] = "Seguir cooldowns de profesiones"
 La["Transmute"] = "Transmutar"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -1487,6 +1514,8 @@ La["DOS"] = "ТС"
 La["Dragon of Nightmare"] = "Драконы Кошмара"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Сохранить отладочную информацию квеста в файле"
@@ -1656,6 +1685,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Отслеживать по�
 La["Trade Skill Cooldowns"] = "Восстановление способностей профессий."
 La["Trade skills"] = "Отслеживать восстановление способностей профессий"
 La["Transmute"] = "Трансмутация (алхимия)"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Тип"
 La["UNDR"] = "ПОДГН"
 La["UPPR"] = "ВЕРХ"
@@ -1733,6 +1766,7 @@ La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "梦魇之龙"
 La["Dragonflight Experimentation"] = "巨龙实验"
+La["Dragonflight Renown"] = "巨龙时代名望"
 La["Dragonflight Transmute"] = "巨龙转化"
 La["Dump quest debugging information"] = "打印任务调试信息"
 La["Dump time debugging information"] = "打印时间调试信息"
@@ -1759,12 +1793,9 @@ La["Full Clear No Masks"] = "五箱"
 La["GD"] = "车站"
 La["General settings"] = "综合"
 La["GMBT"] = "宏图"
---[[Translation missing --]]
-La["Grand Hunts: Mythic Reward"] = "Grand Hunts: Mythic Reward"
---[[Translation missing --]]
-La["Grand Hunts: Rare Reward"] = "Grand Hunts: Rare Reward"
---[[Translation missing --]]
-La["Grand Hunts: Uncommon Reward"] = "Grand Hunts: Uncommon Reward"
+La["Grand Hunts: Mythic Reward"] = "洪荒狩猎：史诗奖励"
+La["Grand Hunts: Rare Reward"] = "洪荒狩猎：精良奖励"
+La["Grand Hunts: Uncommon Reward"] = "洪荒狩猎：优秀奖励"
 La["Group"] = "组合"
 La["Guild"] = "公会"
 La["HOA"] = "赎罪"
@@ -1860,8 +1891,7 @@ La["Show when completed"] = "完成后仍显示"
 La["Show when saved"] = "保存后显示"
 La["Show/Hide the SavedInstances tooltip"] = "显示/隐藏 SavedInstances 界面"
 La["SIEGE"] = "围攻"
---[[Translation missing --]]
-La["Siege on Dragonbane Keep"] = "Siege on Dragonbane Keep"
+La["Siege on Dragonbane Keep"] = "围攻灭龙要塞"
 La["Similarly, the words KILLED and TOTAL will be substituted with the number of bosses killed and total in the lockout."] = "类似的，“KILLED”和“TOTAL”将被替换为首领的击杀数量和总数。"
 La["Single category name"] = "显示唯一分类名字"
 La["SOA"] = "高塔"
@@ -1896,6 +1926,8 @@ La["Track Timeworn Mythic keystone acquisition"] = "追踪时空漫游史诗钥�
 La["Trade Skill Cooldowns"] = "商业技能冷却"
 La["Trade skills"] = "商业技能"
 La["Transmute"] = "转化"
+La["Trial of Elements"] = "元素试炼"
+La["Trial of Flood"] = "洪水试炼"
 La["Type"] = "类型"
 La["UNDR"] = "孢林"
 La["UPPR"] = "卡上"
@@ -1989,6 +2021,8 @@ La["DOS"] = "EOL (DOS)"
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 La["Dump quest debugging information"] = "Volcar información de depuración de misión"
@@ -2192,6 +2226,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Tiempos de reutilización de Profesiones"
 La["Trade skills"] = "Profesiones"
 La["Transmute"] = "Transmutar"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2281,6 +2319,8 @@ La["Doomwalker"] = "末日行者"
 La["DOS"] = "彼界"
 La["Dragon of Nightmare"] = "夢魘之龍"
 La["Dragonflight Experimentation"] = "巨龍崛起實驗性"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 La["Dragonflight Transmute"] = "巨龍崛起變化"
 La["Dump quest debugging information"] = "傾印任務偵錯資訊"
 La["Dump time debugging information"] = "傾印時間偵錯資訊"
@@ -2460,6 +2500,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "追蹤時光漫遊傳奇鑰�
 La["Trade Skill Cooldowns"] = "專業技能冷卻時間"
 La["Trade skills"] = "專業技能"
 La["Transmute"] = "轉化"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "類型"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2563,6 +2607,8 @@ La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Dragon of Nightmare"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 --[[Translation missing --]]
@@ -2794,6 +2840,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Recarga de Habilidades"
 La["Trade skills"] = "Habilidades de profissão"
 La["Transmute"] = "Transmutação"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"
@@ -2908,6 +2958,8 @@ La["DOS"] = "DOS"
 La["Dragon of Nightmare"] = "Drago dell'Incubo"
 --[[Translation missing --]]
 La["Dragonflight Experimentation"] = "Dragonflight Experimentation"
+--[[Translation missing --]]
+La["Dragonflight Renown"] = "Dragonflight Renown"
 --[[Translation missing --]]
 La["Dragonflight Transmute"] = "Dragonflight Transmute"
 --[[Translation missing --]]
@@ -3148,6 +3200,10 @@ La["Track Timeworn Mythic keystone acquisition"] = "Track Timeworn Mythic keysto
 La["Trade Skill Cooldowns"] = "Tempo di scadenza professioni"
 La["Trade skills"] = "Professioni"
 La["Transmute"] = "Trasmutazioni"
+--[[Translation missing --]]
+La["Trial of Elements"] = "Trial of Elements"
+--[[Translation missing --]]
+La["Trial of Flood"] = "Trial of Flood"
 La["Type"] = "Tipo"
 --[[Translation missing --]]
 La["UNDR"] = "UNDR"

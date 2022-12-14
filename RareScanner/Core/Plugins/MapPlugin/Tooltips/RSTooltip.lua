@@ -281,7 +281,7 @@ local function AddAchievementTooltip(tooltip, pin, addSeparator)
 		end
 
 		-- fill with white spaces
-		if (j < 9) then
+		if (j <= 9) then
 			tooltip:SetCell(line, j+1, " ", nil, "LEFT", 10-j, nil, nil, nil, nil, 30 * (10 - j), 30 * (10 - j))
 		end
 		
@@ -363,7 +363,7 @@ local function AddLootTooltip(tooltip, pin)
 			end
 
 			-- fill with white spaces
-			if (j < 9) then
+			if (j <= 9) then
 				tooltip:SetCell(line, j+1, " ", nil, "LEFT", 10-j, nil, nil, nil, nil, 30 * (10 - j), 30 * (10 - j))
 			end
 

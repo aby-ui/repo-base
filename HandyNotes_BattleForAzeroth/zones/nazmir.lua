@@ -682,3 +682,19 @@ map.nodes[73634868] = Collectible({
     group = ns.groups.MUSHROOM_HARVEST,
     rewards = {Achievement({id = 13027, criteria = 41393})}
 }) -- Toadcruel
+
+-------------------------------------------------------------------------------
+------------------- TO ALL THE SQUIRRELS I SET SAIL TO SEE --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[40205880] = ns.node.Squirrel({
+    id = 131017,
+    rewards = {Achievement({id = 14730, criteria = 50244})},
+    pois = {POI({42607180, 37206480, 36605180})}
+}) -- Bloodfever Tarantula
+
+map.nodes[49906630] = ns.node.Squirrel({
+    id = 130217,
+    rewards = {Achievement({id = 14730, criteria = 50245})},
+    pois = {POI({47806760, 44006370, 44005450})}
+}) -- Nazmani Weevil

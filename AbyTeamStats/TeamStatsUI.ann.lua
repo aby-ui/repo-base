@@ -37,12 +37,16 @@ local function GetPlayerAnnText(name)
 
         if tab.special == "season_mythic" then
             for i, id in ipairs(tab.specialIDs) do
-                local data = TS.temp_data[name]
-                data = data and data["mythic"]
-                if data and data[id] then
-                    tinsert(annLine, " ")
-                    local score = data[id]:gsub("^%|c%x%x%x%x%x%x%x%x(%d+)%|r.*$", "%1")
-                    tinsert(annLine, tab.names[i]..score)
+                if id == 0 then
+                    tinsert(annLine, " 大秘评分"..player.mscore)
+                else
+                    local data = TS.temp_data[name]
+                    data = data and data["mythic"]
+                    if data and data[id] then
+                        tinsert(annLine, " ")
+                        local score = data[id]:gsub("^%|c%x%x%x%x%x%x%x%x(%d+)%|r.*$", "%1")
+                        tinsert(annLine, tab.names[i]..score)
+                    end
                 end
             end
         end

@@ -23,22 +23,23 @@ function Color:Populate()
 	self:AddPercentage('glowAlpha'):SetWidth(585)
 
 	-- Slots
-	self:Add('Header', TRADESKILL_FILTER_SLOTS, 'GameFontHighlight', true).top = 15
-	self:AddCheck('emptySlots')
+	self:Add('Header', BACKGROUND, 'GameFontHighlight', true).top = 15
 	self:AddCheck('colorSlots').bottom = 11
 
-  if Addon.sets.colorSlots then
-    self:AddRow(35* ceil(#self:SlotTypes() / 3), function()
-      for i, name in ipairs(self:SlotTypes()) do
-        self:AddColor(name .. 'Color')
-      end
-    end)
-  end
+	if Addon.sets.colorSlots then
+		self:AddRow(35* ceil(#self:SlotTypes() / 3), function()
+			for i, name in ipairs(self:SlotTypes()) do
+			self:AddColor(name .. 'Color')
+			end
+		end)
+	end
+
+	self:AddChoice {arg = 'slotBackground', LAYOUT_STYLE_MODERN and {key = 3, text = LAYOUT_STYLE_MODERN} or false, {key = 2, text = EXPANSION_NAME0}, {key = 1, text = NONE}}
 end
 
 function Color:SlotTypes()
   local types = {}
-  for bits, name in pairs(Addon.Item.SlotTypes) do
+  for bits, name in pairs(Addon.Item.BagFamilies) do
   	if not tContains(types, name) then
   		tinsert(types, name)
   	end

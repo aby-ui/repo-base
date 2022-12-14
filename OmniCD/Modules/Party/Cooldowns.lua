@@ -141,14 +141,6 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 
 	local modRate = (E.BOOKTYPE_CATEGORY[icon.category] or E.spaghettiFix[spellID]) and info.modRate or 1
 
-	if info.callbackTimers[spellID] then
-		if spellID == 378441 then
-			modRate = modRate * .01
-		elseif spellID == 329042 then
-			modRate = modRate * 5
-		end
-	end
-
 	local spellModRate = info.spellModRates[spellID]
 	if spellModRate then
 		modRate = modRate * spellModRate
@@ -170,17 +162,6 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 				cd = cd * mult
 			end
 		end
-	end
-
-
-	local queuedCdrOnStart = info.queuedCdrOnStart[spellID]
-	if queuedCdrOnStart then
-		if type(queuedCdrOnStart) == "string" then
-			now = now - (cd * queuedCdrOnStart)
-		else
-			now = now - (queuedCdrOnStart * modRate)
-		end
-		info.queuedCdrOnStart[spellID] = nil
 	end
 
 	if currCharges then

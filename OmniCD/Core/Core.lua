@@ -174,7 +174,6 @@ E.OmniCDAnchor_OnMouseUp = function(self, button)
 
 end
 
-
 do
 	local Timers = CreateFrame("Frame")
 	local unusedTimers = {}
@@ -274,3 +273,5 @@ end
 E.write = function(...)
 	print(E.userClassHexColor .. "OmniCD|r: ", ...)
 end
+
+E.BLANK = {}

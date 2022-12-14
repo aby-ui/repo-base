@@ -809,3 +809,19 @@ map.nodes[21474360] = Collectible({
         POI({22884623}) -- Cesi Loosecannon
     }
 }) -- Linda Deepwater
+
+-------------------------------------------------------------------------------
+------------------- TO ALL THE SQUIRRELS I SET SAIL TO SEE --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[53202880] = ns.node.Squirrel({
+    id = 129791,
+    rewards = {Achievement({id = 14730, criteria = 50239})},
+    pois = {POI({51802640, 53803340})}
+}) -- Drustbat
+
+map.nodes[60802340] = ns.node.Squirrel({
+    id = 128798,
+    rewards = {Achievement({id = 14730, criteria = 50241})},
+    pois = {POI({60801600, 62602380, 59202340})}
+}) -- Bramble Hare

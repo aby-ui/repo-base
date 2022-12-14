@@ -142,6 +142,13 @@ function RSEntityPinMixin:ShowOverlay()
 			
 			-- Cleans the replaced overly in the minimap
 			RSMinimap.RemoveOverlay(replacedEntityID)
+		-- Checks if they are already shown
+		else
+			for pin in self:GetMap():EnumeratePinsByTemplate("RSOverlayTemplate") do
+				if (pin:GetEntityID() == self.POI.entityID) then
+					return
+				end
+			end
 		end
 		
 		-- Adds the new one

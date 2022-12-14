@@ -67,7 +67,7 @@ function TM:Test(key)
 	P.isInTestMode = not P.isInTestMode
 
 	if P.isInTestMode then
-		if groupSize < 2 and activeCustomUF and not addOnTestMode[activeCustomUF] then
+		if not E.db.position.detached and groupSize < 1 and activeCustomUF and not addOnTestMode[activeCustomUF] then
 			E.write(format(E.STR.UNSUPPORTED_ADDON, activeCustomUF))
 		end
 
@@ -76,11 +76,13 @@ function TM:Test(key)
 			return E.write(ERR_NOT_IN_COMBAT)
 		end
 
-		if not activeCustomUF then
-			if E.isDF then
-				if not E.db.position.detached then
+		if not E.db.position.detached then
+			if not activeCustomUF then
+				if E.isDF then
 					if (groupSize == 0 or not P:CompactFrameIsActive()) and not EditModeManagerFrame:IsEditModeActive() then
-						GameMenuButtonEditMode:Click()
+
+
+						ShowUIPanel(EditModeManagerFrame)
 					end
 
 					if EditModeManagerFrame:IsEditModeActive() and not EditModeManagerFrame:AreRaidFramesForcedShown() and not EditModeManagerFrame:ArePartyFramesForcedShown() then
@@ -88,19 +90,19 @@ function TM:Test(key)
 						P.isInTestMode = false
 						return
 					end
+				else
+					if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") then
+						CompactRaidFrameManager:Show()
+						CompactRaidFrameContainer:Show()
+					else
+						E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
+						P.isInTestMode = false
+						return
+					end
 				end
-			else
-				if IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") then
-					CompactRaidFrameManager:Show()
-					CompactRaidFrameContainer:Show()
-				elseif not E.db.position.detached then
-					E.StaticPopup_Show("OMNICD_RELOADUI", E.STR.ENABLE_BLIZZARD_CRF)
-					P.isInTestMode = false
-					return
-				end
+			elseif addOnTestMode[activeCustomUF] then
+				addOnTestMode[activeCustomUF](P.isInTestMode)
 			end
-		elseif addOnTestMode[activeCustomUF] then
-			addOnTestMode[activeCustomUF](P.isInTestMode)
 		end
 
 		if not self.indicator then
@@ -143,15 +145,21 @@ function TM:Test(key)
 		end
 	else
 		if not activeCustomUF then
-			if not E.isDF then
-				if UnitAffectingCombat("player") then
-					self:EndTestOOC()
-				elseif IsAddOnLoaded("Blizzard_CompactRaidFrames") and IsAddOnLoaded("Blizzard_CUFProfiles") and (groupSize == 0 or not P:CompactFrameIsActive()) then
-					CompactRaidFrameManager:Hide()
-					CompactRaidFrameContainer:Hide()
+			if E.isDF then
+				if EditModeManagerFrame:IsEditModeActive() then
+					HideUIPanel(EditModeManagerFrame)
+				end
+			else
+				if CompactRaidFrameContainer and CompactRaidFrameContainer:IsVisible() and (groupSize == 0 or not P:CompactFrameIsActive()) then
+					if UnitAffectingCombat("player") then
+						self:EndTestOOC()
+					else
+						CompactRaidFrameManager:Hide()
+						CompactRaidFrameContainer:Hide()
+					end
 				end
 			end
-		elseif addOnTestMode[activeCustomUF] then
+		elseif not E.db.position.detached and addOnTestMode[activeCustomUF] then
 			addOnTestMode[activeCustomUF](P.isInTestMode)
 		end
 

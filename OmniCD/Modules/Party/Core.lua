@@ -18,12 +18,12 @@ function P:Enable()
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 	self:RegisterEvent('GROUP_ROSTER_UPDATE')
 	self:RegisterEvent('GROUP_JOINED')
+
 	self:SetScript("OnEvent", function(self, event, ...)
 		self[event](self, ...)
 	end)
 
 	self.enabled = true
-
 
 	self.zone = select(2, IsInInstance())
 	CM:InspectUser()
@@ -212,7 +212,7 @@ end
 
 
 
-P.GetBuffDuration = E.isClassicEra and function(P, unit, spellID)
+P.GetBuffDuration = E.isClassic and function(P, unit, spellID)
 	for i = 1, 40 do
 		local _,_,_,_,_,_,_,_,_, id = UnitBuff(unit, i)
 		if not id then return end
@@ -310,18 +310,18 @@ function P:IsSpecAndTalentForPvpStatus(talentID, info)
 	end
 end
 
-function P:IsSpecOrTalentForPvpStatus(talentID, info)
+function P:IsSpecOrTalentForPvpStatus(talentID, info, isLearnedLevel)
 	if not talentID then
-		return true
+		return isLearnedLevel
 	end
 	if type(talentID) == "table" then
 		for _, id in ipairs(talentID) do
-			local talent = P:IsSpecOrTalentForPvpStatus(id, info)
+			local talent = P:IsSpecOrTalentForPvpStatus(id, info, isLearnedLevel)
 			if talent then return true end
 		end
 	else
 		if specIDs[talentID] then
-			return info.spec == talentID
+			return isLearnedLevel and info.spec == talentID
 		end
 		local talent = info.talentData[talentID]
 		if talent == "PVP" then

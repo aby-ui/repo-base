@@ -1,4 +1,4 @@
-U1RegisterAddon("163UI_TeamStats", {
+U1RegisterAddon("AbyTeamStats", {
     title = "团员信息统计",
     defaultEnable = 1,
     --minimap = "LibDBIcon10_TeamStats", --默认不收集
@@ -24,3 +24,5 @@ U1RegisterAddon("163UI_TeamStats", {
         end,
     },
 });
+
+U1RegisterAddon("163UI_TeamStats", { hide = 1})

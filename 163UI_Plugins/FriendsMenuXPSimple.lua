@@ -2,6 +2,8 @@ U1PLUG["FriendsMenuXPSimple"] = function()
     local currChatType, currChatTarget, currChatFrame --聊天链接点击时的lineID, 用于标记来自聊天链接, 仅当前frame有效
 
     function UnitPopup_ShowMenu_Hook(dropdownMenu, which, unit, name, userData)
+        if which == "PVP_SCOREBOARD" then return end
+
         if ( UIDROPDOWNMENU_MENU_LEVEL ~= 1 ) then
             do return end
 
@@ -13,8 +15,10 @@ U1PLUG["FriendsMenuXPSimple"] = function()
             UIDropDownMenu_AddSeparator(UIDROPDOWNMENU_MENU_LEVEL)
 
             name = name or unit and UnitFullName(unit)
+            local isSameRealm = (not name:find("-") or name:find("-"..GetRealmName()))
+            local isPlayer = (not unit or UnitIsPlayer(unit))
 
-            if notSelf and CanGuildInvite() then
+            if notSelf and CanGuildInvite() and isPlayer and isSameRealm then
                 UIDropDownMenu_AddButton({
                     text = LOCALE_zhCN and "邀请入会" or "Guild Invite",
                     func = function() GuildInvite(name) end,
@@ -22,7 +26,7 @@ U1PLUG["FriendsMenuXPSimple"] = function()
                 })
             end
 
-            if notSelf and UnitIsPlayer(unit) and (not name:find("-") or name:find("-"..GetRealmName())) then
+            if notSelf and isPlayer and isSameRealm then
                 UIDropDownMenu_AddButton({
                     text = LOCALE_zhCN and "查询详情" or "Send Who",
                     func = function() C_FriendList.SendWho(WHO_TAG_EXACT..name) end,

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2487, "DBM-Party-Dragonflight", 2, 1197)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220909231726")
+mod:SetRevision("20221213054234")
 mod:SetCreatureID(184018)
 mod:SetEncounterID(2556)
 mod:SetUsedIcons(8)
@@ -25,7 +25,7 @@ mod:RegisterEventsInCombat(
 --TODO, warn trogg Ambush casts?
 --TODO, target scan thundering slam to notify direction of attack?
 --TODO, rangecheck for chain lighting? it doesn't tell what range of "nearby enemy" means
---TODO, more of timers may be sequenced/alternating, just need multiple long pulls
+--TODO, Mythic timer and heroic timers may actually differ but it's hard to review heroic timers when logs can't be searched
 --TODO, https://www.wowhead.com/beta/spell=369674/stone-spike added in newer build but seems like low prio interrupt over Chain Lightning
 --[[
 (ability.id = 369754 or ability.id = 369703 or ability.id = 382303) and type = "begincast"
@@ -42,10 +42,10 @@ local specWarnThunderingSlam					= mod:NewSpecialWarningDodgeCount(369703, nil, 
 --local yellThunderingSlam						= mod:NewYell(369703)
 --local specWarnGTFO							= mod:NewSpecialWarningGTFO(340324, nil, nil, nil, 1, 8)
 
-local timerCalloftheDeepCD						= mod:NewCDCountTimer(35, 369605, nil, nil, nil, 1)
-local timerQuakingTotemCD						= mod:NewCDTimer(42.2, 369700, nil, nil, nil, 5)
-local timerBloodlustCD							= mod:NewCDTimer(41.1, 369754, nil, nil, nil, 5)
-local timerThunderingSlamCD						= mod:NewCDCountTimer(35, 369703, nil, nil, nil, 3)
+local timerCalloftheDeepCD						= mod:NewCDCountTimer(27.9, 369605, nil, nil, nil, 1)--28-30
+local timerQuakingTotemCD						= mod:NewCDTimer(30.3, 369700, nil, nil, nil, 5)
+local timerBloodlustCD							= mod:NewCDTimer(30.3, 369754, nil, nil, nil, 5)
+local timerThunderingSlamCD						= mod:NewCDCountTimer(18.2, 369703, nil, nil, nil, 3)--18-23
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -54,17 +54,17 @@ local timerThunderingSlamCD						= mod:NewCDCountTimer(35, 369703, nil, nil, nil
 
 mod.vb.callCount = 0
 mod.vb.thunderingCount = 0
---local callTimers = {5, 28.3, 38.4}
---local thunderingTimes = {12.9, 18.2, 27.8, 18.2}
+--local oldcallTimers = {5, 28.3, 38.4}
+--local oldthunderingTimes = {12.9, 18.2, 27.8, 18.2}
 
 
 function mod:OnCombatStart(delay)
 	self.vb.callCount = 0
 	self.vb.thunderingCount = 0
 	timerCalloftheDeepCD:Start(5-delay, 1)
-	timerThunderingSlamCD:Start(12.3-delay, 1)
-	timerQuakingTotemCD:Start(20.8-delay)
-	timerBloodlustCD:Start(25-delay)
+	timerThunderingSlamCD:Start(12.1-delay, 1)
+	timerQuakingTotemCD:Start(20.6-delay)
+	timerBloodlustCD:Start(27.9-delay)
 end
 
 --function mod:OnCombatEnd()
@@ -88,11 +88,7 @@ function mod:SPELL_CAST_START(args)
 		self.vb.thunderingCount = self.vb.thunderingCount + 1
 		specWarnThunderingSlam:Show(self.vb.thunderingCount)
 		specWarnThunderingSlam:Play("shockwave")
-		if self.vb.thunderingCount % 2 == 0 then
-			timerThunderingSlamCD:Start(27.8, self.vb.thunderingCount+1)
-		else
-			timerThunderingSlamCD:Start(18.2, self.vb.thunderingCount+1)
-		end
+		timerThunderingSlamCD:Start(nil, self.vb.thunderingCount+1)
 	elseif spellId == 382303 then
 		specWarnQuakingTotem:Show()
 		specWarnQuakingTotem:Play("attacktotem")
@@ -105,11 +101,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if spellId == 369605 then
 		self.vb.callCount = self.vb.callCount + 1
 		warnCalloftheDeep:Show(self.vb.callCount)
-		if self.vb.thunderingCount % 2 == 0 then
-			timerCalloftheDeepCD:Start(38.4, self.vb.callCount+1)
-		else
-			timerCalloftheDeepCD:Start(28.3, self.vb.callCount+1)
-		end
+		timerCalloftheDeepCD:Start(nil, self.vb.callCount+1)
 	end
 end
 

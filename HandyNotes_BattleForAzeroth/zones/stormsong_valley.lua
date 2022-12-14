@@ -825,3 +825,19 @@ map.nodes[41256950] = Collectible({
     icon = 2065627,
     rewards = {Achievement({id = 13046})}
 }) -- These Hills Sing
+
+-------------------------------------------------------------------------------
+------------------- TO ALL THE SQUIRRELS I SET SAIL TO SEE --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[72806720] = ns.node.Squirrel({
+    id = 131376,
+    rewards = {Achievement({id = 14730, criteria = 50236})},
+    pois = {POI({71206800, 74207260})}
+}) -- Honey Bee
+
+map.nodes[70906670] = ns.node.Squirrel({
+    id = 143220,
+    rewards = {Achievement({id = 14730, criteria = 50237})},
+    pois = {POI({66407020, 68406880, 72806860})}
+}) -- Olivewing

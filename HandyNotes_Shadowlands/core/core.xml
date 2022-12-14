@@ -14,6 +14,7 @@
   <Script file="../HandyNotes_Dragonflight/core/nodes.lua"/>
   <Script file="../HandyNotes_Dragonflight/core/rewards.lua"/>
   <Script file="../HandyNotes_Dragonflight/core/templates.lua"/>
+  <Script file="../HandyNotes_Dragonflight/core/tomtom.lua"/>
   <Script file="../HandyNotes_Dragonflight/core/pois.lua"/>
 
   <!-- Must be outside of core/ for dev purposes -->

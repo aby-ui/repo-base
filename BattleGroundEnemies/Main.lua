@@ -415,7 +415,7 @@ do
 		end
 
 		self.UnitIDs.HasAllyUnitID = false
-
+		self:UNIT_AURA()
 		self:DispatchEvent("UnitIdUpdate")
 	end
 
@@ -1133,59 +1133,67 @@ do
 		if not self.isShown then return end
 		local now = GetTime()
 		if self.lastAuraUpdate and self.lastAuraUpdate == now then return end --this event will fire for the same player multiple times if lets say he is shown on nameplate and on target frame
+		
 		local updatedAuraInfos = {
 			addedAuras = {},
 			isFullUpdate = true
 		}
 
-		if not second then
-			updatedAuraInfos.isFullUpdate = true
-		else
-			if type(second) == "table" then --new 10.0 UNIT_AURA
-				updatedAuraInfos = second
-				if not updatedAuraInfos.isFullUpdate then
-
-					local addedAuras = updatedAuraInfos.addedAuras
-					if addedAuras ~= nil then
-						for i = 1, #addedAuras do
-							local addedAura = addedAuras[i]
-							self.Auras[getFilterFromAuraInfo(addedAura)][addedAura.auraInstanceID] = addPriority(addedAura)
+		if unitID then
+			if not second then
+				updatedAuraInfos.isFullUpdate = true
+			else
+				if type(second) == "table" then --new 10.0 UNIT_AURA
+					updatedAuraInfos = second
+					if not updatedAuraInfos.isFullUpdate then
+	
+						local addedAuras = updatedAuraInfos.addedAuras
+						if addedAuras ~= nil then
+							for i = 1, #addedAuras do
+								local addedAura = addedAuras[i]
+								self.Auras[getFilterFromAuraInfo(addedAura)][addedAura.auraInstanceID] = addPriority(addedAura)
+							end
 						end
-					end
-
-					local updatedAuraInstanceIDs = updatedAuraInfos.updatedAuraInstanceIDs
-					if updatedAuraInstanceIDs ~= nil then
-						for i = 1, #updatedAuraInstanceIDs do
-							local auraInstanceID = updatedAuraInstanceIDs[i]
-							if self.Auras.HELPFUL[auraInstanceID] then
-								local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unitID, auraInstanceID)
-								if newAura then
-									self.Auras.HELPFUL[auraInstanceID] = addPriority(newAura)
-								end
-							elseif self.Auras.HARMFUL[auraInstanceID] then
-								local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unitID, auraInstanceID)
-								if newAura then
-									self.Auras.HARMFUL[auraInstanceID] = addPriority(newAura)
+	
+						local updatedAuraInstanceIDs = updatedAuraInfos.updatedAuraInstanceIDs
+						if updatedAuraInstanceIDs ~= nil then
+							for i = 1, #updatedAuraInstanceIDs do
+								local auraInstanceID = updatedAuraInstanceIDs[i]
+								if self.Auras.HELPFUL[auraInstanceID] then
+									local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unitID, auraInstanceID)
+									if newAura then
+										self.Auras.HELPFUL[auraInstanceID] = addPriority(newAura)
+									end
+								elseif self.Auras.HARMFUL[auraInstanceID] then
+									local newAura = C_UnitAuras.GetAuraDataByAuraInstanceID(unitID, auraInstanceID)
+									if newAura then
+										self.Auras.HARMFUL[auraInstanceID] = addPriority(newAura)
+									end
 								end
 							end
 						end
-					end
-
-					local removedAuraInstanceIDs = updatedAuraInfos.removedAuraInstanceIDs
-					if removedAuraInstanceIDs ~= nil then
-						for i = 1, #removedAuraInstanceIDs do
-							local auraInstanceID = removedAuraInstanceIDs[i]
-							if self.Auras.HELPFUL[auraInstanceID] ~= nil then
-								self.Auras.HELPFUL[auraInstanceID] = nil
-							end
-							if self.Auras.HARMFUL[auraInstanceID] ~= nil then
-								self.Auras.HARMFUL[auraInstanceID] = nil
+	
+						local removedAuraInstanceIDs = updatedAuraInfos.removedAuraInstanceIDs
+						if removedAuraInstanceIDs ~= nil then
+							for i = 1, #removedAuraInstanceIDs do
+								local auraInstanceID = removedAuraInstanceIDs[i]
+								if self.Auras.HELPFUL[auraInstanceID] ~= nil then
+									self.Auras.HELPFUL[auraInstanceID] = nil
+								end
+								if self.Auras.HARMFUL[auraInstanceID] ~= nil then
+									self.Auras.HARMFUL[auraInstanceID] = nil
+								end
 							end
 						end
 					end
 				end
 			end
+		else
+			wipe(self.Auras.HELPFUL)
+			wipe(self.Auras.HARMFUL)
 		end
+		
+	
 
 		--[[
 
@@ -1245,8 +1253,7 @@ do
 
 		for i = 1, #auraFilters do
 			local filter = auraFilters[i]
-
-			shouldQueryAuras = self:DispatchUntilTrue("ShouldQueryAuras", unitID, filter) --ask all subscribers/modules if Aura Scanning is necessary for this filter
+			shouldQueryAuras = unitID and self:DispatchUntilTrue("ShouldQueryAuras", unitID, filter) --ask all subscribers/modules if Aura Scanning is necessary for this filter
 			if shouldQueryAuras then
 				if updatedAuraInfos.isFullUpdate then
 					wipe(self.Auras[filter])
@@ -1282,14 +1289,12 @@ do
 						end
 					end
 				end
-
-
-				self:DispatchEvent("BeforeFullAuraUpdate", filter)
-				for _, aura in pairs(self.Auras[filter]) do
-					self:DispatchEvent("NewAura", unitID, filter, aura)
-				end
-				self:DispatchEvent("AfterFullAuraUpdate", filter)
 			end
+			self:DispatchEvent("BeforeFullAuraUpdate", filter)
+			for _, aura in pairs(self.Auras[filter]) do
+				self:DispatchEvent("NewAura", unitID, filter, aura)
+			end
+			self:DispatchEvent("AfterFullAuraUpdate", filter)
 		end
 		self.lastAuraUpdate = now
 	end

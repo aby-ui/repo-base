@@ -79,6 +79,8 @@ local _specialQuests = {
   [70906] = { name=L["Grand Hunts: Mythic Reward"] }, -- Grand Hunts: Mythic Reward
   [71136] = { name=L["Grand Hunts: Rare Reward"] }, -- Grand Hunts: Rare Reward
   [71137] = { name=L["Grand Hunts: Uncommon Reward"] }, -- Grand Hunts: Uncommon Reward
+  [71033] = { name=L["Trial of Flood"] }, -- Trial of Flood
+  [71995] = { name=L["Trial of Elements"] }, -- Trial of Elements
 
   -- Old Vanilla Bosses during Anniversary Event
   [47461] = { daily=true, name=L["Lord Kazzak"] },          -- Lord Kazzak

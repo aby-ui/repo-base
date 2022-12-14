@@ -327,8 +327,9 @@ private.NPC_GUIDE = {
 		[RSConstants.ENTRANCE] = { x = 0.3642, y = 0.5339 };
 	}; --Researcher Sneakwing <The Sundered Flame>
 	["1909912022"] = { 
-		[RSConstants.ENTRANCE] = { x = 0.3063, y = 0.5147 };
-	}; --Researcher Sneakwing <The Sundered Flame>
+		[RSConstants.ENTRANCE..1] = { x = 0.3063, y = 0.5147 };
+		[RSConstants.ENTRANCE..2] = { x = 0.2942, y = 0.5272 };
+	}; --Char
 	["1936582025"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.4460, y = 0.6774 };
 	}; --Corrupted Proto-Dragon
@@ -566,6 +567,13 @@ private.NPC_GUIDE = {
 	["1932152025"] = { 
 		[RSConstants.FLAG] = { x = 0.3900, y = 0.4620, comment = AL["NOTE_193215_2"] };
 	}; --Scaleseeker Mezeri
+	["1932412025"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.6172, y = 0.8120 };
+	}; --Lord Epochbrgl <Time-Lost>
+	["1839842025"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4753, y = 0.7168 };
+		[RSConstants.FLAG] = { x = 0.4627, y = 0.7317, comment = AL["NOTE_183984_1"] };
+	}; --The Weeping Vilomah
 }
 
 ---============================================================================
@@ -1076,6 +1084,9 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.DOT..5] = { x = 0.7920, y = 0.4520, comment = AL["NOTE_376175_1"] };
 		[RSConstants.DOT..6] = { x = 0.7800, y = 0.4390, comment = AL["NOTE_376175_1"] };
 	}; --Fullsails Supply Chest
+	["3805582022"] = { 
+		[RSConstants.FLAG] = { x = 0.5752, y = 0.5849, comment = AL["NOTE_380558_1"] };
+	}; --Enchanted Debris
 }
 
 ---============================================================================

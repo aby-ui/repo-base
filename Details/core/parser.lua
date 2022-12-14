@@ -738,6 +738,20 @@
 			who_serial = "Creature-0-3134-2289-28065-" .. spellid .. "-000164C698"
 		end
 
+		--if (spellname:find("Secret")) then --debug
+			--print(time, spellid, spellname, who_serial, who_name, who_flags)
+		--end
+
+		--secret technique
+		if (spellid == 282449) then
+			local ownerName, ownerGUID, ownerFlags = Details222.Pets.GetPetOwner(who_serial, who_name)
+			if (ownerName and ownerGUID) then
+				who_serial = ownerGUID
+				who_name = ownerName
+				who_flags = ownerFlags
+			end
+		end
+
 		------------------------------------------------------------------------------------------------
 		--spell reflection
 		if (who_serial == alvo_serial and not reflection_ignore[spellid]) then --~reflect

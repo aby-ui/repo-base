@@ -1,18 +1,4 @@
 ## Interface: 100002
-## Notes: 自动获取全团成员的平均装备等级/韧性/副本击杀次数统计,以列表的方式集中呈现。
-
-## SavedVariables: TeamStatsDB
-## SavedVariablesPerCharacter: TeamStatsPCDB
-
-RequestProtection.lua
-
-Localization.lua
-Local.TABS.lua
-
-TeamStats.lua
-TeamStatsUI.ann.lua
-TeamStatsUI.cols.lua
-TeamStatsUI.lua
-
-## Title: |cff880303[爱不易]|r AbyUI 团员信息统计
+## Title: |cff880303[爱不易]|r [已废弃插件]
+## Notes: 插件已改名,此为空插件,防止玩家本地未删除旧插件
 ## X-Vendor: AbyUI

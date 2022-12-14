@@ -2,9 +2,9 @@
   <Include file="..\..\localization\config\localization.xml"/>
   <Script file="optionsPanel.lua"/>
 	<Script file="generalOptions.lua"/>
-  <Script file="displayOptions.lua"/>
   <Script file="frameOptions.lua"/>
   <Script file="colorOptions.lua"/>
+  <Script file="displayOptions.lua"/>
   <Script file="ruleOptions.lua"/>
   <Script file="creditsPanel.lua"/>
 </Ui>

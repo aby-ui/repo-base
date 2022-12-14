@@ -80,18 +80,26 @@ ELP.frame:SetScript("OnEvent", function(self, event, arg1)
     end
 end)
 
+hooksecurefunc("EJ_SelectTier", function(selectedTier)
+    if debugstack(2):find('Blizzard_EncounterJournal%.lua"%]:%d+: in function `func\'') then
+        if EncounterJournal.selectedTab == 5 then
+            RunOnNextFrame(EJ_ContentTab_Select, 2)
+        end
+    end
+end)
+
 EJ_ContentTab_OnClick_ELP = function(self)
     EncounterJournal.tab5Clicked = true --为了提前EJ_ContentTab_Select能生效
     --EJ_ContentTab_OnClick
     EJ_ContentTab_Select(self.id);
     local instanceSelect = EncounterJournal.instanceSelect;
-    local tierData = GetEJTierData(ELP_VERSION_TIER);
+    local tierData = GetEJTierData(5);
     instanceSelect.bg:SetAtlas(tierData.backgroundAtlas, true);
 
     EJ_HideNonInstancePanels();
     instanceSelect.ScrollBox:Show();
     EncounterJournal_ListInstances_ELP() --abyui
-    EncounterJournal_DisableTierDropDown(true);
+    EncounterJournal_EnableTierDropDown()
 
     if IsModifierKeyDown() then
         if db.range == 0 then db.range = 1 end

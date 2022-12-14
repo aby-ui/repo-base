@@ -129,5 +129,11 @@ function RSNotes.GetNote(entityID, mapID)
 	-- Disturbed dirt
 	elseif (RSUtils.Contains(RSConstants.DISTURBED_DIRT, entityID)) then
 		return AL["NOTE_DISTURBED_DIRT"]
+	-- Magic-Bound Chest
+	elseif (RSUtils.Contains(RSConstants.MAGIC_BOUND_CHEST, entityID)) then
+		return AL["NOTE_MAGIC_BOUND_CHEST"]
+	-- Not trackable containers
+	elseif (RSUtils.Contains(RSConstants.CONTAINERS_WITHOUT_VIGNETTE, entityID)) then
+		return AL["NOTE_CONTAINERS_WITHOUT_VIGNETTE"]
 	end
 end

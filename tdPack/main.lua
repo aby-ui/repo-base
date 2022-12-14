@@ -48,9 +48,9 @@ function tdPack:GetItemID(itemLink)
 end
 
 function tdPack:GetItemInfo(itemID)
-    local itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture
+    local itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture, price, classID, subClassID, bindType, itemExpansion, itemIsReagent
     if type(itemID) == 'number' then
-        itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture = GetItemInfo(itemID)
+        itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, price, classID, subClassID, bindType, itemExpansion, _, itemIsReagent = GetItemInfo(itemID)
     else
         local SpeciesID
         SpeciesID, itemLevel, itemQuality = itemID:match('battlepet:(%d+):(%d+):(%d+)')
@@ -59,7 +59,7 @@ function tdPack:GetItemInfo(itemID)
         itemSubType = BATTLE_PET_SUBTYPES[itemSubType]
     end
     
-    return itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture
+    return itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture, itemExpansion, itemIsReagent
 end
 
 ---- bag slot

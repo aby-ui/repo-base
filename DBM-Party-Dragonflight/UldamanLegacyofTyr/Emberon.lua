@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2476, "DBM-Party-Dragonflight", 2, 1197)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221213054234")
 mod:SetCreatureID(184422)
 mod:SetEncounterID(2558)
 --mod:SetUsedIcons(1, 2, 3)
@@ -27,6 +27,7 @@ mod:RegisterEventsInCombat(
 --TODO, auto mark adds?
 --TODO, target scan to warn warn for https://www.wowhead.com/beta/spell=369049/seeking-flame targets? doesn't seem like you can do much about it (no interrupts, no splash, just repheal)
 --TODO, verify timer resets on boss switching in and out of Puring Flames stage
+--TODO, timers were changed, but sine boss is so radically undertuned, don't see 2 of his major abilities literally at all anymore
 --[[
 (ability.id = 368990 or ability.id = 369110 or ability.id = 369198 or ability.id = 369061) and type = "begincast"
  or ability.id = 369033 and type = "cast"
@@ -48,7 +49,7 @@ local specWarnSearingClap						= mod:NewSpecialWarningDefensive(369061, nil, nil
 local timerActivateKeepersCD					= mod:NewCDTimer(35, 369033, nil, nil, nil, 1)
 local timerPurgingFlamesCD						= mod:NewCDCountTimer(35, 368990, nil, nil, nil, 6)--Maybe swap for activate keepers instead
 local timerUnstableEmbersCD						= mod:NewCDCountTimer(12, 369110, nil, nil, nil, 3)
-local timerSearingClapCD						= mod:NewCDTimer(35, 369061, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
+local timerSearingClapCD						= mod:NewCDTimer(24.2, 369061, nil, "Tank|Healer", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 
 --local berserkTimer							= mod:NewBerserkTimer(600)
 
@@ -64,10 +65,10 @@ function mod:OnCombatStart(delay)
 	self.vb.addsRemaining = 0
 	self.vb.embersCount = 0
 	self.vb.purgingCount = 0
-	timerActivateKeepersCD:Start(3.5-delay)
-	timerSearingClapCD:Start(4.7-delay)
+--	timerActivateKeepersCD:Start(3.5-delay)--Now instantly on pull
+	timerSearingClapCD:Start(4.6-delay)
 	timerUnstableEmbersCD:Start(13.1-delay, 1)
-	timerPurgingFlamesCD:Start(20.4-delay, 1)
+--	timerPurgingFlamesCD:Start(20.4-delay, 1)--No longer known
 end
 
 --function mod:OnCombatEnd()

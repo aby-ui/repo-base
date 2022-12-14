@@ -90,7 +90,7 @@ function P:SetBorder(icon)
 		icon.borderRight:ClearAllPoints()
 		icon.borderLeft:ClearAllPoints()
 
-		local edgeSize = db.borderPixels * ( E.db.general.showRange and not E.db.position.detached and self.effectivePixelMult or E.PixelMult) / db.scale;
+		local edgeSize = ( E.db.general.showRange and not E.db.position.detached and self.effectivePixelMult or E.PixelMult) / db.scale
 		icon.borderTop:SetPoint("TOPLEFT", icon, "TOPLEFT")
 		icon.borderTop:SetPoint("BOTTOMRIGHT", icon, "TOPRIGHT", 0, -edgeSize)
 		icon.borderBottom:SetPoint("BOTTOMLEFT", icon, "BOTTOMLEFT")
@@ -128,8 +128,8 @@ function P:SetMarker(icon, markEnhanced)
 		local spellID = icon.spellID
 		local mark = E.spell_marked[spellID]
 		if mark and (mark == true or self:IsTalentForPvpStatus(mark, self.groupInfo[icon.guid])) then
-			hotkey:SetText(RANGE_INDICATOR)
-			hotkey:SetTextColor(1, 1, 1)
+
+
 			hotkey:Show()
 		else
 			hotkey:Hide()

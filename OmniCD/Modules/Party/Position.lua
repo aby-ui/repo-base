@@ -215,8 +215,9 @@ do
 		if self.enabled and not E.db.position.detached and not hookTimer then
 			hookTimer = C_Timer.NewTimer(0.5, UpdatePosition_OnTimerEnd)
 		end
-		if E.isDF and not E.customUF.active and self.isInTestMode and not EditModeManagerFrame:IsEditModeActive() then
+		if E.isDF and not E.db.position.detached and not E.customUF.active and self.isInTestMode and not EditModeManagerFrame:IsEditModeActive() then
 			self:Test()
+			E:ACR_NotifyChange()
 		end
 	end
 

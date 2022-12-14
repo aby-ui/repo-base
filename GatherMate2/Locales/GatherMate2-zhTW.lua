@@ -49,6 +49,7 @@ L["DELETE_ENTIRE_DESC"] = "這將會忽略資料庫鎖定並從選定的資料�
 L["DELETE_SPECIFIC_DESC"] = "從選定的區域刪除所有選定的資源點。您必須停用資料庫鎖定才能運作。"
 L["Disabled"] = "停用"
 L["Display Settings"] = "顯示設定"
+L["Dragonflight"] = "巨龍崛起"
 L["Enabled"] = "啟用"
 L["Engineering"] = "工程學"
 L["Expansion"] = "資料片"

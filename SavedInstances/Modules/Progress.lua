@@ -276,6 +276,40 @@ local function CovenantAssaultReset(toon, index)
   t.Progress[index].unlocked = unlocked
 end
 
+-- Dragonflight Renown (index 11)
+local function DragonflightRenownUpdate(index)
+  SI.db.Toons[SI.thisToon].Progress[index] = wipe(SI.db.Toons[SI.thisToon].Progress[index] or {})
+
+  local majorFactionIDs = C_MajorFactions.GetMajorFactionIDs(LE_EXPANSION_DRAGONFLIGHT)
+  for _, factionID in ipairs(majorFactionIDs) do
+    local data = C_MajorFactions.GetMajorFactionData(factionID)
+    SI.db.Toons[SI.thisToon].Progress[index][factionID] =
+      data and {data.renownLevel, data.renownReputationEarned, data.renownLevelThreshold}
+  end
+end
+
+local function DragonflightRenownShow(toon, index)
+  local t = SI.db.Toons[toon]
+  if not t or not t.Quests then return end
+  if not t or not t.Progress or not t.Progress[index] then return end
+
+  local text
+  local majorFactionIDs = C_MajorFactions.GetMajorFactionIDs(LE_EXPANSION_DRAGONFLIGHT)
+  for i, factionID in ipairs(majorFactionIDs) do
+    if i == 1 then
+      text = t.Progress[index][factionID] and t.Progress[index][factionID][1] or '0'
+    else
+      text = text .. ' / ' .. (t.Progress[index][factionID] and t.Progress[index][factionID][1] or '0')
+    end
+  end
+
+  return text
+end
+
+local function DragonflightRenownReset(toon, index)
+  -- do nothing
+end
+
 Module.TrackedQuest = {
   -- Conquest
   {
@@ -421,6 +455,14 @@ Module.TrackedQuest = {
     quest = 66042,
     resetFunc = KeepProgress,
     relatedQuest = {66042},
+  },
+  -- Dragonflight Renown
+  {
+    name = L["Dragonflight Renown"],
+    func = DragonflightRenownUpdate,
+    showFunc = DragonflightRenownShow,
+    resetFunc = DragonflightRenownReset,
+    tooltipKey = 'ShowDragonflightRenownTooltip',
   },
 }
 

@@ -254,8 +254,9 @@ local position = {
 						end
 
 						if E.isDF and P.isInTestMode then
+							local testZone = P.testZone
 							P:Test()
-							P:Test()
+							P:Test(testZone)
 						end
 					end,
 				},

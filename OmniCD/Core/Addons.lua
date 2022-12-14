@@ -357,9 +357,8 @@ function E:UnitFrames()
 		end
 
 		self:SetActiveUnitFrameData()
-		self:SetPixelMult() -- do after loading addons
 
-		--[[ informative, but still a nag
+		--[[ remove nag
 		if not self.global.disableElvMsg then
 			--self.StaticPopup_Show("OMNICD_CUSTOM_UF_MSG")
 		end
@@ -370,10 +369,11 @@ end
 function E:Counters()
 	if IsAddOnLoaded("OmniCC") or IsAddOnLoaded("tullaCC") then
 		self.OmniCC = true
+	else
+		self.RegisterCooldown = ElvUI and ElvUI[1]
+			and type(ElvUI[1].CooldownEnabled) == "function" and ElvUI[1]:CooldownEnabled()
+			and type(ElvUI[1].RegisterCooldown) == "function" and ElvUI[1].RegisterCooldown
 	end
-	self.RegisterCooldown = not E.OmniCC and ElvUI and ElvUI[1]
-		and type(ElvUI[1].CooldownEnabled) == "function" and ElvUI[1]:CooldownEnabled()
-		and type(ElvUI[1].RegisterCooldown) == "function" and ElvUI[1].RegisterCooldown
 end
 
 function E:LoadAddOns()

@@ -786,3 +786,26 @@ map.nodes[70605100] = Collectible({
         POI({54333384, 67803420}) -- farm spots
     }
 }) -- Kua'fon
+
+-------------------------------------------------------------------------------
+------------------- TO ALL THE SQUIRRELS I SET SAIL TO SEE --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[62721652] = ns.node.Squirrel({
+    id = 130445,
+    rewards = {Achievement({id = 14730, criteria = 50242})},
+    pois = {POI({59802560, 54802000})}
+}) -- Jungle Gulper
+
+map.nodes[67114189] = ns.node.Squirrel({
+    id = 130716,
+    rewards = {Achievement({id = 14730, criteria = 50243})},
+    pois = {POI({68804030, 68104340})}
+}) -- Crested Gekkota
+
+daz.nodes[42603540] = ns.node.Squirrel({
+    id = 130441,
+    parent = map.id,
+    rewards = {Achievement({id = 14730, criteria = 50246})},
+    pois = {POI({47808680, 45801480, 45605880})}
+}) -- Temple Beetle

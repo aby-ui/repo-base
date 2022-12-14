@@ -1025,3 +1025,19 @@ bor.nodes[72706920] = Citizen({
         Achievement({id = 13285, criteria = 43718}), Toy({item = 166247}) -- Citizens Brigade Whistle
     }
 }) -- Russel the Bard
+
+-------------------------------------------------------------------------------
+------------------- TO ALL THE SQUIRRELS I SET SAIL TO SEE --------------------
+-------------------------------------------------------------------------------
+
+map.nodes[84807780] = ns.node.Squirrel({
+    id = 126546,
+    rewards = {Achievement({id = 14730, criteria = 50238})},
+    pois = {POI({86408120})}
+}) -- Fluttering Softwing
+
+map.nodes[88207280] = ns.node.Squirrel({
+    id = 126519,
+    rewards = {Achievement({id = 14730, criteria = 50240})},
+    pois = {POI({88207800, 78008060})}
+}) -- Tiragarde Gull

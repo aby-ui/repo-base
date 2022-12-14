@@ -141,7 +141,6 @@ function Bag:RegisterEvents()
 				self:RegisterEvent('PLAYERBANKBAGSLOTS_CHANGED', 'Update')
 			end
 
-			self:RegisterEvent(Addon.IsClassic and 'CURSOR_UPDATE' or 'CURSOR_CHANGED', 'UpdateCursor')
 			self:RegisterEvent('ITEM_LOCK_CHANGED', 'UpdateLock')
 		end
 	elseif self:IsCustomSlot() then
@@ -164,7 +163,6 @@ function Bag:Update()
 	self.info = info
 	self.FilterIcon:SetShown(not info.cached)
 	self.Count:SetText(info.free and info.free > 0 and info.free or '')
-	self:UpdateCursor()
 	self:UpdateToggle()
 	self:UpdateLock()
 
@@ -193,16 +191,6 @@ function Bag:Update()
 			end
 		end
 	end
-end
-
-function Bag:UpdateCursor()
-	--[[if not self:IsCustomSlot() then
-		if CursorCanGoInSlot(self.info.slot) then
-			self:LockHighlight()
-		else
-			self:UnlockHighlight()
-		end
-	end--]]
 end
 
 function Bag:UpdateToggle()

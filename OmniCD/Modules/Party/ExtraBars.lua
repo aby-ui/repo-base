@@ -268,7 +268,7 @@ function P:ApplyExSettings(key)
 	local db_icons = E.db.icons
 	local r, g, b = db_icons.borderColor.r, db_icons.borderColor.g, db_icons.borderColor.b
 	local displayBorder = db_icons.displayBorder
-	local edgeSize = db_icons.borderPixels * E.PixelMult / scale
+	local edgeSize = E.PixelMult / scale
 	local desaturateActive = db_icons.desaturateActive
 	local reverseSwipe = db_icons.reverse
 	local swipeAlpha = db_icons.swipeAlpha

@@ -61,9 +61,9 @@ map.nodes[59075874] = RareElite({
     pois = {POI({60755543, 60736211, 59225648, 59266104})} -- Titanic Reactors
 }) -- Ancient Protector
 
-map.nodes[31097121] = Rare({ -- requirement ?
+map.nodes[31097121] = Rare({
     id = 193128,
-    quest = nil,
+    quest = 74096,
     note = L['blightpaw_note'],
     rewards = {Achievement({id = 16679, criteria = 56136})}
 }) -- Blightpaw the Depraved

@@ -216,7 +216,7 @@ function DRTracker:CreateFrame(unit)
 		return
 	end
 	-- create frame
-	self.frame[unit] = CreateFrame("Frame", "Gladius"..self.name.."Frame"..unit, button, "ActionButtonTemplate")
+	self.frame[unit] = CreateFrame("Button", "Gladius"..self.name.."Frame"..unit, button, "ActionButtonTemplate")
 end
 
 function DRTracker:Update(unit)

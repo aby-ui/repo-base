@@ -112,7 +112,7 @@ function ItemDialog:LoadCursor()
 end
 
 function ItemDialog:SetItem(itemID)
-    local itemName, itemType, itemSubType, _, itemQuality, _, itemTexture = tdPack:GetItemInfo(itemID)
+    local itemName, itemType, itemSubType, _, itemQuality, _, itemTexture, itemExpansion, itemIsReageant = tdPack:GetItemInfo(itemID)
     
     local r, g, b = GetItemQualityColor(itemQuality)
     

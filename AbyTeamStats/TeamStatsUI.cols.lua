@@ -16,17 +16,22 @@ local ExtraColumnUpdater = function(line, widget, idx, colIdx)
     local text, r, g, b = "", 1, 1, 1
     local ids = widget.ids
     if tab.special == "season_mythic" then
-        local data = TS.temp_data[line.player_name]
-        data = data and data["mythic"]
-        if data then
-            text = data[ids] or "-"
-            if text == "-" then
-                r,g,b = 1,0.2,0.2
-            end
+        if ids == 0 then
+            local player = line.player
+            local color = C_ChallengeMode.GetDungeonScoreRarityColor(player.mscore or 0)
+            text, r, g, b = player.mscore or "?", color.r, color.g, color.b
         else
-            text, r, g, b = "?", 0.5,0.5,0.5
+            local data = TS.temp_data[line.player_name]
+            data = data and data["mythic"]
+            if data then
+                text = data[ids] or "-"
+                if text == "-" then
+                    r,g,b = 1,0.2,0.2
+                end
+            else
+                text, r, g, b = "?", 0.5,0.5,0.5
+            end
         end
-
     elseif type(ids) == "table" then
         local progress, max, total = TeamStatsUI_GetAchievementOrStaticText(line.player, ids)
         if progress == 0 then

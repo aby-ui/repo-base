@@ -8,5 +8,4 @@
   <Script file="zones\the_maw.lua"/>
   <Script file="zones\torghast.lua"/>
   <Script file="zones\zereth_mortis.lua"/>
-  <Script file="zones\prepatch.lua"/>
 </Ui>

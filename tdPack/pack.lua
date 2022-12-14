@@ -61,7 +61,8 @@ function Pack:Start()
         self:ShowMessage(L['Please drop the item, money or skills.'], 1, 0, 0)
         return
     end
-    
+
+    tdPack('Rule'):CleanSpecialCompareString()
     self:SetStatus(STATUS_READY)
     self:StartUpdate(0.05)
 end
@@ -201,11 +202,16 @@ function Pack:Pack()
 end
 
 function Pack:PackFinish()
+    tdPack('Rule'):SwapSpecialReagentItems(self.bags)
     wipe(self.bags)
 	TDPACK_IGNORE_BAGS = nil
 	TDPACK_IGNORE_BAGS_NO_BANK = nil
     TDPACK_ONLY_REAGENT = nil
     TDPACK_ONLY_STACK = nil
+    if TDPACK_RESTORE_REVERSE ~= nil then
+        tdPack:SetReversePack(TDPACK_RESTORE_REVERSE)
+        TDPACK_RESTORE_REVERSE = nil
+    end
 end
 
 ------ status

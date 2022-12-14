@@ -1,8 +1,6 @@
 local E, L = select(2, ...):unpack()
 local P = E.Party
 
-
-
 local sliderTimer
 
 local visibility = {

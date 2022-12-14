@@ -95,7 +95,7 @@ local function ShowOverlayGlow(icon, duration, isRefresh)
 	if type(icon.isHighlighted) == "table" then
 		icon.isHighlighted:Cancel()
 	end
-	icon.isHighlighted = (E.isClassicEra or icon.guid == E.userGUID) and true or E.TimerAfter(duration + 0.1, RemoveHighlight_OnTimerEnd, icon)
+	icon.isHighlighted = (E.isClassic or icon.guid == E.userGUID) and true or E.TimerAfter(duration + 0.1, RemoveHighlight_OnTimerEnd, icon)
 end
 
 function P:HideOverlayGlow(icon)

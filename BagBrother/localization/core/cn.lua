@@ -48,7 +48,7 @@ L.NumWithdraw = '%d取出'
 L.NumDeposit = '%d存入'
 L.NumRemainingWithdrawals = '%d取出剩余'
 
-local searchTip = '\n爱不易提示: 会在名称,描述分类,品质等多种信息中搜索。\n  boe/bop/boa -> 装绑/拾取绑定/账号绑定\n  l:>372 -> 物品等级高于372\n  r:60 or 70 -> 需要等级为60级或70级\n  v:10 -> 10.0资料片的物品\n  n:符文 -> 只搜索物品名\n  !或not表示反向, 例如v:!9 v:not < 9 / not boe / !boa\n  l:372 or 385表示装等是372或385的\n  l:>372 <385表示装等在372到385之间的'
+local searchTip = '\n爱不易提示: 会在名称,描述分类,品质等多种信息中搜索。\n  boe/bop/boa -> 装绑/拾取绑定/账号绑定\n  l:>372 -> 物品等级高于372\n  r:60 or 70 -> 需要等级为60级或70级\n  v:10 -> 10.0资料片的物品\n  n:符文 -> 只搜索物品名\n  r/re/材料 -> 搜索能放入材料包的\n其他: "v:!9","v:not <9","!boe",\"l:>372 or <385","v:10&re","v:10|材料"'
 
 --action tooltips
 L.TipChangePlayer = '<点击>查看其他角色的物品。'

@@ -13,11 +13,9 @@ L['anima_channeled'] = '心能连接到%s。'
 --------------------------------- SHADOWLANDS ---------------------------------
 -------------------------------------------------------------------------------
 
-L['squirrels_note'] = '必须使用表情 /love 给非战斗宠物的小动物。'
+L['squirrels_note'] = '必须使用表情 /爱（/love）给非战斗宠物的小动物。'
 L['options_icons_squirrels'] = '{achievement:14731}'
 L['options_icons_squirrels_desc'] = '显示 {achievement:14731} 成就中小动物的位置。'
-
-L['prepatch_vendor_note'] = '使用从 |cFFFF8C00原始风暴|r 前夕事件的 {item:199211} 货币购买奖励。'
 
 -------------------------------------------------------------------------------
 --------------------------------- ARDENWEALD ----------------------------------
@@ -693,6 +691,7 @@ L['nexus_cave_forlorn'] = '荒弃之息洞穴内。'
 L['nexus_cave_howl_outside'] = '死亡之嚎洞穴外的地面上'
 L['nexus_cave_howl'] = '死亡之嚎洞穴内'
 L['nexus_cave_roar'] = '死亡之哮洞穴内'
+L['nexus_cave_roar_outside'] = '死亡之哮洞穴外'
 L['nexus_cave_ledge'] = '在壁架下方的一个小洞穴中 '
 L['nexus_cave_prodigum'] = '浪骸之所的小洞穴内'
 L['nexus_cave_soulstained'] = '魂渍原野的小洞穴内'
@@ -702,6 +701,7 @@ L['nexus_npc_akros'] = '{npc:170787} 旁边的楼梯上'
 L['nexus_npc_dekaris'] = '{npc:157964} 处山峰顶上'
 L['nexus_npc_dolos'] = '{npc:170711} 后面的地面上'
 L['nexus_npc_ekphoras'] = '{npc:169827} 的平台边上'
+L['nexus_npc_eternas'] = '{npc:154330} 后面的地面上'
 L['nexus_npc_incinerator'] = '{npc:156203} 下面的一个小窗台上'
 L['nexus_npc_orophea'] = '{npc:172577} 旁边地面上'
 L['nexus_npc_orrholyn'] = '{npc:162845} 的平台下面找到'

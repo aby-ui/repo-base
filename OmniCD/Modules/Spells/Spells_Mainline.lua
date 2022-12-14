@@ -2,8 +2,6 @@ local E = select(2, ...):unpack()
 
 
 
-
-
 E.spell_db = {
 	["WARRIOR"] = {
 		{ ["class"]="WARRIOR",["type"]="defensive",["buff"]=236273,["spec"]=true,["name"]="Duel",["duration"]=60,["icon"]=1455893,["spellID"]=236273, },
@@ -2003,7 +2001,7 @@ E.spell_db = {
 
 
 		{ ["class"]="PRIEST",["type"]="counterCC",["buff"]=32379,["spec"]=true,["maxRanks"]=1,["name"]="Shadow Word: Death",["charges"]=1,["ID"]=160,["duration"]=20,["icon"]=136149,["spellID"]=32379, },
-		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=34433,["spec"]=true,["maxRanks"]=1,["name"]="Shadowfiend",["ID"]=161,["duration"]=180,["icon"]=136214,["spellID"]=34433, },
+		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=34433,["spec"]=true,["maxRanks"]=1,["name"]="Shadowfiend",["ID"]=161,["duration"]=180,["icon"]=136199,["spellID"]=34433,["talent"]=200174, },
 
 
 		{ ["class"]="PRIEST",["type"]="other",["buff"]=73325,["spec"]=true,["maxRanks"]=1,["name"]="Leap of Faith",["ID"]=164,["duration"]=90,["icon"]=463835,["spellID"]=73325, },
@@ -2021,7 +2019,7 @@ E.spell_db = {
 		{ ["class"]="PALADIN",["type"]="externalDefensive",["buff"]=199452,["spec"]=true,["duration"]=60,["name"]="Ultimate Sacrifice",["icon"]=135966,["spellID"]=199452, },
 		{ ["class"]="PALADIN",["type"]="disarm",["buff"]=215652,["spec"]=true,["duration"]=45,["name"]="Inquisition",["icon"]=237452,["spellID"]=215652, },
 		{ ["class"]="PALADIN",["type"]="other",["buff"]=207028,["spec"]=true,["duration"]=20,["name"]="Inquisition",["icon"]=135984,["spellID"]=207028, },
-		{ ["class"]="PALADIN",["type"]="immunity",["buff"]=228049,["spec"]=true,["duration"]=180,["name"]="Guardian of the Forgotten Queen",["icon"]=135919,["spellID"]=228049, },
+		{ ["class"]="PALADIN",["type"]="immunity",["buff"]=228049,["spec"]=true,["duration"]=300,["name"]="Guardian of the Forgotten Queen",["icon"]=135919,["spellID"]=228049, },
 
 
 
@@ -2710,6 +2708,7 @@ E.spell_db = {
 
 E.iconFix = {}
 E.buffFix = {
+
 	[51052] = 145629,
 	[196718] = 209426,
 

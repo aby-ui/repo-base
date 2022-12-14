@@ -74,6 +74,7 @@ P.setQuickSelect = function(info, value)
 	end
 
 	if P:IsCurrentZone(key) then
+		P:UpdateEnabledSpells()
 		P:Refresh()
 	end
 end
@@ -102,7 +103,7 @@ end
 
 local spells = {
 	name = function(info)
-		return isSpellsSubcategory(info) and L["Spells"] or L["Raid CD"]
+		return isSpellsSubcategory(info) and L["Spells"] or format("%s/%s",L["Interrupt"], L["Raid CD"])
 	end,
 	order = 60,
 	type = "group",
@@ -131,7 +132,7 @@ local spells = {
 			confirm = E.ConfirmAction,
 		},
 		showForbearanceCounter = {
-			hidden = E.isClassicEra or isRaidCdSubcategory,
+			hidden = E.isClassic or isRaidCdSubcategory,
 			name = L["Show Forbearance CD"],
 			desc = L["Show timer on spells while under the effect of Forbearance or Hypothermia. Spells castable to others will darken instead"],
 			order = 4,
@@ -261,7 +262,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					t[sId].order = order
 				else
 					local icon, name = v.icon, v.name
-					local link = E.isClassicEra and GetSpellDescription(spellID) or GetSpellLink(spellID)
+					local link = E.isClassic and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
 					t[sId] = {
 						hidden = shouldHideDisabledSpell,
@@ -275,10 +276,10 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					}
 				end
 
-				if E.isClassicEra or E.isDF then
+				if E.isClassic or E.isDF then
 					local spell = Spell:CreateFromSpellID(spellID)
 					spell:ContinueOnSpellLoad(function()
-						local desc = E.isClassicEra and spell:GetSpellDescription() or GetSpellLink(spellID)
+						local desc = E.isClassic and spell:GetSpellDescription() or GetSpellLink(spellID)
 						t[sId].desc = desc
 					end)
 				end
@@ -319,7 +320,7 @@ function P:AddSpellPickerSpells()
 
 					local spellID, icon, name = v.spellID, v.icon, v.name
 					local sId = tostring(spellID)
-					local link = E.isClassicEra and GetSpellDescription(spellID) or GetSpellLink(spellID)
+					local link = E.isClassic and GetSpellDescription(spellID) or GetSpellLink(spellID)
 
 					t[vtype].args[sId] = {
 						hidden = shouldHideDisabledSpell,
@@ -345,10 +346,10 @@ function P:AddSpellPickerSpells()
 						end
 					end
 
-					if E.isClassicEra or E.isDF then
+					if E.isClassic or E.isDF then
 						local spell = Spell:CreateFromSpellID(spellID)
 						spell:ContinueOnSpellLoad(function()
-							local desc = E.isClassicEra and spell:GetSpellDescription() or GetSpellLink(spellID)
+							local desc = E.isClassic and spell:GetSpellDescription() or GetSpellLink(spellID)
 							t[vtype].args[sId].desc = desc
 						end)
 					end

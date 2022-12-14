@@ -79,7 +79,7 @@ L.TradePartner = 'Trading'
 L.Vehicle = 'Entering a Vehicle'
 
 -- colors
-L.ColorOptions = 'Color Settings'
+L.ColorOptions = 'Slot Settings'
 L.ColorOptionsDesc = 'These settings allow you to change how item slots are presented on %s frames for easier identification.'
 
 L.GlowQuality = 'Color by Quality'
@@ -91,6 +91,7 @@ L.GlowPoor = 'Mark Poor Items'
 L.GlowAlpha = 'Glow Brightness'
 
 L.EmptySlots = 'Display Background'
+L.SlotBackground = 'Artwork'
 L.ColorSlots = 'Color by Bag Type'
 L.NormalColor = 'Normal Color'
 L.KeyColor = 'Key Color'

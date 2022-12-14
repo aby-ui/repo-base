@@ -101,15 +101,17 @@ map.nodes[85221544] = Rare({ -- review
 
 map.nodes[80544222] = Rare({
     id = 188095,
-    quest = nil,
+    quest = 73966,
     note = L['hunter_of_the_deep_note'],
     rewards = {Achievement({id = 16677, criteria = 56083})}
 }) -- Hunter of the Deep
 
-map.nodes[80413867] = Rare({ -- review
+map.nodes[80513869] = Rare({
     id = 188124,
-    quest = 66356,
-    rewards = {Achievement({id = 16677, criteria = 56084})}
+    quest = 73967,
+    note = L['in_cave'],
+    rewards = {Achievement({id = 16677, criteria = 56084})},
+    pois = {POI({79143656})} -- Entrance
 }) -- Irontree
 
 map.nodes[87556151] = Rare({
@@ -335,6 +337,13 @@ map.nodes[72232306] = Rare({
     quest = 73980,
     rewards = {Achievement({id = 16677, criteria = 56085})}
 }) -- Zerimek
+
+map.nodes[90434005] = Rare({
+    id = 193128,
+    quest = 74096,
+    note = L['blightpaw_note'],
+    rewards = {Achievement({id = 16679, criteria = 56136})}
+}) -- Blightpaw the Depraved
 
 -------------------------------------------------------------------------------
 
@@ -754,6 +763,7 @@ map.nodes[63251396] = Disturbeddirt()
 map.nodes[65868145] = Disturbeddirt()
 map.nodes[66451981] = Disturbeddirt()
 map.nodes[75003584] = Disturbeddirt()
+map.nodes[78534035] = Disturbeddirt()
 map.nodes[78782268] = Disturbeddirt()
 map.nodes[78943707] = Disturbeddirt()
 map.nodes[79013697] = Disturbeddirt()
@@ -1107,13 +1117,13 @@ map.nodes[58672073] = ns.node.PrettyNeat({
 ------------------------------ A LEGENDARY ALBUM ------------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[72938447] = ns.node.LegendaryCharacter({
+map.nodes[73358131] = ns.node.LegendaryCharacter({
     id = 38294,
     icon = 1109168,
     rewards = {Achievement({id = 16570, criteria = 55772})}
 }) -- Elder Clearwater
 
-map.nodes[51985701] = ns.node.LegendaryCharacter({
+map.nodes[48124748] = ns.node.LegendaryCharacter({
     id = 63721,
     rewards = {Achievement({id = 16570, criteria = 55774})}
 }) -- Nat Pagle
@@ -1366,17 +1376,6 @@ end
 map.nodes[57473193] = Ohnahra()
 
 -------------------------------------------------------------------------------
-
-map.nodes[66333211] = Collectible({
-    label = '{item:200205}',
-    icon = 133739,
-    note = L['tome_of_polymoph_duck'],
-    class = 'MAGE',
-    rewards = {
-        Item({item = 200205}) -- Tome of Polymoph: Duck
-    },
-    pois = {POI({66453173})}
-}) -- Tome of Polymorph: Duck
 
 map.nodes[82207320] = NPC({
     id = 191608,

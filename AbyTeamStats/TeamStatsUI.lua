@@ -378,7 +378,7 @@ function TS:UIUpdate(flashing)
 end
 
 function TeamStatsUI_CreateMinimapButton()
-    local ldb = LibStub("LibDataBroker-1.1"):NewDataObject("163UI_TeamStats", {
+    local ldb = LibStub("LibDataBroker-1.1"):NewDataObject("AbyTeamStats", {
         type = "launcher",
         label = "团队信息统计",
         icon = "Interface\\Icons\\Spell_Deathknight_UnholyPresence",

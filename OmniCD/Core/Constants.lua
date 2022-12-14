@@ -271,9 +271,6 @@ E.RAID_TARGET_MARKERS = {
 	[0x00000080] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t",
 }
 
-
-
-
 E.L_GLOW_ATLAS ={
 	["bags-glow-white"] = ICON_TAG_RAID_TARGET_SKULL3,
 	["bags-glow-green"] = ICON_TAG_RAID_TARGET_TRIANGLE3,

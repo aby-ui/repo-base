@@ -8,6 +8,7 @@ local Class = ns.Class
 local Group = ns.Group
 local Map = ns.Map
 
+local Collectible = ns.node.Collectible
 local Node = ns.node.Node
 local Quest = ns.node.Quest
 local Achievement = ns.reward.Achievement
@@ -86,6 +87,7 @@ ns.groups.VISIONS_CHEST = Group('visions_chest', 'chest_gy')
 ns.groups.VISIONS_CRYSTALS = Group('visions_crystals', 'crystal_o')
 ns.groups.VISIONS_MAIL = Group('visions_mail', 'envelope')
 ns.groups.VISIONS_MISC = Group('visions_misc', 2823166)
+ns.groups.SQUIRRELS = Group('squirrels', 237182, {defaults = ns.GROUP_HIDDEN})
 
 -------------------------------------------------------------------------------
 ---------------------------------- CALLBACKS ----------------------------------
@@ -217,3 +219,15 @@ function WarfrontMap:CanDisplay(node, coord, minimap)
 end
 
 ns.WarfrontMap = WarfrontMap
+
+-------------------------------------------------------------------------------
+------------------- TO ALL THE SQUIRRELS I SET SAIL TO SEE --------------------
+-------------------------------------------------------------------------------
+
+local Squirrel = Class('Squirrel', Collectible, {
+    group = ns.groups.SQUIRRELS,
+    icon = 237182,
+    note = L['squirrels_note']
+})
+
+ns.node.Squirrel = Squirrel

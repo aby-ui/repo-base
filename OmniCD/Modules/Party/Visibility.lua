@@ -43,31 +43,32 @@ local PARTY_UNIT = {
 local INSTANCETYPE_EVENTS = E.preCata and {
 	arena = {
 		'PLAYER_REGEN_DISABLED',
-		'UPDATE_UI_WIDGET'
+		'UPDATE_UI_WIDGET',
 	},
 	pvp = {
 		'CHAT_MSG_BG_SYSTEM_NEUTRAL',
 		'PLAYER_REGEN_DISABLED',
-		'UPDATE_UI_WIDGET'
+		'UPDATE_UI_WIDGET',
 	}
 } or {
 	party = {
-		'CHALLENGE_MODE_START'
+		'CHALLENGE_MODE_START',
 	},
 	raid  = {
-		'ENCOUNTER_END'
+		'ENCOUNTER_END',
 	},
 	none = {
-		'PLAYER_FLAGS_CHANGED'
+		'PLAYER_FLAGS_CHANGED',
 	},
 	arena = {
 		'PLAYER_REGEN_DISABLED',
-		'UPDATE_UI_WIDGET'
+		'UPDATE_UI_WIDGET',
+		'PVP_MATCH_ACTIVE',
 	},
 	pvp = {
 		'CHAT_MSG_BG_SYSTEM_NEUTRAL',
 		'UPDATE_UI_WIDGET',
-		'PLAYER_REGEN_DISABLED'
+		'PLAYER_REGEN_DISABLED',
 	}
 }
 
@@ -151,7 +152,7 @@ local function UpdateRosterInfo(force)
 	end
 
 	if force then
-		P.isInShadowlands = E.isSL or (not P.isInPvPInstance and IsInShadowlands())
+		P.isInShadowlands = E.isSL or (E.postBFA and not P.isInPvPInstance and IsInShadowlands())
 	end
 
 	E.Libs.CBH:Fire("OnStartup")
@@ -242,7 +243,7 @@ local function UpdateRosterInfo(force)
 				if isDead then
 					frame:RegisterUnitEvent('UNIT_HEALTH', unit)
 				end
-				if not E.isClassicEra then
+				if not E.isClassic then
 					frame:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', unit, E.UNIT_TO_PET[unit])
 				end
 				frame:RegisterUnitEvent('UNIT_CONNECTION', unit)
@@ -372,7 +373,6 @@ function P:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi, isRefresh)
 		return
 	end
 
-
 	local key = self.isInTestMode and self.testZone or instanceType
 	key = key == "none" and E.profile.Party.noneZoneSetting or (key == "scenario" and E.profile.Party.scenarioZoneSetting) or key
 	E.db = E.profile.Party[key]
@@ -439,6 +439,11 @@ function P:PLAYER_REGEN_DISABLED()
 		self.callbackTimers.arenaTicker = nil
 	end
 	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
+end
+
+function P:PVP_MATCH_ACTIVE()
+
+	self:ResetAllIcons("joinedPvP")
 end
 
 function P:PLAYER_FLAGS_CHANGED(unitTarget)

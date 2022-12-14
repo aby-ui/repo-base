@@ -4,7 +4,6 @@ ELP_SEASON_TAB_ID = 5
 --最新团本和宿命团本
 --ELP_NEWEST_RAID, ELP_WEEK_RAID = ELP_GetNewestRaidAndEmpoweredRaid(ELP_VERSION_TIER)
 
---abyuiPW
 ELP_SEASON_RAIDS = {
     { 1200 }, --巨龙牢窟
     --{ 1205 }, --巨龙群岛, 只有280的
@@ -32,10 +31,10 @@ ELP_SEASON_MYTHICS = {
     { 1202, 399 }, --红玉新生法池
     { 1203, 401 }, --碧蓝魔馆
     { 1198, 400 }, --诺库德阻击战
+    { 537, 165 }, --影月墓地
     { 800, 210 }, --群星庭院
     { 721, 200 }, --英灵殿
     { 313, 002 }, --青龙寺
-    { 537, 165 }, --影月墓地
 }
 
 -- loot table from https://www.wowhead.com/news/list-of-currently-confirmed-loot-drops-from-season-4-mythic-grimrail-depot-iron-328237
@@ -81,7 +80,7 @@ ELP_LINK_REPLACE = {
 }
 
 --只需要处理5人副本难度，团本难度不用管
-local dungeonDifficulty = 23
+local dungeonDifficulty = 8
 ELP_INSTANCE_DIFFICULTY = {}
 for _, v in ipairs(ELP_SEASON_MYTHICS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
 for _, v in ipairs(ELP_NEXT_SEASON_MYTHICS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] = dungeonDifficulty end
@@ -89,7 +88,7 @@ for _, v in ipairs(ELP_SEASON_DUNGEONS or {}) do ELP_INSTANCE_DIFFICULTY[v[1]] =
 for insID, lt in pairs(ELP_LOOT_TABLE_OTHER or {}) do
     for _, v in ipairs(ELP_INSTANCE_DIFFICULTY[insID] and lt or {}) do ELP_INSTANCE_DIFFICULTY[v] = dungeonDifficulty end
 end
-ELP_INSTANCE_DIFFICULTY[313] = 2 --青龙寺只有英雄
+--ELP_INSTANCE_DIFFICULTY[313] = 2 --前夕青龙寺只有英雄
 
 --自动设置副本名称, 把instances转成map
 ELP_ENCOUNTER_INSTANCE_NAME = {} -- 不同boss对应的副本名 encounterId => instanceName

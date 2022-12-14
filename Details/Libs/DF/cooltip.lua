@@ -15,7 +15,7 @@ local max = math.max
 
 --api locals
 local PixelUtil = PixelUtil or DFPixelUtil
-local version = 8
+local version = 9
 
 local CONST_MENU_TYPE_MAINMENU = "main"
 local CONST_MENU_TYPE_SUBMENU = "sub"
@@ -3217,6 +3217,8 @@ function DF:CreateCoolTip()
 	end
 
 	local wait = 0.2
+	local delayToHide = 0.11
+	local delayToHideDefault = 0.11
 	local InjectOnUpdateEnter = function(self, deltaTime)
 		elapsedTime = elapsedTime + deltaTime
 		if (elapsedTime > wait) then
@@ -3227,7 +3229,7 @@ function DF:CreateCoolTip()
 
 	local InjectOnUpdateLeave = function(self, deltaTime)
 		elapsedTime = elapsedTime + deltaTime
-		if (elapsedTime > 0.2) then
+		if (elapsedTime > delayToHide) then
 			if (not gameCooltip.mouseOver and not gameCooltip.buttonOver and self == gameCooltip.Host) then
 				gameCooltip:ShowMe(false)
 			end
@@ -3240,6 +3242,7 @@ function DF:CreateCoolTip()
 
 		if (gameCooltip.active) then
 			elapsedTime = 0
+			delayToHide = self.CoolTip.HideSpeed or delayToHideDefault
 			self:SetScript("OnUpdate", InjectOnUpdateLeave)
 		else
 			self:SetScript("OnUpdate", nil)

@@ -70,8 +70,9 @@ for k, v in pairs(defaultFonts) do
 	C.General.fonts[k].ofsY = v[8]
 end
 
-local flagFix = {
+local flagFixForDF = {
 	["NONE"] = "",
+
 
 
 }
@@ -86,7 +87,7 @@ function E:SetFontProperties(fontString, db, size)
 		fontString:SetShadowColor(0, 0, 0, 0)
 	end
 	flag = db.font == "Homespun" and "MONOCHROMEOUTLINE" or flag
-	flag = (E.isDF or E.TocVersion == 30401) and flagFix[flag] or flag
+	flag = (E.isDF or E.TocVersion == 30401) and flagFixForDF[flag] or flag
 	fontString:SetFont(LSM:Fetch("font", db.font), size or db.size, flag)
 end
 
@@ -285,9 +286,9 @@ function E:AddGeneral()
 	self.DummyFrame.text = self.DummyFrame.text or self.DummyFrame:CreateFontString()
 	for fontName, fontPath in pairs(LSM:HashTable("font")) do
 		self.DummyFrame.text:SetFont(fontPath, 22)
-
 		LSM_Font[fontName] = fontName
 	end
+
 	for _, fontName in ipairs(LSM:List("statusbar")) do
 		LSM_Statusbar[fontName] = fontName
 	end

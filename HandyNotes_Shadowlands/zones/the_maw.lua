@@ -913,12 +913,6 @@ pitl.nodes[46896760] = Cache({parent = map.id})
 --------------------------------- STYGIA NEXUS --------------------------------
 -------------------------------------------------------------------------------
 
--- local STYGIA_NEXUS = {
---     17005000, 19003400, 21003900, 23007000, 24006800, 25006800, 28004500,
---     29006500, 30002800, 36004200, 38001900, 44005800, 45006600, 45006700,
---     52006700, 52006800, 53006600, 57006000
--- }
-
 local Nexus = Class('StygiaNexus', NPC, {
     group = ns.groups.STYGIA_NEXUS,
     icon = 'peg_gn',
@@ -932,6 +926,7 @@ map.nodes[16015170] = Nexus({note = L['nexus_npc_portal']})
 map.nodes[16875503] = Nexus({note = L['nexus_area_gorgoa_mouth']})
 map.nodes[17745311] = Nexus({note = L['nexus_area_gorgoa_mouth']})
 map.nodes[18285458] = Nexus({note = L['nexus_area_gorgoa_mouth']})
+map.nodes[18924633] = Nexus({note = L['nexus_npc_eternas']})
 map.nodes[19206731] = Nexus({note = L['nexus_area_domination_edge']})
 map.nodes[19433790] = Nexus({note = L['nexus_area_calcis_crystals']})
 map.nodes[19643533] = Nexus({note = L['nexus_area_calcis_crystals']})
@@ -944,6 +939,7 @@ map.nodes[22515477] = Nexus({note = L['nexus_misc_grapple_rock']})
 map.nodes[22922234] = Nexus({note = L['nexus_misc_grapple_rock']})
 map.nodes[22926805] = Nexus({note = L['nexus_misc_grapple_ramparts']})
 map.nodes[23044444] = Nexus({note = L['nexus_misc_grapple_ramparts']})
+map.nodes[23196996] = Nexus({note = L['nexus_misc_grapple_ramparts']})
 map.nodes[23252132] = Nexus({note = L['nexus_npc_orophea']})
 map.nodes[23277382] = Nexus({note = L['nexus_area_domination_bridge']})
 map.nodes[23493460] = Nexus({note = L['nexus_area_calcis_crystals']})
@@ -959,6 +955,7 @@ map.nodes[25623699] = Nexus({note = L['nexus_cave_forlorn']})
 map.nodes[26004499] = Nexus({note = L['nexus_misc_crystal_ledge']})
 map.nodes[26153094] = Nexus({note = L['nexus_npc_dekaris']})
 map.nodes[26336859] = Nexus({note = L['nexus_misc_grapple_ramparts']})
+map.nodes[26744496] = Nexus({note = L['nexus_area_gorgoa_bank']})
 map.nodes[26842748] = Nexus({note = L['nexus_misc_grapple_rock']})
 map.nodes[27392598] = Nexus({note = L['nexus_misc_floating_cage']})
 map.nodes[27427226] = Nexus({note = L['nexus_npc_thanassos']})
@@ -966,9 +963,12 @@ map.nodes[27541273] = Nexus({note = L['nexus_npc_talaporas']})
 map.nodes[27906041] = Nexus({note = L['nexus_npc_dolos']})
 map.nodes[28573090] = Nexus({note = L['nexus_area_torment_rock']})
 map.nodes[28674931] = Nexus({note = L['nexus_misc_grapple_rock']})
+map.nodes[30056578] = Nexus({note = L['nexus_misc_below_ramparts']})
+map.nodes[30092827] = Nexus({note = L['nexus_misc_grapple_rock']})
 map.nodes[32266739] = Nexus({note = L['nexus_misc_grapple_ramparts']})
 map.nodes[32506541] = Nexus({note = L['nexus_room_ramparts']})
 map.nodes[33064239] = Nexus({note = L['nexus_area_zovaal_wall']})
+map.nodes[33182058] = Nexus({note = L['nexus_misc_grapple_rock']})
 map.nodes[33156479] = Nexus({note = L['nexus_area_perdition_wall']})
 map.nodes[33647481] = Nexus({note = L['nexus_npc_akros']})
 map.nodes[33977033] = Nexus({note = L['nexus_misc_grapple_ramparts']})
@@ -983,6 +983,8 @@ map.nodes[41234967] = Nexus({note = L['nexus_misc_floating_cage']})
 map.nodes[41314784] = Nexus({note = L['nexus_misc_floating_cage']})
 map.nodes[42412320] = Nexus({note = L['nexus_npc_ekphoras']})
 map.nodes[43816887] = Nexus({note = L['nexus_area_zone_edge']})
+map.nodes[45126671] = Nexus({note = L['nexus_misc_grapple_rock']})
+map.nodes[46198136] = Nexus({note = L['nexus_cave_roar_outside']})
 map.nodes[47166238] = Nexus({note = L['nexus_road_below']})
 map.nodes[48078370] = Nexus({note = L['nexus_cave_howl_outside']})
 map.nodes[48327061] = Nexus({note = L['nexus_misc_floating_cage']})
@@ -995,6 +997,7 @@ map.nodes[51627864] = Nexus({note = L['nexus_misc_three_chains']})
 map.nodes[51907098] = Nexus({note = L['nexus_cave_ledge']})
 map.nodes[52018189] = Nexus({note = L['nexus_misc_ledge_below']})
 map.nodes[52167619] = Nexus({note = L['nexus_misc_floating_cage']})
+map.nodes[52907027] = Nexus({note = L['nexus_misc_grapple_rock']})
 map.nodes[53167848] = Nexus({note = L['nexus_misc_floating_cage']})
 map.nodes[53338024] = Nexus({note = L['nexus_cave_anguish_outside']})
 map.nodes[53877701] = Nexus({note = L['nexus_misc_floating_cage']})
@@ -1010,6 +1013,7 @@ map.nodes[59007837] = Nexus({note = L['nexus_road_next']})
 map.nodes[59056108] = Nexus({note = L['nexus_cave_desmotaeron']})
 map.nodes[60866755] = Nexus({note = L['nexus_road_next']})
 map.nodes[60927687] = Nexus({note = L['nexus_area_zone_edge']})
+map.nodes[61096917] = Nexus({note = L['nexus_cave_desmotaeron']})
 
 pitu.nodes[53376624] = Nexus({
     note = L['nexus_cave_anguish_upper'],

@@ -15,6 +15,10 @@
             local function hook(overlayFrame)
                 --abyuiPW search for HandyNotes:RegisterPluginDB(
                 local plugins = {
+                    "Valdrakken", "瓦德拉肯", --config_plugin_name
+                    "HandyNotes_Dragonflight",
+                    "Covenant Sanctum", "圣所", "誓盟聖所",
+                    "Oribos", "奥利波斯", "奧睿博司",
                     "HandyNotes_Shadowlands",
                     "HandyNotes_BattleForAzeroth",
                     "DraenorTreasures",
@@ -74,7 +78,7 @@
             end
 
             for _, overlayFrame in next, WorldMapFrame.overlayFrames do
-                if(overlayFrame.Border and overlayFrame.Border:GetTexture() == 'Interface\\Minimap\\MiniMap-TrackingBorder') then
+                if(overlayFrame.Border and overlayFrame.Border:GetTexture() == 136430) then
                     hook(overlayFrame)
                     break
                 end

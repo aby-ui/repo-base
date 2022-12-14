@@ -226,12 +226,14 @@ ns.DRAGON_CUSTOMIZATIONS = {
     WindborneVelocidrake = {
         ClubTail = Item({item = 197624, quest = 69828}),
         FinnedEars = Item({item = 197595, quest = 69799}),
+        GrayHorns = Item({item = 197608, quest = 69812}),
         LargeHeadFin = Item({item = 197589, quest = 69793}),
         SweptHorns = Item({item = 197606, quest = 69810}),
         SpikedBack = Item({item = 197586, quest = 69790}),
         ClusterHorns = Item({item = 197602, quest = 69806})
     },
     HighlandDrake = {
+        ClubTail = Item({item = 197149, quest = 69350}),
         CrestedBrow = Item({item = 197100, quest = 69301}),
         FinnedBack = Item({item = 197098, quest = 69299}),
         ManedHead = Item({item = 197111, quest = 69312}),

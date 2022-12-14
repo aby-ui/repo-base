@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2475, "DBM-Party-Dragonflight", 2, 1197)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20220803233609")
+mod:SetRevision("20221213054234")
 mod:SetCreatureID(184580, 184581, 184582)
 mod:SetEncounterID(2555)
 --mod:SetUsedIcons(1, 2, 3)
@@ -64,7 +64,7 @@ local timerRicochetingShieldCD					= mod:NewCDTimer(35, 369677, nil, nil, nil, 3
 local timerDefensiveBulwarkCD					= mod:NewCDTimer(35, 369602, nil, nil, nil, 4, nil, DBM_COMMON_L.INTERRUPT_ICON)
 --Longboat Raid!
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(24783))
---local timerLongboatRaidCD						= mod:NewCDTimer(20, 375924, nil, nil, nil, 6)
+local timerLongboatRaidCD						= mod:NewCDTimer(27.4, 375924, nil, nil, nil, 6)
 
 local specWarnGTFO								= mod:NewSpecialWarningGTFO(377825, nil, nil, nil, 1, 8)
 
@@ -109,7 +109,7 @@ end
 
 function mod:OnCombatStart(delay)
 	--Baelog
-	timerWildCleaveCD:Start(8.4-delay)
+	timerWildCleaveCD:Start(8.1-delay)
 	timerHeavyArrowCD:Start(20.6-delay)
 	--Eric
 	timerSkullcrackerCD:Start(6-delay)
@@ -117,7 +117,7 @@ function mod:OnCombatStart(delay)
 	timerRicochetingShieldCD:Start(12.1-delay)
 	timerDefensiveBulwarkCD:Start(17.2-delay)
 	--Raid
---	timerLongboatRaidCD:Start(24-delay)
+	timerLongboatRaidCD:Start(24-delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(5)
 	end
@@ -146,8 +146,8 @@ function mod:SPELL_CAST_START(args)
 	elseif spellId == 369677 then
 		self:ScheduleMethod(0.2, "BossTargetScanner", args.sourceGUID, "ShieldTarget", 0.1, 8, true)
 --		timerRicochetingShieldCD:Start()
-	elseif spellId == 375924 and self:AntiSpam(5, 1) then
---		timerLongboatRaidCD:Start()
+	elseif spellId == 375924 and self:AntiSpam(8, 1) then
+		timerLongboatRaidCD:Start()
 		local cid = self:GetCIDFromGUID(args.sourceGUID)
 		if cid == 184581 then--Baelog
 			timerHeavyArrowCD:Stop()

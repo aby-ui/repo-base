@@ -57,9 +57,6 @@
         </Texture>
       </Layer>
     </Layers>
-    <Frames>
-      <Frame parentKey="DropDown" inherits="UIDropDownMenuTemplate" clampedToScreen="true" hidden="true"/>
-    </Frames>
     <HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
     <Scripts>
       <OnLoad method="OnLoad"/>

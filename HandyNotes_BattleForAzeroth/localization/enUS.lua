@@ -730,3 +730,7 @@ L['secret_supply_chest'] = 'Secret Supply Chest'
 L['secret_supply_chest_note'] = 'When a faction assault is active, a ' .. ns.color.Yellow('Secret Supply Chest') .. ' can appear at one of these locations for a short time.'
 L['options_icons_secret_supplies'] = 'Secret Supply Chests'
 L['options_icons_secret_supplies_desc'] = 'Display ' .. ns.color.Yellow('Secret Supply Chest') .. ' locations for the {achievement:13317} achievement.'
+
+L['squirrels_note'] = 'You must use the emote /love on critters not battle pets.'
+L['options_icons_squirrels'] = '{achievement:14730}'
+L['options_icons_squirrels_desc'] = 'Display the locations of critters for {achievement:14730} achievement.'

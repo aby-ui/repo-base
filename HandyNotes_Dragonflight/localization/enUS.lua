@@ -125,6 +125,8 @@ L['snowclaw_cub_note_item1'] = 'Loot 3x {item:197744} from various {npc:182559s}
 L['snowclaw_cub_note_item2'] = 'Purchase 1x {item:198356} from {npc:193310} in |cFFFFFD00The Waking Shores|r.'
 L['snowclaw_cub_note_end'] = ns.color.Orange('All items can be purchased from the auction house. This is especially helpful if you do not easily have access to a {item:199215} which is required to purchase items from {npc:193310}.') .. '\n\nOnce you have the title equiped offer all 4 items to {npc:196768} to receive your pet.' .. ns.color.Red('\n\nBUG: Title may disappear pending fix.')
 
+L['tome_of_polymoph_duck'] = 'Use {spell:1953} to enter the cave and interact with the |cFFFFFD00Manastorming For Beginners|r book to complete the quest.'
+
 L['temperamental_skyclaw_note'] = [[
 Collect (or buy in the auction house):
 
@@ -206,7 +208,6 @@ L['options_icons_dreamguard_desc'] = 'Display  the location of Dreamguards for {
 
 L['khadin_note'] = 'Exchange {item:191784} for profession knowledge.'
 L['the_great_swog_note'] = 'Exchange {item:199338}, {item:199339} and {item:199340} for {item:202102}.'
-L['tome_of_polymoph_duck'] = 'Use {spell:1953} to enter the cave and interact with the |cFFFFFD00Manastorming For Beginners|r book to complete the quest.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------

@@ -44,7 +44,7 @@ if (GetLocale() == "zhCN") then
 		{"TrinketMenu_SortDelay","延迟替换","设置一个饰品被替换的时间 (秒).  比如, 你需要20秒得到大地之击的20秒BUFF."},
 		{"TrinketMenu_SortKeepEquipped","暂停自动排队","选中这个选项,当这个饰品被装备时会暂停自动排队替换. 比如, 你有一个自动换装的插件在你骑马时把棍子上的胡萝卜装备上了."},
 		{"TrinketMenu_Profiles","配置文件","你可以载入或保存一个队列配置."},
-		{"TrinketMenu_Delete","删除","从列表中删这个饰品.  更下面的饰品完全不会影响.  这个选项仅仅用来保持列表的可控性. 提示: 你包包里的饰品将回到列表的最下面."},
+		{"TrinketMenu_Delete","删除","从列表中删这个饰品.  更下面的饰品完全不会影响.  这个选项仅仅用来保持列表的可控性. 提示: 你包包里的饰品将回到列表的最下面.\n按住Ctrl+Alt+Shift清空全部"},
 		{"TrinketMenu_ProfilesDelete","删除配置","移除这个配置Remove this profile."},
 		{"TrinketMenu_ProfilesLoad","载入配置","为选中饰品槽载入一个队列.  你也可以双击一个配置来载入它."},
 		{"TrinketMenu_ProfilesSave","保存配置","保存选中饰品槽的队列.  任一饰品槽都可以使用它."},

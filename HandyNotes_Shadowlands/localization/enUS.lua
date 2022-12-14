@@ -13,11 +13,9 @@ L['anima_channeled'] = 'anima channeled to %s.'
 --------------------------------- SHADOWLANDS ---------------------------------
 -------------------------------------------------------------------------------
 
-L['squirrels_note'] = 'You must use the emote /love on critters not battle pets'
+L['squirrels_note'] = 'You must use the emote /love on critters not battle pets.'
 L['options_icons_squirrels'] = '{achievement:14731}'
-L['options_icons_squirrels_desc'] = 'Critter locations for {achievement:14731}'
-
-L['prepatch_vendor_note'] = 'Purchase rewards using the {item:199211} currency from the |cFFFF8C00Primal Storms|r pre-patch event.'
+L['options_icons_squirrels_desc'] = 'Display the locations of critters for {achievement:14731} achievement.'
 
 -------------------------------------------------------------------------------
 --------------------------------- ARDENWEALD ----------------------------------
@@ -693,6 +691,7 @@ L['nexus_cave_forlorn'] = 'Inside the Forlorn Respite cavern.'
 L['nexus_cave_howl_outside'] = 'On the ground outside the Death\'s Howl cavern'
 L['nexus_cave_howl'] = 'Inside the Death\'s Howl cavern'
 L['nexus_cave_roar'] = 'Inside the Death\'s Roar cavern'
+L['nexus_cave_roar_outside'] = 'Outside the Death\'s Roar cavern'
 L['nexus_cave_ledge'] = 'In a small cave below a ledge'
 L['nexus_cave_prodigum'] = 'In a small cave in the Prodigum'
 L['nexus_cave_soulstained'] = 'In a small cave in the Soulstained Fields'
@@ -702,6 +701,7 @@ L['nexus_npc_akros'] = 'Atop the stairs next to {npc:170787}'
 L['nexus_npc_dekaris'] = 'At the top of the peak where {npc:157964} resides'
 L['nexus_npc_dolos'] = 'On the ground behind {npc:170711}'
 L['nexus_npc_ekphoras'] = 'Next to {npc:169827}\'s platform'
+L['nexus_npc_eternas'] = 'On the ground behind {npc:154330}'
 L['nexus_npc_incinerator'] = 'On a small ledge below {npc:156203}'
 L['nexus_npc_orophea'] = 'On the ground next to {npc:172577}'
 L['nexus_npc_orrholyn'] = 'Found below {npc:162845}\'s platform'

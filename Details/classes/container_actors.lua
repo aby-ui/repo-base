@@ -31,6 +31,8 @@
 	local GetNumDeclensionSets = _G.GetNumDeclensionSets
 	local DeclineName = _G.DeclineName
 
+	local pet_tooltip_frame = _G.DetailsPetOwnerFinder
+
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --constants
 
@@ -94,6 +96,63 @@
 	
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --api functions
+
+	function Details222.Pets.GetPetOwner(petGUID, petName)
+		pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
+		pet_tooltip_frame:SetHyperlink(("unit:" .. petGUID) or "")
+
+		if (bIsDragonflight) then
+			local tooltipData = pet_tooltip_frame:GetTooltipData()
+			if (tooltipData and tooltipData.lines[1]) then
+				if (tooltipData.lines[1].leftText == petName) then
+					for i = 2, #tooltipData.lines do
+						local tooltipLine = tooltipData.lines[i]
+						local args = tooltipLine.args
+						if (args) then
+							if (args[4] and args[4].field == "guid") then
+								local ownerGUID = args[4].guidVal
+								local guidCache = Details:GetParserPlayerCache()
+								local ownerName = guidCache[ownerGUID]
+								if (ownerName) then
+									return ownerName, ownerGUID
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+
+		local actorNameString = _G["DetailsPetOwnerFinderTextLeft1"]
+		local ownerName, ownerGUID, ownerFlags
+
+		if (actorNameString) then
+			local actorName = actorNameString:GetText()
+			if (actorName and type(actorName) == "string") then
+				local isInRaid = _detalhes.tabela_vigente.raid_roster[actorName]
+				if (isInRaid) then
+					ownerGUID = UnitGUID(actorName)
+					ownerName = actorName
+					ownerFlags = 0x514
+				else
+					for playerName in actorName:gmatch("([^%s]+)") do
+						playerName = playerName:gsub(",", "")
+						local playerIsOnRaidCache = _detalhes.tabela_vigente.raid_roster[playerName]
+						if (playerIsOnRaidCache) then
+							ownerGUID = UnitGUID(playerName)
+							ownerName = playerName
+							ownerFlags = 0x514
+							break
+						end
+					end
+				end
+			end
+		end
+
+		if (ownerGUID) then
+			return ownerName, ownerGUID, ownerFlags
+		end
+	end
 
 	function container_combatentes:GetActor(actorName)
 		local index = self._NameIndexTable [actorName]
@@ -437,7 +496,6 @@
 	end
 
 	local petBlackList = {}
-	local pet_tooltip_frame = _G.DetailsPetOwnerFinder
 	local pet_text_object = _G ["DetailsPetOwnerFinderTextLeft2"] --not in use
 	local follower_text_object = _G ["DetailsPetOwnerFinderTextLeft3"] --not in use
 
@@ -588,36 +646,6 @@
 		--end
 
 		local npcId = Details:GetNpcIdFromGuid(serial or "")
-
-		--fix for rogue secret technich, can also be fixed by getting the time of the rogue's hit as the other hits go right after
-		if (npcId == 144961) then
-			pet_tooltip_frame:SetOwner(WorldFrame, "ANCHOR_NONE")
-			pet_tooltip_frame:SetHyperlink(("unit:" .. serial) or "")
-
-			local pname = _G["DetailsPetOwnerFinderTextLeft1"]
-			if (pname) then
-				local text = pname:GetText()
-				if (text and type(text) == "string") then
-					local isInRaid = _detalhes.tabela_vigente.raid_roster[text]
-					if (isInRaid) then
-						serial = UnitGUID(text)
-						nome = text
-						flag = 0x514
-					else
-						for playerName in text:gmatch("([^%s]+)") do
-							playerName = playerName:gsub(",", "")
-							local playerIsOnRaidCache = _detalhes.tabela_vigente.raid_roster[playerName]
-							if (playerIsOnRaidCache) then
-								serial = UnitGUID(playerName)
-								nome = playerName
-								flag = 0x514
-								break
-							end
-						end
-					end
-				end
-			end
-		end
 
 		--verifica se � um pet, se for confere se tem o nome do dono, se n�o tiver, precisa por
 		local dono_do_pet

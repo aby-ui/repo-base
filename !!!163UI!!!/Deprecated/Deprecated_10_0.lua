@@ -346,14 +346,3 @@ end
 do
     --LootHistory名字太小, 在RunSecond的LootHistoryFrame_UpdatePlayerFrames里
 end
-
-do
-    local origin = EquipmentManager_UnpackLocation
-    EquipmentManager_UnpackLocation = function(...)
-        local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = origin(...);
-        if not player and bank and bags and bag and bag >= 5 then
-            bag = bag + 1
-        end
-        return player, bank, bags, voidStorage, slot, bag, tab, voidSlot
-    end
-end

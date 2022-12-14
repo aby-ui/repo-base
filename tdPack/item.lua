@@ -12,13 +12,11 @@ function Item:New(parent, bag, slot)
         return
     end
 
-    local itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture = tdPack:GetItemInfo(itemID)
+    local itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture, itemExpansion, itemIsReagent = tdPack:GetItemInfo(itemID)
 
     if type(itemID) == 'number' then
-        local itemLink = tdPack:GetBagSlotLink(bag, slot)
-        local _
-        itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture = GetItemInfo(itemLink)
-        itemLevel = U1GetRealItemLevel(itemLink)
+        local loc = ItemLocation:CreateFromBagAndSlot(bag, slot)
+        itemLevel = C_Item.GetCurrentItemLevel(loc)
     end
 
     if not itemName then return end  --163ui sometime can't get iteminfo , 2016.9
@@ -33,7 +31,9 @@ function Item:New(parent, bag, slot)
     obj.itemQuality = itemQuality
     obj.itemLevel = itemLevel
     obj.itemTexture = itemTexture
-    
+    obj.itemExpansion = itemExpansion
+    obj.itemIsReagent = itemIsReagent
+
     return obj
 end
 
@@ -91,17 +91,31 @@ function Item:GetItemEquipLoc()
     return self.itemEquipLoc or ''
 end
 
+function Item:GetItemExpansion()
+    return self.itemExpansion or 0
+end
+
+function Item:GetItemIsReagent()
+    return self.itemIsReagent and 1 or 0
+end
+
 ---163ui for test
-function Item:NewByLink(itemLink)
-    local itemID = GetItemInfo(itemLink)
+function Item:NewByID(itemIDOrLink)
+    local itemID = itemIDOrLink
+    if type(itemID) == "string" then
+        local _, id = itemIDOrLink:match("|Hitem:((%d+).-)|h");
+        if id then
+            itemID = tonumber(id)
+        end
+    end
     if not itemID then
         return
     end
 
-    local itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture = tdPack:GetItemInfo(itemID)
+    local itemName, itemType, itemSubType, itemEquipLoc, itemQuality, itemLevel, itemTexture, itemExpansion, itemIsReagent = tdPack:GetItemInfo(itemID)
 
-    if type(itemID) == 'number' then
-        itemLevel = U1GetRealItemLevel(itemLink)
+    if type(itemIDOrLink) == 'string' then
+        itemLevel = U1GetRealItemLevel(itemIDOrLink)
     end
 
     if not itemName then return end  --163ui sometime can't get iteminfo , 2016.9
@@ -115,6 +129,8 @@ function Item:NewByLink(itemLink)
     obj.itemQuality = itemQuality
     obj.itemLevel = itemLevel
     obj.itemTexture = itemTexture
+    obj.itemExpansion = itemExpansion
+    obj.itemIsReagent = itemIsReagent
 
     return obj
 end

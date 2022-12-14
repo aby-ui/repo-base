@@ -65,7 +65,7 @@ Lib.Filters.class = {
 Lib.Filters.bind = {
     keywords = {
         bop = LE_ITEM_BIND_ON_ACQUIRE,
-        boe = LE_ITEM_BIND_ON_EQUIP,
+        --boe = LE_ITEM_BIND_ON_EQUIP,
         bou = LE_ITEM_BIND_ON_USE,
         boq = LE_ITEM_BIND_QUEST,
     },
@@ -240,11 +240,12 @@ Lib.Filters.abyVersionNumber = {
 Lib.Filters.boa = {
     keywords = {
         boa = "boa",
+        boe = "boe",
     },
-    onlyTags = not C_TooltipInfo,
+    stopMatchingOthers = true,
 
     canSearch = function(self, operator, search)
-        return not operator and search
+        return not operator and self.keywords[search]
     end,
 
     match = function(self, item, _, search)
@@ -256,13 +257,36 @@ Lib.Filters.boa = {
             for i = 2, 3 do
                 local t = data.lines[i]
                 t = t and t.args[2].stringVal
-                --if search == "boe" and t == ITEM_BIND_ON_EQUIP then
-                --    return true
-                --end
+                if search == "boe" and t == ITEM_BIND_ON_EQUIP then
+                    return true
+                end
                 if search == "boa" and (t == ITEM_ACCOUNTBOUND or t == ITEM_BIND_TO_BNETACCOUNT or t == ITEM_BNETACCOUNTBOUND) then
                     return true
                 end
             end
+        end
+    end
+}
+
+Lib.Filters.abyReagent = {
+    keywords = {
+        r = REAGENT_BANK,
+        re = REAGENT_BANK,
+        ["材料"] = REAGENT_BANK,
+    },
+    stopMatchingOthers = true,
+
+    canSearch = function(self, operator, search)
+        if operator then return false end
+        if search and self.keywords[search] then
+            return search
+        end
+    end,
+
+    match = function(self, item, operator, search)
+        local itemIsReagent = select(17, GetItemInfo(item.link))
+        if itemIsReagent then
+            return true
         end
     end
 }

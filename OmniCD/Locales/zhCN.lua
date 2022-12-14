@@ -6,6 +6,8 @@ L[ [=[%d: spellID.
 %d-%d: spellID-talentID (Mark spell if talent is selected).]=] ] = [=[%d: spellID.
 %d-%d: spellID-talentID (Mark spell if talent is selected).]=]
 --[[Translation missing --]]
+L["[Show Numbers for Cooldowns] must be enabled in Blizzard's 'Options/Action Bars' menu when using Blizzard's cooldown numbers."] = "[Show Numbers for Cooldowns] must be enabled in Blizzard's 'Options/Action Bars' menu when using Blizzard's cooldown numbers."
+--[[Translation missing --]]
 L["|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."] = "|cff9d9d9d * Scenarios and Outdoor Zones will use Arena settings."
 --[[Translation missing --]]
 L["|cffff2020Friendly CD module must be enabled for the corresponding instance zone."] = "|cffff2020Friendly CD module must be enabled for the corresponding instance zone."
@@ -24,6 +26,10 @@ L["Add Spells"] = "添加法术"
 L["Add to Alerts"] = "添加到警报"
 --[[Translation missing --]]
 L["Addons with raid frame scaling will also cause the icons to scale."] = "Addons with raid frame scaling will also cause the icons to scale."
+--[[Translation missing --]]
+L[ [=[Adjust value until the truncate symbol [...] disappears.
+|cffff20200: Disable option]=] ] = [=[Adjust value until the truncate symbol [...] disappears.
+|cffff20200: Disable option]=]
 L["Alerts"] = "提示"
 L["All user set values will be lost. Do you want to proceed?"] = "所有用户设定值都将丢失。确定继续吗？"
 L["Always attach to Blizzard frames. By default, bars attach to whichever frame is visible, and if both are visible UF addon take precedence over Blizzard"] = "始终将其附加到暴雪框架上。 默认情况下，图标会附加到可见的框架，如果两个框架都可见，则插件优先于暴雪框架"
@@ -40,6 +46,8 @@ L["Apply 'Icons' alpha settings to the status bar"] = "Apply 'Icons' alpha setti
 L["Ascending"] = "升序"
 --[[Translation missing --]]
 L["Assign Raid Cooldowns."] = "Assign Raid Cooldowns."
+--[[Translation missing --]]
+L["Attach Name Bar to the left of icon"] = "Attach Name Bar to the left of icon"
 L["Attach to Blizzard Frames"] = "附加到暴雪框架"
 L["Attachment Point"] = "附着点"
 L["Author"] = "作者"
@@ -107,6 +115,8 @@ L["Crop"] = "Crop"
 --[[Translation missing --]]
 L["Crop Icons 1.5:1."] = "Crop Icons 1.5:1."
 L["Crowd Control"] = "群体控制"
+--[[Translation missing --]]
+L["CTRL+click to edit spell."] = "CTRL+click to edit spell."
 L["Current Profile"] = "当前配置"
 L["Current Unit Frame Addon"] = "目前所使用的单位框体插件"
 L["Custom Priority"] = "自定义优先级"
@@ -225,6 +235,8 @@ L["Interrupted Target Marker"] = "被打断的目标标记"
 L["Interrupts"] = "打断"
 L["Invalid ID"] = "无效的ID"
 L["Invalid Profile"] = "无效的配置文件"
+--[[Translation missing --]]
+L["Invert Name Bar"] = "Invert Name Bar"
 L["Item ID (Optional)"] = "物品ID（可选）"
 L["Jump to Extra Bars settings"] = "跳转到额外的条设置"
 L["Layout"] = "设置"
@@ -323,6 +335,8 @@ L["Replace default timers with a status bar timer."] = "Replace default timers w
 --[[Translation missing --]]
 L["Reset all cooldown timers."] = "Reset all cooldown timers."
 --[[Translation missing --]]
+L["Reset current bar settings to default"] = "Reset current bar settings to default"
+--[[Translation missing --]]
 L["Reset current zone settings to default"] = "Reset current zone settings to default"
 --[[Translation missing --]]
 L["Reset frame position"] = "Reset frame position"
@@ -387,6 +401,8 @@ L["Settings"] = "设置"
 L["Show Anchor"] = "显示锚点"
 L["Show anchor with party/raid numbers"] = "在锚点上显示队伍/团队成员编号。"
 L["Show Forbearance CD"] = "显示自律CD"
+--[[Translation missing --]]
+L["Show Name"] = "Show Name"
 L["Show name on icons"] = "在图标上面显示名称"
 L["Show Player"] = "显示自身"
 L["Show Player in Extra Bars"] = "在额外技能栏中显示自己"
@@ -436,11 +452,15 @@ L["Toggle the cooldown numbers. Spells with charges only show cooldown numbers a
 L["Toggle the grow direction of icon columns"] = "Toggle the grow direction of icon columns"
 L["Toggle the grow direction of icon rows"] = "切换图标行的增长方向"
 L["Tool to copy portions of a profile to another existing profile."] = "将设置的部分内容复制到另一个现有设置文件。"
+--[[Translation missing --]]
+L["Tooltips will be enabled for this login session only."] = "Tooltips will be enabled for this login session only."
 L["TOP"] = "上"
 L["TOPLEFT"] = "左上"
 L["TOPRIGHT"] = "右上"
 L["Trinket and Racial abilities are excluded from sorting"] = "饰品和种族特长排除在排序之外"
 L["Trinket Items"] = "饰品"
+--[[Translation missing --]]
+L["Truncate Name"] = "Truncate Name"
 L["UI Scale Changed."] = "UI比例已更改"
 L["Unit CD bars are limited to 5 man groups unless Blizzard Raid Frames are used."] = "单位冷却条只能用于 5 人队伍，除非是使用游戏内建的团队框架。"
 L["Usage:"] = "用法:"
@@ -463,3 +483,5 @@ L["Vertical + CD Groups"] = "Vertical + CD Groups"
 L["Vertical Groups"] = "垂直显示队伍"
 L["Visibility"] = "可见度"
 L["Weak Purple Glow"] = "淡紫色发光"
+--[[Translation missing --]]
+L["You must manually enable either the 'Party Frames' or 'Raid Frames' in Blizzard's 'HUD Edit Mode'."] = "You must manually enable either the 'Party Frames' or 'Raid Frames' in Blizzard's 'HUD Edit Mode'."

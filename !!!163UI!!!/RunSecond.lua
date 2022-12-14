@@ -690,4 +690,31 @@ do
     end)
 end
 
+--[[------------------------------------------------------------
+10.0银行换装报错
+---------------------------------------------------------------]]
+if true then
+    if EquipmentFlyout_SetBackgroundTexture then
+        local bankOpened
+        CoreOnEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW", function(event, type) if type == Enum.PlayerInteractionType.Banker then bankOpened = true end end)
+        CoreOnEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE", function(event, type) if type == Enum.PlayerInteractionType.Banker then bankOpened = nil end end)
+
+        local origin
+        hooksecurefunc("EquipmentFlyout_SetBackgroundTexture", function()
+            if bankOpened and not origin then
+                origin = EquipmentManager_UnpackLocation
+                EquipmentManager_UnpackLocation = function(...)
+                    local player, bank, bags, voidStorage, slot, bag, tab, voidSlot = origin(...);
+                    if not player and bank and bags and bag and bag >= 5 then
+                        bag = bag + 1
+                    end
+                    return player, bank, bags, voidStorage, slot, bag, tab, voidSlot
+                end
+                U1Message("（你在银行打开的时候按ALT查看了身上的装备，从而触发了此条信息）暴雪自身BUG导致打开银行时换装菜单报错，这边临时修复了下，但是用完了最好/rl重载界面，否则会导致战斗中不能用换装菜单换武器。")
+            end
+        end)
+    end
+end
+
+
 CoreUIRegisterSlash("DEVELOPER_CONSOLE", "/dev", "/develop", function() DeveloperConsole:Toggle() end)

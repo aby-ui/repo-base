@@ -270,7 +270,7 @@ do
         if d == "史诗钥石" then print(group, act, n) end
       end
     end--]]
-    QuickActivities = { 180, 183, 679, 683, 1016, 1017, 471, 473 } --码头 恐轨 垃圾场 车间 天街 宏图 卡下 卡上
+    QuickActivities = { 180, 183, 679, 683, 1016, 1017, 471, 473 } --abyuiPW开服才行
     QuickActivitiesMenuTable = {}
     for _, id in ipairs(QuickActivities) do
         local fullName, shortName, categoryId, groupId, _, filters = C_LFGList.GetActivityInfo(id)

@@ -127,7 +127,7 @@ function CM:DequeueInspect(guid, addToStale)
 end
 
 function CM:EnqueueInspect(force, guid)
-	if E.isClassicEra then
+	if E.isClassic then
 		return
 	end
 
@@ -511,13 +511,15 @@ local function GetEquippedItemData(info, unit, specID, list)
 				else
 					itemID = E.item_merged[itemID] or itemID
 					info.itemData[itemID] = true
-					if list then list[#list + 1] = itemID end
+					if list then
+						if i == 13 then list[#list + 1] = "^E" end
+						list[#list + 1] = itemID
+					end
 				end
 			elseif not moveToStale then
 				moveToStale = true
 			end
 		end
-		if i == 13 and list then list[#list + 1] = "^E" end
 		InspectTooltip:ClearLines()
 	end
 
@@ -703,7 +705,7 @@ end) or (E.isWOTLKC and function(info, inspectUnit, isInspect)
 
 	return list
 end) or function(info, inspectUnit, isInspect)
-	if E.isClassicEra and isInspect then
+	if E.isClassic and isInspect then
 		return
 	end
 
@@ -910,11 +912,9 @@ function CM:InspectUser()
 	GetEquippedItemData(info, "player", specID, dataList)
 	if E.postBFA then
 		GetCovenantSoulbindData(info, dataList)
-	end
-	if not E.preCata then
 		info.spellHasteMult = 1/(1 + UnitSpellHaste("player")/100)
 
-	elseif E.isClassicEra or E.isBCC then
+	elseif E.isClassic or E.isBCC then
 		local speed = UnitRangedDamage("player")
 		if speed and speed > 0 then
 			info.rangedWeaponSpeed = speed

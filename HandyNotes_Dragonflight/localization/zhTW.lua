@@ -6,7 +6,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
-L['elite_loot_385'] = nil
+L['elite_loot_385'] = ns.color.Orange('這個稀有有機會掉落最高到裝等385的拾取!')
 L['gem_cluster_note'] = '需要的物品可以在龍鱗遠征隊名望21後, 在遠征隊斥侯包和挖過的土找到'
 
 L['options_icons_bonus_boss'] = '獎勵精英'
@@ -62,7 +62,7 @@ L['options_icons_squirrels_desc'] = '顯示 {achievement:16729} 成就中小動�
 
 L['hnj_sublabel'] = '需要當地的席卡氏族大狩獵'
 L['hnj_western_azure_span_hunt'] = '在死掉樹的頂端'
-L['hnj_northern_thaldraszus_hunt'] = nil
+L['hnj_northern_thaldraszus_hunt'] = ns.color.Orange('注意: 當大狩獵事件開始時, 你需要快點找到他. 如果太晚的話, 他可能會被野怪殺死.')
 L['options_icons_hemet_nesingwary_jr'] = '{achievement:16542}'
 L['options_icons_hemet_nesingwary_jr_desc'] = '顯示成就 {achievement:16542} 所需的 {npc:194590} 位置.'
 
@@ -71,11 +71,11 @@ L['pretty_neat_note_blazewing'] = '可以在地城 ' .. ns.color.Yellow('奈薩�
 L['options_icons_pretty_neat'] = '{achievement:16446}'
 L['options_icons_pretty_neat_desc'] = '顯示成就 {achievement:16446} 所需的 NPC 位置'
 
-L['large_lunker_sighting'] = '大傢伙目擊點'
+L['large_lunker_sighting'] = '大傢伙目擊地點'
 L['large_lunker_sighting_note'] = '使用5個 {item:194701} 來召喚 {npc:192919} 或是稀有'
 
 L['options_icons_legendary_album'] = '{achievement:16570}'
-L['options_icons_legendary_album_desc'] = nil
+L['options_icons_legendary_album_desc'] = '顯示成就 {achievement:16570} 所需的傳奇角色所在位置.'
 
 -------------------------------------------------------------------------------
 ------------------------------- THE AZURE SPAN --------------------------------
@@ -84,7 +84,7 @@ L['options_icons_legendary_album_desc'] = nil
 L['brackenhide_rare_note'] = '如果你在 |cFFFFFD00蕨皮谷|r 區域的話, 稀有重生時會在對話欄公告'
 L['fisherman_tinnak_note'] = '收集|cFFFFFD00破損的釣魚竿|r, |cFFFFFD00破損的捕漁網|r 和 |cFFFFFD00舊魚叉|r來召喚稀有.'
 L['spellwrought_snowman_note'] = '收集 10個 {npc:193424} 並且把他們帶到 {npc:193242}.'
-L['trilvarus_loreweaver_note'] = '收集一個|cFFFFFD00歌唱碎片|r以取得 {spell:382076} 接著使用 Uncharded Focus 來召喚稀有.'
+L['trilvarus_loreweaver_note'] = '收集一個|cFFFFFD00歌唱碎片|r以取得 {spell:382076} 接著使用 |cFFFFFD00未充能法器|r 來召喚稀有.'
 
 L['breezebiter_note'] = '飛上天空來把他拉下來, 飛靠近他一點'
 
@@ -116,14 +116,16 @@ L['leyline_note'] = '重新校正地脈'
 L['options_icons_layline'] = '{achievement:16638}'
 L['options_icons_layline_desc'] = '顯示成就 {achievement:16638} 中所有地脈的位置.'
 
-L['river_rapids_wrangler_note'] = nil
-L['seeing_blue_note'] = '不著陸地從蒼藍文庫上空飛行前往鈷藍集會.'
+L['river_rapids_wrangler_note'] = '和 {npc:186157} 對話並選擇 "我想要再搭一次你的激流泛舟". 你有60秒來收集40層的 {spell:373490}.'
+L['seeing_blue_note'] = '從蒼藍文庫上空不著陸的飛行直到鈷藍集會.'
 L['snowman_note'] = '這裡有3個 {npc:197599} 躺在這個區域 (可能被其他玩家移動位置), 滾動他們到兩個小孩 {npc:197838} 和 {npc:197839}.\n當雪球有正確大小時你會獲得成就.'
 
-L['snowclaw_cub_note_start'] = nil
-L['snowclaw_cub_note_item1'] = nil
-L['snowclaw_cub_note_item2'] = nil
-L['snowclaw_cub_note_end'] = nil
+L['snowclaw_cub_note_start'] = '你必須完成在 |cFFFFFD00沃卓肯|r 的 {npc:192522} 給予的 {quest:67094} 故事線來取得 |cFFFFFD00『榮譽林精』|r 稱號.'
+L['snowclaw_cub_note_item1'] = '從 |cFFFFFD00甦醒海岸|r 的各種 {npc:182559} 拾取3個 {item:197744}.'
+L['snowclaw_cub_note_item2'] = '從 |cFFFFFD00甦醒海岸|r 的 {npc:193310} 購買1個 {item:198356}'
+L['snowclaw_cub_note_end'] = ns.color.Orange('所有的物品都可以在拍賣場買到. 如果你沒有剛好擁有用來和 {npc:193310} 購買東西所需的 {item:199215} 時, 這會特別有幫助') .. '\n\n當你裝備上稱號後, 提供所需的4個物品給 {npc:196768} 來取得寵物.' .. ns.color.Red('\n\nBUG: 稱號可能會消失需等待修正.')
+
+L['tome_of_polymoph_duck'] = '使用 {spell:1953} 來進入洞窟並和 |cFFFFFD00初學者的法力風暴|r 書互動來完成任務'
 
 L['temperamental_skyclaw_note'] = [[
 收集 (或從拍賣場購買):
@@ -175,7 +177,7 @@ L['pt_script_sign_language_reference_sheet_note'] = '掛在帳篷的入口.'
 L['pt_smith_ancient_spear_shards_note'] = '在|cFFFFFD00拉札薩爾之境|r.'
 L['pt_smith_falconer_gauntlet_drawings_note'] = '海上的小島, 在一個小屋內.'
 L['pt_tailor_noteworthy_scrap_of_carpet_note'] = '坐落於一個小屋. ' .. ns.color.Orange('小屋內有三支菁英.')
-L['pt_tailor_silky_surprise_note'] = '找到並拾取一個 |cFFFFFD00貓薄荷葉|r.'
+L['pt_tailor_silky_surprise_note'] = '找到並拾取一個 |cFFFFFD00貓草嫩葉|r.'
 
 L['lizi_note'] = '完成從 {quest:65901} 開始的 學徒的休假日 故事線. 每天完成任務來修補莉茲並取得你的坐騎.\n\n除了任務需要的物品外, 所有任務都需要150個 {currency:2003}, 總共需要750個 {currency:2003}.'
 L['lizi_note_day1'] = '從 |cFFFFFD00巨龍群島|r 的昆蟲怪物收集20個 {item:192615}.'
@@ -191,30 +193,29 @@ L['ohnahra_note_item3'] = '從拍賣場購買1個 {item:191507}. (煉金師名�
 L['ohnahra_note_end'] = '當你取得所有材料後, 回到 {npc:190022} 並接受任務 {quest:72512}. 到 {npc:194796} 處來回報任務並取得你的坐騎.'
 
 L['bakar_note'] = '撫摸那隻狗!'
-L['bakar_ellam_note'] = '如果足夠的人撫摸了這隻狗, 她會帶你去她的寶藏'
-L['bakar_hugo_note'] = '和艾拉格營地一起旅行'
+L['bakar_ellam_note'] = '如果足夠的人撫摸了這隻狗, 她會帶你去她的寶藏.'
+L['bakar_hugo_note'] = '和艾拉格營地一起旅行.'
 L['options_icons_bakar'] = '{achievement:16424}'
-L['options_icons_bakar_desc'] = '顯示成就 {achievement:16424} 所需的所有巴卡犬的位置'
+L['options_icons_bakar_desc'] = '顯示成就 {achievement:16424} 所需的所有巴卡犬的位置.'
 
-L['ancestor_note'] = '在 |cFFFFFD00木階哨站|r 的帳篷從 |cFFFFFD00甦醒精華|r 取得 {spell:369277} 增益(1小時)來看到先祖並且提供他們需要的物品'
+L['ancestor_note'] = '在 |cFFFFFD00木階哨站|r 的帳篷從 |cFFFFFD00甦醒精華|r 取得 {spell:369277} 增益(1小時)來看到先祖並且提供他們需要的物品.'
 L['options_icons_ancestor'] = '{achievement:16423}'
 L['options_icons_ancestor_desc'] = '顯示成就 {achievement:16423} 中先祖的位置.'
 
 L['dreamguard_note'] = '點選夢境守衛並且使用表情符號 ' .. ns.color.Orange('/sleep')
 L['options_icons_dreamguard'] = '{achievement:16574}'
-L['options_icons_dreamguard_desc'] = '顯示 {achievement:16574} 成就所需的夢境守衛位置'
+L['options_icons_dreamguard_desc'] = '顯示 {achievement:16574} 成就所需的夢境守衛位置.'
 
-L['khadin_note'] = nil
-L['the_great_swog_note'] = nil
-L['tome_of_polymoph_duck'] = nil
+L['khadin_note'] = '使用 {item:191784} 交換專業知識'
+L['the_great_swog_note'] = '使用 {item:199338}, {item:199339} 和 {item:199340} 來交換 {item:202102}.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
 -------------------------------------------------------------------------------
 
-L['ancient_protector_note'] = nil
+L['ancient_protector_note'] = '殺調附近的 {npc:193244} 來取得 {item:197708}. 組合5個 {item:197708} 來產生 {item:197733}. 並且使用它來啟動附近的泰坦反應爐'
 L['blightpaw_note'] = '和附近的 {npc:193222} 交談並同意幫助他.'
-L['corrupted_proto_dragon_note'] = nil
+L['corrupted_proto_dragon_note'] = '和 |cFFFFFD00腐化的龍蛋|r 互動來召喚稀有'
 L['weeping_vilomah_note'] = '和 {npc:193206} 對話來召喚稀有'
 L['woofang_note'] = '撫摸 {npc:193156} 來召喚稀有.'
 
@@ -227,7 +228,7 @@ L['tasty_hatchling_treat_note'] = '在書架後的一個桶子內'
 L['pm_mining_bridgette_holdug'] = '在一個長草的石柱頂端'
 L['pm_tailor_elysa_raywinder'] = '在塔中間的平台上'
 L['pt_alch_contraband_concoction_note'] = '藏在樹叢內' .. ns.color.Orange('很難看到.')
-L['pt_alch_furry_gloop_note'] = '丟一個附近的 {npc:194855} 到每個大鍋然後殺掉刷新出來的怪物'
+L['pt_alch_furry_gloop_note'] = '各丟一個在附近的 {npc:194855} 到每個大鍋, 然後殺掉刷新出來的怪物'
 L['pt_ench_fractured_titanic_sphere_note'] = '|cFFFFFD00提爾堡|r 南邊.'
 L['pt_jewel_alexstraszite_cluster_note'] = '|cFFFFFD00提爾堡|r 內.'
 L['pt_jewel_painters_pretty_jewel_note'] = '在燈籠內'
@@ -248,17 +249,17 @@ L['craft_creche_crowler_note'] = '從在每天地圖下列隨機位置 |cFFFFFD0
 L['bivigosas_blood_sausages_note'] = '從在 |cFFFFFD00蓋利奇爾崗哨|r 的 {npc:188895} ' .. ns.color.NPC('<食物和飲料>') .. ' 處購買.'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = '顯示成就 {achievement:16621} 所需的食物和飲料位置.'
-L['options_icons_new_perspective'] = nil
-L['options_icons_new_perspective_desc'] = nil
-L['new_perspective_note'] = nil
-L['ruby_feast_gourmand'] = nil
+L['options_icons_new_perspective'] = '{achievement:16634}'
+L['options_icons_new_perspective_desc'] = '顯示成就 {achievement:16634} 所需的遠景位置.'
+L['new_perspective_note'] = '在遠景位置使用任何自拍相機拍張照. 當一進入拍攝模式拍攝位置會被一個紫色圈圈標記.\n\n如果你沒有取得成就進度, 請換一個視角.'
+L['ruby_feast_gourmand'] = '一個隨機的客座大廚會每天提供不同的食物和飲料'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
 -------------------------------------------------------------------------------
 
 L['brundin_the_dragonbane_note'] = '喀拉希戰爭隊伍坐在他們的 {npc:192737} 往這座塔旅行.'
-L['captain_lancer_note'] = nil
+L['captain_lancer_note'] = '在完成 {spell:388945} 事件後會立即重生'
 L['enkine_note'] = '殺掉沿著熔岩河的 {npc:193137}, {npc:193138} 或 {npc:193139} 取得 {item:201092}, 使用它並在 {npc:191866} 的附近熔岩中釣魚'
 L['lepidoralia_note'] = '在 |cFFFFFD00振翅洞穴|r. 幫助 {npc:193342} 抓住 {npc:193274} 直到稀有刷新'
 L['obsidian_citadel_rare_note'] = '你或其他玩家必須要繳交總共 %d個 {item:191264} 給 %s. 要鑄造鑰匙你需要結合30個 {item:191251} 和3個 {item:193201}, 你可以在|cFFFFFD00黑曜王座|r的怪物身上取得這些物品'
@@ -329,7 +330,7 @@ L['grand_theft_mammoth_note'] = '騎 {npc:194625} 到 {npc:198163}.\n\n|cFFFF000
 L['options_icons_grand_theft_mammoth'] = '{achievement:16493}'
 L['options_icons_grand_theft_mammoth_desc'] = '顯示成就 {achievement:16493} 所需 {npc:194625} 的位置.'
 
-L['options_icons_stories'] = nil
+L['options_icons_stories'] = '{achievement:16406}'
 L['options_icons_stories_desc'] = nil
 L['all_sides_of_the_story_garrick_and_shuja_note'] = nil
 L['all_sides_of_the_story_duroz_and_kolgar_note'] = nil
@@ -337,8 +338,8 @@ L['all_sides_of_the_story_tarjin_note'] = nil
 L['all_sides_of_the_story_veritistrasz_note'] = nil
 
 L['slumbering_worldsnail_note1'] = nil
-L['slumbering_worldsnail_note2'] = nil
+L['slumbering_worldsnail_note2'] = ns.color.Orange('注意: 如果你死了你會失去你的會員減益. 要嘛是你在死前和 {npc:193310} 使用20個{item:202173}購買新的會員證或是你需要繳交更多的鑰匙來有機率從箱子裡取得新的會員證')
 
 L['options_icons_safari'] = '{achievement:16519}'
-L['options_icons_safari_desc'] = nil
-L['shyfly_note'] = nil
+L['options_icons_safari_desc'] = '顯示成就 {achievement:16519} 所需的戰寵位置'
+L['shyfly_note'] = '你必須要正在做 {quest:70853} 任務才能看到 {npc:189102}.'

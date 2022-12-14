@@ -674,3 +674,7 @@ L['secret_supply_chest'] = nil
 L['secret_supply_chest_note'] = nil
 L['options_icons_secret_supplies'] = nil
 L['options_icons_secret_supplies_desc'] = nil
+
+L['squirrels_note'] = '你必須對小動物而不是戰寵使用表情 /love'
+L['options_icons_squirrels'] = '{achievement:14730}'
+L['options_icons_squirrels_desc'] = '顯示 {achievement:14730} 成就中小動物的位置'

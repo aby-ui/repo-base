@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2489, "DBM-Party-Dragonflight", 4, 1199)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221205064214")
+mod:SetRevision("20221213054234")
 mod:SetCreatureID(189478)--Forgemaster Gorek
 mod:SetEncounterID(2612)
 --mod:SetUsedIcons(1, 2, 3)
@@ -33,6 +33,7 @@ local warnHeatedSwings							= mod:NewTargetNoFilterAnnounce(374534, 3)
 local specWarnMightoftheForge					= mod:NewSpecialWarningSpell(374635, nil, nil, nil, 2, 2)
 local specWarnBlazinAegis						= mod:NewSpecialWarningMoveAway(374842, nil, nil, nil, 1, 2)
 local yellBlazinAegis							= mod:NewYell(374842)
+local yellBlazinAegisFades						= mod:NewShortFadesYell(374842)
 local specWarnHeatedSwings						= mod:NewSpecialWarningMoveAway(374534, nil, nil, nil, 1, 2)
 local yellHeatedSwings							= mod:NewYell(374534)
 local yellHeatedSwingsFades						= mod:NewShortFadesYell(374534)
@@ -97,6 +98,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnBlazinAegis:Show()
 			specWarnBlazinAegis:Play("runout")
 			yellBlazinAegis:Yell()
+			yellBlazinAegisFades:Countdown(spellId)
 		end
 	elseif spellId == 374534 then
 		if args:IsPlayer() then
@@ -116,6 +118,10 @@ function mod:SPELL_AURA_REMOVED(args)
 	if spellId == 374534 then
 		if args:IsPlayer() then
 			yellHeatedSwingsFades:Cancel()
+		end
+	elseif spellId == 374842 then
+		if args:IsPlayer() then
+			yellBlazinAegisFades:Cancel()
 		end
 	end
 end

@@ -130,7 +130,7 @@ map.nodes[14053096] = RareElite({
 
 map.nodes[16622798] = Rare({
     id = 193259,
-    quest = nil,
+    quest = 73870,
     rewards = {
         Achievement({id = 16678, criteria = 56108}),
         Achievement({id = 16446, criteria = 3, note = L['pretty_neat_note']}),
@@ -251,10 +251,11 @@ map.nodes[16213364] = RareElite({
 
 map.nodes[36243573] = Rare({
     id = 190244,
-    quest = nil,
+    quest = 73883,
     rewards = {
-        Achievement({id = 16678, criteria = 56109})
-        -- Transmog({item = , slot = L['']}) -- Name
+        Achievement({id = 16678, criteria = 56109}), --
+        DC.HighlandDrake.ClubTail, --
+        DC.WindborneVelocidrake.GrayHorns
     },
     pois = {Path({35873621, 36243573, 36543508, 36863479})}
 }) -- Mahg the Trampler
@@ -279,12 +280,13 @@ map.nodes[58095471] = Rare({ -- review
     }
 }) -- Mucka the Raker
 
-map.nodes[34362779] = Rare({ -- review location in cave map 2132 Kargpaw's Den
+map.nodes[20584943] = Rare({
     id = 193225,
-    quest = nil,
-    note = L['in_cave'],
+    quest = 73887,
+    note = L['in_small_cave'],
     rewards = {
-        Achievement({id = 16678, criteria = 56107}), Toy({item = 200160}) -- Notfar's Favorite Food
+        Achievement({id = 16678, criteria = 56107}), --
+        Toy({item = 200160}) -- Notfar's Favorite Food
         -- Transmog({item = , slot = L['']}) -- Name
     },
     pois = {POI({34023076, 34933000})} -- Entrance
@@ -368,7 +370,7 @@ map.nodes[55033405] = RareElite({
 
 map.nodes[70222532] = Rare({
     id = 193196,
-    quest = 69861, -- 74087 ?
+    quest = 74087,
     note = L['trilvarus_loreweaver_note'],
     rewards = {
         Achievement({id = 16678, criteria = 56114})
@@ -1206,6 +1208,17 @@ function SnowclawCub.getters:note()
 end
 
 map.nodes[67431840] = SnowclawCub()
+
+map.nodes[66333211] = Collectible({
+    label = '{item:200205}',
+    icon = 133739,
+    note = L['tome_of_polymoph_duck'],
+    class = 'MAGE',
+    rewards = {
+        Item({item = 200205}) -- Tome of Polymoph: Duck
+    },
+    pois = {POI({66453173})}
+}) -- Tome of Polymorph: Duck
 
 -------------------------------------------------------------------------------
 ---------------------------- TEMPERAMENTAL SKYCLAW ----------------------------

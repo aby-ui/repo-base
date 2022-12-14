@@ -22,16 +22,18 @@ StaticPopupDialogs["TDPACK_CONFIRM_BANK"] = { preferredIndex = 3, timeout = 0, e
 
 StaticPopupDialogs["TDPACK_CONFIRM_REAGENT"] = { preferredIndex = 3, timeout = 0, exclusive = 1, hideOnEscape = 1, noCancelOnEscape = 1,
     text = "是否同时整理材料包和材料银行？",
-    button1 = "同时整理(按住Shift优先银行，按住Ctrl优先材料包)",
+    button1 = "同时整理(按住Ctrl优先装满材料包)",
     button2 = "仅整理材料包",
     OnAccept = function (self)
         TDPACK_IGNORE_BAGS_NO_BANK = nil
         TDPACK_ONLY_REAGENT = true
-        tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
+        TDPACK_RESTORE_REVERSE = tdPack:IsReversePack() and true or false
+        tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or 'asc')
     end,
     OnCancel = function(self)
         TDPACK_IGNORE_BAGS_NO_BANK = true
         TDPACK_ONLY_REAGENT = true
+        TDPACK_RESTORE_REVERSE = tdPack:IsReversePack() and true or false
         tdPack:Pack(IsShiftKeyDown() and 'asc' or IsControlKeyDown() and 'desc' or nil)
     end,
 }

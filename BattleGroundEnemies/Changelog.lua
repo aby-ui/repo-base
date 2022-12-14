@@ -2,6 +2,17 @@ local AddonName, Data = ...
 
 Data.changelog = {
 	{
+		Version = "10.0.2.6",
+		Sections = {
+			{
+				Header = "Changes:",
+				Entries = {
+					"The addon now removes all auras (buffs and debuffs) for enemies that have no longer a unitID assigned. This prevents the addon from showing outdated auras.",
+				}
+			},
+		}
+	},
+	{
 		Version = "10.0.2.5",
 		Sections = {
 			{

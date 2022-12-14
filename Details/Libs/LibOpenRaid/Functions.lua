@@ -52,6 +52,26 @@ function openRaidLib.PackTable(table)
     return newString
 end
 
+function openRaidLib.PackTableAndSubTables(table)
+    local totalSize = 0
+    local subTablesAmount = #table
+    for i = 1, subTablesAmount do
+        totalSize = totalSize + #table[i]
+    end
+
+    local newString = "" .. totalSize .. ","
+
+    for i = 1, subTablesAmount do
+        local subTable = table[i]
+        for subIndex = 1, #subTable do
+            newString = newString .. subTable[subIndex] .. ","
+        end
+    end
+
+    newString = newString:gsub(",$", "")
+    return newString
+end
+
 --return is a number is almost equal to another within a tolerance range
 function openRaidLib.isNearlyEqual(value1, value2, tolerance)
     tolerance = tolerance or CONST_FRACTION_OF_A_SECOND
@@ -64,10 +84,10 @@ function openRaidLib.IsCommAllowed()
 end
 
 --stract some indexes of a table
-local selectIndexes = function(table, startIndex, amountIndexes)
+local selectIndexes = function(table, startIndex, amountIndexes, zeroIfNil)
     local values = {}
     for i = startIndex, startIndex+amountIndexes do
-        values[#values+1] = tonumber(table[i]) or 0
+        values[#values+1] = tonumber(table[i]) or (zeroIfNil and 0) or table[i]
     end
     return values
 end
@@ -92,7 +112,7 @@ function openRaidLib.UnpackTable(table, index, isPair, valueIsTable, amountOfVal
         for i = indexStart, indexEnd, amountOfValues do
             if (valueIsTable) then
                 local key = tonumber(table[i])
-                local values = selectIndexes(table, i+1, max(amountOfValues-2, 1))
+                local values = selectIndexes(table, i+1, max(amountOfValues-2, 1), true)
                 result[key] = values
             else
                 local key = tonumber(table[i])
@@ -101,12 +121,19 @@ function openRaidLib.UnpackTable(table, index, isPair, valueIsTable, amountOfVal
             end
         end
     else
-        for i = indexStart, indexEnd do
-            local value = tonumber(table[i])
-            result[#result+1] = value
+        if (valueIsTable) then
+            for i = indexStart, indexEnd, amountOfValues do
+                local values = selectIndexes(table, i, amountOfValues - 1)
+                tinsert(result, values)
+            end
+        else
+            for i = indexStart, indexEnd do
+                local value = tonumber(table[i])
+                result[#result+1] = value
+            end
         end
     end
-    
+
     return result
 end
 
@@ -400,4 +427,86 @@ function openRaidLib.GetFoodTierFromAura(auraInfo)
         end
     end
     return nil
+end
+
+--called from AddUnitGearList() on LibOpenRaid file
+function openRaidLib.GearManager.BuildEquipmentItemLinks(equippedGearList)
+    equippedGearList = equippedGearList or {} --nil table for older versions
+
+    for i = 1, #equippedGearList do
+        local equipmentTable = equippedGearList[i]
+
+        --equippedGearList is a indexed table with 4 indexes:
+        local slotId = equipmentTable[1]
+        local numGemSlots = equipmentTable[2]
+        local itemLevel = equipmentTable[3]
+        local partialItemLink = equipmentTable[4]
+
+        if (partialItemLink and type(partialItemLink) == "string") then
+            --get the itemId from the partial link to query the itemName with GetItemInfo
+            local itemId = partialItemLink:match("^%:(%d+)%:")
+            itemId = tonumber(itemId)
+
+            if (itemId) then
+                local itemName = GetItemInfo(itemId)
+                if (itemName) then
+                    --build the full item link
+                    local itemLink = "|cFFEEEEEE|Hitem" .. partialItemLink .. "|h[" .. itemName .. "]|r"
+
+                    --use GetItemInfo again with the now completed itemLink to query the item color
+                    local _, _, itemQuality = GetItemInfo(itemLink)
+                    itemQuality = itemQuality or 1
+                    local qualityColor = ITEM_QUALITY_COLORS[itemQuality]
+
+                    --replace the item color
+                    --local r, g, b, hex = GetItemQualityColor(qualityColor)
+                    itemLink = itemLink:gsub("FFEEEEEE", qualityColor.color:GenerateHexColor())
+
+                    wipe(equipmentTable)
+
+                    equipmentTable.slotId = slotId
+                    equipmentTable.gemSlots = numGemSlots
+                    equipmentTable.itemLevel = itemLevel
+                    equipmentTable.itemLink = itemLink
+                    equipmentTable.itemQuality = itemQuality
+                    equipmentTable.itemId = itemId
+                    equipmentTable.itemName = itemName
+
+                    local _, _, enchantId, gemId1, gemId2, gemId3, gemId4, suffixId, uniqueId, levelOfTheItem, specId, upgradeInfo, instanceDifficultyId, numBonusIds, restLink = strsplit(":", itemLink)
+
+                    local enchantAttribute = LIB_OPEN_RAID_ENCHANT_SLOTS[slotId]
+                    local nEnchantId = 0
+                    if (enchantAttribute) then --this slot can receive an enchat
+                        if (enchantId and enchantId ~= "") then
+                            enchantId = tonumber(enchantId)
+                            nEnchantId = enchantId
+                        end
+
+                        --6400 and above is dragonflight enchantId number space
+                        if (nEnchantId < 6300 and not LIB_OPEN_RAID_DEATHKNIGHT_RUNEFORGING_ENCHANT_IDS[nEnchantId]) then
+                            nEnchantId = 0
+                        end
+                    end
+                    equipmentTable.enchantId = nEnchantId
+
+                    local nGemId = 0
+                    local gemsIds = {gemId1, gemId2, gemId3, gemId4}
+
+                    --check if the item has a socket
+                    if (numGemSlots) then
+                        --check if the socket is empty
+                        for gemSlotId = 1, numGemSlots do
+                            local gemId = tonumber(gemsIds[gemSlotId])
+                            if (gemId and gemId >= 180000) then
+                                nGemId = gemId
+                                break
+                            end
+                        end
+                    end
+
+                    equipmentTable.gemId = nGemId
+                end
+            end
+        end
+    end
 end

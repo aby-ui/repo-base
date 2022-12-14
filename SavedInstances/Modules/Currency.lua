@@ -89,6 +89,7 @@ local currency = {
   2045, -- Purified Arcane Energy
   2118, -- Elemental Overflow
   2122, -- Storm Sigil
+  2123, -- Bloody Tokens
 }
 SI.currency = currency
 for i = #currency, 1 do if C_CurrencyInfo_GetCurrencyInfo(currency[i]) == nil then table.remove(currency, i) end end

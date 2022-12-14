@@ -64,7 +64,7 @@ if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not isExpansion_Dragonflight()) t
 end
 
 local major = "LibOpenRaid-1.0"
-local CONST_LIB_VERSION = 84
+local CONST_LIB_VERSION = 86
 
 if (not LIB_OPEN_RAID_MAX_VERSION) then
     LIB_OPEN_RAID_MAX_VERSION = CONST_LIB_VERSION
@@ -87,6 +87,8 @@ local unpack = table.unpack or _G.unpack
     openRaidLib.__version = CONST_LIB_VERSION
 
     LIB_OPEN_RAID_CAN_LOAD = true
+
+    openRaidLib.__errors = {} --/dump LibStub:GetLibrary("LibOpenRaid-1.0").__errors
 
 --default values
     openRaidLib.inGroup = false
@@ -1013,9 +1015,11 @@ end
             local playerFullInfo = openRaidLib.UnitInfoManager.GetPlayerFullInfo()
             openRaidLib.UnitInfoManager.AddUnitInfo(unitName, unpack(playerFullInfo))
 
-        --gear info
-            local playerGearInfo = openRaidLib.GearManager.GetPlayerFullGearInfo()
-            openRaidLib.GearManager.AddUnitGearList(unitName, unpack(playerGearInfo))
+            --gear info
+            --C_Timer.After(2, function()
+                local playerGearInfo = openRaidLib.GearManager.GetPlayerFullGearInfo()
+                openRaidLib.GearManager.AddUnitGearList(unitName, unpack(playerGearInfo))
+            --end)
 
         --cooldowns
             openRaidLib.CooldownManager.UpdatePlayerCooldownsLocally()
@@ -1569,7 +1573,7 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
         local specMainAttribute = openRaidLib.specAttribute[playerClass][specId] --1 int, 2 dex, 3 str
 
         if (not specId or not specMainAttribute) then
-            return {0, 0, 0, {}, {}}
+            return {0, 0, 0, {}, {}, {}}
         end
 
         --item level
@@ -1584,6 +1588,9 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
         --enchants and gems
         local slotsWithoutGems, slotsWithoutEnchant = openRaidLib.GearManager.GetPlayerGemsAndEnchantInfo()
 
+        --full gear list {{slotId, gemAmount, itemLevel, itemLink}, {slotId, gemAmount, itemLevel, itemLink}, }
+        local equippedGearList = openRaidLib.GearManager.BuildPlayerEquipmentList()
+
         --build the table with the gear information
         local playerGearInfo = {}
         playerGearInfo[#playerGearInfo+1] = itemLevel           --[1] - one index
@@ -1591,12 +1598,13 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
         playerGearInfo[#playerGearInfo+1] = weaponEnchant       --[3] - one index
         playerGearInfo[#playerGearInfo+1] = slotsWithoutEnchant --[4] - undefined
         playerGearInfo[#playerGearInfo+1] = slotsWithoutGems    --[5] - undefined
+        playerGearInfo[#playerGearInfo+1] = equippedGearList    --[6] - undefined
 
         return playerGearInfo
     end
 
     --when received the gear update from another player, store it and trigger a callback
-    function openRaidLib.GearManager.AddUnitGearList(unitName, itemLevel, durability, weaponEnchant, noEnchantTable, noGemsTable)
+    function openRaidLib.GearManager.AddUnitGearList(unitName, itemLevel, durability, weaponEnchant, noEnchantTable, noGemsTable, equippedGearList)
         local unitGearInfo = openRaidLib.GearManager.GetUnitGear(unitName, true)
 
         unitGearInfo.ilevel = itemLevel
@@ -1605,6 +1613,11 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
         unitGearInfo.noGems = noGemsTable
         unitGearInfo.noEnchants = noEnchantTable
 
+        --parse and replace the 'equippedGearList'
+        openRaidLib.GearManager.BuildEquipmentItemLinks(equippedGearList)
+
+        unitGearInfo.equippedGear = equippedGearList
+
         openRaidLib.publicCallback.TriggerCallback("GearUpdate", openRaidLib.GetUnitID(unitName), unitGearInfo, openRaidLib.GearManager.GetAllUnitsGear())
     end
 
@@ -1612,30 +1625,39 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
     --@data: table received from comm
     --@unitName: player name
     function openRaidLib.GearManager.OnReceiveGearFullInfo(data, unitName)
-        local itemLevel = tonumber(data[1])
-        local durability = tonumber(data[2])
-        local weaponEnchant = tonumber(data[3])
+        local itemLevel = tonumber(data[1]) --1 index
+        local durability = tonumber(data[2]) --1 index
+        local weaponEnchant = tonumber(data[3]) --1 index
+
         local noEnchantTableSize = tonumber(data[4])
-        local noGemsTableIndex = tonumber(noEnchantTableSize + 5)
+        local noGemsTableIndex = tonumber(noEnchantTableSize + 5) --5 is the three first indexes, the enchant table size and +1 to jump to next index
         local noGemsTableSize = data[noGemsTableIndex]
+
+        local equippedGearListIndex = tonumber(noEnchantTableSize + noGemsTableSize + 6) --6 is the same has the 5 but +1 index for the gems table size
+        --local equippedGearListSize = data[noGemsTableIndex]
 
         --unpack the enchant data as a ipairs table
         local noEnchantTableUnpacked = openRaidLib.UnpackTable(data, 4, false, false, noEnchantTableSize)
         --unpack the enchant data as a ipairs table
         local noGemsTableUnpacked = openRaidLib.UnpackTable(data, noGemsTableIndex, false, false, noGemsTableSize)
+        --unpack the full gear
+        local equippedGearListUnpacked = equippedGearListIndex and openRaidLib.UnpackTable(data, equippedGearListIndex, false, true, 4) or {}
 
         --add to the list of gear information
-        openRaidLib.GearManager.AddUnitGearList(unitName, itemLevel, durability, weaponEnchant, noEnchantTableUnpacked, noGemsTableUnpacked)
+        openRaidLib.GearManager.AddUnitGearList(unitName, itemLevel, durability, weaponEnchant, noEnchantTableUnpacked, noGemsTableUnpacked, equippedGearListUnpacked)
     end
     openRaidLib.commHandler.RegisterComm(CONST_COMM_GEARINFO_FULL_PREFIX, openRaidLib.GearManager.OnReceiveGearFullInfo)
 
+    --todo: on changing an item in the inventory, send an update only for the slot that got changed
+
     function openRaidLib.GearManager.SendAllGearInfo()
-        --get gear information, gear info has 5 indexes:
+        --get gear information, gear info has 6 indexes:
         --[1] int item level
         --[2] int durability
         --[3] int weapon enchant
         --[4] table with integers of equipSlot without enchant
         --[5] table with integers of equipSlot which has a gem slot but the slot is empty
+        --[6] table with all gear from the player
 
         local dataToSend = "" .. CONST_COMM_GEARINFO_FULL_PREFIX .. ","
         local playerGearInfo = openRaidLib.GearManager.GetPlayerFullGearInfo()
@@ -1647,7 +1669,8 @@ openRaidLib.internalCallback.RegisterCallback("onLeaveCombat", openRaidLib.UnitI
         dataToSend = dataToSend .. playerGearInfo[2] .. "," --durability
         dataToSend = dataToSend .. playerGearInfo[3] .. "," --weapon enchant
         dataToSend = dataToSend .. openRaidLib.PackTable(playerGearInfo[4]) .. "," --slots without enchant
-        dataToSend = dataToSend .. openRaidLib.PackTable(playerGearInfo[5]) -- slots with empty gem sockets
+        dataToSend = dataToSend .. openRaidLib.PackTable(playerGearInfo[5]) .. "," -- slots with empty gem sockets
+        dataToSend = dataToSend .. openRaidLib.PackTableAndSubTables(playerGearInfo[6]) --full equipped equipment
 
         --send the data
         openRaidLib.commHandler.SendCommData(dataToSend)
@@ -2286,215 +2309,11 @@ end
 function openRaidLib.CooldownManager.OnReceiveUnitCooldowns(data, unitName)
     --unpack the table as a pairs table
     local unpackedTable = openRaidLib.UnpackTable(data, 1, true, true, CONST_COOLDOWN_INFO_SIZE)
-    --local unpackedTable = openRaidLib.UnpackTable(data, 1, true, true, 5)
-    --dumpt(unpackedTable)
 
     --add the list of cooldowns
     openRaidLib.CooldownManager.AddUnitCooldownsList(unitName, unpackedTable)
 end
 openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNFULLLIST_PREFIX, openRaidLib.CooldownManager.OnReceiveUnitCooldowns)
-
---debug data clean up on next version
-
---[=[]] received data
-["1"] = "72", --72 indexes
-["2"] = "7744",
-["3"] = "0",
-["4"] = "1",
-["5"] = "0",
-["6"] = "0",
-["7"] = "0",
-["8"] = "586",
-["9"] = "0",
-["10"] = "1",
-["11"] = "0",
-["12"] = "0",
-["13"] = "0",
-["14"] = "10060",
-["15"] = "0",
-["16"] = "1",
-["17"] = "0",
-["18"] = "0",
-["19"] = "0",
-["20"] = "8122",
-["21"] = "0",
-["22"] = "1",
-["23"] = "0",
-["24"] = "0",
-["25"] = "0",
-["26"] = "15286",
-["27"] = "0",
-["28"] = "1",
-["29"] = "0",
-["30"] = "0",
-["31"] = "0",
-["32"] = "64901",
-["33"] = "0",
-["34"] = "1",
-["35"] = "0",
-["36"] = "0",
-["37"] = "0",
-["38"] = "19236",
-["39"] = "0",
-["40"] = "1",
-["41"] = "0",
-["42"] = "0",
-["43"] = "0",
-["44"] = "32375",
-["45"] = "0",
-["46"] = "1",
-["47"] = "0",
-["48"] = "0",
-["49"] = "0",
-["50"] = "34433",
-["51"] = "0",
-["52"] = "1",
-["53"] = "0",
-["54"] = "0",
-["55"] = "0",
-["56"] = "64843",
-["57"] = "0",
-["58"] = "1",
-["59"] = "0",
-["60"] = "0",
-["61"] = "0",
-["62"] = "265202",
-["63"] = "0",
-["64"] = "1",
-["65"] = "0",
-["66"] = "0",
-["67"] = "0",
-["68"] = "47788",
-["69"] = "0",
-["70"] = "1",
-["71"] = "0",
-["72"] = "0",
-["73"] = "0",
---]=]
-
---[=[
-unpack data with 5 indexes:
-[1] =  { --1 spellID - word of recall
-   ["1"] = 0,
-   ["2"] = 0,
-   ["3"] = 0,
-   ["4"] = 64843, --divine hymm spellID
-},
-[7744] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-},
-[265202] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-},
-[64901] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-},
-[0] =  { --0 spellID
-   ["1"] = 0,
-   ["2"] = 0,
-   ["3"] = 0,
-   ["4"] = 0,
-},
---]=]
-
---[=[ unpacked data with 6 indexes, matches
-[7744] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[586] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[10060] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[32375] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[15286] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[64901] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[19236] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[47788] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[265202] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[64843] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[34433] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-[8122] =  {
-   ["1"] = 0,
-   ["2"] = 1,
-   ["3"] = 0,
-   ["4"] = 0,
-   ["5"] = 0,
-},
-
---]=]
-
-
 
 --send a comm requesting other units in the raid to send an update on the requested spell
 --any unit in the raid that has this cooldown should send a CONST_COMM_COOLDOWNUPDATE_PREFIX
@@ -2774,27 +2593,6 @@ openRaidLib.commHandler.RegisterComm(CONST_COMM_COOLDOWNREQUEST_PREFIX, openRaid
     openRaidLib.internalCallback.RegisterCallback("onEnterWorld", openRaidLib.KeystoneInfoManager.OnPlayerEnterWorld)
     openRaidLib.internalCallback.RegisterCallback("onEnterGroup", openRaidLib.KeystoneInfoManager.OnPlayerEnterGroup)
     openRaidLib.internalCallback.RegisterCallback("mythicDungeonEnd", openRaidLib.KeystoneInfoManager.OnMythicDungeonFinished)
-
-
---DEBUG TEST
---[=[
-local ff = {}
-function ff.OnKSUpdate(unitId, keystoneInfo, allKeystonesInfo)
-    print(unitId, keystoneInfo, allKeystonesInfo)
-    print(keystoneInfo.level, keystoneInfo.mapID, keystoneInfo.challengeMapID)
-end
-openRaidLib.RegisterCallback(ff, "KeystoneUpdate", "OnKSUpdate")
-
-C_Timer.After(7, function()
-    openRaidLib.GetAllKeystonesInfo()
-    print("> ", openRaidLib.GetKeystoneInfo("player"))
-
-    openRaidLib.RequestKeystoneDataFromGuild()
-    openRaidLib.RequestKeystoneDataFromParty()
-    openRaidLib.RequestKeystoneDataFromRaid()
-end)
---]=]
-
 
 --------------------------------------------------------------------------------------------------------------------------------
 --data

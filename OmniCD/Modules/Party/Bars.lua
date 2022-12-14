@@ -118,6 +118,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 			return
 		end
 
+		--[[ Patch 9.0 HSA no longer fires CLEU -> Patch 9.1 removed
 		if E.isBFA and P.isInArena then
 			if P:IsDebuffActive(unit, DEBUFF_HEARTSTOP_AURA) then
 				if not info.auras.isHeartStopped then
@@ -131,6 +132,7 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 				end
 			end
 		end
+		]]
 
 		if info.glowIcons[TOUCH_OF_KARMA] then
 			if not P:GetBuffDuration(unit, TOUCH_OF_KARMA) then
@@ -418,7 +420,7 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 	if info.isDead then
 		frame:RegisterUnitEvent('UNIT_HEALTH', unit)
 	end
-	if not E.isClassicEra then
+	if not E.isClassic then
 		frame:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', unit, UNIT_TO_PET[unit])
 	end
 	frame:RegisterUnitEvent('UNIT_CONNECTION', unit)
@@ -482,9 +484,9 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 						isValidSpell = true
 					elseif isInspectedUnit then
 						if i == 6 then
-							isValidSpell = lvl >= GetSpellLevelLearned(spellID) and (not E.covenant_abilities[spellID] or self.isInShadowlands) and (not spec or self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info)) and (not talent or not self:IsSpecOrTalentForPvpStatus(talent, info))
+							isValidSpell = (not E.postBFA or not E.covenant_abilities[spellID] or self.isInShadowlands) and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, lvl >= GetSpellLevelLearned(spellID)) and (not talent or not info.talentData[talent])
 						elseif i == 5 then
-							isValidSpell = self.isInShadowlands and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info)
+							isValidSpell = self.isInShadowlands and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, true)
 						elseif i == 4 then
 							isValidSpell = info.talentData[spec]
 						else
@@ -560,7 +562,7 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 								if modData then
 									for j = 1, #modData, 2 do
 										local tal = modData[j]
-										local rank = self:IsSpecAndTalentForPvpStatus(tal, info)
+										local rank = info.talentData[tal]
 										if rank then
 											local mult = modData[j+1]
 											mult = type(mult) == "table" and (mult[rank] or mult[1]) or mult

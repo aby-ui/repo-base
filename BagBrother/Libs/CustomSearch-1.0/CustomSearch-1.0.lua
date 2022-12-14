@@ -112,7 +112,15 @@ function Lib:Filter(tag, operator, search)
 		end
 	else
 		for _, filter in pairs(self.filters) do
-			if not filter.onlyTags and self:UseFilter(filter, operator, search) then
+			if not filter.onlyTags and filter.stopMatchingOthers then --abyui boe, boa, re
+				local data = {filter:canSearch(operator, search, self.object)}
+				if data[1] then
+					return filter:match(self.object, operator, unpack(data))
+				end
+			end
+		end
+		for _, filter in pairs(self.filters) do
+			if not filter.onlyTags and not filter.stopMatchingOthers and self:UseFilter(filter, operator, search) then
 				return true
 			end
 		end

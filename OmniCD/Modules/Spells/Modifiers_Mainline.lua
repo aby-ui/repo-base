@@ -1,7 +1,5 @@
 local E = select(2, ...):unpack()
 
-local BLANK = {}
-
 E.spell_cdmod_talents = {
 	[48707] = { 205727, 20 },
 	[48792] = { 373926, 60 },
@@ -572,12 +570,11 @@ E.spellcast_cdr = {
 	[1856] = { 382523, { 10, 20 } },
 
 	[23922] = { 384072, 5, 871 },
-
 }
 
 
-E.spellcast_cdr_powerspender = BLANK
-E.sync_cdr_by_powerconsumed = BLANK
+E.spellcast_cdr_powerspender = E.BLANK
+E.sync_cdr_by_powerconsumed = E.BLANK
 
 
 
@@ -670,15 +667,19 @@ E.spell_dispel_cdstart = {
 	[51886] = true,
 
 	[33891] = true,
+	[329042] = true,
+	[378441] = true,
 	[119996] = true,
 	[322109] = true,
 	[31935] = true,
+	[633] = true,
 	[316262] = true,
+	[373481] = true,
 	[323436] = true,
 	[6262] = true,
 }
 
-E.spell_auraapplied_disablespell = BLANK
+E.spell_auraapplied_disablespell = E.BLANK
 
 E.selfLimitedMinMaxReducer = {
 	[387184] = true,
@@ -688,11 +689,11 @@ E.selfLimitedMinMaxReducer = {
 }
 
 
-E.spell_damage_cdr = BLANK
-E.spell_damage_cdr_totem = BLANK
-E.spell_damage_cdr_pet = BLANK
-E.spell_energize_cdr = BLANK
-E.spell_interrupt_cdr = BLANK
+E.spell_damage_cdr = E.BLANK
+E.spell_damage_cdr_totem = E.BLANK
+E.spell_damage_cdr_pet = E.BLANK
+E.spell_energize_cdr = E.BLANK
+E.spell_interrupt_cdr = E.BLANK
 
 if E.isBFA then
 	E.cdrr_heartstopaura_blackList = {
@@ -892,7 +893,7 @@ E.covenant_abilities = {
 	[324143] = 4,
 }
 
-E.spell_benevolent_faerie_majorcd = BLANK
+E.spell_benevolent_faerie_majorcd = E.BLANK
 
 E.covenant_cdmod_conduits = {
 	[310143] = { 320658, 15 },
@@ -1015,8 +1016,8 @@ E.spell_cdmod_conduits_mult = {
 	[36554] = 341531,
 }
 
-E.spell_symbol_of_hope_majorcd = BLANK
-E.spell_major_cd = BLANK
+E.spell_symbol_of_hope_majorcd = E.BLANK
+E.spell_major_cd = E.BLANK
 
 
 
@@ -1031,23 +1032,23 @@ E.item_merged = {
 	[178334] = 178447,
 	[175884] = 175921,
 
-	[185304] = 181333, [185309] = 184052,
-	[185306] = 181816, [185311] = 184054,
-	[185305] = 181335, [185310] = 184053,
-	[185282] = 178447, [185242] = 178334,
-	[185197] = 175921, [185161] = 175884,
+	[185304] = 181333, [185309] = 181333,
+	[185306] = 181816, [185311] = 181816,
+	[185305] = 181335, [185310] = 181335,
+	[185282] = 178447, [185242] = 178447,
+	[185197] = 175921, [185161] = 175921,
 
-	[186869] = 181333, [186966] = 184052,
-	[186871] = 181816, [186968] = 184054,
-	[186870] = 181335, [186967] = 184053,
-	[186868] = 178447, [186946] = 178334,
-	[186866] = 175921, [186906] = 175884,
+	[186869] = 181333, [186966] = 181333,
+	[186871] = 181816, [186968] = 181816,
+	[186870] = 181335, [186967] = 181335,
+	[186868] = 178447, [186946] = 178447,
+	[186866] = 175921, [186906] = 175921,
 
-	[192298] = 181333, [192412] = 184052,
-	[192300] = 181816, [192414] = 184054,
-	[192299] = 181335, [192413] = 184053,
-	[192297] = 178447, [192392] = 178334,
-	[192295] = 175921, [192352] = 175884,
+	[192298] = 181333, [192412] = 181333,
+	[192300] = 181816, [192414] = 181816,
+	[192299] = 181335, [192413] = 181335,
+	[192297] = 178447, [192392] = 178447,
+	[192295] = 175921, [192352] = 175921,
 	[192301] = 188524,
 	[192302] = 188691,
 	[192303] = 188766,
@@ -1061,7 +1062,7 @@ E.item_merged = {
 	[201807] = 175921, [201449] = 175921,
 }
 
-E.item_equip_bonus = BLANK
+E.item_equip_bonus = E.BLANK
 
 local class_set_bonus = {
 	DRUID = {

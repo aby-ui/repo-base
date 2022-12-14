@@ -81,7 +81,7 @@ function E.CreateFlashButton(parent, text, width, height)
 	Button:SetText(text or "")
 
 	Button.bg = Button:CreateTexture(nil, "BORDER")
-	if E.isClassicEra then
+	if E.isClassic then
 		Button.bg:SetAllPoints()
 	else
 		E.DisablePixelSnap(Button.bg)

@@ -6,8 +6,8 @@
 		local addonName, Details222 = ...
 		local version, build, date, tocversion = GetBuildInfo()
 
-		_detalhes.build_counter = 10334
-		_detalhes.alpha_build_counter = 10334 --if this is higher than the regular counter, use it instead
+		_detalhes.build_counter = 10336
+		_detalhes.alpha_build_counter = 10336 --if this is higher than the regular counter, use it instead
 		_detalhes.dont_open_news = true
 		_detalhes.game_version = version
 		_detalhes.userversion = version .. " " .. _detalhes.build_counter
@@ -73,6 +73,9 @@
 
 		--namespace for texture
 		Details222.Textures = {}
+
+		--namespace for pet
+		Details222.Pets = {}
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --initialization stuff
