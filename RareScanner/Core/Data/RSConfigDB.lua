@@ -283,6 +283,14 @@ function RSConfigDB.SetScanningWorldMapVignettes(value)
 	private.db.general.scanWorldmapVignette = value
 end
 
+function RSConfigDB.IsIgnoringCompletedEntities()
+	return private.db.general.ignoreCompletedEntities
+end
+
+function RSConfigDB.SetIgnoringCompletedEntities(value)
+	private.db.general.ignoreCompletedEntities = value
+end
+
 function RSConfigDB.IsScanningForNpcs()
 	return private.db.general.scanRares
 end

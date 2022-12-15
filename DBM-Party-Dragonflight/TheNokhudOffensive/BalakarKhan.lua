@@ -1,11 +1,11 @@
 local mod	= DBM:NewMod(2477, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128090806")
+mod:SetRevision("20221214204213")
 mod:SetCreatureID(186151)
 mod:SetEncounterID(2580)
 --mod:SetUsedIcons(1, 2, 3)
-mod:SetHotfixNoticeRev(20221127000000)
+mod:SetHotfixNoticeRev(20221214000000)
 --mod:SetMinSyncRevision(20211203000000)
 --mod.respawnTime = 29
 
@@ -44,7 +44,7 @@ local specWarnRendingStrike						= mod:NewSpecialWarningDefensive(375937, nil, n
 
 local timerIronSpearCD							= mod:NewCDTimer(37, 376634, nil, nil, nil, 3)--Need more data
 local timerUpheavalCD							= mod:NewCDTimer(37, 375943, nil, nil, nil, 3)--Need data at all
-local timerRendingStrikeCD						= mod:NewCDCountTimer(16.5, 375937, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both rending and savage
+local timerRendingStrikeCD						= mod:NewCDCountTimer(21.9, 375937, nil, nil, nil, 5, nil, DBM_COMMON_L.TANK_ICON)--CD used for both rending and savage
 
 --Intermission: Stormwinds
 mod:AddTimerLine(DBM:EJ_GetSectionInfo(25192))
@@ -113,9 +113,9 @@ function mod:SPELL_CAST_START(args)
 			specWarnRendingStrike:Show()
 			specWarnRendingStrike:Play("defensive")
 		end
-		--No longer alternates in P1, and is now also used in p2, wtf?
---		local timer = (self.vb.comboCount % 2 == 0) and 15 or 22
-		timerRendingStrikeCD:Start(nil, self.vb.comboCount+1)
+		--Now alternates again
+		local timer = (self.vb.comboCount % 2 == 0) and 17 or 22
+		timerRendingStrikeCD:Start(timer, self.vb.comboCount+1)
 	elseif spellId == 376827 then
 		self.vb.comboCount = self.vb.comboCount + 1
 		if self:IsTanking("player", "boss1", nil, true) then

@@ -262,15 +262,16 @@ end
 do
     --[[ LFGList.lua - self=LFGListFrame.EntryCreation selectedCategory=2, selectedFilters=0, baseFilters=4
     local filters = bit.bor(self.selectedFilters, self.baseFilters, Enum.LFGListFilter.Recommended);
-    local recGroups = C_LFGList.GetAvailableActivityGroups(self.selectedCategory, filters);
+    local recGroups = C_LFGList.GetAvailableActivityGroups(self.selectedCategory, filters);--]]
+    --[[
     for i, group in ipairs(C_LFGList.GetAvailableActivityGroups(2, 5)) do
-      if i > 8 then break end
       for _, act in ipairs(C_LFGList.GetAvailableActivities(2, group, 4)) do
         local n, d = C_LFGList.GetActivityInfo(act)
         if d == "史诗钥石" then print(group, act, n) end
       end
-    end--]]
-    QuickActivities = { 180, 183, 679, 683, 1016, 1017, 471, 473 } --abyuiPW开服才行
+    end
+    --]]
+    QuickActivities = { 1160, 1176, 1180, 1184, 1193, 466, 461, 1192 } --abyuiPW开服才行
     QuickActivitiesMenuTable = {}
     for _, id in ipairs(QuickActivities) do
         local fullName, shortName, categoryId, groupId, _, filters = C_LFGList.GetActivityInfo(id)

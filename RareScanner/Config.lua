@@ -264,8 +264,19 @@ local function GetGeneralOptions()
 					end,
 					width = "full",
 				},
-				showMaker = {
+				ignoreCompletedEntities = {
 					order = 10,
+					name = AL["IGNORE_SCAN_COMPLETED_ENTITIES"],
+					desc = AL["IGNORE_SCAN_COMPLETED_ENTITIES_DESC"],
+					type = "toggle",
+					get = function() return RSConfigDB.IsIgnoringCompletedEntities() end,
+					set = function(_, value)
+						RSConfigDB.SetIgnoringCompletedEntities(value)
+					end,
+					width = "full",
+				},
+				showMaker = {
+					order = 11,
 					name = AL["ENABLE_MARKER"],
 					desc = AL["ENABLE_MARKER_DESC"],
 					type = "toggle",
@@ -276,7 +287,7 @@ local function GetGeneralOptions()
 					width = "full",
 				},
 				marker = {
-					order = 11,
+					order = 12,
 					type = "select",
 					dialogControl = 'RS_Markers',
 					name = AL["MARKER"],
@@ -290,12 +301,12 @@ local function GetGeneralOptions()
 					disabled = function() return not RSConfigDB.IsDisplayingMarkerOnTarget() end,
 				},
 				separatorIngameWaypoints = {
-					order = 12,
+					order = 13,
 					type = "header",
 					name = AL["INGAME_WAYPOINTS"],
 				},
 				enableIngameWaypoints = {
-					order = 13,
+					order = 14,
 					name = AL["ENABLE_WAYPOINTS_SUPPORT"],
 					desc = AL["ENABLE_WAYPOINTS_SUPPORT_DESC"],
 					type = "toggle",
@@ -306,7 +317,7 @@ local function GetGeneralOptions()
 					width = "full",
 				},
 				autoIngameWaypoints = {
-					order = 14,
+					order = 15,
 					name = AL["ENABLE_AUTO_WAYPOINTS"],
 					desc = AL["ENABLE_AUTO_WAYPOINTS_DESC"],
 					type = "toggle",
@@ -318,12 +329,12 @@ local function GetGeneralOptions()
 					disabled = function() return not RSConfigDB.IsWaypointsSupportEnabled() end,
 				},
 				separatorTomtomWaypoints = {
-					order = 15,
+					order = 16,
 					type = "header",
 					name = AL["TOMTOM_WAYPOINTS"],
 				},
 				enableTomtomSupport = {
-					order = 16,
+					order = 17,
 					name = AL["ENABLE_TOMTOM_SUPPORT"],
 					desc = AL["ENABLE_TOMTOM_SUPPORT_DESC"],
 					type = "toggle",
@@ -335,7 +346,7 @@ local function GetGeneralOptions()
 					disabled = function() return not TomTom end,
 				},
 				autoTomtomWaypoints = {
-					order = 17,
+					order = 18,
 					name = AL["ENABLE_AUTO_TOMTOM_WAYPOINTS"],
 					desc = AL["ENABLE_AUTO_TOMTOM_WAYPOINTS_DESC"],
 					type = "toggle",

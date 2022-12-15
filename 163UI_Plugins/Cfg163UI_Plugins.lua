@@ -25,6 +25,10 @@ U1RegisterAddon("163UI_Plugins", {
     },
 
     {
+        var = "CosHelper", text = "群星庭院通报可交互类型", default = true, callback = load, tip = "说明`7.0时候的功能，鼠标移到各个物体上能通报适合什么职业/专业/种族等",
+    },
+
+    {
         var = "FriendsMenuXPSimple", text = "玩家菜单增加邀请入会等按钮", default = true, callback = load,
         tip = "说明`玩家菜单增强插件太老，重新写需要时间，先把最重要的几个按钮加上。",
     },

@@ -438,9 +438,9 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.6713, y = 0.7442, comment = AL["NOTE_OMINOUS_CONCHS"] };
 		[RSConstants.FLAG..2] = { x = 0.3382, y = 0.6453, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Snufflegust <Lunker>
---	["1973712023"] = { 
---		[RSConstants.FLAG] = { x = 0.7488, y = 0.7994, comment = AL["NOTE_OMINOUS_CONCHS"] };
---	}; --Snufflegust <Lunker>
+	["1973712023"] = { 
+		[RSConstants.FLAG] = { x = 0.8208, y = 0.7827, comment = AL["NOTE_OMINOUS_CONCHS"] };
+	}; --Snufflegust <Lunker>
 	["1973712024"] = { 
 		[RSConstants.FLAG] = { x = 0.5911, y = 0.3292, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Snufflegust <Lunker>
@@ -451,9 +451,9 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.6713, y = 0.7442, comment = AL["NOTE_OMINOUS_CONCHS"] };
 		[RSConstants.FLAG..2] = { x = 0.3382, y = 0.6453, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Moth'go Deeploom <Lunker>
---	["1937352023"] = { 
---		[RSConstants.FLAG] = { x = 0.7488, y = 0.7994, comment = AL["NOTE_OMINOUS_CONCHS"] };
---	}; --Moth'go Deeploom <Lunker>
+	["1937352023"] = { 
+		[RSConstants.FLAG] = { x = 0.8208, y = 0.7827, comment = AL["NOTE_OMINOUS_CONCHS"] };
+	}; --Moth'go Deeploom <Lunker>
 	["1937352024"] = { 
 		[RSConstants.FLAG] = { x = 0.5911, y = 0.3292, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Moth'go Deeploom <Lunker>
@@ -464,9 +464,9 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.6713, y = 0.7442, comment = AL["NOTE_OMINOUS_CONCHS"] };
 		[RSConstants.FLAG..2] = { x = 0.3382, y = 0.6453, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Swog'ranka <Lunker>
---	["1936342023"] = { 
---		[RSConstants.FLAG] = { x = 0.7488, y = 0.7994, comment = AL["NOTE_OMINOUS_CONCHS"] };
---	}; --Swog'ranka <Lunker>
+	["1936342023"] = { 
+		[RSConstants.FLAG] = { x = 0.8208, y = 0.7827, comment = AL["NOTE_OMINOUS_CONCHS"] };
+	}; --Swog'ranka <Lunker>
 	["1936342024"] = { 
 		[RSConstants.FLAG] = { x = 0.5911, y = 0.3292, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Swog'ranka <Lunker>
@@ -477,9 +477,9 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.6713, y = 0.7442, comment = AL["NOTE_OMINOUS_CONCHS"] };
 		[RSConstants.FLAG..2] = { x = 0.3382, y = 0.6453, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Seereel, the Spring <Lunker>
---	["1937102023"] = { 
---		[RSConstants.FLAG] = { x = 0.7488, y = 0.7994, comment = AL["NOTE_OMINOUS_CONCHS"] };
---	}; --Seereel, the Spring <Lunker>
+	["1937102023"] = { 
+		[RSConstants.FLAG] = { x = 0.8208, y = 0.7827, comment = AL["NOTE_OMINOUS_CONCHS"] };
+	}; --Seereel, the Spring <Lunker>
 	["1937102024"] = { 
 		[RSConstants.FLAG] = { x = 0.5911, y = 0.3292, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Seereel, the Spring <Lunker>
@@ -490,9 +490,9 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.6713, y = 0.7442, comment = AL["NOTE_OMINOUS_CONCHS"] };
 		[RSConstants.FLAG..2] = { x = 0.3382, y = 0.6453, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Skald the Impaler <Lunker>
---	["1937082023"] = { 
---		[RSConstants.FLAG] = { x = 0.7488, y = 0.7994, comment = AL["NOTE_OMINOUS_CONCHS"] };
---	}; --Skald the Impaler <Lunker>
+	["1937082023"] = { 
+		[RSConstants.FLAG] = { x = 0.8208, y = 0.7827, comment = AL["NOTE_OMINOUS_CONCHS"] };
+	}; --Skald the Impaler <Lunker>
 	["1937082024"] = { 
 		[RSConstants.FLAG] = { x = 0.5911, y = 0.3292, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Skald the Impaler <Lunker>
@@ -516,9 +516,9 @@ private.NPC_GUIDE = {
 		[RSConstants.FLAG..1] = { x = 0.6713, y = 0.7442, comment = AL["NOTE_OMINOUS_CONCHS"] };
 		[RSConstants.FLAG..2] = { x = 0.3382, y = 0.6453, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Snufflegust <Lunker>
---	["1937062023"] = { 
---		[RSConstants.FLAG] = { x = 0.7488, y = 0.7994, comment = AL["NOTE_OMINOUS_CONCHS"] };
---	}; --Snufflegust <Lunker>
+	["1937062023"] = { 
+		[RSConstants.FLAG] = { x = 0.8208, y = 0.7827, comment = AL["NOTE_OMINOUS_CONCHS"] };
+	}; --Snufflegust <Lunker>
 	["1937062024"] = { 
 		[RSConstants.FLAG] = { x = 0.5911, y = 0.3292, comment = AL["NOTE_OMINOUS_CONCHS"] };
 	}; --Snufflegust <Lunker>
@@ -1059,10 +1059,11 @@ private.CONTAINER_GUIDE = {
 	["3806202023"] = { 
 		[RSConstants.ENTRANCE] = { x = 0.7934, y = 0.3650 };
 	}; --Ancient Spear Shards
-	["2010162024"] = { 
-		[RSConstants.STEP1] = { x = 0.4471, y = 0.6199, comment = AL["NOTE_201016_1"] }; 
-		[RSConstants.STEP2] = { x = 0.4468, y = 0.6020, comment = AL["NOTE_201016_1"] }; 
-		[RSConstants.STEP3] = { x = 0.4418, y = 0.6198, comment = AL["NOTE_201016_1"] }; 
+	["3805562024"] = { 
+		[RSConstants.STEP1] = { x = 0.4462, y = 0.6132, comment = AL["NOTE_380556_1"] }; 
+		[RSConstants.STEP2] = { x = 0.4471, y = 0.6199, comment = AL["NOTE_380556_2"] }; 
+		[RSConstants.STEP3] = { x = 0.4418, y = 0.6198, comment = AL["NOTE_380556_2"] }; 
+		[RSConstants.STEP4] = { x = 0.4468, y = 0.6020, comment = AL["NOTE_380556_2"] }; 
 	}; --Harmonic Crystal Harmonizer
 	["3812232025"] = { 
 		[RSConstants.ENTRANCE..1] = { x = 0.3242, y = 0.7561 };
@@ -1087,6 +1088,17 @@ private.CONTAINER_GUIDE = {
 	["3805582022"] = { 
 		[RSConstants.FLAG] = { x = 0.5752, y = 0.5849, comment = AL["NOTE_380558_1"] };
 	}; --Enchanted Debris
+	["3805712022"] = { 
+		[RSConstants.STEP1] = { x = 0.5591, y = 0.4529, comment = AL["NOTE_380571_1"] };
+		[RSConstants.STEP2] = { x = 0.5783, y = 0.4458, comment = AL["NOTE_380571_2"] };
+		[RSConstants.STEP3] = { x = 0.5799, y = 0.4435, comment = AL["NOTE_380571_3"] };
+		[RSConstants.STEP4] = { x = 0.5813, y = 0.4454, comment = AL["NOTE_380571_4"] };
+	}; --Boomthyr Rocket
+	["3808222022"] = { 
+		[RSConstants.STEP1] = { x = 0.3321, y = 0.6258, comment = AL["NOTE_380822_1"] };
+		[RSConstants.STEP2] = { x = 0.3301, y = 0.6410, comment = AL["NOTE_380822_1"] };
+		[RSConstants.STEP3] = { x = 0.3438, y = 0.6460, comment = AL["NOTE_380822_1"] };
+	}; --Igneous Gem
 }
 
 ---============================================================================

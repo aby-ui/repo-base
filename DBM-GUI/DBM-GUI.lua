@@ -744,16 +744,14 @@ do
 						lastArea = lastArea + 1
 						local section = sections[lastArea]
 						section.header:SetText(statTypes[statType])
-						area.frame:HookScript("OnShow", function()
-							local kills, pulls, bestRank, bestTime = mod.stats[statType .. "Kills"] or 0, mod.stats[statType .. "Pulls"] or 0, mod.stats[statType .. "BestRank"] or 0, mod.stats[statType .. "BestTime"]
-							section.value1:SetText(kills)
-							section.value2:SetText(pulls - kills)
-							if statType == "challenge" and bestRank > 0 then
-								section.value3:SetText(bestTime and ("%d:%02d (%d)"):format(mfloor(bestTime / 60), bestTime % 60) or "-", bestRank)
-							else
-								section.value3:SetText(bestTime and ("%d:%02d"):format(mfloor(bestTime / 60), bestTime % 60) or "-")
-							end
-						end)
+						local kills, pulls, bestRank, bestTime = mod.stats[statType .. "Kills"] or 0, mod.stats[statType .. "Pulls"] or 0, mod.stats[statType .. "BestRank"] or 0, mod.stats[statType .. "BestTime"]
+						section.value1:SetText(kills)
+						section.value2:SetText(pulls - kills)
+						if statType == "challenge" and bestRank > 0 then
+							section.value3:SetText(bestTime and ("%d:%02d (%d)"):format(mfloor(bestTime / 60), bestTime % 60) or "-", bestRank)
+						else
+							section.value3:SetText(bestTime and ("%d:%02d"):format(mfloor(bestTime / 60), bestTime % 60) or "-")
+						end
 					end
 				end
 				Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 5 * noHeaderLine) - (L.FontHeight * 6 * singleLine) - (L.FontHeight * 10 * doubleLine))

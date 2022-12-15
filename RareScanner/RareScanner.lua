@@ -402,22 +402,6 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	if (mapID and mapID == RSConstants.DRAGON_ISLES) then
 		return
 	end
-		
-	-- In Zereth Mortis Firim scrolls are tagged as objects
-	if (mapID and mapID == RSConstants.ZERETH_MORTIS_MAPID and vignetteInfo.atlasName == RSConstants.CONTAINER_ZERETH_FIRIM_VIGNETTE and RSUtils.Contains(RSConstants.FIRIM_EXILE_OBJECTS, entityID)) then
-		-- Ignore if achievement completed
-		local _, _, _, achievementCompleted, _, _, _, _, _, _ = GetAchievementInfo(RSConstants.TALES_OF_EXILE_ACHIEVEMENT_ID);
-		if (achievementCompleted) then
-			return
-		end
-		
-		-- Ignore if opened (so far is bugged and the vignette is still there)
-		if (RSContainerDB.IsContainerOpened(entityID)) then
-			return
-		end
-		
-		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
-	end
 	
 	-- In Uldum and Valley of eternal Blossoms the icon for elite NPC is used for events
 	if (mapID and vignetteInfo.atlasName == RSConstants.NPC_VIGNETTE_ELITE and (mapID == RSConstants.VALLEY_OF_ETERNAL_BLOSSOMS_MAPID or mapID == RSConstants.ULDUM_MAPID)) then
@@ -442,6 +426,29 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	-- These containers are tagged with rare NPCs
 	if (entityID == RSConstants.CATACOMBS_CACHE or RSUtils.Contains(RSConstants.CONTAINERS_WITH_NPC_VIGNETTE, entityID)) then
 		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
+	end
+	
+	-- Ignore if hidden quest is completed
+	if (RSConfigDB.IsIgnoringCompletedEntities()) then
+		if (RSConstants.IsNpcAtlas(vignetteInfo.atlasName)) then
+			if (RSNpcDB.GetInternalNpcInfo(entityID) and RSNpcDB.GetInternalNpcInfo(entityID).questID) then
+				for _, questID in ipairs(RSNpcDB.GetInternalNpcInfo(entityID).questID) do
+					if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+						RSLogger:PrintDebugMessage(string.format("Detectado NPC [%s] con misión oculta completa, se ignora.", entityID))
+						return
+					end
+				end
+			end
+		elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
+			if (RSContainerDB.GetInternalContainerInfo(entityID) and RSContainerDB.GetInternalContainerInfo(entityID).questID) then
+				for _, questID in ipairs(RSNpcDB.GetInternalContainerInfo(entityID).questID) do
+					if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+						RSLogger:PrintDebugMessage(string.format("Detectado Contenedor [%s] con misión oculta completa, se ignora.", entityID))
+						return
+					end
+				end
+			end
+		end
 	end
 
 	if (not isNavigating) then

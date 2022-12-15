@@ -431,3 +431,57 @@ do
         end
     end)
 end
+
+U1PLUG["CosHelper"] = function()
+    --[[------------------------------------------------------------
+    群星庭院助手
+    作者 bitingsock https://mods.curse.com/addons/wow/256918-court-of-stars-helper
+    ---------------------------------------------------------------]]
+    local npccheck = {}
+    local NoMore = false
+    local tarIndex = 1
+    local function CoShelper(tooltip)
+        if NoMore then
+            if IsShiftKeyDown() ~= true then
+                NoMore = false
+            end
+            return
+        end
+        local _,unit = tooltip:GetUnit()
+        if unit == nil then return; end;
+        local mapid,_ = C_Map.GetBestMapForUnit("player")
+        if mapid == 761 and UnitGUID(unit) then
+            local npcid = string.sub(UnitGUID(unit),-17,-12)
+            local line = ""
+            if npcid == "105117" then line = "炼金,潜行者 [下毒]" --Flask of the Solemn Night
+            elseif npcid == "105157" then line = "工程,地精,侏儒 [关闭构造体]" --Arcane Power Conduit
+            elseif npcid == "106110" then line = "萨满,剥皮,铭文 [移动速度]" --Waterlogged Scroll
+            elseif npcid == "105160" then line = "恶魔猎手,术士,牧师 [暴击]" --Fel Orb
+            elseif npcid == "105340" then line = "德鲁伊,采药 [急速]" --Umbral Bloom
+            elseif npcid == "106018" then line = "盗贼,战士,制皮 [引小BOSS]" --Bazaar Goods
+            elseif npcid == "106112" then line = "治疗,裁缝,急救 [引小BOSS]" --Wounded Nightborne Civilian
+            elseif npcid == "106113" then line = "珠宝,采矿 [引小BOSS]" --Lifesized Nightborne Statue
+            elseif npcid == "105831" then line = "圣骑,牧师 [减伤]" --Infernal Tome
+            elseif npcid == "105249" then line = "烹饪800,熊猫人 [提升血量]" --Nightshade Refreshments
+            elseif npcid == "105215" then line = "猎人,锻造 [引小BOSS并直接杀死]" --Discarded Junk
+            elseif npcid == "106024" then line = "法师,附魔,精灵 [增加伤害]" --Magical Lantern
+            elseif npcid == "106108" then line = "死骑,武僧 [回复能力]" -- Starlight Rose Brew
+            else return
+            end
+            tooltip:AddLine("爱不易: "..line, 255/255, 106/255, 0/255, true)
+            if npccheck[npcid] == nil then
+                npccheck[npcid] = true
+            end
+            if npccheck[npcid] or IsShiftKeyDown() then
+                SendChatMessage("【爱不易】"..GetUnitName(unit)..": "..line ,"PARTY" ,nil ,"1");
+                SetRaidTarget(unit, tarIndex)
+                tarIndex=tarIndex+1
+                if tarIndex == 9 then tarIndex = 1 end;
+                npccheck[npcid] = false
+                NoMore = true
+            end
+        end
+    end
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, CoShelper)
+    CoreOnEvent("CHALLENGE_MODE_START", function() table.wipe(npccheck) NoMore = false end)
+end

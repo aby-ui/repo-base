@@ -737,7 +737,7 @@ private.CONTAINER_INFO = {
 				[2024] = { x = 2990, y = 4570, artID = { 1707 }, overlay = { "1400-2980","2990-4570","4920-4090","6570-2780","6590-5560","7230-4210" } };
 				[2025] = { x = 5300, y = 5690, artID = { 1708 }, overlay = { "3510-7040","4260-6660","4290-7900","5300-5690" } };
 			  }, reset = true }; --Magic-Bound Chest
-	[198660] = { zoneID = 2023, artID = { 1705 }, x = 6180, y = 1300, overlay = { "6180-1300" }, reset = false, questID = { 70263 }, prof = 755 }; --Objects
+	[380548] = { zoneID = 2023, artID = { 1705 }, x = 6175, y = 1302, overlay = { "6175-1302" }, reset = false, questID = { 70263 }, prof = 755 }; --Joyero olvidado
 	[380597] = { zoneID = 2023, artID = { 1705 }, x = 3542, y = 4024, overlay = { "3542-4024" }, reset = false, questID = { 70295 }, prof = 197 }; --Objects
 	[380599] = { zoneID = 2023, artID = { 1705 }, x = 6650, y = 5350, overlay = { "6650-5350" }, reset = false, questID = { 70303 }, prof = 197 }; --Catnip Frond
 	[376579] = { zoneID = {
@@ -769,9 +769,8 @@ private.CONTAINER_INFO = {
 			  }, reset = true }; --Magic-Bound Chest
 	[195373] = { zoneID = 2024, artID = { 1707 }, x = 2654, y = 4629, overlay = { "2654-4629" }, reset = false, questID = { 70441 } }; --Objects
 	[198599] = { zoneID = 2024, artID = { 1707 }, x = 1640, y = 3850, overlay = { "1640-3850" }, reset = false, questID = { 70208 }, prof = 171 }; --Objects
-	[198664] = { zoneID = 2024, artID = { 1707 }, x = 4500, y = 6130, overlay = { "4500-6130" }, reset = false, questID = { 70277 }, prof = 755 }; --Objects
 	[198712] = { zoneID = 2024, artID = { 1707 }, x = 6700, y = 1320, overlay = { "6700-1320" }, reset = false, questID = { 70309 }, prof = 171 }; --Objects
-	[201016] = { zoneID = 2024, artID = { 1707 }, x = 4460, y = 6120, overlay = { "4460-6120" }, reset = false, questID = { 70271 }, prof = 755 }; --Objects
+	[380556] = { zoneID = 2024, artID = { 1707 }, x = 4460, y = 6120, overlay = { "4460-6120" }, reset = false, questID = { 70271 }, prof = 755 }; --Harmonic Chest
 	[376582] = { zoneID = 2024, artID = { 1707 }, x = 4500, y = 5220, overlay = { "4500-5220","0720-4510","0840-4070","0940-3790","4580-5620","4690-5420","5580-6870","5650-6570","5690-6790","5760-6970","5880-6840","5890-5480","5900-6670","6050-5900" }, reset = true }; --Tuskarr Chest
 	[376583] = { zoneID = {
 				[2024] = { x = 3490, y = 3190, artID = { 1707 }, overlay = { "3490-3190","1050-3110","1200-3670","1220-3520","1240-2200","1280-3410","1380-3820","1380-3940","1440-2180","1450-2050","1500-3110","1610-3520","1620-3890","1790-3600","1810-3480","1840-3840","2140-4230","2200-3970","2320-4370","2450-4020","2490-4230","3410-3410","3460-4540","3540-4800","3560-3410","3580-4660","5820-4140","5850-4270" } };
@@ -842,4 +841,5 @@ private.CONTAINER_INFO = {
 			  }, reset = false, questID = { 66932 } }; --Treasure Hoard
 	[191992] = { zoneID = 2118, artID = { 1709 }, x = 4183, y = 2305, overlay = { "4183-2305" }, reset = false, questID = { 67013 } }; --Objects
 	[380647] = { zoneID = 2024, artID = { 1707 }, x = 3849, y = 5915, overlay = { "3849-5915" }, questID = { 70336 }, prof = 333 }; --Forgotton Arcane Tome
+	[380641] = { zoneID = 2022, artID = { 1706 }, x = 4912, y = 7754, overlay = { "4912-7754" }, reset = false, questID = { 70275 }, prof = 202 }; --Overcharged Tesla Coil
 }

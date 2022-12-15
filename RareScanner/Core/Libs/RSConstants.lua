@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 75
-RSConstants.CURRENT_LOOT_DB_VERSION = 85
+RSConstants.CURRENT_DB_VERSION = 76
+RSConstants.CURRENT_LOOT_DB_VERSION = 86
 
 ---============================================================================
 -- Current maps (newer)
@@ -98,6 +98,7 @@ RSConstants.PROFILE_DEFAULTS = {
 			scanOnTaxi = true,
 			scanOnPetBattle = true,
 			scanWorldmapVignette = false,
+			ignoreCompletedEntities = true,
 			filteredRares = {},
 			filteredContainers = {},
 			filteredEvents = {},
@@ -297,7 +298,6 @@ RSConstants.NPC_TORMENTORS_VIGNETTE = "Tormentors-Boss"
 
 RSConstants.CONTAINER_VIGNETTE = "VignetteLoot"
 RSConstants.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
-RSConstants.CONTAINER_ZERETH_FIRIM_VIGNETTE = "QuestObjective"
 
 RSConstants.EVENT_VIGNETTE = "VignetteEvent"
 RSConstants.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
@@ -362,7 +362,7 @@ RSConstants.CACHES_SWAGSNOUT_GROMIT = { 369292, 369294, 369310, 369297, 369295, 
 RSConstants.STOLEN_ANIMA_VESSEL = { 368946, 368947, 368948, 368949, 368950, 368951, 368952, 368953 }
 RSConstants.STOLEN_ANIMA_VESSEL_RIFT = { 369227, 369235, 369236 }
 RSConstants.DISTURBED_DIRT = { 382029, 376386, 383733, 383734, 383735 }
-RSConstants.HUNTING_PARTY_NPCS = { 195093, 194760, 194251, 191103, 194409, 194601, 191450, 194438, 194458, 195417, 195101, 195283, 195300, 195430 }
+RSConstants.HUNTING_PARTY_NPCS = { 195093, 194760, 194251, 191103, 194409, 194601, 191450, 194438, 194458, 195417, 195101, 195283, 195300, 195430, 195132 }
 RSConstants.OMINOUS_CONCHS_NPCS = { 193735, 193634, 193710, 197371, 193708, 193706 } --197411
 RSConstants.CONTAINERS_WITHOUT_VIGNETTE = { 376582, 376583, 376585, 376579, 376584, 377587, 378010 }
 RSConstants.MAGIC_BOUND_CHEST = { 376426, 385075, 385074 }

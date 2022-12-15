@@ -59,6 +59,7 @@ function RSEntityPinMixin:OnMouseDown(button)
 				RSConfigDB.SetNpcFiltered(self.POI.entityID, false)
 				self:Hide();
 			elseif (self.POI.isContainer) then
+			print(self.POI.entityID)
 				RSConfigDB.SetContainerFiltered(self.POI.entityID, false)
 				self:Hide();
 			elseif (self.POI.isEvent) then

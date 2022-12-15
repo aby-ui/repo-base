@@ -117,9 +117,9 @@ CoreDependCall("Blizzard_ChallengesUI", function()
                 --start = self.ownedKeystoneLevel - 5
             end
             ]]
-            for i = start, start + 6 do
+            for i = start, start + 9 do
                 if levels[i] then
-                    GameTooltip:AddDoubleLine(getline(i, self.level), getline(i+7, self.level), 1, 1, 1, 1, 1, 1)
+                    GameTooltip:AddDoubleLine(getline(i, self.level), getline(i+10, self.level), 1, 1, 1, 1, 1, 1)
                 else
                     break
                 end

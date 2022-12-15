@@ -42,7 +42,7 @@ local RSUtils = private.ImportLib("RareScannerUtils")
 local MINIMAP_BUTTON_NAME = "RareScannerMinimapIcon"
 local ENTITY_FRAME_LEVEL = 3
 local OVERLAY_FRAME_LEVEL = 2
-local GUIDE_FRAME_LEVEL = 2
+local GUIDE_FRAME_LEVEL = 4
 
 function RSMinimap.LoadMinimapButton()
 	local RareScannerMinimapLDB = LibStub("LibDataBroker-1.1"):NewDataObject("RareScannerLDB", {
@@ -352,6 +352,9 @@ function RSMinimap.AddGuide(entityID)
 				local POI = RSGuidePOI.GetGuidePOI(entityID, pinType, info)
 				local pin = guideFramesPool:Acquire()
 				pin.POI = POI
+				if (pin.POI.tooltip and pin.POI.tooltip.comment) then
+					pin.POI.name = pin.POI.tooltip.comment
+				end
 				pin.Texture:SetTexture(POI.texture)
 				pin.Texture:SetScale(RSConfigDB.GetIconsMinimapScale())
 				pin:SetFrameLevel(GUIDE_FRAME_LEVEL)
