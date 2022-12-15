@@ -441,7 +441,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 			end
 		elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
 			if (RSContainerDB.GetInternalContainerInfo(entityID) and RSContainerDB.GetInternalContainerInfo(entityID).questID) then
-				for _, questID in ipairs(RSNpcDB.GetInternalContainerInfo(entityID).questID) do
+				for _, questID in ipairs(RSContainerDB.GetInternalContainerInfo(entityID).questID) do
 					if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
 						RSLogger:PrintDebugMessage(string.format("Detectado Contenedor [%s] con misión oculta completa, se ignora.", entityID))
 						return

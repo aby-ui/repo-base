@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2491, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221214092159")
+mod:SetRevision("20221215054251")
 mod:SetCreatureID(184986)
 mod:SetEncounterID(2605)
 mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
@@ -446,7 +446,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnSplinteredBones:Show(args.destName)
 			specWarnSplinteredBones:Play("tauntboss")
 		else
-			warnSplinteredBones:Show(args.destName, amount)
+			local uId = DBM:GetRaidUnitId(args.destName)
+			if self:IsTanking(uId) then
+				warnSplinteredBones:Show(args.destName, amount)
+			end
 		end
 	elseif spellId == 373487 then
 		local icon = self.vb.litCrashIcon

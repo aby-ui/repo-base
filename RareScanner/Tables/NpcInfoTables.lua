@@ -3052,7 +3052,7 @@ private.NPC_INFO = {
 	[193664] = { zoneID = 2025, artID = { 1708 }, x = 5890, y = 5890, overlay = { "5954-5917" }, displayID = 6089, questID = { 74055 } }; --Ancient Protector
 	[193666] = { zoneID = 2025, artID = { 1708 }, x = 5000, y = 5180, overlay = { "5000-5180" }, displayID = 106316, questID = { 69966 } }; --Rokmur
 	[193668] = { zoneID = 2025, artID = { 1708 }, x = 3682, y = 8575, overlay = { "3679-8557" }, displayID = 108250, questID = { 69967 } }; --Lookout Mordren
-	[193682] = { zoneID = 2025, artID = { 1708 }, x = 0940, y = 2697, overlay = { "6151-6051","0984-2346","0940-2697" }, displayID = 108259, questID = { 69973 } }; --Rouen Icewind
+	[193682] = { zoneID = 2025, artID = { 1708 }, x = 0940, y = 2697, overlay = { "6151-6051","0984-2346","0940-2697" }, displayID = 108259, questID = { 74027 } }; --Rouen Icewind
 	[193687] = { zoneID = 2025, artID = { 1708 }, x = 6160, y = 6051, overlay = { "6163-6058" }, displayID = 108263 }; --Mawgor
 	[193688] = { zoneID = 2025, artID = { 1708 }, x = 6004, y = 6103, overlay = { "6026-6106" }, displayID = 106689, questID = { 74020 } }; --Phenran
 	[195417] = { zoneID = 2025, artID = { 1708 }, x = 5003, y = 4790, overlay = { "5003-4790" }, displayID = 105560, questID = { 73942 } }; --Tsokorg

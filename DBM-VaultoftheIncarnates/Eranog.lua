@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2480, "DBM-VaultoftheIncarnates", nil, 1200)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221214004227")
+mod:SetRevision("20221215054251")
 mod:SetCreatureID(184972)
 mod:SetEncounterID(2587)
 mod:SetUsedIcons(1, 2, 3, 4, 5)
@@ -94,7 +94,7 @@ function mod:OnCombatStart(delay)
 	self.vb.riftCount = 0
 	self.vb.roarCount = 0
 	self.vb.spikesCount = 0
-	timerIncineratingRoarCD:Start(10-delay, 1)
+	timerIncineratingRoarCD:Start(9.8-delay, 1)
 	timerFlameriftCD:Start(13.9-delay, 1)
 	timerMoltenCleaveCD:Start(37.9-delay, 1)
 	if self:IsHard() then

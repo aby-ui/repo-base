@@ -226,10 +226,21 @@ function BaudErrorFrameShowError(Error)
 end
 
 
+local TALENT_FRAME_EXPORT_TEXT_ORIGIN = TALENT_FRAME_EXPORT_TEXT TALENT_FRAME_EXPORT_TEXT = nil
 function BaudErrorFrameAdd(Error, Retrace)
-    if not DEBUG_MODE then
-        if Error and Error:find("StaticPopup%.lua:[0-9]+: bad argument #2 to 'SetFormattedText' %(number expected, got nil%)") then return end
-        if Error and Error:find("SetPoint would result in anchor family connection") then return end
+    if Error and (Error:find("StaticPopup%.lua:[0-9]+: bad argument #2 to 'SetFormattedText' %(number expected, got nil%)")
+            or Error:find("SetPoint would result in anchor family connection")) then
+        if DEBUG_MODE then
+            Error = "[DEBUG_MODE]"..Error
+        else
+            return
+        end
+    elseif Error and Error:find("attempt to index global 'TALENT_FRAME_EXPORT_TEXT' (a nil value)", nil, true) then
+        DEFAULT_CHAT_FRAME:AddMessage(TALENT_FRAME_EXPORT_TEXT_ORIGIN:format("此天赋配置"), YELLOW_FONT_COLOR:GetRGB());
+        if DEBUG_MODE then
+            DEFAULT_CHAT_FRAME:AddMessage("爱不易成功通过错误阻止天赋导出污染")
+        end
+        return
     end
     local currTime = date("%H:%M:%S")..format(".%03d", GetTime()*1000%1000)
     for Key, Value in pairs(ErrorList)do

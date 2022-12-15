@@ -1,6 +1,6 @@
 --[[
 BattlePetBreedID: Pet Data Module
-Last Update: Patch 10.0.2 Live; 2022-12-07T00:39:38Z
+Last Update: Patch 10.0.2 Live; 2022-12-15T08:26:20Z
 
 If you would like a copy of this data in a different format for your own purposes or to be informed of future updates:
 Contact MMOSimca / Simca@Malfurion-US - either through MMO-Champion, through CurseForge, or in-game
@@ -3292,7 +3292,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BasePetStats[3245] = false
     BPBID_Arrays.BasePetStats[3246] = {8, 8, 8}
     BPBID_Arrays.BasePetStats[3247] = {8, 8, 8}
-    BPBID_Arrays.BasePetStats[3248] = false
+    BPBID_Arrays.BasePetStats[3248] = {8.625, 8.125, 7.25}
     BPBID_Arrays.BasePetStats[3249] = {8, 8.5, 7.5}
     BPBID_Arrays.BasePetStats[3250] = false
     BPBID_Arrays.BasePetStats[3251] = false
@@ -6751,9 +6751,9 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3284] = {7}
     BPBID_Arrays.BreedsPerSpecies[3285] = false
     BPBID_Arrays.BreedsPerSpecies[3286] = {6}
-    BPBID_Arrays.BreedsPerSpecies[3287] = false
+    BPBID_Arrays.BreedsPerSpecies[3287] = {8}
     BPBID_Arrays.BreedsPerSpecies[3288] = {6, 7, 9, 12}
-    BPBID_Arrays.BreedsPerSpecies[3289] = false
+    BPBID_Arrays.BreedsPerSpecies[3289] = {8}
     BPBID_Arrays.BreedsPerSpecies[3290] = false
     BPBID_Arrays.BreedsPerSpecies[3291] = false
     BPBID_Arrays.BreedsPerSpecies[3292] = false
@@ -6763,7 +6763,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3296] = {6, 7, 9, 12}
     BPBID_Arrays.BreedsPerSpecies[3297] = false
     BPBID_Arrays.BreedsPerSpecies[3298] = false
-    BPBID_Arrays.BreedsPerSpecies[3299] = false
+    BPBID_Arrays.BreedsPerSpecies[3299] = {8}
     BPBID_Arrays.BreedsPerSpecies[3300] = {5, 8, 9, 11}
     BPBID_Arrays.BreedsPerSpecies[3301] = {3, 10, 11, 12}
     BPBID_Arrays.BreedsPerSpecies[3302] = {3}
@@ -6774,7 +6774,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3307] = {3, 10, 11, 12}
     BPBID_Arrays.BreedsPerSpecies[3308] = false
     BPBID_Arrays.BreedsPerSpecies[3309] = {9}
-    BPBID_Arrays.BreedsPerSpecies[3310] = false
+    BPBID_Arrays.BreedsPerSpecies[3310] = {8}
     BPBID_Arrays.BreedsPerSpecies[3311] = false
     BPBID_Arrays.BreedsPerSpecies[3312] = false
     BPBID_Arrays.BreedsPerSpecies[3313] = {4, 5, 8, 11}
@@ -6793,7 +6793,7 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3326] = {3}
     BPBID_Arrays.BreedsPerSpecies[3327] = {3, 7, 9}
     BPBID_Arrays.BreedsPerSpecies[3328] = {3, 7, 9}
-    BPBID_Arrays.BreedsPerSpecies[3329] = false
+    BPBID_Arrays.BreedsPerSpecies[3329] = {3, 7, 9}
     BPBID_Arrays.BreedsPerSpecies[3330] = false
     BPBID_Arrays.BreedsPerSpecies[3331] = false
     BPBID_Arrays.BreedsPerSpecies[3332] = false
@@ -6809,17 +6809,17 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3342] = {3}
     BPBID_Arrays.BreedsPerSpecies[3343] = false
     BPBID_Arrays.BreedsPerSpecies[3344] = {5}
-    BPBID_Arrays.BreedsPerSpecies[3345] = false
-    BPBID_Arrays.BreedsPerSpecies[3346] = false
-    BPBID_Arrays.BreedsPerSpecies[3347] = false
+    BPBID_Arrays.BreedsPerSpecies[3345] = {5}
+    BPBID_Arrays.BreedsPerSpecies[3346] = {5}
+    BPBID_Arrays.BreedsPerSpecies[3347] = {5}
     BPBID_Arrays.BreedsPerSpecies[3348] = {8}
     BPBID_Arrays.BreedsPerSpecies[3349] = false
     BPBID_Arrays.BreedsPerSpecies[3350] = {5}
     BPBID_Arrays.BreedsPerSpecies[3351] = {3, 4, 7}
     BPBID_Arrays.BreedsPerSpecies[3352] = {3, 4, 7}
     BPBID_Arrays.BreedsPerSpecies[3353] = {3, 9}
-    BPBID_Arrays.BreedsPerSpecies[3354] = false
-    BPBID_Arrays.BreedsPerSpecies[3355] = false
+    BPBID_Arrays.BreedsPerSpecies[3354] = {3, 9}
+    BPBID_Arrays.BreedsPerSpecies[3355] = {8}
     BPBID_Arrays.BreedsPerSpecies[3356] = {3}
     BPBID_Arrays.BreedsPerSpecies[3357] = {9}
     BPBID_Arrays.BreedsPerSpecies[3358] = {9}
@@ -6842,29 +6842,29 @@ function BPBID_Arrays.InitializeArrays()
     BPBID_Arrays.BreedsPerSpecies[3375] = false
     BPBID_Arrays.BreedsPerSpecies[3376] = {3}
     BPBID_Arrays.BreedsPerSpecies[3377] = false
-    BPBID_Arrays.BreedsPerSpecies[3378] = false
-    BPBID_Arrays.BreedsPerSpecies[3379] = false
+    BPBID_Arrays.BreedsPerSpecies[3378] = {12}
+    BPBID_Arrays.BreedsPerSpecies[3379] = {12}
     BPBID_Arrays.BreedsPerSpecies[3380] = {6}
     BPBID_Arrays.BreedsPerSpecies[3381] = {11}
-    BPBID_Arrays.BreedsPerSpecies[3382] = false
+    BPBID_Arrays.BreedsPerSpecies[3382] = {7}
     BPBID_Arrays.BreedsPerSpecies[3383] = false
-    BPBID_Arrays.BreedsPerSpecies[3384] = false
-    BPBID_Arrays.BreedsPerSpecies[3385] = false
-    BPBID_Arrays.BreedsPerSpecies[3386] = false
-    BPBID_Arrays.BreedsPerSpecies[3387] = false
-    BPBID_Arrays.BreedsPerSpecies[3388] = false
+    BPBID_Arrays.BreedsPerSpecies[3384] = {5, 8, 9, 11}
+    BPBID_Arrays.BreedsPerSpecies[3385] = {4, 5, 8, 11}
+    BPBID_Arrays.BreedsPerSpecies[3386] = {3}
+    BPBID_Arrays.BreedsPerSpecies[3387] = {3}
+    BPBID_Arrays.BreedsPerSpecies[3388] = {3}
     BPBID_Arrays.BreedsPerSpecies[3389] = {5, 8, 9, 11}
     BPBID_Arrays.BreedsPerSpecies[3390] = {8}
     BPBID_Arrays.BreedsPerSpecies[3391] = {3}
     BPBID_Arrays.BreedsPerSpecies[3392] = {3}
-    BPBID_Arrays.BreedsPerSpecies[3393] = false
-    BPBID_Arrays.BreedsPerSpecies[3394] = false
-    BPBID_Arrays.BreedsPerSpecies[3395] = false
+    BPBID_Arrays.BreedsPerSpecies[3393] = {6}
+    BPBID_Arrays.BreedsPerSpecies[3394] = {5}
+    BPBID_Arrays.BreedsPerSpecies[3395] = {8}
     BPBID_Arrays.BreedsPerSpecies[3396] = false
-    BPBID_Arrays.BreedsPerSpecies[3397] = false
-    BPBID_Arrays.BreedsPerSpecies[3398] = false
+    BPBID_Arrays.BreedsPerSpecies[3397] = {5}
+    BPBID_Arrays.BreedsPerSpecies[3398] = {3}
     BPBID_Arrays.BreedsPerSpecies[3399] = false
-    BPBID_Arrays.BreedsPerSpecies[3400] = false
+    BPBID_Arrays.BreedsPerSpecies[3400] = {3}
     BPBID_Arrays.BreedsPerSpecies[3401] = false
     BPBID_Arrays.BreedsPerSpecies[3402] = false
     BPBID_Arrays.BreedsPerSpecies[3403] = {5, 6, 9}
