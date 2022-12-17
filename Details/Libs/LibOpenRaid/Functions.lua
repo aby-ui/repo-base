@@ -148,19 +148,21 @@ function openRaidLib.UpdateUnitIDCache()
     openRaidLib.UnitIDCache = {}
     if (IsInRaid()) then
         for i = 1, GetNumGroupMembers() do
-            local unitName = UnitName("raid"..i)
+            local unitName = GetUnitName("raid"..i, true)
             if (unitName) then
                 openRaidLib.UnitIDCache[unitName] = "raid"..i
             end
         end
+
     elseif (IsInGroup()) then
         for i = 1, GetNumGroupMembers() - 1 do
-            local unitName = UnitName("party"..i)
+            local unitName = GetUnitName("party"..i, true)
             if (unitName) then
                 openRaidLib.UnitIDCache[unitName] = "party"..i
             end
         end
     end
+
     openRaidLib.UnitIDCache[UnitName("player")] = "player"
 end
 

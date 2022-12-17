@@ -427,31 +427,31 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 	if (entityID == RSConstants.CATACOMBS_CACHE or RSUtils.Contains(RSConstants.CONTAINERS_WITH_NPC_VIGNETTE, entityID)) then
 		vignetteInfo.atlasName = RSConstants.CONTAINER_VIGNETTE
 	end
-	
-	-- Ignore if hidden quest is completed
-	if (RSConfigDB.IsIgnoringCompletedEntities()) then
-		if (RSConstants.IsNpcAtlas(vignetteInfo.atlasName)) then
-			if (RSNpcDB.GetInternalNpcInfo(entityID) and RSNpcDB.GetInternalNpcInfo(entityID).questID) then
-				for _, questID in ipairs(RSNpcDB.GetInternalNpcInfo(entityID).questID) do
-					if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
-						RSLogger:PrintDebugMessage(string.format("Detectado NPC [%s] con misión oculta completa, se ignora.", entityID))
-						return
+
+	if (not isNavigating) then
+		-- Ignore if hidden quest is completed
+		if (RSConfigDB.IsIgnoringCompletedEntities()) then
+			if (RSConstants.IsNpcAtlas(vignetteInfo.atlasName)) then
+				if (RSNpcDB.GetInternalNpcInfo(entityID) and RSNpcDB.GetInternalNpcInfo(entityID).questID) then
+					for _, questID in ipairs(RSNpcDB.GetInternalNpcInfo(entityID).questID) do
+						if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+							RSLogger:PrintDebugMessage(string.format("Detectado NPC [%s] con misión oculta completa, se ignora.", entityID))
+							return
+						end
 					end
 				end
-			end
-		elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
-			if (RSContainerDB.GetInternalContainerInfo(entityID) and RSContainerDB.GetInternalContainerInfo(entityID).questID) then
-				for _, questID in ipairs(RSContainerDB.GetInternalContainerInfo(entityID).questID) do
-					if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
-						RSLogger:PrintDebugMessage(string.format("Detectado Contenedor [%s] con misión oculta completa, se ignora.", entityID))
-						return
+			elseif (RSConstants.IsContainerAtlas(vignetteInfo.atlasName)) then
+				if (RSContainerDB.GetInternalContainerInfo(entityID) and RSContainerDB.GetInternalContainerInfo(entityID).questID) then
+					for _, questID in ipairs(RSContainerDB.GetInternalContainerInfo(entityID).questID) do
+						if (C_QuestLog.IsQuestFlaggedCompleted(questID)) then
+							RSLogger:PrintDebugMessage(string.format("Detectado Contenedor [%s] con misión oculta completa, se ignora.", entityID))
+							return
+						end
 					end
 				end
 			end
 		end
-	end
-
-	if (not isNavigating) then
+		
 		-- If the vignette is simulated
 		if (vignetteInfo.x and vignetteInfo.y) then
 			local coordinates = {}

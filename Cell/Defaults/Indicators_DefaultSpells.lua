@@ -535,22 +535,21 @@ if UnitClassBase("player") == "WARLOCK" then
 else    
     eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
     eventFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
-    eventFrame:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
+    -- eventFrame:RegisterEvent("ACTIVE_PLAYER_SPECIALIZATION_CHANGED")
 
-    local lock
-    eventFrame:SetScript("OnEvent", function(self, event)
-        if event == "PLAYER_ENTERING_WORLD" then
-            eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-        end
-        
+    local lock, timer
+
+    local function UpdateDispellable()
+        if timer then timer:Cancel() end
+        timer = C_Timer.NewTimer(1, function() lock = nil end)
+
         if lock then return end
         lock = true
-        C_Timer.After(1, function() lock = nil end)
-    
+
         -- update dispellable
         wipe(dispellable)
         local activeConfigID = C_ClassTalents.GetActiveConfigID()
-        if dispelNodeID[Cell.vars.playerSpecID] then
+        if activeConfigID and dispelNodeID[Cell.vars.playerSpecID] then
             for dispelType, value in pairs(dispelNodeID[Cell.vars.playerSpecID]) do
                 if type(value) == "boolean" then
                     dispellable[dispelType] = value
@@ -562,9 +561,18 @@ else
                 end
             end
         end
-    
+
         -- texplore(dispellable)
+    end
+
+    eventFrame:SetScript("OnEvent", function(self, event)
+        if event == "PLAYER_ENTERING_WORLD" then
+            eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        end
+        UpdateDispellable()
     end)
+
+    Cell:RegisterCallback("SpecChanged", "Dispellable_SpecChanged", UpdateDispellable)
 end
 
 -------------------------------------------------
@@ -604,7 +612,7 @@ local spells =  {
     48438, -- 野性成长
     102351, -- 塞纳里奥结界
     102352, -- 塞纳里奥结界
-    391888, -- 激变蜂群
+    391891, -- 激变蜂群
 
     -- evoker
     363502, -- 梦境飞行

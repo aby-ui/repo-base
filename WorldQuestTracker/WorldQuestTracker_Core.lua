@@ -1526,7 +1526,7 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 
 			WQTPathFrame:SetScript("OnUpdate", function()
 				--check if the map is opened and if the player is flying
-				if (WorldMapFrame:IsShown() and IsFlying() and not IsInInstance() and WorldQuestTracker.db.profile.path.enabled) then
+				if (WorldMapFrame:IsShown() and IsFlying() and not IsInInstance() and WorldQuestTracker.db.profile.path.enabled and GetPlayerFacing()) then
 					--get the direction the player is facing
 					local Direction = GetPlayerFacing()
 					--build a forward vector based on the the direction the player is facing
@@ -2312,6 +2312,27 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 				--scripts
 				local buttonOnEnter = function(self)
 					self.MyObject.Icon:SetBlendMode("BLEND")
+
+					--local data = C_MajorFactions.GetMajorFactionData(self.MyObject.FactionID)
+
+					--dumpt(data)
+					--[=[
+						["unlockDescription"] = "Complete the quest For the Benefit of the Queen near the Ruby Life Pools in the Waking Shores.",
+						["renownReputationEarned"] = 0,
+						["bountySetID"] = 119,
+						["renownLevel"] = 0,
+						["isUnlocked"] = false,
+						["factionID"] = 2510,
+						["expansionID"] = 9,
+						["celebrationSoundKit"] = 213204,
+						["name"] = "Valdrakken Accord",
+						["renownFanfareSoundKitID"] = 213208,
+						["renownLevelThreshold"] = 2500,
+						["textureKit"] = "Valdrakken",
+						["unlockOrder"] = 4,
+					]=]
+
+					--local name = data.name
 
 					local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus = GetFactionInfoByID (self.MyObject.FactionID)
 					barMax = barMax - barMin
@@ -4588,41 +4609,43 @@ WorldQuestTracker.OnToggleWorldMap = function(self)
 
 			GameCooltip:CoolTipInject (optionsButton)
 
-			--> options on the interface menu
-			WorldQuestTracker.OptionsInterfaceMenu = CreateFrame ("frame", "WorldQuestTrackerInterfaceOptionsPanel", UIParent, "BackdropTemplate")
-			WorldQuestTracker.OptionsInterfaceMenu.name = L["World Quest Tracker"]
-			InterfaceOptions_AddCategory (WorldQuestTracker.OptionsInterfaceMenu)
+			do
+				--register a new category on the settings panel
+				local frame = CreateFrame("Frame")
+				local background = frame:CreateTexture()
+				background:SetAllPoints(frame)
+				background:SetColorTexture(1, 0, 1, 0.5)
 
-			WorldQuestTracker.OptionsInterfaceMenu.options_button = CreateFrame ("button", nil, WorldQuestTracker.OptionsInterfaceMenu)
-			DetailsFramework:ApplyStandardBackdrop(WorldQuestTracker.OptionsInterfaceMenu.options_button)
-			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetText ("Hover Over Me: Options Menu")
-			setup_button (WorldQuestTracker.OptionsInterfaceMenu.options_button, L["Hover Over Me: Options Menu"])
-			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetPoint("topleft", WorldQuestTracker.OptionsInterfaceMenu, "topleft", 20, -20)
-			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetWidth (270)
-			WorldQuestTracker.OptionsInterfaceMenu.options_button:SetHeight (24)
-			WorldQuestTracker:SetFontSize(WorldQuestTracker.OptionsInterfaceMenu.options_button.Text, 16)
+				local category = Settings.RegisterCanvasLayoutCategory(frame, L["World Quest Tracker"])
+				Settings.RegisterAddOnCategory(category)
 
-			WorldQuestTracker.OptionsInterfaceMenu.options_button.CoolTip = {
-				Type = "menu",
-				BuildFunc = BuildOptionsMenu, --> called when user mouse over the frame
-				OnEnterFunc = function(self)
-					WorldQuestTracker.OptionsInterfaceMenu.options_button.button_mouse_over = true
-					button_onenter (self)
-				end,
-				OnLeaveFunc = function(self)
-					WorldQuestTracker.OptionsInterfaceMenu.options_button.button_mouse_over = false
-					button_onleave (self)
-				end,
-				FixedValue = "none",
-				ShowSpeed = 0.05,
-				Options = function()
+				--local optionsButtonOnInterfacePanel = CreateFrame("button", nil, frame, "BackdropTemplate")
+				local optionsButtonOnInterfacePanel = DF:CreateButton(frame, function()end, 300, 50, L["Open World Quest Tracker Options Menu"], -1)
+				optionsButtonOnInterfacePanel:SetTemplate(DetailsFramework:GetTemplate("button", "OPTIONS_BUTTON_TEMPLATE"))
+				optionsButtonOnInterfacePanel:SetSize(200, 50)
+				optionsButtonOnInterfacePanel:SetText(L["Open World Quest Tracker Options Menu"])
+				optionsButtonOnInterfacePanel:SetPoint("topleft", frame, "topleft", 100, -360)
+				optionsButtonOnInterfacePanel.Text = optionsButtonOnInterfacePanel:CreateFontString(nil, "overlay", "GameFontNormal")
+				optionsButtonOnInterfacePanel.widget.Text = optionsButtonOnInterfacePanel.Text
+				DetailsFramework:ApplyStandardBackdrop(optionsButtonOnInterfacePanel)
 
+				optionsButtonOnInterfacePanel.CoolTip = {
+					Type = "menu",
+					BuildFunc = BuildOptionsMenu, --> called when user mouse over the frame
+					OnEnterFunc = function(self)
+						optionsButtonOnInterfacePanel.button_mouse_over = true
+					end,
+					OnLeaveFunc = function(self)
+						optionsButtonOnInterfacePanel.button_mouse_over = false
+					end,
+					FixedValue = "none",
+					ShowSpeed = 0.05,
+					Options = function()
+					end
+				}
 
-
-				end
-			}
-
-			GameCooltip:CoolTipInject (WorldQuestTracker.OptionsInterfaceMenu.options_button)
+				GameCooltip:CoolTipInject(optionsButtonOnInterfacePanel)
+			end
 
 			local ResourceFontTemplate = DF:GetTemplate ("font", "WQT_RESOURCES_AVAILABLE")
 

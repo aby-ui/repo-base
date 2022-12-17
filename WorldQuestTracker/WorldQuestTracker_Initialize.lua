@@ -425,20 +425,7 @@ do
 	WorldQuestTrackerAddon.WorldWidgetAlpha = .75
 	WorldQuestTrackerAddon.WorldWidgetSmallAlpha = .75
 
-	local L = LibStub ("AceLocale-3.0"):GetLocale ("WorldQuestTrackerAddon", true)
-	WorldQuestTracker.ChangeLogTable = {
-		{1544645786, "Anchor Changes", "December 13, 2018", "Hover over the zone name in the quest summary for a zone to show options for that anchor."},
-		{1544477110, "World Map Changes", "December 13, 2018", "World map is now aligned in the center of the screen. " .. L["S_MAPBAR_OPTIONS"] .. " > '" .. L["S_OPTIONS_MAPFRAME_ALIGN"] .. "' to disable this."},
-		{1544477110, "World Map Changes", "December 13, 2018", "Quest list is now default to quest type, click '" .. L["S_WORLDBUTTONS_SHOW_ZONE"] .. "' to swap."},
-		{1544477110, "World Map Changes", "December 13, 2018", "Added an arrow button in the quest list to start tracking all quests in that list."},
-		{1544477110, "World Map Changes", "December 13, 2018", "Added faction indicators, SHIFT + Left Click to track all quests for that faction."},
-		{1544477110, "Zone Map Changes", "December 13, 2018", "The fullscreen quest summary is now available in windowed mode."},
-		{1544477110, "General Settings", "December 13, 2018", "Added quest blacklist, access it throught the options menu."},
-		{1544477110, "General Settings", "December 13, 2018", "Added Map Window Scale settings in the options menu."},
-		{1544477110, "General Settings", "December 13, 2018", "Several options added to World Map and Zone Map at the options menu."},
-		--{1544477110, "", "December 13, 2018", ""},
-	}
-
+	WorldQuestTracker.ChangeLogTable = {}
 end
 
 

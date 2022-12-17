@@ -64,7 +64,7 @@ if (WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE and not isExpansion_Dragonflight()) t
 end
 
 local major = "LibOpenRaid-1.0"
-local CONST_LIB_VERSION = 86
+local CONST_LIB_VERSION = 87
 
 if (not LIB_OPEN_RAID_MAX_VERSION) then
     LIB_OPEN_RAID_MAX_VERSION = CONST_LIB_VERSION
@@ -788,7 +788,7 @@ end
                 --the group has changed, trigger a long timer to send full data
                 --as the timer is unique, a new change to the group will replace and refresh the time
                 --using random time, players won't trigger all at the same time
-                local randomTime = 1.0 + math.random(1.0, 5.5)
+                local randomTime = 0.3 + math.random(0, 0.7)
                 openRaidLib.Schedules.NewUniqueTimer(randomTime, openRaidLib.mainControl.SendFullData, "mainControl", "sendFullData_Schedule")
             end
 
@@ -1937,7 +1937,7 @@ end
         local timeLeft, charges, timeOffset, duration, updateTime, auraDuration = unpack(cooldownInfo)
         return timeLeft, charges, timeOffset, duration, updateTime, auraDuration
     end
-    
+
     function openRaidLib.CooldownManager.OnPlayerCast(event, spellId, isPlayerPet) --~cast
         --player casted a spell, check if the spell is registered as cooldown
         --issue: pet spells isn't in this table yet, might mess with pet interrupts

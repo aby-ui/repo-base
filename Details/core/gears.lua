@@ -3129,6 +3129,13 @@ end
 hooksecurefunc("ChatFrame_DisplayTimePlayed", function()
 	if (Details.played_class_time) then
 		C_Timer.After(0, function()
+			local expansionName = _G["EXPANSION_NAME" .. GetExpansionLevel()]
+			for fontString in ChatFrame1.fontStringPool:EnumerateActive() do 
+				if (fontString:GetText() and fontString:GetText():find(expansionName)) then 
+					return
+				end 
+			end
+
 			local levelText = TIME_PLAYED_LEVEL and TIME_PLAYED_LEVEL:gsub("%%s", "") or ""
 			for fontString in ChatFrame1.fontStringPool:EnumerateActive() do 
 				if (fontString:GetText() and fontString:GetText():find(levelText)) then 

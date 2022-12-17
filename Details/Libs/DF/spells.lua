@@ -1030,6 +1030,8 @@ DF.CrowdControlSpells = {
 	[183752] = "DEMONHUNTER", --Disrupt
 	
 	[331866] = "COVENANT|VENTHYR", --Agent of Chaos (Nadia soulbind)
+	
+	[372245] = "EVOKER", --Terror of the Skies
 }
 
 -- additionals for classic

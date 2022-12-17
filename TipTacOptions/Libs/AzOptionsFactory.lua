@@ -21,7 +21,7 @@
 	- left align text of check button and dropdown
 --]]
 
-local REVISION = 16;
+local REVISION = 17;
 if (type(AzOptionsFactory) == "table") and (AzOptionsFactory.vers >= REVISION) then
 	return;
 end

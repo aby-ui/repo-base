@@ -1106,6 +1106,7 @@ local UnitCanAttack = UnitCanAttack
 local IsSpellInRange = IsSpellInRange
 local IsItemInRange = IsItemInRange
 local CheckInteractDistance = CheckInteractDistance
+local UnitIsDead = UnitIsDead
 
 local playerClass = UnitClassBase("player")
 local friendSpells = {
@@ -1153,7 +1154,7 @@ local friendItems = {
     ["DEATHKNIGHT"] = 34471,
     ["DEMONHUNTER"] = 34471,
     ["DRUID"] = 34471,
-    ["EVOKER"] = 1180,
+    ["EVOKER"] = 1180, -- 30y
     ["HUNTER"] = 34471,
     ["MAGE"] = 34471,
     ["MONK"] = 34471,
@@ -1169,7 +1170,7 @@ local harmItems = {
     ["DEATHKNIGHT"] = 28767,
     ["DEMONHUNTER"] = 28767,
     ["DRUID"] = 28767,
-    ["EVOKER"] = 24268,
+    ["EVOKER"] = 24268, -- 25y
     ["HUNTER"] = 28767,
     ["MAGE"] = 28767,
     ["MONK"] = 28767,
@@ -1181,39 +1182,74 @@ local harmItems = {
     ["WARRIOR"] = 28767,
 }
 
-function F:IsInRange(unit, check)
-    if not UnitIsVisible(unit) then
-        return false
-    end
+if playerClass == "EVOKER" then
+    local spellDead = GetSpellInfo(361227)
+    local spellAlive = GetSpellInfo(361469)
 
-    if UnitIsUnit("player", unit) then
-        return true
-    elseif not check and F:UnitInGroup(unit) then
-        -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
-        local checked
-        inRange, checked = UnitInRange(unit)
-        if not checked then
-            return F:IsInRange(unit, true)
+    -- NOTE: UnitInRange for evoker is around 50y
+    function F:IsInRange(unit)
+        if not UnitIsVisible(unit) then
+            return false
         end
-        return inRange
-    else
-        if UnitCanAssist("player", unit) then
-            -- print("CanAssist", unit)
-            if friendSpells[playerClass] then
-                return IsSpellInRange(friendSpells[playerClass], unit) == 1
-            else
-                return IsItemInRange(friendItems[playerClass], unit)
-            end
-        elseif UnitCanAttack("player", unit) then
-            -- print("CanAttack", unit)
-            if harmSpells[playerClass] then
-                return IsSpellInRange(harmSpells[playerClass], unit) == 1
-            else
-                return IsItemInRange(harmItems[playerClass], unit)
-            end
+    
+        if UnitIsUnit("player", unit) then
+            return true
         else
-            -- print("CheckInteractDistance", unit)
-            return CheckInteractDistance("target", 4) -- 28 yards
+            if UnitCanAssist("player", unit) then
+                -- print("CanAssist", unit)
+                if UnitIsDead(unit) then
+                    return IsSpellInRange(spellDead, unit) == 1 -- 40y
+                else
+                    return IsSpellInRange(spellAlive, unit) == 1 -- 25/30y
+                end
+            elseif UnitCanAttack("player", unit) then
+                -- print("CanAttack", unit)
+                if harmSpells[playerClass] then
+                    return IsSpellInRange(harmSpells[playerClass], unit) == 1
+                else
+                    return IsItemInRange(harmItems[playerClass], unit)
+                end
+            else
+                -- print("CheckInteractDistance", unit)
+                return CheckInteractDistance("target", 4) -- 28 yards
+            end
+        end
+    end
+else
+    function F:IsInRange(unit, check)
+        if not UnitIsVisible(unit) then
+            return false
+        end
+    
+        if UnitIsUnit("player", unit) then
+            return true
+        elseif not check and F:UnitInGroup(unit) then
+            -- NOTE: UnitInRange only works with group players/pets --! but not available for PLAYER PET when SOLO
+            local checked
+            inRange, checked = UnitInRange(unit)
+            if not checked then
+                return F:IsInRange(unit, true)
+            end
+            return inRange
+        else
+            if UnitCanAssist("player", unit) then
+                -- print("CanAssist", unit)
+                if friendSpells[playerClass] then
+                    return IsSpellInRange(friendSpells[playerClass], unit) == 1
+                else
+                    return IsItemInRange(friendItems[playerClass], unit)
+                end
+            elseif UnitCanAttack("player", unit) then
+                -- print("CanAttack", unit)
+                if harmSpells[playerClass] then
+                    return IsSpellInRange(harmSpells[playerClass], unit) == 1
+                else
+                    return IsItemInRange(harmItems[playerClass], unit)
+                end
+            else
+                -- print("CheckInteractDistance", unit)
+                return CheckInteractDistance("target", 4) -- 28 yards
+            end
         end
     end
 end

@@ -48,60 +48,60 @@ DF:Mixin(DropDownMetaFunctions, DF.ScriptHookMixin)
 ------------------------------------------------------------------------------------------------------------
 --members
 	--selected value
-	local gmember_value = function(object)
+	local gmemberValue = function(object)
 		return object:GetValue()
 	end
 
 	--tooltip
-	local gmember_tooltip = function(object)
+	local gmemberTooltip = function(object)
 		return object:GetTooltip()
 	end
 
 	--shown
-	local gmember_shown = function(object)
+	local gmemberShown = function(object)
 		return object:IsShown()
 	end
 
 	--frame width
-	local gmember_width = function(object)
+	local gmemberWidth = function(object)
 		return object.button:GetWidth()
 	end
 
 	--frame height
-	local gmember_height = function(object)
+	local gmemberHeight = function(object)
 		return object.button:GetHeight()
 	end
 
 	--current text
-	local gmember_text = function(object)
+	local gmemberText = function(object)
 		return object.label:GetText()
 	end
 
 	--menu creation function
-	local gmember_function = function(object)
+	local gmemberFunction = function(object)
 		return object:GetFunction()
 	end
 
 	--menu width
-	local gmember_menuwidth = function(object)
+	local gmemberMenuWidth = function(object)
 		return rawget(object, "realsizeW")
 	end
 
 	--menu height
-	local gmember_menuheight = function(object)
+	local gmemberMenuHeight = function(object)
 		return rawget(object, "realsizeH")
 	end
 
 	DropDownMetaFunctions.GetMembers = DropDownMetaFunctions.GetMembers or {}
-	DropDownMetaFunctions.GetMembers["value"] = gmember_value
-	DropDownMetaFunctions.GetMembers["text"] = gmember_text
-	DropDownMetaFunctions.GetMembers["shown"] = gmember_shown
-	DropDownMetaFunctions.GetMembers["width"] = gmember_width
-	DropDownMetaFunctions.GetMembers["menuwidth"] = gmember_menuwidth
-	DropDownMetaFunctions.GetMembers["height"] = gmember_height
-	DropDownMetaFunctions.GetMembers["menuheight"] = gmember_menuheight
-	DropDownMetaFunctions.GetMembers["tooltip"] = gmember_tooltip
-	DropDownMetaFunctions.GetMembers["func"] = gmember_function
+	DropDownMetaFunctions.GetMembers["value"] = gmemberValue
+	DropDownMetaFunctions.GetMembers["text"] = gmemberText
+	DropDownMetaFunctions.GetMembers["shown"] = gmemberShown
+	DropDownMetaFunctions.GetMembers["width"] = gmemberWidth
+	DropDownMetaFunctions.GetMembers["menuwidth"] = gmemberMenuWidth
+	DropDownMetaFunctions.GetMembers["height"] = gmemberHeight
+	DropDownMetaFunctions.GetMembers["menuheight"] = gmemberMenuHeight
+	DropDownMetaFunctions.GetMembers["tooltip"] = gmemberTooltip
+	DropDownMetaFunctions.GetMembers["func"] = gmemberFunction
 
 	DropDownMetaFunctions.__index = function(object, key)
 		local func = DropDownMetaFunctions.GetMembers[key]
@@ -120,12 +120,12 @@ DF:Mixin(DropDownMetaFunctions, DF.ScriptHookMixin)
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	--tooltip
-	local smember_tooltip = function(object, value)
+	local smemberTooltip = function(object, value)
 		return object:SetTooltip(value)
 	end
 
 	--show
-	local smember_show = function(object, value)
+	local smemberShow = function(object, value)
 		if (value) then
 			return object:Show()
 		else
@@ -134,7 +134,7 @@ DF:Mixin(DropDownMetaFunctions, DF.ScriptHookMixin)
 	end
 
 	--hide
-	local smember_hide = function(object, value)
+	local smemberHide = function(object, value)
 		if (not value) then
 			return object:Show()
 		else
@@ -143,39 +143,39 @@ DF:Mixin(DropDownMetaFunctions, DF.ScriptHookMixin)
 	end
 
 	--frame width
-	local smember_width = function(object, value)
+	local smemberWidth = function(object, value)
 		return object.dropdown:SetWidth(value)
 	end
 
 	--frame height
-	local smember_height = function(object, value)
+	local smemberHeight = function(object, value)
 		return object.dropdown:SetHeight(value)
 	end
 
 	--menu creation function
-	local smember_function = function(object, value)
+	local smemberFunction = function(object, value)
 		return object:SetFunction(value)
 	end
 
 	--menu width
-	local smember_menuwidth = function(object, value)
+	local smemberMenuWidth = function(object, value)
 		object:SetMenuSize(value, nil)
 	end
 
 	--menu height
-	local smember_menuheight = function(object, value)
+	local smemberMenuHeight = function(object, value)
 		object:SetMenuSize(nil, value)
 	end
 
 	DropDownMetaFunctions.SetMembers = DropDownMetaFunctions.SetMembers or {}
-	DropDownMetaFunctions.SetMembers["tooltip"] = smember_tooltip
-	DropDownMetaFunctions.SetMembers["show"] = smember_show
-	DropDownMetaFunctions.SetMembers["hide"] = smember_hide
-	DropDownMetaFunctions.SetMembers["width"] = smember_width
-	DropDownMetaFunctions.SetMembers["menuwidth"] = smember_menuwidth
-	DropDownMetaFunctions.SetMembers["height"] = smember_height
-	DropDownMetaFunctions.SetMembers["menuheight"] = smember_menuheight
-	DropDownMetaFunctions.SetMembers["func"] = smember_function
+	DropDownMetaFunctions.SetMembers["tooltip"] = smemberTooltip
+	DropDownMetaFunctions.SetMembers["show"] = smemberShow
+	DropDownMetaFunctions.SetMembers["hide"] = smemberHide
+	DropDownMetaFunctions.SetMembers["width"] = smemberWidth
+	DropDownMetaFunctions.SetMembers["menuwidth"] = smemberMenuWidth
+	DropDownMetaFunctions.SetMembers["height"] = smemberHeight
+	DropDownMetaFunctions.SetMembers["menuheight"] = smemberMenuHeight
+	DropDownMetaFunctions.SetMembers["func"] = smemberFunction
 
 	DropDownMetaFunctions.__newindex = function(object, key, value)
 		local func = DropDownMetaFunctions.SetMembers[key]

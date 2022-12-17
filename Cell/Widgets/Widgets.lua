@@ -368,7 +368,7 @@ function addon:CreateMovableFrame(title, name, width, height, frameStrata, frame
         P:Resize(header, 20)
         P:Repoint(header)
         addon:StylizeFrame(header, {0.115, 0.115, 0.115, 1})
-        P:Resize(header.closeBtn)
+        header.closeBtn:UpdatePixelPerfect()
     end
 
     return f

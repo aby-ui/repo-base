@@ -70,15 +70,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221215100733"),
+	Revision = parseCurseDate("20221217041532"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.9 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 12, 15) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.10 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 12, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 243, "d58ab26"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.29 alpha"
@@ -4959,11 +4959,11 @@ do
                 end
             end
 			if self.Options.HideObjectivesFrame and mod.addon.type ~= "SCENARIO" and (not isRetail or GetNumTrackedAchievements() == 0) and difficultyIndex ~= 8 and not InCombatLockdown() then
-				if isRetail then
-					if ObjectiveTrackerFrame:IsVisible() and not ObjectiveTrackerFrame.collapsed then --abyui KT
-						ObjectiveTracker_Collapse()
-						watchFrameRestore = true
-					end
+				if isRetail then--Do nothing do to taint and breaking
+					--if ObjectiveTrackerFrame:IsVisible() then
+					--	ObjectiveTracker_Collapse()
+					--	watchFrameRestore = true
+					--end
                     if KT_ForceHideTracker then
                         KT_ForceHideTracker(true)
                         KTTrackerRestore = true
@@ -5415,15 +5415,14 @@ do
 				if not InCombatLockdown() then
 					if watchFrameRestore then
 						if isRetail then
-							ObjectiveTracker_Expand()
+							--ObjectiveTracker_Expand()
 						elseif isWrath then
 							WatchFrame:Show()
 						else -- Classic Era / BCC
 							QuestWatchFrame:Show()
 						end
 						watchFrameRestore = false
-                    end
-
+					end
 					local QuestieLoader = _G["QuestieLoader"]
 					if QuestieLoader then
 						local QuestieTracker = _G["QuestieTracker"] or QuestieLoader:ImportModule("QuestieTracker")--Might be a global in some versions, but not a global in others

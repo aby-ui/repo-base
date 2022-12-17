@@ -1099,6 +1099,19 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.STEP2] = { x = 0.3301, y = 0.6410, comment = AL["NOTE_380822_1"] };
 		[RSConstants.STEP3] = { x = 0.3438, y = 0.6460, comment = AL["NOTE_380822_1"] };
 	}; --Igneous Gem
+	["3805842025"] = { 
+		[RSConstants.FLAG] = { x = 0.4984, y = 0.4031, comment = AL["NOTE_380584_1"] };
+	}; --Curious Glyph
+	["3806012024"] = { 
+		[RSConstants.ENTRANCE] = { x = 0.4652, y = 0.2430 };
+	}; --Dusty Darkmoon Card
+	["2010032025"] = { 
+		[RSConstants.DOT..1] = { x = 0.5520, y = 0.3060, comment = AL["NOTE_201003_1"] };
+		[RSConstants.DOT..2] = { x = 0.5660, y = 0.2900, comment = AL["NOTE_201003_1"] };
+		[RSConstants.DOT..3] = { x = 0.5660, y = 0.3060, comment = AL["NOTE_201003_1"] };
+		[RSConstants.DOT..4] = { x = 0.5580, y = 0.3100, comment = AL["NOTE_201003_1"] };
+		[RSConstants.DOT..5] = { x = 0.5580, y = 0.3120, comment = AL["NOTE_201003_1"] };
+	}; --Furry Gloop
 }
 
 ---============================================================================

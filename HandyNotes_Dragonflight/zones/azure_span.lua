@@ -7,17 +7,24 @@ local L = ns.locale
 local Map = ns.Map
 
 local Collectible = ns.node.Collectible
+local NPC = ns.node.NPC
+local PetBattle = ns.node.PetBattle
+local Rare = ns.node.Rare
+local Treasure = ns.node.Treasure
+
 local Disturbeddirt = ns.node.Disturbeddirt
 local Dragonglyph = ns.node.Dragonglyph
+local Dragonrace = ns.node.Dragonrace
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
-local PetBattle = ns.node.PetBattle
+local LegendaryCharacter = ns.node.LegendaryCharacter
 local PM = ns.node.ProfessionMasters
+local PrettyNeat = ns.node.PrettyNeat
 local PT = ns.node.ProfessionTreasures
-local Rare = ns.node.Rare
-local Scoutpack = ns.node.Scoutpack
 local RareElite = ns.node.RareElite
-local Treasure = ns.node.Treasure
+local Safari = ns.node.Safari
+local Scoutpack = ns.node.Scoutpack
+local Squirrel = ns.node.Squirrel
 
 local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
@@ -69,7 +76,7 @@ map.nodes[53013563] = Rare({
 
 map.nodes[55823132] = Rare({
     id = 194210,
-    quest = nil,
+    quest = 73867,
     rewards = {
         Achievement({id = 16678, criteria = 56105})
         -- Transmog({item = , slot = L['']}) -- Name
@@ -227,7 +234,7 @@ map.nodes[32682911] = RareElite({ -- review -- required 67030
 
 map.nodes[19234362] = Rare({ -- required 67030
     id = 193269,
-    quest = 69892,
+    quest = 74002,
     rewards = {
         Achievement({id = 16678, criteria = 56112}),
         Transmog({item = 200206, slot = L['bow']}) -- Behemoth Slayer Greatbow
@@ -797,36 +804,36 @@ map.nodes[66733144] = Disturbeddirt({note = L['in_cave']})
 ---------------------------- LEY LINE IN THE SPAN -----------------------------
 -------------------------------------------------------------------------------
 
-local LayLine = Class('LayLine', Collectible, {
+local LeyLine = Class('LeyLine', Collectible, {
     id = 198260,
     icon = 1033908,
     note = L['in_small_cave'] .. '\n' .. L['leyline_note'],
     rlabel = ns.status.LightBlue('+20 ' .. select(1, GetFactionInfoByID(2510))), -- Valdrakken Accord
-    group = ns.groups.LAYLINE
+    group = ns.groups.LEYLINE
 })
 
-map.nodes[43476224] = LayLine({
+map.nodes[43476224] = LeyLine({
     quest = 72138,
     rewards = {Achievement({id = 16638, criteria = 55972})}
 }) -- Azure Archives
 
-map.nodes[26533590] = LayLine({
+map.nodes[26533590] = LeyLine({
     quest = 72139,
     rewards = {Achievement({id = 16638, criteria = 55973})}
 }) -- Ancient Outlook
 
-map.nodes[65885066] = LayLine({
+map.nodes[65885066] = LeyLine({
     requires = ns.requirement.Profession(186), -- Mining
     quest = 72136,
     rewards = {Achievement({id = 16638, criteria = 55974})}
 }) -- Rustpine Den
 
-map.nodes[66395950] = LayLine({
+map.nodes[66395950] = LeyLine({
     quest = 72141,
     rewards = {Achievement({id = 16638, criteria = 55975})}
 }) -- Ruins of Karnthar
 
-map.nodes[65732814] = LayLine({
+map.nodes[65732814] = LeyLine({
     quest = 72140,
     rewards = {Achievement({id = 16638, criteria = 55976})}
 }) -- Slyvern Plunge
@@ -857,7 +864,7 @@ map.nodes[65702841] = Scoutpack({note = L['in_small_cave']})
 --------------------------------- DRAGONRACES ---------------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[47914077] = ns.node.Dragonrace({
+map.nodes[47914077] = Dragonrace({
     label = '{quest:66946}',
     normal = {2074, 66, 63},
     advanced = {2075, 63, 58},
@@ -871,7 +878,7 @@ map.nodes[47914077] = ns.node.Dragonrace({
     }
 }) -- Azure Span Sprint
 
-map.nodes[20952262] = ns.node.Dragonrace({
+map.nodes[20952262] = Dragonrace({
     label = '{quest:67002}',
     normal = {2076, 61, 58},
     advanced = {2077, 61, 56},
@@ -885,7 +892,7 @@ map.nodes[20952262] = ns.node.Dragonrace({
     }
 }) -- Azure Span Slalom
 
-map.nodes[71292466] = ns.node.Dragonrace({
+map.nodes[71292466] = Dragonrace({
     label = '{quest:67031}',
     normal = {2078, 61, 58},
     advanced = {2079, 61, 56},
@@ -899,7 +906,7 @@ map.nodes[71292466] = ns.node.Dragonrace({
     }
 }) -- Vakthros Ascent
 
-map.nodes[16574937] = ns.node.Dragonrace({
+map.nodes[16574937] = Dragonrace({
     label = '{quest:67296}',
     normal = {2083, 78, 75},
     advanced = {2084, 75, 70},
@@ -913,7 +920,7 @@ map.nodes[16574937] = ns.node.Dragonrace({
     }
 }) -- Iskaara Tour
 
-map.nodes[48473578] = ns.node.Dragonrace({
+map.nodes[48473578] = Dragonrace({
     label = '{quest:67565}',
     normal = {2085, 79, 76},
     advanced = {2086, 77, 72},
@@ -927,7 +934,7 @@ map.nodes[48473578] = ns.node.Dragonrace({
     }
 }) -- Frostland Flyover
 
-map.nodes[42265676] = ns.node.Dragonrace({
+map.nodes[42265676] = Dragonrace({
     label = '{quest:67741}',
     normal = {2089, 94, 91},
     advanced = {2090, 86, 81},
@@ -945,17 +952,17 @@ map.nodes[42265676] = ns.node.Dragonrace({
 --------------------- TO ALL THE SQUIRRELS HIDDEN TIL NOW ---------------------
 -------------------------------------------------------------------------------
 
-map.nodes[58695326] = ns.node.Squirrel({
+map.nodes[58695326] = Squirrel({
     id = 193594,
     rewards = {Achievement({id = 16729, criteria = 7})}
 }) -- Timbertooth Kit
 
-map.nodes[49975755] = ns.node.Squirrel({
+map.nodes[49975755] = Squirrel({
     id = 186481,
     rewards = {Achievement({id = 16729, criteria = 8})}
 }) -- Frosty Spiderling
 
-map.nodes[29244368] = ns.node.Squirrel({
+map.nodes[29244368] = Squirrel({
     id = 197718,
     rewards = {Achievement({id = 16729, criteria = 9})}
 }) -- Crimson Knocker
@@ -988,12 +995,12 @@ map.nodes[69204987] = HemetNesingwaryJr({
 ----------------------------- THAT'S PRETTY NEAT! -----------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[36673652] = ns.node.PrettyNeat({
+map.nodes[36673652] = PrettyNeat({
     id = 190218,
     rewards = {Achievement({id = 16446, criteria = 11})}
 }) -- Horned Filcher
 
-map.nodes[38193815] = ns.node.PrettyNeat({
+map.nodes[38193815] = PrettyNeat({
     id = 190221,
     rewards = {Achievement({id = 16446, criteria = 17})}
 }) -- Pine Flicker
@@ -1002,7 +1009,7 @@ map.nodes[38193815] = ns.node.PrettyNeat({
 ------------------------------ A LEGENDARY ALBUM ------------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[44206095] = ns.node.LegendaryCharacter({
+map.nodes[44506011] = LegendaryCharacter({
     id = 131443,
     rewards = {Achievement({id = 16570, criteria = 55771})}
 }) -- Chief Telemancer Oculeth
@@ -1023,7 +1030,7 @@ map.nodes[63005780] = Collectible({
 ----------------------------- DRAGON ISLES SAFARI -----------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[15202400] = ns.node.Safari({
+map.nodes[15202400] = Safari({
     id = 192265,
     rewards = {Achievement({id = 16519, criteria = 55642}), Pet({id = 3357})},
     pois = {
@@ -1048,13 +1055,13 @@ map.nodes[15202400] = ns.node.Safari({
     }
 }) -- Azure Crystalspine
 
-map.nodes[60403800] = ns.node.Safari({
+map.nodes[60403800] = Safari({
     id = 192268,
     rewards = {Achievement({id = 16519, criteria = 55656}), Pet({id = 3358})},
     pois = {POI({60403800, 60603800})}
 }) -- Crimsonspine
 
-map.nodes[37203300] = ns.node.Safari({
+map.nodes[37203300] = Safari({
     id = 194720,
     rewards = {Achievement({id = 16519, criteria = 55647}), Pet({id = 3351})},
     pois = {
@@ -1066,7 +1073,7 @@ map.nodes[37203300] = ns.node.Safari({
     }
 }) -- Grizzlefur Cub
 
-map.nodes[23603720] = ns.node.Safari({
+map.nodes[23603720] = Safari({
     id = 189122,
     rewards = {Achievement({id = 16519, criteria = 55652}), Pet({id = 3296})},
     pois = {
@@ -1077,7 +1084,7 @@ map.nodes[23603720] = ns.node.Safari({
     }
 }) -- Palamanther
 
-map.nodes[12004740] = ns.node.Safari({
+map.nodes[12004740] = Safari({
     id = 189103,
     rewards = {Achievement({id = 16519, criteria = 55657}), Pet({id = 3281})},
     pois = {
@@ -1089,7 +1096,7 @@ map.nodes[12004740] = ns.node.Safari({
     }
 }) -- Scruffy Ottuk
 
-map.nodes[48606480] = ns.node.Safari({
+map.nodes[48606480] = Safari({
     id = 189107,
     rewards = {Achievement({id = 16519, criteria = 55659}), Pet({id = 3283})},
     pois = {
@@ -1102,7 +1109,7 @@ map.nodes[48606480] = ns.node.Safari({
     }
 }) -- Snowlemental
 
-map.nodes[40803180] = ns.node.Safari({
+map.nodes[40803180] = Safari({
     id = 189104,
     rewards = {Achievement({id = 16519, criteria = 55661}), Pet({id = 3282})},
     pois = {
@@ -1118,7 +1125,7 @@ map.nodes[40803180] = ns.node.Safari({
     }
 }) -- Swoglet
 
-map.nodes[59405740] = ns.node.Safari({
+map.nodes[59405740] = Safari({
     id = 189658,
     rewards = {Achievement({id = 16519, criteria = 55661}), Pet({id = 3328})},
     pois = {
@@ -1130,7 +1137,7 @@ map.nodes[59405740] = ns.node.Safari({
     }
 }) -- Tiny Timbertooth
 
-map.nodes[68402720] = ns.node.Safari({
+map.nodes[68402720] = Safari({
     id = 189110,
     rewards = {Achievement({id = 16519, criteria = 55664}), Pet({id = 3288})},
     pois = {
@@ -1141,7 +1148,7 @@ map.nodes[68402720] = ns.node.Safari({
     }
 }) -- Trunkalumpf
 
-map.nodes[34204160] = ns.node.Safari({
+map.nodes[34204160] = Safari({
     id = 191323,
     rewards = {Achievement({id = 16519, criteria = 55666}), Pet({id = 3336})},
     pois = {
@@ -1157,6 +1164,20 @@ map.nodes[34204160] = ns.node.Safari({
 -------------------------------- MISCELLANEOUS --------------------------------
 -------------------------------------------------------------------------------
 
+------------------------ MOUNT: TEMPERAMENTAL SKYCLAW -------------------------
+
+map.nodes[19042397] = Collectible({
+    label = '{npc:190892}',
+    note = L['temperamental_skyclaw_note'],
+    icon = 4218760,
+    rewards = {
+        Mount({item = 201454, id = 1674}) -- Temperamental Skyclaw
+    },
+    pois = {POI({58234353, 23074372, 32004400})}
+}) -- Temperamental Skyclaw
+
+--------------------------- ACHIEVEMENT: SEEING BLUE --------------------------
+
 map.nodes[40116156] = Collectible({
     label = '{achievement:16581}',
     note = L['seeing_blue_note'],
@@ -1164,6 +1185,8 @@ map.nodes[40116156] = Collectible({
     rewards = {Achievement({id = 16581})},
     pois = {ns.poi.Arrow({40116156, 46112646}), POI({46112646})}
 }) -- Seeing Blue
+
+----------------- ACHIEVEMENT: DO YOU WANNA BUILD A SNOWMAN? ------------------
 
 map.nodes[50935561] = Collectible({
     label = '{achievement:16474}',
@@ -1173,6 +1196,8 @@ map.nodes[50935561] = Collectible({
     pois = {POI({50955481, 50985611})}
 }) -- Do You Wanna Build a Snowman?
 
+--------------------- ACHIEVEMENT: RIVER RAPIDS WRANGLER ----------------------
+
 map.nodes[45025405] = Collectible({
     label = '{achievement:15889}',
     note = L['river_rapids_wrangler_note'],
@@ -1180,6 +1205,8 @@ map.nodes[45025405] = Collectible({
     requires = ns.requirement.Quest(66155), -- Ruriq's River Rapids Ride
     rewards = {Achievement({id = 15889})}
 }) -- River Rapids Wrangler
+
+------------------------------ PET: SNOWCLAW CUB ------------------------------
 
 local SnowclawCub = Class('SnowclawCub', Collectible, {
     id = 196768,
@@ -1209,6 +1236,8 @@ end
 
 map.nodes[67431840] = SnowclawCub()
 
+------------------------ ITEM: TOME OF POLYMORPH: DUCK ------------------------
+
 map.nodes[66333211] = Collectible({
     label = '{item:200205}',
     icon = 133739,
@@ -1220,18 +1249,15 @@ map.nodes[66333211] = Collectible({
     pois = {POI({66453173})}
 }) -- Tome of Polymorph: Duck
 
--------------------------------------------------------------------------------
----------------------------- TEMPERAMENTAL SKYCLAW ----------------------------
--------------------------------------------------------------------------------
+----------------------------- MISCELLANEOUS NPCs ------------------------------
 
-map.nodes[19042397] = Collectible({
-    label = '{npc:190892}',
-    note = L['temperamental_skyclaw_note'],
-    icon = 4218760,
-    rewards = {
-        Mount({item = 201454, id = 1674}) -- Temperamental Skyclaw
-    },
-    pois = {POI({58234353, 23074372, 32004400})}
-})
+map.nodes[12404920] = NPC({
+    id = 186448,
+    icon = 4638464,
+    note = L['elder_poa_note'],
+    pois = {
+        POI({12.81, 49.34}) -- Entrance
+    }
+}) -- Elder Poa (Iskaara Tuskarr Reputation)
 
 -- STOP: DO NOT ADD NEW NODES HERE UNLESS THEY BELONG IN MISCELLANEOUS

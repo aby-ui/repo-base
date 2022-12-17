@@ -1,9 +1,9 @@
 local mod	= DBM:NewMod("MPlusAffixes", "DBM-Affixes")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221016081320")
+mod:SetRevision("20221217064716")
 --mod:SetModelID(47785)
-mod:SetZone(2441, 2097, 1651, 1208, 1195)--All of the S4 SL M+ Dungeons
+mod:SetZone(2516, 2526, 2515, 2521, 1477, 1571, 1176, 960)--All of the S1 DF M+ Dungeons
 
 mod.isTrashMod = true
 mod.isTrashModBossFightAllowed = true

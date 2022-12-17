@@ -396,6 +396,22 @@ GTFO.SpellID["390619"] = {
   sound = 3;
 };
 
+GTFO.SpellID["386259"] = {
+  --desc = "Sundering Crash (Basrikron)";
+  sound = 3;
+  damageMinimum = 100000;
+};
+
+GTFO.SpellID["385284"] = {
+  --desc = "Fracturing Tremor - Impact (Basrikron)";
+  sound = 3;
+};
+
+GTFO.SpellID["387684"] = {
+  --desc = "Volatile Earth (Basrikron)";
+  sound = 3;
+};
+
 
 --- *******************
 --- * Ruby Life Pools *
@@ -600,6 +616,12 @@ GTFO.SpellID["376660"] = {
 GTFO.SpellID["376737"] = {
   --desc = "Lightning (Balakar Khan)";
   sound = 3;
+};
+
+GTFO.SpellID["376896"] = {
+  --desc = "Crackling Upheaval (Balakar Khan)";
+  sound = 3;
+  test = true;
 };
 
 --- **********************
@@ -830,12 +852,18 @@ GTFO.SpellID["388799"] = {
   sound = 3;
 };
 
+GTFO.SpellID["374350"] = {
+  --desc = "Energy Bomb (Echo of Doragosa)";
+  soundFunction = function() 
+	GTFO_AddEvent("EnergyBomb", 7);
+	return 0;
+  end;
+};
+
 GTFO.SpellID["374352"] = {
   --desc = "Energy Bomb (Echo of Doragosa)";
-  negatingDebuffSpellID = 374352; -- Energy Bomb
-  negatingIgnoreTime = 7;
+  ignoreEvent = "EnergyBomb";
   sound = 3;
-  
 };
 
 GTFO.SpellID["388822"] = {
@@ -1132,9 +1160,97 @@ GTFO.SpellID["369409"] = {
 --- * Vault of the Incarnates *
 --- ***************************
 
+GTFO.SpellID["396025"] = {
+  --desc = "Molten Spike (Eranog)";
+  sound = 3;
+};
+
+GTFO.SpellID["370615"] = {
+  --desc = "Molten Cleave (Eranog)";
+  sound = 3;
+};
+
+GTFO.SpellID["397115"] = {
+  --desc = "Incinerate (Eranog)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["396031"] = {
+  --desc = "Molten Fissure (Eranog)";
+  sound = 3;
+};
+
+GTFO.SpellID["392582"] = {
+  --desc = "Stonebreaking Leap (Quarry Stonebreaker)";
+  applicationOnly = true;
+  sound = 3;
+};
+
+GTFO.SpellID["392635"] = {
+  --desc = "Pulverizing Breath (Kaurdyth)";
+  sound = 3;
+};
+
+GTFO.SpellID["392323"] = {
+  --desc = "Shattering Wingslam (Kaurdyth)";
+  sound = 3;
+};
+
+GTFO.SpellID["392856"] = {
+  --desc = "Fractured Rubble (Terros)";
+  sound = 3;
+};
+
+GTFO.SpellID["378861"] = {
+  --desc = "Fractured Rubble (Terros)";
+  sound = 3;
+};
+
+GTFO.SpellID["383073"] = {
+  --desc = "Shattering Impact (Terros)";
+  sound = 3;
+};
+
+GTFO.SpellID["386400"] = {
+  --desc = "Aftershock (Terros)";
+  sound = 3;
+};
+
+GTFO.SpellID["381775"] = {
+  --desc = "Resonating Annihilation - Cone (Terros)";
+  sound = 3;
+};
+
+GTFO.SpellID["381781"] = {
+  --desc = "Concussive Slam (Terros)";
+  sound = 3;
+  tankSound = 0;
+};
+
+GTFO.SpellID["387822"] = {
+  --desc = "Massive Boulders (Terros)";
+  sound = 3;
+};
+
+GTFO.SpellID["394921"] = {
+  --desc = "Quaking Destruction (Braekkas)";
+  sound = 3;
+};
+
+GTFO.SpellID["396394"] = {
+  --desc = "Glacial Hail (Glacias)";
+  sound = 3;
+};
+
+GTFO.SpellID["370991"] = {
+  --desc = "Earthen Pillar (Opalfang)";
+  sound = 3;
+};
+
 GTFO.SpellID["375424"] = {
   --desc = "Raging Tempest (Dathea)";
-  sound = 1;
+  sound = 3;
   test = true;
 };
 

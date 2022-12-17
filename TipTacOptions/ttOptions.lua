@@ -276,7 +276,8 @@ local options = {
 if (TipTacTalents) then
 	local tttOptions = {
 		{ type = "Check", var = "t_enable", label = "Enable TipTacTalents", tip = "Turns on or off all features of the TipTacTalents addon" },
-		{ type = "Check", var = "t_showTalents", label = "Show Talents", tip = "This option makes the tip show the talent specialization of other players", y = 12 },
+		{ type = "Header", label = "Talents", y = 12 },
+		{ type = "Check", var = "t_showTalents", label = "Show Talents", tip = "This option makes the tip show the talent specialization of other players" },
 		{ type = "Check", var = "t_talentOnlyInParty", label = "Only Show Talents and Average Item Level\nfor Party and Raid Members", tip = "When you enable this, only talents and average item level of players in your party or raid will be requested and shown" },
 	};
 	
@@ -299,12 +300,11 @@ if (TipTacTalents) then
 		end
 	end
 	
-	tttOptions[#tttOptions + 1] = { type = "Check", var = "t_showAverageItemLevel", label = "Show Average Item Level (AIL)", tip = "This option makes the tip show the average item level (AIL) of other players", y = 12 };
-
-	tttOptions[#tttOptions + 1] = { type = "Slider", var = "t_talentCacheSize", label = "Talent/AIL Cache Size", min = 0, max = 50, step = 1, y = 12 };
+	tttOptions[#tttOptions + 1] = { type = "Header", label = "Average Item Level", y = 12 };
+	tttOptions[#tttOptions + 1] = { type = "Check", var = "t_showAverageItemLevel", label = "Show Average Item Level (AIL)", tip = "This option makes the tip show the average item level (AIL) of other players" };
 	
 	options[#options + 1] = {
-		[0] = "Talents",
+		[0] = "Talents/AIL",
 		unpack(tttOptions)
 	};
 end
@@ -404,7 +404,7 @@ UISpecialFrames[#UISpecialFrames + 1] = f:GetName();
 
 f.options = options;
 
-f:SetSize(444,378);
+f:SetSize(449,378);
 f:SetBackdrop({ bgFile = "Interface\\ChatFrame\\ChatFrameBackground", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = 1, tileSize = 16, edgeSize = 16, insets = { left = 3, right = 3, top = 3, bottom = 3 } });
 f:SetBackdropColor(0.1,0.22,0.35,1);
 f:SetBackdropBorderColor(0.1,0.1,0.1,1);
@@ -422,7 +422,7 @@ f.outline:SetBackdropColor(0.1,0.1,0.2,1);
 f.outline:SetBackdropBorderColor(0.8,0.8,0.9,0.4);
 f.outline:SetPoint("TOPLEFT",12,-12);
 f.outline:SetPoint("BOTTOMLEFT",12,12);
-f.outline:SetWidth(84);
+f.outline:SetWidth(89);
 
 f:SetScript("OnMouseDown",f.StartMoving);
 f:SetScript("OnMouseUp",function(self) self:StopMovingOrSizing(); cfg.optionsLeft = self:GetLeft(); cfg.optionsBottom = self:GetBottom(); end);

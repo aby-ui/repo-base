@@ -606,6 +606,13 @@ L["Changelogs"] = "更新记录"
 L["Click to view recent changelogs"] = "点击查看近期更新记录"
 L["Click to view older changelogs"] = "点击查看远古更新记录"
 L["CHANGELOGS"] = [[
+    <h1>r151-release (Dec 17, 2022, 10:18 GMT+8)</h1>
+    <p>* 更新副本减益：化身巨龙牢窟。</p>
+    <p>* 修复唤魔师的距离检查。</p>
+    <p>* 修复可驱散检查（当进入副本/战场自动切换天赋时）。</p>
+    <p>* 更新本地化。</p>
+    <br/>
+
     <h1>r150-release (Dec 12, 2022, 07:55 GMT+8)</h1>
     <p>* 更新巨龙时代减益。</p>
     <p>* 更新进度条类型的指示器（你可能需要重新设置它们的尺寸与位置）。</p>

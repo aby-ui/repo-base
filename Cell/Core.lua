@@ -116,7 +116,7 @@ local function PreUpdateLayout()
     end
 end
 Cell:RegisterCallback("GroupTypeChanged", "Core_GroupTypeChanged", PreUpdateLayout)
-Cell:RegisterCallback("RoleChanged", "Core_RoleChanged", PreUpdateLayout)
+Cell:RegisterCallback("SpecChanged", "Core_SpecChanged", PreUpdateLayout)
 
 -------------------------------------------------
 -- events
@@ -708,15 +708,15 @@ function eventFrame:ACTIVE_TALENT_GROUP_CHANGED()
         if not Cell.vars.playerSpecID then -- NOTE: when join in battleground, spec auto switched, during loading, can't get info from GetSpecializationInfo, until PLAYER_ENTERING_WORLD
             forceRecheck = true
             checkSpecFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-            F:Debug("|cffffbb77RoleChanged:|r FAILED")
+            F:Debug("|cffffbb77SpecChanged:|r FAILED")
         else
             forceRecheck = false
             checkSpecFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
             if not CellDB["clickCastings"][Cell.vars.playerClass]["useCommon"] then
                 Cell:Fire("UpdateClickCastings")
             end
-            F:Debug("|cffffbb77RoleChanged:|r", Cell.vars.playerSpecRole)
-            Cell:Fire("RoleChanged", Cell.vars.playerSpecRole)
+            F:Debug("|cffffbb77SpecChanged:|r", Cell.vars.playerSpecRole)
+            Cell:Fire("SpecChanged", Cell.vars.playerSpecRole)
         end
     end
 end

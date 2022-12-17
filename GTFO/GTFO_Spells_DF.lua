@@ -100,9 +100,20 @@ GTFO.SpellID["388759"] = {
 };
 
 GTFO.SpellID["393467"] = {
-  --desc = "Stormwall";
+  --desc = "Stormwall (Forbidden Isles)";
   sound = 1;
 };
+
+GTFO.SpellID["377840"] = {
+  --desc = "Temporal Shock (Eon's Fringe)";
+  sound = 2;
+};
+
+GTFO.SpellID["385355"] = {
+  --desc = "Fracturing Tremor - Pool (Basrikron)";
+  sound = 1;
+};
+
 
 --- *******************
 --- * Ruby Life Pools *
@@ -199,6 +210,11 @@ GTFO.SpellID["386916"] = {
 
 GTFO.SpellID["395669"] = {
   --desc = "Aftershock (Maruuk)";
+  sound = 1;
+};
+
+GTFO.SpellID["376899"] = {
+  --desc = "Crackling Cloud (Balakar Khan)";
   sound = 1;
 };
 
@@ -489,13 +505,17 @@ GTFO.SpellID["376325"] = {
 GTFO.SpellID["370648"] = {
   --desc = "Lava Flow (Eranog)";
   sound = 1;
-  test = true;
+};
+
+GTFO.SpellID["392563"] = {
+  --desc = "Whirling Destruction (Quarry Stonebreaker)";
+  sound = 1;
+  tankSound = 0;
 };
 
 GTFO.SpellID["382458"] = {
   --desc = "Resonant Aftermath (Terros)";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["371514"] = {
@@ -506,7 +526,6 @@ GTFO.SpellID["371514"] = {
 	end
 	return 1;
   end;
-  test = true;
 };
 
 GTFO.SpellID["372055"] = {

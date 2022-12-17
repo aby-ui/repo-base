@@ -6,7 +6,7 @@ if not L then return end
 -------------------------------- DRAGON ISLES ---------------------------------
 -------------------------------------------------------------------------------
 
-L['elite_loot_385'] = ns.color.Orange('This rare can drop up to ilvl 385 loot!')
+L['elite_loot_385'] = ns.color.Orange('This rare can drop higher ilvl loot!')
 L['gem_cluster_note'] = 'The required item can be found at Renown 21 with the Dragonscale Expedition in Expedition Scout\'s Packs and Disturbed Dirts.'
 
 L['options_icons_bonus_boss'] = 'Bonus Elites'
@@ -113,8 +113,8 @@ L['pt_tailor_decaying_brackenhide_blanket_note'] = 'Hanging on a tree within a m
 L['pt_tailor_intriguing_bolt_of_blue_cloth_note'] = 'Follow the stairs to the left.'
 
 L['leyline_note'] = 'Realign the ley line.'
-L['options_icons_layline'] = '{achievement:16638}'
-L['options_icons_layline_desc'] = 'Display the location of all ley line for the achievement {achievement:16638}.'
+L['options_icons_leyline'] = '{achievement:16638}'
+L['options_icons_leyline_desc'] = 'Display the location of all ley line for the achievement {achievement:16638}.'
 
 L['river_rapids_wrangler_note'] = 'Talk to {npc:186157} and select "I\'d like to take your River Rapids Ride again". You have 60 seconds to collect get 40x stacks of {spell:373490}.'
 L['seeing_blue_note'] = 'Fly from the top of the Azure Archives to the Cobalt Assembly without landing.'
@@ -123,7 +123,7 @@ L['snowman_note'] = 'There are three {npc:197599s} laying in the area (might hav
 L['snowclaw_cub_note_start'] = 'You must complete the {quest:67094} quest chain offered by {npc:192522} in |cFFFFFD00Valdrakken|r to obtain the |cFFFFFD00Honorary Dryad|r title.\n\nGather the following items:'
 L['snowclaw_cub_note_item1'] = 'Loot 3x {item:197744} from various {npc:182559s} around |cFFFFFD00The Waking Shores|r.'
 L['snowclaw_cub_note_item2'] = 'Purchase 1x {item:198356} from {npc:193310} in |cFFFFFD00The Waking Shores|r.'
-L['snowclaw_cub_note_end'] = ns.color.Orange('All items can be purchased from the auction house. This is especially helpful if you do not easily have access to a {item:199215} which is required to purchase items from {npc:193310}.') .. '\n\nOnce you have the title equiped offer all 4 items to {npc:196768} to receive your pet.' .. ns.color.Red('\n\nBUG: Title may disappear pending fix.')
+L['snowclaw_cub_note_end'] = ns.color.Orange('All items can be purchased from the auction house. This is especially helpful if you do not easily have access to a {item:199215} which is required to purchase items from {npc:193310}.') .. '\n\nOnce you have the |cFFFFFD00Honorary Dryad|r title equipped offer all 4 items to {npc:196768} to receive your pet.' .. ns.color.Red('\n\nBUG: Title may disappear pending fix.')
 
 L['tome_of_polymoph_duck'] = 'Use {spell:1953} to enter the cave and interact with the |cFFFFFD00Manastorming For Beginners|r book to complete the quest.'
 
@@ -136,6 +136,8 @@ Collect (or buy in the auction house):
 
 Ask about the saddled slyvern and present {npc:190892} the collected "dishes".
 ]]
+
+L['elder_poa_note'] = 'Turn in {item:200071} for |cFFFFFD00Iskaara Tuskarr|r reputation.'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------
@@ -208,6 +210,7 @@ L['options_icons_dreamguard_desc'] = 'Display  the location of Dreamguards for {
 
 L['khadin_note'] = 'Exchange {item:191784} for profession knowledge.'
 L['the_great_swog_note'] = 'Exchange {item:199338}, {item:199339} and {item:199340} for {item:202102}.'
+L['hunt_instructor_basku_note'] = 'Exchange {item:200093} for |cFFFFFD00Maruuk Centaur|r reputation.'
 
 -------------------------------------------------------------------------------
 --------------------------------- THALDRASZUS ---------------------------------
@@ -249,10 +252,14 @@ L['craft_creche_crowler_note'] = 'Purchase from {npc:187444} ' .. ns.color.NPC('
 L['bivigosas_blood_sausages_note'] = 'Purchase from {npc:188895} ' .. ns.color.NPC('<Food & Drink>') .. ' at |cFFFFFD00Gelikyr Post|r.'
 L['options_icons_specialties'] = '{achievement:16621}'
 L['options_icons_specialties_desc'] = 'Display food and drink locations for {achievement:16621} achievement.'
+
+L['new_perspective_note'] = 'Take a picture with the S.E.L.F.I.E. camera at the vista. The location will be marked by a purple light circle as soon as you in camera mode.\n\nIf you dont get credit towards the achievement, change your perspective.'
 L['options_icons_new_perspective'] = '{achievement:16634}'
 L['options_icons_new_perspective_desc'] = 'Vista locations for the {achievement:16634} achievement.'
-L['new_perspective_note'] = 'Take a picture with the S.E.L.F.I.E. camera at the vista. The location will be marked by a purple light circle as soon as you in camera mode.\n\nIf you dont get credit towards the achievement, change your perspective.'
+
 L['ruby_feast_gourmand'] = 'Every day, a random guest chef serves up different dishes and drinks.'
+
+L['sorotis_note'] = 'Exchange {item:199906} for |cFFFFFD00Valdrakken Accord|r reputation.'
 
 -------------------------------------------------------------------------------
 ------------------------------ THE WAKING SHORE -------------------------------
@@ -350,6 +357,10 @@ L['slumbering_worldsnail_note1'] = [[
 
 L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: If you die you will lose your membership debuff. Either purchase a new membership from {npc:193310} for 20x {item:202173} before you die or you need to turn in more keys for a chance at a new membership from the chest.')
 
+L['magmashell_note'] = 'Loot {item:201883} from {npc:193138} around |cffffff00Obsidian Citadel|r and bring it to the {npc:199010}.\n\n' .. ns.color.Orange('There is a 20 second spell channel while in the lava to obtain the mount so bringing a healer or something like {item:200116} is recommended.')
+
 L['options_icons_safari'] = '{achievement:16519}'
 L['options_icons_safari_desc'] = 'Display the location of battle pets for {achievement:16519}.'
 L['shyfly_note'] = 'You have to be on the quest {quest:70853} to see the {npc:189102}.'
+
+L['cataloger_jakes_note'] = 'Exchange {item:192055} for |cFFFFFD00Dragonscale Expedition|r reputation.'

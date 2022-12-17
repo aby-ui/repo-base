@@ -61,7 +61,12 @@ function RSNavigationMixin:EnablePreviousButton()
 end
 
 function RSNavigationMixin:AddNext(vignetteInfo)
-	table.insert(navigationCache, vignetteInfo)
+	-- Skip if already in the pool in the last position
+	local lastVignetteInfo = navigationCache[#navigationCache]
+	if (not lastVignetteInfo or lastVignetteInfo.objectGUID ~= vignetteInfo.objectGUID) then
+		table.insert(navigationCache, vignetteInfo)
+	end
+	
 	self.ShowAnim:Play();
 
 	-- If its not locking then we have to keep moving the index to the last position
@@ -71,7 +76,7 @@ function RSNavigationMixin:AddNext(vignetteInfo)
 		-- Refresh waypoint
 		RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo)
 		RSWaypoints.AddWaypointFromVignette(vignetteInfo)
-		-- If the navigation cache only contains one item, adds waypoint
+	-- If the navigation cache only contains one item, adds waypoint
 	elseif (table.getn(navigationCache) == 1) then
 		RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo)
 		RSWaypoints.AddWaypointFromVignette(vignetteInfo)

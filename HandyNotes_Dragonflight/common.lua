@@ -41,7 +41,7 @@ ns.groups.FRAGMENT = Group('fragment', 134908, {defaults = ns.GROUP_HIDDEN})
 ns.groups.HEMET_NESINGWARY_JR = Group('hemet_nesingwary_jr', 236444,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.KITE = Group('kite', 133837, {defaults = ns.GROUP_HIDDEN})
-ns.groups.LAYLINE = Group('layline', 1033908, {defaults = ns.GROUP_HIDDEN})
+ns.groups.LEYLINE = Group('leyline', 1033908, {defaults = ns.GROUP_HIDDEN})
 ns.groups.LEGENDARY_ALBUM = Group('legendary_album', 1109168,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.NEW_PERSPECTIVE = Group('new_perspective', 1109100,

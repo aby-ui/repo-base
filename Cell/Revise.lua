@@ -10,7 +10,7 @@ function F:Revise()
     local charaDbRevision
     if Cell.isWrath then
         charaDbRevision = CellCharacterDB["revise"] and tonumber(string.match(CellCharacterDB["revise"], "%d+")) or 0
-        F:Debug("CharaDBRevision:", dbRevision)
+        F:Debug("CharaDBRevision:", charaDbRevision)
     end
 
     if CellDB["revise"] and dbRevision < 100 then -- update from an unsupported version

@@ -467,7 +467,9 @@ end
 
 local pattern = "^%+([0-9,]+) ([^ ]+)$"
 local patternDual = "^%+([0-9,]+) ([^ ]+) 和 %+([0-9,]+) ([^ ]+)$" --"\124cffffffff+60 急速 和 +28 精通 \124A:Professions-Icon-Quality-Tier2-Small:20:20\124a\124r",
-local patternMore = "%+([0-9,]+) ([^ ]-)\124?r?$" --"附魔：+200 急速" "|cffffffff+150 急速|r"
+local patternDual2 = "^%+([0-9,]+) ([^ ]+)，%+([0-9,]+) ([^ ]+)$" -- +13 主属性，+12 全能
+local patternMore = "%+([0-9,]+) ([^ ]-)\124?r?$" --"附魔：+200 急速" 宝石 "|cffffffff+13 主属性，+12 全能 |A:Professions-Icon-Quality-Tier2-Small:20:20|a|r"
+local ALL_PRIMARY_STATS = 99
 local ATTRS = {
     [STAT_CRITICAL_STRIKE]  = 1, --CR_CRIT_MELEE,
     [STAT_HASTE]            = 2, --CR_HASTE_MELEE,
@@ -479,13 +481,7 @@ local ATTRS = {
     [STAT_AVOIDANCE] = 11, --ITEM_MOD_CR_AVOIDANCE_SHORT 闪避
     [STAT_LIFESTEAL] = 12, --ITEM_MOD_CR_LIFESTEAL_SHORT 吸血
     [STAT_SPEED] = 13, --ITEM_MOD_CR_SPEED_SHORT 加速
-
-    CONDUIT_TYPE = 9, --1-效能导灵器, 2-耐久导灵器, 3-灵巧导灵器, 橙装记忆和小宠物是其他
-}
-local CONDUIT_TYPES = {
-    [CONDUIT_TYPE_POTENCY] = 1,
-    [CONDUIT_TYPE_FINESSE] = 2,
-    [CONDUIT_TYPE_ENDURANCE] = 3,
+    ["主属性"] = ALL_PRIMARY_STATS, --10.0
 }
 U1ATTRSNAME = {} for k,v in pairs(ATTRS) do U1ATTRSNAME[v] = k end
 
@@ -517,10 +513,6 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
         TooltipUtil.SurfaceArgs(line2)
         line2 = line2.leftText
     end
-    if CONDUIT_TYPES[line2] then
-        stats = stats or {}
-        stats[ATTRS.CONDUIT_TYPE] = CONDUIT_TYPES[line2]
-    end
     for i = 5, #tData.lines, 1 do
         local line = tData.lines[i]
         TooltipUtil.SurfaceArgs(line)
@@ -529,6 +521,9 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
             txt = txt:gsub(" \124A.-\124a", "") --10.0 "附魔：+100 加速 |A:Professions-Icon-Quality-Tier2-Small:20:20|a"
             txt = txt:gsub("\124c%x%x%x%x%x%x%x%x", ""):gsub("\124r", "")
             local _, _, value1, attr1, value2, attr2 = txt:find(patternDual)
+            if not value1 then
+                _, _, value1, attr1, value2, attr2 = txt:find(patternDual2)
+            end
             if attr1 and attr2 then
                 stats = stats or {}
                 if ATTRS[attr1] then
@@ -565,6 +560,10 @@ function U1GetItemStats(link, slot, tbl, includeGemEnchant, classID, specID)
                 end
             end
         end
+    end
+    if stats and stats[ALL_PRIMARY_STATS] then
+        for i=5,8 do stats[i] = (stats[i] or 0) + stats[ALL_PRIMARY_STATS] end
+        stats[ALL_PRIMARY_STATS] = nil
     end
     if slot == nil and includeGemEnchant and stats then
         cache[link] = copy(stats, cache[link])

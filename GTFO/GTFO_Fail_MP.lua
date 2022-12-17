@@ -123,6 +123,42 @@ GTFO.SpellID["145886"] = {
 	trivialPercent = 0;
 };
 
+GTFO.SpellID["397793"] = {
+  --desc = "Corrupted Geyser (Wise Mari)";
+  sound = 3;
+};
+
+GTFO.SpellID["396010"] = {
+  --desc = "Tears of Pain (The Crybaby Hozen)";
+  sound = 3;
+};
+
+GTFO.SpellID["397899"] = {
+  --desc = "Leg Sweep (Sha-Touched Guardian)";
+  sound = 3;
+  applicationOnly = true;
+};
+
+GTFO.SpellID["396907"] = {
+  --desc = "Jade Fire Breath (Yu'lon)";
+  sound = 3;
+};
+
+GTFO.SpellID["106856"] = {
+  --desc = "Serpent Kick (Liu Flameheart)";
+  sound = 3;
+};
+
+GTFO.SpellID["106864"] = {
+  --desc = "Jade Serpent Kick (Liu Flameheart)";
+  sound = 3;
+};
+
+GTFO.SpellID["110125"] = {
+  --desc = "Shattered Resolve (Minion of Doubt)";
+  sound = 3;
+};
+
 -- *****************
 -- * Scarlet Halls *
 -- *****************

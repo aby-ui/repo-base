@@ -7966,7 +7966,7 @@ detailsFramework.CastFrameFunctions = {
 					--[[if not self.spellEndTime then
 						self:UpdateChannelInfo(self.unit)
 					end]]--
-					self.value = self.spellEndTime - GetTime()
+					self.value = self.empowered and (GetTime() - self.spellStartTime) or (self.spellEndTime - GetTime())
 				end
 
 				self:RunHooksForWidget("OnShow", self, self.unit)
@@ -8005,7 +8005,7 @@ detailsFramework.CastFrameFunctions = {
 					self.percentText:SetText(format("%.1f", abs(self.value - self.maxValue)))
 
 				elseif (self.channeling) then
-					local remainingTime = abs(self.value)
+					local remainingTime = self.empowered and abs(self.value - self.maxValue) or abs(self.value)
 					if (remainingTime > 999) then
 						self.percentText:SetText("")
 					else
@@ -8035,6 +8035,7 @@ detailsFramework.CastFrameFunctions = {
 		--update spark position
 		local sparkPosition = self.value / self.maxValue * self:GetWidth()
 		self.Spark:SetPoint("center", self, "left", sparkPosition + self.Settings.SparkOffset, 0)
+		
 
 		--in order to allow the lazy tick run, it must return true, it tell that the cast didn't finished
 		return true
@@ -8042,7 +8043,7 @@ detailsFramework.CastFrameFunctions = {
 
 	--tick function for channeling casts
 	OnTick_Channeling = function(self, deltaTime)
-		self.value = self.value - deltaTime
+		self.value = self.empowered and self.value + deltaTime or self.value - deltaTime
 
 		if (self:CheckCastIsDone()) then
 			return
@@ -8053,6 +8054,8 @@ detailsFramework.CastFrameFunctions = {
 		--update spark position
 		local sparkPosition = self.value / self.maxValue * self:GetWidth()
 		self.Spark:SetPoint("center", self, "left", sparkPosition + self.Settings.SparkOffset, 0)
+		
+		self:CreateOrUpdateEmpoweredPips()
 
 		return true
 	end,
@@ -8185,6 +8188,14 @@ detailsFramework.CastFrameFunctions = {
 		if (not self:IsValid (unit, name, isTradeSkill, true)) then
 			return
 		end
+		
+		--empowered? no!
+			self.holdAtMaxTime = nil
+			self.empowered = false
+			self.curStage = nil
+			self.numStages = nil
+			self.empStages = nil
+			self:CreateOrUpdateEmpoweredPips()
 
 		--setup cast
 			self.casting = true
@@ -8239,6 +8250,51 @@ detailsFramework.CastFrameFunctions = {
 
 		self:RunHooksForWidget("OnCastStart", self, self.unit, "UNIT_SPELLCAST_START")
 	end,
+	
+	CreateOrUpdateEmpoweredPips = function(self, unit, numStages, startTime, endTime)
+		unit = unit or self.unit
+		numStages = numStages or self.numStages
+		startTime = startTime or ((self.spellStartTime or 0) * 1000)
+		endTime = endTime or ((self.spellEndTime or 0) * 1000)
+		
+		if not self.empStages or not numStages or numStages <= 0 then
+			self.stagePips = self.stagePips or {}
+			for i, stagePip in pairs(self.stagePips) do
+				stagePip:Hide()
+			end
+			return
+		end
+		
+		local width = self:GetWidth()
+		local height = self:GetHeight()
+		for i = 1, numStages, 1 do
+			local curStartTime = self.empStages[i] and self.empStages[i].start
+			local curEndTime = self.empStages[i] and self.empStages[i].finish
+			local curDuration = curEndTime - curStartTime
+			local offset = width * curEndTime / (endTime - startTime) * 1000
+			if curDuration > -1 then
+				
+				stagePip = self.stagePips[i]
+				if not stagePip then
+					stagePip = self:CreateTexture(nil, "overlay", nil, 2)
+					stagePip:SetBlendMode("ADD")
+					stagePip:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
+					stagePip:SetTexCoord(11/32,18/32,9/32,23/32)
+					stagePip:SetSize(2, height)
+					--stagePip = CreateFrame("FRAME", nil, self, "CastingBarFrameStagePipTemplate")
+					self.stagePips[i] = stagePip
+				end
+				
+				stagePip:ClearAllPoints()
+				--stagePip:SetPoint("TOP", self, "TOPLEFT", offset, -1)
+				--stagePip:SetPoint("BOTTOM", self, "BOTTOMLEFT", offset, 1)
+				--stagePip.BasePip:SetVertexColor(1, 1, 1, 1)
+				stagePip:SetPoint("CENTER", self, "LEFT", offset, 0)
+				stagePip:SetVertexColor(1, 1, 1, 1)
+				stagePip:Show()
+			end
+		end
+	end,
 
 	UpdateChannelInfo = function(self, unit, ...)
 		local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo (unit)
@@ -8250,15 +8306,22 @@ detailsFramework.CastFrameFunctions = {
 		
 		--empowered?
 			self.empStages = {}
+			self.stagePips = self.stagePips or {}
+			for i, stagePip in pairs(self.stagePips) do
+				stagePip:Hide()
+			end
+			
 			if numStages and numStages > 0 then
-				self.holdAtMaxTime = GetUnitEmpowerHoldAtMaxTime(unit)
+				self.holdAtMaxTime = GetUnitEmpowerHoldAtMaxTime(self.unit)
 				self.empowered = true
+				self.numStages = numStages
+				
 
 				local lastStageEndTime = 0
 				for i = 1, numStages do
 					self.empStages[i] = {
 						start = lastStageEndTime,
-						finish = lastStageEndTime - GetUnitEmpowerStageDuration(unit, i - 1) / 1000,
+						finish = lastStageEndTime + GetUnitEmpowerStageDuration(unit, i - 1) / 1000,
 					}
 					lastStageEndTime = self.empStages[i].finish
 					
@@ -8270,10 +8333,14 @@ detailsFramework.CastFrameFunctions = {
 				if (self.Settings.ShowEmpoweredDuration) then
 					endTime = endTime + self.holdAtMaxTime
 				end
+				
+				--create/update pips
+				self:CreateOrUpdateEmpoweredPips(unit, numStages, startTime, endTime)
 			else
-				self.holdAtMaxTime = 0
+				self.holdAtMaxTime = nil
 				self.empowered = false
-				self.curStage = 0
+				self.curStage = nil
+				self.numStages = nil
 			end
 
 		--setup cast
@@ -8289,9 +8356,9 @@ detailsFramework.CastFrameFunctions = {
 			self.spellTexture = texture
 			self.spellStartTime = startTime / 1000
 			self.spellEndTime = endTime / 1000
-			self.value = self.spellEndTime - GetTime()
+			self.value = self.empowered and (GetTime() - self.spellStartTime) or (self.spellEndTime - GetTime())
 			self.maxValue = self.spellEndTime - self.spellStartTime
-			self.numStages = numStages
+			self.reverseChanneling = self.empowered
 
 			self:SetMinMaxValues(0, self.maxValue)
 			self:SetValue(self.value)
@@ -8494,13 +8561,13 @@ detailsFramework.CastFrameFunctions = {
 		--update the cast time
 		self.spellStartTime = startTime / 1000
 		self.spellEndTime = endTime / 1000
-		self.value = self.spellEndTime - GetTime()
+		self.value = self.empowered and (GetTime() - self.spellStartTime) or (self.spellEndTime - GetTime())
+		self.maxValue = self.spellEndTime - self.spellStartTime
 
-		if (self.value < 0) then
+		if (self.value < 0 or self.value >= self.maxValue) then
 			self.value = 0
 		end
 
-		self.maxValue = self.spellEndTime - self.spellStartTime
 		self:SetMinMaxValues(0, self.maxValue)
 		self:SetValue(self.value)
 	end,

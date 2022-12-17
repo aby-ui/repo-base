@@ -11,7 +11,7 @@ local patrons = {
     {"夏木沐-伊森利恩 (CN)", "xiamumu"},
     {"flappysmurf (爱发电)", "flappysmurf"},
     {"七月核桃丶-白银之手 (CN)", "qiyuehetaodian"},
-    {"Smile (爱发电)", "smile"},
+    {"芋包-影之哀伤 (CN)", "yubao"},
     {"青乙-影之哀伤 (CN)", "qingyi"},
     {"黑丨诺-影之哀伤 (CN)", "heishunuo"},
     {"Mike (爱发电)", "mike"},
@@ -31,6 +31,8 @@ local patrons = {
     {"伊莉丝翠的眷顾 (爱发电)", "yilisicuidejuangu"},
     {"秋末旷夜-凤凰之神 (CN)", "qiumokuangye"},
     {"批歪 (爱发电)", "piwai"},
+    {"ZzZ (爱发电)", "zzz"},
+    {"音速豆奶-白银之手 (CN)", "yinsudounai"},
 }
 
 -- sort
@@ -47,6 +49,7 @@ local tests = {
     ["Programming-Lycanthoth"] = true,
     ["Programming-影之哀伤"] = true,
     ["篠崎-影之哀伤"] = true,
+    ["蜜柑-影之哀伤"] = true,
 }
 
 local wowPatrons = {}

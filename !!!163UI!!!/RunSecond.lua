@@ -716,5 +716,64 @@ if true then
     end
 end
 
+--[[------------------------------------------------------------
+10.0一些教程提示问题
+---------------------------------------------------------------]]
+do
+    local unspentPath = "!!!163UI!!!/noProUnspent" --未分配的专精点数
+
+    hooksecurefunc(HelpTip, "Show", function(self, UIParent, helpTipInfo, MainMenuBarBackpackButton)
+        if not helpTipInfo or not helpTipInfo.text then return end
+        if helpTipInfo.text == TUTORIAL_REAGENT_BAG_STEP_1 then
+            --材料背包教程
+            for frame in self.framePool:EnumerateActive() do
+                if frame:Matches(UIParent, helpTipInfo.text) then
+                    local btn = AbyRegentBagTutorialCloseButton or TplPanelButton(frame, "AbyRegentBagTutorialCloseButton", 22):SetText("知道了"):AutoWidth():BR(-1, 2)
+                    :SetScript("OnClick", function() U1Message("请双击关闭此提示，本角色不再提示材料包教程") end)
+                    :SetScript("OnDoubleClick", function(self)
+                        self:Hide() self:GetParent():Hide() self:SetAlpha(0)
+                        SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_EQUIP_REAGENT_BAG, true)
+                    end):un()
+                    btn:SetParent(frame)
+                    return true;
+                end
+            end
+
+        elseif helpTipInfo.text == PROFESSIONS_UNSPENT_SPEC_POINTS_REMINDER then
+            for frame in self.framePool:EnumerateActive() do
+                if frame:Matches(UIParent, helpTipInfo.text) then
+                    if U1DB.configs[unspentPath] then
+                        --frame:Hide()
+                        --MicroButtonPulseStop(SpellbookMicroButton)
+                    else
+                        local btn = AbyProfessionUnspentTutorialCloseButton or TplPanelButton(frame, "AbyProfessionUnspentTutorialCloseButton", 22):SetText("知道了"):AutoWidth():BR(-1, 2)
+                        :SetScript("OnClick", function() U1Message("请双击确认") end)
+                        :SetScript("OnDoubleClick", function(self)
+                            self:Hide() self:GetParent():Hide() self:SetAlpha(0)
+                            U1DB.configs[unspentPath] = 1
+                            U1Message("此角色登录时不再提示有未使用的专精点数")
+                        end):un()
+                        btn:SetParent(frame)
+                    end
+                    return true;
+                end
+            end
+        end
+    end)
+
+    CoreOnEvent("VARIABLES_LOADED", function()
+        if U1DB.configs[unspentPath] then
+            for frame, v in pairs(EventRegistry:GetCallbackTables()[2]["SKILL_LINE_SPECS_UNLOCKED"]) do
+                if v and v == frame.CheckShowReminder then
+                    --EventRegistry:UnregisterCallback("SKILL_LINE_SPECS_UNLOCKED", frame)
+                    EventRegistry:UnregisterCallback("CURRENCY_DISPLAY_UPDATE", frame)
+                    EventRegistry:UnregisterCallback("PLAYER_ENTERING_WORLD", frame)
+                    break
+                end
+            end
+        end
+    end)
+end
+
 
 CoreUIRegisterSlash("DEVELOPER_CONSOLE", "/dev", "/develop", function() DeveloperConsole:Toggle() end)

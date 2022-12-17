@@ -23,7 +23,7 @@ function BagBar:GetDefaults()
         return {
             displayLayer = 'LOW',
             point = 'BOTTOMRIGHT',
-            oneBag = not GetCVarBool("expandBagBar"),
+            oneBag = false,
             keyRing = false,
             spacing = 2
         }
