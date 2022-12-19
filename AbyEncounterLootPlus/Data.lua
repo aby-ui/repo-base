@@ -129,16 +129,18 @@ function ELP_InitFilters()
         otherInstances = { 结构同上但不能有lootTable也不需要bosslist, 且bosses必然为"all" }, --仅当单副本且lootTable的时候用, 表示额外获取其他副本的数据，以便职业过滤
     --]]
 
-    local dungeons = {}; for _, v in ipairs(ELP_SEASON_DUNGEONS) do dungeons[v[1]] = { bosses = "all" } end
-    tinsert(FILTERS, { type = "multi", text = "巨龙时代5人本", instances = dungeons })
-    for i, v in ipairs(ELP_SEASON_RAIDS) do
-        tinsert(FILTERS, { type = "raid", text = v[3], instances = { [v[1]] = { bosses = v[4] } }})
-    end
-
     local mythics = {}; for _, v in ipairs(ELP_SEASON_MYTHICS) do mythics[v[1]] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS[v[1]] and ELP_LOOT_TABLE_LOOTS_ALL or nil } end
     --选出others里不是本赛季副本的,加到赛季大秘里
     local others = {}; for _, v in pairs(ELP_LOOT_TABLE_OTHER) do for otherID, v2 in pairs(v) do if not mythics[otherID] then others[otherID] = { bosses = "all", lootTable = ELP_LOOT_TABLE_LOOTS_ALL } end end end
     tinsert(FILTERS, { type = "multi", text = "赛季史诗钥石地下城", short = "赛季大秘", instances = mythics, otherInstances = others})
+
+    for i, v in ipairs(ELP_SEASON_RAIDS) do
+        tinsert(FILTERS, { type = "raid", text = v[3], instances = { [v[1]] = { bosses = v[4] } }})
+    end
+
+    local dungeons = {}; for _, v in ipairs(ELP_SEASON_DUNGEONS) do dungeons[v[1]] = { bosses = "all" } end
+    tinsert(FILTERS, { type = "multi", text = "巨龙时代5人本", instances = dungeons })
+
     --local mythics_and_week = u1copy(mythics, { [ELP_WEEK_RAID] = { bosses = "all" } })
     --FILTERS[2] = { type = "multi", text = "全部赛季地下城和宿命团本", short = "本周副本", instances = mythics_and_week, otherInstances = others }
     --local raids = {}; for _, v in ipairs(ELP_SEASON_RAIDS) do raids[v[1]] = { bosses = "all" } end

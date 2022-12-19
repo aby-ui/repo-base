@@ -137,7 +137,7 @@ Collect (or buy in the auction house):
 Ask about the saddled slyvern and present {npc:190892} the collected "dishes".
 ]]
 
-L['elder_poa_note'] = 'Turn in {item:200071} for |cFFFFFD00Iskaara Tuskarr|r reputation.'
+L['elder_poa_note'] = 'Exchange {item:200071} for |cFFFFFD00Iskaara Tuskarr|r reputation.'
 
 -------------------------------------------------------------------------------
 ------------------------------- FORBIDDEN REACH -------------------------------

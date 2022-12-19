@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1488, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128001010")
+mod:SetRevision("20221217213243")
 mod:SetCreatureID(95675)
 mod:SetEncounterID(1808)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -26,7 +26,7 @@ mod:RegisterEvents(
 (ability.id = 193659 or ability.id = 193668 or ability.id = 193826 or ability.id = 194112) and type = "begincast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
-local warnAegis						= mod:NewTargetAnnounce(202711, 1)
+local warnAegis						= mod:NewTargetNoFilterAnnounce(202711, 1)
 local warnFelblazeRush				= mod:NewTargetAnnounce(193659, 2)
 local warnClaimAegis				= mod:NewSpellAnnounce(194112, 2)
 

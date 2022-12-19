@@ -248,12 +248,12 @@ CoreDependCall("Blizzard_WeeklyRewards", function()
             if WeeklyRewardsFrame.Blackout then WeeklyRewardsFrame.Blackout:Hide() end
         end)
     end)
-    for i=1, 3 do
+    for i=1, 1 do
         local act = WeeklyRewardsFrame:GetActivityFrame(Enum.WeeklyRewardChestThresholdType.MythicPlus, i)
         act.OriginHandlePreviewMythicRewardTooltip = act.HandlePreviewMythicRewardTooltip
         act.HandlePreviewMythicRewardTooltip = function(self, itemLevel, upgradeItemLevel, nextLevel)
             self:OriginHandlePreviewMythicRewardTooltip(itemLevel, upgradeItemLevel, nextLevel)
-            if not upgradeItemLevel then
+            if true then --not upgradeItemLevel then
                 showAllMythicHistory()
             end
         end

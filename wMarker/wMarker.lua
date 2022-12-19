@@ -182,7 +182,9 @@ function wMarkerAce:OnEnable()
 		f:EnableMouse(true)
 		f:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 		f:SetScript("OnClick", function(self, button) if (button=="LeftButton") then SetRaidTarget("target", num) else LibStub("AceConfigDialog-3.0"):Open("wMarker") end end)
-		f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.raid.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(L[name]); GameTooltip:Show() end end)
+		--f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.raid.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(L[name]); GameTooltip:Show() end end)
+		--Use Global Strings for Tooltip
+		f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.raid.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(_G["BINDING_NAME_RAIDTARGET"..num]); GameTooltip:Show() end end)
 		f:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 		lastFrame = f
 		wMarkerAce.raidMain.icon[name] = f
@@ -275,7 +277,9 @@ function wMarkerAce:OnEnable()
 		f:SetAttribute("marker2",num)
 		f:SetAttribute("action2","clear")
 
-		f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.world.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(string.format("%s %s",L[name],L["world marker"])); GameTooltip:Show() end end)
+		--f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.world.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(string.format("%s %s",L[name],L["world marker"])); GameTooltip:Show() end end)
+		--Use Global Strings for Tooltip
+		f:SetScript("OnEnter", function(self) if (wMarkerAce.db.profile.world.tooltips==true) then GameTooltip:SetOwner(self, "ANCHOR_CURSOR"); GameTooltip:ClearLines(); GameTooltip:AddLine(_G["WORLD_MARKER"..num]); GameTooltip:Show() end end)
 		f:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 		f:RegisterForClicks("AnyUp","AnyDown")
 		lastFlare = f

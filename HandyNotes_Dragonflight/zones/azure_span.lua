@@ -141,8 +141,8 @@ map.nodes[16622798] = Rare({
     rewards = {
         Achievement({id = 16678, criteria = 56108}),
         Achievement({id = 16446, criteria = 3, note = L['pretty_neat_note']}),
+        Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         DC.WindborneVelocidrake.FinnedEars
-        -- Transmog({item = , slot = L['']}) -- Name
     }
 }) -- Blue Terror
 

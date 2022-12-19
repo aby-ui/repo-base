@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod("RubyLifePoolsTrash", "DBM-Party-Dragonflight", 7)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221205064214")
+mod:SetRevision("20221217223900")
 --mod:SetModelID(47785)
 mod.isTrashMod = true
 
 mod:RegisterEvents(
-	"SPELL_CAST_START 372087 391726 391723 373614 392395 372696",
-	"SPELL_AURA_APPLIED 373693 392641",
+	"SPELL_CAST_START 372087 391726 391723 373614 392395 372696 384194 392486",
+	"SPELL_AURA_APPLIED 373693 392641 373972 391050",
 --	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED 373693"
 )
@@ -19,6 +19,9 @@ local warnBlazingRush						= mod:NewCastAnnounce(372087, 3)
 local warnBurnout							= mod:NewCastAnnounce(373614, 4)
 local warnRollingThunder					= mod:NewTargetNoFilterAnnounce(392641, 3)
 
+local specWarnLightningStorm				= mod:NewSpecialWarningSpell(392486, nil, nil, nil, 2, 2)
+local specWarnBlazeofGlory					= mod:NewSpecialWarningSpell(373972, nil, nil, nil, 2, 2)
+local specWarnTempestStormshield			= mod:NewSpecialWarningSwitch(391050, nil, nil, nil, 1, 2)
 local specWarnLivingBomb					= mod:NewSpecialWarningMoveAway(373693, nil, nil, nil, 1, 2)
 local yellLivingBomb						= mod:NewShortYell(373693)
 local yellLivingBombFades					= mod:NewShortFadesYell(373693)
@@ -30,7 +33,7 @@ local specWarnExcavatingBlast				= mod:NewSpecialWarningDodge(372696, nil, nil, 
 local specWarnBurnout						= mod:NewSpecialWarningRun(373614, "Melee", nil, nil, 4, 2)
 local specWarnThunderJaw					= mod:NewSpecialWarningDefensive(392395, nil, nil, nil, 1, 2)
 --local specWarnSharedSuffering				= mod:NewSpecialWarningYou(339607, nil, nil, nil, 1, 2)
---local specWarnDirgefromBelow				= mod:NewSpecialWarningInterrupt(310839, "HasInterrupt", nil, nil, 1, 2)
+local specWarnCinderbolt					= mod:NewSpecialWarningInterrupt(384194, "HasInterrupt", nil, nil, 1, 2)
 
 --local playerName = UnitName("player")
 
@@ -52,7 +55,7 @@ end
 
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
-	if spellId == 310780 and self:AntiSpam(5, 6) then
+	if spellId == 310780 and self:AntiSpam(3, 6) then
 		warnBlazingRush:Show()
 	elseif spellId == 391726 then
 		if self:AntiSpam(3, 2) then
@@ -81,9 +84,12 @@ function mod:SPELL_CAST_START(args)
 			specWarnThunderJaw:Show()
 			specWarnThunderJaw:Play("carefly")
 		end
---	elseif spellId == 310839 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
---		specWarnDirgefromBelow:Show(args.sourceName)
---		specWarnDirgefromBelow:Play("kickcast")
+	elseif spellId == 384194 and self:CheckInterruptFilter(args.sourceGUID, false, true) then
+		specWarnCinderbolt:Show(args.sourceName)
+		specWarnCinderbolt:Play("kickcast")
+	elseif spellId == 392486 and self:AntiSpam(3, 4) then
+		specWarnLightningStorm:Show()
+		specWarnLightningStorm:Play("aesoon")
 	end
 end
 
@@ -101,6 +107,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif spellId == 392641 then
 		warnRollingThunder:CombinedShow(0.3, args.destName)
+	elseif spellId == 373972 and self:AntiSpam(3, 4) then
+		specWarnBlazeofGlory:Show()
+		specWarnBlazeofGlory:Play("aesoon")
+	elseif spellId == 391050 then
+		specWarnTempestStormshield:Show()
+		specWarnTempestStormshield:Play("attackshield")
 	end
 end
 --mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED

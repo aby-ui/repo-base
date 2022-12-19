@@ -30,6 +30,7 @@ local Achievement = ns.reward.Achievement
 local Currency = ns.reward.Currency
 local Item = ns.reward.Item
 local Pet = ns.reward.Pet
+local Toy = ns.reward.Toy
 local Transmog = ns.reward.Transmog
 
 local Path = ns.poi.Path
@@ -211,8 +212,11 @@ map.nodes[47207895] = Rare({ -- review -- reqiured 67030
 
 map.nodes[38466826] = Rare({
     id = 191305,
-    quest = 72121,
-    rewards = {Achievement({id = 16679, criteria = 56155})}
+    quest = 74085,
+    rewards = {
+        Achievement({id = 16679, criteria = 56155}), --
+        Toy({item = 200999}) -- The Super Shellkhan Gang
+    }
 }) -- The Great Shellkhan
 
 map.nodes[46267317] = Rare({
@@ -313,26 +317,38 @@ map.nodes[33967695] = Treasure({ -- add loot
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
         ns.requirement.Item(199068) -- Time-Lost Memo
     },
-    rewards = {Achievement({id = 16301, criteria = 54810})}
+    rewards = {
+        Achievement({id = 16301, criteria = 54810}), --
+        Item({item = 169951, note = '3x'}) -- Broken Hourglass
+    }
 }) -- Cracked Hourglass
 
 map.nodes[60244164] = Treasure({ -- add loot
     quest = 70609,
-    rewards = {Achievement({id = 16301, criteria = 54813})}
+    rewards = {
+        Achievement({id = 16301, criteria = 54813}), --
+        Item({item = 203206}) -- Elegant Canvas Brush
+    }
 }) -- Elegant Canvas Brush
 
 map.nodes[58168007] = Treasure({ -- add loot
     quest = 70608,
     note = L['sandy_wooden_duck_note'],
     requires = ns.requirement.Item(199069), -- Yennu's Map
-    rewards = {Achievement({id = 16301, criteria = 54811})},
+    rewards = {
+        Achievement({id = 16301, criteria = 54811}),
+        Item({item = 200827, note = '5x'}) -- Weathered Sculpture
+    },
     pois = {POI({54937543})} -- Yennu's Map
 }) -- Sandy Wooden Duck (Sand Pile)
 
 map.nodes[64851655] = Treasure({ -- add loot
     quest = 70610,
     note = L['in_cave'],
-    rewards = {Achievement({id = 16301, criteria = 54814})}
+    rewards = {
+        Achievement({id = 16301, criteria = 54814}), --
+        Item({item = 193036}) -- Left-Handed Magnifying Glass
+    }
 }) -- Surveyor's Magnifying Glass
 
 -------------------------------------------------------------------------------
@@ -341,7 +357,7 @@ map.nodes[52458361] = Treasure({
     quest = 72355,
     label = '{npc:198604}',
     note = L['in_cave'],
-    requires = ns.requirement.Profession(5, 186), -- Mining
+    requires = ns.requirement.Profession(186), -- Mining
     rewards = {
         Pet({item = 201463, id = 3415}) -- Cubbly
     }
@@ -790,7 +806,7 @@ map.nodes[51134219] = LegendaryCharacter({
     rewards = {Achievement({id = 16570, criteria = 55775})}
 }) -- Wrathion
 
-map.nodes[38386903] = LegendaryCharacter({
+map.nodes[36036939] = LegendaryCharacter({
     id = 195633,
     rewards = {Achievement({id = 16570, criteria = 55773})}
 }) -- Time-Warped Mysterious Fisher

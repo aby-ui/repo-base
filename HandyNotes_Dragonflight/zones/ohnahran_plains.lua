@@ -845,7 +845,7 @@ map.nodes[63275731] = Ancestor({
 
 map.nodes[41655690] = Ancestor({
     id = 197057,
-    requires = ns.requirement.Item(190501), -- Primal Molten Greatbelt
+    requires = ns.requirement.Item(199049), -- Fire-Blessed Greatsword
     rewards = {Achievement({id = 16423, criteria = 55310})}
 }) -- Teerakai
 

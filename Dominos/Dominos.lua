@@ -81,7 +81,7 @@ end
 
 -- configuration events
 function Addon:OnUpgradeDatabase(oldVersion, newVersion)
-    if oldVersion < 2 then
+    if oldVersion and oldVersion < 2 then
         for _, profile in pairs(self.db.profiles) do
             local mainBar = profile.frames and profile.frames[1]
 

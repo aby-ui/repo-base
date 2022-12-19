@@ -410,34 +410,51 @@ end
 -- Focus Checking
 --------------------------------------------------------------------------------
 
-local function IsAncestor(frame, target)
+local function isDescendant(frame, ancestor)
     if frame == nil then
         return false
     end
 
-    if frame == target then
+    if frame == ancestor then
         return true
     end
 
-    return IsAncestor(frame:GetParent(), target)
+    return isDescendant(frame:GetParent(), ancestor)
 end
 
--- returns all frames docked to the given frame
-function Frame:IsFocus()
-    if self:IsMouseOver(1, -1, -1, 1) then
-        local focus = _G.GetMouseFocus()
-        if focus == _G.WorldFrame or IsAncestor(focus, self) then
+local function isFlyoutFocus(flyout, owner)
+    if flyout and flyout:IsVisible() and flyout:IsMouseOver(1, -1, -1, 1) then
+        return isDescendant(flyout, owner)
+    end
+
+    return false
+end
+
+local function isFocus(frame)
+    local focus = GetMouseFocus()
+
+    -- not focused on a particular frame, check to see if the mouse is over
+    -- either the frame itself, or a flyout owned by the frame
+    if focus == WorldFrame then
+        if frame:IsMouseOver(1, -1, -1, 1) then
+            return true
+        end
+
+        if isFlyoutFocus(_G.SpellFlyout, frame) then
+            return true
+        end
+
+        if isFlyoutFocus(Addon.SpellFlyout, frame) then
             return true
         end
     end
 
-    local flyout = _G.SpellFlyout
-    if flyout and flyout:IsVisible() and flyout:IsMouseOver(1, -1, -1, 1) then
-        IsAncestor(flyout, self)
-        return true
-    end
+    return focus and isDescendant(focus, frame)
+end
 
-    return Addon:IsLinkedOpacityEnabled() and self:IfAnchored('IsFocus')
+-- returns all frames docked to the given frame
+function Frame:IsFocus()
+    return isFocus(self) or (Addon:IsLinkedOpacityEnabled() and self:IfAnchored('IsFocus'))
 end
 
 --------------------------------------------------------------------------------

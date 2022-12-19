@@ -2,9 +2,12 @@ local ADDON, Addon = ...
 local Mod = Addon:NewModule('Gossip')
 
 local npcBlacklist = {
-	[107435] = true, [112697] = true, [112699] = true, [107486] = true, -- Suspicous Noble
+	[107435] = true, [112697] = true, [112699] = true, -- Suspicous Noble
 	[101462] = true, -- Reaves
 	[166663] = true, -- Kyrian Steward
+}
+local npcWhitelist = {
+	[197300] = true, -- Azure Vault, Book of Translocation
 }
 
 local cosRumorNPC = 107486
@@ -68,7 +71,7 @@ function Mod:GOSSIP_SHOW()
 	if numOptions ~= 1 then return end -- only automate one gossip option
 
 	if Addon.Config.autoGossip and IsInActiveChallengeMode() and not npcBlacklist[npcId] then
-		if options[1].icon == 132053 then -- the gossip icon, prevents auto-opening repair options etc
+		if npcWhitelist[npcId] or options[1].icon == 132053 or options[1].icon == 1019848 then -- the gossip icon, prevents auto-opening repair options etc
 			local popupWasShown = IsStaticPopupShown()
 			C_GossipInfo.SelectOption(options[1].gossipOptionID)
 			local popupIsShown = IsStaticPopupShown()

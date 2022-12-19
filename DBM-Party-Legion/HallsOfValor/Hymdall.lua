@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1485, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128001010")
+mod:SetRevision("20221217213243")
 mod:SetCreatureID(94960)
 mod:SetEncounterID(1805)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -20,7 +20,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 188404 and type = "cast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
-local warnBreath					= mod:NewCountAnnounce(193235, 3)
+local warnBreath					= mod:NewCountAnnounce(193235, 4)
 local warnDancingBlade				= mod:NewCountAnnounce(193235, 3)
 local warnSweep						= mod:NewSpellAnnounce(193092, 2, nil, "Tank")
 

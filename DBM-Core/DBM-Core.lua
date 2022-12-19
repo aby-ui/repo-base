@@ -70,15 +70,15 @@ local function showRealDate(curseDate)
 end
 
 DBM = {
-	Revision = parseCurseDate("20221217041532"),
+	Revision = parseCurseDate("20221219040826"),
 }
 
 local fakeBWVersion, fakeBWHash
 local bwVersionResponseString = "V^%d^%s"
 -- The string that is shown as version
 if isRetail then
-	DBM.DisplayVersion = "10.0.10 alpha"
-	DBM.ReleaseRevision = releaseDate(2022, 12, 16) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DBM.DisplayVersion = "10.0.11 alpha"
+	DBM.ReleaseRevision = releaseDate(2022, 12, 17) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 	fakeBWVersion, fakeBWHash = 243, "d58ab26"
 elseif isClassic then
 	DBM.DisplayVersion = "1.14.29 alpha"
@@ -3280,7 +3280,7 @@ function DBM:SCENARIO_COMPLETED()
 		for i = #inCombat, 1, -1 do
 			local v = inCombat[i]
 			if v.inScenario then
-				self:EndCombat(v)
+				self:EndCombat(v, nil, nil, "SCENARIO_COMPLETED")
 			end
 		end
 	end
@@ -3425,7 +3425,7 @@ do
 			end
 			if savedDifficulty == "worldboss" then
 				for i = #inCombat, 1, -1 do
-					self:EndCombat(inCombat[i], true)
+					self:EndCombat(inCombat[i], true, nil, "Left zone of world boss")
 				end
 			end
 		end
@@ -3770,7 +3770,7 @@ do
 			eeSyncSender[sender] = true
 			eeSyncReceived = eeSyncReceived + 1
 			if eeSyncReceived > (isRetail and 2 or 0) then -- need at least 3 person to combat end. (for security) (only 1 on classic because classic breaks too badly otherwise)
-				DBM:EndCombat(mod, success == 0)
+				DBM:EndCombat(mod, success == 0, nil, "ENCOUNTER_END synced")
 			end
 		end
 	end
@@ -4559,13 +4559,13 @@ do
 			if v.multiEncounterPullDetection then
 				for _, eId in ipairs(v.multiEncounterPullDetection) do
 					if encounterID == eId then
-						self:EndCombat(v, success == 0)
+						self:EndCombat(v, success == 0, nil, "ENCOUNTER_END")
 						sendSync("EE", encounterID.."\t"..success.."\t"..v.id.."\t"..(v.revision or 0))
 						return
 					end
 				end
 			elseif encounterID == v.combatInfo.eId then
-				self:EndCombat(v, success == 0)
+				self:EndCombat(v, success == 0, nil, "ENCOUNTER_END")
 				sendSync("EE", encounterID.."\t"..success.."\t"..v.id.."\t"..(v.revision or 0))
 				return
 			end
@@ -4584,13 +4584,13 @@ do
 			if v.multiEncounterPullDetection then
 				for _, eId in ipairs(v.multiEncounterPullDetection) do
 					if encounterID == eId then
-						self:EndCombat(v)
+						self:EndCombat(v, nil, nil, "BOSS_KILL")
 						sendSync("EE", encounterID.."\t1\t"..v.id.."\t"..(v.revision or 0))
 						return
 					end
 				end
 			elseif encounterID == v.combatInfo.eId then
-				self:EndCombat(v)
+				self:EndCombat(v, nil, nil, "BOSS_KILL")
 				sendSync("EE", encounterID.."\t1\t"..v.id.."\t"..(v.revision or 0))
 				return
 			end
@@ -4632,7 +4632,7 @@ do
 			local v = inCombat[i]
 			if not v.combatInfo then return end
 			if v.combatInfo.killType == type and v.combatInfo.killMsgs[msg] then
-				self:EndCombat(v)
+				self:EndCombat(v, nil, nil, "onMonsterMessage")
 			end
 		end
 	end
@@ -4765,7 +4765,7 @@ function checkWipe(self, confirm)
 				if not mod.noStatistics then
 					self:Debug("You wiped. Reason : " .. (wipe == 1 and "No combat unit found in your party." or "No boss found : "..(wipe or "nil")))
 				end
-				self:EndCombat(mod, true)
+				self:EndCombat(mod, true, nil, "checkWipe")
 			end
 		else
 			local maxDelayTime = (savedDifficulty == "worldboss" and 15) or 5 --wait 10s more on worldboss do actual wipe.
@@ -5171,7 +5171,7 @@ do
 	end
 	DBM.UNIT_HEALTH_FREQUENT = DBM.UNIT_HEALTH
 
-	function DBM:EndCombat(mod, wipe, srmIncluded)
+	function DBM:EndCombat(mod, wipe, srmIncluded, event)
 		if removeEntry(inCombat, mod) then
 			local scenario = mod.addon.type == "SCENARIO" and not mod.soloChallenge
 			if mod.inCombatOnlyEvents and mod.inCombatOnlyEventsRegistered then
@@ -5191,6 +5191,9 @@ do
 				mod:UnregisterOnUpdateHandler()
 			end
 			mod:Stop()
+			if event then
+				self:Debug("EndCombat called by : "..event..". LastInstanceMapID is "..LastInstanceMapID)
+			end
 			if private.enableIcons and not self.Options.DontSetIcons and not self.Options.DontRestoreIcons then
 				-- restore saved previous icon
 				for uId, icon in pairs(mod.iconRestore) do
@@ -5490,13 +5493,13 @@ function DBM:OnMobKill(cId, synced)
 				end
 			end
 			if allMobsDown then
-				self:EndCombat(v)
+				self:EndCombat(v, nil, nil, "All Mobs Down")
 			end
 		elseif cId == v.combatInfo.mob and not v.combatInfo.killMobs and not v.combatInfo.multiMobPullDetection then
 			if not synced then
 				sendSync("K", cId)
 			end
-			self:EndCombat(v)
+			self:EndCombat(v, nil, nil, "Main CID Down")
 		end
 	end
 end

@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(2498, "DBM-Party-Dragonflight", 3, 1198)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221203231852")
+mod:SetRevision("20221217213243")
 mod:SetCreatureID(186616)
 mod:SetEncounterID(2637)
 mod:SetUsedIcons(8)
@@ -62,6 +62,7 @@ mod:AddSetIconOption("SetIconOnAdd", 386320, true, 5, {8})
 mod.vb.eruptionCount = 0
 mod.vb.shardsCount = 0
 mod.vb.addCount = 0
+local addsTimers = {6, 32.7, 40}
 
 function mod:OnCombatStart(delay)
 	self.vb.eruptionCount = 0
@@ -71,7 +72,7 @@ function mod:OnCombatStart(delay)
 	timerTectonicStompCD:Start(15.5-delay)
 	timerEruptionCD:Start(28.8-delay)
 	if self:IsMythic() then
-		timerSummonSaboteurCD:Start(15-delay, 1)
+		timerSummonSaboteurCD:Start(5.6-delay, 1)
 	end
 end
 
@@ -122,7 +123,7 @@ function mod:SPELL_SUMMON(args)
 	if spellId == 386747 or spellId == 386748 or spellId == 386320 then--386747 Lance 1, 386748 Lance 2, 386320 Lance 3
 		self.vb.addCount = self.vb.addCount + 1
 		warnAdd:Show(self.vb.addCount)
-		timerSummonSaboteurCD:Start(nil, self.vb.addCount+1)
+--		timerSummonSaboteurCD:Start(nil, self.vb.addCount+1)--No longer starts here
 		if self.Options.SetIconOnAdd then--195821, 195820, 195580
 			self:ScanForMobs(args.destGUID, 2, 8, 1, nil, 12, "SetIconOnAdd")
 		end
@@ -144,6 +145,9 @@ function mod:SPELL_AURA_REMOVED(args)
 	local spellId = args.spellId
 	if spellId == 361966 then--Lanced!
 		--Resets these timers
+		if self:IsMythic() then
+			timerSummonSaboteurCD:Start(5.6, self.vb.addCount+1)
+		end
 		timerShardsofStoneCD:Start(10)
 		timerTectonicStompCD:Start(15.3)
 		timerEruptionCD:Start(28.6)

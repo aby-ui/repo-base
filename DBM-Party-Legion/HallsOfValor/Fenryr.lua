@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1487, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221128001010")
+mod:SetRevision("20221217223900")
 mod:SetCreatureID(95674, 99868)--First engage, Second engage
 mod:SetEncounterID(1807)
 mod:DisableEEKillDetection()--ENCOUNTER_END fires a wipe when fenryr casts stealth and runs to new location (P2)
@@ -25,8 +25,8 @@ mod:RegisterEventsInCombat(
 --]]
 local warnLeap							= mod:NewTargetAnnounce(197556, 2)
 local warnPhase2						= mod:NewPhaseAnnounce(2, 2, nil, nil, nil, nil, nil, 2)
-local warnFixate						= mod:NewTargetAnnounce(196838, 3)
-local warnClawFrenzy					= mod:NewSpellAnnounce(196512, 2, nil, "Tank")
+local warnFixate						= mod:NewTargetAnnounce(196838, 2)
+local warnClawFrenzy					= mod:NewSpellAnnounce(196512, 3, nil, nil, 2)
 
 local specWarnLeap						= mod:NewSpecialWarningMoveAway(197556, nil, nil, nil, 1, 2)
 local yellLeap							= mod:NewYell(197556)
