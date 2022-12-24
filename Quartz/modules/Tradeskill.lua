@@ -136,6 +136,8 @@ function Tradeskill:UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)
 			icon = 136243
 		end
 		castBarIcon:SetTexture(icon)
+
+		Player:ClearStages(bar)
 	else
 		castBar:SetMinMaxValues(0, 1)
 		return self.hooks[object].UNIT_SPELLCAST_START(object, bar, unit, guid, spellID)

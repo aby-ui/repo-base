@@ -164,10 +164,19 @@ local function Hook_UpdateButtonArt(Button, HideDivider)
 
 	if not Button.__MSQ_Enabled then return end
 
-	local Pushed, Skin = Button.PushedTexture, Button.__MSQ_Skin
+	local Skin = Button.__MSQ_Skin
 
-	if Pushed and Skin then
-		SkinTexture("Pushed", Pushed, Button, Skin.Pushed, Button.__MSQ_PushedColor, GetScale(Button))
+	if Skin then
+		local Normal = Button.NormalTexture
+		local Pushed = Button.PushedTexture
+		local xScale, yScale = GetScale(Button)
+
+		if Normal then
+			SkinNormal(Normal, Button, Skin.Normal, Button.__MSQ_NormalColor, xScale, yScale)
+		end
+		if Pushed then
+			SkinTexture("Pushed", Pushed, Button, Skin.Pushed, Button.__MSQ_PushedColor, xScale, yScale)
+		end
 	end
 end
 
@@ -311,7 +320,7 @@ function Core.SkinButton(Button, Regions, SkinID, Backdrop, Shadow, Gloss, Color
 			UpdateButtonArt(Button)
 		end
 
-		-- Set the button art.
+		-- Update the textures.
 		if Button.UpdateTextures then
 			UpdateTextures(Button, true)
 		end

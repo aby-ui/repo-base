@@ -11,7 +11,6 @@
 -- type = "input",
 -- get = function() return "URL" end,
 
--- GLOBALS: Libstub, CreateFame, UIParent, BackdropTemplateMixin, OmniCD
 ---------------------------------------------------------------------------------
 
 --[[-----------------------------------------------------------------------------
@@ -168,7 +167,7 @@ local function Constructor()
 	editbox:SetMaxLetters(256)
 	editbox:SetPoint("TOPLEFT", label, "TOPRIGHT", 10, 0)
 	editbox:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -10, 0)
-	OmniCD[1].BackdropTemplate(editbox)
+	OmniCD[1].BackdropTemplate(editbox, "ACD")
 	editbox:SetBackdropColor(1, 1, 1, 0.05)
 	editbox:SetBackdropBorderColor(0, 0, 0)
 

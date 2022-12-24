@@ -268,7 +268,7 @@ function KT_QUEST_TRACKER_MODULE:BuildQuestWatchInfos()
 	self.poiNumericMap = self.poiNumericMap or {}
 	table.wipe(self.poiNumericMap)
 	if KT and KT.db and KT.db.profile.sortByDistance then
-		local numPOINumeric = self.numPOINumeric
+		local numPOINumeric = self.numPOINumeric or 0
 		for index, questWatchInfo in ipairs(infos) do
 			--模拟UpdatePOISingle算出numeric
 			local quest = questWatchInfo.quest

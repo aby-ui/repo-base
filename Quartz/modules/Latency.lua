@@ -31,7 +31,7 @@ local lsmlist = AceGUIWidgetLSMlists
 local GetTime = GetTime
 local unpack = unpack
 
-local lagbox, lagtext, db, timeDiff, sendTime, alignoutside
+local lagbox, lagtext, db, timeDiff, lastCastChangeTime, sendTime, alignoutside
 
 local getOptions
 
@@ -68,7 +68,7 @@ function Latency:OnEnable()
 	self:RawHook(Player, "UNIT_SPELLCAST_DELAYED")
 
 	self:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
-	--self:RegisterEvent("UNIT_SPELLCAST_SENT")
+	self:RegisterEvent("UNIT_SPELLCAST_SENT")
 	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	media.RegisterCallback(self, "LibSharedMedia_SetGlobal", function(mtype, override)
@@ -92,14 +92,15 @@ function Latency:OnDisable()
 end
 
 function Latency:CURRENT_SPELL_CAST_CHANGED(event)
-	sendTime = GetTime()
+	lastCastChangeTime = GetTime()
 end
 
 function Latency:UNIT_SPELLCAST_SENT(event, unit)
 	if unit ~= "player" and unit ~= "vehicle" then
 		return
 	end
-	sendTime = GetTime()
+	sendTime = lastCastChangeTime
+	lastCastChangeTime = nil
 end
 
 function Latency:UNIT_SPELLCAST_SUCCEEDED(event, unit)

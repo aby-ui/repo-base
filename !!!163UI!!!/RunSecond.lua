@@ -681,10 +681,19 @@ do
         if addon == "Blizzard_EncounterJournal" then
             if U1DBG.EJTab then
                 EJ_ContentTab_Select(U1DBG.EJTab)
+                if U1DBG.EJTab == 4 then
+                    EncounterJournal_SetLootJournalView(LOOT_JOURNAL_ITEM_SETS)
+                end
             end
             hooksecurefunc("EJ_ContentTab_Select", function(id)
                 U1DBG.EJTab = id
             end)
+            --始终显示战利品
+            if EncounterJournal_CheckAndDisplayLootTab then
+                hooksecurefunc("EncounterJournal_CheckAndDisplayLootTab", function()
+                    PanelTemplates_ShowTab(EncounterJournal, EncounterJournal.LootJournalTab:GetID())
+                end)
+            end
             return "remove"
         end
     end)

@@ -174,6 +174,7 @@ E.OmniCDAnchor_OnMouseUp = function(self, button)
 
 end
 
+
 do
 	local Timers = CreateFrame("Frame")
 	local unusedTimers = {}
@@ -234,14 +235,14 @@ do
 		obj:SetSnapToPixelGrid(false)
 	end
 
-	E.BackdropTemplate = function(frame, style, bgFile, edgeFile, edgeSize)
+	E.BackdropTemplate = function(frame, style, bgFile, edgeFile, edgeSize, force)
 		style = style or "default"
 		local backdrop = backdropStyle[style]
-		if not backdrop then
+		if not backdrop or force then
 			backdrop = {
 				bgFile = bgFile or E.TEXTURES.White8x8,
 				edgeFile = edgeFile or E.TEXTURES.White8x8,
-				edgeSize = (edgeSize or 1) * E.PixelMult,
+				edgeSize = (edgeSize or 1) * E.PixelMult / (style == "ACD" and E.global.optionPanelScale or 1),
 			}
 			backdropStyle[style] = backdrop
 		end

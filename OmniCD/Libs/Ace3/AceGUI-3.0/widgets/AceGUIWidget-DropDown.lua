@@ -316,7 +316,7 @@ do
 		frame:SetBackdrop(backdrop)
 		frame:SetBackdropColor(0, 0, 0)
 		]]
-		OmniCD[1].BackdropTemplate(frame)
+		OmniCD[1].BackdropTemplate(frame, "ACD")
 		frame:SetBackdropColor(0.12, 0.12, 0.17)
 		frame:SetBackdropBorderColor(0, 0, 0)
 		-- e
@@ -352,7 +352,7 @@ do
 		slider:SetWidth(8)
 		slider:SetThumbTexture("Interface\\Buttons\\UI-SliderBar-Button-Vertical")
 		]]
-		OmniCD[1].BackdropTemplate(slider)
+		OmniCD[1].BackdropTemplate(slider, "ACD")
 		slider:SetBackdropColor(0, 0, 0, 0.4)
 		slider:SetBackdropBorderColor(0, 0, 0)
 		slider:SetWidth(12)
@@ -815,7 +815,7 @@ do
 		dropdown.Left:Hide()
 		dropdown.Right:Hide()
 		dropdown.Middle:Hide()
-		OmniCD[1].BackdropTemplate(dropdown)
+		OmniCD[1].BackdropTemplate(dropdown, "ACD")
 		dropdown:SetBackdropColor(0.15, 0.15, 0.2)
 		dropdown:SetBackdropBorderColor(0, 0, 0)
 		-- e

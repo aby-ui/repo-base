@@ -269,7 +269,7 @@ local function Constructor()
 	slider.bg = slider:CreateTexture(nil, "BACKGROUND")
 	OmniCD[1].DisablePixelSnap(slider.bg)
 	slider.bg:SetColorTexture(0.2, 0.2, 0.25)
-	slider.bg:SetHeight(2 * OmniCD[1].PixelMult)
+	slider.bg:SetHeight(2 * OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1))
 	slider.bg:SetPoint("LEFT")
 	slider.bg:SetPoint("RIGHT")
 	-- e
@@ -335,7 +335,7 @@ local function Constructor()
 	--[[ s r
 	editbox:SetBackdrop(ManualBackdrop)
 	]]
-	OmniCD[1].BackdropTemplate(editbox)
+	OmniCD[1].BackdropTemplate(editbox, "ACD")
 	-- e
 	editbox:SetBackdropColor(0, 0, 0, 0.5)
 	--[[ s r

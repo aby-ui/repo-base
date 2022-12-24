@@ -139,6 +139,11 @@ local function RenderLinks(str, nameOnly)
             local icon = ns.GetIconLink('world_quest', 16, 0, -1)
             return icon .. ns.color.Yellow('[' .. id .. ']')
         end
+        if type == 'dot' then
+            local r, g, b = ns.HEXtoRGBA(id)
+            return '|T' .. ns.icons.peg_bl[2] .. ':0::::16:16::16::16:' .. r *
+                       255 .. ':' .. g * 255 .. ':' .. b * 255 .. '|t'
+        end
         return type .. '+' .. id
     end)
     return links
@@ -229,10 +234,34 @@ local function AsIDTable(value)
 end
 
 -------------------------------------------------------------------------------
+------------------------------ HEX-String to RGBA -----------------------------
+-------------------------------------------------------------------------------
+
+local function HEXtoRGBA(color)
+    local c = false
+
+    if ns.COLORS[color] then
+        c = ns.COLORS[color]
+    elseif string.match(color, '%x%x%x%x%x%x%x%x') then
+        c = color
+    elseif string.match(color, '%x%x%x%x%x%x') then
+        c = 'FF' .. color
+    else
+        return c
+    end
+
+    local a, r, g, b = string.sub(c, 1, 2), string.sub(c, 3, 4),
+        string.sub(c, 5, 6), string.sub(c, 7, 8)
+    return tonumber(r, 16) / 255, tonumber(g, 16) / 255, tonumber(b, 16) / 255,
+        tonumber(a, 16) / 255
+end
+
+-------------------------------------------------------------------------------
 
 ns.AsIDTable = AsIDTable
 ns.AsTable = AsTable
 ns.GetDatabaseTable = GetDatabaseTable
+ns.HEXtoRGBA = HEXtoRGBA
 ns.NameResolver = NameResolver
 ns.NewLocale = NewLocale
 ns.PlayerHasItem = PlayerHasItem

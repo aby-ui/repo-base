@@ -215,7 +215,7 @@ function P:StartCooldown(icon, cd, isRecharge, noGlow)
 		else
 			icon:SetAlpha(E.db.icons.activeAlpha)
 		end
-		if key == "raidBar0" and self.rearrangeInterrupts then
+		if frame.shouldRearrangeInterrupts then
 			self:SetExIconLayout(key, true, true)
 		end
 	end
@@ -293,7 +293,7 @@ function P:ResetAllIcons(reason)
 		end
 	end
 
-	if E.db.extraBars.raidBar0.enabled and self.rearrangeInterrupts then
+	if self.extraBars.raidBar0.shouldRearrangeInterrupts then
 		self:SetExIconLayout("raidBar0", true, true)
 	end
 end

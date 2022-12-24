@@ -136,7 +136,7 @@ local methods = {
 	end,
 
 	["SetTitle"] = function(self, title)
-		self.titletext:SetText(title)
+		self.titletext:SetText("") -- s c title
 		self.titlebg:SetWidth((self.titletext:GetWidth() or 0) + 10)
 	end,
 
@@ -217,7 +217,7 @@ local function Constructor()
 	frame:SetBackdrop(FrameBackdrop)
 	frame:SetBackdropColor(0, 0, 0, 1)
 	]]
-	OmniCD[1].BackdropTemplate(frame)
+	OmniCD[1].BackdropTemplate(frame, "ACD")
 	frame:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR
 	frame:SetBackdropBorderColor(0, 0, 0, 1)
 	--frame:SetClampedToScreen(true) -- s a let's not
@@ -241,13 +241,13 @@ local function Constructor()
 	closebutton:SetWidth(100)
 	closebutton:SetText(CLOSE)
 	]]
-	local closebutton = OmniCD[1].CreateFlashButton(frame, CLOSE, 100, 22) -- where is this getting pushed text position ???
-	closebutton:SetPoint("BOTTOM", 0, 10)
+	local closebutton = OmniCD[1].CreateFlashButton(frame, "X", 25, 25, "ACD") -- where is this getting pushed text position ???
+	closebutton:SetPoint("TOPRIGHT", 0, 0)
 	closebutton:SetScript("OnClick", Button_OnClick)
 	-- e
 
-	local statusbg = CreateFrame("Button", nil, frame, "BackdropTemplate")
 	--[[ s r
+	local statusbg = CreateFrame("Button", nil, frame, "BackdropTemplate")
 	statusbg:SetPoint("BOTTOMLEFT", 15, 15)
 	statusbg:SetPoint("BOTTOMRIGHT", -132, 15)
 	statusbg:SetHeight(24)
@@ -255,11 +255,10 @@ local function Constructor()
 	statusbg:SetBackdropColor(0.1,0.1,0.1)
 	statusbg:SetBackdropBorderColor(0.4,0.4,0.4)
 	]]
-	statusbg:SetPoint("BOTTOMLEFT", 17, 15)
-	statusbg:SetPoint("BOTTOMRIGHT", closebutton, "BOTTOMLEFT", -20, 0)
+	local statusbg = CreateFrame("Button", nil, frame)
+	statusbg:SetPoint("BOTTOMLEFT", 0, 2)
 	statusbg:SetHeight(22)
-	statusbg:SetBackdrop(nil)
-	statusbg:Hide() -- this is where it displays the 'usage' parameter.
+	statusbg:SetWidth(145) -- DEFAULT_TREE_WIDTH
 	-- e
 	statusbg:SetScript("OnEnter", StatusBar_OnEnter)
 	statusbg:SetScript("OnLeave", StatusBar_OnLeave)
@@ -368,8 +367,13 @@ local function Constructor()
 
 	--Container Support
 	local content = CreateFrame("Frame", nil, frame)
+	--[[ s r
 	content:SetPoint("TOPLEFT", 17, -27)
 	content:SetPoint("BOTTOMRIGHT", -17, 40)
+	]]
+	content:SetPoint("TOPLEFT", 1, -24)
+	content:SetPoint("BOTTOMRIGHT", -1, 24)
+	-- e
 
 	local widget = {
 		localstatus = {},

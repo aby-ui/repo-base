@@ -53,7 +53,7 @@ end
 local DEFAULT_TREE_WIDTH = 175
 local DEFAULT_TREE_SIZABLE = true
 ]]
-local DEFAULT_TREE_WIDTH = 145 -- s c 175 (150 will fit obj w/ scrollbar) > 145 to fil 3 spells in raid cd
+local DEFAULT_TREE_WIDTH = 145 -- s c 175 (150 will fit obj w/ scrollbar) > 145 to fill 3 spells in raid cd
 local DEFAULT_TREE_SIZABLE = false -- s c true
 local DEFAULT_ICON_SIZE = 18 -- 24 is frames full height
 local DEFAULT_TAB_HEIGHT = 24 -- OptionsListButtonTemplate 18
@@ -125,7 +125,7 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 		]]
 		if text == "```" then
 			button.text:SetText("") -- refresh old name
-			button:SetHeight(OmniCD[1].PixelMult)
+			button:SetHeight(OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1))
 			button.borderBottom:SetColorTexture(0.569, 0.275, 1.0)
 		else
 			button.text:SetText("|cff808080"..text..FONT_COLOR_CODE_CLOSE)
@@ -463,13 +463,13 @@ local methods = {
 		button.borderBottom = button:CreateTexture(nil, "BACKGROUND") -- line break texture instead of backdrop -- BDR (tree nav button)
 		OmniCD[1].DisablePixelSnap(button.borderBottom) -- works w/o ?
 		button.borderBottom:SetPoint("BOTTOMLEFT")
-		button.borderBottom:SetPoint("TOPRIGHT", button, "BOTTOMRIGHT", 0, OmniCD[1].PixelMult)
+		button.borderBottom:SetPoint("TOPRIGHT", button, "BOTTOMRIGHT", 0, OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1))
 		button.borderBottom:SetColorTexture(0, 0, 0)
 
 		button.bg = button:CreateTexture(nil, "BORDER")
 		OmniCD[1].DisablePixelSnap(button.bg) -- works w/o ?
-		button.bg:SetPoint("TOPLEFT", OmniCD[1].PixelMult, 0)
-		button.bg:SetPoint("BOTTOMRIGHT", button.borderBottom, "TOPRIGHT", -OmniCD[1].PixelMult, 0)
+		button.bg:SetPoint("TOPLEFT", OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1), 0)
+		button.bg:SetPoint("BOTTOMRIGHT", button.borderBottom, "TOPRIGHT", -OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1), 0)
 		button.bg:SetColorTexture(0.412, 0.0, 0.043)
 		button.bg:Hide()
 
@@ -497,11 +497,11 @@ local methods = {
 		]]
 		local icon
 		if USE_ICON_BACKDROP then
-			--[[ s r v46
 			icon = CreateFrame("Frame", nil, button, BackdropTemplateMixin and "BackdropTemplate" or nil)
 			icon:SetHeight(DEFAULT_ICON_SIZE) -- 24 is frames full height
 			icon:SetWidth(DEFAULT_ICON_SIZE)
-			OmniCD[1].BackdropTemplate(icon)
+			--[[ s r v46
+			OmniCD[1].BackdropTemplate(icon, "ACD")
 			icon:SetBackdropBorderColor(0.5, 0.5, 0.5)
 			]]
 			icon = CreateFrame("Frame", nil, button)
@@ -511,14 +511,12 @@ local methods = {
 			OmniCD[1].DisablePixelSnap(icon.border)
 			icon.border:SetAllPoints()
 			icon.border:SetColorTexture(0.5, 0.5, 0.5)
-
 			icon.Center = icon:CreateTexture(nil, "ARTWORK")
 			OmniCD[1].DisablePixelSnap(icon.Center)
-			local edgeSize = OmniCD[1].PixelMult
+			local edgeSize = OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1)
 			icon.Center:SetPoint("TOPLEFT", icon, "TOPLEFT", edgeSize, -edgeSize)
 			icon.Center:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", -edgeSize, edgeSize)
 			-- e
-
 		else
 			icon = button:CreateTexture(nil, "ARTWORK")
 			icon:SetHeight(DEFAULT_ICON_SIZE)
@@ -634,7 +632,7 @@ local methods = {
 			end
 		end
 		local height = self.treeframe:GetHeight() or 0
-		local maxlines = floor(	 (height - 9 + (numDisabled*(DEFAULT_TAB_HEIGHT-OmniCD[1].PixelMult))) / DEFAULT_TAB_HEIGHT  )
+		local maxlines = floor(	 (height - 9 + (numDisabled*(DEFAULT_TAB_HEIGHT-OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1)))) / DEFAULT_TAB_HEIGHT	)
 		-- e
 
 		if maxlines <= 0 then return end
@@ -716,7 +714,7 @@ local methods = {
 						--[[ s r
 						button:SetPoint("TOPRIGHT", -22, -10)
 						]]
-						button:SetPoint("TOPRIGHT", -26, -10) -- scrollbar takes up 26
+						button:SetPoint("TOPRIGHT", -14, -10) -- scrollbar takes up 26 ->  now 14
 						-- e
 						button:SetPoint("TOPLEFT", 0, -10)
 					else
@@ -773,7 +771,7 @@ local methods = {
 				--[[ s r
 				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",-22,-10)
 				]]
-				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",-26,-10) -- scrollbar takes up 26
+				self.buttons[1]:SetPoint("TOPRIGHT", self.treeframe,"TOPRIGHT",-14,-10) -- scrollbar takes up 26 -> now 14 (scrollbar width 4)
 				-- e
 			end
 		else
@@ -902,7 +900,7 @@ local function Constructor()
 	treeframe:SetBackdropBorderColor(0.4, 0.4, 0.4)
 	treeframe:SetResizable(true)
 	]]
-	OmniCD[1].BackdropTemplate(treeframe)
+	OmniCD[1].BackdropTemplate(treeframe, "ACD")
 	treeframe:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR (tree nav bg)
 	treeframe:SetBackdropBorderColor(0, 0, 0)
 	treeframe:SetResizable(false) -- s c resizing disabled
@@ -944,14 +942,17 @@ local function Constructor()
 	scrollbar:SetMinMaxValues(0,0)
 	scrollbar:SetValueStep(1)
 	scrollbar:SetValue(0)
+	--[[
 	scrollbar:SetWidth(16)
+	]]
+	scrollbar:SetWidth(4)
 	scrollbar:SetScript("OnValueChanged", OnScrollValueChanged)
 
 	-- s b
 	scrollbar.ScrollUpButton:Hide()
 	scrollbar.ScrollDownButton:Hide()
 	scrollbar.ThumbTexture:SetTexture([[Interface\BUTTONS\White8x8]])
-	scrollbar.ThumbTexture:SetSize(16, 32)
+	scrollbar.ThumbTexture:SetSize(4, 32) -- match scrollbar width
 	scrollbar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3)
 	scrollbar:SetScript("OnEnter", Thumb_OnEnter)
 	scrollbar:SetScript("OnLeave", Thumb_OnLeave)
@@ -971,7 +972,7 @@ local function Constructor()
 	border:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
 	border:SetBackdropBorderColor(0.4, 0.4, 0.4)
 	]]
-	OmniCD[1].BackdropTemplate(border)
+	OmniCD[1].BackdropTemplate(border, "ACD")
 	border:SetBackdropColor(0.05, 0.05, 0.05, 0.75) -- BDR (tree content bg)
 	border:SetBackdropBorderColor(0, 0, 0)
 	-- e

@@ -4,7 +4,7 @@
 ## Interface-WoTLK: 30400
 ## Title: XLoot
 ## Notes: Core module for Loot and Looting-related UI improvements
-## Version: 10.0.2-1
+## Version: 10.0.2-2
 ## Author: Xuerian
 ## X-Category: Inventory
 ## X-Name: XLoot

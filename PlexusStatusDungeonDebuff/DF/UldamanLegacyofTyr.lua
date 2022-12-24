@@ -1,6 +1,13 @@
 -- local zone = "Uldaman: Legacy of Tyr"
 local zoneid = 2071
 
+--M+
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240447, 1, 6, 6, true) --Quake
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240559, 1, 6, 6, true, true) --Grievous Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 209858, 1, 6, 6, true, true) --Necrotic Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240443, 1, 6, 6, true, true) --Burst
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 226512, 1, 6, 6, true) --Sanguine Ichor
+
 GridStatusRaidDebuff:BossNameId(zoneid, 100, "The Lost Dwarves")
 GridStatusRaidDebuff:DebuffId(zoneid, 377825, 101, 5, 5, true) --burning-pitch
 GridStatusRaidDebuff:DebuffId(zoneid, 375286, 102, 5, 5, true) --searing-cannonfire

@@ -5,8 +5,8 @@ local zoneid = 761
 --true, true is for stackable
 
 --Whole Dungeon/Trash/Mythic Plus
-_G.GridStatusRaidDebuff:DebuffId(zoneid, 209858, 1, 6, 6, false, true) --Necrotic Rot
-_G.GridStatusRaidDebuff:DebuffId(zoneid, 240443, 1, 6, 6, false, true) --Bursting
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 209858, 1, 6, 6, true, true) --Necrotic Rot
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240443, 1, 6, 6, true, true) --Bursting
 _G.GridStatusRaidDebuff:DebuffId(zoneid, 240559, 1, 6, 6, false, true) --Grievous
 _G.GridStatusRaidDebuff:DebuffId(zoneid, 226512, 1, 6, 6) --Sanguine Ichor
 _G.GridStatusRaidDebuff:DebuffId(zoneid, 214692, 1, 6, 6) --Shadow Bolt Volley

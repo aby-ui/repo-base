@@ -18,7 +18,6 @@ function P:Enable()
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 	self:RegisterEvent('GROUP_ROSTER_UPDATE')
 	self:RegisterEvent('GROUP_JOINED')
-
 	self:SetScript("OnEvent", function(self, event, ...)
 		self[event](self, ...)
 	end)
@@ -129,7 +128,7 @@ function P:IsEnabledSpell(id, spellType, key)
 	if not db.spells[id] then
 		return nil
 	end
-	if db.raidCDS[id] then
+	if db.raidCDS[id] or spellType == "interrupt" then
 		for _, frame in pairs(self.extraBars) do
 			local db = frame.db
 			if db.spellType[spellType] then

@@ -41,13 +41,13 @@ L["The default Classic button style."] = "預設的經典按鈕樣式。"
 -- Blizzard Modern Skin
 ---
 
-L["The default Dragonflight button style."] = "預設按鈕樣式。"
+L["The default Dragonflight button style."] = "預設的巨龍崛起按鈕樣式。"
 
 ----------------------------------------
 -- Classic Redux Skin
 ---
 
-L["A modified version of the Classic button style."] = "遊戲預設按鈕樣式的改進版本。"
+L["A modified version of the Classic button style."] = "經典按鈕樣式的修改版。"
 
 ----------------------------------------
 -- Core Settings
@@ -111,8 +111,8 @@ L["Websites"] = "網站"
 -- Interface Settings
 ---
 
--- L["Alternate Sorting"] = "Alternate Sorting"
--- L["Causes the skins included with Masque to be listed above third-party skins."] = "Causes the skins included with Masque to be listed above third-party skins."
+L["Alternate Sorting"] = "另一種排序"
+L["Causes the skins included with Masque to be listed above third-party skins."] = "讓 Masque 內建的外觀排列在第三方外觀上方。"
 L["Enable the Minimap icon."] = "啟用小地圖按鈕。"
 L["Interface"] = "介面"
 L["Interface Settings"] = "介面設置"

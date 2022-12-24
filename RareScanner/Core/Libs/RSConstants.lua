@@ -24,8 +24,8 @@ RSConstants.LOOT_ITEM_ID = nil
 -- Current versions
 ---============================================================================
 
-RSConstants.CURRENT_DB_VERSION = 77
-RSConstants.CURRENT_LOOT_DB_VERSION = 87
+RSConstants.CURRENT_DB_VERSION = 79
+RSConstants.CURRENT_LOOT_DB_VERSION = 89
 
 ---============================================================================
 -- Current maps (newer)
@@ -298,6 +298,7 @@ RSConstants.NPC_TORMENTORS_VIGNETTE = "Tormentors-Boss"
 
 RSConstants.CONTAINER_VIGNETTE = "VignetteLoot"
 RSConstants.CONTAINER_ELITE_VIGNETTE = "VignetteLootElite"
+RSConstants.CONTAINER_LOCKED_VIGNETTE = "vignetteloot-locked"
 
 RSConstants.EVENT_VIGNETTE = "VignetteEvent"
 RSConstants.EVENT_ELITE_VIGNETTE = "VignetteEventElite"
@@ -349,7 +350,7 @@ RSConstants.THEATER_PAIN_NPCS = { 168147, 168148 }
 RSConstants.DAPPERDEW_NPCS = { 168135, 164415, 166135, 166138, 166139, 166140, 166142, 166145, 166146 }
 RSConstants.ASCENDED_COUNCIL_NPCS = { 170832, 170833, 170834, 170835, 170836 }
 RSConstants.FOUR_PEOPLE_NPCS = { 170301, 169827, 170301, 170302 }
-RSConstants.STORM_EVENTS_NPCS = { 193648, 193644, 193686, 193680, 193652, 193675, 193678, 193653, 193650, 193645, 193647, 193682, 193684, 193674, 193677, 193679, 193654, 193655, 193685, 193687 }
+RSConstants.STORM_EVENTS_NPCS = { 193648, 193644, 193686, 193680, 193652, 193675, 193678, 193653, 193650, 193645, 193647, 193682, 193684, 193674, 193677, 193679, 193654, 193655, 193685, 193687, 193674 }
 RSConstants.BOUNDING_SHRROM_CONTAINERS = { 349793, 349797, 353330 }
 RSConstants.RIPE_PURIAN_CONTAINERS = { 353643, 353503, 353205, 353500, 352754, 353516, 353325, 353019, 353252, 353314, 352998 }
 RSConstants.RIFT_HIDDEN_ENTITIES = { 179883, 368645, 368646, 368647, 368648, 368649, 368650 }
@@ -455,6 +456,8 @@ RSConstants.CONTAINERS_WITH_PRE_EVENT = {
 	[79805] = 230664;
 	-- Frostfire Ridge
 	[229366] = 229367;
+	-- Dragonflight
+	[191861] = 385074;
 }
 
 -- NPCs that spawn after killing another NPC
@@ -703,5 +706,5 @@ function RSConstants.IsNpcAtlas(atlasName)
 end
 
 function RSConstants.IsContainerAtlas(atlasName)
-	return atlasName == RSConstants.CONTAINER_VIGNETTE or atlasName == RSConstants.CONTAINER_ELITE_VIGNETTE
+	return atlasName == RSConstants.CONTAINER_VIGNETTE or atlasName == RSConstants.CONTAINER_ELITE_VIGNETTE or atlasName == RSConstants.CONTAINER_LOCKED_VIGNETTE
 end

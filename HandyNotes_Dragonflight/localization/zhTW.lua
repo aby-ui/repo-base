@@ -48,6 +48,10 @@ L['scout_pack'] = '遠征隊斥侯包'
 L['options_icons_scout_pack'] = '遠征隊斥侯包'
 L['options_icons_scout_pack_desc'] = '顯示遠征隊斥侯包的位置'
 
+L['magicbound_chest'] = nil
+L['options_icons_magicbound_chest'] = nil
+L['options_icons_magicbound_chest_desc'] = nil
+
 L['dr_best'] = '你的最快時間:\n - 普通: %.3fs\n - 進階: %.3fs'
 L['dr_best_dash'] = '你的最佳時間:\n - %.3fs'
 L['dr_note'] = '目標時間:\n - 普通: %ss / %ss\n - 進階: %ss / %ss'
@@ -357,6 +361,14 @@ L['slumbering_worldsnail_note1'] = [[
 L['slumbering_worldsnail_note2'] = ns.color.Orange('注意: 如果你死了你會失去你的會員減益. 要嘛是你在死前和 {npc:193310} 使用20個{item:202173}購買新的會員證或是你需要繳交更多的鑰匙來有機率從箱子裡取得新的會員證')
 
 L['magmashell_note'] = '從 |cFFFFFD00黑曜龍堡|r 附近的 {npc:193138} 身上拾取 {item:201883} 並帶給 {npc:199010}.\n\n' .. ns.color.Orange('要取得坐騎需要在熔岩上引導1個20秒的法術, 推薦找個治療者或是帶著 {item:200116}.')
+
+L['otto_note_start1'] = nil
+L['otto_note_start2'] = nil
+L['otto_note_start3'] = nil
+L['otto_note_item1'] = nil
+L['otto_note_item2'] = nil
+L['otto_note_item3'] = nil
+L['otto_note_end'] = nil
 
 L['options_icons_safari'] = '{achievement:16519}'
 L['options_icons_safari_desc'] = '顯示成就 {achievement:16519} 所需的戰寵位置'

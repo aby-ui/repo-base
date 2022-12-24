@@ -99,7 +99,7 @@ function P:UpdateExBarPositionValues()
 		end
 
 		if key == "raidBar0" then
-			self.rearrangeInterrupts = db.sortBy == 2
+			frame.shouldRearrangeInterrupts = db.enabled and db.sortBy == 2
 		end
 	end
 end
@@ -118,22 +118,30 @@ local sorters = {
 	end,
 
 	function(a, b)
-		local aactive = P.groupInfo[a.guid].active[a.spellID]
-		local bactive = P.groupInfo[b.guid].active[b.spellID]
-		if aactive and bactive then
+		local ainfo, binfo = P.groupInfo[a.guid], P.groupInfo[b.guid]
+		local aactive, bactive = ainfo.active[a.spellID], binfo.active[b.spellID]
+		local aisdead, bisdead = ainfo.isDead, binfo.isDead
+		if aisdead and not bisdead then
+			return false
+		elseif bisdead and not aisdead then
+			return true
+		elseif aactive and bactive then
 			return a.duration + aactive.startTime < b.duration + bactive.startTime
 		elseif not aactive and not bactive then
 			local acd, bcd = a.duration, b.duration
 			if acd == bcd then
 				local aclass, bclass = a.class, b.class
 				if aclass == bclass then
-					return P.groupInfo[a.guid].name < P.groupInfo[b.guid].name
+					return ainfo.name < binfo.name
 				end
 				return aclass < bclass
 			end
 			return acd < bcd
-		elseif aactive then return false
-		elseif bactive then return true end
+		elseif aactive then
+			return false
+		elseif bactive then
+			return true
+		end
 	end,
 
 	function(a, b)
@@ -176,7 +184,6 @@ end
 local updateLayout = function(key, noDelay, sortOrder, updateSettings)
 	local frame = P.extraBars[key]
 	local db = frame.db
-
 
 
 	local n = 0
@@ -402,9 +409,13 @@ function P:ApplyExSettings(key)
 
 			statusBar.Text:ClearAllPoints()
 			if nameBar and invertNameBar then
-				statusBar.Text:SetPoint("RIGHT", icon, "LEFT", -textOfsX, textOfsY)
+				statusBar.Text:SetPoint("TOPLEFT", icon, "TOPLEFT", -statusBarWidth + textOfsX, textOfsY)
+				statusBar.Text:SetPoint("BOTTOMRIGHT", icon, "BOTTOMLEFT", -textOfsX, textOfsY)
+				statusBar.Text:SetJustifyH("RIGHT")
 			else
 				statusBar.Text:SetPoint("LEFT", statusBar, textOfsX, textOfsY)
+				statusBar.Text:SetPoint("RIGHT", statusBar, -3, textOfsY)
+				statusBar.Text:SetJustifyH("LEFT")
 			end
 			statusBar.CastingBar.Text:SetPoint("LEFT", statusBar.CastingBar, textOfsX, textOfsY)
 			statusBar.CastingBar.Timer:SetPoint("RIGHT", statusBar.CastingBar, -3, textOfsY)

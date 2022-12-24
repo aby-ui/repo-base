@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1485, "DBM-Party-Legion", 4, 721)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision("20221217213243")
+mod:SetRevision("20221220093407")
 mod:SetCreatureID(94960)
 mod:SetEncounterID(1805)
 mod:SetHotfixNoticeRev(20221127000000)
@@ -20,7 +20,7 @@ mod:RegisterEventsInCombat(
  or ability.id = 188404 and type = "cast"
  or type = "dungeonencounterstart" or type = "dungeonencounterend"
 --]]
-local warnBreath					= mod:NewCountAnnounce(193235, 4)
+local warnBreath					= mod:NewCountAnnounce(188404, 4)
 local warnDancingBlade				= mod:NewCountAnnounce(193235, 3)
 local warnSweep						= mod:NewSpellAnnounce(193092, 2, nil, "Tank")
 
@@ -31,7 +31,7 @@ local specWarnDancingBlade			= mod:NewSpecialWarningGTFO(193235, nil, nil, nil, 
 local timerSweepCD					= mod:NewCDTimer(16.9, 193092, nil, "Tank", nil, 5, nil, DBM_COMMON_L.TANK_ICON)
 local timerDancingBladeCD			= mod:NewCDTimer(10, 193235, nil, nil, nil, 3)
 local timerHornCD					= mod:NewCDTimer(43.8, 191284, nil, nil, nil, 2)
-local timerBreathCast				= mod:NewCastCountTimer(43.8, 191284, nil, nil, nil, 3)
+local timerBreathCast				= mod:NewCastCountTimer(43.8, 188404, nil, nil, nil, 3)
 
 mod.vb.bladeCount = 0
 mod.vb.breathCount = 0

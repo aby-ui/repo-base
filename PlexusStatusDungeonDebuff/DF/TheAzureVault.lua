@@ -1,6 +1,13 @@
 -- local zone = "The Azure Vault"
 local zoneid = 2073
 
+--M+
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240447, 1, 6, 6, true) --Quake
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240559, 1, 6, 6, true, true) --Grievous Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 209858, 1, 6, 6, true, true) --Necrotic Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240443, 1, 6, 6, true, true) --Burst
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 226512, 1, 6, 6, true) --Sanguine Ichor
+
 --"Trash"
 GridStatusRaidDebuff:DebuffId(zoneid, 387564, 1, 5, 5, true) -- Mystic Vapors
 GridStatusRaidDebuff:DebuffId(zoneid, 370764, 1, 5, 5, true) -- Piercing Shards

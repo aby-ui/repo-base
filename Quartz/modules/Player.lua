@@ -20,7 +20,7 @@ local Quartz3 = LibStub("AceAddon-3.0"):GetAddon("Quartz3")
 local L = LibStub("AceLocale-3.0"):GetLocale("Quartz3")
 
 local MODNAME = "Player"
-local Player = Quartz3:NewModule(MODNAME, "AceEvent-3.0")
+local Player = Quartz3:NewModule(MODNAME, "AceEvent-3.0", "AceHook-3.0")
 
 local UnitCastingInfo, UnitChannelInfo = UnitCastingInfo, UnitChannelInfo
 
@@ -115,7 +115,8 @@ function Player:OnInitialize()
 	self.Bar = Quartz3.CastBarTemplate:new(self, "player", MODNAME, L["Player"], db)
 	castBar = self.Bar.Bar
 
-	self.Bar:HookScript("OnUpdate", OnUpdate)
+	self:Hook(self.Bar, "OnUpdate", OnUpdate)
+	self.Bar:SetScript("OnUpdate", self.Bar.OnUpdate)
 end
 
 

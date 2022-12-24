@@ -145,6 +145,7 @@ local Skin = {
 			OffsetX = 0,
 			OffsetY = 0,
 			-- SetAllPoints = nil,
+			UseMask = true,
 		},
 		BagSlot = {
 			-- TexCoords = {0, 1, 0, 1},

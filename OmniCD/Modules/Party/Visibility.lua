@@ -63,7 +63,6 @@ local INSTANCETYPE_EVENTS = E.preCata and {
 	arena = {
 		'PLAYER_REGEN_DISABLED',
 		'UPDATE_UI_WIDGET',
-		'PVP_MATCH_ACTIVE',
 	},
 	pvp = {
 		'CHAT_MSG_BG_SYSTEM_NEUTRAL',
@@ -333,18 +332,24 @@ function P:GROUP_ROSTER_UPDATE(isPEW, isRefresh)
 	end
 end
 
+local inspectAllGroupMembers = function()
+	CM:EnqueueInspect(true)
+end
 
 
 
-function P:GROUP_JOINED()
+
+function P:GROUP_JOINED(arg1,arg2)
 	if self.isInTestMode then
 		self:Test()
 	end
 	self.joinedNewGroup = true
-end
 
-local inspectAllGroupMembers = function()
-	CM:EnqueueInspect(true)
+	if self.isInArena and C_PvP.IsRatedSoloShuffle() and not self.callbackTimers.arenaTicker then
+		self:ResetAllIcons("joinedPvP")
+		self:RegisterEvent('PLAYER_REGEN_DISABLED')
+		self.callbackTimers.arenaTicker = C_Timer.NewTicker(6, inspectAllGroupMembers, 5)
+	end
 end
 
 local function IsAnyExBarEnabled()
@@ -426,9 +431,9 @@ function P:UPDATE_UI_WIDGET(widgetInfo)
 	if self.disabled then return end
 	if widgetInfo.widgetSetID == 1 and widgetInfo.widgetType == 0 then
 		local info = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widgetInfo.widgetID)
-		if info and info.state == 1 then
+		if info and info.state == 1 and info.hasTimer then
 			self:UnregisterZoneEvents()
-			C_Timer.After(1, inspectAllGroupMembers)
+			C_Timer.After(.5, inspectAllGroupMembers)
 		end
 	end
 end
@@ -438,12 +443,7 @@ function P:PLAYER_REGEN_DISABLED()
 		self.callbackTimers.arenaTicker:Cancel()
 		self.callbackTimers.arenaTicker = nil
 	end
-	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
-end
-
-function P:PVP_MATCH_ACTIVE()
-
-	self:ResetAllIcons("joinedPvP")
+	self:UnregisterEvent('PLAYER_REGEN_DISABLED')
 end
 
 function P:PLAYER_FLAGS_CHANGED(unitTarget)

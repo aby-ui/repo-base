@@ -11,7 +11,7 @@ elseif E.isBCC then E.changelog = [=[
 v2.5.4.2722
 	Fixed sync for cross realm group members
 
-Previous changes can be found in the CHANGELOG file.
+Previous changes can be found in the CHANGELOG file
 ]=]
 elseif E.isWOTLKC then E.changelog = [=[
 v3.4.1.2733
@@ -21,24 +21,24 @@ v3.4.0.2724
 	Fixed sync for cross realm group members
 
 v3.4.0.2723
-	The correct talents will show for whichever spec your group member has active on inital inspection.
+	The correct talents will show for whichever spec your group member has active on inital inspection
 
 v3.4.0.2722
 	Wrath of the Lich King Classic release. (Build 45435)
 ]=]
 else E.changelog = [=[
-v10.0.2.2733
+v10.0.2.2734
+	Fixed Coldthirst incorrectly reducing Mind Freeze to 3 sec
+	Fixed Status Bar text wrapping
+	Fixed Sentinel, Incarn
+	Dec 20, 2022 Hotfixes
+	Added option panel scaling
+	Cooldowns will now reset inbetween solo shuffle rounds
 
-	Dragonflight: Trinket fix, etc
-	.
-	.
-	.
-	.
-	.
-	.
-	.
+v10.0.2.2730
+	Dragonflight
 
-	<')+++<
+Full list of changes can be found in the CHANGELOG file
 
 ]=]
 end

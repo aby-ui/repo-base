@@ -55,7 +55,7 @@ Jostle2Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 
 function Jostle2:PLAYER_ENTERING_WORLD()
-	self:Refresh(BuffFrame, PlayerFrame, TargetFrame, MainMenuBar)
+	--self:Refresh(BuffFrame, PlayerFrame, TargetFrame, MainMenuBar) --abyui 可能导致乱动
 end
 
 local function GetScreenTop()

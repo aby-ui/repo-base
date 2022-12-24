@@ -110,6 +110,11 @@ local function CooldownBarFrame_OnEvent(self, event, ...)
 
 			P:SetEnabledColorScheme(info)
 			info.isDead = nil
+			--[[
+			if P.extraBars.raidBar0.shouldRearrangeInterrupts then
+				P:SetExIconLayout("raidBar0", true, true)
+			end
+			]]
 			self:UnregisterEvent(event)
 		end
 	elseif event == 'UNIT_AURA' then
@@ -276,7 +281,7 @@ local function OmniCDCooldown_OnHide(self)
 			icon:SetAlpha(E.db.icons.inactiveAlpha)
 		end
 
-		if key == "raidBar0" and P.rearrangeInterrupts then
+		if frame.shouldRearrangeInterrupts then
 			P:SetExIconLayout(key, true, true)
 		end
 	end
@@ -484,7 +489,9 @@ function P:UpdateUnitBar(guid, isUpdateBarsOrGRU)
 						isValidSpell = true
 					elseif isInspectedUnit then
 						if i == 6 then
-							isValidSpell = (not E.postBFA or not E.covenant_abilities[spellID] or self.isInShadowlands) and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, lvl >= GetSpellLevelLearned(spellID)) and (not talent or not info.talentData[talent])
+							isValidSpell = (not E.postBFA or not E.covenant_abilities[spellID] or self.isInShadowlands)
+								and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, lvl >= GetSpellLevelLearned(spellID))
+								and (not talent or not self:IsSpecOrTalentForPvpStatus(talent, info, true))
 						elseif i == 5 then
 							isValidSpell = self.isInShadowlands and self:IsSpecOrTalentForPvpStatus(spec==true and spellID or spec, info, true)
 						elseif i == 4 then

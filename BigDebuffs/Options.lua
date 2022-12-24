@@ -492,6 +492,16 @@ function BigDebuffs:SetupOptions()
                                 step = 0.01,
                                 order = 9,
                             },
+                            buffs = {
+                                type = "range",
+                                isPercent = true,
+                                name = L["buffs"],
+                                desc = L["Set the size of buffs"],
+                                min = 0,
+                                max = 0.5,
+                                step = 0.01,
+                                order = 10,
+                            },
                         },
                     },
                     inRaid = {

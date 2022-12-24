@@ -141,6 +141,8 @@ L["Detach from raid frames and set position manually"] = "脱离团队框架并�
 L["Disable Popup"] = "不需要确认"
 L["Disable Reload UI confirmation when using Pixel Perfect borders"] = "使用完美像素边框时，无需确认立即重新加载界面"
 L["Disable to make the icons click through"] = "禁用以使图标点击穿过"
+--[[Translation missing --]]
+L["Disabled spells will not appear on your bars even if you have them selected here"] = "Disabled spells will not appear on your bars even if you have them selected here"
 L["Display a glow animation around an icon when it is activated"] = "激活时，在图标周围显示发光动画"
 L["Display custom border around icons"] = "在图标周围显示自定义边框"
 L["Display default border around icons"] = "显示图标周围的默认边框"
@@ -182,6 +184,14 @@ L["Font"] = "字体"
 L["Font Outline"] = "字体轮廓"
 L["Fonts"] = "字体"
 L["Glow Icons"] = "图标闪光"
+--[[Translation missing --]]
+L["Group member must have OmniCD to detect cooldown reduction by Glyphs."] = "Group member must have OmniCD to detect cooldown reduction by Glyphs."
+--[[Translation missing --]]
+L["Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."] = "Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."
+--[[Translation missing --]]
+L["Group member must have OmniCD to detect cooldown reduction with a chance to proc."] = "Group member must have OmniCD to detect cooldown reduction with a chance to proc."
+--[[Translation missing --]]
+L["Group member must have OmniCD to detect Talents."] = "Group member must have OmniCD to detect Talents."
 --[[Translation missing --]]
 L["Group Padding"] = "Group Padding"
 L["Group Size"] = "团队规模"
@@ -230,6 +240,8 @@ L["Inactive"] = "取消激活"
 L["Inactive Icon Opacity"] = "不在冷却中的图标透明度"
 L["INNER"] = "内部"
 L["Interrupt Bar"] = "打断技能图标"
+--[[Translation missing --]]
+L["Interrupt spell types are automatically added to this bar."] = "Interrupt spell types are automatically added to this bar."
 L["Interrupted Spell Icon"] = "被打断的技能图标"
 L["Interrupted Target Marker"] = "被打断的目标标记"
 L["Interrupts"] = "打断"
@@ -367,6 +379,12 @@ L["Select the icon layout"] = "Select the icon layout"
 --[[Translation missing --]]
 L["Select the spell types you want to display on this column."] = "Select the spell types you want to display on this column."
 --[[Translation missing --]]
+L["Select the spells you want to move from the 'Raid CD' tab. The spell must be enabled from the 'Spells' tab first."] = "Select the spells you want to move from the 'Raid CD' tab. The spell must be enabled from the 'Spells' tab first."
+--[[Translation missing --]]
+L["Select the spells you want to show on Raid Bar 1-8 instead of the default Unit Bar"] = "Select the spells you want to show on Raid Bar 1-8 instead of the default Unit Bar"
+--[[Translation missing --]]
+L["Select the spells you want to track."] = "Select the spells you want to track."
+--[[Translation missing --]]
 L["Select the zone setting to use for this zone."] = "Select the zone setting to use for this zone."
 L["Select the zone you want to copy settings from."] = "选择要复制哪个区域的设置。"
 L["Select your default party frame layout"] = "选择默认的团队框架布局"
@@ -389,7 +407,7 @@ L["Set the padding space between group columns"] = "设定队伍之间间距"
 L["Set the padding space between icon columns"] = "设置在图标列之间的填充空间"
 L["Set the padding space between icon rows"] = "设置在图标行之间的填充空间"
 L["Set the padding space between icons"] = "设置图标之间间隔"
-L["Set the prioirty of spell types for sorting."] = "设定法术类型的优先权，供排序使用。"
+L["Set the priority of spell types for sorting."] = "设定法术类型的优先权，供排序使用。"
 L["Set the size of charge numbers"] = "设置充能次数文字大小"
 L["Set the size of cooldown numbers"] = "设定冷却时间数字大小"
 L["Set the size of icons"] = "设置图标大小"

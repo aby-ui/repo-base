@@ -55,7 +55,7 @@
 				<Texture name="$parentIcon" parentKey="icon"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="2">
-				<FontString name="$parentHotKey" inherits="NumberFontNormalSmallGray" parentKey="hotKey" justifyH="RIGHT" text="RANGE_INDICATOR">
+				<FontString name="$parentHotKey" inherits="NumberFontNormalSmallGray" parentKey="hotKey" justifyH="RIGHT" text="RANGE_INDICATOR" hidden="true">
 					<Size x="32" y="10"/>
 					<Anchors>
 						<Anchor point="TOPLEFT" x="3" y="-3"/>

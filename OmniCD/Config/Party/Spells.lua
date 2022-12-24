@@ -103,7 +103,7 @@ end
 
 local spells = {
 	name = function(info)
-		return isSpellsSubcategory(info) and L["Spells"] or format("%s/%s",L["Interrupt"], L["Raid CD"])
+		return isSpellsSubcategory(info) and L["Spells"] or L["Raid CD"]
 	end,
 	order = 60,
 	type = "group",
@@ -112,7 +112,8 @@ local spells = {
 	args = {
 		desc = {
 			name = function(info)
-				return isSpellsSubcategory(info) and L["CTRL+click to edit spell."] or L["Assign Raid Cooldowns."]
+				return isSpellsSubcategory(info) and format("|TInterface\\FriendsFrame\\InformationIcon:14:14:0:0|t %s %s\n\n", L["Select the spells you want to track."], L["CTRL+click to edit spell."])
+				or format("|TInterface\\FriendsFrame\\InformationIcon:14:14:0:0|t %s", L["Select the spells you want to show on Raid Bar 1-8 instead of the default Unit Bar"])
 			end,
 			order = 0,
 			type = "description",
@@ -153,7 +154,7 @@ local spells = {
 		hideDisabledSpells = {
 			hidden = isSpellsSubcategory,
 			name = L["Hide Disabled Spells"],
-			desc = L["Hide spells that are not enabled in the \'Spells\' menu."],
+			desc = format("%s\n\n|cffff2020%s",L["Hide spells that are not enabled in the \'Spells\' menu."], L["Disabled spells will not appear on your bars even if you have them selected here"]),
 			order = 6,
 			type = "toggle",
 			get = function(info) return E[ info[1] ].getHideDisabledSpells(info) end,
@@ -276,7 +277,7 @@ function P:UpdateSpellsOption(id, oldClass, oldType, class, stype, force)
 					}
 				end
 
-				if E.isClassic or E.isDF then
+				if E.isDF or E.isClassic then
 					local spell = Spell:CreateFromSpellID(spellID)
 					spell:ContinueOnSpellLoad(function()
 						local desc = E.isClassic and spell:GetSpellDescription() or GetSpellLink(spellID)
@@ -346,7 +347,7 @@ function P:AddSpellPickerSpells()
 						end
 					end
 
-					if E.isClassic or E.isDF then
+					if E.isDF or E.isClassic then
 						local spell = Spell:CreateFromSpellID(spellID)
 						spell:ContinueOnSpellLoad(function()
 							local desc = E.isClassic and spell:GetSpellDescription() or GetSpellLink(spellID)

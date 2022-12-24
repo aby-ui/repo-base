@@ -114,6 +114,37 @@ GTFO.SpellID["385355"] = {
   sound = 1;
 };
 
+GTFO.SpellID["378927"] = {
+  --desc = "Blizzard";
+  sound = 1;
+};
+
+GTFO.SpellID["391190"] = {
+  --desc = "Stir (Bisquius)";
+  sound = 1;
+};
+
+GTFO.SpellID["395561"] = {
+  --desc = "Restless Earth (Gravlion)";
+  sound = 1;
+};
+
+GTFO.SpellID["395562"] = {
+  --desc = "Restless Earth (Gravlion)";
+  applicationOnly = true;
+  sound = 1;
+};
+
+GTFO.SpellID["375033"] = {
+  --desc = "Quaking Spike";
+  sound = 1;
+};
+
+GTFO.SpellID["394073"] = {
+  --desc = "Furious Flames (Vadne Bleakheart)";
+  sound = 1;
+};
+
 
 --- *******************
 --- * Ruby Life Pools *
@@ -518,6 +549,11 @@ GTFO.SpellID["382458"] = {
   sound = 1;
 };
 
+GTFO.SpellID["398200"] = {
+  --desc = "Djaradin Lava";
+  sound = 1;
+};
+
 GTFO.SpellID["371514"] = {
   --desc = "Scorched Ground (Embar)";
   soundFunction = function() 
@@ -530,22 +566,57 @@ GTFO.SpellID["371514"] = {
 
 GTFO.SpellID["372055"] = {
   --desc = "Icy Ground (Sennarth)";
-  sound = 1;
-  test = true;
+  sound = 2;
+};
+
+GTFO.SpellID["371836"] = {
+  --desc = "Primal Blizzard (Kadros Icewrath)";
+  soundFunction = function() 
+	local stacks = GTFO_DebuffStackCount("player", 371836);
+	if (stacks == 7 or stacks == 8) then
+		return 2;
+	elseif (stacks == 9) then
+		return 1;
+	end
+  end;
+};
+
+GTFO.SpellID["371624"] = {
+  --desc = "Conductive Mark (Dathea Stormlash)";
+  spellType = "SPELL_AURA_APPLIED_DOSE"; -- Only alert when passing debuff to another player, refreshing your own
+  sound = 4;
+};
+
+GTFO.SpellID["372030"] = {
+  --desc = "Sticky Webbing (Sennarth)";
+  applicationOnly = true;
+  soundFunction = function() 
+	GTFO_AddEvent("StickyWebbing", 30);
+	local stacks = GTFO_DebuffStackCount("player", 372030);
+	if (stacks > 6) then
+		return 1;
+	else
+		return 2;
+	end
+  end;
 };
 
 GTFO.SpellID["391686"] = {
   --desc = "Conductive Mark (Dathea)";
-  applicationOnly = true;
-  spellType = "SPELL_AURA_REFRESH"; -- Only alert when passing debuff to another player, refreshing your own
+  spellType = "SPELL_AURA_APPLIED_DOSE"; -- Only alert when passing debuff to another player, refreshing your own
   sound = 4;
+};
+
+GTFO.SpellID["376851"] = {
+  --desc = "Aerial Buffet (Dathea)";
+  tankSound = 1;
+  sound = 0;
   test = true;
 };
 
 GTFO.SpellID["374554"] = {
   --desc = "Magma Pool (Kurog Grimtotem)";
   sound = 1;
-  test = true;
 };
 
 GTFO.SpellID["390747"] = {
@@ -565,5 +636,13 @@ GTFO.SpellID["395929"] = {
   sound = 1;
   test = true;
 };
+
+GTFO.SpellID["395278"] = {
+  --desc = "Electric Surge (Primal Stormsentry)";
+  sound = 4;
+  negatingDebuffSpellID = 395273; -- Electric Surge
+  ignoreSelfInflicted = true;
+};
+
 
 end

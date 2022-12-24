@@ -21,4 +21,10 @@ GTFO.FFSpellID["387848"] = {
   ignoreSelfInflicted = true;
 };
 
+GTFO.FFSpellID["395278"] = {
+  --desc = "Electric Surge";
+  sound = 4;
+  ignoreSelfInflicted = true;
+};
+
 end

@@ -358,7 +358,7 @@ function E:UnitFrames()
 
 		self:SetActiveUnitFrameData()
 
-		--[[ remove nag
+		--[[ informative, but still a nag
 		if not self.global.disableElvMsg then
 			--self.StaticPopup_Show("OMNICD_CUSTOM_UF_MSG")
 		end

@@ -31,6 +31,8 @@ ns.groups.CHISELED_RECORD = Group('chiseled_record', 134455,
     {defaults = ns.GROUP_HIDDEN})
 ns.groups.DISTURBED_DIRT = Group('disturbed_dirt', 1060570,
     {defaults = ns.GROUP_HIDDEN})
+ns.groups.MAGICBOUND_CHEST = Group('magicbound_chest', 'chest_tl',
+    {defaults = ns.GROUP_HIDDEN})
 ns.groups.DRAGONRACE =
     Group('dragonrace', 1100022, {defaults = ns.GROUP_HIDDEN})
 ns.groups.DRAGON_GLYPH = Group('dragon_glyph', 4728198)
@@ -331,6 +333,7 @@ local Disturbeddirt = Class('Disturbed_dirt', Node, {
         Item({item = 199067, quest = 70536}), -- Precious Plans
         Item({item = 198852, quest = 70407}), -- Bear Termination Orders
         Item({item = 198843, quest = 70392}), -- Emerald Gardens Explorer's Notes
+        Item({item = 199065, quest = 70534}), -- Sorrowful Letter
         Item({item = 192055}), -- Dragon Isles Artifact
         Currency({id = 2003}) -- Dragon Isles Supplies
     }
@@ -371,6 +374,26 @@ local Scoutpack = Class('Scoutpack', Node, {
 })
 
 ns.node.Scoutpack = Scoutpack
+
+-------------------------------------------------------------------------------
+------------------------------ Magic-Bound Chest ------------------------------
+-------------------------------------------------------------------------------
+
+local MagicBoundChest = Class('MagicBoundChest', Node, {
+    icon = 'chest_tl',
+    label = L['magicbound_chest'],
+    group = ns.groups.MAGICBOUND_CHEST,
+    requires = ns.requirement.Reputation(2507, 16, true), -- Dragonscale Expedition
+    rewards = {
+        Item({item = 191784}), -- Dragon Shard of Knowledge
+        Item({item = 190454}), -- Primal Chaos
+        Item({item = 199062, quest = 70528}), -- Ruby Gem Cluster Map
+        Item({item = 192055}), -- Dragon Isles Artifact
+        Currency({id = 2003}) -- Dragon Isles Supplies
+    }
+})
+
+ns.node.MagicBoundChest = MagicBoundChest
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------

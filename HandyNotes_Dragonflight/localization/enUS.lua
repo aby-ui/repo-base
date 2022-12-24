@@ -48,6 +48,10 @@ L['scout_pack'] = 'Expedition Scout\'s Pack'
 L['options_icons_scout_pack'] = 'Expedition Scout\'s Packs'
 L['options_icons_scout_pack_desc'] = 'Display the location of Expedition Scout\'s Packs.'
 
+L['magicbound_chest'] = 'Magic-Bound Chest'
+L['options_icons_magicbound_chest'] = 'Magic-Bound Chest'
+L['options_icons_magicbound_chest_desc'] = 'Display the location of Magic-Bound Chests.'
+
 L['dr_best'] = 'Your best time:\n - Normal: %.3fs\n - Advanced: %.3fs'
 L['dr_best_dash'] = 'Your best time:\n - %.3fs'
 L['dr_note'] = 'Target time:\n - Normal: %ss / %ss\n - Advanced: %ss / %ss'
@@ -358,6 +362,14 @@ L['slumbering_worldsnail_note1'] = [[
 L['slumbering_worldsnail_note2'] = ns.color.Orange('Note: If you die you will lose your membership debuff. Either purchase a new membership from {npc:193310} for 20x {item:202173} before you die or you need to turn in more keys for a chance at a new membership from the chest.')
 
 L['magmashell_note'] = 'Loot {item:201883} from {npc:193138} around |cffffff00Obsidian Citadel|r and bring it to the {npc:199010}.\n\n' .. ns.color.Orange('There is a 20 second spell channel while in the lava to obtain the mount so bringing a healer or something like {item:200116} is recommended.')
+
+L['otto_note_start1'] = 'Collect a pair of {item:202042}. The glasses are a 100% drop from the {item:202102} which is purchased from {npc:191608} in the |cFFFFFD00Ohn\'ahran Plains|r.\n\nThe bag can be purchased with 1x {item:199340} which can be purchased with 5x {item:199339} which can be purchased with 75x {item:199338} which can be fished up around |cFFFFFD00The Dragon Isles|r or by defeating |cFFFFFD00<Lunker>|r mobs in fishing holes.'
+L['otto_note_start2'] = ns.color.Orange('Defeating |cFFFFFD00<Lunker>|r mobs will require Renown 7 with the |cFFFFFD00Iskaara Tuskarr|r and access to the {item:194510}.')
+L['otto_note_start3'] = 'Once you have a pair of {item:202042} head over to |cFFFFFD00The Bubble Bath|r dive bar in the |cFFFFFD00Hissing Grotto|r find a dancing mat, and stand on it to get the debuff {spell:396539}. Once the debuff expires you will pass out and wake up next to a barrel. Interact with it to loot the {item:202061}. You now need to fill the barrel with fish to feed to {npc:199563}.'
+L['otto_note_item1'] = 'Collect 100x {item:202072}, a high drop fish that can be fished in the open waters of |cFFFFFD00Iskaara|r in |cFFFFFD00Azure Span|r. Using the barrel with the fish gives you a {item:202066}.'
+L['otto_note_item2'] = 'Collect 25x {item:202073}, a rare drop fish that can be fished in the lava around the |cFFFFFD00Obsidian Citadel|r in |cFFFFFD00The Waking Shores|r. Using the barrel with the fish gives you a {item:202068}.'
+L['otto_note_item3'] = 'Collect 1x {item:202074}, a rare drop fish that can be fished in the waters by |cFFFFFD00Algeth\'ar Academy|r in |cFFFFFD00Thaldraszus|r. Using the barrel with the fish gives you an {item:202069}.'
+L['otto_note_end'] = 'Return to the |cFFFFFD00Hissing Grotto|r in |cFFFFFD00The Waking Shores|r and leave the barrel where you found it to summon {npc:199563} and receive your mount!'
 
 L['options_icons_safari'] = '{achievement:16519}'
 L['options_icons_safari_desc'] = 'Display the location of battle pets for {achievement:16519}.'

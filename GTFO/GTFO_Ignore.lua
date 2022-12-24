@@ -98,5 +98,11 @@ GTFO.IgnoreScan["360303"] = true; -- Swarm of Darkness
 GTFO.IgnoreScan["361923"] = true; -- Ravenous Hunger
 GTFO.IgnoreScan["359778"] = true; -- Ephemera Dust
 GTFO.IgnoreScan["294720"] = true; -- Bottled Enimga
+GTFO.IgnoreScan["396233"] = true; -- Thundering Presence
+GTFO.IgnoreScan["396222"] = true; -- Shattering Presence
+GTFO.IgnoreScan["396212"] = true; -- Chilling Presence
+GTFO.IgnoreScan["396201"] = true; -- Blistering Presence
+GTFO.IgnoreScan["384637"] = true; -- Raging Winds
+GTFO.IgnoreScan["388290"] = true; -- Cyclone
 
 

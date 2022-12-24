@@ -17,6 +17,7 @@ local Dragonrace = ns.node.Dragonrace
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
 local LegendaryCharacter = ns.node.LegendaryCharacter
+local MagicBoundChest = ns.node.MagicBoundChest
 local PetBattle = ns.node.PetBattle
 local PM = ns.node.ProfessionMasters
 local PrettyNeat = ns.node.PrettyNeat
@@ -150,7 +151,8 @@ map.nodes[29935074] = RareElite({
         DC.WindborneVelocidrake.ClubTail, --
         DC.WindborneVelocidrake.ClusterHorns, --
         DC.CliffsideWylderdrake.BlackHorns
-    }
+    },
+    pois = {POI({29335248, 30535144})}
 }) -- Char
 
 map.nodes[31785474] = RareElite({ -- review -- required 67030
@@ -171,7 +173,7 @@ map.nodes[60204535] = Rare({
     quest = 73874,
     rewards = {
         Achievement({id = 16676, criteria = 56039}),
-        Achievement({id = 16446, criteria = 5, note = L['pretty_neat_note']}),
+        Achievement({id = 16446, criteria = 55387, note = L['pretty_neat_note']}),
         Transmog({item = 200219, slot = L['cloak']}) -- Dangerous Drapery
     },
     pois = {
@@ -210,7 +212,7 @@ map.nodes[33127632] = RareElite({
     quest = 73073,
     rewards = {
         Achievement({id = 16676, criteria = 56048}),
-        Achievement({id = 16446, criteria = 8, note = L['pretty_neat_note']}),
+        Achievement({id = 16446, criteria = 55394, note = L['pretty_neat_note']}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200232, slot = L['warglaive']}), -- Raptor Talonglaive
         Transmog({item = 200256, slot = L['offhand']}), -- Darkmaul Soul Horn
@@ -251,7 +253,7 @@ map.nodes[34618275] = Rare({
 
 map.nodes[39596353] = Rare({ -- review -- required 67030
     id = 186827,
-    quest = 70979,
+    quest = 74010,
     rewards = {Achievement({id = 16676, criteria = 56046})}
 }) -- Magmaton
 
@@ -574,7 +576,7 @@ map.nodes[40454136] = Treasure({ -- required 65537, 70599, 70527
     quest = 70599,
     requires = {
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
-        ns.requirement.Item(199061) -- A Guide to Rare Fish
+        ns.requirement.Quest(70527, '{item:199061}') -- A Guide to Rare Fish
     },
     note = L['bubble_drifter_note'],
     rewards = {
@@ -610,7 +612,7 @@ map.nodes[29454699] = Treasure({
     requires = {
         ns.requirement.Reputation(2507, 21, true), -- Dragonscale Expedition
         ns.requirement.Quest(70833), -- Rumors of the Jeweled Whelplings
-        ns.requirement.Item(200738) -- Onyx Gem Cluster Map
+        ns.requirement.Quest(72021, '{item:200738}') -- Onyx Gem Cluster Map
     },
     rewards = {
         Achievement({id = 16297, criteria = 55448}), --
@@ -624,7 +626,7 @@ map.nodes[65804182] = Treasure({
     note = L['golden_dragon_goblet_note'],
     requires = {
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
-        ns.requirement.Item(198854) -- Archeologist Artifact Notes
+        ns.requirement.Quest(70409, '{item:198854}') -- Archeologist Artifact Notes
     },
     rewards = {
         Achievement({id = 16297, criteria = 54698}), --
@@ -639,7 +641,7 @@ map.nodes[61347079] = Treasure({
     requires = {
         ns.requirement.Reputation(2507, 21, true), -- Dragonscale Expedition
         ns.requirement.Quest(70833), -- Rumors of the Jeweled Whelplings
-        ns.requirement.Item(199062) -- Ruby Gem Cluster Map
+        ns.requirement.Quest(70528, '{item:199062}') -- Ruby Gem Cluster Map
     },
     rewards = {
         Achievement({id = 16297, criteria = 54713}), --
@@ -1032,6 +1034,7 @@ map.nodes[51824744] = Scoutpack()
 map.nodes[52745025] = Scoutpack()
 map.nodes[55774334] = Scoutpack()
 map.nodes[55887676] = Scoutpack()
+map.nodes[56182932] = Scoutpack()
 map.nodes[56857953] = Scoutpack()
 map.nodes[57404560] = Scoutpack()
 map.nodes[58395561] = Scoutpack()
@@ -1046,6 +1049,39 @@ map.nodes[72155969] = Scoutpack({
 map.nodes[72595687] = Scoutpack()
 map.nodes[80903776] = Scoutpack({note = L['in_small_cave']})
 map.nodes[82055012] = Scoutpack()
+
+-------------------------------------------------------------------------------
+------------------------------ Magic-Bound Chest ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[22607480] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[23809090] = MagicBoundChest({
+    requires = {
+        ns.requirement.Reputation(2507, 16, true),
+        ns.requirement.Profession(186)
+    },
+    note = L['in_small_cave']
+})
+map.nodes[30504730] = MagicBoundChest({
+    note = L['in_cave'],
+    pois = {POI({29335248, 30535144})}
+})
+map.nodes[36208570] = MagicBoundChest({
+    note = L['in_small_cave'],
+    pois = {POI({36728736})}
+})
+map.nodes[43706150] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[51701860] = MagicBoundChest()
+map.nodes[55404500] = MagicBoundChest()
+map.nodes[62907990] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[64304290] = MagicBoundChest({
+    note = L['in_cave'],
+    pois = {POI({63824085})}
+})
+map.nodes[72206040] = MagicBoundChest({
+    note = L['in_small_cave'],
+    pois = {POI({71725871})}
+})
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
@@ -1335,18 +1371,18 @@ map.nodes[23677143] = GrandTheftMammoth({
 
 map.nodes[42276935] = PrettyNeat({
     id = 192186,
-    rewards = {Achievement({id = 16446, criteria = 19})}
+    rewards = {Achievement({id = 16446, criteria = 55391})}
 }) -- Territorial Axebeak
 
 map.nodes[25675706] = PrettyNeat({
     id = 193291,
     note = L['pretty_neat_note_blazewing'],
-    rewards = {Achievement({id = 16446, criteria = 1})}
+    rewards = {Achievement({id = 16446, criteria = 55392})}
 }) -- Apex Blazewing
 
 nel.nodes[52408260] = PrettyNeat({
     id = 193291,
-    rewards = {Achievement({id = 16446, criteria = 1})}
+    rewards = {Achievement({id = 16446, criteria = 55392})}
 }) -- Apex Blazewing
 
 -------------------------------------------------------------------------------
@@ -1395,7 +1431,7 @@ map.nodes[58676778] = Collectible({
     questCount = true,
     note = L['all_sides_of_the_story_duroz_and_kolgar_note'],
     rewards = {Achievement({id = 16406, criteria = 2})},
-    pois = {POI({57676697})}
+    pois = {POI({57676697, 56826448})}
 }) -- Duroz & Kolgar
 
 map.nodes[16176261] = Collectible({
@@ -1433,7 +1469,7 @@ map.nodes[57856680] = Collectible({
 ------------------------------ A LEGENDARY ALBUM ------------------------------
 -------------------------------------------------------------------------------
 
-map.nodes[64415914] = LegendaryCharacter({
+map.nodes[68755523] = LegendaryCharacter({
     id = 82746,
     rewards = {Achievement({id = 16570, criteria = 55758})}
 }) -- Abu'Gar
@@ -1673,6 +1709,38 @@ map.nodes[71102510] = Collectible({
         POI({21806680, 22406860, 22606880}) -- Lavaslurper locations
     }
 }) -- Magmashell
+
+--------------------------------- MOUNT: OTTO ---------------------------------
+
+local Otto = Class('Otto', Collectible, {
+    id = 199563,
+    icon = 4093847,
+    requires = {
+        ns.requirement.Toy(202042) -- Aquatic Shades
+    },
+    rewards = {
+        Mount({item = 198870, id = 1656}) -- Otto
+    }
+}) -- Otto
+
+function Otto.getters:note()
+    local function status(id, count)
+        if ns.PlayerHasItem(id, count) then
+            return ns.status.Green(count .. 'x')
+        else
+            return ns.status.Red(count .. 'x')
+        end
+    end
+    local note = L['otto_note_start1']
+    note = note .. '\n\n' .. L['otto_note_start2']
+    note = note .. '\n\n' .. L['otto_note_start3']
+    note = note .. '\n\n' .. status(202072, 100) .. ' ' .. L['otto_note_item1'] -- Frigid Floe Fish
+    note = note .. '\n\n' .. status(202073, 25) .. ' ' .. L['otto_note_item2'] -- Calamitous Carp
+    note = note .. '\n\n' .. status(202074, 1) .. ' ' .. L['otto_note_item3'] -- Kingfin, the Wise Whiskerfish
+    return note .. '\n\n' .. L['otto_note_end']
+end
+
+map.nodes[19603650] = Otto()
 
 ----------------------------- MISCELLANEOUS NPCs ------------------------------
 

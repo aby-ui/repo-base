@@ -208,6 +208,7 @@ local allIsLiteral = {
 	descStyle = true,
 	imageWidth = true,
 	imageHeight = true,
+	justifyH = true, -- s a; Add to AceConfigregistery-3.0 typedkeys to validate
 }
 
 --gets the value for a member that could be a function
@@ -1639,6 +1640,9 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 					else -- small or invalid
 						control:SetFontObject(_G["GameFontHighlightSmall-OmniCD"])
 					end
+
+					local justifyH = GetOptionsMemberValue("justifyH",v, options, path, appName)
+					control:SetJustifyH(justifyH or "LEFT")
 					-- e
 
 					local imageCoords = GetOptionsMemberValue("imageCoords",v, options, path, appName)

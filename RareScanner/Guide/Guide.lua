@@ -574,6 +574,9 @@ private.NPC_GUIDE = {
 		[RSConstants.ENTRANCE] = { x = 0.4753, y = 0.7168 };
 		[RSConstants.FLAG] = { x = 0.4627, y = 0.7317, comment = AL["NOTE_183984_1"] };
 	}; --The Weeping Vilomah
+	["1925572023"] = { 
+		[RSConstants.FLAG] = { x = 0.7043, y = 0.6349, comment = AL["NOTE_192557_1"] };
+	}; --Quackers the Terrible
 }
 
 ---============================================================================
@@ -1112,6 +1115,10 @@ private.CONTAINER_GUIDE = {
 		[RSConstants.DOT..4] = { x = 0.5580, y = 0.3100, comment = AL["NOTE_201003_1"] };
 		[RSConstants.DOT..5] = { x = 0.5580, y = 0.3120, comment = AL["NOTE_201003_1"] };
 	}; --Furry Gloop
+	["3823252022"] = { 
+		[RSConstants.ENTRANCE..1] = { x = 0.3063, y = 0.5147 };
+		[RSConstants.ENTRANCE..2] = { x = 0.2942, y = 0.5272 };
+	}; --Onyx Gem Cluster
 }
 
 ---============================================================================

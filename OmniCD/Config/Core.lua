@@ -118,22 +118,62 @@ local function GetOptions()
 							order = 12,
 							type = "toggle",
 						},
+
+						minusScale = {
+							disabled = function() return E.global.optionPanelScale < 0.84 end,
+							image = [[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-minus]], imageWidth = 18, imageHeight = 18,
+							name = "",
+							order = 13,
+							type = "execute",
+							func = function()
+								local currScale = E.global.optionPanelScale
+								if currScale > 0.84 then
+									currScale = currScale - 0.05
+									E.Libs.ACD.OpenFrames.OmniCD.frame:SetScale(currScale)
+									E.global.optionPanelScale = currScale
+								end
+							end,
+							width = 0.15,
+						},
+						currScale = {
+							name = function() return format("%s%%", E.global.optionPanelScale * 100) end,
+							order = 14,
+							type = "description",
+							width = 0.3,
+							justifyH = "CENTER",
+						},
+						plusScale = {
+							disabled = function() return E.global.optionPanelScale == 1.5 end,
+							image = [[Interface\AddOns\OmniCD\Media\omnicd-bg-gnav2-plus]], imageWidth = 18, imageHeight = 18,
+							name = "",
+							order = 15,
+							type = "execute",
+							func = function()
+								local currScale = E.global.optionPanelScale
+								if currScale < 1.46 then
+									currScale = currScale + 0.05
+									E.Libs.ACD.OpenFrames.OmniCD.frame:SetScale(currScale)
+									E.global.optionPanelScale = currScale
+								end
+							end,
+							width = 0.15,
+						},
 						pd3 = {
-							name = "\n", order = 14, type = "description",
+							name = "\n", order = 16, type = "description",
 						},
 						notice = {
 							image = "Interface\\AddOns\\OmniCD\\Media\\omnicd-recent", imageWidth = 32, imageHeight = 16, imageCoords = { 0.13, 1.13, 0.25, 0.75 },
 							name = " ",
-							order = 15,
+							order = 17,
 							type = "description",
 						},
 						notice1 = {
-							name = (E.isClassic and "|cffff2020* Talent detection require Sync Mode.")
-							or (E.isWOTLKC and "|cffff2020* Coodown reduction by Glyphs require Sync Mode.")
-							or (E.isSL and "|cffff2020* Coodown reduction by Soulbind Conduits and RNG modifiers (% chance to X, etc) require Sync Mode.")
-							or (E.isDF and "|cffff2020* RNG cooldown modifiers (% chance to X, etc) require Sync Mode." )
-							or "",
-							order = 16,
+							name = format("|cffff2020* %s", (E.isClassic and L["Group member must have OmniCD to detect Talents."])
+							or (E.isWOTLKC and L["Group member must have OmniCD to detect cooldown reduction by Glyphs."])
+							or (E.isSL and L["Group member must have OmniCD to detect cooldown reduction with a chance to proc and Soulbind Conduits."])
+							or (E.isDF and L["Group member must have OmniCD to detect cooldown reduction with a chance to proc."])
+							or ""),
+							order = 18,
 							type = "description",
 						},
 						pd4 = {

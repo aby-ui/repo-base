@@ -34,7 +34,7 @@ addon.WarningDebuffs = {
     316099, -- Unstable Affliction
     342938, -- Unstable Affliction
     34914, -- Vampiric Touch
-    323673, -- Mindgames
+    375901, -- Mindgames
 }
 
 -- Make sure we always see these debuffs, but don't make them bigger
@@ -47,7 +47,7 @@ addon.PriorityDebuffs = {
     122470, -- Touch of Karma
     208997, -- Counterstrike Totem
     343294, -- Soul Reaper (Unholy)
-    323673, -- Mindgames
+    375901, -- Mindgames
 }
 
 addon.Spells = {
@@ -71,6 +71,7 @@ addon.Spells = {
     [212619] = { type = INTERRUPT, duration = 6 }, -- Call Felhunter (Warlock)
     [31935] = { type = INTERRUPT, duration = 3 }, -- Avenger's Shield (Paladin)
     [217824] = { type = INTERRUPT, duration = 4 }, -- Shield of Virtue (Protection PvP Talent)
+    [351338] = { type = INTERRUPT, duration = 4 }, -- Quell (Evoker)
 
     -- Death Knight
 
@@ -367,7 +368,6 @@ addon.Spells = {
 
     [327661] = { type = BUFF_DEFENSIVE }, -- Fae Guardians
     [337661] = { type = BUFF_DEFENSIVE }, -- Translucent Image (Fade defensive Conduit)
-    [213602] = { type = IMMUNITY }, -- Greater Fade (Holy/Shadow PvP Talent)
     [605] = { type = CROWD_CONTROL, priority = true }, -- Mind Control
     [8122] = { type = CROWD_CONTROL }, -- Psychic Scream
     [9484] = { type = CROWD_CONTROL }, -- Shackle Undead
@@ -410,7 +410,7 @@ addon.Spells = {
         [322461] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Discipline)
         [322458] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Monk)
         [322460] = { type = DEBUFF_OFFENSIVE, parent = 322459 }, -- Thoughtstolen (Priest - Shadow)
-    [323673] = { type = DEBUFF_OFFENSIVE }, -- Mindgames
+    [375901] = { type = DEBUFF_OFFENSIVE }, -- Mindgames
     [329543] = { type = BUFF_DEFENSIVE }, -- Divine Ascension (down)
         [328530] = { type = IMMUNITY, parent = 329543 }, -- Divine Ascension (up)
     [335467] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Devouring Plague
@@ -423,6 +423,8 @@ addon.Spells = {
     [65081] = { type = BUFF_SPEED_BOOST }, -- Body and Soul
     [121557] = { type = BUFF_SPEED_BOOST }, -- Angelic Feather
     [199845] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Psyflay (Psyfiend) debuff
+    [358861] = { type = CROWD_CONTROL }, -- Void Volley: Horrify (Shadow PvP Talent)
+    [114415] = { type = ROOT }, -- Void Tendrils
 
     -- Rogue
 
@@ -459,6 +461,7 @@ addon.Spells = {
     [345569] = { type = BUFF_OFFENSIVE }, -- Flagellation (Venthyr Ability)
     [347037] = { type = BUFF_OFFENSIVE }, -- Sepsis (Night Fae Ability)
     [328305] = { type = DEBUFF_OFFENSIVE, priority = true}, -- Sepsis (Night Fae Ability)
+    [360194] = { type = DEBUFF_OFFENSIVE, priority = true}, -- Deathmark
 
     -- Shaman
 
@@ -589,6 +592,15 @@ addon.Spells = {
     [324143] = { type = BUFF_OFFENSIVE }, -- Conqueror's Banner (Necrolord Ability) - on the warrior
         [325862] = { type = BUFF_OFFENSIVE, parent = 324143 }, -- Conqueror's Banner (Necrolord Ability) - on others
 
+    -- Evoker
+
+    [360806] = { type = CROWD_CONTROL }, -- Sleep Walk
+    [355689] = { type = ROOT }, -- Landslide
+    [375087] = { type = BUFF_OFFENSIVE }, -- Dragonrage
+    [378464] = { type = IMMUNITY_SPELL }, -- Nullifying Shroud
+    [363916] = { type = BUFF_DEFENSIVE }, -- Obsidian Scales
+
+
     -- Other
 
     [115804] = { type = DEBUFF_OFFENSIVE, nounitFrames = true, nonameplates = true }, -- Mortal Wounds
@@ -609,6 +621,11 @@ addon.Spells = {
     [65116] = { type = BUFF_DEFENSIVE }, -- Stoneform
     [273104] = { type = BUFF_DEFENSIVE }, -- Fireblood
     [58984] = { type = BUFF_DEFENSIVE }, -- Shadowmeld
+
+    -- Dragonflight: Dragonriding
+
+    [388673] = { type = CROWD_CONTROL }, -- Dragonrider's Initiative
+    [388380] = { type = BUFF_SPEED_BOOST }, -- Dragonrider's Compassion
 
     -- Shadowlands: Covenant/Soulbind
 

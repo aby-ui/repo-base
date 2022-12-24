@@ -17,7 +17,7 @@ private.CONTINENT_ZONE_IDS = {
 	[875] = { zonefilter = true, npcfilter = true, id = 11, zones = {862,863,864,1165} }; --Zandalar
 	[1355] = { zonefilter = true, npcfilter = true, id = 12, zones = {1355} }; --Nazjatar
 	[1550] = { zonefilter = true, npcfilter = true, id = 13, zones = {1409,1525,1533,1536,1543,1565,1618,1961,1970,2030} }; --Shadowlands
-	[1978] = { zonefilter = true, npcfilter = true, id = 14, zones = {2112,2118,2022,2023,2024,2025,2107}, current = { "all" } }; --Dragon Isles
+	[1978] = { zonefilter = true, npcfilter = true, id = 14, zones = {2112,2118,2022,2023,2024,2025,2085,2107}, current = { "all" } }; --Dragon Isles
 	[9999] = { zonefilter = true, npcfilter = true, zones = {276,378,628,629,672,734,702,695,747,739} }; --Class Halls
 	[9998] = { zonefilter = true, npcfilter = true, zones = {407}, current = { "all" } }; --Darkmoon Island
 	[9997] = { zonefilter = true, npcfilter = true, zones = {35,219,229,237,243,251,274,279,280,301,306,316,317,318,616,677,703,706,713,731,733,749,845,897,903,974,1004,1015,1041,1663,1666,1675,1669,1674,1677,1683,1692,2093} }; --Dungeons or scenarios

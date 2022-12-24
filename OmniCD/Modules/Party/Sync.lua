@@ -435,9 +435,9 @@ local function CooldownSyncFrame_OnUpdate(_, elapsed)
 			else
 				prevStart, prevCharges = cooldownInfo[1], cooldownInfo[2]
 			end
-			local shouldSyncPeriodically = E.sync_periodic[id]
+			local periodicSync = E.sync_periodic[id]
 			if duration == 0 then
-				if shouldSyncPeriodically then
+				if periodicSync then
 					cooldownInfo[1] = start
 					cooldownInfo[2] = charges
 					cooldownData[c + 1] = id
@@ -446,7 +446,7 @@ local function CooldownSyncFrame_OnUpdate(_, elapsed)
 					c = c + 3
 				end
 			else
-				if shouldSyncPeriodically or abs(start - prevStart) > 1 or charges > prevCharges then
+				if periodicSync or abs(start - prevStart) > 1 or charges > prevCharges then
 					cooldownInfo[1] = start
 					cooldownInfo[2] = charges
 					local remainingTime = start + duration - now

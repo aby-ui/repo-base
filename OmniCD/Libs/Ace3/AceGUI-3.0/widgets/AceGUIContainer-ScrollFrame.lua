@@ -141,9 +141,15 @@ local methods = {
 			if not self.scrollBarShown then
 				self.scrollBarShown = true
 				self.scrollbar:Show()
+				--[[ s r (20 = scrollbar 16 + scrollbar to scrollframe offset 4)
 				self.scrollframe:SetPoint("BOTTOMRIGHT", -20, 0)
 				if self.content.original_width then
 					self.content.width = self.content.original_width - 20
+				end
+				]]
+				self.scrollframe:SetPoint("BOTTOMRIGHT", -14, 0)
+				if self.content.original_width then
+					self.content.width = self.content.original_width - 14
 				end
 				self:DoLayout()
 			end
@@ -190,7 +196,10 @@ local methods = {
 
 	["OnWidthSet"] = function(self, width)
 		local content = self.content
+		--[[ s r
 		content.width = width - (self.scrollBarShown and 20 or 0)
+		]]
+		content.width = width - (self.scrollBarShown and 14 or 0)
 		content.original_width = width
 	end,
 
@@ -224,7 +233,7 @@ local function Constructor()
 	scrollbar.ScrollUpButton:Hide()
 	scrollbar.ScrollDownButton:Hide()
 	scrollbar.ThumbTexture:SetTexture([[Interface\BUTTONS\White8x8]])
-	scrollbar.ThumbTexture:SetSize(16, 32)
+	scrollbar.ThumbTexture:SetSize(10, 32) -- match scrollbar width
 	scrollbar.ThumbTexture:SetColorTexture(0.3, 0.3, 0.3) -- red is too much
 	scrollbar:SetScript("OnEnter", Thumb_OnEnter)
 	scrollbar:SetScript("OnLeave", Thumb_OnLeave)
@@ -234,7 +243,10 @@ local function Constructor()
 	scrollbar:SetMinMaxValues(0, 1000)
 	scrollbar:SetValueStep(1)
 	scrollbar:SetValue(0)
+	--[[
 	scrollbar:SetWidth(16)
+	]]
+	scrollbar:SetWidth(10)
 	scrollbar:Hide()
 	-- set the script as the last step, so it doesn't fire yet
 	scrollbar:SetScript("OnValueChanged", ScrollBar_OnScrollValueChanged)

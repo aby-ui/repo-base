@@ -128,8 +128,6 @@ function P:SetMarker(icon, markEnhanced)
 		local spellID = icon.spellID
 		local mark = E.spell_marked[spellID]
 		if mark and (mark == true or self:IsTalentForPvpStatus(mark, self.groupInfo[icon.guid])) then
-
-
 			hotkey:Show()
 		else
 			hotkey:Hide()

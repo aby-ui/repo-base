@@ -18,6 +18,7 @@ local Dragonrace = ns.node.Dragonrace
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
 local LegendaryCharacter = ns.node.LegendaryCharacter
+local MagicBoundChest = ns.node.MagicBoundChest
 local PM = ns.node.ProfessionMasters
 local PrettyNeat = ns.node.PrettyNeat
 local PT = ns.node.ProfessionTreasures
@@ -112,7 +113,7 @@ map.nodes[47675115] = Rare({ -- required 67030
     id = 193234,
     quest = 69875,
     rewards = {
-        Achievement({id = 16446, criteria = 6, note = L['pretty_neat_note']}),
+        Achievement({id = 16446, criteria = 55398, note = L['pretty_neat_note']}),
         Achievement({id = 16679, criteria = 56147})
     }
 }) -- Eldoren the Reborn
@@ -266,7 +267,7 @@ map.nodes[36757287] = Rare({
     id = 193273,
     quest = 72842,
     rewards = {
-        Achievement({id = 16446, criteria = 13, note = L['pretty_neat_note']}),
+        Achievement({id = 16446, criteria = 55399, note = L['pretty_neat_note']}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         Transmog({item = 200193, slot = L['cloth']}) -- Manafrond Sandals
     }
@@ -291,7 +292,7 @@ map.nodes[49436289] = Treasure({
     quest = 70611,
     note = L['acorn_harvester_note'],
     rewards = {
-        Achievement({id = 16301, criteria = 54815}),
+        Achievement({id = 16301, criteria = 54815}), -- Treasures of Thaldraszus
         Pet({item = 193066, id = 3275}) -- Chestnut
     }
 }) -- Acorn Harvester
@@ -302,52 +303,51 @@ map.nodes[52607673] = Treasure({
     requires = {
         ns.requirement.Reputation(2507, 21, true), -- Dragonscale Expedition
         ns.requirement.Quest(70833), -- Rumors of the Jeweled Whelplings
-        ns.requirement.Item(198852) -- Bear Termination Orders
+        ns.requirement.Quest(70407, '{item:198852}') -- Bear Termination Orders
     },
     rewards = {
-        Achievement({id = 16301, criteria = 54812}), --
+        Achievement({id = 16301, criteria = 54812}), -- Treasures of Thaldraszus
         Item({item = 200863}) -- Glimmering Nozdorite Cluster
     }
 }) -- Amber Gem Cluster
 
-map.nodes[33967695] = Treasure({ -- add loot
+map.nodes[33967695] = Treasure({
     quest = 70607,
     note = L['cracked_hourglass_note'],
     requires = {
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
-        ns.requirement.Item(199068) -- Time-Lost Memo
+        ns.requirement.Quest(70537, '{item:199068}') -- Time-Lost Memo
     },
     rewards = {
-        Achievement({id = 16301, criteria = 54810}), --
+        Achievement({id = 16301, criteria = 54810}), -- Treasures of Thaldraszus
         Item({item = 169951, note = '3x'}) -- Broken Hourglass
     }
 }) -- Cracked Hourglass
 
-map.nodes[60244164] = Treasure({ -- add loot
+map.nodes[60244164] = Treasure({
     quest = 70609,
     rewards = {
-        Achievement({id = 16301, criteria = 54813}), --
+        Achievement({id = 16301, criteria = 54813}), -- Treasures of Thaldraszus
         Item({item = 203206}) -- Elegant Canvas Brush
     }
 }) -- Elegant Canvas Brush
 
-map.nodes[58168007] = Treasure({ -- add loot
+map.nodes[58168007] = Treasure({
     quest = 70608,
     note = L['sandy_wooden_duck_note'],
-    requires = ns.requirement.Item(199069), -- Yennu's Map
+    requires = ns.requirement.Quest(70538, '{item:199069}'), -- Yennu's Map
     rewards = {
-        Achievement({id = 16301, criteria = 54811}),
+        Achievement({id = 16301, criteria = 54811}), -- Treasures of Thaldraszus
         Item({item = 200827, note = '5x'}) -- Weathered Sculpture
     },
     pois = {POI({54937543})} -- Yennu's Map
 }) -- Sandy Wooden Duck (Sand Pile)
 
-map.nodes[64851655] = Treasure({ -- add loot
+map.nodes[64851655] = Treasure({
     quest = 70610,
     note = L['in_cave'],
     rewards = {
-        Achievement({id = 16301, criteria = 54814}), --
-        Item({item = 193036}) -- Left-Handed Magnifying Glass
+        Achievement({id = 16301, criteria = 54814}), Item({item = 193036}) -- Left-Handed Magnifying Glass
     }
 }) -- Surveyor's Magnifying Glass
 
@@ -568,20 +568,31 @@ map.nodes[57126460] = Fragment({
 ------------------------------- DISTURBED DIRT --------------------------------
 -------------------------------------------------------------------------------
 
+map.nodes[35406995] = Disturbeddirt({
+    note = L['in_small_cave'],
+    pois = {POI({34926940})}
+})
 map.nodes[38188192] = Disturbeddirt()
 map.nodes[49514830] = Disturbeddirt()
 map.nodes[49894474] = Disturbeddirt()
+map.nodes[53398748] = Disturbeddirt()
+map.nodes[53997921] = Disturbeddirt()
 map.nodes[54273978] = Disturbeddirt()
+map.nodes[54433376] = Disturbeddirt()
 map.nodes[55588459] = Disturbeddirt()
 map.nodes[55756743] = Disturbeddirt()
 map.nodes[55918384] = Disturbeddirt()
+map.nodes[56957403] = Disturbeddirt()
 map.nodes[59532835] = Disturbeddirt()
 map.nodes[62226638] = Disturbeddirt()
+map.nodes[62296972] = Disturbeddirt()
+map.nodes[37667615] = Disturbeddirt()
 
 -------------------------------------------------------------------------------
 -------------------------- EXPEDITION SCOUT'S PACKS ---------------------------
 -------------------------------------------------------------------------------
 
+map.nodes[35517551] = Scoutpack()
 map.nodes[37637740] = Scoutpack()
 map.nodes[38796831] = Scoutpack()
 map.nodes[38806831] = Scoutpack()
@@ -590,8 +601,55 @@ map.nodes[50844623] = Scoutpack()
 map.nodes[52758333] = Scoutpack()
 map.nodes[55456797] = Scoutpack()
 map.nodes[55873598] = Scoutpack()
+map.nodes[55875138] = Scoutpack()
 map.nodes[58046702] = Scoutpack()
 map.nodes[59198794] = Scoutpack()
+map.nodes[59496912] = Scoutpack()
+
+-------------------------------------------------------------------------------
+------------------------------ Magic-Bound Chest ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[35107050] = MagicBoundChest({
+    note = L['in_small_cave'],
+    pois = {POI({34926940})}
+})
+map.nodes[42606660] = MagicBoundChest({
+    requires = {
+        ns.requirement.Reputation(2507, 16, true),
+        ns.requirement.Profession(186)
+    },
+    note = L['in_small_cave']
+})
+map.nodes[42907900] = MagicBoundChest({
+    note = L['in_cave'],
+    pois = {POI({40957754})}
+})
+map.nodes[50205200] = MagicBoundChest({
+    requires = {
+        ns.requirement.Reputation(2507, 16, true),
+        ns.requirement.Profession(186)
+    },
+    note = L['in_small_cave']
+})
+map.nodes[53005690] = MagicBoundChest()
+map.nodes[54108390] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[54803270] = MagicBoundChest({
+    requires = {
+        ns.requirement.Reputation(2507, 16, true),
+        ns.requirement.Profession(186)
+    },
+    note = L['in_small_cave']
+})
+map.nodes[58606750] = MagicBoundChest({
+    note = L['in_cave'],
+    pois = {POI({56916717})}
+})
+map.nodes[61305400] = MagicBoundChest({
+    note = L['in_cave'],
+    pois = {POI({59755371})}
+})
+map.nodes[62207180] = MagicBoundChest()
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
@@ -789,12 +847,12 @@ map.nodes[52416987] = Collectible({
 
 map.nodes[43567208] = PrettyNeat({
     id = 187280,
-    rewards = {Achievement({id = 16446, criteria = 4})}
+    rewards = {Achievement({id = 16446, criteria = 55388})}
 }) -- Chef Fry-Aerie
 
 map.nodes[54285271] = PrettyNeat({
     id = 192383,
-    rewards = {Achievement({id = 16446, criteria = 12})}
+    rewards = {Achievement({id = 16446, criteria = 55389})}
 }) -- Iridescent Peafowl
 
 -------------------------------------------------------------------------------

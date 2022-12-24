@@ -212,6 +212,7 @@ local function CreateDropDown(profile, short, move, click, over, short_hook)
 	button:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 	end)
+	button.HandlesGlobalMouseEvent = function(_, buttonID, event) return event == "GLOBAL_MOUSE_DOWN" and buttonID == "LeftButton" end
 
 	LibDD:UIDropDownMenu_Initialize(dropdown, function(self, level) tdDropDown_Initialize(self, dropdown, level) end, O.Menu and "MENU" or nil);
 end

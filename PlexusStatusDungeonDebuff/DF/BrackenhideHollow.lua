@@ -1,6 +1,13 @@
 -- local zone = "Brackenhide Hollow"
 local zoneid = 2096
 
+--M+
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240447, 1, 6, 6, true) --Quake
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240559, 1, 6, 6, true, true) --Grievous Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 209858, 1, 6, 6, true, true) --Necrotic Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240443, 1, 6, 6, true, true) --Burst
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 226512, 1, 6, 6, true) --Sanguine Ichor
+
 GridStatusRaidDebuff:BossNameId(zoneid, 100, "Hackclaw's War-Band")
 GridStatusRaidDebuff:DebuffId(zoneid, 378020, 101, 5, 5, true) --gash-frenzy
 GridStatusRaidDebuff:DebuffId(zoneid, 381379, 102, 5, 5, true) --decayed-senses

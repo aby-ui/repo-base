@@ -9,8 +9,8 @@ local priority = {
 	set = function(info, value) E.profile.Party[ info[2] ].priority[ info[#info] ] = value P:ConfigBars(info[2], "priority") end,
 	args = {
 		desc = {
-			name = L["Set the prioirty of spell types for sorting."], order = 0, type = "description",
-		}
+			name = format("|TInterface\\FriendsFrame\\InformationIcon:14:14:0:0|t %s\n\n", L["Set the priority of spell types for sorting."]), order = 0, type = "description",
+		},
 	},
 }
 

@@ -15,7 +15,7 @@ local LINK_LEN = #LINK_NAME
 
 local ts = '|cff68ccef|H'..LINK_NAME..'|h%s|h|r %s'
 local AddMessage = function(self, text, ...)
-    local betterts = U1GetCfgValue("163ui_chat/betterts")
+    local betterts = U1GetCfgValueFast("163ui_chat", "betterts")
     if betterts then
         local cvalue = GetCVar("showTimestamps")
         if cvalue ~= "none" then

@@ -131,7 +131,7 @@ local extraBarsInfo = {
 	end,
 	name = function(info)
 		local bar = info[4]
-		return bar == "raidBar0" and L["Interrupts"] or P.extraBars[bar].index
+		return bar == "raidBar0" and L["Interrupt Bar"] or P.extraBars[bar].index
 	end,
 	order = function(info)
 		return P.extraBars[ info[4] ].index
@@ -142,8 +142,8 @@ local extraBarsInfo = {
 			disabled = false,
 			name = ENABLE,
 			desc = function(info)
-				return info[4] == "raidBar0" and L["Move your group's Interrupt spells to the Interrupt Bar."]
-				or L["Move your group's Raid Cooldowns to the Raid Bar."]
+				return info[4] == "raidBar0" and format("%s\n\n|cffffd200%s", L["Move your group's Interrupt spells to the Interrupt Bar."], L["Interrupt spell types are automatically added to this bar."])
+				or format("%s\n\n|cffffd200%s", L["Move your group's Raid Cooldowns to the Raid Bar."], L["Select the spells you want to move from the \'Raid CD\' tab. The spell must be enabled from the \'Spells\' tab first."])
 			end,
 			order = 1,
 			type = "toggle",
@@ -446,6 +446,8 @@ local extraBarsInfo = {
 								end
 								local statusBar = icon.statusBar
 								local castingBar = statusBar.CastingBar
+								statusBar.name = name
+								castingBar.name = name
 								statusBar.Text:SetText(name)
 								castingBar.Text:SetText(name)
 							end
@@ -725,9 +727,13 @@ function P:SetExStatusBarWidth(statusBar, key)
 
 	statusBar.Text:ClearAllPoints()
 	if db.nameBar and db.invertNameBar then
-		statusBar.Text:SetPoint("RIGHT", statusBar.icon, "LEFT", -db.textOfsX, db.textOfsY)
+		statusBar.Text:SetPoint("TOPLEFT", statusBar.icon, "TOPLEFT", -db.statusBarWidth + db.textOfsX, db.textOfsY)
+		statusBar.Text:SetPoint("BOTTOMRIGHT", statusBar.icon, "BOTTOMLEFT", -db.textOfsX, db.textOfsY)
+		statusBar.Text:SetJustifyH("RIGHT")
 	else
 		statusBar.Text:SetPoint("LEFT", statusBar, db.textOfsX, db.textOfsY)
+		statusBar.Text:SetPoint("RIGHT", statusBar, -3, db.textOfsY)
+		statusBar.Text:SetJustifyH("LEFT")
 	end
 	statusBar.CastingBar.Text:SetPoint("LEFT", statusBar.CastingBar, db.textOfsX, db.textOfsY)
 	statusBar.CastingBar.Timer:SetPoint("RIGHT", statusBar.CastingBar, -3, db.textOfsY)

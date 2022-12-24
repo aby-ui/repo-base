@@ -1,4 +1,4 @@
-local E, L = select(2, ...):unpack()
+local E, L, C = select(2, ...):unpack()
 
 local ACD_Tooltip = E.Libs.ACD.tooltip
 local DB_VERSION = 3
@@ -23,8 +23,8 @@ function E:CreateFontObjects()
 end
 
 function E:UpdateFontObjects()
-	local optionFont = self.profile.General.fonts.option
-	local optionFontSmall = self.profile.General.fonts.optionSmall
+	local optionFont = C.General.fonts.option
+	local optionFontSmall = C.General.fonts.optionSmall
 
 	for i = 1, select("#", ACD_Tooltip:GetRegions()) do
 		local region = select(i, ACD_Tooltip:GetRegions())

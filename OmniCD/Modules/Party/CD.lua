@@ -639,7 +639,7 @@ end
 registeredEvents['SPELL_ENERGIZE'][378849] = function(info)
 	local icon = info.spellIcons[47528]
 	if icon and icon.active then
-		P:StartCooldown(icon, 3)
+		P:UpdateCooldown(icon, 3)
 	end
 end
 
@@ -2341,14 +2341,17 @@ registeredEvents['SPELL_HEAL'][633] = function(info, _,_, destGUID, _,_, amount,
 		local icon = info.spellIcons[633]
 		if icon then
 			P:StartCooldown(icon, icon.duration)
+
 			local unit = UnitTokenFromGUID(destGUID)
-			local maxHP = UnitHealthMax(unit)
-			if maxHP > 0 then
-				local actualhealing = amount - overhealing
-				local reducedMult = min(actualhealing / maxHP * 6/7, 0.6)
-				if reducedMult > 0 then
-					if icon.active then
-						P:UpdateCooldown(icon, icon.duration * reducedMult)
+			if unit then
+				local maxHP = UnitHealthMax(unit)
+				if maxHP > 0 then
+					local actualhealing = amount - overhealing
+					local reducedMult = min(actualhealing / maxHP * 6/7, 0.6)
+					if reducedMult > 0 then
+						if icon.active then
+							P:UpdateCooldown(icon, icon.duration * reducedMult)
+						end
 					end
 				end
 			end
@@ -2815,16 +2818,20 @@ registeredEvents['SPELL_AURA_APPLIED'][200183] = function(info, srcGUID, spellID
 end
 
 
-registeredEvents['SPELL_HEAL'][373481] = function(info, _,_,_,_,_, amount, overhealing, destName)
+registeredEvents['SPELL_HEAL'][373481] = function(info, _,_, destGUID, _,_, amount, overhealing)
 	local icon = info.spellIcons[373481]
 	if icon then
 		P:StartCooldown(icon, icon.duration)
-		local maxHP = UnitHealthMax(destName)
-		if maxHP > 0 then
-			local currHP = UnitHealth(destName) - (amount - overhealing)
-			if currHP / maxHP < .35 then
-				if icon.active then
-					P:UpdateCooldown(icon, 20)
+
+		local unit = UnitTokenFromGUID(destGUID)
+		if unit then
+			local maxHP = UnitHealthMax(unit)
+			if maxHP > 0 then
+				local currHP = UnitHealth(unit) - (amount - overhealing)
+				if currHP / maxHP < .35 then
+					if icon.active then
+						P:UpdateCooldown(icon, 20)
+					end
 				end
 			end
 		end
@@ -3626,16 +3633,17 @@ local shamanTotems = {
 
 	8512,
 	]]
-	381930,
 
 }
 
 local function CacheLastTotemUsed(info, _, spellID)
 	if info.talentData[108285] then
 		info.auras.lastTotemUsed = info.auras.lastTotemUsed or {}
-		tinsert(info.auras.lastTotemUsed, 1, spellID)
-		for i = 3, #info.auras.lastTotemUsed do
-			info.auras.lastTotemUsed[i] = nil
+		if info.auras.lastTotemUsed[1] ~= spellID then
+			tinsert(info.auras.lastTotemUsed, 1, spellID)
+			for i = 3, #info.auras.lastTotemUsed do
+				info.auras.lastTotemUsed[i] = nil
+			end
 		end
 	end
 end
@@ -5033,6 +5041,11 @@ local function UpdateDeadStatus(destInfo)
 	P:SetDisabledColorScheme(destInfo)
 	destInfo.isDead = true
 	destInfo.bar:RegisterUnitEvent('UNIT_HEALTH', destInfo.unit)
+	--[[
+	if P.extraBars.raidBar0.shouldRearrangeInterrupts then
+		P:SetExIconLayout("raidBar0", true, true)
+	end
+	]]
 end
 
 if E.isClassic then

@@ -18,6 +18,7 @@ local Dragonrace = ns.node.Dragonrace
 local Flag = ns.node.Flag
 local Fragment = ns.node.Fragment
 local LegendaryCharacter = ns.node.LegendaryCharacter
+local MagicBoundChest = ns.node.MagicBoundChest
 local PM = ns.node.ProfessionMasters
 local PrettyNeat = ns.node.PrettyNeat
 local PT = ns.node.ProfessionTreasures
@@ -140,7 +141,7 @@ map.nodes[16622798] = Rare({
     quest = 73870,
     rewards = {
         Achievement({id = 16678, criteria = 56108}),
-        Achievement({id = 16446, criteria = 3, note = L['pretty_neat_note']}),
+        Achievement({id = 16446, criteria = 55397, note = L['pretty_neat_note']}),
         Transmog({item = 200131, slot = L['dagger']}), -- Reclaimed Survivalist's Dagger
         DC.WindborneVelocidrake.FinnedEars
     }
@@ -477,7 +478,7 @@ map.nodes[45125940] = Treasure({
     note = L['forgotten_jewel_box_note'],
     requires = {
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
-        ns.requirement.Item(199065) -- Sorrowful Letter
+        ns.requirement.Quest(70534, '{item:199065}') -- Sorrowful Letter
     },
     rewards = {
         Achievement({id = 16300, criteria = 54804}), --
@@ -490,7 +491,7 @@ map.nodes[53934372] = Treasure({
     note = L['in_small_cave'] .. ' ' .. L['gnoll_fiend_flail_note'],
     requires = {
         ns.requirement.Quest(72709), -- Funding a Treasure Hunt
-        ns.requirement.Item(199066) -- Letter of Caution
+        ns.requirement.Quest(72709, '{item:199066}') -- Letter of Caution
     },
     rewards = {
         Achievement({id = 16300, criteria = 54805}),
@@ -529,7 +530,7 @@ map.nodes[48632466] = Treasure({
     requires = {
         ns.requirement.Reputation(2507, 21, true), -- Dragonscale Expedition
         ns.requirement.Quest(70833), -- Rumors of the Jeweled Whelplings
-        ns.requirement.Item(199067) -- Precious Plans
+        ns.requirement.Quest(70536, '{item:199067}') -- Precious Plans
     },
     rewards = {
         Achievement({id = 16300, criteria = 54806}), --
@@ -782,25 +783,6 @@ map.nodes[47342459] = Fragment({
 }) -- Wrapped Gold Band
 
 -------------------------------------------------------------------------------
-------------------------------- DISTURBED DIRT --------------------------------
--------------------------------------------------------------------------------
-
-map.nodes[13503833] = Disturbeddirt({note = L['in_small_cave']})
-map.nodes[19214047] = Disturbeddirt()
-map.nodes[23716772] = Disturbeddirt()
-map.nodes[33704685] = Disturbeddirt()
-map.nodes[34234591] = Disturbeddirt()
-map.nodes[57775352] = Disturbeddirt()
-map.nodes[65193151] = Disturbeddirt()
-map.nodes[65516163] = Disturbeddirt()
-map.nodes[68291742] = Disturbeddirt()
-map.nodes[70724381] = Disturbeddirt()
-map.nodes[73374059] = Disturbeddirt()
-map.nodes[78753394] = Disturbeddirt()
-map.nodes[78903087] = Disturbeddirt()
-map.nodes[66733144] = Disturbeddirt({note = L['in_cave']})
-
--------------------------------------------------------------------------------
 ---------------------------- LEY LINE IN THE SPAN -----------------------------
 -------------------------------------------------------------------------------
 
@@ -839,6 +821,26 @@ map.nodes[65732814] = LeyLine({
 }) -- Slyvern Plunge
 
 -------------------------------------------------------------------------------
+------------------------------- DISTURBED DIRT --------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[13503833] = Disturbeddirt({note = L['in_small_cave']})
+map.nodes[19214047] = Disturbeddirt()
+map.nodes[23716772] = Disturbeddirt()
+map.nodes[33704685] = Disturbeddirt()
+map.nodes[34234591] = Disturbeddirt()
+map.nodes[57775352] = Disturbeddirt()
+map.nodes[65193151] = Disturbeddirt()
+map.nodes[65516163] = Disturbeddirt()
+map.nodes[66733144] = Disturbeddirt({note = L['in_cave']})
+map.nodes[68291742] = Disturbeddirt()
+map.nodes[70724381] = Disturbeddirt()
+map.nodes[72404272] = Disturbeddirt({note = L['in_small_cave']})
+map.nodes[73374059] = Disturbeddirt()
+map.nodes[78753394] = Disturbeddirt()
+map.nodes[78903087] = Disturbeddirt()
+
+-------------------------------------------------------------------------------
 -------------------------- EXPEDITION SCOUT'S PACKS ---------------------------
 -------------------------------------------------------------------------------
 
@@ -850,15 +852,41 @@ map.nodes[33864679] = Scoutpack()
 map.nodes[34334607] = Scoutpack()
 map.nodes[43005294] = Scoutpack()
 map.nodes[58115454] = Scoutpack()
+map.nodes[58145373] = Scoutpack()
+map.nodes[65702841] = Scoutpack({note = L['in_small_cave']})
+map.nodes[66733050] = Scoutpack({note = L['in_cave']})
+map.nodes[66783133] = Scoutpack({note = L['in_cave']})
 map.nodes[66784934] = Scoutpack()
 map.nodes[72154242] = Scoutpack({note = L['in_cave']})
 map.nodes[72604263] = Scoutpack({note = L['in_cave']})
 map.nodes[78953094] = Scoutpack()
 map.nodes[79823175] = Scoutpack()
-map.nodes[58145373] = Scoutpack()
-map.nodes[66783133] = Scoutpack({note = L['in_cave']})
-map.nodes[66733050] = Scoutpack({note = L['in_cave']})
-map.nodes[65702841] = Scoutpack({note = L['in_small_cave']})
+
+-------------------------------------------------------------------------------
+------------------------------ Magic-Bound Chest ------------------------------
+-------------------------------------------------------------------------------
+
+map.nodes[09104840] = MagicBoundChest({
+    note = L['in_small_cave'],
+    pois = {POI({08584883})}
+})
+map.nodes[14002990] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[29904570] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[43306260] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[49204090] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[53006610] = MagicBoundChest({
+    requires = {
+        ns.requirement.Reputation(2507, 16, true),
+        ns.requirement.Profession(186)
+    },
+    note = L['in_small_cave']
+})
+map.nodes[65702780] = MagicBoundChest({note = L['in_small_cave']})
+map.nodes[65905560] = MagicBoundChest()
+map.nodes[72304210] = MagicBoundChest({
+    note = L['in_cave'],
+    pois = {POI({71674371})}
+})
 
 -------------------------------------------------------------------------------
 --------------------------------- DRAGONRACES ---------------------------------
@@ -997,12 +1025,12 @@ map.nodes[69204987] = HemetNesingwaryJr({
 
 map.nodes[36673652] = PrettyNeat({
     id = 190218,
-    rewards = {Achievement({id = 16446, criteria = 11})}
+    rewards = {Achievement({id = 16446, criteria = 55393})}
 }) -- Horned Filcher
 
 map.nodes[38193815] = PrettyNeat({
     id = 190221,
-    rewards = {Achievement({id = 16446, criteria = 17})}
+    rewards = {Achievement({id = 16446, criteria = 55390})}
 }) -- Pine Flicker
 
 -------------------------------------------------------------------------------

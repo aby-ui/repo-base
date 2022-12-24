@@ -2,6 +2,7 @@ local E, _, C, G = select(2, ...):unpack()
 
 G.loginMessage = false
 G.notifyNew = false
+G.optionPanelScale = 1
 
 C.Party = {
 	["visibility"] = {

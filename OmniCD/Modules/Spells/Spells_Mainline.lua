@@ -1,7 +1,5 @@
 local E = select(2, ...):unpack()
 
-
-
 E.spell_db = {
 	["WARRIOR"] = {
 		{ ["class"]="WARRIOR",["type"]="defensive",["buff"]=236273,["spec"]=true,["name"]="Duel",["duration"]=60,["icon"]=1455893,["spellID"]=236273, },
@@ -753,7 +751,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="MONK",["type"]="defensive",["buff"]=115203,["spec"]=true,["maxRanks"]=1,["name"]="Fortifying Brew",["ID"]=123,["duration"]=360,["icon"]=615341,["spellID"]=115203, },
+		{ ["class"]="MONK",["type"]="defensive",["buff"]=120954,["spec"]=true,["maxRanks"]=1,["name"]="Fortifying Brew",["ID"]=123,["duration"]=360,["icon"]=615341,["spellID"]=115203, },
 
 
 
@@ -1222,7 +1220,7 @@ E.spell_db = {
 		{ ["class"]="EVOKER",["type"]="defensive",["buff"]=370960,["spec"]=true,["maxRanks"]=1,["name"]="Emerald Communion",["ID"]=10,["duration"]=180,["icon"]=4630447,["spellID"]=370960, },
 
 
-		{ ["class"]="EVOKER",["type"]="raidDefensive",["buff"]=359816,["spec"]=true,["maxRanks"]=1,["name"]="Dream Flight",["ID"]=13,["duration"]=120,["icon"]=4622455,["spellID"]=359816, },
+		{ ["class"]="EVOKER",["type"]="offensive",["buff"]=359816,["spec"]=true,["maxRanks"]=1,["name"]="Dream Flight",["ID"]=13,["duration"]=120,["icon"]=4622455,["spellID"]=359816, },
 
 
 
@@ -1558,7 +1556,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="DRUID",["type"]="offensive",["buff"]=394013,["spec"]=394013,["maxRanks"]=1,["name"]="Incarnation: Chosen of Elune",["ID"]=178,["duration"]=180,["icon"]=571586,["spellID"]=102560,["talent"]=194223, },
+		{ ["class"]="DRUID",["type"]="offensive",["buff"]=394013,["spec"]=394013,["maxRanks"]=1,["name"]="Incarnation: Chosen of Elune",["ID"]=178,["duration"]=180,["icon"]=571586,["spellID"]=102560, },
 
 
 
@@ -1567,7 +1565,7 @@ E.spell_db = {
 
 
 
-		{ ["class"]="DRUID",["type"]="offensive",["buff"]=194223,["spec"]=true,["maxRanks"]=1,["name"]="Celestial Alignment",["ID"]=187,["duration"]=180,["icon"]=136060,["spellID"]=194223,["talent"]=102560, },
+		{ ["class"]="DRUID",["type"]="offensive",["buff"]=194223,["spec"]=true,["maxRanks"]=1,["name"]="Celestial Alignment",["ID"]=187,["duration"]=180,["icon"]=136060,["spellID"]=194223,["talent"]=394013, },
 
 
 
@@ -1605,7 +1603,7 @@ E.spell_db = {
 		{ ["class"]="WARLOCK",["type"]="offensive",["buff"]=344566,["spec"]=true,["duration"]=30,["name"]="Rapid Contagion",["icon"]=237557,["spellID"]=344566, },
 		{ ["class"]="WARLOCK",["type"]="offensive",["buff"]=234877,["spec"]=true,["duration"]=30,["name"]="Bane of Shadows",["icon"]=615099,["spellID"]=234877, },
 		{ ["class"]="WARLOCK",["type"]="offensive",["buff"]=264106,["spec"]=true,["duration"]=30,["name"]="Deathbolt",["icon"]=425953,["spellID"]=264106, },
-		{ ["class"]="WARLOCK",["type"]="interrupt",["buff"]=212619,["spec"]=true,["duration"]=30,["name"]="Call Felhunter",["icon"]=136174,["spellID"]=212619, },
+		{ ["class"]="WARLOCK",["type"]="interrupt",["buff"]=212619,["spec"]=true,["duration"]=60,["name"]="Call Felhunter",["icon"]=136174,["spellID"]=212619, },
 		{ ["class"]="WARLOCK",["type"]="offensive",["buff"]=212459,["spec"]=true,["duration"]=120,["name"]="Call Fel Lord",["icon"]=1113433,["spellID"]=212459, },
 		{ ["class"]="WARLOCK",["type"]="offensive",["buff"]=353601,["spec"]=true,["duration"]=45,["name"]="Fel Obelisk",["icon"]=1718002,["spellID"]=353601, },
 
@@ -1798,6 +1796,7 @@ E.spell_db = {
 
 	},
 	["PRIEST"] = {
+		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=211522,["spec"]=true,["name"]="Psyfiend",["duration"]=45,["icon"]=537021,["spellID"]=211522 },
 		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=197871,["spec"]=true,["name"]="Dark Archangel",["duration"]=60,["icon"]=1445237,["spellID"]=197871 },
 		{ ["class"]="PRIEST",["type"]="offensive",["buff"]=197862,["spec"]=true,["name"]="Archangel",["duration"]=60,["icon"]=458225,["spellID"]=197862 },
 
@@ -2017,7 +2016,7 @@ E.spell_db = {
 	["PALADIN"] = {
 		{ ["class"]="PALADIN",["type"]="dispel",["buff"]=4987,["spec"]=65,["duration"]=8,["name"]="Cleanse",["icon"]=135949,["spellID"]=4987, },
 		{ ["class"]="PALADIN",["type"]="externalDefensive",["buff"]=199452,["spec"]=true,["duration"]=60,["name"]="Ultimate Sacrifice",["icon"]=135966,["spellID"]=199452, },
-		{ ["class"]="PALADIN",["type"]="disarm",["buff"]=215652,["spec"]=true,["duration"]=45,["name"]="Inquisition",["icon"]=237452,["spellID"]=215652, },
+		{ ["class"]="PALADIN",["type"]="disarm",["buff"]=215652,["spec"]=true,["duration"]=45,["name"]="Shield of Virtue",["icon"]=237452,["spellID"]=215652, },
 		{ ["class"]="PALADIN",["type"]="other",["buff"]=207028,["spec"]=true,["duration"]=20,["name"]="Inquisition",["icon"]=135984,["spellID"]=207028, },
 		{ ["class"]="PALADIN",["type"]="immunity",["buff"]=228049,["spec"]=true,["duration"]=300,["name"]="Guardian of the Forgotten Queen",["icon"]=135919,["spellID"]=228049, },
 
@@ -2703,6 +2702,7 @@ E.spell_db = {
 		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Globe of Jagged Ice",["buff"]=388931,["duration"]=30,["icon"]=609814,["spellID"]=388931,["item"]=193732, },
 		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Dragon Games Equipment",["buff"]=386692,["duration"]=120,["icon"]=4641307,["spellID"]=386692,["item"]=193719, },
 		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Bonemaw's Big Toe",["buff"]=397400,["duration"]=120,["icon"]=133718,["spellID"]=397400,["item"]=110012, },
+		{ ["class"]="TRINKET",["type"]="trinket",["name"]="Cataclysmic Punch",["buff"]=392359,["duration"]=120,["icon"]=133718,["spellID"]=392359,["item"]=200868, },
 	},
 }
 
@@ -2743,6 +2743,5 @@ E.spellDefaults = {
 }
 
 E.raidDefaults = {
-	47528, 183752, 351338, 106839, 78675, 147362, 187707, 2139, 116705, 96231, 31935, 15487, 1766, 57994, 119898, 212619, 6552, 386071,
 	51052, 196718, 740, 374227, 359816, 363534, 115310, 31821, 64843, 265202, 62618, 15286, 108280, 98008, 97462,
 }

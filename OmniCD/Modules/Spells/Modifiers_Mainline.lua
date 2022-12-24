@@ -1242,8 +1242,8 @@ E.sync_cooldowns = {
 
 
 
-		[265187] = { 266, 387084 },
 
+		[265187] = { 266, 387084 },
 	},
 	["WARRIOR"] = {
 
@@ -1270,11 +1270,6 @@ E.sync_cooldowns = {
 	["ALL"] = {},
 }
 
-E.sync_in_raid = {
-	[31884] = true,
-	[871] = true,
-}
-
 E.sync_periodic = {
 	[49576] = true,
 	[22842] = true,
@@ -1282,6 +1277,11 @@ E.sync_periodic = {
 
 	[190925] = true,
 
+}
+
+E.sync_in_raid = {
+	[31884] = true,
+	[871] = true,
 }
 
 E:ProcessSpellDB()

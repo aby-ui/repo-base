@@ -29,12 +29,16 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Control_OnEnter(frame)
 	frame.obj:Fire("OnEnter")
-	frame.obj.imagebg:SetBackdropBorderColor(0.5, 0.5, 0.5)	 -- s a
+	if USE_ICON_BACKDROP then
+		frame.obj.imagebg:SetBackdropBorderColor(0.5, 0.5, 0.5)	 -- s a
+	end
 end
 
 local function Control_OnLeave(frame)
 	frame.obj:Fire("OnLeave")
-	frame.obj.imagebg:SetBackdropBorderColor(0.2, 0.2, 0.25)  -- s a
+	if USE_ICON_BACKDROP then
+		frame.obj.imagebg:SetBackdropBorderColor(0.2, 0.2, 0.25)  -- s a
+	end
 end
 
 local function Button_OnClick(frame, button)
@@ -162,12 +166,13 @@ local function Constructor()
 	image:SetHeight(64)
 	image:SetPoint("TOP", 0, -5)
 	]]
+	local image
 	if USE_ICON_BACKDROP then
 		imagebg = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 		imagebg:SetHeight(64)
 		imagebg:SetWidth(64)
 		imagebg:SetPoint("TOP", 0, -5)
-		OmniCD[1].BackdropTemplate(imagebg)
+		OmniCD[1].BackdropTemplate(imagebg, "ACD")
 		imagebg:SetBackdropBorderColor(0.2, 0.2, 0.25)
 		imagebg:SetBackdropColor(0, 0, 0, 0)
 		image = imagebg:CreateTexture(nil, "OVERLAY")
@@ -175,7 +180,7 @@ local function Constructor()
 		image:SetPoint("TOPLEFT", imagebg.TopEdge, "BOTTOMLEFT")
 		image:SetPoint("BOTTOMRIGHT", imagebg.BottomEdge, "TOPRIGHT")
 	else
-		local image = frame:CreateTexture(nil, "BACKGROUND")
+		image = frame:CreateTexture(nil, "BACKGROUND")
 		image:SetWidth(64)
 		image:SetHeight(64)
 		image:SetPoint("TOP", 0, -5)

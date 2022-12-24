@@ -1,5 +1,7 @@
 local U1Name, U1 = ...
 local DataBroker = LibStub'LibDataBroker-1.1'
+local LibDD = LibStub("LibUIDropDownMenu-4.0")
+local DropDownList1 = L_DropDownList1
 local L = U1.L
 
 U1_FRAME_NAME = "U1Frame";
@@ -62,7 +64,7 @@ function UUI.TransCfgToDropDown(path, info)
     local addon, path = path:sub(1,pos-1), path:sub(pos+1)
     if select(5, GetAddOnInfo(addon))=="MISSING" and not flagAlways then return end
     if path=="" then
-        info = info or UIDropDownMenu_CreateInfo()
+        info = info or LibDD:UIDropDownMenu_CreateInfo()
         table.wipe(info);
         info.isNotRadio = true;
         info.keepShownOnClick = true;
@@ -79,7 +81,7 @@ function UUI.TransCfgToDropDown(path, info)
         if not IsAddOnLoaded(addon) and not flagAlways then return end
         if addon == U1Name:lower() and (path=="sortmem" or path=="english") and not UUI():IsVisible() then return end
 
-        info = info or UIDropDownMenu_CreateInfo()
+        info = info or LibDD:UIDropDownMenu_CreateInfo()
         --info.tooltipOnButton = 1;
         info.isNotRadio = nil;
         info.keepShownOnClick = true;
@@ -104,7 +106,7 @@ function UUI.TransCfgToDropDown(path, info)
         info.tooltipTitle=cfg.tipLines and cfg.tipLines[1].."|cff00d200 ("..U1GetAddonTitle(addon)..")|r"
         info.tooltipText=cfg.tipLines and table.concat(cfg.tipLines, "\n", 2)
     end
-    UIDropDownMenu_AddButton(info);
+    LibDD:UIDropDownMenu_AddButton(info);
 end
 
 ---根据Cols修改界面元素
@@ -621,20 +623,20 @@ function UUI.Top.Create(main)
     --主界面的按钮
     main.setting = TplPanelButton(main,nil, UUI.PANEL_BUTTON_HEIGHT):Set3Fonts(UUI.FONT_PANEL_BUTTON)
     :SetScript("OnClick", function()
-        CloseDropDownMenus(1);
+        LibDD:CloseDropDownMenus(1);
         if(UUI().right.addonName==U1Name) then
             UUI.Right.ADDON_SELECTED()
         else
             UUI.Right.ADDON_SELECTED(U1Name) UUI.Right.TabChange(1)
         end
     end)
-    :Frame("$parentSettingDropdown", "UIDropDownMenuTemplate", "drop"):TL("$parent", "BL", 0, 0):up()
     :Button():Key("dropbutton"):Size(20,UUI.PANEL_BUTTON_HEIGHT+6):LEFT("$parent", "RIGHT", -6, -1)
 	:SetNormalTexture("Interface/ChatFrame/UI-ChatIcon-ScrollDown-Up")
 	:SetPushedTexture("Interface/ChatFrame/UI-ChatIcon-ScrollDown-Down")
 	:SetHighlightTexture("Interface/Buttons/UI-Common-MouseHilight")
     :SetScript("OnClick", UUI.Top.ToggleQuickSettingDropDown):up()
     :un()
+    main.setting.drop = LibDD:Create_UIDropDownMenu("$parentSettingDropdown", main.setting)
     CoreUIEnableTooltip(main.setting, L["爱不易设置"], L["直接显示爱不易的介绍和配置项，再次点击则恢复当前的选择插件"])
     CoreUIEnableTooltip(main.setting.dropbutton, L["快捷设置"], L["一些常用的选项，以下拉菜单方式列出，可迅速进行设置。"])
     UUI.AddChangeWithColsButton(main.setting, L["爱不易设置"], L["设置"])
@@ -646,14 +648,12 @@ function UUI.Top.Create(main)
         :SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b)
         :SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b)
         :EnableMouse(true)
-        :SetScript("OnEnter", UIDropDownMenu_StopCounting):SetScript("OnLeave", UIDropDownMenu_StartCounting)
         :un()
         main.setting.soundPanel.HandlesGlobalMouseEvent = function(self, button, event)
             return self:IsShown() and (self:IsMouseOver() or self:GetParent():IsMouseOver() or DropDownList1:IsMouseOver())
         end
 
         local soundSlider = TplSlider(main.setting.soundPanel, nil, VOLUME, 1, "%d%%", 0, 100, 5):Size(12,128):TOP(-10, -35)
-        :SetScript("OnEnter", UIDropDownMenu_StopCounting):SetScript("OnLeave", UIDropDownMenu_StartCounting)
         :SetScript("OnShow", function(self) self:SetValue(100-GetCVar("Sound_MasterVolume")*100) end)
         :un()
         soundSlider.func = function(self, v) SetCVar("Sound_MasterVolume",v/100) PlaySound(SOUNDKIT.IG_MAINMENU_OPEN, "MASTER", true) end
@@ -710,20 +710,21 @@ function UUI.Top.ToggleQuickSettingDropDown(self)
     GameTooltip:Hide()
     if not self._inited then
         self._inited = true
-        UIDropDownMenu_Initialize(UUI().setting.drop, UUI.Top.QuickSettingDropDownMenuInitialize, "MENU"); -- taint here
+        LibDD:UIDropDownMenu_Initialize(UUI().setting.drop, UUI.Top.QuickSettingDropDownMenuInitialize, "MENU"); -- taint here
+        self.HandlesGlobalMouseEvent = function(_, buttonID, event) return event == "GLOBAL_MOUSE_DOWN" and buttonID == "LeftButton" end
     end
-    ToggleDropDownMenu(1, nil, UUI().setting.drop, self, 0, 0)
+    LibDD:ToggleDropDownMenu(1, nil, UUI().setting.drop, self, 0, 0)
     if DropDownList1:IsVisible() then UUI().setting.soundPanel:Show() end
 end
 
 function UUI.Top.QuickSettingDropDownMenuInitialize(frame, level, menuList)
     --UIDropDownMenu_SetAnchor(main.setting.drop, 0, 0, "TOPRIGHT", main.setting.dropbutton, "BOTTOMRIGHT")
     frame.point = "TOPRIGHT"; frame.relativePoint = "BOTTOMRIGHT";
-    local info = UIDropDownMenu_CreateInfo();
+    local info = LibDD:UIDropDownMenu_CreateInfo();
     info.isNotRadio = 1; info.notCheckable = 1; info.isTitle = 1; info.justifyH = "CENTER"; info.text = L["爱不易快捷设置"];
-    UIDropDownMenu_AddButton(info);
+    LibDD:UIDropDownMenu_AddButton(info);
     info.text = "";
-    UIDropDownMenu_AddButton(info);
+    LibDD:UIDropDownMenu_AddButton(info);
     table.wipe(info);
     local items = U1DBG.qSet or UUI.DropDownItems
     for _, v in ipairs(items) do
@@ -1975,8 +1976,9 @@ function U1_CreateMinimapButton()
             GameTooltip:Hide();
             if button=="RightButton" then
                 UUI.Top.ToggleQuickSettingDropDown(self)
+                self.HandlesGlobalMouseEvent = function(_, buttonID, event) return event == "GLOBAL_MOUSE_DOWN" and buttonID == "RightButton" end
             else
-                CloseDropDownMenus(1);
+                LibDD:CloseDropDownMenus(1);
                 UUI.ToggleUI(self, button)
             end
             if LibDBIconTooltip then LibDBIconTooltip:Hide() end

@@ -159,7 +159,7 @@ end
 
 -- Creates a skin options group for an add-on or add-on group.
 local function GetOptions(obj, Order)
-	local Addon, Group = obj.Addon, obj.Group
+	local Addon, Group, Notes = obj.Addon, obj.Group, obj.Notes or nil
 	local Name, Title, Desc
 
 	if Group then
@@ -182,7 +182,7 @@ local function GetOptions(obj, Order)
 	return {
 		type = "group",
 		name = Name,
-		desc = "|cffffffff"..L["Select to view."].."|r",
+		desc = Notes or ("|cffffffff"..L["Select to view."].."|r"),
 		order = Order,
 		args = {
 			Head = {
@@ -198,6 +198,12 @@ local function GetOptions(obj, Order)
 				fontSize = "medium",
 				order = 1,
 			},
+			Notes = Notes and {
+				type = "description",
+				name = Notes..CRLF,
+				fontSize = "medium",
+				order = 2,
+			} or nil,
 			Disable = {
 				type = "toggle",
 				name = L["Disable"],
@@ -206,7 +212,7 @@ local function GetOptions(obj, Order)
 				set = SetDisabled,
 				arg = obj,
 				disabled = GetDisabledParent,
-				order = 2,
+				order = 3,
 			},
 			SkinID = {
 				type = "select",
@@ -220,7 +226,7 @@ local function GetOptions(obj, Order)
 				values = SkinList,
 				sorting = GetSorting,
 				disabled = GetDisabled,
-				order = 3,
+				order = 4,
 			},
 			Reset = {
 				type = "execute",
@@ -230,12 +236,12 @@ local function GetOptions(obj, Order)
 				arg = obj,
 				width = "full",
 				disabled = GetDisabled,
-				order = 4,
+				order = 5,
 			},
 			Spacer = {
 				type = "description",
 				name = " ",
-				order = 5,
+				order = 6,
 			},
 			Backdrop = {
 				type = "group",
@@ -243,7 +249,7 @@ local function GetOptions(obj, Order)
 				arg = obj,
 				inline = true,
 				hidden = GetHidden,
-				order = 6,
+				order = 7,
 				args = {
 					Backdrop = {
 						type = "toggle",
@@ -274,7 +280,7 @@ local function GetOptions(obj, Order)
 				arg = obj,
 				inline = true,
 				hidden = GetHidden,
-				order = 7,
+				order = 8,
 				args = {
 					Shadow = {
 						type = "toggle",
@@ -305,7 +311,7 @@ local function GetOptions(obj, Order)
 				arg = obj,
 				inline = true,
 				hidden = GetHidden,
-				order = 8,
+				order = 9,
 				args = {
 					Gloss = {
 						type = "toggle",
@@ -336,7 +342,7 @@ local function GetOptions(obj, Order)
 				arg = obj,
 				inline = true,
 				disabled = GetDisabled,
-				order = 9,
+				order = 10,
 				args = {
 					Color = {
 						type = "color",
@@ -367,7 +373,7 @@ local function GetOptions(obj, Order)
 				set = SetColor,
 				inline = true,
 				disabled = GetDisabled,
-				order = 10,
+				order = 11,
 				args = {
 					Normal = {
 						type = "color",
@@ -417,7 +423,7 @@ local function GetOptions(obj, Order)
 				name = L["Scale"],
 				--arg = obj,
 				inline = true,
-				order = 11,
+				order = 12,
 				args = {
 					UseScale = {
 						type = "toggle",

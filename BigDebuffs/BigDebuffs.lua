@@ -7,6 +7,14 @@ local LibSharedMedia = LibStub("LibSharedMedia-3.0")
 local LibClassicDurations = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and LibStub("LibClassicDurations")
 if LibClassicDurations then LibClassicDurations:Register(addonName) end
 
+-- Adding in Masque support, preparing groups if it is available
+local Masque = LibStub("Masque", true)
+if Masque ~= nil then
+    BigDebuffs.MasqueGroup = {}
+    BigDebuffs.MasqueGroup.UnitFrame = Masque:Group("BigDebuffs", "UnitFrame")
+    BigDebuffs.MasqueGroup.NamePlate = Masque:Group("BigDebuffs", "NamePlate")
+end
+
 -- Defaults
 local defaults = {
     profile = {
@@ -28,6 +36,7 @@ local defaults = {
                 roots = 50,
             },
             interrupts = 55,
+            buffs = 25,
             roots = 40,
             warning = 30,
             debuffs_offensive = 30,
@@ -265,6 +274,13 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
             Poison = true,
             Disease = true,
         },
+        [1467] = { -- Devastation Evoker
+            Poison = true,
+        },
+        [1468] = { -- Preservation Evoker
+            Magic = true,
+            Poison = true,
+        },
         [577] = {
             Magic = function() return GetSpellInfo(205604) end, -- Reverse Magic
         },
@@ -299,6 +315,11 @@ else
         WARLOCK = {
             -- Felhunter's Devour Magic or Doomguard's Dispel Magic
             Magic = function() return IsUsableSpell(GetSpellInfo(19736)) or IsUsableSpell(GetSpellInfo(19476)) end,
+        },
+        EVOKER = {
+            Poison = true,
+            Disease = function() return IsUsableSpell(GetSpellInfo(374251)) end,
+            Curse = function() return IsUsableSpell(GetSpellInfo(374251)) end,
         },
     }
     local _, class = UnitClass("player")
@@ -345,7 +366,6 @@ local GetAnchor = {
                     end
                 end
             end
-            return
         end
 
         if unit and (unit:match("arena") or unit:match("arena")) then
@@ -427,6 +447,27 @@ local GetAnchor = {
             return frame.ClassIcon, frame
         else
             return frame, frame, true
+        end
+    end,
+    Cell = function(anchor)
+        local anchors, unit = BigDebuffs.anchors
+
+        for u, configAnchor in pairs(anchors.Cell.units) do
+            if anchor == configAnchor then
+                unit = u
+                break
+            end
+        end
+
+        if unit and (unit:match("party") or unit:match("player")) then
+            if Cell then
+                local guid = UnitGUID(unit)
+                local frame = Cell.funcs:GetUnitButtonByGUID(guid)
+                if frame then
+                    return frame, frame, true
+                end
+            end
+            return
         end
     end,
 }
@@ -530,9 +571,9 @@ local nameplatesAnchors = {
         func = GetNameplateAnchor.NeatPlates,
     },
     [6] = {
-        used = function()
+        used = function(frame)
             -- IsAddOnLoaded("TidyPlates_ThreatPlates") should be better
-            return TidyPlatesThreat ~= nil
+            return TidyPlatesThreat ~= nil and frame.TPFrame:IsShown()
         end,
         func = GetNameplateAnchor.ThreatPlates,
     },
@@ -661,6 +702,18 @@ local anchors = {
             arena3 = "sArenaEnemyFrame3",
             arena4 = "sArenaEnemyFrame4",
             arena5 = "sArenaEnemyFrame5",
+        },
+    },
+    ["Cell"] = {
+        noPortait = true,
+        alignLeft = true,
+        func = GetAnchor.Cell,
+        units = {
+            player = "CellPartyFrameMember1",
+            party1 = "CellPartyFrameMember2",
+            party2 = "CellPartyFrameMember3",
+            party3 = "CellPartyFrameMember4",
+            party4 = "CellPartyFrameMember5",
         },
     },
     ["Blizzard"] = {
@@ -959,6 +1012,12 @@ function BigDebuffs:AttachUnitFrame(unit)
 
         frame:SetSize(config.size, config.size)
     end
+    -- If Masque is installed then apply skin.
+    if Masque ~= nil then
+        BigDebuffs.MasqueGroup.UnitFrame:AddButton(frame)
+        -- No idea why I need to re-skin, but this fixes the button size...
+        BigDebuffs.MasqueGroup.UnitFrame:ReSkin(frame.Icon)
+    end
 end
 
 function BigDebuffs:AttachNameplate(unit)
@@ -998,6 +1057,12 @@ function BigDebuffs:AttachNameplate(unit)
     end
 
     frame:SetSize(config[anchorStyle].size, config[anchorStyle].size)
+    -- If Masque is installed then apply skin.
+    if Masque ~= nil then
+        BigDebuffs.MasqueGroup.NamePlate:AddButton(frame)
+        -- No idea why I need to re-skin, but this fixes the size...
+        BigDebuffs.MasqueGroup.NamePlate:ReSkin(frame.Icon)
+    end
 end
 
 function BigDebuffs:SaveUnitFramePosition(frame)
@@ -1166,19 +1231,28 @@ end
 
 BigDebuffs.AttachedFrames = {}
 
-local MAX_BUFFS = 6
+local MAX_BUFFS = 3
 
 function BigDebuffs:AddBigDebuffs(frame)
     if not frame or not frame.displayedUnit or not UnitIsPlayer(frame.displayedUnit) then return end
     local frameName = frame:GetName()
+    local buffPrefix = frameName .. "Buff"
+
     if self.db.profile.raidFrames.increaseBuffs then
         CompactUnitFrame_SetMaxBuffs(frame, 6)
-        for i = 4, MAX_BUFFS do
-            local buffPrefix = frameName .. "Buff"
-            local buffFrame = _G[buffPrefix .. i] or
-                CreateFrame("Button", buffPrefix .. i, frame, "CompactBuffTemplate")
+        MAX_BUFFS = 6
+    end
+
+    for i = 1, MAX_BUFFS do
+        local buffFrame = _G[buffPrefix .. i] or
+            CreateFrame("Button", buffPrefix .. i, frame, "CompactBuffTemplate")
+
+        -- set size
+        local size = frame:GetHeight() * self.db.profile.raidFrames.buffs * 0.01
+        buffFrame:SetSize(size, size)
+
+        if i > 3 then
             buffFrame:ClearAllPoints()
-            buffFrame:SetSize(frame.buffFrames[1]:GetSize())
             if math.fmod(i - 1, 3) == 0 then
                 buffFrame:SetPoint("BOTTOMRIGHT", _G[buffPrefix .. i - 3], "TOPRIGHT")
             else
@@ -1231,19 +1305,30 @@ function BigDebuffs:AddBigDebuffs(frame)
 end
 
 local pending = {}
+local function checkFrame(frame)
+    if not issecurevariable(frame, "action") and not InCombatLockdown() then
+        frame.action = nil
+        frame:SetAttribute("action");
+    end
+end
+
+for _, frame in ipairs(ActionBarButtonEventsFrame.frames) do
+    if frame.UpdateAction then hooksecurefunc(frame, "UpdateAction", checkFrame) end
+end
 
 hooksecurefunc("CompactUnitFrame_UpdateAll", function(frame)
-    if not BigDebuffs.db.profile then return end
-    if not BigDebuffs.db.profile.raidFrames then return end
-    if not BigDebuffs.db.profile.raidFrames.enabled then return end
-    if frame:IsForbidden() then return end
-    local name = frame:GetName()
-    if not name or not name:match("^Compact") then return end
-    if InCombatLockdown() and not frame.BigDebuffs then
-        if not pending[frame] then pending[frame] = true end
-    else
-        BigDebuffs:AddBigDebuffs(frame)
-    end
+	if not BigDebuffs.db.profile then return end
+	if not BigDebuffs.db.profile.raidFrames then return end
+	if not BigDebuffs.db.profile.raidFrames.enabled then return end
+	if frame:IsForbidden() then return end
+	local name = frame:GetName()
+	if not name or not name:match("^Compact") then return end
+	if InCombatLockdown() and not frame.BigDebuffs then
+		if not pending[frame] then pending[frame] = true end
+--	if not IsInGroup() or GetNumGroupMembers() > 5 then return end
+	else
+		BigDebuffs:AddBigDebuffs(frame)
+	end
 end)
 
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
@@ -1405,6 +1490,7 @@ end
 
 --classic and BigDebuffs:ShowBigDebuffs()
 
+local CompactUnitFrame_UtilSetDebuff = CompactUnitFrame_UtilSetDebuff
 
 if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     local Default_CompactUnitFrame_Util_IsPriorityDebuff = CompactUnitFrame_Util_IsPriorityDebuff
@@ -1458,7 +1544,6 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
     end
 
     hooksecurefunc("CompactUnitFrame_UpdateAuras", function(frame, unitAuraUpdateInfo)
-
         if (not frame) or frame:IsForbidden() then return end
 
         if (not UnitIsPlayer(frame.displayedUnit)) then return end
@@ -1610,7 +1695,7 @@ if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
         BigDebuffs:ShowBigDebuffs(frame)
     end)
 else
-    local function CompactUnitFrame_UtilSetDebuff(debuffFrame, unit, index, filter, isBossAura, isBossBuff, ...)
+    CompactUnitFrame_UtilSetDebuff = function(debuffFrame, unit, index, filter, isBossAura, isBossBuff, ...)
         local UnitDebuff = BigDebuffs.test and UnitDebuffTest or UnitDebuff
         -- make sure you are using the correct index here!
         --isBossAura says make this look large.
@@ -2383,7 +2468,7 @@ function BigDebuffs:NAME_PLATE_UNIT_ADDED(_, unit)
     if not frame or not anchor or frame:IsForbidden() then return end
 
     if not frame.BigDebuffs then
-        frame.BigDebuffs = CreateFrame("Frame", "$parent.BigDebuffs", frame)
+        frame.BigDebuffs = CreateFrame("Button", "$parent.BigDebuffs", frame)
         frame.BigDebuffs:SetFrameLevel(frame:GetFrameLevel())
 
         frame.BigDebuffs.icon = frame.BigDebuffs:CreateTexture("$parent.Icon", "OVERLAY", nil, 3)
@@ -2437,6 +2522,11 @@ end
 
 function BigDebuffs:NAME_PLATE_UNIT_REMOVED(_, unit)
     local frame = self.Nameplates[unit]
+
+    -- Seems like a good idea to remove old nameplate frames from the group.
+    if Masque ~= nil then
+        BigDebuffs.MasqueGroup.NamePlate:RemoveButton(frame)
+    end
 
     if frame then frame:UnregisterEvent("UNIT_AURA") end
 

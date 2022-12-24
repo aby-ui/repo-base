@@ -48,6 +48,10 @@ L['scout_pack'] = '探险队斥候的背包'
 L['options_icons_scout_pack'] = '探险队斥候的背包'
 L['options_icons_scout_pack_desc'] = '显示探险队斥候的背包的位置。'
 
+L['magicbound_chest'] = '魔缚宝箱'
+L['options_icons_magicbound_chest'] = '魔缚宝箱'
+L['options_icons_magicbound_chest_desc'] = '显示魔缚宝箱的位置。'
+
 L['dr_best'] = '最快时间：\n - 普通：%.3f秒\n - 进阶：%.3f秒'
 L['dr_best_dash'] = '最快时间：\n - %.3f秒'
 L['dr_note'] = '目标时间：\n - 普通：%s秒 / %s秒\n - 进阶：%s秒 / %s秒'
@@ -358,6 +362,14 @@ L['slumbering_worldsnail_note1'] = [[
 L['slumbering_worldsnail_note2'] = ns.color.Orange('注意：如果你死了，将失去你的会员负面效果。要么在你死之前以20个 {item:202173} 的价格从 {npc:193310} 购买新会员资格，要么交出更多钥匙，就有机会从宝箱中获得新会员资格。')
 
 L['magmashell_note'] = '从 |cffffff00黑曜堡垒|r 周围的 {npc:193138} 拾取 {item:201883} 并将其带给 {npc:199010}。\n\n' .. ns.color.Orange('在熔岩中用一个20秒的引导法术来获得坐骑，因此建议带上治疗或类似 {item:200116} 的物品。')
+
+L['otto_note_start1'] = '收集一对 {item:202042}。眼镜是从 |cFFFFFD00欧恩哈拉平原|r 的 {npc:191608} 处购买的 {item:202102} 100%掉落。\n\n可以用1个 {item:199340} 购买，可以用5个 {item:199339} 购买，可以用75个 {item:199338} 购买，可以在 |cFFFFFD00巨龙群岛|r 周围钓鱼或通过在钓鱼洞中击败 |cFFFFFD00<大家伙>|r 怪物来购买。'
+L['otto_note_start2'] = ns.color.Orange('击败 |cFFFFFD00<大家伙>|r 怪物需要7级 |cFFFFFD00伊斯卡拉海象人|r 声望并获得 {item:194510}。')
+L['otto_note_start3'] = '一旦你有了一对 {item:202042}，就可以前往位于 |cFFFFFD00嘶鸣海湾|r 的 |cFFFFFD00泡泡浴|r 深水酒吧找到一个跳舞垫，然后站在上面获得负面效果 {spell:396539}。一旦负面效果结束，你就会昏倒并在桶旁醒来。与它互动以拾取 {item:202061}。现在需要在桶里装满鱼来喂给 {npc:199563}。'
+L['otto_note_item1'] = '收集100个 {item:202072}，一种高掉率鱼类，可以在 |cFFFFFD00碧蓝林海|r 的 |cFFFFFD00伊斯卡拉|r 的开阔水域钓到。将桶与鱼一起使用可获得 {item:202066}。'
+L['otto_note_item2'] = '收集25个 {item:202073}，一种低掉率鱼类，可以在 |cFFFFFD00觉醒海岸|r 的 |cFFFFFD00黑曜堡垒|r 周围的熔岩中钓到。将桶与鱼一起使用可获得 {item:202068}。'
+L['otto_note_item3'] = '收集1个 {item:202074}，一种稀有掉率鱼类，可以在 |cFFFFFD00索德拉苏斯|r 的 |cFFFFFD00艾杰斯亚学院|r 的水域中钓到。将桶与鱼一起使用可获得 {item:202069}。'
+L['otto_note_end'] = '返回 |cFFFFFD00觉醒海岸|r 的 |cFFFFFD00嘶鸣海湾|r，将桶放在找到它的地方以召唤 {npc:199563} 并领取坐骑！'
 
 L['options_icons_safari'] = '{achievement:16519}'
 L['options_icons_safari_desc'] = '显示 {achievement:16519} 成就中战斗宠物的位置。'

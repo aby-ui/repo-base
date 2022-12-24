@@ -346,3 +346,22 @@ end
 do
     --LootHistory名字太小, 在RunSecond的LootHistoryFrame_UpdatePlayerFrames里
 end
+
+if true then
+    --[[
+    --10.0.2暴雪BUG,动作条触发闪光不消失 /run local b=ActionButton1 ActionButton_ShowOverlayGlow(b) b.SpellActivationAlert.animIn:Play() b.SpellActivationAlert.animIn:Stop()
+    local button=ActionButton1 ActionButton_ShowOverlayGlow(button)
+    C_Timer.After(.1, function() ActionButton_HideOverlayGlow(button) end) --Hide里animIn:Stop()导致未执行animIn的Finished()
+    C_Timer.After(.11, function() ActionButton_ShowOverlayGlow(button) end) --Show里animOut:Stop()导致未执行animOut的Finished()
+    C_Timer.After(3, function() ActionButton_HideOverlayGlow(button) end)
+    --]]
+
+    hooksecurefunc("ActionButton_SetupOverlayGlow", function(button)
+        if button.SpellActivationAlert._abyDone then
+            return
+        end
+        button.SpellActivationAlert._abyDone = 1
+        button.SpellActivationAlert.animIn:SetScript("OnStop", button.SpellActivationAlert.animIn:GetScript("OnFinished"))
+        button.SpellActivationAlert.animOut:SetScript("OnStop", button.SpellActivationAlert.animOut:GetScript("OnFinished"))
+    end)
+end

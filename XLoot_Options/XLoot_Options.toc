@@ -4,7 +4,7 @@
 ## Interface-WoTLK: 30400
 ## Title: XLoot Options
 ## Notes: Configuration interface for XLoot
-## Version: 10.0.2-1
+## Version: 10.0.2-2
 ## Author: Xuerian
 ## X-Category: Inventory
 

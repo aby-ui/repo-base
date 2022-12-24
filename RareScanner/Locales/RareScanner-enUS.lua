@@ -705,6 +705,8 @@ if AL then
 	AL["NOTE_191356_2"] = "Table with toys"
 	AL["NOTE_191842"] = "Inside the cave."
 	AL["NOTE_192364"] = "It is available when you find at his position some NPCs casting a spell on a [Storm-touched Egg]. Kill them all to start the event."
+	AL["NOTE_192557"] = "In order to summon it you need to collect a [Duck Trap Kit], craft it using only level 1 materials (very important!, otherwise it will fail) and then place it at this position."
+	AL["NOTE_192557_1"] = "[Duck Trap Kit]"
 	AL["NOTE_192983"] = "In the last chamber in a long cave."
 	AL["NOTE_193128"] = "Talk to [Archaeologist Koranir] to start the combat."
 	AL["NOTE_193128_1"] = "[Archaeologist Koranir]"

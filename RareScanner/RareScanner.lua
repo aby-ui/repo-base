@@ -136,6 +136,9 @@ scanner_button.Description_text:SetPoint("RIGHT", Description)
 scanner_button.CloseButton = CreateFrame("Button", "CloseButton", scanner_button, "UIPanelCloseButton")
 scanner_button.CloseButton:SetPoint("BOTTOMRIGHT", -4, 4)
 scanner_button.CloseButton:SetSize(16, 16)
+scanner_button.CloseButton:HookScript("OnClick", function(self)
+	RSTomtom.RemoveCurrentTomtomWaypoint();
+end)
 
 -- Filter disabled button
 scanner_button.FilterDisabledButton = CreateFrame("Button", "FilterDisabledButton", scanner_button, "GameMenuButtonTemplate")
@@ -355,7 +358,7 @@ function scanner_button:DetectedNewVignette(self, vignetteInfo, isNavigating)
 		return
 	end
 	
-	--RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s]", vignetteInfo.atlasName))
+	RSLogger:PrintDebugMessage(string.format("Vignette ATLAS [%s]", vignetteInfo.atlasName))
 		
 	-- Overrides name if Torghast vignette
 	if (vignetteInfo.type and vignetteInfo.type == Enum.VignetteType.Torghast) then

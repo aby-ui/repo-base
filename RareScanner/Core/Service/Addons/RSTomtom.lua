@@ -20,10 +20,8 @@ local tomtom_waypoint
 
 function RSTomtom.AddWorldMapTomtomWaypoint(mapID, x, y, name)
 	if (TomTom and RSConfigDB.IsAddingWorldMapTomtomWaypoints() and mapID and x and y and name) then
-		if (tomtom_waypoint) then
-			TomTom:RemoveWaypoint(tomtom_waypoint)
-		end
-		
+		RSTomtom.RemoveCurrentTomtomWaypoint()
+				
 		tomtom_waypoint = TomTom:AddWaypoint(mapID, RSUtils.FixCoord(x), RSUtils.FixCoord(y), {
 			title = name,
 			persistent = false,
@@ -36,9 +34,8 @@ end
 
 function RSTomtom.AddTomtomWaypoint(npcID, name)
 	if (TomTom and RSConfigDB.IsTomtomSupportEnabled() and npcID and name) then
-		if (tomtom_waypoint) then
-			TomTom:RemoveWaypoint(tomtom_waypoint)
-		end
+		RSTomtom.RemoveCurrentTomtomWaypoint()
+		
 		local npcInfo = RSGeneralDB.GetAlreadyFoundEntity(npcID)
 		if (npcInfo and npcInfo.coordX and npcInfo.coordY) then
 			tomtom_waypoint = TomTom:AddWaypoint(npcInfo.mapID, RSUtils.FixCoord(npcInfo.coordX), RSUtils.FixCoord(npcInfo.coordY), {
@@ -68,4 +65,11 @@ function RSTomtom.AddTomtomWaypointFromVignette(vignetteInfo, manuallyFired)
 
 	-- Adds the waypoint
 	RSTomtom.AddTomtomWaypoint(npcID, vignetteInfo.name)
+end
+
+function RSTomtom.RemoveCurrentTomtomWaypoint()
+	if (TomTom and tomtom_waypoint) then
+		TomTom:RemoveWaypoint(tomtom_waypoint)
+		tomtom_waypoint = nil
+	end
 end

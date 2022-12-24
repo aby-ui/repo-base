@@ -1,6 +1,13 @@
 -- local zone = "Halls of Infusion"
 local zoneid = 2082
 
+--M+
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240447, 1, 6, 6, true) --Quake
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240559, 1, 6, 6, true, true) --Grievous Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 209858, 1, 6, 6, true, true) --Necrotic Wound
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 240443, 1, 6, 6, true, true) --Burst
+_G.GridStatusRaidDebuff:DebuffId(zoneid, 226512, 1, 6, 6, true) --Sanguine Ichor
+
 --Trash
 GridStatusRaidDebuff:DebuffId(zoneid, 374020, 1, 5, 5, true) -- containment-beam
 GridStatusRaidDebuff:DebuffId(zoneid, 393444, 1, 5, 5, true) -- gushing-wound

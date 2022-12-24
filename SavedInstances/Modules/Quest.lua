@@ -282,6 +282,15 @@ local QuestExceptions = {
   -- Korthia
   [64522] = "Weekly", -- Stolen Korthian Supplies
 
+  -- DF
+  -- Fishing Weeklies
+  [70199] = "Weekly", -- Catch and Release: Scalebelly Mackerel
+  [70200] = "Weekly", -- Catch and Release: Thousandbite Piranha
+  [70201] = "Weekly", -- Catch and Release: Aileron Seamoth
+  [70202] = "Weekly", -- Catch and Release: Cerulean Spinefish
+  [70203] = "Weekly", -- Catch and Release: Temporal Dragonhead
+  [70935] = "Weekly", -- Catch and Release: Islefin Dorado
+
   -- General
   -- Darkmoon Faire
   [7905]  = "Regular",  -- Darkmoon Faire referral -- old addon versions misidentified this as monthly

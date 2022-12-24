@@ -14,19 +14,19 @@ if LOCALE_koKR then
 	defaultFonts.icon = {"기본 글꼴", 11, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"기본 글꼴", 12, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"기본 글꼴", 12, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.optionSmall = {"기본 글꼴", 11, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.optionSmall = {"기본 글꼴", 10, "NONE", 0, 0, 0, 1, -1}
 elseif LOCALE_zhCN then
 	defaultFonts.statusBar = {"默认", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"默认", 15, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.optionSmall = {"默认", 15, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.optionSmall = {"默认", 12, "NONE", 0, 0, 0, 1, -1}
 elseif LOCALE_zhTW then
 	defaultFonts.statusBar = {"預設", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"預設", 15, "OUTLINE", 0, 0, 0, 1, -1}
 	defaultFonts.anchor = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.option = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
-	defaultFonts.optionSmall = {"預設", 15, "NONE", 0, 0, 0, 1, -1}
+	defaultFonts.optionSmall = {"預設", 13, "NONE", 0, 0, 0, 1, -1}
 elseif LOCALE_ruRU then
 	defaultFonts.statusBar = {"PT Sans Narrow Bold", 22, "NONE", 0, 0, 0, 1, -1}
 	defaultFonts.icon = {"PT Sans Narrow Bold", 10, "OUTLINE", 0, 0, 0, 1, -1}
@@ -179,6 +179,7 @@ local General = {
 					inline = true,
 					args = fontInfo
 				},
+				--[[ scale panel instead
 				option = {
 					name = OPTIONS,
 					order = 4,
@@ -193,6 +194,7 @@ local General = {
 					inline = true,
 					args = fontInfo,
 				},
+				]]
 			}
 		},
 		textures = {

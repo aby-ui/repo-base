@@ -511,15 +511,13 @@ local function GetEquippedItemData(info, unit, specID, list)
 				else
 					itemID = E.item_merged[itemID] or itemID
 					info.itemData[itemID] = true
-					if list then
-						if i == 13 then list[#list + 1] = "^E" end
-						list[#list + 1] = itemID
-					end
+					if list then list[#list + 1] = itemID end
 				end
 			elseif not moveToStale then
 				moveToStale = true
 			end
 		end
+		if list and i == 12 then list[#list + 1] = "^E" end
 		InspectTooltip:ClearLines()
 	end
 

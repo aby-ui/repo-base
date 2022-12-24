@@ -438,10 +438,12 @@ local function Constructor()
 	checkbg:SetWidth(14)
 	checkbg:SetHeight(14)
 	checkbg:SetPoint("LEFT")
-	-- v27 added texture borders instead of backdrop
-	-- OmniCD[1].BackdropTemplate(checkbg)
-	-- checkbg:SetBackdropColor(0, 0, 0)
-	-- checkbg:SetBackdropBorderColor(0.2, 0.2, 0.25)
+
+	--[[ v27 added texture borders instead of backdrop
+	OmniCD[1].BackdropTemplate(checkbg, "ACD")
+	checkbg:SetBackdropColor(0, 0, 0)
+	checkbg:SetBackdropBorderColor(0.2, 0.2, 0.25)
+	]]
 	checkbg.border = checkbg:CreateTexture(nil, "BACKGROUND")
 	OmniCD[1].DisablePixelSnap(checkbg.border)
 	checkbg.border:SetAllPoints()
@@ -450,7 +452,7 @@ local function Constructor()
 	checkbg.bg = checkbg:CreateTexture(nil, "BORDER")
 	OmniCD[1].DisablePixelSnap(checkbg.bg)
 	checkbg.bg:SetColorTexture(0, 0, 0)
-	local edgeSize = OmniCD[1].PixelMult
+	local edgeSize = OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1)
 	checkbg.bg:SetPoint("TOPLEFT", checkbg, "TOPLEFT", edgeSize, -edgeSize)
 	checkbg.bg:SetPoint("BOTTOMRIGHT", checkbg, "BOTTOMRIGHT", -edgeSize, edgeSize)
 
@@ -489,9 +491,11 @@ local function Constructor()
 		imagebg:SetHeight(DEFAULT_ICON_SIZE) -- 24 is frames full height
 		imagebg:SetWidth(DEFAULT_ICON_SIZE)
 		imagebg:SetPoint("LEFT", checkbg, "RIGHT", 2, 0)
-		-- v27
---		OmniCD[1].BackdropTemplate(imagebg)
---		imagebg:SetBackdropBorderColor(0.2, 0.2, 0.05)
+
+		--[[ v27
+		OmniCD[1].BackdropTemplate(imagebg, "ACD")
+		imagebg:SetBackdropBorderColor(0.2, 0.2, 0.05)
+		]]
 		imagebg.border = imagebg:CreateTexture(nil, "BORDER")
 		OmniCD[1].DisablePixelSnap(imagebg.border)
 		imagebg.border:SetAllPoints()
@@ -499,9 +503,10 @@ local function Constructor()
 
 		image = imagebg:CreateTexture(nil, "OVERLAY")
 		OmniCD[1].DisablePixelSnap(image)
-		-- v27
---		image:SetPoint("TOPLEFT", imagebg.TopEdge, "BOTTOMLEFT")
---		image:SetPoint("BOTTOMRIGHT", imagebg.BottomEdge, "TOPRIGHT")
+		--[[ v27
+		image:SetPoint("TOPLEFT", imagebg.TopEdge, "BOTTOMLEFT")
+		image:SetPoint("BOTTOMRIGHT", imagebg.BottomEdge, "TOPRIGHT")
+		]]
 		image:SetPoint("TOPLEFT", imagebg, "TOPLEFT", edgeSize, -edgeSize)
 		image:SetPoint("BOTTOMRIGHT", imagebg, "BOTTOMRIGHT", -edgeSize, edgeSize)
 	else

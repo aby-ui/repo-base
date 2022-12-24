@@ -47,6 +47,7 @@ CL.RINGS							= "Rings"
 CL.CHEST							= "Chest"--As in Treasure 'Chest'. Not Chest as in body part.
 CL.ADD								= "Add"--A fight Add as in "boss spawned extra adds"
 CL.ADDS								= "Adds"
+CL.ADDCOUNT							= "Add %s"--ie, Add 1, Add 2, Add 3
 CL.BIG_ADD							= "Big Add"
 CL.BOSS								= "Boss"
 CL.ENEMIES							= "Enemies"

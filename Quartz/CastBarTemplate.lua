@@ -612,7 +612,7 @@ do
 	end
 
 	local function nothing(self)
-		self:SetAlpha(self.config.alpha)
+		self:SetAlpha(self.config.alpha or 1.0)
 	end
 
 	function CastBarTemplate:Unlock()

@@ -194,6 +194,11 @@ GTFO.SpellID["398301"] = {
   sound = 1;
 };
 
+GTFO.SpellID["396003"] = {
+  --desc = "Terrorial Display (The Songbird Queen)";
+  sound = 1;
+};
+
 -- *********************
 -- * Scarlet Cathedral *
 -- *********************

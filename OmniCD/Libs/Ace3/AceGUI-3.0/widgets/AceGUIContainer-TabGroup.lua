@@ -336,7 +336,7 @@ local methods = {
 		tab.selectedTextY = -2
 
 		-- s b
-		OmniCD[1].BackdropTemplate(tab)
+		OmniCD[1].BackdropTemplate(tab, "ACD")
 		tab:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab btn) - match tree nav btn
 		tab:SetBackdropBorderColor(0, 0, 0)
 
@@ -564,7 +564,7 @@ local methods = {
 			end
 		end
 
-		local PixelMult = OmniCD[1].PixelMult -- s a
+		local PixelMult = OmniCD[1].PixelMult / (OmniCD[1].global.optionPanelScale or 1)-- s a
 
 		--anchor the rows as defined and resize tabs to fill thier row
 		local starttab = 1
@@ -660,7 +660,7 @@ if select(4, GetBuildInfo()) < 100000 then
 		-- s b
 		-- OptionsFrameTabButtonTemplate <AbsDimension x="115" y="24"/>
 		--Mixin(tab, BackdropTemplateMixin)
-		OmniCD[1].BackdropTemplate(tab)
+		OmniCD[1].BackdropTemplate(tab, "ACD")
 		tab:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab btn) - match tree nav btn
 		tab:SetBackdropBorderColor(0, 0, 0)
 		tab:SetHighlightTexture(0) -- DF: nil throws error (Classic too), "" doesn't work (shows highlight texture)
@@ -769,7 +769,7 @@ local function Constructor()
 	]]
 	border:SetPoint("TOPLEFT", 0, -27)
 	border:SetPoint("BOTTOMRIGHT", 0, 3)
-	OmniCD[1].BackdropTemplate(border)
+	OmniCD[1].BackdropTemplate(border, "ACD")
 	border:SetBackdropColor(0.1, 0.1, 0.1, 0.5) -- BDR (tab content bg)
 	border:SetBackdropBorderColor(0, 0, 0)
 	-- e

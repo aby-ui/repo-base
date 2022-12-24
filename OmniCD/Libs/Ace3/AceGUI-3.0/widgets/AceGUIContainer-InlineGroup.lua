@@ -108,7 +108,7 @@ local function Constructor()
 	border:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
 	border:SetBackdropBorderColor(0.4, 0.4, 0.4)
 	]]
-	OmniCD[1].BackdropTemplate(border)
+	OmniCD[1].BackdropTemplate(border, "ACD")
 	border:SetBackdropColor(0, 0, 0, 0.25) -- BDR (group bg) re-darken
 	border:SetBackdropBorderColor(0, 0, 0)
 

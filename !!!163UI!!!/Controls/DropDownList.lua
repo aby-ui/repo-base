@@ -2,7 +2,7 @@
 cfg参数：
 - options = { caption1, value1, caption2, value2, ... } or function
 ---------------------------------------------------------------]]
-local UIDROPDOWNMENUTEMPLATE = "UIDropDownMenuTemplate"
+local LibDD = LibStub("LibUIDropDownMenu-4.0")
 
 local __type = "drop"
 
@@ -42,7 +42,7 @@ end
 local function dropDownButtonFunc(self, arg1, arg2)
     local menu = self.owner
     local value = self.value
-    UIDropDownMenu_SetSelectedValue(menu, value);
+    LibDD:UIDropDownMenu_SetSelectedValue(menu, value);
     local cfg = menu:GetParent()._cfg
     CtlRegularSaveValue(menu:GetParent(), value)
 end
@@ -63,20 +63,20 @@ local function dropDownInitialize(frame, level, menuList)
         info.checked = nil;
         info.text = options[i]
         info.value = options[i+1]
-        UIDropDownMenu_AddButton(info);
+        LibDD:UIDropDownMenu_AddButton(info);
     end
 end
 
 function methods:CtlEnable()
     self._disabled = nil;
     self.title:SetTextColor(self.title:GetFontObject():GetTextColor());
-    UIDropDownMenu_EnableDropDown(self.menu);
+    LibDD:UIDropDownMenu_EnableDropDown(self.menu);
 end
 
 function methods:CtlDisable()
     self._disabled = true;
     self.title:SetTextColor(0.5, 0.5, 0.5);
-    UIDropDownMenu_DisableDropDown(self.menu);
+    LibDD:UIDropDownMenu_DisableDropDown(self.menu);
 end
 
 function methods:IsChildrenDisabled()
@@ -84,7 +84,7 @@ function methods:IsChildrenDisabled()
 end
 
 function methods:CtlLoadValue(v)
-    UIDropDownMenu_SetSelectedValue(self.menu, v);
+    LibDD:UIDropDownMenu_SetSelectedValue(self.menu, v);
 end
 
 function methods:CtlOnSearch(text)
@@ -98,9 +98,9 @@ function methods:CtlPlace(parent, cfg, last)
     self:SetWidth(parent:GetWidth() - CtlGetLeftPadding(self))
     self.title:SetText(cfg.text);
 
-    UIDropDownMenu_Initialize(self.menu, dropDownInitialize);
+    LibDD:UIDropDownMenu_Initialize(self.menu, dropDownInitialize);
     --UIDropDownMenu_SetWidth(self.menu, parent:GetWidth() - CtlGetLeftPadding(self) - 56); --暂时不根据缩进设置宽度
-    UIDropDownMenu_SetWidth(self.menu, 130);
+    LibDD:UIDropDownMenu_SetWidth(self.menu, 130);
 end
 
 --[[------------------------------------------------------------
@@ -116,13 +116,16 @@ local creator = function()
     ct:CreateTexture():SetSize(7, 7):SetColorTexture(1,.82,0,0.3):TL(5,-5);
     ct.title = ct:CreateFontString():SetFontObject(CtlFontNormalSmall):TL(17, -3);
     local btnName = U1_FRAME_NAME.."C_"..__type..idx
-    ct:Frame(btnName, UIDROPDOWNMENUTEMPLATE, "menu"):SetScale(0.85):TR(-30, -27):un();
+
+    ct = ct:un()
+    ct.menu = LibDD:Create_UIDropDownMenu(btnName, ct)
+    WW(ct.menu):SetScale(0.85):TR(-30, -27):un();
     _G[btnName.."Button"]:HookScript("OnEnter", childOnEnter)
     _G[btnName.."Button"]:HookScript("OnLeave", childOnLeave)
     --menu.displayMode = "MENU";
     CtlExtend(ct);
     CtlExtend(ct, methods);
-    return ct:un();
+    return ct;
 end
 
 CtlRegister(__type, creator)
